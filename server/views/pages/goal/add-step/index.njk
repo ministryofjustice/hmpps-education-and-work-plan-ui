@@ -1,0 +1,102 @@
+{% extends "../../../partials/layout.njk" %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/date-input/macro.njk" import govukDateInput %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/breadcrumbs/macro.njk" import govukBreadcrumbs %}
+
+{% set pageTitle = applicationName + " - Home" %}
+{% set mainClasses = "app-container govuk-body" %}
+
+{% block beforeContent %}
+    {{ govukBreadcrumbs({
+        items: [
+            {
+                text: "Digital prison services",
+                href: dpsUrl
+            },
+            {
+                text: "Learning plans",
+                href: "/"
+            }
+        ],
+        classes: 'govuk-!-display-none-print'
+    }) }}
+{% endblock %}
+
+{% block content %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-one-third">
+      <p class="govuk-!-font-weight-bold govuk-!-margin-bottom-5">Prison number: <span class="govuk-body" data-qa="prison-number">A1234BC</span></p>
+    </div>
+    <div class="govuk-grid-column-one-third">
+      <p class="govuk-!-font-weight-bold govuk-!-margin-bottom-5">Earliest release date: <span class="govuk-body" data-qa="release-date">1 July 2024</span></p>
+    </div>
+    <div class="govuk-grid-column-one-third">
+      <p class="govuk-!-font-weight-bold govuk-!-margin-bottom-5">Location: <span class="govuk-body" data-qa="location">C-2-01</span></p>
+    </div>
+  </div>
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h1 class="govuk-heading-l">What are the steps to help them achieve their goal Get English Level 2</h1>
+    </div>
+  </div>
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <form class="form" method="post" novalidate="">
+        <div class="govuk-form-group">
+          <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+
+          {{ govukInput({
+            label: {
+              text: "Step 1",
+              classes: "govuk-label--m",
+              isPageHeading: false
+            },
+            id: "step-title",
+            name: "step-title",
+            hint: {
+              text: "Describe this step"
+            }
+          }) }}
+
+          {{ govukDateInput({
+            id: "step-target-date",
+            namePrefix: "step-target-date",
+            fieldset: {
+              legend: {
+                text: "Target date (optional)",
+                isPageHeading: false,
+                classes: "govuk-fieldset__legend--m"
+              }
+            },
+            hint: {
+              text: "For example, 12 11 2024"
+            }
+          }) }}
+        </div>
+
+        <div class="govuk-form-group">
+          {{ govukButton({
+            id: "add-step-button",
+            name: "add-step-button",
+            text: "Add another step",
+            classes: "govuk-button--secondary"
+          }) }}
+        </div>
+
+        {{ govukButton({
+          id: "submit-button",
+          name: "submit-button",
+          text: "Continue to add a note"
+        }) }}
+
+      </form>
+
+    </div>
+  </div>
+
+{% endblock %}

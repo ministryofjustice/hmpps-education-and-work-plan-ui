@@ -16,5 +16,9 @@ export default function routes(service: Services): Router {
     res.render('pages/goal/create/index')
   })
 
+  get('/plan/:prisonNumber/goals/add-step', (req, res, next) => {
+    res.render('pages/goal/add-step/index')
+  })
+
   return router
 }
