@@ -49,12 +49,34 @@ It then performs a search and replace and directory renames so the project is re
 
 To ensure notifications are routed to the correct slack channels, update the `alerts-slack-channel` and `releases-slack-channel` parameters in `.circle/config.yml` to an appropriate channel.
 
+## Imported Types
+Some types are imported from the Open API docs for hmpps-education-and-work-plan-api and prisoner-search-api.  
+You will need to install the node module `openapi-typescript` globally with the following command:
+
+`npm install -g openapi-typescript`
+
+To update the types from the Open API docs run the following commands:
+
+`npx openapi-typescript https://hmpps-education-and-work-plan-api-dev.hmpps.service.justice.gov.uk/v3/api-docs -o server/@types/educationAndWorkPlanApi/index.d.ts`
+
+`npx openapi-typescript https://prisoner-offender-search-dev.prison.service.justice.gov.uk/v3/api-docs -o server/@types/prisonerSearchApi/index.d.ts`
+
+Note that you will need to run prettier over the generated files and possibly handle other errors before compiling.
+
+The types are inherited for use in `server/@types/educationAndWorkPlanApi/index.d.ts` and `server/@types/prisonerSearchApi/index.d.ts` which may also need tweaking for use.
+
+Do not re-import the specs lightly! Reformatting the generated code with prettier is no small task, especially with large specs such as Prisoner Search.
+
 ## Running the app
 The easiest way to run the app is to use docker compose to create the service and all dependencies. 
 
 `docker-compose pull`
 
 `docker-compose up`
+
+Note that this will require running up the API first. See the [API Readme](https://github.com/ministryofjustice/hmpps-education-and-work-plan-api#running-the-app).
+
+See `http://localhost:3000/health` to check the app is running.
 
 ### Dependencies
 The app requires: 
@@ -70,6 +92,23 @@ To start the main services excluding the example typescript template app:
 Install dependencies using `npm install`, ensuring you are using `node v18.x` and `npm v9.x`
 
 Note: Using `nvm` (or [fnm](https://github.com/Schniz/fnm)), run `nvm install --latest-npm` within the repository folder to use the correct version of node, and the latest version of npm. This matches the `engines` config in `package.json` and the CircleCI build config.
+
+Create a `.env` which should override environment variables required to run locally:
+```properties
+HMPPS_AUTH_URL=http://localhost:9090/auth
+TOKEN_VERIFICATION_API_URL=https://token-verification-api-dev.prison.service.justice.gov.uk
+TOKEN_VERIFICATION_ENABLED=false
+EDUCATION_AND_WORK_PLAN_API_URL=http://localhost:8080
+PRISONER_SEARCH_API_URL=http://localhost:8080
+NODE_ENV=development
+SESSION_SECRET=anything
+PORT=3000
+API_CLIENT_ID=<YOUR_CLIENT_ID>
+API_CLIENT_SECRET="<YOUR_CLIENT_SECRET>"
+SYSTEM_CLIENT_ID=<YOUR_CLIENT_ID>
+SYSTEM_CLIENT_SECRET="<YOUR_CLIENT_SECRET>"
+
+```
 
 And then, to build the assets and start the app with nodemon:
 
