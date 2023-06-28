@@ -1,0 +1,88 @@
+{% extends "../../../partials/layout.njk" %}
+{% from "govuk/components/textarea/macro.njk" import govukTextarea %}
+{% from "govuk/components/date-input/macro.njk" import govukDateInput %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/breadcrumbs/macro.njk" import govukBreadcrumbs %}
+
+
+{% set pageTitle = applicationName + " - Home" %}
+{% set mainClasses = "app-container govuk-body" %}
+
+{% block beforeContent %}
+    {{ govukBreadcrumbs({
+        items: [
+            {
+                text: "Digital prison services",
+                href: dpsUrl
+            },
+            {
+                text: "Learning plans",
+                href: "/"
+            }
+        ],
+        classes: 'govuk-!-display-none-print'
+    }) }}
+{% endblock %}
+
+{% block content %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-one-third">
+      <p class="govuk-!-font-weight-bold govuk-!-margin-bottom-5">Prison number: <span class="govuk-body" data-qa="prison-number">A1234BC</span></p>
+    </div>
+    <div class="govuk-grid-column-one-third">
+      <p class="govuk-!-font-weight-bold govuk-!-margin-bottom-5">Earliest release date: <span class="govuk-body" data-qa="release-date">1 July 2024</span></p>
+    </div>
+    <div class="govuk-grid-column-one-third">
+      <p class="govuk-!-font-weight-bold govuk-!-margin-bottom-5">Location: <span class="govuk-body" data-qa="location">C-2-01</span></p>
+    </div>
+  </div>
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h1 class="govuk-heading-l">Describe the goal you want to create for Chris Atkinson</h1>
+
+      <p>Goals should be SMART, meaning 'specific', 'measurable', 'achievable', 'relevant' and 'time-bound'. SMART goals
+        allow progress to be better measured and evaluated. You can add the steps to achieve the goal on the next page.
+      </p>
+    </div>
+  </div>
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <form class="form" method="post" novalidate="">
+        <div class="govuk-form-group">
+          <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+
+          {{ govukTextarea({
+            name: "goal-title",
+            id: "goal-title"
+          }) }}
+
+          {{ govukDateInput({
+            id: "goal-review-date",
+            namePrefix: "goal-review-date",
+            fieldset: {
+              legend: {
+                text: "Review date",
+                isPageHeading: false,
+                classes: "govuk-fieldset__legend--l"
+              }
+            },
+            hint: {
+              text: "For example, 12 11 2024"
+            }
+          }) }}
+        </div>
+
+        {{ govukButton({
+          text: "Continue to add steps"
+        }) }}
+
+      </form>
+
+    </div>
+  </div>
+
+{% endblock %}
