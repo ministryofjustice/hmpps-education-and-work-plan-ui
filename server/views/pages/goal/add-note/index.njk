@@ -1,0 +1,68 @@
+{% extends "../../../partials/layout.njk" %}
+{% from "govuk/components/textarea/macro.njk" import govukTextarea %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/breadcrumbs/macro.njk" import govukBreadcrumbs %}
+
+{% set pageTitle = applicationName + " - Home" %}
+{% set mainClasses = "app-container govuk-body" %}
+
+{% block beforeContent %}
+    {{ govukBreadcrumbs({
+        items: [
+            {
+                text: "Digital prison services",
+                href: dpsUrl
+            },
+            {
+                text: "Learning plans",
+                href: "/"
+            }
+        ],
+        classes: 'govuk-!-display-none-print'
+    }) }}
+{% endblock %}
+
+{% block content %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-one-third">
+      <p class="govuk-!-font-weight-bold govuk-!-margin-bottom-5">Prison number: <span class="govuk-body" data-qa="prison-number">A1234BC</span></p>
+    </div>
+    <div class="govuk-grid-column-one-third">
+      <p class="govuk-!-font-weight-bold govuk-!-margin-bottom-5">Earliest release date: <span class="govuk-body" data-qa="release-date">1 July 2024</span></p>
+    </div>
+    <div class="govuk-grid-column-one-third">
+      <p class="govuk-!-font-weight-bold govuk-!-margin-bottom-5">Location: <span class="govuk-body" data-qa="location">C-2-01</span></p>
+    </div>
+  </div>
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <form class="form" method="post" novalidate="">
+        <div class="govuk-form-group">
+          <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+
+          {{ govukTextarea({
+            name: "goal-note",
+            id: "goal-note",
+            label: {
+              text: "Add a note to this goal (optional)",
+              classes: "govuk-label--l",
+              isPageHeading: true
+            }
+          }) }}
+        </div>
+
+        {{ govukButton({
+          id: "submit-button",
+          name: "submit-button",
+          text: "Continue to review goals"
+        }) }}
+
+      </form>
+
+    </div>
+  </div>
+
+{% endblock %}
