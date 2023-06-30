@@ -9,7 +9,7 @@ context('Add a note', () => {
 
   it('should render add note page', () => {
     // Given
-    const prisonNumber = 'A1234BC'
+    const prisonNumber = 'G6115VJ'
     cy.signIn()
 
     // When
@@ -22,7 +22,7 @@ context('Add a note', () => {
 
   it.skip('should move to review goals page', () => {
     // Given
-    const prisonNumber = 'A1234BC'
+    const prisonNumber = 'G6115VJ'
     cy.signIn()
     cy.visit(`/plan/${prisonNumber}/goals/create`)
 
