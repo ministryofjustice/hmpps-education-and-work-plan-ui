@@ -1,11 +1,11 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-one-third">
-      <p class="govuk-!-font-weight-bold govuk-!-margin-bottom-5">Prison number: <span class="govuk-body" data-qa="prison-number">G6115VJ</span></p>
+      <p class="govuk-!-font-weight-bold govuk-!-margin-bottom-5">Prison number: <span class="govuk-body" data-qa="prison-number">{{ prisonerSummary.prisonNumber }}</span></p>
     </div>
     <div class="govuk-grid-column-one-third">
-      <p class="govuk-!-font-weight-bold govuk-!-margin-bottom-5">Earliest release date: <span class="govuk-body" data-qa="release-date">1 July 2024</span></p>
+      <p class="govuk-!-font-weight-bold govuk-!-margin-bottom-5">Earliest release date: <span class="govuk-body" data-qa="release-date">{{ prisonerSummary.releaseDate }}</span></p>
     </div>
     <div class="govuk-grid-column-one-third">
-      <p class="govuk-!-font-weight-bold govuk-!-margin-bottom-5">Location: <span class="govuk-body" data-qa="location">C-2-01</span></p>
+      <p class="govuk-!-font-weight-bold govuk-!-margin-bottom-5">Location: <span class="govuk-body" data-qa="location">{{ prisonerSummary.location }}</span></p>
     </div>
   </div>

@@ -2,7 +2,6 @@ import Page from '../../pages/page'
 import CreateGoalPage from '../../pages/goal/CreateGoalPage'
 
 context('Create a goal', () => {
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubSignIn')

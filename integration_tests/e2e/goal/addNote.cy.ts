@@ -4,13 +4,18 @@ import AddStepPage from '../../pages/goal/AddStepPage'
 import AddNotePage from '../../pages/goal/AddNotePage'
 
 context('Add a note', () => {
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  beforeEach(() => {})
+  beforeEach(() => {
+    cy.task('reset')
+    cy.task('stubSignIn')
+    cy.task('stubAuthUser')
+    cy.task('getPrisonerById')
+  })
 
   it('should render add note page', () => {
     // Given
     const prisonNumber = 'G6115VJ'
     cy.signIn()
+    cy.visit(`/plan/${prisonNumber}/goals/create`)
 
     // When
     cy.visit(`/plan/${prisonNumber}/goals/add-note`)
