@@ -3,7 +3,7 @@
       <p class="govuk-!-font-weight-bold govuk-!-margin-bottom-5">Prison number: <span class="govuk-body" data-qa="prison-number">{{ prisonerSummary.prisonNumber }}</span></p>
     </div>
     <div class="govuk-grid-column-one-third">
-      <p class="govuk-!-font-weight-bold govuk-!-margin-bottom-5">Earliest release date: <span class="govuk-body" data-qa="release-date">{{ prisonerSummary.releaseDate }}</span></p>
+      <p class="govuk-!-font-weight-bold govuk-!-margin-bottom-5">Earliest release date: <span class="govuk-body" data-qa="release-date">{{ prisonerSummary.releaseDate | formatDate('D MMMM YYYY') }}</span></p>
     </div>
     <div class="govuk-grid-column-one-third">
       <p class="govuk-!-font-weight-bold govuk-!-margin-bottom-5">Location: <span class="govuk-body" data-qa="location">{{ prisonerSummary.location }}</span></p>
