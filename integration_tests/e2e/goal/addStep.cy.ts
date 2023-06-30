@@ -3,13 +3,18 @@ import CreateGoalPage from '../../pages/goal/CreateGoalPage'
 import AddStepPage from '../../pages/goal/AddStepPage'
 
 context('Add a step', () => {
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  beforeEach(() => {})
+  beforeEach(() => {
+    cy.task('reset')
+    cy.task('stubSignIn')
+    cy.task('stubAuthUser')
+    cy.task('getPrisonerById')
+  })
 
   it('should render add step page', () => {
     // Given
     const prisonNumber = 'G6115VJ'
     cy.signIn()
+    cy.visit(`/plan/${prisonNumber}/goals/create`)
 
     // When
     cy.visit(`/plan/${prisonNumber}/goals/add-step`)
