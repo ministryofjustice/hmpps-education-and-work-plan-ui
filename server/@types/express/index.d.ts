@@ -25,6 +25,8 @@ export declare global {
       verified?: boolean
       id: string
       logout(done: (err: unknown) => void): void
+      flash(type: string, message: Array<Record<string, string>>): number
+      flash(message: 'errors'): Array<Record<string, string>>
     }
   }
 }
