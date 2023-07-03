@@ -26,13 +26,13 @@ export default class CreateGoalPage extends Page {
     this.submitButton().click()
   }
 
-  titleField = (): PageElement => cy.get('#goal-title')
+  titleField = (): PageElement => cy.get('#title')
 
-  reviewDateDayField = (): PageElement => cy.get('#goal-review-date-day')
+  reviewDateDayField = (): PageElement => cy.get('#reviewDate-day')
 
-  reviewDateMonthField = (): PageElement => cy.get('#goal-review-date-month')
+  reviewDateMonthField = (): PageElement => cy.get('#reviewDate-month')
 
-  reviewDateYearField = (): PageElement => cy.get('#goal-review-date-year')
+  reviewDateYearField = (): PageElement => cy.get('#reviewDate-year')
 
   submitButton = (): PageElement => cy.get('button')
 

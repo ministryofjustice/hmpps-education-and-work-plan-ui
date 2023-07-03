@@ -4,6 +4,7 @@ import type { PrisonerSummary } from 'viewModels'
 import createError from 'http-errors'
 import PrisonerSearchService from '../../services/prisonerSearchService'
 import CreateGoalView from './createGoalView'
+import AddStepView from './addStepView'
 
 export default class CreateGoalController {
   constructor(private readonly prisonerSearchService: PrisonerSearchService) {}
@@ -33,12 +34,24 @@ export default class CreateGoalController {
     res.render('pages/goal/create/index', { ...view.renderArgs })
   }
 
-  getAddStepView: RequestHandler = async (req, res, next): Promise<void> => {
+  submitCreateGoalForm: RequestHandler = async (req, res, next): Promise<void> => {
     const { prisonNumber } = req.params
-    const { prisonerSummary } = req.session
-    const createGoalForm = req.session.createGoalForm || { prisonNumber }
+    req.session.createGoalForm = { ...req.body }
 
-    const view = new CreateGoalView(prisonerSummary, createGoalForm, req.flash('errors'))
+    /*
+    Validate req.session.createGoalForm here
+    If any validation errors, add to req.flash('errors`) and redirect back to `/plan/${prisonNumber}/goals/create`
+     */
+
+    return res.redirect(`/plan/${prisonNumber}/goals/add-step`)
+  }
+
+  getAddStepView: RequestHandler = async (req, res, next): Promise<void> => {
+    const { prisonerSummary } = req.session
+    const { createGoalForm } = req.session
+    const addStepForm = req.session.addStepForm || {}
+
+    const view = new AddStepView(createGoalForm.title, prisonerSummary, addStepForm, req.flash('errors'))
     res.render('pages/goal/add-step/index', { ...view.renderArgs })
   }
 
