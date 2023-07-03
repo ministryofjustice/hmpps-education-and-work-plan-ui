@@ -17,6 +17,6 @@ declare module 'forms' {
   }
 
   export interface AddNoteForm {
-    notes?: string
+    note?: string
   }
 }
