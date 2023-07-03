@@ -4,8 +4,6 @@ import type { PrisonerSummary } from 'viewModels'
 import createError from 'http-errors'
 import PrisonerSearchService from '../../services/prisonerSearchService'
 import CreateGoalView from './createGoalView'
-import AddStepView from './addStepView'
-import AddSNoteView from './addNoteView'
 
 export default class CreateGoalController {
   constructor(private readonly prisonerSearchService: PrisonerSearchService) {}
@@ -40,7 +38,7 @@ export default class CreateGoalController {
     const { prisonerSummary } = req.session
     const createGoalForm = req.session.createGoalForm || { prisonNumber }
 
-    const view = new AddStepView(prisonerSummary, createGoalForm, req.flash('errors'))
+    const view = new CreateGoalView(prisonerSummary, createGoalForm, req.flash('errors'))
     res.render('pages/goal/add-step/index', { ...view.renderArgs })
   }
 
@@ -49,7 +47,7 @@ export default class CreateGoalController {
     const { prisonerSummary } = req.session
     const createGoalForm = req.session.createGoalForm || { prisonNumber }
 
-    const view = new AddSNoteView(prisonerSummary, createGoalForm, req.flash('errors'))
+    const view = new CreateGoalView(prisonerSummary, createGoalForm, req.flash('errors'))
     res.render('pages/goal/add-note/index', { ...view.renderArgs })
   }
 }
