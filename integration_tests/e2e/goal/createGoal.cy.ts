@@ -1,5 +1,6 @@
 import Page from '../../pages/page'
 import CreateGoalPage from '../../pages/goal/CreateGoalPage'
+import AddStepPage from '../../pages/goal/AddStepPage'
 
 context('Create a goal', () => {
   beforeEach(() => {
@@ -22,7 +23,7 @@ context('Create a goal', () => {
     page.isForPrisoner(prisonNumber)
   })
 
-  it.skip('should move to add step page', () => {
+  it('should create a valid goal', () => {
     // Given
     const prisonNumber = 'G6115VJ'
     cy.signIn()
@@ -36,6 +37,10 @@ context('Create a goal', () => {
     page.submitPage()
 
     // Then
-    // assert we are on the next page
+    const addStepPage = Page.verifyOnPage(AddStepPage)
+    addStepPage.isForGoal('Learn French')
+
+    addStepPage.setStepTitle('Book French course')
+    addStepPage.setStepTargetDate(23, 12, 2024)
   })
 })

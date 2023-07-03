@@ -3,13 +3,16 @@ declare module 'forms' {
     readonly prisonNumber: string
     title?: string
     reviewDate?: Date
-    steps?: [
-      {
-        title?: string
-        targetDate?: Date
-        sequenceNumber?: number
-      },
-    ]
-    notes?: string
+    'reviewDate-day'?: string
+    'reviewDate-month'?: string
+    'reviewDate-year'?: string
+  }
+
+  export interface AddStepForm {
+    title?: string
+    targetDate?: Date
+    'targetDate-day'?: string
+    'targetDate-month'?: string
+    'targetDate-year'?: string
   }
 }

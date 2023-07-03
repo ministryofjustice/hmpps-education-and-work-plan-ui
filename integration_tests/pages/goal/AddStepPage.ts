@@ -10,6 +10,11 @@ export default class AddStepPage extends Page {
     return this
   }
 
+  isForGoal(expected: string) {
+    this.goalTitle().should('contain.text', expected)
+    return this
+  }
+
   setStepTitle(title: string) {
     this.titleField().clear().type(title)
     return this
@@ -26,13 +31,15 @@ export default class AddStepPage extends Page {
     this.submitButton().click()
   }
 
-  titleField = (): PageElement => cy.get('#goal-title')
+  goalTitle = (): PageElement => cy.get('h1')
 
-  targetDateDayField = (): PageElement => cy.get('#step-target-date-day')
+  titleField = (): PageElement => cy.get('#title')
 
-  targetDateMonthField = (): PageElement => cy.get('#step-target-date-month')
+  targetDateDayField = (): PageElement => cy.get('#targetDate-day')
 
-  targetDateYearField = (): PageElement => cy.get('#step-target-date-year')
+  targetDateMonthField = (): PageElement => cy.get('#targetDate-month')
+
+  targetDateYearField = (): PageElement => cy.get('#targetDate-year')
 
   addStepButton = (): PageElement => cy.get('#add-step-button')
 

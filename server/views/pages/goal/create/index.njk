@@ -28,8 +28,9 @@
           <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
 
           {{ govukTextarea({
-            name: "goal-title",
-            id: "goal-title",
+            name: "title",
+            id: "title",
+            value: form.title,
             label: {
               text: "Goals should be SMART, meaning 'specific', 'measurable', 'achievable', 'relevant' and 'time-bound'. SMART goals allow progress to be better measured and evaluated. You can add the steps to achieve the goal on the next page.",
               isPageHeading: false
@@ -37,8 +38,9 @@
           }) }}
 
           {{ govukDateInput({
-            id: "goal-review-date",
-            namePrefix: "goal-review-date",
+            id: "reviewDate",
+            namePrefix: "reviewDate",
+            value: form.reviewDate,
             fieldset: {
               legend: {
                 text: "Review date",

@@ -16,7 +16,7 @@
 
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-      <h1 class="govuk-heading-l">What are the steps to help them achieve their goal Get English Level 2</h1>
+      <h1 class="govuk-heading-l">What are the steps to help them achieve their goal {{ goalTitle }}</h1>
     </div>
   </div>
 
@@ -33,16 +33,18 @@
               classes: "govuk-label--m",
               isPageHeading: false
             },
-            id: "step-title",
-            name: "step-title",
+            name: "title",
+            id: "title",
+            value: form.title,
             hint: {
               text: "Describe this step"
             }
           }) }}
 
           {{ govukDateInput({
-            id: "step-target-date",
-            namePrefix: "step-target-date",
+            id: "targetDate",
+            namePrefix: "targetDate",
+            value: form.targetDate,
             fieldset: {
               legend: {
                 text: "Target date (optional)",
