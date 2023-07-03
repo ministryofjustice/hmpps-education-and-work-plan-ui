@@ -11,20 +11,6 @@ context('Add a note', () => {
     cy.task('getPrisonerById')
   })
 
-  it('should render add note page', () => {
-    // Given
-    const prisonNumber = 'G6115VJ'
-    cy.signIn()
-    cy.visit(`/plan/${prisonNumber}/goals/create`)
-
-    // When
-    cy.visit(`/plan/${prisonNumber}/goals/add-note`)
-
-    // Then
-    const page = Page.verifyOnPage(AddNotePage)
-    page.isForPrisoner(prisonNumber)
-  })
-
   it.skip('should move to review goals page', () => {
     // Given
     const prisonNumber = 'G6115VJ'

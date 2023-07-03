@@ -21,8 +21,9 @@
           <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
 
           {{ govukTextarea({
-            name: "goal-note",
-            id: "goal-note",
+            name: "notes",
+            id: "notes",
+            value: form.notes,
             label: {
               text: "Add a note to this goal (optional)",
               classes: "govuk-label--l",
