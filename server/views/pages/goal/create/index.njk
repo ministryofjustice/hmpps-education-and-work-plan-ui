@@ -36,12 +36,17 @@
         <div class="govuk-form-group">
           <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
 
+          {% set titleLabelHtml %}
+            <p class="govuk-hint">Goals should be SMART, meaning 'specific', 'measurable', 'achievable', 'relevant' and 'time-bound'. SMART goals allow progress to be better measured and evaluated.</p>
+            <p class="govuk-hint">You can add the steps to achieve the goal on the next page.</p>
+          {% endset %}
+
           {{ govukTextarea({
             name: "title",
             id: "title",
             value: form.title,
             label: {
-              text: "Goals should be SMART, meaning 'specific', 'measurable', 'achievable', 'relevant' and 'time-bound'. SMART goals allow progress to be better measured and evaluated. You can add the steps to achieve the goal on the next page.",
+              html: titleLabelHtml,
               isPageHeading: false
             },
             errorMessage: errors | findError('title')
