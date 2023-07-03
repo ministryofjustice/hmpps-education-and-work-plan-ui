@@ -6,6 +6,8 @@ import PrisonerSearchService from '../../services/prisonerSearchService'
 import CreateGoalView from './createGoalView'
 import AddStepView from './addStepView'
 import AddNoteView from './addNoteView'
+import validateCreateGoalForm from './createGoalFormValidator'
+import parseDate from '../parseDate'
 
 export default class CreateGoalController {
   constructor(private readonly prisonerSearchService: PrisonerSearchService) {}
@@ -37,12 +39,15 @@ export default class CreateGoalController {
 
   submitCreateGoalForm: RequestHandler = async (req, res, next): Promise<void> => {
     const { prisonNumber } = req.params
-    req.session.createGoalForm = { ...req.body }
 
-    /*
-    Validate req.session.createGoalForm here
-    If any validation errors, add to req.flash('errors`) and redirect back to `/plan/${prisonNumber}/goals/create`
-     */
+    const reviewDate = parseDate(req, 'reviewDate')
+    req.session.createGoalForm = { ...req.body, reviewDate }
+
+    const errors = validateCreateGoalForm(req.session.createGoalForm)
+    if (errors.length > 0) {
+      req.flash('errors', errors)
+      return res.redirect(`/plan/${prisonNumber}/goals/create`)
+    }
 
     return res.redirect(`/plan/${prisonNumber}/goals/add-step`)
   }

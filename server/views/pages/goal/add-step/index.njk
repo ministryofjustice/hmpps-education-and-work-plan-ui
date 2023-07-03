@@ -2,6 +2,7 @@
 {% from "govuk/components/input/macro.njk" import govukInput %}
 {% from "govuk/components/date-input/macro.njk" import govukDateInput %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
 
 {% set pageTitle = applicationName + " - Home" %}
 {% set mainClasses = "app-container govuk-body" %}
@@ -11,6 +12,14 @@
 {% endblock %}
 
 {% block content %}
+
+  {% if errors.length > 0 %}
+    {{ govukErrorSummary({
+      titleText: 'There is a problem',
+      errorList: errors,
+      attributes: { 'data-qa-errors': true }
+    }) }}
+  {% endif %}
 
   {% include "../../../partials/prisonerBanner.njk" %}
 
@@ -38,7 +47,8 @@
             value: form.title,
             hint: {
               text: "Describe this step"
-            }
+            },
+            errorMessage: errors | findError('title')
           }) }}
 
           {{ govukDateInput({
@@ -54,7 +64,8 @@
             },
             hint: {
               text: "For example, 12 11 2024"
-            }
+            },
+            errorMessage: errors | findError('targetDate-day')
           }) }}
         </div>
 

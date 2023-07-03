@@ -6,6 +6,7 @@ import { initialiseName } from './utils'
 import { ApplicationInfo } from '../applicationInfo'
 import config from '../config'
 import formatDateFilter from '../filters/formatDateFilter'
+import findErrorFilter from '../filters/findErrorFilter'
 
 const production = process.env.NODE_ENV === 'production'
 
@@ -42,6 +43,7 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
   )
 
   njkEnv.addFilter('initialiseName', initialiseName)
+  njkEnv.addFilter('findError', findErrorFilter)
   njkEnv.addFilter('formatDate', formatDateFilter)
 
   njkEnv.addGlobal('dpsUrl', config.dpsHomeUrl)

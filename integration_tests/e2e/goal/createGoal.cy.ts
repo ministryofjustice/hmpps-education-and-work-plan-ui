@@ -24,6 +24,25 @@ context('Create a goal', () => {
     page.isForPrisoner(prisonNumber)
   })
 
+  it('should not proceed to add step page given validation errors on create goal page', () => {
+    // Given
+    const prisonNumber = 'G6115VJ'
+    cy.signIn()
+    cy.visit(`/plan/${prisonNumber}/goals/create`)
+
+    const page = Page.verifyOnPage(CreateGoalPage)
+    page.setGoalTitle('Learn French')
+    page.clearGoalReviewDate()
+
+    // When
+    page.submitPage()
+
+    // Then
+    Page.verifyOnPage(CreateGoalPage)
+    page.hasErrorCount(1)
+    page.hasFieldInError('reviewDate')
+  })
+
   it('should create a valid goal', () => {
     // Given
     const prisonNumber = 'G6115VJ'
