@@ -1,13 +1,13 @@
 declare module 'forms' {
   export interface CreateGoalForm {
-    prisonNumber: string
-    title: string
-    reviewDate: Date
-    steps: [
+    readonly prisonNumber: string
+    title?: string
+    reviewDate?: Date
+    steps?: [
       {
-        title: string
+        title?: string
         targetDate?: Date
-        sequenceNumber: number
+        sequenceNumber?: number
       },
     ]
     notes?: string
