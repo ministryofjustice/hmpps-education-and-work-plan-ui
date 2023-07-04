@@ -8,6 +8,7 @@ import AddStepView from './addStepView'
 import AddNoteView from './addNoteView'
 import validateCreateGoalForm from './createGoalFormValidator'
 import parseDate from '../parseDate'
+import validateAddStepForm from './addStepFormValidator'
 
 export default class CreateGoalController {
   constructor(private readonly prisonerSearchService: PrisonerSearchService) {}
@@ -63,12 +64,14 @@ export default class CreateGoalController {
 
   submitAddStepForm: RequestHandler = async (req, res, next): Promise<void> => {
     const { prisonNumber } = req.params
-    req.session.addStepForm = { ...req.body }
+    const targetDate = parseDate(req, 'targetDate')
+    req.session.addStepForm = { ...req.body, targetDate }
 
-    /*
-    Validate req.session.createGoalForm here
-    If any validation errors, add to req.flash('errors`) and redirect back to `/plan/${prisonNumber}/goals/create`
-     */
+    const errors = validateAddStepForm(req.session.addStepForm)
+    if (errors.length > 0) {
+      req.flash('errors', errors)
+      return res.redirect(`/plan/${prisonNumber}/goals/add-step`)
+    }
 
     return res.redirect(`/plan/${prisonNumber}/goals/add-note`)
   }

@@ -20,6 +20,11 @@ export default class AddStepPage extends Page {
     return this
   }
 
+  clearTitle() {
+    this.titleField().clear()
+    return this
+  }
+
   setStepTargetDate(day: number, month: number, year: number) {
     this.targetDateDayField().clear().type(day.toString())
     this.targetDateMonthField().clear().type(month.toString())

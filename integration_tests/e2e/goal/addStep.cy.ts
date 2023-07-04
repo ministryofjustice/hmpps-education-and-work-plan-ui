@@ -10,6 +10,33 @@ context('Add a step', () => {
     cy.task('getPrisonerById')
   })
 
+  it('should not proceed to add note page given validation errors on add step page', () => {
+    // Given
+    const prisonNumber = 'G6115VJ'
+    cy.signIn()
+    cy.visit(`/plan/${prisonNumber}/goals/create`)
+
+    const createGoalPage = Page.verifyOnPage(CreateGoalPage)
+    createGoalPage //
+      .setGoalTitle('Learn French')
+      .setGoalReviewDate(23, 12, 2024)
+      .submitPage()
+
+    const addStepPage = Page.verifyOnPage(AddStepPage)
+    addStepPage //
+      .clearTitle()
+      .setStepTargetDate(23, 12, 2024)
+
+    // When
+    addStepPage.submitPage()
+
+    // Then
+    Page.verifyOnPage(AddStepPage)
+    addStepPage //
+      .hasErrorCount(1)
+      .hasFieldInError('title')
+  })
+
   it.skip('should move to add note page', () => {
     // Given
     const prisonNumber = 'G6115VJ'
@@ -17,13 +44,15 @@ context('Add a step', () => {
     cy.visit(`/plan/${prisonNumber}/goals/create`)
 
     const createGoalPage = Page.verifyOnPage(CreateGoalPage)
-    createGoalPage.setGoalTitle('Learn French')
-    createGoalPage.setGoalReviewDate(23, 12, 2024)
-    createGoalPage.submitPage()
+    createGoalPage //
+      .setGoalTitle('Learn French')
+      .setGoalReviewDate(23, 12, 2024)
+      .submitPage()
 
     const addStepPage = Page.verifyOnPage(AddStepPage)
-    addStepPage.setStepTitle('Book French course')
-    addStepPage.setStepTargetDate(23, 12, 2024)
+    addStepPage //
+      .setStepTitle('Book French course')
+      .setStepTargetDate(23, 12, 2024)
 
     // When
     addStepPage.submitPage()
