@@ -41,9 +41,18 @@ export default abstract class Page {
 
   manageDetails = (): PageElement => cy.get('[data-qa=manageDetails]')
 
-  hasNoErrors = () => cy.get('.govuk-error-summary__list').should('not.exist')
+  hasNoErrors() {
+    cy.get('.govuk-error-summary__list').should('not.exist')
+    return this
+  }
 
-  hasErrorCount = (expected: number) => cy.get('.govuk-error-summary__list').should('have.length', expected)
+  hasErrorCount(expected: number) {
+    cy.get('.govuk-error-summary__list').should('have.length', expected)
+    return this
+  }
 
-  hasFieldInError = (field: string) => cy.get(`#${field}-error`).should('exist')
+  hasFieldInError(field: string) {
+    cy.get(`#${field}-error`).should('exist')
+    return this
+  }
 }
