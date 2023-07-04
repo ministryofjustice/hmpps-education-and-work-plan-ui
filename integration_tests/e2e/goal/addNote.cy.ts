@@ -6,7 +6,7 @@ import AddNotePage from '../../pages/goal/AddNotePage'
 context('Add a note', () => {
   beforeEach(() => {
     cy.task('reset')
-    cy.task('stubSignIn')
+    cy.task('stubSignInAsUserWithEditAuthority')
     cy.task('stubAuthUser')
     cy.task('getPrisonerById')
   })

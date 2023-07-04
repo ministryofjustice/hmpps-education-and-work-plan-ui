@@ -2,11 +2,12 @@ import Page from '../../pages/page'
 import CreateGoalPage from '../../pages/goal/CreateGoalPage'
 import AddStepPage from '../../pages/goal/AddStepPage'
 import AddNotePage from '../../pages/goal/AddNotePage'
+import AuthorisationErrorPage from '../../pages/authorisationError'
 
 context('Create a goal', () => {
   beforeEach(() => {
     cy.task('reset')
-    cy.task('stubSignIn')
+    cy.task('stubSignInAsUserWithEditAuthority')
     cy.task('stubAuthUser')
     cy.task('getPrisonerById')
   })
@@ -72,5 +73,33 @@ context('Create a goal', () => {
     addNotePage.isForPrisoner(prisonNumber)
 
     // addNotePage.setNote("Pay close attention to the prisoner's behaviour")
+  })
+
+  it('should redirect to login page given user does not have any authorities', () => {
+    // Given
+    cy.task('stubSignIn')
+
+    const prisonNumber = 'G6115VJ'
+    cy.signIn()
+
+    // When
+    cy.visit(`/plan/${prisonNumber}/goals/create`, { failOnStatusCode: false })
+
+    // Then
+    Page.verifyOnPage(AuthorisationErrorPage)
+  })
+
+  it('should redirect to login page given user does not have edit authority', () => {
+    // Given
+    cy.task('stubSignInAsUserWithViewAuthority')
+
+    const prisonNumber = 'G6115VJ'
+    cy.signIn()
+
+    // When
+    cy.visit(`/plan/${prisonNumber}/goals/create`, { failOnStatusCode: false })
+
+    // Then
+    Page.verifyOnPage(AuthorisationErrorPage)
   })
 })
