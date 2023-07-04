@@ -7,8 +7,8 @@ export default class PrisonerSearchService {
     private readonly prisonerSearchClient: PrisonerSearchClient,
   ) {}
 
-  async getPrisonerByPrisonNumber(prisonNumber: string): Promise<Prisoner> {
-    const systemToken = await this.hmppsAuthClient.getSystemClientToken()
-    return this.prisonerSearchClient.getPrisonerByPrisonNumber(prisonNumber, systemToken)
+  async getPrisonerByPrisonNumber(prisonNumber: string, token: string): Promise<Prisoner> {
+    // const systemToken = await this.hmppsAuthClient.getSystemClientToken()
+    return this.prisonerSearchClient.getPrisonerByPrisonNumber(prisonNumber, token)
   }
 }
