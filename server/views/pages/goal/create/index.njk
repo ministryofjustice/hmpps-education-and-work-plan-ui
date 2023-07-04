@@ -52,6 +52,9 @@
             errorMessage: errors | findError('title')
           }) }}
 
+          {% set reviewDateError = errors | findError('reviewDate') %}
+          {% set reviewDateErrorClass = " govuk-input--error" if reviewDateError %}
+
           {{ govukDateInput({
             id: "reviewDate",
             namePrefix: "reviewDate",
@@ -66,7 +69,24 @@
             hint: {
               text: "For example, 12 11 2024"
             },
-            errorMessage: errors | findError('reviewDate-day')
+            errorMessage: reviewDateErrorClass,
+            items: [
+              {
+                name: "day",
+                classes: "govuk-input--width-2" + reviewDateErrorClass,
+                value: form['reviewDate-day']
+              },
+              {
+                name: "month",
+                classes: "govuk-input--width-2" + reviewDateErrorClass,
+                value: form['reviewDate-month']
+              },
+              {
+                name: "year",
+                classes: "govuk-input--width-4" + reviewDateErrorClass,
+                value: form['reviewDate-year']
+              }
+            ]
           }) }}
         </div>
 

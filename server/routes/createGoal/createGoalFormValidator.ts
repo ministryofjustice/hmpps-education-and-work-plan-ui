@@ -7,6 +7,6 @@ export default function validateCreateGoalForm(createGoalForm: CreateGoalForm): 
   const errors: Array<Record<string, string>> = []
 
   errors.push(...formatErrors('title', validateGoalTitle(createGoalForm.title)))
-  errors.push(...formatErrors('reviewDate-day', validateGoalReviewDate(createGoalForm.reviewDate)))
+  errors.push(...formatErrors('reviewDate', validateGoalReviewDate(createGoalForm.reviewDate)))
   return errors
 }

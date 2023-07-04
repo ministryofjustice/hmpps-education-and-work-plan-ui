@@ -51,6 +51,9 @@
             errorMessage: errors | findError('title')
           }) }}
 
+          {% set targetDateError = errors | findError('targetDate') %}
+          {% set targetDateErrorClass = " govuk-input--error" if targetDateError %}
+
           {{ govukDateInput({
             id: "targetDate",
             namePrefix: "targetDate",
@@ -65,7 +68,24 @@
             hint: {
               text: "For example, 12 11 2024"
             },
-            errorMessage: errors | findError('targetDate-day')
+            errorMessage: targetDateErrorClass,
+            items: [
+              {
+                name: "day",
+                classes: "govuk-input--width-2" + targetDateErrorClass,
+                value: form['targetDate-day']
+              },
+              {
+                name: "month",
+                classes: "govuk-input--width-2" + targetDateErrorClass,
+                value: form['targetDate-month']
+              },
+              {
+                name: "year",
+                classes: "govuk-input--width-4" + targetDateErrorClass,
+                value: form['targetDate-year']
+              }
+            ]
           }) }}
         </div>
 

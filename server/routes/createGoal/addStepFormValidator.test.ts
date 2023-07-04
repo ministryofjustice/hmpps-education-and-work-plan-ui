@@ -69,7 +69,7 @@ describe('addStepFormValidator', () => {
     const errors = validateAddStepForm(form)
 
     // Then
-    expect(errors).toEqual([{ href: '#targetDate-day', text: 'a-target-date-error' }])
+    expect(errors).toEqual([{ href: '#targetDate', text: 'a-target-date-error' }])
   })
 
   it('should validate given multiple create step errors', () => {
@@ -92,7 +92,7 @@ describe('addStepFormValidator', () => {
     // Then
     expect(errors).toEqual([
       { href: '#title', text: 'some-title-error' },
-      { href: '#targetDate-day', text: 'a-target-date-error' },
+      { href: '#targetDate', text: 'a-target-date-error' },
     ])
   })
 })
