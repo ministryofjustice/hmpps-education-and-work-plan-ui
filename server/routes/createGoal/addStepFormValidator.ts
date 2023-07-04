@@ -7,6 +7,6 @@ export default function validateAddStepForm(addStepForm: AddStepForm): Array<Rec
   const errors: Array<Record<string, string>> = []
 
   errors.push(...formatErrors('title', validateStepTitle(addStepForm.title)))
-  errors.push(...formatErrors('targetDate-day', validateStepTargetDate(addStepForm.targetDate)))
+  errors.push(...formatErrors('targetDate', validateStepTargetDate(addStepForm.targetDate)))
   return errors
 }

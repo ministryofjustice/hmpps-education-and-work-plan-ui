@@ -69,7 +69,7 @@ describe('createGoalFormValidator', () => {
     const errors = validateCreateGoalForm(form)
 
     // Then
-    expect(errors).toEqual([{ href: '#reviewDate-day', text: 'a-review-date-error' }])
+    expect(errors).toEqual([{ href: '#reviewDate', text: 'a-review-date-error' }])
   })
 
   it('should validate given multiple create goal errors', () => {
@@ -92,7 +92,7 @@ describe('createGoalFormValidator', () => {
     // Then
     expect(errors).toEqual([
       { href: '#title', text: 'some-title-error' },
-      { href: '#reviewDate-day', text: 'a-review-date-error' },
+      { href: '#reviewDate', text: 'a-review-date-error' },
     ])
   })
 })
