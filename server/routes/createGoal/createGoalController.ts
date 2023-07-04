@@ -1,7 +1,7 @@
 import type { RequestHandler } from 'express'
 import type { Prisoner } from 'prisonRegisterApiClient'
 import type { PrisonerSummary } from 'viewModels'
-// import createError from 'http-errors'
+import createError from 'http-errors'
 import PrisonerSearchService from '../../services/prisonerSearchService'
 import CreateGoalView from './createGoalView'
 import AddStepView from './addStepView'
@@ -13,13 +13,11 @@ export default class CreateGoalController {
   getCreateGoalView: RequestHandler = async (req, res, next): Promise<void> => {
     const { prisonNumber } = req.params
     let prisoner: Prisoner
-    // eslint-disable-next-line no-useless-catch
     try {
-      prisoner = await this.prisonerSearchService.getPrisonerByPrisonNumber(prisonNumber)
+      prisoner = await this.prisonerSearchService.getPrisonerByPrisonNumber(prisonNumber, req.user.token)
     } catch (error) {
-      throw error
-      // next(createError(404, 'Prisoner not found'))
-      // return
+      next(createError(404, 'Prisoner not found'))
+      return
     }
 
     const prisonerSummary = {

@@ -25,8 +25,9 @@ describe('prisonerSearchService', () => {
       // Given
       const prisonNumber = 'A1234BC'
 
-      const systemToken = 'a-system-token'
-      hmppsAuthClient.getSystemClientToken.mockImplementation(() => Promise.resolve(systemToken))
+      const userToken = 'a-user-token'
+      // const systemToken = 'a-system-token'
+      // hmppsAuthClient.getSystemClientToken.mockImplementation(() => Promise.resolve(systemToken))
 
       const prisoner: Prisoner = {
         prisonerNumber: prisonNumber,
@@ -38,25 +39,26 @@ describe('prisonerSearchService', () => {
       prisonerSearchClient.getPrisonerByPrisonNumber.mockImplementation(() => Promise.resolve(prisoner))
 
       // When
-      const actual = await prisonerSearchService.getPrisonerByPrisonNumber(prisonNumber)
+      const actual = await prisonerSearchService.getPrisonerByPrisonNumber(prisonNumber, userToken)
 
       // Then
       expect(actual).toEqual(prisoner)
-      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith() // expect to be called with no args
-      expect(prisonerSearchClient.getPrisonerByPrisonNumber).toHaveBeenCalledWith(prisonNumber, systemToken)
+      // expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith() // expect to be called with no args
+      expect(prisonerSearchClient.getPrisonerByPrisonNumber).toHaveBeenCalledWith(prisonNumber, userToken)
     })
 
     it('should not get prisoner by prison number given prisoner search returns an error', async () => {
       // Given
       const prisonNumber = 'A1234BC'
 
-      const systemToken = 'a-system-token'
-      hmppsAuthClient.getSystemClientToken.mockImplementation(() => Promise.resolve(systemToken))
+      const userToken = 'a-user-token'
+      // const systemToken = 'a-system-token'
+      // hmppsAuthClient.getSystemClientToken.mockImplementation(() => Promise.resolve(systemToken))
 
       prisonerSearchClient.getPrisonerByPrisonNumber.mockImplementation(() => Promise.reject(Error('Not Found')))
 
       // When
-      const actual = await prisonerSearchService.getPrisonerByPrisonNumber(prisonNumber).catch(error => {
+      const actual = await prisonerSearchService.getPrisonerByPrisonNumber(prisonNumber, userToken).catch(error => {
         return error
       })
 
