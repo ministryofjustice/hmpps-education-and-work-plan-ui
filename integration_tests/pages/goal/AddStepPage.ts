@@ -20,7 +20,7 @@ export default class AddStepPage extends Page {
     return this
   }
 
-  clearTitle() {
+  clearStepTitle() {
     this.titleField().clear()
     return this
   }

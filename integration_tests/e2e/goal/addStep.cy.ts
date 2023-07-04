@@ -24,7 +24,7 @@ context('Add a step', () => {
 
     const addStepPage = Page.verifyOnPage(AddStepPage)
     addStepPage //
-      .clearTitle()
+      .clearStepTitle()
       .setStepTargetDate(23, 12, 2024)
 
     // When
