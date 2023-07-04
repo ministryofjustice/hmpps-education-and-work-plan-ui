@@ -1,6 +1,7 @@
 {% extends "../../../partials/layout.njk" %}
 {% from "govuk/components/textarea/macro.njk" import govukTextarea %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
 
 {% set pageTitle = applicationName + " - Home" %}
 {% set mainClasses = "app-container govuk-body" %}
@@ -10,6 +11,14 @@
 {% endblock %}
 
 {% block content %}
+
+  {% if errors.length > 0 %}
+    {{ govukErrorSummary({
+      titleText: 'There is a problem',
+      errorList: errors,
+      attributes: { 'data-qa-errors': true }
+    }) }}
+  {% endif %}
 
   {% include "../../../partials/prisonerBanner.njk" %}
 
@@ -28,7 +37,8 @@
               text: "Add a note to this goal (optional)",
               classes: "govuk-label--l",
               isPageHeading: true
-            }
+            },
+            errorMessage: errors | findError('note')
           }) }}
         </div>
 

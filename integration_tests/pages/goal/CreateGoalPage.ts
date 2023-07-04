@@ -16,9 +16,17 @@ export default class CreateGoalPage extends Page {
   }
 
   setGoalReviewDate(day: number, month: number, year: number) {
-    this.reviewDateDayField().clear().type(day.toString())
-    this.reviewDateMonthField().clear().type(month.toString())
-    this.reviewDateYearField().clear().type(year.toString())
+    this.clearGoalReviewDate()
+    this.reviewDateDayField().type(day.toString())
+    this.reviewDateMonthField().type(month.toString())
+    this.reviewDateYearField().type(year.toString())
+    return this
+  }
+
+  clearGoalReviewDate() {
+    this.reviewDateDayField().clear()
+    this.reviewDateMonthField().clear()
+    this.reviewDateYearField().clear()
     return this
   }
 

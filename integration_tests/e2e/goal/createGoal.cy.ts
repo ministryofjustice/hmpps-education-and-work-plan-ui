@@ -24,6 +24,27 @@ context('Create a goal', () => {
     page.isForPrisoner(prisonNumber)
   })
 
+  it('should not proceed to add step page given validation errors on create goal page', () => {
+    // Given
+    const prisonNumber = 'G6115VJ'
+    cy.signIn()
+    cy.visit(`/plan/${prisonNumber}/goals/create`)
+
+    const page = Page.verifyOnPage(CreateGoalPage)
+    page //
+      .setGoalTitle('Learn French')
+      .clearGoalReviewDate()
+
+    // When
+    page.submitPage()
+
+    // Then
+    Page.verifyOnPage(CreateGoalPage)
+    page //
+      .hasErrorCount(1)
+      .hasFieldInError('reviewDate')
+  })
+
   it('should create a valid goal', () => {
     // Given
     const prisonNumber = 'G6115VJ'
@@ -31,15 +52,17 @@ context('Create a goal', () => {
     cy.visit(`/plan/${prisonNumber}/goals/create`)
 
     const createGoal = Page.verifyOnPage(CreateGoalPage)
-    createGoal.setGoalTitle('Learn French')
-    createGoal.setGoalReviewDate(23, 12, 2024)
-    createGoal.submitPage()
+    createGoal //
+      .setGoalTitle('Learn French')
+      .setGoalReviewDate(23, 12, 2024)
+      .submitPage()
 
     const addStepPage = Page.verifyOnPage(AddStepPage)
     addStepPage.isForGoal('Learn French')
 
-    addStepPage.setStepTitle('Book French course')
-    addStepPage.setStepTargetDate(23, 12, 2024)
+    addStepPage //
+      .setStepTitle('Book French course')
+      .setStepTargetDate(23, 12, 2024)
 
     // When
     addStepPage.submitPage()

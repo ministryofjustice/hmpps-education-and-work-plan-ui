@@ -40,4 +40,19 @@ export default abstract class Page {
   signOut = (): PageElement => cy.get('[data-qa=signOut]')
 
   manageDetails = (): PageElement => cy.get('[data-qa=manageDetails]')
+
+  hasNoErrors() {
+    cy.get('.govuk-error-summary__list').should('not.exist')
+    return this
+  }
+
+  hasErrorCount(expected: number) {
+    cy.get('.govuk-error-summary__list').should('have.length', expected)
+    return this
+  }
+
+  hasFieldInError(field: string) {
+    cy.get(`#${field}-error`).should('exist')
+    return this
+  }
 }
