@@ -19,7 +19,7 @@ export default class AddNotePage extends Page {
     this.submitButton().click()
   }
 
-  noteField = (): PageElement => cy.get('#goal-note')
+  noteField = (): PageElement => cy.get('#note')
 
   submitButton = (): PageElement => cy.get('#submit-button')
 

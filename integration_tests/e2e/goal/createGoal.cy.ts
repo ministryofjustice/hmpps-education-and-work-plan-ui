@@ -1,6 +1,7 @@
 import Page from '../../pages/page'
 import CreateGoalPage from '../../pages/goal/CreateGoalPage'
 import AddStepPage from '../../pages/goal/AddStepPage'
+import AddNotePage from '../../pages/goal/AddNotePage'
 
 context('Create a goal', () => {
   beforeEach(() => {
@@ -29,18 +30,24 @@ context('Create a goal', () => {
     cy.signIn()
     cy.visit(`/plan/${prisonNumber}/goals/create`)
 
-    const page = Page.verifyOnPage(CreateGoalPage)
-    page.setGoalTitle('Learn French')
-    page.setGoalReviewDate(23, 12, 2024)
+    const createGoal = Page.verifyOnPage(CreateGoalPage)
+    createGoal.setGoalTitle('Learn French')
+    createGoal.setGoalReviewDate(23, 12, 2024)
+    createGoal.submitPage()
 
-    // When
-    page.submitPage()
-
-    // Then
     const addStepPage = Page.verifyOnPage(AddStepPage)
     addStepPage.isForGoal('Learn French')
 
     addStepPage.setStepTitle('Book French course')
     addStepPage.setStepTargetDate(23, 12, 2024)
+
+    // When
+    addStepPage.submitPage()
+
+    // Then
+    const addNotePage = Page.verifyOnPage(AddNotePage)
+    addNotePage.isForPrisoner(prisonNumber)
+
+    // addNotePage.setNote("Pay close attention to the prisoner's behaviour")
   })
 })

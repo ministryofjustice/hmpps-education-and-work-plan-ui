@@ -15,4 +15,8 @@ declare module 'forms' {
     'targetDate-month'?: string
     'targetDate-year'?: string
   }
+
+  export interface AddNoteForm {
+    note?: string
+  }
 }

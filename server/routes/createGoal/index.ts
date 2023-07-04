@@ -12,6 +12,7 @@ export default (router: Router, services: Services) => {
   post('/plan/:prisonNumber/goals/create', createGoalController.submitCreateGoalForm)
 
   get('/plan/:prisonNumber/goals/add-step', createGoalController.getAddStepView)
+  post('/plan/:prisonNumber/goals/add-step', createGoalController.submitAddStepForm)
 
   get('/plan/:prisonNumber/goals/add-note', createGoalController.getAddNoteView)
 }
