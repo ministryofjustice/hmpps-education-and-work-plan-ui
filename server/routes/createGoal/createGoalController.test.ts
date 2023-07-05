@@ -27,9 +27,15 @@ describe('createGoalController', () => {
   }
   const res = {
     redirect: jest.fn(),
-    locals: {},
   }
   const next = jest.fn()
+
+  beforeEach(() => {
+    jest.resetAllMocks()
+    req.session = {} as SessionData
+    req.body = {}
+    req.params = {} as Record<string, string>
+  })
 
   describe('submitAddStepForm', () => {
     it('should redirect to add note form given action is submit-form and validation passes', async () => {
