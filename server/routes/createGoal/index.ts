@@ -5,7 +5,10 @@ import asyncMiddleware from '../../middleware/asyncMiddleware'
 import { hasEditAuthority } from '../../middleware/roleBasedAccessControl'
 
 export default (router: Router, services: Services) => {
-  const createGoalController = new CreateGoalController(services.prisonerSearchService)
+  const createGoalController = new CreateGoalController(
+    services.prisonerSearchService,
+    services.educationAndWorkPlanService,
+  )
   const get = (path: string | string[], handler: RequestHandler) => router.get(path, asyncMiddleware(handler))
   const post = (path: string | string[], handler: RequestHandler) => router.post(path, asyncMiddleware(handler))
 
@@ -19,4 +22,5 @@ export default (router: Router, services: Services) => {
 
   router.use('/plan/:prisonNumber/goals/add-note', hasEditAuthority())
   get('/plan/:prisonNumber/goals/add-note', createGoalController.getAddNoteView)
+  post('/plan/:prisonNumber/goals/add-note', createGoalController.submitAddNoteForm)
 }

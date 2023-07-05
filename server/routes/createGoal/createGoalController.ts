@@ -2,6 +2,7 @@ import type { RequestHandler } from 'express'
 import type { Prisoner } from 'prisonRegisterApiClient'
 import type { PrisonerSummary } from 'viewModels'
 import createError from 'http-errors'
+import EducationAndWorkPlanService from '../../services/educationAndWorkPlanService'
 import PrisonerSearchService from '../../services/prisonerSearchService'
 import CreateGoalView from './createGoalView'
 import AddStepView from './addStepView'
@@ -9,9 +10,18 @@ import AddNoteView from './addNoteView'
 import validateCreateGoalForm from './createGoalFormValidator'
 import parseDate from '../parseDate'
 import validateAddStepForm from './addStepFormValidator'
+import CreateGoalFormToCreateGoalDtoMapper from './createGoalFormToCreateGoalDtoMapper'
+import logger from '../../../logger'
 
 export default class CreateGoalController {
-  constructor(private readonly prisonerSearchService: PrisonerSearchService) {}
+  constructor(
+    private readonly prisonerSearchService: PrisonerSearchService,
+    private readonly educationAndWorkPlanService: EducationAndWorkPlanService,
+  ) {}
+
+  private static createDtoMapper(): CreateGoalFormToCreateGoalDtoMapper {
+    return new CreateGoalFormToCreateGoalDtoMapper()
+  }
 
   getCreateGoalView: RequestHandler = async (req, res, next): Promise<void> => {
     const { prisonNumber } = req.params
@@ -32,7 +42,7 @@ export default class CreateGoalController {
     } as PrisonerSummary
     req.session.prisonerSummary = prisonerSummary
 
-    const createGoalForm = req.session.createGoalForm || { prisonNumber }
+    const createGoalForm = req.session.createGoalForm || {}
 
     const view = new CreateGoalView(prisonerSummary, createGoalForm, req.flash('errors'))
     res.render('pages/goal/create/index', { ...view.renderArgs })
@@ -94,5 +104,23 @@ export default class CreateGoalController {
 
     const view = new AddNoteView(prisonerSummary, addNoteForm, req.flash('errors'))
     res.render('pages/goal/add-note/index', { ...view.renderArgs })
+  }
+
+  submitAddNoteForm: RequestHandler = async (req, res, next): Promise<void> => {
+    const { prisonNumber } = req.params
+    const { createGoalForm } = req.session
+    const { addStepForm } = req.session
+    req.session.addNoteForm = { ...req.body }
+
+    const createGoalDto = CreateGoalController.createDtoMapper().toCreateGoalDto(
+      prisonNumber,
+      createGoalForm,
+      addStepForm,
+      req.body,
+    )
+    logger.info(createGoalDto)
+    await this.educationAndWorkPlanService.createGoal(createGoalDto, req.user.token)
+
+    return res.redirect(`/plan/${prisonNumber}/goals/overview`)
   }
 }
