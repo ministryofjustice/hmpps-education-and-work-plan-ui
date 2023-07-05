@@ -22,6 +22,11 @@ export default defineConfig({
       on('task', {
         reset: resetStubs,
         ...auth,
+
+        stubSignIn: () => auth.stubSignIn([]),
+        stubSignInAsUserWithEditAuthority: () => auth.stubSignIn(['ROLE_EDUCATION_WORK_PLAN_EDITOR']),
+        stubSignInAsUserWithViewAuthority: () => auth.stubSignIn(['ROLE_EDUCATION_WORK_PLAN_VIEWER']),
+
         ...tokenVerification,
         ...prisonerSearchApi,
       })

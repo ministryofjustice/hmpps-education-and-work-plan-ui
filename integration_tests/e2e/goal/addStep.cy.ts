@@ -5,7 +5,7 @@ import AddStepPage from '../../pages/goal/AddStepPage'
 context('Add a step', () => {
   beforeEach(() => {
     cy.task('reset')
-    cy.task('stubSignIn')
+    cy.task('stubSignInAsUserWithEditAuthority')
     cy.task('stubAuthUser')
     cy.task('getPrisonerById')
   })
