@@ -15,6 +15,11 @@ export default class AddStepPage extends Page {
     return this
   }
 
+  isStepNumber(expected: number) {
+    this.stepNumberLabel().should('contain.text', `Step ${expected}`)
+    return this
+  }
+
   setStepTitle(title: string) {
     this.titleField().clear().type(title)
     return this
@@ -36,6 +41,10 @@ export default class AddStepPage extends Page {
     this.submitButton().click()
   }
 
+  addAnotherStep() {
+    this.addAnotherStepButton().click()
+  }
+
   goalTitle = (): PageElement => cy.get('h1')
 
   titleField = (): PageElement => cy.get('#title')
@@ -46,9 +55,11 @@ export default class AddStepPage extends Page {
 
   targetDateYearField = (): PageElement => cy.get('#targetDate-year')
 
-  addStepButton = (): PageElement => cy.get('#add-step-button')
+  addAnotherStepButton = (): PageElement => cy.get('#add-another-step-button')
 
   submitButton = (): PageElement => cy.get('#submit-button')
 
   prisonNumberLabel = (): PageElement => cy.get('[data-qa=prison-number]')
+
+  stepNumberLabel = (): PageElement => cy.get('label[for=title]')
 }

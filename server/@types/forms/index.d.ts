@@ -9,11 +9,13 @@ declare module 'forms' {
   }
 
   export interface AddStepForm {
+    stepNumber: number
     title?: string
     targetDate?: Date
     'targetDate-day'?: string
     'targetDate-month'?: string
     'targetDate-year'?: string
+    action?: string
   }
 
   export interface AddNoteForm {

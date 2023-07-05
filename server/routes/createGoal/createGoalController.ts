@@ -56,7 +56,7 @@ export default class CreateGoalController {
   getAddStepView: RequestHandler = async (req, res, next): Promise<void> => {
     const { prisonerSummary } = req.session
     const { createGoalForm } = req.session
-    const addStepForm = req.session.addStepForm || {}
+    const addStepForm = req.session.addStepForm || { stepNumber: 1 }
 
     const view = new AddStepView(createGoalForm.title, prisonerSummary, addStepForm, req.flash('errors'))
     res.render('pages/goal/add-step/index', { ...view.renderArgs })
@@ -66,10 +66,21 @@ export default class CreateGoalController {
     const { prisonNumber } = req.params
     const targetDate = parseDate(req, 'targetDate')
     req.session.addStepForm = { ...req.body, targetDate }
+    const { addStepForm } = req.session
 
-    const errors = validateAddStepForm(req.session.addStepForm)
+    const errors = validateAddStepForm(addStepForm)
     if (errors.length > 0) {
       req.flash('errors', errors)
+      return res.redirect(`/plan/${prisonNumber}/goals/add-step`)
+    }
+
+    // Redirect to the desired page based on the form action
+    if (addStepForm.action === 'add-another-step') {
+      // The next PR will work out where to store steps as each is submitted
+
+      // Initialize a new AddStepForm with the next step number
+      const nextStepNumber = Number(addStepForm.stepNumber) + 1
+      req.session.addStepForm = { stepNumber: nextStepNumber }
       return res.redirect(`/plan/${prisonNumber}/goals/add-step`)
     }
 

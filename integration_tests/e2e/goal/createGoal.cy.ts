@@ -59,7 +59,9 @@ context('Create a goal', () => {
       .submitPage()
 
     const addStepPage = Page.verifyOnPage(AddStepPage)
-    addStepPage.isForGoal('Learn French')
+    addStepPage //
+      .isForGoal('Learn French')
+      .isStepNumber(1)
 
     addStepPage //
       .setStepTitle('Book French course')
