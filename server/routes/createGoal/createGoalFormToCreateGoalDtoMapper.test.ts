@@ -4,7 +4,7 @@ import moment from 'moment'
 import CreateGoalFormToCreateGoalDtoMapper from './createGoalFormToCreateGoalDtoMapper'
 
 describe('createGoalFormToCreateGoalDtoMapper', () => {
-  it.skip('should map to CreateGoalDto given valid form data', () => {
+  it('should map to CreateGoalDto given valid form data', () => {
     // Given
     const createGoalDtoMapper = new CreateGoalFormToCreateGoalDtoMapper()
     const prisonNumber = 'A1234BC'
@@ -42,6 +42,6 @@ describe('createGoalFormToCreateGoalDtoMapper', () => {
     const createGoalDto = createGoalDtoMapper.toCreateGoalDto(prisonNumber, createGoalForm, addStepForm, addNoteForm)
 
     // Then
-    expect(createGoalDto).toEqual(expectedCreateGoalDto)
+    expect(JSON.stringify(createGoalDto)).toEqual(JSON.stringify(expectedCreateGoalDto))
   })
 })

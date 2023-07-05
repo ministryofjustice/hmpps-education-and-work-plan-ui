@@ -4,40 +4,40 @@ import moment from 'moment'
 import EducationAndWorkPlanApiMapper from './educationAndWorkPlanApiMapper'
 
 describe('educationAndWorkPlanApiMapper', () => {
-  it.skip('should map to CreateGoalDto given valid form data', () => {
+  it('should map to CreateGoalDto given valid form data', () => {
     // Given
     const educationAndWorkPlanApiMapper = new EducationAndWorkPlanApiMapper()
     const prisonNumber = 'A1234BC'
-    const addStepDto = {
+    const addStepDto: AddStepDto = {
       title: 'Book Spanish course',
       targetDate: moment('2123-01-31', 'YYYY-MM-DD').toDate(),
-    } as AddStepDto
-    const createGoalDto = {
+    }
+    const createGoalDto: CreateGoalDto = {
       prisonNumber,
       title: 'Learn Spanish',
       reviewDate: moment('2123-06-31', 'YYYY-MM-DD').toDate(),
       steps: [addStepDto],
       note: 'Prisoner is not good at listening',
-    } as CreateGoalDto
+    }
 
-    const expectedAddStepRequest = {
+    const expectedAddStepRequest: CreateStepRequest = {
       title: 'Book Spanish course',
       targetDate: moment('2123-01-31', 'YYYY-MM-DD').toDate(),
       sequenceNumber: 1,
-    } as CreateStepRequest
-    const expectedCreateGoalRequest = {
+    }
+    const expectedCreateGoalRequest: CreateGoalRequest = {
       prisonNumber,
       title: 'Learn Spanish',
       category: 'WORK',
       reviewDate: moment('2123-06-31', 'YYYY-MM-DD').toDate(),
       steps: [expectedAddStepRequest],
       note: createGoalDto.note,
-    } as CreateGoalRequest
+    }
 
     // When
-    const createGoalRequest = educationAndWorkPlanApiMapper.createGoalDtoToCreateGoalRequest(createGoalDto)
+    const createGoalRequest = educationAndWorkPlanApiMapper.toCreateGoalRequest(createGoalDto)
 
     // Then
-    expect(createGoalRequest).toEqual(expectedCreateGoalRequest)
+    expect(JSON.stringify(createGoalRequest)).toEqual(JSON.stringify(expectedCreateGoalRequest))
   })
 })

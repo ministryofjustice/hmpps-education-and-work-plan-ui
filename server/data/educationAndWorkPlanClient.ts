@@ -14,7 +14,7 @@ export default class EducationAndWorkPlanClient {
 
   async createGoal(createGoalDto: CreateGoalDto, token: string): Promise<void> {
     const createGoalRequest =
-      EducationAndWorkPlanClient.educationAndWorkPlanApiMapper().createGoalDtoToCreateGoalRequest(createGoalDto)
+      EducationAndWorkPlanClient.educationAndWorkPlanApiMapper().toCreateGoalRequest(createGoalDto)
 
     await EducationAndWorkPlanClient.restClient(token).post({
       path: `/action-plans/${createGoalRequest.prisonNumber}/goals`,
