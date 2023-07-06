@@ -1,3 +1,4 @@
+import type { AddStepForm } from 'forms'
 import type { RequestHandler } from 'express'
 import type { Prisoner } from 'prisonRegisterApiClient'
 import type { PrisonerSummary } from 'viewModels'
@@ -82,6 +83,11 @@ export default class CreateGoalController {
       return res.redirect(`/plan/${prisonNumber}/goals/add-step`)
     }
 
+    if (!req.session.addStepForms) {
+      req.session.addStepForms = new Array<AddStepForm>()
+    }
+    req.session.addStepForms.push(addStepForm)
+
     // Redirect to the desired page based on the form action
     if (addStepForm.action === 'add-another-step') {
       // The next PR will work out where to store steps as each is submitted
@@ -107,10 +113,10 @@ export default class CreateGoalController {
   submitAddNoteForm: RequestHandler = async (req, res, next): Promise<void> => {
     const { prisonNumber } = req.params
     const { createGoalForm } = req.session
-    const { addStepForm } = req.session
+    const { addStepForms } = req.session
     req.session.addNoteForm = { ...req.body }
 
-    const createGoalDto = toCreateGoalDto(createGoalForm, addStepForm, req.body)
+    const createGoalDto = toCreateGoalDto(createGoalForm, addStepForms, req.body)
     await this.educationAndWorkPlanService.createGoal(createGoalDto, req.user.token)
 
     return res.redirect(`/plan/${prisonNumber}/goals/overview`)

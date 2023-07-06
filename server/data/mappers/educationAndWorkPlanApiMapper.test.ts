@@ -1,23 +1,28 @@
 import type { CreateGoalDto } from 'dto'
 import type { CreateGoalRequest, CreateStepRequest } from 'educationAndWorkPlanApiClient'
-import aValidCreateGoalDtoWithOneStep from '../../testsupport/createGoalDtoTestDataBuilder'
 import { toCreateGoalRequest } from './educationAndWorkPlanApiMapper'
+import { aValidCreateGoalDtoWithMultipleSteps } from '../../testsupport/createGoalDtoTestDataBuilder'
 
 describe('educationAndWorkPlanApiMapper', () => {
   it('should map to CreateGoalDto given valid form data', () => {
     // Given
-    const createGoalDto: CreateGoalDto = aValidCreateGoalDtoWithOneStep()
-    const expectedAddStepRequest: CreateStepRequest = {
+    const createGoalDto: CreateGoalDto = aValidCreateGoalDtoWithMultipleSteps()
+    const expectedAddStepRequest1: CreateStepRequest = {
       title: createGoalDto.steps[0].title,
       targetDate: createGoalDto.steps[0].targetDate,
       sequenceNumber: 1,
+    }
+    const expectedAddStepRequest2: CreateStepRequest = {
+      title: createGoalDto.steps[1].title,
+      targetDate: createGoalDto.steps[1].targetDate,
+      sequenceNumber: 2,
     }
     const expectedCreateGoalRequest: CreateGoalRequest = {
       prisonNumber: createGoalDto.prisonNumber,
       title: createGoalDto.title,
       category: 'WORK',
       reviewDate: createGoalDto.reviewDate,
-      steps: [expectedAddStepRequest],
+      steps: [expectedAddStepRequest1, expectedAddStepRequest2],
       note: createGoalDto.note,
     }
 
