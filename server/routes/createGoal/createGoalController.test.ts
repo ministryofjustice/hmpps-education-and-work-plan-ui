@@ -4,6 +4,7 @@ import CreateGoalController from './createGoalController'
 import { PrisonerSearchService } from '../../services'
 import validateCreateGoalForm from './createGoalFormValidator'
 import validateAddStepForm from './addStepFormValidator'
+import EducationAndWorkPlanService from '../../services/educationAndWorkPlanService'
 
 jest.mock('./addStepFormValidator')
 jest.mock('./createGoalFormValidator')
@@ -17,7 +18,14 @@ describe('createGoalController', () => {
     getPrisonerByPrisonNumber: jest.fn(),
   }
 
-  const controller = new CreateGoalController(prisonerSearchService as unknown as PrisonerSearchService)
+  const educationAndWorkPlanService = {
+    createGoal: jest.fn(),
+  }
+
+  const controller = new CreateGoalController(
+    prisonerSearchService as unknown as PrisonerSearchService,
+    educationAndWorkPlanService as unknown as EducationAndWorkPlanService,
+  )
 
   const req = {
     session: {} as SessionData,
