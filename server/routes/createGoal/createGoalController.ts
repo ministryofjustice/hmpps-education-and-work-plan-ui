@@ -50,7 +50,7 @@ export default class CreateGoalController {
     const { prisonNumber } = req.params
 
     const reviewDate = parseDate(req, 'reviewDate')
-    req.session.createGoalForm = { ...req.body, prisonNumber, reviewDate }
+    req.session.createGoalForm = { ...req.body, reviewDate }
 
     const errors = validateCreateGoalForm(req.session.createGoalForm)
     if (errors.length > 0) {
