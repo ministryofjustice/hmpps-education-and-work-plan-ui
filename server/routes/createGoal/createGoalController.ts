@@ -11,7 +11,6 @@ import validateCreateGoalForm from './createGoalFormValidator'
 import parseDate from '../parseDate'
 import validateAddStepForm from './addStepFormValidator'
 import CreateGoalFormToCreateGoalDtoMapper from './createGoalFormToCreateGoalDtoMapper'
-import logger from '../../../logger'
 
 export default class CreateGoalController {
   constructor(
@@ -42,7 +41,7 @@ export default class CreateGoalController {
     } as PrisonerSummary
     req.session.prisonerSummary = prisonerSummary
 
-    const createGoalForm = req.session.createGoalForm || {}
+    const createGoalForm = req.session.createGoalForm || { prisonNumber }
 
     const view = new CreateGoalView(prisonerSummary, createGoalForm, req.flash('errors'))
     res.render('pages/goal/create/index', { ...view.renderArgs })
@@ -52,7 +51,7 @@ export default class CreateGoalController {
     const { prisonNumber } = req.params
 
     const reviewDate = parseDate(req, 'reviewDate')
-    req.session.createGoalForm = { ...req.body, reviewDate }
+    req.session.createGoalForm = { ...req.body, prisonNumber, reviewDate }
 
     const errors = validateCreateGoalForm(req.session.createGoalForm)
     if (errors.length > 0) {
@@ -112,13 +111,7 @@ export default class CreateGoalController {
     const { addStepForm } = req.session
     req.session.addNoteForm = { ...req.body }
 
-    const createGoalDto = CreateGoalController.createDtoMapper().toCreateGoalDto(
-      prisonNumber,
-      createGoalForm,
-      addStepForm,
-      req.body,
-    )
-    logger.info(createGoalDto)
+    const createGoalDto = CreateGoalController.createDtoMapper().toCreateGoalDto(createGoalForm, addStepForm, req.body)
     await this.educationAndWorkPlanService.createGoal(createGoalDto, req.user.token)
 
     return res.redirect(`/plan/${prisonNumber}/goals/overview`)
