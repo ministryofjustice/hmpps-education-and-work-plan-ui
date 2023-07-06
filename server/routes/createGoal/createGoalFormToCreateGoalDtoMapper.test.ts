@@ -10,8 +10,8 @@ describe('createGoalFormToCreateGoalDtoMapper', () => {
     const prisonNumber = 'A1234BC'
     const createGoalForm: CreateGoalForm = {
       title: 'Learn Spanish',
-      reviewDate: moment('2123-06-31', 'YYYY-MM-DD').toDate(),
-      'reviewDate-day': '31',
+      reviewDate: moment('2123-06-30', 'YYYY-MM-DD').toDate(),
+      'reviewDate-day': '30',
       'reviewDate-month': '06',
       'reviewDate-year': '2123',
     }
@@ -33,7 +33,7 @@ describe('createGoalFormToCreateGoalDtoMapper', () => {
     const expectedCreateGoalDto: CreateGoalDto = {
       prisonNumber,
       title: 'Learn Spanish',
-      reviewDate: moment('2123-06-31', 'YYYY-MM-DD').toDate(),
+      reviewDate: moment('2123-06-30', 'YYYY-MM-DD').toDate(),
       steps: [expectedAddStepDto],
       note: 'Prisoner is not good at listening',
     }
@@ -42,6 +42,6 @@ describe('createGoalFormToCreateGoalDtoMapper', () => {
     const createGoalDto = createGoalDtoMapper.toCreateGoalDto(prisonNumber, createGoalForm, addStepForm, addNoteForm)
 
     // Then
-    expect(JSON.stringify(createGoalDto)).toEqual(JSON.stringify(expectedCreateGoalDto))
+    expect(createGoalDto).toEqual(expectedCreateGoalDto)
   })
 })

@@ -15,7 +15,7 @@ describe('educationAndWorkPlanApiMapper', () => {
     const createGoalDto: CreateGoalDto = {
       prisonNumber,
       title: 'Learn Spanish',
-      reviewDate: moment('2123-06-31', 'YYYY-MM-DD').toDate(),
+      reviewDate: moment('2123-06-30', 'YYYY-MM-DD').toDate(),
       steps: [addStepDto],
       note: 'Prisoner is not good at listening',
     }
@@ -29,7 +29,7 @@ describe('educationAndWorkPlanApiMapper', () => {
       prisonNumber,
       title: 'Learn Spanish',
       category: 'WORK',
-      reviewDate: moment('2123-06-31', 'YYYY-MM-DD').toDate(),
+      reviewDate: moment('2123-06-30', 'YYYY-MM-DD').toDate(),
       steps: [expectedAddStepRequest],
       note: createGoalDto.note,
     }
@@ -38,6 +38,6 @@ describe('educationAndWorkPlanApiMapper', () => {
     const createGoalRequest = educationAndWorkPlanApiMapper.toCreateGoalRequest(createGoalDto)
 
     // Then
-    expect(JSON.stringify(createGoalRequest)).toEqual(JSON.stringify(expectedCreateGoalRequest))
+    expect(createGoalRequest).toEqual(expectedCreateGoalRequest)
   })
 })

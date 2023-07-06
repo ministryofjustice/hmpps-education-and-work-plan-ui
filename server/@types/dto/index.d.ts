@@ -3,7 +3,7 @@ declare module 'dto' {
     prisonNumber: string
     title: string
     reviewDate: Date
-    steps: Array[AddStepDto]
+    steps: Array<AddStepDto>
     note?: string
   }
 
