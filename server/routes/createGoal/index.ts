@@ -2,7 +2,7 @@ import { Router } from 'express'
 import { Services } from '../../services'
 import CreateGoalController from './createGoalController'
 import { hasEditAuthority } from '../../middleware/roleBasedAccessControl'
-import { checkCreateGoalFormExistsInSession } from './routerRequestHandlers'
+import checkCreateGoalFormExistsInSession from './routerRequestHandlers'
 
 export default (router: Router, services: Services) => {
   const createGoalController = new CreateGoalController(

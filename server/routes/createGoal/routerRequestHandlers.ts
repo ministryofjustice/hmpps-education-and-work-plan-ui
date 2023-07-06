@@ -27,8 +27,4 @@ const checkCreateGoalFormExistsInSession = async (req: Request, res: Response, n
   }
 }
 
-const checkAddStepFormExistsInSession = async (req: Request, res: Response, next: NextFunction) => {
-  next()
-}
-
-export { checkCreateGoalFormExistsInSession, checkAddStepFormExistsInSession }
+export default checkCreateGoalFormExistsInSession

@@ -1,7 +1,7 @@
 import { NextFunction, Response, Request } from 'express'
 import { SessionData } from 'express-session'
 import type { CreateGoalForm } from 'forms'
-import { checkCreateGoalFormExistsInSession } from './routerRequestHandlers'
+import checkCreateGoalFormExistsInSession from './routerRequestHandlers'
 
 describe('routerRequestHandlers', () => {
   const req = {
