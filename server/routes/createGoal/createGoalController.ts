@@ -7,20 +7,16 @@ import PrisonerSearchService from '../../services/prisonerSearchService'
 import CreateGoalView from './createGoalView'
 import AddStepView from './addStepView'
 import AddNoteView from './addNoteView'
+import { toCreateGoalDto } from './mappers/createGoalFormToCreateGoalDtoMapper'
 import validateCreateGoalForm from './createGoalFormValidator'
 import parseDate from '../parseDate'
 import validateAddStepForm from './addStepFormValidator'
-import CreateGoalFormToCreateGoalDtoMapper from './createGoalFormToCreateGoalDtoMapper'
 
 export default class CreateGoalController {
   constructor(
     private readonly prisonerSearchService: PrisonerSearchService,
     private readonly educationAndWorkPlanService: EducationAndWorkPlanService,
   ) {}
-
-  private static createDtoMapper(): CreateGoalFormToCreateGoalDtoMapper {
-    return new CreateGoalFormToCreateGoalDtoMapper()
-  }
 
   getCreateGoalView: RequestHandler = async (req, res, next): Promise<void> => {
     const { prisonNumber } = req.params
@@ -111,7 +107,7 @@ export default class CreateGoalController {
     const { addStepForm } = req.session
     req.session.addNoteForm = { ...req.body }
 
-    const createGoalDto = CreateGoalController.createDtoMapper().toCreateGoalDto(createGoalForm, addStepForm, req.body)
+    const createGoalDto = toCreateGoalDto(createGoalForm, addStepForm, req.body)
     await this.educationAndWorkPlanService.createGoal(createGoalDto, req.user.token)
 
     return res.redirect(`/plan/${prisonNumber}/goals/overview`)

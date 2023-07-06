@@ -1,12 +1,11 @@
 import type { CreateGoalDto } from 'dto'
 import type { CreateGoalRequest, CreateStepRequest } from 'educationAndWorkPlanApiClient'
-import EducationAndWorkPlanApiMapper from './educationAndWorkPlanApiMapper'
-import aValidCreateGoalDtoWithOneStep from '../testsupport/createGoalDtoTestDataBuilder'
+import aValidCreateGoalDtoWithOneStep from '../../testsupport/createGoalDtoTestDataBuilder'
+import { toCreateGoalRequest } from './educationAndWorkPlanApiMapper'
 
 describe('educationAndWorkPlanApiMapper', () => {
   it('should map to CreateGoalDto given valid form data', () => {
     // Given
-    const educationAndWorkPlanApiMapper = new EducationAndWorkPlanApiMapper()
     const createGoalDto: CreateGoalDto = aValidCreateGoalDtoWithOneStep()
     const expectedAddStepRequest: CreateStepRequest = {
       title: createGoalDto.steps[0].title,
@@ -23,7 +22,7 @@ describe('educationAndWorkPlanApiMapper', () => {
     }
 
     // When
-    const createGoalRequest = educationAndWorkPlanApiMapper.toCreateGoalRequest(createGoalDto)
+    const createGoalRequest = toCreateGoalRequest(createGoalDto)
 
     // Then
     expect(createGoalRequest).toEqual(expectedCreateGoalRequest)

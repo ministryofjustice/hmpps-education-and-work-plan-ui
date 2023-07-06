@@ -1,13 +1,12 @@
 import type { AddStepDto, CreateGoalDto } from 'dto'
-import CreateGoalFormToCreateGoalDtoMapper from './createGoalFormToCreateGoalDtoMapper'
-import aValidCreateGoalForm from '../../testsupport/createGoalFormTestDataBuilder'
-import aValidAddStepFormWithOneStep from '../../testsupport/addStepFormTestDataBuilder'
-import aValidAddNoteForm from '../../testsupport/addNoteFormTestDataBuilder'
+import { toCreateGoalDto } from './createGoalFormToCreateGoalDtoMapper'
+import aValidCreateGoalForm from '../../../testsupport/createGoalFormTestDataBuilder'
+import aValidAddStepFormWithOneStep from '../../../testsupport/addStepFormTestDataBuilder'
+import aValidAddNoteForm from '../../../testsupport/addNoteFormTestDataBuilder'
 
 describe('createGoalFormToCreateGoalDtoMapper', () => {
   it('should map to CreateGoalDto given valid form data', () => {
     // Given
-    const createGoalDtoMapper = new CreateGoalFormToCreateGoalDtoMapper()
     const createGoalForm = aValidCreateGoalForm()
     const addStepForm = aValidAddStepFormWithOneStep()
     const addNoteForm = aValidAddNoteForm()
@@ -25,7 +24,7 @@ describe('createGoalFormToCreateGoalDtoMapper', () => {
     }
 
     // When
-    const createGoalDto = createGoalDtoMapper.toCreateGoalDto(createGoalForm, addStepForm, addNoteForm)
+    const createGoalDto = toCreateGoalDto(createGoalForm, addStepForm, addNoteForm)
 
     // Then
     expect(createGoalDto).toEqual(expectedCreateGoalDto)
