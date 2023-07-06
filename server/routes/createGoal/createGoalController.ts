@@ -2,16 +2,21 @@ import type { RequestHandler } from 'express'
 import type { Prisoner } from 'prisonRegisterApiClient'
 import type { PrisonerSummary } from 'viewModels'
 import createError from 'http-errors'
+import EducationAndWorkPlanService from '../../services/educationAndWorkPlanService'
 import PrisonerSearchService from '../../services/prisonerSearchService'
 import CreateGoalView from './createGoalView'
 import AddStepView from './addStepView'
 import AddNoteView from './addNoteView'
+import { toCreateGoalDto } from './mappers/createGoalFormToCreateGoalDtoMapper'
 import validateCreateGoalForm from './createGoalFormValidator'
 import parseDate from '../parseDate'
 import validateAddStepForm from './addStepFormValidator'
 
 export default class CreateGoalController {
-  constructor(private readonly prisonerSearchService: PrisonerSearchService) {}
+  constructor(
+    private readonly prisonerSearchService: PrisonerSearchService,
+    private readonly educationAndWorkPlanService: EducationAndWorkPlanService,
+  ) {}
 
   getCreateGoalView: RequestHandler = async (req, res, next): Promise<void> => {
     const { prisonNumber } = req.params
@@ -42,7 +47,7 @@ export default class CreateGoalController {
     const { prisonNumber } = req.params
 
     const reviewDate = parseDate(req, 'reviewDate')
-    req.session.createGoalForm = { ...req.body, reviewDate }
+    req.session.createGoalForm = { ...req.body, prisonNumber, reviewDate }
 
     const errors = validateCreateGoalForm(req.session.createGoalForm)
     if (errors.length > 0) {
@@ -94,5 +99,17 @@ export default class CreateGoalController {
 
     const view = new AddNoteView(prisonerSummary, addNoteForm, req.flash('errors'))
     res.render('pages/goal/add-note/index', { ...view.renderArgs })
+  }
+
+  submitAddNoteForm: RequestHandler = async (req, res, next): Promise<void> => {
+    const { prisonNumber } = req.params
+    const { createGoalForm } = req.session
+    const { addStepForm } = req.session
+    req.session.addNoteForm = { ...req.body }
+
+    const createGoalDto = toCreateGoalDto(createGoalForm, addStepForm, req.body)
+    await this.educationAndWorkPlanService.createGoal(createGoalDto, req.user.token)
+
+    return res.redirect(`/plan/${prisonNumber}/goals/overview`)
   }
 }
