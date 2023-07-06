@@ -7,7 +7,46 @@ context('Add a step', () => {
     cy.task('reset')
     cy.task('stubSignInAsUserWithEditAuthority')
     cy.task('stubAuthUser')
-    cy.task('getPrisonerById')
+    cy.task('getPrisonerById', 'G6115VJ')
+    cy.task('getPrisonerById', 'H4115SD')
+  })
+
+  it('should not be able to navigate directly to add step given Create Goal has not been submitted', () => {
+    // Given
+    const prisonNumber = 'G6115VJ'
+    cy.signIn()
+
+    // When
+    cy.visit(`/plan/${prisonNumber}/goals/add-step`)
+
+    // Then
+    const createGoalPage = Page.verifyOnPage(CreateGoalPage)
+    createGoalPage.isForPrisoner(prisonNumber)
+  })
+
+  it('should not be able to arrive on add step page, then change the prison number in the URL', () => {
+    // Given
+    const prisonNumber = 'G6115VJ'
+    cy.signIn()
+    cy.visit(`/plan/${prisonNumber}/goals/create`)
+
+    let createGoalPage = Page.verifyOnPage(CreateGoalPage)
+    createGoalPage //
+      .setGoalTitle('Learn French')
+      .setGoalReviewDate(23, 12, 2024)
+      .submitPage()
+
+    const addStepPage = Page.verifyOnPage(AddStepPage)
+    addStepPage.isForPrisoner(prisonNumber)
+
+    const someOtherPrisonNumber = 'H4115SD'
+
+    // When
+    cy.visit(`/plan/${someOtherPrisonNumber}/goals/add-step`)
+
+    // Then
+    createGoalPage = Page.verifyOnPage(CreateGoalPage)
+    createGoalPage.isForPrisoner(someOtherPrisonNumber)
   })
 
   it('should not proceed to add note page given validation errors on add step page', () => {
