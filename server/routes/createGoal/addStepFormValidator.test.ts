@@ -13,6 +13,7 @@ describe('addStepFormValidator', () => {
   it('should validate given no errors', () => {
     // Given
     const form = {
+      stepNumber: 1,
       prisonNumber: 'A1234BC',
       title: 'Book Spanish course',
       targetDate: moment('2123-06-31', 'YYYY-MM-DD').toDate(),
@@ -33,6 +34,7 @@ describe('addStepFormValidator', () => {
 
   it('should validate given step title errors', () => {
     const form = {
+      stepNumber: 1,
       prisonNumber: 'A1234BC',
       title: '',
       targetDate: moment('2123-06-31', 'YYYY-MM-DD').toDate(),
@@ -54,6 +56,7 @@ describe('addStepFormValidator', () => {
   it('should validate given step target date errors', () => {
     // Given
     const form = {
+      stepNumber: 1,
       prisonNumber: 'A1234BC',
       title: 'Learn Spanish',
       targetDate: moment('2122-06-01', 'YYYY-MM-DD').toDate(), // date in the past
@@ -75,6 +78,7 @@ describe('addStepFormValidator', () => {
   it('should validate given multiple create step errors', () => {
     // Given
     const form = {
+      stepNumber: 1,
       prisonNumber: 'A1234BC',
       title: undefined,
       targetDate: moment('2122-06-01', 'YYYY-MM-DD').toDate(), // date in the past

@@ -35,10 +35,12 @@
       <form class="form" method="post" novalidate="">
         <div class="govuk-form-group">
           <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+          <input type="hidden" name="stepNumber" value="{{ form.stepNumber }}" />
 
+          {% set titleLabel = 'Step ' + form.stepNumber %}
           {{ govukInput({
             label: {
-              text: "Step 1",
+              text: titleLabel,
               classes: "govuk-label--m",
               isPageHeading: false
             },
@@ -91,8 +93,9 @@
 
         <div class="govuk-form-group">
           {{ govukButton({
-            id: "add-step-button",
-            name: "add-step-button",
+            id: "add-another-step-button",
+            name: "action",
+            value: "add-another-step",
             text: "Add another step",
             classes: "govuk-button--secondary"
           }) }}
@@ -100,7 +103,8 @@
 
         {{ govukButton({
           id: "submit-button",
-          name: "submit-button",
+          name: "action",
+          value: "submit-form",
           text: "Continue to add a note"
         }) }}
 

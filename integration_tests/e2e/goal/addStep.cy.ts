@@ -37,6 +37,37 @@ context('Add a step', () => {
       .hasFieldInError('title')
   })
 
+  it('should not proceed to add step page given user chooses to add another step', () => {
+    // Given
+    const prisonNumber = 'G6115VJ'
+    cy.signIn()
+    cy.visit(`/plan/${prisonNumber}/goals/create`)
+
+    const createGoal = Page.verifyOnPage(CreateGoalPage)
+    createGoal //
+      .setGoalTitle('Learn French')
+      .setGoalReviewDate(23, 12, 2024)
+      .submitPage()
+
+    let addStepPage = Page.verifyOnPage(AddStepPage)
+    addStepPage //
+      .isForGoal('Learn French')
+      .isStepNumber(1)
+
+    addStepPage //
+      .setStepTitle('Book French course')
+      .setStepTargetDate(23, 12, 2024)
+
+    // When
+    addStepPage.addAnotherStep()
+
+    // Then
+    addStepPage = Page.verifyOnPage(AddStepPage)
+    addStepPage //
+      .isForGoal('Learn French')
+      .isStepNumber(2)
+  })
+
   it.skip('should move to add note page', () => {
     // Given
     const prisonNumber = 'G6115VJ'
