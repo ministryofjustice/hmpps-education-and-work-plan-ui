@@ -4,6 +4,9 @@ import CreateGoalController from './createGoalController'
 import { hasEditAuthority } from '../../middleware/roleBasedAccessControl'
 import checkCreateGoalFormExistsInSession from './routerRequestHandlers'
 
+/**
+ * Route definitions for the pages relating to Creating A Goal
+ */
 export default (router: Router, services: Services) => {
   const createGoalController = new CreateGoalController(
     services.prisonerSearchService,
