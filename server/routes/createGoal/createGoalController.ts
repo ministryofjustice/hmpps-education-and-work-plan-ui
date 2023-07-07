@@ -114,8 +114,8 @@ export default class CreateGoalController {
     const { prisonNumber } = req.params
     const { createGoalForm } = req.session
     const { addStepForms } = req.session
-    req.session.addNoteForm = { ...req.body }
 
+    req.session.addNoteForm = { ...req.body }
     const createGoalDto = toCreateGoalDto(createGoalForm, addStepForms, req.body)
     await this.educationAndWorkPlanService.createGoal(createGoalDto, req.user.token)
 

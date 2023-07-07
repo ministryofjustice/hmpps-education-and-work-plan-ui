@@ -8,7 +8,7 @@ const toCreateGoalRequest = (createGoalDto: CreateGoalDto): CreateGoalRequest =>
     category: 'WORK',
     reviewDate: createGoalDto.reviewDate,
     steps: toAddStepRequests(createGoalDto),
-    note: createGoalDto.note,
+    notes: createGoalDto.note,
   }
 }
 

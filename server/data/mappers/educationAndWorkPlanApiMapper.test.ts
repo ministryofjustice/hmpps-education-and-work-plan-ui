@@ -23,7 +23,7 @@ describe('educationAndWorkPlanApiMapper', () => {
       category: 'WORK',
       reviewDate: createGoalDto.reviewDate,
       steps: [expectedAddStepRequest1, expectedAddStepRequest2],
-      note: createGoalDto.note,
+      notes: createGoalDto.note,
     }
 
     // When
