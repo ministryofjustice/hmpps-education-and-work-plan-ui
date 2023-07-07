@@ -57,7 +57,7 @@ export interface components {
        * Format: date
        * @description A date by which the prisoner should aim to complete the step.
        */
-      targetDate: string
+      targetDate?: string
       /**
        * Format: int32
        * @description The number (position) of the Step within the overall Goal.
