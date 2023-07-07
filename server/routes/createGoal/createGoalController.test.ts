@@ -5,6 +5,7 @@ import { PrisonerSearchService } from '../../services'
 import validateAddStepForm from './addStepFormValidator'
 import validateCreateGoalForm from './createGoalFormValidator'
 import EducationAndWorkPlanService from '../../services/educationAndWorkPlanService'
+import { anotherValidAddStepForm, aValidAddStepForm } from '../../testsupport/addStepFormTestDataBuilder'
 
 jest.mock('./addStepFormValidator')
 jest.mock('./createGoalFormValidator')
@@ -123,6 +124,48 @@ describe('createGoalController', () => {
       // Then
       expect(res.redirect).toHaveBeenCalledWith('/plan/A1234GC/goals/add-step')
       expect(req.flash).toHaveBeenCalledWith('errors', errors)
+    })
+
+    it('should add additional step', async () => {
+      // Given
+      req.params.prisonNumber = 'A1234GC'
+      const addStepForm = aValidAddStepForm()
+      req.body = addStepForm
+      req.session.addStepForms = [anotherValidAddStepForm()]
+
+      mockedValidateAddStepForm.mockReturnValue([])
+
+      // When
+      await controller.submitAddStepForm(
+        req as undefined as Request,
+        res as undefined as Response,
+        next as undefined as NextFunction,
+      )
+
+      // Then
+      expect(req.session.addStepForms).toHaveLength(2)
+      expect(res.redirect).toHaveBeenCalledWith('/plan/A1234GC/goals/add-note')
+    })
+
+    it('should not add duplicate step', async () => {
+      // Given
+      req.params.prisonNumber = 'A1234GC'
+      const addStepForm = aValidAddStepForm()
+      req.body = addStepForm
+      req.session.addStepForms = [addStepForm]
+
+      mockedValidateAddStepForm.mockReturnValue([])
+
+      // When
+      await controller.submitAddStepForm(
+        req as undefined as Request,
+        res as undefined as Response,
+        next as undefined as NextFunction,
+      )
+
+      // Then
+      expect(req.session.addStepForms).toHaveLength(1)
+      expect(res.redirect).toHaveBeenCalledWith('/plan/A1234GC/goals/add-note')
     })
   })
 })

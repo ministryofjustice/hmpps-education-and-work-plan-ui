@@ -83,12 +83,14 @@ export default class CreateGoalController {
       req.flash('errors', errors)
       return res.redirect(`/plan/${prisonNumber}/goals/add-step`)
     }
-    addStepForms.push(req.session.addStepForm)
+
+    // check to see if this step has already been added (e.g. after the user clicks the back button)
+    if (!addStepForms.find(step => step.stepNumber === addStepForm.stepNumber)) {
+      addStepForms.push(req.session.addStepForm)
+    }
 
     // Redirect to the desired page based on the form action
     if (addStepForm.action === 'add-another-step') {
-      // The next PR will work out where to store steps as each is submitted
-
       // Initialize a new AddStepForm with the next step number
       const nextStepNumber = Number(addStepForm.stepNumber) + 1
       req.session.addStepForm = { stepNumber: nextStepNumber }
