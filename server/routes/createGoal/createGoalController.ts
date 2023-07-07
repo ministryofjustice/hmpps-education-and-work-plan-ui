@@ -1,4 +1,3 @@
-import type { AddStepForm } from 'forms'
 import type { RequestHandler } from 'express'
 import type { Prisoner } from 'prisonRegisterApiClient'
 import type { PrisonerSummary } from 'viewModels'
@@ -66,7 +65,7 @@ export default class CreateGoalController {
     const { prisonerSummary } = req.session
     const { createGoalForm } = req.session
     const addStepForm = req.session.addStepForm || { stepNumber: 1 }
-    req.session.addStepForms = req.session.addStepForms || new Array<AddStepForm>()
+    req.session.addStepForms = req.session.addStepForms || []
 
     const view = new AddStepView(createGoalForm.title, prisonerSummary, addStepForm, req.flash('errors'))
     res.render('pages/goal/add-step/index', { ...view.renderArgs })
@@ -78,13 +77,13 @@ export default class CreateGoalController {
     req.session.addStepForm = { ...req.body, targetDate }
     const { addStepForm } = req.session
     const { addStepForms } = req.session
-    addStepForms.push(req.session.addStepForm)
 
     const errors = validateAddStepForm(addStepForm)
     if (errors.length > 0) {
       req.flash('errors', errors)
       return res.redirect(`/plan/${prisonNumber}/goals/add-step`)
     }
+    addStepForms.push(req.session.addStepForm)
 
     // Redirect to the desired page based on the form action
     if (addStepForm.action === 'add-another-step') {
@@ -116,6 +115,11 @@ export default class CreateGoalController {
 
     const createGoalDto = toCreateGoalDto(createGoalForm, addStepForms, req.body)
     await this.educationAndWorkPlanService.createGoal(createGoalDto, req.user.token)
+
+    req.session.createGoalForm = undefined
+    req.session.addStepForm = undefined
+    req.session.addStepForms = undefined
+    req.session.addNoteForm = undefined
 
     return res.redirect(`/plan/${prisonNumber}/goals/overview`)
   }

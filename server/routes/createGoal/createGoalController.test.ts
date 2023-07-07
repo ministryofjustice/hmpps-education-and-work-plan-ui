@@ -1,9 +1,9 @@
-import type { AddStepForm } from 'forms'
 import { Request, Response, NextFunction } from 'express'
 import { SessionData } from 'express-session'
 import CreateGoalController from './createGoalController'
 import { PrisonerSearchService } from '../../services'
 import validateAddStepForm from './addStepFormValidator'
+import validateCreateGoalForm from './createGoalFormValidator'
 import EducationAndWorkPlanService from '../../services/educationAndWorkPlanService'
 
 jest.mock('./addStepFormValidator')
@@ -11,6 +11,7 @@ jest.mock('./createGoalFormValidator')
 
 describe('createGoalController', () => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const mockedValidateCreateGoalForm = validateCreateGoalForm as jest.MockedFunction<typeof validateCreateGoalForm>
   const mockedValidateAddStepForm = validateAddStepForm as jest.MockedFunction<typeof validateAddStepForm>
 
   const prisonerSearchService = {
@@ -56,7 +57,7 @@ describe('createGoalController', () => {
         'targetDate-year': '2024',
         action: 'submit-form',
       }
-      req.session.addStepForms = new Array<AddStepForm>()
+      req.session.addStepForms = []
 
       mockedValidateAddStepForm.mockReturnValue([])
 
@@ -83,7 +84,7 @@ describe('createGoalController', () => {
         'targetDate-year': '2024',
         action: 'add-another-step',
       }
-      req.session.addStepForms = new Array<AddStepForm>()
+      req.session.addStepForms = []
 
       mockedValidateAddStepForm.mockReturnValue([])
 
@@ -104,7 +105,7 @@ describe('createGoalController', () => {
       // Given
       req.params.prisonNumber = 'A1234GC'
       req.body = {}
-      req.session.addStepForms = new Array<AddStepForm>()
+      req.session.addStepForms = []
 
       const errors = [
         { href: '#title', text: 'some-title-error' },
