@@ -66,6 +66,7 @@ export default class CreateGoalController {
     const { prisonerSummary } = req.session
     const { createGoalForm } = req.session
     const addStepForm = req.session.addStepForm || { stepNumber: 1 }
+    req.session.addStepForms = req.session.addStepForms || new Array<AddStepForm>()
 
     const view = new AddStepView(createGoalForm.title, prisonerSummary, addStepForm, req.flash('errors'))
     res.render('pages/goal/add-step/index', { ...view.renderArgs })
@@ -76,17 +77,14 @@ export default class CreateGoalController {
     const targetDate = parseDate(req, 'targetDate')
     req.session.addStepForm = { ...req.body, targetDate }
     const { addStepForm } = req.session
+    const { addStepForms } = req.session
+    addStepForms.push(req.session.addStepForm)
 
     const errors = validateAddStepForm(addStepForm)
     if (errors.length > 0) {
       req.flash('errors', errors)
       return res.redirect(`/plan/${prisonNumber}/goals/add-step`)
     }
-
-    if (!req.session.addStepForms) {
-      req.session.addStepForms = new Array<AddStepForm>()
-    }
-    req.session.addStepForms.push(addStepForm)
 
     // Redirect to the desired page based on the form action
     if (addStepForm.action === 'add-another-step') {
@@ -114,8 +112,8 @@ export default class CreateGoalController {
     const { prisonNumber } = req.params
     const { createGoalForm } = req.session
     const { addStepForms } = req.session
-
     req.session.addNoteForm = { ...req.body }
+
     const createGoalDto = toCreateGoalDto(createGoalForm, addStepForms, req.body)
     await this.educationAndWorkPlanService.createGoal(createGoalDto, req.user.token)
 

@@ -19,7 +19,7 @@ const toAddStepRequests = (createGoalDto: CreateGoalDto): Array<CreateStepReques
 const toAddStepRequest = (addStepDto: AddStepDto): CreateStepRequest => {
   return {
     title: addStepDto.title,
-    targetDate: addStepDto.targetDate,
+    targetDate: addStepDto.targetDate, // TODO - fix mapping when targetDate is null
     sequenceNumber: addStepDto.sequenceNumber,
   }
 }
