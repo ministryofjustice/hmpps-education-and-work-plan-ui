@@ -8,7 +8,74 @@ context('Add a note', () => {
     cy.task('reset')
     cy.task('stubSignInAsUserWithEditAuthority')
     cy.task('stubAuthUser')
-    cy.task('getPrisonerById')
+    cy.task('getPrisonerById', 'G6115VJ')
+    cy.task('getPrisonerById', 'H4115SD')
+  })
+
+  it('should not be able to navigate directly to add note given Create Goal and Add Step has not been submitted', () => {
+    // Given
+    const prisonNumber = 'G6115VJ'
+    cy.signIn()
+
+    // When
+    cy.visit(`/plan/${prisonNumber}/goals/add-note`)
+
+    // Then
+    const createGoalPage = Page.verifyOnPage(CreateGoalPage)
+    createGoalPage.isForPrisoner(prisonNumber)
+  })
+
+  it('should not be able to arrive on add note page, then change the prison number in the URL', () => {
+    // Given
+    const prisonNumber = 'G6115VJ'
+    cy.signIn()
+    cy.visit(`/plan/${prisonNumber}/goals/create`)
+
+    let createGoalPage = Page.verifyOnPage(CreateGoalPage)
+    createGoalPage //
+      .setGoalTitle('Learn French')
+      .setGoalReviewDate(23, 12, 2024)
+      .submitPage()
+
+    const addStepPage = Page.verifyOnPage(AddStepPage)
+    addStepPage //
+      .setStepTitle('Book French course')
+      .setStepTargetDate(23, 12, 2024)
+      .submitPage()
+
+    const addNotePage = Page.verifyOnPage(AddNotePage)
+    addNotePage.isForPrisoner(prisonNumber)
+
+    const someOtherPrisonNumber = 'H4115SD'
+
+    // When
+    cy.visit(`/plan/${someOtherPrisonNumber}/goals/add-note`)
+
+    // Then
+    createGoalPage = Page.verifyOnPage(CreateGoalPage)
+    createGoalPage.isForPrisoner(someOtherPrisonNumber)
+  })
+
+  it.skip('should not be able to arrive on add step page, then change the URL to go straight to add-note without submitting add-step', () => {
+    // Given
+    const prisonNumber = 'G6115VJ'
+    cy.signIn()
+    cy.visit(`/plan/${prisonNumber}/goals/create`)
+
+    let createGoalPage = Page.verifyOnPage(CreateGoalPage)
+    createGoalPage //
+      .setGoalTitle('Learn French')
+      .setGoalReviewDate(23, 12, 2024)
+      .submitPage()
+
+    Page.verifyOnPage(AddStepPage)
+
+    // When
+    cy.visit(`/plan/${prisonNumber}/goals/add-note`)
+
+    // Then
+    createGoalPage = Page.verifyOnPage(CreateGoalPage)
+    createGoalPage.isForPrisoner(prisonNumber)
   })
 
   it.skip('should move to review goals page', () => {

@@ -20,10 +20,15 @@ export default class CreateGoalController {
 
   getCreateGoalView: RequestHandler = async (req, res, next): Promise<void> => {
     const { prisonNumber } = req.params
+    if (!req.session.createGoalForm) {
+      req.session.createGoalForm = { prisonNumber }
+    }
+
     let prisoner: Prisoner
     try {
       prisoner = await this.prisonerSearchService.getPrisonerByPrisonNumber(prisonNumber, req.user.token)
     } catch (error) {
+      req.session.createGoalForm = undefined
       next(createError(404, 'Prisoner not found'))
       return
     }
@@ -37,9 +42,7 @@ export default class CreateGoalController {
     } as PrisonerSummary
     req.session.prisonerSummary = prisonerSummary
 
-    const createGoalForm = req.session.createGoalForm || { prisonNumber }
-
-    const view = new CreateGoalView(prisonerSummary, createGoalForm, req.flash('errors'))
+    const view = new CreateGoalView(prisonerSummary, req.session.createGoalForm, req.flash('errors'))
     res.render('pages/goal/create/index', { ...view.renderArgs })
   }
 
@@ -47,7 +50,7 @@ export default class CreateGoalController {
     const { prisonNumber } = req.params
 
     const reviewDate = parseDate(req, 'reviewDate')
-    req.session.createGoalForm = { ...req.body, prisonNumber, reviewDate }
+    req.session.createGoalForm = { ...req.body, reviewDate }
 
     const errors = validateCreateGoalForm(req.session.createGoalForm)
     if (errors.length > 0) {
