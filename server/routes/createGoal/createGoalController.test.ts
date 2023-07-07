@@ -167,5 +167,29 @@ describe('createGoalController', () => {
       expect(req.session.addStepForms).toHaveLength(1)
       expect(res.redirect).toHaveBeenCalledWith('/plan/A1234GC/goals/add-note')
     })
+
+    it('should update existing modified step', async () => {
+      // Given
+      req.params.prisonNumber = 'A1234GC'
+      const addStepForm = aValidAddStepForm()
+      req.session.addStepForms = [addStepForm]
+      const modifiedForm = aValidAddStepForm()
+      modifiedForm.title = 'Find a Spanish course'
+      req.body = modifiedForm
+
+      mockedValidateAddStepForm.mockReturnValue([])
+
+      // When
+      await controller.submitAddStepForm(
+        req as undefined as Request,
+        res as undefined as Response,
+        next as undefined as NextFunction,
+      )
+
+      // Then
+      expect(req.session.addStepForms).toHaveLength(1)
+      expect(req.session.addStepForms[0].title).toEqual('Find a Spanish course')
+      expect(res.redirect).toHaveBeenCalledWith('/plan/A1234GC/goals/add-note')
+    })
   })
 })

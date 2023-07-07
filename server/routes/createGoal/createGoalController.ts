@@ -85,8 +85,13 @@ export default class CreateGoalController {
     }
 
     // check to see if this step has already been added (e.g. after the user clicks the back button)
-    if (!addStepForms.find(step => step.stepNumber === addStepForm.stepNumber)) {
+    const existingAddStepForm = addStepForms.find(step => step.stepNumber === addStepForm.stepNumber)
+    if (!existingAddStepForm) {
       addStepForms.push(req.session.addStepForm)
+    } else {
+      // update it in case the user has clicked back and changed it
+      existingAddStepForm.title = addStepForm.title
+      existingAddStepForm.targetDate = addStepForm.targetDate
     }
 
     // Redirect to the desired page based on the form action
