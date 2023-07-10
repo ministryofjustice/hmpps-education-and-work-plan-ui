@@ -3,6 +3,7 @@ import { type RequestHandler, Router } from 'express'
 import asyncMiddleware from '../middleware/asyncMiddleware'
 import type { Services } from '../services'
 import createGoal from './createGoal'
+import overview from './overview'
 
 export default function routes(services: Services): Router {
   const router = Router()
@@ -12,6 +13,7 @@ export default function routes(services: Services): Router {
     res.render('pages/index')
   })
 
+  overview(router, services)
   createGoal(router, services)
 
   return router
