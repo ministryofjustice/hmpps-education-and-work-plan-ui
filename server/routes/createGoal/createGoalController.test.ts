@@ -72,6 +72,7 @@ describe('createGoalController', () => {
       // Then
       expect(res.redirect).toHaveBeenCalledWith('/plan/A1234GC/goals/add-note')
       expect(req.flash).not.toHaveBeenCalled()
+      expect(req.session.addStepForms).toHaveLength(1)
     })
 
     it('should redirect to add step form given action is add-another-step and validation passes', async () => {
@@ -100,6 +101,7 @@ describe('createGoalController', () => {
       expect(res.redirect).toHaveBeenCalledWith('/plan/A1234GC/goals/add-step')
       expect(req.flash).not.toHaveBeenCalled()
       expect(req.session.addStepForm).toEqual({ stepNumber: 2 })
+      expect(req.session.addStepForms).toHaveLength(1)
     })
 
     it('should redirect to add step form given validation fails', async () => {
@@ -124,6 +126,7 @@ describe('createGoalController', () => {
       // Then
       expect(res.redirect).toHaveBeenCalledWith('/plan/A1234GC/goals/add-step')
       expect(req.flash).toHaveBeenCalledWith('errors', errors)
+      expect(req.session.addStepForms).toHaveLength(0)
     })
 
     it('should add additional step', async () => {

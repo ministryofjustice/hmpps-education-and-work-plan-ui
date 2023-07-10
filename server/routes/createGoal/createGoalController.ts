@@ -75,8 +75,7 @@ export default class CreateGoalController {
     const { prisonNumber } = req.params
     const targetDate = parseDate(req, 'targetDate')
     req.session.addStepForm = { ...req.body, targetDate }
-    const { addStepForm } = req.session
-    const { addStepForms } = req.session
+    const { addStepForm, addStepForms } = req.session
 
     const errors = validateAddStepForm(addStepForm)
     if (errors.length > 0) {
