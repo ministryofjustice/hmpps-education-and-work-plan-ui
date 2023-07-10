@@ -18,7 +18,7 @@ const checkCreateGoalFormExistsInSession = async (req: Request, res: Response, n
     res.redirect(`/plan/${req.params.prisonNumber}/goals/create`)
   } else if (req.session.createGoalForm.prisonNumber !== req.params.prisonNumber) {
     logger.warn(
-      `CreateGoalForm object in session references a different prisoner. Redirecting to start of Create Goal journey.`,
+      'CreateGoalForm object in session references a different prisoner. Redirecting to start of Create Goal journey.',
     )
     req.session.createGoalForm = undefined
     res.redirect(`/plan/${req.params.prisonNumber}/goals/create`)
@@ -27,4 +27,22 @@ const checkCreateGoalFormExistsInSession = async (req: Request, res: Response, n
   }
 }
 
-export default checkCreateGoalFormExistsInSession
+/**
+ * Request handler function to check the AddStepForms array exists in the session and whether there is at least 1
+ * Add Step Form within it.
+ */
+const checkAddStepFormsArrayExistsInSession = async (req: Request, res: Response, next: NextFunction) => {
+  if (!req.session.addStepForms) {
+    logger.warn(
+      `No AddStepForms object in session - user attempting to navigate to path ${req.path} out of sequence. Redirecting to start of Create Goal journey.`,
+    )
+    res.redirect(`/plan/${req.params.prisonNumber}/goals/create`)
+  } else if (req.session.addStepForms.length < 1) {
+    logger.warn('AddStepForms object in session is empty. Redirecting to Add Step page.')
+    res.redirect(`/plan/${req.params.prisonNumber}/goals/add-step`)
+  } else {
+    next()
+  }
+}
+
+export { checkCreateGoalFormExistsInSession, checkAddStepFormsArrayExistsInSession }

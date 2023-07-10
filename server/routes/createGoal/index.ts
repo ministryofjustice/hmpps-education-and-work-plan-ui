@@ -2,7 +2,7 @@ import { Router } from 'express'
 import { Services } from '../../services'
 import CreateGoalController from './createGoalController'
 import { hasEditAuthority } from '../../middleware/roleBasedAccessControl'
-import checkCreateGoalFormExistsInSession from './routerRequestHandlers'
+import { checkCreateGoalFormExistsInSession, checkAddStepFormsArrayExistsInSession } from './routerRequestHandlers'
 
 /**
  * Route definitions for the pages relating to Creating A Goal
@@ -33,10 +33,12 @@ export default (router: Router, services: Services) => {
   router.use('/plan/:prisonNumber/goals/add-note', hasEditAuthority())
   router.get('/plan/:prisonNumber/goals/add-note', [
     checkCreateGoalFormExistsInSession,
+    checkAddStepFormsArrayExistsInSession,
     createGoalController.getAddNoteView,
   ])
   router.post('/plan/:prisonNumber/goals/add-note', [
     checkCreateGoalFormExistsInSession,
+    checkAddStepFormsArrayExistsInSession,
     createGoalController.submitAddNoteForm,
   ])
 }

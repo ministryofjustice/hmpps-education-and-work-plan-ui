@@ -56,13 +56,13 @@ context('Add a note', () => {
     createGoalPage.isForPrisoner(someOtherPrisonNumber)
   })
 
-  it.skip('should not be able to arrive on add step page, then change the URL to go straight to add-note without submitting add-step', () => {
+  it('should not be able to navigate directly to add note given Create Goal has been submitted but Add Step has not', () => {
     // Given
     const prisonNumber = 'G6115VJ'
     cy.signIn()
     cy.visit(`/plan/${prisonNumber}/goals/create`)
 
-    let createGoalPage = Page.verifyOnPage(CreateGoalPage)
+    const createGoalPage = Page.verifyOnPage(CreateGoalPage)
     createGoalPage //
       .setGoalTitle('Learn French')
       .setGoalReviewDate(23, 12, 2024)
@@ -74,8 +74,10 @@ context('Add a note', () => {
     cy.visit(`/plan/${prisonNumber}/goals/add-note`)
 
     // Then
-    createGoalPage = Page.verifyOnPage(CreateGoalPage)
-    createGoalPage.isForPrisoner(prisonNumber)
+    const addStepPage = Page.verifyOnPage(AddStepPage)
+    addStepPage //
+      .isForPrisoner(prisonNumber)
+      .isStepNumber(1)
   })
 
   it.skip('should move to review goals page', () => {
