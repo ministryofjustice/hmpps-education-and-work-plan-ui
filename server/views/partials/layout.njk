@@ -1,4 +1,5 @@
 {% extends "govuk/template.njk" %}
+{% from "govuk/components/phase-banner/macro.njk" import govukPhaseBanner %}
 
 {% block head %}
   <!--[if !IE 8]><!-->
@@ -26,6 +27,25 @@
 {% endblock %}
 
 {% block bodyStart %}
+  <span class="govuk-visually-hidden" id="pageId" data-qa="{{ pageId }}"></span>
+{% endblock %}
+
+{% block main %}
+  <div class="govuk-width-container {{ containerClasses }}">
+    {{ govukPhaseBanner({
+      attributes: {
+        role: "complementary"
+      },
+      tag: {
+        text: "beta"
+      }
+    }) }}
+
+    {% block beforeContent %}{% endblock %}
+    <main class="govuk-main-wrapper {{ mainClasses }}" id="main-content" role="main"{% if mainLang %} lang="{{ mainLang }}"{% endif %}>
+      {% block content %}{% endblock %}
+    </main>
+  </div>
 {% endblock %}
 
 {% block bodyEnd %}

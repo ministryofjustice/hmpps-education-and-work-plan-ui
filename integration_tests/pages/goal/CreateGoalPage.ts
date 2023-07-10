@@ -2,7 +2,7 @@ import Page, { PageElement } from '../page'
 
 export default class CreateGoalPage extends Page {
   constructor() {
-    super('Describe the goal you want to create')
+    super('create-goal')
   }
 
   isForPrisoner(expected: string) {

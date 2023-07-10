@@ -2,7 +2,7 @@ import Page, { PageElement } from '../page'
 
 export default class AddStepPage extends Page {
   constructor() {
-    super('What are the steps to help them achieve')
+    super('add-step')
   }
 
   isForPrisoner(expected: string) {

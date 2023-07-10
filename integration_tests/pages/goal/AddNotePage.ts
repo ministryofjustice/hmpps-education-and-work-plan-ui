@@ -2,7 +2,7 @@ import Page, { PageElement } from '../page'
 
 export default class AddNotePage extends Page {
   constructor() {
-    super('Add a note to this goal (optional)')
+    super('add-note')
   }
 
   isForPrisoner(expected: string) {
