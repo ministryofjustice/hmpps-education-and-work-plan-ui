@@ -11,6 +11,7 @@ declare module 'express-session' {
     prisonerSummary: PrisonerSummary
     createGoalForm: CreateGoalForm
     addStepForm: AddStepForm
+    addStepForms: Array<AddStepForm>
     addNoteForm: AddNoteForm
   }
 }

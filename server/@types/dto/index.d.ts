@@ -10,5 +10,6 @@ declare module 'dto' {
   export interface AddStepDto {
     title: string
     targetDate?: Date
+    sequenceNumber: number
   }
 }

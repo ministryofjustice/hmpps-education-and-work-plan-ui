@@ -2,9 +2,10 @@ import { Request, Response, NextFunction } from 'express'
 import { SessionData } from 'express-session'
 import CreateGoalController from './createGoalController'
 import { PrisonerSearchService } from '../../services'
-import validateCreateGoalForm from './createGoalFormValidator'
 import validateAddStepForm from './addStepFormValidator'
+import validateCreateGoalForm from './createGoalFormValidator'
 import EducationAndWorkPlanService from '../../services/educationAndWorkPlanService'
+import { anotherValidAddStepForm, aValidAddStepForm } from '../../testsupport/addStepFormTestDataBuilder'
 
 jest.mock('./addStepFormValidator')
 jest.mock('./createGoalFormValidator')
@@ -57,6 +58,7 @@ describe('createGoalController', () => {
         'targetDate-year': '2024',
         action: 'submit-form',
       }
+      req.session.addStepForms = []
 
       mockedValidateAddStepForm.mockReturnValue([])
 
@@ -70,6 +72,7 @@ describe('createGoalController', () => {
       // Then
       expect(res.redirect).toHaveBeenCalledWith('/plan/A1234GC/goals/add-note')
       expect(req.flash).not.toHaveBeenCalled()
+      expect(req.session.addStepForms).toHaveLength(1)
     })
 
     it('should redirect to add step form given action is add-another-step and validation passes', async () => {
@@ -83,6 +86,7 @@ describe('createGoalController', () => {
         'targetDate-year': '2024',
         action: 'add-another-step',
       }
+      req.session.addStepForms = []
 
       mockedValidateAddStepForm.mockReturnValue([])
 
@@ -97,12 +101,14 @@ describe('createGoalController', () => {
       expect(res.redirect).toHaveBeenCalledWith('/plan/A1234GC/goals/add-step')
       expect(req.flash).not.toHaveBeenCalled()
       expect(req.session.addStepForm).toEqual({ stepNumber: 2 })
+      expect(req.session.addStepForms).toHaveLength(1)
     })
 
     it('should redirect to add step form given validation fails', async () => {
       // Given
       req.params.prisonNumber = 'A1234GC'
       req.body = {}
+      req.session.addStepForms = []
 
       const errors = [
         { href: '#title', text: 'some-title-error' },
@@ -120,6 +126,73 @@ describe('createGoalController', () => {
       // Then
       expect(res.redirect).toHaveBeenCalledWith('/plan/A1234GC/goals/add-step')
       expect(req.flash).toHaveBeenCalledWith('errors', errors)
+      expect(req.session.addStepForms).toHaveLength(0)
+    })
+
+    it('should add additional step', async () => {
+      // Given
+      req.params.prisonNumber = 'A1234GC'
+      const addStepForm = aValidAddStepForm()
+      req.body = addStepForm
+      req.session.addStepForms = [anotherValidAddStepForm()]
+
+      mockedValidateAddStepForm.mockReturnValue([])
+
+      // When
+      await controller.submitAddStepForm(
+        req as undefined as Request,
+        res as undefined as Response,
+        next as undefined as NextFunction,
+      )
+
+      // Then
+      expect(req.session.addStepForms).toHaveLength(2)
+      expect(res.redirect).toHaveBeenCalledWith('/plan/A1234GC/goals/add-note')
+    })
+
+    it('should not add duplicate step', async () => {
+      // Given
+      req.params.prisonNumber = 'A1234GC'
+      const addStepForm = aValidAddStepForm()
+      req.body = addStepForm
+      req.session.addStepForms = [addStepForm]
+
+      mockedValidateAddStepForm.mockReturnValue([])
+
+      // When
+      await controller.submitAddStepForm(
+        req as undefined as Request,
+        res as undefined as Response,
+        next as undefined as NextFunction,
+      )
+
+      // Then
+      expect(req.session.addStepForms).toHaveLength(1)
+      expect(res.redirect).toHaveBeenCalledWith('/plan/A1234GC/goals/add-note')
+    })
+
+    it('should update existing modified step', async () => {
+      // Given
+      req.params.prisonNumber = 'A1234GC'
+      const addStepForm = aValidAddStepForm()
+      req.session.addStepForms = [addStepForm]
+      const modifiedForm = aValidAddStepForm()
+      modifiedForm.title = 'Find a Spanish course'
+      req.body = modifiedForm
+
+      mockedValidateAddStepForm.mockReturnValue([])
+
+      // When
+      await controller.submitAddStepForm(
+        req as undefined as Request,
+        res as undefined as Response,
+        next as undefined as NextFunction,
+      )
+
+      // Then
+      expect(req.session.addStepForms).toHaveLength(1)
+      expect(req.session.addStepForms[0].title).toEqual('Find a Spanish course')
+      expect(res.redirect).toHaveBeenCalledWith('/plan/A1234GC/goals/add-note')
     })
   })
 })

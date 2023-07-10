@@ -1,5 +1,5 @@
 import type { CreateGoalRequest, CreateStepRequest } from 'educationAndWorkPlanApiClient'
-import type { CreateGoalDto } from 'dto'
+import type { AddStepDto, CreateGoalDto } from 'dto'
 
 const toCreateGoalRequest = (createGoalDto: CreateGoalDto): CreateGoalRequest => {
   return {
@@ -7,16 +7,20 @@ const toCreateGoalRequest = (createGoalDto: CreateGoalDto): CreateGoalRequest =>
     title: createGoalDto.title,
     category: 'WORK',
     reviewDate: createGoalDto.reviewDate,
-    steps: [toAddStepRequest(createGoalDto)],
-    note: createGoalDto.note,
+    steps: toAddStepRequests(createGoalDto),
+    notes: createGoalDto.note,
   }
 }
 
-const toAddStepRequest = (createGoalDto: CreateGoalDto): CreateStepRequest => {
+const toAddStepRequests = (createGoalDto: CreateGoalDto): Array<CreateStepRequest> => {
+  return createGoalDto.steps.map(step => toAddStepRequest(step))
+}
+
+const toAddStepRequest = (addStepDto: AddStepDto): CreateStepRequest => {
   return {
-    title: createGoalDto.steps[0].title,
-    targetDate: createGoalDto.steps[0].targetDate,
-    sequenceNumber: 1,
+    title: addStepDto.title,
+    targetDate: addStepDto.targetDate,
+    sequenceNumber: addStepDto.sequenceNumber,
   }
 }
 

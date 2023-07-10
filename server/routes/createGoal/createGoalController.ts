@@ -65,6 +65,7 @@ export default class CreateGoalController {
     const { prisonerSummary } = req.session
     const { createGoalForm } = req.session
     const addStepForm = req.session.addStepForm || { stepNumber: 1 }
+    req.session.addStepForms = req.session.addStepForms || []
 
     const view = new AddStepView(createGoalForm.title, prisonerSummary, addStepForm, req.flash('errors'))
     res.render('pages/goal/add-step/index', { ...view.renderArgs })
@@ -74,7 +75,7 @@ export default class CreateGoalController {
     const { prisonNumber } = req.params
     const targetDate = parseDate(req, 'targetDate')
     req.session.addStepForm = { ...req.body, targetDate }
-    const { addStepForm } = req.session
+    const { addStepForm, addStepForms } = req.session
 
     const errors = validateAddStepForm(addStepForm)
     if (errors.length > 0) {
@@ -82,10 +83,18 @@ export default class CreateGoalController {
       return res.redirect(`/plan/${prisonNumber}/goals/add-step`)
     }
 
+    // check to see if this step has already been added (e.g. after the user clicks the back button)
+    const existingAddStepForm = addStepForms.find(step => step.stepNumber === addStepForm.stepNumber)
+    if (!existingAddStepForm) {
+      addStepForms.push(req.session.addStepForm)
+    } else {
+      // update it in case the user has clicked back and changed it
+      existingAddStepForm.title = addStepForm.title
+      existingAddStepForm.targetDate = addStepForm.targetDate
+    }
+
     // Redirect to the desired page based on the form action
     if (addStepForm.action === 'add-another-step') {
-      // The next PR will work out where to store steps as each is submitted
-
       // Initialize a new AddStepForm with the next step number
       const nextStepNumber = Number(addStepForm.stepNumber) + 1
       req.session.addStepForm = { stepNumber: nextStepNumber }
@@ -107,11 +116,16 @@ export default class CreateGoalController {
   submitAddNoteForm: RequestHandler = async (req, res, next): Promise<void> => {
     const { prisonNumber } = req.params
     const { createGoalForm } = req.session
-    const { addStepForm } = req.session
+    const { addStepForms } = req.session
     req.session.addNoteForm = { ...req.body }
 
-    const createGoalDto = toCreateGoalDto(createGoalForm, addStepForm, req.body)
+    const createGoalDto = toCreateGoalDto(createGoalForm, addStepForms, req.body)
     await this.educationAndWorkPlanService.createGoal(createGoalDto, req.user.token)
+
+    req.session.createGoalForm = undefined
+    req.session.addStepForm = undefined
+    req.session.addStepForms = undefined
+    req.session.addNoteForm = undefined
 
     return res.redirect(`/plan/${prisonNumber}/goals/overview`)
   }
