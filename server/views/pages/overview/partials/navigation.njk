@@ -1,0 +1,53 @@
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-full">
+    <nav class="moj-sub-navigation" aria-label="Sub navigation">
+      <ul class="moj-sub-navigation__list">
+        <li class="moj-sub-navigation__item">
+          <a class="moj-sub-navigation__link"
+            data-qa="tab-overview"
+            {% if tab === 'overview' %}aria-current="page"{% endif %}
+            href=""
+          >
+            Overview
+          </a>
+        </li>
+        <li class="moj-sub-navigation__item">
+          <a class="moj-sub-navigation__link"
+            data-qa="tab-support-needs"
+            {% if tab === 'support-needs' %}aria-current="page"{% endif %}
+            href=""
+          >
+            Support needs
+          </a>
+        </li>
+        <li class="moj-sub-navigation__item">
+          <a class="moj-sub-navigation__link"
+            data-qa="tab-education-and-training"
+            {% if tab === 'education-and-training' %}aria-current="page"{% endif %}
+            href=""
+          >
+            Education and training
+          </a>
+        </li>
+        <li class="moj-sub-navigation__item">
+          <a class="moj-sub-navigation__link"
+            data-qa="tab-work-and-interests"
+            {% if tab === 'work-and-interests' %}aria-current="page"{% endif %}
+            href=""
+          >
+            Work and interests
+          </a>
+        </li>
+        <li class="moj-sub-navigation__item">
+          <a class="moj-sub-navigation__link"
+            data-qa="tab-timeline"
+            {% if tab === 'timeline' %}aria-current="page"{% endif %}
+            href=""
+          >
+            Timeline
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</div>
