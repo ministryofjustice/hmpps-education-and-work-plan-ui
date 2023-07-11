@@ -1,7 +1,6 @@
 import { Request, Response, NextFunction } from 'express'
 import { SessionData } from 'express-session'
 import CreateGoalController from './createGoalController'
-import { PrisonerSearchService } from '../../services'
 import validateAddStepForm from './addStepFormValidator'
 import validateCreateGoalForm from './createGoalFormValidator'
 import EducationAndWorkPlanService from '../../services/educationAndWorkPlanService'
@@ -15,18 +14,11 @@ describe('createGoalController', () => {
   const mockedValidateCreateGoalForm = validateCreateGoalForm as jest.MockedFunction<typeof validateCreateGoalForm>
   const mockedValidateAddStepForm = validateAddStepForm as jest.MockedFunction<typeof validateAddStepForm>
 
-  const prisonerSearchService = {
-    getPrisonerByPrisonNumber: jest.fn(),
-  }
-
   const educationAndWorkPlanService = {
     createGoal: jest.fn(),
   }
 
-  const controller = new CreateGoalController(
-    prisonerSearchService as unknown as PrisonerSearchService,
-    educationAndWorkPlanService as unknown as EducationAndWorkPlanService,
-  )
+  const controller = new CreateGoalController(educationAndWorkPlanService as unknown as EducationAndWorkPlanService)
 
   const req = {
     session: {} as SessionData,

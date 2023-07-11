@@ -9,6 +9,6 @@ import OverviewController from './overviewController'
 export default (router: Router, services: Services) => {
   const overViewController = new OverviewController(services.prisonerSearchService)
 
-  router.use('/plan/:prisonNumber/view/overview', [hasViewAuthority()])
-  router.get('/plan/:prisonNumber/view/:tab', overViewController.getOverviewView)
+  router.use('/plan/:prisonNumber/view/overview', hasViewAuthority())
+  router.get('/plan/:prisonNumber/view/:tab', [overViewController.getOverviewView])
 }

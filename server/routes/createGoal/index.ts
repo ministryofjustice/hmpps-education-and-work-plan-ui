@@ -2,41 +2,50 @@ import { Router } from 'express'
 import { Services } from '../../services'
 import CreateGoalController from './createGoalController'
 import { hasEditAuthority } from '../../middleware/roleBasedAccessControl'
-import { checkCreateGoalFormExistsInSession, checkAddStepFormsArrayExistsInSession } from './routerRequestHandlers'
+import {
+  checkCreateGoalFormExistsInSession,
+  checkAddStepFormsArrayExistsInSession,
+  checkPrisonerSummaryExistsInSession,
+} from './routerRequestHandlers'
 
 /**
  * Route definitions for the pages relating to Creating A Goal
  */
 export default (router: Router, services: Services) => {
-  const createGoalController = new CreateGoalController(
-    services.prisonerSearchService,
-    services.educationAndWorkPlanService,
-  )
+  const createGoalController = new CreateGoalController(services.educationAndWorkPlanService)
 
-  router.use('/plan/:prisonNumber/goals/create', [hasEditAuthority()])
-  router.get('/plan/:prisonNumber/goals/create', createGoalController.getCreateGoalView)
+  router.use('/plan/:prisonNumber/goals/create', hasEditAuthority())
+  router.get('/plan/:prisonNumber/goals/create', [
+    checkPrisonerSummaryExistsInSession,
+    createGoalController.getCreateGoalView,
+  ])
   router.post('/plan/:prisonNumber/goals/create', [
+    checkPrisonerSummaryExistsInSession,
     checkCreateGoalFormExistsInSession,
     createGoalController.submitCreateGoalForm,
   ])
 
   router.use('/plan/:prisonNumber/goals/add-step', hasEditAuthority())
   router.get('/plan/:prisonNumber/goals/add-step', [
+    checkPrisonerSummaryExistsInSession,
     checkCreateGoalFormExistsInSession,
     createGoalController.getAddStepView,
   ])
   router.post('/plan/:prisonNumber/goals/add-step', [
+    checkPrisonerSummaryExistsInSession,
     checkCreateGoalFormExistsInSession,
     createGoalController.submitAddStepForm,
   ])
 
   router.use('/plan/:prisonNumber/goals/add-note', hasEditAuthority())
   router.get('/plan/:prisonNumber/goals/add-note', [
+    checkPrisonerSummaryExistsInSession,
     checkCreateGoalFormExistsInSession,
     checkAddStepFormsArrayExistsInSession,
     createGoalController.getAddNoteView,
   ])
   router.post('/plan/:prisonNumber/goals/add-note', [
+    checkPrisonerSummaryExistsInSession,
     checkCreateGoalFormExistsInSession,
     checkAddStepFormsArrayExistsInSession,
     createGoalController.submitAddNoteForm,

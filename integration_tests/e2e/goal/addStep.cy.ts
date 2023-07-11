@@ -1,6 +1,6 @@
 import Page from '../../pages/page'
-import CreateGoalPage from '../../pages/goal/CreateGoalPage'
 import AddStepPage from '../../pages/goal/AddStepPage'
+import OverviewPage from '../../pages/overview/OverviewPage'
 
 context('Add a step', () => {
   beforeEach(() => {
@@ -11,7 +11,7 @@ context('Add a step', () => {
     cy.task('getPrisonerById', 'H4115SD')
   })
 
-  it('should not be able to navigate directly to add step given Create Goal has not been submitted', () => {
+  it('should not be able to navigate directly to Add Step given Create Goal has not been submitted', () => {
     // Given
     const prisonNumber = 'G6115VJ'
     cy.signIn()
@@ -20,17 +20,18 @@ context('Add a step', () => {
     cy.visit(`/plan/${prisonNumber}/goals/add-step`)
 
     // Then
-    const createGoalPage = Page.verifyOnPage(CreateGoalPage)
-    createGoalPage.isForPrisoner(prisonNumber)
+    const overviewPage = Page.verifyOnPage(OverviewPage)
+    overviewPage.isForPrisoner(prisonNumber)
   })
 
-  it('should not be able to arrive on add step page, then change the prison number in the URL', () => {
+  it('should not be able to arrive on Add Step page, then change the prison number in the URL', () => {
     // Given
     const prisonNumber = 'G6115VJ'
     cy.signIn()
-    cy.visit(`/plan/${prisonNumber}/goals/create`)
+    cy.visit(`/plan/${prisonNumber}/view/overview`)
+    let overviewPage = Page.verifyOnPage(OverviewPage)
 
-    let createGoalPage = Page.verifyOnPage(CreateGoalPage)
+    const createGoalPage = overviewPage.clickAddGoalButton()
     createGoalPage //
       .setGoalTitle('Learn French')
       .submitPage()
@@ -44,17 +45,18 @@ context('Add a step', () => {
     cy.visit(`/plan/${someOtherPrisonNumber}/goals/add-step`)
 
     // Then
-    createGoalPage = Page.verifyOnPage(CreateGoalPage)
-    createGoalPage.isForPrisoner(someOtherPrisonNumber)
+    overviewPage = Page.verifyOnPage(OverviewPage)
+    overviewPage.isForPrisoner(someOtherPrisonNumber)
   })
 
-  it('should not proceed to add note page given validation errors on add step page', () => {
+  it('should not proceed to Add Note page given validation errors on Add Step page', () => {
     // Given
     const prisonNumber = 'G6115VJ'
     cy.signIn()
-    cy.visit(`/plan/${prisonNumber}/goals/create`)
+    cy.visit(`/plan/${prisonNumber}/view/overview`)
+    const overviewPage = Page.verifyOnPage(OverviewPage)
 
-    const createGoalPage = Page.verifyOnPage(CreateGoalPage)
+    const createGoalPage = overviewPage.clickAddGoalButton()
     createGoalPage //
       .setGoalTitle('Learn French')
       .submitPage()
@@ -74,14 +76,15 @@ context('Add a step', () => {
       .hasFieldInError('title')
   })
 
-  it('should not proceed to add note page given user chooses to add another step', () => {
+  it('should not proceed to Add Note page given user chooses to add another step', () => {
     // Given
     const prisonNumber = 'G6115VJ'
     cy.signIn()
-    cy.visit(`/plan/${prisonNumber}/goals/create`)
+    cy.visit(`/plan/${prisonNumber}/view/overview`)
+    const overviewPage = Page.verifyOnPage(OverviewPage)
 
-    const createGoal = Page.verifyOnPage(CreateGoalPage)
-    createGoal //
+    const createGoalPage = overviewPage.clickAddGoalButton()
+    createGoalPage //
       .setGoalTitle('Learn French')
       .submitPage()
 
@@ -104,13 +107,14 @@ context('Add a step', () => {
       .isStepNumber(2)
   })
 
-  it.skip('should move to add note page', () => {
+  it.skip('should move to Add Note page', () => {
     // Given
     const prisonNumber = 'G6115VJ'
     cy.signIn()
-    cy.visit(`/plan/${prisonNumber}/goals/create`)
+    cy.visit(`/plan/${prisonNumber}/view/overview`)
+    const overviewPage = Page.verifyOnPage(OverviewPage)
 
-    const createGoalPage = Page.verifyOnPage(CreateGoalPage)
+    const createGoalPage = overviewPage.clickAddGoalButton()
     createGoalPage //
       .setGoalTitle('Learn French')
       .submitPage()
