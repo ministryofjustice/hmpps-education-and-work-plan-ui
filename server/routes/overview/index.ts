@@ -6,9 +6,8 @@ import OverviewController from './overviewController'
 /**
  * Route definitions for the pages relating to Creating A Goal
  */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export default (router: Router, services: Services) => {
-  const overViewController = new OverviewController()
+  const overViewController = new OverviewController(services.prisonerSearchService)
 
   router.use('/plan/:prisonNumber/view/overview', [hasViewAuthority()])
   router.get('/plan/:prisonNumber/view/:tab', overViewController.getOverviewView)
