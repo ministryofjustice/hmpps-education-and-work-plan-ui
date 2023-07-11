@@ -6,7 +6,7 @@ export default abstract class Page {
   }
 
   constructor(
-    private readonly title: string,
+    readonly pageId: string,
     private readonly options: { axeTest?: boolean } = {
       axeTest: true,
     },
@@ -19,7 +19,7 @@ export default abstract class Page {
   }
 
   checkOnPage(): void {
-    cy.get('h1').contains(this.title)
+    cy.get('#pageId').should('have.attr', 'data-qa').should('equal', this.pageId)
   }
 
   checkCsfrTokenForFormBasedPages = (): void => {
@@ -53,6 +53,11 @@ export default abstract class Page {
 
   hasFieldInError(field: string) {
     cy.get(`#${field}-error`).should('exist')
+    return this
+  }
+
+  hasMainHeading(expectedHeading: string) {
+    cy.get('h1').should('contain.text', expectedHeading)
     return this
   }
 }

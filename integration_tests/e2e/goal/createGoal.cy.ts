@@ -77,7 +77,7 @@ context('Create a goal', () => {
     // addNotePage.setNote("Pay close attention to the prisoner's behaviour")
   })
 
-  it('should redirect to login page given user does not have any authorities', () => {
+  it('should redirect to auth-error page given user does not have any authorities', () => {
     // Given
     cy.task('stubSignIn')
 
@@ -91,7 +91,7 @@ context('Create a goal', () => {
     Page.verifyOnPage(AuthorisationErrorPage)
   })
 
-  it('should redirect to login page given user does not have edit authority', () => {
+  it('should redirect to auth-error page given user does not have edit authority', () => {
     // Given
     cy.task('stubSignInAsUserWithViewAuthority')
 
