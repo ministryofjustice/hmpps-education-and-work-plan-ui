@@ -34,13 +34,12 @@ context('Add a note', () => {
     let createGoalPage = Page.verifyOnPage(CreateGoalPage)
     createGoalPage //
       .setGoalTitle('Learn French')
-      .setGoalReviewDate(23, 12, 2024)
       .submitPage()
 
     const addStepPage = Page.verifyOnPage(AddStepPage)
     addStepPage //
       .setStepTitle('Book French course')
-      .setStepTargetDate(23, 12, 2024)
+      .setStepTargetDateRange('ZERO_TO_THREE_MONTHS')
       .submitPage()
 
     const addNotePage = Page.verifyOnPage(AddNotePage)
@@ -65,7 +64,6 @@ context('Add a note', () => {
     const createGoalPage = Page.verifyOnPage(CreateGoalPage)
     createGoalPage //
       .setGoalTitle('Learn French')
-      .setGoalReviewDate(23, 12, 2024)
       .submitPage()
 
     Page.verifyOnPage(AddStepPage)
@@ -88,12 +86,12 @@ context('Add a note', () => {
 
     const createGoalPage = Page.verifyOnPage(CreateGoalPage)
     createGoalPage.setGoalTitle('Learn French')
-    createGoalPage.setGoalReviewDate(23, 12, 2024)
     createGoalPage.submitPage()
 
     const addStepPage = Page.verifyOnPage(AddStepPage)
-    addStepPage.setStepTitle('Book French course')
-    addStepPage.setStepTargetDate(23, 12, 2024)
+    addStepPage //
+      .setStepTitle('Book French course')
+      .setStepTargetDateRange('ZERO_TO_THREE_MONTHS')
     addStepPage.submitPage()
 
     const addNotePage = Page.verifyOnPage(AddNotePage)

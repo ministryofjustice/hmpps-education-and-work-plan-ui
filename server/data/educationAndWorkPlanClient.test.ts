@@ -1,6 +1,5 @@
 import type { AddStepDto, CreateGoalDto } from 'dto'
 import nock from 'nock'
-import moment from 'moment/moment'
 import config from '../config'
 import EducationAndWorkPlanClient from './educationAndWorkPlanClient'
 
@@ -26,12 +25,11 @@ describe('educationAndWorkPlanClient', () => {
 
       const addStepDto = {
         title: 'Book Spanish course',
-        targetDate: moment('2123-01-31', 'YYYY-MM-DD').toDate(),
+        targetDateRange: 'ZERO_TO_THREE_MONTHS',
       } as AddStepDto
       const createGoalDto = {
         prisonNumber,
         title: 'Learn Spanish',
-        reviewDate: moment('2123-06-31', 'YYYY-MM-DD').toDate(),
         steps: [addStepDto],
         note: 'Prisoner is not good at listening',
       } as CreateGoalDto

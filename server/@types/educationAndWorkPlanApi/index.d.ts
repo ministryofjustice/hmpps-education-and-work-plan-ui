@@ -23,11 +23,6 @@ export interface components {
        */
       title: string
       /**
-       * Format: date
-       * @description An ISO-8601 date representing when the Goal is up for review.
-       */
-      reviewDate: string
-      /**
        * @description A List of at least one Step.
        * @example null
        */
@@ -54,10 +49,10 @@ export interface components {
        */
       title: string
       /**
-       * Format: date
-       * @description A date by which the prisoner should aim to complete the step.
+       * @description A target date range for the step to be completed by.
+       * @example ZERO_TO_THREE_MONTHS
        */
-      targetDate?: string
+      targetDateRange: string
       /**
        * Format: int32
        * @description The number (position) of the Step within the overall Goal.
@@ -92,11 +87,6 @@ export interface components {
        * @example Improve communication skills
        */
       title: string
-      /**
-       * Format: date
-       * @description An ISO-8601 date representing when the Goal is up for review.
-       */
-      reviewDate: string
       /**
        * @example null
        * @enum {string}
@@ -156,10 +146,10 @@ export interface components {
        */
       title: string
       /**
-       * Format: date
-       * @description A date by which the prisoner should aim to complete the step.
+       * @description A target date range for the step to be completed by.
+       * @example ZERO_TO_THREE_MONTHS
        */
-      targetDate: string
+      targetDateRange: string
       /**
        * @example null
        * @enum {string}

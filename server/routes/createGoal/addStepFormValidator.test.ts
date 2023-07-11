@@ -1,14 +1,15 @@
 import type { AddStepForm } from 'forms'
-import moment from 'moment'
 import validateStepTitle from '../../validators/stepTitleValidator'
-import validateStepTargetDate from '../../validators/stepTargetDateValidator'
+import validateStepTargetDateRange from '../../validators/stepTargetDateRangeValidator'
 import validateAddStepForm from './addStepFormValidator'
 
 jest.mock('../../validators/stepTitleValidator')
-jest.mock('../../validators/stepTargetDateValidator')
+jest.mock('../../validators/stepTargetDateRangeValidator')
 describe('addStepFormValidator', () => {
   const mockedValidateStepTitle = validateStepTitle as jest.MockedFunction<typeof validateStepTitle>
-  const mockedValidateStepTargetDate = validateStepTargetDate as jest.MockedFunction<typeof validateStepTargetDate>
+  const mockedValidateStepTargetDateRange = validateStepTargetDateRange as jest.MockedFunction<
+    typeof validateStepTargetDateRange
+  >
 
   it('should validate given no errors', () => {
     // Given
@@ -16,14 +17,11 @@ describe('addStepFormValidator', () => {
       stepNumber: 1,
       prisonNumber: 'A1234BC',
       title: 'Book Spanish course',
-      targetDate: moment('2123-06-31', 'YYYY-MM-DD').toDate(),
-      'targetDate-day': '31',
-      'targetDate-month': '06',
-      'targetDate-year': '2123',
+      targetDateRange: 'ZERO_TO_THREE_MONTHS',
     } as AddStepForm
 
     mockedValidateStepTitle.mockReturnValue([])
-    mockedValidateStepTargetDate.mockReturnValue([])
+    mockedValidateStepTargetDateRange.mockReturnValue([])
 
     // When
     const errors = validateAddStepForm(form)
@@ -37,14 +35,11 @@ describe('addStepFormValidator', () => {
       stepNumber: 1,
       prisonNumber: 'A1234BC',
       title: '',
-      targetDate: moment('2123-06-31', 'YYYY-MM-DD').toDate(),
-      'targetDate-day': '31',
-      'targetDate-month': '06',
-      'targetDate-year': '2123',
+      targetDateRange: 'ZERO_TO_THREE_MONTHS',
     } as AddStepForm
 
     mockedValidateStepTitle.mockReturnValue(['some-title-error'])
-    mockedValidateStepTargetDate.mockReturnValue([])
+    mockedValidateStepTargetDateRange.mockReturnValue([])
 
     // When
     const errors = validateAddStepForm(form)
@@ -53,26 +48,23 @@ describe('addStepFormValidator', () => {
     expect(errors).toEqual([{ href: '#title', text: 'some-title-error' }])
   })
 
-  it('should validate given step target date errors', () => {
+  it('should validate given step target date range errors', () => {
     // Given
     const form = {
       stepNumber: 1,
       prisonNumber: 'A1234BC',
       title: 'Learn Spanish',
-      targetDate: moment('2122-06-01', 'YYYY-MM-DD').toDate(), // date in the past
-      'targetDate-day': '01',
-      'targetDate-month': '06',
-      'targetDate-year': '2123',
+      targetDateRange: undefined,
     } as AddStepForm
 
     mockedValidateStepTitle.mockReturnValue([])
-    mockedValidateStepTargetDate.mockReturnValue(['a-target-date-error'])
+    mockedValidateStepTargetDateRange.mockReturnValue(['a-target-date-range-error'])
 
     // When
     const errors = validateAddStepForm(form)
 
     // Then
-    expect(errors).toEqual([{ href: '#targetDate', text: 'a-target-date-error' }])
+    expect(errors).toEqual([{ href: '#targetDateRange', text: 'a-target-date-range-error' }])
   })
 
   it('should validate given multiple create step errors', () => {
@@ -81,14 +73,11 @@ describe('addStepFormValidator', () => {
       stepNumber: 1,
       prisonNumber: 'A1234BC',
       title: undefined,
-      targetDate: moment('2122-06-01', 'YYYY-MM-DD').toDate(), // date in the past
-      'targetDate-day': '01',
-      'targetDate-month': '06',
-      'targetDate-year': '2123',
+      targetDateRange: undefined,
     } as AddStepForm
 
     mockedValidateStepTitle.mockReturnValue(['some-title-error'])
-    mockedValidateStepTargetDate.mockReturnValue(['a-target-date-error'])
+    mockedValidateStepTargetDateRange.mockReturnValue(['a-target-date-range-error'])
 
     // When
     const errors = validateAddStepForm(form)
@@ -96,7 +85,7 @@ describe('addStepFormValidator', () => {
     // Then
     expect(errors).toEqual([
       { href: '#title', text: 'some-title-error' },
-      { href: '#targetDate', text: 'a-target-date-error' },
+      { href: '#targetDateRange', text: 'a-target-date-range-error' },
     ])
   })
 })

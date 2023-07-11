@@ -9,7 +9,6 @@ import AddStepView from './addStepView'
 import AddNoteView from './addNoteView'
 import { toCreateGoalDto } from './mappers/createGoalFormToCreateGoalDtoMapper'
 import validateCreateGoalForm from './createGoalFormValidator'
-import parseDate from '../parseDate'
 import validateAddStepForm from './addStepFormValidator'
 
 export default class CreateGoalController {
@@ -48,9 +47,7 @@ export default class CreateGoalController {
 
   submitCreateGoalForm: RequestHandler = async (req, res, next): Promise<void> => {
     const { prisonNumber } = req.params
-
-    const reviewDate = parseDate(req, 'reviewDate')
-    req.session.createGoalForm = { ...req.body, reviewDate }
+    req.session.createGoalForm = { ...req.body }
 
     const errors = validateCreateGoalForm(req.session.createGoalForm)
     if (errors.length > 0) {
@@ -73,8 +70,7 @@ export default class CreateGoalController {
 
   submitAddStepForm: RequestHandler = async (req, res, next): Promise<void> => {
     const { prisonNumber } = req.params
-    const targetDate = parseDate(req, 'targetDate')
-    req.session.addStepForm = { ...req.body, targetDate }
+    req.session.addStepForm = { ...req.body }
     const { addStepForm, addStepForms } = req.session
 
     const errors = validateAddStepForm(addStepForm)
@@ -90,7 +86,7 @@ export default class CreateGoalController {
     } else {
       // update it in case the user has clicked back and changed it
       existingAddStepForm.title = addStepForm.title
-      existingAddStepForm.targetDate = addStepForm.targetDate
+      existingAddStepForm.targetDateRange = addStepForm.targetDateRange
     }
 
     // Redirect to the desired page based on the form action

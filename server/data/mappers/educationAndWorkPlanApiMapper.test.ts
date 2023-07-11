@@ -9,19 +9,18 @@ describe('educationAndWorkPlanApiMapper', () => {
     const createGoalDto: CreateGoalDto = aValidCreateGoalDtoWithMultipleSteps()
     const expectedAddStepRequest1: CreateStepRequest = {
       title: createGoalDto.steps[0].title,
-      targetDate: createGoalDto.steps[0].targetDate,
+      targetDateRange: createGoalDto.steps[0].targetDateRange,
       sequenceNumber: 1,
     }
     const expectedAddStepRequest2: CreateStepRequest = {
       title: createGoalDto.steps[1].title,
-      targetDate: createGoalDto.steps[1].targetDate,
+      targetDateRange: createGoalDto.steps[1].targetDateRange,
       sequenceNumber: 2,
     }
     const expectedCreateGoalRequest: CreateGoalRequest = {
       prisonNumber: createGoalDto.prisonNumber,
       title: createGoalDto.title,
       category: 'WORK',
-      reviewDate: createGoalDto.reviewDate,
       steps: [expectedAddStepRequest1, expectedAddStepRequest2],
       notes: createGoalDto.note,
     }

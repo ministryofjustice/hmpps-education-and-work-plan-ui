@@ -30,10 +30,8 @@ export default class AddStepPage extends Page {
     return this
   }
 
-  setStepTargetDate(day: number, month: number, year: number) {
-    this.targetDateDayField().clear().type(day.toString())
-    this.targetDateMonthField().clear().type(month.toString())
-    this.targetDateYearField().clear().type(year.toString())
+  setStepTargetDateRange(targetDateRange: string) {
+    this.targetDateRangeField(targetDateRange).click()
     return this
   }
 
@@ -49,11 +47,7 @@ export default class AddStepPage extends Page {
 
   titleField = (): PageElement => cy.get('#title')
 
-  targetDateDayField = (): PageElement => cy.get('#targetDate-day')
-
-  targetDateMonthField = (): PageElement => cy.get('#targetDate-month')
-
-  targetDateYearField = (): PageElement => cy.get('#targetDate-year')
+  targetDateRangeField = (targetDateRange: string): PageElement => cy.get(`input[type=radio][value=${targetDateRange}]`)
 
   addAnotherStepButton = (): PageElement => cy.get('#add-another-step-button')
 

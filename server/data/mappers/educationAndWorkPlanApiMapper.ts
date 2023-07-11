@@ -6,7 +6,6 @@ const toCreateGoalRequest = (createGoalDto: CreateGoalDto): CreateGoalRequest =>
     prisonNumber: createGoalDto.prisonNumber,
     title: createGoalDto.title,
     category: 'WORK',
-    reviewDate: createGoalDto.reviewDate,
     steps: toAddStepRequests(createGoalDto),
     notes: createGoalDto.note,
   }
@@ -19,7 +18,7 @@ const toAddStepRequests = (createGoalDto: CreateGoalDto): Array<CreateStepReques
 const toAddStepRequest = (addStepDto: AddStepDto): CreateStepRequest => {
   return {
     title: addStepDto.title,
-    targetDate: addStepDto.targetDate,
+    targetDateRange: addStepDto.targetDateRange,
     sequenceNumber: addStepDto.sequenceNumber,
   }
 }
