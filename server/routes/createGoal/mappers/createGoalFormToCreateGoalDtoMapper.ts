@@ -9,7 +9,6 @@ const toCreateGoalDto = (
   return {
     prisonNumber: createGoalForm.prisonNumber,
     title: createGoalForm.title,
-    reviewDate: createGoalForm.reviewDate,
     steps: toAddStepDtos(addStepForms),
     note: addNoteForm.note,
   }
@@ -22,7 +21,7 @@ const toAddStepDtos = (addStepForms: Array<AddStepForm>): Array<AddStepDto> => {
 const toAddStepDto = (addStepForm: AddStepForm): AddStepDto => {
   return {
     title: addStepForm.title,
-    targetDate: addStepForm.targetDate,
+    targetDateRange: addStepForm.targetDateRange,
     sequenceNumber: addStepForm.stepNumber,
   }
 }

@@ -33,7 +33,6 @@ context('Add a step', () => {
     let createGoalPage = Page.verifyOnPage(CreateGoalPage)
     createGoalPage //
       .setGoalTitle('Learn French')
-      .setGoalReviewDate(23, 12, 2024)
       .submitPage()
 
     const addStepPage = Page.verifyOnPage(AddStepPage)
@@ -58,13 +57,12 @@ context('Add a step', () => {
     const createGoalPage = Page.verifyOnPage(CreateGoalPage)
     createGoalPage //
       .setGoalTitle('Learn French')
-      .setGoalReviewDate(23, 12, 2024)
       .submitPage()
 
     const addStepPage = Page.verifyOnPage(AddStepPage)
     addStepPage //
       .clearStepTitle()
-      .setStepTargetDate(23, 12, 2024)
+      .setStepTargetDateRange('ZERO_TO_THREE_MONTHS')
 
     // When
     addStepPage.submitPage()
@@ -76,7 +74,7 @@ context('Add a step', () => {
       .hasFieldInError('title')
   })
 
-  it('should not proceed to add step page given user chooses to add another step', () => {
+  it('should not proceed to add note page given user chooses to add another step', () => {
     // Given
     const prisonNumber = 'G6115VJ'
     cy.signIn()
@@ -85,7 +83,6 @@ context('Add a step', () => {
     const createGoal = Page.verifyOnPage(CreateGoalPage)
     createGoal //
       .setGoalTitle('Learn French')
-      .setGoalReviewDate(23, 12, 2024)
       .submitPage()
 
     let addStepPage = Page.verifyOnPage(AddStepPage)
@@ -95,7 +92,7 @@ context('Add a step', () => {
 
     addStepPage //
       .setStepTitle('Book French course')
-      .setStepTargetDate(23, 12, 2024)
+      .setStepTargetDateRange('ZERO_TO_THREE_MONTHS')
 
     // When
     addStepPage.addAnotherStep()
@@ -116,13 +113,12 @@ context('Add a step', () => {
     const createGoalPage = Page.verifyOnPage(CreateGoalPage)
     createGoalPage //
       .setGoalTitle('Learn French')
-      .setGoalReviewDate(23, 12, 2024)
       .submitPage()
 
     const addStepPage = Page.verifyOnPage(AddStepPage)
     addStepPage //
       .setStepTitle('Book French course')
-      .setStepTargetDate(23, 12, 2024)
+      .setStepTargetDateRange('ZERO_TO_THREE_MONTHS')
 
     // When
     addStepPage.submitPage()

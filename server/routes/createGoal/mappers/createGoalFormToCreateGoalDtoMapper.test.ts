@@ -13,18 +13,17 @@ describe('createGoalFormToCreateGoalDtoMapper', () => {
 
     const expectedAddStepDto1: AddStepDto = {
       title: addStepForms[0].title,
-      targetDate: addStepForms[0].targetDate,
+      targetDateRange: addStepForms[0].targetDateRange,
       sequenceNumber: addStepForms[0].stepNumber,
     }
     const expectedAddStepDto2: AddStepDto = {
       title: addStepForms[1].title,
-      targetDate: addStepForms[1].targetDate,
+      targetDateRange: addStepForms[1].targetDateRange,
       sequenceNumber: addStepForms[1].stepNumber,
     }
     const expectedCreateGoalDto: CreateGoalDto = {
       prisonNumber: createGoalForm.prisonNumber,
       title: createGoalForm.title,
-      reviewDate: createGoalForm.reviewDate,
       steps: [expectedAddStepDto1, expectedAddStepDto2],
       note: addNoteForm.note,
     }

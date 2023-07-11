@@ -1,6 +1,6 @@
 {% extends "../../../partials/layout.njk" %}
 {% from "govuk/components/input/macro.njk" import govukInput %}
-{% from "govuk/components/date-input/macro.njk" import govukDateInput %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
 
@@ -57,36 +57,33 @@
           {% set targetDateError = errors | findError('targetDate') %}
           {% set targetDateErrorClass = " govuk-input--error" if targetDateError %}
 
-          {{ govukDateInput({
-            id: "targetDate",
-            namePrefix: "targetDate",
-            value: form.targetDate,
+          {{ govukRadios({
+            name: "targetDateRange",
+            id: "targetDateRange",
+            value: form.targetDateRange,
             fieldset: {
               legend: {
-                text: "Target date (optional)",
+                text: "When will they achieve this by?",
                 isPageHeading: false,
                 classes: "govuk-fieldset__legend--m"
               }
             },
-            hint: {
-              text: "For example, 12 11 2024"
-            },
-            errorMessage: targetDateErrorClass,
             items: [
               {
-                name: "day",
-                classes: "govuk-input--width-2" + targetDateErrorClass,
-                value: form['targetDate-day']
+                value: "ZERO_TO_THREE_MONTHS",
+                text: "0 to 3 months"
               },
               {
-                name: "month",
-                classes: "govuk-input--width-2" + targetDateErrorClass,
-                value: form['targetDate-month']
+                value: "THREE_TO_SIX_MONTHS",
+                text: "3 to 6 months"
               },
               {
-                name: "year",
-                classes: "govuk-input--width-4" + targetDateErrorClass,
-                value: form['targetDate-year']
+                value: "SIX_TO_TWELVE_MONTHS",
+                text: "6 to 12 months"
+              },
+              {
+                value: "MORE_THAN_TWELVE_MONTHS",
+                text: "More than 12 months"
               }
             ]
           }) }}

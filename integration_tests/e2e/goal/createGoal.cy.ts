@@ -33,8 +33,7 @@ context('Create a goal', () => {
 
     const page = Page.verifyOnPage(CreateGoalPage)
     page //
-      .setGoalTitle('Learn French')
-      .clearGoalReviewDate()
+      .clearGoalTitle()
 
     // When
     page.submitPage()
@@ -43,7 +42,7 @@ context('Create a goal', () => {
     Page.verifyOnPage(CreateGoalPage)
     page //
       .hasErrorCount(1)
-      .hasFieldInError('reviewDate')
+      .hasFieldInError('title')
   })
 
   it('should create a valid goal', () => {
@@ -55,7 +54,6 @@ context('Create a goal', () => {
     const createGoal = Page.verifyOnPage(CreateGoalPage)
     createGoal //
       .setGoalTitle('Learn French')
-      .setGoalReviewDate(23, 12, 2024)
       .submitPage()
 
     const addStepPage = Page.verifyOnPage(AddStepPage)
@@ -65,7 +63,7 @@ context('Create a goal', () => {
 
     addStepPage //
       .setStepTitle('Book French course')
-      .setStepTargetDate(23, 12, 2024)
+      .setStepTargetDateRange('ZERO_TO_THREE_MONTHS')
 
     // When
     addStepPage.submitPage()
