@@ -3,9 +3,9 @@ import OverviewView from './overviewView'
 
 export default class OverviewController {
   getOverviewView: RequestHandler = async (req, res, next): Promise<void> => {
-    const { tab } = req.params
+    const { prisonNumber, tab } = req.params
 
-    const view = new OverviewView(tab)
+    const view = new OverviewView(tab, prisonNumber)
     res.render('pages/overview/index', { ...view.renderArgs })
   }
 }

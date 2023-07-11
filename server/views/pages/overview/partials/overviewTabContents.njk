@@ -1,7 +1,26 @@
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
+
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds">
 
-    Add a new goal button goes here
+    {% set insetHtml %}
+      <div>
+        <strong>Goals</strong>
+      </div>
+      <div>
+        {{ govukButton({
+          text: "Add a new goal",
+          href: "/plan/" + prisonNumber + "/goals/create",
+          id: "add-goal-button"
+        }) }}
+      </div>
+    {% endset %}
+
+    {{ govukInsetText({
+      html: insetHtml,
+      id: "overview-goals-inset"
+    }) }}
 
   </div>
 </div>
