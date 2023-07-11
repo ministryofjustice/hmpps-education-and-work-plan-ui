@@ -31,7 +31,7 @@ export default class AddStepPage extends Page {
   }
 
   setStepTargetDateRange(targetDateRange: string) {
-    this.targetDateRangeField().clear().select(targetDateRange)
+    this.targetDateRangeField(targetDateRange).click()
     return this
   }
 
@@ -47,7 +47,7 @@ export default class AddStepPage extends Page {
 
   titleField = (): PageElement => cy.get('#title')
 
-  targetDateRangeField = (): PageElement => cy.get('#targetDateRange')
+  targetDateRangeField = (targetDateRange: string): PageElement => cy.get(`input[type=radio][value=${targetDateRange}]`)
 
   addAnotherStepButton = (): PageElement => cy.get('#add-another-step-button')
 
