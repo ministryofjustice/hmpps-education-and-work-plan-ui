@@ -1,12 +1,94 @@
 {% extends "../partials/layout.njk" %}
+{% from "govuk/components/table/macro.njk" import govukTable %}
 
 {% set pageId = 'index-page' %}
 {% set pageTitle = applicationName + " - Home" %}
 {% set mainClasses = "app-container govuk-body" %}
 
+{% block beforeContent %}
+  {% include "../partials/breadCrumb.njk" %}
+{% endblock %}
+
 {% block content %}
 
-  <h1>This site is under construction...</h1>
-  <p>Please check back later when there is content to view.</p>
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h1 class="govuk-heading-l">Manage learning plans</h1>
+    </div>
+  </div>
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      {{ govukTable({
+        attributes: {
+          id: "prisoner-results-table"
+        },
+        head: [
+          {
+            text: "Prisoner"
+          }
+        ],
+        rows: [
+          [
+            {
+              html: "<a href='/plan/A0011DZ/view/overview' class='govuk-link'>Bernhard, Chesle</a><span>A0011DZ</span>"
+            }
+          ],
+          [
+            {
+              html: "<a href='/plan/A0763DZ/view/overview' class='govuk-link'>Nicolas, Calvin</a><span>A0763DZ</span>"
+            }
+          ],
+          [
+            {
+              html: "<a href='/plan/A1350DZ/view/overview' class='govuk-link'>Winchurch, David</a><span>A1350DZ</span>"
+            }
+          ],
+          [
+            {
+              html: "<a href='/plan/A1351DZ/view/overview' class='govuk-link'>Jacobson, Lee</a><span>A1351DZ</span>"
+            }
+          ],
+          [
+            {
+              html: "<a href='/plan/A1465DZ/view/overview' class='govuk-link'>Will, Lorraine</a><span>A1465DZ</span>"
+            }
+          ],
+          [
+            {
+              html: "<a href='/plan/A2005DZ/view/overview' class='govuk-link'>Treutel, Sharon</a><span>A2005DZ</span>"
+            }
+          ],
+          [
+            {
+              html: "<a href='/plan/A2107DZ/view/overview' class='govuk-link'>Russel, Samantha</a><span>A2107DZ</span>"
+            }
+          ],
+          [
+            {
+              html: "<a href='/plan/A2205DZ/view/overview' class='govuk-link'>Hickle, Felipe</a><span>A2205DZ</span>"
+            }
+          ],
+          [
+            {
+              html: "<a href='/plan/A2257DZ/view/overview' class='govuk-link'>Sanford, Kenn</a><span>A2257DZ</span>"
+            }
+          ],
+          [
+            {
+              html: "<a href='/plan/A2263DZ/view/overview' class='govuk-link'>Pacocha, Terrell</a><span>A2263DZ</span>"
+            }
+          ],
+          [
+            {
+              html: "<a href='/plan/G4106UN/view/overview' class='govuk-link'>Zebra, Zebedee</a><span>G4106UN</span>"
+            }
+          ]
+        ]
+      }) }}
+
+    </div>
+  </div>
 
 {% endblock %}
