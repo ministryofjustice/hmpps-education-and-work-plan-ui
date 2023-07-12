@@ -1,9 +1,5 @@
 import type { RequestHandler } from 'express'
-import type { Prisoner } from 'prisonRegisterApiClient'
-import type { PrisonerSummary } from 'viewModels'
-import createError from 'http-errors'
 import EducationAndWorkPlanService from '../../services/educationAndWorkPlanService'
-import PrisonerSearchService from '../../services/prisonerSearchService'
 import CreateGoalView from './createGoalView'
 import AddStepView from './addStepView'
 import AddNoteView from './addNoteView'
@@ -12,34 +8,14 @@ import validateCreateGoalForm from './createGoalFormValidator'
 import validateAddStepForm from './addStepFormValidator'
 
 export default class CreateGoalController {
-  constructor(
-    private readonly prisonerSearchService: PrisonerSearchService,
-    private readonly educationAndWorkPlanService: EducationAndWorkPlanService,
-  ) {}
+  constructor(private readonly educationAndWorkPlanService: EducationAndWorkPlanService) {}
 
   getCreateGoalView: RequestHandler = async (req, res, next): Promise<void> => {
     const { prisonNumber } = req.params
+    const { prisonerSummary } = req.session
     if (!req.session.createGoalForm) {
       req.session.createGoalForm = { prisonNumber }
     }
-
-    let prisoner: Prisoner
-    try {
-      prisoner = await this.prisonerSearchService.getPrisonerByPrisonNumber(prisonNumber, req.user.token)
-    } catch (error) {
-      req.session.createGoalForm = undefined
-      next(createError(404, 'Prisoner not found'))
-      return
-    }
-
-    const prisonerSummary = {
-      prisonNumber: prisoner.prisonerNumber,
-      releaseDate: prisoner.releaseDate,
-      location: prisoner.cellLocation,
-      firstName: prisoner.firstName,
-      lastName: prisoner.lastName,
-    } as PrisonerSummary
-    req.session.prisonerSummary = prisonerSummary
 
     const view = new CreateGoalView(prisonerSummary, req.session.createGoalForm, req.flash('errors'))
     res.render('pages/goal/create/index', { ...view.renderArgs })
@@ -101,7 +77,6 @@ export default class CreateGoalController {
   }
 
   getAddNoteView: RequestHandler = async (req, res, next): Promise<void> => {
-    // const { prisonNumber } = req.params
     const { prisonerSummary } = req.session
     const addNoteForm = req.session.addNoteForm || {}
 

@@ -3,6 +3,7 @@ import CreateGoalPage from '../../pages/goal/CreateGoalPage'
 import AddStepPage from '../../pages/goal/AddStepPage'
 import AddNotePage from '../../pages/goal/AddNotePage'
 import AuthorisationErrorPage from '../../pages/authorisationError'
+import OverviewPage from '../../pages/overview/OverviewPage'
 
 context('Create a goal', () => {
   beforeEach(() => {
@@ -12,7 +13,7 @@ context('Create a goal', () => {
     cy.task('getPrisonerById')
   })
 
-  it('should render initial create goal page', () => {
+  it('should not be able to navigate directly to Create Goal page given user has not clicked Add A Goal from overview page', () => {
     // Given
     const prisonNumber = 'G6115VJ'
     cy.signIn()
@@ -21,26 +22,28 @@ context('Create a goal', () => {
     cy.visit(`/plan/${prisonNumber}/goals/create`)
 
     // Then
-    const page = Page.verifyOnPage(CreateGoalPage)
-    page.isForPrisoner(prisonNumber)
+    const overviewPage = Page.verifyOnPage(OverviewPage)
+    overviewPage.isForPrisoner(prisonNumber)
   })
 
-  it('should not proceed to add step page given validation errors on create goal page', () => {
+  it('should not proceed to Add Step page given validation errors on Create Goal page', () => {
     // Given
     const prisonNumber = 'G6115VJ'
     cy.signIn()
-    cy.visit(`/plan/${prisonNumber}/goals/create`)
 
-    const page = Page.verifyOnPage(CreateGoalPage)
-    page //
+    cy.visit(`/plan/${prisonNumber}/view/overview`)
+    const overviewPage = Page.verifyOnPage(OverviewPage)
+    const createGoalPage = overviewPage.clickAddGoalButton()
+
+    createGoalPage //
       .clearGoalTitle()
 
     // When
-    page.submitPage()
+    createGoalPage.submitPage()
 
     // Then
     Page.verifyOnPage(CreateGoalPage)
-    page //
+    createGoalPage //
       .hasErrorCount(1)
       .hasFieldInError('title')
   })
@@ -51,8 +54,11 @@ context('Create a goal', () => {
     cy.signIn()
     cy.visit(`/plan/${prisonNumber}/goals/create`)
 
-    const createGoal = Page.verifyOnPage(CreateGoalPage)
-    createGoal //
+    cy.visit(`/plan/${prisonNumber}/view/overview`)
+    const overviewPage = Page.verifyOnPage(OverviewPage)
+    const createGoalPage = overviewPage.clickAddGoalButton()
+
+    createGoalPage //
       .setGoalTitle('Learn French')
       .submitPage()
 

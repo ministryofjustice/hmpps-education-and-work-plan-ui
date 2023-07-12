@@ -7,7 +7,7 @@ import logger from '../../../logger'
  */
 
 /**
- * Request handler function to check the CreateGoalForm exists in the session for the prisoner reference in the
+ * Request handler function to check the CreateGoalForm exists in the session for the prisoner referenced in the
  * request URL.
  */
 const checkCreateGoalFormExistsInSession = async (req: Request, res: Response, next: NextFunction) => {
@@ -45,4 +45,29 @@ const checkAddStepFormsArrayExistsInSession = async (req: Request, res: Response
   }
 }
 
-export { checkCreateGoalFormExistsInSession, checkAddStepFormsArrayExistsInSession }
+/**
+ * Request handler function to check the PrisonerSummary exists in the session for the prisoner referenced in the
+ * request URL.
+ */
+const checkPrisonerSummaryExistsInSession = async (req: Request, res: Response, next: NextFunction) => {
+  if (!req.session.prisonerSummary) {
+    logger.warn(
+      `No PrisonerSummary object in session - user attempting to navigate to path ${req.path} out of sequence. Redirecting to prisoner Overview page.`,
+    )
+    res.redirect(`/plan/${req.params.prisonNumber}/view/overview`)
+  } else if (req.session.prisonerSummary.prisonNumber !== req.params.prisonNumber) {
+    logger.warn(
+      'PrisonerSummary object in session references a different prisoner. Redirecting to prisoner Overview page.',
+    )
+    req.session.prisonerSummary = undefined
+    res.redirect(`/plan/${req.params.prisonNumber}/view/overview`)
+  } else {
+    next()
+  }
+}
+
+export {
+  checkCreateGoalFormExistsInSession,
+  checkAddStepFormsArrayExistsInSession,
+  checkPrisonerSummaryExistsInSession,
+}

@@ -1,7 +1,12 @@
 import { NextFunction, Response, Request } from 'express'
 import { SessionData } from 'express-session'
 import type { AddStepForm, CreateGoalForm } from 'forms'
-import { checkCreateGoalFormExistsInSession, checkAddStepFormsArrayExistsInSession } from './routerRequestHandlers'
+import type { PrisonerSummary } from 'viewModels'
+import {
+  checkCreateGoalFormExistsInSession,
+  checkAddStepFormsArrayExistsInSession,
+  checkPrisonerSummaryExistsInSession,
+} from './routerRequestHandlers'
 import { aValidAddStepForm } from '../../testsupport/addStepFormTestDataBuilder'
 
 describe('routerRequestHandlers', () => {
@@ -139,6 +144,70 @@ describe('routerRequestHandlers', () => {
 
       // Then
       expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/goals/add-step`)
+      expect(next).not.toHaveBeenCalled()
+    })
+  })
+
+  describe('checkPrisonerSummaryExistsInSession', () => {
+    it(`should invoke next handler given prisoner summary exists in session for prisoner referenced in url params`, async () => {
+      // Given
+      const prisonNumber = 'A1234BC'
+      req.params.prisonNumber = prisonNumber
+
+      req.session.prisonerSummary = {
+        prisonNumber,
+      } as PrisonerSummary
+
+      // When
+      await checkPrisonerSummaryExistsInSession(
+        req as undefined as Request,
+        res as undefined as Response,
+        next as undefined as NextFunction,
+      )
+
+      // Then
+      expect(next).toHaveBeenCalled()
+      expect(res.redirect).not.toHaveBeenCalled()
+    })
+
+    it(`should redirect to Overview screen given no prisoner summary exists in session`, async () => {
+      // Given
+      const prisonNumber = 'A1234BC'
+      req.params.prisonNumber = prisonNumber
+
+      req.session.prisonerSummary = undefined
+
+      // When
+      await checkPrisonerSummaryExistsInSession(
+        req as undefined as Request,
+        res as undefined as Response,
+        next as undefined as NextFunction,
+      )
+
+      // Then
+      expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/view/overview`)
+      expect(next).not.toHaveBeenCalled()
+    })
+
+    it(`should redirect to Overview screen given prisoner summary exists in session but for different prisoner`, async () => {
+      // Given
+      const prisonNumber = 'A1234BC'
+      req.params.prisonNumber = prisonNumber
+
+      req.session.prisonerSummary = {
+        prisonNumber: 'Z9999XZ',
+      } as PrisonerSummary
+
+      // When
+      await checkPrisonerSummaryExistsInSession(
+        req as undefined as Request,
+        res as undefined as Response,
+        next as undefined as NextFunction,
+      )
+
+      // Then
+      expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/view/overview`)
+      expect(req.session.createGoalForm).toBeUndefined()
       expect(next).not.toHaveBeenCalled()
     })
   })
