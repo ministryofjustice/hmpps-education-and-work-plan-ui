@@ -9,11 +9,13 @@
         <strong>Goals</strong>
       </div>
       <div>
-        {{ govukButton({
-          text: "Add a new goal",
-          href: "/plan/" + prisonNumber + "/goals/create",
-          id: "add-goal-button"
-        }) }}
+        {% if hasEditAuthority %}
+          {{ govukButton({
+            text: "Add a new goal",
+            href: "/plan/" + prisonNumber + "/goals/create",
+            id: "add-goal-button"
+          }) }}
+        {% endif %}
       </div>
     {% endset %}
 

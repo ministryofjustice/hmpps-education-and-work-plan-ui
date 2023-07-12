@@ -1,7 +1,7 @@
 import { Router } from 'express'
 import { Services } from '../../services'
 import CreateGoalController from './createGoalController'
-import { hasEditAuthority } from '../../middleware/roleBasedAccessControl'
+import { checkUserHasEditAuthority } from '../../middleware/roleBasedAccessControl'
 import {
   checkCreateGoalFormExistsInSession,
   checkAddStepFormsArrayExistsInSession,
@@ -14,7 +14,7 @@ import {
 export default (router: Router, services: Services) => {
   const createGoalController = new CreateGoalController(services.educationAndWorkPlanService)
 
-  router.use('/plan/:prisonNumber/goals/create', hasEditAuthority())
+  router.use('/plan/:prisonNumber/goals/create', checkUserHasEditAuthority())
   router.get('/plan/:prisonNumber/goals/create', [
     checkPrisonerSummaryExistsInSession,
     createGoalController.getCreateGoalView,
@@ -25,7 +25,7 @@ export default (router: Router, services: Services) => {
     createGoalController.submitCreateGoalForm,
   ])
 
-  router.use('/plan/:prisonNumber/goals/add-step', hasEditAuthority())
+  router.use('/plan/:prisonNumber/goals/add-step', checkUserHasEditAuthority())
   router.get('/plan/:prisonNumber/goals/add-step', [
     checkPrisonerSummaryExistsInSession,
     checkCreateGoalFormExistsInSession,
@@ -37,7 +37,7 @@ export default (router: Router, services: Services) => {
     createGoalController.submitAddStepForm,
   ])
 
-  router.use('/plan/:prisonNumber/goals/add-note', hasEditAuthority())
+  router.use('/plan/:prisonNumber/goals/add-note', checkUserHasEditAuthority())
   router.get('/plan/:prisonNumber/goals/add-note', [
     checkPrisonerSummaryExistsInSession,
     checkCreateGoalFormExistsInSession,

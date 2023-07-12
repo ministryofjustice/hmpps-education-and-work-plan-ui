@@ -1,6 +1,6 @@
 import { Router } from 'express'
 import { Services } from '../../services'
-import { hasViewAuthority } from '../../middleware/roleBasedAccessControl'
+import { checkUserHasViewAuthority } from '../../middleware/roleBasedAccessControl'
 import OverviewController from './overviewController'
 
 /**
@@ -9,6 +9,6 @@ import OverviewController from './overviewController'
 export default (router: Router, services: Services) => {
   const overViewController = new OverviewController(services.prisonerSearchService)
 
-  router.use('/plan/:prisonNumber/view/overview', hasViewAuthority())
+  router.use('/plan/:prisonNumber/view/overview', checkUserHasViewAuthority())
   router.get('/plan/:prisonNumber/view/:tab', [overViewController.getOverviewView])
 }
