@@ -57,7 +57,7 @@ You will need to install the node module `openapi-typescript` globally with the 
 
 To update the types from the Open API docs run the following commands:
 
-`npx openapi-typescript https://hmpps-education-and-work-plan-api-dev.hmpps.service.justice.gov.uk/v3/api-docs -o server/@types/educationAndWorkPlanApi/index.d.ts`
+`npx openapi-typescript https://learningandworkprogress-api-dev.hmpps.service.justice.gov.uk/v3/api-docs -o server/@types/educationAndWorkPlanApi/index.d.ts`
 
 `npx openapi-typescript https://prisoner-offender-search-dev.prison.service.justice.gov.uk/v3/api-docs -o server/@types/prisonerSearchApi/index.d.ts`
 
