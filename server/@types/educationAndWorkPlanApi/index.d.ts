@@ -28,6 +28,11 @@ export interface components {
        */
       steps: components['schemas']['CreateStepRequest'][]
       /**
+       * Format: date
+       * @description An optional ISO-8601 date representing when the Goal is up for review.
+       */
+      reviewDate?: string
+      /**
        * @example null
        * @enum {string}
        */
@@ -49,10 +54,14 @@ export interface components {
        */
       title: string
       /**
-       * @description A target date range for the step to be completed by.
-       * @example ZERO_TO_THREE_MONTHS
+       * @example null
+       * @enum {string}
        */
-      targetDateRange: string
+      targetDateRange:
+        | 'ZERO_TO_THREE_MONTHS'
+        | 'THREE_TO_SIX_MONTHS'
+        | 'SIX_TO_TWELVE_MONTHS'
+        | 'MORE_THAN_TWELVE_MONTHS'
       /**
        * Format: int32
        * @description The number (position) of the Step within the overall Goal.
@@ -120,6 +129,11 @@ export interface components {
        */
       updatedAt: string
       /**
+       * Format: date
+       * @description An optional ISO-8601 date representing when the Goal is up for review.
+       */
+      reviewDate?: string
+      /**
        * @example null
        * @enum {string}
        */
@@ -146,10 +160,14 @@ export interface components {
        */
       title: string
       /**
-       * @description A target date range for the step to be completed by.
-       * @example ZERO_TO_THREE_MONTHS
+       * @example null
+       * @enum {string}
        */
-      targetDateRange: string
+      targetDateRange:
+        | 'ZERO_TO_THREE_MONTHS'
+        | 'THREE_TO_SIX_MONTHS'
+        | 'SIX_TO_TWELVE_MONTHS'
+        | 'MORE_THAN_TWELVE_MONTHS'
       /**
        * @example null
        * @enum {string}
