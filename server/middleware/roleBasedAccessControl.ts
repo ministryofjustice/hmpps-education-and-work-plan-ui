@@ -1,8 +1,16 @@
 import authorisationMiddleware from './authorisationMiddleware'
 
-const hasEditAuthority = () => authorisationMiddleware(['ROLE_EDUCATION_WORK_PLAN_EDITOR'])
+enum ApplicationRoles {
+  ROLE_EDUCATION_WORK_PLAN_EDITOR = 'ROLE_EDUCATION_WORK_PLAN_EDITOR',
+  ROLE_EDUCATION_WORK_PLAN_VIEWER = 'ROLE_EDUCATION_WORK_PLAN_VIEWER',
+}
 
-const hasViewAuthority = () =>
-  authorisationMiddleware(['ROLE_EDUCATION_WORK_PLAN_EDITOR', 'ROLE_EDUCATION_WORK_PLAN_VIEWER'])
+const checkUserHasEditAuthority = () => authorisationMiddleware([ApplicationRoles.ROLE_EDUCATION_WORK_PLAN_EDITOR])
 
-export { hasEditAuthority, hasViewAuthority }
+const checkUserHasViewAuthority = () =>
+  authorisationMiddleware([
+    ApplicationRoles.ROLE_EDUCATION_WORK_PLAN_EDITOR,
+    ApplicationRoles.ROLE_EDUCATION_WORK_PLAN_VIEWER,
+  ])
+
+export { ApplicationRoles, checkUserHasEditAuthority, checkUserHasViewAuthority }

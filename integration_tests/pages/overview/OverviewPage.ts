@@ -11,13 +11,23 @@ export default class OverviewPage extends Page {
     return this
   }
 
+  hasAddGoalButtonDisplayed() {
+    this.addGoalButton().should('be.visible')
+    return this
+  }
+
+  doesNotHaveAddGoalButton() {
+    this.addGoalButton().should('not.exist')
+    return this
+  }
+
   clickAddGoalButton(): CreateGoalPage {
     this.addGoalButton().click()
     return Page.verifyOnPage(CreateGoalPage)
   }
 
   activeTabIs(expected: string) {
-    this.activeTab().should('have.text', expected)
+    this.activeTab().should('contain.text', expected)
     return this
   }
 

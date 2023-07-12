@@ -10,8 +10,10 @@ context('Prisoner Overview page', () => {
     cy.task('getPrisonerById')
   })
 
-  it('should render prisoner Overview page', () => {
+  it('should render prisoner Overview page with Add Goal button given user has edit authority', () => {
     // Given
+    cy.task('stubSignInAsUserWithEditAuthority')
+
     const prisonNumber = 'G6115VJ'
     cy.signIn()
 
@@ -20,7 +22,28 @@ context('Prisoner Overview page', () => {
 
     // Then
     const page = Page.verifyOnPage(OverviewPage)
-    page.isForPrisoner(prisonNumber)
+    page //
+      .isForPrisoner(prisonNumber)
+      .hasAddGoalButtonDisplayed()
+      .activeTabIs('Overview')
+  })
+
+  it('should render prisoner Overview page without Add Goal button given user does not have edit authority', () => {
+    // Given
+    cy.task('stubSignInAsUserWithViewAuthority')
+
+    const prisonNumber = 'G6115VJ'
+    cy.signIn()
+
+    // When
+    cy.visit(`/plan/${prisonNumber}/view/overview`)
+
+    // Then
+    const page = Page.verifyOnPage(OverviewPage)
+    page //
+      .isForPrisoner(prisonNumber)
+      .doesNotHaveAddGoalButton()
+      .activeTabIs('Overview')
   })
 
   it('should navigate to Create Goal page given Add A Goal button is clicked', () => {
