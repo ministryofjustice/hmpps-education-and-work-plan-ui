@@ -4,15 +4,15 @@ import stepsTableRowFilter from './stepsTableRowFilter'
 describe('stepsTableRowFilter', () => {
   it('should render table rows', () => {
     const steps = [
-      { title: 'Get on English course', targetDateRange: '0 to 3 months' },
-      { title: 'Do course', targetDateRange: '3 to 6 months' },
+      { sequenceNumber: 1, title: 'Get on English course', targetDateRange: 'ZERO_TO_THREE_MONTHS' },
+      { sequenceNumber: 2, title: 'Do course', targetDateRange: 'THREE_TO_SIX_MONTHS' },
     ] as Array<AddStepDto>
 
     const tableRows = stepsTableRowFilter(steps)
 
     expect(tableRows).toEqual([
-      [{ text: 'Get on English course' }, { text: '0 to 3 months' }],
-      [{ text: 'Do course' }, { text: '3 to 6 months' }],
+      [{ text: '1. Get on English course' }, { text: '0 to 3 months' }],
+      [{ text: '2. Do course' }, { text: '3 to 6 months' }],
     ])
   })
 })
