@@ -6,6 +6,7 @@ import AddNoteView from './addNoteView'
 import { toCreateGoalDto } from './mappers/createGoalFormToCreateGoalDtoMapper'
 import validateCreateGoalForm from './createGoalFormValidator'
 import validateAddStepForm from './addStepFormValidator'
+import ReviewView from './reviewView'
 
 export default class CreateGoalController {
   constructor(private readonly educationAndWorkPlanService: EducationAndWorkPlanService) {}
@@ -86,18 +87,36 @@ export default class CreateGoalController {
 
   submitAddNoteForm: RequestHandler = async (req, res, next): Promise<void> => {
     const { prisonNumber } = req.params
-    const { createGoalForm } = req.session
-    const { addStepForms } = req.session
     req.session.addNoteForm = { ...req.body }
 
-    const createGoalDto = toCreateGoalDto(createGoalForm, addStepForms, req.body)
+    return res.redirect(`/plan/${prisonNumber}/goals/review`)
+  }
+
+  getReviewGoalView: RequestHandler = async (req, res, next): Promise<void> => {
+    const { prisonerSummary } = req.session
+    const { createGoalForm } = req.session
+    const { addStepForms } = req.session
+    const { addNoteForm } = req.session
+
+    const createGoalDto = toCreateGoalDto(createGoalForm, addStepForms, addNoteForm)
+
+    const view = new ReviewView(prisonerSummary, createGoalDto)
+    res.render('pages/goal/review/index', { ...view.renderArgs })
+  }
+
+  submitReviewGoal: RequestHandler = async (req, res, next): Promise<void> => {
+    const { prisonNumber } = req.params
+    const { createGoalForm } = req.session
+    const { addStepForms } = req.session
+    const { addNoteForm } = req.session
+
+    const createGoalDto = toCreateGoalDto(createGoalForm, addStepForms, addNoteForm)
     await this.educationAndWorkPlanService.createGoal(createGoalDto, req.user.token)
 
     req.session.createGoalForm = undefined
     req.session.addStepForm = undefined
     req.session.addStepForms = undefined
     req.session.addNoteForm = undefined
-
-    return res.redirect(`/plan/${prisonNumber}/goals/overview`)
+    return res.redirect(`/plan/${prisonNumber}/view/overview`)
   }
 }

@@ -1,5 +1,6 @@
 import Page from '../../pages/page'
 import AddStepPage from '../../pages/goal/AddStepPage'
+import AddNotePage from '../../pages/goal/AddNotePage'
 import OverviewPage from '../../pages/overview/OverviewPage'
 
 context('Add a step', () => {
@@ -128,6 +129,6 @@ context('Add a step', () => {
     addStepPage.submitPage()
 
     // Then
-    // assert we are on the next page
+    Page.verifyOnPage(AddNotePage)
   })
 })

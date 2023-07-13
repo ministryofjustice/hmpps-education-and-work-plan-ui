@@ -6,6 +6,7 @@ import {
   checkCreateGoalFormExistsInSession,
   checkAddStepFormsArrayExistsInSession,
   checkPrisonerSummaryExistsInSession,
+  checkAddNoteFormExistsInSession,
 } from './routerRequestHandlers'
 import { aValidAddStepForm } from '../../testsupport/addStepFormTestDataBuilder'
 
@@ -208,6 +209,26 @@ describe('routerRequestHandlers', () => {
       // Then
       expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/view/overview`)
       expect(req.session.createGoalForm).toBeUndefined()
+      expect(next).not.toHaveBeenCalled()
+    })
+  })
+
+  describe('checkAddNoteFormExistsInSession', () => {
+    it(`should redirect to Create Goal screen given add note form does not exist in session`, async () => {
+      // Given
+      const prisonNumber = 'A1234BC'
+      req.params.prisonNumber = prisonNumber
+      req.session.addNoteForm = undefined
+
+      // When
+      await checkAddNoteFormExistsInSession(
+        req as undefined as Request,
+        res as undefined as Response,
+        next as undefined as NextFunction,
+      )
+
+      // Then
+      expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/goals/add-note`)
       expect(next).not.toHaveBeenCalled()
     })
   })
