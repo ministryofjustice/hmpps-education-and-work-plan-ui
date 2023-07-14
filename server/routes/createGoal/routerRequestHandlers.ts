@@ -46,6 +46,21 @@ const checkAddStepFormsArrayExistsInSession = async (req: Request, res: Response
 }
 
 /**
+ * Request handler function to check the AddNoteForm exists in the session for the prisoner reference in the
+ * request URL.
+ */
+const checkAddNoteFormExistsInSession = async (req: Request, res: Response, next: NextFunction) => {
+  if (!req.session.addNoteForm) {
+    logger.warn(
+      `No AddNoteForm object in session - user attempting to navigate to path ${req.path} out of sequence. Redirecting to Add Note screen.`,
+    )
+    res.redirect(`/plan/${req.params.prisonNumber}/goals/add-note`)
+  } else {
+    next()
+  }
+}
+
+/**
  * Request handler function to check the PrisonerSummary exists in the session for the prisoner referenced in the
  * request URL.
  */
@@ -69,5 +84,6 @@ const checkPrisonerSummaryExistsInSession = async (req: Request, res: Response, 
 export {
   checkCreateGoalFormExistsInSession,
   checkAddStepFormsArrayExistsInSession,
+  checkAddNoteFormExistsInSession,
   checkPrisonerSummaryExistsInSession,
 }

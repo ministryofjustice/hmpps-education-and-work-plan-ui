@@ -1,6 +1,7 @@
 import Page from '../../pages/page'
 import AddStepPage from '../../pages/goal/AddStepPage'
 import AddNotePage from '../../pages/goal/AddNotePage'
+import ReviewPage from '../../pages/goal/ReviewPage'
 import OverviewPage from '../../pages/overview/OverviewPage'
 
 context('Add a note', () => {
@@ -80,7 +81,7 @@ context('Add a note', () => {
       .isStepNumber(1)
   })
 
-  it.skip('should move to review goals page', () => {
+  it('should move to review goals page', () => {
     // Given
     const prisonNumber = 'G6115VJ'
     cy.signIn()
@@ -104,6 +105,8 @@ context('Add a note', () => {
     addNotePage.submitPage()
 
     // Then
-    // assert we are on the next page
+    const reviewPage = Page.verifyOnPage(ReviewPage)
+    reviewPage //
+      .isForPrisoner(prisonNumber)
   })
 })
