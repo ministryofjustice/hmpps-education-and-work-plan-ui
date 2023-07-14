@@ -52,7 +52,7 @@ const checkAddStepFormsArrayExistsInSession = async (req: Request, res: Response
 const checkAddNoteFormExistsInSession = async (req: Request, res: Response, next: NextFunction) => {
   if (!req.session.addNoteForm) {
     logger.warn(
-      `No AddNoteForm object in session - user attempting to navigate to path ${req.path} out of sequence. Redirecting to start of Create Goal journey.`,
+      `No AddNoteForm object in session - user attempting to navigate to path ${req.path} out of sequence. Redirecting to Add Note screen.`,
     )
     res.redirect(`/plan/${req.params.prisonNumber}/goals/add-note`)
   } else {

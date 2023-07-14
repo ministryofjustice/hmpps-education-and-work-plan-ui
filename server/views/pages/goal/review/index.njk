@@ -13,14 +13,6 @@
 
 {% block content %}
 
-  {% if errors.length > 0 %}
-    {{ govukErrorSummary({
-      titleText: 'There is a problem',
-      errorList: errors,
-      attributes: { 'data-qa-errors': true }
-    }) }}
-  {% endif %}
-
   {% include "../../../partials/prisonerBanner.njk" %}
 
   <div class="govuk-grid-row">

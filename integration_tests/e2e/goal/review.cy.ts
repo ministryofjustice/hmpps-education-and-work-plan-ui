@@ -1,5 +1,4 @@
 import Page from '../../pages/page'
-import CreateGoalPage from '../../pages/goal/CreateGoalPage'
 import AddStepPage from '../../pages/goal/AddStepPage'
 import AddNotePage from '../../pages/goal/AddNotePage'
 import ReviewPage from '../../pages/goal/ReviewPage'
@@ -12,6 +11,7 @@ context('Review goal(s)', () => {
     cy.task('stubAuthUser')
     cy.task('getPrisonerById', 'G6115VJ')
     cy.task('getPrisonerById', 'H4115SD')
+    cy.task('createGoal')
   })
 
   it('should not be able to navigate directly to Review Goal given previous forms have not been submitted', () => {
@@ -20,7 +20,7 @@ context('Review goal(s)', () => {
     cy.signIn()
 
     // When
-    cy.visit(`/plan/${prisonNumber}/goals/add-note`)
+    cy.visit(`/plan/${prisonNumber}/goals/review`)
 
     // Then
     const overviewPage = Page.verifyOnPage(OverviewPage)
@@ -49,6 +49,7 @@ context('Review goal(s)', () => {
     addNotePage //
       .isForPrisoner(prisonNumber)
       .submitPage()
+    Page.verifyOnPage(ReviewPage)
 
     const someOtherPrisonNumber = 'H4115SD'
 
@@ -60,7 +61,7 @@ context('Review goal(s)', () => {
     overviewPage.isForPrisoner(someOtherPrisonNumber)
   })
 
-  it('should not be able to navigate directly to review goal given Create Goal and Add Steps have been submitted but Add Note has not', () => {
+  it('should not be able to navigate directly to Review Goal given Create Goal and Add Steps have been submitted but Add Note has not', () => {
     // Given
     const prisonNumber = 'G6115VJ'
     cy.signIn()
@@ -85,16 +86,15 @@ context('Review goal(s)', () => {
     Page.verifyOnPage(AddNotePage)
   })
 
-  it.skip('should move to overview page', () => {
-    // Given
+  it('should move to Overview page', () => {
     const prisonNumber = 'G6115VJ'
     cy.signIn()
-    cy.visit(`/plan/${prisonNumber}/goals/create`)
+    cy.visit(`/plan/${prisonNumber}/view/overview`)
+    let overviewPage = Page.verifyOnPage(OverviewPage)
 
-    const createGoalPage = Page.verifyOnPage(CreateGoalPage)
-    createGoalPage //
-      .setGoalTitle('Learn French')
-      .submitPage()
+    const createGoalPage = overviewPage.clickAddGoalButton()
+    createGoalPage.setGoalTitle('Learn French')
+    createGoalPage.submitPage()
 
     const addStepPage = Page.verifyOnPage(AddStepPage)
     addStepPage //
@@ -107,12 +107,14 @@ context('Review goal(s)', () => {
     addNotePage.submitPage()
 
     const reviewPage = Page.verifyOnPage(ReviewPage)
+    reviewPage //
+      .isForPrisoner(prisonNumber)
 
     // When
     reviewPage.submitPage()
 
     // Then
-    const overviewPage = Page.verifyOnPage(OverviewPage)
+    overviewPage = Page.verifyOnPage(OverviewPage)
     overviewPage //
       .isForPrisoner(prisonNumber)
   })

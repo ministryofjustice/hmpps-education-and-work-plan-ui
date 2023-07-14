@@ -214,7 +214,7 @@ describe('routerRequestHandlers', () => {
   })
 
   describe('checkAddNoteFormExistsInSession', () => {
-    it(`should redirect to Create Goal screen given add note form does not exist in session`, async () => {
+    it(`should redirect to Add Note screen given add note form does not exist in session`, async () => {
       // Given
       const prisonNumber = 'A1234BC'
       req.params.prisonNumber = prisonNumber

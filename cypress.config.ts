@@ -3,6 +3,7 @@ import { resetStubs } from './integration_tests/mockApis/wiremock'
 import auth from './integration_tests/mockApis/auth'
 import tokenVerification from './integration_tests/mockApis/tokenVerification'
 import prisonerSearchApi from './integration_tests/mockApis/prisonerSearchApi'
+import educationAndWorkPlanApi from './integration_tests/mockApis/educationAndWorkPlanApi'
 
 export default defineConfig({
   chromeWebSecurity: false,
@@ -29,6 +30,7 @@ export default defineConfig({
 
         ...tokenVerification,
         ...prisonerSearchApi,
+        ...educationAndWorkPlanApi,
       })
     },
     baseUrl: 'http://localhost:3007',

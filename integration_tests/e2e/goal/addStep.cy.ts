@@ -108,7 +108,7 @@ context('Add a step', () => {
       .isStepNumber(2)
   })
 
-  it.skip('should move to Add Note page', () => {
+  it('should move to Add Note page', () => {
     // Given
     const prisonNumber = 'G6115VJ'
     cy.signIn()
