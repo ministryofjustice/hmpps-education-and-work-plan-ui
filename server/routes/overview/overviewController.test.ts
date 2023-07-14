@@ -37,8 +37,8 @@ describe('overviewController', () => {
 
   it('should get overview view given prisoner is retrieved from prisoner-search API', async () => {
     // Given
-    const userToken = 'a-user-token'
-    req.user.token = userToken
+    const username = 'a-dps-user'
+    req.user.username = username
 
     const expectedTab = 'overview'
     req.params.tab = expectedTab
@@ -59,14 +59,14 @@ describe('overviewController', () => {
     )
 
     // Then
-    expect(prisonerSearchService.getPrisonerByPrisonNumber).toHaveBeenCalledWith(prisonNumber, userToken)
+    expect(prisonerSearchService.getPrisonerByPrisonNumber).toHaveBeenCalledWith(prisonNumber, username)
     expect(res.render).toHaveBeenCalledWith('pages/overview/index', expectedView.renderArgs)
   })
 
   it('should not get overview view given prisoner is not retrieved from prisoner-search API', async () => {
     // Given
-    const userToken = 'a-user-token'
-    req.user.token = userToken
+    const username = 'a-dps-user'
+    req.user.username = username
 
     const prisonNumber = 'A1234GC'
     req.params.prisonNumber = prisonNumber
@@ -83,7 +83,7 @@ describe('overviewController', () => {
     )
 
     // Then
-    expect(prisonerSearchService.getPrisonerByPrisonNumber).toHaveBeenCalledWith(prisonNumber, userToken)
+    expect(prisonerSearchService.getPrisonerByPrisonNumber).toHaveBeenCalledWith(prisonNumber, username)
     expect(next).toHaveBeenCalledWith(expectedError)
   })
 })
