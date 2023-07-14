@@ -19,7 +19,7 @@ describe('stepTargetDateRangeValidator', () => {
     const errors = validateStepTargetDateRange()
 
     // Then
-    expect(errors).toStrictEqual(['Select a target date range'])
+    expect(errors).toStrictEqual(['Please select when they will achieve this by'])
   })
 
   it('should validate given an empty targetDateRange', () => {
@@ -29,16 +29,6 @@ describe('stepTargetDateRangeValidator', () => {
     // When
     const errors = validateStepTargetDateRange(targetDateRange)
 
-    expect(errors).toStrictEqual(['Select a target date range'])
-  })
-
-  it('should validate given a targetDateRange that is too long', () => {
-    // Given
-    const targetDateRange = 'A'.repeat(51)
-
-    // When
-    const errors = validateStepTargetDateRange(targetDateRange)
-
-    expect(errors).toStrictEqual(['The target date range must be 50 characters or less'])
+    expect(errors).toStrictEqual(['Please select when they will achieve this by'])
   })
 })
