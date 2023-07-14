@@ -37,11 +37,10 @@ export default class CreateGoalController {
 
   getAddStepView: RequestHandler = async (req, res, next): Promise<void> => {
     const { prisonerSummary } = req.session
-    const { createGoalForm } = req.session
     const addStepForm = req.session.addStepForm || { stepNumber: 1 }
     req.session.addStepForms = req.session.addStepForms || []
 
-    const view = new AddStepView(createGoalForm.title, prisonerSummary, addStepForm, req.flash('errors'))
+    const view = new AddStepView(prisonerSummary, addStepForm, req.flash('errors'))
     res.render('pages/goal/add-step/index', { ...view.renderArgs })
   }
 

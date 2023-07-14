@@ -1,7 +1,6 @@
 import Page from '../../pages/page'
 import CreateGoalPage from '../../pages/goal/CreateGoalPage'
 import AddStepPage from '../../pages/goal/AddStepPage'
-import AddNotePage from '../../pages/goal/AddNotePage'
 import AuthorisationErrorPage from '../../pages/authorisationError'
 import OverviewPage from '../../pages/overview/OverviewPage'
 
@@ -48,37 +47,22 @@ context('Create a goal', () => {
       .hasFieldInError('title')
   })
 
-  it('should create a valid goal', () => {
+  it('should proceed to Add Step Page given no validation errors', () => {
     // Given
     const prisonNumber = 'G6115VJ'
     cy.signIn()
-    cy.visit(`/plan/${prisonNumber}/goals/create`)
 
     cy.visit(`/plan/${prisonNumber}/view/overview`)
     const overviewPage = Page.verifyOnPage(OverviewPage)
     const createGoalPage = overviewPage.clickAddGoalButton()
 
+    // When
     createGoalPage //
       .setGoalTitle('Learn French')
       .submitPage()
 
-    const addStepPage = Page.verifyOnPage(AddStepPage)
-    addStepPage //
-      .isForGoal('Learn French')
-      .isStepNumber(1)
-
-    addStepPage //
-      .setStepTitle('Book French course')
-      .setStepTargetDateRange('ZERO_TO_THREE_MONTHS')
-
-    // When
-    addStepPage.submitPage()
-
     // Then
-    const addNotePage = Page.verifyOnPage(AddNotePage)
-    addNotePage.isForPrisoner(prisonNumber)
-
-    // addNotePage.setNote("Pay close attention to the prisoner's behaviour")
+    Page.verifyOnPage(AddStepPage)
   })
 
   it('should redirect to auth-error page given user does not have any authorities', () => {
