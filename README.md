@@ -50,7 +50,7 @@ It then performs a search and replace and directory renames so the project is re
 To ensure notifications are routed to the correct slack channels, update the `alerts-slack-channel` and `releases-slack-channel` parameters in `.circle/config.yml` to an appropriate channel.
 
 ## Imported Types
-Some types are imported from the Open API docs for hmpps-education-and-work-plan-api and prisoner-search-api.  
+Some types are imported from the Open API docs for hmpps-education-and-work-plan-api, prisoner-search-api and curious-api.  
 You will need to install the node module `openapi-typescript` globally with the following command:
 
 `npm install -g openapi-typescript`
@@ -61,9 +61,12 @@ To update the types from the Open API docs run the following commands:
 
 `npx openapi-typescript https://prisoner-offender-search-dev.prison.service.justice.gov.uk/v3/api-docs -o server/@types/prisonerSearchApi/index.d.ts`
 
+`npx openapi-typescript https://raw.githubusercontent.com/ministryofjustice/curious-API/main/curious-api-specification.yaml -o server/@types/curiousApi/index.d.ts`
+
 Note that you will need to run prettier over the generated files and possibly handle other errors before compiling.
 
-The types are inherited for use in `server/@types/educationAndWorkPlanApi/index.d.ts` and `server/@types/prisonerSearchApi/index.d.ts` which may also need tweaking for use.
+The types are inherited for use in `server/@types/educationAndWorkPlanApi/index.d.ts`, `server/@types/prisonerSearchApi/index.d.ts` 
+and `server/@types/curiousApi/index.d.ts` which may also need tweaking for use.
 
 Do not re-import the specs lightly! Reformatting the generated code with prettier is no small task, especially with large specs such as Prisoner Search.
 
