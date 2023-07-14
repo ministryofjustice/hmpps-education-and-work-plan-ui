@@ -13,7 +13,7 @@ export default class OverviewController {
 
     let prisoner: Prisoner
     try {
-      prisoner = await this.prisonerSearchService.getPrisonerByPrisonNumber(prisonNumber, req.user.token)
+      prisoner = await this.prisonerSearchService.getPrisonerByPrisonNumber(prisonNumber, req.user.username)
     } catch (error) {
       req.session.createGoalForm = undefined
       next(createError(404, 'Prisoner not found'))
