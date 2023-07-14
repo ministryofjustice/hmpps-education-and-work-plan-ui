@@ -54,9 +54,6 @@
             errorMessage: errors | findError('title')
           }) }}
 
-          {% set targetDateError = errors | findError('targetDate') %}
-          {% set targetDateErrorClass = " govuk-input--error" if targetDateError %}
-
           {{ govukRadios({
             name: "targetDateRange",
             id: "targetDateRange",
@@ -85,7 +82,8 @@
                 value: "MORE_THAN_TWELVE_MONTHS",
                 text: "More than 12 months"
               }
-            ]
+            ],
+            errorMessage: errors | findError('targetDateRange')
           }) }}
         </div>
 
