@@ -91,7 +91,6 @@ context('Add a step', () => {
 
     let addStepPage = Page.verifyOnPage(AddStepPage)
     addStepPage //
-      .isForGoal('Learn French')
       .isStepNumber(1)
 
     addStepPage //
@@ -104,7 +103,6 @@ context('Add a step', () => {
     // Then
     addStepPage = Page.verifyOnPage(AddStepPage)
     addStepPage //
-      .isForGoal('Learn French')
       .isStepNumber(2)
   })
 

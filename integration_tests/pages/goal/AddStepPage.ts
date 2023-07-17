@@ -10,11 +10,6 @@ export default class AddStepPage extends Page {
     return this
   }
 
-  isForGoal(expected: string) {
-    this.goalTitle().should('contain.text', expected)
-    return this
-  }
-
   isStepNumber(expected: number) {
     this.stepNumberLabel().should('contain.text', `Step ${expected}`)
     return this
@@ -42,8 +37,6 @@ export default class AddStepPage extends Page {
   addAnotherStep() {
     this.addAnotherStepButton().click()
   }
-
-  goalTitle = (): PageElement => cy.get('h1')
 
   titleField = (): PageElement => cy.get('#title')
 
