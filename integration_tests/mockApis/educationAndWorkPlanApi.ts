@@ -1,6 +1,7 @@
+import { SuperAgentRequest } from 'superagent'
 import { stubFor } from './wiremock'
 
-const createGoal = () =>
+const createGoal = (): SuperAgentRequest =>
   stubFor({
     request: {
       method: 'POST',
