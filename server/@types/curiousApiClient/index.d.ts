@@ -3,4 +3,5 @@ declare module 'curiousApiClient' {
 
   export type LearnerEducation = components['schemas']['LearnerEducationDTO']
   export type LearnerNeurodivergence = components['schemas']['LearnerNeurodivergenceDTO']
+  export type LearnerProfile = components['schemas']['LearnerProfileDTO']
 }

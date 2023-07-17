@@ -1,7 +1,7 @@
 import { SuperAgentRequest } from 'superagent'
 import { stubFor } from './wiremock'
 
-const stubNeurodivergenceForPrisonerWithAllCategoriesOfSupportNeed = (prisonNumber: string): SuperAgentRequest =>
+const stubNeurodivergenceForPrisonerWithAllCategoriesOfSupportNeed = (prisonNumber = 'G6115VJ'): SuperAgentRequest =>
   stubFor({
     request: {
       method: 'GET',
@@ -26,7 +26,7 @@ const stubNeurodivergenceForPrisonerWithAllCategoriesOfSupportNeed = (prisonNumb
     },
   })
 
-const stubNeurodivergenceForPrisonerWithSelfDeclaredSupportNeeds = (prisonNumber: string): SuperAgentRequest =>
+const stubNeurodivergenceForPrisonerWithSelfDeclaredSupportNeeds = (prisonNumber = 'G6115VJ'): SuperAgentRequest =>
   stubFor({
     request: {
       method: 'GET',
@@ -51,7 +51,7 @@ const stubNeurodivergenceForPrisonerWithSelfDeclaredSupportNeeds = (prisonNumber
     },
   })
 
-const stubNeurodivergenceForPrisonerWithNoCurrentAssessment = (prisonNumber: string): SuperAgentRequest =>
+const stubNeurodivergenceForPrisonerWithNoCurrentAssessment = (prisonNumber = 'G6115VJ'): SuperAgentRequest =>
   stubFor({
     request: {
       method: 'GET',
@@ -64,7 +64,7 @@ const stubNeurodivergenceForPrisonerWithNoCurrentAssessment = (prisonNumber: str
     },
   })
 
-const stubNeurodivergenceForPrisonerNotInCurious = (prisonNumber: string): SuperAgentRequest =>
+const stubNeurodivergenceForPrisonerNotInCurious = (prisonNumber = 'G6115VJ'): SuperAgentRequest =>
   stubFor({
     request: {
       method: 'GET',
@@ -81,7 +81,7 @@ const stubNeurodivergenceForPrisonerNotInCurious = (prisonNumber: string): Super
     },
   })
 
-const stubNeurodivergence401Error = (prisonNumber: string): SuperAgentRequest =>
+const stubNeurodivergence401Error = (prisonNumber = 'G6115VJ'): SuperAgentRequest =>
   stubFor({
     request: {
       method: 'GET',
@@ -98,10 +98,53 @@ const stubNeurodivergence401Error = (prisonNumber: string): SuperAgentRequest =>
     },
   })
 
+const stubLearnerProfile = (prisonNumber = 'G6115VJ'): SuperAgentRequest =>
+  stubFor({
+    request: {
+      method: 'GET',
+      urlPattern: `/learnerProfile/${prisonNumber}`,
+    },
+    response: {
+      status: 200,
+      headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+      jsonBody: [
+        {
+          prn: prisonNumber,
+          establishmentId: 'MDI',
+          establishmentName: 'MOORLAND (HMP & YOI)',
+          uln: '3627609222',
+          lddHealthProblem: 'No information provided by the learner.',
+          priorAttainment: null,
+          qualifications: [
+            {
+              qualificationType: 'Maths',
+              qualificationGrade: 'Entry Level 1',
+              assessmentDate: '2021-07-01',
+            },
+            {
+              qualificationType: 'Digital Literacy',
+              qualificationGrade: 'Entry Level 3',
+              assessmentDate: '2021-07-01',
+            },
+          ],
+          languageStatus: null,
+          plannedHours: null,
+          rapidAssessmentDate: null,
+          inDepthAssessmentDate: null,
+          primaryLDDAndHealthProblem: null,
+          additionalLDDAndHealthProblems: [],
+        },
+      ],
+    },
+  })
+
 export default {
+  // Stubs for Neuro Divergence API
   stubNeurodivergenceForPrisonerWithAllCategoriesOfSupportNeed,
   stubNeurodivergenceForPrisonerWithSelfDeclaredSupportNeeds,
   stubNeurodivergenceForPrisonerWithNoCurrentAssessment,
   stubNeurodivergenceForPrisonerNotInCurious,
   stubNeurodivergence401Error,
+  // Stubs for Learner Profile API
+  stubLearnerProfile,
 }
