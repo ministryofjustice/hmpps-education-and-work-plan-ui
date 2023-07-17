@@ -30,7 +30,7 @@
                 Step {{ step.sequenceNumber }}
               </dt>
               <dd class="govuk-summary-list__value">
-                {{ step.title }} ({{ step.targetDateRange }})
+                {{ step.title }} ({{ step.targetDateRange | formatDateFormValue }})
               </dd>
             </div>
             {% endfor %}
