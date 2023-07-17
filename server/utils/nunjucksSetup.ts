@@ -7,7 +7,7 @@ import { ApplicationInfo } from '../applicationInfo'
 import config from '../config'
 import formatDateFilter from '../filters/formatDateFilter'
 import findErrorFilter from '../filters/findErrorFilter'
-import stepsTableRowFilter from '../filters/stepsTableRowFilter'
+import formatDateFormValue from '../filters/formatDateFormValue'
 
 const production = process.env.NODE_ENV === 'production'
 
@@ -46,7 +46,7 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
   njkEnv.addFilter('initialiseName', initialiseName)
   njkEnv.addFilter('findError', findErrorFilter)
   njkEnv.addFilter('formatDate', formatDateFilter)
-  njkEnv.addFilter('stepsTableRowFilter', stepsTableRowFilter)
+  njkEnv.addFilter('formatDateFormValue', formatDateFormValue)
 
   njkEnv.addGlobal('dpsUrl', config.dpsHomeUrl)
 }

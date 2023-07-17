@@ -1,5 +1,4 @@
 {% extends "../../../partials/layout.njk" %}
-{% from "govuk/components/table/macro.njk" import govukTable %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
 
@@ -18,36 +17,46 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
       <h1 class="govuk-heading-l">Review {{ prisonerSummary.firstName | capitalize }} {{ prisonerSummary.lastName | capitalize }}'s goals</h1>
-    </div>
-  </div>
 
-  <div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
+      <div class="govuk-summary-card">
+        <div class="govuk-summary-card__title-wrapper">
+          <h2 class="govuk-summary-card__title">{{ data.title }}</h2>
+        </div>
+        <div class="govuk-summary-card__content">
+          <dl class="govuk-summary-list">
+            {% for step in data.steps %}
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                Step {{ step.sequenceNumber }}
+              </dt>
+              <dd class="govuk-summary-list__value">
+                {{ step.title }} ({{ step.targetDateRange }})
+              </dd>
+            </div>
+            {% endfor %}
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                Note
+              </dt>
+              <dd class="govuk-summary-list__value">
+                {{ data.note }}
+              </dd>
+            </div>
+          </dl>
+        </div>
+      </div>
 
-        {{ govukTable({
-          caption: 'Goal 1: ' + data.title + '',
-          captionClasses: "govuk-table__caption--m",
-          firstCellIsHeader: false,
-          head: [
-            { text: "Steps" },
-            { text: "Target date" }
-          ],
-          rows: data.steps | stepsTableRowFilter,
-          attributes: { id: 'steps-table' }
+      <form class="form" method="post" novalidate="">
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+
+        {{ govukButton({
+          id: "submit-button",
+          name: "submit-button",
+          text: "Save to learning and work progress plan"
         }) }}
 
-    <form class="form" method="post" novalidate="">
-      <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
-
-      {{ govukButton({
-        id: "submit-button",
-        name: "submit-button",
-        text: "Save to learning and work progress plan"
-      }) }}
-
-    </form>
+      </form>
 
     </div>
   </div>
-
 {% endblock %}
