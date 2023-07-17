@@ -1,18 +1,12 @@
+import type { Prisoner } from 'prisonRegisterApiClient'
 import { SessionData } from 'express-session'
 import { NextFunction, Request, Response } from 'express'
-import createError from 'http-errors'
-import type { Prisoner } from 'prisonRegisterApiClient'
 import type { PrisonerSummary } from 'viewModels'
 import OverviewController from './overviewController'
-import { PrisonerSearchService } from '../../services'
 import OverviewView from './overviewView'
 
 describe('overviewController', () => {
-  const prisonerSearchService = {
-    getPrisonerByPrisonNumber: jest.fn(),
-  }
-
-  const controller = new OverviewController(prisonerSearchService as unknown as PrisonerSearchService)
+  const controller = new OverviewController()
 
   const req = {
     session: {} as SessionData,
@@ -35,7 +29,7 @@ describe('overviewController', () => {
     req.params = {} as Record<string, string>
   })
 
-  it('should get overview view given prisoner is retrieved from prisoner-search API', async () => {
+  it('should get overview view', async () => {
     // Given
     const username = 'a-dps-user'
     req.user.username = username
@@ -45,8 +39,8 @@ describe('overviewController', () => {
 
     const prisonNumber = 'A1234GC'
     req.params.prisonNumber = prisonNumber
-    const prisoner = { prisonerNumber: prisonNumber } as Prisoner
-    prisonerSearchService.getPrisonerByPrisonNumber.mockResolvedValue(prisoner)
+
+    req.session.prisonerSummary = { prisonNumber } as Prisoner
 
     const expectedPrisonerSummary = { prisonNumber } as PrisonerSummary
     const expectedView = new OverviewView(expectedPrisonerSummary, expectedTab, prisonNumber)
@@ -59,31 +53,6 @@ describe('overviewController', () => {
     )
 
     // Then
-    expect(prisonerSearchService.getPrisonerByPrisonNumber).toHaveBeenCalledWith(prisonNumber, username)
     expect(res.render).toHaveBeenCalledWith('pages/overview/index', expectedView.renderArgs)
-  })
-
-  it('should not get overview view given prisoner is not retrieved from prisoner-search API', async () => {
-    // Given
-    const username = 'a-dps-user'
-    req.user.username = username
-
-    const prisonNumber = 'A1234GC'
-    req.params.prisonNumber = prisonNumber
-
-    prisonerSearchService.getPrisonerByPrisonNumber.mockRejectedValue(Error('some error'))
-
-    const expectedError = createError(404, 'Prisoner not found')
-
-    // When
-    await controller.getOverviewView(
-      req as undefined as Request,
-      res as undefined as Response,
-      next as undefined as NextFunction,
-    )
-
-    // Then
-    expect(prisonerSearchService.getPrisonerByPrisonNumber).toHaveBeenCalledWith(prisonNumber, username)
-    expect(next).toHaveBeenCalledWith(expectedError)
   })
 })
