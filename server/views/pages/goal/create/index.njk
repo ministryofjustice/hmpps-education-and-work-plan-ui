@@ -1,15 +1,13 @@
 {% extends "../../../partials/layout.njk" %}
-{% from "govuk/components/textarea/macro.njk" import govukTextarea %}
-{% from "govuk/components/date-input/macro.njk" import govukDateInput %}
-{% from "govuk/components/button/macro.njk" import govukButton %}
-{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
 
 {% set pageId = "create-goal" %}
-{% set pageTitle = applicationName + " - Home" %}
-{% set mainClasses = "app-container govuk-body" %}
+{% set pageTitle = "Describe the goal you want to create for " + prisonerSummary.firstName | capitalize + " " + prisonerSummary.lastName | capitalize %}
 
 {% block beforeContent %}
-  {% include "../../../partials/breadCrumb.njk" %}
+  {{ govukBackLink({
+    text: "Back",
+    href: "/plan/" + prisonerSummary.prisonNumber + "/view/overview"
+  }) }}
 {% endblock %}
 
 {% block content %}
@@ -22,11 +20,9 @@
     }) }}
   {% endif %}
 
-  {% include "../../../partials/prisonerBanner.njk" %}
-
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-      <h1 class="govuk-heading-l">Describe the goal you want to create for {{ prisonerSummary.firstName | capitalize }} {{ prisonerSummary.lastName | capitalize }}</h1>
+      <h1 class="govuk-heading-l">{{ pageTitle }}</h1>
     </div>
   </div>
 

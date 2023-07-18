@@ -1,15 +1,13 @@
 {% extends "../../../partials/layout.njk" %}
-{% from "govuk/components/input/macro.njk" import govukInput %}
-{% from "govuk/components/radios/macro.njk" import govukRadios %}
-{% from "govuk/components/button/macro.njk" import govukButton %}
-{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
 
 {% set pageId = "add-step" %}
-{% set pageTitle = applicationName + " - Home" %}
-{% set mainClasses = "app-container govuk-body" %}
+{% set pageTitle = "What are the steps to help them achieve their goal?" %}
 
 {% block beforeContent %}
-  {% include "../../../partials/breadCrumb.njk" %}
+  {{ govukBackLink({
+    text: "Back",
+    href: "/plan/" + prisonerSummary.prisonNumber + "/goals/create"
+  }) }}
 {% endblock %}
 
 {% block content %}
@@ -22,11 +20,9 @@
     }) }}
   {% endif %}
 
-  {% include "../../../partials/prisonerBanner.njk" %}
-
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-      <h1 class="govuk-heading-l">What are the steps to help them achieve their goal?</h1>
+      <h1 class="govuk-heading-l">{{ pageTitle }}</h1>
     </div>
   </div>
 

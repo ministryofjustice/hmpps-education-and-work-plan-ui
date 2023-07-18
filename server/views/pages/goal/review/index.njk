@@ -3,20 +3,21 @@
 {% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
 
 {% set pageId = "review" %}
-{% set pageTitle = applicationName + " - Home" %}
-{% set mainClasses = "app-container govuk-body" %}
+{% set pageTitle = "Review " + prisonerSummary.firstName | capitalize + " " + prisonerSummary.lastName | capitalize + "'s goals" %}
 
 {% block beforeContent %}
-  {% include "../../../partials/breadCrumb.njk" %}
+  {{ govukBackLink({
+    text: "Back",
+    href: "/plan/" + prisonerSummary.prisonNumber + "/goals/add-note"
+  }) }}
 {% endblock %}
 
 {% block content %}
-
-  {% include "../../../partials/prisonerBanner.njk" %}
-
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-      <h1 class="govuk-heading-l">Review {{ prisonerSummary.firstName | capitalize }} {{ prisonerSummary.lastName | capitalize }}'s goals</h1>
+      <h1 class="govuk-heading-l">{{ pageTitle }}</h1>
+    </div>
+  </div>
 
       <div class="govuk-summary-card">
         <div class="govuk-summary-card__title-wrapper">

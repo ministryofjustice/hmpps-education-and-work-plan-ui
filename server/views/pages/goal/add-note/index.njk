@@ -1,14 +1,13 @@
 {% extends "../../../partials/layout.njk" %}
-{% from "govuk/components/textarea/macro.njk" import govukTextarea %}
-{% from "govuk/components/button/macro.njk" import govukButton %}
-{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
 
 {% set pageId = "add-note" %}
-{% set pageTitle = applicationName + " - Home" %}
-{% set mainClasses = "app-container govuk-body" %}
+{% set pageTitle = "Add a note to this goal (optional)" %}
 
 {% block beforeContent %}
-  {% include "../../../partials/breadCrumb.njk" %}
+  {{ govukBackLink({
+    text: "Back",
+    href: "/plan/" + prisonerSummary.prisonNumber + "/goals/add-step"
+  }) }}
 {% endblock %}
 
 {% block content %}
@@ -20,8 +19,6 @@
       attributes: { 'data-qa-errors': true }
     }) }}
   {% endif %}
-
-  {% include "../../../partials/prisonerBanner.njk" %}
 
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
@@ -35,7 +32,7 @@
             id: "note",
             value: form.note,
             label: {
-              text: "Add a note to this goal (optional)",
+              text: pageTitle,
               classes: "govuk-label--l",
               isPageHeading: true
             },
