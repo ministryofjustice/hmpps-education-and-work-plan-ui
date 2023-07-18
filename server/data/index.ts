@@ -15,6 +15,7 @@ import { createRedisClient } from './redisClient'
 import TokenStore from './tokenStore'
 import PrisonerSearchClient from './prisonerSearchClient'
 import EducationAndWorkPlanClient from './educationAndWorkPlanClient'
+import CuriousClient from './curiousClient'
 
 type RestClientBuilder<T> = (token: string) => T
 
@@ -23,8 +24,9 @@ export const dataAccess = () => ({
   hmppsAuthClient: new HmppsAuthClient(new TokenStore(createRedisClient())),
   prisonerSearchClient: new PrisonerSearchClient(),
   educationAndWorkPlanClient: new EducationAndWorkPlanClient(),
+  curiousClient: new CuriousClient(),
 })
 
 export type DataAccess = ReturnType<typeof dataAccess>
 
-export { HmppsAuthClient, RestClientBuilder, PrisonerSearchClient, EducationAndWorkPlanClient }
+export { HmppsAuthClient, RestClientBuilder, PrisonerSearchClient, EducationAndWorkPlanClient, CuriousClient }

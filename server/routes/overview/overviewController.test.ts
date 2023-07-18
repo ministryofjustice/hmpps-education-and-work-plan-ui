@@ -1,9 +1,10 @@
 import type { Prisoner } from 'prisonRegisterApiClient'
+import type { PrisonerSummary } from 'viewModels'
 import { SessionData } from 'express-session'
 import { NextFunction, Request, Response } from 'express'
-import type { PrisonerSummary } from 'viewModels'
 import OverviewController from './overviewController'
 import OverviewView from './overviewView'
+import aValidSupportNeeds from '../../testsupport/supportNeedsTestDataBuilder'
 
 describe('overviewController', () => {
   const controller = new OverviewController()
@@ -41,9 +42,11 @@ describe('overviewController', () => {
     req.params.prisonNumber = prisonNumber
 
     req.session.prisonerSummary = { prisonNumber } as Prisoner
+    req.session.supportNeeds = aValidSupportNeeds()
 
     const expectedPrisonerSummary = { prisonNumber } as PrisonerSummary
-    const expectedView = new OverviewView(expectedPrisonerSummary, expectedTab, prisonNumber)
+    const expectedSupportNeeds = req.session.supportNeeds
+    const expectedView = new OverviewView(expectedPrisonerSummary, expectedTab, prisonNumber, expectedSupportNeeds)
 
     // When
     await controller.getOverviewView(
