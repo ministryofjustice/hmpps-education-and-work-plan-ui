@@ -45,7 +45,7 @@ context('Add a note', () => {
       .submitPage()
 
     const addNotePage = Page.verifyOnPage(AddNotePage)
-    addNotePage.isForPrisoner(prisonNumber)
+    addNotePage.hasBackLinkForPrisoner(prisonNumber)
 
     const someOtherPrisonNumber = 'H4115SD'
 
@@ -77,7 +77,6 @@ context('Add a note', () => {
     // Then
     const addStepPage = Page.verifyOnPage(AddStepPage)
     addStepPage //
-      .isForPrisoner(prisonNumber)
       .isStepNumber(1)
   })
 
@@ -107,6 +106,6 @@ context('Add a note', () => {
     // Then
     const reviewPage = Page.verifyOnPage(ReviewPage)
     reviewPage //
-      .isForPrisoner(prisonNumber)
+      .hasBackLinkForPrisoner(prisonNumber)
   })
 })

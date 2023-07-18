@@ -38,7 +38,7 @@ context('Add a step', () => {
       .submitPage()
 
     const addStepPage = Page.verifyOnPage(AddStepPage)
-    addStepPage.isForPrisoner(prisonNumber)
+    addStepPage.hasBackLinkForPrisoner(prisonNumber)
 
     const someOtherPrisonNumber = 'H4115SD'
 

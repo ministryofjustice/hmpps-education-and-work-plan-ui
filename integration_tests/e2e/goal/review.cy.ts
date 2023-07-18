@@ -47,7 +47,7 @@ context('Review goal(s)', () => {
 
     const addNotePage = Page.verifyOnPage(AddNotePage)
     addNotePage //
-      .isForPrisoner(prisonNumber)
+      .hasBackLinkForPrisoner(prisonNumber)
       .submitPage()
     Page.verifyOnPage(ReviewPage)
 
@@ -108,7 +108,7 @@ context('Review goal(s)', () => {
 
     const reviewPage = Page.verifyOnPage(ReviewPage)
     reviewPage //
-      .isForPrisoner(prisonNumber)
+      .hasBackLinkForPrisoner(prisonNumber)
 
     // When
     reviewPage.submitPage()

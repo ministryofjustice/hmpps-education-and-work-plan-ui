@@ -10,9 +10,16 @@ export default class ReviewPage extends Page {
     return this
   }
 
+  hasBackLinkForPrisoner(expected: string) {
+    this.backLink().should('have.attr', 'href').and('contains', expected)
+    return this
+  }
+
   submitPage() {
     this.submitButton().click()
   }
+
+  backLink = (): PageElement => cy.get('.govuk-back-link')
 
   submitButton = (): PageElement => cy.get('#submit-button')
 

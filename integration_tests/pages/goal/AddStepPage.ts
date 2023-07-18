@@ -10,6 +10,11 @@ export default class AddStepPage extends Page {
     return this
   }
 
+  hasBackLinkForPrisoner(expected: string) {
+    this.backLink().should('have.attr', 'href').and('contains', expected)
+    return this
+  }
+
   isStepNumber(expected: number) {
     this.stepNumberLabel().should('contain.text', `Step ${expected}`)
     return this
@@ -37,6 +42,8 @@ export default class AddStepPage extends Page {
   addAnotherStep() {
     this.addAnotherStepButton().click()
   }
+
+  backLink = (): PageElement => cy.get('.govuk-back-link')
 
   titleField = (): PageElement => cy.get('#title')
 

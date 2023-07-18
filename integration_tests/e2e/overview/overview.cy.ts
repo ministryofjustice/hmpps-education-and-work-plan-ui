@@ -58,6 +58,6 @@ context('Prisoner Overview page', () => {
 
     // Then
     const createGoalPage = Page.verifyOnPage(CreateGoalPage)
-    createGoalPage.isForPrisoner(prisonNumber)
+    createGoalPage.hasBackLinkForPrisoner(prisonNumber)
   })
 })

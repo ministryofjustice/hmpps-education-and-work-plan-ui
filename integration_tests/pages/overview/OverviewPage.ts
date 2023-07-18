@@ -11,6 +11,11 @@ export default class OverviewPage extends Page {
     return this
   }
 
+  hasBackLinkForPrisoner(expected: string) {
+    this.backLink().should('have.attr', 'href').and('contains', expected)
+    return this
+  }
+
   hasAddGoalButtonDisplayed() {
     this.addGoalButton().should('be.visible')
     return this
@@ -30,6 +35,8 @@ export default class OverviewPage extends Page {
     this.activeTab().should('contain.text', expected)
     return this
   }
+
+  backLink = (): PageElement => cy.get('.govuk-back-link')
 
   prisonNumberLabel = (): PageElement => cy.get('[data-qa=prison-number]')
 

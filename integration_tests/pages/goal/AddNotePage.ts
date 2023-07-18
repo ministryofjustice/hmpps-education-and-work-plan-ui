@@ -10,6 +10,11 @@ export default class AddNotePage extends Page {
     return this
   }
 
+  hasBackLinkForPrisoner(expected: string) {
+    this.backLink().should('have.attr', 'href').and('contains', expected)
+    return this
+  }
+
   setNote(note: string) {
     this.noteField().clear().type(note)
     return this
@@ -18,6 +23,8 @@ export default class AddNotePage extends Page {
   submitPage() {
     this.submitButton().click()
   }
+
+  backLink = (): PageElement => cy.get('.govuk-back-link')
 
   noteField = (): PageElement => cy.get('#note')
 

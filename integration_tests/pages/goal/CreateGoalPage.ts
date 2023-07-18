@@ -10,6 +10,11 @@ export default class CreateGoalPage extends Page {
     return this
   }
 
+  hasBackLinkForPrisoner(expected: string) {
+    this.backLink().should('have.attr', 'href').and('contains', expected)
+    return this
+  }
+
   setGoalTitle(title: string) {
     this.titleField().clear().type(title)
     return this
@@ -23,6 +28,8 @@ export default class CreateGoalPage extends Page {
   submitPage() {
     this.submitButton().click()
   }
+
+  backLink = (): PageElement => cy.get('.govuk-back-link')
 
   titleField = (): PageElement => cy.get('#title')
 
