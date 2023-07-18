@@ -1,15 +1,13 @@
-{% from "govuk/components/breadcrumbs/macro.njk" import govukBreadcrumbs %}
-
-    {{ govukBreadcrumbs({
-        items: [
-            {
-                text: "Digital prison services",
-                href: dpsUrl
-            },
-            {
-                text: "Learning plans",
-                href: "/"
-            }
-        ],
-        classes: 'govuk-!-display-none-print'
-    }) }}
+{{ govukBreadcrumbs({
+  items: [
+    {
+      text: applicationName,
+      href: dpsUrl
+    },
+    {
+      text: "Manage learning and work progress",
+      href: "/"
+    }
+  ],
+  classes: 'govuk-!-display-none-print'
+}) }}
