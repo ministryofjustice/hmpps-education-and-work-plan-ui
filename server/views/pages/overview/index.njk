@@ -1,6 +1,6 @@
 {% extends "../../partials/layout.njk" %}
 
-{% set pageTitle = "Manage learning plan" %}
+{% set pageTitle = "Manage " + prisonerSummary.firstName | capitalize + " " + prisonerSummary.lastName | capitalize + "'s learning plan"  %}
 {% set pageId = "overview" %}
 
 {% block beforeContent %}
@@ -13,7 +13,7 @@
 
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-      <h1 class="govuk-heading-l">Manage {{ prisonerSummary.firstName | capitalize }} {{ prisonerSummary.lastName | capitalize }}'s learning plan</h1>
+      <h1 class="govuk-heading-l">{{ pageTitle }}</h1>
     </div>
   </div>
 
