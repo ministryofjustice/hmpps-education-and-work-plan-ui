@@ -1,28 +1,31 @@
-{% from "govuk/components/button/macro.njk" import govukButton %}
-{% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
-
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds">
 
-    {% set insetHtml %}
-      <div>
-        <strong>Goals</strong>
+    <div class="moj-page-header-actions">
+  
+      <div class="moj-page-header-actions__title">
+        <h1 class="govuk-heading-m">Goals</h1>
       </div>
-      <div>
-        {% if hasEditAuthority %}
-          {{ govukButton({
-            text: "Add a new goal",
-            href: "/plan/" + prisonNumber + "/goals/create",
-            id: "add-goal-button"
-          }) }}
-        {% endif %}
-      </div>
-    {% endset %}
 
-    {{ govukInsetText({
-      html: insetHtml,
-      id: "overview-goals-inset"
-    }) }}
+      <div class="moj-page-header-actions__actions">
+        <div class="moj-button-menu">
+          <div class="moj-button-menu__wrapper">
+
+            {% if hasEditAuthority %}
+              {{ govukButton({
+                text: "Add a new goal",
+                href: "/plan/" + prisonNumber + "/goals/create",
+                id: "add-goal-button",
+                classes: "moj-page-header-actions__action"
+              }) }}
+            {% endif %}
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+
 
   </div>
 </div>
