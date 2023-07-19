@@ -7,23 +7,17 @@ export default class CuriousClient {
     return new RestClient('Curious API Client', config.apis.curious, token)
   }
 
-  async getLearnerProfile(prisonNumber: string, establishmentId: string, token: string): Promise<LearnerProfile> {
+  async getLearnerProfile(prisonNumber: string, token: string): Promise<Array<LearnerProfile>> {
     const learnerProfiles = (await CuriousClient.restClient(token).get({
       path: `/learnerProfile/${prisonNumber}`,
-      query: `establishmentId=${establishmentId}`,
     })) as Array<LearnerProfile>
-    return learnerProfiles.pop()
+    return learnerProfiles
   }
 
-  async getLearnerNeurodivergence(
-    prisonNumber: string,
-    establishmentId: string,
-    token: string,
-  ): Promise<LearnerNeurodivergence> {
+  async getLearnerNeurodivergence(prisonNumber: string, token: string): Promise<LearnerNeurodivergence> {
     const learnerNeurodivergence = (await CuriousClient.restClient(token).get({
       path: `/learnerNeurodivergence/${prisonNumber}`,
-      query: `establishmentId=${establishmentId}`,
     })) as Array<LearnerNeurodivergence>
-    return learnerNeurodivergence.pop()
+    return learnerNeurodivergence
   }
 }

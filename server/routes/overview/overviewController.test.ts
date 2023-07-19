@@ -4,7 +4,7 @@ import { SessionData } from 'express-session'
 import { NextFunction, Request, Response } from 'express'
 import OverviewController from './overviewController'
 import OverviewView from './overviewView'
-import aValidSupportNeeds from '../../testsupport/supportNeedsTestDataBuilder'
+import aValidPrisonerSupportNeeds from '../../testsupport/supportNeedsTestDataBuilder'
 import SupportNeedsView from './supportNeedsView'
 
 describe('overviewController', () => {
@@ -70,7 +70,7 @@ describe('overviewController', () => {
     req.params.prisonNumber = prisonNumber
 
     req.session.prisonerSummary = { prisonNumber } as Prisoner
-    req.session.supportNeeds = aValidSupportNeeds()
+    req.session.supportNeeds = aValidPrisonerSupportNeeds()
 
     const expectedPrisonerSummary = { prisonNumber } as PrisonerSummary
     const expectedSupportNeeds = req.session.supportNeeds

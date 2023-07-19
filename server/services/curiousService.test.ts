@@ -1,4 +1,4 @@
-import type { SupportNeeds } from 'viewModels'
+import type { PrisonerSupportNeeds, HealthAndSupportNeeds, Neurodiversity } from 'viewModels'
 import moment from 'moment'
 import { CuriousClient, HmppsAuthClient } from '../data'
 import CuriousService from './curiousService'
@@ -27,42 +27,50 @@ describe('curiousService', () => {
     it('should get learner profile by prison number and establishment ID', async () => {
       // Given
       const prisonNumber = 'A1234BC'
-      const establishmentId = 'MDI'
-      const learnerProfile = aValidLearnerProfile()
-      const learnerNeurodivergence = aValidLearnerNeurodivergence()
+      const learnerProfiles = [aValidLearnerProfile()]
+      const learnerNeurodivergences = [aValidLearnerNeurodivergence()]
 
       const username = 'a-dps-user'
       const systemToken = 'a-system-token'
       hmppsAuthClient.getSystemClientToken.mockImplementation(() => Promise.resolve(systemToken))
 
       const expectedSupportNeeds = {
-        languageSupportNeeded: false,
-        lddAndHealthNeeds: ['Visual impairment', 'Hearing impairment'],
-        neurodiversity: {
-          supportNeeded: ['Writing support'],
-          supportNeededRecordedDate: moment('2022-02-18').toDate(),
-          selfDeclaredNeurodiversity: ['Dyslexia'],
-          selfDeclaredRecordedDate: moment('2022-02-18').toDate(),
-          assessedNeurodiversity: ['No Identified Neurodiversity Need'],
-          assessmentDate: moment('2022-05-18').toDate(),
-        },
-      } as SupportNeeds
-      curiousClient.getLearnerProfile.mockImplementation(() => Promise.resolve(learnerProfile))
-      curiousClient.getLearnerNeurodivergence.mockImplementation(() => Promise.resolve(learnerNeurodivergence))
+        healthAndSupportNeeds: [
+          {
+            prisonId: 'MDI',
+            prisonName: 'MOORLAND (HMP & YOI)',
+            languageSupportNeeded: 'Bilingual',
+            lddAndHealthNeeds: ['Visual impairment', 'Hearing impairment'],
+          } as HealthAndSupportNeeds,
+        ],
+        neurodiversities: [
+          {
+            prisonId: 'MDI',
+            prisonName: 'MOORLAND (HMP & YOI)',
+            supportNeeded: ['Writing support'],
+            supportNeededRecordedDate: moment('2022-02-18').toDate(),
+            selfDeclaredNeurodiversity: ['Dyslexia'],
+            selfDeclaredRecordedDate: moment('2022-02-18').toDate(),
+            assessedNeurodiversity: ['No Identified Neurodiversity Need'],
+            assessmentDate: moment('2022-05-18').toDate(),
+          } as Neurodiversity,
+        ],
+      } as PrisonerSupportNeeds
+      curiousClient.getLearnerProfile.mockImplementation(() => Promise.resolve(learnerProfiles))
+      curiousClient.getLearnerNeurodivergence.mockImplementation(() => Promise.resolve(learnerNeurodivergences))
 
       // When
-      const actual = await curiousService.getPrisonerSupportNeeds(prisonNumber, establishmentId, username)
+      const actual = await curiousService.getPrisonerSupportNeeds(prisonNumber, username)
 
       // Then
       expect(actual).toEqual(expectedSupportNeeds)
-      expect(curiousClient.getLearnerProfile).toHaveBeenCalledWith(prisonNumber, establishmentId, systemToken)
-      expect(curiousClient.getLearnerNeurodivergence).toHaveBeenCalledWith(prisonNumber, establishmentId, systemToken)
+      expect(curiousClient.getLearnerProfile).toHaveBeenCalledWith(prisonNumber, systemToken)
+      expect(curiousClient.getLearnerNeurodivergence).toHaveBeenCalledWith(prisonNumber, systemToken)
     })
 
     it('should not get learner profile given Curious returns an error', async () => {
       // Given
       const prisonNumber = 'A1234BC'
-      const establishmentId = 'MDI'
       const username = 'a-dps-user'
       const systemToken = 'a-system-token'
       hmppsAuthClient.getSystemClientToken.mockImplementation(() => Promise.resolve(systemToken))
@@ -70,11 +78,9 @@ describe('curiousService', () => {
       curiousClient.getLearnerProfile.mockImplementation(() => Promise.reject(Error('Not Found')))
 
       // When
-      const actual = await curiousService
-        .getPrisonerSupportNeeds(prisonNumber, establishmentId, username)
-        .catch(error => {
-          return error
-        })
+      const actual = await curiousService.getPrisonerSupportNeeds(prisonNumber, username).catch(error => {
+        return error
+      })
 
       // Then
       expect(actual).toEqual(Error('Not Found'))

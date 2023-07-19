@@ -13,15 +13,10 @@ export default class PrisonerSupportNeedsRequestHandler {
    */
   getPrisonerSupportNeeds: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
     const { prisonNumber } = req.params
-    const { prisonerSummary } = req.session
 
     try {
       if (!req.session.supportNeeds) {
-        req.session.supportNeeds = await this.curiousService.getPrisonerSupportNeeds(
-          prisonNumber,
-          prisonerSummary.establishmentId,
-          req.user.username,
-        )
+        req.session.supportNeeds = await this.curiousService.getPrisonerSupportNeeds(prisonNumber, req.user.username)
       }
       next()
     } catch (error) {

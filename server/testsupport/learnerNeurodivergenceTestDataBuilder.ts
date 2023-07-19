@@ -4,6 +4,7 @@ export default function aValidLearnerNeurodivergence(): LearnerNeurodivergence {
   return {
     prn: 'G6123VU',
     establishmentId: 'MDI',
+    establishmentName: 'MOORLAND (HMP & YOI)',
     neurodivergenceSelfDeclared: ['Dyslexia'],
     selfDeclaredDate: '2022-02-18',
     neurodivergenceAssessed: ['No Identified Neurodiversity Need'],

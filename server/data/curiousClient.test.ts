@@ -21,13 +21,12 @@ describe('curiousClient', () => {
     it('should get learner profile', async () => {
       // Given
       const prisonNumber = 'A1234BC'
-      const establishmentId = 'MDI'
       const systemToken = 'a-system-token'
 
       const learnerProfile: Array<LearnerProfile> = [
         {
           prn: prisonNumber,
-          establishmentId,
+          establishmentId: 'MDI',
           establishmentName: 'MOORLAND (HMP & YOI)',
           uln: '3627609222',
           lddHealthProblem: 'No information provided by the learner.',
@@ -52,13 +51,13 @@ describe('curiousClient', () => {
           additionalLDDAndHealthProblems: [],
         },
       ]
-      curiousApi.get(`/learnerProfile/${prisonNumber}?establishmentId=${establishmentId}`).reply(200, learnerProfile)
+      curiousApi.get(`/learnerProfile/${prisonNumber}`).reply(200, learnerProfile)
 
       // When
-      const actual = await curiousClient.getLearnerProfile(prisonNumber, establishmentId, systemToken)
+      const actual = await curiousClient.getLearnerProfile(prisonNumber, systemToken)
 
       // Then
-      expect(actual).toEqual(learnerProfile.pop())
+      expect(actual).toEqual(learnerProfile)
       expect(nock.isDone()).toBe(true)
     })
   })
@@ -67,13 +66,12 @@ describe('curiousClient', () => {
     it('should get learner neuro divergence', async () => {
       // Given
       const prisonNumber = 'A1234BC'
-      const establishmentId = 'DNI'
       const systemToken = 'a-system-token'
 
       const learnerNeurodivergence: Array<LearnerNeurodivergence> = [
         {
           prn: prisonNumber,
-          establishmentId,
+          establishmentId: 'DNI',
           establishmentName: 'DONCASTER (HMP)',
           neurodivergenceSelfDeclared: ['ADHD'],
           selfDeclaredDate: '2022-05-16',
@@ -83,15 +81,13 @@ describe('curiousClient', () => {
           supportDate: '2022-05-16',
         },
       ]
-      curiousApi
-        .get(`/learnerNeurodivergence/${prisonNumber}?establishmentId=${establishmentId}`)
-        .reply(200, learnerNeurodivergence)
+      curiousApi.get(`/learnerNeurodivergence/${prisonNumber}`).reply(200, learnerNeurodivergence)
 
       // When
-      const actual = await curiousClient.getLearnerNeurodivergence(prisonNumber, establishmentId, systemToken)
+      const actual = await curiousClient.getLearnerNeurodivergence(prisonNumber, systemToken)
 
       // Then
-      expect(actual).toEqual(learnerNeurodivergence.pop())
+      expect(actual).toEqual(learnerNeurodivergence)
       expect(nock.isDone()).toBe(true)
     })
   })

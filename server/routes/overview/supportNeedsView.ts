@@ -1,18 +1,18 @@
-import type { PrisonerSummary, SupportNeeds } from 'viewModels'
+import type { PrisonerSummary, PrisonerSupportNeeds } from 'viewModels'
 
 export default class SupportNeedsView {
   constructor(
     private readonly prisonerSummary: PrisonerSummary,
     private readonly tab: string,
     private readonly prisonNumber: string,
-    private readonly supportNeeds: SupportNeeds,
+    private readonly supportNeeds: PrisonerSupportNeeds,
   ) {}
 
   get renderArgs(): {
     prisonerSummary: PrisonerSummary
     tab: string
     prisonNumber: string
-    supportNeeds: SupportNeeds
+    supportNeeds: PrisonerSupportNeeds
   } {
     return {
       prisonerSummary: this.prisonerSummary,

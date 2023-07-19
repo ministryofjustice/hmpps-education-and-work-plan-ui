@@ -1,10 +1,9 @@
 import { SessionData } from 'express-session'
 import { NextFunction, Request, Response } from 'express'
-import type { PrisonerSummary } from 'viewModels'
 import createError from 'http-errors'
 import { CuriousService } from '../../services'
 import PrisonerSupportNeedsRequestHandler from './prisonerSupportNeedsRequestHandler'
-import aValidSupportNeeds from '../../testsupport/supportNeedsTestDataBuilder'
+import aValidPrisonerSupportNeeds from '../../testsupport/supportNeedsTestDataBuilder'
 
 describe('prisonerSupportNeedsRequestHandler', () => {
   const curiousService = {
@@ -41,12 +40,9 @@ describe('prisonerSupportNeedsRequestHandler', () => {
     req.user.username = username
 
     const prisonNumber = 'A1234GC'
-    const establishmentId = 'MDI'
-    const prisonerSummary = { prisonNumber, establishmentId } as PrisonerSummary
-    req.session.prisonerSummary = prisonerSummary
     req.params.prisonNumber = prisonNumber
 
-    const supportNeeds = aValidSupportNeeds()
+    const supportNeeds = aValidPrisonerSupportNeeds()
     curiousService.getPrisonerSupportNeeds.mockResolvedValue(supportNeeds)
 
     // When
@@ -57,14 +53,14 @@ describe('prisonerSupportNeedsRequestHandler', () => {
     )
 
     // Then
-    expect(curiousService.getPrisonerSupportNeeds).toHaveBeenCalledWith(prisonNumber, establishmentId, username)
+    expect(curiousService.getPrisonerSupportNeeds).toHaveBeenCalledWith(prisonNumber, username)
     expect(req.session.supportNeeds).toEqual(supportNeeds)
     expect(next).toHaveBeenCalled()
   })
 
   it('should not retrieve support needs given support needs already in session', async () => {
     // Given
-    const supportNeeds = aValidSupportNeeds()
+    const supportNeeds = aValidPrisonerSupportNeeds()
     req.session.supportNeeds = supportNeeds
     const prisonNumber = 'A1234GC'
     req.params.prisonNumber = prisonNumber
@@ -89,9 +85,6 @@ describe('prisonerSupportNeedsRequestHandler', () => {
     req.user.username = username
 
     const prisonNumber = 'A1234GC'
-    const establishmentId = 'MDI'
-    const prisonerSummary = { prisonNumber, establishmentId } as PrisonerSummary
-    req.session.prisonerSummary = prisonerSummary
     req.params.prisonNumber = prisonNumber
 
     curiousService.getPrisonerSupportNeeds.mockRejectedValue(Error('some error'))
@@ -105,7 +98,7 @@ describe('prisonerSupportNeedsRequestHandler', () => {
     )
 
     // Then
-    expect(curiousService.getPrisonerSupportNeeds).toHaveBeenCalledWith(prisonNumber, establishmentId, username)
+    expect(curiousService.getPrisonerSupportNeeds).toHaveBeenCalledWith(prisonNumber, username)
     expect(req.session.supportNeeds).toBeUndefined()
     expect(next).toHaveBeenCalledWith(expectedError)
   })
