@@ -10,14 +10,14 @@ export default class CuriousClient {
   async getLearnerProfile(prisonNumber: string, token: string): Promise<Array<LearnerProfile>> {
     const learnerProfiles = (await CuriousClient.restClient(token).get({
       path: `/learnerProfile/${prisonNumber}`,
-    })) as Array<LearnerProfile>
+    })) as Promise<Array<LearnerProfile>>
     return learnerProfiles
   }
 
   async getLearnerNeurodivergence(prisonNumber: string, token: string): Promise<LearnerNeurodivergence> {
     const learnerNeurodivergence = (await CuriousClient.restClient(token).get({
       path: `/learnerNeurodivergence/${prisonNumber}`,
-    })) as Array<LearnerNeurodivergence>
+    })) as Promise<Array<LearnerNeurodivergence>>
     return learnerNeurodivergence
   }
 }
