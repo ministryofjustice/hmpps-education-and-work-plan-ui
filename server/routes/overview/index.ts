@@ -18,4 +18,5 @@ export default (router: Router, services: Services) => {
 
   router.get('/plan/:prisonNumber/view/overview', [overViewController.getOverviewView])
   router.get('/plan/:prisonNumber/view/support-needs', [overViewController.getSupportNeedsView])
+  router.get('/plan/:prisonNumber/view/education-and-training', [overViewController.getEducationAndTrainingNeeds])
 }
