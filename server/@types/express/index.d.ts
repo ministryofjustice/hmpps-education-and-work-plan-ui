@@ -1,4 +1,4 @@
-import type { PrisonerSummary } from 'viewModels'
+import type { PrisonerSummary, PrisonerSupportNeeds } from 'viewModels'
 import type { AddNoteForm, AddStepForm, CreateGoalForm } from 'forms'
 
 export default {}
@@ -9,6 +9,7 @@ declare module 'express-session' {
     returnTo: string
     nowInMinutes: number
     prisonerSummary: PrisonerSummary
+    supportNeeds: PrisonerSupportNeeds
     createGoalForm: CreateGoalForm
     addStepForm: AddStepForm
     addStepForms: Array<AddStepForm>
