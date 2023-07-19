@@ -1,4 +1,5 @@
 import type { SupportNeeds } from 'viewModels'
+import moment from 'moment'
 import { CuriousClient, HmppsAuthClient } from '../data'
 import CuriousService from './curiousService'
 import aValidLearnerProfile from '../testsupport/learnerProfileTestDataBuilder'
@@ -39,8 +40,11 @@ describe('curiousService', () => {
         lddAndHealthNeeds: ['Visual impairment', 'Hearing impairment'],
         neurodiversity: {
           supportNeeded: ['Writing support'],
+          supportNeededRecordedDate: moment('2022-02-18').toDate(),
           selfDeclaredNeurodiversity: ['Dyslexia'],
+          selfDeclaredRecordedDate: moment('2022-02-18').toDate(),
           assessedNeurodiversity: ['No Identified Neurodiversity Need'],
+          assessmentDate: moment('2022-05-18').toDate(),
         },
       } as SupportNeeds
       curiousClient.getLearnerProfile.mockImplementation(() => Promise.resolve(learnerProfile))

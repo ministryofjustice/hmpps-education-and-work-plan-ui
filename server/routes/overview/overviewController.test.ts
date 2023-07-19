@@ -5,6 +5,7 @@ import { NextFunction, Request, Response } from 'express'
 import OverviewController from './overviewController'
 import OverviewView from './overviewView'
 import aValidSupportNeeds from '../../testsupport/supportNeedsTestDataBuilder'
+import SupportNeedsView from './supportNeedsView'
 
 describe('overviewController', () => {
   const controller = new OverviewController()
@@ -42,14 +43,41 @@ describe('overviewController', () => {
     req.params.prisonNumber = prisonNumber
 
     req.session.prisonerSummary = { prisonNumber } as Prisoner
+
+    const expectedPrisonerSummary = { prisonNumber } as PrisonerSummary
+    const expectedView = new OverviewView(expectedPrisonerSummary, expectedTab, prisonNumber)
+
+    // When
+    await controller.getOverviewView(
+      req as undefined as Request,
+      res as undefined as Response,
+      next as undefined as NextFunction,
+    )
+
+    // Then
+    expect(res.render).toHaveBeenCalledWith('pages/overview/index', expectedView.renderArgs)
+  })
+
+  it('should get support needs view', async () => {
+    // Given
+    const username = 'a-dps-user'
+    req.user.username = username
+
+    const expectedTab = 'support-needs'
+    req.params.tab = expectedTab
+
+    const prisonNumber = 'A1234GC'
+    req.params.prisonNumber = prisonNumber
+
+    req.session.prisonerSummary = { prisonNumber } as Prisoner
     req.session.supportNeeds = aValidSupportNeeds()
 
     const expectedPrisonerSummary = { prisonNumber } as PrisonerSummary
     const expectedSupportNeeds = req.session.supportNeeds
-    const expectedView = new OverviewView(expectedPrisonerSummary, expectedTab, prisonNumber, expectedSupportNeeds)
+    const expectedView = new SupportNeedsView(expectedPrisonerSummary, expectedTab, prisonNumber, expectedSupportNeeds)
 
     // When
-    await controller.getOverviewView(
+    await controller.getSupportNeedsView(
       req as undefined as Request,
       res as undefined as Response,
       next as undefined as NextFunction,

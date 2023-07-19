@@ -1,3 +1,4 @@
+import moment from 'moment'
 import type { SupportNeeds } from 'viewModels'
 import { toSupportNeeds } from './supportNeedsMapper'
 
@@ -37,8 +38,11 @@ describe('supportNeedsMapper', () => {
       ],
       neurodiversity: {
         supportNeeded: ['Writing support'],
+        supportNeededRecordedDate: moment('2022-02-18').toDate(),
         selfDeclaredNeurodiversity: ['Dyslexia'],
+        selfDeclaredRecordedDate: moment('2022-02-18').toDate(),
         assessedNeurodiversity: ['No Identified Neurodiversity Need'],
+        assessmentDate: moment('2022-05-18').toDate(),
       },
     } as SupportNeeds
 

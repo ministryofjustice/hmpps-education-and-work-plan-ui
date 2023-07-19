@@ -1,5 +1,6 @@
 import { RequestHandler } from 'express'
 import OverviewView from './overviewView'
+import SupportNeedsView from './supportNeedsView'
 
 export default class OverviewController {
   getOverviewView: RequestHandler = async (req, res, next): Promise<void> => {
@@ -7,9 +8,8 @@ export default class OverviewController {
     req.session.createGoalForm = undefined
 
     const { prisonerSummary } = req.session
-    const { supportNeeds } = req.session
 
-    const view = new OverviewView(prisonerSummary, 'overview', prisonNumber, supportNeeds)
+    const view = new OverviewView(prisonerSummary, 'overview', prisonNumber)
     res.render('pages/overview/index', { ...view.renderArgs })
   }
 
@@ -18,7 +18,7 @@ export default class OverviewController {
     const { prisonerSummary } = req.session
     const { supportNeeds } = req.session
 
-    const view = new OverviewView(prisonerSummary, 'support-needs', prisonNumber, supportNeeds)
+    const view = new SupportNeedsView(prisonerSummary, 'support-needs', prisonNumber, supportNeeds)
     res.render('pages/overview/index', { ...view.renderArgs })
   }
 }

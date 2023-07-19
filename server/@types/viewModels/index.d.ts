@@ -16,7 +16,10 @@ declare module 'viewModels' {
 
   export interface Neurodiversity {
     supportNeeded: Array<string>
+    supportNeededRecordedDate: Date
     selfDeclaredNeurodiversity: Array<string>
+    selfDeclaredRecordedDate: Date
     assessedNeurodiversity: Array<string>
+    assessmentDate: Date
   }
 }
