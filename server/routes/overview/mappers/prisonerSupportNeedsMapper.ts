@@ -30,21 +30,27 @@ const toNeurodiversity = (learnerNeurodivergence: LearnerNeurodivergence): Neuro
       prisonId: learnerNeurodivergence.establishmentId,
       prisonName: learnerNeurodivergence.establishmentName,
       supportNeeded: learnerNeurodivergence.neurodivergenceSupport,
-      supportNeededRecordedDate: moment(learnerNeurodivergence.supportDate || null, true).toDate(),
+      supportNeededRecordedDate: dateOrNull(learnerNeurodivergence.supportDate),
       selfDeclaredNeurodiversity: learnerNeurodivergence.neurodivergenceSelfDeclared,
-      selfDeclaredRecordedDate: moment(learnerNeurodivergence.selfDeclaredDate || null, true).toDate(),
+      selfDeclaredRecordedDate: dateOrNull(learnerNeurodivergence.selfDeclaredDate),
       assessedNeurodiversity: learnerNeurodivergence.neurodivergenceAssessed,
-      assessmentDate: moment(learnerNeurodivergence.assessmentDate || null, true).toDate(),
+      assessmentDate: dateOrNull(learnerNeurodivergence.assessmentDate),
     }
   }
   return undefined
 }
 
 const toLddAndHealthNeeds = (learnerProfile: LearnerProfile): Array<string> => {
-  if (learnerProfile.primaryLDDAndHealthProblem) {
-    return [learnerProfile.primaryLDDAndHealthProblem, ...learnerProfile.additionalLDDAndHealthProblems.sort()]
-  }
-  return undefined
+  const lddHealthNeeds = learnerProfile.primaryLDDAndHealthProblem ? [learnerProfile.primaryLDDAndHealthProblem] : []
+  const additionalLdd = learnerProfile.additionalLDDAndHealthProblems
+    ? learnerProfile.additionalLDDAndHealthProblems
+    : []
+
+  return lddHealthNeeds.concat(additionalLdd.sort())
+}
+
+const dateOrNull = (value: string): Date | undefined => {
+  return value ? moment(value, true).toDate() : undefined
 }
 
 export { toPrisonerSupportNeeds, toNeurodiversity }

@@ -1,5 +1,6 @@
 import moment from 'moment'
 import type { PrisonerSupportNeeds, HealthAndSupportNeeds, Neurodiversity } from 'viewModels'
+import type { LearnerNeurodivergence, LearnerProfile } from 'curiousApiClient'
 import { toPrisonerSupportNeeds } from './prisonerSupportNeedsMapper'
 
 describe('prisonerSupportNeedsMapper', () => {
@@ -13,8 +14,8 @@ describe('prisonerSupportNeedsMapper', () => {
         lddHealthProblem: 'Learner considers himself or herself to have a learning difficulty.',
         languageStatus: 'Bilingual',
         primaryLDDAndHealthProblem: 'Hearing impairment',
-        additionalLDDAndHealthProblems: [],
-      },
+        additionalLDDAndHealthProblems: undefined,
+      } as LearnerProfile,
       {
         prn: 'G6123VU',
         establishmentId: 'DNI',
@@ -27,7 +28,7 @@ describe('prisonerSupportNeedsMapper', () => {
           'Social and emotional difficulties',
           'Mental health difficulty',
         ],
-      },
+      } as LearnerProfile,
     ]
     const learnerNeurodivergence = [
       {
@@ -35,12 +36,12 @@ describe('prisonerSupportNeedsMapper', () => {
         establishmentId: 'MDI',
         establishmentName: 'MOORLAND (HMP & YOI)',
         neurodivergenceSelfDeclared: ['Dyslexia'],
-        selfDeclaredDate: '2022-02-18',
+        selfDeclaredDate: null,
         neurodivergenceAssessed: ['ADHD'],
         assessmentDate: '2022-05-18',
         neurodivergenceSupport: ['Writing support'],
         supportDate: '2022-02-18',
-      },
+      } as LearnerNeurodivergence,
       {
         prn: 'G6123VU',
         establishmentId: 'DNI',
@@ -51,7 +52,7 @@ describe('prisonerSupportNeedsMapper', () => {
         assessmentDate: '2022-05-18',
         neurodivergenceSupport: ['No Identified Support Required'],
         supportDate: '2022-02-18',
-      },
+      } as LearnerNeurodivergence,
     ]
 
     const expectedSupportNeeds = {
@@ -81,7 +82,7 @@ describe('prisonerSupportNeedsMapper', () => {
           supportNeeded: ['Writing support'],
           supportNeededRecordedDate: moment('2022-02-18').toDate(),
           selfDeclaredNeurodiversity: ['Dyslexia'],
-          selfDeclaredRecordedDate: moment('2022-02-18').toDate(),
+          selfDeclaredRecordedDate: undefined,
           assessedNeurodiversity: ['ADHD'],
           assessmentDate: moment('2022-05-18').toDate(),
         } as Neurodiversity,
