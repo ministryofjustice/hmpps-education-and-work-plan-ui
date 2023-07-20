@@ -18,6 +18,10 @@ export default abstract class Page {
     }
   }
 
+  hasBreadcrumb() {
+    cy.get('.govuk-breadcrumbs').find('a').first().should('have.text', 'Digital Prison Services')
+  }
+
   checkOnPage(): void {
     cy.get('#pageId').should('have.attr', 'data-qa').should('equal', this.pageId)
   }
