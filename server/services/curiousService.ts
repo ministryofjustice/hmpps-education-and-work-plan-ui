@@ -1,9 +1,10 @@
 import type { LearnerNeurodivergence, LearnerProfile } from 'curiousApiClient'
-import type { PrisonerSupportNeeds } from 'viewModels'
+import type { FunctionalSkills, PrisonerSupportNeeds } from 'viewModels'
 import { toPrisonerSupportNeeds } from '../routes/overview/mappers/prisonerSupportNeedsMapper'
 import CuriousClient from '../data/curiousClient'
 import { HmppsAuthClient } from '../data'
 import logger from '../../logger'
+import toFunctionalSkills from '../routes/overview/mappers/functionalSkillsMapper'
 
 export default class CuriousService {
   constructor(private readonly hmppsAuthClient: HmppsAuthClient, private readonly curiousClient: CuriousClient) {}
@@ -12,14 +13,8 @@ export default class CuriousService {
     const systemToken = await this.hmppsAuthClient.getSystemClientToken(username)
 
     try {
-      const learnerProfile: Array<LearnerProfile> = await this.curiousClient.getLearnerProfile(
-        prisonNumber,
-        systemToken,
-      )
-      const neuroDivergence: Array<LearnerNeurodivergence> = await this.curiousClient.getLearnerNeurodivergence(
-        prisonNumber,
-        systemToken,
-      )
+      const learnerProfile = await this.getLearnerProfile(prisonNumber, systemToken)
+      const neuroDivergence = await this.getLearnerNeurodivergence(prisonNumber, systemToken)
 
       return toPrisonerSupportNeeds(learnerProfile, neuroDivergence)
     } catch (error) {
@@ -32,4 +27,29 @@ export default class CuriousService {
       throw error
     }
   }
+
+  async getPrisonerFunctionalSkills(prisonNumber: string, username: string): Promise<FunctionalSkills> {
+    const systemToken = await this.hmppsAuthClient.getSystemClientToken(username)
+
+    try {
+      const learnerProfiles = await this.getLearnerProfile(prisonNumber, systemToken)
+      return toFunctionalSkills(learnerProfiles)
+    } catch (error) {
+      logger.info(error)
+      if (error.code === 404) {
+        // TODO - we need to check if this is right, but Curious has been unavailable
+        logger.info(`No data found for prisoner [${prisonNumber}] in Curious`)
+        return toFunctionalSkills(undefined)
+      }
+      throw error
+    }
+  }
+
+  private getLearnerProfile = async (prisonNumber: string, token: string): Promise<Array<LearnerProfile>> =>
+    this.curiousClient.getLearnerProfile(prisonNumber, token)
+
+  private getLearnerNeurodivergence = async (
+    prisonNumber: string,
+    token: string,
+  ): Promise<Array<LearnerNeurodivergence>> => this.curiousClient.getLearnerNeurodivergence(prisonNumber, token)
 }
