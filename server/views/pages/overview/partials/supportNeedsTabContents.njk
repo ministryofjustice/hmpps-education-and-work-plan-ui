@@ -75,7 +75,7 @@
               {% for neurodiversity in supportNeeds.neurodiversities %}
                 <ul class="govuk-list">
                   {% for selfDeclared in neurodiversity.selfDeclaredNeurodiversity %}
-                    <li class="govuk-link">{{ selfDeclared }}</li>
+                    <li>{{ selfDeclared }}</li>
                   {% endfor %}
                 </ul>
                 <p class="govuk-body govuk-body-s">Recorded on {{neurodiversity.selfDeclaredRecordedDate | formatDate('DD MMMM YYYY')}}</p>
@@ -85,7 +85,7 @@
               {% for neurodiversity in supportNeeds.neurodiversities %}
                 <ul class="govuk-list">
                   {% for assessed in neurodiversity.assessedNeurodiversity %}
-                    <li class="govuk-link">{{ assessed }}</li>
+                    <li>{{ assessed }}</li>
                   {% endfor %}
                 </ul>
                 <p class="govuk-body govuk-body-s">Recorded on {{neurodiversity.assessmentDate | formatDate('DD MMMM YYYY')}}</p>
