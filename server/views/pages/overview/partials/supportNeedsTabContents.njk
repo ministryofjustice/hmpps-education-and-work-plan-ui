@@ -1,43 +1,43 @@
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-full">
 
-  {% if supportNeeds.problemRetrievingData === true %}
-    There was a problem retrieving the data from Curious.
-  {% else %}
-    <div class="govuk-summary-card">
-      <div class="govuk-summary-card__title-wrapper">
-        <h2 class="govuk-summary-card__title">Health and support needs</h2>
-      </div>
-      <div class="govuk-summary-card__content">
-        <dl class="govuk-summary-list">
+    {% if supportNeeds.problemRetrievingData === true %}
+      There was a problem retrieving the data from Curious.
+    {% else %}
+      <div class="govuk-summary-card">
+        <div class="govuk-summary-card__title-wrapper">
+          <h2 class="govuk-summary-card__title">Health and support needs</h2>
+        </div>
+        <div class="govuk-summary-card__content">
+          <dl class="govuk-summary-list">
 
             <div class="govuk-summary-list__row">
               <dt class="govuk-summary-list__key">
                 Language supported needed
-            </dt>
-            <dd class="govuk-summary-list__value">
-              <ul class="govuk-list">
-                {% for healthAndSupportNeed in supportNeeds.healthAndSupportNeeds %}
-                  <li>{{ healthAndSupportNeed.languageSupportNeeded }}</li>
-                {% endfor %}
-              </ul>
-            </dd>
-          </div>
-
-          <div class="govuk-summary-list__row">
-            <dt class="govuk-summary-list__key">
-              LDD and health needs
-            </dt>
-            <dd class="govuk-summary-list__value">
-              {% for healthAndSupportNeed in supportNeeds.healthAndSupportNeeds %}
+              </dt>
+              <dd class="govuk-summary-list__value">
                 <ul class="govuk-list">
-                  {% for lddHealthNeed in healthAndSupportNeed.lddAndHealthNeeds %}
-                    <li>{{ lddHealthNeed }}</li>
+                  {% for healthAndSupportNeed in supportNeeds.healthAndSupportNeeds %}
+                    <li>{{ healthAndSupportNeed.languageSupportNeeded }}</li>
                   {% endfor %}
                 </ul>
-              {% endfor %}
-            </dd>
-          </div>
+              </dd>
+            </div>
+
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                LDD and health needs
+              </dt>
+              <dd class="govuk-summary-list__value">
+                {% for healthAndSupportNeed in supportNeeds.healthAndSupportNeeds %}
+                  <ul class="govuk-list">
+                    {% for lddHealthNeed in healthAndSupportNeed.lddAndHealthNeeds %}
+                      <li>{{ lddHealthNeed }}</li>
+                    {% endfor %}
+                  </ul>
+                {% endfor %}
+              </dd>
+            </div>
 
           </dl>
         </div>
@@ -50,47 +50,47 @@
         <div class="govuk-summary-card__content">
           <dl class="govuk-summary-list">
 
-          <div class="govuk-summary-list__row">
-            <dt class="govuk-summary-list__key">
-              Supported needed
-            </dt>
-            <dd class="govuk-summary-list__value">
-              {% for neurodiversity in supportNeeds.neurodiversities %}
-                <ul class="govuk-list">
-                  {% for supportNeeded in neurodiversity.supportNeeded %}
-                    <li>{{ supportNeeded }}</li>
-                  {% endfor %}
-                </ul>
-                <p class="govuk-body-s">Recorded on {{neurodiversity.supportNeededRecordedDate | formatDate('DD MMMM YYYY')}}</p>
-              {% endfor %}
-            </dd>
-          </div>
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                Supported needed
+              </dt>
+              <dd class="govuk-summary-list__value">
+                {% for neurodiversity in supportNeeds.neurodiversities %}
+                  <ul class="govuk-list">
+                    {% for supportNeeded in neurodiversity.supportNeeded %}
+                      <li>{{ supportNeeded }}</li>
+                    {% endfor %}
+                  </ul>
+                  <p class="govuk-body-s">Recorded on {{ neurodiversity.supportNeededRecordedDate | formatDate('DD MMMM YYYY') }}</p>
+                {% endfor %}
+              </dd>
+            </div>
 
-          <div class="govuk-summary-list__row">
-            <dt class="govuk-summary-list__key">
-              Neurodiversity
-            </dt>
-            <dd class="govuk-summary-list__value">
-              <h3 class="govuk-heading-s">From self-assessment</h3>
-              {% for neurodiversity in supportNeeds.neurodiversities %}
-                <ul class="govuk-list">
-                  {% for selfDeclared in neurodiversity.selfDeclaredNeurodiversity %}
-                    <li>{{ selfDeclared }}</li>
-                  {% endfor %}
-                </ul>
-                <p class="govuk-body-s">Recorded on {{neurodiversity.selfDeclaredRecordedDate | formatDate('DD MMMM YYYY')}}</p>
-              {% endfor %}
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                Neurodiversity
+              </dt>
+              <dd class="govuk-summary-list__value">
+                <h3 class="govuk-heading-s">From self-assessment</h3>
+                {% for neurodiversity in supportNeeds.neurodiversities %}
+                  <ul class="govuk-list">
+                    {% for selfDeclared in neurodiversity.selfDeclaredNeurodiversity %}
+                      <li>{{ selfDeclared }}</li>
+                    {% endfor %}
+                  </ul>
+                  <p class="govuk-body-s">Recorded on {{ neurodiversity.selfDeclaredRecordedDate | formatDate('DD MMMM YYYY') }}</p>
+                {% endfor %}
 
-              <h3 class="govuk-heading-s">From neurodiversity assessment</h3>
-              {% for neurodiversity in supportNeeds.neurodiversities %}
-                <ul class="govuk-list">
-                  {% for assessed in neurodiversity.assessedNeurodiversity %}
-                    <li>{{ assessed }}</li>
-                  {% endfor %}
-                </ul>
-                <p class="govuk-body-s">Recorded on {{neurodiversity.assessmentDate | formatDate('DD MMMM YYYY')}}</p>
-              {% endfor %}
-            </dd>
+                <h3 class="govuk-heading-s">From neurodiversity assessment</h3>
+                {% for neurodiversity in supportNeeds.neurodiversities %}
+                  <ul class="govuk-list">
+                    {% for assessed in neurodiversity.assessedNeurodiversity %}
+                      <li>{{ assessed }}</li>
+                    {% endfor %}
+                  </ul>
+                  <p class="govuk-body-s">Recorded on {{ neurodiversity.assessmentDate | formatDate('DD MMMM YYYY') }}</p>
+                {% endfor %}
+              </dd>
 
             </div>
 
