@@ -30,4 +30,23 @@ declare module 'viewModels' {
     assessedNeurodiversity: Array<string>
     assessmentDate?: Date
   }
+
+  /**
+   * A prisoner's Functional Skills, which is made up of a collection of Assessments.
+   */
+  export interface FunctionalSkills {
+    problemRetrievingData?: boolean
+    assessments: Array<Assessment>
+  }
+
+  /**
+   * An Assessment of a single functional skill.
+   */
+  export interface Assessment {
+    prisonId: string
+    prisonName: string
+    type?: 'ENGLISH' | 'MATHS' | 'DIGITAL_LITERACY'
+    grade?: string
+    assessmentDate?: Date
+  }
 }
