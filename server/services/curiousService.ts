@@ -41,7 +41,7 @@ export default class CuriousService {
         logger.info(`No data found for prisoner [${prisonNumber}] in Curious`)
         return toFunctionalSkills(undefined)
       }
-      throw error
+      return { problemRetrievingData: true } as FunctionalSkills
     }
   }
 

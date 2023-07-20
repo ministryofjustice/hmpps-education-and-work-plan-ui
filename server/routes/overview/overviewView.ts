@@ -1,11 +1,7 @@
 import type { PrisonerSummary } from 'viewModels'
 
 export default class OverviewView {
-  constructor(
-    private readonly prisonerSummary: PrisonerSummary,
-    private readonly tab: string,
-    private readonly prisonNumber: string,
-  ) {}
+  constructor(private readonly prisonerSummary: PrisonerSummary, private readonly prisonNumber: string) {}
 
   get renderArgs(): {
     prisonerSummary: PrisonerSummary
@@ -14,7 +10,7 @@ export default class OverviewView {
   } {
     return {
       prisonerSummary: this.prisonerSummary,
-      tab: this.tab,
+      tab: 'overview',
       prisonNumber: this.prisonNumber,
     }
   }

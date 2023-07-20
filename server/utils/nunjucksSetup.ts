@@ -1,5 +1,5 @@
 /* eslint-disable no-param-reassign */
-import nunjucks from 'nunjucks'
+import nunjucks, { Environment } from 'nunjucks'
 import express from 'express'
 import path from 'path'
 import { initialiseName } from './utils'
@@ -29,6 +29,10 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
     })
   }
 
+  registerNunjucks(app)
+}
+
+export function registerNunjucks(app?: express.Express): Environment {
   const njkEnv = nunjucks.configure(
     [
       path.join(__dirname, '../../server/views'),
@@ -49,4 +53,6 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
   njkEnv.addFilter('formatDateFormValue', formatDateFormValue)
 
   njkEnv.addGlobal('dpsUrl', config.dpsHomeUrl)
+
+  return njkEnv
 }
