@@ -1,11 +1,7 @@
 {% extends "../../../partials/layout.njk" %}
-{% from "govuk/components/textarea/macro.njk" import govukTextarea %}
-{% from "govuk/components/button/macro.njk" import govukButton %}
-{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
 
 {% set pageId = "add-note" %}
 {% set pageTitle = applicationName + " - Home" %}
-{% set mainClasses = "app-container govuk-body" %}
 
 {% block beforeContent %}
   {% include "../../../partials/breadCrumb.njk" %}
