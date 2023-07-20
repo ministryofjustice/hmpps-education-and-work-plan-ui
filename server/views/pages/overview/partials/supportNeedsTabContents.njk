@@ -42,13 +42,14 @@
 
         </dl>
       </div>
+    </div>
 
-      <div class="govuk-summary-card">
-        <div class="govuk-summary-card__title-wrapper">
-          <h2 class="govuk-summary-card__title">Neurodiversity</h2>
-        </div>
-        <div class="govuk-summary-card__content">
-          <dl class="govuk-summary-list">
+    <div class="govuk-summary-card">
+      <div class="govuk-summary-card__title-wrapper">
+        <h2 class="govuk-summary-card__title">Neurodiversity</h2>
+      </div>
+      <div class="govuk-summary-card__content">
+        <dl class="govuk-summary-list">
 
           <div class="govuk-summary-list__row">
             <dt class="govuk-summary-list__key">
@@ -61,7 +62,7 @@
                     <li>{{ supportNeeded }}</li>
                   {% endfor %}
                 </ul>
-                <p class="app-summary-card__hint govuk-!-margin-top-3">{{neurodiversity.supportNeededRecordedDate}}</p>
+                <p class="app-summary-card__hint govuk-!-margin-top-3">Recorded on {{neurodiversity.supportNeededRecordedDate | formatDate('DD MMMM YYYY')}}</p>
               {% endfor %}
             </dd>
           </div>
@@ -78,7 +79,7 @@
                     <li>{{ selfDeclared }}</li>
                   {% endfor %}
                 </ul>
-                <p class="app-summary-card__hint govuk-!-margin-top-3">{{neurodiversity.selfDeclaredRecordedDate}}</p>
+                <p class="app-summary-card__hint govuk-!-margin-top-3">Recorded on {{neurodiversity.selfDeclaredRecordedDate | formatDate('DD MMMM YYYY')}}</p>
               {% endfor %}
 
               <h3 class="govuk-heading-s govuk-!-margin-top-4">From neurodiversity assessment</h3>
@@ -88,7 +89,8 @@
                     <li>{{ assessed }}</li>
                   {% endfor %}
                 </ul>
-                <p class="app-summary-card__hint govuk-!-margin-top-3">{{neurodiversity.assessmentDate}}</p>
+
+                <p class="app-summary-card__hint govuk-!-margin-top-3">Recorded on {{neurodiversity.assessmentDate | formatDate('DD MMMM YYYY')}}</p>
               {% endfor %}
             </dd>
 
@@ -96,6 +98,7 @@
 
         </dl>
       </div>
+     </div>
   {% endif %}
 
   </div>
