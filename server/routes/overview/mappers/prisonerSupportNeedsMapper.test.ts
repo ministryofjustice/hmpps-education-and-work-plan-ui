@@ -56,6 +56,7 @@ describe('prisonerSupportNeedsMapper', () => {
     ]
 
     const expectedSupportNeeds = {
+      problemRetrievingData: false,
       healthAndSupportNeeds: [
         {
           prisonId: 'MDI',

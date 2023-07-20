@@ -7,6 +7,7 @@ const toPrisonerSupportNeeds = (
   learnerNeurodivergences: Array<LearnerNeurodivergence>,
 ): PrisonerSupportNeeds => {
   return {
+    problemRetrievingData: false,
     healthAndSupportNeeds: learnerProfiles?.map(profile => toHealthAndSupportNeeds(profile)),
     neurodiversities: learnerNeurodivergences?.map(neurodiversity => toNeurodiversity(neurodiversity)),
   }

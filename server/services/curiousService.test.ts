@@ -35,6 +35,7 @@ describe('curiousService', () => {
       hmppsAuthClient.getSystemClientToken.mockImplementation(() => Promise.resolve(systemToken))
 
       const expectedSupportNeeds = {
+        problemRetrievingData: false,
         healthAndSupportNeeds: [
           {
             prisonId: 'MDI',

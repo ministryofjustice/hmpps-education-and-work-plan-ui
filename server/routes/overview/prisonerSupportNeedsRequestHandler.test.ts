@@ -1,6 +1,5 @@
 import { SessionData } from 'express-session'
 import { NextFunction, Request, Response } from 'express'
-import createError from 'http-errors'
 import { CuriousService } from '../../services'
 import PrisonerSupportNeedsRequestHandler from './prisonerSupportNeedsRequestHandler'
 import aValidPrisonerSupportNeeds from '../../testsupport/supportNeedsTestDataBuilder'
@@ -88,7 +87,6 @@ describe('prisonerSupportNeedsRequestHandler', () => {
     req.params.prisonNumber = prisonNumber
 
     curiousService.getPrisonerSupportNeeds.mockRejectedValue(Error('some error'))
-    const expectedError = createError(404, 'Prisoner Support Needs not found')
 
     // When
     await requestHandler.getPrisonerSupportNeeds(
@@ -99,7 +97,7 @@ describe('prisonerSupportNeedsRequestHandler', () => {
 
     // Then
     expect(curiousService.getPrisonerSupportNeeds).toHaveBeenCalledWith(prisonNumber, username)
-    expect(req.session.supportNeeds).toBeUndefined()
-    expect(next).toHaveBeenCalledWith(expectedError)
+    expect(req.session.supportNeeds.problemRetrievingData).toBeTruthy()
+    expect(next).toHaveBeenCalled()
   })
 })
