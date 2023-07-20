@@ -25,6 +25,7 @@ export default class CuriousService {
     } catch (error) {
       logger.info(error)
       if (error.code === 404) {
+        // TODO - we need to check if this is right, but Curious has been unavailable
         logger.info(`No data found for prisoner [${prisonNumber}] in Curious`)
         return toPrisonerSupportNeeds(undefined, undefined)
       }

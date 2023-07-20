@@ -8,6 +8,7 @@ declare module 'viewModels' {
   }
 
   export interface PrisonerSupportNeeds {
+    problemRetrievingData?: boolean
     healthAndSupportNeeds: Array<HealthAndSupportNeeds>
     neurodiversities: Array<Neurodiversity>
   }
@@ -15,7 +16,7 @@ declare module 'viewModels' {
   export interface HealthAndSupportNeeds {
     prisonId: string
     prisonName: string
-    languageSupportNeeded: string
+    languageSupportNeeded?: string
     lddAndHealthNeeds: Array<string>
   }
 
@@ -23,10 +24,10 @@ declare module 'viewModels' {
     prisonId: string
     prisonName: string
     supportNeeded: Array<string>
-    supportNeededRecordedDate: Date
+    supportNeededRecordedDate?: Date
     selfDeclaredNeurodiversity: Array<string>
-    selfDeclaredRecordedDate: Date
+    selfDeclaredRecordedDate?: Date
     assessedNeurodiversity: Array<string>
-    assessmentDate: Date
+    assessmentDate?: Date
   }
 }

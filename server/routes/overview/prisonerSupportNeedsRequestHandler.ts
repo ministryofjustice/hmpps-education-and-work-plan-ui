@@ -1,4 +1,3 @@
-import createError from 'http-errors'
 import { NextFunction, Request, RequestHandler, Response } from 'express'
 import { CuriousService } from '../../services'
 
@@ -18,9 +17,13 @@ export default class PrisonerSupportNeedsRequestHandler {
       if (!req.session.supportNeeds) {
         req.session.supportNeeds = await this.curiousService.getPrisonerSupportNeeds(prisonNumber, req.user.username)
       }
-      next()
     } catch (error) {
-      next(createError(404, 'Prisoner Support Needs not found')) // TODO - what should happen here?
+      req.session.supportNeeds = {
+        healthAndSupportNeeds: undefined,
+        neurodiversities: undefined,
+        problemRetrievingData: true,
+      }
     }
+    next()
   }
 }
