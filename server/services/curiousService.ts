@@ -13,10 +13,10 @@ export default class CuriousService {
     const systemToken = await this.hmppsAuthClient.getSystemClientToken(username)
 
     try {
-      const learnerProfile = await this.getLearnerProfile(prisonNumber, systemToken)
-      const neuroDivergence = await this.getLearnerNeurodivergence(prisonNumber, systemToken)
+      const learnerProfiles = await this.getLearnerProfile(prisonNumber, systemToken)
+      const neuroDivergences = await this.getLearnerNeurodivergence(prisonNumber, systemToken)
 
-      return toPrisonerSupportNeeds(learnerProfile, neuroDivergence)
+      return toPrisonerSupportNeeds(learnerProfiles, neuroDivergences)
     } catch (error) {
       logger.info(error)
       if (error.code === 404) {
