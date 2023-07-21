@@ -37,7 +37,7 @@ export default class OverviewPage extends Page {
   }
 
   hasCuriousUnavailableMessageDisplayed() {
-    cy.get('h2').contains('Sorry, Functional Skills data from Curious is unavailable')
+    cy.get('h2').contains('Sorry, the Curious service is currently unavailable')
     return this
   }
 

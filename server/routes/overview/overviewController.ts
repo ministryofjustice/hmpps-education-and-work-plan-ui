@@ -18,9 +18,10 @@ export default class OverviewController {
   }
 
   getSupportNeedsView: RequestHandler = async (req, res, next): Promise<void> => {
+    const { prisonNumber } = req.params
     const { prisonerSummary } = req.session
-    const { supportNeeds } = req.session
 
+    const supportNeeds = await this.curiousService.getPrisonerSupportNeeds(prisonNumber, req.user.username)
     const view = new SupportNeedsView(prisonerSummary, supportNeeds)
     res.render('pages/overview/index', { ...view.renderArgs })
   }

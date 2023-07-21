@@ -3,8 +3,8 @@ import cheerio from 'cheerio'
 import nunjucks, { Template } from 'nunjucks'
 import { registerNunjucks } from '../../../../utils/nunjucksSetup'
 
-describe('Education and Training tab view', () => {
-  const template = fs.readFileSync('server/views/pages/overview/partials/educationAndTrainingTabContents.njk')
+describe('Support Needs tab view', () => {
+  const template = fs.readFileSync('server/views/pages/overview/partials/supportNeedsTabContents.njk')
   const prisonerSummary = {
     prisonNumber: 'A1234BC',
     releaseDate: '2025-12-31',
@@ -26,8 +26,8 @@ describe('Education and Training tab view', () => {
     // Given
     viewContext = {
       prisonerSummary,
-      tab: 'education-and-training',
-      functionalSkills: {
+      tab: 'support-needs',
+      supportNeeds: {
         problemRetrievingData: true,
       },
     }

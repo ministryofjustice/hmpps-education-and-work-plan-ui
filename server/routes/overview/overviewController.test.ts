@@ -82,10 +82,10 @@ describe('overviewController', () => {
       req.params.prisonNumber = prisonNumber
 
       req.session.prisonerSummary = { prisonNumber } as Prisoner
-      req.session.supportNeeds = aValidPrisonerSupportNeeds()
 
       const expectedPrisonerSummary = { prisonNumber } as PrisonerSummary
-      const expectedSupportNeeds = req.session.supportNeeds
+      const expectedSupportNeeds = aValidPrisonerSupportNeeds()
+      curiousService.getPrisonerSupportNeeds.mockResolvedValue(expectedSupportNeeds)
       const expectedView = {
         prisonerSummary: expectedPrisonerSummary,
         tab: expectedTab,
