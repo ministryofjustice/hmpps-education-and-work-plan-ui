@@ -11,6 +11,8 @@ context('Prisoner Overview page - Education And Training tab', () => {
 
   it('should display curious unavailable message given curious is unavailable', () => {
     // Given
+    cy.task('stubLearnerProfile401Error')
+
     cy.signIn()
     const prisonNumber = 'G6115VJ'
     cy.visit(`/plan/${prisonNumber}/view/overview`)
