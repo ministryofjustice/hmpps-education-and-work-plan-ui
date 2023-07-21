@@ -1,4 +1,4 @@
-import type { PrisonerSupportNeeds, HealthAndSupportNeeds, Neurodiversity, FunctionalSkills } from 'viewModels'
+import type { FunctionalSkills, HealthAndSupportNeeds, Neurodiversity, PrisonerSupportNeeds } from 'viewModels'
 import moment from 'moment'
 import { CuriousClient, HmppsAuthClient } from '../data'
 import CuriousService from './curiousService'
@@ -69,14 +69,19 @@ describe('curiousService', () => {
       expect(curiousClient.getLearnerNeurodivergence).toHaveBeenCalledWith(prisonNumber, systemToken)
     })
 
-    it('should not prisoner support needs given Curious returns an error', async () => {
+    it('should handle retrieval of prisoner support needs given Curious returns an unexpected error', async () => {
       // Given
       const prisonNumber = 'A1234BC'
       const username = 'a-dps-user'
       const systemToken = 'a-system-token'
       hmppsAuthClient.getSystemClientToken.mockImplementation(() => Promise.resolve(systemToken))
 
-      curiousClient.getLearnerProfile.mockImplementation(() => Promise.reject(Error('Not Found')))
+      const expectedSupportNeeds = {
+        problemRetrievingData: true,
+        healthAndSupportNeeds: undefined,
+        neurodiversities: undefined,
+      } as PrisonerSupportNeeds
+      curiousClient.getLearnerProfile.mockImplementation(() => Promise.reject(Error('Unavailable')))
 
       // When
       const actual = await curiousService.getPrisonerSupportNeeds(prisonNumber, username).catch(error => {
@@ -84,8 +89,36 @@ describe('curiousService', () => {
       })
 
       // Then
-      expect(actual).toEqual(Error('Not Found'))
+      expect(actual).toEqual(expectedSupportNeeds)
+      expect(curiousClient.getLearnerProfile).toHaveBeenCalledWith(prisonNumber, systemToken)
+      expect(curiousClient.getLearnerNeurodivergence).not.toHaveBeenCalled()
     })
+  })
+
+  // TODO figure out how to throw a 404 not found error
+  it.skip('should handle retrieval of prisoner support needs given Curious returns not found error', async () => {
+    // Given
+    const prisonNumber = 'A1234BC'
+    const username = 'a-dps-user'
+    const systemToken = 'a-system-token'
+    hmppsAuthClient.getSystemClientToken.mockImplementation(() => Promise.resolve(systemToken))
+
+    const expectedSupportNeeds = {
+      problemRetrievingData: false,
+      healthAndSupportNeeds: undefined,
+      neurodiversities: undefined,
+    } as PrisonerSupportNeeds
+    curiousClient.getLearnerProfile.mockImplementation(() => Promise.reject(Error('Unavailable')))
+
+    // When
+    const actual = await curiousService.getPrisonerSupportNeeds(prisonNumber, username).catch(error => {
+      return error
+    })
+
+    // Then
+    expect(actual).toEqual(expectedSupportNeeds)
+    expect(curiousClient.getLearnerProfile).toHaveBeenCalledWith(prisonNumber, systemToken)
+    expect(curiousClient.getLearnerNeurodivergence).not.toHaveBeenCalled()
   })
 
   describe('getPrisonerFunctionalSkills', () => {

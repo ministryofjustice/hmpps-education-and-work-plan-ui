@@ -1,9 +1,8 @@
-<div class="govuk-grid-row">
-  <div class="govuk-grid-column-full">
+{% if supportNeeds.problemRetrievingData !== true %}
 
-    {% if supportNeeds.problemRetrievingData === true %}
-      There was a problem retrieving the data from Curious.
-    {% else %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+
       <div class="govuk-summary-card">
         <div class="govuk-summary-card__title-wrapper">
           <h2 class="govuk-summary-card__title">Health and support needs</h2>
@@ -61,7 +60,8 @@
                       <li>{{ supportNeeded }}</li>
                     {% endfor %}
                   </ul>
-                  <p class="govuk-body-s">Recorded on {{ neurodiversity.supportNeededRecordedDate | formatDate('DD MMMM YYYY') }}</p>
+                  <p class="govuk-body-s">Recorded
+                    on {{ neurodiversity.supportNeededRecordedDate | formatDate('DD MMMM YYYY') }}</p>
                 {% endfor %}
               </dd>
             </div>
@@ -78,7 +78,8 @@
                       <li>{{ selfDeclared }}</li>
                     {% endfor %}
                   </ul>
-                  <p class="govuk-body-s">Recorded on {{ neurodiversity.selfDeclaredRecordedDate | formatDate('DD MMMM YYYY') }}</p>
+                  <p class="govuk-body-s">Recorded
+                    on {{ neurodiversity.selfDeclaredRecordedDate | formatDate('DD MMMM YYYY') }}</p>
                 {% endfor %}
 
                 <h3 class="govuk-heading-s">From neurodiversity assessment</h3>
@@ -88,7 +89,8 @@
                       <li>{{ assessed }}</li>
                     {% endfor %}
                   </ul>
-                  <p class="govuk-body-s">Recorded on {{ neurodiversity.assessmentDate | formatDate('DD MMMM YYYY') }}</p>
+                  <p class="govuk-body-s">Recorded
+                    on {{ neurodiversity.assessmentDate | formatDate('DD MMMM YYYY') }}</p>
                 {% endfor %}
               </dd>
 
@@ -97,7 +99,18 @@
           </dl>
         </div>
       </div>
-    {% endif %}
 
+    </div>
   </div>
-</div>
+
+{% else %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h2 class="govuk-heading-m">Sorry, the Curious service is currently unavailable.</h2>
+      <p class="govuk-body">
+        Retrieving data from Curious is currently unavailable. Please try again later.
+      </p>
+    </div>
+  </div>
+{% endif %}

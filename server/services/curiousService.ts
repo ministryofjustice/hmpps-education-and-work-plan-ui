@@ -18,13 +18,13 @@ export default class CuriousService {
 
       return toPrisonerSupportNeeds(learnerProfiles, neuroDivergences)
     } catch (error) {
-      logger.info(error)
       if (error.code === 404) {
-        // TODO - we need to check if this is right, but Curious has been unavailable
+        // TODO - we need to check if this is how a 404 is returned, but Curious has been unavailable
         logger.info(`No data found for prisoner [${prisonNumber}] in Curious`)
         return toPrisonerSupportNeeds(undefined, undefined)
       }
-      throw error
+      logger.error(`Error retrieving data from Curious: ${error}`)
+      return { problemRetrievingData: true } as PrisonerSupportNeeds
     }
   }
 
@@ -41,6 +41,7 @@ export default class CuriousService {
         logger.info(`No data found for prisoner [${prisonNumber}] in Curious`)
         return toFunctionalSkills(undefined)
       }
+      logger.error(`Error retrieving data from Curious: ${error}`)
       return { problemRetrievingData: true } as FunctionalSkills
     }
   }
