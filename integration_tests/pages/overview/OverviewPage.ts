@@ -31,6 +31,16 @@ export default class OverviewPage extends Page {
     return this
   }
 
+  selectTab(targetTab: string) {
+    cy.get(`.moj-sub-navigation__link:contains('${targetTab}')`).click()
+    return this
+  }
+
+  hasCuriousUnavailableMessageDisplayed() {
+    cy.get('h2').contains('Sorry, Functional Skills data from Curious is unavailable')
+    return this
+  }
+
   prisonNumberLabel = (): PageElement => cy.get('[data-qa=prison-number]')
 
   activeTab = (): PageElement => cy.get('.moj-sub-navigation__link[aria-current=page]')

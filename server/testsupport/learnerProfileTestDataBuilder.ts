@@ -9,5 +9,12 @@ export default function aValidLearnerProfile(): LearnerProfile {
     languageStatus: 'Bilingual',
     primaryLDDAndHealthProblem: 'Visual impairment',
     additionalLDDAndHealthProblems: ['Hearing impairment'],
+    qualifications: [
+      {
+        qualificationType: 'English',
+        qualificationGrade: 'Level 1',
+        assessmentDate: '2012-02-16',
+      },
+    ],
   }
 }

@@ -1,6 +1,21 @@
-<div class="govuk-grid-row">
-  <div class="govuk-grid-column-two-thirds">
+{% if functionalSkills.problemRetrievingData !== true %}
 
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
 
+    </div>
   </div>
-</div>
+
+{% else %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h2 class="govuk-heading-m">Sorry, Functional Skills data from Curious is unavailable</h2>
+      <p class="govuk-body">
+        Retrieving data from Curious is currently unavailable. Please try again later. Other functions within this
+        service may still be available.
+      </p>
+    </div>
+  </div>
+
+{% endif %}

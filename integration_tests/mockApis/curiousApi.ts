@@ -138,6 +138,23 @@ const stubLearnerProfile = (prisonNumber = 'G6115VJ'): SuperAgentRequest =>
     },
   })
 
+const stubLearnerProfile401Error = (prisonNumber = 'G6115VJ'): SuperAgentRequest =>
+  stubFor({
+    request: {
+      method: 'GET',
+      urlPattern: `/learnerProfile/${prisonNumber}`,
+    },
+    response: {
+      status: 401,
+      headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+      jsonBody: {
+        errorCode: 'VC4001',
+        errorMessage: 'Invalid token',
+        httpStatusCode: 401,
+      },
+    },
+  })
+
 export default {
   // Stubs for Neuro Divergence API
   stubNeurodivergenceForPrisonerWithAllCategoriesOfSupportNeed,
@@ -145,6 +162,8 @@ export default {
   stubNeurodivergenceForPrisonerWithNoCurrentAssessment,
   stubNeurodivergenceForPrisonerNotInCurious,
   stubNeurodivergence401Error,
+
   // Stubs for Learner Profile API
   stubLearnerProfile,
+  stubLearnerProfile401Error,
 }
