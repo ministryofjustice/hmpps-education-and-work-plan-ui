@@ -1,5 +1,6 @@
 import fs from 'fs'
 import cheerio from 'cheerio'
+import moment from 'moment'
 import nunjucks, { Template } from 'nunjucks'
 import { registerNunjucks } from '../../../../utils/nunjucksSetup'
 
@@ -20,6 +21,33 @@ describe('Education and Training tab view', () => {
 
   beforeEach(() => {
     compiledTemplate = nunjucks.compile(template.toString(), njkEnv)
+  })
+
+  it('should render content', () => {
+    // Given
+    viewContext = {
+      prisonerSummary,
+      tab: 'education-and-training',
+      functionalSkills: {
+        problemRetrievingData: false,
+        assessments: [
+          {
+            assessmentDate: moment('2012-02-16').toDate(),
+            grade: 'Level 1',
+            prisonId: 'MDI',
+            prisonName: 'MOORLAND (HMP & YOI)',
+            type: 'ENGLISH',
+          },
+        ],
+      },
+    }
+
+    // When
+    const $ = cheerio.load(compiledTemplate.render(viewContext))
+
+    // Then
+    expect($('#functional-skills-table')).not.toBeUndefined()
+    expect($('#functional-skills-table .govuk-table__body .govuk-table__row').length).toEqual(1)
   })
 
   it('should render content saying curious is unavailable given problem retrieving data is true', () => {
