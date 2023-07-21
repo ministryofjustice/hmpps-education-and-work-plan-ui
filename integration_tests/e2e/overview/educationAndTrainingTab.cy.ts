@@ -9,6 +9,24 @@ context('Prisoner Overview page - Education And Training tab', () => {
     cy.task('getPrisonerById')
   })
 
+  it('should display Education and Training data', () => {
+    // Given
+    cy.task('stubLearnerProfile')
+
+    cy.signIn()
+    const prisonNumber = 'G6115VJ'
+    cy.visit(`/plan/${prisonNumber}/view/overview`)
+    const overviewPage = Page.verifyOnPage(OverviewPage)
+
+    // When
+    overviewPage.selectTab('Education and training')
+
+    // Then
+    overviewPage //
+      .activeTabIs('Education and training')
+      .hasFunctionalSkillsDisplayed()
+  })
+
   it('should display curious unavailable message given curious is unavailable', () => {
     // Given
     cy.task('stubLearnerProfile401Error')
