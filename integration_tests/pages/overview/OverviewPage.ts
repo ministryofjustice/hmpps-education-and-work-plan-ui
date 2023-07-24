@@ -40,6 +40,16 @@ export default class OverviewPage extends Page {
     this.functionalSkillsTable().should('be.visible')
   }
 
+  hasHealthAndSupportNeedsDisplayed() {
+    this.healthAndSupportNeedsSummaryCard().should('be.visible')
+    return this
+  }
+
+  hasNeurodiversityDisplayed() {
+    this.neurodiversitySummaryCard().should('be.visible')
+    return this
+  }
+
   hasCuriousUnavailableMessageDisplayed() {
     cy.get('h2').contains('Sorry, the Curious service is currently unavailable')
     return this
@@ -52,4 +62,8 @@ export default class OverviewPage extends Page {
   addGoalButton = (): PageElement => cy.get('#add-goal-button')
 
   functionalSkillsTable = (): PageElement => cy.get('#functional-skills-table')
+
+  healthAndSupportNeedsSummaryCard = (): PageElement => cy.get('#health-and-support-needs-summary-card')
+
+  neurodiversitySummaryCard = (): PageElement => cy.get('#neurodiversity-summary-card')
 }

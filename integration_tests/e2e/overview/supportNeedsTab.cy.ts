@@ -9,6 +9,26 @@ context('Prisoner Overview page - Support Needs tab', () => {
     cy.task('getPrisonerById')
   })
 
+  it('should display Support Needs data', () => {
+    // Given
+    cy.task('stubLearnerProfile')
+    cy.task('stubNeurodivergenceForPrisonerWithAllCategoriesOfSupportNeed')
+
+    cy.signIn()
+    const prisonNumber = 'G6115VJ'
+    cy.visit(`/plan/${prisonNumber}/view/overview`)
+    const overviewPage = Page.verifyOnPage(OverviewPage)
+
+    // When
+    overviewPage.selectTab('Support needs')
+
+    // Then
+    overviewPage //
+      .activeTabIs('Support needs')
+      .hasHealthAndSupportNeedsDisplayed()
+      .hasNeurodiversityDisplayed()
+  })
+
   it('should display curious unavailable message given curious is unavailable', () => {
     // Given
     cy.task('stubLearnerProfile401Error')
