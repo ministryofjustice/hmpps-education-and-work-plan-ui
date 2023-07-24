@@ -32,8 +32,22 @@ describe('Support Needs tab view', () => {
     const $ = cheerio.load(compiledTemplate.render(viewContext))
 
     // Then
-    expect($('#health-and-support-needs-summary-card')).not.toBeUndefined()
-    expect($('#neurodiversity-summary-card')).not.toBeUndefined()
+    const summaryListRow = '.govuk-summary-list__row'
+    const healthAndSupportNeedsCard = '#health-and-support-needs-summary-card'
+    expect($(`${healthAndSupportNeedsCard} ${summaryListRow}:nth-of-type(1) .govuk-list`).text()).toContain('Bilingual')
+
+    // check primary LDD is displayed first, with secondary ones in alphabetical order
+    const lddHealthNeeds = `${healthAndSupportNeedsCard} ${summaryListRow}:nth-of-type(2) .govuk-list`
+    expect($(`${lddHealthNeeds} li:nth-of-type(1)`).text()).toContain('Visual impairment')
+    expect($(`${lddHealthNeeds} li:nth-of-type(2)`).text()).toContain('Hearing impairment')
+    expect($(`${lddHealthNeeds} li:nth-of-type(3)`).text()).toContain('Mental health difficulty')
+    expect($(`${lddHealthNeeds} li:nth-of-type(4)`).text()).toContain('Social and emotional difficulties')
+
+    const neurodiversityCard = '#neurodiversity-summary-card'
+    const supportNeeded = `${neurodiversityCard} ${summaryListRow}:nth-of-type(1) .govuk-list:nth-of-type(1) li:nth-of-type(1)`
+    const neurodiversity = `${neurodiversityCard} ${summaryListRow}:nth-of-type(2) .govuk-list:nth-of-type(1) li:nth-of-type(1)`
+    expect($(`${supportNeeded}`).text()).toContain('Writing support')
+    expect($(`${neurodiversity}`).text()).toContain('Dyslexia')
   })
 
   it('should render content saying curious is unavailable given problem retrieving data is true', () => {
