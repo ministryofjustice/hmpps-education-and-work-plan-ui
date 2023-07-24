@@ -5,7 +5,19 @@
 {% set pageId = "overview" %}
 
 {% block beforeContent %}
-  {% include "../../partials/breadCrumb.njk" %}
+  {{ govukBreadcrumbs({
+    items: [
+      {
+        text: "Digital Prison Services",
+        href: dpsUrl
+      },
+      {
+        text: "Manage learning and work progress",
+        href: "/"
+      }
+    ],
+    classes: 'govuk-!-display-none-print'
+  }) }}
 {% endblock %}
 
 {% block content %}
@@ -14,6 +26,7 @@
 
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
+      <span class="govuk-caption-l">Learning and work progress</span>
       <h1 class="govuk-heading-l">Manage {{ prisonerSummary.firstName | capitalize }} {{ prisonerSummary.lastName | capitalize }}'s learning plan</h1>
     </div>
   </div>

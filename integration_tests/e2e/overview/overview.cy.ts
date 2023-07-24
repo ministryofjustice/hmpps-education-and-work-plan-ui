@@ -60,4 +60,15 @@ context('Prisoner Overview page', () => {
     const createGoalPage = Page.verifyOnPage(CreateGoalPage)
     createGoalPage.isForPrisoner(prisonNumber)
   })
+
+  it('should have the DPS breadcrumb which does not include the current page', () => {
+    // Given
+    const prisonNumber = 'G6115VJ'
+    cy.signIn()
+    cy.visit(`/plan/${prisonNumber}/view/overview`)
+    const overviewPage = Page.verifyOnPage(OverviewPage)
+
+    // Check
+    overviewPage.hasBreadcrumb().breadcrumbDoesNotIncludeCurrentPage()
+  })
 })
