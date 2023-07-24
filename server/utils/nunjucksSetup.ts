@@ -1,5 +1,5 @@
 /* eslint-disable no-param-reassign */
-import nunjucks from 'nunjucks'
+import nunjucks, { Environment } from 'nunjucks'
 import express from 'express'
 import path from 'path'
 import { initialiseName } from './utils'
@@ -8,6 +8,7 @@ import config from '../config'
 import formatDateFilter from '../filters/formatDateFilter'
 import findErrorFilter from '../filters/findErrorFilter'
 import formatDateFormValue from '../filters/formatDateFormValue'
+import formatFunctionalSkillType from '../filters/formatFunctionalSkillTypeFilter'
 
 const production = process.env.NODE_ENV === 'production'
 
@@ -29,6 +30,10 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
     })
   }
 
+  registerNunjucks(app)
+}
+
+export function registerNunjucks(app?: express.Express): Environment {
   const njkEnv = nunjucks.configure(
     [
       path.join(__dirname, '../../server/views'),
@@ -47,6 +52,9 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
   njkEnv.addFilter('findError', findErrorFilter)
   njkEnv.addFilter('formatDate', formatDateFilter)
   njkEnv.addFilter('formatDateFormValue', formatDateFormValue)
+  njkEnv.addFilter('formatFunctionalSkillType', formatFunctionalSkillType)
 
   njkEnv.addGlobal('dpsUrl', config.dpsHomeUrl)
+
+  return njkEnv
 }

@@ -14,8 +14,11 @@ services:
     - hmpps_int
     container_name: wiremock
     restart: always
+    command: "--global-response-templating --verbose"
     ports:
       - "9091:8080"
+    volumes:
+      - ./wiremock:/home/wiremock
 
 networks:
   hmpps_int:

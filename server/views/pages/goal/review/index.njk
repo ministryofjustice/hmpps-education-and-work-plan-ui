@@ -38,14 +38,14 @@
         <div class="govuk-summary-card__content">
           <dl class="govuk-summary-list">
             {% for step in data.steps %}
-            <div class="govuk-summary-list__row">
-              <dt class="govuk-summary-list__key">
-                Step {{ step.sequenceNumber }}
-              </dt>
-              <dd class="govuk-summary-list__value">
-                {{ step.title }} ({{ step.targetDateRange | formatDateFormValue }})
-              </dd>
-            </div>
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                  Step {{ step.sequenceNumber }}
+                </dt>
+                <dd class="govuk-summary-list__value">
+                  {{ step.title }} ({{ step.targetDateRange | formatDateFormValue }})
+                </dd>
+              </div>
             {% endfor %}
             <div class="govuk-summary-list__row">
               <dt class="govuk-summary-list__key">

@@ -52,9 +52,25 @@ export default class OverviewPage extends Page {
 
   breadCrumb = (): PageElement => cy.get('.govuk-breadcrumbs')
 
+  selectTab(targetTab: string) {
+    cy.get(`.moj-sub-navigation__link:contains('${targetTab}')`).click()
+    return this
+  }
+
+  hasFunctionalSkillsDisplayed() {
+    this.functionalSkillsTable().should('be.visible')
+  }
+
+  hasCuriousUnavailableMessageDisplayed() {
+    cy.get('h2').contains('Sorry, the Curious service is currently unavailable')
+    return this
+  }
+
   prisonNumberLabel = (): PageElement => cy.get('[data-qa=prison-number]')
 
   activeTab = (): PageElement => cy.get('.moj-sub-navigation__link[aria-current=page]')
 
   addGoalButton = (): PageElement => cy.get('#add-goal-button')
+
+  functionalSkillsTable = (): PageElement => cy.get('#functional-skills-table')
 }
