@@ -1,4 +1,4 @@
-import type { CreateGoalDto } from 'dto'
+import type { ActionPlanDto, CreateGoalDto } from 'dto'
 import EducationAndWorkPlanClient from '../data/educationAndWorkPlanClient'
 
 export default class EducationAndWorkPlanService {
@@ -6,5 +6,9 @@ export default class EducationAndWorkPlanService {
 
   async createGoal(createGoalDto: CreateGoalDto, token: string): Promise<void> {
     return this.educationAndWorkPlanClient.createGoal(createGoalDto, token)
+  }
+
+  async getActionPlan(prisonNumber: string, token: string): Promise<ActionPlanDto> {
+    return this.educationAndWorkPlanClient.getActionPlan(prisonNumber, token)
   }
 }

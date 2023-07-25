@@ -1,9 +1,9 @@
 import type { CreateGoalDto } from 'dto'
 import type { CreateGoalRequest, CreateStepRequest } from 'educationAndWorkPlanApiClient'
-import { toCreateGoalRequest } from './educationAndWorkPlanApiMapper'
+import { toCreateGoalRequest } from './createGoalMapper'
 import { aValidCreateGoalDtoWithMultipleSteps } from '../../testsupport/createGoalDtoTestDataBuilder'
 
-describe('educationAndWorkPlanApiMapper', () => {
+describe('createGoalMapper', () => {
   it('should map to CreateGoalDto given valid form data', () => {
     // Given
     const createGoalDto: CreateGoalDto = aValidCreateGoalDtoWithMultipleSteps()
