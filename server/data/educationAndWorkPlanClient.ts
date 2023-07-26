@@ -1,7 +1,9 @@
-import type { CreateGoalDto } from 'dto'
-import { toCreateGoalRequest } from './mappers/educationAndWorkPlanApiMapper'
+import type { ActionPlanDto, CreateGoalDto } from 'dto'
+import type { ActionPlanResponse } from 'educationAndWorkPlanApiClient'
+import { toCreateGoalRequest } from './mappers/createGoalMapper'
 import RestClient from './restClient'
 import config from '../config'
+import { toActionPlanDto } from './mappers/actionPlanMapper'
 
 export default class EducationAndWorkPlanClient {
   private static restClient(token: string): RestClient {
@@ -15,5 +17,12 @@ export default class EducationAndWorkPlanClient {
       path: `/action-plans/${createGoalRequest.prisonNumber}/goals`,
       data: createGoalRequest,
     })
+  }
+
+  async getActionPlan(prisonNumber: string, token: string): Promise<ActionPlanDto> {
+    const actionPlanResponse = (await EducationAndWorkPlanClient.restClient(token).get({
+      path: `/action-plans/${prisonNumber}`,
+    })) as Promise<ActionPlanResponse>
+    return toActionPlanDto(actionPlanResponse)
   }
 }

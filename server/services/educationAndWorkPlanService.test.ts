@@ -1,10 +1,12 @@
 import { EducationAndWorkPlanClient } from '../data'
 import EducationAndWorkPlanService from './educationAndWorkPlanService'
 import { aValidCreateGoalDtoWithOneStep } from '../testsupport/createGoalDtoTestDataBuilder'
+import { aValidActionPlanDtoWithOneGoal } from '../testsupport/actionPlanDtoTestDataBuilder'
 
 describe('educationAndWorkPlanService', () => {
   const educationAndWorkPlanClient = {
     createGoal: jest.fn(),
+    getActionPlan: jest.fn(),
   }
 
   const educationAndWorkPlanService = new EducationAndWorkPlanService(
@@ -16,7 +18,7 @@ describe('educationAndWorkPlanService', () => {
   })
 
   describe('createGoal', () => {
-    it('should create valid goal', async () => {
+    it('should create Goal', async () => {
       // Given
       const userToken = 'a-user-token'
       const createGoalDto = aValidCreateGoalDtoWithOneStep()
@@ -29,7 +31,7 @@ describe('educationAndWorkPlanService', () => {
       expect(educationAndWorkPlanClient.createGoal).toHaveBeenCalledWith(createGoalDto, userToken)
     })
 
-    it('should not create goal given educationAndWorkPlanClient returns an error', async () => {
+    it('should not create Goal given educationAndWorkPlanClient returns an error', async () => {
       // Given
       const userToken = 'a-user-token'
       const createGoalDto = aValidCreateGoalDtoWithOneStep()
@@ -38,6 +40,39 @@ describe('educationAndWorkPlanService', () => {
 
       // When
       const actual = await educationAndWorkPlanService.createGoal(createGoalDto, userToken).catch(error => {
+        return error
+      })
+
+      // Then
+      expect(actual).toEqual(Error('Service Unavailable'))
+    })
+  })
+
+  describe('getActionPlan', () => {
+    it('should get Action Plan', async () => {
+      // Given
+      const prisonNumber = 'A1234BC'
+      const userToken = 'a-user-token'
+      const actionPlan = aValidActionPlanDtoWithOneGoal()
+      educationAndWorkPlanClient.getActionPlan.mockImplementation(() => Promise.resolve(actionPlan))
+
+      // When
+      const actual = await educationAndWorkPlanService.getActionPlan(prisonNumber, userToken)
+
+      // Then
+      expect(educationAndWorkPlanClient.getActionPlan).toHaveBeenCalledWith(prisonNumber, userToken)
+      expect(actual).toEqual(actionPlan)
+    })
+
+    it('should not get Action Plan given educationAndWorkPlanClient returns an error', async () => {
+      // Given
+      const prisonNumber = 'A1234BC'
+      const userToken = 'a-user-token'
+
+      educationAndWorkPlanClient.getActionPlan.mockImplementation(() => Promise.reject(Error('Service Unavailable')))
+
+      // When
+      const actual = await educationAndWorkPlanService.getActionPlan(prisonNumber, userToken).catch(error => {
         return error
       })
 
