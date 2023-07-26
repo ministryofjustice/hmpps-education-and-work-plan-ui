@@ -18,11 +18,6 @@ export default class CuriousService {
 
       return toPrisonerSupportNeeds(learnerProfiles, neuroDivergences)
     } catch (error) {
-      if (error.code === 404) {
-        // TODO - we need to check if this is how a 404 is returned, but Curious has been unavailable
-        logger.info(`No data found for prisoner [${prisonNumber}] in Curious`)
-        return toPrisonerSupportNeeds(undefined, undefined)
-      }
       logger.error(`Error retrieving data from Curious: ${error}`)
       return { problemRetrievingData: true } as PrisonerSupportNeeds
     }
@@ -35,22 +30,35 @@ export default class CuriousService {
       const learnerProfiles = await this.getLearnerProfile(prisonNumber, systemToken)
       return toFunctionalSkills(learnerProfiles)
     } catch (error) {
-      logger.info(error)
-      if (error.code === 404) {
-        // TODO - we need to check if this is right, but Curious has been unavailable
-        logger.info(`No data found for prisoner [${prisonNumber}] in Curious`)
-        return toFunctionalSkills(undefined)
-      }
       logger.error(`Error retrieving data from Curious: ${error}`)
       return { problemRetrievingData: true } as FunctionalSkills
     }
   }
 
-  private getLearnerProfile = async (prisonNumber: string, token: string): Promise<Array<LearnerProfile>> =>
-    this.curiousClient.getLearnerProfile(prisonNumber, token)
+  private getLearnerProfile = async (prisonNumber: string, token: string): Promise<Array<LearnerProfile>> => {
+    try {
+      return await this.curiousClient.getLearnerProfile(prisonNumber, token)
+    } catch (error) {
+      if (error.status === 404) {
+        logger.info(`No data found for prisoner [${prisonNumber}] in Curious`)
+        return undefined
+      }
+      throw error
+    }
+  }
 
   private getLearnerNeurodivergence = async (
     prisonNumber: string,
     token: string,
-  ): Promise<Array<LearnerNeurodivergence>> => this.curiousClient.getLearnerNeurodivergence(prisonNumber, token)
+  ): Promise<Array<LearnerNeurodivergence>> => {
+    try {
+      return await this.curiousClient.getLearnerNeurodivergence(prisonNumber, token)
+    } catch (error) {
+      if (error.status === 404) {
+        logger.info(`No data found for prisoner [${prisonNumber}] in Curious`)
+        return undefined
+      }
+      throw error
+    }
+  }
 }
