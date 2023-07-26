@@ -98,6 +98,23 @@ const stubNeurodivergence401Error = (prisonNumber = 'G6115VJ'): SuperAgentReques
     },
   })
 
+const stubNeurodivergence404Error = (prisonNumber = 'G6115VJ'): SuperAgentRequest =>
+  stubFor({
+    request: {
+      method: 'GET',
+      urlPattern: `/learnerProfile/${prisonNumber}`,
+    },
+    response: {
+      status: 404,
+      headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+      jsonBody: {
+        errorCode: 'VC4004',
+        errorMessage: 'Resource not found',
+        httpStatusCode: 404,
+      },
+    },
+  })
+
 const stubLearnerProfile = (prisonNumber = 'G6115VJ'): SuperAgentRequest =>
   stubFor({
     request: {
@@ -155,6 +172,23 @@ const stubLearnerProfile401Error = (prisonNumber = 'G6115VJ'): SuperAgentRequest
     },
   })
 
+const stubLearnerProfile404Error = (prisonNumber = 'G6115VJ'): SuperAgentRequest =>
+  stubFor({
+    request: {
+      method: 'GET',
+      urlPattern: `/learnerProfile/${prisonNumber}`,
+    },
+    response: {
+      status: 404,
+      headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+      jsonBody: {
+        errorCode: 'VC4004',
+        errorMessage: 'Resource not found',
+        httpStatusCode: 404,
+      },
+    },
+  })
+
 export default {
   // Stubs for Neuro Divergence API
   stubNeurodivergenceForPrisonerWithAllCategoriesOfSupportNeed,
@@ -162,8 +196,10 @@ export default {
   stubNeurodivergenceForPrisonerWithNoCurrentAssessment,
   stubNeurodivergenceForPrisonerNotInCurious,
   stubNeurodivergence401Error,
+  stubNeurodivergence404Error,
 
   // Stubs for Learner Profile API
   stubLearnerProfile,
   stubLearnerProfile401Error,
+  stubLearnerProfile404Error,
 }
