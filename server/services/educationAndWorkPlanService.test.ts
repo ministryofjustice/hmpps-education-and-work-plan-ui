@@ -57,10 +57,11 @@ describe('educationAndWorkPlanService', () => {
       educationAndWorkPlanClient.getActionPlan.mockImplementation(() => Promise.resolve(actionPlan))
 
       // When
-      await educationAndWorkPlanService.getActionPlan(prisonNumber, userToken)
+      const actual = await educationAndWorkPlanService.getActionPlan(prisonNumber, userToken)
 
       // Then
       expect(educationAndWorkPlanClient.getActionPlan).toHaveBeenCalledWith(prisonNumber, userToken)
+      expect(actual).toEqual(actionPlan)
     })
 
     it('should not get Action Plan given educationAndWorkPlanClient returns an error', async () => {

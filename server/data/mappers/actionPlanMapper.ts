@@ -35,4 +35,4 @@ const toStepDto = (stepResponse: StepResponse): StepDto => {
   }
 }
 
-export { toActionPlanDto, toGoalDto, toStepDto }
+export { toActionPlanDto, toGoalDto }
