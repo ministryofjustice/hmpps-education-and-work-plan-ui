@@ -50,9 +50,9 @@
 
                 {% for step in goal.steps %}
 
-                {% if step.status == "COMPLETED" %}
+                {% if step.status == "COMPLETE" %}
                   {% set tagClass = "govuk-tag--green" %}
-                {% elif step.status == "STARTED" %}
+                {% elif step.status == "ACTIVE" %}
                   {% set tagClass = "govuk-tag--blue" %}
                 {% else %}
                   {% set tagClass = "govuk-tag--grey" %}
