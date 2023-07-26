@@ -8,6 +8,7 @@ context('Prisoner Overview page', () => {
     cy.task('stubSignInAsUserWithEditAuthority')
     cy.task('stubAuthUser')
     cy.task('getPrisonerById')
+    cy.task('getActionPlan')
   })
 
   it('should render prisoner Overview page with Add Goal button given user has edit authority', () => {

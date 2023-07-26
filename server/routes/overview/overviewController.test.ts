@@ -6,14 +6,22 @@ import { NextFunction, Request, Response } from 'express'
 import OverviewController from './overviewController'
 import aValidPrisonerSupportNeeds from '../../testsupport/supportNeedsTestDataBuilder'
 import { CuriousService } from '../../services'
+import EducationAndWorkPlanService from '../../services/educationAndWorkPlanService'
+import { aValidActionPlanDtoWithOneGoal } from '../../testsupport/actionPlanDtoTestDataBuilder'
 
 describe('overviewController', () => {
   const curiousService = {
     getPrisonerSupportNeeds: jest.fn(),
     getPrisonerFunctionalSkills: jest.fn(),
   }
+  const educationAndWorkPlanService = {
+    getActionPlan: jest.fn(),
+  }
 
-  const controller = new OverviewController(curiousService as unknown as CuriousService)
+  const controller = new OverviewController(
+    curiousService as unknown as CuriousService,
+    educationAndWorkPlanService as unknown as EducationAndWorkPlanService,
+  )
 
   const req = {
     session: {} as SessionData,
@@ -41,20 +49,21 @@ describe('overviewController', () => {
       // Given
       const username = 'a-dps-user'
       req.user.username = username
-
       const expectedTab = 'overview'
       req.params.tab = expectedTab
-
       const prisonNumber = 'A1234GC'
       req.params.prisonNumber = prisonNumber
-
       req.session.prisonerSummary = { prisonNumber } as Prisoner
+
+      const actionPlan = aValidActionPlanDtoWithOneGoal()
+      educationAndWorkPlanService.getActionPlan.mockResolvedValue(actionPlan)
 
       const expectedPrisonerSummary = { prisonNumber } as PrisonerSummary
       const expectedView = {
         prisonerSummary: expectedPrisonerSummary,
         tab: expectedTab,
         prisonNumber,
+        actionPlan,
       }
 
       // When

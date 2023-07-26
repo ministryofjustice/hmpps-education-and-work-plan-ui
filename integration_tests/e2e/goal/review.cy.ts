@@ -11,6 +11,8 @@ context('Review goal(s)', () => {
     cy.task('stubAuthUser')
     cy.task('getPrisonerById', 'G6115VJ')
     cy.task('getPrisonerById', 'H4115SD')
+    cy.task('getActionPlan', 'G6115VJ')
+    cy.task('getActionPlan', 'H4115SD')
     cy.task('createGoal')
   })
 

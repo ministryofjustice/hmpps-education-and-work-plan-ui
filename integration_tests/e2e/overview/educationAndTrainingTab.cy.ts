@@ -7,6 +7,7 @@ context('Prisoner Overview page - Education And Training tab', () => {
     cy.task('stubSignInAsUserWithEditAuthority')
     cy.task('stubAuthUser')
     cy.task('getPrisonerById')
+    cy.task('getActionPlan')
   })
 
   it('should display Education and Training data', () => {
