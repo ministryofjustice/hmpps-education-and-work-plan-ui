@@ -43,11 +43,11 @@ describe('educationAndWorkPlanClient', () => {
       educationAndWorkPlanApi.get(`/action-plans/${prisonNumber}`).reply(200, actionPlanResponse)
 
       // When
-      const actualPlanDto = await educationAndWorkPlanClient.getActionPlan(prisonNumber, systemToken)
+      const actual = await educationAndWorkPlanClient.getActionPlan(prisonNumber, systemToken)
 
       // Then
       expect(nock.isDone()).toBe(true)
-      expect(actualPlanDto.prisonNumber).toEqual(prisonNumber)
+      expect(actual).toEqual(actionPlanResponse)
     })
   })
 })

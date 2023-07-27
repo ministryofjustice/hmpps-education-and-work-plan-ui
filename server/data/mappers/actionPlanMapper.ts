@@ -1,19 +1,20 @@
 import type { ActionPlanResponse, GoalResponse, StepResponse } from 'educationAndWorkPlanApiClient'
-import type { ActionPlanDto, GoalDto, StepDto } from 'dto'
+import type { ActionPlan, Goal, Step } from 'viewModels'
 
-const toActionPlanDto = (actionPlanResponse: ActionPlanResponse): ActionPlanDto => {
+const toActionPlan = (actionPlanResponse: ActionPlanResponse, problemRetrievingData: boolean): ActionPlan => {
   return {
     prisonNumber: actionPlanResponse.prisonNumber,
-    goals: actionPlanResponse.goals.map((goal: GoalResponse) => toGoalDto(goal)),
+    goals: actionPlanResponse.goals.map((goal: GoalResponse) => toGoal(goal)),
+    problemRetrievingData,
   }
 }
 
-const toGoalDto = (goalResponse: GoalResponse): GoalDto => {
+const toGoal = (goalResponse: GoalResponse): Goal => {
   return {
     goalReference: goalResponse.goalReference,
     title: goalResponse.title,
     status: goalResponse.status,
-    steps: goalResponse.steps.map((step: StepResponse) => toStepDto(step)),
+    steps: goalResponse.steps.map((step: StepResponse) => toStep(step)),
     createdBy: goalResponse.createdBy,
     createdByDisplayName: goalResponse.createdByDisplayName,
     createdAt: goalResponse.createdAt,
@@ -25,7 +26,7 @@ const toGoalDto = (goalResponse: GoalResponse): GoalDto => {
   }
 }
 
-const toStepDto = (stepResponse: StepResponse): StepDto => {
+const toStep = (stepResponse: StepResponse): Step => {
   return {
     stepReference: stepResponse.stepReference,
     title: stepResponse.title,
@@ -35,4 +36,4 @@ const toStepDto = (stepResponse: StepResponse): StepDto => {
   }
 }
 
-export { toActionPlanDto, toGoalDto }
+export { toActionPlan, toGoal }

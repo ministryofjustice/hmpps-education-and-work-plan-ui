@@ -66,7 +66,7 @@ const actionPlans = {
               },
               {
                 stepReference: '32992dd1-7dc6-4480-b2fc-61bc36a6a775',
-                title: 'Complete French aid course',
+                title: 'Complete French course',
                 targetDateRange: 'SIX_TO_TWELVE_MONTHS',
                 status: 'NOT_STARTED',
                 sequenceNumber: 2,
@@ -135,7 +135,7 @@ const actionPlans = {
               },
               {
                 stepReference: '32992dd1-7dc6-4480-b2fc-61bc36a6a775',
-                title: 'Complete French aid course',
+                title: 'Complete French course',
                 targetDateRange: 'SIX_TO_TWELVE_MONTHS',
                 status: 'NOT_STARTED',
                 sequenceNumber: 2,

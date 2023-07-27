@@ -50,4 +50,33 @@ declare module 'viewModels' {
     grade?: string
     assessmentDate?: Date
   }
+
+  export interface ActionPlan {
+    prisonNumber: string
+    goals: Array<Goal>
+    problemRetrievingData: boolean
+  }
+
+  export interface Goal {
+    goalReference: string
+    title: string
+    status: string
+    steps: Array<Step>
+    createdBy: string
+    createdByDisplayName: string
+    createdAt: string
+    updatedBy: string
+    updatedByDisplayName: string
+    updatedAt: string
+    reviewDate?: string
+    note?: string
+  }
+
+  export interface Step {
+    stepReference: string
+    title: string
+    targetDateRange: string
+    status: string
+    sequenceNumber: number
+  }
 }
