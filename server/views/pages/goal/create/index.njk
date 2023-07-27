@@ -37,12 +37,6 @@
 
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-      <h1 class="govuk-heading-l">Describe the goal you want to create for {{ prisonerSummary.firstName | capitalize }} {{ prisonerSummary.lastName | capitalize }}</h1>
-    </div>
-  </div>
-
-  <div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
 
       <form class="form" method="post" novalidate="">
         <div class="govuk-form-group">
@@ -50,6 +44,10 @@
           <input type="hidden" name="prisonNumber" value="{{ form.prisonNumber }}" />
 
           {% set titleLabelHtml %}
+            Describe the goal you want to create for {{ prisonerSummary.firstName | capitalize }} {{ prisonerSummary.lastName | capitalize }}
+          {% endset %}
+
+          {% set hintTextHtml %}
             <p class="govuk-hint">Goals should be SMART, meaning 'specific', 'measurable', 'achievable', 'relevant' and 'time-bound'. SMART goals allow progress to be better measured and evaluated.</p>
             <p class="govuk-hint">You can add the steps to achieve the goal on the next page.</p>
           {% endset %}
@@ -59,15 +57,19 @@
             id: "title",
             value: form.title,
             label: {
-              html: titleLabelHtml,
-              isPageHeading: false
+              text: titleLabelHtml,
+              classes: "govuk-label--l",
+              isPageHeading: true
+            },
+            hint: {
+              html: hintTextHtml
             },
             errorMessage: errors | findError('title')
           }) }}
 
-        {{ govukButton({
-          text: "Continue to add steps"
-        }) }}
+          {{ govukButton({
+            text: "Continue to add steps"
+          }) }}
 
       </form>
 
