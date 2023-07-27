@@ -11,6 +11,7 @@ context('Create a goal', () => {
     cy.task('stubAuthUser')
     cy.task('getPrisonerById')
     cy.task('getActionPlan')
+    cy.task('stubLearnerProfile')
   })
 
   it('should not be able to navigate directly to Create Goal page given user has not clicked Add A Goal from overview page', () => {

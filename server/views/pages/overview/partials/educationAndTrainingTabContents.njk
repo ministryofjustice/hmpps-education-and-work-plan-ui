@@ -19,9 +19,13 @@
         {% for assessment in functionalSkills.assessments %}
           <tr class="govuk-table__row">
             <td class="govuk-table__cell">{{ assessment.type | formatFunctionalSkillType }}</td>
-            <td class="govuk-table__cell">{{ assessment.assessmentDate | formatDate('D MMMM YYYY') }}</td>
-            <td class="govuk-table__cell">{{ assessment.grade }}</td>
-            <td class="govuk-table__cell">Induction</td>
+            {% if assessment.assessmentDate and assessment.grade %}
+              <td class="govuk-table__cell">{{ assessment.assessmentDate | formatDate('D MMMM YYYY') }}</td>
+              <td class="govuk-table__cell">{{ assessment.grade }}</td>
+              <td class="govuk-table__cell">Induction</td>
+            {% else %}
+              <td class="govuk-table__cell" colspan="3">No functional skills assessment recorded</td>
+            {% endif %}
           </tr>
         {% endfor %}
         </tbody>

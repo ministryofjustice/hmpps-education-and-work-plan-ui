@@ -16,9 +16,10 @@ export default class OverviewController {
     req.session.createGoalForm = undefined
 
     const { prisonerSummary } = req.session
-    const actionPlan = await this.educationAndWorkPlanService.getActionPlan(prisonNumber, req.user.token)
 
-    const view = new OverviewView(prisonerSummary, prisonNumber, actionPlan)
+    const actionPlan = await this.educationAndWorkPlanService.getActionPlan(prisonNumber, req.user.token)
+    const allFunctionalSkills = await this.curiousService.getPrisonerFunctionalSkills(prisonNumber, req.user.username)
+    const view = new OverviewView(prisonNumber, prisonerSummary, actionPlan, allFunctionalSkills)
     res.render('pages/overview/index', { ...view.renderArgs })
   }
 
@@ -35,8 +36,8 @@ export default class OverviewController {
     const { prisonNumber } = req.params
     const { prisonerSummary } = req.session
 
-    const functionalSkills = await this.curiousService.getPrisonerFunctionalSkills(prisonNumber, req.user.username)
-    const view = new EducationAndTrainingView(prisonerSummary, functionalSkills)
+    const allFunctionalSkills = await this.curiousService.getPrisonerFunctionalSkills(prisonNumber, req.user.username)
+    const view = new EducationAndTrainingView(prisonerSummary, allFunctionalSkills)
     res.render('pages/overview/index', { ...view.renderArgs })
   }
 }

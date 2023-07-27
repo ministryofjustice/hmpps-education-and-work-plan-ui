@@ -4,7 +4,7 @@ import { toPrisonerSupportNeeds } from '../routes/overview/mappers/prisonerSuppo
 import CuriousClient from '../data/curiousClient'
 import { HmppsAuthClient } from '../data'
 import logger from '../../logger'
-import toFunctionalSkills from '../routes/overview/mappers/functionalSkillsMapper'
+import { toFunctionalSkills } from '../routes/overview/mappers/functionalSkillsMapper'
 
 export default class CuriousService {
   constructor(private readonly hmppsAuthClient: HmppsAuthClient, private readonly curiousClient: CuriousClient) {}

@@ -1,24 +1,28 @@
-import type { PrisonerSummary } from 'viewModels'
+import type { FunctionalSkills, PrisonerSummary } from 'viewModels'
 import type { ActionPlanDto } from 'dto'
+import { mostRecentFunctionalSkills } from './mappers/functionalSkillsMapper'
 
 export default class OverviewView {
   constructor(
-    private readonly prisonerSummary: PrisonerSummary,
     private readonly prisonNumber: string,
+    private readonly prisonerSummary: PrisonerSummary,
     private readonly actionPlan: ActionPlanDto,
+    private readonly functionalSkills: FunctionalSkills,
   ) {}
 
   get renderArgs(): {
-    prisonerSummary: PrisonerSummary
-    tab: string
     prisonNumber: string
+    tab: string
+    prisonerSummary: PrisonerSummary
     actionPlan: ActionPlanDto
+    functionalSkills: FunctionalSkills
   } {
     return {
-      prisonerSummary: this.prisonerSummary,
-      tab: 'overview',
       prisonNumber: this.prisonNumber,
+      tab: 'overview',
+      prisonerSummary: this.prisonerSummary,
       actionPlan: this.actionPlan,
+      functionalSkills: mostRecentFunctionalSkills(this.functionalSkills),
     }
   }
 }
