@@ -1,6 +1,5 @@
 import type { FunctionalSkills, PrisonerSummary } from 'viewModels'
 import type { ActionPlanDto } from 'dto'
-import { mostRecentFunctionalSkills } from './mappers/functionalSkillsMapper'
 
 export default class OverviewView {
   constructor(
@@ -22,7 +21,7 @@ export default class OverviewView {
       tab: 'overview',
       prisonerSummary: this.prisonerSummary,
       actionPlan: this.actionPlan,
-      functionalSkills: mostRecentFunctionalSkills(this.functionalSkills),
+      functionalSkills: this.functionalSkills,
     }
   }
 }
