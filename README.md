@@ -165,3 +165,11 @@ A changelog for the service is available [here](./CHANGELOG.md)
 
 The template project has implemented some scheduled checks to ensure that key dependencies are kept up to date.
 If these are not desired in the cloned project, remove references to `check_outdated` job from `.circleci/config.yml`
+
+## Feature Toggles
+Features can be toggled by setting the relevant environment variable.
+
+| Name                | Default Value | Type    | Description                                                                                            |
+|---------------------|---------------|---------|--------------------------------------------------------------------------------------------------------|
+| EDIT_GOALS_ENABLED  | false         | Boolean | Set to true to enable editing/updating of Goals. Will be removed when feature is complete and released |
+
