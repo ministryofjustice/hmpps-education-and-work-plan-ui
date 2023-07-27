@@ -3,17 +3,22 @@ import EducationAndTrainingView from './educationAndTrainingView'
 import OverviewView from './overviewView'
 import SupportNeedsView from './supportNeedsView'
 import { CuriousService } from '../../services'
+import EducationAndWorkPlanService from '../../services/educationAndWorkPlanService'
 
 export default class OverviewController {
-  constructor(private readonly curiousService: CuriousService) {}
+  constructor(
+    private readonly curiousService: CuriousService,
+    private readonly educationAndWorkPlanService: EducationAndWorkPlanService,
+  ) {}
 
   getOverviewView: RequestHandler = async (req, res, next): Promise<void> => {
     const { prisonNumber } = req.params
     req.session.createGoalForm = undefined
 
     const { prisonerSummary } = req.session
+    const actionPlan = await this.educationAndWorkPlanService.getActionPlan(prisonNumber, req.user.token)
 
-    const view = new OverviewView(prisonerSummary, prisonNumber)
+    const view = new OverviewView(prisonerSummary, prisonNumber, actionPlan)
     res.render('pages/overview/index', { ...view.renderArgs })
   }
 

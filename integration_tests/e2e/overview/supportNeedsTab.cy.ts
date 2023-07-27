@@ -7,6 +7,7 @@ context('Prisoner Overview page - Support Needs tab', () => {
     cy.task('stubSignInAsUserWithEditAuthority')
     cy.task('stubAuthUser')
     cy.task('getPrisonerById')
+    cy.task('getActionPlan')
   })
 
   it('should display Support Needs data', () => {

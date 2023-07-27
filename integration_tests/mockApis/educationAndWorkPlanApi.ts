@@ -1,5 +1,6 @@
 import { SuperAgentRequest } from 'superagent'
 import { stubFor } from './wiremock'
+import actionPlans from '../mockData/actionPlanByPrisonNumberData'
 
 const createGoal = (): SuperAgentRequest =>
   stubFor({
@@ -12,4 +13,6 @@ const createGoal = (): SuperAgentRequest =>
     },
   })
 
-export default { createGoal }
+const getActionPlan = (id = 'G6115VJ'): SuperAgentRequest => stubFor(actionPlans[id])
+
+export default { createGoal, getActionPlan }
