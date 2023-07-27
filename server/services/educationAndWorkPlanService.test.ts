@@ -3,7 +3,7 @@ import EducationAndWorkPlanService from './educationAndWorkPlanService'
 import { aValidCreateGoalDtoWithOneStep } from '../testsupport/createGoalDtoTestDataBuilder'
 import { aValidActionPlanWithOneGoal } from '../testsupport/actionPlanTestDataBuilder'
 import { aValidActionPlanResponseWithOneGoal } from '../testsupport/actionPlanResponseTestDataBuilder'
-import { toCreateGoalRequest } from '../data/mappers/createGoalMapper'
+import { aValidCreateGoalRequestWithOneStep } from '../testsupport/createGoalRequestTestDataBuilder'
 
 describe('educationAndWorkPlanService', () => {
   const educationAndWorkPlanClient = {
@@ -24,7 +24,7 @@ describe('educationAndWorkPlanService', () => {
       // Given
       const userToken = 'a-user-token'
       const createGoalDto = aValidCreateGoalDtoWithOneStep()
-      const createGoalRequest = toCreateGoalRequest(createGoalDto)
+      const createGoalRequest = aValidCreateGoalRequestWithOneStep()
       educationAndWorkPlanClient.createGoal.mockImplementation(() => Promise.resolve(createGoalDto))
 
       // When
