@@ -22,9 +22,10 @@ export default class PrisonerSummaryRequestHandler {
         req.session.prisonerSummary = {
           prisonNumber: prisoner.prisonerNumber,
           releaseDate: prisoner.releaseDate,
-          location: prisoner.cellLocation,
           firstName: prisoner.firstName,
           lastName: prisoner.lastName,
+          receptionDate: prisoner.receptionDate,
+          dateOfBirth: prisoner.dateOfBirth,
         } as PrisonerSummary
       }
       next()

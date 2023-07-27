@@ -1,11 +1,15 @@
-  <div class="govuk-grid-row">
-    <div class="govuk-grid-column-one-third">
-      <p class="govuk-!-font-weight-bold govuk-!-margin-bottom-5">Prison number: <span class="govuk-body" data-qa="prison-number">{{ prisonerSummary.prisonNumber }}</span></p>
-    </div>
-    <div class="govuk-grid-column-one-third">
-      <p class="govuk-!-font-weight-bold govuk-!-margin-bottom-5">Earliest release date: <span class="govuk-body" data-qa="release-date">{{ prisonerSummary.releaseDate | formatDate('D MMMM YYYY') }}</span></p>
-    </div>
-    <div class="govuk-grid-column-one-third">
-      <p class="govuk-!-font-weight-bold govuk-!-margin-bottom-5">Location: <span class="govuk-body" data-qa="location">{{ prisonerSummary.location }}</span></p>
-    </div>
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-one-quarter">
+    <p class="govuk-visually-hidden">{{ prisonerSummary.firstName | title }} {{ prisonerSummary.lastName | title }}'s details</p>
+    <p class="govuk-!-font-weight-bold govuk-!-margin-bottom-6">Prison number: <span class="govuk-body" data-qa="prison-number">{{ prisonerSummary.prisonNumber }}</span></p>
   </div>
+  <div class="govuk-grid-column-one-quarter">
+    <p class="govuk-!-font-weight-bold govuk-!-margin-bottom-6">Reception date: <span class="govuk-body" data-qa="reception-date">{{ prisonerSummary.receptionDate | formatDate('D MMM YYYY') }}</span></p>
+  </div>
+  <div class="govuk-grid-column-one-quarter">
+    <p class="govuk-!-font-weight-bold govuk-!-margin-bottom-6">Earliest release date: <span class="govuk-body" data-qa="release-date">{{ prisonerSummary.releaseDate | formatDate('D MMM YYYY') }}</span></p>
+  </div>
+  <div class="govuk-grid-column-one-quarter">
+    <p class="govuk-!-font-weight-bold govuk-!-margin-bottom-6">DOB: <span class="govuk-body" data-qa="dob">{{ prisonerSummary.dateOfBirth | formatDate('D MMM YYYY') }}</span></p>
+  </div>
+</div>
