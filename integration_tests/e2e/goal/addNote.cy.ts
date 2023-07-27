@@ -13,6 +13,7 @@ context('Add a note', () => {
     cy.task('getPrisonerById', 'H4115SD')
     cy.task('getActionPlan', 'G6115VJ')
     cy.task('getActionPlan', 'H4115SD')
+    cy.task('stubLearnerProfile')
   })
 
   it('should not be able to navigate directly to Add Note given Create Goal and Add Step has not been submitted', () => {

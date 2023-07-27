@@ -49,14 +49,35 @@ describe('overviewController', () => {
       // Given
       const username = 'a-dps-user'
       req.user.username = username
+
       const expectedTab = 'overview'
       req.params.tab = expectedTab
+
       const prisonNumber = 'A1234GC'
       req.params.prisonNumber = prisonNumber
+
       req.session.prisonerSummary = { prisonNumber } as Prisoner
 
       const actionPlan = aValidActionPlanDtoWithOneGoal()
       educationAndWorkPlanService.getActionPlan.mockResolvedValue(actionPlan)
+
+      const functionalSkillsFromCurious = {
+        problemRetrievingData: false,
+        assessments: [],
+      } as FunctionalSkills
+      curiousService.getPrisonerFunctionalSkills.mockResolvedValue(functionalSkillsFromCurious)
+
+      const expectedFunctionalSkills = {
+        problemRetrievingData: false,
+        assessments: [
+          {
+            type: 'ENGLISH',
+          },
+          {
+            type: 'MATHS',
+          },
+        ],
+      } as FunctionalSkills
 
       const expectedPrisonerSummary = { prisonNumber } as PrisonerSummary
       const expectedView = {
@@ -64,6 +85,7 @@ describe('overviewController', () => {
         tab: expectedTab,
         prisonNumber,
         actionPlan,
+        functionalSkills: expectedFunctionalSkills,
       }
 
       // When
@@ -127,7 +149,7 @@ describe('overviewController', () => {
 
       req.session.prisonerSummary = { prisonNumber } as Prisoner
 
-      const expectedFunctionalSkills = {
+      const functionalSkillsFromCurious = {
         problemRetrievingData: false,
         assessments: [
           {
@@ -139,7 +161,23 @@ describe('overviewController', () => {
           },
         ],
       } as FunctionalSkills
-      curiousService.getPrisonerFunctionalSkills.mockResolvedValue(expectedFunctionalSkills)
+      curiousService.getPrisonerFunctionalSkills.mockResolvedValue(functionalSkillsFromCurious)
+
+      const expectedFunctionalSkills = {
+        problemRetrievingData: false,
+        assessments: [
+          {
+            assessmentDate: moment('2012-02-16').toDate(),
+            grade: 'Level 1',
+            prisonId: 'MDI',
+            prisonName: 'MOORLAND (HMP & YOI)',
+            type: 'ENGLISH',
+          },
+          {
+            type: 'MATHS',
+          },
+        ],
+      } as FunctionalSkills
 
       const expectedPrisonerSummary = { prisonNumber } as PrisonerSummary
       const expectedView = {
