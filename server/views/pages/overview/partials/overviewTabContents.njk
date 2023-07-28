@@ -2,4 +2,40 @@
   <div class="govuk-grid-column-two-thirds">
     {% include './overviewTabActionPlanColumn.njk' %}
   </div>
+
+  <div class="govuk-grid-column-one-third">
+
+    <div class="govuk-summary-card">
+      <div class="govuk-summary-card__title-wrapper app-summary-card__title-wrapper--white">
+        <h2 class="govuk-summary-card__title">Current functional skills</h2>
+      </div>
+      <div class="govuk-summary-card__content">
+
+        <table class="govuk-table govuk-!-margin-bottom-0">
+          <caption class="govuk-table__caption govuk-visually-hidden">Functional skills and assessment information</caption>
+          <thead class="govuk-table__head govuk-visually-hidden">
+            <tr class="govuk-table__row">
+              <th scope="col" class="govuk-table__header">Skill and assessment date</th>
+              <th scope="col" class="govuk-table__header">Assessment level</th>
+            </tr>
+          </thead>
+          <tbody class="govuk-table__body">
+            {% for skill in functionalSkills.assessments %}
+            <tr class="govuk-table__row">
+              <th scope="row" class="govuk-table__header">
+                <span class="govuk-body-s">Assessed on {{ skill.assessmentDate | formatDate('D MMMM YYYY') }}</span>
+                <br>
+                {{ skill.type | replace("_", " ") | title }}
+              </th>
+              <td class="govuk-table__cell"><br>{{ skill.grade }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+
+      </div>
+    </div>
+
+  </div>
+
 </div>
