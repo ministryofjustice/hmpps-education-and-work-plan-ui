@@ -1,11 +1,10 @@
-import type { FunctionalSkills, PrisonerSummary } from 'viewModels'
-import type { ActionPlanDto } from 'dto'
+import type { ActionPlan, FunctionalSkills, PrisonerSummary } from 'viewModels'
 
 export default class OverviewView {
   constructor(
     private readonly prisonNumber: string,
     private readonly prisonerSummary: PrisonerSummary,
-    private readonly actionPlan: ActionPlanDto,
+    private readonly actionPlan: ActionPlan,
     private readonly functionalSkills: FunctionalSkills,
   ) {}
 
@@ -13,7 +12,7 @@ export default class OverviewView {
     prisonNumber: string
     tab: string
     prisonerSummary: PrisonerSummary
-    actionPlan: ActionPlanDto
+    actionPlan: ActionPlan
     functionalSkills: FunctionalSkills
   } {
     return {

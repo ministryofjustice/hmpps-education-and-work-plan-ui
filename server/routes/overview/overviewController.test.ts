@@ -7,7 +7,7 @@ import OverviewController from './overviewController'
 import aValidPrisonerSupportNeeds from '../../testsupport/supportNeedsTestDataBuilder'
 import { CuriousService } from '../../services'
 import EducationAndWorkPlanService from '../../services/educationAndWorkPlanService'
-import { aValidActionPlanDtoWithOneGoal } from '../../testsupport/actionPlanDtoTestDataBuilder'
+import { aValidActionPlanWithOneGoal } from '../../testsupport/actionPlanTestDataBuilder'
 
 describe('overviewController', () => {
   const curiousService = {
@@ -58,7 +58,7 @@ describe('overviewController', () => {
 
       req.session.prisonerSummary = { prisonNumber } as Prisoner
 
-      const actionPlan = aValidActionPlanDtoWithOneGoal()
+      const actionPlan = aValidActionPlanWithOneGoal()
       educationAndWorkPlanService.getActionPlan.mockResolvedValue(actionPlan)
 
       const functionalSkillsFromCurious = {
