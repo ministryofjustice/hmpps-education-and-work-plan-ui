@@ -48,6 +48,63 @@ context('Prisoner Overview page', () => {
       .activeTabIs('Overview')
   })
 
+  it('should display prisoner Goals', () => {
+    // Given
+    cy.task('stubSignInAsUserWithViewAuthority')
+    cy.task('getActionPlan')
+
+    cy.signIn()
+    const prisonNumber = 'G6115VJ'
+
+    // When
+    cy.visit(`/plan/${prisonNumber}/view/overview`)
+
+    // Then
+    const page = Page.verifyOnPage(OverviewPage)
+    page //
+      .isForPrisoner(prisonNumber)
+      .activeTabIs('Overview')
+      .hasGoalsDisplayed()
+  })
+
+  it('should display goals section given prisoner has no goals', () => {
+    // Given
+    cy.task('stubSignInAsUserWithViewAuthority')
+    cy.task('getActionPlanForPrisonerWithNoGoals')
+
+    cy.signIn()
+    const prisonNumber = 'G6115VJ'
+
+    // When
+    cy.visit(`/plan/${prisonNumber}/view/overview`)
+
+    // Then
+    const page = Page.verifyOnPage(OverviewPage)
+    page //
+      .isForPrisoner(prisonNumber)
+      .activeTabIs('Overview')
+      .hasEmptyGoalsSection()
+  })
+
+  it('should display service unavailable message given EWP API returns a 500', () => {
+    // Given
+    cy.task('stubSignInAsUserWithViewAuthority')
+    cy.task('getActionPlan500Error')
+
+    cy.signIn()
+    const prisonNumber = 'G6115VJ'
+
+    // When
+    cy.visit(`/plan/${prisonNumber}/view/overview`)
+
+    // Then
+    const page = Page.verifyOnPage(OverviewPage)
+    page //
+      .isForPrisoner(prisonNumber)
+      .activeTabIs('Overview')
+      .hasServiceUnavailableMessageDisplayed()
+  })
+
   it('should navigate to Create Goal page given Add A Goal button is clicked', () => {
     // Given
     const prisonNumber = 'G6115VJ'

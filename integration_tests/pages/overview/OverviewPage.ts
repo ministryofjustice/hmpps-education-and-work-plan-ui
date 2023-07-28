@@ -57,6 +57,15 @@ export default class OverviewPage extends Page {
     return this
   }
 
+  hasGoalsDisplayed() {
+    this.goalsSummaryCard().should('be.visible')
+  }
+
+  hasEmptyGoalsSection() {
+    cy.get('h2').contains('Goals in progress')
+    this.goalsSummaryCard().should('not.exist')
+  }
+
   hasFunctionalSkillsDisplayed() {
     this.functionalSkillsTable().should('be.visible')
   }
@@ -76,6 +85,11 @@ export default class OverviewPage extends Page {
     return this
   }
 
+  hasServiceUnavailableMessageDisplayed() {
+    cy.get('h2').contains('Sorry, the service is currently unavailable.')
+    return this
+  }
+
   prisonNumberLabel = (): PageElement => cy.get('[data-qa=prison-number]')
 
   activeTab = (): PageElement => cy.get('.moj-sub-navigation__link[aria-current=page]')
@@ -83,6 +97,8 @@ export default class OverviewPage extends Page {
   addGoalButton = (): PageElement => cy.get('#add-goal-button')
 
   functionalSkillsTable = (): PageElement => cy.get('#functional-skills-table')
+
+  goalsSummaryCard = (): PageElement => cy.get('#goals-summary-card')
 
   healthAndSupportNeedsSummaryCard = (): PageElement => cy.get('#health-and-support-needs-summary-card')
 
