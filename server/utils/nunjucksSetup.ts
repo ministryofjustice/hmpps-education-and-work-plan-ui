@@ -55,6 +55,7 @@ export function registerNunjucks(app?: express.Express): Environment {
   njkEnv.addFilter('formatFunctionalSkillType', formatFunctionalSkillType)
 
   njkEnv.addGlobal('dpsUrl', config.dpsHomeUrl)
+  njkEnv.addGlobal('featureToggles', config.featureToggles)
 
   return njkEnv
 }
