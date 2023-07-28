@@ -1,4 +1,4 @@
-import type { CreateGoalRequest, CreateStepRequest } from 'educationAndWorkPlanApiClient'
+import type { CreateGoalRequest, StepRequest } from 'educationAndWorkPlanApiClient'
 import type { AddStepDto, CreateGoalDto } from 'dto'
 
 const toCreateGoalRequest = (createGoalDto: CreateGoalDto): CreateGoalRequest => {
@@ -11,11 +11,11 @@ const toCreateGoalRequest = (createGoalDto: CreateGoalDto): CreateGoalRequest =>
   }
 }
 
-const toAddStepRequests = (createGoalDto: CreateGoalDto): Array<CreateStepRequest> => {
+const toAddStepRequests = (createGoalDto: CreateGoalDto): Array<StepRequest> => {
   return createGoalDto.steps.map(step => toAddStepRequest(step))
 }
 
-const toAddStepRequest = (addStepDto: AddStepDto): CreateStepRequest => {
+const toAddStepRequest = (addStepDto: AddStepDto): StepRequest => {
   return {
     title: addStepDto.title,
     targetDateRange: addStepDto.targetDateRange,

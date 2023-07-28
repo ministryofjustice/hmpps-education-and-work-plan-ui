@@ -1,7 +1,7 @@
-import type { CreateGoalRequest, CreateStepRequest } from 'educationAndWorkPlanApiClient'
+import type { CreateGoalRequest, StepRequest } from 'educationAndWorkPlanApiClient'
 
 const aValidCreateGoalRequestWithOneStep = (): CreateGoalRequest => {
-  const createStepRequest: CreateStepRequest = {
+  const createStepRequest: StepRequest = {
     title: 'Book Spanish course',
     targetDateRange: 'ZERO_TO_THREE_MONTHS',
     sequenceNumber: 1,
@@ -16,12 +16,12 @@ const aValidCreateGoalRequestWithOneStep = (): CreateGoalRequest => {
 }
 
 const aValidCreateGoalRequestWithMultipleSteps = (): CreateGoalRequest => {
-  const createStepRequest1: CreateStepRequest = {
+  const createStepRequest1: StepRequest = {
     title: 'Book Spanish course',
     targetDateRange: 'ZERO_TO_THREE_MONTHS',
     sequenceNumber: 1,
   }
-  const createStepRequest2: CreateStepRequest = {
+  const createStepRequest2: StepRequest = {
     title: 'Complete Spanish course',
     targetDateRange: 'THREE_TO_SIX_MONTHS',
     sequenceNumber: 2,
