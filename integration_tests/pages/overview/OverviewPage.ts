@@ -58,12 +58,12 @@ export default class OverviewPage extends Page {
   }
 
   hasGoalsDisplayed() {
-    this.goalsSummaryCard().should('be.visible')
+    this.goalSummaryCards().should('exist')
   }
 
   hasEmptyGoalsSection() {
     cy.get('h2').contains('Goals in progress')
-    this.goalsSummaryCard().should('not.exist')
+    this.goalSummaryCards().should('not.exist')
   }
 
   hasFunctionalSkillsDisplayed() {
@@ -98,7 +98,7 @@ export default class OverviewPage extends Page {
 
   functionalSkillsTable = (): PageElement => cy.get('#functional-skills-table')
 
-  goalsSummaryCard = (): PageElement => cy.get('#goals-summary-card')
+  goalSummaryCards = (): PageElement => cy.get('[data-qa=goal-summary-card]')
 
   healthAndSupportNeedsSummaryCard = (): PageElement => cy.get('#health-and-support-needs-summary-card')
 
