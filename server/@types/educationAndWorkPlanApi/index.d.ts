@@ -32,11 +32,6 @@ export interface components {
        */
       reviewDate?: string
       /**
-       * @example null
-       * @enum {string}
-       */
-      category?: 'WORK' | 'PERSONAL_DEVELOPMENT' | 'EDUCATION' | 'RESETTLEMENT'
-      /**
        * @description Some additional notes related to the Goal.
        * @example Pay close attention to Peter's behaviour.
        */
@@ -86,6 +81,7 @@ export interface components {
      */
     GoalResponse: {
       /**
+       * Format: uuid
        * @description The Goal's unique reference
        * @example c88a6c48-97e2-4c04-93b5-98619966447b
        */
@@ -143,11 +139,6 @@ export interface components {
        */
       reviewDate?: string
       /**
-       * @example null
-       * @enum {string}
-       */
-      category?: 'WORK' | 'PERSONAL_DEVELOPMENT' | 'EDUCATION' | 'RESETTLEMENT'
-      /**
        * @description Some additional notes related to the Goal.
        * @example Pay close attention to Peter's behaviour.
        */
@@ -159,6 +150,7 @@ export interface components {
      */
     StepResponse: {
       /**
+       * Format: uuid
        * @description A unique reference for the Step
        * @example d38a6c41-13d1-1d05-13c2-24619966119b
        */
