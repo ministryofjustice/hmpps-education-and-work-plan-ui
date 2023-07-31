@@ -25,7 +25,7 @@
               <th scope="row" class="govuk-table__header">
                 <span class="govuk-body-s">Assessed on {{ skill.assessmentDate | formatDate('D MMMM YYYY') }}</span>
                 <br>
-                {{ skill.type | replace("_", " ") | title }}
+                {{ skill.type | formatFunctionalSkillType }}
               </th>
               <td class="govuk-table__cell"><br>{{ skill.grade }}</td>
             </tr>
