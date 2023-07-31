@@ -23,11 +23,13 @@
             {% for skill in functionalSkills.assessments %}
             <tr class="govuk-table__row">
               <th scope="row" class="govuk-table__header">
+                {% if skill.assessmentDate %}
                 <span class="govuk-body-s">Assessed on {{ skill.assessmentDate | formatDate('D MMMM YYYY') }}</span>
                 <br>
+                {% endif %}
                 {{ skill.type | formatFunctionalSkillType }}
               </th>
-              <td class="govuk-table__cell"><br>{{ skill.grade }}</td>
+              <td class="govuk-table__cell">{% if skill.grade %}<br>{{ skill.grade }}{% else %}No functional skills assessment recorded{% endif %}</td>
             </tr>
             {% endfor %}
           </tbody>
