@@ -70,6 +70,10 @@ export default class OverviewPage extends Page {
     this.functionalSkillsTable().should('be.visible')
   }
 
+  hasFunctionalSkillsSidebar() {
+    this.functionalSkillsSidebarTable().should('be.visible')
+  }
+
   hasHealthAndSupportNeedsDisplayed() {
     this.healthAndSupportNeedsSummaryCard().should('be.visible')
     return this
@@ -97,6 +101,8 @@ export default class OverviewPage extends Page {
   addGoalButton = (): PageElement => cy.get('#add-goal-button')
 
   functionalSkillsTable = (): PageElement => cy.get('#functional-skills-table')
+
+  functionalSkillsSidebarTable = (): PageElement => cy.get('#functional-skills-sidebar-table')
 
   goalSummaryCards = (): PageElement => cy.get('[data-qa=goal-summary-card]')
 
