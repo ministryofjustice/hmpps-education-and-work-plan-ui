@@ -130,4 +130,20 @@ context('Prisoner Overview page', () => {
     // Check
     overviewPage.hasBreadcrumb().breadcrumbDoesNotIncludeCurrentPage()
   })
+
+  it('should display functional skills in the sidebar', () => {
+    // Given
+    const prisonNumber = 'G6115VJ'
+    cy.signIn()
+
+    // When
+    cy.visit(`/plan/${prisonNumber}/view/overview`)
+
+    // Then
+    const overviewPage = Page.verifyOnPage(OverviewPage)
+    overviewPage //
+      .isForPrisoner(prisonNumber)
+      .activeTabIs('Overview')
+      .hasFunctionalSkillsSidebar()
+  })
 })
