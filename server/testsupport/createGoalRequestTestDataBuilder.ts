@@ -1,13 +1,13 @@
 import type { CreateGoalRequest, CreateStepRequest } from 'educationAndWorkPlanApiClient'
 
-const aValidCreateGoalRequestWithOneStep = (): CreateGoalRequest => {
+const aValidCreateGoalRequestWithOneStep = (prisonNumber = 'A1234BC'): CreateGoalRequest => {
   const createStepRequest: CreateStepRequest = {
     title: 'Book Spanish course',
     targetDateRange: 'ZERO_TO_THREE_MONTHS',
     sequenceNumber: 1,
   }
   return {
-    prisonNumber: 'A1234BC',
+    prisonNumber,
     title: 'Learn Spanish',
     steps: [createStepRequest],
     notes: 'Prisoner is not good at listening',
@@ -15,7 +15,7 @@ const aValidCreateGoalRequestWithOneStep = (): CreateGoalRequest => {
   }
 }
 
-const aValidCreateGoalRequestWithMultipleSteps = (): CreateGoalRequest => {
+const aValidCreateGoalRequestWithMultipleSteps = (prisonNumber: 'A1234BC'): CreateGoalRequest => {
   const createStepRequest1: CreateStepRequest = {
     title: 'Book Spanish course',
     targetDateRange: 'ZERO_TO_THREE_MONTHS',
@@ -27,7 +27,7 @@ const aValidCreateGoalRequestWithMultipleSteps = (): CreateGoalRequest => {
     sequenceNumber: 2,
   }
   return {
-    prisonNumber: 'A1234BC',
+    prisonNumber,
     title: 'Learn Spanish',
     steps: [createStepRequest1, createStepRequest2],
     note: 'Prisoner is not good at listening',

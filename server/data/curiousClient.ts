@@ -8,16 +8,16 @@ export default class CuriousClient {
   }
 
   async getLearnerProfile(prisonNumber: string, token: string): Promise<Array<LearnerProfile>> {
-    const learnerProfiles = (await CuriousClient.restClient(token).get({
+    const learnerProfiles = CuriousClient.restClient(token).get({
       path: `/learnerProfile/${prisonNumber}`,
-    })) as Promise<Array<LearnerProfile>>
-    return learnerProfiles
+    })
+    return learnerProfiles as Promise<Array<LearnerProfile>>
   }
 
   async getLearnerNeurodivergence(prisonNumber: string, token: string): Promise<Array<LearnerNeurodivergence>> {
-    const learnerNeurodivergence = (await CuriousClient.restClient(token).get({
+    const learnerNeurodivergence = CuriousClient.restClient(token).get({
       path: `/learnerNeurodivergence/${prisonNumber}`,
-    })) as Promise<Array<LearnerNeurodivergence>>
-    return learnerNeurodivergence
+    })
+    return learnerNeurodivergence as Promise<Array<LearnerNeurodivergence>>
   }
 }

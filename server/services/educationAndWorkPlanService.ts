@@ -8,7 +8,7 @@ import logger from '../../logger'
 export default class EducationAndWorkPlanService {
   constructor(private readonly educationAndWorkPlanClient: EducationAndWorkPlanClient) {}
 
-  async createGoal(createGoalDto: CreateGoalDto, token: string): Promise<void> {
+  async createGoal(createGoalDto: CreateGoalDto, token: string): Promise<unknown> {
     const createGoalRequest = toCreateGoalRequest(createGoalDto)
     return this.educationAndWorkPlanClient.createGoal(createGoalRequest, token)
   }
