@@ -60,6 +60,29 @@ describe('curiousClient', () => {
       expect(actual).toEqual(learnerProfile)
       expect(nock.isDone()).toBe(true)
     })
+
+    it('should not get learner profile given API returns an error response', async () => {
+      // Given
+      const prisonNumber = 'A1234BC'
+      const systemToken = 'a-system-token'
+
+      const expectedResponseBody = {
+        errorCode: 'VC4001',
+        errorMessage: 'Invalid token',
+        httpStatusCode: 401,
+      }
+      curiousApi.get(`/learnerProfile/${prisonNumber}`).reply(401, expectedResponseBody)
+
+      // When
+      try {
+        await curiousClient.getLearnerProfile(prisonNumber, systemToken)
+      } catch (e) {
+        // Then
+        expect(nock.isDone()).toBe(true)
+        expect(e.status).toEqual(401)
+        expect(e.data).toEqual(expectedResponseBody)
+      }
+    })
   })
 
   describe('getLearnerNeurodivergence', () => {
@@ -89,6 +112,29 @@ describe('curiousClient', () => {
       // Then
       expect(actual).toEqual(learnerNeurodivergence)
       expect(nock.isDone()).toBe(true)
+    })
+
+    it('should not get learner neuro divergence given API returns an error response', async () => {
+      // Given
+      const prisonNumber = 'A1234BC'
+      const systemToken = 'a-system-token'
+
+      const expectedResponseBody = {
+        errorCode: 'VC4001',
+        errorMessage: 'Invalid token',
+        httpStatusCode: 401,
+      }
+      curiousApi.get(`/learnerNeurodivergence/${prisonNumber}`).reply(401, expectedResponseBody)
+
+      // When
+      try {
+        await curiousClient.getLearnerNeurodivergence(prisonNumber, systemToken)
+      } catch (e) {
+        // Then
+        expect(nock.isDone()).toBe(true)
+        expect(e.status).toEqual(401)
+        expect(e.data).toEqual(expectedResponseBody)
+      }
     })
   })
 })

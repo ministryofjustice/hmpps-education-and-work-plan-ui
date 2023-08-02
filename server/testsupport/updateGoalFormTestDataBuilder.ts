@@ -6,6 +6,7 @@ export default function aValidUpdateGoalForm(): UpdateGoalForm {
     title: 'Learn Spanish',
     reviewDate: undefined,
     status: 'ACTIVE',
+    note: 'Prisoner is not good at listening',
     steps: [
       {
         reference: 'c77cd2fb-40e0-4354-982a-5c8017e92b26',
