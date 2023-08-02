@@ -1,0 +1,183 @@
+{% extends "../../../partials/layout.njk" %}
+
+{% set pageId = "update-goal" %}
+{% set pageTitle = applicationName + " - Home" %}
+
+{% block beforeContent %}
+  {{ govukBreadcrumbs({
+    items: [
+      {
+        text: "Digital Prison Services",
+        href: dpsUrl
+      },
+      {
+        text: "Manage learning and work progress",
+        href: "/"
+      },
+      {
+        text: "Manage " + prisonerSummary.firstName | capitalize + " " + prisonerSummary.lastName | capitalize + "'s learning plan",
+        href: "/plan/" + prisonerSummary.prisonNumber + "/view/overview"
+      }
+    ],
+    classes: 'govuk-!-display-none-print'
+  }) }}
+{% endblock %}
+
+{% block content %}
+
+  {% if errors.length > 0 %}
+    {{ govukErrorSummary({
+      titleText: 'There is a problem',
+      errorList: errors,
+      attributes: { 'data-qa-errors': true }
+    }) }}
+  {% endif %}
+
+  {% include "../../../partials/prisonerBanner.njk" %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <h1 class="govuk-heading-l">You are updating a goal for {{ prisonerSummary.firstName | capitalize }} {{ prisonerSummary.lastName | capitalize }}</h1>
+
+      <div data-module="moj-add-another">
+        <form class="form" method="post" novalidate="">
+          <div class="govuk-form-group">
+            <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+            <input type="hidden" name="prisonNumber" value="{{ form.prisonNumber }}" />
+
+            {{ govukCheckboxes({
+              name: "goal-complete",
+              fieldset: {
+                legend: {
+                  text: "Is this goal now complete?"
+                }
+              },
+              items: [
+                {
+                  value: "mark-goal-as-completed",
+                  text: "Mark this goal as completed"
+                }
+              ],
+              errorMessage: errors | findError('goal-complete')
+            }) }}
+
+            {{ govukTextarea({
+              name: "description",
+              id: "description",
+              label: {
+                text: "Description",
+                classes: "govuk-label--m"
+              },
+              errorMessage: errors | findError('description')
+            }) }}
+
+            {{ govukTextarea({
+              name: "note",
+              id: "note",
+              label: {
+                text: "Add or edit note",
+                classes: "govuk-label--m"
+              },
+              errorMessage: errors | findError('note')
+            }) }}
+
+            <h2 class="govuk-heading-m moj-add-another__heading" tabindex="-1">Edit and remove steps</h2>
+
+            {% call govukFieldset({
+              classes: 'moj-add-another__item',
+              legend: {
+                text: 'Step',
+                classes: 'moj-add-another__title govuk-fieldset__legend--m',
+                isPageHeading: false
+              }
+            }) %}
+
+            {{ govukInput({
+              id: 'step[0][description]',
+              name: 'step[0][description]',
+              label: {
+                html: 'Description',
+                classes: 'govuk-!-font-weight-bold'
+              },
+              attributes: {
+                'data-name': 'step[%index%][description]',
+                'data-id': 'step[%index%][description]'
+              }
+            }) }}
+
+            {{ govukSelect({
+              id: "step[0]status",
+              name: "step[0]status",
+              label: {
+                text: "Staus",
+                classes: "govuk-!-font-weight-bold"
+              },
+              items: [
+                {
+                  value: "NOT_STARTED",
+                  text: "Not started",
+                  selected: true
+                },
+                {
+                  value: "ACTIVE",
+                  text: "Started",
+                },
+                {
+                  value: "COMPLETE",
+                  text: "Complete"
+                }
+              ]
+            }) }}
+
+            {{ govukRadios({
+              id: "step[0]targetDateRange"
+              name: "step[0]targetDateRange",
+              fieldset: {
+                legend: {
+                  text: "When will they achieve this by?",
+                  classes: "govuk-!-font-weight-bold"
+                }
+              },
+              items: [
+                {
+                  value: "ZERO_TO_THREE_MONTHS",
+                  text: "0 to 3 months"
+                },
+                {
+                  value: "THREE_TO_SIX_MONTHS",
+                  text: "3 to 6 months"
+                },
+                {
+                  value: "SIX_TO_TWELVE_MONTHS",
+                  text: "6 to 12 months"
+                },
+                {
+                  value: "MORE_THAN_TWELVE_MONTHS",
+                  text: "More than 12 months"
+                }
+              ]
+            }) }}
+
+            {% endcall %}
+
+          <div class="moj-button-action">
+            {{ govukButton({
+              text: 'Add another person',
+              classes: 'govuk-button--secondary moj-add-another__add-button govuk-!-margin-bottom-4'
+            }) }}
+          </div>
+
+          <div class="moj-button-action">
+            {{ govukButton({
+              text: 'Submit'
+            }) }}
+          </div>
+
+        </form>
+      </div>
+
+    </div>
+  </div>
+
+{% endblock %}

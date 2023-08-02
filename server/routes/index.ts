@@ -4,6 +4,7 @@ import asyncMiddleware from '../middleware/asyncMiddleware'
 import type { Services } from '../services'
 
 import createGoal from './createGoal'
+import updateGoal from './updateGoal'
 import overview from './overview'
 
 export default function routes(services: Services): Router {
@@ -16,6 +17,7 @@ export default function routes(services: Services): Router {
 
   overview(router, services)
   createGoal(router, services)
+  updateGoal(router, services)
 
   return router
 }
