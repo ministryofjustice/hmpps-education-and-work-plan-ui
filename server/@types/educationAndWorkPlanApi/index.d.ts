@@ -4,6 +4,9 @@
  */
 
 export interface paths {
+  '/action-plans/{prisonNumber}/goals/{goalReference}': {
+    put: operations['updateGoal']
+  }
   '/action-plans/{prisonNumber}/goals': {
     post: operations['createGoal']
   }
@@ -16,17 +19,28 @@ export type webhooks = Record<string, never>
 
 export interface components {
   schemas: {
-    CreateGoalRequest: {
+    UpdateGoalRequest: {
+      /**
+       * Format: uuid
+       * @description The Goal's unique reference. This is used as an identifier to update the required Goal. It is not possible or supported to update the `goalReference`.
+       * @example c88a6c48-97e2-4c04-93b5-98619966447b
+       */
+      goalReference: string
       /**
        * @description A title explaining the aim of the goal.
        * @example Improve communication skills
        */
       title: string
       /**
+       * @example null
+       * @enum {string}
+       */
+      status: 'ACTIVE' | 'COMPLETED' | 'ARCHIVED'
+      /**
        * @description A List of at least one Step.
        * @example null
        */
-      steps: components['schemas']['StepRequest'][]
+      steps: components['schemas']['UpdateStepRequest'][]
       /**
        * Format: date
        * @description An optional ISO-8601 date representing when the Goal is up for review.
@@ -42,7 +56,18 @@ export interface components {
      * @description A List of at least one Step.
      * @example null
      */
-    StepRequest: {
+    UpdateStepRequest: {
+      /**
+       * Format: uuid
+       * @description The Step's unique reference. This is used as an identifier to update the required Step. It is not possible or supported to update the `stepReference`.
+       * @example d38a6c41-13d1-1d05-13c2-24619966119b
+       */
+      stepReference: string
+      /**
+       * @example null
+       * @enum {string}
+       */
+      status: 'NOT_STARTED' | 'ACTIVE' | 'COMPLETE'
       /**
        * @description A title describing the step
        * @example Book first aid course
@@ -63,12 +88,54 @@ export interface components {
        * @example 1
        */
       sequenceNumber: number
+    }
+    CreateGoalRequest: {
       /**
-       * Format: uuid
-       * @description A unique reference for the Step, which should only be provided when updating an existing known Step. This should be null when creating a new Step, otherwise a 404 ('Not found') error will be returned.
-       * @example d38a6c41-13d1-1d05-13c2-24619966119b
+       * @description A title explaining the aim of the goal.
+       * @example Improve communication skills
        */
-      stepReference?: string
+      title: string
+      /**
+       * @description A List of at least one Step.
+       * @example null
+       */
+      steps: components['schemas']['CreateStepRequest'][]
+      /**
+       * Format: date
+       * @description An optional ISO-8601 date representing when the Goal is up for review.
+       */
+      reviewDate?: string
+      /**
+       * @description Some additional notes related to the Goal.
+       * @example Pay close attention to Peter's behaviour.
+       */
+      notes?: string
+    }
+    /**
+     * @description A List of at least one Step.
+     * @example null
+     */
+    CreateStepRequest: {
+      /**
+       * @description A title describing the step
+       * @example Book first aid course
+       */
+      title: string
+      /**
+       * @example null
+       * @enum {string}
+       */
+      targetDateRange:
+        | 'ZERO_TO_THREE_MONTHS'
+        | 'THREE_TO_SIX_MONTHS'
+        | 'SIX_TO_TWELVE_MONTHS'
+        | 'MORE_THAN_TWELVE_MONTHS'
+      /**
+       * Format: int32
+       * @description The number (position) of the Step within the overall Goal.
+       * @example 1
+       */
+      sequenceNumber: number
     }
     ActionPlanResponse: {
       /**
@@ -199,6 +266,23 @@ export interface components {
 export type external = Record<string, never>
 
 export interface operations {
+  updateGoal: {
+    parameters: {
+      path: {
+        prisonNumber: string
+        goalReference: string
+      }
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['UpdateGoalRequest']
+      }
+    }
+    responses: {
+      /** @description No Content */
+      204: never
+    }
+  }
   createGoal: {
     parameters: {
       path: {

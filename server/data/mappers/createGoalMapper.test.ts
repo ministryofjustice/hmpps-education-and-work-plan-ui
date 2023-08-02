@@ -1,5 +1,5 @@
 import type { CreateGoalDto } from 'dto'
-import type { CreateGoalRequest, StepRequest } from 'educationAndWorkPlanApiClient'
+import type { CreateGoalRequest, CreateStepRequest } from 'educationAndWorkPlanApiClient'
 import { toCreateGoalRequest } from './createGoalMapper'
 import { aValidCreateGoalDtoWithMultipleSteps } from '../../testsupport/createGoalDtoTestDataBuilder'
 
@@ -7,12 +7,12 @@ describe('createGoalMapper', () => {
   it('should map to CreateGoalDto given valid form data', () => {
     // Given
     const createGoalDto: CreateGoalDto = aValidCreateGoalDtoWithMultipleSteps()
-    const expectedAddStepRequest1: StepRequest = {
+    const expectedAddStepRequest1: CreateStepRequest = {
       title: createGoalDto.steps[0].title,
       targetDateRange: createGoalDto.steps[0].targetDateRange,
       sequenceNumber: 1,
     }
-    const expectedAddStepRequest2: StepRequest = {
+    const expectedAddStepRequest2: CreateStepRequest = {
       title: createGoalDto.steps[1].title,
       targetDateRange: createGoalDto.steps[1].targetDateRange,
       sequenceNumber: 2,
