@@ -5,7 +5,7 @@ import OverviewController from './overviewController'
 import PrisonerSummaryRequestHandler from './prisonerSummaryRequestHandler'
 
 /**
- * Route definitions for the pages relating to Creating A Goal
+ * Route definitions for the pages relating to the main Overview page
  */
 export default (router: Router, services: Services) => {
   const prisonerSummaryRequestHandler = new PrisonerSummaryRequestHandler(services.prisonerSearchService)

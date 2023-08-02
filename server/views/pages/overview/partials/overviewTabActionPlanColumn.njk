@@ -34,7 +34,7 @@
         <ul class="govuk-summary-card__actions">
           {% if featureToggles.editGoalsEnabled %}
             <li class="govuk-summary-card__action">
-              <a class="govuk-link" href="">Update</a>
+              <a class="govuk-link" href="/plan/{{ actionPlan.prisonNumber }}/goals/{{ goal.goalReference }}/update">Update</a>
             </li>
           {% endif %}
           {# Not MVP, Jira to created for archiving goals
