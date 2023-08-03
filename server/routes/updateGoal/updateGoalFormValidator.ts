@@ -12,9 +12,9 @@ export default function validateUpdateGoalForm(updateGoalForm: UpdateGoalForm): 
   errors.push(...formatErrors('title', validateGoalTitle(updateGoalForm.title)))
   errors.push(...formatErrors('status', validateGoalStatus(updateGoalForm.status)))
   updateGoalForm.steps.forEach((step, idx) => {
-    errors.push(...formatErrors(`steps[${idx}].title`, validateStepTitle(step.title)))
-    errors.push(...formatErrors(`steps[${idx}].targetDateRange`, validateStepTargetDateRange(step.targetDateRange)))
-    errors.push(...formatErrors(`steps[${idx}].status`, validateStepStatus(step.status)))
+    errors.push(...formatErrors(`steps[${idx}][title]`, validateStepTitle(step.title)))
+    errors.push(...formatErrors(`steps[${idx}][targetDateRange]`, validateStepTargetDateRange(step.targetDateRange)))
+    errors.push(...formatErrors(`steps[${idx}][status]`, validateStepStatus(step.status)))
   })
   return errors
 }

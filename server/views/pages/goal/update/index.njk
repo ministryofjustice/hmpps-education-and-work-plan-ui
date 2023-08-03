@@ -42,19 +42,18 @@
 
         <form class="form" method="post" novalidate="">
             <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
-            <input type="hidden" name="prisonNumber" value="{{ form.prisonNumber }}" />
-            <input type="hidden" name="goalReference" value="{{ form.goalReference }}" />
+            <input type="hidden" name="reference" value="{{ form.reference }}" />
             <input type="hidden" name="status" value="{{ form.status }}" />
 
             {{ govukTextarea({
-              name: "description",
-              id: "description",
+              name: "title",
+              id: "title",
               label: {
                 text: "Description",
                 classes: "govuk-label--m"
               },
               value: form.title,
-              errorMessage: errors | findError('description')
+              errorMessage: errors | findError('title')
             }) }}
 
             {{ govukTextarea({
@@ -71,11 +70,12 @@
             <h2 class="govuk-heading-m">Edit and remove steps</h2>
 
             {% for step in form.steps %}
-              <input type="hidden" name="stepReference" value="{{ step.reference }}" />
+              <input type="hidden" name="steps[{{ (loop.index-1) }}][reference]" value="{{ step.reference }}" />
+              <input type="hidden" name="steps[{{ (loop.index-1) }}][stepNumber]" value="{{ step.stepNumber }}" />
 
               {{ govukTextarea({
-                name: 'steps[' + loop.index + '].title',
-                id: 'steps[' + loop.index + '].title',
+                name: 'steps[' + (loop.index-1) + '][title]',
+                id: 'steps[' + (loop.index-1) + '][title]',
                 label: {
                   text: 'Step ' + step.stepNumber,
                   classes: "govuk-label--m",
@@ -85,12 +85,12 @@
                   text: "Describe this step"
                 },
                 value: step.title,
-                errorMessage: errors | findError('steps[' + loop.index + '].title')
+                errorMessage: errors | findError('steps[' + (loop.index-1) + '][title]')
               }) }}
 
               {{ govukSelect({
-                name: 'steps[' + loop.index + '].status',
-                id: 'steps[' + loop.index + '].status',
+                name: 'steps[' + (loop.index-1) + '][status]',
+                id: 'steps[' + (loop.index-1) + '][status]',
                 label: {
                   text: "Status",
                   classes: "govuk-!-font-weight-bold"
@@ -112,12 +112,12 @@
                     selected: true if step.status == 'COMPLETE' else false
                   }
                 ],
-                errorMessage: errors | findError('steps[' + loop.index + '].status')
+                errorMessage: errors | findError('steps[' + (loop.index-1) + '][status]')
               }) }}
 
               {{ govukRadios({
-                name: 'steps[' + loop.index + '].targetDateRange',
-                id: 'steps[' + loop.index + '].targetDateRange',
+                name: 'steps[' + (loop.index-1) + '][targetDateRange]',
+                id: 'steps[' + (loop.index-1) + '][targetDateRange]',
                 fieldset: {
                   legend: {
                     text: "When will they achieve this by?",
@@ -147,7 +147,7 @@
                     checked: true if step.targetDateRange == 'MORE_THAN_TWELVE_MONTHS' else false
                   }
                 ],
-                errorMessage: errors | findError('steps[' + loop.index + '].targetDateRange')
+                errorMessage: errors | findError('steps[' + (loop.index-1) + '][targetDateRange]')
               }) }}
             {% endfor %}
 

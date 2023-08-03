@@ -5,8 +5,13 @@ import type { UpdateGoalForm } from 'forms'
 import EducationAndWorkPlanService from '../../services/educationAndWorkPlanService'
 import UpdateGoalController from './updateGoalController'
 import { aValidActionPlanWithOneGoal, aValidGoal, aValidStep } from '../../testsupport/actionPlanTestDataBuilder'
+import validateUpdateGoalForm from './updateGoalFormValidator'
+
+jest.mock('./updateGoalFormValidator')
 
 describe('updateGoalController', () => {
+  const mockedValidateUpdateGoalForm = validateUpdateGoalForm as jest.MockedFunction<typeof validateUpdateGoalForm>
+
   const educationAndWorkPlanService = {
     getActionPlan: jest.fn(),
   }
@@ -29,7 +34,7 @@ describe('updateGoalController', () => {
   const prisonNumber = 'A1234BC'
   const goalReference = '1a2eae63-8102-4155-97cb-43d8fb739caf'
   const prisonerSummary = { prisonNumber } as PrisonerSummary
-  const errors: Array<Record<string, string>> = []
+  let errors: Array<Record<string, string>>
 
   beforeEach(() => {
     jest.resetAllMocks()
@@ -41,6 +46,8 @@ describe('updateGoalController', () => {
     req.params.prisonNumber = prisonNumber
     req.params.goalReference = goalReference
     req.session.prisonerSummary = prisonerSummary
+
+    errors = []
   })
 
   describe('getUpdateGoalView', () => {
@@ -82,6 +89,7 @@ describe('updateGoalController', () => {
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/goal/update/index', expectedView)
+      expect(req.session.updateGoalForm).toBeUndefined()
     })
 
     it('should not get update goal view given error getting prisoner action plan', async () => {
@@ -98,6 +106,7 @@ describe('updateGoalController', () => {
 
       // Then
       expect(res.redirect).toHaveBeenCalledWith('/error')
+      expect(req.session.updateGoalForm).toBeUndefined()
     })
 
     it('should not get update goal view given requested goal reference is not part of the prisoners action plan', async () => {
@@ -116,6 +125,35 @@ describe('updateGoalController', () => {
 
       // Then
       expect(res.redirect).toHaveBeenCalledWith('/error')
+      expect(req.session.updateGoalForm).toBeUndefined()
+    })
+  })
+
+  describe('submitUpdateGoalForm', () => {
+    it('should redirect to update goal form given validation fails', async () => {
+      // Given
+      req.params.prisonNumber = 'A1234GC'
+      req.body = { reference: goalReference }
+
+      errors = [
+        { href: '#title', text: 'some-title-error' },
+        { href: '#steps[0].status', text: 'some-step-status-error' },
+      ]
+      mockedValidateUpdateGoalForm.mockReturnValue(errors)
+
+      const expectedUpdateGoalForm = { reference: goalReference } as UpdateGoalForm
+
+      // When
+      await controller.submitUpdateGoalForm(
+        req as undefined as Request,
+        res as undefined as Response,
+        next as undefined as NextFunction,
+      )
+
+      // Then
+      expect(res.redirect).toHaveBeenCalledWith('/plan/A1234GC/goals/1a2eae63-8102-4155-97cb-43d8fb739caf/update')
+      expect(req.flash).toHaveBeenCalledWith('errors', errors)
+      expect(req.session.updateGoalForm).toEqual(expectedUpdateGoalForm)
     })
   })
 })

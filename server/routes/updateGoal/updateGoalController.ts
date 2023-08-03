@@ -1,7 +1,9 @@
 import type { RequestHandler } from 'express'
+import type { UpdateGoalForm } from 'forms'
 import EducationAndWorkPlanService from '../../services/educationAndWorkPlanService'
 import UpdateGoalView from './updateGoalView'
 import { toUpdateGoalForm } from './mappers/goalToUpdateGoalFormMapper'
+import validateUpdateGoalForm from './updateGoalFormValidator'
 
 export default class UpdateGoalController {
   constructor(private readonly educationAndWorkPlanService: EducationAndWorkPlanService) {}
@@ -10,25 +12,47 @@ export default class UpdateGoalController {
     const { prisonNumber, goalReference } = req.params
     const { prisonerSummary } = req.session
 
-    const actionPlan = await this.educationAndWorkPlanService.getActionPlan(prisonNumber, req.user.token)
-    if (actionPlan.problemRetrievingData) {
-      // There was a problem retrieving the prisoner's action plan
-      // TODO - RR-188
-      res.redirect('/error')
-      return
+    let updateGoalForm: UpdateGoalForm
+    if (req.session.updateGoalForm) {
+      updateGoalForm = req.session.updateGoalForm
+    } else {
+      const actionPlan = await this.educationAndWorkPlanService.getActionPlan(prisonNumber, req.user.token)
+      if (actionPlan.problemRetrievingData) {
+        // There was a problem retrieving the prisoner's action plan
+        // TODO - RR-188
+        res.redirect('/error')
+        return
+      }
+
+      const goalToUpdate = actionPlan.goals.find(goal => goal.goalReference === goalReference)
+      if (!goalToUpdate) {
+        // The requested goal is not part of the prisoners action plan
+        // TODO - RR-188
+        res.redirect('/error')
+        return
+      }
+
+      updateGoalForm = toUpdateGoalForm(goalToUpdate)
     }
 
-    const goalToUpdate = actionPlan.goals.find(goal => goal.goalReference === goalReference)
-    if (!goalToUpdate) {
-      // The requested goal is not part of the prisoners action plan
-      // TODO - RR-188
-      res.redirect('/error')
-      return
-    }
-
-    const updateGoalForm = toUpdateGoalForm(goalToUpdate)
+    req.session.updateGoalForm = undefined
 
     const view = new UpdateGoalView(prisonerSummary, updateGoalForm, req.flash('errors'))
     res.render('pages/goal/update/index', { ...view.renderArgs })
+  }
+
+  submitUpdateGoalForm: RequestHandler = async (req, res, next): Promise<void> => {
+    const { prisonNumber, goalReference } = req.params
+    const updateGoalForm = { ...req.body }
+
+    const errors = validateUpdateGoalForm(updateGoalForm)
+    if (errors.length > 0) {
+      req.flash('errors', errors)
+      req.session.updateGoalForm = updateGoalForm
+      return res.redirect(`/plan/${prisonNumber}/goals/${goalReference}/update`)
+    }
+
+    // TODO - RR-191 - updateGoalForm is valid, call service with it, redirect to Overview page
+    return null
   }
 }
