@@ -47,22 +47,6 @@
             <input type="hidden" name="prisonNumber" value="{{ form.prisonNumber }}" />
             <input type="hidden" name="goalReference" value="{{ form.goalReference }}" />
 
-            {{ govukCheckboxes({
-              name: "goal-complete",
-              fieldset: {
-                legend: {
-                  text: "Is this goal now complete?"
-                }
-              },
-              items: [
-                {
-                  value: "mark-goal-as-completed",
-                  text: "Mark this goal as completed"
-                }
-              ],
-              errorMessage: errors | findError('goal-complete')
-            }) }}
-
             {{ govukTextarea({
               name: "description",
               id: "description",
