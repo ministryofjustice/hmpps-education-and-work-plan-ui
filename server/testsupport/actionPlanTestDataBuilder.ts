@@ -1,18 +1,25 @@
 import type { Step, Goal, ActionPlan } from 'viewModels'
 
-const aValidActionPlanWithOneGoal = (): ActionPlan => {
+const aValidActionPlanWithOneGoal = (
+  prisonNumber = 'A1234BC',
+  goals = [aValidGoal()],
+  problemRetrievingData = false,
+): ActionPlan => {
   return {
-    prisonNumber: 'A1234BC',
-    goals: [aValidGoal()],
-    problemRetrievingData: false,
+    prisonNumber,
+    goals,
+    problemRetrievingData,
   }
 }
-const aValidGoal = (): Goal => {
+const aValidGoal = (
+  goalReference = 'd38a6c41-13d1-1d05-13c2-24619966119b',
+  steps = [aValidStep(), anotherValidStep()],
+): Goal => {
   return {
-    goalReference: 'd38a6c41-13d1-1d05-13c2-24619966119b',
+    goalReference,
     title: 'Learn Spanish',
     status: 'ACTIVE',
-    steps: [aValidFirstStep(), aValidSecondStep()],
+    steps,
     createdBy: 'asmith_gen',
     createdByDisplayName: 'Alex Smith',
     createdAt: '',
@@ -23,7 +30,7 @@ const aValidGoal = (): Goal => {
   }
 }
 
-const aValidFirstStep = (): Step => {
+const aValidStep = (): Step => {
   return {
     stepReference: 'c88a6c48-97e2-4c04-93b5-98619966447b',
     title: 'Book Spanish course',
@@ -33,7 +40,7 @@ const aValidFirstStep = (): Step => {
   }
 }
 
-const aValidSecondStep = (): Step => {
+const anotherValidStep = (): Step => {
   return {
     stepReference: 'dc817ce8-2b2e-4282-96b2-b9a1d831fc56',
     title: 'Complete Spanish course',
@@ -43,4 +50,4 @@ const aValidSecondStep = (): Step => {
   }
 }
 
-export { aValidActionPlanWithOneGoal, aValidGoal }
+export { aValidActionPlanWithOneGoal, aValidGoal, aValidStep, anotherValidStep }
