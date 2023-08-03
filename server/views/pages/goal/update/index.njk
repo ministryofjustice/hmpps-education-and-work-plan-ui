@@ -1,0 +1,162 @@
+{% extends "../../../partials/layout.njk" %}
+
+{% set pageId = "update-goal" %}
+{% set pageTitle = applicationName + " - Home" %}
+
+{% block beforeContent %}
+  {{ govukBreadcrumbs({
+    items: [
+      {
+        text: "Digital Prison Services",
+        href: dpsUrl
+      },
+      {
+        text: "Manage learning and work progress",
+        href: "/"
+      },
+      {
+        text: "Manage " + prisonerSummary.firstName | capitalize + " " + prisonerSummary.lastName | capitalize + "'s learning plan",
+        href: "/plan/" + prisonerSummary.prisonNumber + "/view/overview"
+      }
+    ],
+    classes: 'govuk-!-display-none-print'
+  }) }}
+{% endblock %}
+
+{% block content %}
+
+  {% if errors.length > 0 %}
+    {{ govukErrorSummary({
+      titleText: 'There is a problem',
+      errorList: errors,
+      attributes: { 'data-qa-errors': true }
+    }) }}
+  {% endif %}
+
+  {% include "../../../partials/prisonerBanner.njk" %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <h1 class="govuk-heading-l">You are updating a goal for {{ prisonerSummary.firstName | capitalize }} {{ prisonerSummary.lastName | capitalize }}</h1>
+
+        <form class="form" method="post" novalidate="">
+            <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+            <input type="hidden" name="prisonNumber" value="{{ form.prisonNumber }}" />
+            <input type="hidden" name="goalReference" value="{{ form.goalReference }}" />
+            <input type="hidden" name="status" value="{{ form.status }}" />
+
+            {{ govukTextarea({
+              name: "description",
+              id: "description",
+              label: {
+                text: "Description",
+                classes: "govuk-label--m"
+              },
+              value: form.title,
+              errorMessage: errors | findError('description')
+            }) }}
+
+            {{ govukTextarea({
+              name: "note",
+              id: "note",
+              label: {
+                text: "Add or edit note",
+                classes: "govuk-label--m"
+              },
+              value: form.note,
+              errorMessage: errors | findError('note')
+            }) }}
+
+            <h2 class="govuk-heading-m">Edit and remove steps</h2>
+
+            {% for step in form.steps %}
+              <input type="hidden" name="stepReference" value="{{ step.reference }}" />
+
+              {{ govukTextarea({
+                name: 'steps[' + loop.index + '].title',
+                id: 'steps[' + loop.index + '].title',
+                label: {
+                  text: 'Step ' + step.stepNumber,
+                  classes: "govuk-label--m",
+                  isPageHeading: false
+                },
+                hint: {
+                  text: "Describe this step"
+                },
+                value: step.title,
+                errorMessage: errors | findError('steps[' + loop.index + '].title')
+              }) }}
+
+              {{ govukSelect({
+                name: 'steps[' + loop.index + '].status',
+                id: 'steps[' + loop.index + '].status',
+                label: {
+                  text: "Status",
+                  classes: "govuk-!-font-weight-bold"
+                },
+                items: [
+                  {
+                    value: "NOT_STARTED",
+                    text: "Not started",
+                    selected: true if step.status == 'NOT_STARTED' else false
+                  },
+                  {
+                    value: "ACTIVE",
+                    text: "Started",
+                    selected: true if step.status == 'ACTIVE' else false
+                  },
+                  {
+                    value: "COMPLETE",
+                    text: "Completed",
+                    selected: true if step.status == 'COMPLETE' else false
+                  }
+                ],
+                errorMessage: errors | findError('steps[' + loop.index + '].status')
+              }) }}
+
+              {{ govukRadios({
+                name: 'steps[' + loop.index + '].targetDateRange',
+                id: 'steps[' + loop.index + '].targetDateRange',
+                fieldset: {
+                  legend: {
+                    text: "When will they achieve this by?",
+                    isPageHeading: false,
+                    classes: "govuk-fieldset__legend--s"
+                  }
+                },
+                items: [
+                  {
+                    value: "ZERO_TO_THREE_MONTHS",
+                    text: "0 to 3 months",
+                    checked: true if step.targetDateRange == 'ZERO_TO_THREE_MONTHS' else false
+                  },
+                  {
+                    value: "THREE_TO_SIX_MONTHS",
+                    text: "3 to 6 months",
+                    checked: true if step.targetDateRange == 'THREE_TO_SIX_MONTHS' else false
+                  },
+                  {
+                    value: "SIX_TO_TWELVE_MONTHS",
+                    text: "6 to 12 months",
+                    checked: true if step.targetDateRange == 'SIX_TO_TWELVE_MONTHS' else false
+                  },
+                  {
+                    value: "MORE_THAN_TWELVE_MONTHS",
+                    text: "More than 12 months",
+                    checked: true if step.targetDateRange == 'MORE_THAN_TWELVE_MONTHS' else false
+                  }
+                ],
+                errorMessage: errors | findError('steps[' + loop.index + '].targetDateRange')
+              }) }}
+            {% endfor %}
+
+            {{ govukButton({
+              text: 'Submit'
+            }) }}
+        </form>
+
+    </div>
+  </div>
+
+{% endblock %}

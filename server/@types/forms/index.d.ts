@@ -21,16 +21,18 @@ declare module 'forms' {
     reviewDate?: string
     status?: 'ACTIVE' | 'COMPLETED' | 'ARCHIVED'
     note?: string
-    steps: Array<{
-      reference: string
-      title?: string
-      targetDateRange?:
-        | 'ZERO_TO_THREE_MONTHS'
-        | 'THREE_TO_SIX_MONTHS'
-        | 'SIX_TO_TWELVE_MONTHS'
-        | 'MORE_THAN_TWELVE_MONTHS'
-      stepNumber?: number
-      status?: 'NOT_STARTED' | 'ACTIVE' | 'COMPLETE'
-    }>
+    steps: Array<UpdateStepForm>
+  }
+
+  export interface UpdateStepForm {
+    reference: string
+    title?: string
+    targetDateRange?:
+      | 'ZERO_TO_THREE_MONTHS'
+      | 'THREE_TO_SIX_MONTHS'
+      | 'SIX_TO_TWELVE_MONTHS'
+      | 'MORE_THAN_TWELVE_MONTHS'
+    stepNumber?: number
+    status?: 'NOT_STARTED' | 'ACTIVE' | 'COMPLETE'
   }
 }
