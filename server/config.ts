@@ -96,6 +96,6 @@ export default {
   domain: get('INGRESS_URL', 'http://localhost:3000', requiredInProduction),
   dpsHomeUrl: get('DPS_URL', 'http://localhost:3000/', requiredInProduction),
   featureToggles: {
-    editGoalsEnabled: Boolean(get('EDIT_GOALS_ENABLED', true)),
+    editGoalsEnabled: Boolean(get('EDIT_GOALS_ENABLED', false)),
   },
 }
