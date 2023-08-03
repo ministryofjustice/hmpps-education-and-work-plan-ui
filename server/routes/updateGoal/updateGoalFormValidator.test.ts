@@ -129,7 +129,7 @@ describe('updateGoalFormValidator', () => {
     const errors = validateUpdateGoalForm(form)
 
     // Then
-    expect(errors).toEqual([{ href: '#steps[0].title', text: 'some-title-error' }])
+    expect(errors).toEqual([{ href: '#steps[0][title]', text: 'some-title-error' }])
   })
 
   it('should validate given step title errors', () => {
@@ -160,7 +160,7 @@ describe('updateGoalFormValidator', () => {
     const errors = validateUpdateGoalForm(form)
 
     // Then
-    expect(errors).toEqual([{ href: '#steps[0].status', text: 'some-status-error' }])
+    expect(errors).toEqual([{ href: '#steps[0][status]', text: 'some-status-error' }])
   })
 
   it('should validate given step title errors', () => {
@@ -191,6 +191,6 @@ describe('updateGoalFormValidator', () => {
     const errors = validateUpdateGoalForm(form)
 
     // Then
-    expect(errors).toEqual([{ href: '#steps[0].targetDateRange', text: 'some-date-range-error' }])
+    expect(errors).toEqual([{ href: '#steps[0][targetDateRange]', text: 'some-date-range-error' }])
   })
 })

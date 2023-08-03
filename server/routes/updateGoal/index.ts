@@ -21,4 +21,9 @@ export default (router: Router, services: Services) => {
     checkPrisonerSummaryExistsInSession,
     updateGoalController.getUpdateGoalView,
   ])
+
+  router.post('/plan/:prisonNumber/goals/:goalReference/update', [
+    checkPrisonerSummaryExistsInSession,
+    updateGoalController.submitUpdateGoalForm,
+  ])
 }
