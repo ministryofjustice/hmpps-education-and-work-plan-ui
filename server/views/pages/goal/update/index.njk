@@ -45,6 +45,7 @@
           <div class="govuk-form-group">
             <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
             <input type="hidden" name="prisonNumber" value="{{ form.prisonNumber }}" />
+            <input type="hidden" name="goalReference" value="{{ form.goalReference }}" />
 
             {{ govukCheckboxes({
               name: "goal-complete",
@@ -121,7 +122,7 @@
                 },
                 {
                   value: "ACTIVE",
-                  text: "Started",
+                  text: "Started"
                 },
                 {
                   value: "COMPLETE",
@@ -131,7 +132,7 @@
             }) }}
 
             {{ govukRadios({
-              id: "step[0]targetDateRange"
+              id: "step[0]targetDateRange",
               name: "step[0]targetDateRange",
               fieldset: {
                 legend: {
