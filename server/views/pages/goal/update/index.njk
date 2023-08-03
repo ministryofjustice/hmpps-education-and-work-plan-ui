@@ -44,6 +44,7 @@
             <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
             <input type="hidden" name="prisonNumber" value="{{ form.prisonNumber }}" />
             <input type="hidden" name="goalReference" value="{{ form.goalReference }}" />
+            <input type="hidden" name="status" value="{{ form.status }}" />
 
             {{ govukTextarea({
               name: "description",
