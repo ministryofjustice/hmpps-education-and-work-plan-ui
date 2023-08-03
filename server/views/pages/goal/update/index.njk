@@ -84,7 +84,7 @@
                   text: "Describe this step"
                 },
                 value: step.title,
-                errorMessage: errors | findError('title')
+                errorMessage: errors | findError('note-' + step.reference)
               }) }}
 
               {{ govukSelect({
@@ -110,7 +110,8 @@
                     text: "Completed",
                     selected: true if step.status == 'COMPLETE' else false
                   }
-                ]
+                ],
+                errorMessage: errors | findError('status-' + step.reference)
               }) }}
 
               {{ govukRadios({
@@ -145,7 +146,7 @@
                     checked: true if step.targetDateRange == 'MORE_THAN_TWELVE_MONTHS' else false
                   }
                 ],
-                errorMessage: errors | findError('targetDateRange')
+                errorMessage: errors | findError('targetDateRange-' + step.reference)
               }) }}
             {% endfor %}
 
