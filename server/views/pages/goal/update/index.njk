@@ -74,8 +74,8 @@
               <input type="hidden" name="stepReference" value="{{ step.reference }}" />
 
               {{ govukTextarea({
-                name: 'title-' + step.reference,
-                id: 'title-' + step.reference,
+                name: 'steps[' + loop.index + '].title',
+                id: 'steps[' + loop.index + '].title',
                 label: {
                   text: 'Step ' + step.stepNumber,
                   classes: "govuk-label--m",
@@ -85,12 +85,12 @@
                   text: "Describe this step"
                 },
                 value: step.title,
-                errorMessage: errors | findError('note-' + step.reference)
+                errorMessage: errors | findError('steps[' + loop.index + '].title')
               }) }}
 
               {{ govukSelect({
-                name: 'status-' + step.reference,
-                id: 'status-' + step.reference,
+                name: 'steps[' + loop.index + '].status',
+                id: 'steps[' + loop.index + '].status',
                 label: {
                   text: "Status",
                   classes: "govuk-!-font-weight-bold"
@@ -112,12 +112,12 @@
                     selected: true if step.status == 'COMPLETE' else false
                   }
                 ],
-                errorMessage: errors | findError('status-' + step.reference)
+                errorMessage: errors | findError('steps[' + loop.index + '].status')
               }) }}
 
               {{ govukRadios({
-                name: 'targetDateRange-' + step.reference,
-                id: 'targetDateRange-' + step.reference,
+                name: 'steps[' + loop.index + '].targetDateRange',
+                id: 'steps[' + loop.index + '].targetDateRange',
                 fieldset: {
                   legend: {
                     text: "When will they achieve this by?",
@@ -147,7 +147,7 @@
                     checked: true if step.targetDateRange == 'MORE_THAN_TWELVE_MONTHS' else false
                   }
                 ],
-                errorMessage: errors | findError('targetDateRange-' + step.reference)
+                errorMessage: errors | findError('steps[' + loop.index + '].targetDateRange')
               }) }}
             {% endfor %}
 
