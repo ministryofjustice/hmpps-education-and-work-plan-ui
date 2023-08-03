@@ -40,9 +40,7 @@
 
       <h1 class="govuk-heading-l">You are updating a goal for {{ prisonerSummary.firstName | capitalize }} {{ prisonerSummary.lastName | capitalize }}</h1>
 
-      <div data-module="moj-add-another">
         <form class="form" method="post" novalidate="">
-          <div class="govuk-form-group">
             <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
             <input type="hidden" name="prisonNumber" value="{{ form.prisonNumber }}" />
             <input type="hidden" name="goalReference" value="{{ form.goalReference }}" />
@@ -54,6 +52,7 @@
                 text: "Description",
                 classes: "govuk-label--m"
               },
+              value: form.title,
               errorMessage: errors | findError('description')
             }) }}
 
@@ -64,103 +63,96 @@
                 text: "Add or edit note",
                 classes: "govuk-label--m"
               },
+              value: form.note,
               errorMessage: errors | findError('note')
             }) }}
 
-            <h2 class="govuk-heading-m moj-add-another__heading" tabindex="-1">Edit and remove steps</h2>
+            <h2 class="govuk-heading-m">Edit and remove steps</h2>
 
-            {% call govukFieldset({
-              classes: 'moj-add-another__item',
-              legend: {
-                text: 'Step',
-                classes: 'moj-add-another__title govuk-fieldset__legend--m',
-                isPageHeading: false
-              }
-            }) %}
+            {% for step in form.steps %}
+              <input type="hidden" name="stepReference" value="{{ step.reference }}" />
 
-            {{ govukInput({
-              id: 'step[0][description]',
-              name: 'step[0][description]',
-              label: {
-                html: 'Description',
-                classes: 'govuk-!-font-weight-bold'
-              },
-              attributes: {
-                'data-name': 'step[%index%][description]',
-                'data-id': 'step[%index%][description]'
-              }
-            }) }}
-
-            {{ govukSelect({
-              id: "step[0]status",
-              name: "step[0]status",
-              label: {
-                text: "Staus",
-                classes: "govuk-!-font-weight-bold"
-              },
-              items: [
-                {
-                  value: "NOT_STARTED",
-                  text: "Not started",
-                  selected: true
+              {{ govukTextarea({
+                name: 'title-' + step.reference,
+                id: 'title-' + step.reference,
+                label: {
+                  text: 'Step ' + step.stepNumber,
+                  classes: "govuk-label--m",
+                  isPageHeading: false
                 },
-                {
-                  value: "ACTIVE",
-                  text: "Started"
+                hint: {
+                  text: "Describe this step"
                 },
-                {
-                  value: "COMPLETE",
-                  text: "Complete"
-                }
-              ]
-            }) }}
+                value: step.title,
+                errorMessage: errors | findError('title')
+              }) }}
 
-            {{ govukRadios({
-              id: "step[0]targetDateRange",
-              name: "step[0]targetDateRange",
-              fieldset: {
-                legend: {
-                  text: "When will they achieve this by?",
+              {{ govukSelect({
+                name: 'status-' + step.reference,
+                id: 'status-' + step.reference,
+                label: {
+                  text: "Status",
                   classes: "govuk-!-font-weight-bold"
-                }
-              },
-              items: [
-                {
-                  value: "ZERO_TO_THREE_MONTHS",
-                  text: "0 to 3 months"
                 },
-                {
-                  value: "THREE_TO_SIX_MONTHS",
-                  text: "3 to 6 months"
+                items: [
+                  {
+                    value: "NOT_STARTED",
+                    text: "Not started",
+                    selected: true if step.status == 'NOT_STARTED' else false
+                  },
+                  {
+                    value: "ACTIVE",
+                    text: "Started",
+                    selected: true if step.status == 'ACTIVE' else false
+                  },
+                  {
+                    value: "COMPLETE",
+                    text: "Completed",
+                    selected: true if step.status == 'COMPLETE' else false
+                  }
+                ]
+              }) }}
+
+              {{ govukRadios({
+                name: 'targetDateRange-' + step.reference,
+                id: 'targetDateRange-' + step.reference,
+                fieldset: {
+                  legend: {
+                    text: "When will they achieve this by?",
+                    isPageHeading: false,
+                    classes: "govuk-fieldset__legend--s"
+                  }
                 },
-                {
-                  value: "SIX_TO_TWELVE_MONTHS",
-                  text: "6 to 12 months"
-                },
-                {
-                  value: "MORE_THAN_TWELVE_MONTHS",
-                  text: "More than 12 months"
-                }
-              ]
-            }) }}
+                items: [
+                  {
+                    value: "ZERO_TO_THREE_MONTHS",
+                    text: "0 to 3 months",
+                    checked: true if step.targetDateRange == 'ZERO_TO_THREE_MONTHS' else false
+                  },
+                  {
+                    value: "THREE_TO_SIX_MONTHS",
+                    text: "3 to 6 months",
+                    checked: true if step.targetDateRange == 'THREE_TO_SIX_MONTHS' else false
+                  },
+                  {
+                    value: "SIX_TO_TWELVE_MONTHS",
+                    text: "6 to 12 months",
+                    checked: true if step.targetDateRange == 'SIX_TO_TWELVE_MONTHS' else false
+                  },
+                  {
+                    value: "MORE_THAN_TWELVE_MONTHS",
+                    text: "More than 12 months",
+                    checked: true if step.targetDateRange == 'MORE_THAN_TWELVE_MONTHS' else false
+                  }
+                ],
+                errorMessage: errors | findError('targetDateRange')
+              }) }}
+            {% endfor %}
 
-            {% endcall %}
-
-          <div class="moj-button-action">
-            {{ govukButton({
-              text: 'Add another person',
-              classes: 'govuk-button--secondary moj-add-another__add-button govuk-!-margin-bottom-4'
-            }) }}
-          </div>
-
-          <div class="moj-button-action">
             {{ govukButton({
               text: 'Submit'
             }) }}
-          </div>
-
         </form>
-      </div>
 
     </div>
   </div>
