@@ -29,6 +29,6 @@ export default class UpdateGoalController {
     const updateGoalForm = toUpdateGoalForm(goalToUpdate)
 
     const view = new UpdateGoalView(prisonerSummary, updateGoalForm, req.flash('errors'))
-    res.render('pages/goal/edit/index', { ...view.renderArgs })
+    res.render('pages/goal/update/index', { ...view.renderArgs })
   }
 }

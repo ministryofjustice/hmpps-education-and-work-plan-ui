@@ -81,7 +81,7 @@ describe('updateGoalController', () => {
       )
 
       // Then
-      expect(res.render).toHaveBeenCalledWith('pages/goal/edit/index', expectedView)
+      expect(res.render).toHaveBeenCalledWith('pages/goal/update/index', expectedView)
     })
 
     it('should not get update goal view given error getting prisoner action plan', async () => {
