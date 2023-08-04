@@ -4,10 +4,13 @@ import { aValidCreateGoalDtoWithOneStep } from '../testsupport/createGoalDtoTest
 import { aValidActionPlanWithOneGoal } from '../testsupport/actionPlanTestDataBuilder'
 import { aValidActionPlanResponseWithOneGoal } from '../testsupport/actionPlanResponseTestDataBuilder'
 import { aValidCreateGoalRequestWithOneStep } from '../testsupport/createGoalRequestTestDataBuilder'
+import { aValidUpdateGoalDtoWithOneStep } from '../testsupport/updateGoalDtoTestDataBuilder'
+import { aValidUpdateGoalRequestWithOneUpdatedStep } from '../testsupport/updateGoalRequestTestDataBuilder'
 
 describe('educationAndWorkPlanService', () => {
   const educationAndWorkPlanClient = {
     createGoal: jest.fn(),
+    updateGoal: jest.fn(),
     getActionPlan: jest.fn(),
   }
 
@@ -81,6 +84,42 @@ describe('educationAndWorkPlanService', () => {
       // Then
       expect(educationAndWorkPlanClient.getActionPlan).toHaveBeenCalledWith(prisonNumber, userToken)
       expect(actual.problemRetrievingData).toEqual(true)
+    })
+  })
+
+  describe('updateGoal', () => {
+    it('should update Goal', async () => {
+      // Given
+      const prisonNumber = 'A1234BC'
+      const userToken = 'a-user-token'
+      const updateGoalDto = aValidUpdateGoalDtoWithOneStep()
+      const updateGoalRequest = aValidUpdateGoalRequestWithOneUpdatedStep()
+      educationAndWorkPlanClient.updateGoal.mockImplementation(() => Promise.resolve(updateGoalDto))
+
+      // When
+      await educationAndWorkPlanService.updateGoal(prisonNumber, updateGoalDto, userToken)
+
+      // Then
+      expect(educationAndWorkPlanClient.updateGoal).toHaveBeenCalledWith(prisonNumber, updateGoalRequest, userToken)
+    })
+
+    it('should not update Goal given educationAndWorkPlanClient returns an error', async () => {
+      // Given
+      const prisonNumber = 'A1234BC'
+      const userToken = 'a-user-token'
+      const updateGoalDto = aValidUpdateGoalDtoWithOneStep()
+
+      educationAndWorkPlanClient.updateGoal.mockImplementation(() => Promise.reject(Error('Service Unavailable')))
+
+      // When
+      const actual = await educationAndWorkPlanService
+        .updateGoal(prisonNumber, updateGoalDto, userToken)
+        .catch(error => {
+          return error
+        })
+
+      // Then
+      expect(actual).toEqual(Error('Service Unavailable'))
     })
   })
 })
