@@ -6,6 +6,7 @@ import type { Services } from '../services'
 import createGoal from './createGoal'
 import updateGoal from './updateGoal'
 import overview from './overview'
+import functionalSkills from './functionalSkills'
 
 export default function routes(services: Services): Router {
   const router = Router()
@@ -18,6 +19,7 @@ export default function routes(services: Services): Router {
   overview(router, services)
   createGoal(router, services)
   updateGoal(router, services)
+  functionalSkills(router, services)
 
   return router
 }

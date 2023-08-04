@@ -1,6 +1,6 @@
 import moment from 'moment/moment'
 import type { FunctionalSkills } from 'viewModels'
-import mostRecentFunctionalSkills from './mostRecentFunctionalSkillsResolver'
+import mostRecentFunctionalSkills from './functionalSkillsResolver'
 
 describe('mostRecentFunctionalSkillsResolver', () => {
   const NOW = moment()
