@@ -6,14 +6,20 @@ import EducationAndWorkPlanService from '../../services/educationAndWorkPlanServ
 import UpdateGoalController from './updateGoalController'
 import { aValidActionPlanWithOneGoal, aValidGoal, aValidStep } from '../../testsupport/actionPlanTestDataBuilder'
 import validateUpdateGoalForm from './updateGoalFormValidator'
+import aValidUpdateGoalForm from '../../testsupport/updateGoalFormTestDataBuilder'
+import { aValidUpdateGoalDtoWithOneStep } from '../../testsupport/updateGoalDtoTestDataBuilder'
+import { toUpdateGoalDto } from './mappers/updateGoalFormToUpdateGoalDtoMapper'
 
 jest.mock('./updateGoalFormValidator')
+jest.mock('./mappers/updateGoalFormToUpdateGoalDtoMapper')
 
 describe('updateGoalController', () => {
   const mockedValidateUpdateGoalForm = validateUpdateGoalForm as jest.MockedFunction<typeof validateUpdateGoalForm>
+  const mockedUpdateGoalFormToUpdateGoalDtoMapper = toUpdateGoalDto as jest.MockedFunction<typeof toUpdateGoalDto>
 
   const educationAndWorkPlanService = {
     getActionPlan: jest.fn(),
+    updateGoal: jest.fn(),
   }
 
   const controller = new UpdateGoalController(educationAndWorkPlanService as unknown as EducationAndWorkPlanService)
@@ -130,6 +136,37 @@ describe('updateGoalController', () => {
   })
 
   describe('submitUpdateGoalForm', () => {
+    it('should update goal and redirect to overview page', async () => {
+      // Given
+      req.user.token = 'some-token'
+      req.params.prisonNumber = 'A1234GC'
+
+      const updateGoalForm = aValidUpdateGoalForm()
+      req.body = { ...updateGoalForm }
+
+      mockedValidateUpdateGoalForm.mockReturnValue([])
+
+      const expectedUpdateGoalDto = aValidUpdateGoalDtoWithOneStep()
+      mockedUpdateGoalFormToUpdateGoalDtoMapper.mockReturnValue(expectedUpdateGoalDto)
+
+      // When
+      await controller.submitUpdateGoalForm(
+        req as undefined as Request,
+        res as undefined as Response,
+        next as undefined as NextFunction,
+      )
+
+      // Then
+      expect(educationAndWorkPlanService.updateGoal).toHaveBeenCalledWith(
+        'A1234GC',
+        expectedUpdateGoalDto,
+        'some-token',
+      )
+      expect(mockedValidateUpdateGoalForm).toHaveBeenCalledWith(updateGoalForm)
+      expect(res.redirect).toHaveBeenCalledWith('/plan/A1234GC/view/overview')
+      expect(req.session.updateGoalForm).toBeUndefined()
+    })
+
     it('should redirect to update goal form given validation fails', async () => {
       // Given
       req.params.prisonNumber = 'A1234GC'

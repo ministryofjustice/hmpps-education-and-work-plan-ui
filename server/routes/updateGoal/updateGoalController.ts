@@ -4,6 +4,7 @@ import EducationAndWorkPlanService from '../../services/educationAndWorkPlanServ
 import UpdateGoalView from './updateGoalView'
 import { toUpdateGoalForm } from './mappers/goalToUpdateGoalFormMapper'
 import validateUpdateGoalForm from './updateGoalFormValidator'
+import { toUpdateGoalDto } from './mappers/updateGoalFormToUpdateGoalDtoMapper'
 
 export default class UpdateGoalController {
   constructor(private readonly educationAndWorkPlanService: EducationAndWorkPlanService) {}
@@ -52,7 +53,10 @@ export default class UpdateGoalController {
       return res.redirect(`/plan/${prisonNumber}/goals/${goalReference}/update`)
     }
 
-    // TODO - RR-191 - updateGoalForm is valid, call service with it, redirect to Overview page
-    return null
+    const updateGoalDto = toUpdateGoalDto(updateGoalForm)
+    await this.educationAndWorkPlanService.updateGoal(prisonNumber, updateGoalDto, req.user.token)
+    // TODO - RR-188 - handle API error response when updating goal
+
+    return res.redirect(`/plan/${prisonNumber}/view/overview`)
   }
 }

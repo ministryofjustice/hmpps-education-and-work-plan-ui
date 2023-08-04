@@ -5,7 +5,7 @@ const aValidUpdateGoalRequestWithOneUpdatedStep = (
 ): UpdateGoalRequest => {
   const updateStepRequest: UpdateStepRequest = {
     stepReference: 'c77cd2fb-40e0-4354-982a-5c8017e92b26',
-    title: 'Book course',
+    title: 'Book Spanish course',
     targetDateRange: 'ZERO_TO_THREE_MONTHS',
     sequenceNumber: 1,
     status: 'ACTIVE',

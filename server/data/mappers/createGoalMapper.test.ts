@@ -4,7 +4,7 @@ import { toCreateGoalRequest } from './createGoalMapper'
 import { aValidCreateGoalDtoWithMultipleSteps } from '../../testsupport/createGoalDtoTestDataBuilder'
 
 describe('createGoalMapper', () => {
-  it('should map to CreateGoalDto given valid form data', () => {
+  it('should map to CreateGoalRequest given a valid DTO', () => {
     // Given
     const createGoalDto: CreateGoalDto = aValidCreateGoalDtoWithMultipleSteps()
     const expectedAddStepRequest1: CreateStepRequest = {
@@ -26,9 +26,9 @@ describe('createGoalMapper', () => {
     }
 
     // When
-    const createGoalRequest = toCreateGoalRequest(createGoalDto)
+    const actual = toCreateGoalRequest(createGoalDto)
 
     // Then
-    expect(createGoalRequest).toEqual(expectedCreateGoalRequest)
+    expect(actual).toEqual(expectedCreateGoalRequest)
   })
 })
