@@ -100,7 +100,7 @@ export default class OverviewPage extends Page {
 
   addGoalButton = (): PageElement => cy.get('#add-goal-button')
 
-  functionalSkillsTable = (): PageElement => cy.get('#functional-skills-table')
+  functionalSkillsTable = (): PageElement => cy.get('#latest-functional-skills-table')
 
   functionalSkillsSidebarTable = (): PageElement => cy.get('#functional-skills-sidebar-table')
 

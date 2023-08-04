@@ -16,6 +16,20 @@ const mostRecentFunctionalSkills = (allFunctionalSkills: FunctionalSkills): Func
   } as FunctionalSkills
 }
 
+/**
+ * Returns a FunctionalSkills object where the assessments are sorted by date descending.
+ * If the array of assessments already includes English and Maths these are returned in chronological order relative
+ * to the other assessments.
+ * If the array of assessments does not contain English and/or Maths, these are added to the array, but with no assessment
+ * date, and are presented at the top of the array.
+ */
+const allFunctionalSkills = (functionalSkills: FunctionalSkills): FunctionalSkills => {
+  return {
+    ...functionalSkills,
+    assessments: allAssessments(functionalSkills.assessments || []),
+  } as FunctionalSkills
+}
+
 const mostRecentAssessments = (allAssessments: Array<Assessment>): Array<Assessment> => {
   const allAssessmentsGroupedByTypeSortedByDateDesc = assessmentsGroupedByTypeSortedByDateDesc(allAssessments)
 
@@ -32,11 +46,25 @@ const mostRecentAssessments = (allAssessments: Array<Assessment>): Array<Assessm
   return Array.of(latestEnglishAssessment, latestMathsAssessment, ...latestOtherAssessments)
 }
 
-const assessmentsGroupedByTypeSortedByDateDesc = (
-  allAssessments: Array<Assessment>,
-): Map<string, Array<Assessment>> => {
+const allAssessments = (assessments: Array<Assessment>): Array<Assessment> => {
+  const allAssessmentsSortedByDate = assessments.sort((left: Assessment, right: Assessment) =>
+    dateComparator(left.assessmentDate, right.assessmentDate),
+  )
+  const allAssessmentTypes = [...new Set(allAssessmentsSortedByDate.map(assessment => assessment.type))]
+
+  if (!allAssessmentTypes.includes('MATHS')) {
+    allAssessmentsSortedByDate.unshift({ type: 'MATHS' } as Assessment)
+  }
+  if (!allAssessmentTypes.includes('ENGLISH')) {
+    allAssessmentsSortedByDate.unshift({ type: 'ENGLISH' } as Assessment)
+  }
+
+  return allAssessmentsSortedByDate
+}
+
+const assessmentsGroupedByTypeSortedByDateDesc = (assessments: Array<Assessment>): Map<string, Array<Assessment>> => {
   const map = new Map<string, Array<Assessment>>()
-  allAssessments.forEach(assessment => {
+  assessments.forEach(assessment => {
     const key = assessment.type
     const value: Array<Assessment> = map.get(key) || []
     value.push(assessment)
@@ -58,4 +86,4 @@ const dateComparator = (date1: Date, date2: Date): number => {
   return 0
 }
 
-export default mostRecentFunctionalSkills
+export { allFunctionalSkills, mostRecentFunctionalSkills }
