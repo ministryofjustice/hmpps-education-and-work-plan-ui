@@ -19,6 +19,6 @@ export default (router: Router, services: Services) => {
 
   router.get('/plan/:prisonNumber/functional-skills', [
     checkPrisonerSummaryExistsInSession,
-    functionalSkillsController.getAllFunctionalSkillsView,
+    functionalSkillsController.getFunctionalSkillsView,
   ])
 }

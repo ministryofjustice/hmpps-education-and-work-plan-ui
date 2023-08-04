@@ -1,6 +1,6 @@
 import type { FunctionalSkills, PrisonerSummary } from 'viewModels'
 
-export default class AllFunctionalSkillsView {
+export default class FunctionalSkillsView {
   constructor(
     private readonly prisonerSummary: PrisonerSummary,
     private readonly latestFunctionalSkills: FunctionalSkills,
