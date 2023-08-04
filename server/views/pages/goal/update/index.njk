@@ -42,7 +42,7 @@
 
         <form class="form" method="post" novalidate="">
             <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
-            <input type="hidden" name="reference" value="{{ form.reference }}" />
+            <input type="hidden" name="reference" value="{{ form.reference }}" data-qa="goal-reference" />
             <input type="hidden" name="status" value="{{ form.status }}" />
 
             {{ govukTextarea({
@@ -76,6 +76,7 @@
               {{ govukTextarea({
                 name: 'steps[' + (loop.index-1) + '][title]',
                 id: 'steps[' + (loop.index-1) + '][title]',
+                attributes: { 'data-qa': 'step-title-field' },
                 label: {
                   text: 'Step ' + step.stepNumber,
                   classes: "govuk-label--m",
@@ -152,6 +153,9 @@
             {% endfor %}
 
             {{ govukButton({
+              attributes: {
+                'data-qa': 'goal-update-submit-button'
+              },
               text: 'Submit'
             }) }}
         </form>
