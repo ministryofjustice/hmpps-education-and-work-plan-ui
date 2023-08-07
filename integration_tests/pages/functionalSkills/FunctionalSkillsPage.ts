@@ -48,7 +48,7 @@ export default class FunctionalSkillsPage extends Page {
   }
 
   clickLearningPlanBreadcrumb(): OverviewPage {
-    this.breadCrumb().find('a').last().click() // The Prisoner's Learning Plan is the last breadcrumb on the Functional Skills page
+    this.breadCrumb().find('li').last().click() // The Prisoner's Learning Plan is the last breadcrumb on the Functional Skills page
     return Page.verifyOnPage(OverviewPage)
   }
 
