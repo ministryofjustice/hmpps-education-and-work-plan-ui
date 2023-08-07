@@ -60,4 +60,26 @@ export default abstract class Page {
     cy.get('h1').should('contain.text', expectedHeading)
     return this
   }
+
+  hasBreadcrumb() {
+    this.breadCrumb().find('a').first().should('have.text', 'Digital Prison Services')
+    return this
+  }
+
+  breadcrumbDoesNotIncludeCurrentPage() {
+    cy.get('h1')
+      .invoke('text')
+      .then(pageTitle => {
+        this.breadCrumb()
+          .find('a')
+          .last()
+          .invoke('text')
+          .should(breadcrumbText => {
+            expect(pageTitle).not.to.eq(breadcrumbText)
+          })
+      })
+    return this
+  }
+
+  breadCrumb = (): PageElement => cy.get('.govuk-breadcrumbs')
 }
