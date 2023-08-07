@@ -1,29 +1,12 @@
 import Page, { PageElement } from '../page'
 import CreateGoalPage from '../goal/CreateGoalPage'
 import UpdateGoalPage from '../goal/UpdateGoalPage'
+// eslint-disable-next-line import/no-cycle
+import FunctionalSkillsPage from '../functionalSkills/FunctionalSkillsPage'
 
 export default class OverviewPage extends Page {
   constructor() {
     super('overview')
-  }
-
-  hasBreadcrumb() {
-    this.breadCrumb().find('a').first().should('have.text', 'Digital Prison Services')
-    return this
-  }
-
-  breadcrumbDoesNotIncludeCurrentPage() {
-    cy.get('h1')
-      .invoke('text')
-      .then(pageTitle => {
-        this.breadCrumb()
-          .find('a')
-          .last()
-          .invoke('text')
-          .should(breadcrumbText => {
-            expect(pageTitle).not.to.eq(breadcrumbText)
-          })
-      })
   }
 
   isForPrisoner(expected: string) {
@@ -56,7 +39,10 @@ export default class OverviewPage extends Page {
     return this
   }
 
-  breadCrumb = (): PageElement => cy.get('.govuk-breadcrumbs')
+  clickToViewAllFunctionalSkills(): FunctionalSkillsPage {
+    this.viewAllFunctionalSkillsButton().click()
+    return Page.verifyOnPage(FunctionalSkillsPage)
+  }
 
   selectTab(targetTab: string) {
     cy.get(`.moj-sub-navigation__link:contains('${targetTab}')`).click()
@@ -122,4 +108,6 @@ export default class OverviewPage extends Page {
   healthAndSupportNeedsSummaryCard = (): PageElement => cy.get('#health-and-support-needs-summary-card')
 
   neurodiversitySummaryCard = (): PageElement => cy.get('#neurodiversity-summary-card')
+
+  viewAllFunctionalSkillsButton = (): PageElement => cy.get('[data-qa=view-all-functional-skills-button]')
 }
