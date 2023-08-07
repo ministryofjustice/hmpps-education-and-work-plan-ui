@@ -30,7 +30,7 @@ context('Prisoner Overview page', () => {
       .activeTabIs('Overview')
   })
 
-  it('should render prisoner Overview page without Add Goal button given user does not have edit authority', () => {
+  it('should render prisoner Overview page without Add Goal and Update Goal buttons given user does not have edit authority', () => {
     // Given
     cy.task('stubSignInAsUserWithViewAuthority')
 
@@ -45,6 +45,7 @@ context('Prisoner Overview page', () => {
     page //
       .isForPrisoner(prisonNumber)
       .doesNotHaveAddGoalButton()
+      .doesNotHaveUpdateGoalButtons()
       .activeTabIs('Overview')
   })
 
