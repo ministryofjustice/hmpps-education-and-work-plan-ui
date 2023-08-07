@@ -11,23 +11,37 @@ context('Update a goal', () => {
     cy.task('getPrisonerById', 'G6115VJ')
     cy.task('getActionPlan', 'G6115VJ')
     cy.task('stubLearnerProfile')
+    cy.task('updateGoal')
   })
 
-  it('should not submit the form if there are validation errors on the page', () => {
+  it('should be able to navigate directly to update goal page', () => {
     // Given
     const prisonNumber = 'G6115VJ'
     const goalReference = '10efc562-be8f-4675-9283-9ede0c19dade'
     cy.signIn()
 
+    // When
     cy.visit(`/plan/${prisonNumber}/goals/${goalReference}/update`)
-    const updateGoalPage = Page.verifyOnPage(UpdateGoalPage)
 
-    updateGoalPage //
-      .isForGoal(goalReference)
-      .clearGoalTitle()
+    // Then
+    const updateGoalPage = Page.verifyOnPage(UpdateGoalPage)
+    updateGoalPage.isForGoal(goalReference)
+  })
+
+  it('should not submit the form if there are validation errors on the page', () => {
+    // Given
+    const prisonNumber = 'G6115VJ'
+    cy.signIn()
+
+    cy.visit(`/plan/${prisonNumber}/view/overview`)
+    const overviewPage = Page.verifyOnPage(OverviewPage)
+
+    const updateGoalPage = overviewPage.clickUpdateButtonForFirstGoal()
 
     // When
-    updateGoalPage.submitPage()
+    updateGoalPage //
+      .clearGoalTitle()
+      .submitPage()
 
     // Then
     Page.verifyOnPage(UpdateGoalPage)
@@ -39,15 +53,15 @@ context('Update a goal', () => {
   it('should be able to submit the form if no validation errors', () => {
     // Given
     const prisonNumber = 'G6115VJ'
-    const goalReference = '10efc562-be8f-4675-9283-9ede0c19dade'
     cy.signIn()
 
-    cy.visit(`/plan/${prisonNumber}/goals/${goalReference}/update`)
-    const updateGoalPage = Page.verifyOnPage(UpdateGoalPage)
+    cy.visit(`/plan/${prisonNumber}/view/overview`)
+    const overviewPage = Page.verifyOnPage(OverviewPage)
+
+    const updateGoalPage = overviewPage.clickUpdateButtonForFirstGoal()
 
     // When
     updateGoalPage //
-      .isForGoal(goalReference)
       .setGoalTitle('Learn French')
       .setFirstStepTitle('Obtain a French dictionary')
       .submitPage()

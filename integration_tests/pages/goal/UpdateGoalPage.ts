@@ -26,7 +26,7 @@ export default class UpdateGoalPage extends Page {
   }
 
   setFirstStepTitle(stepTitle: string) {
-    this.stepTitleField().first().clear().type(stepTitle)
+    this.stepTitleField(0).clear().type(stepTitle)
     return this
   }
 
@@ -36,7 +36,7 @@ export default class UpdateGoalPage extends Page {
 
   titleField = (): PageElement => cy.get('#title')
 
-  stepTitleField = (): PageElement => cy.get('[data-qa=step-title-field]')
+  stepTitleField = (idx: number): PageElement => cy.get(`[data-qa=step-${idx}-title-field]`)
 
   submitButton = (): PageElement => cy.get('[data-qa=goal-update-submit-button]')
 

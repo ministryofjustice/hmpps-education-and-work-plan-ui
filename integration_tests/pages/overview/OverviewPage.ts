@@ -1,5 +1,6 @@
 import Page, { PageElement } from '../page'
 import CreateGoalPage from '../goal/CreateGoalPage'
+import UpdateGoalPage from '../goal/UpdateGoalPage'
 
 export default class OverviewPage extends Page {
   constructor() {
@@ -40,6 +41,11 @@ export default class OverviewPage extends Page {
     return this
   }
 
+  doesNotHaveUpdateGoalButtons() {
+    this.goalUpdateButton(0).should('not.exist')
+    return this
+  }
+
   clickAddGoalButton(): CreateGoalPage {
     this.addGoalButton().click()
     return Page.verifyOnPage(CreateGoalPage)
@@ -59,6 +65,11 @@ export default class OverviewPage extends Page {
 
   hasGoalsDisplayed() {
     this.goalSummaryCards().should('exist')
+  }
+
+  clickUpdateButtonForFirstGoal(): UpdateGoalPage {
+    this.goalUpdateButton(0).click()
+    return Page.verifyOnPage(UpdateGoalPage)
   }
 
   hasEmptyGoalsSection() {
@@ -105,6 +116,8 @@ export default class OverviewPage extends Page {
   functionalSkillsSidebarTable = (): PageElement => cy.get('#functional-skills-sidebar-table')
 
   goalSummaryCards = (): PageElement => cy.get('[data-qa=goal-summary-card]')
+
+  goalUpdateButton = (idx: number): PageElement => cy.get(`[data-qa=goal-${idx}-update-button]`)
 
   healthAndSupportNeedsSummaryCard = (): PageElement => cy.get('#health-and-support-needs-summary-card')
 
