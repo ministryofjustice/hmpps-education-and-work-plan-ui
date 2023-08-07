@@ -4,7 +4,7 @@ import OverviewView from './overviewView'
 import SupportNeedsView from './supportNeedsView'
 import { CuriousService } from '../../services'
 import EducationAndWorkPlanService from '../../services/educationAndWorkPlanService'
-import mostRecentFunctionalSkills from '../functionalSkillsResolver'
+import { mostRecentFunctionalSkills } from '../functionalSkillsResolver'
 
 export default class OverviewController {
   constructor(
