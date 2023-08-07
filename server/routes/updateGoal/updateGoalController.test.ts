@@ -37,7 +37,7 @@ describe('updateGoalController', () => {
   }
   const next = jest.fn()
 
-  const prisonNumber = 'A1234BC'
+  const prisonNumber = 'A1234GC'
   const goalReference = '1a2eae63-8102-4155-97cb-43d8fb739caf'
   const prisonerSummary = { prisonNumber } as PrisonerSummary
   let errors: Array<Record<string, string>>
@@ -136,12 +136,13 @@ describe('updateGoalController', () => {
   })
 
   describe('submitUpdateGoalForm', () => {
-    it('should update goal and redirect to overview page', async () => {
+    it('should update goal and redirect to overview page given action is submit-form and validation passes', async () => {
       // Given
       req.user.token = 'some-token'
       req.params.prisonNumber = 'A1234GC'
 
-      const updateGoalForm = aValidUpdateGoalForm()
+      const updateGoalForm = aValidUpdateGoalForm(goalReference)
+      updateGoalForm.action = 'submit-form'
       req.body = { ...updateGoalForm }
 
       mockedValidateUpdateGoalForm.mockReturnValue([])
@@ -165,6 +166,34 @@ describe('updateGoalController', () => {
       expect(mockedValidateUpdateGoalForm).toHaveBeenCalledWith(updateGoalForm)
       expect(res.redirect).toHaveBeenCalledWith('/plan/A1234GC/view/overview')
       expect(req.session.updateGoalForm).toBeUndefined()
+    })
+
+    it('should redirect to update goal with new blank step given action is add-another-step and validation passes', async () => {
+      // Given
+      req.user.token = 'some-token'
+      req.params.prisonNumber = 'A1234GC'
+
+      const updateGoalForm = aValidUpdateGoalForm(goalReference)
+      updateGoalForm.action = 'add-another-step'
+      req.body = { ...updateGoalForm }
+
+      mockedValidateUpdateGoalForm.mockReturnValue([])
+
+      const expectedUpdateGoalForm = { ...updateGoalForm }
+      expectedUpdateGoalForm.steps = [...updateGoalForm.steps, { status: 'NOT_STARTED', stepNumber: 3 }]
+
+      // When
+      await controller.submitUpdateGoalForm(
+        req as undefined as Request,
+        res as undefined as Response,
+        next as undefined as NextFunction,
+      )
+
+      // Then
+      expect(mockedValidateUpdateGoalForm).toHaveBeenCalledWith(updateGoalForm)
+      expect(educationAndWorkPlanService.updateGoal).not.toHaveBeenCalled()
+      expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/goals/${goalReference}/update#steps[2][title]`)
+      expect(req.session.updateGoalForm).toEqual(expectedUpdateGoalForm)
     })
 
     it('should redirect to update goal form given validation fails', async () => {

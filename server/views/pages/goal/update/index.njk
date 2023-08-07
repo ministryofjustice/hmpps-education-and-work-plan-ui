@@ -152,13 +152,31 @@
                 ],
                 errorMessage: errors | findError('steps[' + (loop.index-1) + '][targetDateRange]')
               }) }}
+
+              <hr class="govuk-section-break govuk-section-break--visible govuk-!-margin-bottom-6">
             {% endfor %}
 
+            <div class="govuk-form-group">
+              {{ govukButton({
+                id: "add-another-step-button",
+                attributes: {
+                  'data-qa': 'goal-update-add-another-step-button'
+                },
+                name: "action",
+                value: "add-another-step",
+                text: "Add another step",
+                classes: "govuk-button--secondary"
+              }) }}
+            </div>
+
             {{ govukButton({
+              id: "submit-button",
               attributes: {
                 'data-qa': 'goal-update-submit-button'
               },
-              text: 'Submit'
+              name: "action",
+              value: "submit-form",
+              text: "Submit"
             }) }}
         </form>
 

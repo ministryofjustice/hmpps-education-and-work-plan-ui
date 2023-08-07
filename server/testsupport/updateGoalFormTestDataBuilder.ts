@@ -1,8 +1,8 @@
 import type { UpdateGoalForm } from 'forms'
 
-export default function aValidUpdateGoalForm(): UpdateGoalForm {
+export default function aValidUpdateGoalForm(reference = '95b18362-fe56-4234-9ad2-11ef98b974a3'): UpdateGoalForm {
   return {
-    reference: '95b18362-fe56-4234-9ad2-11ef98b974a3',
+    reference,
     title: 'Learn Spanish',
     reviewDate: undefined,
     status: 'ACTIVE',
@@ -23,5 +23,6 @@ export default function aValidUpdateGoalForm(): UpdateGoalForm {
         status: 'NOT_STARTED',
       },
     ],
+    action: 'submit-form',
   }
 }

@@ -34,11 +34,18 @@ export default class UpdateGoalPage extends Page {
     this.submitButton().click()
   }
 
+  addAnotherStep(): UpdateGoalPage {
+    this.addAnotherStepButton().click()
+    return this
+  }
+
   titleField = (): PageElement => cy.get('#title')
 
   stepTitleField = (idx: number): PageElement => cy.get(`[data-qa=step-${idx}-title-field]`)
 
   submitButton = (): PageElement => cy.get('[data-qa=goal-update-submit-button]')
+
+  addAnotherStepButton = (): PageElement => cy.get('[data-qa=goal-update-add-another-step-button]')
 
   prisonNumberLabel = (): PageElement => cy.get('[data-qa=prison-number]')
 
