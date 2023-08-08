@@ -1,6 +1,7 @@
 import Page from '../../pages/page'
 import UpdateGoalPage from '../../pages/goal/UpdateGoalPage'
 import OverviewPage from '../../pages/overview/OverviewPage'
+import ReviewUpdateGoalPage from '../../pages/goal/ReviewUpdateGoalPage'
 import AuthorisationErrorPage from '../../pages/authorisationError'
 import { UpdateGoalRequest } from '../../mockApis/educationAndWorkPlanApi'
 
@@ -68,7 +69,7 @@ context('Update a goal', () => {
       .submitPage()
 
     // Then
-    Page.verifyOnPage(OverviewPage)
+    Page.verifyOnPage(ReviewUpdateGoalPage)
   })
 
   it('should be able to add a new step as part of updating a goal', () => {
