@@ -8,7 +8,7 @@ declare module 'forms' {
     stepNumber: number
     title?: string
     targetDateRange?: string
-    action?: string
+    action?: 'add-another-step' | 'submit-form'
   }
 
   export interface AddNoteForm {
@@ -22,17 +22,18 @@ declare module 'forms' {
     status?: 'ACTIVE' | 'COMPLETED' | 'ARCHIVED'
     note?: string
     steps: Array<UpdateStepForm>
+    action?: 'add-another-step' | 'submit-form'
   }
 
   export interface UpdateStepForm {
-    reference: string
+    reference?: string
     title?: string
     targetDateRange?:
       | 'ZERO_TO_THREE_MONTHS'
       | 'THREE_TO_SIX_MONTHS'
       | 'SIX_TO_TWELVE_MONTHS'
       | 'MORE_THAN_TWELVE_MONTHS'
-    stepNumber?: number
-    status?: 'NOT_STARTED' | 'ACTIVE' | 'COMPLETE'
+    stepNumber: number
+    status: 'NOT_STARTED' | 'ACTIVE' | 'COMPLETE'
   }
 }

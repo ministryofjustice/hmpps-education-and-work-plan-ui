@@ -1,5 +1,5 @@
 import type { RequestHandler } from 'express'
-import type { UpdateGoalForm } from 'forms'
+import type { UpdateGoalForm, UpdateStepForm } from 'forms'
 import EducationAndWorkPlanService from '../../services/educationAndWorkPlanService'
 import UpdateGoalView from './updateGoalView'
 import { toUpdateGoalForm } from './mappers/goalToUpdateGoalFormMapper'
@@ -44,13 +44,25 @@ export default class UpdateGoalController {
 
   submitUpdateGoalForm: RequestHandler = async (req, res, next): Promise<void> => {
     const { prisonNumber, goalReference } = req.params
-    const updateGoalForm = { ...req.body }
+    const updateGoalForm: UpdateGoalForm = { ...req.body }
 
     const errors = validateUpdateGoalForm(updateGoalForm)
     if (errors.length > 0) {
       req.flash('errors', errors)
       req.session.updateGoalForm = updateGoalForm
       return res.redirect(`/plan/${prisonNumber}/goals/${goalReference}/update`)
+    }
+
+    // Redirect to the desired page based on the form action
+    if (updateGoalForm.action === 'add-another-step') {
+      // Initialize a new UpdateStepForm with the next step number
+      const currentHighestStepNumber = Math.max(...updateGoalForm.steps.map(step => step.stepNumber))
+      const nextStepNumber = currentHighestStepNumber + 1
+      const newStep: UpdateStepForm = { stepNumber: nextStepNumber, status: 'NOT_STARTED' }
+      updateGoalForm.steps.push(newStep)
+      req.session.updateGoalForm = updateGoalForm
+      // Redirect back to the Update Goal page with named anchor taking the user straight to the new step
+      return res.redirect(`/plan/${prisonNumber}/goals/${goalReference}/update#steps[${nextStepNumber - 1}][title]`)
     }
 
     const updateGoalDto = toUpdateGoalDto(updateGoalForm)

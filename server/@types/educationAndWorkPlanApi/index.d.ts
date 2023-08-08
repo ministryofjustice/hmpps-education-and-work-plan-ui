@@ -58,12 +58,6 @@ export interface components {
      */
     UpdateStepRequest: {
       /**
-       * Format: uuid
-       * @description The Step's unique reference. This is used as an identifier to update the required Step. It is not possible or supported to update the `stepReference`.
-       * @example d38a6c41-13d1-1d05-13c2-24619966119b
-       */
-      stepReference: string
-      /**
        * @example null
        * @enum {string}
        */
@@ -88,6 +82,12 @@ export interface components {
        * @example 1
        */
       sequenceNumber: number
+      /**
+       * Format: uuid
+       * @description Optional reference number for the Step. The Step's unique reference. This is used as an identifier to update the required Step. It is not possible or supported to update the `stepReference` for an existing step. If the Step reference is not supplied this will be treated as a new Step and will be added to the Goal.
+       * @example d38a6c41-13d1-1d05-13c2-24619966119b
+       */
+      stepReference?: string
     }
     CreateGoalRequest: {
       /**
