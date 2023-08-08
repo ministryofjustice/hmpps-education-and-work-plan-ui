@@ -67,23 +67,24 @@
               errorMessage: errors | findError('note')
             }) }}
 
-            <h2 class="govuk-heading-m">Edit and remove steps</h2>
+          <hr class="govuk-section-break govuk-section-break--visible govuk-section-break--m">
+
+          <h2 class="govuk-heading-m">Edit and remove steps</h2>
 
             {% for step in form.steps %}
               <input type="hidden" name="steps[{{ (loop.index-1) }}][reference]" value="{{ step.reference }}" data-qa="step-{{ (loop.index-1) }}-reference" />
               <input type="hidden" name="steps[{{ (loop.index-1) }}][stepNumber]" value="{{ step.stepNumber }}" />
+
+              <h3 class="govuk-heading-m">Step {{ step.stepNumber }}</h3>
 
               {{ govukTextarea({
                 name: 'steps[' + (loop.index-1) + '][title]',
                 id: 'steps[' + (loop.index-1) + '][title]',
                 attributes: { 'data-qa': 'step-' + (loop.index-1) + '-title-field' },
                 label: {
-                  text: 'Step ' + step.stepNumber,
+                  text: "Description",
                   classes: "govuk-label--m",
                   isPageHeading: false
-                },
-                hint: {
-                  text: "Describe this step"
                 },
                 value: step.title,
                 errorMessage: errors | findError('steps[' + (loop.index-1) + '][title]')
@@ -95,7 +96,8 @@
                 attributes: { 'data-qa': 'step-' + (loop.index-1) + '-status-field' },
                 label: {
                   text: "Status",
-                  classes: "govuk-!-font-weight-bold"
+                  classes: "govuk-label--m",
+                  isPageHeading: false
                 },
                 items: [
                   {
@@ -125,7 +127,7 @@
                   legend: {
                     text: "When will they achieve this by?",
                     isPageHeading: false,
-                    classes: "govuk-fieldset__legend--s"
+                    classes: "govuk-label--m"
                   }
                 },
                 items: [
@@ -153,7 +155,7 @@
                 errorMessage: errors | findError('steps[' + (loop.index-1) + '][targetDateRange]')
               }) }}
 
-              <hr class="govuk-section-break govuk-section-break--visible govuk-!-margin-bottom-6">
+              <hr class="govuk-section-break govuk-section-break--visible govuk-section-break--m">
             {% endfor %}
 
             <div class="govuk-form-group">
