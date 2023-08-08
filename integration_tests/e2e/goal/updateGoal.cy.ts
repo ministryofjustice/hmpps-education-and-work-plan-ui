@@ -1,6 +1,7 @@
 import Page from '../../pages/page'
 import UpdateGoalPage from '../../pages/goal/UpdateGoalPage'
 import OverviewPage from '../../pages/overview/OverviewPage'
+import ReviewUpdateGoalPage from '../../pages/goal/ReviewUpdateGoalPage'
 import AuthorisationErrorPage from '../../pages/authorisationError'
 
 context('Update a goal', () => {
@@ -67,7 +68,7 @@ context('Update a goal', () => {
       .submitPage()
 
     // Then
-    Page.verifyOnPage(OverviewPage)
+    Page.verifyOnPage(ReviewUpdateGoalPage)
   })
 
   it('should redirect to auth-error page given user does not have any authorities', () => {

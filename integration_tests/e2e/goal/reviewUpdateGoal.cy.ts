@@ -36,10 +36,10 @@ context('Review updated goal', () => {
     cy.signIn()
 
     // When
-    cy.visit(`/plan/${prisonNumber}/goals/${goalReference}/update`)
+    cy.visit(`/plan/${prisonNumber}/view/overview`)
+    const overviewPage = Page.verifyOnPage(OverviewPage)
 
-    // Then
-    const updateGoalPage = Page.verifyOnPage(UpdateGoalPage)
+    const updateGoalPage = overviewPage.clickUpdateButtonForFirstGoal()
     updateGoalPage.isForGoal(goalReference).submitPage()
 
     // Then
@@ -57,11 +57,15 @@ context('Review updated goal', () => {
     cy.signIn()
 
     // When
-    cy.visit(`/plan/${prisonNumber}/goals/${goalReference}/update`)
+    cy.visit(`/plan/${prisonNumber}/view/overview`)
+    const overviewPage = Page.verifyOnPage(OverviewPage)
+
+    const updateGoalPage = overviewPage.clickUpdateButtonForFirstGoal()
+    updateGoalPage.isForGoal(goalReference).submitPage()
 
     // Then
-    const updateGoalPage = Page.verifyOnPage(UpdateGoalPage)
-    updateGoalPage.isForGoal(goalReference).submitPage()
+    const reviewUpdateGoalPage = Page.verifyOnPage(ReviewUpdateGoalPage)
+    reviewUpdateGoalPage.isForPrisoner(prisonNumber).submitPage()
 
     // Then
     Page.verifyOnPage(OverviewPage)
