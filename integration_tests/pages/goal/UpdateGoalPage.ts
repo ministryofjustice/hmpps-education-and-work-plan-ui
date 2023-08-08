@@ -26,7 +26,30 @@ export default class UpdateGoalPage extends Page {
   }
 
   setFirstStepTitle(stepTitle: string) {
-    this.stepTitleField(0).clear().type(stepTitle)
+    this.setStepTitle(1, stepTitle)
+    return this
+  }
+
+  setStepTitle(stepNumber: number, stepTitle: string) {
+    this.stepTitleField(stepNumber - 1)
+      .clear()
+      .type(stepTitle)
+    return this
+  }
+
+  setStepStatus(stepNumber: number, stepStatus: 'Not started' | 'Started' | 'Completed') {
+    this.stepStatusField(stepNumber - 1).select(stepStatus)
+    return this
+  }
+
+  setStepTargetDateRange(
+    stepNumber: number,
+    stepTargetDateRange: '0 to 3 months' | '3 to 6 months' | '6 to 12 months' | 'More than 12 months',
+  ) {
+    this.stepTargetDateRangeField(stepNumber - 1)
+      .contains('label', stepTargetDateRange)
+      .siblings('input[type=radio]')
+      .check()
     return this
   }
 
@@ -42,6 +65,10 @@ export default class UpdateGoalPage extends Page {
   titleField = (): PageElement => cy.get('#title')
 
   stepTitleField = (idx: number): PageElement => cy.get(`[data-qa=step-${idx}-title-field]`)
+
+  stepStatusField = (idx: number): PageElement => cy.get(`[data-qa=step-${idx}-status-field]`)
+
+  stepTargetDateRangeField = (idx: number): PageElement => cy.get(`[data-qa=step-${idx}-target-date-range-field]`)
 
   submitButton = (): PageElement => cy.get('[data-qa=goal-update-submit-button]')
 
