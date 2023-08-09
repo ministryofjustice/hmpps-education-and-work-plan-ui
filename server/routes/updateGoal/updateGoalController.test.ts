@@ -136,7 +136,7 @@ describe('updateGoalController', () => {
   })
 
   describe('submitUpdateGoalForm', () => {
-    it('should update goal and redirect to review updated goal page given action is submit-form and validation passes', async () => {
+    it('should update goal and redirect to review updated goal page given action is submit-form and validation passes should redirect to the overview page', async () => {
       // Given
       req.user.token = 'some-token'
       req.params.prisonNumber = 'A1234GC'
@@ -161,6 +161,23 @@ describe('updateGoalController', () => {
       expect(res.redirect).toHaveBeenCalledWith(
         '/plan/A1234GC/goals/1a2eae63-8102-4155-97cb-43d8fb739caf/update/review',
       )
+
+      // When
+      await controller.submitReviewUpdateGoal(
+        req as undefined as Request,
+        res as undefined as Response,
+        next as undefined as NextFunction,
+      )
+
+      // Then
+      expect(educationAndWorkPlanService.updateGoal).toHaveBeenCalledWith(
+        'A1234GC',
+        expectedUpdateGoalDto,
+        'some-token',
+      )
+      expect(mockedValidateUpdateGoalForm).toHaveBeenCalledWith(updateGoalForm)
+      expect(res.redirect).toHaveBeenCalledWith('/plan/A1234GC/view/overview')
+      expect(req.session.updateGoalForm).toBeUndefined()
     })
 
     it('should redirect to update goal with new blank step given action is add-another-step and validation passes', async () => {
