@@ -77,13 +77,8 @@ export default class UpdateGoalController {
   }
 
   submitReviewUpdateGoal: RequestHandler = async (req, res, next): Promise<void> => {
-    const { prisonNumber, goalReference } = req.params
+    const { prisonNumber } = req.params
     const { updateGoalForm } = req.session
-
-    // Redirect to the Update a goal screen if the user clicks the 'Go back to edit goal' button
-    if (updateGoalForm.action === 'back-to-edit-goal') {
-      return res.redirect(`/plan/${prisonNumber}/goals/${goalReference}/update`)
-    }
 
     const updateGoalDto = toUpdateGoalDto(updateGoalForm)
     await this.educationAndWorkPlanService.updateGoal(prisonNumber, updateGoalDto, req.user.token)

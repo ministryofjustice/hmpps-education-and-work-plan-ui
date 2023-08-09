@@ -96,14 +96,12 @@
 
       <form class="form" method="post" novalidate="">
         <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
-        <input type="hidden" name="reference" value="{{ form.reference }}" data-qa="goal-reference" />
-        <input type="hidden" name="status" value="{{ form.status }}" data-qa="goal-status" />
 
         <div class="govuk-form-group govuk-!-margin-bottom-4">
           {{ govukButton({
+            type: "a",
+            href: "/plan/" + prisonerSummary.prisonNumber + "/goals/" + data.reference + "/update",
             id: "back-to-edit-goal-button",
-            name: "action",
-            value: "back-to-edit-goal",
             text: "Go back to edit goal",
             classes: "moj-button-menu__item govuk-button--secondary",
             attributes: {
@@ -116,12 +114,12 @@
           {{ govukButton({
             id: "submit-button",
             name: "action",
+            value: "submit-form",
             text: "Save to learning and work progress plan",
             classes: "moj-button-menu__item",
             attributes: {
               'data-qa': 'goal-update-review-submit-button'
-            },
-            value: "submit-form"
+            }
           }) }}
         </div>
 
