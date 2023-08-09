@@ -46,12 +46,11 @@ export default class UpdateGoalController {
   submitUpdateGoalForm: RequestHandler = async (req, res, next): Promise<void> => {
     const { prisonNumber, goalReference } = req.params
     const updateGoalForm: UpdateGoalForm = { ...req.body }
-    // req.session.updateGoalForm = updateGoalForm
+    req.session.updateGoalForm = updateGoalForm
 
     const errors = validateUpdateGoalForm(updateGoalForm)
     if (errors.length > 0) {
       req.flash('errors', errors)
-      req.session.updateGoalForm = updateGoalForm
       return res.redirect(`/plan/${prisonNumber}/goals/${goalReference}/update`)
     }
 
@@ -62,7 +61,6 @@ export default class UpdateGoalController {
       const nextStepNumber = currentHighestStepNumber + 1
       const newStep: UpdateStepForm = { stepNumber: nextStepNumber, status: 'NOT_STARTED' }
       updateGoalForm.steps.push(newStep)
-      req.session.updateGoalForm = updateGoalForm
       // Redirect back to the Update Goal page with named anchor taking the user straight to the new step
       return res.redirect(`/plan/${prisonNumber}/goals/${goalReference}/update#steps[${nextStepNumber - 1}][title]`)
     }
@@ -79,8 +77,13 @@ export default class UpdateGoalController {
   }
 
   submitReviewUpdateGoal: RequestHandler = async (req, res, next): Promise<void> => {
-    const { prisonNumber } = req.params
+    const { prisonNumber, goalReference } = req.params
     const { updateGoalForm } = req.session
+
+    // Redirect to the Update a goal screen if the user clicks the 'Go back to edit goal' button
+    if (updateGoalForm.action === 'back-to-edit-goal') {
+      return res.redirect(`/plan/${prisonNumber}/goals/${goalReference}/update`)
+    }
 
     const updateGoalDto = toUpdateGoalDto(updateGoalForm)
     await this.educationAndWorkPlanService.updateGoal(prisonNumber, updateGoalDto, req.user.token)

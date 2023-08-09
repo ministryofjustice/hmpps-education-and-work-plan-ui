@@ -28,14 +28,19 @@
   {% include "../../../partials/prisonerBanner.njk" %}
 
   <div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
+    <div class="govuk-grid-column-full">
 
       <h1 class="govuk-heading-l">Check your updates for {{ prisonerSummary.firstName | capitalize }} {{ prisonerSummary.lastName | capitalize }}'s goals</h1>
 
       <h2 class="govuk-heading-m govuk-visually-hidden">Goal details</h2>
 
-      {{ form | dump }}
-      {{ data | dump }}
+      {% if data.status == "COMPLETE" %}
+        {% set statusText = "Completed" %}
+      {% elif data.status == "ACTIVE" %}
+        {% set statusText = "Started" %}
+      {% else %}
+        {% set statusText = "Not started" %}
+      {% endif %}
 
       {{ govukSummaryList({
         classes: 'govuk-!-margin-bottom-9',
@@ -45,7 +50,7 @@
               text: "Description"
             },
             value: {
-              text: data.description
+              text: data.title
             }
           },
           {
@@ -53,7 +58,7 @@
               text: "Status"
             },
             value: {
-              text: data.status
+              text: statusText
             }
           },
           {
@@ -80,10 +85,10 @@
         <tbody class="govuk-table__body">
           {% for step in data.steps %}
           <tr class="govuk-table__row">
-            <th scope="row" class="govuk-table__header">{{ step.sequenceNumber }}</th>
-            <td class="govuk-table__cell">{{ step.description }}</td>
-            <td class="govuk-table__cell">{{ step.status }}</td>
-            <td class="govuk-table__cell">{{ step.targetDate }}</td>
+            <th scope="row" class="govuk-table__header">Step {{ step.stepNumber }}</th>
+            <td class="govuk-table__cell">{{ step.title }}</td>
+            <td class="govuk-table__cell">{% if step.status === "ACTIVE" %}Started{% elif step.status === "COMPLETE" %}Completed{% else %}Not started{% endif %}</td>
+            <td class="govuk-table__cell">{{ step.targetDateRange | formatDateFormValue }}</td>
           </tr>
           {% endfor %}
         </tbody>
@@ -96,7 +101,9 @@
 
         <div class="govuk-form-group govuk-!-margin-bottom-4">
           {{ govukButton({
-            element: "a",
+            id: "back-to-edit-goal-button",
+            name: "action",
+            value: "back-to-edit-goal",
             text: "Go back to edit goal",
             classes: "moj-button-menu__item govuk-button--secondary",
             attributes: {
@@ -108,12 +115,13 @@
         <div class="govuk-form-group">
           {{ govukButton({
             id: "submit-button",
-            name: "submit-button",
+            name: "action",
             text: "Save to learning and work progress plan",
             classes: "moj-button-menu__item",
             attributes: {
               'data-qa': 'goal-update-review-submit-button'
-            }
+            },
+            value: "submit-form"
           }) }}
         </div>
 
