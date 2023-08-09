@@ -22,7 +22,7 @@ declare module 'forms' {
     status?: 'ACTIVE' | 'COMPLETED' | 'ARCHIVED'
     note?: string
     steps: Array<UpdateStepForm>
-    action?: 'add-another-step' | 'submit-form' | 'back-to-edit-goal'
+    action?: 'add-another-step' | 'submit-form'
   }
 
   export interface UpdateStepForm {
