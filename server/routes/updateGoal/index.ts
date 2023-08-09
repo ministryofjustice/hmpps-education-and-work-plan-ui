@@ -22,6 +22,11 @@ export default (router: Router, services: Services) => {
     updateGoalController.getUpdateGoalView,
   ])
 
+  router.post('/plan/:prisonNumber/goals/:goalReference/update', [
+    checkPrisonerSummaryExistsInSession,
+    updateGoalController.submitUpdateGoalForm,
+  ])
+
   router.use('/plan/:prisonNumber/goals/:goalReference/update/review', [
     checkUserHasEditAuthority(),
     prisonerSummaryRequestHandler.getPrisonerSummary,
@@ -34,6 +39,6 @@ export default (router: Router, services: Services) => {
 
   router.post('/plan/:prisonNumber/goals/:goalReference/update/review', [
     checkPrisonerSummaryExistsInSession,
-    updateGoalController.submitUpdateGoalForm,
+    updateGoalController.submitReviewUpdateGoal,
   ])
 }
