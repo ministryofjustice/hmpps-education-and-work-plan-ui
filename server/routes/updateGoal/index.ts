@@ -3,6 +3,7 @@ import { Services } from '../../services'
 import UpdateGoalController from './updateGoalController'
 import { checkUserHasEditAuthority } from '../../middleware/roleBasedAccessControl'
 import { checkPrisonerSummaryExistsInSession } from '../createGoal/routerRequestHandlers'
+import checkUpdateGoalFormExistsInSession from './routerRequestHandlers'
 import PrisonerSummaryRequestHandler from '../overview/prisonerSummaryRequestHandler'
 
 /**
@@ -34,11 +35,13 @@ export default (router: Router, services: Services) => {
 
   router.get('/plan/:prisonNumber/goals/:goalReference/update/review', [
     checkPrisonerSummaryExistsInSession,
+    checkUpdateGoalFormExistsInSession,
     updateGoalController.getReviewUpdateGoalView,
   ])
 
   router.post('/plan/:prisonNumber/goals/:goalReference/update/review', [
     checkPrisonerSummaryExistsInSession,
+    checkUpdateGoalFormExistsInSession,
     updateGoalController.submitReviewUpdateGoal,
   ])
 }
