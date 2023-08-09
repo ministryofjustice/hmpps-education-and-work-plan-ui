@@ -34,6 +34,9 @@
 
       <h2 class="govuk-heading-m govuk-visually-hidden">Goal details</h2>
 
+      {{ form | dump }}
+      {{ data | dump }}
+
       {{ govukSummaryList({
         classes: 'govuk-!-margin-bottom-9',
         rows: [

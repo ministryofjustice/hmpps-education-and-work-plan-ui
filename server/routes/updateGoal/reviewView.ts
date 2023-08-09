@@ -2,7 +2,7 @@ import type { PrisonerSummary } from 'viewModels'
 import type { UpdateGoalForm } from 'forms'
 
 export default class ReviewView {
-  constructor(private readonly prisonerSummary: PrisonerSummary, private readonly updateGoalDto: UpdateGoalForm) {}
+  constructor(private readonly prisonerSummary: PrisonerSummary, private readonly updateGoalForm: UpdateGoalForm) {}
 
   get renderArgs(): {
     prisonerSummary: PrisonerSummary
@@ -10,7 +10,7 @@ export default class ReviewView {
   } {
     return {
       prisonerSummary: this.prisonerSummary,
-      data: this.updateGoalDto,
+      data: this.updateGoalForm,
     }
   }
 }
