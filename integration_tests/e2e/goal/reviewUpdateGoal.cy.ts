@@ -47,7 +47,7 @@ context('Review updated goal', () => {
     reviewUpdateGoalPage.isForPrisoner(prisonNumber).goBackToEditGoal()
 
     // Then
-    Page.verifyOnPage(UpdateGoalPage)
+    Page.verifyOnPage(UpdateGoalPage).isForGoal(goalReference)
   })
 
   it('should be able to submit the form if no validation errors', () => {
