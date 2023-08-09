@@ -92,6 +92,10 @@ context('Update a goal', () => {
       .submitPage()
 
     // Then
+    const reviewUpdateGoalPage = Page.verifyOnPage(ReviewUpdateGoalPage)
+    reviewUpdateGoalPage.submitPage()
+
+    // Then
     Page.verifyOnPage(OverviewPage)
     // Assert that the expected new step was sent in the UpdateGoal request to the API - TODO, there has to be a better way of doing this
     cy.task<UpdateGoalRequest>('getUpdateGoalRequestBody')
