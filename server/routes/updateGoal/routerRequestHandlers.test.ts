@@ -19,8 +19,8 @@ describe('routerRequestHandlers', () => {
     req.params = {} as Record<string, string>
   })
 
-  describe('checkCreateGoalFormExistsInSession', () => {
-    it(`should invoke next handler given form exists in session for prisoner referenced in url params`, async () => {
+  describe('checkUpdateGoalFormExistsInSession', () => {
+    it(`should invoke next handler given update goal form exists in session`, async () => {
       // Given
       const reference = '1a2eae63-8102-4155-97cb-43d8fb739caf'
 
@@ -40,7 +40,7 @@ describe('routerRequestHandlers', () => {
       expect(res.redirect).not.toHaveBeenCalled()
     })
 
-    it(`should redirect to Overview given no form exists in session`, async () => {
+    it(`should redirect to Overview page given no update goal form exists in session`, async () => {
       // Given
       const prisonNumber = 'A1234BC'
       req.params.prisonNumber = prisonNumber
