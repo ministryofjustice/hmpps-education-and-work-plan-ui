@@ -77,7 +77,7 @@
               <td class="govuk-table__cell">{{ step.targetDateRange | formatDateFormValue }}</td>
               <td class="govuk-table__cell">
                 <strong class="govuk-tag {{ tagClass }}">
-                  {{ step.status | replace("_", " ") }}
+                  {{ step.status | formatStepStatusValue }}
                 </strong>
               </td>
             </tr>

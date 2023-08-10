@@ -9,6 +9,8 @@ import formatDateFilter from '../filters/formatDateFilter'
 import findErrorFilter from '../filters/findErrorFilter'
 import formatDateFormValue from '../filters/formatDateFormValue'
 import formatFunctionalSkillType from '../filters/formatFunctionalSkillTypeFilter'
+import formatStepStatusValue from '../filters/formatStepStatusValue'
+import formatGoalStatusValue from '../filters/formatGoalStatusValue'
 
 const production = process.env.NODE_ENV === 'production'
 
@@ -53,6 +55,8 @@ export function registerNunjucks(app?: express.Express): Environment {
   njkEnv.addFilter('formatDate', formatDateFilter)
   njkEnv.addFilter('formatDateFormValue', formatDateFormValue)
   njkEnv.addFilter('formatFunctionalSkillType', formatFunctionalSkillType)
+  njkEnv.addFilter('formatStepStatusValue', formatStepStatusValue)
+  njkEnv.addFilter('formatGoalStatusValue', formatGoalStatusValue)
 
   njkEnv.addGlobal('dpsUrl', config.dpsHomeUrl)
   njkEnv.addGlobal('featureToggles', config.featureToggles)

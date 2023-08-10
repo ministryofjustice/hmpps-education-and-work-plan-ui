@@ -34,14 +34,6 @@
 
       <h2 class="govuk-heading-m govuk-visually-hidden">Goal details</h2>
 
-      {% if data.status == "COMPLETE" %}
-        {% set statusText = "Completed" %}
-      {% elif data.status == "ACTIVE" %}
-        {% set statusText = "Started" %}
-      {% else %}
-        {% set statusText = "Not started" %}
-      {% endif %}
-
       {{ govukSummaryList({
         classes: 'govuk-!-margin-bottom-9',
         rows: [
@@ -58,7 +50,7 @@
               text: "Status"
             },
             value: {
-              text: statusText
+              text: data.status | formatGoalStatusValue
             }
           },
           {
@@ -87,7 +79,7 @@
           <tr class="govuk-table__row">
             <th scope="row" class="govuk-table__header">Step {{ step.stepNumber }}</th>
             <td class="govuk-table__cell">{{ step.title }}</td>
-            <td class="govuk-table__cell">{% if step.status === "ACTIVE" %}Started{% elif step.status === "COMPLETE" %}Completed{% else %}Not started{% endif %}</td>
+            <td class="govuk-table__cell">{{ step.status | formatStepStatusValue }}</td>
             <td class="govuk-table__cell">{{ step.targetDateRange | formatDateFormValue }}</td>
           </tr>
           {% endfor %}
