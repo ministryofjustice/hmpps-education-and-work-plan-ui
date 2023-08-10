@@ -1,7 +1,7 @@
 import type { PrisonerSummary } from 'viewModels'
 import type { UpdateGoalForm } from 'forms'
 
-export default class ReviewView {
+export default class ReviewUpdateGoalView {
   constructor(private readonly prisonerSummary: PrisonerSummary, private readonly updateGoalForm: UpdateGoalForm) {}
 
   get renderArgs(): {

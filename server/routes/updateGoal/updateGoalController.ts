@@ -2,7 +2,7 @@ import type { RequestHandler } from 'express'
 import type { UpdateGoalForm, UpdateStepForm } from 'forms'
 import EducationAndWorkPlanService from '../../services/educationAndWorkPlanService'
 import UpdateGoalView from './updateGoalView'
-import ReviewView from './reviewView'
+import ReviewUpdateGoalView from './reviewUpdateGoalView'
 import { toUpdateGoalForm } from './mappers/goalToUpdateGoalFormMapper'
 import validateUpdateGoalForm from './updateGoalFormValidator'
 import { toUpdateGoalDto } from './mappers/updateGoalFormToUpdateGoalDtoMapper'
@@ -72,7 +72,7 @@ export default class UpdateGoalController {
     const { prisonerSummary } = req.session
     const { updateGoalForm } = req.session
 
-    const view = new ReviewView(prisonerSummary, updateGoalForm)
+    const view = new ReviewUpdateGoalView(prisonerSummary, updateGoalForm)
     res.render('pages/goal/update/review', { ...view.renderArgs })
   }
 

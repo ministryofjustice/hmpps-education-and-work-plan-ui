@@ -1,6 +1,6 @@
 import Page, { PageElement } from '../page'
 
-export default class UpdateGoalPage extends Page {
+export default class ReviewUpdateGoalPage extends Page {
   constructor() {
     super('review-update-goal')
   }

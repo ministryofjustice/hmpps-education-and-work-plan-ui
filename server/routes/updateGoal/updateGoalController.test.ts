@@ -136,7 +136,7 @@ describe('updateGoalController', () => {
   })
 
   describe('submitUpdateGoalForm', () => {
-    it('should update goal and redirect to review updated goal page given action is submit-form and validation passes should redirect to the overview page', async () => {
+    it('should update goal and redirect to review updated goal page given action is submit-form and validation passes', async () => {
       // Given
       req.user.token = 'some-token'
       req.params.prisonNumber = 'A1234GC'
