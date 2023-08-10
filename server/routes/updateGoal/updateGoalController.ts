@@ -82,6 +82,7 @@ export default class UpdateGoalController {
 
     const updateGoalDto = toUpdateGoalDto(updateGoalForm)
     await this.educationAndWorkPlanService.updateGoal(prisonNumber, updateGoalDto, req.user.token)
+    // TODO - RR-188 - handle API error response when updating goal
 
     req.session.updateGoalForm = undefined
 
