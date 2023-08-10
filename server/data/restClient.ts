@@ -10,7 +10,7 @@ import { restClientMetricsMiddleware } from './restClientMetricsMiddleware'
 
 interface GetRequest {
   path?: string
-  query?: string
+  query?: Record<string, string>
   headers?: Record<string, string>
   responseType?: string
   raw?: boolean
@@ -37,6 +37,7 @@ interface PutRequest {
 
 interface DeleteRequest {
   path?: string
+  query?: Record<string, string>
   headers?: Record<string, string>
   responseType?: string
   raw?: boolean
@@ -64,17 +65,32 @@ export default class RestClient {
     return this.config.timeout
   }
 
-  private logRequest(method: string, path: string, query = '') {
+  private logRequest(method: string, path: string, query = {}) {
     if (this.token) {
-      logger.info(`${method.toUpperCase()} request using user credentials: calling ${this.name}: ${path} ${query}`)
+      const queryString = this.queryString(query)
+      logger.info(`${method.toUpperCase()} request using user credentials: calling ${this.name}: ${path}${queryString}`)
     } else {
       logger.info(`Anonymous ${method.toUpperCase()} request: calling ${this.name}: ${path} ${query}`)
     }
   }
 
+  private queryString(query?: Record<string, string>): string {
+    if (query && Object.keys(query).length > 0) {
+      const queryString = Object.keys(query).map((key, idx) => {
+        let delimiter = `&`
+        if (idx === Object.keys(query).length - 1) {
+          delimiter = ''
+        }
+        return `${key}=${encodeURI(query[key])}${delimiter}`
+      })
+      return `?${queryString}`
+    }
+    return ''
+  }
+
   async get({
     path = null,
-    query = '',
+    query = {},
     headers = {},
     responseType = '',
     raw = false,
@@ -107,12 +123,13 @@ export default class RestClient {
 
   async delete({
     path = null,
+    query = {},
     headers = {},
     responseType = '',
     raw = false,
     retry = false,
   }: DeleteRequest = {}): Promise<unknown> {
-    return this.processRequest({ path, headers, responseType, raw, retry, method: 'delete' })
+    return this.processRequest({ path, headers, responseType, query, raw, retry, method: 'delete' })
   }
 
   private async processRequest({
@@ -125,7 +142,7 @@ export default class RestClient {
     raw = false,
     method = undefined as 'get' | 'post' | 'put' | 'delete',
   } = {}): Promise<unknown> {
-    this.logRequest(method.toUpperCase(), path)
+    this.logRequest(method, path, query)
 
     const request = superagent[method](`${this.apiUrl()}${path}`)
     request

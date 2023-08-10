@@ -79,4 +79,26 @@ declare module 'viewModels' {
     status: 'NOT_STARTED' | 'ACTIVE' | 'COMPLETE'
     sequenceNumber: number
   }
+
+  /**
+   * A prisoner's Education Records, which is made up of a collection of PrisonerEducation.
+   * TODO - needs better name and field definition once we understand the data and the requirements.
+   */
+  export interface PrisonerEducationRecords {
+    problemRetrievingData?: boolean
+    educationRecords: Array<PrisonerEducation>
+  }
+
+  /**
+   * An education record.
+   * TODO - needs better name and field definition once we understand the data and the requirements.
+   */
+  export interface PrisonerEducation {
+    prisonId: string
+    prisonName: string
+    courseName: string
+    courseCode: string
+    courseStartDate: Date
+    source: 'CURIOUS'
+  }
 }

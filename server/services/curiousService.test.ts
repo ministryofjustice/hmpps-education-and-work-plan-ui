@@ -1,9 +1,21 @@
-import type { FunctionalSkills, HealthAndSupportNeeds, Neurodiversity, PrisonerSupportNeeds } from 'viewModels'
+import type { LearnerEductionPagedResponse } from 'curiousApiClient'
+import type {
+  FunctionalSkills,
+  HealthAndSupportNeeds,
+  Neurodiversity,
+  PrisonerEducationRecords,
+  PrisonerSupportNeeds,
+} from 'viewModels'
 import moment from 'moment'
 import { CuriousClient, HmppsAuthClient } from '../data'
 import CuriousService from './curiousService'
 import aValidLearnerProfile from '../testsupport/learnerProfileTestDataBuilder'
 import aValidLearnerNeurodivergence from '../testsupport/learnerNeurodivergenceTestDataBuilder'
+import {
+  learnerEducationPagedResponsePage1Of1,
+  learnerEducationPagedResponsePage1Of2,
+  learnerEducationPagedResponsePage2Of2,
+} from '../testsupport/learnerEducationPagedResponseTestDataBuilder'
 
 describe('curiousService', () => {
   const hmppsAuthClient = {
@@ -12,6 +24,7 @@ describe('curiousService', () => {
   const curiousClient = {
     getLearnerProfile: jest.fn(),
     getLearnerNeurodivergence: jest.fn(),
+    getLearnerEducationPage: jest.fn(),
   }
 
   const curiousService = new CuriousService(
@@ -30,13 +43,13 @@ describe('curiousService', () => {
       const username = 'a-dps-user'
 
       const systemToken = 'a-system-token'
-      hmppsAuthClient.getSystemClientToken.mockImplementation(() => Promise.resolve(systemToken))
+      hmppsAuthClient.getSystemClientToken.mockResolvedValue(systemToken)
 
       const learnerProfiles = [aValidLearnerProfile()]
-      curiousClient.getLearnerProfile.mockImplementation(() => Promise.resolve(learnerProfiles))
+      curiousClient.getLearnerProfile.mockResolvedValue(learnerProfiles)
 
       const learnerNeurodivergences = [aValidLearnerNeurodivergence()]
-      curiousClient.getLearnerNeurodivergence.mockImplementation(() => Promise.resolve(learnerNeurodivergences))
+      curiousClient.getLearnerNeurodivergence.mockResolvedValue(learnerNeurodivergences)
 
       const expectedSupportNeeds = {
         problemRetrievingData: false,
@@ -77,14 +90,14 @@ describe('curiousService', () => {
       const username = 'a-dps-user'
 
       const systemToken = 'a-system-token'
-      hmppsAuthClient.getSystemClientToken.mockImplementation(() => Promise.resolve(systemToken))
+      hmppsAuthClient.getSystemClientToken.mockResolvedValue(systemToken)
 
       const curiousApiError = {
         message: 'Internal Server Error',
         status: 500,
         text: { errorCode: 'VC5000', errorMessage: 'Internal server error', httpStatusCode: 500 },
       }
-      curiousClient.getLearnerProfile.mockImplementation(() => Promise.reject(curiousApiError))
+      curiousClient.getLearnerProfile.mockRejectedValue(curiousApiError)
 
       const expectedSupportNeeds = {
         problemRetrievingData: true,
@@ -109,17 +122,17 @@ describe('curiousService', () => {
       const username = 'a-dps-user'
 
       const systemToken = 'a-system-token'
-      hmppsAuthClient.getSystemClientToken.mockImplementation(() => Promise.resolve(systemToken))
+      hmppsAuthClient.getSystemClientToken.mockResolvedValue(systemToken)
 
       const learnerProfiles = [aValidLearnerProfile()]
-      curiousClient.getLearnerProfile.mockImplementation(() => Promise.resolve(learnerProfiles))
+      curiousClient.getLearnerProfile.mockResolvedValue(learnerProfiles)
 
       const curiousApiError = {
         message: 'Internal Server Error',
         status: 500,
         text: { errorCode: 'VC5000', errorMessage: 'Internal server error', httpStatusCode: 500 },
       }
-      curiousClient.getLearnerNeurodivergence.mockImplementation(() => Promise.reject(curiousApiError))
+      curiousClient.getLearnerNeurodivergence.mockRejectedValue(curiousApiError)
 
       const expectedSupportNeeds = {
         problemRetrievingData: true,
@@ -144,17 +157,17 @@ describe('curiousService', () => {
       const username = 'a-dps-user'
 
       const systemToken = 'a-system-token'
-      hmppsAuthClient.getSystemClientToken.mockImplementation(() => Promise.resolve(systemToken))
+      hmppsAuthClient.getSystemClientToken.mockResolvedValue(systemToken)
 
       const curiousApi404Error = {
         message: 'Not Found',
         status: 404,
         text: { errorCode: 'VC4004', errorMessage: 'Resource not found', httpStatusCode: 404 },
       }
-      curiousClient.getLearnerProfile.mockImplementation(() => Promise.reject(curiousApi404Error))
+      curiousClient.getLearnerProfile.mockRejectedValue(curiousApi404Error)
 
       const learnerNeurodivergences = [aValidLearnerNeurodivergence()]
-      curiousClient.getLearnerNeurodivergence.mockImplementation(() => Promise.resolve(learnerNeurodivergences))
+      curiousClient.getLearnerNeurodivergence.mockResolvedValue(learnerNeurodivergences)
 
       const expectedSupportNeeds = {
         problemRetrievingData: false,
@@ -190,17 +203,17 @@ describe('curiousService', () => {
       const username = 'a-dps-user'
 
       const systemToken = 'a-system-token'
-      hmppsAuthClient.getSystemClientToken.mockImplementation(() => Promise.resolve(systemToken))
+      hmppsAuthClient.getSystemClientToken.mockResolvedValue(systemToken)
 
       const learnerProfiles = [aValidLearnerProfile()]
-      curiousClient.getLearnerProfile.mockImplementation(() => Promise.resolve(learnerProfiles))
+      curiousClient.getLearnerProfile.mockResolvedValue(learnerProfiles)
 
       const curiousApi404Error = {
         message: 'Not Found',
         status: 404,
         text: { errorCode: 'VC4004', errorMessage: 'Resource not found', httpStatusCode: 404 },
       }
-      curiousClient.getLearnerNeurodivergence.mockImplementation(() => Promise.reject(curiousApi404Error))
+      curiousClient.getLearnerNeurodivergence.mockRejectedValue(curiousApi404Error)
 
       const expectedSupportNeeds = {
         problemRetrievingData: false,
@@ -234,10 +247,10 @@ describe('curiousService', () => {
       const username = 'a-dps-user'
 
       const systemToken = 'a-system-token'
-      hmppsAuthClient.getSystemClientToken.mockImplementation(() => Promise.resolve(systemToken))
+      hmppsAuthClient.getSystemClientToken.mockResolvedValue(systemToken)
 
       const learnerProfiles = [aValidLearnerProfile()]
-      curiousClient.getLearnerProfile.mockImplementation(() => Promise.resolve(learnerProfiles))
+      curiousClient.getLearnerProfile.mockResolvedValue(learnerProfiles)
 
       const expectedFunctionalSkills = {
         problemRetrievingData: false,
@@ -266,14 +279,14 @@ describe('curiousService', () => {
       const username = 'a-dps-user'
 
       const systemToken = 'a-system-token'
-      hmppsAuthClient.getSystemClientToken.mockImplementation(() => Promise.resolve(systemToken))
+      hmppsAuthClient.getSystemClientToken.mockResolvedValue(systemToken)
 
       const curiousApi404Error = {
         message: 'Not Found',
         status: 404,
         text: { errorCode: 'VC4004', errorMessage: 'Resource not found', httpStatusCode: 404 },
       }
-      curiousClient.getLearnerProfile.mockImplementation(() => Promise.reject(curiousApi404Error))
+      curiousClient.getLearnerProfile.mockRejectedValue(curiousApi404Error)
 
       const expectedFunctionalSkills = {
         problemRetrievingData: false,
@@ -294,14 +307,14 @@ describe('curiousService', () => {
       const username = 'a-dps-user'
 
       const systemToken = 'a-system-token'
-      hmppsAuthClient.getSystemClientToken.mockImplementation(() => Promise.resolve(systemToken))
+      hmppsAuthClient.getSystemClientToken.mockResolvedValue(systemToken)
 
       const curiousApiError = {
         message: 'Internal Server Error',
         status: 500,
         text: { errorCode: 'VC5000', errorMessage: 'Internal server error', httpStatusCode: 500 },
       }
-      curiousClient.getLearnerProfile.mockImplementation(() => Promise.reject(curiousApiError))
+      curiousClient.getLearnerProfile.mockRejectedValue(curiousApiError)
 
       const expectedFunctionalSkills = {
         problemRetrievingData: true,
@@ -314,6 +327,161 @@ describe('curiousService', () => {
       // Then
       expect(actual).toEqual(expectedFunctionalSkills)
       expect(curiousClient.getLearnerProfile).toHaveBeenCalledWith(prisonNumber, systemToken)
+    })
+  })
+
+  describe('getLearnerEducation', () => {
+    it('should get learner eduction given there is only 1 page of data in Curious for the prisoner', async () => {
+      // Given
+      const prisonNumber = 'A1234BC'
+      const username = 'a-dps-user'
+
+      const systemToken = 'a-system-token'
+      hmppsAuthClient.getSystemClientToken.mockResolvedValue(systemToken)
+
+      const learnerEducationPage1Of1: LearnerEductionPagedResponse = learnerEducationPagedResponsePage1Of1(prisonNumber)
+      curiousClient.getLearnerEducationPage.mockResolvedValue(learnerEducationPage1Of1)
+
+      const expected: PrisonerEducationRecords = {
+        problemRetrievingData: false,
+        educationRecords: [
+          {
+            courseCode: '008ENGL06',
+            courseName: 'GCSE English',
+            courseStartDate: moment('2021-06-01').toDate(),
+            prisonId: 'MDI',
+            prisonName: 'MOORLAND (HMP & YOI)',
+            source: 'CURIOUS',
+          },
+          {
+            courseCode: '246674',
+            courseName: 'GCSE Maths',
+            courseStartDate: moment('2016-05-18').toDate(),
+            prisonId: 'WDI',
+            prisonName: 'WAKEFIELD (HMP)',
+            source: 'CURIOUS',
+          },
+        ],
+      }
+
+      // When
+      const actual = await curiousService.getLearnerEducation(prisonNumber, username)
+
+      // Then
+      expect(actual).toEqual(expected)
+      expect(curiousClient.getLearnerEducationPage).toHaveBeenCalledWith(prisonNumber, systemToken, 0)
+    })
+
+    it('should get learner eduction given there are 2 pages of data in Curious for the prisoner', async () => {
+      // Given
+      const prisonNumber = 'A1234BC'
+      const username = 'a-dps-user'
+
+      const systemToken = 'a-system-token'
+      hmppsAuthClient.getSystemClientToken.mockResolvedValue(systemToken)
+
+      const learnerEducationPage1Of2: LearnerEductionPagedResponse = learnerEducationPagedResponsePage1Of2(prisonNumber)
+      curiousClient.getLearnerEducationPage.mockResolvedValueOnce(learnerEducationPage1Of2)
+      const learnerEducationPage2Of2: LearnerEductionPagedResponse = learnerEducationPagedResponsePage2Of2(prisonNumber)
+      curiousClient.getLearnerEducationPage.mockResolvedValueOnce(learnerEducationPage2Of2)
+
+      const expected: PrisonerEducationRecords = {
+        problemRetrievingData: false,
+        educationRecords: [
+          {
+            courseCode: '008ENGL06',
+            courseName: 'GCSE English',
+            courseStartDate: moment('2021-06-01').toDate(),
+            prisonId: 'MDI',
+            prisonName: 'MOORLAND (HMP & YOI)',
+            source: 'CURIOUS',
+          },
+          {
+            courseCode: '246674',
+            courseName: 'GCSE Maths',
+            courseStartDate: moment('2016-05-18').toDate(),
+            prisonId: 'WDI',
+            prisonName: 'WAKEFIELD (HMP)',
+            source: 'CURIOUS',
+          },
+          {
+            courseCode: '008WOOD06',
+            courseName: 'City & Guilds Wood Working',
+            courseStartDate: moment('2021-06-01').toDate(),
+            prisonId: 'MDI',
+            prisonName: 'MOORLAND (HMP & YOI)',
+            source: 'CURIOUS',
+          },
+        ],
+      }
+
+      // When
+      const actual = await curiousService.getLearnerEducation(prisonNumber, username)
+
+      // Then
+      expect(actual).toEqual(expected)
+      expect(curiousClient.getLearnerEducationPage).toHaveBeenCalledWith(prisonNumber, systemToken, 0)
+      expect(curiousClient.getLearnerEducationPage).toHaveBeenCalledWith(prisonNumber, systemToken, 1)
+    })
+
+    it('should not get learner education given the curious API request for page 1 returns an error response', async () => {
+      // Given
+      const prisonNumber = 'A1234BC'
+      const username = 'a-dps-user'
+
+      const systemToken = 'a-system-token'
+      hmppsAuthClient.getSystemClientToken.mockResolvedValue(systemToken)
+
+      const curiousApiError = {
+        message: 'Internal Server Error',
+        status: 500,
+        text: { errorCode: 'VC5000', errorMessage: 'Internal server error', httpStatusCode: 500 },
+      }
+      curiousClient.getLearnerEducationPage.mockRejectedValue(curiousApiError)
+
+      const expected: PrisonerEducationRecords = {
+        problemRetrievingData: true,
+        educationRecords: undefined,
+      }
+
+      // When
+      const actual = await curiousService.getLearnerEducation(prisonNumber, username)
+
+      // Then
+      expect(actual).toEqual(expected)
+      expect(curiousClient.getLearnerEducationPage).toHaveBeenCalledWith(prisonNumber, systemToken, 0)
+    })
+
+    it('should not get learner education given the Curious API request for page 2 returns an error response', async () => {
+      // Given
+      const prisonNumber = 'A1234BC'
+      const username = 'a-dps-user'
+
+      const systemToken = 'a-system-token'
+      hmppsAuthClient.getSystemClientToken.mockResolvedValue(systemToken)
+
+      const learnerEducationPage1Of2: LearnerEductionPagedResponse = learnerEducationPagedResponsePage1Of2(prisonNumber)
+      curiousClient.getLearnerEducationPage.mockResolvedValueOnce(learnerEducationPage1Of2)
+
+      const curiousApiError = {
+        message: 'Internal Server Error',
+        status: 500,
+        text: { errorCode: 'VC5000', errorMessage: 'Internal server error', httpStatusCode: 500 },
+      }
+      curiousClient.getLearnerEducationPage.mockRejectedValueOnce(curiousApiError)
+
+      const expected: PrisonerEducationRecords = {
+        problemRetrievingData: true,
+        educationRecords: undefined,
+      }
+
+      // When
+      const actual = await curiousService.getLearnerEducation(prisonNumber, username)
+
+      // Then
+      expect(actual).toEqual(expected)
+      expect(curiousClient.getLearnerEducationPage).toHaveBeenCalledWith(prisonNumber, systemToken, 0)
+      expect(curiousClient.getLearnerEducationPage).toHaveBeenCalledWith(prisonNumber, systemToken, 1)
     })
   })
 })

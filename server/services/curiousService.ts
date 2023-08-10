@@ -1,10 +1,16 @@
-import type { LearnerNeurodivergence, LearnerProfile } from 'curiousApiClient'
-import type { FunctionalSkills, PrisonerSupportNeeds } from 'viewModels'
+import type {
+  LearnerEducation,
+  LearnerEductionPagedResponse,
+  LearnerNeurodivergence,
+  LearnerProfile,
+} from 'curiousApiClient'
+import type { FunctionalSkills, PrisonerEducationRecords, PrisonerSupportNeeds } from 'viewModels'
 import { toPrisonerSupportNeeds } from '../routes/overview/mappers/prisonerSupportNeedsMapper'
 import CuriousClient from '../data/curiousClient'
 import { HmppsAuthClient } from '../data'
 import logger from '../../logger'
 import toFunctionalSkills from '../routes/overview/mappers/functionalSkillsMapper'
+import toPrisonerEducation from '../data/mappers/prisonerEducationMapper'
 
 export default class CuriousService {
   constructor(private readonly hmppsAuthClient: HmppsAuthClient, private readonly curiousClient: CuriousClient) {}
@@ -18,7 +24,7 @@ export default class CuriousService {
 
       return toPrisonerSupportNeeds(learnerProfiles, neuroDivergences)
     } catch (error) {
-      logger.error(`Error retrieving data from Curious: ${error}`)
+      logger.error(`Error retrieving data from Curious: ${JSON.stringify(error)}`)
       return { problemRetrievingData: true } as PrisonerSupportNeeds
     }
   }
@@ -30,8 +36,41 @@ export default class CuriousService {
       const learnerProfiles = await this.getLearnerProfile(prisonNumber, systemToken)
       return toFunctionalSkills(learnerProfiles)
     } catch (error) {
-      logger.error(`Error retrieving data from Curious: ${error}`)
+      logger.error(`Error retrieving data from Curious: ${JSON.stringify(error)}`)
       return { problemRetrievingData: true } as FunctionalSkills
+    }
+  }
+
+  /**
+   * Returns the specified prisoner's Education Records
+   *
+   * The Curious `learnerEducation` API is a paged API. This function calls the API starting from page 0 until there are no
+   * more pages remaining. The cumulative array of Curious `LearnerEducation` records from all API calls are mapped into
+   * and an array of `PrisonerEducation` within the returned `PrisonerEducationRecords` object.
+   */
+  async getLearnerEducation(prisonNumber: string, username: string): Promise<PrisonerEducationRecords> {
+    const systemToken = await this.hmppsAuthClient.getSystemClientToken(username)
+
+    try {
+      let page = 0
+      let apiPagedResponse = { last: false } as LearnerEductionPagedResponse
+      const apiLearnerEducation: Array<LearnerEducation> = []
+
+      // loop until the API response's `last` field is `true`
+      while (apiPagedResponse.last === false) {
+        // eslint-disable-next-line no-await-in-loop
+        apiPagedResponse = await this.curiousClient.getLearnerEducationPage(prisonNumber, systemToken, page)
+        apiLearnerEducation.push(...apiPagedResponse.content)
+        page += 1
+      }
+
+      return {
+        problemRetrievingData: false,
+        educationRecords: apiLearnerEducation.map(learnerEducation => toPrisonerEducation(learnerEducation)),
+      } as PrisonerEducationRecords
+    } catch (error) {
+      logger.error(`Error retrieving data from Curious: ${JSON.stringify(error)}`)
+      return { problemRetrievingData: true } as PrisonerEducationRecords
     }
   }
 
