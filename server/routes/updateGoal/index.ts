@@ -15,33 +15,22 @@ export default (router: Router, services: Services) => {
 
   router.use('/plan/:prisonNumber/goals/:goalReference/update', [
     checkUserHasEditAuthority(),
+    checkPrisonerSummaryExistsInSession,
     prisonerSummaryRequestHandler.getPrisonerSummary,
   ])
 
-  router.get('/plan/:prisonNumber/goals/:goalReference/update', [
-    checkPrisonerSummaryExistsInSession,
-    updateGoalController.getUpdateGoalView,
-  ])
+  router.get('/plan/:prisonNumber/goals/:goalReference/update', [updateGoalController.getUpdateGoalView])
 
-  router.post('/plan/:prisonNumber/goals/:goalReference/update', [
-    checkPrisonerSummaryExistsInSession,
-    updateGoalController.submitUpdateGoalForm,
-  ])
+  router.post('/plan/:prisonNumber/goals/:goalReference/update', [updateGoalController.submitUpdateGoalForm])
 
   router.use('/plan/:prisonNumber/goals/:goalReference/update/review', [
     checkUserHasEditAuthority(),
+    checkPrisonerSummaryExistsInSession,
+    checkUpdateGoalFormExistsInSession,
     prisonerSummaryRequestHandler.getPrisonerSummary,
   ])
 
-  router.get('/plan/:prisonNumber/goals/:goalReference/update/review', [
-    checkPrisonerSummaryExistsInSession,
-    checkUpdateGoalFormExistsInSession,
-    updateGoalController.getReviewUpdateGoalView,
-  ])
+  router.get('/plan/:prisonNumber/goals/:goalReference/update/review', [updateGoalController.getReviewUpdateGoalView])
 
-  router.post('/plan/:prisonNumber/goals/:goalReference/update/review', [
-    checkPrisonerSummaryExistsInSession,
-    checkUpdateGoalFormExistsInSession,
-    updateGoalController.submitReviewUpdateGoal,
-  ])
+  router.post('/plan/:prisonNumber/goals/:goalReference/update/review', [updateGoalController.submitReviewUpdateGoal])
 }
