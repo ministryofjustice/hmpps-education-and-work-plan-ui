@@ -35,16 +35,16 @@ context('Review updated goal', () => {
     const goalReference = '10efc562-be8f-4675-9283-9ede0c19dade'
     cy.signIn()
 
-    // When
     cy.visit(`/plan/${prisonNumber}/view/overview`)
     const overviewPage = Page.verifyOnPage(OverviewPage)
-
     const updateGoalPage = overviewPage.clickUpdateButtonForFirstGoal()
     updateGoalPage.isForGoal(goalReference).submitPage()
 
-    // Then
     const reviewUpdateGoalPage = Page.verifyOnPage(ReviewUpdateGoalPage)
-    reviewUpdateGoalPage.isForPrisoner(prisonNumber).goBackToEditGoal()
+    reviewUpdateGoalPage.isForPrisoner(prisonNumber)
+
+    // When
+    reviewUpdateGoalPage.goBackToEditGoal()
 
     // Then
     Page.verifyOnPage(UpdateGoalPage).isForGoal(goalReference)

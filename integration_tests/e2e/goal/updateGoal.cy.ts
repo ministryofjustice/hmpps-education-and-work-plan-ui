@@ -91,7 +91,6 @@ context('Update a goal', () => {
       .setStepTargetDateRange(3, '6 to 12 months')
       .submitPage()
 
-    // Then
     const reviewUpdateGoalPage = Page.verifyOnPage(ReviewUpdateGoalPage)
     reviewUpdateGoalPage.submitPage()
 
