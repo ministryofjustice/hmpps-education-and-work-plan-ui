@@ -29,7 +29,7 @@ context('Review updated goal', () => {
     overviewPage.isForPrisoner(prisonNumber)
   })
 
-  it('should navigate back to the update goals form if the go back to edit goal button is clicked', () => {
+  it(`should navigate back to the update goal form when the 'go back to edit goal' button is clicked`, () => {
     // Given
     const prisonNumber = 'G6115VJ'
     const goalReference = '10efc562-be8f-4675-9283-9ede0c19dade'
@@ -63,9 +63,11 @@ context('Review updated goal', () => {
     const updateGoalPage = overviewPage.clickUpdateButtonForFirstGoal()
     updateGoalPage.isForGoal(goalReference).submitPage()
 
-    // Then
     const reviewUpdateGoalPage = Page.verifyOnPage(ReviewUpdateGoalPage)
-    reviewUpdateGoalPage.isForPrisoner(prisonNumber).submitPage()
+    reviewUpdateGoalPage.isForPrisoner(prisonNumber)
+
+    // Then
+    reviewUpdateGoalPage.submitPage()
 
     // Then
     Page.verifyOnPage(OverviewPage)

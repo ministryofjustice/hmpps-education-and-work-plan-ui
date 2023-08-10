@@ -136,9 +136,8 @@ describe('updateGoalController', () => {
   })
 
   describe('submitUpdateGoalForm', () => {
-    it('should update goal and redirect to review updated goal page given action is submit-form and validation passes', async () => {
+    it('should redirect to review updated goal page given action is submit-form and validation passes', async () => {
       // Given
-      req.user.token = 'some-token'
       req.params.prisonNumber = 'A1234GC'
 
       const updateGoalForm = aValidUpdateGoalForm(goalReference)
@@ -146,9 +145,6 @@ describe('updateGoalController', () => {
       req.body = { ...updateGoalForm }
 
       mockedValidateUpdateGoalForm.mockReturnValue([])
-
-      const expectedUpdateGoalDto = aValidUpdateGoalDtoWithOneStep()
-      mockedUpdateGoalFormToUpdateGoalDtoMapper.mockReturnValue(expectedUpdateGoalDto)
 
       // When
       await controller.submitUpdateGoalForm(
@@ -158,31 +154,12 @@ describe('updateGoalController', () => {
       )
 
       // Then
-      expect(res.redirect).toHaveBeenCalledWith(
-        '/plan/A1234GC/goals/1a2eae63-8102-4155-97cb-43d8fb739caf/update/review',
-      )
-
-      // When
-      await controller.submitReviewUpdateGoal(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
-
-      // Then
-      expect(educationAndWorkPlanService.updateGoal).toHaveBeenCalledWith(
-        'A1234GC',
-        expectedUpdateGoalDto,
-        'some-token',
-      )
+      expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/goals/${goalReference}/update/review`)
       expect(mockedValidateUpdateGoalForm).toHaveBeenCalledWith(updateGoalForm)
-      expect(res.redirect).toHaveBeenCalledWith('/plan/A1234GC/view/overview')
-      expect(req.session.updateGoalForm).toBeUndefined()
     })
 
     it('should redirect to update goal with new blank step given action is add-another-step and validation passes', async () => {
       // Given
-      req.user.token = 'some-token'
       req.params.prisonNumber = 'A1234GC'
 
       const updateGoalForm = aValidUpdateGoalForm(goalReference)
@@ -229,9 +206,60 @@ describe('updateGoalController', () => {
       )
 
       // Then
-      expect(res.redirect).toHaveBeenCalledWith('/plan/A1234GC/goals/1a2eae63-8102-4155-97cb-43d8fb739caf/update')
+      expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/goals/${goalReference}/update`)
       expect(req.flash).toHaveBeenCalledWith('errors', errors)
       expect(req.session.updateGoalForm).toEqual(expectedUpdateGoalForm)
+    })
+  })
+
+  describe('getReviewUpdateGoalView', () => {
+    it('should get review update goal view', async () => {
+      // Given
+      const updateGoalForm = aValidUpdateGoalForm(goalReference)
+      req.session.updateGoalForm = updateGoalForm
+
+      const expectedView = {
+        prisonerSummary,
+        data: updateGoalForm,
+      }
+
+      // When
+      await controller.getReviewUpdateGoalView(
+        req as undefined as Request,
+        res as undefined as Response,
+        next as undefined as NextFunction,
+      )
+
+      // Then
+      expect(res.render).toHaveBeenCalledWith('pages/goal/update/review', expectedView)
+    })
+  })
+
+  describe('submitReviewUpdateGoal', () => {
+    it('should update goal and redirect to Overview page', async () => {
+      // Given
+      req.user.token = 'some-token'
+      req.params.prisonNumber = 'A1234GC'
+      req.session.updateGoalForm = aValidUpdateGoalForm(goalReference)
+
+      const expectedUpdateGoalDto = aValidUpdateGoalDtoWithOneStep()
+      mockedUpdateGoalFormToUpdateGoalDtoMapper.mockReturnValue(expectedUpdateGoalDto)
+
+      // When
+      await controller.submitReviewUpdateGoal(
+        req as undefined as Request,
+        res as undefined as Response,
+        next as undefined as NextFunction,
+      )
+
+      // Then
+      expect(educationAndWorkPlanService.updateGoal).toHaveBeenCalledWith(
+        'A1234GC',
+        expectedUpdateGoalDto,
+        'some-token',
+      )
+      expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/view/overview`)
+      expect(req.session.updateGoalForm).toBeUndefined()
     })
   })
 })
