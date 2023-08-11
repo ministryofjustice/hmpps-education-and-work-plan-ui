@@ -1,7 +1,8 @@
-import type { LearnerNeurodivergence, LearnerProfile } from 'curiousApiClient'
+import type { LearnerEductionPagedResponse, LearnerNeurodivergence, LearnerProfile } from 'curiousApiClient'
 import nock from 'nock'
 import CuriousClient from './curiousClient'
 import config from '../config'
+import { learnerEducationPagedResponsePage1Of1 } from '../testsupport/learnerEducationPagedResponseTestDataBuilder'
 
 describe('curiousClient', () => {
   const curiousClient = new CuriousClient()
@@ -129,6 +130,49 @@ describe('curiousClient', () => {
       // When
       try {
         await curiousClient.getLearnerNeurodivergence(prisonNumber, systemToken)
+      } catch (e) {
+        // Then
+        expect(nock.isDone()).toBe(true)
+        expect(e.status).toEqual(401)
+        expect(e.data).toEqual(expectedResponseBody)
+      }
+    })
+  })
+
+  describe('getLearnerEducationPage', () => {
+    it('should get learner eduction page', async () => {
+      // Given
+      const prisonNumber = 'A1234BC'
+      const systemToken = 'a-system-token'
+      const page = 0
+
+      const learnerEducationPage1Of1: LearnerEductionPagedResponse = learnerEducationPagedResponsePage1Of1(prisonNumber)
+      curiousApi.get(`/learnerEducation/${prisonNumber}?page=${page}`).reply(200, learnerEducationPage1Of1)
+
+      // When
+      const actual = await curiousClient.getLearnerEducationPage(prisonNumber, systemToken, page)
+
+      // Then
+      expect(actual).toEqual(learnerEducationPage1Of1)
+      expect(nock.isDone()).toBe(true)
+    })
+
+    it('should not get learner education page given the API request an error response', async () => {
+      // Given
+      const prisonNumber = 'A1234BC'
+      const systemToken = 'a-system-token'
+      const page = 0
+
+      const expectedResponseBody = {
+        errorCode: 'VC4001',
+        errorMessage: 'Invalid token',
+        httpStatusCode: 401,
+      }
+      curiousApi.get(`/learnerEducation/${prisonNumber}?page=${page}`).reply(401, expectedResponseBody)
+
+      // When
+      try {
+        await curiousClient.getLearnerEducationPage(prisonNumber, systemToken, page)
       } catch (e) {
         // Then
         expect(nock.isDone()).toBe(true)

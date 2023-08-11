@@ -1,4 +1,4 @@
-import type { LearnerNeurodivergence, LearnerProfile } from 'curiousApiClient'
+import type { LearnerEductionPagedResponse, LearnerNeurodivergence, LearnerProfile } from 'curiousApiClient'
 import RestClient from './restClient'
 import config from '../config'
 
@@ -19,5 +19,14 @@ export default class CuriousClient {
       path: `/learnerNeurodivergence/${prisonNumber}`,
     })
     return learnerNeurodivergence as Promise<Array<LearnerNeurodivergence>>
+  }
+
+  async getLearnerEducationPage(prisonNumber: string, token: string, page = 0): Promise<LearnerEductionPagedResponse> {
+    return CuriousClient.restClient(token).get({
+      path: `/learnerEducation/${prisonNumber}`,
+      query: {
+        page: `${page}`, // coerce `page` (which is a `number`) into a `string` because query string param values are all strings.
+      },
+    })
   }
 }
