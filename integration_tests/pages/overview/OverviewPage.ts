@@ -61,14 +61,32 @@ export default class OverviewPage extends Page {
   hasEmptyGoalsSection() {
     cy.get('h2').contains('Goals in progress')
     this.goalSummaryCards().should('not.exist')
+    return this
   }
 
   hasFunctionalSkillsDisplayed() {
     this.functionalSkillsTable().should('be.visible')
+    return this
+  }
+
+  doesNotHaveFunctionalSkillsDisplayed() {
+    this.functionalSkillsTable().should('not.exist')
+    return this
+  }
+
+  hasCompletedInPrisonQualificationsDisplayed() {
+    this.completedInPrisonQualificationsTable().should('be.visible')
+    return this
+  }
+
+  doesNotCompletedInPrisonQualificationsDisplayed() {
+    this.completedInPrisonQualificationsTable().should('not.exist')
+    return this
   }
 
   hasFunctionalSkillsSidebar() {
     this.functionalSkillsSidebarTable().should('be.visible')
+    return this
   }
 
   hasHealthAndSupportNeedsDisplayed() {
@@ -98,6 +116,8 @@ export default class OverviewPage extends Page {
   addGoalButton = (): PageElement => cy.get('#add-goal-button')
 
   functionalSkillsTable = (): PageElement => cy.get('#latest-functional-skills-table')
+
+  completedInPrisonQualificationsTable = (): PageElement => cy.get('#completed-in-prison-qualifications-table')
 
   functionalSkillsSidebarTable = (): PageElement => cy.get('#functional-skills-sidebar-table')
 

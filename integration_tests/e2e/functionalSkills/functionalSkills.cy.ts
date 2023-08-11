@@ -11,6 +11,7 @@ context(`Display a prisoner's functional skills`, () => {
     cy.task('getPrisonerById')
     cy.task('getActionPlan')
     cy.task('stubLearnerProfile')
+    cy.task('stubLearnerEducation')
   })
 
   it('should be able to navigate directly to the Functional Skills page', () => {

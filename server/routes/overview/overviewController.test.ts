@@ -1,6 +1,6 @@
 import moment from 'moment'
 import type { Prisoner } from 'prisonRegisterApiClient'
-import type { PrisonerSummary, FunctionalSkills } from 'viewModels'
+import type { PrisonerSummary, FunctionalSkills, InPrisonEducationRecords } from 'viewModels'
 import { SessionData } from 'express-session'
 import { NextFunction, Request, Response } from 'express'
 import OverviewController from './overviewController'
@@ -8,11 +8,16 @@ import aValidPrisonerSupportNeeds from '../../testsupport/supportNeedsTestDataBu
 import { CuriousService } from '../../services'
 import EducationAndWorkPlanService from '../../services/educationAndWorkPlanService'
 import { aValidActionPlanWithOneGoal } from '../../testsupport/actionPlanTestDataBuilder'
+import {
+  aValidEnglishInPrisonEducation,
+  aValidMathsInPrisonEducation,
+} from '../../testsupport/inPrisonEducationTestDataBuilder'
 
 describe('overviewController', () => {
   const curiousService = {
     getPrisonerSupportNeeds: jest.fn(),
     getPrisonerFunctionalSkills: jest.fn(),
+    getLearnerEducation: jest.fn(),
   }
   const educationAndWorkPlanService = {
     getActionPlan: jest.fn(),
@@ -179,11 +184,23 @@ describe('overviewController', () => {
         ],
       } as FunctionalSkills
 
+      const inPrisonEducation: InPrisonEducationRecords = {
+        problemRetrievingData: false,
+        educationRecords: [aValidEnglishInPrisonEducation(), aValidMathsInPrisonEducation()],
+      }
+      curiousService.getLearnerEducation.mockResolvedValue(inPrisonEducation)
+
+      const expectedCompletedInPrisonEducation: InPrisonEducationRecords = {
+        problemRetrievingData: false,
+        educationRecords: [aValidMathsInPrisonEducation()],
+      }
+
       const expectedPrisonerSummary = { prisonNumber } as PrisonerSummary
       const expectedView = {
         prisonerSummary: expectedPrisonerSummary,
         tab: expectedTab,
         functionalSkills: expectedFunctionalSkills,
+        completedInPrisonEducation: expectedCompletedInPrisonEducation,
       }
 
       // When

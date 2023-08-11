@@ -4,13 +4,13 @@ import type {
   LearnerNeurodivergence,
   LearnerProfile,
 } from 'curiousApiClient'
-import type { FunctionalSkills, PrisonerEducationRecords, PrisonerSupportNeeds } from 'viewModels'
+import type { FunctionalSkills, InPrisonEducationRecords, PrisonerSupportNeeds } from 'viewModels'
 import { toPrisonerSupportNeeds } from '../routes/overview/mappers/prisonerSupportNeedsMapper'
 import CuriousClient from '../data/curiousClient'
 import { HmppsAuthClient } from '../data'
 import logger from '../../logger'
 import toFunctionalSkills from '../routes/overview/mappers/functionalSkillsMapper'
-import toPrisonerEducation from '../data/mappers/prisonerEducationMapper'
+import toInPrisonEducation from '../data/mappers/inPrisonEducationMapper'
 
 export default class CuriousService {
   constructor(private readonly hmppsAuthClient: HmppsAuthClient, private readonly curiousClient: CuriousClient) {}
@@ -46,9 +46,9 @@ export default class CuriousService {
    *
    * The Curious `learnerEducation` API is a paged API. This function calls the API starting from page 0 until there are no
    * more pages remaining. The cumulative array of Curious `LearnerEducation` records from all API calls are mapped into
-   * and an array of `PrisonerEducation` within the returned `PrisonerEducationRecords` object.
+   * and an array of `InPrisonEducation` within the returned `InPrisonEducationRecords` object.
    */
-  async getLearnerEducation(prisonNumber: string, username: string): Promise<PrisonerEducationRecords> {
+  async getLearnerEducation(prisonNumber: string, username: string): Promise<InPrisonEducationRecords> {
     const systemToken = await this.hmppsAuthClient.getSystemClientToken(username)
 
     try {
@@ -66,16 +66,16 @@ export default class CuriousService {
 
       return {
         problemRetrievingData: false,
-        educationRecords: apiLearnerEducation.map(learnerEducation => toPrisonerEducation(learnerEducation)),
-      } as PrisonerEducationRecords
+        educationRecords: apiLearnerEducation.map(learnerEducation => toInPrisonEducation(learnerEducation)),
+      } as InPrisonEducationRecords
     } catch (error) {
       if (error.status === 404) {
         logger.info(`No data found for prisoner [${prisonNumber}] in Curious`)
-        return { problemRetrievingData: false, educationRecords: undefined } as PrisonerEducationRecords
+        return { problemRetrievingData: false, educationRecords: undefined } as InPrisonEducationRecords
       }
 
       logger.error(`Error retrieving data from Curious: ${JSON.stringify(error)}`)
-      return { problemRetrievingData: true, educationRecords: undefined } as PrisonerEducationRecords
+      return { problemRetrievingData: true, educationRecords: undefined } as InPrisonEducationRecords
     }
   }
 
