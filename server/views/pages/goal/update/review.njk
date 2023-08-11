@@ -1,0 +1,123 @@
+{% extends "../../../partials/layout.njk" %}
+
+{% set pageId = "review-update-goal" %}
+{% set pageTitle = applicationName + " - Home" %}
+
+{% block beforeContent %}
+  {{ govukBreadcrumbs({
+    items: [
+      {
+        text: "Digital Prison Services",
+        href: dpsUrl
+      },
+      {
+        text: "Manage learning and work progress",
+        href: "/"
+      },
+      {
+        text: "Manage " + prisonerSummary.firstName | capitalize + " " + prisonerSummary.lastName | capitalize + "'s learning plan",
+        href: "/plan/" + prisonerSummary.prisonNumber + "/view/overview"
+      }
+    ],
+    classes: 'govuk-!-display-none-print'
+  }) }}
+{% endblock %}
+
+{% block content %}
+
+  {% include "../../../partials/prisonerBanner.njk" %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+
+      <h1 class="govuk-heading-l">Check your updates for {{ prisonerSummary.firstName | capitalize }} {{ prisonerSummary.lastName | capitalize }}'s goal</h1>
+
+      <h2 class="govuk-heading-m govuk-visually-hidden">Goal details</h2>
+
+      {{ govukSummaryList({
+        classes: 'govuk-!-margin-bottom-9',
+        rows: [
+          {
+            key: {
+              text: "Description"
+            },
+            value: {
+              text: data.title
+            }
+          },
+          {
+            key: {
+              text: "Status"
+            },
+            value: {
+              text: data.status | formatGoalStatusValue
+            }
+          },
+          {
+            key: {
+              text: "Note"
+            },
+            value: {
+              text: data.note
+            }
+          }
+        ]
+      }) }}     
+
+      <table class="govuk-table">
+        <caption class="govuk-table__caption govuk-table__caption--m govuk-visually-hidden">Step details</caption>
+        <thead class="govuk-table__head govuk-visually-hidden">
+          <tr class="govuk-table__row">
+            <th scope="col" class="govuk-table__header">Step number</th>
+            <th scope="col" class="govuk-table__header">Description</th>
+            <th scope="col" class="govuk-table__header">Status</th>
+            <th scope="col" class="govuk-table__header">Target date</th>
+          </tr>
+        </thead>
+        <tbody class="govuk-table__body">
+          {% for step in data.steps %}
+          <tr class="govuk-table__row">
+            <th scope="row" class="govuk-table__header">Step {{ step.stepNumber }}</th>
+            <td class="govuk-table__cell">{{ step.title }}</td>
+            <td class="govuk-table__cell">{{ step.status | formatStepStatusValue }}</td>
+            <td class="govuk-table__cell">{{ step.targetDateRange | formatDateFormValue }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+      <form class="form" method="post" novalidate="">
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+
+        <div class="govuk-form-group govuk-!-margin-bottom-4">
+          {{ govukButton({
+            type: "a",
+            href: "/plan/" + prisonerSummary.prisonNumber + "/goals/" + data.reference + "/update",
+            id: "back-to-edit-goal-button",
+            text: "Go back to edit goal",
+            classes: "moj-button-menu__item govuk-button--secondary",
+            attributes: {
+              'data-qa': 'goal-update-review-back-button'
+            }
+          }) }}
+        </div>
+
+        <div class="govuk-form-group">
+          {{ govukButton({
+            id: "submit-button",
+            name: "action",
+            value: "submit-form",
+            text: "Save to learning and work progress plan",
+            classes: "moj-button-menu__item",
+            attributes: {
+              'data-qa': 'goal-update-review-submit-button'
+            }
+          }) }}
+        </div>
+
+      </form>
+
+    </div>
+  </div>
+
+{% endblock %}

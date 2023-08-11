@@ -2,6 +2,7 @@ import type { RequestHandler } from 'express'
 import type { UpdateGoalForm, UpdateStepForm } from 'forms'
 import EducationAndWorkPlanService from '../../services/educationAndWorkPlanService'
 import UpdateGoalView from './updateGoalView'
+import ReviewUpdateGoalView from './reviewUpdateGoalView'
 import { toUpdateGoalForm } from './mappers/goalToUpdateGoalFormMapper'
 import validateUpdateGoalForm from './updateGoalFormValidator'
 import { toUpdateGoalDto } from './mappers/updateGoalFormToUpdateGoalDtoMapper'
@@ -45,11 +46,11 @@ export default class UpdateGoalController {
   submitUpdateGoalForm: RequestHandler = async (req, res, next): Promise<void> => {
     const { prisonNumber, goalReference } = req.params
     const updateGoalForm: UpdateGoalForm = { ...req.body }
+    req.session.updateGoalForm = updateGoalForm
 
     const errors = validateUpdateGoalForm(updateGoalForm)
     if (errors.length > 0) {
       req.flash('errors', errors)
-      req.session.updateGoalForm = updateGoalForm
       return res.redirect(`/plan/${prisonNumber}/goals/${goalReference}/update`)
     }
 
@@ -60,14 +61,30 @@ export default class UpdateGoalController {
       const nextStepNumber = currentHighestStepNumber + 1
       const newStep: UpdateStepForm = { stepNumber: nextStepNumber, status: 'NOT_STARTED' }
       updateGoalForm.steps.push(newStep)
-      req.session.updateGoalForm = updateGoalForm
       // Redirect back to the Update Goal page with named anchor taking the user straight to the new step
       return res.redirect(`/plan/${prisonNumber}/goals/${goalReference}/update#steps[${nextStepNumber - 1}][title]`)
     }
 
+    return res.redirect(`/plan/${prisonNumber}/goals/${goalReference}/update/review`)
+  }
+
+  getReviewUpdateGoalView: RequestHandler = async (req, res, next): Promise<void> => {
+    const { prisonerSummary } = req.session
+    const { updateGoalForm } = req.session
+
+    const view = new ReviewUpdateGoalView(prisonerSummary, updateGoalForm)
+    res.render('pages/goal/update/review', { ...view.renderArgs })
+  }
+
+  submitReviewUpdateGoal: RequestHandler = async (req, res, next): Promise<void> => {
+    const { prisonNumber } = req.params
+    const { updateGoalForm } = req.session
+
     const updateGoalDto = toUpdateGoalDto(updateGoalForm)
     await this.educationAndWorkPlanService.updateGoal(prisonNumber, updateGoalDto, req.user.token)
     // TODO - RR-188 - handle API error response when updating goal
+
+    req.session.updateGoalForm = undefined
 
     return res.redirect(`/plan/${prisonNumber}/view/overview`)
   }
