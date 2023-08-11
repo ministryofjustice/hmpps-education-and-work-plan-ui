@@ -483,5 +483,33 @@ describe('curiousService', () => {
       expect(curiousClient.getLearnerEducationPage).toHaveBeenCalledWith(prisonNumber, systemToken, 0)
       expect(curiousClient.getLearnerEducationPage).toHaveBeenCalledWith(prisonNumber, systemToken, 1)
     })
+
+    it('should handle retrieval of learner education given Curious returns not found error for the learner education', async () => {
+      // Given
+      const prisonNumber = 'A1234BC'
+      const username = 'a-dps-user'
+
+      const systemToken = 'a-system-token'
+      hmppsAuthClient.getSystemClientToken.mockResolvedValue(systemToken)
+
+      const curiousApi404Error = {
+        message: 'Not Found',
+        status: 404,
+        text: { errorCode: 'VC4004', errorMessage: 'Resource not found', httpStatusCode: 404 },
+      }
+      curiousClient.getLearnerEducationPage.mockRejectedValue(curiousApi404Error)
+
+      const expected: PrisonerEducationRecords = {
+        problemRetrievingData: false,
+        educationRecords: undefined,
+      }
+
+      // When
+      const actual = await curiousService.getLearnerEducation(prisonNumber, username)
+
+      // Then
+      expect(actual).toEqual(expected)
+      expect(curiousClient.getLearnerEducationPage).toHaveBeenCalledWith(prisonNumber, systemToken, 0)
+    })
   })
 })

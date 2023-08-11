@@ -69,8 +69,13 @@ export default class CuriousService {
         educationRecords: apiLearnerEducation.map(learnerEducation => toPrisonerEducation(learnerEducation)),
       } as PrisonerEducationRecords
     } catch (error) {
+      if (error.status === 404) {
+        logger.info(`No data found for prisoner [${prisonNumber}] in Curious`)
+        return { problemRetrievingData: false, educationRecords: undefined } as PrisonerEducationRecords
+      }
+
       logger.error(`Error retrieving data from Curious: ${JSON.stringify(error)}`)
-      return { problemRetrievingData: true } as PrisonerEducationRecords
+      return { problemRetrievingData: true, educationRecords: undefined } as PrisonerEducationRecords
     }
   }
 
