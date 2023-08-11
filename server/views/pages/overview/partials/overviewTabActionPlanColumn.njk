@@ -74,7 +74,7 @@
 
             <tr class="govuk-table__row">
               <td class="govuk-table__cell">{{ step.sequenceNumber }}. {{ step.title }}</td>
-              <td class="govuk-table__cell">{{ step.targetDateRange | formatDateFormValue }}</td>
+              <td class="govuk-table__cell">{{ step.targetDateRange | formatTargetDateRangeValue }}</td>
               <td class="govuk-table__cell">
                 <strong class="govuk-tag {{ tagClass }}">
                   {{ step.status | formatStepStatusValue }}
