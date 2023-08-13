@@ -5,6 +5,8 @@ import AuthorisationErrorPage from '../pages/authorisationError'
 context('404 Page Not Found', () => {
   beforeEach(() => {
     cy.task('reset')
+    cy.task('stubAuthUser')
+    cy.task('stubSignInAsUserWithViewAuthority')
   })
 
   it('should redirect to auth-error page given user does not have any authorities', () => {
