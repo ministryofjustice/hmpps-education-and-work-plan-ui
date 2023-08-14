@@ -1,4 +1,4 @@
-import fs from 'fs'
+import * as fs from 'fs'
 import cheerio from 'cheerio'
 import moment from 'moment'
 import nunjucks, { Template } from 'nunjucks'
