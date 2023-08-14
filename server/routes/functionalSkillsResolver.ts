@@ -1,4 +1,5 @@
 import type { Assessment, FunctionalSkills } from 'viewModels'
+import dateComparator from './dateComparator'
 
 /**
  * Returns a FunctionalSkills object where the assessments are filtered such that only the most recent of each type
@@ -74,16 +75,6 @@ const assessmentsGroupedByTypeSortedByDateDesc = (assessments: Array<Assessment>
     )
   })
   return map
-}
-
-const dateComparator = (date1: Date, date2: Date): number => {
-  if (date1 > date2) {
-    return -1
-  }
-  if (date1 < date2) {
-    return 1
-  }
-  return 0
 }
 
 export { allFunctionalSkills, mostRecentFunctionalSkills }
