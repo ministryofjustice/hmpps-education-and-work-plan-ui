@@ -14,8 +14,10 @@ context('404 Page Not Found', () => {
     cy.task('stubSignIn')
     cy.signIn()
 
+    const prisonNumber = 'G6115VJ'
+
     // When
-    cy.visit(`/unknown`, { failOnStatusCode: false })
+    cy.visit(`/plan/${prisonNumber}/view/overview/unknown`, { failOnStatusCode: false })
 
     // Then
     Page.verifyOnPage(AuthorisationErrorPage)
@@ -25,8 +27,10 @@ context('404 Page Not Found', () => {
     // Given
     cy.signIn()
 
+    const prisonNumber = 'G6115VJ'
+
     // When
-    cy.visit('/unknown', { failOnStatusCode: false })
+    cy.visit(`/plan/${prisonNumber}/view/overview/unknown`, { failOnStatusCode: false })
 
     // Then
     Page.verifyOnPage(Error404Page)
