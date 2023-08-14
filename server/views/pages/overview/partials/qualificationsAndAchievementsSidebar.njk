@@ -1,0 +1,46 @@
+<div class="govuk-summary-card">
+  <div class="govuk-summary-card__title-wrapper app-summary-card__title-wrapper--white">
+    <h2 class="govuk-summary-card__title">Latest qualifications and achievements</h2>
+  </div>
+  <div class="govuk-summary-card__content">
+    
+    {% if not completedInPrisonEducation.problemRetrievingData %}
+      <table class="govuk-table govuk-!-margin-bottom-0" id="qualifications-achievements-sidebar-table">
+        <caption class="govuk-table__caption govuk-visually-hidden">Latest qualifications and achievements information</caption>
+        <thead class="govuk-table__head govuk-visually-hidden">
+          <tr class="govuk-table__row">
+            <th scope="col" class="govuk-table__header">In Prison qualification and completion/achievement date</th>
+          </tr>
+        </thead>
+        <tbody class="govuk-table__body">
+          {% if completedInPrisonEducation.educationRecords.length > 0 %}
+            {% for completedQualification in completedInPrisonEducation.educationRecords %}
+              <tr class="govuk-table__row">
+                <th scope="row" class="govuk-table__header">
+                  {{ completedQualification.courseName }}
+                  <br>
+                  <span class="govuk-body-s">Completed on {{ completedQualification.courseCompletionDate | formatDate('D MMMM YYYY') }}</span>
+                </th>
+              </tr>
+            {% endfor %}
+          {% else %}
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell">
+                {{ prisonerSummary.firstName | title }} {{ prisonerSummary.lastName | title }} has no recorded in-prison qualifications and achievements.
+              </td>
+            </tr>
+          {% endif %}
+        </tbody>
+      </table>
+      <p class="govuk-body govuk-!-margin-top-2">
+        <a class="govuk-link" href="./education-and-training" data-qa="view-all-qualifications-achievements-button">View all <span class="govuk-visually-hidden">qualifications and achievements</span></a>
+      </p>
+    {% else %}
+      <h2 class="govuk-heading-m" data-qa="qualifications-achievements-sidebar-error-heading">Sorry, the Curious service is currently unavailable.</h2>
+      <p class="govuk-body">
+        Retrieving data from Curious is currently unavailable. Please try again later. Other functions within
+        this service may still be available.
+      </p>
+    {% endif %}
+  </div>
+</div>

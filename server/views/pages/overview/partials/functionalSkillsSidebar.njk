@@ -3,7 +3,7 @@
     <h2 class="govuk-summary-card__title">Current functional skills</h2>
   </div>
   <div class="govuk-summary-card__content">
-    
+
     {% if not functionalSkills.problemRetrievingData %}
       <table class="govuk-table govuk-!-margin-bottom-0" id="functional-skills-sidebar-table">
         <caption class="govuk-table__caption govuk-visually-hidden">Functional skills and assessment information</caption>
@@ -31,7 +31,7 @@
         </tbody>
       </table>
       <p class="govuk-body govuk-!-margin-top-2">
-        <a class="govuk-link" href="../functional-skills" data-qa="view-all-functional-skills-button">View all</a>
+        <a class="govuk-link" href="../functional-skills" data-qa="view-all-functional-skills-button">View all <span class="govuk-visually-hidden">functional skills</span></a>
       </p>
     {% else %}
       <h2 class="govuk-heading-m" data-qa="functional-skills-sidebar-error-heading">Sorry, the Curious service is currently unavailable.</h2>
