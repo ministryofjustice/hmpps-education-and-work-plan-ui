@@ -1,17 +1,23 @@
-import type { FunctionalSkills, PrisonerSummary } from 'viewModels'
+import type { FunctionalSkills, InPrisonEducationRecords, PrisonerSummary } from 'viewModels'
 
 export default class EducationAndTrainingView {
-  constructor(private readonly prisonerSummary: PrisonerSummary, private readonly functionalSkills: FunctionalSkills) {}
+  constructor(
+    private readonly prisonerSummary: PrisonerSummary,
+    private readonly functionalSkills: FunctionalSkills,
+    private readonly completedInPrisonEducation: InPrisonEducationRecords,
+  ) {}
 
   get renderArgs(): {
     tab: string
     prisonerSummary: PrisonerSummary
     functionalSkills: FunctionalSkills
+    completedInPrisonEducation: InPrisonEducationRecords
   } {
     return {
       tab: 'education-and-training',
       prisonerSummary: this.prisonerSummary,
       functionalSkills: this.functionalSkills,
+      completedInPrisonEducation: this.completedInPrisonEducation,
     }
   }
 }

@@ -1,16 +1,20 @@
 import moment from 'moment'
 import type { LearnerEducation } from 'curiousApiClient'
-import type { PrisonerEducation } from 'viewModels'
+import type { InPrisonEducation } from 'viewModels'
 
-const toPrisonerEducation = (apiLearnerEducation: LearnerEducation): PrisonerEducation => {
+const toInPrisonEducation = (apiLearnerEducation: LearnerEducation): InPrisonEducation => {
   return {
     prisonId: apiLearnerEducation.establishmentId,
     prisonName: apiLearnerEducation.establishmentName,
     courseCode: apiLearnerEducation.courseCode,
     courseName: apiLearnerEducation.courseName,
     courseStartDate: moment(apiLearnerEducation.learningStartDate).toDate(),
+    courseCompleted: !!apiLearnerEducation.learningActualEndDate,
+    courseCompletionDate: apiLearnerEducation.learningActualEndDate
+      ? moment(apiLearnerEducation.learningActualEndDate).toDate()
+      : null,
     source: 'CURIOUS',
   }
 }
 
-export default toPrisonerEducation
+export default toInPrisonEducation

@@ -3,7 +3,7 @@ import type {
   FunctionalSkills,
   HealthAndSupportNeeds,
   Neurodiversity,
-  PrisonerEducationRecords,
+  InPrisonEducationRecords,
   PrisonerSupportNeeds,
 } from 'viewModels'
 import moment from 'moment'
@@ -342,7 +342,7 @@ describe('curiousService', () => {
       const learnerEducationPage1Of1: LearnerEductionPagedResponse = learnerEducationPagedResponsePage1Of1(prisonNumber)
       curiousClient.getLearnerEducationPage.mockResolvedValue(learnerEducationPage1Of1)
 
-      const expected: PrisonerEducationRecords = {
+      const expected: InPrisonEducationRecords = {
         problemRetrievingData: false,
         educationRecords: [
           {
@@ -351,6 +351,8 @@ describe('curiousService', () => {
             courseStartDate: moment('2021-06-01').toDate(),
             prisonId: 'MDI',
             prisonName: 'MOORLAND (HMP & YOI)',
+            courseCompleted: false,
+            courseCompletionDate: null,
             source: 'CURIOUS',
           },
           {
@@ -359,6 +361,8 @@ describe('curiousService', () => {
             courseStartDate: moment('2016-05-18').toDate(),
             prisonId: 'WDI',
             prisonName: 'WAKEFIELD (HMP)',
+            courseCompleted: true,
+            courseCompletionDate: moment('2016-07-15').toDate(),
             source: 'CURIOUS',
           },
         ],
@@ -385,7 +389,7 @@ describe('curiousService', () => {
       const learnerEducationPage2Of2: LearnerEductionPagedResponse = learnerEducationPagedResponsePage2Of2(prisonNumber)
       curiousClient.getLearnerEducationPage.mockResolvedValueOnce(learnerEducationPage2Of2)
 
-      const expected: PrisonerEducationRecords = {
+      const expected: InPrisonEducationRecords = {
         problemRetrievingData: false,
         educationRecords: [
           {
@@ -394,6 +398,8 @@ describe('curiousService', () => {
             courseStartDate: moment('2021-06-01').toDate(),
             prisonId: 'MDI',
             prisonName: 'MOORLAND (HMP & YOI)',
+            courseCompleted: false,
+            courseCompletionDate: null,
             source: 'CURIOUS',
           },
           {
@@ -402,6 +408,8 @@ describe('curiousService', () => {
             courseStartDate: moment('2016-05-18').toDate(),
             prisonId: 'WDI',
             prisonName: 'WAKEFIELD (HMP)',
+            courseCompleted: true,
+            courseCompletionDate: moment('2016-07-15').toDate(),
             source: 'CURIOUS',
           },
           {
@@ -410,6 +418,8 @@ describe('curiousService', () => {
             courseStartDate: moment('2021-06-01').toDate(),
             prisonId: 'MDI',
             prisonName: 'MOORLAND (HMP & YOI)',
+            courseCompleted: false,
+            courseCompletionDate: null,
             source: 'CURIOUS',
           },
         ],
@@ -439,7 +449,7 @@ describe('curiousService', () => {
       }
       curiousClient.getLearnerEducationPage.mockRejectedValue(curiousApiError)
 
-      const expected: PrisonerEducationRecords = {
+      const expected: InPrisonEducationRecords = {
         problemRetrievingData: true,
         educationRecords: undefined,
       }
@@ -470,7 +480,7 @@ describe('curiousService', () => {
       }
       curiousClient.getLearnerEducationPage.mockRejectedValueOnce(curiousApiError)
 
-      const expected: PrisonerEducationRecords = {
+      const expected: InPrisonEducationRecords = {
         problemRetrievingData: true,
         educationRecords: undefined,
       }
@@ -499,7 +509,7 @@ describe('curiousService', () => {
       }
       curiousClient.getLearnerEducationPage.mockRejectedValue(curiousApi404Error)
 
-      const expected: PrisonerEducationRecords = {
+      const expected: InPrisonEducationRecords = {
         problemRetrievingData: false,
         educationRecords: undefined,
       }

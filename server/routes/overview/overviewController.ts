@@ -5,6 +5,7 @@ import SupportNeedsView from './supportNeedsView'
 import { CuriousService } from '../../services'
 import EducationAndWorkPlanService from '../../services/educationAndWorkPlanService'
 import { mostRecentFunctionalSkills } from '../functionalSkillsResolver'
+import completedInPrisonEducationRecords from '../inPrisonEducationRecordsResolver'
 
 export default class OverviewController {
   constructor(
@@ -42,7 +43,10 @@ export default class OverviewController {
     const allFunctionalSkills = await this.curiousService.getPrisonerFunctionalSkills(prisonNumber, req.user.username)
     const functionalSkills = mostRecentFunctionalSkills(allFunctionalSkills)
 
-    const view = new EducationAndTrainingView(prisonerSummary, functionalSkills)
+    const allInPrisonEducation = await this.curiousService.getLearnerEducation(prisonNumber, req.user.username)
+    const completedInPrisonEducation = completedInPrisonEducationRecords(allInPrisonEducation)
+
+    const view = new EducationAndTrainingView(prisonerSummary, functionalSkills, completedInPrisonEducation)
     res.render('pages/overview/index', { ...view.renderArgs })
   }
 }

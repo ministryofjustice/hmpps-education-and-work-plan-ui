@@ -5,7 +5,6 @@ import nunjucks, { Template } from 'nunjucks'
 import { registerNunjucks } from '../../../../utils/nunjucksSetup'
 
 describe('Education and Training tab view', () => {
-  const template = fs.readFileSync('server/views/pages/overview/partials/educationAndTrainingTabContents.njk')
   const prisonerSummary = {
     prisonNumber: 'A1234BC',
     releaseDate: '2025-12-31',
@@ -19,107 +18,111 @@ describe('Education and Training tab view', () => {
 
   const njkEnv = registerNunjucks()
 
-  beforeEach(() => {
-    compiledTemplate = nunjucks.compile(template.toString(), njkEnv)
-  })
+  describe('educationAndTrainingFunctionalSkills', () => {
+    const template = fs.readFileSync('server/views/pages/overview/partials/educationAndTrainingFunctionalSkills.njk')
 
-  it('should render content', () => {
-    // Given
-    viewContext = {
-      prisonerSummary,
-      tab: 'education-and-training',
-      functionalSkills: {
-        problemRetrievingData: false,
-        assessments: [
-          {
-            assessmentDate: moment('2012-02-16').toDate(),
-            grade: 'Level 1',
-            prisonId: 'MDI',
-            prisonName: 'MOORLAND (HMP & YOI)',
-            type: 'ENGLISH',
-          },
-        ],
-      },
-    }
+    beforeEach(() => {
+      compiledTemplate = nunjucks.compile(template.toString(), njkEnv)
+    })
 
-    // When
-    const $ = cheerio.load(compiledTemplate.render(viewContext))
+    it('should render content', () => {
+      // Given
+      viewContext = {
+        prisonerSummary,
+        tab: 'education-and-training',
+        functionalSkills: {
+          problemRetrievingData: false,
+          assessments: [
+            {
+              assessmentDate: moment('2012-02-16').toDate(),
+              grade: 'Level 1',
+              prisonId: 'MDI',
+              prisonName: 'MOORLAND (HMP & YOI)',
+              type: 'ENGLISH',
+            },
+          ],
+        },
+      }
 
-    // Then
-    expect($('#latest-functional-skills-table')).not.toBeUndefined()
-    expect($('#latest-functional-skills-table .govuk-table__body .govuk-table__row').length).toEqual(1)
-  })
+      // When
+      const $ = cheerio.load(compiledTemplate.render(viewContext))
 
-  it('should render content saying curious is unavailable given problem retrieving data is true', () => {
-    // Given
-    viewContext = {
-      prisonerSummary,
-      tab: 'education-and-training',
-      functionalSkills: {
-        problemRetrievingData: true,
-      },
-    }
+      // Then
+      expect($('#latest-functional-skills-table')).not.toBeUndefined()
+      expect($('#latest-functional-skills-table .govuk-table__body .govuk-table__row').length).toEqual(1)
+    })
 
-    // When
-    const $ = cheerio.load(compiledTemplate.render(viewContext))
+    it('should render content saying curious is unavailable given problem retrieving data is true', () => {
+      // Given
+      viewContext = {
+        prisonerSummary,
+        tab: 'education-and-training',
+        functionalSkills: {
+          problemRetrievingData: true,
+        },
+      }
 
-    // Then
-    expect($('h2').text()).toEqual('Sorry, the Curious service is currently unavailable.')
-  })
+      // When
+      const $ = cheerio.load(compiledTemplate.render(viewContext))
 
-  it('should render Functional Skill assessment date and grade if both are present for a Functional Skill assessment', () => {
-    viewContext = {
-      prisonerSummary,
-      tab: 'education-and-training',
-      functionalSkills: {
-        problemRetrievingData: false,
-        assessments: [
-          {
-            assessmentDate: moment('2012-02-16').toDate(),
-            grade: 'Level 1',
-            prisonId: 'MDI',
-            prisonName: 'MOORLAND (HMP & YOI)',
-            type: 'ENGLISH',
-          },
-        ],
-      },
-    }
+      // Then
+      expect($('h2').text()).toEqual('Sorry, the Curious service is currently unavailable.')
+    })
 
-    // When
-    const $ = cheerio.load(compiledTemplate.render(viewContext))
+    it('should render Functional Skill assessment date and grade if both are present for a Functional Skill assessment', () => {
+      viewContext = {
+        prisonerSummary,
+        tab: 'education-and-training',
+        functionalSkills: {
+          problemRetrievingData: false,
+          assessments: [
+            {
+              assessmentDate: moment('2012-02-16').toDate(),
+              grade: 'Level 1',
+              prisonId: 'MDI',
+              prisonName: 'MOORLAND (HMP & YOI)',
+              type: 'ENGLISH',
+            },
+          ],
+        },
+      }
 
-    // Then
-    expect($('#latest-functional-skills-table tbody tr').length).toBe(1)
-    expect($('#latest-functional-skills-table tbody tr td').length).toBe(4)
-    expect($('#latest-functional-skills-table tbody tr td:nth-child(1)').text()).toEqual('English skills')
-    expect($('#latest-functional-skills-table tbody tr td:nth-child(2)').text()).toEqual('16 February 2012')
-    expect($('#latest-functional-skills-table tbody tr td:nth-child(3)').text()).toEqual('Level 1')
-    expect($('#latest-functional-skills-table tbody tr td:nth-child(4)').text()).toEqual('Induction')
-  })
+      // When
+      const $ = cheerio.load(compiledTemplate.render(viewContext))
 
-  it('should render Functional Skill not recorded if both assessment date and grade are not present for a Functional Skill assessment', () => {
-    viewContext = {
-      prisonerSummary,
-      tab: 'education-and-training',
-      functionalSkills: {
-        problemRetrievingData: false,
-        assessments: [
-          {
-            type: 'ENGLISH',
-          },
-        ],
-      },
-    }
+      // Then
+      expect($('#latest-functional-skills-table tbody tr').length).toBe(1)
+      expect($('#latest-functional-skills-table tbody tr td').length).toBe(4)
+      expect($('#latest-functional-skills-table tbody tr td:nth-child(1)').text()).toEqual('English skills')
+      expect($('#latest-functional-skills-table tbody tr td:nth-child(2)').text()).toEqual('16 February 2012')
+      expect($('#latest-functional-skills-table tbody tr td:nth-child(3)').text()).toEqual('Level 1')
+      expect($('#latest-functional-skills-table tbody tr td:nth-child(4)').text()).toEqual('Induction')
+    })
 
-    // When
-    const $ = cheerio.load(compiledTemplate.render(viewContext))
+    it('should render Functional Skill not recorded if both assessment date and grade are not present for a Functional Skill assessment', () => {
+      viewContext = {
+        prisonerSummary,
+        tab: 'education-and-training',
+        functionalSkills: {
+          problemRetrievingData: false,
+          assessments: [
+            {
+              type: 'ENGLISH',
+            },
+          ],
+        },
+      }
 
-    // Then
-    expect($('#latest-functional-skills-table tbody tr').length).toBe(1)
-    expect($('#latest-functional-skills-table tbody tr td').length).toBe(2)
-    expect($('#latest-functional-skills-table tbody tr td:nth-child(1)').text()).toEqual('English skills')
-    expect($('#latest-functional-skills-table tbody tr td:nth-child(2)').text()).toEqual(
-      'No functional skills assessment recorded',
-    )
+      // When
+      const $ = cheerio.load(compiledTemplate.render(viewContext))
+
+      // Then
+      expect($('#latest-functional-skills-table tbody tr').length).toBe(1)
+      expect($('#latest-functional-skills-table tbody tr td').length).toBe(2)
+      expect($('#latest-functional-skills-table tbody tr td:nth-child(1)').text()).toEqual('English skills')
+      expect($('#latest-functional-skills-table tbody tr td:nth-child(2)').text()).toEqual(
+        'No functional skills assessment recorded',
+      )
+    })
   })
 })

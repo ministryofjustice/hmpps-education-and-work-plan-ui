@@ -81,24 +81,26 @@ declare module 'viewModels' {
   }
 
   /**
-   * A prisoner's Education Records, which is made up of a collection of PrisonerEducation.
+   * A prisoner's record of In Prison courses and eduction, which is made up of a collection of InPrisonEducation.
    * TODO - needs better name and field definition once we understand the data and the requirements.
    */
-  export interface PrisonerEducationRecords {
+  export interface InPrisonEducationRecords {
     problemRetrievingData?: boolean
-    educationRecords: Array<PrisonerEducation>
+    educationRecords: Array<InPrisonEducation>
   }
 
   /**
-   * An education record.
+   * An 'In-Prison' education record.
    * TODO - needs better name and field definition once we understand the data and the requirements.
    */
-  export interface PrisonerEducation {
+  export interface InPrisonEducation {
     prisonId: string
     prisonName: string
     courseName: string
     courseCode: string
     courseStartDate: Date
+    courseCompleted: boolean
+    courseCompletionDate?: Date
     source: 'CURIOUS'
   }
 }

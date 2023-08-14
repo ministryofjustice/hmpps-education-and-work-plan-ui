@@ -13,6 +13,7 @@ context('Prisoner Overview page - Education And Training tab', () => {
   it('should display Education and Training data', () => {
     // Given
     cy.task('stubLearnerProfile')
+    cy.task('stubLearnerEducation')
 
     cy.signIn()
     const prisonNumber = 'G6115VJ'
@@ -26,11 +27,13 @@ context('Prisoner Overview page - Education And Training tab', () => {
     overviewPage //
       .activeTabIs('Education and training')
       .hasFunctionalSkillsDisplayed()
+      .hasCompletedInPrisonQualificationsDisplayed()
   })
 
-  it('should display Education and Training data given curious API returns a 404', () => {
+  it('should display Education and Training data given curious API returns a 404 for the learner profile', () => {
     // Given
     cy.task('stubLearnerProfile404Error')
+    cy.task('stubLearnerEducation')
 
     cy.signIn()
     const prisonNumber = 'G6115VJ'
@@ -44,11 +47,13 @@ context('Prisoner Overview page - Education And Training tab', () => {
     overviewPage //
       .activeTabIs('Education and training')
       .hasFunctionalSkillsDisplayed()
+      .hasCompletedInPrisonQualificationsDisplayed()
   })
 
-  it('should display curious unavailable message given curious is unavailable', () => {
+  it('should display Education and Training data given curious API returns a 404 for the learner education', () => {
     // Given
-    cy.task('stubLearnerProfile401Error')
+    cy.task('stubLearnerProfile')
+    cy.task('stubLearnerEducation404Error')
 
     cy.signIn()
     const prisonNumber = 'G6115VJ'
@@ -61,6 +66,49 @@ context('Prisoner Overview page - Education And Training tab', () => {
     // Then
     overviewPage //
       .activeTabIs('Education and training')
+      .hasFunctionalSkillsDisplayed()
+      .hasCompletedInPrisonQualificationsDisplayed()
+  })
+
+  it('should display curious unavailable message given curious is unavailable for the learner profile', () => {
+    // Given
+    cy.task('stubLearnerProfile401Error')
+    cy.task('stubLearnerEducation')
+
+    cy.signIn()
+    const prisonNumber = 'G6115VJ'
+    cy.visit(`/plan/${prisonNumber}/view/overview`)
+    const overviewPage = Page.verifyOnPage(OverviewPage)
+
+    // When
+    overviewPage.selectTab('Education and training')
+
+    // Then
+    overviewPage //
+      .activeTabIs('Education and training')
+      .doesNotHaveFunctionalSkillsDisplayed()
+      .hasCuriousUnavailableMessageDisplayed()
+      .hasCompletedInPrisonQualificationsDisplayed()
+  })
+
+  it('should display curious unavailable message given curious is unavailable for the learner education', () => {
+    // Given
+    cy.task('stubLearnerProfile')
+    cy.task('stubLearnerEducation401Error')
+
+    cy.signIn()
+    const prisonNumber = 'G6115VJ'
+    cy.visit(`/plan/${prisonNumber}/view/overview`)
+    const overviewPage = Page.verifyOnPage(OverviewPage)
+
+    // When
+    overviewPage.selectTab('Education and training')
+
+    // Then
+    overviewPage //
+      .activeTabIs('Education and training')
+      .hasFunctionalSkillsDisplayed()
+      .doesNotCompletedInPrisonQualificationsDisplayed()
       .hasCuriousUnavailableMessageDisplayed()
   })
 })
