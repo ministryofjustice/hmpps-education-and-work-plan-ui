@@ -1,4 +1,4 @@
-import fs from 'fs'
+import * as fs from 'fs'
 import cheerio from 'cheerio'
 import nunjucks, { Template } from 'nunjucks'
 import { registerNunjucks } from '../../../../utils/nunjucksSetup'

@@ -353,6 +353,7 @@ describe('curiousService', () => {
             prisonName: 'MOORLAND (HMP & YOI)',
             courseCompleted: false,
             courseCompletionDate: null,
+            grade: null,
             source: 'CURIOUS',
           },
           {
@@ -363,6 +364,7 @@ describe('curiousService', () => {
             prisonName: 'WAKEFIELD (HMP)',
             courseCompleted: true,
             courseCompletionDate: moment('2016-07-15').toDate(),
+            grade: 'No achievement',
             source: 'CURIOUS',
           },
         ],
@@ -400,6 +402,7 @@ describe('curiousService', () => {
             prisonName: 'MOORLAND (HMP & YOI)',
             courseCompleted: false,
             courseCompletionDate: null,
+            grade: null,
             source: 'CURIOUS',
           },
           {
@@ -410,6 +413,7 @@ describe('curiousService', () => {
             prisonName: 'WAKEFIELD (HMP)',
             courseCompleted: true,
             courseCompletionDate: moment('2016-07-15').toDate(),
+            grade: 'No achievement',
             source: 'CURIOUS',
           },
           {
@@ -420,6 +424,7 @@ describe('curiousService', () => {
             prisonName: 'MOORLAND (HMP & YOI)',
             courseCompleted: false,
             courseCompletionDate: null,
+            grade: null,
             source: 'CURIOUS',
           },
         ],

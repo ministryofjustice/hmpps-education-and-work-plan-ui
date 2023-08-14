@@ -10,6 +10,7 @@ const aValidEnglishInPrisonEducation = (): InPrisonEducation => {
     courseStartDate: moment('2021-06-01').toDate(),
     courseCompleted: false,
     courseCompletionDate: null,
+    grade: null,
     source: 'CURIOUS',
   }
 }
@@ -23,6 +24,7 @@ const aValidMathsInPrisonEducation = (): InPrisonEducation => {
     courseStartDate: moment('2016-05-18').toDate(),
     courseCompleted: true,
     courseCompletionDate: moment('2016-07-15').toDate(),
+    grade: 'No achievement',
     source: 'CURIOUS',
   }
 }
@@ -36,6 +38,7 @@ const aValidWoodWorkingInPrisonEducation = (): InPrisonEducation => {
     courseStartDate: moment('2021-06-01').toDate(),
     courseCompleted: false,
     courseCompletionDate: null,
+    grade: null,
     source: 'CURIOUS',
   }
 }
