@@ -25,11 +25,7 @@
                 <tr class="govuk-table__row">
                   <td class="govuk-table__cell">{{ completedQualification.courseName }}</td>
                   <td class="govuk-table__cell">{{ completedQualification.courseCompletionDate | formatDate('D MMMM YYYY') }}</td>
-                  <td class="govuk-table__cell">
-                    {#
-                    Grade TBC
-                    #}
-                  </td>
+                  <td class="govuk-table__cell">{{ completedQualification.grade if completedQualification.grade else 'N/A' }}</td>
                 </tr>
               {% endfor %}
             {% else %}

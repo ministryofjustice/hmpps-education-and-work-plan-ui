@@ -81,7 +81,7 @@ declare module 'viewModels' {
   }
 
   /**
-   * A prisoner's record of In Prison courses and eduction, which is made up of a collection of InPrisonEducation.
+   * A prisoner's record of In-Prison courses and eduction, which is made up of a collection of InPrisonEducation.
    * TODO - needs better name and field definition once we understand the data and the requirements.
    */
   export interface InPrisonEducationRecords {
@@ -101,6 +101,7 @@ declare module 'viewModels' {
     courseStartDate: Date
     courseCompleted: boolean
     courseCompletionDate?: Date
+    grade?: string
     source: 'CURIOUS'
   }
 }
