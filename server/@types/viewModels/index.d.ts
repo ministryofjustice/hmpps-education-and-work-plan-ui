@@ -81,8 +81,7 @@ declare module 'viewModels' {
   }
 
   /**
-   * A prisoner's record of In-Prison courses and eduction, which is made up of a collection of InPrisonEducation.
-   * TODO - needs better name and field definition once we understand the data and the requirements.
+   * A prisoner's record of In-Prison courses and education, which is made up of a collection of InPrisonEducation.
    */
   export interface InPrisonEducationRecords {
     problemRetrievingData?: boolean
@@ -91,7 +90,6 @@ declare module 'viewModels' {
 
   /**
    * An 'In-Prison' education record.
-   * TODO - needs better name and field definition once we understand the data and the requirements.
    */
   export interface InPrisonEducation {
     prisonId: string
