@@ -152,12 +152,11 @@ context('Prisoner Overview page', () => {
   it(`should render 404 page given specified prisoner is not found`, () => {
     // Given
     const nonExistentPrisonNumber = 'A9999ZZ'
-    const goalReference = 'c17ffa15-cf3e-409b-827d-e1e458dbd5e8'
     cy.signIn()
     cy.task('stubPrisonerById404Error', nonExistentPrisonNumber)
 
     // When
-    cy.visit(`/plan/${nonExistentPrisonNumber}/goals/${goalReference}/update`, { failOnStatusCode: false })
+    cy.visit(`/plan/${nonExistentPrisonNumber}/view/overview`, { failOnStatusCode: false })
 
     // Then
     Page.verifyOnPage(Error404Page)
