@@ -30,6 +30,28 @@ const updateGoal = (
     },
   })
 
+const updateGoal500Error = (
+  prisonNumber = 'G6115VJ',
+  goalReference = '10efc562-be8f-4675-9283-9ede0c19dade',
+): SuperAgentRequest =>
+  stubFor({
+    request: {
+      method: 'PUT',
+      urlPattern: `/action-plans/${prisonNumber}/goals/${goalReference}`,
+    },
+    response: {
+      status: 500,
+      headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+      jsonBody: {
+        status: 500,
+        errorCode: null,
+        userMessage: 'An unexpected error occurred',
+        developerMessage: 'An unexpected error occurred',
+        moreInfo: null,
+      },
+    },
+  })
+
 const getUpdateGoalRequestBody = (
   prisonNumber = 'G6115VJ',
   goalReference = '10efc562-be8f-4675-9283-9ede0c19dade',
@@ -81,6 +103,7 @@ export default {
   createGoal,
   getActionPlan,
   updateGoal,
+  updateGoal500Error,
   getUpdateGoalRequestBody,
 
   getActionPlanForPrisonerWithNoGoals,

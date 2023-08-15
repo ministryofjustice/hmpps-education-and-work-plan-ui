@@ -21,9 +21,7 @@ export default class UpdateGoalController {
     } else {
       const actionPlan = await this.educationAndWorkPlanService.getActionPlan(prisonNumber, req.user.token)
       if (actionPlan.problemRetrievingData) {
-        // There was a problem retrieving the prisoner's action plan
-        // TODO - RR-188
-        return res.redirect('/error')
+        return next(createError(500, `Error retrieving plan for prisoner ${prisonNumber}`))
       }
 
       const goalToUpdate = actionPlan.goals.find(goal => goal.goalReference === goalReference)
@@ -76,13 +74,14 @@ export default class UpdateGoalController {
   submitReviewUpdateGoal: RequestHandler = async (req, res, next): Promise<void> => {
     const { prisonNumber } = req.params
     const { updateGoalForm } = req.session
-
-    const updateGoalDto = toUpdateGoalDto(updateGoalForm)
-    await this.educationAndWorkPlanService.updateGoal(prisonNumber, updateGoalDto, req.user.token)
-    // TODO - RR-188 - handle API error response when updating goal
-
     req.session.updateGoalForm = undefined
 
-    return res.redirect(`/plan/${prisonNumber}/view/overview`)
+    const updateGoalDto = toUpdateGoalDto(updateGoalForm)
+    try {
+      await this.educationAndWorkPlanService.updateGoal(prisonNumber, updateGoalDto, req.user.token)
+      return res.redirect(`/plan/${prisonNumber}/view/overview`)
+    } catch (e) {
+      return next(createError(500, `Error updating plan for prisoner ${prisonNumber}`))
+    }
   }
 }

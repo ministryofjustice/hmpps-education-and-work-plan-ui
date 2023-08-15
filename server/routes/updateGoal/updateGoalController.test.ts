@@ -104,6 +104,8 @@ describe('updateGoalController', () => {
       const actionPlan = { problemRetrievingData: true } as ActionPlan
       educationAndWorkPlanService.getActionPlan.mockResolvedValue(actionPlan)
 
+      const expectedError = createError(500, `Error retrieving plan for prisoner ${prisonNumber}`)
+
       // When
       await controller.getUpdateGoalView(
         req as undefined as Request,
@@ -112,7 +114,7 @@ describe('updateGoalController', () => {
       )
 
       // Then
-      expect(res.redirect).toHaveBeenCalledWith('/error')
+      expect(next).toHaveBeenCalledWith(expectedError)
       expect(req.session.updateGoalForm).toBeUndefined()
     })
 
@@ -262,6 +264,35 @@ describe('updateGoalController', () => {
         'some-token',
       )
       expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/view/overview`)
+      expect(req.session.updateGoalForm).toBeUndefined()
+    })
+
+    it('should not update goal given error calling service to update the goal', async () => {
+      // Given
+      req.user.token = 'some-token'
+      req.params.prisonNumber = 'A1234GC'
+      req.session.updateGoalForm = aValidUpdateGoalForm(goalReference)
+
+      const expectedUpdateGoalDto = aValidUpdateGoalDtoWithOneStep()
+      mockedUpdateGoalFormToUpdateGoalDtoMapper.mockReturnValue(expectedUpdateGoalDto)
+
+      educationAndWorkPlanService.updateGoal.mockRejectedValue(createError(500, 'Service unavailable'))
+      const expectedError = createError(500, `Error updating plan for prisoner ${prisonNumber}`)
+
+      // When
+      await controller.submitReviewUpdateGoal(
+        req as undefined as Request,
+        res as undefined as Response,
+        next as undefined as NextFunction,
+      )
+
+      // Then
+      expect(educationAndWorkPlanService.updateGoal).toHaveBeenCalledWith(
+        'A1234GC',
+        expectedUpdateGoalDto,
+        'some-token',
+      )
+      expect(next).toHaveBeenCalledWith(expectedError)
       expect(req.session.updateGoalForm).toBeUndefined()
     })
   })
