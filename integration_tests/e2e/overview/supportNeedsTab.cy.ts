@@ -8,6 +8,8 @@ context('Prisoner Overview page - Support Needs tab', () => {
     cy.task('stubAuthUser')
     cy.task('getPrisonerById')
     cy.task('getActionPlan')
+    cy.task('stubLearnerProfile')
+    cy.task('stubLearnerEducation')
   })
 
   it('should display Support Needs data', () => {

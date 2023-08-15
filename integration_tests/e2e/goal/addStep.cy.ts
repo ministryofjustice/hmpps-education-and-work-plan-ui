@@ -14,6 +14,8 @@ context('Add a step', () => {
     cy.task('getActionPlan', 'H4115SD')
     cy.task('stubLearnerProfile', 'G6115VJ')
     cy.task('stubLearnerProfile', 'H4115SD')
+    cy.task('stubLearnerEducation', 'G6115VJ')
+    cy.task('stubLearnerEducation', 'H4115SD')
   })
 
   it('should not be able to navigate directly to Add Step given Create Goal has not been submitted', () => {

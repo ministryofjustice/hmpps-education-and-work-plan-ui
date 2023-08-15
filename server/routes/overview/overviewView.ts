@@ -1,4 +1,4 @@
-import type { ActionPlan, FunctionalSkills, PrisonerSummary } from 'viewModels'
+import type { ActionPlan, FunctionalSkills, InPrisonEducationRecords, PrisonerSummary } from 'viewModels'
 
 export default class OverviewView {
   constructor(
@@ -6,6 +6,7 @@ export default class OverviewView {
     private readonly prisonerSummary: PrisonerSummary,
     private readonly actionPlan: ActionPlan,
     private readonly functionalSkills: FunctionalSkills,
+    private readonly completedInPrisonEducation: InPrisonEducationRecords,
   ) {}
 
   get renderArgs(): {
@@ -14,6 +15,7 @@ export default class OverviewView {
     prisonerSummary: PrisonerSummary
     actionPlan: ActionPlan
     functionalSkills: FunctionalSkills
+    completedInPrisonEducation: InPrisonEducationRecords
   } {
     return {
       prisonNumber: this.prisonNumber,
@@ -21,6 +23,7 @@ export default class OverviewView {
       prisonerSummary: this.prisonerSummary,
       actionPlan: this.actionPlan,
       functionalSkills: this.functionalSkills,
+      completedInPrisonEducation: this.completedInPrisonEducation,
     }
   }
 }
