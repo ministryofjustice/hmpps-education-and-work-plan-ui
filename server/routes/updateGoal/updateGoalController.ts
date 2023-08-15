@@ -1,3 +1,4 @@
+import createError from 'http-errors'
 import type { RequestHandler } from 'express'
 import type { UpdateGoalForm, UpdateStepForm } from 'forms'
 import EducationAndWorkPlanService from '../../services/educationAndWorkPlanService'
@@ -22,16 +23,12 @@ export default class UpdateGoalController {
       if (actionPlan.problemRetrievingData) {
         // There was a problem retrieving the prisoner's action plan
         // TODO - RR-188
-        res.redirect('/error')
-        return
+        return res.redirect('/error')
       }
 
       const goalToUpdate = actionPlan.goals.find(goal => goal.goalReference === goalReference)
       if (!goalToUpdate) {
-        // The requested goal is not part of the prisoners action plan
-        // TODO - RR-188
-        res.redirect('/error')
-        return
+        return next(createError(404, `Goal ${goalReference} does not exist in the prisoner's plan`))
       }
 
       updateGoalForm = toUpdateGoalForm(goalToUpdate)
@@ -40,7 +37,7 @@ export default class UpdateGoalController {
     req.session.updateGoalForm = undefined
 
     const view = new UpdateGoalView(prisonerSummary, updateGoalForm, req.flash('errors'))
-    res.render('pages/goal/update/index', { ...view.renderArgs })
+    return res.render('pages/goal/update/index', { ...view.renderArgs })
   }
 
   submitUpdateGoalForm: RequestHandler = async (req, res, next): Promise<void> => {
@@ -73,7 +70,7 @@ export default class UpdateGoalController {
     const { updateGoalForm } = req.session
 
     const view = new ReviewUpdateGoalView(prisonerSummary, updateGoalForm)
-    res.render('pages/goal/update/review', { ...view.renderArgs })
+    return res.render('pages/goal/update/review', { ...view.renderArgs })
   }
 
   submitReviewUpdateGoal: RequestHandler = async (req, res, next): Promise<void> => {

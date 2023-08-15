@@ -4,6 +4,7 @@ import OverviewPage from '../../pages/overview/OverviewPage'
 import ReviewUpdateGoalPage from '../../pages/goal/ReviewUpdateGoalPage'
 import AuthorisationErrorPage from '../../pages/authorisationError'
 import { UpdateGoalRequest } from '../../mockApis/educationAndWorkPlanApi'
+import Error404Page from '../../pages/error404'
 
 context('Update a goal', () => {
   beforeEach(() => {
@@ -139,5 +140,18 @@ context('Update a goal', () => {
 
     // Then
     Page.verifyOnPage(AuthorisationErrorPage)
+  })
+
+  it(`should render 404 page given specified goal is not found in the prisoner's plan`, () => {
+    // Given
+    const prisonNumber = 'G6115VJ'
+    const nonExistentGoalReference = 'c17ffa15-cf3e-409b-827d-e1e458dbd5e8'
+    cy.signIn()
+
+    // When
+    cy.visit(`/plan/${prisonNumber}/goals/${nonExistentGoalReference}/update`, { failOnStatusCode: false })
+
+    // Then
+    Page.verifyOnPage(Error404Page)
   })
 })
