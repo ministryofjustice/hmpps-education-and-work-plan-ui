@@ -30,7 +30,7 @@ export default class PrisonerSummaryRequestHandler {
       }
       next()
     } catch (error) {
-      next(createError(404, 'Prisoner not found'))
+      next(createError(error.status, `Prisoner ${prisonNumber} not returned by the Prisoner Search Service API`))
     }
   }
 }

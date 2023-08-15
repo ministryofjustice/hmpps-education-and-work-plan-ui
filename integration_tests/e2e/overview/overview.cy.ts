@@ -1,6 +1,7 @@
 import Page from '../../pages/page'
 import CreateGoalPage from '../../pages/goal/CreateGoalPage'
 import OverviewPage from '../../pages/overview/OverviewPage'
+import Error404Page from '../../pages/error404'
 
 context('Prisoner Overview page', () => {
   beforeEach(() => {
@@ -146,5 +147,18 @@ context('Prisoner Overview page', () => {
       .isForPrisoner(prisonNumber)
       .activeTabIs('Overview')
       .hasFunctionalSkillsSidebar()
+  })
+
+  it(`should render 404 page given specified prisoner is not found`, () => {
+    // Given
+    const nonExistentPrisonNumber = 'A9999ZZ'
+    cy.signIn()
+    cy.task('stubPrisonerById404Error', nonExistentPrisonNumber)
+
+    // When
+    cy.visit(`/plan/${nonExistentPrisonNumber}/view/overview`, { failOnStatusCode: false })
+
+    // Then
+    Page.verifyOnPage(Error404Page)
   })
 })

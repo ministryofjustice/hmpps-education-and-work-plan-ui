@@ -1,3 +1,4 @@
+import createError from 'http-errors'
 import { NextFunction, Request, Response } from 'express'
 import type { SessionData } from 'express-session'
 import type { ActionPlan, PrisonerSummary } from 'viewModels'
@@ -122,6 +123,8 @@ describe('updateGoalController', () => {
       const actionPlan = aValidActionPlanWithOneGoal(prisonNumber, goals)
       educationAndWorkPlanService.getActionPlan.mockResolvedValue(actionPlan)
 
+      const expectedError = createError(404, `Goal ${goalReference} does not exist in the prisoner's plan`)
+
       // When
       await controller.getUpdateGoalView(
         req as undefined as Request,
@@ -130,7 +133,7 @@ describe('updateGoalController', () => {
       )
 
       // Then
-      expect(res.redirect).toHaveBeenCalledWith('/error')
+      expect(next).toHaveBeenCalledWith(expectedError)
       expect(req.session.updateGoalForm).toBeUndefined()
     })
   })
