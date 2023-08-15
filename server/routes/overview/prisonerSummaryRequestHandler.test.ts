@@ -112,7 +112,7 @@ describe('prisonerSummaryRequestHandler', () => {
     expect(next).toHaveBeenCalled()
   })
 
-  it('should call next function with error given retrieving prisoner fails', async () => {
+  it('should call next function with error given retrieving prisoner fails with a 404', async () => {
     // Given
     const username = 'a-dps-user'
     req.user.username = username
@@ -122,8 +122,34 @@ describe('prisonerSummaryRequestHandler', () => {
     const prisonNumber = 'A1234GC'
     req.params.prisonNumber = prisonNumber
 
-    prisonerSearchService.getPrisonerByPrisonNumber.mockRejectedValue(Error('some error'))
-    const expectedError = createError(404, 'Prisoner not found')
+    prisonerSearchService.getPrisonerByPrisonNumber.mockRejectedValue(createError(404, 'Not Found'))
+    const expectedError = createError(404, `Prisoner ${prisonNumber} not returned by the Prisoner Search Service API`)
+
+    // When
+    await requestHandler.getPrisonerSummary(
+      req as undefined as Request,
+      res as undefined as Response,
+      next as undefined as NextFunction,
+    )
+
+    // Then
+    expect(prisonerSearchService.getPrisonerByPrisonNumber).toHaveBeenCalledWith(prisonNumber, username)
+    expect(req.session.prisonerSummary).toBeUndefined()
+    expect(next).toHaveBeenCalledWith(expectedError)
+  })
+
+  it('should call next function with error given retrieving prisoner fails with a 500', async () => {
+    // Given
+    const username = 'a-dps-user'
+    req.user.username = username
+
+    req.session.prisonerSummary = undefined
+
+    const prisonNumber = 'A1234GC'
+    req.params.prisonNumber = prisonNumber
+
+    prisonerSearchService.getPrisonerByPrisonNumber.mockRejectedValue(createError(500, 'Not Found'))
+    const expectedError = createError(500, `Prisoner ${prisonNumber} not returned by the Prisoner Search Service API`)
 
     // When
     await requestHandler.getPrisonerSummary(
