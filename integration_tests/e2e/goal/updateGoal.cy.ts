@@ -12,9 +12,10 @@ context('Update a goal', () => {
     cy.task('reset')
     cy.task('stubSignInAsUserWithEditAuthority')
     cy.task('stubAuthUser')
-    cy.task('getPrisonerById', 'G6115VJ')
-    cy.task('getActionPlan', 'G6115VJ')
+    cy.task('getPrisonerById')
+    cy.task('getActionPlan')
     cy.task('stubLearnerProfile')
+    cy.task('stubLearnerEducation')
     cy.task('updateGoal')
   })
 

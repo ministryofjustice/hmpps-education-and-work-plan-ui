@@ -11,6 +11,7 @@ context('Prisoner Overview page', () => {
     cy.task('getPrisonerById')
     cy.task('getActionPlan')
     cy.task('stubLearnerProfile')
+    cy.task('stubLearnerEducation')
   })
 
   it('should render prisoner Overview page with Add Goal button given user has edit authority', () => {
@@ -133,7 +134,7 @@ context('Prisoner Overview page', () => {
     overviewPage.hasBreadcrumb().breadcrumbDoesNotIncludeCurrentPage()
   })
 
-  it('should display functional skills in the sidebar', () => {
+  it('should display functional skills and most recent qualifications in the sidebar', () => {
     // Given
     const prisonNumber = 'G6115VJ'
     cy.signIn()
@@ -147,6 +148,45 @@ context('Prisoner Overview page', () => {
       .isForPrisoner(prisonNumber)
       .activeTabIs('Overview')
       .hasFunctionalSkillsSidebar()
+      .hasMostRecentQualificationsSidebar()
+  })
+
+  it('should display Curious unavailable message in the functional skills sidebar given Curious errors when getting Functional Skills', () => {
+    // Given
+    const prisonNumber = 'G6115VJ'
+    cy.signIn()
+
+    cy.task('stubLearnerProfile401Error')
+
+    // When
+    cy.visit(`/plan/${prisonNumber}/view/overview`)
+
+    // Then
+    const overviewPage = Page.verifyOnPage(OverviewPage)
+    overviewPage //
+      .isForPrisoner(prisonNumber)
+      .activeTabIs('Overview')
+      .hasCuriousUnavailableMessageInFunctionalSkillsSidebar()
+      .hasMostRecentQualificationsSidebar()
+  })
+
+  it('should display Curious unavailable message in the most recent qualifications sidebar given Curious errors when getting Most Recent Qualifications', () => {
+    // Given
+    const prisonNumber = 'G6115VJ'
+    cy.signIn()
+
+    cy.task('stubLearnerEducation401Error')
+
+    // When
+    cy.visit(`/plan/${prisonNumber}/view/overview`)
+
+    // Then
+    const overviewPage = Page.verifyOnPage(OverviewPage)
+    overviewPage //
+      .isForPrisoner(prisonNumber)
+      .activeTabIs('Overview')
+      .hasFunctionalSkillsSidebar()
+      .hasCuriousUnavailableMessageInMostRecentQualificationsSidebar()
   })
 
   it(`should render 404 page given specified prisoner is not found`, () => {

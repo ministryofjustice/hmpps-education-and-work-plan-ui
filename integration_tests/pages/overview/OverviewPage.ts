@@ -89,6 +89,23 @@ export default class OverviewPage extends Page {
     return this
   }
 
+  hasCuriousUnavailableMessageInFunctionalSkillsSidebar() {
+    this.functionalSkillsSidebarTable().should('not.exist')
+    this.functionalSkillsSidebarErrorHeading().should('be.visible')
+    return this
+  }
+
+  hasMostRecentQualificationsSidebar() {
+    this.mostRecentQualificationsSidebarTable().should('be.visible')
+    return this
+  }
+
+  hasCuriousUnavailableMessageInMostRecentQualificationsSidebar() {
+    this.mostRecentQualificationsSidebarTable().should('not.exist')
+    this.mostRecentQualificationsSidebarErrorHeading().should('be.visible')
+    return this
+  }
+
   hasHealthAndSupportNeedsDisplayed() {
     this.healthAndSupportNeedsSummaryCard().should('be.visible')
     return this
@@ -120,6 +137,13 @@ export default class OverviewPage extends Page {
   completedInPrisonQualificationsTable = (): PageElement => cy.get('#completed-in-prison-qualifications-table')
 
   functionalSkillsSidebarTable = (): PageElement => cy.get('#functional-skills-sidebar-table')
+
+  functionalSkillsSidebarErrorHeading = (): PageElement => cy.get('[data-qa=functional-skills-sidebar-error-heading]')
+
+  mostRecentQualificationsSidebarTable = (): PageElement => cy.get('#qualifications-achievements-sidebar-table')
+
+  mostRecentQualificationsSidebarErrorHeading = (): PageElement =>
+    cy.get('[data-qa=qualifications-achievements-sidebar-error-heading]')
 
   goalSummaryCards = (): PageElement => cy.get('[data-qa=goal-summary-card]')
 

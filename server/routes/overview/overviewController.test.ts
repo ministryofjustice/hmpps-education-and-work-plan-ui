@@ -84,6 +84,17 @@ describe('overviewController', () => {
         ],
       } as FunctionalSkills
 
+      const inPrisonEducation: InPrisonEducationRecords = {
+        problemRetrievingData: false,
+        educationRecords: [aValidEnglishInPrisonEducation(), aValidMathsInPrisonEducation()],
+      }
+      curiousService.getLearnerEducation.mockResolvedValue(inPrisonEducation)
+
+      const expectedCompletedInPrisonEducation: InPrisonEducationRecords = {
+        problemRetrievingData: false,
+        educationRecords: [aValidMathsInPrisonEducation()],
+      }
+
       const expectedPrisonerSummary = { prisonNumber } as PrisonerSummary
       const expectedView = {
         prisonerSummary: expectedPrisonerSummary,
@@ -91,6 +102,7 @@ describe('overviewController', () => {
         prisonNumber,
         actionPlan,
         functionalSkills: expectedFunctionalSkills,
+        completedInPrisonEducation: expectedCompletedInPrisonEducation,
       }
 
       // When
