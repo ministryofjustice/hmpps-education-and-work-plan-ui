@@ -3,6 +3,7 @@ import UpdateGoalPage from '../../pages/goal/UpdateGoalPage'
 import ReviewUpdateGoalPage from '../../pages/goal/ReviewUpdateGoalPage'
 import OverviewPage from '../../pages/overview/OverviewPage'
 import AuthorisationErrorPage from '../../pages/authorisationError'
+import Error500Page from '../../pages/error500'
 
 context('Review updated goal', () => {
   beforeEach(() => {
@@ -56,7 +57,6 @@ context('Review updated goal', () => {
     const goalReference = '10efc562-be8f-4675-9283-9ede0c19dade'
     cy.signIn()
 
-    // When
     cy.visit(`/plan/${prisonNumber}/view/overview`)
     const overviewPage = Page.verifyOnPage(OverviewPage)
 
@@ -66,7 +66,7 @@ context('Review updated goal', () => {
     const reviewUpdateGoalPage = Page.verifyOnPage(ReviewUpdateGoalPage)
     reviewUpdateGoalPage.isForPrisoner(prisonNumber)
 
-    // Then
+    // When
     reviewUpdateGoalPage.submitPage()
 
     // Then
@@ -101,5 +101,28 @@ context('Review updated goal', () => {
 
     // Then
     Page.verifyOnPage(AuthorisationErrorPage)
+  })
+
+  it(`should render 500 page given error updating prisoner's plan`, () => {
+    // Given
+    const prisonNumber = 'G6115VJ'
+    const goalReference = '10efc562-be8f-4675-9283-9ede0c19dade'
+    cy.signIn()
+    cy.task('updateGoal500Error')
+
+    cy.visit(`/plan/${prisonNumber}/view/overview`)
+    const overviewPage = Page.verifyOnPage(OverviewPage)
+
+    const updateGoalPage = overviewPage.clickUpdateButtonForFirstGoal()
+    updateGoalPage.isForGoal(goalReference).submitPage()
+
+    const reviewUpdateGoalPage = Page.verifyOnPage(ReviewUpdateGoalPage)
+    reviewUpdateGoalPage.isForPrisoner(prisonNumber)
+
+    // When
+    reviewUpdateGoalPage.submitPage()
+
+    // Then
+    Page.verifyOnPage(Error500Page)
   })
 })

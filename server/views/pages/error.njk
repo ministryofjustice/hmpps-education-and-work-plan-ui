@@ -1,11 +1,20 @@
 {% extends "../partials/layout.njk" %}
 
-{% set pageTitle = applicationName + " - Error" %}
+{% set pageId = 'service-unavailable' %}
+{% set pageTitle = applicationName + " - Service unavailable" %}
 
 {% block content %}
 
-  <h1>{{ message }}</h1>
-  <h2>{{ status }}</h2>
-  <pre>{{ stack }}</pre>
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h1 class="govuk-heading-l">Sorry, there is a problem with this service</h1>
+      <p class="govuk-body">Try again later.</p>
+      <p class="govuk-body">Any information you entered has not been saved. When the service is available, you will need to start again.</p>
+      <p class="govuk-body">
+        If you want to contact us, email: <a href="mailto:learningandworkprogress@digital.justice.gov.uk" class="govuk-link">learningandworkprogress@digital.justice.gov.uk</a>.
+      </p>
+      <p class="govuk-body"><a href="{{ dpsUrl }}" class="govuk-link">Go to the Digital Prison Services (DPS) home page</a></p>
+    </div>
+  </div>
 
 {% endblock %}

@@ -5,6 +5,7 @@ import ReviewUpdateGoalPage from '../../pages/goal/ReviewUpdateGoalPage'
 import AuthorisationErrorPage from '../../pages/authorisationError'
 import { UpdateGoalRequest } from '../../mockApis/educationAndWorkPlanApi'
 import Error404Page from '../../pages/error404'
+import Error500Page from '../../pages/error500'
 
 context('Update a goal', () => {
   beforeEach(() => {
@@ -153,5 +154,19 @@ context('Update a goal', () => {
 
     // Then
     Page.verifyOnPage(Error404Page)
+  })
+
+  it(`should render 500 page given error retrieving prisoner's plan`, () => {
+    // Given
+    const prisonNumber = 'G6115VJ'
+    const goalReference = '10efc562-be8f-4675-9283-9ede0c19dade'
+    cy.signIn()
+    cy.task('getActionPlan500Error')
+
+    // When
+    cy.visit(`/plan/${prisonNumber}/goals/${goalReference}/update`, { failOnStatusCode: false })
+
+    // Then
+    Page.verifyOnPage(Error500Page)
   })
 })
