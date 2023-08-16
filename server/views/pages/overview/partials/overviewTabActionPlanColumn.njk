@@ -33,11 +33,9 @@
         <h2 class="govuk-summary-card__title">Goal {{ loop.index }}</h2>
         <ul class="govuk-summary-card__actions">
           {% if hasEditAuthority %}
-            {% if featureToggles.editGoalsEnabled %}
-              <li class="govuk-summary-card__action">
-                <a class="govuk-link" href="/plan/{{ prisonerSummary.prisonNumber }}/goals/{{ goal.goalReference }}/update" data-qa="goal-{{ loop.index-1 }}-update-button">Update</a>
-              </li>
-            {% endif %}
+            <li class="govuk-summary-card__action">
+              <a class="govuk-link" href="/plan/{{ prisonerSummary.prisonNumber }}/goals/{{ goal.goalReference }}/update" data-qa="goal-{{ loop.index-1 }}-update-button">Update</a>
+            </li>
             {# Not MVP, Jira to created for archiving goals
                 <li class="govuk-summary-card__action">
                   <a class="govuk-link" href="goal-inactive-alert">Archive</a>
