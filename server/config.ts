@@ -92,6 +92,14 @@ export default {
       },
       agent: new AgentConfig(Number(get('CURIOUS_API_TIMEOUT_RESPONSE', 10000))),
     },
+    ciagInduction: {
+      url: get('CIAG_INDUCTION_API_URL', 'http://localhost:8083', requiredInProduction),
+      timeout: {
+        response: Number(get('CIAG_INDUCTION_API_TIMEOUT_RESPONSE', 10000)),
+        deadline: Number(get('CIAG_INDUCTION_API_TIMEOUT_DEADLINE', 10000)),
+      },
+      agent: new AgentConfig(Number(get('CIAG_INDUCTION_API_TIMEOUT_RESPONSE', 10000))),
+    },
   },
   domain: get('INGRESS_URL', 'http://localhost:3000', requiredInProduction),
   dpsHomeUrl: get('DPS_URL', 'http://localhost:3000/', requiredInProduction),

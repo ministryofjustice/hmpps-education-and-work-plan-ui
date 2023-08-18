@@ -50,7 +50,7 @@ It then performs a search and replace and directory renames so the project is re
 To ensure notifications are routed to the correct slack channels, update the `alerts-slack-channel` and `releases-slack-channel` parameters in `.circle/config.yml` to an appropriate channel.
 
 ## Imported Types
-Some types are imported from the Open API docs for hmpps-education-and-work-plan-api, prisoner-search-api and curious-api.  
+Some types are imported from the Open API docs for hmpps-education-and-work-plan-api, prisoner-search-api, curious-api and ciag-induction-api.  
 You will need to install the node module `openapi-typescript` globally with the following command:
 
 `npm install -g openapi-typescript`
@@ -62,6 +62,8 @@ To update the types from the Open API docs run the following commands:
 `npx openapi-typescript https://prisoner-offender-search-dev.prison.service.justice.gov.uk/v3/api-docs -o server/@types/prisonerSearchApi/index.d.ts`
 
 `npx openapi-typescript https://testservices.sequation.net/sequation-virtual-campus2-api/v3/api-docs -o server/@types/curiousApi/index.d.ts`
+
+`npx openapi-typescript https://ciag-induction-api-dev.hmpps.service.justice.gov.uk/v3/api-docs -o server/@types/ciagInductionApi/index.d.ts`
 
 Note that you will need to run prettier over the generated files and possibly handle other errors before compiling.
 
