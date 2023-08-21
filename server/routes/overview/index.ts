@@ -9,7 +9,11 @@ import PrisonerSummaryRequestHandler from './prisonerSummaryRequestHandler'
  */
 export default (router: Router, services: Services) => {
   const prisonerSummaryRequestHandler = new PrisonerSummaryRequestHandler(services.prisonerSearchService)
-  const overViewController = new OverviewController(services.curiousService, services.educationAndWorkPlanService)
+  const overViewController = new OverviewController(
+    services.curiousService,
+    services.educationAndWorkPlanService,
+    services.ciagInductionService,
+  )
 
   router.use('/plan/:prisonNumber/view/*', [
     checkUserHasViewAuthority(),

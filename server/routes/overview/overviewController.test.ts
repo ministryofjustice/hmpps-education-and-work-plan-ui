@@ -12,6 +12,7 @@ import {
   aValidEnglishInPrisonEducation,
   aValidMathsInPrisonEducation,
 } from '../../testsupport/inPrisonEducationTestDataBuilder'
+import CiagInductionService from '../../services/ciagInductionService'
 
 describe('overviewController', () => {
   const curiousService = {
@@ -22,10 +23,14 @@ describe('overviewController', () => {
   const educationAndWorkPlanService = {
     getActionPlan: jest.fn(),
   }
+  const ciagInductionService = {
+    getWorkAndInterests: jest.fn(),
+  }
 
   const controller = new OverviewController(
     curiousService as unknown as CuriousService,
     educationAndWorkPlanService as unknown as EducationAndWorkPlanService,
+    ciagInductionService as unknown as CiagInductionService,
   )
 
   const req = {

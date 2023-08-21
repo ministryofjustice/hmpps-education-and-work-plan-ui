@@ -9,7 +9,7 @@ declare module 'viewModels' {
   }
 
   export interface PrisonerSupportNeeds {
-    problemRetrievingData?: boolean
+    problemRetrievingData: boolean
     healthAndSupportNeeds: Array<HealthAndSupportNeeds>
     neurodiversities: Array<Neurodiversity>
   }
@@ -36,7 +36,7 @@ declare module 'viewModels' {
    * A prisoner's Functional Skills, which is made up of a collection of Assessments.
    */
   export interface FunctionalSkills {
-    problemRetrievingData?: boolean
+    problemRetrievingData: boolean
     assessments: Array<Assessment>
   }
 
@@ -84,7 +84,7 @@ declare module 'viewModels' {
    * A prisoner's record of In-Prison courses and education, which is made up of a collection of InPrisonEducation.
    */
   export interface InPrisonEducationRecords {
-    problemRetrievingData?: boolean
+    problemRetrievingData: boolean
     educationRecords: Array<InPrisonEducation>
   }
 
@@ -102,4 +102,30 @@ declare module 'viewModels' {
     grade?: string
     source: 'CURIOUS'
   }
+
+  /**
+   * A prisoner's pre-prison work experience, skills, and future work interests.
+   */
+  export interface WorkAndInterests {
+    problemRetrievingData: boolean
+    data?: WorkAndInterestsData
+  }
+
+  export interface WorkAndInterestsData {
+    workExperience: WorkExperience
+    workInterests: WorkInterests
+    skillsAndInterests: SkillsAndInterests
+  }
+
+  // TODO RR-115 - define the fields
+  // eslint-disable-next-line @typescript-eslint/no-empty-interface
+  export interface WorkExperience {}
+
+  // TODO RR-115 - define the fields
+  // eslint-disable-next-line @typescript-eslint/no-empty-interface
+  export interface WorkInterests {}
+
+  // TODO RR-115 - define the fields
+  // eslint-disable-next-line @typescript-eslint/no-empty-interface
+  export interface SkillsAndInterests {}
 }
