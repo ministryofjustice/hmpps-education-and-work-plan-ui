@@ -171,6 +171,7 @@ If these are not desired in the cloned project, remove references to `check_outd
 ## Feature Toggles
 Features can be toggled by setting the relevant environment variable.
 
-| Name                | Default Value | Type    | Description                                                                                            |
-|---------------------|---------------|---------|--------------------------------------------------------------------------------------------------------|
+| Name                           | Default Value | Type    | Description                                                                                             |
+|--------------------------------|---------------|---------|---------------------------------------------------------------------------------------------------------|
+| WORK_AND_INTERESTS_TAG_ENABLED | false         | Boolean | Set to true to enable the Work and Interests tab. Will be removed when feature is complete and released |
 
