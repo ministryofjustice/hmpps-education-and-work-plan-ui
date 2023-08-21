@@ -9,6 +9,7 @@ import {
   completedInPrisonEducationRecords,
   mostRecentCompletedInPrisonEducationRecords,
 } from '../inPrisonEducationRecordsResolver'
+import WorkAndInterestsView from './workAndInterestsView'
 
 export default class OverviewController {
   constructor(
@@ -60,6 +61,13 @@ export default class OverviewController {
     const completedInPrisonEducation = completedInPrisonEducationRecords(allInPrisonEducation)
 
     const view = new EducationAndTrainingView(prisonerSummary, functionalSkills, completedInPrisonEducation)
+    res.render('pages/overview/index', { ...view.renderArgs })
+  }
+
+  getWorkAndInterestsView: RequestHandler = async (req, res, next): Promise<void> => {
+    const { prisonerSummary } = req.session
+
+    const view = new WorkAndInterestsView(prisonerSummary)
     res.render('pages/overview/index', { ...view.renderArgs })
   }
 }
