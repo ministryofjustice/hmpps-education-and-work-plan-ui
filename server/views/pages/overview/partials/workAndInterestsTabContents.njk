@@ -1,32 +1,61 @@
-<div class="govuk-grid-row">
-  <div class="govuk-grid-column-two-thirds">
+{% if not workAndInterests.problemRetrievingData %}
 
-    <div class="govuk-summary-card">
-      <div class="govuk-summary-card__title-wrapper">
-        <h2 class="govuk-summary-card__title">Work experience</h2>
-      </div>
-      <div class="govuk-summary-card__content">
+  {% if workAndInterest.data %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
 
+      <div class="govuk-summary-card">
+        <div class="govuk-summary-card__title-wrapper">
+          <h2 class="govuk-summary-card__title">Work experience</h2>
+        </div>
+        <div class="govuk-summary-card__content">
+
+        </div>
       </div>
+
+      <div class="govuk-summary-card">
+        <div class="govuk-summary-card__title-wrapper">
+          <h2 class="govuk-summary-card__title">Work interests</h2>
+        </div>
+        <div class="govuk-summary-card__content">
+
+        </div>
+      </div>
+
+      <div class="govuk-summary-card">
+        <div class="govuk-summary-card__title-wrapper">
+          <h2 class="govuk-summary-card__title">Skills and interests</h2>
+        </div>
+        <div class="govuk-summary-card__content">
+
+        </div>
+      </div>
+
     </div>
-
-    <div class="govuk-summary-card">
-      <div class="govuk-summary-card__title-wrapper">
-        <h2 class="govuk-summary-card__title">Work interests</h2>
-      </div>
-      <div class="govuk-summary-card__content">
-
-      </div>
-    </div>
-
-    <div class="govuk-summary-card">
-      <div class="govuk-summary-card__title-wrapper">
-        <h2 class="govuk-summary-card__title">Skills and interests</h2>
-      </div>
-      <div class="govuk-summary-card__content">
-
-      </div>
-    </div>
-
   </div>
-</div>
+
+  {% else %}
+
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+        <p class="govuk-body">
+          To add work experience and interests information you need to [create a learning and work progress plan] with {{ prisonerSummary.firstName | title }} {{ prisonerSummary.lastName | title }}.
+        </p>
+      </div>
+    </div>
+
+  {% endif %}
+
+{% else %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h2 class="govuk-heading-m">Sorry, the CIAG Induction service is currently unavailable.</h2>
+      <p class="govuk-body">
+        Retrieving the CIAG Induction is currently unavailable. Please try again later. Other functions within
+        this service may still be available.
+      </p>
+    </div>
+  </div>
+
+{% endif %}

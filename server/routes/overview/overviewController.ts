@@ -10,11 +10,13 @@ import {
   mostRecentCompletedInPrisonEducationRecords,
 } from '../inPrisonEducationRecordsResolver'
 import WorkAndInterestsView from './workAndInterestsView'
+import CiagInductionService from '../../services/ciagInductionService'
 
 export default class OverviewController {
   constructor(
     private readonly curiousService: CuriousService,
     private readonly educationAndWorkPlanService: EducationAndWorkPlanService,
+    private readonly ciagInductionService: CiagInductionService,
   ) {}
 
   getOverviewView: RequestHandler = async (req, res, next): Promise<void> => {
@@ -65,9 +67,12 @@ export default class OverviewController {
   }
 
   getWorkAndInterestsView: RequestHandler = async (req, res, next): Promise<void> => {
+    const { prisonNumber } = req.params
     const { prisonerSummary } = req.session
 
-    const view = new WorkAndInterestsView(prisonerSummary)
+    const workAndInterests = await this.ciagInductionService.getWorkAndInterests(prisonNumber, req.user.username)
+
+    const view = new WorkAndInterestsView(prisonerSummary, workAndInterests)
     res.render('pages/overview/index', { ...view.renderArgs })
   }
 }

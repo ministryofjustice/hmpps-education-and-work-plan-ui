@@ -16,6 +16,7 @@ import TokenStore from './tokenStore'
 import PrisonerSearchClient from './prisonerSearchClient'
 import EducationAndWorkPlanClient from './educationAndWorkPlanClient'
 import CuriousClient from './curiousClient'
+import CiagInductionClient from './ciagInductionClient'
 
 type RestClientBuilder<T> = (token: string) => T
 
@@ -25,6 +26,7 @@ export const dataAccess = () => ({
   prisonerSearchClient: new PrisonerSearchClient(),
   educationAndWorkPlanClient: new EducationAndWorkPlanClient(),
   curiousClient: new CuriousClient(),
+  ciagInductionClient: new CiagInductionClient(),
 })
 
 export type DataAccess = ReturnType<typeof dataAccess>
