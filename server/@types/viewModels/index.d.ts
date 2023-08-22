@@ -117,9 +117,33 @@ declare module 'viewModels' {
     skillsAndInterests: SkillsAndInterests
   }
 
-  // TODO RR-115 - define the fields
-  // eslint-disable-next-line @typescript-eslint/no-empty-interface
-  export interface WorkExperience {}
+  export interface WorkExperience {
+    hasWorkedPreviously: boolean
+    jobs: Array<Job>
+    updatedBy: string
+    updatedAt: Date
+  }
+
+  export interface Job {
+    type:
+      | 'OUTDOOR'
+      | 'CONSTRUCTION'
+      | 'DRIVING'
+      | 'BEAUTY'
+      | 'HOSPITALITY'
+      | 'TECHNICAL'
+      | 'MANUFACTURING'
+      | 'OFFICE'
+      | 'RETAIL'
+      | 'SPORTS'
+      | 'WAREHOUSING'
+      | 'WASTE_MANAGEMENT'
+      | 'EDUCATION_TRAINING'
+      | 'OTHER'
+    other?: string
+    role: string
+    responsibilities: string
+  }
 
   // TODO RR-115 - define the fields
   // eslint-disable-next-line @typescript-eslint/no-empty-interface
