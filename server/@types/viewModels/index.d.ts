@@ -152,4 +152,29 @@ declare module 'viewModels' {
   // TODO RR-115 - define the fields
   // eslint-disable-next-line @typescript-eslint/no-empty-interface
   export interface SkillsAndInterests {}
+
+  export interface PrePrisonQualifications {
+    problemRetrievingData: boolean
+    highestEducationLevel?:
+      | 'PRIMARY_SCHOOL'
+      | 'SECONDARY_SCHOOL_LEFT_BEFORE_TAKING_EXAMS'
+      | 'SECONDARY_SCHOOL_TOOK_EXAMS'
+      | 'FURTHER_EDUCATION_COLLEGE'
+      | 'UNDERGRADUATE_DEGREE_AT_UNIVERSITY'
+      | 'POSTGRADUATE_DEGREE_AT_UNIVERSITY'
+      | 'NOT_SURE'
+    additionalTraining?: (
+      | 'CSCS_CARD'
+      | 'FIRST_AID_CERTIFICATE'
+      | 'FOOD_HYGIENE_CERTIFICATE'
+      | 'FULL_UK_DRIVING_LICENCE'
+      | 'HEALTH_AND_SAFETY'
+      | 'HGV_LICENCE'
+      | 'MACHINERY_TICKETS'
+      | 'MANUAL_HANDLING'
+      | 'TRADE_COURSE'
+      | 'OTHER'
+      | 'NONE'
+    )[]
+  }
 }
