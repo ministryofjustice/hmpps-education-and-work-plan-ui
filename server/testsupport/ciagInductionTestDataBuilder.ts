@@ -43,6 +43,56 @@ const aCiagInductionWithPreviousWorkExperience = (prisonNumber = 'A1234BC'): Cia
   }
 }
 
+const aCiagInductionWithNoRecordOfAnyWorkInterests = (prisonNumber = 'A1234BC'): CiagInduction => {
+  return {
+    ...baseCiagInductionTemplate(prisonNumber),
+    workExperience: {
+      workInterests: null,
+    },
+  }
+}
+
+const aCiagInductionWithJobInterests = (prisonNumber = 'A1234BC'): CiagInduction => {
+  return {
+    ...baseCiagInductionTemplate(prisonNumber),
+    hopingToGetWork: 'YES',
+    abilityToWork: ['LIMITED_BY_OFFENSE'],
+    abilityToWorkOther: undefined,
+    workExperience: {
+      workInterests: {
+        modifiedBy: 'ANOTHER_DPS_USER_GEN',
+        modifiedDateTime: '2023-08-22T11:12:31.943Z',
+        particularJobInterests: [
+          {
+            workInterest: 'CONSTRUCTION',
+            role: 'General labourer',
+          },
+          {
+            workInterest: 'OTHER',
+            role: 'Being a stunt double for Tom Cruise, even though he does all his own stunts',
+          },
+        ],
+      },
+    },
+  }
+}
+
+const aCiagInductionWithNoJobInterests = (prisonNumber = 'A1234BC'): CiagInduction => {
+  return {
+    ...baseCiagInductionTemplate(prisonNumber),
+    hopingToGetWork: 'NOT_SURE',
+    abilityToWork: ['CARING_RESPONSIBILITIES', 'OTHER'],
+    abilityToWorkOther: 'Generally a bit lazy',
+    workExperience: {
+      workInterests: {
+        modifiedBy: 'ANOTHER_DPS_USER_GEN',
+        modifiedDateTime: '2023-08-22T11:12:31.943Z',
+        particularJobInterests: null,
+      },
+    },
+  }
+}
+
 const aCiagInductionWithPrePrisonQualifications = (prisonNumber = 'A1234BC'): CiagInduction => {
   return {
     ...baseCiagInductionTemplate(prisonNumber),
@@ -81,6 +131,9 @@ export {
   aCiagInductionWithNoRecordOfAnyPreviousWorkExperience,
   aCiagInductionWithNoPreviousWorkExperience,
   aCiagInductionWithPreviousWorkExperience,
+  aCiagInductionWithNoRecordOfAnyWorkInterests,
+  aCiagInductionWithNoJobInterests,
+  aCiagInductionWithJobInterests,
   aCiagInductionWithPrePrisonQualifications,
   aCiagInductionWithNoPrePrisonQualifications,
 }

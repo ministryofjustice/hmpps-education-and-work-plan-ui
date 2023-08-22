@@ -145,9 +145,32 @@ declare module 'viewModels' {
     responsibilities: string
   }
 
-  // TODO RR-115 - define the fields
-  // eslint-disable-next-line @typescript-eslint/no-empty-interface
-  export interface WorkInterests {}
+  export interface WorkInterests {
+    hopingToWorkOnRelease: 'YES' | 'NO' | 'NOT_SURE'
+    constraintsOnAbilityToWork: Array<
+      'CARING_RESPONSIBILITIES' | 'LIMITED_BY_OFFENSE' | 'HEALTH_ISSUES' | 'NO_RIGHT_TO_WORK' | 'OTHER' | 'NONE'
+    >
+    otherConstraintOnAbilityToWork?: string
+    jobTypes: Array<
+      | 'OUTDOOR'
+      | 'CONSTRUCTION'
+      | 'DRIVING'
+      | 'BEAUTY'
+      | 'HOSPITALITY'
+      | 'TECHNICAL'
+      | 'MANUFACTURING'
+      | 'OFFICE'
+      | 'RETAIL'
+      | 'SPORTS'
+      | 'WAREHOUSING'
+      | 'WASTE_MANAGEMENT'
+      | 'EDUCATION_TRAINING'
+      | 'OTHER'
+    >
+    specificJobRoles: Array<string>
+    updatedBy: string
+    updatedAt: Date
+  }
 
   // TODO RR-115 - define the fields
   // eslint-disable-next-line @typescript-eslint/no-empty-interface
