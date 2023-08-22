@@ -121,6 +121,16 @@ export default class OverviewPage extends Page {
     return this
   }
 
+  hasCiagInductionApiUnavailableMessageDisplayed() {
+    cy.get('h2').contains('Sorry, the CIAG Induction service is currently unavailable')
+    return this
+  }
+
+  hasLinkToCreateCiagInductionDisplayed() {
+    this.createCiagInductionLink().should('be.visible')
+    return this
+  }
+
   hasServiceUnavailableMessageDisplayed() {
     cy.get('h2').contains('Sorry, the service is currently unavailable.')
     return this
@@ -154,4 +164,6 @@ export default class OverviewPage extends Page {
   neurodiversitySummaryCard = (): PageElement => cy.get('#neurodiversity-summary-card')
 
   viewAllFunctionalSkillsButton = (): PageElement => cy.get('[data-qa=view-all-functional-skills-button]')
+
+  createCiagInductionLink = (): PageElement => cy.get('[data-qa=link-to-create-ciag-induction]')
 }

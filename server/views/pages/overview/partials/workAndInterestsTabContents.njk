@@ -39,7 +39,10 @@
     <div class="govuk-grid-row">
       <div class="govuk-grid-column-two-thirds">
         <p class="govuk-body">
-          To add work experience and interests information you need to [create a learning and work progress plan] with {{ prisonerSummary.firstName | title }} {{ prisonerSummary.lastName | title }}.
+          To add work experience and interests information you need to
+          {# TODO RR-115 - add link href to CIAG Induction question set #}
+          <a href="" class="govuk-link" data-qa="link-to-create-ciag-induction">create a learning and work progress plan</a>
+          with {{ prisonerSummary.firstName | title }} {{ prisonerSummary.lastName | title }}.
         </p>
       </div>
     </div>
