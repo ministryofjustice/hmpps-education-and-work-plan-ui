@@ -3,4 +3,5 @@ declare module 'ciagInductionApiClient' {
 
   export type CiagInduction = components['schemas']['CIAGProfileDTO']
   export type CiagWorkExperience = components['schemas']['WorkExperience']
+  export type CiagWorkInterestDetail = components['schemas']['WorkInterestDetail']
 }

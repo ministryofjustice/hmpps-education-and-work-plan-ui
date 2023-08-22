@@ -1,4 +1,4 @@
-import type { PrisonerSummary, WorkAndInterests, WorkInterests } from 'viewModels'
+import type { PrisonerSummary, WorkAndInterests } from 'viewModels'
 
 export default class WorkAndInterestsView {
   constructor(private readonly prisonerSummary: PrisonerSummary, private readonly workAndInterests: WorkAndInterests) {}
@@ -6,7 +6,7 @@ export default class WorkAndInterestsView {
   get renderArgs(): {
     tab: string
     prisonerSummary: PrisonerSummary
-    workAndInterests: WorkInterests
+    workAndInterests: WorkAndInterests
   } {
     return {
       tab: 'work-and-interests',

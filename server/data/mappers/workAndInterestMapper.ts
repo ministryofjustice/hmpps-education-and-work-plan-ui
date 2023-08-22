@@ -1,6 +1,6 @@
 import moment from 'moment'
-import type { CiagInduction, CiagWorkExperience } from 'ciagInductionApiClient'
-import type { WorkAndInterests, WorkAndInterestsData, WorkExperience } from 'viewModels'
+import type { CiagInduction, CiagWorkExperience, CiagWorkInterestDetail } from 'ciagInductionApiClient'
+import type { WorkAndInterests, WorkAndInterestsData, WorkExperience, WorkInterests } from 'viewModels'
 
 const toWorkAndInterests = (ciagInduction: CiagInduction): WorkAndInterests => {
   return {
@@ -15,7 +15,11 @@ const toWorkAndInterestsData = (ciagInduction: CiagInduction): WorkAndInterestsD
   }
 
   // TODO RR-115 - map the fields
-  return { skillsAndInterests: undefined, workExperience: toWorkExperience(ciagInduction), workInterests: undefined }
+  return {
+    skillsAndInterests: undefined,
+    workExperience: toWorkExperience(ciagInduction),
+    workInterests: toWorkInterests(ciagInduction),
+  }
 }
 
 const toWorkExperience = (ciagInduction: CiagInduction): WorkExperience => {
@@ -36,6 +40,23 @@ const toWorkExperience = (ciagInduction: CiagInduction): WorkExperience => {
     }),
     updatedBy: ciagInduction.workExperience.modifiedBy,
     updatedAt: moment(ciagInduction.workExperience.modifiedDateTime).toDate(),
+  }
+}
+
+const toWorkInterests = (ciagInduction: CiagInduction): WorkInterests => {
+  if (!ciagInduction.workExperience || !ciagInduction.workExperience.workInterests) {
+    return undefined
+  }
+
+  const jobInterests: Array<CiagWorkInterestDetail> = ciagInduction.workExperience.workInterests.particularJobInterests
+  return {
+    hopingToWorkOnRelease: ciagInduction.hopingToGetWork,
+    constraintsOnAbilityToWork: ciagInduction.abilityToWork,
+    otherConstraintOnAbilityToWork: ciagInduction.abilityToWorkOther,
+    jobTypes: jobInterests?.map(jobInterest => jobInterest.workInterest),
+    specificJobRoles: jobInterests?.map(jobInterest => jobInterest.role),
+    updatedBy: ciagInduction.workExperience.workInterests.modifiedBy,
+    updatedAt: moment(ciagInduction.workExperience.workInterests.modifiedDateTime).toDate(),
   }
 }
 

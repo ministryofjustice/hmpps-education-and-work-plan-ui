@@ -1,9 +1,12 @@
 import moment from 'moment'
 import type { CiagInduction } from 'ciagInductionApiClient'
-import type { WorkAndInterests, WorkExperience } from 'viewModels'
+import type { WorkAndInterests, WorkExperience, WorkInterests } from 'viewModels'
 import {
+  aCiagInductionWithJobInterests,
+  aCiagInductionWithNoJobInterests,
   aCiagInductionWithNoPreviousWorkExperience,
   aCiagInductionWithNoRecordOfAnyPreviousWorkExperience,
+  aCiagInductionWithNoRecordOfAnyWorkInterests,
   aCiagInductionWithPreviousWorkExperience,
 } from '../../testsupport/ciagInductionTestDataBuilder'
 import toWorkAndInterests from './workAndInterestMapper'
@@ -86,6 +89,79 @@ describe('workAndInterestMapper', () => {
 
       // Then
       expect(actual.data.workExperience).toEqual(expectedWorkExperience)
+    })
+  })
+
+  describe('workInterest mapping', () => {
+    it('should map to Work And Interests given CIAG Induction with some job interests', () => {
+      // Given
+      const ciagInduction = aCiagInductionWithJobInterests()
+
+      const expectedWorkInterests: WorkInterests = {
+        hopingToWorkOnRelease: 'YES',
+        constraintsOnAbilityToWork: ['LIMITED_BY_OFFENSE'],
+        otherConstraintOnAbilityToWork: undefined,
+        jobTypes: ['CONSTRUCTION', 'OTHER'],
+        specificJobRoles: [
+          'General labourer',
+          'Being a stunt double for Tom Cruise, even though he does all his own stunts',
+        ],
+        updatedBy: 'ANOTHER_DPS_USER_GEN',
+        updatedAt: moment('2023-08-22T11:12:31.943Z').toDate(),
+      }
+
+      // When
+      const actual = toWorkAndInterests(ciagInduction)
+
+      // Then
+      expect(actual.data.workInterests).toEqual(expectedWorkInterests)
+    })
+
+    it('should map to Work And Interests given CIAG Induction with no job interests', () => {
+      // Given
+      const ciagInduction = aCiagInductionWithNoJobInterests()
+
+      const expectedWorkInterests: WorkInterests = {
+        hopingToWorkOnRelease: 'NOT_SURE',
+        constraintsOnAbilityToWork: ['CARING_RESPONSIBILITIES', 'OTHER'],
+        otherConstraintOnAbilityToWork: 'Generally a bit lazy',
+        jobTypes: undefined,
+        specificJobRoles: undefined,
+        updatedBy: 'ANOTHER_DPS_USER_GEN',
+        updatedAt: moment('2023-08-22T11:12:31.943Z').toDate(),
+      }
+
+      // When
+      const actual = toWorkAndInterests(ciagInduction)
+
+      // Then
+      expect(actual.data.workInterests).toEqual(expectedWorkInterests)
+    })
+
+    it('should map to Work And Interests given CIAG Induction with no record of any work interests', () => {
+      // Given
+      const ciagInduction = aCiagInductionWithNoRecordOfAnyWorkInterests()
+
+      const expectedWorkInterests: WorkInterests = undefined
+
+      // When
+      const actual = toWorkAndInterests(ciagInduction)
+
+      // Then
+      expect(actual.data.workInterests).toEqual(expectedWorkInterests)
+    })
+
+    it('should map to Work And Interests given CIAG Induction with no record of any previous work experience', () => {
+      // Given
+      const ciagInduction = aCiagInductionWithNoRecordOfAnyPreviousWorkExperience()
+
+      const expectedWorkInterests: WorkInterests = undefined
+
+      // When
+      const actual = toWorkAndInterests(ciagInduction)
+
+      // Then
+      expect(actual.data.workInterests).toEqual(expectedWorkInterests)
     })
   })
 })
