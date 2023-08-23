@@ -51,6 +51,7 @@ export default class OverviewPage extends Page {
 
   hasGoalsDisplayed() {
     this.goalSummaryCards().should('exist')
+    return this
   }
 
   clickUpdateButtonForFirstGoal(): UpdateGoalPage {
@@ -61,6 +62,12 @@ export default class OverviewPage extends Page {
   hasEmptyGoalsSection() {
     cy.get('h2').contains('Goals in progress')
     this.goalSummaryCards().should('not.exist')
+    return this
+  }
+
+  hasGoalNotesExpander() {
+    this.notesExpander(1).should('exist')
+    this.notesExpander(1).should('not.have.attr', 'open')
     return this
   }
 
@@ -166,4 +173,6 @@ export default class OverviewPage extends Page {
   viewAllFunctionalSkillsButton = (): PageElement => cy.get('[data-qa=view-all-functional-skills-button]')
 
   createCiagInductionLink = (): PageElement => cy.get('[data-qa=link-to-create-ciag-induction]')
+
+  notesExpander = (idx: number): PageElement => cy.get(`[data-qa=overview-notes-expander-${idx}]`)
 }

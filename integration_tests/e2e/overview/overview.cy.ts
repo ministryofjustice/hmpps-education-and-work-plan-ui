@@ -68,6 +68,7 @@ context('Prisoner Overview page', () => {
       .isForPrisoner(prisonNumber)
       .activeTabIs('Overview')
       .hasGoalsDisplayed()
+      .hasGoalNotesExpander()
   })
 
   it('should display goals section given prisoner has no goals', () => {
