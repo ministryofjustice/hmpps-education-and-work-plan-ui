@@ -85,7 +85,14 @@
         </table>
 
         {% if goal.note %}
-          <p class="govuk-body">Note: {{ goal.note }}</p>
+          {{ govukDetails({
+            summaryHtml: "View note<span class='govuk-visually-hidden'> for Goal " + loop.index + "</span>",
+            text: goal.note,
+            classes: "govuk-!-display-none-print",
+            attributes: {
+              "data-qa": "overview-notes-expander-" + loop.index
+            }
+          }) }}
         {% endif %}
 
       </div>
