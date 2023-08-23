@@ -6,6 +6,7 @@
 {% from "govuk/components/details/macro.njk" import govukDetails %}
 {% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
 {% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
+{% from "govuk/components/footer/macro.njk" import govukFooter %}
 {% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
 {% from "govuk/components/input/macro.njk" import govukInput %}
 {% from "govuk/components/phase-banner/macro.njk" import govukPhaseBanner %}
@@ -46,7 +47,8 @@
       },
       tag: {
         text: "beta"
-      }
+      },
+      classes: "govuk-!-display-none-print"
     }) }}
 
     {% block beforeContent %}{% endblock %}
@@ -54,6 +56,12 @@
       {% block content %}{% endblock %}
     </main>
   </div>
+{% endblock %}
+
+{% block footer %}
+  {{ govukFooter({
+    classes: "govuk-!-display-none-print"
+  }) }}
 {% endblock %}
 
 {% block bodyEnd %}
