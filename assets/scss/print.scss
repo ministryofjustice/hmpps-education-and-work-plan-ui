@@ -1,15 +1,28 @@
+@page {
+  size: auto;
+  margin: 8mm 10mm;
+}
+
 .govuk-hint,
 .govuk-tag,
 .govuk-caption-l {
   color: #0b0c0c
 }
 
+.moj-page-header-actions {
+  margin-bottom: 5mm;
+}
+
 .govuk-summary-card {
-  border: 1px solid #0b0c0c;
+  border: 0.5mm solid #0b0c0c;
   break-inside: avoid
+}
+
+.govuk-summary-card__title-wrapper {
+  padding-bottom: 0;
 }
 
 .app-functional-skills-sidebar {
   break-inside: avoid;
-  margin-top: 32px;
+  margin-top: 8.5mm;
 }
