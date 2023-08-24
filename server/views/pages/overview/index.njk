@@ -29,6 +29,9 @@
       <span class="govuk-caption-l">Learning and work progress</span>
       <h1 class="govuk-heading-l">Manage {{ prisonerSummary.firstName | capitalize }} {{ prisonerSummary.lastName | capitalize }}'s learning plan</h1>
     </div>
+    <div class="govuk-grid-column-one-third">
+      {% include "../../partials/printThisPage.njk" %}
+    </div>
   </div>
 
   {% include './partials/navigation.njk' %}

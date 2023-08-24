@@ -4,4 +4,9 @@ function showDetailsElementOnPrint() {
   })
 }
 
+function showPrintWindow() {
+  window.print()
+}
+
 window.addEventListener('beforeprint', () => showDetailsElementOnPrint())
+document.getElementById('print-link').addEventListener('click', () => showPrintWindow())
