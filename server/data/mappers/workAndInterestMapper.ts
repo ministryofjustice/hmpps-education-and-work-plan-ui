@@ -1,6 +1,12 @@
 import moment from 'moment'
 import type { CiagInduction, CiagWorkExperience, CiagWorkInterestDetail } from 'ciagInductionApiClient'
-import type { WorkAndInterests, WorkAndInterestsData, WorkExperience, WorkInterests } from 'viewModels'
+import type {
+  SkillsAndInterests,
+  WorkAndInterests,
+  WorkAndInterestsData,
+  WorkExperience,
+  WorkInterests,
+} from 'viewModels'
 
 const toWorkAndInterests = (ciagInduction: CiagInduction): WorkAndInterests => {
   return {
@@ -14,11 +20,25 @@ const toWorkAndInterestsData = (ciagInduction: CiagInduction): WorkAndInterestsD
     return undefined
   }
 
-  // TODO RR-115 - map the fields
   return {
-    skillsAndInterests: undefined,
+    skillsAndInterests: toSkillsAndInterests(ciagInduction),
     workExperience: toWorkExperience(ciagInduction),
     workInterests: toWorkInterests(ciagInduction),
+  }
+}
+
+const toSkillsAndInterests = (ciagInduction: CiagInduction): SkillsAndInterests => {
+  if (!ciagInduction.skillsAndInterests) {
+    return undefined
+  }
+
+  return {
+    skills: ciagInduction.skillsAndInterests.skills || [],
+    otherSkill: ciagInduction.skillsAndInterests.skillOTHER,
+    personalInterests: ciagInduction.skillsAndInterests.personalInterests || [],
+    otherPersonalInterest: ciagInduction.skillsAndInterests.personalInterestsOther,
+    updatedBy: ciagInduction.skillsAndInterests.modifiedBy,
+    updatedAt: moment(ciagInduction.skillsAndInterests.modifiedDateTime).toDate(),
   }
 }
 

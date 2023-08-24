@@ -1,13 +1,17 @@
 import moment from 'moment'
 import type { CiagInduction } from 'ciagInductionApiClient'
-import type { WorkAndInterests, WorkExperience, WorkInterests } from 'viewModels'
+import type { SkillsAndInterests, WorkAndInterests, WorkExperience, WorkInterests } from 'viewModels'
 import {
   aCiagInductionWithJobInterests,
   aCiagInductionWithNoJobInterests,
   aCiagInductionWithNoPreviousWorkExperience,
   aCiagInductionWithNoRecordOfAnyPreviousWorkExperience,
+  aCiagInductionWithNoRecordOfAnySkillsAndInterests,
   aCiagInductionWithNoRecordOfAnyWorkInterests,
+  aCiagInductionWithNoSkillsButSomeInterests,
   aCiagInductionWithPreviousWorkExperience,
+  aCiagInductionWithSkillsAndInterests,
+  aCiagInductionWithSkillsButNoInterests,
 } from '../../testsupport/ciagInductionTestDataBuilder'
 import toWorkAndInterests from './workAndInterestMapper'
 
@@ -162,6 +166,81 @@ describe('workAndInterestMapper', () => {
 
       // Then
       expect(actual.data.workInterests).toEqual(expectedWorkInterests)
+    })
+  })
+
+  describe('skillsAndInterest mapping', () => {
+    it('should map to Work And Interests given CIAG Induction with skills and interests', () => {
+      // Given
+      const ciagInduction = aCiagInductionWithSkillsAndInterests()
+
+      const expectedSkillsAndInterests: SkillsAndInterests = {
+        skills: ['TEAMWORK', 'WILLINGNESS_TO_LEARN', 'OTHER'],
+        otherSkill: 'Tenacity',
+        personalInterests: ['CREATIVE', 'DIGITAL', 'OTHER'],
+        otherPersonalInterest: 'Renewable energy',
+        updatedBy: 'ANOTHER_DPS_USER_GEN',
+        updatedAt: moment('2023-08-22T11:12:31.943Z').toDate(),
+      }
+
+      // When
+      const actual = toWorkAndInterests(ciagInduction)
+
+      // Then
+      expect(actual.data.skillsAndInterests).toEqual(expectedSkillsAndInterests)
+    })
+
+    it('should map to Work And Interests given CIAG Induction with skills but no interests', () => {
+      // Given
+      const ciagInduction = aCiagInductionWithSkillsButNoInterests()
+
+      const expectedSkillsAndInterests: SkillsAndInterests = {
+        skills: ['TEAMWORK', 'WILLINGNESS_TO_LEARN', 'OTHER'],
+        otherSkill: 'Tenacity',
+        personalInterests: [],
+        otherPersonalInterest: null,
+        updatedBy: 'ANOTHER_DPS_USER_GEN',
+        updatedAt: moment('2023-08-22T11:12:31.943Z').toDate(),
+      }
+
+      // When
+      const actual = toWorkAndInterests(ciagInduction)
+
+      // Then
+      expect(actual.data.skillsAndInterests).toEqual(expectedSkillsAndInterests)
+    })
+
+    it('should map to Work And Interests given CIAG Induction with no skills but some interests', () => {
+      // Given
+      const ciagInduction = aCiagInductionWithNoSkillsButSomeInterests()
+
+      const expectedSkillsAndInterests: SkillsAndInterests = {
+        skills: [],
+        otherSkill: null,
+        personalInterests: ['CREATIVE', 'DIGITAL', 'OTHER'],
+        otherPersonalInterest: 'Renewable energy',
+        updatedBy: 'ANOTHER_DPS_USER_GEN',
+        updatedAt: moment('2023-08-22T11:12:31.943Z').toDate(),
+      }
+
+      // When
+      const actual = toWorkAndInterests(ciagInduction)
+
+      // Then
+      expect(actual.data.skillsAndInterests).toEqual(expectedSkillsAndInterests)
+    })
+
+    it('should map to Work And Interests given CIAG Induction with no record of any skills and interests', () => {
+      // Given
+      const ciagInduction = aCiagInductionWithNoRecordOfAnySkillsAndInterests()
+
+      const expectedSkillsAndInterests: SkillsAndInterests = undefined
+
+      // When
+      const actual = toWorkAndInterests(ciagInduction)
+
+      // Then
+      expect(actual.data.skillsAndInterests).toEqual(expectedSkillsAndInterests)
     })
   })
 })

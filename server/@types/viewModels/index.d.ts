@@ -172,9 +172,40 @@ declare module 'viewModels' {
     updatedAt: Date
   }
 
-  // TODO RR-115 - define the fields
-  // eslint-disable-next-line @typescript-eslint/no-empty-interface
-  export interface SkillsAndInterests {}
+  export interface SkillsAndInterests {
+    skills: Array<
+      | 'COMMUNICATION'
+      | 'POSITIVE_ATTITUDE'
+      | 'RESILIENCE'
+      | 'SELF_MANAGEMENT'
+      | 'TEAMWORK'
+      | 'THINKING_AND_PROBLEM_SOLVING'
+      | 'WILLINGNESS_TO_LEARN'
+      | 'OTHER'
+      | 'NONE'
+    >
+    otherSkill?: string
+    personalInterests: Array<
+      | 'COMMUNITY'
+      | 'CRAFTS'
+      | 'CREATIVE'
+      | 'DIGITAL'
+      | 'KNOWLEDGE_BASED'
+      | 'MUSICAL'
+      | 'OUTDOOR'
+      | 'NATURE_AND_ANIMALS'
+      | 'SOCIAL'
+      | 'SOLO_ACTIVITIES'
+      | 'SOLO_SPORTS'
+      | 'TEAM_SPORTS'
+      | 'WELLNESS'
+      | 'OTHER'
+      | 'NONE'
+    >
+    otherPersonalInterest?: string
+    updatedBy: string
+    updatedAt: Date
+  }
 
   export interface PrePrisonQualifications {
     problemRetrievingData: boolean
