@@ -3,7 +3,7 @@ export default function formatStepStatusValue(value: string): string {
   return statusValue
 }
 
-export enum StepStatusValue {
+enum StepStatusValue {
   NOT_STARTED = 'Not started',
   ACTIVE = 'Started',
   COMPLETE = 'Completed',

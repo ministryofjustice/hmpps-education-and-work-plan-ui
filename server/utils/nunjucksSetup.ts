@@ -11,6 +11,9 @@ import formatTargetDateRangeValue from '../filters/formatTargetDateRangeValue'
 import formatFunctionalSkillType from '../filters/formatFunctionalSkillTypeFilter'
 import formatStepStatusValue from '../filters/formatStepStatusValue'
 import formatGoalStatusValue from '../filters/formatGoalStatusValue'
+import formatYesNoFilter from '../filters/formatYesNoFilter'
+import formatAbilityToWorkConstraintFilter from '../filters/formatAbilityToWorkConstraintFilter'
+import formatJobTypeFilter from '../filters/formatJobTypeFilter'
 
 const production = process.env.NODE_ENV === 'production'
 
@@ -57,6 +60,9 @@ export function registerNunjucks(app?: express.Express): Environment {
   njkEnv.addFilter('formatFunctionalSkillType', formatFunctionalSkillType)
   njkEnv.addFilter('formatStepStatusValue', formatStepStatusValue)
   njkEnv.addFilter('formatGoalStatusValue', formatGoalStatusValue)
+  njkEnv.addFilter('formatYesNo', formatYesNoFilter)
+  njkEnv.addFilter('formatAbilityToWorkConstraint', formatAbilityToWorkConstraintFilter)
+  njkEnv.addFilter('formatJobType', formatJobTypeFilter)
 
   njkEnv.addGlobal('dpsUrl', config.dpsHomeUrl)
   njkEnv.addGlobal('featureToggles', config.featureToggles)

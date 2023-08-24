@@ -139,6 +139,7 @@ declare module 'viewModels' {
       | 'WAREHOUSING'
       | 'WASTE_MANAGEMENT'
       | 'EDUCATION_TRAINING'
+      | 'CLEANING_AND_MAINTENANCE'
       | 'OTHER'
     other?: string
     role: string
@@ -165,6 +166,7 @@ declare module 'viewModels' {
       | 'WAREHOUSING'
       | 'WASTE_MANAGEMENT'
       | 'EDUCATION_TRAINING'
+      | 'CLEANING_AND_MAINTENANCE'
       | 'OTHER'
     >
     specificJobRoles: Array<string>

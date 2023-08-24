@@ -3,7 +3,7 @@ export default function formatGoalStatusValue(value: string): string {
   return statusValue
 }
 
-export enum GoalStatusValue {
+enum GoalStatusValue {
   ACTIVE = 'In progress',
   COMPLETED = 'Completed',
   ARCHIVED = 'Archived',
