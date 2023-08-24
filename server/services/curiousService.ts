@@ -24,7 +24,7 @@ export default class CuriousService {
 
       return toPrisonerSupportNeeds(learnerProfiles, neuroDivergences)
     } catch (error) {
-      logger.error(`Error retrieving data from Curious: ${JSON.stringify(error)}`)
+      logger.error(`Error retrieving support needs data from Curious: ${JSON.stringify(error)}`)
       return { problemRetrievingData: true } as PrisonerSupportNeeds
     }
   }
@@ -36,7 +36,7 @@ export default class CuriousService {
       const learnerProfiles = await this.getLearnerProfile(prisonNumber, systemToken)
       return toFunctionalSkills(learnerProfiles)
     } catch (error) {
-      logger.error(`Error retrieving data from Curious: ${JSON.stringify(error)}`)
+      logger.error(`Error retrieving functional skills data from Curious: ${JSON.stringify(error)}`)
       return { problemRetrievingData: true } as FunctionalSkills
     }
   }
@@ -70,11 +70,11 @@ export default class CuriousService {
       } as InPrisonEducationRecords
     } catch (error) {
       if (error.status === 404) {
-        logger.info(`No data found for prisoner [${prisonNumber}] in Curious`)
+        logger.info(`No learner education data found for prisoner [${prisonNumber}] in Curious`)
         return { problemRetrievingData: false, educationRecords: undefined } as InPrisonEducationRecords
       }
 
-      logger.error(`Error retrieving data from Curious: ${JSON.stringify(error)}`)
+      logger.error(`Error retrieving learner education data from Curious: ${JSON.stringify(error)}`)
       return { problemRetrievingData: true, educationRecords: undefined } as InPrisonEducationRecords
     }
   }
@@ -84,7 +84,7 @@ export default class CuriousService {
       return await this.curiousClient.getLearnerProfile(prisonNumber, token)
     } catch (error) {
       if (error.status === 404) {
-        logger.info(`No data found for prisoner [${prisonNumber}] in Curious`)
+        logger.info(`No learner profile data found for prisoner [${prisonNumber}] in Curious`)
         return undefined
       }
       throw error
@@ -99,7 +99,7 @@ export default class CuriousService {
       return await this.curiousClient.getLearnerNeurodivergence(prisonNumber, token)
     } catch (error) {
       if (error.status === 404) {
-        logger.info(`No data found for prisoner [${prisonNumber}] in Curious`)
+        logger.info(`No neurodivergence data found for prisoner [${prisonNumber}] in Curious`)
         return undefined
       }
       throw error
