@@ -105,6 +105,7 @@ export default {
   dpsHomeUrl: get('DPS_URL', 'http://localhost:3000/', requiredInProduction),
   featureToggles: {
     // someToggleEnabled: Boolean(get('SOME_TOGGLE_ENABLED', false)),
-    workAndInterestsTabEnabled: Boolean(get('WORK_AND_INTERESTS_TAG_ENABLED', false)),
+    workAndInterestsTabEnabled: Boolean(get('WORK_AND_INTERESTS_TAB_ENABLED', false)),
+    prePrisonQualificationsEnabled: Boolean(get('PRE_PRISON_QUALIFICATIONS_ENABLED', false)),
   },
 }
