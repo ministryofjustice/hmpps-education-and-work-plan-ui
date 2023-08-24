@@ -1,0 +1,51 @@
+{% if not otherQualifications.problemRetrievingData %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <div class="govuk-summary-card">
+        <div class="govuk-summary-card__title-wrapper">
+          <h2 class="govuk-summary-card__title">Other qualifications and history</h2>
+        </div>
+        <div class="govuk-summary-card__content">
+          <dl class="govuk-summary-list" id="other-qualifications-list">
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                Highest level of education
+              </dt>
+              <dd class="govuk-summary-list__value">
+                {{ otherQualifications.highestEducationLevel }}
+              </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                Other training or qualifications
+              </dt>
+              <dd class="govuk-summary-list__value">
+                <ul class="govuk-list">
+                  {% for additionalTraining in otherQualifications.additionalTraining %}
+                    <li>{{ additionalTraining }}</li>
+                  {% endfor %}
+                </ul>
+              </dd>
+            </div>
+          </dl>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+{% else %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h2 class="govuk-heading-m">Sorry, the CIAG Induction service is currently unavailable.</h2>
+      <p class="govuk-body">
+        Retrieving data from CIAG Induction service is currently unavailable. Please try again later. Other functions
+        within this service may still be available.
+      </p>
+    </div>
+  </div>
+
+{% endif %}

@@ -93,7 +93,7 @@ const aCiagInductionWithNoJobInterests = (prisonNumber = 'A1234BC'): CiagInducti
   }
 }
 
-const aCiagInductionWithPrePrisonQualifications = (prisonNumber = 'A1234BC'): CiagInduction => {
+const aCiagInductionWithOtherQualifications = (prisonNumber = 'A1234BC'): CiagInduction => {
   return {
     ...baseCiagInductionTemplate(prisonNumber),
     qualificationsAndTraining: {
@@ -110,7 +110,7 @@ const aCiagInductionWithPrePrisonQualifications = (prisonNumber = 'A1234BC'): Ci
   }
 }
 
-const aCiagInductionWithNoPrePrisonQualifications = (prisonNumber = 'A1234BC'): CiagInduction => {
+const aCiagInductionWithNoOtherQualifications = (prisonNumber = 'A1234BC'): CiagInduction => {
   return {
     ...baseCiagInductionTemplate(prisonNumber),
     qualificationsAndTraining: null,
@@ -183,8 +183,8 @@ export {
   aCiagInductionWithNoRecordOfAnyWorkInterests,
   aCiagInductionWithNoJobInterests,
   aCiagInductionWithJobInterests,
-  aCiagInductionWithPrePrisonQualifications,
-  aCiagInductionWithNoPrePrisonQualifications,
+  aCiagInductionWithOtherQualifications,
+  aCiagInductionWithNoOtherQualifications,
   aCiagInductionWithNoRecordOfAnySkillsAndInterests,
   aCiagInductionWithSkillsAndInterests,
   aCiagInductionWithSkillsButNoInterests,

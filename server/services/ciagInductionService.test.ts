@@ -1,4 +1,4 @@
-import type { PrePrisonQualifications, WorkAndInterests } from 'viewModels'
+import type { OtherQualifications, WorkAndInterests } from 'viewModels'
 import { HmppsAuthClient } from '../data'
 import CiagInductionClient from '../data/ciagInductionClient'
 import CiagInductionService from './ciagInductionService'
@@ -88,8 +88,8 @@ describe('ciagInductionService', () => {
     })
   })
 
-  describe('getPrePrisonQualifications', () => {
-    it('should handle retrieval of pre-prison qualifications given CIAG Induction API returns an unexpected error for the CIAG Induction', async () => {
+  describe('getOtherQualifications', () => {
+    it('should handle retrieval of other qualifications given CIAG Induction API returns an unexpected error for the CIAG Induction', async () => {
       // Given
       const prisonNumber = 'A1234BC'
       const username = 'a-dps-user'
@@ -107,23 +107,23 @@ describe('ciagInductionService', () => {
       }
       ciagClient.getCiagInduction.mockRejectedValue(ciagInductionApiError)
 
-      const expectedPrePrisonData = {
+      const expectedOtherData = {
         problemRetrievingData: true,
         highestEducationLevel: undefined,
         additionalTraining: undefined,
-      } as PrePrisonQualifications
+      } as OtherQualifications
 
       // When
-      const actual = await ciagInductionService.getPrePrisonQualifications(prisonNumber, username).catch(error => {
+      const actual = await ciagInductionService.getOtherQualifications(prisonNumber, username).catch(error => {
         return error
       })
 
       // Then
-      expect(actual).toEqual(expectedPrePrisonData)
+      expect(actual).toEqual(expectedOtherData)
       expect(ciagClient.getCiagInduction).toHaveBeenCalledWith(prisonNumber, systemToken)
     })
 
-    it('should handle retrieval of pre-prison qualifications given CIAG Induction API returns Not Found for the CIAG Induction', async () => {
+    it('should handle retrieval of other qualifications given CIAG Induction API returns Not Found for the CIAG Induction', async () => {
       // Given
       const prisonNumber = 'A1234BC'
       const username = 'a-dps-user'
@@ -141,19 +141,19 @@ describe('ciagInductionService', () => {
       }
       ciagClient.getCiagInduction.mockRejectedValue(ciagInductionApiError)
 
-      const expectedPrePrisonData = {
+      const expectedOtherData = {
         problemRetrievingData: false,
         highestEducationLevel: undefined,
         additionalTraining: undefined,
-      } as PrePrisonQualifications
+      } as OtherQualifications
 
       // When
-      const actual = await ciagInductionService.getPrePrisonQualifications(prisonNumber, username).catch(error => {
+      const actual = await ciagInductionService.getOtherQualifications(prisonNumber, username).catch(error => {
         return error
       })
 
       // Then
-      expect(actual).toEqual(expectedPrePrisonData)
+      expect(actual).toEqual(expectedOtherData)
       expect(ciagClient.getCiagInduction).toHaveBeenCalledWith(prisonNumber, systemToken)
     })
   })

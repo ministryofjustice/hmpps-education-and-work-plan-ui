@@ -104,7 +104,7 @@ declare module 'viewModels' {
   }
 
   /**
-   * A prisoner's pre-prison work experience, skills, and future work interests.
+   * A prisoner's work experience, skills, and future work interests.
    */
   export interface WorkAndInterests {
     problemRetrievingData: boolean
@@ -207,7 +207,10 @@ declare module 'viewModels' {
     updatedAt: Date
   }
 
-  export interface PrePrisonQualifications {
+  /**
+   * Details of a prisoner's other qualifications and training that been completed.
+   */
+  export interface OtherQualifications {
     problemRetrievingData: boolean
     highestEducationLevel?:
       | 'PRIMARY_SCHOOL'
