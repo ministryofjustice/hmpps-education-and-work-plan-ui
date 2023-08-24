@@ -1,6 +1,12 @@
 import moment from 'moment'
 import type { Prisoner } from 'prisonRegisterApiClient'
-import type { PrisonerSummary, FunctionalSkills, InPrisonEducationRecords, OtherQualifications } from 'viewModels'
+import type {
+  PrisonerSummary,
+  FunctionalSkills,
+  InPrisonEducationRecords,
+  OtherQualifications,
+  WorkAndInterests,
+} from 'viewModels'
 import { SessionData } from 'express-session'
 import { NextFunction, Request, Response } from 'express'
 import OverviewController from './overviewController'
@@ -13,6 +19,7 @@ import {
   aValidMathsInPrisonEducation,
 } from '../../testsupport/inPrisonEducationTestDataBuilder'
 import CiagInductionService from '../../services/ciagInductionService'
+import aValidWorkAndInterests from '../../testsupport/workAndInterestsTestDataBuilder'
 
 describe('overviewController', () => {
   const curiousService = {
@@ -60,6 +67,7 @@ describe('overviewController', () => {
       // Given
       const username = 'a-dps-user'
       req.user.username = username
+      req.user.token = 'a-user-token'
 
       const expectedTab = 'overview'
       req.params.tab = expectedTab
@@ -120,6 +128,7 @@ describe('overviewController', () => {
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/overview/index', expectedView)
+      expect(educationAndWorkPlanService.getActionPlan).toHaveBeenCalledWith(prisonNumber, 'a-user-token')
     })
   })
 
@@ -163,6 +172,7 @@ describe('overviewController', () => {
       // Given
       const username = 'a-dps-user'
       req.user.username = username
+      req.user.token = 'a-user-token'
 
       const expectedTab = 'education-and-training'
       req.params.tab = expectedTab
@@ -244,6 +254,45 @@ describe('overviewController', () => {
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/overview/index', expectedView)
+      expect(ciagInductionService.getOtherQualifications).toHaveBeenCalledWith(prisonNumber, 'a-user-token')
+    })
+  })
+
+  describe('getWorkAndInterestsView', () => {
+    it('should get work and interests view', async () => {
+      // Given
+      const username = 'a-dps-user'
+      req.user.username = username
+      req.user.token = 'a-user-token'
+
+      const expectedTab = 'work-and-interests'
+      req.params.tab = expectedTab
+
+      const prisonNumber = 'A1234GC'
+      req.params.prisonNumber = prisonNumber
+
+      req.session.prisonerSummary = { prisonNumber } as Prisoner
+
+      const expectedWorkAndInterests: WorkAndInterests = aValidWorkAndInterests()
+      ciagInductionService.getWorkAndInterests.mockResolvedValue(expectedWorkAndInterests)
+
+      const expectedPrisonerSummary = { prisonNumber } as PrisonerSummary
+      const expectedView = {
+        prisonerSummary: expectedPrisonerSummary,
+        tab: expectedTab,
+        workAndInterests: expectedWorkAndInterests,
+      }
+
+      // When
+      await controller.getWorkAndInterestsView(
+        req as undefined as Request,
+        res as undefined as Response,
+        next as undefined as NextFunction,
+      )
+
+      // Then
+      expect(res.render).toHaveBeenCalledWith('pages/overview/index', expectedView)
+      expect(ciagInductionService.getWorkAndInterests).toHaveBeenCalledWith(prisonNumber, 'a-user-token')
     })
   })
 })

@@ -34,7 +34,7 @@ const toSkillsAndInterests = (ciagInduction: CiagInduction): SkillsAndInterests 
 
   return {
     skills: ciagInduction.skillsAndInterests.skills || [],
-    otherSkill: ciagInduction.skillsAndInterests.skillOTHER,
+    otherSkill: ciagInduction.skillsAndInterests.skillsOther,
     personalInterests: ciagInduction.skillsAndInterests.personalInterests || [],
     otherPersonalInterest: ciagInduction.skillsAndInterests.personalInterestsOther,
     updatedBy: ciagInduction.skillsAndInterests.modifiedBy,

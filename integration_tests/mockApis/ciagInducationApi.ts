@@ -5,7 +5,7 @@ const stubGetCiagProfile404Error = (prisonNumber = 'G6115VJ'): SuperAgentRequest
   stubFor({
     request: {
       method: 'GET',
-      urlPattern: `/ciag/${prisonNumber}`,
+      urlPattern: `/ciag/induction/${prisonNumber}`,
     },
     response: {
       status: 404,
@@ -24,7 +24,7 @@ const stubGetCiagProfile500Error = (prisonNumber = 'G6115VJ'): SuperAgentRequest
   stubFor({
     request: {
       method: 'GET',
-      urlPattern: `/ciag/${prisonNumber}`,
+      urlPattern: `/ciag/induction/${prisonNumber}`,
     },
     response: {
       status: 500,

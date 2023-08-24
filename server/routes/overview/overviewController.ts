@@ -62,7 +62,7 @@ export default class OverviewController {
     const allInPrisonEducation = await this.curiousService.getLearnerEducation(prisonNumber, req.user.username)
     const completedInPrisonEducation = completedInPrisonEducationRecords(allInPrisonEducation)
 
-    const otherQualifications = await this.ciagInductionService.getOtherQualifications(prisonNumber, req.user.username)
+    const otherQualifications = await this.ciagInductionService.getOtherQualifications(prisonNumber, req.user.token)
 
     const view = new EducationAndTrainingView(
       prisonerSummary,
@@ -77,7 +77,7 @@ export default class OverviewController {
     const { prisonNumber } = req.params
     const { prisonerSummary } = req.session
 
-    const workAndInterests = await this.ciagInductionService.getWorkAndInterests(prisonNumber, req.user.username)
+    const workAndInterests = await this.ciagInductionService.getWorkAndInterests(prisonNumber, req.user.token)
 
     const view = new WorkAndInterestsView(prisonerSummary, workAndInterests)
     res.render('pages/overview/index', { ...view.renderArgs })

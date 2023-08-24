@@ -1,7 +1,7 @@
 {
   "request": {
     "method": "GET",
-    "urlPattern": "/ciag/.*"
+    "urlPattern": "/ciag/induction/.*"
   },
   "response": {
     "headers": {
@@ -19,7 +19,7 @@
       "reasonToNotGetWorkOther": null,
       "abilityToWorkOther": "Building work",
       "abilityToWork": ["CARING_RESPONSIBILITIES"],
-      "reasonToNotGetWork": "LIMIT_THEIR_ABILITY",
+      "reasonToNotGetWork": ["LIMIT_THEIR_ABILITY"],
       "workExperience": {
         "hasWorkedBefore": true,
         "modifiedBy": "asmith_gen",
@@ -54,7 +54,7 @@
         "modifiedDateTime": "2023-08-23T12:18:16.902Z",
         "id": 6789,
         "skills": ["COMMUNICATION"],
-        "skillOTHER": "Juggling",
+        "skillsOther": "Juggling",
         "personalInterests": ["COMMUNITY"],
         "personalInterestsOther": "Stamp collecting"
       },

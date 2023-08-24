@@ -12,11 +12,9 @@ export default class CiagInductionService {
     private readonly ciagInductionClient: CiagInductionClient,
   ) {}
 
-  async getWorkAndInterests(prisonNumber: string, username: string): Promise<WorkAndInterests> {
-    const systemToken = await this.hmppsAuthClient.getSystemClientToken(username)
-
+  async getWorkAndInterests(prisonNumber: string, token: string): Promise<WorkAndInterests> {
     try {
-      const ciagInduction = await this.getCiagInduction(prisonNumber, systemToken)
+      const ciagInduction = await this.getCiagInduction(prisonNumber, token)
       return toWorkAndInterests(ciagInduction)
     } catch (error) {
       logger.error(`Error retrieving data from CIAG Induction API: ${JSON.stringify(error)}`)
@@ -24,11 +22,9 @@ export default class CiagInductionService {
     }
   }
 
-  async getOtherQualifications(prisonNumber: string, username: string): Promise<OtherQualifications> {
-    const systemToken = await this.hmppsAuthClient.getSystemClientToken(username)
-
+  async getOtherQualifications(prisonNumber: string, token: string): Promise<OtherQualifications> {
     try {
-      const ciagInduction = await this.getCiagInduction(prisonNumber, systemToken)
+      const ciagInduction = await this.getCiagInduction(prisonNumber, token)
       return toOtherQualifications(ciagInduction)
     } catch (error) {
       logger.error(`Error retrieving data from CIAG Induction API: ${JSON.stringify(error)}`)
