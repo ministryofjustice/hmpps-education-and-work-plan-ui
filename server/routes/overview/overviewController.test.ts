@@ -1,6 +1,6 @@
 import moment from 'moment'
 import type { Prisoner } from 'prisonRegisterApiClient'
-import type { PrisonerSummary, FunctionalSkills, InPrisonEducationRecords, PrePrisonQualifications } from 'viewModels'
+import type { PrisonerSummary, FunctionalSkills, InPrisonEducationRecords, OtherQualifications } from 'viewModels'
 import { SessionData } from 'express-session'
 import { NextFunction, Request, Response } from 'express'
 import OverviewController from './overviewController'
@@ -25,7 +25,7 @@ describe('overviewController', () => {
   }
   const ciagInductionService = {
     getWorkAndInterests: jest.fn(),
-    getPrePrisonQualifications: jest.fn(),
+    getOtherQualifications: jest.fn(),
   }
 
   const controller = new OverviewController(
@@ -213,14 +213,14 @@ describe('overviewController', () => {
         educationRecords: [aValidMathsInPrisonEducation()],
       }
 
-      const prePrisonQualifications = {
+      const otherQualifications = {
         problemRetrievingData: false,
         highestEducationLevel: 'FURTHER_EDUCATION_COLLEGE',
         additionalTraining: ['CSCS_CARD'],
-      } as PrePrisonQualifications
-      ciagInductionService.getPrePrisonQualifications.mockResolvedValue(prePrisonQualifications)
+      } as OtherQualifications
+      ciagInductionService.getOtherQualifications.mockResolvedValue(otherQualifications)
 
-      const expectedPrePrisonQualifications: PrePrisonQualifications = {
+      const expectedOtherQualifications: OtherQualifications = {
         problemRetrievingData: false,
         highestEducationLevel: 'FURTHER_EDUCATION_COLLEGE',
         additionalTraining: ['CSCS_CARD'],
@@ -232,7 +232,7 @@ describe('overviewController', () => {
         tab: expectedTab,
         functionalSkills: expectedFunctionalSkills,
         completedInPrisonEducation: expectedCompletedInPrisonEducation,
-        prePrisonQualifications: expectedPrePrisonQualifications,
+        otherQualifications: expectedOtherQualifications,
       }
 
       // When

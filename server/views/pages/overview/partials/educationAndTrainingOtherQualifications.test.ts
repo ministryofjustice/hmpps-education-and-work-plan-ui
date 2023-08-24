@@ -3,10 +3,8 @@ import cheerio from 'cheerio'
 import nunjucks, { Template } from 'nunjucks'
 import { registerNunjucks } from '../../../../utils/nunjucksSetup'
 
-describe('Education and Training tab view - Pre Prison Qualifications', () => {
-  const template = fs.readFileSync(
-    'server/views/pages/overview/partials/educationAndTrainingPrePrisonQualifications.njk',
-  )
+describe('Education and Training tab view - Other Qualifications and history', () => {
+  const template = fs.readFileSync('server/views/pages/overview/partials/educationAndTrainingOtherQualifications.njk')
   const prisonerSummary = {
     prisonNumber: 'A1234BC',
     releaseDate: '2025-12-31',
@@ -24,12 +22,12 @@ describe('Education and Training tab view - Pre Prison Qualifications', () => {
     compiledTemplate = nunjucks.compile(template.toString(), njkEnv)
   })
 
-  it('should render Pre Prison Qualifications table', () => {
+  it('should render Other Qualifications and history table', () => {
     // Given
     viewContext = {
       prisonerSummary,
       tab: 'education-and-training',
-      prePrisonQualifications: {
+      otherQualifications: {
         problemRetrievingData: false,
         highestEducationLevel: 'SECONDARY_SCHOOL_TOOK_EXAMS',
         additionalTraining: ['FIRST_AID_CERTIFICATE', 'HEALTH_AND_SAFETY'],
@@ -40,13 +38,11 @@ describe('Education and Training tab view - Pre Prison Qualifications', () => {
     const $ = cheerio.load(compiledTemplate.render(viewContext))
 
     // Then
-    expect($('#pre-prison-qualifications-table tbody tr').length).toBe(2)
-    expect($('#pre-prison-qualifications-table tbody tr td').length).toBe(4)
-    expect($('#pre-prison-qualifications-table tbody tr td:nth-child(2)').text()).toContain(
-      'SECONDARY_SCHOOL_TOOK_EXAMS',
-    )
-    expect($('#pre-prison-qualifications-table tbody tr td:nth-child(2)').text()).toContain('FIRST_AID_CERTIFICATE')
-    expect($('#pre-prison-qualifications-table tbody tr td:nth-child(2)').text()).toContain('HEALTH_AND_SAFETY')
+    expect($('#other-qualifications-table tbody tr').length).toBe(2)
+    expect($('#other-qualifications-table tbody tr td').length).toBe(4)
+    expect($('#other-qualifications-table tbody tr td:nth-child(2)').text()).toContain('SECONDARY_SCHOOL_TOOK_EXAMS')
+    expect($('#other-qualifications-table tbody tr td:nth-child(2)').text()).toContain('FIRST_AID_CERTIFICATE')
+    expect($('#other-qualifications-table tbody tr td:nth-child(2)').text()).toContain('HEALTH_AND_SAFETY')
   })
 
   it('should render content saying curious is unavailable given problem retrieving data is true', () => {
@@ -54,7 +50,7 @@ describe('Education and Training tab view - Pre Prison Qualifications', () => {
     viewContext = {
       prisonerSummary,
       tab: 'education-and-training',
-      prePrisonQualifications: {
+      otherQualifications: {
         problemRetrievingData: true,
       },
     }

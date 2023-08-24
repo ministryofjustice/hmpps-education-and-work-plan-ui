@@ -1,10 +1,10 @@
-import type { WorkAndInterests, PrePrisonQualifications } from 'viewModels'
+import type { WorkAndInterests, OtherQualifications } from 'viewModels'
 import type { CiagInduction } from 'ciagInductionApiClient'
 import { HmppsAuthClient } from '../data'
 import CiagInductionClient from '../data/ciagInductionClient'
 import logger from '../../logger'
 import toWorkAndInterests from '../data/mappers/workAndInterestMapper'
-import toPrePrisonQualifications from '../data/mappers/prePrisonQualificationsMapper'
+import toOtherQualifications from '../data/mappers/otherQualificationsMapper'
 
 export default class CiagInductionService {
   constructor(
@@ -24,15 +24,15 @@ export default class CiagInductionService {
     }
   }
 
-  async getPrePrisonQualifications(prisonNumber: string, username: string): Promise<PrePrisonQualifications> {
+  async getOtherQualifications(prisonNumber: string, username: string): Promise<OtherQualifications> {
     const systemToken = await this.hmppsAuthClient.getSystemClientToken(username)
 
     try {
       const ciagInduction = await this.getCiagInduction(prisonNumber, systemToken)
-      return toPrePrisonQualifications(ciagInduction)
+      return toOtherQualifications(ciagInduction)
     } catch (error) {
       logger.error(`Error retrieving data from CIAG Induction API: ${JSON.stringify(error)}`)
-      return { problemRetrievingData: true } as PrePrisonQualifications
+      return { problemRetrievingData: true } as OtherQualifications
     }
   }
 

@@ -106,6 +106,6 @@ export default {
   featureToggles: {
     // someToggleEnabled: Boolean(get('SOME_TOGGLE_ENABLED', false)),
     workAndInterestsTabEnabled: Boolean(get('WORK_AND_INTERESTS_TAB_ENABLED', false)),
-    prePrisonQualificationsEnabled: Boolean(get('PRE_PRISON_QUALIFICATIONS_ENABLED', false)),
+    prePrisonQualificationsEnabled: Boolean(get('OTHER_QUALIFICATIONS_ENABLED', false)),
   },
 }

@@ -1,34 +1,27 @@
-{% if not prePrisonQualifications.problemRetrievingData %}
+{% if not otherQualifications.problemRetrievingData %}
 
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
 
       <div class="govuk-summary-card">
         <div class="govuk-summary-card__title-wrapper">
-          <h2 class="govuk-summary-card__title">Pre-prison qualifications and education</h2>
+          <h2 class="govuk-summary-card__title">Other qualifications and history</h2>
         </div>
         <div class="govuk-summary-card__content">
-          <table class="govuk-table" id="pre-prison-qualifications-table">
-            <caption class="govuk-table__caption govuk-visually-hidden">Details pre-prison qualifications and education that have been completed</caption>
-
-            <thead class="govuk-table__head">
-              <tr class="govuk-table__row">
-                <th scope="col" class="govuk-table__header">Type</th>
-                <th scope="col" class="govuk-table__header">Completed on</th>
-              </tr>
-            </thead>
+          <table class="govuk-table" id="other-qualifications-table">
+            <caption class="govuk-table__caption govuk-visually-hidden">Details other qualifications and training that have been completed</caption>
 
             <tbody class="govuk-table__body">
               <tr class="govuk-table__row">
                 <td class="govuk-table__cell">Highest level of education</td>
-                <td class="govuk-table__cell">{{ prePrisonQualifications.highestEducationLevel }}</td>
+                <td class="govuk-table__cell">{{ otherQualifications.highestEducationLevel }}</td>
               </tr>
             </tbody>
             <tr class="govuk-table__row">
               <td class="govuk-table__cell">Other training or qualifications</td>
               <td class="govuk-table__cell">
                 <ul class="govuk-list">
-                  {% for additionalTraining in prePrisonQualifications.additionalTraining %}
+                  {% for additionalTraining in otherQualifications.additionalTraining %}
                     <li>{{ additionalTraining }}</li>
                   {% endfor %}
                 </ul>

@@ -1,7 +1,7 @@
 import type { CiagInduction } from 'ciagInductionApiClient'
-import type { PrePrisonQualifications } from 'viewModels'
+import type { OtherQualifications } from 'viewModels'
 
-const toPrePrisonQualifications = (ciagInduction: CiagInduction): PrePrisonQualifications => {
+const toOtherQualifications = (ciagInduction: CiagInduction): OtherQualifications => {
   if (!ciagInduction || !ciagInduction.qualificationsAndTraining) {
     return { problemRetrievingData: false, highestEducationLevel: undefined, additionalTraining: undefined }
   }
@@ -13,4 +13,4 @@ const toPrePrisonQualifications = (ciagInduction: CiagInduction): PrePrisonQuali
   }
 }
 
-export default toPrePrisonQualifications
+export default toOtherQualifications

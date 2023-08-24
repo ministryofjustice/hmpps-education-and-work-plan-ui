@@ -62,16 +62,13 @@ export default class OverviewController {
     const allInPrisonEducation = await this.curiousService.getLearnerEducation(prisonNumber, req.user.username)
     const completedInPrisonEducation = completedInPrisonEducationRecords(allInPrisonEducation)
 
-    const prePrisonQualifications = await this.ciagInductionService.getPrePrisonQualifications(
-      prisonNumber,
-      req.user.username,
-    )
+    const otherQualifications = await this.ciagInductionService.getOtherQualifications(prisonNumber, req.user.username)
 
     const view = new EducationAndTrainingView(
       prisonerSummary,
       functionalSkills,
       completedInPrisonEducation,
-      prePrisonQualifications,
+      otherQualifications,
     )
     res.render('pages/overview/index', { ...view.renderArgs })
   }
