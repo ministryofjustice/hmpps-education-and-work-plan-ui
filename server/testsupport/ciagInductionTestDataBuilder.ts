@@ -117,6 +117,55 @@ const aCiagInductionWithNoPrePrisonQualifications = (prisonNumber = 'A1234BC'): 
   }
 }
 
+const aCiagInductionWithNoRecordOfAnySkillsAndInterests = (prisonNumber = 'A1234BC'): CiagInduction => {
+  return {
+    ...baseCiagInductionTemplate(prisonNumber),
+    skillsAndInterests: null,
+  }
+}
+
+const aCiagInductionWithSkillsAndInterests = (prisonNumber = 'A1234BC'): CiagInduction => {
+  return {
+    ...baseCiagInductionTemplate(prisonNumber),
+    skillsAndInterests: {
+      modifiedBy: 'ANOTHER_DPS_USER_GEN',
+      modifiedDateTime: '2023-08-22T11:12:31.943Z',
+      skills: ['TEAMWORK', 'WILLINGNESS_TO_LEARN', 'OTHER'],
+      skillOTHER: 'Tenacity',
+      personalInterests: ['CREATIVE', 'DIGITAL', 'OTHER'],
+      personalInterestsOther: 'Renewable energy',
+    },
+  }
+}
+
+const aCiagInductionWithSkillsButNoInterests = (prisonNumber = 'A1234BC'): CiagInduction => {
+  return {
+    ...baseCiagInductionTemplate(prisonNumber),
+    skillsAndInterests: {
+      modifiedBy: 'ANOTHER_DPS_USER_GEN',
+      modifiedDateTime: '2023-08-22T11:12:31.943Z',
+      skills: ['TEAMWORK', 'WILLINGNESS_TO_LEARN', 'OTHER'],
+      skillOTHER: 'Tenacity',
+      personalInterests: null,
+      personalInterestsOther: null,
+    },
+  }
+}
+
+const aCiagInductionWithNoSkillsButSomeInterests = (prisonNumber = 'A1234BC'): CiagInduction => {
+  return {
+    ...baseCiagInductionTemplate(prisonNumber),
+    skillsAndInterests: {
+      modifiedBy: 'ANOTHER_DPS_USER_GEN',
+      modifiedDateTime: '2023-08-22T11:12:31.943Z',
+      skills: null,
+      skillOTHER: null,
+      personalInterests: ['CREATIVE', 'DIGITAL', 'OTHER'],
+      personalInterestsOther: 'Renewable energy',
+    },
+  }
+}
+
 const baseCiagInductionTemplate = (prisonNumber = 'A1234BC'): CiagInduction => {
   return {
     offenderId: prisonNumber,
@@ -136,4 +185,8 @@ export {
   aCiagInductionWithJobInterests,
   aCiagInductionWithPrePrisonQualifications,
   aCiagInductionWithNoPrePrisonQualifications,
+  aCiagInductionWithNoRecordOfAnySkillsAndInterests,
+  aCiagInductionWithSkillsAndInterests,
+  aCiagInductionWithSkillsButNoInterests,
+  aCiagInductionWithNoSkillsButSomeInterests,
 }
