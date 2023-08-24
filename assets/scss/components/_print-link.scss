@@ -1,0 +1,68 @@
+.app-print-link {
+  display: none
+}
+
+.app-print-link .app-print-link--show-without-js {
+  display: block
+}
+
+.js-enabled .app-print-link {
+   display: block
+}
+
+.app-print-link__link,
+.app-print-link__button {
+  background: url(/assets/images/icon-print.png) no-repeat 10px 50%;
+  background-size: 16px 18px;
+  padding: 10px 10px 10px 36px;
+  text-decoration: none;
+}
+
+@include govuk-media-query($from: tablet) {
+  .app-print-link__link,
+  .app-print-link__button {
+    float: right;
+  }
+}
+
+@media only screen and (-webkit-min-device-pixel-ratio: 2),
+only screen and (min-resolution: 192dpi),
+only screen and (min-resolution: 2dppx) {
+  .app-print-link__link,
+  .app-print-link__button {
+    background-image: url(/assets/images/icon-print-2x.png)
+  }
+}
+
+.app-print-link__link:hover,
+.app-print-link__button:hover {
+  background-color: #f3f2f1
+}
+
+.app-print-link__link {
+  box-shadow: inset 0 0 0 1px #b1b4b6
+}
+
+.app-print-link__link:focus {
+  border: 0;
+  box-shadow: 0 3px #0b0c0c
+}
+
+.app-print-link__button {
+  border: 1px solid #b1b4b6;
+  color: #1d70b8;
+  cursor: pointer;
+  margin: 0
+}
+
+.app-print-link__button:focus {
+  outline: 3px solid transparent;
+  color: #0b0c0c;
+  background-color: #fd0;
+  box-shadow: 0 -2px #fd0, 0 4px #0b0c0c;
+  text-decoration: none;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  background-color: #fd0;
+  border-color: transparent
+}
