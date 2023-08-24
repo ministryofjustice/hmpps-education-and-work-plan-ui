@@ -16,7 +16,7 @@
               text: "Add a new goal",
               href: "/plan/" + prisonNumber + "/goals/create",
               id: "add-goal-button",
-              classes: "moj-button-menu__item moj-page-header-actions__action"
+              classes: "moj-button-menu__item moj-page-header-actions__action govuk-!-display-none-print"
             }) }}
 
           </div>
@@ -31,7 +31,7 @@
     <div class="govuk-summary-card" data-qa="goal-summary-card">
       <div class="govuk-summary-card__title-wrapper">
         <h2 class="govuk-summary-card__title">Goal {{ loop.index }}</h2>
-        <ul class="govuk-summary-card__actions">
+        <ul class="govuk-summary-card__actions govuk-!-display-none-print">
           {% if hasEditAuthority %}
             <li class="govuk-summary-card__action">
               <a class="govuk-link" href="/plan/{{ prisonerSummary.prisonNumber }}/goals/{{ goal.goalReference }}/update" data-qa="goal-{{ loop.index-1 }}-update-button">Update</a>
@@ -47,7 +47,7 @@
       <div class="govuk-summary-card__content">
         <p class="govuk-body">{{ goal.title }}</p>
         <p class="govuk-hint">Created on {{ goal.createdAt | formatDate('DD MMMM YYYY') }}
-          by {{ goal.createdByDisplayName }}</p>
+          <span class="govuk-!-display-none-print">by {{ goal.createdByDisplayName }}</span></p>
 
         <table class="govuk-table">
           <caption class="govuk-table__caption govuk-visually-hidden">Goal {{ loop.index }} steps</caption>
@@ -88,10 +88,10 @@
           {{ govukDetails({
             summaryHtml: "View note<span class='govuk-visually-hidden'> for Goal " + loop.index + "</span>",
             text: goal.note,
-            classes: "govuk-!-display-none-print",
             attributes: {
               "data-qa": "overview-notes-expander-" + loop.index
-            }
+            },
+            classes: "app-notes-expander"
           }) }}
         {% endif %}
 

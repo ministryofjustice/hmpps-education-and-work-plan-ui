@@ -6,6 +6,7 @@
 {% from "govuk/components/details/macro.njk" import govukDetails %}
 {% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
 {% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
+{% from "govuk/components/footer/macro.njk" import govukFooter %}
 {% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
 {% from "govuk/components/input/macro.njk" import govukInput %}
 {% from "govuk/components/phase-banner/macro.njk" import govukPhaseBanner %}
@@ -24,6 +25,8 @@
   <link href="/assets/stylesheets/application-ie8.css?{{ version }}" rel="stylesheet"/>
   <script src="/assets/js/html5shiv-3.7.3.min.js"></script>
   <![endif]-->
+  
+  <link href="/assets/stylesheets/print.css?{{ version }}" media="print" rel="stylesheet" />
 
   <script src="/assets/js/jquery.min.js"></script> 
 {% endblock %}
@@ -46,7 +49,8 @@
       },
       tag: {
         text: "beta"
-      }
+      },
+      classes: "govuk-!-display-none-print"
     }) }}
 
     {% block beforeContent %}{% endblock %}
@@ -56,10 +60,17 @@
   </div>
 {% endblock %}
 
+{% block footer %}
+  {{ govukFooter({
+    classes: "govuk-!-display-none-print"
+  }) }}
+{% endblock %}
+
 {% block bodyEnd %}
   {# Run JavaScript at end of the
   <body>, to avoid blocking the initial render. #}
   <script src="/assets/govuk/all.js"></script>
   <script src="/assets/govukFrontendInit.js"></script>
   <script src="/assets/moj/all.js"></script>
+  <script src="/assets/print.js"></script>
 {% endblock %}
