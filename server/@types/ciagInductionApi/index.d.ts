@@ -4,7 +4,7 @@
  */
 
 export interface paths {
-  '/ciag/{offenderId}': {
+  '/ciag/induction/{offenderId}': {
     /**
      * Fetch the CIAG profile for the offender
      * @description Currently requires role <b>ROLE_VIEW_PRISONER_DATA</b>
@@ -69,8 +69,7 @@ export interface components {
         | 'OTHER'
         | 'NONE'
       )[]
-      /** @enum {string} */
-      reasonToNotGetWork?:
+      reasonToNotGetWork?: (
         | 'LIMIT_THEIR_ABILITY'
         | 'FULL_TIME_CARER'
         | 'LACKS_CONFIDENCE_OR_MOTIVATION'
@@ -79,6 +78,7 @@ export interface components {
         | 'NO_RIGHT_TO_WORK'
         | 'OTHER'
         | 'NO_REASON'
+      )[]
       workExperience?: components['schemas']['PreviousWork']
       skillsAndInterests?: components['schemas']['SkillsAndInterests']
       qualificationsAndTraining?: components['schemas']['EducationAndQualification']
@@ -198,7 +198,7 @@ export interface components {
         | 'OTHER'
         | 'NONE'
       )[]
-      skillOTHER?: string
+      skillsOther?: string
       personalInterests?: (
         | 'COMMUNITY'
         | 'CRAFTS'
@@ -315,8 +315,7 @@ export interface components {
         | 'OTHER'
         | 'NONE'
       )[]
-      /** @enum {string} */
-      reasonToNotGetWork?:
+      reasonToNotGetWork?: (
         | 'LIMIT_THEIR_ABILITY'
         | 'FULL_TIME_CARER'
         | 'LACKS_CONFIDENCE_OR_MOTIVATION'
@@ -325,6 +324,7 @@ export interface components {
         | 'NO_RIGHT_TO_WORK'
         | 'OTHER'
         | 'NO_REASON'
+      )[]
       workExperience?: components['schemas']['PreviousWork']
       skillsAndInterests?: components['schemas']['SkillsAndInterests']
       qualificationsAndTraining?: components['schemas']['EducationAndQualification']
@@ -359,6 +359,12 @@ export interface operations {
           'application/json': components['schemas']['CIAGProfileDTO']
         }
       }
+      /** @description Invalid Parameters have been passed */
+      400: {
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
       /** @description Unauthorized to access this endpoint */
       401: {
         content: {
@@ -369,6 +375,12 @@ export interface operations {
       403: {
         content: {
           'application/json': string
+        }
+      }
+      /** @description Resource not found */
+      404: {
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
@@ -392,10 +404,16 @@ export interface operations {
       }
     }
     responses: {
-      /** @description CIAG profile created */
+      /** @description CIAG profile update */
       200: {
         content: {
           'application/json': components['schemas']['CIAGProfileDTO']
+        }
+      }
+      /** @description Invalid Parameters have been passed */
+      400: {
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unauthorized to access this endpoint */
@@ -406,6 +424,12 @@ export interface operations {
       }
       /** @description Incorrect permissions to access this endpoint */
       403: {
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Resource not found */
+      404: {
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
@@ -437,6 +461,12 @@ export interface operations {
           'application/json': components['schemas']['CIAGProfileDTO']
         }
       }
+      /** @description Invalid Parameters have been passed */
+      400: {
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
       /** @description Unauthorized to access this endpoint */
       401: {
         content: {
@@ -445,6 +475,12 @@ export interface operations {
       }
       /** @description Incorrect permissions to access this endpoint */
       403: {
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Resource not found */
+      404: {
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
@@ -468,6 +504,12 @@ export interface operations {
           'application/json': components['schemas']['CIAGProfileDTO']
         }
       }
+      /** @description Invalid Parameters have been passed */
+      400: {
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
       /** @description Unauthorized to access this endpoint */
       401: {
         content: {
@@ -478,6 +520,12 @@ export interface operations {
       403: {
         content: {
           'application/json': string
+        }
+      }
+      /** @description Resource not found */
+      404: {
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
         }
       }
     }

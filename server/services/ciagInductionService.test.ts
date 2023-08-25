@@ -24,10 +24,7 @@ describe('ciagInductionService', () => {
     it('should handle retrieval of work and interests given CIAG Induction API returns an unexpected error for the CIAG Induction', async () => {
       // Given
       const prisonNumber = 'A1234BC'
-      const username = 'a-dps-user'
-
-      const systemToken = 'a-system-token'
-      hmppsAuthClient.getSystemClientToken.mockResolvedValue(systemToken)
+      const userToken = 'a-user-token'
 
       const ciagInductionApiError = {
         status: 500,
@@ -45,22 +42,19 @@ describe('ciagInductionService', () => {
       } as WorkAndInterests
 
       // When
-      const actual = await ciagInductionService.getWorkAndInterests(prisonNumber, username).catch(error => {
+      const actual = await ciagInductionService.getWorkAndInterests(prisonNumber, userToken).catch(error => {
         return error
       })
 
       // Then
       expect(actual).toEqual(expectedWorkAndInterests)
-      expect(ciagClient.getCiagInduction).toHaveBeenCalledWith(prisonNumber, systemToken)
+      expect(ciagClient.getCiagInduction).toHaveBeenCalledWith(prisonNumber, userToken)
     })
 
     it('should handle retrieval of work and interests given CIAG Induction API returns Not Found for the CIAG Induction', async () => {
       // Given
       const prisonNumber = 'A1234BC'
-      const username = 'a-dps-user'
-
-      const systemToken = 'a-system-token'
-      hmppsAuthClient.getSystemClientToken.mockResolvedValue(systemToken)
+      const userToken = 'a-user-token'
 
       const ciagInductionApiError = {
         status: 404,
@@ -78,13 +72,13 @@ describe('ciagInductionService', () => {
       } as WorkAndInterests
 
       // When
-      const actual = await ciagInductionService.getWorkAndInterests(prisonNumber, username).catch(error => {
+      const actual = await ciagInductionService.getWorkAndInterests(prisonNumber, userToken).catch(error => {
         return error
       })
 
       // Then
       expect(actual).toEqual(expectedWorkAndInterests)
-      expect(ciagClient.getCiagInduction).toHaveBeenCalledWith(prisonNumber, systemToken)
+      expect(ciagClient.getCiagInduction).toHaveBeenCalledWith(prisonNumber, userToken)
     })
   })
 
@@ -92,10 +86,7 @@ describe('ciagInductionService', () => {
     it('should handle retrieval of other qualifications given CIAG Induction API returns an unexpected error for the CIAG Induction', async () => {
       // Given
       const prisonNumber = 'A1234BC'
-      const username = 'a-dps-user'
-
-      const systemToken = 'a-system-token'
-      hmppsAuthClient.getSystemClientToken.mockResolvedValue(systemToken)
+      const userToken = 'a-user-token'
 
       const ciagInductionApiError = {
         status: 500,
@@ -114,22 +105,19 @@ describe('ciagInductionService', () => {
       } as OtherQualifications
 
       // When
-      const actual = await ciagInductionService.getOtherQualifications(prisonNumber, username).catch(error => {
+      const actual = await ciagInductionService.getOtherQualifications(prisonNumber, userToken).catch(error => {
         return error
       })
 
       // Then
       expect(actual).toEqual(expectedOtherData)
-      expect(ciagClient.getCiagInduction).toHaveBeenCalledWith(prisonNumber, systemToken)
+      expect(ciagClient.getCiagInduction).toHaveBeenCalledWith(prisonNumber, userToken)
     })
 
     it('should handle retrieval of other qualifications given CIAG Induction API returns Not Found for the CIAG Induction', async () => {
       // Given
       const prisonNumber = 'A1234BC'
-      const username = 'a-dps-user'
-
-      const systemToken = 'a-system-token'
-      hmppsAuthClient.getSystemClientToken.mockResolvedValue(systemToken)
+      const userToken = 'a-user-token'
 
       const ciagInductionApiError = {
         status: 404,
@@ -148,13 +136,13 @@ describe('ciagInductionService', () => {
       } as OtherQualifications
 
       // When
-      const actual = await ciagInductionService.getOtherQualifications(prisonNumber, username).catch(error => {
+      const actual = await ciagInductionService.getOtherQualifications(prisonNumber, userToken).catch(error => {
         return error
       })
 
       // Then
       expect(actual).toEqual(expectedOtherData)
-      expect(ciagClient.getCiagInduction).toHaveBeenCalledWith(prisonNumber, systemToken)
+      expect(ciagClient.getCiagInduction).toHaveBeenCalledWith(prisonNumber, userToken)
     })
   })
 })

@@ -9,7 +9,7 @@ export default class CiagInductionClient {
 
   async getCiagInduction(prisonNumber: string, token: string): Promise<CiagInduction> {
     const ciagInduction = CiagInductionClient.restClient(token).get({
-      path: `/ciag/${prisonNumber}`,
+      path: `/ciag/induction/${prisonNumber}`,
     })
     return ciagInduction as Promise<CiagInduction>
   }
