@@ -73,6 +73,7 @@ export function registerNunjucks(app?: express.Express): Environment {
   njkEnv.addFilter('formatPersonalInterests', formatPersonalInterestsFilter)
 
   njkEnv.addGlobal('dpsUrl', config.dpsHomeUrl)
+  njkEnv.addGlobal('ciagInductionUrl', config.ciagInductionUrl)
   njkEnv.addGlobal('featureToggles', config.featureToggles)
 
   return njkEnv

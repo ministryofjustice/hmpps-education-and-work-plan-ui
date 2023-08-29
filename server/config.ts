@@ -103,6 +103,7 @@ export default {
   },
   domain: get('INGRESS_URL', 'http://localhost:3000', requiredInProduction),
   dpsHomeUrl: get('DPS_URL', 'http://localhost:3000/', requiredInProduction),
+  ciagInductionUrl: get('CIAG_INDUCTION_UI_URL', 'http://localhost:3000', requiredInProduction),
   featureToggles: {
     // someToggleEnabled: Boolean(get('SOME_TOGGLE_ENABLED', false)),
     workAndInterestsTabEnabled: Boolean(get('WORK_AND_INTERESTS_TAB_ENABLED', false)),
