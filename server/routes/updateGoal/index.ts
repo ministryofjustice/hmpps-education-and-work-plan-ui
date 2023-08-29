@@ -2,8 +2,7 @@ import { Router } from 'express'
 import { Services } from '../../services'
 import UpdateGoalController from './updateGoalController'
 import { checkUserHasEditAuthority } from '../../middleware/roleBasedAccessControl'
-import { checkPrisonerSummaryExistsInSession } from '../createGoal/routerRequestHandlers'
-import checkUpdateGoalFormExistsInSession from './routerRequestHandlers'
+import { checkPrisonerSummaryExistsInSession, checkUpdateGoalFormExistsInSession } from '../routerRequestHandlers'
 import PrisonerSummaryRequestHandler from '../overview/prisonerSummaryRequestHandler'
 
 /**
