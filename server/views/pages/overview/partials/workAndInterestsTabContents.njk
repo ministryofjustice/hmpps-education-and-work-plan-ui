@@ -1,6 +1,14 @@
 {% if not workAndInterests.problemRetrievingData %}
 
-  {% if workAndInterest.data %}
+  {% if workAndInterests.data %}
+  
+  {# TODO - Is there a better way to do this? #}
+  {% if workAndInterests.data.workExperience.jobs[0].type == 'OTHER' %}
+    {% set workExperienceType = workAndInterests.data.workExperience.jobs[0].other %}
+  {% else %}
+    {% set workExperienceType = workAndInterests.data.workExperience.jobs[0].type | formatJobType %}
+  {% endif %}
+
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
 
@@ -15,7 +23,7 @@
                 Worked before
               </dt>
               <dd class="govuk-summary-list__value">
-                [Value]
+                {{ workAndInterests.data.workExperience.hasWorkedPreviously | formatYesNo }}
               </dd>
               <dd class="govuk-summary-list__actions">
                 {# TODO RR-115 - add link href to CIAG Induction question set #}
@@ -29,7 +37,7 @@
                 Type of work experience
               </dt>
               <dd class="govuk-summary-list__value">
-                [Value]
+                {{ workExperienceType }}
               </dd>
               <dd class="govuk-summary-list__actions">
                 {# TODO RR-115 - add link href to CIAG Induction question set #}
@@ -40,20 +48,21 @@
             </div>
             <div class="govuk-summary-list__row">
               <dt class="govuk-summary-list__key">
-                Construction and trade experience details
+                {{ workExperienceType }} experience details
               </dt>
               <dd class="govuk-summary-list__value">
-                [Value]
+                <p>Job role:<br> {{ workAndInterests.data.workExperience.jobs[0].role }}</p>
+                <p>Roles and responsibilities:<br> {{ workAndInterests.data.workExperience.jobs[0].responsibilities }}</p>
               </dd>
               <dd class="govuk-summary-list__actions">
                 {# TODO RR-115 - add link href to CIAG Induction question set #}
                 <a class="govuk-link" href="#">
-                  Change<span class="govuk-visually-hidden"> construction and trade experience details</span>
+                  Change<span class="govuk-visually-hidden"> {{ workExperienceType }} experience details</span>
                 </a>
               </dd>
             </div>
           </dl>
-          <p class="govuk-hint">Last updated: [Date] by [User]</p>
+          <p class="govuk-hint">Last updated: {{ workAndInterests.data.workExperience.updatedAt | formatDate('DD MMMM YYYY') }} by {{ workAndInterests.data.workExperience.updatedBy }}</p>
         </div>
       </div>
 
@@ -68,7 +77,7 @@
                 Hoping to work on release
               </dt>
               <dd class="govuk-summary-list__value">
-                [Value]
+                {{ workAndInterests.data.workInterests.hopingToWorkOnRelease | formatYesNo }}
               </dd>
               <dd class="govuk-summary-list__actions">
                 {# TODO RR-115 - add link href to CIAG Induction question set #}
@@ -82,7 +91,15 @@
                 Potential affect on ability to work
               </dt>
               <dd class="govuk-summary-list__value">
-                [Value]
+                {% if workAndInterests.data.workInterests.constraintsOnAbilityToWork == 'OTHER' %}
+                  {{ workAndInterests.data.WorkInterests.otherConstraintsOnAbilityToWork }}
+                {% else %}
+                <ul class="govuk-list">
+                  {% for abilityToWorkConstraint in workAndInterests.data.workInterests.constraintsOnAbilityToWork %}
+                  <li>{{ abilityToWorkConstraint | formatAbilityToWorkConstraint }}</li>
+                  {% endfor %}
+                </ul>
+                {% endif %}
               </dd>
               <dd class="govuk-summary-list__actions">
                 {# TODO RR-115 - add link href to CIAG Induction question set #}
@@ -96,7 +113,9 @@
                 Type of work
               </dt>
               <dd class="govuk-summary-list__value">
-                [Value]
+                {% for typeOfWork in workAndInterests.data.workInterests.jobTypes %}
+                  {{ typeOfWork | formatJobType }}<br>
+                {% endfor %}
               </dd>
               <dd class="govuk-summary-list__actions">
                 {# TODO RR-115 - add link href to CIAG Induction question set #}
@@ -110,7 +129,12 @@
                 Specific job role of interest
               </dt>
               <dd class="govuk-summary-list__value">
-                [Value]
+                <ul class="govuk-list">
+                {# TODO - Handle NULL value #}
+                {% for specificJobRole in workAndInterests.data.workInterests.specificJobRoles %}
+                  <li>{{ specificJobRole | formatJobType }}</li>
+                {% endfor %}
+                </ul>
               </dd>
               <dd class="govuk-summary-list__actions">
                 {# TODO RR-115 - add link href to CIAG Induction question set #}
@@ -120,7 +144,7 @@
               </dd>
             </div>
           </dl>
-          <p class="govuk-hint">Last updated: [Date] by [User]</p>
+          <p class="govuk-hint">Last updated: {{ workAndInterests.data.workInterests.updatedAt | formatDate('DD MMMM YYYY') }} by {{ workAndInterests.data.workInterests.updatedBy }}</p>
         </div>
       </div>
 
@@ -135,7 +159,15 @@
                 Skills
               </dt>
               <dd class="govuk-summary-list__value">
-                [Value]
+                {% if workAndInterests.data.skillsAndInterests.skills == 'OTHER' %}
+                  {{ workAndInterests.data.skillsAndInterests.otherSkill }}
+                {% else %}
+                <ul class="govuk-list">
+                  {% for skill in workAndInterests.data.skillsAndInterests.skills %}
+                  <li>{{ skill | formatSkill }}</li>
+                  {% endfor %}
+                </ul>
+                {% endif %}
               </dd>
               <dd class="govuk-summary-list__actions">
                 {# TODO RR-115 - add link href to CIAG Induction question set #}
@@ -149,7 +181,15 @@
                 Personal interests
               </dt>
               <dd class="govuk-summary-list__value">
-                [Value]
+                {% if workAndInterests.data.skillsAndInterests.personalInterests == 'OTHER' %}
+                  {{ workAndInterests.data.skillsAndInterests.otherPersonalInterest }}
+                {% else %}
+                <ul class="govuk-list">
+                  {% for personalInterest in workAndInterests.data.skillsAndInterests.personalInterests %}
+                  <li>{{ personalInterest | formatPersonalInterests }}</li>
+                  {% endfor %}
+                </ul>
+                {% endif %}
               </dd>
               <dd class="govuk-summary-list__actions">
                 {# TODO RR-115 - add link href to CIAG Induction question set #}
@@ -159,7 +199,7 @@
               </dd>
             </div>
           </dl>
-          <p class="govuk-hint">Last updated: [Date] by [User]</p>
+          <p class="govuk-hint">Last updated: {{ workAndInterests.data.skillsAndInterests.updatedAt | formatDate('DD MMMM YYYY') }} by {{ workAndInterests.data.skillsAndInterests.updatedBy }}</p>
         </div>
       </div>
 

@@ -16,6 +16,8 @@ import formatAbilityToWorkConstraintFilter from '../filters/formatAbilityToWorkC
 import formatJobTypeFilter from '../filters/formatJobTypeFilter'
 import formatEducationLevelFilter from '../filters/formatEducationLevelFilter'
 import formatAdditionalTrainingFilter from '../filters/formatAdditionalTrainingFilter'
+import formatSkillFilter from '../filters/formatSkillFilter'
+import formatPersonalInterestsFilter from '../filters/formatPersonalInterestsFilter'
 
 const production = process.env.NODE_ENV === 'production'
 
@@ -67,6 +69,8 @@ export function registerNunjucks(app?: express.Express): Environment {
   njkEnv.addFilter('formatJobType', formatJobTypeFilter)
   njkEnv.addFilter('formatEducationLevel', formatEducationLevelFilter)
   njkEnv.addFilter('formatAdditionalTraining', formatAdditionalTrainingFilter)
+  njkEnv.addFilter('formatSkill', formatSkillFilter)
+  njkEnv.addFilter('formatPersonalInterests', formatPersonalInterestsFilter)
 
   njkEnv.addGlobal('dpsUrl', config.dpsHomeUrl)
   njkEnv.addGlobal('featureToggles', config.featureToggles)
