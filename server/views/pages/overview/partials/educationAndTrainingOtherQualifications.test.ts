@@ -41,13 +41,13 @@ describe('Education and Training tab view - Other Qualifications and history', (
     expect($('#other-qualifications-list .govuk-summary-list__row').length).toBe(2)
     expect(
       $('#other-qualifications-list .govuk-summary-list__row:nth-of-type(1) .govuk-summary-list__value').text(),
-    ).toContain('SECONDARY_SCHOOL_TOOK_EXAMS')
+    ).toContain('Secondary school, took exams')
     expect(
       $('#other-qualifications-list .govuk-summary-list__row:nth-of-type(2) .govuk-summary-list__value').text(),
-    ).toContain('FIRST_AID_CERTIFICATE')
+    ).toContain('First aid certificate')
     expect(
       $('#other-qualifications-list .govuk-summary-list__row:nth-of-type(2) .govuk-summary-list__value').text(),
-    ).toContain('HEALTH_AND_SAFETY')
+    ).toContain('Health and safety')
   })
 
   it('should render content saying curious is unavailable given problem retrieving data is true', () => {
