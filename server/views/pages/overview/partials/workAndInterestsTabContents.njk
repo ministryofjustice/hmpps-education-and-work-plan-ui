@@ -1,6 +1,8 @@
 {% if not workAndInterests.problemRetrievingData %}
 
   {% if workAndInterests.data %}
+
+  {{ workAndInterests.data | dump }}
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
 
@@ -69,6 +71,7 @@
         </div>
       </div>
 
+      {% if workAndInterests.data.workInterests %}
       <div class="govuk-summary-card">
         <div class="govuk-summary-card__title-wrapper">
           <h2 class="govuk-summary-card__title">Work interests</h2>
@@ -147,6 +150,7 @@
           <p class="govuk-hint">Last updated: {{ workAndInterests.data.workInterests.updatedAt | formatDate('DD MMMM YYYY') }} by {{ workAndInterests.data.workInterests.updatedBy }}</p>
         </div>
       </div>
+      {% endif %}
 
       <div class="govuk-summary-card">
         <div class="govuk-summary-card__title-wrapper">
