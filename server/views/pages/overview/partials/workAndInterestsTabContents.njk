@@ -1,15 +1,6 @@
 {% if not workAndInterests.problemRetrievingData %}
 
   {% if workAndInterests.data %}
-  
-  {% if workAndInterests.data.workExperience.jobs[0].type == 'OTHER' %}
-    {% set workExperienceType = workAndInterests.data.workExperience.jobs[0].other %}
-    {% set workExperienceTypeToLower = workAndInterests.data.workExperience.jobs[0].other | lower %}
-  {% else %}
-    {% set workExperienceType = workAndInterests.data.workExperience.jobs[0].type | formatJobType %}
-    {% set workExperienceTypeToLower = workAndInterests.data.workExperience.jobs[0].type | lower %}
-  {% endif %}
-
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
 
@@ -32,12 +23,21 @@
                 </a>
               </dd>
             </div>
+            {% if workAndInterests.data.workExperience.hasWorkedPreviously | formatYesNo == 'Yes' %}
             <div class="govuk-summary-list__row">
               <dt class="govuk-summary-list__key">
                 Type of work experience
               </dt>
               <dd class="govuk-summary-list__value">
-                {{ workExperienceType }}
+                <ul class="govuk-list">
+                  {% for typeOfWorkExperience in workAndInterests.data.workExperience.jobs %}
+                  {% if typeOfWorkExperience.type == 'OTHER' %}
+                    <li>{{ typeOfWorkExperience.other }}</li>
+                  {% else %}
+                    <li>{{ typeOfWorkExperience.type | formatJobType }}</li>
+                  {% endif %}
+                  {% endfor %}
+                </ul>
               </dd>
               <dd class="govuk-summary-list__actions">
                 <a class="govuk-link" href="{{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}/type-of-work-experience/update">
@@ -45,20 +45,25 @@
                 </a>
               </dd>
             </div>
-            <div class="govuk-summary-list__row">
-              <dt class="govuk-summary-list__key">
-                {{ workExperienceType }} experience details
-              </dt>
-              <dd class="govuk-summary-list__value">
-                <p>Job role:<br> {{ workAndInterests.data.workExperience.jobs[0].role }}</p>
-                <p>Roles and responsibilities:<br> {{ workAndInterests.data.workExperience.jobs[0].responsibilities }}</p>
-              </dd>
-              <dd class="govuk-summary-list__actions">
-                <a class="govuk-link" href="{{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}/work-details/{{ workExperienceTypeToLower }}/update">
-                  Change<span class="govuk-visually-hidden"> {{ workExperienceType }} experience details</span>
-                </a>
-              </dd>
-            </div>
+            {% if workAndInterests.data.workExperience.jobs %}
+              {% for workExperienceDetails in workAndInterests.data.workExperience.jobs %}
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">
+                    {% if workExperienceDetails.type == 'Other' %}{{ workExperienceDetails.other }}{% else %}{{ workExperienceDetails.type | formatJobType }}{% endif %} experience details
+                  </dt>
+                  <dd class="govuk-summary-list__value">
+                    <p>Job role:<br> {{ workExperienceDetails.role }}</p>
+                    <p>Roles and responsibilities:<br> {{ workExperienceDetails.responsibilities }}</p>
+                  </dd>
+                  <dd class="govuk-summary-list__actions">
+                    <a class="govuk-link" href="{{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}/work-details/{% if workExperienceDetails.type == 'Other' %}{{ workExperienceDetails.other | lower }}{% else %}{{ workExperienceDetails.type | lower }}{% endif %}/update">
+                      Change<span class="govuk-visually-hidden"> {% if workExperienceDetails.type == 'Other' %}{{ workExperienceDetails.other }}{% else %}{{ workExperienceDetails.type | formatJobType }}{% endif %} experience details</span>
+                    </a>
+                  </dd>
+                </div>
+              {% endfor %}
+            {% endif %}
+            {% endif %}
           </dl>
           <p class="govuk-hint">Last updated: {{ workAndInterests.data.workExperience.updatedAt | formatDate('DD MMMM YYYY') }} by {{ workAndInterests.data.workExperience.updatedBy }}</p>
         </div>
