@@ -14,7 +14,7 @@
                 Highest level of education
               </dt>
               <dd class="govuk-summary-list__value">
-                {{ otherQualifications.highestEducationLevel }}
+                {{ otherQualifications.highestEducationLevel | formatEducationLevel }}
               </dd>
             </div>
             <div class="govuk-summary-list__row">
@@ -24,7 +24,7 @@
               <dd class="govuk-summary-list__value">
                 <ul class="govuk-list">
                   {% for additionalTraining in otherQualifications.additionalTraining %}
-                    <li>{{ additionalTraining }}</li>
+                    <li>{{ additionalTraining | formatAdditionalTraining }}</li>
                   {% endfor %}
                 </ul>
               </dd>
