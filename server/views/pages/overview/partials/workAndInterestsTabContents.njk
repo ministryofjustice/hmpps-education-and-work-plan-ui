@@ -1,8 +1,6 @@
 {% if not workAndInterests.problemRetrievingData %}
 
   {% if workAndInterests.data %}
-
-  {{ workAndInterests.data | dump }}
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
 
@@ -33,11 +31,7 @@
               <dd class="govuk-summary-list__value">
                 <ul class="govuk-list">
                   {% for typeOfWorkExperience in workAndInterests.data.workExperience.jobs %}
-                  {% if typeOfWorkExperience.type == 'OTHER' %}
-                    <li>{{ typeOfWorkExperience.other }}</li>
-                  {% else %}
                     <li>{{ typeOfWorkExperience.type | formatJobType }}</li>
-                  {% endif %}
                   {% endfor %}
                 </ul>
               </dd>
@@ -168,7 +162,11 @@
                 {% else %}
                 <ul class="govuk-list">
                   {% for skill in workAndInterests.data.skillsAndInterests.skills %}
+                  {% if skill == 'OTHER' %}
+                  <li>{{ workAndInterests.data.skillsAndInterests.otherSkill }}</li>
+                  {% else %}
                   <li>{{ skill | formatSkill }}</li>
+                  {% endif %}
                   {% endfor %}
                 </ul>
                 {% endif %}
@@ -189,7 +187,11 @@
                 {% else %}
                 <ul class="govuk-list">
                   {% for personalInterest in workAndInterests.data.skillsAndInterests.personalInterests %}
-                  <li>{{ personalInterest | formatPersonalInterests }}</li>
+                  {% if personalInterest == 'OTHER' %}
+                    <li>{{ workAndInterests.data.skillsAndInterests.otherPersonalInterest }}</li>
+                  {% else %}
+                    <li>{{ personalInterest | formatPersonalInterests }}</li>
+                  {% endif %}
                   {% endfor %}
                 </ul>
                 {% endif %}
