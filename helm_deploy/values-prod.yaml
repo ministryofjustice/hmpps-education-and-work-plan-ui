@@ -13,6 +13,7 @@ generic-service:
     PRISONER_SEARCH_API_URL: "https://prisoner-offender-search.prison.service.justice.gov.uk"
     CURIOUS_API_URL: "https://liveservices.sequation.net/sequation-virtual-campus2-api"
     CIAG_INDUCTION_API_URL: "https://ciag-induction-api.hmpps.service.justice.gov.uk"
+    CIAG_INDUCTION_UI_URL: "https://ciag-induction.hmpps.service.justice.gov.uk"
     DPS_URL: "https://digital.prison.service.justice.gov.uk"
 
 generic-prometheus-alerts:

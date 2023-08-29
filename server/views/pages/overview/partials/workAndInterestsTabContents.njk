@@ -9,25 +9,201 @@
           <h2 class="govuk-summary-card__title">Work experience</h2>
         </div>
         <div class="govuk-summary-card__content">
-
+          <dl class="govuk-summary-list">
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                Worked before
+              </dt>
+              <dd class="govuk-summary-list__value">
+                {{ workAndInterests.data.workExperience.hasWorkedPreviously | formatYesNo }}
+              </dd>
+              <dd class="govuk-summary-list__actions">
+                <a class="govuk-link" href="{{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}/has-worked-before/update">
+                  Change<span class="govuk-visually-hidden"> worked before</span>
+                </a>
+              </dd>
+            </div>
+            {% if workAndInterests.data.workExperience.hasWorkedPreviously | formatYesNo == 'Yes' %}
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                Type of work experience
+              </dt>
+              <dd class="govuk-summary-list__value">
+                <ul class="govuk-list">
+                  {% for typeOfWorkExperience in workAndInterests.data.workExperience.jobs %}
+                    <li>{{ typeOfWorkExperience.type | formatJobType }}</li>
+                  {% endfor %}
+                </ul>
+              </dd>
+              <dd class="govuk-summary-list__actions">
+                <a class="govuk-link" href="{{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}/type-of-work-experience/update">
+                  Change<span class="govuk-visually-hidden"> type of work experience</span>
+                </a>
+              </dd>
+            </div>
+            {% if workAndInterests.data.workExperience.jobs %}
+              {% for workExperienceDetails in workAndInterests.data.workExperience.jobs %}
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">
+                    {% if workExperienceDetails.type == 'Other' %}{{ workExperienceDetails.other }}{% else %}{{ workExperienceDetails.type | formatJobType }}{% endif %} experience details
+                  </dt>
+                  <dd class="govuk-summary-list__value">
+                    <p>Job role:<br> {{ workExperienceDetails.role }}</p>
+                    <p>Roles and responsibilities:<br> {{ workExperienceDetails.responsibilities }}</p>
+                  </dd>
+                  <dd class="govuk-summary-list__actions">
+                    <a class="govuk-link" href="{{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}/work-details/{% if workExperienceDetails.type == 'Other' %}{{ workExperienceDetails.other | lower }}{% else %}{{ workExperienceDetails.type | lower }}{% endif %}/update">
+                      Change<span class="govuk-visually-hidden"> {% if workExperienceDetails.type == 'Other' %}{{ workExperienceDetails.other }}{% else %}{{ workExperienceDetails.type | formatJobType }}{% endif %} experience details</span>
+                    </a>
+                  </dd>
+                </div>
+              {% endfor %}
+            {% endif %}
+            {% endif %}
+          </dl>
+          <p class="govuk-hint">Last updated: {{ workAndInterests.data.workExperience.updatedAt | formatDate('DD MMMM YYYY') }} by {{ workAndInterests.data.workExperience.updatedBy }}</p>
         </div>
       </div>
 
+      {% if workAndInterests.data.workInterests %}
       <div class="govuk-summary-card">
         <div class="govuk-summary-card__title-wrapper">
           <h2 class="govuk-summary-card__title">Work interests</h2>
         </div>
         <div class="govuk-summary-card__content">
-
+          <dl class="govuk-summary-list">
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                Hoping to work on release
+              </dt>
+              <dd class="govuk-summary-list__value">
+                {{ workAndInterests.data.workInterests.hopingToWorkOnRelease | formatYesNo }}
+              </dd>
+              <dd class="govuk-summary-list__actions">
+                <a class="govuk-link" href="{{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}/hoping-to-get-work/update">
+                  Change<span class="govuk-visually-hidden"> hoping to work on release</span>
+                </a>
+              </dd>
+            </div>
+            {% if workAndInterests.data.workInterests.hopingToWorkOnRelease | formatYesNo == 'Yes' %}
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                Potential affect on ability to work
+              </dt>
+              <dd class="govuk-summary-list__value">
+                {% if workAndInterests.data.workInterests.constraintsOnAbilityToWork == 'OTHER' %}
+                  {{ workAndInterests.data.WorkInterests.otherConstraintsOnAbilityToWork }}
+                {% else %}
+                <ul class="govuk-list">
+                  {% for abilityToWorkConstraint in workAndInterests.data.workInterests.constraintsOnAbilityToWork %}
+                  <li>{{ abilityToWorkConstraint | formatAbilityToWorkConstraint }}</li>
+                  {% endfor %}
+                </ul>
+                {% endif %}
+              </dd>
+              <dd class="govuk-summary-list__actions">
+                <a class="govuk-link" href="{{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}/ability-to-work/update">
+                  Change<span class="govuk-visually-hidden"> potential affect on ability to work</span>
+                </a>
+              </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                Type of work
+              </dt>
+              <dd class="govuk-summary-list__value">
+                {% for typeOfWork in workAndInterests.data.workInterests.jobTypes %}
+                  {{ typeOfWork | formatJobType }}<br>
+                {% endfor %}
+              </dd>
+              <dd class="govuk-summary-list__actions">
+                <a class="govuk-link" href="{{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}/work-interests/update">
+                  Change<span class="govuk-visually-hidden"> type of work</span>
+                </a>
+              </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                Specific job role of interest
+              </dt>
+              <dd class="govuk-summary-list__value">
+                <ul class="govuk-list">
+                {% for specificJobRole in workAndInterests.data.workInterests.specificJobRoles %}
+                  <li>{{ specificJobRole | formatJobType }}</li>
+                {% endfor %}
+                </ul>
+              </dd>
+              <dd class="govuk-summary-list__actions">
+                <a class="govuk-link" href="{{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}/particular-job-interests/update">
+                  Change<span class="govuk-visually-hidden"> specific job role of interest</span>
+                </a>
+              </dd>
+            </div>
+            {% endif %}
+          </dl>
+          <p class="govuk-hint">Last updated: {{ workAndInterests.data.workInterests.updatedAt | formatDate('DD MMMM YYYY') }} by {{ workAndInterests.data.workInterests.updatedBy }}</p>
         </div>
       </div>
+      {% endif %}
 
       <div class="govuk-summary-card">
         <div class="govuk-summary-card__title-wrapper">
           <h2 class="govuk-summary-card__title">Skills and interests</h2>
         </div>
         <div class="govuk-summary-card__content">
-
+          <dl class="govuk-summary-list">
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                Skills
+              </dt>
+              <dd class="govuk-summary-list__value">
+                {% if workAndInterests.data.skillsAndInterests.skills == 'OTHER' %}
+                  {{ workAndInterests.data.skillsAndInterests.otherSkill }}
+                {% else %}
+                <ul class="govuk-list">
+                  {% for skill in workAndInterests.data.skillsAndInterests.skills %}
+                  {% if skill == 'OTHER' %}
+                  <li>{{ workAndInterests.data.skillsAndInterests.otherSkill }}</li>
+                  {% else %}
+                  <li>{{ skill | formatSkill }}</li>
+                  {% endif %}
+                  {% endfor %}
+                </ul>
+                {% endif %}
+              </dd>
+              <dd class="govuk-summary-list__actions">
+                <a class="govuk-link" href="{{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}/skills/update">
+                  Change<span class="govuk-visually-hidden"> skills</span>
+                </a>
+              </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                Personal interests
+              </dt>
+              <dd class="govuk-summary-list__value">
+                {% if workAndInterests.data.skillsAndInterests.personalInterests == 'OTHER' %}
+                  {{ workAndInterests.data.skillsAndInterests.otherPersonalInterest }}
+                {% else %}
+                <ul class="govuk-list">
+                  {% for personalInterest in workAndInterests.data.skillsAndInterests.personalInterests %}
+                  {% if personalInterest == 'OTHER' %}
+                    <li>{{ workAndInterests.data.skillsAndInterests.otherPersonalInterest }}</li>
+                  {% else %}
+                    <li>{{ personalInterest | formatPersonalInterests }}</li>
+                  {% endif %}
+                  {% endfor %}
+                </ul>
+                {% endif %}
+              </dd>
+              <dd class="govuk-summary-list__actions">
+                <a class="govuk-link" href="{{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}/personal-interests/update">
+                  Change<span class="govuk-visually-hidden"> personal interests</span>
+                </a>
+              </dd>
+            </div>
+          </dl>
+          <p class="govuk-hint">Last updated: {{ workAndInterests.data.skillsAndInterests.updatedAt | formatDate('DD MMMM YYYY') }} by {{ workAndInterests.data.skillsAndInterests.updatedBy }}</p>
         </div>
       </div>
 
@@ -40,8 +216,7 @@
       <div class="govuk-grid-column-two-thirds">
         <p class="govuk-body">
           To add work experience and interests information you need to
-          {# TODO RR-115 - add link href to CIAG Induction question set #}
-          <a href="" class="govuk-link" data-qa="link-to-create-ciag-induction">create a learning and work progress plan</a>
+          <a href="{{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}" class="govuk-link" data-qa="link-to-create-ciag-induction">create a learning and work progress plan</a>
           with {{ prisonerSummary.firstName | title }} {{ prisonerSummary.lastName | title }}.
         </p>
       </div>
