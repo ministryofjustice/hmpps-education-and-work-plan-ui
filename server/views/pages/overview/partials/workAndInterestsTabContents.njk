@@ -88,6 +88,7 @@
                 </a>
               </dd>
             </div>
+            {% if workAndInterests.data.workInterests.hopingToWorkOnRelease | formatYesNo == 'Yes' %}
             <div class="govuk-summary-list__row">
               <dt class="govuk-summary-list__key">
                 Potential affect on ability to work
@@ -141,6 +142,7 @@
                 </a>
               </dd>
             </div>
+            {% endif %}
           </dl>
           <p class="govuk-hint">Last updated: {{ workAndInterests.data.workInterests.updatedAt | formatDate('DD MMMM YYYY') }} by {{ workAndInterests.data.workInterests.updatedBy }}</p>
         </div>
