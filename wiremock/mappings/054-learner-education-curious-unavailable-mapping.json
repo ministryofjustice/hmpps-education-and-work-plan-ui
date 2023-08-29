@@ -1,0 +1,22 @@
+{
+  "request": {
+    "method": "GET",
+    "urlPathPattern": "/learnerEducation/A2257DZ",
+    "queryParameters": {
+      "page": {
+        "equalTo": "0"
+      }
+    }
+  },
+  "response": {
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "status": 500,
+    "jsonBody": {
+      "errorCode": "VC5000",
+      "errorMessage": "Unexpected error",
+      "httpStatusCode": 500
+    }
+  }
+}
