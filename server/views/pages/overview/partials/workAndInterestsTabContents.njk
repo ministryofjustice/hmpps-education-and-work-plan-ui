@@ -2,11 +2,12 @@
 
   {% if workAndInterests.data %}
   
-  {# TODO - Is there a better way to do this? #}
   {% if workAndInterests.data.workExperience.jobs[0].type == 'OTHER' %}
     {% set workExperienceType = workAndInterests.data.workExperience.jobs[0].other %}
+    {% set workExperienceTypeToLower = workAndInterests.data.workExperience.jobs[0].other | lower %}
   {% else %}
     {% set workExperienceType = workAndInterests.data.workExperience.jobs[0].type | formatJobType %}
+    {% set workExperienceTypeToLower = workAndInterests.data.workExperience.jobs[0].type | lower %}
   {% endif %}
 
   <div class="govuk-grid-row">
@@ -26,8 +27,7 @@
                 {{ workAndInterests.data.workExperience.hasWorkedPreviously | formatYesNo }}
               </dd>
               <dd class="govuk-summary-list__actions">
-                {# TODO RR-115 - add link href to CIAG Induction question set #}
-                <a class="govuk-link" href="#">
+                <a class="govuk-link" href="{{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}/has-worked-before/update">
                   Change<span class="govuk-visually-hidden"> worked before</span>
                 </a>
               </dd>
@@ -40,8 +40,7 @@
                 {{ workExperienceType }}
               </dd>
               <dd class="govuk-summary-list__actions">
-                {# TODO RR-115 - add link href to CIAG Induction question set #}
-                <a class="govuk-link" href="#">
+                <a class="govuk-link" href="{{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}/type-of-work-experience/update">
                   Change<span class="govuk-visually-hidden"> type of work experience</span>
                 </a>
               </dd>
@@ -55,8 +54,7 @@
                 <p>Roles and responsibilities:<br> {{ workAndInterests.data.workExperience.jobs[0].responsibilities }}</p>
               </dd>
               <dd class="govuk-summary-list__actions">
-                {# TODO RR-115 - add link href to CIAG Induction question set #}
-                <a class="govuk-link" href="#">
+                <a class="govuk-link" href="{{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}/work-details/{{ workExperienceTypeToLower }}/update">
                   Change<span class="govuk-visually-hidden"> {{ workExperienceType }} experience details</span>
                 </a>
               </dd>
@@ -80,8 +78,7 @@
                 {{ workAndInterests.data.workInterests.hopingToWorkOnRelease | formatYesNo }}
               </dd>
               <dd class="govuk-summary-list__actions">
-                {# TODO RR-115 - add link href to CIAG Induction question set #}
-                <a class="govuk-link" href="#">
+                <a class="govuk-link" href="{{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}/hoping-to-get-work/update">
                   Change<span class="govuk-visually-hidden"> hoping to work on release</span>
                 </a>
               </dd>
@@ -102,8 +99,7 @@
                 {% endif %}
               </dd>
               <dd class="govuk-summary-list__actions">
-                {# TODO RR-115 - add link href to CIAG Induction question set #}
-                <a class="govuk-link" href="#">
+                <a class="govuk-link" href="{{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}/ability-to-work/update">
                   Change<span class="govuk-visually-hidden"> potential affect on ability to work</span>
                 </a>
               </dd>
@@ -118,8 +114,7 @@
                 {% endfor %}
               </dd>
               <dd class="govuk-summary-list__actions">
-                {# TODO RR-115 - add link href to CIAG Induction question set #}
-                <a class="govuk-link" href="#">
+                <a class="govuk-link" href="{{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}/work-interests/update">
                   Change<span class="govuk-visually-hidden"> type of work</span>
                 </a>
               </dd>
@@ -130,15 +125,13 @@
               </dt>
               <dd class="govuk-summary-list__value">
                 <ul class="govuk-list">
-                {# TODO - Handle NULL value #}
                 {% for specificJobRole in workAndInterests.data.workInterests.specificJobRoles %}
                   <li>{{ specificJobRole | formatJobType }}</li>
                 {% endfor %}
                 </ul>
               </dd>
               <dd class="govuk-summary-list__actions">
-                {# TODO RR-115 - add link href to CIAG Induction question set #}
-                <a class="govuk-link" href="#">
+                <a class="govuk-link" href="{{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}/particular-job-interests/update">
                   Change<span class="govuk-visually-hidden"> specific job role of interest</span>
                 </a>
               </dd>
@@ -170,8 +163,7 @@
                 {% endif %}
               </dd>
               <dd class="govuk-summary-list__actions">
-                {# TODO RR-115 - add link href to CIAG Induction question set #}
-                <a class="govuk-link" href="#">
+                <a class="govuk-link" href="{{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}/skills/update">
                   Change<span class="govuk-visually-hidden"> skills</span>
                 </a>
               </dd>
@@ -192,8 +184,7 @@
                 {% endif %}
               </dd>
               <dd class="govuk-summary-list__actions">
-                {# TODO RR-115 - add link href to CIAG Induction question set #}
-                <a class="govuk-link" href="#">
+                <a class="govuk-link" href="{{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}/personal-interests/update">
                   Change<span class="govuk-visually-hidden"> personal interests</span>
                 </a>
               </dd>
@@ -212,8 +203,7 @@
       <div class="govuk-grid-column-two-thirds">
         <p class="govuk-body">
           To add work experience and interests information you need to
-          {# TODO RR-115 - add link href to CIAG Induction question set #}
-          <a href="" class="govuk-link" data-qa="link-to-create-ciag-induction">create a learning and work progress plan</a>
+          <a href="{{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}" class="govuk-link" data-qa="link-to-create-ciag-induction">create a learning and work progress plan</a>
           with {{ prisonerSummary.firstName | title }} {{ prisonerSummary.lastName | title }}.
         </p>
       </div>
