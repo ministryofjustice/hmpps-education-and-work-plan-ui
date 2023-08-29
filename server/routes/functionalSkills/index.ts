@@ -2,7 +2,7 @@ import type { Router } from 'express'
 import { Services } from '../../services'
 import { checkUserHasViewAuthority } from '../../middleware/roleBasedAccessControl'
 import PrisonerSummaryRequestHandler from '../overview/prisonerSummaryRequestHandler'
-import { checkPrisonerSummaryExistsInSession } from '../createGoal/routerRequestHandlers'
+import { checkPrisonerSummaryExistsInSession } from '../routerRequestHandlers'
 import FunctionalSkillsController from './functionalSkillsController'
 
 /**

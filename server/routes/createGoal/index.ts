@@ -7,7 +7,7 @@ import {
   checkAddStepFormsArrayExistsInSession,
   checkAddNoteFormExistsInSession,
   checkPrisonerSummaryExistsInSession,
-} from './routerRequestHandlers'
+} from '../routerRequestHandlers'
 
 /**
  * Route definitions for the pages relating to Creating A Goal

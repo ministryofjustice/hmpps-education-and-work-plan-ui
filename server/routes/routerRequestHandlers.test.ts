@@ -1,14 +1,15 @@
 import { NextFunction, Response, Request } from 'express'
 import { SessionData } from 'express-session'
-import type { AddStepForm, CreateGoalForm } from 'forms'
+import type { AddStepForm, CreateGoalForm, UpdateGoalForm } from 'forms'
 import type { PrisonerSummary } from 'viewModels'
 import {
   checkCreateGoalFormExistsInSession,
   checkAddStepFormsArrayExistsInSession,
   checkPrisonerSummaryExistsInSession,
   checkAddNoteFormExistsInSession,
+  checkUpdateGoalFormExistsInSession,
 } from './routerRequestHandlers'
-import { aValidAddStepForm } from '../../testsupport/addStepFormTestDataBuilder'
+import { aValidAddStepForm } from '../testsupport/addStepFormTestDataBuilder'
 
 describe('routerRequestHandlers', () => {
   const req = {
@@ -229,6 +230,47 @@ describe('routerRequestHandlers', () => {
 
       // Then
       expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/goals/add-note`)
+      expect(next).not.toHaveBeenCalled()
+    })
+  })
+
+  describe('checkUpdateGoalFormExistsInSession', () => {
+    it(`should invoke next handler given update goal form exists in session`, async () => {
+      // Given
+      const reference = '1a2eae63-8102-4155-97cb-43d8fb739caf'
+
+      req.session.updateGoalForm = {
+        reference,
+      } as UpdateGoalForm
+
+      // When
+      await checkUpdateGoalFormExistsInSession(
+        req as undefined as Request,
+        res as undefined as Response,
+        next as undefined as NextFunction,
+      )
+
+      // Then
+      expect(next).toHaveBeenCalled()
+      expect(res.redirect).not.toHaveBeenCalled()
+    })
+
+    it(`should redirect to Overview page given no update goal form exists in session`, async () => {
+      // Given
+      const prisonNumber = 'A1234BC'
+      req.params.prisonNumber = prisonNumber
+
+      req.session.updateGoalForm = undefined
+
+      // When
+      await checkUpdateGoalFormExistsInSession(
+        req as undefined as Request,
+        res as undefined as Response,
+        next as undefined as NextFunction,
+      )
+
+      // Then
+      expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/view/overview`)
       expect(next).not.toHaveBeenCalled()
     })
   })
