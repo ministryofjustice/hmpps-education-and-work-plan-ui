@@ -11,7 +11,7 @@ describe('formatSkillFilter', () => {
       { source: 'THINKING_AND_PROBLEM_SOLVING', expected: 'Thinking and problem-solving' },
       { source: 'WILLINGNESS_TO_LEARN', expected: 'Willingness to learn' },
       { source: 'OTHER', expected: 'Other' },
-      { source: 'NONE', expected: 'None of these' },
+      { source: 'NONE', expected: 'None' },
     ).forEach(spec => {
       it(`source: ${spec.source}, expected: ${spec.expected}`, () => {
         expect(formatSkillFilter(spec.source)).toEqual(spec.expected)

@@ -18,5 +18,5 @@ enum PersonalInterestValues {
   TEAM_SPORTS = 'Team sports',
   WELLNESS = 'Wellness',
   OTHER = 'Other',
-  NONE = 'None of these',
+  NONE = 'None',
 }

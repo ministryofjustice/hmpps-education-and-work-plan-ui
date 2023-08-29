@@ -17,7 +17,7 @@ describe('formatPersonalInterestsFilter', () => {
       { source: 'TEAM_SPORTS', expected: 'Team sports' },
       { source: 'WELLNESS', expected: 'Wellness' },
       { source: 'OTHER', expected: 'Other' },
-      { source: 'NONE', expected: 'None of these' },
+      { source: 'NONE', expected: 'None' },
     ).forEach(spec => {
       it(`source: ${spec.source}, expected: ${spec.expected}`, () => {
         expect(formatPersonalInterestsFilter(spec.source)).toEqual(spec.expected)

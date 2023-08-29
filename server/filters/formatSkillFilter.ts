@@ -12,5 +12,5 @@ enum SkillValues {
   THINKING_AND_PROBLEM_SOLVING = 'Thinking and problem-solving',
   WILLINGNESS_TO_LEARN = 'Willingness to learn',
   OTHER = 'Other',
-  NONE = 'None of these',
+  NONE = 'None',
 }
