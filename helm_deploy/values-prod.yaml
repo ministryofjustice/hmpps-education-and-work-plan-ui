@@ -6,14 +6,15 @@ generic-service:
     host: learning-and-work-progress.hmpps.service.justice.gov.uk
 
   env:
-    INGRESS_URL: "https://learning-and-work-progress.hmpps.service.justice.gov.uk"
-    HMPPS_AUTH_URL: "https://sign-in.hmpps.service.justice.gov.uk/auth"
-    TOKEN_VERIFICATION_API_URL: "https://token-verification-api.prison.service.justice.gov.uk"
-    EDUCATION_AND_WORK_PLAN_API_URL: "https://learningandworkprogress-api.hmpps.service.justice.gov.uk"
-    PRISONER_SEARCH_API_URL: "https://prisoner-offender-search.prison.service.justice.gov.uk"
-    CURIOUS_API_URL: "https://liveservices.sequation.net/sequation-virtual-campus2-api"
-    CIAG_INDUCTION_API_URL: "https://ciag-induction-api.hmpps.service.justice.gov.uk"
-    DPS_URL: "https://digital.prison.service.justice.gov.uk"
+    INGRESS_URL: 'https://learning-and-work-progress.hmpps.service.justice.gov.uk'
+    HMPPS_AUTH_URL: 'https://sign-in.hmpps.service.justice.gov.uk/auth'
+    TOKEN_VERIFICATION_API_URL: 'https://token-verification-api.prison.service.justice.gov.uk'
+    EDUCATION_AND_WORK_PLAN_API_URL: 'https://learningandworkprogress-api.hmpps.service.justice.gov.uk'
+    PRISONER_SEARCH_API_URL: 'https://prisoner-offender-search.prison.service.justice.gov.uk'
+    CURIOUS_API_URL: 'https://liveservices.sequation.net/sequation-virtual-campus2-api'
+    CIAG_INDUCTION_API_URL: 'https://ciag-induction-api.hmpps.service.justice.gov.uk'
+    CIAG_INDUCTION_UI_URL: 'https://ciag-induction.hmpps.service.justice.gov.uk'
+    DPS_URL: 'https://digital.prison.service.justice.gov.uk'
 
 generic-prometheus-alerts:
   alertSeverity: digital-prison-service
