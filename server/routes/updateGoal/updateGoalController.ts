@@ -41,6 +41,7 @@ export default class UpdateGoalController {
   submitUpdateGoalForm: RequestHandler = async (req, res, next): Promise<void> => {
     const { prisonNumber, goalReference } = req.params
     const updateGoalForm: UpdateGoalForm = { ...req.body }
+    const updateStepForm: UpdateStepForm = { ...req.body }
     req.session.updateGoalForm = updateGoalForm
 
     const errors = validateUpdateGoalForm(updateGoalForm)
@@ -58,6 +59,15 @@ export default class UpdateGoalController {
       updateGoalForm.steps.push(newStep)
       // Redirect back to the Update Goal page with named anchor taking the user straight to the new step
       return res.redirect(`/plan/${prisonNumber}/goals/${goalReference}/update#steps[${nextStepNumber - 1}][title]`)
+    }
+
+    // Remove the desired step on the action delete step
+    if (updateStepForm.action === 'delete-step') {
+      const { stepNumber } = updateStepForm
+      const stepIndex = updateGoalForm.steps.findIndex(step => step.stepNumber === stepNumber)
+      updateGoalForm.steps.splice(stepIndex, 1)
+      // Redirect back to the Update Goal page with named anchor taking the user to the edit and remove steps section
+      return res.redirect(`/plan/${prisonNumber}/goals/${goalReference}/update#edit-and-remove-steps`)
     }
 
     return res.redirect(`/plan/${prisonNumber}/goals/${goalReference}/update/review`)
