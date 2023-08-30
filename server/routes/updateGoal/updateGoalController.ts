@@ -63,9 +63,11 @@ export default class UpdateGoalController {
 
     // Remove the desired step on the action delete step
     if (updateStepForm.action === 'delete-step') {
-      const { stepNumber } = updateStepForm
-      const stepIndex = updateGoalForm.steps.findIndex(step => step.stepNumber === stepNumber)
-      updateGoalForm.steps.splice(stepIndex, 1)
+      const { reference } = updateStepForm
+      // Find the step to remove using reference in the steps array
+      const stepToRemove = updateGoalForm.steps.find(step => step.reference === reference)
+      // Remove the step from the steps array
+      updateGoalForm.steps.splice(updateGoalForm.steps.indexOf(stepToRemove), 1)
       // Redirect back to the Update Goal page with named anchor taking the user to the edit and remove steps section
       return res.redirect(`/plan/${prisonNumber}/goals/${goalReference}/update#edit-and-remove-steps`)
     }

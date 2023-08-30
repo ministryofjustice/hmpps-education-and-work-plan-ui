@@ -166,7 +166,7 @@
                 {{ govukButton({
                   id: 'delete-step',
                   attributes: {
-                    'data-qa': 'goal-update-delete-step-button'
+                    'data-qa': 'step-' + (loop.index-1) + '-remove-button'
                   },
                   name: "action",
                   value: "delete-step",

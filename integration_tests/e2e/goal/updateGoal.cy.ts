@@ -114,6 +114,35 @@ context('Update a goal', () => {
       })
   })
 
+  it('should be able to remove a step as part of updating a goal', () => {
+    // Given
+    const prisonNumber = 'G6115VJ'
+    cy.signIn()
+
+    cy.visit(`/plan/${prisonNumber}/view/overview`)
+    const overviewPage = Page.verifyOnPage(OverviewPage)
+
+    const updateGoalPage = overviewPage.clickUpdateButtonForFirstGoal()
+
+    // When
+    updateGoalPage //
+      .clickRemoveButtonForSecondStep()
+      .submitPage()
+
+    const reviewUpdateGoalPage = Page.verifyOnPage(ReviewUpdateGoalPage)
+    reviewUpdateGoalPage.submitPage()
+
+    // Then
+    Page.verifyOnPage(OverviewPage)
+    // Assert that the expected step was removed from the UpdateGoal request to the API - TODO, there has to be a better way of doing this
+    cy.task<UpdateGoalRequest>('getUpdateGoalRequestBody')
+      .then(updateGoalRequestBody => {
+        const { steps } = updateGoalRequestBody
+        return steps
+      })
+      .should('have.length', 0)
+  })
+
   it('should redirect to auth-error page given user does not have any authorities', () => {
     // Given
     cy.task('stubSignIn')
