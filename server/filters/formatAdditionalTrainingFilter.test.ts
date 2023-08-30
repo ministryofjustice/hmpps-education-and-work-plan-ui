@@ -13,7 +13,7 @@ describe('formatLevelOfEducationFilter', () => {
       { source: 'MANUAL_HANDLING', expected: 'Manual handling' },
       { source: 'TRADE_COURSE', expected: 'Trade course' },
       { source: 'OTHER', expected: 'Other' },
-      { source: 'NONE', expected: 'None of these' },
+      { source: 'NONE', expected: 'None' },
     ).forEach(spec => {
       it(`source: ${spec.source}, expected: ${spec.expected}`, () => {
         expect(formatAdditionalTrainingFilter(spec.source)).toEqual(spec.expected)

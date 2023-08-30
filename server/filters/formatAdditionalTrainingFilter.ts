@@ -14,5 +14,5 @@ enum AdditionalTrainingValues {
   MANUAL_HANDLING = 'Manual handling',
   TRADE_COURSE = 'Trade course',
   OTHER = 'Other',
-  NONE = 'None of these',
+  NONE = 'None',
 }
