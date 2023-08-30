@@ -17,7 +17,7 @@
               <dd class="govuk-summary-list__value">
                 {{ workAndInterests.data.workExperience.hasWorkedPreviously | formatYesNo }}
               </dd>
-              <dd class="govuk-summary-list__actions">
+              <dd class="govuk-summary-list__actions govuk-!-display-none-print">
                 <a class="govuk-link" href="{{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}/has-worked-before/update">
                   Change<span class="govuk-visually-hidden"> worked before</span>
                 </a>
@@ -35,7 +35,7 @@
                   {% endfor %}
                 </ul>
               </dd>
-              <dd class="govuk-summary-list__actions">
+              <dd class="govuk-summary-list__actions govuk-!-display-none-print">
                 <a class="govuk-link" href="{{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}/type-of-work-experience/update">
                   Change<span class="govuk-visually-hidden"> type of work experience</span>
                 </a>
@@ -51,7 +51,7 @@
                     <p>Job role:<br> {{ workExperienceDetails.role }}</p>
                     <p>Roles and responsibilities:<br> {{ workExperienceDetails.responsibilities }}</p>
                   </dd>
-                  <dd class="govuk-summary-list__actions">
+                  <dd class="govuk-summary-list__actions govuk-!-display-none-print">
                     <a class="govuk-link" href="{{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}/work-details/{% if workExperienceDetails.type == 'Other' %}{{ workExperienceDetails.other | lower }}{% else %}{{ workExperienceDetails.type | lower }}{% endif %}/update">
                       Change<span class="govuk-visually-hidden"> {% if workExperienceDetails.type == 'Other' %}{{ workExperienceDetails.other }}{% else %}{{ workExperienceDetails.type | formatJobType }}{% endif %} experience details</span>
                     </a>
@@ -79,7 +79,7 @@
               <dd class="govuk-summary-list__value">
                 {{ workAndInterests.data.workInterests.hopingToWorkOnRelease | formatYesNo }}
               </dd>
-              <dd class="govuk-summary-list__actions">
+              <dd class="govuk-summary-list__actions govuk-!-display-none-print">
                 <a class="govuk-link" href="{{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}/hoping-to-get-work/update">
                   Change<span class="govuk-visually-hidden"> hoping to work on release</span>
                 </a>
@@ -101,7 +101,7 @@
                 </ul>
                 {% endif %}
               </dd>
-              <dd class="govuk-summary-list__actions">
+              <dd class="govuk-summary-list__actions govuk-!-display-none-print">
                 <a class="govuk-link" href="{{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}/ability-to-work/update">
                   Change<span class="govuk-visually-hidden"> potential affect on ability to work</span>
                 </a>
@@ -116,7 +116,7 @@
                   {{ typeOfWork | formatJobType }}<br>
                 {% endfor %}
               </dd>
-              <dd class="govuk-summary-list__actions">
+              <dd class="govuk-summary-list__actions govuk-!-display-none-print">
                 <a class="govuk-link" href="{{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}/work-interests/update">
                   Change<span class="govuk-visually-hidden"> type of work</span>
                 </a>
@@ -133,7 +133,7 @@
                 {% endfor %}
                 </ul>
               </dd>
-              <dd class="govuk-summary-list__actions">
+              <dd class="govuk-summary-list__actions govuk-!-display-none-print">
                 <a class="govuk-link" href="{{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}/particular-job-interests/update">
                   Change<span class="govuk-visually-hidden"> specific job role of interest</span>
                 </a>
@@ -171,7 +171,7 @@
                 </ul>
                 {% endif %}
               </dd>
-              <dd class="govuk-summary-list__actions">
+              <dd class="govuk-summary-list__actions govuk-!-display-none-print">
                 <a class="govuk-link" href="{{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}/skills/update">
                   Change<span class="govuk-visually-hidden"> skills</span>
                 </a>
@@ -196,7 +196,7 @@
                 </ul>
                 {% endif %}
               </dd>
-              <dd class="govuk-summary-list__actions">
+              <dd class="govuk-summary-list__actions govuk-!-display-none-print">
                 <a class="govuk-link" href="{{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}/personal-interests/update">
                   Change<span class="govuk-visually-hidden"> personal interests</span>
                 </a>
