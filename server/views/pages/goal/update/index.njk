@@ -164,7 +164,7 @@
 
               {% if loop.index > 1 %}
                 {{ govukButton({
-                  id: 'delete-step',
+                  id: "delete-step-" + (loop.index-1),
                   attributes: {
                     'data-qa': 'step-' + (loop.index-1) + '-remove-button'
                   },
