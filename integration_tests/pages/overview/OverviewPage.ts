@@ -123,6 +123,16 @@ export default class OverviewPage extends Page {
     return this
   }
 
+  hasWorkExperienceDisplayed() {
+    this.workExperienceSummaryCard().should('be.visible')
+    return this
+  }
+
+  hasSkillsAndInterestsDisplayed() {
+    this.skillsAndInterestSummaryCard().should('be.visible')
+    return this
+  }
+
   hasCuriousUnavailableMessageDisplayed() {
     cy.get('h2').contains('Sorry, the Curious service is currently unavailable')
     return this
@@ -169,6 +179,10 @@ export default class OverviewPage extends Page {
   healthAndSupportNeedsSummaryCard = (): PageElement => cy.get('#health-and-support-needs-summary-card')
 
   neurodiversitySummaryCard = (): PageElement => cy.get('#neurodiversity-summary-card')
+
+  workExperienceSummaryCard = (): PageElement => cy.get('#work-experience-summary-card')
+
+  skillsAndInterestSummaryCard = (): PageElement => cy.get('#skills-and-interests-summary-card')
 
   viewAllFunctionalSkillsButton = (): PageElement => cy.get('[data-qa=view-all-functional-skills-button]')
 
