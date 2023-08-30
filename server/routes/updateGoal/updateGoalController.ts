@@ -45,7 +45,7 @@ export default class UpdateGoalController {
     req.session.updateGoalForm = updateGoalForm
 
     const errors = validateUpdateGoalForm(updateGoalForm)
-    if (errors.length > 0) {
+    if (errors.length > 0 && updateStepForm.action !== 'delete-step') {
       req.flash('errors', errors)
       return res.redirect(`/plan/${prisonNumber}/goals/${goalReference}/update`)
     }
