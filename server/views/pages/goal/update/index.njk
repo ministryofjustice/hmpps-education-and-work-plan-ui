@@ -78,7 +78,7 @@
               {% call govukFieldset({
                 classes: 'moj-add-another__item',
                 legend: {
-                  text: 'Step ' + step.stepNumber,
+                  text: 'Step ' + (loop.index),
                   classes: 'moj-add-another__title govuk-fieldset__legend--m',
                   isPageHeading: false
                 }
@@ -169,14 +169,14 @@
                     'data-qa': 'step-' + (loop.index-1) + '-remove-button'
                   },
                   name: "action",
-                  value: "delete-step",
+                  value: 'delete-step-[' + step.reference + ']',
                   text: "Remove",
                   classes: "govuk-button--secondary moj-add-another__remove-button"
                 }) }}
               {% endif %}
 
               {% endcall %}
-
+        
               <hr class="govuk-section-break govuk-section-break--visible govuk-section-break--m">
             {% endfor %}
             

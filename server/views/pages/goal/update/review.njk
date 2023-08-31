@@ -77,7 +77,7 @@
         <tbody class="govuk-table__body">
           {% for step in data.steps %}
           <tr class="govuk-table__row">
-            <th scope="row" class="govuk-table__header">Step {{ step.stepNumber }}</th>
+            <th scope="row" class="govuk-table__header">Step {{loop.index}}</th>
             <td class="govuk-table__cell">{{ step.title }}</td>
             <td class="govuk-table__cell">{{ step.status | formatStepStatusValue }}</td>
             <td class="govuk-table__cell">{{ step.targetDateRange | formatTargetDateRangeValue }}</td>

@@ -45,7 +45,7 @@ export default class UpdateGoalController {
     req.session.updateGoalForm = updateGoalForm
 
     const errors = validateUpdateGoalForm(updateGoalForm)
-    if (errors.length > 0 && updateStepForm.action !== 'delete-step') {
+    if (errors.length > 0 && !updateStepForm.action.includes('delete-step-')) {
       req.flash('errors', errors)
       return res.redirect(`/plan/${prisonNumber}/goals/${goalReference}/update`)
     }
@@ -62,16 +62,16 @@ export default class UpdateGoalController {
     }
 
     // Remove the desired step on the action delete step
-    if (updateStepForm.action === 'delete-step') {
-      const { reference } = updateStepForm
-      // Find the step to remove using reference in the steps array
-      const stepToRemove = updateGoalForm.steps.find(step => step.reference === reference)
-      // Remove the step from the steps array
-      updateGoalForm.steps.splice(updateGoalForm.steps.indexOf(stepToRemove), 1)
+    if (updateStepForm.action.includes('delete-step-')) {
+      // Get the step reference inbetween the 2 characters [ ] from the action value
+      const stepReference = updateStepForm.action.match(/\[(.*?)\]/)[1]
+      // Using the step reference find the index of the step in the array
+      const stepIndex = updateGoalForm.steps.findIndex(step => step.reference === stepReference)
+      // Remove the desired step from the array
+      updateGoalForm.steps.splice(stepIndex, 1)
       // Redirect back to the Update Goal page with named anchor taking the user to the edit and remove steps section
       return res.redirect(`/plan/${prisonNumber}/goals/${goalReference}/update#edit-and-remove-steps`)
     }
-
     return res.redirect(`/plan/${prisonNumber}/goals/${goalReference}/update/review`)
   }
 
