@@ -35,6 +35,5 @@ declare module 'forms' {
       | 'MORE_THAN_TWELVE_MONTHS'
     stepNumber: number
     status: 'NOT_STARTED' | 'ACTIVE' | 'COMPLETE'
-    action?: `delete-step-[${string}]`
   }
 }
