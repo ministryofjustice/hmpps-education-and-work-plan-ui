@@ -161,8 +161,8 @@
                 ],
                 errorMessage: errors | findError('steps[' + (loop.index-1) + '][targetDateRange]')
               }) }}
-
-              {% if loop.index > 1 %}
+              
+              {% if loop.length > 1 %}
                 {{ govukButton({
                   id: "delete-step-" + (loop.index-1),
                   attributes: {
