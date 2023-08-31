@@ -140,7 +140,7 @@ context('Update a goal', () => {
         const { steps } = updateGoalRequestBody
         return steps
       })
-      .should('have.length', 0)
+      .should('have.length', 1)
   })
 
   it('should redirect to auth-error page given user does not have any authorities', () => {
