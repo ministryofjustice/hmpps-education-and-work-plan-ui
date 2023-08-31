@@ -78,7 +78,7 @@
               {% call govukFieldset({
                 classes: 'moj-add-another__item',
                 legend: {
-                  text: 'Step ' + (loop.index),
+                  text: 'Step ' + step.stepNumber,
                   classes: 'moj-add-another__title govuk-fieldset__legend--m',
                   isPageHeading: false
                 }
@@ -179,7 +179,7 @@
         
               <hr class="govuk-section-break govuk-section-break--visible govuk-section-break--m">
             {% endfor %}
-            
+
             <div class="moj-button-action">
               {{ govukButton({
                 id: "add-another-step-button",
