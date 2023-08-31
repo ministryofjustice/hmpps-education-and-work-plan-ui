@@ -41,11 +41,10 @@ export default class UpdateGoalController {
   submitUpdateGoalForm: RequestHandler = async (req, res, next): Promise<void> => {
     const { prisonNumber, goalReference } = req.params
     const updateGoalForm: UpdateGoalForm = { ...req.body }
-    const updateStepForm: UpdateStepForm = { ...req.body }
     req.session.updateGoalForm = updateGoalForm
 
     const errors = validateUpdateGoalForm(updateGoalForm)
-    if (errors.length > 0 && !updateStepForm.action.includes('delete-step-')) {
+    if (errors.length > 0 && !updateGoalForm.action.includes('delete-step-')) {
       req.flash('errors', errors)
       return res.redirect(`/plan/${prisonNumber}/goals/${goalReference}/update`)
     }
@@ -62,11 +61,9 @@ export default class UpdateGoalController {
     }
 
     // Remove the desired step on the action delete step
-    if (updateStepForm.action.includes('delete-step-')) {
-      // Get the step reference inbetween the 2 characters [ ] from the action value
-      const stepReference = updateStepForm.action.match(/\[(.*?)\]/)[1]
-      // Using the step reference find the index of the step in the array
-      const stepIndex = updateGoalForm.steps.findIndex(step => step.reference === stepReference)
+    if (updateGoalForm.action.startsWith('delete-step-')) {
+      // Get the step index inbetween the 2 characters [ ] from the action value
+      const stepIndex = parseInt(updateGoalForm.action.match(/\[(.*?)\]/)[1], 10)
       // Remove the desired step from the array
       updateGoalForm.steps.splice(stepIndex, 1)
       // Redirect back to the Update Goal page with named anchor taking the user to the edit and remove steps section
