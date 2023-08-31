@@ -44,7 +44,7 @@ export default class UpdateGoalController {
     req.session.updateGoalForm = updateGoalForm
 
     // Remove the desired step on the action delete step
-    if (updateGoalForm.action.startsWith('delete-step-')) {
+    if (updateGoalForm.action && updateGoalForm.action.startsWith('delete-step-')) {
       // Get the step index inbetween the 2 characters [ ] from the action value
       const stepIndex = parseInt(updateGoalForm.action.match(/\[(.*?)\]/)[1], 10)
       // Remove the desired step from the array
