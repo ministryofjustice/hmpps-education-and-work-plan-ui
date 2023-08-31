@@ -69,13 +69,20 @@
 
           <hr class="govuk-section-break govuk-section-break--visible govuk-section-break--m">
 
-          <h2 class="govuk-heading-m">Edit and remove steps</h2>
+          <h2 class="govuk-heading-m" id="edit-and-remove-steps" tabindex="-1">Edit and remove steps</h2>
 
             {% for step in form.steps %}
               <input type="hidden" name="steps[{{ (loop.index-1) }}][reference]" value="{{ step.reference }}" data-qa="step-{{ (loop.index-1) }}-reference" />
               <input type="hidden" name="steps[{{ (loop.index-1) }}][stepNumber]" value="{{ step.stepNumber }}" />
 
-              <h3 class="govuk-heading-m">Step {{ step.stepNumber }}</h3>
+              {% call govukFieldset({
+                classes: 'moj-add-another__item',
+                legend: {
+                  text: 'Step ' + step.stepNumber,
+                  classes: 'moj-add-another__title govuk-fieldset__legend--m',
+                  isPageHeading: false
+                }
+              }) %}
 
               {{ govukTextarea({
                 name: 'steps[' + (loop.index-1) + '][title]',
@@ -154,11 +161,26 @@
                 ],
                 errorMessage: errors | findError('steps[' + (loop.index-1) + '][targetDateRange]')
               }) }}
+              
+              {% if loop.length > 1 %}
+                {{ govukButton({
+                  id: "delete-step-" + (loop.index-1),
+                  attributes: {
+                    'data-qa': 'step-' + (loop.index-1) + '-remove-button'
+                  },
+                  name: "action",
+                  value: 'delete-step-[' + (loop.index-1) + ']',
+                  text: "Remove",
+                  classes: "govuk-button--secondary moj-add-another__remove-button"
+                }) }}
+              {% endif %}
 
+              {% endcall %}
+        
               <hr class="govuk-section-break govuk-section-break--visible govuk-section-break--m">
             {% endfor %}
 
-            <div class="govuk-form-group">
+            <div class="moj-button-action">
               {{ govukButton({
                 id: "add-another-step-button",
                 attributes: {
@@ -167,19 +189,21 @@
                 name: "action",
                 value: "add-another-step",
                 text: "Add another step",
-                classes: "govuk-button--secondary"
+                classes: "govuk-button--secondary govuk-!-margin-bottom-4"
               }) }}
             </div>
 
-            {{ govukButton({
-              id: "submit-button",
-              attributes: {
-                'data-qa': 'goal-update-submit-button'
-              },
-              name: "action",
-              value: "submit-form",
-              text: "Submit"
-            }) }}
+            <div class="moj-button-action">
+              {{ govukButton({
+                id: "submit-button",
+                attributes: {
+                  'data-qa': 'goal-update-submit-button'
+                },
+                name: "action",
+                value: "submit-form",
+                text: "Submit"
+              }) }}
+            </div>
         </form>
 
     </div>

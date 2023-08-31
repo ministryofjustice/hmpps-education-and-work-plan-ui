@@ -43,6 +43,22 @@ export default class UpdateGoalController {
     const updateGoalForm: UpdateGoalForm = { ...req.body }
     req.session.updateGoalForm = updateGoalForm
 
+    // Remove the desired step on the action delete step
+    if (updateGoalForm.action && updateGoalForm.action.startsWith('delete-step-')) {
+      // Get the step index inbetween the 2 characters [ ] from the action value
+      const stepIndex = parseInt(updateGoalForm.action.match(/\[(.*?)\]/)[1], 10)
+      // Remove the desired step from the array
+      updateGoalForm.steps.splice(stepIndex, 1)
+      // Re-sequence the step array so that all the step's stepNumber fields are sequential starting from 1
+      updateGoalForm.steps.forEach((step, index) => {
+        // TODO refactor to avoid param-reassign eslint rule
+        // eslint-disable-next-line no-param-reassign
+        step.stepNumber = index + 1
+      })
+      // Redirect back to the Update Goal page with named anchor taking the user to the edit and remove steps section
+      return res.redirect(`/plan/${prisonNumber}/goals/${goalReference}/update#edit-and-remove-steps`)
+    }
+
     const errors = validateUpdateGoalForm(updateGoalForm)
     if (errors.length > 0) {
       req.flash('errors', errors)

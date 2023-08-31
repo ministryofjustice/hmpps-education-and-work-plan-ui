@@ -62,6 +62,11 @@ export default class UpdateGoalPage extends Page {
     return this
   }
 
+  clickRemoveButtonForSecondStep(): UpdateGoalPage {
+    this.removeStepButton(1).click()
+    return Page.verifyOnPage(UpdateGoalPage)
+  }
+
   titleField = (): PageElement => cy.get('#title')
 
   stepTitleField = (idx: number): PageElement => cy.get(`[data-qa=step-${idx}-title-field]`)
@@ -77,4 +82,6 @@ export default class UpdateGoalPage extends Page {
   prisonNumberLabel = (): PageElement => cy.get('[data-qa=prison-number]')
 
   goalReferenceInputValue = (): PageElement => cy.get('[data-qa=goal-reference]')
+
+  removeStepButton = (idx: number): PageElement => cy.get(`[data-qa=step-${idx}-remove-button]`)
 }
