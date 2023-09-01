@@ -1,7 +1,7 @@
 import createError from 'http-errors'
 import { NextFunction, Request, Response } from 'express'
 import type { SessionData } from 'express-session'
-import type { ActionPlan, PrisonerSummary } from 'viewModels'
+import type { ActionPlan } from 'viewModels'
 import type { UpdateGoalForm } from 'forms'
 import EducationAndWorkPlanService from '../../services/educationAndWorkPlanService'
 import UpdateGoalController from './updateGoalController'
@@ -10,6 +10,7 @@ import validateUpdateGoalForm from './updateGoalFormValidator'
 import aValidUpdateGoalForm from '../../testsupport/updateGoalFormTestDataBuilder'
 import { aValidUpdateGoalDtoWithOneStep } from '../../testsupport/updateGoalDtoTestDataBuilder'
 import { toUpdateGoalDto } from './mappers/updateGoalFormToUpdateGoalDtoMapper'
+import aValidPrisonerSummary from '../../testsupport/prisonerSummaryTestDataBuilder'
 
 jest.mock('./updateGoalFormValidator')
 jest.mock('./mappers/updateGoalFormToUpdateGoalDtoMapper')
@@ -40,7 +41,7 @@ describe('updateGoalController', () => {
 
   const prisonNumber = 'A1234GC'
   const goalReference = '1a2eae63-8102-4155-97cb-43d8fb739caf'
-  const prisonerSummary = { prisonNumber } as PrisonerSummary
+  const prisonerSummary = aValidPrisonerSummary(prisonNumber, 'BXI')
   let errors: Array<Record<string, string>>
 
   beforeEach(() => {
@@ -245,7 +246,8 @@ describe('updateGoalController', () => {
       // Given
       req.user.token = 'some-token'
       req.params.prisonNumber = 'A1234GC'
-      req.session.updateGoalForm = aValidUpdateGoalForm(goalReference)
+      const updateGoalForm = aValidUpdateGoalForm(goalReference)
+      req.session.updateGoalForm = updateGoalForm
 
       const expectedUpdateGoalDto = aValidUpdateGoalDtoWithOneStep()
       mockedUpdateGoalFormToUpdateGoalDtoMapper.mockReturnValue(expectedUpdateGoalDto)
@@ -263,6 +265,7 @@ describe('updateGoalController', () => {
         expectedUpdateGoalDto,
         'some-token',
       )
+      expect(mockedUpdateGoalFormToUpdateGoalDtoMapper).toHaveBeenCalledWith(updateGoalForm, prisonerSummary.prisonId)
       expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/view/overview`)
       expect(req.session.updateGoalForm).toBeUndefined()
     })
@@ -271,7 +274,8 @@ describe('updateGoalController', () => {
       // Given
       req.user.token = 'some-token'
       req.params.prisonNumber = 'A1234GC'
-      req.session.updateGoalForm = aValidUpdateGoalForm(goalReference)
+      const updateGoalForm = aValidUpdateGoalForm(goalReference)
+      req.session.updateGoalForm = updateGoalForm
 
       const expectedUpdateGoalDto = aValidUpdateGoalDtoWithOneStep()
       mockedUpdateGoalFormToUpdateGoalDtoMapper.mockReturnValue(expectedUpdateGoalDto)
@@ -292,6 +296,7 @@ describe('updateGoalController', () => {
         expectedUpdateGoalDto,
         'some-token',
       )
+      expect(mockedUpdateGoalFormToUpdateGoalDtoMapper).toHaveBeenCalledWith(updateGoalForm, prisonerSummary.prisonId)
       expect(next).toHaveBeenCalledWith(expectedError)
       expect(req.session.updateGoalForm).toBeUndefined()
     })

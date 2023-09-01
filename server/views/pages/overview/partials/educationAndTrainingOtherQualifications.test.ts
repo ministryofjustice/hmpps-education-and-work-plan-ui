@@ -2,16 +2,11 @@ import * as fs from 'fs'
 import cheerio from 'cheerio'
 import nunjucks, { Template } from 'nunjucks'
 import { registerNunjucks } from '../../../../utils/nunjucksSetup'
+import aValidPrisonerSummary from '../../../../testsupport/prisonerSummaryTestDataBuilder'
 
 describe('Education and Training tab view - Other Qualifications and history', () => {
   const template = fs.readFileSync('server/views/pages/overview/partials/educationAndTrainingOtherQualifications.njk')
-  const prisonerSummary = {
-    prisonNumber: 'A1234BC',
-    releaseDate: '2025-12-31',
-    location: 'C-01-04',
-    firstName: 'Wayne',
-    lastName: 'Kerr',
-  }
+  const prisonerSummary = aValidPrisonerSummary()
 
   let compiledTemplate: Template
   let viewContext: Record<string, unknown>

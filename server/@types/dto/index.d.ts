@@ -4,6 +4,7 @@ declare module 'dto' {
     title: string
     steps: Array<AddStepDto>
     note?: string
+    prisonId: string
   }
 
   export interface AddStepDto {
@@ -19,6 +20,7 @@ declare module 'dto' {
     steps: Array<UpdateStepDto>
     reviewDate?: string
     notes?: string
+    prisonId: string
   }
 
   export interface UpdateStepDto {

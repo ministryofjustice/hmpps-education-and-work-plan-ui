@@ -73,10 +73,12 @@ export default class UpdateGoalController {
 
   submitReviewUpdateGoal: RequestHandler = async (req, res, next): Promise<void> => {
     const { prisonNumber } = req.params
+    const { prisonerSummary } = req.session
     const { updateGoalForm } = req.session
     req.session.updateGoalForm = undefined
 
-    const updateGoalDto = toUpdateGoalDto(updateGoalForm)
+    const { prisonId } = prisonerSummary
+    const updateGoalDto = toUpdateGoalDto(updateGoalForm, prisonId)
     try {
       await this.educationAndWorkPlanService.updateGoal(prisonNumber, updateGoalDto, req.user.token)
       return res.redirect(`/plan/${prisonNumber}/view/overview`)

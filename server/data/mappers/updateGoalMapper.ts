@@ -9,7 +9,8 @@ const toUpdateGoalRequest = (updateGoalDto: UpdateGoalDto): UpdateGoalRequest =>
     steps: updateGoalDto.steps.map(step => toUpdateStepRequest(step)),
     reviewDate: updateGoalDto.reviewDate,
     notes: updateGoalDto.notes,
-  } as UpdateGoalRequest
+    prisonId: updateGoalDto.prisonId,
+  }
 }
 
 const toUpdateStepRequest = (updateStepDto: UpdateStepDto): UpdateStepRequest => {
@@ -19,7 +20,7 @@ const toUpdateStepRequest = (updateStepDto: UpdateStepDto): UpdateStepRequest =>
     title: updateStepDto.title,
     targetDateRange: updateStepDto.targetDateRange,
     sequenceNumber: updateStepDto.sequenceNumber,
-  } as UpdateStepRequest
+  }
 }
 
 export { toUpdateGoalRequest, toUpdateStepRequest }

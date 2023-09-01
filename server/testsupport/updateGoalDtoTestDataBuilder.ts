@@ -15,6 +15,7 @@ const aValidUpdateGoalDtoWithOneStep = (): UpdateGoalDto => {
     title: 'Learn Spanish',
     steps: [updateStepDto],
     notes: 'Prisoner is not good at listening',
+    prisonId: 'BXI',
   }
 }
 
@@ -40,6 +41,7 @@ const aValidUpdateGoalDtoWithMultipleSteps = (): UpdateGoalDto => {
     title: 'Learn Spanish',
     steps: [updateStepDto1, updateStepDto2],
     notes: 'Prisoner is not good at listening',
+    prisonId: 'BXI',
   }
 }
 

@@ -11,6 +11,7 @@ const aValidCreateGoalDtoWithOneStep = (): CreateGoalDto => {
     title: 'Learn Spanish',
     steps: [addStepDto],
     note: 'Prisoner is not good at listening',
+    prisonId: 'BXI',
   }
 }
 
@@ -30,6 +31,7 @@ const aValidCreateGoalDtoWithMultipleSteps = (): CreateGoalDto => {
     title: 'Learn Spanish',
     steps: [addStepDto1, addStepDto2],
     note: 'Prisoner is not good at listening',
+    prisonId: 'BXI',
   }
 }
 

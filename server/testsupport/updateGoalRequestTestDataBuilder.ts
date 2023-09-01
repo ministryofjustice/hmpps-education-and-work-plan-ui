@@ -17,6 +17,7 @@ const aValidUpdateGoalRequestWithOneUpdatedStep = (
     status: 'ACTIVE',
     steps: [updateStepRequest],
     notes: 'Prisoner is not good at listening',
+    prisonId: 'BXI',
   }
 }
 
@@ -44,6 +45,7 @@ const aValidUpdateGoalRequestWithMultipleUpdatedSteps = (
     status: 'ACTIVE',
     steps: [updateStepRequest1, updateStepRequest2],
     notes: 'Prisoner is not good at listening',
+    prisonId: 'BXI',
   }
 }
 
@@ -71,6 +73,7 @@ const aValidUpdateGoalRequestWithOneUpdatedStepAndOneNewStep = (
     status: 'ACTIVE',
     steps: [updateStepRequest1, updateStepRequest2],
     notes: 'Prisoner is not good at listening',
+    prisonId: 'BXI',
   }
 }
 

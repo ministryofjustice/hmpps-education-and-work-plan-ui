@@ -1,3 +1,4 @@
+import createError from 'http-errors'
 import type { RequestHandler } from 'express'
 import EducationAndWorkPlanService from '../../services/educationAndWorkPlanService'
 import CreateGoalView from './createGoalView'
@@ -97,7 +98,8 @@ export default class CreateGoalController {
     const { addStepForms } = req.session
     const { addNoteForm } = req.session
 
-    const createGoalDto = toCreateGoalDto(createGoalForm, addStepForms, addNoteForm)
+    const { prisonId } = prisonerSummary
+    const createGoalDto = toCreateGoalDto(createGoalForm, addStepForms, addNoteForm, prisonId)
 
     const view = new ReviewView(prisonerSummary, createGoalDto)
     res.render('pages/goal/review/index', { ...view.renderArgs })
@@ -105,17 +107,24 @@ export default class CreateGoalController {
 
   submitReviewGoal: RequestHandler = async (req, res, next): Promise<void> => {
     const { prisonNumber } = req.params
+    const { prisonerSummary } = req.session
     const { createGoalForm } = req.session
     const { addStepForms } = req.session
     const { addNoteForm } = req.session
 
-    const createGoalDto = toCreateGoalDto(createGoalForm, addStepForms, addNoteForm)
-    await this.educationAndWorkPlanService.createGoal(createGoalDto, req.user.token)
+    const { prisonId } = prisonerSummary
+    const createGoalDto = toCreateGoalDto(createGoalForm, addStepForms, addNoteForm, prisonId)
 
-    req.session.createGoalForm = undefined
-    req.session.addStepForm = undefined
-    req.session.addStepForms = undefined
-    req.session.addNoteForm = undefined
-    return res.redirect(`/plan/${prisonNumber}/view/overview`)
+    try {
+      await this.educationAndWorkPlanService.createGoal(createGoalDto, req.user.token)
+
+      req.session.createGoalForm = undefined
+      req.session.addStepForm = undefined
+      req.session.addStepForms = undefined
+      req.session.addNoteForm = undefined
+      return res.redirect(`/plan/${prisonNumber}/view/overview`)
+    } catch (e) {
+      return next(createError(500, `Error updating plan for prisoner ${prisonNumber}`))
+    }
   }
 }

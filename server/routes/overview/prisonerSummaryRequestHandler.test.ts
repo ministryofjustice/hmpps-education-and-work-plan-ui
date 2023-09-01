@@ -1,10 +1,10 @@
 import type { Prisoner } from 'prisonRegisterApiClient'
-import type { PrisonerSummary } from 'viewModels'
 import { SessionData } from 'express-session'
 import { NextFunction, Request, Response } from 'express'
 import createError from 'http-errors'
 import PrisonerSummaryRequestHandler from './prisonerSummaryRequestHandler'
 import { PrisonerSearchService } from '../../services'
+import aValidPrisonerSummary from '../../testsupport/prisonerSummaryTestDataBuilder'
 
 describe('prisonerSummaryRequestHandler', () => {
   const prisonerSearchService = {
@@ -42,11 +42,20 @@ describe('prisonerSummaryRequestHandler', () => {
     req.session.prisonerSummary = undefined
 
     const prisonNumber = 'A1234GC'
+    const prisonId = 'MDI'
     req.params.prisonNumber = prisonNumber
-    const prisoner = { prisonerNumber: prisonNumber } as Prisoner
+    const prisoner = {
+      prisonerNumber: prisonNumber,
+      prisonId,
+      releaseDate: '2025-12-31',
+      firstName: 'Jimmy',
+      lastName: 'Lightfingers',
+      dateOfBirth: '1969-02-12',
+      receptionDate: '1999-08-29',
+    } as Prisoner
     prisonerSearchService.getPrisonerByPrisonNumber.mockResolvedValue(prisoner)
 
-    const expectedPrisonerSummary = { prisonNumber } as PrisonerSummary
+    const expectedPrisonerSummary = aValidPrisonerSummary(prisonNumber, prisonId)
 
     // When
     await requestHandler.getPrisonerSummary(
@@ -66,14 +75,23 @@ describe('prisonerSummaryRequestHandler', () => {
     const username = 'a-dps-user'
     req.user.username = username
 
-    req.session.prisonerSummary = { prisonNumber: 'Z1234XY' } as Prisoner
+    req.session.prisonerSummary = aValidPrisonerSummary('Z1234XY', 'BXI')
 
     const prisonNumber = 'A1234GC'
+    const prisonId = 'MDI'
     req.params.prisonNumber = prisonNumber
-    const prisoner = { prisonerNumber: prisonNumber } as Prisoner
+    const prisoner = {
+      prisonerNumber: prisonNumber,
+      prisonId,
+      releaseDate: '2025-12-31',
+      firstName: 'Jimmy',
+      lastName: 'Lightfingers',
+      dateOfBirth: '1969-02-12',
+      receptionDate: '1999-08-29',
+    } as Prisoner
     prisonerSearchService.getPrisonerByPrisonNumber.mockResolvedValue(prisoner)
 
-    const expectedPrisonerSummary = { prisonNumber } as PrisonerSummary
+    const expectedPrisonerSummary = aValidPrisonerSummary(prisonNumber, prisonId)
 
     // When
     await requestHandler.getPrisonerSummary(
@@ -93,11 +111,13 @@ describe('prisonerSummaryRequestHandler', () => {
     const username = 'a-dps-user'
     req.user.username = username
 
-    req.session.prisonerSummary = { prisonNumber: 'A1234GC' } as Prisoner
-
     const prisonNumber = 'A1234GC'
+    const prisonId = 'MDI'
+
+    req.session.prisonerSummary = aValidPrisonerSummary(prisonNumber, prisonId)
+
     req.params.prisonNumber = prisonNumber
-    const expectedPrisonerSummary = { prisonNumber } as PrisonerSummary
+    const expectedPrisonerSummary = aValidPrisonerSummary(prisonNumber, prisonId)
 
     // When
     await requestHandler.getPrisonerSummary(
