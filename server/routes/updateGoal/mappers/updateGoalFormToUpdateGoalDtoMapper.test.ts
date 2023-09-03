@@ -6,6 +6,7 @@ describe('updateGoalFormToUpdateGoalDtoMapper', () => {
   it('should map UpdateGoalForm to UpdateGoalDto', () => {
     // Given
     const updateGoalForm = aValidUpdateGoalForm()
+    const prisonId = 'MDI'
 
     const expectedUpdateStepDto1: UpdateStepDto = {
       stepReference: updateGoalForm.steps[0].reference,
@@ -28,10 +29,11 @@ describe('updateGoalFormToUpdateGoalDtoMapper', () => {
       steps: [expectedUpdateStepDto1, expectedUpdateStepDto2],
       reviewDate: updateGoalForm.reviewDate,
       notes: updateGoalForm.note,
+      prisonId,
     }
 
     // When
-    const actual = toUpdateGoalDto(updateGoalForm)
+    const actual = toUpdateGoalDto(updateGoalForm, prisonId)
 
     // Then
     expect(actual).toEqual(expectedUpdateGoalDto)

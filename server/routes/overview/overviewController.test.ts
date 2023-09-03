@@ -1,12 +1,5 @@
 import moment from 'moment'
-import type { Prisoner } from 'prisonRegisterApiClient'
-import type {
-  PrisonerSummary,
-  FunctionalSkills,
-  InPrisonEducationRecords,
-  OtherQualifications,
-  WorkAndInterests,
-} from 'viewModels'
+import type { FunctionalSkills, InPrisonEducationRecords, OtherQualifications, WorkAndInterests } from 'viewModels'
 import { SessionData } from 'express-session'
 import { NextFunction, Request, Response } from 'express'
 import OverviewController from './overviewController'
@@ -20,6 +13,7 @@ import {
 } from '../../testsupport/inPrisonEducationTestDataBuilder'
 import CiagInductionService from '../../services/ciagInductionService'
 import aValidWorkAndInterests from '../../testsupport/workAndInterestsTestDataBuilder'
+import aValidPrisonerSummary from '../../testsupport/prisonerSummaryTestDataBuilder'
 
 describe('overviewController', () => {
   const curiousService = {
@@ -75,7 +69,7 @@ describe('overviewController', () => {
       const prisonNumber = 'A1234GC'
       req.params.prisonNumber = prisonNumber
 
-      req.session.prisonerSummary = { prisonNumber } as Prisoner
+      req.session.prisonerSummary = aValidPrisonerSummary(prisonNumber)
 
       const actionPlan = aValidActionPlanWithOneGoal()
       educationAndWorkPlanService.getActionPlan.mockResolvedValue(actionPlan)
@@ -109,7 +103,7 @@ describe('overviewController', () => {
         educationRecords: [aValidMathsInPrisonEducation()],
       }
 
-      const expectedPrisonerSummary = { prisonNumber } as PrisonerSummary
+      const expectedPrisonerSummary = aValidPrisonerSummary(prisonNumber)
       const expectedView = {
         prisonerSummary: expectedPrisonerSummary,
         tab: expectedTab,
@@ -144,13 +138,13 @@ describe('overviewController', () => {
       const prisonNumber = 'A1234GC'
       req.params.prisonNumber = prisonNumber
 
-      req.session.prisonerSummary = { prisonNumber } as Prisoner
+      const prisonerSummary = aValidPrisonerSummary(prisonNumber)
+      req.session.prisonerSummary = prisonerSummary
 
-      const expectedPrisonerSummary = { prisonNumber } as PrisonerSummary
       const expectedSupportNeeds = aValidPrisonerSupportNeeds()
       curiousService.getPrisonerSupportNeeds.mockResolvedValue(expectedSupportNeeds)
       const expectedView = {
-        prisonerSummary: expectedPrisonerSummary,
+        prisonerSummary,
         tab: expectedTab,
         supportNeeds: expectedSupportNeeds,
       }
@@ -180,7 +174,7 @@ describe('overviewController', () => {
       const prisonNumber = 'A1234GC'
       req.params.prisonNumber = prisonNumber
 
-      req.session.prisonerSummary = { prisonNumber } as Prisoner
+      req.session.prisonerSummary = aValidPrisonerSummary(prisonNumber)
 
       const functionalSkillsFromCurious = {
         problemRetrievingData: false,
@@ -236,7 +230,7 @@ describe('overviewController', () => {
         additionalTraining: ['CSCS_CARD'],
       }
 
-      const expectedPrisonerSummary = { prisonNumber } as PrisonerSummary
+      const expectedPrisonerSummary = aValidPrisonerSummary(prisonNumber)
       const expectedView = {
         prisonerSummary: expectedPrisonerSummary,
         tab: expectedTab,
@@ -271,14 +265,14 @@ describe('overviewController', () => {
       const prisonNumber = 'A1234GC'
       req.params.prisonNumber = prisonNumber
 
-      req.session.prisonerSummary = { prisonNumber } as Prisoner
+      const prisonerSummary = aValidPrisonerSummary(prisonNumber)
+      req.session.prisonerSummary = prisonerSummary
 
       const expectedWorkAndInterests: WorkAndInterests = aValidWorkAndInterests()
       ciagInductionService.getWorkAndInterests.mockResolvedValue(expectedWorkAndInterests)
 
-      const expectedPrisonerSummary = { prisonNumber } as PrisonerSummary
       const expectedView = {
-        prisonerSummary: expectedPrisonerSummary,
+        prisonerSummary,
         tab: expectedTab,
         workAndInterests: expectedWorkAndInterests,
       }

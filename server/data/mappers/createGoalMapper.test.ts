@@ -23,6 +23,7 @@ describe('createGoalMapper', () => {
       category: 'WORK',
       steps: [expectedAddStepRequest1, expectedAddStepRequest2],
       notes: createGoalDto.note,
+      prisonId: createGoalDto.prisonId,
     }
 
     // When

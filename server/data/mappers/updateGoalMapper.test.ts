@@ -28,6 +28,7 @@ describe('updateGoalMapper', () => {
       steps: [expectedUpdateStepRequest1, expectedUpdateStepRequest2],
       notes: updateGoalDto.notes,
       reviewDate: updateGoalDto.reviewDate,
+      prisonId: updateGoalDto.prisonId,
     }
 
     // When

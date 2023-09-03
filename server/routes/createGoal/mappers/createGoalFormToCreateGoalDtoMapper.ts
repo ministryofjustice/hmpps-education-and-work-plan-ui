@@ -5,12 +5,14 @@ const toCreateGoalDto = (
   createGoalForm: CreateGoalForm,
   addStepForms: Array<AddStepForm>,
   addNoteForm: AddNoteForm,
+  prisonId: string,
 ): CreateGoalDto => {
   return {
     prisonNumber: createGoalForm.prisonNumber,
     title: createGoalForm.title,
     steps: toAddStepDtos(addStepForms),
     note: addNoteForm.note,
+    prisonId,
   }
 }
 

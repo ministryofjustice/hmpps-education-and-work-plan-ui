@@ -7,11 +7,12 @@ export interface paths {
   '/action-plans/{prisonNumber}/goals/{goalReference}': {
     put: operations['updateGoal']
   }
-  '/action-plans/{prisonNumber}/goals': {
-    post: operations['createGoal']
-  }
   '/action-plans/{prisonNumber}': {
     get: operations['getActionPlan']
+    post: operations['createActionPlan']
+  }
+  '/action-plans/{prisonNumber}/goals': {
+    post: operations['createGoal']
   }
 }
 
@@ -41,6 +42,11 @@ export interface components {
        * @example null
        */
       steps: components['schemas']['UpdateStepRequest'][]
+      /**
+       * @description The identifier of the prison that the prisoner is currently resident at.
+       * @example BXI
+       */
+      prisonId: string
       /**
        * Format: date
        * @description An optional ISO-8601 date representing when the Goal is up for review.
@@ -89,6 +95,22 @@ export interface components {
        */
       stepReference?: string
     }
+    CreateActionPlanRequest: {
+      /**
+       * @description A List of at least one Goal.
+       * @example null
+       */
+      goals: components['schemas']['CreateGoalRequest'][]
+      /**
+       * Format: date
+       * @description An optional ISO-8601 date representing when the Action Plan is up for review.
+       */
+      reviewDate?: string
+    }
+    /**
+     * @description A List of at least one Goal.
+     * @example null
+     */
     CreateGoalRequest: {
       /**
        * @description A title explaining the aim of the goal.
@@ -100,6 +122,11 @@ export interface components {
        * @example null
        */
       steps: components['schemas']['CreateStepRequest'][]
+      /**
+       * @description The identifier of the prison that the prisoner is currently resident at.
+       * @example BXI
+       */
+      prisonId: string
       /**
        * Format: date
        * @description An optional ISO-8601 date representing when the Goal is up for review.
@@ -139,6 +166,12 @@ export interface components {
     }
     ActionPlanResponse: {
       /**
+       * Format: uuid
+       * @description The Action Plan's unique reference
+       * @example 814ade0a-a3b2-46a3-862f-79211ba13f7b
+       */
+      reference: string
+      /**
        * @description The ID of the prisoner
        * @example A1234BC
        */
@@ -148,6 +181,11 @@ export interface components {
        * @example null
        */
       goals: components['schemas']['GoalResponse'][]
+      /**
+       * Format: date
+       * @description An optional ISO-8601 date representing when the Action Plan is up for review.
+       */
+      reviewDate?: string
     }
     /**
      * @description A List of at least one or more Goals.
@@ -192,6 +230,11 @@ export interface components {
        */
       createdAt: string
       /**
+       * @description The identifier of the prison that the prisoner was resident at when the Goal was created.
+       * @example BXI
+       */
+      createdAtPrison: string
+      /**
        * @description The DPS username of the person who last updated the goal.
        * @example asmith_gen
        */
@@ -207,6 +250,11 @@ export interface components {
        * @example 2023-06-19T09:39:44Z
        */
       updatedAt: string
+      /**
+       * @description The identifier of the prison that the prisoner was resident at when the Goal was updated.
+       * @example BXI
+       */
+      updatedAtPrison: string
       /**
        * Format: date
        * @description An optional ISO-8601 date representing when the Goal is up for review.
@@ -283,6 +331,37 @@ export interface operations {
       204: never
     }
   }
+  getActionPlan: {
+    parameters: {
+      path: {
+        prisonNumber: string
+      }
+    }
+    responses: {
+      /** @description OK */
+      200: {
+        content: {
+          'application/json': components['schemas']['ActionPlanResponse']
+        }
+      }
+    }
+  }
+  createActionPlan: {
+    parameters: {
+      path: {
+        prisonNumber: string
+      }
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CreateActionPlanRequest']
+      }
+    }
+    responses: {
+      /** @description Created */
+      201: never
+    }
+  }
   createGoal: {
     parameters: {
       path: {
@@ -297,21 +376,6 @@ export interface operations {
     responses: {
       /** @description Created */
       201: never
-    }
-  }
-  getActionPlan: {
-    parameters: {
-      path: {
-        prisonNumber: string
-      }
-    }
-    responses: {
-      /** @description OK */
-      200: {
-        content: {
-          'application/json': components['schemas']['ActionPlanResponse']
-        }
-      }
     }
   }
 }

@@ -1,7 +1,6 @@
 import { NextFunction, Response, Request } from 'express'
 import { SessionData } from 'express-session'
 import type { AddStepForm, CreateGoalForm, UpdateGoalForm } from 'forms'
-import type { PrisonerSummary } from 'viewModels'
 import {
   checkCreateGoalFormExistsInSession,
   checkAddStepFormsArrayExistsInSession,
@@ -10,6 +9,7 @@ import {
   checkUpdateGoalFormExistsInSession,
 } from './routerRequestHandlers'
 import { aValidAddStepForm } from '../testsupport/addStepFormTestDataBuilder'
+import aValidPrisonerSummary from '../testsupport/prisonerSummaryTestDataBuilder'
 
 describe('routerRequestHandlers', () => {
   const req = {
@@ -156,9 +156,7 @@ describe('routerRequestHandlers', () => {
       const prisonNumber = 'A1234BC'
       req.params.prisonNumber = prisonNumber
 
-      req.session.prisonerSummary = {
-        prisonNumber,
-      } as PrisonerSummary
+      req.session.prisonerSummary = aValidPrisonerSummary(prisonNumber)
 
       // When
       await checkPrisonerSummaryExistsInSession(
@@ -196,9 +194,7 @@ describe('routerRequestHandlers', () => {
       const prisonNumber = 'A1234BC'
       req.params.prisonNumber = prisonNumber
 
-      req.session.prisonerSummary = {
-        prisonNumber: 'Z9999XZ',
-      } as PrisonerSummary
+      req.session.prisonerSummary = aValidPrisonerSummary('Z9999XZ')
 
       // When
       await checkPrisonerSummaryExistsInSession(

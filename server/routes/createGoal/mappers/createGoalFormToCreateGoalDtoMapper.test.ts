@@ -10,6 +10,7 @@ describe('createGoalFormToCreateGoalDtoMapper', () => {
     const createGoalForm = aValidCreateGoalForm()
     const addStepForms = [aValidAddStepForm(), anotherValidAddStepForm()]
     const addNoteForm = aValidAddNoteForm()
+    const prisonId = 'BXI'
 
     const expectedAddStepDto1: AddStepDto = {
       title: addStepForms[0].title,
@@ -26,10 +27,11 @@ describe('createGoalFormToCreateGoalDtoMapper', () => {
       title: createGoalForm.title,
       steps: [expectedAddStepDto1, expectedAddStepDto2],
       note: addNoteForm.note,
+      prisonId,
     }
 
     // When
-    const createGoalDto = toCreateGoalDto(createGoalForm, addStepForms, addNoteForm)
+    const createGoalDto = toCreateGoalDto(createGoalForm, addStepForms, addNoteForm, prisonId)
 
     // Then
     expect(createGoalDto).toEqual(expectedCreateGoalDto)

@@ -3,15 +3,10 @@ import cheerio from 'cheerio'
 import moment from 'moment'
 import nunjucks, { Template } from 'nunjucks'
 import { registerNunjucks } from '../../../../utils/nunjucksSetup'
+import aValidPrisonerSummary from '../../../../testsupport/prisonerSummaryTestDataBuilder'
 
 describe('Functional skills sidebar view', () => {
-  const prisonerSummary = {
-    prisonNumber: 'A1234BC',
-    releaseDate: '2025-12-31',
-    location: 'C-01-04',
-    firstName: 'Jimmy',
-    lastName: 'Lightfingers',
-  }
+  const prisonerSummary = aValidPrisonerSummary()
 
   let compiledTemplate: Template
   let viewContext: Record<string, unknown>

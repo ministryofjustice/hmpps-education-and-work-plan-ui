@@ -21,6 +21,7 @@ export default class PrisonerSummaryRequestHandler {
         const prisoner = await this.prisonerSearchService.getPrisonerByPrisonNumber(prisonNumber, req.user.username)
         req.session.prisonerSummary = {
           prisonNumber: prisoner.prisonerNumber,
+          prisonId: prisoner.prisonId,
           releaseDate: prisoner.releaseDate,
           firstName: prisoner.firstName,
           lastName: prisoner.lastName,

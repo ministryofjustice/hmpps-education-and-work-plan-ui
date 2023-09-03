@@ -12,6 +12,7 @@ const aValidCreateGoalRequestWithOneStep = (prisonNumber = 'A1234BC'): CreateGoa
     steps: [createStepRequest],
     notes: 'Prisoner is not good at listening',
     category: 'WORK',
+    prisonId: 'BXI',
   }
 }
 
@@ -31,6 +32,7 @@ const aValidCreateGoalRequestWithMultipleSteps = (prisonNumber: 'A1234BC'): Crea
     title: 'Learn Spanish',
     steps: [createStepRequest1, createStepRequest2],
     note: 'Prisoner is not good at listening',
+    prisonId: 'BXI',
   }
 }
 

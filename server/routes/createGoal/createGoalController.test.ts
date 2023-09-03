@@ -1,3 +1,4 @@
+import createError from 'http-errors'
 import { Request, Response, NextFunction } from 'express'
 import { SessionData } from 'express-session'
 import CreateGoalController from './createGoalController'
@@ -5,14 +6,21 @@ import validateAddStepForm from './addStepFormValidator'
 import validateCreateGoalForm from './createGoalFormValidator'
 import EducationAndWorkPlanService from '../../services/educationAndWorkPlanService'
 import { anotherValidAddStepForm, aValidAddStepForm } from '../../testsupport/addStepFormTestDataBuilder'
+import aValidCreateGoalForm from '../../testsupport/createGoalFormTestDataBuilder'
+import aValidAddNoteForm from '../../testsupport/addNoteFormTestDataBuilder'
+import { aValidCreateGoalDtoWithOneStep } from '../../testsupport/createGoalDtoTestDataBuilder'
+import { toCreateGoalDto } from './mappers/createGoalFormToCreateGoalDtoMapper'
+import aValidPrisonerSummary from '../../testsupport/prisonerSummaryTestDataBuilder'
 
 jest.mock('./addStepFormValidator')
 jest.mock('./createGoalFormValidator')
+jest.mock('./mappers/createGoalFormToCreateGoalDtoMapper')
 
 describe('createGoalController', () => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const mockedValidateCreateGoalForm = validateCreateGoalForm as jest.MockedFunction<typeof validateCreateGoalForm>
   const mockedValidateAddStepForm = validateAddStepForm as jest.MockedFunction<typeof validateAddStepForm>
+  const mockedCreateGoalDtoMapper = toCreateGoalDto as jest.MockedFunction<typeof toCreateGoalDto>
 
   const educationAndWorkPlanService = {
     createGoal: jest.fn(),
@@ -23,19 +31,30 @@ describe('createGoalController', () => {
   const req = {
     session: {} as SessionData,
     body: {},
+    user: {} as Express.User,
     params: {} as Record<string, string>,
     flash: jest.fn(),
   }
   const res = {
     redirect: jest.fn(),
+    render: jest.fn(),
   }
   const next = jest.fn()
+
+  const prisonNumber = 'A1234GC'
+  let prisonerSummary = aValidPrisonerSummary(prisonNumber)
+  let errors: Array<Record<string, string>>
 
   beforeEach(() => {
     jest.resetAllMocks()
     req.session = {} as SessionData
     req.body = {}
     req.params = {} as Record<string, string>
+
+    req.params.prisonNumber = prisonNumber
+    req.session.prisonerSummary = prisonerSummary
+
+    errors = []
   })
 
   describe('submitAddStepForm', () => {
@@ -102,7 +121,7 @@ describe('createGoalController', () => {
       req.body = {}
       req.session.addStepForms = []
 
-      const errors = [
+      errors = [
         { href: '#title', text: 'some-title-error' },
         { href: '#targetDate', text: 'a-target-date-error' },
       ]
@@ -185,6 +204,125 @@ describe('createGoalController', () => {
       expect(req.session.addStepForms).toHaveLength(1)
       expect(req.session.addStepForms[0].title).toEqual('Find a Spanish course')
       expect(res.redirect).toHaveBeenCalledWith('/plan/A1234GC/goals/add-note')
+    })
+  })
+
+  describe('getReviewGoalView', () => {
+    it('should get review goal view', async () => {
+      // Given
+      const createGoalForm = aValidCreateGoalForm()
+      req.session.createGoalForm = createGoalForm
+      const addStepForms = [aValidAddStepForm()]
+      req.session.addStepForms = addStepForms
+      const addNoteForm = aValidAddNoteForm()
+      req.session.addNoteForm = addNoteForm
+
+      const createGoalDto = aValidCreateGoalDtoWithOneStep()
+      mockedCreateGoalDtoMapper.mockReturnValue(createGoalDto)
+
+      const expectedPrisonId = 'MDI'
+      prisonerSummary = aValidPrisonerSummary(prisonNumber, expectedPrisonId)
+      req.session.prisonerSummary = prisonerSummary
+
+      const expectedView = {
+        prisonerSummary,
+        data: createGoalDto,
+      }
+
+      // When
+      await controller.getReviewGoalView(
+        req as undefined as Request,
+        res as undefined as Response,
+        next as undefined as NextFunction,
+      )
+
+      // Then
+      expect(res.render).toHaveBeenCalledWith('pages/goal/review/index', expectedView)
+      expect(mockedCreateGoalDtoMapper).toHaveBeenCalledWith(
+        createGoalForm,
+        addStepForms,
+        addNoteForm,
+        expectedPrisonId,
+      )
+    })
+  })
+
+  describe('submitReviewGoal', () => {
+    it('should create goal and redirect to Overview page', async () => {
+      // Given
+      req.user.token = 'some-token'
+      const createGoalForm = aValidCreateGoalForm()
+      req.session.createGoalForm = createGoalForm
+      const addStepForms = [aValidAddStepForm()]
+      req.session.addStepForms = addStepForms
+      const addNoteForm = aValidAddNoteForm()
+      req.session.addNoteForm = addNoteForm
+
+      const createGoalDto = aValidCreateGoalDtoWithOneStep()
+      mockedCreateGoalDtoMapper.mockReturnValue(createGoalDto)
+
+      const expectedPrisonId = 'MDI'
+      prisonerSummary = aValidPrisonerSummary(prisonNumber, expectedPrisonId)
+      req.session.prisonerSummary = prisonerSummary
+
+      // When
+      await controller.submitReviewGoal(
+        req as undefined as Request,
+        res as undefined as Response,
+        next as undefined as NextFunction,
+      )
+
+      // Then
+      expect(educationAndWorkPlanService.createGoal).toHaveBeenCalledWith(createGoalDto, 'some-token')
+      expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/view/overview`)
+      expect(mockedCreateGoalDtoMapper).toHaveBeenCalledWith(
+        createGoalForm,
+        addStepForms,
+        addNoteForm,
+        expectedPrisonId,
+      )
+      expect(req.session.createGoalForm).toBeUndefined()
+      expect(req.session.addStepForm).toBeUndefined()
+      expect(req.session.addStepForms).toBeUndefined()
+      expect(req.session.addNoteForm).toBeUndefined()
+    })
+
+    it('should not create goal given error calling service to create the goal', async () => {
+      // Given
+      req.user.token = 'some-token'
+      const createGoalForm = aValidCreateGoalForm()
+      req.session.createGoalForm = createGoalForm
+      const addStepForms = [aValidAddStepForm()]
+      req.session.addStepForms = addStepForms
+      const addNoteForm = aValidAddNoteForm()
+      req.session.addNoteForm = addNoteForm
+
+      const createGoalDto = aValidCreateGoalDtoWithOneStep()
+      mockedCreateGoalDtoMapper.mockReturnValue(createGoalDto)
+
+      const expectedPrisonId = 'MDI'
+      prisonerSummary = aValidPrisonerSummary(prisonNumber, expectedPrisonId)
+      req.session.prisonerSummary = prisonerSummary
+
+      educationAndWorkPlanService.createGoal.mockRejectedValue(createError(500, 'Service unavailable'))
+      const expectedError = createError(500, `Error updating plan for prisoner ${prisonNumber}`)
+
+      // When
+      await controller.submitReviewGoal(
+        req as undefined as Request,
+        res as undefined as Response,
+        next as undefined as NextFunction,
+      )
+
+      // Then
+      expect(educationAndWorkPlanService.createGoal).toHaveBeenCalledWith(createGoalDto, 'some-token')
+      expect(mockedCreateGoalDtoMapper).toHaveBeenCalledWith(
+        createGoalForm,
+        addStepForms,
+        addNoteForm,
+        expectedPrisonId,
+      )
+      expect(next).toHaveBeenCalledWith(expectedError)
     })
   })
 })
