@@ -53,6 +53,7 @@
                 classes: "govuk-label--m"
               },
               value: form.title,
+              rows: 6,
               errorMessage: errors | findError('title')
             }) }}
 
@@ -94,6 +95,7 @@
                   isPageHeading: false
                 },
                 value: step.title,
+                rows: 3,
                 errorMessage: errors | findError('steps[' + (loop.index-1) + '][title]')
               }) }}
 
