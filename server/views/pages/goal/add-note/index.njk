@@ -42,17 +42,20 @@
         <div class="govuk-form-group">
           <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
 
-          {{ govukTextarea({
-            name: "note",
-            id: "note",
-            value: form.note,
-            label: {
-              text: "Add a note to this goal (optional)",
-              classes: "govuk-label--l",
-              isPageHeading: true
-            },
-            errorMessage: errors | findError('note')
-          }) }}
+          <div class="govuk-form-group">
+            <h1 class="govuk-label-wrapper">
+              <label class="govuk-label govuk-label--l" for="note">
+                Add a note to this goal (optional)
+              </label>
+            </h1>
+            {{ govukWarningText({
+              text: "This note will be seen by the prisoner and other prison staff.",
+              iconFallbackText: "Warning",
+              classes: "govuk-!-margin-top-4"
+            }) }}
+            {{ errors | findError('note') }}
+            <textarea class="govuk-textarea" id="note" name="note" rows="5">{{ form.note }}</textarea>
+          </div>
         </div>
 
         {{ govukButton({
