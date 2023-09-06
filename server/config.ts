@@ -101,6 +101,14 @@ export default {
       agent: new AgentConfig(Number(get('CIAG_INDUCTION_API_TIMEOUT_RESPONSE', 10000))),
     },
   },
+  frontendComponents: {
+    url: get('FRONTEND_COMPONENT_API_URL', 'http://localhost:8083', requiredInProduction),
+    timeout: {
+      response: Number(get('FRONTEND_COMPONENT_API_TIMEOUT_RESPONSE', 50000)),
+      deadline: Number(get('FRONTEND_COMPONENT_API_TIMEOUT_DEADLINE', 50000)),
+    },
+    agent: new AgentConfig(Number(get('FRONTEND_COMPONENT_API_TIMEOUT_RESPONSE', 5000))),
+  },
   domain: get('INGRESS_URL', 'http://localhost:3000', requiredInProduction),
   dpsHomeUrl: get('DPS_URL', 'http://localhost:3000/', requiredInProduction),
   ciagInductionUrl: get('CIAG_INDUCTION_UI_URL', 'http://localhost:3000', requiredInProduction),
