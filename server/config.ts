@@ -115,6 +115,5 @@ export default {
   featureToggles: {
     // someToggleEnabled: Boolean(get('SOME_TOGGLE_ENABLED', false)),
     workAndInterestsTabEnabled: Boolean(get('WORK_AND_INTERESTS_TAB_ENABLED', false)),
-    otherQualificationsEnabled: Boolean(get('OTHER_QUALIFICATIONS_ENABLED', false)),
   },
 }
