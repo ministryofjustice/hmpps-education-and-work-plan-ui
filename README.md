@@ -171,7 +171,6 @@ If these are not desired in the cloned project, remove references to `check_outd
 ## Feature Toggles
 Features can be toggled by setting the relevant environment variable.
 
-| Name                              | Default Value | Type    | Description                                                                                                                                                        |
-|-----------------------------------|---------------|---------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| WORK_AND_INTERESTS_TAB_ENABLED    | false         | Boolean | Set to true to enable the Work and Interests tab. Will be removed when feature is complete and released                                                            |
-| PRE_PRISON_QUALIFICATIONS_ENABLED | false         | Boolean | Set to true to enable the Pre-prison qualifications and education section on the Education and training tab. Will be removed when feature is complete and released |
+| Name                | Default Value | Type    | Description                                         |
+|---------------------|---------------|---------|-----------------------------------------------------|
+| SOME_TOGGLE_ENABLED | false         | Boolean | Example feature toggle, for demonstration purposes. |
