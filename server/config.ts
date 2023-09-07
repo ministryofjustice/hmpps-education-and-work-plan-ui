@@ -118,7 +118,7 @@ export default {
     workAndInterestsTabEnabled: Boolean(get('WORK_AND_INTERESTS_TAB_ENABLED', false)),
     otherQualificationsEnabled: Boolean(get('OTHER_QUALIFICATIONS_ENABLED', false)),
     frontendComponentsApiToggleEnabled: Boolean(
-      get('FRONTEND_COMPONENTS_API_FEATURE_TOGGLE_ENABLED', true, requiredInProduction),
+      get('FRONTEND_COMPONENTS_API_FEATURE_TOGGLE_ENABLED', false, requiredInProduction),
     ),
   },
 }
