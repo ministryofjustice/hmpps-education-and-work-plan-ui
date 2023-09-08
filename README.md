@@ -171,6 +171,7 @@ If these are not desired in the cloned project, remove references to `check_outd
 ## Feature Toggles
 Features can be toggled by setting the relevant environment variable.
 
-| Name                | Default Value | Type    | Description                                         |
-|---------------------|---------------|---------|-----------------------------------------------------|
-| SOME_TOGGLE_ENABLED | false         | Boolean | Example feature toggle, for demonstration purposes. |
+| Name                            | Default Value | Type    | Description                                                                                                                                           |
+|---------------------------------|---------------|---------|-------------------------------------------------------------------------------------------------------------------------------------------------------|
+| SOME_TOGGLE_ENABLED             | false         | Boolean | Example feature toggle, for demonstration purposes.                                                                                                   |
+| STUB_PRISONER_LIST_PAGE_ENABLED | false         | Boolean | Whether to serve the stub prisoner list page.<br/>This should only be enabled in `dev` and local builds.<br/>**DO NOT** enable in `preprod` or `prod` |
