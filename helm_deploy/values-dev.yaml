@@ -19,7 +19,6 @@ generic-service:
     DPS_URL: "https://digital-dev.prison.service.justice.gov.uk"
     FRONTEND_COMPONENT_API_URL: "https://frontend-components-dev.hmpps.service.justice.gov.uk"
     STUB_PRISONER_LIST_PAGE_ENABLED: "true"
-    WORK_AND_INTERESTS_TAB_ENABLED: "true"
     FRONTEND_COMPONENTS_API_FEATURE_TOGGLE_ENABLED: "false"
 
 generic-prometheus-alerts:
