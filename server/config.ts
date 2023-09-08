@@ -115,5 +115,8 @@ export default {
   featureToggles: {
     // someToggleEnabled: Boolean(get('SOME_TOGGLE_ENABLED', false)),
     stubPrisonerListPageEnabled: Boolean(get('STUB_PRISONER_LIST_PAGE_ENABLED', false)),
+    frontendComponentsApiToggleEnabled: Boolean(
+      get('FRONTEND_COMPONENTS_API_FEATURE_TOGGLE_ENABLED', false, requiredInProduction),
+    ),
   },
 }
