@@ -114,5 +114,6 @@ export default {
   ciagInductionUrl: get('CIAG_INDUCTION_UI_URL', 'http://localhost:3000', requiredInProduction),
   featureToggles: {
     // someToggleEnabled: Boolean(get('SOME_TOGGLE_ENABLED', false)),
+    stubPrisonerListPageEnabled: Boolean(get('STUB_PRISONER_LIST_PAGE_ENABLED', false)),
   },
 }
