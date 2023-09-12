@@ -16,10 +16,12 @@ import setUpWebSecurity from './middleware/setUpWebSecurity'
 import setUpWebSession from './middleware/setUpWebSession'
 
 import routes from './routes'
+import { DataAccess } from './data'
 import type { Services } from './services'
 import authorisationMiddleware from './middleware/authorisationMiddleware'
+import setUpFrontendComponents from './middleware/fetchFrontendComponentMiddleware'
 
-export default function createApp(services: Services): express.Application {
+export default function createApp(services: Services, dataAccess: DataAccess): express.Application {
   const app = express()
 
   app.set('json spaces', 2)
@@ -37,6 +39,7 @@ export default function createApp(services: Services): express.Application {
   app.use(authorisationMiddleware())
   app.use(setUpCsrf())
   app.use(setUpCurrentUser(services))
+  app.use(setUpFrontendComponents(dataAccess))
 
   app.use(routes(services))
 
