@@ -7,7 +7,7 @@ export default class FrontendComponentApiClient {
     return new RestClient('Frontend Component API', config.apis.frontendComponents, token)
   }
 
-  async getComponent(component: 'header' | 'footer', token: string) {
+  async getComponents(component: 'header' | 'footer', token: string) {
     return FrontendComponentApiClient.restClient(token).get({
       path: `/${component}`,
       headers: { 'x-user-token': token },

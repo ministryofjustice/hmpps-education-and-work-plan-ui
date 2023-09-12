@@ -17,7 +17,7 @@ describe('frontendComponentApiClient', () => {
     nock.cleanAll()
   })
 
-  describe('getComponent', () => {
+  describe('getComponents', () => {
     it('should return data from api', async () => {
       // Given
       const userToken = 'a-user-token'
@@ -27,7 +27,7 @@ describe('frontendComponentApiClient', () => {
       fakeFrontendComponentApi.get('/footer').matchHeader('x-user-token', userToken).reply(200, expectedResponse)
 
       // When
-      const actual = await frontendComponentApiClient.getComponent('footer', userToken)
+      const actual = await frontendComponentApiClient.getComponents('footer', userToken)
 
       // Then
       expect(actual).toEqual(expectedResponse)

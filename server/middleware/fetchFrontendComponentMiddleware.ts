@@ -1,29 +1,25 @@
-import { Router } from 'express'
+import { RequestHandler } from 'express'
 import type { FrontendComponentsPageAdditions } from 'viewModels'
-import { DataAccess } from '../data'
 import logger from '../../logger'
+import { Services } from '../services'
 import config from '../config'
 
-export default function setUpFrontendComponents({ frontendComponentApiClient }: DataAccess): Router {
-  const router = Router({ mergeParams: true })
-
-  router.get('*', async (req, res, next) => {
+export default function getFrontendComponents({ frontendComponentService }: Services): RequestHandler {
+  return async (req, res, next) => {
     try {
-      // Frontend components API is only used when feature toggle is provided
       if (config.featureToggles.frontendComponentsApiToggleEnabled) {
-        const { user } = res.locals
-        const [footer] = await Promise.all([frontendComponentApiClient.getComponent('footer', user.token)])
+        const { token } = res.locals.user
+        const { footer } = await frontendComponentService.getComponents('footer', token)
         res.locals.feComponents = {
           footerHtml: footer.html,
           cssIncludes: [...footer.css],
           jsIncludes: [...footer.javascript],
         } as FrontendComponentsPageAdditions
+        next()
       }
     } catch (error) {
       logger.error(error, 'Failed to retrieve front end components')
+      next()
     }
-    next()
-  })
-
-  return router
+  }
 }

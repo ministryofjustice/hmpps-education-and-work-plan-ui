@@ -14,14 +14,13 @@ import setUpStaticResources from './middleware/setUpStaticResources'
 import setUpWebRequestParsing from './middleware/setupRequestParsing'
 import setUpWebSecurity from './middleware/setUpWebSecurity'
 import setUpWebSession from './middleware/setUpWebSession'
+import getFrontendComponents from './middleware/fetchFrontendComponentMiddleware'
 
 import routes from './routes'
-import { DataAccess } from './data'
 import type { Services } from './services'
 import authorisationMiddleware from './middleware/authorisationMiddleware'
-import setUpFrontendComponents from './middleware/fetchFrontendComponentMiddleware'
 
-export default function createApp(services: Services, dataAccess: DataAccess): express.Application {
+export default function createApp(services: Services): express.Application {
   const app = express()
 
   app.set('json spaces', 2)
@@ -39,8 +38,8 @@ export default function createApp(services: Services, dataAccess: DataAccess): e
   app.use(authorisationMiddleware())
   app.use(setUpCsrf())
   app.use(setUpCurrentUser(services))
-  app.use(setUpFrontendComponents(dataAccess))
 
+  app.get('*', getFrontendComponents(services))
   app.use(routes(services))
 
   app.use((req, res, next) => next(createError(404, 'Not found')))
