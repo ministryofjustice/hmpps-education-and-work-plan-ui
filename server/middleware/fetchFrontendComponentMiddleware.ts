@@ -8,8 +8,7 @@ export default function getFrontendComponents({ frontendComponentService }: Serv
   return async (req, res, next) => {
     try {
       if (config.featureToggles.frontendComponentsApiToggleEnabled) {
-        const { token } = res.locals.user
-        const { footer } = await frontendComponentService.getComponents('footer', token)
+        const { footer } = await frontendComponentService.getComponents('footer', res.locals.user.token)
         res.locals.feComponents = {
           footerHtml: footer.html,
           cssIncludes: [...footer.css],
