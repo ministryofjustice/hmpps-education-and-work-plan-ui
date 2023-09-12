@@ -1,6 +1,7 @@
 import nock from 'nock'
 import config from '../config'
 import FrontendComponentApiClient from './frontendComponentApiClient'
+import aValidFrontEndComponentFooter from '../testsupport/frontendComponentTestDataBuilder'
 
 describe('frontendComponentApiClient', () => {
   const frontendComponentApiClient = new FrontendComponentApiClient()
@@ -21,7 +22,7 @@ describe('frontendComponentApiClient', () => {
       // Given
       const userToken = 'a-user-token'
 
-      const expectedResponse = { data: 'data' }
+      const expectedResponse = aValidFrontEndComponentFooter()
 
       fakeFrontendComponentApi.get('/footer').matchHeader('x-user-token', userToken).reply(200, expectedResponse)
 
