@@ -1,4 +1,4 @@
-import type { Component } from 'frontendComponentApiClient'
+import type { FrontendComponent } from 'frontendComponentApiClient'
 import RestClient from './restClient'
 import config from '../config'
 
@@ -11,6 +11,6 @@ export default class FrontendComponentApiClient {
     return FrontendComponentApiClient.restClient(token).get({
       path: `/${component}`,
       headers: { 'x-user-token': token },
-    }) as Promise<Component>
+    }) as Promise<FrontendComponent>
   }
 }

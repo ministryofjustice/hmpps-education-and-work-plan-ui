@@ -1,7 +1,5 @@
 declare module 'frontendComponentApiClient' {
-  export interface Component {
-    html: string
-    css: string[]
-    javascript: string[]
-  }
+  import Component from '../frontendComponentApi'
+
+  export type FrontendComponent = Component
 }
