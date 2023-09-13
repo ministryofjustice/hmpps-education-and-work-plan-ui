@@ -6,11 +6,13 @@ import {
   checkCreateGoalFormExistsInSession,
   checkAddStepFormsArrayExistsInSession,
   checkPrisonerSummaryExistsInSession,
-  checkAddNoteFormExistsInSession,
   checkUpdateGoalFormExistsInSession,
+  checkNewGoalsFormExistsInSession,
 } from './routerRequestHandlers'
 import { aValidAddStepForm } from '../testsupport/addStepFormTestDataBuilder'
 import aValidPrisonerSummary from '../testsupport/prisonerSummaryTestDataBuilder'
+import aValidCreateGoalForm from '../testsupport/createGoalFormTestDataBuilder'
+import aValidAddNoteForm from '../testsupport/addNoteFormTestDataBuilder'
 
 describe('routerRequestHandlers', () => {
   const req = {
@@ -242,28 +244,6 @@ describe('routerRequestHandlers', () => {
     })
   })
 
-  describe('checkAddNoteFormExistsInSession', () => {
-    it(`should redirect to Add Note screen given add note form does not exist in session`, async () => {
-      // Given
-      const prisonNumber = 'A1234BC'
-      req.params.prisonNumber = prisonNumber
-      req.session.newGoal = {
-        addNoteForm: undefined,
-      } as NewGoal
-
-      // When
-      await checkAddNoteFormExistsInSession(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
-
-      // Then
-      expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/goals/add-note`)
-      expect(next).not.toHaveBeenCalled()
-    })
-  })
-
   describe('checkUpdateGoalFormExistsInSession', () => {
     it(`should invoke next handler given update goal form exists in session`, async () => {
       // Given
@@ -301,6 +281,93 @@ describe('routerRequestHandlers', () => {
 
       // Then
       expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/view/overview`)
+      expect(next).not.toHaveBeenCalled()
+    })
+  })
+
+  describe('checkNewGoalsFormExistsInSession', () => {
+    it(`should invoke next handler given NewGoal array exists in session with at least 1 element`, async () => {
+      // Given
+      req.session.newGoals = [
+        {
+          createGoalForm: aValidCreateGoalForm(),
+          addStepForms: [aValidAddStepForm()],
+          addNoteForm: aValidAddNoteForm(),
+        },
+      ] as Array<NewGoal>
+
+      // When
+      await checkNewGoalsFormExistsInSession(
+        req as undefined as Request,
+        res as undefined as Response,
+        next as undefined as NextFunction,
+      )
+
+      // Then
+      expect(next).toHaveBeenCalled()
+      expect(res.redirect).not.toHaveBeenCalled()
+    })
+
+    it(`should redirect to Create Goal screen given no NewGoal array exists in session`, async () => {
+      // Given
+      const prisonNumber = 'A1234BC'
+      req.params.prisonNumber = prisonNumber
+
+      req.session.newGoals = undefined
+
+      // When
+      await checkNewGoalsFormExistsInSession(
+        req as undefined as Request,
+        res as undefined as Response,
+        next as undefined as NextFunction,
+      )
+
+      // Then
+      expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/goals/create`)
+      expect(next).not.toHaveBeenCalled()
+    })
+
+    it(`should redirect to Add Note screen given an empty NewGoal array exists in session`, async () => {
+      // Given
+      const prisonNumber = 'A1234BC'
+      req.params.prisonNumber = prisonNumber
+
+      req.session.newGoals = []
+
+      // When
+      await checkNewGoalsFormExistsInSession(
+        req as undefined as Request,
+        res as undefined as Response,
+        next as undefined as NextFunction,
+      )
+
+      // Then
+      expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/goals/add-note`)
+      expect(next).not.toHaveBeenCalled()
+    })
+
+    it(`should redirect to Add Note screen given NewGoal array exists in session with at least 1 element that has no AddNoteForm`, async () => {
+      // Given
+      const prisonNumber = 'A1234BC'
+      req.params.prisonNumber = prisonNumber
+
+      req.session.newGoals = [
+        {
+          createGoalForm: aValidCreateGoalForm(),
+          addStepForms: [aValidAddStepForm()],
+          addNoteForm: undefined,
+        },
+      ] as Array<NewGoal>
+
+      // When
+      await checkNewGoalsFormExistsInSession(
+        req as undefined as Request,
+        res as undefined as Response,
+        next as undefined as NextFunction,
+      )
+
+      // Then
+      expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/goals/add-note`)
       expect(next).not.toHaveBeenCalled()
     })
   })

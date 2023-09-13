@@ -5,8 +5,8 @@ import { checkUserHasEditAuthority } from '../../middleware/roleBasedAccessContr
 import {
   checkCreateGoalFormExistsInSession,
   checkAddStepFormsArrayExistsInSession,
-  checkAddNoteFormExistsInSession,
   checkPrisonerSummaryExistsInSession,
+  checkNewGoalsFormExistsInSession,
 } from '../routerRequestHandlers'
 
 /**
@@ -52,18 +52,15 @@ export default (router: Router, services: Services) => {
     createGoalController.submitAddNoteForm,
   ])
 
+  router.use('/plan/:prisonNumber/goals/review', checkUserHasEditAuthority())
   router.get('/plan/:prisonNumber/goals/review', [
     checkPrisonerSummaryExistsInSession,
-    checkCreateGoalFormExistsInSession,
-    checkAddStepFormsArrayExistsInSession,
-    checkAddNoteFormExistsInSession,
+    checkNewGoalsFormExistsInSession,
     createGoalController.getReviewGoalView,
   ])
   router.post('/plan/:prisonNumber/goals/review', [
     checkPrisonerSummaryExistsInSession,
-    checkCreateGoalFormExistsInSession,
-    checkAddStepFormsArrayExistsInSession,
-    checkAddNoteFormExistsInSession,
+    checkNewGoalsFormExistsInSession,
     createGoalController.submitReviewGoal,
   ])
 }
