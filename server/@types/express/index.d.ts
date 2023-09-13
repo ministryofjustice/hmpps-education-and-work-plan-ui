@@ -1,5 +1,6 @@
 import type { PrisonerSummary, PrisonerSupportNeeds } from 'viewModels'
-import type { AddNoteForm, AddStepForm, CreateGoalForm, UpdateGoalForm } from 'forms'
+import type { UpdateGoalForm } from 'forms'
+import type { NewGoal } from 'compositeForms'
 
 export default {}
 
@@ -10,10 +11,7 @@ declare module 'express-session' {
     nowInMinutes: number
     prisonerSummary: PrisonerSummary
     supportNeeds: PrisonerSupportNeeds
-    createGoalForm: CreateGoalForm
-    addStepForm: AddStepForm
-    addStepForms: Array<AddStepForm>
-    addNoteForm: AddNoteForm
+    newGoalForm: NewGoal
     updateGoalForm: UpdateGoalForm
   }
 }

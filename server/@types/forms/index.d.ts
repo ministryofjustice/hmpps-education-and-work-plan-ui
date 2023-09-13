@@ -37,3 +37,23 @@ declare module 'forms' {
     status: 'NOT_STARTED' | 'ACTIVE' | 'COMPLETE'
   }
 }
+
+/**
+ * Module declaring "composite forms", specifically types that contain other forms.
+ * The composite form is not a form object in its own right, in that there are no HTML views, forms or express request
+ * handlers that bind request form fields to an object of this type. It is a convenience object to allow collating
+ * several form objects into a single object held in the session; typically used in multi-page / wizard style screens.
+ */
+declare module 'compositeForms' {
+  import type { AddNoteForm, AddStepForm, CreateGoalForm } from 'forms'
+
+  /**
+   * A composite form representing the individual form objects for creating a new Goal
+   */
+  export interface NewGoal {
+    createGoalForm: CreateGoalForm
+    addStepForm: AddStepForm
+    addStepForms: Array<AddStepForm>
+    addNoteForm: AddNoteForm
+  }
+}

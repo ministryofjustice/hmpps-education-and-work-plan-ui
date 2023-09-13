@@ -1,6 +1,7 @@
 import { NextFunction, Response, Request } from 'express'
 import { SessionData } from 'express-session'
-import type { AddStepForm, CreateGoalForm, UpdateGoalForm } from 'forms'
+import type { UpdateGoalForm } from 'forms'
+import type { NewGoal } from 'compositeForms'
 import {
   checkCreateGoalFormExistsInSession,
   checkAddStepFormsArrayExistsInSession,
@@ -33,9 +34,11 @@ describe('routerRequestHandlers', () => {
       const prisonNumber = 'A1234BC'
       req.params.prisonNumber = prisonNumber
 
-      req.session.createGoalForm = {
-        prisonNumber,
-      } as CreateGoalForm
+      req.session.newGoalForm = {
+        createGoalForm: {
+          prisonNumber,
+        },
+      } as NewGoal
 
       // When
       await checkCreateGoalFormExistsInSession(
@@ -49,12 +52,33 @@ describe('routerRequestHandlers', () => {
       expect(res.redirect).not.toHaveBeenCalled()
     })
 
-    it(`should redirect to Create Goal screen given no form exists in session`, async () => {
+    it(`should redirect to Create Goal screen given no newGoalForm form exists in session`, async () => {
       // Given
       const prisonNumber = 'A1234BC'
       req.params.prisonNumber = prisonNumber
 
-      req.session.createGoalForm = undefined
+      req.session.newGoalForm = undefined
+
+      // When
+      await checkCreateGoalFormExistsInSession(
+        req as undefined as Request,
+        res as undefined as Response,
+        next as undefined as NextFunction,
+      )
+
+      // Then
+      expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/goals/create`)
+      expect(next).not.toHaveBeenCalled()
+    })
+
+    it(`should redirect to Create Goal screen given no createGoalForm form exists in session`, async () => {
+      // Given
+      const prisonNumber = 'A1234BC'
+      req.params.prisonNumber = prisonNumber
+
+      req.session.newGoalForm = {
+        createGoalForm: undefined,
+      } as NewGoal
 
       // When
       await checkCreateGoalFormExistsInSession(
@@ -73,9 +97,11 @@ describe('routerRequestHandlers', () => {
       const prisonNumber = 'A1234BC'
       req.params.prisonNumber = prisonNumber
 
-      req.session.createGoalForm = {
-        prisonNumber: 'Z9999XZ',
-      } as CreateGoalForm
+      req.session.newGoalForm = {
+        createGoalForm: {
+          prisonNumber: 'Z9999XZ',
+        },
+      } as NewGoal
 
       // When
       await checkCreateGoalFormExistsInSession(
@@ -86,7 +112,7 @@ describe('routerRequestHandlers', () => {
 
       // Then
       expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/goals/create`)
-      expect(req.session.createGoalForm).toBeUndefined()
+      expect(req.session.newGoalForm.createGoalForm).toBeUndefined()
       expect(next).not.toHaveBeenCalled()
     })
   })
@@ -97,7 +123,9 @@ describe('routerRequestHandlers', () => {
       const prisonNumber = 'A1234BC'
       req.params.prisonNumber = prisonNumber
 
-      req.session.addStepForms = [aValidAddStepForm()] as Array<AddStepForm>
+      req.session.newGoalForm = {
+        addStepForms: [aValidAddStepForm()],
+      } as NewGoal
 
       // When
       await checkAddStepFormsArrayExistsInSession(
@@ -116,7 +144,9 @@ describe('routerRequestHandlers', () => {
       const prisonNumber = 'A1234BC'
       req.params.prisonNumber = prisonNumber
 
-      req.session.addStepForms = undefined
+      req.session.newGoalForm = {
+        addStepForms: undefined,
+      } as NewGoal
 
       // When
       await checkAddStepFormsArrayExistsInSession(
@@ -135,7 +165,9 @@ describe('routerRequestHandlers', () => {
       const prisonNumber = 'A1234BC'
       req.params.prisonNumber = prisonNumber
 
-      req.session.addStepForms = []
+      req.session.newGoalForm = {
+        addStepForms: [],
+      } as NewGoal
 
       // When
       await checkAddStepFormsArrayExistsInSession(
@@ -205,7 +237,7 @@ describe('routerRequestHandlers', () => {
 
       // Then
       expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/view/overview`)
-      expect(req.session.createGoalForm).toBeUndefined()
+      expect(req.session.newGoalForm).toBeUndefined()
       expect(next).not.toHaveBeenCalled()
     })
   })
@@ -215,7 +247,9 @@ describe('routerRequestHandlers', () => {
       // Given
       const prisonNumber = 'A1234BC'
       req.params.prisonNumber = prisonNumber
-      req.session.addNoteForm = undefined
+      req.session.newGoalForm = {
+        addNoteForm: undefined,
+      } as NewGoal
 
       // When
       await checkAddNoteFormExistsInSession(

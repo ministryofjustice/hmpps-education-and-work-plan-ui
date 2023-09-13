@@ -1,5 +1,6 @@
 import createError from 'http-errors'
 import type { RequestHandler } from 'express'
+import type { NewGoal } from 'compositeForms'
 import EducationAndWorkPlanService from '../../services/educationAndWorkPlanService'
 import CreateGoalView from './createGoalView'
 import AddStepView from './addStepView'
@@ -15,19 +16,21 @@ export default class CreateGoalController {
   getCreateGoalView: RequestHandler = async (req, res, next): Promise<void> => {
     const { prisonNumber } = req.params
     const { prisonerSummary } = req.session
-    if (!req.session.createGoalForm) {
-      req.session.createGoalForm = { prisonNumber }
+    if (!req.session.newGoalForm?.createGoalForm) {
+      req.session.newGoalForm = {
+        createGoalForm: { prisonNumber },
+      } as NewGoal
     }
 
-    const view = new CreateGoalView(prisonerSummary, req.session.createGoalForm, req.flash('errors'))
+    const view = new CreateGoalView(prisonerSummary, req.session.newGoalForm.createGoalForm, req.flash('errors'))
     res.render('pages/goal/create/index', { ...view.renderArgs })
   }
 
   submitCreateGoalForm: RequestHandler = async (req, res, next): Promise<void> => {
     const { prisonNumber } = req.params
-    req.session.createGoalForm = { ...req.body }
+    req.session.newGoalForm.createGoalForm = { ...req.body }
 
-    const errors = validateCreateGoalForm(req.session.createGoalForm)
+    const errors = validateCreateGoalForm(req.session.newGoalForm.createGoalForm)
     if (errors.length > 0) {
       req.flash('errors', errors)
       return res.redirect(`/plan/${prisonNumber}/goals/create`)
@@ -38,8 +41,8 @@ export default class CreateGoalController {
 
   getAddStepView: RequestHandler = async (req, res, next): Promise<void> => {
     const { prisonerSummary } = req.session
-    const addStepForm = req.session.addStepForm || { stepNumber: 1 }
-    req.session.addStepForms = req.session.addStepForms || []
+    const addStepForm = req.session.newGoalForm.addStepForm || { stepNumber: 1 }
+    req.session.newGoalForm.addStepForms = req.session.newGoalForm.addStepForms || []
 
     const view = new AddStepView(prisonerSummary, addStepForm, req.flash('errors'))
     res.render('pages/goal/add-step/index', { ...view.renderArgs })
@@ -47,8 +50,8 @@ export default class CreateGoalController {
 
   submitAddStepForm: RequestHandler = async (req, res, next): Promise<void> => {
     const { prisonNumber } = req.params
-    req.session.addStepForm = { ...req.body }
-    const { addStepForm, addStepForms } = req.session
+    req.session.newGoalForm.addStepForm = { ...req.body }
+    const { addStepForm, addStepForms } = req.session.newGoalForm
 
     const errors = validateAddStepForm(addStepForm)
     if (errors.length > 0) {
@@ -59,7 +62,7 @@ export default class CreateGoalController {
     // check to see if this step has already been added (e.g. after the user clicks the back button)
     const existingAddStepForm = addStepForms.find(step => step.stepNumber === addStepForm.stepNumber)
     if (!existingAddStepForm) {
-      addStepForms.push(req.session.addStepForm)
+      addStepForms.push(addStepForm)
     } else {
       // update it in case the user has clicked back and changed it
       existingAddStepForm.title = addStepForm.title
@@ -70,7 +73,7 @@ export default class CreateGoalController {
     if (addStepForm.action === 'add-another-step') {
       // Initialize a new AddStepForm with the next step number
       const nextStepNumber = Number(addStepForm.stepNumber) + 1
-      req.session.addStepForm = { stepNumber: nextStepNumber }
+      req.session.newGoalForm.addStepForm = { stepNumber: nextStepNumber }
       return res.redirect(`/plan/${prisonNumber}/goals/add-step`)
     }
 
@@ -79,7 +82,7 @@ export default class CreateGoalController {
 
   getAddNoteView: RequestHandler = async (req, res, next): Promise<void> => {
     const { prisonerSummary } = req.session
-    const addNoteForm = req.session.addNoteForm || {}
+    const addNoteForm = req.session.newGoalForm.addNoteForm || {}
 
     const view = new AddNoteView(prisonerSummary, addNoteForm, req.flash('errors'))
     res.render('pages/goal/add-note/index', { ...view.renderArgs })
@@ -87,16 +90,14 @@ export default class CreateGoalController {
 
   submitAddNoteForm: RequestHandler = async (req, res, next): Promise<void> => {
     const { prisonNumber } = req.params
-    req.session.addNoteForm = { ...req.body }
+    req.session.newGoalForm.addNoteForm = { ...req.body }
 
     return res.redirect(`/plan/${prisonNumber}/goals/review`)
   }
 
   getReviewGoalView: RequestHandler = async (req, res, next): Promise<void> => {
     const { prisonerSummary } = req.session
-    const { createGoalForm } = req.session
-    const { addStepForms } = req.session
-    const { addNoteForm } = req.session
+    const { createGoalForm, addStepForms, addNoteForm } = req.session.newGoalForm
 
     const { prisonId } = prisonerSummary
     const createGoalDto = toCreateGoalDto(createGoalForm, addStepForms, addNoteForm, prisonId)
@@ -108,9 +109,7 @@ export default class CreateGoalController {
   submitReviewGoal: RequestHandler = async (req, res, next): Promise<void> => {
     const { prisonNumber } = req.params
     const { prisonerSummary } = req.session
-    const { createGoalForm } = req.session
-    const { addStepForms } = req.session
-    const { addNoteForm } = req.session
+    const { createGoalForm, addStepForms, addNoteForm } = req.session.newGoalForm
 
     const { prisonId } = prisonerSummary
     const createGoalDto = toCreateGoalDto(createGoalForm, addStepForms, addNoteForm, prisonId)
@@ -118,10 +117,7 @@ export default class CreateGoalController {
     try {
       await this.educationAndWorkPlanService.createGoal(createGoalDto, req.user.token)
 
-      req.session.createGoalForm = undefined
-      req.session.addStepForm = undefined
-      req.session.addStepForms = undefined
-      req.session.addNoteForm = undefined
+      req.session.newGoalForm = undefined
       return res.redirect(`/plan/${prisonNumber}/view/overview`)
     } catch (e) {
       return next(createError(500, `Error updating plan for prisoner ${prisonNumber}`))
