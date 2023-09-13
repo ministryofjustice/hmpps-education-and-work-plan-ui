@@ -70,7 +70,7 @@ describe('createGoalController', () => {
         'targetDate-year': '2024',
         action: 'submit-form',
       }
-      req.session.newGoalForm = {
+      req.session.newGoal = {
         addStepForms: [],
       } as NewGoal
 
@@ -86,7 +86,7 @@ describe('createGoalController', () => {
       // Then
       expect(res.redirect).toHaveBeenCalledWith('/plan/A1234GC/goals/add-note')
       expect(req.flash).not.toHaveBeenCalled()
-      expect(req.session.newGoalForm.addStepForms).toHaveLength(1)
+      expect(req.session.newGoal.addStepForms).toHaveLength(1)
     })
 
     it('should redirect to add step form given action is add-another-step and validation passes', async () => {
@@ -100,7 +100,7 @@ describe('createGoalController', () => {
         'targetDate-year': '2024',
         action: 'add-another-step',
       }
-      req.session.newGoalForm = {
+      req.session.newGoal = {
         addStepForms: [],
       } as NewGoal
 
@@ -116,15 +116,15 @@ describe('createGoalController', () => {
       // Then
       expect(res.redirect).toHaveBeenCalledWith('/plan/A1234GC/goals/add-step')
       expect(req.flash).not.toHaveBeenCalled()
-      expect(req.session.newGoalForm.addStepForm).toEqual({ stepNumber: 2 })
-      expect(req.session.newGoalForm.addStepForms).toHaveLength(1)
+      expect(req.session.newGoal.addStepForm).toEqual({ stepNumber: 2 })
+      expect(req.session.newGoal.addStepForms).toHaveLength(1)
     })
 
     it('should redirect to add step form given validation fails', async () => {
       // Given
       req.params.prisonNumber = 'A1234GC'
       req.body = {}
-      req.session.newGoalForm = {
+      req.session.newGoal = {
         addStepForms: [],
       } as NewGoal
 
@@ -144,7 +144,7 @@ describe('createGoalController', () => {
       // Then
       expect(res.redirect).toHaveBeenCalledWith('/plan/A1234GC/goals/add-step')
       expect(req.flash).toHaveBeenCalledWith('errors', errors)
-      expect(req.session.newGoalForm.addStepForms).toHaveLength(0)
+      expect(req.session.newGoal.addStepForms).toHaveLength(0)
     })
 
     it('should add additional step', async () => {
@@ -152,7 +152,7 @@ describe('createGoalController', () => {
       req.params.prisonNumber = 'A1234GC'
       const addStepForm = aValidAddStepForm()
       req.body = addStepForm
-      req.session.newGoalForm = {
+      req.session.newGoal = {
         addStepForms: [anotherValidAddStepForm()],
       } as NewGoal
 
@@ -166,7 +166,7 @@ describe('createGoalController', () => {
       )
 
       // Then
-      expect(req.session.newGoalForm.addStepForms).toHaveLength(2)
+      expect(req.session.newGoal.addStepForms).toHaveLength(2)
       expect(res.redirect).toHaveBeenCalledWith('/plan/A1234GC/goals/add-note')
     })
 
@@ -175,7 +175,7 @@ describe('createGoalController', () => {
       req.params.prisonNumber = 'A1234GC'
       const addStepForm = aValidAddStepForm()
       req.body = addStepForm
-      req.session.newGoalForm = {
+      req.session.newGoal = {
         addStepForms: [addStepForm],
       } as NewGoal
 
@@ -189,7 +189,7 @@ describe('createGoalController', () => {
       )
 
       // Then
-      expect(req.session.newGoalForm.addStepForms).toHaveLength(1)
+      expect(req.session.newGoal.addStepForms).toHaveLength(1)
       expect(res.redirect).toHaveBeenCalledWith('/plan/A1234GC/goals/add-note')
     })
 
@@ -197,7 +197,7 @@ describe('createGoalController', () => {
       // Given
       req.params.prisonNumber = 'A1234GC'
       const addStepForm = aValidAddStepForm()
-      req.session.newGoalForm = {
+      req.session.newGoal = {
         addStepForms: [addStepForm],
       } as NewGoal
       const modifiedForm = aValidAddStepForm()
@@ -214,8 +214,8 @@ describe('createGoalController', () => {
       )
 
       // Then
-      expect(req.session.newGoalForm.addStepForms).toHaveLength(1)
-      expect(req.session.newGoalForm.addStepForms[0].title).toEqual('Find a Spanish course')
+      expect(req.session.newGoal.addStepForms).toHaveLength(1)
+      expect(req.session.newGoal.addStepForms[0].title).toEqual('Find a Spanish course')
       expect(res.redirect).toHaveBeenCalledWith('/plan/A1234GC/goals/add-note')
     })
   })
@@ -226,7 +226,7 @@ describe('createGoalController', () => {
       const createGoalForm = aValidCreateGoalForm()
       const addStepForms = [aValidAddStepForm()]
       const addNoteForm = aValidAddNoteForm()
-      req.session.newGoalForm = {
+      req.session.newGoal = {
         createGoalForm,
         addStepForms,
         addNoteForm,
@@ -269,7 +269,7 @@ describe('createGoalController', () => {
       const createGoalForm = aValidCreateGoalForm()
       const addStepForms = [aValidAddStepForm()]
       const addNoteForm = aValidAddNoteForm()
-      req.session.newGoalForm = {
+      req.session.newGoal = {
         createGoalForm,
         addStepForms,
         addNoteForm,
@@ -298,7 +298,7 @@ describe('createGoalController', () => {
         addNoteForm,
         expectedPrisonId,
       )
-      expect(req.session.newGoalForm).toBeUndefined()
+      expect(req.session.newGoal).toBeUndefined()
     })
 
     it('should not create goal given error calling service to create the goal', async () => {
@@ -307,7 +307,7 @@ describe('createGoalController', () => {
       const createGoalForm = aValidCreateGoalForm()
       const addStepForms = [aValidAddStepForm()]
       const addNoteForm = aValidAddNoteForm()
-      req.session.newGoalForm = {
+      req.session.newGoal = {
         createGoalForm,
         addStepForms,
         addNoteForm,

@@ -16,21 +16,21 @@ export default class CreateGoalController {
   getCreateGoalView: RequestHandler = async (req, res, next): Promise<void> => {
     const { prisonNumber } = req.params
     const { prisonerSummary } = req.session
-    if (!req.session.newGoalForm?.createGoalForm) {
-      req.session.newGoalForm = {
+    if (!req.session.newGoal?.createGoalForm) {
+      req.session.newGoal = {
         createGoalForm: { prisonNumber },
       } as NewGoal
     }
 
-    const view = new CreateGoalView(prisonerSummary, req.session.newGoalForm.createGoalForm, req.flash('errors'))
+    const view = new CreateGoalView(prisonerSummary, req.session.newGoal.createGoalForm, req.flash('errors'))
     res.render('pages/goal/create/index', { ...view.renderArgs })
   }
 
   submitCreateGoalForm: RequestHandler = async (req, res, next): Promise<void> => {
     const { prisonNumber } = req.params
-    req.session.newGoalForm.createGoalForm = { ...req.body }
+    req.session.newGoal.createGoalForm = { ...req.body }
 
-    const errors = validateCreateGoalForm(req.session.newGoalForm.createGoalForm)
+    const errors = validateCreateGoalForm(req.session.newGoal.createGoalForm)
     if (errors.length > 0) {
       req.flash('errors', errors)
       return res.redirect(`/plan/${prisonNumber}/goals/create`)
@@ -41,8 +41,8 @@ export default class CreateGoalController {
 
   getAddStepView: RequestHandler = async (req, res, next): Promise<void> => {
     const { prisonerSummary } = req.session
-    const addStepForm = req.session.newGoalForm.addStepForm || { stepNumber: 1 }
-    req.session.newGoalForm.addStepForms = req.session.newGoalForm.addStepForms || []
+    const addStepForm = req.session.newGoal.addStepForm || { stepNumber: 1 }
+    req.session.newGoal.addStepForms = req.session.newGoal.addStepForms || []
 
     const view = new AddStepView(prisonerSummary, addStepForm, req.flash('errors'))
     res.render('pages/goal/add-step/index', { ...view.renderArgs })
@@ -50,8 +50,8 @@ export default class CreateGoalController {
 
   submitAddStepForm: RequestHandler = async (req, res, next): Promise<void> => {
     const { prisonNumber } = req.params
-    req.session.newGoalForm.addStepForm = { ...req.body }
-    const { addStepForm, addStepForms } = req.session.newGoalForm
+    req.session.newGoal.addStepForm = { ...req.body }
+    const { addStepForm, addStepForms } = req.session.newGoal
 
     const errors = validateAddStepForm(addStepForm)
     if (errors.length > 0) {
@@ -73,7 +73,7 @@ export default class CreateGoalController {
     if (addStepForm.action === 'add-another-step') {
       // Initialize a new AddStepForm with the next step number
       const nextStepNumber = Number(addStepForm.stepNumber) + 1
-      req.session.newGoalForm.addStepForm = { stepNumber: nextStepNumber }
+      req.session.newGoal.addStepForm = { stepNumber: nextStepNumber }
       return res.redirect(`/plan/${prisonNumber}/goals/add-step`)
     }
 
@@ -82,7 +82,7 @@ export default class CreateGoalController {
 
   getAddNoteView: RequestHandler = async (req, res, next): Promise<void> => {
     const { prisonerSummary } = req.session
-    const addNoteForm = req.session.newGoalForm.addNoteForm || {}
+    const addNoteForm = req.session.newGoal.addNoteForm || {}
 
     const view = new AddNoteView(prisonerSummary, addNoteForm, req.flash('errors'))
     res.render('pages/goal/add-note/index', { ...view.renderArgs })
@@ -90,14 +90,14 @@ export default class CreateGoalController {
 
   submitAddNoteForm: RequestHandler = async (req, res, next): Promise<void> => {
     const { prisonNumber } = req.params
-    req.session.newGoalForm.addNoteForm = { ...req.body }
+    req.session.newGoal.addNoteForm = { ...req.body }
 
     return res.redirect(`/plan/${prisonNumber}/goals/review`)
   }
 
   getReviewGoalView: RequestHandler = async (req, res, next): Promise<void> => {
     const { prisonerSummary } = req.session
-    const { createGoalForm, addStepForms, addNoteForm } = req.session.newGoalForm
+    const { createGoalForm, addStepForms, addNoteForm } = req.session.newGoal
 
     const { prisonId } = prisonerSummary
     const createGoalDto = toCreateGoalDto(createGoalForm, addStepForms, addNoteForm, prisonId)
@@ -109,7 +109,7 @@ export default class CreateGoalController {
   submitReviewGoal: RequestHandler = async (req, res, next): Promise<void> => {
     const { prisonNumber } = req.params
     const { prisonerSummary } = req.session
-    const { createGoalForm, addStepForms, addNoteForm } = req.session.newGoalForm
+    const { createGoalForm, addStepForms, addNoteForm } = req.session.newGoal
 
     const { prisonId } = prisonerSummary
     const createGoalDto = toCreateGoalDto(createGoalForm, addStepForms, addNoteForm, prisonId)
@@ -117,7 +117,7 @@ export default class CreateGoalController {
     try {
       await this.educationAndWorkPlanService.createGoal(createGoalDto, req.user.token)
 
-      req.session.newGoalForm = undefined
+      req.session.newGoal = undefined
       return res.redirect(`/plan/${prisonNumber}/view/overview`)
     } catch (e) {
       return next(createError(500, `Error updating plan for prisoner ${prisonNumber}`))

@@ -21,7 +21,7 @@ export default class OverviewController {
 
   getOverviewView: RequestHandler = async (req, res, next): Promise<void> => {
     const { prisonNumber } = req.params
-    req.session.newGoalForm = undefined
+    req.session.newGoal = undefined
 
     const { prisonerSummary } = req.session
 

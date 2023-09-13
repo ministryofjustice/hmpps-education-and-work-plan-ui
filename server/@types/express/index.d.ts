@@ -11,7 +11,7 @@ declare module 'express-session' {
     nowInMinutes: number
     prisonerSummary: PrisonerSummary
     supportNeeds: PrisonerSupportNeeds
-    newGoalForm: NewGoal
+    newGoal: NewGoal
     updateGoalForm: UpdateGoalForm
   }
 }
