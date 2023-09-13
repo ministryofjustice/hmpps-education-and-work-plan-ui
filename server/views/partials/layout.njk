@@ -66,8 +66,8 @@
 {% endblock %}
 
 {% block footer %}
-  {% if feComponents.footer %}
-    {{ feComponents.footer | safe }}
+  {% if feComponents.footerHtml %}
+    {{ feComponents.footerHtml | safe }}
   {% else %}
     {{ govukFooter({
       classes: 'govuk-!-display-none-print'
