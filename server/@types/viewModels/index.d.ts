@@ -237,4 +237,13 @@ declare module 'viewModels' {
       | 'NONE'
     )[]
   }
+
+  /**
+   * DPS frontend components
+   */
+  export interface FrontendComponentsPageAdditions {
+    footerHtml: string
+    cssIncludes: Array<string>
+    jsIncludes: Array<string>
+  }
 }

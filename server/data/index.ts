@@ -17,6 +17,7 @@ import PrisonerSearchClient from './prisonerSearchClient'
 import EducationAndWorkPlanClient from './educationAndWorkPlanClient'
 import CuriousClient from './curiousClient'
 import CiagInductionClient from './ciagInductionClient'
+import FrontendComponentApiClient from './frontendComponentApiClient'
 
 type RestClientBuilder<T> = (token: string) => T
 
@@ -27,8 +28,16 @@ export const dataAccess = () => ({
   educationAndWorkPlanClient: new EducationAndWorkPlanClient(),
   curiousClient: new CuriousClient(),
   ciagInductionClient: new CiagInductionClient(),
+  frontendComponentApiClient: new FrontendComponentApiClient(),
 })
 
 export type DataAccess = ReturnType<typeof dataAccess>
 
-export { HmppsAuthClient, RestClientBuilder, PrisonerSearchClient, EducationAndWorkPlanClient, CuriousClient }
+export {
+  HmppsAuthClient,
+  RestClientBuilder,
+  PrisonerSearchClient,
+  EducationAndWorkPlanClient,
+  CuriousClient,
+  FrontendComponentApiClient,
+}

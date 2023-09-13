@@ -14,7 +14,9 @@ import setUpStaticResources from './middleware/setUpStaticResources'
 import setUpWebRequestParsing from './middleware/setupRequestParsing'
 import setUpWebSecurity from './middleware/setUpWebSecurity'
 import setUpWebSession from './middleware/setUpWebSession'
+import getFrontendComponents from './middleware/fetchFrontendComponentMiddleware'
 
+import config from './config'
 import routes from './routes'
 import type { Services } from './services'
 import authorisationMiddleware from './middleware/authorisationMiddleware'
@@ -37,6 +39,10 @@ export default function createApp(services: Services): express.Application {
   app.use(authorisationMiddleware())
   app.use(setUpCsrf())
   app.use(setUpCurrentUser(services))
+
+  if (config.featureToggles.frontendComponentsApiToggleEnabled) {
+    app.get('*', getFrontendComponents(services))
+  }
 
   app.use(routes(services))
 
