@@ -16,6 +16,7 @@ import setUpWebSecurity from './middleware/setUpWebSecurity'
 import setUpWebSession from './middleware/setUpWebSession'
 import getFrontendComponents from './middleware/fetchFrontendComponentMiddleware'
 
+import config from './config'
 import routes from './routes'
 import type { Services } from './services'
 import authorisationMiddleware from './middleware/authorisationMiddleware'
@@ -39,7 +40,10 @@ export default function createApp(services: Services): express.Application {
   app.use(setUpCsrf())
   app.use(setUpCurrentUser(services))
 
-  app.get('*', getFrontendComponents(services))
+  if (config.featureToggles.frontendComponentsApiToggleEnabled) {
+    app.get('*', getFrontendComponents(services))
+  }
+
   app.use(routes(services))
 
   app.use((req, res, next) => next(createError(404, 'Not found')))
