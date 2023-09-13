@@ -1,5 +1,9 @@
 const production = process.env.NODE_ENV === 'production'
 
+const toBoolean = (value: unknown): boolean => {
+  return value === 'true'
+}
+
 function get<T>(name: string, fallback: T, options = { requireInProduction: false }): T | string {
   if (process.env[name]) {
     return process.env[name]
@@ -113,9 +117,9 @@ export default {
   dpsHomeUrl: get('DPS_URL', 'http://localhost:3000/', requiredInProduction),
   ciagInductionUrl: get('CIAG_INDUCTION_UI_URL', 'http://localhost:3000', requiredInProduction),
   featureToggles: {
-    // someToggleEnabled: Boolean(get('SOME_TOGGLE_ENABLED', false)),
-    stubPrisonerListPageEnabled: Boolean(get('STUB_PRISONER_LIST_PAGE_ENABLED', false)),
-    frontendComponentsApiToggleEnabled: Boolean(
+    // someToggleEnabled: toBoolean(get('SOME_TOGGLE_ENABLED', false)),
+    stubPrisonerListPageEnabled: toBoolean(get('STUB_PRISONER_LIST_PAGE_ENABLED', false)),
+    frontendComponentsApiToggleEnabled: toBoolean(
       get('FRONTEND_COMPONENTS_API_FEATURE_TOGGLE_ENABLED', false, requiredInProduction),
     ),
   },
