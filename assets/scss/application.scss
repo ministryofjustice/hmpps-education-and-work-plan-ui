@@ -8,6 +8,7 @@ $govuk-page-width: $moj-page-width;
 @import 'moj/all';
 
 @import './components/header-bar';
+@import './components/header-bar-dps';
 @import './components/footer';
 @import './components/overview-page';
 @import './components/print-link';
