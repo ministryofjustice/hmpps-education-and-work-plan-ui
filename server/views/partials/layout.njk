@@ -66,8 +66,12 @@
 {% endblock %}
 
 {% block footer %}
-  {% if feComponents.footerHtml %}
-    {{ feComponents.footerHtml | safe }}
+  {% if featureToggles.frontendComponentsApiToggleEnabled %}
+    {% if feComponents.footerHtml %}
+      {{ feComponents.footerHtml | safe }}
+    {% else %}
+      {% include "./footer.njk" %}
+    {% endif %}
   {% else %}
     {{ govukFooter({
       classes: 'govuk-!-display-none-print'
