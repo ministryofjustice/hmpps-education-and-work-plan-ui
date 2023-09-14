@@ -8,6 +8,8 @@ context('Prisoner Overview page', () => {
     cy.task('reset')
     cy.task('stubSignInAsUserWithEditAuthority')
     cy.task('stubAuthUser')
+    cy.task('stubGetHeaderComponent')
+    cy.task('stubGetFooterComponent')
     cy.task('getPrisonerById')
     cy.task('getActionPlan')
     cy.task('stubLearnerProfile')
@@ -138,7 +140,6 @@ context('Prisoner Overview page', () => {
   })
 
   it('should have the DPS footer', () => {
-    cy.task('stubGetFooterComponent')
     // Given
     const prisonNumber = 'G6115VJ'
 

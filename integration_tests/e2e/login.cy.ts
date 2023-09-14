@@ -8,6 +8,8 @@ context('SignIn', () => {
     cy.task('reset')
     cy.task('stubSignInAsUserWithViewAuthority')
     cy.task('stubAuthUser')
+    cy.task('stubGetHeaderComponent')
+    cy.task('stubGetFooterComponent')
   })
 
   it('Unauthenticated user directed to auth', () => {

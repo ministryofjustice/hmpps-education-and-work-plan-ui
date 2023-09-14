@@ -6,6 +6,8 @@ context('Prisoner Overview page - Work and Interests tab', () => {
     cy.task('reset')
     cy.task('stubSignInAsUserWithEditAuthority')
     cy.task('stubAuthUser')
+    cy.task('stubGetHeaderComponent')
+    cy.task('stubGetFooterComponent')
     cy.task('getPrisonerById')
     cy.task('getActionPlan')
     cy.task('stubLearnerProfile')
