@@ -128,11 +128,41 @@ context('Prisoner Overview page', () => {
     // Given
     const prisonNumber = 'G6115VJ'
     cy.signIn()
+
+    // When
     cy.visit(`/plan/${prisonNumber}/view/overview`)
     const overviewPage = Page.verifyOnPage(OverviewPage)
 
     // Check
     overviewPage.hasBreadcrumb().breadcrumbDoesNotIncludeCurrentPage()
+  })
+
+  it('should have the DPS footer', () => {
+    cy.task('stubGetFooterComponent')
+    // Given
+    const prisonNumber = 'G6115VJ'
+
+    cy.signIn()
+    cy.visit(`/plan/${prisonNumber}/view/overview`)
+    const overviewPage = Page.verifyOnPage(OverviewPage)
+
+    // Check
+    overviewPage.hasFooter()
+  })
+
+  it('should have the standard footer given the DPS frontend component API errors', () => {
+    cy.task('stubGetFooterComponent500error')
+    // Given
+    const prisonNumber = 'G6115VJ'
+
+    cy.signIn()
+
+    // When
+    cy.visit(`/plan/${prisonNumber}/view/overview`)
+    const overviewPage = Page.verifyOnPage(OverviewPage)
+
+    // Check
+    overviewPage.hasFallbackFooter()
   })
 
   it('should display functional skills and most recent qualifications in the sidebar', () => {

@@ -81,5 +81,15 @@ export default abstract class Page {
     return this
   }
 
+  hasFooter() {
+    cy.get('.connect-dps-common-footer').should('exist')
+    return this
+  }
+
+  hasFallbackFooter() {
+    cy.get('.govuk-footer').should('exist')
+    return this
+  }
+
   breadCrumb = (): PageElement => cy.get('.govuk-breadcrumbs')
 }
