@@ -1,9 +1,19 @@
-import type { FrontendComponentsPageAdditions } from 'viewModels'
+import type { FrontendComponent } from 'frontendComponentApiClient'
 
-export default function aValidFrontEndComponentFooter(): FrontendComponentsPageAdditions {
+const aValidFrontEndComponentHeader = (): FrontendComponent => {
   return {
-    footerHtml: '<div>Footer</div>',
-    cssIncludes: ['https://frontend-componenents-dev/footerStyles.css'],
-    jsIncludes: ['https://frontend-componenents-dev/footerScripts.js'],
+    html: '<div>Header</div>',
+    css: ['https://frontend-componenents-dev/common.css', 'https://frontend-componenents-dev/headerStyles.css'],
+    javascript: ['https://frontend-componenents-dev/common.js', 'https://frontend-componenents-dev/headerScripts.js'],
   }
 }
+
+const aValidFrontEndComponentFooter = (): FrontendComponent => {
+  return {
+    html: '<div>Footer</div>',
+    css: ['https://frontend-componenents-dev/common.css', 'https://frontend-componenents-dev/footerStyles.css'],
+    javascript: ['https://frontend-componenents-dev/common.js', 'https://frontend-componenents-dev/footerScripts.js'],
+  }
+}
+
+export { aValidFrontEndComponentHeader, aValidFrontEndComponentFooter }

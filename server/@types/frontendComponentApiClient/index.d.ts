@@ -1,5 +1,5 @@
 declare module 'frontendComponentApiClient' {
-  import Component from '../frontendComponentApi'
+  import { components } from '../frontendComponentApi'
 
-  export type FrontendComponent = Component
+  export type FrontendComponent = components['schemas']['Component']
 }

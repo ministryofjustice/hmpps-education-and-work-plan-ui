@@ -242,8 +242,10 @@ declare module 'viewModels' {
    * DPS frontend components
    */
   export interface FrontendComponentsPageAdditions {
+    headerHtml: string
     footerHtml: string
     cssIncludes: Array<string>
     jsIncludes: Array<string>
+    problemRetrievingData: boolean
   }
 }
