@@ -1,0 +1,17 @@
+{
+  "request": {
+    "method": "GET",
+    "urlPattern": "/components/section"
+  },
+  "response": {
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "status": 404,
+    "jsonBody": {
+      "errorCode": "VC4004",
+      "errorMessage": "Resource not found",
+      "httpStatusCode": 404
+    }
+  }
+}

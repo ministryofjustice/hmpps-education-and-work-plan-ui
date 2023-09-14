@@ -1,0 +1,19 @@
+{
+  "request": {
+    "method": "GET",
+    "urlPattern": "/components/footer"
+  },
+  "response": {
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "status": 500,
+    "jsonBody": {
+      "errorCode": "VC5000",
+      "errorMessage": "Unexpected error",
+      "httpStatusCode": 500,
+      "userMessage": "An unexpected error occurred",
+      "developerMessage": "An unexpected error occurred"
+    }
+  }
+}
