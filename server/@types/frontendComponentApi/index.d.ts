@@ -1,5 +1,9 @@
-export default interface Component {
-  html: string
-  css: string[]
-  javascript: string[]
+export interface components {
+  schemas: {
+    Component: {
+      html: string
+      css: string[]
+      javascript: string[]
+    }
+  }
 }

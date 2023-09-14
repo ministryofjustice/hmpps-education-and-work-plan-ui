@@ -28,9 +28,11 @@
   <![endif]-->
 
   {% if featureToggles.frontendComponentsApiToggleEnabled %}
-    {% for css in feComponents.cssIncludes %}
-      <link href="{{ css }}" nonce="{{ cspNonce }}" rel="stylesheet" />
-    {% endfor %}
+    {% if not feComponents.problemRetrievingData %}
+      {% for css in feComponents.cssIncludes %}
+        <link href="{{ css }}" nonce="{{ cspNonce }}" rel="stylesheet" />
+      {% endfor %}
+    {% endif %}
   {% endif %}
 
   <link href="/assets/stylesheets/print.css?{{ version }}" media="print" rel="stylesheet" />
@@ -69,7 +71,7 @@
 
 {% block footer %}
   {% if featureToggles.frontendComponentsApiToggleEnabled %}
-    {% if feComponents.footerHtml %}
+    {% if not feComponents.problemRetrievingData %}
       {{ feComponents.footerHtml | safe }}
     {% else %}
       {% include "./footer.njk" %}
@@ -90,8 +92,10 @@
   <script src="/assets/print.js"></script>
 
   {% if featureToggles.frontendComponentsApiToggleEnabled %}
-    {% for js in feComponents.jsIncludes %}
-      <script src="{{ js }}" nonce="{{ cspNonce }}"></script>
-    {% endfor %}
+    {% if not feComponents.problemRetrievingData %}
+      {% for js in feComponents.jsIncludes %}
+        <script src="{{ js }}" nonce="{{ cspNonce }}"></script>
+      {% endfor %}
+    {% endif %}
   {% endif %}
 {% endblock %}

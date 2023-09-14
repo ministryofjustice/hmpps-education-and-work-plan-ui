@@ -1,7 +1,7 @@
 import nock from 'nock'
 import config from '../config'
 import FrontendComponentApiClient from './frontendComponentApiClient'
-import aValidFrontEndComponentFooter from '../testsupport/frontendComponentTestDataBuilder'
+import { aValidFrontEndComponentFooter } from '../testsupport/frontendComponentTestDataBuilder'
 
 describe('frontendComponentApiClient', () => {
   const frontendComponentApiClient = new FrontendComponentApiClient()
@@ -18,7 +18,7 @@ describe('frontendComponentApiClient', () => {
   })
 
   describe('getComponents', () => {
-    it('should return data from api', async () => {
+    it('should get frontend component', async () => {
       // Given
       const userToken = 'a-user-token'
 
@@ -32,6 +32,28 @@ describe('frontendComponentApiClient', () => {
       // Then
       expect(actual).toEqual(expectedResponse)
       expect(nock.isDone()).toBe(true)
+    })
+
+    it('should not get frontend component given API returns error response', async () => {
+      // Given
+      const userToken = 'a-user-token'
+
+      const expectedResponseBody = {
+        status: 500,
+        userMessage: 'An unexpected error occurred',
+        developerMessage: 'An unexpected error occurred',
+      }
+      fakeFrontendComponentApi.get('/footer').matchHeader('x-user-token', userToken).reply(500, expectedResponseBody)
+
+      // When
+      try {
+        await frontendComponentApiClient.getComponents('footer', userToken)
+      } catch (e) {
+        // Then
+        expect(nock.isDone()).toBe(true)
+        expect(e.status).toEqual(500)
+        expect(e.data).toEqual(expectedResponseBody)
+      }
     })
   })
 })
