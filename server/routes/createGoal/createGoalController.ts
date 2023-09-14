@@ -16,6 +16,8 @@ export default class CreateGoalController {
   getCreateGoalView: RequestHandler = async (req, res, next): Promise<void> => {
     const { prisonNumber } = req.params
     const { prisonerSummary } = req.session
+
+    req.session.newGoals = req.session.newGoals || []
     if (!req.session.newGoal?.createGoalForm) {
       req.session.newGoal = {
         createGoalForm: { prisonNumber },
@@ -92,30 +94,37 @@ export default class CreateGoalController {
     const { prisonNumber } = req.params
     req.session.newGoal.addNoteForm = { ...req.body }
 
+    req.session.newGoals.push(req.session.newGoal)
+    req.session.newGoal = undefined
+
     return res.redirect(`/plan/${prisonNumber}/goals/review`)
   }
 
   getReviewGoalView: RequestHandler = async (req, res, next): Promise<void> => {
     const { prisonerSummary } = req.session
-    const { createGoalForm, addStepForms, addNoteForm } = req.session.newGoal
-
     const { prisonId } = prisonerSummary
-    const createGoalDto = toCreateGoalDto(createGoalForm, addStepForms, addNoteForm, prisonId)
 
-    const view = new ReviewView(prisonerSummary, createGoalDto)
+    const createGoalDtos = req.session.newGoals.map(newGoal => {
+      const { createGoalForm, addStepForms, addNoteForm } = newGoal
+      return toCreateGoalDto(createGoalForm, addStepForms, addNoteForm, prisonId)
+    })
+
+    const view = new ReviewView(prisonerSummary, createGoalDtos[0])
     res.render('pages/goal/review/index', { ...view.renderArgs })
   }
 
   submitReviewGoal: RequestHandler = async (req, res, next): Promise<void> => {
     const { prisonNumber } = req.params
     const { prisonerSummary } = req.session
-    const { createGoalForm, addStepForms, addNoteForm } = req.session.newGoal
-
     const { prisonId } = prisonerSummary
-    const createGoalDto = toCreateGoalDto(createGoalForm, addStepForms, addNoteForm, prisonId)
+
+    const createGoalDtos = req.session.newGoals.map(newGoal => {
+      const { createGoalForm, addStepForms, addNoteForm } = newGoal
+      return toCreateGoalDto(createGoalForm, addStepForms, addNoteForm, prisonId)
+    })
 
     try {
-      await this.educationAndWorkPlanService.createGoal(createGoalDto, req.user.token)
+      await this.educationAndWorkPlanService.createGoal(createGoalDtos[0], req.user.token)
 
       req.session.newGoal = undefined
       return res.redirect(`/plan/${prisonNumber}/view/overview`)

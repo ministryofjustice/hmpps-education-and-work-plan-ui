@@ -52,8 +52,8 @@ declare module 'compositeForms' {
    */
   export interface NewGoal {
     createGoalForm: CreateGoalForm
-    addStepForm: AddStepForm
-    addStepForms: Array<AddStepForm>
+    addStepForm: AddStepForm // A single AddStepForm representing the Step that is currently being added
+    addStepForms: Array<AddStepForm> // An array of AddStepForm representing the Steps that have been added
     addNoteForm: AddNoteForm
   }
 }

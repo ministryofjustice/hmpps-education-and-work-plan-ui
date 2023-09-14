@@ -1,6 +1,7 @@
 import createError from 'http-errors'
 import { Request, Response, NextFunction } from 'express'
 import { SessionData } from 'express-session'
+import type { CreateGoalForm } from 'forms'
 import type { NewGoal } from 'compositeForms'
 import CreateGoalController from './createGoalController'
 import validateAddStepForm from './addStepFormValidator'
@@ -56,6 +57,40 @@ describe('createGoalController', () => {
     req.session.prisonerSummary = prisonerSummary
 
     errors = []
+  })
+
+  describe('getCreateGoalView', () => {
+    it('should get create goal view', async () => {
+      // Given
+      req.session.newGoals = undefined
+      req.session.newGoal = undefined
+
+      const expectedPrisonId = 'MDI'
+      prisonerSummary = aValidPrisonerSummary(prisonNumber, expectedPrisonId)
+      req.session.prisonerSummary = prisonerSummary
+
+      const expectedCreateGoalForm = { prisonNumber } as CreateGoalForm
+      const expectedView = {
+        prisonerSummary,
+        form: expectedCreateGoalForm,
+        errors,
+      }
+      const expectedNewGoal = {
+        createGoalForm: expectedCreateGoalForm,
+      } as NewGoal
+
+      // When
+      await controller.getCreateGoalView(
+        req as undefined as Request,
+        res as undefined as Response,
+        next as undefined as NextFunction,
+      )
+
+      // Then
+      expect(res.render).toHaveBeenCalledWith('pages/goal/create/index', expectedView)
+      expect(req.session.newGoal).toEqual(expectedNewGoal)
+      expect(req.session.newGoals).toEqual([])
+    })
   })
 
   describe('submitAddStepForm', () => {
@@ -220,17 +255,57 @@ describe('createGoalController', () => {
     })
   })
 
+  describe('submitAddNoteForm', () => {
+    it('should redirect to review goal page', async () => {
+      // Given
+      req.params.prisonNumber = 'A1234GC'
+      req.session.newGoals = []
+      req.session.newGoal = {
+        createGoalForm: aValidCreateGoalForm(),
+        addStepForm: aValidAddStepForm(),
+        addNoteForm: undefined,
+      } as NewGoal
+
+      req.body = {
+        note: `Some exciting note about the prisoner's new goal`,
+      }
+
+      const expectedNewGoals = [
+        {
+          createGoalForm: aValidCreateGoalForm(),
+          addStepForm: aValidAddStepForm(),
+          addNoteForm: { note: `Some exciting note about the prisoner's new goal` },
+        },
+      ] as Array<NewGoal>
+
+      // When
+      await controller.submitAddNoteForm(
+        req as undefined as Request,
+        res as undefined as Response,
+        next as undefined as NextFunction,
+      )
+
+      // Then
+      expect(res.redirect).toHaveBeenCalledWith('/plan/A1234GC/goals/review')
+      expect(req.session.newGoal).toBeUndefined()
+      expect(req.session.newGoals).toEqual(expectedNewGoals)
+    })
+  })
+
   describe('getReviewGoalView', () => {
     it('should get review goal view', async () => {
       // Given
       const createGoalForm = aValidCreateGoalForm()
       const addStepForms = [aValidAddStepForm()]
       const addNoteForm = aValidAddNoteForm()
-      req.session.newGoal = {
-        createGoalForm,
-        addStepForms,
-        addNoteForm,
-      } as NewGoal
+
+      req.session.newGoals = [
+        {
+          createGoalForm,
+          addStepForms,
+          addNoteForm,
+        },
+      ] as Array<NewGoal>
 
       const createGoalDto = aValidCreateGoalDtoWithOneStep()
       mockedCreateGoalDtoMapper.mockReturnValue(createGoalDto)
@@ -269,11 +344,14 @@ describe('createGoalController', () => {
       const createGoalForm = aValidCreateGoalForm()
       const addStepForms = [aValidAddStepForm()]
       const addNoteForm = aValidAddNoteForm()
-      req.session.newGoal = {
-        createGoalForm,
-        addStepForms,
-        addNoteForm,
-      } as NewGoal
+
+      req.session.newGoals = [
+        {
+          createGoalForm,
+          addStepForms,
+          addNoteForm,
+        },
+      ] as Array<NewGoal>
 
       const createGoalDto = aValidCreateGoalDtoWithOneStep()
       mockedCreateGoalDtoMapper.mockReturnValue(createGoalDto)
@@ -307,11 +385,14 @@ describe('createGoalController', () => {
       const createGoalForm = aValidCreateGoalForm()
       const addStepForms = [aValidAddStepForm()]
       const addNoteForm = aValidAddNoteForm()
-      req.session.newGoal = {
-        createGoalForm,
-        addStepForms,
-        addNoteForm,
-      } as NewGoal
+
+      req.session.newGoals = [
+        {
+          createGoalForm,
+          addStepForms,
+          addNoteForm,
+        },
+      ] as Array<NewGoal>
 
       const createGoalDto = aValidCreateGoalDtoWithOneStep()
       mockedCreateGoalDtoMapper.mockReturnValue(createGoalDto)

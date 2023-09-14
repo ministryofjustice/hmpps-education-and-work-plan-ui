@@ -46,21 +46,6 @@ const checkAddStepFormsArrayExistsInSession = async (req: Request, res: Response
 }
 
 /**
- * Request handler function to check the AddNoteForm exists in the session for the prisoner reference in the
- * request URL.
- */
-const checkAddNoteFormExistsInSession = async (req: Request, res: Response, next: NextFunction) => {
-  if (!req.session.newGoal?.addNoteForm) {
-    logger.warn(
-      `No AddNoteForm object in session - user attempting to navigate to path ${req.path} out of sequence. Redirecting to Add Note screen.`,
-    )
-    res.redirect(`/plan/${req.params.prisonNumber}/goals/add-note`)
-  } else {
-    next()
-  }
-}
-
-/**
  * Request handler function to check the PrisonerSummary exists in the session for the prisoner referenced in the
  * request URL.
  */
@@ -96,10 +81,34 @@ const checkUpdateGoalFormExistsInSession = async (req: Request, res: Response, n
   }
 }
 
+/**
+ * Request handler function to check the NewGoal array exists in the session and contains at least 1 element, where each
+ * element contains an AddNoteForm (if a given element does not contain an AddNoteForm it means the pages are being navigated
+ * out of sequence)
+ */
+const checkNewGoalsFormExistsInSession = async (req: Request, res: Response, next: NextFunction) => {
+  if (!req.session.newGoals) {
+    logger.warn(
+      `No NewGoal objects in session - user attempting to navigate to path ${req.path} out of sequence. Redirecting to start of Create Goal journey.`,
+    )
+    res.redirect(`/plan/${req.params.prisonNumber}/goals/create`)
+  } else if (req.session.newGoals.length < 1) {
+    logger.warn('NewGoal array in session is empty. Redirecting to Add Note page.')
+    res.redirect(`/plan/${req.params.prisonNumber}/goals/add-note`)
+  } else if (req.session.newGoals.some(newGoal => newGoal.addNoteForm === undefined || newGoal.addNoteForm === null)) {
+    logger.warn(
+      `At least 1 NewGoal has no AddNoteForm object - user attempting to navigate to path ${req.path} out of sequence. Redirecting to Add Note page.`,
+    )
+    res.redirect(`/plan/${req.params.prisonNumber}/goals/add-note`)
+  } else {
+    next()
+  }
+}
+
 export {
   checkCreateGoalFormExistsInSession,
   checkAddStepFormsArrayExistsInSession,
-  checkAddNoteFormExistsInSession,
   checkPrisonerSummaryExistsInSession,
   checkUpdateGoalFormExistsInSession,
+  checkNewGoalsFormExistsInSession,
 }

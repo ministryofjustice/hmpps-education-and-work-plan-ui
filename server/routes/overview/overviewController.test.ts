@@ -123,6 +123,8 @@ describe('overviewController', () => {
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/overview/index', expectedView)
       expect(educationAndWorkPlanService.getActionPlan).toHaveBeenCalledWith(prisonNumber, 'a-user-token')
+      expect(req.session.newGoal).toBeUndefined()
+      expect(req.session.newGoals).toBeUndefined()
     })
   })
 
