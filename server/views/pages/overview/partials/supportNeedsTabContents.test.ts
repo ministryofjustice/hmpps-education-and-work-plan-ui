@@ -27,17 +27,41 @@ describe('Support Needs tab view', () => {
     const $ = cheerio.load(compiledTemplate.render(viewContext))
 
     // Then
+    const healthAndSupportNeedsCard = $('#health-and-support-needs-summary-card')
+    // expect there to be only 1 gov-uk-summmary-list representing the data from the 1 prison in aValidPrisonerSupportNeeds()
+    expect(healthAndSupportNeedsCard.find('.govuk-summary-list').length).toEqual(1)
+    expect(healthAndSupportNeedsCard.find('h3').text().trim()).toEqual('MOORLAND (HMP & YOI)')
+    expect(
+      healthAndSupportNeedsCard //
+        .find(`.govuk-summary-list__key:contains('Rapid assessment')`)
+        .next()
+        .text()
+        .trim(),
+    ).toEqual('18 February 2022')
+    expect(
+      healthAndSupportNeedsCard //
+        .find(`.govuk-summary-list__key:contains('In-depth assessment')`)
+        .next()
+        .text()
+        .trim(),
+    ).toEqual('Not recorded in Curious')
+    expect(
+      healthAndSupportNeedsCard //
+        .find(`.govuk-summary-list__key:contains('Primary LDD and health needs')`)
+        .next()
+        .text()
+        .trim(),
+    ).toEqual('Visual impairment')
+    expect(
+      healthAndSupportNeedsCard //
+        .find(`.govuk-summary-list__key:contains('Additional LDD and health needs')`)
+        .next()
+        .find('li')
+        .toArray()
+        .map(el => $(el).text()),
+    ).toEqual(['Hearing impairment', 'Mental health difficulty', 'Social and emotional difficulties'])
+
     const summaryListRow = '.govuk-summary-list__row'
-    const healthAndSupportNeedsCard = '#health-and-support-needs-summary-card'
-    expect($(`${healthAndSupportNeedsCard} ${summaryListRow}:nth-of-type(1) .govuk-list`).text()).toContain('Bilingual')
-
-    // check primary LDD is displayed first, with secondary ones in alphabetical order
-    const lddHealthNeeds = `${healthAndSupportNeedsCard} ${summaryListRow}:nth-of-type(2) .govuk-list`
-    expect($(`${lddHealthNeeds} li:nth-of-type(1)`).text()).toContain('Visual impairment')
-    expect($(`${lddHealthNeeds} li:nth-of-type(2)`).text()).toContain('Hearing impairment')
-    expect($(`${lddHealthNeeds} li:nth-of-type(3)`).text()).toContain('Mental health difficulty')
-    expect($(`${lddHealthNeeds} li:nth-of-type(4)`).text()).toContain('Social and emotional difficulties')
-
     const neurodiversityCard = '#neurodiversity-summary-card'
     const supportNeeded = `${neurodiversityCard} ${summaryListRow}:nth-of-type(1) .govuk-list:nth-of-type(1) li:nth-of-type(1)`
     const neurodiversity = `${neurodiversityCard} ${summaryListRow}:nth-of-type(2) .govuk-list:nth-of-type(1) li:nth-of-type(1)`

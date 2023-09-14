@@ -1,11 +1,5 @@
 import type { LearnerEductionPagedResponse } from 'curiousApiClient'
-import type {
-  FunctionalSkills,
-  HealthAndSupportNeeds,
-  Neurodiversity,
-  InPrisonEducationRecords,
-  PrisonerSupportNeeds,
-} from 'viewModels'
+import type { FunctionalSkills, Neurodiversity, InPrisonEducationRecords, PrisonerSupportNeeds } from 'viewModels'
 import moment from 'moment'
 import { CuriousClient, HmppsAuthClient } from '../data'
 import CuriousService from './curiousService'
@@ -51,15 +45,15 @@ describe('curiousService', () => {
       const learnerNeurodivergences = [aValidLearnerNeurodivergence()]
       curiousClient.getLearnerNeurodivergence.mockResolvedValue(learnerNeurodivergences)
 
-      const expectedSupportNeeds = {
+      const expectedSupportNeeds: PrisonerSupportNeeds = {
         problemRetrievingData: false,
         healthAndSupportNeeds: [
           {
             prisonId: 'MDI',
             prisonName: 'MOORLAND (HMP & YOI)',
-            languageSupportNeeded: 'Bilingual',
-            lddAndHealthNeeds: ['Visual impairment', 'Hearing impairment'],
-          } as HealthAndSupportNeeds,
+            primaryLddAndHealthNeeds: 'Visual impairment',
+            additionalLddAndHealthNeeds: ['Hearing impairment'],
+          },
         ],
         neurodiversities: [
           {
@@ -71,9 +65,9 @@ describe('curiousService', () => {
             selfDeclaredRecordedDate: moment('2022-02-18').toDate(),
             assessedNeurodiversity: ['No Identified Neurodiversity Need'],
             assessmentDate: moment('2022-05-18').toDate(),
-          } as Neurodiversity,
+          },
         ],
-      } as PrisonerSupportNeeds
+      }
 
       // When
       const actual = await curiousService.getPrisonerSupportNeeds(prisonNumber, username)
@@ -215,18 +209,18 @@ describe('curiousService', () => {
       }
       curiousClient.getLearnerNeurodivergence.mockRejectedValue(curiousApi404Error)
 
-      const expectedSupportNeeds = {
+      const expectedSupportNeeds: PrisonerSupportNeeds = {
         problemRetrievingData: false,
         healthAndSupportNeeds: [
           {
             prisonId: 'MDI',
             prisonName: 'MOORLAND (HMP & YOI)',
-            languageSupportNeeded: 'Bilingual',
-            lddAndHealthNeeds: ['Visual impairment', 'Hearing impairment'],
-          } as HealthAndSupportNeeds,
+            primaryLddAndHealthNeeds: 'Visual impairment',
+            additionalLddAndHealthNeeds: ['Hearing impairment'],
+          },
         ],
         neurodiversities: undefined,
-      } as PrisonerSupportNeeds
+      }
 
       // When
       const actual = await curiousService.getPrisonerSupportNeeds(prisonNumber, username).catch(error => {

@@ -5,40 +5,58 @@
 
       <div class="govuk-summary-card" id="health-and-support-needs-summary-card">
         <div class="govuk-summary-card__title-wrapper">
-          <h2 class="govuk-summary-card__title">Health and support needs</h2>
+          <h2 class="govuk-summary-card__title">LDD and health needs</h2>
         </div>
         <div class="govuk-summary-card__content">
-          <dl class="govuk-summary-list">
+          <p class="govuk-hint">Information from Curious.</p>
 
-            <div class="govuk-summary-list__row">
-              <dt class="govuk-summary-list__key">
-                Language support needed
-              </dt>
-              <dd class="govuk-summary-list__value">
-                <ul class="govuk-list">
-                  {% for healthAndSupportNeed in supportNeeds.healthAndSupportNeeds %}
-                    <li>{{ healthAndSupportNeed.languageSupportNeeded }}</li>
-                  {% endfor %}
-                </ul>
-              </dd>
-            </div>
+          {% for healthAndSupportNeed in supportNeeds.healthAndSupportNeeds %}
 
-            <div class="govuk-summary-list__row">
-              <dt class="govuk-summary-list__key">
-                LDD and health needs
-              </dt>
-              <dd class="govuk-summary-list__value">
-                {% for healthAndSupportNeed in supportNeeds.healthAndSupportNeeds %}
-                  <ul class="govuk-list">
-                    {% for lddHealthNeed in healthAndSupportNeed.lddAndHealthNeeds %}
-                      <li>{{ lddHealthNeed }}</li>
-                    {% endfor %}
-                  </ul>
-                {% endfor %}
-              </dd>
-            </div>
+            <dl class="govuk-summary-list">
+              <h3>{{ healthAndSupportNeed.prisonName }}</h3>
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                  Rapid assessment
+                </dt>
+                <dd class="govuk-summary-list__value">
+                  {{ healthAndSupportNeed.rapidAssessmentDate | formatDate('D MMMM YYYY') | fallbackMessage('Not recorded in Curious') }}
+                </dd>
+              </div>
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                  In-depth assessment
+                </dt>
+                <dd class="govuk-summary-list__value">
+                  {{ healthAndSupportNeed.inDepthAssessmentDate | formatDate('D MMMM YYYY') | fallbackMessage('Not recorded in Curious') }}
+                </dd>
+              </div>
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                  Primary LDD and health needs
+                </dt>
+                <dd class="govuk-summary-list__value">
+                  {{ healthAndSupportNeed.primaryLddAndHealthNeeds | fallbackMessage('Not recorded in Curious') }}
+                </dd>
+              </div>
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                  Additional LDD and health needs
+                </dt>
+                <dd class="govuk-summary-list__value">
+                  {% if healthAndSupportNeed.additionalLddAndHealthNeeds.length > 0 %}
+                    <ul class="govuk-list">
+                      {% for additionalLddAndHealthNeed in healthAndSupportNeed.additionalLddAndHealthNeeds %}
+                        <li>{{ additionalLddAndHealthNeed }}</li>
+                      {% endfor %}
+                    </ul>
+                  {% else %}
+                    Not recorded in Curious
+                  {% endif %}
+                </dd>
+              </div>
+            </dl>
+          {% endfor %}
 
-          </dl>
         </div>
       </div>
 
