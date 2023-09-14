@@ -15,7 +15,22 @@ context('Create a goal', () => {
     cy.task('stubLearnerEducation')
   })
 
-  it('should not be able to navigate directly to Create Goal page given user has not clicked Add A Goal from overview page', () => {
+  it('should be able to navigate to Create Goal page given user has clicked Add A Goal from Overview page', () => {
+    // Given
+    const prisonNumber = 'G6115VJ'
+    cy.signIn()
+
+    cy.visit(`/plan/${prisonNumber}/view/overview`)
+    const overviewPage = Page.verifyOnPage(OverviewPage)
+
+    // When
+    const createGoalPage = overviewPage.clickAddGoalButton()
+
+    // Then
+    createGoalPage.isForPrisoner(prisonNumber)
+  })
+
+  it('should be able to navigate directly to Create Goal page from non-PLP pages such as CIAG service', () => {
     // Given
     const prisonNumber = 'G6115VJ'
     cy.signIn()
@@ -24,8 +39,8 @@ context('Create a goal', () => {
     cy.visit(`/plan/${prisonNumber}/goals/create`)
 
     // Then
-    const overviewPage = Page.verifyOnPage(OverviewPage)
-    overviewPage.isForPrisoner(prisonNumber)
+    const createGoalPage = Page.verifyOnPage(CreateGoalPage)
+    createGoalPage.isForPrisoner(prisonNumber)
   })
 
   it('should not proceed to Add Step page given validation errors on Create Goal page', () => {

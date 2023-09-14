@@ -1,5 +1,8 @@
-import { NextFunction, Request, Response } from 'express'
+import createError from 'http-errors'
+import { NextFunction, Request, RequestHandler, Response } from 'express'
+import type { PrisonerSummary } from 'viewModels'
 import logger from '../../logger'
+import PrisonerSearchService from '../services/prisonerSearchService'
 
 /**
  * A module exporting request handler functions to support ensuring page requests have been followed
@@ -105,10 +108,39 @@ const checkNewGoalsFormExistsInSession = async (req: Request, res: Response, nex
   }
 }
 
+/**
+ *  Middleware function that returns a Request handler function to look up the prisoner from prisoner-search, map to a PrisonerSummary, and store in the session
+ */
+const retrievePrisonerSummaryIfNotInSession = (prisonerSearchService: PrisonerSearchService): RequestHandler => {
+  return async (req: Request, res: Response, next: NextFunction) => {
+    const { prisonNumber } = req.params
+
+    try {
+      // Lookup the prisoner and store in the session if its either not there, or is for a different prisoner
+      if (!req.session.prisonerSummary || req.session.prisonerSummary.prisonNumber !== prisonNumber) {
+        const prisoner = await prisonerSearchService.getPrisonerByPrisonNumber(prisonNumber, req.user.username)
+        req.session.prisonerSummary = {
+          prisonNumber: prisoner.prisonerNumber,
+          prisonId: prisoner.prisonId,
+          releaseDate: prisoner.releaseDate,
+          firstName: prisoner.firstName,
+          lastName: prisoner.lastName,
+          receptionDate: prisoner.receptionDate,
+          dateOfBirth: prisoner.dateOfBirth,
+        } as PrisonerSummary
+      }
+      next()
+    } catch (error) {
+      next(createError(error.status, `Prisoner ${prisonNumber} not returned by the Prisoner Search Service API`))
+    }
+  }
+}
+
 export {
   checkCreateGoalFormExistsInSession,
   checkAddStepFormsArrayExistsInSession,
   checkPrisonerSummaryExistsInSession,
   checkUpdateGoalFormExistsInSession,
   checkNewGoalsFormExistsInSession,
+  retrievePrisonerSummaryIfNotInSession,
 }
