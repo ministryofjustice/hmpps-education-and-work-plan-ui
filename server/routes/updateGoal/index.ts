@@ -2,19 +2,21 @@ import { Router } from 'express'
 import { Services } from '../../services'
 import UpdateGoalController from './updateGoalController'
 import { checkUserHasEditAuthority } from '../../middleware/roleBasedAccessControl'
-import { checkPrisonerSummaryExistsInSession, checkUpdateGoalFormExistsInSession } from '../routerRequestHandlers'
-import PrisonerSummaryRequestHandler from '../overview/prisonerSummaryRequestHandler'
+import {
+  checkPrisonerSummaryExistsInSession,
+  checkUpdateGoalFormExistsInSession,
+  retrievePrisonerSummaryIfNotInSession,
+} from '../routerRequestHandlers'
 
 /**
  * Route definitions for the pages relating to Updating A Goal
  */
 export default (router: Router, services: Services) => {
-  const prisonerSummaryRequestHandler = new PrisonerSummaryRequestHandler(services.prisonerSearchService)
   const updateGoalController = new UpdateGoalController(services.educationAndWorkPlanService)
 
   router.use('/plan/:prisonNumber/goals/:goalReference/update', [
     checkUserHasEditAuthority(),
-    prisonerSummaryRequestHandler.getPrisonerSummary,
+    retrievePrisonerSummaryIfNotInSession(services.prisonerSearchService),
   ])
   router.get('/plan/:prisonNumber/goals/:goalReference/update', [updateGoalController.getUpdateGoalView])
   router.post('/plan/:prisonNumber/goals/:goalReference/update', [updateGoalController.submitUpdateGoalForm])

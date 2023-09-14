@@ -7,6 +7,7 @@ import {
   checkAddStepFormsArrayExistsInSession,
   checkPrisonerSummaryExistsInSession,
   checkNewGoalsFormExistsInSession,
+  retrievePrisonerSummaryIfNotInSession,
 } from '../routerRequestHandlers'
 
 /**
@@ -17,7 +18,7 @@ export default (router: Router, services: Services) => {
 
   router.use('/plan/:prisonNumber/goals/create', checkUserHasEditAuthority())
   router.get('/plan/:prisonNumber/goals/create', [
-    checkPrisonerSummaryExistsInSession,
+    retrievePrisonerSummaryIfNotInSession(services.prisonerSearchService),
     createGoalController.getCreateGoalView,
   ])
   router.post('/plan/:prisonNumber/goals/create', [

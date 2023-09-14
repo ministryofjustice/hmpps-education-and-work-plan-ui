@@ -1,20 +1,18 @@
 import type { Router } from 'express'
 import { Services } from '../../services'
 import { checkUserHasViewAuthority } from '../../middleware/roleBasedAccessControl'
-import PrisonerSummaryRequestHandler from '../overview/prisonerSummaryRequestHandler'
-import { checkPrisonerSummaryExistsInSession } from '../routerRequestHandlers'
+import { checkPrisonerSummaryExistsInSession, retrievePrisonerSummaryIfNotInSession } from '../routerRequestHandlers'
 import FunctionalSkillsController from './functionalSkillsController'
 
 /**
  * Route definitions for the pages relating to Functional Skills
  */
 export default (router: Router, services: Services) => {
-  const prisonerSummaryRequestHandler = new PrisonerSummaryRequestHandler(services.prisonerSearchService)
   const functionalSkillsController = new FunctionalSkillsController(services.curiousService)
 
   router.use('/plan/:prisonNumber/functional-skills', [
     checkUserHasViewAuthority(),
-    prisonerSummaryRequestHandler.getPrisonerSummary,
+    retrievePrisonerSummaryIfNotInSession(services.prisonerSearchService),
   ])
 
   router.get('/plan/:prisonNumber/functional-skills', [
