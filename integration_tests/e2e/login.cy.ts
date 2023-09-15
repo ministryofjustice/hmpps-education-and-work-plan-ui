@@ -65,6 +65,6 @@ context('SignIn', () => {
     cy.task('stubAuthUser', 'bobby brown')
     cy.signIn()
 
-    indexPage.headerUserName().contains('B. Brown')
+    indexPage.headerUserName().contains('J. Smith')
   })
 })
