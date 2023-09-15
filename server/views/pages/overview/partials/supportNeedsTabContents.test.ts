@@ -30,7 +30,16 @@ describe('Support Needs tab view', () => {
     const healthAndSupportNeedsCard = $('#health-and-support-needs-summary-card')
     // expect there to be only 1 gov-uk-summmary-list representing the data from the 1 prison in aValidPrisonerSupportNeeds()
     expect(healthAndSupportNeedsCard.find('.govuk-summary-list').length).toEqual(1)
-    expect(healthAndSupportNeedsCard.find('h3').text().trim()).toEqual('MOORLAND (HMP & YOI)')
+    expect(
+      healthAndSupportNeedsCard //
+        .find('h3')
+        .text(),
+    ).toContain(`Jimmy Lightfingers's learning difficulties, disabilities and health needs recorded whilst at`)
+    expect(
+      healthAndSupportNeedsCard //
+        .find('h3')
+        .text(),
+    ).toContain('MOORLAND (HMP & YOI)')
     expect(
       healthAndSupportNeedsCard //
         .find(`.govuk-summary-list__key:contains('Rapid assessment')`)
