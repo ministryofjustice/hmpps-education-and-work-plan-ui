@@ -7,6 +7,7 @@ import prisonerSearchApi from './integration_tests/mockApis/prisonerSearchApi'
 import educationAndWorkPlanApi from './integration_tests/mockApis/educationAndWorkPlanApi'
 import curiousApi from './integration_tests/mockApis/curiousApi'
 import ciagInducationApi from './integration_tests/mockApis/ciagInducationApi'
+import frontendComponentApi from './integration_tests/mockApis/frontendComponentApi'
 
 export default defineConfig({
   chromeWebSecurity: false,
@@ -36,6 +37,7 @@ export default defineConfig({
         ...educationAndWorkPlanApi,
         ...curiousApi,
         ...ciagInducationApi,
+        ...frontendComponentApi,
       })
       on('after:spec', (spec: Cypress.Spec, results: CypressCommandLine.RunResult) => {
         if (results && results.video) {

@@ -7,6 +7,8 @@ context('404 Page Not Found', () => {
     cy.task('reset')
     cy.task('stubAuthUser')
     cy.task('stubSignInAsUserWithViewAuthority')
+    cy.task('stubGetHeaderComponent')
+    cy.task('stubGetFooterComponent')
   })
 
   it('should redirect to auth-error page given user does not have any authorities', () => {
