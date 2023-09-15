@@ -18,8 +18,10 @@ declare module 'viewModels' {
   export interface HealthAndSupportNeeds {
     prisonId: string
     prisonName: string
-    languageSupportNeeded?: string
-    lddAndHealthNeeds: Array<string>
+    rapidAssessmentDate?: Date
+    inDepthAssessmentDate?: Date
+    primaryLddAndHealthNeeds?: string
+    additionalLddAndHealthNeeds: Array<string>
   }
 
   export interface Neurodiversity {

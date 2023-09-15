@@ -18,8 +18,10 @@ const toHealthAndSupportNeeds = (learnerProfile: LearnerProfile): HealthAndSuppo
     return {
       prisonId: learnerProfile.establishmentId,
       prisonName: learnerProfile.establishmentName,
-      languageSupportNeeded: learnerProfile.languageStatus,
-      lddAndHealthNeeds: toLddAndHealthNeeds(learnerProfile),
+      rapidAssessmentDate: dateOrNull(learnerProfile.rapidAssessmentDate),
+      inDepthAssessmentDate: dateOrNull(learnerProfile.inDepthAssessmentDate),
+      primaryLddAndHealthNeeds: learnerProfile.primaryLDDAndHealthProblem,
+      additionalLddAndHealthNeeds: learnerProfile.additionalLDDAndHealthProblems?.sort() || [],
     }
   }
   return undefined
@@ -39,15 +41,6 @@ const toNeurodiversity = (learnerNeurodivergence: LearnerNeurodivergence): Neuro
     }
   }
   return undefined
-}
-
-const toLddAndHealthNeeds = (learnerProfile: LearnerProfile): Array<string> => {
-  const lddHealthNeeds = learnerProfile.primaryLDDAndHealthProblem ? [learnerProfile.primaryLDDAndHealthProblem] : []
-  const additionalLdd = learnerProfile.additionalLDDAndHealthProblems
-    ? learnerProfile.additionalLDDAndHealthProblems
-    : []
-
-  return lddHealthNeeds.concat(additionalLdd.sort())
 }
 
 const dateOrNull = (value: string): Date | undefined => {

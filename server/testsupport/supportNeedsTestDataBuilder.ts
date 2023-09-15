@@ -1,4 +1,4 @@
-import type { PrisonerSupportNeeds, HealthAndSupportNeeds, Neurodiversity } from 'viewModels'
+import type { PrisonerSupportNeeds } from 'viewModels'
 import moment from 'moment/moment'
 
 export default function aValidPrisonerSupportNeeds(): PrisonerSupportNeeds {
@@ -7,14 +7,15 @@ export default function aValidPrisonerSupportNeeds(): PrisonerSupportNeeds {
       {
         prisonId: 'MDI',
         prisonName: 'MOORLAND (HMP & YOI)',
-        languageSupportNeeded: 'Bilingual',
-        lddAndHealthNeeds: [
-          'Visual impairment',
+        rapidAssessmentDate: moment('2022-02-18').toDate(),
+        inDepthAssessmentDate: undefined,
+        primaryLddAndHealthNeeds: 'Visual impairment',
+        additionalLddAndHealthNeeds: [
           'Hearing impairment',
           'Mental health difficulty',
           'Social and emotional difficulties',
         ],
-      } as HealthAndSupportNeeds,
+      },
     ],
     neurodiversities: [
       {
@@ -26,7 +27,8 @@ export default function aValidPrisonerSupportNeeds(): PrisonerSupportNeeds {
         selfDeclaredRecordedDate: moment('2022-02-18').toDate(),
         assessedNeurodiversity: ['No Identified Neurodiversity Need'],
         assessmentDate: moment('2022-05-18').toDate(),
-      } as Neurodiversity,
+      },
     ],
-  } as PrisonerSupportNeeds
+    problemRetrievingData: false,
+  }
 }

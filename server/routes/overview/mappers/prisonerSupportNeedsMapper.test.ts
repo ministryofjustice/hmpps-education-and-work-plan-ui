@@ -1,36 +1,38 @@
 import moment from 'moment'
-import type { PrisonerSupportNeeds, HealthAndSupportNeeds, Neurodiversity } from 'viewModels'
+import type { PrisonerSupportNeeds } from 'viewModels'
 import type { LearnerNeurodivergence, LearnerProfile } from 'curiousApiClient'
 import { toPrisonerSupportNeeds } from './prisonerSupportNeedsMapper'
 
 describe('prisonerSupportNeedsMapper', () => {
   it('should map to SupportNeeds', () => {
     // Given
-    const learnerProfile = [
+    const learnerProfile: Array<LearnerProfile> = [
       {
         prn: 'G6123VU',
         establishmentId: 'MDI',
         establishmentName: 'MOORLAND (HMP & YOI)',
+        rapidAssessmentDate: '2022-05-18',
+        inDepthAssessmentDate: '2022-06-01',
         lddHealthProblem: 'Learner considers himself or herself to have a learning difficulty.',
-        languageStatus: 'Bilingual',
         primaryLDDAndHealthProblem: 'Hearing impairment',
         additionalLDDAndHealthProblems: undefined,
-      } as LearnerProfile,
+      },
       {
         prn: 'G6123VU',
         establishmentId: 'DNI',
         establishmentName: 'DONCASTER (HMP)',
+        rapidAssessmentDate: undefined,
+        inDepthAssessmentDate: undefined,
         lddHealthProblem: 'Learner considers himself or herself to have a learning difficulty.',
-        languageStatus: 'Bilingual',
         primaryLDDAndHealthProblem: 'Visual impairment',
         additionalLDDAndHealthProblems: [
           'Hearing impairment',
           'Social and emotional difficulties',
           'Mental health difficulty',
         ],
-      } as LearnerProfile,
+      },
     ]
-    const learnerNeurodivergence = [
+    const learnerNeurodivergence: Array<LearnerNeurodivergence> = [
       {
         prn: 'G6123VU',
         establishmentId: 'MDI',
@@ -41,7 +43,7 @@ describe('prisonerSupportNeedsMapper', () => {
         assessmentDate: '2022-05-18',
         neurodivergenceSupport: ['Writing support'],
         supportDate: '2022-02-18',
-      } as LearnerNeurodivergence,
+      },
       {
         prn: 'G6123VU',
         establishmentId: 'DNI',
@@ -52,29 +54,32 @@ describe('prisonerSupportNeedsMapper', () => {
         assessmentDate: '2022-05-18',
         neurodivergenceSupport: ['No Identified Support Required'],
         supportDate: '2022-02-18',
-      } as LearnerNeurodivergence,
+      },
     ]
 
-    const expectedSupportNeeds = {
+    const expectedSupportNeeds: PrisonerSupportNeeds = {
       problemRetrievingData: false,
       healthAndSupportNeeds: [
         {
           prisonId: 'MDI',
           prisonName: 'MOORLAND (HMP & YOI)',
-          languageSupportNeeded: 'Bilingual',
-          lddAndHealthNeeds: ['Hearing impairment'],
-        } as HealthAndSupportNeeds,
+          rapidAssessmentDate: moment('2022-05-18').toDate(),
+          inDepthAssessmentDate: moment('2022-06-01').toDate(),
+          primaryLddAndHealthNeeds: 'Hearing impairment',
+          additionalLddAndHealthNeeds: [],
+        },
         {
           prisonId: 'DNI',
           prisonName: 'DONCASTER (HMP)',
-          languageSupportNeeded: 'Bilingual',
-          lddAndHealthNeeds: [
-            'Visual impairment',
+          rapidAssessmentDate: undefined,
+          inDepthAssessmentDate: undefined,
+          primaryLddAndHealthNeeds: 'Visual impairment',
+          additionalLddAndHealthNeeds: [
             'Hearing impairment',
             'Mental health difficulty',
             'Social and emotional difficulties',
           ],
-        } as HealthAndSupportNeeds,
+        },
       ],
       neurodiversities: [
         {
@@ -86,7 +91,7 @@ describe('prisonerSupportNeedsMapper', () => {
           selfDeclaredRecordedDate: undefined,
           assessedNeurodiversity: ['ADHD'],
           assessmentDate: moment('2022-05-18').toDate(),
-        } as Neurodiversity,
+        },
         {
           prisonId: 'DNI',
           prisonName: 'DONCASTER (HMP)',
@@ -96,9 +101,9 @@ describe('prisonerSupportNeedsMapper', () => {
           selfDeclaredRecordedDate: moment('2022-02-18').toDate(),
           assessedNeurodiversity: ['No Identified Neurodiversity Need'],
           assessmentDate: moment('2022-05-18').toDate(),
-        } as Neurodiversity,
+        },
       ],
-    } as PrisonerSupportNeeds
+    }
 
     // When
     const supportNeeds = toPrisonerSupportNeeds(learnerProfile, learnerNeurodivergence)
