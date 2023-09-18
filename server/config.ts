@@ -123,5 +123,6 @@ export default {
     frontendComponentsApiToggleEnabled: toBoolean(
       get('FRONTEND_COMPONENTS_API_FEATURE_TOGGLE_ENABLED', false, requiredInProduction),
     ),
+    addMultipleGoalsEnabled: toBoolean(get('ADD_MULTIPLE_GOALS_ENABLED', false, requiredInProduction)),
   },
 }
