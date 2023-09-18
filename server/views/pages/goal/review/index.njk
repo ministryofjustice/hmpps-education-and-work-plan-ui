@@ -62,9 +62,22 @@
       <form class="form" method="post" novalidate="">
         <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
 
+        {% if featureToggles.addMultipleGoalsEnabled %}
+          <div class="govuk-form-group">
+            {{ govukButton({
+              id: "add-another-goal-button",
+              name: "action",
+              value: "add-another-goal",
+              text: "Add another goal",
+              classes: "govuk-button--secondary"
+            }) }}
+          </div>
+        {% endif %}
+
         {{ govukButton({
           id: "submit-button",
           name: "submit-button",
+          value: "submit-form",
           text: "Save to learning and work progress plan"
         }) }}
 
