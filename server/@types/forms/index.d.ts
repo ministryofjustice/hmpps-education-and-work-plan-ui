@@ -15,6 +15,10 @@ declare module 'forms' {
     note?: string
   }
 
+  export interface ReviewGoalForm {
+    action?: 'add-another-goal' | 'submit-form'
+  }
+
   export interface UpdateGoalForm {
     reference: string
     title?: string

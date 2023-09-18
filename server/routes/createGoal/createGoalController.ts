@@ -118,6 +118,14 @@ export default class CreateGoalController {
     const { prisonerSummary } = req.session
     const { prisonId } = prisonerSummary
 
+    const reviewGoalForm = { ...req.body }
+    // Redirect to the desired page based on the form action
+    if (reviewGoalForm.action === 'add-another-goal') {
+      // Rest the NewGoal form ready for the new goal to be created
+      req.session.newGoal = undefined
+      return res.redirect(`/plan/${prisonNumber}/goals/create`)
+    }
+
     const createGoalDtos = req.session.newGoals.map(newGoal => {
       const { createGoalForm, addStepForms, addNoteForm } = newGoal
       return toCreateGoalDto(createGoalForm, addStepForms, addNoteForm, prisonId)
@@ -127,6 +135,7 @@ export default class CreateGoalController {
       await this.educationAndWorkPlanService.createGoal(createGoalDtos[0], req.user.token)
 
       req.session.newGoal = undefined
+      req.session.newGoals = undefined
       return res.redirect(`/plan/${prisonNumber}/view/overview`)
     } catch (e) {
       return next(createError(500, `Error updating plan for prisoner ${prisonNumber}`))

@@ -353,6 +353,10 @@ describe('createGoalController', () => {
         },
       ] as Array<NewGoal>
 
+      req.body = {
+        action: 'submit-form',
+      }
+
       const createGoalDto = aValidCreateGoalDtoWithOneStep()
       mockedCreateGoalDtoMapper.mockReturnValue(createGoalDto)
 
@@ -377,6 +381,7 @@ describe('createGoalController', () => {
         expectedPrisonId,
       )
       expect(req.session.newGoal).toBeUndefined()
+      expect(req.session.newGoals).toBeUndefined()
     })
 
     it('should not create goal given error calling service to create the goal', async () => {
@@ -393,6 +398,10 @@ describe('createGoalController', () => {
           addNoteForm,
         },
       ] as Array<NewGoal>
+
+      req.body = {
+        action: 'submit-form',
+      }
 
       const createGoalDto = aValidCreateGoalDtoWithOneStep()
       mockedCreateGoalDtoMapper.mockReturnValue(createGoalDto)
@@ -420,6 +429,44 @@ describe('createGoalController', () => {
         expectedPrisonId,
       )
       expect(next).toHaveBeenCalledWith(expectedError)
+      expect(req.session.newGoals).not.toBeUndefined()
+    })
+
+    it('should redirect to create goal form given action is add-another-goal', async () => {
+      // Given
+      req.user.token = 'some-token'
+      const createGoalForm = aValidCreateGoalForm()
+      const addStepForms = [aValidAddStepForm()]
+      const addNoteForm = aValidAddNoteForm()
+
+      req.session.newGoals = [
+        {
+          createGoalForm,
+          addStepForms,
+          addNoteForm,
+        },
+      ] as Array<NewGoal>
+
+      req.body = {
+        action: 'add-another-goal',
+      }
+
+      prisonerSummary = aValidPrisonerSummary(prisonNumber)
+      req.session.prisonerSummary = prisonerSummary
+
+      // When
+      await controller.submitReviewGoal(
+        req as undefined as Request,
+        res as undefined as Response,
+        next as undefined as NextFunction,
+      )
+
+      // Then
+      expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/goals/create`)
+      expect(mockedCreateGoalDtoMapper).not.toHaveBeenCalled()
+      expect(educationAndWorkPlanService.createGoal).not.toHaveBeenCalled()
+      expect(req.session.newGoal).toBeUndefined()
+      expect(req.session.newGoals).not.toBeUndefined()
     })
   })
 })
