@@ -1,3 +1,6 @@
+@import "govuk/base";
+@import 'govuk/core/all';
+
 @page {
   size: auto;
   margin: 8mm 10mm;
@@ -5,8 +8,9 @@
 
 .govuk-hint,
 .govuk-tag,
-.govuk-caption-l {
-  color: #0b0c0c
+.govuk-caption-l,
+.govuk-details__summary {
+  color: $govuk-text-colour;
 }
 
 .moj-page-header-actions {
@@ -14,7 +18,7 @@
 }
 
 .govuk-summary-card {
-  border: 0.5mm solid #0b0c0c;
+  border: 0.5mm solid $govuk-text-colour;
   break-inside: avoid
 }
 
