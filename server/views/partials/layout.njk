@@ -43,7 +43,15 @@
 {% block pageTitle %}{{pageTitle | default(applicationName)}}{% endblock %}
 
 {% block header %}
-  {% include "./header.njk" %}
+  {% if featureToggles.frontendComponentsApiToggleEnabled %}
+    {% if not feComponents.problemRetrievingData %}
+      {{ feComponents.headerHtml | safe }}
+    {% else %}
+      {% include "./header-dps.njk" %}
+    {% endif %}
+  {% else %}
+      {% include "./header.njk" %}
+  {% endif %}
 {% endblock %}
 
 {% block bodyStart %}

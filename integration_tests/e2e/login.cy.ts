@@ -54,6 +54,7 @@ context('SignIn', () => {
   })
 
   it('Token verification failure clears user session', () => {
+    cy.task('stubGetHeaderComponent', 'B. Brown')
     cy.signIn()
     const indexPage = Page.verifyOnPage(IndexPage)
     cy.task('stubVerifyToken', false)
