@@ -4,7 +4,7 @@ import type { CreateGoalDto } from 'dto'
 export default class ReviewView {
   constructor(
     private readonly prisonerSummary: PrisonerSummary,
-    private readonly createGoalDto: Array<CreateGoalDto>,
+    private readonly createGoalDtos: Array<CreateGoalDto>,
   ) {}
 
   get renderArgs(): {
@@ -13,7 +13,7 @@ export default class ReviewView {
   } {
     return {
       prisonerSummary: this.prisonerSummary,
-      goals: this.createGoalDto,
+      goals: this.createGoalDtos,
     }
   }
 }
