@@ -109,7 +109,7 @@ export default class CreateGoalController {
       return toCreateGoalDto(createGoalForm, addStepForms, addNoteForm, prisonId)
     })
 
-    const view = new ReviewView(prisonerSummary, createGoalDtos[0])
+    const view = new ReviewView(prisonerSummary, createGoalDtos)
     res.render('pages/goal/review/index', { ...view.renderArgs })
   }
 
