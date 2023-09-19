@@ -94,6 +94,47 @@ context('Review goal(s)', () => {
     Page.verifyOnPage(AddNotePage)
   })
 
+  it('should be able to create another goal from the Review screen', () => {
+    // Given
+    const prisonNumber = 'G6115VJ'
+    cy.signIn()
+    cy.visit(`/plan/${prisonNumber}/view/overview`)
+    const overviewPage = Page.verifyOnPage(OverviewPage)
+
+    const createGoalPage = overviewPage.clickAddGoalButton()
+    createGoalPage //
+      .setGoalTitle('Learn French')
+      .submitPage()
+
+    const addStepPage = Page.verifyOnPage(AddStepPage)
+    addStepPage //
+      .setStepTitle('Book French course')
+      .setStepTargetDateRange('ZERO_TO_THREE_MONTHS')
+      .submitPage()
+
+    const addNotePage = Page.verifyOnPage(AddNotePage)
+    addNotePage.setNote("Pay close attention to Chris' behaviour during classes")
+    addNotePage.submitPage()
+
+    // When
+    const reviewPage = Page.verifyOnPage(ReviewPage)
+    reviewPage.addAnotherGoal()
+
+    createGoalPage //
+      .setGoalTitle('Learn Spanish')
+      .submitPage()
+
+    addStepPage //
+      .setStepTitle('Book Spanish course')
+      .setStepTargetDateRange('ZERO_TO_THREE_MONTHS')
+      .submitPage()
+
+    addNotePage.submitPage()
+
+    // Then
+    Page.verifyOnPage(ReviewPage)
+  })
+
   it('should move to Overview page', () => {
     const prisonNumber = 'G6115VJ'
     cy.signIn()
