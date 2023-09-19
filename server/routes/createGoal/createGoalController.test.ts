@@ -316,7 +316,7 @@ describe('createGoalController', () => {
 
       const expectedView = {
         prisonerSummary,
-        data: createGoalDto,
+        goals: [createGoalDto],
       }
 
       // When
