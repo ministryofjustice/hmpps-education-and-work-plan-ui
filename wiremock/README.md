@@ -29,6 +29,19 @@ A 404 is returned from each of the Curious endpoints (`/learnerprofile`, `/learn
 A 500 is returned from each of the Curious endpoints (`/learnerprofile`, `/learnerneurodivergece` and `/learnereducation` - e.g. `054-learner-education-curious-unavailable-mapping.json`):
 * [Ken Sanford - A2257DZ](http://localhost:3000/plan/A2257DZ/view/overview)
 
+# DPS Header & Footer
+The DPS header and footer response markup, and associated css and fonts are stubbed tp provide a consistent user experience.
+
+# Introducing delays in mocked responses
+It is possible to add delays to wiremock responses to simulate remote server or general network latency. See [here](https://wiremock.org/docs/simulating-faults/) for details
+but as a simple example, add the following to a given response mapping:
+```
+    "chunkedDribbleDelay": {
+      "numberOfChunks": 5,
+      "totalDuration": 5000
+    }
+```
+
 # How to run
 To run wiremock with these mappings, first start up docker in the integration test profile:
 
