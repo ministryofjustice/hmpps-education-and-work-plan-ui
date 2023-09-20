@@ -17,7 +17,7 @@ generic-service:
     CIAG_INDUCTION_API_URL: "https://ciag-induction-api-dev.hmpps.service.justice.gov.uk"
     CIAG_INDUCTION_UI_URL: "http://ciag-induction-dev.hmpps.service.justice.gov.uk"
     DPS_URL: "https://digital-dev.prison.service.justice.gov.uk"
-    FRONTEND_COMPONENT_API_URL: "https://xxx-frontend-components-dev.hmpps.service.justice.gov.uk"
+    FRONTEND_COMPONENT_API_URL: "https://frontend-components-dev.hmpps.service.justice.gov.uk"
     STUB_PRISONER_LIST_PAGE_ENABLED: "true"
     FRONTEND_COMPONENTS_API_FEATURE_TOGGLE_ENABLED: "true"
     ENVIRONMENT_NAME: "DEV"
