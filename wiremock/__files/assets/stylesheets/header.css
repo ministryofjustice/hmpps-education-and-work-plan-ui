@@ -1,0 +1,771 @@
+.govuk-width-container {
+  max-width: 1170px;
+  margin-right: 15px;
+  margin-left: 15px;
+}
+
+@supports (margin: max(calc(0px))) {
+  .govuk-width-container {
+    margin-right: max(15px, calc(15px + env(safe-area-inset-right)));
+    margin-left: max(15px, calc(15px + env(safe-area-inset-left)));
+  }
+}
+
+@media (min-width: 40.0625em) {
+  .govuk-width-container {
+    margin-right: 30px;
+    margin-left: 30px;
+  }
+
+  @supports (margin: max(calc(0px))) {
+    .govuk-width-container {
+      margin-right: max(30px, calc(15px + env(safe-area-inset-right)));
+      margin-left: max(30px, calc(15px + env(safe-area-inset-left)));
+    }
+  }
+}
+
+@media (min-width: 1230px) {
+  .govuk-width-container {
+    margin-right: auto;
+    margin-left: auto;
+  }
+
+  @supports (margin: max(calc(0px))) {
+    .govuk-width-container {
+      margin-right: auto;
+      margin-left: auto;
+    }
+  }
+}
+
+.hmpps-header {
+  padding-top: 15px;
+  padding-bottom: 15px;
+  background-color: #0b0c0c;
+  color: #fff;
+}
+
+.hmpps-header__container {
+  max-width: 1170px;
+  margin-right: 15px;
+  margin-left: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+@supports (margin: max(calc(0px))) {
+  .hmpps-header__container {
+    margin-right: max(15px, calc(15px + env(safe-area-inset-right)));
+    margin-left: max(15px, calc(15px + env(safe-area-inset-left)));
+  }
+}
+
+@media (min-width: 40.0625em) {
+  .hmpps-header__container {
+    margin-right: 30px;
+    margin-left: 30px;
+  }
+
+  @supports (margin: max(calc(0px))) {
+    .hmpps-header__container {
+      margin-right: max(30px, calc(15px + env(safe-area-inset-right)));
+      margin-left: max(30px, calc(15px + env(safe-area-inset-left)));
+    }
+  }
+}
+
+@media (min-width: 1230px) {
+  .hmpps-header__container {
+    margin-right: auto;
+    margin-left: auto;
+  }
+
+  @supports (margin: max(calc(0px))) {
+    .hmpps-header__container {
+      margin-right: auto;
+      margin-left: auto;
+    }
+  }
+}
+
+.hmpps-header__logo {
+  margin-right: 10px;
+  position: relative;
+  top: -2px;
+  fill: #fff;
+}
+
+.hmpps-header__title {
+  padding-right: 15px;
+  display: flex;
+  align-items: center;
+}
+
+.hmpps-header__title__organisation-name {
+  margin-right: 10px;
+  font-family: 'GDS Transport', arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-weight: 700;
+  font-size: 18px;
+  font-size: 1.125rem;
+  line-height: 1.1111111111;
+  display: flex;
+  align-items: center;
+}
+
+/*! Copyright (c) 2011 by Margaret Calvert & Henrik Kubel. All rights reserved. The font has been customised for exclusive use on gov.uk. This cut is not commercially available. */
+@font-face {
+  font-family: 'GDS Transport';
+  font-style: normal;
+  font-weight: normal;
+  src: url('/assets/fonts/light-94a07e06a1-v2.woff2') format('woff2'),
+    url('/assets/fonts/light-f591b13f7d-v2.woff') format('woff');
+  font-display: fallback;
+}
+
+@font-face {
+  font-family: 'GDS Transport';
+  font-style: normal;
+  font-weight: bold;
+  src: url('/assets/fonts/bold-b542beb274-v2.woff2') format('woff2'),
+    url('/assets/fonts/bold-affa96571d-v2.woff') format('woff');
+  font-display: fallback;
+}
+
+@media print {
+  .hmpps-header__title__organisation-name {
+    font-family: sans-serif;
+  }
+}
+
+@media (min-width: 40.0625em) {
+  .hmpps-header__title__organisation-name {
+    font-size: 24px;
+    font-size: 1.5rem;
+    line-height: 1.25;
+  }
+}
+
+@media print {
+  .hmpps-header__title__organisation-name {
+    font-size: 18pt;
+    line-height: 1.15;
+  }
+}
+
+.hmpps-header__title__service-name {
+  margin-right: 10px;
+  font-family: 'GDS Transport', arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-weight: 400;
+  font-size: 18px;
+  font-size: 1.125rem;
+  line-height: 1.1111111111;
+  display: none;
+}
+
+@media print {
+  .hmpps-header__title__service-name {
+    font-family: sans-serif;
+  }
+}
+
+@media (min-width: 40.0625em) {
+  .hmpps-header__title__service-name {
+    font-size: 24px;
+    font-size: 1.5rem;
+    line-height: 1.25;
+  }
+}
+
+@media print {
+  .hmpps-header__title__service-name {
+    font-size: 18pt;
+    line-height: 1.15;
+  }
+}
+
+@media (min-width: 48.0625em) {
+  .hmpps-header__title__service-name {
+    display: flex;
+    align-items: center;
+  }
+}
+
+.hmpps-header__link {
+  font-family: 'GDS Transport', arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-decoration: underline;
+  text-underline-offset: 0.1em;
+}
+
+@media print {
+  .hmpps-header__link {
+    font-family: sans-serif;
+  }
+}
+
+.hmpps-header__link:focus {
+  outline: 3px solid rgba(0, 0, 0, 0);
+  color: #0b0c0c;
+  background-color: #fd0;
+  box-shadow: 0 -2px #fd0, 0 4px #0b0c0c;
+  text-decoration: none;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+
+.hmpps-header__link:link {
+  color: #1d70b8;
+}
+
+.hmpps-header__link:visited {
+  color: #4c2c92;
+}
+
+.hmpps-header__link:hover {
+  color: #003078;
+}
+
+.hmpps-header__link:active {
+  color: #0b0c0c;
+}
+
+.hmpps-header__link:focus {
+  color: #0b0c0c;
+}
+
+.hmpps-header__link:link,
+.hmpps-header__link:visited,
+.hmpps-header__link:active {
+  color: #fff;
+  text-decoration: none;
+}
+
+.hmpps-header__link:hover {
+  text-decoration: underline;
+}
+
+.hmpps-header__link:focus {
+  color: #0b0c0c;
+}
+
+.hmpps-header__link:focus svg {
+  fill: #0b0c0c;
+}
+
+.hmpps-header__link__sub-text {
+  font-family: 'GDS Transport', arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-weight: 400;
+  font-size: 14px;
+  font-size: 0.875rem;
+  line-height: 1.1428571429;
+  display: none;
+}
+
+@media print {
+  .hmpps-header__link__sub-text {
+    font-family: sans-serif;
+  }
+}
+
+@media (min-width: 40.0625em) {
+  .hmpps-header__link__sub-text {
+    font-size: 16px;
+    font-size: 1rem;
+    line-height: 1.25;
+  }
+}
+
+@media print {
+  .hmpps-header__link__sub-text {
+    font-size: 14pt;
+    line-height: 1.2;
+  }
+}
+
+@media (min-width: 40.0625em) {
+  .hmpps-header__link__sub-text {
+    display: block;
+  }
+}
+
+.hmpps-header__navigation {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+@media (min-width: 40.0625em) {
+  .hmpps-header__navigation {
+    flex-direction: row;
+    align-items: center;
+  }
+}
+
+.hmpps-header__navigation__item {
+  font-family: 'GDS Transport', arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-weight: 400;
+  font-size: 16px;
+  font-size: 1rem;
+  line-height: 1.25;
+  margin-bottom: 5px;
+  text-align: right;
+}
+
+@media print {
+  .hmpps-header__navigation__item {
+    font-family: sans-serif;
+  }
+}
+
+@media (min-width: 40.0625em) {
+  .hmpps-header__navigation__item {
+    font-size: 19px;
+    font-size: 1.1875rem;
+    line-height: 1.3157894737;
+  }
+}
+
+@media print {
+  .hmpps-header__navigation__item {
+    font-size: 14pt;
+    line-height: 1.15;
+  }
+}
+
+@media (min-width: 40.0625em) {
+  .hmpps-header__navigation__item {
+    margin-right: 15px;
+    padding-right: 15px;
+    margin-bottom: 0;
+    border-right: 1px solid #fff;
+  }
+}
+
+@media (min-width: 40.0625em) and (min-width: 40.0625em) {
+  .hmpps-header__navigation__item {
+    margin-right: 20px;
+  }
+}
+
+@media (min-width: 40.0625em) and (min-width: 40.0625em) {
+  .hmpps-header__navigation__item {
+    padding-right: 20px;
+  }
+}
+
+.hmpps-header__navigation__item a {
+  display: inline-block;
+}
+
+.hmpps-header__navigation__item:last-child {
+  margin-right: 0;
+  border-right: 0;
+  padding-right: 0;
+}
+
+@media print {
+  .hmpps-header {
+    display: none;
+  }
+}
+
+.govuk-phase-banner {
+  max-width: 1170px;
+  margin-right: 15px;
+  margin-left: 15px;
+  border: none;
+}
+
+@supports (margin: max(calc(0px))) {
+  .govuk-phase-banner {
+    margin-right: max(15px, calc(15px + env(safe-area-inset-right)));
+    margin-left: max(15px, calc(15px + env(safe-area-inset-left)));
+  }
+}
+
+@media (min-width: 40.0625em) {
+  .govuk-phase-banner {
+    margin-right: 30px;
+    margin-left: 30px;
+  }
+
+  @supports (margin: max(calc(0px))) {
+    .govuk-phase-banner {
+      margin-right: max(30px, calc(15px + env(safe-area-inset-right)));
+      margin-left: max(30px, calc(15px + env(safe-area-inset-left)));
+    }
+  }
+}
+
+@media (min-width: 1230px) {
+  .govuk-phase-banner {
+    margin-right: auto;
+    margin-left: auto;
+  }
+
+  @supports (margin: max(calc(0px))) {
+    .govuk-phase-banner {
+      margin-right: auto;
+      margin-left: auto;
+    }
+  }
+}
+
+.connect-dps-common-header {
+  padding-top: 15px;
+  padding-bottom: 15px;
+  background-color: #0b0c0c;
+  color: #fff;
+}
+
+.connect-dps-common-header__container {
+  max-width: 1170px;
+  margin-right: 15px;
+  margin-left: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+@supports (margin: max(calc(0px))) {
+  .connect-dps-common-header__container {
+    margin-right: max(15px, calc(15px + env(safe-area-inset-right)));
+    margin-left: max(15px, calc(15px + env(safe-area-inset-left)));
+  }
+}
+
+@media (min-width: 40.0625em) {
+  .connect-dps-common-header__container {
+    margin-right: 30px;
+    margin-left: 30px;
+  }
+
+  @supports (margin: max(calc(0px))) {
+    .connect-dps-common-header__container {
+      margin-right: max(30px, calc(15px + env(safe-area-inset-right)));
+      margin-left: max(30px, calc(15px + env(safe-area-inset-left)));
+    }
+  }
+}
+
+@media (min-width: 1230px) {
+  .connect-dps-common-header__container {
+    margin-right: auto;
+    margin-left: auto;
+  }
+
+  @supports (margin: max(calc(0px))) {
+    .connect-dps-common-header__container {
+      margin-right: auto;
+      margin-left: auto;
+    }
+  }
+}
+
+.connect-dps-common-header__logo {
+  margin-right: 15px;
+  position: relative;
+  top: -2px;
+  fill: #fff;
+}
+
+.connect-dps-common-header__title {
+  padding-right: 15px;
+  display: flex;
+  align-items: center;
+}
+
+.connect-dps-common-header__title__organisation-name {
+  margin-right: 10px;
+  font-family: 'GDS Transport', arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-weight: 700;
+  font-size: 18px;
+  font-size: 1.125rem;
+  line-height: 1.1111111111;
+  display: flex;
+  align-items: center;
+}
+
+@media print {
+  .connect-dps-common-header__title__organisation-name {
+    font-family: sans-serif;
+  }
+}
+
+@media (min-width: 40.0625em) {
+  .connect-dps-common-header__title__organisation-name {
+    font-size: 24px;
+    font-size: 1.5rem;
+    line-height: 1.25;
+  }
+}
+
+@media print {
+  .connect-dps-common-header__title__organisation-name {
+    font-size: 18pt;
+    line-height: 1.15;
+  }
+}
+
+.connect-dps-common-header__title__service-name {
+  display: none;
+  font-family: 'GDS Transport', arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-weight: 400;
+  font-size: 18px;
+  font-size: 1.125rem;
+  line-height: 1.1111111111;
+}
+
+@media print {
+  .connect-dps-common-header__title__service-name {
+    font-family: sans-serif;
+  }
+}
+
+@media (min-width: 40.0625em) {
+  .connect-dps-common-header__title__service-name {
+    font-size: 24px;
+    font-size: 1.5rem;
+    line-height: 1.25;
+  }
+}
+
+@media print {
+  .connect-dps-common-header__title__service-name {
+    font-size: 18pt;
+    line-height: 1.15;
+  }
+}
+
+@media (min-width: 48.0625em) {
+  .connect-dps-common-header__title__service-name {
+    display: inline-block;
+  }
+}
+
+.connect-dps-common-header__link {
+  font-family: 'GDS Transport', arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-decoration: underline;
+}
+
+@media print {
+  .connect-dps-common-header__link {
+    font-family: sans-serif;
+  }
+}
+
+.connect-dps-common-header__link:focus {
+  outline: 3px solid rgba(0, 0, 0, 0);
+  color: #0b0c0c;
+  background-color: #fd0;
+  box-shadow: 0 -2px #fd0, 0 4px #0b0c0c;
+  text-decoration: none;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+
+.connect-dps-common-header__link:link {
+  color: #1d70b8;
+}
+
+.connect-dps-common-header__link:visited {
+  color: #4c2c92;
+}
+
+.connect-dps-common-header__link:hover {
+  color: #003078;
+}
+
+.connect-dps-common-header__link:active {
+  color: #0b0c0c;
+}
+
+.connect-dps-common-header__link:focus {
+  color: #0b0c0c;
+}
+
+.connect-dps-common-header__link:link,
+.connect-dps-common-header__link:visited,
+.connect-dps-common-header__link:active {
+  color: #fff;
+  text-decoration: none;
+  font-weight: normal;
+}
+
+.connect-dps-common-header__link:hover {
+  text-decoration: underline;
+}
+
+.connect-dps-common-header__link:focus {
+  color: #0b0c0c;
+}
+
+.connect-dps-common-header__link:focus svg {
+  fill: #0b0c0c;
+}
+
+.connect-dps-common-header__link__sub-text {
+  font-family: 'GDS Transport', arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-weight: 400;
+  font-size: 14px;
+  font-size: 0.875rem;
+  line-height: 1.1428571429;
+  display: none;
+}
+
+@media print {
+  .connect-dps-common-header__link__sub-text {
+    font-family: sans-serif;
+  }
+}
+
+@media (min-width: 40.0625em) {
+  .connect-dps-common-header__link__sub-text {
+    font-size: 16px;
+    font-size: 1rem;
+    line-height: 1.25;
+  }
+}
+
+@media print {
+  .connect-dps-common-header__link__sub-text {
+    font-size: 14pt;
+    line-height: 1.2;
+  }
+}
+
+@media (min-width: 40.0625em) {
+  .connect-dps-common-header__link__sub-text {
+    display: block;
+  }
+}
+
+.connect-dps-common-header__navigation {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+@media (min-width: 40.0625em) {
+  .connect-dps-common-header__navigation {
+    flex-direction: row;
+    align-items: center;
+  }
+}
+
+.connect-dps-common-header__navigation__item {
+  display: flex;
+  font-family: 'GDS Transport', arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-weight: 400;
+  font-size: 14px;
+  font-size: 0.875rem;
+  line-height: 1.1428571429;
+  margin-bottom: 5px;
+  text-align: right;
+  min-height: 45px;
+}
+
+@media print {
+  .connect-dps-common-header__navigation__item {
+    font-family: sans-serif;
+  }
+}
+
+@media (min-width: 40.0625em) {
+  .connect-dps-common-header__navigation__item {
+    font-size: 16px;
+    font-size: 1rem;
+    line-height: 1.25;
+  }
+}
+
+@media print {
+  .connect-dps-common-header__navigation__item {
+    font-size: 14pt;
+    line-height: 1.2;
+  }
+}
+
+@media (min-width: 40.0625em) {
+  .connect-dps-common-header__navigation__item {
+    margin-left: 15px;
+    padding-left: 15px;
+    margin-bottom: 0;
+  }
+
+  .connect-dps-common-header__navigation__item:not(:only-of-type) {
+    border-left: 1px solid #fff;
+  }
+}
+
+.connect-dps-common-header__navigation__item a {
+  display: inline-block;
+  margin: auto 0;
+}
+
+.connect-dps-common-header__navigation__item:last-child {
+  margin-right: 0;
+  border-right: 0;
+  padding-right: 0;
+  font-family: 'GDS Transport', arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-weight: 400;
+  font-size: 16px;
+  font-size: 1rem;
+  line-height: 1.25;
+}
+
+@media print {
+  .connect-dps-common-header__navigation__item:last-child {
+    font-family: sans-serif;
+  }
+}
+
+@media (min-width: 40.0625em) {
+  .connect-dps-common-header__navigation__item:last-child {
+    font-size: 19px;
+    font-size: 1.1875rem;
+    line-height: 1.3157894737;
+  }
+}
+
+@media print {
+  .connect-dps-common-header__navigation__item:last-child {
+    font-size: 14pt;
+    line-height: 1.15;
+  }
+}
+
+@media print {
+  .connect-dps-common-header {
+    display: none;
+  }
+}

@@ -14,7 +14,7 @@ services:
     - hmpps_int
     container_name: wiremock
     restart: always
-    command: "--global-response-templating --verbose"
+    command: "--global-response-templating --enable-stub-cors" # add command `--verbose` to output verbose request matching
     ports:
       - "9091:8080"
     volumes:
