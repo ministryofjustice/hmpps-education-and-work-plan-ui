@@ -3,6 +3,7 @@ import AddStepPage from '../../pages/goal/AddStepPage'
 import AddNotePage from '../../pages/goal/AddNotePage'
 import ReviewPage from '../../pages/goal/ReviewPage'
 import OverviewPage from '../../pages/overview/OverviewPage'
+import CreateGoalPage from '../../pages/goal/CreateGoalPage'
 
 context('Review goal(s)', () => {
   beforeEach(() => {
@@ -92,6 +93,55 @@ context('Review goal(s)', () => {
 
     // Then
     Page.verifyOnPage(AddNotePage)
+  })
+
+  it('should be able to create another goal from the Review screen', () => {
+    // Given
+    const prisonNumber = 'G6115VJ'
+    cy.signIn()
+    cy.visit(`/plan/${prisonNumber}/view/overview`)
+    const overviewPage = Page.verifyOnPage(OverviewPage)
+
+    let createGoalPage = overviewPage.clickAddGoalButton()
+    createGoalPage //
+      .setGoalTitle('Learn French')
+      .submitPage()
+
+    let addStepPage = Page.verifyOnPage(AddStepPage)
+    addStepPage //
+      .setStepTitle('Book French course')
+      .setStepTargetDateRange('ZERO_TO_THREE_MONTHS')
+      .submitPage()
+
+    let addNotePage = Page.verifyOnPage(AddNotePage)
+    addNotePage.setNote("Pay close attention to Chris' behaviour during classes")
+    addNotePage.submitPage()
+
+    const reviewPage = Page.verifyOnPage(ReviewPage)
+    cy.get('.govuk-summary-card').should('have.length', 1)
+    cy.get('.govuk-summary-card').eq(0).contains('Learn French')
+
+    // When
+    reviewPage.addAnotherGoal()
+
+    createGoalPage = Page.verifyOnPage(CreateGoalPage)
+    createGoalPage //
+      .setGoalTitle('Learn Spanish')
+      .submitPage()
+
+    addStepPage = Page.verifyOnPage(AddStepPage)
+    addStepPage //
+      .setStepTitle('Book Spanish course')
+      .setStepTargetDateRange('ZERO_TO_THREE_MONTHS')
+      .submitPage()
+
+    addNotePage = Page.verifyOnPage(AddNotePage)
+    addNotePage.submitPage()
+
+    // Then
+    Page.verifyOnPage(ReviewPage)
+    cy.get('.govuk-summary-card').should('have.length', 2)
+    cy.get('.govuk-summary-card').eq(1).contains('Learn Spanish')
   })
 
   it('should move to Overview page', () => {
