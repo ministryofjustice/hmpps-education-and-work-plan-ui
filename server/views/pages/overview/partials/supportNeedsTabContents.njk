@@ -12,7 +12,7 @@
 
           {% for healthAndSupportNeed in supportNeeds.healthAndSupportNeeds %}
             <h3 class="govuk-heading-m">
-              <span class="govuk-visually-hidden">{{ prisonerSummary.firstName | capitalize }} {{ prisonerSummary.lastName | capitalize }}'s learning difficulties, disabilities and health needs recorded whilst at</span>
+              <span class="govuk-visually-hidden">{{ prisonerSummary.firstName }} {{ prisonerSummary.lastName | capitalize }}'s learning difficulties, disabilities and health needs recorded whilst at</span>
               {{ healthAndSupportNeed.prisonName }}
             </h3>
             <dl class="govuk-summary-list govuk-!-margin-bottom-6">
@@ -71,7 +71,7 @@
 
           {% for neurodiversity in supportNeeds.neurodiversities %}
             <h3 class="govuk-heading-m">
-              <span class="govuk-visually-hidden">{{ prisonerSummary.firstName | capitalize }} {{ prisonerSummary.lastName | capitalize }}'s neurodiversity support needs recorded whilst at</span>
+              <span class="govuk-visually-hidden">{{ prisonerSummary.firstName }} {{ prisonerSummary.lastName }}'s neurodiversity support needs recorded whilst at</span>
               {{ neurodiversity.prisonName }}
             </h3>
             <dl class="govuk-summary-list govuk-!-margin-bottom-6">

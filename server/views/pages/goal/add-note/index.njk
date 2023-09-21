@@ -4,23 +4,7 @@
 {% set pageTitle = applicationName + " - Home" %}
 
 {% block beforeContent %}
-  {{ govukBreadcrumbs({
-    items: [
-      {
-        text: "Digital Prison Services",
-        href: dpsUrl
-      },
-      {
-        text: "Manage learning and work progress",
-        href: "/"
-      },
-      {
-        text: prisonerSummary.firstName | capitalize + " " + prisonerSummary.lastName | capitalize + "'s learning and work progress",
-        href: "/plan/" + prisonerSummary.prisonNumber + "/view/overview"
-      }
-    ],
-    classes: 'govuk-!-display-none-print'
-  }) }}
+  {% include "../../../partials/breadcrumb.njk" %}
 {% endblock %}
 
 {% block content %}

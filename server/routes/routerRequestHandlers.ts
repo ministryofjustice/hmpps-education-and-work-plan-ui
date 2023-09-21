@@ -112,6 +112,12 @@ const checkNewGoalsFormExistsInSession = async (req: Request, res: Response, nex
  *  Middleware function that returns a Request handler function to look up the prisoner from prisoner-search, map to a PrisonerSummary, and store in the session
  */
 const retrievePrisonerSummaryIfNotInSession = (prisonerSearchService: PrisonerSearchService): RequestHandler => {
+  // Trim whitespace from a name string and capitalize the first letter and lowercase the rest of the string
+  const capitalize = (name: string): string => {
+    const trimmedLowercaseName = name.trim().toLowerCase()
+    return trimmedLowercaseName.charAt(0).toUpperCase() + trimmedLowercaseName.slice(1)
+  }
+
   return async (req: Request, res: Response, next: NextFunction) => {
     const { prisonNumber } = req.params
 
@@ -123,8 +129,8 @@ const retrievePrisonerSummaryIfNotInSession = (prisonerSearchService: PrisonerSe
           prisonNumber: prisoner.prisonerNumber,
           prisonId: prisoner.prisonId,
           releaseDate: prisoner.releaseDate,
-          firstName: prisoner.firstName,
-          lastName: prisoner.lastName,
+          firstName: capitalize(prisoner.firstName),
+          lastName: capitalize(prisoner.lastName),
           receptionDate: prisoner.receptionDate,
           dateOfBirth: prisoner.dateOfBirth,
         } as PrisonerSummary
