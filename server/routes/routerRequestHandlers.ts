@@ -123,8 +123,8 @@ const retrievePrisonerSummaryIfNotInSession = (prisonerSearchService: PrisonerSe
           prisonNumber: prisoner.prisonerNumber,
           prisonId: prisoner.prisonId,
           releaseDate: prisoner.releaseDate,
-          firstName: prisoner.firstName,
-          lastName: prisoner.lastName,
+          firstName: `${prisoner.firstName.trim().charAt(0).toUpperCase()}${prisoner.firstName.trim().slice(1)}`,
+          lastName: `${prisoner.lastName.trim().charAt(0).toUpperCase()}${prisoner.lastName.trim().slice(1)}`,
           receptionDate: prisoner.receptionDate,
           dateOfBirth: prisoner.dateOfBirth,
         } as PrisonerSummary
