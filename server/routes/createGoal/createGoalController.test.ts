@@ -338,18 +338,26 @@ describe('createGoalController', () => {
   })
 
   describe('submitReviewGoal', () => {
-    it('should create goal and redirect to Overview page', async () => {
+    it('should call API to create goals and redirect to Overview page', async () => {
       // Given
       req.user.token = 'some-token'
-      const createGoalForm = aValidCreateGoalForm()
-      const addStepForms = [aValidAddStepForm()]
-      const addNoteForm = aValidAddNoteForm()
+      const createGoalForm1 = aValidCreateGoalForm('Goal 1')
+      const addStepForms1 = [aValidAddStepForm()]
+      const addNoteForm1 = aValidAddNoteForm()
+      const createGoalForm2 = aValidCreateGoalForm('Goal 2')
+      const addStepForms2 = [aValidAddStepForm()]
+      const addNoteForm2 = aValidAddNoteForm()
 
       req.session.newGoals = [
         {
-          createGoalForm,
-          addStepForms,
-          addNoteForm,
+          createGoalForm: createGoalForm1,
+          addStepForms: addStepForms1,
+          addNoteForm: addNoteForm1,
+        },
+        {
+          createGoalForm: createGoalForm2,
+          addStepForms: addStepForms2,
+          addNoteForm: addNoteForm2,
         },
       ] as Array<NewGoal>
 
@@ -357,8 +365,10 @@ describe('createGoalController', () => {
         action: 'submit-form',
       }
 
-      const createGoalDto = aValidCreateGoalDtoWithOneStep()
-      mockedCreateGoalDtoMapper.mockReturnValue(createGoalDto)
+      const createGoalDto1 = aValidCreateGoalDtoWithOneStep('Goal 1')
+      const createGoalDto2 = aValidCreateGoalDtoWithOneStep('Goal 2')
+      mockedCreateGoalDtoMapper.mockReturnValueOnce(createGoalDto1)
+      mockedCreateGoalDtoMapper.mockReturnValueOnce(createGoalDto2)
 
       const expectedPrisonId = 'MDI'
       prisonerSummary = aValidPrisonerSummary(prisonNumber, expectedPrisonId)
@@ -372,12 +382,19 @@ describe('createGoalController', () => {
       )
 
       // Then
-      expect(educationAndWorkPlanService.createGoal).toHaveBeenCalledWith(createGoalDto, 'some-token')
+      expect(educationAndWorkPlanService.createGoal).toHaveBeenCalledWith(createGoalDto1, 'some-token')
+      expect(educationAndWorkPlanService.createGoal).toHaveBeenCalledWith(createGoalDto2, 'some-token')
       expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/view/overview`)
       expect(mockedCreateGoalDtoMapper).toHaveBeenCalledWith(
-        createGoalForm,
-        addStepForms,
-        addNoteForm,
+        createGoalForm1,
+        addStepForms1,
+        addNoteForm1,
+        expectedPrisonId,
+      )
+      expect(mockedCreateGoalDtoMapper).toHaveBeenCalledWith(
+        createGoalForm2,
+        addStepForms2,
+        addNoteForm2,
         expectedPrisonId,
       )
       expect(req.session.newGoal).toBeUndefined()

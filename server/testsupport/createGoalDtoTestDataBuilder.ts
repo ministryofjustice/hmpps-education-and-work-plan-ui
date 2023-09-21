@@ -1,6 +1,6 @@
 import type { AddStepDto, CreateGoalDto } from 'dto'
 
-const aValidCreateGoalDtoWithOneStep = (): CreateGoalDto => {
+const aValidCreateGoalDtoWithOneStep = (title = 'Learn Spanish'): CreateGoalDto => {
   const addStepDto: AddStepDto = {
     title: 'Book Spanish course',
     targetDateRange: 'ZERO_TO_THREE_MONTHS',
@@ -8,14 +8,14 @@ const aValidCreateGoalDtoWithOneStep = (): CreateGoalDto => {
   }
   return {
     prisonNumber: 'A1234BC',
-    title: 'Learn Spanish',
+    title,
     steps: [addStepDto],
     note: 'Prisoner is not good at listening',
     prisonId: 'BXI',
   }
 }
 
-const aValidCreateGoalDtoWithMultipleSteps = (): CreateGoalDto => {
+const aValidCreateGoalDtoWithMultipleSteps = (title = 'Learn Spanish'): CreateGoalDto => {
   const addStepDto1: AddStepDto = {
     title: 'Book Spanish course',
     targetDateRange: 'ZERO_TO_THREE_MONTHS',
@@ -28,7 +28,7 @@ const aValidCreateGoalDtoWithMultipleSteps = (): CreateGoalDto => {
   }
   return {
     prisonNumber: 'A1234BC',
-    title: 'Learn Spanish',
+    title,
     steps: [addStepDto1, addStepDto2],
     note: 'Prisoner is not good at listening',
     prisonId: 'BXI',
