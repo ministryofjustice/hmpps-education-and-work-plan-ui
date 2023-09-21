@@ -462,7 +462,7 @@ describe('routerRequestHandlers', () => {
       req.params.prisonNumber = prisonNumber
       const prisoner = {
         firstName: ' jimmy ',
-        lastName: ' lightfingers',
+        lastName: ' LIGHTFINGERS',
       } as Prisoner
       prisonerSearchService.getPrisonerByPrisonNumber.mockResolvedValue(prisoner)
 
