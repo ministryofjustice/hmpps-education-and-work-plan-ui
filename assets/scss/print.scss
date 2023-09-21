@@ -30,3 +30,7 @@
   break-inside: avoid;
   margin-top: 8.5mm;
 }
+
+.connect-dps-common-footer {
+  @include govuk-visually-hidden();
+}
