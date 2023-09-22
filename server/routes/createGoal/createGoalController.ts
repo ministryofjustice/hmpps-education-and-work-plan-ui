@@ -132,7 +132,10 @@ export default class CreateGoalController {
     })
 
     try {
-      await this.educationAndWorkPlanService.createGoal(createGoalDtos[0], req.user.token)
+      const createGoalApiRequests = createGoalDtos.map(createGoalDto =>
+        this.educationAndWorkPlanService.createGoal(createGoalDto, req.user.token),
+      )
+      await Promise.all(createGoalApiRequests)
 
       req.session.newGoal = undefined
       req.session.newGoals = undefined
