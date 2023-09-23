@@ -3,13 +3,13 @@ import EducationAndWorkPlanService from './educationAndWorkPlanService'
 import { aValidCreateGoalDtoWithOneStep } from '../testsupport/createGoalDtoTestDataBuilder'
 import { aValidActionPlanWithOneGoal } from '../testsupport/actionPlanTestDataBuilder'
 import { aValidActionPlanResponseWithOneGoal } from '../testsupport/actionPlanResponseTestDataBuilder'
-import { aValidCreateGoalRequestWithOneStep } from '../testsupport/createGoalRequestTestDataBuilder'
 import { aValidUpdateGoalDtoWithOneStep } from '../testsupport/updateGoalDtoTestDataBuilder'
 import { aValidUpdateGoalRequestWithOneUpdatedStep } from '../testsupport/updateGoalRequestTestDataBuilder'
+import { aValidCreateGoalsRequestWithOneGoal } from '../testsupport/createGoalsRequestTestDataBuilder'
 
 describe('educationAndWorkPlanService', () => {
   const educationAndWorkPlanClient = {
-    createGoal: jest.fn(),
+    createGoals: jest.fn(),
     updateGoal: jest.fn(),
     getActionPlan: jest.fn(),
   }
@@ -22,19 +22,19 @@ describe('educationAndWorkPlanService', () => {
     jest.resetAllMocks()
   })
 
-  describe('createGoal', () => {
-    it('should create Goal', async () => {
+  describe('createGoals', () => {
+    it('should create Goals', async () => {
       // Given
       const userToken = 'a-user-token'
       const createGoalDto = aValidCreateGoalDtoWithOneStep()
-      const createGoalRequest = aValidCreateGoalRequestWithOneStep()
-      educationAndWorkPlanClient.createGoal.mockImplementation(() => Promise.resolve(createGoalDto))
+      const createGoalsRequest = aValidCreateGoalsRequestWithOneGoal()
+      educationAndWorkPlanClient.createGoals.mockImplementation(() => Promise.resolve(createGoalDto))
 
       // When
-      await educationAndWorkPlanService.createGoal(createGoalDto, userToken)
+      await educationAndWorkPlanService.createGoals([createGoalDto], userToken)
 
       // Then
-      expect(educationAndWorkPlanClient.createGoal).toHaveBeenCalledWith(createGoalRequest, userToken)
+      expect(educationAndWorkPlanClient.createGoals).toHaveBeenCalledWith(createGoalsRequest, userToken)
     })
 
     it('should not create Goal given educationAndWorkPlanClient returns an error', async () => {
@@ -42,10 +42,10 @@ describe('educationAndWorkPlanService', () => {
       const userToken = 'a-user-token'
       const createGoalDto = aValidCreateGoalDtoWithOneStep()
 
-      educationAndWorkPlanClient.createGoal.mockImplementation(() => Promise.reject(Error('Service Unavailable')))
+      educationAndWorkPlanClient.createGoals.mockImplementation(() => Promise.reject(Error('Service Unavailable')))
 
       // When
-      const actual = await educationAndWorkPlanService.createGoal(createGoalDto, userToken).catch(error => {
+      const actual = await educationAndWorkPlanService.createGoals([createGoalDto], userToken).catch(error => {
         return error
       })
 

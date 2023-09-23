@@ -20,7 +20,7 @@ context('Review goal(s)', () => {
     cy.task('stubLearnerProfile', 'H4115SD')
     cy.task('stubLearnerEducation', 'G6115VJ')
     cy.task('stubLearnerEducation', 'H4115SD')
-    cy.task('createGoal')
+    cy.task('createGoals')
   })
 
   it('should not be able to navigate directly to Review Goal given previous forms have not been submitted', () => {

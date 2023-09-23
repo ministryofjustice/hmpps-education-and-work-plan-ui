@@ -1,4 +1,5 @@
 import type { CreateGoalDto, UpdateGoalDto } from 'dto'
+import type { CreateGoalsRequest } from 'educationAndWorkPlanApiClient'
 import type { ActionPlan } from 'viewModels'
 import EducationAndWorkPlanClient from '../data/educationAndWorkPlanClient'
 import { toCreateGoalRequest } from '../data/mappers/createGoalMapper'
@@ -9,9 +10,11 @@ import { toUpdateGoalRequest } from '../data/mappers/updateGoalMapper'
 export default class EducationAndWorkPlanService {
   constructor(private readonly educationAndWorkPlanClient: EducationAndWorkPlanClient) {}
 
-  async createGoal(createGoalDto: CreateGoalDto, token: string): Promise<unknown> {
-    const createGoalRequest = toCreateGoalRequest(createGoalDto)
-    return this.educationAndWorkPlanClient.createGoal(createGoalRequest, token)
+  async createGoals(createGoalDtos: CreateGoalDto[], token: string): Promise<unknown> {
+    const createGoalsRequest: CreateGoalsRequest = {
+      goals: createGoalDtos.map(createGoalDto => toCreateGoalRequest(createGoalDto)),
+    }
+    return this.educationAndWorkPlanClient.createGoals(createGoalsRequest, token)
   }
 
   async getActionPlan(prisonNumber: string, token: string): Promise<ActionPlan> {
