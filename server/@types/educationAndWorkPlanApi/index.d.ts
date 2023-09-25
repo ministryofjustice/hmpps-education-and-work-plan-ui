@@ -55,9 +55,9 @@ export interface components {
       prisonId: string
       /**
        * Format: date
-       * @description An optional ISO-8601 date representing when the Goal is up for review.
+       * @description An optional ISO-8601 date representing the target completion date of the Goal.
        */
-      reviewDate?: string
+      targetCompletionDate?: string
       /**
        * @description Some additional notes related to the Goal.
        * @example Pay close attention to Peter's behaviour.
@@ -171,9 +171,9 @@ export interface components {
       prisonId: string
       /**
        * Format: date
-       * @description An optional ISO-8601 date representing when the Goal is up for review.
+       * @description An optional ISO-8601 date representing the target completion date of the Goal.
        */
-      reviewDate?: string
+      targetCompletionDate?: string
       /**
        * @description Some additional notes related to the Goal.
        * @example Pay close attention to Peter's behaviour.
@@ -382,9 +382,9 @@ export interface components {
       updatedAtPrison: string
       /**
        * Format: date
-       * @description An optional ISO-8601 date representing when the Goal is up for review.
+       * @description An optional ISO-8601 date representing the target completion date of the Goal.
        */
-      reviewDate?: string
+      targetCompletionDate?: string
       /**
        * @description Some additional notes related to the Goal.
        * @example Pay close attention to Peter's behaviour.

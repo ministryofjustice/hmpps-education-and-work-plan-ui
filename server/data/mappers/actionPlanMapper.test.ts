@@ -27,7 +27,7 @@ describe('actionPlanMapper', () => {
       title: 'Learn Spanish',
       status: 'ACTIVE',
       steps: [expectedFirstStep, expectedSecondStep],
-      reviewDate: undefined,
+      targetCompletionDate: undefined,
       createdBy: 'asmith_gen',
       createdByDisplayName: 'Alex Smith',
       createdAt: '',

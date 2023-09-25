@@ -18,7 +18,7 @@ declare module 'dto' {
     title: string
     status: string
     steps: Array<UpdateStepDto>
-    reviewDate?: string
+    targetCompletionDate?: string
     notes?: string
     prisonId: string
   }

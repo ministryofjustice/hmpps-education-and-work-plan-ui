@@ -27,7 +27,7 @@ describe('updateGoalFormToUpdateGoalDtoMapper', () => {
       title: updateGoalForm.title,
       status: updateGoalForm.status,
       steps: [expectedUpdateStepDto1, expectedUpdateStepDto2],
-      reviewDate: updateGoalForm.reviewDate,
+      targetCompletionDate: updateGoalForm.targetCompletionDate,
       notes: updateGoalForm.note,
       prisonId,
     }

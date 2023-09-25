@@ -15,7 +15,7 @@ describe('goalToUpdateGoalFormMapper', () => {
         reference: '1a2eae63-8102-4155-97cb-43d8fb739caf',
         title: 'Learn Spanish',
         note: 'Prisoner is not good at listening',
-        reviewDate: undefined,
+        targetCompletionDate: undefined,
         status: 'ACTIVE',
         steps: [
           {

@@ -7,7 +7,7 @@ const toUpdateGoalDto = (updateGoalForm: UpdateGoalForm, prisonId: string): Upda
     title: updateGoalForm.title,
     status: updateGoalForm.status,
     steps: updateGoalForm.steps.map(step => toUpdateStepDto(step)),
-    reviewDate: updateGoalForm.reviewDate,
+    targetCompletionDate: updateGoalForm.targetCompletionDate,
     notes: updateGoalForm.note,
     prisonId,
   }

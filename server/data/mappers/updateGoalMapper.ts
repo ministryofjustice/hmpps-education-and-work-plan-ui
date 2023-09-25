@@ -7,7 +7,7 @@ const toUpdateGoalRequest = (updateGoalDto: UpdateGoalDto): UpdateGoalRequest =>
     title: updateGoalDto.title,
     status: updateGoalDto.status,
     steps: updateGoalDto.steps.map(step => toUpdateStepRequest(step)),
-    reviewDate: updateGoalDto.reviewDate,
+    targetCompletionDate: updateGoalDto.targetCompletionDate,
     notes: updateGoalDto.notes,
     prisonId: updateGoalDto.prisonId,
   }
