@@ -43,7 +43,7 @@ describe('updateGoalFormValidator', () => {
     const form: UpdateGoalForm = {
       reference: '95b18362-fe56-4234-9ad2-11ef98b974a3',
       title: undefined,
-      reviewDate: undefined,
+      targetCompletionDate: undefined,
       status: 'ACTIVE',
       note: 'Prisoner is not good at listening',
       steps: [
@@ -74,7 +74,7 @@ describe('updateGoalFormValidator', () => {
     const form: UpdateGoalForm = {
       reference: '95b18362-fe56-4234-9ad2-11ef98b974a3',
       title: 'Learn Spanish',
-      reviewDate: undefined,
+      targetCompletionDate: undefined,
       status: undefined,
       note: 'Prisoner is not good at listening',
       steps: [
@@ -105,7 +105,7 @@ describe('updateGoalFormValidator', () => {
     const form: UpdateGoalForm = {
       reference: '95b18362-fe56-4234-9ad2-11ef98b974a3',
       title: 'Learn Spanish',
-      reviewDate: undefined,
+      targetCompletionDate: undefined,
       status: 'ACTIVE',
       note: 'Prisoner is not good at listening',
       steps: [
@@ -136,7 +136,7 @@ describe('updateGoalFormValidator', () => {
     const form: UpdateGoalForm = {
       reference: '95b18362-fe56-4234-9ad2-11ef98b974a3',
       title: 'Learn Spanish',
-      reviewDate: undefined,
+      targetCompletionDate: undefined,
       status: 'ACTIVE',
       note: 'Prisoner is not good at listening',
       steps: [
@@ -167,7 +167,7 @@ describe('updateGoalFormValidator', () => {
     const form: UpdateGoalForm = {
       reference: '95b18362-fe56-4234-9ad2-11ef98b974a3',
       title: 'Learn Spanish',
-      reviewDate: undefined,
+      targetCompletionDate: undefined,
       status: 'ACTIVE',
       note: 'Prisoner is not good at listening',
       steps: [

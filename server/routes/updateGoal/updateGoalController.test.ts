@@ -69,7 +69,7 @@ describe('updateGoalController', () => {
       const updateGoalForm = {
         reference: goal.goalReference,
         title: goal.title,
-        reviewDate: goal.reviewDate,
+        targetCompletionDate: goal.targetCompletionDate,
         status: goal.status,
         note: goal.note,
         steps: [

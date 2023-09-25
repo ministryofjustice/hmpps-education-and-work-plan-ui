@@ -21,7 +21,7 @@ const toGoal = (goalResponse: GoalResponse): Goal => {
     updatedBy: goalResponse.updatedBy,
     updatedByDisplayName: goalResponse.updatedByDisplayName,
     updatedAt: goalResponse.updatedAt,
-    reviewDate: goalResponse.reviewDate,
+    targetCompletionDate: goalResponse.targetCompletionDate,
     note: goalResponse.notes,
   }
 }

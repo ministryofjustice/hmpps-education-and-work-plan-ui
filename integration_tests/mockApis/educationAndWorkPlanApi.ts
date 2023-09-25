@@ -123,6 +123,6 @@ export interface UpdateGoalRequest {
       sequenceNumber: number
     },
   ]
-  reviewDate?: string
+  targetCompletionDate?: string
   notes?: string
 }

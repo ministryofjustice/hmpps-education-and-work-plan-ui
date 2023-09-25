@@ -4,7 +4,7 @@ export default function aValidUpdateGoalForm(reference = '95b18362-fe56-4234-9ad
   return {
     reference,
     title: 'Learn Spanish',
-    reviewDate: undefined,
+    targetCompletionDate: undefined,
     status: 'ACTIVE',
     note: 'Prisoner is not good at listening',
     steps: [

@@ -5,7 +5,7 @@ const toUpdateGoalForm = (goal: Goal): UpdateGoalForm => {
   return {
     reference: goal.goalReference,
     title: goal.title,
-    reviewDate: goal.reviewDate,
+    targetCompletionDate: goal.targetCompletionDate,
     status: goal.status,
     note: goal.note,
     steps: goal.steps.map(step => toUpdateStepForm(step)),
