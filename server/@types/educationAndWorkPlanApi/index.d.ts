@@ -7,12 +7,18 @@ export interface paths {
   '/action-plans/{prisonNumber}/goals/{goalReference}': {
     put: operations['updateGoal']
   }
+  '/action-plans': {
+    post: operations['getActionPlanSummaries']
+  }
   '/action-plans/{prisonNumber}': {
     get: operations['getActionPlan']
     post: operations['createActionPlan']
   }
   '/action-plans/{prisonNumber}/goals': {
-    post: operations['createGoal']
+    post: operations['createGoals']
+  }
+  '/timelines/{prisonNumber}': {
+    get: operations['getTimeline']
   }
 }
 
@@ -95,6 +101,42 @@ export interface components {
        */
       stepReference?: string
     }
+    GetActionPlanSummariesRequest: {
+      /**
+       * @description A List of at least one prison number.
+       * @example null
+       */
+      prisonNumbers: string[]
+    }
+    ActionPlanSummaryListResponse: {
+      /**
+       * @description A List of prisoners' Action Plan summaries. Can be empty but not null.
+       * @example null
+       */
+      actionPlanSummaries: components['schemas']['ActionPlanSummaryResponse'][]
+    }
+    /**
+     * @description A List of prisoners' Action Plan summaries. Can be empty but not null.
+     * @example null
+     */
+    ActionPlanSummaryResponse: {
+      /**
+       * Format: uuid
+       * @description The Action Plan's unique reference
+       * @example 814ade0a-a3b2-46a3-862f-79211ba13f7b
+       */
+      reference: string
+      /**
+       * @description The ID of the prisoner
+       * @example A1234BC
+       */
+      prisonNumber: string
+      /**
+       * Format: date
+       * @description An optional ISO-8601 date representing when the Action Plan is up for review.
+       */
+      reviewDate?: string
+    }
     CreateActionPlanRequest: {
       /**
        * @description A List of at least one Goal.
@@ -163,6 +205,89 @@ export interface components {
        * @example 1
        */
       sequenceNumber: number
+    }
+    CreateGoalsRequest: {
+      /**
+       * @description A List of at least one Goal.
+       * @example null
+       */
+      goals: components['schemas']['CreateGoalRequest'][]
+    }
+    /**
+     * @description A List of at least one TimelineEventResponse.
+     * @example null
+     */
+    TimelineEventResponse: {
+      /**
+       * Format: uuid
+       * @description The Timeline event's unique reference
+       * @example c88a6c48-97e2-4c04-93b5-98619966447b
+       */
+      reference: string
+      /**
+       * @description A reference to the originating entity that was created, or updated during this event, such as a Prisoner's Goal or Induction. Typically this will be a UUID, but does not have to be.
+       * @example c88a6c48-97e2-4c04-93b5-98619966447b
+       */
+      sourceReference: string
+      /**
+       * @example null
+       * @enum {string}
+       */
+      eventType:
+        | 'ACTION_PLAN_CREATED'
+        | 'GOAL_CREATED'
+        | 'GOAL_UPDATED'
+        | 'GOAL_STARTED'
+        | 'GOAL_COMPLETED'
+        | 'GOAL_ARCHIVED'
+        | 'STEP_UPDATED'
+        | 'STEP_NOT_STARTED'
+        | 'STEP_STARTED'
+        | 'STEP_COMPLETED'
+      /**
+       * @description The identifier of the prison that the prisoner was at when the event occurred.
+       * @example BXI
+       */
+      prisonId: string
+      /**
+       * @description The username of the person who caused this event. Set to 'system' if the event was not actioned by a DPS user.
+       * @example asmith_gen
+       */
+      actionedBy: string
+      /**
+       * Format: date-time
+       * @description An ISO-8601 timestamp representing when the event occurred.
+       * @example 2023-06-19T09:39:44Z
+       */
+      timestamp: string
+      /**
+       * @description Contextual information that's relevant to the event in question. For example the title of a Goal that was completed.
+       * @example Learn French
+       */
+      contextualInfo?: string
+      /**
+       * @description The display name of the person who caused this event, if applicable.
+       * @example Alex Smith
+       */
+      actionedByDisplayName?: string
+    }
+    TimelineResponse: {
+      /**
+       * Format: uuid
+       * @description The Timeline's unique reference.
+       * @example c88a6c48-97e2-4c04-93b5-98619966447b
+       */
+      reference: string
+      /**
+       * @description The ID of the prisoner.
+       * @example A1234BC
+       */
+      prisonNumber: string
+      /**
+       * @description A List of at least one TimelineEventResponse.
+       * @example null
+       */
+      events: components['schemas']['TimelineEventResponse'][]
     }
     ActionPlanResponse: {
       /**
@@ -331,6 +456,21 @@ export interface operations {
       204: never
     }
   }
+  getActionPlanSummaries: {
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['GetActionPlanSummariesRequest']
+      }
+    }
+    responses: {
+      /** @description OK */
+      200: {
+        content: {
+          'application/json': components['schemas']['ActionPlanSummaryListResponse']
+        }
+      }
+    }
+  }
   getActionPlan: {
     parameters: {
       path: {
@@ -362,7 +502,7 @@ export interface operations {
       201: never
     }
   }
-  createGoal: {
+  createGoals: {
     parameters: {
       path: {
         prisonNumber: string
@@ -370,12 +510,27 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['CreateGoalRequest']
+        'application/json': components['schemas']['CreateGoalsRequest']
       }
     }
     responses: {
       /** @description Created */
       201: never
+    }
+  }
+  getTimeline: {
+    parameters: {
+      path: {
+        prisonNumber: string
+      }
+    }
+    responses: {
+      /** @description OK */
+      200: {
+        content: {
+          'application/json': components['schemas']['TimelineResponse']
+        }
+      }
     }
   }
 }

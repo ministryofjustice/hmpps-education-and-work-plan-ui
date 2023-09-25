@@ -1,4 +1,4 @@
-import type { ActionPlanResponse, CreateGoalRequest, UpdateGoalRequest } from 'educationAndWorkPlanApiClient'
+import type { ActionPlanResponse, CreateGoalsRequest, UpdateGoalRequest } from 'educationAndWorkPlanApiClient'
 import RestClient from './restClient'
 import config from '../config'
 
@@ -7,10 +7,10 @@ export default class EducationAndWorkPlanClient {
     return new RestClient('Education and Work Plan API Client', config.apis.educationAndWorkPlan, token)
   }
 
-  async createGoal(createGoalRequest: CreateGoalRequest, token: string): Promise<unknown> {
+  async createGoals(createGoalsRequest: CreateGoalsRequest, token: string): Promise<unknown> {
     return EducationAndWorkPlanClient.restClient(token).post({
-      path: `/action-plans/${createGoalRequest.prisonNumber}/goals`,
-      data: createGoalRequest,
+      path: `/action-plans/${createGoalsRequest.goals[0].prisonNumber}/goals`,
+      data: createGoalsRequest,
     })
   }
 

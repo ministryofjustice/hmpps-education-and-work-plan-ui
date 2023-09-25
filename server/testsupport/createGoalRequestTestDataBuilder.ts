@@ -16,7 +16,7 @@ const aValidCreateGoalRequestWithOneStep = (prisonNumber = 'A1234BC'): CreateGoa
   }
 }
 
-const aValidCreateGoalRequestWithMultipleSteps = (prisonNumber: 'A1234BC'): CreateGoalRequest => {
+const aValidCreateGoalRequestWithMultipleSteps = (prisonNumber = 'A1234BC'): CreateGoalRequest => {
   const createStepRequest1: CreateStepRequest = {
     title: 'Book Spanish course',
     targetDateRange: 'ZERO_TO_THREE_MONTHS',

@@ -2,7 +2,7 @@ import { SuperAgentRequest } from 'superagent'
 import { getMatchingRequests, stubFor } from './wiremock'
 import actionPlans from '../mockData/actionPlanByPrisonNumberData'
 
-const createGoal = (): SuperAgentRequest =>
+const createGoals = (): SuperAgentRequest =>
   stubFor({
     request: {
       method: 'POST',
@@ -100,7 +100,7 @@ const getActionPlan500Error = (prisonNumber = 'G6115VJ'): SuperAgentRequest =>
   })
 
 export default {
-  createGoal,
+  createGoals,
   getActionPlan,
   updateGoal,
   updateGoal500Error,

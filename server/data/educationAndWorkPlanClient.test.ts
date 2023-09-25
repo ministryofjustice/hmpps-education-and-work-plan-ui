@@ -2,8 +2,11 @@ import nock from 'nock'
 import config from '../config'
 import EducationAndWorkPlanClient from './educationAndWorkPlanClient'
 import { aValidActionPlanResponseWithOneGoal } from '../testsupport/actionPlanResponseTestDataBuilder'
-import { aValidCreateGoalRequestWithOneStep } from '../testsupport/createGoalRequestTestDataBuilder'
 import { aValidUpdateGoalRequestWithOneUpdatedStep } from '../testsupport/updateGoalRequestTestDataBuilder'
+import {
+  aValidCreateGoalsRequestWithOneGoal,
+  aValidCreateGoalsRequestWitMultipleGoals,
+} from '../testsupport/createGoalsRequestTestDataBuilder'
 
 describe('educationAndWorkPlanClient', () => {
   const educationAndWorkPlanClient = new EducationAndWorkPlanClient()
@@ -19,44 +22,44 @@ describe('educationAndWorkPlanClient', () => {
     nock.cleanAll()
   })
 
-  describe('createGoal', () => {
-    it('should create Goal', async () => {
+  describe('createGoals', () => {
+    it('should create Goals', async () => {
       // Given
       const prisonNumber = 'A1234BC'
       const systemToken = 'a-system-token'
 
-      const createGoalRequest = aValidCreateGoalRequestWithOneStep(prisonNumber)
+      const createGoalsRequest = aValidCreateGoalsRequestWitMultipleGoals(prisonNumber)
       const expectedResponseBody = {}
       educationAndWorkPlanApi
-        .post(`/action-plans/${prisonNumber}/goals`, createGoalRequest)
+        .post(`/action-plans/${prisonNumber}/goals`, createGoalsRequest)
         .reply(201, expectedResponseBody)
 
       // When
-      const actual = await educationAndWorkPlanClient.createGoal(createGoalRequest, systemToken)
+      const actual = await educationAndWorkPlanClient.createGoals(createGoalsRequest, systemToken)
 
       // Then
       expect(nock.isDone()).toBe(true)
       expect(actual).toEqual(expectedResponseBody)
     })
 
-    it('should not create Goal given API returns an error response', async () => {
+    it('should not create Goals given API returns an error response', async () => {
       // Given
       const prisonNumber = 'A1234BC'
       const systemToken = 'a-system-token'
 
-      const createGoalRequest = aValidCreateGoalRequestWithOneStep(prisonNumber)
+      const createGoalsRequest = aValidCreateGoalsRequestWithOneGoal(prisonNumber)
       const expectedResponseBody = {
         status: 500,
         userMessage: 'An unexpected error occurred',
         developerMessage: 'An unexpected error occurred',
       }
       educationAndWorkPlanApi
-        .post(`/action-plans/${prisonNumber}/goals`, createGoalRequest)
+        .post(`/action-plans/${prisonNumber}/goals`, createGoalsRequest)
         .reply(500, expectedResponseBody)
 
       // When
       try {
-        await educationAndWorkPlanClient.createGoal(createGoalRequest, systemToken)
+        await educationAndWorkPlanClient.createGoals(createGoalsRequest, systemToken)
       } catch (e) {
         // Then
         expect(nock.isDone()).toBe(true)

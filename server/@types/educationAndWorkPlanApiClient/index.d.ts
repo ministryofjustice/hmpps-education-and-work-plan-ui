@@ -2,6 +2,7 @@ declare module 'educationAndWorkPlanApiClient' {
   import { components } from '../educationAndWorkPlanApi'
 
   export type CreateGoalRequest = components['schemas']['CreateGoalRequest']
+  export type CreateGoalsRequest = components['schemas']['CreateGoalsRequest']
   export type CreateStepRequest = components['schemas']['CreateStepRequest']
 
   export type UpdateGoalRequest = components['schemas']['UpdateGoalRequest']

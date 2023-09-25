@@ -25,7 +25,7 @@ describe('createGoalController', () => {
   const mockedCreateGoalDtoMapper = toCreateGoalDto as jest.MockedFunction<typeof toCreateGoalDto>
 
   const educationAndWorkPlanService = {
-    createGoal: jest.fn(),
+    createGoals: jest.fn(),
   }
 
   const controller = new CreateGoalController(educationAndWorkPlanService as unknown as EducationAndWorkPlanService)
@@ -382,8 +382,10 @@ describe('createGoalController', () => {
       )
 
       // Then
-      expect(educationAndWorkPlanService.createGoal).toHaveBeenCalledWith(createGoalDto1, 'some-token')
-      expect(educationAndWorkPlanService.createGoal).toHaveBeenCalledWith(createGoalDto2, 'some-token')
+      expect(educationAndWorkPlanService.createGoals).toHaveBeenCalledWith(
+        [createGoalDto1, createGoalDto2],
+        'some-token',
+      )
       expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/view/overview`)
       expect(mockedCreateGoalDtoMapper).toHaveBeenCalledWith(
         createGoalForm1,
@@ -401,7 +403,7 @@ describe('createGoalController', () => {
       expect(req.session.newGoals).toBeUndefined()
     })
 
-    it('should not create goal given error calling service to create the goal', async () => {
+    it('should not create goals given error calling service to create the goals', async () => {
       // Given
       req.user.token = 'some-token'
       const createGoalForm = aValidCreateGoalForm()
@@ -427,7 +429,7 @@ describe('createGoalController', () => {
       prisonerSummary = aValidPrisonerSummary(prisonNumber, expectedPrisonId)
       req.session.prisonerSummary = prisonerSummary
 
-      educationAndWorkPlanService.createGoal.mockRejectedValue(createError(500, 'Service unavailable'))
+      educationAndWorkPlanService.createGoals.mockRejectedValue(createError(500, 'Service unavailable'))
       const expectedError = createError(500, `Error updating plan for prisoner ${prisonNumber}`)
 
       // When
@@ -438,7 +440,7 @@ describe('createGoalController', () => {
       )
 
       // Then
-      expect(educationAndWorkPlanService.createGoal).toHaveBeenCalledWith(createGoalDto, 'some-token')
+      expect(educationAndWorkPlanService.createGoals).toHaveBeenCalledWith([createGoalDto], 'some-token')
       expect(mockedCreateGoalDtoMapper).toHaveBeenCalledWith(
         createGoalForm,
         addStepForms,
@@ -481,7 +483,7 @@ describe('createGoalController', () => {
       // Then
       expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/goals/create`)
       expect(mockedCreateGoalDtoMapper).not.toHaveBeenCalled()
-      expect(educationAndWorkPlanService.createGoal).not.toHaveBeenCalled()
+      expect(educationAndWorkPlanService.createGoals).not.toHaveBeenCalled()
       expect(req.session.newGoal).toBeUndefined()
       expect(req.session.newGoals).not.toBeUndefined()
     })
