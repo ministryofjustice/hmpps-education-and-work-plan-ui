@@ -5,7 +5,23 @@
 {% set pageId = "functional-skills" %}
 
 {% block beforeContent %}
-  {% include "../../partials/breadcrumb.njk" %}
+  {{ govukBreadcrumbs({
+    items: [
+      {
+        text: "Digital Prison Services",
+        href: dpsUrl
+      },
+      {
+        text: "Manage learning and work progress",
+        href: "/"
+      },
+      {
+        text: prisonerSummary.firstName + " " + prisonerSummary.lastName + "'s learning and work progress",
+        href: "/plan/" + prisonerSummary.prisonNumber + "/view/education-and-training"
+      }
+    ],
+    classes: 'govuk-!-display-none-print'
+  }) }}
 {% endblock %}
 
 {% block content %}
