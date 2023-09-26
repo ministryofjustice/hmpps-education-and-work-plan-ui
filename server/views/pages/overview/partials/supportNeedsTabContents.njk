@@ -8,57 +8,59 @@
           <h2 class="govuk-summary-card__title">LDD and health needs</h2>
         </div>
         <div class="govuk-summary-card__content">
-          <p class="govuk-hint">Information from Curious.</p>
-
-          {% for healthAndSupportNeed in supportNeeds.healthAndSupportNeeds %}
-            <h3 class="govuk-heading-m">
-              <span class="govuk-visually-hidden">{{ prisonerSummary.firstName }} {{ prisonerSummary.lastName | capitalize }}'s learning difficulties, disabilities and health needs recorded whilst at</span>
-              {{ healthAndSupportNeed.prisonName }}
-            </h3>
-            <dl class="govuk-summary-list govuk-!-margin-bottom-6">
-              <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                  Rapid assessment
-                </dt>
-                <dd class="govuk-summary-list__value">
-                  {{ healthAndSupportNeed.rapidAssessmentDate | formatDate('D MMMM YYYY') | fallbackMessage('Not recorded in Curious') }}
-                </dd>
-              </div>
-              <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                  In-depth assessment
-                </dt>
-                <dd class="govuk-summary-list__value">
-                  {{ healthAndSupportNeed.inDepthAssessmentDate | formatDate('D MMMM YYYY') | fallbackMessage('Not recorded in Curious') }}
-                </dd>
-              </div>
-              <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                  Primary LDD and health needs
-                </dt>
-                <dd class="govuk-summary-list__value">
-                  {{ healthAndSupportNeed.primaryLddAndHealthNeeds | fallbackMessage('Not recorded in Curious') }}
-                </dd>
-              </div>
-              <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                  Additional LDD and health needs
-                </dt>
-                <dd class="govuk-summary-list__value">
-                  {% if healthAndSupportNeed.additionalLddAndHealthNeeds.length > 0 %}
-                    <ul class="govuk-list">
-                      {% for additionalLddAndHealthNeed in healthAndSupportNeed.additionalLddAndHealthNeeds %}
-                        <li>{{ additionalLddAndHealthNeed }}</li>
-                      {% endfor %}
-                    </ul>
-                  {% else %}
-                    Not recorded in Curious
-                  {% endif %}
-                </dd>
-              </div>
-            </dl>
-          {% endfor %}
-
+          {% if supportNeeds.healthAndSupportNeeds %}
+            <p class="govuk-hint">Information from Curious.</p>
+            {% for healthAndSupportNeed in supportNeeds.healthAndSupportNeeds %}
+              <h3 class="govuk-heading-m">
+                <span class="govuk-visually-hidden">{{ prisonerSummary.firstName }} {{ prisonerSummary.lastName | capitalize }}'s learning difficulties, disabilities and health needs recorded whilst at</span>
+                {{ healthAndSupportNeed.prisonName }}
+              </h3>
+              <dl class="govuk-summary-list govuk-!-margin-bottom-6">
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">
+                    Rapid assessment
+                  </dt>
+                  <dd class="govuk-summary-list__value">
+                    {{ healthAndSupportNeed.rapidAssessmentDate | formatDate('D MMMM YYYY') | fallbackMessage('Not recorded in Curious') }}
+                  </dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">
+                    In-depth assessment
+                  </dt>
+                  <dd class="govuk-summary-list__value">
+                    {{ healthAndSupportNeed.inDepthAssessmentDate | formatDate('D MMMM YYYY') | fallbackMessage('Not recorded in Curious') }}
+                  </dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">
+                    Primary LDD and health needs
+                  </dt>
+                  <dd class="govuk-summary-list__value">
+                    {{ healthAndSupportNeed.primaryLddAndHealthNeeds | fallbackMessage('Not recorded in Curious') }}
+                  </dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">
+                    Additional LDD and health needs
+                  </dt>
+                  <dd class="govuk-summary-list__value">
+                    {% if healthAndSupportNeed.additionalLddAndHealthNeeds.length > 0 %}
+                      <ul class="govuk-list">
+                        {% for additionalLddAndHealthNeed in healthAndSupportNeed.additionalLddAndHealthNeeds %}
+                          <li>{{ additionalLddAndHealthNeed }}</li>
+                        {% endfor %}
+                      </ul>
+                    {% else %}
+                      Not recorded in Curious
+                    {% endif %}
+                  </dd>
+                </div>
+              </dl>
+            {% endfor %}
+          {% else %}
+            <p class="govuk-body">Not recorded in Curious</p>
+          {% endif %}
         </div>
       </div>
 
@@ -67,68 +69,70 @@
           <h2 class="govuk-summary-card__title">Neurodiversity</h2>
         </div>
         <div class="govuk-summary-card__content">
-          <p class="govuk-hint">Information in Curious from the local education team is not a medical diagnosis.</p>
-
-          {% for neurodiversity in supportNeeds.neurodiversities %}
-            <h3 class="govuk-heading-m">
-              <span class="govuk-visually-hidden">{{ prisonerSummary.firstName }} {{ prisonerSummary.lastName }}'s neurodiversity support needs recorded whilst at</span>
-              {{ neurodiversity.prisonName }}
-            </h3>
-            <dl class="govuk-summary-list govuk-!-margin-bottom-6">
-              <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                  Support needed
-                </dt>
-                <dd class="govuk-summary-list__value">
-                  {% if neurodiversity.supportNeeded.length > 0 %}
-                    <ul class="govuk-list">
-                      {% for supportNeeded in neurodiversity.supportNeeded %}
-                        <li>{{ supportNeeded }}</li>
-                      {% endfor %}
-                    </ul>
-                    <p class="govuk-body-s">Recorded on {{ neurodiversity.supportNeededRecordedDate | formatDate('D MMMM YYYY') }}</p>
-                  {% else %}
-                    Not recorded in Curious
-                  {% endif %}
-                </dd>
-              </div>
-              <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                  From neurodiversity assessment
-                </dt>
-                <dd class="govuk-summary-list__value">
-                  {% if neurodiversity.assessedNeurodiversity.length > 0 %}
-                    <ul class="govuk-list">
-                      {% for assessed in neurodiversity.assessedNeurodiversity %}
-                        <li>{{ assessed }}</li>
-                      {% endfor %}
-                    </ul>
-                    <p class="govuk-body-s">Recorded on {{ neurodiversity.assessmentDate | formatDate('D MMMM YYYY') }}</p>
-                  {% else %}
-                    Not recorded in Curious
-                  {% endif %}
-                </dd>
-              </div>
-              <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                  Self-declared
-                </dt>
-                <dd class="govuk-summary-list__value">
-                  {% if neurodiversity.selfDeclaredNeurodiversity.length > 0 %}
-                    <ul class="govuk-list">
-                      {% for selfDeclared in neurodiversity.selfDeclaredNeurodiversity %}
-                        <li>{{ selfDeclared }}</li>
-                      {% endfor %}
-                    </ul>
-                    <p class="govuk-body-s">Recorded on {{ neurodiversity.selfDeclaredRecordedDate | formatDate('D MMMM YYYY') }}</p>
-                  {% else %}
-                    Not recorded in Curious
-                  {% endif %}
-                </dd>
-              </div>
-            </dl>
-          {% endfor %}
-
+          {% if supportNeeds.neurodiversities %}
+            <p class="govuk-hint">Information in Curious from the local education team is not a medical diagnosis.</p>
+            {% for neurodiversity in supportNeeds.neurodiversities %}
+              <h3 class="govuk-heading-m">
+                <span class="govuk-visually-hidden">{{ prisonerSummary.firstName }} {{ prisonerSummary.lastName }}'s neurodiversity support needs recorded whilst at</span>
+                {{ neurodiversity.prisonName }}
+              </h3>
+              <dl class="govuk-summary-list govuk-!-margin-bottom-6">
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">
+                    Support needed
+                  </dt>
+                  <dd class="govuk-summary-list__value">
+                    {% if neurodiversity.supportNeeded.length > 0 %}
+                      <ul class="govuk-list">
+                        {% for supportNeeded in neurodiversity.supportNeeded %}
+                          <li>{{ supportNeeded }}</li>
+                        {% endfor %}
+                      </ul>
+                      <p class="govuk-body-s">Recorded on {{ neurodiversity.supportNeededRecordedDate | formatDate('D MMMM YYYY') }}</p>
+                    {% else %}
+                      Not recorded in Curious
+                    {% endif %}
+                  </dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">
+                    From neurodiversity assessment
+                  </dt>
+                  <dd class="govuk-summary-list__value">
+                    {% if neurodiversity.assessedNeurodiversity.length > 0 %}
+                      <ul class="govuk-list">
+                        {% for assessed in neurodiversity.assessedNeurodiversity %}
+                          <li>{{ assessed }}</li>
+                        {% endfor %}
+                      </ul>
+                      <p class="govuk-body-s">Recorded on {{ neurodiversity.assessmentDate | formatDate('D MMMM YYYY') }}</p>
+                    {% else %}
+                      Not recorded in Curious
+                    {% endif %}
+                  </dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">
+                    Self-declared
+                  </dt>
+                  <dd class="govuk-summary-list__value">
+                    {% if neurodiversity.selfDeclaredNeurodiversity.length > 0 %}
+                      <ul class="govuk-list">
+                        {% for selfDeclared in neurodiversity.selfDeclaredNeurodiversity %}
+                          <li>{{ selfDeclared }}</li>
+                        {% endfor %}
+                      </ul>
+                      <p class="govuk-body-s">Recorded on {{ neurodiversity.selfDeclaredRecordedDate | formatDate('D MMMM YYYY') }}</p>
+                    {% else %}
+                      Not recorded in Curious
+                    {% endif %}
+                  </dd>
+                </div>
+              </dl>
+            {% endfor %}
+          {% else %}
+            <p class="govuk-body">Not recorded in Curious</p>
+          {% endif %}
         </div>
       </div>
 
