@@ -4,6 +4,7 @@ import config from '../config'
 
 afterEach(() => {
   config.featureToggles.stubPrisonerListPageEnabled = false
+  config.ciagInductionUrl = 'http://localhost:3000'
 })
 
 describe('GET /', () => {
@@ -22,13 +23,14 @@ describe('GET /', () => {
 
   it('should not serve stub prisoner list page given feature toggle is disabled', () => {
     config.featureToggles.stubPrisonerListPageEnabled = false
+    config.ciagInductionUrl = 'https://ciag-induction-dev.hmpps.service.justice.gov.uk'
     const app = appWithAllRoutes({})
 
     return request(app)
       .get('/')
-      .expect('Content-Type', /html/)
       .expect(res => {
-        expect(res.status).toEqual(404)
+        expect(res.status).toEqual(302)
+        expect(res.headers.location).toEqual('https://ciag-induction-dev.hmpps.service.justice.gov.uk')
       })
   })
 })

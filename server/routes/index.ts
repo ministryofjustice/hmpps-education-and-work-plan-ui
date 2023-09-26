@@ -11,11 +11,13 @@ export default function routes(services: Services): Router {
   const router = Router()
   const get = (path: string | string[], handler: RequestHandler) => router.get(path, asyncMiddleware(handler))
 
-  if (config.featureToggles.stubPrisonerListPageEnabled) {
-    get('/', (req, res, next) => {
+  get('/', (req, res, next) => {
+    if (config.featureToggles.stubPrisonerListPageEnabled) {
       res.render('pages/index')
-    })
-  }
+    } else {
+      res.redirect(config.ciagInductionUrl)
+    }
+  })
 
   overview(router, services)
   createGoal(router, services)
