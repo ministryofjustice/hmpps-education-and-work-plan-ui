@@ -119,7 +119,6 @@ export interface UpdateGoalRequest {
       stepReference?: string
       title: string
       status: string
-      targetDateRange: string
       sequenceNumber: number
     },
   ]

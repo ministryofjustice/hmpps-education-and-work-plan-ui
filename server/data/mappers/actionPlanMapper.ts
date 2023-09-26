@@ -30,7 +30,6 @@ const toStep = (stepResponse: StepResponse): Step => {
   return {
     stepReference: stepResponse.stepReference,
     title: stepResponse.title,
-    targetDateRange: stepResponse.targetDateRange,
     status: stepResponse.status,
     sequenceNumber: stepResponse.sequenceNumber,
   }

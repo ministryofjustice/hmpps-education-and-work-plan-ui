@@ -18,7 +18,6 @@ const toUpdateStepDto = (updateStepForm: UpdateStepForm): UpdateStepDto => {
     stepReference: updateStepForm.reference,
     status: updateStepForm.status,
     title: updateStepForm.title,
-    targetDateRange: updateStepForm.targetDateRange,
     sequenceNumber: updateStepForm.stepNumber,
   }
 }

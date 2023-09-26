@@ -11,14 +11,12 @@ describe('updateGoalMapper', () => {
       stepReference: updateGoalDto.steps[0].stepReference,
       title: updateGoalDto.steps[0].title,
       status: updateGoalDto.steps[0].status,
-      targetDateRange: updateGoalDto.steps[0].targetDateRange,
       sequenceNumber: 1,
     }
     const expectedUpdateStepRequest2: UpdateStepRequest = {
       stepReference: updateGoalDto.steps[1].stepReference,
       title: updateGoalDto.steps[1].title,
       status: updateGoalDto.steps[1].status,
-      targetDateRange: updateGoalDto.steps[1].targetDateRange,
       sequenceNumber: 2,
     }
     const expectedCreateGoalRequest: UpdateGoalRequest = {

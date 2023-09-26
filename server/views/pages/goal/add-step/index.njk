@@ -48,38 +48,6 @@
             },
             errorMessage: errors | findError('title')
           }) }}
-
-          {{ govukRadios({
-            name: "targetDateRange",
-            id: "targetDateRange",
-            value: form.targetDateRange,
-            fieldset: {
-              legend: {
-                text: "When will they achieve this by?",
-                isPageHeading: false,
-                classes: "govuk-fieldset__legend--m"
-              }
-            },
-            items: [
-              {
-                value: "ZERO_TO_THREE_MONTHS",
-                text: "0 to 3 months"
-              },
-              {
-                value: "THREE_TO_SIX_MONTHS",
-                text: "3 to 6 months"
-              },
-              {
-                value: "SIX_TO_TWELVE_MONTHS",
-                text: "6 to 12 months"
-              },
-              {
-                value: "MORE_THAN_TWELVE_MONTHS",
-                text: "More than 12 months"
-              }
-            ],
-            errorMessage: errors | findError('targetDateRange')
-          }) }}
         </div>
 
         <div class="govuk-form-group">

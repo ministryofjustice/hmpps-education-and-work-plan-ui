@@ -19,7 +19,6 @@ const toAddStepRequests = (createGoalDto: CreateGoalDto): Array<CreateStepReques
 const toAddStepRequest = (addStepDto: AddStepDto): CreateStepRequest => {
   return {
     title: addStepDto.title,
-    targetDateRange: addStepDto.targetDateRange,
     sequenceNumber: addStepDto.sequenceNumber,
   }
 }

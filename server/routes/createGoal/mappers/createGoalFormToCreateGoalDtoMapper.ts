@@ -23,7 +23,6 @@ const toAddStepDtos = (addStepForms: Array<AddStepForm>): Array<AddStepDto> => {
 const toAddStepDto = (addStepForm: AddStepForm): AddStepDto => {
   return {
     title: addStepForm.title,
-    targetDateRange: addStepForm.targetDateRange,
     sequenceNumber: addStepForm.stepNumber,
   }
 }

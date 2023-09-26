@@ -93,7 +93,6 @@ context('Update a goal', () => {
       .addAnotherStep()
       .setStepTitle(3, 'A brand new step')
       .setStepStatus(3, 'Started')
-      .setStepTargetDateRange(3, '6 to 12 months')
       .submitPage()
 
     const reviewUpdateGoalPage = Page.verifyOnPage(ReviewUpdateGoalPage)
@@ -112,7 +111,6 @@ context('Update a goal', () => {
         sequenceNumber: '3',
         title: 'A brand new step',
         status: 'ACTIVE',
-        targetDateRange: 'SIX_TO_TWELVE_MONTHS',
       })
   })
 

@@ -73,7 +73,6 @@ context('Add a step', () => {
     const addStepPage = Page.verifyOnPage(AddStepPage)
     addStepPage //
       .clearStepTitle()
-      .setStepTargetDateRange('ZERO_TO_THREE_MONTHS')
 
     // When
     addStepPage.submitPage()
@@ -103,7 +102,6 @@ context('Add a step', () => {
 
     addStepPage //
       .setStepTitle('Book French course')
-      .setStepTargetDateRange('ZERO_TO_THREE_MONTHS')
 
     // When
     addStepPage.addAnotherStep()
@@ -129,7 +127,6 @@ context('Add a step', () => {
     const addStepPage = Page.verifyOnPage(AddStepPage)
     addStepPage //
       .setStepTitle('Book French course')
-      .setStepTargetDateRange('ZERO_TO_THREE_MONTHS')
 
     // When
     addStepPage.submitPage()

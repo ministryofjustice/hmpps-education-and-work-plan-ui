@@ -78,7 +78,6 @@ declare module 'viewModels' {
   export interface Step {
     stepReference: string
     title: string
-    targetDateRange: 'ZERO_TO_THREE_MONTHS' | 'THREE_TO_SIX_MONTHS' | 'SIX_TO_TWELVE_MONTHS' | 'MORE_THAN_TWELVE_MONTHS'
     status: 'NOT_STARTED' | 'ACTIVE' | 'COMPLETE'
     sequenceNumber: number
   }

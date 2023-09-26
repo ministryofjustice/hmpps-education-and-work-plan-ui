@@ -51,7 +51,6 @@ context('Review goal(s)', () => {
     const addStepPage = Page.verifyOnPage(AddStepPage)
     addStepPage //
       .setStepTitle('Book French course')
-      .setStepTargetDateRange('ZERO_TO_THREE_MONTHS')
       .submitPage()
 
     const addNotePage = Page.verifyOnPage(AddNotePage)
@@ -85,7 +84,6 @@ context('Review goal(s)', () => {
     const addStepPage = Page.verifyOnPage(AddStepPage)
     addStepPage //
       .setStepTitle('Book French course')
-      .setStepTargetDateRange('ZERO_TO_THREE_MONTHS')
       .submitPage()
 
     // When
@@ -110,7 +108,6 @@ context('Review goal(s)', () => {
     let addStepPage = Page.verifyOnPage(AddStepPage)
     addStepPage //
       .setStepTitle('Book French course')
-      .setStepTargetDateRange('ZERO_TO_THREE_MONTHS')
       .submitPage()
 
     let addNotePage = Page.verifyOnPage(AddNotePage)
@@ -132,7 +129,6 @@ context('Review goal(s)', () => {
     addStepPage = Page.verifyOnPage(AddStepPage)
     addStepPage //
       .setStepTitle('Book Spanish course')
-      .setStepTargetDateRange('ZERO_TO_THREE_MONTHS')
       .submitPage()
 
     addNotePage = Page.verifyOnPage(AddNotePage)
@@ -157,7 +153,6 @@ context('Review goal(s)', () => {
     const addStepPage = Page.verifyOnPage(AddStepPage)
     addStepPage //
       .setStepTitle('Book French course')
-      .setStepTargetDateRange('ZERO_TO_THREE_MONTHS')
     addStepPage.submitPage()
 
     const addNotePage = Page.verifyOnPage(AddNotePage)

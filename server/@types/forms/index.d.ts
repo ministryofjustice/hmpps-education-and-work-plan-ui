@@ -7,7 +7,6 @@ declare module 'forms' {
   export interface AddStepForm {
     stepNumber: number
     title?: string
-    targetDateRange?: string
     action?: 'add-another-step' | 'submit-form'
   }
 
@@ -32,11 +31,6 @@ declare module 'forms' {
   export interface UpdateStepForm {
     reference?: string
     title?: string
-    targetDateRange?:
-      | 'ZERO_TO_THREE_MONTHS'
-      | 'THREE_TO_SIX_MONTHS'
-      | 'SIX_TO_TWELVE_MONTHS'
-      | 'MORE_THAN_TWELVE_MONTHS'
     stepNumber: number
     status: 'NOT_STARTED' | 'ACTIVE' | 'COMPLETE'
   }

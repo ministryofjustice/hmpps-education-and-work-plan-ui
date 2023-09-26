@@ -49,7 +49,6 @@ context('Add a note', () => {
     const addStepPage = Page.verifyOnPage(AddStepPage)
     addStepPage //
       .setStepTitle('Book French course')
-      .setStepTargetDateRange('ZERO_TO_THREE_MONTHS')
       .submitPage()
 
     const addNotePage = Page.verifyOnPage(AddNotePage)
@@ -103,7 +102,6 @@ context('Add a note', () => {
     const addStepPage = Page.verifyOnPage(AddStepPage)
     addStepPage //
       .setStepTitle('Book French course')
-      .setStepTargetDateRange('ZERO_TO_THREE_MONTHS')
     addStepPage.submitPage()
 
     const addNotePage = Page.verifyOnPage(AddNotePage)

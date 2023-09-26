@@ -64,7 +64,6 @@
             <th scope="row" class="govuk-table__header">Step {{ step.stepNumber }}</th>
             <td class="govuk-table__cell">{{ step.title }}</td>
             <td class="govuk-table__cell">{{ step.status | formatStepStatusValue }}</td>
-            <td class="govuk-table__cell">{{ step.targetDateRange | formatTargetDateRangeValue }}</td>
           </tr>
           {% endfor %}
         </tbody>

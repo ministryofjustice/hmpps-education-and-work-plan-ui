@@ -18,14 +18,12 @@ const actionPlans = {
               {
                 stepReference: '177e45eb-c8fe-438b-aa81-1bf9157efa05',
                 title: 'Book first aid course',
-                targetDateRange: 'THREE_TO_SIX_MONTHS',
                 status: 'NOT_STARTED',
                 sequenceNumber: 1,
               },
               {
                 stepReference: '32992dd1-7dc6-4480-b2fc-61bc36a6a775',
                 title: 'Complete first aid course',
-                targetDateRange: 'SIX_TO_TWELVE_MONTHS',
                 status: 'NOT_STARTED',
                 sequenceNumber: 2,
               },
@@ -60,14 +58,12 @@ const actionPlans = {
               {
                 stepReference: '177e45eb-c8fe-438b-aa81-1bf9157efa05',
                 title: 'Book French course',
-                targetDateRange: 'THREE_TO_SIX_MONTHS',
                 status: 'NOT_STARTED',
                 sequenceNumber: 1,
               },
               {
                 stepReference: '32992dd1-7dc6-4480-b2fc-61bc36a6a775',
                 title: 'Complete French course',
-                targetDateRange: 'SIX_TO_TWELVE_MONTHS',
                 status: 'NOT_STARTED',
                 sequenceNumber: 2,
               },
@@ -102,14 +98,12 @@ const actionPlans = {
               {
                 stepReference: '177e45eb-c8fe-438b-aa81-1bf9157efa05',
                 title: 'Book first aid course',
-                targetDateRange: 'THREE_TO_SIX_MONTHS',
                 status: 'NOT_STARTED',
                 sequenceNumber: 1,
               },
               {
                 stepReference: '32992dd1-7dc6-4480-b2fc-61bc36a6a775',
                 title: 'Complete first aid course',
-                targetDateRange: 'SIX_TO_TWELVE_MONTHS',
                 status: 'NOT_STARTED',
                 sequenceNumber: 2,
               },
@@ -129,14 +123,12 @@ const actionPlans = {
               {
                 stepReference: '177e45eb-c8fe-438b-aa81-1bf9157efa05',
                 title: 'Book French course',
-                targetDateRange: 'THREE_TO_SIX_MONTHS',
                 status: 'NOT_STARTED',
                 sequenceNumber: 1,
               },
               {
                 stepReference: '32992dd1-7dc6-4480-b2fc-61bc36a6a775',
                 title: 'Complete French course',
-                targetDateRange: 'SIX_TO_TWELVE_MONTHS',
                 status: 'NOT_STARTED',
                 sequenceNumber: 2,
               },
@@ -171,14 +163,12 @@ const actionPlans = {
               {
                 stepReference: '177e45eb-c8fe-438b-aa81-1bf9157efa05',
                 title: 'Book wood work course',
-                targetDateRange: 'ZERO_TO_THREE_MONTHS',
                 status: 'NOT_STARTED',
                 sequenceNumber: 1,
               },
               {
                 stepReference: '32992dd1-7dc6-4480-b2fc-61bc36a6a775',
                 title: 'Complete wood work course',
-                targetDateRange: 'SIX_TO_TWELVE_MONTHS',
                 status: 'NOT_STARTED',
                 sequenceNumber: 2,
               },

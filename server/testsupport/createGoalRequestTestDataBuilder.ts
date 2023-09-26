@@ -3,7 +3,6 @@ import type { CreateGoalRequest, CreateStepRequest } from 'educationAndWorkPlanA
 const aValidCreateGoalRequestWithOneStep = (prisonNumber = 'A1234BC'): CreateGoalRequest => {
   const createStepRequest: CreateStepRequest = {
     title: 'Book Spanish course',
-    targetDateRange: 'ZERO_TO_THREE_MONTHS',
     sequenceNumber: 1,
   }
   return {
@@ -19,12 +18,10 @@ const aValidCreateGoalRequestWithOneStep = (prisonNumber = 'A1234BC'): CreateGoa
 const aValidCreateGoalRequestWithMultipleSteps = (prisonNumber = 'A1234BC'): CreateGoalRequest => {
   const createStepRequest1: CreateStepRequest = {
     title: 'Book Spanish course',
-    targetDateRange: 'ZERO_TO_THREE_MONTHS',
     sequenceNumber: 1,
   }
   const createStepRequest2: CreateStepRequest = {
     title: 'Complete Spanish course',
-    targetDateRange: 'THREE_TO_SIX_MONTHS',
     sequenceNumber: 2,
   }
   return {

@@ -18,7 +18,6 @@ const toUpdateStepRequest = (updateStepDto: UpdateStepDto): UpdateStepRequest =>
     stepReference: updateStepDto.stepReference,
     status: updateStepDto.status,
     title: updateStepDto.title,
-    targetDateRange: updateStepDto.targetDateRange,
     sequenceNumber: updateStepDto.sequenceNumber,
   }
 }

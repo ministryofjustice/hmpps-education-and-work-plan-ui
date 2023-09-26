@@ -42,17 +42,6 @@ export default class UpdateGoalPage extends Page {
     return this
   }
 
-  setStepTargetDateRange(
-    stepNumber: number,
-    stepTargetDateRange: '0 to 3 months' | '3 to 6 months' | '6 to 12 months' | 'More than 12 months',
-  ) {
-    this.stepTargetDateRangeField(stepNumber - 1)
-      .contains('label', stepTargetDateRange)
-      .siblings('input[type=radio]')
-      .check()
-    return this
-  }
-
   submitPage() {
     this.submitButton().click()
   }
@@ -72,8 +61,6 @@ export default class UpdateGoalPage extends Page {
   stepTitleField = (idx: number): PageElement => cy.get(`[data-qa=step-${idx}-title-field]`)
 
   stepStatusField = (idx: number): PageElement => cy.get(`[data-qa=step-${idx}-status-field]`)
-
-  stepTargetDateRangeField = (idx: number): PageElement => cy.get(`[data-qa=step-${idx}-target-date-range-field]`)
 
   submitButton = (): PageElement => cy.get('[data-qa=goal-update-submit-button]')
 

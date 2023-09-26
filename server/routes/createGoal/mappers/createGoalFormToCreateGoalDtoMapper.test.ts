@@ -14,12 +14,10 @@ describe('createGoalFormToCreateGoalDtoMapper', () => {
 
     const expectedAddStepDto1: AddStepDto = {
       title: addStepForms[0].title,
-      targetDateRange: addStepForms[0].targetDateRange,
       sequenceNumber: addStepForms[0].stepNumber,
     }
     const expectedAddStepDto2: AddStepDto = {
       title: addStepForms[1].title,
-      targetDateRange: addStepForms[1].targetDateRange,
       sequenceNumber: addStepForms[1].stepNumber,
     }
     const expectedCreateGoalDto: CreateGoalDto = {
