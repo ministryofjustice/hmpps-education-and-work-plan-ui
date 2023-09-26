@@ -80,15 +80,6 @@ export interface components {
        */
       title: string
       /**
-       * @example null
-       * @enum {string}
-       */
-      targetDateRange:
-        | 'ZERO_TO_THREE_MONTHS'
-        | 'THREE_TO_SIX_MONTHS'
-        | 'SIX_TO_TWELVE_MONTHS'
-        | 'MORE_THAN_TWELVE_MONTHS'
-      /**
        * Format: int32
        * @description The number (position) of the Step within the overall Goal.
        * @example 1
@@ -190,15 +181,6 @@ export interface components {
        * @example Book first aid course
        */
       title: string
-      /**
-       * @example null
-       * @enum {string}
-       */
-      targetDateRange:
-        | 'ZERO_TO_THREE_MONTHS'
-        | 'THREE_TO_SIX_MONTHS'
-        | 'SIX_TO_TWELVE_MONTHS'
-        | 'MORE_THAN_TWELVE_MONTHS'
       /**
        * Format: int32
        * @description The number (position) of the Step within the overall Goal.
@@ -407,15 +389,6 @@ export interface components {
        * @example Book communication skills course
        */
       title: string
-      /**
-       * @example null
-       * @enum {string}
-       */
-      targetDateRange:
-        | 'ZERO_TO_THREE_MONTHS'
-        | 'THREE_TO_SIX_MONTHS'
-        | 'SIX_TO_TWELVE_MONTHS'
-        | 'MORE_THAN_TWELVE_MONTHS'
       /**
        * @example null
        * @enum {string}

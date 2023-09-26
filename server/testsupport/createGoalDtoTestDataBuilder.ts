@@ -3,7 +3,6 @@ import type { AddStepDto, CreateGoalDto } from 'dto'
 const aValidCreateGoalDtoWithOneStep = (title = 'Learn Spanish'): CreateGoalDto => {
   const addStepDto: AddStepDto = {
     title: 'Book Spanish course',
-    targetDateRange: 'ZERO_TO_THREE_MONTHS',
     sequenceNumber: 1,
   }
   return {
@@ -18,12 +17,10 @@ const aValidCreateGoalDtoWithOneStep = (title = 'Learn Spanish'): CreateGoalDto 
 const aValidCreateGoalDtoWithMultipleSteps = (title = 'Learn Spanish'): CreateGoalDto => {
   const addStepDto1: AddStepDto = {
     title: 'Book Spanish course',
-    targetDateRange: 'ZERO_TO_THREE_MONTHS',
     sequenceNumber: 1,
   }
   const addStepDto2: AddStepDto = {
     title: 'Complete Spanish course',
-    targetDateRange: 'THREE_TO_SIX_MONTHS',
     sequenceNumber: 2,
   }
   return {

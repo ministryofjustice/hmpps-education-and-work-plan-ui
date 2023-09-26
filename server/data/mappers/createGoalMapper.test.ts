@@ -9,12 +9,10 @@ describe('createGoalMapper', () => {
     const createGoalDto: CreateGoalDto = aValidCreateGoalDtoWithMultipleSteps()
     const expectedAddStepRequest1: CreateStepRequest = {
       title: createGoalDto.steps[0].title,
-      targetDateRange: createGoalDto.steps[0].targetDateRange,
       sequenceNumber: 1,
     }
     const expectedAddStepRequest2: CreateStepRequest = {
       title: createGoalDto.steps[1].title,
-      targetDateRange: createGoalDto.steps[1].targetDateRange,
       sequenceNumber: 2,
     }
     const expectedCreateGoalRequest: CreateGoalRequest = {

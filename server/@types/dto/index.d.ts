@@ -9,7 +9,6 @@ declare module 'dto' {
 
   export interface AddStepDto {
     title: string
-    targetDateRange: string
     sequenceNumber: number
   }
 
@@ -27,7 +26,6 @@ declare module 'dto' {
     stepReference: string
     status: string
     title: string
-    targetDateRange: string
     sequenceNumber: number
   }
 }

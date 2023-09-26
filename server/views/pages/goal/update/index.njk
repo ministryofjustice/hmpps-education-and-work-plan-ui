@@ -112,42 +112,6 @@
                 errorMessage: errors | findError('steps[' + (loop.index-1) + '][status]')
               }) }}
 
-              {{ govukRadios({
-                name: 'steps[' + (loop.index-1) + '][targetDateRange]',
-                id: 'steps[' + (loop.index-1) + '][targetDateRange]',
-                attributes: { 'data-qa': 'step-' + (loop.index-1) + '-target-date-range-field' },
-                fieldset: {
-                  legend: {
-                    text: "When will they achieve this by?",
-                    isPageHeading: false,
-                    classes: "govuk-fieldset__legend--s"
-                  }
-                },
-                items: [
-                  {
-                    value: "ZERO_TO_THREE_MONTHS",
-                    text: "0 to 3 months",
-                    checked: true if step.targetDateRange == 'ZERO_TO_THREE_MONTHS' else false
-                  },
-                  {
-                    value: "THREE_TO_SIX_MONTHS",
-                    text: "3 to 6 months",
-                    checked: true if step.targetDateRange == 'THREE_TO_SIX_MONTHS' else false
-                  },
-                  {
-                    value: "SIX_TO_TWELVE_MONTHS",
-                    text: "6 to 12 months",
-                    checked: true if step.targetDateRange == 'SIX_TO_TWELVE_MONTHS' else false
-                  },
-                  {
-                    value: "MORE_THAN_TWELVE_MONTHS",
-                    text: "More than 12 months",
-                    checked: true if step.targetDateRange == 'MORE_THAN_TWELVE_MONTHS' else false
-                  }
-                ],
-                errorMessage: errors | findError('steps[' + (loop.index-1) + '][targetDateRange]')
-              }) }}
-              
               {% if loop.length > 1 %}
                 {{ govukButton({
                   id: "delete-step-" + (loop.index-1),

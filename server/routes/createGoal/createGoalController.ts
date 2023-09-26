@@ -68,7 +68,6 @@ export default class CreateGoalController {
     } else {
       // update it in case the user has clicked back and changed it
       existingAddStepForm.title = addStepForm.title
-      existingAddStepForm.targetDateRange = addStepForm.targetDateRange
     }
 
     // Redirect to the desired page based on the form action

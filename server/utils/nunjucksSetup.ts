@@ -7,7 +7,6 @@ import { ApplicationInfo } from '../applicationInfo'
 import config from '../config'
 import formatDateFilter from '../filters/formatDateFilter'
 import findErrorFilter from '../filters/findErrorFilter'
-import formatTargetDateRangeValue from '../filters/formatTargetDateRangeValue'
 import formatFunctionalSkillType from '../filters/formatFunctionalSkillTypeFilter'
 import formatStepStatusValue from '../filters/formatStepStatusValue'
 import formatGoalStatusValue from '../filters/formatGoalStatusValue'
@@ -61,7 +60,6 @@ export function registerNunjucks(app?: express.Express): Environment {
   njkEnv.addFilter('initialiseName', initialiseName)
   njkEnv.addFilter('findError', findErrorFilter)
   njkEnv.addFilter('formatDate', formatDateFilter)
-  njkEnv.addFilter('formatTargetDateRangeValue', formatTargetDateRangeValue)
   njkEnv.addFilter('formatFunctionalSkillType', formatFunctionalSkillType)
   njkEnv.addFilter('formatStepStatusValue', formatStepStatusValue)
   njkEnv.addFilter('formatGoalStatusValue', formatGoalStatusValue)

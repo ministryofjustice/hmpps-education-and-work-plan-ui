@@ -76,7 +76,6 @@ describe('updateGoalController', () => {
           {
             reference: goal.steps[0].stepReference,
             title: goal.steps[0].title,
-            targetDateRange: goal.steps[0].targetDateRange,
             stepNumber: goal.steps[0].sequenceNumber,
             status: goal.steps[0].status,
           },

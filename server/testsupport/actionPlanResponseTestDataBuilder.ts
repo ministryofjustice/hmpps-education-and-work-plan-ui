@@ -26,7 +26,6 @@ const aValidFirstStepResponse = (): StepResponse => {
   return {
     stepReference: 'c88a6c48-97e2-4c04-93b5-98619966447b',
     title: 'Book Spanish course',
-    targetDateRange: 'ZERO_TO_THREE_MONTHS',
     status: 'ACTIVE',
     sequenceNumber: 1,
   }
@@ -36,7 +35,6 @@ const aValidSecondStepResponse = (): StepResponse => {
   return {
     stepReference: 'dc817ce8-2b2e-4282-96b2-b9a1d831fc56',
     title: 'Complete Spanish course',
-    targetDateRange: 'THREE_TO_SIX_MONTHS',
     status: 'NOT_STARTED',
     sequenceNumber: 2,
   }
