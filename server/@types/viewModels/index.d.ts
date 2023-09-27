@@ -71,7 +71,7 @@ declare module 'viewModels' {
     updatedBy: string
     updatedByDisplayName: string
     updatedAt: string
-    targetCompletionDate?: string
+    targetCompletionDate?: Date
     note?: string
   }
 

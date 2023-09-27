@@ -1,4 +1,5 @@
 import type { AddStepDto, CreateGoalDto } from 'dto'
+import moment from 'moment'
 
 const aValidCreateGoalDtoWithOneStep = (title = 'Learn Spanish'): CreateGoalDto => {
   const addStepDto: AddStepDto = {
@@ -9,7 +10,7 @@ const aValidCreateGoalDtoWithOneStep = (title = 'Learn Spanish'): CreateGoalDto 
     prisonNumber: 'A1234BC',
     title,
     steps: [addStepDto],
-    targetCompletionDate: '2024-01-01',
+    targetCompletionDate: moment('2024-01-01').toDate(),
     note: 'Prisoner is not good at listening',
     prisonId: 'BXI',
   }
@@ -28,7 +29,7 @@ const aValidCreateGoalDtoWithMultipleSteps = (title = 'Learn Spanish'): CreateGo
     prisonNumber: 'A1234BC',
     title,
     steps: [addStepDto1, addStepDto2],
-    targetCompletionDate: '2024-01-01',
+    targetCompletionDate: moment('2024-01-01').toDate(),
     note: 'Prisoner is not good at listening',
     prisonId: 'BXI',
   }

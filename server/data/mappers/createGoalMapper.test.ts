@@ -20,7 +20,7 @@ describe('createGoalMapper', () => {
       title: createGoalDto.title,
       category: 'WORK',
       steps: [expectedAddStepRequest1, expectedAddStepRequest2],
-      targetCompletionDate: createGoalDto.targetCompletionDate,
+      targetCompletionDate: createGoalDto.targetCompletionDate.toISOString(),
       notes: createGoalDto.note,
       prisonId: createGoalDto.prisonId,
     }
