@@ -23,7 +23,6 @@
     <div class="govuk-grid-column-two-thirds">
 
       <form class="form" method="post" novalidate="">
-        <div class="govuk-form-group">
           <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
           <input type="hidden" name="prisonNumber" value="{{ form.prisonNumber }}" />
 
@@ -49,6 +48,55 @@
               html: hintTextHtml
             },
             errorMessage: errors | findError('title')
+          }) }}
+
+          {% set anotherDateHtml %}
+            {{ govukDateInput({
+              id: "another-date",
+              namePrefix: "another-date",
+              fieldset: {
+                legend: {
+                  text: "What date are they aiming to achieve this by?",
+                  classes: "govuk-visually-hidden"
+                }
+              },
+              hint: {
+                text: "For example, 27 3 2007"
+              }
+            }) }}
+          {% endset -%}
+
+          {{ govukRadios({
+            name: "targetCompletionDate",
+            id: "targetCompletionDate",
+            value: form.targetCompletionDate,
+            fieldset: {
+              legend: {
+                text: "When are they aiming to achieve this by?",
+                classes: "govuk-fieldset__legend--s"
+              }
+            },
+            items: [
+              {
+                value: currentDatePlus3Months  | formatDate('YYYY-MM-DD'),
+                text: "in 3 months (" + currentDatePlus3Months | formatDate('D MMMM YYYY') + ")"
+              },
+              {
+                value: currentDatePlus6Months  | formatDate('YYYY-MM-DD'),
+                text: "in 6 months (" + currentDatePlus6Months | formatDate('D MMMM YYYY') + ")"
+              },
+              {
+                value: currentDatePlus12Months  | formatDate('YYYY-MM-DD'),
+                text: "in 12 months (" + currentDatePlus12Months | formatDate('D MMMM YYYY') + ")"
+              },
+              {
+                value: "another-date",
+                text: "set another date",
+                conditional: {
+                  html: anotherDateHtml
+                }
+              }
+            ]
           }) }}
 
           {{ govukButton({
