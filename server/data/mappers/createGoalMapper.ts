@@ -7,7 +7,7 @@ const toCreateGoalRequest = (createGoalDto: CreateGoalDto): CreateGoalRequest =>
     title: createGoalDto.title,
     category: 'WORK',
     steps: toAddStepRequests(createGoalDto),
-    targetCompletionDate: createGoalDto.targetCompletionDate.toISOString(),
+    targetCompletionDate: createGoalDto.targetCompletionDate.toISOString().split('T')[0],
     notes: createGoalDto.note,
     prisonId: createGoalDto.prisonId,
   }
