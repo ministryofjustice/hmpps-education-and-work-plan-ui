@@ -1,6 +1,7 @@
 import createError from 'http-errors'
 import type { RequestHandler } from 'express'
 import type { NewGoal } from 'compositeForms'
+import moment from 'moment'
 import EducationAndWorkPlanService from '../../services/educationAndWorkPlanService'
 import CreateGoalView from './createGoalView'
 import AddStepView from './addStepView'
@@ -24,7 +25,18 @@ export default class CreateGoalController {
       } as NewGoal
     }
 
-    const view = new CreateGoalView(prisonerSummary, req.session.newGoal.createGoalForm, req.flash('errors'))
+    const currentDatePlus3Months = moment().add(3, 'months').toDate()
+    const currentDatePlus6Months = moment().add(6, 'months').toDate()
+    const currentDatePlus12Months = moment().add(12, 'months').toDate()
+
+    const view = new CreateGoalView(
+      prisonerSummary,
+      req.session.newGoal.createGoalForm,
+      currentDatePlus3Months,
+      currentDatePlus6Months,
+      currentDatePlus12Months,
+      req.flash('errors'),
+    )
     res.render('pages/goal/create/index', { ...view.renderArgs })
   }
 
