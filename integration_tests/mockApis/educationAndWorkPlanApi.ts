@@ -122,6 +122,6 @@ export interface UpdateGoalRequest {
       sequenceNumber: number
     },
   ]
-  targetCompletionDate?: string
+  targetCompletionDate?: Date
   notes?: string
 }
