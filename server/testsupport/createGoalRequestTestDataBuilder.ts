@@ -1,5 +1,4 @@
 import type { CreateGoalRequest, CreateStepRequest } from 'educationAndWorkPlanApiClient'
-import moment from 'moment'
 
 const aValidCreateGoalRequestWithOneStep = (prisonNumber = 'A1234BC'): CreateGoalRequest => {
   const createStepRequest: CreateStepRequest = {
@@ -10,7 +9,7 @@ const aValidCreateGoalRequestWithOneStep = (prisonNumber = 'A1234BC'): CreateGoa
     prisonNumber,
     title: 'Learn Spanish',
     steps: [createStepRequest],
-    targetCompletionDate: moment('2024-01-01').toDate(),
+    targetCompletionDate: '2024-01-01',
     notes: 'Prisoner is not good at listening',
     category: 'WORK',
     prisonId: 'BXI',
@@ -30,7 +29,7 @@ const aValidCreateGoalRequestWithMultipleSteps = (prisonNumber = 'A1234BC'): Cre
     prisonNumber,
     title: 'Learn Spanish',
     steps: [createStepRequest1, createStepRequest2],
-    targetCompletionDate: moment('2024-01-01').toDate(),
+    targetCompletionDate: '2024-01-01',
     note: 'Prisoner is not good at listening',
     prisonId: 'BXI',
   }
