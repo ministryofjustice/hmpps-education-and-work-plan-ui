@@ -91,6 +91,15 @@ export interface components {
        * @example d38a6c41-13d1-1d05-13c2-24619966119b
        */
       stepReference?: string
+      /**
+       * @example null
+       * @enum {string}
+       */
+      targetDateRange?:
+        | 'ZERO_TO_THREE_MONTHS'
+        | 'THREE_TO_SIX_MONTHS'
+        | 'SIX_TO_TWELVE_MONTHS'
+        | 'MORE_THAN_TWELVE_MONTHS'
     }
     GetActionPlanSummariesRequest: {
       /**
@@ -187,6 +196,15 @@ export interface components {
        * @example 1
        */
       sequenceNumber: number
+      /**
+       * @example null
+       * @enum {string}
+       */
+      targetDateRange?:
+        | 'ZERO_TO_THREE_MONTHS'
+        | 'THREE_TO_SIX_MONTHS'
+        | 'SIX_TO_TWELVE_MONTHS'
+        | 'MORE_THAN_TWELVE_MONTHS'
     }
     CreateGoalsRequest: {
       /**
@@ -400,6 +418,15 @@ export interface components {
        * @example 1
        */
       sequenceNumber: number
+      /**
+       * @example null
+       * @enum {string}
+       */
+      targetDateRange?:
+        | 'ZERO_TO_THREE_MONTHS'
+        | 'THREE_TO_SIX_MONTHS'
+        | 'SIX_TO_TWELVE_MONTHS'
+        | 'MORE_THAN_TWELVE_MONTHS'
     }
   }
   responses: never
@@ -408,6 +435,8 @@ export interface components {
   headers: never
   pathItems: never
 }
+
+export type $defs = Record<string, never>
 
 export type external = Record<string, never>
 
@@ -426,7 +455,9 @@ export interface operations {
     }
     responses: {
       /** @description No Content */
-      204: never
+      204: {
+        content: never
+      }
     }
   }
   getActionPlanSummaries: {
@@ -472,7 +503,9 @@ export interface operations {
     }
     responses: {
       /** @description Created */
-      201: never
+      201: {
+        content: never
+      }
     }
   }
   createGoals: {
@@ -488,7 +521,9 @@ export interface operations {
     }
     responses: {
       /** @description Created */
-      201: never
+      201: {
+        content: never
+      }
     }
   }
   getTimeline: {
