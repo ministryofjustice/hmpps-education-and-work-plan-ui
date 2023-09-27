@@ -73,6 +73,9 @@ describe('createGoalController', () => {
       const expectedView = {
         prisonerSummary,
         form: expectedCreateGoalForm,
+        currentDatePlus12Months: expect.any(Date),
+        currentDatePlus6Months: expect.any(Date),
+        currentDatePlus3Months: expect.any(Date),
         errors,
       }
       const expectedNewGoal = {
