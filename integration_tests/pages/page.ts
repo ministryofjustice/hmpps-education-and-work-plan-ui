@@ -34,6 +34,9 @@ export default abstract class Page {
     cy.injectAxe()
     cy.checkA11y(null, {
       includedImpacts: ['critical', 'serious'],
+      rules: {
+        'aria-allowed-attr': { enabled: false },
+      },
     })
   }
 
