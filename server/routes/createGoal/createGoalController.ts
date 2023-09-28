@@ -55,7 +55,7 @@ export default class CreateGoalController {
 
     if (createGoalForm.targetCompletionDate.toString() === 'another-date') {
       createGoalForm.targetCompletionDate = moment(
-        `${createGoalForm['another-date-year']}-${createGoalForm['another-date-month']}-${createGoalForm['another-date-day']}`,
+        `${createGoalForm['targetCompletionDate-year']}-${createGoalForm['targetCompletionDate-month']}-${createGoalForm['targetCompletionDate-day']}`,
       ).toDate()
     }
 
