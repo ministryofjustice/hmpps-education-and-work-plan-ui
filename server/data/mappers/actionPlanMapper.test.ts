@@ -1,3 +1,4 @@
+import moment from 'moment'
 import type { ActionPlanResponse } from 'educationAndWorkPlanApiClient'
 import type { ActionPlan, Goal, Step } from 'viewModels'
 import { toActionPlan } from './actionPlanMapper'
@@ -8,24 +9,24 @@ describe('actionPlanMapper', () => {
     // Given
     const actionPlanResponse: ActionPlanResponse = aValidActionPlanResponseWithOneGoal()
     const problemRetrievingData = false
-    const expectedFirstStep = {
+    const expectedFirstStep: Step = {
       stepReference: 'c88a6c48-97e2-4c04-93b5-98619966447b',
       title: 'Book Spanish course',
       status: 'ACTIVE',
       sequenceNumber: 1,
-    } as Step
-    const expectedSecondStep = {
+    }
+    const expectedSecondStep: Step = {
       stepReference: 'dc817ce8-2b2e-4282-96b2-b9a1d831fc56',
       title: 'Complete Spanish course',
       status: 'NOT_STARTED',
       sequenceNumber: 2,
-    } as Step
-    const expectedGoal = {
+    }
+    const expectedGoal: Goal = {
       goalReference: 'd38a6c41-13d1-1d05-13c2-24619966119b',
       title: 'Learn Spanish',
       status: 'ACTIVE',
       steps: [expectedFirstStep, expectedSecondStep],
-      targetCompletionDate: undefined,
+      targetCompletionDate: moment('2024-02-29').toDate(),
       createdBy: 'asmith_gen',
       createdByDisplayName: 'Alex Smith',
       createdAt: '',
@@ -33,12 +34,12 @@ describe('actionPlanMapper', () => {
       updatedByDisplayName: 'Alex Smith',
       updatedAt: '',
       note: 'Prisoner is not good at listening',
-    } as Goal
-    const expectedActionPlan = {
+    }
+    const expectedActionPlan: ActionPlan = {
       prisonNumber: actionPlanResponse.prisonNumber,
       goals: [expectedGoal],
       problemRetrievingData: false,
-    } as ActionPlan
+    }
 
     // When
     const actionPlan = toActionPlan(actionPlanResponse, problemRetrievingData)

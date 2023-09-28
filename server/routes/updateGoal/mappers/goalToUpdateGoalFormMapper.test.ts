@@ -1,3 +1,4 @@
+import moment from 'moment'
 import type { UpdateGoalForm } from 'forms'
 import { anotherValidStep, aValidGoal, aValidStep } from '../../../testsupport/actionPlanTestDataBuilder'
 import { toUpdateGoalForm } from './goalToUpdateGoalFormMapper'
@@ -15,7 +16,7 @@ describe('goalToUpdateGoalFormMapper', () => {
         reference: '1a2eae63-8102-4155-97cb-43d8fb739caf',
         title: 'Learn Spanish',
         note: 'Prisoner is not good at listening',
-        targetCompletionDate: undefined,
+        targetCompletionDate: moment('2024-02-29').toDate(),
         status: 'ACTIVE',
         steps: [
           {

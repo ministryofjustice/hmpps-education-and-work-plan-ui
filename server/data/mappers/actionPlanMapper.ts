@@ -1,5 +1,6 @@
 import type { ActionPlanResponse, GoalResponse, StepResponse } from 'educationAndWorkPlanApiClient'
 import type { ActionPlan, Goal, Step } from 'viewModels'
+import moment from 'moment'
 
 const toActionPlan = (actionPlanResponse: ActionPlanResponse, problemRetrievingData: boolean): ActionPlan => {
   return {
@@ -21,7 +22,7 @@ const toGoal = (goalResponse: GoalResponse): Goal => {
     updatedBy: goalResponse.updatedBy,
     updatedByDisplayName: goalResponse.updatedByDisplayName,
     updatedAt: goalResponse.updatedAt,
-    targetCompletionDate: goalResponse.targetCompletionDate,
+    targetCompletionDate: toDate(goalResponse.targetCompletionDate),
     note: goalResponse.notes,
   }
 }
@@ -33,6 +34,10 @@ const toStep = (stepResponse: StepResponse): Step => {
     status: stepResponse.status,
     sequenceNumber: stepResponse.sequenceNumber,
   }
+}
+
+const toDate = (dateString: string): Date => {
+  return dateString ? moment(dateString).toDate() : null
 }
 
 export { toActionPlan, toGoal }
