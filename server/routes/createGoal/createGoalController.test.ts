@@ -14,6 +14,7 @@ import aValidAddNoteForm from '../../testsupport/addNoteFormTestDataBuilder'
 import { aValidCreateGoalDtoWithOneStep } from '../../testsupport/createGoalDtoTestDataBuilder'
 import { toCreateGoalDto } from './mappers/createGoalFormToCreateGoalDtoMapper'
 import aValidPrisonerSummary from '../../testsupport/prisonerSummaryTestDataBuilder'
+import futureGoalTargetDateCalculator from '../futureGoalTargetDateCalculator'
 
 jest.mock('./addStepFormValidator')
 jest.mock('./createGoalFormValidator')
@@ -71,19 +72,11 @@ describe('createGoalController', () => {
       req.session.prisonerSummary = prisonerSummary
 
       const expectedCreateGoalForm = { prisonNumber } as CreateGoalForm
+      const today = moment().toDate()
       const expectedFutureGoalTargetDates = [
-        {
-          text: moment(moment().add(3, 'months').toDate()).format('YYYY-MM-DD'),
-          value: `in 3 months (${moment(moment().add(3, 'months').toDate()).format('D MMMM YYYY')})`,
-        },
-        {
-          text: moment(moment().add(6, 'months').toDate()).format('YYYY-MM-DD'),
-          value: `in 6 months (${moment(moment().add(6, 'months').toDate()).format('D MMMM YYYY')})`,
-        },
-        {
-          text: moment(moment().add(12, 'months').toDate()).format('YYYY-MM-DD'),
-          value: `in 12 months (${moment(moment().add(12, 'months').toDate()).format('D MMMM YYYY')})`,
-        },
+        futureGoalTargetDateCalculator(today, 3),
+        futureGoalTargetDateCalculator(today, 6),
+        futureGoalTargetDateCalculator(today, 12),
       ]
       const expectedView = {
         prisonerSummary,

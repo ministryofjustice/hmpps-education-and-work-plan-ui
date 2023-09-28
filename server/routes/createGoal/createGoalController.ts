@@ -10,6 +10,7 @@ import { toCreateGoalDto } from './mappers/createGoalFormToCreateGoalDtoMapper'
 import validateCreateGoalForm from './createGoalFormValidator'
 import validateAddStepForm from './addStepFormValidator'
 import ReviewView from './reviewView'
+import futureGoalTargetDateCalculator from '../futureGoalTargetDateCalculator'
 
 export default class CreateGoalController {
   constructor(private readonly educationAndWorkPlanService: EducationAndWorkPlanService) {}
@@ -25,19 +26,11 @@ export default class CreateGoalController {
       } as NewGoal
     }
 
+    const today = moment().toDate()
     const futureGoalTargetDates = [
-      {
-        text: moment(moment().add(3, 'months').toDate()).format('YYYY-MM-DD'),
-        value: `in 3 months (${moment(moment().add(3, 'months').toDate()).format('D MMMM YYYY')})`,
-      },
-      {
-        text: moment(moment().add(6, 'months').toDate()).format('YYYY-MM-DD'),
-        value: `in 6 months (${moment(moment().add(6, 'months').toDate()).format('D MMMM YYYY')})`,
-      },
-      {
-        text: moment(moment().add(12, 'months').toDate()).format('YYYY-MM-DD'),
-        value: `in 12 months (${moment(moment().add(12, 'months').toDate()).format('D MMMM YYYY')})`,
-      },
+      futureGoalTargetDateCalculator(today, 3),
+      futureGoalTargetDateCalculator(today, 6),
+      futureGoalTargetDateCalculator(today, 12),
     ]
 
     const view = new CreateGoalView(
