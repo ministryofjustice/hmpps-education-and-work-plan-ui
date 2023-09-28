@@ -1,6 +1,7 @@
 import createError from 'http-errors'
 import type { RequestHandler } from 'express'
 import type { NewGoal } from 'compositeForms'
+import moment from 'moment'
 import EducationAndWorkPlanService from '../../services/educationAndWorkPlanService'
 import CreateGoalView from './createGoalView'
 import AddStepView from './addStepView'
@@ -9,6 +10,7 @@ import { toCreateGoalDto } from './mappers/createGoalFormToCreateGoalDtoMapper'
 import validateCreateGoalForm from './createGoalFormValidator'
 import validateAddStepForm from './addStepFormValidator'
 import ReviewView from './reviewView'
+import futureGoalTargetDateCalculator from '../futureGoalTargetDateCalculator'
 
 export default class CreateGoalController {
   constructor(private readonly educationAndWorkPlanService: EducationAndWorkPlanService) {}
@@ -24,7 +26,19 @@ export default class CreateGoalController {
       } as NewGoal
     }
 
-    const view = new CreateGoalView(prisonerSummary, req.session.newGoal.createGoalForm, req.flash('errors'))
+    const today = moment().toDate()
+    const futureGoalTargetDates = [
+      futureGoalTargetDateCalculator(today, 3),
+      futureGoalTargetDateCalculator(today, 6),
+      futureGoalTargetDateCalculator(today, 12),
+    ]
+
+    const view = new CreateGoalView(
+      prisonerSummary,
+      req.session.newGoal.createGoalForm,
+      futureGoalTargetDates,
+      req.flash('errors'),
+    )
     res.render('pages/goal/create/index', { ...view.renderArgs })
   }
 

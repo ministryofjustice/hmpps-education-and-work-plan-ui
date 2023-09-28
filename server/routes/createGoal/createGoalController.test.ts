@@ -3,6 +3,7 @@ import { Request, Response, NextFunction } from 'express'
 import { SessionData } from 'express-session'
 import type { CreateGoalForm } from 'forms'
 import type { NewGoal } from 'compositeForms'
+import moment from 'moment'
 import CreateGoalController from './createGoalController'
 import validateAddStepForm from './addStepFormValidator'
 import validateCreateGoalForm from './createGoalFormValidator'
@@ -13,6 +14,7 @@ import aValidAddNoteForm from '../../testsupport/addNoteFormTestDataBuilder'
 import { aValidCreateGoalDtoWithOneStep } from '../../testsupport/createGoalDtoTestDataBuilder'
 import { toCreateGoalDto } from './mappers/createGoalFormToCreateGoalDtoMapper'
 import aValidPrisonerSummary from '../../testsupport/prisonerSummaryTestDataBuilder'
+import futureGoalTargetDateCalculator from '../futureGoalTargetDateCalculator'
 
 jest.mock('./addStepFormValidator')
 jest.mock('./createGoalFormValidator')
@@ -70,9 +72,16 @@ describe('createGoalController', () => {
       req.session.prisonerSummary = prisonerSummary
 
       const expectedCreateGoalForm = { prisonNumber } as CreateGoalForm
+      const today = moment().toDate()
+      const expectedFutureGoalTargetDates = [
+        futureGoalTargetDateCalculator(today, 3),
+        futureGoalTargetDateCalculator(today, 6),
+        futureGoalTargetDateCalculator(today, 12),
+      ]
       const expectedView = {
         prisonerSummary,
         form: expectedCreateGoalForm,
+        futureGoalTargetDates: expectedFutureGoalTargetDates,
         errors,
       }
       const expectedNewGoal = {
