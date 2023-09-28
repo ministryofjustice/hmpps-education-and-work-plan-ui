@@ -25,16 +25,25 @@ export default class CreateGoalController {
       } as NewGoal
     }
 
-    const currentDatePlus3Months = moment().add(3, 'months').toDate()
-    const currentDatePlus6Months = moment().add(6, 'months').toDate()
-    const currentDatePlus12Months = moment().add(12, 'months').toDate()
+    const futureGoalTargetDates = [
+      {
+        text: moment(moment().add(3, 'months').toDate()).format('YYYY-MM-DD'),
+        value: `in 3 months (${moment(moment().add(3, 'months').toDate()).format('D MMMM YYYY')})`,
+      },
+      {
+        text: moment(moment().add(6, 'months').toDate()).format('YYYY-MM-DD'),
+        value: `in 6 months (${moment(moment().add(6, 'months').toDate()).format('D MMMM YYYY')})`,
+      },
+      {
+        text: moment(moment().add(12, 'months').toDate()).format('YYYY-MM-DD'),
+        value: `in 12 months (${moment(moment().add(12, 'months').toDate()).format('D MMMM YYYY')})`,
+      },
+    ]
 
     const view = new CreateGoalView(
       prisonerSummary,
       req.session.newGoal.createGoalForm,
-      currentDatePlus3Months,
-      currentDatePlus6Months,
-      currentDatePlus12Months,
+      futureGoalTargetDates,
       req.flash('errors'),
     )
     res.render('pages/goal/create/index', { ...view.renderArgs })

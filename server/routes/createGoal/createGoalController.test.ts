@@ -3,6 +3,7 @@ import { Request, Response, NextFunction } from 'express'
 import { SessionData } from 'express-session'
 import type { CreateGoalForm } from 'forms'
 import type { NewGoal } from 'compositeForms'
+import moment from 'moment'
 import CreateGoalController from './createGoalController'
 import validateAddStepForm from './addStepFormValidator'
 import validateCreateGoalForm from './createGoalFormValidator'
@@ -70,12 +71,24 @@ describe('createGoalController', () => {
       req.session.prisonerSummary = prisonerSummary
 
       const expectedCreateGoalForm = { prisonNumber } as CreateGoalForm
+      const expectedFutureGoalTargetDates = [
+        {
+          text: moment(moment().add(3, 'months').toDate()).format('YYYY-MM-DD'),
+          value: `in 3 months (${moment(moment().add(3, 'months').toDate()).format('D MMMM YYYY')})`,
+        },
+        {
+          text: moment(moment().add(6, 'months').toDate()).format('YYYY-MM-DD'),
+          value: `in 6 months (${moment(moment().add(6, 'months').toDate()).format('D MMMM YYYY')})`,
+        },
+        {
+          text: moment(moment().add(12, 'months').toDate()).format('YYYY-MM-DD'),
+          value: `in 12 months (${moment(moment().add(12, 'months').toDate()).format('D MMMM YYYY')})`,
+        },
+      ]
       const expectedView = {
         prisonerSummary,
         form: expectedCreateGoalForm,
-        currentDatePlus12Months: expect.any(Date),
-        currentDatePlus6Months: expect.any(Date),
-        currentDatePlus3Months: expect.any(Date),
+        futureGoalTargetDates: expectedFutureGoalTargetDates,
         errors,
       }
       const expectedNewGoal = {
