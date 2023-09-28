@@ -7,7 +7,7 @@ const toUpdateGoalRequest = (updateGoalDto: UpdateGoalDto): UpdateGoalRequest =>
     title: updateGoalDto.title,
     status: updateGoalDto.status,
     steps: updateGoalDto.steps.map(step => toUpdateStepRequest(step)),
-    targetCompletionDate: updateGoalDto.targetCompletionDate,
+    targetCompletionDate: toDateString(updateGoalDto.targetCompletionDate),
     notes: updateGoalDto.notes,
     prisonId: updateGoalDto.prisonId,
   }
@@ -20,6 +20,10 @@ const toUpdateStepRequest = (updateStepDto: UpdateStepDto): UpdateStepRequest =>
     title: updateStepDto.title,
     sequenceNumber: updateStepDto.sequenceNumber,
   }
+}
+
+const toDateString = (date: Date): string => {
+  return date?.toISOString().split('T')[0]
 }
 
 export { toUpdateGoalRequest, toUpdateStepRequest }

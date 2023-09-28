@@ -1,4 +1,5 @@
 import type { Step, Goal, ActionPlan } from 'viewModels'
+import moment from 'moment'
 
 const aValidActionPlanWithOneGoal = (
   prisonNumber = 'A1234BC',
@@ -26,6 +27,7 @@ const aValidGoal = (
     updatedBy: 'asmith_gen',
     updatedByDisplayName: 'Alex Smith',
     updatedAt: '',
+    targetCompletionDate: moment('2024-02-29').toDate(),
     note: 'Prisoner is not good at listening',
   }
 }

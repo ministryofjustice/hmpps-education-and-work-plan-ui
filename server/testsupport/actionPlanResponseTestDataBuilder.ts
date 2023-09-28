@@ -18,6 +18,7 @@ const aValidGoalResponse = (): GoalResponse => {
     updatedBy: 'asmith_gen',
     updatedByDisplayName: 'Alex Smith',
     updatedAt: '',
+    targetCompletionDate: '2024-02-29',
     notes: 'Prisoner is not good at listening',
   }
 }
