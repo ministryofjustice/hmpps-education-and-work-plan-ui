@@ -3,6 +3,9 @@ declare module 'forms' {
     prisonNumber: string
     title?: string
     targetCompletionDate?: Date
+    'another-date-day'?: string
+    'another-date-month'?: string
+    'another-date-year'?: string
   }
 
   export interface AddStepForm {
