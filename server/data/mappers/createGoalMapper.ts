@@ -7,6 +7,7 @@ const toCreateGoalRequest = (createGoalDto: CreateGoalDto): CreateGoalRequest =>
     title: createGoalDto.title,
     category: 'WORK',
     steps: toAddStepRequests(createGoalDto),
+    targetCompletionDate: toDateString(createGoalDto.targetCompletionDate),
     notes: createGoalDto.note,
     prisonId: createGoalDto.prisonId,
   }
@@ -21,6 +22,10 @@ const toAddStepRequest = (addStepDto: AddStepDto): CreateStepRequest => {
     title: addStepDto.title,
     sequenceNumber: addStepDto.sequenceNumber,
   }
+}
+
+const toDateString = (date: Date): string => {
+  return date?.toISOString().split('T')[0]
 }
 
 export { toCreateGoalRequest, toAddStepRequest }
