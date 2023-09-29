@@ -69,6 +69,7 @@ describe('updateGoalController', () => {
       const updateGoalForm = {
         reference: goal.goalReference,
         title: goal.title,
+        createdAt: goal.createdAt,
         targetCompletionDate: '2024-02-29',
         'targetCompletionDate-day': null,
         'targetCompletionDate-month': null,
@@ -87,6 +88,10 @@ describe('updateGoalController', () => {
       const expectedView = {
         prisonerSummary,
         form: updateGoalForm,
+        goalTargetDate: {
+          text: 'by 29 February 2024 (goal created on 16 January 2023)',
+          value: '2024-02-29',
+        },
         errors,
       }
 

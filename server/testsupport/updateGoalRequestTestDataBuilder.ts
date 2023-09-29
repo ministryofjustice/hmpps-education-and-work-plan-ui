@@ -12,7 +12,7 @@ const aValidUpdateGoalRequestWithOneUpdatedStep = (
   return {
     goalReference,
     title: 'Learn Spanish',
-    targetCompletionDate: undefined,
+    targetCompletionDate: '2024-02-29',
     status: 'ACTIVE',
     steps: [updateStepRequest],
     notes: 'Prisoner is not good at listening',
@@ -38,7 +38,7 @@ const aValidUpdateGoalRequestWithMultipleUpdatedSteps = (
   return {
     goalReference,
     title: 'Learn Spanish',
-    targetCompletionDate: undefined,
+    targetCompletionDate: '2024-02-29',
     status: 'ACTIVE',
     steps: [updateStepRequest1, updateStepRequest2],
     notes: 'Prisoner is not good at listening',

@@ -25,32 +25,71 @@
       <h1 class="govuk-heading-l">You are updating a goal for {{ prisonerSummary.firstName }} {{ prisonerSummary.lastName }}</h1>
 
         <form class="form" method="post" novalidate="">
-            <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
-            <input type="hidden" name="reference" value="{{ form.reference }}" data-qa="goal-reference" />
-            <input type="hidden" name="status" value="{{ form.status }}" data-qa="goal-status" />
+          <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+          <input type="hidden" name="reference" value="{{ form.reference }}" data-qa="goal-reference" />
+          <input type="hidden" name="status" value="{{ form.status }}" data-qa="goal-status" />
+          <input type="hidden" name="createdAt" value="{{ form.createdAt }}" />
 
-            {{ govukTextarea({
-              name: "title",
-              id: "title",
-              label: {
-                text: "Description",
-                classes: "govuk-label--m"
-              },
-              value: form.title,
-              rows: 6,
-              errorMessage: errors | findError('title')
-            }) }}
+          {{ govukTextarea({
+            name: "title",
+            id: "title",
+            label: {
+              text: "Description",
+              classes: "govuk-label--m"
+            },
+            value: form.title,
+            rows: 6,
+            errorMessage: errors | findError('title')
+          }) }}
 
-            {{ govukTextarea({
-              name: "note",
-              id: "note",
-              label: {
-                text: "Add to this note",
-                classes: "govuk-label--m"
+          {% set targetCompletionDateItems = [goalTargetDate] %}
+          {% set anotherDateHtml %}
+            {{ govukDateInput({
+              id: "another-date",
+              namePrefix: "targetCompletionDate",
+              fieldset: {
+                legend: {
+                  text: "What date are they aiming to achieve this by?",
+                  classes: "govuk-visually-hidden"
+                }
               },
-              value: form.note,
-              errorMessage: errors | findError('note')
+              hint: {
+                text: "For example, 27 3 2007"
+              }
             }) }}
+          {% endset -%}
+          {% set targetCompletionDateItems = (targetCompletionDateItems.push({
+              "value": "another-date",
+              "text": "set another date",
+              "conditional": {
+                "html": anotherDateHtml
+              }
+            }), targetCompletionDateItems)
+          %}
+
+          {{ govukRadios({
+            name: "targetCompletionDate",
+            id: "targetCompletionDate",
+            value: form.targetCompletionDate,
+            fieldset: {
+              legend: {
+                text: "When are they aiming to achieve this by?",
+                classes: "govuk-fieldset__legend--s"
+              }
+            },
+            items: targetCompletionDateItems
+          }) }}
+
+          {{ govukTextarea({
+            name: "note",
+            id: "note",
+            label: {
+              text: "Add to this note",
+              classes: "govuk-label--m"
+            },
+            value: form.note,
+            errorMessage: errors | findError('note')
+          }) }}
 
           <hr class="govuk-section-break govuk-section-break--visible govuk-section-break--m">
 

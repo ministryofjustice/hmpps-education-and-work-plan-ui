@@ -24,16 +24,13 @@ const toUpdateStepDto = (updateStepForm: UpdateStepForm): UpdateStepDto => {
 }
 
 const toTargetCompletionDate = (updateGoalForm: UpdateGoalForm): Date => {
-  if (updateGoalForm.targetCompletionDate) {
-    if (updateGoalForm.targetCompletionDate === 'another-date') {
-      const day = updateGoalForm['targetCompletionDate-day'].padStart(2, '0')
-      const month = updateGoalForm['targetCompletionDate-month'].padStart(2, '0')
-      const year = updateGoalForm['targetCompletionDate-year']
-      return moment(`${year}-${month}-${day}`).toDate()
-    }
-    return moment(updateGoalForm.targetCompletionDate).toDate()
+  if (updateGoalForm.targetCompletionDate === 'another-date') {
+    const day = updateGoalForm['targetCompletionDate-day'].padStart(2, '0')
+    const month = updateGoalForm['targetCompletionDate-month'].padStart(2, '0')
+    const year = updateGoalForm['targetCompletionDate-year']
+    return moment(`${year}-${month}-${day}`).toDate()
   }
-  return null
+  return moment(updateGoalForm.targetCompletionDate).toDate()
 }
 
 export { toUpdateGoalDto, toUpdateStepDto }

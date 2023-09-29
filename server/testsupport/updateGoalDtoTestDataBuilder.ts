@@ -10,7 +10,7 @@ const aValidUpdateGoalDtoWithOneStep = (): UpdateGoalDto => {
   }
   return {
     goalReference: '95b18362-fe56-4234-9ad2-11ef98b974a3',
-    targetCompletionDate: undefined,
+    targetCompletionDate: moment('2024-02-29').toDate(),
     status: 'ACTIVE',
     title: 'Learn Spanish',
     steps: [updateStepDto],

@@ -4,6 +4,7 @@ const aValidUpdateGoalForm = (reference = '95b18362-fe56-4234-9ad2-11ef98b974a3'
   return {
     reference,
     title: 'Learn Spanish',
+    createdAt: '2023-01-16',
     targetCompletionDate: '2024-02-29',
     'targetCompletionDate-day': null,
     'targetCompletionDate-month': null,
@@ -34,6 +35,7 @@ const aValidUpdateGoalFormWithIndividualTargetDateFields = (
   return {
     reference,
     title: 'Learn Spanish',
+    createdAt: '2023-01-16',
     targetCompletionDate: 'another-date',
     'targetCompletionDate-day': '29',
     'targetCompletionDate-month': '02',
