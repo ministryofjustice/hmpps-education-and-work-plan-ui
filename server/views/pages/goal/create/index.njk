@@ -73,6 +73,29 @@
             hint: {
               text: "For example, 27 3 2007"
             },
+            items: [
+              {
+                  id: 'another-date-day',
+                  label: 'Day',
+                  name: 'targetCompletionDate-day',
+                  classes: 'govuk-input--width-2',
+                  value: form['targetCompletionDate-day']
+              },
+              {
+                  id: 'another-date-month',
+                  label: 'Month',
+                  name: 'targetCompletionDate-month',
+                  classes: 'govuk-input--width-2',
+                  value: form['targetCompletionDate-month']
+              },
+              {
+                  id: 'another-date-year',
+                  label: 'Year',
+                  name: 'targetCompletionDate-year',
+                  classes: 'govuk-input--width-4',
+                  value: form['targetCompletionDate-year']
+              }
+            ],
             errorMessage: errors | findError('another-date')
           }) }}
         {% endset -%}
