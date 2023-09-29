@@ -45,8 +45,9 @@ export default class CreateGoalController {
   submitCreateGoalForm: RequestHandler = async (req, res, next): Promise<void> => {
     const { prisonNumber } = req.params
     req.session.newGoal.createGoalForm = { ...req.body }
+    const { createGoalForm } = req.session.newGoal
 
-    const errors = validateCreateGoalForm(req.session.newGoal.createGoalForm)
+    const errors = validateCreateGoalForm(createGoalForm)
     if (errors.length > 0) {
       req.flash('errors', errors)
       return res.redirect(`/plan/${prisonNumber}/goals/create`)

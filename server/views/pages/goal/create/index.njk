@@ -23,37 +23,84 @@
     <div class="govuk-grid-column-two-thirds">
 
       <form class="form" method="post" novalidate="">
-        <div class="govuk-form-group">
-          <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
-          <input type="hidden" name="prisonNumber" value="{{ form.prisonNumber }}" />
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+        <input type="hidden" name="prisonNumber" value="{{ form.prisonNumber }}" />
 
-          {% set titleLabelHtml %}
-            Describe the goal you want to create for {{ prisonerSummary.firstName }} {{ prisonerSummary.lastName }}
-          {% endset %}
+        {% set titleLabelHtml %}
+          Describe the goal you want to create for {{ prisonerSummary.firstName }} {{ prisonerSummary.lastName }}
+        {% endset %}
 
-          {% set hintTextHtml %}
-            <p class="govuk-hint">Goals should be SMART, meaning 'specific', 'measurable', 'achievable', 'relevant' and 'time-bound'. SMART goals allow progress to be better measured and evaluated.</p>
-            <p class="govuk-hint">You can add the steps to achieve the goal on the next page.</p>
-          {% endset %}
+        {% set hintTextHtml %}
+          <p class="govuk-hint">Goals should be SMART, meaning 'specific', 'measurable', 'achievable', 'relevant' and 'time-bound'. SMART goals allow progress to be better measured and evaluated.</p>
+          <p class="govuk-hint">You can add the steps to achieve the goal on the next page.</p>
+        {% endset %}
 
-          {{ govukTextarea({
-            name: "title",
-            id: "title",
-            value: form.title,
-            label: {
-              text: titleLabelHtml,
-              classes: "govuk-label--l",
-              isPageHeading: true
+        {{ govukTextarea({
+          name: "title",
+          id: "title",
+          value: form.title,
+          label: {
+            text: titleLabelHtml,
+            classes: "govuk-label--l",
+            isPageHeading: true
+          },
+          hint: {
+            html: hintTextHtml
+          },
+          errorMessage: errors | findError('title')
+        }) }}
+
+        {% set targetCompletionDateItems = [] %}
+
+        {% for futureGoalTargetDate in futureGoalTargetDates %}
+          {% set targetCompletionDateItems = (targetCompletionDateItems.push({
+            "value": futureGoalTargetDate.value,
+            "text": futureGoalTargetDate.text
+            }), targetCompletionDateItems)
+          %}
+        {% endfor %}
+
+        {% set anotherDateHtml %}
+          {{ govukDateInput({
+            id: "another-date",
+            namePrefix: "targetCompletionDate",
+            fieldset: {
+              legend: {
+                text: "What date are they aiming to achieve this by?",
+                classes: "govuk-visually-hidden"
+              }
             },
             hint: {
-              html: hintTextHtml
-            },
-            errorMessage: errors | findError('title')
+              text: "For example, 27 3 2007"
+            }
           }) }}
+        {% endset -%}
 
-          {{ govukButton({
-            text: "Continue to add steps"
-          }) }}
+        {% set targetCompletionDateItems = (targetCompletionDateItems.push({
+          "value": "another-date",
+          "text": "set another date",
+          "conditional": {
+            "html": anotherDateHtml
+          }
+          }), targetCompletionDateItems)
+        %}
+
+        {{ govukRadios({
+          name: "targetCompletionDate",
+          id: "targetCompletionDate",
+          value: form.targetCompletionDate,
+          fieldset: {
+            legend: {
+              text: "When are they aiming to achieve this by?",
+              classes: "govuk-fieldset__legend--s"
+            }
+          },
+          items: targetCompletionDateItems
+        }) }}
+
+        {{ govukButton({
+          text: "Continue to add steps"
+        }) }}
 
       </form>
 

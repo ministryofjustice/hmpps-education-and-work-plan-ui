@@ -14,7 +14,7 @@ import {
 } from './routerRequestHandlers'
 import { aValidAddStepForm } from '../testsupport/addStepFormTestDataBuilder'
 import aValidPrisonerSummary from '../testsupport/prisonerSummaryTestDataBuilder'
-import aValidCreateGoalForm from '../testsupport/createGoalFormTestDataBuilder'
+import { aValidCreateGoalForm } from '../testsupport/createGoalFormTestDataBuilder'
 import aValidAddNoteForm from '../testsupport/addNoteFormTestDataBuilder'
 import { PrisonerSearchService } from '../services'
 
