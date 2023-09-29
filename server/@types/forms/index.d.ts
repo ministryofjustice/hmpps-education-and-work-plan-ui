@@ -2,7 +2,7 @@ declare module 'forms' {
   export interface CreateGoalForm {
     prisonNumber: string
     title?: string
-    targetCompletionDate?: Date
+    targetCompletionDate?: string
     'targetCompletionDate-day'?: string
     'targetCompletionDate-month'?: string
     'targetCompletionDate-year'?: string

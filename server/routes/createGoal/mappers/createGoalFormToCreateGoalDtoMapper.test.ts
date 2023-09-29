@@ -1,7 +1,11 @@
+import moment from 'moment'
 import type { AddStepDto, CreateGoalDto } from 'dto'
 import { anotherValidAddStepForm, aValidAddStepForm } from '../../../testsupport/addStepFormTestDataBuilder'
 import { toCreateGoalDto } from './createGoalFormToCreateGoalDtoMapper'
-import aValidCreateGoalForm from '../../../testsupport/createGoalFormTestDataBuilder'
+import {
+  aValidCreateGoalForm,
+  aValidCreateGoalFormWithIndividualTargetDateFields,
+} from '../../../testsupport/createGoalFormTestDataBuilder'
 import aValidAddNoteForm from '../../../testsupport/addNoteFormTestDataBuilder'
 
 describe('createGoalFormToCreateGoalDtoMapper', () => {
@@ -26,6 +30,34 @@ describe('createGoalFormToCreateGoalDtoMapper', () => {
       steps: [expectedAddStepDto1, expectedAddStepDto2],
       note: addNoteForm.note,
       prisonId,
+      targetCompletionDate: moment('2024-02-29').toDate(),
+    }
+
+    // When
+    const createGoalDto = toCreateGoalDto(createGoalForm, addStepForms, addNoteForm, prisonId)
+
+    // Then
+    expect(createGoalDto).toEqual(expectedCreateGoalDto)
+  })
+
+  it('should map to CreateGoalDto given individual target completion date fields', () => {
+    // Given
+    const createGoalForm = aValidCreateGoalFormWithIndividualTargetDateFields()
+    const addStepForms = [aValidAddStepForm()]
+    const addNoteForm = aValidAddNoteForm()
+    const prisonId = 'BXI'
+
+    const expectedAddStepDto: AddStepDto = {
+      title: addStepForms[0].title,
+      sequenceNumber: addStepForms[0].stepNumber,
+    }
+    const expectedCreateGoalDto: CreateGoalDto = {
+      prisonNumber: createGoalForm.prisonNumber,
+      title: createGoalForm.title,
+      steps: [expectedAddStepDto],
+      note: addNoteForm.note,
+      prisonId,
+      targetCompletionDate: moment('2024-02-29').toDate(),
     }
 
     // When

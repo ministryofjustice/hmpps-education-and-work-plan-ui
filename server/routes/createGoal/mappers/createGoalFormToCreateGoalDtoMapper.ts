@@ -1,5 +1,6 @@
 import type { AddStepDto, CreateGoalDto } from 'dto'
 import type { AddNoteForm, AddStepForm, CreateGoalForm } from 'forms'
+import moment from 'moment'
 
 const toCreateGoalDto = (
   createGoalForm: CreateGoalForm,
@@ -10,6 +11,7 @@ const toCreateGoalDto = (
   return {
     prisonNumber: createGoalForm.prisonNumber,
     title: createGoalForm.title,
+    targetCompletionDate: toTargetCompletionDate(createGoalForm),
     steps: toAddStepDtos(addStepForms),
     note: addNoteForm.note,
     prisonId,
@@ -25,6 +27,19 @@ const toAddStepDto = (addStepForm: AddStepForm): AddStepDto => {
     title: addStepForm.title,
     sequenceNumber: addStepForm.stepNumber,
   }
+}
+
+const toTargetCompletionDate = (createGoalForm: CreateGoalForm): Date => {
+  if (createGoalForm.targetCompletionDate) {
+    if (createGoalForm.targetCompletionDate === 'another-date') {
+      const day = createGoalForm['targetCompletionDate-day'].padStart(2, '0')
+      const month = createGoalForm['targetCompletionDate-month'].padStart(2, '0')
+      const year = createGoalForm['targetCompletionDate-year']
+      return moment(`${year}-${month}-${day}`).toDate()
+    }
+    return moment(createGoalForm.targetCompletionDate).toDate()
+  }
+  return null
 }
 
 export { toCreateGoalDto, toAddStepDto }
