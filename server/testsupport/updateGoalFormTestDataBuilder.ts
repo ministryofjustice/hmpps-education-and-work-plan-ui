@@ -1,10 +1,13 @@
 import type { UpdateGoalForm } from 'forms'
 
-export default function aValidUpdateGoalForm(reference = '95b18362-fe56-4234-9ad2-11ef98b974a3'): UpdateGoalForm {
+const aValidUpdateGoalForm = (reference = '95b18362-fe56-4234-9ad2-11ef98b974a3'): UpdateGoalForm => {
   return {
     reference,
     title: 'Learn Spanish',
-    targetCompletionDate: undefined,
+    targetCompletionDate: '2024-02-29',
+    'targetCompletionDate-day': null,
+    'targetCompletionDate-month': null,
+    'targetCompletionDate-year': null,
     status: 'ACTIVE',
     note: 'Prisoner is not good at listening',
     steps: [
@@ -24,3 +27,29 @@ export default function aValidUpdateGoalForm(reference = '95b18362-fe56-4234-9ad
     action: 'submit-form',
   }
 }
+
+const aValidUpdateGoalFormWithIndividualTargetDateFields = (
+  reference = '95b18362-fe56-4234-9ad2-11ef98b974a3',
+): UpdateGoalForm => {
+  return {
+    reference,
+    title: 'Learn Spanish',
+    targetCompletionDate: 'another-date',
+    'targetCompletionDate-day': '29',
+    'targetCompletionDate-month': '02',
+    'targetCompletionDate-year': '2024',
+    status: 'ACTIVE',
+    note: 'Prisoner is not good at listening',
+    steps: [
+      {
+        reference: 'c77cd2fb-40e0-4354-982a-5c8017e92b26',
+        title: 'Book course',
+        stepNumber: 1,
+        status: 'ACTIVE',
+      },
+    ],
+    action: 'submit-form',
+  }
+}
+
+export { aValidUpdateGoalForm, aValidUpdateGoalFormWithIndividualTargetDateFields }

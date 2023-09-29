@@ -4,7 +4,7 @@ import validateGoalStatus from '../../validators/goalStatusValidator'
 import validateStepTitle from '../../validators/stepTitleValidator'
 import validateStepStatus from '../../validators/stepStatusValidator'
 import validateUpdateGoalForm from './updateGoalFormValidator'
-import aValidUpdateGoalForm from '../../testsupport/updateGoalFormTestDataBuilder'
+import { aValidUpdateGoalForm } from '../../testsupport/updateGoalFormTestDataBuilder'
 
 jest.mock('../../validators/goalTitleValidator')
 jest.mock('../../validators/stepStatusValidator')

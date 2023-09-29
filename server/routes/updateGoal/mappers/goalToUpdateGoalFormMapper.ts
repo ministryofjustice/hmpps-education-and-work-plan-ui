@@ -1,11 +1,15 @@
 import type { UpdateGoalForm, UpdateStepForm } from 'forms'
 import type { Goal, Step } from 'viewModels'
+import moment from 'moment'
 
 const toUpdateGoalForm = (goal: Goal): UpdateGoalForm => {
   return {
     reference: goal.goalReference,
     title: goal.title,
-    targetCompletionDate: goal.targetCompletionDate,
+    targetCompletionDate: toDateString(goal.targetCompletionDate),
+    'targetCompletionDate-day': null,
+    'targetCompletionDate-month': null,
+    'targetCompletionDate-year': null,
     status: goal.status,
     note: goal.note,
     steps: goal.steps.map(step => toUpdateStepForm(step)),
@@ -19,6 +23,13 @@ const toUpdateStepForm = (step: Step): UpdateStepForm => {
     stepNumber: step.sequenceNumber,
     status: step.status,
   } as UpdateStepForm
+}
+
+const toDateString = (date: Date): string => {
+  if (!date) {
+    return null
+  }
+  return moment(date).format('YYYY-MM-DD')
 }
 
 export { toUpdateGoalForm, toUpdateStepForm }
