@@ -30,7 +30,7 @@
   {% for goal in actionPlan.goals %}
     <div class="govuk-summary-card" data-qa="goal-summary-card">
       <div class="govuk-summary-card__title-wrapper">
-        <h2 class="govuk-summary-card__title">Goal {{ loop.index }}</h2>
+        <h3 class="govuk-summary-card__title">Goal {{ loop.index }}</h3>
         <ul class="govuk-summary-card__actions govuk-!-display-none-print">
           {% if hasEditAuthority %}
             <li class="govuk-summary-card__action">
