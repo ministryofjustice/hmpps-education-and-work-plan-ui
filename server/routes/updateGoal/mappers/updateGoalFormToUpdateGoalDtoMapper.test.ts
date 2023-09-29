@@ -1,5 +1,9 @@
+import moment from 'moment'
 import type { UpdateStepDto, UpdateGoalDto } from 'dto'
-import aValidUpdateGoalForm from '../../../testsupport/updateGoalFormTestDataBuilder'
+import {
+  aValidUpdateGoalForm,
+  aValidUpdateGoalFormWithIndividualTargetDateFields,
+} from '../../../testsupport/updateGoalFormTestDataBuilder'
 import { toUpdateGoalDto } from './updateGoalFormToUpdateGoalDtoMapper'
 
 describe('updateGoalFormToUpdateGoalDtoMapper', () => {
@@ -25,7 +29,35 @@ describe('updateGoalFormToUpdateGoalDtoMapper', () => {
       title: updateGoalForm.title,
       status: updateGoalForm.status,
       steps: [expectedUpdateStepDto1, expectedUpdateStepDto2],
-      targetCompletionDate: updateGoalForm.targetCompletionDate,
+      targetCompletionDate: moment('2024-02-29').toDate(),
+      notes: updateGoalForm.note,
+      prisonId,
+    }
+
+    // When
+    const actual = toUpdateGoalDto(updateGoalForm, prisonId)
+
+    // Then
+    expect(actual).toEqual(expectedUpdateGoalDto)
+  })
+
+  it('should map UpdateGoalForm to UpdateGoalDto given individual target completion date fields', () => {
+    // Given
+    const updateGoalForm = aValidUpdateGoalFormWithIndividualTargetDateFields()
+    const prisonId = 'MDI'
+
+    const expectedUpdateStepDto: UpdateStepDto = {
+      stepReference: updateGoalForm.steps[0].reference,
+      status: updateGoalForm.steps[0].status,
+      title: updateGoalForm.steps[0].title,
+      sequenceNumber: updateGoalForm.steps[0].stepNumber,
+    }
+    const expectedUpdateGoalDto: UpdateGoalDto = {
+      goalReference: updateGoalForm.reference,
+      title: updateGoalForm.title,
+      status: updateGoalForm.status,
+      steps: [expectedUpdateStepDto],
+      targetCompletionDate: moment('2024-02-29').toDate(),
       notes: updateGoalForm.note,
       prisonId,
     }

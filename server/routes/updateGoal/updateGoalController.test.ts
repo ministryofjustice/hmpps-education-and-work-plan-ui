@@ -7,7 +7,7 @@ import EducationAndWorkPlanService from '../../services/educationAndWorkPlanServ
 import UpdateGoalController from './updateGoalController'
 import { aValidActionPlanWithOneGoal, aValidGoal, aValidStep } from '../../testsupport/actionPlanTestDataBuilder'
 import validateUpdateGoalForm from './updateGoalFormValidator'
-import aValidUpdateGoalForm from '../../testsupport/updateGoalFormTestDataBuilder'
+import { aValidUpdateGoalForm } from '../../testsupport/updateGoalFormTestDataBuilder'
 import { aValidUpdateGoalDtoWithOneStep } from '../../testsupport/updateGoalDtoTestDataBuilder'
 import { toUpdateGoalDto } from './mappers/updateGoalFormToUpdateGoalDtoMapper'
 import aValidPrisonerSummary from '../../testsupport/prisonerSummaryTestDataBuilder'
@@ -69,7 +69,10 @@ describe('updateGoalController', () => {
       const updateGoalForm = {
         reference: goal.goalReference,
         title: goal.title,
-        targetCompletionDate: goal.targetCompletionDate,
+        targetCompletionDate: '2024-02-29',
+        'targetCompletionDate-day': null,
+        'targetCompletionDate-month': null,
+        'targetCompletionDate-year': null,
         status: goal.status,
         note: goal.note,
         steps: [

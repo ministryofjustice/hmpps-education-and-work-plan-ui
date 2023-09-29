@@ -25,7 +25,10 @@ declare module 'forms' {
   export interface UpdateGoalForm {
     reference: string
     title?: string
-    targetCompletionDate?: Date
+    targetCompletionDate?: string
+    'targetCompletionDate-day'?: string
+    'targetCompletionDate-month'?: string
+    'targetCompletionDate-year'?: string
     status?: 'ACTIVE' | 'COMPLETED' | 'ARCHIVED'
     note?: string
     steps: Array<UpdateStepForm>
