@@ -2,7 +2,7 @@ export default function validateTargetDate(targetCompletionDate: string): Array<
   const errors: Array<string> = []
 
   if (!targetCompletionDate) {
-    errors.push('Select a target completion date')
+    errors.push('Select when they are aiming to achieve this by')
   }
 
   return errors
