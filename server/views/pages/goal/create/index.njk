@@ -72,7 +72,8 @@
             },
             hint: {
               text: "For example, 27 3 2007"
-            }
+            },
+            errorMessage: errors | findError('another-date')
           }) }}
         {% endset -%}
 
@@ -95,7 +96,8 @@
               classes: "govuk-fieldset__legend--s"
             }
           },
-          items: targetCompletionDateItems
+          items: targetCompletionDateItems,
+          errorMessage: errors | findError('targetCompletionDate')
         }) }}
 
         {{ govukButton({
