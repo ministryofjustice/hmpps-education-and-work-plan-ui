@@ -1,16 +1,26 @@
-import validateDate from './dateValidator'
+import validateTargetDate from './goalTargetCompletionDateValidator'
 
-describe('dateValidator', () => {
+describe('goalTargetDateValidator', () => {
+  it('should validate given no date selection', () => {
+    // Given
+    const targetCompletionDate = ''
+    // When
+    const errors = validateTargetDate(targetCompletionDate)
+
+    // Then
+    expect(errors).toStrictEqual(['Select a target completion date'])
+  })
+
   it('should validate given empty day', () => {
     // Given
     const day = ''
     const month = '02'
     const year = '2040'
     // When
-    const errors = validateDate(day, month, year)
+    const errors = validateTargetDate('another-date', day, month, year)
 
     // Then
-    expect(errors).toStrictEqual(['Enter a date'])
+    expect(errors).toStrictEqual(['Enter a valid date'])
   })
 
   it('should validate given empty month', () => {
@@ -19,10 +29,10 @@ describe('dateValidator', () => {
     const month = ''
     const year = '2040'
     // When
-    const errors = validateDate(day, month, year)
+    const errors = validateTargetDate('another-date', day, month, year)
 
     // Then
-    expect(errors).toStrictEqual(['Enter a date'])
+    expect(errors).toStrictEqual(['Enter a valid date'])
   })
 
   it('should validate given empty year', () => {
@@ -31,10 +41,10 @@ describe('dateValidator', () => {
     const month = '02'
     const year = ''
     // When
-    const errors = validateDate(day, month, year)
+    const errors = validateTargetDate('another-date', day, month, year)
 
     // Then
-    expect(errors).toStrictEqual(['Enter a date'])
+    expect(errors).toStrictEqual(['Enter a valid date'])
   })
 
   it('should validate given an invalid date', () => {
@@ -43,7 +53,7 @@ describe('dateValidator', () => {
     const month = '40'
     const year = '2024'
     // When
-    const errors = validateDate(day, month, year)
+    const errors = validateTargetDate('another-date', day, month, year)
 
     // Then
     expect(errors).toStrictEqual(['Enter a valid date'])
@@ -55,7 +65,7 @@ describe('dateValidator', () => {
     const month = '02'
     const year = '2007'
     // When
-    const errors = validateDate(day, month, year)
+    const errors = validateTargetDate('another-date', day, month, year)
 
     // Then
     expect(errors).toStrictEqual(['Enter a date in the future'])
