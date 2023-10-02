@@ -25,6 +25,7 @@ declare module 'forms' {
   export interface UpdateGoalForm {
     reference: string
     title?: string
+    createdAt: string
     targetCompletionDate?: string
     'targetCompletionDate-day'?: string
     'targetCompletionDate-month'?: string

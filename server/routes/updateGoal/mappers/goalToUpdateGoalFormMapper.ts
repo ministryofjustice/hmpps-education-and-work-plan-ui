@@ -6,6 +6,7 @@ const toUpdateGoalForm = (goal: Goal): UpdateGoalForm => {
   return {
     reference: goal.goalReference,
     title: goal.title,
+    createdAt: goal.createdAt,
     targetCompletionDate: toDateString(goal.targetCompletionDate),
     'targetCompletionDate-day': null,
     'targetCompletionDate-month': null,
@@ -13,7 +14,7 @@ const toUpdateGoalForm = (goal: Goal): UpdateGoalForm => {
     status: goal.status,
     note: goal.note,
     steps: goal.steps.map(step => toUpdateStepForm(step)),
-  } as UpdateGoalForm
+  }
 }
 
 const toUpdateStepForm = (step: Step): UpdateStepForm => {
@@ -22,13 +23,10 @@ const toUpdateStepForm = (step: Step): UpdateStepForm => {
     title: step.title,
     stepNumber: step.sequenceNumber,
     status: step.status,
-  } as UpdateStepForm
+  }
 }
 
 const toDateString = (date: Date): string => {
-  if (!date) {
-    return null
-  }
   return moment(date).format('YYYY-MM-DD')
 }
 

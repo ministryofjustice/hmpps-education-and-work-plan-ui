@@ -29,10 +29,10 @@ describe('actionPlanMapper', () => {
       targetCompletionDate: moment('2024-02-29').toDate(),
       createdBy: 'asmith_gen',
       createdByDisplayName: 'Alex Smith',
-      createdAt: '',
+      createdAt: '2023-01-16',
       updatedBy: 'asmith_gen',
       updatedByDisplayName: 'Alex Smith',
-      updatedAt: '',
+      updatedAt: '2023-09-23',
       note: 'Prisoner is not good at listening',
     }
     const expectedActionPlan: ActionPlan = {
