@@ -86,6 +86,25 @@ context('Create a goal', () => {
     Page.verifyOnPage(AddStepPage)
   })
 
+  it('should proceed to Add Step Page given user has provided a custom date target completion date', () => {
+    // Given
+    const prisonNumber = 'G6115VJ'
+    cy.signIn()
+
+    cy.visit(`/plan/${prisonNumber}/view/overview`)
+    const overviewPage = Page.verifyOnPage(OverviewPage)
+    const createGoalPage = overviewPage.clickAddGoalButton()
+
+    // When
+    createGoalPage //
+      .setGoalTitle('Learn French')
+      .setGoalCustomTargetDate('26', '02', '2028')
+      .submitPage()
+
+    // Then
+    Page.verifyOnPage(AddStepPage)
+  })
+
   it('should redirect to auth-error page given user does not have any authorities', () => {
     // Given
     cy.task('stubSignIn')
