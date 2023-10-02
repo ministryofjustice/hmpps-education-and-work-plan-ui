@@ -11,6 +11,7 @@ describe('createGoalFormValidator', () => {
     const form = {
       prisonNumber: 'A1234BC',
       title: 'Learn Spanish',
+      targetCompletionDate: '2024-02-29',
     } as CreateGoalForm
 
     mockedValidateGoalTitle.mockReturnValue([])
@@ -26,6 +27,7 @@ describe('createGoalFormValidator', () => {
     const form = {
       prisonNumber: 'A1234BC',
       title: '',
+      targetCompletionDate: '2024-02-29',
     } as CreateGoalForm
 
     mockedValidateGoalTitle.mockReturnValue(['some-title-error'])
