@@ -25,6 +25,14 @@ export default class CreateGoalPage extends Page {
     return this
   }
 
+  setGoalCustomTargetDate(day: string, month: string, year: string) {
+    this.targetDateField().last().check()
+    this.targetDateFieldDayField().clear().type(day)
+    this.targetDateFieldMonthField().clear().type(month)
+    this.targetDateFieldYearField().clear().type(year)
+    return this
+  }
+
   submitPage() {
     this.submitButton().click()
   }
@@ -32,6 +40,12 @@ export default class CreateGoalPage extends Page {
   titleField = (): PageElement => cy.get('#title')
 
   targetDateField = (): PageElement => cy.get('[type="radio"]')
+
+  targetDateFieldDayField = (): PageElement => cy.get('#another-date-day')
+
+  targetDateFieldMonthField = (): PageElement => cy.get('#another-date-month')
+
+  targetDateFieldYearField = (): PageElement => cy.get('#another-date-year')
 
   submitButton = (): PageElement => cy.get('button')
 
