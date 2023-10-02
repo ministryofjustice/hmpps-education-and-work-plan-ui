@@ -79,6 +79,7 @@ context('Create a goal', () => {
     // When
     createGoalPage //
       .setGoalTitle('Learn French')
+      .setGoalTargetDate()
       .submitPage()
 
     // Then

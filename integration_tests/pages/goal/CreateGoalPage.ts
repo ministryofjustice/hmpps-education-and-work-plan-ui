@@ -20,11 +20,18 @@ export default class CreateGoalPage extends Page {
     return this
   }
 
+  setGoalTargetDate() {
+    this.targetDateField().first().check()
+    return this
+  }
+
   submitPage() {
     this.submitButton().click()
   }
 
   titleField = (): PageElement => cy.get('#title')
+
+  targetDateField = (): PageElement => cy.get('[type="radio"]')
 
   submitButton = (): PageElement => cy.get('button')
 

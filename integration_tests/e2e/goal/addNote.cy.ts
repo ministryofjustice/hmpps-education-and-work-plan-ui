@@ -44,6 +44,7 @@ context('Add a note', () => {
     const createGoalPage = overviewPage.clickAddGoalButton()
     createGoalPage //
       .setGoalTitle('Learn French')
+      .setGoalTargetDate()
       .submitPage()
 
     const addStepPage = Page.verifyOnPage(AddStepPage)
@@ -74,6 +75,7 @@ context('Add a note', () => {
     const createGoalPage = overviewPage.clickAddGoalButton()
     createGoalPage //
       .setGoalTitle('Learn French')
+      .setGoalTargetDate()
       .submitPage()
 
     Page.verifyOnPage(AddStepPage)
@@ -97,6 +99,7 @@ context('Add a note', () => {
 
     const createGoalPage = overviewPage.clickAddGoalButton()
     createGoalPage.setGoalTitle('Learn French')
+    createGoalPage.setGoalTargetDate()
     createGoalPage.submitPage()
 
     const addStepPage = Page.verifyOnPage(AddStepPage)
