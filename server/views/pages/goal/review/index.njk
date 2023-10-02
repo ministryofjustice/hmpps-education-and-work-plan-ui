@@ -22,6 +22,14 @@
         </div>
         <div class="govuk-summary-card__content">
           <dl class="govuk-summary-list">
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                When are they aiming to achieve this by?
+              </dt>
+              <dd class="govuk-summary-list__value">
+                by {{ goal.targetCompletionDate | formatDate('D MMMM YYYY') }}
+              </dd>
+            </div>
             {% for step in goal.steps %}
               <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">
