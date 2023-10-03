@@ -48,7 +48,7 @@ context('Update a goal', () => {
     // When
     updateGoalPage //
       .clearGoalTitle()
-      .setTargetCompletionDateFromValuePreviouslySaveInGoal()
+      .setTargetCompletionDateFromValuePreviouslySetOnGoal()
       .submitPage()
 
     // Then
@@ -94,7 +94,7 @@ context('Update a goal', () => {
     // When
     updateGoalPage //
       .setGoalTitle('Learn French')
-      .setTargetCompletionDateFromValuePreviouslySaveInGoal()
+      .setTargetCompletionDateFromValuePreviouslySetOnGoal()
       .setFirstStepTitle('Obtain a French dictionary')
       .submitPage()
 

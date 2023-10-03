@@ -57,7 +57,7 @@ export default class UpdateGoalPage extends Page {
     return Page.verifyOnPage(UpdateGoalPage)
   }
 
-  setTargetCompletionDateFromValuePreviouslySaveInGoal(): UpdateGoalPage {
+  setTargetCompletionDateFromValuePreviouslySetOnGoal(): UpdateGoalPage {
     this.targetDateField().first().check()
     return this
   }
