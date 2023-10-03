@@ -48,6 +48,7 @@ context('Update a goal', () => {
     // When
     updateGoalPage //
       .clearGoalTitle()
+      .setTargetCompletionDateFromValuePreviouslySetOnGoal()
       .submitPage()
 
     // Then
@@ -55,6 +56,29 @@ context('Update a goal', () => {
     updateGoalPage //
       .hasErrorCount(1)
       .hasFieldInError('title')
+  })
+
+  it('should not submit the form and highlight field in error if there are validation errors on target completion date field', () => {
+    // Given
+    const prisonNumber = 'G6115VJ'
+    cy.signIn()
+
+    cy.visit(`/plan/${prisonNumber}/view/overview`)
+    const overviewPage = Page.verifyOnPage(OverviewPage)
+
+    const updateGoalPage = overviewPage.clickUpdateButtonForFirstGoal()
+
+    // When
+    updateGoalPage //
+      .setTargetCompletionDate('01', '91', 'xx91')
+      .submitPage()
+
+    // Then
+    Page.verifyOnPage(UpdateGoalPage)
+    updateGoalPage //
+      .hasErrorCount(1)
+      .hasFieldInError('targetCompletionDate')
+      .hasTargetCompletionDateValue('01', '91', 'xx91')
   })
 
   it('should be able to submit the form if no validation errors', () => {
@@ -70,6 +94,7 @@ context('Update a goal', () => {
     // When
     updateGoalPage //
       .setGoalTitle('Learn French')
+      .setTargetCompletionDateFromValuePreviouslySetOnGoal()
       .setFirstStepTitle('Obtain a French dictionary')
       .submitPage()
 

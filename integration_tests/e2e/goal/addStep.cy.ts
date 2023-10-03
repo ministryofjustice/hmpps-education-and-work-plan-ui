@@ -43,7 +43,7 @@ context('Add a step', () => {
     const createGoalPage = overviewPage.clickAddGoalButton()
     createGoalPage //
       .setGoalTitle('Learn French')
-      .setGoalTargetDate()
+      .setTargetCompletionDate0to3Months()
       .submitPage()
 
     const addStepPage = Page.verifyOnPage(AddStepPage)
@@ -69,7 +69,7 @@ context('Add a step', () => {
     const createGoalPage = overviewPage.clickAddGoalButton()
     createGoalPage //
       .setGoalTitle('Learn French')
-      .setGoalTargetDate()
+      .setTargetCompletionDate0to3Months()
       .submitPage()
 
     const addStepPage = Page.verifyOnPage(AddStepPage)
@@ -96,7 +96,7 @@ context('Add a step', () => {
     const createGoalPage = overviewPage.clickAddGoalButton()
     createGoalPage //
       .setGoalTitle('Learn French')
-      .setGoalTargetDate()
+      .setTargetCompletionDate0to3Months()
       .submitPage()
 
     let addStepPage = Page.verifyOnPage(AddStepPage)
@@ -125,7 +125,7 @@ context('Add a step', () => {
     const createGoalPage = overviewPage.clickAddGoalButton()
     createGoalPage //
       .setGoalTitle('Learn French')
-      .setGoalTargetDate()
+      .setTargetCompletionDate0to3Months()
       .submitPage()
 
     const addStepPage = Page.verifyOnPage(AddStepPage)
