@@ -31,8 +31,8 @@
     <div class="govuk-summary-card" data-qa="goal-summary-card">
       <div class="govuk-summary-card__title-wrapper">
         <h3 class="govuk-summary-card__title">Goal {{ loop.index }}
-          <span class="govuk-caption-m">Created on {{ goal.createdAt | formatDate('DD MMMM YYYY') }} <span class="govuk-!-display-none-print">by {{ goal.createdByDisplayName }}</span>,
-          <br> aiming to achieve this <strong>by {{ goal.targetCompletionDate | formatDate('DD MMMM YYYY') }}</strong></span>
+          <span class="govuk-caption-m">Created on {{ goal.createdAt | formatDate('D MMMM YYYY') }} <span class="govuk-!-display-none-print">by {{ goal.createdByDisplayName }}</span>,
+          <br> aiming to achieve this <strong>by {{ goal.targetCompletionDate | formatDate('D MMMM YYYY') }}</strong></span>
         </h3>
         <ul class="govuk-summary-card__actions govuk-!-display-none-print">
           {% if hasEditAuthority %}
