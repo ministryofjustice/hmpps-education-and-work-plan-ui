@@ -79,7 +79,7 @@ context('Create a goal', () => {
     // When
     createGoalPage //
       .setGoalTitle('Learn French')
-      .setGoalTargetDate()
+      .setTargetCompletionDate0to3Months()
       .submitPage()
 
     // Then
@@ -98,7 +98,7 @@ context('Create a goal', () => {
     // When
     createGoalPage //
       .setGoalTitle('Learn French')
-      .setGoalCustomTargetDate('26', '02', '2028')
+      .setTargetCompletionDate('26', '02', '2028')
       .submitPage()
 
     // Then

@@ -20,16 +20,31 @@ export default class CreateGoalPage extends Page {
     return this
   }
 
-  setGoalTargetDate() {
+  setTargetCompletionDate0to3Months(): CreateGoalPage {
     this.targetDateField().first().check()
     return this
   }
 
-  setGoalCustomTargetDate(day: string, month: string, year: string) {
+  setTargetCompletionDate(day: string, month: string, year: string): CreateGoalPage {
     this.targetDateField().last().check()
     this.targetDateFieldDayField().clear().type(day)
     this.targetDateFieldMonthField().clear().type(month)
     this.targetDateFieldYearField().clear().type(year)
+    return this
+  }
+
+  hasTargetCompletionDateValue(expectedDay: string, expectedMonth: string, expectedYear: string): CreateGoalPage {
+    this.targetDateField()
+      .filter(':checked')
+      .then(selectedRadioElement => {
+        if (selectedRadioElement.val() === 'another-date') {
+          this.targetDateFieldDayField().should('have.value', expectedDay)
+          this.targetDateFieldMonthField().should('have.value', expectedMonth)
+          this.targetDateFieldYearField().should('have.value', expectedYear)
+        } else {
+          cy.wrap(selectedRadioElement).should('have.value', `${expectedYear}-${expectedMonth}-${expectedDay}`)
+        }
+      })
     return this
   }
 
@@ -39,7 +54,7 @@ export default class CreateGoalPage extends Page {
 
   titleField = (): PageElement => cy.get('#title')
 
-  targetDateField = (): PageElement => cy.get('[type="radio"]')
+  targetDateField = (): PageElement => cy.get('[name="targetCompletionDate"][type="radio"]')
 
   targetDateFieldDayField = (): PageElement => cy.get('#another-date-day')
 

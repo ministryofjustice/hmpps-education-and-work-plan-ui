@@ -1,3 +1,4 @@
+import moment from 'moment'
 import Page, { PageElement } from '../page'
 
 export default class UpdateGoalPage extends Page {
@@ -56,6 +57,34 @@ export default class UpdateGoalPage extends Page {
     return Page.verifyOnPage(UpdateGoalPage)
   }
 
+  setTargetCompletionDateFromValuePreviouslySaveInGoal(): UpdateGoalPage {
+    this.targetDateField().first().check()
+    return this
+  }
+
+  setTargetCompletionDate(day: string, month: string, year: string): UpdateGoalPage {
+    this.targetDateField().last().check()
+    this.targetDateFieldDayField().clear().type(day)
+    this.targetDateFieldMonthField().clear().type(month)
+    this.targetDateFieldYearField().clear().type(year)
+    return this
+  }
+
+  hasTargetCompletionDateValue(expectedDay: string, expectedMonth: string, expectedYear: string): UpdateGoalPage {
+    this.targetDateField()
+      .filter(':checked')
+      .then(selectedRadioElement => {
+        if (selectedRadioElement.val() === 'another-date') {
+          this.targetDateFieldDayField().should('have.value', expectedDay)
+          this.targetDateFieldMonthField().should('have.value', expectedMonth)
+          this.targetDateFieldYearField().should('have.value', expectedYear)
+        } else {
+          cy.wrap(selectedRadioElement).should('have.value', `${expectedYear}-${expectedMonth}-${expectedDay}`)
+        }
+      })
+    return this
+  }
+
   titleField = (): PageElement => cy.get('#title')
 
   stepTitleField = (idx: number): PageElement => cy.get(`[data-qa=step-${idx}-title-field]`)
@@ -71,4 +100,12 @@ export default class UpdateGoalPage extends Page {
   goalReferenceInputValue = (): PageElement => cy.get('[data-qa=goal-reference]')
 
   removeStepButton = (idx: number): PageElement => cy.get(`[data-qa=step-${idx}-remove-button]`)
+
+  targetDateField = (): PageElement => cy.get('[name="targetCompletionDate"][type="radio"]')
+
+  targetDateFieldDayField = (): PageElement => cy.get('#another-date-day')
+
+  targetDateFieldMonthField = (): PageElement => cy.get('#another-date-month')
+
+  targetDateFieldYearField = (): PageElement => cy.get('#another-date-year')
 }
