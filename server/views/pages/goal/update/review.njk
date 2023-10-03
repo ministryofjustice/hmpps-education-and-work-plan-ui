@@ -31,6 +31,14 @@
           },
           {
             key: {
+              text: "When are they aiming to achieve this by?"
+            },
+            value: {
+              text: "by " + data.targetCompletionDate | formatDate('D MMMM YYYY')
+            }
+          },
+          {
+            key: {
               text: "Status"
             },
             value: {
@@ -42,7 +50,7 @@
               text: "Note"
             },
             value: {
-              text: data.note
+              text: data.notes
             }
           }
         ]
@@ -60,7 +68,7 @@
         <tbody class="govuk-table__body">
           {% for step in data.steps %}
           <tr class="govuk-table__row">
-            <th scope="row" class="govuk-table__header">Step {{ step.stepNumber }}</th>
+            <th scope="row" class="govuk-table__header">Step {{ step.sequenceNumber }}</th>
             <td class="govuk-table__cell">{{ step.title }}</td>
             <td class="govuk-table__cell">{{ step.status | formatStepStatusValue }}</td>
           </tr>
