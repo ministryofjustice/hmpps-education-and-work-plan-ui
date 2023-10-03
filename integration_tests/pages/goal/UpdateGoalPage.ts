@@ -1,4 +1,3 @@
-import moment from 'moment'
 import Page, { PageElement } from '../page'
 
 export default class UpdateGoalPage extends Page {
