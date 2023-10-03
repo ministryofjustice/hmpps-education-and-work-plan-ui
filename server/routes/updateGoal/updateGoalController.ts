@@ -96,8 +96,10 @@ export default class UpdateGoalController {
   getReviewUpdateGoalView: RequestHandler = async (req, res, next): Promise<void> => {
     const { prisonerSummary } = req.session
     const { updateGoalForm } = req.session
+    const { prisonId } = prisonerSummary
 
-    const view = new ReviewUpdateGoalView(prisonerSummary, updateGoalForm)
+    const updateGoalDto = toUpdateGoalDto(updateGoalForm, prisonId)
+    const view = new ReviewUpdateGoalView(prisonerSummary, updateGoalDto)
     return res.render('pages/goal/update/review', { ...view.renderArgs })
   }
 

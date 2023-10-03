@@ -8,7 +8,10 @@ import UpdateGoalController from './updateGoalController'
 import { aValidActionPlanWithOneGoal, aValidGoal, aValidStep } from '../../testsupport/actionPlanTestDataBuilder'
 import validateUpdateGoalForm from './updateGoalFormValidator'
 import { aValidUpdateGoalForm } from '../../testsupport/updateGoalFormTestDataBuilder'
-import { aValidUpdateGoalDtoWithOneStep } from '../../testsupport/updateGoalDtoTestDataBuilder'
+import {
+  aValidUpdateGoalDtoWithMultipleSteps,
+  aValidUpdateGoalDtoWithOneStep,
+} from '../../testsupport/updateGoalDtoTestDataBuilder'
 import { toUpdateGoalDto } from './mappers/updateGoalFormToUpdateGoalDtoMapper'
 import aValidPrisonerSummary from '../../testsupport/prisonerSummaryTestDataBuilder'
 
@@ -231,9 +234,12 @@ describe('updateGoalController', () => {
       const updateGoalForm = aValidUpdateGoalForm(goalReference)
       req.session.updateGoalForm = updateGoalForm
 
+      const expectedUpdateGoalDto = aValidUpdateGoalDtoWithMultipleSteps()
+      mockedUpdateGoalFormToUpdateGoalDtoMapper.mockReturnValue(expectedUpdateGoalDto)
+
       const expectedView = {
         prisonerSummary,
-        data: updateGoalForm,
+        data: expectedUpdateGoalDto,
       }
 
       // When
@@ -245,6 +251,7 @@ describe('updateGoalController', () => {
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/goal/update/review', expectedView)
+      expect(mockedUpdateGoalFormToUpdateGoalDtoMapper).toHaveBeenCalledWith(updateGoalForm, 'BXI')
     })
   })
 
