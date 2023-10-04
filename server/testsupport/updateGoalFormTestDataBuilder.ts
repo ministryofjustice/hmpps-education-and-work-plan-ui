@@ -26,6 +26,7 @@ const aValidUpdateGoalForm = (reference = '95b18362-fe56-4234-9ad2-11ef98b974a3'
       },
     ],
     action: 'submit-form',
+    originalTargetCompletionDate: '2024-02-29',
   }
 }
 
@@ -51,6 +52,7 @@ const aValidUpdateGoalFormWithIndividualTargetDateFields = (
       },
     ],
     action: 'submit-form',
+    originalTargetCompletionDate: '2024-02-29',
   }
 }
 

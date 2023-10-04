@@ -35,6 +35,7 @@ describe('goalToUpdateGoalFormMapper', () => {
             stepNumber: 2,
           },
         ],
+        originalTargetCompletionDate: '2024-02-29',
       }
 
       // When
