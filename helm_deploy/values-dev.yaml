@@ -7,6 +7,11 @@ generic-service:
   ingress:
     host: learning-and-work-progress-dev.hmpps.service.justice.gov.uk
 
+  scheduledDowntime:
+    enabled: true
+    startup: '30 6 * * 1-5' # Start at 6.30am UTC Monday-Friday
+    shutdown: '00 21 * * 1-5' # Stop at 9.00pm UTC Monday-Friday
+
   env:
     INGRESS_URL: "https://learning-and-work-progress-dev.hmpps.service.justice.gov.uk"
     HMPPS_AUTH_URL: "https://sign-in-dev.hmpps.service.justice.gov.uk/auth"
