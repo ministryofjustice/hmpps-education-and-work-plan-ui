@@ -14,6 +14,7 @@ const toUpdateGoalForm = (goal: Goal): UpdateGoalForm => {
     status: goal.status,
     note: goal.note,
     steps: goal.steps.map(step => toUpdateStepForm(step)),
+    originalTargetCompletionDate: toDateString(goal.targetCompletionDate),
   }
 }
 

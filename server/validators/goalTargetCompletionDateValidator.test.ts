@@ -11,52 +11,27 @@ describe('goalTargetDateValidator', () => {
     expect(errors).toStrictEqual(['Select a target completion date'])
   })
 
-  it('should validate given empty day', () => {
-    // Given
-    const day = ''
-    const month = '02'
-    const year = '2040'
-    // When
-    const errors = validateTargetDate('another-date', day, month, year)
+  Array.of(
+    { day: undefined, month: undefined, year: undefined },
+    { day: '26', month: '40', year: '2024' },
+    { day: '', month: '02', year: '2040' },
+    { day: '26', month: '', year: '2040' },
+    { day: '26', month: '02', year: '' },
+    { day: '26', month: '40', year: '2024' },
+    { day: '][', month: '8', year: '2025' },
+    { day: '2nd', month: '8', year: '2025' },
+    { day: '2', month: 'AUG', year: '2025' },
+    { day: 'X', month: 'X11', year: 'MMXXV' },
+  ).forEach(dateValues => {
+    it(`should validate given an invalid date - day: ${dateValues.day}, month: ${dateValues.month}, year: ${dateValues.year}`, () => {
+      // Given
 
-    // Then
-    expect(errors).toStrictEqual(['Enter a valid date'])
-  })
+      // When
+      const errors = validateTargetDate('another-date', dateValues.day, dateValues.month, dateValues.year)
 
-  it('should validate given empty month', () => {
-    // Given
-    const day = '26'
-    const month = ''
-    const year = '2040'
-    // When
-    const errors = validateTargetDate('another-date', day, month, year)
-
-    // Then
-    expect(errors).toStrictEqual(['Enter a valid date'])
-  })
-
-  it('should validate given empty year', () => {
-    // Given
-    const day = '26'
-    const month = '02'
-    const year = ''
-    // When
-    const errors = validateTargetDate('another-date', day, month, year)
-
-    // Then
-    expect(errors).toStrictEqual(['Enter a valid date'])
-  })
-
-  it('should validate given an invalid date', () => {
-    // Given
-    const day = '26'
-    const month = '40'
-    const year = '2024'
-    // When
-    const errors = validateTargetDate('another-date', day, month, year)
-
-    // Then
-    expect(errors).toStrictEqual(['Enter a valid date'])
+      // Then
+      expect(errors).toStrictEqual(['Enter a valid date'])
+    })
   })
 
   it('should validate given a date in the past', () => {

@@ -34,6 +34,7 @@ declare module 'forms' {
     note?: string
     steps: Array<UpdateStepForm>
     action?: 'add-another-step' | 'submit-form' | 'delete-step-[0]'
+    originalTargetCompletionDate: string
   }
 
   export interface UpdateStepForm {

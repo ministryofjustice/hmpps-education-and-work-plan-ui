@@ -13,10 +13,16 @@ export default function goalTargetCompletionDateValidator(
     return errors
   }
 
-  const proposedDate =
-    targetCompletionDate === 'another-date'
-      ? moment(`${year}-${month?.padStart(2, '0')}-${day?.padStart(2, '0')}`, 'YYYY-MM-DD')
-      : moment(targetCompletionDate, 'YYYY-MM-DD')
+  let proposedDate: moment.Moment
+  if (targetCompletionDate === 'another-date') {
+    if (isNotNumeric(day) || isNotNumeric(month) || isNotNumeric(year)) {
+      errors.push('Enter a valid date')
+      return errors
+    }
+    proposedDate = moment(`${year}-${month?.padStart(2, '0')}-${day?.padStart(2, '0')}`, 'YYYY-MM-DD')
+  } else {
+    proposedDate = moment(targetCompletionDate, 'YYYY-MM-DD')
+  }
 
   if (!proposedDate.isValid()) {
     errors.push('Enter a valid date')
@@ -28,4 +34,8 @@ export default function goalTargetCompletionDateValidator(
   }
 
   return errors
+}
+
+const isNotNumeric = (value: string): boolean => {
+  return Number.isNaN(Number(value))
 }

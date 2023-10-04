@@ -36,7 +36,7 @@ export default class UpdateGoalController {
     req.session.updateGoalForm = undefined
 
     const goalCreatedDate = moment(updateGoalForm.createdAt)
-    const goalTargetCompletionDate = moment(updateGoalForm.targetCompletionDate)
+    const goalTargetCompletionDate = moment(updateGoalForm.originalTargetCompletionDate)
     const goalTargetCompletionDateOption = {
       value: goalTargetCompletionDate.format('YYYY-MM-DD'),
       text: `by ${goalTargetCompletionDate.format('D MMMM YYYY')} (goal created on ${goalCreatedDate.format(
@@ -59,7 +59,7 @@ export default class UpdateGoalController {
 
     // Remove the desired step on the action delete step
     if (updateGoalForm.action && updateGoalForm.action.startsWith('delete-step-')) {
-      // Get the step index inbetween the 2 characters [ ] from the action value
+      // Get the step index in between the 2 characters [ ] from the action value
       const stepIndex = parseInt(updateGoalForm.action.match(/\[(.*?)\]/)[1], 10)
       // Remove the desired step from the array
       updateGoalForm.steps.splice(stepIndex, 1)

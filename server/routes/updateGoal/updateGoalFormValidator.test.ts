@@ -58,6 +58,7 @@ describe('updateGoalFormValidator', () => {
           status: 'ACTIVE',
         },
       ],
+      originalTargetCompletionDate: '2024-02-29',
     }
 
     mockedValidateGoalTitle.mockReturnValue(['some-title-error'])
@@ -92,6 +93,7 @@ describe('updateGoalFormValidator', () => {
           status: 'ACTIVE',
         },
       ],
+      originalTargetCompletionDate: '2024-02-29',
     }
 
     mockedValidateGoalTitle.mockReturnValue([])
@@ -126,6 +128,7 @@ describe('updateGoalFormValidator', () => {
           status: 'ACTIVE',
         },
       ],
+      originalTargetCompletionDate: '2024-02-29',
     }
 
     mockedValidateGoalTitle.mockReturnValue([])
@@ -160,6 +163,7 @@ describe('updateGoalFormValidator', () => {
           status: 'ACTIVE',
         },
       ],
+      originalTargetCompletionDate: '2024-02-29',
     }
 
     mockedValidateGoalTitle.mockReturnValue([])
@@ -194,6 +198,7 @@ describe('updateGoalFormValidator', () => {
           status: undefined,
         },
       ],
+      originalTargetCompletionDate: '2024-02-29',
     }
 
     mockedValidateGoalTitle.mockReturnValue([])
