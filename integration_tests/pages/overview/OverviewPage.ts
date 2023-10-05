@@ -134,7 +134,7 @@ export default class OverviewPage extends Page {
   }
 
   hasCuriousUnavailableMessageDisplayed() {
-    cy.get('h2').contains('We cannot show these details from Curious right now')
+    this.curiousUnavailableMessage().should('be.exist')
     return this
   }
 
@@ -189,4 +189,6 @@ export default class OverviewPage extends Page {
   createCiagInductionLink = (): PageElement => cy.get('[data-qa=link-to-create-ciag-induction]')
 
   notesExpander = (idx: number): PageElement => cy.get(`[data-qa=overview-notes-expander-${idx}]`)
+
+  curiousUnavailableMessage = (): PageElement => cy.get('[data-qa=curious-unavailable-message]')
 }
