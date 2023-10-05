@@ -73,7 +73,7 @@ describe('Support Needs tab view', () => {
     const $ = cheerio.load(compiledTemplate.render(viewContext))
 
     // Then
-    expect($('h2').text()).toEqual('Sorry, the Curious service is currently unavailable.')
+    expect($('h2').text()).toEqual('We cannot show these details from Curious right now')
   })
 })
 
