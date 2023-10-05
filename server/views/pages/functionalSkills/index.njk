@@ -28,117 +28,110 @@
 
   {% include "../../partials/prisonerBanner.njk" %}
 
-  {% if not allFunctionalSkills.problemRetrievingData %}
-
     <div class="govuk-grid-row">
       <div class="govuk-grid-column-two-thirds">
-        <span class="govuk-caption-l">Learning and work progress</span>
-        <h1 class="govuk-heading-l">{{ prisonerSummary.firstName }} {{ prisonerSummary.lastName }}'s functional skills</h1>
+        {% if not allFunctionalSkills.problemRetrievingData %}
 
-        <div class="govuk-summary-card">
-          <div class="govuk-summary-card__title-wrapper">
-            <h2 class="govuk-summary-card__title">Current functional skills</h2>
-            {# Not MVP, Add assesment link
-            <ul class="govuk-summary-card__actions govuk-!-display-none-print">
-                <li class="govuk-summary-card__action">
-                  <a class="govuk-link" href="">Update</a>
-                </li>
-            </ul>
-            #}
-          </div>
-          <div class="govuk-summary-card__content">
-            <table class="govuk-table" id="latest-functional-skills-table">
-              <caption class="govuk-table__caption govuk-visually-hidden">Details of current functional skills</caption>
-              <thead class="govuk-table__head">
-                <tr class="govuk-table__row">
-                  <th scope="col" class="govuk-table__header">Subject</th>
-                  <th scope="col" class="govuk-table__header">Assessed on</th>
-                  <th scope="col" class="govuk-table__header">Level</th>
-                  <th scope="col" class="govuk-table__header">Assessment type</th>
-                  <th scope="col" class="govuk-table__header"><span class="govuk-visually-hidden">Action</span></th>
-                </tr>
-              </thead>
+          <span class="govuk-caption-l">Learning and work progress</span>
+          <h1 class="govuk-heading-l">{{ prisonerSummary.firstName }} {{ prisonerSummary.lastName }}'s functional skills</h1>
 
-              <tbody class="govuk-table__body">
-              {% for assessment in latestFunctionalSkills.assessments %}
-                <tr class="govuk-table__row">
-                  <td class="govuk-table__cell">{{ assessment.type | formatFunctionalSkillType }}</td>
-                  {% if assessment.assessmentDate and assessment.grade %}
-                    <td class="govuk-table__cell">{{ assessment.assessmentDate | formatDate('D MMMM YYYY') }}</td>
-                    <td class="govuk-table__cell">{{ assessment.grade }}</td>
-                    <td class="govuk-table__cell">
-                      Initial
-                    </td>
-                    <td class="govuk-table__cell">
-                      <span class="govuk-hint">Curious</span>
-                    </td>
-                  {% else %}
-                    <td class="govuk-table__cell" colspan="4">No functional skills assessment recorded</td>
-                  {% endif %}
-                </tr>
-              {% endfor %}
-              </tbody>
-            </table>
-          </div>
-        </div>
+          <div class="govuk-summary-card">
+            <div class="govuk-summary-card__title-wrapper">
+              <h2 class="govuk-summary-card__title">Current functional skills</h2>
+              {# Not MVP, Add assesment link
+              <ul class="govuk-summary-card__actions govuk-!-display-none-print">
+                  <li class="govuk-summary-card__action">
+                    <a class="govuk-link" href="">Update</a>
+                  </li>
+              </ul>
+              #}
+            </div>
+            <div class="govuk-summary-card__content">
+              <table class="govuk-table" id="latest-functional-skills-table">
+                <caption class="govuk-table__caption govuk-visually-hidden">Details of current functional skills</caption>
+                <thead class="govuk-table__head">
+                  <tr class="govuk-table__row">
+                    <th scope="col" class="govuk-table__header">Subject</th>
+                    <th scope="col" class="govuk-table__header">Assessed on</th>
+                    <th scope="col" class="govuk-table__header">Level</th>
+                    <th scope="col" class="govuk-table__header">Assessment type</th>
+                    <th scope="col" class="govuk-table__header"><span class="govuk-visually-hidden">Action</span></th>
+                  </tr>
+                </thead>
 
-        <div class="govuk-summary-card">
-          <div class="govuk-summary-card__title-wrapper">
-            <h2 class="govuk-summary-card__title">Assessment history</h2>
+                <tbody class="govuk-table__body">
+                {% for assessment in latestFunctionalSkills.assessments %}
+                  <tr class="govuk-table__row">
+                    <td class="govuk-table__cell">{{ assessment.type | formatFunctionalSkillType }}</td>
+                    {% if assessment.assessmentDate and assessment.grade %}
+                      <td class="govuk-table__cell">{{ assessment.assessmentDate | formatDate('D MMMM YYYY') }}</td>
+                      <td class="govuk-table__cell">{{ assessment.grade }}</td>
+                      <td class="govuk-table__cell">
+                        Initial
+                      </td>
+                      <td class="govuk-table__cell">
+                        <span class="govuk-hint">Curious</span>
+                      </td>
+                    {% else %}
+                      <td class="govuk-table__cell" colspan="4">No functional skills assessment recorded</td>
+                    {% endif %}
+                  </tr>
+                {% endfor %}
+                </tbody>
+              </table>
+            </div>
           </div>
-          <div class="govuk-summary-card__content">
-            <table class="govuk-table" id="functional-skills-assessments-history-table">
-              <caption class="govuk-table__caption govuk-visually-hidden">Details of functional skills assessment history</caption>
-              <thead class="govuk-table__head">
-              <tr class="govuk-table__row">
-                <th scope="col" class="govuk-table__header">Subject</th>
-                <th scope="col" class="govuk-table__header">Assessed on</th>
-                <th scope="col" class="govuk-table__header">Level</th>
-                <th scope="col" class="govuk-table__header">Assessment type</th>
-                <th scope="col" class="govuk-table__header"><span class="govuk-visually-hidden">Source</span></th>
-              </tr>
-              </thead>
 
-              <tbody class="govuk-table__body">
-              {% for assessment in allFunctionalSkills.assessments %}
-                <tr class="govuk-table__row">
-                  <td class="govuk-table__cell">{{ assessment.type | formatFunctionalSkillType }}</td>
-                  {% if assessment.assessmentDate and assessment.grade %}
-                    <td class="govuk-table__cell">{{ assessment.assessmentDate | formatDate('D MMMM YYYY') }}</td>
-                    <td class="govuk-table__cell">{{ assessment.grade }}</td>
-                    <td class="govuk-table__cell">
-                      Initial
-                    </td>
-                    <td class="govuk-table__cell">
-                      <span class="govuk-hint">Curious</span>
-                    </td>
-                  {% else %}
-                    <td class="govuk-table__cell" colspan="4">No functional skills assessment recorded</td>
-                  {% endif %}
-                </tr>
-              {% endfor %}
-              </tbody>
-            </table>
+          <div class="govuk-summary-card">
+            <div class="govuk-summary-card__title-wrapper">
+              <h2 class="govuk-summary-card__title">Assessment history</h2>
+            </div>
+            <div class="govuk-summary-card__content">
+              <table class="govuk-table" id="functional-skills-assessments-history-table">
+                <caption class="govuk-table__caption govuk-visually-hidden">Details of functional skills assessment history</caption>
+                <thead class="govuk-table__head">
+                  <tr class="govuk-table__row">
+                    <th scope="col" class="govuk-table__header">Subject</th>
+                    <th scope="col" class="govuk-table__header">Assessed on</th>
+                    <th scope="col" class="govuk-table__header">Level</th>
+                    <th scope="col" class="govuk-table__header">Assessment type</th>
+                    <th scope="col" class="govuk-table__header"><span class="govuk-visually-hidden">Source</span></th>
+                  </tr>
+                </thead>
+
+                <tbody class="govuk-table__body">
+                {% for assessment in allFunctionalSkills.assessments %}
+                  <tr class="govuk-table__row">
+                    <td class="govuk-table__cell">{{ assessment.type | formatFunctionalSkillType }}</td>
+                    {% if assessment.assessmentDate and assessment.grade %}
+                      <td class="govuk-table__cell">{{ assessment.assessmentDate | formatDate('D MMMM YYYY') }}</td>
+                      <td class="govuk-table__cell">{{ assessment.grade }}</td>
+                      <td class="govuk-table__cell">
+                        Initial
+                      </td>
+                      <td class="govuk-table__cell">
+                        <span class="govuk-hint">Curious</span>
+                      </td>
+                    {% else %}
+                      <td class="govuk-table__cell" colspan="4">No functional skills assessment recorded</td>
+                    {% endif %}
+                  </tr>
+                {% endfor %}
+                </tbody>
+              </table>
+            </div>
           </div>
-        </div>
+
+        {% else %}
+
+          <h2 class="govuk-heading-m">We cannot show these details from Curious right now</h2>
+          <p class="govuk-body">Reload the page or try again later. Other parts of this service may still be available.</p>
+  
+        {% endif %}
 
       </div>
       <div class="govuk-grid-column-one-third">
         {% include "../../partials/printThisPage.njk" %}
       </div>
     </div>
-
-  {% else %}
-
-    <div class="govuk-grid-row">
-      <div class="govuk-grid-column-two-thirds">
-        <h2 class="govuk-heading-m">Sorry, the Curious service is currently unavailable.</h2>
-        <p class="govuk-body">
-          Retrieving data from Curious is currently unavailable. Please try again later. Other functions within
-          this service may still be available.
-        </p>
-      </div>
-    </div>
-
-  {% endif %}
 {% endblock %}
