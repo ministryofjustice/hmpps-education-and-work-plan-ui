@@ -69,7 +69,7 @@ describe('Functional skills sidebar view', () => {
 
       // Then
       expect($('[data-qa=functional-skills-sidebar-error-heading]').text()).toEqual(
-        'Sorry, the Curious service is currently unavailable.',
+        'We cannot show these details from Curious right now',
       )
     })
 
