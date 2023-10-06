@@ -59,7 +59,9 @@ describe('Education and Training tab view - Functional Skills', () => {
     const $ = cheerio.load(compiledTemplate.render(viewContext))
 
     // Then
-    expect($('h2').text()).toEqual('Sorry, the Curious service is currently unavailable.')
+    expect($('[data-qa="curious-unavailable-message"]').text()).toContain(
+      'We cannot show these details from Curious right now',
+    )
   })
 
   it('should render Functional Skill assessment date and grade if both are present for a Functional Skill assessment', () => {

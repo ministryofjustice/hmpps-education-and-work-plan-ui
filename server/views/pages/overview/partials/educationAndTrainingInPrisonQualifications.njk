@@ -1,13 +1,13 @@
-{% if not completedInPrisonEducation.problemRetrievingData %}
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
 
-  <div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
+    <div class="govuk-summary-card">
+      <div class="govuk-summary-card__title-wrapper">
+        <h2 class="govuk-summary-card__title">In-prison qualifications and achievements</h2>
+      </div>
+      <div class="govuk-summary-card__content">
+        {% if not completedInPrisonEducation.problemRetrievingData %}
 
-      <div class="govuk-summary-card">
-        <div class="govuk-summary-card__title-wrapper">
-          <h2 class="govuk-summary-card__title">In-prison qualifications and achievements</h2>
-        </div>
-        <div class="govuk-summary-card__content">
           <table class="govuk-table" id="completed-in-prison-qualifications-table">
             <caption class="govuk-table__caption govuk-visually-hidden">Details in-prison qualifications and achievement that have been completed</caption>
 
@@ -37,22 +37,16 @@
             {% endif %}
             </tbody>
           </table>
-        </div>
+
+        {% else %}
+
+          <h3 class="govuk-heading-s" data-qa="curious-unavailable-message">We cannot show these details from Curious right now</h3>
+          <p class="govuk-body">Reload the page or try again later. Other parts of this service may still be available.</p>
+
+        {% endif %}
+
       </div>
-
     </div>
+
   </div>
-
-{% else %}
-
-  <div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
-      <h2 class="govuk-heading-m" data-qa="curious-unavailable-message">Sorry, the Curious service is currently unavailable.</h2>
-      <p class="govuk-body">
-        Retrieving data from Curious is currently unavailable. Please try again later. Other functions within
-        this service may still be available.
-      </p>
-    </div>
-  </div>
-
-{% endif %}
+</div>

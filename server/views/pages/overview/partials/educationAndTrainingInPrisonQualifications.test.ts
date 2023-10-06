@@ -67,8 +67,9 @@ describe('Education and Training tab view - In Prison Qualifications', () => {
     // When
     const $ = cheerio.load(compiledTemplate.render(viewContext))
 
-    // Then
-    expect($('h2').text()).toContain('Sorry, the Curious service is currently unavailable.')
+    expect($('[data-qa="curious-unavailable-message"]').text()).toContain(
+      'We cannot show these details from Curious right now',
+    )
   })
 
   it('should render grade if present for an In Prison Qualification', () => {
