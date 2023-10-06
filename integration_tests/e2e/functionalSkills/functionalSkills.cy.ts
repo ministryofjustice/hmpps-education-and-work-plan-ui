@@ -84,6 +84,28 @@ context(`Display a prisoner's functional skills`, () => {
       .englishAndMathsAreDisplayedInAssessmentHistoryTable()
   })
 
+  it('should display curious unavailable message given curious is unavailable for the learner profile', () => {
+    // Given
+    cy.task('stubLearnerProfile401Error')
+    cy.task('stubLearnerEducation')
+
+    cy.signIn()
+    const prisonNumber = 'G6115VJ'
+    cy.visit(`/plan/${prisonNumber}/view/overview`)
+    const overviewPage = Page.verifyOnPage(OverviewPage)
+    overviewPage.selectTab('Education and training')
+
+    // When
+    const functionalSkillsPage = overviewPage.clickToViewAllFunctionalSkills()
+
+    // Then
+    functionalSkillsPage
+      .isForPrisoner(prisonNumber)
+      .doesNotHaveFunctionalSkillsDisplayed()
+      .doesNotHaveAssessmentHistoryDisplayed()
+      .hasCuriousUnavailableMessageDisplayed()
+  })
+
   it('should redirect to auth-error page given user does not have any authorities', () => {
     // Given
     cy.task('stubSignIn')

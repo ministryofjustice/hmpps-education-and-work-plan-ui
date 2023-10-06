@@ -52,9 +52,26 @@ export default class FunctionalSkillsPage extends Page {
     return Page.verifyOnPage(OverviewPage)
   }
 
+  doesNotHaveFunctionalSkillsDisplayed() {
+    this.latestFunctionalSkillsTable().should('not.exist')
+    return this
+  }
+
+  doesNotHaveAssessmentHistoryDisplayed() {
+    this.assessmentHistoryTable().should('not.exist')
+    return this
+  }
+
+  hasCuriousUnavailableMessageDisplayed() {
+    this.curiousUnavailableMessage().should('be.exist')
+    return this
+  }
+
   prisonNumberLabel = (): PageElement => cy.get('[data-qa=prison-number]')
 
   latestFunctionalSkillsTable = (): PageElement => cy.get('#latest-functional-skills-table')
 
   assessmentHistoryTable = (): PageElement => cy.get('#functional-skills-assessments-history-table')
+
+  curiousUnavailableMessage = (): PageElement => cy.get('[data-qa=curious-unavailable-message]')
 }
