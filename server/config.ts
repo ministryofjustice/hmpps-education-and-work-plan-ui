@@ -117,6 +117,7 @@ export default {
   environmentName: get('ENVIRONMENT_NAME', ''),
   dpsHomeUrl: get('DPS_URL', 'http://localhost:3000/', requiredInProduction),
   ciagInductionUrl: get('CIAG_INDUCTION_UI_URL', 'http://localhost:3000', requiredInProduction),
+  gtmContainerId: get('GOOGLE_TAG_MANAGER_CONTAINER_ID', null),
   featureToggles: {
     // someToggleEnabled: toBoolean(get('SOME_TOGGLE_ENABLED', false)),
     stubPrisonerListPageEnabled: toBoolean(get('STUB_PRISONER_LIST_PAGE_ENABLED', false)),

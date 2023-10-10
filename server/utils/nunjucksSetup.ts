@@ -73,6 +73,7 @@ export function registerNunjucks(app?: express.Express): Environment {
   njkEnv.addFilter('fallbackMessage', fallbackMessageFilter)
 
   njkEnv.addGlobal('dpsUrl', config.dpsHomeUrl)
+  njkEnv.addGlobal('gtmContainerId', config.gtmContainerId)
   njkEnv.addGlobal('ciagInductionUrl', config.ciagInductionUrl)
   njkEnv.addGlobal(
     'prisonerListUrl',
