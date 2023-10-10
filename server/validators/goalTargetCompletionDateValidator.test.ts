@@ -13,6 +13,7 @@ describe('goalTargetDateValidator', () => {
 
   Array.of(
     { day: undefined, month: undefined, year: undefined },
+    { day: '26', month: '4', year: '24' },
     { day: '26', month: '40', year: '2024' },
     { day: '', month: '02', year: '2040' },
     { day: '26', month: '', year: '2040' },
