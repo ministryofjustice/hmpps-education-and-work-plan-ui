@@ -15,7 +15,7 @@ export default function goalTargetCompletionDateValidator(
 
   let proposedDate: moment.Moment
   if (targetCompletionDate === 'another-date') {
-    if (isNotNumeric(day) || isNotNumeric(month) || isNotNumeric(year)) {
+    if (!(isOneOrTwoDigits(day) && isOneOrTwoDigits(month) && isFourDigits(year))) {
       errors.push('Enter a valid date')
       return errors
     }
@@ -36,6 +36,10 @@ export default function goalTargetCompletionDateValidator(
   return errors
 }
 
-const isNotNumeric = (value: string): boolean => {
-  return Number.isNaN(Number(value))
+const isOneOrTwoDigits = (value: string): boolean => {
+  return !Number.isNaN(Number(value)) && (value.length === 1 || value.length === 2)
+}
+
+const isFourDigits = (value: string): boolean => {
+  return !Number.isNaN(Number(value)) && value.length === 4
 }
