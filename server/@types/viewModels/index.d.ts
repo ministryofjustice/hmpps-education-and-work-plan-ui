@@ -2,11 +2,11 @@ declare module 'viewModels' {
   export interface PrisonerSummary {
     prisonNumber: string
     prisonId: string
-    releaseDate: string // TODO ideally change to a Date?
+    releaseDate?: Date
     firstName: string
     lastName: string
-    receptionDate: string
-    dateOfBirth: string
+    receptionDate?: Date
+    dateOfBirth?: Date
   }
 
   export interface PrisonerSupportNeeds {

@@ -1,13 +1,14 @@
+import moment from 'moment'
 import type { PrisonerSummary } from 'viewModels'
 
 export default function aValidPrisonerSummary(prisonNumber = 'A1234BC', prisonId = 'BXI'): PrisonerSummary {
   return {
     prisonNumber,
     prisonId,
-    releaseDate: '2025-12-31',
+    releaseDate: moment('2025-12-31').toDate(),
     firstName: 'Jimmy',
     lastName: 'Lightfingers',
-    receptionDate: '1999-08-29',
-    dateOfBirth: '1969-02-12',
+    receptionDate: moment('1999-08-29').toDate(),
+    dateOfBirth: moment('1969-02-12').toDate(),
   }
 }

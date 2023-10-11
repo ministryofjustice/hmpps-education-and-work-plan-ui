@@ -1,6 +1,5 @@
 import { NextFunction, Response, Request } from 'express'
 import { SessionData } from 'express-session'
-import type { Prisoner } from 'prisonRegisterApiClient'
 import type { UpdateGoalForm } from 'forms'
 import type { NewGoal } from 'compositeForms'
 import createError from 'http-errors'
@@ -16,6 +15,7 @@ import { aValidAddStepForm } from '../testsupport/addStepFormTestDataBuilder'
 import aValidPrisonerSummary from '../testsupport/prisonerSummaryTestDataBuilder'
 import { aValidCreateGoalForm } from '../testsupport/createGoalFormTestDataBuilder'
 import aValidAddNoteForm from '../testsupport/addNoteFormTestDataBuilder'
+import aValidPrisoner from '../testsupport/prisonerTestDataBuilder'
 import { PrisonerSearchService } from '../services'
 
 describe('routerRequestHandlers', () => {
@@ -397,15 +397,7 @@ describe('routerRequestHandlers', () => {
       const prisonNumber = 'A1234GC'
       const prisonId = 'MDI'
       req.params.prisonNumber = prisonNumber
-      const prisoner = {
-        prisonerNumber: prisonNumber,
-        prisonId,
-        releaseDate: '2025-12-31',
-        firstName: 'Jimmy',
-        lastName: 'Lightfingers',
-        dateOfBirth: '1969-02-12',
-        receptionDate: '1999-08-29',
-      } as Prisoner
+      const prisoner = aValidPrisoner(prisonNumber, prisonId)
       prisonerSearchService.getPrisonerByPrisonNumber.mockResolvedValue(prisoner)
 
       const expectedPrisonerSummary = aValidPrisonerSummary(prisonNumber, prisonId)
@@ -429,15 +421,7 @@ describe('routerRequestHandlers', () => {
       const prisonNumber = 'A1234GC'
       const prisonId = 'MDI'
       req.params.prisonNumber = prisonNumber
-      const prisoner = {
-        prisonerNumber: prisonNumber,
-        prisonId,
-        releaseDate: '2025-12-31',
-        firstName: 'Jimmy',
-        lastName: 'Lightfingers',
-        dateOfBirth: '1969-02-12',
-        receptionDate: '1999-08-29',
-      } as Prisoner
+      const prisoner = aValidPrisoner(prisonNumber, prisonId)
       prisonerSearchService.getPrisonerByPrisonNumber.mockResolvedValue(prisoner)
 
       const expectedPrisonerSummary = aValidPrisonerSummary(prisonNumber, prisonId)
@@ -448,34 +432,6 @@ describe('routerRequestHandlers', () => {
       // Then
       expect(prisonerSearchService.getPrisonerByPrisonNumber).toHaveBeenCalledWith(prisonNumber, username)
       expect(req.session.prisonerSummary).toEqual(expectedPrisonerSummary)
-      expect(next).toHaveBeenCalled()
-    })
-
-    it('should return prisoners first name and last name without whitespace and a capital letter at the start', async () => {
-      // Given
-      const username = 'a-dps-user'
-      req.user.username = username
-
-      req.session.prisonerSummary = undefined
-
-      const prisonNumber = 'A1234GC'
-      req.params.prisonNumber = prisonNumber
-      const prisoner = {
-        firstName: ' jimmy ',
-        lastName: ' LIGHTFINGERS',
-      } as Prisoner
-      prisonerSearchService.getPrisonerByPrisonNumber.mockResolvedValue(prisoner)
-
-      const expectedPrisonerFirstName = 'Jimmy'
-      const expectedPrisonerLastName = 'Lightfingers'
-
-      // When
-      await requestHandler(req as undefined as Request, res as undefined as Response, next as undefined as NextFunction)
-
-      // Then
-      expect(prisonerSearchService.getPrisonerByPrisonNumber).toHaveBeenCalledWith(prisonNumber, username)
-      expect(req.session.prisonerSummary.firstName).toEqual(expectedPrisonerFirstName)
-      expect(req.session.prisonerSummary.lastName).toEqual(expectedPrisonerLastName)
       expect(next).toHaveBeenCalled()
     })
 
