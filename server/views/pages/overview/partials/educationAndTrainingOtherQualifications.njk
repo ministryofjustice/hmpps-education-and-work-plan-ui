@@ -1,13 +1,13 @@
-{% if not otherQualifications.problemRetrievingData %}
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
 
-  <div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
+    <div class="govuk-summary-card">
+      <div class="govuk-summary-card__title-wrapper">
+        <h2 class="govuk-summary-card__title">Other qualifications and history</h2>
+      </div>
+      <div class="govuk-summary-card__content">
+        {% if not otherQualifications.problemRetrievingData %}
 
-      <div class="govuk-summary-card">
-        <div class="govuk-summary-card__title-wrapper">
-          <h2 class="govuk-summary-card__title">Other qualifications and history</h2>
-        </div>
-        <div class="govuk-summary-card__content">
           <dl class="govuk-summary-list" id="other-qualifications-list">
             <div class="govuk-summary-list__row">
               <dt class="govuk-summary-list__key">
@@ -30,22 +30,16 @@
               </dd>
             </div>
           </dl>
-        </div>
+
+        {% else %}
+
+          <h3 class="govuk-heading-s" data-qa="ciag-unavailable-message">We cannot show these details right now</h3>
+          <p class="govuk-body">Reload the page or try again later. Other parts of this service may still be available.</p>
+
+        {% endif %}
+
       </div>
-
     </div>
+
   </div>
-
-{% else %}
-
-  <div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
-      <h2 class="govuk-heading-m">Sorry, the CIAG Induction service is currently unavailable.</h2>
-      <p class="govuk-body">
-        Retrieving data from CIAG Induction service is currently unavailable. Please try again later. Other functions
-        within this service may still be available.
-      </p>
-    </div>
-  </div>
-
-{% endif %}
+</div>
