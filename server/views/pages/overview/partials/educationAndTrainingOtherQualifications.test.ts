@@ -45,7 +45,7 @@ describe('Education and Training tab view - Other Qualifications and history', (
     ).toContain('Health and safety')
   })
 
-  it('should render content saying curious is unavailable given problem retrieving data is true', () => {
+  it('should render content saying CIAG is unavailable given problem retrieving data is true', () => {
     // Given
     viewContext = {
       prisonerSummary,
@@ -59,6 +59,6 @@ describe('Education and Training tab view - Other Qualifications and history', (
     const $ = cheerio.load(compiledTemplate.render(viewContext))
 
     // Then
-    expect($('h2').text()).toContain('Sorry, the CIAG Induction service is currently unavailable.')
+    expect($('[data-qa=ciag-unavailable-message]').text()).toEqual('We cannot show these details right now')
   })
 })
