@@ -139,7 +139,7 @@ export default class OverviewPage extends Page {
   }
 
   hasCiagInductionApiUnavailableMessageDisplayed() {
-    cy.get('h2').contains('Sorry, the CIAG Induction service is currently unavailable')
+    this.ciagUnavailableMessage().should('be.exist')
     return this
   }
 
@@ -191,4 +191,6 @@ export default class OverviewPage extends Page {
   notesExpander = (idx: number): PageElement => cy.get(`[data-qa=overview-notes-expander-${idx}]`)
 
   curiousUnavailableMessage = (): PageElement => cy.get('[data-qa=curious-unavailable-message]')
+
+  ciagUnavailableMessage = (): PageElement => cy.get('[data-qa=ciag-unavailable-message]')
 }
