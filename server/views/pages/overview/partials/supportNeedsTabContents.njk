@@ -88,7 +88,7 @@
                           <li>{{ supportNeeded }}</li>
                         {% endfor %}
                       </ul>
-                      <p class="govuk-body-s">Recorded on {{ neurodiversity.supportNeededRecordedDate | formatDate('D MMMM YYYY') }}</p>
+                      <p class="govuk-body-s govuk-hint">Recorded on {{ neurodiversity.supportNeededRecordedDate | formatDate('D MMMM YYYY') }}</p>
                     {% else %}
                       Not recorded in Curious
                     {% endif %}
@@ -105,7 +105,7 @@
                           <li>{{ assessed }}</li>
                         {% endfor %}
                       </ul>
-                      <p class="govuk-body-s">Recorded on {{ neurodiversity.assessmentDate | formatDate('D MMMM YYYY') }}</p>
+                      <p class="govuk-body-s govuk-hint">Recorded on {{ neurodiversity.assessmentDate | formatDate('D MMMM YYYY') }}</p>
                     {% else %}
                       Not recorded in Curious
                     {% endif %}
@@ -122,7 +122,7 @@
                           <li>{{ selfDeclared }}</li>
                         {% endfor %}
                       </ul>
-                      <p class="govuk-body-s">Recorded on {{ neurodiversity.selfDeclaredRecordedDate | formatDate('D MMMM YYYY') }}</p>
+                      <p class="govuk-body-s govuk-hint">Recorded on {{ neurodiversity.selfDeclaredRecordedDate | formatDate('D MMMM YYYY') }}</p>
                     {% else %}
                       Not recorded in Curious
                     {% endif %}
