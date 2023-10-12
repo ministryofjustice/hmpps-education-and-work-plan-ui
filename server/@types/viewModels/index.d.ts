@@ -7,6 +7,12 @@ declare module 'viewModels' {
     lastName: string
     receptionDate?: Date
     dateOfBirth?: Date
+    location: string
+  }
+
+  export interface PrisonerSearchSummary extends PrisonerSummary {
+    hasCiagInduction: boolean
+    hasActionPlan: boolean
   }
 
   export interface PrisonerSupportNeeds {

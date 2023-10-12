@@ -10,5 +10,6 @@ export default function aValidPrisonerSummary(prisonNumber = 'A1234BC', prisonId
     lastName: 'Lightfingers',
     receptionDate: moment('1999-08-29').toDate(),
     dateOfBirth: moment('1969-02-12').toDate(),
+    location: 'A-1-102',
   }
 }

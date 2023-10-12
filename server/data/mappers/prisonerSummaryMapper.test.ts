@@ -28,6 +28,7 @@ describe('prisonerSummaryMapper', () => {
       lastName: 'LIGHTFINGERS',
       receptionDate: '',
       dateOfBirth: '',
+      cellLocation: 'A-1-102',
     }
 
     const expected: PrisonerSummary = {
@@ -38,6 +39,7 @@ describe('prisonerSummaryMapper', () => {
       lastName: 'Lightfingers',
       receptionDate: null,
       dateOfBirth: null,
+      location: 'A-1-102',
     }
 
     // When
@@ -57,6 +59,7 @@ describe('prisonerSummaryMapper', () => {
       lastName: '  LIGHTFinGerS ',
       receptionDate: '1999-08-29',
       dateOfBirth: '1969-02-12',
+      cellLocation: 'A-1-102',
     }
 
     const expected: PrisonerSummary = {
@@ -67,6 +70,7 @@ describe('prisonerSummaryMapper', () => {
       lastName: 'Lightfingers',
       receptionDate: moment('1999-08-29').toDate(),
       dateOfBirth: moment('1969-02-12').toDate(),
+      location: 'A-1-102',
     }
 
     // When
