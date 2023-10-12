@@ -9,5 +9,6 @@ export default function aValidPrisoner(prisonNumber = 'A1234BC', prisonId = 'BXI
     lastName: 'LIGHTFINGERS',
     receptionDate: '1999-08-29',
     dateOfBirth: '1969-02-12',
+    cellLocation: 'A-1-102',
   }
 }
