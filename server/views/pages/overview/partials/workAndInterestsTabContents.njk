@@ -61,7 +61,7 @@
             {% endif %}
             {% endif %}
           </dl>
-          <p class="govuk-hint">Last updated: {{ workAndInterests.data.workExperience.updatedAt | formatDate('DD MMMM YYYY') }} by {{ workAndInterests.data.workExperience.updatedBy }}</p>
+          <p class="govuk-hint">Last updated: {{ workAndInterests.data.workExperience.updatedAt | formatDate('DD MMMM YYYY') }}<span class="govuk-!-display-none-print"> by {{ workAndInterests.data.workExperience.updatedBy }}</span></p>
         </div>
       </div>
 
@@ -141,7 +141,7 @@
             </div>
             {% endif %}
           </dl>
-          <p class="govuk-hint">Last updated: {{ workAndInterests.data.workInterests.updatedAt | formatDate('DD MMMM YYYY') }} by {{ workAndInterests.data.workInterests.updatedBy }}</p>
+          <p class="govuk-hint">Last updated: {{ workAndInterests.data.workInterests.updatedAt | formatDate('DD MMMM YYYY') }}<span class="govuk-!-display-none-print"> by {{ workAndInterests.data.workInterests.updatedBy }}</span></p>
         </div>
       </div>
       {% endif %}
@@ -203,7 +203,7 @@
               </dd>
             </div>
           </dl>
-          <p class="govuk-hint">Last updated: {{ workAndInterests.data.skillsAndInterests.updatedAt | formatDate('DD MMMM YYYY') }} by {{ workAndInterests.data.skillsAndInterests.updatedBy }}</p>
+          <p class="govuk-hint">Last updated: {{ workAndInterests.data.skillsAndInterests.updatedAt | formatDate('DD MMMM YYYY') }}<span class="govuk-!-display-none-print"> by {{ workAndInterests.data.skillsAndInterests.updatedBy }}</span></p>
         </div>
       </div>
 
