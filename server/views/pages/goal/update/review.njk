@@ -18,9 +18,33 @@
 
       <h2 class="govuk-heading-m govuk-visually-hidden">Goal details</h2>
 
+      {% set goalStatusHtml %}
+        {% if data.status == "COMPLETED" %}
+          <strong class="govuk-tag govuk-tag--green">
+            {{ data.status | formatGoalStatusValue }}
+          </strong>
+        {% elif data.status == "ACTIVE" %}
+          <strong class="govuk-tag govuk-tag--blue">
+            {{ data.status | formatGoalStatusValue }}
+          </strong>
+        {% else %}
+          <strong class="govuk-tag govuk-tag--grey">
+            {{ data.status | formatGoalStatusValue }}
+          </strong>
+        {% endif %}
+      {% endset %}
+
       {{ govukSummaryList({
         classes: 'govuk-!-margin-bottom-9',
         rows: [
+          {
+            key: {
+              text: "Status"
+            },
+            value: {
+              html: goalStatusHtml
+            }
+          },
           {
             key: {
               text: "Description"
@@ -39,14 +63,6 @@
           },
           {
             key: {
-              text: "Status"
-            },
-            value: {
-              text: data.status | formatGoalStatusValue
-            }
-          },
-          {
-            key: {
               text: "Note"
             },
             value: {
@@ -54,8 +70,7 @@
             }
           }
         ]
-      }) }}     
-
+      }) }}
       <table class="govuk-table">
         <caption class="govuk-table__caption govuk-table__caption--m govuk-visually-hidden">Step details</caption>
         <thead class="govuk-table__head govuk-visually-hidden">
@@ -67,11 +82,24 @@
         </thead>
         <tbody class="govuk-table__body">
           {% for step in data.steps %}
-          <tr class="govuk-table__row">
-            <th scope="row" class="govuk-table__header">Step {{ step.sequenceNumber }}</th>
-            <td class="govuk-table__cell">{{ step.title }}</td>
-            <td class="govuk-table__cell">{{ step.status | formatStepStatusValue }}</td>
-          </tr>
+
+            {% if step.status == "COMPLETE" %}
+              {% set tagClass = "govuk-tag--green" %}
+            {% elif step.status == "ACTIVE" %}
+              {% set tagClass = "govuk-tag--blue" %}
+            {% else %}
+              {% set tagClass = "govuk-tag--grey" %}
+            {% endif %}
+
+            <tr class="govuk-table__row">
+              <th scope="row" class="govuk-table__header">Step {{ step.sequenceNumber }}</th>
+              <td class="govuk-table__cell">{{ step.title }}</td>
+              <td class="govuk-table__cell">
+                <strong class="govuk-tag {{ tagClass }}">
+                  {{ step.status | formatStepStatusValue }}
+                </strong>
+              </td>
+            </tr>
           {% endfor %}
         </tbody>
       </table>
