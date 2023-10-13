@@ -83,22 +83,26 @@
         <tbody class="govuk-table__body">
           {% for step in data.steps %}
 
-            {% if step.status == "COMPLETE" %}
-              {% set tagClass = "govuk-tag--green" %}
-            {% elif step.status == "ACTIVE" %}
-              {% set tagClass = "govuk-tag--blue" %}
-            {% else %}
-              {% set tagClass = "govuk-tag--grey" %}
-            {% endif %}
+            {% set stepStatusHtml %}
+              {% if step.status == "COMPLETE" %}
+                <strong class="govuk-tag govuk-tag--green">
+                  {{ step.status | formatStepStatusValue }}
+                </strong>
+              {% elif step.status == "ACTIVE" %}
+                <strong class="govuk-tag govuk-tag--blue">
+                  {{ step.status | formatStepStatusValue }}
+                </strong>
+              {% else %}
+                <strong class="govuk-tag govuk-tag--grey">
+                  {{ step.status | formatStepStatusValue }}
+                </strong>
+              {% endif %}
+            {% endset %}
 
             <tr class="govuk-table__row">
               <th scope="row" class="govuk-table__header">Step {{ step.sequenceNumber }}</th>
               <td class="govuk-table__cell">{{ step.title }}</td>
-              <td class="govuk-table__cell">
-                <strong class="govuk-tag {{ tagClass }}">
-                  {{ step.status | formatStepStatusValue }}
-                </strong>
-              </td>
+              <td class="govuk-table__cell">{{ stepStatusHtml | safe }}</td>
             </tr>
           {% endfor %}
         </tbody>
