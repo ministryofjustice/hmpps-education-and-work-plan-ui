@@ -102,7 +102,7 @@
             <tr class="govuk-table__row">
               <th scope="row" class="govuk-table__header">Step {{ step.sequenceNumber }}</th>
               <td class="govuk-table__cell">{{ step.title }}</td>
-              <td class="govuk-table__cell">{{ stepStatusHtml | safe }}</td>
+              <td class="govuk-table__cell govuk-!-text-align-right">{{ stepStatusHtml | safe }}</td>
             </tr>
           {% endfor %}
         </tbody>
