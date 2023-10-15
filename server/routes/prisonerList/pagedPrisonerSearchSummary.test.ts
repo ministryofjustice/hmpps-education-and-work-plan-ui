@@ -189,7 +189,7 @@ describe('pagedPrisonerSearchSummary', () => {
 
   describe('sortOn', () => {
     describe('name', () => {
-      it(`should sort on name ascending`, () => {
+      it('should sort on name ascending', () => {
         // Given
         const prisonerSearchSummaries = [terrySmith, jimAardvark, bobSmith]
         const pagedPrisonerSearchSummaries = new PagedPrisonerSearchSummary(prisonerSearchSummaries, 10)
@@ -201,7 +201,7 @@ describe('pagedPrisonerSearchSummary', () => {
         expect(pagedPrisonerSearchSummaries.getCurrentPageResults()).toEqual([jimAardvark, bobSmith, terrySmith])
       })
 
-      it(`should sort on name descending`, () => {
+      it('should sort on name descending', () => {
         // Given
         const prisonerSearchSummaries = [terrySmith, jimAardvark, bobSmith]
         const pagedPrisonerSearchSummaries = new PagedPrisonerSearchSummary(prisonerSearchSummaries, 10)
@@ -215,7 +215,7 @@ describe('pagedPrisonerSearchSummary', () => {
     })
 
     describe('location', () => {
-      it(`should sort on location ascending`, () => {
+      it('should sort on location ascending', () => {
         // Given
         const prisonerSearchSummaries = [
           terrySmith, // C-1-1024
@@ -239,7 +239,7 @@ describe('pagedPrisonerSearchSummary', () => {
         ])
       })
 
-      it(`should sort on location descending`, () => {
+      it('should sort on location descending', () => {
         // Given
         const prisonerSearchSummaries = [
           terrySmith, // C-1-1024
@@ -265,7 +265,7 @@ describe('pagedPrisonerSearchSummary', () => {
     })
 
     describe('release date', () => {
-      it(`should sort on release date ascending`, () => {
+      it('should sort on release date ascending', () => {
         // Given
         const prisonerSearchSummaries = [
           terrySmith, // 2030-12-31
@@ -289,7 +289,7 @@ describe('pagedPrisonerSearchSummary', () => {
         ])
       })
 
-      it(`should sort on release date descending`, () => {
+      it('should sort on release date descending', () => {
         // Given
         const prisonerSearchSummaries = [
           terrySmith, // 2030-12-31
@@ -315,7 +315,7 @@ describe('pagedPrisonerSearchSummary', () => {
     })
 
     describe('reception date', () => {
-      it(`should sort on reception date ascending`, () => {
+      it('should sort on reception date ascending', () => {
         // Given
         const prisonerSearchSummaries = [
           terrySmith, // no reception date
@@ -339,7 +339,7 @@ describe('pagedPrisonerSearchSummary', () => {
         ])
       })
 
-      it(`should sort on reception date descending`, () => {
+      it('should sort on reception date descending', () => {
         // Given
         const prisonerSearchSummaries = [
           terrySmith, // no reception date
@@ -365,7 +365,7 @@ describe('pagedPrisonerSearchSummary', () => {
     })
 
     describe('status', () => {
-      it(`should sort on status ascending`, () => {
+      it('should sort on status ascending', () => {
         // Given
         const prisonerSearchSummaries = [
           terrySmith, // hasCiagInduction: true, hasActionPlan: true; status = ''
@@ -383,7 +383,7 @@ describe('pagedPrisonerSearchSummary', () => {
         ])
       })
 
-      it(`should sort on status descending`, () => {
+      it('should sort on status descending', () => {
         // Given
         const prisonerSearchSummaries = [
           terrySmith, // hasCiagInduction: true, hasActionPlan: true; status = ''
