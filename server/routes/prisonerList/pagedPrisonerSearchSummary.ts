@@ -5,8 +5,8 @@ import type { PrisonerSearchSummary } from 'viewModels'
  * A class encapsulating an array of [PrisonerSearchSummary] records, exposing them as a paged collection.
  * The class exposes methods to sort, filter, change page and return the current page of records.
  *
- * All fields that represent indexes (`currentPage`, `resultIndexFrom` and `resultIndexTo`) are 1 indexed to make it
- * easier for view concerns to interact with this class.
+ * All fields that represent indexes (`currentPageNumber`, `resultIndexFrom` and `resultIndexTo`) are 1 indexed to make
+ * it easier for view concerns to interact with this class.
  *
  * The internal state of this class is mutable. Of particular note is the internal array of [PrisonerSearchSummary] records
  * which is mutated by the `filter` method. Calling the `filter` method removes elements from the internal array of
@@ -15,7 +15,7 @@ import type { PrisonerSearchSummary } from 'viewModels'
 export default class PagedPrisonerSearchSummary {
   private prisonerSearchSummaries: PrisonerSearchSummary[]
 
-  currentPage: number
+  currentPageNumber: number
 
   totalPages: number
 
@@ -35,7 +35,7 @@ export default class PagedPrisonerSearchSummary {
     this.prisonerSearchSummaries = prisonerSearchSummaries
     this.pageSize = pageSize
     this.totalPages = Math.ceil(prisonerSearchSummaries.length / pageSize)
-    this.setCurrentPage(1)
+    this.setCurrentPageNumber(1)
   }
 
   /**
@@ -47,10 +47,10 @@ export default class PagedPrisonerSearchSummary {
    * This method also updates the `resultIndexFrom` and `resultIndexTo` fields to allow view concerns to be able to render
    * content such as "Showing records x thru y"
    */
-  setCurrentPage = (pageNumber: number): PagedPrisonerSearchSummary => {
-    this.currentPage = Math.min(this.totalPages, Math.max(1, pageNumber))
+  setCurrentPageNumber = (pageNumber: number): PagedPrisonerSearchSummary => {
+    this.currentPageNumber = Math.min(this.totalPages, Math.max(1, pageNumber))
     this.totalResults = this.prisonerSearchSummaries.length
-    this.resultIndexFrom = Math.min(1 + (this.currentPage - 1) * this.pageSize, this.totalResults)
+    this.resultIndexFrom = Math.min(1 + (this.currentPageNumber - 1) * this.pageSize, this.totalResults)
     this.resultIndexTo = Math.min(this.resultIndexFrom + this.pageSize - 1, this.totalResults)
     return this
   }
@@ -63,9 +63,8 @@ export default class PagedPrisonerSearchSummary {
    * The returned array is a deep clone of the elements from the internal array. This means that mutating elements in
    * the returned array will not affect the elements in the internal array.
    */
-  getCurrentPageResults = (): PrisonerSearchSummary[] => {
-    return structuredClone(this.prisonerSearchSummaries.slice(this.resultIndexFrom - 1, this.resultIndexTo))
-  }
+  getCurrentPage = (): PrisonerSearchSummary[] =>
+    structuredClone(this.prisonerSearchSummaries.slice(this.resultIndexFrom - 1, this.resultIndexTo))
 
   /**
    * Filters and replaces the internal array of [PrisonerSearchSummary] records based on the specified filter field and value.
@@ -82,7 +81,7 @@ export default class PagedPrisonerSearchSummary {
       this.prisonerSearchSummaries = this.prisonerSearchSummaries.filter(
         this.prisonerSearchSummaryFilter(filterBy, value),
       )
-      this.setCurrentPage(1)
+      this.setCurrentPageNumber(1)
     }
 
     return this
@@ -116,7 +115,7 @@ export default class PagedPrisonerSearchSummary {
    * it does not remove any records, therefore the current page can be maintained (though the current page may
    * contain different records than before the sort operation was performed)
    */
-  sortOn = (sortBy: SortBy, sortOrder: SortOrder): PagedPrisonerSearchSummary => {
+  sort = (sortBy: SortBy, sortOrder: SortOrder): PagedPrisonerSearchSummary => {
     this.prisonerSearchSummaries = this.prisonerSearchSummaries.sort(
       this.prisonerSearchSummariesComparator(sortBy, sortOrder),
     )
@@ -186,26 +185,20 @@ export default class PagedPrisonerSearchSummary {
 /**
  * Return the prisoner's name in the format `LASTNAME-FORENAME` for the purpose of sorting
  */
-const sortableName = (prisonerSearchSummary: PrisonerSearchSummary): string => {
-  return `${prisonerSearchSummary.lastName.trim().toUpperCase()}-${prisonerSearchSummary.firstName
-    .trim()
-    .toUpperCase()}`
-}
+const sortableName = (prisonerSearchSummary: PrisonerSearchSummary): string =>
+  `${prisonerSearchSummary.lastName.trim().toUpperCase()}-${prisonerSearchSummary.firstName.trim().toUpperCase()}`
 
 /**
  * Return the specified date, unless it is null/undefined, in which case return the maximum possible date; for th purpose of sorting
  * Javascript's max date is +275760-09-13T00:00:00.000Z
  */
-const sortableDate = (date?: Date): Date => {
-  return date || moment(8640000000000000).toDate()
-}
+const sortableDate = (date?: Date): Date => date || moment(8640000000000000).toDate()
 
 /**
  * Returns the status for the purpose of sorting and filtering. Currently, we only support one status (NEEDS_PLAN)
  */
-const sortableFilterableStatus = (prisonerSearchSummary: PrisonerSearchSummary): string => {
-  return prisonerSearchSummary.hasCiagInduction && prisonerSearchSummary.hasActionPlan ? '' : 'NEEDS_PLAN'
-}
+const sortableFilterableStatus = (prisonerSearchSummary: PrisonerSearchSummary): string =>
+  prisonerSearchSummary.hasCiagInduction && prisonerSearchSummary.hasActionPlan ? '' : 'NEEDS_PLAN'
 
 export enum SortBy {
   NAME,

@@ -66,7 +66,7 @@ describe('pagedPrisonerSearchSummary', () => {
       expect(pagedPrisonerSearchSummaries.pageSize).toEqual(5)
       expect(pagedPrisonerSearchSummaries.totalResults).toEqual(3)
       expect(pagedPrisonerSearchSummaries.totalPages).toEqual(1)
-      expect(pagedPrisonerSearchSummaries.currentPage).toEqual(1)
+      expect(pagedPrisonerSearchSummaries.currentPageNumber).toEqual(1)
       expect(pagedPrisonerSearchSummaries.resultIndexFrom).toEqual(1)
       expect(pagedPrisonerSearchSummaries.resultIndexTo).toEqual(3)
     })
@@ -83,7 +83,7 @@ describe('pagedPrisonerSearchSummary', () => {
       expect(pagedPrisonerSearchSummaries.pageSize).toEqual(2)
       expect(pagedPrisonerSearchSummaries.totalResults).toEqual(3)
       expect(pagedPrisonerSearchSummaries.totalPages).toEqual(2)
-      expect(pagedPrisonerSearchSummaries.currentPage).toEqual(1)
+      expect(pagedPrisonerSearchSummaries.currentPageNumber).toEqual(1)
       expect(pagedPrisonerSearchSummaries.resultIndexFrom).toEqual(1)
       expect(pagedPrisonerSearchSummaries.resultIndexTo).toEqual(2)
     })
@@ -100,13 +100,13 @@ describe('pagedPrisonerSearchSummary', () => {
       expect(pagedPrisonerSearchSummaries.pageSize).toEqual(3)
       expect(pagedPrisonerSearchSummaries.totalResults).toEqual(3)
       expect(pagedPrisonerSearchSummaries.totalPages).toEqual(1)
-      expect(pagedPrisonerSearchSummaries.currentPage).toEqual(1)
+      expect(pagedPrisonerSearchSummaries.currentPageNumber).toEqual(1)
       expect(pagedPrisonerSearchSummaries.resultIndexFrom).toEqual(1)
       expect(pagedPrisonerSearchSummaries.resultIndexTo).toEqual(3)
     })
   })
 
-  describe('setCurrentPage', () => {
+  describe('setCurrentPageNumber', () => {
     it('should set current page given page number less than 1', () => {
       // Given
       const pageSize = 2
@@ -116,10 +116,10 @@ describe('pagedPrisonerSearchSummary', () => {
       const pageNumber = 0
 
       // When
-      pagedPrisonerSearchSummaries.setCurrentPage(pageNumber)
+      pagedPrisonerSearchSummaries.setCurrentPageNumber(pageNumber)
 
       // Then
-      expect(pagedPrisonerSearchSummaries.currentPage).toEqual(1) // expect first page to be set
+      expect(pagedPrisonerSearchSummaries.currentPageNumber).toEqual(1) // expect first page to be set
       expect(pagedPrisonerSearchSummaries.resultIndexFrom).toEqual(1)
       expect(pagedPrisonerSearchSummaries.resultIndexTo).toEqual(2)
     })
@@ -133,10 +133,10 @@ describe('pagedPrisonerSearchSummary', () => {
       const pageNumber = 3
 
       // When
-      pagedPrisonerSearchSummaries.setCurrentPage(pageNumber)
+      pagedPrisonerSearchSummaries.setCurrentPageNumber(pageNumber)
 
       // Then
-      expect(pagedPrisonerSearchSummaries.currentPage).toEqual(2) // expect last page to be set
+      expect(pagedPrisonerSearchSummaries.currentPageNumber).toEqual(2) // expect last page to be set
       expect(pagedPrisonerSearchSummaries.resultIndexFrom).toEqual(3)
       expect(pagedPrisonerSearchSummaries.resultIndexTo).toEqual(3)
     })
@@ -150,10 +150,10 @@ describe('pagedPrisonerSearchSummary', () => {
       const pageNumber = 2
 
       // When
-      pagedPrisonerSearchSummaries.setCurrentPage(pageNumber)
+      pagedPrisonerSearchSummaries.setCurrentPageNumber(pageNumber)
 
       // Then
-      expect(pagedPrisonerSearchSummaries.currentPage).toEqual(2)
+      expect(pagedPrisonerSearchSummaries.currentPageNumber).toEqual(2)
       expect(pagedPrisonerSearchSummaries.resultIndexFrom).toEqual(3)
       expect(pagedPrisonerSearchSummaries.resultIndexTo).toEqual(3)
     })
@@ -166,10 +166,10 @@ describe('pagedPrisonerSearchSummary', () => {
 
     it('should get the current page results where the current page is not the last page', () => {
       // Given
-      pagedPrisonerSearchSummaries.setCurrentPage(1)
+      pagedPrisonerSearchSummaries.setCurrentPageNumber(1)
 
       // When
-      const actual = pagedPrisonerSearchSummaries.getCurrentPageResults()
+      const actual = pagedPrisonerSearchSummaries.getCurrentPage()
 
       // Then
       expect(actual).toEqual([terrySmith, jimAardvark])
@@ -177,17 +177,17 @@ describe('pagedPrisonerSearchSummary', () => {
 
     it('should get the current page results where the current page is the last page', () => {
       // Given
-      pagedPrisonerSearchSummaries.setCurrentPage(3)
+      pagedPrisonerSearchSummaries.setCurrentPageNumber(3)
 
       // When
-      const actual = pagedPrisonerSearchSummaries.getCurrentPageResults()
+      const actual = pagedPrisonerSearchSummaries.getCurrentPage()
 
       // Then
       expect(actual).toEqual([billHumphries])
     })
   })
 
-  describe('sortOn', () => {
+  describe('sort', () => {
     describe('name', () => {
       it('should sort on name ascending', () => {
         // Given
@@ -195,10 +195,10 @@ describe('pagedPrisonerSearchSummary', () => {
         const pagedPrisonerSearchSummaries = new PagedPrisonerSearchSummary(prisonerSearchSummaries, 10)
 
         // When
-        pagedPrisonerSearchSummaries.sortOn(SortBy.NAME, SortOrder.ASCENDING)
+        pagedPrisonerSearchSummaries.sort(SortBy.NAME, SortOrder.ASCENDING)
 
         // Then
-        expect(pagedPrisonerSearchSummaries.getCurrentPageResults()).toEqual([jimAardvark, bobSmith, terrySmith])
+        expect(pagedPrisonerSearchSummaries.getCurrentPage()).toEqual([jimAardvark, bobSmith, terrySmith])
       })
 
       it('should sort on name descending', () => {
@@ -207,10 +207,10 @@ describe('pagedPrisonerSearchSummary', () => {
         const pagedPrisonerSearchSummaries = new PagedPrisonerSearchSummary(prisonerSearchSummaries, 10)
 
         // When
-        pagedPrisonerSearchSummaries.sortOn(SortBy.NAME, SortOrder.DESCENDING)
+        pagedPrisonerSearchSummaries.sort(SortBy.NAME, SortOrder.DESCENDING)
 
         // Then
-        expect(pagedPrisonerSearchSummaries.getCurrentPageResults()).toEqual([terrySmith, bobSmith, jimAardvark])
+        expect(pagedPrisonerSearchSummaries.getCurrentPage()).toEqual([terrySmith, bobSmith, jimAardvark])
       })
     })
 
@@ -227,10 +227,10 @@ describe('pagedPrisonerSearchSummary', () => {
         const pagedPrisonerSearchSummaries = new PagedPrisonerSearchSummary(prisonerSearchSummaries, 10)
 
         // When
-        pagedPrisonerSearchSummaries.sortOn(SortBy.LOCATION, SortOrder.ASCENDING)
+        pagedPrisonerSearchSummaries.sort(SortBy.LOCATION, SortOrder.ASCENDING)
 
         // Then
-        expect(pagedPrisonerSearchSummaries.getCurrentPageResults()).toEqual([
+        expect(pagedPrisonerSearchSummaries.getCurrentPage()).toEqual([
           jimAardvark, // A-8-1098
           bobSmith, // A-8-42
           terrySmith, // C-1-1024
@@ -251,10 +251,10 @@ describe('pagedPrisonerSearchSummary', () => {
         const pagedPrisonerSearchSummaries = new PagedPrisonerSearchSummary(prisonerSearchSummaries, 10)
 
         // When
-        pagedPrisonerSearchSummaries.sortOn(SortBy.LOCATION, SortOrder.DESCENDING)
+        pagedPrisonerSearchSummaries.sort(SortBy.LOCATION, SortOrder.DESCENDING)
 
         // Then
-        expect(pagedPrisonerSearchSummaries.getCurrentPageResults()).toEqual([
+        expect(pagedPrisonerSearchSummaries.getCurrentPage()).toEqual([
           fredSmith, // RECP
           billHumphries, // COURT
           terrySmith, // C-1-1024
@@ -277,10 +277,10 @@ describe('pagedPrisonerSearchSummary', () => {
         const pagedPrisonerSearchSummaries = new PagedPrisonerSearchSummary(prisonerSearchSummaries, 10)
 
         // When
-        pagedPrisonerSearchSummaries.sortOn(SortBy.RELEASE_DATE, SortOrder.ASCENDING)
+        pagedPrisonerSearchSummaries.sort(SortBy.RELEASE_DATE, SortOrder.ASCENDING)
 
         // Then
-        expect(pagedPrisonerSearchSummaries.getCurrentPageResults()).toEqual([
+        expect(pagedPrisonerSearchSummaries.getCurrentPage()).toEqual([
           jimAardvark, // 2024-01-01
           bobSmith, // 2030-12-30
           terrySmith, // 2030-12-31
@@ -301,10 +301,10 @@ describe('pagedPrisonerSearchSummary', () => {
         const pagedPrisonerSearchSummaries = new PagedPrisonerSearchSummary(prisonerSearchSummaries, 10)
 
         // When
-        pagedPrisonerSearchSummaries.sortOn(SortBy.RELEASE_DATE, SortOrder.DESCENDING)
+        pagedPrisonerSearchSummaries.sort(SortBy.RELEASE_DATE, SortOrder.DESCENDING)
 
         // Then
-        expect(pagedPrisonerSearchSummaries.getCurrentPageResults()).toEqual([
+        expect(pagedPrisonerSearchSummaries.getCurrentPage()).toEqual([
           fredSmith, // no release date
           billHumphries, // no release date
           terrySmith, // 2030-12-31
@@ -327,10 +327,10 @@ describe('pagedPrisonerSearchSummary', () => {
         const pagedPrisonerSearchSummaries = new PagedPrisonerSearchSummary(prisonerSearchSummaries, 10)
 
         // When
-        pagedPrisonerSearchSummaries.sortOn(SortBy.RECEPTION_DATE, SortOrder.ASCENDING)
+        pagedPrisonerSearchSummaries.sort(SortBy.RECEPTION_DATE, SortOrder.ASCENDING)
 
         // Then
-        expect(pagedPrisonerSearchSummaries.getCurrentPageResults()).toEqual([
+        expect(pagedPrisonerSearchSummaries.getCurrentPage()).toEqual([
           bobSmith, // 1980-06-12
           jimAardvark, // 1999-01-01
           billHumphries, // 2024-10-01
@@ -351,10 +351,10 @@ describe('pagedPrisonerSearchSummary', () => {
         const pagedPrisonerSearchSummaries = new PagedPrisonerSearchSummary(prisonerSearchSummaries, 10)
 
         // When
-        pagedPrisonerSearchSummaries.sortOn(SortBy.RECEPTION_DATE, SortOrder.DESCENDING)
+        pagedPrisonerSearchSummaries.sort(SortBy.RECEPTION_DATE, SortOrder.DESCENDING)
 
         // Then
-        expect(pagedPrisonerSearchSummaries.getCurrentPageResults()).toEqual([
+        expect(pagedPrisonerSearchSummaries.getCurrentPage()).toEqual([
           terrySmith, // no reception date
           fredSmith, // 2024-10-13
           billHumphries, // 2024-10-01
@@ -374,10 +374,10 @@ describe('pagedPrisonerSearchSummary', () => {
         const pagedPrisonerSearchSummaries = new PagedPrisonerSearchSummary(prisonerSearchSummaries, 10)
 
         // When
-        pagedPrisonerSearchSummaries.sortOn(SortBy.STATUS, SortOrder.ASCENDING)
+        pagedPrisonerSearchSummaries.sort(SortBy.STATUS, SortOrder.ASCENDING)
 
         // Then
-        expect(pagedPrisonerSearchSummaries.getCurrentPageResults()).toEqual([
+        expect(pagedPrisonerSearchSummaries.getCurrentPage()).toEqual([
           terrySmith, // hasCiagInduction: true, hasActionPlan: true; status = ''
           jimAardvark, // hasCiagInduction: true, hasActionPlan: false; status = 'NEEDS_PLAN'
         ])
@@ -392,10 +392,10 @@ describe('pagedPrisonerSearchSummary', () => {
         const pagedPrisonerSearchSummaries = new PagedPrisonerSearchSummary(prisonerSearchSummaries, 10)
 
         // When
-        pagedPrisonerSearchSummaries.sortOn(SortBy.STATUS, SortOrder.DESCENDING)
+        pagedPrisonerSearchSummaries.sort(SortBy.STATUS, SortOrder.DESCENDING)
 
         // Then
-        expect(pagedPrisonerSearchSummaries.getCurrentPageResults()).toEqual([
+        expect(pagedPrisonerSearchSummaries.getCurrentPage()).toEqual([
           jimAardvark, // hasCiagInduction: true, hasActionPlan: false; status = 'NEEDS_PLAN'
           terrySmith, // hasCiagInduction: true, hasActionPlan: true; status = ''
         ])
@@ -415,10 +415,10 @@ describe('pagedPrisonerSearchSummary', () => {
           pagedPrisonerSearchSummaries.filter(FilterBy.NAME, value)
 
           // Then
-          expect(pagedPrisonerSearchSummaries.currentPage).toEqual(1)
+          expect(pagedPrisonerSearchSummaries.currentPageNumber).toEqual(1)
           expect(pagedPrisonerSearchSummaries.resultIndexFrom).toEqual(1)
           expect(pagedPrisonerSearchSummaries.resultIndexTo).toEqual(5)
-          expect(pagedPrisonerSearchSummaries.getCurrentPageResults()).toEqual([
+          expect(pagedPrisonerSearchSummaries.getCurrentPage()).toEqual([
             terrySmith,
             jimAardvark,
             bobSmith,
@@ -439,10 +439,10 @@ describe('pagedPrisonerSearchSummary', () => {
         pagedPrisonerSearchSummaries.filter(FilterBy.NAME, value)
 
         // Then
-        expect(pagedPrisonerSearchSummaries.currentPage).toEqual(1)
+        expect(pagedPrisonerSearchSummaries.currentPageNumber).toEqual(1)
         expect(pagedPrisonerSearchSummaries.resultIndexFrom).toEqual(0)
         expect(pagedPrisonerSearchSummaries.resultIndexTo).toEqual(0)
-        expect(pagedPrisonerSearchSummaries.getCurrentPageResults()).toEqual([])
+        expect(pagedPrisonerSearchSummaries.getCurrentPage()).toEqual([])
       })
 
       it('should filter given value that filters out some records', () => {
@@ -456,10 +456,10 @@ describe('pagedPrisonerSearchSummary', () => {
         pagedPrisonerSearchSummaries.filter(FilterBy.NAME, value)
 
         // Then
-        expect(pagedPrisonerSearchSummaries.currentPage).toEqual(1)
+        expect(pagedPrisonerSearchSummaries.currentPageNumber).toEqual(1)
         expect(pagedPrisonerSearchSummaries.resultIndexFrom).toEqual(1)
         expect(pagedPrisonerSearchSummaries.resultIndexTo).toEqual(3)
-        expect(pagedPrisonerSearchSummaries.getCurrentPageResults()).toEqual([terrySmith, bobSmith, fredSmith])
+        expect(pagedPrisonerSearchSummaries.getCurrentPage()).toEqual([terrySmith, bobSmith, fredSmith])
       })
     })
 
@@ -474,10 +474,10 @@ describe('pagedPrisonerSearchSummary', () => {
           pagedPrisonerSearchSummaries.filter(FilterBy.STATUS, value)
 
           // Then
-          expect(pagedPrisonerSearchSummaries.currentPage).toEqual(1)
+          expect(pagedPrisonerSearchSummaries.currentPageNumber).toEqual(1)
           expect(pagedPrisonerSearchSummaries.resultIndexFrom).toEqual(1)
           expect(pagedPrisonerSearchSummaries.resultIndexTo).toEqual(5)
-          expect(pagedPrisonerSearchSummaries.getCurrentPageResults()).toEqual([
+          expect(pagedPrisonerSearchSummaries.getCurrentPage()).toEqual([
             terrySmith,
             jimAardvark,
             bobSmith,
@@ -501,10 +501,10 @@ describe('pagedPrisonerSearchSummary', () => {
         pagedPrisonerSearchSummaries.filter(FilterBy.STATUS, value)
 
         // Then
-        expect(pagedPrisonerSearchSummaries.currentPage).toEqual(1)
+        expect(pagedPrisonerSearchSummaries.currentPageNumber).toEqual(1)
         expect(pagedPrisonerSearchSummaries.resultIndexFrom).toEqual(0)
         expect(pagedPrisonerSearchSummaries.resultIndexTo).toEqual(0)
-        expect(pagedPrisonerSearchSummaries.getCurrentPageResults()).toEqual([])
+        expect(pagedPrisonerSearchSummaries.getCurrentPage()).toEqual([])
       })
 
       it('should filter given value that filters out some records', () => {
@@ -524,10 +524,10 @@ describe('pagedPrisonerSearchSummary', () => {
         pagedPrisonerSearchSummaries.filter(FilterBy.STATUS, value)
 
         // Then
-        expect(pagedPrisonerSearchSummaries.currentPage).toEqual(1)
+        expect(pagedPrisonerSearchSummaries.currentPageNumber).toEqual(1)
         expect(pagedPrisonerSearchSummaries.resultIndexFrom).toEqual(1)
         expect(pagedPrisonerSearchSummaries.resultIndexTo).toEqual(3)
-        expect(pagedPrisonerSearchSummaries.getCurrentPageResults()).toEqual([
+        expect(pagedPrisonerSearchSummaries.getCurrentPage()).toEqual([
           jimAardvark, // hasCiagInduction: true, hasActionPlan: false; status = 'NEEDS_PLAN'
           fredSmith, // hasCiagInduction: false, hasActionPlan: false; status = 'NEEDS_PLAN'
           billHumphries, // hasCiagInduction: false, hasActionPlan: false; status = 'NEEDS_PLAN'
@@ -551,17 +551,17 @@ describe('pagedPrisonerSearchSummary', () => {
 
       // When
       pagedPrisonerSearchSummaries //
-        .sortOn(SortBy.NAME, SortOrder.DESCENDING) // all 5 records sorted by name descending (terrySmith, fredSmith, bobSmith, billHumphries, jimAardvark)
-        .setCurrentPage(2) // page 2 (bobSmith, billHumphries)
+        .sort(SortBy.NAME, SortOrder.DESCENDING) // all 5 records sorted by name descending (terrySmith, fredSmith, bobSmith, billHumphries, jimAardvark)
+        .setCurrentPageNumber(2) // page 2 (bobSmith, billHumphries)
         .filter(FilterBy.NAME, 'S') // jimAardvark is removed as he does not have an S in his name
         .filter(FilterBy.STATUS, 'NEEDS_PLAN') // only fredSmith and billHumphries remain as they have the status NEEDS_PLAN
-        .sortOn(SortBy.RECEPTION_DATE, SortOrder.ASCENDING) // 2 remaining records sorted by reception date ascending (billHumphries, fredSmith)
+        .sort(SortBy.RECEPTION_DATE, SortOrder.ASCENDING) // 2 remaining records sorted by reception date ascending (billHumphries, fredSmith)
 
       // Then
-      expect(pagedPrisonerSearchSummaries.currentPage).toEqual(1)
+      expect(pagedPrisonerSearchSummaries.currentPageNumber).toEqual(1)
       expect(pagedPrisonerSearchSummaries.resultIndexFrom).toEqual(1)
       expect(pagedPrisonerSearchSummaries.resultIndexTo).toEqual(2)
-      expect(pagedPrisonerSearchSummaries.getCurrentPageResults()).toEqual([
+      expect(pagedPrisonerSearchSummaries.getCurrentPage()).toEqual([
         billHumphries, // hasCiagInduction: false, hasActionPlan: false; status = 'NEEDS_PLAN', receptionDate: 2024-10-01
         fredSmith, // hasCiagInduction: false, hasActionPlan: false; status = 'NEEDS_PLAN', receptionDate: 2024-10-13
       ])
