@@ -5,6 +5,7 @@ import EducationAndWorkPlanService from './educationAndWorkPlanService'
 import CuriousService from './curiousService'
 import CiagInductionService from './ciagInductionService'
 import FrontendComponentService from './frontendComponentService'
+import PrisonerListService from './prisonerListService'
 
 /**
  * Function that instantiates and exposes all services required by the application.
@@ -26,6 +27,12 @@ export const services = () => {
   const curiousService = new CuriousService(hmppsAuthClient, curiousClient)
   const ciagInductionService = new CiagInductionService(hmppsAuthClient, ciagInductionClient)
   const frontendComponentService = new FrontendComponentService(frontendComponentApiClient)
+  const prisonerListService = new PrisonerListService(
+    hmppsAuthClient,
+    prisonerSearchClient,
+    educationAndWorkPlanClient,
+    ciagInductionClient,
+  )
 
   return {
     applicationInfo,
@@ -35,9 +42,10 @@ export const services = () => {
     curiousService,
     ciagInductionService,
     frontendComponentService,
+    prisonerListService,
   }
 }
 
 export type Services = ReturnType<typeof services>
 
-export { UserService, PrisonerSearchService, EducationAndWorkPlanService, CuriousService }
+export { UserService, PrisonerSearchService, EducationAndWorkPlanService, CuriousService, PrisonerListService }
