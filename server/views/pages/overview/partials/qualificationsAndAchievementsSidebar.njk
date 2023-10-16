@@ -1,6 +1,6 @@
 <div class="govuk-summary-card">
-  <div class="govuk-summary-card__title-wrapper app-summary-card__title-wrapper--white">
-    <h2 class="govuk-summary-card__title">Latest qualifications and achievements</h2>
+  <div class="govuk-summary-card__title-wrapper app-summary-card__title-wrapper app-summary-card__title-wrapper--green">
+    <h2 class="govuk-summary-card__title govuk-!-font-size-24">Latest qualifications and achievements</h2>
   </div>
   <div class="govuk-summary-card__content">
     
@@ -19,7 +19,7 @@
                 <th scope="row" class="govuk-table__header">
                   {{ completedQualification.courseName }}
                   <br>
-                  <span class="govuk-body-s">Completed on {{ completedQualification.courseCompletionDate | formatDate('D MMMM YYYY') }}</span>
+                  <span class="govuk-hint">Completed on {{ completedQualification.courseCompletionDate | formatDate('D MMMM YYYY') }}</span>
                 </th>
               </tr>
             {% endfor %}
