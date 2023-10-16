@@ -14,6 +14,8 @@ export default function routes(services: Services): Router {
   get('/', (req, res, next) => {
     if (config.featureToggles.stubPrisonerListPageEnabled) {
       res.render('pages/index')
+    } else if (config.featureToggles.plpPrisonerListAndOverviewPagesEnabled) {
+      res.render('pages/prisonerList/index')
     } else {
       res.redirect(config.ciagInductionUrl)
     }

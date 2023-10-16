@@ -1,0 +1,79 @@
+{# TODO: Logic for the problemRetrievingData #}
+{% if not ciagPrisonerList.problemRetrievingData %}
+  {{ govukTable({
+    attributes: {
+      'data-module': 'moj-sortable-table'
+    },
+    head: [
+      {
+        text: "Prisoner",
+        attributes: {
+          "aria-sort": "ascending"
+        }
+      },
+      {
+        text: "Location",
+        attributes: {
+          "aria-sort": "none"
+        }
+      },
+      {
+        text: "Release date",
+        attributes: {
+          "aria-sort": "none"
+        }
+      },
+      {
+        text: "Entered prison on",
+        attributes: {
+          "aria-sort": "none"
+        }
+      },
+      {
+        text: "Status",
+        attributes: {
+          "aria-sort": "none"
+        }
+      }
+    ],
+    rows: [
+      [
+        {
+          html: "<a href='/plan/G9981UK/view/overview' rel='noopener noreferrer' class='govuk-link govuk-link--no-visited-state'>Avary, Austin</a><br><span class='govuk-hint govuk-!-margin-bottom-0'>G9981UK</span>"
+        },
+        {
+          text: "A-1-032"
+        },
+        {
+          text: "3 February 2020"
+        },
+        {
+          text: "13 December 2021"
+        },
+        {
+          text: ""
+        }
+      ],
+      [
+        {
+          html: "<a href='/plan/G5045UF/view/overview' rel='noopener noreferrer' class='govuk-link govuk-link--no-visited-state'>Aishard, Ogonanthomasin</a><br><span class='govuk-hint govuk-!-margin-bottom-0'>G5045UF</span>"
+        },
+        {
+          text: "B-1-002"
+        },
+        {
+          text: "N/A"
+        },
+        {
+          text: "12 July 2023"
+        },
+        {
+          html: "<strong class='govuk-tag govuk-tag--red'>Needs plan</strong>"
+        }
+      ]  
+    ]
+  }) }}
+{% else %}
+  <h2 class="govuk-heading-m" data-qa="ciag-unavailable-message">We cannot show these details right now</h3>
+  <p class="govuk-body">Reload the page or try again later. Other parts of this service may still be available.</p>
+{% endif %}
