@@ -73,6 +73,10 @@
       ]  
     ]
   }) }}
+
+  {# TODO: Handle pagination #}
+  {{ mojPagination({}) }}
+
 {% else %}
   <h2 class="govuk-heading-m" data-qa="ciag-unavailable-message">We cannot show these details right now</h3>
   <p class="govuk-body">Reload the page or try again later. Other parts of this service may still be available.</p>
