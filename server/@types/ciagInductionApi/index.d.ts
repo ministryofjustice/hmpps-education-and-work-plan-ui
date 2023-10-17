@@ -26,17 +26,26 @@ export interface paths {
      */
     delete: operations['deleteCIAGProfileForOffenderId']
   }
+  '/ciag/induction/list': {
+    /**
+     * Fetch the CIAG profile for the given offender ids
+     * @description Currently requires role <b>ROLE_VIEW_PRISONER_DATA</b>
+     */
+    post: operations['getAllCIAGProfileForGivenOffenderIds']
+  }
 }
 
 export type webhooks = Record<string, never>
 
 export interface components {
   schemas: {
+    /** @description This is the qualification list of the inmate. */
     AchievedQualification: {
-      subject?: string
-      grade?: string
-      /** @enum {string} */
-      level?:
+      /**
+       * @description This is the level of  the subject the inmate has chosen.
+       * @enum {string}
+       */
+      subject?:
         | 'ENTRY_LEVEL_2'
         | 'ENTRY_LEVEL_3'
         | 'LEVEL_1'
@@ -49,18 +58,38 @@ export interface components {
         | 'LEVEL_8'
     }
     CIAGProfileDTO: {
+      /** @description This is the ID of the inmate */
       offenderId: string
+      /** @description This is the prision ID of the inmate */
+      prisonId?: string
+      /** @description This is the prision Name of the inmate */
+      prisonName?: string
+      /** @description This is the person who creates the Induction.Even though it is passed from front end it wil be automatically set to the right value at the time of record creation */
       createdBy: string
-      /** Format: date-time */
+      /**
+       * Format: date-time
+       * @description This is the creation date and time of Induction record .Even though it is passed from front end it wil be automatically set to the right value at the time of record creation
+       */
       createdDateTime: string
+      /** @description This is the person who modifies the Induction.Even though it is passed from front end it wil be automatically set to the right value at the time of record modification */
       modifiedBy: string
-      desireToWork: boolean
-      /** Format: date-time */
+      /**
+       * Format: date-time
+       * @description This is the modified date and time of Induction record .Even though it is passed from front end it wil be automatically set to the right value at the time of record modification
+       */
       modifiedDateTime: string
-      /** @enum {string} */
+      /** @description Whether the inmate wants to work or not */
+      desireToWork: boolean
+      /**
+       * @description Whether the inmate hopes to get work
+       * @enum {string}
+       */
       hopingToGetWork: 'YES' | 'NO' | 'NOT_SURE'
+      /** @description This is the reason that is given when the inmate do not want to work .This field is mandatory when  "reasonToNotGetWork" has a Value set to "OTHER" */
       reasonToNotGetWorkOther?: string
+      /** @description This is the factor affecting work which is peculiar to this inmate  .This field is mandatory when  "abilityToWork" has a Value set to "OTHER" */
       abilityToWorkOther?: string
+      /** @description This is the factors affecting work to this inmate . */
       abilityToWork?: (
         | 'CARING_RESPONSIBILITIES'
         | 'LIMITED_BY_OFFENSE'
@@ -69,6 +98,7 @@ export interface components {
         | 'OTHER'
         | 'NONE'
       )[]
+      /** @description This is the reasons for the inmate not to get work. */
       reasonToNotGetWork?: (
         | 'LIMIT_THEIR_ABILITY'
         | 'FULL_TIME_CARER'
@@ -76,6 +106,7 @@ export interface components {
         | 'HEALTH'
         | 'RETIRED'
         | 'NO_RIGHT_TO_WORK'
+        | 'NOT_SURE'
         | 'OTHER'
         | 'NO_REASON'
       )[]
@@ -83,15 +114,24 @@ export interface components {
       skillsAndInterests?: components['schemas']['SkillsAndInterests']
       qualificationsAndTraining?: components['schemas']['EducationAndQualification']
       inPrisonInterests?: components['schemas']['PrisonWorkAndEducation']
+      /** @description This is the schema version used */
       schemaVersion?: string
     }
+    /** @description This is the qualification and training achived in the prison by the inmate. */
     EducationAndQualification: {
+      /** @description This is the person who modifies the Induction.Even though it is passed from front end it wil be automatically set to the right value at the time of record modification */
       modifiedBy: string
-      /** Format: date-time */
+      /**
+       * Format: date-time
+       * @description This is the modified date and time of Induction record .Even though it is passed from front end it wil be automatically set to the right value at the time of record modification
+       */
       modifiedDateTime: string
       /** Format: int64 */
       id?: number
-      /** @enum {string} */
+      /**
+       * @description This is the Highest education level of the inmate.
+       * @enum {string}
+       */
       educationLevel?:
         | 'PRIMARY_SCHOOL'
         | 'SECONDARY_SCHOOL_LEFT_BEFORE_TAKING_EXAMS'
@@ -100,7 +140,9 @@ export interface components {
         | 'UNDERGRADUATE_DEGREE_AT_UNIVERSITY'
         | 'POSTGRADUATE_DEGREE_AT_UNIVERSITY'
         | 'NOT_SURE'
+      /** @description This is the qualification list of the inmate. */
       qualifications?: components['schemas']['AchievedQualification'][]
+      /** @description This is the additional training list of the inmate. */
       additionalTraining?: (
         | 'CSCS_CARD'
         | 'FIRST_AID_CERTIFICATE'
@@ -114,15 +156,22 @@ export interface components {
         | 'OTHER'
         | 'NONE'
       )[]
+      /** @description This is the additional which is peculiar to this inmate  .This field is mandatory when  "additionalTraining" has a Value set to "OTHER" */
       additionalTrainingOther?: string
     }
+    /** @description This is the previous experience of the inmate. */
     PreviousWork: {
       hasWorkedBefore: boolean
+      /** @description This is the person who modifies the Induction.Even though it is passed from front end it wil be automatically set to the right value at the time of record modification */
       modifiedBy: string
-      /** Format: date-time */
+      /**
+       * Format: date-time
+       * @description This is the modified date and time of Induction record .Even though it is passed from front end it wil be automatically set to the right value at the time of record modification
+       */
       modifiedDateTime: string
       /** Format: int64 */
       id?: number
+      /** @description This is the work experience list of the inmate. */
       typeOfWorkExperience?: (
         | 'OUTDOOR'
         | 'CONSTRUCTION'
@@ -140,16 +189,24 @@ export interface components {
         | 'CLEANING_AND_MAINTENANCE'
         | 'OTHER'
       )[]
+      /** @description This is the work experience which is peculiar to this inmate  .This field is mandatory when  "typeOfWorkExperience" has a Value set to "OTHER" */
       typeOfWorkExperienceOther?: string
+      /** @description This is the list of work experience details of the inmate. */
       workExperience?: components['schemas']['WorkExperience'][]
       workInterests?: components['schemas']['WorkInterests']
     }
+    /** @description This is the work and training the inmate.wants to receive in prison */
     PrisonWorkAndEducation: {
+      /** @description This is the person who modifies the Induction.Even though it is passed from front end it wil be automatically set to the right value at the time of record modification */
       modifiedBy: string
-      /** Format: date-time */
+      /**
+       * Format: date-time
+       * @description This is the modified date and time of Induction record .Even though it is passed from front end it wil be automatically set to the right value at the time of record modification
+       */
       modifiedDateTime: string
       /** Format: int64 */
       id?: number
+      /** @description This is the prison work list of the inmate. */
       inPrisonWork?: (
         | 'CLEANING_AND_HYGIENE'
         | 'COMPUTERS_OR_DESK_BASED'
@@ -163,7 +220,9 @@ export interface components {
         | 'WOODWORK_AND_JOINERY'
         | 'OTHER'
       )[]
+      /** @description This is the prison work which is peculiar to this inmate  .This field is mandatory when  "inPrisonWork" has a Value set to "OTHER" */
       inPrisonWorkOther?: string
+      /** @description This is the prison education list of the inmate. */
       inPrisonEducation?: (
         | 'BARBERING_AND_HAIRDRESSING'
         | 'CATERING'
@@ -179,14 +238,21 @@ export interface components {
         | 'WOODWORK_AND_JOINERY'
         | 'OTHER'
       )[]
+      /** @description This is the prison education which is peculiar to this inmate  .This field is mandatory when  "inPrisonEducation" has a Value set to "OTHER" */
       inPrisonEducationOther?: string
     }
+    /** @description This is the  skills and interests of the inmate. */
     SkillsAndInterests: {
+      /** @description This is the person who modifies the Induction.Even though it is passed from front end it wil be automatically set to the right value at the time of record modification */
       modifiedBy: string
-      /** Format: date-time */
+      /**
+       * Format: date-time
+       * @description This is the modified date and time of Induction record .Even though it is passed from front end it wil be automatically set to the right value at the time of record modification
+       */
       modifiedDateTime: string
       /** Format: int64 */
       id?: number
+      /** @description This is the skill list of the inmate. */
       skills?: (
         | 'COMMUNICATION'
         | 'POSITIVE_ATTITUDE'
@@ -198,7 +264,9 @@ export interface components {
         | 'OTHER'
         | 'NONE'
       )[]
+      /** @description This is the skill which is peculiar to this inmate  .This field is mandatory when  "skills" has a Value set to "OTHER" */
       skillsOther?: string
+      /** @description This is the interests list of the inmate. */
       personalInterests?: (
         | 'COMMUNITY'
         | 'CRAFTS'
@@ -216,11 +284,16 @@ export interface components {
         | 'OTHER'
         | 'NONE'
       )[]
+      /** @description This is the work interest which is peculiar to this inmate  .This field is mandatory when  "personalInterests" has a Value set to "OTHER" */
       personalInterestsOther?: string
     }
+    /** @description This is the list of work experience details of the inmate. */
     WorkExperience: {
-      /** @enum {string} */
-      typeOfWorkExperience?:
+      /**
+       * @description This is the experience of the inmate, being detailed.
+       * @enum {string}
+       */
+      typeOfWorkExperience:
         | 'OUTDOOR'
         | 'CONSTRUCTION'
         | 'DRIVING'
@@ -236,13 +309,20 @@ export interface components {
         | 'EDUCATION_TRAINING'
         | 'CLEANING_AND_MAINTENANCE'
         | 'OTHER'
+      /** @description This is the experience of the inmate, being detailed, which is not listed in typeOfWorkExperience Enum */
       otherWork?: string
+      /** @description This is the role  of the inmate, in the work ,being detailed */
       role?: string
+      /** @description This is the detail of the work */
       details?: string
     }
+    /** @description This is the list of detailed interests of the inmate. */
     WorkInterestDetail: {
-      /** @enum {string} */
-      workInterest?:
+      /**
+       * @description This is the interest of the inmate, being detailed.
+       * @enum {string}
+       */
+      workInterest:
         | 'OUTDOOR'
         | 'CONSTRUCTION'
         | 'DRIVING'
@@ -258,15 +338,22 @@ export interface components {
         | 'EDUCATION_TRAINING'
         | 'CLEANING_AND_MAINTENANCE'
         | 'OTHER'
-      role?: string
+      /** @description This is the role of the inmate for the given work interest. */
+      role: string
     }
+    /** @description This is the work interests of the inmate. */
     WorkInterests: {
+      /** @description This is the person who modifies the Induction.Even though it is passed from front end it wil be automatically set to the right value at the time of record modification */
       modifiedBy: string
-      /** Format: date-time */
+      /**
+       * Format: date-time
+       * @description This is the modified date and time of Induction record .Even though it is passed from front end it wil be automatically set to the right value at the time of record modification
+       */
       modifiedDateTime: string
       /** Format: int64 */
       id?: number
-      workInterests?: (
+      /** @description This is the list of interests of the inmate. */
+      workInterests: (
         | 'OUTDOOR'
         | 'CONSTRUCTION'
         | 'DRIVING'
@@ -283,7 +370,9 @@ export interface components {
         | 'CLEANING_AND_MAINTENANCE'
         | 'OTHER'
       )[]
+      /** @description This is the work interest which is peculiar to this inmate  .This field is mandatory when  "workInterests" has a Value set to "OTHER" */
       workInterestsOther?: string
+      /** @description This is the list of detailed interests of the inmate. */
       particularJobInterests?: components['schemas']['WorkInterestDetail'][]
     }
     ErrorResponse: {
@@ -295,18 +384,38 @@ export interface components {
       moreInfo?: string
     }
     CIAGProfileRequestDTO: {
+      /** @description This is the ID of the inmate */
       offenderId: string
+      /** @description This is the prision ID of the inmate */
+      prisonId?: string
+      /** @description This is the prision Name of the inmate */
+      prisonName?: string
+      /** @description This is the person who creates the Induction.Even though it is passed from front end it wil be automatically set to the right value at the time of record creation */
       createdBy: string
-      /** Format: date-time */
+      /**
+       * Format: date-time
+       * @description This is the creation date and time of Induction record .Even though it is passed from front end it wil be automatically set to the right value at the time of record creation
+       */
       createdDateTime: string
+      /** @description This is the person who modifies the Induction.Even though it is passed from front end it wil be automatically set to the right value at the time of record modification */
       modifiedBy: string
-      desireToWork: boolean
-      /** Format: date-time */
+      /**
+       * Format: date-time
+       * @description This is the modified date and time of Induction record .Even though it is passed from front end it wil be automatically set to the right value at the time of record modification
+       */
       modifiedDateTime: string
-      /** @enum {string} */
+      /** @description Whether the inmate wants to work or not */
+      desireToWork: boolean
+      /**
+       * @description Whether the inmate hopes to get work
+       * @enum {string}
+       */
       hopingToGetWork: 'YES' | 'NO' | 'NOT_SURE'
+      /** @description This is the reason that is given when the inmate do not want to work .This field is mandatory when  "reasonToNotGetWork" has a Value set to "OTHER" */
       reasonToNotGetWorkOther?: string
+      /** @description This is the factor affecting work which is peculiar to this inmate  .This field is mandatory when  "abilityToWork" has a Value set to "OTHER" */
       abilityToWorkOther?: string
+      /** @description This is the factors affecting work to this inmate . */
       abilityToWork?: (
         | 'CARING_RESPONSIBILITIES'
         | 'LIMITED_BY_OFFENSE'
@@ -315,6 +424,7 @@ export interface components {
         | 'OTHER'
         | 'NONE'
       )[]
+      /** @description This is the reasons for the inmate not to get work. */
       reasonToNotGetWork?: (
         | 'LIMIT_THEIR_ABILITY'
         | 'FULL_TIME_CARER'
@@ -322,6 +432,7 @@ export interface components {
         | 'HEALTH'
         | 'RETIRED'
         | 'NO_RIGHT_TO_WORK'
+        | 'NOT_SURE'
         | 'OTHER'
         | 'NO_REASON'
       )[]
@@ -329,7 +440,16 @@ export interface components {
       skillsAndInterests?: components['schemas']['SkillsAndInterests']
       qualificationsAndTraining?: components['schemas']['EducationAndQualification']
       inPrisonInterests?: components['schemas']['PrisonWorkAndEducation']
+      /** @description This is the schema version used */
       schemaVersion?: string
+    }
+    CIAGProfileListDTO: {
+      /** @description This is the List of inductions for inmates */
+      ciagProfileList?: components['schemas']['CIAGProfileDTO'][]
+    }
+    CIAGProfileOffenderIdListRequestDTO: {
+      /** @description This is the ID list of the inmates */
+      offenderIds: string[]
     }
   }
   responses: never
@@ -526,6 +646,43 @@ export interface operations {
       404: {
         content: {
           'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  /**
+   * Fetch the CIAG profile for the given offender ids
+   * @description Currently requires role <b>ROLE_VIEW_PRISONER_DATA</b>
+   */
+  getAllCIAGProfileForGivenOffenderIds: {
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CIAGProfileOffenderIdListRequestDTO']
+      }
+    }
+    responses: {
+      /** @description CIAG profile list is returned */
+      200: {
+        content: {
+          'application/json': components['schemas']['CIAGProfileListDTO']
+        }
+      }
+      /** @description Invalid Parameters have been passed */
+      400: {
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unauthorized to access this endpoint */
+      401: {
+        content: {
+          'application/json': string
+        }
+      }
+      /** @description Incorrect permissions to access this endpoint */
+      403: {
+        content: {
+          'application/json': string
         }
       }
     }
