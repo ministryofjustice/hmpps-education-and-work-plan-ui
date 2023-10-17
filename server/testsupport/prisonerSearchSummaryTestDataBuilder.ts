@@ -1,7 +1,7 @@
 import moment from 'moment'
 import type { PrisonerSearchSummary } from 'viewModels'
 
-export default function aValidPrisonerSearchSummary(options: {
+export default function aValidPrisonerSearchSummary(options?: {
   prisonNumber?: string
   prisonId?: string
   releaseDate?: string

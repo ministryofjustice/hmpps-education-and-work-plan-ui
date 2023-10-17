@@ -1,4 +1,10 @@
-import type { ActionPlanResponse, CreateGoalsRequest, UpdateGoalRequest } from 'educationAndWorkPlanApiClient'
+import type {
+  ActionPlanResponse,
+  ActionPlanSummaryListResponse,
+  CreateGoalsRequest,
+  GetActionPlanSummariesRequest,
+  UpdateGoalRequest,
+} from 'educationAndWorkPlanApiClient'
 import RestClient from './restClient'
 import config from '../config'
 
@@ -24,6 +30,14 @@ export default class EducationAndWorkPlanClient {
     return EducationAndWorkPlanClient.restClient(token).put({
       path: `/action-plans/${prisonNumber}/goals/${updateGoalRequest.goalReference}`,
       data: updateGoalRequest,
+    })
+  }
+
+  async getActionPlans(prisonNumbers: string[], token: string): Promise<ActionPlanSummaryListResponse> {
+    const requestBody: GetActionPlanSummariesRequest = { prisonNumbers }
+    return EducationAndWorkPlanClient.restClient(token).post({
+      path: '/action-plans',
+      data: requestBody,
     })
   }
 }

@@ -7,6 +7,8 @@ import {
   aValidCreateGoalsRequestWithOneGoal,
   aValidCreateGoalsRequestWitMultipleGoals,
 } from '../testsupport/createGoalsRequestTestDataBuilder'
+import aValidActionPlanSummaryListResponse from '../testsupport/actionPlanSummaryListResponseTestDataBuilder'
+import aValidActionPlanSummaryResponse from '../testsupport/actionPlanSummaryResponseTestDataBuilder'
 
 describe('educationAndWorkPlanClient', () => {
   const educationAndWorkPlanClient = new EducationAndWorkPlanClient()
@@ -156,6 +158,53 @@ describe('educationAndWorkPlanClient', () => {
         expect(e.status).toEqual(500)
         expect(e.data).toEqual(expectedResponseBody)
       }
+    })
+  })
+
+  describe('getActionPlans', () => {
+    it('should get Action Plans', async () => {
+      // Given
+      const prisonNumbers = ['A1234BC', 'B5544GD']
+      const systemToken = 'a-system-token'
+
+      const expectedActionPlanSummaryListResponse = aValidActionPlanSummaryListResponse({
+        actionPlanSummaries: [
+          aValidActionPlanSummaryResponse({
+            reference: '6add2455-30f1-4b3e-a23e-1baf2d761e8f',
+            prisonNumber: 'A1234BC',
+          }),
+          aValidActionPlanSummaryResponse({
+            reference: 'b134fb41-426d-4494-bb66-75dafd9dc084',
+            prisonNumber: 'B5544GD',
+          }),
+        ],
+      })
+      educationAndWorkPlanApi.post('/action-plans', { prisonNumbers }).reply(200, expectedActionPlanSummaryListResponse)
+
+      // When
+      const actual = await educationAndWorkPlanClient.getActionPlans(prisonNumbers, systemToken)
+
+      // Then
+      expect(nock.isDone()).toBe(true)
+      expect(actual).toEqual(expectedActionPlanSummaryListResponse)
+    })
+
+    it('should get zero Action Plans given none of the specified prisoners have Action Plans', async () => {
+      // Given
+      const prisonNumbers = ['A1234BC', 'B5544GD']
+      const systemToken = 'a-system-token'
+
+      const expectedActionPlanSummaryListResponse = aValidActionPlanSummaryListResponse({
+        actionPlanSummaries: [],
+      })
+      educationAndWorkPlanApi.post('/action-plans', { prisonNumbers }).reply(200, expectedActionPlanSummaryListResponse)
+
+      // When
+      const actual = await educationAndWorkPlanClient.getActionPlans(prisonNumbers, systemToken)
+
+      // Then
+      expect(nock.isDone()).toBe(true)
+      expect(actual).toEqual(expectedActionPlanSummaryListResponse)
     })
   })
 })

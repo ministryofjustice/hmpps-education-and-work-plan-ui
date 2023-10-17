@@ -1,7 +1,8 @@
 import nock from 'nock'
-import type { Prisoner } from 'prisonRegisterApiClient'
 import PrisonerSearchClient from './prisonerSearchClient'
 import config from '../config'
+import aValidPagedCollectionOfPrisoners from '../testsupport/pagedCollectionOfPrisonersTestDataBuilder'
+import aValidPrisoner from '../testsupport/prisonerTestDataBuilder'
 
 describe('prisonerSearchClient', () => {
   const prisonerSearchClient = new PrisonerSearchClient()
@@ -23,13 +24,7 @@ describe('prisonerSearchClient', () => {
       const prisonNumber = 'A1234BC'
       const systemToken = 'a-system-token'
 
-      const prisoner: Prisoner = {
-        prisonerNumber: prisonNumber,
-        firstName: 'AUSTIN',
-        lastName: 'AVARY',
-        dateOfBirth: '1993-12-08',
-        gender: 'Male',
-      }
+      const prisoner = aValidPrisoner()
       prisonerSearchApi.get(`/prisoner/${prisonNumber}`).reply(200, prisoner)
 
       // When
@@ -54,6 +49,59 @@ describe('prisonerSearchClient', () => {
 
       // Then
       expect(actual).toEqual(Error('Not Found'))
+      expect(nock.isDone()).toBe(true)
+    })
+  })
+
+  describe('getPrisonersByPrisonId', () => {
+    it('should get prisoners by prison id given prison ID exists', async () => {
+      // Given
+      const prisonId = 'BXI'
+      const systemToken = 'a-system-token'
+
+      const page = 0
+      const pageSize = 100
+
+      const pagedCollectionOfPrisoners = aValidPagedCollectionOfPrisoners({
+        number: 2,
+        content: [
+          aValidPrisoner({ firstName: 'Fred', lastName: 'Blogs' }),
+          aValidPrisoner({ firstName: 'Martin', lastName: 'McDougal' }),
+        ],
+      })
+      prisonerSearchApi
+        .get(`/prison-search/prison/${prisonId}?page=${page}&size=${pageSize}`)
+        .reply(200, pagedCollectionOfPrisoners)
+
+      // When
+      const actual = await prisonerSearchClient.getPrisonersByPrisonId(prisonId, page, pageSize, systemToken)
+
+      // Then
+      expect(actual).toEqual(pagedCollectionOfPrisoners)
+      expect(nock.isDone()).toBe(true)
+    })
+
+    it('should get zero prisoners by prison id given prison ID does not exist', async () => {
+      // Given
+      const prisonId = 'some-unknown-prison-id'
+      const systemToken = 'a-system-token'
+
+      const page = 0
+      const pageSize = 100
+
+      const pagedCollectionOfPrisoners = aValidPagedCollectionOfPrisoners({
+        number: 0,
+        content: [],
+      })
+      prisonerSearchApi
+        .get(`/prison-search/prison/${prisonId}?page=${page}&size=${pageSize}`)
+        .reply(200, pagedCollectionOfPrisoners)
+
+      // When
+      const actual = await prisonerSearchClient.getPrisonersByPrisonId(prisonId, page, pageSize, systemToken)
+
+      // Then
+      expect(actual).toEqual(pagedCollectionOfPrisoners)
       expect(nock.isDone()).toBe(true)
     })
   })

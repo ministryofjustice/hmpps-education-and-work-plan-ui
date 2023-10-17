@@ -397,7 +397,7 @@ describe('routerRequestHandlers', () => {
       const prisonNumber = 'A1234GC'
       const prisonId = 'MDI'
       req.params.prisonNumber = prisonNumber
-      const prisoner = aValidPrisoner(prisonNumber, prisonId)
+      const prisoner = aValidPrisoner({ prisonNumber, prisonId })
       prisonerSearchService.getPrisonerByPrisonNumber.mockResolvedValue(prisoner)
 
       const expectedPrisonerSummary = aValidPrisonerSummary(prisonNumber, prisonId)
@@ -421,7 +421,7 @@ describe('routerRequestHandlers', () => {
       const prisonNumber = 'A1234GC'
       const prisonId = 'MDI'
       req.params.prisonNumber = prisonNumber
-      const prisoner = aValidPrisoner(prisonNumber, prisonId)
+      const prisoner = aValidPrisoner({ prisonNumber, prisonId })
       prisonerSearchService.getPrisonerByPrisonNumber.mockResolvedValue(prisoner)
 
       const expectedPrisonerSummary = aValidPrisonerSummary(prisonNumber, prisonId)
