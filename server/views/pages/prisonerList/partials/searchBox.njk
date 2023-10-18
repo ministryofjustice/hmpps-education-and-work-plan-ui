@@ -1,0 +1,41 @@
+<div class="govuk-form-group app-prisoner-list__search">
+  <form class="form" method="post" novalidate="">
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+    <legend class="govuk-fieldset__legend govuk-fieldset__legend--m app-prisoner-list__search-legend">Filter by</legend>
+    <div class="govuk-grid-column-one-third">
+      <div class="govuk-form-group">
+        <label class="govuk-label moj-search__label" for="searchTerm">Prisoner's name</label>
+        {# TODO: Populate searchTerm value #}
+        <input class="govuk-input moj-search__input"
+              id="searchTerm"
+              name="searchTerm"
+              type="search"
+              value="{{ searchTerm }}"
+              maxlength="200"
+        />
+      </div>
+    </div>
+    <div class="govuk-grid-column-one-third">
+      <div class="moj-search">
+        <div class="govuk-form-group">
+          <label class="govuk-label moj-search__label" for="statusFilter">Status</label>
+          {# TODO: Handle the selected logic #}
+          <select class="govuk-select" id="statusFilter" name="statusFilter">
+            <option value="" selected>All statuses</option>
+            <option value="NEEDS_PLAN">Needs plan</option>
+          </select>
+        </div>
+        <button class="govuk-button moj-search__button" data-module="govuk-button">Apply filters</button>
+      </div>
+    </div>
+    {# TODO: Populate searchTerm/statusFilter logic #}
+    {% if searchTerm or statusFilter %}
+      <div class="govuk-grid-column-one-third">
+        <p class="govuk-!-margin-bottom-0 govuk-!-margin-top-7">
+          {# TODO: Handle clear search event click #}
+          <a class="govuk-link" href="#">Clear<span class="govuk-visually-hidden"> prisoner name filter option</span></a>
+        </p>
+      </div>
+    {% endif %}
+  </form>
+</div>
