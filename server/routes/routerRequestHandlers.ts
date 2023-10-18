@@ -2,7 +2,6 @@ import createError from 'http-errors'
 import { NextFunction, Request, RequestHandler, Response } from 'express'
 import logger from '../../logger'
 import PrisonerSearchService from '../services/prisonerSearchService'
-import toPrisonerSummary from '../data/mappers/prisonerSummaryMapper'
 
 /**
  * A module exporting request handler functions to support ensuring page requests have been followed
@@ -118,8 +117,10 @@ const retrievePrisonerSummaryIfNotInSession = (prisonerSearchService: PrisonerSe
     try {
       // Lookup the prisoner and store in the session if its either not there, or is for a different prisoner
       if (!req.session.prisonerSummary || req.session.prisonerSummary.prisonNumber !== prisonNumber) {
-        const prisoner = await prisonerSearchService.getPrisonerByPrisonNumber(prisonNumber, req.user.username)
-        req.session.prisonerSummary = toPrisonerSummary(prisoner)
+        req.session.prisonerSummary = await prisonerSearchService.getPrisonerByPrisonNumber(
+          prisonNumber,
+          req.user.username,
+        )
       }
       next()
     } catch (error) {
