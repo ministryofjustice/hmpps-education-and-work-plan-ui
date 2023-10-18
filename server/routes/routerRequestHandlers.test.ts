@@ -15,7 +15,6 @@ import { aValidAddStepForm } from '../testsupport/addStepFormTestDataBuilder'
 import aValidPrisonerSummary from '../testsupport/prisonerSummaryTestDataBuilder'
 import { aValidCreateGoalForm } from '../testsupport/createGoalFormTestDataBuilder'
 import aValidAddNoteForm from '../testsupport/addNoteFormTestDataBuilder'
-import aValidPrisoner from '../testsupport/prisonerTestDataBuilder'
 import { PrisonerSearchService } from '../services'
 
 describe('routerRequestHandlers', () => {
@@ -397,10 +396,8 @@ describe('routerRequestHandlers', () => {
       const prisonNumber = 'A1234GC'
       const prisonId = 'MDI'
       req.params.prisonNumber = prisonNumber
-      const prisoner = aValidPrisoner({ prisonNumber, prisonId })
-      prisonerSearchService.getPrisonerByPrisonNumber.mockResolvedValue(prisoner)
-
       const expectedPrisonerSummary = aValidPrisonerSummary(prisonNumber, prisonId)
+      prisonerSearchService.getPrisonerByPrisonNumber.mockResolvedValue(expectedPrisonerSummary)
 
       // When
       await requestHandler(req as undefined as Request, res as undefined as Response, next as undefined as NextFunction)
@@ -421,10 +418,8 @@ describe('routerRequestHandlers', () => {
       const prisonNumber = 'A1234GC'
       const prisonId = 'MDI'
       req.params.prisonNumber = prisonNumber
-      const prisoner = aValidPrisoner({ prisonNumber, prisonId })
-      prisonerSearchService.getPrisonerByPrisonNumber.mockResolvedValue(prisoner)
-
       const expectedPrisonerSummary = aValidPrisonerSummary(prisonNumber, prisonId)
+      prisonerSearchService.getPrisonerByPrisonNumber.mockResolvedValue(expectedPrisonerSummary)
 
       // When
       await requestHandler(req as undefined as Request, res as undefined as Response, next as undefined as NextFunction)
