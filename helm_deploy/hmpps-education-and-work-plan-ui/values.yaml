@@ -34,7 +34,6 @@ generic-service:
     REDIS_TLS_ENABLED: "true"
     TOKEN_VERIFICATION_ENABLED: "true"
     APPLICATIONINSIGHTS_CONNECTION_STRING: "InstrumentationKey=$(APPINSIGHTS_INSTRUMENTATIONKEY);IngestionEndpoint=https://northeurope-0.in.applicationinsights.azure.com/;LiveEndpoint=https://northeurope.livediagnostics.monitor.azure.com/"
-    STUB_PRISONER_LIST_PAGE_ENABLED: "false"
     FRONTEND_COMPONENTS_API_FEATURE_TOGGLE_ENABLED: "false"
     PLP_PRISONER_LIST_AND_OVERVIEW_PAGES_ENABLED: "false"
 

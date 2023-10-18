@@ -3,13 +3,13 @@ import { appWithAllRoutes } from './testutils/appSetup'
 import config from '../config'
 
 afterEach(() => {
-  config.featureToggles.stubPrisonerListPageEnabled = false
+  config.featureToggles.plpPrisonerListAndOverviewPagesEnabled = false
   config.ciagInductionUrl = 'http://localhost:3000'
 })
 
 describe('GET /', () => {
-  it('should serve stub prisoner list page given feature toggle is enabled', () => {
-    config.featureToggles.stubPrisonerListPageEnabled = true
+  it('should serve PLP prisoner list page given feature toggle is enabled', () => {
+    config.featureToggles.plpPrisonerListAndOverviewPagesEnabled = true
     const app = appWithAllRoutes({})
 
     return request(app)
@@ -21,8 +21,8 @@ describe('GET /', () => {
       })
   })
 
-  it('should not serve stub prisoner list page given feature toggle is disabled', () => {
-    config.featureToggles.stubPrisonerListPageEnabled = false
+  it('should not serve PLP prisoner list page given feature toggle is disabled', () => {
+    config.featureToggles.plpPrisonerListAndOverviewPagesEnabled = false
     config.ciagInductionUrl = 'https://ciag-induction-dev.hmpps.service.justice.gov.uk'
     const app = appWithAllRoutes({})
 
