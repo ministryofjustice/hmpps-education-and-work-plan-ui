@@ -1,11 +1,7 @@
-import Page, { PageElement } from './page'
+import Page from './page'
 
 export default class IndexPage extends Page {
   constructor() {
-    super('index-page')
+    super('prisoner-list-page')
   }
-
-  headerUserName = (): PageElement => cy.get('[data-qa=header-user-name]')
-
-  courtRegisterLink = (): PageElement => cy.get('[href="/court-register"]')
 }

@@ -77,9 +77,7 @@ export function registerNunjucks(app?: express.Express): Environment {
   njkEnv.addGlobal('ciagInductionUrl', config.ciagInductionUrl)
   njkEnv.addGlobal(
     'prisonerListUrl',
-    config.featureToggles.plpPrisonerListAndOverviewPagesEnabled || config.featureToggles.stubPrisonerListPageEnabled
-      ? '/'
-      : config.ciagInductionUrl,
+    config.featureToggles.plpPrisonerListAndOverviewPagesEnabled ? '/' : config.ciagInductionUrl,
   )
   njkEnv.addGlobal('featureToggles', config.featureToggles)
 

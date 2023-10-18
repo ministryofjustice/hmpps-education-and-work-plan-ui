@@ -16,11 +16,12 @@ const testAppInfo: ApplicationInfo = {
   gitShortHash: 'short ref',
 }
 
-export const user = {
+const testUserWithEditorRole = {
   firstName: 'first',
   lastName: 'last',
   userId: 'id',
-  token: 'token',
+  token:
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InVzZXIxIiwiaWF0IjoxNTE2MjM5MDIyLCJhdXRob3JpdGllcyI6WyJST0xFX0VEVUNBVElPTl9XT1JLX1BMQU5fRURJVE9SIl19.vZ7FwrGzUFIDgxluRAj72It0yBW2hbxu5UQCjKkyOzM',
   username: 'user1',
   displayName: 'First Last',
   activeCaseLoadId: 'MDI',
@@ -55,7 +56,7 @@ function appSetup(services: Services, production: boolean, userSupplier: () => E
 export function appWithAllRoutes({
   production = false,
   services = {},
-  userSupplier = () => user,
+  userSupplier = () => testUserWithEditorRole,
 }: {
   production?: boolean
   services?: Partial<Services>

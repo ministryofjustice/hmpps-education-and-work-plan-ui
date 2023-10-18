@@ -120,7 +120,6 @@ export default {
   gtmContainerId: get('GOOGLE_TAG_MANAGER_CONTAINER_ID', null),
   featureToggles: {
     // someToggleEnabled: toBoolean(get('SOME_TOGGLE_ENABLED', false)),
-    stubPrisonerListPageEnabled: toBoolean(get('STUB_PRISONER_LIST_PAGE_ENABLED', false)),
     frontendComponentsApiToggleEnabled: toBoolean(
       get('FRONTEND_COMPONENTS_API_FEATURE_TOGGLE_ENABLED', false, requiredInProduction),
     ),
