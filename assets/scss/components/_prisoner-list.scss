@@ -1,0 +1,11 @@
+.app-prisoner-list__search {
+  @include govuk-responsive-margin(4, "top");
+  background-color: govuk-colour("light-grey");
+  padding: 30px 10px;
+}
+
+.app-prisoner-list__search-legend {
+  @include govuk-responsive-margin(2, "top");
+  margin-top: 0;
+  padding-left: 16px;
+}

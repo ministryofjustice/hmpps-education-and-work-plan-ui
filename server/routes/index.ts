@@ -6,18 +6,23 @@ import createGoal from './createGoal'
 import updateGoal from './updateGoal'
 import overview from './overview'
 import functionalSkills from './functionalSkills'
+import prisonerList from './prisonerList'
 
 export default function routes(services: Services): Router {
   const router = Router()
   const get = (path: string | string[], handler: RequestHandler) => router.get(path, asyncMiddleware(handler))
 
-  get('/', (req, res, next) => {
-    if (config.featureToggles.stubPrisonerListPageEnabled) {
-      res.render('pages/index')
-    } else {
-      res.redirect(config.ciagInductionUrl)
-    }
-  })
+  if (config.featureToggles.plpPrisonerListAndOverviewPagesEnabled) {
+    prisonerList(router)
+  } else {
+    get('/', (req, res, next) => {
+      if (config.featureToggles.stubPrisonerListPageEnabled) {
+        res.render('pages/index')
+      } else {
+        res.redirect(config.ciagInductionUrl)
+      }
+    })
+  }
 
   overview(router, services)
   createGoal(router, services)

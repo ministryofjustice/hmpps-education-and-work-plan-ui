@@ -16,6 +16,7 @@
 {% from "govuk/components/table/macro.njk" import govukTable %}
 {% from "govuk/components/textarea/macro.njk" import govukTextarea %}
 {% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
+{% from "moj/components/pagination/macro.njk" import mojPagination %}
 
 {% block head %}
   {% if gtmContainerId %}
@@ -60,8 +61,6 @@
   {% endif %}
 
   <link href="/assets/stylesheets/print.css?{{ version }}" media="print" rel="stylesheet" />
-
-  <script src="/assets/js/jquery.min.js"></script> 
 {% endblock %}
 
 {% block pageTitle %}{{ pageTitle | default(applicationName) }} - {{ applicationName }}{% endblock %}
@@ -125,9 +124,11 @@
 {% block bodyEnd %}
   {# Run JavaScript at end of the
   <body>, to avoid blocking the initial render. #}
+  <script src="/assets/js/jquery.min.js"></script> 
   <script src="/assets/govuk/all.js"></script>
   <script src="/assets/govukFrontendInit.js"></script>
   <script src="/assets/moj/all.js"></script>
+  <script src="/assets/mojukFrontendInit.js"></script>
   <script src="/assets/print.js"></script>
 
   {% if featureToggles.frontendComponentsApiToggleEnabled %}
