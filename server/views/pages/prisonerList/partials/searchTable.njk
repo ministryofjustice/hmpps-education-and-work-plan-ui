@@ -1,78 +1,39 @@
 {# TODO: Logic for the problemRetrievingData #}
 {% if not ciagPrisonerList.problemRetrievingData %}
-  {{ govukTable({
-    attributes: {
-      'data-module': 'moj-sortable-table'
-    },
-    head: [
-      {
-        text: "Prisoner",
-        attributes: {
-          "aria-sort": "ascending"
-        }
-      },
-      {
-        text: "Location",
-        attributes: {
-          "aria-sort": "none"
-        }
-      },
-      {
-        text: "Release date",
-        attributes: {
-          "aria-sort": "none"
-        }
-      },
-      {
-        text: "Entered prison on",
-        attributes: {
-          "aria-sort": "none"
-        }
-      },
-      {
-        text: "Status",
-        attributes: {
-          "aria-sort": "none"
-        }
-      }
-    ],
-    rows: [
-      [
-        {
-          html: "<a href='/plan/G9981UK/view/overview' rel='noopener noreferrer' class='govuk-link govuk-link--no-visited-state'>Avary, Austin</a><br><span class='govuk-hint govuk-!-margin-bottom-0'>G9981UK</span>"
-        },
-        {
-          text: "A-1-032"
-        },
-        {
-          text: "3 February 2020"
-        },
-        {
-          text: "13 December 2021"
-        },
-        {
-          text: ""
-        }
-      ],
-      [
-        {
-          html: "<a href='/plan/G5045UF/view/overview' rel='noopener noreferrer' class='govuk-link govuk-link--no-visited-state'>Aishard, Ogonanthomasin</a><br><span class='govuk-hint govuk-!-margin-bottom-0'>G5045UF</span>"
-        },
-        {
-          text: "B-1-002"
-        },
-        {
-          text: "N/A"
-        },
-        {
-          text: "12 July 2023"
-        },
-        {
-          html: "<strong class='govuk-tag govuk-tag--red'>Needs plan</strong>"
-        }
-      ]  
-    ]
-  }) }}
+  <table class="govuk-table" data-module="moj-sortable-table">
+
+    <thead class="govuk-table__head">
+      <tr class="govuk-table__row">
+        <th scope="col" class="govuk-table__header" aria-sort="ascending">Prisoner</th>
+        <th scope="col" class="govuk-table__header" aria-sort="none">Location</th>
+        <th scope="col" class="govuk-table__header" aria-sort="none">Release date</th>
+        <th scope="col" class="govuk-table__header" aria-sort="none">Entered prison on</th>
+        <th scope="col" class="govuk-table__header" aria-sort="none">Status</th>
+      </tr>
+    </thead>
+
+    <tbody class="govuk-table__body">
+      {% for prisoner in currentPageOfRecords %}
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell">
+            <a href="/plan/{{ prisoner.prisonNumber }}/view/overview" rel="noopener noreferrer" class="govuk-link govuk-link--no-visited-state">
+              {{ prisoner.lastName }}, {{ prisoner.firstName }}
+            </a>
+            <br>
+            <span class='govuk-hint govuk-!-margin-bottom-0'>{{ prisoner.prisonNumber }}</span>
+          </td>
+          <td class="govuk-table__cell">{{ prisoner.location }}</td>
+          <td class="govuk-table__cell">{{ prisoner.releaseDate | formatDate('D MMMM YYYY') or 'N/A' }}</td>
+          <td class="govuk-table__cell">{{ prisoner.receptionDate | formatDate('D MMMM YYYY') or 'N/A' }}</td>
+          <td class="govuk-table__cell">
+            {% if prisoner.hasActionPlan !== true %}
+              <strong class="govuk-tag govuk-tag--red">Needs plan</strong>            
+            {% endif %}
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
 
   {# TODO: Handle pagination #}
   {{ mojPagination({}) }}
