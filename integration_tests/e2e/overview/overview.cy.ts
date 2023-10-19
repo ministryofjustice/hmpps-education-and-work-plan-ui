@@ -30,6 +30,7 @@ context('Prisoner Overview page', () => {
     const page = Page.verifyOnPage(OverviewPage)
     page //
       .isForPrisoner(prisonNumber)
+      .isPostInduction()
       .hasAddGoalButtonDisplayed()
       .activeTabIs('Overview')
   })
@@ -48,6 +49,7 @@ context('Prisoner Overview page', () => {
     const page = Page.verifyOnPage(OverviewPage)
     page //
       .isForPrisoner(prisonNumber)
+      .isPostInduction()
       .doesNotHaveAddGoalButton()
       .doesNotHaveUpdateGoalButtons()
       .activeTabIs('Overview')
@@ -68,6 +70,7 @@ context('Prisoner Overview page', () => {
     const page = Page.verifyOnPage(OverviewPage)
     page //
       .isForPrisoner(prisonNumber)
+      .isPostInduction()
       .activeTabIs('Overview')
       .hasGoalsDisplayed()
       .hasGoalNotesExpander()
@@ -88,6 +91,7 @@ context('Prisoner Overview page', () => {
     const page = Page.verifyOnPage(OverviewPage)
     page //
       .isForPrisoner(prisonNumber)
+      .isPostInduction()
       .activeTabIs('Overview')
       .hasEmptyGoalsSection()
   })
@@ -107,6 +111,7 @@ context('Prisoner Overview page', () => {
     const page = Page.verifyOnPage(OverviewPage)
     page //
       .isForPrisoner(prisonNumber)
+      .isPostInduction()
       .activeTabIs('Overview')
       .hasServiceUnavailableMessageDisplayed()
   })
