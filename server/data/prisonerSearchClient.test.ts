@@ -70,7 +70,7 @@ describe('prisonerSearchClient', () => {
         ],
       })
       prisonerSearchApi
-        .get(`/prison-search/prison/${prisonId}?page=${page}&size=${pageSize}`)
+        .get(`/prisoner-search/prison/${prisonId}?page=${page}&size=${pageSize}`)
         .reply(200, pagedCollectionOfPrisoners)
 
       // When
@@ -94,7 +94,7 @@ describe('prisonerSearchClient', () => {
         content: [],
       })
       prisonerSearchApi
-        .get(`/prison-search/prison/${prisonId}?page=${page}&size=${pageSize}`)
+        .get(`/prisoner-search/prison/${prisonId}?page=${page}&size=${pageSize}`)
         .reply(200, pagedCollectionOfPrisoners)
 
       // When

@@ -20,7 +20,7 @@ export default class PrisonerSearchClient {
     token: string,
   ): Promise<PagedCollectionOfPrisoners> {
     return PrisonerSearchClient.restClient(token).get({
-      path: `/prison-search/prison/${prisonId}`,
+      path: `/prisoner-search/prison/${prisonId}`,
       headers: {
         'content-type': 'application/json',
       },
