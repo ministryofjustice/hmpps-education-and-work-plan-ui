@@ -87,6 +87,7 @@ export default {
         deadline: Number(get('PRISONER_SEARCH_API_TIMEOUT_DEADLINE', 10000)),
       },
       agent: new AgentConfig(Number(get('PRISONER_SEARCH_API_TIMEOUT_RESPONSE', 10000))),
+      defaultPageSize: Number(get('PRISONER_SEARCH_API_DEFAULT_PAGE_SIZE', 9999, requiredInProduction)),
     },
     curious: {
       url: get('CURIOUS_API_URL', 'http://localhost:8083', requiredInProduction),
@@ -118,6 +119,9 @@ export default {
   dpsHomeUrl: get('DPS_URL', 'http://localhost:3000/', requiredInProduction),
   ciagInductionUrl: get('CIAG_INDUCTION_UI_URL', 'http://localhost:3000', requiredInProduction),
   gtmContainerId: get('GOOGLE_TAG_MANAGER_CONTAINER_ID', null),
+  prisonerListUiDefaultPaginationPageSize: Number(
+    get('PRISONER_LIST_UI_DEFAULT_PAGINATION_PAGE_SIZE', 50, requiredInProduction),
+  ),
   featureToggles: {
     // someToggleEnabled: toBoolean(get('SOME_TOGGLE_ENABLED', false)),
     frontendComponentsApiToggleEnabled: toBoolean(
