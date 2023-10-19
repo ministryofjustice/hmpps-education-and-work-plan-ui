@@ -44,6 +44,7 @@ describe('prisonerListService', () => {
     const pageSize = 9999
 
     const username = 'a-dps-user'
+    const userToken = 'a-user-token'
     const systemToken = 'a-system-token'
     hmppsAuthClient.getSystemClientToken.mockResolvedValue(systemToken)
 
@@ -100,16 +101,19 @@ describe('prisonerListService', () => {
     ]
 
     // When
-    const actual = await prisonerListService.getPrisonerSearchSummariesForPrisonId(prisonId, page, pageSize, username)
+    const actual = await prisonerListService.getPrisonerSearchSummariesForPrisonId(
+      prisonId,
+      page,
+      pageSize,
+      username,
+      userToken,
+    )
 
     // Then
     expect(actual).toEqual(expectedPrisonerSearchSummaries)
     expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
     expect(prisonerSearchClient.getPrisonersByPrisonId).toHaveBeenCalledWith(prisonId, page, pageSize, systemToken)
-    expect(ciagInductionClient.getCiagInductionsForPrisonNumbers).toHaveBeenCalledWith(
-      expectedPrisonNumbers,
-      systemToken,
-    )
-    expect(educationAndWorkPlanClient.getActionPlans).toHaveBeenCalledWith(expectedPrisonNumbers, systemToken)
+    expect(ciagInductionClient.getCiagInductionsForPrisonNumbers).toHaveBeenCalledWith(expectedPrisonNumbers, userToken)
+    expect(educationAndWorkPlanClient.getActionPlans).toHaveBeenCalledWith(expectedPrisonNumbers, userToken)
   })
 })
