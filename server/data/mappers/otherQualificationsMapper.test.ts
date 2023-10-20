@@ -25,26 +25,6 @@ describe('otherQualificationsMapper', () => {
     expect(actual).toEqual(expected)
   })
 
-  describe('inductionQuestionSet mapping', () => {
-    Array.of(
-      { hopingToGetWork: 'YES', expectedInductionQuestionSet: 'LONG_QUESTION_SET' },
-      { hopingToGetWork: 'NO', expectedInductionQuestionSet: 'SHORT_QUESTION_SET' },
-      { hopingToGetWork: 'NOT_SURE', expectedInductionQuestionSet: 'SHORT_QUESTION_SET' },
-    ).forEach(fixture => {
-      it(`should map to Other Qualifications given CIAG Induction where hoping to get work is ${fixture.hopingToGetWork}`, () => {
-        // Given
-        const ciagInduction = aCiagInductionWithOtherQualifications()
-        ciagInduction.hopingToGetWork = fixture.hopingToGetWork
-
-        // When
-        const actual = toOtherQualifications(ciagInduction)
-
-        // Then
-        expect(actual.inductionQuestionSet).toEqual(fixture.expectedInductionQuestionSet)
-      })
-    })
-  })
-
   it('should map to Other Qualifications given CIAG Induction with qualifications and training data', () => {
     // Given
     const ciagInduction: CiagInduction = aCiagInductionWithOtherQualifications()

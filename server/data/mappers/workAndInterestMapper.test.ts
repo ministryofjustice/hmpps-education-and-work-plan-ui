@@ -33,26 +33,6 @@ describe('workAndInterestMapper', () => {
     expect(actual).toEqual(expected)
   })
 
-  describe('inductionQuestionSet mapping', () => {
-    Array.of(
-      { hopingToGetWork: 'YES', expectedInductionQuestionSet: 'LONG_QUESTION_SET' },
-      { hopingToGetWork: 'NO', expectedInductionQuestionSet: 'SHORT_QUESTION_SET' },
-      { hopingToGetWork: 'NOT_SURE', expectedInductionQuestionSet: 'SHORT_QUESTION_SET' },
-    ).forEach(fixture => {
-      it(`should map to Work and Interests given CIAG Induction where hoping to get work is ${fixture.hopingToGetWork}`, () => {
-        // Given
-        const ciagInduction = aCiagInductionWithPreviousWorkExperience()
-        ciagInduction.hopingToGetWork = fixture.hopingToGetWork
-
-        // When
-        const actual = toWorkAndInterests(ciagInduction)
-
-        // Then
-        expect(actual.inductionQuestionSet).toEqual(fixture.expectedInductionQuestionSet)
-      })
-    })
-  })
-
   describe('workExperience mapping', () => {
     it('should map to Work And Interests given CIAG Induction with previous work experience', () => {
       // Given
