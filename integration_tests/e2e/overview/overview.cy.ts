@@ -10,6 +10,9 @@ context('Prisoner Overview page', () => {
     cy.task('stubAuthUser')
     cy.task('stubGetHeaderComponent')
     cy.task('stubGetFooterComponent')
+    cy.task('stubPrisonerList')
+    cy.task('stubCiagInductionList')
+    cy.task('stubActionPlansList')
     cy.task('getPrisonerById')
     cy.task('getActionPlan')
     cy.task('stubLearnerProfile')
@@ -21,6 +24,7 @@ context('Prisoner Overview page', () => {
     cy.task('stubSignInAsUserWithEditAuthority')
 
     const prisonNumber = 'G6115VJ'
+
     cy.signIn()
 
     // When

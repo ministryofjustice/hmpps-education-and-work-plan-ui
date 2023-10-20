@@ -99,15 +99,49 @@ const getActionPlan500Error = (prisonNumber = 'G6115VJ'): SuperAgentRequest =>
     },
   })
 
+const stubActionPlansList = (): SuperAgentRequest =>
+  stubFor({
+    request: {
+      method: 'POST',
+      urlPattern: '/action-plans',
+    },
+    response: {
+      status: 200,
+      headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+      jsonBody: {
+        actionPlanSummaries: [
+          {
+            reference: '814ade0a-a3b2-46a3-862f-79211ba13f7b',
+            prisonNumber: 'A1234BC',
+            reviewDate: '2024-12-19',
+          },
+        ],
+      },
+    },
+  })
+
+const stubActionPlansList500error = (): SuperAgentRequest =>
+  stubFor({
+    request: {
+      method: 'POST',
+      urlPattern: `/action-plans`,
+    },
+    response: {
+      status: 500,
+      body: 'Unexpected error',
+    },
+  })
+
 export default {
   createGoals,
   getActionPlan,
   updateGoal,
   updateGoal500Error,
   getUpdateGoalRequestBody,
-
   getActionPlanForPrisonerWithNoGoals,
   getActionPlan500Error,
+  stubActionPlansList,
+  stubActionPlansList500error,
 }
 
 export interface UpdateGoalRequest {

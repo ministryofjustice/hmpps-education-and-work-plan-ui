@@ -13,7 +13,7 @@ export default function routes(services: Services): Router {
   const get = (path: string | string[], handler: RequestHandler) => router.get(path, asyncMiddleware(handler))
 
   if (config.featureToggles.plpPrisonerListAndOverviewPagesEnabled) {
-    prisonerList(router)
+    prisonerList(router, services)
   } else {
     get('/', (req, res, next) => {
       res.redirect(config.ciagInductionUrl)
