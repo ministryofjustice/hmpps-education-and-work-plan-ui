@@ -11,6 +11,7 @@ import type {
 const toWorkAndInterests = (ciagInduction: CiagInduction): WorkAndInterests => {
   return {
     problemRetrievingData: false,
+    inductionQuestionSet: toInductionQuestionSet(ciagInduction),
     data: toWorkAndInterestsData(ciagInduction),
   }
 }
@@ -78,6 +79,15 @@ const toWorkInterests = (ciagInduction: CiagInduction): WorkInterests => {
     updatedBy: ciagInduction.workExperience.workInterests.modifiedBy,
     updatedAt: moment(ciagInduction.workExperience.workInterests.modifiedDateTime).toDate(),
   }
+}
+
+const toInductionQuestionSet = (
+  ciagInduction: CiagInduction,
+): 'LONG_QUESTION_SET' | 'SHORT_QUESTION_SET' | undefined => {
+  if (ciagInduction) {
+    return ciagInduction.hopingToGetWork === 'YES' ? 'LONG_QUESTION_SET' : 'SHORT_QUESTION_SET'
+  }
+  return undefined
 }
 
 export default toWorkAndInterests

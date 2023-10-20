@@ -1,20 +1,13 @@
 import type { OtherQualifications, WorkAndInterests } from 'viewModels'
-import { HmppsAuthClient } from '../data'
 import CiagInductionClient from '../data/ciagInductionClient'
 import CiagInductionService from './ciagInductionService'
 
 describe('ciagInductionService', () => {
-  const hmppsAuthClient = {
-    getSystemClientToken: jest.fn(),
-  }
   const ciagClient = {
     getCiagInduction: jest.fn(),
   }
 
-  const ciagInductionService = new CiagInductionService(
-    hmppsAuthClient as unknown as HmppsAuthClient,
-    ciagClient as unknown as CiagInductionClient,
-  )
+  const ciagInductionService = new CiagInductionService(ciagClient as unknown as CiagInductionClient)
 
   beforeEach(() => {
     jest.resetAllMocks()

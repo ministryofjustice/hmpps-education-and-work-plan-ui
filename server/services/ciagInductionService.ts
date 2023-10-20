@@ -1,16 +1,12 @@
 import type { WorkAndInterests, OtherQualifications } from 'viewModels'
 import type { CiagInduction } from 'ciagInductionApiClient'
-import { HmppsAuthClient } from '../data'
 import CiagInductionClient from '../data/ciagInductionClient'
 import logger from '../../logger'
 import toWorkAndInterests from '../data/mappers/workAndInterestMapper'
 import toOtherQualifications from '../data/mappers/otherQualificationsMapper'
 
 export default class CiagInductionService {
-  constructor(
-    private readonly hmppsAuthClient: HmppsAuthClient,
-    private readonly ciagInductionClient: CiagInductionClient,
-  ) {}
+  constructor(private readonly ciagInductionClient: CiagInductionClient) {}
 
   async getWorkAndInterests(prisonNumber: string, token: string): Promise<WorkAndInterests> {
     try {

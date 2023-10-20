@@ -25,7 +25,7 @@ export const services = () => {
   const prisonerSearchService = new PrisonerSearchService(hmppsAuthClient, prisonerSearchClient)
   const educationAndWorkPlanService = new EducationAndWorkPlanService(educationAndWorkPlanClient)
   const curiousService = new CuriousService(hmppsAuthClient, curiousClient)
-  const ciagInductionService = new CiagInductionService(hmppsAuthClient, ciagInductionClient)
+  const ciagInductionService = new CiagInductionService(ciagInductionClient)
   const frontendComponentService = new FrontendComponentService(frontendComponentApiClient)
   const prisonerListService = new PrisonerListService(
     hmppsAuthClient,
