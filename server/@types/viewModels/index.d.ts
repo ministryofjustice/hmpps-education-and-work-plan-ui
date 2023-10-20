@@ -116,6 +116,7 @@ declare module 'viewModels' {
    */
   export interface WorkAndInterests {
     problemRetrievingData: boolean
+    inductionQuestionSet?: 'SHORT_QUESTION_SET' | 'LONG_QUESTION_SET'
     data?: WorkAndInterestsData
   }
 
@@ -222,6 +223,7 @@ declare module 'viewModels' {
    */
   export interface OtherQualifications {
     problemRetrievingData: boolean
+    inductionQuestionSet?: 'SHORT_QUESTION_SET' | 'LONG_QUESTION_SET'
     highestEducationLevel?:
       | 'PRIMARY_SCHOOL'
       | 'SECONDARY_SCHOOL_LEFT_BEFORE_TAKING_EXAMS'

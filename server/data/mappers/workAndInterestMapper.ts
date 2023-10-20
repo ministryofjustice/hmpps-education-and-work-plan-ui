@@ -7,10 +7,12 @@ import type {
   WorkExperience,
   WorkInterests,
 } from 'viewModels'
+import toInductionQuestionSet from './inductionQuestionSetMapper'
 
 const toWorkAndInterests = (ciagInduction: CiagInduction): WorkAndInterests => {
   return {
     problemRetrievingData: false,
+    inductionQuestionSet: toInductionQuestionSet(ciagInduction),
     data: toWorkAndInterestsData(ciagInduction),
   }
 }

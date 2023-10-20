@@ -168,6 +168,7 @@ const aCiagInductionWithNoSkillsButSomeInterests = (prisonNumber = 'A1234BC'): C
 
 const baseCiagInductionTemplate = (prisonNumber = 'A1234BC'): CiagInduction => {
   return {
+    hopingToGetWork: 'YES',
     offenderId: prisonNumber,
     createdBy: 'DPS_USER_GEN',
     createdDateTime: '2023-08-15T14:47:09.123Z',

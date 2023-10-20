@@ -22,6 +22,7 @@ describe('workAndInterestMapper', () => {
 
     const expected: WorkAndInterests = {
       problemRetrievingData: false,
+      inductionQuestionSet: undefined,
       data: undefined,
     }
 

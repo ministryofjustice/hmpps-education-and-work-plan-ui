@@ -4,6 +4,7 @@ import type { WorkAndInterests } from 'viewModels'
 export default function aValidWorkAndInterests(): WorkAndInterests {
   return {
     problemRetrievingData: false,
+    inductionQuestionSet: 'LONG_QUESTION_SET',
     data: {
       workExperience: {
         hasWorkedPreviously: false,

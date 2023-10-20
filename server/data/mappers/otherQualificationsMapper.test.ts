@@ -13,6 +13,7 @@ describe('otherQualificationsMapper', () => {
 
     const expected: OtherQualifications = {
       problemRetrievingData: false,
+      inductionQuestionSet: undefined,
       highestEducationLevel: undefined,
       additionalTraining: undefined,
     }
@@ -30,6 +31,7 @@ describe('otherQualificationsMapper', () => {
 
     const expected: OtherQualifications = {
       problemRetrievingData: false,
+      inductionQuestionSet: 'LONG_QUESTION_SET',
       highestEducationLevel: 'SECONDARY_SCHOOL_TOOK_EXAMS',
       additionalTraining: ['FIRST_AID_CERTIFICATE', 'MANUAL_HANDLING'],
     }
@@ -47,6 +49,7 @@ describe('otherQualificationsMapper', () => {
 
     const expected: OtherQualifications = {
       problemRetrievingData: false,
+      inductionQuestionSet: 'LONG_QUESTION_SET',
       highestEducationLevel: undefined,
       additionalTraining: undefined,
     }
