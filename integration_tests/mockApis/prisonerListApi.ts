@@ -1,11 +1,15 @@
 import { SuperAgentRequest } from 'superagent'
 import { stubFor } from './wiremock'
 
-const stubPrisonerList = (prisonId = 'BXI'): SuperAgentRequest =>
+const stubPrisonerList = (prisonId = 'BXI', page = 0, pageSize = 9999): SuperAgentRequest =>
   stubFor({
     request: {
       method: 'GET',
-      urlPattern: `/prisoner-search/prison/${prisonId}\\?page=0&size=9999`,
+      urlPathPattern: `/prisoner-search/prison/${prisonId}`,
+      queryParameters: {
+        page: { equalTo: `${page}` },
+        size: { equalTo: `${pageSize}` },
+      },
     },
     response: {
       status: 200,
@@ -292,11 +296,15 @@ const stubPrisonerList = (prisonId = 'BXI'): SuperAgentRequest =>
     },
   })
 
-const stubPrisonerList500error = (prisonId = 'BXI'): SuperAgentRequest =>
+const stubPrisonerList500error = (prisonId = 'BXI', page = 0, pageSize = 9999): SuperAgentRequest =>
   stubFor({
     request: {
       method: 'GET',
-      urlPattern: `/prisoner-search/prison/${prisonId}\\?page=0&size=9999`,
+      urlPathPattern: `/prisoner-search/prison/${prisonId}`,
+      queryParameters: {
+        page: { equalTo: `${page}` },
+        size: { equalTo: `${pageSize}` },
+      },
     },
     response: {
       status: 500,
