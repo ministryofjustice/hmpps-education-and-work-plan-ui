@@ -27,7 +27,7 @@
         <input type="hidden" name="prisonNumber" value="{{ form.prisonNumber }}" />
 
         {% set titleLabelHtml %}
-          Describe the goal you want to create for {{ prisonerSummary.firstName }} {{ prisonerSummary.lastName }}
+          Describe the goal you want to create for {{ prisonerSummary.firstName | safe }} {{ prisonerSummary.lastName | safe }}
         {% endset %}
 
         {% set hintTextHtml %}
