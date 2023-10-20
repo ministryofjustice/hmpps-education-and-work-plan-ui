@@ -9,22 +9,34 @@ export default class OverviewPage extends Page {
     super('overview')
   }
 
-  isForPrisoner(expected: string) {
+  isForPrisoner(expected: string): OverviewPage {
     this.prisonNumberLabel().should('have.text', expected)
     return this
   }
 
-  hasAddGoalButtonDisplayed() {
+  isPreInduction(): OverviewPage {
+    this.preInductionOverviewPanel().should('be.visible')
+    this.postInductionOverviewPanel().should('not.exist')
+    return this
+  }
+
+  isPostInduction(): OverviewPage {
+    this.preInductionOverviewPanel().should('not.exist')
+    this.postInductionOverviewPanel().should('be.visible')
+    return this
+  }
+
+  hasAddGoalButtonDisplayed(): OverviewPage {
     this.addGoalButton().should('be.visible')
     return this
   }
 
-  doesNotHaveAddGoalButton() {
+  doesNotHaveAddGoalButton(): OverviewPage {
     this.addGoalButton().should('not.exist')
     return this
   }
 
-  doesNotHaveUpdateGoalButtons() {
+  doesNotHaveUpdateGoalButtons(): OverviewPage {
     this.goalUpdateButton(0).should('not.exist')
     return this
   }
@@ -34,7 +46,7 @@ export default class OverviewPage extends Page {
     return Page.verifyOnPage(CreateGoalPage)
   }
 
-  activeTabIs(expected: string) {
+  activeTabIs(expected: string): OverviewPage {
     this.activeTab().should('contain.text', expected)
     return this
   }
@@ -44,12 +56,12 @@ export default class OverviewPage extends Page {
     return Page.verifyOnPage(FunctionalSkillsPage)
   }
 
-  selectTab(targetTab: string) {
+  selectTab(targetTab: string): OverviewPage {
     cy.get(`.moj-sub-navigation__link:contains('${targetTab}')`).click()
     return this
   }
 
-  hasGoalsDisplayed() {
+  hasGoalsDisplayed(): OverviewPage {
     this.goalSummaryCards().should('exist')
     return this
   }
@@ -59,96 +71,96 @@ export default class OverviewPage extends Page {
     return Page.verifyOnPage(UpdateGoalPage)
   }
 
-  hasEmptyGoalsSection() {
+  hasEmptyGoalsSection(): OverviewPage {
     cy.get('h2').contains('Goals in progress')
     this.goalSummaryCards().should('not.exist')
     return this
   }
 
-  hasGoalNotesExpander() {
+  hasGoalNotesExpander(): OverviewPage {
     this.notesExpander(1).should('exist')
     this.notesExpander(1).should('not.have.attr', 'open')
     return this
   }
 
-  hasFunctionalSkillsDisplayed() {
+  hasFunctionalSkillsDisplayed(): OverviewPage {
     this.functionalSkillsTable().should('be.visible')
     return this
   }
 
-  doesNotHaveFunctionalSkillsDisplayed() {
+  doesNotHaveFunctionalSkillsDisplayed(): OverviewPage {
     this.functionalSkillsTable().should('not.exist')
     return this
   }
 
-  hasCompletedInPrisonQualificationsDisplayed() {
+  hasCompletedInPrisonQualificationsDisplayed(): OverviewPage {
     this.completedInPrisonQualificationsTable().should('be.visible')
     return this
   }
 
-  doesNotCompletedInPrisonQualificationsDisplayed() {
+  doesNotCompletedInPrisonQualificationsDisplayed(): OverviewPage {
     this.completedInPrisonQualificationsTable().should('not.exist')
     return this
   }
 
-  hasFunctionalSkillsSidebar() {
+  hasFunctionalSkillsSidebar(): OverviewPage {
     this.functionalSkillsSidebarTable().should('be.visible')
     return this
   }
 
-  hasCuriousUnavailableMessageInFunctionalSkillsSidebar() {
+  hasCuriousUnavailableMessageInFunctionalSkillsSidebar(): OverviewPage {
     this.functionalSkillsSidebarTable().should('not.exist')
     this.functionalSkillsSidebarErrorHeading().should('be.visible')
     return this
   }
 
-  hasMostRecentQualificationsSidebar() {
+  hasMostRecentQualificationsSidebar(): OverviewPage {
     this.mostRecentQualificationsSidebarTable().should('be.visible')
     return this
   }
 
-  hasCuriousUnavailableMessageInMostRecentQualificationsSidebar() {
+  hasCuriousUnavailableMessageInMostRecentQualificationsSidebar(): OverviewPage {
     this.mostRecentQualificationsSidebarTable().should('not.exist')
     this.mostRecentQualificationsSidebarErrorHeading().should('be.visible')
     return this
   }
 
-  hasHealthAndSupportNeedsDisplayed() {
+  hasHealthAndSupportNeedsDisplayed(): OverviewPage {
     this.healthAndSupportNeedsSummaryCard().should('be.visible')
     return this
   }
 
-  hasNeurodiversityDisplayed() {
+  hasNeurodiversityDisplayed(): OverviewPage {
     this.neurodiversitySummaryCard().should('be.visible')
     return this
   }
 
-  hasWorkExperienceDisplayed() {
+  hasWorkExperienceDisplayed(): OverviewPage {
     this.workExperienceSummaryCard().should('be.visible')
     return this
   }
 
-  hasSkillsAndInterestsDisplayed() {
+  hasSkillsAndInterestsDisplayed(): OverviewPage {
     this.skillsAndInterestSummaryCard().should('be.visible')
     return this
   }
 
-  hasCuriousUnavailableMessageDisplayed() {
+  hasCuriousUnavailableMessageDisplayed(): OverviewPage {
     this.curiousUnavailableMessage().should('be.exist')
     return this
   }
 
-  hasCiagInductionApiUnavailableMessageDisplayed() {
+  hasCiagInductionApiUnavailableMessageDisplayed(): OverviewPage {
     this.ciagUnavailableMessage().should('be.exist')
     return this
   }
 
-  hasLinkToCreateCiagInductionDisplayed() {
+  hasLinkToCreateCiagInductionDisplayed(): OverviewPage {
     this.createCiagInductionLink().should('be.visible')
     return this
   }
 
-  hasServiceUnavailableMessageDisplayed() {
+  hasServiceUnavailableMessageDisplayed(): OverviewPage {
     cy.get('h2').contains('Sorry, the service is currently unavailable.')
     return this
   }
@@ -193,4 +205,8 @@ export default class OverviewPage extends Page {
   curiousUnavailableMessage = (): PageElement => cy.get('[data-qa=curious-unavailable-message]')
 
   ciagUnavailableMessage = (): PageElement => cy.get('[data-qa=ciag-unavailable-message]')
+
+  preInductionOverviewPanel = (): PageElement => cy.get('[data-qa=pre-induction-overview')
+
+  postInductionOverviewPanel = (): PageElement => cy.get('[data-qa=post-induction-overview')
 }
