@@ -10,6 +10,7 @@ context('SignIn', () => {
     cy.task('stubAuthUser')
     cy.task('stubGetHeaderComponent')
     cy.task('stubGetFooterComponent')
+    cy.task('stubPrisonerList')
   })
 
   it('Unauthenticated user directed to auth', () => {

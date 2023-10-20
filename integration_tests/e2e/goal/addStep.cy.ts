@@ -10,6 +10,7 @@ context('Add a step', () => {
     cy.task('stubAuthUser')
     cy.task('stubGetHeaderComponent')
     cy.task('stubGetFooterComponent')
+    cy.task('stubPrisonerList')
     cy.task('getPrisonerById', 'G6115VJ')
     cy.task('getPrisonerById', 'H4115SD')
     cy.task('getActionPlan', 'G6115VJ')
