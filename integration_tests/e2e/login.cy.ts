@@ -11,6 +11,8 @@ context('SignIn', () => {
     cy.task('stubGetHeaderComponent')
     cy.task('stubGetFooterComponent')
     cy.task('stubPrisonerList')
+    cy.task('stubCiagInductionList')
+    cy.task('stubActionPlansList')
   })
 
   it('Unauthenticated user directed to auth', () => {

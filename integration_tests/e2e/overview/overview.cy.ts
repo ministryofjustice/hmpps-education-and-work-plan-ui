@@ -11,6 +11,8 @@ context('Prisoner Overview page', () => {
     cy.task('stubGetHeaderComponent')
     cy.task('stubGetFooterComponent')
     cy.task('stubPrisonerList')
+    cy.task('stubCiagInductionList')
+    cy.task('stubActionPlansList')
     cy.task('getPrisonerById')
     cy.task('getActionPlan')
     cy.task('stubLearnerProfile')
