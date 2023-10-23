@@ -10,30 +10,33 @@ import type {
 import toInductionQuestionSet from './inductionQuestionSetMapper'
 
 const toWorkAndInterests = (ciagInduction: CiagInduction): WorkAndInterests => {
+  const inductionQuestionSet = toInductionQuestionSet(ciagInduction)
   return {
     problemRetrievingData: false,
-    inductionQuestionSet: toInductionQuestionSet(ciagInduction),
-    data: toWorkAndInterestsData(ciagInduction),
+    inductionQuestionSet,
+    data: toWorkAndInterestsData(ciagInduction, inductionQuestionSet),
   }
 }
 
-const toWorkAndInterestsData = (ciagInduction: CiagInduction): WorkAndInterestsData => {
-  if (!ciagInduction) {
+const toWorkAndInterestsData = (
+  ciagInduction: CiagInduction,
+  inductionQuestionSet: 'LONG_QUESTION_SET' | 'SHORT_QUESTION_SET' | undefined,
+): WorkAndInterestsData => {
+  if (!inductionQuestionSet) {
     return undefined
   }
 
   return {
-    skillsAndInterests: toSkillsAndInterests(ciagInduction),
-    workExperience: toWorkExperience(ciagInduction),
-    workInterests: toWorkInterests(ciagInduction),
+    skillsAndInterests: inductionQuestionSet === 'LONG_QUESTION_SET' ? toSkillsAndInterests(ciagInduction) : undefined,
+    workExperience: inductionQuestionSet === 'LONG_QUESTION_SET' ? toWorkExperience(ciagInduction) : undefined,
+    workInterests:
+      inductionQuestionSet === 'LONG_QUESTION_SET'
+        ? toLongQuestionSetWorkInterests(ciagInduction)
+        : toShortQuestionSetWorkInterests(ciagInduction),
   }
 }
 
 const toSkillsAndInterests = (ciagInduction: CiagInduction): SkillsAndInterests => {
-  if (!ciagInduction.skillsAndInterests) {
-    return undefined
-  }
-
   return {
     skills: ciagInduction.skillsAndInterests.skills || [],
     otherSkill: ciagInduction.skillsAndInterests.skillsOther,
@@ -45,10 +48,6 @@ const toSkillsAndInterests = (ciagInduction: CiagInduction): SkillsAndInterests 
 }
 
 const toWorkExperience = (ciagInduction: CiagInduction): WorkExperience => {
-  if (!ciagInduction.workExperience) {
-    return undefined
-  }
-
   const previousJobs: Array<CiagWorkExperience> = ciagInduction.workExperience.workExperience
   return {
     hasWorkedPreviously: ciagInduction.workExperience.hasWorkedBefore,
@@ -65,20 +64,34 @@ const toWorkExperience = (ciagInduction: CiagInduction): WorkExperience => {
   }
 }
 
-const toWorkInterests = (ciagInduction: CiagInduction): WorkInterests => {
-  if (!ciagInduction.workExperience || !ciagInduction.workExperience.workInterests) {
-    return undefined
-  }
-
+const toLongQuestionSetWorkInterests = (ciagInduction: CiagInduction): WorkInterests => {
   const jobInterests: Array<CiagWorkInterestDetail> = ciagInduction.workExperience.workInterests.particularJobInterests
   return {
     hopingToWorkOnRelease: ciagInduction.hopingToGetWork,
-    constraintsOnAbilityToWork: ciagInduction.abilityToWork,
-    otherConstraintOnAbilityToWork: ciagInduction.abilityToWorkOther,
-    jobTypes: jobInterests?.map(jobInterest => jobInterest.workInterest),
-    specificJobRoles: jobInterests?.map(jobInterest => jobInterest.role),
+    longQuestionSetAnswers: {
+      constraintsOnAbilityToWork: ciagInduction.abilityToWork,
+      otherConstraintOnAbilityToWork: ciagInduction.abilityToWorkOther,
+      jobTypes: jobInterests?.map(jobInterest => jobInterest.workInterest),
+      specificJobRoles: jobInterests?.map(jobInterest => jobInterest.role),
+    },
+    shortQuestionSetAnswers: undefined,
     updatedBy: ciagInduction.workExperience.workInterests.modifiedBy,
     updatedAt: moment(ciagInduction.workExperience.workInterests.modifiedDateTime).toDate(),
+  }
+}
+
+const toShortQuestionSetWorkInterests = (ciagInduction: CiagInduction): WorkInterests => {
+  return {
+    hopingToWorkOnRelease: ciagInduction.hopingToGetWork,
+    longQuestionSetAnswers: undefined,
+    shortQuestionSetAnswers: {
+      inPrisonWorkInterests: ciagInduction.inPrisonInterests.inPrisonWork,
+      otherInPrisonerWorkInterest: ciagInduction.inPrisonInterests.inPrisonWorkOther,
+      reasonsForNotWantingToWork: ciagInduction.reasonToNotGetWork,
+      otherReasonForNotWantingToWork: ciagInduction.reasonToNotGetWorkOther,
+    },
+    updatedBy: ciagInduction.inPrisonInterests.modifiedBy,
+    updatedAt: moment(ciagInduction.inPrisonInterests.modifiedDateTime).toDate(),
   }
 }
 

@@ -1,7 +1,7 @@
 import { SuperAgentRequest } from 'superagent'
 import { stubFor } from './wiremock'
 
-const stubGetCiagProfile = (prisonNumber = 'G6115VJ'): SuperAgentRequest =>
+const stubGetLongQuestionSetCiagProfile = (prisonNumber = 'G6115VJ'): SuperAgentRequest =>
   stubFor({
     request: {
       method: 'GET',
@@ -43,7 +43,19 @@ const stubGetCiagProfile = (prisonNumber = 'G6115VJ'): SuperAgentRequest =>
               details: 'Some daily tasks',
             },
           ],
-          workInterests: null,
+          workInterests: {
+            id: 63,
+            workInterests: ['WASTE_MANAGEMENT'],
+            workInterestsOther: '',
+            particularJobInterests: [
+              {
+                workInterest: 'WASTE_MANAGEMENT',
+                role: 'Bin man',
+              },
+            ],
+            modifiedBy: 'A_USER_GEN',
+            modifiedDateTime: '2023-08-29T10:29:22.457',
+          },
         },
         skillsAndInterests: {
           modifiedBy: 'A_USER_GEN',
@@ -85,6 +97,57 @@ const stubGetCiagProfile = (prisonNumber = 'G6115VJ'): SuperAgentRequest =>
           additionalTrainingOther: 'Accountancy Certification',
         },
         inPrisonInterests: null,
+        schemaVersion: null,
+      },
+    },
+  })
+
+const stubGetShortQuestionSetCiagProfile = (prisonNumber = 'G6115VJ'): SuperAgentRequest =>
+  stubFor({
+    request: {
+      method: 'GET',
+      urlPattern: `/ciag/induction/${prisonNumber}`,
+    },
+    response: {
+      status: 200,
+      headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+      jsonBody: {
+        offenderId: prisonNumber,
+        createdBy: 'A_USER_GEN',
+        createdDateTime: '2023-08-29T11:29:22.8793',
+        modifiedBy: 'A_USER_GEN',
+        desireToWork: false,
+        hopingToGetWork: 'NO',
+        reasonToNotGetWorkOther: '',
+        abilityToWorkOther: null,
+        abilityToWork: [],
+        reasonToNotGetWork: ['LIMIT_THEIR_ABILITY'],
+        workExperience: null,
+        skillsAndInterests: null,
+        qualificationsAndTraining: {
+          modifiedBy: 'A_USER_GEN',
+          modifiedDateTime: '2023-10-23T08:34:35.497',
+          id: 40,
+          educationLevel: null,
+          qualifications: [
+            {
+              subject: 'English',
+              grade: 'C',
+              level: 'LEVEL_6',
+            },
+          ],
+          additionalTraining: ['FULL_UK_DRIVING_LICENCE'],
+          additionalTrainingOther: '',
+        },
+        inPrisonInterests: {
+          modifiedBy: 'A_USER_GEN',
+          modifiedDateTime: '2023-10-23T08:34:35.497',
+          id: 39,
+          inPrisonWork: ['MAINTENANCE'],
+          inPrisonWorkOther: '',
+          inPrisonEducation: ['MACHINERY_TICKETS'],
+          inPrisonEducationOther: '',
+        },
         schemaVersion: null,
       },
     },
@@ -233,7 +296,8 @@ const stubCiagInductionList500error = (): SuperAgentRequest =>
   })
 
 export default {
-  stubGetCiagProfile,
+  stubGetLongQuestionSetCiagProfile,
+  stubGetShortQuestionSetCiagProfile,
   stubGetCiagProfile404Error,
   stubGetCiagProfile500Error,
   stubCiagInductionList,

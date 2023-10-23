@@ -1,7 +1,7 @@
 import moment from 'moment/moment'
 import type { WorkAndInterests } from 'viewModels'
 
-export default function aValidWorkAndInterests(): WorkAndInterests {
+export default function aValidLongQuestionSetWorkAndInterests(): WorkAndInterests {
   return {
     problemRetrievingData: false,
     inductionQuestionSet: 'LONG_QUESTION_SET',
@@ -14,9 +14,13 @@ export default function aValidWorkAndInterests(): WorkAndInterests {
       },
       workInterests: {
         hopingToWorkOnRelease: 'NOT_SURE',
-        constraintsOnAbilityToWork: ['NONE'],
-        jobTypes: ['OUTDOOR'],
-        specificJobRoles: ['Gardner'],
+        longQuestionSetAnswers: {
+          constraintsOnAbilityToWork: ['NONE'],
+          otherConstraintOnAbilityToWork: undefined,
+          jobTypes: ['OUTDOOR'],
+          specificJobRoles: ['Gardner'],
+        },
+        shortQuestionSetAnswers: undefined,
         updatedBy: 'A_DPS_USER_GEN',
         updatedAt: moment('2023-08-22T11:12:31.943Z').toDate(),
       },

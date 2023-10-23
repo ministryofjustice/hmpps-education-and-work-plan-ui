@@ -79,7 +79,6 @@ export default class OverviewController {
     const { prisonerSummary } = req.session
 
     const workAndInterests = await this.ciagInductionService.getWorkAndInterests(prisonNumber, req.user.token)
-
     const view = new WorkAndInterestsView(prisonerSummary, workAndInterests)
     res.render('pages/overview/index', { ...view.renderArgs })
   }

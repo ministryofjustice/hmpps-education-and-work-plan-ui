@@ -4,7 +4,7 @@ import CiagInductionClient from '../data/ciagInductionClient'
 import aValidPagedCollectionOfPrisoners from '../testsupport/pagedCollectionOfPrisonersTestDataBuilder'
 import aValidPrisoner from '../testsupport/prisonerTestDataBuilder'
 import aValidCiagInductionListResponse from '../testsupport/ciagInductionListResponseTestDataBuilder'
-import { aCiagInductionWithJobInterests } from '../testsupport/ciagInductionTestDataBuilder'
+import { aLongQuestionSetCiagInduction } from '../testsupport/ciagInductionTestDataBuilder'
 import aValidActionPlanSummaryResponse from '../testsupport/actionPlanSummaryResponseTestDataBuilder'
 import aValidActionPlanSummaryListResponse from '../testsupport/actionPlanSummaryListResponseTestDataBuilder'
 import toPrisonerSummary from '../data/mappers/prisonerSummaryMapper'
@@ -71,8 +71,8 @@ describe('prisonerListService', () => {
     })
     prisonerSearchClient.getPrisonersByPrisonId.mockResolvedValue(pagedCollectionOfPrisoners)
 
-    const fredsCiagInduction = aCiagInductionWithJobInterests('A1234BC')
-    const jimsCiagInduction = aCiagInductionWithJobInterests('F4329JC')
+    const fredsCiagInduction = aLongQuestionSetCiagInduction({ prisonNumber: 'A1234BC' })
+    const jimsCiagInduction = aLongQuestionSetCiagInduction({ prisonNumber: 'F4329JC' })
     const ciagInductionListResponse = aValidCiagInductionListResponse({
       ciagProfileList: [fredsCiagInduction, jimsCiagInduction],
     })

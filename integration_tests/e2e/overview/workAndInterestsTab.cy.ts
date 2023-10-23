@@ -18,9 +18,9 @@ context('Prisoner Overview page - Work and Interests tab', () => {
     cy.task('stubLearnerEducation')
   })
 
-  it('should display Work and interests data', () => {
+  it('should display Work and interests data given the long question set CIAG Induction was performed', () => {
     // Given
-    cy.task('stubGetCiagProfile')
+    cy.task('stubGetLongQuestionSetCiagProfile')
 
     cy.signIn()
     const prisonNumber = 'G6115VJ'
@@ -34,8 +34,30 @@ context('Prisoner Overview page - Work and Interests tab', () => {
     // Then
     workAndInterestsPage //
       .activeTabIs('Work and interests')
+      .isShowingLongQuestionSetAnswers()
+      .hasWorkInterests()
       .hasWorkExperienceDisplayed()
       .hasSkillsAndInterestsDisplayed()
+  })
+
+  it('should display Work and interests data given the short question set CIAG Induction was performed', () => {
+    // Given
+    cy.task('stubGetShortQuestionSetCiagProfile')
+
+    cy.signIn()
+    const prisonNumber = 'G6115VJ'
+    cy.visit(`/plan/${prisonNumber}/view/overview`)
+    const overviewPage = Page.verifyOnPage(OverviewPage)
+
+    // When
+    overviewPage.selectTab('Work and interests')
+    const workAndInterestsPage = Page.verifyOnPage(WorkAndInterestsPage)
+
+    // Then
+    workAndInterestsPage //
+      .activeTabIs('Work and interests')
+      .isShowingShortQuestionSetAnswers()
+      .hasWorkInterests()
   })
 
   it('should display CIAG unavailable message given CIAG is unavailable', () => {
