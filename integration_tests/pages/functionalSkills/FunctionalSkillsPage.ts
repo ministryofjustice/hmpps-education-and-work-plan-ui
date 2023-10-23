@@ -1,6 +1,6 @@
 import Page, { PageElement } from '../page'
 // eslint-disable-next-line import/no-cycle
-import OverviewPage from '../overview/OverviewPage'
+import EducationAndTrainingPage from '../overview/EducationAndTrainingPage'
 
 export default class FunctionalSkillsPage extends Page {
   constructor() {
@@ -47,9 +47,9 @@ export default class FunctionalSkillsPage extends Page {
     return this
   }
 
-  clickLearningPlanBreadcrumb(): OverviewPage {
+  clickLearningPlanBreadcrumb(): EducationAndTrainingPage {
     this.breadCrumb().find('a').last().click() // The Prisoner's Learning Plan is the last breadcrumb on the Functional Skills page
-    return Page.verifyOnPage(OverviewPage)
+    return Page.verifyOnPage(EducationAndTrainingPage)
   }
 
   doesNotHaveFunctionalSkillsDisplayed() {

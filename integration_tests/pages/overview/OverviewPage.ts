@@ -4,9 +4,13 @@ import UpdateGoalPage from '../goal/UpdateGoalPage'
 // eslint-disable-next-line import/no-cycle
 import FunctionalSkillsPage from '../functionalSkills/FunctionalSkillsPage'
 
+/**
+ * Cypress page class representing the Overview tab of the Overview Page
+ */
 export default class OverviewPage extends Page {
   constructor() {
     super('overview')
+    this.activeTabIs('Overview')
   }
 
   isForPrisoner(expected: string): OverviewPage {
@@ -83,26 +87,6 @@ export default class OverviewPage extends Page {
     return this
   }
 
-  hasFunctionalSkillsDisplayed(): OverviewPage {
-    this.functionalSkillsTable().should('be.visible')
-    return this
-  }
-
-  doesNotHaveFunctionalSkillsDisplayed(): OverviewPage {
-    this.functionalSkillsTable().should('not.exist')
-    return this
-  }
-
-  hasCompletedInPrisonQualificationsDisplayed(): OverviewPage {
-    this.completedInPrisonQualificationsTable().should('be.visible')
-    return this
-  }
-
-  doesNotCompletedInPrisonQualificationsDisplayed(): OverviewPage {
-    this.completedInPrisonQualificationsTable().should('not.exist')
-    return this
-  }
-
   hasFunctionalSkillsSidebar(): OverviewPage {
     this.functionalSkillsSidebarTable().should('be.visible')
     return this
@@ -125,41 +109,6 @@ export default class OverviewPage extends Page {
     return this
   }
 
-  hasHealthAndSupportNeedsDisplayed(): OverviewPage {
-    this.healthAndSupportNeedsSummaryCard().should('be.visible')
-    return this
-  }
-
-  hasNeurodiversityDisplayed(): OverviewPage {
-    this.neurodiversitySummaryCard().should('be.visible')
-    return this
-  }
-
-  hasWorkExperienceDisplayed(): OverviewPage {
-    this.workExperienceSummaryCard().should('be.visible')
-    return this
-  }
-
-  hasSkillsAndInterestsDisplayed(): OverviewPage {
-    this.skillsAndInterestSummaryCard().should('be.visible')
-    return this
-  }
-
-  hasCuriousUnavailableMessageDisplayed(): OverviewPage {
-    this.curiousUnavailableMessage().should('be.exist')
-    return this
-  }
-
-  hasCiagInductionApiUnavailableMessageDisplayed(): OverviewPage {
-    this.ciagUnavailableMessage().should('be.exist')
-    return this
-  }
-
-  hasLinkToCreateCiagInductionDisplayed(): OverviewPage {
-    this.createCiagInductionLink().should('be.visible')
-    return this
-  }
-
   hasServiceUnavailableMessageDisplayed(): OverviewPage {
     cy.get('h2').contains('Sorry, the service is currently unavailable.')
     return this
@@ -170,10 +119,6 @@ export default class OverviewPage extends Page {
   activeTab = (): PageElement => cy.get('.moj-sub-navigation__link[aria-current=page]')
 
   addGoalButton = (): PageElement => cy.get('#add-goal-button')
-
-  functionalSkillsTable = (): PageElement => cy.get('#latest-functional-skills-table')
-
-  completedInPrisonQualificationsTable = (): PageElement => cy.get('#completed-in-prison-qualifications-table')
 
   functionalSkillsSidebarTable = (): PageElement => cy.get('#functional-skills-sidebar-table')
 
@@ -188,23 +133,11 @@ export default class OverviewPage extends Page {
 
   goalUpdateButton = (idx: number): PageElement => cy.get(`[data-qa=goal-${idx}-update-button]`)
 
-  healthAndSupportNeedsSummaryCard = (): PageElement => cy.get('#health-and-support-needs-summary-card')
-
-  neurodiversitySummaryCard = (): PageElement => cy.get('#neurodiversity-summary-card')
-
   workExperienceSummaryCard = (): PageElement => cy.get('#work-experience-summary-card')
-
-  skillsAndInterestSummaryCard = (): PageElement => cy.get('#skills-and-interests-summary-card')
 
   viewAllFunctionalSkillsButton = (): PageElement => cy.get('[data-qa=view-all-functional-skills-button]')
 
-  createCiagInductionLink = (): PageElement => cy.get('[data-qa=link-to-create-ciag-induction]')
-
   notesExpander = (idx: number): PageElement => cy.get(`[data-qa=overview-notes-expander-${idx}]`)
-
-  curiousUnavailableMessage = (): PageElement => cy.get('[data-qa=curious-unavailable-message]')
-
-  ciagUnavailableMessage = (): PageElement => cy.get('[data-qa=ciag-unavailable-message]')
 
   preInductionOverviewPanel = (): PageElement => cy.get('[data-qa=pre-induction-overview')
 
