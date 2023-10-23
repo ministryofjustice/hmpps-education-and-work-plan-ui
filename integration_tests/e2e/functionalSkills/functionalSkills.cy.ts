@@ -2,6 +2,7 @@ import Page from '../../pages/page'
 import AuthorisationErrorPage from '../../pages/authorisationError'
 import FunctionalSkillsPage from '../../pages/functionalSkills/FunctionalSkillsPage'
 import OverviewPage from '../../pages/overview/OverviewPage'
+import EducationAndTrainingPage from '../../pages/overview/EducationAndTrainingPage'
 
 context(`Display a prisoner's functional skills`, () => {
   beforeEach(() => {
@@ -44,10 +45,10 @@ context(`Display a prisoner's functional skills`, () => {
     const functionalSkillsPage = Page.verifyOnPage(FunctionalSkillsPage)
 
     // When
-    const overviewPage = functionalSkillsPage.clickLearningPlanBreadcrumb()
+    const educationAndTrainingPage = functionalSkillsPage.clickLearningPlanBreadcrumb()
 
     // Then
-    overviewPage.activeTabIs('Education and training')
+    educationAndTrainingPage.activeTabIs('Education and training')
   })
 
   it('should be able to navigate to the Functional Skills page from the Functional Skills panel on the Overview page', () => {
@@ -76,9 +77,10 @@ context(`Display a prisoner's functional skills`, () => {
     cy.visit(`/plan/${prisonNumber}/view/overview`)
     const overviewPage = Page.verifyOnPage(OverviewPage)
     overviewPage.selectTab('Education and training')
+    const educationAndTrainingPage = Page.verifyOnPage(EducationAndTrainingPage)
 
     // When
-    const functionalSkillsPage = overviewPage.clickToViewAllFunctionalSkills()
+    const functionalSkillsPage = educationAndTrainingPage.clickToViewAllFunctionalSkills()
 
     // Then
     functionalSkillsPage
@@ -97,9 +99,10 @@ context(`Display a prisoner's functional skills`, () => {
     cy.visit(`/plan/${prisonNumber}/view/overview`)
     const overviewPage = Page.verifyOnPage(OverviewPage)
     overviewPage.selectTab('Education and training')
+    const educationAndTrainingPage = Page.verifyOnPage(EducationAndTrainingPage)
 
     // When
-    const functionalSkillsPage = overviewPage.clickToViewAllFunctionalSkills()
+    const functionalSkillsPage = educationAndTrainingPage.clickToViewAllFunctionalSkills()
 
     // Then
     functionalSkillsPage

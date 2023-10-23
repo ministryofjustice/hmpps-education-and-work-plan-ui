@@ -1,5 +1,6 @@
 import Page from '../../pages/page'
 import OverviewPage from '../../pages/overview/OverviewPage'
+import WorkAndInterestsPage from '../../pages/overview/WorkAndInterestsPage'
 
 context('Prisoner Overview page - Work and Interests tab', () => {
   beforeEach(() => {
@@ -28,9 +29,10 @@ context('Prisoner Overview page - Work and Interests tab', () => {
 
     // When
     overviewPage.selectTab('Work and interests')
+    const workAndInterestsPage = Page.verifyOnPage(WorkAndInterestsPage)
 
     // Then
-    overviewPage //
+    workAndInterestsPage //
       .activeTabIs('Work and interests')
       .hasWorkExperienceDisplayed()
       .hasSkillsAndInterestsDisplayed()
@@ -47,9 +49,10 @@ context('Prisoner Overview page - Work and Interests tab', () => {
 
     // When
     overviewPage.selectTab('Work and interests')
+    const workAndInterestsPage = Page.verifyOnPage(WorkAndInterestsPage)
 
     // Then
-    overviewPage //
+    workAndInterestsPage //
       .activeTabIs('Work and interests')
       .hasCiagInductionApiUnavailableMessageDisplayed()
   })
@@ -65,9 +68,10 @@ context('Prisoner Overview page - Work and Interests tab', () => {
 
     // When
     overviewPage.selectTab('Work and interests')
+    const workAndInterestsPage = Page.verifyOnPage(WorkAndInterestsPage)
 
     // Then
-    overviewPage //
+    workAndInterestsPage //
       .activeTabIs('Work and interests')
       .hasLinkToCreateCiagInductionDisplayed()
   })

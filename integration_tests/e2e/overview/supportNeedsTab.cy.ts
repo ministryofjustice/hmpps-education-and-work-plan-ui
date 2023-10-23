@@ -1,5 +1,6 @@
 import OverviewPage from '../../pages/overview/OverviewPage'
 import Page from '../../pages/page'
+import SupportNeedsPage from '../../pages/overview/SupportNeedsPage'
 
 context('Prisoner Overview page - Support Needs tab', () => {
   beforeEach(() => {
@@ -29,9 +30,10 @@ context('Prisoner Overview page - Support Needs tab', () => {
 
     // When
     overviewPage.selectTab('Support needs')
+    const supportNeedsPage = Page.verifyOnPage(SupportNeedsPage)
 
     // Then
-    overviewPage //
+    supportNeedsPage //
       .activeTabIs('Support needs')
       .hasHealthAndSupportNeedsDisplayed()
       .hasNeurodiversityDisplayed()
@@ -49,9 +51,10 @@ context('Prisoner Overview page - Support Needs tab', () => {
 
     // When
     overviewPage.selectTab('Support needs')
+    const supportNeedsPage = Page.verifyOnPage(SupportNeedsPage)
 
     // Then
-    overviewPage //
+    supportNeedsPage //
       .activeTabIs('Support needs')
       .hasHealthAndSupportNeedsDisplayed()
       .hasNeurodiversityDisplayed()
@@ -68,9 +71,10 @@ context('Prisoner Overview page - Support Needs tab', () => {
 
     // When
     overviewPage.selectTab('Support needs')
+    const supportNeedsPage = Page.verifyOnPage(SupportNeedsPage)
 
     // Then
-    overviewPage //
+    supportNeedsPage //
       .activeTabIs('Support needs')
       .hasCuriousUnavailableMessageDisplayed()
   })

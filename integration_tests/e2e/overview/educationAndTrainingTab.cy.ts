@@ -1,5 +1,6 @@
 import OverviewPage from '../../pages/overview/OverviewPage'
 import Page from '../../pages/page'
+import EducationAndTrainingPage from '../../pages/overview/EducationAndTrainingPage'
 
 context('Prisoner Overview page - Education And Training tab', () => {
   beforeEach(() => {
@@ -27,9 +28,10 @@ context('Prisoner Overview page - Education And Training tab', () => {
 
     // When
     overviewPage.selectTab('Education and training')
+    const educationAndTrainingPage = Page.verifyOnPage(EducationAndTrainingPage)
 
     // Then
-    overviewPage //
+    educationAndTrainingPage //
       .activeTabIs('Education and training')
       .hasFunctionalSkillsDisplayed()
       .hasCompletedInPrisonQualificationsDisplayed()
@@ -47,9 +49,10 @@ context('Prisoner Overview page - Education And Training tab', () => {
 
     // When
     overviewPage.selectTab('Education and training')
+    const educationAndTrainingPage = Page.verifyOnPage(EducationAndTrainingPage)
 
     // Then
-    overviewPage //
+    educationAndTrainingPage //
       .activeTabIs('Education and training')
       .hasFunctionalSkillsDisplayed()
       .hasCompletedInPrisonQualificationsDisplayed()
@@ -67,9 +70,10 @@ context('Prisoner Overview page - Education And Training tab', () => {
 
     // When
     overviewPage.selectTab('Education and training')
+    const educationAndTrainingPage = Page.verifyOnPage(EducationAndTrainingPage)
 
     // Then
-    overviewPage //
+    educationAndTrainingPage //
       .activeTabIs('Education and training')
       .hasFunctionalSkillsDisplayed()
       .hasCompletedInPrisonQualificationsDisplayed()
@@ -87,9 +91,10 @@ context('Prisoner Overview page - Education And Training tab', () => {
 
     // When
     overviewPage.selectTab('Education and training')
+    const educationAndTrainingPage = Page.verifyOnPage(EducationAndTrainingPage)
 
     // Then
-    overviewPage //
+    educationAndTrainingPage //
       .activeTabIs('Education and training')
       .doesNotHaveFunctionalSkillsDisplayed()
       .hasCuriousUnavailableMessageDisplayed()
@@ -108,9 +113,10 @@ context('Prisoner Overview page - Education And Training tab', () => {
 
     // When
     overviewPage.selectTab('Education and training')
+    const educationAndTrainingPage = Page.verifyOnPage(EducationAndTrainingPage)
 
     // Then
-    overviewPage //
+    educationAndTrainingPage //
       .activeTabIs('Education and training')
       .hasFunctionalSkillsDisplayed()
       .doesNotCompletedInPrisonQualificationsDisplayed()
