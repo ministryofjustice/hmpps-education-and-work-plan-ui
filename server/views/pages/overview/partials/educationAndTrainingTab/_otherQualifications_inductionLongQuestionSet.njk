@@ -14,7 +14,7 @@ as the follow up questions are different.
           Highest level of education
         </dt>
         <dd class="govuk-summary-list__value">
-          {{ otherQualifications.highestEducationLevel | formatEducationLevel }}
+          {{ educationAndTraining.data.longQuestionSetAnswers.highestEducationLevel | formatEducationLevel }}
         </dd>
       </div>
       <div class="govuk-summary-list__row">
@@ -23,7 +23,7 @@ as the follow up questions are different.
         </dt>
         <dd class="govuk-summary-list__value">
           <ul class="govuk-list">
-            {% for additionalTraining in otherQualifications.additionalTraining %}
+            {% for additionalTraining in educationAndTraining.data.longQuestionSetAnswers.additionalTraining %}
               <li>{{ additionalTraining | formatAdditionalTraining }}</li>
             {% endfor %}
           </ul>

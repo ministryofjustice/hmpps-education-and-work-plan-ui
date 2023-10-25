@@ -6,11 +6,11 @@
         <h2 class="govuk-summary-card__title">Other qualifications and history</h2>
       </div>
 
-      {% if not otherQualifications.problemRetrievingData %}
+      {% if not educationAndTraining.problemRetrievingData %}
 
         {# Include content based on whether the Induction was the long or short question set #}
         {#
-        {% if workAndInterests.inductionQuestionSet == 'LONG_QUESTION_SET' %}
+        {% if educationAndTraining.inductionQuestionSet == 'LONG_QUESTION_SET' %}
           {% include './_otherQualifications_inductionLongQuestionSet.njk' %}
         {% else %}
           {% include './_otherQualifications_inductionShortQuestionSet.njk' %}

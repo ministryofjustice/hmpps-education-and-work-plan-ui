@@ -1,5 +1,5 @@
 import moment from 'moment'
-import type { FunctionalSkills, InPrisonEducationRecords, OtherQualifications, WorkAndInterests } from 'viewModels'
+import type { FunctionalSkills, InPrisonEducationRecords, WorkAndInterests } from 'viewModels'
 import { SessionData } from 'express-session'
 import { NextFunction, Request, Response } from 'express'
 import OverviewController from './overviewController'
@@ -14,6 +14,7 @@ import {
 import CiagInductionService from '../../services/ciagInductionService'
 import aValidLongQuestionSetWorkAndInterests from '../../testsupport/workAndInterestsTestDataBuilder'
 import aValidPrisonerSummary from '../../testsupport/prisonerSummaryTestDataBuilder'
+import aValidShortQuestionSetEducationAndTraining from '../../testsupport/educationAndTrainingTestDataBuilder'
 
 describe('overviewController', () => {
   const curiousService = {
@@ -26,7 +27,7 @@ describe('overviewController', () => {
   }
   const ciagInductionService = {
     getWorkAndInterests: jest.fn(),
-    getOtherQualifications: jest.fn(),
+    getEducationAndTraining: jest.fn(),
   }
 
   const controller = new OverviewController(
@@ -219,18 +220,8 @@ describe('overviewController', () => {
         educationRecords: [aValidMathsInPrisonEducation()],
       }
 
-      const otherQualifications = {
-        problemRetrievingData: false,
-        highestEducationLevel: 'FURTHER_EDUCATION_COLLEGE',
-        additionalTraining: ['CSCS_CARD'],
-      } as OtherQualifications
-      ciagInductionService.getOtherQualifications.mockResolvedValue(otherQualifications)
-
-      const expectedOtherQualifications: OtherQualifications = {
-        problemRetrievingData: false,
-        highestEducationLevel: 'FURTHER_EDUCATION_COLLEGE',
-        additionalTraining: ['CSCS_CARD'],
-      }
+      const expectedEducationAndTraining = aValidShortQuestionSetEducationAndTraining()
+      ciagInductionService.getEducationAndTraining.mockResolvedValue(expectedEducationAndTraining)
 
       const expectedPrisonerSummary = aValidPrisonerSummary(prisonNumber)
       const expectedView = {
@@ -238,7 +229,7 @@ describe('overviewController', () => {
         tab: expectedTab,
         functionalSkills: expectedFunctionalSkills,
         completedInPrisonEducation: expectedCompletedInPrisonEducation,
-        otherQualifications: expectedOtherQualifications,
+        educationAndTraining: expectedEducationAndTraining,
       }
 
       // When
@@ -250,7 +241,7 @@ describe('overviewController', () => {
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/overview/index', expectedView)
-      expect(ciagInductionService.getOtherQualifications).toHaveBeenCalledWith(prisonNumber, 'a-user-token')
+      expect(ciagInductionService.getEducationAndTraining).toHaveBeenCalledWith(prisonNumber, 'a-user-token')
     })
   })
 

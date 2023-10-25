@@ -1,5 +1,6 @@
 import * as fs from 'fs'
 import cheerio from 'cheerio'
+import moment from 'moment'
 import nunjucks, { Template } from 'nunjucks'
 import { registerNunjucks } from '../../../../../utils/nunjucksSetup'
 import aValidPrisonerSummary from '../../../../../testsupport/prisonerSummaryTestDataBuilder'
@@ -24,10 +25,17 @@ describe('Education and Training tab view - Other Qualifications and history - L
     viewContext = {
       prisonerSummary,
       tab: 'education-and-training',
-      otherQualifications: {
+      educationAndTraining: {
         problemRetrievingData: false,
-        highestEducationLevel: 'SECONDARY_SCHOOL_TOOK_EXAMS',
-        additionalTraining: ['FIRST_AID_CERTIFICATE', 'HEALTH_AND_SAFETY'],
+        inductionQuestionSet: 'LONG_QUESTION_SET',
+        data: {
+          longQuestionSetAnswers: {
+            highestEducationLevel: 'SECONDARY_SCHOOL_TOOK_EXAMS',
+            additionalTraining: ['FIRST_AID_CERTIFICATE', 'HEALTH_AND_SAFETY'],
+          },
+          updatedAt: moment('2023-08-22T13:02:31.943Z').toDate(),
+          updatedBy: 'A_DPS_USER_GEN',
+        },
       },
     }
 

@@ -7,4 +7,6 @@ declare module 'ciagInductionApiClient' {
 
   export type CiagInductionListRequest = components['schemas']['CIAGProfileOffenderIdListRequestDTO']
   export type CiagInductionListResponse = components['schemas']['CIAGProfileListDTO']
+
+  export type CiagPrePrisonQualification = components['schemas']['AchievedQualification']
 }

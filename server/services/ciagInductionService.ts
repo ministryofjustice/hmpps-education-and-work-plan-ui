@@ -1,9 +1,9 @@
-import type { WorkAndInterests, OtherQualifications } from 'viewModels'
+import type { WorkAndInterests, EducationAndTraining } from 'viewModels'
 import type { CiagInduction } from 'ciagInductionApiClient'
 import CiagInductionClient from '../data/ciagInductionClient'
 import logger from '../../logger'
 import toWorkAndInterests from '../data/mappers/workAndInterestMapper'
-import toOtherQualifications from '../data/mappers/otherQualificationsMapper'
+import toEducationAndTraining from '../data/mappers/educationAndTrainingMapper'
 
 export default class CiagInductionService {
   constructor(private readonly ciagInductionClient: CiagInductionClient) {}
@@ -18,13 +18,13 @@ export default class CiagInductionService {
     }
   }
 
-  async getOtherQualifications(prisonNumber: string, token: string): Promise<OtherQualifications> {
+  async getEducationAndTraining(prisonNumber: string, token: string): Promise<EducationAndTraining> {
     try {
       const ciagInduction = await this.getCiagInduction(prisonNumber, token)
-      return toOtherQualifications(ciagInduction)
+      return toEducationAndTraining(ciagInduction)
     } catch (error) {
       logger.error(`Error retrieving data from CIAG Induction API: ${JSON.stringify(error)}`)
-      return { problemRetrievingData: true } as OtherQualifications
+      return { problemRetrievingData: true } as EducationAndTraining
     }
   }
 
