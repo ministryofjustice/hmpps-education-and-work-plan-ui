@@ -31,6 +31,18 @@
   margin-top: 8.5mm;
 }
 
+.app-u-print-full-width {
+  width: 100%;
+}
+
+.app-summary-card__title-wrapper--green {
+  border-top: 4px solid $govuk-text-colour;
+
+  .govuk-summary-card__title {
+    color: $govuk-text-colour;
+  }
+}
+
 .connect-dps-common-footer {
   @include govuk-visually-hidden();
 }
