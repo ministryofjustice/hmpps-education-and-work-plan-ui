@@ -2,8 +2,8 @@ import * as fs from 'fs'
 import cheerio from 'cheerio'
 import moment from 'moment'
 import nunjucks, { Template } from 'nunjucks'
-import { registerNunjucks } from '../../../../utils/nunjucksSetup'
-import aValidPrisonerSummary from '../../../../testsupport/prisonerSummaryTestDataBuilder'
+import { registerNunjucks } from '../../../../../utils/nunjucksSetup'
+import aValidPrisonerSummary from '../../../../../testsupport/prisonerSummaryTestDataBuilder'
 
 describe('Functional skills sidebar view', () => {
   const prisonerSummary = aValidPrisonerSummary()
@@ -14,7 +14,7 @@ describe('Functional skills sidebar view', () => {
   const njkEnv = registerNunjucks()
 
   describe('overviewSideFunctionalSkills', () => {
-    const template = fs.readFileSync('server/views/pages/overview/partials/functionalSkillsSidebar.njk')
+    const template = fs.readFileSync('server/views/pages/overview/partials/overviewTab/functionalSkillsSidebar.njk')
 
     beforeEach(() => {
       compiledTemplate = nunjucks.compile(template.toString(), njkEnv)

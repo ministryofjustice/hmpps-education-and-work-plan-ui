@@ -1,0 +1,35 @@
+{#
+'Other qualifications and history' summary card on the 'Education and training' tab - content for the long question set
+asked at the Induction.
+The 'Other qualifications and history' summary card is different to the one presented if the short question set was asked,
+as the follow up questions are different.
+#}
+
+<section data-qa="other-qualifications-long-question-set">
+
+  <div class="govuk-summary-card__content">
+    <dl class="govuk-summary-list" id="other-qualifications-list">
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+          Highest level of education
+        </dt>
+        <dd class="govuk-summary-list__value">
+          {{ otherQualifications.highestEducationLevel | formatEducationLevel }}
+        </dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+          Other training or qualifications
+        </dt>
+        <dd class="govuk-summary-list__value">
+          <ul class="govuk-list">
+            {% for additionalTraining in otherQualifications.additionalTraining %}
+              <li>{{ additionalTraining | formatAdditionalTraining }}</li>
+            {% endfor %}
+          </ul>
+        </dd>
+      </div>
+    </dl>
+  </div>
+
+</section>

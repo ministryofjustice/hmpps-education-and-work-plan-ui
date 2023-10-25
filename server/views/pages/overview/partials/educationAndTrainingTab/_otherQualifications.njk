@@ -1,0 +1,29 @@
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+    <div class="govuk-summary-card">
+      <div class="govuk-summary-card__title-wrapper">
+        <h2 class="govuk-summary-card__title">Other qualifications and history</h2>
+      </div>
+
+      {% if not otherQualifications.problemRetrievingData %}
+
+        {# Include content based on whether the Induction was the long or short question set #}
+        {#
+        {% if workAndInterests.inductionQuestionSet == 'LONG_QUESTION_SET' %}
+          {% include './_otherQualifications_inductionLongQuestionSet.njk' %}
+        {% else %}
+          {% include './_otherQualifications_inductionShortQuestionSet.njk' %}
+        {% endif %}
+        #}
+        {% include './_otherQualifications_inductionLongQuestionSet.njk' %}
+
+      {% else %}
+      <div class="govuk-summary-card__content">
+        <h3 class="govuk-heading-s" data-qa="ciag-unavailable-message">We cannot show these details right now</h3>
+        <p class="govuk-body">Reload the page or try again later. Other parts of this service may still be available.</p>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>

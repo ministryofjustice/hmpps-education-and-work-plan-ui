@@ -1,0 +1,10 @@
+{#
+'Education and training' tab
+Contains 'Functional skills', 'In-prison qualifications and achievements' and 'Other qualifications and history' summary cards.
+The `Other qualifications and history` summary card has differing content based on whether the long or short question
+set was asked at Induction, as the follow up questions are different.
+#}
+
+{% include './_functionalSkills.njk' %}
+{% include './_inPrisonQualifications.njk' %}
+{% include './_otherQualifications.njk' %}

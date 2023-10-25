@@ -37,16 +37,16 @@
   {% include './partials/navigation.njk' %}
 
   {% if tab === 'overview' %}
-    {% include './partials/overviewTabContents.njk' %}
+    {% include './partials/overviewTab/overviewTabContents.njk' %}
   {% endif %}
   {% if tab === 'support-needs' %}
-    {% include './partials/supportNeedsTabContents.njk' %}
+    {% include './partials/supportNeedsTab/supportNeedsTabContents.njk' %}
   {% endif %}
   {% if tab === 'education-and-training' %}
-    {% include './partials/educationAndTrainingTabContents.njk' %}
+    {% include './partials/educationAndTrainingTab/educationAndTrainingTabContents.njk' %}
   {% endif %}
   {% if tab === 'work-and-interests' %}
-    {% include './partials/workAndInterestsTabContents.njk' %}
+    {% include './partials/workAndInterestsTab/workAndInterestsTabContents.njk' %}
   {% endif %}
 
 {% endblock %}

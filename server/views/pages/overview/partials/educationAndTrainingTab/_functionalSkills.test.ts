@@ -2,11 +2,11 @@ import * as fs from 'fs'
 import cheerio from 'cheerio'
 import moment from 'moment'
 import nunjucks, { Template } from 'nunjucks'
-import { registerNunjucks } from '../../../../utils/nunjucksSetup'
-import aValidPrisonerSummary from '../../../../testsupport/prisonerSummaryTestDataBuilder'
+import { registerNunjucks } from '../../../../../utils/nunjucksSetup'
+import aValidPrisonerSummary from '../../../../../testsupport/prisonerSummaryTestDataBuilder'
 
 describe('Education and Training tab view - Functional Skills', () => {
-  const template = fs.readFileSync('server/views/pages/overview/partials/educationAndTrainingFunctionalSkills.njk')
+  const template = fs.readFileSync('server/views/pages/overview/partials/educationAndTrainingTab/_functionalSkills.njk')
   const prisonerSummary = aValidPrisonerSummary()
 
   let compiledTemplate: Template

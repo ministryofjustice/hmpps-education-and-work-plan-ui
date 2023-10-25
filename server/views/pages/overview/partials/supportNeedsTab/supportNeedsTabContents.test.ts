@@ -1,12 +1,12 @@
 import * as fs from 'fs'
 import cheerio, { Cheerio, CheerioAPI } from 'cheerio'
 import nunjucks, { Template } from 'nunjucks'
-import { registerNunjucks } from '../../../../utils/nunjucksSetup'
-import aValidPrisonerSupportNeeds from '../../../../testsupport/supportNeedsTestDataBuilder'
-import aValidPrisonerSummary from '../../../../testsupport/prisonerSummaryTestDataBuilder'
+import { registerNunjucks } from '../../../../../utils/nunjucksSetup'
+import aValidPrisonerSupportNeeds from '../../../../../testsupport/supportNeedsTestDataBuilder'
+import aValidPrisonerSummary from '../../../../../testsupport/prisonerSummaryTestDataBuilder'
 
 describe('Support Needs tab view', () => {
-  const template = fs.readFileSync('server/views/pages/overview/partials/supportNeedsTabContents.njk')
+  const template = fs.readFileSync('server/views/pages/overview/partials/supportNeedsTab/supportNeedsTabContents.njk')
   const prisonerSummary = aValidPrisonerSummary()
 
   let compiledTemplate: Template
