@@ -6,9 +6,9 @@
       <div class="govuk-grid-column-two-thirds">
         {# Include content based on whether the Induction was the long or short question set #}
           {% if workAndInterests.inductionQuestionSet == 'LONG_QUESTION_SET' %}
-            {% include './workAndInterests_inductionLongQuestionSet.njk' %}
+            {% include './_inductionLongQuestionSet.njk' %}
           {% else %}
-            {% include './workAndInterests_inductionShortQuestionSet.njk' %}
+            {% include './_inductionShortQuestionSet.njk' %}
           {% endif %}
       </div>
     </div>

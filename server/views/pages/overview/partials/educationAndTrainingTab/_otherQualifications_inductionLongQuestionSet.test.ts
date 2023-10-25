@@ -1,11 +1,13 @@
 import * as fs from 'fs'
 import cheerio from 'cheerio'
 import nunjucks, { Template } from 'nunjucks'
-import { registerNunjucks } from '../../../../utils/nunjucksSetup'
-import aValidPrisonerSummary from '../../../../testsupport/prisonerSummaryTestDataBuilder'
+import { registerNunjucks } from '../../../../../utils/nunjucksSetup'
+import aValidPrisonerSummary from '../../../../../testsupport/prisonerSummaryTestDataBuilder'
 
-describe('Education and Training tab view - Other Qualifications and history', () => {
-  const template = fs.readFileSync('server/views/pages/overview/partials/educationAndTrainingOtherQualifications.njk')
+describe('Education and Training tab view - Other Qualifications and history - Long question set', () => {
+  const template = fs.readFileSync(
+    'server/views/pages/overview/partials/educationAndTrainingTab/_otherQualifications_inductionLongQuestionSet.njk',
+  )
   const prisonerSummary = aValidPrisonerSummary()
 
   let compiledTemplate: Template
@@ -43,22 +45,5 @@ describe('Education and Training tab view - Other Qualifications and history', (
     expect(
       $('#other-qualifications-list .govuk-summary-list__row:nth-of-type(2) .govuk-summary-list__value').text(),
     ).toContain('Health and safety')
-  })
-
-  it('should render content saying CIAG is unavailable given problem retrieving data is true', () => {
-    // Given
-    viewContext = {
-      prisonerSummary,
-      tab: 'education-and-training',
-      otherQualifications: {
-        problemRetrievingData: true,
-      },
-    }
-
-    // When
-    const $ = cheerio.load(compiledTemplate.render(viewContext))
-
-    // Then
-    expect($('[data-qa=ciag-unavailable-message]').text()).toEqual('We cannot show these details right now')
   })
 })
