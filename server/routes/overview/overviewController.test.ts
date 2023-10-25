@@ -12,7 +12,7 @@ import {
   aValidMathsInPrisonEducation,
 } from '../../testsupport/inPrisonEducationTestDataBuilder'
 import CiagInductionService from '../../services/ciagInductionService'
-import aValidWorkAndInterests from '../../testsupport/workAndInterestsTestDataBuilder'
+import aValidLongQuestionSetWorkAndInterests from '../../testsupport/workAndInterestsTestDataBuilder'
 import aValidPrisonerSummary from '../../testsupport/prisonerSummaryTestDataBuilder'
 
 describe('overviewController', () => {
@@ -270,7 +270,7 @@ describe('overviewController', () => {
       const prisonerSummary = aValidPrisonerSummary(prisonNumber)
       req.session.prisonerSummary = prisonerSummary
 
-      const expectedWorkAndInterests: WorkAndInterests = aValidWorkAndInterests()
+      const expectedWorkAndInterests: WorkAndInterests = aValidLongQuestionSetWorkAndInterests()
       ciagInductionService.getWorkAndInterests.mockResolvedValue(expectedWorkAndInterests)
 
       const expectedView = {

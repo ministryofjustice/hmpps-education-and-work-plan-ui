@@ -1,10 +1,10 @@
 import type { CiagInduction, CiagInductionListResponse } from 'ciagInductionApiClient'
-import { aCiagInductionWithNoRecordOfAnyPreviousWorkExperience } from './ciagInductionTestDataBuilder'
+import { aLongQuestionSetCiagInduction } from './ciagInductionTestDataBuilder'
 
 export default function aValidCiagInductionListResponse(options?: {
   ciagProfileList?: CiagInduction[]
 }): CiagInductionListResponse {
   return {
-    ciagProfileList: options?.ciagProfileList || [aCiagInductionWithNoRecordOfAnyPreviousWorkExperience()],
+    ciagProfileList: options?.ciagProfileList || [aLongQuestionSetCiagInduction()],
   }
 }

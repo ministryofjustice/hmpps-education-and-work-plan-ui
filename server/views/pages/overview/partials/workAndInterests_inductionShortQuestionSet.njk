@@ -1,0 +1,84 @@
+{#
+'Work and interests' tab - content for the short question set asked at the Induction
+Contains just a 'Work interests' summary card.
+The 'Work interests' summary card is different to the one presented if the long question set was asked, as the follow up
+questions are different.
+#}
+
+<section data-qa="work-and-interests-short-question-set">
+
+  {# Work interests summary card #}
+  <div class="govuk-summary-card" id="work-interests-summary-card">
+    <div class="govuk-summary-card__title-wrapper">
+      <h2 class="govuk-summary-card__title">Work interests</h2>
+    </div>
+    <div class="govuk-summary-card__content">
+      <dl class="govuk-summary-list">
+
+        {# Is the Prisoner hoping to work on release #}
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">
+            Hoping to work on release
+          </dt>
+          <dd class="govuk-summary-list__value">
+            {{ workAndInterests.data.workInterests.hopingToWorkOnRelease | formatYesNo }}
+          </dd>
+          <dd class="govuk-summary-list__actions govuk-!-display-none-print">
+            <a class="govuk-link" href="{{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}/hoping-to-get-work/update">
+              Change<span class="govuk-visually-hidden"> hoping to work on release</span>
+            </a>
+          </dd>
+        </div>
+
+        {# Prisoner is not hoping to work on release (or is not sure), hence the Short question set was asked #}
+        {# List the reasons the Prisoner is not hoping to work on release #}
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">
+            Reasons why not hoping to get work
+          </dt>
+          <dd class="govuk-summary-list__value">
+            <ul class="govuk-list">
+              {% for reasonNotToGetWork in workAndInterests.data.workInterests.shortQuestionSetAnswers.reasonsForNotWantingToWork %}
+                {% if reasonNotToGetWork == 'OTHER' %}
+                  <li>{{ workAndInterests.data.workInterests.shortQuestionSetAnswers.otherReasonForNotWantingToWork }}</li>
+                {% else %}
+                  <li>{{ reasonNotToGetWork | formatReasonNotToGetWork }}</li>
+                {% endif %}
+              {% endfor %}
+            </ul>
+          </dd>
+          <dd class="govuk-summary-list__actions govuk-!-display-none-print">
+            <a class="govuk-link" href="{{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}/reason-to-not-get-work/update">
+              Change<span class="govuk-visually-hidden"> reasons for not wanting to get work</span>
+            </a>
+          </dd>
+        </div>
+
+        {# List the type of work the Prisoner is hoping to do whilst in prison #}
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">
+            Work interests in prison
+          </dt>
+          <dd class="govuk-summary-list__value">
+            <ul class="govuk-list">
+              {% for inPrisonWorkInterest in workAndInterests.data.workInterests.shortQuestionSetAnswers.inPrisonWorkInterests %}
+                {% if inPrisonWorkInterest == 'OTHER' %}
+                  <li>{{ workAndInterests.data.workInterests.shortQuestionSetAnswers.otherInPrisonerWorkInterest }}</li>
+                {% else %}
+                  <li>{{ inPrisonWorkInterest | formatInPrisonWorkInterest }}</li>
+                {% endif %}
+              {% endfor %}
+            </ul>
+          </dd>
+          <dd class="govuk-summary-list__actions govuk-!-display-none-print">
+            <a class="govuk-link" href="{{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}/in-prison-work/update">
+              Change<span class="govuk-visually-hidden"> work interests whilst in prison</span>
+            </a>
+          </dd>
+        </div>
+      </dl>
+      <p class="govuk-hint">Last updated: {{ workAndInterests.data.workInterests.updatedAt | formatDate('DD MMMM YYYY') }}<span class="govuk-!-display-none-print"> by {{ workAndInterests.data.workInterests.updatedBy }}</span></p>
+    </div>
+  </div>
+
+</section>

@@ -2,10 +2,7 @@ import nock from 'nock'
 import type { CiagInduction } from 'ciagInductionApiClient'
 import config from '../config'
 import CiagInductionClient from './ciagInductionClient'
-import {
-  aCiagInductionWithJobInterests,
-  aCiagInductionWithNoRecordOfAnyPreviousWorkExperience,
-} from '../testsupport/ciagInductionTestDataBuilder'
+import { aLongQuestionSetCiagInduction } from '../testsupport/ciagInductionTestDataBuilder'
 import aValidCiagInductionListResponse from '../testsupport/ciagInductionListResponseTestDataBuilder'
 
 describe('ciagInductionClient', () => {
@@ -28,7 +25,7 @@ describe('ciagInductionClient', () => {
       const prisonNumber = 'A1234BC'
       const token = 'a-user-token'
 
-      const ciagInduction: CiagInduction = aCiagInductionWithJobInterests(prisonNumber)
+      const ciagInduction: CiagInduction = aLongQuestionSetCiagInduction({ prisonNumber })
       ciagApi.get(`/ciag/induction/${prisonNumber}`).reply(200, ciagInduction)
 
       // When
@@ -71,8 +68,8 @@ describe('ciagInductionClient', () => {
 
       const expectedCiagInductionListResponse = aValidCiagInductionListResponse({
         ciagProfileList: [
-          aCiagInductionWithNoRecordOfAnyPreviousWorkExperience('A1234BC'),
-          aCiagInductionWithNoRecordOfAnyPreviousWorkExperience('B5544GD'),
+          aLongQuestionSetCiagInduction({ prisonNumber: 'A1234BC' }),
+          aLongQuestionSetCiagInduction({ prisonNumber: 'B5544GD' }),
         ],
       })
       ciagApi.post('/ciag/induction/list', { offenderIds: prisonNumbers }).reply(200, expectedCiagInductionListResponse)

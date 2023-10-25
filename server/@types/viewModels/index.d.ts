@@ -112,7 +112,7 @@ declare module 'viewModels' {
   }
 
   /**
-   * A prisoner's work experience, skills, and future work interests.
+   * View model interface representing the 'Work interests' tab on the Overview page.
    */
   export interface WorkAndInterests {
     problemRetrievingData: boolean
@@ -120,10 +120,15 @@ declare module 'viewModels' {
     data?: WorkAndInterestsData
   }
 
+  /**
+   * A prisoner's work experience, skills, and future work interests.
+   * A prisoner is only asked about work experience and skills in the Induction long question set. If the short
+   * question set was asked these fields are undefined.
+   * */
   export interface WorkAndInterestsData {
-    workExperience: WorkExperience
+    workExperience?: WorkExperience
     workInterests: WorkInterests
-    skillsAndInterests: SkillsAndInterests
+    skillsAndInterests?: SkillsAndInterests
   }
 
   export interface WorkExperience {
@@ -155,8 +160,20 @@ declare module 'viewModels' {
     responsibilities: string
   }
 
+  /**
+   * The prisoner's work interests. The Induction asks this data differently in the long question set to the short
+   * question set. Only one of `longQuestionSetAnswers` or `shortQuestionSetAnswers` will be populated, with the other
+   * left undefined.
+   */
   export interface WorkInterests {
     hopingToWorkOnRelease: 'YES' | 'NO' | 'NOT_SURE'
+    longQuestionSetAnswers?: WorkInterestsLongQuestionSet
+    shortQuestionSetAnswers?: WorkInterestsShortQuestionSet
+    updatedBy: string
+    updatedAt: Date
+  }
+
+  export interface WorkInterestsLongQuestionSet {
     constraintsOnAbilityToWork: Array<
       'CARING_RESPONSIBILITIES' | 'LIMITED_BY_OFFENSE' | 'HEALTH_ISSUES' | 'NO_RIGHT_TO_WORK' | 'OTHER' | 'NONE'
     >
@@ -179,8 +196,35 @@ declare module 'viewModels' {
       | 'OTHER'
     >
     specificJobRoles: Array<string>
-    updatedBy: string
-    updatedAt: Date
+  }
+
+  export interface WorkInterestsShortQuestionSet {
+    inPrisonWorkInterests: Array<
+      | 'CLEANING_AND_HYGIENE'
+      | 'COMPUTERS_OR_DESK_BASED'
+      | 'GARDENING_AND_OUTDOORS'
+      | 'KITCHENS_AND_COOKING'
+      | 'MAINTENANCE'
+      | 'PRISON_LAUNDRY'
+      | 'PRISON_LIBRARY'
+      | 'TEXTILES_AND_SEWING'
+      | 'WELDING_AND_METALWORK'
+      | 'WOODWORK_AND_JOINERY'
+      | 'OTHER'
+    >
+    otherInPrisonerWorkInterest?: string
+    reasonsForNotWantingToWork: Array<
+      | 'LIMIT_THEIR_ABILITY'
+      | 'FULL_TIME_CARER'
+      | 'LACKS_CONFIDENCE_OR_MOTIVATION'
+      | 'HEALTH'
+      | 'RETIRED'
+      | 'NO_RIGHT_TO_WORK'
+      | 'NOT_SURE'
+      | 'OTHER'
+      | 'NO_REASON'
+    >
+    otherReasonForNotWantingToWork?: string
   }
 
   export interface SkillsAndInterests {
