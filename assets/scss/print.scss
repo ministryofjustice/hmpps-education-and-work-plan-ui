@@ -3,7 +3,7 @@
 
 @page {
   size: auto;
-  margin: 8mm 10mm;
+  margin: 8mm;
 }
 
 .govuk-hint,
@@ -15,11 +15,6 @@
 
 .moj-page-header-actions {
   margin-bottom: 5mm;
-}
-
-.govuk-summary-card {
-  border: 0.5mm solid $govuk-text-colour;
-  break-inside: avoid
 }
 
 .govuk-summary-card__title-wrapper {
