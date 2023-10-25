@@ -41,11 +41,15 @@ export interface components {
   schemas: {
     /** @description This is the qualification list of the inmate. */
     AchievedQualification: {
+      /** @description This is the subject the inmate has chosen. */
+      subject?: string
+      /** @description This is the grade on the subject the inmate has chosen. */
+      grade?: string
       /**
        * @description This is the level of  the subject the inmate has chosen.
        * @enum {string}
        */
-      subject?:
+      level?:
         | 'ENTRY_LEVEL_2'
         | 'ENTRY_LEVEL_3'
         | 'LEVEL_1'
