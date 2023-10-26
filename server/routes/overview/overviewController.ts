@@ -64,6 +64,9 @@ export default class OverviewController {
     const completedInPrisonEducation = completedInPrisonEducationRecords(allInPrisonEducation)
 
     const educationAndTraining = await this.ciagInductionService.getEducationAndTraining(prisonNumber, req.user.token)
+
+    console.log(`educationAndTraining is : ${JSON.stringify(educationAndTraining)}`)
+
     const view = new EducationAndTrainingView(
       prisonerSummary,
       functionalSkills,

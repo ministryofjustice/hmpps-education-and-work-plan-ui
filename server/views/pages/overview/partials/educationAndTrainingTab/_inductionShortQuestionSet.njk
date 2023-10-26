@@ -18,7 +18,7 @@ as the follow up questions are different.
     </div>
 
     {% if educationAndTraining.data.shortQuestionSetAnswers.educationalQualifications | length %}
-      <table class="govuk-table">
+      <table class="govuk-table govuk-!-margin-top-4">
         <caption class="govuk-table__caption govuk-table__caption--m govuk-visually-hidden">Details of prisoners educational qualifications</caption>
         <thead class="govuk-table__head">
           <tr class="govuk-table__row">
@@ -31,7 +31,7 @@ as the follow up questions are different.
           {% for qualification in educationAndTraining.data.shortQuestionSetAnswers.educationalQualifications %}
           <tr class="govuk-table__row">
             <td class="govuk-table__cell">{{ qualification.subject }}</td>
-            <td class="govuk-table__cell">{{ qualification.level }}</td>
+            <td class="govuk-table__cell">{{ qualification.level | formatQualificationLevel }}</td>
             <td class="govuk-table__cell">{{ qualification.grade }}</td>
           </tr>
           {% endfor %}
