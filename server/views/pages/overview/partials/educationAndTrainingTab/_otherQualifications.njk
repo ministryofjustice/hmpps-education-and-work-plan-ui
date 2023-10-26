@@ -11,12 +11,12 @@
         {# Include content based on whether the Induction was the long or short question set #}
         {#
         {% if educationAndTraining.inductionQuestionSet == 'LONG_QUESTION_SET' %}
-          {% include './_otherQualifications_inductionLongQuestionSet.njk' %}
+          {% include './_inductionLongQuestionSet.njk' %}
         {% else %}
-          {% include './_otherQualifications_inductionShortQuestionSet.njk' %}
+          {% include './_inductionShortQuestionSet.njk' %}
         {% endif %}
         #}
-        {% include './_otherQualifications_inductionLongQuestionSet.njk' %}
+        {% include './_inductionLongQuestionSet.njk' %}
 
       {% else %}
       <div class="govuk-summary-card__content">
