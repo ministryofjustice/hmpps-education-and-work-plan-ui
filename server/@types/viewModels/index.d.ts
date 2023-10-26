@@ -263,12 +263,28 @@ declare module 'viewModels' {
   }
 
   /**
-   * Details of a prisoner's other qualifications and training that been completed.
+   * View model interface representing the 'Education and training' tab on the Overview page.
    */
-  export interface OtherQualifications {
+  export interface EducationAndTraining {
     problemRetrievingData: boolean
     inductionQuestionSet?: 'SHORT_QUESTION_SET' | 'LONG_QUESTION_SET'
-    highestEducationLevel?:
+    data?: EducationAndTrainingData
+  }
+
+  /**
+   * The prisoner's Education and Training. The Induction asks this data differently in the long question set to the short
+   * question set. Only one of `longQuestionSetAnswers` or `shortQuestionSetAnswers` will be populated, with the other
+   * left undefined.
+   */
+  export interface EducationAndTrainingData {
+    longQuestionSetAnswers?: EducationAndTrainingLongQuestionSet
+    shortQuestionSetAnswers?: EducationAndTrainingShortQuestionSet
+    updatedBy: string
+    updatedAt: Date
+  }
+
+  export interface EducationAndTrainingLongQuestionSet {
+    highestEducationLevel:
       | 'PRIMARY_SCHOOL'
       | 'SECONDARY_SCHOOL_LEFT_BEFORE_TAKING_EXAMS'
       | 'SECONDARY_SCHOOL_TOOK_EXAMS'
@@ -276,7 +292,7 @@ declare module 'viewModels' {
       | 'UNDERGRADUATE_DEGREE_AT_UNIVERSITY'
       | 'POSTGRADUATE_DEGREE_AT_UNIVERSITY'
       | 'NOT_SURE'
-    additionalTraining?: (
+    additionalTraining: (
       | 'CSCS_CARD'
       | 'FIRST_AID_CERTIFICATE'
       | 'FOOD_HYGIENE_CERTIFICATE'
@@ -289,6 +305,41 @@ declare module 'viewModels' {
       | 'OTHER'
       | 'NONE'
     )[]
+    otherAdditionalTraining?: string
+  }
+
+  export interface EducationAndTrainingShortQuestionSet {
+    additionalTraining: (
+      | 'CSCS_CARD'
+      | 'FIRST_AID_CERTIFICATE'
+      | 'FOOD_HYGIENE_CERTIFICATE'
+      | 'FULL_UK_DRIVING_LICENCE'
+      | 'HEALTH_AND_SAFETY'
+      | 'HGV_LICENCE'
+      | 'MACHINERY_TICKETS'
+      | 'MANUAL_HANDLING'
+      | 'TRADE_COURSE'
+      | 'OTHER'
+      | 'NONE'
+    )[]
+    otherAdditionalTraining: string
+    educationalQualifications: EducationalQualifications[]
+  }
+
+  export interface EducationalQualifications {
+    subject: string
+    grade: string
+    level:
+      | 'ENTRY_LEVEL_2'
+      | 'ENTRY_LEVEL_3'
+      | 'LEVEL_1'
+      | 'LEVEL_2'
+      | 'LEVEL_3'
+      | 'LEVEL_4'
+      | 'LEVEL_5'
+      | 'LEVEL_6'
+      | 'LEVEL_7'
+      | 'LEVEL_8'
   }
 
   /**

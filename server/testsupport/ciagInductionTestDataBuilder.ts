@@ -77,6 +77,23 @@ const aLongQuestionSetCiagInduction = (options?: {
           ? 'Renewable energy'
           : undefined,
     },
+    qualificationsAndTraining: {
+      modifiedBy: 'ANOTHER_DPS_USER_GEN',
+      modifiedDateTime: '2023-08-22T13:02:31.943Z',
+      id: 1234,
+      educationLevel: 'SECONDARY_SCHOOL_TOOK_EXAMS',
+      qualifications: [
+        {
+          subject: 'Pottery',
+          grade: 'C',
+          level: 'LEVEL_4',
+        },
+      ],
+      additionalTraining: ['FIRST_AID_CERTIFICATE', 'MANUAL_HANDLING', 'OTHER'],
+      additionalTrainingOther: 'Advanced origami',
+      inPrisonInterests: null,
+      schemaVersion: null,
+    },
   }
 }
 
@@ -95,30 +112,28 @@ const aShortQuestionSetCiagInduction = (options?: {
       inPrisonWork: ['CLEANING_AND_HYGIENE', 'OTHER'],
       inPrisonWorkOther: 'Gardening and grounds keeping',
     },
-  }
-}
-
-const aCiagInductionWithOtherQualifications = (prisonNumber = 'A1234BC'): CiagInduction => {
-  return {
-    ...baseCiagInductionTemplate(prisonNumber),
     qualificationsAndTraining: {
       modifiedBy: 'ANOTHER_DPS_USER_GEN',
-      modifiedDateTime: '2023-08-22T11:12:31.943Z',
+      modifiedDateTime: '2023-08-22T13:02:31.943Z',
       id: 1234,
-      educationLevel: 'SECONDARY_SCHOOL_TOOK_EXAMS',
-      qualifications: [],
-      additionalTraining: ['FIRST_AID_CERTIFICATE', 'MANUAL_HANDLING'],
-      additionalTrainingOther: null,
+      educationLevel: null,
+      qualifications: [
+        {
+          subject: 'English',
+          grade: 'C',
+          level: 'LEVEL_6',
+        },
+        {
+          subject: 'Maths',
+          grade: 'A*',
+          level: 'LEVEL_6',
+        },
+      ],
+      additionalTraining: ['FULL_UK_DRIVING_LICENCE', 'OTHER'],
+      additionalTrainingOther: 'Beginners cookery for IT professionals',
       inPrisonInterests: null,
       schemaVersion: null,
     },
-  }
-}
-
-const aCiagInductionWithNoOtherQualifications = (prisonNumber = 'A1234BC'): CiagInduction => {
-  return {
-    ...baseCiagInductionTemplate(prisonNumber),
-    qualificationsAndTraining: null,
   }
 }
 
@@ -133,9 +148,4 @@ const baseCiagInductionTemplate = (prisonNumber = 'A1234BC'): CiagInduction => {
   }
 }
 
-export {
-  aLongQuestionSetCiagInduction,
-  aShortQuestionSetCiagInduction,
-  aCiagInductionWithOtherQualifications,
-  aCiagInductionWithNoOtherQualifications,
-}
+export { aLongQuestionSetCiagInduction, aShortQuestionSetCiagInduction }

@@ -1,4 +1,4 @@
-import type { OtherQualifications, WorkAndInterests } from 'viewModels'
+import type { EducationAndTraining, WorkAndInterests } from 'viewModels'
 import CiagInductionClient from '../data/ciagInductionClient'
 import CiagInductionService from './ciagInductionService'
 
@@ -29,10 +29,11 @@ describe('ciagInductionService', () => {
       }
       ciagClient.getCiagInduction.mockRejectedValue(ciagInductionApiError)
 
-      const expectedWorkAndInterests = {
+      const expectedWorkAndInterests: WorkAndInterests = {
         problemRetrievingData: true,
+        inductionQuestionSet: undefined,
         data: undefined,
-      } as WorkAndInterests
+      }
 
       // When
       const actual = await ciagInductionService.getWorkAndInterests(prisonNumber, userToken).catch(error => {
@@ -59,10 +60,11 @@ describe('ciagInductionService', () => {
       }
       ciagClient.getCiagInduction.mockRejectedValue(ciagInductionApiError)
 
-      const expectedWorkAndInterests = {
+      const expectedWorkAndInterests: WorkAndInterests = {
         problemRetrievingData: false,
+        inductionQuestionSet: undefined,
         data: undefined,
-      } as WorkAndInterests
+      }
 
       // When
       const actual = await ciagInductionService.getWorkAndInterests(prisonNumber, userToken).catch(error => {
@@ -75,8 +77,8 @@ describe('ciagInductionService', () => {
     })
   })
 
-  describe('getOtherQualifications', () => {
-    it('should handle retrieval of other qualifications given CIAG Induction API returns an unexpected error for the CIAG Induction', async () => {
+  describe('getEducationAndTraining', () => {
+    it('should handle retrieval of Education and Training given CIAG Induction API returns an unexpected error for the CIAG Induction', async () => {
       // Given
       const prisonNumber = 'A1234BC'
       const userToken = 'a-user-token'
@@ -91,23 +93,23 @@ describe('ciagInductionService', () => {
       }
       ciagClient.getCiagInduction.mockRejectedValue(ciagInductionApiError)
 
-      const expectedOtherData = {
+      const expectedEducationAndTraining: EducationAndTraining = {
         problemRetrievingData: true,
-        highestEducationLevel: undefined,
-        additionalTraining: undefined,
-      } as OtherQualifications
+        inductionQuestionSet: undefined,
+        data: undefined,
+      }
 
       // When
-      const actual = await ciagInductionService.getOtherQualifications(prisonNumber, userToken).catch(error => {
+      const actual = await ciagInductionService.getEducationAndTraining(prisonNumber, userToken).catch(error => {
         return error
       })
 
       // Then
-      expect(actual).toEqual(expectedOtherData)
+      expect(actual).toEqual(expectedEducationAndTraining)
       expect(ciagClient.getCiagInduction).toHaveBeenCalledWith(prisonNumber, userToken)
     })
 
-    it('should handle retrieval of other qualifications given CIAG Induction API returns Not Found for the CIAG Induction', async () => {
+    it('should handle retrieval of Education and Training given CIAG Induction API returns Not Found for the CIAG Induction', async () => {
       // Given
       const prisonNumber = 'A1234BC'
       const userToken = 'a-user-token'
@@ -122,19 +124,19 @@ describe('ciagInductionService', () => {
       }
       ciagClient.getCiagInduction.mockRejectedValue(ciagInductionApiError)
 
-      const expectedOtherData = {
+      const expectedEducationAndTraining: EducationAndTraining = {
         problemRetrievingData: false,
-        highestEducationLevel: undefined,
-        additionalTraining: undefined,
-      } as OtherQualifications
+        inductionQuestionSet: undefined,
+        data: undefined,
+      }
 
       // When
-      const actual = await ciagInductionService.getOtherQualifications(prisonNumber, userToken).catch(error => {
+      const actual = await ciagInductionService.getEducationAndTraining(prisonNumber, userToken).catch(error => {
         return error
       })
 
       // Then
-      expect(actual).toEqual(expectedOtherData)
+      expect(actual).toEqual(expectedEducationAndTraining)
       expect(ciagClient.getCiagInduction).toHaveBeenCalledWith(prisonNumber, userToken)
     })
   })
