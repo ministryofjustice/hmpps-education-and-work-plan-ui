@@ -50,11 +50,12 @@ as the follow up questions are different.
         <dd class="govuk-summary-list__value">
           <ul class="govuk-list">
             {% for additionalTraining in educationAndTraining.data.shortQuestionSetAnswers.additionalTraining %}
-              <li>{{ additionalTraining | formatAdditionalTraining }}</li>
+              {% if additionalTraining == 'OTHER' %}
+                <li>{{ educationAndTraining.data.shortQuestionSetAnswers.otherAdditionalTraining }}</li>
+              {% else %}
+                <li>{{ additionalTraining | formatAdditionalTraining }}</li>
+              {% endif %}  
             {% endfor %}
-            {% if educationAndTraining.data.shortQuestionSetAnswers.otherAdditionalTraining %}
-              <li>{{ educationAndTraining.data.shortQuestionSetAnswers.otherAdditionalTraining | formatAdditionalTraining }}</li>
-            {% endif %}
           </ul>
         </dd>
         <dd class="govuk-summary-list__actions">
