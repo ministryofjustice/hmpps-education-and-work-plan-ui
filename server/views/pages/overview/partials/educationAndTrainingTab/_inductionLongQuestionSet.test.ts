@@ -5,9 +5,9 @@ import nunjucks, { Template } from 'nunjucks'
 import { registerNunjucks } from '../../../../../utils/nunjucksSetup'
 import aValidPrisonerSummary from '../../../../../testsupport/prisonerSummaryTestDataBuilder'
 
-describe('Education and Training tab view - Other Qualifications and history - Long question set', () => {
+describe('Education and Training tab view - Other qualifications and history - Long question set', () => {
   const template = fs.readFileSync(
-    'server/views/pages/overview/partials/educationAndTrainingTab/_otherQualifications_inductionLongQuestionSet.njk',
+    'server/views/pages/overview/partials/educationAndTrainingTab/_inductionLongQuestionSet.njk',
   )
   const prisonerSummary = aValidPrisonerSummary()
 
@@ -20,7 +20,7 @@ describe('Education and Training tab view - Other Qualifications and history - L
     compiledTemplate = nunjucks.compile(template.toString(), njkEnv)
   })
 
-  it('should render Other Qualifications and history summary list', () => {
+  it('should render Other qualifications and history summary list', () => {
     // Given
     viewContext = {
       prisonerSummary,
