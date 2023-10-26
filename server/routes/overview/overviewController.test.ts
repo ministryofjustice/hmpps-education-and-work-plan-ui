@@ -14,7 +14,7 @@ import {
 import CiagInductionService from '../../services/ciagInductionService'
 import aValidLongQuestionSetWorkAndInterests from '../../testsupport/workAndInterestsTestDataBuilder'
 import aValidPrisonerSummary from '../../testsupport/prisonerSummaryTestDataBuilder'
-import aValidShortQuestionSetEducationAndTraining from '../../testsupport/educationAndTrainingTestDataBuilder'
+import { aValidShortQuestionSetEducationAndTraining } from '../../testsupport/educationAndTrainingTestDataBuilder'
 
 describe('overviewController', () => {
   const curiousService = {

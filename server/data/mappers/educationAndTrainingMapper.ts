@@ -36,9 +36,8 @@ const toEducationAndTrainingData = (
 
 const toLongQuestionSet = (ciagInduction: CiagInduction): EducationAndTrainingLongQuestionSet => {
   return {
+    ...toShortQuestionSet(ciagInduction),
     highestEducationLevel: ciagInduction.qualificationsAndTraining.educationLevel,
-    additionalTraining: ciagInduction.qualificationsAndTraining.additionalTraining,
-    otherAdditionalTraining: ciagInduction.qualificationsAndTraining.additionalTrainingOther,
   }
 }
 

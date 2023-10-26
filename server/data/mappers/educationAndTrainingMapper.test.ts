@@ -40,6 +40,13 @@ describe('educationAndTrainingMapper', () => {
             highestEducationLevel: 'SECONDARY_SCHOOL_TOOK_EXAMS',
             additionalTraining: ['FIRST_AID_CERTIFICATE', 'MANUAL_HANDLING', 'OTHER'],
             otherAdditionalTraining: 'Advanced origami',
+            educationalQualifications: [
+              {
+                subject: 'Pottery',
+                grade: 'C',
+                level: 'LEVEL_4',
+              },
+            ],
           },
           shortQuestionSetAnswers: undefined,
         },
