@@ -12,8 +12,6 @@ as the follow up questions are different.
       <h3 class="govuk-heading-s app-summary-card__change-link__heading">Educational qualifications</h3>
       {% if educationAndTraining.data.shortQuestionSetAnswers.educationalQualifications | length %}
         <a class="govuk-link app-summary-card__change-link__link" href="{{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}/qualifications-list/update">Change<span class="govuk-visually-hidden"> qualifications</span></a>
-      {% else %}
-        <a class="govuk-link app-summary-card__change-link__link" href="{{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}/wants-to-add-qualifications/update">Change<span class="govuk-visually-hidden">  whether they want educational qualifications recorded</span></a>
       {% endif %}
     </div>
 
