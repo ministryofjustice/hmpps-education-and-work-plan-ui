@@ -10,10 +10,10 @@ as the follow up questions are different.
   <div class="govuk-summary-card__content">
     <div class="app-summary-card__change-link">
       <h3 class="govuk-heading-s app-summary-card__change-link__heading">Educational qualifications</h3>
-      {% if educationAndTraining.data.shortQuestionSetAnswers.educationalQualifications %}
-        <a class="govuk-link app-summary-card__change-link__link" href="{{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}/wants-to-add-qualifications/edit">Change<span class="govuk-visually-hidden"> qualifications</span></a>
+      {% if educationAndTraining.data.shortQuestionSetAnswers.educationalQualifications | length %}
+        <a class="govuk-link app-summary-card__change-link__link" href="{{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}/qualifications-list/edit">Change<span class="govuk-visually-hidden"> qualifications</span></a>
       {% else %}
-        <a class="govuk-link app-summary-card__change-link__link" href="{{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}/qualifications-list/edit">Change<span class="govuk-visually-hidden">  whether they want educational qualifications recorded</span></a>
+        <a class="govuk-link app-summary-card__change-link__link" href="{{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}/wants-to-add-qualifications/edit">Change<span class="govuk-visually-hidden">  whether they want educational qualifications recorded</span></a>
       {% endif %}
     </div>
 
