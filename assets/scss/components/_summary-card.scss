@@ -12,3 +12,19 @@
     color: govuk-colour("green");
   }
 }
+
+.app-summary-card__change-link {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  .app-summary-card__change-link__heading,
+  .app-summary-card__change-link__link {
+    display: inline-block;
+    margin: 0;
+  }
+
+  .app-summary-card__change-link__link {
+    @include govuk-font($size: 19);
+  }
+}
