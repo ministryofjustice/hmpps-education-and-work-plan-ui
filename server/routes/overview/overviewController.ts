@@ -64,14 +64,6 @@ export default class OverviewController {
     const completedInPrisonEducation = completedInPrisonEducationRecords(allInPrisonEducation)
 
     const educationAndTraining = await this.ciagInductionService.getEducationAndTraining(prisonNumber, req.user.token)
-    // TODO RR-441 - temporary data fix to ensure there is always a longQuestionSetAnswers. Remove this whe we implement the short answers view and the code to use the correct view
-    if (educationAndTraining.data && !educationAndTraining.data.longQuestionSetAnswers) {
-      educationAndTraining.data.longQuestionSetAnswers = {
-        ...educationAndTraining.data.shortQuestionSetAnswers,
-        highestEducationLevel: undefined,
-      }
-    }
-
     const view = new EducationAndTrainingView(
       prisonerSummary,
       functionalSkills,
