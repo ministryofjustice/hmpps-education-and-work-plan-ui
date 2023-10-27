@@ -16,6 +16,18 @@ export default class EducationAndTrainingPage extends Page {
     return this
   }
 
+  isShowingLongQuestionSetAnswers(): EducationAndTrainingPage {
+    this.longQuestionSetContent().should('be.visible')
+    this.shortQuestionSetContent().should('not.exist')
+    return this
+  }
+
+  isShowingShortQuestionSetAnswers(): EducationAndTrainingPage {
+    this.shortQuestionSetContent().should('be.visible')
+    this.longQuestionSetContent().should('not.exist')
+    return this
+  }
+
   hasFunctionalSkillsDisplayed(): EducationAndTrainingPage {
     this.functionalSkillsTable().should('be.visible')
     return this
@@ -41,6 +53,16 @@ export default class EducationAndTrainingPage extends Page {
     return this
   }
 
+  hasCiagInductionApiUnavailableMessageDisplayed(): EducationAndTrainingPage {
+    this.ciagUnavailableMessage().should('be.exist')
+    return this
+  }
+
+  hasLinkToCreateCiagInductionDisplayed(): EducationAndTrainingPage {
+    this.createCiagInductionLink().should('be.visible')
+    return this
+  }
+
   clickToViewAllFunctionalSkills(): FunctionalSkillsPage {
     this.viewAllFunctionalSkillsButton().click()
     return Page.verifyOnPage(FunctionalSkillsPage)
@@ -55,4 +77,13 @@ export default class EducationAndTrainingPage extends Page {
   curiousUnavailableMessage = (): PageElement => cy.get('[data-qa=curious-unavailable-message]')
 
   viewAllFunctionalSkillsButton = (): PageElement => cy.get('[data-qa=view-all-functional-skills-button]')
+
+  longQuestionSetContent = (): PageElement => cy.get('[data-qa=qualifications-and-education-history-long-question-set')
+
+  shortQuestionSetContent = (): PageElement =>
+    cy.get('[data-qa=qualifications-and-education-history-short-question-set')
+
+  ciagUnavailableMessage = (): PageElement => cy.get('[data-qa=ciag-unavailable-message]')
+
+  createCiagInductionLink = (): PageElement => cy.get('[data-qa=link-to-create-ciag-induction]')
 }

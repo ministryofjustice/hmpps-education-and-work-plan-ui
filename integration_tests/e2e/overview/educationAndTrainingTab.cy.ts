@@ -14,112 +14,188 @@ context('Prisoner Overview page - Education And Training tab', () => {
     cy.task('stubActionPlansList')
     cy.task('getPrisonerById')
     cy.task('getActionPlan')
-  })
-
-  it('should display Education and Training data', () => {
-    // Given
     cy.task('stubLearnerProfile')
     cy.task('stubLearnerEducation')
-
-    cy.signIn()
-    const prisonNumber = 'G6115VJ'
-    cy.visit(`/plan/${prisonNumber}/view/overview`)
-    const overviewPage = Page.verifyOnPage(OverviewPage)
-
-    // When
-    overviewPage.selectTab('Education and training')
-    const educationAndTrainingPage = Page.verifyOnPage(EducationAndTrainingPage)
-
-    // Then
-    educationAndTrainingPage //
-      .activeTabIs('Education and training')
-      .hasFunctionalSkillsDisplayed()
-      .hasCompletedInPrisonQualificationsDisplayed()
+    cy.task('stubGetLongQuestionSetCiagProfile')
   })
 
-  it('should display Education and Training data given curious API returns a 404 for the learner profile', () => {
-    // Given
-    cy.task('stubLearnerProfile404Error')
-    cy.task('stubLearnerEducation')
+  describe('should retrieve and render data from Curious API data', () => {
+    it('should display Functional Skills and In Prison Qualifications And Achievements data', () => {
+      // Given
+      cy.signIn()
+      const prisonNumber = 'G6115VJ'
+      cy.visit(`/plan/${prisonNumber}/view/overview`)
+      const overviewPage = Page.verifyOnPage(OverviewPage)
 
-    cy.signIn()
-    const prisonNumber = 'G6115VJ'
-    cy.visit(`/plan/${prisonNumber}/view/overview`)
-    const overviewPage = Page.verifyOnPage(OverviewPage)
+      // When
+      overviewPage.selectTab('Education and training')
+      const educationAndTrainingPage = Page.verifyOnPage(EducationAndTrainingPage)
 
-    // When
-    overviewPage.selectTab('Education and training')
-    const educationAndTrainingPage = Page.verifyOnPage(EducationAndTrainingPage)
+      // Then
+      educationAndTrainingPage //
+        .activeTabIs('Education and training')
+        .hasFunctionalSkillsDisplayed()
+        .hasCompletedInPrisonQualificationsDisplayed()
+    })
 
-    // Then
-    educationAndTrainingPage //
-      .activeTabIs('Education and training')
-      .hasFunctionalSkillsDisplayed()
-      .hasCompletedInPrisonQualificationsDisplayed()
+    it('should display Functional Skills and In Prison Qualifications And Achievements data given curious API returns a 404 for the learner profile', () => {
+      // Given
+      cy.task('stubLearnerProfile404Error')
+
+      cy.signIn()
+      const prisonNumber = 'G6115VJ'
+      cy.visit(`/plan/${prisonNumber}/view/overview`)
+      const overviewPage = Page.verifyOnPage(OverviewPage)
+
+      // When
+      overviewPage.selectTab('Education and training')
+      const educationAndTrainingPage = Page.verifyOnPage(EducationAndTrainingPage)
+
+      // Then
+      educationAndTrainingPage //
+        .activeTabIs('Education and training')
+        .hasFunctionalSkillsDisplayed()
+        .hasCompletedInPrisonQualificationsDisplayed()
+    })
+
+    it('should display Functional Skills and In Prison Qualifications And Achievements data given curious API returns a 404 for the learner education', () => {
+      // Given
+      cy.task('stubLearnerEducation404Error')
+
+      cy.signIn()
+      const prisonNumber = 'G6115VJ'
+      cy.visit(`/plan/${prisonNumber}/view/overview`)
+      const overviewPage = Page.verifyOnPage(OverviewPage)
+
+      // When
+      overviewPage.selectTab('Education and training')
+      const educationAndTrainingPage = Page.verifyOnPage(EducationAndTrainingPage)
+
+      // Then
+      educationAndTrainingPage //
+        .activeTabIs('Education and training')
+        .hasFunctionalSkillsDisplayed()
+        .hasCompletedInPrisonQualificationsDisplayed()
+    })
+
+    it('should display curious unavailable message given curious is unavailable for the learner profile', () => {
+      // Given
+      cy.task('stubLearnerProfile401Error')
+
+      cy.signIn()
+      const prisonNumber = 'G6115VJ'
+      cy.visit(`/plan/${prisonNumber}/view/overview`)
+      const overviewPage = Page.verifyOnPage(OverviewPage)
+
+      // When
+      overviewPage.selectTab('Education and training')
+      const educationAndTrainingPage = Page.verifyOnPage(EducationAndTrainingPage)
+
+      // Then
+      educationAndTrainingPage //
+        .activeTabIs('Education and training')
+        .doesNotHaveFunctionalSkillsDisplayed()
+        .hasCuriousUnavailableMessageDisplayed()
+        .hasCompletedInPrisonQualificationsDisplayed()
+    })
+
+    it('should display curious unavailable message given curious is unavailable for the learner education', () => {
+      // Given
+      cy.task('stubLearnerEducation401Error')
+
+      cy.signIn()
+      const prisonNumber = 'G6115VJ'
+      cy.visit(`/plan/${prisonNumber}/view/overview`)
+      const overviewPage = Page.verifyOnPage(OverviewPage)
+
+      // When
+      overviewPage.selectTab('Education and training')
+      const educationAndTrainingPage = Page.verifyOnPage(EducationAndTrainingPage)
+
+      // Then
+      educationAndTrainingPage //
+        .activeTabIs('Education and training')
+        .hasFunctionalSkillsDisplayed()
+        .doesNotCompletedInPrisonQualificationsDisplayed()
+        .hasCuriousUnavailableMessageDisplayed()
+    })
   })
 
-  it('should display Education and Training data given curious API returns a 404 for the learner education', () => {
-    // Given
-    cy.task('stubLearnerProfile')
-    cy.task('stubLearnerEducation404Error')
+  describe('should retrieve and render data from CIAG API data', () => {
+    it('should display Qualifications And Education given CIAG Induction was the long question set', () => {
+      // Given
+      cy.task('stubGetLongQuestionSetCiagProfile')
 
-    cy.signIn()
-    const prisonNumber = 'G6115VJ'
-    cy.visit(`/plan/${prisonNumber}/view/overview`)
-    const overviewPage = Page.verifyOnPage(OverviewPage)
+      cy.signIn()
+      const prisonNumber = 'G6115VJ'
+      cy.visit(`/plan/${prisonNumber}/view/overview`)
+      const overviewPage = Page.verifyOnPage(OverviewPage)
 
-    // When
-    overviewPage.selectTab('Education and training')
-    const educationAndTrainingPage = Page.verifyOnPage(EducationAndTrainingPage)
+      // When
+      overviewPage.selectTab('Education and training')
+      const educationAndTrainingPage = Page.verifyOnPage(EducationAndTrainingPage)
 
-    // Then
-    educationAndTrainingPage //
-      .activeTabIs('Education and training')
-      .hasFunctionalSkillsDisplayed()
-      .hasCompletedInPrisonQualificationsDisplayed()
-  })
+      // Then
+      educationAndTrainingPage //
+        .activeTabIs('Education and training')
+        .isShowingLongQuestionSetAnswers()
+    })
 
-  it('should display curious unavailable message given curious is unavailable for the learner profile', () => {
-    // Given
-    cy.task('stubLearnerProfile401Error')
-    cy.task('stubLearnerEducation')
+    it('should display Qualifications And Education given CIAG Induction was the short question set', () => {
+      // Given
+      cy.task('stubGetShortQuestionSetCiagProfile')
 
-    cy.signIn()
-    const prisonNumber = 'G6115VJ'
-    cy.visit(`/plan/${prisonNumber}/view/overview`)
-    const overviewPage = Page.verifyOnPage(OverviewPage)
+      cy.signIn()
+      const prisonNumber = 'G6115VJ'
+      cy.visit(`/plan/${prisonNumber}/view/overview`)
+      const overviewPage = Page.verifyOnPage(OverviewPage)
 
-    // When
-    overviewPage.selectTab('Education and training')
-    const educationAndTrainingPage = Page.verifyOnPage(EducationAndTrainingPage)
+      // When
+      overviewPage.selectTab('Education and training')
+      const educationAndTrainingPage = Page.verifyOnPage(EducationAndTrainingPage)
 
-    // Then
-    educationAndTrainingPage //
-      .activeTabIs('Education and training')
-      .doesNotHaveFunctionalSkillsDisplayed()
-      .hasCuriousUnavailableMessageDisplayed()
-      .hasCompletedInPrisonQualificationsDisplayed()
-  })
+      // Then
+      educationAndTrainingPage //
+        .activeTabIs('Education and training')
+        .isShowingShortQuestionSetAnswers()
+    })
 
-  it('should display curious unavailable message given curious is unavailable for the learner education', () => {
-    // Given
-    cy.task('stubLearnerProfile')
-    cy.task('stubLearnerEducation401Error')
+    it('should display CIAG unavailable message given CIAG is unavailable', () => {
+      // Given
+      cy.task('stubGetCiagProfile500Error')
 
-    cy.signIn()
-    const prisonNumber = 'G6115VJ'
-    cy.visit(`/plan/${prisonNumber}/view/overview`)
-    const overviewPage = Page.verifyOnPage(OverviewPage)
+      cy.signIn()
+      const prisonNumber = 'G6115VJ'
+      cy.visit(`/plan/${prisonNumber}/view/overview`)
+      const overviewPage = Page.verifyOnPage(OverviewPage)
 
-    // When
-    overviewPage.selectTab('Education and training')
-    const educationAndTrainingPage = Page.verifyOnPage(EducationAndTrainingPage)
+      // When
+      overviewPage.selectTab('Education and training')
+      const educationAndTrainingPage = Page.verifyOnPage(EducationAndTrainingPage)
 
-    // Then
-    educationAndTrainingPage //
-      .activeTabIs('Education and training')
-      .hasFunctionalSkillsDisplayed()
-      .doesNotCompletedInPrisonQualificationsDisplayed()
-      .hasCuriousUnavailableMessageDisplayed()
+      // Then
+      educationAndTrainingPage //
+        .activeTabIs('Education and training')
+        .hasCiagInductionApiUnavailableMessageDisplayed()
+    })
+
+    it('should display link to create CIAG Induction given prisoner does not have a CIAG Induction yet', () => {
+      // Given
+      cy.task('stubGetCiagProfile404Error')
+
+      cy.signIn()
+      const prisonNumber = 'G6115VJ'
+      cy.visit(`/plan/${prisonNumber}/view/overview`)
+      const overviewPage = Page.verifyOnPage(OverviewPage)
+
+      // When
+      overviewPage.selectTab('Education and training')
+      const educationAndTrainingPage = Page.verifyOnPage(EducationAndTrainingPage)
+
+      // Then
+      educationAndTrainingPage //
+        .activeTabIs('Education and training')
+        .hasLinkToCreateCiagInductionDisplayed()
+    })
   })
 })

@@ -306,6 +306,7 @@ declare module 'viewModels' {
       | 'NONE'
     )[]
     otherAdditionalTraining?: string
+    educationalQualifications: EducationalQualifications[]
   }
 
   export interface EducationAndTrainingShortQuestionSet {
@@ -322,7 +323,7 @@ declare module 'viewModels' {
       | 'OTHER'
       | 'NONE'
     )[]
-    otherAdditionalTraining: string
+    otherAdditionalTraining?: string
     educationalQualifications: EducationalQualifications[]
   }
 
