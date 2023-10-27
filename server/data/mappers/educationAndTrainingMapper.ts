@@ -50,6 +50,8 @@ const toShortQuestionSet = (ciagInduction: CiagInduction): EducationAndTrainingS
     educationalQualifications: educationalQualifications.map(qualification => {
       return { ...qualification }
     }),
+    inPrisonInterestsEducation: ciagInduction.inPrisonInterests.inPrisonEducation,
+    inPrisonInterestsEducationOther: ciagInduction.inPrisonInterests.inPrisonEducationOther,
   }
 }
 
