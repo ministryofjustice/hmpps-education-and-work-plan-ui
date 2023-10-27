@@ -4,6 +4,15 @@
  */
 
 export interface paths {
+  '/queue-admin/retry-dlq/{dlqName}': {
+    put: operations['retryDlq']
+  }
+  '/queue-admin/retry-all-dlqs': {
+    put: operations['retryAllDlqs']
+  }
+  '/queue-admin/purge-queue/{queueName}': {
+    put: operations['purgeQueue']
+  }
   '/ciag/induction/{offenderId}': {
     /**
      * Fetch the CIAG profile for the offender
@@ -33,12 +42,72 @@ export interface paths {
      */
     post: operations['getAllCIAGProfileForGivenOffenderIds']
   }
+  '/queue-admin/get-dlq-messages/{dlqName}': {
+    get: operations['getDlqMessages']
+  }
 }
 
 export type webhooks = Record<string, never>
 
 export interface components {
   schemas: {
+    Message: {
+      messageId?: string
+      receiptHandle?: string
+      body?: string
+      attributes?: {
+        [key: string]: string | undefined
+      }
+      messageAttributes?: {
+        [key: string]: components['schemas']['MessageAttributeValue'] | undefined
+      }
+      md5OfBody?: string
+      md5OfMessageAttributes?: string
+    }
+    MessageAttributeValue: {
+      stringValue?: string
+      binaryValue?: {
+        /** Format: int32 */
+        short?: number
+        char?: string
+        /** Format: int32 */
+        int?: number
+        /** Format: int64 */
+        long?: number
+        /** Format: float */
+        float?: number
+        /** Format: double */
+        double?: number
+        direct?: boolean
+        readOnly?: boolean
+      }
+      stringListValues?: string[]
+      binaryListValues?: {
+        /** Format: int32 */
+        short?: number
+        char?: string
+        /** Format: int32 */
+        int?: number
+        /** Format: int64 */
+        long?: number
+        /** Format: float */
+        float?: number
+        /** Format: double */
+        double?: number
+        direct?: boolean
+        readOnly?: boolean
+      }[]
+      dataType?: string
+    }
+    RetryDlqResult: {
+      /** Format: int32 */
+      messagesFoundCount: number
+      messages: components['schemas']['Message'][]
+    }
+    PurgeQueueResult: {
+      /** Format: int32 */
+      messagesFoundCount: number
+    }
     /** @description This is the qualification list of the inmate. */
     AchievedQualification: {
       /** @description This is the subject the inmate has chosen. */
@@ -50,8 +119,7 @@ export interface components {
        * @enum {string}
        */
       level?:
-        | 'ENTRY_LEVEL_2'
-        | 'ENTRY_LEVEL_3'
+        | 'ENTRY_LEVEL'
         | 'LEVEL_1'
         | 'LEVEL_2'
         | 'LEVEL_3'
@@ -124,12 +192,12 @@ export interface components {
     /** @description This is the qualification and training achived in the prison by the inmate. */
     EducationAndQualification: {
       /** @description This is the person who modifies the Induction.Even though it is passed from front end it wil be automatically set to the right value at the time of record modification */
-      modifiedBy: string
+      modifiedBy?: string
       /**
        * Format: date-time
        * @description This is the modified date and time of Induction record .Even though it is passed from front end it wil be automatically set to the right value at the time of record modification
        */
-      modifiedDateTime: string
+      modifiedDateTime?: string
       /** Format: int64 */
       id?: number
       /**
@@ -167,12 +235,12 @@ export interface components {
     PreviousWork: {
       hasWorkedBefore: boolean
       /** @description This is the person who modifies the Induction.Even though it is passed from front end it wil be automatically set to the right value at the time of record modification */
-      modifiedBy: string
+      modifiedBy?: string
       /**
        * Format: date-time
        * @description This is the modified date and time of Induction record .Even though it is passed from front end it wil be automatically set to the right value at the time of record modification
        */
-      modifiedDateTime: string
+      modifiedDateTime?: string
       /** Format: int64 */
       id?: number
       /** @description This is the work experience list of the inmate. */
@@ -202,12 +270,12 @@ export interface components {
     /** @description This is the work and training the inmate.wants to receive in prison */
     PrisonWorkAndEducation: {
       /** @description This is the person who modifies the Induction.Even though it is passed from front end it wil be automatically set to the right value at the time of record modification */
-      modifiedBy: string
+      modifiedBy?: string
       /**
        * Format: date-time
        * @description This is the modified date and time of Induction record .Even though it is passed from front end it wil be automatically set to the right value at the time of record modification
        */
-      modifiedDateTime: string
+      modifiedDateTime?: string
       /** Format: int64 */
       id?: number
       /** @description This is the prison work list of the inmate. */
@@ -248,12 +316,12 @@ export interface components {
     /** @description This is the  skills and interests of the inmate. */
     SkillsAndInterests: {
       /** @description This is the person who modifies the Induction.Even though it is passed from front end it wil be automatically set to the right value at the time of record modification */
-      modifiedBy: string
+      modifiedBy?: string
       /**
        * Format: date-time
        * @description This is the modified date and time of Induction record .Even though it is passed from front end it wil be automatically set to the right value at the time of record modification
        */
-      modifiedDateTime: string
+      modifiedDateTime?: string
       /** Format: int64 */
       id?: number
       /** @description This is the skill list of the inmate. */
@@ -348,12 +416,12 @@ export interface components {
     /** @description This is the work interests of the inmate. */
     WorkInterests: {
       /** @description This is the person who modifies the Induction.Even though it is passed from front end it wil be automatically set to the right value at the time of record modification */
-      modifiedBy: string
+      modifiedBy?: string
       /**
        * Format: date-time
        * @description This is the modified date and time of Induction record .Even though it is passed from front end it wil be automatically set to the right value at the time of record modification
        */
-      modifiedDateTime: string
+      modifiedDateTime?: string
       /** Format: int64 */
       id?: number
       /** @description This is the list of interests of the inmate. */
@@ -395,19 +463,19 @@ export interface components {
       /** @description This is the prision Name of the inmate */
       prisonName?: string
       /** @description This is the person who creates the Induction.Even though it is passed from front end it wil be automatically set to the right value at the time of record creation */
-      createdBy: string
+      createdBy?: string
       /**
        * Format: date-time
        * @description This is the creation date and time of Induction record .Even though it is passed from front end it wil be automatically set to the right value at the time of record creation
        */
-      createdDateTime: string
+      createdDateTime?: string
       /** @description This is the person who modifies the Induction.Even though it is passed from front end it wil be automatically set to the right value at the time of record modification */
-      modifiedBy: string
+      modifiedBy?: string
       /**
        * Format: date-time
        * @description This is the modified date and time of Induction record .Even though it is passed from front end it wil be automatically set to the right value at the time of record modification
        */
-      modifiedDateTime: string
+      modifiedDateTime?: string
       /** @description Whether the inmate wants to work or not */
       desireToWork: boolean
       /**
@@ -447,13 +515,52 @@ export interface components {
       /** @description This is the schema version used */
       schemaVersion?: string
     }
+    /** @description This is the List of inductions for inmates */
+    CIAGMainProfileDTO: {
+      /** @description This is the ID of the inmate */
+      offenderId: string
+      /** @description This is the person who creates the Induction.Even though it is passed from front end it wil be automatically set to the right value at the time of record creation */
+      createdBy: string
+      /**
+       * Format: date-time
+       * @description This is the creation date and time of Induction record .Even though it is passed from front end it wil be automatically set to the right value at the time of record creation
+       */
+      createdDateTime: string
+      /** @description This is the person who modifies the Induction.Even though it is passed from front end it wil be automatically set to the right value at the time of record modification */
+      modifiedBy: string
+      /**
+       * Format: date-time
+       * @description This is the modified date and time of Induction record .Even though it is passed from front end it wil be automatically set to the right value at the time of record modification
+       */
+      modifiedDateTime: string
+      /** @description Whether the inmate wants to work or not */
+      desireToWork: boolean
+      /**
+       * @description Whether the inmate hopes to get work
+       * @enum {string}
+       */
+      hopingToGetWork: 'YES' | 'NO' | 'NOT_SURE'
+    }
     CIAGProfileListDTO: {
       /** @description This is the List of inductions for inmates */
-      ciagProfileList?: components['schemas']['CIAGProfileDTO'][]
+      ciagProfileList?: components['schemas']['CIAGMainProfileDTO'][]
     }
     CIAGProfileOffenderIdListRequestDTO: {
       /** @description This is the ID list of the inmates */
       offenderIds: string[]
+    }
+    DlqMessage: {
+      body: {
+        [key: string]: Record<string, never> | undefined
+      }
+      messageId: string
+    }
+    GetDlqResult: {
+      /** Format: int32 */
+      messagesFoundCount: number
+      /** Format: int32 */
+      messagesReturnedCount: number
+      messages: components['schemas']['DlqMessage'][]
     }
   }
   responses: never
@@ -466,6 +573,46 @@ export interface components {
 export type external = Record<string, never>
 
 export interface operations {
+  retryDlq: {
+    parameters: {
+      path: {
+        dlqName: string
+      }
+    }
+    responses: {
+      /** @description OK */
+      200: {
+        content: {
+          '*/*': components['schemas']['RetryDlqResult']
+        }
+      }
+    }
+  }
+  retryAllDlqs: {
+    responses: {
+      /** @description OK */
+      200: {
+        content: {
+          '*/*': components['schemas']['RetryDlqResult'][]
+        }
+      }
+    }
+  }
+  purgeQueue: {
+    parameters: {
+      path: {
+        queueName: string
+      }
+    }
+    responses: {
+      /** @description OK */
+      200: {
+        content: {
+          '*/*': components['schemas']['PurgeQueueResult']
+        }
+      }
+    }
+  }
   /**
    * Fetch the CIAG profile for the offender
    * @description Currently requires role <b>ROLE_VIEW_PRISONER_DATA</b>
@@ -521,10 +668,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': {
-          requestDTO?: components['schemas']['CIAGProfileRequestDTO']
-          oauth2User?: string
-        }
+        'application/json': components['schemas']['CIAGProfileRequestDTO']
       }
     }
     responses: {
@@ -572,10 +716,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': {
-          requestDTO?: components['schemas']['CIAGProfileRequestDTO']
-          oauth2User?: string
-        }
+        'application/json': components['schemas']['CIAGProfileRequestDTO']
       }
     }
     responses: {
@@ -687,6 +828,24 @@ export interface operations {
       403: {
         content: {
           'application/json': string
+        }
+      }
+    }
+  }
+  getDlqMessages: {
+    parameters: {
+      query?: {
+        maxMessages?: number
+      }
+      path: {
+        dlqName: string
+      }
+    }
+    responses: {
+      /** @description OK */
+      200: {
+        content: {
+          '*/*': components['schemas']['GetDlqResult']
         }
       }
     }

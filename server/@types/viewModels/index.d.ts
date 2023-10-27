@@ -330,17 +330,7 @@ declare module 'viewModels' {
   export interface EducationalQualifications {
     subject: string
     grade: string
-    level:
-      | 'ENTRY_LEVEL_2'
-      | 'ENTRY_LEVEL_3'
-      | 'LEVEL_1'
-      | 'LEVEL_2'
-      | 'LEVEL_3'
-      | 'LEVEL_4'
-      | 'LEVEL_5'
-      | 'LEVEL_6'
-      | 'LEVEL_7'
-      | 'LEVEL_8'
+    level: 'ENTRY_LEVEL' | 'LEVEL_1' | 'LEVEL_2' | 'LEVEL_3' | 'LEVEL_4' | 'LEVEL_5' | 'LEVEL_6' | 'LEVEL_7' | 'LEVEL_8'
   }
 
   /**
