@@ -13,8 +13,32 @@ asked at the Induction.
 
       <div class="govuk-summary-card__content">
         {% if not educationAndTraining.problemRetrievingData %}
-
-
+  
+          <dl class="govuk-summary-list">
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                Training and eduction interests
+              </dt>
+              <dd class="govuk-summary-list__value">
+                <ul class="govuk-list">
+                  {# TODO: Replace with the correct data value for training and education interests #}
+                  {% for education in educationAndTraining.data.shortQuestionSetAnswers.additionalTraining %}
+                    {% if education == 'OTHER' %}
+                      <li>{{ educationAndTraining.data.shortQuestionSetAnswers.otherAdditionalTraining }}</li>
+                    {% else %}
+                      <li>{{ education | formatInPrisonEducation }}</li>
+                    {% endif %}  
+                  {% endfor %}
+                </ul>
+              </dd>
+              <dd class="govuk-summary-list__actions">
+                <a class="govuk-link" href="{{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}/in-prison-education/update">
+                  Change<span class="govuk-visually-hidden"> training and eduction interests</span>
+                </a>
+              </dd>
+            </div>
+          </dl>
+          <p class="govuk-hint">Last updated: {{ educationAndTraining.data.updatedAt | formatDate('D MMMM YYYY') }}<span class="govuk-!-display-none-print"> by {{ educationAndTraining.data.updatedBy }}</span></p>
 
         {% else %}
 
