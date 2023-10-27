@@ -283,7 +283,7 @@ declare module 'viewModels' {
     updatedAt: Date
   }
 
-  export interface EducationAndTrainingLongQuestionSet extends EducationAndTrainingShortQuestionSet {
+  export interface EducationAndTrainingLongQuestionSet {
     highestEducationLevel:
       | 'PRIMARY_SCHOOL'
       | 'SECONDARY_SCHOOL_LEFT_BEFORE_TAKING_EXAMS'
@@ -292,6 +292,21 @@ declare module 'viewModels' {
       | 'UNDERGRADUATE_DEGREE_AT_UNIVERSITY'
       | 'POSTGRADUATE_DEGREE_AT_UNIVERSITY'
       | 'NOT_SURE'
+    additionalTraining: (
+      | 'CSCS_CARD'
+      | 'FIRST_AID_CERTIFICATE'
+      | 'FOOD_HYGIENE_CERTIFICATE'
+      | 'FULL_UK_DRIVING_LICENCE'
+      | 'HEALTH_AND_SAFETY'
+      | 'HGV_LICENCE'
+      | 'MACHINERY_TICKETS'
+      | 'MANUAL_HANDLING'
+      | 'TRADE_COURSE'
+      | 'OTHER'
+      | 'NONE'
+    )[]
+    otherAdditionalTraining?: string
+    educationalQualifications: EducationalQualifications[]
   }
 
   export interface EducationAndTrainingShortQuestionSet {
