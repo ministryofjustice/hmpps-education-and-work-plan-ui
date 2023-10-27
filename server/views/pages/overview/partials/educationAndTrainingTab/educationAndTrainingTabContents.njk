@@ -1,10 +1,24 @@
 {#
 'Education and training' tab
-Contains 'Functional skills', 'In-prison qualifications and achievements' and 'Other qualifications and history' summary cards.
-The `Other qualifications and history` summary card has differing content based on whether the long or short question
+Contains 'Functional skills', 'In-prison qualifications and achievements', 'Qualifications and education history', and
+in the case of the Induction short question set a 'Training and eduction in prison', summary cards.
+The 'Qualifications and education history' summary card has differing content based on whether the long or short question
 set was asked at Induction, as the follow up questions are different.
+The 'Training and eduction in prison' summary card is only shown if the short question set was asked at Induction.
 #}
 
 {% include './_functionalSkills.njk' %}
 {% include './_inPrisonQualifications.njk' %}
-{% include './_otherQualifications.njk' %}
+
+{% if educationAndTraining.inductionQuestionSet == 'LONG_QUESTION_SET' %}
+  <section data-qa="qualifications-and-education-history-long-question-set">
+    {% include './_qualificationsAndEducationHistory_inductionLongQuestionSet.njk' %}
+  </section>
+{% else %}
+  <section data-qa="qualifications-and-education-history-short-question-set">
+    {% include './_qualificationsAndEducationHistory_inductionShortQuestionSet.njk' %}
+    {#
+    {% include './_trainingAndEducationInterestsInPrison.njk' %}
+    #}
+  </section>
+{% endif %}

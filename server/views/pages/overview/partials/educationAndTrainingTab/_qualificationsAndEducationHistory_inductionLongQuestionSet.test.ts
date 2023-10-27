@@ -7,7 +7,7 @@ import aValidPrisonerSummary from '../../../../../testsupport/prisonerSummaryTes
 
 describe('Education and Training tab view - Other qualifications and history - Long question set', () => {
   const template = fs.readFileSync(
-    'server/views/pages/overview/partials/educationAndTrainingTab/_inductionLongQuestionSet.njk',
+    'server/views/pages/overview/partials/educationAndTrainingTab/_qualificationsAndEducationHistory_inductionLongQuestionSet.njk',
   )
   const prisonerSummary = aValidPrisonerSummary()
 
