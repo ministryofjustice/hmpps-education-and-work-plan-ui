@@ -1,24 +1,30 @@
+{#
+'Training and education interests in prison' summary card on the 'Education and training' tab - content for the short question set
+asked at the Induction.
+#}
+
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds app-u-print-full-width">
 
     <div class="govuk-summary-card">
       <div class="govuk-summary-card__title-wrapper">
-        <h2 class="govuk-summary-card__title">Other qualifications and history</h2>
+        <h2 class="govuk-summary-card__title">Training and eduction interests in prison</h2>
       </div>
 
-      {% if not educationAndTraining.problemRetrievingData %}
-        {% if educationAndTraining.inductionQuestionSet == 'LONG_QUESTION_SET' %}
-          {% include './_inductionLongQuestionSet.njk' %}
-        {% else %}
-          {% include './_inductionShortQuestionSet.njk' %}
-        {% endif %}
+      <div class="govuk-summary-card__content">
+        {% if not educationAndTraining.problemRetrievingData %}
 
-      {% else %}
-        <div class="govuk-summary-card__content">
+
+
+        {% else %}
+
           <h3 class="govuk-heading-s" data-qa="ciag-unavailable-message">We cannot show these details right now</h3>
           <p class="govuk-body">Reload the page or try again later. Other parts of this service may still be available.</p>
-        </div>
-      {% endif %}
+
+        {% endif %}
+
+      </div>
     </div>
+
   </div>
 </div>
