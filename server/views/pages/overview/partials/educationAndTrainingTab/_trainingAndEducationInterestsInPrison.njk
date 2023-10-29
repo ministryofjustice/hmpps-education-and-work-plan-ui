@@ -8,7 +8,7 @@ asked at the Induction.
 
     <div class="govuk-summary-card">
       <div class="govuk-summary-card__title-wrapper">
-        <h2 class="govuk-summary-card__title">Training and eduction interests in prison</h2>
+        <h2 class="govuk-summary-card__title">Training and education interests in prison</h2>
       </div>
 
       <div class="govuk-summary-card__content">
@@ -21,10 +21,9 @@ asked at the Induction.
               </dt>
               <dd class="govuk-summary-list__value">
                 <ul class="govuk-list">
-                  {# TODO: Replace with the correct data value for training and education interests #}
-                  {% for education in educationAndTraining.data.shortQuestionSetAnswers.additionalTraining %}
+                  {% for education in educationAndTraining.data.shortQuestionSetAnswers.inPrisonInterestsEducation %}
                     {% if education == 'OTHER' %}
-                      <li>{{ educationAndTraining.data.shortQuestionSetAnswers.otherAdditionalTraining }}</li>
+                      <li>{{ educationAndTraining.data.shortQuestionSetAnswers.inPrisonInterestsEducationOther }}</li>
                     {% else %}
                       <li>{{ education | formatInPrisonEducation }}</li>
                     {% endif %}  

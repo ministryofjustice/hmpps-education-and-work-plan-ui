@@ -35,8 +35,14 @@ const toEducationAndTrainingData = (
 }
 
 const toLongQuestionSet = (ciagInduction: CiagInduction): EducationAndTrainingLongQuestionSet => {
+  const educationalQualifications =
+    (ciagInduction.qualificationsAndTraining.qualifications as Array<CiagPrePrisonQualification>) || []
   return {
-    ...toShortQuestionSet(ciagInduction),
+    additionalTraining: ciagInduction.qualificationsAndTraining.additionalTraining,
+    otherAdditionalTraining: ciagInduction.qualificationsAndTraining.additionalTrainingOther,
+    educationalQualifications: educationalQualifications.map(qualification => {
+      return { ...qualification }
+    }),
     highestEducationLevel: ciagInduction.qualificationsAndTraining.educationLevel,
   }
 }
@@ -50,6 +56,8 @@ const toShortQuestionSet = (ciagInduction: CiagInduction): EducationAndTrainingS
     educationalQualifications: educationalQualifications.map(qualification => {
       return { ...qualification }
     }),
+    inPrisonInterestsEducation: ciagInduction.inPrisonInterests.inPrisonEducation,
+    inPrisonInterestsEducationOther: ciagInduction.inPrisonInterests.inPrisonEducationOther,
   }
 }
 

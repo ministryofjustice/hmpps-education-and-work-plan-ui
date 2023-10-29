@@ -87,6 +87,8 @@ describe('educationAndTrainingMapper', () => {
                 level: 'LEVEL_6',
               },
             ],
+            inPrisonInterestsEducation: ['FORKLIFT_DRIVING', 'CATERING', 'OTHER'],
+            inPrisonInterestsEducationOther: 'Advanced origami',
           },
         },
       }

@@ -111,6 +111,8 @@ const aShortQuestionSetCiagInduction = (options?: {
       modifiedDateTime: '2023-08-22T11:12:31.943Z',
       inPrisonWork: ['CLEANING_AND_HYGIENE', 'OTHER'],
       inPrisonWorkOther: 'Gardening and grounds keeping',
+      inPrisonEducation: ['FORKLIFT_DRIVING', 'CATERING', 'OTHER'],
+      inPrisonEducationOther: 'Advanced origami',
     },
     qualificationsAndTraining: {
       modifiedBy: 'ANOTHER_DPS_USER_GEN',
@@ -131,7 +133,6 @@ const aShortQuestionSetCiagInduction = (options?: {
       ],
       additionalTraining: ['FULL_UK_DRIVING_LICENCE', 'OTHER'],
       additionalTrainingOther: 'Beginners cookery for IT professionals',
-      inPrisonInterests: null,
       schemaVersion: null,
     },
   }

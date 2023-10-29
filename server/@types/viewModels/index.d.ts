@@ -325,6 +325,22 @@ declare module 'viewModels' {
     )[]
     otherAdditionalTraining?: string
     educationalQualifications: EducationalQualifications[]
+    inPrisonInterestsEducation: (
+      | 'BARBERING_AND_HAIRDRESSING'
+      | 'CATERING'
+      | 'COMMUNICATION_SKILLS'
+      | 'ENGLISH_LANGUAGE_SKILLS'
+      | 'FORKLIFT_DRIVING'
+      | 'INTERVIEW_SKILLS'
+      | 'MACHINERY_TICKETS'
+      | 'NUMERACY_SKILLS'
+      | 'RUNNING_A_BUSINESS'
+      | 'SOCIAL_AND_LIFE_SKILLS'
+      | 'WELDING_AND_METALWORK'
+      | 'WOODWORK_AND_JOINERY'
+      | 'OTHER'
+    )[]
+    inPrisonInterestsEducationOther?: string
   }
 
   export interface EducationalQualifications {
