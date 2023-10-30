@@ -279,8 +279,6 @@ declare module 'viewModels' {
   export interface EducationAndTrainingData {
     longQuestionSetAnswers?: EducationAndTrainingLongQuestionSet
     shortQuestionSetAnswers?: EducationAndTrainingShortQuestionSet
-    updatedBy: string
-    updatedAt: Date
   }
 
   export interface EducationAndTrainingLongQuestionSet {
@@ -307,6 +305,8 @@ declare module 'viewModels' {
     )[]
     otherAdditionalTraining?: string
     educationalQualifications: EducationalQualifications[]
+    updatedAt: Date
+    updatedBy: string
   }
 
   export interface EducationAndTrainingShortQuestionSet {
@@ -341,6 +341,8 @@ declare module 'viewModels' {
       | 'OTHER'
     )[]
     inPrisonInterestsEducationOther?: string
+    updatedAt: Date
+    updatedBy: string
   }
 
   export interface EducationalQualifications {
