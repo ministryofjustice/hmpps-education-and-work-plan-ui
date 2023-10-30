@@ -91,6 +91,46 @@ describe('workAndInterestMapper', () => {
       expect(actual).toEqual(expected)
     })
 
+    it('should map to Work And Interests given CIAG Induction was updated more recently than the work interests', () => {
+      // Given
+      const mostRecentModifiedTimestamp = moment()
+      const earlierModifiedTimeStamp = moment().subtract(1, 'minute')
+
+      const ciagInduction = aLongQuestionSetCiagInduction({
+        modifiedBy: 'USER1_GEN',
+        modifiedByDateTime: mostRecentModifiedTimestamp.format('YYYY-MM-DDTHH:mm:ss.SSSZ'),
+        workInterestModifiedBy: 'USER2_GEN',
+        workInterestModifiedByDateTime: earlierModifiedTimeStamp.format('YYYY-MM-DDTHH:mm:ss.SSSZ'),
+      })
+
+      // When
+      const actual = toWorkAndInterests(ciagInduction)
+
+      // Then
+      expect(actual.data.workInterests.updatedBy).toEqual('USER1_GEN')
+      expect(actual.data.workInterests.updatedAt).toEqual(mostRecentModifiedTimestamp.toDate())
+    })
+
+    it('should map to Work And Interests given the work interests were updated more recently than the CIAG Induction', () => {
+      // Given
+      const mostRecentModifiedTimestamp = moment()
+      const earlierModifiedTimeStamp = moment().subtract(1, 'minute')
+
+      const ciagInduction = aLongQuestionSetCiagInduction({
+        modifiedBy: 'USER1_GEN',
+        modifiedByDateTime: earlierModifiedTimeStamp.format('YYYY-MM-DDTHH:mm:ss.SSSZ'),
+        workInterestModifiedBy: 'USER2_GEN',
+        workInterestModifiedByDateTime: mostRecentModifiedTimestamp.format('YYYY-MM-DDTHH:mm:ss.SSSZ'),
+      })
+
+      // When
+      const actual = toWorkAndInterests(ciagInduction)
+
+      // Then
+      expect(actual.data.workInterests.updatedBy).toEqual('USER2_GEN')
+      expect(actual.data.workInterests.updatedAt).toEqual(mostRecentModifiedTimestamp.toDate())
+    })
+
     it('should map to Work And Interests given CIAG Induction has not worked before, and has no skills, interests or future job interests', () => {
       // Given
       const ciagInduction = aLongQuestionSetCiagInduction({
@@ -172,6 +212,46 @@ describe('workAndInterestMapper', () => {
 
       // Then
       expect(actual).toEqual(expected)
+    })
+
+    it('should map to Work And Interests given CIAG Induction was updated more recently than the in-prison interests', () => {
+      // Given
+      const mostRecentModifiedTimestamp = moment()
+      const earlierModifiedTimeStamp = moment().subtract(1, 'minute')
+
+      const ciagInduction = aShortQuestionSetCiagInduction({
+        modifiedBy: 'USER1_GEN',
+        modifiedByDateTime: mostRecentModifiedTimestamp.format('YYYY-MM-DDTHH:mm:ss.SSSZ'),
+        inPrisonInterestsModifiedBy: 'USER2_GEN',
+        inPrisonInterestsModifiedByDateTime: earlierModifiedTimeStamp.format('YYYY-MM-DDTHH:mm:ss.SSSZ'),
+      })
+
+      // When
+      const actual = toWorkAndInterests(ciagInduction)
+
+      // Then
+      expect(actual.data.workInterests.updatedBy).toEqual('USER1_GEN')
+      expect(actual.data.workInterests.updatedAt).toEqual(mostRecentModifiedTimestamp.toDate())
+    })
+
+    it('should map to Work And Interests given the in-prison interests were updated more recently than the CIAG Induction', () => {
+      // Given
+      const mostRecentModifiedTimestamp = moment()
+      const earlierModifiedTimeStamp = moment().subtract(1, 'minute')
+
+      const ciagInduction = aShortQuestionSetCiagInduction({
+        modifiedBy: 'USER1_GEN',
+        modifiedByDateTime: earlierModifiedTimeStamp.format('YYYY-MM-DDTHH:mm:ss.SSSZ'),
+        inPrisonInterestsModifiedBy: 'USER2_GEN',
+        inPrisonInterestsModifiedByDateTime: mostRecentModifiedTimestamp.format('YYYY-MM-DDTHH:mm:ss.SSSZ'),
+      })
+
+      // When
+      const actual = toWorkAndInterests(ciagInduction)
+
+      // Then
+      expect(actual.data.workInterests.updatedBy).toEqual('USER2_GEN')
+      expect(actual.data.workInterests.updatedAt).toEqual(mostRecentModifiedTimestamp.toDate())
     })
   })
 })
