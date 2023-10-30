@@ -171,8 +171,8 @@ If these are not desired in the cloned project, remove references to `check_outd
 ## Feature Toggles
 Features can be toggled by setting the relevant environment variable.
 
-| Name                                           | Default Value | Type    | Description                                                                                                                                                                     |
-|------------------------------------------------|---------------|---------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| SOME_TOGGLE_ENABLED                            | false         | Boolean | Example feature toggle, for demonstration purposes.                                                                                                                             |
-| FRONTEND_COMPONENTS_API_FEATURE_TOGGLE_ENABLED | false         | Boolean | Set to true to enable the DPS frontend components, mainly the Header and Footer. Will be removed when the work on the DPS frontend components is tested and the service is live |
-| PLP_PRISONER_LIST_AND_OVERVIEW_PAGES_ENABLED   | false         | Boolean | Set to true to enable the PLP versions of the Prisoner List and Overview pages.<br/>The same feature toggle must be set in the CIAG UI codebase                                 |
+| Name                                           | Default Value | Type    | Description                                                                                                                                                                       |
+|------------------------------------------------|---------------|---------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| SOME_TOGGLE_ENABLED                            | false         | Boolean | Example feature toggle, for demonstration purposes.                                                                                                                               |
+| FRONTEND_COMPONENTS_API_FEATURE_TOGGLE_ENABLED | true          | Boolean | Set to false to disable the DPS frontend components, mainly the Header and Footer. Will be removed when the work on the DPS frontend components is tested and the service is live |
+| PLP_PRISONER_LIST_AND_OVERVIEW_PAGES_ENABLED   | false         | Boolean | Set to true to enable the PLP versions of the Prisoner List and Overview pages.<br/>The same feature toggle must be set in the CIAG UI codebase                                   |
