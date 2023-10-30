@@ -40,7 +40,7 @@ export default function setUpWebSecurity(): Router {
           styleSrc,
           imgSrc,
           fontSrc,
-          formAction: [`'self' ${config.apis.hmppsAuth.externalUrl}`],
+          formAction: [`'self' ${config.apis.hmppsAuth.externalUrl} ${config.dpsHomeUrl}`],
         },
       },
       crossOriginEmbedderPolicy: true,
