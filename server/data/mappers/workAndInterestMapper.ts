@@ -65,6 +65,11 @@ const toWorkExperience = (ciagInduction: CiagInduction): WorkExperience => {
 }
 
 const toLongQuestionSetWorkInterests = (ciagInduction: CiagInduction): WorkInterests => {
+  const mostRecentlyUpdatedSection: 'MAIN_INDUCTION' | 'WORK_INTERESTS' =
+    ciagInduction.modifiedDateTime >= ciagInduction.workExperience.workInterests.modifiedDateTime
+      ? 'MAIN_INDUCTION'
+      : 'WORK_INTERESTS'
+
   const jobInterests: Array<CiagWorkInterestDetail> = ciagInduction.workExperience.workInterests.particularJobInterests
   return {
     hopingToWorkOnRelease: ciagInduction.hopingToGetWork,
@@ -75,8 +80,14 @@ const toLongQuestionSetWorkInterests = (ciagInduction: CiagInduction): WorkInter
       specificJobRoles: jobInterests?.map(jobInterest => jobInterest.role),
     },
     shortQuestionSetAnswers: undefined,
-    updatedBy: ciagInduction.workExperience.workInterests.modifiedBy,
-    updatedAt: moment(ciagInduction.workExperience.workInterests.modifiedDateTime).toDate(),
+    updatedBy:
+      mostRecentlyUpdatedSection === 'MAIN_INDUCTION'
+        ? ciagInduction.modifiedBy
+        : ciagInduction.workExperience.workInterests.modifiedBy,
+    updatedAt:
+      mostRecentlyUpdatedSection === 'MAIN_INDUCTION'
+        ? moment(ciagInduction.modifiedDateTime).toDate()
+        : moment(ciagInduction.workExperience.workInterests.modifiedDateTime).toDate(),
   }
 }
 
