@@ -108,15 +108,23 @@ const aLongQuestionSetCiagInduction = (options?: {
 const aShortQuestionSetCiagInduction = (options?: {
   prisonNumber?: string
   hopingToGetWork?: 'NO' | 'NOT_SURE'
+  modifiedBy?: string
+  modifiedByDateTime?: string
+  inPrisonInterestsModifiedBy?: string
+  inPrisonInterestsModifiedByDateTime?: string
 }): CiagInduction => {
   return {
-    ...baseCiagInductionTemplate({ prisonNumber: options?.prisonNumber }),
+    ...baseCiagInductionTemplate({
+      prisonNumber: options?.prisonNumber,
+      modifiedBy: options?.modifiedBy,
+      modifiedDateTime: options?.modifiedByDateTime,
+    }),
     hopingToGetWork: options?.hopingToGetWork || 'NO',
     reasonToNotGetWork: ['HEALTH', 'OTHER'],
     reasonToNotGetWorkOther: 'Will be of retirement age at release',
     inPrisonInterests: {
-      modifiedBy: 'ANOTHER_DPS_USER_GEN',
-      modifiedDateTime: '2023-08-22T11:12:31.943Z',
+      modifiedBy: options?.inPrisonInterestsModifiedBy || 'ANOTHER_DPS_USER_GEN',
+      modifiedDateTime: options?.inPrisonInterestsModifiedByDateTime || '2023-08-22T11:12:31.943Z',
       inPrisonWork: ['CLEANING_AND_HYGIENE', 'OTHER'],
       inPrisonWorkOther: 'Gardening and grounds keeping',
       inPrisonEducation: ['FORKLIFT_DRIVING', 'CATERING', 'OTHER'],

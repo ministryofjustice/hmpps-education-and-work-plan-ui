@@ -92,6 +92,11 @@ const toLongQuestionSetWorkInterests = (ciagInduction: CiagInduction): WorkInter
 }
 
 const toShortQuestionSetWorkInterests = (ciagInduction: CiagInduction): WorkInterests => {
+  const mostRecentlyUpdatedSection: 'MAIN_INDUCTION' | 'WORK_INTERESTS' =
+    ciagInduction.modifiedDateTime >= ciagInduction.inPrisonInterests.modifiedDateTime
+      ? 'MAIN_INDUCTION'
+      : 'WORK_INTERESTS'
+
   return {
     hopingToWorkOnRelease: ciagInduction.hopingToGetWork,
     longQuestionSetAnswers: undefined,
@@ -101,8 +106,14 @@ const toShortQuestionSetWorkInterests = (ciagInduction: CiagInduction): WorkInte
       reasonsForNotWantingToWork: ciagInduction.reasonToNotGetWork,
       otherReasonForNotWantingToWork: ciagInduction.reasonToNotGetWorkOther,
     },
-    updatedBy: ciagInduction.inPrisonInterests.modifiedBy,
-    updatedAt: moment(ciagInduction.inPrisonInterests.modifiedDateTime).toDate(),
+    updatedBy:
+      mostRecentlyUpdatedSection === 'MAIN_INDUCTION'
+        ? ciagInduction.modifiedBy
+        : ciagInduction.inPrisonInterests.modifiedBy,
+    updatedAt:
+      mostRecentlyUpdatedSection === 'MAIN_INDUCTION'
+        ? moment(ciagInduction.modifiedDateTime).toDate()
+        : moment(ciagInduction.inPrisonInterests.modifiedDateTime).toDate(),
   }
 }
 
