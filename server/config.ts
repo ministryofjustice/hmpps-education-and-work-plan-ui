@@ -125,7 +125,7 @@ export default {
   featureToggles: {
     // someToggleEnabled: toBoolean(get('SOME_TOGGLE_ENABLED', false)),
     frontendComponentsApiToggleEnabled: toBoolean(
-      get('FRONTEND_COMPONENTS_API_FEATURE_TOGGLE_ENABLED', false, requiredInProduction),
+      get('FRONTEND_COMPONENTS_API_FEATURE_TOGGLE_ENABLED', true, requiredInProduction),
     ),
     plpPrisonerListAndOverviewPagesEnabled: toBoolean(
       get('PLP_PRISONER_LIST_AND_OVERVIEW_PAGES_ENABLED', false, requiredInProduction),
