@@ -70,14 +70,12 @@ const toLongQuestionSetWorkInterests = (ciagInduction: CiagInduction): WorkInter
       ? 'MAIN_INDUCTION'
       : 'WORK_INTERESTS'
 
-  const jobInterests: Array<CiagWorkInterestDetail> = ciagInduction.workExperience.workInterests.particularJobInterests
   return {
     hopingToWorkOnRelease: ciagInduction.hopingToGetWork,
     longQuestionSetAnswers: {
       constraintsOnAbilityToWork: ciagInduction.abilityToWork,
       otherConstraintOnAbilityToWork: ciagInduction.abilityToWorkOther,
-      jobTypes: jobInterests?.map(jobInterest => jobInterest.workInterest),
-      specificJobRoles: jobInterests?.map(jobInterest => jobInterest.role),
+      jobs: getJobInterestsWithSpecificJobRoles(ciagInduction),
     },
     shortQuestionSetAnswers: undefined,
     updatedBy:
@@ -115,6 +113,48 @@ const toShortQuestionSetWorkInterests = (ciagInduction: CiagInduction): WorkInte
         ? moment(ciagInduction.modifiedDateTime).toDate()
         : moment(ciagInduction.inPrisonInterests.modifiedDateTime).toDate(),
   }
+}
+
+/**
+ * Returns an array of the prisoner's job type interests and specific job role.
+ * This mapped from two arrays in the CIAG Induction, where the first is the list of job types that they are interested in,
+ * and the second is the list of job types that have a specific job role of interest.
+ * It's basically the combining and flattening of two arrays.
+ *
+ * @returns Array<
+ *  {
+ *    jobType: 'OUTDOOR' | 'CONSTRUCTION' | 'DRIVING' | 'BEAUTY' | 'HOSPITALITY' | 'TECHNICAL' | 'MANUFACTURING' | 'OFFICE' | 'RETAIL' | 'SPORTS' | 'WAREHOUSING' | 'WASTE_MANAGEMENT' | 'EDUCATION_TRAINING' | 'CLEANING_AND_MAINTENANCE' | 'OTHER'
+ *    specificJobRole?: string
+ *  }
+ * >
+ */
+const getJobInterestsWithSpecificJobRoles = (ciagInduction: CiagInduction) => {
+  return (
+    ciagInduction.workExperience.workInterests.workInterests as Array<
+      | 'OUTDOOR'
+      | 'CONSTRUCTION'
+      | 'DRIVING'
+      | 'BEAUTY'
+      | 'HOSPITALITY'
+      | 'TECHNICAL'
+      | 'MANUFACTURING'
+      | 'OFFICE'
+      | 'RETAIL'
+      | 'SPORTS'
+      | 'WAREHOUSING'
+      | 'WASTE_MANAGEMENT'
+      | 'EDUCATION_TRAINING'
+      | 'CLEANING_AND_MAINTENANCE'
+      | 'OTHER'
+    >
+  ).map(jobType => {
+    return {
+      jobType,
+      specificJobRole: (
+        ciagInduction.workExperience.workInterests.particularJobInterests as Array<CiagWorkInterestDetail>
+      ).find(jobInterest => jobInterest.workInterest === jobType)?.role,
+    }
+  })
 }
 
 export default toWorkAndInterests

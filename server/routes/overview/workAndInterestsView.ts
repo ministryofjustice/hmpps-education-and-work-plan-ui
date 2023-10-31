@@ -7,11 +7,16 @@ export default class WorkAndInterestsView {
     tab: string
     prisonerSummary: PrisonerSummary
     workAndInterests: WorkAndInterests
+    hasAtLeastOneSpecificJobRole: boolean
   } {
     return {
       tab: 'work-and-interests',
       prisonerSummary: this.prisonerSummary,
       workAndInterests: this.workAndInterests,
+      hasAtLeastOneSpecificJobRole:
+        this.workAndInterests.data?.workInterests.longQuestionSetAnswers?.jobs.filter(
+          jobInterest => jobInterest.specificJobRole,
+        ).length > 0,
     }
   }
 }

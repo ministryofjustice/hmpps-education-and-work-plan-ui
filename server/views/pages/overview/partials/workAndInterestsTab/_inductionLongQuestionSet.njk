@@ -128,9 +128,11 @@ questions are different.
             Type of work
           </dt>
           <dd class="govuk-summary-list__value">
-            {% for typeOfWork in workAndInterests.data.workInterests.longQuestionSetAnswers.jobTypes %}
-              {{ typeOfWork | formatJobType }}<br>
-            {% endfor %}
+            <ul class="govuk-list">
+              {% for job in workAndInterests.data.workInterests.longQuestionSetAnswers.jobs %}
+                <li>{{ job.jobType | formatJobType }}</li>
+              {% endfor %}
+            </ul>
           </dd>
           <dd class="govuk-summary-list__actions govuk-!-display-none-print">
             <a class="govuk-link" href="{{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}/work-interests/update">
@@ -145,11 +147,15 @@ questions are different.
             Specific job role of interest
           </dt>
           <dd class="govuk-summary-list__value">
-            <ul class="govuk-list">
-              {% for specificJobRole in workAndInterests.data.workInterests.longQuestionSetAnswers.specificJobRoles %}
-                <li>{{ specificJobRole }}</li>
-              {% endfor %}
-            </ul>
+            {% if hasAtLeastOneSpecificJobRole %}
+              <ul class="govuk-list">
+                {% for job in workAndInterests.data.workInterests.longQuestionSetAnswers.jobs %}
+                  <li>{{ job.specificJobRole or 'None' }}</li>
+                {% endfor %}
+              </ul>
+            {% else %}
+              None
+            {% endif %}
           </dd>
           <dd class="govuk-summary-list__actions govuk-!-display-none-print">
             <a class="govuk-link" href="{{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}/particular-job-interests/update">
