@@ -325,6 +325,12 @@ declare module 'viewModels' {
     )[]
     otherAdditionalTraining?: string
     educationalQualifications: EducationalQualifications[]
+    inPrisonInterestsEducation: InPrisonInterestsEducation
+    updatedAt: Date
+    updatedBy: string
+  }
+
+  export interface InPrisonInterestsEducation {
     inPrisonInterestsEducation: (
       | 'BARBERING_AND_HAIRDRESSING'
       | 'CATERING'
