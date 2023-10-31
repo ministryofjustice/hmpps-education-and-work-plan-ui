@@ -26,8 +26,6 @@ const toEducationAndTrainingData = (
   }
 
   return {
-    updatedBy: ciagInduction.qualificationsAndTraining.modifiedBy,
-    updatedAt: moment(ciagInduction.qualificationsAndTraining.modifiedDateTime).toDate(),
     longQuestionSetAnswers: inductionQuestionSet === 'LONG_QUESTION_SET' ? toLongQuestionSet(ciagInduction) : undefined,
     shortQuestionSetAnswers:
       inductionQuestionSet === 'SHORT_QUESTION_SET' ? toShortQuestionSet(ciagInduction) : undefined,
@@ -38,6 +36,8 @@ const toLongQuestionSet = (ciagInduction: CiagInduction): EducationAndTrainingLo
   const educationalQualifications =
     (ciagInduction.qualificationsAndTraining.qualifications as Array<CiagPrePrisonQualification>) || []
   return {
+    updatedBy: ciagInduction.qualificationsAndTraining.modifiedBy,
+    updatedAt: moment(ciagInduction.qualificationsAndTraining.modifiedDateTime).toDate(),
     additionalTraining: ciagInduction.qualificationsAndTraining.additionalTraining,
     otherAdditionalTraining: ciagInduction.qualificationsAndTraining.additionalTrainingOther,
     educationalQualifications: educationalQualifications.map(qualification => {
@@ -51,13 +51,19 @@ const toShortQuestionSet = (ciagInduction: CiagInduction): EducationAndTrainingS
   const educationalQualifications =
     (ciagInduction.qualificationsAndTraining.qualifications as Array<CiagPrePrisonQualification>) || []
   return {
+    updatedBy: ciagInduction.qualificationsAndTraining.modifiedBy,
+    updatedAt: moment(ciagInduction.qualificationsAndTraining.modifiedDateTime).toDate(),
     additionalTraining: ciagInduction.qualificationsAndTraining.additionalTraining,
     otherAdditionalTraining: ciagInduction.qualificationsAndTraining.additionalTrainingOther,
     educationalQualifications: educationalQualifications.map(qualification => {
       return { ...qualification }
     }),
-    inPrisonInterestsEducation: ciagInduction.inPrisonInterests.inPrisonEducation,
-    inPrisonInterestsEducationOther: ciagInduction.inPrisonInterests.inPrisonEducationOther,
+    inPrisonInterestsEducation: {
+      inPrisonInterestsEducation: ciagInduction.inPrisonInterests.inPrisonEducation,
+      inPrisonInterestsEducationOther: ciagInduction.inPrisonInterests.inPrisonEducationOther,
+      updatedBy: ciagInduction.qualificationsAndTraining.modifiedBy,
+      updatedAt: moment(ciagInduction.qualificationsAndTraining.modifiedDateTime).toDate(),
+    },
   }
 }
 

@@ -21,9 +21,9 @@ asked at the Induction.
               </dt>
               <dd class="govuk-summary-list__value">
                 <ul class="govuk-list">
-                  {% for education in educationAndTraining.data.shortQuestionSetAnswers.inPrisonInterestsEducation %}
+                  {% for education in educationAndTraining.data.shortQuestionSetAnswers.inPrisonInterestsEducation.inPrisonInterestsEducation %}
                     {% if education == 'OTHER' %}
-                      <li>{{ educationAndTraining.data.shortQuestionSetAnswers.inPrisonInterestsEducationOther }}</li>
+                      <li>{{ educationAndTraining.data.shortQuestionSetAnswers.inPrisonInterestsEducation.inPrisonInterestsEducationOther }}</li>
                     {% else %}
                       <li>{{ education | formatInPrisonEducation }}</li>
                     {% endif %}  
@@ -37,7 +37,7 @@ asked at the Induction.
               </dd>
             </div>
           </dl>
-          <p class="govuk-hint">Last updated: {{ educationAndTraining.data.updatedAt | formatDate('D MMMM YYYY') }}<span class="govuk-!-display-none-print"> by {{ educationAndTraining.data.updatedBy }}</span></p>
+          <p class="govuk-hint">Last updated: {{ educationAndTraining.data.shortQuestionSetAnswers.inPrisonInterestsEducation.updatedAt | formatDate('D MMMM YYYY') }}<span class="govuk-!-display-none-print"> by {{ educationAndTraining.data.shortQuestionSetAnswers.inPrisonInterestsEducation.updatedBy }}</span></p>
 
         {% else %}
 
