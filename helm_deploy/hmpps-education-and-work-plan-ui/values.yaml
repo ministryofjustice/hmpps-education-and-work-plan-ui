@@ -13,6 +13,7 @@ generic-service:
     enabled: true
     host: app-hostname.local    # override per environment
     tlsSecretName: hmpps-education-and-work-plan-cert
+    modsecurity_enabled: true   # enable OWASP core rules. Handle any false positives by removing or tweaking rules to not block specific args or cookies as necessary.
 
   livenessProbe:
     httpGet:
