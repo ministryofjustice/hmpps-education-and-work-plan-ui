@@ -148,6 +148,12 @@ const getJobInterestsWithSpecificJobRoles = (ciagInduction: CiagInduction) => {
       | 'OTHER'
     >
   ).map(jobType => {
+    if (jobType === 'OTHER') {
+      return {
+        jobType,
+        specificJobRole: ciagInduction.workExperience.workInterests.workInterestsOther,
+      }
+    }
     return {
       jobType,
       specificJobRole: (

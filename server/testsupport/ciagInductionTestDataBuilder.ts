@@ -47,14 +47,11 @@ const aLongQuestionSetCiagInduction = (options?: {
         modifiedBy: options?.workInterestModifiedBy || 'ANOTHER_DPS_USER_GEN',
         modifiedDateTime: options?.workInterestModifiedByDateTime || '2023-08-22T11:12:31.943Z',
         workInterests: ['RETAIL', 'CONSTRUCTION', 'OTHER'],
+        workInterestsOther: 'Being a stunt double for Tom Cruise, even though he does all his own stunts',
         particularJobInterests: [
           {
             workInterest: 'CONSTRUCTION',
             role: 'General labourer',
-          },
-          {
-            workInterest: 'OTHER',
-            role: 'Being a stunt double for Tom Cruise, even though he does all his own stunts',
           },
         ],
       },
