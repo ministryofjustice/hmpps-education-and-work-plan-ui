@@ -48,10 +48,6 @@ const toLongQuestionSet = (ciagInduction: CiagInduction): EducationAndTrainingLo
 }
 
 const toShortQuestionSet = (ciagInduction: CiagInduction): EducationAndTrainingShortQuestionSet => {
-  const mostRecentlyUpdatedSection: 'MAIN_INDUCTION' | 'EDUCATION_TRAINING' =
-    ciagInduction.modifiedDateTime >= ciagInduction.inPrisonInterests.modifiedDateTime
-      ? 'MAIN_INDUCTION'
-      : 'EDUCATION_TRAINING'
   const educationalQualifications =
     (ciagInduction.qualificationsAndTraining.qualifications as Array<CiagPrePrisonQualification>) || []
   return {
@@ -65,14 +61,8 @@ const toShortQuestionSet = (ciagInduction: CiagInduction): EducationAndTrainingS
     inPrisonInterestsEducation: {
       inPrisonInterestsEducation: ciagInduction.inPrisonInterests.inPrisonEducation,
       inPrisonInterestsEducationOther: ciagInduction.inPrisonInterests.inPrisonEducationOther,
-      updatedBy:
-        mostRecentlyUpdatedSection === 'MAIN_INDUCTION'
-          ? ciagInduction.modifiedBy
-          : ciagInduction.inPrisonInterests.modifiedBy,
-      updatedAt:
-        mostRecentlyUpdatedSection === 'MAIN_INDUCTION'
-          ? moment(ciagInduction.modifiedDateTime).toDate()
-          : moment(ciagInduction.inPrisonInterests.modifiedDateTime).toDate(),
+      updatedBy: ciagInduction.inPrisonInterests.modifiedBy,
+      updatedAt: moment(ciagInduction.inPrisonInterests.modifiedDateTime).toDate(),
     },
   }
 }
