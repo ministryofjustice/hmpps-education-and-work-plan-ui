@@ -71,12 +71,12 @@ describe('workAndInterestMapper', () => {
               constraintsOnAbilityToWork: undefined,
               jobs: [
                 {
-                  jobType: 'RETAIL',
-                  specificJobRole: undefined,
-                },
-                {
                   jobType: 'CONSTRUCTION',
                   specificJobRole: 'General labourer',
+                },
+                {
+                  jobType: 'RETAIL',
+                  specificJobRole: undefined,
                 },
                 {
                   jobType: 'OTHER',
@@ -171,12 +171,12 @@ describe('workAndInterestMapper', () => {
               constraintsOnAbilityToWork: undefined,
               jobs: [
                 {
-                  jobType: 'RETAIL',
-                  specificJobRole: undefined,
-                },
-                {
                   jobType: 'CONSTRUCTION',
                   specificJobRole: 'General labourer',
+                },
+                {
+                  jobType: 'RETAIL',
+                  specificJobRole: undefined,
                 },
                 {
                   jobType: 'OTHER',

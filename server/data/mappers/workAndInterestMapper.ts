@@ -8,7 +8,7 @@ import type {
   WorkInterests,
 } from 'viewModels'
 import toInductionQuestionSet from './inductionQuestionSetMapper'
-import jobComparator from './jobComparator'
+import { jobComparator, workInterestJobComparator } from './jobComparator'
 
 const toWorkAndInterests = (ciagInduction: CiagInduction): WorkAndInterests => {
   const inductionQuestionSet = toInductionQuestionSet(ciagInduction)
@@ -78,7 +78,7 @@ const toLongQuestionSetWorkInterests = (ciagInduction: CiagInduction): WorkInter
     longQuestionSetAnswers: {
       constraintsOnAbilityToWork: ciagInduction.abilityToWork,
       otherConstraintOnAbilityToWork: ciagInduction.abilityToWorkOther,
-      jobs: getJobInterestsWithSpecificJobRoles(ciagInduction),
+      jobs: getJobInterestsWithSpecificJobRoles(ciagInduction).sort(workInterestJobComparator),
     },
     shortQuestionSetAnswers: undefined,
     updatedBy:
