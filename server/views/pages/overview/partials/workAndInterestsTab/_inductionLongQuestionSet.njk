@@ -55,7 +55,7 @@ questions are different.
           {% for workExperienceDetails in workAndInterests.data.workExperience.jobs %}
             <div class="govuk-summary-list__row">
               <dt class="govuk-summary-list__key">
-                {% if workExperienceDetails.type == 'Other' %}{{ workExperienceDetails.other }}{% else %}{{ workExperienceDetails.type | formatJobType }}{% endif %} experience details
+                {% if workExperienceDetails.type == 'Other' %}Other - {{ workExperienceDetails.other }}{% else %}{{ workExperienceDetails.type | formatJobType }}{% endif %} experience details
               </dt>
               <dd class="govuk-summary-list__value">
                 <p>Job role:<br> {{ workExperienceDetails.role }}</p>
@@ -108,7 +108,7 @@ questions are different.
             <ul class="govuk-list">
               {% for abilityToWorkConstraint in workAndInterests.data.workInterests.longQuestionSetAnswers.constraintsOnAbilityToWork %}
                 {% if abilityToWorkConstraint == 'OTHER' %}
-                  <li>{{ workAndInterests.data.workInterests.longQuestionSetAnswers.otherConstraintOnAbilityToWork }}</li>
+                  <li>Other - {{ workAndInterests.data.workInterests.longQuestionSetAnswers.otherConstraintOnAbilityToWork }}</li>
                 {% else %}
                   <li>{{ abilityToWorkConstraint | formatAbilityToWorkConstraint }}</li>
                 {% endif %}
@@ -149,7 +149,11 @@ questions are different.
           <dd class="govuk-summary-list__value">
             <ul class="govuk-list">
               {% for job in workAndInterests.data.workInterests.longQuestionSetAnswers.jobs %}
-                <li>{{ job.specificJobRole or 'None' }}</li>
+                {% if job.jobType === 'OTHER' %}
+                  <li>Other - {{ job.specificJobRole }}</li>
+                {% else %}
+                  <li>{{ job.specificJobRole or 'None' }}</li>
+                {% endif %}
               {% endfor %}
             </ul>
           </dd>
@@ -181,7 +185,7 @@ questions are different.
             <ul class="govuk-list">
               {% for skill in workAndInterests.data.skillsAndInterests.skills %}
                 {% if skill == 'OTHER' %}
-                  <li>{{ workAndInterests.data.skillsAndInterests.otherSkill }}</li>
+                  <li>Other - {{ workAndInterests.data.skillsAndInterests.otherSkill }}</li>
                 {% else %}
                   <li>{{ skill | formatSkill }}</li>
                 {% endif %}
@@ -204,7 +208,7 @@ questions are different.
             <ul class="govuk-list">
               {% for personalInterest in workAndInterests.data.skillsAndInterests.personalInterests %}
                 {% if personalInterest == 'OTHER' %}
-                  <li>{{ workAndInterests.data.skillsAndInterests.otherPersonalInterest }}</li>
+                  <li>Other - {{ workAndInterests.data.skillsAndInterests.otherPersonalInterest }}</li>
                 {% else %}
                   <li>{{ personalInterest | formatPersonalInterests }}</li>
                 {% endif %}

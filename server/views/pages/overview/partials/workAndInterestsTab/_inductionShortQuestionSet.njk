@@ -40,7 +40,7 @@ questions are different.
             <ul class="govuk-list">
               {% for reasonNotToGetWork in workAndInterests.data.workInterests.shortQuestionSetAnswers.reasonsForNotWantingToWork %}
                 {% if reasonNotToGetWork == 'OTHER' %}
-                  <li>{{ workAndInterests.data.workInterests.shortQuestionSetAnswers.otherReasonForNotWantingToWork }}</li>
+                  <li>Other - {{ workAndInterests.data.workInterests.shortQuestionSetAnswers.otherReasonForNotWantingToWork }}</li>
                 {% else %}
                   <li>{{ reasonNotToGetWork | formatReasonNotToGetWork }}</li>
                 {% endif %}
@@ -63,7 +63,7 @@ questions are different.
             <ul class="govuk-list">
               {% for inPrisonWorkInterest in workAndInterests.data.workInterests.shortQuestionSetAnswers.inPrisonWorkInterests %}
                 {% if inPrisonWorkInterest == 'OTHER' %}
-                  <li>{{ workAndInterests.data.workInterests.shortQuestionSetAnswers.otherInPrisonerWorkInterest }}</li>
+                  <li>Other - {{ workAndInterests.data.workInterests.shortQuestionSetAnswers.otherInPrisonerWorkInterest }}</li>
                 {% else %}
                   <li>{{ inPrisonWorkInterest | formatInPrisonWorkInterest }}</li>
                 {% endif %}

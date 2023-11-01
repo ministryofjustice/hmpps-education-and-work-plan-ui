@@ -73,7 +73,7 @@ as the follow up questions are different.
               <ul class="govuk-list">
                 {% for additionalTraining in educationAndTraining.data.longQuestionSetAnswers.additionalTraining %}
                   {% if additionalTraining == 'OTHER' %}
-                    <li>{{ educationAndTraining.data.longQuestionSetAnswers.otherAdditionalTraining }}</li>
+                    <li>Other - {{ educationAndTraining.data.longQuestionSetAnswers.otherAdditionalTraining }}</li>
                   {% else %}
                     <li>{{ additionalTraining | formatAdditionalTraining }}</li>
                   {% endif %}

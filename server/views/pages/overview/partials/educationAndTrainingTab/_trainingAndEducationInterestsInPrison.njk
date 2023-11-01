@@ -23,7 +23,7 @@ asked at the Induction.
                 <ul class="govuk-list">
                   {% for education in educationAndTraining.data.shortQuestionSetAnswers.inPrisonInterestsEducation.inPrisonInterestsEducation %}
                     {% if education == 'OTHER' %}
-                      <li>{{ educationAndTraining.data.shortQuestionSetAnswers.inPrisonInterestsEducation.inPrisonInterestsEducationOther }}</li>
+                      <li>Other - {{ educationAndTraining.data.shortQuestionSetAnswers.inPrisonInterestsEducation.inPrisonInterestsEducationOther }}</li>
                     {% else %}
                       <li>{{ education | formatInPrisonEducation }}</li>
                     {% endif %}  
