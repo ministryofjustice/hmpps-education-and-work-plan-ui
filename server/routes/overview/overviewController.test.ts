@@ -268,7 +268,6 @@ describe('overviewController', () => {
         prisonerSummary,
         tab: expectedTab,
         workAndInterests: expectedWorkAndInterests,
-        hasAtLeastOneSpecificJobRole: true,
       }
 
       // When

@@ -147,15 +147,11 @@ questions are different.
             Specific job role of interest
           </dt>
           <dd class="govuk-summary-list__value">
-            {% if hasAtLeastOneSpecificJobRole %}
-              <ul class="govuk-list">
-                {% for job in workAndInterests.data.workInterests.longQuestionSetAnswers.jobs %}
-                  <li>{{ job.specificJobRole or 'None' }}</li>
-                {% endfor %}
-              </ul>
-            {% else %}
-              None
-            {% endif %}
+            <ul class="govuk-list">
+              {% for job in workAndInterests.data.workInterests.longQuestionSetAnswers.jobs %}
+                <li>{{ job.specificJobRole or 'None' }}</li>
+              {% endfor %}
+            </ul>
           </dd>
           <dd class="govuk-summary-list__actions govuk-!-display-none-print">
             <a class="govuk-link" href="{{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}/particular-job-interests/update">
