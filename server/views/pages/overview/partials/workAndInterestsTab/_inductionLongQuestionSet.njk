@@ -63,7 +63,7 @@ questions are different.
               </dd>
               <dd class="govuk-summary-list__actions govuk-!-display-none-print">
                 <a class="govuk-link" href="{{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}/work-details/{% if workExperienceDetails.type == 'Other' %}{{ workExperienceDetails.other | lower }}{% else %}{{ workExperienceDetails.type | lower }}{% endif %}/update">
-                  Change<span class="govuk-visually-hidden"> {% if workExperienceDetails.type == 'Other' %}Other - {{ workExperienceDetails.other }}{% else %}{{ workExperienceDetails.type | formatJobType }}{% endif %} experience details</span>
+                  Change<span class="govuk-visually-hidden"> {% if workExperienceDetails.type == 'Other' %}{{ workExperienceDetails.other }}{% else %}{{ workExperienceDetails.type | formatJobType }}{% endif %} experience details</span>
                 </a>
               </dd>
             </div>
