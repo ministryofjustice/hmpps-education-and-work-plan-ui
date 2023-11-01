@@ -17,8 +17,12 @@ export default function aValidLongQuestionSetWorkAndInterests(): WorkAndInterest
         longQuestionSetAnswers: {
           constraintsOnAbilityToWork: ['NONE'],
           otherConstraintOnAbilityToWork: undefined,
-          jobTypes: ['OUTDOOR'],
-          specificJobRoles: ['Gardner'],
+          jobs: [
+            {
+              jobType: 'OUTDOOR',
+              specificJobRole: 'Gardener',
+            },
+          ],
         },
         shortQuestionSetAnswers: undefined,
         updatedBy: 'A_DPS_USER_GEN',

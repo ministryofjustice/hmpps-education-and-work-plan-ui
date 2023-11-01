@@ -5,7 +5,6 @@ const aLongQuestionSetCiagInduction = (options?: {
   hasWorkedBefore?: boolean
   hasSkills?: boolean
   hasInterests?: boolean
-  hasFutureJobInterests?: boolean
   modifiedBy?: string
   modifiedByDateTime?: string
   workInterestModifiedBy?: string
@@ -47,22 +46,17 @@ const aLongQuestionSetCiagInduction = (options?: {
       workInterests: {
         modifiedBy: options?.workInterestModifiedBy || 'ANOTHER_DPS_USER_GEN',
         modifiedDateTime: options?.workInterestModifiedByDateTime || '2023-08-22T11:12:31.943Z',
-        particularJobInterests:
-          !options ||
-          options.hasFutureJobInterests === null ||
-          options.hasFutureJobInterests === undefined ||
-          options.hasFutureJobInterests === true
-            ? [
-                {
-                  workInterest: 'CONSTRUCTION',
-                  role: 'General labourer',
-                },
-                {
-                  workInterest: 'OTHER',
-                  role: 'Being a stunt double for Tom Cruise, even though he does all his own stunts',
-                },
-              ]
-            : [],
+        workInterests: ['RETAIL', 'CONSTRUCTION', 'OTHER'],
+        particularJobInterests: [
+          {
+            workInterest: 'CONSTRUCTION',
+            role: 'General labourer',
+          },
+          {
+            workInterest: 'OTHER',
+            role: 'Being a stunt double for Tom Cruise, even though he does all his own stunts',
+          },
+        ],
       },
     },
     skillsAndInterests: {

@@ -26,13 +26,12 @@ describe('workAndInterestMapper', () => {
   })
 
   describe('Long question set CIAG Induction', () => {
-    it('should map to Work And Interests given CIAG Induction has worked before, and has skills, interests and future job interests', () => {
+    it('should map to Work And Interests given CIAG Induction has worked before, and has skills and interests', () => {
       // Given
       const ciagInduction = aLongQuestionSetCiagInduction({
         hasWorkedBefore: true,
         hasSkills: true,
         hasInterests: true,
-        hasFutureJobInterests: true,
       })
 
       const expected: WorkAndInterests = {
@@ -70,12 +69,21 @@ describe('workAndInterestMapper', () => {
             hopingToWorkOnRelease: 'YES',
             longQuestionSetAnswers: {
               constraintsOnAbilityToWork: undefined,
-              jobTypes: ['CONSTRUCTION', 'OTHER'],
-              otherConstraintOnAbilityToWork: undefined,
-              specificJobRoles: [
-                'General labourer',
-                'Being a stunt double for Tom Cruise, even though he does all his own stunts',
+              jobs: [
+                {
+                  jobType: 'RETAIL',
+                  specificJobRole: undefined,
+                },
+                {
+                  jobType: 'CONSTRUCTION',
+                  specificJobRole: 'General labourer',
+                },
+                {
+                  jobType: 'OTHER',
+                  specificJobRole: 'Being a stunt double for Tom Cruise, even though he does all his own stunts',
+                },
               ],
+              otherConstraintOnAbilityToWork: undefined,
             },
             shortQuestionSetAnswers: undefined,
             updatedAt: moment('2023-08-22T11:12:31.943Z').toDate(),
@@ -131,13 +139,12 @@ describe('workAndInterestMapper', () => {
       expect(actual.data.workInterests.updatedAt).toEqual(mostRecentModifiedTimestamp.toDate())
     })
 
-    it('should map to Work And Interests given CIAG Induction has not worked before, and has no skills, interests or future job interests', () => {
+    it('should map to Work And Interests given CIAG Induction has not worked before, and has no skills or interests', () => {
       // Given
       const ciagInduction = aLongQuestionSetCiagInduction({
         hasWorkedBefore: false,
         hasSkills: false,
         hasInterests: false,
-        hasFutureJobInterests: false,
       })
 
       const expected: WorkAndInterests = {
@@ -162,9 +169,21 @@ describe('workAndInterestMapper', () => {
             hopingToWorkOnRelease: 'YES',
             longQuestionSetAnswers: {
               constraintsOnAbilityToWork: undefined,
-              jobTypes: [],
+              jobs: [
+                {
+                  jobType: 'RETAIL',
+                  specificJobRole: undefined,
+                },
+                {
+                  jobType: 'CONSTRUCTION',
+                  specificJobRole: 'General labourer',
+                },
+                {
+                  jobType: 'OTHER',
+                  specificJobRole: 'Being a stunt double for Tom Cruise, even though he does all his own stunts',
+                },
+              ],
               otherConstraintOnAbilityToWork: undefined,
-              specificJobRoles: [],
             },
             shortQuestionSetAnswers: undefined,
             updatedAt: moment('2023-08-22T11:12:31.943Z').toDate(),

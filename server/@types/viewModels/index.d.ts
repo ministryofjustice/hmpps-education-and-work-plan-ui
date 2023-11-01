@@ -178,24 +178,25 @@ declare module 'viewModels' {
       'CARING_RESPONSIBILITIES' | 'LIMITED_BY_OFFENSE' | 'HEALTH_ISSUES' | 'NO_RIGHT_TO_WORK' | 'OTHER' | 'NONE'
     >
     otherConstraintOnAbilityToWork?: string
-    jobTypes: Array<
-      | 'OUTDOOR'
-      | 'CONSTRUCTION'
-      | 'DRIVING'
-      | 'BEAUTY'
-      | 'HOSPITALITY'
-      | 'TECHNICAL'
-      | 'MANUFACTURING'
-      | 'OFFICE'
-      | 'RETAIL'
-      | 'SPORTS'
-      | 'WAREHOUSING'
-      | 'WASTE_MANAGEMENT'
-      | 'EDUCATION_TRAINING'
-      | 'CLEANING_AND_MAINTENANCE'
-      | 'OTHER'
-    >
-    specificJobRoles: Array<string>
+    jobs: Array<{
+      jobType:
+        | 'OUTDOOR'
+        | 'CONSTRUCTION'
+        | 'DRIVING'
+        | 'BEAUTY'
+        | 'HOSPITALITY'
+        | 'TECHNICAL'
+        | 'MANUFACTURING'
+        | 'OFFICE'
+        | 'RETAIL'
+        | 'SPORTS'
+        | 'WAREHOUSING'
+        | 'WASTE_MANAGEMENT'
+        | 'EDUCATION_TRAINING'
+        | 'CLEANING_AND_MAINTENANCE'
+        | 'OTHER'
+      specificJobRole?: string
+    }>
   }
 
   export interface WorkInterestsShortQuestionSet {
