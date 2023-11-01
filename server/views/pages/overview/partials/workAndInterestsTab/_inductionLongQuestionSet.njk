@@ -149,7 +149,11 @@ questions are different.
           <dd class="govuk-summary-list__value">
             <ul class="govuk-list">
               {% for job in workAndInterests.data.workInterests.longQuestionSetAnswers.jobs %}
-                <li>{{ job.specificJobRole or 'None' }}</li>
+                {% if job.jobType === 'OTHER' %}
+                  <li>Other - {{ job.specificJobRole }}</li>
+                {% else %}
+                  <li>{{ job.specificJobRole or 'None' }}</li>
+                {% endif %}
               {% endfor %}
             </ul>
           </dd>
