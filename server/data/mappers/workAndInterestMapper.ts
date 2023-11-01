@@ -8,6 +8,7 @@ import type {
   WorkInterests,
 } from 'viewModels'
 import toInductionQuestionSet from './inductionQuestionSetMapper'
+import jobComparator from './jobComparator'
 
 const toWorkAndInterests = (ciagInduction: CiagInduction): WorkAndInterests => {
   const inductionQuestionSet = toInductionQuestionSet(ciagInduction)
@@ -51,14 +52,16 @@ const toWorkExperience = (ciagInduction: CiagInduction): WorkExperience => {
   const previousJobs: Array<CiagWorkExperience> = ciagInduction.workExperience.workExperience
   return {
     hasWorkedPreviously: ciagInduction.workExperience.hasWorkedBefore,
-    jobs: previousJobs?.map(job => {
-      return {
-        type: job.typeOfWorkExperience,
-        other: job.otherWork,
-        role: job.role,
-        responsibilities: job.details,
-      }
-    }),
+    jobs: previousJobs
+      ?.map(job => {
+        return {
+          type: job.typeOfWorkExperience,
+          other: job.otherWork,
+          role: job.role,
+          responsibilities: job.details,
+        }
+      })
+      .sort(jobComparator),
     updatedBy: ciagInduction.workExperience.modifiedBy,
     updatedAt: moment(ciagInduction.workExperience.modifiedDateTime).toDate(),
   }
