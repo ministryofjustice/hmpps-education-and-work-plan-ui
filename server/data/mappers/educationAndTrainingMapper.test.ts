@@ -90,7 +90,7 @@ describe('educationAndTrainingMapper', () => {
             inPrisonInterestsEducation: {
               inPrisonInterestsEducation: ['FORKLIFT_DRIVING', 'CATERING', 'OTHER'],
               inPrisonInterestsEducationOther: 'Advanced origami',
-              updatedAt: moment('2023-08-22T13:02:31.943Z').toDate(),
+              updatedAt: moment('2023-08-22T11:12:31.943Z').toDate(),
               updatedBy: 'ANOTHER_DPS_USER_GEN',
             },
           },

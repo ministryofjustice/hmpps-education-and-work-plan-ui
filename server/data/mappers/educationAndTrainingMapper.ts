@@ -61,8 +61,8 @@ const toShortQuestionSet = (ciagInduction: CiagInduction): EducationAndTrainingS
     inPrisonInterestsEducation: {
       inPrisonInterestsEducation: ciagInduction.inPrisonInterests.inPrisonEducation,
       inPrisonInterestsEducationOther: ciagInduction.inPrisonInterests.inPrisonEducationOther,
-      updatedBy: ciagInduction.qualificationsAndTraining.modifiedBy,
-      updatedAt: moment(ciagInduction.qualificationsAndTraining.modifiedDateTime).toDate(),
+      updatedBy: ciagInduction.inPrisonInterests.modifiedBy,
+      updatedAt: moment(ciagInduction.inPrisonInterests.modifiedDateTime).toDate(),
     },
   }
 }
