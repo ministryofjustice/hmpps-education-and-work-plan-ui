@@ -65,7 +65,7 @@ const toShortQuestionSet = (ciagInduction: CiagInduction): EducationAndTrainingS
       })
       .sort(educationalQualificationComparator),
     inPrisonInterestsEducation: {
-      inPrisonInterestsEducation: ciagInduction.inPrisonInterests.inPrisonEducation,
+      inPrisonInterestsEducation: ciagInduction.inPrisonInterests.inPrisonEducation.sort(enumComparator),
       inPrisonInterestsEducationOther: ciagInduction.inPrisonInterests.inPrisonEducationOther,
       updatedBy: ciagInduction.inPrisonInterests.modifiedBy,
       updatedAt: moment(ciagInduction.inPrisonInterests.modifiedDateTime).toDate(),

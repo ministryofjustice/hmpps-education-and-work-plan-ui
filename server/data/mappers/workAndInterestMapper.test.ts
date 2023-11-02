@@ -68,7 +68,7 @@ describe('workAndInterestMapper', () => {
           workInterests: {
             hopingToWorkOnRelease: 'YES',
             longQuestionSetAnswers: {
-              constraintsOnAbilityToWork: undefined,
+              constraintsOnAbilityToWork: ['NONE'],
               jobs: [
                 {
                   jobType: 'CONSTRUCTION',
@@ -171,7 +171,7 @@ describe('workAndInterestMapper', () => {
           workInterests: {
             hopingToWorkOnRelease: 'YES',
             longQuestionSetAnswers: {
-              constraintsOnAbilityToWork: undefined,
+              constraintsOnAbilityToWork: ['NONE'],
               jobs: [
                 {
                   jobType: 'CONSTRUCTION',

@@ -88,7 +88,7 @@ describe('educationAndTrainingMapper', () => {
               },
             ],
             inPrisonInterestsEducation: {
-              inPrisonInterestsEducation: ['FORKLIFT_DRIVING', 'CATERING', 'OTHER'],
+              inPrisonInterestsEducation: ['CATERING', 'FORKLIFT_DRIVING', 'OTHER'],
               inPrisonInterestsEducationOther: 'Advanced origami',
               updatedAt: moment('2023-08-22T11:12:31.943Z').toDate(),
               updatedBy: 'ANOTHER_DPS_USER_GEN',
