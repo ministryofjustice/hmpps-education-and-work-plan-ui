@@ -308,7 +308,7 @@ declare module 'viewModels' {
       | 'NONE'
     )[]
     otherAdditionalTraining?: string
-    educationalQualifications: EducationalQualifications[]
+    educationalQualifications: EducationalQualification[]
     updatedAt: Date
     updatedBy: string
   }
@@ -328,7 +328,7 @@ declare module 'viewModels' {
       | 'NONE'
     )[]
     otherAdditionalTraining?: string
-    educationalQualifications: EducationalQualifications[]
+    educationalQualifications: EducationalQualification[]
     inPrisonInterestsEducation: InPrisonInterestsEducation
     updatedAt: Date
     updatedBy: string
@@ -355,7 +355,7 @@ declare module 'viewModels' {
     updatedBy: string
   }
 
-  export interface EducationalQualifications {
+  export interface EducationalQualification {
     subject: string
     grade: string
     level: 'ENTRY_LEVEL' | 'LEVEL_1' | 'LEVEL_2' | 'LEVEL_3' | 'LEVEL_4' | 'LEVEL_5' | 'LEVEL_6' | 'LEVEL_7' | 'LEVEL_8'

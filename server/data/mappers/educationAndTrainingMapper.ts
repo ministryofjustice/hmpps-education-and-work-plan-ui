@@ -7,6 +7,7 @@ import type {
   EducationAndTrainingShortQuestionSet,
 } from 'viewModels'
 import toInductionQuestionSet from './inductionQuestionSetMapper'
+import educationalQualificationComparator from './educationalQualificationComparator'
 
 const toEducationAndTraining = (ciagInduction: CiagInduction): EducationAndTraining => {
   const inductionQuestionSet = toInductionQuestionSet(ciagInduction)
@@ -40,9 +41,11 @@ const toLongQuestionSet = (ciagInduction: CiagInduction): EducationAndTrainingLo
     updatedAt: moment(ciagInduction.qualificationsAndTraining.modifiedDateTime).toDate(),
     additionalTraining: ciagInduction.qualificationsAndTraining.additionalTraining,
     otherAdditionalTraining: ciagInduction.qualificationsAndTraining.additionalTrainingOther,
-    educationalQualifications: educationalQualifications.map(qualification => {
-      return { ...qualification }
-    }),
+    educationalQualifications: educationalQualifications
+      .map(qualification => {
+        return { ...qualification }
+      })
+      .sort(educationalQualificationComparator),
     highestEducationLevel: ciagInduction.qualificationsAndTraining.educationLevel,
   }
 }
@@ -55,9 +58,11 @@ const toShortQuestionSet = (ciagInduction: CiagInduction): EducationAndTrainingS
     updatedAt: moment(ciagInduction.qualificationsAndTraining.modifiedDateTime).toDate(),
     additionalTraining: ciagInduction.qualificationsAndTraining.additionalTraining,
     otherAdditionalTraining: ciagInduction.qualificationsAndTraining.additionalTrainingOther,
-    educationalQualifications: educationalQualifications.map(qualification => {
-      return { ...qualification }
-    }),
+    educationalQualifications: educationalQualifications
+      .map(qualification => {
+        return { ...qualification }
+      })
+      .sort(educationalQualificationComparator),
     inPrisonInterestsEducation: {
       inPrisonInterestsEducation: ciagInduction.inPrisonInterests.inPrisonEducation,
       inPrisonInterestsEducationOther: ciagInduction.inPrisonInterests.inPrisonEducationOther,
