@@ -32,13 +32,15 @@
                 Add a note to this goal (optional)
               </label>
             </h1>
-            {{ govukWarningText({
-              text: "This note will be seen by the prisoner and other prison staff.",
-              iconFallbackText: "Warning",
-              classes: "govuk-!-margin-top-4"
-            }) }}
+            <div class="govuk-warning-text govuk-!-margin-top-4" id="warning-text">
+              <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+              <strong class="govuk-warning-text__text">
+                <span class="govuk-warning-text__assistive">Warning</span>
+                This note will be seen by the prisoner and other prison staff.
+              </strong>
+            </div>
             {{ errors | findError('note') }}
-            <textarea class="govuk-textarea" id="note" name="note" rows="5">{{ form.note }}</textarea>
+            <textarea class="govuk-textarea" id="note" name="note" rows="5" aria-describedby="warning-text">{{ form.note }}</textarea>
           </div>
         </div>
 
