@@ -190,6 +190,7 @@ declare module 'viewModels' {
       | 'EDUCATION_TRAINING'
       | 'CLEANING_AND_MAINTENANCE'
       | 'OTHER'
+    otherJobType?: string
     specificJobRole?: string
   }
 

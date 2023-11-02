@@ -72,14 +72,17 @@ describe('workAndInterestMapper', () => {
               jobs: [
                 {
                   jobType: 'CONSTRUCTION',
+                  otherJobType: undefined,
                   specificJobRole: 'General labourer',
                 },
                 {
                   jobType: 'RETAIL',
+                  otherJobType: undefined,
                   specificJobRole: undefined,
                 },
                 {
                   jobType: 'OTHER',
+                  otherJobType: 'Film, TV and media',
                   specificJobRole: 'Being a stunt double for Tom Cruise, even though he does all his own stunts',
                 },
               ],
@@ -172,14 +175,17 @@ describe('workAndInterestMapper', () => {
               jobs: [
                 {
                   jobType: 'CONSTRUCTION',
+                  otherJobType: undefined,
                   specificJobRole: 'General labourer',
                 },
                 {
                   jobType: 'RETAIL',
+                  otherJobType: undefined,
                   specificJobRole: undefined,
                 },
                 {
                   jobType: 'OTHER',
+                  otherJobType: 'Film, TV and media',
                   specificJobRole: 'Being a stunt double for Tom Cruise, even though he does all his own stunts',
                 },
               ],
