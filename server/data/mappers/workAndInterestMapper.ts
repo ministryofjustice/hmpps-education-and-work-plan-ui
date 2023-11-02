@@ -8,7 +8,7 @@ import type {
   WorkInterests,
 } from 'viewModels'
 import toInductionQuestionSet from './inductionQuestionSetMapper'
-import jobComparator from './jobComparator'
+import { jobComparator, workInterestJobComparator } from './jobComparator'
 
 const toWorkAndInterests = (ciagInduction: CiagInduction): WorkAndInterests => {
   const inductionQuestionSet = toInductionQuestionSet(ciagInduction)
@@ -78,7 +78,7 @@ const toLongQuestionSetWorkInterests = (ciagInduction: CiagInduction): WorkInter
     longQuestionSetAnswers: {
       constraintsOnAbilityToWork: ciagInduction.abilityToWork,
       otherConstraintOnAbilityToWork: ciagInduction.abilityToWorkOther,
-      jobs: getJobInterestsWithSpecificJobRoles(ciagInduction),
+      jobs: getJobInterestsWithSpecificJobRoles(ciagInduction).sort(workInterestJobComparator),
     },
     shortQuestionSetAnswers: undefined,
     updatedBy:
@@ -151,14 +151,9 @@ const getJobInterestsWithSpecificJobRoles = (ciagInduction: CiagInduction) => {
       | 'OTHER'
     >
   ).map(jobType => {
-    if (jobType === 'OTHER') {
-      return {
-        jobType,
-        specificJobRole: ciagInduction.workExperience.workInterests.workInterestsOther,
-      }
-    }
     return {
       jobType,
+      otherJobType: jobType === 'OTHER' ? ciagInduction.workExperience.workInterests.workInterestsOther : undefined,
       specificJobRole: (
         ciagInduction.workExperience.workInterests.particularJobInterests as Array<CiagWorkInterestDetail>
       ).find(jobInterest => jobInterest.workInterest === jobType)?.role,

@@ -20,6 +20,7 @@ export default function aValidLongQuestionSetWorkAndInterests(): WorkAndInterest
           jobs: [
             {
               jobType: 'OUTDOOR',
+              otherJobType: undefined,
               specificJobRole: 'Gardener',
             },
           ],
