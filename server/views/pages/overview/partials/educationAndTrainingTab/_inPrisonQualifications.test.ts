@@ -149,7 +149,7 @@ describe('Education and Training tab view - In Prison Qualifications', () => {
     expect($('#completed-in-prison-qualifications-table tbody tr').length).toBe(1)
     expect($('#completed-in-prison-qualifications-table tbody tr td').length).toBe(1)
     expect($('#completed-in-prison-qualifications-table tbody tr td').text()).toContain(
-      'Jimmy Lightfingers has no recorded in-prison qualifications and achievements.',
+      'No qualifications or achievements recorded in Curious.',
     )
   })
 })
