@@ -17,6 +17,7 @@ const aLongQuestionSetCiagInduction = (options?: {
       modifiedDateTime: options?.modifiedByDateTime,
     }),
     hopingToGetWork: 'YES',
+    abilityToWork: ['NONE'],
     workExperience: {
       modifiedBy: 'ANOTHER_DPS_USER_GEN',
       modifiedDateTime: '2023-08-22T11:12:31.943Z',

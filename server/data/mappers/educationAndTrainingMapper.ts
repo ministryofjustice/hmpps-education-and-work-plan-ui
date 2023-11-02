@@ -8,6 +8,7 @@ import type {
 } from 'viewModels'
 import toInductionQuestionSet from './inductionQuestionSetMapper'
 import educationalQualificationComparator from './educationalQualificationComparator'
+import enumComparator from './enumComparator'
 
 const toEducationAndTraining = (ciagInduction: CiagInduction): EducationAndTraining => {
   const inductionQuestionSet = toInductionQuestionSet(ciagInduction)
@@ -39,7 +40,7 @@ const toLongQuestionSet = (ciagInduction: CiagInduction): EducationAndTrainingLo
   return {
     updatedBy: ciagInduction.qualificationsAndTraining.modifiedBy,
     updatedAt: moment(ciagInduction.qualificationsAndTraining.modifiedDateTime).toDate(),
-    additionalTraining: ciagInduction.qualificationsAndTraining.additionalTraining,
+    additionalTraining: ciagInduction.qualificationsAndTraining.additionalTraining.sort(enumComparator),
     otherAdditionalTraining: ciagInduction.qualificationsAndTraining.additionalTrainingOther,
     educationalQualifications: educationalQualifications
       .map(qualification => {
@@ -56,7 +57,7 @@ const toShortQuestionSet = (ciagInduction: CiagInduction): EducationAndTrainingS
   return {
     updatedBy: ciagInduction.qualificationsAndTraining.modifiedBy,
     updatedAt: moment(ciagInduction.qualificationsAndTraining.modifiedDateTime).toDate(),
-    additionalTraining: ciagInduction.qualificationsAndTraining.additionalTraining,
+    additionalTraining: ciagInduction.qualificationsAndTraining.additionalTraining.sort(enumComparator),
     otherAdditionalTraining: ciagInduction.qualificationsAndTraining.additionalTrainingOther,
     educationalQualifications: educationalQualifications
       .map(qualification => {
@@ -64,7 +65,7 @@ const toShortQuestionSet = (ciagInduction: CiagInduction): EducationAndTrainingS
       })
       .sort(educationalQualificationComparator),
     inPrisonInterestsEducation: {
-      inPrisonInterestsEducation: ciagInduction.inPrisonInterests.inPrisonEducation,
+      inPrisonInterestsEducation: ciagInduction.inPrisonInterests.inPrisonEducation.sort(enumComparator),
       inPrisonInterestsEducationOther: ciagInduction.inPrisonInterests.inPrisonEducationOther,
       updatedBy: ciagInduction.inPrisonInterests.modifiedBy,
       updatedAt: moment(ciagInduction.inPrisonInterests.modifiedDateTime).toDate(),

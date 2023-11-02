@@ -9,6 +9,7 @@ import type {
 } from 'viewModels'
 import toInductionQuestionSet from './inductionQuestionSetMapper'
 import { jobComparator, workInterestJobComparator } from './jobComparator'
+import enumComparator from './enumComparator'
 
 const toWorkAndInterests = (ciagInduction: CiagInduction): WorkAndInterests => {
   const inductionQuestionSet = toInductionQuestionSet(ciagInduction)
@@ -39,9 +40,9 @@ const toWorkAndInterestsData = (
 
 const toSkillsAndInterests = (ciagInduction: CiagInduction): SkillsAndInterests => {
   return {
-    skills: ciagInduction.skillsAndInterests.skills || [],
+    skills: ciagInduction.skillsAndInterests.skills.sort(enumComparator) || [],
     otherSkill: ciagInduction.skillsAndInterests.skillsOther,
-    personalInterests: ciagInduction.skillsAndInterests.personalInterests || [],
+    personalInterests: ciagInduction.skillsAndInterests.personalInterests.sort(enumComparator) || [],
     otherPersonalInterest: ciagInduction.skillsAndInterests.personalInterestsOther,
     updatedBy: ciagInduction.skillsAndInterests.modifiedBy,
     updatedAt: moment(ciagInduction.skillsAndInterests.modifiedDateTime).toDate(),
@@ -76,7 +77,7 @@ const toLongQuestionSetWorkInterests = (ciagInduction: CiagInduction): WorkInter
   return {
     hopingToWorkOnRelease: ciagInduction.hopingToGetWork,
     longQuestionSetAnswers: {
-      constraintsOnAbilityToWork: ciagInduction.abilityToWork,
+      constraintsOnAbilityToWork: ciagInduction.abilityToWork.sort(enumComparator),
       otherConstraintOnAbilityToWork: ciagInduction.abilityToWorkOther,
       jobs: getJobInterestsWithSpecificJobRoles(ciagInduction).sort(workInterestJobComparator),
     },
@@ -102,9 +103,9 @@ const toShortQuestionSetWorkInterests = (ciagInduction: CiagInduction): WorkInte
     hopingToWorkOnRelease: ciagInduction.hopingToGetWork,
     longQuestionSetAnswers: undefined,
     shortQuestionSetAnswers: {
-      inPrisonWorkInterests: ciagInduction.inPrisonInterests.inPrisonWork,
+      inPrisonWorkInterests: ciagInduction.inPrisonInterests.inPrisonWork.sort(enumComparator),
       otherInPrisonerWorkInterest: ciagInduction.inPrisonInterests.inPrisonWorkOther,
-      reasonsForNotWantingToWork: ciagInduction.reasonToNotGetWork,
+      reasonsForNotWantingToWork: ciagInduction.reasonToNotGetWork.sort(enumComparator),
       otherReasonForNotWantingToWork: ciagInduction.reasonToNotGetWorkOther,
     },
     updatedBy:
