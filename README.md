@@ -168,6 +168,24 @@ A changelog for the service is available [here](./CHANGELOG.md)
 The template project has implemented some scheduled checks to ensure that key dependencies are kept up to date.
 If these are not desired in the cloned project, remove references to `check_outdated` job from `.circleci/config.yml`
 
+## OAuth Clients
+This UI uses the standard HMPPS Digital configuration which makes use of two oauth clients. The oauth clients are setup
+and managed by the HAAR team (slack channel #hmpps-auth-audit-registers).
+
+* `API_CLIENT_ID` - auth flow client used as part of the hmpps-auth authentication process.
+* `SYSTEM_CLIENT_ID` - system client containing the roles `ROLE_PRISONER_SEARCH` and `ROLE_CURIOUS_API`. This is the client that is used in API requests that use the 'system token'.
+
+## API external dependencies
+This UI consumes, and is therefore dependent on, data from the following APIs:
+
+* `hmpps-auth` - Standard HMPPS Digital configuration; used for authentication and retrieved the user profile. Uses the user token.
+* `application-insights` - Standard HMPPS Digital configuration; used for telemetry and event tracing.
+* `frontend-componenents` - Standard HMPPS Digital configuration; used to retrieve the html and css for the DPS header and footer. Uses the system token.
+* `prisoner-search` - Used to return the list of prisoners in the user's active prison (active caseload ID) and to return individual prisoner records. Uses the system token.
+* `curious-api` - Used to retrieve the prisoner's initial functional skill assessments, neurodiversity support needs, and in-prison qualifications and achievements. Uses the system token.
+* `education-and-work-plan-api` - Used to record and retrieve prisoner action plan and goals, and retrieve timeline events. Uses the user token.
+* `ciag-inducation-api` - Used to return the prisoner's CIAG Induction record. Uses the user token.
+
 ## Feature Toggles
 Features can be toggled by setting the relevant environment variable.
 
