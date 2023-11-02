@@ -85,7 +85,7 @@ describe('enumComparator', () => {
     expect(actual).toEqual(-1)
   })
 
-  it('should sort an array of Jobs alphabetically on type, but with OTHER at the end', () => {
+  it('should sort an array ENUM strings alphabetically, but with OTHER at the end', () => {
     // Given
     const enumString1 = 'WELDING_AND_METALWORK'
     const enumString2 = 'OTHER'
@@ -94,7 +94,7 @@ describe('enumComparator', () => {
 
     const enums = [enumString1, enumString2, enumString3, enumString4]
 
-    const expected = [enumString3, enumString4, enumString1, enumString2] // alphabetically on type, with OTHER at the end
+    const expected = [enumString3, enumString4, enumString1, enumString2] // alphabetically on ENUM string, with OTHER at the end
 
     // When
     enums.sort(enumComparator)
