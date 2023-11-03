@@ -122,7 +122,7 @@ describe('Functional skills sidebar view', () => {
       expect($('#functional-skills-sidebar-table tbody tr').length).toBe(1)
       expect($('#functional-skills-sidebar-table tbody tr th').text().trim()).toEqual('English skills')
       expect($('#functional-skills-sidebar-table tbody tr td').text().trim()).toEqual(
-        'No functional skills recorded in Curious',
+        'No functional skill assessment scores recorded in Curious',
       )
     })
   })
