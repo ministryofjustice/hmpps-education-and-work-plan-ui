@@ -1,44 +1,51 @@
 {# TODO: Logic for the problemRetrievingData #}
 {% if not ciagPrisonerList.problemRetrievingData %}
-  <table class="govuk-table" data-module="moj-sortable-table">
 
-    <thead class="govuk-table__head">
-      <tr class="govuk-table__row">
-        <th scope="col" class="govuk-table__header" aria-sort="ascending">Prisoner</th>
-        <th scope="col" class="govuk-table__header" aria-sort="none">Location</th>
-        <th scope="col" class="govuk-table__header" aria-sort="none">Release date</th>
-        <th scope="col" class="govuk-table__header" aria-sort="none">Entered prison on</th>
-        <th scope="col" class="govuk-table__header" aria-sort="none">Status</th>
-      </tr>
-    </thead>
+  {% if currentPageOfRecords | length %}
+    <table class="govuk-table" data-module="moj-sortable-table" data-qa="prisoner-list-results-table">
 
-    <tbody class="govuk-table__body">
-      {% for prisoner in currentPageOfRecords %}
+      <thead class="govuk-table__head">
         <tr class="govuk-table__row">
-          <td class="govuk-table__cell">
-            <a href="/plan/{{ prisoner.prisonNumber }}/view/overview" rel="noopener noreferrer" class="govuk-link govuk-link--no-visited-state">
-              {{ prisoner.lastName }}, {{ prisoner.firstName }}
-            </a>
-            <br>
-            <span class='govuk-hint govuk-!-margin-bottom-0'>{{ prisoner.prisonNumber }}</span>
-          </td>
-          <td class="govuk-table__cell">{{ prisoner.location }}</td>
-          <td class="govuk-table__cell">{{ prisoner.releaseDate | formatDate('D MMMM YYYY') or 'N/A' }}</td>
-          <td class="govuk-table__cell">{{ prisoner.receptionDate | formatDate('D MMMM YYYY') or 'N/A' }}</td>
-          <td class="govuk-table__cell">
-            {% if prisoner.hasActionPlan !== true %}
-              <strong class="govuk-tag govuk-tag--red">Needs plan</strong>            
-            {% endif %}
-          </td>
+          <th scope="col" class="govuk-table__header" aria-sort="ascending">Prisoner</th>
+          <th scope="col" class="govuk-table__header" aria-sort="none">Location</th>
+          <th scope="col" class="govuk-table__header" aria-sort="none">Release date</th>
+          <th scope="col" class="govuk-table__header" aria-sort="none">Entered prison on</th>
+          <th scope="col" class="govuk-table__header" aria-sort="none">Status</th>
         </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+      </thead>
 
-  {# TODO: Handle pagination #}
-  {{ mojPagination({}) }}
+      <tbody class="govuk-table__body">
+        {% for prisoner in currentPageOfRecords %}
+          <tr class="govuk-table__row">
+            <td class="govuk-table__cell">
+              <a href="/plan/{{ prisoner.prisonNumber }}/view/overview" rel="noopener noreferrer" class="govuk-link govuk-link--no-visited-state">
+                {{ prisoner.lastName }}, {{ prisoner.firstName }}
+              </a>
+              <br>
+              <span class='govuk-hint govuk-!-margin-bottom-0'>{{ prisoner.prisonNumber }}</span>
+            </td>
+            <td class="govuk-table__cell">{{ prisoner.location }}</td>
+            <td class="govuk-table__cell">{{ prisoner.releaseDate | formatDate('D MMMM YYYY') or 'N/A' }}</td>
+            <td class="govuk-table__cell">{{ prisoner.receptionDate | formatDate('D MMMM YYYY') or 'N/A' }}</td>
+            <td class="govuk-table__cell">
+              {% if prisoner.hasActionPlan !== true %}
+                <strong class="govuk-tag govuk-tag--red">Needs plan</strong>
+              {% endif %}
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    {# TODO: Handle pagination #}
+    {{ mojPagination({}) }}
+
+  {% else %}
+    <h2 class="govuk-heading-m" data-qa="zero-results-message">0 results for "{{ searchTerm }}"</h2>
+    <p class="govuk-body govuk-!-font-size-19">Check your spelling and search again, or clear the search and browse for the prisoner.</p>
+  {% endif %}
 
 {% else %}
-  <h2 class="govuk-heading-m" data-qa="ciag-unavailable-message">We cannot show these details right now</h3>
+  <h2 class="govuk-heading-m" data-qa="ciag-unavailable-message">We cannot show these details right now</h2>
   <p class="govuk-body">Reload the page or try again later. Other parts of this service may still be available.</p>
 {% endif %}
