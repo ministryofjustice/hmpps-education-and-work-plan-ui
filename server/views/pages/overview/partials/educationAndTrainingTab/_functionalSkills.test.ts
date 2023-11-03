@@ -117,7 +117,7 @@ describe('Education and Training tab view - Functional Skills', () => {
     expect($('#latest-functional-skills-table tbody tr td').length).toBe(2)
     expect($('#latest-functional-skills-table tbody tr td:nth-child(1)').text()).toEqual('English skills')
     expect($('#latest-functional-skills-table tbody tr td:nth-child(2)').text()).toEqual(
-      'No functional skills recorded in Curious',
+      'No functional skill assessment scores recorded in Curious',
     )
   })
 })
