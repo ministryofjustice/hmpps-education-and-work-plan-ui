@@ -2,7 +2,7 @@ import { RequestHandler } from 'express'
 import { PrisonerListService } from '../../services'
 import PrisonerListView from './prisonerListView'
 import config from '../../config'
-import PagedPrisonerSearchSummary from './pagedPrisonerSearchSummary'
+import PagedPrisonerSearchSummary, { FilterBy } from './pagedPrisonerSearchSummary'
 
 export default class PrisonerListController {
   constructor(private readonly prisonerListService: PrisonerListService) {}
@@ -12,6 +12,9 @@ export default class PrisonerListController {
     const page = 0
     const pageSize = config.apis.prisonerSearch.defaultPageSize
 
+    const searchTerm = req.query.searchTerm as string
+    const statusFilter = req.query.statusFilter as string
+
     const prisonerList = await this.prisonerListService.getPrisonerSearchSummariesForPrisonId(
       prisonId,
       page,
@@ -20,9 +23,18 @@ export default class PrisonerListController {
       req.user.token,
     )
 
-    const view = new PrisonerListView(
-      new PagedPrisonerSearchSummary(prisonerList, config.prisonerListUiDefaultPaginationPageSize),
+    const pagedPrisonerSearchSummary = new PagedPrisonerSearchSummary(
+      prisonerList,
+      config.prisonerListUiDefaultPaginationPageSize,
     )
+    if (searchTerm) {
+      pagedPrisonerSearchSummary.filter(FilterBy.NAME, searchTerm)
+    }
+    if (statusFilter) {
+      pagedPrisonerSearchSummary.filter(FilterBy.STATUS, statusFilter)
+    }
+
+    const view = new PrisonerListView(pagedPrisonerSearchSummary, searchTerm, statusFilter)
 
     res.render('pages/prisonerList/index', { ...view.renderArgs })
   }

@@ -24,7 +24,7 @@ export default abstract class Page {
 
   checkCsfrTokenForFormBasedPages = (): void => {
     cy.get('body').then(body => {
-      body.find('form').each((idx, form) => {
+      body.find('form[method=post]').each((idx, form) => {
         cy.wrap(form).find('input[name=_csrf]').should('not.have.value', '')
       })
     })
