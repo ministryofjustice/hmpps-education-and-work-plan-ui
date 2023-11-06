@@ -211,8 +211,8 @@ export enum SortBy {
 }
 
 export enum SortOrder {
-  ASCENDING = 'asc',
-  DESCENDING = 'desc',
+  ASCENDING = 'ascending',
+  DESCENDING = 'descending',
 }
 
 export enum FilterBy {

@@ -4,6 +4,9 @@ import PrisonerListView from './prisonerListView'
 import config from '../../config'
 import PagedPrisonerSearchSummary, { FilterBy, SortBy, SortOrder } from './pagedPrisonerSearchSummary'
 
+const DEFAULT_SORT_FIELD = 'name'
+const DEFAULT_SORT_DIRECTION = 'ascending'
+
 export default class PrisonerListController {
   constructor(private readonly prisonerListService: PrisonerListService) {}
 
@@ -23,7 +26,7 @@ export default class PrisonerListController {
     }
 
     // Apply sorting
-    const sortQueryStringValue = (req.query.sort as string) || 'name,asc'
+    const sortQueryStringValue = (req.query.sort as string) || `${DEFAULT_SORT_FIELD},${DEFAULT_SORT_DIRECTION}`
     const sortOptions = toSortOptions(sortQueryStringValue)
     if (sortOptions) {
       pagedPrisonerSearchSummary.sort(sortOptions.sortBy, sortOptions.sortOrder)
@@ -33,8 +36,8 @@ export default class PrisonerListController {
       pagedPrisonerSearchSummary,
       searchTerm || '',
       statusFilter || '',
-      sortOptions.sortBy.toString(),
-      sortOptions.sortOrder.toString(),
+      sortOptions?.sortBy.toString() || DEFAULT_SORT_FIELD,
+      sortOptions?.sortOrder.toString() || DEFAULT_SORT_DIRECTION,
     )
 
     res.render('pages/prisonerList/index', { ...view.renderArgs })

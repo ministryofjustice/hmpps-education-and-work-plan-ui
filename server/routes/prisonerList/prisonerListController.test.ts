@@ -65,7 +65,7 @@ describe('prisonerListController', () => {
         searchTerm: '',
         statusFilter: '',
         sortBy: 'name',
-        sortOrder: 'asc',
+        sortOrder: 'ascending',
         items: [
           {
             href: '?page=1',
@@ -119,7 +119,7 @@ describe('prisonerListController', () => {
         searchTerm: 'Jimmy',
         statusFilter: '',
         sortBy: 'name',
-        sortOrder: 'asc',
+        sortOrder: 'ascending',
         items: [
           {
             href: '?page=1',
@@ -173,7 +173,7 @@ describe('prisonerListController', () => {
         searchTerm: '',
         statusFilter: 'NEEDS_PLAN',
         sortBy: 'name',
-        sortOrder: 'asc',
+        sortOrder: 'ascending',
         items: [
           {
             href: '?page=1',
@@ -228,7 +228,7 @@ describe('prisonerListController', () => {
         searchTerm: 'Jimmy',
         statusFilter: 'NEEDS_PLAN',
         sortBy: 'name',
-        sortOrder: 'asc',
+        sortOrder: 'ascending',
         items: [
           {
             href: '?page=1',
