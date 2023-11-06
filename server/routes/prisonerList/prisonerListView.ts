@@ -4,14 +4,18 @@ import PagedPrisonerSearchSummary from './pagedPrisonerSearchSummary'
 export default class PrisonerListView {
   constructor(
     private readonly pagedPrisonerSearchSummary: PagedPrisonerSearchSummary,
-    private readonly searchTerm?: string,
-    private readonly statusFilter?: string,
+    private readonly searchTerm: string,
+    private readonly statusFilter: string,
+    private readonly sortBy: string,
+    private readonly sortOrder: string,
   ) {}
 
   get renderArgs(): {
     currentPageOfRecords: PrisonerSearchSummary[]
-    searchTerm?: string
-    statusFilter?: string
+    searchTerm: string
+    statusFilter: string
+    sortBy: string
+    sortOrder: string
     renderPaginationControls: boolean
     items: Item[]
     results: Results
@@ -22,6 +26,8 @@ export default class PrisonerListView {
       currentPageOfRecords: this.pagedPrisonerSearchSummary.getCurrentPage(),
       searchTerm: this.searchTerm,
       statusFilter: this.statusFilter,
+      sortBy: this.sortBy,
+      sortOrder: this.sortOrder,
       renderPaginationControls: this.pagedPrisonerSearchSummary.totalPages > 1,
       items: buildItemsArray(this.pagedPrisonerSearchSummary),
       results: buildResults(this.pagedPrisonerSearchSummary),

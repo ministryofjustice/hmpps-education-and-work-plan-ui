@@ -19,9 +19,10 @@
     <div class="govuk-grid-column-full">
       <h1 class="govuk-heading-l">Manage learning and work progress</h1>
 
-      {% include './partials/searchBox.njk' %}
-      {% include './partials/searchTable.njk' %}
-
+      <form class="form" method="get" novalidate="">
+        {% include './partials/searchBox.njk' %}
+        {% include './partials/searchTable.njk' %}
+      </form>
     </div>
   </div>
 
