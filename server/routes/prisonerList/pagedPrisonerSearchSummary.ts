@@ -34,7 +34,7 @@ export default class PagedPrisonerSearchSummary {
   constructor(prisonerSearchSummaries: PrisonerSearchSummary[], pageSize: number) {
     this.prisonerSearchSummaries = prisonerSearchSummaries
     this.pageSize = pageSize
-    this.totalPages = Math.ceil(prisonerSearchSummaries.length / pageSize)
+    this.totalPages = Math.max(Math.ceil(prisonerSearchSummaries.length / pageSize))
     this.setCurrentPageNumber(1)
   }
 
@@ -48,7 +48,7 @@ export default class PagedPrisonerSearchSummary {
    * content such as "Showing records x thru y"
    */
   setCurrentPageNumber = (pageNumber: number): PagedPrisonerSearchSummary => {
-    this.currentPageNumber = Math.min(this.totalPages, Math.max(1, pageNumber))
+    this.currentPageNumber = Math.min(Math.max(1, this.totalPages), Math.max(1, pageNumber))
     this.totalResults = this.prisonerSearchSummaries.length
     this.resultIndexFrom = Math.min(1 + (this.currentPageNumber - 1) * this.pageSize, this.totalResults)
     this.resultIndexTo = Math.min(this.resultIndexFrom + this.pageSize - 1, this.totalResults)
@@ -81,6 +81,8 @@ export default class PagedPrisonerSearchSummary {
       this.prisonerSearchSummaries = this.prisonerSearchSummaries.filter(
         this.prisonerSearchSummaryFilter(filterBy, value),
       )
+      this.totalPages = Math.max(1, Math.ceil(this.prisonerSearchSummaries.length / this.pageSize))
+      this.totalResults = this.prisonerSearchSummaries.length
       this.setCurrentPageNumber(1)
     }
 
