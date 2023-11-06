@@ -60,19 +60,12 @@ describe('prisonerListController', () => {
       // Given
       req.query = {}
 
-      const expectedView: {
-        currentPageOfRecords: PrisonerSearchSummary[]
-        renderPaginationControls: boolean
-        items: Array<{ href: string; selected: boolean; text: string; type: undefined }>
-        results: { count: number; from: number; to: number }
-        previousPage: { href: string; text: string }
-        nextPage: { href: string; text: string }
-        searchTerm?: string
-        statusFilter?: string
-      } = {
-        currentPageOfRecords: [jimmyLightFingers, jimmyMcShifty, donVitoCorleone],
-        searchTerm: undefined,
-        statusFilter: undefined,
+      const expectedView: RenderedPrisonerListView = {
+        currentPageOfRecords: [donVitoCorleone, jimmyLightFingers, jimmyMcShifty], // default sort order (name ascending) applied
+        searchTerm: '',
+        statusFilter: '',
+        sortBy: 'name',
+        sortOrder: 'asc',
         items: [
           {
             href: '?page=1',
@@ -121,19 +114,12 @@ describe('prisonerListController', () => {
         searchTerm: 'Jimmy',
       }
 
-      const expectedView: {
-        currentPageOfRecords: PrisonerSearchSummary[]
-        renderPaginationControls: boolean
-        items: Array<{ href: string; selected: boolean; text: string; type: undefined }>
-        results: { count: number; from: number; to: number }
-        previousPage: { href: string; text: string }
-        nextPage: { href: string; text: string }
-        searchTerm?: string
-        statusFilter?: string
-      } = {
+      const expectedView: RenderedPrisonerListView = {
         currentPageOfRecords: [jimmyLightFingers, jimmyMcShifty],
         searchTerm: 'Jimmy',
-        statusFilter: undefined,
+        statusFilter: '',
+        sortBy: 'name',
+        sortOrder: 'asc',
         items: [
           {
             href: '?page=1',
@@ -182,19 +168,12 @@ describe('prisonerListController', () => {
         statusFilter: 'NEEDS_PLAN',
       }
 
-      const expectedView: {
-        currentPageOfRecords: PrisonerSearchSummary[]
-        renderPaginationControls: boolean
-        items: Array<{ href: string; selected: boolean; text: string; type: undefined }>
-        results: { count: number; from: number; to: number }
-        previousPage: { href: string; text: string }
-        nextPage: { href: string; text: string }
-        searchTerm?: string
-        statusFilter?: string
-      } = {
-        currentPageOfRecords: [jimmyMcShifty, donVitoCorleone],
-        searchTerm: undefined,
+      const expectedView: RenderedPrisonerListView = {
+        currentPageOfRecords: [donVitoCorleone, jimmyMcShifty], // default sort order (name ascending) applied
+        searchTerm: '',
         statusFilter: 'NEEDS_PLAN',
+        sortBy: 'name',
+        sortOrder: 'asc',
         items: [
           {
             href: '?page=1',
@@ -244,19 +223,12 @@ describe('prisonerListController', () => {
         statusFilter: 'NEEDS_PLAN',
       }
 
-      const expectedView: {
-        currentPageOfRecords: PrisonerSearchSummary[]
-        renderPaginationControls: boolean
-        items: Array<{ href: string; selected: boolean; text: string; type: undefined }>
-        results: { count: number; from: number; to: number }
-        previousPage: { href: string; text: string }
-        nextPage: { href: string; text: string }
-        searchTerm?: string
-        statusFilter?: string
-      } = {
+      const expectedView: RenderedPrisonerListView = {
         currentPageOfRecords: [jimmyMcShifty],
         searchTerm: 'Jimmy',
         statusFilter: 'NEEDS_PLAN',
+        sortBy: 'name',
+        sortOrder: 'asc',
         items: [
           {
             href: '?page=1',
@@ -300,3 +272,16 @@ describe('prisonerListController', () => {
     })
   })
 })
+
+interface RenderedPrisonerListView {
+  currentPageOfRecords: PrisonerSearchSummary[]
+  renderPaginationControls: boolean
+  searchTerm: string
+  statusFilter: string
+  sortBy: string
+  sortOrder: string
+  items: Array<{ href: string; selected: boolean; text: string; type: undefined }>
+  results: { count: number; from: number; to: number }
+  previousPage: { href: string; text: string }
+  nextPage: { href: string; text: string }
+}

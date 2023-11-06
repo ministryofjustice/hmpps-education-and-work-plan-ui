@@ -203,16 +203,16 @@ const sortableFilterableStatus = (prisonerSearchSummary: PrisonerSearchSummary):
   prisonerSearchSummary.hasCiagInduction && prisonerSearchSummary.hasActionPlan ? '' : 'NEEDS_PLAN'
 
 export enum SortBy {
-  NAME,
-  RELEASE_DATE,
-  RECEPTION_DATE,
-  LOCATION,
-  STATUS,
+  NAME = 'name',
+  RELEASE_DATE = 'release-date',
+  RECEPTION_DATE = 'reception-date',
+  LOCATION = 'location',
+  STATUS = 'status',
 }
 
 export enum SortOrder {
-  ASCENDING,
-  DESCENDING,
+  ASCENDING = 'asc',
+  DESCENDING = 'desc',
 }
 
 export enum FilterBy {
