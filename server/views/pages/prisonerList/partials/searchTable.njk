@@ -37,8 +37,14 @@
       </tbody>
     </table>
 
-    {# TODO: Handle pagination #}
-    {{ mojPagination({}) }}
+    {% if renderPaginationControls %}
+      {{ mojPagination({
+        items: items,
+        results: results,
+        previous: previousPage if previousPage.href,
+        next: nextPage if nextPage.href
+      }) }}
+    {% endif %}
 
   {% else %}
     <h2 class="govuk-heading-m" data-qa="zero-results-message">0 results for "{{ searchTerm }}"</h2>

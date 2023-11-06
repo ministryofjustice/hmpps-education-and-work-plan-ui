@@ -62,12 +62,39 @@ describe('prisonerListController', () => {
 
       const expectedView: {
         currentPageOfRecords: PrisonerSearchSummary[]
+        renderPaginationControls: boolean
+        items: Array<{ href: string; selected: boolean; text: string; type: undefined }>
+        results: { count: number; from: number; to: number }
+        previousPage: { href: string; text: string }
+        nextPage: { href: string; text: string }
         searchTerm?: string
         statusFilter?: string
       } = {
         currentPageOfRecords: [jimmyLightFingers, jimmyMcShifty, donVitoCorleone],
         searchTerm: undefined,
         statusFilter: undefined,
+        items: [
+          {
+            href: '?page=1',
+            selected: true,
+            text: '1',
+            type: undefined,
+          },
+        ],
+        nextPage: {
+          href: '',
+          text: 'Next',
+        },
+        previousPage: {
+          href: '',
+          text: 'Previous',
+        },
+        renderPaginationControls: false,
+        results: {
+          count: 3,
+          from: 1,
+          to: 3,
+        },
       }
 
       // When
@@ -96,12 +123,39 @@ describe('prisonerListController', () => {
 
       const expectedView: {
         currentPageOfRecords: PrisonerSearchSummary[]
+        renderPaginationControls: boolean
+        items: Array<{ href: string; selected: boolean; text: string; type: undefined }>
+        results: { count: number; from: number; to: number }
+        previousPage: { href: string; text: string }
+        nextPage: { href: string; text: string }
         searchTerm?: string
         statusFilter?: string
       } = {
         currentPageOfRecords: [jimmyLightFingers, jimmyMcShifty],
         searchTerm: 'Jimmy',
         statusFilter: undefined,
+        items: [
+          {
+            href: '?page=1',
+            selected: true,
+            text: '1',
+            type: undefined,
+          },
+        ],
+        nextPage: {
+          href: '',
+          text: 'Next',
+        },
+        previousPage: {
+          href: '',
+          text: 'Previous',
+        },
+        renderPaginationControls: false,
+        results: {
+          count: 2,
+          from: 1,
+          to: 2,
+        },
       }
 
       // When
@@ -130,12 +184,39 @@ describe('prisonerListController', () => {
 
       const expectedView: {
         currentPageOfRecords: PrisonerSearchSummary[]
+        renderPaginationControls: boolean
+        items: Array<{ href: string; selected: boolean; text: string; type: undefined }>
+        results: { count: number; from: number; to: number }
+        previousPage: { href: string; text: string }
+        nextPage: { href: string; text: string }
         searchTerm?: string
         statusFilter?: string
       } = {
         currentPageOfRecords: [jimmyMcShifty, donVitoCorleone],
         searchTerm: undefined,
         statusFilter: 'NEEDS_PLAN',
+        items: [
+          {
+            href: '?page=1',
+            selected: true,
+            text: '1',
+            type: undefined,
+          },
+        ],
+        nextPage: {
+          href: '',
+          text: 'Next',
+        },
+        previousPage: {
+          href: '',
+          text: 'Previous',
+        },
+        renderPaginationControls: false,
+        results: {
+          count: 2,
+          from: 1,
+          to: 2,
+        },
       }
 
       // When
@@ -165,12 +246,39 @@ describe('prisonerListController', () => {
 
       const expectedView: {
         currentPageOfRecords: PrisonerSearchSummary[]
+        renderPaginationControls: boolean
+        items: Array<{ href: string; selected: boolean; text: string; type: undefined }>
+        results: { count: number; from: number; to: number }
+        previousPage: { href: string; text: string }
+        nextPage: { href: string; text: string }
         searchTerm?: string
         statusFilter?: string
       } = {
         currentPageOfRecords: [jimmyMcShifty],
         searchTerm: 'Jimmy',
         statusFilter: 'NEEDS_PLAN',
+        items: [
+          {
+            href: '?page=1',
+            selected: true,
+            text: '1',
+            type: undefined,
+          },
+        ],
+        nextPage: {
+          href: '',
+          text: 'Next',
+        },
+        previousPage: {
+          href: '',
+          text: 'Previous',
+        },
+        renderPaginationControls: false,
+        results: {
+          count: 1,
+          from: 1,
+          to: 1,
+        },
       }
 
       // When
