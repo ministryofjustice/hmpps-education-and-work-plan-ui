@@ -416,6 +416,7 @@ describe('pagedPrisonerSearchSummary', () => {
 
           // Then
           expect(pagedPrisonerSearchSummaries.currentPageNumber).toEqual(1)
+          expect(pagedPrisonerSearchSummaries.totalPages).toEqual(1)
           expect(pagedPrisonerSearchSummaries.resultIndexFrom).toEqual(1)
           expect(pagedPrisonerSearchSummaries.resultIndexTo).toEqual(5)
           expect(pagedPrisonerSearchSummaries.getCurrentPage()).toEqual([
@@ -440,6 +441,7 @@ describe('pagedPrisonerSearchSummary', () => {
 
         // Then
         expect(pagedPrisonerSearchSummaries.currentPageNumber).toEqual(1)
+        expect(pagedPrisonerSearchSummaries.totalPages).toEqual(1)
         expect(pagedPrisonerSearchSummaries.resultIndexFrom).toEqual(0)
         expect(pagedPrisonerSearchSummaries.resultIndexTo).toEqual(0)
         expect(pagedPrisonerSearchSummaries.getCurrentPage()).toEqual([])
@@ -457,9 +459,28 @@ describe('pagedPrisonerSearchSummary', () => {
 
         // Then
         expect(pagedPrisonerSearchSummaries.currentPageNumber).toEqual(1)
+        expect(pagedPrisonerSearchSummaries.totalPages).toEqual(1)
         expect(pagedPrisonerSearchSummaries.resultIndexFrom).toEqual(1)
         expect(pagedPrisonerSearchSummaries.resultIndexTo).toEqual(3)
         expect(pagedPrisonerSearchSummaries.getCurrentPage()).toEqual([terrySmith, bobSmith, fredSmith])
+      })
+
+      it('should filter given value that filters out some records', () => {
+        // Given
+        const prisonerSearchSummaries = [terrySmith, jimAardvark, bobSmith, fredSmith, billHumphries]
+        const pagedPrisonerSearchSummaries = new PagedPrisonerSearchSummary(prisonerSearchSummaries, 2) // totalPages will be 3
+
+        const value = '  SmItH  '
+
+        // When
+        pagedPrisonerSearchSummaries.filter(FilterBy.NAME, value)
+
+        // Then
+        expect(pagedPrisonerSearchSummaries.currentPageNumber).toEqual(1)
+        expect(pagedPrisonerSearchSummaries.totalPages).toEqual(2)
+        expect(pagedPrisonerSearchSummaries.resultIndexFrom).toEqual(1)
+        expect(pagedPrisonerSearchSummaries.resultIndexTo).toEqual(2)
+        expect(pagedPrisonerSearchSummaries.getCurrentPage()).toEqual([terrySmith, bobSmith])
       })
     })
 
