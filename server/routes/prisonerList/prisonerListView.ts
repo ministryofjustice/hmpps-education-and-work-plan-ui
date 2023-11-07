@@ -29,7 +29,13 @@ export default class PrisonerListView {
       sortBy: this.sortBy,
       sortOrder: this.sortOrder,
       renderPaginationControls: this.pagedPrisonerSearchSummary.totalPages > 1,
-      items: buildItemsArray(this.pagedPrisonerSearchSummary, this.searchTerm, this.statusFilter),
+      items: buildItemsArray({
+        pagedPrisonerSearchSummary: this.pagedPrisonerSearchSummary,
+        searchTerm: this.searchTerm,
+        statusFilter: this.statusFilter,
+        sortBy: this.sortBy,
+        sortOrder: this.sortOrder,
+      }),
       results: buildResults(this.pagedPrisonerSearchSummary),
       previousPage: getPreviousPage(this.pagedPrisonerSearchSummary),
       nextPage: getNextPage(this.pagedPrisonerSearchSummary),
@@ -37,23 +43,28 @@ export default class PrisonerListView {
   }
 }
 
-const buildItemsArray = (
-  pagedPrisonerSearchSummary: PagedPrisonerSearchSummary,
-  searchTerm: string,
-  statusFilter: string,
-): Item[] => {
+const buildItemsArray = (config: {
+  pagedPrisonerSearchSummary: PagedPrisonerSearchSummary
+  searchTerm: string
+  statusFilter: string
+  sortBy: string
+  sortOrder: string
+}): Item[] => {
   const items: Item[] = []
-  for (let page = 1; page <= pagedPrisonerSearchSummary.totalPages; page += 1) {
+  for (let page = 1; page <= config.pagedPrisonerSearchSummary.totalPages; page += 1) {
     const queryStringParams = [
-      searchTerm && `searchTerm=${decodeURIComponent(searchTerm)}`,
-      statusFilter && `statusFilter=${decodeURIComponent(statusFilter)}`,
+      config.searchTerm && `searchTerm=${decodeURIComponent(config.searchTerm)}`,
+      config.statusFilter && `statusFilter=${decodeURIComponent(config.statusFilter)}`,
+      config.sortBy &&
+        config.sortOrder &&
+        `sort=${decodeURIComponent(config.sortBy)},${decodeURIComponent(config.sortOrder)}`,
       page && `page=${page}`,
     ].filter(val => !!val)
     items.push({
       type: undefined,
       text: page.toString(),
       href: `?${queryStringParams.join('&')}`,
-      selected: page === pagedPrisonerSearchSummary.currentPageNumber,
+      selected: page === config.pagedPrisonerSearchSummary.currentPageNumber,
     })
   }
   return items

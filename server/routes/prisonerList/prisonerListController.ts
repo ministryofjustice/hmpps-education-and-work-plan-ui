@@ -4,6 +4,9 @@ import PrisonerListView from './prisonerListView'
 import config from '../../config'
 import PagedPrisonerSearchSummary, { FilterBy, SortBy, SortOrder } from './pagedPrisonerSearchSummary'
 
+const DEFAULT_SORT_FIELD = SortBy.NAME
+const DEFAULT_SORT_DIRECTION = SortOrder.ASCENDING
+
 export default class PrisonerListController {
   constructor(private readonly prisonerListService: PrisonerListService) {}
 
@@ -23,11 +26,10 @@ export default class PrisonerListController {
     }
 
     // Apply sorting
-    const sortQueryStringValue = (req.query.sort as string) || 'name,asc'
+    const sortQueryStringValue =
+      (req.query.sort as string) || `${DEFAULT_SORT_FIELD.toString()},${DEFAULT_SORT_DIRECTION.toString()}`
     const sortOptions = toSortOptions(sortQueryStringValue)
-    if (sortOptions) {
-      pagedPrisonerSearchSummary.sort(sortOptions.sortBy, sortOptions.sortOrder)
-    }
+    pagedPrisonerSearchSummary.sort(sortOptions.sortBy, sortOptions.sortOrder)
 
     const view = new PrisonerListView(
       pagedPrisonerSearchSummary,
@@ -59,7 +61,20 @@ export default class PrisonerListController {
   }
 }
 
-const toSortOptions = (queryStringValue: string): { sortBy: SortBy; sortOrder: SortOrder } | undefined => {
+/**
+ * Returns an object describing the required sort options:
+ * ```
+ * {
+ *   sortBy: SortBy
+ *   sortOrder: SortOrder
+ * }
+ * ```
+ * constructed from parsing the specified query string value which is expected to be a comma delimited valye
+ * of field name (to sort by) and sort order.
+ *
+ * If the query string cannot be parsed, an object is returned describing the default sort field and direction.
+ */
+const toSortOptions = (queryStringValue: string): { sortBy: SortBy; sortOrder: SortOrder } => {
   const options = queryStringValue
     .trim()
     .split(',')
@@ -68,8 +83,9 @@ const toSortOptions = (queryStringValue: string): { sortBy: SortBy; sortOrder: S
   const sortBy = Object.values(SortBy).find(value => value === sortByString)
   const sortOrderString = options[1]
   const sortOrder = Object.values(SortOrder).find(value => value === sortOrderString)
-  if (!sortBy || !sortOrder) {
-    return undefined
+  if (sortBy && sortBy) {
+    return { sortBy, sortOrder }
   }
-  return { sortBy, sortOrder }
+  // Could not determine valid sort options from the query string value, return the default sort options
+  return { sortBy: DEFAULT_SORT_FIELD, sortOrder: DEFAULT_SORT_DIRECTION }
 }
