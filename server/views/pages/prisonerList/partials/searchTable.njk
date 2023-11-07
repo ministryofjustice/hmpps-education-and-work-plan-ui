@@ -1,41 +1,89 @@
+{% from "../macros/sortableTableHeader.njk" import sortableTableHeader %}
+
 {# TODO: Logic for the problemRetrievingData #}
 {% if not ciagPrisonerList.problemRetrievingData %}
 
   {% if currentPageOfRecords | length %}
-    <table class="govuk-table" data-module="moj-sortable-table" data-qa="prisoner-list-results-table">
 
-      <thead class="govuk-table__head">
-        <tr class="govuk-table__row">
-          <th scope="col" class="govuk-table__header" aria-sort="ascending">Prisoner</th>
-          <th scope="col" class="govuk-table__header" aria-sort="none">Location</th>
-          <th scope="col" class="govuk-table__header" aria-sort="none">Release date</th>
-          <th scope="col" class="govuk-table__header" aria-sort="none">Entered prison on</th>
-          <th scope="col" class="govuk-table__header" aria-sort="none">Status</th>
-        </tr>
-      </thead>
+    {# Wrap the Prisoner List table in a form that contains hidden fields for the current search term, status filter and page.
+     This ensures that when then Prisoner List page is sorted via the buttons in the table header the current
+     search term, status filter and page are maintained.
+    #}
+    <form class="form" method="get">
+      <input type="hidden" name="searchTerm" value="{{ searchTerm }}" />
+      <input type="hidden" name="statusFilter" value="{{ statusFilter }}" />
+      <input type="hidden" name="page" value="{{ page }}" />
 
-      <tbody class="govuk-table__body">
-        {% for prisoner in currentPageOfRecords %}
+      <table class="govuk-table" data-module="moj-sortable-table" data-qa="prisoner-list-results-table">
+
+        <thead class="govuk-table__head">
           <tr class="govuk-table__row">
-            <td class="govuk-table__cell">
-              <a href="/plan/{{ prisoner.prisonNumber }}/view/overview" rel="noopener noreferrer" class="govuk-link govuk-link--no-visited-state">
-                {{ prisoner.lastName }}, {{ prisoner.firstName }}
-              </a>
-              <br>
-              <span class='govuk-hint govuk-!-margin-bottom-0'>{{ prisoner.prisonNumber }}</span>
-            </td>
-            <td class="govuk-table__cell">{{ prisoner.location }}</td>
-            <td class="govuk-table__cell">{{ prisoner.releaseDate | formatDate('D MMMM YYYY') or 'N/A' }}</td>
-            <td class="govuk-table__cell">{{ prisoner.receptionDate | formatDate('D MMMM YYYY') or 'N/A' }}</td>
-            <td class="govuk-table__cell">
-              {% if prisoner.hasActionPlan !== true %}
-                <strong class="govuk-tag govuk-tag--red">Needs plan</strong>
-              {% endif %}
-            </td>
+            {{ sortableTableHeader({
+              searchTerm: searchTerm,
+              statusFilter: statusFilter,
+              sortBy: sortBy,
+              sortOrder: sortOrder,
+              fieldName: 'name',
+              headerText: 'Prisoner'
+            }) }}
+            {{ sortableTableHeader({
+              searchTerm: searchTerm,
+              statusFilter: statusFilter,
+              sortBy: sortBy,
+              sortOrder: sortOrder,
+              fieldName: 'location',
+              headerText: 'Location'
+            }) }}
+            {{ sortableTableHeader({
+              searchTerm: searchTerm,
+              statusFilter: statusFilter,
+              sortBy: sortBy,
+              sortOrder: sortOrder,
+              fieldName: 'release-date',
+              headerText: 'Release date'
+            }) }}
+            {{ sortableTableHeader({
+              searchTerm: searchTerm,
+              statusFilter: statusFilter,
+              sortBy: sortBy,
+              sortOrder: sortOrder,
+              fieldName: 'reception-date',
+              headerText: 'Entered prison on'
+            }) }}
+            {{ sortableTableHeader({
+              searchTerm: searchTerm,
+              statusFilter: statusFilter,
+              sortBy: sortBy,
+              sortOrder: sortOrder,
+              fieldName: 'status',
+              headerText: 'Status'
+            }) }}
           </tr>
-        {% endfor %}
-      </tbody>
-    </table>
+        </thead>
+
+        <tbody class="govuk-table__body">
+          {% for prisoner in currentPageOfRecords %}
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell">
+                <a href="/plan/{{ prisoner.prisonNumber }}/view/overview" rel="noopener noreferrer" class="govuk-link govuk-link--no-visited-state">
+                  {{ prisoner.lastName }}, {{ prisoner.firstName }}
+                </a>
+                <br>
+                <span class='govuk-hint govuk-!-margin-bottom-0'>{{ prisoner.prisonNumber }}</span>
+              </td>
+              <td class="govuk-table__cell">{{ prisoner.location }}</td>
+              <td class="govuk-table__cell">{{ prisoner.releaseDate | formatDate('D MMMM YYYY') or 'N/A' }}</td>
+              <td class="govuk-table__cell">{{ prisoner.receptionDate | formatDate('D MMMM YYYY') or 'N/A' }}</td>
+              <td class="govuk-table__cell">
+                {% if prisoner.hasActionPlan !== true %}
+                  <strong class="govuk-tag govuk-tag--red">Needs plan</strong>
+                {% endif %}
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </form>
 
     {% if renderPaginationControls %}
       {{ mojPagination({

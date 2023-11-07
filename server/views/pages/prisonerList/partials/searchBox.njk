@@ -1,40 +1,51 @@
 <div class="govuk-form-group app-prisoner-list__search">
 
-  <legend class="govuk-fieldset__legend govuk-fieldset__legend--m app-prisoner-list__search-legend">Filter by</legend>
-  <div class="govuk-grid-column-one-third">
-    <div class="govuk-form-group">
-      <label class="govuk-label moj-search__label" for="searchTerm">Prisoner's name</label>
-      <input class="govuk-input moj-search__input"
-            id="searchTerm"
-            name="searchTerm"
-            type="search"
-            value="{{ searchTerm }}"
-            maxlength="200"
-      />
-    </div>
-  </div>
+  {# Wrap the search / filter controls in a form that contains hidden fields for the current sort order.
+     This ensures that when then Prisoner List page is filtered the current sort field and order are maintained.
+  #}
+  <form class="form" method="get">
+    <input type="hidden" name="sort" value="{{ sortBy }},{{ sortOrder }}" />
 
-  <div class="govuk-grid-column-one-third">
-    <div class="moj-search">
-      <div class="govuk-form-group">
-        <label class="govuk-label moj-search__label" for="statusFilter">Status</label>
-        <select class="govuk-select" id="statusFilter" name="statusFilter">
-          <option value="" {{ 'selected' if statusFilter === ''}}>All statuses</option>
-          <option value="NEEDS_PLAN" {{ 'selected' if statusFilter === 'NEEDS_PLAN'}}>Needs plan</option>
-        </select>
-      </div>
-      <button class="govuk-button moj-search__button" data-module="govuk-button" data-qa="apply-filters">Apply filters</button>
-    </div>
-  </div>
-
-  {% if searchTerm or statusFilter %}
+    <legend class="govuk-fieldset__legend govuk-fieldset__legend--m app-prisoner-list__search-legend">Filter by</legend>
     <div class="govuk-grid-column-one-third">
-      <p class="govuk-!-margin-bottom-0 govuk-!-margin-top-7">
-        <a class="govuk-link" href="/?searchTerm=&statusFilter=" data-qa="clear-filters">
-          Clear<span class="govuk-visually-hidden"> prisoner name filter option</span>
-        </a>
-      </p>
+      <div class="govuk-form-group">
+        <label class="govuk-label moj-search__label" for="searchTerm">Prisoner's name</label>
+        <input class="govuk-input moj-search__input"
+              id="searchTerm"
+              name="searchTerm"
+              type="search"
+              value="{{ searchTerm }}"
+              maxlength="200"
+        />
+      </div>
     </div>
-  {% endif %}
 
+    <div class="govuk-grid-column-one-third">
+      <div class="moj-search">
+        <div class="govuk-form-group">
+          <label class="govuk-label moj-search__label" for="statusFilter">Status</label>
+          <select class="govuk-select" id="statusFilter" name="statusFilter">
+            <option value="" {{ 'selected' if statusFilter === ''}}>All statuses</option>
+            <option value="NEEDS_PLAN" {{ 'selected' if statusFilter === 'NEEDS_PLAN'}}>Needs plan</option>
+          </select>
+        </div>
+        <button class="govuk-button moj-search__button" data-module="govuk-button" data-qa="apply-filters">Apply filters</button>
+      </div>
+    </div>
+
+    {% if searchTerm or statusFilter %}
+      <div class="govuk-grid-column-one-third">
+        <p class="govuk-!-margin-bottom-0 govuk-!-margin-top-7">
+          {# Reset the Prisoner List page filters using an anchor link with blank searchTerm and statusFilter field values.
+             The link also contains the current sort order to ensure the current sort field and order are maintained after
+             reseting the filter.
+          #}
+          <a class="govuk-link" href="/?searchTerm=&statusFilter=&sort={{ sortBy }},{{ sortOrder }}" data-qa="clear-filters">
+            Clear<span class="govuk-visually-hidden"> prisoner name filter option</span>
+          </a>
+        </p>
+      </div>
+    {% endif %}
+
+  </form>
 </div>

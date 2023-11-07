@@ -65,10 +65,10 @@ describe('prisonerListController', () => {
         searchTerm: '',
         statusFilter: '',
         sortBy: 'name',
-        sortOrder: 'asc',
+        sortOrder: 'ascending',
         items: [
           {
-            href: '?page=1',
+            href: '?sort=name,ascending&page=1',
             selected: true,
             text: '1',
             type: undefined,
@@ -108,167 +108,279 @@ describe('prisonerListController', () => {
       )
     })
 
-    it('should get prisoner list view given name filtering', async () => {
-      // Given
-      req.query = {
-        searchTerm: 'Jimmy',
-      }
+    describe('filtering', () => {
+      it('should get prisoner list view given name filtering', async () => {
+        // Given
+        req.query = {
+          searchTerm: 'Jimmy',
+        }
 
-      const expectedView: RenderedPrisonerListView = {
-        currentPageOfRecords: [jimmyLightFingers, jimmyMcShifty],
-        searchTerm: 'Jimmy',
-        statusFilter: '',
-        sortBy: 'name',
-        sortOrder: 'asc',
-        items: [
-          {
-            href: '?searchTerm=Jimmy&page=1',
-            selected: true,
-            text: '1',
-            type: undefined,
+        const expectedView: RenderedPrisonerListView = {
+          currentPageOfRecords: [jimmyLightFingers, jimmyMcShifty],
+          searchTerm: 'Jimmy',
+          statusFilter: '',
+          sortBy: 'name',
+          sortOrder: 'ascending',
+          items: [
+            {
+              href: '?searchTerm=Jimmy&sort=name,ascending&page=1',
+              selected: true,
+              text: '1',
+              type: undefined,
+            },
+          ],
+          nextPage: {
+            href: '',
+            text: 'Next',
           },
-        ],
-        nextPage: {
-          href: '',
-          text: 'Next',
-        },
-        previousPage: {
-          href: '',
-          text: 'Previous',
-        },
-        renderPaginationControls: false,
-        results: {
-          count: 2,
-          from: 1,
-          to: 2,
-        },
-      }
+          previousPage: {
+            href: '',
+            text: 'Previous',
+          },
+          renderPaginationControls: false,
+          results: {
+            count: 2,
+            from: 1,
+            to: 2,
+          },
+        }
 
-      // When
-      await controller.getPrisonerListView(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+        // When
+        await controller.getPrisonerListView(
+          req as undefined as Request,
+          res as undefined as Response,
+          next as undefined as NextFunction,
+        )
 
-      // Then
-      expect(res.render).toHaveBeenCalledWith('pages/prisonerList/index', expectedView)
-      expect(prisonerListService.getPrisonerSearchSummariesForPrisonId).toHaveBeenCalledWith(
-        'BXI',
-        0,
-        9999,
-        'AUSER_GEN',
-        'some-token',
-      )
+        // Then
+        expect(res.render).toHaveBeenCalledWith('pages/prisonerList/index', expectedView)
+        expect(prisonerListService.getPrisonerSearchSummariesForPrisonId).toHaveBeenCalledWith(
+          'BXI',
+          0,
+          9999,
+          'AUSER_GEN',
+          'some-token',
+        )
+      })
+
+      it('should get prisoner list view given status filtering', async () => {
+        // Given
+        req.query = {
+          statusFilter: 'NEEDS_PLAN',
+        }
+
+        const expectedView: RenderedPrisonerListView = {
+          currentPageOfRecords: [donVitoCorleone, jimmyMcShifty], // default sort order (name ascending) applied
+          searchTerm: '',
+          statusFilter: 'NEEDS_PLAN',
+          sortBy: 'name',
+          sortOrder: 'ascending',
+          items: [
+            {
+              href: '?statusFilter=NEEDS_PLAN&sort=name,ascending&page=1',
+              selected: true,
+              text: '1',
+              type: undefined,
+            },
+          ],
+          nextPage: {
+            href: '',
+            text: 'Next',
+          },
+          previousPage: {
+            href: '',
+            text: 'Previous',
+          },
+          renderPaginationControls: false,
+          results: {
+            count: 2,
+            from: 1,
+            to: 2,
+          },
+        }
+
+        // When
+        await controller.getPrisonerListView(
+          req as undefined as Request,
+          res as undefined as Response,
+          next as undefined as NextFunction,
+        )
+
+        // Then
+        expect(res.render).toHaveBeenCalledWith('pages/prisonerList/index', expectedView)
+        expect(prisonerListService.getPrisonerSearchSummariesForPrisonId).toHaveBeenCalledWith(
+          'BXI',
+          0,
+          9999,
+          'AUSER_GEN',
+          'some-token',
+        )
+      })
+
+      it('should get prisoner list view given name and status filtering', async () => {
+        // Given
+        req.query = {
+          searchTerm: 'Jimmy',
+          statusFilter: 'NEEDS_PLAN',
+        }
+
+        const expectedView: RenderedPrisonerListView = {
+          currentPageOfRecords: [jimmyMcShifty],
+          searchTerm: 'Jimmy',
+          statusFilter: 'NEEDS_PLAN',
+          sortBy: 'name',
+          sortOrder: 'ascending',
+          items: [
+            {
+              href: '?searchTerm=Jimmy&statusFilter=NEEDS_PLAN&sort=name,ascending&page=1',
+              selected: true,
+              text: '1',
+              type: undefined,
+            },
+          ],
+          nextPage: {
+            href: '',
+            text: 'Next',
+          },
+          previousPage: {
+            href: '',
+            text: 'Previous',
+          },
+          renderPaginationControls: false,
+          results: {
+            count: 1,
+            from: 1,
+            to: 1,
+          },
+        }
+
+        // When
+        await controller.getPrisonerListView(
+          req as undefined as Request,
+          res as undefined as Response,
+          next as undefined as NextFunction,
+        )
+
+        // Then
+        expect(res.render).toHaveBeenCalledWith('pages/prisonerList/index', expectedView)
+        expect(prisonerListService.getPrisonerSearchSummariesForPrisonId).toHaveBeenCalledWith(
+          'BXI',
+          0,
+          9999,
+          'AUSER_GEN',
+          'some-token',
+        )
+      })
     })
 
-    it('should get prisoner list view given status filtering', async () => {
-      // Given
-      req.query = {
-        statusFilter: 'NEEDS_PLAN',
-      }
+    describe('sorting', () => {
+      it('should get prisoner list view given sorting by name descending', async () => {
+        // Given
+        req.query = {
+          sort: 'name,descending',
+        }
 
-      const expectedView: RenderedPrisonerListView = {
-        currentPageOfRecords: [donVitoCorleone, jimmyMcShifty], // default sort order (name ascending) applied
-        searchTerm: '',
-        statusFilter: 'NEEDS_PLAN',
-        sortBy: 'name',
-        sortOrder: 'asc',
-        items: [
-          {
-            href: '?statusFilter=NEEDS_PLAN&page=1',
-            selected: true,
-            text: '1',
-            type: undefined,
+        const expectedView: RenderedPrisonerListView = {
+          currentPageOfRecords: [jimmyMcShifty, jimmyLightFingers, donVitoCorleone],
+          searchTerm: '',
+          statusFilter: '',
+          sortBy: 'name',
+          sortOrder: 'descending',
+          items: [
+            {
+              href: '?sort=name,descending&page=1',
+              selected: true,
+              text: '1',
+              type: undefined,
+            },
+          ],
+          nextPage: {
+            href: '',
+            text: 'Next',
           },
-        ],
-        nextPage: {
-          href: '',
-          text: 'Next',
-        },
-        previousPage: {
-          href: '',
-          text: 'Previous',
-        },
-        renderPaginationControls: false,
-        results: {
-          count: 2,
-          from: 1,
-          to: 2,
-        },
-      }
-
-      // When
-      await controller.getPrisonerListView(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
-
-      // Then
-      expect(res.render).toHaveBeenCalledWith('pages/prisonerList/index', expectedView)
-      expect(prisonerListService.getPrisonerSearchSummariesForPrisonId).toHaveBeenCalledWith(
-        'BXI',
-        0,
-        9999,
-        'AUSER_GEN',
-        'some-token',
-      )
-    })
-
-    it('should get prisoner list view given name and status filtering', async () => {
-      // Given
-      req.query = {
-        searchTerm: 'Jimmy',
-        statusFilter: 'NEEDS_PLAN',
-      }
-
-      const expectedView: RenderedPrisonerListView = {
-        currentPageOfRecords: [jimmyMcShifty],
-        searchTerm: 'Jimmy',
-        statusFilter: 'NEEDS_PLAN',
-        sortBy: 'name',
-        sortOrder: 'asc',
-        items: [
-          {
-            href: '?searchTerm=Jimmy&statusFilter=NEEDS_PLAN&page=1',
-            selected: true,
-            text: '1',
-            type: undefined,
+          previousPage: {
+            href: '',
+            text: 'Previous',
           },
-        ],
-        nextPage: {
-          href: '',
-          text: 'Next',
-        },
-        previousPage: {
-          href: '',
-          text: 'Previous',
-        },
-        renderPaginationControls: false,
-        results: {
-          count: 1,
-          from: 1,
-          to: 1,
-        },
-      }
+          renderPaginationControls: false,
+          results: {
+            count: 3,
+            from: 1,
+            to: 3,
+          },
+        }
 
-      // When
-      await controller.getPrisonerListView(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+        // When
+        await controller.getPrisonerListView(
+          req as undefined as Request,
+          res as undefined as Response,
+          next as undefined as NextFunction,
+        )
 
-      // Then
-      expect(res.render).toHaveBeenCalledWith('pages/prisonerList/index', expectedView)
-      expect(prisonerListService.getPrisonerSearchSummariesForPrisonId).toHaveBeenCalledWith(
-        'BXI',
-        0,
-        9999,
-        'AUSER_GEN',
-        'some-token',
-      )
+        // Then
+        expect(res.render).toHaveBeenCalledWith('pages/prisonerList/index', expectedView)
+        expect(prisonerListService.getPrisonerSearchSummariesForPrisonId).toHaveBeenCalledWith(
+          'BXI',
+          0,
+          9999,
+          'AUSER_GEN',
+          'some-token',
+        )
+      })
+
+      it('should get prisoner list view given invalid sort options', async () => {
+        // Given
+        req.query = {
+          sort: 'unknown-field,nearest-neighbour',
+        }
+
+        const expectedView: RenderedPrisonerListView = {
+          currentPageOfRecords: [donVitoCorleone, jimmyLightFingers, jimmyMcShifty], // default sort order (name ascending) applied
+          searchTerm: '',
+          statusFilter: '',
+          sortBy: 'name', // current sort by field is `name` given the requested value was invalid
+          sortOrder: 'ascending', // current sort order is `ascending` given the requested value was invalid
+          items: [
+            {
+              href: '?sort=name,ascending&page=1',
+              selected: true,
+              text: '1',
+              type: undefined,
+            },
+          ],
+          nextPage: {
+            href: '',
+            text: 'Next',
+          },
+          previousPage: {
+            href: '',
+            text: 'Previous',
+          },
+          renderPaginationControls: false,
+          results: {
+            count: 3,
+            from: 1,
+            to: 3,
+          },
+        }
+
+        // When
+        await controller.getPrisonerListView(
+          req as undefined as Request,
+          res as undefined as Response,
+          next as undefined as NextFunction,
+        )
+
+        // Then
+        expect(res.render).toHaveBeenCalledWith('pages/prisonerList/index', expectedView)
+        expect(prisonerListService.getPrisonerSearchSummariesForPrisonId).toHaveBeenCalledWith(
+          'BXI',
+          0,
+          9999,
+          'AUSER_GEN',
+          'some-token',
+        )
+      })
     })
   })
 })
