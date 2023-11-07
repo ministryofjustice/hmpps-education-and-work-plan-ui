@@ -75,7 +75,7 @@
               <td class="govuk-table__cell">{{ prisoner.releaseDate | formatDate('D MMMM YYYY') or 'N/A' }}</td>
               <td class="govuk-table__cell">{{ prisoner.receptionDate | formatDate('D MMMM YYYY') or 'N/A' }}</td>
               <td class="govuk-table__cell">
-                {% if prisoner.hasActionPlan !== true %}
+                {% if not (prisoner.hasCiagInduction === true and prisoner.hasActionPlan === true) %}
                   <strong class="govuk-tag govuk-tag--red">Needs plan</strong>
                 {% endif %}
               </td>
