@@ -71,7 +71,10 @@ const buildItemsArray = (config: {
       selected: page === config.pagedPrisonerSearchSummary.currentPageNumber,
     })
   }
-  return items
+  // Return 10 pages, showing 5 pages before and after the current page
+  const start = Math.max(0, config.pagedPrisonerSearchSummary.currentPageNumber - 6)
+  const end = Math.min(start + 11, items.length)
+  return items.slice(start, end)
 }
 
 const buildResults = (pagedPrisonerSearchSummary: PagedPrisonerSearchSummary): Results => ({
