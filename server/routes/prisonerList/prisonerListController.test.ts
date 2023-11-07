@@ -122,7 +122,7 @@ describe('prisonerListController', () => {
         sortOrder: 'asc',
         items: [
           {
-            href: '?page=1',
+            href: '?searchTerm=Jimmy&page=1',
             selected: true,
             text: '1',
             type: undefined,
@@ -176,7 +176,7 @@ describe('prisonerListController', () => {
         sortOrder: 'asc',
         items: [
           {
-            href: '?page=1',
+            href: '?statusFilter=NEEDS_PLAN&page=1',
             selected: true,
             text: '1',
             type: undefined,
@@ -231,7 +231,7 @@ describe('prisonerListController', () => {
         sortOrder: 'asc',
         items: [
           {
-            href: '?page=1',
+            href: '?searchTerm=Jimmy&statusFilter=NEEDS_PLAN&page=1',
             selected: true,
             text: '1',
             type: undefined,

@@ -29,7 +29,7 @@ export default class PrisonerListView {
       sortBy: this.sortBy,
       sortOrder: this.sortOrder,
       renderPaginationControls: this.pagedPrisonerSearchSummary.totalPages > 1,
-      items: buildItemsArray(this.pagedPrisonerSearchSummary),
+      items: buildItemsArray(this.pagedPrisonerSearchSummary, this.searchTerm, this.statusFilter),
       results: buildResults(this.pagedPrisonerSearchSummary),
       previousPage: getPreviousPage(this.pagedPrisonerSearchSummary),
       nextPage: getNextPage(this.pagedPrisonerSearchSummary),
@@ -37,14 +37,23 @@ export default class PrisonerListView {
   }
 }
 
-const buildItemsArray = (pagedPrisonerSearchSummary: PagedPrisonerSearchSummary): Item[] => {
+const buildItemsArray = (
+  pagedPrisonerSearchSummary: PagedPrisonerSearchSummary,
+  searchTerm: string,
+  statusFilter: string,
+): Item[] => {
   const items: Item[] = []
-  for (let i = 1; i <= pagedPrisonerSearchSummary.totalPages; i += 1) {
+  for (let page = 1; page <= pagedPrisonerSearchSummary.totalPages; page += 1) {
+    const queryStringParams = [
+      searchTerm && `searchTerm=${decodeURIComponent(searchTerm)}`,
+      statusFilter && `statusFilter=${decodeURIComponent(statusFilter)}`,
+      page && `page=${page}`,
+    ].filter(val => !!val)
     items.push({
       type: undefined,
-      text: i.toString(),
-      href: `?page=${i}`,
-      selected: i === pagedPrisonerSearchSummary.currentPageNumber,
+      text: page.toString(),
+      href: `?${queryStringParams.join('&')}`,
+      selected: page === pagedPrisonerSearchSummary.currentPageNumber,
     })
   }
   return items
