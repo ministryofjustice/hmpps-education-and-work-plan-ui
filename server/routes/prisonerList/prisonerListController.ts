@@ -31,6 +31,10 @@ export default class PrisonerListController {
     const sortOptions = toSortOptions(sortQueryStringValue)
     pagedPrisonerSearchSummary.sort(sortOptions.sortBy, sortOptions.sortOrder)
 
+    // Apply paging
+    const page = req.query.page as string
+    pagedPrisonerSearchSummary.setCurrentPageNumber(page ? parseInt(page, 10) : 1)
+
     const view = new PrisonerListView(
       pagedPrisonerSearchSummary,
       searchTerm || '',

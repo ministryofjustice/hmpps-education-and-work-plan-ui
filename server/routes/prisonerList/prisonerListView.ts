@@ -37,8 +37,20 @@ export default class PrisonerListView {
         sortOrder: this.sortOrder,
       }),
       results: buildResults(this.pagedPrisonerSearchSummary),
-      previousPage: getPreviousPage(this.pagedPrisonerSearchSummary),
-      nextPage: getNextPage(this.pagedPrisonerSearchSummary),
+      previousPage: getPreviousPage({
+        pagedPrisonerSearchSummary: this.pagedPrisonerSearchSummary,
+        searchTerm: this.searchTerm,
+        statusFilter: this.statusFilter,
+        sortBy: this.sortBy,
+        sortOrder: this.sortOrder,
+      }),
+      nextPage: getNextPage({
+        pagedPrisonerSearchSummary: this.pagedPrisonerSearchSummary,
+        searchTerm: this.searchTerm,
+        statusFilter: this.statusFilter,
+        sortBy: this.sortBy,
+        sortOrder: this.sortOrder,
+      }),
     }
   }
 }
@@ -52,18 +64,10 @@ const buildItemsArray = (config: {
 }): Item[] => {
   const items: Item[] = []
   for (let page = 1; page <= config.pagedPrisonerSearchSummary.totalPages; page += 1) {
-    const queryStringParams = [
-      config.searchTerm && `searchTerm=${decodeURIComponent(config.searchTerm)}`,
-      config.statusFilter && `statusFilter=${decodeURIComponent(config.statusFilter)}`,
-      config.sortBy &&
-        config.sortOrder &&
-        `sort=${decodeURIComponent(config.sortBy)},${decodeURIComponent(config.sortOrder)}`,
-      page && `page=${page}`,
-    ].filter(val => !!val)
     items.push({
       type: undefined,
       text: page.toString(),
-      href: `?${queryStringParams.join('&')}`,
+      href: buildQueryString({ ...config, page }),
       selected: page === config.pagedPrisonerSearchSummary.currentPageNumber,
     })
   }
@@ -76,20 +80,50 @@ const buildResults = (pagedPrisonerSearchSummary: PagedPrisonerSearchSummary): R
   to: pagedPrisonerSearchSummary.resultIndexTo,
 })
 
-const getPreviousPage = (pagedPrisonerSearchSummary: PagedPrisonerSearchSummary): Paging => {
-  const previousPageNumber = pagedPrisonerSearchSummary.currentPageNumber - 1
+const getPreviousPage = (config: {
+  pagedPrisonerSearchSummary: PagedPrisonerSearchSummary
+  searchTerm: string
+  statusFilter: string
+  sortBy: string
+  sortOrder: string
+}): Paging => {
+  const page = config.pagedPrisonerSearchSummary.currentPageNumber - 1
   return {
     text: 'Previous',
-    href: previousPageNumber > 1 ? `?page=${previousPageNumber}` : '',
+    href: page >= 1 ? buildQueryString({ ...config, page }) : '',
   }
 }
 
-const getNextPage = (pagedPrisonerSearchSummary: PagedPrisonerSearchSummary): Paging => {
-  const nextPageNumber = pagedPrisonerSearchSummary.currentPageNumber + 1
+const getNextPage = (config: {
+  pagedPrisonerSearchSummary: PagedPrisonerSearchSummary
+  searchTerm: string
+  statusFilter: string
+  sortBy: string
+  sortOrder: string
+}): Paging => {
+  const page = config.pagedPrisonerSearchSummary.currentPageNumber + 1
   return {
     text: 'Next',
-    href: nextPageNumber <= pagedPrisonerSearchSummary.totalPages ? `?page=${nextPageNumber}` : '',
+    href: page <= config.pagedPrisonerSearchSummary.totalPages ? buildQueryString({ ...config, page }) : '',
   }
+}
+
+const buildQueryString = (config: {
+  searchTerm: string
+  statusFilter: string
+  sortBy: string
+  sortOrder: string
+  page: number
+}): string => {
+  const queryStringParams = [
+    config.searchTerm && `searchTerm=${decodeURIComponent(config.searchTerm)}`,
+    config.statusFilter && `statusFilter=${decodeURIComponent(config.statusFilter)}`,
+    config.sortBy &&
+      config.sortOrder &&
+      `sort=${decodeURIComponent(config.sortBy)},${decodeURIComponent(config.sortOrder)}`,
+    config.page && `page=${config.page}`,
+  ].filter(val => !!val)
+  return `?${queryStringParams.join('&')}`
 }
 
 interface Item {
