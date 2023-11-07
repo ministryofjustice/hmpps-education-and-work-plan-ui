@@ -80,7 +80,7 @@ const getPreviousPage = (pagedPrisonerSearchSummary: PagedPrisonerSearchSummary)
   const previousPageNumber = pagedPrisonerSearchSummary.currentPageNumber - 1
   return {
     text: 'Previous',
-    href: previousPageNumber > 1 ? `?page=${previousPageNumber}` : '',
+    href: previousPageNumber >= 1 ? `?page=${previousPageNumber}` : '',
   }
 }
 
