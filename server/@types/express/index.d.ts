@@ -14,6 +14,7 @@ declare module 'express-session' {
     newGoal: NewGoal // A single NewGoal representing the Goal that is currently being added
     newGoals: Array<NewGoal> // An array of NewGoal representing the Goals that have been added
     updateGoalForm: UpdateGoalForm
+    prisonerListSortOptions: string
   }
 }
 
