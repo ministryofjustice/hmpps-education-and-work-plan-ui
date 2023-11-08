@@ -1,3 +1,6 @@
+import type { PrisonerSearchSummary } from 'viewModels'
+import moment from 'moment'
+import { randomUUID } from 'crypto'
 import { SuperAgentRequest } from 'superagent'
 import { getMatchingRequests, stubFor } from './wiremock'
 import actionPlans from '../mockData/actionPlanByPrisonNumberData'
@@ -120,6 +123,31 @@ const stubActionPlansList = (): SuperAgentRequest =>
     },
   })
 
+const stubActionPlansListFromPrisonerSearchSummaries = (
+  prisonerSearchSummaries: Array<PrisonerSearchSummary>,
+): SuperAgentRequest =>
+  stubFor({
+    request: {
+      method: 'POST',
+      urlPattern: '/action-plans',
+    },
+    response: {
+      status: 200,
+      headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+      jsonBody: {
+        actionPlanSummaries: prisonerSearchSummaries
+          .filter(prisonerSearchSummary => prisonerSearchSummary.hasCiagInduction)
+          .map(prisonerSearchSummary => {
+            return {
+              reference: randomUUID(),
+              prisonNumber: prisonerSearchSummary.prisonNumber,
+              reviewDate: randomReviewDate(),
+            }
+          }),
+      },
+    },
+  })
+
 const stubActionPlansList500error = (): SuperAgentRequest =>
   stubFor({
     request: {
@@ -141,6 +169,7 @@ export default {
   getActionPlanForPrisonerWithNoGoals,
   getActionPlan500Error,
   stubActionPlansList,
+  stubActionPlansListFromPrisonerSearchSummaries,
   stubActionPlansList500error,
 }
 
@@ -159,3 +188,12 @@ export interface UpdateGoalRequest {
   targetCompletionDate?: string
   notes?: string
 }
+
+/**
+ * Returns a random date sometime between 30 days and 365 days years after today; or undefined.
+ * Approximately 5% will return undefined, meaning the action plan has no review date.
+ */
+const randomReviewDate = (): string | undefined =>
+  randomNumber(1, 100) > 5 ? moment().add(randomNumber(30, 5475), 'days').format('YYYY-MM-DD') : undefined
+
+const randomNumber = (min: number, max: number): number => Math.floor(Math.random() * (max - min) + min)

@@ -1,3 +1,5 @@
+import moment from 'moment'
+import type { PrisonerSearchSummary } from 'viewModels'
 import { SuperAgentRequest } from 'superagent'
 import { stubFor } from './wiremock'
 
@@ -296,6 +298,49 @@ const stubPrisonerList = (prisonId = 'BXI', page = 0, pageSize = 9999): SuperAge
     },
   })
 
+const stubPrisonerListFromPrisonerSearchSummaries = (
+  prisonerSearchSummaries: Array<PrisonerSearchSummary>,
+  options?: {
+    prisonId?: string
+    page?: number
+    pageSize?: number
+  },
+): SuperAgentRequest =>
+  stubFor({
+    request: {
+      method: 'GET',
+      urlPathPattern: `/prisoner-search/prison/${options?.prisonId || 'BXI'}`,
+      queryParameters: {
+        page: { equalTo: `${options?.page || 0}` },
+        size: { equalTo: `${options?.pageSize || 9999}` },
+      },
+    },
+    response: {
+      status: 200,
+      headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+      jsonBody: {
+        content: prisonerSearchSummaries.map(prisonerSearchSummary => {
+          return {
+            prisonId: prisonerSearchSummary.prisonId,
+            prisonerNumber: prisonerSearchSummary.prisonNumber,
+            firstName: prisonerSearchSummary.firstName,
+            lastName: prisonerSearchSummary.lastName,
+            dateOfBirth: prisonerSearchSummary.dateOfBirth
+              ? moment(prisonerSearchSummary.dateOfBirth).format('YYYY-MM-DD')
+              : undefined,
+            receptionDate: prisonerSearchSummary.receptionDate
+              ? moment(prisonerSearchSummary.receptionDate).format('YYYY-MM-DD')
+              : undefined,
+            releaseDate: prisonerSearchSummary.releaseDate
+              ? moment(prisonerSearchSummary.releaseDate).format('YYYY-MM-DD')
+              : undefined,
+            cellLocation: prisonerSearchSummary.location,
+          }
+        }),
+      },
+    },
+  })
+
 const stubPrisonerList500error = (prisonId = 'BXI', page = 0, pageSize = 9999): SuperAgentRequest =>
   stubFor({
     request: {
@@ -315,4 +360,5 @@ const stubPrisonerList500error = (prisonId = 'BXI', page = 0, pageSize = 9999): 
 export default {
   stubPrisonerList,
   stubPrisonerList500error,
+  stubPrisonerListFromPrisonerSearchSummaries,
 }
