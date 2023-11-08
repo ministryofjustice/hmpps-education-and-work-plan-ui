@@ -1,3 +1,4 @@
+import { SessionData } from 'express-session'
 import type { PrisonerSearchSummary } from 'viewModels'
 import type { Locals } from 'express-serve-static-core'
 import { NextFunction, Request, Response } from 'express'
@@ -9,18 +10,21 @@ describe('prisonerListController', () => {
   const jimmyLightFingers = aValidPrisonerSearchSummary({
     firstName: 'Jimmy',
     lastName: 'Lightfingers',
+    receptionDate: '2023-10-01',
     hasCiagInduction: true,
     hasActionPlan: true,
   })
   const jimmyMcShifty = aValidPrisonerSearchSummary({
     firstName: 'Jimmy',
     lastName: 'McShifty',
+    receptionDate: '2000-07-23',
     hasCiagInduction: false,
     hasActionPlan: false,
   })
   const donVitoCorleone = aValidPrisonerSearchSummary({
     firstName: 'Vito',
     lastName: 'Corleone',
+    receptionDate: '2020-09-10',
     hasCiagInduction: false,
     hasActionPlan: false,
   })
@@ -33,6 +37,7 @@ describe('prisonerListController', () => {
   const controller = new PrisonerListController(prisonerListService as unknown as PrisonerListService)
 
   const req = {
+    session: {} as SessionData,
     query: {},
     user: {} as Express.User,
   }
@@ -53,6 +58,7 @@ describe('prisonerListController', () => {
     }
     req.user.token = 'some-token'
     req.user.username = 'AUSER_GEN'
+    req.session = {} as SessionData
   })
 
   describe('getPrisonerListView', () => {
@@ -61,14 +67,14 @@ describe('prisonerListController', () => {
       req.query = {}
 
       const expectedView: RenderedPrisonerListView = {
-        currentPageOfRecords: [donVitoCorleone, jimmyLightFingers, jimmyMcShifty], // default sort order (name ascending) applied
+        currentPageOfRecords: [jimmyLightFingers, donVitoCorleone, jimmyMcShifty], // default sort order (reception-date descending) applied
         searchTerm: '',
         statusFilter: '',
-        sortBy: 'name',
-        sortOrder: 'ascending',
+        sortBy: 'reception-date',
+        sortOrder: 'descending',
         items: [
           {
-            href: '?sort=name,ascending&page=1',
+            href: '?sort=reception-date,descending&page=1',
             selected: true,
             text: '1',
             type: undefined,
@@ -119,11 +125,11 @@ describe('prisonerListController', () => {
           currentPageOfRecords: [jimmyLightFingers, jimmyMcShifty],
           searchTerm: 'Jimmy',
           statusFilter: '',
-          sortBy: 'name',
-          sortOrder: 'ascending',
+          sortBy: 'reception-date',
+          sortOrder: 'descending',
           items: [
             {
-              href: '?searchTerm=Jimmy&sort=name,ascending&page=1',
+              href: '?searchTerm=Jimmy&sort=reception-date,descending&page=1',
               selected: true,
               text: '1',
               type: undefined,
@@ -170,14 +176,14 @@ describe('prisonerListController', () => {
         }
 
         const expectedView: RenderedPrisonerListView = {
-          currentPageOfRecords: [donVitoCorleone, jimmyMcShifty], // default sort order (name ascending) applied
+          currentPageOfRecords: [donVitoCorleone, jimmyMcShifty], // default sort order (reception-date descending) applied
           searchTerm: '',
           statusFilter: 'NEEDS_PLAN',
-          sortBy: 'name',
-          sortOrder: 'ascending',
+          sortBy: 'reception-date',
+          sortOrder: 'descending',
           items: [
             {
-              href: '?statusFilter=NEEDS_PLAN&sort=name,ascending&page=1',
+              href: '?statusFilter=NEEDS_PLAN&sort=reception-date,descending&page=1',
               selected: true,
               text: '1',
               type: undefined,
@@ -228,11 +234,11 @@ describe('prisonerListController', () => {
           currentPageOfRecords: [jimmyMcShifty],
           searchTerm: 'Jimmy',
           statusFilter: 'NEEDS_PLAN',
-          sortBy: 'name',
-          sortOrder: 'ascending',
+          sortBy: 'reception-date',
+          sortOrder: 'descending',
           items: [
             {
-              href: '?searchTerm=Jimmy&statusFilter=NEEDS_PLAN&sort=name,ascending&page=1',
+              href: '?searchTerm=Jimmy&statusFilter=NEEDS_PLAN&sort=reception-date,descending&page=1',
               selected: true,
               text: '1',
               type: undefined,
@@ -274,72 +280,18 @@ describe('prisonerListController', () => {
     })
 
     describe('sorting', () => {
-      it('should get prisoner list view given sorting by name descending', async () => {
+      it('should get prisoner list view given sorting by name ascending via query string parameter', async () => {
         // Given
         req.query = {
-          sort: 'name,descending',
+          sort: 'name,ascending',
         }
 
         const expectedView: RenderedPrisonerListView = {
-          currentPageOfRecords: [jimmyMcShifty, jimmyLightFingers, donVitoCorleone],
+          currentPageOfRecords: [donVitoCorleone, jimmyLightFingers, jimmyMcShifty],
           searchTerm: '',
           statusFilter: '',
           sortBy: 'name',
-          sortOrder: 'descending',
-          items: [
-            {
-              href: '?sort=name,descending&page=1',
-              selected: true,
-              text: '1',
-              type: undefined,
-            },
-          ],
-          nextPage: {
-            href: '',
-            text: 'Next',
-          },
-          previousPage: {
-            href: '',
-            text: 'Previous',
-          },
-          renderPaginationControls: false,
-          results: {
-            count: 3,
-            from: 1,
-            to: 3,
-          },
-        }
-
-        // When
-        await controller.getPrisonerListView(
-          req as undefined as Request,
-          res as undefined as Response,
-          next as undefined as NextFunction,
-        )
-
-        // Then
-        expect(res.render).toHaveBeenCalledWith('pages/prisonerList/index', expectedView)
-        expect(prisonerListService.getPrisonerSearchSummariesForPrisonId).toHaveBeenCalledWith(
-          'BXI',
-          0,
-          9999,
-          'AUSER_GEN',
-          'some-token',
-        )
-      })
-
-      it('should get prisoner list view given invalid sort options', async () => {
-        // Given
-        req.query = {
-          sort: 'unknown-field,nearest-neighbour',
-        }
-
-        const expectedView: RenderedPrisonerListView = {
-          currentPageOfRecords: [donVitoCorleone, jimmyLightFingers, jimmyMcShifty], // default sort order (name ascending) applied
-          searchTerm: '',
-          statusFilter: '',
-          sortBy: 'name', // current sort by field is `name` given the requested value was invalid
-          sortOrder: 'ascending', // current sort order is `ascending` given the requested value was invalid
+          sortOrder: 'ascending',
           items: [
             {
               href: '?sort=name,ascending&page=1',
@@ -380,6 +332,116 @@ describe('prisonerListController', () => {
           'AUSER_GEN',
           'some-token',
         )
+        expect(req.session.prisonerListSortOptions).toEqual('name,ascending') // expect current sort options saved in session
+      })
+
+      it('should get prisoner list view given invalid sort options via query string parameter', async () => {
+        // Given
+        req.query = {
+          sort: 'unknown-field,nearest-neighbour',
+        }
+
+        const expectedView: RenderedPrisonerListView = {
+          currentPageOfRecords: [jimmyLightFingers, donVitoCorleone, jimmyMcShifty], // default sort order (reception-date descending) applied
+          searchTerm: '',
+          statusFilter: '',
+          sortBy: 'reception-date', // current sort by field is `reception-date` given the requested value was invalid
+          sortOrder: 'descending', // current sort order is `descending` given the requested value was invalid
+          items: [
+            {
+              href: '?sort=reception-date,descending&page=1',
+              selected: true,
+              text: '1',
+              type: undefined,
+            },
+          ],
+          nextPage: {
+            href: '',
+            text: 'Next',
+          },
+          previousPage: {
+            href: '',
+            text: 'Previous',
+          },
+          renderPaginationControls: false,
+          results: {
+            count: 3,
+            from: 1,
+            to: 3,
+          },
+        }
+
+        // When
+        await controller.getPrisonerListView(
+          req as undefined as Request,
+          res as undefined as Response,
+          next as undefined as NextFunction,
+        )
+
+        // Then
+        expect(res.render).toHaveBeenCalledWith('pages/prisonerList/index', expectedView)
+        expect(prisonerListService.getPrisonerSearchSummariesForPrisonId).toHaveBeenCalledWith(
+          'BXI',
+          0,
+          9999,
+          'AUSER_GEN',
+          'some-token',
+        )
+        expect(req.session.prisonerListSortOptions).toEqual('reception-date,descending') // expect default sort options saved in session
+      })
+
+      it('should get prisoner list view given sorting by name ascending via session variable', async () => {
+        // Given
+        req.query = {}
+        req.session.prisonerListSortOptions = 'name,ascending'
+
+        const expectedView: RenderedPrisonerListView = {
+          currentPageOfRecords: [donVitoCorleone, jimmyLightFingers, jimmyMcShifty],
+          searchTerm: '',
+          statusFilter: '',
+          sortBy: 'name',
+          sortOrder: 'ascending',
+          items: [
+            {
+              href: '?sort=name,ascending&page=1',
+              selected: true,
+              text: '1',
+              type: undefined,
+            },
+          ],
+          nextPage: {
+            href: '',
+            text: 'Next',
+          },
+          previousPage: {
+            href: '',
+            text: 'Previous',
+          },
+          renderPaginationControls: false,
+          results: {
+            count: 3,
+            from: 1,
+            to: 3,
+          },
+        }
+
+        // When
+        await controller.getPrisonerListView(
+          req as undefined as Request,
+          res as undefined as Response,
+          next as undefined as NextFunction,
+        )
+
+        // Then
+        expect(res.render).toHaveBeenCalledWith('pages/prisonerList/index', expectedView)
+        expect(prisonerListService.getPrisonerSearchSummariesForPrisonId).toHaveBeenCalledWith(
+          'BXI',
+          0,
+          9999,
+          'AUSER_GEN',
+          'some-token',
+        )
+        expect(req.session.prisonerListSortOptions).toEqual('name,ascending') // expect current sort options saved in session
       })
     })
   })

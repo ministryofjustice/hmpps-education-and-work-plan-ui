@@ -4,8 +4,8 @@ import PrisonerListView from './prisonerListView'
 import config from '../../config'
 import PagedPrisonerSearchSummary, { FilterBy, SortBy, SortOrder } from './pagedPrisonerSearchSummary'
 
-const DEFAULT_SORT_FIELD = SortBy.NAME
-const DEFAULT_SORT_DIRECTION = SortOrder.ASCENDING
+const DEFAULT_SORT_FIELD = SortBy.RECEPTION_DATE
+const DEFAULT_SORT_DIRECTION = SortOrder.DESCENDING
 
 export default class PrisonerListController {
   constructor(private readonly prisonerListService: PrisonerListService) {}
@@ -26,10 +26,13 @@ export default class PrisonerListController {
     }
 
     // Apply sorting
-    const sortQueryStringValue =
-      (req.query.sort as string) || `${DEFAULT_SORT_FIELD.toString()},${DEFAULT_SORT_DIRECTION.toString()}`
+    const sortQueryStringValue = // sort options should be from query string, session, or defaults; in that order of preference
+      (req.query.sort as string) ||
+      req.session.prisonerListSortOptions ||
+      `${DEFAULT_SORT_FIELD.toString()},${DEFAULT_SORT_DIRECTION.toString()}`
     const sortOptions = toSortOptions(sortQueryStringValue)
     pagedPrisonerSearchSummary.sort(sortOptions.sortBy, sortOptions.sortOrder)
+    req.session.prisonerListSortOptions = `${sortOptions.sortBy.toString()},${sortOptions.sortOrder.toString()}` // save last sort options to session so that they are remembered when coming back to Prisoner List screen
 
     // Apply paging
     const page = req.query.page as string
