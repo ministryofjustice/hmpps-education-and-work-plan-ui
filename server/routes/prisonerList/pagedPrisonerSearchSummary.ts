@@ -97,11 +97,19 @@ export default class PagedPrisonerSearchSummary {
     (filterBy: FilterBy, value: string) =>
     (prisonerSearchSummary: PrisonerSearchSummary): boolean => {
       switch (filterBy) {
-        case FilterBy.NAME:
-          return (
-            prisonerSearchSummary.lastName.toUpperCase().includes(value.trim().toUpperCase()) ||
-            prisonerSearchSummary.firstName.toUpperCase().includes(value.trim().toUpperCase())
-          )
+        case FilterBy.NAME: {
+          const searchTerms = [
+            prisonerSearchSummary.prisonNumber.toUpperCase(), // eg: A1234BB
+            prisonerSearchSummary.firstName.toUpperCase(), // eg: JIMMY
+            prisonerSearchSummary.lastName.toUpperCase(), // eg: LIGHTFINGERS
+            `${prisonerSearchSummary.firstName}, ${prisonerSearchSummary.lastName}`.toUpperCase(), // eg: JIMMY, LIGHTFINGERS
+            `${prisonerSearchSummary.firstName} ${prisonerSearchSummary.lastName}`.toUpperCase(), // eg: JIMMY LIGHTFINGERS
+            `${prisonerSearchSummary.lastName}, ${prisonerSearchSummary.firstName}`.toUpperCase(), // eg: LIGHTFINGERS, JIMMY
+            `${prisonerSearchSummary.lastName} ${prisonerSearchSummary.firstName}`.toUpperCase(), // eg: LIGHTFINGERS JIMMY
+            `${prisonerSearchSummary.firstName.charAt(0)} ${prisonerSearchSummary.lastName}`.toUpperCase(), // eg: J LIGHTFINGERS
+          ]
+          return searchTerms.some(searchTerm => searchTerm.includes(value.trim().toUpperCase()))
+        }
         case FilterBy.STATUS:
           return sortableFilterableStatus(prisonerSearchSummary) === value
         default:

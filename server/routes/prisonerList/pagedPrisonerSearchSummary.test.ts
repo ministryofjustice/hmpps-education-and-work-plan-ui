@@ -450,25 +450,7 @@ describe('pagedPrisonerSearchSummary', () => {
       it('should filter given value that filters out some records', () => {
         // Given
         const prisonerSearchSummaries = [terrySmith, jimAardvark, bobSmith, fredSmith, billHumphries]
-        const pagedPrisonerSearchSummaries = new PagedPrisonerSearchSummary(prisonerSearchSummaries, 10)
-
-        const value = '  SmItH  '
-
-        // When
-        pagedPrisonerSearchSummaries.filter(FilterBy.NAME, value)
-
-        // Then
-        expect(pagedPrisonerSearchSummaries.currentPageNumber).toEqual(1)
-        expect(pagedPrisonerSearchSummaries.totalPages).toEqual(1)
-        expect(pagedPrisonerSearchSummaries.resultIndexFrom).toEqual(1)
-        expect(pagedPrisonerSearchSummaries.resultIndexTo).toEqual(3)
-        expect(pagedPrisonerSearchSummaries.getCurrentPage()).toEqual([terrySmith, bobSmith, fredSmith])
-      })
-
-      it('should filter given value that filters out some records', () => {
-        // Given
-        const prisonerSearchSummaries = [terrySmith, jimAardvark, bobSmith, fredSmith, billHumphries]
-        const pagedPrisonerSearchSummaries = new PagedPrisonerSearchSummary(prisonerSearchSummaries, 2) // totalPages will be 3
+        const pagedPrisonerSearchSummaries = new PagedPrisonerSearchSummary(prisonerSearchSummaries, 2) // totalPages will be 3 before filtering
 
         const value = '  SmItH  '
 
@@ -481,6 +463,38 @@ describe('pagedPrisonerSearchSummary', () => {
         expect(pagedPrisonerSearchSummaries.resultIndexFrom).toEqual(1)
         expect(pagedPrisonerSearchSummaries.resultIndexTo).toEqual(2)
         expect(pagedPrisonerSearchSummaries.getCurrentPage()).toEqual([terrySmith, bobSmith])
+      })
+
+      Array.of(
+        'J',
+        'jim',
+        'aardv',
+        'aardvark',
+        'jim aardvark',
+        'j aardvark',
+        'aardvark j',
+        'aardvark jim',
+        'Jim, Aardvark',
+        'AARDVARK, JIM',
+        'G9981UK',
+        'G9981',
+        '9981',
+      ).forEach(value => {
+        it(`should filter given value '${value}' that will return a specific prisoner`, () => {
+          // Given
+          const prisonerSearchSummaries = [terrySmith, jimAardvark, bobSmith, fredSmith, billHumphries]
+          const pagedPrisonerSearchSummaries = new PagedPrisonerSearchSummary(prisonerSearchSummaries, 10)
+
+          // When
+          pagedPrisonerSearchSummaries.filter(FilterBy.NAME, value)
+
+          // Then
+          expect(pagedPrisonerSearchSummaries.currentPageNumber).toEqual(1)
+          expect(pagedPrisonerSearchSummaries.totalPages).toEqual(1)
+          expect(pagedPrisonerSearchSummaries.resultIndexFrom).toEqual(1)
+          expect(pagedPrisonerSearchSummaries.resultIndexTo).toEqual(1)
+          expect(pagedPrisonerSearchSummaries.getCurrentPage()).toEqual([jimAardvark])
+        })
       })
     })
 
