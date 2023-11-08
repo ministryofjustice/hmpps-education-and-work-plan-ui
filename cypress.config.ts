@@ -9,6 +9,7 @@ import curiousApi from './integration_tests/mockApis/curiousApi'
 import ciagInducationApi from './integration_tests/mockApis/ciagInducationApi'
 import frontendComponentApi from './integration_tests/mockApis/frontendComponentApi'
 import prisonerListApi from './integration_tests/mockApis/prisonerListApi'
+import prisonerSearchSummaryMockDataGenerator from './integration_tests/mockData/prisonerSearchSummaryMockDataGenerator'
 
 export default defineConfig({
   chromeWebSecurity: false,
@@ -40,6 +41,7 @@ export default defineConfig({
         ...ciagInducationApi,
         ...frontendComponentApi,
         ...prisonerListApi,
+        ...prisonerSearchSummaryMockDataGenerator,
       })
       on('after:spec', (spec: Cypress.Spec, results: CypressCommandLine.RunResult) => {
         if (results && results.video) {
