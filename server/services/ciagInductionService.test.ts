@@ -1,8 +1,19 @@
 import type { EducationAndTraining, WorkAndInterests } from 'viewModels'
 import CiagInductionClient from '../data/ciagInductionClient'
 import CiagInductionService from './ciagInductionService'
+import { aLongQuestionSetCiagInduction } from '../testsupport/ciagInductionTestDataBuilder'
+import aValidLongQuestionSetWorkAndInterests from '../testsupport/workAndInterestsTestDataBuilder'
+import toWorkAndInterests from '../data/mappers/workAndInterestMapper'
+import toEducationAndTraining from '../data/mappers/educationAndTrainingMapper'
+import { aValidLongQuestionSetEducationAndTraining } from '../testsupport/educationAndTrainingTestDataBuilder'
+
+jest.mock('../data/mappers/workAndInterestMapper')
+jest.mock('../data/mappers/educationAndTrainingMapper')
 
 describe('ciagInductionService', () => {
+  const mockedWorkAndInterestsMapper = toWorkAndInterests as jest.MockedFunction<typeof toWorkAndInterests>
+  const mockedEducationAndTrainingMapper = toEducationAndTraining as jest.MockedFunction<typeof toEducationAndTraining>
+
   const ciagClient = {
     getCiagInduction: jest.fn(),
   }
@@ -65,15 +76,35 @@ describe('ciagInductionService', () => {
         inductionQuestionSet: undefined,
         data: undefined,
       }
+      mockedWorkAndInterestsMapper.mockReturnValue(expectedWorkAndInterests)
 
       // When
-      const actual = await ciagInductionService.getWorkAndInterests(prisonNumber, userToken).catch(error => {
-        return error
-      })
+      const actual = await ciagInductionService.getWorkAndInterests(prisonNumber, userToken)
 
       // Then
       expect(actual).toEqual(expectedWorkAndInterests)
       expect(ciagClient.getCiagInduction).toHaveBeenCalledWith(prisonNumber, userToken)
+      expect(mockedWorkAndInterestsMapper).toHaveBeenCalledWith(undefined)
+    })
+
+    it('should retrieve work and interests given CIAG Induction API returns a CIAG Induction', async () => {
+      // Given
+      const prisonNumber = 'A1234BC'
+      const userToken = 'a-user-token'
+
+      const ciagInduction = aLongQuestionSetCiagInduction()
+      ciagClient.getCiagInduction.mockResolvedValue(ciagInduction)
+
+      const expectedWorkAndInterests = aValidLongQuestionSetWorkAndInterests()
+      mockedWorkAndInterestsMapper.mockReturnValue(expectedWorkAndInterests)
+
+      // When
+      const actual = await ciagInductionService.getWorkAndInterests(prisonNumber, userToken)
+
+      // Then
+      expect(actual).toEqual(expectedWorkAndInterests)
+      expect(ciagClient.getCiagInduction).toHaveBeenCalledWith(prisonNumber, userToken)
+      expect(mockedWorkAndInterestsMapper).toHaveBeenCalledWith(ciagInduction)
     })
   })
 
@@ -129,14 +160,103 @@ describe('ciagInductionService', () => {
         inductionQuestionSet: undefined,
         data: undefined,
       }
+      mockedEducationAndTrainingMapper.mockReturnValue(expectedEducationAndTraining)
 
       // When
-      const actual = await ciagInductionService.getEducationAndTraining(prisonNumber, userToken).catch(error => {
+      const actual = await ciagInductionService.getEducationAndTraining(prisonNumber, userToken)
+
+      // Then
+      expect(actual).toEqual(expectedEducationAndTraining)
+      expect(ciagClient.getCiagInduction).toHaveBeenCalledWith(prisonNumber, userToken)
+      expect(mockedEducationAndTrainingMapper).toHaveBeenCalledWith(undefined)
+    })
+
+    it('should retrieve Education and Training given CIAG Induction API returns a CIAG Induction', async () => {
+      // Given
+      const prisonNumber = 'A1234BC'
+      const userToken = 'a-user-token'
+
+      const ciagInduction = aLongQuestionSetCiagInduction()
+      ciagClient.getCiagInduction.mockResolvedValue(ciagInduction)
+
+      const expectedEducationAndTraining = aValidLongQuestionSetEducationAndTraining()
+      mockedEducationAndTrainingMapper.mockReturnValue(expectedEducationAndTraining)
+
+      // When
+      const actual = await ciagInductionService.getEducationAndTraining(prisonNumber, userToken)
+
+      // Then
+      expect(actual).toEqual(expectedEducationAndTraining)
+      expect(ciagClient.getCiagInduction).toHaveBeenCalledWith(prisonNumber, userToken)
+      expect(mockedEducationAndTrainingMapper).toHaveBeenCalledWith(ciagInduction)
+    })
+  })
+
+  describe('ciagInductionExists', () => {
+    it('should determine if CIAG Induction exists given CIAG Induction API returns an induction response', async () => {
+      // Given
+      const prisonNumber = 'A1234BC'
+      const userToken = 'a-user-token'
+
+      ciagClient.getCiagInduction.mockResolvedValue(aLongQuestionSetCiagInduction())
+
+      const expected = true
+
+      // When
+      const actual = await ciagInductionService.ciagInductionExists(prisonNumber, userToken)
+
+      // Then
+      expect(actual).toEqual(expected)
+      expect(ciagClient.getCiagInduction).toHaveBeenCalledWith(prisonNumber, userToken)
+    })
+
+    it('should determine if CIAG Induction exists given CIAG Induction API returns Not Found', async () => {
+      // Given
+      const prisonNumber = 'A1234BC'
+      const userToken = 'a-user-token'
+
+      const ciagInductionApiError = {
+        status: 404,
+        data: {
+          status: 404,
+          userMessage: `CIAG profile does not exist for offender ${prisonNumber}`,
+          developerMessage: `CIAG profile does not exist for offender ${prisonNumber}`,
+        },
+      }
+      ciagClient.getCiagInduction.mockRejectedValue(ciagInductionApiError)
+
+      const expected = false
+
+      // When
+      const actual = await ciagInductionService.ciagInductionExists(prisonNumber, userToken)
+
+      // Then
+      expect(actual).toEqual(expected)
+      expect(ciagClient.getCiagInduction).toHaveBeenCalledWith(prisonNumber, userToken)
+    })
+
+    it('should rethrow error given CIAG Induction API returns an unexpected error', async () => {
+      // Given
+      const prisonNumber = 'A1234BC'
+      const userToken = 'a-user-token'
+
+      const ciagInductionApiError = {
+        status: 500,
+        data: {
+          status: 500,
+          userMessage: 'An unexpected error occurred',
+          developerMessage: 'An unexpected error occurred',
+        },
+      }
+      ciagClient.getCiagInduction.mockRejectedValue(ciagInductionApiError)
+
+      // When
+      const actual = await ciagInductionService.ciagInductionExists(prisonNumber, userToken).catch(error => {
         return error
       })
 
       // Then
-      expect(actual).toEqual(expectedEducationAndTraining)
+      expect(actual).toEqual(ciagInductionApiError)
       expect(ciagClient.getCiagInduction).toHaveBeenCalledWith(prisonNumber, userToken)
     })
   })
