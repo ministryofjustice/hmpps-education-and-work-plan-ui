@@ -13,7 +13,6 @@ export default class CiagInductionService {
       const ciagInduction = await this.getCiagInduction(prisonNumber, token)
       return toWorkAndInterests(ciagInduction)
     } catch (error) {
-      logger.error(`Error retrieving data from CIAG Induction API: ${JSON.stringify(error)}`)
       return { problemRetrievingData: true } as WorkAndInterests
     }
   }
@@ -23,9 +22,12 @@ export default class CiagInductionService {
       const ciagInduction = await this.getCiagInduction(prisonNumber, token)
       return toEducationAndTraining(ciagInduction)
     } catch (error) {
-      logger.error(`Error retrieving data from CIAG Induction API: ${JSON.stringify(error)}`)
       return { problemRetrievingData: true } as EducationAndTraining
     }
+  }
+
+  async ciagInductionExists(prisonNumber: string, token: string): Promise<boolean> {
+    return (await this.getCiagInduction(prisonNumber, token)) !== undefined
   }
 
   private getCiagInduction = async (prisonNumber: string, token: string): Promise<CiagInduction> => {
@@ -36,6 +38,8 @@ export default class CiagInductionService {
         logger.info(`No CIAG Induction found for prisoner [${prisonNumber}] in CIAG Induction API`)
         return undefined
       }
+
+      logger.error(`Error retrieving data from CIAG Induction API: ${JSON.stringify(error)}`)
       throw error
     }
   }
