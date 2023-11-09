@@ -128,6 +128,11 @@ const FORENAMES = [
   'JIMMY',
   'STEVE',
   'STEPHEN',
+  'JOHN',
+  'OSCAR',
+  'CHARLIE',
+  'ROMEO',
+  'JACK',
 ]
 
 const SURNAMES = [
@@ -149,6 +154,12 @@ const SURNAMES = [
   'MONTEGO',
   'MINI',
   'GOLF',
+  'TANGO',
+  'ECHO',
+  'FOXTROT',
+  'LIMA',
+  'JOHNSON',
+  'JACKSON',
 ]
 
 export default { generatePrisonerSearchSummaries: prisonerSearchSummaryMockDataGenerator }
