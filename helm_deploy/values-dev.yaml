@@ -25,9 +25,7 @@ generic-service:
     ENVIRONMENT_NAME: "DEV"
 
   allowlist:
-    hmp-parc-1: 217.161.76.162/32
-    hmp-parc-2: 217.161.76.154/32
-    undefined: 5.181.59.114/32
+    uservision-accessibility-testers: 5.181.59.114/32
     cymulate-1: 54.217.50.18/32
     cymulate-2: 52.208.202.111/32
     cymulate-3: 52.49.144.209/32
