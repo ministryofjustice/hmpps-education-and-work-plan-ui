@@ -5,9 +5,10 @@ export default class PrisonerListPage extends Page {
     super('prisoner-list-page')
   }
 
-  hasResultsDisplayed(): PrisonerListPage {
+  hasResultsDisplayed(expectedResultCount: number): PrisonerListPage {
     this.prisonerListResultsTable().should('be.visible')
     this.zeroResultsMessage().should('not.exist')
+    this.paginationResultsCount().should('contain', ` of ${expectedResultCount} results`)
     return this
   }
 
@@ -47,6 +48,34 @@ export default class PrisonerListPage extends Page {
     return this
   }
 
+  sortBy(field: 'name' | 'location' | 'release-date' | 'reception-date' | 'status'): PrisonerListPage {
+    this.sortableTableHeaders().find(`[data-qa=${field}-column-header] button`).click()
+    return this
+  }
+
+  isSortedBy(
+    field: 'name' | 'location' | 'release-date' | 'reception-date' | 'status',
+    direction: 'ascending' | 'descending',
+  ): PrisonerListPage {
+    this.sortableTableHeaders().find(`[data-qa=${field}-column-header]`).should('have.attr', 'aria-sort', direction)
+    return this
+  }
+
+  firstRowNameIs(expected: string): PrisonerListPage {
+    this.prisonerListResultsFirstRow().find('td:nth-of-type(1) a').should('contain', expected)
+    return this
+  }
+
+  firstRowPrisonNumberIs(expected: string): PrisonerListPage {
+    this.prisonerListResultsFirstRow().find('td:nth-of-type(1) span').should('contain', expected)
+    return this
+  }
+
+  firstRowLocationIs(expected: string): PrisonerListPage {
+    this.prisonerListResultsFirstRow().find('td:nth-of-type(2)').should('contain', expected)
+    return this
+  }
+
   searchTermField = (): PageElement => cy.get('#searchTerm')
 
   statusFilterDropdown = (): PageElement => cy.get('#statusFilter')
@@ -57,5 +86,14 @@ export default class PrisonerListPage extends Page {
 
   prisonerListResultsTable = (): PageElement => cy.get('[data-qa=prisoner-list-results-table]')
 
+  prisonerListResultsFirstRow = (): PageElement =>
+    cy.get('[data-qa=prisoner-list-results-table] tbody tr:first-of-type')
+
   zeroResultsMessage = (): PageElement => cy.get('[data-qa=zero-results-message]')
+
+  paginationControls = (): PageElement => cy.get('[data-qa=prisoner-list-pagination] ul')
+
+  paginationResultsCount = (): PageElement => cy.get('[data-qa=prisoner-list-pagination] p')
+
+  sortableTableHeaders = (): PageElement => cy.get('[data-qa=sortable-table-headers]')
 }

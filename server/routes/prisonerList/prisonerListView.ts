@@ -16,7 +16,6 @@ export default class PrisonerListView {
     statusFilter: string
     sortBy: string
     sortOrder: string
-    renderPaginationControls: boolean
     items: Item[]
     results: Results
     previousPage: Paging
@@ -28,7 +27,6 @@ export default class PrisonerListView {
       statusFilter: this.statusFilter,
       sortBy: this.sortBy,
       sortOrder: this.sortOrder,
-      renderPaginationControls: this.pagedPrisonerSearchSummary.totalPages > 1,
       items: buildItemsArray({
         pagedPrisonerSearchSummary: this.pagedPrisonerSearchSummary,
         searchTerm: this.searchTerm,
@@ -63,6 +61,11 @@ const buildItemsArray = (config: {
   sortOrder: string
 }): Item[] => {
   const items: Item[] = []
+
+  if (config.pagedPrisonerSearchSummary.totalPages === 1) {
+    return items
+  }
+
   for (let page = 1; page <= config.pagedPrisonerSearchSummary.totalPages; page += 1) {
     items.push({
       type: undefined,

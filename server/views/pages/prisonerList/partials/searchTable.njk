@@ -17,7 +17,7 @@
       <table class="govuk-table" data-module="moj-sortable-table" data-qa="prisoner-list-results-table">
 
         <thead class="govuk-table__head">
-          <tr class="govuk-table__row">
+          <tr class="govuk-table__row" data-qa="sortable-table-headers">
             {{ sortableTableHeader({
               searchTerm: searchTerm,
               statusFilter: statusFilter,
@@ -85,14 +85,14 @@
       </table>
     </form>
 
-    {% if renderPaginationControls %}
+    <section data-qa="prisoner-list-pagination">
       {{ mojPagination({
         items: items,
         results: results,
         previous: previousPage if previousPage.href,
         next: nextPage if nextPage.href
       }) }}
-    {% endif %}
+    </section>
 
   {% else %}
     <h2 class="govuk-heading-m" data-qa="zero-results-message">0 results for "{{ searchTerm }}"</h2>

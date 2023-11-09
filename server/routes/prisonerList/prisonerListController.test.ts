@@ -72,14 +72,7 @@ describe('prisonerListController', () => {
         statusFilter: '',
         sortBy: 'reception-date',
         sortOrder: 'descending',
-        items: [
-          {
-            href: '?sort=reception-date,descending&page=1',
-            selected: true,
-            text: '1',
-            type: undefined,
-          },
-        ],
+        items: [],
         nextPage: {
           href: '',
           text: 'Next',
@@ -88,7 +81,6 @@ describe('prisonerListController', () => {
           href: '',
           text: 'Previous',
         },
-        renderPaginationControls: false,
         results: {
           count: 3,
           from: 1,
@@ -127,14 +119,7 @@ describe('prisonerListController', () => {
           statusFilter: '',
           sortBy: 'reception-date',
           sortOrder: 'descending',
-          items: [
-            {
-              href: '?searchTerm=Jimmy&sort=reception-date,descending&page=1',
-              selected: true,
-              text: '1',
-              type: undefined,
-            },
-          ],
+          items: [],
           nextPage: {
             href: '',
             text: 'Next',
@@ -143,7 +128,6 @@ describe('prisonerListController', () => {
             href: '',
             text: 'Previous',
           },
-          renderPaginationControls: false,
           results: {
             count: 2,
             from: 1,
@@ -181,14 +165,7 @@ describe('prisonerListController', () => {
           statusFilter: 'NEEDS_PLAN',
           sortBy: 'reception-date',
           sortOrder: 'descending',
-          items: [
-            {
-              href: '?statusFilter=NEEDS_PLAN&sort=reception-date,descending&page=1',
-              selected: true,
-              text: '1',
-              type: undefined,
-            },
-          ],
+          items: [],
           nextPage: {
             href: '',
             text: 'Next',
@@ -197,7 +174,6 @@ describe('prisonerListController', () => {
             href: '',
             text: 'Previous',
           },
-          renderPaginationControls: false,
           results: {
             count: 2,
             from: 1,
@@ -236,14 +212,7 @@ describe('prisonerListController', () => {
           statusFilter: 'NEEDS_PLAN',
           sortBy: 'reception-date',
           sortOrder: 'descending',
-          items: [
-            {
-              href: '?searchTerm=Jimmy&statusFilter=NEEDS_PLAN&sort=reception-date,descending&page=1',
-              selected: true,
-              text: '1',
-              type: undefined,
-            },
-          ],
+          items: [],
           nextPage: {
             href: '',
             text: 'Next',
@@ -252,7 +221,6 @@ describe('prisonerListController', () => {
             href: '',
             text: 'Previous',
           },
-          renderPaginationControls: false,
           results: {
             count: 1,
             from: 1,
@@ -292,14 +260,7 @@ describe('prisonerListController', () => {
           statusFilter: '',
           sortBy: 'name',
           sortOrder: 'ascending',
-          items: [
-            {
-              href: '?sort=name,ascending&page=1',
-              selected: true,
-              text: '1',
-              type: undefined,
-            },
-          ],
+          items: [],
           nextPage: {
             href: '',
             text: 'Next',
@@ -308,7 +269,6 @@ describe('prisonerListController', () => {
             href: '',
             text: 'Previous',
           },
-          renderPaginationControls: false,
           results: {
             count: 3,
             from: 1,
@@ -347,14 +307,7 @@ describe('prisonerListController', () => {
           statusFilter: '',
           sortBy: 'reception-date', // current sort by field is `reception-date` given the requested value was invalid
           sortOrder: 'descending', // current sort order is `descending` given the requested value was invalid
-          items: [
-            {
-              href: '?sort=reception-date,descending&page=1',
-              selected: true,
-              text: '1',
-              type: undefined,
-            },
-          ],
+          items: [],
           nextPage: {
             href: '',
             text: 'Next',
@@ -363,7 +316,6 @@ describe('prisonerListController', () => {
             href: '',
             text: 'Previous',
           },
-          renderPaginationControls: false,
           results: {
             count: 3,
             from: 1,
@@ -401,14 +353,7 @@ describe('prisonerListController', () => {
           statusFilter: '',
           sortBy: 'name',
           sortOrder: 'ascending',
-          items: [
-            {
-              href: '?sort=name,ascending&page=1',
-              selected: true,
-              text: '1',
-              type: undefined,
-            },
-          ],
+          items: [],
           nextPage: {
             href: '',
             text: 'Next',
@@ -417,7 +362,6 @@ describe('prisonerListController', () => {
             href: '',
             text: 'Previous',
           },
-          renderPaginationControls: false,
           results: {
             count: 3,
             from: 1,
@@ -449,7 +393,6 @@ describe('prisonerListController', () => {
 
 interface RenderedPrisonerListView {
   currentPageOfRecords: PrisonerSearchSummary[]
-  renderPaginationControls: boolean
   searchTerm: string
   statusFilter: string
   sortBy: string
