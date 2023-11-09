@@ -73,7 +73,11 @@ const buildItemsArray = (config: {
   }
   // Return 10 pages, showing 5 pages before and after the current page
   const start = Math.max(0, config.pagedPrisonerSearchSummary.currentPageNumber - 6)
-  const end = Math.min(start + 11, items.length)
+  const end = Math.min(start + 10, items.length)
+  // If are less than 5 pages before the current page, show the previous 10 pages
+  if (end - start < 10) {
+    return items.slice(Math.max(0, end - 10), end)
+  }
   return items.slice(start, end)
 }
 
