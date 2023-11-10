@@ -1,6 +1,6 @@
+import createError from 'http-errors'
 import { RequestHandler } from 'express'
 import EducationAndTrainingView from './educationAndTrainingView'
-import OverviewView from './overviewView'
 import SupportNeedsView from './supportNeedsView'
 import { CuriousService } from '../../services'
 import EducationAndWorkPlanService from '../../services/educationAndWorkPlanService'
@@ -11,6 +11,8 @@ import {
 } from '../inPrisonEducationRecordsResolver'
 import WorkAndInterestsView from './workAndInterestsView'
 import CiagInductionService from '../../services/ciagInductionService'
+import PostInductionOverviewView from './postInductionOverviewView'
+import PreInductionOverviewView from './preInductionOverviewView'
 
 export default class OverviewController {
   constructor(
@@ -19,7 +21,8 @@ export default class OverviewController {
     private readonly ciagInductionService: CiagInductionService,
   ) {}
 
-  getOverviewView: RequestHandler = async (req, res, next): Promise<void> => {
+  // TODO - remove this entire method after private beta go-live, once we have switched over to use the PLP Prisoner List and Overview screens rather than the CIAG ones
+  getPrivateBetaOverviewView: RequestHandler = async (req, res, next): Promise<void> => {
     const { prisonNumber } = req.params
     req.session.newGoal = undefined
     req.session.newGoals = undefined
@@ -34,7 +37,7 @@ export default class OverviewController {
     const allInPrisonEducation = await this.curiousService.getLearnerEducation(prisonNumber, req.user.username)
     const completedInPrisonEducation = mostRecentCompletedInPrisonEducationRecords(allInPrisonEducation, 2)
 
-    const view = new OverviewView(
+    const view = new PostInductionOverviewView(
       prisonNumber,
       prisonerSummary,
       actionPlan,
@@ -42,6 +45,42 @@ export default class OverviewController {
       completedInPrisonEducation,
     )
     res.render('pages/overview/index', { ...view.renderArgs })
+  }
+
+  getOverviewView: RequestHandler = async (req, res, next): Promise<void> => {
+    const { prisonNumber } = req.params
+    req.session.newGoal = undefined
+    req.session.newGoals = undefined
+
+    const { prisonerSummary } = req.session
+
+    try {
+      const ciagInductionExists = await this.ciagInductionService.ciagInductionExists(prisonNumber, req.user.token)
+
+      const allFunctionalSkills = await this.curiousService.getPrisonerFunctionalSkills(prisonNumber, req.user.username)
+      const functionalSkills = mostRecentFunctionalSkills(allFunctionalSkills)
+
+      const allInPrisonEducation = await this.curiousService.getLearnerEducation(prisonNumber, req.user.username)
+      const completedInPrisonEducation = mostRecentCompletedInPrisonEducationRecords(allInPrisonEducation, 2)
+
+      let view: PostInductionOverviewView | PreInductionOverviewView
+      if (ciagInductionExists) {
+        const actionPlan = await this.educationAndWorkPlanService.getActionPlan(prisonNumber, req.user.token)
+        view = new PostInductionOverviewView(
+          prisonNumber,
+          prisonerSummary,
+          actionPlan,
+          functionalSkills,
+          completedInPrisonEducation,
+        )
+      } else {
+        view = new PreInductionOverviewView(prisonNumber, prisonerSummary, functionalSkills, completedInPrisonEducation)
+      }
+
+      return res.render('pages/overview/index', { ...view.renderArgs })
+    } catch (error) {
+      return next(createError(500, `Error checking whether a CIAG Induction exists for prisoner ${prisonNumber}`))
+    }
   }
 
   getSupportNeedsView: RequestHandler = async (req, res, next): Promise<void> => {

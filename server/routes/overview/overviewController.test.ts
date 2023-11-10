@@ -1,3 +1,4 @@
+import createError from 'http-errors'
 import moment from 'moment'
 import type { FunctionalSkills, InPrisonEducationRecords, WorkAndInterests } from 'viewModels'
 import { SessionData } from 'express-session'
@@ -28,6 +29,7 @@ describe('overviewController', () => {
   const ciagInductionService = {
     getWorkAndInterests: jest.fn(),
     getEducationAndTraining: jest.fn(),
+    ciagInductionExists: jest.fn(),
   }
 
   const controller = new OverviewController(
@@ -57,7 +59,8 @@ describe('overviewController', () => {
     req.params = {} as Record<string, string>
   })
 
-  describe('getOverviewView', () => {
+  // TODO - remove these tests after private beta go-live, once we have switched over to use the PLP Prisoner List and Overview screens rather than the CIAG ones
+  describe('getPrivateBetaOverviewView', () => {
     it('should get overview view', async () => {
       // Given
       const username = 'a-dps-user'
@@ -112,6 +115,82 @@ describe('overviewController', () => {
         actionPlan,
         functionalSkills: expectedFunctionalSkills,
         completedInPrisonEducation: expectedCompletedInPrisonEducation,
+        isPostInduction: true,
+      }
+
+      // When
+      await controller.getPrivateBetaOverviewView(
+        req as undefined as Request,
+        res as undefined as Response,
+        next as undefined as NextFunction,
+      )
+
+      // Then
+      expect(res.render).toHaveBeenCalledWith('pages/overview/index', expectedView)
+      expect(educationAndWorkPlanService.getActionPlan).toHaveBeenCalledWith(prisonNumber, 'a-user-token')
+      expect(req.session.newGoal).toBeUndefined()
+      expect(req.session.newGoals).toBeUndefined()
+    })
+  })
+
+  describe('getOverviewView', () => {
+    it('should get overview view given CIAG Induction and PLP Action Plan both exist', async () => {
+      // Given
+      const username = 'a-dps-user'
+      req.user.username = username
+      req.user.token = 'a-user-token'
+
+      const expectedTab = 'overview'
+      req.params.tab = expectedTab
+
+      const prisonNumber = 'A1234GC'
+      req.params.prisonNumber = prisonNumber
+
+      req.session.prisonerSummary = aValidPrisonerSummary(prisonNumber)
+
+      ciagInductionService.ciagInductionExists.mockResolvedValue(true)
+
+      const actionPlan = aValidActionPlanWithOneGoal()
+      educationAndWorkPlanService.getActionPlan.mockResolvedValue(actionPlan)
+
+      const functionalSkillsFromCurious = {
+        problemRetrievingData: false,
+        assessments: [],
+      } as FunctionalSkills
+      curiousService.getPrisonerFunctionalSkills.mockResolvedValue(functionalSkillsFromCurious)
+
+      const expectedFunctionalSkills = {
+        problemRetrievingData: false,
+        assessments: [
+          {
+            type: 'ENGLISH',
+          },
+          {
+            type: 'MATHS',
+          },
+        ],
+      } as FunctionalSkills
+
+      const inPrisonEducation: InPrisonEducationRecords = {
+        problemRetrievingData: false,
+        educationRecords: [aValidEnglishInPrisonEducation(), aValidMathsInPrisonEducation()],
+      }
+      curiousService.getLearnerEducation.mockResolvedValue(inPrisonEducation)
+
+      const expectedCompletedInPrisonEducation: InPrisonEducationRecords = {
+        problemRetrievingData: false,
+        educationRecords: [aValidMathsInPrisonEducation()],
+      }
+
+      const expectedPrisonerSummary = aValidPrisonerSummary(prisonNumber)
+      const expectedView = {
+        prisonerSummary: expectedPrisonerSummary,
+        tab: expectedTab,
+        prisonNumber,
+        actionPlan,
+        functionalSkills: expectedFunctionalSkills,
+        completedInPrisonEducation: expectedCompletedInPrisonEducation,
+        isPostInduction: true,
       }
 
       // When
@@ -124,6 +203,116 @@ describe('overviewController', () => {
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/overview/index', expectedView)
       expect(educationAndWorkPlanService.getActionPlan).toHaveBeenCalledWith(prisonNumber, 'a-user-token')
+      expect(ciagInductionService.ciagInductionExists).toHaveBeenCalledWith(prisonNumber, 'a-user-token')
+      expect(req.session.newGoal).toBeUndefined()
+      expect(req.session.newGoals).toBeUndefined()
+    })
+
+    it('should get overview view given CIAG Induction does not exist', async () => {
+      // Given
+      const username = 'a-dps-user'
+      req.user.username = username
+      req.user.token = 'a-user-token'
+
+      const expectedTab = 'overview'
+      req.params.tab = expectedTab
+
+      const prisonNumber = 'A1234GC'
+      req.params.prisonNumber = prisonNumber
+
+      req.session.prisonerSummary = aValidPrisonerSummary(prisonNumber)
+
+      ciagInductionService.ciagInductionExists.mockResolvedValue(false)
+
+      const functionalSkillsFromCurious = {
+        problemRetrievingData: false,
+        assessments: [],
+      } as FunctionalSkills
+      curiousService.getPrisonerFunctionalSkills.mockResolvedValue(functionalSkillsFromCurious)
+
+      const expectedFunctionalSkills = {
+        problemRetrievingData: false,
+        assessments: [
+          {
+            type: 'ENGLISH',
+          },
+          {
+            type: 'MATHS',
+          },
+        ],
+      } as FunctionalSkills
+
+      const inPrisonEducation: InPrisonEducationRecords = {
+        problemRetrievingData: false,
+        educationRecords: [aValidEnglishInPrisonEducation(), aValidMathsInPrisonEducation()],
+      }
+      curiousService.getLearnerEducation.mockResolvedValue(inPrisonEducation)
+
+      const expectedCompletedInPrisonEducation: InPrisonEducationRecords = {
+        problemRetrievingData: false,
+        educationRecords: [aValidMathsInPrisonEducation()],
+      }
+
+      const expectedPrisonerSummary = aValidPrisonerSummary(prisonNumber)
+      const expectedView = {
+        prisonerSummary: expectedPrisonerSummary,
+        tab: expectedTab,
+        prisonNumber,
+        functionalSkills: expectedFunctionalSkills,
+        completedInPrisonEducation: expectedCompletedInPrisonEducation,
+        isPostInduction: false,
+      }
+
+      // When
+      await controller.getOverviewView(
+        req as undefined as Request,
+        res as undefined as Response,
+        next as undefined as NextFunction,
+      )
+
+      // Then
+      expect(res.render).toHaveBeenCalledWith('pages/overview/index', expectedView)
+      expect(educationAndWorkPlanService.getActionPlan).not.toHaveBeenCalled()
+      expect(ciagInductionService.ciagInductionExists).toHaveBeenCalledWith(prisonNumber, 'a-user-token')
+      expect(req.session.newGoal).toBeUndefined()
+      expect(req.session.newGoals).toBeUndefined()
+    })
+
+    it('should not get overview view given CIAG Induction throws an error', async () => {
+      // Given
+      const username = 'a-dps-user'
+      req.user.username = username
+      req.user.token = 'a-user-token'
+
+      const expectedTab = 'overview'
+      req.params.tab = expectedTab
+
+      const prisonNumber = 'A1234GC'
+      req.params.prisonNumber = prisonNumber
+
+      req.session.prisonerSummary = aValidPrisonerSummary(prisonNumber)
+
+      ciagInductionService.ciagInductionExists.mockRejectedValue(createError(500, 'Service unavailable'))
+
+      const expectedError = createError(
+        500,
+        `Error checking whether a CIAG Induction exists for prisoner ${prisonNumber}`,
+      )
+
+      // When
+      await controller.getOverviewView(
+        req as undefined as Request,
+        res as undefined as Response,
+        next as undefined as NextFunction,
+      )
+
+      // Then
+      expect(next).toHaveBeenCalledWith(expectedError)
+      expect(res.render).not.toHaveBeenCalled()
+      expect(ciagInductionService.ciagInductionExists).toHaveBeenCalledWith(prisonNumber, 'a-user-token')
+      expect(educationAndWorkPlanService.getActionPlan).not.toHaveBeenCalled()
+      expect(curiousService.getLearnerEducation).not.toHaveBeenCalled()
+      expect(curiousService.getPrisonerFunctionalSkills).not.toHaveBeenCalled()
       expect(req.session.newGoal).toBeUndefined()
       expect(req.session.newGoals).toBeUndefined()
     })
