@@ -76,6 +76,33 @@ export default class PrisonerListPage extends Page {
     return this
   }
 
+  hasPaginationControlsDisplayed(): PrisonerListPage {
+    this.paginationControls().should('exist')
+    return this
+  }
+
+  setPaginationNumber(value: number): PrisonerListPage {
+    this.paginationControls().find(`li:nth-of-type(${value}) a`).click()
+    return this
+  }
+
+  hasPreviousLinkDisplayed(): PrisonerListPage {
+    this.paginationControls().find('li:first-of-type a').should('contain', 'Previous')
+    return this
+  }
+
+  hasNextLinkDisplayed(): PrisonerListPage {
+    this.paginationControls().find('li:last-of-type a').should('contain', 'Next')
+    return this
+  }
+
+  hasNumberOfPagesDisplayed(expected: number): PrisonerListPage {
+    this.paginationControls()
+      .find('li.moj-pagination__item')
+      .should('have.length', expected + 1)
+    return this
+  }
+
   searchTermField = (): PageElement => cy.get('#searchTerm')
 
   statusFilterDropdown = (): PageElement => cy.get('#statusFilter')
@@ -94,6 +121,10 @@ export default class PrisonerListPage extends Page {
   paginationControls = (): PageElement => cy.get('[data-qa=prisoner-list-pagination] ul')
 
   paginationResultsCount = (): PageElement => cy.get('[data-qa=prisoner-list-pagination] p')
+
+  paginationFirstLink = (): PageElement => cy.get('[data-qa=prisoner-list-pagination] ul li:first-of-type a')
+
+  paginationLastLink = (): PageElement => cy.get('[data-qa=prisoner-list-pagination] ul li:last-of-type a')
 
   sortableTableHeaders = (): PageElement => cy.get('[data-qa=sortable-table-headers]')
 }

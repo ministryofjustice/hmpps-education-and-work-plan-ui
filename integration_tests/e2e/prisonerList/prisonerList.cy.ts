@@ -148,6 +148,40 @@ context(`Display the prisoner list screen`, () => {
         .firstRowLocationIs(expectedFirstRowInTable.location)
     })
   })
+
+  describe('pagination', () => {
+    it('should display pagination controls, displaying 1 to 10 with the next link, on the first page of the prisoner list', () => {
+      // Given
+      cy.signIn()
+      cy.visit('/')
+
+      // When
+      const prisonerListPage = Page.verifyOnPage(PrisonerListPage)
+
+      // Then
+      prisonerListPage //
+        .hasPaginationControlsDisplayed()
+        .hasNumberOfPagesDisplayed(10)
+        .hasNextLinkDisplayed()
+    })
+
+    it('should display pagination controls, displaying 2 to 11 with the next and previous links, on the 7th page of the prisoner list', () => {
+      // Given
+      cy.signIn()
+      cy.visit('/')
+
+      // When
+      const prisonerListPage = Page.verifyOnPage(PrisonerListPage)
+
+      // Then
+      prisonerListPage //
+        .hasPaginationControlsDisplayed()
+        .hasNumberOfPagesDisplayed(10)
+        .setPaginationNumber(7)
+        .hasPreviousLinkDisplayed()
+        .hasNextLinkDisplayed()
+    })
+  })
 })
 
 const capitalize = (name: string): string => {
