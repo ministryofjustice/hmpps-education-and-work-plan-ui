@@ -99,7 +99,9 @@ export default class PrisonerListPage extends Page {
   hasNumberOfPagesDisplayed(expected: number): PrisonerListPage {
     this.paginationControls()
       .find('li.moj-pagination__item')
-      .should('have.length', expected + 1)
+      .not('.moj-pagination__item--next')
+      .not('.moj-pagination__item--previous')
+      .should('have.length', expected)
     return this
   }
 
