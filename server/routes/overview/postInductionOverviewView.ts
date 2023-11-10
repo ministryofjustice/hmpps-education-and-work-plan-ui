@@ -1,6 +1,6 @@
 import type { ActionPlan, FunctionalSkills, InPrisonEducationRecords, PrisonerSummary } from 'viewModels'
 
-export default class OverviewView {
+export default class PostInductionOverviewView {
   constructor(
     private readonly prisonNumber: string,
     private readonly prisonerSummary: PrisonerSummary,
@@ -16,6 +16,7 @@ export default class OverviewView {
     actionPlan: ActionPlan
     functionalSkills: FunctionalSkills
     completedInPrisonEducation: InPrisonEducationRecords
+    isPostInduction: boolean
   } {
     return {
       prisonNumber: this.prisonNumber,
@@ -24,6 +25,7 @@ export default class OverviewView {
       actionPlan: this.actionPlan,
       functionalSkills: this.functionalSkills,
       completedInPrisonEducation: this.completedInPrisonEducation,
+      isPostInduction: true,
     }
   }
 }

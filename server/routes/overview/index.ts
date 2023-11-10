@@ -3,6 +3,7 @@ import { Services } from '../../services'
 import { checkUserHasViewAuthority } from '../../middleware/roleBasedAccessControl'
 import OverviewController from './overviewController'
 import { retrievePrisonerSummaryIfNotInSession } from '../routerRequestHandlers'
+import config from '../../config'
 
 /**
  * Route definitions for the pages relating to the main Overview page
@@ -19,7 +20,11 @@ export default (router: Router, services: Services) => {
     retrievePrisonerSummaryIfNotInSession(services.prisonerSearchService),
   ])
 
-  router.get('/plan/:prisonNumber/view/overview', [overViewController.getOverviewView])
+  if (config.featureToggles.plpPrisonerListAndOverviewPagesEnabled) {
+    router.get('/plan/:prisonNumber/view/overview', [overViewController.getOverviewView])
+  } else {
+    router.get('/plan/:prisonNumber/view/overview', [overViewController.getPrivateBetaOverviewView])
+  }
 
   router.get('/plan/:prisonNumber/view/support-needs', [overViewController.getSupportNeedsView])
 

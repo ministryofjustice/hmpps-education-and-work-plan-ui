@@ -13,6 +13,7 @@ context('Prisoner Overview page - Work and Interests tab', () => {
     cy.task('stubCiagInductionList')
     cy.task('stubActionPlansList')
     cy.task('getPrisonerById')
+    cy.task('stubGetShortQuestionSetCiagProfile')
     cy.task('getActionPlan')
     cy.task('stubLearnerProfile')
     cy.task('stubLearnerEducation')
@@ -62,12 +63,16 @@ context('Prisoner Overview page - Work and Interests tab', () => {
 
   it('should display CIAG unavailable message given CIAG is unavailable', () => {
     // Given
-    cy.task('stubGetCiagProfile500Error')
-
     cy.signIn()
+
     const prisonNumber = 'G6115VJ'
     cy.visit(`/plan/${prisonNumber}/view/overview`)
     const overviewPage = Page.verifyOnPage(OverviewPage)
+
+    // Stub a CIAG 500 error *after* rendering the overview page. The scenario here is that the user has signed in and
+    // displayed the Prisoner List and Overview screens, but between displaying the Overview and clicking on
+    // 'Work and interests' the CIAG API has gone done.
+    cy.task('stubGetCiagProfile500Error')
 
     // When
     overviewPage.selectTab('Work and interests')

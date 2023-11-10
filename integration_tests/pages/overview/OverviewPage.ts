@@ -50,6 +50,10 @@ export default class OverviewPage extends Page {
     return Page.verifyOnPage(CreateGoalPage)
   }
 
+  clickMakeProgressPlan() {
+    this.makeProgressPlanLink().click()
+  }
+
   activeTabIs(expected: string): OverviewPage {
     this.activeTab().should('contain.text', expected)
     return this
@@ -139,7 +143,9 @@ export default class OverviewPage extends Page {
 
   notesExpander = (idx: number): PageElement => cy.get(`[data-qa=overview-notes-expander-${idx}]`)
 
-  preInductionOverviewPanel = (): PageElement => cy.get('[data-qa=pre-induction-overview')
+  preInductionOverviewPanel = (): PageElement => cy.get('[data-qa=pre-induction-overview]')
 
-  postInductionOverviewPanel = (): PageElement => cy.get('[data-qa=post-induction-overview')
+  postInductionOverviewPanel = (): PageElement => cy.get('[data-qa=post-induction-overview]')
+
+  makeProgressPlanLink = (): PageElement => cy.get('[data-qa=pre-induction-overview] a.govuk-notification-banner__link')
 }
