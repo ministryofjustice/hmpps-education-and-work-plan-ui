@@ -160,8 +160,15 @@ context(`Display the prisoner list screen`, () => {
 
       // Then
       prisonerListPage //
-        .hasPaginationControlsDisplayed()
-        .hasNumberOfPagesDisplayed(10)
+        .paginationCurrentPageIs(1)
+        .hasPaginationLinkForPage(2)
+        .hasPaginationLinkForPage(3)
+        .hasPaginationLinkForPage(4)
+        .hasPaginationLinkForPage(5)
+        .hasPaginationLinkForPage(6)
+        .hasPaginationLinkForPage(8)
+        .hasPaginationLinkForPage(9)
+        .hasPaginationLinkForPage(10)
         .hasNextLinkDisplayed()
     })
 
@@ -169,16 +176,24 @@ context(`Display the prisoner list screen`, () => {
       // Given
       cy.signIn()
       cy.visit('/')
+      const prisonerListPage = Page.verifyOnPage(PrisonerListPage)
 
       // When
-      const prisonerListPage = Page.verifyOnPage(PrisonerListPage)
+      prisonerListPage.gotoPage(7)
 
       // Then
       prisonerListPage //
-        .hasPaginationControlsDisplayed()
-        .hasNumberOfPagesDisplayed(10)
-        .setPaginationNumber(7)
         .hasPreviousLinkDisplayed()
+        .hasPaginationLinkForPage(2)
+        .hasPaginationLinkForPage(3)
+        .hasPaginationLinkForPage(4)
+        .hasPaginationLinkForPage(5)
+        .hasPaginationLinkForPage(6)
+        .paginationCurrentPageIs(7)
+        .hasPaginationLinkForPage(8)
+        .hasPaginationLinkForPage(9)
+        .hasPaginationLinkForPage(10)
+        .hasPaginationLinkForPage(11)
         .hasNextLinkDisplayed()
     })
   })

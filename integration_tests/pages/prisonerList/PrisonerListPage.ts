@@ -76,32 +76,28 @@ export default class PrisonerListPage extends Page {
     return this
   }
 
-  hasPaginationControlsDisplayed(): PrisonerListPage {
-    this.paginationControls().should('exist')
-    return this
-  }
-
-  setPaginationNumber(value: number): PrisonerListPage {
+  gotoPage(value: number): PrisonerListPage {
     this.paginationControls().find(`li:nth-of-type(${value}) a`).click()
     return this
   }
 
+  paginationCurrentPageIs(value: number): PrisonerListPage {
+    this.paginationControls().find(`li:nth-of-type(${value})`).should('have.attr', 'aria-current', 'page')
+    return this
+  }
+
   hasPreviousLinkDisplayed(): PrisonerListPage {
-    this.paginationControls().find('li:first-of-type a').should('contain', 'Previous')
+    this.paginationFirstLink().should('contain', 'Previous')
     return this
   }
 
   hasNextLinkDisplayed(): PrisonerListPage {
-    this.paginationControls().find('li:last-of-type a').should('contain', 'Next')
+    this.paginationLastLink().should('contain', 'Next')
     return this
   }
 
-  hasNumberOfPagesDisplayed(expected: number): PrisonerListPage {
-    this.paginationControls()
-      .find('li.moj-pagination__item')
-      .not('.moj-pagination__item--next')
-      .not('.moj-pagination__item--previous')
-      .should('have.length', expected)
+  hasPaginationLinkForPage(page: number): PrisonerListPage {
+    this.paginationControls().find(`li:nth-of-type(${page}) a`).should('contain', `${page}`)
     return this
   }
 
