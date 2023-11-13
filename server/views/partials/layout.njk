@@ -92,13 +92,14 @@
 {% block main %}
   <div class="govuk-width-container {{ containerClasses }}">
     {{ govukPhaseBanner({
+      tag: {
+        text: "Beta"
+      },
+      html: 'This is a new service – get help or <a class="govuk-link" href="' + feedbackUrl + '" target="_blank" referrerpolicy="no-referrer" rel="noopener">give your feedback</a> to help us to improve it.',
+      classes: "govuk-!-display-none-print",
       attributes: {
         role: "complementary"
-      },
-      tag: {
-        text: "beta"
-      },
-      classes: "govuk-!-display-none-print"
+      }
     }) }}
 
     {% block beforeContent %}{% endblock %}
