@@ -148,6 +148,55 @@ context(`Display the prisoner list screen`, () => {
         .firstRowLocationIs(expectedFirstRowInTable.location)
     })
   })
+
+  describe('pagination', () => {
+    it('should display pagination controls, displaying 1 to 10 with the next link, on the first page of the prisoner list', () => {
+      // Given
+      cy.signIn()
+      cy.visit('/')
+
+      // When
+      const prisonerListPage = Page.verifyOnPage(PrisonerListPage)
+
+      // Then
+      prisonerListPage //
+        .paginationCurrentPageIs(1)
+        .hasPaginationLinkForPage(2)
+        .hasPaginationLinkForPage(3)
+        .hasPaginationLinkForPage(4)
+        .hasPaginationLinkForPage(5)
+        .hasPaginationLinkForPage(6)
+        .hasPaginationLinkForPage(8)
+        .hasPaginationLinkForPage(9)
+        .hasPaginationLinkForPage(10)
+        .hasNextLinkDisplayed()
+    })
+
+    it('should display pagination controls, displaying 2 to 11 with the next and previous links, on the 7th page of the prisoner list', () => {
+      // Given
+      cy.signIn()
+      cy.visit('/')
+      const prisonerListPage = Page.verifyOnPage(PrisonerListPage)
+
+      // When
+      prisonerListPage.gotoPage(7)
+
+      // Then
+      prisonerListPage //
+        .hasPreviousLinkDisplayed()
+        .hasPaginationLinkForPage(2)
+        .hasPaginationLinkForPage(3)
+        .hasPaginationLinkForPage(4)
+        .hasPaginationLinkForPage(5)
+        .hasPaginationLinkForPage(6)
+        .paginationCurrentPageIs(7)
+        .hasPaginationLinkForPage(8)
+        .hasPaginationLinkForPage(9)
+        .hasPaginationLinkForPage(10)
+        .hasPaginationLinkForPage(11)
+        .hasNextLinkDisplayed()
+    })
+  })
 })
 
 const capitalize = (name: string): string => {
