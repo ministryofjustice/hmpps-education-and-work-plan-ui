@@ -38,6 +38,7 @@ generic-service:
     PLP_PRISONER_LIST_AND_OVERVIEW_PAGES_ENABLED: "false"
     PRISONER_SEARCH_API_DEFAULT_PAGE_SIZE: "9999"
     PRISONER_LIST_UI_DEFAULT_PAGINATION_PAGE_SIZE: "50"
+    FEEDBACK_URL: "https://eu.surveymonkey.com/r/H9CYM7B"
 
   # Pre-existing kubernetes secrets to load as environment variables in the deployment.
   # namespace_secrets:

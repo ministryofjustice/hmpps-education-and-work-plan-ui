@@ -22,7 +22,6 @@ generic-service:
     CIAG_INDUCTION_UI_URL: "http://ciag-induction-dev.hmpps.service.justice.gov.uk"
     DPS_URL: "https://digital-dev.prison.service.justice.gov.uk"
     FRONTEND_COMPONENT_API_URL: "https://frontend-components-dev.hmpps.service.justice.gov.uk"
-    FEEDBACK_URL: "https://eu.surveymonkey.com/r/H9CYM7B"
     ENVIRONMENT_NAME: "DEV"
 
   allowlist:
