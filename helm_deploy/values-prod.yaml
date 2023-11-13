@@ -16,6 +16,7 @@ generic-service:
     CIAG_INDUCTION_UI_URL: "https://ciag-induction.hmpps.service.justice.gov.uk"
     DPS_URL: "https://digital.prison.service.justice.gov.uk"
     FRONTEND_COMPONENT_API_URL: "https://frontend-components.hmpps.service.justice.gov.uk"
+    FEEDBACK_URL: "https://eu.surveymonkey.com/r/H9CYM7B"
 
 generic-prometheus-alerts:
   alertSeverity: digital-prison-service
