@@ -21,10 +21,15 @@ export default function setUpWebSecurity(): Router {
   // This ensures only scripts we trust are loaded, and not anything injected into the
   // page by an attacker.
 
-  const scriptSrc = ["'self'", (_req: Request, res: Response) => `'nonce-${res.locals.cspNonce}'`]
+  const scriptSrc = [
+    "'self'",
+    (_req: Request, res: Response) => `'nonce-${res.locals.cspNonce}'`,
+    'js.monitor.azure.com',
+  ]
   const styleSrc = ["'self'", (_req: Request, res: Response) => `'nonce-${res.locals.cspNonce}'`]
   const imgSrc = ["'self'", 'data:']
   const fontSrc = ["'self'"]
+  const connectSrc = ["'self'", 'js.monitor.azure.com', 'dc.services.visualstudio.com']
 
   scriptSrc.push(config.apis.frontendComponents.url)
   styleSrc.push(config.apis.frontendComponents.url)
@@ -40,10 +45,11 @@ export default function setUpWebSecurity(): Router {
           styleSrc,
           imgSrc,
           fontSrc,
+          connectSrc,
           formAction: [`'self' ${config.apis.hmppsAuth.externalUrl} ${config.dpsHomeUrl}`],
         },
       },
-      crossOriginEmbedderPolicy: true,
+      crossOriginEmbedderPolicy: false,
     }),
   )
   return router

@@ -82,6 +82,8 @@ export function registerNunjucks(app?: express.Express): Environment {
 
   njkEnv.addGlobal('dpsUrl', config.dpsHomeUrl)
   njkEnv.addGlobal('gtmContainerId', config.gtmContainerId)
+  njkEnv.addGlobal('appInsightsInstrumentationKey', config.applicationInsights.instrumentationKey)
+  // njkEnv.addGlobal('applicationInsightsRoleName', applicationInfo().applicationName)
   njkEnv.addGlobal('ciagInductionUrl', config.ciagInductionUrl)
   njkEnv.addGlobal(
     'prisonerListUrl',
