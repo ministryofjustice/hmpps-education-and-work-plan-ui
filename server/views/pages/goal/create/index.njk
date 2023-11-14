@@ -35,10 +35,11 @@
           <p class="govuk-hint">You can add the steps to achieve the goal on the next page.</p>
         {% endset %}
 
-        {{ govukTextarea({
+        {{ govukCharacterCount({
           name: "title",
           id: "title",
           value: form.title,
+          maxlength: 512,
           label: {
             text: titleLabelHtml,
             classes: "govuk-label--l",

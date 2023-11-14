@@ -1,0 +1,5 @@
+// Fix an issue with spacing when there is a GOVUK character count component 
+// with an error message inside a MOJ add another component
+.moj-add-another__item:has(.govuk-character-count):has(.govuk-error-message) .moj-add-another__title {
+  padding-left: 20px;
+}

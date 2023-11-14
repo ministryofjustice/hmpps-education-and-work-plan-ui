@@ -34,20 +34,22 @@
           <input type="hidden" name="stepNumber" value="{{ form.stepNumber }}" />
 
           {% set titleLabel = 'Step ' + form.stepNumber %}
-          {{ govukInput({
+          {{ govukCharacterCount({
+            name: "title",
+            id: "title",
+            value: form.title,
+            maxlength: 512,
             label: {
               text: titleLabel,
               classes: "govuk-label--m",
               isPageHeading: false
             },
-            name: "title",
-            id: "title",
-            value: form.title,
             hint: {
               text: "Describe this step"
             },
             errorMessage: errors | findError('title')
           }) }}
+
         </div>
 
         <div class="govuk-form-group">

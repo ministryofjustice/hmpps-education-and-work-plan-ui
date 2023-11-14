@@ -31,15 +31,16 @@
           <input type="hidden" name="createdAt" value="{{ form.createdAt }}" />
           <input type="hidden" name="originalTargetCompletionDate" value="{{ form.originalTargetCompletionDate }}" />
 
-          {{ govukTextarea({
+          {{ govukCharacterCount({
             name: "title",
             id: "title",
+            value: form.title,
+            maxlength: 512,
             label: {
               text: "Description",
-              classes: "govuk-label--m"
+              classes: "govuk-label--m",
+              isPageHeading: false
             },
-            value: form.title,
-            rows: 6,
             errorMessage: errors | findError('title')
           }) }}
 
@@ -132,17 +133,17 @@
                 }
               }) %}
 
-              {{ govukTextarea({
+              {{ govukCharacterCount({
                 name: 'steps[' + (loop.index-1) + '][title]',
                 id: 'steps[' + (loop.index-1) + '][title]',
                 attributes: { 'data-qa': 'step-' + (loop.index-1) + '-title-field' },
+                value: step.title,
+                maxlength: 512,
                 label: {
                   text: "Description",
                   classes: "govuk-fieldset__legend--s",
                   isPageHeading: false
                 },
-                value: step.title,
-                rows: 3,
                 errorMessage: errors | findError('steps[' + (loop.index-1) + '][title]')
               }) }}
 
