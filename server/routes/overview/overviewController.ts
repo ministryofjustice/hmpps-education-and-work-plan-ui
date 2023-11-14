@@ -13,6 +13,7 @@ import WorkAndInterestsView from './workAndInterestsView'
 import CiagInductionService from '../../services/ciagInductionService'
 import PostInductionOverviewView from './postInductionOverviewView'
 import PreInductionOverviewView from './preInductionOverviewView'
+import TimelineView from './timelineView'
 
 export default class OverviewController {
   constructor(
@@ -118,6 +119,13 @@ export default class OverviewController {
 
     const workAndInterests = await this.ciagInductionService.getWorkAndInterests(prisonNumber, req.user.token)
     const view = new WorkAndInterestsView(prisonerSummary, workAndInterests)
+    res.render('pages/overview/index', { ...view.renderArgs })
+  }
+
+  getTimelineView: RequestHandler = async (req, res, next): Promise<void> => {
+    const { prisonerSummary } = req.session
+
+    const view = new TimelineView(prisonerSummary)
     res.render('pages/overview/index', { ...view.renderArgs })
   }
 }
