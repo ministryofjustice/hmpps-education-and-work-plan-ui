@@ -1,4 +1,3 @@
-import fs from 'fs'
 import path from 'path'
 import compression from 'compression'
 import express, { Router } from 'express'
