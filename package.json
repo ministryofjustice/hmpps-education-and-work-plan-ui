@@ -91,6 +91,7 @@
     ]
   },
   "dependencies": {
+    "@microsoft/applicationinsights-web": "^3.0.4",
     "@ministryofjustice/frontend": "^1.8.0",
     "agentkeepalive": "^4.3.0",
     "applicationinsights": "^2.7.0",

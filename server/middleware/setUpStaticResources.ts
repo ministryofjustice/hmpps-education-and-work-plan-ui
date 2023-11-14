@@ -1,3 +1,4 @@
+import fs from 'fs'
 import path from 'path'
 import compression from 'compression'
 import express, { Router } from 'express'
@@ -22,6 +23,7 @@ export default function setUpStaticResources(): Router {
     '/node_modules/@ministryofjustice/frontend/moj/assets',
     '/node_modules/@ministryofjustice/frontend',
     '/node_modules/jquery/dist',
+    '/node_modules/@microsoft/applicationinsights-web/dist/es5',
   ).forEach(dir => {
     router.use('/assets', express.static(path.join(process.cwd(), dir), cacheControl))
   })
