@@ -216,6 +216,8 @@ export interface components {
        * @enum {string}
        */
       eventType:
+        | 'INDUCTION_CREATED'
+        | 'INDUCTION_UPDATED'
         | 'ACTION_PLAN_CREATED'
         | 'GOAL_CREATED'
         | 'GOAL_UPDATED'
@@ -242,6 +244,12 @@ export interface components {
        * @example 2023-06-19T09:39:44Z
        */
       timestamp: string
+      /**
+       * Format: uuid
+       * @description A correlationId for this and any other TimelineEvents that occurred at the same time (i.e. within same atomic action). For example, this could be an update to a Goal, plus one or more of its child Steps. If required, this allows a client to easily group the events together.
+       * @example 113d1833-0ce1-45ad-ab44-878c9d589358
+       */
+      correlationId: string
       /**
        * @description Contextual information that's relevant to the event in question. For example the title of a Goal that was completed.
        * @example Learn French

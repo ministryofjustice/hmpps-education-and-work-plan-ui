@@ -3,25 +3,26 @@
 
     <div class="moj-timeline">
 
-      <!-- Timeline item -->
+      {% for event in timeline.events %}
+        <div class="moj-timeline__item">
+          <div class="moj-timeline__header">
+            <h2 class="moj-timeline__title">{{ event.eventType | formatTimelineEvent }}</h2>
+            <p class="moj-timeline__byline govuk-!-display-none-print">by {{ event.actionedByDisplayName }}, {{ event.prisonId }}</p>
+          </div>
 
-      <div class="moj-timeline__item">
-        <div class="moj-timeline__header">
-          <h2 class="moj-timeline__title">[Event]</h2>
-          <p class="moj-timeline__byline govuk-!-display-none-print">by [User], [Prison name]</p>
+          <p class="moj-timeline__date">
+            <time datetime="{{ event.timestamp }}">{{ event.timestamp | formatDate('D MMMM YYYY') }}</time>
+          </p>
+
+          {# TODO: Display the description and action
+          <div class="moj-timeline__description">
+            <p>[Description]</p>
+            [Description component/action]
+          </div>
+          #} 
+
         </div>
-
-        <p class="moj-timeline__date">
-          <time datetime="2023-11-12">[Date]</time>
-        </p>
-
-        <div class="moj-timeline__description">
-          <p>[Description]</p>
-          [Description component]
-        </div>
-      </div>
-
-      <!-- end Timeline item -->
+      {% endfor %}
 
     </div>
 

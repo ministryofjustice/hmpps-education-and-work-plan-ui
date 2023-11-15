@@ -361,6 +361,36 @@ declare module 'viewModels' {
     level: 'ENTRY_LEVEL' | 'LEVEL_1' | 'LEVEL_2' | 'LEVEL_3' | 'LEVEL_4' | 'LEVEL_5' | 'LEVEL_6' | 'LEVEL_7' | 'LEVEL_8'
   }
 
+  export interface Timeline {
+    reference?: string // TODO - Are these required/optional?
+    prisonNumber?: string // TODO - Are these required/optional?
+    events?: Array<TimelineEntry>
+  }
+
+  export interface TimelineEntry {
+    reference: string
+    sourceReference: string
+    eventType:
+      | 'ACTION_PLAN_CREATED'
+      | 'GOAL_CREATED'
+      | 'GOAL_UPDATED'
+      | 'GOAL_STARTED'
+      | 'GOAL_COMPLETED'
+      | 'GOAL_ARCHIVED'
+      | 'STEP_UPDATED'
+      | 'STEP_NOT_STARTED'
+      | 'STEP_STARTED'
+      | 'STEP_COMPLETED'
+      | 'INDUCTION_UPDATED'
+      | 'INDUCTION_CREATED'
+    prisonId: string
+    actionedBy: string
+    timestamp: string
+    correlationId: string
+    contextualInfo?: string
+    actionedByDisplayName?: string
+  }
+
   /**
    * DPS frontend components
    */

@@ -31,4 +31,8 @@ export default class EducationAndWorkPlanService {
     const updateGoalRequest = toUpdateGoalRequest(updateGoalDto)
     return this.educationAndWorkPlanClient.updateGoal(prisonNumber, updateGoalRequest, token)
   }
+
+  async getTimeline(prisonNumber: string, token: string): Promise<unknown> {
+    return this.educationAndWorkPlanClient.getTimeline(prisonNumber, token)
+  }
 }

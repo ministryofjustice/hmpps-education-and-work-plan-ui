@@ -123,9 +123,11 @@ export default class OverviewController {
   }
 
   getTimelineView: RequestHandler = async (req, res, next): Promise<void> => {
+    const { prisonNumber } = req.params
     const { prisonerSummary } = req.session
 
-    const view = new TimelineView(prisonerSummary)
+    const timeline = await this.educationAndWorkPlanService.getTimeline(prisonNumber, req.user.token)
+    const view = new TimelineView(prisonerSummary, timeline)
     res.render('pages/overview/index', { ...view.renderArgs })
   }
 }
