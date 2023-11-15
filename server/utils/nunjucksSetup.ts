@@ -31,6 +31,9 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
   app.locals.asset_path = '/assets/'
   app.locals.applicationName = 'Digital Prison Services'
 
+  app.locals.applicationInsightsConnectionString = config.applicationInsights.connectionString
+  app.locals.applicationInsightsRoleName = applicationInfo.applicationName
+
   // Cachebusting version string
   if (production) {
     // Version only changes with new commits

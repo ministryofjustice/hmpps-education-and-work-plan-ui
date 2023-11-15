@@ -25,6 +25,7 @@ export default function setUpWebSecurity(): Router {
   const styleSrc = ["'self'", (_req: Request, res: Response) => `'nonce-${res.locals.cspNonce}'`]
   const imgSrc = ["'self'", 'data:']
   const fontSrc = ["'self'"]
+  const connectSrc = ["'self'", '*.applicationinsights.azure.com']
 
   scriptSrc.push(config.apis.frontendComponents.url)
   styleSrc.push(config.apis.frontendComponents.url)
@@ -40,6 +41,7 @@ export default function setUpWebSecurity(): Router {
           styleSrc,
           imgSrc,
           fontSrc,
+          connectSrc,
           formAction: [`'self' ${config.apis.hmppsAuth.externalUrl} ${config.dpsHomeUrl}`],
         },
       },
