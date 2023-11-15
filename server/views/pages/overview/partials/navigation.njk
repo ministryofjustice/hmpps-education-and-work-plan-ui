@@ -38,17 +38,17 @@
             Work and interests
           </a>
         </li>
-        {# The timeline will be added in epic RR-203
+        {% if featureToggles.frontendComponentsApiToggleEnabled %}
         <li class="moj-sub-navigation__item">
           <a class="moj-sub-navigation__link"
             data-qa="tab-timeline"
             {% if tab === 'timeline' %}aria-current="page"{% endif %}
-            href=""
+            href="timeline"
           >
             Timeline
           </a>
         </li>
-        #}
+        {% endif %}
       </ul>
     </nav>
   </div>
