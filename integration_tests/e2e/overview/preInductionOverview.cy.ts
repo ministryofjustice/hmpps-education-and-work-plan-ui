@@ -36,6 +36,7 @@ context('Prisoner Overview page - Pre Induction', () => {
       .isForPrisoner(prisonNumber)
       .isPreInduction()
       .activeTabIs('Overview')
+      .printThisPageIsNotPresent()
   })
 
   it(`should navigate to CIAG create induction page given 'make a progress plan' is clicked`, () => {
