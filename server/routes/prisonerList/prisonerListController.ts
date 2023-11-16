@@ -1,4 +1,5 @@
 import { RequestHandler } from 'express'
+import createError from 'http-errors'
 import { PrisonerListService } from '../../services'
 import PrisonerListView from './prisonerListView'
 import config from '../../config'
@@ -13,40 +14,44 @@ export default class PrisonerListController {
   getPrisonerListView: RequestHandler = async (req, res, next): Promise<void> => {
     const prisonId = res.locals.user.activeCaseLoadId
 
-    const pagedPrisonerSearchSummary = await this.getPagedPrisonerSearchSummaryForAllPrisoners(prisonId, req.user)
+    try {
+      const pagedPrisonerSearchSummary = await this.getPagedPrisonerSearchSummaryForAllPrisoners(prisonId, req.user)
 
-    // Apply filtering first if specified on the query string parameters
-    const searchTerm = req.query.searchTerm as string
-    const statusFilter = req.query.statusFilter as string
-    if (searchTerm) {
-      pagedPrisonerSearchSummary.filter(FilterBy.NAME, searchTerm)
+      // Apply filtering first if specified on the query string parameters
+      const searchTerm = req.query.searchTerm as string
+      const statusFilter = req.query.statusFilter as string
+      if (searchTerm) {
+        pagedPrisonerSearchSummary.filter(FilterBy.NAME, searchTerm)
+      }
+      if (statusFilter) {
+        pagedPrisonerSearchSummary.filter(FilterBy.STATUS, statusFilter)
+      }
+
+      // Apply sorting
+      const sortQueryStringValue = // sort options should be from query string, session, or defaults; in that order of preference
+        (req.query.sort as string) ||
+        req.session.prisonerListSortOptions ||
+        `${DEFAULT_SORT_FIELD.toString()},${DEFAULT_SORT_DIRECTION.toString()}`
+      const sortOptions = toSortOptions(sortQueryStringValue)
+      pagedPrisonerSearchSummary.sort(sortOptions.sortBy, sortOptions.sortOrder)
+      req.session.prisonerListSortOptions = `${sortOptions.sortBy.toString()},${sortOptions.sortOrder.toString()}` // save last sort options to session so that they are remembered when coming back to Prisoner List screen
+
+      // Apply paging
+      const page = req.query.page as string
+      pagedPrisonerSearchSummary.setCurrentPageNumber(page ? parseInt(page, 10) : 1)
+
+      const view = new PrisonerListView(
+        pagedPrisonerSearchSummary,
+        searchTerm || '',
+        statusFilter || '',
+        sortOptions.sortBy.toString(),
+        sortOptions.sortOrder.toString(),
+      )
+
+      return res.render('pages/prisonerList/index', { ...view.renderArgs })
+    } catch (error) {
+      return next(createError(500, `Error producing prisoner list for prison ${prisonId}`))
     }
-    if (statusFilter) {
-      pagedPrisonerSearchSummary.filter(FilterBy.STATUS, statusFilter)
-    }
-
-    // Apply sorting
-    const sortQueryStringValue = // sort options should be from query string, session, or defaults; in that order of preference
-      (req.query.sort as string) ||
-      req.session.prisonerListSortOptions ||
-      `${DEFAULT_SORT_FIELD.toString()},${DEFAULT_SORT_DIRECTION.toString()}`
-    const sortOptions = toSortOptions(sortQueryStringValue)
-    pagedPrisonerSearchSummary.sort(sortOptions.sortBy, sortOptions.sortOrder)
-    req.session.prisonerListSortOptions = `${sortOptions.sortBy.toString()},${sortOptions.sortOrder.toString()}` // save last sort options to session so that they are remembered when coming back to Prisoner List screen
-
-    // Apply paging
-    const page = req.query.page as string
-    pagedPrisonerSearchSummary.setCurrentPageNumber(page ? parseInt(page, 10) : 1)
-
-    const view = new PrisonerListView(
-      pagedPrisonerSearchSummary,
-      searchTerm || '',
-      statusFilter || '',
-      sortOptions.sortBy.toString(),
-      sortOptions.sortOrder.toString(),
-    )
-
-    res.render('pages/prisonerList/index', { ...view.renderArgs })
   }
 
   getPagedPrisonerSearchSummaryForAllPrisoners = async (

@@ -1,6 +1,6 @@
 import Page from '../../pages/page'
 import OverviewPage from '../../pages/overview/OverviewPage'
-import CreateCiagInductionPage from '../ciagUi/createCiagInductionPage'
+import CreateCiagInductionPage from '../../pages/ciagUi/createCiagInductionPage'
 import Error500Page from '../../pages/error500'
 
 context('Prisoner Overview page - Pre Induction', () => {
