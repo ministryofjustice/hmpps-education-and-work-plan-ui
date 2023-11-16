@@ -1,6 +1,7 @@
 import type { PrisonerSearchSummary } from 'viewModels'
 import Page from '../../pages/page'
 import PrisonerListPage from '../../pages/prisonerList/PrisonerListPage'
+import Error500Page from '../../pages/error500'
 
 /**
  * Cypress scenarios for the Prisoner List page.
@@ -43,6 +44,42 @@ context(`Display the prisoner list screen`, () => {
     // Then
     const prisonerListPage = Page.verifyOnPage(PrisonerListPage)
     prisonerListPage.hasResultsDisplayed(expectedResultCount)
+  })
+
+  it('should display service unavailable message given prisoner-search API returns a 500', () => {
+    // Given
+    cy.signIn()
+    cy.task('stubPrisonerList500error')
+
+    // When
+    cy.visit('/', { failOnStatusCode: false })
+
+    // Then
+    Page.verifyOnPage(Error500Page)
+  })
+
+  it('should display service unavailable message given CIAG API returns a 500', () => {
+    // Given
+    cy.signIn()
+    cy.task('stubCiagInductionList500error')
+
+    // When
+    cy.visit('/', { failOnStatusCode: false })
+
+    // Then
+    Page.verifyOnPage(Error500Page)
+  })
+
+  it('should display service unavailable message given Action Plans API returns a 500', () => {
+    // Given
+    cy.signIn()
+    cy.task('stubActionPlansList500error')
+
+    // When
+    cy.visit('/', { failOnStatusCode: false })
+
+    // Then
+    Page.verifyOnPage(Error500Page)
   })
 
   describe('filtering', () => {

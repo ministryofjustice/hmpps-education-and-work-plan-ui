@@ -1,4 +1,4 @@
-import Page from '../../pages/page'
+import Page from '../page'
 
 export default class CreateCiagInductionPage extends Page {
   constructor() {

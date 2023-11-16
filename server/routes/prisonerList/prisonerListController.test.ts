@@ -1,3 +1,4 @@
+import createError from 'http-errors'
 import { SessionData } from 'express-session'
 import type { PrisonerSearchSummary } from 'viewModels'
 import type { Locals } from 'express-serve-static-core'
@@ -104,6 +105,34 @@ describe('prisonerListController', () => {
         'AUSER_GEN',
         'some-token',
       )
+    })
+
+    it('should not get prisoner list view given error calling service to get prisoner list summaries', async () => {
+      // Given
+      req.query = {}
+
+      prisonerListService.getPrisonerSearchSummariesForPrisonId.mockRejectedValue(
+        createError(500, 'Service unavailable'),
+      )
+      const expectedError = createError(500, `Error producing prisoner list for prison BXI`)
+
+      // When
+      await controller.getPrisonerListView(
+        req as undefined as Request,
+        res as undefined as Response,
+        next as undefined as NextFunction,
+      )
+
+      // Then
+      expect(prisonerListService.getPrisonerSearchSummariesForPrisonId).toHaveBeenCalledWith(
+        'BXI',
+        0,
+        9999,
+        'AUSER_GEN',
+        'some-token',
+      )
+      expect(res.render).not.toHaveBeenCalled()
+      expect(next).toHaveBeenCalledWith(expectedError)
     })
 
     describe('filtering', () => {
