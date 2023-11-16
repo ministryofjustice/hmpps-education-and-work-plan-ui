@@ -118,6 +118,16 @@ export default class OverviewPage extends Page {
     return this
   }
 
+  printThisPageIsPresent(): OverviewPage {
+    this.printThisPageLink().should('be.visible')
+    return this
+  }
+
+  printThisPageIsNotPresent(): OverviewPage {
+    this.printThisPageLink().should('not.exist')
+    return this
+  }
+
   prisonNumberLabel = (): PageElement => cy.get('[data-qa=prison-number]')
 
   activeTab = (): PageElement => cy.get('.moj-sub-navigation__link[aria-current=page]')
@@ -148,4 +158,6 @@ export default class OverviewPage extends Page {
   postInductionOverviewPanel = (): PageElement => cy.get('[data-qa=post-induction-overview]')
 
   makeProgressPlanLink = (): PageElement => cy.get('[data-qa=pre-induction-overview] a.govuk-notification-banner__link')
+
+  printThisPageLink = (): PageElement => cy.get('#print-link')
 }

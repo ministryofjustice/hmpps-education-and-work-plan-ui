@@ -37,6 +37,7 @@ context('Prisoner Overview page - Post Induction', () => {
       .isPostInduction()
       .hasAddGoalButtonDisplayed()
       .activeTabIs('Overview')
+      .printThisPageIsPresent()
   })
 
   it('should render prisoner Overview page without Add Goal and Update Goal buttons given user does not have edit authority', () => {

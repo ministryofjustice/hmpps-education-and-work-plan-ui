@@ -27,7 +27,10 @@
       <h1 class="govuk-heading-l">{{ prisonerSummary.firstName }} {{ prisonerSummary.lastName }}'s learning and work progress</h1>
     </div>
     <div class="govuk-grid-column-one-third">
-      {% include "../../partials/printThisPage.njk" %}
+      {% if tab !== 'overview' or isPostInduction %}
+        {# `Print this page` should not be on the pre-induction overview tab. Any other tab, or the post-induction Overview should get the `Print this page` link #}
+        {% include "../../partials/printThisPage.njk" %}
+      {% endif %}
     </div>
   </div>
 
