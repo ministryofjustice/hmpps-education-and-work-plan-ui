@@ -1,17 +1,15 @@
-import type { PrisonerSummary, Timeline } from 'viewModels'
+import type { PrisonerSummary } from 'viewModels'
 
 export default class TimelineView {
-  constructor(private readonly prisonerSummary: PrisonerSummary, private readonly timeline: Timeline) {}
+  constructor(private readonly prisonerSummary: PrisonerSummary) {}
 
   get renderArgs(): {
     tab: string
     prisonerSummary: PrisonerSummary
-    timeline: Timeline
   } {
     return {
       tab: 'timeline',
       prisonerSummary: this.prisonerSummary,
-      timeline: this.timeline,
     }
   }
 }

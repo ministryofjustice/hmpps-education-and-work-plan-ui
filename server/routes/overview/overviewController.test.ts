@@ -1,6 +1,6 @@
 import createError from 'http-errors'
 import moment from 'moment'
-import type { FunctionalSkills, InPrisonEducationRecords, Timeline, WorkAndInterests } from 'viewModels'
+import type { FunctionalSkills, InPrisonEducationRecords, WorkAndInterests } from 'viewModels'
 import { SessionData } from 'express-session'
 import { NextFunction, Request, Response } from 'express'
 import OverviewController from './overviewController'
@@ -16,7 +16,6 @@ import CiagInductionService from '../../services/ciagInductionService'
 import aValidLongQuestionSetWorkAndInterests from '../../testsupport/workAndInterestsTestDataBuilder'
 import aValidPrisonerSummary from '../../testsupport/prisonerSummaryTestDataBuilder'
 import { aValidShortQuestionSetEducationAndTraining } from '../../testsupport/educationAndTrainingTestDataBuilder'
-import aValidTimelineResponse from '../../testsupport/timelineTestDataBuilder'
 
 describe('overviewController', () => {
   const curiousService = {
@@ -26,7 +25,6 @@ describe('overviewController', () => {
   }
   const educationAndWorkPlanService = {
     getActionPlan: jest.fn(),
-    getTimeline: jest.fn(),
   }
   const ciagInductionService = {
     getWorkAndInterests: jest.fn(),
@@ -471,44 +469,6 @@ describe('overviewController', () => {
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/overview/index', expectedView)
       expect(ciagInductionService.getWorkAndInterests).toHaveBeenCalledWith(prisonNumber, 'a-user-token')
-    })
-  })
-
-  describe('getTimelineView', () => {
-    it('should get timeline view', async () => {
-      // Given
-      const username = 'a-dps-user'
-      req.user.username = username
-      req.user.token = 'a-user-token'
-
-      const expectedTab = 'timeline'
-      req.params.tab = expectedTab
-
-      const prisonNumber = 'A1234GC'
-      req.params.prisonNumber = prisonNumber
-
-      const prisonerSummary = aValidPrisonerSummary(prisonNumber)
-      req.session.prisonerSummary = prisonerSummary
-
-      const expectedTimeline: Timeline = aValidTimelineResponse()
-      educationAndWorkPlanService.getTimeline.mockResolvedValue(expectedTimeline)
-
-      const expectedView = {
-        prisonerSummary,
-        tab: expectedTab,
-        timeline: expectedTimeline,
-      }
-
-      // When
-      await controller.getTimelineView(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
-
-      // Then
-      expect(res.render).toHaveBeenCalledWith('pages/overview/index', expectedView)
-      expect(educationAndWorkPlanService.getTimeline).toHaveBeenCalledWith(prisonNumber, 'a-user-token')
     })
   })
 })
