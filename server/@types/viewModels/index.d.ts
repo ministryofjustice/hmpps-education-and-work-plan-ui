@@ -362,12 +362,12 @@ declare module 'viewModels' {
   }
 
   export interface Timeline {
-    reference?: string // TODO - Are these required/optional?
-    prisonNumber?: string // TODO - Are these required/optional?
-    events?: Array<TimelineEntry>
+    reference: string
+    prisonNumber: string
+    events?: Array<TimelineEvent>
   }
 
-  export interface TimelineEntry {
+  export interface TimelineEvent {
     reference: string
     sourceReference: string
     eventType:
