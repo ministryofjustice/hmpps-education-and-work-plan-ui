@@ -362,7 +362,7 @@ declare module 'viewModels' {
   }
 
   export interface Timeline {
-    reference: string
+    reference?: string
     prisonNumber: string
     events?: Array<TimelineEvent>
   }
@@ -377,10 +377,6 @@ declare module 'viewModels' {
       | 'GOAL_STARTED'
       | 'GOAL_COMPLETED'
       | 'GOAL_ARCHIVED'
-      | 'STEP_UPDATED'
-      | 'STEP_NOT_STARTED'
-      | 'STEP_STARTED'
-      | 'STEP_COMPLETED'
       | 'INDUCTION_UPDATED'
       | 'INDUCTION_CREATED'
     prisonId: string
