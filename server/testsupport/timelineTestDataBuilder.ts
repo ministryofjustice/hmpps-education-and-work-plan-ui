@@ -1,6 +1,6 @@
 import type { Timeline } from 'viewModels'
 
-export default function aValidTimelineResponse(): Timeline {
+export default function aValidTimeline(): Timeline {
   return {
     reference: '6add2455-30f1-4b3e-a23e-1baf2d761e8f',
     prisonNumber: 'A1234BC',
