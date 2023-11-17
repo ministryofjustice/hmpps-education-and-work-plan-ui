@@ -9,7 +9,7 @@ import {
 } from '../testsupport/createGoalsRequestTestDataBuilder'
 import aValidActionPlanSummaryListResponse from '../testsupport/actionPlanSummaryListResponseTestDataBuilder'
 import aValidActionPlanSummaryResponse from '../testsupport/actionPlanSummaryResponseTestDataBuilder'
-import aValidTimeline from '../testsupport/timelineTestDataBuilder'
+import aValidTimelineResponse from '../testsupport/timelineResponseTestDataBuilder'
 
 describe('educationAndWorkPlanClient', () => {
   const educationAndWorkPlanClient = new EducationAndWorkPlanClient()
@@ -215,7 +215,7 @@ describe('educationAndWorkPlanClient', () => {
       const prisonNumber = 'A1234BC'
       const systemToken = 'a-system-token'
 
-      const expectedTimelineResponse = aValidTimeline()
+      const expectedTimelineResponse = aValidTimelineResponse()
 
       educationAndWorkPlanApi.get(`/timelines/${prisonNumber}`).reply(200, expectedTimelineResponse)
 

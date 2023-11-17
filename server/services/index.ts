@@ -6,6 +6,7 @@ import CuriousService from './curiousService'
 import CiagInductionService from './ciagInductionService'
 import FrontendComponentService from './frontendComponentService'
 import PrisonerListService from './prisonerListService'
+import TimelineService from './timelineService'
 
 /**
  * Function that instantiates and exposes all services required by the application.
@@ -33,6 +34,7 @@ export const services = () => {
     educationAndWorkPlanClient,
     ciagInductionClient,
   )
+  const timelineService = new TimelineService(educationAndWorkPlanClient)
 
   return {
     applicationInfo,
@@ -43,6 +45,7 @@ export const services = () => {
     ciagInductionService,
     frontendComponentService,
     prisonerListService,
+    timelineService,
   }
 }
 
