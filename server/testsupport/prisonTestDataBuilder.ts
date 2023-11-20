@@ -38,3 +38,5 @@ const aValidPrison = (options?: { prisonID?: string; prisonName?: string; active
     ],
   }
 }
+
+export default aValidPrison

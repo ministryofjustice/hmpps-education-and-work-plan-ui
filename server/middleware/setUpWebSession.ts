@@ -2,12 +2,12 @@ import { v4 as uuidv4 } from 'uuid'
 import session from 'express-session'
 import RedisStore from 'connect-redis'
 import express, { Router } from 'express'
-import { createRedisClient } from '../data/redisClient'
+import { createRedisClient } from '../data/cache/redisClient'
 import config from '../config'
 import logger from '../../logger'
 
 export default function setUpWebSession(): Router {
-  const client = createRedisClient()
+  const client = createRedisClient('webSession:')
   client.connect().catch((err: Error) => logger.error(`Error connecting to Redis`, err))
 
   const router = express.Router()
