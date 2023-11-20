@@ -61,6 +61,8 @@ To update the types from the Open API docs run the following commands:
 
 `npx openapi-typescript https://prisoner-search-dev.prison.service.justice.gov.uk/v3/api-docs -o server/@types/prisonerSearchApi/index.d.ts`
 
+`npx openapi-typescript https://prison-register-dev.hmpps.service.justice.gov.uk/v3/api-docs -o server/@types/prisonRegisterApi/index.d.ts`
+
 `npx openapi-typescript https://testservices.sequation.net/sequation-virtual-campus2-api/v3/api-docs -o server/@types/curiousApi/index.d.ts`
 
 `npx openapi-typescript https://ciag-induction-api-dev.hmpps.service.justice.gov.uk/v3/api-docs -o server/@types/ciagInductionApi/index.d.ts`
