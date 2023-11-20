@@ -362,6 +362,7 @@ declare module 'viewModels' {
   }
 
   export interface Timeline {
+    problemRetrievingData: boolean
     reference?: string
     prisonNumber: string
     events?: Array<TimelineEvent>

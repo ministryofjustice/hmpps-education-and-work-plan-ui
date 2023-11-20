@@ -2,6 +2,7 @@ import type { Timeline } from 'viewModels'
 
 export default function aValidTimeline(): Timeline {
   return {
+    problemRetrievingData: false,
     reference: '6add2455-30f1-4b3e-a23e-1baf2d761e8f',
     prisonNumber: 'A1234BC',
     events: [
