@@ -24,4 +24,4 @@ const toTimelineEvent = (timelineEventResponse: TimelineEventResponse): Timeline
   }
 }
 
-export default toTimeline
+export { toTimeline, toTimelineEvent }

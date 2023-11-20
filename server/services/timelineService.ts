@@ -1,6 +1,6 @@
 import type { TimelineResponse } from 'educationAndWorkPlanApiClient'
 import EducationAndWorkPlanClient from '../data/educationAndWorkPlanClient'
-import toTimeline from '../routes/overview/mappers/timelineMapper'
+import { toTimeline } from '../routes/overview/mappers/timelineMapper'
 import logger from '../../logger'
 
 export default class TimelineService {
