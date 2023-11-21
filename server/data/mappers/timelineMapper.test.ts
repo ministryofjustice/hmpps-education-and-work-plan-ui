@@ -30,7 +30,10 @@ describe('timelineMapper', () => {
           reference: 'cd98ea4c-b415-48d9-a600-9068cefe65e4x',
           sourceReference: '33bc1045-7368-47c4-a261-4d616b7b51b9',
           eventType: 'ACTION_PLAN_CREATED',
-          prisonName: 'MDI',
+          prison: {
+            prisonId: 'MDI',
+            prisonName: undefined,
+          },
           timestamp: '2023-09-01T10:47:38.565Z',
           correlationId: '246aa049-c5df-459d-8231-bdeab3936d0f',
           contextualInfo: '',
@@ -64,7 +67,10 @@ describe('timelineMapper', () => {
       reference: 'cd98ea4c-b415-48d9-a600-9068cefe65e4x',
       sourceReference: '33bc1045-7368-47c4-a261-4d616b7b51b9',
       eventType: 'ACTION_PLAN_CREATED',
-      prisonName: 'MDI',
+      prison: {
+        prisonId: 'MDI',
+        prisonName: undefined,
+      },
       timestamp: '2023-09-01T10:47:38.565Z',
       correlationId: '246aa049-c5df-459d-8231-bdeab3936d0f',
       contextualInfo: '',

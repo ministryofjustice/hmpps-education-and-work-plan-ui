@@ -1,12 +1,13 @@
+import type { Timeline } from 'viewModels'
 import type { TimelineResponse } from 'educationAndWorkPlanApiClient'
 import EducationAndWorkPlanClient from '../data/educationAndWorkPlanClient'
-import { toTimeline } from '../routes/overview/mappers/timelineMapper'
+import { toTimeline } from '../data/mappers/timelineMapper'
 import logger from '../../logger'
 
 export default class TimelineService {
   constructor(private readonly educationAndWorkPlanClient: EducationAndWorkPlanClient) {}
 
-  async getTimeline(prisonNumber: string, token: string): Promise<TimelineResponse> {
+  async getTimeline(prisonNumber: string, token: string): Promise<Timeline> {
     try {
       const timelineResponse = await this.educationAndWorkPlanClient.getTimeline(prisonNumber, token)
       const timelineResponseFilteredEvents = this.filterTimelineByActionPlanCreatedOrUpdatedEvent(timelineResponse)
@@ -14,7 +15,7 @@ export default class TimelineService {
       return toTimeline(timelineResponse)
     } catch (error) {
       logger.error(`Error retrieving Timeline for Prisoner [${prisonNumber}]: ${error}`)
-      return { problemRetrievingData: true } as TimelineResponse
+      return { problemRetrievingData: true } as Timeline
     }
   }
 

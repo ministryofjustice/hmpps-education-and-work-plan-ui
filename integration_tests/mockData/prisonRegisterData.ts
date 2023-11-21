@@ -1,6 +1,6 @@
-import type { Prison } from 'prisonRegisterApiClient'
+import type { PrisonResponse } from 'prisonRegisterApiClient'
 
-const prisonsKeyedByPrisonId: Record<string, Prison> = {
+const prisonsKeyedByPrisonId: Record<string, PrisonResponse> = {
   AKI: {
     prisonId: 'AKI',
     prisonName: 'Acklington (HMP)',
@@ -5117,6 +5117,8 @@ const prisonsKeyedByPrisonId: Record<string, Prison> = {
   },
 }
 
-const allPrisons: Array<Prison> = Object.entries(prisonsKeyedByPrisonId).map(entry => entry[1] as Prison)
+const allPrisons: Array<PrisonResponse> = Object.entries(prisonsKeyedByPrisonId).map(
+  entry => entry[1] as PrisonResponse,
+)
 
 export { prisonsKeyedByPrisonId, allPrisons }
