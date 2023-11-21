@@ -9,7 +9,7 @@ export default class TimelineService {
   async getTimeline(prisonNumber: string, token: string): Promise<TimelineResponse> {
     try {
       const timelineResponse = await this.educationAndWorkPlanClient.getTimeline(prisonNumber, token)
-      const timelineResponseFilteredEvents = this.filterTimelineByActionPlanCreatedEvent(timelineResponse)
+      const timelineResponseFilteredEvents = this.filterTimelineByActionPlanCreatedOrUpdatedEvent(timelineResponse)
       timelineResponse.events = timelineResponseFilteredEvents
       return toTimeline(timelineResponse)
     } catch (error) {
@@ -18,7 +18,10 @@ export default class TimelineService {
     }
   }
 
-  filterTimelineByActionPlanCreatedEvent = (timelineResponse: TimelineResponse) => {
-    return timelineResponse.events.filter((event: { eventType: string }) => event.eventType === 'ACTION_PLAN_CREATED')
+  filterTimelineByActionPlanCreatedOrUpdatedEvent = (timelineResponse: TimelineResponse) => {
+    return timelineResponse.events.filter(
+      (event: { eventType: string }) =>
+        event.eventType === 'ACTION_PLAN_CREATED' || event.eventType === 'INDUCTION_UPDATED',
+    )
   }
 }
