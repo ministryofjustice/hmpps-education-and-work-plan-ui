@@ -11,6 +11,10 @@ describe('formatTimelineEvent', () => {
         timelineEventValue: 'INDUCTION_UPDATED',
         expected: 'Learning and work progress plan updated',
       },
+      {
+        timelineEventValue: 'GOAL_UPDATED',
+        expected: 'Goal updated',
+      },
     ).forEach(spec => {
       it(`Timeline event value ${spec.timelineEventValue}, expected text: ${spec.expected}`, () => {
         expect(formatTimelineEvent(spec.timelineEventValue)).toEqual(spec.expected)

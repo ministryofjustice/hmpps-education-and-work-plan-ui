@@ -7,7 +7,7 @@
       {% for event in timeline.events %}
         <div class="moj-timeline__item">
           <div class="moj-timeline__header">
-            <h2 class="moj-timeline__title">{{ event.eventType | formatTimelineEvent }} </h2>
+            <h2 class="moj-timeline__title">{{ event.eventType | formatTimelineEvent }}</h2>
             <p class="moj-timeline__byline govuk-!-display-none-print">by {{ event.actionedByDisplayName }}, {{ event.prison.prisonName if event.prison.prisonName else event.prison.prisonId }}</p>
           </div>
 
@@ -15,9 +15,16 @@
             <time datetime="{{ event.timestamp }}">{{ event.timestamp | formatDate('D MMMM YYYY') }}</time>
           </p>
 
-          {% if event.eventType == 'ACTION_PLAN_CREATED' %}
+          {% if event.eventType == 'ACTION_PLAN_CREATED' or event.eventType == 'GOAL_UPDATED' %}
           <div class="moj-timeline__description">
-            <p class="govuk-body govuk-!-margin-bottom-0 govuk-!-display-none-print"><a href="/plan/{{ prisonerSummary.prisonNumber }}/view/overview">View {{ prisonerSummary.firstName }} {{ prisonerSummary.lastName | title }}'s learning and work progress</a></p>
+            <p class="govuk-body govuk-!-margin-bottom-0 govuk-!-display-none-print">
+              <a href="/plan/{{ prisonerSummary.prisonNumber }}/view/overview">
+                {% if event.eventType == 'ACTION_PLAN_CREATED' %}
+                  View {{ prisonerSummary.firstName }} {{ prisonerSummary.lastName | title }}'s learning and work progress</a>
+                {% elif event.eventType == 'GOAL_UPDATED' %}
+                  View <span class="govuk-visually-hidden">{{ prisonerSummary.firstName }} {{ prisonerSummary.lastName | title }}'s </span>goals</a>
+                {% endif %}
+              </p>
           </div>
           {% endif %}
 
