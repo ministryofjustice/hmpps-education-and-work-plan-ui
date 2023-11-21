@@ -13,6 +13,7 @@ export default (router: Router, services: Services) => {
     services.curiousService,
     services.educationAndWorkPlanService,
     services.ciagInductionService,
+    services.timelineService,
   )
 
   router.use('/plan/:prisonNumber/view/*', [

@@ -9,10 +9,16 @@ export default class TimelineService {
   async getTimeline(prisonNumber: string, token: string): Promise<TimelineResponse> {
     try {
       const timelineResponse = await this.educationAndWorkPlanClient.getTimeline(prisonNumber, token)
+      const timelineResponseFilteredEvents = this.filterTimelineByActionPlanCreatedEvent(timelineResponse)
+      timelineResponse.events = timelineResponseFilteredEvents
       return toTimeline(timelineResponse)
     } catch (error) {
       logger.error(`Error retrieving Timeline for Prisoner [${prisonNumber}]: ${error}`)
       return { problemRetrievingData: true } as TimelineResponse
     }
+  }
+
+  filterTimelineByActionPlanCreatedEvent = (timelineResponse: TimelineResponse) => {
+    return timelineResponse.events.filter((event: { eventType: string }) => event.eventType === 'ACTION_PLAN_CREATED')
   }
 }

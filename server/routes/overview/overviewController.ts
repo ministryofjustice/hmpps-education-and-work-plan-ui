@@ -4,6 +4,7 @@ import EducationAndTrainingView from './educationAndTrainingView'
 import SupportNeedsView from './supportNeedsView'
 import { CuriousService } from '../../services'
 import EducationAndWorkPlanService from '../../services/educationAndWorkPlanService'
+import TimelineService from '../../services/timelineService'
 import { mostRecentFunctionalSkills } from '../functionalSkillsResolver'
 import {
   completedInPrisonEducationRecords,
@@ -20,6 +21,7 @@ export default class OverviewController {
     private readonly curiousService: CuriousService,
     private readonly educationAndWorkPlanService: EducationAndWorkPlanService,
     private readonly ciagInductionService: CiagInductionService,
+    private readonly timelineService: TimelineService,
   ) {}
 
   // TODO - remove this entire method after private beta go-live, once we have switched over to use the PLP Prisoner List and Overview screens rather than the CIAG ones
@@ -123,9 +125,11 @@ export default class OverviewController {
   }
 
   getTimelineView: RequestHandler = async (req, res, next): Promise<void> => {
+    const { prisonNumber } = req.params
     const { prisonerSummary } = req.session
 
-    const view = new TimelineView(prisonerSummary)
+    const timeline = await this.timelineService.getTimeline(prisonNumber, req.user.token)
+    const view = new TimelineView(prisonerSummary, timeline)
     res.render('pages/overview/index', { ...view.renderArgs })
   }
 }
