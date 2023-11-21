@@ -16,7 +16,7 @@ as the follow up questions are different.
       <div class="govuk-summary-card__content">
         <div class="app-summary-card__change-link">
           <h3 class="govuk-heading-s app-summary-card__change-link__heading">Educational qualifications</h3>
-          <a class="govuk-link app-summary-card__change-link__link" href="{{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}/qualifications-list/update">
+          <a class="govuk-link app-summary-card__change-link__link govuk-!-display-none-print" href="{{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}/qualifications-list/update">
             {% if educationAndTraining.data.shortQuestionSetAnswers.educationalQualifications | length %}
               Change<span class="govuk-visually-hidden"> qualifications by adding or removing qualifications</span>
             {% else %}
@@ -66,7 +66,7 @@ as the follow up questions are different.
                 {% endfor %}
               </ul>
             </dd>
-            <dd class="govuk-summary-list__actions">
+            <dd class="govuk-summary-list__actions govuk-!-display-none-print">
               <a class="govuk-link" href="{{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}/additional-training/update">
                 Change<span class="govuk-visually-hidden"> other training or qualifications</span>
               </a>
