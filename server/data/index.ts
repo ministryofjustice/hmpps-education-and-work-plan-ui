@@ -11,8 +11,8 @@ initialiseAppInsights()
 buildAppInsightsClient(applicationInfo)
 
 import HmppsAuthClient from './hmppsAuthClient'
-import { createRedisClient } from './redisClient'
-import TokenStore from './tokenStore'
+import { createRedisClient } from './cache/redisClient'
+import TokenStore from './cache/tokenStore'
 import PrisonerSearchClient from './prisonerSearchClient'
 import EducationAndWorkPlanClient from './educationAndWorkPlanClient'
 import CuriousClient from './curiousClient'
