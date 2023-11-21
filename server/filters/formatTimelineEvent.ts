@@ -5,4 +5,5 @@ export default function formatTimelineEvent(value: string): string {
 
 enum TimelineEventValue {
   ACTION_PLAN_CREATED = 'Learning and work progress plan created',
+  INDUCTION_UPDATED = 'Learning and work progress plan updated',
 }
