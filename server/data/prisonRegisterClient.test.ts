@@ -1,8 +1,8 @@
-import type { Prison } from 'prisonRegisterApiClient'
+import type { PrisonResponse } from 'prisonRegisterApiClient'
 import nock from 'nock'
 import config from '../config'
 import PrisonRegisterClient from './prisonRegisterClient'
-import aValidPrison from '../testsupport/prisonTestDataBuilder'
+import aValidPrisonResponse from '../testsupport/prisonResponseTestDataBuilder'
 
 describe('prisonRegisterClient', () => {
   const prisonRegisterClient = new PrisonRegisterClient()
@@ -22,19 +22,19 @@ describe('prisonRegisterClient', () => {
     it('should get all prisons', async () => {
       // Given
       const systemToken = 'a-system-token'
-      const allPrisons: Array<Prison> = [
-        aValidPrison({
-          prisonID: 'ACI',
+      const allPrisons: Array<PrisonResponse> = [
+        aValidPrisonResponse({
+          prisonId: 'ACI',
           prisonName: 'Altcourse (HMP)',
           active: false,
         }),
-        aValidPrison({
-          prisonID: 'ASI',
+        aValidPrisonResponse({
+          prisonId: 'ASI',
           prisonName: 'Ashfield (HMP)',
           active: true,
         }),
-        aValidPrison({
-          prisonID: 'MDI',
+        aValidPrisonResponse({
+          prisonId: 'MDI',
           prisonName: 'Moorland (HMP & YOI)',
           active: true,
         }),
@@ -77,8 +77,8 @@ describe('prisonRegisterClient', () => {
       // Given
       const systemToken = 'a-system-token'
       const prisonId = 'MDI'
-      const moorland = aValidPrison({
-        prisonID: prisonId,
+      const moorland = aValidPrisonResponse({
+        prisonId,
         prisonName: 'Moorland (HMP & YOI)',
       })
       prisonRegisterApi.get(`/prisons/id/${prisonId}`).reply(200, moorland)

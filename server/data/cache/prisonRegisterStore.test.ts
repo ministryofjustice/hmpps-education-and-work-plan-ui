@@ -1,7 +1,7 @@
-import type { Prison } from 'prisonRegisterApiClient'
+import type { PrisonResponse } from 'prisonRegisterApiClient'
 import PrisonRegisterStore from './prisonRegisterStore'
 import { RedisClient } from './redisClient'
-import aValidPrison from '../../testsupport/prisonTestDataBuilder'
+import aValidPrisonResponse from '../../testsupport/prisonResponseTestDataBuilder'
 
 const redisClient = {
   on: jest.fn(),
@@ -10,32 +10,32 @@ const redisClient = {
   connect: jest.fn(),
 }
 
-const allPrisons: Array<Prison> = [
-  aValidPrison({
-    prisonID: 'ACI',
+const allPrisons: Array<PrisonResponse> = [
+  aValidPrisonResponse({
+    prisonId: 'ACI',
     prisonName: 'Altcourse (HMP)',
     active: false,
   }),
-  aValidPrison({
-    prisonID: 'ASI',
+  aValidPrisonResponse({
+    prisonId: 'ASI',
     prisonName: 'Ashfield (HMP)',
     active: true,
   }),
-  aValidPrison({
-    prisonID: 'MDI',
+  aValidPrisonResponse({
+    prisonId: 'MDI',
     prisonName: 'Moorland (HMP & YOI)',
     active: true,
   }),
 ]
 
-const activePrisons: Array<Prison> = [
-  aValidPrison({
-    prisonID: 'ASI',
+const activePrisons: Array<PrisonResponse> = [
+  aValidPrisonResponse({
+    prisonId: 'ASI',
     prisonName: 'Ashfield (HMP)',
     active: true,
   }),
-  aValidPrison({
-    prisonID: 'MDI',
+  aValidPrisonResponse({
+    prisonId: 'MDI',
     prisonName: 'Moorland (HMP & YOI)',
     active: true,
   }),
@@ -86,7 +86,7 @@ describe('prisonRegisterStore', () => {
     const serializedActivePrisons: string = null
     redisClient.get.mockResolvedValue(serializedActivePrisons)
 
-    const expectedActivePrisons: Array<Prison> = []
+    const expectedActivePrisons: Array<PrisonResponse> = []
 
     // When
     const returnedActivePrisons = await prisonRegisterStore.getActivePrisons()

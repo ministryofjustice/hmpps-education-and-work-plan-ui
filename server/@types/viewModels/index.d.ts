@@ -380,7 +380,7 @@ declare module 'viewModels' {
       | 'GOAL_ARCHIVED'
       | 'INDUCTION_UPDATED'
       | 'INDUCTION_CREATED'
-    prisonName: string
+    prison: Prison
     timestamp: string
     correlationId: string
     contextualInfo?: string
@@ -396,5 +396,10 @@ declare module 'viewModels' {
     cssIncludes: Array<string>
     jsIncludes: Array<string>
     problemRetrievingData: boolean
+  }
+
+  export interface Prison {
+    prisonId: string
+    prisonName: string
   }
 }

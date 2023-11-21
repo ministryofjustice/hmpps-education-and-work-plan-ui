@@ -15,7 +15,10 @@ const toTimelineEvent = (timelineEventResponse: TimelineEventResponse): Timeline
     reference: timelineEventResponse.reference,
     sourceReference: timelineEventResponse.sourceReference,
     eventType: timelineEventResponse.eventType,
-    prisonName: timelineEventResponse.prisonId, // (JIRA: 480) TODO: Lookup Prison name from the service
+    prison: {
+      prisonId: timelineEventResponse.prisonId,
+      prisonName: undefined, // This mapper cannot look up / resolve the prisonName; that has to be post-processed
+    },
     timestamp: timelineEventResponse.timestamp,
     correlationId: timelineEventResponse.correlationId,
     contextualInfo: timelineEventResponse.contextualInfo,
