@@ -6,7 +6,6 @@ describe('timelineMapper', () => {
   it('should map to Timeline', () => {
     // Given
     const timeline: TimelineResponse = {
-      problemRetrievingData: false,
       prisonNumber: 'A1234AA',
       events: [
         {
