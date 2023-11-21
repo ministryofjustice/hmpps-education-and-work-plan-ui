@@ -16,6 +16,7 @@ import CiagInductionService from '../../services/ciagInductionService'
 import aValidLongQuestionSetWorkAndInterests from '../../testsupport/workAndInterestsTestDataBuilder'
 import aValidPrisonerSummary from '../../testsupport/prisonerSummaryTestDataBuilder'
 import { aValidShortQuestionSetEducationAndTraining } from '../../testsupport/educationAndTrainingTestDataBuilder'
+import TimelineService from '../../services/timelineService'
 
 describe('overviewController', () => {
   const curiousService = {
@@ -31,11 +32,15 @@ describe('overviewController', () => {
     getEducationAndTraining: jest.fn(),
     ciagInductionExists: jest.fn(),
   }
+  const timelineService = {
+    getTimeline: jest.fn(),
+  }
 
   const controller = new OverviewController(
     curiousService as unknown as CuriousService,
     educationAndWorkPlanService as unknown as EducationAndWorkPlanService,
     ciagInductionService as unknown as CiagInductionService,
+    timelineService as unknown as TimelineService,
   )
 
   const req = {

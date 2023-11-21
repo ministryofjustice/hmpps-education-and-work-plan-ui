@@ -15,8 +15,7 @@ const toTimelineEvent = (timelineEventResponse: TimelineEventResponse): Timeline
     reference: timelineEventResponse.reference,
     sourceReference: timelineEventResponse.sourceReference,
     eventType: timelineEventResponse.eventType,
-    prisonId: timelineEventResponse.prisonId,
-    actionedBy: timelineEventResponse.actionedBy,
+    prisonName: timelineEventResponse.prisonId, // (JIRA: 480) TODO: Lookup Prison name from the service
     timestamp: timelineEventResponse.timestamp,
     correlationId: timelineEventResponse.correlationId,
     contextualInfo: timelineEventResponse.contextualInfo,

@@ -380,8 +380,7 @@ declare module 'viewModels' {
       | 'GOAL_ARCHIVED'
       | 'INDUCTION_UPDATED'
       | 'INDUCTION_CREATED'
-    prisonId: string
-    actionedBy: string
+    prisonName: string
     timestamp: string
     correlationId: string
     contextualInfo?: string

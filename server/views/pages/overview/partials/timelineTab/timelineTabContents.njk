@@ -4,25 +4,25 @@
 
       <div class="moj-timeline">
 
-        <!-- Timeline item -->
-
+      {% for event in timeline.events %}
         <div class="moj-timeline__item">
           <div class="moj-timeline__header">
-            <h2 class="moj-timeline__title">[Event]</h2>
-            <p class="moj-timeline__byline govuk-!-display-none-print">by [User], [Prison name]</p>
+            <h2 class="moj-timeline__title">{{ event.eventType | formatTimelineEvent }} </h2>
+            <p class="moj-timeline__byline govuk-!-display-none-print">by {{ event.actionedByDisplayName }}, {{ event.prisonName }}</p>
           </div>
 
           <p class="moj-timeline__date">
-            <time datetime="2023-11-12">[Date]</time>
+            <time datetime="{{ event.timestamp }}">{{ event.timestamp | formatDate('D MMMM YYYY') }}</time>
           </p>
 
+          {% if event.eventType == 'ACTION_PLAN_CREATED' %}
           <div class="moj-timeline__description">
-            <p>[Description]</p>
-            [Description component]
+            <p class="govuk-body govuk-!-margin-bottom-0 govuk-!-display-none-print"><a href="/plan/{{ prisonerSummary.prisonNumber }}/view/overview">View {{ prisonerSummary.firstName }} {{ prisonerSummary.lastName | title }}'s learning and work progress</a></p>
           </div>
-        </div>
+          {% endif %}
 
-        <!-- end Timeline item -->
+        </div>
+      {% endfor %}
 
       </div>
 
