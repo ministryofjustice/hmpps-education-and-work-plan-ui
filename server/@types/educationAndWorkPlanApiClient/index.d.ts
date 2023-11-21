@@ -15,4 +15,7 @@ declare module 'educationAndWorkPlanApiClient' {
   export type ActionPlanSummaryResponse = components['schemas']['ActionPlanSummaryResponse']
   export type ActionPlanSummaryListResponse = components['schemas']['ActionPlanSummaryListResponse']
   export type GetActionPlanSummariesRequest = components['schemas']['GetActionPlanSummariesRequest']
+
+  export type TimelineResponse = components['schemas']['TimelineResponse']
+  export type TimelineEventResponse = components['schemas']['TimelineEventResponse']
 }

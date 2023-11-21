@@ -9,6 +9,7 @@ import {
 } from '../testsupport/createGoalsRequestTestDataBuilder'
 import aValidActionPlanSummaryListResponse from '../testsupport/actionPlanSummaryListResponseTestDataBuilder'
 import aValidActionPlanSummaryResponse from '../testsupport/actionPlanSummaryResponseTestDataBuilder'
+import aValidTimelineResponse from '../testsupport/timelineResponseTestDataBuilder'
 
 describe('educationAndWorkPlanClient', () => {
   const educationAndWorkPlanClient = new EducationAndWorkPlanClient()
@@ -205,6 +206,48 @@ describe('educationAndWorkPlanClient', () => {
       // Then
       expect(nock.isDone()).toBe(true)
       expect(actual).toEqual(expectedActionPlanSummaryListResponse)
+    })
+  })
+
+  describe('getTimeline', () => {
+    it('should get Timeline', async () => {
+      // Given
+      const prisonNumber = 'A1234BC'
+      const systemToken = 'a-system-token'
+
+      const expectedTimelineResponse = aValidTimelineResponse()
+
+      educationAndWorkPlanApi.get(`/timelines/${prisonNumber}`).reply(200, expectedTimelineResponse)
+
+      // When
+      const actual = await educationAndWorkPlanClient.getTimeline(prisonNumber, systemToken)
+
+      // Then
+      expect(nock.isDone()).toBe(true)
+      expect(actual).toEqual(expectedTimelineResponse)
+    })
+
+    it('should not get Timeline given API returns error response', async () => {
+      // Given
+      const prisonNumber = 'A1234BC'
+      const systemToken = 'a-system-token'
+
+      const expectedResponseBody = {
+        status: 500,
+        userMessage: 'An unexpected error occurred',
+        developerMessage: 'An unexpected error occurred',
+      }
+      educationAndWorkPlanApi.get(`/timelines/${prisonNumber}`).reply(500, expectedResponseBody)
+
+      // When
+      try {
+        await educationAndWorkPlanClient.getTimeline(prisonNumber, systemToken)
+      } catch (e) {
+        // Then
+        expect(nock.isDone()).toBe(true)
+        expect(e.status).toEqual(500)
+        expect(e.data).toEqual(expectedResponseBody)
+      }
     })
   })
 })

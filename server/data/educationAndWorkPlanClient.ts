@@ -4,6 +4,7 @@ import type {
   CreateGoalsRequest,
   GetActionPlanSummariesRequest,
   UpdateGoalRequest,
+  TimelineResponse,
 } from 'educationAndWorkPlanApiClient'
 import RestClient from './restClient'
 import config from '../config'
@@ -38,6 +39,12 @@ export default class EducationAndWorkPlanClient {
     return EducationAndWorkPlanClient.restClient(token).post({
       path: '/action-plans',
       data: requestBody,
+    })
+  }
+
+  async getTimeline(prisonNumber: string, token: string): Promise<TimelineResponse> {
+    return EducationAndWorkPlanClient.restClient(token).get({
+      path: `/timelines/${prisonNumber}`,
     })
   }
 }

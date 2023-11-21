@@ -1,29 +1,40 @@
-<div class="govuk-grid-row">
-  <div class="govuk-grid-column-two-thirds app-u-print-full-width">
+{% if not timeline.problemRetrievingData %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds app-u-print-full-width">
 
-    <div class="moj-timeline">
+      <div class="moj-timeline">
 
-      <!-- Timeline item -->
+        <!-- Timeline item -->
 
-      <div class="moj-timeline__item">
-        <div class="moj-timeline__header">
-          <h2 class="moj-timeline__title">[Event]</h2>
-          <p class="moj-timeline__byline govuk-!-display-none-print">by [User], [Prison name]</p>
+        <div class="moj-timeline__item">
+          <div class="moj-timeline__header">
+            <h2 class="moj-timeline__title">[Event]</h2>
+            <p class="moj-timeline__byline govuk-!-display-none-print">by [User], [Prison name]</p>
+          </div>
+
+          <p class="moj-timeline__date">
+            <time datetime="2023-11-12">[Date]</time>
+          </p>
+
+          <div class="moj-timeline__description">
+            <p>[Description]</p>
+            [Description component]
+          </div>
         </div>
 
-        <p class="moj-timeline__date">
-          <time datetime="2023-11-12">[Date]</time>
-        </p>
+        <!-- end Timeline item -->
 
-        <div class="moj-timeline__description">
-          <p>[Description]</p>
-          [Description component]
-        </div>
       </div>
 
-      <!-- end Timeline item -->
-
     </div>
-
   </div>
-</div>
+{% else %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h2 class="govuk-heading-m">[Error state title]</h2>
+      <p class="govuk-body">
+        [Error state message]
+      </p>
+    </div>
+  </div>
+{% endif %}
