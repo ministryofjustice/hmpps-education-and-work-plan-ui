@@ -4,6 +4,8 @@ import PrisonService from './prisonService'
 import TimelineService from './timelineService'
 import { EducationAndWorkPlanClient, HmppsAuthClient } from '../data'
 import { toTimeline } from '../data/mappers/timelineMapper'
+import aValidTimelineResponse from '../testsupport/timelineResponseTestDataBuilder'
+import aValidTimeline from '../testsupport/timelineTestDataBuilder'
 
 jest.mock('../data/mappers/timelineMapper')
 
@@ -38,6 +40,26 @@ describe('timelineService', () => {
   const systemToken = 'a-system-token'
 
   describe('getTimeline', () => {
+    it('should get timeline', async () => {
+      // Given
+      hmppsAuthClient.getSystemClientToken.mockResolvedValue(systemToken)
+
+      const timelineResponse: TimelineResponse = aValidTimelineResponse()
+      educationAndWorkPlanClient.getTimeline.mockResolvedValue(timelineResponse)
+
+      const timeline: Timeline = aValidTimeline()
+      mockedTimelineMapper.mockReturnValue(timeline)
+
+      // When
+      const actual = await timelineService.getTimeline(prisonNumber, userToken, username)
+
+      // Then
+      expect(actual).toEqual(timeline)
+      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
+      expect(educationAndWorkPlanClient.getTimeline).toHaveBeenCalledWith(prisonNumber, userToken)
+      expect(mockedTimelineMapper).toHaveBeenCalledWith(timelineResponse)
+    })
+
     describe('lookup prison names', () => {
       it('should get timeline given prison name lookups for several different prisons', async () => {
         // Given
