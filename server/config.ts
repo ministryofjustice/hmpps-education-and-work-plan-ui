@@ -96,7 +96,6 @@ export default {
         deadline: Number(get('PRISON_REGISTER_API_TIMEOUT_DEADLINE', 10000)),
       },
       agent: new AgentConfig(Number(get('PRISON_REGISTER_API_TIMEOUT_RESPONSE', 10000))),
-      defaultPageSize: Number(get('PRISON_REGISTER_API_DEFAULT_PAGE_SIZE', 9999, requiredInProduction)),
     },
     curious: {
       url: get('CURIOUS_API_URL', 'http://localhost:8083', requiredInProduction),
