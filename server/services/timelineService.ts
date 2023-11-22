@@ -39,7 +39,7 @@ export default class TimelineService {
     }
 
     // Lookup the prison for the first event by itself to prevent a race condition on the `PrisonService`
-    // If the `PrisonStore` cache is empty/stale, ettempting to lookup all the event's prisons in a `Promise.all`
+    // If the `PrisonStore` cache is empty/stale, attempting to lookup all the event's prisons in a `Promise.all`
     // loop results in a race condition where all prison look ups run (essentially) at the same time, and they all try
     // to populate the cache from the `prison-register-api`. This results in many REST API calls to `prison-register-api`
     // effectively spamming `prison-register-api` !
