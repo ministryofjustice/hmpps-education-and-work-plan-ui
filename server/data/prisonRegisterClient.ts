@@ -13,9 +13,10 @@ export default class PrisonRegisterClient {
     })
   }
 
-  async getAllPrisons(token: string): Promise<PrisonResponse> {
-    return PrisonRegisterClient.restClient(token).get({
+  async getAllPrisons(token: string): Promise<Array<PrisonResponse>> {
+    const allPrisonResponses = PrisonRegisterClient.restClient(token).get({
       path: '/prisons',
     })
+    return allPrisonResponses as Promise<Array<PrisonResponse>>
   }
 }
