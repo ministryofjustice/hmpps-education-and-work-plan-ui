@@ -6,7 +6,7 @@ import logger from '../../logger'
 import PrisonService from './prisonService'
 import { HmppsAuthClient } from '../data'
 
-const SUPPORTED_TIMELINE_EVENTS = ['ACTION_PLAN_CREATED', 'INDUCTION_UPDATED']
+const SUPPORTED_TIMELINE_EVENTS = ['ACTION_PLAN_CREATED', 'INDUCTION_UPDATED', 'GOAL_UPDATED']
 
 export default class TimelineService {
   constructor(
