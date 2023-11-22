@@ -184,6 +184,7 @@ This UI consumes, and is therefore dependent on, data from the following APIs:
 * `application-insights` - Standard HMPPS Digital configuration; used for telemetry and event tracing.
 * `frontend-componenents` - Standard HMPPS Digital configuration; used to retrieve the html and css for the DPS header and footer. Uses the system token.
 * `prisoner-search` - Used to return the list of prisoners in the user's active prison (active caseload ID) and to return individual prisoner records. Uses the system token.
+* `prison-register` - Used to return prison information in order to render prison names in the UI. Uses the system token.
 * `curious-api` - Used to retrieve the prisoner's initial functional skill assessments, neurodiversity support needs, and in-prison qualifications and achievements. Uses the system token.
 * `education-and-work-plan-api` - Used to record and retrieve prisoner action plan and goals, and retrieve timeline events. Uses the user token.
 * `ciag-inducation-api` - Used to return the prisoner's CIAG Induction record. Uses the user token.
@@ -191,10 +192,10 @@ This UI consumes, and is therefore dependent on, data from the following APIs:
 ## Feature Toggles
 Features can be toggled by setting the relevant environment variable.
 
-| Name                                           | Default Value | Type    | Description                                                                                                                                                                        |
-|------------------------------------------------|---------------|---------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| SOME_TOGGLE_ENABLED                            | false         | Boolean | Example feature toggle, for demonstration purposes.                                                                                                                                |
-| FRONTEND_COMPONENTS_API_FEATURE_TOGGLE_ENABLED | true          | Boolean | Set to false to disable the DPS frontend components, mainly the Header and Footer. Will be removed when the work on the DPS frontend components is tested and the service is live  |
-| PLP_PRISONER_LIST_AND_OVERVIEW_PAGES_ENABLED   | false         | Boolean | Set to true to enable the PLP versions of the Prisoner List and Overview pages.<br/>The same feature toggle must be set in the CIAG UI codebase                                    |
-| TIMELINE_PAGE_ENABLED                          | false         | Boolean | Set to false to disable the in development Timeline page feature                                                                                                                   |
-| NEW_CREATE_GOAL_ROUTES_ENABLED                 | false         | Boolean | Set to true to enable new style routes for the Create Goal screens.<br/>New style routes include a Goal and Step index in the path and are necessary for Change link functionality |
+| Name                                           | Default Value | Type    | Description                                                                                                                                                                         |
+|------------------------------------------------|---------------|---------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| SOME_TOGGLE_ENABLED                            | false         | Boolean | Example feature toggle, for demonstration purposes.                                                                                                                                 |
+| FRONTEND_COMPONENTS_API_FEATURE_TOGGLE_ENABLED | true          | Boolean | Set to false to disable the DPS frontend components, mainly the Header and Footer. Will be removed when the work on the DPS frontend components is tested and the service is live   |
+| PLP_PRISONER_LIST_AND_OVERVIEW_PAGES_ENABLED   | false         | Boolean | Set to true to enable the PLP versions of the Prisoner List and Overview pages.<br/>The same feature toggle must be set in the CIAG UI codebase                                     |
+| TIMELINE_PAGE_ENABLED                          | false         | Boolean | Set to true to enable the Timeline page feature                                                                                                                                     |
+| NEW_CREATE_GOAL_ROUTES_ENABLED                 | false         | Boolean | Set to true to enable new style routes for the Create Goal screens.<br/>New style routes include a Goal and Step index in the path and are necessary for Change link functionality  |
