@@ -21,15 +21,17 @@ export default class TimelineService {
       const timelineResponse = await this.educationAndWorkPlanClient.getTimeline(prisonNumber, token)
       timelineResponse.events = timelineResponse.events.filter(this.filterTimelineEvents)
 
-      // Check for GOAL_CREATED events with the same correlationId, then change the event type to MULTIPLE_GOALS_CREATED
-      // as they've been created at the same time (i.e. within same atomic action)
+      // Filter the events where a goal was created and extra the correlation IDs
       const goalCreatedEvents = timelineResponse.events.filter(this.filterGoalCreatedEvents)
-      const goalCreatedCorrelationIds = goalCreatedEvents.map((event: TimelineEvent) => event.correlationId)
-      const multipleGoalCreatedEvents = goalCreatedCorrelationIds.filter(
-        (correlationId: string, index: string) => goalCreatedCorrelationIds.indexOf(correlationId) !== index,
+      const correlationIdsFromGoalCreatedEvents = goalCreatedEvents.map((event: TimelineEvent) => event.correlationId)
+
+      // Filter the correlation IDs that appear more than once, indicating multiple goals were created in the same action
+      const correlationIdsForMultipleGoals = correlationIdsFromGoalCreatedEvents.filter(
+        (correlationId: string, index: string) => correlationIdsFromGoalCreatedEvents.indexOf(correlationId) !== index,
       )
 
-      multipleGoalCreatedEvents.forEach((correlationId: string) => {
+      // For each correlation ID associated with multiple goals, update the event type to 'MULTIPLE_GOALS_CREATED'
+      correlationIdsForMultipleGoals.forEach((correlationId: string) => {
         timelineResponse.events = timelineResponse.events.map((event: TimelineEvent) => {
           if (event.correlationId === correlationId) {
             return { ...event, eventType: 'MULTIPLE_GOALS_CREATED' }
@@ -38,14 +40,10 @@ export default class TimelineService {
         })
       })
 
-      // Only return a single MULTIPLE_GOALS_CREATED event which has the same correlationId
+      // Filter out 'MULTIPLE_GOALS_CREATED' events, leaving only one per correlation ID
       timelineResponse.events = timelineResponse.events.filter(
-        (event: TimelineEvent, index: number, self: TimelineEvent[]) => {
-          const isMultipleGoalsCreated = event.eventType === 'MULTIPLE_GOALS_CREATED'
-          const isSameCorrelationIdAsNext = self[index + 1]?.correlationId === event.correlationId
-
-          return !(isMultipleGoalsCreated && isSameCorrelationIdAsNext)
-        },
+        (event: TimelineEvent, index: number, self: TimelineEvent[]) =>
+          !(event.eventType === 'MULTIPLE_GOALS_CREATED' && self[index + 1]?.correlationId === event.correlationId),
       )
 
       const timeline = toTimeline(timelineResponse)
