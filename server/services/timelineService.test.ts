@@ -103,7 +103,7 @@ describe('timelineService', () => {
             {
               reference: 'f49a3412-df7f-41d2-ac04-ffd35e453af4',
               sourceReference: '32',
-              eventType: 'INDUCTION_CREATED',
+              eventType: 'ACTION_PLAN_CREATED',
               prison: {
                 prisonId: 'ASI',
                 prisonName: undefined,
@@ -116,7 +116,7 @@ describe('timelineService', () => {
             {
               reference: 'cd98ea4c-b415-48d9-a600-9068cefe65e4x',
               sourceReference: '33bc1045-7368-47c4-a261-4d616b7b51b9',
-              eventType: 'ACTION_PLAN_CREATED',
+              eventType: 'GOAL_CREATED',
               prison: {
                 prisonId: 'MDI',
                 prisonName: undefined,
@@ -188,7 +188,7 @@ describe('timelineService', () => {
             {
               reference: 'f49a3412-df7f-41d2-ac04-ffd35e453af4',
               sourceReference: '32',
-              eventType: 'INDUCTION_CREATED',
+              eventType: 'ACTION_PLAN_CREATED',
               prison: {
                 prisonId: 'ASI',
                 prisonName: undefined,
@@ -201,7 +201,7 @@ describe('timelineService', () => {
             {
               reference: 'cd98ea4c-b415-48d9-a600-9068cefe65e4x',
               sourceReference: '33bc1045-7368-47c4-a261-4d616b7b51b9',
-              eventType: 'ACTION_PLAN_CREATED',
+              eventType: 'GOAL_CREATED',
               prison: {
                 prisonId: 'MDI',
                 prisonName: undefined,

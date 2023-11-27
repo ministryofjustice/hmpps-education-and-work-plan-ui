@@ -48,7 +48,7 @@ export default function aValidTimeline(): Timeline {
       {
         reference: 'b046eccc-eadc-4351-8e2c-c5da12fca973',
         sourceReference: '93646ba2-d0f9-42a9-9f87-3eb985ab6fe9',
-        eventType: 'GOAL_COMPLETED',
+        eventType: 'GOAL_CREATED',
         prison: {
           prisonId: 'MDI',
           prisonName: undefined,

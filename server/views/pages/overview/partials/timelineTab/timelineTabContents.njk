@@ -15,16 +15,17 @@
             <time datetime="{{ event.timestamp }}">{{ event.timestamp | formatDate('D MMMM YYYY') }}</time>
           </p>
 
-          {% if event.eventType == 'ACTION_PLAN_CREATED' or event.eventType == 'GOAL_UPDATED' %}
+          {% if event.eventType == 'ACTION_PLAN_CREATED' or event.eventType == 'GOAL_UPDATED' or event.eventType == 'GOAL_CREATED' or event.eventType == 'MULTIPLE_GOALS_CREATED' %}
           <div class="moj-timeline__description">
             <p class="govuk-body govuk-!-margin-bottom-0 govuk-!-display-none-print">
               <a href="/plan/{{ prisonerSummary.prisonNumber }}/view/overview">
                 {% if event.eventType == 'ACTION_PLAN_CREATED' %}
-                  View {{ prisonerSummary.firstName }} {{ prisonerSummary.lastName | title }}'s learning and work progress</a>
-                {% elif event.eventType == 'GOAL_UPDATED' %}
-                  View <span class="govuk-visually-hidden">{{ prisonerSummary.firstName }} {{ prisonerSummary.lastName | title }}'s </span>goals</a>
+                  View {{ prisonerSummary.firstName }} {{ prisonerSummary.lastName | title }}'s learning and work progress
+                {% elif event.eventType == 'GOAL_UPDATED' or event.eventType == 'GOAL_CREATED' or event.eventType == 'MULTIPLE_GOALS_CREATED' %}
+                  View <span class="govuk-visually-hidden">{{ prisonerSummary.firstName }} {{ prisonerSummary.lastName | title }}'s </span>goals
                 {% endif %}
-              </p>
+              </a>
+            </p>
           </div>
           {% endif %}
 

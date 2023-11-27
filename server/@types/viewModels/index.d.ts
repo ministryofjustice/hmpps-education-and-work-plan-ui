@@ -371,15 +371,7 @@ declare module 'viewModels' {
   export interface TimelineEvent {
     reference: string
     sourceReference: string
-    eventType:
-      | 'ACTION_PLAN_CREATED'
-      | 'GOAL_CREATED'
-      | 'GOAL_UPDATED'
-      | 'GOAL_STARTED'
-      | 'GOAL_COMPLETED'
-      | 'GOAL_ARCHIVED'
-      | 'INDUCTION_UPDATED'
-      | 'INDUCTION_CREATED'
+    eventType: 'ACTION_PLAN_CREATED' | 'GOAL_CREATED' | 'MULTIPLE_GOALS_CREATED' | 'GOAL_UPDATED' | 'INDUCTION_UPDATED'
     prison: Prison
     timestamp: string
     correlationId: string

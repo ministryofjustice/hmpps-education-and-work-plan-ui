@@ -6,7 +6,7 @@ import logger from '../../logger'
 import PrisonService from './prisonService'
 import { HmppsAuthClient } from '../data'
 
-const SUPPORTED_TIMELINE_EVENTS = ['ACTION_PLAN_CREATED', 'INDUCTION_UPDATED', 'GOAL_UPDATED']
+const SUPPORTED_TIMELINE_EVENTS = ['ACTION_PLAN_CREATED', 'INDUCTION_UPDATED', 'GOAL_UPDATED', 'GOAL_CREATED']
 
 export default class TimelineService {
   constructor(
@@ -20,6 +20,29 @@ export default class TimelineService {
       const systemToken = await this.hmppsAuthClient.getSystemClientToken(username)
       const timelineResponse = await this.educationAndWorkPlanClient.getTimeline(prisonNumber, token)
       timelineResponse.events = timelineResponse.events.filter(this.filterTimelineEvents)
+
+      // Check for GOAL_CREATED events with the same correlationId, then change the event type to MULTIPLE_GOALS_CREATED
+      // as they've been created at the same time (i.e. within same atomic action)
+      const goalCreatedEvents = timelineResponse.events.filter(this.filterGoalCreatedEvents)
+      const goalCreatedCorrelationIds = goalCreatedEvents.map((event: TimelineEvent) => event.correlationId)
+      const multipleGoalCreatedEvents = goalCreatedCorrelationIds.filter(
+        (correlationId: string, index: string) => goalCreatedCorrelationIds.indexOf(correlationId) !== index,
+      )
+      multipleGoalCreatedEvents.forEach((correlationId: string) => {
+        const eventsToChange = timelineResponse.events.filter(
+          (event: TimelineEvent) => event.correlationId === correlationId,
+        )
+        eventsToChange.forEach((event: TimelineEvent) => {
+          // eslint-disable-next-line no-param-reassign
+          event.eventType = 'MULTIPLE_GOALS_CREATED'
+        })
+      })
+
+      // Only return a single MULTIPLE_GOALS_CREATED event which has the same correlationId
+      timelineResponse.events = timelineResponse.events.filter(
+        (event: TimelineEvent, index: number, self: TimelineEvent[]) =>
+          !(event.eventType === 'MULTIPLE_GOALS_CREATED' && self[index + 1]?.correlationId === event.correlationId),
+      )
 
       const timeline = toTimeline(timelineResponse)
       timeline.events = await this.addPrisonNameToPrisons(timeline.events, systemToken)
@@ -80,4 +103,6 @@ export default class TimelineService {
 
   private filterTimelineEvents = (event: TimelineEventResponse): boolean =>
     SUPPORTED_TIMELINE_EVENTS.includes(event.eventType)
+
+  private filterGoalCreatedEvents = (event: TimelineEventResponse): boolean => event.eventType === 'GOAL_CREATED'
 }
