@@ -28,20 +28,24 @@ export default class TimelineService {
       const multipleGoalCreatedEvents = goalCreatedCorrelationIds.filter(
         (correlationId: string, index: string) => goalCreatedCorrelationIds.indexOf(correlationId) !== index,
       )
+
       multipleGoalCreatedEvents.forEach((correlationId: string) => {
-        const eventsToChange = timelineResponse.events.filter(
-          (event: TimelineEvent) => event.correlationId === correlationId,
-        )
-        eventsToChange.forEach((event: TimelineEvent) => {
-          // eslint-disable-next-line no-param-reassign
-          event.eventType = 'MULTIPLE_GOALS_CREATED'
+        timelineResponse.events = timelineResponse.events.map((event: TimelineEvent) => {
+          if (event.correlationId === correlationId) {
+            return { ...event, eventType: 'MULTIPLE_GOALS_CREATED' }
+          }
+          return event
         })
       })
 
       // Only return a single MULTIPLE_GOALS_CREATED event which has the same correlationId
       timelineResponse.events = timelineResponse.events.filter(
-        (event: TimelineEvent, index: number, self: TimelineEvent[]) =>
-          !(event.eventType === 'MULTIPLE_GOALS_CREATED' && self[index + 1]?.correlationId === event.correlationId),
+        (event: TimelineEvent, index: number, self: TimelineEvent[]) => {
+          const isMultipleGoalsCreated = event.eventType === 'MULTIPLE_GOALS_CREATED'
+          const isSameCorrelationIdAsNext = self[index + 1]?.correlationId === event.correlationId
+
+          return !(isMultipleGoalsCreated && isSameCorrelationIdAsNext)
+        },
       )
 
       const timeline = toTimeline(timelineResponse)

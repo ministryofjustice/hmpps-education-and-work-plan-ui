@@ -129,6 +129,7 @@ export default class OverviewController {
     const { prisonerSummary } = req.session
 
     const timeline = await this.timelineService.getTimeline(prisonNumber, req.user.token, req.user.username)
+    console.log(timeline)
     const view = new TimelineView(prisonerSummary, timeline)
     res.render('pages/overview/index', { ...view.renderArgs })
   }
