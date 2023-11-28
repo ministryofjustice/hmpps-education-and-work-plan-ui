@@ -373,7 +373,7 @@ declare module 'viewModels' {
     sourceReference: string
     eventType: 'ACTION_PLAN_CREATED' | 'GOAL_CREATED' | 'MULTIPLE_GOALS_CREATED' | 'GOAL_UPDATED' | 'INDUCTION_UPDATED'
     prison: Prison
-    timestamp: string
+    timestamp: Date
     correlationId: string
     contextualInfo?: string
     actionedByDisplayName?: string

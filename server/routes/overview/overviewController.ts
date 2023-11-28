@@ -10,6 +10,7 @@ import {
   completedInPrisonEducationRecords,
   mostRecentCompletedInPrisonEducationRecords,
 } from '../inPrisonEducationRecordsResolver'
+import filterTimelineEvents from '../timelineResolver'
 import WorkAndInterestsView from './workAndInterestsView'
 import CiagInductionService from '../../services/ciagInductionService'
 import PostInductionOverviewView from './postInductionOverviewView'
@@ -128,7 +129,8 @@ export default class OverviewController {
     const { prisonNumber } = req.params
     const { prisonerSummary } = req.session
 
-    const timeline = await this.timelineService.getTimeline(prisonNumber, req.user.token, req.user.username)
+    const allTimelineEvents = await this.timelineService.getTimeline(prisonNumber, req.user.token, req.user.username)
+    const timeline = filterTimelineEvents(allTimelineEvents)
     const view = new TimelineView(prisonerSummary, timeline)
     res.render('pages/overview/index', { ...view.renderArgs })
   }

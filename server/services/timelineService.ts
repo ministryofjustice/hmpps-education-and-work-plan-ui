@@ -21,31 +21,6 @@ export default class TimelineService {
       const timelineResponse = await this.educationAndWorkPlanClient.getTimeline(prisonNumber, token)
       timelineResponse.events = timelineResponse.events.filter(this.filterTimelineEvents)
 
-      // Filter the events where a goal was created and extra the correlation IDs
-      const goalCreatedEvents = timelineResponse.events.filter(this.filterGoalCreatedEvents)
-      const correlationIdsFromGoalCreatedEvents = goalCreatedEvents.map((event: TimelineEvent) => event.correlationId)
-
-      // Filter the correlation IDs that appear more than once, indicating multiple goals were created in the same action
-      const correlationIdsForMultipleGoals = correlationIdsFromGoalCreatedEvents.filter(
-        (correlationId: string, index: string) => correlationIdsFromGoalCreatedEvents.indexOf(correlationId) !== index,
-      )
-
-      // For each correlation ID associated with multiple goals, update the event type to 'MULTIPLE_GOALS_CREATED'
-      correlationIdsForMultipleGoals.forEach((correlationId: string) => {
-        timelineResponse.events = timelineResponse.events.map((event: TimelineEvent) => {
-          if (event.correlationId === correlationId) {
-            return { ...event, eventType: 'MULTIPLE_GOALS_CREATED' }
-          }
-          return event
-        })
-      })
-
-      // Filter out 'MULTIPLE_GOALS_CREATED' events, leaving only one per correlation ID
-      timelineResponse.events = timelineResponse.events.filter(
-        (event: TimelineEvent, index: number, self: TimelineEvent[]) =>
-          !(event.eventType === 'MULTIPLE_GOALS_CREATED' && self[index + 1]?.correlationId === event.correlationId),
-      )
-
       const timeline = toTimeline(timelineResponse)
       timeline.events = await this.addPrisonNameToPrisons(timeline.events, systemToken)
       return timeline
@@ -105,6 +80,4 @@ export default class TimelineService {
 
   private filterTimelineEvents = (event: TimelineEventResponse): boolean =>
     SUPPORTED_TIMELINE_EVENTS.includes(event.eventType)
-
-  private filterGoalCreatedEvents = (event: TimelineEventResponse): boolean => event.eventType === 'GOAL_CREATED'
 }

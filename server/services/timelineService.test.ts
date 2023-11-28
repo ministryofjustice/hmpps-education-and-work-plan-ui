@@ -1,5 +1,6 @@
 import type { TimelineResponse } from 'educationAndWorkPlanApiClient'
 import type { Timeline } from 'viewModels'
+import moment from 'moment'
 import PrisonService from './prisonService'
 import TimelineService from './timelineService'
 import { EducationAndWorkPlanClient, HmppsAuthClient } from '../data'
@@ -118,7 +119,7 @@ describe('timelineService', () => {
               prisonId: 'ASI',
               prisonName: undefined,
             },
-            timestamp: '2023-09-01T10:46:38.565Z',
+            timestamp: moment('2023-09-01T10:46:38.565Z').toDate(),
             correlationId: '847aa5ad-2068-40e1-aec0-66b19007c494',
             contextualInfo: '',
             actionedByDisplayName: 'Ralph Gen',
@@ -131,7 +132,7 @@ describe('timelineService', () => {
               prisonId: 'MDI',
               prisonName: undefined,
             },
-            timestamp: '2023-09-01T10:47:38.565Z',
+            timestamp: moment('2023-09-01T10:47:38.565Z').toDate(),
             correlationId: '246aa049-c5df-459d-8231-bdeab3936d0f',
             contextualInfo: '',
             actionedByDisplayName: 'Ralph Gen',
@@ -144,7 +145,7 @@ describe('timelineService', () => {
               prisonId: 'MDI',
               prisonName: undefined,
             },
-            timestamp: '2023-09-01T10:47:38.565Z',
+            timestamp: moment('2023-09-01T10:47:38.565Z').toDate(),
             correlationId: '246aa049-c5df-459d-8231-bdeab3936d0f',
             contextualInfo: '',
             actionedByDisplayName: 'Ralph Gen',
@@ -211,7 +212,7 @@ describe('timelineService', () => {
                 prisonId: 'ASI',
                 prisonName: undefined,
               },
-              timestamp: '2023-09-01T10:46:38.565Z',
+              timestamp: moment('2023-09-01T10:46:38.565Z').toDate(),
               correlationId: '847aa5ad-2068-40e1-aec0-66b19007c494',
               contextualInfo: '',
               actionedByDisplayName: 'Ralph Gen',
@@ -224,7 +225,7 @@ describe('timelineService', () => {
                 prisonId: 'MDI',
                 prisonName: undefined,
               },
-              timestamp: '2023-09-01T10:47:38.565Z',
+              timestamp: moment('2023-09-01T10:47:38.565Z').toDate(),
               correlationId: '246aa049-c5df-459d-8231-bdeab3936d0f',
               contextualInfo: '',
               actionedByDisplayName: 'Ralph Gen',
@@ -296,7 +297,7 @@ describe('timelineService', () => {
                 prisonId: 'ASI',
                 prisonName: undefined,
               },
-              timestamp: '2023-09-01T10:46:38.565Z',
+              timestamp: moment('2023-09-01T10:46:38.565Z').toDate(),
               correlationId: '847aa5ad-2068-40e1-aec0-66b19007c494',
               contextualInfo: '',
               actionedByDisplayName: 'Ralph Gen',
@@ -309,7 +310,7 @@ describe('timelineService', () => {
                 prisonId: 'MDI',
                 prisonName: undefined,
               },
-              timestamp: '2023-09-01T10:47:38.565Z',
+              timestamp: moment('2023-09-01T10:47:38.565Z').toDate(),
               correlationId: '246aa049-c5df-459d-8231-bdeab3936d0f',
               contextualInfo: '',
               actionedByDisplayName: 'Ralph Gen',
