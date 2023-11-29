@@ -19,7 +19,7 @@ generic-service:
     PRISONER_SEARCH_API_URL: "https://prisoner-search-dev.prison.service.justice.gov.uk"
     PRISON_REGISTER_API_URL: "https://prison-register-dev.hmpps.service.justice.gov.uk"
     CURIOUS_API_URL: "https://testservices.sequation.net/sequation-virtual-campus2-api"
-    CIAG_INDUCTION_API_URL: "https://ciag-induction-api-dev.hmpps.service.justice.gov.uk"
+    CIAG_INDUCTION_API_URL: "https://learningandworkprogress-api-dev.hmpps.service.justice.gov.uk"
     CIAG_INDUCTION_UI_URL: "http://ciag-induction-dev.hmpps.service.justice.gov.uk"
     DPS_URL: "https://digital-dev.prison.service.justice.gov.uk"
     FRONTEND_COMPONENT_API_URL: "https://frontend-components-dev.hmpps.service.justice.gov.uk"
