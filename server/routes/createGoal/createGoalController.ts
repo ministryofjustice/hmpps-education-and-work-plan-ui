@@ -1,5 +1,5 @@
 import createError from 'http-errors'
-import type { RequestHandler } from 'express'
+import type { Request, RequestHandler } from 'express'
 import type { NewGoal } from 'compositeForms'
 import moment from 'moment'
 import EducationAndWorkPlanService from '../../services/educationAndWorkPlanService'
@@ -16,11 +16,17 @@ export default class CreateGoalController {
   constructor(private readonly educationAndWorkPlanService: EducationAndWorkPlanService) {}
 
   getCreateGoalView: RequestHandler = async (req, res, next): Promise<void> => {
-    const { prisonNumber } = req.params
+    const { prisonNumber, goalIndex } = req.params
     const { prisonerSummary } = req.session
 
     req.session.newGoals = req.session.newGoals || []
-    if (!req.session.newGoal?.createGoalForm) {
+
+    if (isEditMode(req)) {
+      // User is editing a Goal via it's Change link - get the relevant `NewGoal` object from the session based on the goalIndex path param
+      req.session.newGoal.createGoalForm = req.session.newGoals[parseInt(goalIndex, 10)].createGoalForm
+      // TODO - error handling for when goalIndex is not a number or goal at that index is not in the session array
+    } else if (!req.session.newGoal?.createGoalForm) {
+      // User is creating a new Goal
       req.session.newGoal = {
         createGoalForm: { prisonNumber },
       } as NewGoal
@@ -44,6 +50,7 @@ export default class CreateGoalController {
 
   submitCreateGoalForm: RequestHandler = async (req, res, next): Promise<void> => {
     const { prisonNumber, goalIndex } = req.params
+
     req.session.newGoal.createGoalForm = { ...req.body }
     const { createGoalForm } = req.session.newGoal
 
@@ -53,11 +60,22 @@ export default class CreateGoalController {
       return res.redirect(`/plan/${prisonNumber}/goals/${goalIndex}/create`)
     }
 
+    if (isEditMode(req)) {
+      // TODO - error handling for when goalIndex is not a number or goal at that index is not in the session array
+      req.session.newGoals[parseInt(goalIndex, 10)].createGoalForm = req.session.newGoal.createGoalForm
+      req.session.newGoal = undefined
+      return res.redirect(`/plan/${prisonNumber}/goals/review`)
+    }
     return res.redirect(`/plan/${prisonNumber}/goals/${goalIndex}/add-step/1`)
   }
 
   getAddStepView: RequestHandler = async (req, res, next): Promise<void> => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { goalIndex, stepIndex } = req.params
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { mode } = req.query
     const { prisonerSummary } = req.session
+
     const addStepForm = req.session.newGoal.addStepForm || { stepNumber: 1 }
     req.session.newGoal.addStepForms = req.session.newGoal.addStepForms || []
 
@@ -67,6 +85,8 @@ export default class CreateGoalController {
 
   submitAddStepForm: RequestHandler = async (req, res, next): Promise<void> => {
     const { prisonNumber, goalIndex, stepIndex } = req.params
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { mode } = req.query
     req.session.newGoal.addStepForm = { ...req.body }
     const { addStepForm, addStepForms } = req.session.newGoal
 
@@ -97,6 +117,10 @@ export default class CreateGoalController {
   }
 
   getAddNoteView: RequestHandler = async (req, res, next): Promise<void> => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { goalIndex } = req.params
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { mode } = req.query
     const { prisonerSummary } = req.session
     const addNoteForm = req.session.newGoal.addNoteForm || {}
 
@@ -105,7 +129,10 @@ export default class CreateGoalController {
   }
 
   submitAddNoteForm: RequestHandler = async (req, res, next): Promise<void> => {
-    const { prisonNumber } = req.params
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { prisonNumber, goalIndex } = req.params
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { mode } = req.query
     req.session.newGoal.addNoteForm = { ...req.body }
 
     req.session.newGoals.push(req.session.newGoal)
@@ -157,3 +184,5 @@ export default class CreateGoalController {
     }
   }
 }
+
+const isEditMode = (req: Request): boolean => req.query?.mode === 'edit'
