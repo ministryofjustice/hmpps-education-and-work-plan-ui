@@ -113,4 +113,25 @@ describe('timelineResolver', () => {
       expect(actual).toEqual(expected)
     })
   })
+
+  it('should return a Timeline with no events given a Timeline with problem retrieving data', () => {
+    // Given
+    const timeline = {
+      prisonNumber: 'A1234AA',
+      problemRetrievingData: true,
+      events: [],
+    } as Timeline
+
+    const expected = {
+      prisonNumber: 'A1234AA',
+      problemRetrievingData: true,
+      events: [],
+    } as Timeline
+
+    // When
+    const actual = filterTimelineEvents(timeline)
+
+    // Then
+    expect(actual).toEqual(expected)
+  })
 })

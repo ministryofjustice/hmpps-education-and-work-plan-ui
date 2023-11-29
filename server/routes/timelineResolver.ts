@@ -3,7 +3,7 @@ import type { Timeline, TimelineEvent } from 'viewModels'
 import dateComparator from './dateComparator'
 
 const filterTimelineEvents = (timeline: Timeline): Timeline => {
-  // If there is no Timeline data, return the timeline as-is
+  // If there is no Timeline data or there was a problem retrieving data, return the timeline as-is
   if (!timeline || timeline.problemRetrievingData) {
     return timeline
   }
