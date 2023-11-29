@@ -25,6 +25,10 @@ export default class TimelineService {
       timeline.events = await this.addPrisonNameToPrisons(timeline.events, systemToken)
       return timeline
     } catch (error) {
+      if (error.status === 404) {
+        logger.info(`No Timeline for prisoner [${prisonNumber}]: ${error}`)
+        return undefined
+      }
       logger.error(`Error retrieving Timeline for Prisoner [${prisonNumber}]: ${error}`)
       return { problemRetrievingData: true } as Timeline
     }
