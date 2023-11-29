@@ -4,7 +4,7 @@ import dateComparator from './dateComparator'
 
 const filterTimelineEvents = (timeline: Timeline): Timeline => {
   // If there is no Timeline data, return the timeline as-is
-  if (!timeline) {
+  if (!timeline || timeline.problemRetrievingData) {
     return timeline
   }
 
