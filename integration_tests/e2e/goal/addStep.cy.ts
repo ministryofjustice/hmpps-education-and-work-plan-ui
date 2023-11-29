@@ -118,6 +118,7 @@ context('Add a step', () => {
     addStepPage = Page.verifyOnPage(AddStepPage)
     addStepPage //
       .isStepNumber(2)
+      .urlIsForGoalAndStepIndexes(1, 2)
   })
 
   it('should move to Add Note page', () => {

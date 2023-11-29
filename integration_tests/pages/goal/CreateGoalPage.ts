@@ -5,17 +5,17 @@ export default class CreateGoalPage extends Page {
     super('create-goal')
   }
 
-  isForPrisoner(expected: string) {
+  isForPrisoner(expected: string): CreateGoalPage {
     this.prisonNumberLabel().should('have.text', expected)
     return this
   }
 
-  setGoalTitle(title: string) {
+  setGoalTitle(title: string): CreateGoalPage {
     this.titleField().clear().type(title)
     return this
   }
 
-  clearGoalTitle() {
+  clearGoalTitle(): CreateGoalPage {
     this.titleField().clear()
     return this
   }
@@ -50,6 +50,11 @@ export default class CreateGoalPage extends Page {
 
   submitPage() {
     this.submitButton().click()
+  }
+
+  urlIsForGoalIndex(expectedGoalIndex: number): CreateGoalPage {
+    cy.url().should('match', RegExp(`.*/goals/${expectedGoalIndex}/create$`))
+    return this
   }
 
   titleField = (): PageElement => cy.get('#title')
