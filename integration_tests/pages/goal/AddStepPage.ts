@@ -15,7 +15,7 @@ export default class AddStepPage extends Page {
     return this
   }
 
-  urlIsForGoalAndStepIndexes(expectedGoalIndex: number, expectedStepIndex: number): AddStepPage {
+  isForGoalAndStepIndexes(expectedGoalIndex: number, expectedStepIndex: number): AddStepPage {
     cy.url().should('match', RegExp(`.*/goals/${expectedGoalIndex}/add-step/${expectedStepIndex}$`))
     return this
   }

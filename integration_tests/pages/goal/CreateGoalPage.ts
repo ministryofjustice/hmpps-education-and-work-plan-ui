@@ -52,7 +52,7 @@ export default class CreateGoalPage extends Page {
     this.submitButton().click()
   }
 
-  urlIsForGoalIndex(expectedGoalIndex: number): CreateGoalPage {
+  isForGoalIndex(expectedGoalIndex: number): CreateGoalPage {
     cy.url().should('match', RegExp(`.*/goals/${expectedGoalIndex}/create$`))
     return this
   }
