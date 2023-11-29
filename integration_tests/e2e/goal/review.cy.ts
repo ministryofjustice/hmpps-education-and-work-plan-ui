@@ -131,12 +131,14 @@ context('Review goal(s)', () => {
 
     createGoalPage = Page.verifyOnPage(CreateGoalPage)
     createGoalPage //
+      .isForGoalIndex(2)
       .setGoalTitle('Learn Spanish')
       .setTargetCompletionDate0to3Months()
       .submitPage()
 
     addStepPage = Page.verifyOnPage(AddStepPage)
     addStepPage //
+      .isForGoalAndStepIndexes(2, 1)
       .setStepTitle('Book Spanish course')
       .submitPage()
 

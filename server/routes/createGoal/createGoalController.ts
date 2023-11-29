@@ -43,17 +43,17 @@ export default class CreateGoalController {
   }
 
   submitCreateGoalForm: RequestHandler = async (req, res, next): Promise<void> => {
-    const { prisonNumber } = req.params
+    const { prisonNumber, goalIndex } = req.params
     req.session.newGoal.createGoalForm = { ...req.body }
     const { createGoalForm } = req.session.newGoal
 
     const errors = validateCreateGoalForm(createGoalForm)
     if (errors.length > 0) {
       req.flash('errors', errors)
-      return res.redirect(`/plan/${prisonNumber}/goals/1/create`)
+      return res.redirect(`/plan/${prisonNumber}/goals/${goalIndex}/create`)
     }
 
-    return res.redirect(`/plan/${prisonNumber}/goals/1/add-step/1`)
+    return res.redirect(`/plan/${prisonNumber}/goals/${goalIndex}/add-step/1`)
   }
 
   getAddStepView: RequestHandler = async (req, res, next): Promise<void> => {
@@ -66,14 +66,14 @@ export default class CreateGoalController {
   }
 
   submitAddStepForm: RequestHandler = async (req, res, next): Promise<void> => {
-    const { prisonNumber } = req.params
+    const { prisonNumber, goalIndex, stepIndex } = req.params
     req.session.newGoal.addStepForm = { ...req.body }
     const { addStepForm, addStepForms } = req.session.newGoal
 
     const errors = validateAddStepForm(addStepForm)
     if (errors.length > 0) {
       req.flash('errors', errors)
-      return res.redirect(`/plan/${prisonNumber}/goals/1/add-step/1`)
+      return res.redirect(`/plan/${prisonNumber}/goals/${goalIndex}/add-step/${stepIndex}`)
     }
 
     // check to see if this step has already been added (e.g. after the user clicks the back button)
@@ -90,10 +90,10 @@ export default class CreateGoalController {
       // Initialize a new AddStepForm with the next step number
       const nextStepNumber = Number(addStepForm.stepNumber) + 1
       req.session.newGoal.addStepForm = { stepNumber: nextStepNumber }
-      return res.redirect(`/plan/${prisonNumber}/goals/1/add-step/1`)
+      return res.redirect(`/plan/${prisonNumber}/goals/${goalIndex}/add-step/${nextStepNumber}`)
     }
 
-    return res.redirect(`/plan/${prisonNumber}/goals/1/add-note`)
+    return res.redirect(`/plan/${prisonNumber}/goals/${goalIndex}/add-note`)
   }
 
   getAddNoteView: RequestHandler = async (req, res, next): Promise<void> => {
@@ -135,9 +135,10 @@ export default class CreateGoalController {
     const reviewGoalForm = { ...req.body }
     // Redirect to the desired page based on the form action
     if (reviewGoalForm.action === 'add-another-goal') {
-      // Rest the NewGoal form ready for the new goal to be created
+      // Reset the NewGoal form ready for the new goal to be created
       req.session.newGoal = undefined
-      return res.redirect(`/plan/${prisonNumber}/goals/1/create`)
+      const nextGoalIndex = req.session.newGoals.length + 1
+      return res.redirect(`/plan/${prisonNumber}/goals/${nextGoalIndex}/create`)
     }
 
     const createGoalDtos = req.session.newGoals.map(newGoal => {

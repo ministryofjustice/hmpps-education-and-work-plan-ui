@@ -5,22 +5,27 @@ export default class AddStepPage extends Page {
     super('add-step')
   }
 
-  isForPrisoner(expected: string) {
+  isForPrisoner(expected: string): AddStepPage {
     this.prisonNumberLabel().should('have.text', expected)
     return this
   }
 
-  isStepNumber(expected: number) {
+  isStepNumber(expected: number): AddStepPage {
     this.stepNumberLabel().should('contain.text', `Step ${expected}`)
     return this
   }
 
-  setStepTitle(title: string) {
+  isForGoalAndStepIndexes(expectedGoalIndex: number, expectedStepIndex: number): AddStepPage {
+    cy.url().should('match', RegExp(`.*/goals/${expectedGoalIndex}/add-step/${expectedStepIndex}$`))
+    return this
+  }
+
+  setStepTitle(title: string): AddStepPage {
     this.titleField().clear().type(title)
     return this
   }
 
-  clearStepTitle() {
+  clearStepTitle(): AddStepPage {
     this.titleField().clear()
     return this
   }
@@ -29,8 +34,9 @@ export default class AddStepPage extends Page {
     this.submitButton().click()
   }
 
-  addAnotherStep() {
+  addAnotherStep(): AddStepPage {
     this.addAnotherStepButton().click()
+    return this
   }
 
   titleField = (): PageElement => cy.get('#title')

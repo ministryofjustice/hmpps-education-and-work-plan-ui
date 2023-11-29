@@ -109,6 +109,8 @@ describe('createGoalController', () => {
     it('should redirect to add note form given action is submit-form and validation passes', async () => {
       // Given
       req.params.prisonNumber = 'A1234GC'
+      req.params.goalIndex = '2'
+      req.params.stepIndex = '1'
       req.body = {
         stepNumber: '1',
         title: 'Book French lessons',
@@ -131,7 +133,7 @@ describe('createGoalController', () => {
       )
 
       // Then
-      expect(res.redirect).toHaveBeenCalledWith('/plan/A1234GC/goals/1/add-note')
+      expect(res.redirect).toHaveBeenCalledWith('/plan/A1234GC/goals/2/add-note')
       expect(req.flash).not.toHaveBeenCalled()
       expect(req.session.newGoal.addStepForms).toHaveLength(1)
     })
@@ -139,6 +141,8 @@ describe('createGoalController', () => {
     it('should redirect to add step form given action is add-another-step and validation passes', async () => {
       // Given
       req.params.prisonNumber = 'A1234GC'
+      req.params.goalIndex = '1'
+      req.params.stepIndex = '1'
       req.body = {
         stepNumber: '1',
         title: 'Book French lessons',
@@ -161,7 +165,7 @@ describe('createGoalController', () => {
       )
 
       // Then
-      expect(res.redirect).toHaveBeenCalledWith('/plan/A1234GC/goals/1/add-step/1')
+      expect(res.redirect).toHaveBeenCalledWith('/plan/A1234GC/goals/1/add-step/2')
       expect(req.flash).not.toHaveBeenCalled()
       expect(req.session.newGoal.addStepForm).toEqual({ stepNumber: 2 })
       expect(req.session.newGoal.addStepForms).toHaveLength(1)
@@ -170,6 +174,8 @@ describe('createGoalController', () => {
     it('should redirect to add step form given validation fails', async () => {
       // Given
       req.params.prisonNumber = 'A1234GC'
+      req.params.goalIndex = '2'
+      req.params.stepIndex = '1'
       req.body = {}
       req.session.newGoal = {
         addStepForms: [],
@@ -189,7 +195,7 @@ describe('createGoalController', () => {
       )
 
       // Then
-      expect(res.redirect).toHaveBeenCalledWith('/plan/A1234GC/goals/1/add-step/1')
+      expect(res.redirect).toHaveBeenCalledWith('/plan/A1234GC/goals/2/add-step/1')
       expect(req.flash).toHaveBeenCalledWith('errors', errors)
       expect(req.session.newGoal.addStepForms).toHaveLength(0)
     })
@@ -197,6 +203,8 @@ describe('createGoalController', () => {
     it('should add additional step', async () => {
       // Given
       req.params.prisonNumber = 'A1234GC'
+      req.params.goalIndex = '3'
+      req.params.stepIndex = '2'
       const addStepForm = aValidAddStepForm()
       req.body = addStepForm
       req.session.newGoal = {
@@ -214,12 +222,14 @@ describe('createGoalController', () => {
 
       // Then
       expect(req.session.newGoal.addStepForms).toHaveLength(2)
-      expect(res.redirect).toHaveBeenCalledWith('/plan/A1234GC/goals/1/add-note')
+      expect(res.redirect).toHaveBeenCalledWith('/plan/A1234GC/goals/3/add-note')
     })
 
     it('should not add duplicate step', async () => {
       // Given
       req.params.prisonNumber = 'A1234GC'
+      req.params.goalIndex = '1'
+      req.params.stepIndex = '2'
       const addStepForm = aValidAddStepForm()
       req.body = addStepForm
       req.session.newGoal = {
@@ -243,6 +253,8 @@ describe('createGoalController', () => {
     it('should update existing modified step', async () => {
       // Given
       req.params.prisonNumber = 'A1234GC'
+      req.params.goalIndex = '1'
+      req.params.stepIndex = '2'
       const addStepForm = aValidAddStepForm()
       req.session.newGoal = {
         addStepForms: [addStepForm],
@@ -493,7 +505,7 @@ describe('createGoalController', () => {
       )
 
       // Then
-      expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/goals/1/create`)
+      expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/goals/2/create`)
       expect(mockedCreateGoalDtoMapper).not.toHaveBeenCalled()
       expect(educationAndWorkPlanService.createGoals).not.toHaveBeenCalled()
       expect(req.session.newGoal).toBeUndefined()
