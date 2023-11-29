@@ -19,10 +19,10 @@ import { PrisonerSearchService } from '../services'
 import config from '../config'
 
 /**
- * Unit tests for routerRequestHandlers where the featureToggles.newCreateGoalRoutesEnabled is enabled (ie. new behaviour).
- * TODO - RR-517 - delete feature toggle control when the feature toggle is removed.
+ * Unit tests for routerRequestHandlers where the featureToggles.newCreateGoalRoutesEnabled is disabled (ie. original behaviour).
+ * TODO - RR-517 - delete this test class when the feature toggle is removed.
  */
-describe('routerRequestHandlers', () => {
+describe('routerRequestHandlers - original behaviour', () => {
   const req = {
     user: {} as Express.User,
     session: {} as SessionData,
@@ -36,7 +36,7 @@ describe('routerRequestHandlers', () => {
   let newCreateGoalRoutesEnabled: boolean
   beforeAll(() => {
     newCreateGoalRoutesEnabled = config.featureToggles.newCreateGoalRoutesEnabled
-    config.featureToggles.newCreateGoalRoutesEnabled = true
+    config.featureToggles.newCreateGoalRoutesEnabled = false
   })
 
   beforeEach(() => {
@@ -89,7 +89,7 @@ describe('routerRequestHandlers', () => {
       )
 
       // Then
-      expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/goals/1/create`)
+      expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/goals/create`)
       expect(next).not.toHaveBeenCalled()
     })
 
@@ -110,7 +110,7 @@ describe('routerRequestHandlers', () => {
       )
 
       // Then
-      expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/goals/1/create`)
+      expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/goals/create`)
       expect(next).not.toHaveBeenCalled()
     })
 
@@ -133,7 +133,7 @@ describe('routerRequestHandlers', () => {
       )
 
       // Then
-      expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/goals/1/create`)
+      expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/goals/create`)
       expect(req.session.newGoal.createGoalForm).toBeUndefined()
       expect(next).not.toHaveBeenCalled()
     })
@@ -178,7 +178,7 @@ describe('routerRequestHandlers', () => {
       )
 
       // Then
-      expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/goals/1/create`)
+      expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/goals/create`)
       expect(next).not.toHaveBeenCalled()
     })
 
@@ -199,7 +199,7 @@ describe('routerRequestHandlers', () => {
       )
 
       // Then
-      expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/goals/1/add-step/1`)
+      expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/goals/add-step`)
       expect(next).not.toHaveBeenCalled()
     })
   })
@@ -343,7 +343,7 @@ describe('routerRequestHandlers', () => {
       )
 
       // Then
-      expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/goals/1/create`)
+      expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/goals/create`)
       expect(next).not.toHaveBeenCalled()
     })
 
@@ -362,7 +362,7 @@ describe('routerRequestHandlers', () => {
       )
 
       // Then
-      expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/goals/1/add-note`)
+      expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/goals/add-note`)
       expect(next).not.toHaveBeenCalled()
     })
 
@@ -387,7 +387,7 @@ describe('routerRequestHandlers', () => {
       )
 
       // Then
-      expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/goals/1/add-note`)
+      expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/goals/add-note`)
       expect(next).not.toHaveBeenCalled()
     })
   })

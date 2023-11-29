@@ -142,5 +142,6 @@ export default {
       get('PLP_PRISONER_LIST_AND_OVERVIEW_PAGES_ENABLED', false, requiredInProduction),
     ),
     timelinePageEnabled: toBoolean(get('TIMELINE_PAGE_ENABLED', false, requiredInProduction)),
+    newCreateGoalRoutesEnabled: toBoolean(get('NEW_CREATE_GOAL_ROUTES_ENABLED', false, requiredInProduction)),
   },
 }

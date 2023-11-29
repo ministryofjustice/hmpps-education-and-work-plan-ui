@@ -1,6 +1,8 @@
 import { Router } from 'express'
 import { Services } from '../../services'
+import config from '../../config'
 import CreateGoalController from './createGoalController'
+import CreateGoalControllerOriginalBehaviour from './createGoalController.originalBehaviour'
 import { checkUserHasEditAuthority } from '../../middleware/roleBasedAccessControl'
 import {
   checkCreateGoalFormExistsInSession,
@@ -14,8 +16,44 @@ import {
  * Route definitions for the pages relating to Creating A Goal
  */
 export default (router: Router, services: Services) => {
-  const createGoalController = new CreateGoalController(services.educationAndWorkPlanService)
+  if (config.featureToggles.newCreateGoalRoutesEnabled) {
+    const createGoalController = new CreateGoalController(services.educationAndWorkPlanService)
+    newCreateGoalRoutes(router, services, createGoalController)
 
+    router.use('/plan/:prisonNumber/goals/review', checkUserHasEditAuthority())
+    router.get('/plan/:prisonNumber/goals/review', [
+      checkPrisonerSummaryExistsInSession,
+      checkNewGoalsFormExistsInSession,
+      createGoalController.getReviewGoalView,
+    ])
+    router.post('/plan/:prisonNumber/goals/review', [
+      checkPrisonerSummaryExistsInSession,
+      checkNewGoalsFormExistsInSession,
+      createGoalController.submitReviewGoal,
+    ])
+  } else {
+    const createGoalController = new CreateGoalControllerOriginalBehaviour(services.educationAndWorkPlanService)
+    originalCreateGoalRoutes(router, services, createGoalController)
+
+    router.use('/plan/:prisonNumber/goals/review', checkUserHasEditAuthority())
+    router.get('/plan/:prisonNumber/goals/review', [
+      checkPrisonerSummaryExistsInSession,
+      checkNewGoalsFormExistsInSession,
+      createGoalController.getReviewGoalView,
+    ])
+    router.post('/plan/:prisonNumber/goals/review', [
+      checkPrisonerSummaryExistsInSession,
+      checkNewGoalsFormExistsInSession,
+      createGoalController.submitReviewGoal,
+    ])
+  }
+}
+
+const originalCreateGoalRoutes = (
+  router: Router,
+  services: Services,
+  createGoalController: CreateGoalControllerOriginalBehaviour,
+) => {
   router.use('/plan/:prisonNumber/goals/create', checkUserHasEditAuthority())
   router.get('/plan/:prisonNumber/goals/create', [
     retrievePrisonerSummaryIfNotInSession(services.prisonerSearchService),
@@ -52,16 +90,43 @@ export default (router: Router, services: Services) => {
     checkAddStepFormsArrayExistsInSession,
     createGoalController.submitAddNoteForm,
   ])
+}
 
-  router.use('/plan/:prisonNumber/goals/review', checkUserHasEditAuthority())
-  router.get('/plan/:prisonNumber/goals/review', [
-    checkPrisonerSummaryExistsInSession,
-    checkNewGoalsFormExistsInSession,
-    createGoalController.getReviewGoalView,
+const newCreateGoalRoutes = (router: Router, services: Services, createGoalController: CreateGoalController) => {
+  router.use('/plan/:prisonNumber/goals/:goalIndex/create', checkUserHasEditAuthority())
+  router.get('/plan/:prisonNumber/goals/:goalIndex/create', [
+    retrievePrisonerSummaryIfNotInSession(services.prisonerSearchService),
+    createGoalController.getCreateGoalView,
   ])
-  router.post('/plan/:prisonNumber/goals/review', [
+  router.post('/plan/:prisonNumber/goals/:goalIndex/create', [
     checkPrisonerSummaryExistsInSession,
-    checkNewGoalsFormExistsInSession,
-    createGoalController.submitReviewGoal,
+    checkCreateGoalFormExistsInSession,
+    createGoalController.submitCreateGoalForm,
+  ])
+
+  router.use('/plan/:prisonNumber/goals/:goalIndex/add-step/:stepIndex', checkUserHasEditAuthority())
+  router.get('/plan/:prisonNumber/goals/:goalIndex/add-step/:stepIndex', [
+    checkPrisonerSummaryExistsInSession,
+    checkCreateGoalFormExistsInSession,
+    createGoalController.getAddStepView,
+  ])
+  router.post('/plan/:prisonNumber/goals/:goalIndex/add-step/:stepIndex', [
+    checkPrisonerSummaryExistsInSession,
+    checkCreateGoalFormExistsInSession,
+    createGoalController.submitAddStepForm,
+  ])
+
+  router.use('/plan/:prisonNumber/goals/:goalIndex/add-note', checkUserHasEditAuthority())
+  router.get('/plan/:prisonNumber/goals/:goalIndex/add-note', [
+    checkPrisonerSummaryExistsInSession,
+    checkCreateGoalFormExistsInSession,
+    checkAddStepFormsArrayExistsInSession,
+    createGoalController.getAddNoteView,
+  ])
+  router.post('/plan/:prisonNumber/goals/:goalIndex/add-note', [
+    checkPrisonerSummaryExistsInSession,
+    checkCreateGoalFormExistsInSession,
+    checkAddStepFormsArrayExistsInSession,
+    createGoalController.submitAddNoteForm,
   ])
 }

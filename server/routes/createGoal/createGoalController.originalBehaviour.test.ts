@@ -4,7 +4,6 @@ import { SessionData } from 'express-session'
 import type { CreateGoalForm } from 'forms'
 import type { NewGoal } from 'compositeForms'
 import moment from 'moment'
-import CreateGoalController from './createGoalController'
 import validateAddStepForm from './addStepFormValidator'
 import validateCreateGoalForm from './createGoalFormValidator'
 import EducationAndWorkPlanService from '../../services/educationAndWorkPlanService'
@@ -15,15 +14,17 @@ import { aValidCreateGoalDtoWithOneStep } from '../../testsupport/createGoalDtoT
 import { toCreateGoalDto } from './mappers/createGoalFormToCreateGoalDtoMapper'
 import aValidPrisonerSummary from '../../testsupport/prisonerSummaryTestDataBuilder'
 import futureGoalTargetDateCalculator from '../futureGoalTargetDateCalculator'
+import CreateGoalControllerOriginalBehaviour from './createGoalController.originalBehaviour'
 
 jest.mock('./addStepFormValidator')
 jest.mock('./createGoalFormValidator')
 jest.mock('./mappers/createGoalFormToCreateGoalDtoMapper')
 
 /**
- * Unit tests for createGoalController.
+ * Unit tests for createGoalController where the featureToggles.newCreateGoalRoutesEnabled is disabled (ie. original behaviour).
+ * TODO - RR-517 - delete this test class when the feature toggle is removed.
  */
-describe('createGoalController', () => {
+describe('createGoalController - original behaviour', () => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const mockedValidateCreateGoalForm = validateCreateGoalForm as jest.MockedFunction<typeof validateCreateGoalForm>
   const mockedValidateAddStepForm = validateAddStepForm as jest.MockedFunction<typeof validateAddStepForm>
@@ -33,7 +34,9 @@ describe('createGoalController', () => {
     createGoals: jest.fn(),
   }
 
-  const controller = new CreateGoalController(educationAndWorkPlanService as unknown as EducationAndWorkPlanService)
+  const controller = new CreateGoalControllerOriginalBehaviour(
+    educationAndWorkPlanService as unknown as EducationAndWorkPlanService,
+  )
 
   const req = {
     session: {} as SessionData,
@@ -131,7 +134,7 @@ describe('createGoalController', () => {
       )
 
       // Then
-      expect(res.redirect).toHaveBeenCalledWith('/plan/A1234GC/goals/1/add-note')
+      expect(res.redirect).toHaveBeenCalledWith('/plan/A1234GC/goals/add-note')
       expect(req.flash).not.toHaveBeenCalled()
       expect(req.session.newGoal.addStepForms).toHaveLength(1)
     })
@@ -161,7 +164,7 @@ describe('createGoalController', () => {
       )
 
       // Then
-      expect(res.redirect).toHaveBeenCalledWith('/plan/A1234GC/goals/1/add-step/1')
+      expect(res.redirect).toHaveBeenCalledWith('/plan/A1234GC/goals/add-step')
       expect(req.flash).not.toHaveBeenCalled()
       expect(req.session.newGoal.addStepForm).toEqual({ stepNumber: 2 })
       expect(req.session.newGoal.addStepForms).toHaveLength(1)
@@ -189,7 +192,7 @@ describe('createGoalController', () => {
       )
 
       // Then
-      expect(res.redirect).toHaveBeenCalledWith('/plan/A1234GC/goals/1/add-step/1')
+      expect(res.redirect).toHaveBeenCalledWith('/plan/A1234GC/goals/add-step')
       expect(req.flash).toHaveBeenCalledWith('errors', errors)
       expect(req.session.newGoal.addStepForms).toHaveLength(0)
     })
@@ -214,7 +217,7 @@ describe('createGoalController', () => {
 
       // Then
       expect(req.session.newGoal.addStepForms).toHaveLength(2)
-      expect(res.redirect).toHaveBeenCalledWith('/plan/A1234GC/goals/1/add-note')
+      expect(res.redirect).toHaveBeenCalledWith('/plan/A1234GC/goals/add-note')
     })
 
     it('should not add duplicate step', async () => {
@@ -237,7 +240,7 @@ describe('createGoalController', () => {
 
       // Then
       expect(req.session.newGoal.addStepForms).toHaveLength(1)
-      expect(res.redirect).toHaveBeenCalledWith('/plan/A1234GC/goals/1/add-note')
+      expect(res.redirect).toHaveBeenCalledWith('/plan/A1234GC/goals/add-note')
     })
 
     it('should update existing modified step', async () => {
@@ -263,7 +266,7 @@ describe('createGoalController', () => {
       // Then
       expect(req.session.newGoal.addStepForms).toHaveLength(1)
       expect(req.session.newGoal.addStepForms[0].title).toEqual('Find a Spanish course')
-      expect(res.redirect).toHaveBeenCalledWith('/plan/A1234GC/goals/1/add-note')
+      expect(res.redirect).toHaveBeenCalledWith('/plan/A1234GC/goals/add-note')
     })
   })
 
@@ -493,7 +496,7 @@ describe('createGoalController', () => {
       )
 
       // Then
-      expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/goals/1/create`)
+      expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/goals/create`)
       expect(mockedCreateGoalDtoMapper).not.toHaveBeenCalled()
       expect(educationAndWorkPlanService.createGoals).not.toHaveBeenCalled()
       expect(req.session.newGoal).toBeUndefined()
