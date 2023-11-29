@@ -17,7 +17,7 @@
 
               {{ govukButton({
                 text: "Add a new goal",
-                href: "/plan/" + prisonNumber + "/goals/create",
+                href: "/plan/" + prisonNumber + "/goals/1/create" if featureToggles.newCreateGoalRoutesEnabled else "/plan/" + prisonNumber + "/goals/create",
                 id: "add-goal-button",
                 classes: "moj-button-menu__item moj-page-header-actions__action govuk-!-display-none-print"
               }) }}

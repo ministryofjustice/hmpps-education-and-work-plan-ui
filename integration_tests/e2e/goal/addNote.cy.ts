@@ -32,7 +32,7 @@ context('Add a note', () => {
     cy.signIn()
 
     // When
-    cy.visit(`/plan/${prisonNumber}/goals/add-note`)
+    cy.visit(`/plan/${prisonNumber}/goals/1/add-note`)
 
     // Then
     const overviewPage = Page.verifyOnPage(OverviewPage)
@@ -63,7 +63,7 @@ context('Add a note', () => {
     const someOtherPrisonNumber = 'H4115SD'
 
     // When
-    cy.visit(`/plan/${someOtherPrisonNumber}/goals/add-note`)
+    cy.visit(`/plan/${someOtherPrisonNumber}/goals/1/add-note`)
 
     // Then
     overviewPage = Page.verifyOnPage(OverviewPage)
@@ -86,7 +86,7 @@ context('Add a note', () => {
     Page.verifyOnPage(AddStepPage)
 
     // When
-    cy.visit(`/plan/${prisonNumber}/goals/add-note`)
+    cy.visit(`/plan/${prisonNumber}/goals/1/add-note`)
 
     // Then
     const addStepPage = Page.verifyOnPage(AddStepPage)

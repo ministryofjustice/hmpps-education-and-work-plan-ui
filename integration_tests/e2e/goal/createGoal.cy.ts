@@ -42,7 +42,7 @@ context('Create a goal', () => {
     cy.signIn()
 
     // When
-    cy.visit(`/plan/${prisonNumber}/goals/create`)
+    cy.visit(`/plan/${prisonNumber}/goals/1/create`)
 
     // Then
     const createGoalPage = Page.verifyOnPage(CreateGoalPage)
@@ -117,7 +117,7 @@ context('Create a goal', () => {
     cy.signIn()
 
     // When
-    cy.visit(`/plan/${prisonNumber}/goals/create`, { failOnStatusCode: false })
+    cy.visit(`/plan/${prisonNumber}/goals/1/create`, { failOnStatusCode: false })
 
     // Then
     Page.verifyOnPage(AuthorisationErrorPage)
@@ -131,7 +131,7 @@ context('Create a goal', () => {
     cy.signIn()
 
     // When
-    cy.visit(`/plan/${prisonNumber}/goals/create`, { failOnStatusCode: false })
+    cy.visit(`/plan/${prisonNumber}/goals/1/create`, { failOnStatusCode: false })
 
     // Then
     Page.verifyOnPage(AuthorisationErrorPage)

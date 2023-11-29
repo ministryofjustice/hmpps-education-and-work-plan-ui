@@ -31,7 +31,7 @@ context('Add a step', () => {
     cy.signIn()
 
     // When
-    cy.visit(`/plan/${prisonNumber}/goals/add-step`)
+    cy.visit(`/plan/${prisonNumber}/goals/1/add-step/1`)
 
     // Then
     const overviewPage = Page.verifyOnPage(OverviewPage)
@@ -57,7 +57,7 @@ context('Add a step', () => {
     const someOtherPrisonNumber = 'H4115SD'
 
     // When
-    cy.visit(`/plan/${someOtherPrisonNumber}/goals/add-step`)
+    cy.visit(`/plan/${someOtherPrisonNumber}/goals/1/add-step/1`)
 
     // Then
     overviewPage = Page.verifyOnPage(OverviewPage)
