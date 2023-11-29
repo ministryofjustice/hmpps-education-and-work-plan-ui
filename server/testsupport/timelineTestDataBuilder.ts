@@ -1,3 +1,4 @@
+import moment from 'moment/moment'
 import type { Timeline } from 'viewModels'
 
 export default function aValidTimeline(): Timeline {
@@ -14,7 +15,7 @@ export default function aValidTimeline(): Timeline {
           prisonId: 'MDI',
           prisonName: undefined,
         },
-        timestamp: '2023-09-01T10:47:38.565Z',
+        timestamp: moment('2023-09-01T10:47:38.565Z').toDate(),
         correlationId: '246aa049-c5df-459d-8231-bdeab3936d0f',
         contextualInfo: '',
         actionedByDisplayName: 'Ralph Gen',
@@ -27,7 +28,7 @@ export default function aValidTimeline(): Timeline {
           prisonId: 'MDI',
           prisonName: undefined,
         },
-        timestamp: '2023-09-23T15:47:38.565Z',
+        timestamp: moment('2023-09-23T15:47:38.565Z').toDate(),
         correlationId: '0838330d-606f-480a-b55f-3228e1be122d',
         contextualInfo: '',
         actionedByDisplayName: 'Ralph Gen',
@@ -40,7 +41,7 @@ export default function aValidTimeline(): Timeline {
           prisonId: 'MDI',
           prisonName: undefined,
         },
-        timestamp: '2023-09-24T08:47:38.565Z',
+        timestamp: moment('2023-09-24T08:47:38.565Z').toDate(),
         correlationId: '9805d096-cd52-406b-84b0-f4c1d735f3bd',
         contextualInfo: '',
         actionedByDisplayName: 'Ralph Gen',
@@ -48,12 +49,12 @@ export default function aValidTimeline(): Timeline {
       {
         reference: 'b046eccc-eadc-4351-8e2c-c5da12fca973',
         sourceReference: '93646ba2-d0f9-42a9-9f87-3eb985ab6fe9',
-        eventType: 'GOAL_COMPLETED',
+        eventType: 'GOAL_CREATED',
         prison: {
           prisonId: 'MDI',
           prisonName: undefined,
         },
-        timestamp: '2023-09-29T18:47:38.565Z',
+        timestamp: moment('2023-09-29T18:47:38.565Z').toDate(),
         correlationId: 'db35c8d4-d5c3-4ec8-8554-a3e31f099b3a',
         contextualInfo: '',
         actionedByDisplayName: 'Ralph Gen',

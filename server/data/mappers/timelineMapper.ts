@@ -1,4 +1,5 @@
 import type { TimelineResponse, TimelineEventResponse } from 'educationAndWorkPlanApiClient'
+import moment from 'moment'
 import type { Timeline, TimelineEvent } from 'viewModels'
 
 const toTimeline = (timelineResponse: TimelineResponse): Timeline => {
@@ -19,11 +20,15 @@ const toTimelineEvent = (timelineEventResponse: TimelineEventResponse): Timeline
       prisonId: timelineEventResponse.prisonId,
       prisonName: undefined, // This mapper cannot look up / resolve the prisonName; that has to be post-processed
     },
-    timestamp: timelineEventResponse.timestamp,
+    timestamp: toDate(timelineEventResponse.timestamp),
     correlationId: timelineEventResponse.correlationId,
     contextualInfo: timelineEventResponse.contextualInfo,
     actionedByDisplayName: timelineEventResponse.actionedByDisplayName,
   }
+}
+
+const toDate = (dateString: string): Date => {
+  return dateString ? moment(dateString).toDate() : null
 }
 
 export { toTimeline, toTimelineEvent }

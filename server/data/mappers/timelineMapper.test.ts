@@ -1,3 +1,4 @@
+import moment from 'moment'
 import type { TimelineResponse, TimelineEventResponse } from 'educationAndWorkPlanApiClient'
 import type { Timeline, TimelineEvent } from 'viewModels'
 import { toTimeline, toTimelineEvent } from './timelineMapper'
@@ -34,7 +35,7 @@ describe('timelineMapper', () => {
             prisonId: 'MDI',
             prisonName: undefined,
           },
-          timestamp: '2023-09-01T10:47:38.565Z',
+          timestamp: moment('2023-09-01T10:47:38.565Z').toDate(),
           correlationId: '246aa049-c5df-459d-8231-bdeab3936d0f',
           contextualInfo: '',
           actionedByDisplayName: 'Ralph Gen',
@@ -71,7 +72,7 @@ describe('timelineMapper', () => {
         prisonId: 'MDI',
         prisonName: undefined,
       },
-      timestamp: '2023-09-01T10:47:38.565Z',
+      timestamp: moment('2023-09-01T10:47:38.565Z').toDate(),
       correlationId: '246aa049-c5df-459d-8231-bdeab3936d0f',
       contextualInfo: '',
       actionedByDisplayName: 'Ralph Gen',

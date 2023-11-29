@@ -1,5 +1,6 @@
 import type { TimelineResponse } from 'educationAndWorkPlanApiClient'
 import type { Timeline } from 'viewModels'
+import moment from 'moment'
 import PrisonService from './prisonService'
 import TimelineService from './timelineService'
 import { EducationAndWorkPlanClient, HmppsAuthClient } from '../data'
@@ -60,6 +61,109 @@ describe('timelineService', () => {
       expect(mockedTimelineMapper).toHaveBeenCalledWith(timelineResponse)
     })
 
+    it('should get timeline given multiple goals created in a single journey', async () => {
+      // Given
+      hmppsAuthClient.getSystemClientToken.mockResolvedValue(systemToken)
+
+      const timelineResponse: TimelineResponse = {
+        reference: '6add2455-30f1-4b3e-a23e-1baf2d761e8f',
+        prisonNumber: 'A1234BC',
+        events: [
+          {
+            reference: 'f49a3412-df7f-41d2-ac04-ffd35e453af4',
+            sourceReference: '32',
+            eventType: 'ACTION_PLAN_CREATED',
+            prisonId: 'MDI',
+            actionedBy: 'RALPH_GEN',
+            timestamp: '2023-09-01T10:46:38.565Z',
+            correlationId: '847aa5ad-2068-40e1-aec0-66b19007c494',
+            contextualInfo: '',
+            actionedByDisplayName: 'Ralph Gen',
+          },
+          {
+            reference: 'cd98ea4c-b415-48d9-a600-9068cefe65e4x',
+            sourceReference: '33bc1045-7368-47c4-a261-4d616b7b51b9',
+            eventType: 'GOAL_CREATED',
+            prisonId: 'MDI',
+            actionedBy: 'RALPH_GEN',
+            timestamp: '2023-09-01T10:47:38.565Z',
+            correlationId: '246aa049-c5df-459d-8231-bdeab3936d0f',
+            contextualInfo: '',
+            actionedByDisplayName: 'Ralph Gen',
+          },
+          {
+            reference: 'cd98ea4c-b415-48d9-a600-9068cefe65e4x',
+            sourceReference: '33bc1045-7368-47c4-a261-4d616b7b51b9',
+            eventType: 'GOAL_CREATED',
+            prisonId: 'MDI',
+            actionedBy: 'RALPH_GEN',
+            timestamp: '2023-09-01T10:47:38.565Z',
+            correlationId: '246aa049-c5df-459d-8231-bdeab3936d0f',
+            contextualInfo: '',
+            actionedByDisplayName: 'Ralph Gen',
+          },
+        ],
+      }
+      educationAndWorkPlanClient.getTimeline.mockResolvedValue(timelineResponse)
+
+      const timeline: Timeline = {
+        problemRetrievingData: false,
+        reference: '6add2455-30f1-4b3e-a23e-1baf2d761e8f',
+        prisonNumber: 'A1234BC',
+        events: [
+          {
+            reference: 'f49a3412-df7f-41d2-ac04-ffd35e453af4',
+            sourceReference: '32',
+            eventType: 'ACTION_PLAN_CREATED',
+            prison: {
+              prisonId: 'ASI',
+              prisonName: undefined,
+            },
+            timestamp: moment('2023-09-01T10:46:38.565Z').toDate(),
+            correlationId: '847aa5ad-2068-40e1-aec0-66b19007c494',
+            contextualInfo: '',
+            actionedByDisplayName: 'Ralph Gen',
+          },
+          {
+            reference: 'cd98ea4c-b415-48d9-a600-9068cefe65e4x',
+            sourceReference: '33bc1045-7368-47c4-a261-4d616b7b51b9',
+            eventType: 'MULTIPLE_GOALS_CREATED',
+            prison: {
+              prisonId: 'MDI',
+              prisonName: undefined,
+            },
+            timestamp: moment('2023-09-01T10:47:38.565Z').toDate(),
+            correlationId: '246aa049-c5df-459d-8231-bdeab3936d0f',
+            contextualInfo: '',
+            actionedByDisplayName: 'Ralph Gen',
+          },
+          {
+            reference: 'cd98ea4c-b415-48d9-a600-9068cefe65e4x',
+            sourceReference: '33bc1045-7368-47c4-a261-4d616b7b51b9',
+            eventType: 'MULTIPLE_GOALS_CREATED',
+            prison: {
+              prisonId: 'MDI',
+              prisonName: undefined,
+            },
+            timestamp: moment('2023-09-01T10:47:38.565Z').toDate(),
+            correlationId: '246aa049-c5df-459d-8231-bdeab3936d0f',
+            contextualInfo: '',
+            actionedByDisplayName: 'Ralph Gen',
+          },
+        ],
+      }
+      mockedTimelineMapper.mockReturnValue(timeline)
+
+      // When
+      const actual = await timelineService.getTimeline(prisonNumber, userToken, username)
+
+      // Then
+      expect(actual).toEqual(timeline)
+      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
+      expect(educationAndWorkPlanClient.getTimeline).toHaveBeenCalledWith(prisonNumber, userToken)
+      expect(mockedTimelineMapper).toHaveBeenCalledWith(timelineResponse)
+    })
+
     describe('lookup prison names', () => {
       it('should get timeline given prison name lookups for several different prisons', async () => {
         // Given
@@ -103,12 +207,12 @@ describe('timelineService', () => {
             {
               reference: 'f49a3412-df7f-41d2-ac04-ffd35e453af4',
               sourceReference: '32',
-              eventType: 'INDUCTION_CREATED',
+              eventType: 'ACTION_PLAN_CREATED',
               prison: {
                 prisonId: 'ASI',
                 prisonName: undefined,
               },
-              timestamp: '2023-09-01T10:46:38.565Z',
+              timestamp: moment('2023-09-01T10:46:38.565Z').toDate(),
               correlationId: '847aa5ad-2068-40e1-aec0-66b19007c494',
               contextualInfo: '',
               actionedByDisplayName: 'Ralph Gen',
@@ -116,12 +220,12 @@ describe('timelineService', () => {
             {
               reference: 'cd98ea4c-b415-48d9-a600-9068cefe65e4x',
               sourceReference: '33bc1045-7368-47c4-a261-4d616b7b51b9',
-              eventType: 'ACTION_PLAN_CREATED',
+              eventType: 'GOAL_CREATED',
               prison: {
                 prisonId: 'MDI',
                 prisonName: undefined,
               },
-              timestamp: '2023-09-01T10:47:38.565Z',
+              timestamp: moment('2023-09-01T10:47:38.565Z').toDate(),
               correlationId: '246aa049-c5df-459d-8231-bdeab3936d0f',
               contextualInfo: '',
               actionedByDisplayName: 'Ralph Gen',
@@ -188,12 +292,12 @@ describe('timelineService', () => {
             {
               reference: 'f49a3412-df7f-41d2-ac04-ffd35e453af4',
               sourceReference: '32',
-              eventType: 'INDUCTION_CREATED',
+              eventType: 'ACTION_PLAN_CREATED',
               prison: {
                 prisonId: 'ASI',
                 prisonName: undefined,
               },
-              timestamp: '2023-09-01T10:46:38.565Z',
+              timestamp: moment('2023-09-01T10:46:38.565Z').toDate(),
               correlationId: '847aa5ad-2068-40e1-aec0-66b19007c494',
               contextualInfo: '',
               actionedByDisplayName: 'Ralph Gen',
@@ -201,12 +305,12 @@ describe('timelineService', () => {
             {
               reference: 'cd98ea4c-b415-48d9-a600-9068cefe65e4x',
               sourceReference: '33bc1045-7368-47c4-a261-4d616b7b51b9',
-              eventType: 'ACTION_PLAN_CREATED',
+              eventType: 'GOAL_CREATED',
               prison: {
                 prisonId: 'MDI',
                 prisonName: undefined,
               },
-              timestamp: '2023-09-01T10:47:38.565Z',
+              timestamp: moment('2023-09-01T10:47:38.565Z').toDate(),
               correlationId: '246aa049-c5df-459d-8231-bdeab3936d0f',
               contextualInfo: '',
               actionedByDisplayName: 'Ralph Gen',
