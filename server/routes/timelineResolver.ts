@@ -3,6 +3,11 @@ import type { Timeline, TimelineEvent } from 'viewModels'
 import dateComparator from './dateComparator'
 
 const filterTimelineEvents = (timeline: Timeline): Timeline => {
+  // If there is no Timeline data, return the timeline as-is
+  if (!timeline) {
+    return timeline
+  }
+
   // Filter the 'GOAL_CREATED' events and extract the correlationId values
   const goalCreatedEvents = timeline.events.filter(
     (event: TimelineEvent): boolean => event.eventType === 'GOAL_CREATED',
