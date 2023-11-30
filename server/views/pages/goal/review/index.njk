@@ -26,12 +26,20 @@
               <dt class="govuk-summary-list__key">
                 Description
               </dt>
+<<<<<<< HEAD
               <dd class="govuk-summary-list__value" data-qa="goal-{{ loop.index }}-description-value">
+=======
+              <dd class="govuk-summary-list__value">
+>>>>>>> 80147c7 (RR-500 functionality to change goal description and target date)
                 {{ goal.title }}
               </dd>
               {% if featureToggles.newCreateGoalRoutesEnabled %}
               <dd class="govuk-summary-list__actions">
+<<<<<<< HEAD
                 <a class="govuk-link" href="/plan/{{ prisonerSummary.prisonNumber }}/goals/{{ loop.index }}/create?mode=edit" data-qa="change-goal-{{ loop.index }}-description">
+=======
+                <a class="govuk-link" href="/plan/{{ prisonerSummary.prisonNumber }}/goals/{{ loop.index }}/create?mode=edit">
+>>>>>>> 80147c7 (RR-500 functionality to change goal description and target date)
                   Change<span class="govuk-visually-hidden"> description for goal {{ loop.index }}</span>
                 </a>
               </dd>
@@ -46,7 +54,11 @@
               </dd>
               {% if featureToggles.newCreateGoalRoutesEnabled %}
               <dd class="govuk-summary-list__actions">
+<<<<<<< HEAD
                 <a class="govuk-link" href="/plan/{{ prisonerSummary.prisonNumber }}/goals/{{ loop.index }}/create?mode=edit" data-qa="change-goal-{{ loop.index }}-target-date">
+=======
+                <a class="govuk-link" href="/plan/{{ prisonerSummary.prisonNumber }}/goals/{{ loop.index }}/create?mode=edit">
+>>>>>>> 80147c7 (RR-500 functionality to change goal description and target date)
                   Change<span class="govuk-visually-hidden"> when are they aiming to achieve this by for goal {{ loop.index }}</span>
                 </a>
               </dd>
