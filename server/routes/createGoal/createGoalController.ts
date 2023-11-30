@@ -23,7 +23,9 @@ export default class CreateGoalController {
 
     if (isEditMode(req)) {
       // User is editing a Goal via it's Change link - get the relevant `NewGoal` object from the session based on the goalIndex path param
-      req.session.newGoal.createGoalForm = req.session.newGoals[parseInt(goalIndex, 10)].createGoalForm
+      req.session.newGoal = {
+        createGoalForm: req.session.newGoals[parseInt(goalIndex, 10) - 1].createGoalForm,
+      } as NewGoal
       // TODO - error handling for when goalIndex is not a number or goal at that index is not in the session array
     } else if (!req.session.newGoal?.createGoalForm) {
       // User is creating a new Goal
@@ -43,6 +45,7 @@ export default class CreateGoalController {
       prisonerSummary,
       req.session.newGoal.createGoalForm,
       futureGoalTargetDates,
+      isEditMode(req),
       req.flash('errors'),
     )
     res.render('pages/goal/create/index', { ...view.renderArgs })
@@ -62,7 +65,7 @@ export default class CreateGoalController {
 
     if (isEditMode(req)) {
       // TODO - error handling for when goalIndex is not a number or goal at that index is not in the session array
-      req.session.newGoals[parseInt(goalIndex, 10)].createGoalForm = req.session.newGoal.createGoalForm
+      req.session.newGoals[parseInt(goalIndex, 10) - 1].createGoalForm = req.session.newGoal.createGoalForm
       req.session.newGoal = undefined
       return res.redirect(`/plan/${prisonNumber}/goals/review`)
     }

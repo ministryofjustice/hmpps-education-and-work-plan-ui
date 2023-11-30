@@ -18,10 +18,25 @@
       {% for goal in goals %}
       <div class="govuk-summary-card">
         <div class="govuk-summary-card__title-wrapper">
-          <h2 class="govuk-summary-card__title">{{ goal.title }}</h2>
+          <h2 class="govuk-summary-card__title">Goal {{ loop.index }}</h2>
         </div>
         <div class="govuk-summary-card__content">
           <dl class="govuk-summary-list">
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                Description
+              </dt>
+              <dd class="govuk-summary-list__value">
+                {{ goal.title }}
+              </dd>
+              {% if featureToggles.newCreateGoalRoutesEnabled %}
+              <dd class="govuk-summary-list__actions">
+                <a class="govuk-link" href="/plan/{{ prisonerSummary.prisonNumber }}/goals/{{ loop.index }}/create?mode=edit">
+                  Change<span class="govuk-visually-hidden"> description for goal {{ loop.index }}</span>
+                </a>
+              </dd>
+              {% endif %}
+            </div>
             <div class="govuk-summary-list__row">
               <dt class="govuk-summary-list__key">
                 When are they aiming to achieve this by?
@@ -29,6 +44,13 @@
               <dd class="govuk-summary-list__value">
                 by {{ goal.targetCompletionDate | formatDate('D MMMM YYYY') }}
               </dd>
+              {% if featureToggles.newCreateGoalRoutesEnabled %}
+              <dd class="govuk-summary-list__actions">
+                <a class="govuk-link" href="/plan/{{ prisonerSummary.prisonNumber }}/goals/{{ loop.index }}/create?mode=edit">
+                  Change<span class="govuk-visually-hidden"> when are they aiming to achieve this by for goal {{ loop.index }}</span>
+                </a>
+              </dd>
+              {% endif %}
             </div>
             {% for step in goal.steps %}
               <div class="govuk-summary-list__row">

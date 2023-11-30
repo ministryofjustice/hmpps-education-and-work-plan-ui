@@ -41,6 +41,7 @@ export default class CreateGoalControllerOriginalBehaviour {
       prisonerSummary,
       req.session.newGoal.createGoalForm,
       futureGoalTargetDates,
+      false,
       req.flash('errors'),
     )
     res.render('pages/goal/create/index', { ...view.renderArgs })
