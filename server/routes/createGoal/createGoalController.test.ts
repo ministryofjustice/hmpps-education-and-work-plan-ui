@@ -40,6 +40,7 @@ describe('createGoalController', () => {
     body: {},
     user: {} as Express.User,
     params: {} as Record<string, string>,
+    query: {} as Record<string, string>,
     flash: jest.fn(),
   }
   const res = {
@@ -57,6 +58,7 @@ describe('createGoalController', () => {
     req.session = {} as SessionData
     req.body = {}
     req.params = {} as Record<string, string>
+    req.query = {} as Record<string, string>
 
     req.params.prisonNumber = prisonNumber
     req.session.prisonerSummary = prisonerSummary
