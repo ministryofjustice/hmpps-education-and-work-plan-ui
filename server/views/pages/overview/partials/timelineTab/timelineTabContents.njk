@@ -2,47 +2,51 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds app-u-print-full-width">
 
-      <div class="moj-timeline">
+      {% if timeline.events %}
 
-      {% for event in timeline.events %}
-        <div class="moj-timeline__item">
-          <div class="moj-timeline__header">
-            <h2 class="moj-timeline__title">{{ event.eventType | formatTimelineEvent }}</h2>
-            <p class="moj-timeline__byline govuk-!-display-none-print">by {{ event.actionedByDisplayName }}, {{ event.prison.prisonName if event.prison.prisonName else event.prison.prisonId }}</p>
-          </div>
+        <div class="moj-timeline">
 
-          <p class="moj-timeline__date">
-            <time datetime="{{ event.timestamp }}">{{ event.timestamp | formatDate('D MMMM YYYY') }}</time>
-          </p>
+        {% for event in timeline.events %}
+          <div class="moj-timeline__item">
+            <div class="moj-timeline__header">
+              <h2 class="moj-timeline__title">{{ event.eventType | formatTimelineEvent }}</h2>
+              <p class="moj-timeline__byline govuk-!-display-none-print">by {{ event.actionedByDisplayName }}, {{ event.prison.prisonName if event.prison.prisonName else event.prison.prisonId }}</p>
+            </div>
 
-          {% if event.eventType == 'ACTION_PLAN_CREATED' or event.eventType == 'GOAL_UPDATED' or event.eventType == 'GOAL_CREATED' or event.eventType == 'MULTIPLE_GOALS_CREATED' %}
-          <div class="moj-timeline__description">
-            <p class="govuk-body govuk-!-margin-bottom-0 govuk-!-display-none-print">
-              <a href="/plan/{{ prisonerSummary.prisonNumber }}/view/overview">
-                {% if event.eventType == 'ACTION_PLAN_CREATED' %}
-                  View {{ prisonerSummary.firstName }} {{ prisonerSummary.lastName | title }}'s learning and work progress
-                {% elif event.eventType == 'GOAL_UPDATED' or event.eventType == 'GOAL_CREATED' or event.eventType == 'MULTIPLE_GOALS_CREATED' %}
-                  View <span class="govuk-visually-hidden">{{ prisonerSummary.firstName }} {{ prisonerSummary.lastName | title }}'s </span>goals
-                {% endif %}
-              </a>
+            <p class="moj-timeline__date">
+              <time datetime="{{ event.timestamp }}">{{ event.timestamp | formatDate('D MMMM YYYY') }}</time>
             </p>
+
+            {% if event.eventType == 'ACTION_PLAN_CREATED' or event.eventType == 'GOAL_UPDATED' or event.eventType == 'GOAL_CREATED' or event.eventType == 'MULTIPLE_GOALS_CREATED' %}
+            <div class="moj-timeline__description">
+              <p class="govuk-body govuk-!-margin-bottom-0 govuk-!-display-none-print">
+                <a href="/plan/{{ prisonerSummary.prisonNumber }}/view/overview">
+                  {% if event.eventType == 'ACTION_PLAN_CREATED' %}
+                    View {{ prisonerSummary.firstName }} {{ prisonerSummary.lastName | title }}'s learning and work progress
+                  {% elif event.eventType == 'GOAL_UPDATED' or event.eventType == 'GOAL_CREATED' or event.eventType == 'MULTIPLE_GOALS_CREATED' %}
+                    View <span class="govuk-visually-hidden">{{ prisonerSummary.firstName }} {{ prisonerSummary.lastName | title }}'s </span>goals
+                  {% endif %}
+                </a>
+              </p>
+            </div>
+            {% endif %}
+
           </div>
-          {% endif %}
+        {% endfor %}
 
         </div>
-      {% endfor %}
 
-      </div>
+      {% else %}
+        <h2 class="govuk-heading-m">There are no learning and work timeline events to display</h2>
+      {% endif %}
 
     </div>
   </div>
 {% else %}
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-      <h2 class="govuk-heading-m">[Error state title]</h2>
-      <p class="govuk-body">
-        [Error state message]
-      </p>
+      <h2 class="govuk-heading-m" data-qa="ciag-unavailable-message">We cannot show these details right now</h2>
+      <p class="govuk-body">Reload the page or try again later. Other parts of this service may still be available.</p>
     </div>
   </div>
 {% endif %}
