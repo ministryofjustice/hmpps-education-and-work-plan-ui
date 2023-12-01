@@ -87,6 +87,7 @@ describe('createGoalController', () => {
         prisonerSummary,
         form: expectedCreateGoalForm,
         futureGoalTargetDates: expectedFutureGoalTargetDates,
+        isEditMode: false,
         errors,
       }
       const expectedNewGoal = {

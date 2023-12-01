@@ -22,9 +22,13 @@ export default class CreateGoalController {
     req.session.newGoals = req.session.newGoals || []
 
     if (isEditMode(req)) {
+      if (!req.session.newGoals[parseInt(goalIndex, 10) - 1]) {
+        return next(createError(404, `Goal ${goalIndex} not found`))
+      }
       // User is editing a Goal via it's Change link - get the relevant `NewGoal` object from the session based on the goalIndex path param
-      req.session.newGoal.createGoalForm = req.session.newGoals[parseInt(goalIndex, 10)].createGoalForm
-      // TODO - error handling for when goalIndex is not a number or goal at that index is not in the session array
+      req.session.newGoal = {
+        createGoalForm: req.session.newGoals[parseInt(goalIndex, 10) - 1].createGoalForm,
+      } as NewGoal
     } else if (!req.session.newGoal?.createGoalForm) {
       // User is creating a new Goal
       req.session.newGoal = {
@@ -43,9 +47,10 @@ export default class CreateGoalController {
       prisonerSummary,
       req.session.newGoal.createGoalForm,
       futureGoalTargetDates,
+      isEditMode(req),
       req.flash('errors'),
     )
-    res.render('pages/goal/create/index', { ...view.renderArgs })
+    return res.render('pages/goal/create/index', { ...view.renderArgs })
   }
 
   submitCreateGoalForm: RequestHandler = async (req, res, next): Promise<void> => {
@@ -61,8 +66,10 @@ export default class CreateGoalController {
     }
 
     if (isEditMode(req)) {
-      // TODO - error handling for when goalIndex is not a number or goal at that index is not in the session array
-      req.session.newGoals[parseInt(goalIndex, 10)].createGoalForm = req.session.newGoal.createGoalForm
+      if (!req.session.newGoals[parseInt(goalIndex, 10) - 1]) {
+        return next(createError(404, `Goal ${goalIndex} not found`))
+      }
+      req.session.newGoals[parseInt(goalIndex, 10) - 1].createGoalForm = req.session.newGoal.createGoalForm
       req.session.newGoal = undefined
       return res.redirect(`/plan/${prisonNumber}/goals/review`)
     }
