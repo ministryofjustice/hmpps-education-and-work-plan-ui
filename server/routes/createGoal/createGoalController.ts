@@ -66,7 +66,9 @@ export default class CreateGoalController {
     }
 
     if (isEditMode(req)) {
-      // TODO - error handling for when goalIndex is not a number or goal at that index is not in the session array
+      if (!req.session.newGoals[parseInt(goalIndex, 10) - 1]) {
+        return next(createError(404, `Goal ${goalIndex} not found`))
+      }
       req.session.newGoals[parseInt(goalIndex, 10) - 1].createGoalForm = req.session.newGoal.createGoalForm
       req.session.newGoal = undefined
       return res.redirect(`/plan/${prisonNumber}/goals/review`)
