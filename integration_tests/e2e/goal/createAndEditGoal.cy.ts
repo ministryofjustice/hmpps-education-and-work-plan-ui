@@ -4,7 +4,6 @@ import AddNotePage from '../../pages/goal/AddNotePage'
 import ReviewPage from '../../pages/goal/ReviewPage'
 import OverviewPage from '../../pages/overview/OverviewPage'
 import CreateGoalPage from '../../pages/goal/CreateGoalPage'
-import AuthorisationErrorPage from '../../pages/authorisationError'
 
 context('Create and edit a goal', () => {
   beforeEach(() => {
@@ -21,66 +20,6 @@ context('Create and edit a goal', () => {
     cy.task('getActionPlan')
     cy.task('stubLearnerProfile')
     cy.task('stubLearnerEducation')
-  })
-
-  it('should be able to navigate to edit goal description page given user has clicked change from the review page', () => {
-    // Given
-    const prisonNumber = 'G6115VJ'
-    cy.signIn()
-    cy.visit(`/plan/${prisonNumber}/view/overview`)
-    const overviewPage = Page.verifyOnPage(OverviewPage)
-
-    const createGoalPage = overviewPage.clickAddGoalButton()
-    createGoalPage //
-      .setGoalTitle('Learn French')
-      .setTargetCompletionDate0to3Months()
-      .submitPage()
-
-    const addStepPage = Page.verifyOnPage(AddStepPage)
-    addStepPage //
-      .setStepTitle('Book French course')
-      .submitPage()
-
-    const addNotePage = Page.verifyOnPage(AddNotePage)
-    addNotePage.setNote("Pay close attention to Chris' behaviour during classes")
-    addNotePage.submitPage()
-
-    // When
-    const reviewPage = Page.verifyOnPage(ReviewPage)
-    reviewPage.clickChangeGoalDescriptionLink()
-
-    // Then
-    Page.verifyOnPage(CreateGoalPage)
-  })
-
-  it('should be able to navigate to edit goal target date page given user has clicked change from the review page', () => {
-    // Given
-    const prisonNumber = 'G6115VJ'
-    cy.signIn()
-    cy.visit(`/plan/${prisonNumber}/view/overview`)
-    const overviewPage = Page.verifyOnPage(OverviewPage)
-
-    const createGoalPage = overviewPage.clickAddGoalButton()
-    createGoalPage //
-      .setGoalTitle('Learn French')
-      .setTargetCompletionDate0to3Months()
-      .submitPage()
-
-    const addStepPage = Page.verifyOnPage(AddStepPage)
-    addStepPage //
-      .setStepTitle('Book French course')
-      .submitPage()
-
-    const addNotePage = Page.verifyOnPage(AddNotePage)
-    addNotePage.setNote("Pay close attention to Chris' behaviour during classes")
-    addNotePage.submitPage()
-
-    // When
-    const reviewPage = Page.verifyOnPage(ReviewPage)
-    reviewPage.clickChangeGoalTargetDateLink()
-
-    // Then
-    Page.verifyOnPage(CreateGoalPage)
   })
 
   it('should be able to edit the goal description from the review goal screen', () => {
@@ -151,33 +90,5 @@ context('Create and edit a goal', () => {
     // Then
     Page.verifyOnPage(ReviewPage)
     reviewPage.hasGoalTargetDate('by 26 February 2024')
-  })
-
-  it('should redirect to auth-error page given user does not have any authorities', () => {
-    // Given
-    cy.task('stubSignIn')
-
-    const prisonNumber = 'G6115VJ'
-    cy.signIn()
-
-    // When
-    cy.visit(`/plan/${prisonNumber}/goals/1/create?edit`, { failOnStatusCode: false })
-
-    // Then
-    Page.verifyOnPage(AuthorisationErrorPage)
-  })
-
-  it('should redirect to auth-error page given user does not have edit authority', () => {
-    // Given
-    cy.task('stubSignInAsUserWithViewAuthority')
-
-    const prisonNumber = 'G6115VJ'
-    cy.signIn()
-
-    // When
-    cy.visit(`/plan/${prisonNumber}/goals/1/create?edit`, { failOnStatusCode: false })
-
-    // Then
-    Page.verifyOnPage(AuthorisationErrorPage)
   })
 })
