@@ -86,20 +86,15 @@ export default class CreateGoalController {
       if (!req.session.newGoals[parseInt(goalIndex, 10) - 1]) {
         return next(createError(404, `Goal ${goalIndex} not found`))
       }
-      if (!req.session.newGoals[parseInt(stepIndex, 10) - 1].addStepForms) {
+      if (!req.session.newGoals[parseInt(stepIndex, 10) - 1].addStepForm) {
         return next(createError(404, `Step ${stepIndex} not found`))
       }
       req.session.newGoal = {
         addStepForm: req.session.newGoals[parseInt(goalIndex, 10) - 1].addStepForms[parseInt(stepIndex, 10) - 1],
       } as NewGoal
-    } else if (!req.session.newGoal.addStepForm) {
-      // User is creating a new Step
-      req.session.newGoal = {
-        addStepForm: { stepNumber: 1 },
-      } as NewGoal
     }
 
-    const { addStepForm } = req.session.newGoal
+    const addStepForm = req.session.newGoal.addStepForm || { stepNumber: 1 }
 
     const view = new AddStepView(prisonerSummary, addStepForm, isEditMode(req), req.flash('errors'))
     return res.render('pages/goal/add-step/index', { ...view.renderArgs })
