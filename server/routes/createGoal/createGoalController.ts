@@ -80,6 +80,7 @@ export default class CreateGoalController {
     const { goalIndex, stepIndex } = req.params
     const { prisonerSummary } = req.session
 
+    req.session.newGoals = req.session.newGoals || []
     req.session.newGoal.addStepForms = req.session.newGoal.addStepForms || []
 
     if (isEditMode(req)) {
@@ -89,8 +90,10 @@ export default class CreateGoalController {
       if (!req.session.newGoals[parseInt(stepIndex, 10) - 1].addStepForm) {
         return next(createError(404, `Step ${stepIndex} not found`))
       }
+      // User is editing a Step via it's Change link - get the relevant `NewGoal` objects from the session based on the goalIndex and stepIndex path params
       req.session.newGoal = {
-        addStepForm: req.session.newGoals[parseInt(goalIndex, 10) - 1].addStepForms[parseInt(stepIndex, 10) - 1],
+        createGoalForm: req.session.newGoals[parseInt(goalIndex, 10) - 1].createGoalForm,
+        addStepForm: req.session.newGoals[parseInt(stepIndex, 10) - 1].addStepForm,
       } as NewGoal
     }
 
