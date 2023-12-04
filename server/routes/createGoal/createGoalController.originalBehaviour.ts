@@ -66,7 +66,7 @@ export default class CreateGoalControllerOriginalBehaviour {
     const addStepForm = req.session.newGoal.addStepForm || { stepNumber: 1 }
     req.session.newGoal.addStepForms = req.session.newGoal.addStepForms || []
 
-    const view = new AddStepView(prisonerSummary, addStepForm, req.flash('errors'))
+    const view = new AddStepView(prisonerSummary, addStepForm, false, req.flash('errors'))
     res.render('pages/goal/add-step/index', { ...view.renderArgs })
   }
 
