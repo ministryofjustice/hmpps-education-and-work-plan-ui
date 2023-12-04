@@ -80,24 +80,17 @@ export default class CreateGoalController {
     const { goalIndex, stepIndex } = req.params
     const { prisonerSummary } = req.session
 
-    req.session.newGoals = req.session.newGoals || []
     req.session.newGoal.addStepForms = req.session.newGoal.addStepForms || []
 
     if (isEditMode(req)) {
-      if (!req.session.newGoals[parseInt(goalIndex, 10) - 1]) {
-        return next(createError(404, `Goal ${goalIndex} not found`))
-      }
-      if (!req.session.newGoals[parseInt(stepIndex, 10) - 1].addStepForm) {
-        return next(createError(404, `Step ${stepIndex} not found`))
-      }
-      // User is editing a Step via it's Change link - get the relevant `NewGoal` objects from the session based on the goalIndex and stepIndex path params
       req.session.newGoal = {
-        createGoalForm: req.session.newGoals[parseInt(goalIndex, 10) - 1].createGoalForm,
-        addStepForm: req.session.newGoals[parseInt(stepIndex, 10) - 1].addStepForm,
+        addStepForm: req.session.newGoals[parseInt(goalIndex, 10) - 1].addStepForms[parseInt(stepIndex, 10) - 1],
       } as NewGoal
+    } else if (!req.session.newGoal.addStepForm) {
+      req.session.newGoal.addStepForm = { stepNumber: 1 }
     }
 
-    const addStepForm = req.session.newGoal.addStepForm || { stepNumber: 1 }
+    const { addStepForm } = req.session.newGoal
 
     const view = new AddStepView(prisonerSummary, addStepForm, isEditMode(req), req.flash('errors'))
     return res.render('pages/goal/add-step/index', { ...view.renderArgs })
