@@ -16,9 +16,10 @@
       <h1 class="govuk-heading-l">Review {{ prisonerSummary.firstName }} {{ prisonerSummary.lastName }}'s goals</h1>
 
       {% for goal in goals %}
+      {% set goalLoop = loop %}
       <div class="govuk-summary-card">
         <div class="govuk-summary-card__title-wrapper">
-          <h2 class="govuk-summary-card__title">Goal {{ loop.index }}</h2>
+          <h2 class="govuk-summary-card__title">Goal {{ goalLoop.index }}</h2>
         </div>
         <div class="govuk-summary-card__content">
           <dl class="govuk-summary-list">
@@ -26,13 +27,13 @@
               <dt class="govuk-summary-list__key">
                 Description
               </dt>
-              <dd class="govuk-summary-list__value" data-qa="goal-{{ loop.index }}-description-value">
+              <dd class="govuk-summary-list__value" data-qa="goal-{{ goalLoop.index }}-description-value">
                 {{ goal.title }}
               </dd>
               {% if featureToggles.newCreateGoalRoutesEnabled %}
               <dd class="govuk-summary-list__actions">
-                <a class="govuk-link" href="/plan/{{ prisonerSummary.prisonNumber }}/goals/{{ loop.index }}/create?mode=edit" data-qa="change-goal-{{ loop.index }}-description">
-                  Change<span class="govuk-visually-hidden"> description for goal {{ loop.index }}</span>
+                <a class="govuk-link" href="/plan/{{ prisonerSummary.prisonNumber }}/goals/{{ goalLoop.index }}/create?mode=edit" data-qa="change-goal-{{ goalLoop.index }}-description">
+                  Change<span class="govuk-visually-hidden"> description for goal {{ goalLoop.index }}</span>
                 </a>
               </dd>
               {% endif %}
@@ -41,13 +42,13 @@
               <dt class="govuk-summary-list__key">
                 When are they aiming to achieve this by?
               </dt>
-              <dd class="govuk-summary-list__value" data-qa="goal-{{ loop.index }}-target-date-value">
+              <dd class="govuk-summary-list__value" data-qa="goal-{{ goalLoop.index }}-target-date-value">
                 by {{ goal.targetCompletionDate | formatDate('D MMMM YYYY') }}
               </dd>
               {% if featureToggles.newCreateGoalRoutesEnabled %}
               <dd class="govuk-summary-list__actions">
-                <a class="govuk-link" href="/plan/{{ prisonerSummary.prisonNumber }}/goals/{{ loop.index }}/create?mode=edit" data-qa="change-goal-{{ loop.index }}-target-date">
-                  Change<span class="govuk-visually-hidden"> when are they aiming to achieve this by for goal {{ loop.index }}</span>
+                <a class="govuk-link" href="/plan/{{ prisonerSummary.prisonNumber }}/goals/{{ goalLoop.index }}/create?mode=edit" data-qa="change-goal-{{ goalLoop.index }}-target-date">
+                  Change<span class="govuk-visually-hidden"> when are they aiming to achieve this by for goal {{ goalLoop.index }}</span>
                 </a>
               </dd>
               {% endif %}
@@ -62,8 +63,8 @@
                 </dd>
                 {% if featureToggles.newCreateGoalRoutesEnabled %}
                 <dd class="govuk-summary-list__actions">
-                  <a class="govuk-link" href="/plan/{{ prisonerSummary.prisonNumber }}/goals/{{ loop.index }}/add-step/{{ step.sequenceNumber }}?mode=edit" data-q="change-goal-{{ loop.index }}-step-{{ step.sequenceNumber }}">
-                    Change<span class="govuk-visually-hidden"> goal {{ goal.title }} step {{ step.sequenceNumber }} step title</span>
+                  <a class="govuk-link" href="/plan/{{ prisonerSummary.prisonNumber }}/goals/{{ goalLoop.index }}/add-step/{{ step.sequenceNumber }}?mode=edit" data-q="change-goal-{{ goalLoop.index }}-step-{{ step.sequenceNumber }}">
+                    Change<span class="govuk-visually-hidden"> goal {{ goalLoop.index }} step {{ step.sequenceNumber }} step title</span>
                   </a>
                 </dd>
                 {% endif %}
