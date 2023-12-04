@@ -60,6 +60,13 @@
                 <dd class="govuk-summary-list__value">
                   {{ step.title }}
                 </dd>
+                {% if featureToggles.newCreateGoalRoutesEnabled %}
+                <dd class="govuk-summary-list__actions">
+                  <a class="govuk-link" href="/plan/{{ prisonerSummary.prisonNumber }}/goals/{{ loop.index }}/add-step/{{ step.sequenceNumber }}?mode=edit" data-q="change-goal-{{ loop.index }}-step-{{ step.sequenceNumber }}">
+                    Change<span class="govuk-visually-hidden"> goal {{ goal.title }} step {{ step.sequenceNumber }} step title</span>
+                  </a>
+                </dd>
+                {% endif %}
               </div>
             {% endfor %}
             <div class="govuk-summary-list__row">

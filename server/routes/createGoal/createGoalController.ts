@@ -80,7 +80,6 @@ export default class CreateGoalController {
     const { goalIndex, stepIndex } = req.params
     const { prisonerSummary } = req.session
 
-    const addStepForm = req.session.newGoal.addStepForm || { stepNumber: 1 }
     req.session.newGoal.addStepForms = req.session.newGoal.addStepForms || []
 
     if (isEditMode(req)) {
@@ -93,12 +92,9 @@ export default class CreateGoalController {
       req.session.newGoal = {
         addStepForm: req.session.newGoals[parseInt(goalIndex, 10) - 1].addStepForms[parseInt(stepIndex, 10) - 1],
       } as NewGoal
-    } else if (!req.session.newGoal?.addStepForm) {
-      // User is creating a new Step
-      req.session.newGoal = {
-        addStepForm: { stepNumber: addStepForm.stepNumber },
-      } as NewGoal
     }
+
+    const addStepForm = req.session.newGoal.addStepForm || { stepNumber: 1 }
 
     const view = new AddStepView(prisonerSummary, addStepForm, isEditMode(req), req.flash('errors'))
     return res.render('pages/goal/add-step/index', { ...view.renderArgs })
