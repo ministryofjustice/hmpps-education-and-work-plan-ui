@@ -7,7 +7,7 @@
         <div class="moj-timeline">
 
         {% for event in timeline.events %}
-          <div class="moj-timeline__item">
+          <div class="moj-timeline__item" data-qa-event-type="{{ event.eventType }}">
             <div class="moj-timeline__header">
               <h2 class="moj-timeline__title">{{ event.eventType | formatTimelineEvent }}</h2>
               <p class="moj-timeline__byline govuk-!-display-none-print">by {{ event.actionedByDisplayName }}, {{ event.prison.prisonName if event.prison.prisonName else event.prison.prisonId }}</p>
@@ -37,7 +37,7 @@
         </div>
 
       {% else %}
-        <h2 class="govuk-heading-m">There are no learning and work timeline events to display</h2>
+        <h2 class="govuk-heading-m" data-qa="empty-timeline-message">There are no learning and work timeline events to display</h2>
       {% endif %}
 
     </div>
@@ -45,7 +45,7 @@
 {% else %}
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-      <h2 class="govuk-heading-m" data-qa="ciag-unavailable-message">We cannot show these details right now</h2>
+      <h2 class="govuk-heading-m" data-qa="timeline-unavailable-message">We cannot show these details right now</h2>
       <p class="govuk-body">Reload the page or try again later. Other parts of this service may still be available.</p>
     </div>
   </div>
