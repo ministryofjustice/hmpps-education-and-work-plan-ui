@@ -11,9 +11,7 @@ const stubGetAllPrisons = (): SuperAgentRequest =>
     response: {
       status: 200,
       headers: { 'Content-Type': 'application/json;charset=UTF-8' },
-      jsonBody: {
-        content: allPrisons,
-      },
+      jsonBody: allPrisons,
     },
   })
 

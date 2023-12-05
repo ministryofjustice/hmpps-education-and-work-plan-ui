@@ -18,8 +18,13 @@ import aValidPrisonerSummary from '../../testsupport/prisonerSummaryTestDataBuil
 import { aValidShortQuestionSetEducationAndTraining } from '../../testsupport/educationAndTrainingTestDataBuilder'
 import TimelineService from '../../services/timelineService'
 import aValidTimeline from '../../testsupport/timelineTestDataBuilder'
+import filterTimelineEvents from '../timelineResolver'
+
+jest.mock('../timelineResolver')
 
 describe('overviewController', () => {
+  const mockedTimelineResolver = filterTimelineEvents as jest.MockedFunction<typeof filterTimelineEvents>
+
   const curiousService = {
     getPrisonerSupportNeeds: jest.fn(),
     getPrisonerFunctionalSkills: jest.fn(),
@@ -496,6 +501,7 @@ describe('overviewController', () => {
 
       const expectedTimeline: Timeline = aValidTimeline()
       timelineService.getTimeline.mockResolvedValue(expectedTimeline)
+      mockedTimelineResolver.mockReturnValue(expectedTimeline)
 
       const expectedView = {
         prisonerSummary,
