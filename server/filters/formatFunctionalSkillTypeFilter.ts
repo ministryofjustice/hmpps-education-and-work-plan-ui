@@ -1,4 +1,4 @@
-export default function formatFunctionalSkillType(value: string): string {
+export default function formatFunctionalSkillTypeFilter(value: string): string {
   const assessmentType = AssessmentType[value as keyof typeof AssessmentType]
   return assessmentType
 }

@@ -1,6 +1,6 @@
-import formatGoalStatusValue from './formatGoalStatusValue'
+import formatGoalStatusValueFilter from './formatGoalStatusValueFilter'
 
-describe('formatStepStatusValue', () => {
+describe('formatStepStatusValueFilter', () => {
   describe('should format the goal status API value into a user friendly value', () => {
     Array.of(
       { statusValue: 'ACTIVE', expected: 'In progress' },
@@ -8,7 +8,7 @@ describe('formatStepStatusValue', () => {
       { statusValue: 'ARCHIVED', expected: 'Archived' },
     ).forEach(spec => {
       it(`Goal status value ${spec.statusValue}, expected text: ${spec.expected}`, () => {
-        expect(formatGoalStatusValue(spec.statusValue)).toEqual(spec.expected)
+        expect(formatGoalStatusValueFilter(spec.statusValue)).toEqual(spec.expected)
       })
     })
   })

@@ -7,9 +7,9 @@ import { ApplicationInfo } from '../applicationInfo'
 import config from '../config'
 import formatDateFilter from '../filters/formatDateFilter'
 import findErrorFilter from '../filters/findErrorFilter'
-import formatFunctionalSkillType from '../filters/formatFunctionalSkillTypeFilter'
-import formatStepStatusValue from '../filters/formatStepStatusValue'
-import formatGoalStatusValue from '../filters/formatGoalStatusValue'
+import formatFunctionalSkillTypeFilter from '../filters/formatFunctionalSkillTypeFilter'
+import formatStepStatusValueFilter from '../filters/formatStepStatusValueFilter'
+import formatGoalStatusValueFilter from '../filters/formatGoalStatusValueFilter'
 import formatYesNoFilter from '../filters/formatYesNoFilter'
 import formatAbilityToWorkConstraintFilter from '../filters/formatAbilityToWorkConstraintFilter'
 import formatJobTypeFilter from '../filters/formatJobTypeFilter'
@@ -22,7 +22,7 @@ import formatInPrisonWorkInterestFilter from '../filters/formatInPrisonWorkInter
 import formatInPrisonEducationFilter from '../filters/formatInPrisonEducationFilter'
 import formatReasonNotToGetWorkFilter from '../filters/formatReasonNotToGetWorkFilter'
 import formatQualificationLevelFilter from '../filters/formatQualificationLevelFilter'
-import formatTimelineEvent from '../filters/formatTimelineEvent'
+import formatTimelineEventFilter from '../filters/formatTimelineEventFilter'
 
 const production = process.env.NODE_ENV === 'production'
 
@@ -68,9 +68,9 @@ export function registerNunjucks(app?: express.Express): Environment {
   njkEnv.addFilter('initialiseName', initialiseName)
   njkEnv.addFilter('findError', findErrorFilter)
   njkEnv.addFilter('formatDate', formatDateFilter)
-  njkEnv.addFilter('formatFunctionalSkillType', formatFunctionalSkillType)
-  njkEnv.addFilter('formatStepStatusValue', formatStepStatusValue)
-  njkEnv.addFilter('formatGoalStatusValue', formatGoalStatusValue)
+  njkEnv.addFilter('formatFunctionalSkillType', formatFunctionalSkillTypeFilter)
+  njkEnv.addFilter('formatStepStatusValue', formatStepStatusValueFilter)
+  njkEnv.addFilter('formatGoalStatusValue', formatGoalStatusValueFilter)
   njkEnv.addFilter('formatYesNo', formatYesNoFilter)
   njkEnv.addFilter('formatAbilityToWorkConstraint', formatAbilityToWorkConstraintFilter)
   njkEnv.addFilter('formatJobType', formatJobTypeFilter)
@@ -82,7 +82,7 @@ export function registerNunjucks(app?: express.Express): Environment {
   njkEnv.addFilter('formatInPrisonEducation', formatInPrisonEducationFilter)
   njkEnv.addFilter('formatReasonNotToGetWork', formatReasonNotToGetWorkFilter)
   njkEnv.addFilter('formatQualificationLevel', formatQualificationLevelFilter)
-  njkEnv.addFilter('formatTimelineEvent', formatTimelineEvent)
+  njkEnv.addFilter('formatTimelineEvent', formatTimelineEventFilter)
   njkEnv.addFilter('fallbackMessage', fallbackMessageFilter)
 
   njkEnv.addGlobal('dpsUrl', config.dpsHomeUrl)

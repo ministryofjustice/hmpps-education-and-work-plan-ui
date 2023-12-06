@@ -1,4 +1,4 @@
-export default function formatGoalStatusValue(value: string): string {
+export default function formatGoalStatusValueFilter(value: string): string {
   const statusValue = GoalStatusValue[value as keyof typeof GoalStatusValue]
   return statusValue
 }
