@@ -28,9 +28,9 @@ const toTargetCompletionDate = (updateGoalForm: UpdateGoalForm): Date => {
     const day = updateGoalForm['targetCompletionDate-day'].padStart(2, '0')
     const month = updateGoalForm['targetCompletionDate-month'].padStart(2, '0')
     const year = updateGoalForm['targetCompletionDate-year']
-    return moment(`${year}-${month}-${day}`).toDate()
+    return moment.utc(`${year}-${month}-${day}`).toDate()
   }
-  return moment(updateGoalForm.targetCompletionDate).toDate()
+  return moment.utc(updateGoalForm.targetCompletionDate).toDate()
 }
 
 export { toUpdateGoalDto, toUpdateStepDto }

@@ -5,6 +5,7 @@ import { toCreateGoalDto } from './createGoalFormToCreateGoalDtoMapper'
 import {
   aValidCreateGoalForm,
   aValidCreateGoalFormWithIndividualTargetDateFields,
+  aValidCreateGoalFormDuringDaylightSavingTime,
 } from '../../../testsupport/createGoalFormTestDataBuilder'
 import aValidAddNoteForm from '../../../testsupport/addNoteFormTestDataBuilder'
 
@@ -30,7 +31,7 @@ describe('createGoalFormToCreateGoalDtoMapper', () => {
       steps: [expectedAddStepDto1, expectedAddStepDto2],
       note: addNoteForm.note,
       prisonId,
-      targetCompletionDate: moment('2024-02-29').toDate(),
+      targetCompletionDate: moment.utc('2024-02-29').toDate(),
     }
 
     // When
@@ -57,7 +58,34 @@ describe('createGoalFormToCreateGoalDtoMapper', () => {
       steps: [expectedAddStepDto],
       note: addNoteForm.note,
       prisonId,
-      targetCompletionDate: moment('2024-02-29').toDate(),
+      targetCompletionDate: moment.utc('2024-02-29').toDate(),
+    }
+
+    // When
+    const createGoalDto = toCreateGoalDto(createGoalForm, addStepForms, addNoteForm, prisonId)
+
+    // Then
+    expect(createGoalDto).toEqual(expectedCreateGoalDto)
+  })
+
+  it('should map to CreateGoalDto given date during daylight saving time', () => {
+    // Given
+    const createGoalForm = aValidCreateGoalFormDuringDaylightSavingTime()
+    const addStepForms = [aValidAddStepForm()]
+    const addNoteForm = aValidAddNoteForm()
+    const prisonId = 'BXI'
+
+    const expectedAddStepDto: AddStepDto = {
+      title: addStepForms[0].title,
+      sequenceNumber: addStepForms[0].stepNumber,
+    }
+    const expectedCreateGoalDto: CreateGoalDto = {
+      prisonNumber: createGoalForm.prisonNumber,
+      title: createGoalForm.title,
+      steps: [expectedAddStepDto],
+      note: addNoteForm.note,
+      prisonId,
+      targetCompletionDate: moment.utc('2024-06-29').toDate(),
     }
 
     // When
