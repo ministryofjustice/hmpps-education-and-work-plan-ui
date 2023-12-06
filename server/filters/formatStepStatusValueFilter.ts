@@ -1,4 +1,4 @@
-export default function formatStepStatusValue(value: string): string {
+export default function formatStepStatusValueFilter(value: string): string {
   const statusValue = StepStatusValue[value as keyof typeof StepStatusValue]
   return statusValue
 }
