@@ -25,7 +25,6 @@ generic-service:
     FRONTEND_COMPONENT_API_URL: "https://frontend-components-dev.hmpps.service.justice.gov.uk"
     ENVIRONMENT_NAME: "DEV"
     TIMELINE_PAGE_ENABLED: "true"
-    PLP_PRISONER_LIST_AND_OVERVIEW_PAGES_ENABLED: "true"
 
   allowlist:
     uservision-accessibility-testers: 5.181.59.114/32
