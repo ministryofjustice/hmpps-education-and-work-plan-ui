@@ -35,9 +35,9 @@ const toTargetCompletionDate = (createGoalForm: CreateGoalForm): Date => {
       const day = createGoalForm['targetCompletionDate-day'].padStart(2, '0')
       const month = createGoalForm['targetCompletionDate-month'].padStart(2, '0')
       const year = createGoalForm['targetCompletionDate-year']
-      return moment(`${year}-${month}-${day}`).toDate()
+      return moment.utc(`${year}-${month}-${day}`).toDate()
     }
-    return moment(createGoalForm.targetCompletionDate).toDate()
+    return moment.utc(createGoalForm.targetCompletionDate).toDate()
   }
   return null
 }

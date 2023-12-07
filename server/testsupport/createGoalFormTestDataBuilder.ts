@@ -22,4 +22,19 @@ const aValidCreateGoalFormWithIndividualTargetDateFields = (title = 'Learn Spani
   }
 }
 
-export { aValidCreateGoalForm, aValidCreateGoalFormWithIndividualTargetDateFields }
+const aValidCreateGoalFormDuringDaylightSavingTime = (title = 'Learn Spanish'): CreateGoalForm => {
+  return {
+    prisonNumber: 'A1234BC',
+    title,
+    targetCompletionDate: '2024-06-29',
+    'targetCompletionDate-day': null,
+    'targetCompletionDate-month': null,
+    'targetCompletionDate-year': null,
+  }
+}
+
+export {
+  aValidCreateGoalForm,
+  aValidCreateGoalFormWithIndividualTargetDateFields,
+  aValidCreateGoalFormDuringDaylightSavingTime,
+}

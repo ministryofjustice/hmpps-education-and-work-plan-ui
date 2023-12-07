@@ -56,4 +56,34 @@ const aValidUpdateGoalFormWithIndividualTargetDateFields = (
   }
 }
 
-export { aValidUpdateGoalForm, aValidUpdateGoalFormWithIndividualTargetDateFields }
+const aValidUpdateGoalFormDuringDaylightSavingTime = (
+  reference = '95b18362-fe56-4234-9ad2-11ef98b974a3',
+): UpdateGoalForm => {
+  return {
+    reference,
+    title: 'Learn Spanish',
+    createdAt: '2023-01-16',
+    targetCompletionDate: '2024-06-29',
+    'targetCompletionDate-day': null,
+    'targetCompletionDate-month': null,
+    'targetCompletionDate-year': null,
+    status: 'ACTIVE',
+    note: 'Prisoner is not good at listening',
+    steps: [
+      {
+        reference: 'c77cd2fb-40e0-4354-982a-5c8017e92b26',
+        title: 'Book course',
+        stepNumber: 1,
+        status: 'ACTIVE',
+      },
+    ],
+    action: 'submit-form',
+    originalTargetCompletionDate: '2024-06-29',
+  }
+}
+
+export {
+  aValidUpdateGoalForm,
+  aValidUpdateGoalFormWithIndividualTargetDateFields,
+  aValidUpdateGoalFormDuringDaylightSavingTime,
+}
