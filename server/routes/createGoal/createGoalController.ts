@@ -84,6 +84,7 @@ export default class CreateGoalController {
 
     if (isEditMode(req)) {
       req.session.newGoal = {
+        createGoalForm: req.session.newGoals[parseInt(goalIndex, 10) - 1].createGoalForm,
         addStepForm: req.session.newGoals[parseInt(goalIndex, 10) - 1].addStepForms[parseInt(stepIndex, 10) - 1],
       } as NewGoal
     } else if (!req.session.newGoal.addStepForm) {
