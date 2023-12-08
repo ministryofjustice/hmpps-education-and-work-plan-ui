@@ -128,10 +128,11 @@ export default class CreateGoalController {
       if (!req.session.newGoals[parseInt(goalIndex, 10) - 1]) {
         return next(createError(404, `Goal ${goalIndex} not found`))
       }
-      if (!req.session.newGoals[parseInt(stepIndex, 10) - 1].addStepForm) {
+      if (!req.session.newGoals[parseInt(goalIndex, 10) - 1].addStepForms[parseInt(stepIndex, 10) - 1]) {
         return next(createError(404, `Step ${stepIndex} not found`))
       }
-      req.session.newGoals[parseInt(goalIndex, 10) - 1].addStepForm = req.session.newGoal.addStepForm
+      req.session.newGoal.addStepForm =
+        req.session.newGoals[parseInt(goalIndex, 10) - 1].addStepForms[parseInt(stepIndex, 10) - 1]
       req.session.newGoal = undefined
       return res.redirect(`/plan/${prisonNumber}/goals/review`)
     }
