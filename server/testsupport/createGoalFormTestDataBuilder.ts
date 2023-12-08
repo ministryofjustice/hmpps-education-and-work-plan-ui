@@ -1,10 +1,14 @@
 import type { CreateGoalForm } from 'forms'
 
-const aValidCreateGoalForm = (title = 'Learn Spanish'): CreateGoalForm => {
+const aValidCreateGoalForm = (options?: {
+  prisonNumber?: string
+  title?: string
+  targetCompletionDate?: string
+}): CreateGoalForm => {
   return {
-    prisonNumber: 'A1234BC',
-    title,
-    targetCompletionDate: '2024-02-29',
+    prisonNumber: options?.prisonNumber || 'A1234BC',
+    title: options?.title || 'Learn Spanish',
+    targetCompletionDate: options?.targetCompletionDate || '2024-02-29',
     'targetCompletionDate-day': null,
     'targetCompletionDate-month': null,
     'targetCompletionDate-year': null,

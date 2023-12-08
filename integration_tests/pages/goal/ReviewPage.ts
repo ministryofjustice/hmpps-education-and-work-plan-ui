@@ -25,7 +25,7 @@ export default class ReviewPage extends Page {
   }
 
   hasStepDescription(expected: string) {
-    this.goalStepValue(1).should('contain.text', expected)
+    this.goalStepValue(1, 1).should('contain.text', expected)
     return this
   }
 
@@ -55,10 +55,11 @@ export default class ReviewPage extends Page {
 
   changeGoalTargetDateLink = (idx: number): PageElement => cy.get(`[data-qa=change-goal-${idx}-target-date]`)
 
-  goalStepValue = (idx: number): PageElement => cy.get(`[data-qa=goal-${idx}-step-value]`)
+  goalStepValue = (goalIdx: number, stepIdx: number): PageElement =>
+    cy.get(`[data-qa=goal-${goalIdx}-step-${stepIdx}-value]`)
 
-  changeGoalStepLink = (idx: number, stepIdx: number): PageElement =>
-    cy.get(`[data-qa=change-goal-${idx}-step-${stepIdx}]`)
+  changeGoalStepLink = (goalIdx: number, stepIdx: number): PageElement =>
+    cy.get(`[data-qa=change-goal-${goalIdx}-step-${stepIdx}]`)
 
   submitButton = (): PageElement => cy.get('#submit-button')
 

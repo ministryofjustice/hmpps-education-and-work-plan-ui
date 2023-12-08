@@ -20,17 +20,13 @@ export default (router: Router, services: Services) => {
     const createGoalController = new CreateGoalController(services.educationAndWorkPlanService)
     newCreateGoalRoutes(router, services, createGoalController)
 
-    router.use('/plan/:prisonNumber/goals/review', checkUserHasEditAuthority())
-    router.get('/plan/:prisonNumber/goals/review', [
+    router.use('/plan/:prisonNumber/goals/review', [
+      checkUserHasEditAuthority(),
       checkPrisonerSummaryExistsInSession,
       checkNewGoalsFormExistsInSession,
-      createGoalController.getReviewGoalView,
     ])
-    router.post('/plan/:prisonNumber/goals/review', [
-      checkPrisonerSummaryExistsInSession,
-      checkNewGoalsFormExistsInSession,
-      createGoalController.submitReviewGoal,
-    ])
+    router.get('/plan/:prisonNumber/goals/review', [createGoalController.getReviewGoalView])
+    router.post('/plan/:prisonNumber/goals/review', [createGoalController.submitReviewGoal])
   } else {
     const createGoalController = new CreateGoalControllerOriginalBehaviour(services.educationAndWorkPlanService)
     originalCreateGoalRoutes(router, services, createGoalController)
@@ -93,7 +89,7 @@ const originalCreateGoalRoutes = (
 }
 
 const newCreateGoalRoutes = (router: Router, services: Services, createGoalController: CreateGoalController) => {
-  router.use('/plan/:prisonNumber/goals/:goalIndex/create', checkUserHasEditAuthority())
+  router.use('/plan/:prisonNumber/goals/:goalIndex/create', [checkUserHasEditAuthority()])
   router.get('/plan/:prisonNumber/goals/:goalIndex/create', [
     retrievePrisonerSummaryIfNotInSession(services.prisonerSearchService),
     createGoalController.getCreateGoalView,
@@ -104,29 +100,20 @@ const newCreateGoalRoutes = (router: Router, services: Services, createGoalContr
     createGoalController.submitCreateGoalForm,
   ])
 
-  router.use('/plan/:prisonNumber/goals/:goalIndex/add-step/:stepIndex', checkUserHasEditAuthority())
-  router.get('/plan/:prisonNumber/goals/:goalIndex/add-step/:stepIndex', [
+  router.use('/plan/:prisonNumber/goals/:goalIndex/add-step/:stepIndex', [
+    checkUserHasEditAuthority(),
     checkPrisonerSummaryExistsInSession,
     checkCreateGoalFormExistsInSession,
-    createGoalController.getAddStepView,
   ])
-  router.post('/plan/:prisonNumber/goals/:goalIndex/add-step/:stepIndex', [
-    checkPrisonerSummaryExistsInSession,
-    checkCreateGoalFormExistsInSession,
-    createGoalController.submitAddStepForm,
-  ])
+  router.get('/plan/:prisonNumber/goals/:goalIndex/add-step/:stepIndex', [createGoalController.getAddStepView])
+  router.post('/plan/:prisonNumber/goals/:goalIndex/add-step/:stepIndex', [createGoalController.submitAddStepForm])
 
-  router.use('/plan/:prisonNumber/goals/:goalIndex/add-note', checkUserHasEditAuthority())
-  router.get('/plan/:prisonNumber/goals/:goalIndex/add-note', [
+  router.use('/plan/:prisonNumber/goals/:goalIndex/add-note', [
+    checkUserHasEditAuthority(),
     checkPrisonerSummaryExistsInSession,
     checkCreateGoalFormExistsInSession,
     checkAddStepFormsArrayExistsInSession,
-    createGoalController.getAddNoteView,
   ])
-  router.post('/plan/:prisonNumber/goals/:goalIndex/add-note', [
-    checkPrisonerSummaryExistsInSession,
-    checkCreateGoalFormExistsInSession,
-    checkAddStepFormsArrayExistsInSession,
-    createGoalController.submitAddNoteForm,
-  ])
+  router.get('/plan/:prisonNumber/goals/:goalIndex/add-note', [createGoalController.getAddNoteView])
+  router.post('/plan/:prisonNumber/goals/:goalIndex/add-note', [createGoalController.submitAddNoteForm])
 }

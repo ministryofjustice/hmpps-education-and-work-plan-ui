@@ -44,15 +44,15 @@ context('Add and edit a step', () => {
     addNotePage.submitPage()
 
     // When
-    const reviewPage = Page.verifyOnPage(ReviewPage)
-    reviewPage.clickChangeGoalStepLink()
+    let reviewPage = Page.verifyOnPage(ReviewPage)
+    reviewPage.clickChangeGoalDescriptionLink()
 
     const editStepPage = Page.verifyOnPage(AddStepPage)
     editStepPage.setStepTitle('Read a French phrase book')
     editStepPage.submitPage()
 
     // Then
-    Page.verifyOnPage(ReviewPage)
-    reviewPage.hasStepDescription('Learn Spanish')
+    reviewPage = Page.verifyOnPage(ReviewPage)
+    reviewPage.hasStepDescription('Read a French phrase book')
   })
 })

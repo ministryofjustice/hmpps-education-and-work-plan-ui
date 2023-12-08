@@ -17,6 +17,7 @@ import { aValidCreateGoalForm } from '../testsupport/createGoalFormTestDataBuild
 import aValidAddNoteForm from '../testsupport/addNoteFormTestDataBuilder'
 import { PrisonerSearchService } from '../services'
 import config from '../config'
+import aValidNewGoalForm from '../testsupport/newGoalFormTestDataBuilder'
 
 /**
  * Unit tests for routerRequestHandlers where the featureToggles.newCreateGoalRoutesEnabled is enabled (ie. new behaviour).
@@ -27,6 +28,7 @@ describe('routerRequestHandlers', () => {
     user: {} as Express.User,
     session: {} as SessionData,
     params: {} as Record<string, string>,
+    query: {} as Record<string, string>,
   }
   const res = {
     redirect: jest.fn(),
@@ -44,6 +46,7 @@ describe('routerRequestHandlers', () => {
     req.user = {} as Express.User
     req.session = {} as SessionData
     req.params = {} as Record<string, string>
+    req.query = {} as Record<string, string>
   })
 
   afterAll(() => {
@@ -51,91 +54,123 @@ describe('routerRequestHandlers', () => {
   })
 
   describe('checkCreateGoalFormExistsInSession', () => {
-    it(`should invoke next handler given form exists in session for prisoner referenced in url params`, async () => {
-      // Given
+    describe('edit mode', () => {
       const prisonNumber = 'A1234BC'
-      req.params.prisonNumber = prisonNumber
+      beforeEach(() => {
+        req.query.mode = 'edit'
+      })
 
-      req.session.newGoal = {
-        createGoalForm: {
-          prisonNumber,
-        },
-      } as NewGoal
+      it(`should invoke next handler given form exists in session for goal and prisoner referenced in url params`, async () => {
+        // Given
+        req.params.prisonNumber = prisonNumber
+        req.params.goalIndex = '1'
 
-      // When
-      await checkCreateGoalFormExistsInSession(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+        req.session.newGoals = [
+          aValidNewGoalForm({ createGoalForm: aValidCreateGoalForm({ prisonNumber }) }),
+          aValidNewGoalForm({ createGoalForm: aValidCreateGoalForm({ prisonNumber }) }),
+          aValidNewGoalForm({ createGoalForm: aValidCreateGoalForm({ prisonNumber }) }),
+        ]
 
-      // Then
-      expect(next).toHaveBeenCalled()
-      expect(res.redirect).not.toHaveBeenCalled()
+        // When
+        await checkCreateGoalFormExistsInSession(
+          req as undefined as Request,
+          res as undefined as Response,
+          next as undefined as NextFunction,
+        )
+
+        // Then
+        expect(next).toHaveBeenCalled()
+        expect(res.redirect).not.toHaveBeenCalled()
+      })
     })
 
-    it(`should redirect to Create Goal screen given no newGoal form exists in session`, async () => {
-      // Given
-      const prisonNumber = 'A1234BC'
-      req.params.prisonNumber = prisonNumber
+    describe('non-edit mode', () => {
+      beforeEach(() => {
+        req.query = {}
+      })
 
-      req.session.newGoal = undefined
+      it(`should invoke next handler given form exists in session for prisoner referenced in url params`, async () => {
+        // Given
+        const prisonNumber = 'A1234BC'
+        req.params.prisonNumber = prisonNumber
 
-      // When
-      await checkCreateGoalFormExistsInSession(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+        req.session.newGoal = aValidNewGoalForm({
+          createGoalForm: aValidCreateGoalForm({ prisonNumber }),
+        })
 
-      // Then
-      expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/goals/1/create`)
-      expect(next).not.toHaveBeenCalled()
-    })
+        // When
+        await checkCreateGoalFormExistsInSession(
+          req as undefined as Request,
+          res as undefined as Response,
+          next as undefined as NextFunction,
+        )
 
-    it(`should redirect to Create Goal screen given no createGoalForm form exists in session`, async () => {
-      // Given
-      const prisonNumber = 'A1234BC'
-      req.params.prisonNumber = prisonNumber
+        // Then
+        expect(next).toHaveBeenCalled()
+        expect(res.redirect).not.toHaveBeenCalled()
+      })
 
-      req.session.newGoal = {
-        createGoalForm: undefined,
-      } as NewGoal
+      it(`should redirect to Create Goal screen given no newGoal form exists in session`, async () => {
+        // Given
+        const prisonNumber = 'A1234BC'
+        req.params.prisonNumber = prisonNumber
 
-      // When
-      await checkCreateGoalFormExistsInSession(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+        req.session.newGoal = undefined
 
-      // Then
-      expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/goals/1/create`)
-      expect(next).not.toHaveBeenCalled()
-    })
+        // When
+        await checkCreateGoalFormExistsInSession(
+          req as undefined as Request,
+          res as undefined as Response,
+          next as undefined as NextFunction,
+        )
 
-    it(`should redirect to Create Goal screen given form exists in session but for different prisoner`, async () => {
-      // Given
-      const prisonNumber = 'A1234BC'
-      req.params.prisonNumber = prisonNumber
+        // Then
+        expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/goals/1/create`)
+        expect(next).not.toHaveBeenCalled()
+      })
 
-      req.session.newGoal = {
-        createGoalForm: {
-          prisonNumber: 'Z9999XZ',
-        },
-      } as NewGoal
+      it(`should redirect to Create Goal screen given no createGoalForm form exists in session`, async () => {
+        // Given
+        const prisonNumber = 'A1234BC'
+        req.params.prisonNumber = prisonNumber
 
-      // When
-      await checkCreateGoalFormExistsInSession(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+        req.session.newGoal = {
+          createGoalForm: undefined,
+        } as NewGoal
 
-      // Then
-      expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/goals/1/create`)
-      expect(req.session.newGoal.createGoalForm).toBeUndefined()
-      expect(next).not.toHaveBeenCalled()
+        // When
+        await checkCreateGoalFormExistsInSession(
+          req as undefined as Request,
+          res as undefined as Response,
+          next as undefined as NextFunction,
+        )
+
+        // Then
+        expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/goals/1/create`)
+        expect(next).not.toHaveBeenCalled()
+      })
+
+      it(`should redirect to Create Goal screen given form exists in session but for different prisoner`, async () => {
+        // Given
+        const prisonNumber = 'A1234BC'
+        req.params.prisonNumber = prisonNumber
+
+        req.session.newGoal = aValidNewGoalForm({
+          createGoalForm: aValidCreateGoalForm({ prisonNumber: 'Z9999XZ' }),
+        })
+
+        // When
+        await checkCreateGoalFormExistsInSession(
+          req as undefined as Request,
+          res as undefined as Response,
+          next as undefined as NextFunction,
+        )
+
+        // Then
+        expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/goals/1/create`)
+        expect(req.session.newGoal.createGoalForm).toBeUndefined()
+        expect(next).not.toHaveBeenCalled()
+      })
     })
   })
 

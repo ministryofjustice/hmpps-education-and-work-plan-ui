@@ -58,12 +58,12 @@
                 <dt class="govuk-summary-list__key">
                   Step {{ step.sequenceNumber }}
                 </dt>
-                <dd class="govuk-summary-list__value">
+                <dd class="govuk-summary-list__value" data-qa="goal-{{ goalLoop.index }}-step-{{ step.sequenceNumber }}-value">
                   {{ step.title }}
                 </dd>
                 {% if featureToggles.newCreateGoalRoutesEnabled %}
                 <dd class="govuk-summary-list__actions">
-                  <a class="govuk-link" href="/plan/{{ prisonerSummary.prisonNumber }}/goals/{{ goalLoop.index }}/add-step/{{ step.sequenceNumber }}?mode=edit" data-q="change-goal-{{ goalLoop.index }}-step-{{ step.sequenceNumber }}">
+                  <a class="govuk-link" href="/plan/{{ prisonerSummary.prisonNumber }}/goals/{{ goalLoop.index }}/add-step/{{ step.sequenceNumber }}?mode=edit" data-qa="change-goal-{{ goalLoop.index }}-step-{{ step.sequenceNumber }}">
                     Change<span class="govuk-visually-hidden"> goal {{ goalLoop.index }} step {{ step.sequenceNumber }} step title</span>
                   </a>
                 </dd>
