@@ -45,7 +45,7 @@ context('Add and edit a step', () => {
 
     // When
     const reviewPage = Page.verifyOnPage(ReviewPage)
-    reviewPage.clickChangeGoalDescriptionLink()
+    reviewPage.clickChangeGoalStepLink()
 
     const editStepPage = Page.verifyOnPage(AddStepPage)
     editStepPage.setStepTitle('Read a French phrase book')
