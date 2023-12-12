@@ -108,6 +108,69 @@ describe('createGoalController', () => {
     })
   })
 
+  describe('submitCreateGoalForm', () => {
+    it('should redirect to add step form given action is submit-form and validation passes', async () => {
+      // Given
+      req.params.prisonNumber = 'A1234GC'
+      req.params.goalIndex = '1'
+      req.body = {
+        title: 'Learn French',
+        'targetDate-day': '31',
+        'targetDate-month': '12',
+        'targetDate-year': '2024',
+        action: 'submit-form',
+      }
+      req.session.newGoal = {
+        createGoalForm: aValidCreateGoalForm(),
+      } as NewGoal
+
+      mockedValidateCreateGoalForm.mockReturnValue([])
+
+      // When
+      await controller.submitCreateGoalForm(
+        req as undefined as Request,
+        res as undefined as Response,
+        next as undefined as NextFunction,
+      )
+
+      // Then
+      expect(res.redirect).toHaveBeenCalledWith('/plan/A1234GC/goals/1/add-step/1')
+      expect(req.flash).not.toHaveBeenCalled()
+    })
+
+    it('should redirect to review goal page given action is submit-form, validation passes and is in edit mode', async () => {
+      // Given
+      req.params.prisonNumber = 'A1234GC'
+      req.query.mode = 'edit'
+      req.params.goalIndex = '1'
+      req.body = {
+        title: 'Learn French',
+        'targetDate-day': '31',
+        'targetDate-month': '12',
+        'targetDate-year': '2024',
+        action: 'submit-form',
+      }
+      req.session.newGoal = {
+        createGoalForm: aValidCreateGoalForm(),
+      } as NewGoal
+
+      req.session.newGoals = [{ createGoalForm: aValidCreateGoalForm() }] as Array<NewGoal>
+
+      mockedValidateCreateGoalForm.mockReturnValue([])
+
+      // When
+      await controller.submitCreateGoalForm(
+        req as undefined as Request,
+        res as undefined as Response,
+        next as undefined as NextFunction,
+      )
+
+      // Then
+      expect(res.redirect).toHaveBeenCalledWith('/plan/A1234GC/goals/review')
+      expect(req.flash).not.toHaveBeenCalled()
+    })
+  })
+
   describe('submitAddStepForm', () => {
     it('should redirect to add note form given action is submit-form and validation passes', async () => {
       // Given
@@ -201,6 +264,42 @@ describe('createGoalController', () => {
       expect(res.redirect).toHaveBeenCalledWith('/plan/A1234GC/goals/2/add-step/1')
       expect(req.flash).toHaveBeenCalledWith('errors', errors)
       expect(req.session.newGoal.addStepForms).toHaveLength(0)
+    })
+
+    it('should redirect to add note form given action is submit-form and validation passes', async () => {
+      // Given
+      req.params.prisonNumber = 'A1234GC'
+      req.params.goalIndex = '2'
+      req.params.stepIndex = '1'
+      req.body = {
+        stepNumber: '1',
+        title: 'Book French lessons',
+        'targetDate-day': '31',
+        'targetDate-month': '12',
+        'targetDate-year': '2024',
+        action: 'submit-form',
+      }
+      req.session.newGoal = {
+        addStepForms: [],
+      } as NewGoal
+
+      req.session.newGoals = [
+        { createGoalForm: aValidCreateGoalForm(), addStepForm: aValidAddStepForm() },
+      ] as Array<NewGoal>
+
+      mockedValidateAddStepForm.mockReturnValue([])
+
+      // When
+      await controller.submitAddStepForm(
+        req as undefined as Request,
+        res as undefined as Response,
+        next as undefined as NextFunction,
+      )
+
+      // Then
+      expect(res.redirect).toHaveBeenCalledWith('/plan/A1234GC/goals/2/add-note')
+      expect(req.flash).not.toHaveBeenCalled()
+      expect(req.session.newGoal.addStepForms).toHaveLength(1)
     })
 
     it('should add additional step', async () => {
