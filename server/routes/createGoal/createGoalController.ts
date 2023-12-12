@@ -77,23 +77,27 @@ export default class CreateGoalController {
   }
 
   getAddStepView: RequestHandler = async (req, res, next): Promise<void> => {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { goalIndex, stepIndex } = req.params
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { mode } = req.query
     const { prisonerSummary } = req.session
 
-    const addStepForm = req.session.newGoal.addStepForm || { stepNumber: 1 }
     req.session.newGoal.addStepForms = req.session.newGoal.addStepForms || []
 
-    const view = new AddStepView(prisonerSummary, addStepForm, req.flash('errors'))
-    res.render('pages/goal/add-step/index', { ...view.renderArgs })
+    if (isEditMode(req)) {
+      req.session.newGoal.addStepForm =
+        req.session.newGoals[parseInt(goalIndex, 10) - 1].addStepForms[parseInt(stepIndex, 10) - 1]
+    } else if (!req.session.newGoal.addStepForm) {
+      req.session.newGoal.addStepForm = { stepNumber: 1 }
+    }
+
+    const { addStepForm } = req.session.newGoal
+
+    const view = new AddStepView(prisonerSummary, addStepForm, isEditMode(req), req.flash('errors'))
+    return res.render('pages/goal/add-step/index', { ...view.renderArgs })
   }
 
   submitAddStepForm: RequestHandler = async (req, res, next): Promise<void> => {
     const { prisonNumber, goalIndex, stepIndex } = req.params
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { mode } = req.query
+
     req.session.newGoal.addStepForm = { ...req.body }
     const { addStepForm, addStepForms } = req.session.newGoal
 
@@ -118,6 +122,19 @@ export default class CreateGoalController {
       const nextStepNumber = Number(addStepForm.stepNumber) + 1
       req.session.newGoal.addStepForm = { stepNumber: nextStepNumber }
       return res.redirect(`/plan/${prisonNumber}/goals/${goalIndex}/add-step/${nextStepNumber}`)
+    }
+
+    if (isEditMode(req)) {
+      if (!req.session.newGoals[parseInt(goalIndex, 10) - 1]) {
+        return next(createError(404, `Goal ${goalIndex} not found`))
+      }
+      if (!req.session.newGoals[parseInt(goalIndex, 10) - 1].addStepForms[parseInt(stepIndex, 10) - 1]) {
+        return next(createError(404, `Step ${stepIndex} not found`))
+      }
+      req.session.newGoal.addStepForm =
+        req.session.newGoals[parseInt(goalIndex, 10) - 1].addStepForms[parseInt(stepIndex, 10) - 1]
+      req.session.newGoal = undefined
+      return res.redirect(`/plan/${prisonNumber}/goals/review`)
     }
 
     return res.redirect(`/plan/${prisonNumber}/goals/${goalIndex}/add-note`)

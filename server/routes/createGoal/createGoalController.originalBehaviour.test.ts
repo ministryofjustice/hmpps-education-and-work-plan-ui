@@ -357,10 +357,10 @@ describe('createGoalController - original behaviour', () => {
     it('should call API to create goals and redirect to Overview page', async () => {
       // Given
       req.user.token = 'some-token'
-      const createGoalForm1 = aValidCreateGoalForm('Goal 1')
+      const createGoalForm1 = aValidCreateGoalForm({ title: 'Goal 1' })
       const addStepForms1 = [aValidAddStepForm()]
       const addNoteForm1 = aValidAddNoteForm()
-      const createGoalForm2 = aValidCreateGoalForm('Goal 2')
+      const createGoalForm2 = aValidCreateGoalForm({ title: 'Goal 2' })
       const addStepForms2 = [aValidAddStepForm()]
       const addNoteForm2 = aValidAddNoteForm()
 
