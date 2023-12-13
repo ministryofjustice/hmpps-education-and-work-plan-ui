@@ -154,7 +154,7 @@ export default class CreateGoalController {
 
     const { addNoteForm } = req.session.newGoal
 
-    const view = new AddNoteView(prisonerSummary, addNoteForm, req.flash('errors'))
+    const view = new AddNoteView(prisonerSummary, addNoteForm, isEditMode(req), req.flash('errors'))
     return res.render('pages/goal/add-note/index', { ...view.renderArgs })
   }
 

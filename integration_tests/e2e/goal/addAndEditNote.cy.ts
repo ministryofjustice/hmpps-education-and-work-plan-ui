@@ -4,7 +4,7 @@ import AddNotePage from '../../pages/goal/AddNotePage'
 import ReviewPage from '../../pages/goal/ReviewPage'
 import OverviewPage from '../../pages/overview/OverviewPage'
 
-context('Add and edit a step', () => {
+context('Add and edit a note', () => {
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubSignInAsUserWithEditAuthority')
@@ -21,7 +21,7 @@ context('Add and edit a step', () => {
     cy.task('stubLearnerEducation')
   })
 
-  it('should be able to edit the step from the review goal screen', () => {
+  it('should be able to edit the note from the review goal screen', () => {
     // Given
     const prisonNumber = 'G6115VJ'
     cy.signIn()
