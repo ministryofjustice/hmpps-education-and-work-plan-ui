@@ -105,7 +105,7 @@ export default class CreateGoalControllerOriginalBehaviour {
     const { prisonerSummary } = req.session
     const addNoteForm = req.session.newGoal.addNoteForm || {}
 
-    const view = new AddNoteView(prisonerSummary, addNoteForm, req.flash('errors'))
+    const view = new AddNoteView(prisonerSummary, addNoteForm, false, req.flash('errors'))
     res.render('pages/goal/add-note/index', { ...view.renderArgs })
   }
 

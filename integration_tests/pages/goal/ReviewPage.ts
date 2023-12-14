@@ -29,6 +29,11 @@ export default class ReviewPage extends Page {
     return this
   }
 
+  hasNote(expected: string) {
+    this.goalNoteValue(1).should('contain.text', expected)
+    return this
+  }
+
   clickChangeGoalDescriptionLink() {
     this.changeGoalDescriptionLink(1).click()
   }
@@ -39,6 +44,10 @@ export default class ReviewPage extends Page {
 
   clickChangeGoalStepLink() {
     this.changeGoalStepLink(1, 1).click()
+  }
+
+  clickChangeGoalNoteLink() {
+    this.changeGoalNote(1).click()
   }
 
   submitPage() {
@@ -60,6 +69,10 @@ export default class ReviewPage extends Page {
 
   changeGoalStepLink = (goalIdx: number, stepIdx: number): PageElement =>
     cy.get(`[data-qa=change-goal-${goalIdx}-step-${stepIdx}]`)
+
+  goalNoteValue = (goalIdx: number): PageElement => cy.get(`[data-qa=goal-${goalIdx}-note-value]`)
+
+  changeGoalNote = (idx: number): PageElement => cy.get(`[data-qa=change-goal-${idx}-note]`)
 
   submitButton = (): PageElement => cy.get('#submit-button')
 

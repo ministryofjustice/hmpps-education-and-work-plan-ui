@@ -141,23 +141,36 @@ export default class CreateGoalController {
   }
 
   getAddNoteView: RequestHandler = async (req, res, next): Promise<void> => {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { goalIndex } = req.params
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { mode } = req.query
     const { prisonerSummary } = req.session
-    const addNoteForm = req.session.newGoal.addNoteForm || {}
 
-    const view = new AddNoteView(prisonerSummary, addNoteForm, req.flash('errors'))
-    res.render('pages/goal/add-note/index', { ...view.renderArgs })
+    if (isEditMode(req)) {
+      req.session.newGoal = {
+        addNoteForm: req.session.newGoals[parseInt(goalIndex, 10) - 1].addNoteForm,
+      } as NewGoal
+    } else if (!req.session.newGoal.addNoteForm) {
+      req.session.newGoal.addNoteForm = {}
+    }
+
+    const { addNoteForm } = req.session.newGoal
+
+    const view = new AddNoteView(prisonerSummary, addNoteForm, isEditMode(req), req.flash('errors'))
+    return res.render('pages/goal/add-note/index', { ...view.renderArgs })
   }
 
   submitAddNoteForm: RequestHandler = async (req, res, next): Promise<void> => {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { prisonNumber, goalIndex } = req.params
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { mode } = req.query
+    const { goalIndex, prisonNumber } = req.params
+
     req.session.newGoal.addNoteForm = { ...req.body }
+
+    if (isEditMode(req)) {
+      if (!req.session.newGoals[parseInt(goalIndex, 10) - 1]) {
+        return next(createError(404, `Goal ${goalIndex} not found`))
+      }
+      req.session.newGoals[parseInt(goalIndex, 10) - 1].addNoteForm = req.session.newGoal.addNoteForm
+      req.session.newGoal = undefined
+      return res.redirect(`/plan/${prisonNumber}/goals/review`)
+    }
 
     req.session.newGoals.push(req.session.newGoal)
     req.session.newGoal = undefined
