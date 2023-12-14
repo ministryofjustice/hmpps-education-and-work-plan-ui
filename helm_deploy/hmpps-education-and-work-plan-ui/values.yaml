@@ -37,7 +37,7 @@ generic-service:
     APPLICATIONINSIGHTS_CONNECTION_STRING: "InstrumentationKey=$(APPINSIGHTS_INSTRUMENTATIONKEY);IngestionEndpoint=https://northeurope-0.in.applicationinsights.azure.com/;LiveEndpoint=https://northeurope.livediagnostics.monitor.azure.com/"
     FRONTEND_COMPONENTS_API_FEATURE_TOGGLE_ENABLED: "true"
     PLP_PRISONER_LIST_AND_OVERVIEW_PAGES_ENABLED: "true"
-    TIMELINE_PAGE_ENABLED: "false"
+    TIMELINE_PAGE_ENABLED: "true"
     NEW_CREATE_GOAL_ROUTES_ENABLED: "false"
     PRISONER_SEARCH_API_DEFAULT_PAGE_SIZE: "9999"
     PRISONER_LIST_UI_DEFAULT_PAGINATION_PAGE_SIZE: "50"
