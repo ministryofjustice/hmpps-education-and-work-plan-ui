@@ -5,6 +5,13 @@ generic-service:
 
   ingress:
     host: learning-and-work-progress-dev.hmpps.service.justice.gov.uk
+    modsecurity_enabled: true # enable OWASP core rules. Handle any false positives by removing or tweaking rules in modsecurity_snippet.
+    modsecurity_github_team: farsight-devs
+    modsecurity_snippet: |
+      SecRuleEngine On
+      # update OWASP rule 942440 (SQL Comment injection via ==) to not apply it to the connect.sid cookie (express) or the _csrf token. Both can legitimately include ==
+      SecRuleUpdateTargetById 942440 "!REQUEST_COOKIES:/connect.sid/" 
+      SecRuleUpdateTargetById 942440 "!ARGS:_csrf"
 
   scheduledDowntime:
     enabled: true
