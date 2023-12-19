@@ -9,33 +9,7 @@ const actionPlans = {
       headers: { 'Content-Type': 'application/json;charset=UTF-8' },
       jsonBody: {
         prisonerNumber: 'A00001A',
-        goals: [
-          {
-            goalReference: '10efc562-be8f-4675-9283-9ede0c19dade',
-            title: 'Learn first aid',
-            status: 'ACTIVE',
-            steps: [
-              {
-                stepReference: '177e45eb-c8fe-438b-aa81-1bf9157efa05',
-                title: 'Book first aid course',
-                status: 'NOT_STARTED',
-                sequenceNumber: 1,
-              },
-              {
-                stepReference: '32992dd1-7dc6-4480-b2fc-61bc36a6a775',
-                title: 'Complete first aid course',
-                status: 'NOT_STARTED',
-                sequenceNumber: 2,
-              },
-            ],
-            createdBy: 'auser_gen',
-            createdAt: '2023-07-20T09:29:15.386Z',
-            updatedBy: 'auser_gen',
-            updatedAt: '2023-07-20T09:29:15.386Z',
-            targetCompletionDate: '2024-02-29',
-            notes: "Pay close attention to Paris' behaviour.",
-          },
-        ],
+        goals: [],
       },
     },
   },
