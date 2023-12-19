@@ -34,6 +34,10 @@
         {% endif %}
       {% endset %}
 
+      {% set goalTitleHtml %}
+        {{ data.title | formatMarkdown | safe }}
+      {% endset %}
+
       {{ govukSummaryList({
         classes: 'govuk-!-margin-bottom-9',
         rows: [
@@ -50,7 +54,7 @@
               text: "Description"
             },
             value: {
-              text: data.title
+              html: goalTitleHtml
             }
           },
           {

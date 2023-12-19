@@ -28,7 +28,7 @@
                 Description
               </dt>
               <dd class="govuk-summary-list__value" data-qa="goal-{{ goalLoop.index }}-description-value">
-                {{ goal.title }}
+                {{ goal.title | formatMarkdown | safe }}
               </dd>
               {% if featureToggles.newCreateGoalRoutesEnabled %}
               <dd class="govuk-summary-list__actions">

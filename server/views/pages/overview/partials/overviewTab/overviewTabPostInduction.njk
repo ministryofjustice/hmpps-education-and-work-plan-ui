@@ -51,7 +51,7 @@
           </ul>
         </div>
         <div class="govuk-summary-card__content">
-          <p class="govuk-body">{{ goal.title }}</p>
+          {{ goal.title | formatMarkdown | safe }}
           <table class="govuk-table">
             <caption class="govuk-table__caption govuk-visually-hidden">Goal {{ loop.index }} steps</caption>
             <thead class="govuk-table__head">

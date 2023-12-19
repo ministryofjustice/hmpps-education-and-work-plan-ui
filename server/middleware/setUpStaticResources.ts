@@ -24,6 +24,8 @@ export default function setUpStaticResources(): Router {
     '/node_modules/jquery/dist',
     '/node_modules/@microsoft/applicationinsights-web/dist/es5',
     '/node_modules/@microsoft/applicationinsights-clickanalytics-js/dist/es5',
+    '/node_modules/easymde/dist',
+    '/node_modules/font-awesome/css',
   ).forEach(dir => {
     router.use('/assets', express.static(path.join(process.cwd(), dir), cacheControl))
   })
@@ -34,6 +36,9 @@ export default function setUpStaticResources(): Router {
 
   Array.of('/node_modules/jquery/dist/jquery.min.js').forEach(dir => {
     router.use('/assets/js/jquery.min.js', express.static(path.join(process.cwd(), dir), cacheControl))
+  })
+  Array.of('/node_modules/font-awesome/fonts').forEach(dir => {
+    router.use('/fonts', express.static(path.join(process.cwd(), dir), cacheControl))
   })
 
   // Don't cache dynamic resources

@@ -1,0 +1,36 @@
+/* global EasyMDE */
+document.querySelectorAll('textarea[data-easymde=true]').forEach(el => {
+  const easyMDE = new EasyMDE({
+    element: el,
+    autoDownloadFontAwesome: false,
+    spellChecker: false,
+    status: false,
+    indentWithTabs: false,
+    toolbar: [
+      // 'bold',
+      // 'italic',
+      // 'quote',
+      'unordered-list',
+      'ordered-list',
+      // 'link',
+      // 'image',
+      // 'strikethrough',
+      // 'code',
+      // 'table',
+      // 'redo',
+      // 'heading',
+      // 'undo',
+      // 'heading-bigger',
+      // 'heading-smaller',
+      // 'heading-1',
+      // 'heading-2',
+      // 'heading-3',
+      // 'clean-block',
+      // 'horizontal-rule',
+      'preview',
+      // 'side-by-side',
+      // 'fullscreen',
+      // 'guide',
+    ],
+  })
+})
