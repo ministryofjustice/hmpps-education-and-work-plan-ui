@@ -66,7 +66,7 @@ describe('updateGoalController', () => {
       // Given
       const step = aValidStep()
       const goal = aValidGoal(goalReference, [step])
-      const actionPlan = aValidActionPlanWithOneGoal(prisonNumber, [goal])
+      const actionPlan = aValidActionPlanWithOneGoal({ prisonNumber, goal })
       educationAndWorkPlanService.getActionPlan.mockResolvedValue(actionPlan)
 
       const updateGoalForm = {
@@ -133,8 +133,8 @@ describe('updateGoalController', () => {
     it('should not get update goal view given requested goal reference is not part of the prisoners action plan', async () => {
       // Given
       const someOtherGoalReference = 'd31d22bc-b9be-4d13-9e47-d633d6815454'
-      const goals = [aValidGoal(someOtherGoalReference)]
-      const actionPlan = aValidActionPlanWithOneGoal(prisonNumber, goals)
+      const goal = aValidGoal(someOtherGoalReference)
+      const actionPlan = aValidActionPlanWithOneGoal({ prisonNumber, goal })
       educationAndWorkPlanService.getActionPlan.mockResolvedValue(actionPlan)
 
       const expectedError = createError(404, `Goal ${goalReference} does not exist in the prisoner's plan`)

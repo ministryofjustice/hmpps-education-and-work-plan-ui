@@ -11,34 +11,24 @@ const aValidActionPlan = (options?: {
     goals: options?.goals || [aValidGoal()],
     problemRetrievingData:
       !options || options.problemRetrievingData === null || options.problemRetrievingData === undefined
-        ? true
+        ? false
         : options.problemRetrievingData,
   }
 }
 
-/**
- * @deprecated - Use `aValidActionPlan` above because specifying a different collection of goals with this method makes
- * for code that is confusing to read and reason about.
- * EG:
- * ```
- * // create an action plan with 3 goals
- * const actionPlan = aValidActionPlanWithOneGoal(
- *  {
- *    goals: [aValidGoal(), aValidGoal(), aValidGoal()],
- *  }
- * )
- * ```
- */
-const aValidActionPlanWithOneGoal = (
-  prisonNumber = 'A1234BC',
-  goals = [aValidGoal()],
-  problemRetrievingData = false,
-): ActionPlan => {
-  return {
-    prisonNumber,
-    goals,
-    problemRetrievingData,
-  }
+const aValidActionPlanWithOneGoal = (options?: {
+  prisonNumber?: string
+  goal?: Goal
+  problemRetrievingData?: boolean
+}): ActionPlan => {
+  return aValidActionPlan({
+    prisonNumber: options?.prisonNumber || 'A1234BC',
+    goals: [options?.goal || aValidGoal()],
+    problemRetrievingData:
+      !options || options.problemRetrievingData === null || options.problemRetrievingData === undefined
+        ? false
+        : options.problemRetrievingData,
+  })
 }
 
 const aValidGoal = (
