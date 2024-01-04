@@ -53,6 +53,45 @@ context('Add and edit a step', () => {
 
     // Then
     reviewPage = Page.verifyOnPage(ReviewPage)
-    reviewPage.hasStepDescription('Read a French phrase book')
+    reviewPage.hasStepDescription('Read a French phrase book', 1)
+  })
+
+  it('should be able to add another step from the edit a step screen', () => {
+    // Given
+    const prisonNumber = 'G6115VJ'
+    cy.signIn()
+    cy.visit(`/plan/${prisonNumber}/view/overview`)
+    const overviewPage = Page.verifyOnPage(OverviewPage)
+
+    const createGoalPage = overviewPage.clickAddGoalButton()
+    createGoalPage //
+      .setGoalTitle('Learn French')
+      .setTargetCompletionDate0to3Months()
+      .submitPage()
+
+    const addStepPage = Page.verifyOnPage(AddStepPage)
+    addStepPage //
+      .setStepTitle('Book French course')
+      .submitPage()
+
+    const addNotePage = Page.verifyOnPage(AddNotePage)
+    addNotePage.setNote("Pay close attention to Chris' behaviour during classes")
+    addNotePage.submitPage()
+
+    // When
+    let reviewPage = Page.verifyOnPage(ReviewPage)
+    reviewPage.clickChangeGoalStepLink()
+
+    const editStepPage = Page.verifyOnPage(AddStepPage)
+    editStepPage //
+      .setStepTitle('Read a French phrase book')
+      .addAnotherStep()
+      .setStepTitle('Watch a French film')
+      .submitPage()
+
+    // Then
+    reviewPage = Page.verifyOnPage(ReviewPage)
+    reviewPage.hasStepDescription('Read a French phrase book', 1)
+    reviewPage.hasStepDescription('Watch a French film', 2)
   })
 })

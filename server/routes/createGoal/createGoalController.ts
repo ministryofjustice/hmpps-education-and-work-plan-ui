@@ -83,8 +83,9 @@ export default class CreateGoalController {
     req.session.newGoal.addStepForms = req.session.newGoal.addStepForms || []
 
     if (isEditMode(req)) {
-      req.session.newGoal.addStepForm =
-        req.session.newGoals[parseInt(goalIndex, 10) - 1].addStepForms[parseInt(stepIndex, 10) - 1]
+      req.session.newGoal.addStepForm = req.session.newGoals[parseInt(goalIndex, 10) - 1].addStepForms[
+        parseInt(stepIndex, 10) - 1
+      ] || { stepNumber: parseInt(stepIndex, 10) }
     } else if (!req.session.newGoal.addStepForm) {
       req.session.newGoal.addStepForm = { stepNumber: 1 }
     }
@@ -121,6 +122,15 @@ export default class CreateGoalController {
       // Initialize a new AddStepForm with the next step number
       const nextStepNumber = Number(addStepForm.stepNumber) + 1
       req.session.newGoal.addStepForm = { stepNumber: nextStepNumber }
+
+      if (isEditMode(req)) {
+        const currentHighestStepNumber = Math.max(
+          ...req.session.newGoals[parseInt(goalIndex, 10) - 1].addStepForms.map(step => step.stepNumber),
+        )
+        const nextAvailableStepNumber = currentHighestStepNumber + 1
+        return res.redirect(`/plan/${prisonNumber}/goals/${goalIndex}/add-step/${nextAvailableStepNumber}?mode=edit`)
+      }
+
       return res.redirect(`/plan/${prisonNumber}/goals/${goalIndex}/add-step/${nextStepNumber}`)
     }
 

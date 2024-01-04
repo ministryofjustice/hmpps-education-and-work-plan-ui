@@ -189,6 +189,10 @@ describe('createGoalController', () => {
         addStepForms: [],
       } as NewGoal
 
+      req.session.newGoals = [
+        { createGoalForm: aValidCreateGoalForm(), addStepForm: aValidAddStepForm() },
+      ] as Array<NewGoal>
+
       mockedValidateAddStepForm.mockReturnValue([])
 
       // When
