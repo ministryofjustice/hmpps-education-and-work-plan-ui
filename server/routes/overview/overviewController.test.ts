@@ -7,7 +7,7 @@ import OverviewController from './overviewController'
 import aValidPrisonerSupportNeeds from '../../testsupport/supportNeedsTestDataBuilder'
 import { CuriousService } from '../../services'
 import EducationAndWorkPlanService from '../../services/educationAndWorkPlanService'
-import { aValidActionPlanWithOneGoal } from '../../testsupport/actionPlanTestDataBuilder'
+import { aValidActionPlan, aValidActionPlanWithOneGoal } from '../../testsupport/actionPlanTestDataBuilder'
 import {
   aValidEnglishInPrisonEducation,
   aValidMathsInPrisonEducation,
@@ -235,6 +235,9 @@ describe('overviewController', () => {
 
       ciagInductionService.ciagInductionExists.mockResolvedValue(false)
 
+      const actionPlan = aValidActionPlan({ goals: [] })
+      educationAndWorkPlanService.getActionPlan.mockResolvedValue(actionPlan)
+
       const functionalSkillsFromCurious = {
         problemRetrievingData: false,
         assessments: [],
@@ -269,6 +272,7 @@ describe('overviewController', () => {
         prisonerSummary: expectedPrisonerSummary,
         tab: expectedTab,
         prisonNumber,
+        actionPlan,
         functionalSkills: expectedFunctionalSkills,
         completedInPrisonEducation: expectedCompletedInPrisonEducation,
         isPostInduction: false,
@@ -283,7 +287,7 @@ describe('overviewController', () => {
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/overview/index', expectedView)
-      expect(educationAndWorkPlanService.getActionPlan).not.toHaveBeenCalled()
+      expect(educationAndWorkPlanService.getActionPlan).toHaveBeenCalledWith(prisonNumber, 'a-user-token')
       expect(ciagInductionService.ciagInductionExists).toHaveBeenCalledWith(prisonNumber, 'a-user-token')
       expect(req.session.newGoal).toBeUndefined()
       expect(req.session.newGoals).toBeUndefined()

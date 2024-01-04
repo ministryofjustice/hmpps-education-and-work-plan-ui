@@ -74,6 +74,11 @@ export default class OverviewPage extends Page {
     return this
   }
 
+  hasNoGoalsDisplayed(): OverviewPage {
+    this.goalSummaryCards().should('not.exist')
+    return this
+  }
+
   clickUpdateButtonForFirstGoal(): UpdateGoalPage {
     this.goalUpdateButton(0).click()
     return Page.verifyOnPage(UpdateGoalPage)

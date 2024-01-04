@@ -143,5 +143,8 @@ export default {
     ),
     timelinePageEnabled: toBoolean(get('TIMELINE_PAGE_ENABLED', false, requiredInProduction)),
     newCreateGoalRoutesEnabled: toBoolean(get('NEW_CREATE_GOAL_ROUTES_ENABLED', false, requiredInProduction)),
+    createGoalsWithoutInductionEnabled: toBoolean(
+      get('CREATE_GOALS_WITHOUT_INDUCTION_ENABLED', false, requiredInProduction),
+    ),
   },
 }

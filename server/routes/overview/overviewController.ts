@@ -67,9 +67,10 @@ export default class OverviewController {
       const allInPrisonEducation = await this.curiousService.getLearnerEducation(prisonNumber, req.user.username)
       const completedInPrisonEducation = mostRecentCompletedInPrisonEducationRecords(allInPrisonEducation, 2)
 
+      const actionPlan = await this.educationAndWorkPlanService.getActionPlan(prisonNumber, req.user.token)
+
       let view: PostInductionOverviewView | PreInductionOverviewView
       if (ciagInductionExists) {
-        const actionPlan = await this.educationAndWorkPlanService.getActionPlan(prisonNumber, req.user.token)
         view = new PostInductionOverviewView(
           prisonNumber,
           prisonerSummary,
@@ -78,7 +79,13 @@ export default class OverviewController {
           completedInPrisonEducation,
         )
       } else {
-        view = new PreInductionOverviewView(prisonNumber, prisonerSummary, functionalSkills, completedInPrisonEducation)
+        view = new PreInductionOverviewView(
+          prisonNumber,
+          prisonerSummary,
+          actionPlan,
+          functionalSkills,
+          completedInPrisonEducation,
+        )
       }
 
       return res.render('pages/overview/index', { ...view.renderArgs })

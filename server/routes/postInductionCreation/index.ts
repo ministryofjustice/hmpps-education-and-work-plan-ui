@@ -14,6 +14,10 @@ export default (router: Router, services: Services) => {
     const userToken = req.user.token
     const { prisonNumber } = req.params
 
+    if (!config.featureToggles.createGoalsWithoutInductionEnabled) {
+      return res.redirect(createGoalRoute(prisonNumber))
+    }
+
     return (await prisonerHasActionPlan(prisonNumber, userToken, services.educationAndWorkPlanService))
       ? res.redirect(`/plan/${prisonNumber}/view/overview`) // Action Plan with goal(s) exists already. Redirect to the Overview page
       : res.redirect(createGoalRoute(prisonNumber)) // Action Plan goals do not exist yet. Redirect to the Create Goal flow routes.

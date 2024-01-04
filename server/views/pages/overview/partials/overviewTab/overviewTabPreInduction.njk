@@ -1,16 +1,38 @@
 {# Main content panel for the "Pre-Induction" Overview screen; IE. when prisoner does not have a CIAG Induction record #}
 
+{% set createInductionBanner %}
+  <p class="govuk-notification-banner__heading">
+    Create goals and add education, work, skills and interests to
+    <a class="govuk-notification-banner__link" href="{{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}/hoping-to-get-work/new">make a progress plan now</a>.
+  </p>
+{% endset %}
+
 <section data-qa="pre-induction-overview">
 
-  {% set html %}
-    <p class="govuk-notification-banner__heading">
-      Create goals and add education, work, skills and interests to
-      <a class="govuk-notification-banner__link" href="{{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}/hoping-to-get-work/new">make a progress plan now</a>.
-    </p>
-  {% endset %}
 
-  {{ govukNotificationBanner({
-    html: html
-  }) }}
+  {% if not featureToggles.createGoalsWithoutInductionEnabled %}
+
+    {{ govukNotificationBanner({
+      html: createInductionBanner
+    }) }}
+
+  {% else %}
+    {% if not actionPlan.problemRetrievingData %}
+
+      {% include './_actionsHeader.njk' %}
+
+      {{ govukNotificationBanner({
+        html: createInductionBanner
+      }) }}
+
+      {% include './_goalsList.njk' %}
+
+    {% else %}
+      <h2 class="govuk-heading-m">Sorry, the service is currently unavailable.</h2>
+      <p class="govuk-body">
+        Retrieving goals is currently unavailable. Please try again later.
+      </p>
+    {% endif %}
+  {% endif %}
 
 </section>
