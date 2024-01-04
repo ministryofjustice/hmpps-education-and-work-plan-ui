@@ -83,13 +83,9 @@ export default class CreateGoalController {
     req.session.newGoal.addStepForms = req.session.newGoal.addStepForms || []
 
     if (isEditMode(req)) {
-      const newGoalForm = req.session.newGoals[parseInt(goalIndex, 10) - 1]
-      let addStepForm = newGoalForm.addStepForms[parseInt(stepIndex, 10) - 1]
-      // In the case of adding a new step in edit mode there won't be an existing AddStepForm on the session so we need to instantiate one
-      if (!addStepForm) {
-        addStepForm = { stepNumber: parseInt(stepIndex, 10) }
-      }
-      req.session.newGoal.addStepForm = addStepForm
+      req.session.newGoal.addStepForm =
+        req.session.newGoal.addStepForm ||
+        req.session.newGoals[parseInt(goalIndex, 10) - 1].addStepForms[parseInt(stepIndex, 10) - 1]
     } else if (!req.session.newGoal.addStepForm) {
       req.session.newGoal.addStepForm = { stepNumber: 1 }
     }
@@ -124,18 +120,13 @@ export default class CreateGoalController {
     // Redirect to the desired page based on the form action
     if (addStepForm.action === 'add-another-step') {
       // Initialize a new AddStepForm with the next step number
-      const nextStepNumber = Number(addStepForm.stepNumber) + 1
-      req.session.newGoal.addStepForm = { stepNumber: nextStepNumber }
+      const currentHighestStepNumber = Math.max(...addStepForms.map(step => step.stepNumber))
+      const nextAvailableStepNumber = currentHighestStepNumber + 1
+      req.session.newGoal.addStepForm = { stepNumber: nextAvailableStepNumber }
 
-      if (isEditMode(req)) {
-        const currentHighestStepNumber = Math.max(
-          ...req.session.newGoals[parseInt(goalIndex, 10) - 1].addStepForms.map(step => step.stepNumber),
-        )
-        const nextAvailableStepNumber = currentHighestStepNumber + 1
-        return res.redirect(`/plan/${prisonNumber}/goals/${goalIndex}/add-step/${nextAvailableStepNumber}?mode=edit`)
-      }
-
-      return res.redirect(`/plan/${prisonNumber}/goals/${goalIndex}/add-step/${nextStepNumber}`)
+      return isEditMode(req)
+        ? res.redirect(`/plan/${prisonNumber}/goals/${goalIndex}/add-step/${nextAvailableStepNumber}?mode=edit`)
+        : res.redirect(`/plan/${prisonNumber}/goals/${goalIndex}/add-step/${nextAvailableStepNumber}`)
     }
 
     if (isEditMode(req)) {
