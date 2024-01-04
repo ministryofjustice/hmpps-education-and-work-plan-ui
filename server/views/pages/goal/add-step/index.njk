@@ -52,17 +52,15 @@
 
         </div>
 
-        {% if not isEditMode %}
-          <div class="govuk-form-group">
-            {{ govukButton({
-              id: "add-another-step-button",
-              name: "action",
-              value: "add-another-step",
-              text: "Add another step",
-              classes: "govuk-button--secondary"
-            }) }}
-          </div>
-        {% endif %}
+        <div class="govuk-form-group">
+          {{ govukButton({
+            id: "add-another-step-button",
+            name: "action",
+            value: "add-another-step",
+            text: "Add another step",
+            classes: "govuk-button--secondary"
+          }) }}
+        </div>
 
         {% if featureToggles.newCreateGoalRoutesEnabled %}
           {% if isEditMode %}

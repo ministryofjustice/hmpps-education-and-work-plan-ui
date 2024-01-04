@@ -84,6 +84,7 @@ export default class CreateGoalController {
 
     if (isEditMode(req)) {
       req.session.newGoal.addStepForm =
+        req.session.newGoal.addStepForm ||
         req.session.newGoals[parseInt(goalIndex, 10) - 1].addStepForms[parseInt(stepIndex, 10) - 1]
     } else if (!req.session.newGoal.addStepForm) {
       req.session.newGoal.addStepForm = { stepNumber: 1 }
@@ -119,9 +120,13 @@ export default class CreateGoalController {
     // Redirect to the desired page based on the form action
     if (addStepForm.action === 'add-another-step') {
       // Initialize a new AddStepForm with the next step number
-      const nextStepNumber = Number(addStepForm.stepNumber) + 1
-      req.session.newGoal.addStepForm = { stepNumber: nextStepNumber }
-      return res.redirect(`/plan/${prisonNumber}/goals/${goalIndex}/add-step/${nextStepNumber}`)
+      const currentHighestStepNumber = Math.max(...addStepForms.map(step => step.stepNumber))
+      const nextAvailableStepNumber = currentHighestStepNumber + 1
+      req.session.newGoal.addStepForm = { stepNumber: nextAvailableStepNumber }
+
+      return isEditMode(req)
+        ? res.redirect(`/plan/${prisonNumber}/goals/${goalIndex}/add-step/${nextAvailableStepNumber}?mode=edit`)
+        : res.redirect(`/plan/${prisonNumber}/goals/${goalIndex}/add-step/${nextAvailableStepNumber}`)
     }
 
     if (isEditMode(req)) {

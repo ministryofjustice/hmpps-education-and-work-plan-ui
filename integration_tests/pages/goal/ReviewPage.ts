@@ -24,8 +24,8 @@ export default class ReviewPage extends Page {
     return this
   }
 
-  hasStepDescription(expected: string) {
-    this.goalStepValue(1, 1).should('contain.text', expected)
+  hasStepDescription(expected: string, stepValue: number) {
+    this.goalStepValue(1, stepValue).should('contain.text', expected)
     return this
   }
 

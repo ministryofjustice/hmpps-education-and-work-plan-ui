@@ -1,10 +1,14 @@
 import type { AddStepForm } from 'forms'
 
-const aValidAddStepForm = (): AddStepForm => {
+const aValidAddStepForm = (options?: {
+  stepNumber?: number
+  title?: string
+  action?: 'submit-form' | 'add-another-step'
+}): AddStepForm => {
   return {
-    stepNumber: 1,
-    title: 'Book Spanish course',
-    action: 'submit-form',
+    stepNumber: options?.stepNumber || 1,
+    title: options?.title || 'Book Spanish course',
+    action: options?.action || 'submit-form',
   }
 }
 
