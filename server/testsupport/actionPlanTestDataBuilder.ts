@@ -1,17 +1,36 @@
 import type { Step, Goal, ActionPlan } from 'viewModels'
 import moment from 'moment'
 
-const aValidActionPlanWithOneGoal = (
-  prisonNumber = 'A1234BC',
-  goals = [aValidGoal()],
-  problemRetrievingData = false,
-): ActionPlan => {
+const aValidActionPlan = (options?: {
+  prisonNumber?: string
+  goals?: Array<Goal>
+  problemRetrievingData?: boolean
+}): ActionPlan => {
   return {
-    prisonNumber,
-    goals,
-    problemRetrievingData,
+    prisonNumber: options?.prisonNumber || 'A1234BC',
+    goals: options?.goals || [aValidGoal()],
+    problemRetrievingData:
+      !options || options.problemRetrievingData === null || options.problemRetrievingData === undefined
+        ? false
+        : options.problemRetrievingData,
   }
 }
+
+const aValidActionPlanWithOneGoal = (options?: {
+  prisonNumber?: string
+  goal?: Goal
+  problemRetrievingData?: boolean
+}): ActionPlan => {
+  return aValidActionPlan({
+    prisonNumber: options?.prisonNumber || 'A1234BC',
+    goals: [options?.goal || aValidGoal()],
+    problemRetrievingData:
+      !options || options.problemRetrievingData === null || options.problemRetrievingData === undefined
+        ? false
+        : options.problemRetrievingData,
+  })
+}
+
 const aValidGoal = (
   goalReference = 'd38a6c41-13d1-1d05-13c2-24619966119b',
   steps = [aValidStep(), anotherValidStep()],
@@ -50,4 +69,4 @@ const anotherValidStep = (): Step => {
   }
 }
 
-export { aValidActionPlanWithOneGoal, aValidGoal, aValidStep, anotherValidStep }
+export { aValidActionPlan, aValidActionPlanWithOneGoal, aValidGoal, aValidStep, anotherValidStep }
