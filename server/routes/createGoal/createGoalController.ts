@@ -83,9 +83,13 @@ export default class CreateGoalController {
     req.session.newGoal.addStepForms = req.session.newGoal.addStepForms || []
 
     if (isEditMode(req)) {
-      req.session.newGoal.addStepForm = req.session.newGoals[parseInt(goalIndex, 10) - 1].addStepForms[
-        parseInt(stepIndex, 10) - 1
-      ] || { stepNumber: parseInt(stepIndex, 10) }
+      const newGoalForm = req.session.newGoals[parseInt(goalIndex, 10) - 1]
+      let addStepForm = newGoalForm.addStepForms[parseInt(stepIndex, 10) - 1]
+      // In the case of adding a new step in edit mode there won't be an existing AddStepForm on the session so we need to instantiate one
+      if (!addStepForm) {
+        addStepForm = { stepNumber: parseInt(stepIndex, 10) }
+      }
+      req.session.newGoal.addStepForm = addStepForm
     } else if (!req.session.newGoal.addStepForm) {
       req.session.newGoal.addStepForm = { stepNumber: 1 }
     }
