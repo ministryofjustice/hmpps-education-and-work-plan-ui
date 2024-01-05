@@ -24,6 +24,8 @@ export default abstract class RedisStore {
   }
 
   private async ensureConnected(): Promise<void> {
-    return !this.redisClient.isOpen ? this.redisClient.connect() : null
+    if (!this.redisClient.isOpen) {
+      await this.redisClient.connect()
+    }
   }
 }
