@@ -18,6 +18,7 @@ export default defineConfig({
   fixturesFolder: 'integration_tests/fixtures',
   screenshotsFolder: 'integration_tests/screenshots',
   videosFolder: 'integration_tests/videos',
+  video: true,
   reporter: 'cypress-multi-reporters',
   reporterOptions: {
     configFile: 'reporter-config.json',
