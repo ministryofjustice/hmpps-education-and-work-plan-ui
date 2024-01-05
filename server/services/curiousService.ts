@@ -13,7 +13,10 @@ import toFunctionalSkills from '../routes/overview/mappers/functionalSkillsMappe
 import toInPrisonEducation from '../data/mappers/inPrisonEducationMapper'
 
 export default class CuriousService {
-  constructor(private readonly hmppsAuthClient: HmppsAuthClient, private readonly curiousClient: CuriousClient) {}
+  constructor(
+    private readonly hmppsAuthClient: HmppsAuthClient,
+    private readonly curiousClient: CuriousClient,
+  ) {}
 
   async getPrisonerSupportNeeds(prisonNumber: string, username: string): Promise<PrisonerSupportNeeds> {
     const systemToken = await this.hmppsAuthClient.getSystemClientToken(username)

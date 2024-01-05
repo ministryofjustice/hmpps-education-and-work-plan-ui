@@ -2,7 +2,10 @@ import type { PrisonerSummary } from 'viewModels'
 import type { UpdateGoalDto } from 'dto'
 
 export default class ReviewUpdateGoalView {
-  constructor(private readonly prisonerSummary: PrisonerSummary, private readonly updateGoalDto: UpdateGoalDto) {}
+  constructor(
+    private readonly prisonerSummary: PrisonerSummary,
+    private readonly updateGoalDto: UpdateGoalDto,
+  ) {}
 
   get renderArgs(): {
     prisonerSummary: PrisonerSummary

@@ -1,7 +1,10 @@
 import type { PrisonerSummary, PrisonerSupportNeeds } from 'viewModels'
 
 export default class SupportNeedsView {
-  constructor(private readonly prisonerSummary: PrisonerSummary, private readonly supportNeeds: PrisonerSupportNeeds) {}
+  constructor(
+    private readonly prisonerSummary: PrisonerSummary,
+    private readonly supportNeeds: PrisonerSupportNeeds,
+  ) {}
 
   get renderArgs(): {
     tab: string
