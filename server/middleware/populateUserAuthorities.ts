@@ -1,5 +1,5 @@
 import { RequestHandler } from 'express'
-import jwtDecode from 'jwt-decode'
+import { jwtDecode } from 'jwt-decode'
 import { ApplicationRoles } from './roleBasedAccessControl'
 
 export default function populateUserAuthorities(): RequestHandler {

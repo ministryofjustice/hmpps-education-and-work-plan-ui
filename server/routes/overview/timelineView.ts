@@ -1,7 +1,10 @@
 import type { PrisonerSummary, Timeline } from 'viewModels'
 
 export default class TimelineView {
-  constructor(private readonly prisonerSummary: PrisonerSummary, private readonly timeline: Timeline) {}
+  constructor(
+    private readonly prisonerSummary: PrisonerSummary,
+    private readonly timeline: Timeline,
+  ) {}
 
   get renderArgs(): {
     tab: string
