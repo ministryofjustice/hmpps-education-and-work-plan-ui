@@ -1,16 +1,34 @@
-import moment from 'moment'
-import type { CiagInduction, CiagWorkExperience, CiagWorkInterestDetail } from 'ciagInductionApiClient'
 import type {
+  CiagInduction,
+  CiagPrePrisonQualification,
+  CiagWorkExperience,
+  CiagWorkInterestDetail,
+} from 'ciagInductionApiClient'
+import type {
+  EducationAndTraining,
+  EducationAndTrainingData,
+  EducationAndTrainingLongQuestionSet,
+  EducationAndTrainingShortQuestionSet,
   SkillsAndInterests,
   WorkAndInterests,
   WorkAndInterestsData,
   WorkExperience,
   WorkInterests,
 } from 'viewModels'
-import toInductionQuestionSet from './inductionQuestionSetMapper'
-import { jobComparator, workInterestJobComparator } from './jobComparator'
+import moment from 'moment'
 import enumComparator from './enumComparator'
+import educationalQualificationComparator from './educationalQualificationComparator'
+import { jobComparator, workInterestJobComparator } from './jobComparator'
 
+/**
+ * Mapper functions that map from CIAG Induction response types to UI view models.
+ *
+ * This mapper will be removed when we have fully migrated to the new Induction based API
+ */
+
+/**
+ * Given a [CiagInduction] returns a [WorkAndInterests] instance.
+ */
 const toWorkAndInterests = (ciagInduction: CiagInduction): WorkAndInterests => {
   const inductionQuestionSet = toInductionQuestionSet(ciagInduction)
   return {
@@ -162,4 +180,82 @@ const getJobInterestsWithSpecificJobRoles = (ciagInduction: CiagInduction) => {
   })
 }
 
-export default toWorkAndInterests
+/**
+ * Given a [CiagInduction] returns a [EducationAndTraining] instance.
+ */
+const toEducationAndTraining = (ciagInduction: CiagInduction): EducationAndTraining => {
+  const inductionQuestionSet = toInductionQuestionSet(ciagInduction)
+  return {
+    problemRetrievingData: false,
+    inductionQuestionSet,
+    data: toEducationAndTrainingData(ciagInduction, inductionQuestionSet),
+  }
+}
+
+const toEducationAndTrainingData = (
+  ciagInduction: CiagInduction,
+  inductionQuestionSet: 'LONG_QUESTION_SET' | 'SHORT_QUESTION_SET' | undefined,
+): EducationAndTrainingData => {
+  if (!inductionQuestionSet) {
+    return undefined
+  }
+
+  return {
+    longQuestionSetAnswers: inductionQuestionSet === 'LONG_QUESTION_SET' ? toLongQuestionSet(ciagInduction) : undefined,
+    shortQuestionSetAnswers:
+      inductionQuestionSet === 'SHORT_QUESTION_SET' ? toShortQuestionSet(ciagInduction) : undefined,
+  }
+}
+
+const toLongQuestionSet = (ciagInduction: CiagInduction): EducationAndTrainingLongQuestionSet => {
+  const educationalQualifications =
+    (ciagInduction.qualificationsAndTraining.qualifications as Array<CiagPrePrisonQualification>) || []
+  return {
+    updatedBy: ciagInduction.qualificationsAndTraining.modifiedBy,
+    updatedAt: moment(ciagInduction.qualificationsAndTraining.modifiedDateTime).toDate(),
+    additionalTraining: ciagInduction.qualificationsAndTraining.additionalTraining.sort(enumComparator),
+    otherAdditionalTraining: ciagInduction.qualificationsAndTraining.additionalTrainingOther,
+    educationalQualifications: educationalQualifications
+      .map(qualification => {
+        return { ...qualification }
+      })
+      .sort(educationalQualificationComparator),
+    highestEducationLevel: ciagInduction.qualificationsAndTraining.educationLevel,
+  }
+}
+
+const toShortQuestionSet = (ciagInduction: CiagInduction): EducationAndTrainingShortQuestionSet => {
+  const educationalQualifications =
+    (ciagInduction.qualificationsAndTraining.qualifications as Array<CiagPrePrisonQualification>) || []
+  return {
+    updatedBy: ciagInduction.qualificationsAndTraining.modifiedBy,
+    updatedAt: moment(ciagInduction.qualificationsAndTraining.modifiedDateTime).toDate(),
+    additionalTraining: ciagInduction.qualificationsAndTraining.additionalTraining.sort(enumComparator),
+    otherAdditionalTraining: ciagInduction.qualificationsAndTraining.additionalTrainingOther,
+    educationalQualifications: educationalQualifications
+      .map(qualification => {
+        return { ...qualification }
+      })
+      .sort(educationalQualificationComparator),
+    inPrisonInterestsEducation: {
+      inPrisonInterestsEducation: ciagInduction.inPrisonInterests.inPrisonEducation.sort(enumComparator),
+      inPrisonInterestsEducationOther: ciagInduction.inPrisonInterests.inPrisonEducationOther,
+      updatedBy: ciagInduction.inPrisonInterests.modifiedBy,
+      updatedAt: moment(ciagInduction.inPrisonInterests.modifiedDateTime).toDate(),
+    },
+  }
+}
+
+/**
+ * Given a [CiagInduction] returns 'LONG_QUESTION_SET' or 'SHORT_QUESTION_SET'
+ */
+const toInductionQuestionSet = (
+  ciagInduction: CiagInduction,
+): 'LONG_QUESTION_SET' | 'SHORT_QUESTION_SET' | undefined => {
+  if (ciagInduction) {
+    return ciagInduction.hopingToGetWork === 'YES' ? 'LONG_QUESTION_SET' : 'SHORT_QUESTION_SET'
+  }
+  return undefined
+}
+
+export { toWorkAndInterests, toEducationAndTraining, toInductionQuestionSet }

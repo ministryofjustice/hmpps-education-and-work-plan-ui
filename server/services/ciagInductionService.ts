@@ -2,8 +2,7 @@ import type { WorkAndInterests, EducationAndTraining } from 'viewModels'
 import type { CiagInduction } from 'ciagInductionApiClient'
 import CiagInductionClient from '../data/ciagInductionClient'
 import logger from '../../logger'
-import toWorkAndInterests from '../data/mappers/workAndInterestMapper'
-import toEducationAndTraining from '../data/mappers/educationAndTrainingMapper'
+import { toWorkAndInterests, toEducationAndTraining } from '../data/mappers/ciagInductionResponseMappers'
 
 export default class CiagInductionService {
   constructor(private readonly ciagInductionClient: CiagInductionClient) {}

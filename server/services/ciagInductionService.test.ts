@@ -3,12 +3,10 @@ import CiagInductionClient from '../data/ciagInductionClient'
 import CiagInductionService from './ciagInductionService'
 import { aLongQuestionSetCiagInduction } from '../testsupport/ciagInductionTestDataBuilder'
 import aValidLongQuestionSetWorkAndInterests from '../testsupport/workAndInterestsTestDataBuilder'
-import toWorkAndInterests from '../data/mappers/workAndInterestMapper'
-import toEducationAndTraining from '../data/mappers/educationAndTrainingMapper'
+import { toWorkAndInterests, toEducationAndTraining } from '../data/mappers/ciagInductionResponseMappers'
 import { aValidLongQuestionSetEducationAndTraining } from '../testsupport/educationAndTrainingTestDataBuilder'
 
-jest.mock('../data/mappers/workAndInterestMapper')
-jest.mock('../data/mappers/educationAndTrainingMapper')
+jest.mock('../data/mappers/ciagInductionResponseMappers')
 
 describe('ciagInductionService', () => {
   const mockedWorkAndInterestsMapper = toWorkAndInterests as jest.MockedFunction<typeof toWorkAndInterests>
