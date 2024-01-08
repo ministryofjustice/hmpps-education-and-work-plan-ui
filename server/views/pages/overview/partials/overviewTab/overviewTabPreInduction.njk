@@ -2,8 +2,13 @@
 
 {% set createInductionBanner %}
   <p class="govuk-notification-banner__heading">
-    Create goals and add education, work, skills and interests to
-    <a class="govuk-notification-banner__link" href="{{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}/hoping-to-get-work/new">make a progress plan now</a>.
+    {% if featureToggles.createGoalsWithoutInductionEnabled and actionPlan.goals | length %}
+      Add education, work, skills and interest to
+      <a class="govuk-notification-banner__link" href="{{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}/hoping-to-get-work/new">complete {{ prisonerSummary.firstName | safe }}'s progress plan now</a>.
+    {% else %}
+      Create goals and add education, work, skills and interests to
+      <a class="govuk-notification-banner__link" href="{{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}/hoping-to-get-work/new">make a progress plan now</a>.
+    {% endif %}
   </p>
 {% endset %}
 
