@@ -84,8 +84,7 @@ export default class CreateGoalController {
 
     if (isEditMode(req)) {
       req.session.newGoal.addStepForm =
-        req.session.newGoals[parseInt(goalIndex, 10) - 1].addStepForms[parseInt(stepIndex, 10) - 1] ||
-        req.session.newGoal.addStepForm
+        req.session.newGoals[parseInt(goalIndex, 10) - 1].addStepForms[parseInt(stepIndex, 10) - 1]
     } else if (!req.session.newGoal.addStepForm) {
       req.session.newGoal.addStepForm = { stepNumber: 1 }
     }
@@ -136,8 +135,6 @@ export default class CreateGoalController {
       if (!req.session.newGoals[parseInt(goalIndex, 10) - 1].addStepForms[parseInt(stepIndex, 10) - 1]) {
         return next(createError(404, `Step ${stepIndex} not found`))
       }
-      req.session.newGoal.addStepForm =
-        req.session.newGoals[parseInt(goalIndex, 10) - 1].addStepForms[parseInt(stepIndex, 10) - 1]
       req.session.newGoal = undefined
       return res.redirect(`/plan/${prisonNumber}/goals/review`)
     }
