@@ -4,8 +4,30 @@
  */
 
 export interface paths {
+  '/queue-admin/retry-dlq/{dlqName}': {
+    put: operations['retryDlq']
+  }
+  '/queue-admin/retry-all-dlqs': {
+    put: operations['retryAllDlqs']
+  }
+  '/queue-admin/purge-queue/{queueName}': {
+    put: operations['purgeQueue']
+  }
+  '/inductions/{prisonNumber}': {
+    get: operations['getInduction']
+    put: operations['updateInduction']
+    post: operations['createInduction']
+  }
+  '/ciag/induction/{prisonNumber}': {
+    get: operations['getInduction_1']
+    put: operations['updateInduction_1']
+    post: operations['createInduction_1']
+  }
   '/action-plans/{prisonNumber}/goals/{goalReference}': {
     put: operations['updateGoal']
+  }
+  '/ciag/induction/list': {
+    post: operations['getInductionSummaries']
   }
   '/action-plans': {
     post: operations['getActionPlanSummaries']
@@ -20,12 +42,818 @@ export interface paths {
   '/timelines/{prisonNumber}': {
     get: operations['getTimeline']
   }
+  '/queue-admin/get-dlq-messages/{dlqName}': {
+    get: operations['getDlqMessages']
+  }
 }
 
 export type webhooks = Record<string, never>
 
 export interface components {
   schemas: {
+    DlqMessage: {
+      body: {
+        [key: string]: Record<string, never> | undefined
+      }
+      messageId: string
+    }
+    RetryDlqResult: {
+      /** Format: int32 */
+      messagesFoundCount: number
+      messages: components['schemas']['DlqMessage'][]
+    }
+    PurgeQueueResult: {
+      /** Format: int32 */
+      messagesFoundCount: number
+    }
+    /**
+     * @description A list of the Prisoner's previous qualifications.
+     * @example null
+     */
+    AchievedQualification: {
+      /**
+       * @description The subject of the qualification.
+       * @example null
+       */
+      subject: string
+      /**
+       * @description The level of the qualification (if known/relevant).
+       * @example null
+       * @enum {string}
+       */
+      level:
+        | 'ENTRY_LEVEL'
+        | 'LEVEL_1'
+        | 'LEVEL_2'
+        | 'LEVEL_3'
+        | 'LEVEL_4'
+        | 'LEVEL_5'
+        | 'LEVEL_6'
+        | 'LEVEL_7'
+        | 'LEVEL_8'
+      /**
+       * @description The grade which was achieved (if known/relevant).
+       * @example null
+       */
+      grade: string
+    }
+    /**
+     * @description One or more future work interests that the Prisoner has.
+     * @example null
+     */
+    FutureWorkInterest: {
+      /**
+       * @example null
+       * @enum {string}
+       */
+      workType:
+        | 'OUTDOOR'
+        | 'CONSTRUCTION'
+        | 'DRIVING'
+        | 'BEAUTY'
+        | 'HOSPITALITY'
+        | 'TECHNICAL'
+        | 'MANUFACTURING'
+        | 'OFFICE'
+        | 'RETAIL'
+        | 'SPORTS'
+        | 'WAREHOUSING'
+        | 'WASTE_MANAGEMENT'
+        | 'EDUCATION_TRAINING'
+        | 'CLEANING_AND_MAINTENANCE'
+        | 'OTHER'
+      /**
+       * @description A specific type of work interest that does not fit the given 'workType' values. Mandatory when 'workType' is 'OTHER'.
+       * @example null
+       */
+      workTypeOther?: string
+      /**
+       * @description The role within a Prisoner's area of work interest.
+       * @example null
+       */
+      role?: string
+    }
+    /**
+     * @description A list of in-prison training that the Prisoner is interested in.
+     * @example null
+     */
+    InPrisonTrainingInterest: {
+      /**
+       * @example null
+       * @enum {string}
+       */
+      trainingType:
+        | 'BARBERING_AND_HAIRDRESSING'
+        | 'CATERING'
+        | 'COMMUNICATION_SKILLS'
+        | 'ENGLISH_LANGUAGE_SKILLS'
+        | 'FORKLIFT_DRIVING'
+        | 'INTERVIEW_SKILLS'
+        | 'MACHINERY_TICKETS'
+        | 'NUMERACY_SKILLS'
+        | 'RUNNING_A_BUSINESS'
+        | 'SOCIAL_AND_LIFE_SKILLS'
+        | 'WELDING_AND_METALWORK'
+        | 'WOODWORK_AND_JOINERY'
+        | 'OTHER'
+      /**
+       * @description A specific type of in-prison training that does not fit the given 'trainingType' values. Mandatory when 'trainingType' is 'OTHER'.
+       * @example null
+       */
+      trainingTypeOther?: string
+    }
+    /**
+     * @description A list of in-prison work that the Prisoner is interested in.
+     * @example null
+     */
+    InPrisonWorkInterest: {
+      /**
+       * @example null
+       * @enum {string}
+       */
+      workType:
+        | 'CLEANING_AND_HYGIENE'
+        | 'COMPUTERS_OR_DESK_BASED'
+        | 'GARDENING_AND_OUTDOORS'
+        | 'KITCHENS_AND_COOKING'
+        | 'MAINTENANCE'
+        | 'PRISON_LAUNDRY'
+        | 'PRISON_LIBRARY'
+        | 'TEXTILES_AND_SEWING'
+        | 'WELDING_AND_METALWORK'
+        | 'WOODWORK_AND_JOINERY'
+        | 'OTHER'
+      /**
+       * @description A specific type of in-prison work that does not fit the given 'workType' values. Mandatory when 'workType' is 'OTHER'.
+       * @example null
+       */
+      workTypeOther?: string
+    }
+    /**
+     * @description One or more interests that the Prisoner feels they have.
+     * @example null
+     */
+    PersonalInterest: {
+      /**
+       * @example null
+       * @enum {string}
+       */
+      interestType:
+        | 'COMMUNITY'
+        | 'CRAFTS'
+        | 'CREATIVE'
+        | 'DIGITAL'
+        | 'KNOWLEDGE_BASED'
+        | 'MUSICAL'
+        | 'OUTDOOR'
+        | 'NATURE_AND_ANIMALS'
+        | 'SOCIAL'
+        | 'SOLO_ACTIVITIES'
+        | 'SOLO_SPORTS'
+        | 'TEAM_SPORTS'
+        | 'WELLNESS'
+        | 'OTHER'
+        | 'NONE'
+      /**
+       * @description A specific type of personal interest that does not fit the given 'interestType' values. Mandatory when 'interestType' is 'OTHER'.
+       * @example null
+       */
+      interestTypeOther?: string
+    }
+    /**
+     * @description One or more skills that the Prisoner feels they have.
+     * @example null
+     */
+    PersonalSkill: {
+      /**
+       * @example null
+       * @enum {string}
+       */
+      skillType:
+        | 'COMMUNICATION'
+        | 'POSITIVE_ATTITUDE'
+        | 'RESILIENCE'
+        | 'SELF_MANAGEMENT'
+        | 'TEAMWORK'
+        | 'THINKING_AND_PROBLEM_SOLVING'
+        | 'WILLINGNESS_TO_LEARN'
+        | 'OTHER'
+        | 'NONE'
+      /**
+       * @description A specific type of personal skill that does not fit the given 'skillType' values. Mandatory when 'skillType' is 'OTHER'.
+       * @example null
+       */
+      skillTypeOther?: string
+    }
+    /**
+     * @description A list of the Prisoner's previous work experiences.
+     * @example null
+     */
+    PreviousWorkExperience: {
+      /**
+       * @example null
+       * @enum {string}
+       */
+      experienceType:
+        | 'OUTDOOR'
+        | 'CONSTRUCTION'
+        | 'DRIVING'
+        | 'BEAUTY'
+        | 'HOSPITALITY'
+        | 'TECHNICAL'
+        | 'MANUFACTURING'
+        | 'OFFICE'
+        | 'RETAIL'
+        | 'SPORTS'
+        | 'WAREHOUSING'
+        | 'WASTE_MANAGEMENT'
+        | 'EDUCATION_TRAINING'
+        | 'CLEANING_AND_MAINTENANCE'
+        | 'OTHER'
+      /**
+       * @description A type of work experience, which is not listed in 'experienceType' Enum. Mandatory when 'experienceType' is 'OTHER'.
+       * @example null
+       */
+      experienceTypeOther?: string
+      /**
+       * @description The role the Prisoner had.
+       * @example null
+       */
+      role?: string
+      /**
+       * @description Any additional details of the work experience.
+       * @example null
+       */
+      details?: string
+    }
+    /** @example null */
+    UpdateFutureWorkInterestsRequest: {
+      /**
+       * @description One or more future work interests that the Prisoner has.
+       * @example null
+       */
+      interests: components['schemas']['FutureWorkInterest'][]
+      /**
+       * Format: uuid
+       * @description A unique reference for a FutureWorkInterests resource (if it already exists).
+       * @example c88a6c48-97e2-4c04-93b5-98619966447b
+       */
+      reference?: string
+    }
+    /** @example null */
+    UpdateInPrisonInterestsRequest: {
+      /**
+       * @description A list of in-prison work that the Prisoner is interested in.
+       * @example null
+       */
+      inPrisonWorkInterests: components['schemas']['InPrisonWorkInterest'][]
+      /**
+       * @description A list of in-prison training that the Prisoner is interested in.
+       * @example null
+       */
+      inPrisonTrainingInterests: components['schemas']['InPrisonTrainingInterest'][]
+      /**
+       * Format: uuid
+       * @description A unique reference for a InPrisonInterests resource (if it already exists).
+       * @example c88a6c48-97e2-4c04-93b5-98619966447b
+       */
+      reference?: string
+    }
+    UpdateInductionRequest: {
+      /**
+       * Format: uuid
+       * @description The Induction's unique reference.
+       * @example c88a6c48-97e2-4c04-93b5-98619966447b
+       */
+      reference: string
+      /**
+       * @description The identifier of the prison that the prisoner is currently resident at.
+       * @example BXI
+       */
+      prisonId: string
+      workOnRelease?: components['schemas']['UpdateWorkOnReleaseRequest']
+      previousQualifications?: components['schemas']['UpdatePreviousQualificationsRequest']
+      previousTraining?: components['schemas']['UpdatePreviousTrainingRequest']
+      previousWorkExperiences?: components['schemas']['UpdatePreviousWorkExperiencesRequest']
+      inPrisonInterests?: components['schemas']['UpdateInPrisonInterestsRequest']
+      personalSkillsAndInterests?: components['schemas']['UpdatePersonalSkillsAndInterestsRequest']
+      futureWorkInterests?: components['schemas']['UpdateFutureWorkInterestsRequest']
+    }
+    /** @example null */
+    UpdatePersonalSkillsAndInterestsRequest: {
+      /**
+       * @description One or more skills that the Prisoner feels they have.
+       * @example null
+       */
+      skills: components['schemas']['PersonalSkill'][]
+      /**
+       * @description One or more interests that the Prisoner feels they have.
+       * @example null
+       */
+      interests: components['schemas']['PersonalInterest'][]
+      /**
+       * Format: uuid
+       * @description A unique reference for a PersonalSkillsAndInterests resource (if it already exists).
+       * @example c88a6c48-97e2-4c04-93b5-98619966447b
+       */
+      reference?: string
+    }
+    /** @example null */
+    UpdatePreviousQualificationsRequest: {
+      /**
+       * Format: uuid
+       * @description A unique reference for a PreviousQualifications resource (if it already exists).
+       * @example c88a6c48-97e2-4c04-93b5-98619966447b
+       */
+      reference?: string
+      /**
+       * @example null
+       * @enum {string}
+       */
+      educationLevel?:
+        | 'PRIMARY_SCHOOL'
+        | 'SECONDARY_SCHOOL_LEFT_BEFORE_TAKING_EXAMS'
+        | 'SECONDARY_SCHOOL_TOOK_EXAMS'
+        | 'FURTHER_EDUCATION_COLLEGE'
+        | 'UNDERGRADUATE_DEGREE_AT_UNIVERSITY'
+        | 'POSTGRADUATE_DEGREE_AT_UNIVERSITY'
+        | 'NOT_SURE'
+      /**
+       * @description A list of the Prisoner's previous qualifications.
+       * @example null
+       */
+      qualifications?: components['schemas']['AchievedQualification'][]
+    }
+    /** @example null */
+    UpdatePreviousTrainingRequest: {
+      /**
+       * @description Any additional training that the Prisoner has completed in the past. Must not be empty ('NONE' is an option).
+       * @example null
+       */
+      trainingTypes: (
+        | 'CSCS_CARD'
+        | 'FIRST_AID_CERTIFICATE'
+        | 'FOOD_HYGIENE_CERTIFICATE'
+        | 'FULL_UK_DRIVING_LICENCE'
+        | 'HEALTH_AND_SAFETY'
+        | 'HGV_LICENCE'
+        | 'MACHINERY_TICKETS'
+        | 'MANUAL_HANDLING'
+        | 'TRADE_COURSE'
+        | 'OTHER'
+        | 'NONE'
+      )[]
+      /**
+       * Format: uuid
+       * @description A unique reference for a PreviousTraining resource (if it already exists).
+       * @example c88a6c48-97e2-4c04-93b5-98619966447b
+       */
+      reference?: string
+      /**
+       * @description A specific type of training that does not fit the given 'trainingTypes'. Mandatory when 'trainingTypes' includes 'OTHER'.
+       * @example null
+       */
+      trainingTypeOther?: string
+    }
+    /** @example null */
+    UpdatePreviousWorkExperiencesRequest: {
+      /** @example false */
+      hasWorkedBefore: boolean
+      /**
+       * Format: uuid
+       * @description A unique reference for a PreviousWorkExperiences resource (if it already exists).
+       * @example c88a6c48-97e2-4c04-93b5-98619966447b
+       */
+      reference?: string
+      /**
+       * @description A list of the Prisoner's previous work experiences.
+       * @example null
+       */
+      experiences?: components['schemas']['PreviousWorkExperience'][]
+    }
+    /** @example null */
+    UpdateWorkOnReleaseRequest: {
+      /**
+       * Format: uuid
+       * @description A unique reference for a WorkOnRelease resource.
+       * @example c88a6c48-97e2-4c04-93b5-98619966447b
+       */
+      reference: string
+      /**
+       * @example null
+       * @enum {string}
+       */
+      hopingToWork: 'YES' | 'NO' | 'NOT_SURE'
+      /**
+       * @description Reasons the Prisoner has given not to get work after leaving Prison.
+       * @example null
+       */
+      notHopingToWorkReasons?: (
+        | 'LIMIT_THEIR_ABILITY'
+        | 'FULL_TIME_CARER'
+        | 'LACKS_CONFIDENCE_OR_MOTIVATION'
+        | 'HEALTH'
+        | 'RETIRED'
+        | 'NO_RIGHT_TO_WORK'
+        | 'NOT_SURE'
+        | 'OTHER'
+        | 'NO_REASON'
+      )[]
+      /**
+       * @description The reason that is given when the Prisoner does not want to work. This is mandatory when 'notHopingToWorkReasons' includes 'OTHER'.
+       * @example null
+       */
+      notHopingToWorkOtherReason?: string
+      /**
+       * @description Factors affecting the Prisoner's ability to work.
+       * @example null
+       */
+      affectAbilityToWork?: (
+        | 'CARING_RESPONSIBILITIES'
+        | 'LIMITED_BY_OFFENSE'
+        | 'HEALTH_ISSUES'
+        | 'NO_RIGHT_TO_WORK'
+        | 'OTHER'
+        | 'NONE'
+      )[]
+      /**
+       * @description A specific factor affecting the Prisoner's ability to work. This is mandatory when 'affectAbilityToWork' includes 'OTHER'.
+       * @example null
+       */
+      affectAbilityToWorkOther?: string
+    }
+    UpdateCiagInductionRequest: {
+      /**
+       * @description The ID of the Prison that that Prisoner is currently at.
+       * @example null
+       */
+      prisonId: string
+      /**
+       * @example null
+       * @enum {string}
+       */
+      hopingToGetWork: 'YES' | 'NO' | 'NOT_SURE'
+      /**
+       * Format: uuid
+       * @description The Induction's unique reference. Currently optional (to avoid breaking the existing CIAG API), but will be mandatory in future (and will most likely become a path variable).
+       * @example c88a6c48-97e2-4c04-93b5-98619966447b
+       */
+      reference?: string
+      /**
+       * @description The reason that is given when the Prisoner does not want to work. This is mandatory when 'reasonToNotGetWork' is set to 'OTHER'.
+       * @example null
+       */
+      reasonToNotGetWorkOther?: string
+      /**
+       * @description One or more factors affecting the Prisoner's ability to work.
+       * @example null
+       */
+      abilityToWork?: (
+        | 'CARING_RESPONSIBILITIES'
+        | 'LIMITED_BY_OFFENSE'
+        | 'HEALTH_ISSUES'
+        | 'NO_RIGHT_TO_WORK'
+        | 'OTHER'
+        | 'NONE'
+      )[]
+      /**
+       * @description A specific factor affecting the Prisoner's ability to work. This is mandatory when 'abilityToWork' is set to 'OTHER'.
+       * @example null
+       */
+      abilityToWorkOther?: string
+      /**
+       * @description One or more reasons the Prisoner has given not to get work after leaving Prison.
+       * @example null
+       */
+      reasonToNotGetWork?: (
+        | 'LIMIT_THEIR_ABILITY'
+        | 'FULL_TIME_CARER'
+        | 'LACKS_CONFIDENCE_OR_MOTIVATION'
+        | 'HEALTH'
+        | 'RETIRED'
+        | 'NO_RIGHT_TO_WORK'
+        | 'NOT_SURE'
+        | 'OTHER'
+        | 'NO_REASON'
+      )[]
+      workExperience?: components['schemas']['UpdatePreviousWorkRequest']
+      skillsAndInterests?: components['schemas']['UpdateSkillsAndInterestsRequest']
+      qualificationsAndTraining?: components['schemas']['UpdateEducationAndQualificationsRequest']
+      inPrisonInterests?: components['schemas']['UpdatePrisonWorkAndEducationRequest']
+    }
+    /** @example null */
+    UpdateEducationAndQualificationsRequest: {
+      /**
+       * Format: uuid
+       * @description A unique reference for this Prisoner's education and qualifications.
+       * @example c88a6c48-97e2-4c04-93b5-98619966447b
+       */
+      id?: string
+      /**
+       * @example null
+       * @enum {string}
+       */
+      educationLevel?:
+        | 'PRIMARY_SCHOOL'
+        | 'SECONDARY_SCHOOL_LEFT_BEFORE_TAKING_EXAMS'
+        | 'SECONDARY_SCHOOL_TOOK_EXAMS'
+        | 'FURTHER_EDUCATION_COLLEGE'
+        | 'UNDERGRADUATE_DEGREE_AT_UNIVERSITY'
+        | 'POSTGRADUATE_DEGREE_AT_UNIVERSITY'
+        | 'NOT_SURE'
+      /**
+       * @description A list of the Prisoner's previous qualifications
+       * @example null
+       */
+      qualifications?: components['schemas']['AchievedQualification'][]
+      /**
+       * @description Any additional training that the Prisoner has completed in the past.
+       * @example null
+       */
+      additionalTraining?: (
+        | 'CSCS_CARD'
+        | 'FIRST_AID_CERTIFICATE'
+        | 'FOOD_HYGIENE_CERTIFICATE'
+        | 'FULL_UK_DRIVING_LICENCE'
+        | 'HEALTH_AND_SAFETY'
+        | 'HGV_LICENCE'
+        | 'MACHINERY_TICKETS'
+        | 'MANUAL_HANDLING'
+        | 'TRADE_COURSE'
+        | 'OTHER'
+        | 'NONE'
+      )[]
+      /**
+       * @description A specific type of training that does not fit the given 'additionalTraining' types. Mandatory when 'additionalTraining' includes 'OTHER'.
+       * @example null
+       */
+      additionalTrainingOther?: string
+    }
+    /** @example null */
+    UpdatePreviousWorkRequest: {
+      /** @example false */
+      hasWorkedBefore: boolean
+      /**
+       * Format: uuid
+       * @description A unique reference for this Prisoner's previous work experience.
+       * @example c88a6c48-97e2-4c04-93b5-98619966447b
+       */
+      id?: string
+      /**
+       * @description A list of the Prisoner's type of previous work experience.
+       * @example null
+       */
+      typeOfWorkExperience?: (
+        | 'OUTDOOR'
+        | 'CONSTRUCTION'
+        | 'DRIVING'
+        | 'BEAUTY'
+        | 'HOSPITALITY'
+        | 'TECHNICAL'
+        | 'MANUFACTURING'
+        | 'OFFICE'
+        | 'RETAIL'
+        | 'SPORTS'
+        | 'WAREHOUSING'
+        | 'WASTE_MANAGEMENT'
+        | 'EDUCATION_TRAINING'
+        | 'CLEANING_AND_MAINTENANCE'
+        | 'OTHER'
+      )[]
+      /**
+       * @description A specific work experience type for the Prisoner. Mandatory when 'typeOfWorkExperience' includes 'OTHER'.
+       * @example null
+       */
+      typeOfWorkExperienceOther?: string
+      /**
+       * @description A list of the Prisoner's previous work experience details.
+       * @example null
+       */
+      workExperience?: components['schemas']['WorkExperience'][]
+      workInterests?: components['schemas']['UpdateWorkInterestsRequest']
+    }
+    /** @example null */
+    UpdatePrisonWorkAndEducationRequest: {
+      /**
+       * Format: uuid
+       * @description A unique reference for this Prisoner's in-prison work and education interests.
+       * @example c88a6c48-97e2-4c04-93b5-98619966447b
+       */
+      id?: string
+      /**
+       * @description A list of in-prison work that the Prisoner is interested in.
+       * @example null
+       */
+      inPrisonWork?: (
+        | 'CLEANING_AND_HYGIENE'
+        | 'COMPUTERS_OR_DESK_BASED'
+        | 'GARDENING_AND_OUTDOORS'
+        | 'KITCHENS_AND_COOKING'
+        | 'MAINTENANCE'
+        | 'PRISON_LAUNDRY'
+        | 'PRISON_LIBRARY'
+        | 'TEXTILES_AND_SEWING'
+        | 'WELDING_AND_METALWORK'
+        | 'WOODWORK_AND_JOINERY'
+        | 'OTHER'
+      )[]
+      /**
+       * @description A specific type of in-prison work that does not fit the given 'inPrisonWork' types. Mandatory when 'inPrisonWork' includes 'OTHER'.
+       * @example null
+       */
+      inPrisonWorkOther?: string
+      /**
+       * @description Any potential in-prison education/training that the Prisoner is interested in.
+       * @example null
+       */
+      inPrisonEducation?: (
+        | 'BARBERING_AND_HAIRDRESSING'
+        | 'CATERING'
+        | 'COMMUNICATION_SKILLS'
+        | 'ENGLISH_LANGUAGE_SKILLS'
+        | 'FORKLIFT_DRIVING'
+        | 'INTERVIEW_SKILLS'
+        | 'MACHINERY_TICKETS'
+        | 'NUMERACY_SKILLS'
+        | 'RUNNING_A_BUSINESS'
+        | 'SOCIAL_AND_LIFE_SKILLS'
+        | 'WELDING_AND_METALWORK'
+        | 'WOODWORK_AND_JOINERY'
+        | 'OTHER'
+      )[]
+      /**
+       * @description A specific type of in-prison education/training that does not fit the given 'inPrisonEducation' types. Mandatory when 'inPrisonEducation' includes 'OTHER'.
+       * @example null
+       */
+      inPrisonEducationOther?: string
+    }
+    /** @example null */
+    UpdateSkillsAndInterestsRequest: {
+      /**
+       * Format: uuid
+       * @description A unique reference for this Prisoner's personal skills and interests.
+       * @example c88a6c48-97e2-4c04-93b5-98619966447b
+       */
+      id?: string
+      /**
+       * @description One or more skills that the Prisoner feels they have.
+       * @example null
+       */
+      skills?: (
+        | 'COMMUNICATION'
+        | 'POSITIVE_ATTITUDE'
+        | 'RESILIENCE'
+        | 'SELF_MANAGEMENT'
+        | 'TEAMWORK'
+        | 'THINKING_AND_PROBLEM_SOLVING'
+        | 'WILLINGNESS_TO_LEARN'
+        | 'OTHER'
+        | 'NONE'
+      )[]
+      /**
+       * @description A specific type of a skill that the Prisoner feels they have. Mandatory when 'skills' includes 'OTHER'.
+       * @example null
+       */
+      skillsOther?: string
+      /**
+       * @description One or more interests that the Prisoner feels they have.
+       * @example null
+       */
+      personalInterests?: (
+        | 'COMMUNITY'
+        | 'CRAFTS'
+        | 'CREATIVE'
+        | 'DIGITAL'
+        | 'KNOWLEDGE_BASED'
+        | 'MUSICAL'
+        | 'OUTDOOR'
+        | 'NATURE_AND_ANIMALS'
+        | 'SOCIAL'
+        | 'SOLO_ACTIVITIES'
+        | 'SOLO_SPORTS'
+        | 'TEAM_SPORTS'
+        | 'WELLNESS'
+        | 'OTHER'
+        | 'NONE'
+      )[]
+      /**
+       * @description A specific type of a interest that the Prisoner feels they have. Mandatory when 'personalInterests' includes 'OTHER'.
+       * @example null
+       */
+      personalInterestsOther?: string
+    }
+    /** @example null */
+    UpdateWorkInterestsRequest: {
+      /**
+       * Format: uuid
+       * @description A unique reference for this Prisoner's work interests.
+       * @example c88a6c48-97e2-4c04-93b5-98619966447b
+       */
+      id?: string
+      /**
+       * @description A list of Prisoner's future work interests.
+       * @example null
+       */
+      workInterests?: (
+        | 'OUTDOOR'
+        | 'CONSTRUCTION'
+        | 'DRIVING'
+        | 'BEAUTY'
+        | 'HOSPITALITY'
+        | 'TECHNICAL'
+        | 'MANUFACTURING'
+        | 'OFFICE'
+        | 'RETAIL'
+        | 'SPORTS'
+        | 'WAREHOUSING'
+        | 'WASTE_MANAGEMENT'
+        | 'EDUCATION_TRAINING'
+        | 'CLEANING_AND_MAINTENANCE'
+        | 'OTHER'
+      )[]
+      /**
+       * @description A work interest, which is not listed in 'workInterests' Enum. Mandatory when 'workInterests' includes 'OTHER'.
+       * @example null
+       */
+      workInterestsOther?: string
+      /**
+       * @description A detailed list of work interests that a Prisoner has.
+       * @example null
+       */
+      particularJobInterests?: components['schemas']['WorkInterestDetail'][]
+    }
+    /**
+     * @description A list of the Prisoner's previous work experience details.
+     * @example null
+     */
+    WorkExperience: {
+      /**
+       * @example null
+       * @enum {string}
+       */
+      typeOfWorkExperience:
+        | 'OUTDOOR'
+        | 'CONSTRUCTION'
+        | 'DRIVING'
+        | 'BEAUTY'
+        | 'HOSPITALITY'
+        | 'TECHNICAL'
+        | 'MANUFACTURING'
+        | 'OFFICE'
+        | 'RETAIL'
+        | 'SPORTS'
+        | 'WAREHOUSING'
+        | 'WASTE_MANAGEMENT'
+        | 'EDUCATION_TRAINING'
+        | 'CLEANING_AND_MAINTENANCE'
+        | 'OTHER'
+      /**
+       * @description A work experience, which is not listed in 'typeOfWorkExperience' Enum. Mandatory when 'typeOfWorkExperience' includes 'OTHER'.
+       * @example null
+       */
+      otherWork?: string
+      /**
+       * @description This is the role the Prisoner had.
+       * @example null
+       */
+      role?: string
+      /**
+       * @description Additional details of the work.
+       * @example null
+       */
+      details?: string
+    }
+    /**
+     * @description A detailed list of work interests that a Prisoner has.
+     * @example null
+     */
+    WorkInterestDetail: {
+      /**
+       * @example null
+       * @enum {string}
+       */
+      workInterest:
+        | 'OUTDOOR'
+        | 'CONSTRUCTION'
+        | 'DRIVING'
+        | 'BEAUTY'
+        | 'HOSPITALITY'
+        | 'TECHNICAL'
+        | 'MANUFACTURING'
+        | 'OFFICE'
+        | 'RETAIL'
+        | 'SPORTS'
+        | 'WAREHOUSING'
+        | 'WASTE_MANAGEMENT'
+        | 'EDUCATION_TRAINING'
+        | 'CLEANING_AND_MAINTENANCE'
+        | 'OTHER'
+      /**
+       * @description The role within a Prisoner's area of work interest.
+       * @example null
+       */
+      role?: string
+    }
     UpdateGoalRequest: {
       /**
        * Format: uuid
@@ -38,6 +866,11 @@ export interface components {
        * @example Improve communication skills
        */
       title: string
+      /**
+       * Format: date
+       * @description An optional ISO-8601 date representing the target completion date of the Goal.
+       */
+      targetCompletionDate: string
       /**
        * @example null
        * @enum {string}
@@ -53,11 +886,6 @@ export interface components {
        * @example BXI
        */
       prisonId: string
-      /**
-       * Format: date
-       * @description An optional ISO-8601 date representing the target completion date of the Goal.
-       */
-      targetCompletionDate?: string
       /**
        * @description Some additional notes related to the Goal.
        * @example Pay close attention to Peter's behaviour.
@@ -92,9 +920,478 @@ export interface components {
        */
       stepReference?: string
     }
+    /** @example null */
+    CreateFutureWorkInterestsRequest: {
+      /**
+       * @description One or more future work interests that the Prisoner has.
+       * @example null
+       */
+      interests: components['schemas']['FutureWorkInterest'][]
+    }
+    /** @example null */
+    CreateInPrisonInterestsRequest: {
+      /**
+       * @description A list of in-prison work that the Prisoner is interested in.
+       * @example null
+       */
+      inPrisonWorkInterests: components['schemas']['InPrisonWorkInterest'][]
+      /**
+       * @description A list of in-prison training that the Prisoner is interested in.
+       * @example null
+       */
+      inPrisonTrainingInterests: components['schemas']['InPrisonTrainingInterest'][]
+    }
+    CreateInductionRequest: {
+      /**
+       * @description The identifier of the prison that the prisoner is currently resident at.
+       * @example BXI
+       */
+      prisonId: string
+      workOnRelease: components['schemas']['CreateWorkOnReleaseRequest']
+      previousQualifications?: components['schemas']['CreatePreviousQualificationsRequest']
+      previousTraining?: components['schemas']['CreatePreviousTrainingRequest']
+      previousWorkExperiences?: components['schemas']['CreatePreviousWorkExperiencesRequest']
+      inPrisonInterests?: components['schemas']['CreateInPrisonInterestsRequest']
+      personalSkillsAndInterests?: components['schemas']['CreatePersonalSkillsAndInterestsRequest']
+      futureWorkInterests?: components['schemas']['CreateFutureWorkInterestsRequest']
+    }
+    /** @example null */
+    CreatePersonalSkillsAndInterestsRequest: {
+      /**
+       * @description One or more skills that the Prisoner feels they have.
+       * @example null
+       */
+      skills: components['schemas']['PersonalSkill'][]
+      /**
+       * @description One or more interests that the Prisoner feels they have.
+       * @example null
+       */
+      interests: components['schemas']['PersonalInterest'][]
+    }
+    /** @example null */
+    CreatePreviousQualificationsRequest: {
+      /**
+       * @example null
+       * @enum {string}
+       */
+      educationLevel?:
+        | 'PRIMARY_SCHOOL'
+        | 'SECONDARY_SCHOOL_LEFT_BEFORE_TAKING_EXAMS'
+        | 'SECONDARY_SCHOOL_TOOK_EXAMS'
+        | 'FURTHER_EDUCATION_COLLEGE'
+        | 'UNDERGRADUATE_DEGREE_AT_UNIVERSITY'
+        | 'POSTGRADUATE_DEGREE_AT_UNIVERSITY'
+        | 'NOT_SURE'
+      /**
+       * @description A list of the Prisoner's previous qualifications.
+       * @example null
+       */
+      qualifications?: components['schemas']['AchievedQualification'][]
+    }
+    /** @example null */
+    CreatePreviousTrainingRequest: {
+      /**
+       * @description Any additional training that the Prisoner has completed in the past. Must not be empty ('NONE' is an option).
+       * @example null
+       */
+      trainingTypes: (
+        | 'CSCS_CARD'
+        | 'FIRST_AID_CERTIFICATE'
+        | 'FOOD_HYGIENE_CERTIFICATE'
+        | 'FULL_UK_DRIVING_LICENCE'
+        | 'HEALTH_AND_SAFETY'
+        | 'HGV_LICENCE'
+        | 'MACHINERY_TICKETS'
+        | 'MANUAL_HANDLING'
+        | 'TRADE_COURSE'
+        | 'OTHER'
+        | 'NONE'
+      )[]
+      /**
+       * @description A specific type of training that does not fit the given 'trainingTypes'. Mandatory when 'trainingTypes' includes 'OTHER'.
+       * @example null
+       */
+      trainingTypeOther?: string
+    }
+    /** @example null */
+    CreatePreviousWorkExperiencesRequest: {
+      /** @example false */
+      hasWorkedBefore: boolean
+      /**
+       * @description A list of the Prisoner's previous work experiences.
+       * @example null
+       */
+      experiences?: components['schemas']['PreviousWorkExperience'][]
+    }
+    /** @example null */
+    CreateWorkOnReleaseRequest: {
+      /**
+       * @example null
+       * @enum {string}
+       */
+      hopingToWork: 'YES' | 'NO' | 'NOT_SURE'
+      /**
+       * @description Reasons the Prisoner has given not to get work after leaving Prison.
+       * @example null
+       */
+      notHopingToWorkReasons?: (
+        | 'LIMIT_THEIR_ABILITY'
+        | 'FULL_TIME_CARER'
+        | 'LACKS_CONFIDENCE_OR_MOTIVATION'
+        | 'HEALTH'
+        | 'RETIRED'
+        | 'NO_RIGHT_TO_WORK'
+        | 'NOT_SURE'
+        | 'OTHER'
+        | 'NO_REASON'
+      )[]
+      /**
+       * @description The reason that is given when the Prisoner does not want to work. This is mandatory when 'notHopingToWorkReasons' includes 'OTHER'.
+       * @example null
+       */
+      notHopingToWorkOtherReason?: string
+      /**
+       * @description Factors affecting the Prisoner's ability to work.
+       * @example null
+       */
+      affectAbilityToWork?: (
+        | 'CARING_RESPONSIBILITIES'
+        | 'LIMITED_BY_OFFENSE'
+        | 'HEALTH_ISSUES'
+        | 'NO_RIGHT_TO_WORK'
+        | 'OTHER'
+        | 'NONE'
+      )[]
+      /**
+       * @description A specific factor affecting the Prisoner's ability to work. This is mandatory when 'affectAbilityToWork' includes 'OTHER'.
+       * @example null
+       */
+      affectAbilityToWorkOther?: string
+    }
+    CreateCiagInductionRequest: {
+      /**
+       * @description The ID of the Prison that that Prisoner is currently at.
+       * @example null
+       */
+      prisonId: string
+      /**
+       * @example null
+       * @enum {string}
+       */
+      hopingToGetWork: 'YES' | 'NO' | 'NOT_SURE'
+      /**
+       * @description The reason that is given when the Prisoner does not want to work. This is mandatory when 'reasonToNotGetWork' is set to 'OTHER'.
+       * @example null
+       */
+      reasonToNotGetWorkOther?: string
+      /**
+       * @description One or more factors affecting the Prisoner's ability to work.
+       * @example null
+       */
+      abilityToWork?: (
+        | 'CARING_RESPONSIBILITIES'
+        | 'LIMITED_BY_OFFENSE'
+        | 'HEALTH_ISSUES'
+        | 'NO_RIGHT_TO_WORK'
+        | 'OTHER'
+        | 'NONE'
+      )[]
+      /**
+       * @description A specific factor affecting the Prisoner's ability to work. This is mandatory when 'abilityToWork' is set to 'OTHER'.
+       * @example null
+       */
+      abilityToWorkOther?: string
+      /**
+       * @description One or more reasons the Prisoner has given not to get work after leaving Prison.
+       * @example null
+       */
+      reasonToNotGetWork?: (
+        | 'LIMIT_THEIR_ABILITY'
+        | 'FULL_TIME_CARER'
+        | 'LACKS_CONFIDENCE_OR_MOTIVATION'
+        | 'HEALTH'
+        | 'RETIRED'
+        | 'NO_RIGHT_TO_WORK'
+        | 'NOT_SURE'
+        | 'OTHER'
+        | 'NO_REASON'
+      )[]
+      workExperience?: components['schemas']['CreatePreviousWorkRequest']
+      skillsAndInterests?: components['schemas']['CreateSkillsAndInterestsRequest']
+      qualificationsAndTraining?: components['schemas']['CreateEducationAndQualificationsRequest']
+      inPrisonInterests?: components['schemas']['CreatePrisonWorkAndEducationRequest']
+    }
+    /** @example null */
+    CreateEducationAndQualificationsRequest: {
+      /**
+       * @example null
+       * @enum {string}
+       */
+      educationLevel?:
+        | 'PRIMARY_SCHOOL'
+        | 'SECONDARY_SCHOOL_LEFT_BEFORE_TAKING_EXAMS'
+        | 'SECONDARY_SCHOOL_TOOK_EXAMS'
+        | 'FURTHER_EDUCATION_COLLEGE'
+        | 'UNDERGRADUATE_DEGREE_AT_UNIVERSITY'
+        | 'POSTGRADUATE_DEGREE_AT_UNIVERSITY'
+        | 'NOT_SURE'
+      /**
+       * @description A list of the Prisoner's previous qualifications
+       * @example null
+       */
+      qualifications?: components['schemas']['AchievedQualification'][]
+      /**
+       * @description Any additional training that the Prisoner has completed in the past.
+       * @example null
+       */
+      additionalTraining?: (
+        | 'CSCS_CARD'
+        | 'FIRST_AID_CERTIFICATE'
+        | 'FOOD_HYGIENE_CERTIFICATE'
+        | 'FULL_UK_DRIVING_LICENCE'
+        | 'HEALTH_AND_SAFETY'
+        | 'HGV_LICENCE'
+        | 'MACHINERY_TICKETS'
+        | 'MANUAL_HANDLING'
+        | 'TRADE_COURSE'
+        | 'OTHER'
+        | 'NONE'
+      )[]
+      /**
+       * @description A specific type of training that does not fit the given 'additionalTraining' types. Mandatory when 'additionalTraining' includes 'OTHER'.
+       * @example null
+       */
+      additionalTrainingOther?: string
+    }
+    /** @example null */
+    CreatePreviousWorkRequest: {
+      /** @example false */
+      hasWorkedBefore: boolean
+      /**
+       * @description A list of the Prisoner's type of previous work experience.
+       * @example null
+       */
+      typeOfWorkExperience?: (
+        | 'OUTDOOR'
+        | 'CONSTRUCTION'
+        | 'DRIVING'
+        | 'BEAUTY'
+        | 'HOSPITALITY'
+        | 'TECHNICAL'
+        | 'MANUFACTURING'
+        | 'OFFICE'
+        | 'RETAIL'
+        | 'SPORTS'
+        | 'WAREHOUSING'
+        | 'WASTE_MANAGEMENT'
+        | 'EDUCATION_TRAINING'
+        | 'CLEANING_AND_MAINTENANCE'
+        | 'OTHER'
+      )[]
+      /**
+       * @description A specific work experience type for the Prisoner. Mandatory when 'typeOfWorkExperience' includes 'OTHER'.
+       * @example null
+       */
+      typeOfWorkExperienceOther?: string
+      /**
+       * @description A list of the Prisoner's previous work experience details.
+       * @example null
+       */
+      workExperience?: components['schemas']['WorkExperience'][]
+      workInterests?: components['schemas']['CreateWorkInterestsRequest']
+    }
+    /** @example null */
+    CreatePrisonWorkAndEducationRequest: {
+      /**
+       * @description A list of in-prison work that the Prisoner is interested in.
+       * @example null
+       */
+      inPrisonWork?: (
+        | 'CLEANING_AND_HYGIENE'
+        | 'COMPUTERS_OR_DESK_BASED'
+        | 'GARDENING_AND_OUTDOORS'
+        | 'KITCHENS_AND_COOKING'
+        | 'MAINTENANCE'
+        | 'PRISON_LAUNDRY'
+        | 'PRISON_LIBRARY'
+        | 'TEXTILES_AND_SEWING'
+        | 'WELDING_AND_METALWORK'
+        | 'WOODWORK_AND_JOINERY'
+        | 'OTHER'
+      )[]
+      /**
+       * @description A specific type of in-prison work that does not fit the given 'inPrisonWork' types. Mandatory when 'inPrisonWork' includes 'OTHER'.
+       * @example null
+       */
+      inPrisonWorkOther?: string
+      /**
+       * @description Any potential in-prison education/training that the Prisoner is interested in.
+       * @example null
+       */
+      inPrisonEducation?: (
+        | 'BARBERING_AND_HAIRDRESSING'
+        | 'CATERING'
+        | 'COMMUNICATION_SKILLS'
+        | 'ENGLISH_LANGUAGE_SKILLS'
+        | 'FORKLIFT_DRIVING'
+        | 'INTERVIEW_SKILLS'
+        | 'MACHINERY_TICKETS'
+        | 'NUMERACY_SKILLS'
+        | 'RUNNING_A_BUSINESS'
+        | 'SOCIAL_AND_LIFE_SKILLS'
+        | 'WELDING_AND_METALWORK'
+        | 'WOODWORK_AND_JOINERY'
+        | 'OTHER'
+      )[]
+      /**
+       * @description A specific type of in-prison education/training that does not fit the given 'inPrisonEducation' types. Mandatory when 'inPrisonEducation' includes 'OTHER'.
+       * @example null
+       */
+      inPrisonEducationOther?: string
+    }
+    /** @example null */
+    CreateSkillsAndInterestsRequest: {
+      /**
+       * @description One or more skills that the Prisoner feels they have.
+       * @example null
+       */
+      skills?: (
+        | 'COMMUNICATION'
+        | 'POSITIVE_ATTITUDE'
+        | 'RESILIENCE'
+        | 'SELF_MANAGEMENT'
+        | 'TEAMWORK'
+        | 'THINKING_AND_PROBLEM_SOLVING'
+        | 'WILLINGNESS_TO_LEARN'
+        | 'OTHER'
+        | 'NONE'
+      )[]
+      /**
+       * @description A specific type of a skill that the Prisoner feels they have. Mandatory when 'skills' includes 'OTHER'.
+       * @example null
+       */
+      skillsOther?: string
+      /**
+       * @description One or more interests that the Prisoner feels they have.
+       * @example null
+       */
+      personalInterests?: (
+        | 'COMMUNITY'
+        | 'CRAFTS'
+        | 'CREATIVE'
+        | 'DIGITAL'
+        | 'KNOWLEDGE_BASED'
+        | 'MUSICAL'
+        | 'OUTDOOR'
+        | 'NATURE_AND_ANIMALS'
+        | 'SOCIAL'
+        | 'SOLO_ACTIVITIES'
+        | 'SOLO_SPORTS'
+        | 'TEAM_SPORTS'
+        | 'WELLNESS'
+        | 'OTHER'
+        | 'NONE'
+      )[]
+      /**
+       * @description A specific type of a interest that the Prisoner feels they have. Mandatory when 'personalInterests' includes 'OTHER'.
+       * @example null
+       */
+      personalInterestsOther?: string
+    }
+    /** @example null */
+    CreateWorkInterestsRequest: {
+      /**
+       * @description A list of Prisoner's future work interests.
+       * @example null
+       */
+      workInterests?: (
+        | 'OUTDOOR'
+        | 'CONSTRUCTION'
+        | 'DRIVING'
+        | 'BEAUTY'
+        | 'HOSPITALITY'
+        | 'TECHNICAL'
+        | 'MANUFACTURING'
+        | 'OFFICE'
+        | 'RETAIL'
+        | 'SPORTS'
+        | 'WAREHOUSING'
+        | 'WASTE_MANAGEMENT'
+        | 'EDUCATION_TRAINING'
+        | 'CLEANING_AND_MAINTENANCE'
+        | 'OTHER'
+      )[]
+      /**
+       * @description A work interest, which is not listed in 'workInterests' Enum. Mandatory when 'workInterests' includes 'OTHER'.
+       * @example null
+       */
+      workInterestsOther?: string
+      /**
+       * @description A detailed list of work interests that a Prisoner has.
+       * @example null
+       */
+      particularJobInterests?: components['schemas']['WorkInterestDetail'][]
+    }
+    GetCiagInductionSummariesRequest: {
+      /**
+       * @description A List of prison numbers whose CIAG Inductions should be retrieved.
+       * @example null
+       */
+      offenderIds: string[]
+    }
+    CiagInductionSummaryListResponse: {
+      /**
+       * @description A List of prisoners' CIAG Induction summaries. Can be empty but not null.
+       * @example null
+       */
+      ciagProfileList: components['schemas']['CiagInductionSummaryResponse'][]
+    }
+    /**
+     * @description A List of prisoners' CIAG Induction summaries. Can be empty but not null.
+     * @example null
+     */
+    CiagInductionSummaryResponse: {
+      /**
+       * @description The ID of the Prisoner. AKA the prison number.
+       * @example A1234BC
+       */
+      offenderId: string
+      /**
+       * @description Whether the Prisoner wishes to work or not.
+       * @example false
+       */
+      desireToWork: boolean
+      /**
+       * @example null
+       * @enum {string}
+       */
+      hopingToGetWork: 'YES' | 'NO' | 'NOT_SURE'
+      /**
+       * @description The DPS username of the person who created the Induction.
+       * @example asmith_gen
+       */
+      createdBy: string
+      /**
+       * Format: date-time
+       * @description An ISO-8601 timestamp representing when the Induction was created.
+       * @example 2023-06-19T09:39:44Z
+       */
+      createdDateTime: string
+      /**
+       * @description The DPS username of the person who last updated the Induction.
+       * @example asmith_gen
+       */
+      modifiedBy: string
+      /**
+       * Format: date-time
+       * @description An ISO-8601 timestamp representing when the Goal was last updated. This will be the same as the created date if it has not yet been updated.
+       * @example 2023-06-19T09:39:44Z
+       */
+      modifiedDateTime: string
+    }
     GetActionPlanSummariesRequest: {
       /**
-       * @description A List of at least one prison number.
+       * @description A List of prison numbers whose Action Plans should be retrieved.
        * @example null
        */
       prisonNumbers: string[]
@@ -151,6 +1448,11 @@ export interface components {
        */
       title: string
       /**
+       * Format: date
+       * @description An optional ISO-8601 date representing the target completion date of the Goal.
+       */
+      targetCompletionDate: string
+      /**
        * @description A List of at least one Step.
        * @example null
        */
@@ -160,11 +1462,6 @@ export interface components {
        * @example BXI
        */
       prisonId: string
-      /**
-       * Format: date
-       * @description An optional ISO-8601 date representing the target completion date of the Goal.
-       */
-      targetCompletionDate?: string
       /**
        * @description Some additional notes related to the Goal.
        * @example Pay close attention to Peter's behaviour.
@@ -279,6 +1576,927 @@ export interface components {
        */
       events: components['schemas']['TimelineEventResponse'][]
     }
+    GetDlqResult: {
+      /** Format: int32 */
+      messagesFoundCount: number
+      /** Format: int32 */
+      messagesReturnedCount: number
+      messages: components['schemas']['DlqMessage'][]
+    }
+    /** @example null */
+    FutureWorkInterestsResponse: {
+      /**
+       * Format: uuid
+       * @description A unique reference reference for this FutureWorkInterestsResponse.
+       * @example 814ade0a-a3b2-46a3-862f-79211ba13f7b
+       */
+      reference: string
+      /**
+       * @description One or more future work interests that the Prisoner has.
+       * @example null
+       */
+      interests: components['schemas']['FutureWorkInterest'][]
+      /**
+       * @description The DPS username of the person who created this resource.
+       * @example asmith_gen
+       */
+      createdBy: string
+      /**
+       * @description The display name of the person who created this resource.
+       * @example Alex Smith
+       */
+      createdByDisplayName: string
+      /**
+       * Format: date-time
+       * @description An ISO-8601 timestamp representing when this resource was created.
+       * @example 2023-06-19T09:39:44Z
+       */
+      createdAt: string
+      /**
+       * @description The identifier of the prison that the prisoner was resident at when this resource was created.
+       * @example BXI
+       */
+      createdAtPrison: string
+      /**
+       * @description The DPS username of the person who last updated this resource.
+       * @example asmith_gen
+       */
+      updatedBy: string
+      /**
+       * @description The display name of the person who last updated this resource.
+       * @example Alex Smith
+       */
+      updatedByDisplayName: string
+      /**
+       * Format: date-time
+       * @description An ISO-8601 timestamp representing when this resource was last updated. This will be the same as the created date if it has not yet been updated.
+       * @example 2023-06-19T09:39:44Z
+       */
+      updatedAt: string
+      /**
+       * @description The identifier of the prison that the prisoner was resident at when this resource was updated.
+       * @example BXI
+       */
+      updatedAtPrison: string
+    }
+    /** @example null */
+    InPrisonInterestsResponse: {
+      /**
+       * Format: uuid
+       * @description A unique reference reference for this InPrisonInterestsResponse.
+       * @example 814ade0a-a3b2-46a3-862f-79211ba13f7b
+       */
+      reference: string
+      /**
+       * @description A list of in-prison work that the Prisoner is interested in.
+       * @example null
+       */
+      inPrisonWorkInterests: components['schemas']['InPrisonWorkInterest'][]
+      /**
+       * @description A list of in-prison training that the Prisoner is interested in.
+       * @example null
+       */
+      inPrisonTrainingInterests: components['schemas']['InPrisonTrainingInterest'][]
+      /**
+       * @description The DPS username of the person who created this resource.
+       * @example asmith_gen
+       */
+      createdBy: string
+      /**
+       * @description The display name of the person who created this resource.
+       * @example Alex Smith
+       */
+      createdByDisplayName: string
+      /**
+       * Format: date-time
+       * @description An ISO-8601 timestamp representing when this resource was created.
+       * @example 2023-06-19T09:39:44Z
+       */
+      createdAt: string
+      /**
+       * @description The identifier of the prison that the prisoner was resident at when this resource was created.
+       * @example BXI
+       */
+      createdAtPrison: string
+      /**
+       * @description The DPS username of the person who last updated this resource.
+       * @example asmith_gen
+       */
+      updatedBy: string
+      /**
+       * @description The display name of the person who last updated this resource.
+       * @example Alex Smith
+       */
+      updatedByDisplayName: string
+      /**
+       * Format: date-time
+       * @description An ISO-8601 timestamp representing when this resource was last updated. This will be the same as the created date if it has not yet been updated.
+       * @example 2023-06-19T09:39:44Z
+       */
+      updatedAt: string
+      /**
+       * @description The identifier of the prison that the prisoner was resident at when this resource was updated.
+       * @example BXI
+       */
+      updatedAtPrison: string
+    }
+    InductionResponse: {
+      /**
+       * Format: uuid
+       * @description A unique reference for this Induction.
+       * @example 814ade0a-a3b2-46a3-862f-79211ba13f7b
+       */
+      reference: string
+      workOnRelease: components['schemas']['WorkOnReleaseResponse']
+      /**
+       * @description The DPS username of the person who created the Induction.
+       * @example asmith_gen
+       */
+      createdBy: string
+      /**
+       * @description The display name of the person who created the Induction.
+       * @example Alex Smith
+       */
+      createdByDisplayName: string
+      /**
+       * Format: date-time
+       * @description An ISO-8601 timestamp representing when the Induction was created.
+       * @example 2023-06-19T09:39:44Z
+       */
+      createdAt: string
+      /**
+       * @description The identifier of the prison that the prisoner was resident at when the Induction was created.
+       * @example BXI
+       */
+      createdAtPrison: string
+      /**
+       * @description The DPS username of the person who last updated the Induction.
+       * @example asmith_gen
+       */
+      updatedBy: string
+      /**
+       * @description The display name of the person who last updated the Induction.
+       * @example Alex Smith
+       */
+      updatedByDisplayName: string
+      /**
+       * Format: date-time
+       * @description An ISO-8601 timestamp representing when the Induction was last updated. This will be the same as the created date if it has not yet been updated.
+       * @example 2023-06-19T09:39:44Z
+       */
+      updatedAt: string
+      /**
+       * @description The identifier of the prison that the prisoner was resident at when the Induction was updated.
+       * @example BXI
+       */
+      updatedAtPrison: string
+      previousQualifications?: components['schemas']['PreviousQualificationsResponse']
+      previousTraining?: components['schemas']['PreviousTrainingResponse']
+      previousWorkExperiences?: components['schemas']['PreviousWorkExperiencesResponse']
+      inPrisonInterests?: components['schemas']['InPrisonInterestsResponse']
+      personalSkillsAndInterests?: components['schemas']['PersonalSkillsAndInterestsResponse']
+      futureWorkInterests?: components['schemas']['FutureWorkInterestsResponse']
+    }
+    /** @example null */
+    PersonalSkillsAndInterestsResponse: {
+      /**
+       * Format: uuid
+       * @description A unique reference reference for this PersonalSkillsAndInterestsResponse.
+       * @example 814ade0a-a3b2-46a3-862f-79211ba13f7b
+       */
+      reference: string
+      /**
+       * @description One or more skills that the Prisoner feels they have.
+       * @example null
+       */
+      skills: components['schemas']['PersonalSkill'][]
+      /**
+       * @description One or more interests that the Prisoner feels they have.
+       * @example null
+       */
+      interests: components['schemas']['PersonalInterest'][]
+      /**
+       * @description The DPS username of the person who created this resource.
+       * @example asmith_gen
+       */
+      createdBy: string
+      /**
+       * @description The display name of the person who created this resource.
+       * @example Alex Smith
+       */
+      createdByDisplayName: string
+      /**
+       * Format: date-time
+       * @description An ISO-8601 timestamp representing when this resource was created.
+       * @example 2023-06-19T09:39:44Z
+       */
+      createdAt: string
+      /**
+       * @description The identifier of the prison that the prisoner was resident at when this resource was created.
+       * @example BXI
+       */
+      createdAtPrison: string
+      /**
+       * @description The DPS username of the person who last updated this resource.
+       * @example asmith_gen
+       */
+      updatedBy: string
+      /**
+       * @description The display name of the person who last updated this resource.
+       * @example Alex Smith
+       */
+      updatedByDisplayName: string
+      /**
+       * Format: date-time
+       * @description An ISO-8601 timestamp representing when this resource was last updated. This will be the same as the created date if it has not yet been updated.
+       * @example 2023-06-19T09:39:44Z
+       */
+      updatedAt: string
+      /**
+       * @description The identifier of the prison that the prisoner was resident at when this resource was updated.
+       * @example BXI
+       */
+      updatedAtPrison: string
+    }
+    /** @example null */
+    PreviousQualificationsResponse: {
+      /**
+       * Format: uuid
+       * @description A unique reference reference for this PreviousQualificationsResponse.
+       * @example 814ade0a-a3b2-46a3-862f-79211ba13f7b
+       */
+      reference: string
+      /**
+       * @example null
+       * @enum {string}
+       */
+      educationLevel:
+        | 'PRIMARY_SCHOOL'
+        | 'SECONDARY_SCHOOL_LEFT_BEFORE_TAKING_EXAMS'
+        | 'SECONDARY_SCHOOL_TOOK_EXAMS'
+        | 'FURTHER_EDUCATION_COLLEGE'
+        | 'UNDERGRADUATE_DEGREE_AT_UNIVERSITY'
+        | 'POSTGRADUATE_DEGREE_AT_UNIVERSITY'
+        | 'NOT_SURE'
+      /**
+       * @description A list of the Prisoner's previous qualifications. Can be empty but not null.
+       * @example null
+       */
+      qualifications: components['schemas']['AchievedQualification'][]
+      /**
+       * @description The DPS username of the person who created this resource.
+       * @example asmith_gen
+       */
+      createdBy: string
+      /**
+       * @description The display name of the person who created this resource.
+       * @example Alex Smith
+       */
+      createdByDisplayName: string
+      /**
+       * Format: date-time
+       * @description An ISO-8601 timestamp representing when this resource was created.
+       * @example 2023-06-19T09:39:44Z
+       */
+      createdAt: string
+      /**
+       * @description The identifier of the prison that the prisoner was resident at when this resource was created.
+       * @example BXI
+       */
+      createdAtPrison: string
+      /**
+       * @description The DPS username of the person who last updated this resource.
+       * @example asmith_gen
+       */
+      updatedBy: string
+      /**
+       * @description The display name of the person who last updated this resource.
+       * @example Alex Smith
+       */
+      updatedByDisplayName: string
+      /**
+       * Format: date-time
+       * @description An ISO-8601 timestamp representing when this resource was last updated. This will be the same as the created date if it has not yet been updated.
+       * @example 2023-06-19T09:39:44Z
+       */
+      updatedAt: string
+      /**
+       * @description The identifier of the prison that the prisoner was resident at when this resource was updated.
+       * @example BXI
+       */
+      updatedAtPrison: string
+    }
+    /** @example null */
+    PreviousTrainingResponse: {
+      /**
+       * Format: uuid
+       * @description A unique reference reference for this PreviousTrainingResponse.
+       * @example 814ade0a-a3b2-46a3-862f-79211ba13f7b
+       */
+      reference: string
+      /**
+       * @description Any additional training that the Prisoner has completed in the past. Can be empty, but never null.
+       * @example null
+       */
+      trainingTypes: (
+        | 'CSCS_CARD'
+        | 'FIRST_AID_CERTIFICATE'
+        | 'FOOD_HYGIENE_CERTIFICATE'
+        | 'FULL_UK_DRIVING_LICENCE'
+        | 'HEALTH_AND_SAFETY'
+        | 'HGV_LICENCE'
+        | 'MACHINERY_TICKETS'
+        | 'MANUAL_HANDLING'
+        | 'TRADE_COURSE'
+        | 'OTHER'
+        | 'NONE'
+      )[]
+      /**
+       * @description The DPS username of the person who created this resource.
+       * @example asmith_gen
+       */
+      createdBy: string
+      /**
+       * @description The display name of the person who created this resource.
+       * @example Alex Smith
+       */
+      createdByDisplayName: string
+      /**
+       * Format: date-time
+       * @description An ISO-8601 timestamp representing when this resource was created.
+       * @example 2023-06-19T09:39:44Z
+       */
+      createdAt: string
+      /**
+       * @description The identifier of the prison that the prisoner was resident at when this resource was created.
+       * @example BXI
+       */
+      createdAtPrison: string
+      /**
+       * @description The DPS username of the person who last updated this resource.
+       * @example asmith_gen
+       */
+      updatedBy: string
+      /**
+       * @description The display name of the person who last updated this resource.
+       * @example Alex Smith
+       */
+      updatedByDisplayName: string
+      /**
+       * Format: date-time
+       * @description An ISO-8601 timestamp representing when this resource was last updated. This will be the same as the created date if it has not yet been updated.
+       * @example 2023-06-19T09:39:44Z
+       */
+      updatedAt: string
+      /**
+       * @description The identifier of the prison that the prisoner was resident at when this resource was updated.
+       * @example BXI
+       */
+      updatedAtPrison: string
+      /**
+       * @description A specific type of training that does not fit the given 'trainingTypes'. Mandatory when 'trainingTypes' includes 'OTHER'.
+       * @example null
+       */
+      trainingTypeOther?: string
+    }
+    /** @example null */
+    PreviousWorkExperiencesResponse: {
+      /**
+       * Format: uuid
+       * @description A unique reference reference for this PreviousWorkExperiencesResponse.
+       * @example 814ade0a-a3b2-46a3-862f-79211ba13f7b
+       */
+      reference: string
+      /** @example false */
+      hasWorkedBefore: boolean
+      /**
+       * @description A list of the Prisoner's previous work experiences.
+       * @example null
+       */
+      experiences: components['schemas']['PreviousWorkExperience'][]
+      /**
+       * @description The DPS username of the person who created this resource.
+       * @example asmith_gen
+       */
+      createdBy: string
+      /**
+       * @description The display name of the person who created this resource.
+       * @example Alex Smith
+       */
+      createdByDisplayName: string
+      /**
+       * Format: date-time
+       * @description An ISO-8601 timestamp representing when this resource was created.
+       * @example 2023-06-19T09:39:44Z
+       */
+      createdAt: string
+      /**
+       * @description The identifier of the prison that the prisoner was resident at when this resource was created.
+       * @example BXI
+       */
+      createdAtPrison: string
+      /**
+       * @description The DPS username of the person who last updated this resource.
+       * @example asmith_gen
+       */
+      updatedBy: string
+      /**
+       * @description The display name of the person who last updated this resource.
+       * @example Alex Smith
+       */
+      updatedByDisplayName: string
+      /**
+       * Format: date-time
+       * @description An ISO-8601 timestamp representing when this resource was last updated. This will be the same as the created date if it has not yet been updated.
+       * @example 2023-06-19T09:39:44Z
+       */
+      updatedAt: string
+      /**
+       * @description The identifier of the prison that the prisoner was resident at when this resource was updated.
+       * @example BXI
+       */
+      updatedAtPrison: string
+    }
+    /** @example null */
+    WorkOnReleaseResponse: {
+      /**
+       * Format: uuid
+       * @description A unique reference reference for this WorkOnReleaseResponse.
+       * @example 814ade0a-a3b2-46a3-862f-79211ba13f7b
+       */
+      reference: string
+      /**
+       * @example null
+       * @enum {string}
+       */
+      hopingToWork: 'YES' | 'NO' | 'NOT_SURE'
+      /**
+       * @description Reasons the Prisoner has given not to get work after leaving Prison. Can be empty but not null.
+       * @example null
+       */
+      notHopingToWorkReasons: (
+        | 'LIMIT_THEIR_ABILITY'
+        | 'FULL_TIME_CARER'
+        | 'LACKS_CONFIDENCE_OR_MOTIVATION'
+        | 'HEALTH'
+        | 'RETIRED'
+        | 'NO_RIGHT_TO_WORK'
+        | 'NOT_SURE'
+        | 'OTHER'
+        | 'NO_REASON'
+      )[]
+      /**
+       * @description Factors affecting the Prisoner's ability to work. Can be empty but not null.
+       * @example null
+       */
+      affectAbilityToWork: (
+        | 'CARING_RESPONSIBILITIES'
+        | 'LIMITED_BY_OFFENSE'
+        | 'HEALTH_ISSUES'
+        | 'NO_RIGHT_TO_WORK'
+        | 'OTHER'
+        | 'NONE'
+      )[]
+      /**
+       * @description The DPS username of the person who created this resource.
+       * @example asmith_gen
+       */
+      createdBy: string
+      /**
+       * @description The display name of the person who created this resource.
+       * @example Alex Smith
+       */
+      createdByDisplayName: string
+      /**
+       * Format: date-time
+       * @description An ISO-8601 timestamp representing when this resource was created.
+       * @example 2023-06-19T09:39:44Z
+       */
+      createdAt: string
+      /**
+       * @description The identifier of the prison that the prisoner was resident at when this resource was created.
+       * @example BXI
+       */
+      createdAtPrison: string
+      /**
+       * @description The DPS username of the person who last updated this resource.
+       * @example asmith_gen
+       */
+      updatedBy: string
+      /**
+       * @description The display name of the person who last updated this resource.
+       * @example Alex Smith
+       */
+      updatedByDisplayName: string
+      /**
+       * Format: date-time
+       * @description An ISO-8601 timestamp representing when this resource was last updated. This will be the same as the created date if it has not yet been updated.
+       * @example 2023-06-19T09:39:44Z
+       */
+      updatedAt: string
+      /**
+       * @description The identifier of the prison that the prisoner was resident at when this resource was updated.
+       * @example BXI
+       */
+      updatedAtPrison: string
+      /**
+       * @description The reason that is given when the Prisoner does not want to work. This is mandatory when 'notHopingToWorkReasons' includes 'OTHER'.
+       * @example null
+       */
+      notHopingToWorkOtherReason?: string
+      /**
+       * @description A specific factor affecting the Prisoner's ability to work. This is mandatory when 'affectAbilityToWork' includes 'OTHER'.
+       * @example null
+       */
+      affectAbilityToWorkOther?: string
+    }
+    CiagInductionResponse: {
+      /**
+       * Format: uuid
+       * @description The Induction's unique reference.
+       * @example 814ade0a-a3b2-46a3-862f-79211ba13f7b
+       */
+      reference: string
+      /**
+       * @description The ID of the Prisoner. AKA the prison number.
+       * @example null
+       */
+      offenderId: string
+      /**
+       * @example null
+       * @enum {string}
+       */
+      hopingToGetWork: 'YES' | 'NO' | 'NOT_SURE'
+      /**
+       * @description The DPS username of the person who created the Induction.
+       * @example asmith_gen
+       */
+      createdBy: string
+      /**
+       * Format: date-time
+       * @description An ISO-8601 timestamp representing when the Induction was created.
+       * @example 2023-06-19T09:39:44Z
+       */
+      createdDateTime: string
+      /**
+       * @description The DPS username of the person who last updated the Induction.
+       * @example asmith_gen
+       */
+      modifiedBy: string
+      /**
+       * Format: date-time
+       * @description An ISO-8601 timestamp representing when the Goal was last updated. This will be the same as the created date if it has not yet been updated.
+       * @example 2023-06-19T09:39:44Z
+       */
+      modifiedDateTime: string
+      /**
+       * @description The ID of the Prison that that Prisoner is currently at.
+       * @example null
+       */
+      prisonId?: string
+      /**
+       * @description Whether the Prisoner wishes to work or not.
+       * @example false
+       */
+      desireToWork?: boolean
+      /**
+       * @description The reason that is given when the Prisoner does not want to work. This is mandatory when 'reasonToNotGetWork' is set to 'OTHER'.
+       * @example null
+       */
+      reasonToNotGetWorkOther?: string
+      /**
+       * @description One or more factors affecting the Prisoner's ability to work.
+       * @example null
+       */
+      abilityToWork?: (
+        | 'CARING_RESPONSIBILITIES'
+        | 'LIMITED_BY_OFFENSE'
+        | 'HEALTH_ISSUES'
+        | 'NO_RIGHT_TO_WORK'
+        | 'OTHER'
+        | 'NONE'
+      )[]
+      /**
+       * @description A specific factor affecting the Prisoner's ability to work. This is mandatory when 'abilityToWork' is set to 'OTHER'.
+       * @example null
+       */
+      abilityToWorkOther?: string
+      /**
+       * @description One or more reasons the Prisoner has given not to get work after leaving Prison.
+       * @example null
+       */
+      reasonToNotGetWork?: (
+        | 'LIMIT_THEIR_ABILITY'
+        | 'FULL_TIME_CARER'
+        | 'LACKS_CONFIDENCE_OR_MOTIVATION'
+        | 'HEALTH'
+        | 'RETIRED'
+        | 'NO_RIGHT_TO_WORK'
+        | 'NOT_SURE'
+        | 'OTHER'
+        | 'NO_REASON'
+      )[]
+      workExperience?: components['schemas']['PreviousWorkResponse']
+      skillsAndInterests?: components['schemas']['SkillsAndInterestsResponse']
+      qualificationsAndTraining?: components['schemas']['EducationAndQualificationResponse']
+      inPrisonInterests?: components['schemas']['PrisonWorkAndEducationResponse']
+    }
+    /** @example null */
+    EducationAndQualificationResponse: {
+      /**
+       * @description The DPS username of the person who last updated this Prisoner's education and qualifications.
+       * @example asmith_gen
+       */
+      modifiedBy: string
+      /**
+       * Format: date-time
+       * @description An ISO-8601 timestamp representing when this Prisoner's education and qualifications was last updated. This will be the same as the created date if it has not yet been updated.
+       * @example 2023-06-19T09:39:44Z
+       */
+      modifiedDateTime: string
+      /**
+       * Format: uuid
+       * @description A unique reference for this Prisoner's education and qualifications (not the database primary key).
+       * @example c88a6c48-97e2-4c04-93b5-98619966447b
+       */
+      id?: string
+      /**
+       * @example null
+       * @enum {string}
+       */
+      educationLevel?:
+        | 'PRIMARY_SCHOOL'
+        | 'SECONDARY_SCHOOL_LEFT_BEFORE_TAKING_EXAMS'
+        | 'SECONDARY_SCHOOL_TOOK_EXAMS'
+        | 'FURTHER_EDUCATION_COLLEGE'
+        | 'UNDERGRADUATE_DEGREE_AT_UNIVERSITY'
+        | 'POSTGRADUATE_DEGREE_AT_UNIVERSITY'
+        | 'NOT_SURE'
+      /**
+       * @description A list of the Prisoner's previous qualifications
+       * @example null
+       */
+      qualifications?: components['schemas']['AchievedQualification'][]
+      /**
+       * @description Any additional training that the Prisoner has completed in the past.
+       * @example null
+       */
+      additionalTraining?: (
+        | 'CSCS_CARD'
+        | 'FIRST_AID_CERTIFICATE'
+        | 'FOOD_HYGIENE_CERTIFICATE'
+        | 'FULL_UK_DRIVING_LICENCE'
+        | 'HEALTH_AND_SAFETY'
+        | 'HGV_LICENCE'
+        | 'MACHINERY_TICKETS'
+        | 'MANUAL_HANDLING'
+        | 'TRADE_COURSE'
+        | 'OTHER'
+        | 'NONE'
+      )[]
+      /**
+       * @description A specific type of training that does not fit the given 'additionalTraining' types. Mandatory when 'additionalTraining' includes 'OTHER'.
+       * @example null
+       */
+      additionalTrainingOther?: string
+    }
+    /** @example null */
+    PreviousWorkResponse: {
+      /** @example false */
+      hasWorkedBefore: boolean
+      /**
+       * @description The DPS username of the person who last updated this Prisoner's previous work.
+       * @example asmith_gen
+       */
+      modifiedBy: string
+      /**
+       * Format: date-time
+       * @description An ISO-8601 timestamp representing when this Prisoner's previous work was last updated. This will be the same as the created date if it has not yet been updated.
+       * @example 2023-06-19T09:39:44Z
+       */
+      modifiedDateTime: string
+      /**
+       * Format: uuid
+       * @description A unique reference for this Prisoner's previous work experience (not the database primary key).
+       * @example c88a6c48-97e2-4c04-93b5-98619966447b
+       */
+      id?: string
+      /**
+       * @description A list of the Prisoner's type of previous work experience.
+       * @example null
+       */
+      typeOfWorkExperience?: (
+        | 'OUTDOOR'
+        | 'CONSTRUCTION'
+        | 'DRIVING'
+        | 'BEAUTY'
+        | 'HOSPITALITY'
+        | 'TECHNICAL'
+        | 'MANUFACTURING'
+        | 'OFFICE'
+        | 'RETAIL'
+        | 'SPORTS'
+        | 'WAREHOUSING'
+        | 'WASTE_MANAGEMENT'
+        | 'EDUCATION_TRAINING'
+        | 'CLEANING_AND_MAINTENANCE'
+        | 'OTHER'
+      )[]
+      /**
+       * @description A specific work experience type for the Prisoner. Mandatory when 'typeOfWorkExperience' includes 'OTHER'.
+       * @example null
+       */
+      typeOfWorkExperienceOther?: string
+      /**
+       * @description A list of the Prisoner's previous work experience details.
+       * @example null
+       */
+      workExperience?: components['schemas']['WorkExperience'][]
+      workInterests?: components['schemas']['WorkInterestsResponse']
+    }
+    /** @example null */
+    PrisonWorkAndEducationResponse: {
+      /**
+       * @description The DPS username of the person who last updated this Prisoner's in-prison work and education interests.
+       * @example asmith_gen
+       */
+      modifiedBy: string
+      /**
+       * Format: date-time
+       * @description An ISO-8601 timestamp representing when this Prisoner's in-prison work and education interests was last updated. This will be the same as the created date if it has not yet been updated.
+       * @example 2023-06-19T09:39:44Z
+       */
+      modifiedDateTime: string
+      /**
+       * Format: uuid
+       * @description A unique reference for this Prisoner's in-prison work and education interests (not the database primary key).
+       * @example c88a6c48-97e2-4c04-93b5-98619966447b
+       */
+      id?: string
+      /**
+       * @description A list of in-prison work that the Prisoner is interested in.
+       * @example null
+       */
+      inPrisonWork?: (
+        | 'CLEANING_AND_HYGIENE'
+        | 'COMPUTERS_OR_DESK_BASED'
+        | 'GARDENING_AND_OUTDOORS'
+        | 'KITCHENS_AND_COOKING'
+        | 'MAINTENANCE'
+        | 'PRISON_LAUNDRY'
+        | 'PRISON_LIBRARY'
+        | 'TEXTILES_AND_SEWING'
+        | 'WELDING_AND_METALWORK'
+        | 'WOODWORK_AND_JOINERY'
+        | 'OTHER'
+      )[]
+      /**
+       * @description A specific type of in-prison work that does not fit the given 'inPrisonWork' types. Mandatory when 'inPrisonWork' includes 'OTHER'.
+       * @example null
+       */
+      inPrisonWorkOther?: string
+      /**
+       * @description Any potential in-prison education/training that the Prisoner is interested in.
+       * @example null
+       */
+      inPrisonEducation?: (
+        | 'BARBERING_AND_HAIRDRESSING'
+        | 'CATERING'
+        | 'COMMUNICATION_SKILLS'
+        | 'ENGLISH_LANGUAGE_SKILLS'
+        | 'FORKLIFT_DRIVING'
+        | 'INTERVIEW_SKILLS'
+        | 'MACHINERY_TICKETS'
+        | 'NUMERACY_SKILLS'
+        | 'RUNNING_A_BUSINESS'
+        | 'SOCIAL_AND_LIFE_SKILLS'
+        | 'WELDING_AND_METALWORK'
+        | 'WOODWORK_AND_JOINERY'
+        | 'OTHER'
+      )[]
+      /**
+       * @description A specific type of in-prison education/training that does not fit the given 'inPrisonEducation' types. Mandatory when 'inPrisonEducation' includes 'OTHER'.
+       * @example null
+       */
+      inPrisonEducationOther?: string
+    }
+    /** @example null */
+    SkillsAndInterestsResponse: {
+      /**
+       * @description The DPS username of the person who last updated this Prisoner's skills and interests.
+       * @example asmith_gen
+       */
+      modifiedBy: string
+      /**
+       * Format: date-time
+       * @description An ISO-8601 timestamp representing when this Prisoner's skills and interests was last updated. This will be the same as the created date if it has not yet been updated.
+       * @example 2023-06-19T09:39:44Z
+       */
+      modifiedDateTime: string
+      /**
+       * Format: uuid
+       * @description A unique reference for this Prisoner's skills and interests (not the database primary key).
+       * @example c88a6c48-97e2-4c04-93b5-98619966447b
+       */
+      id?: string
+      /**
+       * @description One or more skills that the Prisoner feels they have.
+       * @example null
+       */
+      skills?: (
+        | 'COMMUNICATION'
+        | 'POSITIVE_ATTITUDE'
+        | 'RESILIENCE'
+        | 'SELF_MANAGEMENT'
+        | 'TEAMWORK'
+        | 'THINKING_AND_PROBLEM_SOLVING'
+        | 'WILLINGNESS_TO_LEARN'
+        | 'OTHER'
+        | 'NONE'
+      )[]
+      /**
+       * @description A specific type of a skill that the Prisoner feels they have. Mandatory when 'skills' includes 'OTHER'.
+       * @example null
+       */
+      skillsOther?: string
+      /**
+       * @description One or more interests that the Prisoner feels they have.
+       * @example null
+       */
+      personalInterests?: (
+        | 'COMMUNITY'
+        | 'CRAFTS'
+        | 'CREATIVE'
+        | 'DIGITAL'
+        | 'KNOWLEDGE_BASED'
+        | 'MUSICAL'
+        | 'OUTDOOR'
+        | 'NATURE_AND_ANIMALS'
+        | 'SOCIAL'
+        | 'SOLO_ACTIVITIES'
+        | 'SOLO_SPORTS'
+        | 'TEAM_SPORTS'
+        | 'WELLNESS'
+        | 'OTHER'
+        | 'NONE'
+      )[]
+      /**
+       * @description A specific type of a interest that the Prisoner feels they have. Mandatory when 'personalInterests' includes 'OTHER'.
+       * @example null
+       */
+      personalInterestsOther?: string
+    }
+    /** @example null */
+    WorkInterestsResponse: {
+      /**
+       * Format: uuid
+       * @description A unique reference for this Prisoner's work interests.
+       * @example c88a6c48-97e2-4c04-93b5-98619966447b
+       */
+      id: string
+      /**
+       * @description The DPS username of the person who last updated the Induction.
+       * @example asmith_gen
+       */
+      modifiedBy: string
+      /**
+       * Format: date-time
+       * @description An ISO-8601 timestamp representing when the Goal was last updated. This will be the same as the created date if it has not yet been updated.
+       * @example 2023-06-19T09:39:44Z
+       */
+      modifiedDateTime: string
+      /**
+       * @description A list of Prisoner's future work interests.
+       * @example null
+       */
+      workInterests?: (
+        | 'OUTDOOR'
+        | 'CONSTRUCTION'
+        | 'DRIVING'
+        | 'BEAUTY'
+        | 'HOSPITALITY'
+        | 'TECHNICAL'
+        | 'MANUFACTURING'
+        | 'OFFICE'
+        | 'RETAIL'
+        | 'SPORTS'
+        | 'WAREHOUSING'
+        | 'WASTE_MANAGEMENT'
+        | 'EDUCATION_TRAINING'
+        | 'CLEANING_AND_MAINTENANCE'
+        | 'OTHER'
+      )[]
+      /**
+       * @description A work interest, which is not listed in 'workInterests' Enum. Mandatory when 'workInterests' includes 'OTHER'.
+       * @example null
+       */
+      workInterestsOther?: string
+      /**
+       * @description A detailed list of work interests that a Prisoner has.
+       * @example null
+       */
+      particularJobInterests?: components['schemas']['WorkInterestDetail'][]
+    }
     ActionPlanResponse: {
       /**
        * Format: uuid
@@ -318,6 +2536,11 @@ export interface components {
        * @example Improve communication skills
        */
       title: string
+      /**
+       * Format: date
+       * @description An optional ISO-8601 date representing the target completion date of the Goal.
+       */
+      targetCompletionDate: string
       /**
        * @example null
        * @enum {string}
@@ -371,11 +2594,6 @@ export interface components {
        */
       updatedAtPrison: string
       /**
-       * Format: date
-       * @description An optional ISO-8601 date representing the target completion date of the Goal.
-       */
-      targetCompletionDate?: string
-      /**
        * @description Some additional notes related to the Goal.
        * @example Pay close attention to Peter's behaviour.
        */
@@ -420,6 +2638,140 @@ export interface components {
 export type external = Record<string, never>
 
 export interface operations {
+  retryDlq: {
+    parameters: {
+      path: {
+        dlqName: string
+      }
+    }
+    responses: {
+      /** @description OK */
+      200: {
+        content: {
+          '*/*': components['schemas']['RetryDlqResult']
+        }
+      }
+    }
+  }
+  retryAllDlqs: {
+    responses: {
+      /** @description OK */
+      200: {
+        content: {
+          '*/*': components['schemas']['RetryDlqResult'][]
+        }
+      }
+    }
+  }
+  purgeQueue: {
+    parameters: {
+      path: {
+        queueName: string
+      }
+    }
+    responses: {
+      /** @description OK */
+      200: {
+        content: {
+          '*/*': components['schemas']['PurgeQueueResult']
+        }
+      }
+    }
+  }
+  getInduction: {
+    parameters: {
+      path: {
+        prisonNumber: string
+      }
+    }
+    responses: {
+      /** @description OK */
+      200: {
+        content: {
+          'application/json': components['schemas']['InductionResponse']
+        }
+      }
+    }
+  }
+  updateInduction: {
+    parameters: {
+      path: {
+        prisonNumber: string
+      }
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['UpdateInductionRequest']
+      }
+    }
+    responses: {
+      /** @description No Content */
+      204: never
+    }
+  }
+  createInduction: {
+    parameters: {
+      path: {
+        prisonNumber: string
+      }
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CreateInductionRequest']
+      }
+    }
+    responses: {
+      /** @description Created */
+      201: never
+    }
+  }
+  getInduction_1: {
+    parameters: {
+      path: {
+        prisonNumber: string
+      }
+    }
+    responses: {
+      /** @description OK */
+      200: {
+        content: {
+          'application/json': components['schemas']['CiagInductionResponse']
+        }
+      }
+    }
+  }
+  updateInduction_1: {
+    parameters: {
+      path: {
+        prisonNumber: string
+      }
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['UpdateCiagInductionRequest']
+      }
+    }
+    responses: {
+      /** @description No Content */
+      204: never
+    }
+  }
+  createInduction_1: {
+    parameters: {
+      path: {
+        prisonNumber: string
+      }
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CreateCiagInductionRequest']
+      }
+    }
+    responses: {
+      /** @description Created */
+      201: never
+    }
+  }
   updateGoal: {
     parameters: {
       path: {
@@ -435,6 +2787,21 @@ export interface operations {
     responses: {
       /** @description No Content */
       204: never
+    }
+  }
+  getInductionSummaries: {
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['GetCiagInductionSummariesRequest']
+      }
+    }
+    responses: {
+      /** @description OK */
+      200: {
+        content: {
+          'application/json': components['schemas']['CiagInductionSummaryListResponse']
+        }
+      }
     }
   }
   getActionPlanSummaries: {
@@ -510,6 +2877,24 @@ export interface operations {
       200: {
         content: {
           'application/json': components['schemas']['TimelineResponse']
+        }
+      }
+    }
+  }
+  getDlqMessages: {
+    parameters: {
+      query?: {
+        maxMessages?: number
+      }
+      path: {
+        dlqName: string
+      }
+    }
+    responses: {
+      /** @description OK */
+      200: {
+        content: {
+          '*/*': components['schemas']['GetDlqResult']
         }
       }
     }

@@ -18,4 +18,6 @@ declare module 'educationAndWorkPlanApiClient' {
 
   export type TimelineResponse = components['schemas']['TimelineResponse']
   export type TimelineEventResponse = components['schemas']['TimelineEventResponse']
+
+  export type InductionResponse = components['schemas']['InductionResponse']
 }

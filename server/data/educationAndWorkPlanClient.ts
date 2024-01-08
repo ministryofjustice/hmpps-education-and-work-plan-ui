@@ -5,6 +5,7 @@ import type {
   GetActionPlanSummariesRequest,
   UpdateGoalRequest,
   TimelineResponse,
+  InductionResponse,
 } from 'educationAndWorkPlanApiClient'
 import RestClient from './restClient'
 import config from '../config'
@@ -45,6 +46,12 @@ export default class EducationAndWorkPlanClient {
   async getTimeline(prisonNumber: string, token: string): Promise<TimelineResponse> {
     return EducationAndWorkPlanClient.restClient(token).get({
       path: `/timelines/${prisonNumber}`,
+    })
+  }
+
+  async getInduction(prisonNumber: string, token: string): Promise<InductionResponse> {
+    return EducationAndWorkPlanClient.restClient(token).get({
+      path: `/inductions/${prisonNumber}`,
     })
   }
 }
