@@ -10,7 +10,7 @@ import {
 import aValidActionPlanSummaryListResponse from '../testsupport/actionPlanSummaryListResponseTestDataBuilder'
 import aValidActionPlanSummaryResponse from '../testsupport/actionPlanSummaryResponseTestDataBuilder'
 import aValidTimelineResponse from '../testsupport/timelineResponseTestDataBuilder'
-import aValidInductionResponse from '../testsupport/inductionResponseTestDataBuilder'
+import { aShortQuestionSetInduction } from '../testsupport/inductionResponseTestDataBuilder'
 
 describe('educationAndWorkPlanClient', () => {
   const educationAndWorkPlanClient = new EducationAndWorkPlanClient()
@@ -258,7 +258,7 @@ describe('educationAndWorkPlanClient', () => {
       const prisonNumber = 'A1234BC'
       const systemToken = 'a-system-token'
 
-      const expectedInduction = aValidInductionResponse()
+      const expectedInduction = aShortQuestionSetInduction()
       educationAndWorkPlanApi.get(`/inductions/${prisonNumber}`).reply(200, expectedInduction)
 
       // When
