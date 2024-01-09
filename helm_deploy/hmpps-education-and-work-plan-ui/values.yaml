@@ -50,7 +50,7 @@ generic-service:
     PRISONER_SEARCH_API_DEFAULT_PAGE_SIZE: "9999"
     PRISONER_LIST_UI_DEFAULT_PAGINATION_PAGE_SIZE: "50"
     FEEDBACK_URL: "https://eu.surveymonkey.com/r/H9CYM7B"
-    CREATE_GOALS_WITHOUT_INDUCTION_ENABLED: "false"
+    CREATE_GOALS_WITHOUT_INDUCTION_ENABLED: "true"
     NEW_CREATE_GOAL_ROUTES_ENABLED: "true"
 
   # Pre-existing kubernetes secrets to load as environment variables in the deployment.
