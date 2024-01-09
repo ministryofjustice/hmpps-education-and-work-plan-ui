@@ -24,7 +24,6 @@ generic-service:
     DPS_URL: "https://digital-dev.prison.service.justice.gov.uk"
     FRONTEND_COMPONENT_API_URL: "https://frontend-components-dev.hmpps.service.justice.gov.uk"
     ENVIRONMENT_NAME: "DEV"
-    CREATE_GOALS_WITHOUT_INDUCTION_ENABLED: "true"
 
   allowlist:
     uservision-accessibility-testers: 5.181.59.114/32
