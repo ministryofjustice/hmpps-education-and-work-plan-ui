@@ -8,6 +8,7 @@ import FrontendComponentService from './frontendComponentService'
 import PrisonerListService from './prisonerListService'
 import TimelineService from './timelineService'
 import PrisonService from './prisonService'
+import InductionService from './inductionService'
 
 /**
  * Function that instantiates and exposes all services required by the application.
@@ -28,6 +29,7 @@ export const services = () => {
   const userService = new UserService(hmppsAuthClient)
   const prisonerSearchService = new PrisonerSearchService(hmppsAuthClient, prisonerSearchClient)
   const educationAndWorkPlanService = new EducationAndWorkPlanService(educationAndWorkPlanClient)
+  const inductionService = new InductionService(educationAndWorkPlanClient)
   const curiousService = new CuriousService(hmppsAuthClient, curiousClient)
   const ciagInductionService = new CiagInductionService(ciagInductionClient)
   const frontendComponentService = new FrontendComponentService(frontendComponentApiClient)
@@ -45,6 +47,7 @@ export const services = () => {
     userService,
     prisonerSearchService,
     educationAndWorkPlanService,
+    inductionService,
     curiousService,
     ciagInductionService,
     frontendComponentService,
@@ -60,6 +63,7 @@ export {
   UserService,
   PrisonerSearchService,
   EducationAndWorkPlanService,
+  InductionService,
   CuriousService,
   CiagInductionService,
   FrontendComponentService,
