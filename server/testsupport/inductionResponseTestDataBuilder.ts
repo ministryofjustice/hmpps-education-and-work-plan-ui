@@ -178,7 +178,7 @@ type CoreBuilderOptions = {
 const baseInductionResponseTemplate = (options?: CoreBuilderOptions): InductionResponse => {
   return {
     reference: '814ade0a-a3b2-46a3-862f-79211ba13f7b',
-    // prisonNumber: options?.prisonNumber || 'A1234BC',
+    prisonNumber: options?.prisonNumber || 'A1234BC',
     ...auditFields(options),
     workOnRelease: undefined,
     previousQualifications: undefined,

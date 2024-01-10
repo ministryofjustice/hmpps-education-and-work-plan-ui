@@ -1707,6 +1707,11 @@ export interface components {
        * @example 814ade0a-a3b2-46a3-862f-79211ba13f7b
        */
       reference: string
+      /**
+       * @description The ID of the prisoner
+       * @example A1234BC
+       */
+      prisonNumber: string
       workOnRelease: components['schemas']['WorkOnReleaseResponse']
       /**
        * @description The DPS username of the person who created the Induction.
