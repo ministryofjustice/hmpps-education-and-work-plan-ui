@@ -52,6 +52,7 @@ generic-service:
     FEEDBACK_URL: "https://eu.surveymonkey.com/r/H9CYM7B"
     CREATE_GOALS_WITHOUT_INDUCTION_ENABLED: "true"
     NEW_CREATE_GOAL_ROUTES_ENABLED: "true"
+    USE_NEW_INDUCTION_API_ENABLED: "false"
 
   # Pre-existing kubernetes secrets to load as environment variables in the deployment.
   # namespace_secrets:

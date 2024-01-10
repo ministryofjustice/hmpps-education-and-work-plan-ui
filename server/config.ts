@@ -146,5 +146,6 @@ export default {
     createGoalsWithoutInductionEnabled: toBoolean(
       get('CREATE_GOALS_WITHOUT_INDUCTION_ENABLED', false, requiredInProduction),
     ),
+    useNewInductionApiEnabled: toBoolean(get('USE_NEW_INDUCTION_API_ENABLED', false, requiredInProduction)),
   },
 }

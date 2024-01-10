@@ -5,20 +5,20 @@ import { SessionData } from 'express-session'
 import { NextFunction, Request, Response } from 'express'
 import OverviewController from './overviewController'
 import aValidPrisonerSupportNeeds from '../../testsupport/supportNeedsTestDataBuilder'
-import { CuriousService } from '../../services'
+import { CiagInductionService, CuriousService, InductionService } from '../../services'
 import EducationAndWorkPlanService from '../../services/educationAndWorkPlanService'
 import { aValidActionPlan, aValidActionPlanWithOneGoal } from '../../testsupport/actionPlanTestDataBuilder'
 import {
   aValidEnglishInPrisonEducation,
   aValidMathsInPrisonEducation,
 } from '../../testsupport/inPrisonEducationTestDataBuilder'
-import CiagInductionService from '../../services/ciagInductionService'
 import aValidLongQuestionSetWorkAndInterests from '../../testsupport/workAndInterestsTestDataBuilder'
 import aValidPrisonerSummary from '../../testsupport/prisonerSummaryTestDataBuilder'
 import { aValidShortQuestionSetEducationAndTraining } from '../../testsupport/educationAndTrainingTestDataBuilder'
 import TimelineService from '../../services/timelineService'
 import aValidTimeline from '../../testsupport/timelineTestDataBuilder'
 import filterTimelineEvents from '../timelineResolver'
+import config from '../../config'
 
 jest.mock('../timelineResolver')
 
@@ -33,10 +33,11 @@ describe('overviewController', () => {
   const educationAndWorkPlanService = {
     getActionPlan: jest.fn(),
   }
-  const ciagInductionService = {
+  const ciagInductionService = {}
+  const inductionService = {
     getWorkAndInterests: jest.fn(),
     getEducationAndTraining: jest.fn(),
-    ciagInductionExists: jest.fn(),
+    inductionExists: jest.fn(),
   }
   const timelineService = {
     getTimeline: jest.fn(),
@@ -45,6 +46,7 @@ describe('overviewController', () => {
   const controller = new OverviewController(
     curiousService as unknown as CuriousService,
     educationAndWorkPlanService as unknown as EducationAndWorkPlanService,
+    inductionService as unknown as InductionService,
     ciagInductionService as unknown as CiagInductionService,
     timelineService as unknown as TimelineService,
   )
@@ -61,6 +63,10 @@ describe('overviewController', () => {
     render: jest.fn(),
   }
   const next = jest.fn()
+
+  beforeAll(() => {
+    config.featureToggles.useNewInductionApiEnabled = true
+  })
 
   beforeEach(() => {
     jest.resetAllMocks()
@@ -159,7 +165,7 @@ describe('overviewController', () => {
 
       req.session.prisonerSummary = aValidPrisonerSummary(prisonNumber)
 
-      ciagInductionService.ciagInductionExists.mockResolvedValue(true)
+      inductionService.inductionExists.mockResolvedValue(true)
 
       const actionPlan = aValidActionPlanWithOneGoal()
       educationAndWorkPlanService.getActionPlan.mockResolvedValue(actionPlan)
@@ -214,7 +220,7 @@ describe('overviewController', () => {
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/overview/index', expectedView)
       expect(educationAndWorkPlanService.getActionPlan).toHaveBeenCalledWith(prisonNumber, 'a-user-token')
-      expect(ciagInductionService.ciagInductionExists).toHaveBeenCalledWith(prisonNumber, 'a-user-token')
+      expect(inductionService.inductionExists).toHaveBeenCalledWith(prisonNumber, 'a-user-token')
       expect(req.session.newGoal).toBeUndefined()
       expect(req.session.newGoals).toBeUndefined()
     })
@@ -233,7 +239,7 @@ describe('overviewController', () => {
 
       req.session.prisonerSummary = aValidPrisonerSummary(prisonNumber)
 
-      ciagInductionService.ciagInductionExists.mockResolvedValue(false)
+      inductionService.inductionExists.mockResolvedValue(false)
 
       const actionPlan = aValidActionPlan({ goals: [] })
       educationAndWorkPlanService.getActionPlan.mockResolvedValue(actionPlan)
@@ -288,7 +294,7 @@ describe('overviewController', () => {
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/overview/index', expectedView)
       expect(educationAndWorkPlanService.getActionPlan).toHaveBeenCalledWith(prisonNumber, 'a-user-token')
-      expect(ciagInductionService.ciagInductionExists).toHaveBeenCalledWith(prisonNumber, 'a-user-token')
+      expect(inductionService.inductionExists).toHaveBeenCalledWith(prisonNumber, 'a-user-token')
       expect(req.session.newGoal).toBeUndefined()
       expect(req.session.newGoals).toBeUndefined()
     })
@@ -307,7 +313,7 @@ describe('overviewController', () => {
 
       req.session.prisonerSummary = aValidPrisonerSummary(prisonNumber)
 
-      ciagInductionService.ciagInductionExists.mockRejectedValue(createError(500, 'Service unavailable'))
+      inductionService.inductionExists.mockRejectedValue(createError(500, 'Service unavailable'))
 
       const expectedError = createError(
         500,
@@ -324,7 +330,7 @@ describe('overviewController', () => {
       // Then
       expect(next).toHaveBeenCalledWith(expectedError)
       expect(res.render).not.toHaveBeenCalled()
-      expect(ciagInductionService.ciagInductionExists).toHaveBeenCalledWith(prisonNumber, 'a-user-token')
+      expect(inductionService.inductionExists).toHaveBeenCalledWith(prisonNumber, 'a-user-token')
       expect(educationAndWorkPlanService.getActionPlan).not.toHaveBeenCalled()
       expect(curiousService.getLearnerEducation).not.toHaveBeenCalled()
       expect(curiousService.getPrisonerFunctionalSkills).not.toHaveBeenCalled()
@@ -425,7 +431,7 @@ describe('overviewController', () => {
       }
 
       const expectedEducationAndTraining = aValidShortQuestionSetEducationAndTraining()
-      ciagInductionService.getEducationAndTraining.mockResolvedValue(expectedEducationAndTraining)
+      inductionService.getEducationAndTraining.mockResolvedValue(expectedEducationAndTraining)
 
       const expectedPrisonerSummary = aValidPrisonerSummary(prisonNumber)
       const expectedView = {
@@ -445,7 +451,7 @@ describe('overviewController', () => {
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/overview/index', expectedView)
-      expect(ciagInductionService.getEducationAndTraining).toHaveBeenCalledWith(prisonNumber, 'a-user-token')
+      expect(inductionService.getEducationAndTraining).toHaveBeenCalledWith(prisonNumber, 'a-user-token')
     })
   })
 
@@ -466,7 +472,7 @@ describe('overviewController', () => {
       req.session.prisonerSummary = prisonerSummary
 
       const expectedWorkAndInterests: WorkAndInterests = aValidLongQuestionSetWorkAndInterests()
-      ciagInductionService.getWorkAndInterests.mockResolvedValue(expectedWorkAndInterests)
+      inductionService.getWorkAndInterests.mockResolvedValue(expectedWorkAndInterests)
 
       const expectedView = {
         prisonerSummary,
@@ -483,7 +489,7 @@ describe('overviewController', () => {
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/overview/index', expectedView)
-      expect(ciagInductionService.getWorkAndInterests).toHaveBeenCalledWith(prisonNumber, 'a-user-token')
+      expect(inductionService.getWorkAndInterests).toHaveBeenCalledWith(prisonNumber, 'a-user-token')
     })
   })
 

@@ -16,6 +16,7 @@ context('Prisoner Overview page - Common functionality for both pre and post ind
     cy.task('getActionPlan')
     cy.task('stubLearnerProfile')
     cy.task('stubLearnerEducation')
+    cy.task('stubGetInductionShortQuestionSet')
   })
 
   it('should have the DPS breadcrumb which does not include the current page', () => {
