@@ -16,7 +16,7 @@ context('Prisoner Overview page - Timeline tab', () => {
     cy.task('getPrisonerById', 'H4115SD')
     cy.task('getActionPlan', 'G6115VJ')
     cy.task('getActionPlan', 'H4115SD')
-    cy.task('stubGetShortQuestionSetCiagProfile')
+    cy.task('stubGetInductionShortQuestionSet')
     cy.task('stubLearnerProfile', 'G6115VJ')
     cy.task('stubLearnerProfile', 'H4115SD')
     cy.task('stubLearnerEducation', 'G6115VJ')

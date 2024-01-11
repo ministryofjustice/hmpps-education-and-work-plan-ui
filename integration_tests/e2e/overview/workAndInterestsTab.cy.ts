@@ -13,15 +13,15 @@ context('Prisoner Overview page - Work and Interests tab', () => {
     cy.task('stubCiagInductionList')
     cy.task('stubActionPlansList')
     cy.task('getPrisonerById')
-    cy.task('stubGetShortQuestionSetCiagProfile')
+    cy.task('stubGetInductionShortQuestionSet')
     cy.task('getActionPlan')
     cy.task('stubLearnerProfile')
     cy.task('stubLearnerEducation')
   })
 
-  it('should display Work and interests data given the long question set CIAG Induction was performed', () => {
+  it('should display Work and interests data given the long question set Induction was performed', () => {
     // Given
-    cy.task('stubGetLongQuestionSetCiagProfile')
+    cy.task('stubGetInductionLongQuestionSet')
 
     cy.signIn()
     const prisonNumber = 'G6115VJ'
@@ -41,9 +41,9 @@ context('Prisoner Overview page - Work and Interests tab', () => {
       .hasSkillsAndInterestsDisplayed()
   })
 
-  it('should display Work and interests data given the short question set CIAG Induction was performed', () => {
+  it('should display Work and interests data given the short question set Induction was performed', () => {
     // Given
-    cy.task('stubGetShortQuestionSetCiagProfile')
+    cy.task('stubGetInductionShortQuestionSet')
 
     cy.signIn()
     const prisonNumber = 'G6115VJ'
@@ -61,7 +61,7 @@ context('Prisoner Overview page - Work and Interests tab', () => {
       .hasWorkInterests()
   })
 
-  it('should display CIAG unavailable message given CIAG is unavailable', () => {
+  it('should display Induction unavailable message given PLP API is unavailable when retrieving the Induction', () => {
     // Given
     cy.signIn()
 
@@ -69,10 +69,10 @@ context('Prisoner Overview page - Work and Interests tab', () => {
     cy.visit(`/plan/${prisonNumber}/view/overview`)
     const overviewPage = Page.verifyOnPage(OverviewPage)
 
-    // Stub a CIAG 500 error *after* rendering the overview page. The scenario here is that the user has signed in and
+    // Stub a PLP API 500 error *after* rendering the overview page. The scenario here is that the user has signed in and
     // displayed the Prisoner List and Overview screens, but between displaying the Overview and clicking on
-    // 'Work and interests' the CIAG API has gone done.
-    cy.task('stubGetCiagProfile500Error')
+    // 'Work and interests' the PLP API has gone done.
+    cy.task('stubGetInduction500Error')
 
     // When
     overviewPage.selectTab('Work and interests')
@@ -81,12 +81,12 @@ context('Prisoner Overview page - Work and Interests tab', () => {
     // Then
     workAndInterestsPage //
       .activeTabIs('Work and interests')
-      .hasCiagInductionApiUnavailableMessageDisplayed()
+      .hasInductionUnavailableMessageDisplayed()
   })
 
-  it('should display link to create CIAG Induction given prisoner does not have a CIAG Induction yet', () => {
+  it('should display link to create Induction given prisoner does not have an Induction yet', () => {
     // Given
-    cy.task('stubGetCiagProfile404Error')
+    cy.task('stubGetInduction404Error')
 
     cy.signIn()
     const prisonNumber = 'G6115VJ'
@@ -100,6 +100,6 @@ context('Prisoner Overview page - Work and Interests tab', () => {
     // Then
     workAndInterestsPage //
       .activeTabIs('Work and interests')
-      .hasLinkToCreateCiagInductionDisplayed()
+      .hasLinkToCreateInductionDisplayed()
   })
 })

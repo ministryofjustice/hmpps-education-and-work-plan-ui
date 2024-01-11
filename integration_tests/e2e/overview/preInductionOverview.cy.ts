@@ -16,7 +16,7 @@ context('Prisoner Overview page - Pre Induction', () => {
     cy.task('stubActionPlansList')
     cy.task('getPrisonerById', 'G6115VJ')
     cy.task('getPrisonerById', 'A00001A')
-    cy.task('stubGetCiagProfile404Error')
+    cy.task('stubGetInduction404Error')
     cy.task('getActionPlan', 'G6115VJ')
     cy.task('getActionPlan', 'A00001A')
     cy.task('stubLearnerProfile', 'G6115VJ')
@@ -125,13 +125,13 @@ context('Prisoner Overview page - Pre Induction', () => {
     Page.verifyOnPage(CreateGoalPage)
   })
 
-  it('should display service unavailable message given CIAG API returns a 500', () => {
+  it('should display service unavailable message given PLP API returns a 500 when retrieving the Induction', () => {
     // Given
     cy.task('stubSignInAsUserWithViewAuthority')
     cy.signIn()
 
     const prisonNumber = 'G6115VJ'
-    cy.task('stubGetCiagProfile500Error')
+    cy.task('stubGetInduction500Error')
 
     // When
     cy.visit(`/plan/${prisonNumber}/view/overview`, { failOnStatusCode: false })

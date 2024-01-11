@@ -12,6 +12,7 @@ export default (router: Router, services: Services) => {
   const overViewController = new OverviewController(
     services.curiousService,
     services.educationAndWorkPlanService,
+    services.inductionService,
     services.ciagInductionService,
     services.timelineService,
   )

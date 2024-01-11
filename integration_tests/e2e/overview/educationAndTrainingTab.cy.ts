@@ -13,11 +13,11 @@ context('Prisoner Overview page - Education And Training tab', () => {
     cy.task('stubCiagInductionList')
     cy.task('stubActionPlansList')
     cy.task('getPrisonerById')
-    cy.task('stubGetShortQuestionSetCiagProfile')
+    cy.task('stubGetInductionShortQuestionSet')
     cy.task('getActionPlan')
     cy.task('stubLearnerProfile')
     cy.task('stubLearnerEducation')
-    cy.task('stubGetLongQuestionSetCiagProfile')
+    cy.task('stubGetInductionLongQuestionSet')
   })
 
   describe('should retrieve and render data from Curious API data', () => {
@@ -122,10 +122,10 @@ context('Prisoner Overview page - Education And Training tab', () => {
     })
   })
 
-  describe('should retrieve and render data from CIAG API data', () => {
-    it('should display Qualifications And Education given CIAG Induction was the long question set', () => {
+  describe('should retrieve and render data from PLP API Induction data', () => {
+    it('should display Qualifications And Education given Induction was the long question set', () => {
       // Given
-      cy.task('stubGetLongQuestionSetCiagProfile')
+      cy.task('stubGetInductionLongQuestionSet')
 
       cy.signIn()
       const prisonNumber = 'G6115VJ'
@@ -142,9 +142,9 @@ context('Prisoner Overview page - Education And Training tab', () => {
         .isShowingLongQuestionSetAnswers()
     })
 
-    it('should display Qualifications And Education given CIAG Induction was the short question set', () => {
+    it('should display Qualifications And Education given Induction was the short question set', () => {
       // Given
-      cy.task('stubGetShortQuestionSetCiagProfile')
+      cy.task('stubGetInductionShortQuestionSet')
 
       cy.signIn()
       const prisonNumber = 'G6115VJ'
@@ -161,17 +161,17 @@ context('Prisoner Overview page - Education And Training tab', () => {
         .isShowingShortQuestionSetAnswers()
     })
 
-    it('should display CIAG unavailable message given CIAG is unavailable', () => {
+    it('should display Induction unavailable message given PLP API is unavailable when retrieving the Induction', () => {
       // Given
       cy.signIn()
       const prisonNumber = 'G6115VJ'
       cy.visit(`/plan/${prisonNumber}/view/overview`)
       const overviewPage = Page.verifyOnPage(OverviewPage)
 
-      // Stub a CIAG 500 error *after* rendering the overview page. The scenario here is that the user has signed in and
+      // Stub a PLP API 500 error *after* rendering the overview page. The scenario here is that the user has signed in and
       // displayed the Prisoner List and Overview screens, but between displaying the Overview and clicking on
-      // 'Education and training' the CIAG API has gone done.
-      cy.task('stubGetCiagProfile500Error')
+      // 'Education and training' the PLP API has gone done.
+      cy.task('stubGetInduction500Error')
 
       // When
       overviewPage.selectTab('Education and training')
@@ -180,12 +180,12 @@ context('Prisoner Overview page - Education And Training tab', () => {
       // Then
       educationAndTrainingPage //
         .activeTabIs('Education and training')
-        .hasCiagInductionApiUnavailableMessageDisplayed()
+        .hasInductionUnavailableMessageDisplayed()
     })
 
-    it('should display link to create CIAG Induction given prisoner does not have a CIAG Induction yet', () => {
+    it('should display link to create Induction given prisoner does not have an Induction yet', () => {
       // Given
-      cy.task('stubGetCiagProfile404Error')
+      cy.task('stubGetInduction404Error')
 
       cy.signIn()
       const prisonNumber = 'G6115VJ'
@@ -199,7 +199,7 @@ context('Prisoner Overview page - Education And Training tab', () => {
       // Then
       educationAndTrainingPage //
         .activeTabIs('Education and training')
-        .hasLinkToCreateCiagInductionDisplayed()
+        .hasLinkToCreateInductionDisplayed()
     })
   })
 })

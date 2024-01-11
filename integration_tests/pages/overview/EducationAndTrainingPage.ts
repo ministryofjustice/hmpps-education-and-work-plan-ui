@@ -53,13 +53,13 @@ export default class EducationAndTrainingPage extends Page {
     return this
   }
 
-  hasCiagInductionApiUnavailableMessageDisplayed(): EducationAndTrainingPage {
-    this.ciagUnavailableMessage().should('be.exist')
+  hasInductionUnavailableMessageDisplayed(): EducationAndTrainingPage {
+    this.inductionUnavailableMessage().should('be.exist')
     return this
   }
 
-  hasLinkToCreateCiagInductionDisplayed(): EducationAndTrainingPage {
-    this.createCiagInductionLink().should('be.visible')
+  hasLinkToCreateInductionDisplayed(): EducationAndTrainingPage {
+    this.createInductionLink().should('be.visible')
     return this
   }
 
@@ -83,7 +83,7 @@ export default class EducationAndTrainingPage extends Page {
   shortQuestionSetContent = (): PageElement =>
     cy.get('[data-qa=qualifications-and-education-history-short-question-set')
 
-  ciagUnavailableMessage = (): PageElement => cy.get('[data-qa=ciag-unavailable-message]')
+  inductionUnavailableMessage = (): PageElement => cy.get('[data-qa=induction-unavailable-message]')
 
-  createCiagInductionLink = (): PageElement => cy.get('[data-qa=link-to-create-ciag-induction]')
+  createInductionLink = (): PageElement => cy.get('[data-qa=link-to-create-induction]')
 }

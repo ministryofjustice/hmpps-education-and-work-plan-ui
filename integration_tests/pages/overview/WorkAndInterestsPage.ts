@@ -41,13 +41,13 @@ export default class WorkAndInterestsPage extends Page {
     return this
   }
 
-  hasCiagInductionApiUnavailableMessageDisplayed(): WorkAndInterestsPage {
-    this.ciagUnavailableMessage().should('be.exist')
+  hasInductionUnavailableMessageDisplayed(): WorkAndInterestsPage {
+    this.inductionUnavailableMessage().should('be.exist')
     return this
   }
 
-  hasLinkToCreateCiagInductionDisplayed(): WorkAndInterestsPage {
-    this.createCiagInductionLink().should('be.visible')
+  hasLinkToCreateInductionDisplayed(): WorkAndInterestsPage {
+    this.createInductionLink().should('be.visible')
     return this
   }
 
@@ -59,9 +59,9 @@ export default class WorkAndInterestsPage extends Page {
 
   skillsAndInterestSummaryCard = (): PageElement => cy.get('#skills-and-interests-summary-card')
 
-  ciagUnavailableMessage = (): PageElement => cy.get('[data-qa=ciag-unavailable-message]')
+  inductionUnavailableMessage = (): PageElement => cy.get('[data-qa=induction-unavailable-message]')
 
-  createCiagInductionLink = (): PageElement => cy.get('[data-qa=link-to-create-ciag-induction]')
+  createInductionLink = (): PageElement => cy.get('[data-qa=link-to-create-induction]')
 
   longQuestionSetContent = (): PageElement => cy.get('[data-qa=work-and-interests-long-question-set')
 

@@ -2,7 +2,7 @@ import createError from 'http-errors'
 import { RequestHandler } from 'express'
 import EducationAndTrainingView from './educationAndTrainingView'
 import SupportNeedsView from './supportNeedsView'
-import { CuriousService } from '../../services'
+import { CiagInductionService, CuriousService, InductionService } from '../../services'
 import EducationAndWorkPlanService from '../../services/educationAndWorkPlanService'
 import TimelineService from '../../services/timelineService'
 import { mostRecentFunctionalSkills } from '../functionalSkillsResolver'
@@ -12,15 +12,16 @@ import {
 } from '../inPrisonEducationRecordsResolver'
 import filterTimelineEvents from '../timelineResolver'
 import WorkAndInterestsView from './workAndInterestsView'
-import CiagInductionService from '../../services/ciagInductionService'
 import PostInductionOverviewView from './postInductionOverviewView'
 import PreInductionOverviewView from './preInductionOverviewView'
 import TimelineView from './timelineView'
+import config from '../../config'
 
 export default class OverviewController {
   constructor(
     private readonly curiousService: CuriousService,
     private readonly educationAndWorkPlanService: EducationAndWorkPlanService,
+    private readonly inductionService: InductionService,
     private readonly ciagInductionService: CiagInductionService,
     private readonly timelineService: TimelineService,
   ) {}
@@ -59,7 +60,9 @@ export default class OverviewController {
     const { prisonerSummary } = req.session
 
     try {
-      const ciagInductionExists = await this.ciagInductionService.ciagInductionExists(prisonNumber, req.user.token)
+      const ciagInductionExists = config.featureToggles.useNewInductionApiEnabled
+        ? await this.inductionService.inductionExists(prisonNumber, req.user.token)
+        : await this.ciagInductionService.ciagInductionExists(prisonNumber, req.user.token)
 
       const allFunctionalSkills = await this.curiousService.getPrisonerFunctionalSkills(prisonNumber, req.user.username)
       const functionalSkills = mostRecentFunctionalSkills(allFunctionalSkills)
@@ -113,7 +116,9 @@ export default class OverviewController {
     const allInPrisonEducation = await this.curiousService.getLearnerEducation(prisonNumber, req.user.username)
     const completedInPrisonEducation = completedInPrisonEducationRecords(allInPrisonEducation)
 
-    const educationAndTraining = await this.ciagInductionService.getEducationAndTraining(prisonNumber, req.user.token)
+    const educationAndTraining = config.featureToggles.useNewInductionApiEnabled
+      ? await this.inductionService.getEducationAndTraining(prisonNumber, req.user.token)
+      : await this.ciagInductionService.getEducationAndTraining(prisonNumber, req.user.token)
     const view = new EducationAndTrainingView(
       prisonerSummary,
       functionalSkills,
@@ -127,7 +132,9 @@ export default class OverviewController {
     const { prisonNumber } = req.params
     const { prisonerSummary } = req.session
 
-    const workAndInterests = await this.ciagInductionService.getWorkAndInterests(prisonNumber, req.user.token)
+    const workAndInterests = config.featureToggles.useNewInductionApiEnabled
+      ? await this.inductionService.getWorkAndInterests(prisonNumber, req.user.token)
+      : await this.ciagInductionService.getWorkAndInterests(prisonNumber, req.user.token)
     const view = new WorkAndInterestsView(prisonerSummary, workAndInterests)
     res.render('pages/overview/index', { ...view.renderArgs })
   }
