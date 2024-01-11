@@ -17,6 +17,7 @@ import aValidLongQuestionSetWorkAndInterests from '../../testsupport/workAndInte
 import aValidPrisonerSummary from '../../testsupport/prisonerSummaryTestDataBuilder'
 import { aValidShortQuestionSetEducationAndTraining } from '../../testsupport/educationAndTrainingTestDataBuilder'
 import TimelineService from '../../services/timelineService'
+import PrisonService from '../../services/prisonService'
 import aValidTimeline from '../../testsupport/timelineTestDataBuilder'
 import filterTimelineEvents from '../timelineResolver'
 
@@ -41,12 +42,16 @@ describe('overviewController', () => {
   const timelineService = {
     getTimeline: jest.fn(),
   }
+  const prisonService = {
+    getPrisonByPrisonId: jest.fn(),
+  }
 
   const controller = new OverviewController(
     curiousService as unknown as CuriousService,
     educationAndWorkPlanService as unknown as EducationAndWorkPlanService,
     ciagInductionService as unknown as CiagInductionService,
     timelineService as unknown as TimelineService,
+    prisonService as unknown as PrisonService,
   )
 
   const req = {

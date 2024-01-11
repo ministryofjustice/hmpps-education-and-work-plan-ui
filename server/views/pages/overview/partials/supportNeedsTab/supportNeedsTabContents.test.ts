@@ -34,7 +34,7 @@ describe('Support Needs tab view', () => {
     expect(healthAndSupportNeedsCard.heading()).toContain(
       `Jimmy Lightfingers's learning difficulties, disabilities and health needs recorded whilst at`,
     )
-    expect(healthAndSupportNeedsCard.heading()).toContain('MOORLAND (HMP & YOI)')
+    expect(healthAndSupportNeedsCard.heading()).toContain('Moorland (HMP & YOI)')
     expect(healthAndSupportNeedsCard.rapidAssessmentDate()).toEqual('18 February 2022')
     expect(healthAndSupportNeedsCard.inDepthAssessmentDate()).toEqual('Not recorded in Curious')
     expect(healthAndSupportNeedsCard.primaryLddAndHealthNeeds()).toEqual('Visual impairment')
@@ -50,7 +50,7 @@ describe('Support Needs tab view', () => {
     expect(neurodiversityCard.heading()).toContain(
       `Jimmy Lightfingers's neurodiversity support needs recorded whilst at`,
     )
-    expect(neurodiversityCard.heading()).toContain('MOORLAND (HMP & YOI)')
+    expect(neurodiversityCard.heading()).toContain('Moorland (HMP & YOI)')
     expect(neurodiversityCard.neurodiversitySupportNeeds()).toContain('Writing support')
     expect(neurodiversityCard.neurodiversitySupportNeeds()).toContain('Recorded on 18 February 2022')
     expect(neurodiversityCard.assessedNeurodiversityDiagnosis()).toContain('No Identified Neurodiversity Need')

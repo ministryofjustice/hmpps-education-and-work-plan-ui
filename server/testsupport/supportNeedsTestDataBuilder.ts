@@ -6,7 +6,7 @@ export default function aValidPrisonerSupportNeeds(): PrisonerSupportNeeds {
     healthAndSupportNeeds: [
       {
         prisonId: 'MDI',
-        prisonName: 'MOORLAND (HMP & YOI)',
+        prisonName: 'Moorland (HMP & YOI)',
         rapidAssessmentDate: moment('2022-02-18').toDate(),
         inDepthAssessmentDate: undefined,
         primaryLddAndHealthNeeds: 'Visual impairment',
@@ -20,7 +20,7 @@ export default function aValidPrisonerSupportNeeds(): PrisonerSupportNeeds {
     neurodiversities: [
       {
         prisonId: 'MDI',
-        prisonName: 'MOORLAND (HMP & YOI)',
+        prisonName: 'Moorland (HMP & YOI)',
         supportNeeded: ['Writing support'],
         supportNeededRecordedDate: moment('2022-02-18').toDate(),
         selfDeclaredNeurodiversity: ['Dyslexia'],
