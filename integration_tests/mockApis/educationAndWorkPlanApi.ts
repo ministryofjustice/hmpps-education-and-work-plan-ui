@@ -497,8 +497,8 @@ const stubGetInduction404Error = (prisonNumber = 'G6115VJ'): SuperAgentRequest =
       jsonBody: {
         status: 404,
         errorCode: null,
-        userMessage: `CIAG profile does not exist for offender ${prisonNumber}`,
-        developerMessage: `CIAG profile does not exist for offender ${prisonNumber}`,
+        userMessage: `Induction not found for prisoner [${prisonNumber}]`,
+        developerMessage: `Induction not found for prisoner [${prisonNumber}]`,
         moreInfo: null,
       },
     },
