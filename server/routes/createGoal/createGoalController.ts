@@ -222,7 +222,7 @@ export default class CreateGoalController {
       req.session.newGoals = undefined
       return res.redirect(`/plan/${prisonNumber}/view/overview`)
     } catch (e) {
-      return next(createError(500, `Error updating plan for prisoner ${prisonNumber}`))
+      return next(createError(500, `Error creating goal(s) for prisoner ${prisonNumber}. Error: ${e}`))
     }
   }
 }
