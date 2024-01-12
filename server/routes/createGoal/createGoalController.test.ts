@@ -629,7 +629,10 @@ describe('createGoalController', () => {
       req.session.prisonerSummary = prisonerSummary
 
       educationAndWorkPlanService.createGoals.mockRejectedValue(createError(500, 'Service unavailable'))
-      const expectedError = createError(500, `Error updating plan for prisoner ${prisonNumber}`)
+      const expectedError = createError(
+        500,
+        `Error creating goal(s) for prisoner ${prisonNumber}. Error: InternalServerError: Service unavailable`,
+      )
 
       // When
       await controller.submitReviewGoal(
