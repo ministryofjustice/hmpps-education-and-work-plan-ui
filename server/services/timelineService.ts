@@ -17,7 +17,6 @@ export default class TimelineService {
 
   async getTimeline(prisonNumber: string, token: string, username: string): Promise<Timeline> {
     try {
-      const systemToken = await this.hmppsAuthClient.getSystemClientToken(username)
       const timelineResponse = await this.educationAndWorkPlanClient.getTimeline(prisonNumber, token)
       timelineResponse.events = timelineResponse.events.filter(this.filterTimelineEvents)
 

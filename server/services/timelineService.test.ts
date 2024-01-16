@@ -57,7 +57,6 @@ describe('timelineService', () => {
 
       // Then
       expect(actual).toEqual(timeline)
-      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
       expect(educationAndWorkPlanClient.getTimeline).toHaveBeenCalledWith(prisonNumber, userToken)
       expect(mockedTimelineMapper).toHaveBeenCalledWith(timelineResponse)
     })
@@ -160,7 +159,6 @@ describe('timelineService', () => {
 
       // Then
       expect(actual).toEqual(timeline)
-      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
       expect(educationAndWorkPlanClient.getTimeline).toHaveBeenCalledWith(prisonNumber, userToken)
       expect(mockedTimelineMapper).toHaveBeenCalledWith(timelineResponse)
     })
