@@ -1,4 +1,4 @@
-import type { Prison, Timeline, TimelineEvent } from 'viewModels'
+import type { Timeline, TimelineEvent } from 'viewModels'
 import type { TimelineEventResponse } from 'educationAndWorkPlanApiClient'
 import EducationAndWorkPlanClient from '../data/educationAndWorkPlanClient'
 import { toTimeline } from '../data/mappers/timelineMapper'
@@ -22,7 +22,7 @@ export default class TimelineService {
       timelineResponse.events = timelineResponse.events.filter(this.filterTimelineEvents)
 
       const timeline = toTimeline(timelineResponse)
-      timeline.events = await this.addPrisonNameToPrisons(timeline.events, systemToken)
+      timeline.events = await this.addPrisonNameToPrisons(timeline.events, username)
       return timeline
     } catch (error) {
       if (error.status === 404) {
@@ -36,7 +36,7 @@ export default class TimelineService {
 
   private addPrisonNameToPrisons = async (
     events: Array<TimelineEvent>,
-    token: string,
+    username: string,
   ): Promise<Array<TimelineEvent>> => {
     if (!events || events.length === 0) {
       return []
@@ -49,7 +49,7 @@ export default class TimelineService {
     // effectively spamming `prison-register-api` !
     const firstEvent: TimelineEvent = {
       ...events[0],
-      prison: await this.lookupPrison(events[0].prison.prisonId, token),
+      prison: await this.prisonService.lookupPrison(events[0].prison.prisonId, username),
     }
 
     // Lookup the prisons for the remaining events. We can do this in an async loop, safe in the knowledge that the
@@ -57,7 +57,7 @@ export default class TimelineService {
     const otherEvents: Array<Promise<TimelineEvent>> = events.slice(1).map(async (event): Promise<TimelineEvent> => {
       return {
         ...event,
-        prison: await this.lookupPrison(event.prison.prisonId, token),
+        prison: await this.prisonService.lookupPrison(event.prison.prisonId, username),
       }
     })
 
@@ -70,16 +70,6 @@ export default class TimelineService {
       ...otherEvents,
     ]
     return Promise.all(eventPromises)
-  }
-
-  private async lookupPrison(prisonId: string, token: string): Promise<Prison> {
-    try {
-      return (await this.prisonService.getPrisonByPrisonId(prisonId, token)) || { prisonId, prisonName: undefined }
-    } catch (e) {
-      logger.error(`Error looking up prison ${prisonId}`, e)
-      // return a Prison with just the prison ID set. Failing to lookup the prison should not stop the Timeline service returning a Timeline
-      return { prisonId, prisonName: undefined }
-    }
   }
 
   private filterTimelineEvents = (event: TimelineEventResponse): boolean =>

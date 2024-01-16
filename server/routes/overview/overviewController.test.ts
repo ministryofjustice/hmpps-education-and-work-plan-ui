@@ -43,7 +43,7 @@ describe('overviewController', () => {
     getTimeline: jest.fn(),
   }
   const prisonService = {
-    getPrisonByPrisonId: jest.fn(),
+    lookupPrison: jest.fn(),
   }
 
   const controller = new OverviewController(
@@ -350,11 +350,14 @@ describe('overviewController', () => {
       const prisonNumber = 'A1234GC'
       req.params.prisonNumber = prisonNumber
 
+      const prisonId = 'MDI'
+
       const prisonerSummary = aValidPrisonerSummary(prisonNumber)
       req.session.prisonerSummary = prisonerSummary
 
       const expectedSupportNeeds = aValidPrisonerSupportNeeds()
       curiousService.getPrisonerSupportNeeds.mockResolvedValue(expectedSupportNeeds)
+      prisonService.lookupPrison.mockResolvedValue({ prisonId, prisonName: 'Moorland (HMP & YOI)' })
       const expectedView = {
         prisonerSummary,
         tab: expectedTab,
@@ -370,6 +373,7 @@ describe('overviewController', () => {
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/overview/index', expectedView)
+      expect(prisonService.lookupPrison).toHaveBeenCalledWith(prisonId, 'a-dps-user')
     })
   })
 

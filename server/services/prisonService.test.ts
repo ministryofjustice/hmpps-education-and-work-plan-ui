@@ -3,6 +3,7 @@ import toPrison from '../data/mappers/prisonMapper'
 import PrisonService from './prisonService'
 import PrisonRegisterStore from '../data/cache/prisonRegisterStore'
 import PrisonRegisterClient from '../data/prisonRegisterClient'
+import { HmppsAuthClient } from '../data'
 import aValidPrisonResponse from '../testsupport/prisonResponseTestDataBuilder'
 import aValidPrison from '../testsupport/prisonTestDataBuilder'
 
@@ -20,9 +21,14 @@ describe('prisonService', () => {
     getAllPrisons: jest.fn(),
   }
 
+  const hmppsAuthClient = {
+    getSystemClientToken: jest.fn(),
+  }
+
   const prisonService = new PrisonService(
     prisonRegisterStore as unknown as PrisonRegisterStore,
     prisonRegisterClient as unknown as PrisonRegisterClient,
+    hmppsAuthClient as unknown as HmppsAuthClient,
   )
 
   beforeEach(() => {
