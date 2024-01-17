@@ -214,4 +214,36 @@ describe('prisonService', () => {
       expect(prisonRegisterStore.setActivePrisons).toHaveBeenCalledWith(allPrisons, 1)
     })
   })
+
+  describe('lookupPrison', () => {
+    it('should lookup prison by ID', async () => {
+      // Given
+      const prisonId = 'MDI'
+      const username = 'some-username'
+
+      prisonService.lookupPrison = jest.fn().mockResolvedValue(aValidPrison({ prisonId: 'MDI' }))
+
+      // When
+      const actual = await prisonService.lookupPrison(prisonId, username)
+
+      // Then
+      expect(actual).toEqual(aValidPrison({ prisonId: 'MDI' }))
+      expect(prisonService.lookupPrison).toHaveBeenCalled()
+    })
+
+    it('should not lookup prison by ID given prison ID does not exist', async () => {
+      // Given
+      const prisonId = 'some-unknown-prison-id'
+      const username = 'some-username'
+
+      prisonService.lookupPrison = jest.fn().mockResolvedValue({ prisonId })
+
+      // When
+      const actual = await prisonService.lookupPrison(prisonId, username)
+
+      // Then
+      expect(actual).toEqual({ prisonId: 'some-unknown-prison-id', prisonName: undefined })
+      expect(prisonService.lookupPrison).toHaveBeenCalled()
+    })
+  })
 })
