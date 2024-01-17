@@ -4,13 +4,11 @@ import EducationAndWorkPlanClient from '../data/educationAndWorkPlanClient'
 import { toTimeline } from '../data/mappers/timelineMapper'
 import logger from '../../logger'
 import PrisonService from './prisonService'
-import { HmppsAuthClient } from '../data'
 
 const SUPPORTED_TIMELINE_EVENTS = ['ACTION_PLAN_CREATED', 'INDUCTION_UPDATED', 'GOAL_UPDATED', 'GOAL_CREATED']
 
 export default class TimelineService {
   constructor(
-    private readonly hmppsAuthClient: HmppsAuthClient,
     private readonly educationAndWorkPlanClient: EducationAndWorkPlanClient,
     private readonly prisonService: PrisonService,
   ) {}
