@@ -3,7 +3,7 @@ import type { Timeline } from 'viewModels'
 import moment from 'moment'
 import PrisonService from './prisonService'
 import TimelineService from './timelineService'
-import { EducationAndWorkPlanClient, HmppsAuthClient } from '../data'
+import { EducationAndWorkPlanClient } from '../data'
 import { toTimeline } from '../data/mappers/timelineMapper'
 import aValidTimelineResponse from '../testsupport/timelineResponseTestDataBuilder'
 import aValidTimeline from '../testsupport/timelineTestDataBuilder'
@@ -13,20 +13,15 @@ jest.mock('../data/mappers/timelineMapper')
 describe('timelineService', () => {
   const mockedTimelineMapper = toTimeline as jest.MockedFunction<typeof toTimeline>
 
-  const hmppsAuthClient = {
-    getSystemClientToken: jest.fn(),
-  }
-
   const educationAndWorkPlanClient = {
     getTimeline: jest.fn(),
   }
 
   const prisonService = {
-    getPrisonByPrisonId: jest.fn(),
+    lookupPrison: jest.fn(),
   }
 
   const timelineService = new TimelineService(
-    hmppsAuthClient as unknown as HmppsAuthClient,
     educationAndWorkPlanClient as unknown as EducationAndWorkPlanClient,
     prisonService as unknown as PrisonService,
   )
@@ -38,13 +33,10 @@ describe('timelineService', () => {
   const prisonNumber = 'A1234BC'
   const username = 'a-dps-user'
   const userToken = 'a-user-token'
-  const systemToken = 'a-system-token'
 
   describe('getTimeline', () => {
     it('should get timeline', async () => {
       // Given
-      hmppsAuthClient.getSystemClientToken.mockResolvedValue(systemToken)
-
       const timelineResponse: TimelineResponse = aValidTimelineResponse()
       educationAndWorkPlanClient.getTimeline.mockResolvedValue(timelineResponse)
 
@@ -56,15 +48,12 @@ describe('timelineService', () => {
 
       // Then
       expect(actual).toEqual(timeline)
-      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
       expect(educationAndWorkPlanClient.getTimeline).toHaveBeenCalledWith(prisonNumber, userToken)
       expect(mockedTimelineMapper).toHaveBeenCalledWith(timelineResponse)
     })
 
     it('should get timeline given multiple goals created in a single journey', async () => {
       // Given
-      hmppsAuthClient.getSystemClientToken.mockResolvedValue(systemToken)
-
       const timelineResponse: TimelineResponse = {
         reference: '6add2455-30f1-4b3e-a23e-1baf2d761e8f',
         prisonNumber: 'A1234BC',
@@ -159,7 +148,6 @@ describe('timelineService', () => {
 
       // Then
       expect(actual).toEqual(timeline)
-      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
       expect(educationAndWorkPlanClient.getTimeline).toHaveBeenCalledWith(prisonNumber, userToken)
       expect(mockedTimelineMapper).toHaveBeenCalledWith(timelineResponse)
     })
@@ -167,8 +155,6 @@ describe('timelineService', () => {
     describe('lookup prison names', () => {
       it('should get timeline given prison name lookups for several different prisons', async () => {
         // Given
-        hmppsAuthClient.getSystemClientToken.mockResolvedValue(systemToken)
-
         const timelineResponse: TimelineResponse = {
           reference: '6add2455-30f1-4b3e-a23e-1baf2d761e8f',
           prisonNumber: 'A1234BC',
@@ -234,8 +220,8 @@ describe('timelineService', () => {
         }
         mockedTimelineMapper.mockReturnValue(timeline)
 
-        prisonService.getPrisonByPrisonId.mockResolvedValueOnce({ prisonId: 'ASI', prisonName: 'Ashfield (HMP)' })
-        prisonService.getPrisonByPrisonId.mockResolvedValueOnce({ prisonId: 'MDI', prisonName: 'Moorland (HMP & YOI)' })
+        prisonService.lookupPrison.mockResolvedValueOnce({ prisonId: 'ASI', prisonName: 'Ashfield (HMP)' })
+        prisonService.lookupPrison.mockResolvedValueOnce({ prisonId: 'MDI', prisonName: 'Moorland (HMP & YOI)' })
 
         // When
         const actual = await timelineService.getTimeline(prisonNumber, userToken, username)
@@ -244,16 +230,13 @@ describe('timelineService', () => {
         expect(actual.events[0].prison.prisonName).toEqual('Ashfield (HMP)')
         expect(actual.events[1].prison.prisonName).toEqual('Moorland (HMP & YOI)')
 
-        expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
         expect(mockedTimelineMapper).toHaveBeenCalledWith(timelineResponse)
-        expect(prisonService.getPrisonByPrisonId).toHaveBeenCalledWith('ASI', systemToken)
-        expect(prisonService.getPrisonByPrisonId).toHaveBeenCalledWith('MDI', systemToken)
+        expect(prisonService.lookupPrison).toHaveBeenCalledWith('ASI', username)
+        expect(prisonService.lookupPrison).toHaveBeenCalledWith('MDI', username)
       })
 
       it('should get timeline given prison name lookups fail', async () => {
         // Given
-        hmppsAuthClient.getSystemClientToken.mockResolvedValue(systemToken)
-
         const timelineResponse: TimelineResponse = {
           reference: '6add2455-30f1-4b3e-a23e-1baf2d761e8f',
           prisonNumber: 'A1234BC',
@@ -319,7 +302,7 @@ describe('timelineService', () => {
         }
         mockedTimelineMapper.mockReturnValue(timeline)
 
-        prisonService.getPrisonByPrisonId.mockRejectedValue('some-error-looking-up-prison-name')
+        prisonService.lookupPrison.mockReturnValue({ prisonId: 'MDI', prisonName: undefined })
 
         // When
         const actual = await timelineService.getTimeline(prisonNumber, userToken, username)
@@ -328,10 +311,9 @@ describe('timelineService', () => {
         expect(actual.events[0].prison.prisonName).toBeUndefined()
         expect(actual.events[1].prison.prisonName).toBeUndefined()
 
-        expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
         expect(mockedTimelineMapper).toHaveBeenCalledWith(timelineResponse)
-        expect(prisonService.getPrisonByPrisonId).toHaveBeenCalledWith('ASI', systemToken)
-        expect(prisonService.getPrisonByPrisonId).toHaveBeenCalledWith('MDI', systemToken)
+        expect(prisonService.lookupPrison).toHaveBeenCalledWith('ASI', username)
+        expect(prisonService.lookupPrison).toHaveBeenCalledWith('MDI', username)
       })
     })
   })

@@ -4,6 +4,7 @@ import PrisonRegisterStore from '../data/cache/prisonRegisterStore'
 import PrisonRegisterClient from '../data/prisonRegisterClient'
 import toPrison from '../data/mappers/prisonMapper'
 import logger from '../../logger'
+import { HmppsAuthClient } from '../data'
 
 const PRISON_CACHE_TTL_DAYS = 1
 
@@ -11,6 +12,7 @@ export default class PrisonService {
   constructor(
     private readonly prisonRegisterStore: PrisonRegisterStore,
     private readonly prisonRegisterClient: PrisonRegisterClient,
+    private readonly hmppsAuthClient: HmppsAuthClient,
   ) {}
 
   async getPrisonByPrisonId(prisonId: string, token: string): Promise<Prison | undefined> {
@@ -22,6 +24,17 @@ export default class PrisonService {
 
     logger.info(`Could not find details for prison ${prisonId}`)
     return undefined
+  }
+
+  async lookupPrison(prisonId: string, username: string): Promise<Prison> {
+    try {
+      const systemToken = await this.hmppsAuthClient.getSystemClientToken(username)
+      return (await this.getPrisonByPrisonId(prisonId, systemToken)) || { prisonId, prisonName: undefined }
+    } catch (e) {
+      logger.error(`Error looking up prison ${prisonId}`, e)
+      // return a Prison with just the prison ID set. Failing to lookup the prison should not stop the Timeline service returning a Timeline
+      return { prisonId, prisonName: undefined }
+    }
   }
 
   private async getPrison(prisonId: string, token: string): Promise<PrisonResponse | undefined> {

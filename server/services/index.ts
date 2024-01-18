@@ -39,8 +39,8 @@ export const services = () => {
     educationAndWorkPlanClient,
     ciagInductionClient,
   )
-  const prisonService = new PrisonService(prisonRegisterStore, prisonRegisterClient)
-  const timelineService = new TimelineService(hmppsAuthClient, educationAndWorkPlanClient, prisonService)
+  const prisonService = new PrisonService(prisonRegisterStore, prisonRegisterClient, hmppsAuthClient)
+  const timelineService = new TimelineService(educationAndWorkPlanClient, prisonService)
 
   return {
     applicationInfo,

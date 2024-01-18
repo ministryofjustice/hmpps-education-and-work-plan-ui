@@ -15,6 +15,7 @@ export default (router: Router, services: Services) => {
     services.inductionService,
     services.ciagInductionService,
     services.timelineService,
+    services.prisonService,
   )
 
   router.use('/plan/:prisonNumber/view/*', [

@@ -16,6 +16,7 @@ import aValidLongQuestionSetWorkAndInterests from '../../testsupport/workAndInte
 import aValidPrisonerSummary from '../../testsupport/prisonerSummaryTestDataBuilder'
 import { aValidShortQuestionSetEducationAndTraining } from '../../testsupport/educationAndTrainingTestDataBuilder'
 import TimelineService from '../../services/timelineService'
+import PrisonService from '../../services/prisonService'
 import aValidTimeline from '../../testsupport/timelineTestDataBuilder'
 import filterTimelineEvents from '../timelineResolver'
 import config from '../../config'
@@ -42,6 +43,9 @@ describe('overviewController', () => {
   const timelineService = {
     getTimeline: jest.fn(),
   }
+  const prisonService = {
+    lookupPrison: jest.fn(),
+  }
 
   const controller = new OverviewController(
     curiousService as unknown as CuriousService,
@@ -49,6 +53,7 @@ describe('overviewController', () => {
     inductionService as unknown as InductionService,
     ciagInductionService as unknown as CiagInductionService,
     timelineService as unknown as TimelineService,
+    prisonService as unknown as PrisonService,
   )
 
   const req = {
@@ -351,11 +356,14 @@ describe('overviewController', () => {
       const prisonNumber = 'A1234GC'
       req.params.prisonNumber = prisonNumber
 
+      const prisonId = 'MDI'
+
       const prisonerSummary = aValidPrisonerSummary(prisonNumber)
       req.session.prisonerSummary = prisonerSummary
 
       const expectedSupportNeeds = aValidPrisonerSupportNeeds()
       curiousService.getPrisonerSupportNeeds.mockResolvedValue(expectedSupportNeeds)
+      prisonService.lookupPrison.mockResolvedValue({ prisonId, prisonName: 'Moorland (HMP & YOI)' })
       const expectedView = {
         prisonerSummary,
         tab: expectedTab,
@@ -371,6 +379,7 @@ describe('overviewController', () => {
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/overview/index', expectedView)
+      expect(prisonService.lookupPrison).toHaveBeenCalledWith(prisonId, 'a-dps-user')
     })
   })
 
