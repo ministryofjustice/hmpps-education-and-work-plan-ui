@@ -27,8 +27,8 @@ export default class PrisonService {
   }
 
   async lookupPrison(prisonId: string, username: string): Promise<Prison> {
-    const systemToken = await this.hmppsAuthClient.getSystemClientToken(username)
     try {
+      const systemToken = await this.hmppsAuthClient.getSystemClientToken(username)
       return (await this.getPrisonByPrisonId(prisonId, systemToken)) || { prisonId, prisonName: undefined }
     } catch (e) {
       logger.error(`Error looking up prison ${prisonId}`, e)

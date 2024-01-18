@@ -216,34 +216,59 @@ describe('prisonService', () => {
   })
 
   describe('lookupPrison', () => {
-    it('should lookup prison by ID', async () => {
+    it('should lookup prison by ID given prison has been previously cached', async () => {
       // Given
       const prisonId = 'MDI'
       const username = 'some-username'
+      const systemToken = 'a-system-token'
 
-      prisonService.lookupPrison = jest.fn().mockResolvedValue(aValidPrison({ prisonId: 'MDI' }))
+      hmppsAuthClient.getSystemClientToken.mockResolvedValue(systemToken)
+
+      const moorlandPrisonResponse = aValidPrisonResponse({
+        prisonId: 'MDI',
+        prisonName: 'Moorland (HMP & YOI)',
+        active: true,
+      })
+
+      prisonRegisterStore.getActivePrisons.mockResolvedValue(activePrisons) // activePrisons contains MDI (Moorland)
+
+      const expectedPrison = aValidPrison({ prisonId: 'MDI', prisonName: 'Moorland (HMP & YOI)' })
+      mockedPrisonMapper.mockReturnValue(expectedPrison)
 
       // When
       const actual = await prisonService.lookupPrison(prisonId, username)
 
       // Then
-      expect(actual).toEqual(aValidPrison({ prisonId: 'MDI' }))
-      expect(prisonService.lookupPrison).toHaveBeenCalled()
+      expect(actual).toEqual(expectedPrison)
+      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
+      expect(prisonRegisterStore.getActivePrisons).toHaveBeenCalled()
+      expect(mockedPrisonMapper).toHaveBeenCalledWith(moorlandPrisonResponse)
     })
 
-    it('should not lookup prison by ID given prison ID does not exist', async () => {
+    it('should lookup prison by ID given prison is not cached and prison register store throws an error', async () => {
       // Given
-      const prisonId = 'some-unknown-prison-id'
+      const prisonId = 'MDI'
       const username = 'some-username'
+      const systemToken = 'a-system-token'
 
-      prisonService.lookupPrison = jest.fn().mockResolvedValue({ prisonId })
+      hmppsAuthClient.getSystemClientToken.mockResolvedValue(systemToken)
+
+      const emptyArrayOfPrisons: Array<PrisonResponse> = []
+      prisonRegisterStore.getActivePrisons.mockResolvedValue(emptyArrayOfPrisons)
+
+      prisonRegisterClient.getAllPrisons.mockRejectedValue('some-api-error')
+
+      const expectedPrison = { prisonId: 'MDI', prisonName: undefined as string }
 
       // When
       const actual = await prisonService.lookupPrison(prisonId, username)
 
       // Then
-      expect(actual).toEqual({ prisonId: 'some-unknown-prison-id', prisonName: undefined })
-      expect(prisonService.lookupPrison).toHaveBeenCalled()
+      expect(actual).toEqual(expectedPrison)
+      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
+      expect(prisonRegisterStore.getActivePrisons).toHaveBeenCalled()
+      expect(prisonRegisterClient.getAllPrisons).toHaveBeenCalledWith(systemToken)
+      expect(mockedPrisonMapper).not.toHaveBeenCalled()
     })
   })
 })

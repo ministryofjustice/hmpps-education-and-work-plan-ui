@@ -18,7 +18,6 @@ describe('timelineService', () => {
   }
 
   const prisonService = {
-    getPrisonByPrisonId: jest.fn(),
     lookupPrison: jest.fn(),
   }
 
