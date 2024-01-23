@@ -141,7 +141,6 @@ export default {
     plpPrisonerListAndOverviewPagesEnabled: toBoolean(
       get('PLP_PRISONER_LIST_AND_OVERVIEW_PAGES_ENABLED', false, requiredInProduction),
     ),
-    timelinePageEnabled: toBoolean(get('TIMELINE_PAGE_ENABLED', false, requiredInProduction)),
     createGoalsWithoutInductionEnabled: toBoolean(
       get('CREATE_GOALS_WITHOUT_INDUCTION_ENABLED', false, requiredInProduction),
     ),
