@@ -11,6 +11,7 @@ import validateCreateGoalForm from './createGoalFormValidator'
 import validateAddStepForm from './addStepFormValidator'
 import ReviewView from './reviewView'
 import futureGoalTargetDateCalculator from '../futureGoalTargetDateCalculator'
+import logger from '../../../logger'
 
 export default class CreateGoalController {
   constructor(private readonly educationAndWorkPlanService: EducationAndWorkPlanService) {}
@@ -222,6 +223,7 @@ export default class CreateGoalController {
       req.session.newGoals = undefined
       return res.redirect(`/plan/${prisonNumber}/view/overview`)
     } catch (e) {
+      logger.error(`Error creating goal(s) for prisoner ${prisonNumber}`, e)
       return next(createError(500, `Error creating goal(s) for prisoner ${prisonNumber}. Error: ${e}`))
     }
   }

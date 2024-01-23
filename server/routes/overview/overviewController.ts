@@ -17,6 +17,7 @@ import PostInductionOverviewView from './postInductionOverviewView'
 import PreInductionOverviewView from './preInductionOverviewView'
 import TimelineView from './timelineView'
 import config from '../../config'
+import logger from '../../../logger'
 
 export default class OverviewController {
   constructor(
@@ -95,6 +96,7 @@ export default class OverviewController {
 
       return res.render('pages/overview/index', { ...view.renderArgs })
     } catch (error) {
+      logger.error(`Error checking whether a CIAG Induction exists for prisoner ${prisonNumber}`, error)
       return next(createError(500, `Error checking whether a CIAG Induction exists for prisoner ${prisonNumber}`))
     }
   }
