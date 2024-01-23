@@ -2,7 +2,6 @@ import createError from 'http-errors'
 import { NextFunction, Request, RequestHandler, Response } from 'express'
 import logger from '../../logger'
 import PrisonerSearchService from '../services/prisonerSearchService'
-import config from '../config'
 
 /**
  * A module exporting request handler functions to support ensuring page requests have been followed
@@ -26,21 +25,13 @@ const checkCreateGoalFormExistsInSession = async (req: Request, res: Response, n
     logger.warn(
       `No CreateGoalForm object in session - user attempting to navigate to path ${req.path} out of sequence. Redirecting to start of Create Goal journey.`,
     )
-    res.redirect(
-      config.featureToggles.newCreateGoalRoutesEnabled
-        ? `/plan/${req.params.prisonNumber}/goals/1/create`
-        : `/plan/${req.params.prisonNumber}/goals/create`,
-    )
+    res.redirect(`/plan/${req.params.prisonNumber}/goals/1/create`)
   } else if (req.session.newGoal.createGoalForm.prisonNumber !== req.params.prisonNumber) {
     logger.warn(
       'CreateGoalForm object in session references a different prisoner. Redirecting to start of Create Goal journey.',
     )
     req.session.newGoal.createGoalForm = undefined
-    res.redirect(
-      config.featureToggles.newCreateGoalRoutesEnabled
-        ? `/plan/${req.params.prisonNumber}/goals/1/create`
-        : `/plan/${req.params.prisonNumber}/goals/create`,
-    )
+    res.redirect(`/plan/${req.params.prisonNumber}/goals/1/create`)
   } else {
     next()
   }
@@ -55,18 +46,10 @@ const checkAddStepFormsArrayExistsInSession = async (req: Request, res: Response
     logger.warn(
       `No AddStepForms object in session - user attempting to navigate to path ${req.path} out of sequence. Redirecting to start of Create Goal journey.`,
     )
-    res.redirect(
-      config.featureToggles.newCreateGoalRoutesEnabled
-        ? `/plan/${req.params.prisonNumber}/goals/1/create`
-        : `/plan/${req.params.prisonNumber}/goals/create`,
-    )
+    res.redirect(`/plan/${req.params.prisonNumber}/goals/1/create`)
   } else if (req.session.newGoal.addStepForms.length < 1) {
     logger.warn('AddStepForms object in session is empty. Redirecting to Add Step page.')
-    res.redirect(
-      config.featureToggles.newCreateGoalRoutesEnabled
-        ? `/plan/${req.params.prisonNumber}/goals/1/add-step/1`
-        : `/plan/${req.params.prisonNumber}/goals/add-step`,
-    )
+    res.redirect(`/plan/${req.params.prisonNumber}/goals/1/add-step/1`)
   } else {
     next()
   }
@@ -118,27 +101,15 @@ const checkNewGoalsFormExistsInSession = async (req: Request, res: Response, nex
     logger.warn(
       `No NewGoal objects in session - user attempting to navigate to path ${req.path} out of sequence. Redirecting to start of Create Goal journey.`,
     )
-    res.redirect(
-      config.featureToggles.newCreateGoalRoutesEnabled
-        ? `/plan/${req.params.prisonNumber}/goals/1/create`
-        : `/plan/${req.params.prisonNumber}/goals/create`,
-    )
+    res.redirect(`/plan/${req.params.prisonNumber}/goals/1/create`)
   } else if (req.session.newGoals.length < 1) {
     logger.warn('NewGoal array in session is empty. Redirecting to Add Note page.')
-    res.redirect(
-      config.featureToggles.newCreateGoalRoutesEnabled
-        ? `/plan/${req.params.prisonNumber}/goals/1/add-note`
-        : `/plan/${req.params.prisonNumber}/goals/add-note`,
-    )
+    res.redirect(`/plan/${req.params.prisonNumber}/goals/1/add-note`)
   } else if (req.session.newGoals.some(newGoal => newGoal.addNoteForm === undefined || newGoal.addNoteForm === null)) {
     logger.warn(
       `At least 1 NewGoal has no AddNoteForm object - user attempting to navigate to path ${req.path} out of sequence. Redirecting to Add Note page.`,
     )
-    res.redirect(
-      config.featureToggles.newCreateGoalRoutesEnabled
-        ? `/plan/${req.params.prisonNumber}/goals/1/add-note`
-        : `/plan/${req.params.prisonNumber}/goals/add-note`,
-    )
+    res.redirect(`/plan/${req.params.prisonNumber}/goals/1/add-note`)
   } else {
     next()
   }

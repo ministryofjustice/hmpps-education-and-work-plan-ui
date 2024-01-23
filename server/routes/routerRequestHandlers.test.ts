@@ -16,13 +16,8 @@ import aValidPrisonerSummary from '../testsupport/prisonerSummaryTestDataBuilder
 import { aValidCreateGoalForm } from '../testsupport/createGoalFormTestDataBuilder'
 import aValidAddNoteForm from '../testsupport/addNoteFormTestDataBuilder'
 import { PrisonerSearchService } from '../services'
-import config from '../config'
 import aValidNewGoalForm from '../testsupport/newGoalFormTestDataBuilder'
 
-/**
- * Unit tests for routerRequestHandlers where the featureToggles.newCreateGoalRoutesEnabled is enabled (ie. new behaviour).
- * TODO - RR-517 - delete feature toggle control when the feature toggle is removed.
- */
 describe('routerRequestHandlers', () => {
   const req = {
     user: {} as Express.User,
@@ -35,22 +30,12 @@ describe('routerRequestHandlers', () => {
   }
   const next = jest.fn()
 
-  let newCreateGoalRoutesEnabled: boolean
-  beforeAll(() => {
-    newCreateGoalRoutesEnabled = config.featureToggles.newCreateGoalRoutesEnabled
-    config.featureToggles.newCreateGoalRoutesEnabled = true
-  })
-
   beforeEach(() => {
     jest.resetAllMocks()
     req.user = {} as Express.User
     req.session = {} as SessionData
     req.params = {} as Record<string, string>
     req.query = {} as Record<string, string>
-  })
-
-  afterAll(() => {
-    config.featureToggles.newCreateGoalRoutesEnabled = newCreateGoalRoutesEnabled
   })
 
   describe('checkCreateGoalFormExistsInSession', () => {
