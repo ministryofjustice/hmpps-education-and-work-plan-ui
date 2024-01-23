@@ -122,16 +122,14 @@
           errorMessage: errors | findError('targetCompletionDate')
         }) }}
 
-        {% if featureToggles.newCreateGoalRoutesEnabled %}
-          {% if isEditMode %}
-            {% set buttonText = "Continue to check goals" %}
-          {% else %}
-            {% set buttonText = "Continue to add steps" %}
-          {% endif %}
+        {% if isEditMode %}
+          {% set buttonText = "Continue to check goals" %}
+        {% else %}
+          {% set buttonText = "Continue to add steps" %}
         {% endif %}
 
         {{ govukButton({
-          text: buttonText if featureToggles.newCreateGoalRoutesEnabled else "Continue to add steps"
+          text: buttonText
         }) }}
 
       </form>

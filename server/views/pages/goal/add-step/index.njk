@@ -62,19 +62,17 @@
           }) }}
         </div>
 
-        {% if featureToggles.newCreateGoalRoutesEnabled %}
-          {% if isEditMode %}
-            {% set buttonText = "Continue to check goals" %}
-          {% else %}
-            {% set buttonText = "Continue to add a note" %}
-          {% endif %}
+        {% if isEditMode %}
+          {% set buttonText = "Continue to check goals" %}
+        {% else %}
+          {% set buttonText = "Continue to add a note" %}
         {% endif %}
 
         {{ govukButton({
           id: "submit-button",
           name: "action",
           value: "submit-form",
-          text: buttonText if featureToggles.newCreateGoalRoutesEnabled else "Continue to add a note"
+          text: buttonText
         }) }}
 
       </form>

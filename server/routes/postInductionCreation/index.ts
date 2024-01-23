@@ -36,7 +36,4 @@ const prisonerHasActionPlan = async (
   return actionPlan.goals.length > 0
 }
 
-const createGoalRoute = (prisonNumber: string): string =>
-  config.featureToggles.newCreateGoalRoutesEnabled
-    ? `/plan/${prisonNumber}/goals/1/create`
-    : `/plan/${prisonNumber}/goals/create`
+const createGoalRoute = (prisonNumber: string): string => `/plan/${prisonNumber}/goals/1/create`
