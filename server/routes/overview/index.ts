@@ -35,7 +35,5 @@ export default (router: Router, services: Services) => {
 
   router.get('/plan/:prisonNumber/view/work-and-interests', [overViewController.getWorkAndInterestsView])
 
-  if (config.featureToggles.timelinePageEnabled) {
-    router.get('/plan/:prisonNumber/view/timeline', [overViewController.getTimelineView])
-  }
+  router.get('/plan/:prisonNumber/view/timeline', [overViewController.getTimelineView])
 }
