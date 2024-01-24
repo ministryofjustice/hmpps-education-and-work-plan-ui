@@ -1,7 +1,5 @@
-import { type RequestHandler, Router } from 'express'
+import { Router } from 'express'
 import type { Services } from '../services'
-import config from '../config'
-import asyncMiddleware from '../middleware/asyncMiddleware'
 import createGoal from './createGoal'
 import updateGoal from './updateGoal'
 import overview from './overview'
@@ -11,16 +9,8 @@ import postInductionCreation from './postInductionCreation'
 
 export default function routes(services: Services): Router {
   const router = Router()
-  const get = (path: string | string[], handler: RequestHandler) => router.get(path, asyncMiddleware(handler))
 
-  if (config.featureToggles.plpPrisonerListAndOverviewPagesEnabled) {
-    prisonerList(router, services)
-  } else {
-    get('/', (req, res, next) => {
-      res.redirect(config.ciagInductionUrl)
-    })
-  }
-
+  prisonerList(router, services)
   overview(router, services)
   createGoal(router, services)
   updateGoal(router, services)
