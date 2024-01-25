@@ -138,9 +138,6 @@ export default {
     frontendComponentsApiToggleEnabled: toBoolean(
       get('FRONTEND_COMPONENTS_API_FEATURE_TOGGLE_ENABLED', true, requiredInProduction),
     ),
-    plpPrisonerListAndOverviewPagesEnabled: toBoolean(
-      get('PLP_PRISONER_LIST_AND_OVERVIEW_PAGES_ENABLED', false, requiredInProduction),
-    ),
     createGoalsWithoutInductionEnabled: toBoolean(
       get('CREATE_GOALS_WITHOUT_INDUCTION_ENABLED', false, requiredInProduction),
     ),

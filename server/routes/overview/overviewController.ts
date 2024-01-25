@@ -29,32 +29,6 @@ export default class OverviewController {
     private readonly prisonService: PrisonService,
   ) {}
 
-  // TODO - remove this entire method after private beta go-live, once we have switched over to use the PLP Prisoner List and Overview screens rather than the CIAG ones
-  getPrivateBetaOverviewView: RequestHandler = async (req, res, next): Promise<void> => {
-    const { prisonNumber } = req.params
-    req.session.newGoal = undefined
-    req.session.newGoals = undefined
-
-    const { prisonerSummary } = req.session
-
-    const actionPlan = await this.educationAndWorkPlanService.getActionPlan(prisonNumber, req.user.token)
-
-    const allFunctionalSkills = await this.curiousService.getPrisonerFunctionalSkills(prisonNumber, req.user.username)
-    const functionalSkills = mostRecentFunctionalSkills(allFunctionalSkills)
-
-    const allInPrisonEducation = await this.curiousService.getLearnerEducation(prisonNumber, req.user.username)
-    const completedInPrisonEducation = mostRecentCompletedInPrisonEducationRecords(allInPrisonEducation, 2)
-
-    const view = new PostInductionOverviewView(
-      prisonNumber,
-      prisonerSummary,
-      actionPlan,
-      functionalSkills,
-      completedInPrisonEducation,
-    )
-    res.render('pages/overview/index', { ...view.renderArgs })
-  }
-
   getOverviewView: RequestHandler = async (req, res, next): Promise<void> => {
     const { prisonNumber } = req.params
     req.session.newGoal = undefined
