@@ -1525,6 +1525,9 @@ export interface components {
         | 'STEP_NOT_STARTED'
         | 'STEP_STARTED'
         | 'STEP_COMPLETED'
+        | 'PRISON_ADMISSION'
+        | 'PRISON_RELEASE'
+        | 'PRISON_TRANSFER'
       /**
        * @description The identifier of the prison that the prisoner was at when the event occurred.
        * @example BXI
