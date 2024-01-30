@@ -53,7 +53,7 @@ describe('timelineService', () => {
       expect(mockedTimelineMapper).toHaveBeenCalledWith(timelineResponse)
     })
 
-    it('should get timeline with all supported events', async () => {
+    it('should get timeline with prison movement events', async () => {
       // Given
       config.featureToggles.includePrisonTimelineEventsEnabled = true
       const timelineResponse: TimelineResponse = {
@@ -122,10 +122,10 @@ describe('timelineService', () => {
       // Then
       expect(actual).toEqual(timeline)
       expect(educationAndWorkPlanClient.getTimeline).toHaveBeenCalledWith(prisonNumber, userToken)
-      expect(mockedTimelineMapper).toHaveBeenCalledWith(expectedFilteredTimelineResponse)
+      expect(mockedTimelineMapper).toHaveBeenCalledWith(expectedFilteredTimelineResponse) // this is the key test
     })
 
-    it('should get timeline without unsupported events', async () => {
+    it('should get timeline without prison movement events', async () => {
       // Given
       config.featureToggles.includePrisonTimelineEventsEnabled = false
       const timelineResponse: TimelineResponse = {
@@ -183,7 +183,7 @@ describe('timelineService', () => {
       // Then
       expect(actual).toEqual(timeline)
       expect(educationAndWorkPlanClient.getTimeline).toHaveBeenCalledWith(prisonNumber, userToken)
-      expect(mockedTimelineMapper).toHaveBeenCalledWith(expectedFilteredTimelineResponse)
+      expect(mockedTimelineMapper).toHaveBeenCalledWith(expectedFilteredTimelineResponse) // this is the key test
     })
   })
 
