@@ -117,9 +117,11 @@ describe('timelineService', () => {
       mockedTimelineMapper.mockReturnValue(timeline)
 
       // When
-      await timelineService.getTimeline(prisonNumber, userToken, username)
+      const actual = await timelineService.getTimeline(prisonNumber, userToken, username)
 
       // Then
+      expect(actual).toEqual(timeline)
+      expect(educationAndWorkPlanClient.getTimeline).toHaveBeenCalledWith(prisonNumber, userToken)
       expect(mockedTimelineMapper).toHaveBeenCalledWith(expectedFilteredTimelineResponse)
     })
 
@@ -176,9 +178,11 @@ describe('timelineService', () => {
       mockedTimelineMapper.mockReturnValue(timeline)
 
       // When
-      await timelineService.getTimeline(prisonNumber, userToken, username)
+      const actual = await timelineService.getTimeline(prisonNumber, userToken, username)
 
       // Then
+      expect(actual).toEqual(timeline)
+      expect(educationAndWorkPlanClient.getTimeline).toHaveBeenCalledWith(prisonNumber, userToken)
       expect(mockedTimelineMapper).toHaveBeenCalledWith(expectedFilteredTimelineResponse)
     })
   })

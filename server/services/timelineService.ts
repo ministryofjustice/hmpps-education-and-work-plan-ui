@@ -73,9 +73,10 @@ export default class TimelineService {
 
   private filterTimelineEvents = (event: TimelineEventResponse): boolean => {
     // TODO RR-610 - remove feature toggle and revert back to one SUPPORTED_TIMELINE_EVENTS array
-    if (config.featureToggles.includePrisonTimelineEventsEnabled) {
-      return PRISON_TIMELINE_EVENTS.includes(event.eventType) || PLP_TIMELINE_EVENTS.includes(event.eventType)
-    }
-    return PLP_TIMELINE_EVENTS.includes(event.eventType)
+    const SUPPORTED_TIMELINE_EVENTS = config.featureToggles.includePrisonTimelineEventsEnabled
+      ? PLP_TIMELINE_EVENTS.concat(PRISON_TIMELINE_EVENTS)
+      : PLP_TIMELINE_EVENTS
+
+    return SUPPORTED_TIMELINE_EVENTS.includes(event.eventType)
   }
 }
