@@ -2,10 +2,12 @@ import type { Timeline, TimelineEvent } from 'viewModels'
 import type { TimelineEventResponse } from 'educationAndWorkPlanApiClient'
 import EducationAndWorkPlanClient from '../data/educationAndWorkPlanClient'
 import { toTimeline } from '../data/mappers/timelineMapper'
+import config from '../config'
 import logger from '../../logger'
 import PrisonService from './prisonService'
 
-const SUPPORTED_TIMELINE_EVENTS = ['ACTION_PLAN_CREATED', 'INDUCTION_UPDATED', 'GOAL_UPDATED', 'GOAL_CREATED']
+const PLP_TIMELINE_EVENTS = ['ACTION_PLAN_CREATED', 'INDUCTION_UPDATED', 'GOAL_UPDATED', 'GOAL_CREATED']
+const PRISON_TIMELINE_EVENTS = ['PRISON_ADMISSION', 'PRISON_RELEASE', 'PRISON_TRANSFER']
 
 export default class TimelineService {
   constructor(
@@ -69,6 +71,12 @@ export default class TimelineService {
     return Promise.all(eventPromises)
   }
 
-  private filterTimelineEvents = (event: TimelineEventResponse): boolean =>
-    SUPPORTED_TIMELINE_EVENTS.includes(event.eventType)
+  private filterTimelineEvents = (event: TimelineEventResponse): boolean => {
+    // TODO RR-610 - remove feature toggle and revert back to one SUPPORTED_TIMELINE_EVENTS array
+    const SUPPORTED_TIMELINE_EVENTS = config.featureToggles.includePrisonTimelineEventsEnabled
+      ? Array.of(...PLP_TIMELINE_EVENTS, ...PRISON_TIMELINE_EVENTS)
+      : PLP_TIMELINE_EVENTS
+
+    return SUPPORTED_TIMELINE_EVENTS.includes(event.eventType)
+  }
 }
