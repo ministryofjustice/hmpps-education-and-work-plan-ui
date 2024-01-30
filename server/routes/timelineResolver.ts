@@ -66,10 +66,12 @@ const sortTimelineEvents = (timelineEvents: Array<TimelineEvent>): Array<Timelin
 }
 
 // Ensure the ACTION_PLAN_CREATED event appears after any related GOAL_CREATED events that were created at the same time. In theory
-// the ACTION_PLAN_CREATED event should be the last event in the array (because it was the first in time to occur), but if the
-// related GOAL_CREATED events have the exact same time (down to the millisecond), then this sorting may not always have worked as
-// expected. This method looks for the ACTION_PLAN_CREATED event in the array and subtracts a second from its timestamp, thereby
+// the ACTION_PLAN_CREATED event should be after its related GOAL_CREATED events (because it was the first to occur). However, if
+// the related GOAL_CREATED events have the exact same time (down to the millisecond), then this sorting may not always have worked
+// as expected. This method looks for the ACTION_PLAN_CREATED event in the array and subtracts a second from its timestamp, thereby
 // ensuring it always appears in the correct position on the timeline UI.
+// Whilst modifying such data is usually best avoided, the milliseconds are of no interest to the UI and the alternative of
+// manipulating the array would be far more complicated.
 const modifyActionPlanCreatedTimestamp = (timelineEvents: Array<TimelineEvent>): Array<TimelineEvent> => {
   const actionPlanCreatedEvent = timelineEvents.find(timelineEvent => timelineEvent.eventType === 'ACTION_PLAN_CREATED')
   // If the TimelineEvents do not include a ACTION_PLAN_CREATED event then simply return the array of TimelineEvents
