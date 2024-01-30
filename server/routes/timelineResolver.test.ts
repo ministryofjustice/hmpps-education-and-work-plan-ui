@@ -6,6 +6,19 @@ describe('timelineResolver', () => {
   describe('filterTimelineEvents', () => {
     it('should return a Timeline with multiple goal events with the same correlationId value grouped and events sorted by timestamp', () => {
       // Given
+      const prisonAdmissionEvent: TimelineEvent = {
+        correlationId: '734dc310-64d3-4772-a5f7-35e7e6d696d7',
+        reference: '9d86c486-2bf7-4780-8786-f4f068de1223',
+        sourceReference: '12345',
+        eventType: 'PRISON_ADMISSION',
+        prison: {
+          prisonId: 'MDI',
+          prisonName: undefined,
+        },
+        timestamp: moment('2023-08-01T10:47:38.560Z').toDate(),
+        contextualInfo: undefined,
+        actionedByDisplayName: undefined,
+      }
       const correlationIdForActionPlanAndGoalCreateEvents = '246aa049-c5df-459d-8231-bdeab3936d0f'
       const actionPlanCreatedEvent: TimelineEvent = {
         correlationId: correlationIdForActionPlanAndGoalCreateEvents,
@@ -94,7 +107,7 @@ describe('timelineResolver', () => {
       const timeline: Timeline = {
         prisonNumber: 'A1234AA',
         problemRetrievingData: false,
-        events: [...actionPlanGoalCreateEvents, actionPlanCreatedEvent, ...otherEvents],
+        events: [prisonAdmissionEvent, ...actionPlanGoalCreateEvents, actionPlanCreatedEvent, ...otherEvents],
       }
 
       const expected: Timeline = {
@@ -117,7 +130,11 @@ describe('timelineResolver', () => {
             contextualInfo: '',
             actionedByDisplayName: 'Ralph Gen',
           },
-          actionPlanCreatedEvent,
+          {
+            ...actionPlanCreatedEvent,
+            timestamp: moment('2023-09-01T10:47:37.560Z').toDate(),
+          },
+          prisonAdmissionEvent,
         ],
       }
 

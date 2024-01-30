@@ -1,4 +1,5 @@
 import type { Timeline, TimelineEvent } from 'viewModels'
+import moment from 'moment'
 import dateComparator from './dateComparator'
 
 const filterTimelineEvents = (timeline: Timeline): Timeline => {
@@ -7,9 +8,9 @@ const filterTimelineEvents = (timeline: Timeline): Timeline => {
     return timeline
   }
 
-  // 'Flatten' multiple GOAL_CREATED events with the same correlationId into single MULTIPLE_GOALS_CREATED events
+  // Merge multiple GOAL_CREATED events with the same correlationId into single MULTIPLE_GOALS_CREATED events
   const eventsGroupedByCorrelationId = groupByCorrelationId(timeline.events)
-  const timelineEvents = eventsWithFlattenedCreateGoalEvents(eventsGroupedByCorrelationId)
+  const timelineEvents = eventsWithMergedCreateGoalEvents(eventsGroupedByCorrelationId)
 
   return {
     ...timeline,
@@ -32,9 +33,9 @@ const groupByCorrelationId = (items: Array<TimelineEvent>): Record<string, Array
 
 /**
  * Takes the events grouped by correlationId and returns an array of events where multiple GOAL_CREATED events in the same
- * correlationId are flattened into a single MULTIPLE_GOALS_CREATED event.
+ * correlationId are merged into a single MULTIPLE_GOALS_CREATED event.
  */
-const eventsWithFlattenedCreateGoalEvents = (
+const eventsWithMergedCreateGoalEvents = (
   eventsGroupedByCorrelationId: Record<string, Array<TimelineEvent>>,
 ): Array<TimelineEvent> => {
   return Object.values(eventsGroupedByCorrelationId)
@@ -54,30 +55,36 @@ const eventsWithFlattenedCreateGoalEvents = (
     .filter(timelineEvent => !!timelineEvent)
 }
 
-// Returns the TimelineEvents sorted by date desc, but with ACTION_PLAN_CREATED always as the last event
+// Returns the TimelineEvents sorted by date desc, but with ACTION_PLAN_CREATED always after any related GOAL_CREATED events
 const sortTimelineEvents = (timelineEvents: Array<TimelineEvent>): Array<TimelineEvent> => {
-  const timelineEventsSortedByDateDesc = timelineEvents.sort((left: TimelineEvent, right: TimelineEvent) =>
+  const updatedTimelineEvents = modifyActionPlanCreatedTimestamp(timelineEvents)
+  const timelineEventsSortedByDateDesc = updatedTimelineEvents.sort((left: TimelineEvent, right: TimelineEvent) =>
     dateComparator(left.timestamp, right.timestamp),
   )
 
-  return forceActionPlanCreatedEventToLastEvent(timelineEventsSortedByDateDesc)
+  return timelineEventsSortedByDateDesc
 }
 
-// Force ACTION_PLAN_CREATED to be the last event in the list of events that have been sorted by date desc. In theory the ACTION_PLAN_CREATED event
-// should be the last event in the array (because it was the first in time to occur), but if the GOAL_CREATED events that were created with it in
-// the same correlationId have the exact same time (down to the millisecond) this sorting may not always have worked as expected. So we look for it
-// in the array and move it to the last event, therefore it always appears in the correct position on the timeline UI.
-const forceActionPlanCreatedEventToLastEvent = (timelineEvents: Array<TimelineEvent>): Array<TimelineEvent> => {
+// Ensure the ACTION_PLAN_CREATED event appears after any related GOAL_CREATED events that were created at the same time. In theory
+// the ACTION_PLAN_CREATED event should be after its related GOAL_CREATED events (because it was the first to occur). However, if
+// the related GOAL_CREATED events have the exact same time (down to the millisecond), then this sorting may not always have worked
+// as expected. This method looks for the ACTION_PLAN_CREATED event in the array and subtracts a second from its timestamp, thereby
+// ensuring it always appears in the correct position on the timeline UI.
+// Whilst modifying such data is usually best avoided, the milliseconds are of no interest to the UI and the alternative of
+// manipulating the array would be far more complicated.
+const modifyActionPlanCreatedTimestamp = (timelineEvents: Array<TimelineEvent>): Array<TimelineEvent> => {
   const actionPlanCreatedEvent = timelineEvents.find(timelineEvent => timelineEvent.eventType === 'ACTION_PLAN_CREATED')
-  // If the TimelineEvents does not include a ACTION_PLAN_CREATED event (can happen for some early prisoner action plans where the timeline was not fully implemented)
-  // simply return the array of TimelineEvents
+  // If the TimelineEvents do not include a ACTION_PLAN_CREATED event then simply return the array of TimelineEvents
   if (!actionPlanCreatedEvent) {
     return timelineEvents
   }
-
+  const mutatedActionPlanEvent = {
+    ...actionPlanCreatedEvent,
+    timestamp: moment.utc(actionPlanCreatedEvent.timestamp).subtract(1, 'second').toDate(),
+  }
   const index = timelineEvents.indexOf(actionPlanCreatedEvent)
-  timelineEvents.splice(index, 1)
-  return [...timelineEvents, actionPlanCreatedEvent]
+  timelineEvents.splice(index, 1, mutatedActionPlanEvent)
+  return timelineEvents
 }
 
 export default filterTimelineEvents
