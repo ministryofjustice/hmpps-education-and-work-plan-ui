@@ -49,7 +49,7 @@ export default class TimelineService {
     const firstEvent: TimelineEvent = {
       ...events[0],
       prison: await this.prisonService.lookupPrison(events[0].prison.prisonId, username),
-      contextualInfo: this.isPrisonTransferEvent(events[0])
+      contextualInfo: isPrisonTransfer(events[0])
         ? await this.getTransferredFromPrisonName(events[0], username)
         : events[0].contextualInfo,
     }
@@ -60,7 +60,7 @@ export default class TimelineService {
       return {
         ...event,
         prison: await this.prisonService.lookupPrison(event.prison.prisonId, username),
-        contextualInfo: this.isPrisonTransferEvent(event)
+        contextualInfo: isPrisonTransfer(event)
           ? await this.getTransferredFromPrisonName(event, username)
           : event.contextualInfo,
       }
@@ -86,8 +86,8 @@ export default class TimelineService {
     return SUPPORTED_TIMELINE_EVENTS.includes(event.eventType)
   }
 
-  private isPrisonTransferEvent = (event: TimelineEvent): boolean => event.eventType === 'PRISON_TRANSFER'
-
   private getTransferredFromPrisonName = async (event: TimelineEvent, username: string): Promise<string> =>
     (await this.prisonService.lookupPrison(event.contextualInfo, username))?.prisonName
 }
+
+const isPrisonTransfer = (event: TimelineEvent): boolean => event.eventType === 'PRISON_TRANSFER'
