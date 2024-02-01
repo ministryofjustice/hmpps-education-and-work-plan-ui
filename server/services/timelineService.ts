@@ -43,12 +43,15 @@ export default class TimelineService {
 
     // Lookup the prison for the first event by itself to prevent a race condition on the `PrisonService`
     // If the `PrisonStore` cache is empty/stale, attempting to lookup all the event's prisons in a `Promise.all`
-    // loop results in a race condition where all prison look ups run (essentially) at the same time, and they all try
+    // loop results in a race condition where all prison look-ups run (essentially) at the same time, and they all try
     // to populate the cache from the `prison-register-api`. This results in many REST API calls to `prison-register-api`
     // effectively spamming `prison-register-api` !
     const firstEvent: TimelineEvent = {
       ...events[0],
       prison: await this.prisonService.lookupPrison(events[0].prison.prisonId, username),
+      contextualInfo: this.isPrisonTransferEvent(events[0])
+        ? await this.getTransferredFromPrisonName(events[0], username)
+        : events[0].contextualInfo,
     }
 
     // Lookup the prisons for the remaining events. We can do this in an async loop, safe in the knowledge that the
@@ -57,6 +60,9 @@ export default class TimelineService {
       return {
         ...event,
         prison: await this.prisonService.lookupPrison(event.prison.prisonId, username),
+        contextualInfo: this.isPrisonTransferEvent(event)
+          ? await this.getTransferredFromPrisonName(event, username)
+          : event.contextualInfo,
       }
     })
 
@@ -79,4 +85,9 @@ export default class TimelineService {
 
     return SUPPORTED_TIMELINE_EVENTS.includes(event.eventType)
   }
+
+  private isPrisonTransferEvent = (event: TimelineEvent): boolean => event.eventType === 'PRISON_TRANSFER'
+
+  private getTransferredFromPrisonName = async (event: TimelineEvent, username: string): Promise<string> =>
+    (await this.prisonService.lookupPrison(event.contextualInfo, username))?.prisonName
 }

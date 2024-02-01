@@ -36,8 +36,9 @@ describe('timelineService', () => {
   const userToken = 'a-user-token'
 
   describe('getTimeline', () => {
-    it('should get timeline', async () => {
+    it('should get all timeline events', async () => {
       // Given
+      config.featureToggles.includePrisonTimelineEventsEnabled = true
       const timelineResponse: TimelineResponse = aValidTimelineResponse()
       educationAndWorkPlanClient.getTimeline.mockResolvedValue(timelineResponse)
 
@@ -51,78 +52,6 @@ describe('timelineService', () => {
       expect(actual).toEqual(timeline)
       expect(educationAndWorkPlanClient.getTimeline).toHaveBeenCalledWith(prisonNumber, userToken)
       expect(mockedTimelineMapper).toHaveBeenCalledWith(timelineResponse)
-    })
-
-    it('should get timeline with prison movement events', async () => {
-      // Given
-      config.featureToggles.includePrisonTimelineEventsEnabled = true
-      const timelineResponse: TimelineResponse = {
-        reference: '6add2455-30f1-4b3e-a23e-1baf2d761e8f',
-        prisonNumber: 'A1234BC',
-        events: [
-          {
-            reference: 'f49a3412-df7f-41d2-ac04-ffd35e453af4',
-            sourceReference: '1211013',
-            eventType: 'PRISON_ADMISSION',
-            prisonId: 'MDI',
-            actionedBy: 'system',
-            timestamp: '2023-08-01T10:46:38.565Z',
-            correlationId: '6457a634-6dbe-4179-983b-74e92883232c',
-            contextualInfo: undefined,
-            actionedByDisplayName: undefined,
-          },
-          {
-            reference: '97cf372e-009f-4781-83d9-e4cc74ee321e',
-            sourceReference: '3a60b143-dfe3-49a7-9cba-31c2b8a7fa8b',
-            eventType: 'GOAL_CREATED',
-            prisonId: 'MDI',
-            actionedBy: 'RALPH_GEN',
-            timestamp: '2023-09-01T10:46:38.565Z',
-            correlationId: '847aa5ad-2068-40e1-aec0-66b19007c494',
-            contextualInfo: 'Learn French',
-            actionedByDisplayName: 'Ralph Gen',
-          },
-        ],
-      }
-      educationAndWorkPlanClient.getTimeline.mockResolvedValue(timelineResponse)
-      const expectedFilteredTimelineResponse: TimelineResponse = {
-        reference: '6add2455-30f1-4b3e-a23e-1baf2d761e8f',
-        prisonNumber: 'A1234BC',
-        events: [
-          {
-            reference: 'f49a3412-df7f-41d2-ac04-ffd35e453af4',
-            sourceReference: '1211013',
-            eventType: 'PRISON_ADMISSION',
-            prisonId: 'MDI',
-            actionedBy: 'system',
-            timestamp: '2023-08-01T10:46:38.565Z',
-            correlationId: '6457a634-6dbe-4179-983b-74e92883232c',
-            contextualInfo: undefined,
-            actionedByDisplayName: undefined,
-          },
-          {
-            reference: '97cf372e-009f-4781-83d9-e4cc74ee321e',
-            sourceReference: '3a60b143-dfe3-49a7-9cba-31c2b8a7fa8b',
-            eventType: 'GOAL_CREATED',
-            prisonId: 'MDI',
-            actionedBy: 'RALPH_GEN',
-            timestamp: '2023-09-01T10:46:38.565Z',
-            correlationId: '847aa5ad-2068-40e1-aec0-66b19007c494',
-            contextualInfo: 'Learn French',
-            actionedByDisplayName: 'Ralph Gen',
-          },
-        ],
-      }
-      const timeline: Timeline = aValidTimeline()
-      mockedTimelineMapper.mockReturnValue(timeline)
-
-      // When
-      const actual = await timelineService.getTimeline(prisonNumber, userToken, username)
-
-      // Then
-      expect(actual).toEqual(timeline)
-      expect(educationAndWorkPlanClient.getTimeline).toHaveBeenCalledWith(prisonNumber, userToken)
-      expect(mockedTimelineMapper).toHaveBeenCalledWith(expectedFilteredTimelineResponse) // this is the key test
     })
 
     it('should get timeline without prison movement events', async () => {
