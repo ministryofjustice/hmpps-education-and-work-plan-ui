@@ -41,7 +41,13 @@ context('Prisoner Overview page - Timeline tab', () => {
     timelinePage //
       .activeTabIs('Timeline')
       .hasTimelineDisplayed()
-      .hasLearningAndWorkProgressPlanEventWithOneGoalDisplayed()
+      .hasTimelineEventsInOrder([
+        'PRISON_RELEASE',
+        'PRISON_TRANSFER',
+        'GOAL_CREATED',
+        'ACTION_PLAN_CREATED',
+        'PRISON_ADMISSION',
+      ])
   })
 
   it('should display timeline given prisoner where multiple goals were created as part of their initial action plan', () => {
@@ -61,7 +67,7 @@ context('Prisoner Overview page - Timeline tab', () => {
     timelinePage //
       .activeTabIs('Timeline')
       .hasTimelineDisplayed()
-      .hasLearningAndWorkProgressPlanEventWithMultipleGoalsDisplayed()
+      .hasTimelineEventsInOrder(['MULTIPLE_GOALS_CREATED', 'ACTION_PLAN_CREATED', 'PRISON_ADMISSION'])
   })
 
   it('should display timeline data unavailable message given timeline API is unavailable', () => {
