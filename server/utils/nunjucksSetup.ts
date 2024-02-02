@@ -23,6 +23,7 @@ import formatInPrisonEducationFilter from '../filters/formatInPrisonEducationFil
 import formatReasonNotToGetWorkFilter from '../filters/formatReasonNotToGetWorkFilter'
 import formatQualificationLevelFilter from '../filters/formatQualificationLevelFilter'
 import formatTimelineEventFilter from '../filters/formatTimelineEventFilter'
+import formatPrisonMovementEventFilter from '../filters/formatPrisonMovementEventFilter'
 
 const production = process.env.NODE_ENV === 'production'
 
@@ -83,6 +84,7 @@ export function registerNunjucks(app?: express.Express): Environment {
   njkEnv.addFilter('formatReasonNotToGetWork', formatReasonNotToGetWorkFilter)
   njkEnv.addFilter('formatQualificationLevel', formatQualificationLevelFilter)
   njkEnv.addFilter('formatTimelineEvent', formatTimelineEventFilter)
+  njkEnv.addFilter('formatPrisonMovementEvent', formatPrisonMovementEventFilter)
   njkEnv.addFilter('fallbackMessage', fallbackMessageFilter)
 
   njkEnv.addGlobal('dpsUrl', config.dpsHomeUrl)
