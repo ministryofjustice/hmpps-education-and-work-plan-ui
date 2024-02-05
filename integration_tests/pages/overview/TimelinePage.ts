@@ -35,10 +35,12 @@ export default class TimelinePage extends Page {
     return this
   }
 
-  hasTimelineEventsInOrder = (events: string[]) =>
+  hasTimelineEventsInOrder = (events: string[]) => {
     cy.get('div.moj-timeline div.moj-timeline__item').each((el, idx) => {
       cy.wrap(el.attr('data-qa-event-type')).should('eq', events[idx])
     })
+    return this
+  }
 
   activeTab = (): PageElement => cy.get('.moj-sub-navigation__link[aria-current=page]')
 
