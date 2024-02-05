@@ -35,23 +35,10 @@ export default class TimelinePage extends Page {
     return this
   }
 
-  hasLearningAndWorkProgressPlanEventWithOneGoalDisplayed(): TimelinePage {
-    // The timeline is rendered in reverse chronological order, so the last event on the timeline (ie. the last element in the dom)
-    // is the first event in time.
-    // We expect the last event in the DOM to be the first event in time, which should be ACTION_PLAN_CREATED
-    this.lastTimelineEvent().should('have.attr', 'data-qa-event-type', 'ACTION_PLAN_CREATED')
-    // We expect the 2nd to last event in the DOM to be the 2nd event in time, which should be GOAL_CREATED ('goal' singular)
-    this.lastButOneTimelineEvent().should('have.attr', 'data-qa-event-type', 'GOAL_CREATED')
-    return this
-  }
-
-  hasLearningAndWorkProgressPlanEventWithMultipleGoalsDisplayed(): TimelinePage {
-    // The timeline is rendered in reverse chronological order, so the last event on the timeline (ie. the last element in the dom)
-    // is the first event in time.
-    // We expect the last event in the DOM to be the first event in time, which should be ACTION_PLAN_CREATED
-    this.lastTimelineEvent().should('have.attr', 'data-qa-event-type', 'ACTION_PLAN_CREATED')
-    // We expect the 2nd to last event in the DOM to be the 2nd event in time, which should be MULTIPLE_GOALS_CREATED
-    this.lastButOneTimelineEvent().should('have.attr', 'data-qa-event-type', 'MULTIPLE_GOALS_CREATED')
+  hasTimelineEventsInOrder = (events: string[]): TimelinePage => {
+    cy.get('div.moj-timeline div.moj-timeline__item').each((el, idx) => {
+      cy.wrap(el.attr('data-qa-event-type')).should('eq', events[idx])
+    })
     return this
   }
 
@@ -62,8 +49,4 @@ export default class TimelinePage extends Page {
   timelineUnavailableMessage = (): PageElement => cy.get('[data-qa=timeline-unavailable-message]')
 
   timelineContainer = (): PageElement => cy.get('div.moj-timeline')
-
-  lastTimelineEvent = (): PageElement => cy.get('div.moj-timeline div.moj-timeline__item:last-of-type')
-
-  lastButOneTimelineEvent = (): PageElement => cy.get('div.moj-timeline div.moj-timeline__item:nth-last-child(2)')
 }
