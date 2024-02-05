@@ -50,7 +50,7 @@ generic-service:
     FEEDBACK_URL: "https://eu.surveymonkey.com/r/H9CYM7B"
     CREATE_GOALS_WITHOUT_INDUCTION_ENABLED: "true"
     USE_NEW_INDUCTION_API_ENABLED: "true"
-    INCLUDE_PRISON_TIMELINE_EVENTS_ENABLED: "false"
+    INCLUDE_PRISON_TIMELINE_EVENTS_ENABLED: "true"
 
   # Pre-existing kubernetes secrets to load as environment variables in the deployment.
   # namespace_secrets:
