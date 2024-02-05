@@ -35,7 +35,7 @@ export default class TimelinePage extends Page {
     return this
   }
 
-  hasTimelineEventsInOrder = (events: string[]) => {
+  hasTimelineEventsInOrder = (events: string[]): TimelinePage => {
     cy.get('div.moj-timeline div.moj-timeline__item').each((el, idx) => {
       cy.wrap(el.attr('data-qa-event-type')).should('eq', events[idx])
     })
