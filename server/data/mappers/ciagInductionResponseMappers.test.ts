@@ -46,10 +46,12 @@ describe('ciagInductionResponseMappers', () => {
               otherPersonalInterest: 'Renewable energy',
               updatedAt: moment('2023-08-22T11:12:31.943Z').toDate(),
               updatedBy: 'ANOTHER_DPS_USER_GEN',
+              updatedByDisplayName: 'Another DPS User',
             },
             workExperience: {
               hasWorkedPreviously: true,
               updatedBy: 'ANOTHER_DPS_USER_GEN',
+              updatedByDisplayName: 'Another DPS User',
               updatedAt: moment('2023-08-22T11:12:31.943Z').toDate(),
               jobs: [
                 {
@@ -92,6 +94,7 @@ describe('ciagInductionResponseMappers', () => {
               shortQuestionSetAnswers: undefined,
               updatedAt: moment('2023-08-22T11:12:31.943Z').toDate(),
               updatedBy: 'ANOTHER_DPS_USER_GEN',
+              updatedByDisplayName: 'Another DPS User',
             },
           },
         }
@@ -162,10 +165,12 @@ describe('ciagInductionResponseMappers', () => {
               otherPersonalInterest: undefined,
               updatedAt: moment('2023-08-22T11:12:31.943Z').toDate(),
               updatedBy: 'ANOTHER_DPS_USER_GEN',
+              updatedByDisplayName: 'Another DPS User',
             },
             workExperience: {
               hasWorkedPreviously: false,
               updatedBy: 'ANOTHER_DPS_USER_GEN',
+              updatedByDisplayName: 'Another DPS User',
               updatedAt: moment('2023-08-22T11:12:31.943Z').toDate(),
               jobs: [],
             },
@@ -195,6 +200,7 @@ describe('ciagInductionResponseMappers', () => {
               shortQuestionSetAnswers: undefined,
               updatedAt: moment('2023-08-22T11:12:31.943Z').toDate(),
               updatedBy: 'ANOTHER_DPS_USER_GEN',
+              updatedByDisplayName: 'Another DPS User',
             },
           },
         }
@@ -229,6 +235,7 @@ describe('ciagInductionResponseMappers', () => {
               },
               updatedAt: moment('2023-08-22T11:12:31.943Z').toDate(),
               updatedBy: 'ANOTHER_DPS_USER_GEN',
+              updatedByDisplayName: 'Another DPS User',
             },
           },
         }

@@ -63,6 +63,7 @@ const toSkillsAndInterests = (ciagInduction: CiagInduction): SkillsAndInterests 
     personalInterests: ciagInduction.skillsAndInterests.personalInterests.sort(enumComparator) || [],
     otherPersonalInterest: ciagInduction.skillsAndInterests.personalInterestsOther,
     updatedBy: ciagInduction.skillsAndInterests.modifiedBy,
+    updatedByDisplayName: ciagInduction.skillsAndInterests.modifiedByDisplayName,
     updatedAt: moment(ciagInduction.skillsAndInterests.modifiedDateTime).toDate(),
   }
 }
@@ -82,6 +83,7 @@ const toWorkExperience = (ciagInduction: CiagInduction): WorkExperience => {
       })
       .sort(jobComparator),
     updatedBy: ciagInduction.workExperience.modifiedBy,
+    updatedByDisplayName: ciagInduction.workExperience.modifiedByDisplayName,
     updatedAt: moment(ciagInduction.workExperience.modifiedDateTime).toDate(),
   }
 }
@@ -104,6 +106,10 @@ const toLongQuestionSetWorkInterests = (ciagInduction: CiagInduction): WorkInter
       mostRecentlyUpdatedSection === 'MAIN_INDUCTION'
         ? ciagInduction.modifiedBy
         : ciagInduction.workExperience.workInterests.modifiedBy,
+    updatedByDisplayName:
+      mostRecentlyUpdatedSection === 'MAIN_INDUCTION'
+        ? ciagInduction.modifiedByDisplayName
+        : ciagInduction.workExperience.workInterests.modifiedByDisplayName,
     updatedAt:
       mostRecentlyUpdatedSection === 'MAIN_INDUCTION'
         ? moment(ciagInduction.modifiedDateTime).toDate()
@@ -130,6 +136,10 @@ const toShortQuestionSetWorkInterests = (ciagInduction: CiagInduction): WorkInte
       mostRecentlyUpdatedSection === 'MAIN_INDUCTION'
         ? ciagInduction.modifiedBy
         : ciagInduction.inPrisonInterests.modifiedBy,
+    updatedByDisplayName:
+      mostRecentlyUpdatedSection === 'MAIN_INDUCTION'
+        ? ciagInduction.modifiedByDisplayName
+        : ciagInduction.inPrisonInterests.modifiedByDisplayName,
     updatedAt:
       mostRecentlyUpdatedSection === 'MAIN_INDUCTION'
         ? moment(ciagInduction.modifiedDateTime).toDate()

@@ -45,11 +45,13 @@ describe('workAndInterestMapper', () => {
             otherPersonalInterest: 'Renewable energy',
             updatedAt: moment('2023-06-19T09:39:44.000Z').toDate(),
             updatedBy: 'asmith_gen',
+            updatedByDisplayName: 'Alex Smith',
           },
           workExperience: {
             hasWorkedPreviously: true,
             updatedAt: moment('2023-06-19T09:39:44.000Z').toDate(),
             updatedBy: 'asmith_gen',
+            updatedByDisplayName: 'Alex Smith',
             jobs: [
               {
                 type: 'CONSTRUCTION',
@@ -91,6 +93,7 @@ describe('workAndInterestMapper', () => {
             shortQuestionSetAnswers: undefined,
             updatedAt: moment('2023-06-19T09:39:44.000Z').toDate(),
             updatedBy: 'asmith_gen',
+            updatedByDisplayName: 'Alex Smith',
           },
         },
       }
@@ -161,11 +164,13 @@ describe('workAndInterestMapper', () => {
             otherPersonalInterest: undefined,
             updatedAt: moment('2023-06-19T09:39:44.000Z').toDate(),
             updatedBy: 'asmith_gen',
+            updatedByDisplayName: 'Alex Smith',
           },
           workExperience: {
             hasWorkedPreviously: false,
             updatedAt: moment('2023-06-19T09:39:44.000Z').toDate(),
             updatedBy: 'asmith_gen',
+            updatedByDisplayName: 'Alex Smith',
             jobs: [],
           },
           workInterests: {
@@ -194,6 +199,7 @@ describe('workAndInterestMapper', () => {
             shortQuestionSetAnswers: undefined,
             updatedAt: moment('2023-06-19T09:39:44.000Z').toDate(),
             updatedBy: 'asmith_gen',
+            updatedByDisplayName: 'Alex Smith',
           },
         },
       }
@@ -228,6 +234,7 @@ describe('workAndInterestMapper', () => {
             },
             updatedAt: moment('2023-06-19T09:39:44.000Z').toDate(),
             updatedBy: 'asmith_gen',
+            updatedByDisplayName: 'Alex Smith',
           },
         },
       }

@@ -10,6 +10,7 @@ export default function aValidLongQuestionSetWorkAndInterests(): WorkAndInterest
         hasWorkedPreviously: false,
         jobs: [],
         updatedBy: 'A_DPS_USER_GEN',
+        updatedByDisplayName: 'DPS User',
         updatedAt: moment('2023-08-22T11:12:31.943Z').toDate(),
       },
       workInterests: {
@@ -27,12 +28,14 @@ export default function aValidLongQuestionSetWorkAndInterests(): WorkAndInterest
         },
         shortQuestionSetAnswers: undefined,
         updatedBy: 'A_DPS_USER_GEN',
+        updatedByDisplayName: 'DPS User',
         updatedAt: moment('2023-08-22T11:12:31.943Z').toDate(),
       },
       skillsAndInterests: {
         skills: ['THINKING_AND_PROBLEM_SOLVING'],
         personalInterests: ['CREATIVE', 'CRAFTS'],
         updatedBy: 'A_DPS_USER_GEN',
+        updatedByDisplayName: 'DPS User',
         updatedAt: moment('2023-08-22T11:12:31.943Z').toDate(),
       },
     },

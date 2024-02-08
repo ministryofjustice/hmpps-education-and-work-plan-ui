@@ -135,6 +135,7 @@ declare module 'viewModels' {
     hasWorkedPreviously: boolean
     jobs: Array<Job>
     updatedBy: string
+    updatedByDisplayName: string
     updatedAt: Date
   }
 
@@ -170,6 +171,7 @@ declare module 'viewModels' {
     longQuestionSetAnswers?: WorkInterestsLongQuestionSet
     shortQuestionSetAnswers?: WorkInterestsShortQuestionSet
     updatedBy: string
+    updatedByDisplayName: string
     updatedAt: Date
   }
 
@@ -263,6 +265,7 @@ declare module 'viewModels' {
     >
     otherPersonalInterest?: string
     updatedBy: string
+    updatedByDisplayName: string
     updatedAt: Date
   }
 

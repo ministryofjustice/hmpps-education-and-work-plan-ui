@@ -57,6 +57,7 @@ const toSkillsAndInterests = (induction: InductionResponse): SkillsAndInterests 
     personalInterests: personalInterests.map(interest => interest.interestType).sort(enumComparator),
     otherPersonalInterest: personalInterests.find(interest => interest.interestType === 'OTHER')?.interestTypeOther,
     updatedBy: induction.personalSkillsAndInterests.updatedBy,
+    updatedByDisplayName: induction.personalSkillsAndInterests.updatedByDisplayName,
     updatedAt: moment(induction.personalSkillsAndInterests.updatedAt).toDate(),
   }
 }
@@ -76,6 +77,7 @@ const toWorkExperience = (induction: InductionResponse): WorkExperience => {
       })
       .sort(jobComparator),
     updatedBy: induction.previousWorkExperiences.updatedBy,
+    updatedByDisplayName: induction.previousWorkExperiences.updatedByDisplayName,
     updatedAt: moment(induction.previousWorkExperiences.updatedAt).toDate(),
   }
 }
@@ -104,6 +106,10 @@ const toLongQuestionSetWorkInterests = (induction: InductionResponse): WorkInter
     shortQuestionSetAnswers: undefined,
     updatedBy:
       mostRecentlyUpdatedSection === 'MAIN_INDUCTION' ? induction.updatedBy : induction.futureWorkInterests.updatedBy,
+    updatedByDisplayName:
+      mostRecentlyUpdatedSection === 'MAIN_INDUCTION'
+        ? induction.updatedByDisplayName
+        : induction.futureWorkInterests.updatedByDisplayName,
     updatedAt:
       mostRecentlyUpdatedSection === 'MAIN_INDUCTION'
         ? moment(induction.updatedAt).toDate()
@@ -131,6 +137,10 @@ const toShortQuestionSetWorkInterests = (induction: InductionResponse): WorkInte
     },
     updatedBy:
       mostRecentlyUpdatedSection === 'MAIN_INDUCTION' ? induction.updatedBy : induction.inPrisonInterests.updatedBy,
+    updatedByDisplayName:
+      mostRecentlyUpdatedSection === 'MAIN_INDUCTION'
+        ? induction.updatedByDisplayName
+        : induction.inPrisonInterests.updatedByDisplayName,
     updatedAt:
       mostRecentlyUpdatedSection === 'MAIN_INDUCTION'
         ? moment(induction.updatedAt).toDate()
