@@ -6,6 +6,7 @@ const aLongQuestionSetCiagInduction = (options?: {
   hasSkills?: boolean
   hasInterests?: boolean
   modifiedBy?: string
+  modifiedByDisplayName?: string
   modifiedByDateTime?: string
   workInterestModifiedBy?: string
   workInterestModifiedByDateTime?: string
@@ -14,12 +15,14 @@ const aLongQuestionSetCiagInduction = (options?: {
     ...baseCiagInductionTemplate({
       prisonNumber: options?.prisonNumber,
       modifiedBy: options?.modifiedBy,
+      modifiedByDisplayName: options?.modifiedByDisplayName,
       modifiedDateTime: options?.modifiedByDateTime,
     }),
     hopingToGetWork: 'YES',
     abilityToWork: ['NONE'],
     workExperience: {
       modifiedBy: 'ANOTHER_DPS_USER_GEN',
+      modifiedByDisplayName: 'Another DPS User',
       modifiedDateTime: '2023-08-22T11:12:31.943Z',
       hasWorkedBefore:
         !options || options.hasWorkedBefore === null || options.hasWorkedBefore === undefined
@@ -46,6 +49,7 @@ const aLongQuestionSetCiagInduction = (options?: {
           : [],
       workInterests: {
         modifiedBy: options?.workInterestModifiedBy || 'ANOTHER_DPS_USER_GEN',
+        modifiedByDisplayName: options?.modifiedByDisplayName || 'Another DPS User',
         modifiedDateTime: options?.workInterestModifiedByDateTime || '2023-08-22T11:12:31.943Z',
         workInterests: ['RETAIL', 'CONSTRUCTION', 'OTHER'],
         workInterestsOther: 'Film, TV and media',
@@ -63,6 +67,7 @@ const aLongQuestionSetCiagInduction = (options?: {
     },
     skillsAndInterests: {
       modifiedBy: 'ANOTHER_DPS_USER_GEN',
+      modifiedByDisplayName: 'Another DPS User',
       modifiedDateTime: '2023-08-22T11:12:31.943Z',
       skills:
         !options || options.hasSkills === null || options.hasSkills === undefined || options.hasSkills === true
@@ -83,6 +88,7 @@ const aLongQuestionSetCiagInduction = (options?: {
     },
     qualificationsAndTraining: {
       modifiedBy: 'ANOTHER_DPS_USER_GEN',
+      modifiedByDisplayName: 'Another DPS User',
       modifiedDateTime: '2023-08-22T13:02:31.943Z',
       id: 1234,
       educationLevel: 'SECONDARY_SCHOOL_TOOK_EXAMS',
@@ -107,6 +113,7 @@ const aShortQuestionSetCiagInduction = (options?: {
   modifiedBy?: string
   modifiedByDateTime?: string
   inPrisonInterestsModifiedBy?: string
+  inPrisonInterestsModifiedByDisplayName?: string
   inPrisonInterestsModifiedByDateTime?: string
 }): CiagInduction => {
   return {
@@ -120,6 +127,7 @@ const aShortQuestionSetCiagInduction = (options?: {
     reasonToNotGetWorkOther: 'Will be of retirement age at release',
     inPrisonInterests: {
       modifiedBy: options?.inPrisonInterestsModifiedBy || 'ANOTHER_DPS_USER_GEN',
+      modifiedByDisplayName: options?.inPrisonInterestsModifiedByDisplayName || 'Another DPS User',
       modifiedDateTime: options?.inPrisonInterestsModifiedByDateTime || '2023-08-22T11:12:31.943Z',
       inPrisonWork: ['CLEANING_AND_HYGIENE', 'OTHER'],
       inPrisonWorkOther: 'Gardening and grounds keeping',
@@ -128,6 +136,7 @@ const aShortQuestionSetCiagInduction = (options?: {
     },
     qualificationsAndTraining: {
       modifiedBy: 'ANOTHER_DPS_USER_GEN',
+      modifiedByDisplayName: 'Another DPS User',
       modifiedDateTime: '2023-08-22T13:02:31.943Z',
       id: 1234,
       educationLevel: null,
@@ -155,6 +164,7 @@ const baseCiagInductionTemplate = (options?: {
   createBy?: string
   createdDateTime?: string
   modifiedBy?: string
+  modifiedByDisplayName?: string
   modifiedDateTime?: string
 }): CiagInduction => {
   return {
@@ -162,6 +172,7 @@ const baseCiagInductionTemplate = (options?: {
     createdBy: options?.createBy || 'DPS_USER_GEN',
     createdDateTime: options?.createdDateTime || '2023-08-15T14:47:09.123Z',
     modifiedBy: options?.modifiedBy || 'ANOTHER_DPS_USER_GEN',
+    modifiedByDisplayName: options?.modifiedByDisplayName || 'Another DPS User',
     modifiedDateTime: options?.modifiedDateTime || '2023-08-22T11:12:31.943Z',
   }
 }
