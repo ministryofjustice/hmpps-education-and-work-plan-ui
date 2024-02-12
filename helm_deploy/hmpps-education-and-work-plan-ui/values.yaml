@@ -23,6 +23,8 @@ generic-service:
       # Update OWASP rule 942440 (SQL Comment injection via ==) to not apply it to the connect.sid cookie (express) or the _csrf token. Both can legitimately include ==
       SecRuleUpdateTargetById 942440 "!REQUEST_COOKIES:/connect.sid/" 
       SecRuleUpdateTargetById 942440 "!ARGS:_csrf"
+      # Disable OWASP rule 942230 (SQL injection attempt) as the regex is too strict and prevents sentences containing `case`, `like`, `having` or `if` in them
+      SecRuleRemoveById 942230
 
   livenessProbe:
     httpGet:
