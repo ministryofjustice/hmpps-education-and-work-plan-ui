@@ -38,8 +38,8 @@ const toGoal = (goalResponse: GoalResponse, goalSequenceNumber: number): Goal =>
  */
 const goalReferencesSortedByCreationDate = (goals: Array<GoalResponse>): Array<string> => {
   return [...goals]
-    .sort(
-      (left: GoalResponse, right: GoalResponse) => dateComparator(toDate(left.createdAt), toDate(right.createdAt)) * -1,
+    .sort((left: GoalResponse, right: GoalResponse) =>
+      dateComparator(toDate(left.createdAt), toDate(right.createdAt), 'ASC'),
     )
     .map(goal => goal.goalReference)
 }
