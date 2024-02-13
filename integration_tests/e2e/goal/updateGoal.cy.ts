@@ -3,9 +3,11 @@ import UpdateGoalPage from '../../pages/goal/UpdateGoalPage'
 import OverviewPage from '../../pages/overview/OverviewPage'
 import ReviewUpdateGoalPage from '../../pages/goal/ReviewUpdateGoalPage'
 import AuthorisationErrorPage from '../../pages/authorisationError'
-import { UpdateGoalRequest } from '../../mockApis/educationAndWorkPlanApi'
 import Error404Page from '../../pages/error404'
 import Error500Page from '../../pages/error500'
+import { putRequestedFor } from '../../mockApis/wiremock/requestPatternBuilder'
+import { urlEqualTo } from '../../mockApis/wiremock/matchers/url'
+import { matchingJsonPath } from '../../mockApis/wiremock/matchers/content'
 
 context('Update a goal', () => {
   beforeEach(() => {
@@ -129,18 +131,15 @@ context('Update a goal', () => {
 
     // Then
     Page.verifyOnPage(OverviewPage)
-    // Assert that the expected new step was sent in the UpdateGoal request to the API - TODO, there has to be a better way of doing this
-    cy.task<UpdateGoalRequest>('getUpdateGoalRequestBody')
-      .then(updateGoalRequestBody => {
-        const newStep = { ...updateGoalRequestBody.steps.slice(-1)[0] }
-        return newStep
-      })
-      .should('deep.equal', {
-        stepReference: '',
-        sequenceNumber: '3',
-        title: 'A brand new step',
-        status: 'ACTIVE',
-      })
+    const goalReference = '10efc562-be8f-4675-9283-9ede0c19dade'
+    cy.wiremockVerify(
+      putRequestedFor(urlEqualTo(`/action-plans/${prisonNumber}/goals/${goalReference}`)) //
+        .withRequestBody(
+          matchingJsonPath(
+            `$.steps[2].[?(@.stepReference == '' && @.sequenceNumber == '3' && @.title == 'A brand new step' && @.status == 'ACTIVE')]`,
+          ),
+        ),
+    )
   })
 
   it('should be able to remove a step as part of updating a goal', () => {
@@ -163,13 +162,11 @@ context('Update a goal', () => {
 
     // Then
     Page.verifyOnPage(OverviewPage)
-    // Assert that the expected step was removed from the UpdateGoal request to the API - TODO, there has to be a better way of doing this
-    cy.task<UpdateGoalRequest>('getUpdateGoalRequestBody')
-      .then(updateGoalRequestBody => {
-        const { steps } = updateGoalRequestBody
-        return steps
-      })
-      .should('have.length', 1)
+    const goalReference = '10efc562-be8f-4675-9283-9ede0c19dade'
+    cy.wiremockVerify(
+      putRequestedFor(urlEqualTo(`/action-plans/${prisonNumber}/goals/${goalReference}`)) //
+        .withRequestBody(matchingJsonPath(`$[?(@.goalReference == '${goalReference}' && @.steps.size() == 1)]`)),
+    )
   })
 
   it('should redirect to auth-error page given user does not have any authorities', () => {
