@@ -1,6 +1,5 @@
 import { Router } from 'express'
 import { EducationAndWorkPlanService, Services } from '../../services'
-import config from '../../config'
 
 /**
  * Definitions for the route immediately following the CIAG UI Induction creation.
@@ -13,10 +12,6 @@ export default (router: Router, services: Services) => {
   router.get('/plan/:prisonNumber/induction-created', async (req, res, next) => {
     const userToken = req.user.token
     const { prisonNumber } = req.params
-
-    if (!config.featureToggles.createGoalsWithoutInductionEnabled) {
-      return res.redirect(createGoalRoute(prisonNumber))
-    }
 
     return (await prisonerHasActionPlan(prisonNumber, userToken, services.educationAndWorkPlanService))
       ? res.redirect(`/plan/${prisonNumber}/view/overview`) // Action Plan with goal(s) exists already. Redirect to the Overview page
