@@ -5,5 +5,7 @@ declare namespace Cypress {
      * @example cy.signIn({ failOnStatusCode: boolean })
      */
     signIn(options?: { failOnStatusCode: boolean }): Chainable<AUTWindow>
+
+    verifyWiremock(options: { requestMatcher: WiremockRequestMatcher; times?: number }): Chainable<*>
   }
 }

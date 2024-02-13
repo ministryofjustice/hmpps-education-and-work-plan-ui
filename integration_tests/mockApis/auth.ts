@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken'
 import { Response } from 'superagent'
 
-import { stubFor, getMatchingRequests } from './wiremock'
+import { stubFor, getMatchingWiremockRequest } from './wiremock'
 import tokenVerification from './tokenVerification'
 
 const createToken = (authorities: string[]) => {
@@ -18,12 +18,11 @@ const createToken = (authorities: string[]) => {
 }
 
 const getSignInUrl = (): Promise<string> =>
-  getMatchingRequests({
+  getMatchingWiremockRequest({
     method: 'GET',
     urlPath: '/auth/oauth/authorize',
-  }).then(data => {
-    const { requests } = data.body
-    const stateValue = requests[requests.length - 1].queryParams.state.values[0]
+  }).then(matchedRequest => {
+    const stateValue = matchedRequest.queryParams.state.values[0]
     return `/sign-in/callback?code=codexxxx&state=${stateValue}`
   })
 
