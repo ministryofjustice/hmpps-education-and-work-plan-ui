@@ -1,5 +1,4 @@
 import type { Step, Goal, ActionPlan } from 'viewModels'
-import moment from 'moment'
 
 const aValidActionPlan = (options?: {
   prisonNumber?: string
@@ -31,23 +30,21 @@ const aValidActionPlanWithOneGoal = (options?: {
   })
 }
 
-const aValidGoal = (
-  goalReference = 'd38a6c41-13d1-1d05-13c2-24619966119b',
-  steps = [aValidStep(), anotherValidStep()],
-): Goal => {
+const aValidGoal = (options?: { goalReference?: string; steps?: Array<Step>; sequenceNumber?: number }): Goal => {
   return {
-    goalReference,
+    goalReference: options?.goalReference || 'd38a6c41-13d1-1d05-13c2-24619966119b',
     title: 'Learn Spanish',
     status: 'ACTIVE',
-    steps,
+    steps: options?.steps || [aValidStep(), anotherValidStep()],
     createdBy: 'asmith_gen',
     createdByDisplayName: 'Alex Smith',
-    createdAt: '2023-01-16',
+    createdAt: new Date('2023-01-16T09:34:12.453Z'),
     updatedBy: 'asmith_gen',
     updatedByDisplayName: 'Alex Smith',
-    updatedAt: '2023-09-23',
-    targetCompletionDate: moment('2024-02-29').toDate(),
+    updatedAt: new Date('2023-09-23T13:42:01.401Z'),
+    targetCompletionDate: new Date('2024-02-29T00:00:00.000Z'),
     note: 'Prisoner is not good at listening',
+    sequenceNumber: options?.sequenceNumber || 1,
   }
 }
 

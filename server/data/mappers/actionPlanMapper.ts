@@ -1,16 +1,20 @@
 import type { ActionPlanResponse, GoalResponse, StepResponse } from 'educationAndWorkPlanApiClient'
 import type { ActionPlan, Goal, Step } from 'viewModels'
-import moment from 'moment'
+import dateComparator from '../../routes/dateComparator'
 
 const toActionPlan = (actionPlanResponse: ActionPlanResponse, problemRetrievingData: boolean): ActionPlan => {
+  const goalReferencesInCreationDateOrder = goalReferencesSortedByCreationDate(actionPlanResponse.goals)
   return {
     prisonNumber: actionPlanResponse.prisonNumber,
-    goals: actionPlanResponse.goals.map((goal: GoalResponse) => toGoal(goal)),
+    goals: actionPlanResponse.goals.map((goal: GoalResponse) => {
+      const goalSequenceNumber = goalReferencesInCreationDateOrder.indexOf(goal.goalReference) + 1
+      return toGoal(goal, goalSequenceNumber)
+    }),
     problemRetrievingData,
   }
 }
 
-const toGoal = (goalResponse: GoalResponse): Goal => {
+const toGoal = (goalResponse: GoalResponse, goalSequenceNumber: number): Goal => {
   return {
     goalReference: goalResponse.goalReference,
     title: goalResponse.title,
@@ -18,13 +22,26 @@ const toGoal = (goalResponse: GoalResponse): Goal => {
     steps: goalResponse.steps.map((step: StepResponse) => toStep(step)),
     createdBy: goalResponse.createdBy,
     createdByDisplayName: goalResponse.createdByDisplayName,
-    createdAt: goalResponse.createdAt,
+    createdAt: toDate(goalResponse.createdAt),
     updatedBy: goalResponse.updatedBy,
     updatedByDisplayName: goalResponse.updatedByDisplayName,
-    updatedAt: goalResponse.updatedAt,
+    updatedAt: toDate(goalResponse.updatedAt),
     targetCompletionDate: toDate(goalResponse.targetCompletionDate),
     note: goalResponse.notes,
+    sequenceNumber: goalSequenceNumber,
   }
+}
+
+/**
+ * Sorts the goals by creation date descending in a non-destructive manner (function arg is pass by reference) and
+ * returns an array of the goal reference numbers.
+ */
+const goalReferencesSortedByCreationDate = (goals: Array<GoalResponse>): Array<string> => {
+  return [...goals]
+    .sort(
+      (left: GoalResponse, right: GoalResponse) => dateComparator(toDate(left.createdAt), toDate(right.createdAt)) * -1,
+    )
+    .map(goal => goal.goalReference)
 }
 
 const toStep = (stepResponse: StepResponse): Step => {
@@ -37,7 +54,7 @@ const toStep = (stepResponse: StepResponse): Step => {
 }
 
 const toDate = (dateString: string): Date => {
-  return dateString ? moment(dateString).toDate() : null
+  return dateString ? new Date(dateString) : null
 }
 
 export { toActionPlan, toGoal }

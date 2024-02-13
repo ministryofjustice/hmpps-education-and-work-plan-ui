@@ -6,7 +6,7 @@ const toUpdateGoalForm = (goal: Goal): UpdateGoalForm => {
   return {
     reference: goal.goalReference,
     title: goal.title,
-    createdAt: goal.createdAt,
+    createdAt: goal.createdAt.toISOString(),
     targetCompletionDate: toDateString(goal.targetCompletionDate),
     'targetCompletionDate-day': null,
     'targetCompletionDate-month': null,

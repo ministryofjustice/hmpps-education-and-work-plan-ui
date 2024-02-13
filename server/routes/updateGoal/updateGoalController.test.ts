@@ -65,14 +65,14 @@ describe('updateGoalController', () => {
     it('should get update goal view', async () => {
       // Given
       const step = aValidStep()
-      const goal = aValidGoal(goalReference, [step])
+      const goal = aValidGoal({ goalReference, steps: [step] })
       const actionPlan = aValidActionPlanWithOneGoal({ prisonNumber, goal })
       educationAndWorkPlanService.getActionPlan.mockResolvedValue(actionPlan)
 
       const updateGoalForm = {
         reference: goal.goalReference,
         title: goal.title,
-        createdAt: goal.createdAt,
+        createdAt: goal.createdAt.toISOString(),
         targetCompletionDate: '2024-02-29',
         'targetCompletionDate-day': null,
         'targetCompletionDate-month': null,
@@ -133,7 +133,7 @@ describe('updateGoalController', () => {
     it('should not get update goal view given requested goal reference is not part of the prisoners action plan', async () => {
       // Given
       const someOtherGoalReference = 'd31d22bc-b9be-4d13-9e47-d633d6815454'
-      const goal = aValidGoal(someOtherGoalReference)
+      const goal = aValidGoal({ goalReference: someOtherGoalReference })
       const actionPlan = aValidActionPlanWithOneGoal({ prisonNumber, goal })
       educationAndWorkPlanService.getActionPlan.mockResolvedValue(actionPlan)
 
