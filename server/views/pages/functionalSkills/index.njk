@@ -33,7 +33,7 @@
 
           <div class="govuk-summary-card">
             <div class="govuk-summary-card__title-wrapper">
-              <h2 class="govuk-summary-card__title">Current functional skills</h2>
+              <h2 class="govuk-summary-card__title">Current functional skills assessment scores</h2>
               {# Not MVP, Add assesment link
               <ul class="govuk-summary-card__actions govuk-!-display-none-print">
                   <li class="govuk-summary-card__action">
@@ -44,7 +44,7 @@
             </div>
             <div class="govuk-summary-card__content">
               <table class="govuk-table" id="latest-functional-skills-table">
-                <caption class="govuk-table__caption govuk-visually-hidden">Details of current functional skills</caption>
+                <caption class="govuk-table__caption govuk-visually-hidden">Details of current functional skills assessment scores</caption>
                 <thead class="govuk-table__head">
                   <tr class="govuk-table__row">
                     <th scope="col" class="govuk-table__header">Subject</th>
@@ -69,7 +69,7 @@
                         <span class="govuk-hint">Curious</span>
                       </td>
                     {% else %}
-                      <td class="govuk-table__cell" colspan="4">No functional skills recorded in Curious</td>
+                      <td class="govuk-table__cell" colspan="4">No functional skill assessment scores recorded in Curious</td>
                     {% endif %}
                   </tr>
                 {% endfor %}
