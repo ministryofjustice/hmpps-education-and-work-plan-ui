@@ -3,7 +3,6 @@ import UserService from './userService'
 import PrisonerSearchService from './prisonerSearchService'
 import EducationAndWorkPlanService from './educationAndWorkPlanService'
 import CuriousService from './curiousService'
-import CiagInductionService from './ciagInductionService'
 import FrontendComponentService from './frontendComponentService'
 import PrisonerListService from './prisonerListService'
 import TimelineService from './timelineService'
@@ -31,7 +30,6 @@ export const services = () => {
   const educationAndWorkPlanService = new EducationAndWorkPlanService(educationAndWorkPlanClient)
   const inductionService = new InductionService(educationAndWorkPlanClient)
   const curiousService = new CuriousService(hmppsAuthClient, curiousClient)
-  const ciagInductionService = new CiagInductionService(ciagInductionClient)
   const frontendComponentService = new FrontendComponentService(frontendComponentApiClient)
   const prisonerListService = new PrisonerListService(
     hmppsAuthClient,
@@ -49,7 +47,6 @@ export const services = () => {
     educationAndWorkPlanService,
     inductionService,
     curiousService,
-    ciagInductionService,
     frontendComponentService,
     prisonerListService,
     timelineService,
@@ -65,7 +62,6 @@ export {
   EducationAndWorkPlanService,
   InductionService,
   CuriousService,
-  CiagInductionService,
   FrontendComponentService,
   PrisonerListService,
   TimelineService,

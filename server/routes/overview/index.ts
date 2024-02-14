@@ -12,7 +12,6 @@ export default (router: Router, services: Services) => {
     services.curiousService,
     services.educationAndWorkPlanService,
     services.inductionService,
-    services.ciagInductionService,
     services.timelineService,
     services.prisonService,
   )
