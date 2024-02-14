@@ -73,12 +73,13 @@ declare module 'viewModels' {
     steps: Array<Step>
     createdBy: string
     createdByDisplayName: string
-    createdAt: string
+    createdAt: Date
     updatedBy: string
     updatedByDisplayName: string
-    updatedAt: string
+    updatedAt: Date
     targetCompletionDate: Date
     note?: string
+    sequenceNumber: number
   }
 
   export interface Step {

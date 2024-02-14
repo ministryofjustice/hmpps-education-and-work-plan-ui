@@ -14,11 +14,11 @@ const aValidGoalResponse = (): GoalResponse => {
     steps: [aValidFirstStepResponse(), aValidSecondStepResponse()],
     createdBy: 'asmith_gen',
     createdByDisplayName: 'Alex Smith',
-    createdAt: '2023-01-16',
+    createdAt: '2023-01-16T09:34:12.453Z',
     updatedBy: 'asmith_gen',
     updatedByDisplayName: 'Alex Smith',
-    updatedAt: '2023-09-23',
-    targetCompletionDate: '2024-02-29',
+    updatedAt: '2023-09-23T13:42:01.401Z',
+    targetCompletionDate: '2024-02-29T00:00:00.000Z',
     notes: 'Prisoner is not good at listening',
   }
 }
