@@ -15,7 +15,7 @@ export default (router: Router, services: Services) => {
 
     return (await prisonerHasActionPlan(prisonNumber, userToken, services.educationAndWorkPlanService))
       ? res.redirect(`/plan/${prisonNumber}/view/overview`) // Action Plan with goal(s) exists already. Redirect to the Overview page
-      : res.redirect(createGoalRoute(prisonNumber)) // Action Plan goals do not exist yet. Redirect to the Create Goal flow routes.
+      : res.redirect(`/plan/${prisonNumber}/goals/1/create`) // Action Plan goals do not exist yet. Redirect to the Create Goal flow routes.
   })
 }
 
@@ -30,5 +30,3 @@ const prisonerHasActionPlan = async (
   }
   return actionPlan.goals.length > 0
 }
-
-const createGoalRoute = (prisonNumber: string): string => `/plan/${prisonNumber}/goals/1/create`
