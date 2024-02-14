@@ -1,5 +1,5 @@
 import { WiremockRequestMatcher } from '../mockApis/wiremock'
-import { verifyWiremockRequestSent } from '../mockApis/wiremockRequestVerifier'
+import verifyWiremockRequestSent from '../wiremock/wiremockRequestVerifier'
 
 Cypress.Commands.add('signIn', (options = { failOnStatusCode: false }) => {
   cy.request('/')
