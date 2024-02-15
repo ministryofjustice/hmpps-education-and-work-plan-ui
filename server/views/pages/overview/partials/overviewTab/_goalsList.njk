@@ -21,7 +21,7 @@
       </ul>
     </div>
     <div class="govuk-summary-card__content">
-      <p class="govuk-body">{{ goal.title }}</p>
+      <p class="govuk-body">{{ goal.title | formatMultilineText | safe }}</p>
       <table class="govuk-table">
         <caption class="govuk-table__caption govuk-visually-hidden">Goal {{ loop.index }} steps</caption>
         <thead class="govuk-table__head">
@@ -43,7 +43,7 @@
           {% endif %}
 
           <tr class="govuk-table__row">
-            <td class="govuk-table__cell">{{ step.sequenceNumber }}. {{ step.title }}</td>
+            <td class="govuk-table__cell">{{ step.sequenceNumber }}. {{ step.title | formatMultilineText | safe }}</td>
             <td class="govuk-table__cell">
               <strong class="govuk-tag {{ tagClass }}">
                 {{ step.status | formatStepStatusValue }}
@@ -58,7 +58,7 @@
       {% if goal.note %}
         {{ govukDetails({
           summaryHtml: "View note<span class='govuk-visually-hidden'> for Goal " + loop.index + "</span>",
-          text: goal.note,
+          text: goal.note | formatMultilineText | safe,
           attributes: {
             "data-qa": "overview-notes-expander-" + loop.index
           },
