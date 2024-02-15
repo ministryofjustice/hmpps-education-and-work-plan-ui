@@ -16,3 +16,9 @@
 .hmpps-width-20 {
   width: 20em;
 }
+
+// Custom section break widths
+
+.app-u-section-break-8 {
+  border-top: 8px solid $govuk-border-colour !important;
+}
