@@ -5,6 +5,9 @@ import ReviewUpdateGoalPage from '../../pages/goal/ReviewUpdateGoalPage'
 import AuthorisationErrorPage from '../../pages/authorisationError'
 import Error404Page from '../../pages/error404'
 import Error500Page from '../../pages/error500'
+import { putRequestedFor } from '../../wiremock/requestPatternBuilder'
+import { urlEqualTo } from '../../wiremock/matchers/url/equalToMatcherBuilder'
+import { matchingJsonPath } from '../../wiremock/matchers/content/jsonPathMatcherBuilder'
 
 context('Update a goal', () => {
   beforeEach(() => {
@@ -129,18 +132,14 @@ context('Update a goal', () => {
     // Then
     Page.verifyOnPage(OverviewPage)
     const goalReference = '10efc562-be8f-4675-9283-9ede0c19dade'
-    cy.verifyWiremock({
-      requestMatcher: {
-        method: 'PUT',
-        urlPattern: `/action-plans/${prisonNumber}/goals/${goalReference}`,
-        bodyPatterns: [
-          {
-            matchesJsonPath: `$.steps[2].[?(@.stepReference == '' && @.sequenceNumber == '3' && @.title == 'A brand new step' && @.status == 'ACTIVE')]`,
-          },
-        ],
-      },
-      times: 1,
-    })
+    cy.wiremockVerify(
+      putRequestedFor(urlEqualTo(`/action-plans/${prisonNumber}/goals/${goalReference}`)) //
+        .withRequestBody(
+          matchingJsonPath(
+            `$.steps[2].[?(@.stepReference == '' && @.sequenceNumber == '3' && @.title == 'A brand new step' && @.status == 'ACTIVE')]`,
+          ),
+        ),
+    )
   })
 
   it('should be able to remove a step as part of updating a goal', () => {
@@ -164,14 +163,10 @@ context('Update a goal', () => {
     // Then
     Page.verifyOnPage(OverviewPage)
     const goalReference = '10efc562-be8f-4675-9283-9ede0c19dade'
-    cy.verifyWiremock({
-      requestMatcher: {
-        method: 'PUT',
-        urlPattern: `/action-plans/${prisonNumber}/goals/${goalReference}`,
-        bodyPatterns: [{ matchesJsonPath: `$[?(@.goalReference == '${goalReference}' && @.steps.size() == 1)]` }],
-      },
-      times: 1,
-    })
+    cy.wiremockVerify(
+      putRequestedFor(urlEqualTo(`/action-plans/${prisonNumber}/goals/${goalReference}`)) //
+        .withRequestBody(matchingJsonPath(`$[?(@.goalReference == '${goalReference}' && @.steps.size() == 1)]`)),
+    )
   })
 
   it('should redirect to auth-error page given user does not have any authorities', () => {

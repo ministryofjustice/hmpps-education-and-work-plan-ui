@@ -1,13 +1,11 @@
-import { WiremockRequestMatcher } from '../mockApis/wiremock'
-import verifyWiremockRequestSent from '../wiremock/wiremockRequestVerifier'
+import { RequestPatternBuilder } from '../wiremock/requestPatternBuilder'
+import verify from '../wiremock/wiremockRequestVerifier'
 
 Cypress.Commands.add('signIn', (options = { failOnStatusCode: false }) => {
   cy.request('/')
   return cy.task('getSignInUrl').then((url: string) => cy.visit(url, options))
 })
 
-Cypress.Commands.add('verifyWiremock', (options: { requestMatcher: WiremockRequestMatcher; times?: number }) => {
-  return cy
-    .wrap(verifyWiremockRequestSent({ requestMatcher: options.requestMatcher, times: options.times || 1 }))
-    .should('be.true')
+Cypress.Commands.add('wiremockVerify', (requestPatternBuilder: RequestPatternBuilder) => {
+  return cy.wrap(verify(requestPatternBuilder)).should('be.true')
 })

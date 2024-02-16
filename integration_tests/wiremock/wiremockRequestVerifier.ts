@@ -1,11 +1,11 @@
-import { getMatchingWiremockRequests, WiremockMatchedRequest, WiremockRequestMatcher } from '../mockApis/wiremock'
+import { getMatchingWiremockRequests, WiremockMatchedRequest } from '../mockApis/wiremock'
+import { RequestPatternBuilder } from './requestPatternBuilder'
 
-const verifyWiremockRequestSent = async (options: {
-  requestMatcher: WiremockRequestMatcher
-  times: number
-}): Promise<boolean> => {
-  const matchedRequests: Array<WiremockMatchedRequest> = await getMatchingWiremockRequests(options.requestMatcher)
-  return matchedRequests.length === options.times
+const verify = async (requestPatternBuilder: RequestPatternBuilder): Promise<boolean> => {
+  const matchedRequests: Array<WiremockMatchedRequest> = await getMatchingWiremockRequests(
+    requestPatternBuilder.build(),
+  )
+  return matchedRequests.length === requestPatternBuilder.expectedRequestCount
 }
 
-export default verifyWiremockRequestSent
+export default verify
