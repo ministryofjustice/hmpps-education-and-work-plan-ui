@@ -6,8 +6,8 @@ import AuthorisationErrorPage from '../../pages/authorisationError'
 import Error404Page from '../../pages/error404'
 import Error500Page from '../../pages/error500'
 import { putRequestedFor } from '../../wiremock/requestPatternBuilder'
-import { urlEqualTo } from '../../wiremock/matchers/url/equalToMatcherBuilder'
-import { matchingJsonPath } from '../../wiremock/matchers/content/jsonPathMatcherBuilder'
+import { urlEqualTo } from '../../wiremock/matchers/url'
+import { matchingJsonPath } from '../../wiremock/matchers/content'
 
 context('Update a goal', () => {
   beforeEach(() => {
