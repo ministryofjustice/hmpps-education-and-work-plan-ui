@@ -17,9 +17,9 @@ export default class FunctionalSkillsController {
     const latestFunctionalSkillsFromCurious = mostRecentFunctionalSkills(functionalSkillsFromCurious)
     const allFunctionalSkillsFromCurious = allFunctionalSkills(functionalSkillsFromCurious)
 
-    const englishSkills = functionalSkillsByType(allFunctionalSkillsFromCurious.assessments, 'ENGLISH')
-    const mathsSkills = functionalSkillsByType(allFunctionalSkillsFromCurious.assessments, 'MATHS')
-    const digitalSkills = functionalSkillsByType(allFunctionalSkillsFromCurious.assessments, 'DIGITAL_LITERACY')
+    const englishSkills = functionalSkillsByType(functionalSkillsFromCurious.assessments, 'ENGLISH')
+    const mathsSkills = functionalSkillsByType(functionalSkillsFromCurious.assessments, 'MATHS')
+    const digitalSkills = functionalSkillsByType(functionalSkillsFromCurious.assessments, 'DIGITAL_LITERACY')
 
     const view = new FunctionalSkillsView(
       prisonerSummary,
