@@ -1,10 +1,18 @@
-import superagent, { SuperAgentRequest, Response } from 'superagent'
-import logger from '../../logger'
+import superagent, { Response, SuperAgentRequest } from 'superagent'
+import logger from '../../../logger'
+import WiremockMatchedRequest from './wiremockMatchedRequest'
+import WiremockRequestMatcher from './wiremockRequestMatcher'
+import { RequestPatternBuilder } from './requestPatternBuilder'
 
 const wiremockAdminUrl = 'http://localhost:9091/__admin'
 
-const stubFor = (mapping: Record<string, unknown>): SuperAgentRequest =>
-  superagent.post(`${wiremockAdminUrl}/mappings`).send(mapping)
+/**
+ * Returns matching wiremock requests.
+ *
+ * @deprecated Use one of [getMatchingWiremockRequest], [getMatchingWiremockRequests], [getTypedWiremockRequestBody] or
+ * [getTypedWiremockRequestBodies] instead.
+ */
+const getMatchingRequests = body => superagent.post(`${wiremockAdminUrl}/requests/find`).send(body)
 
 /**
  * Returns the Wiremock [WiremockMatchedRequest] from the Wiremock journal that matches the specified [WiremockRequestMatcher]
@@ -82,45 +90,26 @@ const getTypedWiremockRequestBodies = async <T>(requestMatcher: WiremockRequestM
 const resetStubs = (): Promise<Array<Response>> =>
   Promise.all([superagent.delete(`${wiremockAdminUrl}/mappings`), superagent.delete(`${wiremockAdminUrl}/requests`)])
 
+const stubFor = (mapping: Record<string, unknown>): SuperAgentRequest =>
+  superagent.post(`${wiremockAdminUrl}/mappings`).send(mapping)
+
+/**
+ * Verify the expected number of requests were made to wiremock that match the specified [RequestPatternBuilder]
+ */
+const verify = async (expectedCount: number, requestPatternBuilder: RequestPatternBuilder): Promise<boolean> => {
+  const matchedRequests: Array<WiremockMatchedRequest> = await getMatchingWiremockRequests(
+    requestPatternBuilder.build(),
+  )
+  return matchedRequests.length === expectedCount
+}
+
 export {
-  stubFor,
+  getMatchingRequests,
   getMatchingWiremockRequest,
   getMatchingWiremockRequests,
   getTypedWiremockRequestBody,
   getTypedWiremockRequestBodies,
   resetStubs,
-}
-
-/**
- * WiremockRequestMatcher - based heavily on the type defined in the (Wiremock openApi spec)[https://wiremock.org/assets/js/wiremock-admin-api.json]
- */
-export interface WiremockRequestMatcher {
-  method?: string
-  url?: string
-  urlPath?: string
-  urlPathPattern?: string
-  urlPattern?: string
-  queryParameters?: Record<string, never>
-  headers?: Record<string, never>
-  basicAuthCredentials?: {
-    password: string
-    username: string
-  }
-  cookies?: Record<string, never>
-  bodyPatterns?: Record<string, never>[]
-}
-
-/**
- * WiremockMatchedRequest - based heavily on the type defined in the (Wiremock openApi spec)[https://wiremock.org/assets/js/wiremock-admin-api.json]
- */
-export interface WiremockMatchedRequest {
-  url?: string
-  absoluteUrl?: string
-  method?: string
-  headers: Record<string, unknown>
-  body?: string
-  browserProxyRequest?: boolean
-  loggedDate?: Date
-  loggedDateString?: string
-  queryParams?: Record<string, { key: string; values: Array<string> }>
+  stubFor,
+  verify,
 }

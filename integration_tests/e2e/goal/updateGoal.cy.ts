@@ -5,9 +5,9 @@ import ReviewUpdateGoalPage from '../../pages/goal/ReviewUpdateGoalPage'
 import AuthorisationErrorPage from '../../pages/authorisationError'
 import Error404Page from '../../pages/error404'
 import Error500Page from '../../pages/error500'
-import { putRequestedFor } from '../../wiremock/requestPatternBuilder'
-import { urlEqualTo } from '../../wiremock/matchers/url'
-import { matchingJsonPath } from '../../wiremock/matchers/content'
+import { putRequestedFor } from '../../mockApis/wiremock/requestPatternBuilder'
+import { urlEqualTo } from '../../mockApis/wiremock/matchers/url'
+import { matchingJsonPath } from '../../mockApis/wiremock/matchers/content'
 
 context('Update a goal', () => {
   beforeEach(() => {

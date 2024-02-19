@@ -1,11 +1,11 @@
 import ContentMatcherBuilder from './matchers/content/contentMatcherBuilder'
 import UrlMatcherBuilder from './matchers/url/urlMatcherBuilder'
+import WiremockRequestMatcher from './wiremockRequestMatcher'
 
 class RequestPatternBuilder {
   private constructor(
     private readonly method: HttpMethod,
     private readonly urlMatcher: UrlMatcherBuilder,
-    public expectedRequestCount = 1,
   ) {}
 
   static getRequestedFor = (urlMatcher: UrlMatcherBuilder) => new RequestPatternBuilder(HttpMethod.GET, urlMatcher)
@@ -30,17 +30,10 @@ class RequestPatternBuilder {
     return this
   }
 
-  times = (expected: number): RequestPatternBuilder => {
-    this.expectedRequestCount = expected
-    return this
-  }
-
-  never = (): RequestPatternBuilder => {
-    this.expectedRequestCount = 0
-    return this
-  }
-
-  build = (): Record<string, unknown> => {
+  /**
+   * Builds a [WiremockRequestMatcher] from the properties in this builder instance.
+   */
+  build = (): WiremockRequestMatcher => {
     return {
       method: this.method.toString(),
       ...this.urlMatcher.build(),

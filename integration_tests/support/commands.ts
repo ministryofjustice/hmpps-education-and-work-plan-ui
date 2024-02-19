@@ -1,5 +1,5 @@
-import { RequestPatternBuilder } from '../wiremock/requestPatternBuilder'
-import verify from '../wiremock/wiremockRequestVerifier'
+import { RequestPatternBuilder } from '../mockApis/wiremock/requestPatternBuilder'
+import { verify } from '../mockApis/wiremock'
 
 Cypress.Commands.add('signIn', (options = { failOnStatusCode: false }) => {
   cy.request('/')
@@ -7,5 +7,5 @@ Cypress.Commands.add('signIn', (options = { failOnStatusCode: false }) => {
 })
 
 Cypress.Commands.add('wiremockVerify', (requestPatternBuilder: RequestPatternBuilder) => {
-  return cy.wrap(verify(requestPatternBuilder)).should('be.true')
+  return cy.wrap(verify(1, requestPatternBuilder)).should('be.true')
 })
