@@ -41,7 +41,7 @@ export default class OverviewPage extends Page {
   }
 
   doesNotHaveUpdateGoalButtons(): OverviewPage {
-    this.goalUpdateButton(0).should('not.exist')
+    this.goalUpdateButton(1).should('not.exist')
     return this
   }
 
@@ -80,7 +80,7 @@ export default class OverviewPage extends Page {
   }
 
   clickUpdateButtonForFirstGoal(): UpdateGoalPage {
-    this.goalUpdateButton(0).click()
+    this.goalUpdateButton(1).click()
     return Page.verifyOnPage(UpdateGoalPage)
   }
 
