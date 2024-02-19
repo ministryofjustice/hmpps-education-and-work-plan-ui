@@ -24,7 +24,6 @@ import formatReasonNotToGetWorkFilter from '../filters/formatReasonNotToGetWorkF
 import formatQualificationLevelFilter from '../filters/formatQualificationLevelFilter'
 import formatTimelineEventFilter from '../filters/formatTimelineEventFilter'
 import formatPrisonMovementEventFilter from '../filters/formatPrisonMovementEventFilter'
-import formatMultilineTextFilter from '../filters/formatMultilineTextFilter'
 
 const production = process.env.NODE_ENV === 'production'
 
@@ -87,10 +86,7 @@ export function registerNunjucks(app?: express.Express): Environment {
   njkEnv.addFilter('formatTimelineEvent', formatTimelineEventFilter)
   njkEnv.addFilter('formatPrisonMovementEvent', formatPrisonMovementEventFilter)
   njkEnv.addFilter('fallbackMessage', fallbackMessageFilter)
-  njkEnv.addFilter(
-    'formatMultilineText',
-    config.featureToggles.formatMultilineTextEnabled ? formatMultilineTextFilter : value => value,
-  )
+  njkEnv.addFilter('formatMultilineText', njkEnv.getFilter('nl2br')) // Use the inbuilt `nl2br` filter, but reference it as `formatMultilineText` in the nunjucks templates because it's a better name
 
   njkEnv.addGlobal('dpsUrl', config.dpsHomeUrl)
   njkEnv.addGlobal('feedbackUrl', config.feedbackUrl)
