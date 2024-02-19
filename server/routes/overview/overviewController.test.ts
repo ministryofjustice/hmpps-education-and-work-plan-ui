@@ -5,7 +5,7 @@ import { SessionData } from 'express-session'
 import { NextFunction, Request, Response } from 'express'
 import OverviewController from './overviewController'
 import aValidPrisonerSupportNeeds from '../../testsupport/supportNeedsTestDataBuilder'
-import { CiagInductionService, CuriousService, InductionService } from '../../services'
+import { CuriousService, InductionService } from '../../services'
 import EducationAndWorkPlanService from '../../services/educationAndWorkPlanService'
 import { aValidActionPlan, aValidActionPlanWithOneGoal } from '../../testsupport/actionPlanTestDataBuilder'
 import {
@@ -19,7 +19,6 @@ import TimelineService from '../../services/timelineService'
 import PrisonService from '../../services/prisonService'
 import aValidTimeline from '../../testsupport/timelineTestDataBuilder'
 import filterTimelineEvents from '../timelineResolver'
-import config from '../../config'
 
 jest.mock('../timelineResolver')
 
@@ -34,7 +33,6 @@ describe('overviewController', () => {
   const educationAndWorkPlanService = {
     getActionPlan: jest.fn(),
   }
-  const ciagInductionService = {}
   const inductionService = {
     getWorkAndInterests: jest.fn(),
     getEducationAndTraining: jest.fn(),
@@ -51,7 +49,6 @@ describe('overviewController', () => {
     curiousService as unknown as CuriousService,
     educationAndWorkPlanService as unknown as EducationAndWorkPlanService,
     inductionService as unknown as InductionService,
-    ciagInductionService as unknown as CiagInductionService,
     timelineService as unknown as TimelineService,
     prisonService as unknown as PrisonService,
   )
@@ -68,10 +65,6 @@ describe('overviewController', () => {
     render: jest.fn(),
   }
   const next = jest.fn()
-
-  beforeAll(() => {
-    config.featureToggles.useNewInductionApiEnabled = true
-  })
 
   beforeEach(() => {
     jest.resetAllMocks()

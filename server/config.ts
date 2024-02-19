@@ -138,7 +138,6 @@ export default {
     frontendComponentsApiToggleEnabled: toBoolean(
       get('FRONTEND_COMPONENTS_API_FEATURE_TOGGLE_ENABLED', true, requiredInProduction),
     ),
-    useNewInductionApiEnabled: toBoolean(get('USE_NEW_INDUCTION_API_ENABLED', false, requiredInProduction)),
     includePrisonTimelineEventsEnabled: toBoolean(
       get('INCLUDE_PRISON_TIMELINE_EVENTS_ENABLED', false, requiredInProduction),
     ),
