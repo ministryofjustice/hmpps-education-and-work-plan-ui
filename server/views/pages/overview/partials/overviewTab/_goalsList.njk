@@ -3,14 +3,14 @@
 {% for goal in actionPlan.goals %}
   <div class="govuk-summary-card" data-qa="goal-summary-card">
     <div class="govuk-summary-card__title-wrapper">
-      <h3 class="govuk-summary-card__title">Goal {{ loop.index }}
+      <h3 class="govuk-summary-card__title">Goal {{ goal.sequenceNumber }}
         <span class="govuk-caption-m">Created on {{ goal.createdAt | formatDate('D MMMM YYYY') }}<span class="govuk-!-display-none-print"> by {{ goal.createdByDisplayName }}</span>,
         <br> aiming to achieve this <strong>by {{ goal.targetCompletionDate | formatDate('D MMMM YYYY') }}</strong></span>
       </h3>
       <ul class="govuk-summary-card__actions govuk-!-display-none-print">
         {% if hasEditAuthority %}
           <li class="govuk-summary-card__action">
-            <a class="govuk-link" href="/plan/{{ prisonerSummary.prisonNumber }}/goals/{{ goal.goalReference }}/update" data-qa="goal-{{ loop.index-1 }}-update-button">Update<span class="govuk-visually-hidden"> goal {{ loop.index }}</span></a>
+            <a class="govuk-link" href="/plan/{{ prisonerSummary.prisonNumber }}/goals/{{ goal.goalReference }}/update" data-qa="goal-{{ goal.sequenceNumber }}-update-button">Update<span class="govuk-visually-hidden"> goal {{ goal.sequenceNumber }}</span></a>
           </li>
           {# Not MVP, Jira to created for archiving goals
               <li class="govuk-summary-card__action">
@@ -23,7 +23,7 @@
     <div class="govuk-summary-card__content">
       <p class="govuk-body">{{ goal.title | formatMultilineText | safe }}</p>
       <table class="govuk-table">
-        <caption class="govuk-table__caption govuk-visually-hidden">Goal {{ loop.index }} steps</caption>
+        <caption class="govuk-table__caption govuk-visually-hidden">Goal {{ goal.sequenceNumber }} steps</caption>
         <thead class="govuk-table__head">
         <tr class="govuk-table__row">
           <th scope="col" class="govuk-table__header app-u-width-60">Steps</th>
@@ -57,10 +57,10 @@
 
       {% if goal.note %}
         {{ govukDetails({
-          summaryHtml: "View note<span class='govuk-visually-hidden'> for Goal " + loop.index + "</span>",
+          summaryHtml: "View note<span class='govuk-visually-hidden'> for Goal " + goal.sequenceNumber + "</span>",
           text: goal.note | formatMultilineText | safe,
           attributes: {
-            "data-qa": "overview-notes-expander-" + loop.index
+            "data-qa": "overview-notes-expander-" + goal.sequenceNumber
           },
           classes: "app-notes-expander"
         }) }}
