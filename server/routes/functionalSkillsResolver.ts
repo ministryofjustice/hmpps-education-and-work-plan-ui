@@ -77,4 +77,8 @@ const assessmentsGroupedByTypeSortedByDateDesc = (assessments: Array<Assessment>
   return map
 }
 
-export { allFunctionalSkills, mostRecentFunctionalSkills }
+const functionalSkillsByType = (assessments: Array<Assessment>, type: Assessment['type']): Array<Assessment> => {
+  return assessments.filter(assessment => assessment.type === type)
+}
+
+export { allFunctionalSkills, mostRecentFunctionalSkills, functionalSkillsByType }
