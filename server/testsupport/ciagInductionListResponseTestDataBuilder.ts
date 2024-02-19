@@ -1,9 +1,9 @@
-import type { CiagInduction, CiagInductionListResponse } from 'ciagInductionApiClient'
+import type { CiagInductionSummaryListResponse, CiagInductionSummaryResponse } from 'educationAndWorkPlanApiClient'
 import { aLongQuestionSetCiagInduction } from './ciagInductionTestDataBuilder'
 
 export default function aValidCiagInductionListResponse(options?: {
-  ciagProfileList?: CiagInduction[]
-}): CiagInductionListResponse {
+  ciagProfileList?: CiagInductionSummaryResponse[]
+}): CiagInductionSummaryListResponse {
   return {
     ciagProfileList: options?.ciagProfileList || [aLongQuestionSetCiagInduction()],
   }

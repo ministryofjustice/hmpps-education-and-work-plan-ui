@@ -1,4 +1,4 @@
-import type { CiagInduction } from 'ciagInductionApiClient'
+import type { CiagInductionSummaryResponse } from 'educationAndWorkPlanApiClient'
 
 const aLongQuestionSetCiagInduction = (options?: {
   prisonNumber?: string
@@ -10,7 +10,7 @@ const aLongQuestionSetCiagInduction = (options?: {
   modifiedByDateTime?: string
   workInterestModifiedBy?: string
   workInterestModifiedByDateTime?: string
-}): CiagInduction => {
+}): CiagInductionSummaryResponse => {
   return {
     ...baseCiagInductionTemplate({
       prisonNumber: options?.prisonNumber,
@@ -115,7 +115,7 @@ const aShortQuestionSetCiagInduction = (options?: {
   inPrisonInterestsModifiedBy?: string
   inPrisonInterestsModifiedByDisplayName?: string
   inPrisonInterestsModifiedByDateTime?: string
-}): CiagInduction => {
+}): CiagInductionSummaryResponse => {
   return {
     ...baseCiagInductionTemplate({
       prisonNumber: options?.prisonNumber,
@@ -166,7 +166,7 @@ const baseCiagInductionTemplate = (options?: {
   modifiedBy?: string
   modifiedByDisplayName?: string
   modifiedDateTime?: string
-}): CiagInduction => {
+}): CiagInductionSummaryResponse => {
   return {
     offenderId: options?.prisonNumber || 'A1234BC',
     createdBy: options?.createBy || 'DPS_USER_GEN',

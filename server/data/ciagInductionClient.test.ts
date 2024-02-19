@@ -7,11 +7,11 @@ import aValidCiagInductionListResponse from '../testsupport/ciagInductionListRes
 describe('ciagInductionClient', () => {
   const ciagInductionClient = new CiagInductionClient()
 
-  config.apis.ciagInduction.url = 'http://localhost:8200'
+  config.apis.educationAndWorkPlan.url = 'http://localhost:8200'
   let ciagApi: nock.Scope
 
   beforeEach(() => {
-    ciagApi = nock(config.apis.ciagInduction.url)
+    ciagApi = nock(config.apis.educationAndWorkPlan.url)
   })
 
   afterEach(() => {
