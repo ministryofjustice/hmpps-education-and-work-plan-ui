@@ -142,6 +142,5 @@ export default {
     includePrisonTimelineEventsEnabled: toBoolean(
       get('INCLUDE_PRISON_TIMELINE_EVENTS_ENABLED', false, requiredInProduction),
     ),
-    formatMultilineTextEnabled: toBoolean(get('FORMAT_MULTILINE_TEXT_ENABLED', false, requiredInProduction)),
   },
 }
