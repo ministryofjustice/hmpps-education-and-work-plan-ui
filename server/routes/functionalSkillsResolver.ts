@@ -78,7 +78,9 @@ const assessmentsGroupedByTypeSortedByDateDesc = (assessments: Array<Assessment>
 }
 
 const functionalSkillsByType = (assessments: Array<Assessment>, type: Assessment['type']): Array<Assessment> => {
-  return assessments.filter(assessment => assessment.type === type)
+  return assessments
+    .filter(assessment => assessment.type === type)
+    .sort((left: Assessment, right: Assessment) => dateComparator(left.assessmentDate, right.assessmentDate))
 }
 
 export { allFunctionalSkills, mostRecentFunctionalSkills, functionalSkillsByType }

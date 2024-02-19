@@ -223,10 +223,14 @@ describe('functionalSkillsResolver', () => {
         { type: 'MATHS', grade: 'Level 3', assessmentDate: YESTERDAY },
       ] as Array<Assessment>
 
-      const expected = [{ type: 'ENGLISH', grade: 'Level 1', assessmentDate: TEN_DAYS_AGO }] as Array<Assessment>
+      const expected = [
+        { type: 'DIGITAL_LITERACY', grade: 'Level 3', assessmentDate: YESTERDAY },
+        { type: 'DIGITAL_LITERACY', grade: 'Level 2', assessmentDate: FIVE_DAYS_AGO },
+        { type: 'DIGITAL_LITERACY', grade: 'Level 1', assessmentDate: TEN_DAYS_AGO },
+      ] as Array<Assessment>
 
       // When
-      const actual = functionalSkillsByType(assessments, 'ENGLISH')
+      const actual = functionalSkillsByType(assessments, 'DIGITAL_LITERACY')
 
       // Then
       expect(actual).toEqual(expected)
