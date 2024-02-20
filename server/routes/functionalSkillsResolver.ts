@@ -13,7 +13,7 @@ import dateComparator from './dateComparator'
 const mostRecentFunctionalSkills = (allFunctionalSkills: FunctionalSkills): FunctionalSkills => {
   return {
     ...allFunctionalSkills,
-    assessments: mostRecentAssessments(allFunctionalSkills.assessments || []),
+    assessments: mostRecentAssessments([...(allFunctionalSkills.assessments || [])]),
   } as FunctionalSkills
 }
 
@@ -27,7 +27,7 @@ const mostRecentFunctionalSkills = (allFunctionalSkills: FunctionalSkills): Func
 const allFunctionalSkills = (functionalSkills: FunctionalSkills): FunctionalSkills => {
   return {
     ...functionalSkills,
-    assessments: allAssessments(functionalSkills.assessments || []),
+    assessments: allAssessments([...(functionalSkills.assessments || [])]),
   } as FunctionalSkills
 }
 
@@ -78,10 +78,7 @@ const assessmentsGroupedByTypeSortedByDateDesc = (assessments: Array<Assessment>
 }
 
 const functionalSkillsByType = (assessments: Array<Assessment>, type: Assessment['type']): Array<Assessment> => {
-  if (!assessments || assessments.length === 0) {
-    return []
-  }
-  return assessments
+  return [...(assessments || [])]
     .filter(assessment => assessment.type === type)
     .sort((left: Assessment, right: Assessment) => dateComparator(left.assessmentDate, right.assessmentDate))
 }
