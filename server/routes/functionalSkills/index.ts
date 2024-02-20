@@ -8,7 +8,7 @@ import FunctionalSkillsController from './functionalSkillsController'
  * Route definitions for the pages relating to Functional Skills
  */
 export default (router: Router, services: Services) => {
-  const functionalSkillsController = new FunctionalSkillsController(services.curiousService)
+  const functionalSkillsController = new FunctionalSkillsController(services.curiousService, services.prisonService)
 
   router.use('/plan/:prisonNumber/functional-skills', [
     checkUserHasViewAuthority(),

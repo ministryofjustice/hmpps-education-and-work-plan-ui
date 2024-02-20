@@ -1,0 +1,29 @@
+{#  -------------------------------------------------------------
+    Sortable table for the functional skills page
+    `config` argument is an object with the following properties:
+      * id - the id of the sortable table
+      * assessmentType - the name of the data array to loop through { englishSkills, mathsSkills, digitalSkills }
+    ------------------------------------------------------------- #}
+{% macro sortableTable(config) %}
+    <table class="govuk-table" data-module="moj-sortable-table" data-qa="{{ config.id }}-sortable-table">
+      <thead class="govuk-table__head">
+        <tr class="govuk-table__row">
+          <th scope="col" class="govuk-table__header">Name</th>
+          <th scope="col" class="govuk-table__header"{% if config.assessmentType.length > 1 %} aria-sort="none"{% endif %}>Location</th>
+          <th scope="col" class="govuk-table__header"{% if config.assessmentType.length > 1 %} aria-sort="desc"{% endif %}>Assessed on</th>
+          <th scope="col" class="govuk-table__header"{% if config.assessmentType.length > 1 %} aria-sort="none"{% endif %}>Level</th>
+        </tr>
+      </thead>
+
+      <tbody class="govuk-table__body">
+        {% for assesment in config.assessmentType %}
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell">{{ assesment.type | formatFunctionalSkillType }}</td>
+          <td class="govuk-table__cell">{{ assesment.prisonId }} {{ assesment.prisonName }}</td>
+          <td class="govuk-table__cell">{{ assesment.assessmentDate | formatDate('D MMMM YYYY') }}</td>
+          <td class="govuk-table__cell">{{ assesment.grade }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+{% endmacro %}

@@ -97,6 +97,11 @@
     initAll()
   </script>
   <script src="/assets/moj/all.js"></script>
+  {% block mojFrontendInit %}
+  <script nonce="{{ cspNonce }}">
+    window.MOJFrontend.initAll()
+  </script>
+  {% endblock %}
   <script src="/assets/print.js"></script>
   <script src="/assets/applicationinsights-web.min.js"></script>
   <script src="/assets/applicationinsights-clickanalytics-js.min.js"></script>
