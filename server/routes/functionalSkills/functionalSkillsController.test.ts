@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from 'express'
 import { SessionData } from 'express-session'
 import moment from 'moment'
 import type { Assessment, FunctionalSkills } from 'viewModels'
-import { CuriousService } from '../../services'
+import { CuriousService, PrisonService } from '../../services'
 import FunctionalSkillsController from './functionalSkillsController'
 import aValidPrisonerSummary from '../../testsupport/prisonerSummaryTestDataBuilder'
 
@@ -11,7 +11,14 @@ describe('functionalSkillsController', () => {
     getPrisonerFunctionalSkills: jest.fn(),
   }
 
-  const controller = new FunctionalSkillsController(curiousService as unknown as CuriousService)
+  const prisonService = {
+    lookupPrison: jest.fn(),
+  }
+
+  const controller = new FunctionalSkillsController(
+    curiousService as unknown as CuriousService,
+    prisonService as unknown as PrisonService,
+  )
 
   const req = {
     session: {} as SessionData,
@@ -59,28 +66,6 @@ describe('functionalSkillsController', () => {
       } as FunctionalSkills
       curiousService.getPrisonerFunctionalSkills.mockResolvedValue(functionalSkills)
 
-      const expectedAllFunctionalSkills = {
-        problemRetrievingData: false,
-        assessments: [
-          { type: 'DIGITAL_LITERACY', grade: 'Level 3', assessmentDate: YESTERDAY },
-          { type: 'MATHS', grade: 'Level 3', assessmentDate: YESTERDAY },
-          { type: 'MATHS', grade: 'Level 2', assessmentDate: FIVE_DAYS_AGO },
-          { type: 'DIGITAL_LITERACY', grade: 'Level 2', assessmentDate: FIVE_DAYS_AGO },
-          { type: 'ENGLISH', grade: 'Level 1', assessmentDate: TEN_DAYS_AGO },
-          { type: 'MATHS', grade: 'Level 1', assessmentDate: TEN_DAYS_AGO },
-          { type: 'DIGITAL_LITERACY', grade: 'Level 1', assessmentDate: TEN_DAYS_AGO },
-        ],
-      } as FunctionalSkills
-
-      const expectedLatestFunctionalSkills = {
-        problemRetrievingData: false,
-        assessments: [
-          { type: 'ENGLISH', grade: 'Level 1', assessmentDate: TEN_DAYS_AGO },
-          { type: 'MATHS', grade: 'Level 3', assessmentDate: YESTERDAY },
-          { type: 'DIGITAL_LITERACY', grade: 'Level 3', assessmentDate: YESTERDAY },
-        ],
-      } as FunctionalSkills
-
       const expectedDigitalSkills = [
         { type: 'DIGITAL_LITERACY', grade: 'Level 3', assessmentDate: YESTERDAY },
         { type: 'DIGITAL_LITERACY', grade: 'Level 2', assessmentDate: FIVE_DAYS_AGO },
@@ -99,8 +84,6 @@ describe('functionalSkillsController', () => {
 
       const expectedView = {
         prisonerSummary,
-        allFunctionalSkills: expectedAllFunctionalSkills,
-        latestFunctionalSkills: expectedLatestFunctionalSkills,
         problemRetrievingData: false,
         digitalSkills: expectedDigitalSkills,
         englishSkills: expectedEnglishSkills,
@@ -133,16 +116,6 @@ describe('functionalSkillsController', () => {
       } as FunctionalSkills
       curiousService.getPrisonerFunctionalSkills.mockResolvedValue(functionalSkills)
 
-      const expectedAllFunctionalSkills = {
-        problemRetrievingData: false,
-        assessments: [{ type: 'ENGLISH' }, { type: 'MATHS' }],
-      } as FunctionalSkills
-
-      const expectedLatestFunctionalSkills = {
-        problemRetrievingData: false,
-        assessments: [{ type: 'ENGLISH' }, { type: 'MATHS' }],
-      } as FunctionalSkills
-
       const expectedDigitalSkills = [] as Array<Assessment>
 
       const expectedEnglishSkills = [] as Array<Assessment>
@@ -151,8 +124,6 @@ describe('functionalSkillsController', () => {
 
       const expectedView = {
         prisonerSummary,
-        allFunctionalSkills: expectedAllFunctionalSkills,
-        latestFunctionalSkills: expectedLatestFunctionalSkills,
         problemRetrievingData: false,
         digitalSkills: expectedDigitalSkills,
         englishSkills: expectedEnglishSkills,
@@ -184,16 +155,6 @@ describe('functionalSkillsController', () => {
       } as FunctionalSkills
       curiousService.getPrisonerFunctionalSkills.mockResolvedValue(functionalSkills)
 
-      const expectedAllFunctionalSkills = {
-        problemRetrievingData: true,
-        assessments: [{ type: 'ENGLISH' }, { type: 'MATHS' }],
-      } as FunctionalSkills
-
-      const expectedLatestFunctionalSkills = {
-        problemRetrievingData: true,
-        assessments: [{ type: 'ENGLISH' }, { type: 'MATHS' }],
-      } as FunctionalSkills
-
       const expectedDigitalSkills = [] as Array<Assessment>
 
       const expectedEnglishSkills = [] as Array<Assessment>
@@ -202,8 +163,6 @@ describe('functionalSkillsController', () => {
 
       const expectedView = {
         prisonerSummary,
-        allFunctionalSkills: expectedAllFunctionalSkills,
-        latestFunctionalSkills: expectedLatestFunctionalSkills,
         problemRetrievingData: true,
         digitalSkills: expectedDigitalSkills,
         englishSkills: expectedEnglishSkills,
