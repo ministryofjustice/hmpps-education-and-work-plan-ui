@@ -20,40 +20,20 @@ export default class FunctionalSkillsController {
     )
 
     const { problemRetrievingData } = functionalSkillsFromCurious
-
-    // Get all functional skills with the type 'ENGLISH' and add the prison name to the object for each from the prison service
     const englishSkills = functionalSkillsByType(functionalSkillsFromCurious.assessments, 'ENGLISH')
-    await Promise.all(
-      englishSkills.map(async assessment => {
-        const prison = await this.prisonService.lookupPrison(assessment.prisonId, req.user.username)
-        if (prison) {
-          // TODO refactor to avoid param-reassign eslint rule
-          // eslint-disable-next-line no-param-reassign
-          assessment.prisonName = prison.prisonName
-        }
-      }),
-    )
-
-    // Get all functional skills with the type 'MATHS' and add the prison name to the object for each from the prison service
     const mathsSkills = functionalSkillsByType(functionalSkillsFromCurious.assessments, 'MATHS')
-    await Promise.all(
-      mathsSkills.map(async assessment => {
-        const prison = await this.prisonService.lookupPrison(assessment.prisonId, req.user.username)
-        if (prison) {
-          // TODO refactor to avoid param-reassign eslint rule
-          // eslint-disable-next-line no-param-reassign
-          assessment.prisonName = prison.prisonName
-        }
-      }),
+    const digitalSkills = functionalSkillsByType(functionalSkillsFromCurious.assessments, 'DIGITAL_LITERACY')
+
+    const assessmentTypes: ('ENGLISH' | 'MATHS' | 'DIGITAL_LITERACY')[] = ['ENGLISH', 'MATHS', 'DIGITAL_LITERACY']
+
+    const allSkillsByType = assessmentTypes.flatMap(type =>
+      functionalSkillsByType(functionalSkillsFromCurious.assessments, type),
     )
 
-    // Get all functional skills with the type 'DIGITAL_LITERACY' and add the prison name to the object for each from the prison service
-    const digitalSkills = functionalSkillsByType(functionalSkillsFromCurious.assessments, 'DIGITAL_LITERACY')
     await Promise.all(
-      digitalSkills.map(async assessment => {
+      allSkillsByType.map(async assessment => {
         const prison = await this.prisonService.lookupPrison(assessment.prisonId, req.user.username)
         if (prison) {
-          // TODO refactor to avoid param-reassign eslint rule
           // eslint-disable-next-line no-param-reassign
           assessment.prisonName = prison.prisonName
         }
