@@ -16,12 +16,12 @@
       </thead>
 
       <tbody class="govuk-table__body">
-        {% for assesment in config.assessments %}
+        {% for assessment in config.assessments %}
         <tr class="govuk-table__row">
-          <td class="govuk-table__cell">{{ assesment.type | formatFunctionalSkillType }}</td>
-          <td class="govuk-table__cell">{{ assesment.prisonName if assesment.prisonName else assesment.prisonId }}</td>
-          <td class="govuk-table__cell">{{ assesment.assessmentDate | formatDate('D MMMM YYYY') }}</td>
-          <td class="govuk-table__cell">{{ assesment.grade }}</td>
+          <td class="govuk-table__cell">{{ assessment.type | formatFunctionalSkillType }}</td>
+          <td class="govuk-table__cell">{{ assessment.prisonName if assessment.prisonName else assessment.prisonId }}</td>
+          <td class="govuk-table__cell">{{ assessment.assessmentDate | formatDate('D MMMM YYYY') }}</td>
+          <td class="govuk-table__cell">{{ assessment.grade }}</td>
         </tr>
         {% endfor %}
       </tbody>
