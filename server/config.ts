@@ -105,14 +105,6 @@ export default {
       },
       agent: new AgentConfig(Number(get('CURIOUS_API_TIMEOUT_RESPONSE', 10000))),
     },
-    ciagInduction: {
-      url: get('CIAG_INDUCTION_API_URL', 'http://localhost:8083', requiredInProduction),
-      timeout: {
-        response: Number(get('CIAG_INDUCTION_API_TIMEOUT_RESPONSE', 10000)),
-        deadline: Number(get('CIAG_INDUCTION_API_TIMEOUT_DEADLINE', 10000)),
-      },
-      agent: new AgentConfig(Number(get('CIAG_INDUCTION_API_TIMEOUT_RESPONSE', 10000))),
-    },
     frontendComponents: {
       url: get('FRONTEND_COMPONENT_API_URL', 'http://localhost:8083', requiredInProduction),
       timeout: {

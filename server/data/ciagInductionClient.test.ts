@@ -1,17 +1,17 @@
 import nock from 'nock'
 import config from '../config'
 import CiagInductionClient from './ciagInductionClient'
-import { aLongQuestionSetCiagInduction } from '../testsupport/ciagInductionTestDataBuilder'
-import aValidCiagInductionListResponse from '../testsupport/ciagInductionListResponseTestDataBuilder'
+import aValidCiagInductionSummaryListResponse from '../testsupport/ciagInductionSummaryListResponseTestDataBuilder'
+import aValidCiagInductionSummaryResponse from '../testsupport/ciagInductionSummaryReponseTestDataBuilder'
 
 describe('ciagInductionClient', () => {
   const ciagInductionClient = new CiagInductionClient()
 
-  config.apis.ciagInduction.url = 'http://localhost:8200'
+  config.apis.educationAndWorkPlan.url = 'http://localhost:8200'
   let ciagApi: nock.Scope
 
   beforeEach(() => {
-    ciagApi = nock(config.apis.ciagInduction.url)
+    ciagApi = nock(config.apis.educationAndWorkPlan.url)
   })
 
   afterEach(() => {
@@ -24,10 +24,10 @@ describe('ciagInductionClient', () => {
       const prisonNumbers = ['A1234BC', 'B5544GD']
       const token = 'a-user-token'
 
-      const expectedCiagInductionListResponse = aValidCiagInductionListResponse({
+      const expectedCiagInductionListResponse = aValidCiagInductionSummaryListResponse({
         ciagProfileList: [
-          aLongQuestionSetCiagInduction({ prisonNumber: 'A1234BC' }),
-          aLongQuestionSetCiagInduction({ prisonNumber: 'B5544GD' }),
+          aValidCiagInductionSummaryResponse({ prisonNumber: 'A1234BC' }),
+          aValidCiagInductionSummaryResponse({ prisonNumber: 'B5544GD' }),
         ],
       })
       ciagApi.post('/ciag/induction/list', { offenderIds: prisonNumbers }).reply(200, expectedCiagInductionListResponse)
@@ -45,7 +45,7 @@ describe('ciagInductionClient', () => {
       const prisonNumbers = ['A1234BC', 'B5544GD']
       const token = 'a-user-token'
 
-      const expectedCiagInductionListResponse = aValidCiagInductionListResponse({
+      const expectedCiagInductionListResponse = aValidCiagInductionSummaryListResponse({
         ciagProfileList: [],
       })
       ciagApi.post('/ciag/induction/list', { offenderIds: prisonNumbers }).reply(200, expectedCiagInductionListResponse)
