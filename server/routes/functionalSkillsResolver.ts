@@ -78,6 +78,9 @@ const assessmentsGroupedByTypeSortedByDateDesc = (assessments: Array<Assessment>
 }
 
 const functionalSkillsByType = (assessments: Array<Assessment>, type: Assessment['type']): Array<Assessment> => {
+  if (!assessments || assessments.length === 0) {
+    return []
+  }
   return assessments
     .filter(assessment => assessment.type === type)
     .sort((left: Assessment, right: Assessment) => dateComparator(left.assessmentDate, right.assessmentDate))
