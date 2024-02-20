@@ -19,20 +19,12 @@ export default class FunctionalSkillsController {
       prisonNumber,
       req.user.username,
     )
+    const allAssessments = await this.setPrisonNamesOnAssessments(functionalSkillsFromCurious.assessments || [], req)
 
     const { problemRetrievingData } = functionalSkillsFromCurious
-    const englishSkills = await this.setPrisonNamesOnAssessments(
-      functionalSkillsByType(functionalSkillsFromCurious.assessments, 'ENGLISH'),
-      req,
-    )
-    const mathsSkills = await this.setPrisonNamesOnAssessments(
-      functionalSkillsByType(functionalSkillsFromCurious.assessments, 'MATHS'),
-      req,
-    )
-    const digitalSkills = await this.setPrisonNamesOnAssessments(
-      functionalSkillsByType(functionalSkillsFromCurious.assessments, 'DIGITAL_LITERACY'),
-      req,
-    )
+    const englishSkills = functionalSkillsByType(allAssessments, 'ENGLISH')
+    const mathsSkills = functionalSkillsByType(allAssessments, 'MATHS')
+    const digitalSkills = functionalSkillsByType(allAssessments, 'DIGITAL_LITERACY')
 
     const view = new FunctionalSkillsView(
       prisonerSummary,
