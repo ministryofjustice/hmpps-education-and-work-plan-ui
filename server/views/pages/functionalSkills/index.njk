@@ -38,7 +38,7 @@
           {% if englishSkills.length > 0 %}
             {{ sortableTable({
               id: "english-skills",
-              assessmentType: englishSkills
+              assessments: englishSkills
             }) }}
           {% else %}
             <p class="govuk-body">No English functional skill assessment scores recorded in Curious.</p>
@@ -49,7 +49,7 @@
           {% if mathsSkills.length > 0 %}
             {{ sortableTable({
               id: "maths-skills",
-              assessmentType: mathsSkills
+              assessments: mathsSkills
             }) }}
           {% else %}
             <p class="govuk-body">No Maths functional skill assessment scores recorded in Curious.</p>
@@ -60,7 +60,7 @@
           {% if digitalSkills.length > 0 %}
             {{ sortableTable({
               id: "digital-skills",
-              assessmentType: digitalSkills
+              assessments: digitalSkills
             }) }}
           {% else %}
             <p class="govuk-body">No Digital functional skill assessment scores recorded in Curious.</p>
