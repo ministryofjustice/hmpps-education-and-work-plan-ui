@@ -3,11 +3,11 @@ import PrisonerListService from './prisonerListService'
 import CiagInductionClient from '../data/ciagInductionClient'
 import aValidPagedCollectionOfPrisoners from '../testsupport/pagedCollectionOfPrisonersTestDataBuilder'
 import aValidPrisoner from '../testsupport/prisonerTestDataBuilder'
-import aValidCiagInductionListResponse from '../testsupport/ciagInductionListResponseTestDataBuilder'
-import { aLongQuestionSetCiagInduction } from '../testsupport/ciagInductionTestDataBuilder'
+import aValidCiagInductionSummaryListResponse from '../testsupport/ciagInductionSummaryListResponseTestDataBuilder'
 import aValidActionPlanSummaryResponse from '../testsupport/actionPlanSummaryResponseTestDataBuilder'
 import aValidActionPlanSummaryListResponse from '../testsupport/actionPlanSummaryListResponseTestDataBuilder'
 import toPrisonerSummary from '../data/mappers/prisonerSummaryMapper'
+import aValidCiagInductionSummaryResponse from '../testsupport/ciagInductionSummaryReponseTestDataBuilder'
 
 describe('prisonerListService', () => {
   const hmppsAuthClient = {
@@ -71,9 +71,9 @@ describe('prisonerListService', () => {
     })
     prisonerSearchClient.getPrisonersByPrisonId.mockResolvedValue(pagedCollectionOfPrisoners)
 
-    const fredsCiagInduction = aLongQuestionSetCiagInduction({ prisonNumber: 'A1234BC' })
-    const jimsCiagInduction = aLongQuestionSetCiagInduction({ prisonNumber: 'F4329JC' })
-    const ciagInductionListResponse = aValidCiagInductionListResponse({
+    const fredsCiagInduction = aValidCiagInductionSummaryResponse({ prisonNumber: 'A1234BC' })
+    const jimsCiagInduction = aValidCiagInductionSummaryResponse({ prisonNumber: 'F4329JC' })
+    const ciagInductionListResponse = aValidCiagInductionSummaryListResponse({
       ciagProfileList: [fredsCiagInduction, jimsCiagInduction],
     })
     ciagInductionClient.getCiagInductionsForPrisonNumbers.mockResolvedValue(ciagInductionListResponse)
