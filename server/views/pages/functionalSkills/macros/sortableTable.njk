@@ -19,7 +19,7 @@
         {% for assesment in config.assessmentType %}
         <tr class="govuk-table__row">
           <td class="govuk-table__cell">{{ assesment.type | formatFunctionalSkillType }}</td>
-          <td class="govuk-table__cell">{{ assesment.prisonName }}</td>
+          <td class="govuk-table__cell">{{ assesment.prisonName if assesment.prisonName else assesment.prisonId }}</td>
           <td class="govuk-table__cell">{{ assesment.assessmentDate | formatDate('D MMMM YYYY') }}</td>
           <td class="govuk-table__cell">{{ assesment.grade }}</td>
         </tr>
