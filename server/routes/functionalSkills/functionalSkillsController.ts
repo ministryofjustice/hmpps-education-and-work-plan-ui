@@ -1,4 +1,5 @@
-import { RequestHandler } from 'express'
+import type { Assessment } from 'viewModels'
+import { Request, RequestHandler } from 'express'
 import { CuriousService } from '../../services'
 import FunctionalSkillsView from './functionalSkillsView'
 import PrisonService from '../../services/prisonService'
@@ -20,30 +21,18 @@ export default class FunctionalSkillsController {
     )
 
     const { problemRetrievingData } = functionalSkillsFromCurious
-    const englishSkills = functionalSkillsByType(functionalSkillsFromCurious.assessments, 'ENGLISH')
-    const mathsSkills = functionalSkillsByType(functionalSkillsFromCurious.assessments, 'MATHS')
-    const digitalSkills = functionalSkillsByType(functionalSkillsFromCurious.assessments, 'DIGITAL_LITERACY')
-
-    // Handle the prison name lookup for each assessment
-    // Define the types of assessments that we're interested in
-    const assessmentTypes: ('ENGLISH' | 'MATHS' | 'DIGITAL_LITERACY')[] = ['ENGLISH', 'MATHS', 'DIGITAL_LITERACY']
-
-    // Get all assessments of the specified types
-    const allSkillsByType = assessmentTypes.flatMap(type =>
-      functionalSkillsByType(functionalSkillsFromCurious.assessments, type),
+    const englishSkills = await this.setPrisonNamesOnAssessments(
+      functionalSkillsByType(functionalSkillsFromCurious.assessments, 'ENGLISH'),
+      req,
     )
-
-    // Function to add the prison name to an assessment
-    const addPrisonNameToAssessment = async (assessment: { prisonId: string; prisonName: string }) => {
-      const prison = await this.prisonService.lookupPrison(assessment.prisonId, req.user.username)
-      if (prison) {
-        // eslint-disable-next-line no-param-reassign
-        assessment.prisonName = prison.prisonName
-      }
-    }
-
-    // Add the prison name to all assessments
-    await Promise.all(allSkillsByType.map(addPrisonNameToAssessment))
+    const mathsSkills = await this.setPrisonNamesOnAssessments(
+      functionalSkillsByType(functionalSkillsFromCurious.assessments, 'MATHS'),
+      req,
+    )
+    const digitalSkills = await this.setPrisonNamesOnAssessments(
+      functionalSkillsByType(functionalSkillsFromCurious.assessments, 'DIGITAL_LITERACY'),
+      req,
+    )
 
     const view = new FunctionalSkillsView(
       prisonerSummary,
@@ -53,5 +42,16 @@ export default class FunctionalSkillsController {
       digitalSkills,
     )
     res.render('pages/functionalSkills/index', { ...view.renderArgs })
+  }
+
+  setPrisonNamesOnAssessments = async (assessments: Array<Assessment>, req: Request): Promise<Array<Assessment>> => {
+    const assessmentsWithPrisonLookups = assessments.map(async assessment => {
+      const prison = await this.prisonService.lookupPrison(assessment.prisonId, req.user.username)
+      return {
+        ...assessment,
+        prisonName: prison?.prisonName,
+      }
+    })
+    return Promise.all(assessmentsWithPrisonLookups)
   }
 }
