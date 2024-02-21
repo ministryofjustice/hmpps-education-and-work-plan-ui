@@ -1,0 +1,29 @@
+{#  -------------------------------------------------------------
+    Sortable table for the functional skills page
+    `config` argument is an object with the following properties:
+      * id - the id of the sortable table
+      * assessments - an array of assessment data, where each item is an instance of view model type Assessment
+    ------------------------------------------------------------- #}
+{% macro sortableTable(config) %}
+    <table class="govuk-table" data-module="moj-sortable-table" data-qa="{{ config.id }}-sortable-table">
+      <thead class="govuk-table__head">
+        <tr class="govuk-table__row">
+          <th scope="col" class="govuk-table__header app-u-width-20">Name</th>
+          <th scope="col" class="govuk-table__header app-u-width-30" aria-sort="none">Location</th>
+          <th scope="col" class="govuk-table__header app-u-width-30" aria-sort="none">Assessed on</th>
+          <th scope="col" class="govuk-table__header app-u-width-20" aria-sort="none">Level</th>
+        </tr>
+      </thead>
+
+      <tbody class="govuk-table__body">
+        {% for assessment in config.assessments %}
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell">{{ assessment.type | formatFunctionalSkillType }}</td>
+          <td class="govuk-table__cell">{{ assessment.prisonName if assessment.prisonName else assessment.prisonId }}</td>
+          <td class="govuk-table__cell">{{ assessment.assessmentDate | formatDate('D MMMM YYYY') }}</td>
+          <td class="govuk-table__cell">{{ assessment.grade }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+{% endmacro %}

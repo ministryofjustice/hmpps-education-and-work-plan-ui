@@ -33,8 +33,8 @@ context(`Display a prisoner's functional skills`, () => {
     const functionalSkillsPage = Page.verifyOnPage(FunctionalSkillsPage)
     functionalSkillsPage
       .isForPrisoner(prisonNumber)
-      .englishAndMathsAreDisplayedInLatestFunctionalSkillsTable()
-      .englishAndMathsAreDisplayedInAssessmentHistoryTable()
+      .hasMathsFunctionalSkillsDisplayed()
+      .hasDigitalFunctionalSkillsDisplayed()
   })
 
   it('should go to Education and Training tab when clicking learning plan breadcrumb on Functional Skills page', () => {
@@ -66,8 +66,8 @@ context(`Display a prisoner's functional skills`, () => {
     // Then
     functionalSkillsPage
       .isForPrisoner(prisonNumber)
-      .englishAndMathsAreDisplayedInLatestFunctionalSkillsTable()
-      .englishAndMathsAreDisplayedInAssessmentHistoryTable()
+      .hasMathsFunctionalSkillsDisplayed()
+      .hasDigitalFunctionalSkillsDisplayed()
   })
 
   it('should be able to navigate to the Functional Skills page from the Education and Training tab on the Overview page', () => {
@@ -86,8 +86,8 @@ context(`Display a prisoner's functional skills`, () => {
     // Then
     functionalSkillsPage
       .isForPrisoner(prisonNumber)
-      .englishAndMathsAreDisplayedInLatestFunctionalSkillsTable()
-      .englishAndMathsAreDisplayedInAssessmentHistoryTable()
+      .hasMathsFunctionalSkillsDisplayed()
+      .hasDigitalFunctionalSkillsDisplayed()
   })
 
   it('should display curious unavailable message given curious is unavailable for the learner profile', () => {
@@ -108,8 +108,9 @@ context(`Display a prisoner's functional skills`, () => {
     // Then
     functionalSkillsPage
       .isForPrisoner(prisonNumber)
-      .doesNotHaveFunctionalSkillsDisplayed()
-      .doesNotHaveAssessmentHistoryDisplayed()
+      .doesNotHaveEnglishFunctionalSkillsDisplayed()
+      .doesNotHaveMathsFunctionalSkillsDisplayed()
+      .doesNotHaveDigitalFunctionalSkillsDisplayed()
       .hasCuriousUnavailableMessageDisplayed()
   })
 
