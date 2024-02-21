@@ -44,9 +44,7 @@ export default function createApp(services: Services): express.Application {
   app.use(setUpCsrf())
   app.use(setUpCurrentUser(services))
 
-  if (config.featureToggles.frontendComponentsApiToggleEnabled) {
-    app.get('*', getFrontendComponents(services))
-  }
+  app.get('*', getFrontendComponents(services))
 
   app.use(routes(services))
 
