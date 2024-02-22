@@ -301,14 +301,11 @@ describe('inductionService', () => {
       educationAndWorkPlanClient.getInduction.mockRejectedValue(eductionAndWorkPlanApiError)
 
       // When
-      const actual = await inductionService.getInduction(prisonNumber, userToken).catch(error => {
-        return error
-      })
+      const actual = await inductionService.getInduction(prisonNumber, userToken)
 
       // Then
-      expect(actual).toEqual(eductionAndWorkPlanApiError)
+      expect(actual).toEqual(undefined)
       expect(educationAndWorkPlanClient.getInduction).toHaveBeenCalledWith(prisonNumber, userToken)
-      expect(mockedInductionDtoMapper).not.toHaveBeenCalled()
     })
 
     it('should rethrow error given Education and Work Plan API returns an unexpected error', async () => {

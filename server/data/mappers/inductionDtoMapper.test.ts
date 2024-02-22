@@ -32,4 +32,14 @@ describe('inductionDtoMapper', () => {
     // Then
     expect(actual).toEqual(expected)
   })
+
+  it('should not map to InductionDto given undefined InductionResponse', () => {
+    // Given
+
+    // When
+    const actual = toInductionDto(undefined)
+
+    // Then
+    expect(actual).toBeUndefined()
+  })
 })

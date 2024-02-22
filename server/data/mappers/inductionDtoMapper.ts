@@ -2,6 +2,9 @@ import type { InductionResponse } from 'educationAndWorkPlanApiClient'
 import type { InductionDto } from 'inductionDto'
 
 const toInductionDto = (inductionResponse: InductionResponse): InductionDto => {
+  if (!inductionResponse) {
+    return undefined
+  }
   return {
     ...inductionResponse,
     createdAt: new Date(inductionResponse.createdAt),

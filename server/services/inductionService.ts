@@ -30,7 +30,7 @@ export default class InductionService {
 
   async getInduction(prisonNumber: string, token: string): Promise<InductionDto> {
     try {
-      const inductionResponse = await this.educationAndWorkPlanClient.getInduction(prisonNumber, token)
+      const inductionResponse = await this.retrieveInduction(prisonNumber, token)
       return toInductionDto(inductionResponse)
     } catch (error) {
       logger.error('Error retrieving Induction data from Education And Work Plan API', error)
