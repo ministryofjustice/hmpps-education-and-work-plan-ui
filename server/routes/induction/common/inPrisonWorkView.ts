@@ -7,6 +7,7 @@ export default class InPrisonWorkView {
     private readonly backLinkUrl: string,
     private readonly backLinkAriaText: string,
     private readonly inPrisonWorkForm: InPrisonWorkForm,
+    private readonly formValues: Array<{ value: string; text: string }>,
     private readonly errors?: Array<Record<string, string>>,
   ) {}
 
@@ -15,6 +16,7 @@ export default class InPrisonWorkView {
     backLinkUrl: string
     backLinkAriaText: string
     form: InPrisonWorkForm
+    formValues: Array<{ value: string; text: string }>
     errors?: Array<Record<string, string>>
   } {
     return {
@@ -22,6 +24,7 @@ export default class InPrisonWorkView {
       backLinkUrl: this.backLinkUrl,
       backLinkAriaText: this.backLinkAriaText,
       form: this.inPrisonWorkForm,
+      formValues: this.formValues,
       errors: this.errors || [],
     }
   }

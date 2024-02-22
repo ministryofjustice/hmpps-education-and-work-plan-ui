@@ -58,6 +58,26 @@
             }) }}
           {% endset -%}
 
+          {% set formItemValues = [] %}
+
+          {% for formItemValue in formValues %}
+            {% set formItemValues = (formItemValues.push({
+              "value": formItemValue.value,
+              "text": formItemValue.text,
+              "checked": formItemValue.checked
+              }), formItemValues)
+            %}
+          {% endfor %}
+
+          {% set formItemValues = (formItemValues.push({
+              "value": "other",
+              "text": "Other",
+              "conditional": {
+                "html": otherHtml
+              }
+            }), formItemValues)
+          %}
+
           {{ govukCheckboxes({
             name: "inPrisonWork",
             fieldset: {
@@ -70,68 +90,8 @@
             hint: {
               text: "Select all that apply."
             },
-            items: [
-              {
-                value: 'CLEANING_AND_HYGIENE',
-                checked: form.inPrisonWork.includes("CLEANING_AND_HYGIENE"),
-                text: 'Cleaning and hygiene'
-              },
-              {
-                value: 'COMPUTERS_OR_DESK_BASED',
-                checked: form.inPrisonWork.includes("COMPUTERS_OR_DESK_BASED"),
-                text: 'Computers or desk-based'
-              },
-              {
-                value: 'GARDENING_AND_OUTDOORS',
-                checked: form.inPrisonWork.includes("GARDENING_AND_OUTDOORS"),
-                text: 'Gardening and outdoors'
-              },
-              {
-                value: 'KITCHENS_AND_COOKING',
-                checked: form.inPrisonWork.includes("KITCHENS_AND_COOKING"),
-                text: 'Kitchens and cooking'
-              },
-              {
-                value: 'MAINTENANCE',
-                checked: form.inPrisonWork.includes("MAINTENANCE"),
-                text: 'Maintenance'
-              },
-              {
-                value: 'PRISON_LAUNDRY',
-                checked: form.inPrisonWork.includes("PRISON_LAUNDRY"),
-                text: 'Prison laundry'
-              },
-              {
-                value: 'PRISON_LIBRARY',
-                checked: form.inPrisonWork.includes("PRISON_LIBRARY"),
-                text: 'Prison library'
-              },
-              {
-                value: 'TEXTILES_AND_SEWING',
-                checked: form.inPrisonWork.includes("TEXTILES_AND_SEWING"),
-                text: 'Textiles and sewing'
-              },
-              {
-                value: 'WELDING_AND_METALWORK',
-                checked: form.inPrisonWork.includes("WELDING_AND_METALWORK"),
-                text: 'Welding and metalwork'
-              },
-              {
-                value: 'WOODWORK_AND_JOINERY',
-                checked: form.inPrisonWork.includes("WOODWORK_AND_JOINERY"),
-                text: 'Woodwork and joinery'
-              },
-              {
-                value: 'OTHER',
-                checked: form.inPrisonWork.includes("OTHER"),
-                text: 'Other',
-                attributes: { "aria-label": "Other (Opens a dialogue box)" },
-                conditional: {
-                  html: otherHtml
-                }
-              }
-            ],
-             errorMessage: errors | findError('inPrisonWork')
+            items: formItemValues,
+            errorMessage: errors | findError('inPrisonWork')
           }) }}
 
         </div>
