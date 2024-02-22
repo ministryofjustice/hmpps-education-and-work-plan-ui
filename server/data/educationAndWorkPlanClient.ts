@@ -6,6 +6,7 @@ import type {
   UpdateGoalRequest,
   TimelineResponse,
   InductionResponse,
+  UpdateInductionRequest,
 } from 'educationAndWorkPlanApiClient'
 import RestClient from './restClient'
 import config from '../config'
@@ -52,6 +53,17 @@ export default class EducationAndWorkPlanClient {
   async getInduction(prisonNumber: string, token: string): Promise<InductionResponse> {
     return EducationAndWorkPlanClient.restClient(token).get({
       path: `/inductions/${prisonNumber}`,
+    })
+  }
+
+  async updateInduction(
+    prisonNumber: string,
+    updateInductionRequest: UpdateInductionRequest,
+    token: string,
+  ): Promise<unknown> {
+    return EducationAndWorkPlanClient.restClient(token).put({
+      path: `/inductions/${prisonNumber}`,
+      data: updateInductionRequest,
     })
   }
 }

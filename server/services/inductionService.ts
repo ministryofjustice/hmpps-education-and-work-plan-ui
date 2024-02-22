@@ -1,10 +1,11 @@
 import type { WorkAndInterests, EducationAndTraining } from 'viewModels'
-import type { InductionDto } from 'inductionDto'
+import type { CreateOrUpdateInductionDto, InductionDto } from 'inductionDto'
 import logger from '../../logger'
 import EducationAndWorkPlanClient from '../data/educationAndWorkPlanClient'
 import toWorkAndInterests from '../data/mappers/workAndInterestMapper'
 import toEducationAndTraining from '../data/mappers/educationAndTrainingMapper'
 import toInductionDto from '../data/mappers/inductionDtoMapper'
+import toUpdateInductionRequest from '../data/mappers/updateInductionMapper'
 
 export default class InductionService {
   constructor(private readonly educationAndWorkPlanClient: EducationAndWorkPlanClient) {}
@@ -32,7 +33,21 @@ export default class InductionService {
       const inductionResponse = await this.educationAndWorkPlanClient.getInduction(prisonNumber, token)
       return toInductionDto(inductionResponse)
     } catch (error) {
-      logger.error('Error retrieving Induction data from Education And Work Plan API', error)
+      logger.error(`Error retrieving Induction for prisoner [${prisonNumber}] from Education And Work Plan API `, error)
+      throw error
+    }
+  }
+
+  async updateInduction(
+    prisonNumber: string,
+    updateInductionDto: CreateOrUpdateInductionDto,
+    token: string,
+  ): Promise<unknown> {
+    try {
+      const updateInductionRequest = toUpdateInductionRequest(updateInductionDto)
+      return await this.educationAndWorkPlanClient.updateInduction(prisonNumber, updateInductionRequest, token)
+    } catch (error) {
+      logger.error(`Error updating Induction for prisoner [${prisonNumber}] in the Education And Work Plan API `, error)
       throw error
     }
   }
