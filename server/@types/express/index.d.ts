@@ -1,6 +1,7 @@
 import type { PrisonerSummary, PrisonerSupportNeeds } from 'viewModels'
 import type { UpdateGoalForm } from 'forms'
 import type { NewGoal } from 'compositeForms'
+import type { InPrisonWorkForm } from 'inductionForms'
 
 export default {}
 
@@ -15,6 +16,9 @@ declare module 'express-session' {
     newGoals: Array<NewGoal> // An array of NewGoal representing the Goals that have been added
     updateGoalForm: UpdateGoalForm
     prisonerListSortOptions: string
+    // Induction related objects held on the session
+    inductionDto: InductionDto
+    inPrisonWorkForm: InPrisonWorkForm
   }
 }
 
