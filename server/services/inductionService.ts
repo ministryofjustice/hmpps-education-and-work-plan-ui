@@ -1,4 +1,3 @@
-import type { InductionResponse } from 'educationAndWorkPlanApiClient'
 import type { WorkAndInterests, EducationAndTraining } from 'viewModels'
 import type { InductionDto } from 'inductionDto'
 import logger from '../../logger'
@@ -12,25 +11,25 @@ export default class InductionService {
 
   async getWorkAndInterests(prisonNumber: string, token: string): Promise<WorkAndInterests> {
     try {
-      const induction = await this.retrieveInduction(prisonNumber, token)
+      const induction = await this.educationAndWorkPlanClient.getInduction(prisonNumber, token)
       return toWorkAndInterests(induction)
     } catch (error) {
-      return { problemRetrievingData: true } as WorkAndInterests
+      return gracefullyHandleException(error, prisonNumber) as WorkAndInterests
     }
   }
 
   async getEducationAndTraining(prisonNumber: string, token: string): Promise<EducationAndTraining> {
     try {
-      const induction = await this.retrieveInduction(prisonNumber, token)
+      const induction = await this.educationAndWorkPlanClient.getInduction(prisonNumber, token)
       return toEducationAndTraining(induction)
     } catch (error) {
-      return { problemRetrievingData: true } as EducationAndTraining
+      return gracefullyHandleException(error, prisonNumber) as EducationAndTraining
     }
   }
 
   async getInduction(prisonNumber: string, token: string): Promise<InductionDto> {
     try {
-      const inductionResponse = await this.retrieveInduction(prisonNumber, token)
+      const inductionResponse = await this.educationAndWorkPlanClient.getInduction(prisonNumber, token)
       return toInductionDto(inductionResponse)
     } catch (error) {
       logger.error('Error retrieving Induction data from Education And Work Plan API', error)
@@ -39,16 +38,13 @@ export default class InductionService {
   }
 
   async inductionExists(prisonNumber: string, token: string): Promise<boolean> {
-    return (await this.retrieveInduction(prisonNumber, token)) !== undefined
-  }
-
-  private retrieveInduction = async (prisonNumber: string, token: string): Promise<InductionResponse> => {
     try {
-      return await this.educationAndWorkPlanClient.getInduction(prisonNumber, token)
+      await this.educationAndWorkPlanClient.getInduction(prisonNumber, token)
+      return true
     } catch (error) {
-      if (error.status === 404) {
+      if (isNotFoundError(error)) {
         logger.info(`No Induction found for prisoner [${prisonNumber}] in Education And Work Plan API`)
-        return undefined
+        return false
       }
 
       logger.error(`Error retrieving Induction data from Education And Work Plan: ${JSON.stringify(error)}`)
@@ -56,3 +52,23 @@ export default class InductionService {
     }
   }
 }
+
+/**
+ * Gracefully handle an exception thrown from the educationAndWorkPlanClient by returning an object of
+ *   * { problemRetrievingData: false } if it was a 404 error (there was no problem retrieving data; it's just the data didn't exist)
+ *   * { problemRetrievingData: true } if it was any other status code, indicating a more serious error and problem retrieving the data from the API
+ */
+const gracefullyHandleException = (
+  error: { status: number },
+  prisonNumber: string,
+): { problemRetrievingData: boolean } => {
+  if (isNotFoundError(error)) {
+    logger.info(`No Induction found for prisoner [${prisonNumber}] in Education And Work Plan API`)
+    return { problemRetrievingData: false }
+  }
+
+  logger.error(`Error retrieving Induction data from Education And Work Plan: ${JSON.stringify(error)}`)
+  return { problemRetrievingData: true }
+}
+
+const isNotFoundError = (error: { status: number }): boolean => error.status === 404
