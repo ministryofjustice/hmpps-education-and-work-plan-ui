@@ -2,6 +2,7 @@ import createError from 'http-errors'
 import { NextFunction, Request, RequestHandler, Response } from 'express'
 import logger from '../../logger'
 import PrisonerSearchService from '../services/prisonerSearchService'
+import { InductionService } from '../services'
 
 /**
  * A module exporting request handler functions to support ensuring page requests have been followed
@@ -137,6 +138,25 @@ const retrievePrisonerSummaryIfNotInSession = (prisonerSearchService: PrisonerSe
   }
 }
 
+/**
+ *  Middleware function that returns a Request handler function to retrieve the Induction from InductionService, map to a PrisonerSummary, and store in the session
+ */
+const retrieveInductionIfNotInSession = (inductionService: InductionService): RequestHandler => {
+  return async (req: Request, res: Response, next: NextFunction) => {
+    const { prisonNumber } = req.params
+
+    try {
+      // Retrieve the Induction and store in the session if its either not there, or is for a different prisoner
+      if (!req.session.inductionDto || req.session.inductionDto.prisonNumber !== prisonNumber) {
+        req.session.inductionDto = await inductionService.getInduction(prisonNumber, req.user.token)
+      }
+      next()
+    } catch (error) {
+      next(createError(error.status, `Induction for prisoner ${prisonNumber} not returned by the Induction Service`))
+    }
+  }
+}
+
 export {
   checkCreateGoalFormExistsInSession,
   checkAddStepFormsArrayExistsInSession,
@@ -144,6 +164,7 @@ export {
   checkUpdateGoalFormExistsInSession,
   checkNewGoalsFormExistsInSession,
   retrievePrisonerSummaryIfNotInSession,
+  retrieveInductionIfNotInSession,
 }
 
 const isEditMode = (req: Request): boolean => req.query?.mode === 'edit'
