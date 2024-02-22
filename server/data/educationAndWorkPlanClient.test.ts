@@ -11,6 +11,7 @@ import aValidActionPlanSummaryListResponse from '../testsupport/actionPlanSummar
 import aValidActionPlanSummaryResponse from '../testsupport/actionPlanSummaryResponseTestDataBuilder'
 import aValidTimelineResponse from '../testsupport/timelineResponseTestDataBuilder'
 import { aShortQuestionSetInduction } from '../testsupport/inductionResponseTestDataBuilder'
+import { aShortQuestionSetUpdateInductionRequest } from '../testsupport/updateInductionRequestTestDataBuilder'
 
 describe('educationAndWorkPlanClient', () => {
   const educationAndWorkPlanClient = new EducationAndWorkPlanClient()
@@ -310,6 +311,53 @@ describe('educationAndWorkPlanClient', () => {
         // Then
         expect(nock.isDone()).toBe(true)
         expect(e.status).toEqual(404)
+        expect(e.data).toEqual(expectedResponseBody)
+      }
+    })
+  })
+
+  describe('updateInduction', () => {
+    it('should update Induction', async () => {
+      // Given
+      const prisonNumber = 'A1234BC'
+      const systemToken = 'a-system-token'
+      const updateInductionRequest = aShortQuestionSetUpdateInductionRequest()
+
+      const expectedResponseBody = {}
+      educationAndWorkPlanApi
+        .put(`/inductions/${prisonNumber}`, updateInductionRequest)
+        .reply(204, expectedResponseBody)
+
+      // When
+      const actual = await educationAndWorkPlanClient.updateInduction(prisonNumber, updateInductionRequest, systemToken)
+
+      // Then
+      expect(nock.isDone()).toBe(true)
+      expect(actual).toEqual(expectedResponseBody)
+    })
+
+    it('should not update Induction given API returns error response', async () => {
+      // Given
+      const prisonNumber = 'A1234BC'
+      const systemToken = 'a-system-token'
+      const updateInductionRequest = aShortQuestionSetUpdateInductionRequest()
+
+      const expectedResponseBody = {
+        status: 500,
+        userMessage: 'An unexpected error occurred',
+        developerMessage: 'An unexpected error occurred',
+      }
+      educationAndWorkPlanApi
+        .put(`/inductions/${prisonNumber}`, updateInductionRequest)
+        .reply(500, expectedResponseBody)
+
+      // When
+      try {
+        await educationAndWorkPlanClient.updateInduction(prisonNumber, updateInductionRequest, systemToken)
+      } catch (e) {
+        // Then
+        expect(nock.isDone()).toBe(true)
+        expect(e.status).toEqual(500)
         expect(e.data).toEqual(expectedResponseBody)
       }
     })
