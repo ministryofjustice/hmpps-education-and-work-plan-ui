@@ -24,12 +24,10 @@
 {% block head %}
   <link href="/assets/stylesheets/application.css?{{ version }}" rel="stylesheet"/>
 
-  {% if featureToggles.frontendComponentsApiToggleEnabled %}
-    {% if not feComponents.problemRetrievingData %}
-      {% for css in feComponents.cssIncludes %}
-        <link href="{{ css }}" nonce="{{ cspNonce }}" rel="stylesheet" />
-      {% endfor %}
-    {% endif %}
+  {% if not feComponents.problemRetrievingData %}
+    {% for css in feComponents.cssIncludes %}
+      <link href="{{ css }}" nonce="{{ cspNonce }}" rel="stylesheet" />
+    {% endfor %}
   {% endif %}
 
   <link href="/assets/stylesheets/print.css?{{ version }}" media="print" rel="stylesheet" />
@@ -38,14 +36,10 @@
 {% block pageTitle %}{{ pageTitle | default(applicationName) }} - {{ applicationName }}{% endblock %}
 
 {% block header %}
-  {% if featureToggles.frontendComponentsApiToggleEnabled %}
-    {% if not feComponents.problemRetrievingData %}
-      {{ feComponents.headerHtml | safe }}
-    {% else %}
-      {% include "./header-dps.njk" %}
-    {% endif %}
+  {% if not feComponents.problemRetrievingData %}
+    {{ feComponents.headerHtml | safe }}
   {% else %}
-      {% include "./header.njk" %}
+    {% include "./header.njk" %}
   {% endif %}
 {% endblock %}
 
@@ -74,16 +68,10 @@
 {% endblock %}
 
 {% block footer %}
-  {% if featureToggles.frontendComponentsApiToggleEnabled %}
-    {% if not feComponents.problemRetrievingData %}
-      {{ feComponents.footerHtml | safe }}
-    {% else %}
-      {% include "./footer.njk" %}
-    {% endif %}
+  {% if not feComponents.problemRetrievingData %}
+    {{ feComponents.footerHtml | safe }}
   {% else %}
-    {{ govukFooter({
-      classes: 'govuk-!-display-none-print'
-    }) }}
+    {% include "./footer.njk" %}
   {% endif %}
 {% endblock %}
 
@@ -110,11 +98,9 @@
     window.applicationInsights.init('{{ applicationInsightsConnectionString }}', '{{ applicationInsightsRoleName }}', '{{ user.username }}');
   </script>
 
-  {% if featureToggles.frontendComponentsApiToggleEnabled %}
-    {% if not feComponents.problemRetrievingData %}
-      {% for js in feComponents.jsIncludes %}
-        <script src="{{ js }}" nonce="{{ cspNonce }}"></script>
-      {% endfor %}
-    {% endif %}
+  {% if not feComponents.problemRetrievingData %}
+    {% for js in feComponents.jsIncludes %}
+      <script src="{{ js }}" nonce="{{ cspNonce }}"></script>
+    {% endfor %}
   {% endif %}
 {% endblock %}

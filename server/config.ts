@@ -127,9 +127,6 @@ export default {
   ),
   featureToggles: {
     // someToggleEnabled: toBoolean(get('SOME_TOGGLE_ENABLED', false)),
-    frontendComponentsApiToggleEnabled: toBoolean(
-      get('FRONTEND_COMPONENTS_API_FEATURE_TOGGLE_ENABLED', true, requiredInProduction),
-    ),
     includePrisonTimelineEventsEnabled: toBoolean(
       get('INCLUDE_PRISON_TIMELINE_EVENTS_ENABLED', false, requiredInProduction),
     ),
