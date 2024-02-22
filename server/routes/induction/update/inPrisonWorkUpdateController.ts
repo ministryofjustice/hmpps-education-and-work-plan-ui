@@ -21,7 +21,7 @@ export default class InPrisonWorkUpdateController extends InPrisonWorkController
 
   submitInPrisonWorkForm: RequestHandler = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { prisonNumber } = req.params
-    const { prisonerSummary, inductionDto } = req.session
+    const { prisonerSummary } = req.session
 
     req.session.inPrisonWorkForm = { ...req.body }
     if (!req.session.inPrisonWorkForm.inPrisonWork) {
