@@ -27,8 +27,12 @@ const validateInPrisonWork = (inPrisonWorkForm: InPrisonWorkForm, prisonerSummar
   return errors
 }
 
+/**
+ * Return true if any value in the specified array is not in the full set of `InPrisonWorkValue` enum values.
+ */
 const containsInvalidOptions = (inPrisonWork: Array<InPrisonWorkValue>): boolean => {
-  return inPrisonWork.some(value => !InPrisonWorkValue[value])
+  const allValidValues = Object.values(InPrisonWorkValue)
+  return inPrisonWork.some(value => !allValidValues.includes(value))
 }
 
 const validateInPrisonWorkOther = (

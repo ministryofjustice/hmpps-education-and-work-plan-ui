@@ -31,6 +31,7 @@ describe('inPrisonWorkFormValidator', () => {
       { inPrisonWork: [], inPrisonWorkOther: '' },
       { inPrisonWork: [], inPrisonWorkOther: undefined },
       { inPrisonWork: ['a-non-supported-value'], inPrisonWorkOther: undefined },
+      { inPrisonWork: ['PRISON_L'], inPrisonWorkOther: undefined },
       { inPrisonWork: ['PRISON_LAUNDRY', 'a-non-supported-value'], inPrisonWorkOther: undefined },
     ).forEach(spec => {
       it(`form data: ${JSON.stringify(spec)}`, () => {
