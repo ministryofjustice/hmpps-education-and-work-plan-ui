@@ -5,14 +5,18 @@ import { aLongQuestionSetInduction } from '../testsupport/inductionResponseTestD
 import aValidLongQuestionSetWorkAndInterests from '../testsupport/workAndInterestsTestDataBuilder'
 import toWorkAndInterests from '../data/mappers/workAndInterestMapper'
 import toEducationAndTraining from '../data/mappers/educationAndTrainingMapper'
+import toInductionDto from '../data/mappers/inductionDtoMapper'
 import { aValidLongQuestionSetEducationAndTraining } from '../testsupport/educationAndTrainingTestDataBuilder'
+import { aLongQuestionSetInductionDto } from '../testsupport/inductionDtoTestDataBuilder'
 
 jest.mock('../data/mappers/workAndInterestMapper')
 jest.mock('../data/mappers/educationAndTrainingMapper')
+jest.mock('../data/mappers/inductionDtoMapper')
 
 describe('inductionService', () => {
   const mockedWorkAndInterestsMapper = toWorkAndInterests as jest.MockedFunction<typeof toWorkAndInterests>
   const mockedEducationAndTrainingMapper = toEducationAndTraining as jest.MockedFunction<typeof toEducationAndTraining>
+  const mockedInductionDtoMapper = toInductionDto as jest.MockedFunction<typeof toInductionDto>
 
   const educationAndWorkPlanClient = {
     getInduction: jest.fn(),
@@ -258,6 +262,79 @@ describe('inductionService', () => {
       // Then
       expect(actual).toEqual(eductionAndWorkPlanApiError)
       expect(educationAndWorkPlanClient.getInduction).toHaveBeenCalledWith(prisonNumber, userToken)
+    })
+  })
+
+  describe('getInduction', () => {
+    it('should get Induction given Education and Work Plan API returns an Induction', async () => {
+      // Given
+      const prisonNumber = 'A1234BC'
+      const userToken = 'a-user-token'
+
+      const inductionResponse = aLongQuestionSetInduction()
+      educationAndWorkPlanClient.getInduction.mockResolvedValue(inductionResponse)
+      const expectedInductionDto = aLongQuestionSetInductionDto()
+      mockedInductionDtoMapper.mockReturnValue(expectedInductionDto)
+
+      // When
+      const actual = await inductionService.getInduction(prisonNumber, userToken)
+
+      // Then
+      expect(actual).toEqual(expectedInductionDto)
+      expect(educationAndWorkPlanClient.getInduction).toHaveBeenCalledWith(prisonNumber, userToken)
+      expect(mockedInductionDtoMapper).toHaveBeenCalledWith(inductionResponse)
+    })
+
+    it('should not get Induction given Education and Work Plan API returns Not Found', async () => {
+      // Given
+      const prisonNumber = 'A1234BC'
+      const userToken = 'a-user-token'
+
+      const eductionAndWorkPlanApiError = {
+        status: 404,
+        data: {
+          status: 404,
+          userMessage: `Induction not found for prisoner [${prisonNumber}]`,
+          developerMessage: `Induction not found for prisoner [${prisonNumber}]`,
+        },
+      }
+      educationAndWorkPlanClient.getInduction.mockRejectedValue(eductionAndWorkPlanApiError)
+
+      // When
+      const actual = await inductionService.getInduction(prisonNumber, userToken).catch(error => {
+        return error
+      })
+
+      // Then
+      expect(actual).toEqual(eductionAndWorkPlanApiError)
+      expect(educationAndWorkPlanClient.getInduction).toHaveBeenCalledWith(prisonNumber, userToken)
+      expect(mockedInductionDtoMapper).not.toHaveBeenCalled()
+    })
+
+    it('should rethrow error given Education and Work Plan API returns an unexpected error', async () => {
+      // Given
+      const prisonNumber = 'A1234BC'
+      const userToken = 'a-user-token'
+
+      const eductionAndWorkPlanApiError = {
+        status: 500,
+        data: {
+          status: 500,
+          userMessage: 'An unexpected error occurred',
+          developerMessage: 'An unexpected error occurred',
+        },
+      }
+      educationAndWorkPlanClient.getInduction.mockRejectedValue(eductionAndWorkPlanApiError)
+
+      // When
+      const actual = await inductionService.getInduction(prisonNumber, userToken).catch(error => {
+        return error
+      })
+
+      // Then
+      expect(actual).toEqual(eductionAndWorkPlanApiError)
+      expect(educationAndWorkPlanClient.getInduction).toHaveBeenCalledWith(prisonNumber, userToken)
+      expect(mockedInductionDtoMapper).not.toHaveBeenCalled()
     })
   })
 })
