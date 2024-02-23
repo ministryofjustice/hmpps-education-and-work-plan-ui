@@ -4,12 +4,6 @@
 {% set title = "What type of work would " + prisonerSummary.firstName + " " + prisonerSummary.lastName + " like to do in prison?" %}
 {% set pageTitle = title %}
 
-{% from "govuk/components/button/macro.njk" import govukButton %}
-{% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
-{% from "govuk/components/textarea/macro.njk" import govukTextarea %}
-{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
-
-
 {#
   Data supplied to this template:
     * prisonerSummary - object with firstName and lastName
