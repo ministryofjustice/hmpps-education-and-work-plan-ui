@@ -1,0 +1,157 @@
+{% extends "../../../partials/layout.njk" %}
+
+{% set pageId = "induction-skills" %}
+{% set title = "What skills does " + prisonerSummary.firstName + " " + prisonerSummary.lastName + " feel they have?" %}
+{% set pageTitle = title %}
+
+{#
+  Data supplied to this template:
+    * prisonerSummary - object with firstName and lastName
+    * backLinkUrl - url of the back link
+    * backLinkAriaText - the aria label for the back link
+    * form - form object containing the following fields:
+      * skills - Array of selected in-prison work options
+      * skillsOther? - value for when Other is selected
+    * errors? - validation errors
+#}
+
+{% block beforeContent %}
+  {{ govukBackLink({ text: "Back", href: backLinkUrl, attributes: { "aria-label" : backLinkAriaText } }) }}
+{% endblock %}
+
+{% block content %}
+
+  {% if errors.length > 0 %}
+    {{ govukErrorSummary({
+      titleText: 'There is a problem',
+      errorList: errors,
+      attributes: { 'data-qa-errors': true }
+    }) }}
+  {% endif %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <form class="form" method="post" novalidate="">
+        <div class="govuk-form-group">
+          <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+
+          {% set otherHtml %}
+            {{ govukTextarea({
+              id: "skillsOther",
+              name: "skillsOther",
+              rows: "2",
+              value: form.skillsOther,
+              type: "text",
+              label: {
+                text: "Give details",
+                attributes: { "aria-live": "polite" }
+              },
+              attributes: { "aria-label" : "Give details of any skills" },
+              errorMessage: errors | findError('skillsOther')
+            }) }}
+          {% endset -%}
+
+          {{ govukCheckboxes({
+            name: "skills",
+            fieldset: {
+              legend: {
+                  text: title,
+                  isPageHeading: true,
+                  classes: "govuk-fieldset__legend--l"
+                }
+            },
+            hint: {
+              text: "Select all that apply."
+            },
+            items: [
+              {
+                value: "COMMUNICATION",
+                checked: form.skills.includes("COMMUNICATION"),
+                text: "COMMUNICATION" | formatSkill,
+                hint: {
+                  text: "listening well and being clear when speaking or writing"
+                }
+              },
+              {
+                value: "POSITIVE_ATTITUDE",
+                checked: form.skills.includes("POSITIVE_ATTITUDE"),
+                text: "POSITIVE_ATTITUDE" | formatSkill,
+                hint: {
+                  text: "enthusiastic and willing to work, even when it's difficult"
+                }
+              },
+              {
+                value: "RESILIENCE",
+                checked: form.skills.includes("RESILIENCE"),
+                text: "RESILIENCE" | formatSkill,
+                hint: {
+                  text: "stays calm and keeps going even when things are hard"
+                }
+              },
+               {
+                value: "SELF_MANAGEMENT",
+                checked: form.skills.includes("SELF_MANAGEMENT"),
+                text: "SELF_MANAGEMENT" | formatSkill,
+                hint: {
+                  text: "good at timekeeping, punctual and reliable"
+                }
+              },
+              {
+                value: "TEAMWORK",
+                checked: form.skills.includes("TEAMWORK"),
+                text: "TEAMWORK" | formatSkill,
+                hint: {
+                  text: "likes working with others and happy to help out"
+                }
+              },
+              {
+                value: "THINKING_AND_PROBLEM_SOLVING",
+                checked: form.skills.includes("THINKING_AND_PROBLEM_SOLVING"),
+                text: "THINKING_AND_PROBLEM_SOLVING" | formatSkill,
+                hint: {
+                  text: "enjoys working things out and seeing how things work"
+                }
+              },
+              {
+                value: "WILLINGNESS_TO_LEARN",
+                checked: form.skills.includes("WILLINGNESS_TO_LEARN"),
+                text: "WILLINGNESS_TO_LEARN" | formatSkill,
+                hint: {
+                  text: "likes to learn new things and improve skills"
+                }
+              },
+              {
+                value: "OTHER",
+                checked: form.skills.includes("OTHER"),
+                text: "OTHER" | formatSkill,
+                attributes: { "aria-label": "OTHER" | formatSkill + " (Opens a dialogue box)" },
+                conditional: {
+                  html: otherHtml
+                }
+              },
+              {
+                divider: "or"
+              },
+              {
+                value: "NONE",
+                checked: form.skills.includes("NONE"),
+                text: "NONE" | formatSkill,
+                behaviour: "exclusive"
+              }
+            ],
+            errorMessage: errors | findError('skills')
+          }) }}
+        </div>
+
+        {{ govukButton({
+            id: "submit-button",
+            text: "Continue",
+            type: "submit",
+            attributes: {"data-qa": "submit-button"}
+          }) }}
+      </form>
+    </div>
+  </div>
+
+{% endblock %}

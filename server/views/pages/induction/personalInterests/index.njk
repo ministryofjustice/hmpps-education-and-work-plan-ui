@@ -1,0 +1,205 @@
+{% extends "../../../partials/layout.njk" %}
+
+{% set pageId = "induction-personal-interests" %}
+{% set title = "What are " + prisonerSummary.firstName + " " + prisonerSummary.lastName + "'s interests?" %}
+{% set pageTitle = title %}
+
+{#
+  Data supplied to this template:
+    * prisonerSummary - object with firstName and lastName
+    * backLinkUrl - url of the back link
+    * backLinkAriaText - the aria label for the back link
+    * form - form object containing the following fields:
+      * personalInterests - Array existing values for field
+      * personalInterestsOther? - value for when Other is selected
+    * errors? - validation errors
+#}
+
+{% block beforeContent %}
+  {{ govukBackLink({ text: "Back", href: backLocation, attributes: { "aria-label" : backLocationAriaText } }) }}
+{% endblock %}
+
+{% block content %}
+
+  {% if errors.length > 0 %}
+    {{ govukErrorSummary({
+      titleText: 'There is a problem',
+      errorList: errors,
+      attributes: { 'data-qa-errors': true }
+    }) }}
+  {% endif %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <form class="form" method="post" novalidate="">
+        <div class="govuk-form-group">
+          <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+
+          {% set otherHtml %}
+            {{ govukTextarea({
+              id: "personalInterestsOther",
+              name: "personalInterestsOther",
+              rows: "2",
+              value: form.personalInterestsOther,
+              type: "text",
+              label: {
+                text: "Give details",
+                attributes: { "aria-live": "polite" }
+              },
+              attributes: { "aria-label" : "Give details of any interests" },
+              errorMessage: errors | findError('personalInterestsOther')
+            }) }}
+          {% endset -%}
+
+          {{ govukCheckboxes({
+            name: "personalInterests",
+            fieldset: {
+              legend: {
+                  text: title,
+                  isPageHeading: true,
+                  classes: "govuk-fieldset__legend--l"
+                }
+            },
+            hint: {
+              text: "Select all that apply."
+            },
+            items: [
+              {
+                value: "COMMUNITY",
+                checked: form.personalInterests.includes("COMMUNITY"),
+                text: "COMMUNITY" | formatPersonalInterests,
+                hint: {
+                  text: "things like volunteering with local organisations or charities"
+                }
+              },
+              {
+                value: "CRAFTS",
+                checked: form.personalInterests.includes("CRAFTS"),
+                text: "CRAFTS" | formatPersonalInterests
+                hint: {
+                  text: "things like DIY, sewing or woodworking"
+                }
+              },
+              {
+                value: "CREATIVE",
+                checked: form.personalInterests.includes("CREATIVE"),
+                text: "CREATIVE" | formatPersonalInterests,
+                hint: {
+                  text: "things like writing, cooking or photography"
+                }
+              },
+               {
+                value: "DIGITAL",
+                checked: form.personalInterests.includes("DIGITAL"),
+                text: "DIGITAL" | formatPersonalInterests,
+                hint: {
+                  text: "things like computer gaming, making movies or coding"
+                }
+              },
+              {
+                value: "KNOWLEDGE_BASED",
+                checked: form.personalInterests.includes("KNOWLEDGE_BASED"),
+                text: "KNOWLEDGE BASED" | formatPersonalInterests,
+                hint: {
+                  text: "things like quizzes, local history or learning a language"
+                }
+              },
+              {
+                value: "MUSICAL",
+                checked: form.personalInterests.includes("MUSICAL"),
+                text: "MUSICAL" | formatPersonalInterests,
+                hint: {
+                  text: "things like singing, playing an instrument or dancing"
+                }
+              },
+              {
+                value: "OUTDOOR",
+                checked: form.personalInterests.includes("OUTDOOR"),
+                text: "OUTDOOR" | formatPersonalInterests,
+                hint: {
+                  text: "things like cycling, hiking or gardening"
+                }
+              },
+              {
+                value: "NATURE_AND_ANIMALS",
+                checked: form.personalInterests.includes("NATURE_AND_ANIMALS"),
+                text: "NATURE_AND_ANIMALS" | formatPersonalInterests,
+                hint: {
+                  text: "things like looking after pets, fishing or birdwatching"
+                }
+              },
+              {
+                value: "SOCIAL",
+                checked: form.personalInterests.includes("SOCIAL"),
+                text: "SOCIAL" | formatPersonalInterests,
+                hint: {
+                  text: "things like spending time with friends or going to the cinema"
+                }
+              },
+              {
+                value: "SOLO_ACTIVITIES",
+                checked: form.personalInterests.includes("SOLO_ACTIVITIES"),
+                text: "SOLO_ACTIVITIES" | formatPersonalInterests,
+                hint: {
+                  text: "  things like reading, watching TV or listening to music"
+                }
+              },
+              {
+                value: "SOLO_SPORTS",
+                checked: form.personalInterests.includes("SOLO_SPORTS"),
+                text: "SOLO_SPORTS" | formatPersonalInterests,
+                hint: {
+                  text: "things like golf, running or swimming"
+                }
+              },
+              {
+                value: "TEAM_SPORTS",
+                checked: form.personalInterests.includes("TEAM_SPORTS"),
+                text: "TEAM_SPORTS" | formatPersonalInterests,
+                hint: {
+                  text: "things like football, netball or cricket"
+                }
+              },
+              {
+                value: "WELLNESS",
+                checked: form.personalInterests.includes("WELLNESS"),
+                text: "WELLNESS" | formatPersonalInterests,
+                hint: {
+                  text: "things like yoga, meditation or going to the gym"
+                }
+              },
+              {
+                value: "OTHER",
+                checked: form.personalInterests.includes("OTHER"),
+                text: "OTHER" | formatPersonalInterests,
+                attributes: { "aria-label": "OTHER" | formatPersonalInterests + " (Opens a dialogue box)" },
+                conditional: {
+                  html: otherHtml
+                }
+              },
+              {
+                divider: "or"
+              },
+              {
+                value: "NONE",
+                checked: form.personalInterests.includes("NONE"),
+                text: "NONE" | formatPersonalInterests
+                behaviour: "exclusive"
+              }
+            ],
+            errorMessage: errors | findError('personalInterests')
+          }) }}
+        </div>
+
+        {{ govukButton({
+            id: "submit-button",
+            text: "Continue",
+            type: "submit",
+            attributes: {"data-qa": "submit-button"}
+          }) }}
+      </form>
+    </div>
+  </div>
+
+{% endblock %}
