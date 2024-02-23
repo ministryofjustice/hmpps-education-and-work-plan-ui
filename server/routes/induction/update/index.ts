@@ -4,6 +4,8 @@ import config from '../../../config'
 import { checkUserHasEditAuthority } from '../../../middleware/roleBasedAccessControl'
 import { retrieveInductionIfNotInSession, retrievePrisonerSummaryIfNotInSession } from '../../routerRequestHandlers'
 import InPrisonWorkUpdateController from './inPrisonWorkUpdateController'
+import SkillsUpdateController from './skillsUpdateController'
+import PersonalInterestsUpdateController from './personalInterestsUpdateController'
 
 /**
  * Route definitions for updating the various sections of an Induction
@@ -13,6 +15,8 @@ import InPrisonWorkUpdateController from './inPrisonWorkUpdateController'
  */
 export default (router: Router, services: Services) => {
   const inPrisonTrainingAndEducationUpdateController = new InPrisonWorkUpdateController(services.inductionService)
+  const skillsUpdateController = new SkillsUpdateController()
+  const personalInterestsUpdateController = new PersonalInterestsUpdateController()
 
   if (isAnyUpdateSectionEnabled()) {
     router.get('/prisoners/:prisonNumber/induction/**', [
@@ -34,6 +38,18 @@ export default (router: Router, services: Services) => {
     router.post('/prisoners/:prisonNumber/induction/in-prison-work', [
       inPrisonTrainingAndEducationUpdateController.submitInPrisonWorkForm,
     ])
+  }
+
+  if (config.featureToggles.induction.update.skillsAndInterestsSectionEnabled) {
+    router.get('/prisoners/:prisonNumber/induction/personal-interests', [
+      personalInterestsUpdateController.getPersonalInterestsView,
+    ])
+    router.post('/prisoners/:prisonNumber/induction/personal-interests', [
+      personalInterestsUpdateController.submitPersonalInterestsForm,
+    ])
+
+    router.get('/prisoners/:prisonNumber/induction/skills', [skillsUpdateController.getSkillsView])
+    router.post('/prisoners/:prisonNumber/induction/skills', [skillsUpdateController.submitSkillsForm])
   }
 }
 
