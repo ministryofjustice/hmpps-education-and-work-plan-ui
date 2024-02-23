@@ -1,19 +1,19 @@
 import createError from 'http-errors'
 import type { SessionData } from 'express-session'
 import { NextFunction, Request, Response } from 'express'
-import InPrisonWorkUpdateController from './inPrisonWorkUpdateController'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
-import { aShortQuestionSetInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
-import validateInPrisonWorkForm from './inPrisonWorkFormValidator'
+import { aLongQuestionSetInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
+import validateSkillsForm from './skillsFormValidator'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
 import { InductionService } from '../../../services'
 import { aShortQuestionSetUpdateInductionRequest } from '../../../testsupport/updateInductionRequestTestDataBuilder'
+import SkillsUpdateController from './skillsUpdateController'
 
-jest.mock('./inPrisonWorkFormValidator')
+jest.mock('./skillsFormValidator')
 jest.mock('../../../data/mappers/createOrUpdateInductionDtoMapper')
 
-describe('inPrisonWorkUpdateController', () => {
-  const mockedFormValidator = validateInPrisonWorkForm as jest.MockedFunction<typeof validateInPrisonWorkForm>
+describe('skillsUpdateController', () => {
+  const mockedFormValidator = validateSkillsForm as jest.MockedFunction<typeof validateSkillsForm>
   const mockedCreateOrUpdateInductionDtoMapper = toCreateOrUpdateInductionDto as jest.MockedFunction<
     typeof toCreateOrUpdateInductionDto
   >
@@ -22,7 +22,7 @@ describe('inPrisonWorkUpdateController', () => {
     updateInduction: jest.fn(),
   }
 
-  const controller = new InPrisonWorkUpdateController(inductionService as unknown as InductionService)
+  const controller = new SkillsUpdateController(inductionService as unknown as InductionService)
 
   const req = {
     session: {} as SessionData,
@@ -49,83 +49,83 @@ describe('inPrisonWorkUpdateController', () => {
     errors = []
   })
 
-  describe('getInPrisonWorkView', () => {
-    it('should get the In Prison Work view given there is no InPrisonWorkForm on the session', async () => {
+  describe('getSkillsView', () => {
+    it('should get the Skills view given there is no SkillsForm on the session', async () => {
       // Given
       const prisonNumber = 'A1234BC'
       req.params.prisonNumber = prisonNumber
 
       const prisonerSummary = aValidPrisonerSummary()
       req.session.prisonerSummary = prisonerSummary
-      const inductionDto = aShortQuestionSetInductionDto()
+      const inductionDto = aLongQuestionSetInductionDto()
       req.session.inductionDto = inductionDto
-      req.session.inPrisonWorkForm = undefined
+      req.session.skillsForm = undefined
 
-      const expectedInPrisonWorkForm = {
-        inPrisonWork: ['CLEANING_AND_HYGIENE', 'OTHER'],
-        inPrisonWorkOther: 'Gardening and grounds keeping',
+      const expectedSkillsForm = {
+        skills: ['TEAMWORK', 'WILLINGNESS_TO_LEARN', 'OTHER'],
+        skillsOther: 'Tenacity',
       }
 
       const expectedView = {
         prisonerSummary,
-        form: expectedInPrisonWorkForm,
-        backLinkUrl: '/plan/A1234BC/view/education-and-training',
+        form: expectedSkillsForm,
+        backLinkUrl: '/plan/A1234BC/view/work-and-interests',
         backLinkAriaText: 'Back to <TODO - check what CIAG UI does here>',
         errors,
       }
 
       // When
-      await controller.getInPrisonWorkView(
+      await controller.getSkillsView(
         req as undefined as Request,
         res as undefined as Response,
         next as undefined as NextFunction,
       )
 
       // Then
-      expect(res.render).toHaveBeenCalledWith('pages/induction/inPrisonWork/index', expectedView)
-      expect(req.session.inPrisonWorkForm).toBeUndefined()
+      expect(res.render).toHaveBeenCalledWith('pages/induction/skills/index', expectedView)
+      expect(req.session.skillsForm).toBeUndefined()
       expect(req.session.inductionDto).toEqual(inductionDto)
     })
 
-    it('should get the In Prison Work view given there is an InPrisonWorkForm already on the session', async () => {
+    it('should get the Skills view given there is an SkillsForm already on the session', async () => {
       // Given
       const prisonNumber = 'A1234BC'
       req.params.prisonNumber = prisonNumber
 
       const prisonerSummary = aValidPrisonerSummary()
       req.session.prisonerSummary = prisonerSummary
-      const inductionDto = aShortQuestionSetInductionDto()
+      const inductionDto = aLongQuestionSetInductionDto()
       req.session.inductionDto = inductionDto
 
-      const expectedInPrisonWorkForm = {
-        inPrisonWork: ['TEXTILES_AND_SEWING', 'WELDING_AND_METALWORK', 'WOODWORK_AND_JOINERY'],
-        inPrisonWorkOther: '',
+      const expectedSkillsForm = {
+        skills: ['SELF_MANAGEMENT', 'TEAMWORK', 'THINKING_AND_PROBLEM_SOLVING'],
+        skillsOther: '',
       }
-      req.session.inPrisonWorkForm = expectedInPrisonWorkForm
+      req.session.skillsForm = expectedSkillsForm
 
       const expectedView = {
         prisonerSummary,
-        form: expectedInPrisonWorkForm,
-        backLinkUrl: '/plan/A1234BC/view/education-and-training',
+        form: expectedSkillsForm,
+        backLinkUrl: '/plan/A1234BC/view/work-and-interests',
         backLinkAriaText: 'Back to <TODO - check what CIAG UI does here>',
         errors,
       }
 
       // When
-      await controller.getInPrisonWorkView(
+      await controller.getSkillsView(
         req as undefined as Request,
         res as undefined as Response,
         next as undefined as NextFunction,
       )
 
       // Then
-      expect(res.render).toHaveBeenCalledWith('pages/induction/inPrisonWork/index', expectedView)
-      expect(req.session.inPrisonWorkForm).toBeUndefined()
+      expect(res.render).toHaveBeenCalledWith('pages/induction/skills/index', expectedView)
+      expect(req.session.skillsForm).toBeUndefined()
       expect(req.session.inductionDto).toEqual(inductionDto)
     })
   })
 
-  describe('submitInPrisonWorkForm', () => {
+  describe('submitSkillsForm', () => {
     it('should not update Induction given form is submitted with validation errors', async () => {
       // Given
       const prisonNumber = 'A1234BC'
@@ -133,36 +133,34 @@ describe('inPrisonWorkUpdateController', () => {
 
       const prisonerSummary = aValidPrisonerSummary()
       req.session.prisonerSummary = prisonerSummary
-      const inductionDto = aShortQuestionSetInductionDto()
+      const inductionDto = aLongQuestionSetInductionDto()
       req.session.inductionDto = inductionDto
 
-      const invalidInPrisonWorkForm = {
-        inPrisonWork: ['OTHER'],
-        inPrisonWorkOther: '',
+      const invalidSkillsForm = {
+        skills: ['OTHER'],
+        skillsOther: '',
       }
-      req.body = invalidInPrisonWorkForm
-      req.session.inPrisonWorkForm = undefined
+      req.body = invalidSkillsForm
+      req.session.skillsForm = undefined
 
-      errors = [
-        { href: '#inPrisonWorkOther', text: 'Enter the type of work Jimmy Lightfingers would like to do in prison' },
-      ]
+      errors = [{ href: '#skillsOther', text: 'Enter the skill that Jimmy Lightfingers feels they have' }]
       mockedFormValidator.mockReturnValue(errors)
 
       // When
-      await controller.submitInPrisonWorkForm(
+      await controller.submitSkillsForm(
         req as undefined as Request,
         res as undefined as Response,
         next as undefined as NextFunction,
       )
 
       // Then
-      expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/induction/in-prison-work')
+      expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/induction/skills')
       expect(req.flash).toHaveBeenCalledWith('errors', errors)
-      expect(req.session.inPrisonWorkForm).toEqual(invalidInPrisonWorkForm)
+      expect(req.session.skillsForm).toEqual(invalidSkillsForm)
       expect(req.session.inductionDto).toEqual(inductionDto)
     })
 
-    it('should update Induction and call API and redirect to education and training page', async () => {
+    it('should update Induction and call API and redirect to work and interests page', async () => {
       // Given
       req.user.token = 'some-token'
       const prisonNumber = 'A1234BC'
@@ -170,32 +168,32 @@ describe('inPrisonWorkUpdateController', () => {
 
       const prisonerSummary = aValidPrisonerSummary()
       req.session.prisonerSummary = prisonerSummary
-      const inductionDto = aShortQuestionSetInductionDto()
+      const inductionDto = aLongQuestionSetInductionDto()
       req.session.inductionDto = inductionDto
 
-      const inPrisonWorkForm = {
-        inPrisonWork: ['COMPUTERS_OR_DESK_BASED', 'OTHER'],
-        inPrisonWorkOther: 'Gambling',
+      const skillsForm = {
+        skills: ['TEAMWORK', 'OTHER'],
+        skillsOther: 'Circus skills',
       }
-      req.body = inPrisonWorkForm
-      req.session.inPrisonWorkForm = undefined
+      req.body = skillsForm
+      req.session.skillsForm = undefined
       const updateInductionDto = aShortQuestionSetUpdateInductionRequest()
 
       mockedCreateOrUpdateInductionDtoMapper.mockReturnValueOnce(updateInductionDto)
       mockedFormValidator.mockReturnValue(errors)
-      const expectedUpdatedWorkInterests = [
+      const expectedUpdatedSkills = [
         {
-          workType: 'COMPUTERS_OR_DESK_BASED',
-          workTypeOther: undefined,
+          skillType: 'TEAMWORK',
+          skillTypeOther: undefined,
         },
         {
-          workType: 'OTHER',
-          workTypeOther: 'Gambling',
+          skillType: 'OTHER',
+          skillTypeOther: 'Circus skills',
         },
       ]
 
       // When
-      await controller.submitInPrisonWorkForm(
+      await controller.submitSkillsForm(
         req as undefined as Request,
         res as undefined as Response,
         next as undefined as NextFunction,
@@ -205,11 +203,11 @@ describe('inPrisonWorkUpdateController', () => {
       // Extract the first call to the mock and the second argument (i.e. the updated Induction)
       const updatedInduction = mockedCreateOrUpdateInductionDtoMapper.mock.calls[0][1]
       expect(mockedCreateOrUpdateInductionDtoMapper).toHaveBeenCalledWith(prisonerSummary.prisonId, updatedInduction)
-      expect(updatedInduction.inPrisonInterests.inPrisonWorkInterests).toEqual(expectedUpdatedWorkInterests)
+      expect(updatedInduction.personalSkillsAndInterests.skills).toEqual(expectedUpdatedSkills)
 
       expect(inductionService.updateInduction).toHaveBeenCalledWith(prisonNumber, updateInductionDto, 'some-token')
-      expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/view/education-and-training`)
-      expect(req.session.inPrisonWorkForm).toBeUndefined()
+      expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/view/work-and-interests`)
+      expect(req.session.skillsForm).toBeUndefined()
       expect(req.session.inductionDto).toBeUndefined()
     })
 
@@ -221,27 +219,27 @@ describe('inPrisonWorkUpdateController', () => {
 
       const prisonerSummary = aValidPrisonerSummary()
       req.session.prisonerSummary = prisonerSummary
-      const inductionDto = aShortQuestionSetInductionDto()
+      const inductionDto = aLongQuestionSetInductionDto()
       req.session.inductionDto = inductionDto
 
-      const inPrisonWorkForm = {
-        inPrisonWork: ['COMPUTERS_OR_DESK_BASED', 'OTHER'],
-        inPrisonWorkOther: 'Gambling',
+      const skillsForm = {
+        skills: ['TEAMWORK', 'OTHER'],
+        skillsOther: 'Circus skills',
       }
-      req.body = inPrisonWorkForm
-      req.session.inPrisonWorkForm = undefined
+      req.body = skillsForm
+      req.session.skillsForm = undefined
       const updateInductionDto = aShortQuestionSetUpdateInductionRequest()
 
       mockedCreateOrUpdateInductionDtoMapper.mockReturnValueOnce(updateInductionDto)
       mockedFormValidator.mockReturnValue(errors)
-      const expectedUpdatedWorkInterests = [
+      const expectedUpdatedSkills = [
         {
-          workType: 'COMPUTERS_OR_DESK_BASED',
-          workTypeOther: undefined,
+          skillType: 'TEAMWORK',
+          skillTypeOther: undefined,
         },
         {
-          workType: 'OTHER',
-          workTypeOther: 'Gambling',
+          skillType: 'OTHER',
+          skillTypeOther: 'Circus skills',
         },
       ]
 
@@ -252,7 +250,7 @@ describe('inPrisonWorkUpdateController', () => {
       )
 
       // When
-      await controller.submitInPrisonWorkForm(
+      await controller.submitSkillsForm(
         req as undefined as Request,
         res as undefined as Response,
         next as undefined as NextFunction,
@@ -262,11 +260,11 @@ describe('inPrisonWorkUpdateController', () => {
       // Extract the first call to the mock and the second argument (i.e. the updated Induction)
       const updatedInduction = mockedCreateOrUpdateInductionDtoMapper.mock.calls[0][1]
       expect(mockedCreateOrUpdateInductionDtoMapper).toHaveBeenCalledWith(prisonerSummary.prisonId, updatedInduction)
-      expect(updatedInduction.inPrisonInterests.inPrisonWorkInterests).toEqual(expectedUpdatedWorkInterests)
+      expect(updatedInduction.personalSkillsAndInterests.skills).toEqual(expectedUpdatedSkills)
 
       expect(inductionService.updateInduction).toHaveBeenCalledWith(prisonNumber, updateInductionDto, 'some-token')
       expect(next).toHaveBeenCalledWith(expectedError)
-      expect(req.session.inPrisonWorkForm).toEqual(inPrisonWorkForm)
+      expect(req.session.skillsForm).toEqual(skillsForm)
       expect(req.session.inductionDto).toEqual(inductionDto)
     })
   })

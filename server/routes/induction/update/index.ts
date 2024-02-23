@@ -15,7 +15,7 @@ import PersonalInterestsUpdateController from './personalInterestsUpdateControll
  */
 export default (router: Router, services: Services) => {
   const inPrisonTrainingAndEducationUpdateController = new InPrisonWorkUpdateController(services.inductionService)
-  const skillsUpdateController = new SkillsUpdateController()
+  const skillsUpdateController = new SkillsUpdateController(services.inductionService)
   const personalInterestsUpdateController = new PersonalInterestsUpdateController()
 
   if (isAnyUpdateSectionEnabled()) {
