@@ -4,6 +4,9 @@ import InPrisonWorkValue from '../../../server/enums/inPrisonWorkValue'
 import EducationAndTrainingPage from '../../pages/overview/EducationAndTrainingPage'
 import AuthorisationErrorPage from '../../pages/authorisationError'
 import Error404Page from '../../pages/error404'
+import { putRequestedFor } from '../../mockApis/wiremock/requestPatternBuilder'
+import { urlEqualTo } from '../../mockApis/wiremock/matchers/url'
+import { matchingJsonPath } from '../../mockApis/wiremock/matchers/content'
 
 context('Update single question in the Induction', () => {
   beforeEach(() => {
@@ -24,10 +27,11 @@ context('Update single question in the Induction', () => {
   describe('short question set Inductions', () => {
     beforeEach(() => {
       cy.task('stubGetInductionShortQuestionSet')
+      cy.task('stubUpdateInduction')
       cy.signIn()
     })
 
-    it.skip('should update Induction given page submitted with no validation errors', () => {
+    it('should update Induction given page submitted with no validation errors', () => {
       // Given
       const prisonNumber = 'G6115VJ'
       cy.visit(`/prisoners/${prisonNumber}/induction/in-prison-work`)
@@ -42,8 +46,17 @@ context('Update single question in the Induction', () => {
 
       // Then
       Page.verifyOnPage(EducationAndTrainingPage)
-      // TODO assert the API was called with the correct data - we would expect the update request to have in prison work as
-      //  CLEANING_AND_HYGIENE, MAINTENANCE (as MAINTENANCE was already on the Induction), and OTHER with the value 'Painting and decorating'
+      cy.wiremockVerify(
+        putRequestedFor(urlEqualTo(`/inductions/${prisonNumber}`)) //
+          .withRequestBody(
+            matchingJsonPath(
+              '$[?(@.inPrisonInterests.inPrisonWorkInterests.size() == 3 && ' +
+                "@.inPrisonInterests.inPrisonWorkInterests[0].workType == 'CLEANING_AND_HYGIENE' && !@.inPrisonInterests.inPrisonWorkInterests[0].workTypeOther && " +
+                "@.inPrisonInterests.inPrisonWorkInterests[1].workType == 'MAINTENANCE' && !@.inPrisonInterests.inPrisonWorkInterests[1].workTypeOther && " +
+                "@.inPrisonInterests.inPrisonWorkInterests[2].workType == 'OTHER' && @.inPrisonInterests.inPrisonWorkInterests[2].workTypeOther == 'Painting and decorating')]",
+            ),
+          ),
+      )
     })
 
     it('should not update Induction given page submitted with validation errors', () => {
@@ -61,7 +74,6 @@ context('Update single question in the Induction', () => {
       // Then
       inPrisonWorkPage = Page.verifyOnPage(InPrisonWorkPage)
       inPrisonWorkPage.hasFieldInError('inPrisonWorkOther')
-      // TODO assert the API was not called
     })
   })
 
