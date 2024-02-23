@@ -70,4 +70,14 @@ declare module 'inductionForms' {
     inPrisonWork: Array<InPrisonWorkValue>
     inPrisonWorkOther?: string
   }
+
+  export interface SkillsForm {
+    skills: Array<SkillsValue>
+    skillsOther?: string
+  }
+
+  export interface PersonalInterestsForm {
+    personalInterests: Array<PersonalInterestsValue>
+    personalInterestsOther?: string
+  }
 }

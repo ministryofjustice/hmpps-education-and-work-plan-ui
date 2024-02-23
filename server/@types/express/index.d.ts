@@ -1,7 +1,7 @@
 import type { PrisonerSummary, PrisonerSupportNeeds } from 'viewModels'
 import type { UpdateGoalForm } from 'forms'
 import type { NewGoal } from 'compositeForms'
-import type { InPrisonWorkForm } from 'inductionForms'
+import type { InPrisonWorkForm, PersonalInterestsForm, SkillsForm } from 'inductionForms'
 
 export default {}
 
@@ -19,6 +19,8 @@ declare module 'express-session' {
     // Induction related objects held on the session
     inductionDto: InductionDto
     inPrisonWorkForm: InPrisonWorkForm
+    skillsForm: SkillsForm
+    personalInterestsForm: PersonalInterestsForm
   }
 }
 
