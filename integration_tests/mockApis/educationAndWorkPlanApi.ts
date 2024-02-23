@@ -2,7 +2,7 @@ import type { PrisonerSearchSummary } from 'viewModels'
 import moment from 'moment'
 import { randomUUID } from 'crypto'
 import { SuperAgentRequest } from 'superagent'
-import { getMatchingRequests, stubFor } from './wiremock'
+import { stubFor } from './wiremock'
 import actionPlans from '../mockData/actionPlanByPrisonNumberData'
 import timelinesKeyedByPrisonNumber from '../mockData/timelineData'
 
@@ -54,18 +54,6 @@ const updateGoal500Error = (
         moreInfo: null,
       },
     },
-  })
-
-const getUpdateGoalRequestBody = (
-  prisonNumber = 'G6115VJ',
-  goalReference = '10efc562-be8f-4675-9283-9ede0c19dade',
-): Promise<UpdateGoalRequest> =>
-  getMatchingRequests({
-    method: 'PUT',
-    urlPattern: `/action-plans/${prisonNumber}/goals/${goalReference}`,
-  }).then(data => {
-    const { requests } = JSON.parse(data.text)
-    return JSON.parse(requests[0].body)
   })
 
 const getActionPlanForPrisonerWithNoGoals = (prisonNumber = 'G6115VJ'): SuperAgentRequest =>
@@ -528,7 +516,6 @@ export default {
   getActionPlan,
   updateGoal,
   updateGoal500Error,
-  getUpdateGoalRequestBody,
   getActionPlanForPrisonerWithNoGoals,
   getActionPlan500Error,
   stubActionPlansList,
@@ -543,22 +530,6 @@ export default {
   stubGetInductionLongQuestionSet,
   stubGetInduction404Error,
   stubGetInduction500Error,
-}
-
-export interface UpdateGoalRequest {
-  goalReference: string
-  title: string
-  status: string
-  steps: [
-    {
-      stepReference?: string
-      title: string
-      status: string
-      sequenceNumber: number
-    },
-  ]
-  targetCompletionDate?: string
-  notes?: string
 }
 
 /**
