@@ -12,7 +12,7 @@ import InPrisonWorkUpdateController from './inPrisonWorkUpdateController'
  * /prisoners/<prison-number>/induction/<page/section-id>
  */
 export default (router: Router, services: Services) => {
-  const inPrisonTrainingAndEducationUpdateController = new InPrisonWorkUpdateController()
+  const inPrisonTrainingAndEducationUpdateController = new InPrisonWorkUpdateController(services.inductionService)
 
   if (isAnyUpdateSectionEnabled()) {
     router.get('/prisoners/:prisonNumber/induction/**', [

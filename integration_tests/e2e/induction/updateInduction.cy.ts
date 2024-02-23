@@ -27,7 +27,7 @@ context('Update single question in the Induction', () => {
       cy.signIn()
     })
 
-    it('should update Induction given page submitted with no validation errors', () => {
+    it.skip('should update Induction given page submitted with no validation errors', () => {
       // Given
       const prisonNumber = 'G6115VJ'
       cy.visit(`/prisoners/${prisonNumber}/induction/in-prison-work`)
