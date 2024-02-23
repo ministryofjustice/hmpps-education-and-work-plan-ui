@@ -1,6 +1,7 @@
 import OverviewPage from '../../pages/overview/OverviewPage'
 import Page from '../../pages/page'
 import EducationAndTrainingPage from '../../pages/overview/EducationAndTrainingPage'
+import InPrisonWorkPage from '../../pages/induction/InPrisonWorkPage'
 
 context('Prisoner Overview page - Education And Training tab', () => {
   beforeEach(() => {
@@ -200,6 +201,24 @@ context('Prisoner Overview page - Education And Training tab', () => {
       educationAndTrainingPage //
         .activeTabIs('Education and training')
         .hasLinkToCreateInductionDisplayed()
+    })
+  })
+
+  describe('should display change links to Induction questions', () => {
+    it(`should link to change Induction 'In Prison Work' question given short question set induction`, () => {
+      // Given
+      cy.task('stubGetInductionShortQuestionSet')
+
+      cy.signIn()
+      const prisonNumber = 'G6115VJ'
+      cy.visit(`/plan/${prisonNumber}/view/education-and-training`)
+      const educationAndTrainingPage = Page.verifyOnPage(EducationAndTrainingPage)
+
+      // When
+      educationAndTrainingPage.clickInPrisonWorkChangeLink()
+
+      // Then
+      Page.verifyOnPage(InPrisonWorkPage)
     })
   })
 })

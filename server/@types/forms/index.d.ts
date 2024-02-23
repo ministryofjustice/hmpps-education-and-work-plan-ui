@@ -64,3 +64,10 @@ declare module 'compositeForms' {
     addNoteForm: AddNoteForm
   }
 }
+
+declare module 'inductionForms' {
+  export interface InPrisonWorkForm {
+    inPrisonWork: Array<InPrisonWorkValue>
+    inPrisonWorkOther?: string
+  }
+}
