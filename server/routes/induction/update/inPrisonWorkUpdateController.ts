@@ -1,12 +1,19 @@
+import type { InPrisonWorkForm } from 'inductionForms'
+import type { InductionDto, InPrisonWorkInterestDto } from 'inductionDto'
 import { NextFunction, Request, RequestHandler, Response } from 'express'
+import createError from 'http-errors'
 import InPrisonWorkController from '../common/inPrisonWorkController'
 import validateInPrisonWorkForm from './inPrisonWorkFormValidator'
+import { InductionService } from '../../../services'
+import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
+import InPrisonWorkValue from '../../../enums/inPrisonWorkValue'
+import logger from '../../../../logger'
 
 /**
  * Controller for the Update of the In Prison Work screen of the Induction.
  */
 export default class InPrisonWorkUpdateController extends InPrisonWorkController {
-  constructor() {
+  constructor(private readonly inductionService: InductionService) {
     super()
   }
 
@@ -21,7 +28,8 @@ export default class InPrisonWorkUpdateController extends InPrisonWorkController
 
   submitInPrisonWorkForm: RequestHandler = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { prisonNumber } = req.params
-    const { prisonerSummary } = req.session
+    const { prisonerSummary, inductionDto } = req.session
+    const { prisonId } = prisonerSummary
 
     req.session.inPrisonWorkForm = { ...req.body }
     if (!req.session.inPrisonWorkForm.inPrisonWork) {
@@ -38,10 +46,38 @@ export default class InPrisonWorkUpdateController extends InPrisonWorkController
       return res.redirect(`/prisoners/${prisonNumber}/induction/in-prison-work`)
     }
 
-    // map back to DTO, call service
-    req.session.inPrisonWorkForm = undefined
-    req.session.inductionDto = undefined
+    // create an updated InductionDto with any new values and then map it to a CreateOrUpdateInductionDTO to call the API
+    const updatedInduction = this.updatedInductionDtoWithInPrisonWork(inductionDto, inPrisonWorkForm)
+    const updateInductionDto = toCreateOrUpdateInductionDto(prisonId, updatedInduction)
 
-    return res.redirect(`/plan/${prisonNumber}/view/education-and-training`)
+    try {
+      await this.inductionService.updateInduction(prisonNumber, updateInductionDto, req.user.token)
+
+      req.session.inPrisonWorkForm = undefined
+      req.session.inductionDto = undefined
+      return res.redirect(`/plan/${prisonNumber}/view/education-and-training`)
+    } catch (e) {
+      logger.error(`Error updating Induction for prisoner ${prisonNumber}`, e)
+      return next(createError(500, `Error updating Induction for prisoner ${prisonNumber}. Error: ${e}`))
+    }
+  }
+
+  private updatedInductionDtoWithInPrisonWork(
+    inductionDto: InductionDto,
+    inPrisonWorkForm: InPrisonWorkForm,
+  ): InductionDto {
+    const updatedPrisonWorkInterests: InPrisonWorkInterestDto[] = inPrisonWorkForm.inPrisonWork.map(interest => {
+      return {
+        workType: interest,
+        workTypeOther: interest === InPrisonWorkValue.OTHER ? inPrisonWorkForm.inPrisonWorkOther : undefined,
+      }
+    })
+    return {
+      ...inductionDto,
+      inPrisonInterests: {
+        ...inductionDto.inPrisonInterests,
+        inPrisonWorkInterests: updatedPrisonWorkInterests,
+      },
+    }
   }
 }
