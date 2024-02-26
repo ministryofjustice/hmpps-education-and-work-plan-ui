@@ -84,4 +84,9 @@ declare module 'inductionForms' {
   export interface WorkedBeforeForm {
     hasWorkedBefore: YesNoValue
   }
+
+  export interface TypeOfWorkExperienceForm {
+    typeOfWorkExperience: Array<TypeOfWorkExperienceValue>
+    typeOfWorkExperienceOther?: string
+  }
 }
