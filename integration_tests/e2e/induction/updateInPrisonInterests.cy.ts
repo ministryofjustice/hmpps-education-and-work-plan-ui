@@ -8,7 +8,7 @@ import { putRequestedFor } from '../../mockApis/wiremock/requestPatternBuilder'
 import { urlEqualTo } from '../../mockApis/wiremock/matchers/url'
 import { matchingJsonPath } from '../../mockApis/wiremock/matchers/content'
 
-context('Update single question in the Induction', () => {
+context('Update in-prison interests within an Induction', () => {
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubSignInAsUserWithEditAuthority')
@@ -24,14 +24,14 @@ context('Update single question in the Induction', () => {
     cy.task('stubLearnerEducation')
   })
 
-  describe('short question set Inductions', () => {
+  describe('update in-prison work within an Induction', () => {
     beforeEach(() => {
       cy.task('stubGetInductionShortQuestionSet')
       cy.task('stubUpdateInduction')
       cy.signIn()
     })
 
-    it('should update Induction given page submitted with no validation errors', () => {
+    it('should update in-prison work given page submitted with no validation errors', () => {
       // Given
       const prisonNumber = 'G6115VJ'
       cy.visit(`/prisoners/${prisonNumber}/induction/in-prison-work`)
@@ -59,7 +59,7 @@ context('Update single question in the Induction', () => {
       )
     })
 
-    it('should not update Induction given page submitted with validation errors', () => {
+    it('should not update in-prison work given page submitted with validation errors', () => {
       // Given
       const prisonNumber = 'G6115VJ'
       cy.visit(`/prisoners/${prisonNumber}/induction/in-prison-work`)
@@ -75,51 +75,6 @@ context('Update single question in the Induction', () => {
       inPrisonWorkPage = Page.verifyOnPage(InPrisonWorkPage)
       inPrisonWorkPage.hasFieldInError('inPrisonWorkOther')
       cy.wiremockVerifyNoInteractions(putRequestedFor(urlEqualTo(`/inductions/${prisonNumber}`)))
-    })
-  })
-
-  describe('long question set Inductions', () => {})
-
-  describe('questions common to both short and long question set Inductions', () => {
-    it('should redirect to 404 page given prisoner does not have an induction', () => {
-      // Given
-      cy.task('stubGetInduction404Error')
-      cy.signIn()
-      const prisonNumber = 'G6115VJ'
-
-      // When
-      cy.visit(`/prisoners/${prisonNumber}/induction/in-prison-work`, { failOnStatusCode: false })
-
-      // Then
-      Page.verifyOnPage(Error404Page)
-    })
-
-    it('should redirect to auth-error page given user does not have any authorities', () => {
-      // Given
-      cy.task('stubSignIn')
-      cy.signIn()
-
-      const prisonNumber = 'G6115VJ'
-
-      // When
-      cy.visit(`/prisoners/${prisonNumber}/induction/in-prison-work`, { failOnStatusCode: false })
-
-      // Then
-      Page.verifyOnPage(AuthorisationErrorPage)
-    })
-
-    it('should redirect to auth-error page given user does not have edit authority', () => {
-      // Given
-      cy.task('stubSignInAsUserWithViewAuthority')
-      cy.signIn()
-
-      const prisonNumber = 'G6115VJ'
-
-      // When
-      cy.visit(`/prisoners/${prisonNumber}/induction/in-prison-work`, { failOnStatusCode: false })
-
-      // Then
-      Page.verifyOnPage(AuthorisationErrorPage)
     })
   })
 })
