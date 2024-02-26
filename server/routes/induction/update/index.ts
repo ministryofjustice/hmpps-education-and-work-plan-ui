@@ -6,6 +6,7 @@ import { retrieveInductionIfNotInSession, retrievePrisonerSummaryIfNotInSession 
 import InPrisonWorkUpdateController from './inPrisonWorkUpdateController'
 import SkillsUpdateController from './skillsUpdateController'
 import PersonalInterestsUpdateController from './personalInterestsUpdateController'
+import WorkedBeforeUpdateController from './workedBeforeUpdateController'
 
 /**
  * Route definitions for updating the various sections of an Induction
@@ -17,6 +18,7 @@ export default (router: Router, services: Services) => {
   const inPrisonTrainingAndEducationUpdateController = new InPrisonWorkUpdateController(services.inductionService)
   const skillsUpdateController = new SkillsUpdateController(services.inductionService)
   const personalInterestsUpdateController = new PersonalInterestsUpdateController(services.inductionService)
+  const workedBeforeUpdateController = new WorkedBeforeUpdateController(services.inductionService)
 
   if (isAnyUpdateSectionEnabled()) {
     router.get('/prisoners/:prisonNumber/induction/**', [
@@ -50,6 +52,15 @@ export default (router: Router, services: Services) => {
 
     router.get('/prisoners/:prisonNumber/induction/skills', [skillsUpdateController.getSkillsView])
     router.post('/prisoners/:prisonNumber/induction/skills', [skillsUpdateController.submitSkillsForm])
+  }
+
+  if (config.featureToggles.induction.update.workExperienceSectionEnabled) {
+    router.get('/prisoners/:prisonNumber/induction/has-worked-before', [
+      workedBeforeUpdateController.getWorkedBeforeView,
+    ])
+    router.post('/prisoners/:prisonNumber/induction/has-worked-before', [
+      workedBeforeUpdateController.submitWorkedBeforeForm,
+    ])
   }
 }
 

@@ -80,4 +80,8 @@ declare module 'inductionForms' {
     personalInterests: Array<PersonalInterestsValue>
     personalInterestsOther?: string
   }
+
+  export interface WorkedBeforeForm {
+    hasWorkedBefore: YesNoValue
+  }
 }

@@ -1,7 +1,7 @@
 import type { PrisonerSummary, PrisonerSupportNeeds } from 'viewModels'
 import type { UpdateGoalForm } from 'forms'
 import type { NewGoal } from 'compositeForms'
-import type { InPrisonWorkForm, PersonalInterestsForm, SkillsForm } from 'inductionForms'
+import type { InPrisonWorkForm, PersonalInterestsForm, SkillsForm, WorkedBeforeForm } from 'inductionForms'
 
 export default {}
 
@@ -21,6 +21,7 @@ declare module 'express-session' {
     inPrisonWorkForm: InPrisonWorkForm
     skillsForm: SkillsForm
     personalInterestsForm: PersonalInterestsForm
+    workedBeforeForm: WorkedBeforeForm
   }
 }
 
