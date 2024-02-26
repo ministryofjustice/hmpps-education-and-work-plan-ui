@@ -83,12 +83,39 @@ context('Create and edit a goal', () => {
     const reviewPage = Page.verifyOnPage(ReviewPage)
     reviewPage.clickChangeGoalTargetDateLink()
 
+    const today = new Date()
+    const nextYear = new Date(
+      today.getTime() +
+        365 * // days
+          24 * // hours
+          60 * // minutes
+          60 * // seconds
+          1000, // milliseconds
+    )
+    const targetCompletionDay = `${nextYear.getDate()}`
+    const targetCompletionMonth = `${nextYear.getMonth() + 1}` // month is zero indexed so need to add 1
+    const targetCompletionYear = `${nextYear.getFullYear()}`
+    const expectedMonthName = [
+      'January',
+      'February',
+      'March',
+      'April',
+      'May',
+      'June',
+      'July',
+      'August',
+      'September',
+      'October',
+      'November',
+      'December',
+    ][nextYear.getMonth()]
+
     const editGoalPage = Page.verifyOnPage(CreateGoalPage)
-    editGoalPage.setTargetCompletionDate('26', '2', '2024')
+    editGoalPage.setTargetCompletionDate(targetCompletionDay, targetCompletionMonth, targetCompletionYear)
     editGoalPage.submitPage()
 
     // Then
     Page.verifyOnPage(ReviewPage)
-    reviewPage.hasGoalTargetDate('by 26 February 2024')
+    reviewPage.hasGoalTargetDate(`by ${targetCompletionDay} ${expectedMonthName} ${targetCompletionYear}`)
   })
 })
