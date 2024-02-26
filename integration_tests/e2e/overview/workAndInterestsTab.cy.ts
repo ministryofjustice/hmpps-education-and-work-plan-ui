@@ -2,6 +2,7 @@ import Page from '../../pages/page'
 import OverviewPage from '../../pages/overview/OverviewPage'
 import WorkAndInterestsPage from '../../pages/overview/WorkAndInterestsPage'
 import SkillsPage from '../../pages/induction/SkillsPage'
+import PersonalInterestsPage from '../../pages/induction/PersonalInterestsPage'
 
 context('Prisoner Overview page - Work and Interests tab', () => {
   beforeEach(() => {
@@ -119,6 +120,22 @@ context('Prisoner Overview page - Work and Interests tab', () => {
 
       // Then
       Page.verifyOnPage(SkillsPage)
+    })
+
+    it(`should link to change Induction 'Personal Interests' question given long question set induction`, () => {
+      // Given
+      cy.task('stubGetInductionLongQuestionSet')
+
+      cy.signIn()
+      const prisonNumber = 'G6115VJ'
+      cy.visit(`/plan/${prisonNumber}/view/work-and-interests`)
+      const workAndInterestsPage = Page.verifyOnPage(WorkAndInterestsPage)
+
+      // When
+      workAndInterestsPage.clickPersonalInterestsChangeLink()
+
+      // Then
+      Page.verifyOnPage(PersonalInterestsPage)
     })
   })
 })
