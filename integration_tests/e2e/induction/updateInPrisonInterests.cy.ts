@@ -74,6 +74,7 @@ context('Update single question in the Induction', () => {
       // Then
       inPrisonWorkPage = Page.verifyOnPage(InPrisonWorkPage)
       inPrisonWorkPage.hasFieldInError('inPrisonWorkOther')
+      cy.wiremockVerifyNoInteractions(putRequestedFor(urlEqualTo(`/inductions/${prisonNumber}`)))
     })
   })
 

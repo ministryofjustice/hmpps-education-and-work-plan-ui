@@ -7,5 +7,9 @@ Cypress.Commands.add('signIn', (options = { failOnStatusCode: false }) => {
 })
 
 Cypress.Commands.add('wiremockVerify', (requestPatternBuilder: RequestPatternBuilder, expectedCount?: number) => {
-  return cy.wrap(verify(expectedCount || 1, requestPatternBuilder)).should('be.true')
+  return cy.wrap(verify(expectedCount == null ? 1 : expectedCount, requestPatternBuilder)).should('be.true')
+})
+
+Cypress.Commands.add('wiremockVerifyNoInteractions', (requestPatternBuilder: RequestPatternBuilder) => {
+  return cy.wrap(verify(0, requestPatternBuilder)).should('be.true')
 })
