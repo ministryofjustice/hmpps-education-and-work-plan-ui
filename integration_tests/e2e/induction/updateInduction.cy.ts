@@ -2,7 +2,7 @@ import Page from '../../pages/page'
 import AuthorisationErrorPage from '../../pages/authorisationError'
 import Error404Page from '../../pages/error404'
 
-context('Tests which are common to updating both short and long question set Inductions', () => {
+context('Tests which are common to updating Inductions', () => {
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubSignInAsUserWithEditAuthority')
@@ -17,6 +17,11 @@ context('Tests which are common to updating both short and long question set Ind
     cy.task('stubLearnerProfile')
     cy.task('stubLearnerEducation')
   })
+
+  describe('short question set Inductions', () => {})
+
+  describe('long question set Inductions', () => {})
+
   describe('tests common to both short and long question set Inductions', () => {
     it('should redirect to 404 page given prisoner does not have an induction', () => {
       // Given
