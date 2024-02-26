@@ -511,6 +511,37 @@ const stubGetInduction500Error = (prisonNumber = 'G6115VJ'): SuperAgentRequest =
     },
   })
 
+const stubUpdateInduction = (prisonNumber = 'G6115VJ'): SuperAgentRequest =>
+  stubFor({
+    request: {
+      method: 'PUT',
+      urlPattern: `/inductions/${prisonNumber}`,
+    },
+    response: {
+      status: 204,
+      headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+    },
+  })
+
+const stubUpdateInduction500Error = (prisonNumber = 'G6115VJ'): SuperAgentRequest =>
+  stubFor({
+    request: {
+      method: 'PUT',
+      urlPattern: `/inductions/${prisonNumber}`,
+    },
+    response: {
+      status: 500,
+      headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+      jsonBody: {
+        status: 500,
+        errorCode: null,
+        userMessage: 'An unexpected error occurred',
+        developerMessage: 'An unexpected error occurred',
+        moreInfo: null,
+      },
+    },
+  })
+
 export default {
   createGoals,
   getActionPlan,
@@ -530,6 +561,9 @@ export default {
   stubGetInductionLongQuestionSet,
   stubGetInduction404Error,
   stubGetInduction500Error,
+
+  stubUpdateInduction,
+  stubUpdateInduction500Error,
 }
 
 /**

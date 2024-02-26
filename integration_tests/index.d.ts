@@ -7,5 +7,7 @@ declare namespace Cypress {
     signIn(options?: { failOnStatusCode: boolean }): Chainable<AUTWindow>
 
     wiremockVerify(requestPatternBuilder: RequestPatternBuilder, expectedCount?: number): Chainable<*>
+
+    wiremockVerifyNoInteractions(requestPatternBuilder: RequestPatternBuilder): Chainable<*>
   }
 }
