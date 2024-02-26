@@ -1,0 +1,204 @@
+{% extends "../../../partials/layout.njk" %}
+
+{% set pageId = "induction-work-interests" %}
+{% set title = "What type of work is " + prisonerSummary.firstName + " " + prisonerSummary.lastName + " interested in?" %}
+{% set pageTitle = title %}
+
+{#
+  Data supplied to this template:
+    * prisonerSummary - object with firstName and lastName
+    * backLinkUrl - url of the back link
+    * backLinkAriaText - the aria label for the back link
+    * form - form object containing the following fields:
+      * workInterests - Array of selected work interests options
+      * workInterestsOther? - value for when Other is selected
+    * errors? - validation errors
+#}
+
+{% block beforeContent %}
+  {{ govukBackLink({ text: "Back", href: backLocation, attributes: { "aria-label" : backLocationAriaText } }) }}
+{% endblock %}
+
+{% block content %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      {% if errors.length > 0 %}
+        {{ govukErrorSummary({
+          titleText: 'There is a problem',
+          errorList: errors,
+          attributes: { 'data-qa-errors': true }
+        }) }}
+      {% endif %}
+
+      <form class="form" method="post" novalidate="">
+        <div class="govuk-form-group">
+          <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+
+          {% set otherHtml %}
+            {{ govukTextarea({
+              id: "workInterestsOther",
+              name: "workInterestsOther",
+              rows: "2",
+              value: form.workInterestsOther,
+              type: "text",
+              label: {
+                text: "Give details",
+                attributes: { "aria-live": "polite" }
+              },
+              attributes: { "aria-label" : "Give details of any work " + prisonerSummary.firstName + " " + prisonerSummary.lastName + " has done before" },
+              errorMessage: errors | findError('workInterestsOther')
+            }) }}
+          {% endset -%}
+
+          {{ govukCheckboxes({
+            name: "workInterests",
+            fieldset: {
+              legend: {
+                  text: title,
+                  isPageHeading: true,
+                  classes: "govuk-fieldset__legend--l"
+                }
+            },
+            hint: {
+              text: "Select all that apply."
+            },
+            items: [
+              {
+                value: "OUTDOOR",
+                checked: form.workInterests.includes("OUTDOOR"),
+                text: "OUTDOOR" | formatInPrisonWorkInterest,
+                hint: {
+                  text: "things like kennel worker, groundskeeper and farm work"
+                }
+              },
+              {
+                value: "CLEANING_AND_MAINTENANCE",
+                checked: form.workInterests.includes("CLEANING_AND_MAINTENANCE"),
+                text: "CLEANING_AND_MAINTENANCE" | formatInPrisonWorkInterest,
+                hint: {
+                  text: "things like biohazard cleaning, janitor and window cleaner"
+                }
+              },
+              { 
+                value: "CONSTRUCTION",
+                checked: form.workInterests.includes("CONSTRUCTION"),
+                text: "CONSTRUCTION" | formatInPrisonWorkInterest,
+                hint: {
+                  text: "things like bricklayer, plumber and site management"
+                }
+              },
+              { 
+                value: "DRIVING",
+                checked: form.workInterests.includes("DRIVING"),
+                text: "DRIVING" | formatInPrisonWorkInterest,
+                hint: {
+                  text: "things like bus driver and rail or road maintenance"
+                }
+              },
+              { 
+                value: "BEAUTY",
+                checked: form.workInterests.includes("BEAUTY"),
+                text: "BEAUTY" | formatInPrisonWorkInterest,
+                hint: {
+                  text: "things like nail technician and barber"
+                }
+              },
+              { 
+                value: "HOSPITALITY",
+                checked: form.workInterests.includes("HOSPITALITY"),
+                text: "HOSPITALITY" | formatInPrisonWorkInterest,
+                hint: {
+                  text: "things like chef, mobile catering and hotel porter"
+                }
+              },
+              { 
+                value: "TECHNICAL",
+                checked: form.workInterests.includes("TECHNICAL"),
+                text: "TECHNICAL" | formatInPrisonWorkInterest,
+                hint: {
+                  text: "things like coding, web developer and IT support"
+                }
+              },
+              { 
+                value: "MANUFACTURING",
+                checked: form.workInterests.includes("MANUFACTURING"),
+                text: "MANUFACTURING" | formatInPrisonWorkInterest,
+                hint: {
+                  text: "things like assembly line work, welding and maintenance"
+                }
+              },
+              { 
+                value: "OFFICE",
+                checked: form.workInterests.includes("OFFICE"),
+                text: contentLookup.fields.workInterests["OFFICE"],
+                hint: {
+                  text: "things like administration, marketing assistant and office manager"
+                }
+              },
+              { 
+                value: "RETAIL",
+                checked: form.workInterests.includes("RETAIL"),
+                text: "RETAIL" | formatInPrisonWorkInterest,
+                hint: {
+                  text: "things like sales assistant, customer service and store manager"
+                }
+              },
+              { 
+                value: "SPORTS",
+                checked: form.workInterests.includes("SPORTS"),
+                text: "SPORTS" | formatInPrisonWorkInterest,
+                hint: {
+                  text: "things like personal trainer and gym attendant"
+                }
+              },
+              { 
+                value: "EDUCATION_TRAINING",
+                checked: form.workInterests.includes("EDUCATION_TRAINING"),
+                text: "EDUCATION_TRAINING" | formatInPrisonWorkInterest,
+                hint: {
+                  text: "things like welding trainer and welfare rights support"
+                }
+              },
+              { 
+                value: "WAREHOUSING",
+                checked: form.workInterests.includes("WAREHOUSING"),
+                text: "WAREHOUSING" | formatInPrisonWorkInterest,
+                hint: {
+                  text: "things like removals and forklift driver"
+                }
+              },
+              { 
+                value: "WASTE_MANAGEMENT",
+                checked: form.workInterests.includes("WASTE_MANAGEMENT"),
+                text: "WASTE_MANAGEMENT" | formatInPrisonWorkInterest,
+                hint: {
+                  text: "things like waste collection and recycling management"
+                }
+              },
+              {
+                value: "OTHER",
+                checked: form.workInterests.includes("OTHER"),
+                text: "OTHER" | formatInPrisonWorkInterest,
+                conditional: {
+                  html: otherHtml
+                }
+              }
+            ],
+            errorMessage: errors | findError('workInterests')
+          }) }}
+
+        </div>
+
+        {{ govukButton({
+            id: "submit-button",
+            text: "Continue",
+            type: "submit",
+            attributes: {"data-qa": "submit-button"}
+          }) }}
+      </form>
+    </div>
+  </div>
+
+{% endblock %}
