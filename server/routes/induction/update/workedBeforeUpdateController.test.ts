@@ -83,7 +83,7 @@ describe('workedBeforeUpdateController', () => {
       )
 
       // Then
-      expect(res.render).toHaveBeenCalledWith('pages/induction/worked-before/index', expectedView)
+      expect(res.render).toHaveBeenCalledWith('pages/induction/workedBefore/index', expectedView)
       expect(req.session.workedBeforeForm).toBeUndefined()
       expect(req.session.inductionDto).toEqual(inductionDto)
     })
@@ -119,7 +119,7 @@ describe('workedBeforeUpdateController', () => {
       )
 
       // Then
-      expect(res.render).toHaveBeenCalledWith('pages/induction/worked-before/index', expectedView)
+      expect(res.render).toHaveBeenCalledWith('pages/induction/workedBefore/index', expectedView)
       expect(req.session.workedBeforeForm).toBeUndefined()
       expect(req.session.inductionDto).toEqual(inductionDto)
     })
@@ -155,7 +155,7 @@ describe('workedBeforeUpdateController', () => {
       )
 
       // Then
-      expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/induction/worked-before')
+      expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/induction/workedBefore')
       expect(req.flash).toHaveBeenCalledWith('errors', errors)
       expect(req.session.workedBeforeForm).toEqual(invalidWorkedBeforeForm)
       expect(req.session.inductionDto).toEqual(inductionDto)

@@ -29,7 +29,7 @@ export default abstract class WorkedBeforeController extends InductionController
       workedBeforeForm,
       req.flash('errors'),
     )
-    return res.render('pages/induction/worked-before/index', { ...view.renderArgs })
+    return res.render('pages/induction/workedBefore/index', { ...view.renderArgs })
   }
 }
 

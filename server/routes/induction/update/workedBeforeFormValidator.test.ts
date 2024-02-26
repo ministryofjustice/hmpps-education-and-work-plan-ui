@@ -18,11 +18,11 @@ describe('workedBeforeFormValidator', () => {
     })
   })
 
-  describe('happy path - validation does not pass', () => {
-    it(`has worked before is selected`, () => {
+  describe('unhappy path - validation does not pass', () => {
+    it(`has worked before is not selected`, () => {
       // Given
       const expected: Array<Record<string, string>> = [
-        { href: '#workedBefore', text: 'Select whether Jimmy Lightfingers has worked before or not' },
+        { href: '#hasWorkedBefore', text: 'Select whether Jimmy Lightfingers has worked before or not' },
       ]
 
       // When

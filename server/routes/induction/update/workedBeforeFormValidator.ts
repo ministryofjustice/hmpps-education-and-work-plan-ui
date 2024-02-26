@@ -8,7 +8,7 @@ export default function validateWorkedBeforeForm(
 ): Array<Record<string, string>> {
   const errors: Array<Record<string, string>> = []
 
-  errors.push(...formatErrors('workedBefore', validateWorkedBefore(workedBeforeForm, prisonerSummary)))
+  errors.push(...formatErrors('hasWorkedBefore', validateWorkedBefore(workedBeforeForm, prisonerSummary)))
   return errors
 }
 
