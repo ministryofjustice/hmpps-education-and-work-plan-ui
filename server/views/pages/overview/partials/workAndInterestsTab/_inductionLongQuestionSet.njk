@@ -193,7 +193,14 @@ questions are different.
             </ul>
           </dd>
           <dd class="govuk-summary-list__actions govuk-!-display-none-print">
-            <a class="govuk-link" href="{{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}/skills/update">
+            {%- set skillsChangeLinkUrl -%}
+              {%- if featureToggles.induction.update.skillsAndInterestsSectionEnabled -%}
+                /prisoners/{{ prisonerSummary.prisonNumber }}/induction/skills
+              {%- else -%}
+                {{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}/skills/update
+              {%- endif -%}
+            {%- endset -%}
+            <a class="govuk-link" href="{{ skillsChangeLinkUrl }}" data-qa="skills-change-link">
               Change<span class="govuk-visually-hidden"> skills</span>
             </a>
           </dd>

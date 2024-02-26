@@ -1,4 +1,5 @@
 import Page, { PageElement } from '../page'
+import SkillsPage from '../induction/SkillsPage'
 
 /**
  * Cypress page class representing the Work And Interests tab of the Overview Page
@@ -51,6 +52,11 @@ export default class WorkAndInterestsPage extends Page {
     return this
   }
 
+  clickSkillsChangeLink(): SkillsPage {
+    this.skillsChangeLink().click()
+    return Page.verifyOnPage(SkillsPage)
+  }
+
   activeTab = (): PageElement => cy.get('.moj-sub-navigation__link[aria-current=page]')
 
   workInterestsSummaryCard = (): PageElement => cy.get('#work-interests-summary-card')
@@ -66,4 +72,6 @@ export default class WorkAndInterestsPage extends Page {
   longQuestionSetContent = (): PageElement => cy.get('[data-qa=work-and-interests-long-question-set')
 
   shortQuestionSetContent = (): PageElement => cy.get('[data-qa=work-and-interests-short-question-set')
+
+  skillsChangeLink = (): PageElement => cy.get('[data-qa=skills-change-link')
 }
