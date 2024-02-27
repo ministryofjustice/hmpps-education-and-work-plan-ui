@@ -1,0 +1,81 @@
+{% extends "../../../partials/layout.njk" %}
+
+{% set pageId = "induction-previous-work-experience-detail" %}
+{% set title = "What did " +  prisonerSummary.firstName + " " + prisonerSummary.lastName + " do in their " + typeOfWorkExperience | formatJobType | lower + " job?" %}
+{% set pageTitle = title %}
+
+{#
+Data supplied to this template:
+  * prisonerSummary - object with firstName and lastName
+  * backLinkUrl - url of the back link
+  * backLinkAriaText - the aria label for the back link
+  * form - form object containing the following fields:
+    * jobRole - existing value for field
+    * jobDetails - existing value for field
+  * typeOfWorkExperience - work experience type that this page is editing values for
+  * errors? - validation errors
+#}
+
+{% block beforeContent %}
+  {{ govukBackLink({ text: "Back", href: backLinkUrl, attributes: { "aria-label" : backLinkAriaText } }) }}
+{% endblock %}
+
+{% block content %}
+
+  {% if errors.length > 0 %}
+    {{ govukErrorSummary({
+      titleText: 'There is a problem',
+      errorList: errors,
+      attributes: { 'data-qa-errors': true }
+    }) }}
+  {% endif %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <h1 class="govuk-heading-l">{{ title }}</h1>
+
+      <form class="form" method="post" novalidate="">
+        <div class="govuk-form-group">
+          <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+
+          {{ govukInput({
+              id: "jobRole",
+              name: "jobRole",
+              value: form.jobRole,
+              type: "text",
+              classes: "govuk-!-width-one-half",
+              label: {
+                text: "Job role",
+                attributes: { "aria-live": "polite" }
+              },
+              attributes: { "aria-label" : "Give the Job role" },
+              errorMessage: errors | findErrors('jobRole')
+            }) }}
+
+          {{ govukTextarea({
+              id: "jobDetails",
+              name: "jobDetails",
+              rows: "4",
+              value: form.jobDetails,
+              type: "text",
+              label: {
+                text: "Main tasks and responsibilities with rough dates if known",
+                attributes: { "aria-live": "polite" }
+              },
+              attributes: { "aria-label" : "Give the main tasks and responsibilities with rough dates if known" },
+              errorMessage: errors | findErrors('jobDetails')
+            }) }}        
+        </div>
+
+        {{ govukButton({
+            id: "submit-button",
+            text: "Continue",
+            type: "submit",
+            attributes: {"data-qa": "submit-button"}
+          }) }}
+      </form>
+    </div>
+  </div>
+
+{% endblock %}

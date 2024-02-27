@@ -1,6 +1,6 @@
 {% extends "../../../partials/layout.njk" %}
 
-{% set pageId = "induction-previous-work-experience" %}
+{% set pageId = "induction-previous-work-experience-types" %}
 {% set title = "What type of work has " + prisonerSummary.firstName + " " + prisonerSummary.lastName + " done before?" %}
 {% set pageTitle = title %}
 
@@ -193,7 +193,7 @@ Data supplied to this template:
         </div>
 
         {{ govukButton({
-            id: "submit-button"
+            id: "submit-button",
             text: "Continue",
             type: "submit",
             attributes: {"data-qa": "submit-button"}
