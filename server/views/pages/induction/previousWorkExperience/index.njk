@@ -1,0 +1,205 @@
+{% extends "../../../partials/layout.njk" %}
+
+{% set pageId = "induction-previous-work-experience" %}
+{% set title = "What type of work has " + prisonerSummary.firstName + " " + prisonerSummary.lastName + " done before?" %}
+{% set pageTitle = title %}
+
+{#
+Data supplied to this template:
+  * prisonerSummary - object with firstName and lastName
+  * backLinkUrl - url of the back link
+  * backLinkAriaText - the aria label for the back link
+  * form - form object containing the following fields:
+    * typeOfWorkExperience - Array of selected in-prison work options
+    * typeOfWorkExperienceOther? - value for when Other is selected
+  * errors? - validation errors
+#}
+
+{% block beforeContent %}
+  {{ govukBackLink({ text: "Back", href: backLinkUrl, attributes: { "aria-label" : backLinkAriaText } }) }}
+{% endblock %}
+
+{% block content %}
+
+  {% if errors.length > 0 %}
+    {{ govukErrorSummary({
+      titleText: 'There is a problem',
+      errorList: errors,
+      attributes: { 'data-qa-errors': true }
+    }) }}
+  {% endif %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <form class="form" method="post" novalidate="">
+        <div class="govuk-form-group">
+          <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+
+          {% set otherHtml %}
+            {{ govukTextarea({
+              id: "typeOfWorkExperienceOther",
+              name: "typeOfWorkExperienceOther",
+              rows: "2",
+              value: form.typeOfWorkExperienceOther,
+              type: "text",
+              label: {
+                text: "Give details",
+                attributes: { "aria-live": "polite" }
+              },
+              attributes: { "aria-label" : "Give details of any work " + prisonerSummary.firstName + " " + prisonerSummary.lastName + " has done before" },
+              errorMessage: errors | findError('typeOfWorkExperienceOther')
+            }) }}
+          {% endset -%}
+
+          {{ govukCheckboxes({
+            name: "typeOfWorkExperience",
+            fieldset: {
+              legend: {
+                  text: title,
+                  isPageHeading: true,
+                  classes: "govuk-fieldset__legend--l"
+                }
+            },
+            hint: {
+              text: "Select all that apply."
+            },
+            items: [
+              {
+                value: "OUTDOOR",
+                checked: form.typeOfWorkExperience.includes("OUTDOOR"),
+                text: "OUTDOOR" | formatJobType,
+                hint: {
+                  text: "things like kennel worker, groundskeeper and farm work"
+                }
+              },
+              {
+                value: "CLEANING_AND_MAINTENANCE",
+                checked: form.typeOfWorkExperience.includes("CLEANING_AND_MAINTENANCE"),
+                text: "CLEANING_AND_MAINTENANCE" | formatJobType,
+                hint: {
+                  text: "things like biohazard cleaning, janitor and window cleaner"
+                }
+              },
+              { 
+                value: "CONSTRUCTION",
+                checked: form.typeOfWorkExperience.includes("CONSTRUCTION"),
+                text: "CONSTRUCTION" | formatJobType,
+                hint: {
+                  text: "things like bricklayer, plumber and site management"
+                }
+              },
+              { 
+                value: "DRIVING",
+                checked: form.typeOfWorkExperience.includes("DRIVING"),
+                text: "DRIVING" | formatJobType,
+                hint: {
+                  text: "things like bus driver and rail or road maintenance"
+                }
+              },
+              { 
+                value: "BEAUTY",
+                checked: form.typeOfWorkExperience.includes("BEAUTY"),
+                text: "BEAUTY" | formatJobType,
+                hint: {
+                  text: "things like nail technician and barber"
+                }
+              },
+              { 
+                value: "HOSPITALITY",
+                checked: form.typeOfWorkExperience.includes("HOSPITALITY"),
+                text: "HOSPITALITY" | formatJobType,
+                hint: {
+                  text: "things like chef, mobile catering and hotel porter"
+                }
+              },
+              { 
+                value: "TECHNICAL",
+                checked: form.typeOfWorkExperience.includes("TECHNICAL"),
+                text: "TECHNICAL" | formatJobType,
+                hint: {
+                  text: "things like coding, web developer and IT support"
+                }
+              },
+              { 
+                value: "MANUFACTURING",
+                checked: form.typeOfWorkExperience.includes("MANUFACTURING"),
+                text: "MANUFACTURING" | formatJobType,
+                hint: {
+                  text: "things like assembly line work, welding and maintenance"
+                }
+              },
+              { 
+                value: "OFFICE",
+                checked: form.typeOfWorkExperience.includes("OFFICE"),
+                text: "OFFICE" | formatJobType,
+                hint: {
+                  text: "things like administration, marketing assistant and office manager"
+                }
+              },
+              { 
+                value: "RETAIL",
+                checked: form.typeOfWorkExperience.includes("RETAIL"),
+                text: "RETAIL" | formatJobType,
+                hint: {
+                  text: "things like sales assistant, customer service and store manager"
+                }
+              },
+              { 
+                value: "SPORTS",
+                checked: form.typeOfWorkExperience.includes("SPORTS"),
+                text: "SPORTS" | formatJobType,
+                hint: {
+                  text: "things like personal trainer and gym attendant"
+                }
+              },
+              { 
+                value: "EDUCATION_TRAINING",
+                checked: form.typeOfWorkExperience.includes("EDUCATION_TRAINING"),
+                text: "EDUCATION_TRAINING" | formatJobType,
+                hint: {
+                  text: "things like welding trainer and welfare rights support"
+                }
+              },
+              { 
+                value: "WAREHOUSING",
+                checked: form.typeOfWorkExperience.includes("WAREHOUSING"),
+                text: "WAREHOUSING" | formatJobType,
+                hint: {
+                  text: "things like removals and forklift driver"
+                }
+              },
+              { 
+                value: "WASTE_MANAGEMENT",
+                checked: form.typeOfWorkExperience.includes("WASTE_MANAGEMENT"),
+                text: "WASTE_MANAGEMENT" | formatJobType,
+                hint: {
+                  text: "things like waste collection and recycling management"
+                }
+              },
+              {
+                value: "OTHER",
+                checked: form.typeOfWorkExperience.includes("OTHER"),
+                text: "OTHER" | formatJobType,
+                attributes: { "aria-label": "OTHER" | formatJobType + " (Opens a dialogue box)" },
+                conditional: {
+                  html: otherHtml
+                }
+              }
+            ],
+             errorMessage: errors | findError('typeOfWorkExperience')
+          }) }}
+
+        </div>
+
+        {{ govukButton({
+            id: "submit-button"
+            text: "Continue",
+            type: "submit",
+            attributes: {"data-qa": "submit-button"}
+          }) }}
+      </form>
+    </div>
+  </div>
+
+{% endblock %}
