@@ -42,14 +42,14 @@ Data supplied to this template:
               id: "affectAbilityToWorkOther",
               name: "affectAbilityToWorkOther",
               rows: "2",
-              value: affectAbilityToWorkOther,
+              value: form.affectAbilityToWorkOther,
               type: "text",
               label: {
                 text: "Give details",
                 attributes: { "aria-live": "polite" }
               },
-              attributes: { "aria-label" : "Give details of any affectAbilityToWork" },
-              errorMessage: errors.affectAbilityToWorkOther
+              attributes: { "aria-label" : "Give details of any factors that could affect their ability to work" },
+              errorMessage: errors | findError('affectAbilityToWorkOther')
             }) }}
           {% endset -%}
 
@@ -69,28 +69,28 @@ Data supplied to this template:
               {
                 value: "LIMITED_BY_OFFENSE",
                 checked: form.affectAbilityToWork.includes("LIMITED_BY_OFFENSE"),
-                text: "LIMITED_BY_OFFENSE" | formatAffectAbilityToWork
+                text: "LIMITED_BY_OFFENSE" | formatAbilityToWorkConstraint
               },
               {
                 value: "CARING_RESPONSIBILITIES",
                 checked: form.affectAbilityToWork.includes("CARING_RESPONSIBILITIES"),
-                text: "CARING_RESPONSIBILITIES" | formatAffectAbilityToWork
+                text: "CARING_RESPONSIBILITIES" | formatAbilityToWorkConstraint
               },
               {
                 value: "HEALTH_ISSUES",
                 checked: form.affectAbilityToWork.includes("HEALTH_ISSUES"),
-                text: "HEALTH_ISSUES" | formatAffectAbilityToWork
+                text: "HEALTH_ISSUES" | formatAbilityToWorkConstraint
               },
                {
                 value: "NO_RIGHT_TO_WORK",
                 checked: form.affectAbilityToWork.includes("NO_RIGHT_TO_WORK"),
-                text: "NO_RIGHT_TO_WORK" | formatAffectAbilityToWork
+                text: "NO_RIGHT_TO_WORK" | formatAbilityToWorkConstraint
               },
               {
                 value: "OTHER",
                 checked: form.affectAbilityToWork.includes("OTHER"),
-                text: "OTHER" | formatAffectAbilityToWork,
-                attributes: { "aria-label": "OTHER" | formatAffectAbilityToWork + " (Opens a dialogue box)" },
+                text: "OTHER" | formatAbilityToWorkConstraint,
+                attributes: { "aria-label": "OTHER" | formatAbilityToWorkConstraint + " (Opens a dialogue box)" },
                 conditional: {
                   html: otherHtml
                 }
@@ -100,12 +100,12 @@ Data supplied to this template:
               },
               {
                 value: "NONE",
-                text:"NONE" | formatAffectAbilityToWork,
+                text:"NONE" | formatAbilityToWorkConstraint,
                 checked: form.affectAbilityToWork.includes("NONE"),
                 behaviour: "exclusive"
               }
             ],
-            errorMessage: errors.affectAbilityToWork
+            errorMessage: errors | findError('affectAbilityToWork')
           }) }}
         </div>
 
