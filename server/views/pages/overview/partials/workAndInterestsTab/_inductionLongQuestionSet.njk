@@ -223,7 +223,14 @@ questions are different.
             </ul>
           </dd>
           <dd class="govuk-summary-list__actions govuk-!-display-none-print">
-            <a class="govuk-link" href="{{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}/personal-interests/update">
+            {%- set personalInterestsChangeLinkUrl -%}
+              {%- if featureToggles.induction.update.skillsAndInterestsSectionEnabled -%}
+                /prisoners/{{ prisonerSummary.prisonNumber }}/induction/personal-interests
+              {%- else -%}
+                {{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}/personal-interests/update
+              {%- endif -%}
+            {%- endset -%}
+            <a class="govuk-link" href="{{ personalInterestsChangeLinkUrl }}" data-qa="personal-interests-change-link">
               Change<span class="govuk-visually-hidden"> personal interests</span>
             </a>
           </dd>

@@ -25,7 +25,7 @@ context('Update Skills in the Induction', () => {
     cy.signIn()
   })
 
-  it.skip('should update Skills given page submitted with changed skills and no validation errors', () => {
+  it('should update Skills given page submitted with changed skills and no validation errors', () => {
     // Given
     const prisonNumber = 'G6115VJ'
     cy.visit(`/prisoners/${prisonNumber}/induction/skills`)
