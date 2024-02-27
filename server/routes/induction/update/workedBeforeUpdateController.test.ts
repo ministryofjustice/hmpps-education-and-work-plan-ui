@@ -155,7 +155,7 @@ describe('workedBeforeUpdateController', () => {
       )
 
       // Then
-      expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/induction/workedBefore')
+      expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/induction/has-worked-before')
       expect(req.flash).toHaveBeenCalledWith('errors', errors)
       expect(req.session.workedBeforeForm).toEqual(invalidWorkedBeforeForm)
       expect(req.session.inductionDto).toEqual(inductionDto)

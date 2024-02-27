@@ -40,7 +40,7 @@ export default class WorkedBeforeUpdateController extends WorkExperienceControll
     const errors = validateWorkedBeforeForm(workedBeforeForm, prisonerSummary)
     if (errors.length > 0) {
       req.flash('errors', errors)
-      return res.redirect(`/prisoners/${prisonNumber}/induction/workedBefore`)
+      return res.redirect(`/prisoners/${prisonNumber}/induction/has-worked-before`)
     }
 
     // update InductionDto with any new values and then map it to a CreateOrUpdateInductionDTO to call the API
