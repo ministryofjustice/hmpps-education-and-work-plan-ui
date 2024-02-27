@@ -48,12 +48,12 @@
               {
                 value: 'YES',
                 text: 'YES' | formatYesNo,
-                checked: hasWorkedBefore === 'YES'
+                checked: form.hasWorkedBefore === 'YES'
               },
               {
                 value: 'NO',
                 text: 'NO' | formatYesNo,
-                checked: hasWorkedBefore === 'NO'
+                checked: form.hasWorkedBefore === 'NO'
               }
             ],
             errorMessage: errors | findError('hasWorkedBefore')
