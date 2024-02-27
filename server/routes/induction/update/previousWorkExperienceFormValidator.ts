@@ -1,33 +1,33 @@
-import type { TypeOfWorkExperienceForm } from 'inductionForms'
+import type { PreviousWorkExperienceForm } from 'inductionForms'
 import type { PrisonerSummary } from 'viewModels'
 import formatErrors from '../../errorFormatter'
 import TypeOfWorkExperienceValue from '../../../enums/typeOfWorkExperienceValue'
 
-export default function validateTypeOfWorkExperienceForm(
-  typeOfWorkExperienceForm: TypeOfWorkExperienceForm,
+export default function validatePreviousWorkExperienceForm(
+  previousWorkExperienceForm: PreviousWorkExperienceForm,
   prisonerSummary: PrisonerSummary,
 ): Array<Record<string, string>> {
   const errors: Array<Record<string, string>> = []
 
   errors.push(
-    ...formatErrors('typeOfWorkExperience', validateTypeOfWorkExperience(typeOfWorkExperienceForm, prisonerSummary)),
+    ...formatErrors('typeOfWorkExperience', validateTypeOfWorkExperience(previousWorkExperienceForm, prisonerSummary)),
   )
   errors.push(
     ...formatErrors(
       'typeOfWorkExperienceOther',
-      validateTypeOfWorkExperienceOther(typeOfWorkExperienceForm, prisonerSummary),
+      validateTypeOfWorkExperienceOther(previousWorkExperienceForm, prisonerSummary),
     ),
   )
   return errors
 }
 
 const validateTypeOfWorkExperience = (
-  typeOfWorkExperienceForm: TypeOfWorkExperienceForm,
+  previousWorkExperienceForm: PreviousWorkExperienceForm,
   prisonerSummary: PrisonerSummary,
 ): Array<string> => {
   const errors: Array<string> = []
 
-  const { typeOfWorkExperience } = typeOfWorkExperienceForm
+  const { typeOfWorkExperience } = previousWorkExperienceForm
   if (!typeOfWorkExperience || typeOfWorkExperience.length === 0 || containsInvalidOptions(typeOfWorkExperience)) {
     errors.push(`Select the type of work ${prisonerSummary.firstName} ${prisonerSummary.lastName} has done before`)
   }
@@ -44,12 +44,12 @@ const containsInvalidOptions = (typeOfWorkExperience: Array<TypeOfWorkExperience
 }
 
 const validateTypeOfWorkExperienceOther = (
-  typeOfWorkExperienceForm: TypeOfWorkExperienceForm,
+  previousWorkExperienceForm: PreviousWorkExperienceForm,
   prisonerSummary: PrisonerSummary,
 ): Array<string> => {
   const errors: Array<string> = []
 
-  const { typeOfWorkExperience, typeOfWorkExperienceOther } = typeOfWorkExperienceForm
+  const { typeOfWorkExperience, typeOfWorkExperienceOther } = previousWorkExperienceForm
 
   if (
     typeOfWorkExperience &&

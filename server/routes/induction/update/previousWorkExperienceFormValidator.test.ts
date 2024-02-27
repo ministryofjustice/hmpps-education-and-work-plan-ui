@@ -1,12 +1,12 @@
-import type { TypeOfWorkExperienceForm } from 'inductionForms'
-import validateTypeOfWorkExperienceForm from './typeOfWorkExperienceFormValidator'
+import type { PreviousWorkExperienceForm } from 'inductionForms'
+import validatePreviousWorkExperienceForm from './previousWorkExperienceFormValidator'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
 
-describe('typeOfWorkExperienceFormValidator', () => {
+describe('previousWorkExperienceFormValidator', () => {
   const prisonerSummary = aValidPrisonerSummary()
 
   describe('happy path - validation passes', () => {
-    Array.of<TypeOfWorkExperienceForm>(
+    Array.of<PreviousWorkExperienceForm>(
       { typeOfWorkExperience: ['OTHER'], typeOfWorkExperienceOther: 'Gardener' },
       { typeOfWorkExperience: ['RETAIL'], typeOfWorkExperienceOther: '' },
       { typeOfWorkExperience: ['RETAIL'], typeOfWorkExperienceOther: undefined },
@@ -17,7 +17,7 @@ describe('typeOfWorkExperienceFormValidator', () => {
         const expected: Array<Record<string, string>> = []
 
         // When
-        const actual = validateTypeOfWorkExperienceForm(spec, prisonerSummary)
+        const actual = validatePreviousWorkExperienceForm(spec, prisonerSummary)
 
         // Then
         expect(actual).toEqual(expected)
@@ -26,7 +26,7 @@ describe('typeOfWorkExperienceFormValidator', () => {
   })
 
   describe('sad path - validation of typeOfWorkExperience field does not pass', () => {
-    Array.of<TypeOfWorkExperienceForm>(
+    Array.of<PreviousWorkExperienceForm>(
       { typeOfWorkExperience: [], typeOfWorkExperienceOther: 'Gardener' },
       { typeOfWorkExperience: [], typeOfWorkExperienceOther: '' },
       { typeOfWorkExperience: [], typeOfWorkExperienceOther: undefined },
@@ -41,7 +41,7 @@ describe('typeOfWorkExperienceFormValidator', () => {
         ]
 
         // When
-        const actual = validateTypeOfWorkExperienceForm(spec, prisonerSummary)
+        const actual = validatePreviousWorkExperienceForm(spec, prisonerSummary)
 
         // Then
         expect(actual).toEqual(expected)
@@ -50,7 +50,7 @@ describe('typeOfWorkExperienceFormValidator', () => {
   })
 
   describe('sad path - validation of typeOfWorkExperienceOther field does not pass', () => {
-    Array.of<TypeOfWorkExperienceForm>(
+    Array.of<PreviousWorkExperienceForm>(
       { typeOfWorkExperience: ['OTHER'], typeOfWorkExperienceOther: '' },
       { typeOfWorkExperience: ['OTHER'], typeOfWorkExperienceOther: undefined },
       { typeOfWorkExperience: ['RETAIL', 'OTHER'], typeOfWorkExperienceOther: '' },
@@ -63,7 +63,7 @@ describe('typeOfWorkExperienceFormValidator', () => {
         ]
 
         // When
-        const actual = validateTypeOfWorkExperienceForm(spec, prisonerSummary)
+        const actual = validatePreviousWorkExperienceForm(spec, prisonerSummary)
 
         // Then
         expect(actual).toEqual(expected)
