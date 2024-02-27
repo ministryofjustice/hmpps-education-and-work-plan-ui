@@ -23,8 +23,16 @@ questions are different.
           <dd class="govuk-summary-list__value">
             {{ workAndInterests.data.workExperience.hasWorkedPreviously | formatYesNo }}
           </dd>
+
           <dd class="govuk-summary-list__actions govuk-!-display-none-print">
-            <a class="govuk-link" href="{{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}/has-worked-before/update">
+            {%- set hasWorkedBeforeChangeLinkUrl -%}
+              {%- if featureToggles.induction.update.workExperienceSectionEnabled -%}
+                /prisoners/{{ prisonerSummary.prisonNumber }}/induction/has-worked-before
+              {%- else -%}
+                {{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}/has-worked-before/update
+              {%- endif -%}
+            {%- endset -%}
+            <a class="govuk-link" href="{{ hasWorkedBeforeChangeLinkUrl }}" data-qa="has-worked-before-change-link">
               Change<span class="govuk-visually-hidden"> worked before</span>
             </a>
           </dd>
