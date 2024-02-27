@@ -7,6 +7,7 @@ import InPrisonWorkUpdateController from './inPrisonWorkUpdateController'
 import SkillsUpdateController from './skillsUpdateController'
 import PersonalInterestsUpdateController from './personalInterestsUpdateController'
 import WorkedBeforeUpdateController from './workedBeforeUpdateController'
+import PreviousWorkExperienceUpdateController from './previousWorkExperienceUpdateController'
 
 /**
  * Route definitions for updating the various sections of an Induction
@@ -15,10 +16,12 @@ import WorkedBeforeUpdateController from './workedBeforeUpdateController'
  * /prisoners/<prison-number>/induction/<page/section-id>
  */
 export default (router: Router, services: Services) => {
-  const inPrisonTrainingAndEducationUpdateController = new InPrisonWorkUpdateController(services.inductionService)
-  const skillsUpdateController = new SkillsUpdateController(services.inductionService)
-  const personalInterestsUpdateController = new PersonalInterestsUpdateController(services.inductionService)
-  const workedBeforeUpdateController = new WorkedBeforeUpdateController(services.inductionService)
+  const { inductionService } = services
+  const inPrisonTrainingAndEducationUpdateController = new InPrisonWorkUpdateController(inductionService)
+  const skillsUpdateController = new SkillsUpdateController(inductionService)
+  const personalInterestsUpdateController = new PersonalInterestsUpdateController(inductionService)
+  const workedBeforeUpdateController = new WorkedBeforeUpdateController(inductionService)
+  const previousWorkExperienceUpdateController = new PreviousWorkExperienceUpdateController(inductionService)
 
   if (isAnyUpdateSectionEnabled()) {
     router.get('/prisoners/:prisonNumber/induction/**', [
@@ -60,6 +63,13 @@ export default (router: Router, services: Services) => {
     ])
     router.post('/prisoners/:prisonNumber/induction/has-worked-before', [
       workedBeforeUpdateController.submitWorkedBeforeForm,
+    ])
+
+    router.get('/prisoners/:prisonNumber/induction/previous-work-experience', [
+      previousWorkExperienceUpdateController.getPreviousWorkExperienceView,
+    ])
+    router.post('/prisoners/:prisonNumber/induction/previous-work-experience', [
+      previousWorkExperienceUpdateController.submitPreviousWorkExperienceForm,
     ])
   }
 }
