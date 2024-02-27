@@ -3,6 +3,7 @@ import OverviewPage from '../../pages/overview/OverviewPage'
 import WorkAndInterestsPage from '../../pages/overview/WorkAndInterestsPage'
 import SkillsPage from '../../pages/induction/SkillsPage'
 import PersonalInterestsPage from '../../pages/induction/PersonalInterestsPage'
+import WorkedBeforePage from '../../pages/induction/WorkedBeforePage'
 
 context('Prisoner Overview page - Work and Interests tab', () => {
   beforeEach(() => {
@@ -136,6 +137,22 @@ context('Prisoner Overview page - Work and Interests tab', () => {
 
       // Then
       Page.verifyOnPage(PersonalInterestsPage)
+    })
+
+    it(`should link to change Induction 'Worked Before' question given long question set induction`, () => {
+      // Given
+      cy.task('stubGetInductionLongQuestionSet')
+
+      cy.signIn()
+      const prisonNumber = 'G6115VJ'
+      cy.visit(`/plan/${prisonNumber}/view/work-and-interests`)
+      const workAndInterestsPage = Page.verifyOnPage(WorkAndInterestsPage)
+
+      // When
+      workAndInterestsPage.clickWorkedBeforeChangeLink()
+
+      // Then
+      Page.verifyOnPage(WorkedBeforePage)
     })
   })
 })
