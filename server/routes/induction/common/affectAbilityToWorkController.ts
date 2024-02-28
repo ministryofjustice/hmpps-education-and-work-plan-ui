@@ -8,10 +8,6 @@ import AffectAbilityToWorkView from './affectAbilityToWorkView'
  * Abstract controller class defining functionality common to both the Create and Update Induction journeys.
  */
 export default abstract class AffectAbilityToWorkController extends InductionController {
-  constructor() {
-    super()
-  }
-
   /**
    * Returns the Personal Interests view; suitable for use by the Create and Update journeys.
    */
