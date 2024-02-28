@@ -15,7 +15,6 @@ generic-service:
     modsecurity_enabled: true # enable OWASP core rules. Handle any false positives by removing or tweaking rules in modsecurity_snippet.
     modsecurity_snippet: |
       SecRuleEngine On
-      SecDebugLogLevel 4
       # GitHub team name to grant access to the OpenSearch logs to be able to delve into the detail and cause
       SecDefaultAction "phase:2,pass,log,tag:github_team=farsight-devs"
       # Change default response code to be a 406 so that we can tell easily that it is modsecurity doing the blocking
