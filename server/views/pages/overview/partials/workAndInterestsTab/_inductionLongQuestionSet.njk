@@ -124,7 +124,14 @@ questions are different.
             </ul>
           </dd>
           <dd class="govuk-summary-list__actions govuk-!-display-none-print">
-            <a class="govuk-link" href="{{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}/ability-to-work/update">
+            {%- set affectAbilityToWorkChangeLinkUrl -%}
+              {%- if featureToggles.induction.update.workInterestsSectionEnabled -%}
+                /prisoners/{{ prisonerSummary.prisonNumber }}/induction/affect-ability-to-work
+              {%- else -%}
+                {{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}/ability-to-work/update
+              {%- endif -%}
+            {%- endset -%}
+            <a class="govuk-link" href="{{ affectAbilityToWorkChangeLinkUrl }}" data-qa="affect-ability-to-work-change-link">
               Change<span class="govuk-visually-hidden"> potential affect on ability to work</span>
             </a>
           </dd>
