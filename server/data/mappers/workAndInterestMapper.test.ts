@@ -6,6 +6,7 @@ import {
   aLongQuestionSetInduction,
   aShortQuestionSetInduction,
 } from '../../testsupport/inductionResponseTestDataBuilder'
+import AbilityToWorkValue from '../../enums/abilityToWorkValue'
 
 describe('workAndInterestMapper', () => {
   it('should map to Work And Interests given no Induction', () => {
@@ -70,7 +71,7 @@ describe('workAndInterestMapper', () => {
           workInterests: {
             hopingToWorkOnRelease: 'YES',
             longQuestionSetAnswers: {
-              constraintsOnAbilityToWork: ['NONE'],
+              constraintsOnAbilityToWork: ['CARING_RESPONSIBILITIES', 'HEALTH_ISSUES', 'OTHER'],
               jobs: [
                 {
                   jobType: 'RETAIL',
@@ -88,7 +89,7 @@ describe('workAndInterestMapper', () => {
                   specificJobRole: 'Being a stunt double for Tom Cruise, even though he does all his own stunts',
                 },
               ],
-              otherConstraintOnAbilityToWork: null,
+              otherConstraintOnAbilityToWork: 'Variable mental health',
             },
             shortQuestionSetAnswers: undefined,
             updatedAt: moment('2023-06-19T09:39:44.000Z').toDate(),
@@ -176,7 +177,7 @@ describe('workAndInterestMapper', () => {
           workInterests: {
             hopingToWorkOnRelease: 'YES',
             longQuestionSetAnswers: {
-              constraintsOnAbilityToWork: ['NONE'],
+              constraintsOnAbilityToWork: ['CARING_RESPONSIBILITIES', 'HEALTH_ISSUES', 'OTHER'],
               jobs: [
                 {
                   jobType: 'RETAIL',
@@ -194,7 +195,7 @@ describe('workAndInterestMapper', () => {
                   specificJobRole: 'Being a stunt double for Tom Cruise, even though he does all his own stunts',
                 },
               ],
-              otherConstraintOnAbilityToWork: null,
+              otherConstraintOnAbilityToWork: 'Variable mental health',
             },
             shortQuestionSetAnswers: undefined,
             updatedAt: moment('2023-06-19T09:39:44.000Z').toDate(),

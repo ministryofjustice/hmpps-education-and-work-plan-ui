@@ -89,4 +89,9 @@ declare module 'inductionForms' {
     typeOfWorkExperience: Array<TypeOfWorkExperienceValue>
     typeOfWorkExperienceOther?: string
   }
+
+  export interface AffectAbilityToWorkForm {
+    affectAbilityToWork: Array<AffectAbilityToWorkValue>
+    affectAbilityToWorkOther?: string
+  }
 }

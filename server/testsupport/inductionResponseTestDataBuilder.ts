@@ -1,4 +1,5 @@
 import type { InductionResponse } from 'educationAndWorkPlanApiClient'
+import AbilityToWorkValue from '../enums/abilityToWorkValue'
 
 const aLongQuestionSetInduction = (
   options?: CoreBuilderOptions & {
@@ -13,8 +14,12 @@ const aLongQuestionSetInduction = (
       reference: 'bdebe39f-6f85-459b-81be-a26341c3fe3c',
       ...auditFields(options),
       hopingToWork: 'YES',
-      affectAbilityToWork: ['NONE'],
-      affectAbilityToWorkOther: null,
+      affectAbilityToWork: [
+        AbilityToWorkValue.CARING_RESPONSIBILITIES,
+        AbilityToWorkValue.HEALTH_ISSUES,
+        AbilityToWorkValue.OTHER,
+      ],
+      affectAbilityToWorkOther: 'Variable mental health',
       notHopingToWorkReasons: null,
       notHopingToWorkOtherReason: null,
     },
@@ -119,8 +124,8 @@ const aShortQuestionSetInduction = (
       reference: 'bdebe39f-6f85-459b-81be-a26341c3fe3c',
       ...auditFields(options),
       hopingToWork: options?.hopingToGetWork || 'NO',
-      affectAbilityToWork: null,
-      affectAbilityToWorkOther: null,
+      affectAbilityToWork: [AbilityToWorkValue.CARING_RESPONSIBILITIES, AbilityToWorkValue.OTHER],
+      affectAbilityToWorkOther: 'Variable mental health',
       notHopingToWorkReasons: ['HEALTH', 'OTHER'],
       notHopingToWorkOtherReason: 'Will be of retirement age at release',
     },

@@ -1,7 +1,6 @@
 import type { InductionDto } from 'inductionDto'
 import ReasonToNotGetWorkValue from '../enums/reasonToNotGetWorkValue'
 import HopingToGetWorkValue from '../enums/hopingToGetWorkValue'
-import AbilityToWorkValue from '../enums/abilityToWorkValue'
 import TypeOfWorkExperienceValue from '../enums/typeOfWorkExperienceValue'
 import WorkInterestsValue from '../enums/workInterestsValue'
 import SkillsValue from '../enums/skillsValue'
@@ -11,6 +10,7 @@ import QualificationLevelValue from '../enums/qualificationLevelValue'
 import AdditionalTrainingValue from '../enums/additionalTrainingValue'
 import InPrisonWorkValue from '../enums/inPrisonWorkValue'
 import InPrisonEducationValue from '../enums/inPrisonEducationValue'
+import AbilityToWorkValue from '../enums/abilityToWorkValue'
 
 const aLongQuestionSetInductionDto = (
   options?: CoreBuilderOptions & {
@@ -25,8 +25,12 @@ const aLongQuestionSetInductionDto = (
       reference: 'bdebe39f-6f85-459b-81be-a26341c3fe3c',
       ...auditFields(options),
       hopingToWork: HopingToGetWorkValue.YES,
-      affectAbilityToWork: [AbilityToWorkValue.NONE],
-      affectAbilityToWorkOther: null,
+      affectAbilityToWork: [
+        AbilityToWorkValue.CARING_RESPONSIBILITIES,
+        AbilityToWorkValue.HEALTH_ISSUES,
+        AbilityToWorkValue.OTHER,
+      ],
+      affectAbilityToWorkOther: 'Variable mental health',
       notHopingToWorkReasons: null,
       notHopingToWorkOtherReason: null,
     },
@@ -135,8 +139,8 @@ const aShortQuestionSetInductionDto = (
       reference: 'bdebe39f-6f85-459b-81be-a26341c3fe3c',
       ...auditFields(options),
       hopingToWork: options?.hopingToGetWork || HopingToGetWorkValue.NO,
-      affectAbilityToWork: null,
-      affectAbilityToWorkOther: null,
+      affectAbilityToWork: [AbilityToWorkValue.CARING_RESPONSIBILITIES, AbilityToWorkValue.OTHER],
+      affectAbilityToWorkOther: 'Variable mental health',
       notHopingToWorkReasons: [ReasonToNotGetWorkValue.HEALTH, ReasonToNotGetWorkValue.OTHER],
       notHopingToWorkOtherReason: 'Will be of retirement age at release',
     },
