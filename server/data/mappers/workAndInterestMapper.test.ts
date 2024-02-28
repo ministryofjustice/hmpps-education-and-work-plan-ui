@@ -6,7 +6,6 @@ import {
   aLongQuestionSetInduction,
   aShortQuestionSetInduction,
 } from '../../testsupport/inductionResponseTestDataBuilder'
-import AbilityToWorkValue from '../../enums/abilityToWorkValue'
 
 describe('workAndInterestMapper', () => {
   it('should map to Work And Interests given no Induction', () => {
