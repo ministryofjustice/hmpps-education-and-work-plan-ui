@@ -100,7 +100,7 @@ describe('previousWorkExperienceDetailUpdateController', () => {
       // Given
       const prisonNumber = 'A1234BC'
       req.params.prisonNumber = prisonNumber
-      req.params.typeOfWorkExperience = 'retail'
+      req.params.typeOfWorkExperience = 'construction'
 
       const prisonerSummary = aValidPrisonerSummary()
       req.session.prisonerSummary = prisonerSummary
@@ -108,8 +108,8 @@ describe('previousWorkExperienceDetailUpdateController', () => {
       req.session.inductionDto = inductionDto
 
       const expectedPreviousWorkExperienceDetailForm = {
-        jobRole: 'Shop assistant',
-        jobDetails: 'Serving customers and stacking shelves',
+        jobRole: 'General labourer',
+        jobDetails: 'General labouring, building walls, basic plastering',
       }
       req.session.previousWorkExperienceDetailForm = expectedPreviousWorkExperienceDetailForm
 
@@ -119,7 +119,7 @@ describe('previousWorkExperienceDetailUpdateController', () => {
         backLinkUrl: '/plan/A1234BC/view/work-and-interests',
         backLinkAriaText:
           'Back to <TODO - check what CIAG UI does here bearing in mind the previous page might be the create journey or the update journey for either a specific job type, or all the job types>',
-        typeOfWorkExperience: 'RETAIL',
+        typeOfWorkExperience: 'CONSTRUCTION',
         errors,
       }
 

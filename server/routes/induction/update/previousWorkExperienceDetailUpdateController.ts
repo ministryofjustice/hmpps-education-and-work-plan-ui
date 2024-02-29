@@ -37,23 +37,15 @@ export default class PreviousWorkExperienceDetailUpdateController extends Previo
     const { prisonId } = prisonerSummary
     const { typeOfWorkExperience } = req.params
 
-    const previousWorkExperienceType = Object.values(TypeOfWorkExperienceValue).find(
-      type => type === typeOfWorkExperience.toUpperCase(),
-    )
-    if (!previousWorkExperienceType) {
-      logger.warn(
-        `Attempt to submit PreviousWorkExperienceDetailForm for invalid work experience type ${typeOfWorkExperience} from ${prisonerSummary.prisonNumber}'s Induction`,
-      )
-      return next(createError(404, `Previous Work Experience type ${typeOfWorkExperience} not found on Induction`))
-    }
-
-    const previousWorkExperiencesOnInduction = (inductionDto as InductionDto).previousWorkExperiences.experiences.map(
-      experience => experience.experienceType,
-    )
-    if (!previousWorkExperiencesOnInduction.includes(previousWorkExperienceType)) {
-      logger.warn(
-        `Attempt to submit PreviousWorkExperienceDetailForm for work experience type ${typeOfWorkExperience} that does not exist on ${prisonerSummary.prisonNumber}'s Induction`,
-      )
+    let previousWorkExperienceType: TypeOfWorkExperienceValue
+    try {
+      previousWorkExperienceType = this.validateInductionContainsPreviousWorkExperienceOfType({
+        req,
+        inductionDto: inductionDto as InductionDto,
+        invalidTypeOfWorkExperienceMessage: `Attempt to submit PreviousWorkExperienceDetailForm for invalid work experience type ${typeOfWorkExperience} from ${prisonerSummary.prisonNumber}'s Induction`,
+        typeOfWorkExperienceMissingOnInductionMessage: `Attempt to submit PreviousWorkExperienceDetailForm for work experience type ${typeOfWorkExperience} that does not exist on ${prisonerSummary.prisonNumber}'s Induction`,
+      })
+    } catch (error) {
       return next(createError(404, `Previous Work Experience type ${typeOfWorkExperience} not found on Induction`))
     }
 
