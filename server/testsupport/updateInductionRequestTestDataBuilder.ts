@@ -24,8 +24,12 @@ const aLongQuestionSetUpdateInductionRequest = (
     workOnRelease: {
       reference: 'bdebe39f-6f85-459b-81be-a26341c3fe3c',
       hopingToWork: HopingToGetWorkValue.YES,
-      affectAbilityToWork: [AbilityToWorkValue.NONE],
-      affectAbilityToWorkOther: null,
+      affectAbilityToWork: [
+        AbilityToWorkValue.CARING_RESPONSIBILITIES,
+        AbilityToWorkValue.HEALTH_ISSUES,
+        AbilityToWorkValue.OTHER,
+      ],
+      affectAbilityToWorkOther: 'Variable mental health',
       notHopingToWorkReasons: null,
       notHopingToWorkOtherReason: null,
     },
@@ -128,8 +132,8 @@ const aShortQuestionSetUpdateInductionRequest = (
     workOnRelease: {
       reference: 'bdebe39f-6f85-459b-81be-a26341c3fe3c',
       hopingToWork: options?.hopingToGetWork || HopingToGetWorkValue.NO,
-      affectAbilityToWork: null,
-      affectAbilityToWorkOther: null,
+      affectAbilityToWork: [AbilityToWorkValue.CARING_RESPONSIBILITIES, AbilityToWorkValue.OTHER],
+      affectAbilityToWorkOther: 'Variable mental health',
       notHopingToWorkReasons: [ReasonToNotGetWorkValue.HEALTH, ReasonToNotGetWorkValue.OTHER],
       notHopingToWorkOtherReason: 'Will be of retirement age at release',
     },

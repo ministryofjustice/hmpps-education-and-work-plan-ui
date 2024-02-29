@@ -3,17 +3,18 @@ import type { SessionData } from 'express-session'
 import { NextFunction, Request, Response } from 'express'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
 import { aLongQuestionSetInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
-import validatePersonalInterestsForm from './personalInterestsFormValidator'
+import validateAbilityToWorkForm from './affectAbilityToWorkFormValidator'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
 import { InductionService } from '../../../services'
 import { aShortQuestionSetUpdateInductionRequest } from '../../../testsupport/updateInductionRequestTestDataBuilder'
-import PersonalInterestsUpdateController from './personalInterestsUpdateController'
+import AbilityToWorkUpdateController from './affectAbilityToWorkUpdateController'
+import AbilityToWorkValue from '../../../enums/abilityToWorkValue'
 
-jest.mock('./personalInterestsFormValidator')
+jest.mock('./affectAbilityToWorkFormValidator')
 jest.mock('../../../data/mappers/createOrUpdateInductionDtoMapper')
 
-describe('personalInterestsUpdateController', () => {
-  const mockedFormValidator = validatePersonalInterestsForm as jest.MockedFunction<typeof validatePersonalInterestsForm>
+describe('affectAbilityToWorkUpdateController', () => {
+  const mockedFormValidator = validateAbilityToWorkForm as jest.MockedFunction<typeof validateAbilityToWorkForm>
   const mockedCreateOrUpdateInductionDtoMapper = toCreateOrUpdateInductionDto as jest.MockedFunction<
     typeof toCreateOrUpdateInductionDto
   >
@@ -22,7 +23,7 @@ describe('personalInterestsUpdateController', () => {
     updateInduction: jest.fn(),
   }
 
-  const controller = new PersonalInterestsUpdateController(inductionService as unknown as InductionService)
+  const controller = new AbilityToWorkUpdateController(inductionService as unknown as InductionService)
 
   const req = {
     session: {} as SessionData,
@@ -49,8 +50,8 @@ describe('personalInterestsUpdateController', () => {
     errors = []
   })
 
-  describe('getPersonalInterestsView', () => {
-    it('should get the Personal interests view given there is no PersonalInterestsForm on the session', async () => {
+  describe('getAbilityToWorkView', () => {
+    it('should get the Ability To Work view given there is no AbilityToWorkForm on the session', async () => {
       // Given
       const prisonNumber = 'A1234BC'
       req.params.prisonNumber = prisonNumber
@@ -59,35 +60,39 @@ describe('personalInterestsUpdateController', () => {
       req.session.prisonerSummary = prisonerSummary
       const inductionDto = aLongQuestionSetInductionDto()
       req.session.inductionDto = inductionDto
-      req.session.personalInterestsForm = undefined
+      req.session.affectAbilityToWorkForm = undefined
 
-      const expectedPersonalInterestsForm = {
-        personalInterests: ['CREATIVE', 'DIGITAL', 'OTHER'],
-        personalInterestsOther: 'Renewable energy',
+      const expectedAbilityToWorkForm = {
+        affectAbilityToWork: [
+          AbilityToWorkValue.CARING_RESPONSIBILITIES,
+          AbilityToWorkValue.HEALTH_ISSUES,
+          AbilityToWorkValue.OTHER,
+        ],
+        affectAbilityToWorkOther: 'Variable mental health',
       }
 
       const expectedView = {
         prisonerSummary,
-        form: expectedPersonalInterestsForm,
+        form: expectedAbilityToWorkForm,
         backLinkUrl: '/plan/A1234BC/view/work-and-interests',
         backLinkAriaText: 'Back to <TODO - check what CIAG UI does here>',
         errors,
       }
 
       // When
-      await controller.getPersonalInterestsView(
+      await controller.getAffectAbilityToWorkView(
         req as undefined as Request,
         res as undefined as Response,
         next as undefined as NextFunction,
       )
 
       // Then
-      expect(res.render).toHaveBeenCalledWith('pages/induction/personalInterests/index', expectedView)
-      expect(req.session.personalInterestsForm).toBeUndefined()
+      expect(res.render).toHaveBeenCalledWith('pages/induction/affectAbilityToWork/index', expectedView)
+      expect(req.session.affectAbilityToWorkForm).toBeUndefined()
       expect(req.session.inductionDto).toEqual(inductionDto)
     })
 
-    it('should get the Personal interests view given there is an PersonalInterestsForm already on the session', async () => {
+    it('should get the Ability To Work view given there is an AbilityToWorkForm already on the session', async () => {
       // Given
       const prisonNumber = 'A1234BC'
       req.params.prisonNumber = prisonNumber
@@ -97,35 +102,39 @@ describe('personalInterestsUpdateController', () => {
       const inductionDto = aLongQuestionSetInductionDto()
       req.session.inductionDto = inductionDto
 
-      const expectedPersonalInterestsForm = {
-        personalInterests: ['COMMUNITY', 'CREATIVE', 'MUSICAL'],
-        personalInterestsOther: '',
+      const expectedAbilityToWorkForm = {
+        affectAbilityToWork: [
+          AbilityToWorkValue.CARING_RESPONSIBILITIES,
+          AbilityToWorkValue.HEALTH_ISSUES,
+          AbilityToWorkValue.OTHER,
+        ],
+        affectAbilityToWorkOther: 'Variable mental health',
       }
-      req.session.personalInterestsForm = expectedPersonalInterestsForm
+      req.session.affectAbilityToWorkForm = expectedAbilityToWorkForm
 
       const expectedView = {
         prisonerSummary,
-        form: expectedPersonalInterestsForm,
+        form: expectedAbilityToWorkForm,
         backLinkUrl: '/plan/A1234BC/view/work-and-interests',
         backLinkAriaText: 'Back to <TODO - check what CIAG UI does here>',
         errors,
       }
 
       // When
-      await controller.getPersonalInterestsView(
+      await controller.getAffectAbilityToWorkView(
         req as undefined as Request,
         res as undefined as Response,
         next as undefined as NextFunction,
       )
 
       // Then
-      expect(res.render).toHaveBeenCalledWith('pages/induction/personalInterests/index', expectedView)
-      expect(req.session.personalInterestsForm).toBeUndefined()
+      expect(res.render).toHaveBeenCalledWith('pages/induction/affectAbilityToWork/index', expectedView)
+      expect(req.session.affectAbilityToWorkForm).toBeUndefined()
       expect(req.session.inductionDto).toEqual(inductionDto)
     })
   })
 
-  describe('submitPersonalInterestsForm', () => {
+  describe('submitAbilityToWorkForm', () => {
     it('should not update Induction given form is submitted with validation errors', async () => {
       // Given
       const prisonNumber = 'A1234BC'
@@ -136,29 +145,32 @@ describe('personalInterestsUpdateController', () => {
       const inductionDto = aLongQuestionSetInductionDto()
       req.session.inductionDto = inductionDto
 
-      const invalidPersonalInterestsForm = {
-        personalInterests: ['OTHER'],
-        personalInterestsOther: '',
+      const invalidAbilityToWorkForm = {
+        affectAbilityToWork: [AbilityToWorkValue.OTHER],
+        affectAbilityToWorkOther: '',
       }
-      req.body = invalidPersonalInterestsForm
-      req.session.personalInterestsForm = undefined
+      req.body = invalidAbilityToWorkForm
+      req.session.affectAbilityToWorkForm = undefined
 
       errors = [
-        { href: '#personalInterestsOther', text: `Select Jimmy Lightfingers's interests or select 'None of these'` },
+        {
+          href: '#affectAbilityToWorkOther',
+          text: `Select factors affecting Jimmy Lightfingers's ability to work or select 'None of these'`,
+        },
       ]
       mockedFormValidator.mockReturnValue(errors)
 
       // When
-      await controller.submitPersonalInterestsForm(
+      await controller.submitAffectAbilityToWorkForm(
         req as undefined as Request,
         res as undefined as Response,
         next as undefined as NextFunction,
       )
 
       // Then
-      expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/induction/personal-interests')
+      expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/induction/affect-ability-to-work')
       expect(req.flash).toHaveBeenCalledWith('errors', errors)
-      expect(req.session.personalInterestsForm).toEqual(invalidPersonalInterestsForm)
+      expect(req.session.affectAbilityToWorkForm).toEqual(invalidAbilityToWorkForm)
       expect(req.session.inductionDto).toEqual(inductionDto)
     })
 
@@ -173,29 +185,21 @@ describe('personalInterestsUpdateController', () => {
       const inductionDto = aLongQuestionSetInductionDto()
       req.session.inductionDto = inductionDto
 
-      const personalInterestsForm = {
-        personalInterests: ['CREATIVE', 'OTHER'],
-        personalInterestsOther: 'Renewable energy',
+      const affectAbilityToWorkForm = {
+        affectAbilityToWork: [AbilityToWorkValue.CARING_RESPONSIBILITIES, AbilityToWorkValue.OTHER],
+        affectAbilityToWorkOther: 'Variable mental health',
       }
-      req.body = personalInterestsForm
-      req.session.personalInterestsForm = undefined
+      req.body = affectAbilityToWorkForm
+      req.session.affectAbilityToWorkForm = undefined
       const updateInductionDto = aShortQuestionSetUpdateInductionRequest()
 
       mockedCreateOrUpdateInductionDtoMapper.mockReturnValueOnce(updateInductionDto)
       mockedFormValidator.mockReturnValue(errors)
-      const expectedUpdatedPersonalInterests = [
-        {
-          interestType: 'CREATIVE',
-          interestTypeOther: undefined,
-        },
-        {
-          interestType: 'OTHER',
-          interestTypeOther: 'Renewable energy',
-        },
-      ]
+      const expectedUpdatedAbilityToWork = ['CARING_RESPONSIBILITIES', 'OTHER']
+      const expectedUpdatedAbilityToWorkOther = 'Variable mental health'
 
       // When
-      await controller.submitPersonalInterestsForm(
+      await controller.submitAffectAbilityToWorkForm(
         req as undefined as Request,
         res as undefined as Response,
         next as undefined as NextFunction,
@@ -205,11 +209,12 @@ describe('personalInterestsUpdateController', () => {
       // Extract the first call to the mock and the second argument (i.e. the updated Induction)
       const updatedInduction = mockedCreateOrUpdateInductionDtoMapper.mock.calls[0][1]
       expect(mockedCreateOrUpdateInductionDtoMapper).toHaveBeenCalledWith(prisonerSummary.prisonId, updatedInduction)
-      expect(updatedInduction.personalSkillsAndInterests.interests).toEqual(expectedUpdatedPersonalInterests)
+      expect(updatedInduction.workOnRelease.affectAbilityToWork).toEqual(expectedUpdatedAbilityToWork)
+      expect(updatedInduction.workOnRelease.affectAbilityToWorkOther).toEqual(expectedUpdatedAbilityToWorkOther)
 
       expect(inductionService.updateInduction).toHaveBeenCalledWith(prisonNumber, updateInductionDto, 'some-token')
       expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/view/work-and-interests`)
-      expect(req.session.personalInterestsForm).toBeUndefined()
+      expect(req.session.affectAbilityToWorkForm).toBeUndefined()
       expect(req.session.inductionDto).toBeUndefined()
     })
 
@@ -224,26 +229,18 @@ describe('personalInterestsUpdateController', () => {
       const inductionDto = aLongQuestionSetInductionDto()
       req.session.inductionDto = inductionDto
 
-      const personalInterestsForm = {
-        personalInterests: ['KNOWLEDGE_BASED', 'OTHER'],
-        personalInterestsOther: 'Writing poetry and short stories',
+      const affectAbilityToWorkForm = {
+        affectAbilityToWork: [AbilityToWorkValue.CARING_RESPONSIBILITIES, AbilityToWorkValue.OTHER],
+        affectAbilityToWorkOther: 'Variable mental health',
       }
-      req.body = personalInterestsForm
-      req.session.personalInterestsForm = undefined
+      req.body = affectAbilityToWorkForm
+      req.session.affectAbilityToWorkForm = undefined
       const updateInductionDto = aShortQuestionSetUpdateInductionRequest()
 
       mockedCreateOrUpdateInductionDtoMapper.mockReturnValueOnce(updateInductionDto)
       mockedFormValidator.mockReturnValue(errors)
-      const expectedUpdatedPersonalInterests = [
-        {
-          interestType: 'KNOWLEDGE_BASED',
-          interestTypeOther: undefined,
-        },
-        {
-          interestType: 'OTHER',
-          interestTypeOther: 'Writing poetry and short stories',
-        },
-      ]
+      const expectedUpdatedAbilityToWork = ['CARING_RESPONSIBILITIES', 'OTHER']
+      const expectedUpdatedAbilityToWorkOther = 'Variable mental health'
 
       inductionService.updateInduction.mockRejectedValue(createError(500, 'Service unavailable'))
       const expectedError = createError(
@@ -252,7 +249,7 @@ describe('personalInterestsUpdateController', () => {
       )
 
       // When
-      await controller.submitPersonalInterestsForm(
+      await controller.submitAffectAbilityToWorkForm(
         req as undefined as Request,
         res as undefined as Response,
         next as undefined as NextFunction,
@@ -262,11 +259,12 @@ describe('personalInterestsUpdateController', () => {
       // Extract the first call to the mock and the second argument (i.e. the updated Induction)
       const updatedInduction = mockedCreateOrUpdateInductionDtoMapper.mock.calls[0][1]
       expect(mockedCreateOrUpdateInductionDtoMapper).toHaveBeenCalledWith(prisonerSummary.prisonId, updatedInduction)
-      expect(updatedInduction.personalSkillsAndInterests.interests).toEqual(expectedUpdatedPersonalInterests)
+      expect(updatedInduction.workOnRelease.affectAbilityToWork).toEqual(expectedUpdatedAbilityToWork)
+      expect(updatedInduction.workOnRelease.affectAbilityToWorkOther).toEqual(expectedUpdatedAbilityToWorkOther)
 
       expect(inductionService.updateInduction).toHaveBeenCalledWith(prisonNumber, updateInductionDto, 'some-token')
       expect(next).toHaveBeenCalledWith(expectedError)
-      expect(req.session.personalInterestsForm).toEqual(personalInterestsForm)
+      expect(req.session.affectAbilityToWorkForm).toEqual(affectAbilityToWorkForm)
       expect(req.session.inductionDto).toEqual(inductionDto)
     })
   })

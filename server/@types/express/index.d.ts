@@ -7,6 +7,7 @@ import type {
   SkillsForm,
   PreviousWorkExperienceForm,
   WorkedBeforeForm,
+  AffectAbilityToWorkForm,
 } from 'inductionForms'
 
 export default {}
@@ -29,6 +30,7 @@ declare module 'express-session' {
     personalInterestsForm: PersonalInterestsForm
     workedBeforeForm: WorkedBeforeForm
     previousWorkExperienceForm: PreviousWorkExperienceForm
+    affectAbilityToWorkForm: AffectAbilityToWorkForm
   }
 }
 

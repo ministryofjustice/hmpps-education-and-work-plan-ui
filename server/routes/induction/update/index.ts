@@ -7,6 +7,7 @@ import InPrisonWorkUpdateController from './inPrisonWorkUpdateController'
 import SkillsUpdateController from './skillsUpdateController'
 import PersonalInterestsUpdateController from './personalInterestsUpdateController'
 import WorkedBeforeUpdateController from './workedBeforeUpdateController'
+import AffectAbilityToWorkUpdateController from './affectAbilityToWorkUpdateController'
 
 /**
  * Route definitions for updating the various sections of an Induction
@@ -19,6 +20,7 @@ export default (router: Router, services: Services) => {
   const skillsUpdateController = new SkillsUpdateController(services.inductionService)
   const personalInterestsUpdateController = new PersonalInterestsUpdateController(services.inductionService)
   const workedBeforeUpdateController = new WorkedBeforeUpdateController(services.inductionService)
+  const affectAbilityToWorkUpdateController = new AffectAbilityToWorkUpdateController(services.inductionService)
 
   if (isAnyUpdateSectionEnabled()) {
     router.get('/prisoners/:prisonNumber/induction/**', [
@@ -60,6 +62,15 @@ export default (router: Router, services: Services) => {
     ])
     router.post('/prisoners/:prisonNumber/induction/has-worked-before', [
       workedBeforeUpdateController.submitWorkedBeforeForm,
+    ])
+  }
+
+  if (config.featureToggles.induction.update.workInterestsSectionEnabled) {
+    router.get('/prisoners/:prisonNumber/induction/affect-ability-to-work', [
+      affectAbilityToWorkUpdateController.getAffectAbilityToWorkView,
+    ])
+    router.post('/prisoners/:prisonNumber/induction/affect-ability-to-work', [
+      affectAbilityToWorkUpdateController.submitAffectAbilityToWorkForm,
     ])
   }
 }
