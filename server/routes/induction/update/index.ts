@@ -7,6 +7,7 @@ import InPrisonWorkUpdateController from './inPrisonWorkUpdateController'
 import SkillsUpdateController from './skillsUpdateController'
 import PersonalInterestsUpdateController from './personalInterestsUpdateController'
 import WorkedBeforeUpdateController from './workedBeforeUpdateController'
+import PreviousWorkExperienceDetailUpdateController from './previousWorkExperienceDetailUpdateController'
 import AffectAbilityToWorkUpdateController from './affectAbilityToWorkUpdateController'
 
 /**
@@ -16,11 +17,15 @@ import AffectAbilityToWorkUpdateController from './affectAbilityToWorkUpdateCont
  * /prisoners/<prison-number>/induction/<page/section-id>
  */
 export default (router: Router, services: Services) => {
-  const inPrisonTrainingAndEducationUpdateController = new InPrisonWorkUpdateController(services.inductionService)
-  const skillsUpdateController = new SkillsUpdateController(services.inductionService)
-  const personalInterestsUpdateController = new PersonalInterestsUpdateController(services.inductionService)
-  const workedBeforeUpdateController = new WorkedBeforeUpdateController(services.inductionService)
-  const affectAbilityToWorkUpdateController = new AffectAbilityToWorkUpdateController(services.inductionService)
+  const { inductionService } = services
+  const inPrisonTrainingAndEducationUpdateController = new InPrisonWorkUpdateController(inductionService)
+  const skillsUpdateController = new SkillsUpdateController(inductionService)
+  const personalInterestsUpdateController = new PersonalInterestsUpdateController(inductionService)
+  const workedBeforeUpdateController = new WorkedBeforeUpdateController(inductionService)
+  const previousWorkExperienceDetailUpdateController = new PreviousWorkExperienceDetailUpdateController(
+    inductionService,
+  )
+  const affectAbilityToWorkUpdateController = new AffectAbilityToWorkUpdateController(inductionService)
 
   if (isAnyUpdateSectionEnabled()) {
     router.get('/prisoners/:prisonNumber/induction/**', [
@@ -62,6 +67,13 @@ export default (router: Router, services: Services) => {
     ])
     router.post('/prisoners/:prisonNumber/induction/has-worked-before', [
       workedBeforeUpdateController.submitWorkedBeforeForm,
+    ])
+
+    router.get('/prisoners/:prisonNumber/induction/previous-work-experience/:typeOfWorkExperience', [
+      previousWorkExperienceDetailUpdateController.getPreviousWorkExperienceDetailView,
+    ])
+    router.post('/prisoners/:prisonNumber/induction/previous-work-experience/:typeOfWorkExperience', [
+      previousWorkExperienceDetailUpdateController.submitPreviousWorkExperienceDetailForm,
     ])
   }
 

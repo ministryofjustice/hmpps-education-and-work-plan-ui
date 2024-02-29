@@ -70,7 +70,14 @@ questions are different.
                 <p>Roles and responsibilities:<br> {{ workExperienceDetails.responsibilities }}</p>
               </dd>
               <dd class="govuk-summary-list__actions govuk-!-display-none-print">
-                <a class="govuk-link" href="{{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}/work-details/{% if workExperienceDetails.type == 'Other' %}{{ workExperienceDetails.other | lower }}{% else %}{{ workExperienceDetails.type | lower }}{% endif %}/update">
+                {%- set workExperienceDetailChangeLinkUrl -%}
+                  {%- if featureToggles.induction.update.workExperienceSectionEnabled -%}
+                    /prisoners/{{ prisonerSummary.prisonNumber }}/induction/previous-work-experience/{{ workExperienceDetails.type | lower }}
+                  {%- else -%}
+                    {{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}/work-details/{% if workExperienceDetails.type == 'Other' %}{{ workExperienceDetails.other | lower }}{% else %}{{ workExperienceDetails.type | lower }}{% endif %}/update
+                  {%- endif -%}
+                {%- endset -%}
+                <a class="govuk-link" href="{{ workExperienceDetailChangeLinkUrl }}" data-qa="previous-work-experience-details-{{ workExperienceDetails.type }}-change-link">
                   Change<span class="govuk-visually-hidden"> {% if workExperienceDetails.type == 'Other' %}{{ workExperienceDetails.other }}{% else %}{{ workExperienceDetails.type | formatJobType }}{% endif %} experience details</span>
                 </a>
               </dd>

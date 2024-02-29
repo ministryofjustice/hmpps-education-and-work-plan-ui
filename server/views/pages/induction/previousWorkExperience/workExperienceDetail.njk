@@ -50,7 +50,7 @@ Data supplied to this template:
                 attributes: { "aria-live": "polite" }
               },
               attributes: { "aria-label" : "Give the Job role" },
-              errorMessage: errors | findErrors('jobRole')
+              errorMessage: errors | findError('jobRole')
             }) }}
 
           {{ govukTextarea({
@@ -64,7 +64,7 @@ Data supplied to this template:
                 attributes: { "aria-live": "polite" }
               },
               attributes: { "aria-label" : "Give the main tasks and responsibilities with rough dates if known" },
-              errorMessage: errors | findErrors('jobDetails')
+              errorMessage: errors | findError('jobDetails')
             }) }}        
         </div>
 
