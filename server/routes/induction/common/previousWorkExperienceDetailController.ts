@@ -11,10 +11,6 @@ import logger from '../../../../logger'
  * Abstract controller class defining functionality common to both the Create and Update Induction journeys.
  */
 export default abstract class PreviousWorkExperienceDetailController extends InductionController {
-  constructor() {
-    super()
-  }
-
   /**
    * Returns the Previous Work Experience Detail view; suitable for use by the Create and Update journeys.
    */
