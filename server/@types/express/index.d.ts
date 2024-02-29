@@ -9,6 +9,7 @@ import type {
   PreviousWorkExperienceTypesForm,
   WorkedBeforeForm,
   AffectAbilityToWorkForm,
+  ReasonsNotToGetWorkForm,
 } from 'inductionForms'
 
 export default {}
@@ -34,6 +35,7 @@ declare module 'express-session' {
     previousWorkExperienceDetailForm: PreviousWorkExperienceDetailForm
     previousWorkExperienceForm: PreviousWorkExperienceForm
     affectAbilityToWorkForm: AffectAbilityToWorkForm
+    reasonsNotToGetWorkForm: ReasonsNotToGetWorkForm
   }
 }
 

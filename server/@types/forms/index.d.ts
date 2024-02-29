@@ -99,4 +99,9 @@ declare module 'inductionForms' {
     affectAbilityToWork: Array<AffectAbilityToWorkValue>
     affectAbilityToWorkOther?: string
   }
+
+  export interface ReasonsNotToGetWorkForm {
+    reasonsNotToGetWork: Array<ReasonNotToGetWorkValue>
+    reasonsNotToGetWorkOther?: string
+  }
 }
