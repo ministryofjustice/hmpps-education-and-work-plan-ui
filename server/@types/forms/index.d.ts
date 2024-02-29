@@ -85,9 +85,14 @@ declare module 'inductionForms' {
     hasWorkedBefore: YesNoValue
   }
 
-  export interface PreviousWorkExperienceForm {
+  export interface PreviousWorkExperienceTypesForm {
     typeOfWorkExperience: Array<TypeOfWorkExperienceValue>
     typeOfWorkExperienceOther?: string
+  }
+
+  export interface PreviousWorkExperienceDetailForm {
+    jobRole: string
+    jobDetails: string
   }
 
   export interface AffectAbilityToWorkForm {

@@ -5,7 +5,8 @@ import type {
   InPrisonWorkForm,
   PersonalInterestsForm,
   SkillsForm,
-  PreviousWorkExperienceForm,
+  PreviousWorkExperienceDetailForm,
+  PreviousWorkExperienceTypesForm,
   WorkedBeforeForm,
   AffectAbilityToWorkForm,
 } from 'inductionForms'
@@ -29,6 +30,8 @@ declare module 'express-session' {
     skillsForm: SkillsForm
     personalInterestsForm: PersonalInterestsForm
     workedBeforeForm: WorkedBeforeForm
+    previousWorkExperienceTypesForm: PreviousWorkExperienceTypesForm
+    previousWorkExperienceDetailForm: PreviousWorkExperienceDetailForm
     previousWorkExperienceForm: PreviousWorkExperienceForm
     affectAbilityToWorkForm: AffectAbilityToWorkForm
   }
