@@ -48,7 +48,14 @@ questions are different.
             </ul>
           </dd>
           <dd class="govuk-summary-list__actions govuk-!-display-none-print">
-            <a class="govuk-link" href="{{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}/reason-to-not-get-work/update">
+            {%- set reasonsNotToGetWorkChangeLinkUrl -%}
+              {%- if featureToggles.induction.update.workInterestsSectionEnabled -%}
+                /prisoners/{{ prisonerSummary.prisonNumber }}/induction/reasons-not-to-get-work
+              {%- else -%}
+                {{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}/reason-to-not-get-work/update
+              {%- endif -%}
+            {%- endset -%}
+            <a class="govuk-link" href="{{ reasonsNotToGetWorkChangeLinkUrl }}" data-qa="reasons-not-to-get-work-change-link">
               Change<span class="govuk-visually-hidden"> what could stop work on release</span>
             </a>
           </dd>

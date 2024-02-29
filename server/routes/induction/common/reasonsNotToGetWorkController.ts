@@ -11,7 +11,7 @@ export default abstract class ReasonsNotToGetWorkController extends InductionCon
   /**
    * Returns the Reasons Not To Get Work view; suitable for use by the Create and Update journeys.
    */
-  getReasonToNotGetWorkView: RequestHandler = async (
+  getReasonsNotToGetWorkView: RequestHandler = async (
     req: Request,
     res: Response,
     next: NextFunction,

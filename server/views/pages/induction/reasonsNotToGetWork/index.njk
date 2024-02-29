@@ -104,10 +104,10 @@ Data supplied to this template:
                 value: "OTHER",
                 checked: form.reasonsNotToGetWork.includes("OTHER"),
                 text: "OTHER" | formatReasonNotToGetWork,
-                attributes: { "aria-label": "OTHER" | formatReasonNotToGetWork " (Opens a dialogue box)" },
+                attributes: { "aria-label": "OTHER" | formatReasonNotToGetWork + " (Opens a dialogue box)" },
                 conditional: {
-                html: otherHtml
-              }
+                  html: otherHtml
+                }
               },
               {
                 divider: "or"
