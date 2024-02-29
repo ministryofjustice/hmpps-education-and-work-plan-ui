@@ -26,12 +26,6 @@ describe('affectAbilityToWorkFormValidator', () => {
     })
   })
 
-  //  //  LIMITED_BY_OFFENSE = 'LIMITED_BY_OFFENSE',
-  //   //   CARING_RESPONSIBILITIES = 'CARING_RESPONSIBILITIES',
-  //   //   HEALTH_ISSUES = 'HEALTH_ISSUES',
-  //   //   NO_RIGHT_TO_WORK = 'NO_RIGHT_TO_WORK',
-  //   //   OTHER = 'OTHER',
-  //   //   NONE = 'NONE',
   describe('sad path - validation of affectAbilityToWork field does not pass', () => {
     Array.of<AffectAbilityToWorkForm>(
       { affectAbilityToWork: [], affectAbilityToWorkOther: 'Mental health' },
