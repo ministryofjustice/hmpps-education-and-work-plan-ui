@@ -16,7 +16,6 @@ Data supplied to this template:
 #}
 
 {% block beforeContent %}
-  {{ super() }}
   {{ govukBackLink({ text: "Back", href: backLinkUrl, attributes: { "aria-label" : backLinkAriaText } }) }}
 {% endblock %}
 
