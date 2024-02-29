@@ -9,7 +9,7 @@ import AffectAbilityToWorkView from './affectAbilityToWorkView'
  */
 export default abstract class AffectAbilityToWorkController extends InductionController {
   /**
-   * Returns the Personal Interests view; suitable for use by the Create and Update journeys.
+   * Returns the Affects on Ability To Work view; suitable for use by the Create and Update journeys.
    */
   getAffectAbilityToWorkView: RequestHandler = async (
     req: Request,
