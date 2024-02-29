@@ -1,5 +1,5 @@
 import type { CreateOrUpdateInductionDto } from 'inductionDto'
-import ReasonToNotGetWorkValue from '../enums/reasonToNotGetWorkValue'
+import ReasonNotToGetWorkValue from '../enums/reasonNotToGetWorkValue'
 import HopingToGetWorkValue from '../enums/hopingToGetWorkValue'
 import AbilityToWorkValue from '../enums/abilityToWorkValue'
 import TypeOfWorkExperienceValue from '../enums/typeOfWorkExperienceValue'
@@ -134,7 +134,7 @@ const aShortQuestionSetUpdateInductionDto = (
       hopingToWork: options?.hopingToGetWork || HopingToGetWorkValue.NO,
       affectAbilityToWork: [AbilityToWorkValue.CARING_RESPONSIBILITIES, AbilityToWorkValue.OTHER],
       affectAbilityToWorkOther: 'Variable mental health',
-      notHopingToWorkReasons: [ReasonToNotGetWorkValue.HEALTH, ReasonToNotGetWorkValue.OTHER],
+      notHopingToWorkReasons: [ReasonNotToGetWorkValue.HEALTH, ReasonNotToGetWorkValue.OTHER],
       notHopingToWorkOtherReason: 'Will be of retirement age at release',
     },
     inPrisonInterests: {

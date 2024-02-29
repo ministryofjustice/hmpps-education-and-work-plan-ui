@@ -60,7 +60,7 @@ declare module 'inductionDto' {
 
   export interface WorkOnReleaseDto extends ReferencedAndAuditable {
     hopingToWork: HopingToGetWorkValue
-    notHopingToWorkReasons: ReasonToNotGetWorkValue[]
+    notHopingToWorkReasons: ReasonNotToGetWorkValue[]
     notHopingToWorkOtherReason?: string
     affectAbilityToWork: AbilityToWorkValue[]
     affectAbilityToWorkOther?: string
@@ -110,7 +110,7 @@ declare module 'inductionDto' {
   export interface CreateOrUpdateWorkOnReleaseDto {
     reference?: string
     hopingToWork: HopingToGetWorkValue
-    notHopingToWorkReasons?: ReasonToNotGetWorkValue[]
+    notHopingToWorkReasons?: ReasonNotToGetWorkValue[]
     notHopingToWorkOtherReason?: string
     affectAbilityToWork?: AbilityToWorkValue[]
     affectAbilityToWorkOther?: string
