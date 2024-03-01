@@ -3,7 +3,7 @@ import ReasonNotToGetWorkValue from '../enums/reasonNotToGetWorkValue'
 import HopingToGetWorkValue from '../enums/hopingToGetWorkValue'
 import AbilityToWorkValue from '../enums/abilityToWorkValue'
 import TypeOfWorkExperienceValue from '../enums/typeOfWorkExperienceValue'
-import WorkInterestsValue from '../enums/workInterestsValue'
+import WorkInterestTypeValue from '../enums/workInterestTypeValue'
 import SkillsValue from '../enums/skillsValue'
 import PersonalInterestsValue from '../enums/personalInterestsValue'
 import EducationLevelValue from '../enums/educationLevelValue'
@@ -64,17 +64,17 @@ const aLongQuestionSetUpdateInductionRequest = (
       reference: 'cad34670-691d-4862-8014-dc08a6f620b9',
       interests: [
         {
-          workType: WorkInterestsValue.RETAIL,
+          workType: WorkInterestTypeValue.RETAIL,
           workTypeOther: null,
           role: null,
         },
         {
-          workType: WorkInterestsValue.CONSTRUCTION,
+          workType: WorkInterestTypeValue.CONSTRUCTION,
           workTypeOther: null,
           role: 'General labourer',
         },
         {
-          workType: WorkInterestsValue.OTHER,
+          workType: WorkInterestTypeValue.OTHER,
           workTypeOther: 'Film, TV and media',
           role: 'Being a stunt double for Tom Cruise, even though he does all his own stunts',
         },

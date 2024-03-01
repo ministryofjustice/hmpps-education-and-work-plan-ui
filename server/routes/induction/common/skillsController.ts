@@ -35,8 +35,8 @@ export default abstract class SkillsController extends InductionController {
 
 const toSkillsForm = (inductionDto: InductionDto): SkillsForm => {
   return {
-    skills: inductionDto.personalSkillsAndInterests.skills.map(skill => skill.skillType),
-    skillsOther: inductionDto.personalSkillsAndInterests.skills.find(skill => skill.skillType === SkillsValue.OTHER)
+    skills: inductionDto.personalSkillsAndInterests?.skills.map(skill => skill.skillType) || [],
+    skillsOther: inductionDto.personalSkillsAndInterests?.skills.find(skill => skill.skillType === SkillsValue.OTHER)
       ?.skillTypeOther,
   }
 }

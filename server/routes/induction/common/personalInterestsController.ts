@@ -35,8 +35,9 @@ export default abstract class PersonalInterestsController extends InductionContr
 
 const toPersonalInterestsForm = (inductionDto: InductionDto): PersonalInterestsForm => {
   return {
-    personalInterests: inductionDto.personalSkillsAndInterests.interests.map(interest => interest.interestType),
-    personalInterestsOther: inductionDto.personalSkillsAndInterests.interests.find(
+    personalInterests:
+      inductionDto.personalSkillsAndInterests?.interests.map(interest => interest.interestType) || null,
+    personalInterestsOther: inductionDto.personalSkillsAndInterests?.interests.find(
       interest => interest.interestType === PersonalInterestsValue.OTHER,
     )?.interestTypeOther,
   }

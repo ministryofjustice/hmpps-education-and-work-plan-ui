@@ -83,7 +83,7 @@ export default class PreviousWorkExperienceDetailUpdateController extends Previo
     previousWorkExperienceType: TypeOfWorkExperienceValue,
   ): InductionDto {
     const updatedPreviousWorkExperiences: Array<PreviousWorkExperienceDto> =
-      inductionDto.previousWorkExperiences.experiences.map(experience => {
+      inductionDto.previousWorkExperiences?.experiences?.map(experience => {
         if (experience.experienceType === previousWorkExperienceType) {
           return {
             ...experience,
@@ -94,7 +94,7 @@ export default class PreviousWorkExperienceDetailUpdateController extends Previo
         return {
           ...experience,
         }
-      })
+      }) || []
 
     return {
       ...inductionDto,

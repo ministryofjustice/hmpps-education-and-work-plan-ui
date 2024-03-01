@@ -35,8 +35,9 @@ export default abstract class InPrisonWorkController extends InductionController
 
 const toInPrisonWorkForm = (inductionDto: InductionDto): InPrisonWorkForm => {
   return {
-    inPrisonWork: inductionDto.inPrisonInterests.inPrisonWorkInterests.map(workInterest => workInterest.workType),
-    inPrisonWorkOther: inductionDto.inPrisonInterests.inPrisonWorkInterests.find(
+    inPrisonWork:
+      inductionDto.inPrisonInterests?.inPrisonWorkInterests.map(workInterest => workInterest.workType) || [],
+    inPrisonWorkOther: inductionDto.inPrisonInterests?.inPrisonWorkInterests.find(
       workInterest => workInterest.workType === InPrisonWorkValue.OTHER,
     )?.workTypeOther,
   }

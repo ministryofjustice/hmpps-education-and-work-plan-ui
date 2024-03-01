@@ -1,4 +1,4 @@
-enum WorkInterestsValue {
+enum WorkInterestTypeValue {
   OUTDOOR = 'OUTDOOR',
   CLEANING_AND_MAINTENANCE = 'CLEANING_AND_MAINTENANCE',
   CONSTRUCTION = 'CONSTRUCTION',
@@ -16,4 +16,4 @@ enum WorkInterestsValue {
   OTHER = 'OTHER',
 }
 
-export default WorkInterestsValue
+export default WorkInterestTypeValue

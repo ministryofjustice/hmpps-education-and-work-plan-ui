@@ -35,6 +35,6 @@ export default abstract class WorkedBeforeController extends InductionController
 
 const toWorkedBeforeForm = (inductionDto: InductionDto): WorkedBeforeForm => {
   return {
-    hasWorkedBefore: inductionDto.previousWorkExperiences.hasWorkedBefore === true ? YesNoValue.YES : YesNoValue.NO,
+    hasWorkedBefore: inductionDto.previousWorkExperiences?.hasWorkedBefore === true ? YesNoValue.YES : YesNoValue.NO,
   }
 }

@@ -104,4 +104,9 @@ declare module 'inductionForms' {
     reasonsNotToGetWork: Array<ReasonNotToGetWorkValue>
     reasonsNotToGetWorkOther?: string
   }
+
+  export interface WorkInterestTypesForm {
+    workInterestTypes: Array<WorkInterestsValue>
+    workInterestTypesOther?: string
+  }
 }
