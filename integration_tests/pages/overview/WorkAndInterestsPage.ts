@@ -3,6 +3,7 @@ import SkillsPage from '../induction/SkillsPage'
 import PersonalInterestsPage from '../induction/PersonalInterestsPage'
 import WorkedBeforePage from '../induction/WorkedBeforePage'
 import AffectAbilityToWorkPage from '../induction/AffectAbilityToWorkPage'
+import ReasonsNotToGetWorkPage from '../induction/ReasonsNotToGetWorkPage'
 import PreviousWorkExperienceDetailPage from '../induction/PreviousWorkExperienceDetailPage'
 import TypeOfWorkExperienceValue from '../../../server/enums/typeOfWorkExperienceValue'
 
@@ -77,6 +78,11 @@ export default class WorkAndInterestsPage extends Page {
     return Page.verifyOnPage(AffectAbilityToWorkPage)
   }
 
+  clickReasonsNotToGetWorkWorkChangeLink(): ReasonsNotToGetWorkPage {
+    this.reasonsNotToGetWorkChangeLink().click()
+    return Page.verifyOnPage(ReasonsNotToGetWorkPage)
+  }
+
   clickPreviousWorkExperienceDetailChangeLink(
     workExperienceType: TypeOfWorkExperienceValue,
   ): PreviousWorkExperienceDetailPage {
@@ -107,6 +113,8 @@ export default class WorkAndInterestsPage extends Page {
   workedBeforeChangeLink = (): PageElement => cy.get('[data-qa=has-worked-before-change-link')
 
   affectAbilityToWorkChangeLink = (): PageElement => cy.get('[data-qa=affect-ability-to-work-change-link')
+
+  reasonsNotToGetWorkChangeLink = (): PageElement => cy.get('[data-qa=reasons-not-to-get-work-change-link')
 
   previousWorkExperienceDetailChangeLink = (workExperienceType: TypeOfWorkExperienceValue): PageElement =>
     cy.get(`[data-qa=previous-work-experience-details-${workExperienceType}-change-link`)
