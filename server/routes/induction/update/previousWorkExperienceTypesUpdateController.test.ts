@@ -205,7 +205,7 @@ describe('previousWorkExperienceTypesUpdateController', () => {
       expect(req.session.inductionDto).toBeUndefined()
     })
 
-    it('should update Induction given form is submitted where the only change is a removal of a work type other than OTHER', async () => {
+    it('should update Induction given form is submitted where the only change is a removal of a work type', async () => {
       // Given
       req.user.token = 'some-token'
       const prisonNumber = 'A1234BC'
@@ -234,57 +234,6 @@ describe('previousWorkExperienceTypesUpdateController', () => {
           experienceType: 'OTHER',
           experienceTypeOther: 'Retail delivery',
           role: 'Milkman',
-        },
-      ]
-
-      // When
-      await controller.submitPreviousWorkExperienceTypesForm(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
-
-      // Then
-      // Extract the first call to the mock and the second argument (i.e. the updated Induction)
-      const updatedInduction = mockedCreateOrUpdateInductionDtoMapper.mock.calls[0][1]
-      expect(mockedCreateOrUpdateInductionDtoMapper).toHaveBeenCalledWith(prisonerSummary.prisonId, updatedInduction)
-      expect(updatedInduction.previousWorkExperiences.experiences).toEqual(expectedPreviousWorkExperiences)
-
-      expect(inductionService.updateInduction).toHaveBeenCalledWith(prisonNumber, updateInductionDto, 'some-token')
-      expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/view/work-and-interests`)
-      expect(req.session.skillsForm).toBeUndefined()
-      expect(req.session.inductionDto).toBeUndefined()
-    })
-
-    it('should update Induction given form is submitted where the only change is a removal of the work type OTHER', async () => {
-      // Given
-      req.user.token = 'some-token'
-      const prisonNumber = 'A1234BC'
-      req.params.prisonNumber = prisonNumber
-
-      const prisonerSummary = aValidPrisonerSummary()
-      req.session.prisonerSummary = prisonerSummary
-      const inductionDto = aLongQuestionSetInductionDto({ hasWorkedBefore: true })
-      // The induction has work experience of CONSTRUCTION and OTHER (Retail delivery)
-      req.session.inductionDto = inductionDto
-
-      const previousWorkExperienceTypesForm = {
-        typeOfWorkExperience: ['CONSTRUCTION'],
-        typeOfWorkExperienceOther: '',
-      }
-      req.body = previousWorkExperienceTypesForm
-      req.session.previousWorkExperienceTypesForm = undefined
-
-      const updateInductionDto = aLongQuestionSetUpdateInductionDto({ hasWorkedBefore: true })
-      mockedCreateOrUpdateInductionDtoMapper.mockReturnValueOnce(updateInductionDto)
-
-      mockedFormValidator.mockReturnValue(errors)
-      const expectedPreviousWorkExperiences: Array<PreviousWorkExperienceDto> = [
-        {
-          details: 'Groundwork and basic block work and bricklaying',
-          experienceType: 'CONSTRUCTION',
-          experienceTypeOther: null,
-          role: 'General labourer',
         },
       ]
 

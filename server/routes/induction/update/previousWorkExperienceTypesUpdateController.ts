@@ -56,7 +56,7 @@ export default class PreviousWorkExperienceTypesUpdateController extends Previou
     ) {
       if (onlyRemovalsWereMadeToPreviousWorkExperienceSubmitted(inductionDto, previousWorkExperienceTypesForm)) {
         logger.debug(
-          'Previous Work Experiences changes are only removed types so Induction can be updated without starting a flow',
+          'Previous Work Experiences changes are only removed types so Induction can be updated without asking for work experience details',
         )
         // call the service to update the Induction
         try {
