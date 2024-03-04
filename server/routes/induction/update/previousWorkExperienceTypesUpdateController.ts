@@ -100,10 +100,7 @@ export default class PreviousWorkExperienceTypesUpdateController extends Previou
     req: Request,
     prisonerSummary: PrisonerSummary,
   ) => {
-    const updatedInduction = updatedInductionDtoWithRemovedPreviousWorkExperiencesAndChangesToOther(
-      inductionDto,
-      previousWorkExperienceTypesForm,
-    )
+    const updatedInduction = updatedInductionDto(inductionDto, previousWorkExperienceTypesForm)
     const updateInductionDto = toCreateOrUpdateInductionDto(prisonerSummary.prisonId, updatedInduction)
 
     try {
@@ -125,33 +122,29 @@ export default class PreviousWorkExperienceTypesUpdateController extends Previou
  *
  * This method is not suitable for use when Previous Work Experiences have been added.
  */
-const updatedInductionDtoWithRemovedPreviousWorkExperiencesAndChangesToOther = (
+const updatedInductionDto = (
   inductionDto: InductionDto,
-  previousWorkExperienceTypesForm: PreviousWorkExperienceTypesForm,
+  workExperienceTypesForm: PreviousWorkExperienceTypesForm,
 ): InductionDto => {
-  const removedTypes = removedPreviousWorkExperienceTypes(inductionDto, previousWorkExperienceTypesForm)
-
-  const updatedPreviousWorkExperiences: Array<PreviousWorkExperienceDto> =
-    inductionDto.previousWorkExperiences.experiences
-      .filter(experience => !removedTypes.includes(experience.experienceType))
-      // We have filtered out all the work experiences that have been removed
-      .map(experience => {
-        if (experience.experienceType === TypeOfWorkExperienceValue.OTHER) {
-          return {
-            ...experience,
-            experienceTypeOther: previousWorkExperienceTypesForm.typeOfWorkExperienceOther,
-          }
-        }
-        return {
-          ...experience,
-        }
-      })
-
+  const updatedWorkExperiences: Array<PreviousWorkExperienceDto> = workExperienceTypesForm.typeOfWorkExperience.map(
+    workType => {
+      const existingWorkExperience = inductionDto.previousWorkExperiences?.experiences.find(
+        experience => experience.experienceType === workType,
+      )
+      return {
+        experienceType: workType,
+        experienceTypeOther:
+          workType === TypeOfWorkExperienceValue.OTHER ? workExperienceTypesForm.typeOfWorkExperienceOther : null,
+        role: existingWorkExperience?.role,
+        details: existingWorkExperience?.details,
+      }
+    },
+  )
   return {
     ...inductionDto,
     previousWorkExperiences: {
       ...inductionDto.previousWorkExperiences,
-      experiences: updatedPreviousWorkExperiences,
+      experiences: updatedWorkExperiences,
     },
   }
 }
