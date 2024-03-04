@@ -8,6 +8,7 @@ import AffectAbilityToWorkPage from '../../pages/induction/AffectAbilityToWorkPa
 import ReasonsNotToGetWorkPage from '../../pages/induction/ReasonsNotToGetWorkPage'
 import PreviousWorkExperienceDetailPage from '../../pages/induction/PreviousWorkExperienceDetailPage'
 import TypeOfWorkExperienceValue from '../../../server/enums/typeOfWorkExperienceValue'
+import FutureWorkInterestTypesPage from '../../pages/induction/FutureWorkInterestTypesPage'
 
 context('Prisoner Overview page - Work and Interests tab', () => {
   beforeEach(() => {
@@ -206,5 +207,21 @@ context('Prisoner Overview page - Work and Interests tab', () => {
       // Then
       Page.verifyOnPage(PreviousWorkExperienceDetailPage)
     })
+  })
+
+  it(`should link to change Induction 'Future Work Interest Types' question given long question set induction`, () => {
+    // Given
+    cy.task('stubGetInductionLongQuestionSet')
+
+    cy.signIn()
+    const prisonNumber = 'G6115VJ'
+    cy.visit(`/plan/${prisonNumber}/view/work-and-interests`)
+    const workAndInterestsPage = Page.verifyOnPage(WorkAndInterestsPage)
+
+    // When
+    workAndInterestsPage.clickFutureWorkInterestTypesChangeLink()
+
+    // Then
+    Page.verifyOnPage(FutureWorkInterestTypesPage)
   })
 })

@@ -6,6 +6,7 @@ import AffectAbilityToWorkPage from '../induction/AffectAbilityToWorkPage'
 import ReasonsNotToGetWorkPage from '../induction/ReasonsNotToGetWorkPage'
 import PreviousWorkExperienceDetailPage from '../induction/PreviousWorkExperienceDetailPage'
 import TypeOfWorkExperienceValue from '../../../server/enums/typeOfWorkExperienceValue'
+import FutureWorkInterestTypesPage from '../induction/FutureWorkInterestTypesPage'
 
 /**
  * Cypress page class representing the Work And Interests tab of the Overview Page
@@ -83,6 +84,11 @@ export default class WorkAndInterestsPage extends Page {
     return Page.verifyOnPage(ReasonsNotToGetWorkPage)
   }
 
+  clickFutureWorkInterestTypesChangeLink(): FutureWorkInterestTypesPage {
+    this.futureWorkInterestTypesChangeLink().click()
+    return Page.verifyOnPage(FutureWorkInterestTypesPage)
+  }
+
   clickPreviousWorkExperienceDetailChangeLink(
     workExperienceType: TypeOfWorkExperienceValue,
   ): PreviousWorkExperienceDetailPage {
@@ -115,6 +121,8 @@ export default class WorkAndInterestsPage extends Page {
   affectAbilityToWorkChangeLink = (): PageElement => cy.get('[data-qa=affect-ability-to-work-change-link')
 
   reasonsNotToGetWorkChangeLink = (): PageElement => cy.get('[data-qa=reasons-not-to-get-work-change-link')
+
+  futureWorkInterestTypesChangeLink = (): PageElement => cy.get('[data-qa=work-interest-types-change-link')
 
   previousWorkExperienceDetailChangeLink = (workExperienceType: TypeOfWorkExperienceValue): PageElement =>
     cy.get(`[data-qa=previous-work-experience-details-${workExperienceType}-change-link`)
