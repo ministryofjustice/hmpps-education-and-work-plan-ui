@@ -161,7 +161,14 @@ questions are different.
             </ul>
           </dd>
           <dd class="govuk-summary-list__actions govuk-!-display-none-print">
-            <a class="govuk-link" href="{{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}/work-interests/update">
+            {%- set workInterestTypesChangeLinkUrl -%}
+              {%- if featureToggles.induction.update.workInterestsSectionEnabled -%}
+                /prisoners/{{ prisonerSummary.prisonNumber }}/induction/work-interest-types
+              {%- else -%}
+                {{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}/work-interests/update
+              {%- endif -%}
+            {%- endset -%}
+            <a class="govuk-link" href="{{ workInterestTypesChangeLinkUrl }}" data-qa="work-interest-types-change-link">
               Change<span class="govuk-visually-hidden"> type of work</span>
             </a>
           </dd>

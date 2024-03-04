@@ -1,6 +1,6 @@
 {% extends "../../../partials/layout.njk" %}
 
-{% set pageId = "induction-work-interests" %}
+{% set pageId = "induction-work-interest-types" %}
 {% set title = "What type of work is " + prisonerSummary.firstName + " " + prisonerSummary.lastName + " interested in?" %}
 {% set pageTitle = title %}
 
@@ -10,8 +10,8 @@
     * backLinkUrl - url of the back link
     * backLinkAriaText - the aria label for the back link
     * form - form object containing the following fields:
-      * workInterests - Array of selected work interests options
-      * workInterestsOther? - value for when Other is selected
+      * workInterestTypes - Array of selected work interests options
+      * workInterestTypesOther? - value for when Other is selected
     * errors? - validation errors
 #}
 
@@ -21,16 +21,16 @@
 
 {% block content %}
 
+  {% if errors.length > 0 %}
+    {{ govukErrorSummary({
+      titleText: 'There is a problem',
+      errorList: errors,
+      attributes: { 'data-qa-errors': true }
+    }) }}
+  {% endif %}
+
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-
-      {% if errors.length > 0 %}
-        {{ govukErrorSummary({
-          titleText: 'There is a problem',
-          errorList: errors,
-          attributes: { 'data-qa-errors': true }
-        }) }}
-      {% endif %}
 
       <form class="form" method="post" novalidate="">
         <div class="govuk-form-group">
@@ -38,22 +38,22 @@
 
           {% set otherHtml %}
             {{ govukTextarea({
-              id: "workInterestsOther",
-              name: "workInterestsOther",
+              id: "workInterestTypesOther",
+              name: "workInterestTypesOther",
               rows: "2",
-              value: form.workInterestsOther,
+              value: form.workInterestTypesOther,
               type: "text",
               label: {
                 text: "Give details",
                 attributes: { "aria-live": "polite" }
               },
-              attributes: { "aria-label" : "Give details of any work " + prisonerSummary.firstName + " " + prisonerSummary.lastName + " has done before" },
-              errorMessage: errors | findError('workInterestsOther')
+              attributes: { "aria-label" : "Give details of any work " + prisonerSummary.firstName + " " + prisonerSummary.lastName + " is interested in" },
+              errorMessage: errors | findError('workInterestTypesOther')
             }) }}
           {% endset -%}
 
           {{ govukCheckboxes({
-            name: "workInterests",
+            name: "workInterestTypes",
             fieldset: {
               legend: {
                   text: title,
@@ -67,126 +67,126 @@
             items: [
               {
                 value: "OUTDOOR",
-                checked: form.workInterests.includes("OUTDOOR"),
-                text: "OUTDOOR" | formatInPrisonWorkInterest,
+                checked: form.workInterestTypes.includes("OUTDOOR"),
+                text: "OUTDOOR" | formatJobType,
                 hint: {
                   text: "things like kennel worker, groundskeeper and farm work"
                 }
               },
               {
                 value: "CLEANING_AND_MAINTENANCE",
-                checked: form.workInterests.includes("CLEANING_AND_MAINTENANCE"),
-                text: "CLEANING_AND_MAINTENANCE" | formatInPrisonWorkInterest,
+                checked: form.workInterestTypes.includes("CLEANING_AND_MAINTENANCE"),
+                text: "CLEANING_AND_MAINTENANCE" | formatJobType,
                 hint: {
                   text: "things like biohazard cleaning, janitor and window cleaner"
                 }
               },
               { 
                 value: "CONSTRUCTION",
-                checked: form.workInterests.includes("CONSTRUCTION"),
-                text: "CONSTRUCTION" | formatInPrisonWorkInterest,
+                checked: form.workInterestTypes.includes("CONSTRUCTION"),
+                text: "CONSTRUCTION" | formatJobType,
                 hint: {
                   text: "things like bricklayer, plumber and site management"
                 }
               },
               { 
                 value: "DRIVING",
-                checked: form.workInterests.includes("DRIVING"),
-                text: "DRIVING" | formatInPrisonWorkInterest,
+                checked: form.workInterestTypes.includes("DRIVING"),
+                text: "DRIVING" | formatJobType,
                 hint: {
                   text: "things like bus driver and rail or road maintenance"
                 }
               },
               { 
                 value: "BEAUTY",
-                checked: form.workInterests.includes("BEAUTY"),
-                text: "BEAUTY" | formatInPrisonWorkInterest,
+                checked: form.workInterestTypes.includes("BEAUTY"),
+                text: "BEAUTY" | formatJobType,
                 hint: {
                   text: "things like nail technician and barber"
                 }
               },
               { 
                 value: "HOSPITALITY",
-                checked: form.workInterests.includes("HOSPITALITY"),
-                text: "HOSPITALITY" | formatInPrisonWorkInterest,
+                checked: form.workInterestTypes.includes("HOSPITALITY"),
+                text: "HOSPITALITY" | formatJobType,
                 hint: {
                   text: "things like chef, mobile catering and hotel porter"
                 }
               },
               { 
                 value: "TECHNICAL",
-                checked: form.workInterests.includes("TECHNICAL"),
-                text: "TECHNICAL" | formatInPrisonWorkInterest,
+                checked: form.workInterestTypes.includes("TECHNICAL"),
+                text: "TECHNICAL" | formatJobType,
                 hint: {
                   text: "things like coding, web developer and IT support"
                 }
               },
               { 
                 value: "MANUFACTURING",
-                checked: form.workInterests.includes("MANUFACTURING"),
-                text: "MANUFACTURING" | formatInPrisonWorkInterest,
+                checked: form.workInterestTypes.includes("MANUFACTURING"),
+                text: "MANUFACTURING" | formatJobType,
                 hint: {
                   text: "things like assembly line work, welding and maintenance"
                 }
               },
               { 
                 value: "OFFICE",
-                checked: form.workInterests.includes("OFFICE"),
-                text: contentLookup.fields.workInterests["OFFICE"],
+                checked: form.workInterestTypes.includes("OFFICE"),
+                text: contentLookup.fields.workInterestTypes["OFFICE"],
                 hint: {
                   text: "things like administration, marketing assistant and office manager"
                 }
               },
               { 
                 value: "RETAIL",
-                checked: form.workInterests.includes("RETAIL"),
-                text: "RETAIL" | formatInPrisonWorkInterest,
+                checked: form.workInterestTypes.includes("RETAIL"),
+                text: "RETAIL" | formatJobType,
                 hint: {
                   text: "things like sales assistant, customer service and store manager"
                 }
               },
               { 
                 value: "SPORTS",
-                checked: form.workInterests.includes("SPORTS"),
-                text: "SPORTS" | formatInPrisonWorkInterest,
+                checked: form.workInterestTypes.includes("SPORTS"),
+                text: "SPORTS" | formatJobType,
                 hint: {
                   text: "things like personal trainer and gym attendant"
                 }
               },
               { 
                 value: "EDUCATION_TRAINING",
-                checked: form.workInterests.includes("EDUCATION_TRAINING"),
-                text: "EDUCATION_TRAINING" | formatInPrisonWorkInterest,
+                checked: form.workInterestTypes.includes("EDUCATION_TRAINING"),
+                text: "EDUCATION_TRAINING" | formatJobType,
                 hint: {
                   text: "things like welding trainer and welfare rights support"
                 }
               },
               { 
                 value: "WAREHOUSING",
-                checked: form.workInterests.includes("WAREHOUSING"),
-                text: "WAREHOUSING" | formatInPrisonWorkInterest,
+                checked: form.workInterestTypes.includes("WAREHOUSING"),
+                text: "WAREHOUSING" | formatJobType,
                 hint: {
                   text: "things like removals and forklift driver"
                 }
               },
               { 
                 value: "WASTE_MANAGEMENT",
-                checked: form.workInterests.includes("WASTE_MANAGEMENT"),
-                text: "WASTE_MANAGEMENT" | formatInPrisonWorkInterest,
+                checked: form.workInterestTypes.includes("WASTE_MANAGEMENT"),
+                text: "WASTE_MANAGEMENT" | formatJobType,
                 hint: {
                   text: "things like waste collection and recycling management"
                 }
               },
               {
                 value: "OTHER",
-                checked: form.workInterests.includes("OTHER"),
-                text: "OTHER" | formatInPrisonWorkInterest,
+                checked: form.workInterestTypes.includes("OTHER"),
+                text: "OTHER" | formatJobType,
                 conditional: {
                   html: otherHtml
                 }
               }
             ],
-            errorMessage: errors | findError('workInterests')
+            errorMessage: errors | findError('workInterestTypes')
           }) }}
 
         </div>
