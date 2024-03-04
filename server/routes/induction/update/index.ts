@@ -8,6 +8,7 @@ import SkillsUpdateController from './skillsUpdateController'
 import PersonalInterestsUpdateController from './personalInterestsUpdateController'
 import WorkedBeforeUpdateController from './workedBeforeUpdateController'
 import PreviousWorkExperienceDetailUpdateController from './previousWorkExperienceDetailUpdateController'
+import PreviousWorkExperienceTypesUpdateController from './previousWorkExperienceTypesUpdateController'
 import AffectAbilityToWorkUpdateController from './affectAbilityToWorkUpdateController'
 import ReasonsNotToGetWorkUpdateController from './reasonsNotToGetWorkUpdateController'
 
@@ -23,6 +24,7 @@ export default (router: Router, services: Services) => {
   const skillsUpdateController = new SkillsUpdateController(inductionService)
   const personalInterestsUpdateController = new PersonalInterestsUpdateController(inductionService)
   const workedBeforeUpdateController = new WorkedBeforeUpdateController(inductionService)
+  const previousWorkExperienceTypesUpdateController = new PreviousWorkExperienceTypesUpdateController(inductionService)
   const previousWorkExperienceDetailUpdateController = new PreviousWorkExperienceDetailUpdateController(
     inductionService,
   )
@@ -69,6 +71,13 @@ export default (router: Router, services: Services) => {
     ])
     router.post('/prisoners/:prisonNumber/induction/has-worked-before', [
       workedBeforeUpdateController.submitWorkedBeforeForm,
+    ])
+
+    router.get('/prisoners/:prisonNumber/induction/previous-work-experience', [
+      previousWorkExperienceTypesUpdateController.getPreviousWorkExperienceTypesView,
+    ])
+    router.post('/prisoners/:prisonNumber/induction/previous-work-experience', [
+      previousWorkExperienceTypesUpdateController.submitPreviousWorkExperienceTypesForm,
     ])
 
     router.get('/prisoners/:prisonNumber/induction/previous-work-experience/:typeOfWorkExperience', [
