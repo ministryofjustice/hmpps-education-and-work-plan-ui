@@ -60,7 +60,11 @@ export default class PreviousWorkExperienceTypesUpdateController extends Previou
         )
         // call the service to update the Induction
         try {
-          await this.updateInduction(inductionDto, previousWorkExperienceTypesForm, req, prisonerSummary)
+          const updatedInduction = updatedInductionDtoWithRemovalsAndChangesToOther(
+            inductionDto,
+            previousWorkExperienceTypesForm,
+          )
+          await this.updateInduction(updatedInduction, req, prisonerSummary)
         } catch (e) {
           return next(createError(500, `Error updating Induction for prisoner ${prisonNumber}. Error: ${e}`))
         }
@@ -74,7 +78,6 @@ export default class PreviousWorkExperienceTypesUpdateController extends Previou
     }
 
     /* We need to show the Details page for each of:
-         - previous work experience on the original induction that has not been removed by the form submission
          - any additional job types that have been added by the form submission
          - and OTHER if it's value has changed
      */
@@ -91,21 +94,12 @@ export default class PreviousWorkExperienceTypesUpdateController extends Previou
   }
 
   /**
-   * Updates the Induction using the InductionService.
+   * Updates the Induction with the specified [InductionDto] using the InductionService.
+   * The specified [InductionDto] should describe the new/desired state of the Induction.
    * @throws Error if InductionService throws an error. The Error from InductionService is rethrown.
    */
-  private updateInduction = async (
-    inductionDto: InductionDto,
-    previousWorkExperienceTypesForm: PreviousWorkExperienceTypesForm,
-    req: Request,
-    prisonerSummary: PrisonerSummary,
-  ) => {
-    const updatedInduction = updatedInductionDtoWithRemovedPreviousWorkExperiencesAndChangesToOther(
-      inductionDto,
-      previousWorkExperienceTypesForm,
-    )
-    const updateInductionDto = toCreateOrUpdateInductionDto(prisonerSummary.prisonId, updatedInduction)
-
+  private updateInduction = async (inductionDto: InductionDto, req: Request, prisonerSummary: PrisonerSummary) => {
+    const updateInductionDto = toCreateOrUpdateInductionDto(prisonerSummary.prisonId, inductionDto)
     try {
       await this.inductionService.updateInduction(prisonerSummary.prisonNumber, updateInductionDto, req.user.token)
       req.session.previousWorkExperienceTypesForm = undefined
@@ -118,34 +112,33 @@ export default class PreviousWorkExperienceTypesUpdateController extends Previou
 }
 
 /**
- * Returns an [InductionDto] that represents the Induction with changes made to it.
- * Specifically this method is only for use when
- *   * Previous Work Experiences have been removed
- *   * Or the value for Other has been changed
+ * Returns an [InductionDto] that represents the Induction with Previous Work Experience removals and value changes to "OTHER" made to it.
+ * Specifically this method returns an [InductionDto] based on the passed in DTO, but with
+ *   * Any Previous Work Experiences removed where they are removed (missing) in the [PreviousWorkExperienceTypesForm]
+ *   * The value for Other has been changed where it has been changed in the [PreviousWorkExperienceTypesForm]
  *
- * This method is not suitable for use when Previous Work Experiences have been added.
+ * This method is not suitable for use when Previous Work Experiences have been added as these are not included in the
+ * returned DTO.
  */
-const updatedInductionDtoWithRemovedPreviousWorkExperiencesAndChangesToOther = (
+const updatedInductionDtoWithRemovalsAndChangesToOther = (
   inductionDto: InductionDto,
   previousWorkExperienceTypesForm: PreviousWorkExperienceTypesForm,
 ): InductionDto => {
-  const removedTypes = removedPreviousWorkExperienceTypes(inductionDto, previousWorkExperienceTypesForm)
-
   const updatedPreviousWorkExperiences: Array<PreviousWorkExperienceDto> =
-    inductionDto.previousWorkExperiences.experiences
-      .filter(experience => !removedTypes.includes(experience.experienceType))
-      // We have filtered out all the work experiences that have been removed
-      .map(experience => {
-        if (experience.experienceType === TypeOfWorkExperienceValue.OTHER) {
-          return {
-            ...experience,
-            experienceTypeOther: previousWorkExperienceTypesForm.typeOfWorkExperienceOther,
-          }
-        }
-        return {
-          ...experience,
-        }
-      })
+    previousWorkExperienceTypesForm.typeOfWorkExperience.map(workType => {
+      const existingWorkExperience = inductionDto.previousWorkExperiences?.experiences.find(
+        experience => experience.experienceType === workType,
+      )
+      return {
+        experienceType: workType,
+        experienceTypeOther:
+          workType === TypeOfWorkExperienceValue.OTHER
+            ? previousWorkExperienceTypesForm.typeOfWorkExperienceOther
+            : null,
+        role: existingWorkExperience?.role,
+        details: existingWorkExperience?.details,
+      }
+    })
 
   return {
     ...inductionDto,
@@ -230,22 +223,15 @@ const onlyRemovalsWereMadeToPreviousWorkExperienceSubmitted = (
 
 /**
  * Given the current Induction and the [PreviousWorkExperienceTypesForm], returns a list of [TypeOfWorkExperienceValue]
- * that represent the Previous Work Experiences that will remain on the Induction after any removals, plus any additions
- * from the form; plus OTHER if it's value has changed.
+ * that represent the Previous Work Experiences that are to be added; plus OTHER if it's value has changed.
  */
 const typesOfPreviousWorkExperienceToShowDetailsFormFor = (
   inductionDto: InductionDto,
   previousWorkExperienceTypesForm: PreviousWorkExperienceTypesForm,
 ): Array<TypeOfWorkExperienceValue> => {
-  const removedTypes = removedPreviousWorkExperienceTypes(inductionDto, previousWorkExperienceTypesForm)
   const addedTypes = addedPreviousWorkExperienceTypes(inductionDto, previousWorkExperienceTypesForm)
-  return [
-    ...previousWorkExperienceTypesOnCurrentInduction(inductionDto), // All work types that were on the induction to start with
-    ...addedTypes, // plus any that have been added on this form
-    otherTypeOfWorkExperienceHasBeenChanged(inductionDto, previousWorkExperienceTypesForm) // plus OTHER if the value has changed
-      ? TypeOfWorkExperienceValue.OTHER
-      : undefined,
-  ]
-    .filter(type => !removedTypes.includes(type)) // filter out any that were removed on the form
-    .filter(type => type !== undefined) // filter out any undefined values in the array
+  if (!otherTypeOfWorkExperienceHasBeenChanged(inductionDto, previousWorkExperienceTypesForm)) {
+    return [...addedTypes]
+  }
+  return [...addedTypes, TypeOfWorkExperienceValue.OTHER]
 }
