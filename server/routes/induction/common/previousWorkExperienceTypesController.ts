@@ -38,7 +38,7 @@ const toPreviousWorkExperienceTypesForm = (inductionDto: InductionDto): Previous
   return {
     typeOfWorkExperience:
       inductionDto.previousWorkExperiences?.experiences.map(experience => experience.experienceType) || [],
-    typeOfWorkExperienceOther: inductionDto.previousWorkExperiences.experiences.find(
+    typeOfWorkExperienceOther: inductionDto.previousWorkExperiences?.experiences.find(
       experience => experience.experienceType === TypeOfWorkExperienceValue.OTHER,
     )?.experienceTypeOther,
   }
