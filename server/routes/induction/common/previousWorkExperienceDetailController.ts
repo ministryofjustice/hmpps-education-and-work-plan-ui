@@ -89,11 +89,11 @@ const toPreviousWorkExperienceDetailForm = (
   inductionDto: InductionDto,
   typeOfWorkExperience: TypeOfWorkExperienceValue,
 ): PreviousWorkExperienceDetailForm => {
-  const previousWorkExperience = inductionDto.previousWorkExperiences.experiences.find(
+  const previousWorkExperience = inductionDto.previousWorkExperiences?.experiences.find(
     experience => experience.experienceType === typeOfWorkExperience,
   )
   return {
-    jobRole: previousWorkExperience.role,
-    jobDetails: previousWorkExperience.details,
+    jobRole: previousWorkExperience?.role || '',
+    jobDetails: previousWorkExperience?.details || '',
   }
 }
