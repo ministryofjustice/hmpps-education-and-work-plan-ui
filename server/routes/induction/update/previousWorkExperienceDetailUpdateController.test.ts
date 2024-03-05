@@ -92,7 +92,7 @@ describe('previousWorkExperienceDetailUpdateController', () => {
         'pages/induction/previousWorkExperience/workExperienceDetail',
         expectedView,
       )
-      expect(req.session.personalInterestsForm).toBeUndefined()
+      expect(req.session.previousWorkExperienceDetailForm).toBeUndefined()
       expect(req.session.inductionDto).toEqual(inductionDto)
     })
 
@@ -135,7 +135,7 @@ describe('previousWorkExperienceDetailUpdateController', () => {
         'pages/induction/previousWorkExperience/workExperienceDetail',
         expectedView,
       )
-      expect(req.session.personalInterestsForm).toBeUndefined()
+      expect(req.session.previousWorkExperienceDetailForm).toBeUndefined()
       expect(req.session.inductionDto).toEqual(inductionDto)
     })
 
