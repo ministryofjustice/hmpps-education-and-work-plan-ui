@@ -20,6 +20,7 @@ describe('inPrisonEducationMapper', () => {
       courseStartDate: moment('2021-06-01').toDate(),
       courseCompleted: false, // expect courseCompleted to be false because there is no value for learningActualEndDate
       courseCompletionDate: null,
+      isAccredited: false,
       grade: null,
       source: 'CURIOUS',
     }
@@ -46,6 +47,7 @@ describe('inPrisonEducationMapper', () => {
       courseStartDate: moment('2016-05-18').toDate(),
       courseCompleted: true, // expect courseCompleted to be true because there is a value for learningActualEndDate
       courseCompletionDate: moment('2016-07-15').toDate(),
+      isAccredited: true,
       grade: null,
       source: 'CURIOUS',
     }
@@ -71,6 +73,7 @@ describe('inPrisonEducationMapper', () => {
       courseStartDate: moment('2016-05-18').toDate(),
       courseCompleted: true,
       courseCompletionDate: moment('2016-07-15').toDate(),
+      isAccredited: true,
       grade: 'A', // expect grade to be the value of outcomeGrade (as preference over outcome)
       source: 'CURIOUS',
     }
@@ -96,6 +99,7 @@ describe('inPrisonEducationMapper', () => {
       courseStartDate: moment('2016-05-18').toDate(),
       courseCompleted: true,
       courseCompletionDate: moment('2016-07-15').toDate(),
+      isAccredited: true,
       grade: 'Passed', // expect grade to be the value of outcome (because there is no outcome grade)
       source: 'CURIOUS',
     }
@@ -121,6 +125,7 @@ describe('inPrisonEducationMapper', () => {
       courseStartDate: moment('2016-05-18').toDate(),
       courseCompleted: true,
       courseCompletionDate: moment('2016-07-15').toDate(),
+      isAccredited: true,
       grade: null, // expect grade to be null (because there is no outcome grade or outcome)
       source: 'CURIOUS',
     }

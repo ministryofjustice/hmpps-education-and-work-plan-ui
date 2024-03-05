@@ -108,6 +108,7 @@ declare module 'viewModels' {
     courseStartDate: Date
     courseCompleted: boolean
     courseCompletionDate?: Date
+    isAccredited: boolean
     grade?: string
     source: 'CURIOUS'
   }
