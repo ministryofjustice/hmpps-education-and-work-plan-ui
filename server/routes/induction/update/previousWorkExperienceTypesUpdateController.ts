@@ -190,7 +190,7 @@ const addedPreviousWorkExperienceTypes = (
 
 /**
  * Given the current Induction and the [PreviousWorkExperienceTypesForm], returns `true` if both the Induction and the
- * [PreviousWorkExperienceTypesForm] inclyde a Previous Work Experience type of OTHER, and if it's value is different.
+ * [PreviousWorkExperienceTypesForm] include a Previous Work Experience type of OTHER, and if its value is different.
  */
 const otherTypeOfWorkExperienceHasBeenChanged = (
   inductionDto: InductionDto,
