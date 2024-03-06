@@ -12,6 +12,7 @@ import PreviousWorkExperienceTypesUpdateController from './previousWorkExperienc
 import AffectAbilityToWorkUpdateController from './affectAbilityToWorkUpdateController'
 import ReasonsNotToGetWorkUpdateController from './reasonsNotToGetWorkUpdateController'
 import WorkInterestTypesUpdateController from './workInterestTypesUpdateController'
+import WorkInterestRolesUpdateController from './workInterestRolesUpdateController'
 
 /**
  * Route definitions for updating the various sections of an Induction
@@ -32,6 +33,7 @@ export default (router: Router, services: Services) => {
   const affectAbilityToWorkUpdateController = new AffectAbilityToWorkUpdateController(inductionService)
   const reasonsNotToGetWorkUpdateController = new ReasonsNotToGetWorkUpdateController(inductionService)
   const workInterestTypesUpdateController = new WorkInterestTypesUpdateController(inductionService)
+  const workInterestRolesUpdateController = new WorkInterestRolesUpdateController(inductionService)
 
   if (isAnyUpdateSectionEnabled()) {
     router.get('/prisoners/:prisonNumber/induction/**', [
@@ -110,6 +112,13 @@ export default (router: Router, services: Services) => {
     ])
     router.post('/prisoners/:prisonNumber/induction/work-interest-types', [
       workInterestTypesUpdateController.submitWorkInterestTypesForm,
+    ])
+
+    router.get('/prisoners/:prisonNumber/induction/work-interest-roles', [
+      workInterestRolesUpdateController.getWorkInterestRolesView,
+    ])
+    router.post('/prisoners/:prisonNumber/induction/work-interest-roles', [
+      workInterestRolesUpdateController.submitWorkInterestRolesForm,
     ])
   }
 }

@@ -11,6 +11,7 @@ import type {
   AffectAbilityToWorkForm,
   ReasonsNotToGetWorkForm,
   WorkInterestTypesForm,
+  WorkInterestRolesForm,
 } from 'inductionForms'
 
 export default {}
@@ -38,6 +39,7 @@ declare module 'express-session' {
     affectAbilityToWorkForm: AffectAbilityToWorkForm
     reasonsNotToGetWorkForm: ReasonsNotToGetWorkForm
     workInterestTypesForm: WorkInterestTypesForm
+    workInterestRolesForm: WorkInterestRolesForm
   }
 }
 

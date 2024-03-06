@@ -106,7 +106,12 @@ declare module 'inductionForms' {
   }
 
   export interface WorkInterestTypesForm {
-    workInterestTypes: Array<WorkInterestsValue>
+    workInterestTypes: Array<WorkInterestTypeValue>
     workInterestTypesOther?: string
+  }
+
+  export interface WorkInterestRolesForm {
+    workInterestRoles: Map<WorkInterestTypeValue, string>
+    workInterestTypesOther: string
   }
 }
