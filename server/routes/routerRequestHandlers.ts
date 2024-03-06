@@ -3,6 +3,7 @@ import { NextFunction, Request, RequestHandler, Response } from 'express'
 import logger from '../../logger'
 import PrisonerSearchService from '../services/prisonerSearchService'
 import { InductionService } from '../services'
+import { setCurrentPageIndex } from './pageFlowQueue'
 
 /**
  * A module exporting request handler functions to support ensuring page requests have been followed
@@ -157,6 +158,39 @@ const retrieveInductionIfNotInSession = (inductionService: InductionService): Re
   }
 }
 
+/**
+ *  Request handler function that removes any Induction related forms or DTOs on the session. This is useful in the case
+ *  where the user has started updating the Induction in some way and has used either the Back link or browser Back
+ *  button to essentially cancel the process.
+ */
+const removeInductionFormsFromSession = async (req: Request, res: Response, next: NextFunction) => {
+  req.session.pageFlowQueue = undefined
+  req.session.inductionDto = undefined
+  req.session.inPrisonWorkForm = undefined
+  req.session.skillsForm = undefined
+  req.session.personalInterestsForm = undefined
+  req.session.workedBeforeForm = undefined
+  req.session.previousWorkExperienceTypesForm = undefined
+  req.session.previousWorkExperienceDetailForm = undefined
+  req.session.affectAbilityToWorkForm = undefined
+  req.session.reasonsNotToGetWorkForm = undefined
+  req.session.workInterestTypesForm = undefined
+
+  next()
+}
+
+/**
+ * Request handler function that sets the current page in the [PageFlowQueue] if this page request is part of a page
+ * flow (designated by the presence of a [PageFlowQueue] on the session)
+ */
+const setCurrentPageInPageFlowQueue = async (req: Request, res: Response, next: NextFunction) => {
+  const { pageFlowQueue } = req.session
+  if (pageFlowQueue) {
+    req.session.pageFlowQueue = setCurrentPageIndex(pageFlowQueue, req.path)
+  }
+  next()
+}
+
 export {
   checkCreateGoalFormExistsInSession,
   checkAddStepFormsArrayExistsInSession,
@@ -165,6 +199,8 @@ export {
   checkNewGoalsFormExistsInSession,
   retrievePrisonerSummaryIfNotInSession,
   retrieveInductionIfNotInSession,
+  removeInductionFormsFromSession,
+  setCurrentPageInPageFlowQueue,
 }
 
 const isEditMode = (req: Request): boolean => req.query?.mode === 'edit'

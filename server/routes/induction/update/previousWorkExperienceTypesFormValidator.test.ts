@@ -2,7 +2,7 @@ import type { PreviousWorkExperienceTypesForm } from 'inductionForms'
 import validatePreviousWorkExperienceTypesForm from './previousWorkExperienceTypesFormValidator'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
 
-describe('previousWorkExperienceFormValidator', () => {
+describe('previousWorkExperienceTypesFormValidator', () => {
   const prisonerSummary = aValidPrisonerSummary()
 
   describe('happy path - validation passes', () => {

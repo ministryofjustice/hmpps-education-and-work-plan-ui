@@ -1,4 +1,4 @@
-import type { PrisonerSummary, PrisonerSupportNeeds } from 'viewModels'
+import type { PageFlowQueue, PrisonerSummary, PrisonerSupportNeeds } from 'viewModels'
 import type { UpdateGoalForm } from 'forms'
 import type { NewGoal } from 'compositeForms'
 import type {
@@ -26,6 +26,7 @@ declare module 'express-session' {
     newGoals: Array<NewGoal> // An array of NewGoal representing the Goals that have been added
     updateGoalForm: UpdateGoalForm
     prisonerListSortOptions: string
+    pageFlowQueue: PageFlowQueue
     // Induction related objects held on the session
     inductionDto: InductionDto
     inPrisonWorkForm: InPrisonWorkForm
@@ -34,7 +35,6 @@ declare module 'express-session' {
     workedBeforeForm: WorkedBeforeForm
     previousWorkExperienceTypesForm: PreviousWorkExperienceTypesForm
     previousWorkExperienceDetailForm: PreviousWorkExperienceDetailForm
-    previousWorkExperienceForm: PreviousWorkExperienceForm
     affectAbilityToWorkForm: AffectAbilityToWorkForm
     reasonsNotToGetWorkForm: ReasonsNotToGetWorkForm
     workInterestTypesForm: WorkInterestTypesForm

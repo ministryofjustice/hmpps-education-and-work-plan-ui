@@ -53,7 +53,14 @@ questions are different.
               </ul>
             </dd>
             <dd class="govuk-summary-list__actions govuk-!-display-none-print">
-              <a class="govuk-link" href="{{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}/type-of-work-experience/update">
+              {%- set previousWorkExperienceChangeLinkUrl -%}
+                {%- if featureToggles.induction.update.workExperienceSectionEnabled -%}
+                  /prisoners/{{ prisonerSummary.prisonNumber }}/induction/previous-work-experience
+                {%- else -%}
+                  {{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}/type-of-work-experience/update
+                {%- endif -%}
+              {%- endset -%}
+              <a class="govuk-link" href="{{ previousWorkExperienceChangeLinkUrl }}" data-qa="previous-work-experience-change-link">
                 Change<span class="govuk-visually-hidden"> type of work experience</span>
               </a>
             </dd>

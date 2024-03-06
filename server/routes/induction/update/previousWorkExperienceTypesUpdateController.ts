@@ -2,6 +2,7 @@ import createError from 'http-errors'
 import { NextFunction, Request, RequestHandler, Response } from 'express'
 import type { InductionDto, PreviousWorkExperienceDto } from 'inductionDto'
 import type { PreviousWorkExperienceTypesForm } from 'inductionForms'
+import type { PageFlowQueue } from 'viewModels'
 import logger from '../../../../logger'
 import PreviousWorkExperienceTypesController from '../common/previousWorkExperienceTypesController'
 import { InductionService } from '../../../services'
@@ -9,6 +10,7 @@ import validatePreviousWorkExperienceTypesForm from './previousWorkExperienceTyp
 import TypeOfWorkExperienceValue from '../../../enums/typeOfWorkExperienceValue'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
 import previousWorkExperienceTypeScreenOrderComparator from '../previousWorkExperienceTypeScreenOrderComparator'
+import { getNextPage } from '../../pageFlowQueue'
 
 export default class PreviousWorkExperienceTypesUpdateController extends PreviousWorkExperienceTypesController {
   constructor(private readonly inductionService: InductionService) {
@@ -82,18 +84,6 @@ export default class PreviousWorkExperienceTypesUpdateController extends Previou
       return res.redirect(`/plan/${prisonNumber}/view/work-and-interests`)
     }
 
-    /* We need to show the Details page for each of:
-         - any additional job types that have been added by the form submission
-         - and OTHER if it's value has changed
-     */
-    const workExperienceTypesToShowDetailsFormFor = [
-      ...typesOfPreviousWorkExperienceToShowDetailsFormFor(inductionDto, previousWorkExperienceTypesForm),
-    ].sort(previousWorkExperienceTypeScreenOrderComparator) // sort them by the order presented on screen (which is not alphabetic on the enum values)
-
-    logger.debug(
-      `Previous Work Experiences changes resulting in going to the Detail pages for ${workExperienceTypesToShowDetailsFormFor}`,
-    )
-
     // Update the InductionDTO in the session with changes to Previous Work Experiences, but do not persist to the API
     // The user will be redirected to each Previous Work Experience Detail page in turn
     req.session.inductionDto = updatedInductionDtoWithPreviousWorkExperiences(
@@ -101,10 +91,38 @@ export default class PreviousWorkExperienceTypesUpdateController extends Previou
       previousWorkExperienceTypesForm,
     )
 
-    // TODO - replace with correct redirect once we've implemented form redirect/handling for a "queue" of Previous Work Experience Detail pages
-    return res.redirect(
-      `/prisoners/${prisonNumber}/induction/previous-work-experience/${workExperienceTypesToShowDetailsFormFor[0].toLowerCase()}`,
+    /* We need to show the Details page for each of:
+         - any additional job types that have been added by the form submission
+         - and OTHER if it's value has changed
+     */
+    const workExperienceTypesToShowDetailsFormFor = [
+      ...typesOfPreviousWorkExperienceToShowDetailsFormFor(inductionDto, previousWorkExperienceTypesForm),
+    ].sort(previousWorkExperienceTypeScreenOrderComparator) // sort them by the order presented on screen (which is not alphabetic on the enum values)
+    const pageFlowQueue = this.buildPageFlowQueue(workExperienceTypesToShowDetailsFormFor, prisonNumber)
+    req.session.pageFlowQueue = pageFlowQueue
+    logger.debug(
+      `Previous Work Experiences changes resulting in going to the Detail pages for ${workExperienceTypesToShowDetailsFormFor}`,
     )
+
+    req.session.previousWorkExperienceTypesForm = undefined
+    return res.redirect(getNextPage(pageFlowQueue))
+  }
+
+  buildPageFlowQueue = (
+    previousWorkExperienceTypes: Array<TypeOfWorkExperienceValue>,
+    prisonNumber: string,
+  ): PageFlowQueue => {
+    const previousWorkExperienceTypesPageUrl = `/prisoners/${prisonNumber}/induction/previous-work-experience`
+    const pageUrls = [
+      previousWorkExperienceTypesPageUrl,
+      ...previousWorkExperienceTypes.map(
+        workType => `/prisoners/${prisonNumber}/induction/previous-work-experience/${workType.toLowerCase()}`,
+      ),
+    ]
+    return {
+      pageUrls,
+      currentPageIndex: 0,
+    }
   }
 }
 
@@ -126,24 +144,27 @@ const updatedInductionDtoWithPreviousWorkExperiences = (
       const existingWorkExperience = inductionDto.previousWorkExperiences?.experiences.find(
         experience => experience.experienceType === workType,
       )
+      const isWorkTypeOther = workType === TypeOfWorkExperienceValue.OTHER
+      const workTypeOtherValueHasBeenChanged =
+        isWorkTypeOther &&
+        previousWorkExperienceTypesForm.typeOfWorkExperienceOther !== existingWorkExperience?.experienceTypeOther
 
       return !existingWorkExperience
         ? {
-            // It's a Previous Work Experience that is not already on the Induction. Add it but with undefined role and details fields
+            // It's a new Previous Work Experience that is not already on the Induction. Add it but with undefined role and details fields
             experienceType: workType,
-            experienceTypeOther: undefined,
+            experienceTypeOther: isWorkTypeOther ? previousWorkExperienceTypesForm.typeOfWorkExperienceOther : null,
             role: undefined,
             details: undefined,
           }
         : {
-            // It's a Previous Work Experience that is already on the Induction. Map it, but using the typeOfWorkExperienceOther field from the form if it is OTHER
+            // It's a Previous Work Experience that is already on the Induction. Map it, but if the work type is OTHER
+            // map the typeOfWorkExperienceOther field from the form and clear the previous role and details values
+            // IE. it's a different kind of "other" so the previous role and details will likely not apply.
             experienceType: workType,
-            experienceTypeOther:
-              workType === TypeOfWorkExperienceValue.OTHER
-                ? previousWorkExperienceTypesForm.typeOfWorkExperienceOther
-                : null,
-            role: existingWorkExperience?.role,
-            details: existingWorkExperience?.details,
+            experienceTypeOther: isWorkTypeOther ? previousWorkExperienceTypesForm.typeOfWorkExperienceOther : null,
+            role: isWorkTypeOther && workTypeOtherValueHasBeenChanged ? undefined : existingWorkExperience?.role,
+            details: isWorkTypeOther && workTypeOtherValueHasBeenChanged ? undefined : existingWorkExperience?.details,
           }
     })
 

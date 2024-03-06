@@ -2,7 +2,7 @@ import { Router } from 'express'
 import { Services } from '../../services'
 import { checkUserHasViewAuthority } from '../../middleware/roleBasedAccessControl'
 import OverviewController from './overviewController'
-import { retrievePrisonerSummaryIfNotInSession } from '../routerRequestHandlers'
+import { removeInductionFormsFromSession, retrievePrisonerSummaryIfNotInSession } from '../routerRequestHandlers'
 
 /**
  * Route definitions for the pages relating to the main Overview page
@@ -19,6 +19,7 @@ export default (router: Router, services: Services) => {
   router.use('/plan/:prisonNumber/view/*', [
     checkUserHasViewAuthority(),
     retrievePrisonerSummaryIfNotInSession(services.prisonerSearchService),
+    removeInductionFormsFromSession,
   ])
 
   router.get('/plan/:prisonNumber/view/overview', [overViewController.getOverviewView])
