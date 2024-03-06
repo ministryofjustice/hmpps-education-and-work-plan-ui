@@ -13,6 +13,7 @@ const toInPrisonEducation = (apiLearnerEducation: LearnerEducation): InPrisonEdu
     courseCompletionDate: apiLearnerEducation.learningActualEndDate
       ? moment(apiLearnerEducation.learningActualEndDate).toDate()
       : null,
+    isAccredited: apiLearnerEducation.isAccredited,
     grade: apiLearnerEducation.outcomeGrade || apiLearnerEducation.outcome || null,
     source: 'CURIOUS',
   }
