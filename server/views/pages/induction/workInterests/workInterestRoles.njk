@@ -1,0 +1,70 @@
+{% extends "../../../partials/layout.njk" %}
+
+{% set pageId = "induction-work-interest-roles" %}
+{% set title = "Is " + prisonerSummary.firstName + " " + prisonerSummary.lastName + " interested in any particular jobs?" %}
+{% set pageTitle = title %}
+
+{#
+Data supplied to this template:
+  * prisonerSummary - object with firstName and lastName
+  * backLinkUrl - url of the back link
+  * backLinkAriaText - the aria label for the back link
+  * form - form object containing the following fields:
+    * workInterestRoles - Map of work types and associated roles
+    * workInterestTypesOther? - value for when Other is selected
+  * errors? - validation errors
+#}
+
+{% block beforeContent %}
+  {{ govukBackLink({ text: "Back", href: backLinkUrl, attributes: { "aria-label" : backLinkAriaText } }) }}
+{% endblock %}
+
+{% block content %}
+
+  {% if errors.length > 0 %}
+    {{ govukErrorSummary({
+      titleText: 'There is a problem',
+      errorList: errors,
+      attributes: { 'data-qa-errors': true }
+    }) }}
+  {% endif %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <h1 class="govuk-heading-l">{{ title }}</h1>
+
+      <form class="form" method="post" novalidate="">
+        <div class="govuk-form-group">
+          <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+
+          {% for role in form.workInterestRoles %}
+            {{ govukInput({
+                id: role[0],
+                name: 'workInterestRoles[' + role[0] + ']',
+                value: role[1],
+                type: "text",
+                classes: "govuk-!-width-one-half",
+                label: {
+                  text: role[0] | formatJobType if role[0] !== 'OTHER' else form.workInterestTypesOther,
+                  classes: 'govuk-heading-m',
+                  attributes: { "aria-live": "polite" }
+                },
+                hint: {
+                  text: "Enter a particular job role (optional)"
+                },
+              errorMessage: errors | findError(role[0])
+              }) }}
+            {% endfor %}   
+        </div>
+
+        {{ govukButton({
+            text: "Continue",
+            type: "submit",
+            attributes: {"data-qa": "submit-button"}
+          }) }}
+      </form>
+    </div>
+  </div>
+
+{% endblock %}
