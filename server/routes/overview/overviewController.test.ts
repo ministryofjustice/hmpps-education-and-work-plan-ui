@@ -1,6 +1,12 @@
 import createError from 'http-errors'
 import moment from 'moment'
-import type { FunctionalSkills, InPrisonEducationRecords, Timeline, WorkAndInterests } from 'viewModels'
+import type {
+  FunctionalSkills,
+  InPrisonEducationRecords,
+  Timeline,
+  WorkAndInterests,
+  InPrisonEducation,
+} from 'viewModels'
 import { SessionData } from 'express-session'
 import { NextFunction, Request, Response } from 'express'
 import OverviewController from './overviewController'
@@ -358,6 +364,8 @@ describe('overviewController', () => {
         educationRecords: [aValidMathsInPrisonEducation()],
       }
 
+      const expectedCompletedEducationRecordsWithinLast12Months = [] as Array<InPrisonEducation>
+
       const expectedEducationAndTraining = aValidShortQuestionSetEducationAndTraining()
       inductionService.getEducationAndTraining.mockResolvedValue(expectedEducationAndTraining)
 
@@ -367,6 +375,7 @@ describe('overviewController', () => {
         tab: expectedTab,
         functionalSkills: expectedFunctionalSkills,
         completedInPrisonEducation: expectedCompletedInPrisonEducation,
+        completedEducationRecordsWithinLast12Months: expectedCompletedEducationRecordsWithinLast12Months,
         educationAndTraining: expectedEducationAndTraining,
       }
 

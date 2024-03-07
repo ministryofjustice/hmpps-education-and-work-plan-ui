@@ -1,52 +1,119 @@
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds app-u-print-full-width">
 
-    <div class="govuk-summary-card">
-      <div class="govuk-summary-card__title-wrapper">
-        <h2 class="govuk-summary-card__title">In-prison qualifications and achievements</h2>
-      </div>
-      <div class="govuk-summary-card__content">
-        {% if not completedInPrisonEducation.problemRetrievingData %}
+    {% if featureToggles.newCourseAndQualificationHistoryEnabled %}
 
-          <table class="govuk-table" id="completed-in-prison-qualifications-table">
-            <caption class="govuk-table__caption govuk-visually-hidden">Details in-prison qualifications and achievement that have been completed</caption>
+      <div class="govuk-summary-card">
+        <div class="govuk-summary-card__title-wrapper">
+          <h2 class="govuk-summary-card__title">In-prison courses and qualifications</h2>
+          {# TODO: JIRA 673, 674 and 676}
+          {% if completedInPrisonEducation.educationRecords.length > 0 %}
+            <ul class="govuk-summary-card__actions govuk-!-display-none-print">
+              <li class="govuk-summary-card__action">
+                <a class="govuk-link" href="#" data-qa="view-all-in-prison-qualifications-button">View all<span class="govuk-visually-hidden"> in-prison courses and qualifications</span></a>
+              </li>
+            </ul>
+          {% endif %}
+          {#}
+        </div>
+        <div class="govuk-summary-card__content">
+          {% if not completedInPrisonEducation.problemRetrievingData %}
+            <p class="govuk-hint">Information from Curious. This only includes educational courses. Contact the local education team to find out more.</p>
 
-            <thead class="govuk-table__head">
-              <tr class="govuk-table__row">
-                <th scope="col" class="govuk-table__header">Name</th>
-                <th scope="col" class="govuk-table__header">Completed on</th>
-                <th scope="col" class="govuk-table__header">Grade or outcome</th>
-              </tr>
-            </thead>
+            <table class="govuk-table" id="completed-in-prison-qualifications-table">
+              <caption class="govuk-table__caption">Completed courses</caption>
 
-            <tbody class="govuk-table__body">
-            {% if completedInPrisonEducation.educationRecords.length > 0 %}
-              {% for completedQualification in completedInPrisonEducation.educationRecords %}
+              <thead class="govuk-table__head">
                 <tr class="govuk-table__row">
-                  <td class="govuk-table__cell">{{ completedQualification.courseName }}</td>
-                  <td class="govuk-table__cell">{{ completedQualification.courseCompletionDate | formatDate('D MMMM YYYY') }}</td>
-                  <td class="govuk-table__cell">{{ completedQualification.grade if completedQualification.grade else 'N/A' }}</td>
+                  <th scope="col" class="govuk-table__header">Name</th>
+                  <th scope="col" class="govuk-table__header">Type</th>
+                  <th scope="col" class="govuk-table__header">Location</th>
+                  <th scope="col" class="govuk-table__header">Completed on</th>
+                  <th scope="col" class="govuk-table__header">Grade or outcome</th>
                 </tr>
-              {% endfor %}
-            {% else %}
-              <tr class="govuk-table__row">
-                <td class="govuk-table__cell" colspan="3">
-                  No qualifications or achievements recorded in Curious.
-                </td>
-              </tr>
-            {% endif %}
-            </tbody>
-          </table>
+              </thead>
 
-        {% else %}
+              <tbody class="govuk-table__body">
+              {% if completedEducationRecordsWithinLast12Months.length > 0 %}
+                {% for completedQualification in completedEducationRecordsWithinLast12Months %}
+                  <tr class="govuk-table__row">
+                    <td class="govuk-table__cell">{{ completedQualification.courseName }}</td>
+                    <td class="govuk-table__cell">{{ completedQualification.isAccredited | formatIsAccredited }}</td>
+                    <td class="govuk-table__cell">{{ completedQualification.prisonName if completedQualification.prisonName else completedQualification.prisonId }}</td>
+                    <td class="govuk-table__cell">{{ completedQualification.courseCompletionDate | formatDate('D MMMM YYYY') }}</td>
+                    <td class="govuk-table__cell">{{ completedQualification.grade if completedQualification.grade else 'N/A' }}</td>
+                  </tr>
+                {% endfor %}
+              {% else %}
+                <tr class="govuk-table__row">
+                  <td class="govuk-table__cell" colspan="5">
+                    No courses or qualifications completed in last 12 months.
+                  </td>
+                </tr>
+              {% endif %}
+              </tbody>
+            </table>
 
-          <h3 class="govuk-heading-s" data-qa="curious-unavailable-message">We cannot show these details from Curious right now</h3>
-          <p class="govuk-body">Reload the page or try again later. Other parts of this service may still be available.</p>
+          {% else %}
 
-        {% endif %}
+            <h3 class="govuk-heading-s" data-qa="curious-unavailable-message">We cannot show these details from Curious right now</h3>
+            <p class="govuk-body">Reload the page or try again later. Other parts of this service may still be available.</p>
 
+          {% endif %}
+
+        </div>
       </div>
-    </div>
+
+    {% else %}
+
+      <div class="govuk-summary-card">
+        <div class="govuk-summary-card__title-wrapper">
+          <h2 class="govuk-summary-card__title">In-prison qualifications and achievements</h2>
+        </div>
+        <div class="govuk-summary-card__content">
+          {% if not completedInPrisonEducation.problemRetrievingData %}
+
+            <table class="govuk-table" id="completed-in-prison-qualifications-table">
+              <caption class="govuk-table__caption govuk-visually-hidden">Details in-prison qualifications and achievement that have been completed</caption>
+
+              <thead class="govuk-table__head">
+                <tr class="govuk-table__row">
+                  <th scope="col" class="govuk-table__header">Name</th>
+                  <th scope="col" class="govuk-table__header">Completed on</th>
+                  <th scope="col" class="govuk-table__header">Grade or outcome</th>
+                </tr>
+              </thead>
+
+              <tbody class="govuk-table__body">
+              {% if completedInPrisonEducation.educationRecords.length > 0 %}
+                {% for completedQualification in completedInPrisonEducation.educationRecords %}
+                  <tr class="govuk-table__row">
+                    <td class="govuk-table__cell">{{ completedQualification.courseName }}</td>
+                    <td class="govuk-table__cell">{{ completedQualification.courseCompletionDate | formatDate('D MMMM YYYY') }}</td>
+                    <td class="govuk-table__cell">{{ completedQualification.grade if completedQualification.grade else 'N/A' }}</td>
+                  </tr>
+                {% endfor %}
+              {% else %}
+                <tr class="govuk-table__row">
+                  <td class="govuk-table__cell" colspan="3">
+                    No qualifications or achievements recorded in Curious.
+                  </td>
+                </tr>
+              {% endif %}
+              </tbody>
+            </table>
+
+          {% else %}
+
+            <h3 class="govuk-heading-s" data-qa="curious-unavailable-message">We cannot show these details from Curious right now</h3>
+            <p class="govuk-body">Reload the page or try again later. Other parts of this service may still be available.</p>
+
+          {% endif %}
+
+        </div>
+      </div>
+
+    {% endif %}
 
   </div>
 </div>

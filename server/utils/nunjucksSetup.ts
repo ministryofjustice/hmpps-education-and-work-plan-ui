@@ -18,6 +18,7 @@ import formatAdditionalTrainingFilter from '../filters/formatAdditionalTrainingF
 import formatSkillFilter from '../filters/formatSkillFilter'
 import formatPersonalInterestsFilter from '../filters/formatPersonalInterestsFilter'
 import fallbackMessageFilter from '../filters/fallbackMessageFilter'
+import formatIsAccreditedFilter from '../filters/formatIsAccreditedFilter'
 import formatInPrisonWorkInterestFilter from '../filters/formatInPrisonWorkInterestFilter'
 import formatInPrisonEducationFilter from '../filters/formatInPrisonEducationFilter'
 import formatReasonNotToGetWorkFilter from '../filters/formatReasonNotToGetWorkFilter'
@@ -79,6 +80,7 @@ export function registerNunjucks(app?: express.Express): Environment {
   njkEnv.addFilter('formatAdditionalTraining', formatAdditionalTrainingFilter)
   njkEnv.addFilter('formatSkill', formatSkillFilter)
   njkEnv.addFilter('formatPersonalInterests', formatPersonalInterestsFilter)
+  njkEnv.addFilter('formatIsAccredited', formatIsAccreditedFilter)
   njkEnv.addFilter('formatInPrisonWorkInterest', formatInPrisonWorkInterestFilter)
   njkEnv.addFilter('formatInPrisonEducation', formatInPrisonEducationFilter)
   njkEnv.addFilter('formatReasonNotToGetWork', formatReasonNotToGetWorkFilter)

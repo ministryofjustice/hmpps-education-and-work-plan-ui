@@ -33,4 +33,31 @@ const mostRecentCompletedInPrisonEducationRecords = (
   }
 }
 
-export { completedInPrisonEducationRecords, mostRecentCompletedInPrisonEducationRecords }
+/**
+ * Returns an InPrisonEducationRecords object where the eduction records are filtered so that only the completed courses
+ * within the last 12 months are returned
+ */
+
+const completedInPrisonEducationRecordsWithinLast12Months = (
+  allInPrisonEducationRecords: InPrisonEducationRecords,
+): InPrisonEducationRecords => {
+  return {
+    ...allInPrisonEducationRecords,
+    educationRecords: (allInPrisonEducationRecords.educationRecords || [])
+      .filter(inPrisonEducation => inPrisonEducation.courseCompleted === true)
+      .filter(inPrisonEducation => {
+        const twelveMonthsAgo = new Date()
+        twelveMonthsAgo.setMonth(twelveMonthsAgo.getMonth() - 12)
+        return inPrisonEducation.courseCompletionDate >= twelveMonthsAgo
+      })
+      .sort((left: InPrisonEducation, right: InPrisonEducation) =>
+        dateComparator(left.courseCompletionDate, right.courseCompletionDate),
+      ),
+  }
+}
+
+export {
+  completedInPrisonEducationRecords,
+  mostRecentCompletedInPrisonEducationRecords,
+  completedInPrisonEducationRecordsWithinLast12Months,
+}
