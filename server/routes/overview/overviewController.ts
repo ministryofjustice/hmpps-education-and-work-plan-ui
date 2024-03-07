@@ -1,4 +1,4 @@
-import type { InPrisonEducation } from 'viewModels'
+import type { InPrisonEducationRecords } from 'viewModels'
 import createError from 'http-errors'
 import { Request, RequestHandler } from 'express'
 import EducationAndTrainingView from './educationAndTrainingView'
@@ -122,18 +122,13 @@ export default class OverviewController {
     const completedInPrisonEducationWithinLast12Months =
       completedInPrisonEducationRecordsWithinLast12Months(completedInPrisonEducation)
 
-    const completedEducationRecordsWithinLast12Months = await this.setPrisonNamesOnInPrisonEducationRecord(
-      completedInPrisonEducationWithinLast12Months.educationRecords || [],
-      req,
-    )
-
     const educationAndTraining = await this.inductionService.getEducationAndTraining(prisonNumber, req.user.token)
 
     const view = new EducationAndTrainingView(
       prisonerSummary,
       functionalSkills,
       completedInPrisonEducation,
-      completedEducationRecordsWithinLast12Months,
+      completedInPrisonEducationWithinLast12Months,
       educationAndTraining,
     )
     res.render('pages/overview/index', { ...view.renderArgs })
@@ -156,19 +151,5 @@ export default class OverviewController {
     const timeline = filterTimelineEvents(allTimelineEvents)
     const view = new TimelineView(prisonerSummary, timeline)
     res.render('pages/overview/index', { ...view.renderArgs })
-  }
-
-  setPrisonNamesOnInPrisonEducationRecord = async (
-    educationRecords: Array<InPrisonEducation>,
-    req: Request,
-  ): Promise<Array<InPrisonEducation>> => {
-    const educationRecordsWithPrisonLookups = educationRecords.map(async educationRecord => {
-      const prison = await this.prisonService.lookupPrison(educationRecord.prisonId, req.user.username)
-      return {
-        ...educationRecord,
-        prisonName: prison?.prisonName,
-      }
-    })
-    return Promise.all(educationRecordsWithPrisonLookups)
   }
 }

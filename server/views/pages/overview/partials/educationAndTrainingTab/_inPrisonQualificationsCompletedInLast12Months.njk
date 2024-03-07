@@ -15,7 +15,7 @@
           {#}
       </div>
       <div class="govuk-summary-card__content">
-        {% if not completedInPrisonEducation.problemRetrievingData %}
+        {% if not completedInPrisonEducationWithinLast12Months.problemRetrievingData %}
         <p class="govuk-hint">Information from Curious. This only includes educational courses. Contact the local education team to find out more.</p>
 
         <table class="govuk-table" id="completed-in-prison-qualifications-table">
@@ -32,22 +32,22 @@
             </thead>
 
             <tbody class="govuk-table__body">
-            {% if completedEducationRecordsWithinLast12Months.length > 0 %}
-            {% for completedQualification in completedEducationRecordsWithinLast12Months %}
-                <tr class="govuk-table__row">
-                <td class="govuk-table__cell">{{ completedQualification.courseName }}</td>
-                <td class="govuk-table__cell">{{ completedQualification.isAccredited | formatIsAccredited }}</td>
-                <td class="govuk-table__cell">{{ completedQualification.prisonName if completedQualification.prisonName else completedQualification.prisonId }}</td>
-                <td class="govuk-table__cell">{{ completedQualification.courseCompletionDate | formatDate('D MMMM YYYY') }}</td>
-                <td class="govuk-table__cell">{{ completedQualification.grade if completedQualification.grade else 'N/A' }}</td>
-                </tr>
-            {% endfor %}
+            {% if completedInPrisonEducationWithinLast12Months.length > 0 %}
+              {% for completedQualification in completedInPrisonEducationWithinLast12Months %}
+                  <tr class="govuk-table__row">
+                  <td class="govuk-table__cell">{{ completedQualification.courseName }}</td>
+                  <td class="govuk-table__cell">{{ completedQualification.isAccredited | formatIsAccredited }}</td>
+                  <td class="govuk-table__cell">{{ completedQualification.prisonName if completedQualification.prisonName else completedQualification.prisonId }}</td>
+                  <td class="govuk-table__cell">{{ completedQualification.courseCompletionDate | formatDate('D MMMM YYYY') }}</td>
+                  <td class="govuk-table__cell">{{ completedQualification.grade if completedQualification.grade else 'N/A' }}</td>
+                  </tr>
+              {% endfor %}
             {% else %}
-            <tr class="govuk-table__row">
-                <td class="govuk-table__cell" colspan="5">
-                No courses or qualifications completed in last 12 months.
-                </td>
-            </tr>
+              <tr class="govuk-table__row">
+                  <td class="govuk-table__cell" colspan="5">
+                  No courses or qualifications completed in last 12 months.
+                  </td>
+              </tr>
             {% endif %}
             </tbody>
         </table>

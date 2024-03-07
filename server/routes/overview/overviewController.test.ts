@@ -364,7 +364,10 @@ describe('overviewController', () => {
         educationRecords: [aValidMathsInPrisonEducation()],
       }
 
-      const expectedCompletedEducationRecordsWithinLast12Months = [] as Array<InPrisonEducation>
+      const expectedCompletedInPrisonEducationWithinLast12Months: InPrisonEducationRecords = {
+        problemRetrievingData: false,
+        educationRecords: [],
+      }
 
       const expectedEducationAndTraining = aValidShortQuestionSetEducationAndTraining()
       inductionService.getEducationAndTraining.mockResolvedValue(expectedEducationAndTraining)
@@ -375,7 +378,7 @@ describe('overviewController', () => {
         tab: expectedTab,
         functionalSkills: expectedFunctionalSkills,
         completedInPrisonEducation: expectedCompletedInPrisonEducation,
-        completedEducationRecordsWithinLast12Months: expectedCompletedEducationRecordsWithinLast12Months,
+        completedInPrisonEducationWithinLast12Months: expectedCompletedInPrisonEducationWithinLast12Months,
         educationAndTraining: expectedEducationAndTraining,
       }
 
