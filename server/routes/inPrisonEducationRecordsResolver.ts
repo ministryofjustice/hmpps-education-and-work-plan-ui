@@ -44,7 +44,6 @@ const completedInPrisonEducationRecordsWithinLast12Months = (
   return {
     ...allInPrisonEducationRecords,
     educationRecords: (allInPrisonEducationRecords.educationRecords || [])
-      .filter(inPrisonEducation => inPrisonEducation.courseCompleted === true)
       .filter(inPrisonEducation => {
         const twelveMonthsAgo = new Date()
         twelveMonthsAgo.setMonth(twelveMonthsAgo.getMonth() - 12)
