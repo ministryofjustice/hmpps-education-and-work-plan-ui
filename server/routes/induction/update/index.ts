@@ -2,7 +2,11 @@ import { Router } from 'express'
 import { Services } from '../../../services'
 import config from '../../../config'
 import { checkUserHasEditAuthority } from '../../../middleware/roleBasedAccessControl'
-import { retrieveInductionIfNotInSession, retrievePrisonerSummaryIfNotInSession } from '../../routerRequestHandlers'
+import {
+  retrieveInductionIfNotInSession,
+  retrievePrisonerSummaryIfNotInSession,
+  setCurrentPageInPageFlowQueue,
+} from '../../routerRequestHandlers'
 import InPrisonWorkUpdateController from './inPrisonWorkUpdateController'
 import SkillsUpdateController from './skillsUpdateController'
 import PersonalInterestsUpdateController from './personalInterestsUpdateController'
@@ -40,11 +44,13 @@ export default (router: Router, services: Services) => {
       checkUserHasEditAuthority(),
       retrievePrisonerSummaryIfNotInSession(services.prisonerSearchService),
       retrieveInductionIfNotInSession(services.inductionService),
+      setCurrentPageInPageFlowQueue,
     ])
     router.post('/prisoners/:prisonNumber/induction/**', [
       checkUserHasEditAuthority(),
       retrievePrisonerSummaryIfNotInSession(services.prisonerSearchService),
       retrieveInductionIfNotInSession(services.inductionService),
+      setCurrentPageInPageFlowQueue,
     ])
   }
 

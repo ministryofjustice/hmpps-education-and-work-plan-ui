@@ -8,6 +8,7 @@ import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateIn
 import logger from '../../../../logger'
 import validatePreviousWorkExperienceDetailForm from './previousWorkExperienceDetailFormValidator'
 import TypeOfWorkExperienceValue from '../../../enums/typeOfWorkExperienceValue'
+import { getNextPage, isLastPage } from '../../pageFlowQueue'
 
 /**
  * Controller for the Update of the Previous Work Experience Detail screen of the Induction.
@@ -63,9 +64,18 @@ export default class PreviousWorkExperienceDetailUpdateController extends Previo
       previousWorkExperienceDetailForm,
       previousWorkExperienceType,
     )
-    const updateInductionDto = toCreateOrUpdateInductionDto(prisonId, updatedInduction)
+
+    const { pageFlowQueue } = req.session
+    if (pageFlowQueue && !isLastPage(pageFlowQueue)) {
+      // There is a page flow queue, and we are not on the last page of the queue yet
+      // Put the updated InductionDto on the session and redirect to the next page in the queue
+      req.session.inductionDto = updatedInduction
+      req.session.previousWorkExperienceDetailForm = undefined
+      return res.redirect(getNextPage(pageFlowQueue))
+    }
 
     try {
+      const updateInductionDto = toCreateOrUpdateInductionDto(prisonId, updatedInduction)
       await this.inductionService.updateInduction(prisonNumber, updateInductionDto, req.user.token)
 
       req.session.previousWorkExperienceDetailForm = undefined

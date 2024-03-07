@@ -1,16 +1,31 @@
+import createError from 'http-errors'
 import { NextFunction, Response, Request } from 'express'
 import { SessionData } from 'express-session'
 import type { UpdateGoalForm } from 'forms'
 import type { NewGoal } from 'compositeForms'
-import createError from 'http-errors'
+import type { PageFlowQueue } from 'viewModels'
+import type { InductionDto } from 'inductionDto'
+import type {
+  AffectAbilityToWorkForm,
+  InPrisonWorkForm,
+  PersonalInterestsForm,
+  PreviousWorkExperienceDetailForm,
+  PreviousWorkExperienceTypesForm,
+  ReasonsNotToGetWorkForm,
+  SkillsForm,
+  WorkedBeforeForm,
+  WorkInterestTypesForm,
+} from 'inductionForms'
 import {
   checkCreateGoalFormExistsInSession,
   checkAddStepFormsArrayExistsInSession,
   checkPrisonerSummaryExistsInSession,
   checkUpdateGoalFormExistsInSession,
   checkNewGoalsFormExistsInSession,
+  removeInductionFormsFromSession,
   retrievePrisonerSummaryIfNotInSession,
   retrieveInductionIfNotInSession,
+  setCurrentPageInPageFlowQueue,
 } from './routerRequestHandlers'
 import { aValidAddStepForm } from '../testsupport/addStepFormTestDataBuilder'
 import aValidPrisonerSummary from '../testsupport/prisonerSummaryTestDataBuilder'
@@ -19,13 +34,19 @@ import aValidAddNoteForm from '../testsupport/addNoteFormTestDataBuilder'
 import { InductionService, PrisonerSearchService } from '../services'
 import aValidNewGoalForm from '../testsupport/newGoalFormTestDataBuilder'
 import { aShortQuestionSetInductionDto } from '../testsupport/inductionDtoTestDataBuilder'
+import { setCurrentPageIndex } from './pageFlowQueue'
+
+jest.mock('./pageFlowQueue')
 
 describe('routerRequestHandlers', () => {
+  const mockCurrentPageIndexSetter = setCurrentPageIndex as jest.MockedFunction<typeof setCurrentPageIndex>
+
   const req = {
     user: {} as Express.User,
     session: {} as SessionData,
     params: {} as Record<string, string>,
     query: {} as Record<string, string>,
+    path: '',
   }
   const res = {
     redirect: jest.fn(),
@@ -38,6 +59,7 @@ describe('routerRequestHandlers', () => {
     req.session = {} as SessionData
     req.params = {} as Record<string, string>
     req.query = {} as Record<string, string>
+    req.path = ''
   })
 
   describe('checkCreateGoalFormExistsInSession', () => {
@@ -652,6 +674,90 @@ describe('routerRequestHandlers', () => {
       expect(inductionService.getInduction).toHaveBeenCalledWith(prisonNumber, token)
       expect(req.session.prisonerSummary).toBeUndefined()
       expect(next).toHaveBeenCalledWith(expectedError)
+    })
+  })
+
+  describe('removeInductionFormsFromSession', () => {
+    it('should remove induction forms from session', async () => {
+      // Given
+      req.session.pageFlowQueue = {} as PageFlowQueue
+      req.session.inductionDto = {} as InductionDto
+      req.session.inPrisonWorkForm = {} as InPrisonWorkForm
+      req.session.skillsForm = {} as SkillsForm
+      req.session.personalInterestsForm = {} as PersonalInterestsForm
+      req.session.workedBeforeForm = {} as WorkedBeforeForm
+      req.session.previousWorkExperienceTypesForm = {} as PreviousWorkExperienceTypesForm
+      req.session.previousWorkExperienceDetailForm = {} as PreviousWorkExperienceDetailForm
+      req.session.affectAbilityToWorkForm = {} as AffectAbilityToWorkForm
+      req.session.reasonsNotToGetWorkForm = {} as ReasonsNotToGetWorkForm
+      req.session.workInterestTypesForm = {} as WorkInterestTypesForm
+
+      // When
+      await removeInductionFormsFromSession(
+        req as undefined as Request,
+        res as undefined as Response,
+        next as undefined as NextFunction,
+      )
+
+      // Then
+      expect(next).toHaveBeenCalled()
+      expect(req.session.pageFlowQueue).toBeUndefined()
+      expect(req.session.inductionDto).toBeUndefined()
+      expect(req.session.inPrisonWorkForm).toBeUndefined()
+      expect(req.session.skillsForm).toBeUndefined()
+      expect(req.session.personalInterestsForm).toBeUndefined()
+      expect(req.session.workedBeforeForm).toBeUndefined()
+      expect(req.session.previousWorkExperienceTypesForm).toBeUndefined()
+      expect(req.session.previousWorkExperienceDetailForm).toBeUndefined()
+      expect(req.session.affectAbilityToWorkForm).toBeUndefined()
+      expect(req.session.reasonsNotToGetWorkForm).toBeUndefined()
+      expect(req.session.workInterestTypesForm).toBeUndefined()
+    })
+  })
+
+  describe('setCurrentPageInPageFlowQueue', () => {
+    it('should set the current page in page flow queue given there is a PageFlowQueue on the session', async () => {
+      // Given
+      const initialPageFlowQueue: PageFlowQueue = {
+        pageUrls: ['/first-page', '/second-page', '/third-page'],
+        currentPageIndex: 0,
+      }
+      req.session.pageFlowQueue = initialPageFlowQueue
+      req.path = '/second-page'
+
+      const expectedPageFlowQueue: PageFlowQueue = {
+        pageUrls: ['/first-page', '/second-page', '/third-page'],
+        currentPageIndex: 1,
+      }
+      mockCurrentPageIndexSetter.mockReturnValue(expectedPageFlowQueue)
+
+      // When
+      await setCurrentPageInPageFlowQueue(
+        req as undefined as Request,
+        res as undefined as Response,
+        next as undefined as NextFunction,
+      )
+
+      // Then
+      expect(next).toHaveBeenCalled()
+      expect(req.session.pageFlowQueue).toEqual(expectedPageFlowQueue)
+      expect(mockCurrentPageIndexSetter).toHaveBeenCalledWith(initialPageFlowQueue, '/second-page')
+    })
+
+    it('should not set the current page in page flow queue given there is no PageFlowQueue on the session', async () => {
+      // Given
+      req.session.pageFlowQueue = undefined
+
+      // When
+      await setCurrentPageInPageFlowQueue(
+        req as undefined as Request,
+        res as undefined as Response,
+        next as undefined as NextFunction,
+      )
+
+      // Then
+      expect(next).toHaveBeenCalled()
+      expect(req.session.pageFlowQueue).toBeUndefined()
     })
   })
 })
