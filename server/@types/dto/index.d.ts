@@ -185,7 +185,7 @@ declare module 'inductionDto' {
   }
 
   export interface FutureWorkInterestDto {
-    workType: WorkInterestsValue
+    workType: WorkInterestTypeValue
     workTypeOther?: string
     role?: string
   }
