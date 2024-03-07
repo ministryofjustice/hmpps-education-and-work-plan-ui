@@ -1,12 +1,6 @@
 import createError from 'http-errors'
 import moment from 'moment'
-import type {
-  FunctionalSkills,
-  InPrisonEducationRecords,
-  Timeline,
-  WorkAndInterests,
-  InPrisonEducation,
-} from 'viewModels'
+import type { FunctionalSkills, InPrisonEducationRecords, Timeline, WorkAndInterests } from 'viewModels'
 import { SessionData } from 'express-session'
 import { NextFunction, Request, Response } from 'express'
 import OverviewController from './overviewController'

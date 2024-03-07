@@ -1,6 +1,5 @@
-import type { InPrisonEducationRecords } from 'viewModels'
 import createError from 'http-errors'
-import { Request, RequestHandler } from 'express'
+import { RequestHandler } from 'express'
 import EducationAndTrainingView from './educationAndTrainingView'
 import SupportNeedsView from './supportNeedsView'
 import { CuriousService, InductionService } from '../../services'

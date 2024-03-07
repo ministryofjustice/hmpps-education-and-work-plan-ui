@@ -1,10 +1,4 @@
-import type {
-  FunctionalSkills,
-  InPrisonEducationRecords,
-  EducationAndTraining,
-  PrisonerSummary,
-  InPrisonEducation,
-} from 'viewModels'
+import type { FunctionalSkills, InPrisonEducationRecords, EducationAndTraining, PrisonerSummary } from 'viewModels'
 
 export default class EducationAndTrainingView {
   constructor(
