@@ -8,8 +8,12 @@ The 'Training and eduction in prison' summary card is only shown if the short qu
 #}
 
 {% include './_functionalSkills.njk' %}
-{% include './_inPrisonQualifications.njk' %}
 
+{% if featureToggles.newCourseAndQualificationHistoryEnabled %}
+  {% include './_inPrisonQualificationsCompletedInLast12Months.njk' %}
+{% else %}
+  {% include './_inPrisonQualifications.njk' %}
+{% endif %}
 
 {% if not educationAndTraining.problemRetrievingData %}
 
