@@ -7,6 +7,7 @@ import functionalSkills from './functionalSkills'
 import prisonerList from './prisonerList'
 import postInductionCreation from './postInductionCreation'
 import updateInduction from './induction/update'
+import inPrisonCoursesAndQualifications from './inPrisonCoursesAndQualifications'
 
 export default function routes(services: Services): Router {
   const router = Router()
@@ -16,6 +17,7 @@ export default function routes(services: Services): Router {
   createGoal(router, services)
   updateGoal(router, services)
   functionalSkills(router, services)
+  inPrisonCoursesAndQualifications(router, services)
 
   postInductionCreation(router, services)
 
