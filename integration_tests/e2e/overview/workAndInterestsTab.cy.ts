@@ -9,6 +9,7 @@ import ReasonsNotToGetWorkPage from '../../pages/induction/ReasonsNotToGetWorkPa
 import PreviousWorkExperienceDetailPage from '../../pages/induction/PreviousWorkExperienceDetailPage'
 import TypeOfWorkExperienceValue from '../../../server/enums/typeOfWorkExperienceValue'
 import FutureWorkInterestTypesPage from '../../pages/induction/FutureWorkInterestTypesPage'
+import FutureWorkInterestRolesPage from '../../pages/induction/FutureWorkInterestRolesPage'
 import PreviousWorkExperienceTypesPage from '../../pages/induction/PreviousWorkExperienceTypesPage'
 
 context('Prisoner Overview page - Work and Interests tab', () => {
@@ -243,5 +244,21 @@ context('Prisoner Overview page - Work and Interests tab', () => {
       // Then
       Page.verifyOnPage(FutureWorkInterestTypesPage)
     })
+  })
+
+  it(`should link to change Induction 'Future Work Interest Roles' question given long question set induction`, () => {
+    // Given
+    cy.task('stubGetInductionLongQuestionSet')
+
+    cy.signIn()
+    const prisonNumber = 'G6115VJ'
+    cy.visit(`/plan/${prisonNumber}/view/work-and-interests`)
+    const workAndInterestsPage = Page.verifyOnPage(WorkAndInterestsPage)
+
+    // When
+    workAndInterestsPage.clickFutureWorkInterestRolesChangeLink()
+
+    // Then
+    Page.verifyOnPage(FutureWorkInterestRolesPage)
   })
 })

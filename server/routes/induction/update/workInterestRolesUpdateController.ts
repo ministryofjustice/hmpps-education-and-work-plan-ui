@@ -33,7 +33,8 @@ export default class WorkInterestRolesUpdateController extends WorkInterestRoles
     const { prisonerSummary, inductionDto } = req.session
     const { prisonId } = prisonerSummary
 
-    req.session.workInterestRolesForm = { ...req.body }
+    const workInterestRoles = new Map(Object.entries({ ...req.body.workInterestRoles }))
+    req.session.workInterestRolesForm = { workInterestRoles } as WorkInterestRolesForm
     const { workInterestRolesForm } = req.session
 
     const updatedInduction = this.updatedInductionDtoWithWorkInterestRoles(inductionDto, workInterestRolesForm)
@@ -59,7 +60,7 @@ export default class WorkInterestRolesUpdateController extends WorkInterestRoles
       return {
         workType: interest.workType,
         workTypeOther: interest.workTypeOther,
-        role: workInterestRolesForm.workInterestRoles.get(interest.workType),
+        role: workInterestRolesForm.workInterestRoles?.get(interest.workType),
       }
     })
     return {

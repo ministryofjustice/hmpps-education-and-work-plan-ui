@@ -44,13 +44,16 @@ context('Update future work interest types within an Induction', () => {
       putRequestedFor(urlEqualTo(`/inductions/${prisonNumber}`)) //
         .withRequestBody(
           matchingJsonPath(
-            '$[?(@.futureWorkInterests.interests.size() == 2 && ' +
-              "@.futureWorkInterests.interests[0].workType == 'WASTE_MANAGEMENT' && " +
-              "@.futureWorkInterests.interests[0].role == 'Bin man' && " +
+            '$[?(@.futureWorkInterests.interests.size() == 3 && ' +
+              "@.futureWorkInterests.interests[0].workType == 'CONSTRUCTION' && " +
+              '!@.futureWorkInterests.interests[0].role && ' +
               '!@.futureWorkInterests.interests[0].workTypeOther && ' +
-              "@.futureWorkInterests.interests[1].workType == 'OTHER' && " +
-              '!@.futureWorkInterests.interests[1].role && ' +
-              "@.futureWorkInterests.interests[1].workTypeOther == 'Renewable energy')]",
+              "@.futureWorkInterests.interests[1].workType == 'WASTE_MANAGEMENT' && " +
+              "@.futureWorkInterests.interests[1].role == 'Bin man' && " +
+              '!@.futureWorkInterests.interests[1].workTypeOther && ' +
+              "@.futureWorkInterests.interests[2].workType == 'OTHER' && " +
+              '!@.futureWorkInterests.interests[2].role && ' +
+              "@.futureWorkInterests.interests[2].workTypeOther == 'Renewable energy')]",
           ),
         ),
     )

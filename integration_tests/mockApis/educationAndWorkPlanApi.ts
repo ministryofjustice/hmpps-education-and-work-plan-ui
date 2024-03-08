@@ -322,8 +322,14 @@ const stubGetInductionLongQuestionSet = (prisonNumber = 'G6115VJ'): SuperAgentRe
           interests: [
             {
               workType: 'WASTE_MANAGEMENT',
-              workTypeOther: null,
               role: 'Bin man',
+            },
+            {
+              workType: 'CONSTRUCTION',
+            },
+            {
+              workType: 'OTHER',
+              workTypeOther: 'Renewable energy',
             },
           ],
         },
