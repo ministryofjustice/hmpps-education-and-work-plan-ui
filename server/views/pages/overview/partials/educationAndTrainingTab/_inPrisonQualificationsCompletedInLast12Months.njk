@@ -3,16 +3,14 @@
 
     <div class="govuk-summary-card">
       <div class="govuk-summary-card__title-wrapper">
-          <h2 class="govuk-summary-card__title">In-prison courses and qualifications</h2>
-          {# TODO: JIRA 673, 674 and 676}
-          {% if completedInPrisonEducation.educationRecords.length > 0 %}
-          <ul class="govuk-summary-card__actions govuk-!-display-none-print">
-              <li class="govuk-summary-card__action">
-              <a class="govuk-link" href="#" data-qa="view-all-in-prison-qualifications-button">View all<span class="govuk-visually-hidden"> in-prison courses and qualifications</span></a>
-              </li>
-          </ul>
-          {% endif %}
-          {#}
+        <h2 class="govuk-summary-card__title">In-prison courses and qualifications</h2>
+        {% if completedInPrisonEducation.educationRecords.length > 0 %}
+        <ul class="govuk-summary-card__actions govuk-!-display-none-print">
+          <li class="govuk-summary-card__action">
+            <a class="govuk-link" href="/plan/{{ prisonerSummary.prisonNumber }}/in-prison-courses-and-qualifications" data-qa="view-all-in-prison-qualifications-button">View all<span class="govuk-visually-hidden"> in-prison courses and qualifications</span></a>
+          </li>
+        </ul>
+        {% endif %}
       </div>
       <div class="govuk-summary-card__content">
         {% if not completedInPrisonEducationWithinLast12Months.problemRetrievingData %}
