@@ -9,6 +9,7 @@ import ReasonsNotToGetWorkPage from '../../pages/induction/ReasonsNotToGetWorkPa
 import PreviousWorkExperienceDetailPage from '../../pages/induction/PreviousWorkExperienceDetailPage'
 import TypeOfWorkExperienceValue from '../../../server/enums/typeOfWorkExperienceValue'
 import FutureWorkInterestTypesPage from '../../pages/induction/FutureWorkInterestTypesPage'
+import PreviousWorkExperienceTypesPage from '../../pages/induction/PreviousWorkExperienceTypesPage'
 
 context('Prisoner Overview page - Work and Interests tab', () => {
   beforeEach(() => {
@@ -192,6 +193,25 @@ context('Prisoner Overview page - Work and Interests tab', () => {
       Page.verifyOnPage(ReasonsNotToGetWorkPage)
     })
 
+    it(`should link to change Induction 'Previous Work Experience Types' question given long question set induction`, () => {
+      // Given
+      cy.task('stubGetInductionLongQuestionSet') // Long question set induction has previous work experiences of Office and Other
+
+      cy.signIn()
+      const prisonNumber = 'G6115VJ'
+      cy.visit(`/plan/${prisonNumber}/view/work-and-interests`)
+      const workAndInterestsPage = Page.verifyOnPage(WorkAndInterestsPage)
+
+      // When
+      workAndInterestsPage.clickPreviousWorkExperienceTypesChangeLink()
+
+      // Then
+      const previousWorkExperienceTypesPage = Page.verifyOnPage(PreviousWorkExperienceTypesPage)
+      previousWorkExperienceTypesPage //
+        .hasPreviousWorkExperiences([TypeOfWorkExperienceValue.OFFICE, TypeOfWorkExperienceValue.OTHER])
+        .hasOtherPreviousWorkExperienceType('Finance')
+    })
+
     it(`should link to change Induction 'Previous Work Experience Detail' question given long question set induction`, () => {
       // Given
       cy.task('stubGetInductionLongQuestionSet') // Long question set induction has previous work experiences of Office and Other
@@ -207,21 +227,21 @@ context('Prisoner Overview page - Work and Interests tab', () => {
       // Then
       Page.verifyOnPage(PreviousWorkExperienceDetailPage)
     })
-  })
 
-  it(`should link to change Induction 'Future Work Interest Types' question given long question set induction`, () => {
-    // Given
-    cy.task('stubGetInductionLongQuestionSet')
+    it(`should link to change Induction 'Future Work Interest Types' question given long question set induction`, () => {
+      // Given
+      cy.task('stubGetInductionLongQuestionSet')
 
-    cy.signIn()
-    const prisonNumber = 'G6115VJ'
-    cy.visit(`/plan/${prisonNumber}/view/work-and-interests`)
-    const workAndInterestsPage = Page.verifyOnPage(WorkAndInterestsPage)
+      cy.signIn()
+      const prisonNumber = 'G6115VJ'
+      cy.visit(`/plan/${prisonNumber}/view/work-and-interests`)
+      const workAndInterestsPage = Page.verifyOnPage(WorkAndInterestsPage)
 
-    // When
-    workAndInterestsPage.clickFutureWorkInterestTypesChangeLink()
+      // When
+      workAndInterestsPage.clickFutureWorkInterestTypesChangeLink()
 
-    // Then
-    Page.verifyOnPage(FutureWorkInterestTypesPage)
+      // Then
+      Page.verifyOnPage(FutureWorkInterestTypesPage)
+    })
   })
 })
