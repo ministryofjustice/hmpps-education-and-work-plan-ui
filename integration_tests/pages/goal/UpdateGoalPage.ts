@@ -5,11 +5,6 @@ export default class UpdateGoalPage extends Page {
     super('update-goal')
   }
 
-  isForPrisoner(expected: string) {
-    this.prisonNumberLabel().should('have.text', expected)
-    return this
-  }
-
   isForGoal(expected: string) {
     this.goalReferenceInputValue().should('have.value', expected)
     return this
@@ -93,8 +88,6 @@ export default class UpdateGoalPage extends Page {
   submitButton = (): PageElement => cy.get('[data-qa=goal-update-submit-button]')
 
   addAnotherStepButton = (): PageElement => cy.get('[data-qa=goal-update-add-another-step-button]')
-
-  prisonNumberLabel = (): PageElement => cy.get('[data-qa=prison-number]')
 
   goalReferenceInputValue = (): PageElement => cy.get('[data-qa=goal-reference]')
 

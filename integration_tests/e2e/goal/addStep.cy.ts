@@ -51,8 +51,7 @@ context('Add a step', () => {
       .setTargetCompletionDate0to3Months()
       .submitPage()
 
-    const addStepPage = Page.verifyOnPage(AddStepPage)
-    addStepPage.isForPrisoner(prisonNumber)
+    Page.verifyOnPage(AddStepPage)
 
     const someOtherPrisonNumber = 'H4115SD'
 

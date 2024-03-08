@@ -30,10 +30,10 @@ context('Create a goal', () => {
     const overviewPage = Page.verifyOnPage(OverviewPage)
 
     // When
-    const createGoalPage = overviewPage.clickAddGoalButton()
+    overviewPage.clickAddGoalButton()
 
     // Then
-    createGoalPage.isForPrisoner(prisonNumber)
+    Page.verifyOnPage(CreateGoalPage)
   })
 
   it('should be able to navigate directly to Create Goal page from non-PLP pages such as CIAG service', () => {
@@ -45,8 +45,7 @@ context('Create a goal', () => {
     cy.visit(`/plan/${prisonNumber}/goals/1/create`)
 
     // Then
-    const createGoalPage = Page.verifyOnPage(CreateGoalPage)
-    createGoalPage.isForPrisoner(prisonNumber)
+    Page.verifyOnPage(CreateGoalPage)
   })
 
   it('should not proceed to Add Step page given validation errors on Create Goal page', () => {

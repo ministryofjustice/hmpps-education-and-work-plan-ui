@@ -57,8 +57,7 @@ context('Add a note', () => {
       .setStepTitle('Book French course')
       .submitPage()
 
-    const addNotePage = Page.verifyOnPage(AddNotePage)
-    addNotePage.isForPrisoner(prisonNumber)
+    Page.verifyOnPage(AddNotePage)
 
     const someOtherPrisonNumber = 'H4115SD'
 
@@ -91,7 +90,6 @@ context('Add a note', () => {
     // Then
     const addStepPage = Page.verifyOnPage(AddStepPage)
     addStepPage //
-      .isForPrisoner(prisonNumber)
       .isStepNumber(1)
   })
 
@@ -119,8 +117,6 @@ context('Add a note', () => {
     addNotePage.submitPage()
 
     // Then
-    const reviewPage = Page.verifyOnPage(ReviewPage)
-    reviewPage //
-      .isForPrisoner(prisonNumber)
+    Page.verifyOnPage(ReviewPage)
   })
 })

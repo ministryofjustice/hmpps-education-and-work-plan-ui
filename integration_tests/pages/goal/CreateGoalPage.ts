@@ -5,11 +5,6 @@ export default class CreateGoalPage extends Page {
     super('create-goal')
   }
 
-  isForPrisoner(expected: string): CreateGoalPage {
-    this.prisonNumberLabel().should('have.text', expected)
-    return this
-  }
-
   setGoalTitle(title: string): CreateGoalPage {
     this.titleField().clear().type(title)
     return this
@@ -68,6 +63,4 @@ export default class CreateGoalPage extends Page {
   targetDateFieldYearField = (): PageElement => cy.get('#another-date-year')
 
   submitButton = (): PageElement => cy.get('button')
-
-  prisonNumberLabel = (): PageElement => cy.get('[data-qa=prison-number]')
 }

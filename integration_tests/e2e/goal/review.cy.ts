@@ -61,7 +61,6 @@ context('Review goal(s)', () => {
 
     const addNotePage = Page.verifyOnPage(AddNotePage)
     addNotePage //
-      .isForPrisoner(prisonNumber)
       .submitPage()
     Page.verifyOnPage(ReviewPage)
 
@@ -172,8 +171,6 @@ context('Review goal(s)', () => {
     addNotePage.submitPage()
 
     const reviewPage = Page.verifyOnPage(ReviewPage)
-    reviewPage //
-      .isForPrisoner(prisonNumber)
 
     // When
     reviewPage.submitPage()

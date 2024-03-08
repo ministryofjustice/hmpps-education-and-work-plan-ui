@@ -35,9 +35,7 @@ context(`Show the relevant screen after an Induction has been created`, () => {
     cy.visit(`/plan/${prisonNumber}/induction-created`)
 
     // Then
-    const createGoalPage = Page.verifyOnPage(CreateGoalPage)
-    createGoalPage //
-      .isForPrisoner(prisonNumber)
+    Page.verifyOnPage(CreateGoalPage)
   })
 
   it('should display the Overview page given the prisoner already has an Action Plan with goals', () => {

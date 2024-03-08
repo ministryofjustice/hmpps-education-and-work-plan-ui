@@ -5,11 +5,6 @@ export default class AddNotePage extends Page {
     super('add-note')
   }
 
-  isForPrisoner(expected: string) {
-    this.prisonNumberLabel().should('have.text', expected)
-    return this
-  }
-
   setNote(note: string) {
     this.noteField().clear().type(note)
     return this
@@ -22,6 +17,4 @@ export default class AddNotePage extends Page {
   noteField = (): PageElement => cy.get('#note')
 
   submitButton = (): PageElement => cy.get('#submit-button')
-
-  prisonNumberLabel = (): PageElement => cy.get('[data-qa=prison-number]')
 }

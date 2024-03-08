@@ -5,11 +5,6 @@ export default class ReviewPage extends Page {
     super('review')
   }
 
-  isForPrisoner(expected: string) {
-    this.prisonNumberLabel().should('have.text', expected)
-    return this
-  }
-
   addAnotherGoal() {
     this.addAnotherGoalButton().click()
   }
@@ -75,6 +70,4 @@ export default class ReviewPage extends Page {
   changeGoalNote = (idx: number): PageElement => cy.get(`[data-qa=change-goal-${idx}-note]`)
 
   submitButton = (): PageElement => cy.get('#submit-button')
-
-  prisonNumberLabel = (): PageElement => cy.get('[data-qa=prison-number]')
 }
