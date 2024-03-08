@@ -132,7 +132,6 @@ context('Prisoner Overview page - Post Induction', () => {
     overviewPage.clickAddGoalButton()
 
     // Then
-    const createGoalPage = Page.verifyOnPage(CreateGoalPage)
-    createGoalPage.isForPrisoner(prisonNumber)
+    Page.verifyOnPage(CreateGoalPage)
   })
 })

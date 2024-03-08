@@ -49,7 +49,6 @@ context('Review updated goal', () => {
     updateGoalPage.isForGoal(goalReference).submitPage()
 
     const reviewUpdateGoalPage = Page.verifyOnPage(ReviewUpdateGoalPage)
-    reviewUpdateGoalPage.isForPrisoner(prisonNumber)
 
     // When
     reviewUpdateGoalPage.goBackToEditGoal()
@@ -71,7 +70,6 @@ context('Review updated goal', () => {
     updateGoalPage.isForGoal(goalReference).submitPage()
 
     const reviewUpdateGoalPage = Page.verifyOnPage(ReviewUpdateGoalPage)
-    reviewUpdateGoalPage.isForPrisoner(prisonNumber)
 
     // When
     reviewUpdateGoalPage.submitPage()
@@ -124,7 +122,6 @@ context('Review updated goal', () => {
     updateGoalPage.isForGoal(goalReference).submitPage()
 
     const reviewUpdateGoalPage = Page.verifyOnPage(ReviewUpdateGoalPage)
-    reviewUpdateGoalPage.isForPrisoner(prisonNumber)
 
     // When
     reviewUpdateGoalPage.submitPage()

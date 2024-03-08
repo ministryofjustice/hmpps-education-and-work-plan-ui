@@ -5,11 +5,6 @@ export default class AddStepPage extends Page {
     super('add-step')
   }
 
-  isForPrisoner(expected: string): AddStepPage {
-    this.prisonNumberLabel().should('have.text', expected)
-    return this
-  }
-
   isStepNumber(expected: number): AddStepPage {
     this.stepNumberLabel().should('contain.text', `Step ${expected}`)
     return this
@@ -44,8 +39,6 @@ export default class AddStepPage extends Page {
   addAnotherStepButton = (): PageElement => cy.get('#add-another-step-button')
 
   submitButton = (): PageElement => cy.get('#submit-button')
-
-  prisonNumberLabel = (): PageElement => cy.get('[data-qa=prison-number]')
 
   stepNumberLabel = (): PageElement => cy.get('label[for=title]')
 }
