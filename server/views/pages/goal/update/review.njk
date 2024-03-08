@@ -34,43 +34,44 @@
         {% endif %}
       {% endset %}
 
-      {{ govukSummaryList({
-        classes: 'govuk-!-margin-bottom-9',
-        rows: [
-          {
-            key: {
-              text: "Status"
-            },
-            value: {
-              html: goalStatusHtml
-            }
-          },
-          {
-            key: {
-              text: "Description"
-            },
-            value: {
-              text: data.title | formatMultilineText | safe
-            }
-          },
-          {
-            key: {
-              text: "When are they aiming to achieve this by?"
-            },
-            value: {
-              text: "by " + data.targetCompletionDate | formatDate('D MMMM YYYY')
-            }
-          },
-          {
-            key: {
-              text: "Note"
-            },
-            value: {
-              text: data.notes | formatMultilineText | safe
-            }
-          }
-        ]
-      }) }}
+      <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">
+            Status
+          </dt>
+          <dd class="govuk-summary-list__value">
+            {{ goalStatusHtml | safe }}
+          </dd>
+        </div>
+
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">
+            Description
+          </dt>
+          <dd class="govuk-summary-list__value">
+            <span class="app-u-multiline-text">{{ data.title }}</span>
+          </dd>
+        </div>
+
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">
+            When are they aiming to achieve this by?
+          </dt>
+          <dd class="govuk-summary-list__value">
+            by {{ data.targetCompletionDate | formatDate('D MMMM YYYY') }}
+          </dd>
+        </div>
+
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">
+            Note
+          </dt>
+          <dd class="govuk-summary-list__value">
+            <span class="app-u-multiline-text">{{ data.notes }}</span>
+          </dd>
+        </div>
+      </dl>
+
       <table class="govuk-table">
         <caption class="govuk-table__caption govuk-table__caption--m govuk-visually-hidden">Step details</caption>
         <thead class="govuk-table__head govuk-visually-hidden">
@@ -101,7 +102,7 @@
 
             <tr class="govuk-table__row">
               <th scope="row" class="govuk-table__header">Step {{ step.sequenceNumber }}</th>
-              <td class="govuk-table__cell">{{ step.title | formatMultilineText | safe }}</td>
+              <td class="govuk-table__cell app-u-multiline-text">{{ step.title }}</td>
               <td class="govuk-table__cell govuk-!-text-align-right">{{ stepStatusHtml | safe }}</td>
             </tr>
           {% endfor %}
