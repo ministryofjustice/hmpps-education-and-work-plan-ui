@@ -144,15 +144,13 @@ describe('workInterestRolesUpdateController', () => {
       const inductionDto = aLongQuestionSetInductionDto()
       req.session.inductionDto = inductionDto
 
-      const workInterestRolesForm = {
-        workInterestRoles: new Map<WorkInterestTypeValue, string>([
-          [WorkInterestTypeValue.RETAIL, null],
-          [WorkInterestTypeValue.CONSTRUCTION, 'General labourer'],
-          [WorkInterestTypeValue.OTHER, 'Being a stunt double for Tom Cruise, even though he does all his own stunts'],
-        ]),
-        workInterestTypesOther: 'Film, TV and media',
+      req.body = {
+        workInterestRoles: {
+          RETAIL: null as string,
+          CONSTRUCTION: 'General labourer',
+          OTHER: 'Being a stunt double for Tom Cruise, even though he does all his own stunts',
+        },
       }
-      req.body = workInterestRolesForm
       req.session.workInterestRolesForm = undefined
       const updateInductionDto = aLongQuestionSetUpdateInductionRequest()
 
@@ -205,15 +203,13 @@ describe('workInterestRolesUpdateController', () => {
       const inductionDto = aLongQuestionSetInductionDto()
       req.session.inductionDto = inductionDto
 
-      const workInterestRolesForm = {
-        workInterestRoles: new Map<WorkInterestTypeValue, string>([
-          [WorkInterestTypeValue.RETAIL, null],
-          [WorkInterestTypeValue.CONSTRUCTION, 'General labourer'],
-          [WorkInterestTypeValue.OTHER, 'Being a stunt double for Tom Cruise, even though he does all his own stunts'],
-        ]),
-        workInterestTypesOther: 'Film, TV and media',
+      req.body = {
+        workInterestRoles: {
+          RETAIL: null as string,
+          CONSTRUCTION: 'General labourer',
+          OTHER: 'Being a stunt double for Tom Cruise, even though he does all his own stunts',
+        },
       }
-      req.body = workInterestRolesForm
       req.session.workInterestRolesForm = undefined
       const updateInductionDto = aLongQuestionSetUpdateInductionRequest()
 
@@ -235,6 +231,13 @@ describe('workInterestRolesUpdateController', () => {
           role: 'Being a stunt double for Tom Cruise, even though he does all his own stunts',
         },
       ]
+      const expectedWorkInterestsForm = {
+        workInterestRoles: new Map<WorkInterestTypeValue, string>([
+          [WorkInterestTypeValue.RETAIL, null],
+          [WorkInterestTypeValue.CONSTRUCTION, 'General labourer'],
+          [WorkInterestTypeValue.OTHER, 'Being a stunt double for Tom Cruise, even though he does all his own stunts'],
+        ]),
+      }
 
       inductionService.updateInduction.mockRejectedValue(createError(500, 'Service unavailable'))
       const expectedError = createError(
@@ -257,7 +260,7 @@ describe('workInterestRolesUpdateController', () => {
 
       expect(inductionService.updateInduction).toHaveBeenCalledWith(prisonNumber, updateInductionDto, 'some-token')
       expect(next).toHaveBeenCalledWith(expectedError)
-      expect(req.session.workInterestRolesForm).toEqual(workInterestRolesForm)
+      expect(req.session.workInterestRolesForm).toEqual(expectedWorkInterestsForm)
       expect(req.session.inductionDto).toEqual(inductionDto)
     })
   })
