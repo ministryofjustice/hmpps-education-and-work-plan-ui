@@ -69,7 +69,7 @@ describe('inPrisonWorkUpdateController', () => {
       const expectedView = {
         prisonerSummary,
         form: expectedInPrisonWorkForm,
-        backLinkUrl: '/plan/A1234BC/view/education-and-training',
+        backLinkUrl: '/plan/A1234BC/view/work-and-interests',
         backLinkAriaText: 'Back to <TODO - check what CIAG UI does here>',
         errors,
       }
@@ -106,7 +106,7 @@ describe('inPrisonWorkUpdateController', () => {
       const expectedView = {
         prisonerSummary,
         form: expectedInPrisonWorkForm,
-        backLinkUrl: '/plan/A1234BC/view/education-and-training',
+        backLinkUrl: '/plan/A1234BC/view/work-and-interests',
         backLinkAriaText: 'Back to <TODO - check what CIAG UI does here>',
         errors,
       }
@@ -162,7 +162,7 @@ describe('inPrisonWorkUpdateController', () => {
       expect(req.session.inductionDto).toEqual(inductionDto)
     })
 
-    it('should update Induction and call API and redirect to education and training page', async () => {
+    it('should update Induction and call API and redirect to work and interests page', async () => {
       // Given
       req.user.token = 'some-token'
       const prisonNumber = 'A1234BC'
@@ -208,7 +208,7 @@ describe('inPrisonWorkUpdateController', () => {
       expect(updatedInduction.inPrisonInterests.inPrisonWorkInterests).toEqual(expectedUpdatedWorkInterests)
 
       expect(inductionService.updateInduction).toHaveBeenCalledWith(prisonNumber, updateInductionDto, 'some-token')
-      expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/view/education-and-training`)
+      expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/view/work-and-interests`)
       expect(req.session.inPrisonWorkForm).toBeUndefined()
       expect(req.session.inductionDto).toBeUndefined()
     })

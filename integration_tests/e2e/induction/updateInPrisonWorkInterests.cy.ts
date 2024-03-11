@@ -1,7 +1,7 @@
 import Page from '../../pages/page'
 import InPrisonWorkPage from '../../pages/induction/InPrisonWorkPage'
 import InPrisonWorkValue from '../../../server/enums/inPrisonWorkValue'
-import EducationAndTrainingPage from '../../pages/overview/EducationAndTrainingPage'
+import WorkAndInterestsPage from '../../pages/overview/WorkAndInterestsPage'
 import { putRequestedFor } from '../../mockApis/wiremock/requestPatternBuilder'
 import { urlEqualTo } from '../../mockApis/wiremock/matchers/url'
 import { matchingJsonPath } from '../../mockApis/wiremock/matchers/content'
@@ -39,7 +39,7 @@ context('Update in-prison work interests within an Induction', () => {
       .submitPage()
 
     // Then
-    Page.verifyOnPage(EducationAndTrainingPage)
+    Page.verifyOnPage(WorkAndInterestsPage)
     cy.wiremockVerify(
       putRequestedFor(urlEqualTo(`/inductions/${prisonNumber}`)) //
         .withRequestBody(
