@@ -74,6 +74,11 @@ export default class EducationAndTrainingPage extends Page {
     return Page.verifyOnPage(InPrisonWorkPage)
   }
 
+  clickViewAllCoursesAndQualificationsLink(): EducationAndTrainingPage {
+    this.viewAllCoursesAndQualificationsLink().click()
+    return this
+  }
+
   activeTab = (): PageElement => cy.get('.moj-sub-navigation__link[aria-current=page]')
 
   functionalSkillsTable = (): PageElement => cy.get('#latest-functional-skills-table')
@@ -94,4 +99,6 @@ export default class EducationAndTrainingPage extends Page {
   createInductionLink = (): PageElement => cy.get('[data-qa=link-to-create-induction]')
 
   inPrisonWorkChangeLink = (): PageElement => cy.get('[data-qa=in-prison-work-change-link')
+
+  viewAllCoursesAndQualificationsLink = (): PageElement => cy.get('[data-qa=view-all-in-prison-qualifications-link')
 }
