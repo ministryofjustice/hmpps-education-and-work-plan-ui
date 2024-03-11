@@ -1,7 +1,6 @@
 import Page, { PageElement } from '../page'
 // eslint-disable-next-line import/no-cycle
 import FunctionalSkillsPage from '../functionalSkills/FunctionalSkillsPage'
-import InPrisonWorkPage from '../induction/InPrisonWorkPage'
 import InPrisonCoursesAndQualificationsPage from '../inPrisonCoursesAndQualifications/InPrisonCoursesAndQualificationsPage'
 
 /**
@@ -70,11 +69,6 @@ export default class EducationAndTrainingPage extends Page {
     return Page.verifyOnPage(FunctionalSkillsPage)
   }
 
-  clickInPrisonWorkChangeLink(): InPrisonWorkPage {
-    this.inPrisonWorkChangeLink().click()
-    return Page.verifyOnPage(InPrisonWorkPage)
-  }
-
   clickViewAllCoursesAndQualificationsLink(): InPrisonCoursesAndQualificationsPage {
     this.viewAllCoursesAndQualificationsLink().click()
     return Page.verifyOnPage(InPrisonCoursesAndQualificationsPage)
@@ -98,8 +92,6 @@ export default class EducationAndTrainingPage extends Page {
   inductionUnavailableMessage = (): PageElement => cy.get('[data-qa=induction-unavailable-message]')
 
   createInductionLink = (): PageElement => cy.get('[data-qa=link-to-create-induction]')
-
-  inPrisonWorkChangeLink = (): PageElement => cy.get('[data-qa=in-prison-work-change-link')
 
   viewAllCoursesAndQualificationsLink = (): PageElement => cy.get('[data-qa=view-all-in-prison-qualifications-link')
 }
