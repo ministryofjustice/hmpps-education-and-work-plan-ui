@@ -1,0 +1,153 @@
+{% extends "../../../partials/layout.njk" %}
+
+{% set pageId = "induction-in-prison-education" %}
+{% set title = "What type of training and education activities would " + prisonerSummary.firstName + " " + prisonerSummary.lastName + " like to do in prison?" %}
+{% set pageTitle = title %}
+
+{#
+Data supplied to this template:
+  * prisonerSummary - object with firstName and lastName
+  * backLinkUrl - url of the back link
+  * backLinkAriaText - the aria label for the back link
+  * form - form object containing the following fields:
+    * inPrisonEducation - Array of selected education and training types
+    * inPrisonEducationOther? - value for when Other is selected
+  * errors? - validation errors
+#}
+
+{% block beforeContent %}
+  {{ govukBackLink({ text: "Back", href: backLinkUrl, attributes: { "aria-label" : backLinkAriaText } }) }}
+{% endblock %}
+
+{% block content %}
+
+  {% if errors.length > 0 %}
+    {{ govukErrorSummary({
+      titleText: 'There is a problem',
+      errorList: errors,
+      attributes: { 'data-qa-errors': true }
+    }) }}
+  {% endif %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <form class="form" method="post" novalidate="">
+        <div class="govuk-form-group">
+          <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+
+          {% set otherHtml %}
+            {{ govukTextarea({
+              id: "inPrisonEducationOther",
+              name: "inPrisonEducationOther",
+              rows: "2",
+              value: form.inPrisonEducationOther,
+              type: "text",
+              label: {
+                text: "Give details",
+                attributes: { "aria-live": "polite" }
+              },
+              attributes: { "aria-label" : "Give details of any education or training " + prisonerSummary.firstName + " " + prisonerSummary.lastName + " would like to do in prison?" },
+              errorMessage: errors | findError('inPrisonEducationOther')
+            }) }}
+          {% endset -%}
+
+          {{ govukCheckboxes({
+            name: "inPrisonEducation",
+            fieldset: {
+              legend: {
+                text: title,
+                isPageHeading: true,
+                classes: "govuk-fieldset__legend--l"
+              }
+            },
+            hint: {
+              text: "Select all that apply."
+            },
+            items: [
+              {
+                value: "BARBERING_AND_HAIRDRESSING",
+                checked: form.inPrisonEducation.includes("BARBERING_AND_HAIRDRESSING"),
+                text: "BARBERING_AND_HAIRDRESSING" | formatInPrisonEducation
+              },
+              {
+                value: "CATERING",
+                checked: form.inPrisonEducation.includes("CATERING"),
+                text: "CATERING" | formatInPrisonEducation
+              },
+              {
+                value: "COMMUNICATION_SKILLS",
+                checked: form.inPrisonEducation.includes("COMMUNICATION_SKILLS"),
+                text: "COMMUNICATION_SKILLS" | formatInPrisonEducation
+              },
+              {
+                value: "ENGLISH_LANGUAGE_SKILLS",
+                checked: form.inPrisonEducation.includes("ENGLISH_LANGUAGE_SKILLS"),
+                text: "ENGLISH_LANGUAGE_SKILLS" | formatInPrisonEducation
+              },
+              {
+                value: "FORKLIFT_DRIVING",
+                checked: form.inPrisonEducation.includes("FORKLIFT_DRIVING"),
+                text: "FORKLIFT_DRIVING" | formatInPrisonEducation
+              },
+              {
+                value: "INTERVIEW_SKILLS",
+                checked: form.inPrisonEducation.includes("INTERVIEW_SKILLS"),
+                text: "INTERVIEW_SKILLS" | formatInPrisonEducation
+              },
+              {
+                value: "MACHINERY_TICKETS",
+                checked: form.inPrisonEducation.includes("MACHINERY_TICKETS"),
+                text: "MACHINERY_TICKETS" | formatInPrisonEducation
+              },
+              {
+                value: "NUMERACY_SKILLS",
+                checked: form.inPrisonEducation.includes("NUMERACY_SKILLS"),
+                text: "NUMERACY_SKILLS" | formatInPrisonEducation
+              },
+              {
+                value: "RUNNING_A_BUSINESS",
+                checked: form.inPrisonEducation.includes("RUNNING_A_BUSINESS"),
+                text: "RUNNING_A_BUSINESS" | formatInPrisonEducation
+              },
+              {
+                value: "SOCIAL_AND_LIFE_SKILLS",
+                checked: form.inPrisonEducation.includes("SOCIAL_AND_LIFE_SKILLS"),
+                text: "SOCIAL_AND_LIFE_SKILLS" | formatInPrisonEducation
+              },
+              {
+                value: "WELDING_AND_METALWORK",
+                checked: form.inPrisonEducation.includes("WELDING_AND_METALWORK"),
+                text: "WELDING_AND_METALWORK" | formatInPrisonEducation
+              },
+              {
+                value: "WOODWORK_AND_JOINERY",
+                checked: form.inPrisonEducation.includes("WOODWORK_AND_JOINERY"),
+                text: "WOODWORK_AND_JOINERY" | formatInPrisonEducation
+              },
+              {
+                value: "OTHER",
+                checked: form.inPrisonEducation.includes("OTHER"),
+                text: "OTHER" | formatInPrisonEducation,
+                attributes: { "aria-label": "OTHER" | formatInPrisonEducation + " (Opens a dialogue box)" },
+                conditional: {
+                  html: otherHtml
+                }
+              }
+            ],
+            errorMessage: errors | findError('inPrisonEducation')
+          }) }}
+
+        </div>
+
+        {{ govukButton({
+          id: "submit-button",
+          text: "Continue",
+          type: "submit",
+          attributes: {"data-qa": "submit-button"}
+        }) }}
+      </form>
+    </div>
+  </div>
+
+{% endblock %}
