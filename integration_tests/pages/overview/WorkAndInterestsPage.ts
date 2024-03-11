@@ -9,6 +9,7 @@ import TypeOfWorkExperienceValue from '../../../server/enums/typeOfWorkExperienc
 import FutureWorkInterestTypesPage from '../induction/FutureWorkInterestTypesPage'
 import FutureWorkInterestRolesPage from '../induction/FutureWorkInterestRolesPage'
 import PreviousWorkExperienceTypesPage from '../induction/PreviousWorkExperienceTypesPage'
+import InPrisonWorkPage from '../induction/InPrisonWorkPage'
 
 /**
  * Cypress page class representing the Work And Interests tab of the Overview Page
@@ -108,6 +109,11 @@ export default class WorkAndInterestsPage extends Page {
     return Page.verifyOnPage(PreviousWorkExperienceDetailPage)
   }
 
+  clickInPrisonWorkChangeLink(): InPrisonWorkPage {
+    this.inPrisonWorkChangeLink().click()
+    return Page.verifyOnPage(InPrisonWorkPage)
+  }
+
   activeTab = (): PageElement => cy.get('.moj-sub-navigation__link[aria-current=page]')
 
   workInterestsSummaryCard = (): PageElement => cy.get('#work-interests-summary-card')
@@ -142,4 +148,6 @@ export default class WorkAndInterestsPage extends Page {
 
   previousWorkExperienceDetailChangeLink = (workExperienceType: TypeOfWorkExperienceValue): PageElement =>
     cy.get(`[data-qa=previous-work-experience-details-${workExperienceType}-change-link`)
+
+  inPrisonWorkChangeLink = (): PageElement => cy.get('[data-qa=in-prison-work-change-link')
 }

@@ -19,7 +19,7 @@ export default class InPrisonWorkUpdateController extends InPrisonWorkController
 
   getBackLinkUrl(req: Request): string {
     const { prisonNumber } = req.params
-    return `/plan/${prisonNumber}/view/education-and-training`
+    return `/plan/${prisonNumber}/view/work-and-interests`
   }
 
   getBackLinkAriaText(_req: Request): string {
@@ -55,7 +55,7 @@ export default class InPrisonWorkUpdateController extends InPrisonWorkController
 
       req.session.inPrisonWorkForm = undefined
       req.session.inductionDto = undefined
-      return res.redirect(`/plan/${prisonNumber}/view/education-and-training`)
+      return res.redirect(`/plan/${prisonNumber}/view/work-and-interests`)
     } catch (e) {
       logger.error(`Error updating Induction for prisoner ${prisonNumber}`, e)
       return next(createError(500, `Error updating Induction for prisoner ${prisonNumber}. Error: ${e}`))

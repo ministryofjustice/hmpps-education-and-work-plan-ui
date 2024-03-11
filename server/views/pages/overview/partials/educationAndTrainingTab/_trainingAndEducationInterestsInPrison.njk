@@ -31,14 +31,7 @@ asked at the Induction.
                 </ul>
               </dd>
               <dd class="govuk-summary-list__actions govuk-!-display-none-print">
-                {%- set changeLinkUrl -%}
-                  {%- if featureToggles.induction.update.trainingAndInterestsInPrisonSectionEnabled -%}
-                    /prisoners/{{ prisonerSummary.prisonNumber }}/induction/in-prison-work
-                  {%- else -%}
-                    {{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}/in-prison-education/update
-                  {%- endif -%}
-                {%- endset -%}
-                <a class="govuk-link" href="{{ changeLinkUrl }}" data-qa="in-prison-work-change-link">
+                <a class="govuk-link" href="{{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}/in-prison-education/update">
                   Change<span class="govuk-visually-hidden"> training and eduction interests</span>
                 </a>
               </dd>

@@ -11,6 +11,7 @@ import TypeOfWorkExperienceValue from '../../../server/enums/typeOfWorkExperienc
 import FutureWorkInterestTypesPage from '../../pages/induction/FutureWorkInterestTypesPage'
 import FutureWorkInterestRolesPage from '../../pages/induction/FutureWorkInterestRolesPage'
 import PreviousWorkExperienceTypesPage from '../../pages/induction/PreviousWorkExperienceTypesPage'
+import InPrisonWorkPage from '../../pages/induction/InPrisonWorkPage'
 
 context('Prisoner Overview page - Work and Interests tab', () => {
   beforeEach(() => {
@@ -244,21 +245,37 @@ context('Prisoner Overview page - Work and Interests tab', () => {
       // Then
       Page.verifyOnPage(FutureWorkInterestTypesPage)
     })
-  })
 
-  it(`should link to change Induction 'Future Work Interest Roles' question given long question set induction`, () => {
-    // Given
-    cy.task('stubGetInductionLongQuestionSet')
+    it(`should link to change Induction 'Future Work Interest Roles' question given long question set induction`, () => {
+      // Given
+      cy.task('stubGetInductionLongQuestionSet')
 
-    cy.signIn()
-    const prisonNumber = 'G6115VJ'
-    cy.visit(`/plan/${prisonNumber}/view/work-and-interests`)
-    const workAndInterestsPage = Page.verifyOnPage(WorkAndInterestsPage)
+      cy.signIn()
+      const prisonNumber = 'G6115VJ'
+      cy.visit(`/plan/${prisonNumber}/view/work-and-interests`)
+      const workAndInterestsPage = Page.verifyOnPage(WorkAndInterestsPage)
 
-    // When
-    workAndInterestsPage.clickFutureWorkInterestRolesChangeLink()
+      // When
+      workAndInterestsPage.clickFutureWorkInterestRolesChangeLink()
 
-    // Then
-    Page.verifyOnPage(FutureWorkInterestRolesPage)
+      // Then
+      Page.verifyOnPage(FutureWorkInterestRolesPage)
+    })
+
+    it(`should link to change Induction 'In Prison Work' question given short question set induction`, () => {
+      // Given
+      cy.task('stubGetInductionShortQuestionSet')
+
+      cy.signIn()
+      const prisonNumber = 'G6115VJ'
+      cy.visit(`/plan/${prisonNumber}/view/work-and-interests`)
+      const workAndInterestsPage = Page.verifyOnPage(WorkAndInterestsPage)
+
+      // When
+      workAndInterestsPage.clickInPrisonWorkChangeLink()
+
+      // Then
+      Page.verifyOnPage(InPrisonWorkPage)
+    })
   })
 })
