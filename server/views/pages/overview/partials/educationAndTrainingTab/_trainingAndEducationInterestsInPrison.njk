@@ -25,13 +25,20 @@ asked at the Induction.
                     {% if education == 'OTHER' %}
                       <li>Other - {{ educationAndTraining.data.shortQuestionSetAnswers.inPrisonInterestsEducation.inPrisonInterestsEducationOther }}</li>
                     {% else %}
-                      <li>{{ education | formatInPrisonEducation }}</li>
+                      <li>{{ education | formatInPrisonTraining }}</li>
                     {% endif %}  
                   {% endfor %}
                 </ul>
               </dd>
               <dd class="govuk-summary-list__actions govuk-!-display-none-print">
-                <a class="govuk-link" href="{{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}/in-prison-education/update">
+                {%- set inPrisonTrainingChangeLinkUrl -%}
+                  {%- if featureToggles.induction.update.inPrisonTrainingSectionEnabled -%}
+                    /prisoners/{{ prisonerSummary.prisonNumber }}/induction/in-prison-training
+                  {%- else -%}
+                    {{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}/in-prison-education/update
+                  {%- endif -%}
+                {%- endset -%}
+                <a class="govuk-link" href="{{ inPrisonTrainingChangeLinkUrl }}" data-qa="in-prison-training-change-link">
                   Change<span class="govuk-visually-hidden"> training and eduction interests</span>
                 </a>
               </dd>

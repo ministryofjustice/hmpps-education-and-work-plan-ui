@@ -79,7 +79,7 @@ questions are different.
           </dd>
           <dd class="govuk-summary-list__actions govuk-!-display-none-print">
             {%- set inPrisonWorkChangeLinkUrl -%}
-              {%- if featureToggles.induction.update.trainingInterestsInPrisonSectionEnabled -%}
+              {%- if featureToggles.induction.update.workInterestsSectionEnabled -%}
                 /prisoners/{{ prisonerSummary.prisonNumber }}/induction/in-prison-work
               {%- else -%}
                 {{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}/in-prison-work/update

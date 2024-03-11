@@ -3,6 +3,7 @@ import type { UpdateGoalForm } from 'forms'
 import type { NewGoal } from 'compositeForms'
 import type {
   InPrisonWorkForm,
+  InPrisonTrainingForm,
   PersonalInterestsForm,
   SkillsForm,
   PreviousWorkExperienceDetailForm,
@@ -31,6 +32,7 @@ declare module 'express-session' {
     // Induction related objects held on the session
     inductionDto: InductionDto
     inPrisonWorkForm: InPrisonWorkForm
+    inPrisonTrainingForm: InPrisonTrainingForm
     skillsForm: SkillsForm
     personalInterestsForm: PersonalInterestsForm
     workedBeforeForm: WorkedBeforeForm

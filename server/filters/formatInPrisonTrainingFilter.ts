@@ -1,9 +1,9 @@
-export default function formatInPrisonEducationFilter(value: string): string {
-  const inPrisonEductionValue = InPrisonEductionValues[value as keyof typeof InPrisonEductionValues]
-  return inPrisonEductionValue
+export default function formatInPrisonTrainingFilter(value: string): string {
+  const inPrisonTrainingValue = InPrisonTrainingValues[value as keyof typeof InPrisonTrainingValues]
+  return inPrisonTrainingValue
 }
 
-enum InPrisonEductionValues {
+enum InPrisonTrainingValues {
   BARBERING_AND_HAIRDRESSING = 'Barbering and hairdressing',
   CATERING = 'Catering',
   COMMUNICATION_SKILLS = 'Communication skills',

@@ -10,7 +10,7 @@ import EducationLevelValue from '../enums/educationLevelValue'
 import QualificationLevelValue from '../enums/qualificationLevelValue'
 import AdditionalTrainingValue from '../enums/additionalTrainingValue'
 import InPrisonWorkValue from '../enums/inPrisonWorkValue'
-import InPrisonEducationValue from '../enums/inPrisonEducationValue'
+import InPrisonTrainingValue from '../enums/inPrisonTrainingValue'
 
 const aLongQuestionSetUpdateInductionDto = (
   options?: CoreBuilderOptions & {
@@ -144,9 +144,9 @@ const aShortQuestionSetUpdateInductionDto = (
         { workType: InPrisonWorkValue.OTHER, workTypeOther: 'Gardening and grounds keeping' },
       ],
       inPrisonTrainingInterests: [
-        { trainingType: InPrisonEducationValue.FORKLIFT_DRIVING, trainingTypeOther: null },
-        { trainingType: InPrisonEducationValue.CATERING, trainingTypeOther: null },
-        { trainingType: InPrisonEducationValue.OTHER, trainingTypeOther: 'Advanced origami' },
+        { trainingType: InPrisonTrainingValue.FORKLIFT_DRIVING, trainingTypeOther: null },
+        { trainingType: InPrisonTrainingValue.CATERING, trainingTypeOther: null },
+        { trainingType: InPrisonTrainingValue.OTHER, trainingTypeOther: 'Advanced origami' },
       ],
     },
     previousQualifications: {

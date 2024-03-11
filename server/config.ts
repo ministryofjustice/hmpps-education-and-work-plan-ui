@@ -141,8 +141,8 @@ export default {
         workInterestsSectionEnabled: toBoolean(
           get('UPDATE_INDUCTION_WORK_INTERESTS_SECTION_ENABLED', false, requiredInProduction),
         ),
-        trainingInterestsInPrisonSectionEnabled: toBoolean(
-          get('UPDATE_INDUCTION_TRAINING_INTERESTS_IN_PRISON_SECTION_ENABLED', false, requiredInProduction),
+        inPrisonTrainingSectionEnabled: toBoolean(
+          get('UPDATE_INDUCTION_IN_PRISON_TRAINING_SECTION_ENABLED', false, requiredInProduction),
         ),
       },
     },
