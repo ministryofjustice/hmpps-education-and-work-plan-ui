@@ -150,10 +150,11 @@ describe('inPrisonEducationRecordsResolver', () => {
       // Given
       const englishPrisonEducation = { ...aValidEnglishInPrisonEducation() }
       englishPrisonEducation.courseCompleted = true
-      englishPrisonEducation.courseCompletionDate = moment('2023-07-10').toDate()
+      englishPrisonEducation.courseCompletionDate = moment().subtract(7, 'months').toDate()
       const mathsPrisonEducation = { ...aValidMathsInPrisonEducation() }
       mathsPrisonEducation.courseCompleted = true
-      mathsPrisonEducation.courseCompletionDate = moment('2023-07-11').toDate()
+      mathsPrisonEducation.courseCompletionDate = moment().subtract(4, 'months').toDate()
+
       const woodWorkPrisonEducation = { ...aValidWoodWorkingInPrisonEducation() }
       woodWorkPrisonEducation.courseCompleted = true
       woodWorkPrisonEducation.courseCompletionDate = moment('2021-06-20').toDate()
