@@ -46,4 +46,24 @@ const aValidWoodWorkingInPrisonEducation = (): InPrisonEducation => {
   }
 }
 
-export { aValidEnglishInPrisonEducation, aValidMathsInPrisonEducation, aValidWoodWorkingInPrisonEducation }
+const aValidEnglishInPrisonEducationWithinLast12Months = (): InPrisonEducation => {
+  return {
+    prisonId: 'MDI',
+    prisonName: 'Moorland (HMP & YOI)',
+    courseName: 'GCSE English',
+    courseCode: '008ENGL06',
+    courseStartDate: moment('2023-10-01').toDate(),
+    courseCompleted: true,
+    courseCompletionDate: moment('2024-02-26').toDate(),
+    isAccredited: true,
+    grade: null,
+    source: 'CURIOUS',
+  }
+}
+
+export {
+  aValidEnglishInPrisonEducation,
+  aValidMathsInPrisonEducation,
+  aValidWoodWorkingInPrisonEducation,
+  aValidEnglishInPrisonEducationWithinLast12Months,
+}

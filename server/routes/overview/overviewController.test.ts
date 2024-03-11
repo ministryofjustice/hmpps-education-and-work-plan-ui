@@ -11,6 +11,7 @@ import { aValidActionPlan, aValidActionPlanWithOneGoal } from '../../testsupport
 import {
   aValidEnglishInPrisonEducation,
   aValidMathsInPrisonEducation,
+  aValidEnglishInPrisonEducationWithinLast12Months,
 } from '../../testsupport/inPrisonEducationTestDataBuilder'
 import aValidLongQuestionSetWorkAndInterests from '../../testsupport/workAndInterestsTestDataBuilder'
 import aValidPrisonerSummary from '../../testsupport/prisonerSummaryTestDataBuilder'
@@ -317,6 +318,8 @@ describe('overviewController', () => {
 
       req.session.prisonerSummary = aValidPrisonerSummary(prisonNumber)
 
+      const prisonId = 'MDI'
+
       const functionalSkillsFromCurious = {
         problemRetrievingData: false,
         assessments: [
@@ -349,24 +352,29 @@ describe('overviewController', () => {
 
       const inPrisonEducation: InPrisonEducationRecords = {
         problemRetrievingData: false,
-        educationRecords: [aValidEnglishInPrisonEducation(), aValidMathsInPrisonEducation()],
+        educationRecords: [
+          aValidEnglishInPrisonEducation(),
+          aValidMathsInPrisonEducation(),
+          aValidEnglishInPrisonEducationWithinLast12Months(),
+        ],
       }
       curiousService.getLearnerEducation.mockResolvedValue(inPrisonEducation)
 
       const expectedCompletedInPrisonEducation: InPrisonEducationRecords = {
         problemRetrievingData: false,
-        educationRecords: [aValidMathsInPrisonEducation()],
+        educationRecords: [aValidEnglishInPrisonEducationWithinLast12Months(), aValidMathsInPrisonEducation()],
       }
 
       const expectedCompletedInPrisonEducationWithinLast12Months: InPrisonEducationRecords = {
         problemRetrievingData: false,
-        educationRecords: [],
+        educationRecords: [aValidEnglishInPrisonEducationWithinLast12Months()],
       }
 
       const expectedEducationAndTraining = aValidShortQuestionSetEducationAndTraining()
       inductionService.getEducationAndTraining.mockResolvedValue(expectedEducationAndTraining)
 
       const expectedPrisonerSummary = aValidPrisonerSummary(prisonNumber)
+      prisonService.lookupPrison.mockResolvedValue({ prisonId, prisonName: 'Moorland (HMP & YOI)' })
       const expectedView = {
         prisonerSummary: expectedPrisonerSummary,
         tab: expectedTab,
@@ -386,6 +394,7 @@ describe('overviewController', () => {
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/overview/index', expectedView)
       expect(inductionService.getEducationAndTraining).toHaveBeenCalledWith(prisonNumber, 'a-user-token')
+      expect(prisonService.lookupPrison).toHaveBeenCalledWith(prisonId, 'a-dps-user')
     })
   })
 
