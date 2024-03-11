@@ -114,4 +114,8 @@ declare module 'inductionForms' {
     workInterestRoles: Map<WorkInterestTypeValue, string>
     workInterestTypesOther: string
   }
+
+  export interface HighestLevelOfEducationForm {
+    educationLevel: string
+  }
 }

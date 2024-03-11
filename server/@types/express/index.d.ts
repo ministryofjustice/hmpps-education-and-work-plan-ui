@@ -2,6 +2,7 @@ import type { PageFlowQueue, PrisonerSummary, PrisonerSupportNeeds } from 'viewM
 import type { UpdateGoalForm } from 'forms'
 import type { NewGoal } from 'compositeForms'
 import type {
+  HighestLevelOfEducationForm,
   InPrisonWorkForm,
   PersonalInterestsForm,
   SkillsForm,
@@ -40,6 +41,7 @@ declare module 'express-session' {
     reasonsNotToGetWorkForm: ReasonsNotToGetWorkForm
     workInterestTypesForm: WorkInterestTypesForm
     workInterestRolesForm: WorkInterestRolesForm
+    highestLevelOfEducationForm: HighestLevelOfEducationForm
   }
 }
 
