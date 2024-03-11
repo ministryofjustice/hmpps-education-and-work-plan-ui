@@ -5,6 +5,7 @@ export default class EducationAndTrainingView {
     private readonly prisonerSummary: PrisonerSummary,
     private readonly functionalSkills: FunctionalSkills,
     private readonly completedInPrisonEducation: InPrisonEducationRecords,
+    private readonly completedInPrisonEducationWithinLast12Months: InPrisonEducationRecords,
     private readonly educationAndTraining: EducationAndTraining,
   ) {}
 
@@ -13,6 +14,7 @@ export default class EducationAndTrainingView {
     prisonerSummary: PrisonerSummary
     functionalSkills: FunctionalSkills
     completedInPrisonEducation: InPrisonEducationRecords
+    completedInPrisonEducationWithinLast12Months: InPrisonEducationRecords
     educationAndTraining: EducationAndTraining
   } {
     return {
@@ -20,6 +22,7 @@ export default class EducationAndTrainingView {
       prisonerSummary: this.prisonerSummary,
       functionalSkills: this.functionalSkills,
       completedInPrisonEducation: this.completedInPrisonEducation,
+      completedInPrisonEducationWithinLast12Months: this.completedInPrisonEducationWithinLast12Months,
       educationAndTraining: this.educationAndTraining,
     }
   }

@@ -2,6 +2,7 @@ import Page, { PageElement } from '../page'
 // eslint-disable-next-line import/no-cycle
 import FunctionalSkillsPage from '../functionalSkills/FunctionalSkillsPage'
 import InPrisonWorkPage from '../induction/InPrisonWorkPage'
+import InPrisonCoursesAndQualificationsPage from '../inPrisonCoursesAndQualifications/InPrisonCoursesAndQualificationsPage'
 
 /**
  * Cypress page class representing the Education And Training tab of the Overview Page
@@ -74,6 +75,11 @@ export default class EducationAndTrainingPage extends Page {
     return Page.verifyOnPage(InPrisonWorkPage)
   }
 
+  clickViewAllCoursesAndQualificationsLink(): InPrisonCoursesAndQualificationsPage {
+    this.viewAllCoursesAndQualificationsLink().click()
+    return Page.verifyOnPage(InPrisonCoursesAndQualificationsPage)
+  }
+
   activeTab = (): PageElement => cy.get('.moj-sub-navigation__link[aria-current=page]')
 
   functionalSkillsTable = (): PageElement => cy.get('#latest-functional-skills-table')
@@ -94,4 +100,6 @@ export default class EducationAndTrainingPage extends Page {
   createInductionLink = (): PageElement => cy.get('[data-qa=link-to-create-induction]')
 
   inPrisonWorkChangeLink = (): PageElement => cy.get('[data-qa=in-prison-work-change-link')
+
+  viewAllCoursesAndQualificationsLink = (): PageElement => cy.get('[data-qa=view-all-in-prison-qualifications-link')
 }

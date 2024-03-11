@@ -2,6 +2,7 @@ import OverviewPage from '../../pages/overview/OverviewPage'
 import Page from '../../pages/page'
 import EducationAndTrainingPage from '../../pages/overview/EducationAndTrainingPage'
 import InPrisonWorkPage from '../../pages/induction/InPrisonWorkPage'
+import InPrisonCoursesAndQualificationsPage from '../../pages/inPrisonCoursesAndQualifications/InPrisonCoursesAndQualificationsPage'
 
 context('Prisoner Overview page - Education And Training tab', () => {
   beforeEach(() => {
@@ -219,6 +220,24 @@ context('Prisoner Overview page - Education And Training tab', () => {
 
       // Then
       Page.verifyOnPage(InPrisonWorkPage)
+    })
+  })
+
+  describe('should display a link to view all courses and qualifications', () => {
+    it(`should link to the courses and qualifications page`, () => {
+      // Given
+      cy.task('stubGetInductionShortQuestionSet')
+
+      cy.signIn()
+      const prisonNumber = 'G6115VJ'
+      cy.visit(`/plan/${prisonNumber}/view/education-and-training`)
+      const educationAndTrainingPage = Page.verifyOnPage(EducationAndTrainingPage)
+
+      // When
+      educationAndTrainingPage.clickViewAllCoursesAndQualificationsLink()
+
+      // Then
+      Page.verifyOnPage(InPrisonCoursesAndQualificationsPage)
     })
   })
 })

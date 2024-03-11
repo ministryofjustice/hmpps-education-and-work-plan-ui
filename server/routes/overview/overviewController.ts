@@ -1,5 +1,6 @@
+import type { InPrisonEducationRecords } from 'viewModels'
 import createError from 'http-errors'
-import { RequestHandler } from 'express'
+import { Request, RequestHandler } from 'express'
 import EducationAndTrainingView from './educationAndTrainingView'
 import SupportNeedsView from './supportNeedsView'
 import { CuriousService, InductionService } from '../../services'
@@ -10,6 +11,7 @@ import { mostRecentFunctionalSkills } from '../functionalSkillsResolver'
 import {
   completedInPrisonEducationRecords,
   mostRecentCompletedInPrisonEducationRecords,
+  completedInPrisonEducationRecordsWithinLast12Months,
 } from '../inPrisonEducationRecordsResolver'
 import filterTimelineEvents from '../timelineResolver'
 import WorkAndInterestsView from './workAndInterestsView'
@@ -117,12 +119,18 @@ export default class OverviewController {
 
     const allInPrisonEducation = await this.curiousService.getLearnerEducation(prisonNumber, req.user.username)
     const completedInPrisonEducation = completedInPrisonEducationRecords(allInPrisonEducation)
+    const completedInPrisonEducationWithinLast12Months = await this.setPrisonNamesOnEducationRecords(
+      completedInPrisonEducationRecordsWithinLast12Months(completedInPrisonEducation),
+      req,
+    )
 
     const educationAndTraining = await this.inductionService.getEducationAndTraining(prisonNumber, req.user.token)
+
     const view = new EducationAndTrainingView(
       prisonerSummary,
       functionalSkills,
       completedInPrisonEducation,
+      completedInPrisonEducationWithinLast12Months,
       educationAndTraining,
     )
     res.render('pages/overview/index', { ...view.renderArgs })
@@ -145,5 +153,24 @@ export default class OverviewController {
     const timeline = filterTimelineEvents(allTimelineEvents)
     const view = new TimelineView(prisonerSummary, timeline)
     res.render('pages/overview/index', { ...view.renderArgs })
+  }
+
+  async setPrisonNamesOnEducationRecords(
+    completedInPrisonEducationWithinLast12Months: InPrisonEducationRecords,
+    req: Request,
+  ): Promise<InPrisonEducationRecords> {
+    const educationRecordsWithPrisonLookups = completedInPrisonEducationWithinLast12Months.educationRecords.map(
+      async educationRecord => {
+        const prison = await this.prisonService.lookupPrison(educationRecord.prisonId, req.user.username)
+        return {
+          ...educationRecord,
+          prisonName: prison?.prisonName,
+        }
+      },
+    )
+    return {
+      ...completedInPrisonEducationWithinLast12Months,
+      educationRecords: await Promise.all(educationRecordsWithPrisonLookups),
+    }
   }
 }
