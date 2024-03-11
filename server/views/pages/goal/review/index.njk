@@ -26,7 +26,7 @@
                 Description
               </dt>
               <dd class="govuk-summary-list__value" data-qa="goal-{{ goalLoop.index }}-description-value">
-                {{ goal.title | formatMultilineText | safe }}
+                <span class="app-u-multiline-text">{{ goal.title }}</span>
               </dd>
               <dd class="govuk-summary-list__actions">
                 <a class="govuk-link" href="/plan/{{ prisonerSummary.prisonNumber }}/goals/{{ goalLoop.index }}/create?mode=edit" data-qa="change-goal-{{ goalLoop.index }}-description">
@@ -53,7 +53,7 @@
                   Step {{ step.sequenceNumber }}
                 </dt>
                 <dd class="govuk-summary-list__value" data-qa="goal-{{ goalLoop.index }}-step-{{ step.sequenceNumber }}-value">
-                  {{ step.title | formatMultilineText | safe }}
+                  <span class="app-u-multiline-text">{{ step.title }}</span>
                 </dd>
                 <dd class="govuk-summary-list__actions">
                   <a class="govuk-link" href="/plan/{{ prisonerSummary.prisonNumber }}/goals/{{ goalLoop.index }}/add-step/{{ step.sequenceNumber }}?mode=edit" data-qa="change-goal-{{ goalLoop.index }}-step-{{ step.sequenceNumber }}">
@@ -67,7 +67,7 @@
                 Note
               </dt>
               <dd class="govuk-summary-list__value" data-qa="goal-{{ goalLoop.index }}-note-value">
-                {{ goal.note | formatMultilineText | safe }}
+                <span class="app-u-multiline-text">{{ goal.note }}</span>
               </dd>
                 <dd class="govuk-summary-list__actions">
                   <a class="govuk-link" href="/plan/{{ prisonerSummary.prisonNumber }}/goals/{{ goalLoop.index }}/add-note?mode=edit" data-qa="change-goal-{{ goalLoop.index }}-note">
