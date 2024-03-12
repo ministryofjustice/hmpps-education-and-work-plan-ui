@@ -121,6 +121,6 @@ declare module 'inductionForms' {
   }
 
   export interface HighestLevelOfEducationForm {
-    educationLevel: string
+    educationLevel: EducationLevelValue
   }
 }
