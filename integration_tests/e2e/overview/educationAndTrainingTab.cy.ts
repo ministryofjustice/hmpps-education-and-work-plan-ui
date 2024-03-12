@@ -26,6 +26,8 @@ context('Prisoner Overview page - Education And Training tab', () => {
   describe('should retrieve and render data from Curious API data', () => {
     it('should display Functional Skills and In Prison Qualifications And Achievements data', () => {
       // Given
+      cy.task('stubLearnerEducationWithCoursesQualificationsCompletedInLast12Months')
+
       cy.signIn()
       const prisonNumber = 'G6115VJ'
       cy.visit(`/plan/${prisonNumber}/view/overview`)
@@ -39,7 +41,50 @@ context('Prisoner Overview page - Education And Training tab', () => {
       educationAndTrainingPage //
         .activeTabIs('Education and training')
         .hasFunctionalSkillsDisplayed()
-        .hasCompletedInPrisonQualificationsDisplayed()
+        .hasCompletedInPrisonQualificationsLast12MonthsDisplayed()
+        .coursesAndQualificationsLinkShouldExist()
+    })
+
+    it('should display message and view all link if prisoner has no completed courses or qualifications within last 12 months but does have older courses and qualifications', () => {
+      // Given
+      cy.task('stubGetInductionShortQuestionSet')
+      cy.task('stubLearnerEducationWithCoursesCompletedInMoreThanLast12Months')
+
+      cy.signIn()
+      const prisonNumber = 'G6115VJ'
+      cy.visit(`/plan/${prisonNumber}/view/overview`)
+      const overviewPage = Page.verifyOnPage(OverviewPage)
+
+      // When
+      overviewPage.selectTab('Education and training')
+      const educationAndTrainingPage = Page.verifyOnPage(EducationAndTrainingPage)
+
+      // Then
+      educationAndTrainingPage //
+        .activeTabIs('Education and training')
+        .hasNoCoursesAndQualificationsLast12MonthsMessageDisplayed()
+        .coursesAndQualificationsLinkShouldExist()
+    })
+
+    it('should display message but not display view all link if prisoner has no completed courses', () => {
+      // Given
+      cy.task('stubGetInductionShortQuestionSet')
+      cy.task('stubLearnerEducationWithNoCoursesQualifications')
+
+      cy.signIn()
+      const prisonNumber = 'G6115VJ'
+      cy.visit(`/plan/${prisonNumber}/view/overview`)
+      const overviewPage = Page.verifyOnPage(OverviewPage)
+
+      // When
+      overviewPage.selectTab('Education and training')
+      const educationAndTrainingPage = Page.verifyOnPage(EducationAndTrainingPage)
+
+      // Then
+      educationAndTrainingPage //
+        .activeTabIs('Education and training')
+        .hasNoCoursesAndQualificationsLast12MonthsMessageDisplayed()
+        .coursesAndQualificationsLinkShouldNotExist()
     })
 
     it('should display Functional Skills and In Prison Qualifications And Achievements data given curious API returns a 404 for the learner profile', () => {
@@ -59,7 +104,7 @@ context('Prisoner Overview page - Education And Training tab', () => {
       educationAndTrainingPage //
         .activeTabIs('Education and training')
         .hasFunctionalSkillsDisplayed()
-        .hasCompletedInPrisonQualificationsDisplayed()
+        .hasNoCoursesAndQualificationsLast12MonthsMessageDisplayed()
     })
 
     it('should display Functional Skills and In Prison Qualifications And Achievements data given curious API returns a 404 for the learner education', () => {
@@ -79,7 +124,7 @@ context('Prisoner Overview page - Education And Training tab', () => {
       educationAndTrainingPage //
         .activeTabIs('Education and training')
         .hasFunctionalSkillsDisplayed()
-        .hasCompletedInPrisonQualificationsDisplayed()
+        .hasNoCoursesAndQualificationsLast12MonthsMessageDisplayed()
     })
 
     it('should display curious unavailable message given curious is unavailable for the learner profile', () => {
@@ -100,7 +145,7 @@ context('Prisoner Overview page - Education And Training tab', () => {
         .activeTabIs('Education and training')
         .doesNotHaveFunctionalSkillsDisplayed()
         .hasCuriousUnavailableMessageDisplayed()
-        .hasCompletedInPrisonQualificationsDisplayed()
+        .hasNoCoursesAndQualificationsLast12MonthsMessageDisplayed()
     })
 
     it('should display curious unavailable message given curious is unavailable for the learner education', () => {
@@ -120,7 +165,7 @@ context('Prisoner Overview page - Education And Training tab', () => {
       educationAndTrainingPage //
         .activeTabIs('Education and training')
         .hasFunctionalSkillsDisplayed()
-        .doesNotCompletedInPrisonQualificationsDisplayed()
+        .doesNotCompletedInPrisonQualificationsLast12MonthsDisplayed()
         .hasCuriousUnavailableMessageDisplayed()
     })
   })

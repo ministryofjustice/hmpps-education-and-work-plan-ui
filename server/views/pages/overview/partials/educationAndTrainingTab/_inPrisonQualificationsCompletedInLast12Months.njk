@@ -16,7 +16,7 @@
         {% if not completedInPrisonEducationWithinLast12Months.problemRetrievingData %}
         <p class="govuk-hint">Information from Curious. This only includes educational courses. Contact the local education team to find out more.</p>
 
-        <table class="govuk-table" id="completed-in-prison-qualifications-table">
+        <table class="govuk-table" id="completed-in-prison-qualifications-last-12-months-table">
             <caption class="govuk-table__caption">Completed courses</caption>
 
             <thead class="govuk-table__head">
@@ -33,7 +33,7 @@
             {% if completedInPrisonEducationWithinLast12Months.educationRecords.length > 0 %}
               {% for completedQualification in completedInPrisonEducationWithinLast12Months.educationRecords %}
                   <tr class="govuk-table__row">
-                  <td class="govuk-table__cell">{{ completedQualification.courseName }}</td>
+                  <td class="govuk-table__cell" data-qa="completed-qualification-course-name">{{ completedQualification.courseName }}</td>
                   <td class="govuk-table__cell">{{ completedQualification.isAccredited | formatIsAccredited }}</td>
                   <td class="govuk-table__cell">{{ completedQualification.prisonName if completedQualification.prisonName else completedQualification.prisonId }}</td>
                   <td class="govuk-table__cell">{{ completedQualification.courseCompletionDate | formatDate('D MMMM YYYY') }}</td>
@@ -42,8 +42,8 @@
               {% endfor %}
             {% else %}
               <tr class="govuk-table__row">
-                  <td class="govuk-table__cell" colspan="5">
-                  No courses or qualifications completed in last 12 months.
+                  <td class="govuk-table__cell" colspan="5" data-qa="no-courses-or-qualifications-last-12-months-message">
+                    No courses or qualifications completed in last 12 months.
                   </td>
               </tr>
             {% endif %}

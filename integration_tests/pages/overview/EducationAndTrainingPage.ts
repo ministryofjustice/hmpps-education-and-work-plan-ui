@@ -41,13 +41,15 @@ export default class EducationAndTrainingPage extends Page {
     return this
   }
 
-  hasCompletedInPrisonQualificationsDisplayed(): EducationAndTrainingPage {
-    this.completedInPrisonQualificationsTable().should('be.visible')
+  hasCompletedInPrisonQualificationsLast12MonthsDisplayed(): EducationAndTrainingPage {
+    this.completedInPrisonQualificationsLast12MonthsTable().should('be.visible')
+    this.completedQualificationCourseName().should('be.exist')
+    this.noCoursesAndQualificationsLast12MonthsMessage().should('not.exist')
     return this
   }
 
-  doesNotCompletedInPrisonQualificationsDisplayed(): EducationAndTrainingPage {
-    this.completedInPrisonQualificationsTable().should('not.exist')
+  doesNotCompletedInPrisonQualificationsLast12MonthsDisplayed(): EducationAndTrainingPage {
+    this.completedInPrisonQualificationsLast12MonthsTable().should('not.exist')
     return this
   }
 
@@ -71,6 +73,11 @@ export default class EducationAndTrainingPage extends Page {
     return Page.verifyOnPage(FunctionalSkillsPage)
   }
 
+  coursesAndQualificationsLinkShouldExist(): EducationAndTrainingPage {
+    this.viewAllCoursesAndQualificationsLink().should('be.exist')
+    return this
+  }
+
   clickViewAllCoursesAndQualificationsLink(): InPrisonCoursesAndQualificationsPage {
     this.viewAllCoursesAndQualificationsLink().click()
     return Page.verifyOnPage(InPrisonCoursesAndQualificationsPage)
@@ -86,11 +93,22 @@ export default class EducationAndTrainingPage extends Page {
     return Page.verifyOnPage(HighestLevelOfEducationPage)
   }
 
+  coursesAndQualificationsLinkShouldNotExist(): EducationAndTrainingPage {
+    this.viewAllCoursesAndQualificationsLink().should('not.exist')
+    return this
+  }
+
+  hasNoCoursesAndQualificationsLast12MonthsMessageDisplayed(): EducationAndTrainingPage {
+    this.noCoursesAndQualificationsLast12MonthsMessage().should('be.exist')
+    return this
+  }
+
   activeTab = (): PageElement => cy.get('.moj-sub-navigation__link[aria-current=page]')
 
   functionalSkillsTable = (): PageElement => cy.get('#latest-functional-skills-table')
 
-  completedInPrisonQualificationsTable = (): PageElement => cy.get('#completed-in-prison-qualifications-table')
+  completedInPrisonQualificationsLast12MonthsTable = (): PageElement =>
+    cy.get('#completed-in-prison-qualifications-last-12-months-table')
 
   curiousUnavailableMessage = (): PageElement => cy.get('[data-qa=curious-unavailable-message]')
 
@@ -110,4 +128,9 @@ export default class EducationAndTrainingPage extends Page {
   inPrisonTrainingChangeLink = (): PageElement => cy.get('[data-qa=in-prison-training-change-link]')
 
   highestLevelOfEducationChangeLink = (): PageElement => cy.get('[data-qa=highest-level-of-education-change-link]')
+
+  noCoursesAndQualificationsLast12MonthsMessage = (): PageElement =>
+    cy.get('[data-qa=no-courses-or-qualifications-last-12-months-message]')
+
+  completedQualificationCourseName = (): PageElement => cy.get('[data-qa=completed-qualification-course-name]')
 }
