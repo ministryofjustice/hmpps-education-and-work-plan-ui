@@ -87,6 +87,7 @@ context('Update in-prison training interests within an Induction', () => {
     // Then
     inPrisonTrainingPage = Page.verifyOnPage(InPrisonTrainingPage)
     inPrisonTrainingPage.hasErrorCount(1)
+    inPrisonTrainingPage.hasFieldInError('inPrisonTraining')
     cy.wiremockVerifyNoInteractions(putRequestedFor(urlEqualTo(`/inductions/${prisonNumber}`)))
   })
 })
