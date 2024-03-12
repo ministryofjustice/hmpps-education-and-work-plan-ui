@@ -86,6 +86,11 @@ export default class EducationAndTrainingPage extends Page {
     return Page.verifyOnPage(HighestLevelOfEducationPage)
   }
 
+  coursesAndQualificationsLinkShouldNotExist(): EducationAndTrainingPage {
+    this.viewAllCoursesAndQualificationsLink().should('not.exist')
+    return this
+  }
+
   activeTab = (): PageElement => cy.get('.moj-sub-navigation__link[aria-current=page]')
 
   functionalSkillsTable = (): PageElement => cy.get('#latest-functional-skills-table')

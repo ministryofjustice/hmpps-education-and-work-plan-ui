@@ -316,6 +316,41 @@ const stubLearnerEducation = (prisonNumber = 'G6115VJ', page = 0): SuperAgentReq
     },
   })
 
+const stubLearnerEducationWithNoCoursesQualifications = (prisonNumber = 'G6115VJ', page = 0): SuperAgentRequest =>
+  stubFor({
+    request: {
+      method: 'GET',
+      urlPathPattern: `/learnerEducation/${prisonNumber}`,
+      queryParameters: {
+        page: { equalTo: `${page}` },
+      },
+    },
+    response: {
+      status: 200,
+      headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+      jsonBody: {
+        content: [],
+        empty: false,
+        first: true,
+        last: true,
+        number: 0,
+        numberOfElements: 0,
+        pageable: {
+          sort: [],
+          pageNumber: 0,
+          pageSize: 10,
+          offset: 0,
+          unpaged: false,
+          paged: true,
+        },
+        size: 10,
+        sort: [],
+        totalElements: 0,
+        totalPages: 1,
+      },
+    },
+  })
+
 const stubLearnerEducation401Error = (prisonNumber = 'G6115VJ', page = 0): SuperAgentRequest =>
   stubFor({
     request: {
@@ -372,6 +407,7 @@ export default {
 
   // Stubs for Learner Education API
   stubLearnerEducation,
+  stubLearnerEducationWithNoCoursesQualifications,
   stubLearnerEducation401Error,
   stubLearnerEducation404Error,
 }

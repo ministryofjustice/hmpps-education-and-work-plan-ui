@@ -256,5 +256,21 @@ context('Prisoner Overview page - Education And Training tab', () => {
       // Then
       Page.verifyOnPage(InPrisonCoursesAndQualificationsPage)
     })
+
+    it('should not link to the courses and qualifications page given the prisoner does not have any courses and qualifications', () => {
+      // Given
+      cy.task('stubGetInductionShortQuestionSet')
+      cy.task('stubLearnerEducationWithNoCoursesQualifications')
+
+      cy.signIn()
+      const prisonNumber = 'G6115VJ'
+      cy.visit(`/plan/${prisonNumber}/view/education-and-training`)
+
+      // When
+      const educationAndTrainingPage = Page.verifyOnPage(EducationAndTrainingPage)
+
+      // Then
+      educationAndTrainingPage.coursesAndQualificationsLinkShouldNotExist()
+    })
   })
 })
