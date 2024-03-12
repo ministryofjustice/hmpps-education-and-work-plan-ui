@@ -42,6 +42,46 @@ context('Prisoner Overview page - Education And Training tab', () => {
         .hasCompletedInPrisonQualificationsLast12MonthsDisplayed()
     })
 
+    it('should display courses and qualification data if prisoner has completed courses or qualifications in last 12 months', () => {
+      // Given
+      cy.task('stubGetInductionShortQuestionSet')
+      cy.task('stubLearnerEducationWithCoursesQualificationsInLast12Months')
+
+      cy.signIn()
+      const prisonNumber = 'G6115VJ'
+      cy.visit(`/plan/${prisonNumber}/view/overview`)
+      const overviewPage = Page.verifyOnPage(OverviewPage)
+
+      // When
+      overviewPage.selectTab('Education and training')
+      const educationAndTrainingPage = Page.verifyOnPage(EducationAndTrainingPage)
+
+      // Then
+      educationAndTrainingPage //
+        .activeTabIs('Education and training')
+        .hasCompletedInPrisonQualificationsLast12MonthsDisplayed()
+        .hasCompletedInPrisonQualificationRecordDisplayed('GCSE Maths')
+    })
+
+    it('should display message if prisoner has no completed courses or qualifications in last 12 months', () => {
+      // Given
+      cy.task('stubGetInductionShortQuestionSet')
+
+      cy.signIn()
+      const prisonNumber = 'G6115VJ'
+      cy.visit(`/plan/${prisonNumber}/view/overview`)
+      const overviewPage = Page.verifyOnPage(OverviewPage)
+
+      // When
+      overviewPage.selectTab('Education and training')
+      const educationAndTrainingPage = Page.verifyOnPage(EducationAndTrainingPage)
+
+      // Then
+      educationAndTrainingPage //
+        .activeTabIs('Education and training')
+        .hasNoCoursesAndQualificationsLast12MonthsMessageDisplayed()
+    })
+
     it('should display Functional Skills and In Prison Qualifications And Achievements data given curious API returns a 404 for the learner profile', () => {
       // Given
       cy.task('stubLearnerProfile404Error')
@@ -162,25 +202,6 @@ context('Prisoner Overview page - Education And Training tab', () => {
       educationAndTrainingPage //
         .activeTabIs('Education and training')
         .isShowingShortQuestionSetAnswers()
-    })
-
-    it('should display message if prisoner has no completed courses or qualifications in last 12 months', () => {
-      // Given
-      cy.task('stubGetInductionShortQuestionSet')
-
-      cy.signIn()
-      const prisonNumber = 'G6115VJ'
-      cy.visit(`/plan/${prisonNumber}/view/overview`)
-      const overviewPage = Page.verifyOnPage(OverviewPage)
-
-      // When
-      overviewPage.selectTab('Education and training')
-      const educationAndTrainingPage = Page.verifyOnPage(EducationAndTrainingPage)
-
-      // Then
-      educationAndTrainingPage //
-        .activeTabIs('Education and training')
-        .hasNoCoursesAndQualificationsLast12MonthsMessageDisplayed()
     })
 
     it('should display Induction unavailable message given PLP API is unavailable when retrieving the Induction', () => {

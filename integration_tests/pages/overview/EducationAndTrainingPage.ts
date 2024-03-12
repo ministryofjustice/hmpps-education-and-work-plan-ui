@@ -46,6 +46,11 @@ export default class EducationAndTrainingPage extends Page {
     return this
   }
 
+  hasCompletedInPrisonQualificationRecordDisplayed(expected: string): EducationAndTrainingPage {
+    this.completedInPrisonQualificationsLast12MonthsTable().should('contain.text', expected)
+    return this
+  }
+
   doesNotCompletedInPrisonQualificationsLast12MonthsDisplayed(): EducationAndTrainingPage {
     this.completedInPrisonQualificationsLast12MonthsTable().should('not.exist')
     return this
