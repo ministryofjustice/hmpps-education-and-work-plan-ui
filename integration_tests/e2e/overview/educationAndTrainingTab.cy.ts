@@ -49,7 +49,7 @@ context('Prisoner Overview page - Education And Training tab', () => {
     it('should display message and view all link if prisoner has no completed courses or qualifications within last 12 months but does have older courses and qualifications', () => {
       // Given
       cy.task('stubGetInductionShortQuestionSet')
-      cy.task('stubLearnerEducationWithCoursesQualificationsCompletedInLast12Months')
+      cy.task('stubLearnerEducationWithCoursesCompletedInMoreThanLast12Months')
 
       cy.signIn()
       const prisonNumber = 'G6115VJ'
