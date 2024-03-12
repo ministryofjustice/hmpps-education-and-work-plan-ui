@@ -42,7 +42,6 @@ context('Prisoner Overview page - Education And Training tab', () => {
         .activeTabIs('Education and training')
         .hasFunctionalSkillsDisplayed()
         .hasCompletedInPrisonQualificationsLast12MonthsDisplayed()
-        .hasCompletedInPrisonQualificationRecordDisplayed('GCSE Maths')
         .coursesAndQualificationsLinkShouldExist()
     })
 
@@ -105,7 +104,7 @@ context('Prisoner Overview page - Education And Training tab', () => {
       educationAndTrainingPage //
         .activeTabIs('Education and training')
         .hasFunctionalSkillsDisplayed()
-        .hasCompletedInPrisonQualificationsLast12MonthsDisplayed()
+        .hasNoCoursesAndQualificationsLast12MonthsMessageDisplayed()
     })
 
     it('should display Functional Skills and In Prison Qualifications And Achievements data given curious API returns a 404 for the learner education', () => {
@@ -125,7 +124,7 @@ context('Prisoner Overview page - Education And Training tab', () => {
       educationAndTrainingPage //
         .activeTabIs('Education and training')
         .hasFunctionalSkillsDisplayed()
-        .hasCompletedInPrisonQualificationsLast12MonthsDisplayed()
+        .hasNoCoursesAndQualificationsLast12MonthsMessageDisplayed()
     })
 
     it('should display curious unavailable message given curious is unavailable for the learner profile', () => {
@@ -146,7 +145,7 @@ context('Prisoner Overview page - Education And Training tab', () => {
         .activeTabIs('Education and training')
         .doesNotHaveFunctionalSkillsDisplayed()
         .hasCuriousUnavailableMessageDisplayed()
-        .hasCompletedInPrisonQualificationsLast12MonthsDisplayed()
+        .hasNoCoursesAndQualificationsLast12MonthsMessageDisplayed()
     })
 
     it('should display curious unavailable message given curious is unavailable for the learner education', () => {

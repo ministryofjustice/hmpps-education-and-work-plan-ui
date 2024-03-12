@@ -33,7 +33,7 @@
             {% if completedInPrisonEducationWithinLast12Months.educationRecords.length > 0 %}
               {% for completedQualification in completedInPrisonEducationWithinLast12Months.educationRecords %}
                   <tr class="govuk-table__row">
-                  <td class="govuk-table__cell">{{ completedQualification.courseName }}</td>
+                  <td class="govuk-table__cell" data-qa="completed-qualification-course-name">{{ completedQualification.courseName }}</td>
                   <td class="govuk-table__cell">{{ completedQualification.isAccredited | formatIsAccredited }}</td>
                   <td class="govuk-table__cell">{{ completedQualification.prisonName if completedQualification.prisonName else completedQualification.prisonId }}</td>
                   <td class="govuk-table__cell">{{ completedQualification.courseCompletionDate | formatDate('D MMMM YYYY') }}</td>

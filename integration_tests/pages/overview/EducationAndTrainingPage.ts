@@ -43,11 +43,8 @@ export default class EducationAndTrainingPage extends Page {
 
   hasCompletedInPrisonQualificationsLast12MonthsDisplayed(): EducationAndTrainingPage {
     this.completedInPrisonQualificationsLast12MonthsTable().should('be.visible')
-    return this
-  }
-
-  hasCompletedInPrisonQualificationRecordDisplayed(expected: string): EducationAndTrainingPage {
-    this.completedInPrisonQualificationsLast12MonthsTable().should('contain.text', expected)
+    this.completedQualificationCourseName().should('be.exist')
+    this.noCoursesAndQualificationsLast12MonthsMessage().should('not.exist')
     return this
   }
 
@@ -134,4 +131,6 @@ export default class EducationAndTrainingPage extends Page {
 
   noCoursesAndQualificationsLast12MonthsMessage = (): PageElement =>
     cy.get('[data-qa=no-courses-or-qualifications-last-12-months-message]')
+
+  completedQualificationCourseName = (): PageElement => cy.get('[data-qa=completed-qualification-course-name]')
 }
