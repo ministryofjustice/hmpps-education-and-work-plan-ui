@@ -317,7 +317,7 @@ const stubLearnerEducation = (prisonNumber = 'G6115VJ', page = 0): SuperAgentReq
     },
   })
 
-const stubLearnerEducationWithCoursesQualificationsInLast12Months = (
+const stubLearnerEducationWithCoursesQualificationsCompletedInLast12Months = (
   prisonNumber = 'G6115VJ',
   page = 0,
 ): SuperAgentRequest =>
@@ -492,7 +492,7 @@ export default {
 
   // Stubs for Learner Education API
   stubLearnerEducation,
-  stubLearnerEducationWithCoursesQualificationsInLast12Months,
+  stubLearnerEducationWithCoursesQualificationsCompletedInLast12Months,
   stubLearnerEducationWithNoCoursesQualifications,
   stubLearnerEducation401Error,
   stubLearnerEducation404Error,

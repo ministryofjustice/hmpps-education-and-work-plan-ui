@@ -26,6 +26,8 @@ context('Prisoner Overview page - Education And Training tab', () => {
   describe('should retrieve and render data from Curious API data', () => {
     it('should display Functional Skills and In Prison Qualifications And Achievements data', () => {
       // Given
+      cy.task('stubLearnerEducationWithCoursesQualificationsCompletedInLast12Months')
+
       cy.signIn()
       const prisonNumber = 'G6115VJ'
       cy.visit(`/plan/${prisonNumber}/view/overview`)
@@ -40,12 +42,13 @@ context('Prisoner Overview page - Education And Training tab', () => {
         .activeTabIs('Education and training')
         .hasFunctionalSkillsDisplayed()
         .hasCompletedInPrisonQualificationsLast12MonthsDisplayed()
+        .hasCompletedInPrisonQualificationRecordDisplayed('GCSE Maths')
     })
 
-    it('should display courses and qualification data if prisoner has completed courses or qualifications in last 12 months', () => {
+    it('should display message if prisoner has no completed courses or qualifications in last 12 months', () => {
       // Given
       cy.task('stubGetInductionShortQuestionSet')
-      cy.task('stubLearnerEducationWithCoursesQualificationsInLast12Months')
+      cy.task('stubLearnerEducationWithCoursesQualificationsCompletedInLast12Months')
 
       cy.signIn()
       const prisonNumber = 'G6115VJ'
@@ -59,13 +62,13 @@ context('Prisoner Overview page - Education And Training tab', () => {
       // Then
       educationAndTrainingPage //
         .activeTabIs('Education and training')
-        .hasCompletedInPrisonQualificationsLast12MonthsDisplayed()
-        .hasCompletedInPrisonQualificationRecordDisplayed('GCSE Maths')
+        .hasNoCoursesAndQualificationsLast12MonthsMessageDisplayed()
     })
 
-    it('should display message if prisoner has no completed courses or qualifications in last 12 months', () => {
+    it('should display message if prisoner has no completed courses', () => {
       // Given
       cy.task('stubGetInductionShortQuestionSet')
+      cy.task('stubLearnerEducationWithNoCoursesQualifications')
 
       cy.signIn()
       const prisonNumber = 'G6115VJ'
