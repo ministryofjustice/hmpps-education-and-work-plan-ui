@@ -1,0 +1,152 @@
+{% extends "../../../partials/layout.njk" %}
+
+{% set pageId = "induction-additional-training" %}
+{% set title = "Does " + prisonerSummary.firstName + " " + prisonerSummary.lastName + " have any other training or vocational qualifications?" %}
+{% set pageTitle = title %}
+
+{#
+Data supplied to this template:
+  * prisonerSummary - object with firstName and lastName
+  * backLinkUrl - url of the back link
+  * backLinkAriaText - the aria label for the back link
+  * form - form object containing the following fields:
+    * additionalTraining - Array of selected additional training types
+    * additionalTrainingOther? - value for when Other is selected
+  * errors? - validation errors
+#}
+
+{% block beforeContent %}
+  {{ govukBackLink({ text: "Back", href: backLinkUrl, attributes: { "aria-label" : backLinkAriaText } }) }}
+{% endblock %}
+
+{% block content %}
+
+  {% if errors.length > 0 %}
+    {{ govukErrorSummary({
+      titleText: 'There is a problem',
+      errorList: errors,
+      attributes: { 'data-qa-errors': true }
+    }) }}
+  {% endif %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <form class="form" method="post" novalidate="">
+        <div class="govuk-form-group">
+          <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+
+          {% set otherHtml %}
+            {{ govukTextarea({
+              id: "additionalTrainingOther",
+              name: "additionalTrainingOther",
+              rows: "2",
+              value: form.additionalTrainingOther,
+              type: "text",
+              label: {
+                text: "Give details",
+                attributes: { "aria-live": "polite" }
+              },
+              attributes: { "aria-label" : "Give details of any qualifications or training" },
+              errorMessage: errors | findError('additionalTrainingOther')
+            }) }}
+          {% endset -%}
+
+          {{ govukCheckboxes({
+            name: "additionalTraining",
+            fieldset: {
+              legend: {
+                text: title,
+                isPageHeading: true,
+                classes: "govuk-fieldset__legend--l"
+              }
+            },
+            hint: {
+              text: "Select all that apply."
+            },
+            items: [
+              {
+                value: "CSCS_CARD",
+                checked: form.additionalTraining.includes("CSCS_CARD"),
+                text: "CSCS_CARD" | formatAdditionalTraining
+              },
+              {
+                value: "FIRST_AID_CERTIFICATE",
+                checked: form.additionalTraining.includes("FIRST_AID_CERTIFICATE"),
+                text: "FIRST_AID_CERTIFICATE" | formatAdditionalTraining
+              },
+              {
+                value: "FOOD_HYGIENE_CERTIFICATE",
+                checked: form.additionalTraining.includes("FOOD_HYGIENE_CERTIFICATE"),
+                text: "FOOD_HYGIENE_CERTIFICATE" | formatAdditionalTraining
+              },
+              {
+                value: "FULL_UK_DRIVING_LICENCE",
+                checked: form.additionalTraining.includes("FULL_UK_DRIVING_LICENCE"),
+                text: "FULL_UK_DRIVING_LICENCE" | formatAdditionalTraining
+              },
+              {
+                value: "HEALTH_AND_SAFETY",
+                checked: form.additionalTraining.includes("HEALTH_AND_SAFETY"),
+                text: "HEALTH_AND_SAFETY" | formatAdditionalTraining
+              },
+              {
+                value: "HGV_LICENCE",
+                checked: form.additionalTraining.includes("HGV_LICENCE"),
+                text:contentLookup.fields.additionalTraining["HGV_LICENCE"]
+              },
+              {
+                value: "MACHINERY_TICKETS",
+                checked: form.additionalTraining.includes("MACHINERY_TICKETS"),
+                text: "MACHINERY_TICKETS" | formatAdditionalTraining,
+                hint: {
+                  text: "including things like forklift, digger and dumper"
+                }
+              },
+              {
+                value: "MANUAL_HANDLING",
+                checked: form.additionalTraining.includes("MANUAL_HANDLING"),
+                text: "MANUAL_HANDLING" | formatAdditionalTraining
+              },
+              {
+                value: "TRADE_COURSE",
+                checked: form.additionalTraining.includes("TRADE_COURSE"),
+                text: "TRADE_COURSE" | formatAdditionalTraining,
+                hint: {
+                  text: "including things like bricklaying, painting and decorating and carpentry"
+                }
+              },
+              {
+                value: "OTHER",
+                checked: form.additionalTraining.includes("OTHER"),
+                text: "OTHER" | formatAdditionalTraining,
+                attributes: { "aria-label": "OTHER" | formatAdditionalTraining + " (Opens a dialogue box)" },
+                conditional: {
+                  html: otherHtml
+                }
+              },
+              {
+                divider: "or"
+              },
+              {
+                value: "NONE",
+                checked: form.additionalTraining.includes("NONE"),
+                text: "NONE" | formatAdditionalTraining,
+                behaviour: "exclusive"
+              }
+            ],
+            errorMessage: errors | findError('additionalTraining')
+          }) }}
+        </div>
+
+        {{ govukButton({
+          id: "submit-button",
+          text: "Continue",
+          type: "submit",
+          attributes: {"data-qa": "submit-button"}
+        }) }}
+      </form>
+    </div>
+  </div>
+
+{% endblock %}
