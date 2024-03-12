@@ -3,6 +3,7 @@ import Page, { PageElement } from '../page'
 import FunctionalSkillsPage from '../functionalSkills/FunctionalSkillsPage'
 import InPrisonCoursesAndQualificationsPage from '../inPrisonCoursesAndQualifications/InPrisonCoursesAndQualificationsPage'
 import InPrisonTrainingPage from '../induction/InPrisonTrainingPage'
+import HighestLevelOfEducationPage from '../induction/HighestLevelOfEducationPage'
 
 /**
  * Cypress page class representing the Education And Training tab of the Overview Page
@@ -80,6 +81,11 @@ export default class EducationAndTrainingPage extends Page {
     return Page.verifyOnPage(InPrisonTrainingPage)
   }
 
+  clickToChangeHighestLevelOfEducation(): HighestLevelOfEducationPage {
+    this.highestLevelOfEducationChangeLink().click()
+    return Page.verifyOnPage(HighestLevelOfEducationPage)
+  }
+
   activeTab = (): PageElement => cy.get('.moj-sub-navigation__link[aria-current=page]')
 
   functionalSkillsTable = (): PageElement => cy.get('#latest-functional-skills-table')
@@ -102,4 +108,6 @@ export default class EducationAndTrainingPage extends Page {
   viewAllCoursesAndQualificationsLink = (): PageElement => cy.get('[data-qa=view-all-in-prison-qualifications-link')
 
   inPrisonTrainingChangeLink = (): PageElement => cy.get('[data-qa=in-prison-training-change-link]')
+
+  highestLevelOfEducationChangeLink = (): PageElement => cy.get('[data-qa=highest-level-of-education-change-link]')
 }

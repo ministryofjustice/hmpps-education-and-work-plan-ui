@@ -18,6 +18,7 @@ import AffectAbilityToWorkUpdateController from './affectAbilityToWorkUpdateCont
 import ReasonsNotToGetWorkUpdateController from './reasonsNotToGetWorkUpdateController'
 import WorkInterestTypesUpdateController from './workInterestTypesUpdateController'
 import WorkInterestRolesUpdateController from './workInterestRolesUpdateController'
+import HighestLevelOfEducationUpdateController from './highestLevelOfEducationUpdateController'
 
 /**
  * Route definitions for updating the various sections of an Induction
@@ -40,6 +41,7 @@ export default (router: Router, services: Services) => {
   const reasonsNotToGetWorkUpdateController = new ReasonsNotToGetWorkUpdateController(inductionService)
   const workInterestTypesUpdateController = new WorkInterestTypesUpdateController(inductionService)
   const workInterestRolesUpdateController = new WorkInterestRolesUpdateController(inductionService)
+  const highestLevelOfEducationUpdateController = new HighestLevelOfEducationUpdateController(inductionService)
 
   if (isAnyUpdateSectionEnabled()) {
     router.get('/prisoners/:prisonNumber/induction/**', [
@@ -134,10 +136,20 @@ export default (router: Router, services: Services) => {
       inPrisonWorkUpdateController.submitInPrisonWorkForm,
     ])
   }
+
+  if (config.featureToggles.induction.update.prePrisonEducationSectionEnabled) {
+    router.get('/prisoners/:prisonNumber/induction/highest-level-of-education', [
+      highestLevelOfEducationUpdateController.getHighestLevelOfEducationView,
+    ])
+    router.post('/prisoners/:prisonNumber/induction/highest-level-of-education', [
+      highestLevelOfEducationUpdateController.submitHighestLevelOfEducationForm,
+    ])
+  }
 }
 
 const isAnyUpdateSectionEnabled = (): boolean =>
   config.featureToggles.induction.update.skillsAndInterestsSectionEnabled ||
   config.featureToggles.induction.update.workExperienceSectionEnabled ||
   config.featureToggles.induction.update.workInterestsSectionEnabled ||
-  config.featureToggles.induction.update.inPrisonTrainingSectionEnabled
+  config.featureToggles.induction.update.inPrisonTrainingSectionEnabled ||
+  config.featureToggles.induction.update.prePrisonEducationSectionEnabled
