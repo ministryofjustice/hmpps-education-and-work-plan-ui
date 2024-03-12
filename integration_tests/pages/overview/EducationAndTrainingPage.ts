@@ -41,13 +41,13 @@ export default class EducationAndTrainingPage extends Page {
     return this
   }
 
-  hasCompletedInPrisonQualificationsDisplayed(): EducationAndTrainingPage {
-    this.completedInPrisonQualificationsTable().should('be.visible')
+  hasCompletedInPrisonQualificationsLast12MonthsDisplayed(): EducationAndTrainingPage {
+    this.completedInPrisonQualificationsLast12MonthsTable().should('be.visible')
     return this
   }
 
-  doesNotCompletedInPrisonQualificationsDisplayed(): EducationAndTrainingPage {
-    this.completedInPrisonQualificationsTable().should('not.exist')
+  doesNotCompletedInPrisonQualificationsLast12MonthsDisplayed(): EducationAndTrainingPage {
+    this.completedInPrisonQualificationsLast12MonthsTable().should('not.exist')
     return this
   }
 
@@ -90,7 +90,8 @@ export default class EducationAndTrainingPage extends Page {
 
   functionalSkillsTable = (): PageElement => cy.get('#latest-functional-skills-table')
 
-  completedInPrisonQualificationsTable = (): PageElement => cy.get('#completed-in-prison-qualifications-table')
+  completedInPrisonQualificationsLast12MonthsTable = (): PageElement =>
+    cy.get('#completed-in-prison-qualifications-last-12-months-table')
 
   curiousUnavailableMessage = (): PageElement => cy.get('[data-qa=curious-unavailable-message]')
 
