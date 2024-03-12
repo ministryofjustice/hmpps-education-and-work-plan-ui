@@ -51,6 +51,10 @@ export default class HighestLevelOfEducationUpdateController extends HighestLeve
         // Or if the new Highest Level of Education does not require qualifications, regardless of whether qualifications already exist on the induction
         highestLevelOfEducationDoesNotRequireQualifications(highestLevelOfEducationForm)
       ) {
+        logger.debug(
+          'Induction can be updated with new Highest Level of Education without asking further questions about educational qualifications',
+        )
+
         // Update the Induction with the new Highest Level of Education
         const updatedInduction = updatedInductionDtoWithHighestLevelOfEducation(
           inductionDto,
@@ -64,6 +68,12 @@ export default class HighestLevelOfEducationUpdateController extends HighestLeve
           logger.error(`Error updating Induction for prisoner ${prisonNumber}`, e)
           return next(createError(500, `Error updating Induction for prisoner ${prisonNumber}. Error: ${e}`))
         }
+      } else {
+        logger.debug(
+          'The new Highest Level of Education requires asking further questions about educational qualifications',
+        )
+        // TODO - implement mini-flow to ask education qualification details
+        throw new Error('Unsupported operation')
       }
     } else {
       logger.debug('No changes to Highest Level of Education were submitted')
