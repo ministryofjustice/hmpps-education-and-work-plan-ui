@@ -91,6 +91,11 @@ export default class EducationAndTrainingPage extends Page {
     return this
   }
 
+  hasNoCoursesAndQualificationsLast12MonthsMessageDisplayed(): EducationAndTrainingPage {
+    this.noCoursesAndQualificationsLast12MonthsMessage().should('be.exist')
+    return this
+  }
+
   activeTab = (): PageElement => cy.get('.moj-sub-navigation__link[aria-current=page]')
 
   functionalSkillsTable = (): PageElement => cy.get('#latest-functional-skills-table')
@@ -116,4 +121,7 @@ export default class EducationAndTrainingPage extends Page {
   inPrisonTrainingChangeLink = (): PageElement => cy.get('[data-qa=in-prison-training-change-link]')
 
   highestLevelOfEducationChangeLink = (): PageElement => cy.get('[data-qa=highest-level-of-education-change-link]')
+
+  noCoursesAndQualificationsLast12MonthsMessage = (): PageElement =>
+    cy.get('[data-qa=no-courses-or-qualifications-last-12-months-message]')
 }
