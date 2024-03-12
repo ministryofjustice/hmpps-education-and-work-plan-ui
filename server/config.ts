@@ -144,6 +144,9 @@ export default {
         inPrisonTrainingSectionEnabled: toBoolean(
           get('UPDATE_INDUCTION_IN_PRISON_TRAINING_SECTION_ENABLED', false, requiredInProduction),
         ),
+        prePrisonEducationSectionEnabled: toBoolean(
+          get('UPDATE_INDUCTION_PRE_PRISON_EDUCATION_SECTION_ENABLED', false, requiredInProduction),
+        ),
       },
     },
     newCourseAndQualificationHistoryEnabled: toBoolean(

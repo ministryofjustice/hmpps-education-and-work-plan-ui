@@ -3,6 +3,7 @@ import Page from '../../pages/page'
 import EducationAndTrainingPage from '../../pages/overview/EducationAndTrainingPage'
 import InPrisonCoursesAndQualificationsPage from '../../pages/inPrisonCoursesAndQualifications/InPrisonCoursesAndQualificationsPage'
 import InPrisonTrainingPage from '../../pages/induction/InPrisonTrainingPage'
+import HighestLevelOfEducationPage from '../../pages/induction/HighestLevelOfEducationPage'
 
 context('Prisoner Overview page - Education And Training tab', () => {
   beforeEach(() => {
@@ -220,6 +221,22 @@ context('Prisoner Overview page - Education And Training tab', () => {
 
       // Then
       Page.verifyOnPage(InPrisonTrainingPage)
+    })
+
+    it(`should link to the change Highest Level of Education page`, () => {
+      // Given
+      cy.task('stubGetInductionLongQuestionSet')
+
+      cy.signIn()
+      const prisonNumber = 'G6115VJ'
+      cy.visit(`/plan/${prisonNumber}/view/education-and-training`)
+      const educationAndTrainingPage = Page.verifyOnPage(EducationAndTrainingPage)
+
+      // When
+      educationAndTrainingPage.clickToChangeHighestLevelOfEducation()
+
+      // Then
+      Page.verifyOnPage(HighestLevelOfEducationPage)
     })
   })
 

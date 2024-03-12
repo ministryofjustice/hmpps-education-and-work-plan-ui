@@ -59,7 +59,14 @@ as the follow up questions are different.
               {{ educationAndTraining.data.longQuestionSetAnswers.highestEducationLevel | formatEducationLevel }}
             </dd>
             <dd class="govuk-summary-list__actions govuk-!-display-none-print">
-              <a class="govuk-link" href="{{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}/education-level/update">
+              {%- set highestLevelOfEducationChangeLinkUrl -%}
+                {%- if featureToggles.induction.update.prePrisonEducationSectionEnabled -%}
+                  /prisoners/{{ prisonerSummary.prisonNumber }}/induction/highest-level-of-education
+                {%- else -%}
+                  {{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}/education-level/update
+                {%- endif -%}
+              {%- endset -%}
+              <a class="govuk-link" href="{{ highestLevelOfEducationChangeLinkUrl }}" data-qa="highest-level-of-education-change-link">
                 Change<span class="govuk-visually-hidden"> highest level of education before prison</span>
               </a>
             </dd>
