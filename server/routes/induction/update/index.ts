@@ -8,6 +8,7 @@ import {
   setCurrentPageInPageFlowQueue,
 } from '../../routerRequestHandlers'
 import InPrisonWorkUpdateController from './inPrisonWorkUpdateController'
+import InPrisonTrainingUpdateController from './inPrisonTrainingUpdateController'
 import SkillsUpdateController from './skillsUpdateController'
 import PersonalInterestsUpdateController from './personalInterestsUpdateController'
 import WorkedBeforeUpdateController from './workedBeforeUpdateController'
@@ -27,6 +28,7 @@ import WorkInterestRolesUpdateController from './workInterestRolesUpdateControll
 export default (router: Router, services: Services) => {
   const { inductionService } = services
   const inPrisonWorkUpdateController = new InPrisonWorkUpdateController(inductionService)
+  const inPrisonTrainingUpdateController = new InPrisonTrainingUpdateController(inductionService)
   const skillsUpdateController = new SkillsUpdateController(inductionService)
   const personalInterestsUpdateController = new PersonalInterestsUpdateController(inductionService)
   const workedBeforeUpdateController = new WorkedBeforeUpdateController(inductionService)
@@ -54,8 +56,13 @@ export default (router: Router, services: Services) => {
     ])
   }
 
-  if (config.featureToggles.induction.update.trainingInterestsInPrisonSectionEnabled) {
-    // TODO RR-647 link to training & education interests in prison
+  if (config.featureToggles.induction.update.inPrisonTrainingSectionEnabled) {
+    router.get('/prisoners/:prisonNumber/induction/in-prison-training', [
+      inPrisonTrainingUpdateController.getInPrisonTrainingView,
+    ])
+    router.post('/prisoners/:prisonNumber/induction/in-prison-training', [
+      inPrisonTrainingUpdateController.submitInPrisonTrainingForm,
+    ])
   }
 
   if (config.featureToggles.induction.update.skillsAndInterestsSectionEnabled) {
@@ -133,4 +140,4 @@ const isAnyUpdateSectionEnabled = (): boolean =>
   config.featureToggles.induction.update.skillsAndInterestsSectionEnabled ||
   config.featureToggles.induction.update.workExperienceSectionEnabled ||
   config.featureToggles.induction.update.workInterestsSectionEnabled ||
-  config.featureToggles.induction.update.trainingInterestsInPrisonSectionEnabled
+  config.featureToggles.induction.update.inPrisonTrainingSectionEnabled

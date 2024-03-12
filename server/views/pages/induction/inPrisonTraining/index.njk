@@ -10,8 +10,8 @@ Data supplied to this template:
   * backLinkUrl - url of the back link
   * backLinkAriaText - the aria label for the back link
   * form - form object containing the following fields:
-    * inPrisonEducation - Array of selected education and training types
-    * inPrisonEducationOther? - value for when Other is selected
+    * inPrisonTraining - Array of selected education and training types
+    * inPrisonTrainingOther? - value for when Other is selected
   * errors? - validation errors
 #}
 
@@ -38,22 +38,22 @@ Data supplied to this template:
 
           {% set otherHtml %}
             {{ govukTextarea({
-              id: "inPrisonEducationOther",
-              name: "inPrisonEducationOther",
+              id: "inPrisonTrainingOther",
+              name: "inPrisonTrainingOther",
               rows: "2",
-              value: form.inPrisonEducationOther,
+              value: form.inPrisonTrainingOther,
               type: "text",
               label: {
                 text: "Give details",
                 attributes: { "aria-live": "polite" }
               },
               attributes: { "aria-label" : "Give details of any education or training " + prisonerSummary.firstName + " " + prisonerSummary.lastName + " would like to do in prison?" },
-              errorMessage: errors | findError('inPrisonEducationOther')
+              errorMessage: errors | findError('inPrisonTrainingOther')
             }) }}
           {% endset -%}
 
           {{ govukCheckboxes({
-            name: "inPrisonEducation",
+            name: "inPrisonTraining",
             fieldset: {
               legend: {
                 text: title,
@@ -67,75 +67,75 @@ Data supplied to this template:
             items: [
               {
                 value: "BARBERING_AND_HAIRDRESSING",
-                checked: form.inPrisonEducation.includes("BARBERING_AND_HAIRDRESSING"),
-                text: "BARBERING_AND_HAIRDRESSING" | formatInPrisonEducation
+                checked: form.inPrisonTraining.includes("BARBERING_AND_HAIRDRESSING"),
+                text: "BARBERING_AND_HAIRDRESSING" | formatInPrisonTraining
               },
               {
                 value: "CATERING",
-                checked: form.inPrisonEducation.includes("CATERING"),
-                text: "CATERING" | formatInPrisonEducation
+                checked: form.inPrisonTraining.includes("CATERING"),
+                text: "CATERING" | formatInPrisonTraining
               },
               {
                 value: "COMMUNICATION_SKILLS",
-                checked: form.inPrisonEducation.includes("COMMUNICATION_SKILLS"),
-                text: "COMMUNICATION_SKILLS" | formatInPrisonEducation
+                checked: form.inPrisonTraining.includes("COMMUNICATION_SKILLS"),
+                text: "COMMUNICATION_SKILLS" | formatInPrisonTraining
               },
               {
                 value: "ENGLISH_LANGUAGE_SKILLS",
-                checked: form.inPrisonEducation.includes("ENGLISH_LANGUAGE_SKILLS"),
-                text: "ENGLISH_LANGUAGE_SKILLS" | formatInPrisonEducation
+                checked: form.inPrisonTraining.includes("ENGLISH_LANGUAGE_SKILLS"),
+                text: "ENGLISH_LANGUAGE_SKILLS" | formatInPrisonTraining
               },
               {
                 value: "FORKLIFT_DRIVING",
-                checked: form.inPrisonEducation.includes("FORKLIFT_DRIVING"),
-                text: "FORKLIFT_DRIVING" | formatInPrisonEducation
+                checked: form.inPrisonTraining.includes("FORKLIFT_DRIVING"),
+                text: "FORKLIFT_DRIVING" | formatInPrisonTraining
               },
               {
                 value: "INTERVIEW_SKILLS",
-                checked: form.inPrisonEducation.includes("INTERVIEW_SKILLS"),
-                text: "INTERVIEW_SKILLS" | formatInPrisonEducation
+                checked: form.inPrisonTraining.includes("INTERVIEW_SKILLS"),
+                text: "INTERVIEW_SKILLS" | formatInPrisonTraining
               },
               {
                 value: "MACHINERY_TICKETS",
-                checked: form.inPrisonEducation.includes("MACHINERY_TICKETS"),
-                text: "MACHINERY_TICKETS" | formatInPrisonEducation
+                checked: form.inPrisonTraining.includes("MACHINERY_TICKETS"),
+                text: "MACHINERY_TICKETS" | formatInPrisonTraining
               },
               {
                 value: "NUMERACY_SKILLS",
-                checked: form.inPrisonEducation.includes("NUMERACY_SKILLS"),
-                text: "NUMERACY_SKILLS" | formatInPrisonEducation
+                checked: form.inPrisonTraining.includes("NUMERACY_SKILLS"),
+                text: "NUMERACY_SKILLS" | formatInPrisonTraining
               },
               {
                 value: "RUNNING_A_BUSINESS",
-                checked: form.inPrisonEducation.includes("RUNNING_A_BUSINESS"),
-                text: "RUNNING_A_BUSINESS" | formatInPrisonEducation
+                checked: form.inPrisonTraining.includes("RUNNING_A_BUSINESS"),
+                text: "RUNNING_A_BUSINESS" | formatInPrisonTraining
               },
               {
                 value: "SOCIAL_AND_LIFE_SKILLS",
-                checked: form.inPrisonEducation.includes("SOCIAL_AND_LIFE_SKILLS"),
-                text: "SOCIAL_AND_LIFE_SKILLS" | formatInPrisonEducation
+                checked: form.inPrisonTraining.includes("SOCIAL_AND_LIFE_SKILLS"),
+                text: "SOCIAL_AND_LIFE_SKILLS" | formatInPrisonTraining
               },
               {
                 value: "WELDING_AND_METALWORK",
-                checked: form.inPrisonEducation.includes("WELDING_AND_METALWORK"),
-                text: "WELDING_AND_METALWORK" | formatInPrisonEducation
+                checked: form.inPrisonTraining.includes("WELDING_AND_METALWORK"),
+                text: "WELDING_AND_METALWORK" | formatInPrisonTraining
               },
               {
                 value: "WOODWORK_AND_JOINERY",
-                checked: form.inPrisonEducation.includes("WOODWORK_AND_JOINERY"),
-                text: "WOODWORK_AND_JOINERY" | formatInPrisonEducation
+                checked: form.inPrisonTraining.includes("WOODWORK_AND_JOINERY"),
+                text: "WOODWORK_AND_JOINERY" | formatInPrisonTraining
               },
               {
                 value: "OTHER",
-                checked: form.inPrisonEducation.includes("OTHER"),
-                text: "OTHER" | formatInPrisonEducation,
-                attributes: { "aria-label": "OTHER" | formatInPrisonEducation + " (Opens a dialogue box)" },
+                checked: form.inPrisonTraining.includes("OTHER"),
+                text: "OTHER" | formatInPrisonTraining,
+                attributes: { "aria-label": "OTHER" | formatInPrisonTraining + " (Opens a dialogue box)" },
                 conditional: {
                   html: otherHtml
                 }
               }
             ],
-            errorMessage: errors | findError('inPrisonEducation')
+            errorMessage: errors | findError('inPrisonTraining')
           }) }}
 
         </div>

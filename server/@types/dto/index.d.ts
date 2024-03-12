@@ -170,7 +170,7 @@ declare module 'inductionDto' {
   }
 
   export interface InPrisonTrainingInterestDto {
-    trainingType: InPrisonEducationValue
+    trainingType: InPrisonTrainingValue
     trainingTypeOther?: string
   }
 

@@ -1,6 +1,6 @@
-import formatInPrisonEducationFilter from './formatInPrisonEducationFilter'
+import formatInPrisonTrainingFilter from './formatInPrisonTrainingFilter'
 
-describe('formatInPrisonEducationFilter', () => {
+describe('formatInPrisonTrainingFilter', () => {
   describe('should format view model values', () => {
     Array.of(
       { source: 'BARBERING_AND_HAIRDRESSING', expected: 'Barbering and hairdressing' },
@@ -18,7 +18,7 @@ describe('formatInPrisonEducationFilter', () => {
       { source: 'OTHER', expected: 'Other' },
     ).forEach(spec => {
       it(`source: ${spec.source}, expected: ${spec.expected}`, () => {
-        expect(formatInPrisonEducationFilter(spec.source)).toEqual(spec.expected)
+        expect(formatInPrisonTrainingFilter(spec.source)).toEqual(spec.expected)
       })
     })
   })
