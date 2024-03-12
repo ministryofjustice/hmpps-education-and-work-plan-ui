@@ -2,6 +2,7 @@ import OverviewPage from '../../pages/overview/OverviewPage'
 import Page from '../../pages/page'
 import EducationAndTrainingPage from '../../pages/overview/EducationAndTrainingPage'
 import InPrisonCoursesAndQualificationsPage from '../../pages/inPrisonCoursesAndQualifications/InPrisonCoursesAndQualificationsPage'
+import InPrisonTrainingPage from '../../pages/induction/InPrisonTrainingPage'
 
 context('Prisoner Overview page - Education And Training tab', () => {
   beforeEach(() => {
@@ -205,7 +206,21 @@ context('Prisoner Overview page - Education And Training tab', () => {
   })
 
   describe('should display change links to Induction questions', () => {
-    // TODO RR-647 - test link to change in-prison education and training
+    it(`should link to the change in-prison training interests page`, () => {
+      // Given
+      cy.task('stubGetInductionShortQuestionSet')
+
+      cy.signIn()
+      const prisonNumber = 'G6115VJ'
+      cy.visit(`/plan/${prisonNumber}/view/education-and-training`)
+      const educationAndTrainingPage = Page.verifyOnPage(EducationAndTrainingPage)
+
+      // When
+      educationAndTrainingPage.clickToChangeInPrisonTraining()
+
+      // Then
+      Page.verifyOnPage(InPrisonTrainingPage)
+    })
   })
 
   describe('should display a link to view all courses and qualifications', () => {
