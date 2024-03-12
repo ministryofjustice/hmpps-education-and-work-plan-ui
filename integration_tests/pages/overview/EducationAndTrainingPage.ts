@@ -76,6 +76,16 @@ export default class EducationAndTrainingPage extends Page {
     return Page.verifyOnPage(FunctionalSkillsPage)
   }
 
+  clickInPrisonWorkChangeLink(): InPrisonWorkPage {
+    this.inPrisonWorkChangeLink().click()
+    return Page.verifyOnPage(InPrisonWorkPage)
+  }
+
+  coursesAndQualificationsLinkShouldExist(): EducationAndTrainingPage {
+    this.viewAllCoursesAndQualificationsLink().should('be.exist')
+    return this
+  }
+
   clickViewAllCoursesAndQualificationsLink(): InPrisonCoursesAndQualificationsPage {
     this.viewAllCoursesAndQualificationsLink().click()
     return Page.verifyOnPage(InPrisonCoursesAndQualificationsPage)

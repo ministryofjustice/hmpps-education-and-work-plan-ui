@@ -43,9 +43,10 @@ context('Prisoner Overview page - Education And Training tab', () => {
         .hasFunctionalSkillsDisplayed()
         .hasCompletedInPrisonQualificationsLast12MonthsDisplayed()
         .hasCompletedInPrisonQualificationRecordDisplayed('GCSE Maths')
+        .coursesAndQualificationsLinkShouldExist()
     })
 
-    it('should display message if prisoner has no completed courses or qualifications in last 12 months', () => {
+    it('should display message and view all link if prisoner has no completed courses or qualifications within last 12 months but does have older courses and qualifications', () => {
       // Given
       cy.task('stubGetInductionShortQuestionSet')
       cy.task('stubLearnerEducationWithCoursesQualificationsCompletedInLast12Months')
@@ -63,9 +64,10 @@ context('Prisoner Overview page - Education And Training tab', () => {
       educationAndTrainingPage //
         .activeTabIs('Education and training')
         .hasNoCoursesAndQualificationsLast12MonthsMessageDisplayed()
+        .coursesAndQualificationsLinkShouldExist()
     })
 
-    it('should display message if prisoner has no completed courses', () => {
+    it('should display message but not display view all link if prisoner has no completed courses', () => {
       // Given
       cy.task('stubGetInductionShortQuestionSet')
       cy.task('stubLearnerEducationWithNoCoursesQualifications')
@@ -83,6 +85,7 @@ context('Prisoner Overview page - Education And Training tab', () => {
       educationAndTrainingPage //
         .activeTabIs('Education and training')
         .hasNoCoursesAndQualificationsLast12MonthsMessageDisplayed()
+        .coursesAndQualificationsLinkShouldNotExist()
     })
 
     it('should display Functional Skills and In Prison Qualifications And Achievements data given curious API returns a 404 for the learner profile', () => {
@@ -298,22 +301,6 @@ context('Prisoner Overview page - Education And Training tab', () => {
 
       // Then
       Page.verifyOnPage(InPrisonCoursesAndQualificationsPage)
-    })
-
-    it('should not link to the courses and qualifications page given the prisoner does not have any courses and qualifications', () => {
-      // Given
-      cy.task('stubGetInductionShortQuestionSet')
-      cy.task('stubLearnerEducationWithNoCoursesQualifications')
-
-      cy.signIn()
-      const prisonNumber = 'G6115VJ'
-      cy.visit(`/plan/${prisonNumber}/view/education-and-training`)
-
-      // When
-      const educationAndTrainingPage = Page.verifyOnPage(EducationAndTrainingPage)
-
-      // Then
-      educationAndTrainingPage.coursesAndQualificationsLinkShouldNotExist()
     })
   })
 })
