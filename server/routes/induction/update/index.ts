@@ -3,6 +3,7 @@ import { Services } from '../../../services'
 import config from '../../../config'
 import { checkUserHasEditAuthority } from '../../../middleware/roleBasedAccessControl'
 import {
+  retrieveFunctionalSkillsIfNotInSession,
   retrieveInductionIfNotInSession,
   retrievePrisonerSummaryIfNotInSession,
   setCurrentPageInPageFlowQueue,
@@ -20,6 +21,7 @@ import WorkInterestTypesUpdateController from './workInterestTypesUpdateControll
 import WorkInterestRolesUpdateController from './workInterestRolesUpdateController'
 import HighestLevelOfEducationUpdateController from './highestLevelOfEducationUpdateController'
 import AdditionalTrainingUpdateController from './additionalTrainingUpdateController'
+import QualificationsListUpdateController from './qualificationsListUpdateController'
 
 /**
  * Route definitions for updating the various sections of an Induction
@@ -44,6 +46,7 @@ export default (router: Router, services: Services) => {
   const workInterestRolesUpdateController = new WorkInterestRolesUpdateController(inductionService)
   const highestLevelOfEducationUpdateController = new HighestLevelOfEducationUpdateController(inductionService)
   const additionalTrainingUpdateController = new AdditionalTrainingUpdateController(inductionService)
+  const qualificationsListUpdateController = new QualificationsListUpdateController()
 
   if (isAnyUpdateSectionEnabled()) {
     router.get('/prisoners/:prisonNumber/induction/**', [
@@ -140,6 +143,11 @@ export default (router: Router, services: Services) => {
   }
 
   if (config.featureToggles.induction.update.prePrisonEducationSectionEnabled) {
+    router.get('/prisoners/:prisonNumber/induction/qualifications', [
+      retrieveFunctionalSkillsIfNotInSession(services.curiousService),
+      qualificationsListUpdateController.getQualificationsListView,
+    ])
+
     router.get('/prisoners/:prisonNumber/induction/highest-level-of-education', [
       highestLevelOfEducationUpdateController.getHighestLevelOfEducationView,
     ])
