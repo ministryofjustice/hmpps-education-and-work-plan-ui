@@ -1,10 +1,15 @@
 import { NextFunction, Request, Response } from 'express'
 import { SessionData } from 'express-session'
 import moment from 'moment'
-import type { Assessment, FunctionalSkills, Prison } from 'viewModels'
+import type { Assessment, Prison } from 'viewModels'
 import { CuriousService, PrisonService } from '../../services'
 import FunctionalSkillsController from './functionalSkillsController'
 import aValidPrisonerSummary from '../../testsupport/prisonerSummaryTestDataBuilder'
+import {
+  functionalSkillsWithProblemRetrievingData,
+  validFunctionalSkills,
+  validFunctionalSkillsWithNoAssessments,
+} from '../../testsupport/functionalSkillsTestDataBuilder'
 
 describe('functionalSkillsController', () => {
   const curiousService = {
@@ -68,8 +73,8 @@ describe('functionalSkillsController', () => {
 
       prisonService.lookupPrison.mockImplementation(mockPrisonLookup)
 
-      const functionalSkills: FunctionalSkills = {
-        problemRetrievingData: false,
+      const functionalSkills = validFunctionalSkills({
+        prisonNumber,
         assessments: [
           {
             type: 'ENGLISH',
@@ -121,7 +126,7 @@ describe('functionalSkillsController', () => {
             prisonName: 'WYMOTT (HMP/YOI)',
           },
         ],
-      }
+      })
       curiousService.getPrisonerFunctionalSkills.mockResolvedValue(functionalSkills)
 
       const expectedDigitalSkills: Array<Assessment> = [
@@ -210,10 +215,7 @@ describe('functionalSkillsController', () => {
       const prisonerSummary = aValidPrisonerSummary(prisonNumber)
       req.session.prisonerSummary = prisonerSummary
 
-      const functionalSkills = {
-        problemRetrievingData: false,
-        assessments: [],
-      } as FunctionalSkills
+      const functionalSkills = validFunctionalSkillsWithNoAssessments({ prisonNumber })
       curiousService.getPrisonerFunctionalSkills.mockResolvedValue(functionalSkills)
 
       const expectedDigitalSkills = [] as Array<Assessment>
@@ -251,9 +253,7 @@ describe('functionalSkillsController', () => {
       const prisonerSummary = aValidPrisonerSummary(prisonNumber)
       req.session.prisonerSummary = prisonerSummary
 
-      const functionalSkills = {
-        problemRetrievingData: true,
-      } as FunctionalSkills
+      const functionalSkills = functionalSkillsWithProblemRetrievingData({ prisonNumber })
       curiousService.getPrisonerFunctionalSkills.mockResolvedValue(functionalSkills)
 
       const expectedDigitalSkills = [] as Array<Assessment>

@@ -47,6 +47,7 @@ declare module 'viewModels' {
   export interface FunctionalSkills {
     problemRetrievingData: boolean
     assessments: Array<Assessment>
+    prisonNumber: string
   }
 
   /**
