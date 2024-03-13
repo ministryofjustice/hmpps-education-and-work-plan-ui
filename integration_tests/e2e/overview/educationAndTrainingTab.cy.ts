@@ -4,6 +4,7 @@ import EducationAndTrainingPage from '../../pages/overview/EducationAndTrainingP
 import InPrisonCoursesAndQualificationsPage from '../../pages/inPrisonCoursesAndQualifications/InPrisonCoursesAndQualificationsPage'
 import InPrisonTrainingPage from '../../pages/induction/InPrisonTrainingPage'
 import HighestLevelOfEducationPage from '../../pages/induction/HighestLevelOfEducationPage'
+import AdditionalTrainingPage from '../../pages/induction/AdditionalTrainingPage'
 
 context('Prisoner Overview page - Education And Training tab', () => {
   beforeEach(() => {
@@ -282,6 +283,38 @@ context('Prisoner Overview page - Education And Training tab', () => {
 
       // Then
       Page.verifyOnPage(HighestLevelOfEducationPage)
+    })
+
+    it(`should link to the change Additional Training page given long question set`, () => {
+      // Given
+      cy.task('stubGetInductionLongQuestionSet')
+
+      cy.signIn()
+      const prisonNumber = 'G6115VJ'
+      cy.visit(`/plan/${prisonNumber}/view/education-and-training`)
+      const educationAndTrainingPage = Page.verifyOnPage(EducationAndTrainingPage)
+
+      // When
+      educationAndTrainingPage.clickToChangeAdditionalTraining()
+
+      // Then
+      Page.verifyOnPage(AdditionalTrainingPage)
+    })
+
+    it(`should link to the change Additional Training page given short question set`, () => {
+      // Given
+      cy.task('stubGetInductionShortQuestionSet')
+
+      cy.signIn()
+      const prisonNumber = 'G6115VJ'
+      cy.visit(`/plan/${prisonNumber}/view/education-and-training`)
+      const educationAndTrainingPage = Page.verifyOnPage(EducationAndTrainingPage)
+
+      // When
+      educationAndTrainingPage.clickToChangeAdditionalTraining()
+
+      // Then
+      Page.verifyOnPage(AdditionalTrainingPage)
     })
   })
 
