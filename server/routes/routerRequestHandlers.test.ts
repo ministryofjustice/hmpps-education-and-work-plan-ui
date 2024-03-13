@@ -26,15 +26,20 @@ import {
   retrievePrisonerSummaryIfNotInSession,
   retrieveInductionIfNotInSession,
   setCurrentPageInPageFlowQueue,
+  retrieveFunctionalSkillsIfNotInSession,
 } from './routerRequestHandlers'
 import { aValidAddStepForm } from '../testsupport/addStepFormTestDataBuilder'
 import aValidPrisonerSummary from '../testsupport/prisonerSummaryTestDataBuilder'
 import { aValidCreateGoalForm } from '../testsupport/createGoalFormTestDataBuilder'
 import aValidAddNoteForm from '../testsupport/addNoteFormTestDataBuilder'
-import { InductionService, PrisonerSearchService } from '../services'
+import { CuriousService, InductionService, PrisonerSearchService } from '../services'
 import aValidNewGoalForm from '../testsupport/newGoalFormTestDataBuilder'
 import { aShortQuestionSetInductionDto } from '../testsupport/inductionDtoTestDataBuilder'
 import { setCurrentPageIndex } from './pageFlowQueue'
+import {
+  functionalSkillsWithProblemRetrievingData,
+  validFunctionalSkills,
+} from '../testsupport/functionalSkillsTestDataBuilder'
 
 jest.mock('./pageFlowQueue')
 
@@ -758,6 +763,98 @@ describe('routerRequestHandlers', () => {
       // Then
       expect(next).toHaveBeenCalled()
       expect(req.session.pageFlowQueue).toBeUndefined()
+    })
+  })
+
+  describe('retrieveFunctionalSkillsIfNotInSession', () => {
+    const curiousService = {
+      getPrisonerFunctionalSkills: jest.fn(),
+    }
+
+    const requestHandler = retrieveFunctionalSkillsIfNotInSession(curiousService as unknown as CuriousService)
+
+    it('should retrieve prisoner functional skills and store in session given functional skills not in session', async () => {
+      // Given
+      const username = 'a-dps-user'
+      req.user.username = username
+
+      req.session.prisonerFunctionalSkills = undefined
+
+      const prisonNumber = 'A1234GC'
+      req.params.prisonNumber = prisonNumber
+      const expectedFunctionalSkills = validFunctionalSkills({ prisonNumber })
+      curiousService.getPrisonerFunctionalSkills.mockResolvedValue(expectedFunctionalSkills)
+
+      // When
+      await requestHandler(req as undefined as Request, res as undefined as Response, next as undefined as NextFunction)
+
+      // Then
+      expect(curiousService.getPrisonerFunctionalSkills).toHaveBeenCalledWith(prisonNumber, username)
+      expect(req.session.prisonerFunctionalSkills).toEqual(expectedFunctionalSkills)
+      expect(next).toHaveBeenCalled()
+    })
+
+    it('should retrieve prisoner functional skills and store in session given functional skills for a different prisoner already in session', async () => {
+      // Given
+      const username = 'a-dps-user'
+      req.user.username = username
+
+      req.session.prisonerFunctionalSkills = validFunctionalSkills({ prisonNumber: 'Z1234XY' })
+
+      const prisonNumber = 'A1234GC'
+      req.params.prisonNumber = prisonNumber
+      const expectedFunctionalSkills = validFunctionalSkills({ prisonNumber })
+      curiousService.getPrisonerFunctionalSkills.mockResolvedValue(expectedFunctionalSkills)
+
+      // When
+      await requestHandler(req as undefined as Request, res as undefined as Response, next as undefined as NextFunction)
+
+      // Then
+      expect(curiousService.getPrisonerFunctionalSkills).toHaveBeenCalledWith(prisonNumber, username)
+      expect(req.session.prisonerFunctionalSkills).toEqual(expectedFunctionalSkills)
+      expect(next).toHaveBeenCalled()
+    })
+
+    it('should not retrieve prisoner functional skills given functional skills for prisoner already in session', async () => {
+      // Given
+      const username = 'a-dps-user'
+      req.user.username = username
+
+      const prisonNumber = 'A1234GC'
+
+      req.session.prisonerFunctionalSkills = validFunctionalSkills({ prisonNumber })
+
+      req.params.prisonNumber = prisonNumber
+      const expectedFunctionalSkills = validFunctionalSkills({ prisonNumber })
+
+      // When
+      await requestHandler(req as undefined as Request, res as undefined as Response, next as undefined as NextFunction)
+
+      // Then
+      expect(curiousService.getPrisonerFunctionalSkills).not.toHaveBeenCalled()
+      expect(req.session.prisonerFunctionalSkills).toEqual(expectedFunctionalSkills)
+      expect(next).toHaveBeenCalled()
+    })
+
+    it('should retrieve prisoner functional skills and store in session given functional skills with problem retrieving data already in session', async () => {
+      // Given
+      const username = 'a-dps-user'
+      req.user.username = username
+
+      const prisonNumber = 'A1234GC'
+      req.params.prisonNumber = prisonNumber
+
+      req.session.prisonerFunctionalSkills = functionalSkillsWithProblemRetrievingData({ prisonNumber })
+      const expectedFunctionalSkills = validFunctionalSkills({ prisonNumber })
+      curiousService.getPrisonerFunctionalSkills.mockResolvedValue(expectedFunctionalSkills)
+
+      // When
+      await requestHandler(req as undefined as Request, res as undefined as Response, next as undefined as NextFunction)
+
+      // Then
+      expect(curiousService.getPrisonerFunctionalSkills).toHaveBeenCalledWith(prisonNumber, username)
+      expect(req.session.prisonerFunctionalSkills).toEqual(expectedFunctionalSkills)
+      expect(next).toHaveBeenCalled()
     })
   })
 })

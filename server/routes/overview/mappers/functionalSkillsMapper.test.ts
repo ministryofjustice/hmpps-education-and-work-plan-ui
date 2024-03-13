@@ -6,9 +6,10 @@ import toFunctionalSkills from './functionalSkillsMapper'
 describe('functionalSkillsMapper', () => {
   it('should map to functional skills given learner profiles', () => {
     // Given
+    const prisonNumber = 'G6123VU'
     const learnerProfiles: Array<LearnerProfile> = [
       {
-        prn: 'G6123VU',
+        prn: prisonNumber,
         establishmentId: 'MDI',
         establishmentName: 'MOORLAND (HMP & YOI)',
         qualifications: [
@@ -25,7 +26,7 @@ describe('functionalSkillsMapper', () => {
         ],
       },
       {
-        prn: 'G6123VU',
+        prn: prisonNumber,
         establishmentId: 'DNI',
         establishmentName: 'DONCASTER (HMP)',
         qualifications: [
@@ -40,6 +41,7 @@ describe('functionalSkillsMapper', () => {
 
     const expected: FunctionalSkills = {
       problemRetrievingData: false,
+      prisonNumber,
       assessments: [
         {
           assessmentDate: moment('2012-02-16').toDate(),
@@ -66,7 +68,7 @@ describe('functionalSkillsMapper', () => {
     }
 
     // When
-    const actual = toFunctionalSkills(learnerProfiles)
+    const actual = toFunctionalSkills(learnerProfiles, prisonNumber)
 
     // Then
     expect(actual).toEqual(expected)
@@ -74,15 +76,18 @@ describe('functionalSkillsMapper', () => {
 
   it('should map to functional skills given no learner profiles', () => {
     // Given
+    const prisonNumber = 'G6123VU'
+
     const learnerProfiles: Array<LearnerProfile> = []
 
     const expected: FunctionalSkills = {
       problemRetrievingData: false,
+      prisonNumber,
       assessments: [],
     }
 
     // When
-    const actual = toFunctionalSkills(learnerProfiles)
+    const actual = toFunctionalSkills(learnerProfiles, prisonNumber)
 
     // Then
     expect(actual).toEqual(expected)
@@ -90,15 +95,18 @@ describe('functionalSkillsMapper', () => {
 
   it('should map to functional skills given undefined learner profiles', () => {
     // Given
+    const prisonNumber = 'G6123VU'
+
     const learnerProfiles: Array<LearnerProfile> = undefined
 
     const expected: FunctionalSkills = {
       problemRetrievingData: false,
+      prisonNumber,
       assessments: undefined,
     }
 
     // When
-    const actual = toFunctionalSkills(learnerProfiles)
+    const actual = toFunctionalSkills(learnerProfiles, prisonNumber)
 
     // Then
     expect(actual).toEqual(expected)

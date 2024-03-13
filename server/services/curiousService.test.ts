@@ -257,6 +257,7 @@ describe('curiousService', () => {
             type: 'ENGLISH',
           },
         ],
+        prisonNumber,
       } as FunctionalSkills
 
       // When
@@ -285,6 +286,7 @@ describe('curiousService', () => {
       const expectedFunctionalSkills = {
         problemRetrievingData: false,
         assessments: undefined,
+        prisonNumber,
       } as FunctionalSkills
 
       // When

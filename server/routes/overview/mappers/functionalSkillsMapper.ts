@@ -2,7 +2,7 @@ import moment from 'moment'
 import type { Assessment as AssemmentDto, LearnerProfile } from 'curiousApiClient'
 import type { Assessment, FunctionalSkills } from 'viewModels'
 
-const toFunctionalSkills = (learnerProfiles: Array<LearnerProfile>): FunctionalSkills => {
+const toFunctionalSkills = (learnerProfiles: Array<LearnerProfile>, prisonNumber: string): FunctionalSkills => {
   return {
     problemRetrievingData: false,
     assessments: learnerProfiles?.flatMap(learnerProfile =>
@@ -10,6 +10,7 @@ const toFunctionalSkills = (learnerProfiles: Array<LearnerProfile>): FunctionalS
         toAssessment(learnerProfile.establishmentId, learnerProfile.establishmentName, assessment),
       ),
     ),
+    prisonNumber,
   }
 }
 

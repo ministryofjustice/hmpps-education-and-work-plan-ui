@@ -37,7 +37,7 @@ export default class CuriousService {
 
     try {
       const learnerProfiles = await this.getLearnerProfile(prisonNumber, systemToken)
-      return toFunctionalSkills(learnerProfiles)
+      return toFunctionalSkills(learnerProfiles, prisonNumber)
     } catch (error) {
       logger.error(`Error retrieving functional skills data from Curious: ${JSON.stringify(error)}`)
       return { problemRetrievingData: true } as FunctionalSkills
