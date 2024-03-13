@@ -22,6 +22,7 @@ import WorkInterestRolesUpdateController from './workInterestRolesUpdateControll
 import HighestLevelOfEducationUpdateController from './highestLevelOfEducationUpdateController'
 import AdditionalTrainingUpdateController from './additionalTrainingUpdateController'
 import QualificationsListUpdateController from './qualificationsListUpdateController'
+import QualificationLevelUpdateController from './qualificationLevelUpdateController'
 
 /**
  * Route definitions for updating the various sections of an Induction
@@ -45,6 +46,7 @@ export default (router: Router, services: Services) => {
   const workInterestTypesUpdateController = new WorkInterestTypesUpdateController(inductionService)
   const workInterestRolesUpdateController = new WorkInterestRolesUpdateController(inductionService)
   const highestLevelOfEducationUpdateController = new HighestLevelOfEducationUpdateController(inductionService)
+  const qualificationLevelUpdateController = new QualificationLevelUpdateController(inductionService)
   const additionalTrainingUpdateController = new AdditionalTrainingUpdateController(inductionService)
   const qualificationsListUpdateController = new QualificationsListUpdateController()
 
@@ -154,6 +156,11 @@ export default (router: Router, services: Services) => {
     router.post('/prisoners/:prisonNumber/induction/highest-level-of-education', [
       highestLevelOfEducationUpdateController.submitHighestLevelOfEducationForm,
     ])
+
+    router.get('/prisoners/:prisonNumber/induction/qualification-level', [
+      qualificationLevelUpdateController.getQualificationLevelView,
+    ])
+    // TODO RR-694 - handle submit of qualification level
 
     router.get('/prisoners/:prisonNumber/induction/additional-training', [
       additionalTrainingUpdateController.getAdditionalTrainingView,

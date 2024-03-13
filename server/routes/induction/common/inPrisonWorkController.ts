@@ -9,10 +9,6 @@ import InPrisonWorkValue from '../../../enums/inPrisonWorkValue'
  * Abstract controller class defining functionality common to both the Create and Update Induction journeys.
  */
 export default abstract class InPrisonWorkController extends InductionController {
-  constructor() {
-    super()
-  }
-
   /**
    * Returns the In Prison Work view; suitable for use by the Create and Update journeys.
    */
