@@ -19,6 +19,7 @@ import ReasonsNotToGetWorkUpdateController from './reasonsNotToGetWorkUpdateCont
 import WorkInterestTypesUpdateController from './workInterestTypesUpdateController'
 import WorkInterestRolesUpdateController from './workInterestRolesUpdateController'
 import HighestLevelOfEducationUpdateController from './highestLevelOfEducationUpdateController'
+import AdditionalTrainingUpdateController from './additionalTrainingUpdateController'
 
 /**
  * Route definitions for updating the various sections of an Induction
@@ -42,6 +43,7 @@ export default (router: Router, services: Services) => {
   const workInterestTypesUpdateController = new WorkInterestTypesUpdateController(inductionService)
   const workInterestRolesUpdateController = new WorkInterestRolesUpdateController(inductionService)
   const highestLevelOfEducationUpdateController = new HighestLevelOfEducationUpdateController(inductionService)
+  const additionalTrainingUpdateController = new AdditionalTrainingUpdateController(inductionService)
 
   if (isAnyUpdateSectionEnabled()) {
     router.get('/prisoners/:prisonNumber/induction/**', [
@@ -143,6 +145,13 @@ export default (router: Router, services: Services) => {
     ])
     router.post('/prisoners/:prisonNumber/induction/highest-level-of-education', [
       highestLevelOfEducationUpdateController.submitHighestLevelOfEducationForm,
+    ])
+
+    router.get('/prisoners/:prisonNumber/induction/additional-training', [
+      additionalTrainingUpdateController.getAdditionalTrainingView,
+    ])
+    router.post('/prisoners/:prisonNumber/induction/additional-training', [
+      additionalTrainingUpdateController.submitAdditionalTrainingForm,
     ])
   }
 }

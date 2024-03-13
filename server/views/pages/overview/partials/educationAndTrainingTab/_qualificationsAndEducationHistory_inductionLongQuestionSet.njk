@@ -88,7 +88,14 @@ as the follow up questions are different.
               </ul>
             </dd>
             <dd class="govuk-summary-list__actions govuk-!-display-none-print">
-              <a class="govuk-link" href="{{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}/additional-training/update">
+              {%- set additionalTrainingChangeLinkUrl -%}
+                {%- if featureToggles.induction.update.prePrisonEducationSectionEnabled -%}
+                  /prisoners/{{ prisonerSummary.prisonNumber }}/induction/additional-training
+                {%- else -%}
+                  {{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}/additional-training/update
+                {%- endif -%}
+              {%- endset -%}
+              <a class="govuk-link" href="{{ additionalTrainingChangeLinkUrl }}" data-qa="additional-training-change-link">
                 Change<span class="govuk-visually-hidden"> other training or qualifications</span>
               </a>
             </dd>

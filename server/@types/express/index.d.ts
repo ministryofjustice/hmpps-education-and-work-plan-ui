@@ -14,6 +14,7 @@ import type {
   ReasonsNotToGetWorkForm,
   WorkInterestTypesForm,
   WorkInterestRolesForm,
+  AdditionalTrainingForm,
 } from 'inductionForms'
 
 export default {}
@@ -44,6 +45,7 @@ declare module 'express-session' {
     workInterestTypesForm: WorkInterestTypesForm
     workInterestRolesForm: WorkInterestRolesForm
     highestLevelOfEducationForm: HighestLevelOfEducationForm
+    additionalTrainingForm: AdditionalTrainingForm
   }
 }
 
