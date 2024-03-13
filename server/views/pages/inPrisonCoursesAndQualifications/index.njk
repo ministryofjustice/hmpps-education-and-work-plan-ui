@@ -1,4 +1,5 @@
 {% extends "../../partials/layout.njk" %}
+{% from "./macros/sortableTable.njk" import sortableTable %}
 
 {% set pageTitle = "Prisoner's in-prison courses and qualifications" %}
 
@@ -23,5 +24,46 @@
 {% block content %}
 
   {% include "../../partials/prisonerBanner.njk" %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-three-quarters app-u-print-full-width">
+      <span class="govuk-caption-l">Learning and work progress</span>
+      <h1 class="govuk-heading-l">{{ prisonerSummary.firstName }} {{ prisonerSummary.lastName }}'s in-prison courses and qualifications</h1>
+    </div>
+    <div class="govuk-grid-column-one-quarter">
+      {% include "../../partials/printThisPage.njk" %}
+    </div>
+  </div>
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+
+      {% set completedCoursesHtml %}
+        <p class="govuk-hint">Information from Curious. This only includes educational courses. Contact the local education team to find out more.</p>
+        {% if completedCourses.length > 0 %}
+          <h2 class="govuk-heading-m">Completed courses</h2>
+          {{ sortableTable({
+            id: "completed-courses",
+            courses: completedCourses
+          }) }}
+        {% else %}
+          <p class="govuk-body">{{ prisonerSummary.firstName }} {{ prisonerSummary.lastName }} has not completed any courses.</p>
+        {% endif %}
+      {% endset -%}
+
+      {{ govukTabs({
+        items: [
+          {
+            label: "Completed ([Number of completed courses] courses)",
+            id: "complete-courses",
+            panel: {
+              html: completedCoursesHtml
+            }
+          }
+        ]
+      }) }}
+
+    </div>
+  </div>
 
 {% endblock %}
