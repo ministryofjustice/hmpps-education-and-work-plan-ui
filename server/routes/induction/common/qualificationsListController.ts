@@ -52,15 +52,17 @@ const mostRecentAssessments = (allAssessments: Array<Assessment>): Array<Assessm
 }
 
 const assessmentsGroupedByTypeSortedByDateDesc = (assessments: Array<Assessment>): Map<string, Array<Assessment>> => {
-  const map = new Map<string, Array<Assessment>>()
+  const assessmentsByType = new Map<string, Array<Assessment>>()
   assessments.forEach(assessment => {
     const key = assessment.type
-    const value: Array<Assessment> = map.get(key) || []
+    const value: Array<Assessment> = assessmentsByType.get(key) || []
     value.push(assessment)
-    map.set(
+    assessmentsByType.set(
       key,
-      value.sort((left: Assessment, right: Assessment) => dateComparator(left.assessmentDate, right.assessmentDate)),
+      value.sort((left: Assessment, right: Assessment) =>
+        dateComparator(left.assessmentDate, right.assessmentDate, 'DESC'),
+      ),
     )
   })
-  return map
+  return assessmentsByType
 }
