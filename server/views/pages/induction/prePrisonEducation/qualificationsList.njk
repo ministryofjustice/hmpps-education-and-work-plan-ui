@@ -1,0 +1,113 @@
+{% extends "../../../partials/layout.njk" %}
+
+{% set pageId = "induction-educational-qualifications-list" %}
+{% set title = prisonerSummary.firstName + " " + prisonerSummary.lastName + "'s qualifications" %}
+{% set pageTitle = title %}
+
+{#
+Data supplied to this template:
+  * prisonerSummary - object with firstName and lastName
+  * backLinkUrl - url of the back link
+  * backLinkAriaText - the aria label for the back link
+  * qualifications - Array of AchievedQualificationDto representing the educational qualifications on the Induction
+  * functionalSkills - The most recent Functional Skills assessments from Curious
+#}
+
+{% block beforeContent %}
+  {{ govukBackLink({ text: "Back", href: backLinkUrl, attributes: { "aria-label" : backLinkAriaText } }) }}
+{% endblock %}
+
+{% block content %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h1 class="govuk-heading-l">{{ title }}</h1>
+
+      <form class="form" method="post" novalidate="">
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+
+        {# List functional skills assessments from Curious #}
+        {% if not functionalSkills.problemRetrievingData %}
+          {% if functionalSkills.assessments.length %}
+            <table class="govuk-table">
+              <caption class="govuk-table__caption govuk-table__caption--m">Current functional skills assessment scores</caption>
+              <caption class="govuk-table__caption govuk-!-font-weight-regular govuk-body">Functional skills assessment scores inform in-prison work and education allocations.</caption>
+
+              <thead class="govuk-table__head">
+              <tr class="govuk-table__row">
+                <th scope="col" class="govuk-table__header">Assessment</th>
+                <th scope="col" class="govuk-table__header">Level</th>
+                <th scope="col" class="govuk-table__header">Assessment date</th>
+              </tr>
+              </thead>
+              <tbody class="govuk-table__body">
+              {% for item in functionalSkills.assessments %}
+                <tr class="govuk-table__row">
+                  <td class="govuk-table__cell">{{ item.type | formatFunctionalSkillType }}</td>
+                  <td class="govuk-table__cell"> {{ item.grade }}</td>
+                  <td class="govuk-table__cell">{{ item.assessmentDate | formatDate('DD MMM yyyy') }}</td>
+                </tr>
+              {% endfor %}
+              </tbody>
+            </table>
+          {% else %}
+            <h2 class="govuk-heading-m">Functional skills assessment levels</h2>
+            <p>Functional skills assessment scores inform in-prison work and education allocations.</p>
+
+            <p>{{  prisonerSummary.firstName + " " + prisonerSummary.lastName }} has no recorded functional skills assessment scores.</p>
+            <br>
+          {% endif %}
+        {% else %}
+        {% endif %}
+
+
+        {# List educational qualifications already on the Induction #}
+        {% if qualifications.length %}
+          <table class="govuk-table">
+            <caption class="govuk-table__caption govuk-table__caption--m">Educational qualifications</caption>
+
+            <thead class="govuk-table__head">
+            <tr class="govuk-table__row">
+              <th scope="col" class="govuk-table__header">Level</th>
+              <th scope="col" class="govuk-table__header">Subject</th>
+              <th scope="col" class="govuk-table__header">Grade</th>
+              <th scope="col" class="govuk-table__header"><span class="govuk-visually-hidden">Actions</span></th>
+            </tr>
+            </thead>
+            <tbody class="govuk-table__body">
+            {% for item in qualifications %}
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">{{ item.level | formatQualificationLevel }}</td>
+                <td class="govuk-table__cell">{{ item.subject }}</td>
+                <td class="govuk-table__cell">{{ item.grade }}</td>
+                <td class="govuk-table__cell">
+                  <button type="submit" class="app-u-button-as-link" value="{{ item.level }}-{{ item.subject }}-{{ item.grade }}" name="removeQualification">Remove</button>
+                  <span class="govuk-visually-hidden"> {{ item.level | formatQualificationLevel }}, {{ item.subject }}, {{ item.grade }}</span>
+                </td>
+              </tr>
+            {% endfor %}
+            </tbody>
+          </table>
+          <div class="govuk-form-group">
+            {{ govukButton({
+              text: "Add another qualification",
+              name: "addQualification",
+              classes: "govuk-button--secondary",
+              id: "addQualification"
+            }) }}
+          </div>
+        {% endif %}
+
+        <div class="govuk-form-group">
+          {{ govukButton({
+            id: "submit-button",
+            text: "Continue",
+            type: "submit",
+            attributes: {"data-qa": "submit-button"}
+          }) }}
+        </div>
+      </form>
+    </div>
+  </div>
+
+{% endblock %}
