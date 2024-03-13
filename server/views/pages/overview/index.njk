@@ -19,8 +19,6 @@
 
 {% block content %}
 
-  {% include "../../partials/prisonerBanner.njk" %}
-
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
       <span class="govuk-caption-l">Learning and work progress</span>
@@ -33,6 +31,8 @@
       {% endif %}
     </div>
   </div>
+
+  {% include "../../partials/prisonerBanner.njk" %}
 
   {% include './partials/navigation.njk' %}
 

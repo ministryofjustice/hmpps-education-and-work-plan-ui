@@ -1,0 +1,39 @@
+.app-mini-profile-header {
+  align-items: start;
+  background: govuk-colour("light-grey");
+  display: flex;
+  flex-direction: row;
+  padding: 15px;
+}
+
+.app-mini-profile-header dl {
+  margin: 0;
+  margin-right: 60px
+}
+
+.app-mini-profile-header dl:last-child {
+  margin-right: 0
+}
+
+.app-mini-profile-header dd {
+  margin-bottom: 0;
+  margin-left: 0;
+}
+
+@include govuk-media-query($until: tablet) {
+  .app-mini-profile-header {
+    display: block
+  }
+
+  .app-mini-profile-header dl {
+    margin-right: 0
+  }
+
+  .app-mini-profile-header dl:last-child {
+    margin-bottom: 0
+  }
+
+  .app-mini-profile-header dl:last-child dd {
+    margin-bottom: 0
+  }
+}
