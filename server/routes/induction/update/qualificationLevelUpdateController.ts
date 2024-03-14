@@ -3,7 +3,7 @@ import { InductionService } from '../../../services'
 import QualificationLevelController from '../common/qualificationLevelController'
 
 /**
- * Controller for the Update of the WorkExperience screen of the Induction.
+ * Controller for the Update of the Qualification Level screen of the Induction.
  */
 export default class QualificationLevelUpdateController extends QualificationLevelController {
   constructor(private readonly inductionService: InductionService) {
