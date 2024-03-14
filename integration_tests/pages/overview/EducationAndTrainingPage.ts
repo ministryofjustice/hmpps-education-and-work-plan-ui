@@ -5,6 +5,7 @@ import InPrisonCoursesAndQualificationsPage from '../inPrisonCoursesAndQualifica
 import InPrisonTrainingPage from '../induction/InPrisonTrainingPage'
 import HighestLevelOfEducationPage from '../induction/HighestLevelOfEducationPage'
 import AdditionalTrainingPage from '../induction/AdditionalTrainingPage'
+import QualificationsListPage from '../induction/QualificationsListPage'
 
 /**
  * Cypress page class representing the Education And Training tab of the Overview Page
@@ -99,6 +100,11 @@ export default class EducationAndTrainingPage extends Page {
     return Page.verifyOnPage(AdditionalTrainingPage)
   }
 
+  clickToChangeEducationalQualifications(): QualificationsListPage {
+    this.educationalQualificationsChangeLink().click()
+    return Page.verifyOnPage(QualificationsListPage)
+  }
+
   coursesAndQualificationsLinkShouldNotExist(): EducationAndTrainingPage {
     this.viewAllCoursesAndQualificationsLink().should('not.exist')
     return this
@@ -136,6 +142,8 @@ export default class EducationAndTrainingPage extends Page {
   highestLevelOfEducationChangeLink = (): PageElement => cy.get('[data-qa=highest-level-of-education-change-link]')
 
   additionalTrainingChangeLink = (): PageElement => cy.get('[data-qa=additional-training-change-link]')
+
+  educationalQualificationsChangeLink = (): PageElement => cy.get('[data-qa=educational-qualifications-change-link]')
 
   noCoursesAndQualificationsLast12MonthsMessage = (): PageElement =>
     cy.get('[data-qa=no-courses-or-qualifications-last-12-months-message]')

@@ -48,7 +48,7 @@ export default (router: Router, services: Services) => {
   const highestLevelOfEducationUpdateController = new HighestLevelOfEducationUpdateController(inductionService)
   const qualificationLevelUpdateController = new QualificationLevelUpdateController(inductionService)
   const additionalTrainingUpdateController = new AdditionalTrainingUpdateController(inductionService)
-  const qualificationsListUpdateController = new QualificationsListUpdateController()
+  const qualificationsListUpdateController = new QualificationsListUpdateController(inductionService)
 
   if (isAnyUpdateSectionEnabled()) {
     router.get('/prisoners/:prisonNumber/induction/**', [
@@ -148,6 +148,9 @@ export default (router: Router, services: Services) => {
     router.get('/prisoners/:prisonNumber/induction/qualifications', [
       retrieveFunctionalSkillsIfNotInSession(services.curiousService),
       qualificationsListUpdateController.getQualificationsListView,
+    ])
+    router.post('/prisoners/:prisonNumber/induction/qualifications', [
+      qualificationsListUpdateController.submitQualificationsListView,
     ])
 
     router.get('/prisoners/:prisonNumber/induction/highest-level-of-education', [

@@ -16,7 +16,14 @@ as the follow up questions are different.
       <div class="govuk-summary-card__content">
         <div class="app-summary-card__change-link">
           <h3 class="govuk-heading-s app-summary-card__change-link__heading">Educational qualifications</h3>
-          <a class="govuk-link app-summary-card__change-link__link govuk-!-display-none-print" href="{{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}/qualifications-list/update">
+          {%- set educationalQualificationsChangeLinkUrl -%}
+            {%- if featureToggles.induction.update.prePrisonEducationSectionEnabled -%}
+              /prisoners/{{ prisonerSummary.prisonNumber }}/induction/qualifications
+            {%- else -%}
+              {{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}/qualifications-list/update
+            {%- endif -%}
+          {%- endset -%}
+          <a class="govuk-link app-summary-card__change-link__link govuk-!-display-none-print" href="{{ educationalQualificationsChangeLinkUrl }}" data-qa="educational-qualifications-change-link">
             {% if educationAndTraining.data.shortQuestionSetAnswers.educationalQualifications | length %}
               Change<span class="govuk-visually-hidden"> qualifications by adding or removing qualifications</span>
             {% else %}
