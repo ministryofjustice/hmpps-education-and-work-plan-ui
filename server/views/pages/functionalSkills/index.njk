@@ -23,14 +23,27 @@
 
 {% block content %}
 
-  {% include "../../partials/prisonerBanner.njk" %}
-
     <div class="govuk-grid-row">
       <div class="govuk-grid-column-two-thirds app-u-print-full-width">
+        <span class="govuk-caption-l">Learning and work progress</span>
+        <h1 class="govuk-heading-l">{{ prisonerSummary.firstName }} {{ prisonerSummary.lastName }}'s functional skills</h1>
+      </div>
+      <div class="govuk-grid-column-one-third">
+        {% include "../../partials/printThisPage.njk" %}
+      </div>
+    </div>
+
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-full">
+        {% include "../../partials/prisonerBanner.njk" %}
+      </div>
+    </div>
+
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+        
         {% if not problemRetrievingData %}
 
-          <span class="govuk-caption-l">Learning and work progress</span>
-          <h1 class="govuk-heading-l">{{ prisonerSummary.firstName }} {{ prisonerSummary.lastName }}'s functional skills</h1>
           <p class="govuk-hint">Information from Curious. These scores are from a person's induction assessment.<br/>For recent functional skills qualifications, go to in-prison courses and qualifications.</p>
 
           <h2 class="govuk-heading-m">English functional skills assessment scores</h2>
@@ -73,9 +86,6 @@
   
         {% endif %}
 
-      </div>
-      <div class="govuk-grid-column-one-third">
-        {% include "../../partials/printThisPage.njk" %}
       </div>
     </div>
 {% endblock %}

@@ -63,7 +63,7 @@
     }) }}
 
     {% block beforeContent %}{% endblock %}
-    <main class="govuk-main-wrapper {{ mainClasses }}" id="main-content" role="main"{% if mainLang %} lang="{{ mainLang }}"{% endif %}>
+    <main class="govuk-main-wrapper govuk-!-padding-top-0 {{ mainClasses }}" id="main-content" role="main"{% if mainLang %} lang="{{ mainLang }}"{% endif %}>
       {% block content %}{% endblock %}
     </main>
   </div>
