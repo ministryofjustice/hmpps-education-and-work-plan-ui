@@ -1,0 +1,58 @@
+{% extends "../../partials/layout.njk" %}
+
+{% set pageTitle = "Accessibility statement" %}
+
+{% set pageId = "accessibility statement" %}
+
+{% block beforeContent %}
+  <nav class="govuk-breadcrumbs govuk-!-display-none-print" aria-label="Breadcrumb">
+    <ol class="govuk-breadcrumbs__list">
+      <li class="govuk-breadcrumbs__list-item">
+        <a class="govuk-breadcrumbs__link" href="{{ dpsUrl }}">Digital Prison Services</a>
+      </li>
+      <li class="govuk-breadcrumbs__list-item">
+        <a class="govuk-breadcrumbs__link" href="{{ prisonerListUrl }}">Manage learning and work progress</a>
+      </li>
+    </ol>
+  </nav>
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      
+      <h1 class="govuk-heading-l">{{ pageTitle }}</h1>
+      <p>This accessibility statement applies to the Learning and work progress service.</p>
+      <p>This website is run by HMPPS Digital. We want as many people as possible to be able to use this website. For example, that means you should be able to:</p>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>change colours, contrast levels and fonts using browser or device settings</li>
+        <li>zoom in up to 400% without the text spilling off the screen</li>
+        <li>navigate most of the website using a keyboard or speech recognition software</li>
+        <li>listen to most of the website using a screen reader (including the most recent versions of JAWS, NVDA and VoiceOver)</li>
+      </ul>
+      <p>We’ve also made the website text as simple as possible to understand.</p>
+      <p><a href="https://mcmw.abilitynet.org.uk">AbilityNet</a> has advice on making your device easier to use if you have a disability.</p>
+
+      <h2 class="govuk-heading-m">How accessible is this website</h2>
+      <p>This service does produce PDFs for print purposes. We do not plan to replace the PDF format as the generated PDF is meant for printing.</p>
+
+      <h2 class="govuk-heading-m">Feedback and contact information</h2>
+      <p>We’re always looking to improve the accessibility of this website. If you find any problems not listed on this page or think we’re not meeting accessibility requirements, email: <a href="mailto:learningandworkprogress@digital.justice.gov.uk">learningandworkprogress@digital.justice.gov.uk</a></p>
+      <p>If you need information on this website in a different format like accessible PDF, large print, easy read or audio recording, email: <a href="mailto:learningandworkprogress@digital.justice.gov.uk">learningandworkprogress@digital.justice.gov.uk</a></p>
+      <p>We’ll consider your request and get back to you in 5 working days.</p>
+
+      <h2 class="govuk-heading-m">Enforcement procedure</h2>
+      <p>The Equality and Human Rights Commission (EHRC) is responsible for enforcing the Public Sector Bodies (Websites and Mobile Applications) (No. 2) Accessibility Regulations 2018 (the ‘accessibility regulations’). If you’re not happy with how we respond to you, <a href="https://www.equalityadvisoryservice.com">contact the Equality Advisory and Support Service (EASS)</a>.</p>
+
+      <h2 class="govuk-heading-m">Technical information about this website’s accessibility</h2>
+      <p>HMPPS Digital is committed to making its website accessible, in accordance with the Public Sector Bodies (Websites and Mobile Applications) (No. 2) Accessibility Regulations 2018.</p>
+
+      <h2 class="govuk-heading-m">Compliance status</h2>
+      <p>This website is fully compliant with the <a href="https://www.w3.org/TR/WCAG22/">Web Content Accessibility Guidelines (WCAG) V2.2 Level A and Level AA</a>.</p>
+
+      <h2 class="govuk-heading-m">Preparation of this accessibility statement</h2>
+      <p>This statement was prepared on 8 November 2023.</p>
+      <p>This website was last tested on 25 October 2023 against the WCAG 2.2 AA standard. The test was carried out by <a href="https://uservision.co.uk">Uservision</a>.</p>
+    </div>
+  </div>
+{% endblock %}
