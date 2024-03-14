@@ -1,10 +1,13 @@
 import createError from 'http-errors'
 import { NextFunction, Request, Response } from 'express'
 import type { SessionData } from 'express-session'
-import type { AchievedQualificationDto } from 'inductionDto'
+import type { AchievedQualificationDto, InductionDto } from 'inductionDto'
 import QualificationsListUpdateController from './qualificationsListUpdateController'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
-import { aLongQuestionSetInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
+import {
+  aLongQuestionSetInductionDto,
+  aShortQuestionSetInductionDto,
+} from '../../../testsupport/inductionDtoTestDataBuilder'
 import { validFunctionalSkills } from '../../../testsupport/functionalSkillsTestDataBuilder'
 import QualificationLevelValue from '../../../enums/qualificationLevelValue'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
@@ -178,6 +181,47 @@ describe('qualificationsListUpdateController', () => {
       expect(inductionService.updateInduction).toHaveBeenCalledWith(prisonNumber, updateInductionDto, 'some-token')
       expect(next).toHaveBeenCalledWith(expectedError)
       expect(req.session.inductionDto).toEqual(inductionDto)
+    })
+
+    it('should update Induction but not call API and redirect to Education and Training tab given page submitted with removeQualification', async () => {
+      // Given
+      req.user.token = 'some-token'
+      const prisonNumber = 'A1234BC'
+      req.params.prisonNumber = prisonNumber
+
+      const prisonerSummary = aValidPrisonerSummary()
+      req.session.prisonerSummary = prisonerSummary
+
+      const inductionDto = aShortQuestionSetInductionDto()
+      req.session.inductionDto = inductionDto
+      /* The short question set induction has no highest level of education, but does have qualifications:
+           - Level 6 English, Grade C
+           - Level 6 Maths, Grade A*
+       */
+
+      req.body = { removeQualification: '0' } // We expect to delete English, as it is the first qualification (zero indexed)
+
+      const expectedHighestLevelOfEducation: EducationLevelValue = null
+      const expectedQualifications: Array<AchievedQualificationDto> = [
+        { subject: 'Maths', grade: 'A*', level: QualificationLevelValue.LEVEL_6 },
+      ]
+
+      // When
+      await controller.submitQualificationsListView(
+        req as undefined as Request,
+        res as undefined as Response,
+        next as undefined as NextFunction,
+      )
+
+      // Then
+      const updatedInduction: InductionDto = req.session.inductionDto
+      expect(updatedInduction.previousQualifications.educationLevel).toEqual(expectedHighestLevelOfEducation)
+      expect(updatedInduction.previousQualifications.qualifications).toEqual(expectedQualifications)
+
+      expect(mockedCreateOrUpdateInductionDtoMapper).not.toHaveBeenCalled()
+      expect(inductionService.updateInduction).not.toHaveBeenCalled()
+
+      expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/induction/qualifications')
     })
   })
 })
