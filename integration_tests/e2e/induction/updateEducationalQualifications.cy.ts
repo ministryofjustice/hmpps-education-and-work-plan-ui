@@ -24,6 +24,29 @@ context('Update educational qualifications within an Induction', () => {
     cy.signIn()
   })
 
+  it('should display the Qualifications List page given Curious is unavailable', () => {
+    // Given
+    cy.task('stubLearnerProfile401Error')
+
+    const prisonNumber = 'G6115VJ'
+
+    // When
+    cy.visit(`/prisoners/${prisonNumber}/induction/qualifications`)
+    const qualificationsListPage = Page.verifyOnPage(QualificationsListPage)
+
+    // Then
+    /* Long question set induction has highest level of education of UNDERGRADUATE_DEGREE_AT_UNIVERSITY
+       with the following qualifications:
+         French, grade C, LEVEL_3
+         Maths, grade A, level LEVEL_3
+         Maths, grade 1st, level LEVEL_6
+         English, grade A, level LEVEL_3
+    */
+    qualificationsListPage //
+      .hasEducationalQualifications(['French', 'Maths', 'Maths', 'English'])
+      .hasCuriousUnavailableMessageDisplayed()
+  })
+
   it('should update Induction and redirect back to Education & Training page given Qualifications List page is submitted without having made any changes', () => {
     // Given
     const prisonNumber = 'G6115VJ'
