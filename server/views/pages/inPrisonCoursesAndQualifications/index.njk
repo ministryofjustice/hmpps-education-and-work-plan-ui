@@ -72,20 +72,44 @@
         {% endif %}
       {% endset -%}
 
+      {% set withdrawnCoursesHtml %}
+        <p class="govuk-hint">{{ curiousHelpText }}</p>
+        {% if withdrawnCourses.length > 0 %}
+          <h2 class="govuk-heading-m">Withdrawn courses</h2>
+          {{ sortableTable({
+            id: "withdrawn-courses",
+            courses: withdrawnCourses,
+            locationColumn: true,
+            endDateColumn: true,
+            statusColumn: true,
+            reasonColumn: true
+          }) }}
+        {% else %}
+          <p class="govuk-body">{{ prisonerSummary.firstName }} {{ prisonerSummary.lastName }} has no withdrawn courses.</p>
+        {% endif %}
+      {% endset -%}
+
       {{ govukTabs({
         items: [
           {
-            label: "Completed ([Number of completed courses] courses)",
+            label: "Completed ([X] courses)",
             id: "complete-courses",
             panel: {
               html: completedCoursesHtml
             }
           },
           {
-            label: "In progress ([Number of in progress courses] courses)",
+            label: "In progress ([X] courses)",
             id: "in-progress-courses",
             panel: {
               html: inProgressCoursesHtml
+            }
+          },
+          {
+            label: "Withdrawn ([X] courses)",
+            id: "withdrawn-courses",
+            panel: {
+              html: withdrawnCoursesHtml
             }
           }
         ]
