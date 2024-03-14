@@ -22,6 +22,11 @@ export default class QualificationsListPage extends Page {
     return this
   }
 
+  hasCuriousUnavailableMessageDisplayed() {
+    this.curiousUnavailableMessage().should('be.exist')
+    return this
+  }
+
   submitPage() {
     this.submitButton().click()
   }
@@ -29,4 +34,6 @@ export default class QualificationsListPage extends Page {
   submitButton = (): PageElement => cy.get('#submit-button')
 
   educationalQualificationsTable = (): PageElement => cy.get('[data-qa=educational-qualifications-table]')
+
+  curiousUnavailableMessage = (): PageElement => cy.get('[data-qa=curious-unavailable-message]')
 }

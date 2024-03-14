@@ -23,7 +23,7 @@ export default abstract class QualificationsListController extends InductionCont
 
     const functionalSkills = {
       ...prisonerFunctionalSkills,
-      assessments: mostRecentAssessments(prisonerFunctionalSkills.assessments),
+      assessments: mostRecentAssessments(prisonerFunctionalSkills.assessments || []),
     }
 
     const view = new QualificationsListView(
