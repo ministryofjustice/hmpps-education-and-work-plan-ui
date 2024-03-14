@@ -9,10 +9,6 @@ import YesNoValue from '../../../enums/yesNoValue'
  * Abstract controller class defining functionality common to both the Create and Update Induction journeys.
  */
 export default abstract class WorkedBeforeController extends InductionController {
-  constructor() {
-    super()
-  }
-
   /**
    * Returns the WorkedBefore view; suitable for use by the Create and Update journeys.
    */

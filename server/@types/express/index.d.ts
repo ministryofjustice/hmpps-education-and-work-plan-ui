@@ -46,6 +46,7 @@ declare module 'express-session' {
     workInterestTypesForm: WorkInterestTypesForm
     workInterestRolesForm: WorkInterestRolesForm
     highestLevelOfEducationForm: HighestLevelOfEducationForm
+    qualificationLevelForm: QualificationLevelForm
     additionalTrainingForm: AdditionalTrainingForm
   }
 }

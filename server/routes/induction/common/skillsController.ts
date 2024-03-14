@@ -9,10 +9,6 @@ import SkillsValue from '../../../enums/skillsValue'
  * Abstract controller class defining functionality common to both the Create and Update Induction journeys.
  */
 export default abstract class SkillsController extends InductionController {
-  constructor() {
-    super()
-  }
-
   /**
    * Returns the Skills view; suitable for use by the Create and Update journeys.
    */

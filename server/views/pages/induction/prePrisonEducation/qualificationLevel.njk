@@ -1,0 +1,165 @@
+{% extends "../../../partials/layout.njk" %}
+
+{% set pageId = "induction-qualification-level" %}
+{% set title = "What level of secondary school qualification does " + prisonerSummary.firstName + " " + prisonerSummary.lastName + " want to add?" %}
+{% set pageTitle = title %}
+
+{#
+Data supplied to this template:
+  * prisonerSummary - object with firstName and lastName
+  * backLinkUrl - url of the back link
+  * backLinkAriaText - the aria label for the back link
+  * form - form object containing the following fields:
+    * qualificationLevel? - the level of the qualification being added
+  * educationLevel - the prisoner's highest level of education
+  * errors? - validation errors
+#}
+
+{# Setup page based on education level #}
+{% set options = [
+  {
+    value: "ENTRY_LEVEL",
+    text: "ENTRY_LEVEL" | formatQualificationLevel,
+    hint: {
+      text: "ENTRY_LEVEL" | formatQualificationLevelHint
+    },
+    checked: form.qualificationLevel === "ENTRY_LEVEL"
+  },
+  {
+    value: "LEVEL_1",
+    text: "LEVEL_1" | formatQualificationLevel,
+    hint: {
+      text: "LEVEL_1" | formatQualificationLevelHint
+    },
+    checked: form.qualificationLevel === "LEVEL_1"
+  },
+  {
+    value: "LEVEL_2",
+    text: "LEVEL_2" | formatQualificationLevel,
+    hint: {
+      text: "LEVEL_2" | formatQualificationLevelHint
+    },
+    checked: form.qualificationLevel === "LEVEL_2"
+  },
+  {
+    value: "LEVEL_3",
+    text: "LEVEL_3" | formatQualificationLevel,
+    hint: {
+      text: "LEVEL_3" | formatQualificationLevelHint
+    },
+    checked: form.qualificationLevel === "LEVEL_3"
+  },
+  {
+    value: "LEVEL_4",
+    text: "LEVEL_4" | formatQualificationLevel,
+    hint: {
+      text: "LEVEL_4" | formatQualificationLevelHint
+    },
+    checked: form.qualificationLevel === "LEVEL_4"
+  }
+  ]
+%}
+
+
+{% if ['FURTHER_EDUCATION_COLLEGE', 'UNDERGRADUATE_DEGREE_AT_UNIVERSITY', 'POSTGRADUATE_DEGREE_AT_UNIVERSITY'].includes(educationLevel) or educationLevel === '' %}
+  {% set title = "What level of further education college qualification does " + prisonerSummary.firstName + " " + prisonerSummary.lastName + " want to add?" %}
+  {% set level5 = {
+        value: "LEVEL_5",
+        text: "LEVEL_5" | formatQualificationLevel,
+        hint: {
+          text: "LEVEL_5" | formatQualificationLevelHint
+        },
+        checked: form.qualificationLevel === "LEVEL_5"
+      }
+  %}
+  {% set options = options.concat(level5) %}
+{% endif %}
+
+{% if ['UNDERGRADUATE_DEGREE_AT_UNIVERSITY', 'POSTGRADUATE_DEGREE_AT_UNIVERSITY'].includes(educationLevel) or educationLevel === '' %}
+  {% set title = "What level of qualification does " + prisonerSummary.firstName + " " + prisonerSummary.lastName + " want to add?" %}
+  {% set level6 = {
+        value: "LEVEL_6",
+        text: "LEVEL_6" | formatQualificationLevel,
+        hint: {
+          text: "LEVEL_6" | formatQualificationLevelHint
+        },
+        checked: form.qualificationLevel === "LEVEL_6"
+      }
+  %}
+  {% set options = options.concat(level6) %}
+{% endif %}
+
+{% if educationLevel === 'POSTGRADUATE_DEGREE_AT_UNIVERSITY' or educationLevel === '' %}
+  {% set title = "What level of qualification does " + prisonerSummary.firstName + " " + prisonerSummary.lastName + " want to add?" %}
+  {% set level7 = {
+        value: "LEVEL_7",
+        text: "LEVEL_7" | formatQualificationLevel,
+        hint: {
+          text: "LEVEL_7" | formatQualificationLevelHint
+        },
+        checked: form.qualificationLevel === "LEVEL_7"
+      }
+  %}
+  {% set options = options.concat(level7) %}
+  {% set level8 = {
+        value: "LEVEL_8",
+        text: "LEVEL_8" | formatQualificationLevel,
+        hint: {
+          text: "LEVEL_8" | formatQualificationLevelHint
+        },
+        checked: form.qualificationLevel === "LEVEL_8"
+      }
+  %}
+  {% set options = options.concat(level8) %}
+{% endif %}
+
+
+{% block beforeContent %}
+  {{ govukBackLink({ text: "Back", href: backLinkUrl, attributes: { "aria-label" : backLinkAriaText } }) }}
+{% endblock %}
+
+{% block content %}
+
+  {% if errors.length > 0 %}
+    {{ govukErrorSummary({
+      titleText: 'There is a problem',
+      errorList: errors,
+      attributes: { 'data-qa-errors': true }
+    }) }}
+  {% endif %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <form class="form" method="post" novalidate="">
+        <div class="govuk-form-group">
+          <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+        
+          {{ govukRadios({
+            name: "qualificationLevel",
+            fieldset: {
+              legend: {
+                text: title,
+                isPageHeading: true,
+                classes: "govuk-fieldset__legend--l"
+              }
+            },
+            hint: {
+              text: 'Add their highest level of qualification first. You can add any others afterwards.'
+            },
+            items: options,
+            errorMessage: errors | findError('qualificationLevel')
+          }) }}
+        </div>
+
+        {{ govukButton({
+            id: "submit-button",
+            text: "Continue",
+            type: "submit",
+            attributes: {"data-qa": "submit-button"}
+          }) }}
+      </form>
+    </div>
+  </div>
+
+{% endblock %}
