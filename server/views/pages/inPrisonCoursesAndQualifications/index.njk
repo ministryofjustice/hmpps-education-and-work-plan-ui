@@ -38,16 +38,37 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
 
+      {% set curiousHelpText %}
+        Information from Curious. This only includes educational courses. Contact the local education team to find out more.
+      {% endset %}
+
       {% set completedCoursesHtml %}
-        <p class="govuk-hint">Information from Curious. This only includes educational courses. Contact the local education team to find out more.</p>
+        <p class="govuk-hint">{{ curiousHelpText }}</p>
         {% if completedCourses.length > 0 %}
           <h2 class="govuk-heading-m">Completed courses</h2>
           {{ sortableTable({
             id: "completed-courses",
-            courses: completedCourses
+            courses: completedCourses,
+            locationColumn: true,
+            completedOnColumn: true,
+            gradeColumn: true
           }) }}
         {% else %}
           <p class="govuk-body">{{ prisonerSummary.firstName }} {{ prisonerSummary.lastName }} has not completed any courses.</p>
+        {% endif %}
+      {% endset -%}
+
+      {% set inProgressCoursesHtml %}
+        <p class="govuk-hint">{{ curiousHelpText }}</p>
+        {% if inProgressCourses.length > 0 %}
+          <h2 class="govuk-heading-m">Current courses</h2>
+          {{ sortableTable({
+            id: "in-progress-courses",
+            courses: inProgressCourses,
+            plannedEndDateColumn: true
+          }) }}
+        {% else %}
+          <p class="govuk-body">{{ prisonerSummary.firstName }} {{ prisonerSummary.lastName }} is not currently doing any courses.</p>
         {% endif %}
       {% endset -%}
 
@@ -58,6 +79,13 @@
             id: "complete-courses",
             panel: {
               html: completedCoursesHtml
+            }
+          },
+          {
+            label: "In progress ([Number of in progress courses] courses)",
+            id: "in-progress-courses",
+            panel: {
+              html: inProgressCoursesHtml
             }
           }
         ]
