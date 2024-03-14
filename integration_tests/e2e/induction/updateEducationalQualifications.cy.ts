@@ -91,4 +91,47 @@ context('Update educational qualifications within an Induction', () => {
         ),
     )
   })
+
+  it('should remove qualifications and call API to update Induction', () => {
+    // Given
+    const prisonNumber = 'G6115VJ'
+    cy.visit(`/prisoners/${prisonNumber}/induction/qualifications`)
+    const qualificationsListPage = Page.verifyOnPage(QualificationsListPage)
+
+    /* Long question set induction has highest level of education of UNDERGRADUATE_DEGREE_AT_UNIVERSITY
+       with the following qualifications:
+         French, grade C, LEVEL_3
+         Maths, grade A, level LEVEL_3
+         Maths, grade 1st, level LEVEL_6
+         English, grade A, level LEVEL_3
+    */
+
+    qualificationsListPage //
+      .hasEducationalQualifications(['French', 'Maths', 'Maths', 'English'])
+
+    // When
+    qualificationsListPage //
+      .removeQualification(2) // Remove Level 3 Maths
+      .removeQualification(3) // Remove Level 3 English (bearing in mind the indexing will have changed following the first remove operation
+    qualificationsListPage.hasEducationalQualifications(['French', 'Maths'])
+    qualificationsListPage.submitPage()
+
+    // Then
+    Page.verifyOnPage(EducationAndTrainingPage)
+    cy.wiremockVerify(
+      putRequestedFor(urlEqualTo(`/inductions/${prisonNumber}`)) //
+        .withRequestBody(
+          matchingJsonPath(
+            "$[?(@.previousQualifications.educationLevel == 'UNDERGRADUATE_DEGREE_AT_UNIVERSITY' && " +
+              '@.previousQualifications.qualifications.size() == 2 && ' +
+              "@.previousQualifications.qualifications[0].subject == 'French' && " +
+              "@.previousQualifications.qualifications[0].grade == 'C' && " +
+              "@.previousQualifications.qualifications[0].level == 'LEVEL_3' && " +
+              "@.previousQualifications.qualifications[1].subject == 'Maths' && " +
+              "@.previousQualifications.qualifications[1].grade == '1st' && " +
+              "@.previousQualifications.qualifications[1].level == 'LEVEL_6')]",
+          ),
+        ),
+    )
+  })
 })
