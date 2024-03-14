@@ -5,7 +5,6 @@ import { aLongQuestionSetInductionDto } from '../../../testsupport/inductionDtoT
 import { InductionService } from '../../../services'
 import QualificationLevelUpdateController from './qualificationLevelUpdateController'
 import EducationLevelValue from '../../../enums/educationLevelValue'
-import QualificationLevelValue from '../../../enums/qualificationLevelValue'
 
 describe('qualificationLevelUpdateController', () => {
   const inductionService = {
@@ -52,13 +51,13 @@ describe('qualificationLevelUpdateController', () => {
       req.session.qualificationLevelForm = undefined
 
       const expectedQualificationLevelForm = {
-        educationLevel: EducationLevelValue.SECONDARY_SCHOOL_TOOK_EXAMS,
-        qualificationLevel: undefined as QualificationLevelValue,
+        qualificationLevel: '',
       }
 
       const expectedView = {
         prisonerSummary,
         form: expectedQualificationLevelForm,
+        educationLevel: EducationLevelValue.SECONDARY_SCHOOL_TOOK_EXAMS,
         backLinkUrl: '/plan/A1234BC/view/education-and-training',
         backLinkAriaText: 'Back to <TODO - check what CIAG UI does here>',
         errors,
@@ -88,14 +87,14 @@ describe('qualificationLevelUpdateController', () => {
       req.session.inductionDto = inductionDto
 
       const expectedQualificationLevelForm = {
-        educationLevel: EducationLevelValue.SECONDARY_SCHOOL_TOOK_EXAMS,
-        qualificationLevel: undefined as QualificationLevelValue,
+        qualificationLevel: '',
       }
       req.session.qualificationLevelForm = expectedQualificationLevelForm
 
       const expectedView = {
         prisonerSummary,
         form: expectedQualificationLevelForm,
+        educationLevel: EducationLevelValue.SECONDARY_SCHOOL_TOOK_EXAMS,
         backLinkUrl: '/plan/A1234BC/view/education-and-training',
         backLinkAriaText: 'Back to <TODO - check what CIAG UI does here>',
         errors,

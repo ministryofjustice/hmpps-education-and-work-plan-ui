@@ -125,7 +125,6 @@ declare module 'inductionForms' {
   }
 
   export interface QualificationLevelForm {
-    educationLevel: EducationLevelValue
     qualificationLevel: QualificationLevelValue
   }
 

@@ -1,6 +1,4 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express'
-import type { InductionDto } from 'inductionDto'
-import type { QualificationLevelForm } from 'inductionForms'
 import InductionController from './inductionController'
 import QualificationLevelView from './qualificationLevelView'
 
@@ -18,23 +16,18 @@ export default abstract class QualificationLevelController extends InductionCont
   ): Promise<void> => {
     const { prisonerSummary, inductionDto } = req.session
 
-    const qualificationLevelForm = req.session.qualificationLevelForm || toQualificationLevelForm(inductionDto)
+    const qualificationLevelForm = req.session.qualificationLevelForm || { qualificationLevel: '' }
     req.session.qualificationLevelForm = undefined
 
+    const educationLevel = inductionDto.previousQualifications?.educationLevel || ''
     const view = new QualificationLevelView(
       prisonerSummary,
       this.getBackLinkUrl(req),
       this.getBackLinkAriaText(req),
       qualificationLevelForm,
+      educationLevel,
       req.flash('errors'),
     )
     return res.render('pages/induction/prePrisonEducation/qualificationLevel', { ...view.renderArgs })
-  }
-}
-
-const toQualificationLevelForm = (inductionDto: InductionDto): QualificationLevelForm => {
-  return {
-    educationLevel: inductionDto.previousQualifications?.educationLevel,
-    qualificationLevel: undefined,
   }
 }

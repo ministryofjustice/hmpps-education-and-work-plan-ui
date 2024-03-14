@@ -10,8 +10,8 @@ Data supplied to this template:
   * backLinkUrl - url of the back link
   * backLinkAriaText - the aria label for the back link
   * form - form object containing the following fields:
-    * educationLevel - the prisoner's highest level of education
-    * qualificationLevel? - the level for the qualification being added
+    * qualificationLevel? - the level of the qualification being added
+  * educationLevel - the prisoner's highest level of education
   * errors? - validation errors
 #}
 
@@ -61,7 +61,7 @@ Data supplied to this template:
 %}
 
 
-{% if ['FURTHER_EDUCATION_COLLEGE', 'UNDERGRADUATE_DEGREE_AT_UNIVERSITY', 'POSTGRADUATE_DEGREE_AT_UNIVERSITY'].includes(form.educationLevel) or form.educationLevel === '' %}
+{% if ['FURTHER_EDUCATION_COLLEGE', 'UNDERGRADUATE_DEGREE_AT_UNIVERSITY', 'POSTGRADUATE_DEGREE_AT_UNIVERSITY'].includes(educationLevel) or educationLevel === '' %}
   {% set title = "What level of further education college qualification does " + prisonerSummary.firstName + " " + prisonerSummary.lastName + " want to add?" %}
   {% set level5 = {
         value: "LEVEL_5",
@@ -75,7 +75,7 @@ Data supplied to this template:
   {% set options = options.concat(level5) %}
 {% endif %}
 
-{% if ['UNDERGRADUATE_DEGREE_AT_UNIVERSITY', 'POSTGRADUATE_DEGREE_AT_UNIVERSITY'].includes(form.educationLevel) or form.educationLevel === '' %}
+{% if ['UNDERGRADUATE_DEGREE_AT_UNIVERSITY', 'POSTGRADUATE_DEGREE_AT_UNIVERSITY'].includes(educationLevel) or educationLevel === '' %}
   {% set title = "What level of qualification does " + prisonerSummary.firstName + " " + prisonerSummary.lastName + " want to add?" %}
   {% set level6 = {
         value: "LEVEL_6",
