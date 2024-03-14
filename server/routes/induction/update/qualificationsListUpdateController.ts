@@ -28,19 +28,18 @@ export default class QualificationsListUpdateController extends QualificationsLi
     const { prisonNumber } = req.params
     const { prisonerSummary, inductionDto } = req.session
     const { prisonId } = prisonerSummary
-    const { addQualification, removeQualification } = req.body
 
     // Behaviour and subsequent routing of the submission of the Qualifications List page depends on whether the page
     // is submitted with the values `addQualification`, `removeQualification`; and if neither whether the Induction has
     // qualifications already on it or not.
 
-    if (addQualification) {
+    if (userClickedOnButton(req, 'addQualification')) {
       logger.debug('Request to add a new qualification to the Induction')
       // TODO implement correct routing / flow
       throw new Error('Unsupported operation')
     }
 
-    if (removeQualification) {
+    if (userClickedOnButton(req, 'removeQualification')) {
       logger.debug('Request to remove a qualification from the Induction')
       // TODO implement correct routing / flow
       throw new Error('Unsupported operation')
@@ -73,3 +72,6 @@ export default class QualificationsListUpdateController extends QualificationsLi
 
 const inductionHasNoQualifications = (inductionDto: InductionDto): boolean =>
   inductionDto.previousQualifications?.qualifications.length === 0
+
+const userClickedOnButton = (request: Request, name: string): boolean =>
+  Object.prototype.hasOwnProperty.call(request.body, name)
