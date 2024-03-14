@@ -1,7 +1,7 @@
-<div class="app-mini-profile-header govuk-!-margin-bottom-6">
+<div class="app-mini-profile-header govuk-!-margin-bottom-6 govuk-!-display-none-print">
   <dl>
     <dt class="govuk-heading-s govuk-!-margin-bottom-0">
-      <a href="{{ dpsUrl }}/prisoner/{{ prisonNumber }}" class="govuk-link govuk-!-font-weight-bold">
+      <a href="{{ dpsUrl }}/prisoner/{{ prisonerSummary.prisonNumber }}" class="govuk-link govuk-!-font-weight-bold" aria-label="{{ prisonerSummary.lastName | title }}, {{ prisonerSummary.firstName | title }}'s prisoner profile">
         {{ prisonerSummary.lastName | title }}, {{ prisonerSummary.firstName | title }}
       </a>
     </dt>
