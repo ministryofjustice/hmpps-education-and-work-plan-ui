@@ -8,7 +8,6 @@ import prisonerList from './prisonerList'
 import postInductionCreation from './postInductionCreation'
 import updateInduction from './induction/update'
 import inPrisonCoursesAndQualifications from './inPrisonCoursesAndQualifications'
-import accessibilityStatement from './accessibilityStatement'
 
 export default function routes(services: Services): Router {
   const router = Router()
@@ -24,7 +23,9 @@ export default function routes(services: Services): Router {
 
   updateInduction(router, services)
 
-  accessibilityStatement(router)
+  router.get('/accessibility-statement', async (req, res, next) => {
+    res.render('pages/accessibilityStatement/index')
+  })
 
   return router
 }
