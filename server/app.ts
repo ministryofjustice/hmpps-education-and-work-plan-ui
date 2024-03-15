@@ -46,6 +46,10 @@ export default function createApp(services: Services): express.Application {
 
   app.get('*', getFrontendComponents(services))
 
+  app.get('/accessibility-statement', async (req, res, next) => {
+    res.render('pages/accessibilityStatement/index')
+  })
+
   app.use(routes(services))
 
   app.use((req, res, next) => next(createError(404, 'Not found')))
