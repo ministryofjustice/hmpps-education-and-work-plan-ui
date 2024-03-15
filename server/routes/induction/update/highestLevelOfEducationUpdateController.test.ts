@@ -10,6 +10,7 @@ import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateIn
 import HighestLevelOfEducationUpdateController from './highestLevelOfEducationUpdateController'
 import EducationLevelValue from '../../../enums/educationLevelValue'
 import { aLongQuestionSetUpdateInductionRequest } from '../../../testsupport/updateInductionRequestTestDataBuilder'
+import QualificationLevelValue from '../../../enums/qualificationLevelValue'
 
 jest.mock('./highestLevelOfEducationFormValidator')
 jest.mock('../../../data/mappers/createOrUpdateInductionDtoMapper')
@@ -172,8 +173,9 @@ describe('highestLevelOfEducationUpdateController', () => {
       expect(req.session.inductionDto).toEqual(inductionDto)
     })
 
-    it('should not update Induction given form is submitted with no changes to the Highest Level of Education', async () => {
+    it('should update Induction given form is submitted with no changes to the Highest Level of Education', async () => {
       // Given
+      req.user.token = 'some-token'
       const prisonNumber = 'A1234BC'
       req.params.prisonNumber = prisonNumber
 
@@ -192,6 +194,14 @@ describe('highestLevelOfEducationUpdateController', () => {
 
       mockedFormValidator.mockReturnValue(errors)
 
+      const updateInductionDto = aLongQuestionSetUpdateInductionRequest()
+      mockedCreateOrUpdateInductionDtoMapper.mockReturnValueOnce(updateInductionDto)
+
+      const expectedUpdatedHighestLevelOfEducation = 'SECONDARY_SCHOOL_TOOK_EXAMS'
+      const expectedQualifications: Array<AchievedQualificationDto> = [
+        { subject: 'Pottery', grade: 'C', level: QualificationLevelValue.LEVEL_4 },
+      ]
+
       // When
       await controller.submitHighestLevelOfEducationForm(
         req as undefined as Request,
@@ -200,8 +210,13 @@ describe('highestLevelOfEducationUpdateController', () => {
       )
 
       // Then
-      expect(mockedCreateOrUpdateInductionDtoMapper).not.toHaveBeenCalled()
-      expect(inductionService.updateInduction).not.toHaveBeenCalled()
+      // Extract the first call to the mock and the second argument (i.e. the updated Induction)
+      const updatedInduction = mockedCreateOrUpdateInductionDtoMapper.mock.calls[0][1]
+      expect(mockedCreateOrUpdateInductionDtoMapper).toHaveBeenCalledWith(prisonerSummary.prisonId, updatedInduction)
+      expect(updatedInduction.previousQualifications.educationLevel).toEqual(expectedUpdatedHighestLevelOfEducation)
+      expect(updatedInduction.previousQualifications.qualifications).toEqual(expectedQualifications)
+
+      expect(inductionService.updateInduction).toHaveBeenCalledWith(prisonNumber, updateInductionDto, 'some-token')
       expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/view/education-and-training`)
       expect(req.session.highestLevelOfEducationForm).toBeUndefined()
       expect(req.session.inductionDto).toBeUndefined()
@@ -227,10 +242,9 @@ describe('highestLevelOfEducationUpdateController', () => {
       req.session.highestLevelOfEducationForm = undefined
 
       mockedFormValidator.mockReturnValue(errors)
-      const updateInductionDto = aLongQuestionSetUpdateInductionRequest()
 
+      const updateInductionDto = aLongQuestionSetUpdateInductionRequest()
       mockedCreateOrUpdateInductionDtoMapper.mockReturnValueOnce(updateInductionDto)
-      mockedFormValidator.mockReturnValue(errors)
 
       const expectedUpdatedHighestLevelOfEducation = 'PRIMARY_SCHOOL'
       const expectedQualifications = [{ subject: 'Pottery', grade: 'C', level: 'LEVEL_4' }]
@@ -275,10 +289,9 @@ describe('highestLevelOfEducationUpdateController', () => {
       req.session.highestLevelOfEducationForm = undefined
 
       mockedFormValidator.mockReturnValue(errors)
-      const updateInductionDto = aLongQuestionSetUpdateInductionRequest()
 
+      const updateInductionDto = aLongQuestionSetUpdateInductionRequest()
       mockedCreateOrUpdateInductionDtoMapper.mockReturnValueOnce(updateInductionDto)
-      mockedFormValidator.mockReturnValue(errors)
 
       const expectedUpdatedHighestLevelOfEducation = 'POSTGRADUATE_DEGREE_AT_UNIVERSITY'
       const expectedQualifications = [{ subject: 'Pottery', grade: 'C', level: 'LEVEL_4' }]
@@ -323,10 +336,9 @@ describe('highestLevelOfEducationUpdateController', () => {
       req.session.highestLevelOfEducationForm = undefined
 
       mockedFormValidator.mockReturnValue(errors)
-      const updateInductionDto = aLongQuestionSetUpdateInductionRequest()
 
+      const updateInductionDto = aLongQuestionSetUpdateInductionRequest()
       mockedCreateOrUpdateInductionDtoMapper.mockReturnValueOnce(updateInductionDto)
-      mockedFormValidator.mockReturnValue(errors)
 
       const expectedUpdatedHighestLevelOfEducation = 'PRIMARY_SCHOOL'
       const expectedQualifications: Array<AchievedQualificationDto> = []
@@ -370,10 +382,9 @@ describe('highestLevelOfEducationUpdateController', () => {
       req.session.highestLevelOfEducationForm = undefined
 
       mockedFormValidator.mockReturnValue(errors)
-      const updateInductionDto = aLongQuestionSetUpdateInductionRequest()
 
+      const updateInductionDto = aLongQuestionSetUpdateInductionRequest()
       mockedCreateOrUpdateInductionDtoMapper.mockReturnValueOnce(updateInductionDto)
-      mockedFormValidator.mockReturnValue(errors)
 
       const expectedUpdatedHighestLevelOfEducation = 'PRIMARY_SCHOOL'
       const expectedQualifications = [{ subject: 'Pottery', grade: 'C', level: 'LEVEL_4' }]

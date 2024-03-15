@@ -22,6 +22,11 @@ export default class QualificationsListPage extends Page {
     return this
   }
 
+  hasNoEducationalQualificationsDisplayed(): QualificationsListPage {
+    this.educationalQualificationsTable().should('not.exist')
+    return this
+  }
+
   /**
    * Removes the qualification from the qualifications table by clicking its "Remove" button.
    * The parameter is deliberately one indexed in order to make the tests more readable and intuitive.
