@@ -44,39 +44,32 @@ export default class HighestLevelOfEducationUpdateController extends HighestLeve
       return res.redirect(`/prisoners/${prisonNumber}/induction/highest-level-of-education`)
     }
 
-    if (changesToHighestLevelOfEducationSubmitted(inductionDto, highestLevelOfEducationForm)) {
-      if (
-        // The Induction already has qualifications, regardless of the new Highest Level of Education
-        inductionHasEducationQualifications(inductionDto) ||
-        // Or if the new Highest Level of Education does not require qualifications, regardless of whether qualifications already exist on the induction
-        highestLevelOfEducationDoesNotRequireQualifications(highestLevelOfEducationForm)
-      ) {
-        logger.debug(
-          'Induction can be updated with new Highest Level of Education without asking further questions about educational qualifications',
-        )
+    if (
+      // The Induction already has qualifications, regardless of the new Highest Level of Education
+      inductionHasEducationQualifications(inductionDto) ||
+      // Or if the new Highest Level of Education does not require qualifications, regardless of whether qualifications already exist on the induction
+      highestLevelOfEducationDoesNotRequireQualifications(highestLevelOfEducationForm)
+    ) {
+      logger.debug(
+        'Induction can be updated with new Highest Level of Education without asking further questions about educational qualifications',
+      )
 
-        // Update the Induction with the new Highest Level of Education
-        const updatedInduction = updatedInductionDtoWithHighestLevelOfEducation(
-          inductionDto,
-          highestLevelOfEducationForm,
-        )
-        const updateInductionDto = toCreateOrUpdateInductionDto(prisonId, updatedInduction)
+      // Update the Induction with the new Highest Level of Education
+      const updatedInduction = updatedInductionDtoWithHighestLevelOfEducation(inductionDto, highestLevelOfEducationForm)
+      const updateInductionDto = toCreateOrUpdateInductionDto(prisonId, updatedInduction)
 
-        try {
-          await this.inductionService.updateInduction(prisonNumber, updateInductionDto, req.user.token)
-        } catch (e) {
-          logger.error(`Error updating Induction for prisoner ${prisonNumber}`, e)
-          return next(createError(500, `Error updating Induction for prisoner ${prisonNumber}. Error: ${e}`))
-        }
-      } else {
-        logger.debug(
-          'The new Highest Level of Education requires asking further questions about educational qualifications',
-        )
-        // TODO - implement mini-flow to ask education qualification details
-        throw new Error('Unsupported operation')
+      try {
+        await this.inductionService.updateInduction(prisonNumber, updateInductionDto, req.user.token)
+      } catch (e) {
+        logger.error(`Error updating Induction for prisoner ${prisonNumber}`, e)
+        return next(createError(500, `Error updating Induction for prisoner ${prisonNumber}. Error: ${e}`))
       }
     } else {
-      logger.debug('No changes to Highest Level of Education were submitted')
+      logger.debug(
+        'The new Highest Level of Education requires asking further questions about educational qualifications',
+      )
+      // TODO - implement mini-flow to ask education qualification details
+      throw new Error('Unsupported operation')
     }
 
     req.session.highestLevelOfEducationForm = undefined
@@ -114,12 +107,3 @@ const updatedInductionDtoWithHighestLevelOfEducation = (
  */
 const inductionHasEducationQualifications = (inductionDto: InductionDto): boolean =>
   inductionDto.previousQualifications?.qualifications?.length > 0
-
-/**
- * Given the current Induction and the [HighestLevelOfEducationForm], returns `true` if there have been changes made
- * to the highest level of education.
- */
-const changesToHighestLevelOfEducationSubmitted = (
-  inductionDto: InductionDto,
-  highestLevelOfEducationForm: HighestLevelOfEducationForm,
-): boolean => highestLevelOfEducationForm.educationLevel !== inductionDto.previousQualifications.educationLevel

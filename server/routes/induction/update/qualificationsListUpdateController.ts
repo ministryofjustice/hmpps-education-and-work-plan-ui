@@ -47,9 +47,10 @@ export default class QualificationsListUpdateController extends QualificationsLi
     }
 
     if (inductionHasNoQualifications(inductionDto)) {
-      logger.debug('Induction has no qualifications. Redirect the user to add qualification(s)')
-      // TODO implement correct routing / flow
-      throw new Error('Unsupported operation')
+      logger.debug(
+        `Induction has no qualifications. Redirect the user to Highest Level of Education in order to start adding qualification(s)`,
+      )
+      return res.redirect(`/prisoners/${prisonNumber}/induction/highest-level-of-education`)
     }
 
     // By submitting the form without adding/removing any other educational qualifications, the user is indicating their
