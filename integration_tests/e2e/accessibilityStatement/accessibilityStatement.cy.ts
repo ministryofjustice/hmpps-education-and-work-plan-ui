@@ -6,9 +6,19 @@ context('Accessibility statement', () => {
     cy.task('reset')
   })
 
-  it('should render accessibility statement page', () => {
+  it('should render accessibility statement page given the user has no roles', () => {
+    // Given
+    cy.task('stubSignIn')
+    cy.task('stubAuthUser')
+    cy.task('stubGetHeaderComponent')
+    cy.task('stubGetFooterComponent')
+
+    cy.signIn()
+
+    // When
     cy.visit('/accessibility-statement')
 
+    // Then
     Page.verifyOnPage(AccessibilityStatementPage)
   })
 })

@@ -23,9 +23,5 @@ export default function routes(services: Services): Router {
 
   updateInduction(router, services)
 
-  router.get('/accessibility-statement', async (req, res, next) => {
-    res.render('pages/accessibilityStatement/index')
-  })
-
   return router
 }
