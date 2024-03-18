@@ -1,0 +1,78 @@
+{% extends "../../../partials/layout.njk" %}
+
+{% set pageId = "induction-hoping-to-work-on-release" %}
+{% set title = "Hoping to get work" %}
+{% set pageTitle = title %}
+
+{#
+Data supplied to this template:
+  * prisonerSummary - object with firstName and lastName
+  * backLinkUrl - url of the back link
+  * backLinkAriaText - the aria label for the back link
+    * form - form object containing the following fields:
+      * hopingToGetWork - YES/NO/NOT_SURE existing value for field
+    * errors? - validation errors
+#}
+
+{% block beforeContent %}
+  {{ govukBackLink({ text: "Back", href: backLinkUrl, attributes: { "aria-label" : backLinkAriaText } }) }}
+{% endblock %}
+
+{% block content %}
+
+  {% if errors.length > 0 %}
+    {{ govukErrorSummary({
+      titleText: 'There is a problem',
+      errorList: errors,
+      attributes: { 'data-qa-errors': true }
+    }) }}
+  {% endif %}
+
+  <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+
+        <form class="form" method="post" novalidate="">
+          <div class="govuk-form-group">
+            <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+          
+            {{ govukRadios({
+              name: "hopingToGetWork",
+              fieldset: {
+                legend: {
+                  text: "Is " + prisonerSummary.firstName + " " + prisonerSummary.lastName + " hoping to get work when they're released?",
+                  isPageHeading: true,
+                  classes: "govuk-fieldset__legend--l"
+                }
+              },
+              items: [
+                {
+                  value: "YES",
+                  text: "YES" | formatYesNoFilter,
+                  checked: form.hopingToGetWork === "YES"
+                },
+                {
+                  value: "NO",
+                  text: "NO" | formatYesNoFilter,
+                  checked: form.hopingToGetWork === "NO"
+                },
+                {
+                  value: "NOT_SURE",
+                  text: "NOT_SURE" | formatYesNoFilter,
+                  checked: form.hopingToGetWork === "NOT_SURE"
+                }
+              ],
+              errorMessage: errors | findError('hopingToGetWork')
+            }) }}
+          </div>
+
+          {{ govukButton({
+              id: "submit-button",
+              text: "Continue",
+              type: "submit",
+              attributes: {"data-qa": "submit-button"}
+            }) }}
+        </form>
+      </div>
+    </div>
+
+{% endblock %}
