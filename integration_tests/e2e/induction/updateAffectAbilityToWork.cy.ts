@@ -30,6 +30,8 @@ context('Update factors affecting the ability to work within an Induction', () =
     const prisonNumber = 'G6115VJ'
     cy.visit(`/prisoners/${prisonNumber}/induction/affect-ability-to-work`)
     const affectAbilityToWorkPage = Page.verifyOnPage(AffectAbilityToWorkPage)
+      .hasBackLinkTo(`/plan/${prisonNumber}/view/work-and-interests`)
+      .backLinkHasAriaLabel('Back to <TODO - check what CIAG UI does here>')
 
     // When
     affectAbilityToWorkPage //
