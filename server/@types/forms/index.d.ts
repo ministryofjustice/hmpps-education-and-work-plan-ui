@@ -128,6 +128,11 @@ declare module 'inductionForms' {
     qualificationLevel: QualificationLevelValue
   }
 
+  export interface QualificationDetailsForm {
+    qualificationSubject: string
+    qualificationGrade: string
+  }
+
   export interface AdditionalTrainingForm {
     additionalTraining: Array<AdditionalTrainingValue>
     additionalTrainingOther?: string

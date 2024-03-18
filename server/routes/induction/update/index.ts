@@ -23,6 +23,7 @@ import HighestLevelOfEducationUpdateController from './highestLevelOfEducationUp
 import AdditionalTrainingUpdateController from './additionalTrainingUpdateController'
 import QualificationsListUpdateController from './qualificationsListUpdateController'
 import QualificationLevelUpdateController from './qualificationLevelUpdateController'
+import QualificationDetailsUpdateController from './qualificationDetailsUpdateController'
 
 /**
  * Route definitions for updating the various sections of an Induction
@@ -46,7 +47,8 @@ export default (router: Router, services: Services) => {
   const workInterestTypesUpdateController = new WorkInterestTypesUpdateController(inductionService)
   const workInterestRolesUpdateController = new WorkInterestRolesUpdateController(inductionService)
   const highestLevelOfEducationUpdateController = new HighestLevelOfEducationUpdateController(inductionService)
-  const qualificationLevelUpdateController = new QualificationLevelUpdateController(inductionService)
+  const qualificationLevelUpdateController = new QualificationLevelUpdateController()
+  const qualificationDetailsUpdateController = new QualificationDetailsUpdateController()
   const additionalTrainingUpdateController = new AdditionalTrainingUpdateController(inductionService)
   const qualificationsListUpdateController = new QualificationsListUpdateController(inductionService)
 
@@ -163,7 +165,16 @@ export default (router: Router, services: Services) => {
     router.get('/prisoners/:prisonNumber/induction/qualification-level', [
       qualificationLevelUpdateController.getQualificationLevelView,
     ])
-    // TODO RR-694 - handle submit of qualification level
+    router.post('/prisoners/:prisonNumber/induction/qualification-level', [
+      qualificationLevelUpdateController.submitQualificationLevelForm,
+    ])
+
+    router.get('/prisoners/:prisonNumber/induction/qualification-details', [
+      qualificationDetailsUpdateController.getQualificationDetailsView,
+    ])
+    router.post('/prisoners/:prisonNumber/induction/qualification-details', [
+      qualificationDetailsUpdateController.submitQualificationDetailsForm,
+    ])
 
     router.get('/prisoners/:prisonNumber/induction/additional-training', [
       additionalTrainingUpdateController.getAdditionalTrainingView,

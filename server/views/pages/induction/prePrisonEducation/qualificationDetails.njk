@@ -1,0 +1,89 @@
+{% extends "../../../partials/layout.njk" %}
+
+{% set pageId = "induction-qualification-details" %}
+
+{% if ['LEVEL_6', 'LEVEL_7', 'LEVEL_8'].includes(qualificationLevel) %}
+  {% set title = "Add a degree qualification" %}
+  {% set pageTitle = title %}
+{% else %}
+  {% set title = "Add a " + qualificationLevel | formatQualificationLevel | lower + " qualification" %}
+  {% set pageTitle = title %}
+{% endif %}
+
+{#
+  Data supplied to this template:
+    * backLocation - url of the back link
+    * prisoner - object with firsName and lastName
+    * form - form object containing the following fields:
+      * qualificationSubject - the subject of the qualification being added
+      * qualificationGrade - the grade of the qualification being added
+    * qualificationLevel - the level of the qualification being added
+    * errors? - validation errors
+#}
+
+{% block beforeContent %}
+  {{ govukBackLink({ text: "Back", href: backLinkUrl, attributes: { "aria-label" : backLinkAriaText } }) }}
+{% endblock %}
+
+{% block content %}
+
+  {% if errors.length > 0 %}
+    {{ govukErrorSummary({
+      titleText: 'There is a problem',
+      errorList: errors,
+      attributes: { 'data-qa-errors': true }
+    }) }}
+  {% endif %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <h1 class="govuk-heading-l">{{ title }}</h1>
+
+      <form class="form" method="post" novalidate="">
+        <div class="govuk-form-group">
+          <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+
+          {{ govukInput({
+              id: "qualificationSubject",
+              name: "qualificationSubject",
+              value: form.qualificationSubject,
+              type: "text",
+              label: {
+                text: "Subject",
+                attributes: { "aria-live": "polite" }
+              },
+              attributes: { "aria-label" : "Give the subject of the qualification" },
+              errorMessage: errors | findError('qualificationSubject')
+            }) }}
+
+          {{ govukInput({
+              id: "qualificationGrade",
+              name: "qualificationGrade",
+              value: form.qualificationGrade,
+              type: "text",
+              label: {
+                text: "Grade",
+                attributes: { "aria-live": "polite" }
+              },
+              hint: {
+                text: 'For example, 9-1, A-E, pass or distinction'
+              },
+              attributes: { "aria-label" : "Give the grade of the qualification" },
+              classes: 'govuk-input--width-10',
+              errorMessage: errors | findError('qualificationGrade')
+            }) }}
+        
+        </div>
+
+        {{ govukButton({
+            id: "submit-button",
+            text: "Continue",
+            type: "submit",
+            attributes: {"data-qa": "submit-button"}
+          }) }}
+      </form>
+    </div>
+  </div>
+
+{% endblock %}

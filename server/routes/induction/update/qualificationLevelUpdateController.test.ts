@@ -1,17 +1,22 @@
 import type { SessionData } from 'express-session'
 import { NextFunction, Request, Response } from 'express'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
-import { aLongQuestionSetInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
-import { InductionService } from '../../../services'
+import {
+  aLongQuestionSetInductionDto,
+  aShortQuestionSetInductionDto,
+} from '../../../testsupport/inductionDtoTestDataBuilder'
 import QualificationLevelUpdateController from './qualificationLevelUpdateController'
 import EducationLevelValue from '../../../enums/educationLevelValue'
+import QualificationLevelValue from '../../../enums/qualificationLevelValue'
+import validateQualificationLevelForm from './qualificationLevelFormValidator'
+
+jest.mock('./qualificationLevelFormValidator')
 
 describe('qualificationLevelUpdateController', () => {
-  const inductionService = {
-    updateInduction: jest.fn(),
-  }
-
-  const controller = new QualificationLevelUpdateController(inductionService as unknown as InductionService)
+  const mockedFormValidator = validateQualificationLevelForm as jest.MockedFunction<
+    typeof validateQualificationLevelForm
+  >
+  const controller = new QualificationLevelUpdateController()
 
   const req = {
     session: {} as SessionData,
@@ -86,9 +91,7 @@ describe('qualificationLevelUpdateController', () => {
       const inductionDto = aLongQuestionSetInductionDto()
       req.session.inductionDto = inductionDto
 
-      const expectedQualificationLevelForm = {
-        qualificationLevel: '',
-      }
+      const expectedQualificationLevelForm = { qualificationLevel: '' }
       req.session.qualificationLevelForm = expectedQualificationLevelForm
 
       const expectedView = {
@@ -115,6 +118,74 @@ describe('qualificationLevelUpdateController', () => {
   })
 
   describe('submitQualificationLevelForm', () => {
-    // TODO RR-694 - test submission of qualification level
+    it('should not proceed to qualification detail page given form submitted with validation errors', async () => {
+      // Given
+      const prisonNumber = 'A1234BC'
+      req.params.prisonNumber = prisonNumber
+
+      const prisonerSummary = aValidPrisonerSummary()
+      req.session.prisonerSummary = prisonerSummary
+      const inductionDto = aShortQuestionSetInductionDto()
+      req.session.inductionDto = inductionDto
+
+      const invalidQualificationLevelForm = {
+        qualificationLevel: '',
+      }
+      req.body = invalidQualificationLevelForm
+      req.session.qualificationLevelForm = undefined
+
+      errors = [
+        {
+          href: '#qualificationLevel',
+          text: `Select the level of qualification Jimmy Lightfingers wants to add`,
+        },
+      ]
+      mockedFormValidator.mockReturnValue(errors)
+
+      // When
+      await controller.submitQualificationLevelForm(
+        req as undefined as Request,
+        res as undefined as Response,
+        next as undefined as NextFunction,
+      )
+
+      // Then
+      expect(res.redirect).toHaveBeenCalledWith(`/prisoners/${prisonNumber}/induction/qualification-level`)
+      expect(req.flash).toHaveBeenCalledWith('errors', errors)
+      expect(req.session.qualificationLevelForm).toEqual(invalidQualificationLevelForm)
+      expect(req.session.inductionDto).toEqual(inductionDto)
+    })
+
+    it('should proceed to qualification detail page', async () => {
+      // Given
+      req.user.token = 'some-token'
+      const prisonNumber = 'A1234BC'
+      req.params.prisonNumber = prisonNumber
+
+      const prisonerSummary = aValidPrisonerSummary()
+      req.session.prisonerSummary = prisonerSummary
+      const inductionDto = aShortQuestionSetInductionDto()
+      req.session.inductionDto = inductionDto
+
+      const qualificationLevelForm = {
+        qualificationLevel: QualificationLevelValue.LEVEL_5,
+      }
+      req.body = qualificationLevelForm
+      req.session.qualificationLevelForm = undefined
+
+      mockedFormValidator.mockReturnValue(errors)
+
+      // When
+      await controller.submitQualificationLevelForm(
+        req as undefined as Request,
+        res as undefined as Response,
+        next as undefined as NextFunction,
+      )
+
+      // Then
+      expect(res.redirect).toHaveBeenCalledWith(`/prisoners/${prisonNumber}/induction/qualification-details`)
+      expect(req.session.qualificationLevelForm).toEqual(qualificationLevelForm)
+      expect(req.session.inductionDto).toEqual(inductionDto)
+    })
   })
 })

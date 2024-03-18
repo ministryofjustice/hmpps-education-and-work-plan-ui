@@ -34,14 +34,11 @@ export default class QualificationsListUpdateController extends QualificationsLi
     // qualifications already on it or not.
 
     if (userClickedOnButton(req, 'addQualification')) {
-      logger.debug('Request to add a new qualification to the Induction')
-      // TODO implement correct routing / flow
-      throw new Error('Unsupported operation')
+      return res.redirect(`/prisoners/${prisonNumber}/induction/qualification-level`)
     }
 
     if (userClickedOnButton(req, 'removeQualification')) {
       const qualificationIndexToRemove = req.body.removeQualification as number
-      logger.debug(`Request to remove qualification number ${qualificationIndexToRemove} from the Induction`)
       req.session.inductionDto = inductionWithRemovedQualification(inductionDto, qualificationIndexToRemove)
       return res.redirect(`/prisoners/${prisonNumber}/induction/qualifications`)
     }
@@ -75,8 +72,8 @@ export default class QualificationsListUpdateController extends QualificationsLi
 const inductionHasNoQualifications = (inductionDto: InductionDto): boolean =>
   inductionDto.previousQualifications?.qualifications.length === 0
 
-const userClickedOnButton = (request: Request, name: string): boolean =>
-  Object.prototype.hasOwnProperty.call(request.body, name)
+const userClickedOnButton = (request: Request, buttonName: string): boolean =>
+  Object.prototype.hasOwnProperty.call(request.body, buttonName)
 
 const inductionWithRemovedQualification = (
   inductionDto: InductionDto,
