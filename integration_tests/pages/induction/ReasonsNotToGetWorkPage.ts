@@ -1,10 +1,11 @@
-import Page, { PageElement } from '../page'
+import { PageElement } from '../page'
 import ReasonNotToGetWorkValue from '../../../server/enums/reasonNotToGetWorkValue'
+import InductionPage from './InductionPage'
 
 /**
  * Cypress page class representing the Induction "Reasons Not To Get Work" page
  */
-export default class ReasonsNotToGetWorkPage extends Page {
+export default class ReasonsNotToGetWorkPage extends InductionPage {
   constructor() {
     super('induction-reasons-not-to-work')
   }

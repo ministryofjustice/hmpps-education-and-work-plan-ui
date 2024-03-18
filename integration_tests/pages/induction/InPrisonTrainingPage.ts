@@ -1,10 +1,11 @@
-import Page, { PageElement } from '../page'
+import { PageElement } from '../page'
 import InPrisonTrainingValue from '../../../server/enums/inPrisonTrainingValue'
+import InductionPage from './InductionPage'
 
 /**
  * Cypress page class representing the Induction "In Prison Training" page
  */
-export default class InPrisonTrainingPage extends Page {
+export default class InPrisonTrainingPage extends InductionPage {
   constructor() {
     super('induction-in-prison-training')
   }

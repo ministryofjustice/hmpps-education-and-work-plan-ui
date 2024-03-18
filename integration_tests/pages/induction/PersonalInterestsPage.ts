@@ -1,10 +1,11 @@
-import Page, { PageElement } from '../page'
+import { PageElement } from '../page'
 import PersonalInterestsValue from '../../../server/enums/personalInterestsValue'
+import InductionPage from './InductionPage'
 
 /**
  * Cypress page class representing the Induction "Personal Interests" page
  */
-export default class PersonalInterestsPage extends Page {
+export default class PersonalInterestsPage extends InductionPage {
   constructor() {
     super('induction-personal-interests')
   }
