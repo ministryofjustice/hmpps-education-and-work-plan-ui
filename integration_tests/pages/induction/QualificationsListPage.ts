@@ -1,4 +1,5 @@
-import { PageElement } from '../page'
+import Page, { PageElement } from '../page'
+import QualificationLevelPage from './QualificationLevelPage'
 import InductionPage from './InductionPage'
 
 /**
@@ -28,6 +29,11 @@ export default class QualificationsListPage extends InductionPage {
     return this
   }
 
+  clickToAddAnotherQualification(): QualificationLevelPage {
+    this.addAnotherQualificationLink().click()
+    return Page.verifyOnPage(QualificationLevelPage)
+  }
+
   /**
    * Removes the qualification from the qualifications table by clicking its "Remove" button.
    * The parameter is deliberately one indexed in order to make the tests more readable and intuitive.
@@ -48,6 +54,8 @@ export default class QualificationsListPage extends InductionPage {
   submitPage() {
     this.submitButton().click()
   }
+
+  addAnotherQualificationLink = (): PageElement => cy.get('#addQualification')
 
   submitButton = (): PageElement => cy.get('#submit-button')
 
