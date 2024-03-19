@@ -363,6 +363,46 @@ describe('highestLevelOfEducationUpdateController', () => {
       expect(req.session.inductionDto).toBeUndefined()
     })
 
+    it('should update Induction containing no previous qualifications given form submitted with exam level highest level of education', async () => {
+      // Given
+      req.user.token = 'some-token'
+      const prisonNumber = 'A1234BC'
+      req.params.prisonNumber = prisonNumber
+
+      const prisonerSummary = aValidPrisonerSummary()
+      req.session.prisonerSummary = prisonerSummary
+
+      const inductionDto = aLongQuestionSetInductionDto()
+      inductionDto.previousQualifications.qualifications = [] // Induction has no previous qualifications
+      req.session.inductionDto = inductionDto
+
+      const highestLevelOfEducationForm = {
+        educationLevel: EducationLevelValue.FURTHER_EDUCATION_COLLEGE,
+      }
+      req.body = highestLevelOfEducationForm
+      req.session.highestLevelOfEducationForm = undefined
+
+      mockedFormValidator.mockReturnValue(errors)
+
+      const expectedUpdatedHighestLevelOfEducation = 'FURTHER_EDUCATION_COLLEGE'
+      const expectedQualifications: Array<AchievedQualificationDto> = []
+
+      // When
+      await controller.submitHighestLevelOfEducationForm(
+        req as undefined as Request,
+        res as undefined as Response,
+        next as undefined as NextFunction,
+      )
+
+      // Then
+      const updatedInductionDto = req.session.inductionDto
+      expect(updatedInductionDto.previousQualifications.educationLevel).toEqual(expectedUpdatedHighestLevelOfEducation)
+      expect(updatedInductionDto.previousQualifications.qualifications).toEqual(expectedQualifications)
+
+      expect(res.redirect).toHaveBeenCalledWith(`/prisoners/${prisonNumber}/induction/qualification-level`)
+      expect(req.session.highestLevelOfEducationForm).toBeUndefined()
+    })
+
     it('should not update Induction given error calling service', async () => {
       // Given
       req.user.token = 'some-token'
