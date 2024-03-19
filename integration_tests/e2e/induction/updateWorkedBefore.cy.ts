@@ -31,7 +31,7 @@ context('Update whether a prisoner has worked before in an Induction', () => {
     cy.visit(`prisoners/${prisonNumber}/induction/has-worked-before`)
     const workedBeforePage = Page.verifyOnPage(WorkedBeforePage)
       .hasBackLinkTo(`/plan/${prisonNumber}/view/work-and-interests`)
-      .backLinkHasAriaLabel('Back to <TODO - check what CIAG UI does here>')
+      .backLinkHasAriaLabel(`Back to Daniel Craig's learning and work progress`)
 
     // When
     workedBeforePage //

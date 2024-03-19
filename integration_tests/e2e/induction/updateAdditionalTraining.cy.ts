@@ -31,7 +31,7 @@ context('Update additional training within an Induction', () => {
     cy.visit(`/prisoners/${prisonNumber}/induction/additional-training`)
     const additionalTrainingPage = Page.verifyOnPage(AdditionalTrainingPage)
       .hasBackLinkTo(`/plan/${prisonNumber}/view/education-and-training`)
-      .backLinkHasAriaLabel('Back to <TODO - check what CIAG UI does here>')
+      .backLinkHasAriaLabel(`Back to Daniel Craig's learning and work progress`)
 
     // When
     additionalTrainingPage //

@@ -21,8 +21,9 @@ export default class ReasonsNotToGetWorkUpdateController extends ReasonsNotToGet
     return `/plan/${prisonNumber}/view/work-and-interests`
   }
 
-  getBackLinkAriaText(_req: Request): string {
-    return 'Back to <TODO - check what CIAG UI does here>'
+  getBackLinkAriaText(req: Request): string {
+    const { prisonerSummary } = req.session
+    return `Back to ${prisonerSummary.firstName} ${prisonerSummary.lastName}'s learning and work progress`
   }
 
   submitReasonsNotToGetWorkForm: RequestHandler = async (
