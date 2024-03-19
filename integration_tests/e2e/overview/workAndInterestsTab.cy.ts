@@ -12,6 +12,7 @@ import FutureWorkInterestTypesPage from '../../pages/induction/FutureWorkInteres
 import FutureWorkInterestRolesPage from '../../pages/induction/FutureWorkInterestRolesPage'
 import PreviousWorkExperienceTypesPage from '../../pages/induction/PreviousWorkExperienceTypesPage'
 import InPrisonWorkPage from '../../pages/induction/InPrisonWorkPage'
+import HopingToWorkOnReleasePage from '../../pages/induction/HopingToWorkOnReleasePage'
 
 context('Prisoner Overview page - Work and Interests tab', () => {
   beforeEach(() => {
@@ -115,6 +116,22 @@ context('Prisoner Overview page - Work and Interests tab', () => {
   })
 
   describe('should display change links to Induction questions', () => {
+    it(`should link to change Induction 'Hoping to work on release' question given long question set induction`, () => {
+      // Given
+      cy.task('stubGetInductionLongQuestionSet')
+
+      cy.signIn()
+      const prisonNumber = 'G6115VJ'
+      cy.visit(`/plan/${prisonNumber}/view/work-and-interests`)
+      const workAndInterestsPage = Page.verifyOnPage(WorkAndInterestsPage)
+
+      // When
+      workAndInterestsPage.clickHopingToWorkOnReleaseChangeLink()
+
+      // Then
+      Page.verifyOnPage(HopingToWorkOnReleasePage)
+    })
+
     it(`should link to change Induction 'Skills' question given long question set induction`, () => {
       // Given
       cy.task('stubGetInductionLongQuestionSet')
@@ -177,6 +194,22 @@ context('Prisoner Overview page - Work and Interests tab', () => {
 
       // Then
       Page.verifyOnPage(AffectAbilityToWorkPage)
+    })
+
+    it(`should link to change Induction 'Hoping to work on release' question given short question set induction`, () => {
+      // Given
+      cy.task('stubGetInductionShortQuestionSet')
+
+      cy.signIn()
+      const prisonNumber = 'G6115VJ'
+      cy.visit(`/plan/${prisonNumber}/view/work-and-interests`)
+      const workAndInterestsPage = Page.verifyOnPage(WorkAndInterestsPage)
+
+      // When
+      workAndInterestsPage.clickHopingToWorkOnReleaseChangeLink()
+
+      // Then
+      Page.verifyOnPage(HopingToWorkOnReleasePage)
     })
 
     it(`should link to change Induction 'Reasons Not To Get Work' question given short question set induction`, () => {

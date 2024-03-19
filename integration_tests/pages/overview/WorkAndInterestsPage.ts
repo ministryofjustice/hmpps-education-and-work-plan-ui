@@ -10,6 +10,7 @@ import FutureWorkInterestTypesPage from '../induction/FutureWorkInterestTypesPag
 import FutureWorkInterestRolesPage from '../induction/FutureWorkInterestRolesPage'
 import PreviousWorkExperienceTypesPage from '../induction/PreviousWorkExperienceTypesPage'
 import InPrisonWorkPage from '../induction/InPrisonWorkPage'
+import HopingToWorkOnReleasePage from '../induction/HopingToWorkOnReleasePage'
 
 /**
  * Cypress page class representing the Work And Interests tab of the Overview Page
@@ -77,6 +78,11 @@ export default class WorkAndInterestsPage extends Page {
     return Page.verifyOnPage(WorkedBeforePage)
   }
 
+  clickHopingToWorkOnReleaseChangeLink(): HopingToWorkOnReleasePage {
+    this.hopingToWorkOnReleaseChangeLink().click()
+    return Page.verifyOnPage(HopingToWorkOnReleasePage)
+  }
+
   clickAffectAbilityToWorkChangeLink(): AffectAbilityToWorkPage {
     this.affectAbilityToWorkChangeLink().click()
     return Page.verifyOnPage(AffectAbilityToWorkPage)
@@ -135,6 +141,8 @@ export default class WorkAndInterestsPage extends Page {
   personalInterestsChangeLink = (): PageElement => cy.get('[data-qa=personal-interests-change-link')
 
   workedBeforeChangeLink = (): PageElement => cy.get('[data-qa=has-worked-before-change-link')
+
+  hopingToWorkOnReleaseChangeLink = (): PageElement => cy.get('[data-qa=hoping-to-work-on-release-change-link')
 
   affectAbilityToWorkChangeLink = (): PageElement => cy.get('[data-qa=affect-ability-to-work-change-link')
 
