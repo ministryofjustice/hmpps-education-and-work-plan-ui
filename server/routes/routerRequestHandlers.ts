@@ -166,6 +166,7 @@ const retrieveInductionIfNotInSession = (inductionService: InductionService): Re
 const removeInductionFormsFromSession = async (req: Request, res: Response, next: NextFunction) => {
   req.session.pageFlowQueue = undefined
   req.session.inductionDto = undefined
+  req.session.hopingToWorkOnReleaseForm = undefined
   req.session.inPrisonWorkForm = undefined
   req.session.skillsForm = undefined
   req.session.personalInterestsForm = undefined

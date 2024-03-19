@@ -2,6 +2,7 @@ import type { FunctionalSkills, PageFlowQueue, PrisonerSummary, PrisonerSupportN
 import type { UpdateGoalForm } from 'forms'
 import type { NewGoal } from 'compositeForms'
 import type {
+  HopingToWorkOnReleaseForm,
   HighestLevelOfEducationForm,
   InPrisonWorkForm,
   InPrisonTrainingForm,
@@ -34,6 +35,7 @@ declare module 'express-session' {
     prisonerFunctionalSkills: FunctionalSkills
     // Induction related objects held on the session
     inductionDto: InductionDto
+    hopingToWorkOnReleaseForm: HopingToWorkOnReleaseForm
     inPrisonWorkForm: InPrisonWorkForm
     inPrisonTrainingForm: InPrisonTrainingForm
     skillsForm: SkillsForm

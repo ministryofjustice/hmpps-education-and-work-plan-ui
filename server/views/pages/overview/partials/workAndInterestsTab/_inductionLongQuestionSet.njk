@@ -114,7 +114,14 @@ questions are different.
             {{ workAndInterests.data.workInterests.hopingToWorkOnRelease | formatYesNo }}
           </dd>
           <dd class="govuk-summary-list__actions govuk-!-display-none-print">
-            <a class="govuk-link" href="{{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}/hoping-to-get-work/update">
+            {%- set hopingToWorkOnReleaseChangeLinkUrl -%}
+              {%- if featureToggles.induction.update.workInterestsSectionEnabled -%}
+                /prisoners/{{ prisonerSummary.prisonNumber }}/induction/hoping-to-work-on-release
+              {%- else -%}
+                {{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}/hoping-to-get-work/update
+              {%- endif -%}
+            {%- endset -%}
+            <a class="govuk-link" href="{{ hopingToWorkOnReleaseChangeLinkUrl }}" data-qa="hoping-to-work-on-release-change-link">
               Change<span class="govuk-visually-hidden"> hoping to work on release</span>
             </a>
           </dd>

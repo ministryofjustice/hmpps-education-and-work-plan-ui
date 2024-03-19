@@ -7,6 +7,7 @@ import type { PageFlowQueue } from 'viewModels'
 import type { InductionDto } from 'inductionDto'
 import type {
   AffectAbilityToWorkForm,
+  HopingToWorkOnReleaseForm,
   InPrisonWorkForm,
   PersonalInterestsForm,
   PreviousWorkExperienceDetailForm,
@@ -687,6 +688,7 @@ describe('routerRequestHandlers', () => {
       // Given
       req.session.pageFlowQueue = {} as PageFlowQueue
       req.session.inductionDto = {} as InductionDto
+      req.session.hopingToWorkOnReleaseForm = {} as HopingToWorkOnReleaseForm
       req.session.inPrisonWorkForm = {} as InPrisonWorkForm
       req.session.skillsForm = {} as SkillsForm
       req.session.personalInterestsForm = {} as PersonalInterestsForm
@@ -708,6 +710,7 @@ describe('routerRequestHandlers', () => {
       expect(next).toHaveBeenCalled()
       expect(req.session.pageFlowQueue).toBeUndefined()
       expect(req.session.inductionDto).toBeUndefined()
+      expect(req.session.hopingToWorkOnReleaseForm).toBeUndefined()
       expect(req.session.inPrisonWorkForm).toBeUndefined()
       expect(req.session.skillsForm).toBeUndefined()
       expect(req.session.personalInterestsForm).toBeUndefined()

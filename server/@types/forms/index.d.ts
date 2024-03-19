@@ -66,6 +66,10 @@ declare module 'compositeForms' {
 }
 
 declare module 'inductionForms' {
+  export interface HopingToWorkOnReleaseForm {
+    hopingToGetWork: HopingToGetWorkValue
+  }
+
   export interface InPrisonWorkForm {
     inPrisonWork: Array<InPrisonWorkValue>
     inPrisonWorkOther?: string

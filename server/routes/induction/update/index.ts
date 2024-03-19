@@ -24,6 +24,7 @@ import AdditionalTrainingUpdateController from './additionalTrainingUpdateContro
 import QualificationsListUpdateController from './qualificationsListUpdateController'
 import QualificationLevelUpdateController from './qualificationLevelUpdateController'
 import QualificationDetailsUpdateController from './qualificationDetailsUpdateController'
+import HopingToWorkOnReleaseUpdateController from './hopingToWorkOnReleaseUpdateController'
 
 /**
  * Route definitions for updating the various sections of an Induction
@@ -33,6 +34,7 @@ import QualificationDetailsUpdateController from './qualificationDetailsUpdateCo
  */
 export default (router: Router, services: Services) => {
   const { inductionService } = services
+  const hopingToWorkOnReleaseController = new HopingToWorkOnReleaseUpdateController()
   const inPrisonWorkUpdateController = new InPrisonWorkUpdateController(inductionService)
   const inPrisonTrainingUpdateController = new InPrisonTrainingUpdateController(inductionService)
   const skillsUpdateController = new SkillsUpdateController(inductionService)
@@ -112,6 +114,10 @@ export default (router: Router, services: Services) => {
   }
 
   if (config.featureToggles.induction.update.workInterestsSectionEnabled) {
+    router.get('/prisoners/:prisonNumber/induction/hoping-to-work-on-release', [
+      hopingToWorkOnReleaseController.getHopingToWorkOnReleaseView,
+    ])
+
     router.get('/prisoners/:prisonNumber/induction/affect-ability-to-work', [
       affectAbilityToWorkUpdateController.getAffectAbilityToWorkView,
     ])
