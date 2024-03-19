@@ -51,6 +51,13 @@ describe('qualificationDetailsUpdateController', () => {
       req.session.inductionDto = inductionDto
       const qualificationLevelForm = { qualificationLevel: QualificationLevelValue.LEVEL_3 }
       req.session.qualificationLevelForm = qualificationLevelForm
+      req.session.pageFlowQueue = {
+        pageUrls: [
+          `/prisoners/${prisonNumber}/induction/qualifications`,
+          `/prisoners/${prisonNumber}/induction/qualification-level`,
+        ],
+        currentPageIndex: 2,
+      }
 
       req.session.qualificationDetailsForm = undefined
       const expectedQualificationDetailsForm = {
@@ -93,6 +100,13 @@ describe('qualificationDetailsUpdateController', () => {
         qualificationLevel: QualificationLevelValue.LEVEL_3,
       }
       req.session.qualificationLevelForm = qualificationLevelForm
+      req.session.pageFlowQueue = {
+        pageUrls: [
+          `/prisoners/${prisonNumber}/induction/qualifications`,
+          `/prisoners/${prisonNumber}/induction/qualification-level`,
+        ],
+        currentPageIndex: 2,
+      }
 
       const expectedQualificationDetailsForm = {
         qualificationSubject: '',
@@ -137,6 +151,14 @@ describe('qualificationDetailsUpdateController', () => {
         qualificationLevel: QualificationLevelValue.LEVEL_3,
       }
       req.session.qualificationLevelForm = qualificationLevelForm
+      const pageFlowQueue = {
+        pageUrls: [
+          `/prisoners/${prisonNumber}/induction/qualifications`,
+          `/prisoners/${prisonNumber}/induction/qualification-level`,
+        ],
+        currentPageIndex: 2,
+      }
+      req.session.pageFlowQueue = pageFlowQueue
 
       const invalidQualificationDetailsForm = {
         qualificationSubject: '',
@@ -166,6 +188,7 @@ describe('qualificationDetailsUpdateController', () => {
       expect(req.session.qualificationDetailsForm).toEqual(invalidQualificationDetailsForm)
       expect(req.session.qualificationLevelForm).toEqual(qualificationLevelForm)
       expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(req.session.pageFlowQueue).toEqual(pageFlowQueue)
     })
 
     it('should proceed to qualifications page', async () => {
@@ -178,6 +201,13 @@ describe('qualificationDetailsUpdateController', () => {
       req.session.prisonerSummary = prisonerSummary
       const inductionDto = aLongQuestionSetInductionDto()
       req.session.inductionDto = inductionDto
+      req.session.pageFlowQueue = {
+        pageUrls: [
+          `/prisoners/${prisonNumber}/induction/qualifications`,
+          `/prisoners/${prisonNumber}/induction/qualification-level`,
+        ],
+        currentPageIndex: 2,
+      }
       const qualificationLevelForm = {
         qualificationLevel: QualificationLevelValue.LEVEL_3,
       }
@@ -203,6 +233,7 @@ describe('qualificationDetailsUpdateController', () => {
       expect(res.redirect).toHaveBeenCalledWith(`/prisoners/${prisonNumber}/induction/qualifications`)
       expect(req.session.qualificationDetailsForm).toBeUndefined()
       expect(req.session.qualificationLevelForm).toBeUndefined()
+      expect(req.session.pageFlowQueue).toBeUndefined()
       expect(req.session.inductionDto).toEqual(inductionDto)
     })
   })

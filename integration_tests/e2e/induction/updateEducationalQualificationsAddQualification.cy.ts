@@ -36,11 +36,13 @@ context('Update educational qualifications within an Induction - add new qualifi
 
     const qualificationLevelPage = Page.verifyOnPage(QualificationLevelPage)
     qualificationLevelPage //
+      .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/qualifications`)
       .selectQualificationLevel(QualificationLevelValue.LEVEL_3)
       .submitPage()
 
     const qualificationDetailsPage = Page.verifyOnPage(QualificationDetailsPage)
     qualificationDetailsPage //
+      .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/qualification-level`)
       .setQualificationSubject('Spanish')
       .setQualificationGrade('B')
       .submitPage()
@@ -89,7 +91,9 @@ context('Update educational qualifications within an Induction - add new qualifi
   it('should not add qualification given validation errors on qualification level page', () => {
     // Given
     const prisonNumber = 'G6115VJ'
-    cy.visit(`/prisoners/${prisonNumber}/induction/qualification-level`)
+    cy.visit(`/prisoners/${prisonNumber}/induction/qualifications`)
+    const qualificationsListPage = Page.verifyOnPage(QualificationsListPage)
+    qualificationsListPage.clickToAddAnotherQualification()
     const qualificationLevelPage = Page.verifyOnPage(QualificationLevelPage)
 
     // When
@@ -97,13 +101,17 @@ context('Update educational qualifications within an Induction - add new qualifi
 
     // Then
     Page.verifyOnPage(QualificationLevelPage)
-    qualificationLevelPage.hasFieldInError('qualificationLevel')
+    qualificationLevelPage //
+      .hasFieldInError('qualificationLevel')
+      .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/qualifications`)
   })
 
   it('should not add qualification given validation errors on qualification details page', () => {
     // Given
     const prisonNumber = 'G6115VJ'
-    cy.visit(`/prisoners/${prisonNumber}/induction/qualification-level`)
+    cy.visit(`/prisoners/${prisonNumber}/induction/qualifications`)
+    const qualificationsListPage = Page.verifyOnPage(QualificationsListPage)
+    qualificationsListPage.clickToAddAnotherQualification()
     const qualificationLevelPage = Page.verifyOnPage(QualificationLevelPage)
     qualificationLevelPage //
       .selectQualificationLevel(QualificationLevelValue.LEVEL_3)
@@ -119,6 +127,8 @@ context('Update educational qualifications within an Induction - add new qualifi
 
     // Then
     Page.verifyOnPage(QualificationDetailsPage)
-    qualificationDetailsPage.hasFieldInError('qualificationGrade')
+    qualificationDetailsPage //
+      .hasFieldInError('qualificationGrade')
+      .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/qualification-level`)
   })
 })

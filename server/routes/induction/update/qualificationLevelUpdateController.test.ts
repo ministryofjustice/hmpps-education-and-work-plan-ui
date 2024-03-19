@@ -54,6 +54,10 @@ describe('qualificationLevelUpdateController', () => {
       const inductionDto = aLongQuestionSetInductionDto()
       req.session.inductionDto = inductionDto
       req.session.qualificationLevelForm = undefined
+      req.session.pageFlowQueue = {
+        pageUrls: [`/prisoners/${prisonNumber}/induction/qualifications`],
+        currentPageIndex: 1,
+      }
 
       const expectedQualificationLevelForm = {
         qualificationLevel: '',
@@ -63,7 +67,7 @@ describe('qualificationLevelUpdateController', () => {
         prisonerSummary,
         form: expectedQualificationLevelForm,
         educationLevel: EducationLevelValue.SECONDARY_SCHOOL_TOOK_EXAMS,
-        backLinkUrl: '/plan/A1234BC/view/education-and-training',
+        backLinkUrl: `/prisoners/${prisonNumber}/induction/qualifications`,
         backLinkAriaText: 'Back to <TODO - check what CIAG UI does here>',
         errors,
       }
@@ -90,6 +94,10 @@ describe('qualificationLevelUpdateController', () => {
       req.session.prisonerSummary = prisonerSummary
       const inductionDto = aLongQuestionSetInductionDto()
       req.session.inductionDto = inductionDto
+      req.session.pageFlowQueue = {
+        pageUrls: [`/prisoners/${prisonNumber}/induction/qualifications`],
+        currentPageIndex: 1,
+      }
 
       const expectedQualificationLevelForm = { qualificationLevel: '' }
       req.session.qualificationLevelForm = expectedQualificationLevelForm
@@ -98,7 +106,7 @@ describe('qualificationLevelUpdateController', () => {
         prisonerSummary,
         form: expectedQualificationLevelForm,
         educationLevel: EducationLevelValue.SECONDARY_SCHOOL_TOOK_EXAMS,
-        backLinkUrl: '/plan/A1234BC/view/education-and-training',
+        backLinkUrl: '/prisoners/A1234BC/induction/qualifications',
         backLinkAriaText: 'Back to <TODO - check what CIAG UI does here>',
         errors,
       }
@@ -166,6 +174,13 @@ describe('qualificationLevelUpdateController', () => {
       req.session.prisonerSummary = prisonerSummary
       const inductionDto = aShortQuestionSetInductionDto()
       req.session.inductionDto = inductionDto
+      req.session.pageFlowQueue = {
+        pageUrls: [
+          `/prisoners/${prisonNumber}/induction/qualifications`,
+          `/prisoners/${prisonNumber}/induction/qualification-level`,
+        ],
+        currentPageIndex: 1,
+      }
 
       const qualificationLevelForm = {
         qualificationLevel: QualificationLevelValue.LEVEL_5,

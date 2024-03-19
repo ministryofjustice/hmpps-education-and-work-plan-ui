@@ -1,10 +1,12 @@
 import createError from 'http-errors'
 import { NextFunction, Request, RequestHandler, Response } from 'express'
 import type { InductionDto } from 'inductionDto'
+import type { PageFlowQueue } from 'viewModels'
 import QualificationsListController from '../common/qualificationsListController'
 import logger from '../../../../logger'
 import { InductionService } from '../../../services'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
+import { getNextPage } from '../../pageFlowQueue'
 
 export default class QualificationsListUpdateController extends QualificationsListController {
   constructor(private readonly inductionService: InductionService) {
@@ -34,7 +36,10 @@ export default class QualificationsListUpdateController extends QualificationsLi
     // qualifications already on it or not.
 
     if (userClickedOnButton(req, 'addQualification')) {
-      return res.redirect(`/prisoners/${prisonNumber}/induction/qualification-level`)
+      const pageFlowQueue = this.buildPageFlowQueue(prisonNumber)
+      req.session.pageFlowQueue = pageFlowQueue
+      logger.debug(`Redirecting to /qualification-level from /qualifications`)
+      return res.redirect(getNextPage(pageFlowQueue))
     }
 
     if (userClickedOnButton(req, 'removeQualification')) {
@@ -65,6 +70,17 @@ export default class QualificationsListUpdateController extends QualificationsLi
     } catch (e) {
       logger.error(`Error updating Induction for prisoner ${prisonNumber}`, e)
       return next(createError(500, `Error updating Induction for prisoner ${prisonNumber}. Error: ${e}`))
+    }
+  }
+
+  buildPageFlowQueue = (prisonNumber: string): PageFlowQueue => {
+    const pageUrls = [
+      `/prisoners/${prisonNumber}/induction/qualifications`,
+      `/prisoners/${prisonNumber}/induction/qualification-level`,
+    ]
+    return {
+      pageUrls,
+      currentPageIndex: 0,
     }
   }
 }

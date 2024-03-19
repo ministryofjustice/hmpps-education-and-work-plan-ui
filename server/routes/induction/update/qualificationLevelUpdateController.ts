@@ -1,14 +1,15 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express'
 import QualificationLevelController from '../common/qualificationLevelController'
 import validateQualificationLevelForm from './qualificationLevelFormValidator'
+import { addPage, getNextPage, getPreviousPage } from '../../pageFlowQueue'
 
 /**
  * Controller for the Update of the Qualification Level screen of the Induction.
  */
 export default class QualificationLevelUpdateController extends QualificationLevelController {
   getBackLinkUrl(req: Request): string {
-    const { prisonNumber } = req.params
-    return `/plan/${prisonNumber}/view/education-and-training`
+    const { pageFlowQueue } = req.session
+    return getPreviousPage(pageFlowQueue)
   }
 
   getBackLinkAriaText(_req: Request): string {
@@ -21,7 +22,7 @@ export default class QualificationLevelUpdateController extends QualificationLev
     next: NextFunction,
   ): Promise<void> => {
     const { prisonNumber } = req.params
-    const { prisonerSummary } = req.session
+    const { prisonerSummary, pageFlowQueue } = req.session
 
     req.session.qualificationLevelForm = { ...req.body }
     const { qualificationLevelForm } = req.session
@@ -32,6 +33,8 @@ export default class QualificationLevelUpdateController extends QualificationLev
       return res.redirect(`/prisoners/${prisonNumber}/induction/qualification-level`)
     }
 
-    return res.redirect(`/prisoners/${prisonNumber}/induction/qualification-details`)
+    const updatedPageFlowQueue = addPage(pageFlowQueue, `/prisoners/${prisonNumber}/induction/qualification-details`)
+    req.session.pageFlowQueue = updatedPageFlowQueue
+    return res.redirect(getNextPage(updatedPageFlowQueue))
   }
 }

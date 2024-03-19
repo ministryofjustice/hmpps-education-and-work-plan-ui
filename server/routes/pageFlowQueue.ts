@@ -5,6 +5,17 @@ import type { PageFlowQueue } from 'viewModels'
  */
 
 /**
+ * Adds the provided page url to the last position in the specified [PageFlowQueue].
+ * Does not change the current page (current page index).
+ */
+const addPage = (pageFlowQueue: PageFlowQueue, pageUrl: string): PageFlowQueue => {
+  pageFlowQueue.pageUrls.push(pageUrl)
+  return {
+    ...pageFlowQueue,
+  }
+}
+
+/**
  * Returns the current page url in the specified [PageFlowQueue]
  */
 const getCurrentPage = (pageFlowQueue: PageFlowQueue): string => {
@@ -57,4 +68,4 @@ const isFirstPage = (pageFlowQueue: PageFlowQueue): boolean => pageFlowQueue.cur
 const isLastPage = (pageFlowQueue: PageFlowQueue): boolean =>
   pageFlowQueue.currentPageIndex === pageFlowQueue.pageUrls.length - 1
 
-export { getCurrentPage, getNextPage, getPreviousPage, setCurrentPageIndex, isFirstPage, isLastPage }
+export { addPage, getCurrentPage, getNextPage, getPreviousPage, setCurrentPageIndex, isFirstPage, isLastPage }

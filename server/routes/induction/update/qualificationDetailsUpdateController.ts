@@ -4,14 +4,15 @@ import type { QualificationDetailsForm } from 'inductionForms'
 import QualificationDetailsController from '../common/qualificationDetailsController'
 import validateQualificationDetailsForm from './qualificationDetailsFormValidator'
 import QualificationLevelValue from '../../../enums/qualificationLevelValue'
+import { getPreviousPage } from '../../pageFlowQueue'
 
 /**
  * Controller for the Update of the Qualification Details screen of the Induction.
  */
 export default class QualificationDetailsUpdateController extends QualificationDetailsController {
   getBackLinkUrl(req: Request): string {
-    const { prisonNumber } = req.params
-    return `/prisoners/${prisonNumber}/induction/qualification-level`
+    const { pageFlowQueue } = req.session
+    return getPreviousPage(pageFlowQueue)
   }
 
   getBackLinkAriaText(_req: Request): string {
@@ -47,6 +48,7 @@ export default class QualificationDetailsUpdateController extends QualificationD
 
     req.session.qualificationDetailsForm = undefined
     req.session.qualificationLevelForm = undefined
+    req.session.pageFlowQueue = undefined
 
     return res.redirect(`/prisoners/${prisonNumber}/induction/qualifications`)
   }

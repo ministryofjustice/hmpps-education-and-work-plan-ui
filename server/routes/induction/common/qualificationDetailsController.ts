@@ -14,7 +14,10 @@ export default abstract class QualificationDetailsController extends InductionCo
     res: Response,
     next: NextFunction,
   ): Promise<void> => {
-    const { prisonerSummary, qualificationLevelForm } = req.session
+    const { pageFlowQueue, prisonerSummary, qualificationLevelForm } = req.session
+    if (!pageFlowQueue) {
+      return res.redirect(`/plan/${prisonerSummary.prisonNumber}/view/education-and-training`)
+    }
 
     const qualificationDetailsForm = req.session.qualificationDetailsForm || {
       qualificationSubject: '',
