@@ -65,11 +65,13 @@ export default class HighestLevelOfEducationUpdateController extends HighestLeve
         return next(createError(500, `Error updating Induction for prisoner ${prisonNumber}. Error: ${e}`))
       }
     } else {
-      logger.debug(
-        'The new Highest Level of Education requires asking further questions about educational qualifications',
+      logger.debug('New Highest Level of Education requires asking further questions about educational qualifications')
+      req.session.inductionDto = updatedInductionDtoWithHighestLevelOfEducation(
+        inductionDto,
+        highestLevelOfEducationForm,
       )
-      // TODO - implement mini-flow to ask education qualification details
-      throw new Error('Unsupported operation')
+      req.session.highestLevelOfEducationForm = undefined
+      return res.redirect(`/prisoners/${prisonNumber}/induction/qualification-level`)
     }
 
     req.session.highestLevelOfEducationForm = undefined
