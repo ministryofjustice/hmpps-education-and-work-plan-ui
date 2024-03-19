@@ -71,7 +71,7 @@ describe('workedBeforeUpdateController', () => {
         prisonerSummary,
         form: expectedWorkedBeforeForm,
         backLinkUrl: '/plan/A1234BC/view/work-and-interests',
-        backLinkAriaText: 'Back to <TODO - check what CIAG UI does here>',
+        backLinkAriaText: `Back to Jimmy Lightfingers's learning and work progress`,
         errors,
       }
 
@@ -107,7 +107,7 @@ describe('workedBeforeUpdateController', () => {
         prisonerSummary,
         form: expectedWorkedBeforeForm,
         backLinkUrl: '/plan/A1234BC/view/work-and-interests',
-        backLinkAriaText: 'Back to <TODO - check what CIAG UI does here>',
+        backLinkAriaText: `Back to Jimmy Lightfingers's learning and work progress`,
         errors,
       }
 

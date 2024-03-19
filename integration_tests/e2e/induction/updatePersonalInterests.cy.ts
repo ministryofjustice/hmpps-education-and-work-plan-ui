@@ -30,6 +30,8 @@ context('Update Personal Interests in the Induction', () => {
     const prisonNumber = 'G6115VJ'
     cy.visit(`/prisoners/${prisonNumber}/induction/personal-interests`)
     const personalInterestsPage = Page.verifyOnPage(PersonalInterestsPage)
+      .hasBackLinkTo(`/plan/${prisonNumber}/view/work-and-interests`)
+      .backLinkHasAriaLabel(`Back to Daniel Craig's learning and work progress`)
 
     // stubGetInductionLongQuestionSet has personal interests of Creative, Digital, Solo Activity, and Other (Car boot sales)
 

@@ -30,6 +30,8 @@ context('Update in-prison training interests within an Induction', () => {
     const prisonNumber = 'G6115VJ'
     cy.visit(`/prisoners/${prisonNumber}/induction/in-prison-training`)
     const inPrisonTrainingPage = Page.verifyOnPage(InPrisonTrainingPage)
+      .hasBackLinkTo(`/plan/${prisonNumber}/view/education-and-training`)
+      .backLinkHasAriaLabel(`Back to Daniel Craig's learning and work progress`)
 
     // When
     inPrisonTrainingPage //

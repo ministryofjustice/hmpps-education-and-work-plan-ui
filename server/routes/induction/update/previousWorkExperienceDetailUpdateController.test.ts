@@ -77,8 +77,7 @@ describe('previousWorkExperienceDetailUpdateController', () => {
         prisonerSummary,
         form: expectedPreviousWorkExperienceDetailForm,
         backLinkUrl: '/plan/A1234BC/view/work-and-interests',
-        backLinkAriaText:
-          'Back to <TODO - check what CIAG UI does here bearing in mind the previous page might be the create journey or the update journey for either a specific job type, or all the job types>',
+        backLinkAriaText: `Back to Jimmy Lightfingers's learning and work progress`,
         typeOfWorkExperience: 'CONSTRUCTION',
         errors,
       }
@@ -120,8 +119,7 @@ describe('previousWorkExperienceDetailUpdateController', () => {
         prisonerSummary,
         form: expectedPreviousWorkExperienceDetailForm,
         backLinkUrl: '/plan/A1234BC/view/work-and-interests',
-        backLinkAriaText:
-          'Back to <TODO - check what CIAG UI does here bearing in mind the previous page might be the create journey or the update journey for either a specific job type, or all the job types>',
+        backLinkAriaText: `Back to Jimmy Lightfingers's learning and work progress`,
         typeOfWorkExperience: 'CONSTRUCTION',
         errors,
       }

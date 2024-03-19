@@ -22,8 +22,9 @@ export default class InPrisonTrainingUpdateController extends InPrisonTrainingCo
     return `/plan/${prisonNumber}/view/education-and-training`
   }
 
-  getBackLinkAriaText(_req: Request): string {
-    return 'Back to <TODO - check what CIAG UI does here>'
+  getBackLinkAriaText(req: Request): string {
+    const { prisonerSummary } = req.session
+    return `Back to ${prisonerSummary.firstName} ${prisonerSummary.lastName}'s learning and work progress`
   }
 
   submitInPrisonTrainingForm: RequestHandler = async (

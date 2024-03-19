@@ -24,8 +24,9 @@ export default class PreviousWorkExperienceDetailUpdateController extends Previo
     return `/plan/${prisonNumber}/view/work-and-interests`
   }
 
-  getBackLinkAriaText(_req: Request): string {
-    return 'Back to <TODO - check what CIAG UI does here bearing in mind the previous page might be the create journey or the update journey for either a specific job type, or all the job types>'
+  getBackLinkAriaText(req: Request): string {
+    const { prisonerSummary } = req.session
+    return `Back to ${prisonerSummary.firstName} ${prisonerSummary.lastName}'s learning and work progress`
   }
 
   submitPreviousWorkExperienceDetailForm: RequestHandler = async (

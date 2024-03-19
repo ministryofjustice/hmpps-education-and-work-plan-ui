@@ -31,7 +31,7 @@ context('Update factors affecting the ability to work within an Induction', () =
     cy.visit(`/prisoners/${prisonNumber}/induction/affect-ability-to-work`)
     const affectAbilityToWorkPage = Page.verifyOnPage(AffectAbilityToWorkPage)
       .hasBackLinkTo(`/plan/${prisonNumber}/view/work-and-interests`)
-      .backLinkHasAriaLabel('Back to <TODO - check what CIAG UI does here>')
+      .backLinkHasAriaLabel(`Back to Daniel Craig's learning and work progress`)
 
     // When
     affectAbilityToWorkPage //
