@@ -71,7 +71,7 @@ describe('qualificationLevelUpdateController', () => {
         form: expectedQualificationLevelForm,
         educationLevel: EducationLevelValue.SECONDARY_SCHOOL_TOOK_EXAMS,
         backLinkUrl: `/prisoners/${prisonNumber}/induction/qualifications`,
-        backLinkAriaText: 'Back to <TODO - check what CIAG UI does here>',
+        backLinkAriaText: "Back to Jimmy Lightfingers's qualifications",
         errors,
       }
 
@@ -113,7 +113,7 @@ describe('qualificationLevelUpdateController', () => {
         form: expectedQualificationLevelForm,
         educationLevel: EducationLevelValue.SECONDARY_SCHOOL_TOOK_EXAMS,
         backLinkUrl: '/prisoners/A1234BC/induction/qualifications',
-        backLinkAriaText: 'Back to <TODO - check what CIAG UI does here>',
+        backLinkAriaText: "Back to Jimmy Lightfingers's qualifications",
         errors,
       }
 

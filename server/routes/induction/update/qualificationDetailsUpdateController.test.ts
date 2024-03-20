@@ -71,7 +71,7 @@ describe('qualificationDetailsUpdateController', () => {
         form: expectedQualificationDetailsForm,
         qualificationLevel: QualificationLevelValue.LEVEL_3,
         backLinkUrl: '/prisoners/A1234BC/induction/qualification-level',
-        backLinkAriaText: 'Back to <TODO - check what CIAG UI does here>',
+        backLinkAriaText: 'Back to What level of qualification does Jimmy Lightfingers want to add',
         errors,
       }
 
@@ -121,7 +121,7 @@ describe('qualificationDetailsUpdateController', () => {
         form: expectedQualificationDetailsForm,
         qualificationLevel: QualificationLevelValue.LEVEL_3,
         backLinkUrl: '/prisoners/A1234BC/induction/qualification-level',
-        backLinkAriaText: 'Back to <TODO - check what CIAG UI does here>',
+        backLinkAriaText: 'Back to What level of qualification does Jimmy Lightfingers want to add',
         errors,
       }
 
