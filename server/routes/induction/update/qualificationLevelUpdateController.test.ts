@@ -55,7 +55,10 @@ describe('qualificationLevelUpdateController', () => {
       req.session.inductionDto = inductionDto
       req.session.qualificationLevelForm = undefined
       req.session.pageFlowQueue = {
-        pageUrls: [`/prisoners/${prisonNumber}/induction/qualifications`],
+        pageUrls: [
+          `/prisoners/${prisonNumber}/induction/qualifications`,
+          `/prisoners/${prisonNumber}/induction/qualification-level`,
+        ],
         currentPageIndex: 1,
       }
 
@@ -95,7 +98,10 @@ describe('qualificationLevelUpdateController', () => {
       const inductionDto = aLongQuestionSetInductionDto()
       req.session.inductionDto = inductionDto
       req.session.pageFlowQueue = {
-        pageUrls: [`/prisoners/${prisonNumber}/induction/qualifications`],
+        pageUrls: [
+          `/prisoners/${prisonNumber}/induction/qualifications`,
+          `/prisoners/${prisonNumber}/induction/qualification-level`,
+        ],
         currentPageIndex: 1,
       }
 

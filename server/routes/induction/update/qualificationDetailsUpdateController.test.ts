@@ -55,6 +55,7 @@ describe('qualificationDetailsUpdateController', () => {
         pageUrls: [
           `/prisoners/${prisonNumber}/induction/qualifications`,
           `/prisoners/${prisonNumber}/induction/qualification-level`,
+          `/prisoners/${prisonNumber}/induction/qualification-details`,
         ],
         currentPageIndex: 2,
       }
@@ -104,6 +105,7 @@ describe('qualificationDetailsUpdateController', () => {
         pageUrls: [
           `/prisoners/${prisonNumber}/induction/qualifications`,
           `/prisoners/${prisonNumber}/induction/qualification-level`,
+          `/prisoners/${prisonNumber}/induction/qualification-details`,
         ],
         currentPageIndex: 2,
       }
@@ -155,6 +157,7 @@ describe('qualificationDetailsUpdateController', () => {
         pageUrls: [
           `/prisoners/${prisonNumber}/induction/qualifications`,
           `/prisoners/${prisonNumber}/induction/qualification-level`,
+          `/prisoners/${prisonNumber}/induction/qualification-details`,
         ],
         currentPageIndex: 2,
       }
@@ -205,6 +208,7 @@ describe('qualificationDetailsUpdateController', () => {
         pageUrls: [
           `/prisoners/${prisonNumber}/induction/qualifications`,
           `/prisoners/${prisonNumber}/induction/qualification-level`,
+          `/prisoners/${prisonNumber}/induction/qualification-details`,
         ],
         currentPageIndex: 2,
       }
