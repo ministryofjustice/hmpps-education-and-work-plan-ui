@@ -124,6 +124,10 @@ declare module 'inductionForms' {
     workInterestTypesOther: string
   }
 
+  export interface WantToAddQualificationsForm {
+    wantToAddQualifications: YesNoValue
+  }
+
   export interface HighestLevelOfEducationForm {
     educationLevel: EducationLevelValue
   }
