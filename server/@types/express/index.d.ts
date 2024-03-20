@@ -2,20 +2,23 @@ import type { FunctionalSkills, PageFlowQueue, PrisonerSummary, PrisonerSupportN
 import type { UpdateGoalForm } from 'forms'
 import type { NewGoal } from 'compositeForms'
 import type {
-  HopingToWorkOnReleaseForm,
+  AdditionalTrainingForm,
+  AffectAbilityToWorkForm,
   HighestLevelOfEducationForm,
-  InPrisonWorkForm,
+  HopingToWorkOnReleaseForm,
   InPrisonTrainingForm,
+  InPrisonWorkForm,
   PersonalInterestsForm,
-  SkillsForm,
   PreviousWorkExperienceDetailForm,
   PreviousWorkExperienceTypesForm,
-  WorkedBeforeForm,
-  AffectAbilityToWorkForm,
+  QualificationDetailsForm,
+  QualificationLevelForm,
   ReasonsNotToGetWorkForm,
-  WorkInterestTypesForm,
+  SkillsForm,
+  WantToAddQualificationsForm,
+  WorkedBeforeForm,
   WorkInterestRolesForm,
-  AdditionalTrainingForm,
+  WorkInterestTypesForm,
 } from 'inductionForms'
 
 export default {}
@@ -47,6 +50,7 @@ declare module 'express-session' {
     reasonsNotToGetWorkForm: ReasonsNotToGetWorkForm
     workInterestTypesForm: WorkInterestTypesForm
     workInterestRolesForm: WorkInterestRolesForm
+    wantToAddQualificationsForm: WantToAddQualificationsForm
     highestLevelOfEducationForm: HighestLevelOfEducationForm
     qualificationLevelForm: QualificationLevelForm
     qualificationDetailsForm: QualificationDetailsForm
