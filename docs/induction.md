@@ -3,10 +3,10 @@ purpose is to collect background information about the prisoner, their education
 future work aspirations.
 
 The Induction data is presented and collected using a typical GDS wizard style sequence of screens, where the answers to
-questions will determine the question set. Broadly speaking there is a short question set for when the prisoner either
-doesn't want or is not sure if they want to work on release. The long question set is asked when the prisoner does want
-to work on release. There are some additional subtleties within these 2 question sets based on the answers to questions,
-but in general the terms "short question set" and "long question set" are used.
+questions will determine the question set. Broadly speaking there is a long question for when the prisoner wants to work
+on release and a short question set for when they do not (or are not sure). There are some additional subtleties within
+these 2 question sets based on the answers to questions, but in general the terms "short question set" and 
+"long question set" are used.
 
 ![Induction screens](./induction-process-flow-chart.png)
 
