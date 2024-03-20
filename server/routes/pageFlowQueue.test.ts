@@ -1,5 +1,6 @@
 import type { PageFlowQueue } from 'viewModels'
 import {
+  addPage,
   getCurrentPage,
   getNextPage,
   getPreviousPage,
@@ -146,6 +147,23 @@ describe('pageFlowQueue', () => {
 
       // Then
       expect(actual).toBeFalsy()
+    })
+  })
+
+  describe('addPage', () => {
+    it('should add page and maintain existing index', () => {
+      // Given
+      const pageFlowQueue = pageFlowQueueOnPageUrl('/first-page')
+      const expected: PageFlowQueue = {
+        pageUrls: ['/first-page', '/second-page', '/third-page', '/fourth-page'],
+        currentPageIndex: 0,
+      }
+
+      // When
+      const actual = addPage(pageFlowQueue, '/fourth-page')
+
+      // Then
+      expect(actual).toEqual(expected)
     })
   })
 
