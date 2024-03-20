@@ -224,4 +224,34 @@ describe('qualificationsListUpdateController', () => {
       expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/induction/qualifications')
     })
   })
+
+  it('should redirect to Qualification Level page given page submitted with addQualification', async () => {
+    // Given
+    req.user.token = 'some-token'
+    const prisonNumber = 'A1234BC'
+    req.params.prisonNumber = prisonNumber
+
+    const prisonerSummary = aValidPrisonerSummary()
+    req.session.prisonerSummary = prisonerSummary
+    req.body = { addQualification: '0' }
+
+    const expectedPageFlowQueue = {
+      pageUrls: [
+        `/prisoners/${prisonNumber}/induction/qualifications`,
+        `/prisoners/${prisonNumber}/induction/qualification-level`,
+      ],
+      currentPageIndex: 0,
+    }
+
+    // When
+    await controller.submitQualificationsListView(
+      req as undefined as Request,
+      res as undefined as Response,
+      next as undefined as NextFunction,
+    )
+
+    // Then
+    expect(req.session.pageFlowQueue).toEqual(expectedPageFlowQueue)
+    expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/induction/qualification-level')
+  })
 })

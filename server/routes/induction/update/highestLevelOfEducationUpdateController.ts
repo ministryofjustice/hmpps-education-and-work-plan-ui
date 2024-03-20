@@ -2,12 +2,14 @@ import createError from 'http-errors'
 import { NextFunction, Request, RequestHandler, Response } from 'express'
 import type { InductionDto } from 'inductionDto'
 import type { HighestLevelOfEducationForm } from 'inductionForms'
+import type { PageFlowQueue } from 'viewModels'
 import HighestLevelOfEducationController from '../common/highestLevelOfEducationController'
 import { InductionService } from '../../../services'
 import validateHighestLevelOfEducationForm from './highestLevelOfEducationFormValidator'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
 import EducationLevelValue from '../../../enums/educationLevelValue'
 import logger from '../../../../logger'
+import { getNextPage } from '../../pageFlowQueue'
 
 /**
  * Controller for the Update of the Highest Level of Education screen of the Induction.
@@ -60,6 +62,9 @@ export default class HighestLevelOfEducationUpdateController extends HighestLeve
 
       try {
         await this.inductionService.updateInduction(prisonNumber, updateInductionDto, req.user.token)
+        req.session.highestLevelOfEducationForm = undefined
+        req.session.inductionDto = undefined
+        return res.redirect(`/plan/${prisonNumber}/view/education-and-training`)
       } catch (e) {
         logger.error(`Error updating Induction for prisoner ${prisonNumber}`, e)
         return next(createError(500, `Error updating Induction for prisoner ${prisonNumber}. Error: ${e}`))
@@ -71,12 +76,23 @@ export default class HighestLevelOfEducationUpdateController extends HighestLeve
         highestLevelOfEducationForm,
       )
       req.session.highestLevelOfEducationForm = undefined
-      return res.redirect(`/prisoners/${prisonNumber}/induction/qualification-level`)
-    }
 
-    req.session.highestLevelOfEducationForm = undefined
-    req.session.inductionDto = undefined
-    return res.redirect(`/plan/${prisonNumber}/view/education-and-training`)
+      const pageFlowQueue = this.buildPageFlowQueue(prisonNumber)
+      req.session.pageFlowQueue = pageFlowQueue
+      logger.debug(`Redirecting to /qualification-level from /highest-level-of-education`)
+      return res.redirect(getNextPage(pageFlowQueue))
+    }
+  }
+
+  buildPageFlowQueue = (prisonNumber: string): PageFlowQueue => {
+    const pageUrls = [
+      `/prisoners/${prisonNumber}/induction/highest-level-of-education`,
+      `/prisoners/${prisonNumber}/induction/qualification-level`,
+    ]
+    return {
+      pageUrls,
+      currentPageIndex: 0,
+    }
   }
 }
 

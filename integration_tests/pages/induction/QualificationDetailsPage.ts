@@ -1,9 +1,10 @@
-import Page, { PageElement } from '../page'
+import { PageElement } from '../page'
+import InductionPage from './InductionPage'
 
 /**
  * Cypress page class representing the Induction "Qualification Details" page
  */
-export default class QualificationDetailsPage extends Page {
+export default class QualificationDetailsPage extends InductionPage {
   constructor() {
     super('induction-qualification-details')
   }
