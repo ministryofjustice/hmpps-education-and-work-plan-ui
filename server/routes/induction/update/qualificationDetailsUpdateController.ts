@@ -5,7 +5,7 @@ import QualificationDetailsController from '../common/qualificationDetailsContro
 import validateQualificationDetailsForm from './qualificationDetailsFormValidator'
 import QualificationLevelValue from '../../../enums/qualificationLevelValue'
 import { getPreviousPage } from '../../pageFlowQueue'
-import getDynamicBackLinkAriaText from '../dynamicAriaText'
+import getDynamicBackLinkAriaText from '../dynamicAriaTextResolver'
 
 /**
  * Controller for the Update of the Qualification Details screen of the Induction.

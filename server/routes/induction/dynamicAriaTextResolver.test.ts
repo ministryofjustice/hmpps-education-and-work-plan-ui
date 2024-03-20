@@ -1,6 +1,6 @@
 import { SessionData } from 'express-session'
 import { Request } from 'express'
-import getDynamicBackLinkAriaText from './dynamicAriaText'
+import getDynamicBackLinkAriaText from './dynamicAriaTextResolver'
 import aValidPrisonerSummary from '../../testsupport/prisonerSummaryTestDataBuilder'
 
 const req = {
