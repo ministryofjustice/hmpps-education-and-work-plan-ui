@@ -37,7 +37,9 @@ context('Update highest level of education within an Induction', () => {
     // Given
     const prisonNumber = 'G6115VJ'
     cy.visit(`/prisoners/${prisonNumber}/induction/highest-level-of-education`)
-    const highestLevelOfEducationPage = Page.verifyOnPage(HighestLevelOfEducationPage)
+    const highestLevelOfEducationPage = Page.verifyOnPage(HighestLevelOfEducationPage) //
+      .hasBackLinkTo(`/plan/G6115VJ/view/education-and-training`)
+      .backLinkHasAriaLabel(`Back to Daniel Craig's learning and work progress`)
 
     // When
     highestLevelOfEducationPage //
@@ -73,7 +75,9 @@ context('Update highest level of education within an Induction', () => {
     // Given
     const prisonNumber = 'G6115VJ'
     cy.visit(`/prisoners/${prisonNumber}/induction/highest-level-of-education`)
-    const highestLevelOfEducationPage = Page.verifyOnPage(HighestLevelOfEducationPage)
+    const highestLevelOfEducationPage = Page.verifyOnPage(HighestLevelOfEducationPage) //
+      .hasBackLinkTo(`/plan/G6115VJ/view/education-and-training`)
+      .backLinkHasAriaLabel(`Back to Daniel Craig's learning and work progress`)
 
     // When
     highestLevelOfEducationPage //
@@ -112,7 +116,9 @@ context('Update highest level of education within an Induction', () => {
 
     const prisonNumber = 'G6115VJ'
     cy.visit(`/prisoners/${prisonNumber}/induction/highest-level-of-education`)
-    const highestLevelOfEducationPage = Page.verifyOnPage(HighestLevelOfEducationPage)
+    const highestLevelOfEducationPage = Page.verifyOnPage(HighestLevelOfEducationPage) //
+      .hasBackLinkTo(`/plan/G6115VJ/view/education-and-training`)
+      .backLinkHasAriaLabel(`Back to Daniel Craig's learning and work progress`)
 
     // When
     highestLevelOfEducationPage //
