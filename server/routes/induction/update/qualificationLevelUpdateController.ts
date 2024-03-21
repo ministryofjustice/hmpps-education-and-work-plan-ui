@@ -2,6 +2,7 @@ import { NextFunction, Request, RequestHandler, Response } from 'express'
 import QualificationLevelController from '../common/qualificationLevelController'
 import validateQualificationLevelForm from './qualificationLevelFormValidator'
 import { addPage, getNextPage, getPreviousPage } from '../../pageFlowQueue'
+import getDynamicBackLinkAriaText from '../dynamicAriaTextResolver'
 
 /**
  * Controller for the Update of the Qualification Level screen of the Induction.
@@ -12,8 +13,8 @@ export default class QualificationLevelUpdateController extends QualificationLev
     return getPreviousPage(pageFlowQueue)
   }
 
-  getBackLinkAriaText(_req: Request): string {
-    return 'Back to <TODO - check what CIAG UI does here>'
+  getBackLinkAriaText(req: Request): string {
+    return getDynamicBackLinkAriaText(req, this.getBackLinkUrl(req))
   }
 
   submitQualificationLevelForm: RequestHandler = async (
