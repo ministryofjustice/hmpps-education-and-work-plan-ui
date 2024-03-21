@@ -49,7 +49,7 @@ context('Prisoner Overview page - Education And Training tab', () => {
         .hasFunctionalSkillWithNoAssessmentScoreMessageDisplayed('ENGLISH') // English & Maths are always displayed, even if not in the returned data
     })
 
-    it('should display Functional Skills given curious API returns a 404 for the learner profile', () => {
+    it('should display message saying no assessment scores for Maths and English are recorded given curious API returns a 404 for the learner profile', () => {
       // Given
       cy.task('stubLearnerProfile404Error') // Curious 404 for /learnerProfile means there are no Functional Skills recprded for the prisoner
 
