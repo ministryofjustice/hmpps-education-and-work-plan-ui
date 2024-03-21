@@ -8,7 +8,7 @@ const aValidEnglishInPrisonEducation = (): InPrisonEducation => {
     courseName: 'GCSE English',
     courseCode: '008ENGL06',
     courseStartDate: moment('2021-06-01').toDate(),
-    courseCompleted: false,
+    courseStatus: 'IN_PROGRESS',
     courseCompletionDate: null,
     isAccredited: true,
     grade: null,
@@ -23,7 +23,7 @@ const aValidMathsInPrisonEducation = (): InPrisonEducation => {
     courseName: 'GCSE Maths',
     courseCode: '246674',
     courseStartDate: moment('2016-05-18').toDate(),
-    courseCompleted: true,
+    courseStatus: 'COMPLETED',
     courseCompletionDate: moment('2016-07-15').toDate(),
     isAccredited: true,
     grade: 'No achievement',
@@ -38,7 +38,7 @@ const aValidWoodWorkingInPrisonEducation = (): InPrisonEducation => {
     courseName: 'City & Guilds Wood Working',
     courseCode: '008WOOD06',
     courseStartDate: moment('2021-06-01').toDate(),
-    courseCompleted: false,
+    courseStatus: 'IN_PROGRESS',
     courseCompletionDate: null,
     isAccredited: true,
     grade: null,
@@ -46,15 +46,15 @@ const aValidWoodWorkingInPrisonEducation = (): InPrisonEducation => {
   }
 }
 
-const aValidEnglishInPrisonEducationWithinLast12Months = (): InPrisonEducation => {
+const aValidEnglishInPrisonEducationCompletedWithinLast12Months = (): InPrisonEducation => {
   return {
     prisonId: 'MDI',
     prisonName: 'Moorland (HMP & YOI)',
     courseName: 'GCSE English',
     courseCode: '008ENGL06',
     courseStartDate: moment('2023-10-01').toDate(),
-    courseCompleted: true,
-    courseCompletionDate: moment('2024-02-26').toDate(),
+    courseStatus: 'COMPLETED',
+    courseCompletionDate: moment().subtract(3, 'months').toDate(),
     isAccredited: true,
     grade: null,
     source: 'CURIOUS',
@@ -65,5 +65,5 @@ export {
   aValidEnglishInPrisonEducation,
   aValidMathsInPrisonEducation,
   aValidWoodWorkingInPrisonEducation,
-  aValidEnglishInPrisonEducationWithinLast12Months,
+  aValidEnglishInPrisonEducationCompletedWithinLast12Months,
 }

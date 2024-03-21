@@ -11,7 +11,7 @@ const completedInPrisonEducationRecords = (
   return {
     ...allInPrisonEducationRecords,
     educationRecords: (allInPrisonEducationRecords.educationRecords || [])
-      .filter(inPrisonEducation => inPrisonEducation.courseCompleted === true)
+      .filter(inPrisonEducation => inPrisonEducation.courseStatus === 'COMPLETED')
       .sort((left: InPrisonEducation, right: InPrisonEducation) =>
         dateComparator(left.courseCompletionDate, right.courseCompletionDate),
       ),

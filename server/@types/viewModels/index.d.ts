@@ -107,7 +107,7 @@ declare module 'viewModels' {
     courseName: string
     courseCode: string
     courseStartDate: Date
-    courseCompleted: boolean
+    courseStatus: 'COMPLETED' | 'IN_PROGRESS' | 'WITHDRAWN' | 'TEMPORARILY_WITHDRAWN'
     courseCompletionDate?: Date
     isAccredited: boolean
     grade?: string

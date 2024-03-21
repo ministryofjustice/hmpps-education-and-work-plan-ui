@@ -11,7 +11,7 @@ import { aValidActionPlan, aValidActionPlanWithOneGoal } from '../../testsupport
 import {
   aValidEnglishInPrisonEducation,
   aValidMathsInPrisonEducation,
-  aValidEnglishInPrisonEducationWithinLast12Months,
+  aValidEnglishInPrisonEducationCompletedWithinLast12Months,
 } from '../../testsupport/inPrisonEducationTestDataBuilder'
 import aValidLongQuestionSetWorkAndInterests from '../../testsupport/workAndInterestsTestDataBuilder'
 import aValidPrisonerSummary from '../../testsupport/prisonerSummaryTestDataBuilder'
@@ -350,24 +350,23 @@ describe('overviewController', () => {
         ],
       } as FunctionalSkills
 
+      const completedMathsCourse = aValidMathsInPrisonEducation()
+      const inProgressEnglishCourse = aValidEnglishInPrisonEducation()
+      const completedInLast12MonthsCourse = aValidEnglishInPrisonEducationCompletedWithinLast12Months()
       const inPrisonEducation: InPrisonEducationRecords = {
         problemRetrievingData: false,
-        educationRecords: [
-          aValidEnglishInPrisonEducation(),
-          aValidMathsInPrisonEducation(),
-          aValidEnglishInPrisonEducationWithinLast12Months(),
-        ],
+        educationRecords: [inProgressEnglishCourse, completedMathsCourse, completedInLast12MonthsCourse],
       }
       curiousService.getLearnerEducation.mockResolvedValue(inPrisonEducation)
 
       const expectedCompletedInPrisonEducation: InPrisonEducationRecords = {
         problemRetrievingData: false,
-        educationRecords: [aValidEnglishInPrisonEducationWithinLast12Months(), aValidMathsInPrisonEducation()],
+        educationRecords: [completedInLast12MonthsCourse, completedMathsCourse],
       }
 
       const expectedCompletedInPrisonEducationWithinLast12Months: InPrisonEducationRecords = {
         problemRetrievingData: false,
-        educationRecords: [aValidEnglishInPrisonEducationWithinLast12Months()],
+        educationRecords: [completedInLast12MonthsCourse],
       }
 
       const expectedEducationAndTraining = aValidShortQuestionSetEducationAndTraining()
