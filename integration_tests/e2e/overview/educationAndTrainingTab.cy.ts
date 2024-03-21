@@ -354,7 +354,7 @@ context('Prisoner Overview page - Education And Training tab', () => {
   describe('should display a link to view all courses and qualifications', () => {
     it(`should link to the courses and qualifications page`, () => {
       // Given
-      cy.task('stubGetInductionShortQuestionSet')
+      cy.task('stubLearnerEducationWithCoursesQualificationsCompletedInLast12Months')
 
       cy.signIn()
       const prisonNumber = 'G6115VJ'

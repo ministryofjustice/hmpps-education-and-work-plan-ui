@@ -10,7 +10,7 @@ import CuriousClient from '../data/curiousClient'
 import { HmppsAuthClient } from '../data'
 import logger from '../../logger'
 import toFunctionalSkills from '../routes/overview/mappers/functionalSkillsMapper'
-import toInPrisonEducation from '../data/mappers/inPrisonEducationMapper'
+import { toInPrisonEducation } from '../data/mappers/inPrisonEducationMapper'
 
 export default class CuriousService {
   constructor(

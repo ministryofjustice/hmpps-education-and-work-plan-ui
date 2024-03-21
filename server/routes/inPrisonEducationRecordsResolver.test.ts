@@ -75,13 +75,13 @@ describe('inPrisonEducationRecordsResolver', () => {
     it('should return most recent completed In Prison Education records given InPrisonEducationRecords', () => {
       // Given
       const englishPrisonEducation = { ...aValidEnglishInPrisonEducation() }
-      englishPrisonEducation.courseCompleted = true
+      englishPrisonEducation.courseStatus = 'COMPLETED'
       englishPrisonEducation.courseCompletionDate = moment('2023-07-10').toDate()
       const mathsPrisonEducation = { ...aValidMathsInPrisonEducation() }
-      mathsPrisonEducation.courseCompleted = true
+      mathsPrisonEducation.courseStatus = 'COMPLETED'
       mathsPrisonEducation.courseCompletionDate = moment('2023-07-11').toDate()
       const woodWorkPrisonEducation = { ...aValidWoodWorkingInPrisonEducation() }
-      woodWorkPrisonEducation.courseCompleted = true
+      woodWorkPrisonEducation.courseStatus = 'COMPLETED'
       woodWorkPrisonEducation.courseCompletionDate = moment('2023-06-20').toDate()
 
       const inPrisonEducationRecords: InPrisonEducationRecords = {
@@ -149,14 +149,14 @@ describe('inPrisonEducationRecordsResolver', () => {
     it('should return completed In Prison Education records within last 12 months given InPrisonEducationRecords', () => {
       // Given
       const englishPrisonEducation = { ...aValidEnglishInPrisonEducation() }
-      englishPrisonEducation.courseCompleted = true
+      englishPrisonEducation.courseStatus = 'COMPLETED'
       englishPrisonEducation.courseCompletionDate = moment().subtract(7, 'months').toDate()
       const mathsPrisonEducation = { ...aValidMathsInPrisonEducation() }
-      mathsPrisonEducation.courseCompleted = true
+      mathsPrisonEducation.courseStatus = 'COMPLETED'
       mathsPrisonEducation.courseCompletionDate = moment().subtract(4, 'months').toDate()
 
       const woodWorkPrisonEducation = { ...aValidWoodWorkingInPrisonEducation() }
-      woodWorkPrisonEducation.courseCompleted = true
+      woodWorkPrisonEducation.courseStatus = 'COMPLETED'
       woodWorkPrisonEducation.courseCompletionDate = moment('2021-06-20').toDate()
 
       const inPrisonEducationRecords: InPrisonEducationRecords = {
