@@ -1,6 +1,5 @@
-import type { InPrisonEducationRecords } from 'viewModels'
 import createError from 'http-errors'
-import { Request, RequestHandler } from 'express'
+import { RequestHandler } from 'express'
 import EducationAndTrainingView from './educationAndTrainingView'
 import SupportNeedsView from './supportNeedsView'
 import { CuriousService, InductionService } from '../../services'
@@ -8,11 +7,6 @@ import EducationAndWorkPlanService from '../../services/educationAndWorkPlanServ
 import TimelineService from '../../services/timelineService'
 import PrisonService from '../../services/prisonService'
 import { mostRecentFunctionalSkills } from '../functionalSkillsResolver'
-import {
-  completedInPrisonEducationRecords,
-  mostRecentCompletedInPrisonEducationRecords,
-  completedInPrisonEducationRecordsWithinLast12Months,
-} from '../inPrisonEducationRecordsResolver'
 import filterTimelineEvents from '../timelineResolver'
 import WorkAndInterestsView from './workAndInterestsView'
 import PostInductionOverviewView from './postInductionOverviewView'
@@ -41,8 +35,7 @@ export default class OverviewController {
       const allFunctionalSkills = await this.curiousService.getPrisonerFunctionalSkills(prisonNumber, req.user.username)
       const functionalSkills = mostRecentFunctionalSkills(allFunctionalSkills)
 
-      const allInPrisonEducation = await this.curiousService.getLearnerEducation(prisonNumber, req.user.username)
-      const completedInPrisonEducation = mostRecentCompletedInPrisonEducationRecords(allInPrisonEducation, 2)
+      const inPrisonCourses = await this.curiousService.getPrisonerInPrisonCourses(prisonNumber, req.user.username)
 
       const actionPlan = await this.educationAndWorkPlanService.getActionPlan(prisonNumber, req.user.token)
 
@@ -53,7 +46,7 @@ export default class OverviewController {
           prisonerSummary,
           actionPlan,
           functionalSkills,
-          completedInPrisonEducation,
+          inPrisonCourses,
         )
       } else {
         view = new PreInductionOverviewView(
@@ -61,7 +54,7 @@ export default class OverviewController {
           prisonerSummary,
           actionPlan,
           functionalSkills,
-          completedInPrisonEducation,
+          inPrisonCourses,
         )
       }
 
@@ -117,22 +110,11 @@ export default class OverviewController {
     const allFunctionalSkills = await this.curiousService.getPrisonerFunctionalSkills(prisonNumber, req.user.username)
     const functionalSkills = mostRecentFunctionalSkills(allFunctionalSkills)
 
-    const allInPrisonEducation = await this.curiousService.getLearnerEducation(prisonNumber, req.user.username)
-    const completedInPrisonEducation = completedInPrisonEducationRecords(allInPrisonEducation)
-    const completedInPrisonEducationWithinLast12Months = await this.setPrisonNamesOnEducationRecords(
-      completedInPrisonEducationRecordsWithinLast12Months(completedInPrisonEducation),
-      req,
-    )
+    const inPrisonCourses = await this.curiousService.getPrisonerInPrisonCourses(prisonNumber, req.user.username)
 
     const educationAndTraining = await this.inductionService.getEducationAndTraining(prisonNumber, req.user.token)
 
-    const view = new EducationAndTrainingView(
-      prisonerSummary,
-      functionalSkills,
-      completedInPrisonEducation,
-      completedInPrisonEducationWithinLast12Months,
-      educationAndTraining,
-    )
+    const view = new EducationAndTrainingView(prisonerSummary, functionalSkills, inPrisonCourses, educationAndTraining)
     res.render('pages/overview/index', { ...view.renderArgs })
   }
 
@@ -153,24 +135,5 @@ export default class OverviewController {
     const timeline = filterTimelineEvents(allTimelineEvents)
     const view = new TimelineView(prisonerSummary, timeline)
     res.render('pages/overview/index', { ...view.renderArgs })
-  }
-
-  async setPrisonNamesOnEducationRecords(
-    completedInPrisonEducationWithinLast12Months: InPrisonEducationRecords,
-    req: Request,
-  ): Promise<InPrisonEducationRecords> {
-    const educationRecordsWithPrisonLookups = completedInPrisonEducationWithinLast12Months.educationRecords.map(
-      async educationRecord => {
-        const prison = await this.prisonService.lookupPrison(educationRecord.prisonId, req.user.username)
-        return {
-          ...educationRecord,
-          prisonName: prison?.prisonName,
-        }
-      },
-    )
-    return {
-      ...completedInPrisonEducationWithinLast12Months,
-      educationRecords: await Promise.all(educationRecordsWithPrisonLookups),
-    }
   }
 }

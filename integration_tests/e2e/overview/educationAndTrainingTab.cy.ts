@@ -1,7 +1,6 @@
 import OverviewPage from '../../pages/overview/OverviewPage'
 import Page from '../../pages/page'
 import EducationAndTrainingPage from '../../pages/overview/EducationAndTrainingPage'
-import InPrisonCoursesAndQualificationsPage from '../../pages/inPrisonCoursesAndQualifications/InPrisonCoursesAndQualificationsPage'
 import InPrisonTrainingPage from '../../pages/induction/InPrisonTrainingPage'
 import HighestLevelOfEducationPage from '../../pages/induction/HighestLevelOfEducationPage'
 import AdditionalTrainingPage from '../../pages/induction/AdditionalTrainingPage'
@@ -23,12 +22,15 @@ context('Prisoner Overview page - Education And Training tab', () => {
     cy.task('stubLearnerProfile')
     cy.task('stubLearnerEducation')
     cy.task('stubGetInductionLongQuestionSet')
+    cy.task('stubGetAllPrisons')
   })
 
-  describe('should retrieve and render data from Curious API data', () => {
-    it('should display Functional Skills and In Prison Qualifications And Achievements data', () => {
+  describe('should retrieve and render Functional Skills from Curious API data', () => {
+    // Functional skills come from the Curious API /learnerProfile
+
+    it('should display Functional Skills', () => {
       // Given
-      cy.task('stubLearnerEducationWithCoursesQualificationsCompletedInLast12Months')
+      cy.task('stubLearnerProfile') // Learner profile stub has Maths and Digital Literacy, but not English
 
       cy.signIn()
       const prisonNumber = 'G6115VJ'
@@ -42,15 +44,14 @@ context('Prisoner Overview page - Education And Training tab', () => {
       // Then
       educationAndTrainingPage //
         .activeTabIs('Education and training')
-        .hasFunctionalSkillsDisplayed()
-        .hasCompletedInPrisonQualificationsLast12MonthsDisplayed()
-        .coursesAndQualificationsLinkShouldExist()
+        .hasFunctionalSkillWithAssessmentScoreDisplayed('MATHS')
+        .hasFunctionalSkillWithAssessmentScoreDisplayed('DIGITAL_LITERACY')
+        .hasFunctionalSkillWithNoAssessmentScoreMessageDisplayed('ENGLISH') // English & Maths are always displayed, even if not in the returned data
     })
 
-    it('should display message and view all link if prisoner has no completed courses or qualifications within last 12 months but does have older courses and qualifications', () => {
+    it('should display Functional Skills given curious API returns a 404 for the learner profile', () => {
       // Given
-      cy.task('stubGetInductionShortQuestionSet')
-      cy.task('stubLearnerEducationWithCoursesCompletedInMoreThanLast12Months')
+      cy.task('stubLearnerProfile404Error') // Curious 404 for /learnerProfile means there are no Functional Skills recprded for the prisoner
 
       cy.signIn()
       const prisonNumber = 'G6115VJ'
@@ -64,69 +65,8 @@ context('Prisoner Overview page - Education And Training tab', () => {
       // Then
       educationAndTrainingPage //
         .activeTabIs('Education and training')
-        .hasNoCoursesAndQualificationsLast12MonthsMessageDisplayed()
-        .coursesAndQualificationsLinkShouldExist()
-    })
-
-    it('should display message but not display view all link if prisoner has no completed courses', () => {
-      // Given
-      cy.task('stubGetInductionShortQuestionSet')
-      cy.task('stubLearnerEducationWithNoCoursesQualifications')
-
-      cy.signIn()
-      const prisonNumber = 'G6115VJ'
-      cy.visit(`/plan/${prisonNumber}/view/overview`)
-      const overviewPage = Page.verifyOnPage(OverviewPage)
-
-      // When
-      overviewPage.selectTab('Education and training')
-      const educationAndTrainingPage = Page.verifyOnPage(EducationAndTrainingPage)
-
-      // Then
-      educationAndTrainingPage //
-        .activeTabIs('Education and training')
-        .hasNoCoursesAndQualificationsLast12MonthsMessageDisplayed()
-        .coursesAndQualificationsLinkShouldNotExist()
-    })
-
-    it('should display Functional Skills and In Prison Qualifications And Achievements data given curious API returns a 404 for the learner profile', () => {
-      // Given
-      cy.task('stubLearnerProfile404Error')
-
-      cy.signIn()
-      const prisonNumber = 'G6115VJ'
-      cy.visit(`/plan/${prisonNumber}/view/overview`)
-      const overviewPage = Page.verifyOnPage(OverviewPage)
-
-      // When
-      overviewPage.selectTab('Education and training')
-      const educationAndTrainingPage = Page.verifyOnPage(EducationAndTrainingPage)
-
-      // Then
-      educationAndTrainingPage //
-        .activeTabIs('Education and training')
-        .hasFunctionalSkillsDisplayed()
-        .hasNoCoursesAndQualificationsLast12MonthsMessageDisplayed()
-    })
-
-    it('should display Functional Skills and In Prison Qualifications And Achievements data given curious API returns a 404 for the learner education', () => {
-      // Given
-      cy.task('stubLearnerEducation404Error')
-
-      cy.signIn()
-      const prisonNumber = 'G6115VJ'
-      cy.visit(`/plan/${prisonNumber}/view/overview`)
-      const overviewPage = Page.verifyOnPage(OverviewPage)
-
-      // When
-      overviewPage.selectTab('Education and training')
-      const educationAndTrainingPage = Page.verifyOnPage(EducationAndTrainingPage)
-
-      // Then
-      educationAndTrainingPage //
-        .activeTabIs('Education and training')
-        .hasFunctionalSkillsDisplayed()
-        .hasNoCoursesAndQualificationsLast12MonthsMessageDisplayed()
+        .hasFunctionalSkillWithNoAssessmentScoreMessageDisplayed('ENGLISH') // English & Maths are always displayed, even if not in the returned data
+        .hasFunctionalSkillWithNoAssessmentScoreMessageDisplayed('MATHS') // English & Maths are always displayed, even if not in the returned data
     })
 
     it('should display curious unavailable message given curious is unavailable for the learner profile', () => {
@@ -147,7 +87,90 @@ context('Prisoner Overview page - Education And Training tab', () => {
         .activeTabIs('Education and training')
         .doesNotHaveFunctionalSkillsDisplayed()
         .hasCuriousUnavailableMessageDisplayed()
-        .hasNoCoursesAndQualificationsLast12MonthsMessageDisplayed()
+    })
+  })
+
+  describe('should retrieve and render In Prison Courses from Curious API data', () => {
+    // In Prison Courses come from the Curious API /learnerEducation
+
+    it('should display In Prison Courses completed in the last 12 months', () => {
+      // Given
+      cy.task('stubLearnerEducationWithCompletedCoursesInLast12Months') // Learner education stub has GCSE Maths completed in last 12 months
+
+      cy.signIn()
+      const prisonNumber = 'G6115VJ'
+      cy.visit(`/plan/${prisonNumber}/view/overview`)
+      const overviewPage = Page.verifyOnPage(OverviewPage)
+
+      // When
+      overviewPage.selectTab('Education and training')
+      const educationAndTrainingPage = Page.verifyOnPage(EducationAndTrainingPage)
+
+      // Then
+      educationAndTrainingPage //
+        .activeTabIs('Education and training')
+        .hasCompletedCourseInLast12MonthsDisplayed('GCSE Maths')
+        .hasLinkToViewAllCourses()
+    })
+
+    it('should display message and view all link if prisoner has no completed courses within last 12 months but does have older courses', () => {
+      // Given
+      cy.task('stubLearnerEducationWithCompletedCoursesOlderThanLast12Months')
+
+      cy.signIn()
+      const prisonNumber = 'G6115VJ'
+      cy.visit(`/plan/${prisonNumber}/view/overview`)
+      const overviewPage = Page.verifyOnPage(OverviewPage)
+
+      // When
+      overviewPage.selectTab('Education and training')
+      const educationAndTrainingPage = Page.verifyOnPage(EducationAndTrainingPage)
+
+      // Then
+      educationAndTrainingPage //
+        .activeTabIs('Education and training')
+        .hasNoCompletedCoursesInLast12MonthsDisplayed()
+        .hasLinkToViewAllCourses()
+    })
+
+    it('should display message but not display view all link if prisoner has no completed courses', () => {
+      // Given
+      cy.task('stubLearnerEducationWithNoCourses')
+
+      cy.signIn()
+      const prisonNumber = 'G6115VJ'
+      cy.visit(`/plan/${prisonNumber}/view/overview`)
+      const overviewPage = Page.verifyOnPage(OverviewPage)
+
+      // When
+      overviewPage.selectTab('Education and training')
+      const educationAndTrainingPage = Page.verifyOnPage(EducationAndTrainingPage)
+
+      // Then
+      educationAndTrainingPage //
+        .activeTabIs('Education and training')
+        .hasNoCompletedCoursesInLast12MonthsDisplayed()
+        .doesNotHaveLinkToViewAllCourses()
+    })
+
+    it('should not display In Prison courses given curious API returns a 404 for the learner education', () => {
+      // Given
+      cy.task('stubLearnerEducation404Error')
+
+      cy.signIn()
+      const prisonNumber = 'G6115VJ'
+      cy.visit(`/plan/${prisonNumber}/view/overview`)
+      const overviewPage = Page.verifyOnPage(OverviewPage)
+
+      // When
+      overviewPage.selectTab('Education and training')
+      const educationAndTrainingPage = Page.verifyOnPage(EducationAndTrainingPage)
+
+      // Then
+      educationAndTrainingPage //
+        .activeTabIs('Education and training')
+        .hasNoCompletedCoursesInLast12MonthsDisplayed()
+        .doesNotHaveLinkToViewAllCourses()
     })
 
     it('should display curious unavailable message given curious is unavailable for the learner education', () => {
@@ -166,8 +189,7 @@ context('Prisoner Overview page - Education And Training tab', () => {
       // Then
       educationAndTrainingPage //
         .activeTabIs('Education and training')
-        .hasFunctionalSkillsDisplayed()
-        .doesNotCompletedInPrisonQualificationsLast12MonthsDisplayed()
+        .doesNotHaveCompletedCoursesInLast12MonthsDisplayed()
         .hasCuriousUnavailableMessageDisplayed()
     })
   })
@@ -348,24 +370,6 @@ context('Prisoner Overview page - Education And Training tab', () => {
 
       // Then
       Page.verifyOnPage(QualificationsListPage)
-    })
-  })
-
-  describe('should display a link to view all courses and qualifications', () => {
-    it(`should link to the courses and qualifications page`, () => {
-      // Given
-      cy.task('stubLearnerEducationWithCoursesQualificationsCompletedInLast12Months')
-
-      cy.signIn()
-      const prisonNumber = 'G6115VJ'
-      cy.visit(`/plan/${prisonNumber}/view/education-and-training`)
-      const educationAndTrainingPage = Page.verifyOnPage(EducationAndTrainingPage)
-
-      // When
-      educationAndTrainingPage.clickViewAllCoursesAndQualificationsLink()
-
-      // Then
-      Page.verifyOnPage(InPrisonCoursesAndQualificationsPage)
     })
   })
 })

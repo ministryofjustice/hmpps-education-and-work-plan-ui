@@ -33,8 +33,21 @@ export default class EducationAndTrainingPage extends Page {
     return this
   }
 
-  hasFunctionalSkillsDisplayed(): EducationAndTrainingPage {
+  hasFunctionalSkillWithAssessmentScoreDisplayed(
+    expectedType: 'ENGLISH' | 'MATHS' | 'DIGITAL_LITERACY',
+  ): EducationAndTrainingPage {
     this.functionalSkillsTable().should('be.visible')
+    this.functionalSkillRow(expectedType).should('be.visible')
+    this.noAssessmentScoreMessageForFunctionalSkill(expectedType).should('not.exist')
+    return this
+  }
+
+  hasFunctionalSkillWithNoAssessmentScoreMessageDisplayed(
+    expectedType: 'ENGLISH' | 'MATHS' | 'DIGITAL_LITERACY',
+  ): EducationAndTrainingPage {
+    this.functionalSkillsTable().should('be.visible')
+    this.functionalSkillRow(expectedType).should('be.visible')
+    this.noAssessmentScoreMessageForFunctionalSkill(expectedType).should('be.visible')
     return this
   }
 
@@ -43,25 +56,25 @@ export default class EducationAndTrainingPage extends Page {
     return this
   }
 
-  hasCompletedInPrisonQualificationsLast12MonthsDisplayed(): EducationAndTrainingPage {
-    this.completedInPrisonQualificationsLast12MonthsTable().should('be.visible')
-    this.completedQualificationCourseName().should('be.exist')
-    this.noCoursesAndQualificationsLast12MonthsMessage().should('not.exist')
+  hasCompletedCourseInLast12MonthsDisplayed(expectedCourseName: string): EducationAndTrainingPage {
+    this.completedInPrisonCoursesInLast12MonthsTable().should('be.visible')
+    this.completedCourseWithName(expectedCourseName).should('be.visible')
+    this.noCompletedCoursesInLast12MonthsMessage().should('not.exist')
     return this
   }
 
-  doesNotCompletedInPrisonQualificationsLast12MonthsDisplayed(): EducationAndTrainingPage {
-    this.completedInPrisonQualificationsLast12MonthsTable().should('not.exist')
+  doesNotHaveCompletedCoursesInLast12MonthsDisplayed(): EducationAndTrainingPage {
+    this.completedInPrisonCoursesInLast12MonthsTable().should('not.exist')
     return this
   }
 
   hasCuriousUnavailableMessageDisplayed(): EducationAndTrainingPage {
-    this.curiousUnavailableMessage().should('be.exist')
+    this.curiousUnavailableMessage().should('be.visible')
     return this
   }
 
   hasInductionUnavailableMessageDisplayed(): EducationAndTrainingPage {
-    this.inductionUnavailableMessage().should('be.exist')
+    this.inductionUnavailableMessage().should('be.visible')
     return this
   }
 
@@ -75,13 +88,13 @@ export default class EducationAndTrainingPage extends Page {
     return Page.verifyOnPage(FunctionalSkillsPage)
   }
 
-  coursesAndQualificationsLinkShouldExist(): EducationAndTrainingPage {
-    this.viewAllCoursesAndQualificationsLink().should('be.exist')
+  hasLinkToViewAllCourses(): EducationAndTrainingPage {
+    this.viewAllInPrisonCoursesLink().should('be.visible')
     return this
   }
 
-  clickViewAllCoursesAndQualificationsLink(): InPrisonCoursesAndQualificationsPage {
-    this.viewAllCoursesAndQualificationsLink().click()
+  clickViewAllCoursesLink(): InPrisonCoursesAndQualificationsPage {
+    this.viewAllInPrisonCoursesLink().click()
     return Page.verifyOnPage(InPrisonCoursesAndQualificationsPage)
   }
 
@@ -105,13 +118,13 @@ export default class EducationAndTrainingPage extends Page {
     return Page.verifyOnPage(QualificationsListPage)
   }
 
-  coursesAndQualificationsLinkShouldNotExist(): EducationAndTrainingPage {
-    this.viewAllCoursesAndQualificationsLink().should('not.exist')
+  doesNotHaveLinkToViewAllCourses(): EducationAndTrainingPage {
+    this.viewAllInPrisonCoursesLink().should('not.exist')
     return this
   }
 
-  hasNoCoursesAndQualificationsLast12MonthsMessageDisplayed(): EducationAndTrainingPage {
-    this.noCoursesAndQualificationsLast12MonthsMessage().should('be.exist')
+  hasNoCompletedCoursesInLast12MonthsDisplayed(): EducationAndTrainingPage {
+    this.noCompletedCoursesInLast12MonthsMessage().should('be.visible')
     return this
   }
 
@@ -119,8 +132,14 @@ export default class EducationAndTrainingPage extends Page {
 
   functionalSkillsTable = (): PageElement => cy.get('#latest-functional-skills-table')
 
-  completedInPrisonQualificationsLast12MonthsTable = (): PageElement =>
-    cy.get('#completed-in-prison-qualifications-last-12-months-table')
+  functionalSkillRow = (expectedType: 'ENGLISH' | 'MATHS' | 'DIGITAL_LITERACY'): PageElement =>
+    cy.get(`[data-qa=functional-skill-${expectedType}]`)
+
+  noAssessmentScoreMessageForFunctionalSkill = (expectedType: 'ENGLISH' | 'MATHS' | 'DIGITAL_LITERACY'): PageElement =>
+    cy.get(`[data-qa=no-assessment-score-for-functional-skill-for-${expectedType}]`)
+
+  completedInPrisonCoursesInLast12MonthsTable = (): PageElement =>
+    cy.get('#completed-in-prison-courses-in-last-12-months-table')
 
   curiousUnavailableMessage = (): PageElement => cy.get('[data-qa=curious-unavailable-message]')
 
@@ -135,7 +154,7 @@ export default class EducationAndTrainingPage extends Page {
 
   createInductionLink = (): PageElement => cy.get('[data-qa=link-to-create-induction]')
 
-  viewAllCoursesAndQualificationsLink = (): PageElement => cy.get('[data-qa=view-all-in-prison-qualifications-link')
+  viewAllInPrisonCoursesLink = (): PageElement => cy.get('[data-qa=view-all-in-prison-courses-link]')
 
   inPrisonTrainingChangeLink = (): PageElement => cy.get('[data-qa=in-prison-training-change-link]')
 
@@ -145,8 +164,9 @@ export default class EducationAndTrainingPage extends Page {
 
   educationalQualificationsChangeLink = (): PageElement => cy.get('[data-qa=educational-qualifications-change-link]')
 
-  noCoursesAndQualificationsLast12MonthsMessage = (): PageElement =>
-    cy.get('[data-qa=no-courses-or-qualifications-last-12-months-message]')
+  noCompletedCoursesInLast12MonthsMessage = (): PageElement =>
+    cy.get('[data-qa=no-completed-courses-in-last-12-months-message]')
 
-  completedQualificationCourseName = (): PageElement => cy.get('[data-qa=completed-qualification-course-name]')
+  completedCourseWithName = (expectedCourseName: string): PageElement =>
+    cy.get(`[data-qa=completed-course-name]:contains(${expectedCourseName})`)
 }

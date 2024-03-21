@@ -4,18 +4,21 @@ import type {
   LearnerNeurodivergence,
   LearnerProfile,
 } from 'curiousApiClient'
-import type { FunctionalSkills, InPrisonEducationRecords, PrisonerSupportNeeds } from 'viewModels'
+import type { FunctionalSkills, InPrisonCourse, InPrisonCourseRecords, PrisonerSupportNeeds } from 'viewModels'
 import { toPrisonerSupportNeeds } from '../routes/overview/mappers/prisonerSupportNeedsMapper'
 import CuriousClient from '../data/curiousClient'
 import { HmppsAuthClient } from '../data'
 import logger from '../../logger'
 import toFunctionalSkills from '../routes/overview/mappers/functionalSkillsMapper'
-import { toInPrisonEducation } from '../data/mappers/inPrisonEducationMapper'
+import { toInPrisonCourse } from '../data/mappers/inPrisonCourseMapper'
+import dateComparator from '../routes/dateComparator'
+import PrisonService from './prisonService'
 
 export default class CuriousService {
   constructor(
     private readonly hmppsAuthClient: HmppsAuthClient,
     private readonly curiousClient: CuriousClient,
+    private readonly prisonService: PrisonService,
   ) {}
 
   async getPrisonerSupportNeeds(prisonNumber: string, username: string): Promise<PrisonerSupportNeeds> {
@@ -45,13 +48,13 @@ export default class CuriousService {
   }
 
   /**
-   * Returns the specified prisoner's Education Records
+   * Returns the specified prisoner's In Prison Course Records
    *
    * The Curious `learnerEducation` API is a paged API. This function calls the API starting from page 0 until there are no
-   * more pages remaining. The cumulative array of Curious `LearnerEducation` records from all API calls are mapped into
-   * and an array of `InPrisonEducation` within the returned `InPrisonEducationRecords` object.
+   * more pages remaining. The cumulative array of Curious `LearnerEducation` records from all API calls are mapped and
+   * grouped into arrays of `InPrisonCourse` within the returned `InPrisonCourseRecords` object.
    */
-  async getLearnerEducation(prisonNumber: string, username: string): Promise<InPrisonEducationRecords> {
+  async getPrisonerInPrisonCourses(prisonNumber: string, username: string): Promise<InPrisonCourseRecords> {
     const systemToken = await this.hmppsAuthClient.getSystemClientToken(username)
 
     try {
@@ -67,18 +70,61 @@ export default class CuriousService {
         page += 1
       }
 
+      const allCourses = apiLearnerEducation
+        .map(learnerEducation => toInPrisonCourse(learnerEducation))
+        .sort((left: InPrisonCourse, right: InPrisonCourse) =>
+          dateComparator(left.courseCompletionDate, right.courseCompletionDate),
+        )
+      const allCoursesWithPrisonNamePopulated = await this.setPrisonNamesOnInPrisonCourses(allCourses, username)
+
+      const completedCourses = allCoursesWithPrisonNamePopulated.filter(
+        inPrisonCourse => inPrisonCourse.courseStatus === 'COMPLETED',
+      )
+      const inProgressCourses = allCoursesWithPrisonNamePopulated.filter(
+        inPrisonCourse => inPrisonCourse.courseStatus === 'IN_PROGRESS',
+      )
+      const withdrawnCourses = allCoursesWithPrisonNamePopulated.filter(
+        inPrisonCourse => inPrisonCourse.courseStatus === 'WITHDRAWN',
+      )
+      const temporarilyWithdrawnCourses = allCoursesWithPrisonNamePopulated.filter(
+        inPrisonCourse => inPrisonCourse.courseStatus === 'TEMPORARILY_WITHDRAWN',
+      )
+
+      const coursesCompletedInLast12Months = [...completedCourses].filter(inPrisonCourse => {
+        const twelveMonthsAgo = new Date()
+        twelveMonthsAgo.setMonth(twelveMonthsAgo.getMonth() - 12)
+        return inPrisonCourse.courseCompletionDate >= twelveMonthsAgo
+      })
+
       return {
         problemRetrievingData: false,
-        educationRecords: apiLearnerEducation.map(learnerEducation => toInPrisonEducation(learnerEducation)),
-      } as InPrisonEducationRecords
+        totalRecords: allCourses.length,
+        coursesByStatus: {
+          COMPLETED: completedCourses,
+          IN_PROGRESS: inProgressCourses,
+          WITHDRAWN: withdrawnCourses,
+          TEMPORARILY_WITHDRAWN: temporarilyWithdrawnCourses,
+        },
+        coursesCompletedInLast12Months,
+      }
     } catch (error) {
       if (error.status === 404) {
         logger.info(`No learner education data found for prisoner [${prisonNumber}] in Curious`)
-        return { problemRetrievingData: false, educationRecords: undefined } as InPrisonEducationRecords
+        return {
+          problemRetrievingData: false,
+          totalRecords: 0,
+          coursesByStatus: {
+            COMPLETED: [],
+            IN_PROGRESS: [],
+            WITHDRAWN: [],
+            TEMPORARILY_WITHDRAWN: [],
+          },
+          coursesCompletedInLast12Months: [],
+        }
       }
 
-      logger.error(`Error retrieving learner education data from Curious: ${JSON.stringify(error)}`)
-      return { problemRetrievingData: true, educationRecords: undefined } as InPrisonEducationRecords
+      logger.error('Error retrieving learner education data from Curious', error)
+      return { problemRetrievingData: true } as InPrisonCourseRecords
     }
   }
 
@@ -107,5 +153,20 @@ export default class CuriousService {
       }
       throw error
     }
+  }
+
+  private async setPrisonNamesOnInPrisonCourses(
+    inPrisonCourses: Array<InPrisonCourse>,
+    username: string,
+  ): Promise<Array<InPrisonCourse>> {
+    return Promise.all(
+      inPrisonCourses.map(async inPrisonCourse => {
+        const prison = await this.prisonService.lookupPrison(inPrisonCourse.prisonId, username)
+        return {
+          ...inPrisonCourse,
+          prisonName: prison?.prisonName,
+        }
+      }),
+    )
   }
 }

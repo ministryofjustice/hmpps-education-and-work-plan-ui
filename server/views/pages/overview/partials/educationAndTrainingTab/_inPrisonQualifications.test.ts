@@ -25,21 +25,28 @@ describe('Education and Training tab view - In Prison Qualifications', () => {
     viewContext = {
       prisonerSummary,
       tab: 'education-and-training',
-      completedInPrisonEducation: {
+      inPrisonCourses: {
         problemRetrievingData: false,
-        educationRecords: [
-          {
-            prisonId: 'WDI',
-            prisonName: 'WAKEFIELD (HMP)',
-            courseName: 'GCSE Maths',
-            courseCode: '246674',
-            courseStartDate: moment('2016-05-18').toDate(),
-            courseStatus: 'COMPLETED',
-            courseCompletionDate: moment('2016-07-15').toDate(),
-            grade: 'A*',
-            source: 'CURIOUS',
-          },
-        ],
+        totalRecords: 1,
+        coursesByStatus: {
+          WITHDRAWN: [],
+          TEMPORARILY_WITHDRAWN: [],
+          IN_PROGRESS: [],
+          COMPLETED: [
+            {
+              prisonId: 'WDI',
+              prisonName: 'WAKEFIELD (HMP)',
+              courseName: 'GCSE Maths',
+              courseCode: '246674',
+              courseStartDate: moment('2016-05-18').toDate(),
+              courseStatus: 'COMPLETED',
+              courseCompletionDate: moment('2016-07-15').toDate(),
+              grade: 'A*',
+              source: 'CURIOUS',
+            },
+          ],
+        },
+        coursesCompletedInLast12Months: [],
       },
     }
 
@@ -59,7 +66,7 @@ describe('Education and Training tab view - In Prison Qualifications', () => {
     viewContext = {
       prisonerSummary,
       tab: 'education-and-training',
-      completedInPrisonEducation: {
+      inPrisonCourses: {
         problemRetrievingData: true,
       },
     }
@@ -76,21 +83,28 @@ describe('Education and Training tab view - In Prison Qualifications', () => {
     viewContext = {
       prisonerSummary,
       tab: 'education-and-training',
-      completedInPrisonEducation: {
+      inPrisonCourses: {
         problemRetrievingData: false,
-        educationRecords: [
-          {
-            prisonId: 'WDI',
-            prisonName: 'WAKEFIELD (HMP)',
-            courseName: 'GCSE Maths',
-            courseCode: '246674',
-            courseStartDate: moment('2016-05-18').toDate(),
-            courseStatus: 'COMPLETED',
-            courseCompletionDate: moment('2016-07-15').toDate(),
-            grade: 'A*',
-            source: 'CURIOUS',
-          },
-        ],
+        totalRecords: 1,
+        coursesByStatus: {
+          WITHDRAWN: [],
+          TEMPORARILY_WITHDRAWN: [],
+          IN_PROGRESS: [],
+          COMPLETED: [
+            {
+              prisonId: 'WDI',
+              prisonName: 'WAKEFIELD (HMP)',
+              courseName: 'GCSE Maths',
+              courseCode: '246674',
+              courseStartDate: moment('2016-05-18').toDate(),
+              courseStatus: 'COMPLETED',
+              courseCompletionDate: moment('2016-07-15').toDate(),
+              grade: 'A*',
+              source: 'CURIOUS',
+            },
+          ],
+        },
+        coursesCompletedInLast12Months: [],
       },
     }
 
@@ -106,21 +120,28 @@ describe('Education and Training tab view - In Prison Qualifications', () => {
     viewContext = {
       prisonerSummary,
       tab: 'education-and-training',
-      completedInPrisonEducation: {
+      inPrisonCourses: {
         problemRetrievingData: false,
-        educationRecords: [
-          {
-            prisonId: 'WDI',
-            prisonName: 'WAKEFIELD (HMP)',
-            courseName: 'GCSE Maths',
-            courseCode: '246674',
-            courseStartDate: moment('2016-05-18').toDate(),
-            courseStatus: 'COMPLETED',
-            courseCompletionDate: moment('2016-07-15').toDate(),
-            grade: null,
-            source: 'CURIOUS',
-          },
-        ],
+        totalRecords: 1,
+        coursesByStatus: {
+          WITHDRAWN: [],
+          TEMPORARILY_WITHDRAWN: [],
+          IN_PROGRESS: [],
+          COMPLETED: [
+            {
+              prisonId: 'WDI',
+              prisonName: 'WAKEFIELD (HMP)',
+              courseName: 'GCSE Maths',
+              courseCode: '246674',
+              courseStartDate: moment('2016-05-18').toDate(),
+              courseStatus: 'COMPLETED',
+              courseCompletionDate: moment('2016-07-15').toDate(),
+              grade: null,
+              source: 'CURIOUS',
+            },
+          ],
+        },
+        coursesCompletedInLast12Months: [],
       },
     }
 
@@ -136,9 +157,16 @@ describe('Education and Training tab view - In Prison Qualifications', () => {
     viewContext = {
       prisonerSummary,
       tab: 'education-and-training',
-      completedInPrisonEducation: {
+      inPrisonCourses: {
         problemRetrievingData: false,
-        educationRecords: [],
+        totalRecords: 0,
+        coursesByStatus: {
+          WITHDRAWN: [],
+          TEMPORARILY_WITHDRAWN: [],
+          IN_PROGRESS: [],
+          COMPLETED: [],
+        },
+        coursesCompletedInLast12Months: [],
       },
     }
 

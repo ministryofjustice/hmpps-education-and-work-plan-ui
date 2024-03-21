@@ -317,7 +317,7 @@ const stubLearnerEducation = (prisonNumber = 'G6115VJ', page = 0): SuperAgentReq
     },
   })
 
-const stubLearnerEducationWithCoursesQualificationsCompletedInLast12Months = (
+const stubLearnerEducationWithCompletedCoursesInLast12Months = (
   prisonNumber = 'G6115VJ',
   page = 0,
 ): SuperAgentRequest =>
@@ -401,7 +401,7 @@ const stubLearnerEducationWithCoursesQualificationsCompletedInLast12Months = (
     },
   })
 
-const stubLearnerEducationWithCoursesCompletedInMoreThanLast12Months = (
+const stubLearnerEducationWithCompletedCoursesOlderThanLast12Months = (
   prisonNumber = 'G6115VJ',
   page = 0,
 ): SuperAgentRequest =>
@@ -485,7 +485,7 @@ const stubLearnerEducationWithCoursesCompletedInMoreThanLast12Months = (
     },
   })
 
-const stubLearnerEducationWithNoCoursesQualifications = (prisonNumber = 'G6115VJ', page = 0): SuperAgentRequest =>
+const stubLearnerEducationWithNoCourses = (prisonNumber = 'G6115VJ', page = 0): SuperAgentRequest =>
   stubFor({
     request: {
       method: 'GET',
@@ -576,9 +576,9 @@ export default {
 
   // Stubs for Learner Education API
   stubLearnerEducation,
-  stubLearnerEducationWithCoursesQualificationsCompletedInLast12Months,
-  stubLearnerEducationWithCoursesCompletedInMoreThanLast12Months,
-  stubLearnerEducationWithNoCoursesQualifications,
+  stubLearnerEducationWithCompletedCoursesInLast12Months,
+  stubLearnerEducationWithCompletedCoursesOlderThanLast12Months,
+  stubLearnerEducationWithNoCourses,
   stubLearnerEducation401Error,
   stubLearnerEducation404Error,
 }

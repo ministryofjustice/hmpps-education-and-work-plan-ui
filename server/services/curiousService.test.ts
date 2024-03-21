@@ -1,15 +1,17 @@
 import type { LearnerEductionPagedResponse } from 'curiousApiClient'
-import type { FunctionalSkills, Neurodiversity, InPrisonEducationRecords, PrisonerSupportNeeds } from 'viewModels'
+import type { FunctionalSkills, Neurodiversity, InPrisonCourseRecords, PrisonerSupportNeeds, Prison } from 'viewModels'
 import moment from 'moment'
 import { CuriousClient, HmppsAuthClient } from '../data'
 import CuriousService from './curiousService'
 import aValidLearnerProfile from '../testsupport/learnerProfileTestDataBuilder'
 import aValidLearnerNeurodivergence from '../testsupport/learnerNeurodivergenceTestDataBuilder'
 import {
+  learnerEducationPagedResponse,
   learnerEducationPagedResponsePage1Of1,
   learnerEducationPagedResponsePage1Of2,
   learnerEducationPagedResponsePage2Of2,
 } from '../testsupport/learnerEducationPagedResponseTestDataBuilder'
+import PrisonService from './prisonService'
 
 describe('curiousService', () => {
   const hmppsAuthClient = {
@@ -20,10 +22,14 @@ describe('curiousService', () => {
     getLearnerNeurodivergence: jest.fn(),
     getLearnerEducationPage: jest.fn(),
   }
+  const prisonService = {
+    lookupPrison: jest.fn(),
+  }
 
   const curiousService = new CuriousService(
     hmppsAuthClient as unknown as HmppsAuthClient,
     curiousClient as unknown as CuriousClient,
+    prisonService as unknown as PrisonService,
   )
 
   beforeEach(() => {
@@ -60,11 +66,11 @@ describe('curiousService', () => {
             prisonId: 'MDI',
             prisonName: 'MOORLAND (HMP & YOI)',
             supportNeeded: ['Writing support'],
-            supportNeededRecordedDate: moment('2022-02-18').toDate(),
+            supportNeededRecordedDate: moment('2022-02-18').utc().toDate(),
             selfDeclaredNeurodiversity: ['Dyslexia'],
-            selfDeclaredRecordedDate: moment('2022-02-18').toDate(),
+            selfDeclaredRecordedDate: moment('2022-02-18').utc().toDate(),
             assessedNeurodiversity: ['No Identified Neurodiversity Need'],
-            assessmentDate: moment('2022-05-18').toDate(),
+            assessmentDate: moment('2022-05-18').utc().toDate(),
           },
         ],
       }
@@ -171,11 +177,11 @@ describe('curiousService', () => {
             prisonId: 'MDI',
             prisonName: 'MOORLAND (HMP & YOI)',
             supportNeeded: ['Writing support'],
-            supportNeededRecordedDate: moment('2022-02-18').toDate(),
+            supportNeededRecordedDate: moment('2022-02-18').utc().toDate(),
             selfDeclaredNeurodiversity: ['Dyslexia'],
-            selfDeclaredRecordedDate: moment('2022-02-18').toDate(),
+            selfDeclaredRecordedDate: moment('2022-02-18').utc().toDate(),
             assessedNeurodiversity: ['No Identified Neurodiversity Need'],
-            assessmentDate: moment('2022-05-18').toDate(),
+            assessmentDate: moment('2022-05-18').utc().toDate(),
           } as Neurodiversity,
         ],
       } as PrisonerSupportNeeds
@@ -250,7 +256,7 @@ describe('curiousService', () => {
         problemRetrievingData: false,
         assessments: [
           {
-            assessmentDate: moment('2012-02-16').toDate(),
+            assessmentDate: moment('2012-02-16').utc().toDate(),
             grade: 'Level 1',
             prisonId: 'MDI',
             prisonName: 'MOORLAND (HMP & YOI)',
@@ -326,8 +332,20 @@ describe('curiousService', () => {
     })
   })
 
-  describe('getLearnerEducation', () => {
-    it('should get learner eduction given there is only 1 page of data in Curious for the prisoner', async () => {
+  describe('getPrisonerInPrisonCourses', () => {
+    const mockPrisonLookup = (prisonId: string): Prison => {
+      let prisonName: string
+      if (prisonId === 'MDI') {
+        prisonName = 'Moorland (HMP & YOI)'
+      } else if (prisonId === 'WDI') {
+        prisonName = 'Wakefield (HMP)'
+      } else {
+        return undefined
+      }
+      return { prisonId, prisonName }
+    }
+
+    it('should get In Prison Courses', async () => {
       // Given
       const prisonNumber = 'A1234BC'
       const username = 'a-dps-user'
@@ -335,48 +353,170 @@ describe('curiousService', () => {
       const systemToken = 'a-system-token'
       hmppsAuthClient.getSystemClientToken.mockResolvedValue(systemToken)
 
-      const learnerEducationPage1Of1: LearnerEductionPagedResponse = learnerEducationPagedResponsePage1Of1(prisonNumber)
+      prisonService.lookupPrison.mockImplementation(mockPrisonLookup)
+
+      const learnerEducationPage1Of1: LearnerEductionPagedResponse = learnerEducationPagedResponse(prisonNumber)
       curiousClient.getLearnerEducationPage.mockResolvedValue(learnerEducationPage1Of1)
 
-      const expected: InPrisonEducationRecords = {
+      const expected: InPrisonCourseRecords = {
         problemRetrievingData: false,
-        educationRecords: [
+        totalRecords: 5,
+        coursesByStatus: {
+          COMPLETED: [
+            {
+              courseCode: '008WOOD06',
+              courseCompletionDate: moment().startOf('day').subtract(3, 'months').utc().toDate(),
+              courseName: 'City & Guilds Wood Working',
+              courseStartDate: moment('2021-06-01').utc().toDate(),
+              courseStatus: 'COMPLETED',
+              grade: null,
+              isAccredited: false,
+              prisonId: 'MDI',
+              prisonName: 'Moorland (HMP & YOI)',
+              source: 'CURIOUS',
+            },
+            {
+              courseCode: '008ENGL06',
+              courseCompletionDate: moment('2021-12-13').utc().toDate(),
+              courseName: 'GCSE English',
+              courseStartDate: moment('2021-06-01').utc().toDate(),
+              courseStatus: 'COMPLETED',
+              grade: null,
+              isAccredited: false,
+              prisonId: 'MDI',
+              prisonName: 'Moorland (HMP & YOI)',
+              source: 'CURIOUS',
+            },
+          ],
+          IN_PROGRESS: [
+            {
+              courseCode: '008ENGL06',
+              courseName: 'GCSE English',
+              courseStartDate: moment('2021-06-01').utc().toDate(),
+              prisonId: 'MDI',
+              prisonName: 'Moorland (HMP & YOI)',
+              courseStatus: 'IN_PROGRESS',
+              courseCompletionDate: null,
+              isAccredited: false,
+              grade: null,
+              source: 'CURIOUS',
+            },
+          ],
+          WITHDRAWN: [
+            {
+              courseCode: '246674',
+              courseName: 'GCSE Maths',
+              courseStartDate: moment('2016-05-18').utc().toDate(),
+              prisonId: 'WDI',
+              prisonName: 'Wakefield (HMP)',
+              courseStatus: 'WITHDRAWN',
+              courseCompletionDate: moment('2016-07-15').utc().toDate(),
+              isAccredited: true,
+              grade: 'No achievement',
+              source: 'CURIOUS',
+            },
+          ],
+          TEMPORARILY_WITHDRAWN: [
+            {
+              courseCode: '246674',
+              courseCompletionDate: moment('2016-07-15').utc().toDate(),
+              courseName: 'GCSE Maths',
+              courseStartDate: moment('2016-05-18').utc().toDate(),
+              courseStatus: 'TEMPORARILY_WITHDRAWN',
+              grade: 'No achievement',
+              isAccredited: true,
+              prisonId: 'WDI',
+              prisonName: 'Wakefield (HMP)',
+              source: 'CURIOUS',
+            },
+          ],
+        },
+        coursesCompletedInLast12Months: [
           {
-            courseCode: '008ENGL06',
-            courseName: 'GCSE English',
-            courseStartDate: moment('2021-06-01').toDate(),
-            prisonId: 'MDI',
-            prisonName: 'MOORLAND (HMP & YOI)',
-            courseStatus: 'IN_PROGRESS',
-            courseCompletionDate: null,
-            isAccredited: false,
+            courseCode: '008WOOD06',
+            courseCompletionDate: moment().startOf('day').subtract(3, 'months').utc().toDate(),
+            courseName: 'City & Guilds Wood Working',
+            courseStartDate: moment('2021-06-01').utc().toDate(),
+            courseStatus: 'COMPLETED',
             grade: null,
-            source: 'CURIOUS',
-          },
-          {
-            courseCode: '246674',
-            courseName: 'GCSE Maths',
-            courseStartDate: moment('2016-05-18').toDate(),
-            prisonId: 'WDI',
-            prisonName: 'WAKEFIELD (HMP)',
-            courseStatus: 'WITHDRAWN',
-            courseCompletionDate: moment('2016-07-15').toDate(),
-            isAccredited: true,
-            grade: 'No achievement',
+            isAccredited: false,
+            prisonId: 'MDI',
+            prisonName: 'Moorland (HMP & YOI)',
             source: 'CURIOUS',
           },
         ],
       }
 
       // When
-      const actual = await curiousService.getLearnerEducation(prisonNumber, username)
+      const actual = await curiousService.getPrisonerInPrisonCourses(prisonNumber, username)
+
+      // Then
+      expect(actual).toEqual(expected)
+      expect(curiousClient.getLearnerEducationPage).toHaveBeenCalledWith(prisonNumber, systemToken, 0)
+      expect(prisonService.lookupPrison).toHaveBeenCalledWith('MDI', username)
+      expect(prisonService.lookupPrison).toHaveBeenCalledWith('WDI', username)
+    })
+
+    it('should get In Prison Courses given there is only 1 page of data in Curious for the prisoner', async () => {
+      // Given
+      const prisonNumber = 'A1234BC'
+      const username = 'a-dps-user'
+
+      const systemToken = 'a-system-token'
+      hmppsAuthClient.getSystemClientToken.mockResolvedValue(systemToken)
+
+      prisonService.lookupPrison.mockImplementation(mockPrisonLookup)
+
+      const learnerEducationPage1Of1: LearnerEductionPagedResponse = learnerEducationPagedResponsePage1Of1(prisonNumber)
+      curiousClient.getLearnerEducationPage.mockResolvedValue(learnerEducationPage1Of1)
+
+      const expected: InPrisonCourseRecords = {
+        problemRetrievingData: false,
+        totalRecords: 2,
+        coursesByStatus: {
+          COMPLETED: [],
+          IN_PROGRESS: [
+            {
+              courseCode: '008ENGL06',
+              courseName: 'GCSE English',
+              courseStartDate: moment('2021-06-01').utc().toDate(),
+              prisonId: 'MDI',
+              prisonName: 'Moorland (HMP & YOI)',
+              courseStatus: 'IN_PROGRESS',
+              courseCompletionDate: null,
+              isAccredited: false,
+              grade: null,
+              source: 'CURIOUS',
+            },
+          ],
+          WITHDRAWN: [
+            {
+              courseCode: '246674',
+              courseName: 'GCSE Maths',
+              courseStartDate: moment('2016-05-18').utc().toDate(),
+              prisonId: 'WDI',
+              prisonName: 'Wakefield (HMP)',
+              courseStatus: 'WITHDRAWN',
+              courseCompletionDate: moment('2016-07-15').utc().toDate(),
+              isAccredited: true,
+              grade: 'No achievement',
+              source: 'CURIOUS',
+            },
+          ],
+          TEMPORARILY_WITHDRAWN: [],
+        },
+        coursesCompletedInLast12Months: [],
+      }
+
+      // When
+      const actual = await curiousService.getPrisonerInPrisonCourses(prisonNumber, username)
 
       // Then
       expect(actual).toEqual(expected)
       expect(curiousClient.getLearnerEducationPage).toHaveBeenCalledWith(prisonNumber, systemToken, 0)
     })
 
-    it('should get learner eduction given there are 2 pages of data in Curious for the prisoner', async () => {
+    it('should get In Prison Courses given there are 2 pages of data in Curious for the prisoner', async () => {
       // Given
       const prisonNumber = 'A1234BC'
       const username = 'a-dps-user'
@@ -384,55 +524,65 @@ describe('curiousService', () => {
       const systemToken = 'a-system-token'
       hmppsAuthClient.getSystemClientToken.mockResolvedValue(systemToken)
 
+      prisonService.lookupPrison.mockImplementation(mockPrisonLookup)
+
       const learnerEducationPage1Of2: LearnerEductionPagedResponse = learnerEducationPagedResponsePage1Of2(prisonNumber)
       curiousClient.getLearnerEducationPage.mockResolvedValueOnce(learnerEducationPage1Of2)
       const learnerEducationPage2Of2: LearnerEductionPagedResponse = learnerEducationPagedResponsePage2Of2(prisonNumber)
       curiousClient.getLearnerEducationPage.mockResolvedValueOnce(learnerEducationPage2Of2)
 
-      const expected: InPrisonEducationRecords = {
+      const expected: InPrisonCourseRecords = {
         problemRetrievingData: false,
-        educationRecords: [
-          {
-            courseCode: '008ENGL06',
-            courseName: 'GCSE English',
-            courseStartDate: moment('2021-06-01').toDate(),
-            prisonId: 'MDI',
-            prisonName: 'MOORLAND (HMP & YOI)',
-            courseStatus: 'IN_PROGRESS',
-            courseCompletionDate: null,
-            isAccredited: false,
-            grade: null,
-            source: 'CURIOUS',
-          },
-          {
-            courseCode: '246674',
-            courseName: 'GCSE Maths',
-            courseStartDate: moment('2016-05-18').toDate(),
-            prisonId: 'WDI',
-            prisonName: 'WAKEFIELD (HMP)',
-            courseStatus: 'WITHDRAWN',
-            courseCompletionDate: moment('2016-07-15').toDate(),
-            isAccredited: true,
-            grade: 'No achievement',
-            source: 'CURIOUS',
-          },
-          {
-            courseCode: '008WOOD06',
-            courseName: 'City & Guilds Wood Working',
-            courseStartDate: moment('2021-06-01').toDate(),
-            prisonId: 'MDI',
-            prisonName: 'MOORLAND (HMP & YOI)',
-            courseStatus: 'IN_PROGRESS',
-            courseCompletionDate: null,
-            isAccredited: false,
-            grade: null,
-            source: 'CURIOUS',
-          },
-        ],
+        totalRecords: 3,
+        coursesByStatus: {
+          COMPLETED: [],
+          IN_PROGRESS: [
+            {
+              courseCode: '008ENGL06',
+              courseName: 'GCSE English',
+              courseStartDate: moment('2021-06-01').utc().toDate(),
+              prisonId: 'MDI',
+              prisonName: 'Moorland (HMP & YOI)',
+              courseStatus: 'IN_PROGRESS',
+              courseCompletionDate: null,
+              isAccredited: false,
+              grade: null,
+              source: 'CURIOUS',
+            },
+            {
+              courseCode: '008WOOD06',
+              courseName: 'City & Guilds Wood Working',
+              courseStartDate: moment('2021-06-01').utc().toDate(),
+              prisonId: 'MDI',
+              prisonName: 'Moorland (HMP & YOI)',
+              courseStatus: 'IN_PROGRESS',
+              courseCompletionDate: null,
+              isAccredited: false,
+              grade: null,
+              source: 'CURIOUS',
+            },
+          ],
+          WITHDRAWN: [
+            {
+              courseCode: '246674',
+              courseName: 'GCSE Maths',
+              courseStartDate: moment('2016-05-18').utc().toDate(),
+              prisonId: 'WDI',
+              prisonName: 'Wakefield (HMP)',
+              courseStatus: 'WITHDRAWN',
+              courseCompletionDate: moment('2016-07-15').utc().toDate(),
+              isAccredited: true,
+              grade: 'No achievement',
+              source: 'CURIOUS',
+            },
+          ],
+          TEMPORARILY_WITHDRAWN: [],
+        },
+        coursesCompletedInLast12Months: [],
       }
 
       // When
-      const actual = await curiousService.getLearnerEducation(prisonNumber, username)
+      const actual = await curiousService.getPrisonerInPrisonCourses(prisonNumber, username)
 
       // Then
       expect(actual).toEqual(expected)
@@ -440,7 +590,7 @@ describe('curiousService', () => {
       expect(curiousClient.getLearnerEducationPage).toHaveBeenCalledWith(prisonNumber, systemToken, 1)
     })
 
-    it('should not get learner education given the curious API request for page 1 returns an error response', async () => {
+    it('should not get In Prison Courses given the curious API request for page 1 returns an error response', async () => {
       // Given
       const prisonNumber = 'A1234BC'
       const username = 'a-dps-user'
@@ -455,20 +605,20 @@ describe('curiousService', () => {
       }
       curiousClient.getLearnerEducationPage.mockRejectedValue(curiousApiError)
 
-      const expected: InPrisonEducationRecords = {
+      const expected = {
         problemRetrievingData: true,
-        educationRecords: undefined,
-      }
+      } as InPrisonCourseRecords
 
       // When
-      const actual = await curiousService.getLearnerEducation(prisonNumber, username)
+      const actual = await curiousService.getPrisonerInPrisonCourses(prisonNumber, username)
 
       // Then
       expect(actual).toEqual(expected)
       expect(curiousClient.getLearnerEducationPage).toHaveBeenCalledWith(prisonNumber, systemToken, 0)
+      expect(prisonService.lookupPrison).not.toHaveBeenCalled()
     })
 
-    it('should not get learner education given the Curious API request for page 2 returns an error response', async () => {
+    it('should not get In Prison Courses given the Curious API request for page 2 returns an error response', async () => {
       // Given
       const prisonNumber = 'A1234BC'
       const username = 'a-dps-user'
@@ -486,21 +636,21 @@ describe('curiousService', () => {
       }
       curiousClient.getLearnerEducationPage.mockRejectedValueOnce(curiousApiError)
 
-      const expected: InPrisonEducationRecords = {
+      const expected = {
         problemRetrievingData: true,
-        educationRecords: undefined,
-      }
+      } as InPrisonCourseRecords
 
       // When
-      const actual = await curiousService.getLearnerEducation(prisonNumber, username)
+      const actual = await curiousService.getPrisonerInPrisonCourses(prisonNumber, username)
 
       // Then
       expect(actual).toEqual(expected)
       expect(curiousClient.getLearnerEducationPage).toHaveBeenCalledWith(prisonNumber, systemToken, 0)
       expect(curiousClient.getLearnerEducationPage).toHaveBeenCalledWith(prisonNumber, systemToken, 1)
+      expect(prisonService.lookupPrison).not.toHaveBeenCalled()
     })
 
-    it('should handle retrieval of learner education given Curious returns not found error for the learner education', async () => {
+    it('should handle retrieval of In Prison Courses given Curious returns not found error for the learner education', async () => {
       // Given
       const prisonNumber = 'A1234BC'
       const username = 'a-dps-user'
@@ -515,17 +665,25 @@ describe('curiousService', () => {
       }
       curiousClient.getLearnerEducationPage.mockRejectedValue(curiousApi404Error)
 
-      const expected: InPrisonEducationRecords = {
+      const expected: InPrisonCourseRecords = {
         problemRetrievingData: false,
-        educationRecords: undefined,
+        totalRecords: 0,
+        coursesByStatus: {
+          COMPLETED: [],
+          IN_PROGRESS: [],
+          WITHDRAWN: [],
+          TEMPORARILY_WITHDRAWN: [],
+        },
+        coursesCompletedInLast12Months: [],
       }
 
       // When
-      const actual = await curiousService.getLearnerEducation(prisonNumber, username)
+      const actual = await curiousService.getPrisonerInPrisonCourses(prisonNumber, username)
 
       // Then
       expect(actual).toEqual(expected)
       expect(curiousClient.getLearnerEducationPage).toHaveBeenCalledWith(prisonNumber, systemToken, 0)
+      expect(prisonService.lookupPrison).not.toHaveBeenCalled()
     })
   })
 })
