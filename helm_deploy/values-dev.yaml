@@ -17,7 +17,7 @@ generic-service:
       SecRuleUpdateTargetById 942440 "!ARGS:_csrf"
       # Disable OWASP rule 942230 (SQL injection attempt) as the regex is too strict and prevents sentences containing `case`, `like`, `having` or `if` in them
       SecRuleRemoveById 942230
-      SecRuleUpdateTargetById 921110 "setvar:'tx.anomaly_score_pl1=+5'"
+      SecRuleUpdateActionById 921110 "setvar:'tx.anomaly_score_pl1=+5'"
 
   scheduledDowntime:
     enabled: true
