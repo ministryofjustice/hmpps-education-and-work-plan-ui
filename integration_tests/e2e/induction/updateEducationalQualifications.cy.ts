@@ -53,7 +53,9 @@ context('Update educational qualifications within an Induction', () => {
     // Given
     const prisonNumber = 'G6115VJ'
     cy.visit(`/prisoners/${prisonNumber}/induction/qualifications`)
-    const qualificationsListPage = Page.verifyOnPage(QualificationsListPage)
+    const qualificationsListPage = Page.verifyOnPage(QualificationsListPage) //
+      .hasBackLinkTo(`/plan/G6115VJ/view/education-and-training`)
+      .backLinkHasAriaLabel(`Back to Daniel Craig's learning and work progress`)
 
     /* Long question set induction has highest level of education of UNDERGRADUATE_DEGREE_AT_UNIVERSITY
        with the following qualifications:
@@ -142,7 +144,9 @@ context('Update educational qualifications within an Induction', () => {
       // Given
       const prisonNumber = 'G6115VJ'
       cy.visit(`/prisoners/${prisonNumber}/induction/qualifications`)
-      const qualificationsListPage = Page.verifyOnPage(QualificationsListPage)
+      const qualificationsListPage = Page.verifyOnPage(QualificationsListPage) //
+        .hasBackLinkTo(`/plan/G6115VJ/view/education-and-training`)
+        .backLinkHasAriaLabel(`Back to Daniel Craig's learning and work progress`)
 
       /* Long question set induction has highest level of education of UNDERGRADUATE_DEGREE_AT_UNIVERSITY
          with the following qualifications:
