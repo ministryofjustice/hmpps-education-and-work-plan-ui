@@ -29,7 +29,6 @@ describe('overviewController', () => {
   const curiousService = {
     getPrisonerSupportNeeds: jest.fn(),
     getPrisonerFunctionalSkills: jest.fn(),
-    getPrisonerInPrisonCourses: jest.fn(),
   }
   const educationAndWorkPlanService = {
     getActionPlan: jest.fn(),
@@ -64,6 +63,7 @@ describe('overviewController', () => {
   const res = {
     redirect: jest.fn(),
     render: jest.fn(),
+    locals: {} as Record<string, unknown>,
   }
   const next = jest.fn()
 
@@ -73,6 +73,7 @@ describe('overviewController', () => {
     req.body = {}
     req.user = {} as Express.User
     req.params = {} as Record<string, string>
+    res.locals = {} as Record<string, unknown>
   })
 
   describe('getOverviewView', () => {
@@ -125,7 +126,7 @@ describe('overviewController', () => {
         },
         coursesCompletedInLast12Months: [],
       }
-      curiousService.getPrisonerInPrisonCourses.mockResolvedValue(inPrisonCourses)
+      res.locals.curiousInPrisonCourses = inPrisonCourses
 
       const expectedPrisonerSummary = aValidPrisonerSummary(prisonNumber)
       const expectedView = {
@@ -202,7 +203,7 @@ describe('overviewController', () => {
         },
         coursesCompletedInLast12Months: [],
       }
-      curiousService.getPrisonerInPrisonCourses.mockResolvedValue(inPrisonCourses)
+      res.locals.curiousInPrisonCourses = inPrisonCourses
 
       const expectedPrisonerSummary = aValidPrisonerSummary(prisonNumber)
       const expectedView = {
@@ -263,7 +264,6 @@ describe('overviewController', () => {
       expect(res.render).not.toHaveBeenCalled()
       expect(inductionService.inductionExists).toHaveBeenCalledWith(prisonNumber, 'a-user-token')
       expect(educationAndWorkPlanService.getActionPlan).not.toHaveBeenCalled()
-      expect(curiousService.getPrisonerInPrisonCourses).not.toHaveBeenCalled()
       expect(curiousService.getPrisonerFunctionalSkills).not.toHaveBeenCalled()
       expect(req.session.newGoal).toBeUndefined()
       expect(req.session.newGoals).toBeUndefined()
@@ -366,7 +366,7 @@ describe('overviewController', () => {
         },
         coursesCompletedInLast12Months: [aValidEnglishInPrisonCourseCompletedWithinLast12Months()],
       }
-      curiousService.getPrisonerInPrisonCourses.mockResolvedValue(inPrisonCourses)
+      res.locals.curiousInPrisonCourses = inPrisonCourses
 
       const expectedEducationAndTraining = aValidShortQuestionSetEducationAndTraining()
       inductionService.getEducationAndTraining.mockResolvedValue(expectedEducationAndTraining)
