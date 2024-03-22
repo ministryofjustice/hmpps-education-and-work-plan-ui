@@ -1,10 +1,10 @@
 import moment from 'moment'
-import type { InPrisonEducation } from 'viewModels'
+import type { InPrisonCourse } from 'viewModels'
 
-const aValidEnglishInPrisonEducation = (): InPrisonEducation => {
+const aValidEnglishInPrisonCourse = (): InPrisonCourse => {
   return {
     prisonId: 'MDI',
-    prisonName: 'MOORLAND (HMP & YOI)',
+    prisonName: 'Moorland (HMP & YOI)',
     courseName: 'GCSE English',
     courseCode: '008ENGL06',
     courseStartDate: moment('2021-06-01').toDate(),
@@ -16,10 +16,10 @@ const aValidEnglishInPrisonEducation = (): InPrisonEducation => {
   }
 }
 
-const aValidMathsInPrisonEducation = (): InPrisonEducation => {
+const aValidMathsInPrisonCourse = (): InPrisonCourse => {
   return {
     prisonId: 'WDI',
-    prisonName: 'WAKEFIELD (HMP)',
+    prisonName: 'Wakefield (HMP)',
     courseName: 'GCSE Maths',
     courseCode: '246674',
     courseStartDate: moment('2016-05-18').toDate(),
@@ -31,10 +31,10 @@ const aValidMathsInPrisonEducation = (): InPrisonEducation => {
   }
 }
 
-const aValidWoodWorkingInPrisonEducation = (): InPrisonEducation => {
+const aValidWoodWorkingInPrisonCourse = (): InPrisonCourse => {
   return {
     prisonId: 'MDI',
-    prisonName: 'MOORLAND (HMP & YOI)',
+    prisonName: 'Moorland (HMP & YOI)',
     courseName: 'City & Guilds Wood Working',
     courseCode: '008WOOD06',
     courseStartDate: moment('2021-06-01').toDate(),
@@ -46,7 +46,7 @@ const aValidWoodWorkingInPrisonEducation = (): InPrisonEducation => {
   }
 }
 
-const aValidEnglishInPrisonEducationCompletedWithinLast12Months = (): InPrisonEducation => {
+const aValidEnglishInPrisonCourseCompletedWithinLast12Months = (): InPrisonCourse => {
   return {
     prisonId: 'MDI',
     prisonName: 'Moorland (HMP & YOI)',
@@ -62,8 +62,8 @@ const aValidEnglishInPrisonEducationCompletedWithinLast12Months = (): InPrisonEd
 }
 
 export {
-  aValidEnglishInPrisonEducation,
-  aValidMathsInPrisonEducation,
-  aValidWoodWorkingInPrisonEducation,
-  aValidEnglishInPrisonEducationCompletedWithinLast12Months,
+  aValidEnglishInPrisonCourse,
+  aValidMathsInPrisonCourse,
+  aValidWoodWorkingInPrisonCourse,
+  aValidEnglishInPrisonCourseCompletedWithinLast12Months,
 }

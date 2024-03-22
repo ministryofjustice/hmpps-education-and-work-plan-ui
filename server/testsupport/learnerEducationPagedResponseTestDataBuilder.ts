@@ -1,9 +1,56 @@
 import type { LearnerEductionPagedResponse } from 'curiousApiClient'
+import moment from 'moment'
 import {
   aValidEnglishLearnerEducation,
   aValidMathsLearnerEducation,
   aValidWoodWorkingLearnerEducation,
 } from './learnerEducationTestDataBuilder'
+
+const learnerEducationPagedResponse = (prisonNumber = 'A1234BC'): LearnerEductionPagedResponse => {
+  const completedEnglishCourse = aValidEnglishLearnerEducation(prisonNumber)
+  completedEnglishCourse.completionStatus =
+    'The learner has completed the learning activities leading to the learning aim'
+  completedEnglishCourse.learningActualEndDate = '2021-12-13'
+  const completedWoodworkCourseInLast12Months = aValidWoodWorkingLearnerEducation(prisonNumber)
+  completedWoodworkCourseInLast12Months.completionStatus =
+    'The learner has completed the learning activities leading to the learning aim'
+  completedWoodworkCourseInLast12Months.learningActualEndDate = moment()
+    .subtract(3, 'months')
+    .utc()
+    .format('YYYY-MM-DD')
+  const inProgressEnglishCourse = aValidEnglishLearnerEducation(prisonNumber)
+  const withdrawnMathsCourse = aValidMathsLearnerEducation(prisonNumber)
+  const temporarilyWithdrawnMathsCourse = aValidMathsLearnerEducation(prisonNumber)
+  temporarilyWithdrawnMathsCourse.completionStatus =
+    'Learner has temporarily withdrawn from the aim due to an agreed break in learning'
+
+  return {
+    content: [
+      inProgressEnglishCourse,
+      withdrawnMathsCourse,
+      completedEnglishCourse,
+      completedWoodworkCourseInLast12Months,
+      temporarilyWithdrawnMathsCourse,
+    ],
+    empty: false,
+    first: true,
+    last: true,
+    number: 0,
+    numberOfElements: 5,
+    pageable: {
+      sort: [],
+      pageNumber: 0,
+      pageSize: 10,
+      offset: 0,
+      unpaged: false,
+      paged: true,
+    },
+    size: 10,
+    sort: [],
+    totalElements: 5,
+    totalPages: 1,
+  }
+}
 
 const learnerEducationPagedResponsePage1Of1 = (prisonNumber = 'A1234BC'): LearnerEductionPagedResponse => {
   return {
@@ -75,6 +122,7 @@ const learnerEducationPagedResponsePage2Of2 = (prisonNumber = 'A1234BC'): Learne
 }
 
 export {
+  learnerEducationPagedResponse,
   learnerEducationPagedResponsePage1Of1,
   learnerEducationPagedResponsePage1Of2,
   learnerEducationPagedResponsePage2Of2,

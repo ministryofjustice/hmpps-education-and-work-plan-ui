@@ -91,17 +91,20 @@ declare module 'viewModels' {
   }
 
   /**
-   * A prisoner's record of In-Prison courses and education, which is made up of a collection of InPrisonEducation.
+   * A prisoner's record of In-Prison courses, which is made up of collections of [InPrisonCourse].
    */
-  export interface InPrisonEducationRecords {
+  export interface InPrisonCourseRecords {
     problemRetrievingData: boolean
-    educationRecords: Array<InPrisonEducation>
+    totalRecords: number
+    coursesByStatus: Record<'COMPLETED' | 'IN_PROGRESS' | 'WITHDRAWN' | 'TEMPORARILY_WITHDRAWN', Array<InPrisonCourse>>
+    coursesCompletedInLast12Months: Array<InPrisonCourse>
+    prisonNumber: string
   }
 
   /**
-   * An 'In-Prison' education record.
+   * An 'In-Prison' course record.
    */
-  export interface InPrisonEducation {
+  export interface InPrisonCourse {
     prisonId: string
     prisonName: string
     courseName: string

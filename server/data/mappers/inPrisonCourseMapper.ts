@@ -1,17 +1,17 @@
 import moment from 'moment'
 import type { LearnerEducation } from 'curiousApiClient'
-import type { InPrisonEducation } from 'viewModels'
+import type { InPrisonCourse } from 'viewModels'
 
-const toInPrisonEducation = (apiLearnerEducation: LearnerEducation): InPrisonEducation => {
+const toInPrisonCourse = (apiLearnerEducation: LearnerEducation): InPrisonCourse => {
   return {
     prisonId: apiLearnerEducation.establishmentId,
     prisonName: apiLearnerEducation.establishmentName,
     courseCode: apiLearnerEducation.courseCode,
     courseName: apiLearnerEducation.courseName,
-    courseStartDate: moment(apiLearnerEducation.learningStartDate).toDate(),
+    courseStartDate: moment(apiLearnerEducation.learningStartDate).utc().toDate(),
     courseStatus: toCourseStatus(apiLearnerEducation.completionStatus),
     courseCompletionDate: apiLearnerEducation.learningActualEndDate
-      ? moment(apiLearnerEducation.learningActualEndDate).toDate()
+      ? moment(apiLearnerEducation.learningActualEndDate).utc().toDate()
       : null,
     isAccredited: apiLearnerEducation.isAccredited,
     grade: apiLearnerEducation.outcomeGrade || apiLearnerEducation.outcome || null,
@@ -55,4 +55,4 @@ const toCourseStatus = (
   return 'IN_PROGRESS'
 }
 
-export { toInPrisonEducation, toCourseStatus }
+export { toInPrisonCourse, toCourseStatus }

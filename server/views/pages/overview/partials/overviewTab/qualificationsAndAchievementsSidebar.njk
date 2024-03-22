@@ -4,7 +4,7 @@
   </div>
   <div class="govuk-summary-card__content">
     
-    {% if not completedInPrisonEducation.problemRetrievingData %}
+    {% if not inPrisonCourses.problemRetrievingData %}
       <table class="govuk-table govuk-!-margin-bottom-0" id="qualifications-achievements-sidebar-table">
         <caption class="govuk-table__caption govuk-visually-hidden">Latest qualifications and achievements information</caption>
         <thead class="govuk-table__head govuk-visually-hidden">
@@ -13,8 +13,8 @@
           </tr>
         </thead>
         <tbody class="govuk-table__body">
-          {% if completedInPrisonEducation.educationRecords.length > 0 %}
-            {% for completedQualification in completedInPrisonEducation.educationRecords %}
+          {% if inPrisonCourses.coursesByStatus['COMPLETED'].length > 0 %}
+            {% for completedQualification in inPrisonCourses.coursesByStatus['COMPLETED'].splice(0, 2) %}
               <tr class="govuk-table__row">
                 <th scope="row" class="govuk-table__header">
                   {{ completedQualification.courseName }}
@@ -36,7 +36,7 @@
         <a class="govuk-link" href="./education-and-training" data-qa="view-all-qualifications-achievements-button">View all <span class="govuk-visually-hidden">qualifications and achievements</span></a>
       </p>
     {% else %}
-      <h3 class="govuk-heading-s" data-qa="qualifications-achievements-sidebar-error-heading">We cannot show these details from Curious right now</h2>
+      <h3 class="govuk-heading-s" data-qa="qualifications-achievements-sidebar-error-heading">We cannot show these details from Curious right now</h3>
       <p class="govuk-body">Reload the page or try again later. Other parts of this service may still be available.</p>
     {% endif %}
   </div>

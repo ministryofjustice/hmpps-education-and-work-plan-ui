@@ -28,7 +28,7 @@
 
             <tbody class="govuk-table__body">
             {% for assessment in functionalSkills.assessments %}
-              <tr class="govuk-table__row">
+              <tr class="govuk-table__row" data-qa="functional-skill-{{ assessment.type }}">
                 <td class="govuk-table__cell">{{ assessment.type | formatFunctionalSkillType }}</td>
                 {% if assessment.assessmentDate and assessment.grade %}
                   <td class="govuk-table__cell">{{ assessment.assessmentDate | formatDate('D MMMM YYYY') }}</td>
@@ -36,7 +36,7 @@
                   <td class="govuk-table__cell">Induction</td>
                   <td class="govuk-table__cell"><span class="govuk-hint">Curious</span></td>
                 {% else %}
-                  <td class="govuk-table__cell" colspan="4">No functional skill assessment scores recorded in Curious</td>
+                  <td class="govuk-table__cell" colspan="4" data-qa="no-assessment-score-for-functional-skill-for-{{ assessment.type }}">No functional skill assessment scores recorded in Curious</td>
                 {% endif %}
               </tr>
             {% endfor %}

@@ -1,6 +1,6 @@
 import createError from 'http-errors'
 import moment from 'moment'
-import type { FunctionalSkills, InPrisonEducationRecords, Timeline, WorkAndInterests } from 'viewModels'
+import type { FunctionalSkills, InPrisonCourseRecords, Timeline, WorkAndInterests } from 'viewModels'
 import { SessionData } from 'express-session'
 import { NextFunction, Request, Response } from 'express'
 import OverviewController from './overviewController'
@@ -9,10 +9,10 @@ import { CuriousService, InductionService } from '../../services'
 import EducationAndWorkPlanService from '../../services/educationAndWorkPlanService'
 import { aValidActionPlan, aValidActionPlanWithOneGoal } from '../../testsupport/actionPlanTestDataBuilder'
 import {
-  aValidEnglishInPrisonEducation,
-  aValidMathsInPrisonEducation,
-  aValidEnglishInPrisonEducationCompletedWithinLast12Months,
-} from '../../testsupport/inPrisonEducationTestDataBuilder'
+  aValidEnglishInPrisonCourse,
+  aValidMathsInPrisonCourse,
+  aValidEnglishInPrisonCourseCompletedWithinLast12Months,
+} from '../../testsupport/inPrisonCourseTestDataBuilder'
 import aValidLongQuestionSetWorkAndInterests from '../../testsupport/workAndInterestsTestDataBuilder'
 import aValidPrisonerSummary from '../../testsupport/prisonerSummaryTestDataBuilder'
 import { aValidShortQuestionSetEducationAndTraining } from '../../testsupport/educationAndTrainingTestDataBuilder'
@@ -29,7 +29,7 @@ describe('overviewController', () => {
   const curiousService = {
     getPrisonerSupportNeeds: jest.fn(),
     getPrisonerFunctionalSkills: jest.fn(),
-    getLearnerEducation: jest.fn(),
+    getPrisonerInPrisonCourses: jest.fn(),
   }
   const educationAndWorkPlanService = {
     getActionPlan: jest.fn(),
@@ -113,16 +113,19 @@ describe('overviewController', () => {
         ],
       } as FunctionalSkills
 
-      const inPrisonEducation: InPrisonEducationRecords = {
+      const inPrisonCourses: InPrisonCourseRecords = {
         problemRetrievingData: false,
-        educationRecords: [aValidEnglishInPrisonEducation(), aValidMathsInPrisonEducation()],
+        prisonNumber,
+        totalRecords: 2,
+        coursesByStatus: {
+          COMPLETED: [aValidMathsInPrisonCourse()],
+          IN_PROGRESS: [aValidEnglishInPrisonCourse()],
+          WITHDRAWN: [],
+          TEMPORARILY_WITHDRAWN: [],
+        },
+        coursesCompletedInLast12Months: [],
       }
-      curiousService.getLearnerEducation.mockResolvedValue(inPrisonEducation)
-
-      const expectedCompletedInPrisonEducation: InPrisonEducationRecords = {
-        problemRetrievingData: false,
-        educationRecords: [aValidMathsInPrisonEducation()],
-      }
+      curiousService.getPrisonerInPrisonCourses.mockResolvedValue(inPrisonCourses)
 
       const expectedPrisonerSummary = aValidPrisonerSummary(prisonNumber)
       const expectedView = {
@@ -131,7 +134,7 @@ describe('overviewController', () => {
         prisonNumber,
         actionPlan,
         functionalSkills: expectedFunctionalSkills,
-        completedInPrisonEducation: expectedCompletedInPrisonEducation,
+        inPrisonCourses,
         isPostInduction: true,
       }
 
@@ -187,16 +190,19 @@ describe('overviewController', () => {
         ],
       } as FunctionalSkills
 
-      const inPrisonEducation: InPrisonEducationRecords = {
+      const inPrisonCourses: InPrisonCourseRecords = {
         problemRetrievingData: false,
-        educationRecords: [aValidEnglishInPrisonEducation(), aValidMathsInPrisonEducation()],
+        prisonNumber,
+        totalRecords: 2,
+        coursesByStatus: {
+          COMPLETED: [aValidMathsInPrisonCourse()],
+          IN_PROGRESS: [aValidEnglishInPrisonCourse()],
+          WITHDRAWN: [],
+          TEMPORARILY_WITHDRAWN: [],
+        },
+        coursesCompletedInLast12Months: [],
       }
-      curiousService.getLearnerEducation.mockResolvedValue(inPrisonEducation)
-
-      const expectedCompletedInPrisonEducation: InPrisonEducationRecords = {
-        problemRetrievingData: false,
-        educationRecords: [aValidMathsInPrisonEducation()],
-      }
+      curiousService.getPrisonerInPrisonCourses.mockResolvedValue(inPrisonCourses)
 
       const expectedPrisonerSummary = aValidPrisonerSummary(prisonNumber)
       const expectedView = {
@@ -205,7 +211,7 @@ describe('overviewController', () => {
         prisonNumber,
         actionPlan,
         functionalSkills: expectedFunctionalSkills,
-        completedInPrisonEducation: expectedCompletedInPrisonEducation,
+        inPrisonCourses,
         isPostInduction: false,
       }
 
@@ -257,7 +263,7 @@ describe('overviewController', () => {
       expect(res.render).not.toHaveBeenCalled()
       expect(inductionService.inductionExists).toHaveBeenCalledWith(prisonNumber, 'a-user-token')
       expect(educationAndWorkPlanService.getActionPlan).not.toHaveBeenCalled()
-      expect(curiousService.getLearnerEducation).not.toHaveBeenCalled()
+      expect(curiousService.getPrisonerInPrisonCourses).not.toHaveBeenCalled()
       expect(curiousService.getPrisonerFunctionalSkills).not.toHaveBeenCalled()
       expect(req.session.newGoal).toBeUndefined()
       expect(req.session.newGoals).toBeUndefined()
@@ -318,8 +324,6 @@ describe('overviewController', () => {
 
       req.session.prisonerSummary = aValidPrisonerSummary(prisonNumber)
 
-      const prisonId = 'MDI'
-
       const functionalSkillsFromCurious = {
         problemRetrievingData: false,
         assessments: [
@@ -350,36 +354,30 @@ describe('overviewController', () => {
         ],
       } as FunctionalSkills
 
-      const completedMathsCourse = aValidMathsInPrisonEducation()
-      const inProgressEnglishCourse = aValidEnglishInPrisonEducation()
-      const completedInLast12MonthsCourse = aValidEnglishInPrisonEducationCompletedWithinLast12Months()
-      const inPrisonEducation: InPrisonEducationRecords = {
+      const inPrisonCourses: InPrisonCourseRecords = {
         problemRetrievingData: false,
-        educationRecords: [inProgressEnglishCourse, completedMathsCourse, completedInLast12MonthsCourse],
+        prisonNumber,
+        totalRecords: 3,
+        coursesByStatus: {
+          COMPLETED: [aValidMathsInPrisonCourse(), aValidEnglishInPrisonCourseCompletedWithinLast12Months()],
+          IN_PROGRESS: [aValidEnglishInPrisonCourse()],
+          WITHDRAWN: [],
+          TEMPORARILY_WITHDRAWN: [],
+        },
+        coursesCompletedInLast12Months: [aValidEnglishInPrisonCourseCompletedWithinLast12Months()],
       }
-      curiousService.getLearnerEducation.mockResolvedValue(inPrisonEducation)
-
-      const expectedCompletedInPrisonEducation: InPrisonEducationRecords = {
-        problemRetrievingData: false,
-        educationRecords: [completedInLast12MonthsCourse, completedMathsCourse],
-      }
-
-      const expectedCompletedInPrisonEducationWithinLast12Months: InPrisonEducationRecords = {
-        problemRetrievingData: false,
-        educationRecords: [completedInLast12MonthsCourse],
-      }
+      curiousService.getPrisonerInPrisonCourses.mockResolvedValue(inPrisonCourses)
 
       const expectedEducationAndTraining = aValidShortQuestionSetEducationAndTraining()
       inductionService.getEducationAndTraining.mockResolvedValue(expectedEducationAndTraining)
 
       const expectedPrisonerSummary = aValidPrisonerSummary(prisonNumber)
-      prisonService.lookupPrison.mockResolvedValue({ prisonId, prisonName: 'Moorland (HMP & YOI)' })
+
       const expectedView = {
         prisonerSummary: expectedPrisonerSummary,
         tab: expectedTab,
         functionalSkills: expectedFunctionalSkills,
-        completedInPrisonEducation: expectedCompletedInPrisonEducation,
-        completedInPrisonEducationWithinLast12Months: expectedCompletedInPrisonEducationWithinLast12Months,
+        inPrisonCourses,
         educationAndTraining: expectedEducationAndTraining,
       }
 
@@ -393,7 +391,6 @@ describe('overviewController', () => {
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/overview/index', expectedView)
       expect(inductionService.getEducationAndTraining).toHaveBeenCalledWith(prisonNumber, 'a-user-token')
-      expect(prisonService.lookupPrison).toHaveBeenCalledWith(prisonId, 'a-dps-user')
     })
   })
 
