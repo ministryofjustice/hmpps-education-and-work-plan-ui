@@ -360,6 +360,7 @@ describe('curiousService', () => {
 
       const expected: InPrisonCourseRecords = {
         problemRetrievingData: false,
+        prisonNumber,
         totalRecords: 5,
         coursesByStatus: {
           COMPLETED: [
@@ -472,6 +473,7 @@ describe('curiousService', () => {
 
       const expected: InPrisonCourseRecords = {
         problemRetrievingData: false,
+        prisonNumber,
         totalRecords: 2,
         coursesByStatus: {
           COMPLETED: [],
@@ -533,6 +535,7 @@ describe('curiousService', () => {
 
       const expected: InPrisonCourseRecords = {
         problemRetrievingData: false,
+        prisonNumber,
         totalRecords: 3,
         coursesByStatus: {
           COMPLETED: [],
@@ -667,6 +670,7 @@ describe('curiousService', () => {
 
       const expected: InPrisonCourseRecords = {
         problemRetrievingData: false,
+        prisonNumber,
         totalRecords: 0,
         coursesByStatus: {
           COMPLETED: [],

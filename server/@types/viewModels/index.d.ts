@@ -98,6 +98,7 @@ declare module 'viewModels' {
     totalRecords: number
     coursesByStatus: Record<'COMPLETED' | 'IN_PROGRESS' | 'WITHDRAWN' | 'TEMPORARILY_WITHDRAWN', Array<InPrisonCourse>>
     coursesCompletedInLast12Months: Array<InPrisonCourse>
+    prisonNumber: string
   }
 
   /**

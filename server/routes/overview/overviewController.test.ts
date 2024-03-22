@@ -115,6 +115,7 @@ describe('overviewController', () => {
 
       const inPrisonCourses: InPrisonCourseRecords = {
         problemRetrievingData: false,
+        prisonNumber,
         totalRecords: 2,
         coursesByStatus: {
           COMPLETED: [aValidMathsInPrisonCourse()],
@@ -191,6 +192,7 @@ describe('overviewController', () => {
 
       const inPrisonCourses: InPrisonCourseRecords = {
         problemRetrievingData: false,
+        prisonNumber,
         totalRecords: 2,
         coursesByStatus: {
           COMPLETED: [aValidMathsInPrisonCourse()],
@@ -354,6 +356,7 @@ describe('overviewController', () => {
 
       const inPrisonCourses: InPrisonCourseRecords = {
         problemRetrievingData: false,
+        prisonNumber,
         totalRecords: 3,
         coursesByStatus: {
           COMPLETED: [aValidMathsInPrisonCourse(), aValidEnglishInPrisonCourseCompletedWithinLast12Months()],

@@ -106,6 +106,7 @@ export default class CuriousService {
           TEMPORARILY_WITHDRAWN: temporarilyWithdrawnCourses,
         },
         coursesCompletedInLast12Months,
+        prisonNumber,
       }
     } catch (error) {
       if (error.status === 404) {
@@ -120,6 +121,7 @@ export default class CuriousService {
             TEMPORARILY_WITHDRAWN: [],
           },
           coursesCompletedInLast12Months: [],
+          prisonNumber,
         }
       }
 
