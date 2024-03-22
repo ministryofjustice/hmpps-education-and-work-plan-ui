@@ -45,20 +45,20 @@
       <tbody class="govuk-table__body">
         {% for course in config.courses %}
         <tr class="govuk-table__row">
-          <td class="govuk-table__cell">[course.courseName]</td>
-          <td class="govuk-table__cell">[course.courseType]</td>
+          <td class="govuk-table__cell" data-qa="course-name">{{ course.courseName }}</td>
+          <td class="govuk-table__cell">{{ course.isAccredited | formatIsAccredited }}</td>
           {% if config.locationColumn %}
-            <td class="govuk-table__cell">[course.prisonName if course.prisonName else course.prisonId]</td>
+            <td class="govuk-table__cell">{{ course.prisonName if course.prisonName else course.prisonId }}</td>
           {% endif %}
-            <td class="govuk-table__cell">[course.courseStartDate | formatDate('D MMMM YYYY')]</td>
+          <td class="govuk-table__cell">{{ course.courseStartDate | formatDate('D MMMM YYYY') }}</td>
           {% if config.completedOnColumn %}
-            <td class="govuk-table__cell">[course.courseCompletionDate]</td>
+            <td class="govuk-table__cell">{{ course.courseCompletionDate | formatDate('D MMMM YYYY') }}</td>
           {% endif %}
           {% if config.endDateColumn %}
             <td class="govuk-table__cell">[course.learningActualEndDate]</td>
           {% endif %}
           {% if config.gradeColumn %}
-            <td class="govuk-table__cell">[course.outcomeGrade]</td>
+            <td class="govuk-table__cell">{{ course.grade }}</td>
           {% endif %}
           {% if config.plannedEndDateColumn %}
             <td class="govuk-table__cell">[course.plannedEndDate]</td>
