@@ -2,7 +2,7 @@ import type { Router } from 'express'
 import config from '../../config'
 import { Services } from '../../services'
 import { checkUserHasViewAuthority } from '../../middleware/roleBasedAccessControl'
-import { retrievePrisonerSummaryIfNotInSession } from '../routerRequestHandlers'
+import { retrieveCuriousInPrisonCourses, retrievePrisonerSummaryIfNotInSession } from '../routerRequestHandlers'
 import InPrisonCoursesAndQualificationsController from './inPrisonCoursesAndQualificationsController'
 
 /**
@@ -18,6 +18,7 @@ export default (router: Router, services: Services) => {
     router.get('/plan/:prisonNumber/in-prison-courses-and-qualifications', [
       checkUserHasViewAuthority(),
       retrievePrisonerSummaryIfNotInSession(services.prisonerSearchService),
+      retrieveCuriousInPrisonCourses(services.curiousService),
       inPrisonCoursesAndQualificationsController.getInPrisonCoursesAndQualificationsView,
     ])
   }

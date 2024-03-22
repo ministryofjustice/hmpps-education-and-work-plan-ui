@@ -3,7 +3,7 @@ import { NextFunction, Response, Request } from 'express'
 import { SessionData } from 'express-session'
 import type { UpdateGoalForm } from 'forms'
 import type { NewGoal } from 'compositeForms'
-import type { PageFlowQueue } from 'viewModels'
+import type { InPrisonCourseRecords, PageFlowQueue } from 'viewModels'
 import type { InductionDto } from 'inductionDto'
 import type {
   AdditionalTrainingForm,
@@ -35,6 +35,7 @@ import {
   retrieveInductionIfNotInSession,
   setCurrentPageInPageFlowQueue,
   retrieveFunctionalSkillsIfNotInSession,
+  retrieveCuriousInPrisonCourses,
 } from './routerRequestHandlers'
 import { aValidAddStepForm } from '../testsupport/addStepFormTestDataBuilder'
 import aValidPrisonerSummary from '../testsupport/prisonerSummaryTestDataBuilder'
@@ -48,6 +49,7 @@ import {
   functionalSkillsWithProblemRetrievingData,
   validFunctionalSkills,
 } from '../testsupport/functionalSkillsTestDataBuilder'
+import { aValidEnglishInPrisonCourse, aValidMathsInPrisonCourse } from '../testsupport/inPrisonCourseTestDataBuilder'
 
 jest.mock('./pageFlowQueue')
 
@@ -63,6 +65,7 @@ describe('routerRequestHandlers', () => {
   }
   const res = {
     redirect: jest.fn(),
+    locals: {} as Record<string, unknown>,
   }
   const next = jest.fn()
 
@@ -73,6 +76,7 @@ describe('routerRequestHandlers', () => {
     req.params = {} as Record<string, string>
     req.query = {} as Record<string, string>
     req.path = ''
+    res.locals = {} as Record<string, unknown>
   })
 
   describe('checkCreateGoalFormExistsInSession', () => {
@@ -878,6 +882,157 @@ describe('routerRequestHandlers', () => {
       // Then
       expect(curiousService.getPrisonerFunctionalSkills).toHaveBeenCalledWith(prisonNumber, username)
       expect(req.session.prisonerFunctionalSkills).toEqual(expectedFunctionalSkills)
+      expect(next).toHaveBeenCalled()
+    })
+  })
+
+  describe('retrieveCuriousInPrisonCourses', () => {
+    const curiousService = {
+      getPrisonerInPrisonCourses: jest.fn(),
+    }
+
+    const requestHandler = retrieveCuriousInPrisonCourses(curiousService as unknown as CuriousService)
+
+    it('should retrieve prisoner In Prison Courses given In Prison Courses not already on res.locals', async () => {
+      // Given
+      const username = 'a-dps-user'
+      req.user.username = username
+
+      res.locals.curiousInPrisonCourses = undefined
+
+      const prisonNumber = 'A1234GC'
+      req.params.prisonNumber = prisonNumber
+      const expectedInPrisonCourses: InPrisonCourseRecords = {
+        problemRetrievingData: false,
+        prisonNumber,
+        totalRecords: 2,
+        coursesByStatus: {
+          COMPLETED: [aValidMathsInPrisonCourse()],
+          IN_PROGRESS: [aValidEnglishInPrisonCourse()],
+          WITHDRAWN: [],
+          TEMPORARILY_WITHDRAWN: [],
+        },
+        coursesCompletedInLast12Months: [],
+      }
+      curiousService.getPrisonerInPrisonCourses.mockResolvedValue(expectedInPrisonCourses)
+
+      // When
+      await requestHandler(req as undefined as Request, res as undefined as Response, next as undefined as NextFunction)
+
+      // Then
+      expect(curiousService.getPrisonerInPrisonCourses).toHaveBeenCalledWith(prisonNumber, username)
+      expect(res.locals.curiousInPrisonCourses).toEqual(expectedInPrisonCourses)
+      expect(next).toHaveBeenCalled()
+    })
+
+    it('should retrieve prisoner In Prison Courses given In Prison Courses for a different prisoner already in res.locals', async () => {
+      // Given
+      const username = 'a-dps-user'
+      req.user.username = username
+
+      res.locals.curiousInPrisonCourses = {
+        problemRetrievingData: false,
+        prisonNumber: 'Z1234XY',
+        totalRecords: 2,
+        coursesByStatus: {
+          COMPLETED: [aValidMathsInPrisonCourse()],
+          IN_PROGRESS: [aValidEnglishInPrisonCourse()],
+          WITHDRAWN: [],
+          TEMPORARILY_WITHDRAWN: [],
+        },
+        coursesCompletedInLast12Months: [],
+      }
+
+      const prisonNumber = 'A1234GC'
+      req.params.prisonNumber = prisonNumber
+      const expectedInPrisonCourses: InPrisonCourseRecords = {
+        problemRetrievingData: false,
+        prisonNumber,
+        totalRecords: 2,
+        coursesByStatus: {
+          COMPLETED: [aValidMathsInPrisonCourse()],
+          IN_PROGRESS: [aValidEnglishInPrisonCourse()],
+          WITHDRAWN: [],
+          TEMPORARILY_WITHDRAWN: [],
+        },
+        coursesCompletedInLast12Months: [],
+      }
+      curiousService.getPrisonerInPrisonCourses.mockResolvedValue(expectedInPrisonCourses)
+
+      // When
+      await requestHandler(req as undefined as Request, res as undefined as Response, next as undefined as NextFunction)
+
+      // Then
+      expect(curiousService.getPrisonerInPrisonCourses).toHaveBeenCalledWith(prisonNumber, username)
+      expect(res.locals.curiousInPrisonCourses).toEqual(expectedInPrisonCourses)
+      expect(next).toHaveBeenCalled()
+    })
+
+    it('should not retrieve In Prison Courses given In Prison Courses for prisoner already in res.locals', async () => {
+      // Given
+      const username = 'a-dps-user'
+      req.user.username = username
+
+      const prisonNumber = 'A1234GC'
+
+      const expectedInPrisonCourses: InPrisonCourseRecords = {
+        problemRetrievingData: false,
+        prisonNumber,
+        totalRecords: 2,
+        coursesByStatus: {
+          COMPLETED: [aValidMathsInPrisonCourse()],
+          IN_PROGRESS: [aValidEnglishInPrisonCourse()],
+          WITHDRAWN: [],
+          TEMPORARILY_WITHDRAWN: [],
+        },
+        coursesCompletedInLast12Months: [],
+      }
+      res.locals.curiousInPrisonCourses = expectedInPrisonCourses
+
+      req.params.prisonNumber = prisonNumber
+
+      // When
+      await requestHandler(req as undefined as Request, res as undefined as Response, next as undefined as NextFunction)
+
+      // Then
+      expect(curiousService.getPrisonerInPrisonCourses).not.toHaveBeenCalled()
+      expect(res.locals.curiousInPrisonCourses).toEqual(expectedInPrisonCourses)
+      expect(next).toHaveBeenCalled()
+    })
+
+    it('should retrieve In Prison Courses and store in res.locals given In Prison Courses with problem retrieving data already in res.locals', async () => {
+      // Given
+      const username = 'a-dps-user'
+      req.user.username = username
+
+      const prisonNumber = 'A1234GC'
+      req.params.prisonNumber = prisonNumber
+
+      res.locals.curiousInPrisonCourses = {
+        problemRetrievingData: true,
+        prisonNumber,
+      }
+
+      const expectedInPrisonCourses: InPrisonCourseRecords = {
+        problemRetrievingData: false,
+        prisonNumber,
+        totalRecords: 2,
+        coursesByStatus: {
+          COMPLETED: [aValidMathsInPrisonCourse()],
+          IN_PROGRESS: [aValidEnglishInPrisonCourse()],
+          WITHDRAWN: [],
+          TEMPORARILY_WITHDRAWN: [],
+        },
+        coursesCompletedInLast12Months: [],
+      }
+      curiousService.getPrisonerInPrisonCourses.mockResolvedValue(expectedInPrisonCourses)
+
+      // When
+      await requestHandler(req as undefined as Request, res as undefined as Response, next as undefined as NextFunction)
+
+      // Then
+      expect(curiousService.getPrisonerInPrisonCourses).toHaveBeenCalledWith(prisonNumber, username)
+      expect(res.locals.curiousInPrisonCourses).toEqual(expectedInPrisonCourses)
       expect(next).toHaveBeenCalled()
     })
   })

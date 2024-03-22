@@ -35,8 +35,6 @@ export default class OverviewController {
       const allFunctionalSkills = await this.curiousService.getPrisonerFunctionalSkills(prisonNumber, req.user.username)
       const functionalSkills = mostRecentFunctionalSkills(allFunctionalSkills)
 
-      const inPrisonCourses = await this.curiousService.getPrisonerInPrisonCourses(prisonNumber, req.user.username)
-
       const actionPlan = await this.educationAndWorkPlanService.getActionPlan(prisonNumber, req.user.token)
 
       let view: PostInductionOverviewView | PreInductionOverviewView
@@ -46,7 +44,7 @@ export default class OverviewController {
           prisonerSummary,
           actionPlan,
           functionalSkills,
-          inPrisonCourses,
+          res.locals.curiousInPrisonCourses,
         )
       } else {
         view = new PreInductionOverviewView(
@@ -54,7 +52,7 @@ export default class OverviewController {
           prisonerSummary,
           actionPlan,
           functionalSkills,
-          inPrisonCourses,
+          res.locals.curiousInPrisonCourses,
         )
       }
 
@@ -110,11 +108,14 @@ export default class OverviewController {
     const allFunctionalSkills = await this.curiousService.getPrisonerFunctionalSkills(prisonNumber, req.user.username)
     const functionalSkills = mostRecentFunctionalSkills(allFunctionalSkills)
 
-    const inPrisonCourses = await this.curiousService.getPrisonerInPrisonCourses(prisonNumber, req.user.username)
-
     const educationAndTraining = await this.inductionService.getEducationAndTraining(prisonNumber, req.user.token)
 
-    const view = new EducationAndTrainingView(prisonerSummary, functionalSkills, inPrisonCourses, educationAndTraining)
+    const view = new EducationAndTrainingView(
+      prisonerSummary,
+      functionalSkills,
+      res.locals.curiousInPrisonCourses,
+      educationAndTraining,
+    )
     res.render('pages/overview/index', { ...view.renderArgs })
   }
 
