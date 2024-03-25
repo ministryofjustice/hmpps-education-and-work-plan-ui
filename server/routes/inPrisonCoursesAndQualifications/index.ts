@@ -2,8 +2,9 @@ import type { Router } from 'express'
 import config from '../../config'
 import { Services } from '../../services'
 import { checkUserHasViewAuthority } from '../../middleware/roleBasedAccessControl'
-import { retrieveCuriousInPrisonCourses, retrievePrisonerSummaryIfNotInSession } from '../routerRequestHandlers'
 import InPrisonCoursesAndQualificationsController from './inPrisonCoursesAndQualificationsController'
+import retrieveCuriousInPrisonCourses from '../routerRequestHandlers/retrieveCuriousInPrisonCourses'
+import retrievePrisonerSummaryIfNotInSession from '../routerRequestHandlers/retrievePrisonerSummaryIfNotInSession'
 
 /**
  * Route definitions for the pages relating to In Prison Courses & Qualifications

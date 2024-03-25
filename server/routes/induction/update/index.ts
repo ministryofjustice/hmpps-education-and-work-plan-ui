@@ -2,12 +2,6 @@ import { Router } from 'express'
 import { Services } from '../../../services'
 import config from '../../../config'
 import { checkUserHasEditAuthority } from '../../../middleware/roleBasedAccessControl'
-import {
-  retrieveFunctionalSkillsIfNotInSession,
-  retrieveInductionIfNotInSession,
-  retrievePrisonerSummaryIfNotInSession,
-  setCurrentPageInPageFlowQueue,
-} from '../../routerRequestHandlers'
 import InPrisonWorkUpdateController from './inPrisonWorkUpdateController'
 import InPrisonTrainingUpdateController from './inPrisonTrainingUpdateController'
 import SkillsUpdateController from './skillsUpdateController'
@@ -25,6 +19,10 @@ import QualificationsListUpdateController from './qualificationsListUpdateContro
 import QualificationLevelUpdateController from './qualificationLevelUpdateController'
 import QualificationDetailsUpdateController from './qualificationDetailsUpdateController'
 import HopingToWorkOnReleaseUpdateController from './hopingToWorkOnReleaseUpdateController'
+import retrieveFunctionalSkillsIfNotInSession from '../../routerRequestHandlers/retrieveFunctionalSkillsIfNotInSession'
+import setCurrentPageInPageFlowQueue from '../../routerRequestHandlers/setCurrentPageInPageFlowQueue'
+import retrieveInductionIfNotInSession from '../../routerRequestHandlers/retrieveInductionIfNotInSession'
+import retrievePrisonerSummaryIfNotInSession from '../../routerRequestHandlers/retrievePrisonerSummaryIfNotInSession'
 
 /**
  * Route definitions for updating the various sections of an Induction

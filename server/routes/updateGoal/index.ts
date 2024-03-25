@@ -2,11 +2,9 @@ import { Router } from 'express'
 import { Services } from '../../services'
 import UpdateGoalController from './updateGoalController'
 import { checkUserHasEditAuthority } from '../../middleware/roleBasedAccessControl'
-import {
-  checkPrisonerSummaryExistsInSession,
-  checkUpdateGoalFormExistsInSession,
-  retrievePrisonerSummaryIfNotInSession,
-} from '../routerRequestHandlers'
+import retrievePrisonerSummaryIfNotInSession from '../routerRequestHandlers/retrievePrisonerSummaryIfNotInSession'
+import checkUpdateGoalFormExistsInSession from '../routerRequestHandlers/checkUpdateGoalFormExistsInSession'
+import checkPrisonerSummaryExistsInSession from '../routerRequestHandlers/checkPrisonerSummaryExistsInSession'
 
 /**
  * Route definitions for the pages relating to Updating A Goal
