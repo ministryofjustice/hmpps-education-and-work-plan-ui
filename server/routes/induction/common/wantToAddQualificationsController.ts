@@ -37,6 +37,7 @@ export default abstract class WantToAddQualificationsController extends Inductio
   }
 }
 
+// TODO - this is duplicated in QualificationsListController - needs putting somewhere common
 const mostRecentAssessments = (allAssessments: Array<Assessment>): Array<Assessment> => {
   const allAssessmentsGroupedByTypeSortedByDateDesc = assessmentsGroupedByTypeSortedByDateDesc(allAssessments)
 

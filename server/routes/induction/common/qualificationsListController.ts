@@ -37,6 +37,7 @@ export default abstract class QualificationsListController extends InductionCont
   }
 }
 
+// TODO - this is duplicated in WantToAddQualificationsController - needs putting somewhere common
 const mostRecentAssessments = (allAssessments: Array<Assessment>): Array<Assessment> => {
   const allAssessmentsGroupedByTypeSortedByDateDesc = assessmentsGroupedByTypeSortedByDateDesc(allAssessments)
 
