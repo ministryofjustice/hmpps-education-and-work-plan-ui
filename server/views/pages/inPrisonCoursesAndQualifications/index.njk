@@ -51,9 +51,7 @@
             {{ sortableTable({
               id: "completed-courses",
               courses: completedCourses,
-              locationColumn: true,
-              completedOnColumn: true,
-              gradeColumn: true
+              courseStatus: "COMPLETED"
             }) }}
           {% else %}
             <p class="govuk-body" data-qa="no-completed-courses-message">{{ prisonerSummary.firstName }} {{ prisonerSummary.lastName }} has not completed any courses.</p>
@@ -67,7 +65,7 @@
             {{ sortableTable({
               id: "in-progress-courses",
               courses: inProgressCourses,
-              plannedEndDateColumn: true
+              courseStatus: "IN_PROGRESS"
             }) }}
           {% else %}
             <p class="govuk-body" data-qa="no-in-progress-courses-message">{{ prisonerSummary.firstName }} {{ prisonerSummary.lastName }} is not currently doing any courses.</p>
@@ -81,10 +79,7 @@
             {{ sortableTable({
               id: "withdrawn-courses",
               courses: withdrawnCourses,
-              locationColumn: true,
-              endDateColumn: true,
-              statusColumn: true,
-              reasonColumn: true
+              courseStatus: "WITHDRAWN"
             }) }}
           {% else %}
             <p class="govuk-body" data-qa="no-withdrawn-courses-message">{{ prisonerSummary.firstName }} {{ prisonerSummary.lastName }} has no withdrawn courses.</p>
@@ -101,7 +96,7 @@
               }
             },
             {
-              label: "In progress ([X] courses)",
+              label: "In progress (" + inProgressCourses.length + " course" + ("s" if inProgressCourses.length !== 1) + ")",
               id: "in-progress-courses",
               panel: {
                 html: inProgressCoursesHtml

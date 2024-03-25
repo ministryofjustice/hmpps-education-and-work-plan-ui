@@ -3,40 +3,38 @@
     `config` argument is an object with the following properties:
       * id - the id of the sortable table (required)
       * courses - an array of course data, where each item is an instance of view model type InPrisonCourse (required)
-      * locationColumn - boolean, whether to display the location column (optional, default is false)
-      * completedOnColumn - boolean, whether to display the completed on column (optional, default is false)
-      * endDateColumn - boolean, whether to display the end date column (optional, default is false)  
-      * gradeColumn - boolean, whether to display the grade column (optional, default is false)
-      * plannedEndDateColumn - boolean, whether to display the planned end date column (optional, default is false)
-      * statusColumn - boolean, whether to display the status column (optional, default is false)
-      * reasonColumn - boolean, whether to display the reason column (optional, default is false)
+      * courseStatus - COMPLETED | IN_PROGRESS | WITHDRAWN, to determine which colunms to render
+                       COMPLETED = Name, type, location, start date, completed date, grade
+                       IN_PROGRESS = Name, type, start date, planned end date
+                       WITHDRAWN = Name, type, location, start date, end date, status, reason
     ------------------------------------------------------------- #}
 {% macro sortableTable(config) %}
     <table class="govuk-table" data-module="moj-sortable-table" data-qa="{{ config.id }}-sortable-table">
       <thead class="govuk-table__head">
         <tr class="govuk-table__row">
-          <th scope="col" class="govuk-table__header">Name</th>
-          <th scope="col" class="govuk-table__header" aria-sort="none">Type</th>
-          {% if config.locationColumn %}
+          {% if config.courseStatus === 'COMPLETED' %}
+            <th scope="col" class="govuk-table__header">Name</th>
+            <th scope="col" class="govuk-table__header" aria-sort="none">Type</th>
             <th scope="col" class="govuk-table__header" aria-sort="none">Location</th>
-          {% endif %}
             <th scope="col" class="govuk-table__header" aria-sort="none">Start date</th>
-          {% if config.completedOnColumn %}
             <th scope="col" class="govuk-table__header" aria-sort="none">Completed on</th>
-          {% endif %}
-          {% if config.endDateColumn %}
-            <th scope="col" class="govuk-table__header" aria-sort="none">End date</th>
-          {% endif %}
-          {% if config.gradeColumn %}
             <th scope="col" class="govuk-table__header" aria-sort="none">Grade or outcome</th>
           {% endif %}
-          {% if config.plannedEndDateColumn %}
+
+          {% if config.courseStatus === 'IN_PROGRESS' %}
+            <th scope="col" class="govuk-table__header">Name</th>
+            <th scope="col" class="govuk-table__header" aria-sort="none">Type</th>
+            <th scope="col" class="govuk-table__header" aria-sort="none">Start date</th>
             <th scope="col" class="govuk-table__header" aria-sort="none">Planned end date</th>
           {% endif %}
-          {% if config.statusColumn %}
+
+          {% if config.courseStatus === 'WITHDRAWN' %}
+            <th scope="col" class="govuk-table__header">Name</th>
+            <th scope="col" class="govuk-table__header" aria-sort="none">Type</th>
+            <th scope="col" class="govuk-table__header" aria-sort="none">Location</th>
+            <th scope="col" class="govuk-table__header" aria-sort="none">Start date</th>
+            <th scope="col" class="govuk-table__header" aria-sort="none">End date</th>
             <th scope="col" class="govuk-table__header" aria-sort="none">Status</th>
-          {% endif %}
-          {% if config.reasonColumn %}
             <th scope="col" class="govuk-table__header">Reason</th>
           {% endif %}
         </tr>
@@ -44,32 +42,33 @@
 
       <tbody class="govuk-table__body">
         {% for course in config.courses %}
-        <tr class="govuk-table__row">
-          <td class="govuk-table__cell" data-qa="course-name">{{ course.courseName }}</td>
-          <td class="govuk-table__cell">{{ course.isAccredited | formatIsAccredited }}</td>
-          {% if config.locationColumn %}
-            <td class="govuk-table__cell">{{ course.prisonName if course.prisonName else course.prisonId }}</td>
-          {% endif %}
-          <td class="govuk-table__cell">{{ course.courseStartDate | formatDate('D MMMM YYYY') }}</td>
-          {% if config.completedOnColumn %}
-            <td class="govuk-table__cell">{{ course.courseCompletionDate | formatDate('D MMMM YYYY') }}</td>
-          {% endif %}
-          {% if config.endDateColumn %}
-            <td class="govuk-table__cell">[course.learningActualEndDate]</td>
-          {% endif %}
-          {% if config.gradeColumn %}
-            <td class="govuk-table__cell">{{ course.grade }}</td>
-          {% endif %}
-          {% if config.plannedEndDateColumn %}
-            <td class="govuk-table__cell">[course.plannedEndDate]</td>
-          {% endif %}
-          {% if config.statusColumn %}
-            <td class="govuk-table__cell">[course.outcome]</td>
-          {% endif %}
-          {% if config.reasonColumn %}
-            <td class="govuk-table__cell">[course.prisonWithdrawalReason]</td>
-          {% endif %}
-        </tr>
+          <tr class="govuk-table__row">
+            {% if config.courseStatus === 'COMPLETED' %}
+              <td class="govuk-table__cell" data-qa="course-name">{{ course.courseName }}</td>
+              <td class="govuk-table__cell">{{ course.isAccredited | formatIsAccredited }}</td>
+              <td class="govuk-table__cell">{{ course.prisonName if course.prisonName else course.prisonId }}</td>
+              <td class="govuk-table__cell">{{ course.courseStartDate | formatDate('D MMMM YYYY') }}</td>
+              <td class="govuk-table__cell">{{ course.courseCompletionDate | formatDate('D MMMM YYYY') }}</td>
+              <td class="govuk-table__cell">{{ course.grade }}</td>
+            {% endif %}
+
+            {% if config.courseStatus === 'IN_PROGRESS' %}
+              <td class="govuk-table__cell" data-qa="course-name">{{ course.courseName }}</td>
+              <td class="govuk-table__cell">{{ course.isAccredited | formatIsAccredited }}</td>
+              <td class="govuk-table__cell">{{ course.courseStartDate | formatDate('D MMMM YYYY') }}</td>
+              <td class="govuk-table__cell">{{ course.coursePlannedEndDate | formatDate('D MMMM YYYY') }}</td>
+            {% endif %}
+
+            {% if config.courseStatus === 'WITHDRAWN' %}
+              <td class="govuk-table__cell" data-qa="course-name">{{ course.courseName }}</td>
+              <td class="govuk-table__cell">{{ course.isAccredited | formatIsAccredited }}</td>
+              <td class="govuk-table__cell">{{ course.prisonName if course.prisonName else course.prisonId }}</td>
+              <td class="govuk-table__cell">{{ course.courseStartDate | formatDate('D MMMM YYYY') }}</td>
+              <td class="govuk-table__cell">[course.learningActualEndDate]</td>
+              <td class="govuk-table__cell">[course.outcome]</td>
+              <td class="govuk-table__cell">[course.prisonWithdrawalReason]</td>
+            {% endif %}
+          </tr>
         {% endfor %}
       </tbody>
     </table>

@@ -20,6 +20,7 @@ describe('inPrisonCourseMapper', () => {
         courseStartDate: moment('2021-06-01').utc().toDate(),
         courseStatus: 'IN_PROGRESS',
         courseCompletionDate: null,
+        coursePlannedEndDate: moment('2021-08-06').utc().toDate(),
         isAccredited: false,
         grade: null,
         source: 'CURIOUS',
@@ -47,6 +48,7 @@ describe('inPrisonCourseMapper', () => {
         courseStartDate: moment('2016-05-18').utc().toDate(),
         courseStatus: 'WITHDRAWN',
         courseCompletionDate: moment('2016-07-15').utc().toDate(),
+        coursePlannedEndDate: moment('2016-12-23').utc().toDate(),
         isAccredited: true,
         grade: null,
         source: 'CURIOUS',
@@ -73,6 +75,7 @@ describe('inPrisonCourseMapper', () => {
         courseStartDate: moment('2016-05-18').utc().toDate(),
         courseStatus: 'WITHDRAWN',
         courseCompletionDate: moment('2016-07-15').utc().toDate(),
+        coursePlannedEndDate: moment('2016-12-23').utc().toDate(),
         isAccredited: true,
         grade: 'A', // expect grade to be the value of outcomeGrade (as preference over outcome)
         source: 'CURIOUS',
@@ -99,6 +102,7 @@ describe('inPrisonCourseMapper', () => {
         courseStartDate: moment('2016-05-18').utc().toDate(),
         courseStatus: 'WITHDRAWN',
         courseCompletionDate: moment('2016-07-15').utc().toDate(),
+        coursePlannedEndDate: moment('2016-12-23').utc().toDate(),
         isAccredited: true,
         grade: 'Passed', // expect grade to be the value of outcome (because there is no outcome grade)
         source: 'CURIOUS',
@@ -125,6 +129,7 @@ describe('inPrisonCourseMapper', () => {
         courseStartDate: moment('2016-05-18').utc().toDate(),
         courseStatus: 'WITHDRAWN',
         courseCompletionDate: moment('2016-07-15').utc().toDate(),
+        coursePlannedEndDate: moment('2016-12-23').utc().toDate(),
         isAccredited: true,
         grade: null, // expect grade to be null (because there is no outcome grade or outcome)
         source: 'CURIOUS',
