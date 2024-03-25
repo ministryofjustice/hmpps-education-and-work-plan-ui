@@ -2,11 +2,9 @@ import { Router } from 'express'
 import { Services } from '../../services'
 import { checkUserHasViewAuthority } from '../../middleware/roleBasedAccessControl'
 import OverviewController from './overviewController'
-import {
-  removeInductionFormsFromSession,
-  retrieveCuriousInPrisonCourses,
-  retrievePrisonerSummaryIfNotInSession,
-} from '../routerRequestHandlers'
+import retrieveCuriousInPrisonCourses from '../routerRequestHandlers/retrieveCuriousInPrisonCourses'
+import removeInductionFormsFromSession from '../routerRequestHandlers/removeInductionFormsFromSession'
+import retrievePrisonerSummaryIfNotInSession from '../routerRequestHandlers/retrievePrisonerSummaryIfNotInSession'
 
 /**
  * Route definitions for the pages relating to the main Overview page

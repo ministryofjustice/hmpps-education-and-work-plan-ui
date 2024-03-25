@@ -2,13 +2,11 @@ import { Router } from 'express'
 import { Services } from '../../services'
 import CreateGoalController from './createGoalController'
 import { checkUserHasEditAuthority } from '../../middleware/roleBasedAccessControl'
-import {
-  checkCreateGoalFormExistsInSession,
-  checkAddStepFormsArrayExistsInSession,
-  checkPrisonerSummaryExistsInSession,
-  checkNewGoalsFormExistsInSession,
-  retrievePrisonerSummaryIfNotInSession,
-} from '../routerRequestHandlers'
+import retrievePrisonerSummaryIfNotInSession from '../routerRequestHandlers/retrievePrisonerSummaryIfNotInSession'
+import checkNewGoalsFormExistsInSession from '../routerRequestHandlers/checkNewGoalsFormExistsInSession'
+import checkPrisonerSummaryExistsInSession from '../routerRequestHandlers/checkPrisonerSummaryExistsInSession'
+import checkAddStepFormsArrayExistsInSession from '../routerRequestHandlers/checkAddStepFormsArrayExistsInSession'
+import checkCreateGoalFormExistsInSession from '../routerRequestHandlers/checkCreateGoalFormExistsInSession'
 
 /**
  * Route definitions for the pages relating to Creating A Goal

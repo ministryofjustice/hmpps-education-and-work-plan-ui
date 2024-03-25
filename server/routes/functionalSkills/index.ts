@@ -1,8 +1,8 @@
 import type { Router } from 'express'
 import { Services } from '../../services'
 import { checkUserHasViewAuthority } from '../../middleware/roleBasedAccessControl'
-import { retrievePrisonerSummaryIfNotInSession } from '../routerRequestHandlers'
 import FunctionalSkillsController from './functionalSkillsController'
+import retrievePrisonerSummaryIfNotInSession from '../routerRequestHandlers/retrievePrisonerSummaryIfNotInSession'
 
 /**
  * Route definitions for the pages relating to Functional Skills
