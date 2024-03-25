@@ -58,7 +58,7 @@ export default class InPrisonCoursesAndQualificationsPage extends Page {
     return this
   }
 
-  private completedCoursesTab = (): PageElement => cy.get('#tab_completed-courses')
+  private completedCoursesTab = (): PageElement => cy.get('.govuk-tabs__tab[href="#completed-courses"]')
 
   private completedCoursesTable = (): PageElement => cy.get('[data-qa=completed-courses-sortable-table')
 
@@ -67,7 +67,7 @@ export default class InPrisonCoursesAndQualificationsPage extends Page {
 
   private noCompletedCoursesMessage = (): PageElement => cy.get('[data-qa=no-completed-courses-message')
 
-  private inProgressCoursesTab = (): PageElement => cy.get('#tab_in-progress-courses')
+  private inProgressCoursesTab = (): PageElement => cy.get('.govuk-tabs__tab[href="#in-progress-courses"]')
 
   private inProgressCoursesTable = (): PageElement => cy.get('[data-qa=in-progress-courses-sortable-table')
 
@@ -76,7 +76,7 @@ export default class InPrisonCoursesAndQualificationsPage extends Page {
 
   private noInProgressCoursesMessage = (): PageElement => cy.get('[data-qa=no-in-progress-courses-message')
 
-  private withdrawnCoursesTab = (): PageElement => cy.get('#tab_withdrawn-courses')
+  private withdrawnCoursesTab = (): PageElement => cy.get('.govuk-tabs__tab[href="#withdrawn-courses"]')
 
   private withdrawnCoursesTable = (): PageElement => cy.get('[data-qa=withdrawn-courses-sortable-table')
 
