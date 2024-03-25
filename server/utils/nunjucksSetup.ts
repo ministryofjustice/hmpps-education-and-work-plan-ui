@@ -26,6 +26,7 @@ import formatQualificationLevelFilter from '../filters/formatQualificationLevelF
 import formatQualificationLevelHintFilter from '../filters/formatQualificationLevelHintFilter'
 import formatTimelineEventFilter from '../filters/formatTimelineEventFilter'
 import formatPrisonMovementEventFilter from '../filters/formatPrisonMovementEventFilter'
+import formatCuriousCourseStatusFilter from '../filters/formatCuriousCourseStatusFilter'
 
 const production = process.env.NODE_ENV === 'production'
 
@@ -89,6 +90,7 @@ export function registerNunjucks(app?: express.Express): Environment {
   njkEnv.addFilter('formatQualificationLevelHint', formatQualificationLevelHintFilter)
   njkEnv.addFilter('formatTimelineEvent', formatTimelineEventFilter)
   njkEnv.addFilter('formatPrisonMovementEvent', formatPrisonMovementEventFilter)
+  njkEnv.addFilter('formatCuriousCourseStatus', formatCuriousCourseStatusFilter)
   njkEnv.addFilter('fallbackMessage', fallbackMessageFilter)
 
   njkEnv.addGlobal('dpsUrl', config.dpsHomeUrl)

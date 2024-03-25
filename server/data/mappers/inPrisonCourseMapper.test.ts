@@ -23,6 +23,7 @@ describe('inPrisonCourseMapper', () => {
         coursePlannedEndDate: moment('2021-08-06').utc().toDate(),
         isAccredited: false,
         grade: null,
+        withdrawalReason: null,
         source: 'CURIOUS',
       }
 
@@ -51,6 +52,7 @@ describe('inPrisonCourseMapper', () => {
         coursePlannedEndDate: moment('2016-12-23').utc().toDate(),
         isAccredited: true,
         grade: null,
+        withdrawalReason: 'Significant ill health causing them to be unable to attend education',
         source: 'CURIOUS',
       }
 
@@ -78,6 +80,7 @@ describe('inPrisonCourseMapper', () => {
         coursePlannedEndDate: moment('2016-12-23').utc().toDate(),
         isAccredited: true,
         grade: 'A', // expect grade to be the value of outcomeGrade (as preference over outcome)
+        withdrawalReason: 'Significant ill health causing them to be unable to attend education',
         source: 'CURIOUS',
       }
 
@@ -105,6 +108,7 @@ describe('inPrisonCourseMapper', () => {
         coursePlannedEndDate: moment('2016-12-23').utc().toDate(),
         isAccredited: true,
         grade: 'Passed', // expect grade to be the value of outcome (because there is no outcome grade)
+        withdrawalReason: 'Significant ill health causing them to be unable to attend education',
         source: 'CURIOUS',
       }
 
@@ -132,6 +136,7 @@ describe('inPrisonCourseMapper', () => {
         coursePlannedEndDate: moment('2016-12-23').utc().toDate(),
         isAccredited: true,
         grade: null, // expect grade to be null (because there is no outcome grade or outcome)
+        withdrawalReason: 'Significant ill health causing them to be unable to attend education',
         source: 'CURIOUS',
       }
 

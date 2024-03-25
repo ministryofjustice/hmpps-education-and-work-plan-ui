@@ -18,6 +18,7 @@ const toInPrisonCourse = (apiLearnerEducation: LearnerEducation): InPrisonCourse
       : null,
     isAccredited: apiLearnerEducation.isAccredited,
     grade: apiLearnerEducation.outcomeGrade || apiLearnerEducation.outcome || null,
+    withdrawalReason: apiLearnerEducation.prisonWithdrawalReason,
     source: 'CURIOUS',
   }
 }
