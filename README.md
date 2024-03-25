@@ -82,6 +82,7 @@ TOKEN_VERIFICATION_API_URL=https://token-verification-api-dev.prison.service.jus
 TOKEN_VERIFICATION_ENABLED=false
 EDUCATION_AND_WORK_PLAN_API_URL=http://localhost:8080
 PRISONER_SEARCH_API_URL=http://localhost:8080
+ACTIVITIES_API_URL=http://localhost:8080
 NODE_ENV=development
 SESSION_SECRET=anything
 PORT=3000
