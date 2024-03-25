@@ -9,10 +9,7 @@ import InPrisonCoursesAndQualificationsController from './inPrisonCoursesAndQual
  * Route definitions for the pages relating to In Prison Courses & Qualifications
  */
 export default (router: Router, services: Services) => {
-  const inPrisonCoursesAndQualificationsController = new InPrisonCoursesAndQualificationsController(
-    services.curiousService,
-    services.prisonService,
-  )
+  const inPrisonCoursesAndQualificationsController = new InPrisonCoursesAndQualificationsController()
 
   if (config.featureToggles.newCourseAndQualificationHistoryEnabled) {
     router.get('/plan/:prisonNumber/in-prison-courses-and-qualifications', [

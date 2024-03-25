@@ -43,7 +43,7 @@ export default class FunctionalSkillsPage extends Page {
   }
 
   hasCuriousUnavailableMessageDisplayed() {
-    this.curiousUnavailableMessage().should('be.exist')
+    this.curiousUnavailableMessage().should('be.visible')
     return this
   }
 

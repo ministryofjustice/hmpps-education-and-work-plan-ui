@@ -73,7 +73,7 @@ export default class CuriousService {
       const allCourses = apiLearnerEducation
         .map(learnerEducation => toInPrisonCourse(learnerEducation))
         .sort((left: InPrisonCourse, right: InPrisonCourse) =>
-          dateComparator(left.courseCompletionDate, right.courseCompletionDate),
+          dateComparator(left.courseCompletionDate, right.courseCompletionDate, 'DESC'),
         )
       const allCoursesWithPrisonNamePopulated = await this.setPrisonNamesOnInPrisonCourses(allCourses, username)
 

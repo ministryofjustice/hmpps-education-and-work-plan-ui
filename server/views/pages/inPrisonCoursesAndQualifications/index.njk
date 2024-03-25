@@ -38,83 +38,91 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
 
-      {% set curiousHelpText %}
-        Information from Curious. This only includes educational courses. Contact the local education team to find out more.
-      {% endset %}
+      {% if not problemRetrievingData %}
 
-      {% set completedCoursesHtml %}
-        <p class="govuk-hint">{{ curiousHelpText }}</p>
-        {% if completedCourses.length > 0 %}
-          <h2 class="govuk-heading-m">Completed courses</h2>
-          {{ sortableTable({
-            id: "completed-courses",
-            courses: completedCourses,
-            locationColumn: true,
-            completedOnColumn: true,
-            gradeColumn: true
-          }) }}
-        {% else %}
-          <p class="govuk-body">{{ prisonerSummary.firstName }} {{ prisonerSummary.lastName }} has not completed any courses.</p>
-        {% endif %}
-      {% endset -%}
+        {% set curiousHelpText %}
+          Information from Curious. This only includes educational courses. Contact the local education team to find out more.
+        {% endset %}
 
-      {% set inProgressCoursesHtml %}
-        <p class="govuk-hint">{{ curiousHelpText }}</p>
-        {% if inProgressCourses.length > 0 %}
-          <h2 class="govuk-heading-m">Current courses</h2>
-          {{ sortableTable({
-            id: "in-progress-courses",
-            courses: inProgressCourses,
-            plannedEndDateColumn: true
-          }) }}
-        {% else %}
-          <p class="govuk-body">{{ prisonerSummary.firstName }} {{ prisonerSummary.lastName }} is not currently doing any courses.</p>
-        {% endif %}
-      {% endset -%}
+        {% set completedCoursesHtml %}
+          <p class="govuk-hint">{{ curiousHelpText }}</p>
+          {% if completedCourses.length > 0 %}
+            <h2 class="govuk-heading-m">Completed courses</h2>
+            {{ sortableTable({
+              id: "completed-courses",
+              courses: completedCourses,
+              locationColumn: true,
+              completedOnColumn: true,
+              gradeColumn: true
+            }) }}
+          {% else %}
+            <p class="govuk-body" data-qa="no-completed-courses-message">{{ prisonerSummary.firstName }} {{ prisonerSummary.lastName }} has not completed any courses.</p>
+          {% endif %}
+        {% endset -%}
 
-      {% set withdrawnCoursesHtml %}
-        <p class="govuk-hint">{{ curiousHelpText }}</p>
-        {% if withdrawnCourses.length > 0 %}
-          <h2 class="govuk-heading-m">Withdrawn courses</h2>
-          {{ sortableTable({
-            id: "withdrawn-courses",
-            courses: withdrawnCourses,
-            locationColumn: true,
-            endDateColumn: true,
-            statusColumn: true,
-            reasonColumn: true
-          }) }}
-        {% else %}
-          <p class="govuk-body">{{ prisonerSummary.firstName }} {{ prisonerSummary.lastName }} has no withdrawn courses.</p>
-        {% endif %}
-      {% endset -%}
+        {% set inProgressCoursesHtml %}
+          <p class="govuk-hint">{{ curiousHelpText }}</p>
+          {% if inProgressCourses.length > 0 %}
+            <h2 class="govuk-heading-m">Current courses</h2>
+            {{ sortableTable({
+              id: "in-progress-courses",
+              courses: inProgressCourses,
+              plannedEndDateColumn: true
+            }) }}
+          {% else %}
+            <p class="govuk-body" data-qa="no-in-progress-courses-message">{{ prisonerSummary.firstName }} {{ prisonerSummary.lastName }} is not currently doing any courses.</p>
+          {% endif %}
+        {% endset -%}
 
-      {{ govukTabs({
-        items: [
-          {
-            label: "Completed ([X] courses)",
-            id: "complete-courses",
-            panel: {
-              html: completedCoursesHtml
+        {% set withdrawnCoursesHtml %}
+          <p class="govuk-hint">{{ curiousHelpText }}</p>
+          {% if withdrawnCourses.length > 0 %}
+            <h2 class="govuk-heading-m">Withdrawn courses</h2>
+            {{ sortableTable({
+              id: "withdrawn-courses",
+              courses: withdrawnCourses,
+              locationColumn: true,
+              endDateColumn: true,
+              statusColumn: true,
+              reasonColumn: true
+            }) }}
+          {% else %}
+            <p class="govuk-body" data-qa="no-withdrawn-courses-message">{{ prisonerSummary.firstName }} {{ prisonerSummary.lastName }} has no withdrawn courses.</p>
+          {% endif %}
+        {% endset -%}
+
+        {{ govukTabs({
+          items: [
+            {
+              label: "Completed (" + completedCourses.length + " course" + ("s" if completedCourses.length !== 1) + ")",
+              id: "completed-courses",
+              panel: {
+                html: completedCoursesHtml
+              }
+            },
+            {
+              label: "In progress ([X] courses)",
+              id: "in-progress-courses",
+              panel: {
+                html: inProgressCoursesHtml
+              }
+            },
+            {
+              label: "Withdrawn ([X] courses)",
+              id: "withdrawn-courses",
+              panel: {
+                html: withdrawnCoursesHtml
+              }
             }
-          },
-          {
-            label: "In progress ([X] courses)",
-            id: "in-progress-courses",
-            panel: {
-              html: inProgressCoursesHtml
-            }
-          },
-          {
-            label: "Withdrawn ([X] courses)",
-            id: "withdrawn-courses",
-            panel: {
-              html: withdrawnCoursesHtml
-            }
-          }
-        ]
-      }) }}
+          ]
+        }) }}
 
+      {% else %}
+
+        <h2 class="govuk-heading-m" data-qa="curious-unavailable-message">We cannot show these details from Curious right now</h2>
+        <p class="govuk-body">Reload the page or try again later. Other parts of this service may still be available.</p>
+
+      {% endif %}
     </div>
   </div>
 
