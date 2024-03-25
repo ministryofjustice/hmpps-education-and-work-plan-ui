@@ -1,4 +1,4 @@
-import superagent, { Response, ResponseError } from 'superagent'
+import superagent, { ResponseError } from 'superagent'
 import Agent, { HttpsAgent } from 'agentkeepalive'
 import { Readable } from 'stream'
 
@@ -10,7 +10,7 @@ import { restClientMetricsMiddleware } from './restClientMetricsMiddleware'
 
 interface GetRequest {
   path?: string
-  query?: Record<string, string | number>
+  query?: Record<string, string>
   headers?: Record<string, string>
   responseType?: string
   raw?: boolean
