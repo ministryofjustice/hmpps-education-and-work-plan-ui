@@ -27,7 +27,7 @@ export default class InPrisonCoursesAndQualificationsPage extends Page {
   }
 
   hasInProgressCourse = (expectedCourseName: string): InPrisonCoursesAndQualificationsPage => {
-    this.completedCourseWithName(expectedCourseName).should('be.visible')
+    this.inProgressCourseWithName(expectedCourseName).should('be.visible')
     return this
   }
 
@@ -43,7 +43,7 @@ export default class InPrisonCoursesAndQualificationsPage extends Page {
   }
 
   hasWithdrawnCourse = (expectedCourseName: string): InPrisonCoursesAndQualificationsPage => {
-    this.completedCourseWithName(expectedCourseName).should('be.visible')
+    this.withdrawnCourseWithName(expectedCourseName).should('be.visible')
     return this
   }
 

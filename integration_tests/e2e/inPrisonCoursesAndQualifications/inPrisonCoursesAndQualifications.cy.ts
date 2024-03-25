@@ -29,6 +29,20 @@ context('In Prison Courses and Qualifications', () => {
     inPrisonCoursePage.hasCompletedCourse('GCSE Maths')
   })
 
+  it('should display in-progress In Prison courses', () => {
+    // Given
+    cy.task('stubLearnerEducation') // Stub learner education has 1 in progress course - GCSE English
+
+    cy.visit(`/plan/${prisonNumber}/in-prison-courses-and-qualifications`)
+    const inPrisonCoursePage = Page.verifyOnPage(InPrisonCoursesAndQualificationsPage)
+
+    // When
+    inPrisonCoursePage.clickInProgressCoursesTab()
+
+    // Then
+    inPrisonCoursePage.hasInProgressCourse('GCSE English')
+  })
+
   it('should display no courses messages given prisoner with no In Prison course data', () => {
     // Given
     cy.task('stubLearnerEducationWithNoCourses')

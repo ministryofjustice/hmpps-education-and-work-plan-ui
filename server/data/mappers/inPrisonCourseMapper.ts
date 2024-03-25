@@ -13,6 +13,9 @@ const toInPrisonCourse = (apiLearnerEducation: LearnerEducation): InPrisonCourse
     courseCompletionDate: apiLearnerEducation.learningActualEndDate
       ? moment(apiLearnerEducation.learningActualEndDate).utc().toDate()
       : null,
+    coursePlannedEndDate: apiLearnerEducation.learningPlannedEndDate
+      ? moment(apiLearnerEducation.learningPlannedEndDate).utc().toDate()
+      : null,
     isAccredited: apiLearnerEducation.isAccredited,
     grade: apiLearnerEducation.outcomeGrade || apiLearnerEducation.outcome || null,
     source: 'CURIOUS',
