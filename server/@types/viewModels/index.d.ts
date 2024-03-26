@@ -115,6 +115,7 @@ declare module 'viewModels' {
     coursePlannedEndDate?: Date
     isAccredited: boolean
     grade?: string
+    withdrawalReason?: string
     source: 'CURIOUS'
   }
 

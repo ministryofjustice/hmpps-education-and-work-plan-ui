@@ -1,5 +1,4 @@
 {% extends "../../partials/layout.njk" %}
-{% from "./macros/sortableTable.njk" import sortableTable %}
 
 {% set pageTitle = "Prisoner's in-prison courses and qualifications" %}
 
@@ -48,11 +47,7 @@
           <p class="govuk-hint">{{ curiousHelpText }}</p>
           {% if completedCourses.length > 0 %}
             <h2 class="govuk-heading-m">Completed courses</h2>
-            {{ sortableTable({
-              id: "completed-courses",
-              courses: completedCourses,
-              courseStatus: "COMPLETED"
-            }) }}
+            {% include './_completedCoursesTable.njk' %}
           {% else %}
             <p class="govuk-body" data-qa="no-completed-courses-message">{{ prisonerSummary.firstName }} {{ prisonerSummary.lastName }} has not completed any courses.</p>
           {% endif %}
@@ -62,11 +57,7 @@
           <p class="govuk-hint">{{ curiousHelpText }}</p>
           {% if inProgressCourses.length > 0 %}
             <h2 class="govuk-heading-m">Current courses</h2>
-            {{ sortableTable({
-              id: "in-progress-courses",
-              courses: inProgressCourses,
-              courseStatus: "IN_PROGRESS"
-            }) }}
+            {% include './_inProgressCoursesTable.njk' %}
           {% else %}
             <p class="govuk-body" data-qa="no-in-progress-courses-message">{{ prisonerSummary.firstName }} {{ prisonerSummary.lastName }} is not currently doing any courses.</p>
           {% endif %}
@@ -76,11 +67,7 @@
           <p class="govuk-hint">{{ curiousHelpText }}</p>
           {% if withdrawnCourses.length > 0 %}
             <h2 class="govuk-heading-m">Withdrawn courses</h2>
-            {{ sortableTable({
-              id: "withdrawn-courses",
-              courses: withdrawnCourses,
-              courseStatus: "WITHDRAWN"
-            }) }}
+            {% include './_withdrawnCoursesTable.njk' %}
           {% else %}
             <p class="govuk-body" data-qa="no-withdrawn-courses-message">{{ prisonerSummary.firstName }} {{ prisonerSummary.lastName }} has no withdrawn courses.</p>
           {% endif %}
@@ -103,7 +90,7 @@
               }
             },
             {
-              label: "Withdrawn ([X] courses)",
+              label: "Withdrawn (" + withdrawnCourses.length + " course" + ("s" if withdrawnCourses.length !== 1) + ")",
               id: "withdrawn-courses",
               panel: {
                 html: withdrawnCoursesHtml

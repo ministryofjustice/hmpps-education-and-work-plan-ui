@@ -43,6 +43,22 @@ context('In Prison Courses and Qualifications', () => {
     inPrisonCoursePage.hasInProgressCourse('GCSE English')
   })
 
+  it('should display withdrawn In Prison courses', () => {
+    // Given
+    cy.task('stubLearnerEducationWithWithdrawnCourses') // Stub learner education has 1 withdrawn course (GCSE Maths) and 1 temporarily withdrawn course (Bricklaying)
+
+    cy.visit(`/plan/${prisonNumber}/in-prison-courses-and-qualifications`)
+    const inPrisonCoursePage = Page.verifyOnPage(InPrisonCoursesAndQualificationsPage)
+
+    // When
+    inPrisonCoursePage.clickWithdrawnCoursesTab()
+
+    // Then
+    inPrisonCoursePage //
+      .hasWithdrawnCourse('GCSE Maths')
+      .hasWithdrawnCourse('BTEC Bricklaying for beginners')
+  })
+
   it('should display no courses messages given prisoner with no In Prison course data', () => {
     // Given
     cy.task('stubLearnerEducationWithNoCourses')
