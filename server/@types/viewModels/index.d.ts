@@ -414,7 +414,7 @@ declare module 'viewModels' {
     prisonName: string
   }
 
-  export interface PageFlowQueue {
+  export interface PageFlow {
     pageUrls: Array<string>
     currentPageIndex: number
   }

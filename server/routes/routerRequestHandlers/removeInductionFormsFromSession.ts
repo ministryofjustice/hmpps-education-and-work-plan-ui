@@ -7,6 +7,7 @@ import { NextFunction, Request, Response } from 'express'
  */
 const removeInductionFormsFromSession = async (req: Request, res: Response, next: NextFunction) => {
   req.session.pageFlowQueue = undefined
+  req.session.pageFlowHistory = undefined
   req.session.inductionDto = undefined
   req.session.hopingToWorkOnReleaseForm = undefined
   req.session.inPrisonWorkForm = undefined

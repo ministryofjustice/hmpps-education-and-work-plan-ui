@@ -4,7 +4,7 @@ import type { QualificationDetailsForm } from 'inductionForms'
 import QualificationDetailsController from '../common/qualificationDetailsController'
 import validateQualificationDetailsForm from './qualificationDetailsFormValidator'
 import QualificationLevelValue from '../../../enums/qualificationLevelValue'
-import { getPreviousPage } from '../../pageFlowQueue'
+import { getPreviousPage } from '../../pageFlowHistory'
 import getDynamicBackLinkAriaText from '../dynamicAriaTextResolver'
 
 /**
@@ -12,8 +12,8 @@ import getDynamicBackLinkAriaText from '../dynamicAriaTextResolver'
  */
 export default class QualificationDetailsUpdateController extends QualificationDetailsController {
   getBackLinkUrl(req: Request): string {
-    const { pageFlowQueue } = req.session
-    return getPreviousPage(pageFlowQueue)
+    const { pageFlowHistory } = req.session
+    return getPreviousPage(pageFlowHistory)
   }
 
   getBackLinkAriaText(req: Request): string {
@@ -49,11 +49,12 @@ export default class QualificationDetailsUpdateController extends QualificationD
 
     if (req.session.updateInductionQuestionSet) {
       // TODO redirect to next page in the question set
+      return res.redirect(`/prisoners/${prisonNumber}/induction/qualifications`)
     }
 
-    req.session.pageFlowQueue = undefined
     req.session.qualificationDetailsForm = undefined
     req.session.qualificationLevelForm = undefined
+    req.session.pageFlowHistory = undefined
     return res.redirect(`/prisoners/${prisonNumber}/induction/qualifications`)
   }
 

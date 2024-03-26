@@ -49,7 +49,7 @@ describe('wantToAddQualificationsUpdateController', () => {
 
       const prisonerSummary = aValidPrisonerSummary()
       req.session.prisonerSummary = prisonerSummary
-      req.session.pageFlowQueue = {
+      req.session.pageFlowHistory = {
         pageUrls: [
           `/prisoners/${prisonNumber}/induction/hoping-to-work-on-release`,
           `/prisoners/${prisonNumber}/induction/reasons-not-to-get-work`,
@@ -74,7 +74,7 @@ describe('wantToAddQualificationsUpdateController', () => {
         functionalSkills: expectedFunctionalSkills,
         errors,
       }
-      const expectedPageFlowQueue = {
+      const expectedPageFlowHistory = {
         pageUrls: [
           `/prisoners/${prisonNumber}/induction/hoping-to-work-on-release`,
           `/prisoners/${prisonNumber}/induction/reasons-not-to-get-work`,
@@ -96,7 +96,7 @@ describe('wantToAddQualificationsUpdateController', () => {
         expectedView,
       )
       expect(req.session.wantToAddQualificationsForm).toBeUndefined()
-      expect(req.session.pageFlowQueue).toEqual(expectedPageFlowQueue)
+      expect(req.session.pageFlowHistory).toEqual(expectedPageFlowHistory)
     })
 
     it('should get the Want To Add Qualifications view given there is a WantToAddQualificationsForm already on the session', async () => {
@@ -106,7 +106,7 @@ describe('wantToAddQualificationsUpdateController', () => {
 
       const prisonerSummary = aValidPrisonerSummary()
       req.session.prisonerSummary = prisonerSummary
-      req.session.pageFlowQueue = {
+      req.session.pageFlowHistory = {
         pageUrls: [
           `/prisoners/${prisonNumber}/induction/hoping-to-work-on-release`,
           `/prisoners/${prisonNumber}/induction/reasons-not-to-get-work`,
@@ -131,7 +131,7 @@ describe('wantToAddQualificationsUpdateController', () => {
         functionalSkills: expectedFunctionalSkills,
         errors,
       }
-      const expectedPageFlowQueue = {
+      const expectedPageFlowHistory = {
         pageUrls: [
           `/prisoners/${prisonNumber}/induction/hoping-to-work-on-release`,
           `/prisoners/${prisonNumber}/induction/reasons-not-to-get-work`,
@@ -152,7 +152,7 @@ describe('wantToAddQualificationsUpdateController', () => {
         'pages/induction/prePrisonEducation/wantToAddQualifications',
         expectedView,
       )
-      expect(req.session.pageFlowQueue).toEqual(expectedPageFlowQueue)
+      expect(req.session.pageFlowHistory).toEqual(expectedPageFlowHistory)
     })
   })
 

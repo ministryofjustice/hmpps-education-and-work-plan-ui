@@ -386,11 +386,8 @@ describe('highestLevelOfEducationUpdateController', () => {
 
       const expectedUpdatedHighestLevelOfEducation = 'FURTHER_EDUCATION_COLLEGE'
       const expectedQualifications: Array<AchievedQualificationDto> = []
-      const expectedPageFlowQueue = {
-        pageUrls: [
-          `/prisoners/${prisonNumber}/induction/highest-level-of-education`,
-          `/prisoners/${prisonNumber}/induction/qualification-level`,
-        ],
+      const expectedPageFlowHistory = {
+        pageUrls: [`/prisoners/${prisonNumber}/induction/highest-level-of-education`],
         currentPageIndex: 0,
       }
 
@@ -408,7 +405,7 @@ describe('highestLevelOfEducationUpdateController', () => {
 
       expect(res.redirect).toHaveBeenCalledWith(`/prisoners/${prisonNumber}/induction/qualification-level`)
       expect(req.session.highestLevelOfEducationForm).toBeUndefined()
-      expect(req.session.pageFlowQueue).toEqual(expectedPageFlowQueue)
+      expect(req.session.pageFlowHistory).toEqual(expectedPageFlowHistory)
     })
 
     it('should not update Induction given error calling service', async () => {

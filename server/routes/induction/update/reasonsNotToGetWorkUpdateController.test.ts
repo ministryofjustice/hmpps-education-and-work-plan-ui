@@ -62,8 +62,8 @@ describe('reasonsNotToGetWorkUpdateController', () => {
       req.session.prisonerSummary = prisonerSummary
       const inductionDto = aShortQuestionSetInductionDto()
       req.session.inductionDto = inductionDto
-      req.session.reasonsNotToGetWorkForm = undefined
 
+      req.session.reasonsNotToGetWorkForm = undefined
       const expectedReasonsNotToGetWorkForm = {
         reasonsNotToGetWork: [ReasonsNotToGetWorkValue.HEALTH, ReasonsNotToGetWorkValue.OTHER],
         reasonsNotToGetWorkOther: 'Will be of retirement age at release',
@@ -87,8 +87,8 @@ describe('reasonsNotToGetWorkUpdateController', () => {
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/induction/reasonsNotToGetWork/index', expectedView)
       expect(req.session.reasonsNotToGetWorkForm).toBeUndefined()
-      expect(req.session.pageFlowQueue).toBeUndefined()
       expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(req.session.pageFlowHistory).toBeUndefined()
     })
 
     it('should get the Reasons Not To Get Work view given there is an ReasonsNotToGetWorkForm already on the session', async () => {
@@ -125,11 +125,11 @@ describe('reasonsNotToGetWorkUpdateController', () => {
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/induction/reasonsNotToGetWork/index', expectedView)
       expect(req.session.reasonsNotToGetWorkForm).toBeUndefined()
-      expect(req.session.pageFlowQueue).toBeUndefined()
       expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(req.session.pageFlowHistory).toBeUndefined()
     })
 
-    it('should get the Reasons Not To Get Work view given there is pageFlowQueue on the session', async () => {
+    it('should get the Reasons Not To Get Work view given there is pageFlowHistory on the session', async () => {
       // Given
       const prisonNumber = 'A1234BC'
       req.params.prisonNumber = prisonNumber
@@ -141,7 +141,7 @@ describe('reasonsNotToGetWorkUpdateController', () => {
       req.session.updateInductionQuestionSet = {
         hopingToWorkOnRelease: 'NO',
       }
-      req.session.pageFlowQueue = {
+      req.session.pageFlowHistory = {
         pageUrls: [`/prisoners/${prisonNumber}/induction/hoping-to-work-on-release`],
         currentPageIndex: 0,
       }
@@ -159,7 +159,7 @@ describe('reasonsNotToGetWorkUpdateController', () => {
         backLinkAriaText: `Back to Is Jimmy Lightfingers hoping to get work when they're released?`,
         errors,
       }
-      const expectedPageFlowQueue = {
+      const expectedPageFlowHistory = {
         pageUrls: [
           `/prisoners/${prisonNumber}/induction/hoping-to-work-on-release`,
           `/prisoners/${prisonNumber}/induction/reasons-not-to-get-work`,
@@ -178,7 +178,7 @@ describe('reasonsNotToGetWorkUpdateController', () => {
       expect(res.render).toHaveBeenCalledWith('pages/induction/reasonsNotToGetWork/index', expectedView)
       expect(req.session.reasonsNotToGetWorkForm).toBeUndefined()
       expect(req.session.inductionDto).toEqual(inductionDto)
-      expect(req.session.pageFlowQueue).toEqual(expectedPageFlowQueue)
+      expect(req.session.pageFlowHistory).toEqual(expectedPageFlowHistory)
     })
   })
 

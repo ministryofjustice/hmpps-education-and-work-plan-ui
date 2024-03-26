@@ -7,7 +7,7 @@ import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateIn
 import logger from '../../../../logger'
 import { InductionService } from '../../../services'
 import validateAdditionalTrainingForm from './additionalTrainingFormValidator'
-import { getPreviousPage } from '../../pageFlowQueue'
+import { getPreviousPage } from '../../pageFlowHistory'
 import getDynamicBackLinkAriaText from '../dynamicAriaTextResolver'
 
 /**
@@ -20,9 +20,9 @@ export default class AdditionalTrainingUpdateController extends AdditionalTraini
 
   getBackLinkUrl(req: Request): string {
     const { prisonNumber } = req.params
-    const { pageFlowQueue } = req.session
-    if (pageFlowQueue) {
-      return getPreviousPage(pageFlowQueue)
+    const { pageFlowHistory } = req.session
+    if (pageFlowHistory) {
+      return getPreviousPage(pageFlowHistory)
     }
     return `/plan/${prisonNumber}/view/education-and-training`
   }

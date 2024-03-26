@@ -1,6 +1,6 @@
 import type {
   FunctionalSkills,
-  PageFlowQueue,
+  PageFlow,
   PrisonerSummary,
   PrisonerSupportNeeds,
   UpdateInductionQuestionSet,
@@ -40,7 +40,8 @@ declare module 'express-session' {
     newGoals: Array<NewGoal> // An array of NewGoal representing the Goals that have been added
     updateGoalForm: UpdateGoalForm
     prisonerListSortOptions: string
-    pageFlowQueue: PageFlowQueue
+    pageFlowHistory: PageFlow
+    pageFlowQueue: PageFlow
     prisonerFunctionalSkills: FunctionalSkills
     // Induction related objects held on the session
     inductionDto: InductionDto

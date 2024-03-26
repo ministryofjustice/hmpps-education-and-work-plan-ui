@@ -1,5 +1,5 @@
 import { Request } from 'express'
-import { addPage } from '../../pageFlowQueue'
+import { setCurrentPage } from '../../pageFlowHistory'
 
 /**
  * Abstract controller class defining functionality common to all Induction screens and journeys.
@@ -15,9 +15,11 @@ export default abstract class InductionController {
    */
   abstract getBackLinkAriaText(req: Request): string
 
-  addCurrentPageToQueue(req: Request, currentPageUri: string) {
-    const { pageFlowQueue } = req.session
-    const updatedPageFlowQueue = addPage(pageFlowQueue, currentPageUri)
-    req.session.pageFlowQueue = updatedPageFlowQueue
+  addCurrentPageToHistory(req: Request, currentPageUri: string) {
+    if (!req.session.pageFlowHistory) {
+      req.session.pageFlowHistory = { pageUrls: [], currentPageIndex: 0 }
+    }
+    const updatedPageFlowHistory = setCurrentPage(req.session.pageFlowHistory, currentPageUri)
+    req.session.pageFlowHistory = updatedPageFlowHistory
   }
 }

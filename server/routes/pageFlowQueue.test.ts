@@ -1,29 +1,47 @@
-import type { PageFlowQueue } from 'viewModels'
-import { addPage, getCurrentPage, getNextPage, getPreviousPage, isFirstPage, isLastPage } from './pageFlowQueue'
+import type { PageFlow } from 'viewModels'
+import {
+  getCurrentPage,
+  getNextPage,
+  getPreviousPage,
+  isFirstPage,
+  isLastPage,
+  setCurrentPageIndex,
+} from './pageFlowQueue'
 
 describe('pageFlowQueue', () => {
-  const PAGE_FLOW_QUEUE: PageFlowQueue = {
+  const PAGE_FLOW_QUEUE: PageFlow = {
     pageUrls: ['/first-page', '/second-page', '/third-page'],
-    currentPageIndex: 2,
+    currentPageIndex: 0,
   }
 
   describe('getCurrentPage', () => {
     it('should get current page', () => {
       // Given
-      const pageFlowQueue = PAGE_FLOW_QUEUE
+      const pageFlowQueue = pageFlowQueueOnPageUrl('/second-page')
 
       // When
       const actual = getCurrentPage(pageFlowQueue)
 
       // Then
-      expect(actual).toEqual('/third-page')
+      expect(actual).toEqual('/second-page')
     })
   })
 
   describe('getNextPage', () => {
+    it('should get next page given pageFlowQueue is not on the last page', () => {
+      // Given
+      const pageFlowQueue = pageFlowQueueOnPageUrl('/second-page')
+
+      // When
+      const actual = getNextPage(pageFlowQueue)
+
+      // Then
+      expect(actual).toEqual('/third-page')
+    })
+
     it('should not get next page given pageFlowQueue is on the last page', () => {
       // Given
-      const pageFlowQueue = PAGE_FLOW_QUEUE
+      const pageFlowQueue = pageFlowQueueOnPageUrl('/third-page')
 
       // When
       const actual = getNextPage(pageFlowQueue)
@@ -36,21 +54,18 @@ describe('pageFlowQueue', () => {
   describe('getPreviousPage', () => {
     it('should get previous page given pageFlowQueue is not on the first page', () => {
       // Given
-      const pageFlowQueue = PAGE_FLOW_QUEUE
+      const pageFlowQueue = pageFlowQueueOnPageUrl('/second-page')
 
       // When
       const actual = getPreviousPage(pageFlowQueue)
 
       // Then
-      expect(actual).toEqual('/second-page')
+      expect(actual).toEqual('/first-page')
     })
 
     it('should not get previous page given pageFlowQueue is on the first page', () => {
       // Given
-      const pageFlowQueue: PageFlowQueue = {
-        pageUrls: ['/first-page'],
-        currentPageIndex: 0,
-      }
+      const pageFlowQueue = pageFlowQueueOnPageUrl('/first-page')
 
       // When
       const actual = getPreviousPage(pageFlowQueue)
@@ -60,13 +75,36 @@ describe('pageFlowQueue', () => {
     })
   })
 
+  describe('setCurrentPageIndex', () => {
+    it('should set current page index given a valid page in the pageFlowQueue', () => {
+      // Given
+      const pageFlowQueue = pageFlowQueueOnPageUrl('/first-page')
+      const targetPage = '/second-page'
+
+      // When
+      const actual = setCurrentPageIndex(pageFlowQueue, targetPage)
+
+      // Then
+      expect(actual.currentPageIndex).toEqual(1) // zero based index
+    })
+
+    it('should not set current page index given an invalid page in the pageFlowQueue', () => {
+      // Given
+      const pageFlowQueue = pageFlowQueueOnPageUrl('/first-page')
+      const targetPage = '/a-page-not-in-the-page-flow-queue'
+
+      // When
+      const actual = setCurrentPageIndex(pageFlowQueue, targetPage)
+
+      // Then
+      expect(actual.currentPageIndex).toEqual(0) // zero based index
+    })
+  })
+
   describe('isFirstPage', () => {
     it('should determine if isFirstPage given the pageFlowQueue is on the first page', () => {
       // Given
-      const pageFlowQueue: PageFlowQueue = {
-        pageUrls: ['/first-page'],
-        currentPageIndex: 0,
-      }
+      const pageFlowQueue = pageFlowQueueOnPageUrl('/first-page')
 
       // When
       const actual = isFirstPage(pageFlowQueue)
@@ -77,7 +115,7 @@ describe('pageFlowQueue', () => {
 
     it('should determine if isFirstPage given the pageFlowQueue is not on the first page', () => {
       // Given
-      const pageFlowQueue = PAGE_FLOW_QUEUE
+      const pageFlowQueue = pageFlowQueueOnPageUrl('/second-page')
 
       // When
       const actual = isFirstPage(pageFlowQueue)
@@ -90,7 +128,7 @@ describe('pageFlowQueue', () => {
   describe('isLastPage', () => {
     it('should determine if isLastPage given the pageFlowQueue is on the last page', () => {
       // Given
-      const pageFlowQueue = PAGE_FLOW_QUEUE
+      const pageFlowQueue = pageFlowQueueOnPageUrl('/third-page')
 
       // When
       const actual = isLastPage(pageFlowQueue)
@@ -98,37 +136,20 @@ describe('pageFlowQueue', () => {
       // Then
       expect(actual).toBeTruthy()
     })
-  })
 
-  describe('addPage', () => {
-    it('should add page and increment page index', () => {
+    it('should determine if isLastPage given the pageFlowQueue is not on the last page', () => {
       // Given
-      const pageFlowQueue = PAGE_FLOW_QUEUE
-      const expected: PageFlowQueue = {
-        pageUrls: ['/first-page', '/second-page', '/third-page', '/fourth-page'],
-        currentPageIndex: 3,
-      }
+      const pageFlowQueue = pageFlowQueueOnPageUrl('/second-page')
 
       // When
-      const actual = addPage(pageFlowQueue, '/fourth-page')
+      const actual = isLastPage(pageFlowQueue)
 
       // Then
-      expect(actual).toEqual(expected)
-    })
-
-    it('should not add page and remove pages after it given it already exists in the pageFlowQueue', () => {
-      // Given
-      const pageFlowQueue = PAGE_FLOW_QUEUE
-      const expected: PageFlowQueue = {
-        pageUrls: ['/first-page', '/second-page'],
-        currentPageIndex: 1,
-      }
-
-      // When
-      const actual = addPage(pageFlowQueue, '/second-page')
-
-      // Then
-      expect(actual).toEqual(expected)
+      expect(actual).toBeFalsy()
     })
   })
+
+  const pageFlowQueueOnPageUrl = (pageUrl: string): PageFlow => {
+    return setCurrentPageIndex(PAGE_FLOW_QUEUE, pageUrl)
+  }
 })

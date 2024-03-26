@@ -126,7 +126,7 @@ describe('additionalTrainingUpdateController', () => {
       expect(req.session.inductionDto).toEqual(inductionDto)
     })
 
-    it('should get Additional Training view given there is a pageFlowQueue on the session', async () => {
+    it('should get Additional Training view given there is a pageFlowHistory on the session', async () => {
       // Given
       const prisonNumber = 'A1234BC'
       req.params.prisonNumber = prisonNumber
@@ -139,7 +139,7 @@ describe('additionalTrainingUpdateController', () => {
       req.session.updateInductionQuestionSet = {
         hopingToWorkOnRelease: 'NO',
       }
-      req.session.pageFlowQueue = {
+      req.session.pageFlowHistory = {
         pageUrls: [`/prisoners/${prisonNumber}/induction/qualifications`],
         currentPageIndex: 0,
       }
@@ -156,7 +156,7 @@ describe('additionalTrainingUpdateController', () => {
         backLinkAriaText: `Back to Jimmy Lightfingers's qualifications`,
         errors,
       }
-      const expectedPageFlowQueue = {
+      const expectedPageFlowHistory = {
         pageUrls: [
           `/prisoners/${prisonNumber}/induction/qualifications`,
           `/prisoners/${prisonNumber}/induction/additional-training`,
@@ -175,7 +175,7 @@ describe('additionalTrainingUpdateController', () => {
       expect(res.render).toHaveBeenCalledWith('pages/induction/additionalTraining/index', expectedView)
       expect(req.session.additionalTrainingForm).toBeUndefined()
       expect(req.session.inductionDto).toEqual(inductionDto)
-      expect(req.session.pageFlowQueue).toEqual(expectedPageFlowQueue)
+      expect(req.session.pageFlowHistory).toEqual(expectedPageFlowHistory)
     })
   })
 

@@ -21,7 +21,7 @@ export default abstract class ReasonsNotToGetWorkController extends InductionCon
     // Check if we are in the midst of changing the main induction question set (i.e. from long route to short route)
     if (req.session.updateInductionQuestionSet) {
       const { prisonNumber } = req.params
-      this.addCurrentPageToQueue(req, `/prisoners/${prisonNumber}/induction/reasons-not-to-get-work`)
+      this.addCurrentPageToHistory(req, `/prisoners/${prisonNumber}/induction/reasons-not-to-get-work`)
     }
 
     const reasonsNotToGetWorkForm = req.session.reasonsNotToGetWorkForm || toReasonsNotToGetWorkForm(inductionDto)

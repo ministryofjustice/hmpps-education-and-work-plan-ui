@@ -7,7 +7,7 @@ import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateIn
 import logger from '../../../../logger'
 import { InductionService } from '../../../services'
 import validateReasonsNotToGetWorkForm from './reasonsNotToGetWorkFormValidator'
-import { getPreviousPage } from '../../pageFlowQueue'
+import { getPreviousPage } from '../../pageFlowHistory'
 import getDynamicBackLinkAriaText from '../dynamicAriaTextResolver'
 
 /**
@@ -20,9 +20,9 @@ export default class ReasonsNotToGetWorkUpdateController extends ReasonsNotToGet
 
   getBackLinkUrl(req: Request): string {
     const { prisonNumber } = req.params
-    const { pageFlowQueue } = req.session
-    if (pageFlowQueue) {
-      return getPreviousPage(pageFlowQueue)
+    const { pageFlowHistory } = req.session
+    if (pageFlowHistory) {
+      return getPreviousPage(pageFlowHistory)
     }
     return `/plan/${prisonNumber}/view/work-and-interests`
   }

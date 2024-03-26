@@ -1,12 +1,12 @@
 import createError from 'http-errors'
 import { NextFunction, Request, RequestHandler, Response } from 'express'
 import type { InductionDto } from 'inductionDto'
-import type { PageFlowQueue } from 'viewModels'
+import type { PageFlow } from 'viewModels'
 import QualificationsListController from '../common/qualificationsListController'
 import logger from '../../../../logger'
 import { InductionService } from '../../../services'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
-import { getNextPage } from '../../pageFlowQueue'
+import { setCurrentPage, getPreviousPage, isPageInFlow } from '../../pageFlowHistory'
 
 export default class QualificationsListUpdateController extends QualificationsListController {
   constructor(private readonly inductionService: InductionService) {
@@ -15,6 +15,18 @@ export default class QualificationsListUpdateController extends QualificationsLi
 
   getBackLinkUrl(req: Request): string {
     const { prisonNumber } = req.params
+    const { pageFlowHistory } = req.session
+    if (pageFlowHistory) {
+      // TODO - this needs thinking through!
+      // We cannot go back to /qualification-detail (if applicable), since the page forms have been removed from the session
+      // To make things more complex, it's possible we haven't come to this page yet, since we may have gone to /want-to-add-qualifications first
+      const previousPage = isPageInFlow(pageFlowHistory, `/prisoners/${prisonNumber}/induction/qualifications`)
+        ? `/prisoners/${prisonNumber}/induction/qualifications`
+        : `/prisoners/${prisonNumber}/induction/want-to-add-qualifications`
+      const revertedPageHistory = setCurrentPage(pageFlowHistory, previousPage)
+      req.session.pageFlowHistory = revertedPageHistory
+      return getPreviousPage(revertedPageHistory)
+    }
     return `/plan/${prisonNumber}/view/education-and-training`
   }
 
@@ -37,10 +49,11 @@ export default class QualificationsListUpdateController extends QualificationsLi
     // qualifications already on it or not.
 
     if (userClickedOnButton(req, 'addQualification')) {
-      const pageFlowQueue = this.buildPageFlowQueue(prisonNumber)
-      req.session.pageFlowQueue = pageFlowQueue
-      logger.debug(`Redirecting to /qualification-level from /qualifications`)
-      return res.redirect(getNextPage(pageFlowQueue))
+      if (!req.session.pageFlowHistory) {
+        const pageFlowHistory = this.buildPageFlowHistory(prisonNumber)
+        req.session.pageFlowHistory = pageFlowHistory
+      }
+      return res.redirect(`/prisoners/${prisonNumber}/induction/qualification-level`)
     }
 
     if (userClickedOnButton(req, 'removeQualification')) {
@@ -74,11 +87,8 @@ export default class QualificationsListUpdateController extends QualificationsLi
     }
   }
 
-  buildPageFlowQueue = (prisonNumber: string): PageFlowQueue => {
-    const pageUrls = [
-      `/prisoners/${prisonNumber}/induction/qualifications`,
-      `/prisoners/${prisonNumber}/induction/qualification-level`,
-    ]
+  buildPageFlowHistory = (prisonNumber: string): PageFlow => {
+    const pageUrls = [`/prisoners/${prisonNumber}/induction/qualifications`]
     return {
       pageUrls,
       currentPageIndex: 0,

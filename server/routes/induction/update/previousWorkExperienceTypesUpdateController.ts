@@ -2,7 +2,7 @@ import createError from 'http-errors'
 import { NextFunction, Request, RequestHandler, Response } from 'express'
 import type { InductionDto, PreviousWorkExperienceDto } from 'inductionDto'
 import type { PreviousWorkExperienceTypesForm } from 'inductionForms'
-import type { PageFlowQueue } from 'viewModels'
+import type { PageFlow } from 'viewModels'
 import logger from '../../../../logger'
 import PreviousWorkExperienceTypesController from '../common/previousWorkExperienceTypesController'
 import { InductionService } from '../../../services'
@@ -11,6 +11,7 @@ import TypeOfWorkExperienceValue from '../../../enums/typeOfWorkExperienceValue'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
 import previousWorkExperienceTypeScreenOrderComparator from '../previousWorkExperienceTypeScreenOrderComparator'
 import { getNextPage } from '../../pageFlowQueue'
+import { getPreviousPage } from '../../pageFlowHistory'
 
 export default class PreviousWorkExperienceTypesUpdateController extends PreviousWorkExperienceTypesController {
   constructor(private readonly inductionService: InductionService) {
@@ -18,11 +19,16 @@ export default class PreviousWorkExperienceTypesUpdateController extends Previou
   }
 
   getBackLinkUrl(req: Request): string {
+    const { pageFlowHistory } = req.session
+    if (pageFlowHistory) {
+      return getPreviousPage(pageFlowHistory)
+    }
     const { prisonNumber } = req.params
     return `/plan/${prisonNumber}/view/work-and-interests`
   }
 
   getBackLinkAriaText(req: Request): string {
+    // TODO - retrieve text for previous work experience types (a generic one for all types?)
     const { prisonerSummary } = req.session
     return `Back to ${prisonerSummary.firstName} ${prisonerSummary.lastName}'s learning and work progress`
   }
@@ -99,20 +105,21 @@ export default class PreviousWorkExperienceTypesUpdateController extends Previou
     const workExperienceTypesToShowDetailsFormFor = [
       ...typesOfPreviousWorkExperienceToShowDetailsFormFor(inductionDto, previousWorkExperienceTypesForm),
     ].sort(previousWorkExperienceTypeScreenOrderComparator) // sort them by the order presented on screen (which is not alphabetic on the enum values)
-    const pageFlowQueue = this.buildPageFlowQueue(workExperienceTypesToShowDetailsFormFor, prisonNumber)
-    req.session.pageFlowQueue = pageFlowQueue
     logger.debug(
       `Previous Work Experiences changes resulting in going to the Detail pages for ${workExperienceTypesToShowDetailsFormFor}`,
     )
 
     req.session.previousWorkExperienceTypesForm = undefined
+
+    const pageFlowQueue = this.buildPageFlowQueue(workExperienceTypesToShowDetailsFormFor, prisonNumber)
+    req.session.pageFlowQueue = pageFlowQueue
     return res.redirect(getNextPage(pageFlowQueue))
   }
 
   buildPageFlowQueue = (
     previousWorkExperienceTypes: Array<TypeOfWorkExperienceValue>,
     prisonNumber: string,
-  ): PageFlowQueue => {
+  ): PageFlow => {
     const previousWorkExperienceTypesPageUrl = `/prisoners/${prisonNumber}/induction/previous-work-experience`
     const pageUrls = [
       previousWorkExperienceTypesPageUrl,

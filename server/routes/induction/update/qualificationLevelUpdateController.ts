@@ -1,7 +1,7 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express'
 import QualificationLevelController from '../common/qualificationLevelController'
 import validateQualificationLevelForm from './qualificationLevelFormValidator'
-import { getPreviousPage } from '../../pageFlowQueue'
+import { getPreviousPage } from '../../pageFlowHistory'
 import getDynamicBackLinkAriaText from '../dynamicAriaTextResolver'
 
 /**
@@ -9,8 +9,8 @@ import getDynamicBackLinkAriaText from '../dynamicAriaTextResolver'
  */
 export default class QualificationLevelUpdateController extends QualificationLevelController {
   getBackLinkUrl(req: Request): string {
-    const { pageFlowQueue } = req.session
-    return getPreviousPage(pageFlowQueue)
+    const { pageFlowHistory } = req.session
+    return getPreviousPage(pageFlowHistory)
   }
 
   getBackLinkAriaText(req: Request): string {

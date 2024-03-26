@@ -2,7 +2,7 @@ import createError from 'http-errors'
 import { NextFunction, Request, Response } from 'express'
 import type { SessionData } from 'express-session'
 import type { PreviousWorkExperienceDto } from 'inductionDto'
-import type { PageFlowQueue } from 'viewModels'
+import type { PageFlow } from 'viewModels'
 import { InductionService } from '../../../services'
 import PreviousWorkExperienceDetailUpdateController from './previousWorkExperienceDetailUpdateController'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
@@ -438,7 +438,7 @@ describe('previousWorkExperienceDetailUpdateController', () => {
         req.params.typeOfWorkExperience = 'construction'
         req.path = `prisoners/${prisonNumber}/induction/previous-work-experience/construction`
 
-        const pageFlowQueue: PageFlowQueue = {
+        const pageFlowQueue: PageFlow = {
           pageUrls: [`prisoners/${prisonNumber}/induction/previous-work-experience/construction`],
           currentPageIndex: 0,
         }
@@ -503,7 +503,7 @@ describe('previousWorkExperienceDetailUpdateController', () => {
         req.params.typeOfWorkExperience = 'construction'
         req.path = `prisoners/${prisonNumber}/induction/previous-work-experience/construction`
 
-        const pageFlowQueue: PageFlowQueue = {
+        const pageFlowQueue: PageFlow = {
           pageUrls: [
             `prisoners/${prisonNumber}/induction/previous-work-experience/construction`,
             `prisoners/${prisonNumber}/induction/previous-work-experience/retail`,
