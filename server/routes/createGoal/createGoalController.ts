@@ -54,36 +54,6 @@ export default class CreateGoalController {
     return res.render('pages/goal/create/index', { ...view.renderArgs })
   }
 
-  // TODO: RR-734 - Create controller and view classes new create goal journey
-  newGetCreateGoalView: RequestHandler = async (req, res, next): Promise<void> => {
-    const { prisonNumber } = req.params
-    const { prisonerSummary } = req.session
-
-    req.session.newGoals = req.session.newGoals || []
-
-    if (!req.session.newGoal?.createGoalForm) {
-      req.session.newGoal = {
-        createGoalForm: { prisonNumber },
-      } as NewGoal
-    }
-
-    const today = moment().toDate()
-    const futureGoalTargetDates = [
-      futureGoalTargetDateCalculator(today, 3),
-      futureGoalTargetDateCalculator(today, 6),
-      futureGoalTargetDateCalculator(today, 12),
-    ]
-
-    const view = new CreateGoalView(
-      prisonerSummary,
-      req.session.newGoal.createGoalForm,
-      futureGoalTargetDates,
-      false,
-      req.flash('errors'),
-    )
-    return res.render('pages/goal/create/newIndex', { ...view.renderArgs })
-  }
-
   submitCreateGoalForm: RequestHandler = async (req, res, next): Promise<void> => {
     const { prisonNumber, goalIndex } = req.params
 
@@ -105,21 +75,6 @@ export default class CreateGoalController {
       return res.redirect(`/plan/${prisonNumber}/goals/review`)
     }
     return res.redirect(`/plan/${prisonNumber}/goals/${goalIndex}/add-step/1`)
-  }
-
-  // TODO: RR-748 - Implement submit handler for new create goal journey
-  newSubmitCreateGoalForm: RequestHandler = async (req, res, next): Promise<void> => {
-    const { prisonNumber, goalIndex } = req.params
-
-    req.session.newGoal.createGoalForm = { ...req.body }
-    const { createGoalForm } = req.session.newGoal
-
-    const errors = validateCreateGoalForm(createGoalForm)
-    if (errors.length > 0) {
-      req.flash('errors', errors)
-      return res.redirect(`/plan/${prisonNumber}/goals/${goalIndex}/create`)
-    }
-    return res.redirect(`/plan/${prisonNumber}/view/overview`)
   }
 
   getAddStepView: RequestHandler = async (req, res, next): Promise<void> => {
