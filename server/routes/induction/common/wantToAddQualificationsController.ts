@@ -1,43 +1,43 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express'
-import type { AchievedQualificationDto } from 'inductionDto'
 import type { Assessment } from 'viewModels'
+import type { WantToAddQualificationsForm } from 'inductionForms'
 import InductionController from './inductionController'
-import QualificationsListView from './qualificationsListView'
+import WantToAddQualificationsView from './wantToAddQualificationsView'
 import dateComparator from '../../dateComparator'
+import YesNoValue from '../../../enums/yesNoValue'
 
 /**
  * Abstract controller class defining functionality common to both the Create and Update Induction journeys.
  */
-export default abstract class QualificationsListController extends InductionController {
+export default abstract class WantToAddQualificationsController extends InductionController {
   /**
-   * Returns the Qualifications List view; suitable for use by the Create and Update journeys.
+   * Returns the Want to Add Qualifications view; suitable for use by the Create and Update journeys.
    */
-  getQualificationsListView: RequestHandler = async (
+  getWantToAddQualificationsView: RequestHandler = async (
     req: Request,
     res: Response,
     next: NextFunction,
   ): Promise<void> => {
-    const { prisonerSummary, inductionDto, prisonerFunctionalSkills } = req.session
-
-    const qualifications: Array<AchievedQualificationDto> = inductionDto.previousQualifications?.qualifications
-
+    const { prisonerSummary, prisonerFunctionalSkills } = req.session
     const functionalSkills = {
       ...prisonerFunctionalSkills,
       assessments: mostRecentAssessments(prisonerFunctionalSkills.assessments || []),
     }
+    const wantToAddQualificationsForm = req.session.wantToAddQualificationsForm || createWantToAddQualificationsForm()
+    req.session.wantToAddQualificationsForm = undefined
 
-    const view = new QualificationsListView(
+    const view = new WantToAddQualificationsView(
       prisonerSummary,
       this.getBackLinkUrl(req),
       this.getBackLinkAriaText(req),
-      qualifications,
+      wantToAddQualificationsForm,
       functionalSkills,
     )
-    return res.render('pages/induction/prePrisonEducation/qualificationsList', { ...view.renderArgs })
+    return res.render('pages/induction/prePrisonEducation/wantToAddQualifications', { ...view.renderArgs })
   }
 }
 
-// TODO - this is duplicated in WantToAddQualificationsController - needs putting somewhere common
+// TODO - this is duplicated in QualificationsListController - needs putting somewhere common
 const mostRecentAssessments = (allAssessments: Array<Assessment>): Array<Assessment> => {
   const allAssessmentsGroupedByTypeSortedByDateDesc = assessmentsGroupedByTypeSortedByDateDesc(allAssessments)
 
@@ -66,4 +66,10 @@ const assessmentsGroupedByTypeSortedByDateDesc = (assessments: Array<Assessment>
     )
   })
   return assessmentsByType
+}
+
+const createWantToAddQualificationsForm = (): WantToAddQualificationsForm => {
+  return {
+    wantToAddQualifications: YesNoValue.NO,
+  }
 }
