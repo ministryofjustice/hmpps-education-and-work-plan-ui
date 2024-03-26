@@ -85,8 +85,7 @@ Data supplied to this template:
                 <td class="govuk-table__cell" data-qa="educational-qualification-subject">{{ item.subject }}</td>
                 <td class="govuk-table__cell" data-qa="educational-qualification-grade">{{ item.grade }}</td>
                 <td class="govuk-table__cell">
-                  <button type="submit" class="app-u-button-as-link" value="{{ loop.index0 }}" name="removeQualification">Remove</button>
-                  <span class="govuk-visually-hidden"> {{ item.level | formatQualificationLevel }}, {{ item.subject }}, {{ item.grade }}</span>
+                  <button type="submit" class="app-u-button-as-link" value="{{ loop.index0 }}" name="removeQualification">Remove <span class="govuk-visually-hidden"> {{ item.level | formatQualificationLevel }}, {{ item.subject }}, {{ item.grade }}</span></button>
                 </td>
               </tr>
             {% endfor %}
