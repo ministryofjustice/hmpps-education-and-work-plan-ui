@@ -1,4 +1,4 @@
-import superagent, { Response, ResponseError } from 'superagent'
+import superagent, { ResponseError } from 'superagent'
 import Agent, { HttpsAgent } from 'agentkeepalive'
 import { Readable } from 'stream'
 
@@ -21,7 +21,8 @@ interface PostRequest {
   path?: string
   headers?: Record<string, string>
   responseType?: string
-  data?: Record<string, unknown>
+  query?: Record<string, string | number>
+  data?: Record<string, unknown> | Array<unknown>
   raw?: boolean
   retry?: boolean
 }
@@ -92,51 +93,52 @@ export default class RestClient {
     return ''
   }
 
-  async get({
+  async get<Response = unknown>({
     path = null,
     query = {},
     headers = {},
     responseType = '',
     raw = false,
     retry = false,
-  }: GetRequest): Promise<unknown> {
+  }: GetRequest): Promise<Response> {
     return this.processRequest({ path, headers, responseType, query, raw, retry, method: 'get' })
   }
 
-  async post({
+  async post<Response = unknown>({
     path = null,
     headers = {},
     responseType = '',
+    query = {},
     data = {},
     raw = false,
     retry = false,
-  }: PostRequest = {}): Promise<unknown> {
-    return this.processRequest({ path, headers, responseType, data, raw, retry, method: 'post' })
+  }: PostRequest = {}): Promise<Response> {
+    return this.processRequest({ path, headers, responseType, query, data, raw, retry, method: 'post' })
   }
 
-  async put({
+  async put<Response = unknown>({
     path = null,
     headers = {},
     responseType = '',
     data = {},
     raw = false,
     retry = false,
-  }: PutRequest = {}): Promise<unknown> {
+  }: PutRequest = {}): Promise<Response> {
     return this.processRequest({ path, headers, responseType, data, raw, retry, method: 'put' })
   }
 
-  async delete({
+  async delete<Response = unknown>({
     path = null,
     query = {},
     headers = {},
     responseType = '',
     raw = false,
     retry = false,
-  }: DeleteRequest = {}): Promise<unknown> {
+  }: DeleteRequest = {}): Promise<Response> {
     return this.processRequest({ path, headers, responseType, query, raw, retry, method: 'delete' })
   }
 
-  private async processRequest({
+  private async processRequest<Response = unknown>({
     path = null,
     headers = {},
     responseType = '',
@@ -145,7 +147,7 @@ export default class RestClient {
     retry = false,
     raw = false,
     method = undefined as 'get' | 'post' | 'put' | 'delete',
-  } = {}): Promise<unknown> {
+  } = {}): Promise<Response> {
     this.logRequest(method, path, query)
 
     const request = superagent[method](`${this.apiUrl()}${path}`)
@@ -175,7 +177,7 @@ export default class RestClient {
     }
 
     return request
-      .then((result: Response) => (raw ? result : result.body))
+      .then(result => (raw ? result : result.body))
       .catch((error: ResponseError): void => {
         const sanitisedError = sanitiseError(error)
         logger.warn({ ...sanitisedError }, `Error calling ${this.name}, path: '${path}', verb: ${method.toUpperCase()}`)

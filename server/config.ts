@@ -113,6 +113,14 @@ export default {
       },
       agent: new AgentConfig(Number(get('FRONTEND_COMPONENT_API_TIMEOUT_RESPONSE', 5000))),
     },
+    activities: {
+      url: get('ACTIVITIES_API_URL', 'http://localhost:8083', requiredInProduction),
+      timeout: {
+        response: Number(get('ACTIVITIES_AND_WORK_PLAN_API_TIMEOUT_RESPONSE', 10000)),
+        deadline: Number(get('ACTIVITIES_AND_WORK_PLAN_API_TIMEOUT_DEADLINE', 10000)),
+      },
+      agent: new AgentConfig(Number(get('ACTIVITIES_AND_WORK_PLAN_API_TIMEOUT_RESPONSE', 10000))),
+    },
   },
   domain: get('INGRESS_URL', 'http://localhost:3000', requiredInProduction),
   environmentName: get('ENVIRONMENT_NAME', ''),
