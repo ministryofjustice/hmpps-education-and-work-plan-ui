@@ -87,6 +87,7 @@ describe('reasonsNotToGetWorkUpdateController', () => {
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/induction/reasonsNotToGetWork/index', expectedView)
       expect(req.session.reasonsNotToGetWorkForm).toBeUndefined()
+      expect(req.session.pageFlowQueue).toBeUndefined()
       expect(req.session.inductionDto).toEqual(inductionDto)
     })
 
@@ -124,7 +125,60 @@ describe('reasonsNotToGetWorkUpdateController', () => {
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/induction/reasonsNotToGetWork/index', expectedView)
       expect(req.session.reasonsNotToGetWorkForm).toBeUndefined()
+      expect(req.session.pageFlowQueue).toBeUndefined()
       expect(req.session.inductionDto).toEqual(inductionDto)
+    })
+
+    it('should get the Reasons Not To Get Work view given there is pageFlowQueue on the session', async () => {
+      // Given
+      const prisonNumber = 'A1234BC'
+      req.params.prisonNumber = prisonNumber
+
+      const prisonerSummary = aValidPrisonerSummary()
+      req.session.prisonerSummary = prisonerSummary
+      const inductionDto = aShortQuestionSetInductionDto()
+      req.session.inductionDto = inductionDto
+      req.session.updateInductionQuestionSet = {
+        hopingToWorkOnRelease: 'NO',
+      }
+      req.session.pageFlowQueue = {
+        pageUrls: [`/prisoners/${prisonNumber}/induction/hoping-to-work-on-release`],
+        currentPageIndex: 0,
+      }
+
+      const expectedReasonsNotToGetWorkForm = {
+        reasonsNotToGetWork: [ReasonsNotToGetWorkValue.HEALTH, ReasonsNotToGetWorkValue.OTHER],
+        reasonsNotToGetWorkOther: 'Will be of retirement age at release',
+      }
+      req.session.reasonsNotToGetWorkForm = expectedReasonsNotToGetWorkForm
+
+      const expectedView = {
+        prisonerSummary,
+        form: expectedReasonsNotToGetWorkForm,
+        backLinkUrl: '/prisoners/A1234BC/induction/hoping-to-work-on-release',
+        backLinkAriaText: `Back to Is Jimmy Lightfingers hoping to get work when they're released?`,
+        errors,
+      }
+      const expectedPageFlowQueue = {
+        pageUrls: [
+          `/prisoners/${prisonNumber}/induction/hoping-to-work-on-release`,
+          `/prisoners/${prisonNumber}/induction/reasons-not-to-get-work`,
+        ],
+        currentPageIndex: 1,
+      }
+
+      // When
+      await controller.getReasonsNotToGetWorkView(
+        req as undefined as Request,
+        res as undefined as Response,
+        next as undefined as NextFunction,
+      )
+
+      // Then
+      expect(res.render).toHaveBeenCalledWith('pages/induction/reasonsNotToGetWork/index', expectedView)
+      expect(req.session.reasonsNotToGetWorkForm).toBeUndefined()
+      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(req.session.pageFlowQueue).toEqual(expectedPageFlowQueue)
     })
   })
 

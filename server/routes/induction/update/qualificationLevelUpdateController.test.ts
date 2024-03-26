@@ -55,11 +55,8 @@ describe('qualificationLevelUpdateController', () => {
       req.session.inductionDto = inductionDto
       req.session.qualificationLevelForm = undefined
       req.session.pageFlowQueue = {
-        pageUrls: [
-          `/prisoners/${prisonNumber}/induction/qualifications`,
-          `/prisoners/${prisonNumber}/induction/qualification-level`,
-        ],
-        currentPageIndex: 1,
+        pageUrls: [`/prisoners/${prisonNumber}/induction/qualifications`],
+        currentPageIndex: 0,
       }
 
       const expectedQualificationLevelForm = {
@@ -74,6 +71,13 @@ describe('qualificationLevelUpdateController', () => {
         backLinkAriaText: "Back to Jimmy Lightfingers's qualifications",
         errors,
       }
+      const expectedPageFlowQueue = {
+        pageUrls: [
+          `/prisoners/${prisonNumber}/induction/qualifications`,
+          `/prisoners/${prisonNumber}/induction/qualification-level`,
+        ],
+        currentPageIndex: 1,
+      }
 
       // When
       await controller.getQualificationLevelView(
@@ -86,6 +90,7 @@ describe('qualificationLevelUpdateController', () => {
       expect(res.render).toHaveBeenCalledWith('pages/induction/prePrisonEducation/qualificationLevel', expectedView)
       expect(req.session.qualificationLevelForm).toBeUndefined()
       expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(req.session.pageFlowQueue).toEqual(expectedPageFlowQueue)
     })
 
     it('should get the QualificationLevel view given there is an QualificationLevelForm already on the session', async () => {
@@ -98,11 +103,8 @@ describe('qualificationLevelUpdateController', () => {
       const inductionDto = aLongQuestionSetInductionDto()
       req.session.inductionDto = inductionDto
       req.session.pageFlowQueue = {
-        pageUrls: [
-          `/prisoners/${prisonNumber}/induction/qualifications`,
-          `/prisoners/${prisonNumber}/induction/qualification-level`,
-        ],
-        currentPageIndex: 1,
+        pageUrls: [`/prisoners/${prisonNumber}/induction/qualifications`],
+        currentPageIndex: 0,
       }
 
       const expectedQualificationLevelForm = { qualificationLevel: '' }
@@ -116,6 +118,13 @@ describe('qualificationLevelUpdateController', () => {
         backLinkAriaText: "Back to Jimmy Lightfingers's qualifications",
         errors,
       }
+      const expectedPageFlowQueue = {
+        pageUrls: [
+          `/prisoners/${prisonNumber}/induction/qualifications`,
+          `/prisoners/${prisonNumber}/induction/qualification-level`,
+        ],
+        currentPageIndex: 1,
+      }
 
       // When
       await controller.getQualificationLevelView(
@@ -128,6 +137,7 @@ describe('qualificationLevelUpdateController', () => {
       expect(res.render).toHaveBeenCalledWith('pages/induction/prePrisonEducation/qualificationLevel', expectedView)
       expect(req.session.qualificationLevelForm).toBeUndefined()
       expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(req.session.pageFlowQueue).toEqual(expectedPageFlowQueue)
     })
   })
 
@@ -180,13 +190,6 @@ describe('qualificationLevelUpdateController', () => {
       req.session.prisonerSummary = prisonerSummary
       const inductionDto = aShortQuestionSetInductionDto()
       req.session.inductionDto = inductionDto
-      req.session.pageFlowQueue = {
-        pageUrls: [
-          `/prisoners/${prisonNumber}/induction/qualifications`,
-          `/prisoners/${prisonNumber}/induction/qualification-level`,
-        ],
-        currentPageIndex: 1,
-      }
 
       const qualificationLevelForm = {
         qualificationLevel: QualificationLevelValue.LEVEL_5,

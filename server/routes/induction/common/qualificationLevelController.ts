@@ -18,6 +18,8 @@ export default abstract class QualificationLevelController extends InductionCont
     if (!pageFlowQueue) {
       return res.redirect(`/plan/${prisonerSummary.prisonNumber}/view/education-and-training`)
     }
+    const { prisonNumber } = req.params
+    this.addCurrentPageToQueue(req, `/prisoners/${prisonNumber}/induction/qualification-level`)
 
     const qualificationLevelForm = req.session.qualificationLevelForm || { qualificationLevel: '' }
     req.session.qualificationLevelForm = undefined

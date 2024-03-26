@@ -47,10 +47,13 @@ export default class QualificationDetailsUpdateController extends QualificationD
       qualificationLevelForm.qualificationLevel,
     )
 
+    if (req.session.updateInductionQuestionSet) {
+      // TODO redirect to next page in the question set
+    }
+
+    req.session.pageFlowQueue = undefined
     req.session.qualificationDetailsForm = undefined
     req.session.qualificationLevelForm = undefined
-    req.session.pageFlowQueue = undefined
-
     return res.redirect(`/prisoners/${prisonNumber}/induction/qualifications`)
   }
 

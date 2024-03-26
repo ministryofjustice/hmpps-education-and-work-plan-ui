@@ -1,7 +1,7 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express'
 import QualificationLevelController from '../common/qualificationLevelController'
 import validateQualificationLevelForm from './qualificationLevelFormValidator'
-import { addPage, getNextPage, getPreviousPage } from '../../pageFlowQueue'
+import { getPreviousPage } from '../../pageFlowQueue'
 import getDynamicBackLinkAriaText from '../dynamicAriaTextResolver'
 
 /**
@@ -23,7 +23,7 @@ export default class QualificationLevelUpdateController extends QualificationLev
     next: NextFunction,
   ): Promise<void> => {
     const { prisonNumber } = req.params
-    const { prisonerSummary, pageFlowQueue } = req.session
+    const { prisonerSummary } = req.session
 
     req.session.qualificationLevelForm = { ...req.body }
     const { qualificationLevelForm } = req.session
@@ -34,8 +34,6 @@ export default class QualificationLevelUpdateController extends QualificationLev
       return res.redirect(`/prisoners/${prisonNumber}/induction/qualification-level`)
     }
 
-    const updatedPageFlowQueue = addPage(pageFlowQueue, `/prisoners/${prisonNumber}/induction/qualification-details`)
-    req.session.pageFlowQueue = updatedPageFlowQueue
-    return res.redirect(getNextPage(updatedPageFlowQueue))
+    return res.redirect(`/prisoners/${prisonNumber}/induction/qualification-details`)
   }
 }

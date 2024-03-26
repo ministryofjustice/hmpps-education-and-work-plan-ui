@@ -21,7 +21,6 @@ import QualificationDetailsUpdateController from './qualificationDetailsUpdateCo
 import HopingToWorkOnReleaseUpdateController from './hopingToWorkOnReleaseUpdateController'
 import WantToAddQualificationsUpdateController from './wantToAddQualificationsUpdateController'
 import retrieveFunctionalSkillsIfNotInSession from '../../routerRequestHandlers/retrieveFunctionalSkillsIfNotInSession'
-import setCurrentPageInPageFlowQueue from '../../routerRequestHandlers/setCurrentPageInPageFlowQueue'
 import retrieveInductionIfNotInSession from '../../routerRequestHandlers/retrieveInductionIfNotInSession'
 import retrievePrisonerSummaryIfNotInSession from '../../routerRequestHandlers/retrievePrisonerSummaryIfNotInSession'
 
@@ -59,13 +58,11 @@ export default (router: Router, services: Services) => {
       checkUserHasEditAuthority(),
       retrievePrisonerSummaryIfNotInSession(services.prisonerSearchService),
       retrieveInductionIfNotInSession(services.inductionService),
-      setCurrentPageInPageFlowQueue,
     ])
     router.post('/prisoners/:prisonNumber/induction/**', [
       checkUserHasEditAuthority(),
       retrievePrisonerSummaryIfNotInSession(services.prisonerSearchService),
       retrieveInductionIfNotInSession(services.inductionService),
-      setCurrentPageInPageFlowQueue,
     ])
   }
 

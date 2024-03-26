@@ -7,6 +7,8 @@ import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateIn
 import logger from '../../../../logger'
 import { InductionService } from '../../../services'
 import validateAdditionalTrainingForm from './additionalTrainingFormValidator'
+import { getPreviousPage } from '../../pageFlowQueue'
+import getDynamicBackLinkAriaText from '../dynamicAriaTextResolver'
 
 /**
  * Controller for Updating a Prisoner's Additional Training or Vocational Qualifications screen of the Induction.
@@ -18,12 +20,15 @@ export default class AdditionalTrainingUpdateController extends AdditionalTraini
 
   getBackLinkUrl(req: Request): string {
     const { prisonNumber } = req.params
+    const { pageFlowQueue } = req.session
+    if (pageFlowQueue) {
+      return getPreviousPage(pageFlowQueue)
+    }
     return `/plan/${prisonNumber}/view/education-and-training`
   }
 
   getBackLinkAriaText(req: Request): string {
-    const { prisonerSummary } = req.session
-    return `Back to ${prisonerSummary.firstName} ${prisonerSummary.lastName}'s learning and work progress`
+    return getDynamicBackLinkAriaText(req, this.getBackLinkUrl(req))
   }
 
   submitAdditionalTrainingForm: RequestHandler = async (
@@ -51,6 +56,11 @@ export default class AdditionalTrainingUpdateController extends AdditionalTraini
     }
 
     const updatedInduction = this.updatedInductionDtoWithAdditionalTraining(inductionDto, additionalTrainingForm)
+
+    if (req.session.updateInductionQuestionSet) {
+      // TODO redirect to next page in the question set
+    }
+
     const updateInductionDto = toCreateOrUpdateInductionDto(prisonId, updatedInduction)
 
     try {

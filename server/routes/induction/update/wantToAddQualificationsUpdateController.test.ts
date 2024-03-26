@@ -49,6 +49,14 @@ describe('wantToAddQualificationsUpdateController', () => {
 
       const prisonerSummary = aValidPrisonerSummary()
       req.session.prisonerSummary = prisonerSummary
+      req.session.pageFlowQueue = {
+        pageUrls: [
+          `/prisoners/${prisonNumber}/induction/hoping-to-work-on-release`,
+          `/prisoners/${prisonNumber}/induction/reasons-not-to-get-work`,
+        ],
+        currentPageIndex: 1,
+      }
+
       const functionalSkills = validFunctionalSkills()
       req.session.prisonerFunctionalSkills = functionalSkills
       req.session.wantToAddQualificationsForm = undefined
@@ -66,6 +74,14 @@ describe('wantToAddQualificationsUpdateController', () => {
         functionalSkills: expectedFunctionalSkills,
         errors,
       }
+      const expectedPageFlowQueue = {
+        pageUrls: [
+          `/prisoners/${prisonNumber}/induction/hoping-to-work-on-release`,
+          `/prisoners/${prisonNumber}/induction/reasons-not-to-get-work`,
+          `/prisoners/${prisonNumber}/induction/want-to-add-qualifications`,
+        ],
+        currentPageIndex: 2,
+      }
 
       // When
       await controller.getWantToAddQualificationsView(
@@ -80,6 +96,7 @@ describe('wantToAddQualificationsUpdateController', () => {
         expectedView,
       )
       expect(req.session.wantToAddQualificationsForm).toBeUndefined()
+      expect(req.session.pageFlowQueue).toEqual(expectedPageFlowQueue)
     })
 
     it('should get the Want To Add Qualifications view given there is a WantToAddQualificationsForm already on the session', async () => {
@@ -89,6 +106,14 @@ describe('wantToAddQualificationsUpdateController', () => {
 
       const prisonerSummary = aValidPrisonerSummary()
       req.session.prisonerSummary = prisonerSummary
+      req.session.pageFlowQueue = {
+        pageUrls: [
+          `/prisoners/${prisonNumber}/induction/hoping-to-work-on-release`,
+          `/prisoners/${prisonNumber}/induction/reasons-not-to-get-work`,
+        ],
+        currentPageIndex: 1,
+      }
+
       const functionalSkills = validFunctionalSkills()
       req.session.prisonerFunctionalSkills = functionalSkills
 
@@ -106,6 +131,14 @@ describe('wantToAddQualificationsUpdateController', () => {
         functionalSkills: expectedFunctionalSkills,
         errors,
       }
+      const expectedPageFlowQueue = {
+        pageUrls: [
+          `/prisoners/${prisonNumber}/induction/hoping-to-work-on-release`,
+          `/prisoners/${prisonNumber}/induction/reasons-not-to-get-work`,
+          `/prisoners/${prisonNumber}/induction/want-to-add-qualifications`,
+        ],
+        currentPageIndex: 2,
+      }
 
       // When
       await controller.getWantToAddQualificationsView(
@@ -119,6 +152,7 @@ describe('wantToAddQualificationsUpdateController', () => {
         'pages/induction/prePrisonEducation/wantToAddQualifications',
         expectedView,
       )
+      expect(req.session.pageFlowQueue).toEqual(expectedPageFlowQueue)
     })
   })
 
@@ -171,23 +205,7 @@ describe('wantToAddQualificationsUpdateController', () => {
       req.body = wantToAddQualificationsForm
       req.session.wantToAddQualificationsForm = undefined
 
-      req.session.pageFlowQueue = {
-        pageUrls: [
-          `/prisoners/${prisonNumber}/induction/hoping-to-work-on-release`,
-          `/prisoners/${prisonNumber}/induction/want-to-add-qualifications`,
-        ],
-        currentPageIndex: 1,
-      }
       mockedFormValidator.mockReturnValue(errors)
-
-      const expectedPageFlowQueue = {
-        pageUrls: [
-          `/prisoners/${prisonNumber}/induction/hoping-to-work-on-release`,
-          `/prisoners/${prisonNumber}/induction/want-to-add-qualifications`,
-          `/prisoners/${prisonNumber}/induction/qualification-level`,
-        ],
-        currentPageIndex: 1,
-      }
 
       // When
       await controller.submitWantToAddQualificationsForm(
@@ -198,7 +216,6 @@ describe('wantToAddQualificationsUpdateController', () => {
 
       // Then
       expect(res.redirect).toHaveBeenCalledWith(`/prisoners/${prisonNumber}/induction/qualification-level`)
-      expect(req.session.pageFlowQueue).toEqual(expectedPageFlowQueue)
     })
 
     it(`should proceed to additional training page given user wants to add a qualification`, async () => {
@@ -213,23 +230,8 @@ describe('wantToAddQualificationsUpdateController', () => {
       const wantToAddQualificationsForm = { wantToAddQualifications: YesNoValue.NO }
       req.body = wantToAddQualificationsForm
       req.session.wantToAddQualificationsForm = undefined
-      req.session.pageFlowQueue = {
-        pageUrls: [
-          `/prisoners/${prisonNumber}/induction/hoping-to-work-on-release`,
-          `/prisoners/${prisonNumber}/induction/want-to-add-qualifications`,
-        ],
-        currentPageIndex: 1,
-      }
-      mockedFormValidator.mockReturnValue(errors)
 
-      const expectedPageFlowQueue = {
-        pageUrls: [
-          `/prisoners/${prisonNumber}/induction/hoping-to-work-on-release`,
-          `/prisoners/${prisonNumber}/induction/want-to-add-qualifications`,
-          `/prisoners/${prisonNumber}/induction/additional-training`,
-        ],
-        currentPageIndex: 1,
-      }
+      mockedFormValidator.mockReturnValue(errors)
 
       // When
       await controller.submitWantToAddQualificationsForm(
@@ -240,7 +242,6 @@ describe('wantToAddQualificationsUpdateController', () => {
 
       // Then
       expect(res.redirect).toHaveBeenCalledWith(`/prisoners/${prisonNumber}/induction/additional-training`)
-      expect(req.session.pageFlowQueue).toEqual(expectedPageFlowQueue)
     })
   })
 })

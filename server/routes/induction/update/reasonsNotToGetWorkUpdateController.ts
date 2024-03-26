@@ -7,6 +7,8 @@ import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateIn
 import logger from '../../../../logger'
 import { InductionService } from '../../../services'
 import validateReasonsNotToGetWorkForm from './reasonsNotToGetWorkFormValidator'
+import { getPreviousPage } from '../../pageFlowQueue'
+import getDynamicBackLinkAriaText from '../dynamicAriaTextResolver'
 
 /**
  * Controller for Updating a Prisoner's Reasons Not To Get Work after release screen of the Induction.
@@ -18,12 +20,15 @@ export default class ReasonsNotToGetWorkUpdateController extends ReasonsNotToGet
 
   getBackLinkUrl(req: Request): string {
     const { prisonNumber } = req.params
+    const { pageFlowQueue } = req.session
+    if (pageFlowQueue) {
+      return getPreviousPage(pageFlowQueue)
+    }
     return `/plan/${prisonNumber}/view/work-and-interests`
   }
 
   getBackLinkAriaText(req: Request): string {
-    const { prisonerSummary } = req.session
-    return `Back to ${prisonerSummary.firstName} ${prisonerSummary.lastName}'s learning and work progress`
+    return getDynamicBackLinkAriaText(req, this.getBackLinkUrl(req))
   }
 
   submitReasonsNotToGetWorkForm: RequestHandler = async (
@@ -53,8 +58,15 @@ export default class ReasonsNotToGetWorkUpdateController extends ReasonsNotToGet
     }
 
     const updatedInduction = this.updatedInductionDtoWithReasonsNotToGetWork(inductionDto, reasonsNotToGetWorkForm)
-    const updateInductionDto = toCreateOrUpdateInductionDto(prisonId, updatedInduction)
 
+    // Check if we are in the midst of changing the main induction question set (i.e. from long route to short route)
+    if (req.session.updateInductionQuestionSet) {
+      const nextPage = `/prisoners/${prisonNumber}/induction/want-to-add-qualifications`
+      return res.redirect(nextPage)
+    }
+
+    // Otherwise update the Induction in the API and return to the main work-and-interests tab
+    const updateInductionDto = toCreateOrUpdateInductionDto(prisonId, updatedInduction)
     try {
       await this.inductionService.updateInduction(prisonNumber, updateInductionDto, req.user.token)
 

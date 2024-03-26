@@ -9,10 +9,11 @@ import type { PageFlowQueue } from 'viewModels'
  * Does not change the current page (current page index).
  */
 const addPage = (pageFlowQueue: PageFlowQueue, pageUrl: string): PageFlowQueue => {
-  pageFlowQueue.pageUrls.push(pageUrl)
-  return {
-    ...pageFlowQueue,
+  const pageIndex = pageFlowQueue.pageUrls.findIndex(page => page === pageUrl)
+  if (pageIndex < 0) {
+    pageFlowQueue.pageUrls.push(pageUrl)
   }
+  return setCurrentPageIndex(pageFlowQueue, pageUrl)
 }
 
 /**
@@ -46,17 +47,6 @@ const getPreviousPage = (pageFlowQueue: PageFlowQueue): string => {
   return undefined
 }
 
-const setCurrentPageIndex = (pageFlowQueue: PageFlowQueue, currentPagePath: string): PageFlowQueue => {
-  const pageIndex = pageFlowQueue.pageUrls.findIndex(page => page === currentPagePath)
-  if (pageIndex > -1) {
-    return {
-      ...pageFlowQueue,
-      currentPageIndex: pageIndex,
-    }
-  }
-  return pageFlowQueue
-}
-
 /**
  * Returns true if the current page in the specified [PageFlowQueue] is the first page.
  */
@@ -68,4 +58,25 @@ const isFirstPage = (pageFlowQueue: PageFlowQueue): boolean => pageFlowQueue.cur
 const isLastPage = (pageFlowQueue: PageFlowQueue): boolean =>
   pageFlowQueue.currentPageIndex === pageFlowQueue.pageUrls.length - 1
 
-export { addPage, getCurrentPage, getNextPage, getPreviousPage, setCurrentPageIndex, isFirstPage, isLastPage }
+/**
+ * Sets the current page index to the position of the provided page.
+ * Any pages after this index are removed, so that the current page is always is the last page. This is to maintain a
+ * clean history of previous pages (i.e. for the back links).
+ * Note that this is not intended to be used outside of this module.
+ * @param pageFlowQueue
+ * @param currentPagePath
+ */
+const setCurrentPageIndex = (pageFlowQueue: PageFlowQueue, currentPagePath: string): PageFlowQueue => {
+  const pageIndex = pageFlowQueue.pageUrls.findIndex(page => page === currentPagePath)
+  if (pageIndex > -1) {
+    // simplify the page history by removing any pages that have previously been added after this one
+    pageFlowQueue.pageUrls.splice(pageIndex + 1)
+    return {
+      ...pageFlowQueue,
+      currentPageIndex: pageIndex,
+    }
+  }
+  return pageFlowQueue
+}
+
+export { addPage, getCurrentPage, getNextPage, getPreviousPage, isFirstPage, isLastPage }

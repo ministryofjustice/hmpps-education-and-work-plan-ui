@@ -18,6 +18,8 @@ export default abstract class QualificationDetailsController extends InductionCo
     if (!pageFlowQueue) {
       return res.redirect(`/plan/${prisonerSummary.prisonNumber}/view/education-and-training`)
     }
+    const { prisonNumber } = req.params
+    this.addCurrentPageToQueue(req, `/prisoners/${prisonNumber}/induction/qualification-details`)
 
     const qualificationDetailsForm = req.session.qualificationDetailsForm || {
       qualificationSubject: '',

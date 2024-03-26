@@ -2,6 +2,7 @@ import createError from 'http-errors'
 import { NextFunction, Request, RequestHandler, Response } from 'express'
 import type { InductionDto } from 'inductionDto'
 import type { HopingToWorkOnReleaseForm } from 'inductionForms'
+import type { PageFlowQueue } from 'viewModels'
 import HopingToWorkOnReleaseController from '../common/hopingToWorkOnReleaseController'
 import validateHopingToWorkOnReleaseForm from './hopingToWorkOnReleaseFormValidator'
 import { InductionService } from '../../../services'
@@ -46,8 +47,14 @@ export default class HopingToWorkOnReleaseUpdateController extends HopingToWorkO
     req.session.inductionDto = updatedInduction
 
     if (changeWillResultInANewQuestionSet(inductionDto, hopingToWorkOnReleaseForm)) {
-      // TODO - build a new flow and redirect to first page of flow
-      throw new Error('Unsupported operation')
+      req.session.updateInductionQuestionSet = { hopingToWorkOnRelease: hopingToWorkOnReleaseForm.hopingToGetWork }
+      const nextPage =
+        hopingToWorkOnReleaseForm.hopingToGetWork === HopingToGetWorkValue.YES
+          ? `/prisoners/${prisonNumber}/induction/qualifications`
+          : `/prisoners/${prisonNumber}/induction/reasons-not-to-get-work`
+      const pageFlowQueue = this.buildPageFlowQueue(prisonNumber)
+      req.session.pageFlowQueue = pageFlowQueue
+      return res.redirect(nextPage)
     }
 
     try {
@@ -61,6 +68,13 @@ export default class HopingToWorkOnReleaseUpdateController extends HopingToWorkO
     req.session.hopingToWorkOnReleaseForm = undefined
     req.session.inductionDto = undefined
     return res.redirect(`/plan/${prisonNumber}/view/work-and-interests`)
+  }
+
+  buildPageFlowQueue = (prisonNumber: string): PageFlowQueue => {
+    return {
+      pageUrls: [`/prisoners/${prisonNumber}/induction/hoping-to-work-on-release`],
+      currentPageIndex: 0,
+    }
   }
 }
 
