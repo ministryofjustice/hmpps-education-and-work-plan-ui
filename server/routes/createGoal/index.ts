@@ -2,6 +2,7 @@ import { Router } from 'express'
 import { Services } from '../../services'
 import config from '../../config'
 import CreateGoalController from './createGoalController'
+import CreateGoalsController from './createGoalsController'
 import { checkUserHasEditAuthority } from '../../middleware/roleBasedAccessControl'
 import {
   checkCreateGoalFormExistsInSession,
@@ -16,9 +17,10 @@ import {
  */
 export default (router: Router, services: Services) => {
   const createGoalController = new CreateGoalController(services.educationAndWorkPlanService)
+  const createGoalsController = new CreateGoalsController()
   if (config.featureToggles.newCreateGoalJourneyEnabled) {
     // TODO: RR-734 - Create route classes new create goal journey
-    newCreateGoalRoutes(router, services, createGoalController)
+    newCreateGoalRoutes(router, services, createGoalsController)
   } else {
     createGoalRoutes(router, services, createGoalController)
   }
@@ -62,15 +64,15 @@ const createGoalRoutes = (router: Router, services: Services, createGoalControll
   router.post('/plan/:prisonNumber/goals/:goalIndex/add-note', [createGoalController.submitAddNoteForm])
 }
 
-const newCreateGoalRoutes = (router: Router, services: Services, createGoalController: CreateGoalController) => {
+const newCreateGoalRoutes = (router: Router, services: Services, createGoalsController: CreateGoalsController) => {
   router.use('/plan/:prisonNumber/goals/:goalIndex/create', [checkUserHasEditAuthority()])
   router.get('/plan/:prisonNumber/goals/:goalIndex/create', [
     retrievePrisonerSummaryIfNotInSession(services.prisonerSearchService),
-    createGoalController.newGetCreateGoalView,
+    createGoalsController.getCreateGoalsView,
   ])
   router.post('/plan/:prisonNumber/goals/:goalIndex/create', [
     checkPrisonerSummaryExistsInSession,
     checkCreateGoalFormExistsInSession,
-    createGoalController.newSubmitCreateGoalForm,
+    createGoalsController.submitCreateGoalsForm,
   ])
 }

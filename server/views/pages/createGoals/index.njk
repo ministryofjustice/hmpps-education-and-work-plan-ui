@@ -1,10 +1,10 @@
-{% extends "../../../partials/layout.njk" %}
+{% extends "../../partials/layout.njk" %}
 
-{% set pageId = "create-goal" %}
+{% set pageId = "create-goals" %}
 {% set pageTitle = "Create goals with prisoner" %}
 
 {% block beforeContent %}
-  {% include "../../../partials/breadcrumb.njk" %}
+  {% include "../../partials/breadcrumb.njk" %}
 {% endblock %}
 
 {% block content %}
@@ -31,7 +31,6 @@
       <form class="form" method="post" novalidate="">
         <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
         <input type="hidden" name="prisonNumber" value="{{ form.prisonNumber }}" />
-        <input type="hidden" name="stepNumber" value="{{ form.stepNumber }}" />
 
         <div class="govuk-summary-card">
           <div class="govuk-summary-card__title-wrapper">
@@ -125,22 +124,24 @@
               }) }}
 
             <div class="govuk-form-group">
-              {% set titleLabel = 'Step ' + form.stepNumber %}
+              <!-- TODO: Populate the stepNumber object to relect the correct number on the UI -->
+              {% set stepTitleLabel = 'Step ' + form.stepNumber %}
+              <!-- TODO: Populate the stepTitle object to reflect the correct step title on the UI -->
               {{ govukCharacterCount({
-                name: "title",
-                id: "title",
-                value: form.title,
+                name: "stepTitle",
+                id: "stepTitle",
+                value: form.stepTitle,
                 maxlength: 512,
                 rows: 2,
                 label: {
-                  text: titleLabel,
+                  text: stepTitleLabel,
                   classes: "govuk-label--s",
                   isPageHeading: false
                 },
                 hint: {
                   text: "Describe this step"
                 },
-                errorMessage: errors | findError('title')
+                errorMessage: errors | findError('stepTitle')
               }) }}
 
             </div>
