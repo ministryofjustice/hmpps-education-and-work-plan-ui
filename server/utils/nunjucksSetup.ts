@@ -35,7 +35,8 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
 
   app.locals.asset_path = '/assets/'
   app.locals.applicationName = 'Digital Prison Services'
-
+  app.locals.environmentName = config.environmentName
+  app.locals.environmentNameColour = config.environmentName === 'PRE-PRODUCTION' ? 'govuk-tag--green' : ''
   app.locals.applicationInsightsConnectionString = config.applicationInsights.connectionString
   app.locals.applicationInsightsRoleName = applicationInfo.applicationName
 
@@ -58,10 +59,8 @@ export function registerNunjucks(app?: express.Express): Environment {
   const njkEnv = nunjucks.configure(
     [
       path.join(__dirname, '../../server/views'),
-      'node_modules/govuk-frontend/dist',
-      'node_modules/govuk-frontend/dist/components/',
+      'node_modules/govuk-frontend/dist/',
       'node_modules/@ministryofjustice/frontend/',
-      'node_modules/@ministryofjustice/frontend/moj/components/',
     ],
     {
       autoescape: true,

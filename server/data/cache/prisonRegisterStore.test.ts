@@ -1,6 +1,6 @@
 import type { PrisonResponse } from 'prisonRegisterApiClient'
 import PrisonRegisterStore from './prisonRegisterStore'
-import { RedisClient } from './redisClient'
+import { RedisClient } from '../redisClient'
 import aValidPrisonResponse from '../../testsupport/prisonResponseTestDataBuilder'
 
 const redisClient = {

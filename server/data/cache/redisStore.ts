@@ -1,5 +1,5 @@
 import logger from '../../../logger'
-import { RedisClient } from './redisClient'
+import { RedisClient } from '../redisClient'
 
 export default abstract class RedisStore {
   protected constructor(private readonly redisClient: RedisClient) {

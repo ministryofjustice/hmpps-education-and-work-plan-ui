@@ -101,7 +101,7 @@ describe('educationAndWorkPlanClient', () => {
         userMessage: 'An unexpected error occurred',
         developerMessage: 'An unexpected error occurred',
       }
-      educationAndWorkPlanApi.get(`/action-plans/${prisonNumber}`).reply(500, expectedResponseBody)
+      educationAndWorkPlanApi.get(`/action-plans/${prisonNumber}`).thrice().reply(500, expectedResponseBody)
 
       // When
       try {
@@ -239,7 +239,7 @@ describe('educationAndWorkPlanClient', () => {
         userMessage: 'An unexpected error occurred',
         developerMessage: 'An unexpected error occurred',
       }
-      educationAndWorkPlanApi.get(`/timelines/${prisonNumber}`).reply(500, expectedResponseBody)
+      educationAndWorkPlanApi.get(`/timelines/${prisonNumber}`).thrice().reply(500, expectedResponseBody)
 
       // When
       try {
@@ -280,7 +280,7 @@ describe('educationAndWorkPlanClient', () => {
         userMessage: 'An unexpected error occurred',
         developerMessage: 'An unexpected error occurred',
       }
-      educationAndWorkPlanApi.get(`/inductions/${prisonNumber}`).reply(500, expectedResponseBody)
+      educationAndWorkPlanApi.get(`/inductions/${prisonNumber}`).thrice().reply(500, expectedResponseBody)
 
       // When
       try {

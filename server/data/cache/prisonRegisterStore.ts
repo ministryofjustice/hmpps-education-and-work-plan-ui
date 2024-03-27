@@ -1,5 +1,5 @@
 import type { PrisonResponse } from 'prisonRegisterApiClient'
-import { createRedisClient, RedisClient } from './redisClient'
+import { createRedisClient, RedisClient } from '../redisClient'
 import RedisStore from './redisStore'
 
 const ACTIVE_PRISONS = 'activePrisons'

@@ -1,11 +1,11 @@
 import superagent from 'superagent'
 import { URLSearchParams } from 'url'
 
-import type TokenStore from './cache/tokenStore'
 import logger from '../../logger'
 import config from '../config'
 import generateOauthClientToken from '../authentication/clientCredentials'
 import RestClient from './restClient'
+import TokenStore from './tokenStore/tokenStore'
 
 const timeoutSpec = config.apis.hmppsAuth.timeout
 const hmppsAuthUrl = config.apis.hmppsAuth.url
