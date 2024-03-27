@@ -266,6 +266,78 @@ describe('reasonsNotToGetWorkUpdateController', () => {
       expect(req.session.inductionDto).toBeUndefined()
     })
 
+    it('should submit reasons not to get work and move to qualifications page', async () => {
+      // Given
+      req.user.token = 'some-token'
+      const prisonNumber = 'A1234BC'
+      req.params.prisonNumber = prisonNumber
+
+      const prisonerSummary = aValidPrisonerSummary()
+      req.session.prisonerSummary = prisonerSummary
+      const inductionDto = aShortQuestionSetInductionDto()
+      req.session.inductionDto = inductionDto
+
+      const reasonsNotToGetWorkForm = {
+        reasonsNotToGetWork: [ReasonsNotToGetWorkValue.HEALTH, ReasonsNotToGetWorkValue.OTHER],
+        reasonsNotToGetWorkOther: 'Will be of retirement age at release',
+      }
+      req.body = reasonsNotToGetWorkForm
+      req.session.reasonsNotToGetWorkForm = undefined
+      mockedFormValidator.mockReturnValue(errors)
+
+      req.session.updateInductionQuestionSet = { hopingToWorkOnRelease: 'NO' }
+      const expectedNextPage = `/prisoners/${prisonNumber}/induction/qualifications`
+
+      // When
+      await controller.submitReasonsNotToGetWorkForm(
+        req as undefined as Request,
+        res as undefined as Response,
+        next as undefined as NextFunction,
+      )
+
+      // Then
+      expect(res.redirect).toHaveBeenCalledWith(expectedNextPage)
+      expect(req.session.reasonsNotToGetWorkForm).toEqual(reasonsNotToGetWorkForm)
+      expect(req.session.inductionDto).toEqual(inductionDto)
+    })
+
+    it('should submit reasons not to get work and move to want to add qualifications page', async () => {
+      // Given
+      req.user.token = 'some-token'
+      const prisonNumber = 'A1234BC'
+      req.params.prisonNumber = prisonNumber
+
+      const prisonerSummary = aValidPrisonerSummary()
+      req.session.prisonerSummary = prisonerSummary
+      const inductionDto = aShortQuestionSetInductionDto()
+      // Remove any qualifications to invoke the want-to-add-qualifications route
+      inductionDto.previousQualifications.qualifications.splice(0)
+      req.session.inductionDto = inductionDto
+
+      const reasonsNotToGetWorkForm = {
+        reasonsNotToGetWork: [ReasonsNotToGetWorkValue.HEALTH, ReasonsNotToGetWorkValue.OTHER],
+        reasonsNotToGetWorkOther: 'Will be of retirement age at release',
+      }
+      req.body = reasonsNotToGetWorkForm
+      req.session.reasonsNotToGetWorkForm = undefined
+      mockedFormValidator.mockReturnValue(errors)
+
+      req.session.updateInductionQuestionSet = { hopingToWorkOnRelease: 'NO' }
+      const expectedNextPage = `/prisoners/${prisonNumber}/induction/want-to-add-qualifications`
+
+      // When
+      await controller.submitReasonsNotToGetWorkForm(
+        req as undefined as Request,
+        res as undefined as Response,
+        next as undefined as NextFunction,
+      )
+
+      // Then
+      expect(res.redirect).toHaveBeenCalledWith(expectedNextPage)
+      expect(req.session.reasonsNotToGetWorkForm).toEqual(reasonsNotToGetWorkForm)
+      expect(req.session.inductionDto).toEqual(inductionDto)
+    })
+
     it('should not update Induction given error calling service', async () => {
       // Given
       req.user.token = 'some-token'
