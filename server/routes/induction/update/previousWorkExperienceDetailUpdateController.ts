@@ -9,6 +9,7 @@ import logger from '../../../../logger'
 import validatePreviousWorkExperienceDetailForm from './previousWorkExperienceDetailFormValidator'
 import TypeOfWorkExperienceValue from '../../../enums/typeOfWorkExperienceValue'
 import { getNextPage, isLastPage } from '../../pageFlowQueue'
+import { getPreviousPage } from '../../pageFlowHistory'
 
 /**
  * Controller for the Update of the Previous Work Experience Detail screen of the Induction.
@@ -20,11 +21,16 @@ export default class PreviousWorkExperienceDetailUpdateController extends Previo
   }
 
   getBackLinkUrl(req: Request): string {
+    const { pageFlowHistory } = req.session
+    if (pageFlowHistory) {
+      return getPreviousPage(pageFlowHistory)
+    }
     const { prisonNumber } = req.params
     return `/plan/${prisonNumber}/view/work-and-interests`
   }
 
   getBackLinkAriaText(req: Request): string {
+    // TODO - retrieve text for previous work experience types (a generic one for all types?)
     const { prisonerSummary } = req.session
     return `Back to ${prisonerSummary.firstName} ${prisonerSummary.lastName}'s learning and work progress`
   }

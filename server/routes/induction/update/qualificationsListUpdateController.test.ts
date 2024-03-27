@@ -235,11 +235,8 @@ describe('qualificationsListUpdateController', () => {
     req.session.prisonerSummary = prisonerSummary
     req.body = { addQualification: '0' }
 
-    const expectedPageFlowQueue = {
-      pageUrls: [
-        `/prisoners/${prisonNumber}/induction/qualifications`,
-        `/prisoners/${prisonNumber}/induction/qualification-level`,
-      ],
+    const expectedPageFlowHistory = {
+      pageUrls: [`/prisoners/${prisonNumber}/induction/qualifications`],
       currentPageIndex: 0,
     }
 
@@ -251,7 +248,7 @@ describe('qualificationsListUpdateController', () => {
     )
 
     // Then
-    expect(req.session.pageFlowQueue).toEqual(expectedPageFlowQueue)
+    expect(req.session.pageFlowHistory).toEqual(expectedPageFlowHistory)
     expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/induction/qualification-level')
   })
 })

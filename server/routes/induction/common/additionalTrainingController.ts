@@ -18,6 +18,12 @@ export default abstract class AdditionalTrainingController extends InductionCont
   ): Promise<void> => {
     const { prisonerSummary, inductionDto } = req.session
 
+    // Check if we are in the midst of changing the main induction question set (e.g. from long route to short route)
+    if (req.session.updateInductionQuestionSet) {
+      const { prisonNumber } = req.params
+      this.addCurrentPageToHistory(req, `/prisoners/${prisonNumber}/induction/additional-training`)
+    }
+
     const additionalTrainingForm = req.session.additionalTrainingForm || toAdditionalTrainingForm(inductionDto)
     req.session.additionalTrainingForm = undefined
 

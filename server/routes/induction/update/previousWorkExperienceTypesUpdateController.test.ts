@@ -2,7 +2,7 @@ import createError from 'http-errors'
 import { NextFunction, Request, Response } from 'express'
 import type { SessionData } from 'express-session'
 import type { InductionDto, PreviousWorkExperienceDto } from 'inductionDto'
-import type { PageFlowQueue } from 'viewModels'
+import type { PageFlow } from 'viewModels'
 import { InductionService } from '../../../services'
 import PreviousWorkExperienceTypesUpdateController from './previousWorkExperienceTypesUpdateController'
 import validatePreviousWorkExperienceTypesForm from './previousWorkExperienceTypesFormValidator'
@@ -362,7 +362,7 @@ describe('previousWorkExperienceTypesUpdateController', () => {
         },
       ]
 
-      const expectedPageFlowQueue: PageFlowQueue = {
+      const expectedPageFlowQueue: PageFlow = {
         pageUrls: [
           '/prisoners/A1234BC/induction/previous-work-experience',
           '/prisoners/A1234BC/induction/previous-work-experience/outdoor',
@@ -421,7 +421,7 @@ describe('previousWorkExperienceTypesUpdateController', () => {
         },
       ]
 
-      const expectedPageFlowQueue: PageFlowQueue = {
+      const expectedPageFlowQueue: PageFlow = {
         pageUrls: [
           '/prisoners/A1234BC/induction/previous-work-experience',
           '/prisoners/A1234BC/induction/previous-work-experience/other',

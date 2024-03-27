@@ -19,6 +19,9 @@ export default abstract class WantToAddQualificationsController extends Inductio
     next: NextFunction,
   ): Promise<void> => {
     const { prisonerSummary, prisonerFunctionalSkills } = req.session
+    const { prisonNumber } = req.params
+    this.addCurrentPageToHistory(req, `/prisoners/${prisonNumber}/induction/want-to-add-qualifications`)
+
     const functionalSkills = {
       ...prisonerFunctionalSkills,
       assessments: mostRecentAssessments(prisonerFunctionalSkills.assessments || []),

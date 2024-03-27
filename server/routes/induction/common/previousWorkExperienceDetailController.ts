@@ -20,7 +20,7 @@ export default abstract class PreviousWorkExperienceDetailController extends Ind
     next: NextFunction,
   ): Promise<void> => {
     const { prisonerSummary, inductionDto } = req.session
-    const { typeOfWorkExperience } = req.params
+    const { prisonNumber, typeOfWorkExperience } = req.params
 
     let previousWorkExperienceType: TypeOfWorkExperienceValue
     try {
@@ -32,6 +32,14 @@ export default abstract class PreviousWorkExperienceDetailController extends Ind
       })
     } catch (error) {
       return next(createError(404, `Previous Work Experience type ${typeOfWorkExperience} not found on Induction`))
+    }
+
+    // Check if we are in the midst of changing the main induction question set (e.g. from long route to short route)
+    if (req.session.updateInductionQuestionSet) {
+      this.addCurrentPageToHistory(
+        req,
+        `/prisoners/${prisonNumber}/induction/previous-work-experience/${typeOfWorkExperience}`,
+      )
     }
 
     const previousWorkExperienceDetailsForm =

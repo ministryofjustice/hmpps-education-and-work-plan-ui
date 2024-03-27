@@ -20,8 +20,8 @@ import QualificationLevelUpdateController from './qualificationLevelUpdateContro
 import QualificationDetailsUpdateController from './qualificationDetailsUpdateController'
 import HopingToWorkOnReleaseUpdateController from './hopingToWorkOnReleaseUpdateController'
 import WantToAddQualificationsUpdateController from './wantToAddQualificationsUpdateController'
-import retrieveFunctionalSkillsIfNotInSession from '../../routerRequestHandlers/retrieveFunctionalSkillsIfNotInSession'
 import setCurrentPageInPageFlowQueue from '../../routerRequestHandlers/setCurrentPageInPageFlowQueue'
+import retrieveFunctionalSkillsIfNotInSession from '../../routerRequestHandlers/retrieveFunctionalSkillsIfNotInSession'
 import retrieveInductionIfNotInSession from '../../routerRequestHandlers/retrieveInductionIfNotInSession'
 import retrievePrisonerSummaryIfNotInSession from '../../routerRequestHandlers/retrievePrisonerSummaryIfNotInSession'
 

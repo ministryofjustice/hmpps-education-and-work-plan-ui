@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express'
-import type { PageFlowQueue } from 'viewModels'
+import type { PageFlow } from 'viewModels'
 import type { InductionDto } from 'inductionDto'
 import type {
   AdditionalTrainingForm,
@@ -37,7 +37,8 @@ describe('removeInductionFormsFromSession', () => {
 
   it('should remove induction forms from session', async () => {
     // Given
-    req.session.pageFlowQueue = {} as PageFlowQueue
+    req.session.pageFlowQueue = {} as PageFlow
+    req.session.pageFlowHistory = {} as PageFlow
     req.session.inductionDto = {} as InductionDto
     req.session.hopingToWorkOnReleaseForm = {} as HopingToWorkOnReleaseForm
     req.session.inPrisonWorkForm = {} as InPrisonWorkForm
@@ -67,6 +68,7 @@ describe('removeInductionFormsFromSession', () => {
     // Then
     expect(next).toHaveBeenCalled()
     expect(req.session.pageFlowQueue).toBeUndefined()
+    expect(req.session.pageFlowHistory).toBeUndefined()
     expect(req.session.inductionDto).toBeUndefined()
     expect(req.session.hopingToWorkOnReleaseForm).toBeUndefined()
     expect(req.session.inPrisonWorkForm).toBeUndefined()

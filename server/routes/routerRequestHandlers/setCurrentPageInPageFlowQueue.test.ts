@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express'
-import type { PageFlowQueue } from 'viewModels'
+import type { PageFlow } from 'viewModels'
 import { SessionData } from 'express-session'
 import setCurrentPageInPageFlowQueue from './setCurrentPageInPageFlowQueue'
 import { setCurrentPageIndex } from '../pageFlowQueue'
@@ -34,14 +34,14 @@ describe('setCurrentPageInPageFlowQueue', () => {
 
   it('should set the current page in page flow queue given there is a PageFlowQueue on the session', async () => {
     // Given
-    const initialPageFlowQueue: PageFlowQueue = {
+    const initialPageFlowQueue: PageFlow = {
       pageUrls: ['/first-page', '/second-page', '/third-page'],
       currentPageIndex: 0,
     }
     req.session.pageFlowQueue = initialPageFlowQueue
     req.path = '/second-page'
 
-    const expectedPageFlowQueue: PageFlowQueue = {
+    const expectedPageFlowQueue: PageFlow = {
       pageUrls: ['/first-page', '/second-page', '/third-page'],
       currentPageIndex: 1,
     }

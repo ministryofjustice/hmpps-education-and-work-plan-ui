@@ -125,6 +125,58 @@ describe('additionalTrainingUpdateController', () => {
       expect(req.session.additionalTrainingForm).toBeUndefined()
       expect(req.session.inductionDto).toEqual(inductionDto)
     })
+
+    it('should get Additional Training view given there is a pageFlowHistory on the session', async () => {
+      // Given
+      const prisonNumber = 'A1234BC'
+      req.params.prisonNumber = prisonNumber
+
+      const prisonerSummary = aValidPrisonerSummary()
+      req.session.prisonerSummary = prisonerSummary
+      const inductionDto = aShortQuestionSetInductionDto()
+      req.session.inductionDto = inductionDto
+      req.session.additionalTrainingForm = undefined
+      req.session.updateInductionQuestionSet = {
+        hopingToWorkOnRelease: 'NO',
+      }
+      req.session.pageFlowHistory = {
+        pageUrls: [`/prisoners/${prisonNumber}/induction/qualifications`],
+        currentPageIndex: 0,
+      }
+
+      const expectedAdditionalTrainingForm = {
+        additionalTraining: [AdditionalTrainingValue.FULL_UK_DRIVING_LICENCE, AdditionalTrainingValue.OTHER],
+        additionalTrainingOther: 'Beginners cookery for IT professionals',
+      }
+
+      const expectedView = {
+        prisonerSummary,
+        form: expectedAdditionalTrainingForm,
+        backLinkUrl: '/prisoners/A1234BC/induction/qualifications',
+        backLinkAriaText: `Back to Jimmy Lightfingers's qualifications`,
+        errors,
+      }
+      const expectedPageFlowHistory = {
+        pageUrls: [
+          `/prisoners/${prisonNumber}/induction/qualifications`,
+          `/prisoners/${prisonNumber}/induction/additional-training`,
+        ],
+        currentPageIndex: 1,
+      }
+
+      // When
+      await controller.getAdditionalTrainingView(
+        req as undefined as Request,
+        res as undefined as Response,
+        next as undefined as NextFunction,
+      )
+
+      // Then
+      expect(res.render).toHaveBeenCalledWith('pages/induction/additionalTraining/index', expectedView)
+      expect(req.session.additionalTrainingForm).toBeUndefined()
+      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(req.session.pageFlowHistory).toEqual(expectedPageFlowHistory)
+    })
   })
 
   describe('submitAdditionalTrainingForm', () => {

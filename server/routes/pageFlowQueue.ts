@@ -1,24 +1,14 @@
-import type { PageFlowQueue } from 'viewModels'
+import type { PageFlow } from 'viewModels'
 
 /**
- * Module exposing utility functions that operate on [PageFlowQueue] instances
+ * Module exposing utility functions that operate on [PageFlowQueue] instances. This is intended for "mini" page flows,
+ * which may occur during a larger "main" flow of pages.
  */
-
-/**
- * Adds the provided page url to the last position in the specified [PageFlowQueue].
- * Does not change the current page (current page index).
- */
-const addPage = (pageFlowQueue: PageFlowQueue, pageUrl: string): PageFlowQueue => {
-  pageFlowQueue.pageUrls.push(pageUrl)
-  return {
-    ...pageFlowQueue,
-  }
-}
 
 /**
  * Returns the current page url in the specified [PageFlowQueue]
  */
-const getCurrentPage = (pageFlowQueue: PageFlowQueue): string => {
+const getCurrentPage = (pageFlowQueue: PageFlow): string => {
   return pageFlowQueue.pageUrls[pageFlowQueue.currentPageIndex]
 }
 
@@ -27,7 +17,7 @@ const getCurrentPage = (pageFlowQueue: PageFlowQueue): string => {
  * Does not change the current page (current page index).
  * If the current page is the last page in the queue, returns undefined.
  */
-const getNextPage = (pageFlowQueue: PageFlowQueue): string => {
+const getNextPage = (pageFlowQueue: PageFlow): string => {
   if (!isLastPage(pageFlowQueue)) {
     return pageFlowQueue.pageUrls[pageFlowQueue.currentPageIndex + 1]
   }
@@ -39,14 +29,14 @@ const getNextPage = (pageFlowQueue: PageFlowQueue): string => {
  * Does not change the current page (current page index).
  * If the current page is the first page in the queue, returns undefined.
  */
-const getPreviousPage = (pageFlowQueue: PageFlowQueue): string => {
+const getPreviousPage = (pageFlowQueue: PageFlow): string => {
   if (!isFirstPage(pageFlowQueue)) {
     return pageFlowQueue.pageUrls[pageFlowQueue.currentPageIndex - 1]
   }
   return undefined
 }
 
-const setCurrentPageIndex = (pageFlowQueue: PageFlowQueue, currentPagePath: string): PageFlowQueue => {
+const setCurrentPageIndex = (pageFlowQueue: PageFlow, currentPagePath: string): PageFlow => {
   const pageIndex = pageFlowQueue.pageUrls.findIndex(page => page === currentPagePath)
   if (pageIndex > -1) {
     return {
@@ -60,12 +50,12 @@ const setCurrentPageIndex = (pageFlowQueue: PageFlowQueue, currentPagePath: stri
 /**
  * Returns true if the current page in the specified [PageFlowQueue] is the first page.
  */
-const isFirstPage = (pageFlowQueue: PageFlowQueue): boolean => pageFlowQueue.currentPageIndex === 0
+const isFirstPage = (pageFlowQueue: PageFlow): boolean => pageFlowQueue.currentPageIndex === 0
 
 /**
  * Returns true if the current page in the specified [PageFlowQueue] is the last page.
  */
-const isLastPage = (pageFlowQueue: PageFlowQueue): boolean =>
+const isLastPage = (pageFlowQueue: PageFlow): boolean =>
   pageFlowQueue.currentPageIndex === pageFlowQueue.pageUrls.length - 1
 
-export { addPage, getCurrentPage, getNextPage, getPreviousPage, setCurrentPageIndex, isFirstPage, isLastPage }
+export { setCurrentPageIndex, getCurrentPage, getNextPage, getPreviousPage, isFirstPage, isLastPage }

@@ -1,4 +1,10 @@
-import type { FunctionalSkills, PageFlowQueue, PrisonerSummary, PrisonerSupportNeeds } from 'viewModels'
+import type {
+  FunctionalSkills,
+  PageFlow,
+  PrisonerSummary,
+  PrisonerSupportNeeds,
+  UpdateInductionQuestionSet,
+} from 'viewModels'
 import type { UpdateGoalForm } from 'forms'
 import type { NewGoal } from 'compositeForms'
 import type {
@@ -34,10 +40,12 @@ declare module 'express-session' {
     newGoals: Array<NewGoal> // An array of NewGoal representing the Goals that have been added
     updateGoalForm: UpdateGoalForm
     prisonerListSortOptions: string
-    pageFlowQueue: PageFlowQueue
+    pageFlowHistory: PageFlow
+    pageFlowQueue: PageFlow
     prisonerFunctionalSkills: FunctionalSkills
     // Induction related objects held on the session
     inductionDto: InductionDto
+    updateInductionQuestionSet: UpdateInductionQuestionSet
     hopingToWorkOnReleaseForm: HopingToWorkOnReleaseForm
     inPrisonWorkForm: InPrisonWorkForm
     inPrisonTrainingForm: InPrisonTrainingForm

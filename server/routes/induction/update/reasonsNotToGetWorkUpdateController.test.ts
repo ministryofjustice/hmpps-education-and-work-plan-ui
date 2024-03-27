@@ -62,8 +62,8 @@ describe('reasonsNotToGetWorkUpdateController', () => {
       req.session.prisonerSummary = prisonerSummary
       const inductionDto = aShortQuestionSetInductionDto()
       req.session.inductionDto = inductionDto
-      req.session.reasonsNotToGetWorkForm = undefined
 
+      req.session.reasonsNotToGetWorkForm = undefined
       const expectedReasonsNotToGetWorkForm = {
         reasonsNotToGetWork: [ReasonsNotToGetWorkValue.HEALTH, ReasonsNotToGetWorkValue.OTHER],
         reasonsNotToGetWorkOther: 'Will be of retirement age at release',
@@ -88,6 +88,7 @@ describe('reasonsNotToGetWorkUpdateController', () => {
       expect(res.render).toHaveBeenCalledWith('pages/induction/reasonsNotToGetWork/index', expectedView)
       expect(req.session.reasonsNotToGetWorkForm).toBeUndefined()
       expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(req.session.pageFlowHistory).toBeUndefined()
     })
 
     it('should get the Reasons Not To Get Work view given there is an ReasonsNotToGetWorkForm already on the session', async () => {
@@ -125,6 +126,59 @@ describe('reasonsNotToGetWorkUpdateController', () => {
       expect(res.render).toHaveBeenCalledWith('pages/induction/reasonsNotToGetWork/index', expectedView)
       expect(req.session.reasonsNotToGetWorkForm).toBeUndefined()
       expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(req.session.pageFlowHistory).toBeUndefined()
+    })
+
+    it('should get the Reasons Not To Get Work view given there is pageFlowHistory on the session', async () => {
+      // Given
+      const prisonNumber = 'A1234BC'
+      req.params.prisonNumber = prisonNumber
+
+      const prisonerSummary = aValidPrisonerSummary()
+      req.session.prisonerSummary = prisonerSummary
+      const inductionDto = aShortQuestionSetInductionDto()
+      req.session.inductionDto = inductionDto
+      req.session.updateInductionQuestionSet = {
+        hopingToWorkOnRelease: 'NO',
+      }
+      req.session.pageFlowHistory = {
+        pageUrls: [`/prisoners/${prisonNumber}/induction/hoping-to-work-on-release`],
+        currentPageIndex: 0,
+      }
+
+      const expectedReasonsNotToGetWorkForm = {
+        reasonsNotToGetWork: [ReasonsNotToGetWorkValue.HEALTH, ReasonsNotToGetWorkValue.OTHER],
+        reasonsNotToGetWorkOther: 'Will be of retirement age at release',
+      }
+      req.session.reasonsNotToGetWorkForm = expectedReasonsNotToGetWorkForm
+
+      const expectedView = {
+        prisonerSummary,
+        form: expectedReasonsNotToGetWorkForm,
+        backLinkUrl: '/prisoners/A1234BC/induction/hoping-to-work-on-release',
+        backLinkAriaText: `Back to Is Jimmy Lightfingers hoping to get work when they're released?`,
+        errors,
+      }
+      const expectedPageFlowHistory = {
+        pageUrls: [
+          `/prisoners/${prisonNumber}/induction/hoping-to-work-on-release`,
+          `/prisoners/${prisonNumber}/induction/reasons-not-to-get-work`,
+        ],
+        currentPageIndex: 1,
+      }
+
+      // When
+      await controller.getReasonsNotToGetWorkView(
+        req as undefined as Request,
+        res as undefined as Response,
+        next as undefined as NextFunction,
+      )
+
+      // Then
+      expect(res.render).toHaveBeenCalledWith('pages/induction/reasonsNotToGetWork/index', expectedView)
+      expect(req.session.reasonsNotToGetWorkForm).toBeUndefined()
+      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(req.session.pageFlowHistory).toEqual(expectedPageFlowHistory)
     })
   })
 
@@ -210,6 +264,78 @@ describe('reasonsNotToGetWorkUpdateController', () => {
       expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/view/work-and-interests`)
       expect(req.session.reasonsNotToGetWorkForm).toBeUndefined()
       expect(req.session.inductionDto).toBeUndefined()
+    })
+
+    it('should submit reasons not to get work and move to qualifications page', async () => {
+      // Given
+      req.user.token = 'some-token'
+      const prisonNumber = 'A1234BC'
+      req.params.prisonNumber = prisonNumber
+
+      const prisonerSummary = aValidPrisonerSummary()
+      req.session.prisonerSummary = prisonerSummary
+      const inductionDto = aShortQuestionSetInductionDto()
+      req.session.inductionDto = inductionDto
+
+      const reasonsNotToGetWorkForm = {
+        reasonsNotToGetWork: [ReasonsNotToGetWorkValue.HEALTH, ReasonsNotToGetWorkValue.OTHER],
+        reasonsNotToGetWorkOther: 'Will be of retirement age at release',
+      }
+      req.body = reasonsNotToGetWorkForm
+      req.session.reasonsNotToGetWorkForm = undefined
+      mockedFormValidator.mockReturnValue(errors)
+
+      req.session.updateInductionQuestionSet = { hopingToWorkOnRelease: 'NO' }
+      const expectedNextPage = `/prisoners/${prisonNumber}/induction/qualifications`
+
+      // When
+      await controller.submitReasonsNotToGetWorkForm(
+        req as undefined as Request,
+        res as undefined as Response,
+        next as undefined as NextFunction,
+      )
+
+      // Then
+      expect(res.redirect).toHaveBeenCalledWith(expectedNextPage)
+      expect(req.session.reasonsNotToGetWorkForm).toEqual(reasonsNotToGetWorkForm)
+      expect(req.session.inductionDto).toEqual(inductionDto)
+    })
+
+    it('should submit reasons not to get work and move to want to add qualifications page', async () => {
+      // Given
+      req.user.token = 'some-token'
+      const prisonNumber = 'A1234BC'
+      req.params.prisonNumber = prisonNumber
+
+      const prisonerSummary = aValidPrisonerSummary()
+      req.session.prisonerSummary = prisonerSummary
+      const inductionDto = aShortQuestionSetInductionDto()
+      // Remove any qualifications to invoke the want-to-add-qualifications route
+      inductionDto.previousQualifications.qualifications.splice(0)
+      req.session.inductionDto = inductionDto
+
+      const reasonsNotToGetWorkForm = {
+        reasonsNotToGetWork: [ReasonsNotToGetWorkValue.HEALTH, ReasonsNotToGetWorkValue.OTHER],
+        reasonsNotToGetWorkOther: 'Will be of retirement age at release',
+      }
+      req.body = reasonsNotToGetWorkForm
+      req.session.reasonsNotToGetWorkForm = undefined
+      mockedFormValidator.mockReturnValue(errors)
+
+      req.session.updateInductionQuestionSet = { hopingToWorkOnRelease: 'NO' }
+      const expectedNextPage = `/prisoners/${prisonNumber}/induction/want-to-add-qualifications`
+
+      // When
+      await controller.submitReasonsNotToGetWorkForm(
+        req as undefined as Request,
+        res as undefined as Response,
+        next as undefined as NextFunction,
+      )
+
+      // Then
+      expect(res.redirect).toHaveBeenCalledWith(expectedNextPage)
+      expect(req.session.reasonsNotToGetWorkForm).toEqual(reasonsNotToGetWorkForm)
+      expect(req.session.inductionDto).toEqual(inductionDto)
     })
 
     it('should not update Induction given error calling service', async () => {

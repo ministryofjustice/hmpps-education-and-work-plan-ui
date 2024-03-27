@@ -1,6 +1,5 @@
-import type { PageFlowQueue } from 'viewModels'
+import type { PageFlow } from 'viewModels'
 import {
-  addPage,
   getCurrentPage,
   getNextPage,
   getPreviousPage,
@@ -10,7 +9,7 @@ import {
 } from './pageFlowQueue'
 
 describe('pageFlowQueue', () => {
-  const PAGE_FLOW_QUEUE: PageFlowQueue = {
+  const PAGE_FLOW_QUEUE: PageFlow = {
     pageUrls: ['/first-page', '/second-page', '/third-page'],
     currentPageIndex: 0,
   }
@@ -150,24 +149,7 @@ describe('pageFlowQueue', () => {
     })
   })
 
-  describe('addPage', () => {
-    it('should add page and maintain existing index', () => {
-      // Given
-      const pageFlowQueue = pageFlowQueueOnPageUrl('/first-page')
-      const expected: PageFlowQueue = {
-        pageUrls: ['/first-page', '/second-page', '/third-page', '/fourth-page'],
-        currentPageIndex: 0,
-      }
-
-      // When
-      const actual = addPage(pageFlowQueue, '/fourth-page')
-
-      // Then
-      expect(actual).toEqual(expected)
-    })
-  })
-
-  const pageFlowQueueOnPageUrl = (pageUrl: string): PageFlowQueue => {
+  const pageFlowQueueOnPageUrl = (pageUrl: string): PageFlow => {
     return setCurrentPageIndex(PAGE_FLOW_QUEUE, pageUrl)
   }
 })
