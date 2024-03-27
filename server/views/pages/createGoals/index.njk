@@ -41,15 +41,15 @@
           <div class="govuk-summary-card__content">
 
               {{ govukCharacterCount({
-                name: "title",
-                id: "title",
-                value: form.title,
+                name: "goals[0].title",
+                id: "goals[0].title",
+                value: form.goals[0].title,
                 maxlength: 512,
                 label: {
                   text: "Describe the goal",
                   classes: "govuk-label--s"
                 },
-                errorMessage: errors | findError('title')
+                errorMessage: errors | findError('goals[0].title')
               }) }}
 
               {% set targetCompletionDateItems = [] %}
@@ -78,23 +78,23 @@
                     {
                       id: 'another-date-day',
                       label: 'Day',
-                      name: 'targetCompletionDate-day',
+                      name: 'goals[0].targetCompletionDate-day',
                       classes: 'govuk-input--width-2',
-                      value: form['targetCompletionDate-day']
+                      value: form.goals[0]['targetCompletionDate-day']
                     },
                     {
                       id: 'another-date-month',
                       label: 'Month',
-                      name: 'targetCompletionDate-month',
+                      name: 'goals[0].targetCompletionDate-month',
                       classes: 'govuk-input--width-2',
-                      value: form['targetCompletionDate-month']
+                      value: form.goals[0]['targetCompletionDate-month']
                     },
                     {
                       id: 'another-date-year',
                       label: 'Year',
-                      name: 'targetCompletionDate-year',
+                      name: 'goals[0].targetCompletionDate-year',
                       classes: 'govuk-input--width-4',
-                      value: form['targetCompletionDate-year']
+                      value: form.goals[0]['targetCompletionDate-year']
                     }
                   ]
                 }) }}
@@ -110,9 +110,9 @@
               %}
 
               {{ govukRadios({
-                name: "targetCompletionDate",
-                id: "targetCompletionDate",
-                value: form.targetCompletionDate,
+                name: "goals[0].targetCompletionDate",
+                id: "goals[0].targetCompletionDate",
+                value: form.goals[0].targetCompletionDate,
                 fieldset: {
                   legend: {
                     text: "When are they aiming to achieve this by?",
@@ -120,31 +120,30 @@
                   }
                 },
                 items: targetCompletionDateItems,
-                errorMessage: errors | findError('targetCompletionDate')
+                errorMessage: errors | findError('goals[0].targetCompletionDate')
               }) }}
 
-            <div class="govuk-form-group">
-              <!-- TODO: Populate the stepNumber object to relect the correct number on the UI -->
-              {% set stepTitleLabel = 'Step ' + form.stepNumber %}
-              <!-- TODO: Populate the stepTitle object to reflect the correct step title on the UI -->
-              {{ govukCharacterCount({
-                name: "stepTitle",
-                id: "stepTitle",
-                value: form.stepTitle,
-                maxlength: 512,
-                rows: 2,
-                label: {
-                  text: stepTitleLabel,
-                  classes: "govuk-label--s",
-                  isPageHeading: false
-                },
-                hint: {
-                  text: "Describe this step"
-                },
-                errorMessage: errors | findError('stepTitle')
-              }) }}
-
-            </div>
+              <div class="govuk-form-group">
+                <!-- TODO: Populate the loop object to relect the correct number on the UI -->
+                {% set stepTitleLabel = 'Step ' + form.goals[0].steps[(loop.index)] %}
+                <!-- TODO: Populate the loop object to reflect the correct step title on the UI -->
+                {{ govukCharacterCount({
+                  name: "goals[0].steps[0].title",
+                  id: "goals[0].steps[0].title",
+                  value: form.goals[0].steps[0].title,
+                  maxlength: 512,
+                  rows: 2,
+                  label: {
+                    text: stepTitleLabel,
+                    classes: "govuk-label--s",
+                    isPageHeading: false
+                  },
+                  hint: {
+                    text: "Describe this step"
+                  },
+                  errorMessage: errors | findError('goals[0].steps[0].title')
+                }) }}
+              </div>
 
             <div class="govuk-form-group govuk-!-margin-bottom-2">
               {{ govukButton({
@@ -159,7 +158,7 @@
             <div class="govuk-form-group">
               <div class="govuk-form-group">
                 <h1 class="govuk-label-wrapper">
-                  <label class="govuk-label govuk-label--s" for="note">
+                  <label class="govuk-label govuk-label--s" for="goals[0].note">
                     Add a note to this goal (optional)
                   </label>
                 </h1>
@@ -170,16 +169,18 @@
                     This note will be seen by the prisoner and other prison staff.
                   </strong>
                 </div>
-                {{ errors | findError('note') }}
-                <textarea class="govuk-textarea" id="note" name="note" rows="5" aria-describedby="warning-text">{{ form.note }}</textarea>
+                {{ errors | findError('goals[0].note') }}
+                <textarea class="govuk-textarea" id="goals[0].note" name="goals[0].note" rows="5" aria-describedby="warning-text">{{ form.goals[0].note }}</textarea>
               </div>
             </div>
-
 
           </div>
         </div>
 
         {{ govukButton({
+          id: "submit-button",
+          name: "action",
+          value: "submit-form",
           text: "Save to learning and work progress plan"
         }) }}
 
