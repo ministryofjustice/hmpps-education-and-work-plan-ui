@@ -40,7 +40,7 @@ describe('qualificationDetailsUpdateController', () => {
   })
 
   describe('getQualificationDetailsView', () => {
-    it('should get the QualificationDetails view given there is no QualificationDetailsForm on the session', async () => {
+    it('should get the Qualification Details view given there is no QualificationDetailsForm on the session', async () => {
       // Given
       const prisonNumber = 'A1234BC'
       req.params.prisonNumber = prisonNumber
@@ -96,7 +96,7 @@ describe('qualificationDetailsUpdateController', () => {
       expect(req.session.pageFlowHistory).toEqual(expectedPageFlowHistory)
     })
 
-    it('should get the QualificationDetails view given there is an QualificationDetailsForm already on the session', async () => {
+    it('should get the Qualification Details view given there is a QualificationDetailsForm already on the session', async () => {
       // Given
       const prisonNumber = 'A1234BC'
       req.params.prisonNumber = prisonNumber
@@ -152,6 +152,57 @@ describe('qualificationDetailsUpdateController', () => {
       expect(req.session.qualificationDetailsForm).toBeUndefined()
       expect(req.session.inductionDto).toEqual(inductionDto)
       expect(req.session.pageFlowHistory).toEqual(expectedPageFlowHistory)
+    })
+
+    it('should redirect to the Qualifications view given there is no pageFlowHistory on the session', async () => {
+      // Given
+      const prisonNumber = 'A1234BC'
+      req.params.prisonNumber = prisonNumber
+
+      const prisonerSummary = aValidPrisonerSummary()
+      req.session.prisonerSummary = prisonerSummary
+      const inductionDto = aLongQuestionSetInductionDto()
+      req.session.inductionDto = inductionDto
+      req.session.pageFlowHistory = undefined
+
+      // When
+      await controller.getQualificationDetailsView(
+        req as undefined as Request,
+        res as undefined as Response,
+        next as undefined as NextFunction,
+      )
+
+      // Then
+      expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/view/education-and-training`)
+    })
+
+    it('should redirect to the Qualification Level view given there is no QualificationLevelForm on the session', async () => {
+      // Given
+      const prisonNumber = 'A1234BC'
+      req.params.prisonNumber = prisonNumber
+
+      const prisonerSummary = aValidPrisonerSummary()
+      req.session.prisonerSummary = prisonerSummary
+      const inductionDto = aLongQuestionSetInductionDto()
+      req.session.inductionDto = inductionDto
+      req.session.qualificationLevelForm = undefined
+      req.session.pageFlowHistory = {
+        pageUrls: [
+          `/prisoners/${prisonNumber}/induction/qualifications`,
+          `/prisoners/${prisonNumber}/induction/qualification-level`,
+        ],
+        currentPageIndex: 1,
+      }
+
+      // When
+      await controller.getQualificationDetailsView(
+        req as undefined as Request,
+        res as undefined as Response,
+        next as undefined as NextFunction,
+      )
+
+      // Then
+      expect(res.redirect).toHaveBeenCalledWith(`/prisoners/${prisonNumber}/induction/qualification-level`)
     })
   })
 
