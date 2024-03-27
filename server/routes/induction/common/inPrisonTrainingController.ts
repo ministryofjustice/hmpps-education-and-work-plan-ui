@@ -15,6 +15,12 @@ export default abstract class InPrisonTrainingController extends InductionContro
   getInPrisonTrainingView: RequestHandler = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { prisonerSummary, inductionDto } = req.session
 
+    // Check if we are in the midst of changing the main induction question set (in this case from long route to short route)
+    if (req.session.updateInductionQuestionSet) {
+      const { prisonNumber } = req.params
+      this.addCurrentPageToHistory(req, `/prisoners/${prisonNumber}/induction/in-prison-training`)
+    }
+
     const inPrisonTrainingForm = req.session.inPrisonTrainingForm || toInPrisonTrainingForm(inductionDto)
     req.session.inPrisonTrainingForm = undefined
 

@@ -48,7 +48,7 @@ export default class QualificationDetailsUpdateController extends QualificationD
     )
 
     if (req.session.updateInductionQuestionSet) {
-      // TODO redirect to next page in the question set
+      req.session.inductionDto = inductionDto
       return res.redirect(`/prisoners/${prisonNumber}/induction/qualifications`)
     }
 

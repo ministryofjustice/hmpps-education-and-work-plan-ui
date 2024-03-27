@@ -157,10 +157,7 @@ describe('additionalTrainingUpdateController', () => {
         errors,
       }
       const expectedPageFlowHistory = {
-        pageUrls: [
-          `/prisoners/${prisonNumber}/induction/qualifications`,
-          `/prisoners/${prisonNumber}/induction/additional-training`,
-        ],
+        pageUrls: ['/prisoners/A1234BC/induction/qualifications', '/prisoners/A1234BC/induction/additional-training'],
         currentPageIndex: 1,
       }
 
@@ -173,7 +170,6 @@ describe('additionalTrainingUpdateController', () => {
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/induction/additionalTraining/index', expectedView)
-      expect(req.session.additionalTrainingForm).toBeUndefined()
       expect(req.session.inductionDto).toEqual(inductionDto)
       expect(req.session.pageFlowHistory).toEqual(expectedPageFlowHistory)
     })
@@ -261,6 +257,86 @@ describe('additionalTrainingUpdateController', () => {
       expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/view/education-and-training`)
       expect(req.session.additionalTrainingForm).toBeUndefined()
       expect(req.session.inductionDto).toBeUndefined()
+    })
+
+    it('should update Induction and redirect to has worked before page', async () => {
+      // Given
+      req.user.token = 'some-token'
+      const prisonNumber = 'A1234BC'
+      req.params.prisonNumber = prisonNumber
+
+      const prisonerSummary = aValidPrisonerSummary()
+      req.session.prisonerSummary = prisonerSummary
+      const inductionDto = aShortQuestionSetInductionDto()
+      req.session.inductionDto = inductionDto
+
+      const additionalTrainingForm = {
+        additionalTraining: [AdditionalTrainingValue.FULL_UK_DRIVING_LICENCE, AdditionalTrainingValue.OTHER],
+        additionalTrainingOther: 'Beginners cookery for IT professionals',
+      }
+      req.body = additionalTrainingForm
+      req.session.additionalTrainingForm = undefined
+
+      mockedFormValidator.mockReturnValue(errors)
+      const expectedUpdatedAdditionalTraining = ['FULL_UK_DRIVING_LICENCE', 'OTHER']
+      const expectedUpdatedAdditionalTrainingOther = 'Beginners cookery for IT professionals'
+
+      req.session.updateInductionQuestionSet = { hopingToWorkOnRelease: 'NOT_SURE' }
+      const expectedNextPage = '/prisoners/A1234BC/induction/in-prison-work'
+
+      // When
+      await controller.submitAdditionalTrainingForm(
+        req as undefined as Request,
+        res as undefined as Response,
+        next as undefined as NextFunction,
+      )
+
+      // Then
+      const updatedInductionDto = req.session.inductionDto
+      expect(updatedInductionDto.previousTraining.trainingTypes).toEqual(expectedUpdatedAdditionalTraining)
+      expect(updatedInductionDto.previousTraining.trainingTypeOther).toEqual(expectedUpdatedAdditionalTrainingOther)
+      expect(res.redirect).toHaveBeenCalledWith(expectedNextPage)
+      expect(req.session.additionalTrainingForm).toEqual(additionalTrainingForm)
+    })
+
+    it('should update Induction and redirect to in-prison work page', async () => {
+      // Given
+      req.user.token = 'some-token'
+      const prisonNumber = 'A1234BC'
+      req.params.prisonNumber = prisonNumber
+
+      const prisonerSummary = aValidPrisonerSummary()
+      req.session.prisonerSummary = prisonerSummary
+      const inductionDto = aShortQuestionSetInductionDto()
+      req.session.inductionDto = inductionDto
+
+      const additionalTrainingForm = {
+        additionalTraining: [AdditionalTrainingValue.FULL_UK_DRIVING_LICENCE, AdditionalTrainingValue.OTHER],
+        additionalTrainingOther: 'Beginners cookery for IT professionals',
+      }
+      req.body = additionalTrainingForm
+      req.session.additionalTrainingForm = undefined
+
+      mockedFormValidator.mockReturnValue(errors)
+      const expectedUpdatedAdditionalTraining = ['FULL_UK_DRIVING_LICENCE', 'OTHER']
+      const expectedUpdatedAdditionalTrainingOther = 'Beginners cookery for IT professionals'
+
+      req.session.updateInductionQuestionSet = { hopingToWorkOnRelease: 'YES' }
+      const expectedNextPage = '/prisoners/A1234BC/induction/has-worked-before'
+
+      // When
+      await controller.submitAdditionalTrainingForm(
+        req as undefined as Request,
+        res as undefined as Response,
+        next as undefined as NextFunction,
+      )
+
+      // Then
+      const updatedInductionDto = req.session.inductionDto
+      expect(updatedInductionDto.previousTraining.trainingTypes).toEqual(expectedUpdatedAdditionalTraining)
+      expect(updatedInductionDto.previousTraining.trainingTypeOther).toEqual(expectedUpdatedAdditionalTrainingOther)
+      expect(res.redirect).toHaveBeenCalledWith(expectedNextPage)
+      expect(req.session.additionalTrainingForm).toEqual(additionalTrainingForm)
     })
 
     it('should not update Induction given error calling service', async () => {

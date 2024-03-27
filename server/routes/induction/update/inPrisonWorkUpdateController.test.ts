@@ -123,6 +123,54 @@ describe('inPrisonWorkUpdateController', () => {
       expect(req.session.inPrisonWorkForm).toBeUndefined()
       expect(req.session.inductionDto).toEqual(inductionDto)
     })
+
+    it('should get the In Prison Work view given there is a pageFlowHistory already on the session', async () => {
+      // Given
+      const prisonNumber = 'A1234BC'
+      req.params.prisonNumber = prisonNumber
+
+      const prisonerSummary = aValidPrisonerSummary()
+      req.session.prisonerSummary = prisonerSummary
+      const inductionDto = aShortQuestionSetInductionDto()
+      req.session.inductionDto = inductionDto
+      req.session.updateInductionQuestionSet = {
+        hopingToWorkOnRelease: 'NO',
+      }
+      req.session.pageFlowHistory = {
+        pageUrls: [`/prisoners/${prisonNumber}/induction/additional-training`],
+        currentPageIndex: 0,
+      }
+
+      const expectedInPrisonWorkForm = {
+        inPrisonWork: ['TEXTILES_AND_SEWING', 'WELDING_AND_METALWORK', 'WOODWORK_AND_JOINERY'],
+        inPrisonWorkOther: '',
+      }
+      req.session.inPrisonWorkForm = expectedInPrisonWorkForm
+
+      const expectedView = {
+        prisonerSummary,
+        form: expectedInPrisonWorkForm,
+        backLinkUrl: '/prisoners/A1234BC/induction/additional-training',
+        backLinkAriaText: 'Back to Does Jimmy Lightfingers have any other training or vocational qualifications?',
+        errors,
+      }
+      const expectedPageFlowHistory = {
+        pageUrls: ['/prisoners/A1234BC/induction/additional-training', '/prisoners/A1234BC/induction/in-prison-work'],
+        currentPageIndex: 1,
+      }
+
+      // When
+      await controller.getInPrisonWorkView(
+        req as undefined as Request,
+        res as undefined as Response,
+        next as undefined as NextFunction,
+      )
+
+      // Then
+      expect(res.render).toHaveBeenCalledWith('pages/induction/inPrisonWork/index', expectedView)
+      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(req.session.pageFlowHistory).toEqual(expectedPageFlowHistory)
+    })
   })
 
   describe('submitInPrisonWorkForm', () => {
@@ -211,6 +259,52 @@ describe('inPrisonWorkUpdateController', () => {
       expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/view/work-and-interests`)
       expect(req.session.inPrisonWorkForm).toBeUndefined()
       expect(req.session.inductionDto).toBeUndefined()
+    })
+
+    it('should update InductionDto and redirect to in-prison training page', async () => {
+      // Given
+      req.user.token = 'some-token'
+      const prisonNumber = 'A1234BC'
+      req.params.prisonNumber = prisonNumber
+
+      const prisonerSummary = aValidPrisonerSummary()
+      req.session.prisonerSummary = prisonerSummary
+      const inductionDto = aShortQuestionSetInductionDto()
+      req.session.inductionDto = inductionDto
+
+      const inPrisonWorkForm = {
+        inPrisonWork: ['COMPUTERS_OR_DESK_BASED', 'OTHER'],
+        inPrisonWorkOther: 'Gambling',
+      }
+      req.body = inPrisonWorkForm
+      req.session.inPrisonWorkForm = undefined
+
+      mockedFormValidator.mockReturnValue(errors)
+      const expectedUpdatedWorkInterests = [
+        {
+          workType: 'COMPUTERS_OR_DESK_BASED',
+          workTypeOther: undefined,
+        },
+        {
+          workType: 'OTHER',
+          workTypeOther: 'Gambling',
+        },
+      ]
+
+      req.session.updateInductionQuestionSet = { hopingToWorkOnRelease: 'NO' }
+      const expectedNextPage = '/prisoners/A1234BC/induction/in-prison-training'
+
+      // When
+      await controller.submitInPrisonWorkForm(
+        req as undefined as Request,
+        res as undefined as Response,
+        next as undefined as NextFunction,
+      )
+
+      // Then
+      expect(req.session.inductionDto.inPrisonInterests.inPrisonWorkInterests).toEqual(expectedUpdatedWorkInterests)
+      expect(res.redirect).toHaveBeenCalledWith(expectedNextPage)
+      expect(req.session.inPrisonWorkForm).toEqual(inPrisonWorkForm)
     })
 
     it('should not update Induction given error calling service', async () => {

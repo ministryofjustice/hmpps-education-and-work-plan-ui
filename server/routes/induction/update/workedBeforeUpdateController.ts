@@ -8,6 +8,8 @@ import logger from '../../../../logger'
 import { InductionService } from '../../../services'
 import validateWorkedBeforeForm from './workedBeforeFormValidator'
 import YesNoValue from '../../../enums/yesNoValue'
+import getDynamicBackLinkAriaText from '../dynamicAriaTextResolver'
+import { getPreviousPage } from '../../pageFlowHistory'
 
 /**
  * Controller for the Update of the WorkExperience screen of the Induction.
@@ -19,12 +21,15 @@ export default class WorkedBeforeUpdateController extends WorkExperienceControll
 
   getBackLinkUrl(req: Request): string {
     const { prisonNumber } = req.params
+    const { pageFlowHistory } = req.session
+    if (pageFlowHistory) {
+      return getPreviousPage(pageFlowHistory)
+    }
     return `/plan/${prisonNumber}/view/work-and-interests`
   }
 
   getBackLinkAriaText(req: Request): string {
-    const { prisonerSummary } = req.session
-    return `Back to ${prisonerSummary.firstName} ${prisonerSummary.lastName}'s learning and work progress`
+    return getDynamicBackLinkAriaText(req, this.getBackLinkUrl(req))
   }
 
   submitWorkedBeforeForm: RequestHandler = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
@@ -44,10 +49,15 @@ export default class WorkedBeforeUpdateController extends WorkExperienceControll
       return res.redirect(`/prisoners/${prisonNumber}/induction/has-worked-before`)
     }
 
-    // update InductionDto with any new values and then map it to a CreateOrUpdateInductionDTO to call the API
+    // update InductionDto with any new values
     const updatedInduction = this.updatedInductionDtoWithHasWorkedBefore(inductionDto, workedBeforeForm)
-    const updateInductionDto = toCreateOrUpdateInductionDto(prisonId, updatedInduction)
+    // TODO - check to see if we are switching the main question set (in this case from the short one to the long one)
+    // if (req.session.updateInductionQuestionSet) {
+    // req.session.inductionDto = updatedInduction
+    // Then, depending on workedBeforeForm.hasWorkedBefore, forward to /previous-work-experience or /work-interest-types
 
+    // otherwise map the InductionDto to a CreateOrUpdateInductionDTO to call the API
+    const updateInductionDto = toCreateOrUpdateInductionDto(prisonId, updatedInduction)
     try {
       await this.inductionService.updateInduction(prisonNumber, updateInductionDto, req.user.token)
 

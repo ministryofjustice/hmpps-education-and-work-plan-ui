@@ -61,6 +61,7 @@ export default class ReasonsNotToGetWorkUpdateController extends ReasonsNotToGet
 
     // Check if we are in the midst of changing the main induction question set from long route to short route
     if (req.session.updateInductionQuestionSet) {
+      req.session.inductionDto = updatedInduction
       const nextPage =
         inductionDto.previousQualifications?.qualifications?.length > 0
           ? `/prisoners/${prisonNumber}/induction/qualifications`
