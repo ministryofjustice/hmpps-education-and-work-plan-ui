@@ -129,7 +129,7 @@ describe('inPrisonTrainingUpdateController', () => {
       expect(req.session.inductionDto).toEqual(inductionDto)
     })
 
-    it('should get the In Prison Training view given there is pageFlowHistory already on the session', async () => {
+    it('should get the In Prison Training view given given short question set journey', async () => {
       // Given
       const prisonNumber = 'A1234BC'
       req.params.prisonNumber = prisonNumber
@@ -270,7 +270,7 @@ describe('inPrisonTrainingUpdateController', () => {
       expect(req.session.inductionDto).toBeUndefined()
     })
 
-    it('should update Induction redirect to check your answers page', async () => {
+    it('should update InductionDto and redirect to Check Your Answers view given short question set journey', async () => {
       // Given
       req.user.token = 'some-token'
       const prisonNumber = 'A1234BC'

@@ -129,7 +129,7 @@ describe('reasonsNotToGetWorkUpdateController', () => {
       expect(req.session.pageFlowHistory).toBeUndefined()
     })
 
-    it('should get the Reasons Not To Get Work view given there is pageFlowHistory on the session', async () => {
+    it('should get the Reasons Not To Get Work view given short induction question journey', async () => {
       // Given
       const prisonNumber = 'A1234BC'
       req.params.prisonNumber = prisonNumber
@@ -301,7 +301,7 @@ describe('reasonsNotToGetWorkUpdateController', () => {
       expect(req.session.inductionDto).toEqual(inductionDto)
     })
 
-    it('should submit reasons not to get work and move to want to add qualifications page', async () => {
+    it('should submit reasons not to get work and redirect to Want to Add Qualifications view given short induction set journey and Prisoner has no qualifications', async () => {
       // Given
       req.user.token = 'some-token'
       const prisonNumber = 'A1234BC'

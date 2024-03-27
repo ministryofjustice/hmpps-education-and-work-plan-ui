@@ -259,7 +259,7 @@ describe('additionalTrainingUpdateController', () => {
       expect(req.session.inductionDto).toBeUndefined()
     })
 
-    it('should update Induction and redirect to has worked before page', async () => {
+    it('should update InductionDto and redirect to Has Worked Before view given long question set journey', async () => {
       // Given
       req.user.token = 'some-token'
       const prisonNumber = 'A1234BC'
@@ -299,7 +299,7 @@ describe('additionalTrainingUpdateController', () => {
       expect(req.session.additionalTrainingForm).toEqual(additionalTrainingForm)
     })
 
-    it('should update Induction and redirect to in-prison work page', async () => {
+    it('should update InductionDto and redirect to In Prison Work view given short question set journey', async () => {
       // Given
       req.user.token = 'some-token'
       const prisonNumber = 'A1234BC'

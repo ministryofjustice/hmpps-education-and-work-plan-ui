@@ -94,7 +94,7 @@ describe('highestLevelOfEducationUpdateController', () => {
       expect(req.session.inductionDto).toEqual(inductionDto)
     })
 
-    it('should get the Highest Level of Education view given there is a HighestLevelOfEducationForm already on the session', async () => {
+    it('should get the Highest Level of Education view given long question set journey', async () => {
       // Given
       const prisonNumber = 'A1234BC'
       req.params.prisonNumber = prisonNumber
