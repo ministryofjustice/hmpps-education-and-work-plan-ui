@@ -43,6 +43,26 @@ declare module 'forms' {
     stepNumber: number
     status: 'NOT_STARTED' | 'ACTIVE' | 'COMPLETE'
   }
+
+  export interface CreateGoalsForm {
+    prisonNumber: string
+    goals: [
+      {
+        title?: string
+        targetCompletionDate?: string
+        'targetCompletionDate-day'?: string
+        'targetCompletionDate-month'?: string
+        'targetCompletionDate-year'?: string
+        steps: [
+          {
+            title?: string
+          },
+        ]
+        note?: string
+      },
+    ]
+    action?: 'add-another-step' | 'submit-form'
+  }
 }
 
 /**
