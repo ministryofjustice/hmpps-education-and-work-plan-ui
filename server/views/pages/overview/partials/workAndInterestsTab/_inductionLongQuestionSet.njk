@@ -267,7 +267,7 @@ questions are different.
                 {% if personalInterest == 'OTHER' %}
                   <li>Other - {{ workAndInterests.data.skillsAndInterests.otherPersonalInterest }}</li>
                 {% else %}
-                  <li>{{ personalInterest | formatPersonalInterests }}</li>
+                  <li>{{ personalInterest | formatPersonalInterest }}</li>
                 {% endif %}
               {% endfor %}
             </ul>

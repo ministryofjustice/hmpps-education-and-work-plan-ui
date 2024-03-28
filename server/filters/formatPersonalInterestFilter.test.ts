@@ -1,6 +1,6 @@
-import formatPersonalInterestsFilter from './formatPersonalInterestsFilter'
+import formatPersonalInterestFilter from './formatPersonalInterestFilter'
 
-describe('formatPersonalInterestsFilter', () => {
+describe('formatPersonalInterestFilter', () => {
   describe('should format view model values', () => {
     Array.of(
       { source: 'COMMUNITY', expected: 'Community' },
@@ -20,7 +20,7 @@ describe('formatPersonalInterestsFilter', () => {
       { source: 'NONE', expected: 'None' },
     ).forEach(spec => {
       it(`source: ${spec.source}, expected: ${spec.expected}`, () => {
-        expect(formatPersonalInterestsFilter(spec.source)).toEqual(spec.expected)
+        expect(formatPersonalInterestFilter(spec.source)).toEqual(spec.expected)
       })
     })
   })

@@ -1,0 +1,34 @@
+<h2 class="govuk-heading-m">Work on release</h2>
+<dl class="govuk-summary-list govuk-!-margin-bottom-8">
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key govuk-!-width-one-quarter">
+      Hoping to work on release
+    </dt>
+    <dd class="govuk-summary-list__value" data-qa="hopingToGetWork">
+      {{ inductionDto.workOnRelease.hopingToWork | formatYesNo if inductionDto.workOnRelease.hopingToWork }}
+    </dd>
+    <dd class="govuk-summary-list__actions">
+      <a class="govuk-link" href="/prisoners/{{ prisonerSummary.prisonNumber }}/induction/hoping-to-work-on-release" data-qa="hopingToGetWorkLink">
+        Change<span class="govuk-visually-hidden"> whether they're hoping to work when they're released</span>
+      </a>
+    </dd>
+  </div>
+
+  {% if inductionDto.workOnRelease.hopingToWork !== 'YES' %}
+    <div class="govuk-summary-list__row">
+      <dt class="govuk-summary-list__key govuk-!-width-one-quarter">
+        What could stop work on release
+      </dt>
+      <dd class="govuk-summary-list__value" data-qa="reasonToNotGetWork">
+        {% for item in inductionDto.workOnRelease.notHopingToWorkReasons %}
+          <div data-qa="reasonToNotGetWork-{{ loop.index }}">{{ item | formatReasonNotToGetWork }}{{ ' - ' + inductionDto.workOnRelease.notHopingToWorkOtherReason if item === 'OTHER' }}{{ ',' if inductionDto.workOnRelease.notHopingToWorkReasons.length !== loop.index }}</div>
+        {% endfor %}
+      </dd>
+      <dd class="govuk-summary-list__actions">
+        <a class="govuk-link" href="/prisoners/{{ prisonerSummary.prisonNumber }}/induction/reasons-not-to-get-work" data-qa="reasonToNotGetWorkLink">
+          Change<span class="govuk-visually-hidden"> what could stop work on release</span>
+        </a>
+      </dd>
+    </div>
+  {% endif %}
+</dl>

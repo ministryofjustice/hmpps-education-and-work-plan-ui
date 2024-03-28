@@ -22,7 +22,6 @@ export default abstract class QualificationDetailsController extends InductionCo
     const { prisonNumber } = req.params
     if (!qualificationLevelForm) {
       // Guard against the user using the back button to return to this page, which can cause a NPE on line 40 (depending on which pages they've been to)
-      // TODO - not sure if this is the best solution?
       return res.redirect(`/prisoners/${prisonNumber}/induction/qualification-level`)
     }
     this.addCurrentPageToHistory(req, `/prisoners/${prisonNumber}/induction/qualification-details`)

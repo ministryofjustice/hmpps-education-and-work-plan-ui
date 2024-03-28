@@ -12,6 +12,7 @@ import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateIn
 import previousWorkExperienceTypeScreenOrderComparator from '../previousWorkExperienceTypeScreenOrderComparator'
 import { getNextPage } from '../../pageFlowQueue'
 import { getPreviousPage } from '../../pageFlowHistory'
+import getDynamicBackLinkAriaText from '../dynamicAriaTextResolver'
 
 export default class PreviousWorkExperienceTypesUpdateController extends PreviousWorkExperienceTypesController {
   constructor(private readonly inductionService: InductionService) {
@@ -28,9 +29,7 @@ export default class PreviousWorkExperienceTypesUpdateController extends Previou
   }
 
   getBackLinkAriaText(req: Request): string {
-    // TODO - retrieve text for previous work experience types (a generic one for all types?)
-    const { prisonerSummary } = req.session
-    return `Back to ${prisonerSummary.firstName} ${prisonerSummary.lastName}'s learning and work progress`
+    return getDynamicBackLinkAriaText(req, this.getBackLinkUrl(req))
   }
 
   submitPreviousWorkExperienceTypesForm: RequestHandler = async (

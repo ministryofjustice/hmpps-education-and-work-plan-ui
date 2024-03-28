@@ -1,0 +1,65 @@
+<h2 class="govuk-heading-m govuk-!-margin-top-2 govuk-!-margin-bottom-6">Qualifications and training</h2>
+
+<!-- TODO - the CIAG UI includes "and record.wantsToAddQualifications === 'YES'" - do we need this? -->
+<dl class="govuk-summary-list {{ 'govuk-!-margin-bottom-8' if (inductionDto.previousQualifications.qualifications.length) else 'govuk-!-margin-bottom-0' }}">
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key govuk-!-width-one-quarter">
+      Has educational qualifications they want recorded					
+    </dt>
+    <dd class="govuk-summary-list__value" data-qa="wantsToAddQualifications">
+      {{ inductionDto.previousQualifications.qualifications.length | formatYesNo }}
+    </dd>
+    <dd class="govuk-summary-list__actions">
+      <a class="govuk-link" href="/prisoners/{{ prisonerSummary.prisonNumber }}/induction/want-to-add-qualifications" data-qa="wantsToAddQualificationsLink">
+        Change<span class="govuk-visually-hidden"> whether they want educational qualifications recorded</span>
+      </a>
+    </dd>
+  </div>
+</dl>
+
+<!-- TODO - the CIAG UI includes "and record.wantsToAddQualifications === 'YES'" - do we need this? -->
+{% if inductionDto.previousQualifications.qualifications.length %}
+  <h3 class="govuk-heading-s govuk-!-margin-top-2 govuk-!-margin-bottom-3">
+    Educational qualifications
+    <span><a class="gov-link govuk-!-font-weight-regular" style="float:right; color:#1d70b8" href="/prisoners/{{ prisonerSummary.prisonNumber }}/induction/qualifications" data-qa="qualificationsLink">Change <span class="govuk-visually-hidden"> qualifications</span></a></span>
+  </h3>
+
+  <table class="govuk-table govuk-!-margin-bottom-6" data-qa="qualifications">
+    <thead class="govuk-table__head">
+      <tr class="govuk-table__row">
+        <th scope="col" class="govuk-table__header govuk-!-width-one-quarter">Level</th>
+        <th scope="col" class="govuk-table__header">Subject</th>
+        <th scope="col" class="govuk-table__header">Grade</th>
+      </tr>
+    </thead>
+    <tbody class="govuk-table__body">
+      {% for item in inductionDto.previousQualifications.qualifications %}
+          <tr class="govuk-table__row" >
+            <td class="govuk-table__cell" data-qa="qualifications-level-{{ loop.index }}">{{ item.level | formatQualificationLevel }}</td>
+            <td class="govuk-table__cell" data-qa="qualifications-subject-{{ loop.index }}">{{ item.subject }}</td>
+            <td class="govuk-table__cell" data-qa="qualifications-grade-{{ loop.index }}">{{ item.grade }}</td>
+          </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endif %}
+
+<dl class="govuk-summary-list govuk-!-margin-bottom-8">
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key govuk-!-width-one-quarter">
+      Other training or qualifications
+    </dt>
+    <dd class="govuk-summary-list__value" data-qa="additionalTraining">
+      {% for item in inductionDto.previousTraining.trainingTypes %}
+        <div data-qa="additionalTraining-{{ loop.index }}">{{ item | formatAdditionalTraining }}{{ ' - ' + inductionDto.previousTraining.trainingTypeOther if item === 'OTHER' }}{{ ',' if inductionDto.previousTraining.trainingTypes.length !== loop.index }}</div>
+      {% endfor %}
+    </dd>
+    <dd class="govuk-summary-list__actions">
+      <a class="govuk-link govuk-link--no-visited-state" href="/prisoners/{{ prisonerSummary.prisonNumber }}/induction/additional-training" data-qa="additionalTrainingLink">
+        Change<span class="govuk-visually-hidden"> other training or qualifications</span>
+      </a>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+  </div>
+</dl>
