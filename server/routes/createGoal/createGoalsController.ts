@@ -11,10 +11,10 @@ export default class CreateGoalsController {
     const { prisonNumber } = req.params
     const { prisonerSummary } = req.session
 
-    req.session.newGoalsForm = req.session.newGoalsForm || []
+    req.session.createGoalsForm = req.session.createGoalsForm || []
 
-    if (!req.session.newGoalsForm?.createGoalsForm) {
-      req.session.newGoalsForm = {
+    if (!req.session.createGoalsForm) {
+      req.session.createGoalsForm = {
         prisonNumber,
         goals: [
           {
@@ -33,7 +33,7 @@ export default class CreateGoalsController {
 
     const view = new CreateGoalsView(
       prisonerSummary,
-      req.session.newGoalsForm,
+      req.session.createGoalsForm,
       futureGoalTargetDates,
       req.flash('errors'),
     )

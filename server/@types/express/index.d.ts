@@ -38,7 +38,7 @@ declare module 'express-session' {
     supportNeeds: PrisonerSupportNeeds
     newGoal: NewGoal // A single NewGoal representing the Goal that is currently being added
     newGoals: Array<NewGoal> // An array of NewGoal representing the Goals that have been added
-    newGoalsForm: CreateGoalsForm
+    createGoalsForm: CreateGoalsForm
     updateGoalForm: UpdateGoalForm
     prisonerListSortOptions: string
     pageFlowHistory: PageFlow
