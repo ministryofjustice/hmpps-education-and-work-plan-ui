@@ -1,0 +1,59 @@
+<h2 class="govuk-heading-m">Work experience</h2>
+
+<dl class="govuk-summary-list govuk-!-margin-bottom-8">
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key govuk-!-width-one-quarter">
+      Worked before
+    </dt>
+    <dd class="govuk-summary-list__value" data-qa="hasWorkedBefore">
+      {{ inductionDto.previousWorkExperiences.hasWorkedBefore | formatYesNo if inductionDto.previousWorkExperiences.hasWorkedBefore }}
+    </dd>
+    <dd class="govuk-summary-list__actions">
+      <a class="govuk-link govuk-link--no-visited-state" href="/prisoners/{{ prisonerSummary.prisonNumber }}/induction/has-worked-before" data-qa="hasWorkedBeforeLink">
+        Change<span class="govuk-visually-hidden"> whether they have worked before</span>
+      </a>
+    </dd>
+  </div>
+
+  {% if inductionDto.previousWorkExperiences.hasWorkedBefore === true %}
+    <div class="govuk-summary-list__row">
+      <dt class="govuk-summary-list__key govuk-!-width-one-quarter">
+        Type of work experience
+      </dt>
+      <dd class="govuk-summary-list__value" data-qa="typeOfWorkExperience">
+        {% for item in inductionDto.previousWorkExperiences.experiences %}
+          <div>{{ item.experienceType | formatJobType }}{{ ' - ' + item.experienceTypeOther if item.experienceType === 'OTHER' }}{{ ',' if inductionDto.previousWorkExperiences.experiences.length !== loop.index }}</div>
+        {% endfor %}
+      </dd>
+      <dd class="govuk-summary-list__actions">
+        <a class="govuk-link govuk-link--no-visited-state" href="/prisoners/{{ prisonerSummary.prisonNumber }}/induction/previous-work-experience" data-qa="typeOfWorkExperienceLink">
+          Change<span class="govuk-visually-hidden"> type of work they have done before</span>
+        </a>
+      </dd>
+    </div>
+  {% endif %}
+
+  {% for item in inductionDto.previousWorkExperiences.experiences %}
+    <div class="govuk-summary-list__row">
+      <dt class="govuk-summary-list__key govuk-!-width-one-quarter">
+        {{ item.experienceType | formatJobType }} experience details
+      </dt>
+      <dd class="govuk-summary-list__value">
+        <p class="govuk-body" data-qa="workExperience-role-{{ loop.index }}">
+          Job role:<br>
+          {{ item.role }}
+        </p>
+        <p class="govuk-body" data-qa="workExperience-details-{{ loop.index }}">
+          Main tasks and responsibilities:<br>
+          {{ item.details }}
+        </p>
+      </dd>
+      <dd class="govuk-summary-list__actions">
+        <a class="govuk-link govuk-link--no-visited-state" href="/prisoners/{{ prisonerSummary.prisonNumber }}/induction/previous-work-experience/{{ item.experienceType | lower }}" data-qa="workExperience-link-{{ loop.index }}">
+          Change<span class="govuk-visually-hidden"> {{ item.experienceType | formatJobType }}</span>
+        </a>
+      </dd>
+    </div>
+  {% endfor %}
+
+</dl>

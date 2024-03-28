@@ -1,4 +1,4 @@
-export default function formatPersonalInterestsFilter(value: string): string {
+export default function formatPersonalInterestFilter(value: string): string {
   const personalInterestsValue = PersonalInterestValues[value as keyof typeof PersonalInterestValues]
   return personalInterestsValue
 }
