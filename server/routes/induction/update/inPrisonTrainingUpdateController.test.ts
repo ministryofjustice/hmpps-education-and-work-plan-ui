@@ -157,7 +157,7 @@ describe('inPrisonTrainingUpdateController', () => {
         prisonerSummary,
         form: expectedInPrisonTrainingForm,
         backLinkUrl: '/prisoners/A1234BC/induction/in-prison-work',
-        backLinkAriaText: 'What type of work would Jimmy Lightfingers like to do in prison?',
+        backLinkAriaText: 'Back to What type of work would Jimmy Lightfingers like to do in prison?',
         errors,
       }
       const expectedPageFlowHistory = {
