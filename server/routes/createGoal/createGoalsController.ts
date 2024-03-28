@@ -3,6 +3,7 @@ import moment from 'moment'
 import type { CreateGoalsForm } from 'forms'
 import CreateGoalsView from './createGoalsView'
 import futureGoalTargetDateCalculator from '../futureGoalTargetDateCalculator'
+import validateCreateGoalsForm from './createGoalsFormValidator'
 
 export default class CreateGoalsController {
   constructor() {}
@@ -43,6 +44,14 @@ export default class CreateGoalsController {
   // TODO: RR-748 - Implement submit handler for new create goal journey
   submitCreateGoalsForm: RequestHandler = async (req, res, next): Promise<void> => {
     const { prisonNumber } = req.params
+    const { createGoalsForm } = req.session.createGoalsForm
+
+    const errors = validateCreateGoalsForm(createGoalsForm)
+    if (errors.length > 0) {
+      req.flash('errors', errors)
+      return res.redirect(`/plan/${prisonNumber}/goals/1/create`)
+    }
+
     return res.redirect(`/plan/${prisonNumber}/view/overview`)
   }
 }
