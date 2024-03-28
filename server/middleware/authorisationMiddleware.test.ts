@@ -54,9 +54,18 @@ describe('authorisationMiddleware', () => {
   })
 
   it('should return next when user has authorised role', async () => {
-    const res = createResWithToken({ authorities: ['SOME_REQUIRED_ROLE'] })
+    const res = createResWithToken({ authorities: ['ROLE_SOME_REQUIRED_ROLE'] })
 
     await authorisationMiddleware(['SOME_REQUIRED_ROLE'])(req, res, next)
+
+    expect(next).toHaveBeenCalled()
+    expect(res.redirect).not.toHaveBeenCalled()
+  })
+
+  it('should return next when user has authorised role and middleware created with ROLE_ prefix', async () => {
+    const res = createResWithToken({ authorities: ['ROLE_SOME_REQUIRED_ROLE'] })
+
+    await authorisationMiddleware(['ROLE_SOME_REQUIRED_ROLE'])(req, res, next)
 
     expect(next).toHaveBeenCalled()
     expect(res.redirect).not.toHaveBeenCalled()

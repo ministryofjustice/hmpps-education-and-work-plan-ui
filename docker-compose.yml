@@ -32,6 +32,7 @@ services:
     ports:
       - "3000:3000"
     environment:
+      - PRODUCT_ID=DPS027
       - REDIS_HOST=redis
       - HMPPS_AUTH_EXTERNAL_URL=http://localhost:9090/auth
       - HMPPS_AUTH_URL=http://hmpps-auth:8080/auth
@@ -40,6 +41,10 @@ services:
       - API_CLIENT_SECRET=client-secret
       - SYSTEM_CLIENT_ID=system-client-id
       - SYSTEM_CLIENT_SECRET=system-client-secret
+      - SESSION_SECRET=somesecretvalue
+      - TOKEN_VERIFICATION_API_URL=http://hmpps-auth:8080/auth
+      - TOKEN_VERIFICATION_ENABLED=false
+      - INGRESS_URL=http://localhost:3000
 
 networks:
   hmpps:

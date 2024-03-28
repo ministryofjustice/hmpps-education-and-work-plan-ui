@@ -1,13 +1,44 @@
-<nav class="govuk-breadcrumbs govuk-!-display-none-print" aria-label="Breadcrumb">
-  <ol class="govuk-breadcrumbs__list">
-    <li class="govuk-breadcrumbs__list-item">
-      <a class="govuk-breadcrumbs__link" href="{{ dpsUrl }}">Digital Prison Services</a>
-    </li>
-    <li class="govuk-breadcrumbs__list-item">
-      <a class="govuk-breadcrumbs__link" href="{{ prisonerListUrl }}">Manage learning and work progress</a>
-    </li>
-    <li class="govuk-breadcrumbs__list-item">
-      <a class="govuk-breadcrumbs__link" href="/plan/{{ prisonerSummary.prisonNumber }}/view/overview">{{ prisonerSummary.firstName }} {{ prisonerSummary.lastName }}'s learning and work progress</a>
-    </li>
-  </ol>
-</nav>
+{% from "govuk/components/breadcrumbs/macro.njk" import govukBreadcrumbs %}
+
+{% macro breadcrumb(pageTitle, breadcrumbList, displayCurrentPageTitle="true") %}
+
+  {% set rows = [ {
+    text: "Digital Prison Services",
+    href: dpsUrl
+    },
+    {
+    text: "Manage learning and work progress",
+    href: prisonerListUrl
+    },
+    {
+    text: prisonerSummary.firstName + " " + prisonerSummary.lastName + "s learning and work progress",
+    href: "/plan/" + prisonerSummary.prisonNumber + "/view/overview"
+    } ]
+  %}
+
+  {% for item in breadcrumbList %}
+    {% set rows = (rows.push(
+      {
+        text: item.title,
+        href: item.href
+      }
+    ), rows) %}
+  {% endfor %}
+
+  {% if displayCurrentPageTitle %}
+    {% set completedRows = (rows.push(
+      {
+        text: pageTitle
+      }
+    ), rows) %}
+  {% else %}
+    {% set completedRows = rows %}
+  {% endif %}
+
+{{ govukBreadcrumbs({
+  collapseOnMobile: true,
+  items: completedRows,
+  classes: "govuk-!-display-none-print"
+}) }}
+
+{% endmacro %}

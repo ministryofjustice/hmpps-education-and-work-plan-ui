@@ -4,6 +4,8 @@ import createError from 'http-errors'
 
 import nunjucksSetup from './utils/nunjucksSetup'
 import errorHandler from './errorHandler'
+import { appInsightsMiddleware } from './utils/azureAppInsights'
+import authorisationMiddleware from './middleware/authorisationMiddleware'
 import { metricsMiddleware } from './monitoring/metricsApp'
 
 import setUpAuthentication from './middleware/setUpAuthentication'
@@ -19,7 +21,6 @@ import getFrontendComponents from './middleware/fetchFrontendComponentMiddleware
 import config from './config'
 import routes from './routes'
 import type { Services } from './services'
-import authorisationMiddleware from './middleware/authorisationMiddleware'
 
 export default function createApp(services: Services): express.Application {
   const app = express()
@@ -28,6 +29,7 @@ export default function createApp(services: Services): express.Application {
   app.set('trust proxy', true)
   app.set('port', process.env.PORT || 3000)
 
+  app.use(appInsightsMiddleware())
   app.use(metricsMiddleware)
   app.use(setUpHealthChecks(services.applicationInfo))
   app.use(setUpWebSecurity())

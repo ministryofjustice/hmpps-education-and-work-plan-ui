@@ -43,7 +43,11 @@ describe('frontendComponentApiClient', () => {
         userMessage: 'An unexpected error occurred',
         developerMessage: 'An unexpected error occurred',
       }
-      fakeFrontendComponentApi.get('/footer').matchHeader('x-user-token', userToken).reply(500, expectedResponseBody)
+      fakeFrontendComponentApi
+        .get('/footer')
+        .matchHeader('x-user-token', userToken)
+        .thrice()
+        .reply(500, expectedResponseBody)
 
       // When
       try {

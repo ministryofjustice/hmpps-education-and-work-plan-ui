@@ -2,6 +2,7 @@ import * as fs from 'fs'
 import { defineConfig } from 'cypress'
 import { resetStubs } from './integration_tests/mockApis/wiremock'
 import auth from './integration_tests/mockApis/auth'
+import manageUsersApi from './integration_tests/mockApis/manageUsersApi'
 import tokenVerification from './integration_tests/mockApis/tokenVerification'
 import prisonerSearchApi from './integration_tests/mockApis/prisonerSearchApi'
 import educationAndWorkPlanApi from './integration_tests/mockApis/educationAndWorkPlanApi'
@@ -36,6 +37,7 @@ export default defineConfig({
         stubSignInAsUserWithEditAuthority: () => auth.stubSignIn(['ROLE_EDUCATION_WORK_PLAN_EDITOR']),
         stubSignInAsUserWithViewAuthority: () => auth.stubSignIn(['ROLE_EDUCATION_WORK_PLAN_VIEWER']),
 
+        ...manageUsersApi,
         ...tokenVerification,
         ...prisonerSearchApi,
         ...educationAndWorkPlanApi,

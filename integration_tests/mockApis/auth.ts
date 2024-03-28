@@ -1,10 +1,12 @@
 import jwt from 'jsonwebtoken'
 import { Response } from 'superagent'
 
-import { stubFor, getMatchingWiremockRequest } from './wiremock'
+import { stubFor, getMatchingRequests } from './wiremock'
 import tokenVerification from './tokenVerification'
 
-const createToken = (authorities: string[]) => {
+const createToken = (roles: string[] = []) => {
+  // authorities in the session are always prefixed by ROLE.
+  const authorities = roles.map(role => (role.startsWith('ROLE_') ? role : `ROLE_${role}`))
   const payload = {
     user_name: 'USER1',
     scope: ['read'],
@@ -18,11 +20,12 @@ const createToken = (authorities: string[]) => {
 }
 
 const getSignInUrl = (): Promise<string> =>
-  getMatchingWiremockRequest({
+  getMatchingRequests({
     method: 'GET',
     urlPath: '/auth/oauth/authorize',
-  }).then(matchedRequest => {
-    const stateValue = matchedRequest.queryParams.state.values[0]
+  }).then(data => {
+    const { requests } = data.body
+    const stateValue = requests[requests.length - 1].queryParams.state.values[0]
     return `/sign-in/callback?code=codexxxx&state=${stateValue}`
   })
 
@@ -94,7 +97,7 @@ const manageDetails = () =>
     },
   })
 
-const token = (authorities: string[]) =>
+const token = (roles: string[] = []) =>
   stubFor({
     request: {
       method: 'POST',
@@ -107,7 +110,7 @@ const token = (authorities: string[]) =>
         Location: 'http://localhost:3007/sign-in/callback?code=codexxxx&state=stateyyyy',
       },
       jsonBody: {
-        access_token: createToken(authorities),
+        access_token: createToken(roles),
         token_type: 'bearer',
         user_name: 'USER1',
         expires_in: 599,
@@ -121,7 +124,7 @@ const stubUser = (name: string) =>
   stubFor({
     request: {
       method: 'GET',
-      urlPattern: '/auth/api/user/me',
+      urlPattern: '/manage-users-api/users/me',
     },
     response: {
       status: 200,
@@ -142,28 +145,21 @@ const stubUserRoles = () =>
   stubFor({
     request: {
       method: 'GET',
-      urlPattern: '/auth/api/user/me/roles',
+      urlPattern: '/manage-users-api/user/me/roles',
     },
     response: {
       status: 200,
       headers: {
         'Content-Type': 'application/json;charset=UTF-8',
       },
-      jsonBody: [{ roleCode: 'SOME_USER_ROLE' }],
+      jsonBody: ['SOME_USER_ROLE'],
     },
   })
 
 export default {
   getSignInUrl,
   stubAuthPing: ping,
-  stubSignIn: (authorities: string[]): Promise<[Response, Response, Response, Response, Response, Response]> =>
-    Promise.all([
-      favicon(),
-      redirect(),
-      signOut(),
-      manageDetails(),
-      token(authorities),
-      tokenVerification.stubVerifyToken(),
-    ]),
+  stubSignIn: (roles: string[]): Promise<[Response, Response, Response, Response, Response, Response]> =>
+    Promise.all([favicon(), redirect(), signOut(), manageDetails(), token(roles), tokenVerification.stubVerifyToken()]),
   stubAuthUser: (name = 'john smith'): Promise<[Response, Response]> => Promise.all([stubUser(name), stubUserRoles()]),
 }
