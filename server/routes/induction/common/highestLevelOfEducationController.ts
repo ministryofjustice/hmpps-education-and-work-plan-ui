@@ -18,6 +18,12 @@ export default abstract class HighestLevelOfEducationController extends Inductio
   ): Promise<void> => {
     const { prisonerSummary, inductionDto } = req.session
 
+    // Check if we are in the midst of changing the main induction question set (in this case from short route to long route)
+    if (req.session.updateInductionQuestionSet) {
+      const { prisonNumber } = req.params
+      this.addCurrentPageToHistory(req, `/prisoners/${prisonNumber}/induction/highest-level-of-education`)
+    }
+
     const highestLevelOfEducationForm =
       req.session.highestLevelOfEducationForm || toHighestLevelOfEducationForm(inductionDto)
     req.session.highestLevelOfEducationForm = undefined

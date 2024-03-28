@@ -10,6 +10,7 @@ import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateIn
 import EducationLevelValue from '../../../enums/educationLevelValue'
 import logger from '../../../../logger'
 import { getPreviousPage } from '../../pageFlowHistory'
+import getDynamicBackLinkAriaText from '../dynamicAriaTextResolver'
 
 /**
  * Controller for the Update of the Highest Level of Education screen of the Induction.
@@ -29,8 +30,7 @@ export default class HighestLevelOfEducationUpdateController extends HighestLeve
   }
 
   getBackLinkAriaText(req: Request): string {
-    const { prisonerSummary } = req.session
-    return `Back to ${prisonerSummary.firstName} ${prisonerSummary.lastName}'s learning and work progress`
+    return getDynamicBackLinkAriaText(req, this.getBackLinkUrl(req))
   }
 
   submitHighestLevelOfEducationForm: RequestHandler = async (
@@ -63,6 +63,11 @@ export default class HighestLevelOfEducationUpdateController extends HighestLeve
 
       // Update the Induction with the new Highest Level of Education
       const updatedInduction = updatedInductionDtoWithHighestLevelOfEducation(inductionDto, highestLevelOfEducationForm)
+      // TODO forward to next page in long question set route
+      // if (req.session.updateInductionQuestionSet) {
+      // req.session.inductionDto = updatedInduction
+
+      // Otherwise, call the API to persist the changes
       const updateInductionDto = toCreateOrUpdateInductionDto(prisonId, updatedInduction)
 
       try {
@@ -82,6 +87,7 @@ export default class HighestLevelOfEducationUpdateController extends HighestLeve
       )
       req.session.highestLevelOfEducationForm = undefined
 
+      // if there is no page history (i.e. because we're not changing the main question set), start one here before commencing the add qualification mini flow
       if (!req.session.pageFlowHistory) {
         const pageFlowHistory = this.buildPageFlowHistory(prisonNumber)
         req.session.pageFlowHistory = pageFlowHistory

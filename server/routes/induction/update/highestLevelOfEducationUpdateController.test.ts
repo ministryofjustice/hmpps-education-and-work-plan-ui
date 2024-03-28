@@ -94,7 +94,7 @@ describe('highestLevelOfEducationUpdateController', () => {
       expect(req.session.inductionDto).toEqual(inductionDto)
     })
 
-    it('should get the Highest Level of Education view given there is a HighestLevelOfEducationForm already on the session', async () => {
+    it('should get the Highest Level of Education view given long question set journey', async () => {
       // Given
       const prisonNumber = 'A1234BC'
       req.params.prisonNumber = prisonNumber
@@ -131,6 +131,60 @@ describe('highestLevelOfEducationUpdateController', () => {
       )
       expect(req.session.highestLevelOfEducationForm).toBeUndefined()
       expect(req.session.inductionDto).toEqual(inductionDto)
+    })
+
+    it('should get the Highest Level of Education view given there is a pageFlowHistory already on the session', async () => {
+      // Given
+      const prisonNumber = 'A1234BC'
+      req.params.prisonNumber = prisonNumber
+
+      const prisonerSummary = aValidPrisonerSummary()
+      req.session.prisonerSummary = prisonerSummary
+      const inductionDto = aLongQuestionSetInductionDto()
+      req.session.inductionDto = inductionDto
+
+      req.session.updateInductionQuestionSet = {
+        hopingToWorkOnRelease: 'YES',
+      }
+      req.session.pageFlowHistory = {
+        pageUrls: [`/prisoners/${prisonNumber}/induction/qualifications`],
+        currentPageIndex: 0,
+      }
+
+      const expectedHighestLevelOfEducationForm = {
+        educationLevel: EducationLevelValue.SECONDARY_SCHOOL_TOOK_EXAMS,
+      }
+      req.session.highestLevelOfEducationForm = expectedHighestLevelOfEducationForm
+
+      const expectedView = {
+        prisonerSummary,
+        form: expectedHighestLevelOfEducationForm,
+        backLinkUrl: '/prisoners/A1234BC/induction/qualifications',
+        backLinkAriaText: `Back to Jimmy Lightfingers's qualifications`,
+        errors,
+      }
+      const expectedPageFlowHistory = {
+        pageUrls: [
+          `/prisoners/A1234BC/induction/qualifications`,
+          `/prisoners/A1234BC/induction/highest-level-of-education`,
+        ],
+        currentPageIndex: 1,
+      }
+
+      // When
+      await controller.getHighestLevelOfEducationView(
+        req as undefined as Request,
+        res as undefined as Response,
+        next as undefined as NextFunction,
+      )
+
+      // Then
+      expect(res.render).toHaveBeenCalledWith(
+        'pages/induction/prePrisonEducation/highestLevelOfEducation',
+        expectedView,
+      )
+      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(req.session.pageFlowHistory).toEqual(expectedPageFlowHistory)
     })
   })
 

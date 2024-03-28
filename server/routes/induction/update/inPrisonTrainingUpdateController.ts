@@ -8,6 +8,8 @@ import logger from '../../../../logger'
 import { InductionService } from '../../../services'
 import validateInPrisonTrainingForm from './inPrisonTrainingFormValidator'
 import InPrisonTrainingValue from '../../../enums/inPrisonTrainingValue'
+import { getPreviousPage } from '../../pageFlowHistory'
+import getDynamicBackLinkAriaText from '../dynamicAriaTextResolver'
 
 /**
  * Controller for Updating a Prisoner's In-Prison Education and Training screen of the Induction.
@@ -19,12 +21,15 @@ export default class InPrisonTrainingUpdateController extends InPrisonTrainingCo
 
   getBackLinkUrl(req: Request): string {
     const { prisonNumber } = req.params
+    const { pageFlowHistory } = req.session
+    if (pageFlowHistory) {
+      return getPreviousPage(pageFlowHistory)
+    }
     return `/plan/${prisonNumber}/view/education-and-training`
   }
 
   getBackLinkAriaText(req: Request): string {
-    const { prisonerSummary } = req.session
-    return `Back to ${prisonerSummary.firstName} ${prisonerSummary.lastName}'s learning and work progress`
+    return getDynamicBackLinkAriaText(req, this.getBackLinkUrl(req))
   }
 
   submitInPrisonTrainingForm: RequestHandler = async (
@@ -52,6 +57,14 @@ export default class InPrisonTrainingUpdateController extends InPrisonTrainingCo
     }
 
     const updatedInduction = this.updatedInductionDtoWithInPrisonTraining(inductionDto, inPrisonTrainingForm)
+
+    // if we are switching from the long question set to the short one, forward to the check your answers page
+    if (req.session.updateInductionQuestionSet) {
+      req.session.inductionDto = updatedInduction
+      // TODO - forward to check your answers
+      return res.redirect(`/plan/${prisonNumber}/view/work-and-interests`)
+    }
+
     const updateInductionDto = toCreateOrUpdateInductionDto(prisonId, updatedInduction)
 
     try {
