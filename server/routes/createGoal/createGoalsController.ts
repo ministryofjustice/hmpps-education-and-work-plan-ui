@@ -1,23 +1,27 @@
 import type { RequestHandler } from 'express'
-import type { NewGoal } from 'compositeForms'
 import moment from 'moment'
+import type { CreateGoalsForm } from 'forms'
 import CreateGoalsView from './createGoalsView'
 import futureGoalTargetDateCalculator from '../futureGoalTargetDateCalculator'
 
 export default class CreateGoalsController {
   constructor() {}
 
-  // TODO: RR-734 - Create controller and view classes new create goal journey
   getCreateGoalsView: RequestHandler = async (req, res, next): Promise<void> => {
     const { prisonNumber } = req.params
     const { prisonerSummary } = req.session
 
-    req.session.newGoals = req.session.newGoals || []
+    req.session.createGoalsForm = req.session.createGoalsForm || []
 
-    if (!req.session.newGoal?.createGoalForm) {
-      req.session.newGoal = {
-        createGoalForm: { prisonNumber },
-      } as NewGoal
+    if (!req.session.createGoalsForm) {
+      req.session.createGoalsForm = {
+        prisonNumber,
+        goals: [
+          {
+            steps: [{ title: '' }],
+          },
+        ],
+      } as CreateGoalsForm
     }
 
     const today = moment().toDate()
@@ -29,7 +33,7 @@ export default class CreateGoalsController {
 
     const view = new CreateGoalsView(
       prisonerSummary,
-      req.session.newGoal.createGoalForm,
+      req.session.createGoalsForm,
       futureGoalTargetDates,
       req.flash('errors'),
     )

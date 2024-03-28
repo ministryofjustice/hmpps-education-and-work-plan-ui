@@ -32,105 +32,107 @@
         <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
         <input type="hidden" name="prisonNumber" value="{{ form.prisonNumber }}" />
 
+        {% for goals in form.goals %}
+        {% set goalLoop = loop %}
         <div class="govuk-summary-card">
           <div class="govuk-summary-card__title-wrapper">
             <h2 class="govuk-summary-card__title">
-              Goal
+              Goal {{ goalLoop.index }}
             </h2>
           </div>
           <div class="govuk-summary-card__content">
 
-              {{ govukCharacterCount({
-                name: "goals[0].title",
-                id: "goals[0].title",
-                value: form.goals[0].title,
-                maxlength: 512,
-                label: {
-                  text: "Describe the goal",
-                  classes: "govuk-label--s"
-                },
-                errorMessage: errors | findError('goals[0].title')
-              }) }}
+            {{ govukCharacterCount({
+              name: "goals[" + goalLoop.index0 + "].title",
+              id: "goals[" + goalLoop.index0 + "].title",
+              value: form.goals[(goalLoop.index0)].title,
+              maxlength: 512,
+              label: {
+                text: "Describe the goal",
+                classes: "govuk-label--s"
+              },
+              errorMessage: errors | findError("goals[" + goalLoop.index0 + "].title")
+            }) }}
 
-              {% set targetCompletionDateItems = [] %}
+            {% set targetCompletionDateItems = [] %}
 
-              {% for futureGoalTargetDate in futureGoalTargetDates %}
-                {% set targetCompletionDateItems = (targetCompletionDateItems.push({
-                  "value": futureGoalTargetDate.value,
-                  "text": futureGoalTargetDate.text
-                  }), targetCompletionDateItems)
-                %}
-              {% endfor %}
-
-              {% set anotherDateHtml %}
-                {{ govukDateInput({
-                  id: "another-date",
-                  fieldset: {
-                    legend: {
-                      text: "What date are they aiming to achieve this by?",
-                      classes: "govuk-visually-hidden"
-                    }
-                  },
-                  hint: {
-                    text: "For example, 27 3 2007"
-                  },
-                  items: [
-                    {
-                      id: 'another-date-day',
-                      label: 'Day',
-                      name: 'goals[0].targetCompletionDate-day',
-                      classes: 'govuk-input--width-2',
-                      value: form.goals[0]['targetCompletionDate-day']
-                    },
-                    {
-                      id: 'another-date-month',
-                      label: 'Month',
-                      name: 'goals[0].targetCompletionDate-month',
-                      classes: 'govuk-input--width-2',
-                      value: form.goals[0]['targetCompletionDate-month']
-                    },
-                    {
-                      id: 'another-date-year',
-                      label: 'Year',
-                      name: 'goals[0].targetCompletionDate-year',
-                      classes: 'govuk-input--width-4',
-                      value: form.goals[0]['targetCompletionDate-year']
-                    }
-                  ]
-                }) }}
-              {% endset -%}
-
+            {% for futureGoalTargetDate in futureGoalTargetDates %}
               {% set targetCompletionDateItems = (targetCompletionDateItems.push({
-                "value": "another-date",
-                "text": "set another date",
-                "conditional": {
-                  "html": anotherDateHtml
-                }
+                "value": futureGoalTargetDate.value,
+                "text": futureGoalTargetDate.text
                 }), targetCompletionDateItems)
               %}
+            {% endfor %}
 
-              {{ govukRadios({
-                name: "goals[0].targetCompletionDate",
-                id: "goals[0].targetCompletionDate",
-                value: form.goals[0].targetCompletionDate,
+            {% set anotherDateHtml %}
+              {{ govukDateInput({
+                id: "another-date",
                 fieldset: {
                   legend: {
-                    text: "When are they aiming to achieve this by?",
-                    classes: "govuk-fieldset__legend--s"
+                    text: "What date are they aiming to achieve this by?",
+                    classes: "govuk-visually-hidden"
                   }
                 },
-                items: targetCompletionDateItems,
-                errorMessage: errors | findError('goals[0].targetCompletionDate')
+                hint: {
+                  text: "For example, 27 3 2007"
+                },
+                items: [
+                  {
+                    id: 'another-date-day',
+                    label: 'Day',
+                    name: "goals[" + goalLoop.index0 + "].targetCompletionDate-day",
+                    classes: 'govuk-input--width-2',
+                    value: form.goals[(goalLoop.index0)]['targetCompletionDate-day']
+                  },
+                  {
+                    id: 'another-date-month',
+                    label: 'Month',
+                    name: "goals[" + goalLoop.index0 + "].targetCompletionDate-month",
+                    classes: 'govuk-input--width-2',
+                    value: form.goals[(goalLoop.index0)]['targetCompletionDate-month']
+                  },
+                  {
+                    id: 'another-date-year',
+                    label: 'Year',
+                    name: "goals[" + goalLoop.index0 + "].targetCompletionDate-year",
+                    classes: 'govuk-input--width-4',
+                    value: form.goals[(goalLoop.index0)]['targetCompletionDate-year']
+                  }
+                ]
               }) }}
+            {% endset -%}
 
+            {% set targetCompletionDateItems = (targetCompletionDateItems.push({
+              "value": "another-date",
+              "text": "set another date",
+              "conditional": {
+                "html": anotherDateHtml
+              }
+              }), targetCompletionDateItems)
+            %}
+
+            {{ govukRadios({
+              name: "goals[" + goalLoop.index0 + "].targetCompletionDate",
+              id: "goals[" + goalLoop.index0 + "].targetCompletionDate",
+              value: form.goals[(goalLoop.index0)].targetCompletionDate,
+              fieldset: {
+                legend: {
+                  text: "When are they aiming to achieve this by?",
+                  classes: "govuk-fieldset__legend--s"
+                }
+              },
+              items: targetCompletionDateItems,
+              errorMessage: errors | findError("goals[" + goalLoop.index0 + "].targetCompletionDate")
+            }) }}
+
+            {% for steps in form.goals[goalLoop.index0].steps %}
+              {% set stepLoop = loop %}
               <div class="govuk-form-group">
-                <!-- TODO: Populate the loop object to relect the correct number on the UI -->
-                {% set stepTitleLabel = 'Step ' + form.goals[0].steps[(loop.index)] %}
-                <!-- TODO: Populate the loop object to reflect the correct step title on the UI -->
+                {% set stepTitleLabel = 'Step ' + stepLoop.index %}
                 {{ govukCharacterCount({
-                  name: "goals[0].steps[0].title",
-                  id: "goals[0].steps[0].title",
-                  value: form.goals[0].steps[0].title,
+                  name: "goals[" + goalLoop.index0 + "].steps[" + stepLoop.index0 + "].title",
+                  id: "goals[" + goalLoop.index0 + "].steps[" + stepLoop.index0 + "].title",
+                  value: form.goals[(goalLoop.index0)].steps[(stepLoop.index0)].title,
                   maxlength: 512,
                   rows: 2,
                   label: {
@@ -141,9 +143,10 @@
                   hint: {
                     text: "Describe this step"
                   },
-                  errorMessage: errors | findError('goals[0].steps[0].title')
+                  errorMessage: errors | findError('goals[" + goalLoop.index0 + "].steps[" + stepLoop.index0 + "].title')
                 }) }}
               </div>
+            {% endfor %}
 
             <div class="govuk-form-group govuk-!-margin-bottom-2">
               {{ govukButton({
@@ -169,13 +172,14 @@
                     This note will be seen by the prisoner and other prison staff.
                   </strong>
                 </div>
-                {{ errors | findError('goals[0].note') }}
-                <textarea class="govuk-textarea" id="goals[0].note" name="goals[0].note" rows="5" aria-describedby="warning-text">{{ form.goals[0].note }}</textarea>
+                {{ errors | findError("goals[" + goalLoop.index0 + "].note") }}
+                <textarea class="govuk-textarea" id="goals[{{ goalLoop.index0 }}].note" name="goals[{{ goalLoop.index0 }}].note" rows="5" aria-describedby="warning-text">{{ form.goals[goalLoop.index0].note }}</textarea>
               </div>
             </div>
 
           </div>
         </div>
+        {% endfor %}
 
         {{ govukButton({
           id: "submit-button",
