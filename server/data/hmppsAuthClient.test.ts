@@ -2,11 +2,11 @@ import nock from 'nock'
 
 import config from '../config'
 import HmppsAuthClient from './hmppsAuthClient'
-import TokenStore from './cache/tokenStore'
+import TokenStore from './tokenStore/redisTokenStore'
 
-jest.mock('./cache/tokenStore')
+jest.mock('./tokenStore/redisTokenStore')
 
-const tokenStore = new TokenStore() as jest.Mocked<TokenStore>
+const tokenStore = new TokenStore(null) as jest.Mocked<TokenStore>
 
 const username = 'Bob'
 const token = { access_token: 'token-1', expires_in: 300 }

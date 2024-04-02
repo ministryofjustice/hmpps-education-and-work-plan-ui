@@ -11,27 +11,31 @@ initialiseAppInsights()
 buildAppInsightsClient(applicationInfo)
 
 import HmppsAuthClient from './hmppsAuthClient'
-import { createRedisClient } from './cache/redisClient'
-import TokenStore from './cache/tokenStore'
+import { createRedisClient } from './redisClient'
+import RedisTokenStore from './tokenStore/redisTokenStore'
+import InMemoryTokenStore from './tokenStore/inMemoryTokenStore'
+import config from '../config'
 import PrisonerSearchClient from './prisonerSearchClient'
 import EducationAndWorkPlanClient from './educationAndWorkPlanClient'
 import CuriousClient from './curiousClient'
 import CiagInductionClient from './ciagInductionClient'
 import FrontendComponentApiClient from './frontendComponentApiClient'
-import PrisonRegisterStore from './cache/prisonRegisterStore'
+import PrisonRegisterStore from './prisonRegisterStore/prisonRegisterStore'
 import PrisonRegisterClient from './prisonRegisterClient'
 
 type RestClientBuilder<T> = (token: string) => T
 
 export const dataAccess = () => ({
   applicationInfo,
-  hmppsAuthClient: new HmppsAuthClient(new TokenStore(createRedisClient())),
+  hmppsAuthClient: new HmppsAuthClient(
+    config.redis.enabled ? new RedisTokenStore(createRedisClient()) : new InMemoryTokenStore(),
+  ),
   prisonerSearchClient: new PrisonerSearchClient(),
   educationAndWorkPlanClient: new EducationAndWorkPlanClient(),
   curiousClient: new CuriousClient(),
   ciagInductionClient: new CiagInductionClient(),
   frontendComponentApiClient: new FrontendComponentApiClient(),
-  prisonRegisterStore: new PrisonRegisterStore(),
+  prisonRegisterStore: new PrisonRegisterStore(createRedisClient('prisonRegister:')),
   prisonRegisterClient: new PrisonRegisterClient(),
 })
 

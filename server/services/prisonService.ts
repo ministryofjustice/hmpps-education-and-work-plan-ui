@@ -1,6 +1,6 @@
 import type { Prison } from 'viewModels'
 import type { PrisonResponse } from 'prisonRegisterApiClient'
-import PrisonRegisterStore from '../data/cache/prisonRegisterStore'
+import PrisonRegisterStore from '../data/prisonRegisterStore/prisonRegisterStore'
 import PrisonRegisterClient from '../data/prisonRegisterClient'
 import toPrison from '../data/mappers/prisonMapper'
 import logger from '../../logger'
@@ -62,7 +62,8 @@ export default class PrisonService {
     logger.info('Retrieving and caching active prisons')
     try {
       const allPrisonResponses = await this.prisonRegisterClient.getAllPrisons(token)
-      await this.prisonRegisterStore.setActivePrisons(allPrisonResponses, PRISON_CACHE_TTL_DAYS)
+      const activePrisons = allPrisonResponses.filter(prison => prison.active === true)
+      await this.prisonRegisterStore.setActivePrisons(activePrisons, PRISON_CACHE_TTL_DAYS)
       return allPrisonResponses
     } catch (ex) {
       // Retrieving and caching prisons failed for some reason. Return an empty array.

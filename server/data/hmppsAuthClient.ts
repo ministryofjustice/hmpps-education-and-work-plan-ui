@@ -1,7 +1,7 @@
 import superagent from 'superagent'
 import { URLSearchParams } from 'url'
 
-import type TokenStore from './cache/tokenStore'
+import type TokenStore from './tokenStore/tokenStore'
 import logger from '../../logger'
 import config from '../config'
 import generateOauthClientToken from '../authentication/clientCredentials'
