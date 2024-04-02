@@ -1,6 +1,6 @@
 import type { PrisonResponse } from 'prisonRegisterApiClient'
 import PrisonRegisterStore from './prisonRegisterStore'
-import { RedisClient } from './redisClient'
+import { RedisClient } from '../redisClient'
 import aValidPrisonResponse from '../../testsupport/prisonResponseTestDataBuilder'
 
 const redisClient = {
@@ -9,24 +9,6 @@ const redisClient = {
   set: jest.fn(),
   connect: jest.fn(),
 }
-
-const allPrisons: Array<PrisonResponse> = [
-  aValidPrisonResponse({
-    prisonId: 'ACI',
-    prisonName: 'Altcourse (HMP)',
-    active: false,
-  }),
-  aValidPrisonResponse({
-    prisonId: 'ASI',
-    prisonName: 'Ashfield (HMP)',
-    active: true,
-  }),
-  aValidPrisonResponse({
-    prisonId: 'MDI',
-    prisonName: 'Moorland (HMP & YOI)',
-    active: true,
-  }),
-]
 
 const activePrisons: Array<PrisonResponse> = [
   aValidPrisonResponse({
@@ -58,7 +40,7 @@ describe('prisonRegisterStore', () => {
     const durationDays = 2
 
     // When
-    await prisonRegisterStore.setActivePrisons(allPrisons, durationDays)
+    await prisonRegisterStore.setActivePrisons(activePrisons, durationDays)
 
     // Then
     expect(redisClient.set).toHaveBeenCalledWith(

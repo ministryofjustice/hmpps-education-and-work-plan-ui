@@ -1,7 +1,7 @@
 import type { PrisonResponse } from 'prisonRegisterApiClient'
 import toPrison from '../data/mappers/prisonMapper'
 import PrisonService from './prisonService'
-import PrisonRegisterStore from '../data/cache/prisonRegisterStore'
+import PrisonRegisterStore from '../data/prisonRegisterStore/prisonRegisterStore'
 import PrisonRegisterClient from '../data/prisonRegisterClient'
 import { HmppsAuthClient } from '../data'
 import aValidPrisonResponse from '../testsupport/prisonResponseTestDataBuilder'
@@ -123,7 +123,7 @@ describe('prisonService', () => {
       expect(prisonRegisterStore.getActivePrisons).toHaveBeenCalled()
       expect(mockedPrisonMapper).toHaveBeenCalledWith(moorlandPrisonResponse)
       expect(prisonRegisterClient.getAllPrisons).toHaveBeenCalled()
-      expect(prisonRegisterStore.setActivePrisons).toHaveBeenCalledWith(allPrisons, 1)
+      expect(prisonRegisterStore.setActivePrisons).toHaveBeenCalledWith(activePrisons, 1)
     })
 
     it('should not get prison by ID given prison does not exist in cache or API', async () => {
@@ -142,7 +142,7 @@ describe('prisonService', () => {
       expect(prisonRegisterStore.getActivePrisons).toHaveBeenCalled()
       expect(mockedPrisonMapper).not.toHaveBeenCalled()
       expect(prisonRegisterClient.getAllPrisons).toHaveBeenCalled()
-      expect(prisonRegisterStore.setActivePrisons).toHaveBeenCalledWith(allPrisons, 1)
+      expect(prisonRegisterStore.setActivePrisons).toHaveBeenCalledWith(activePrisons, 1)
     })
 
     it('should get prison by ID given retrieving from cache throws an error', async () => {
@@ -172,7 +172,7 @@ describe('prisonService', () => {
       expect(prisonRegisterStore.getActivePrisons).toHaveBeenCalled()
       expect(mockedPrisonMapper).toHaveBeenCalledWith(moorlandPrisonResponse)
       expect(prisonRegisterClient.getAllPrisons).toHaveBeenCalled()
-      expect(prisonRegisterStore.setActivePrisons).toHaveBeenCalledWith(allPrisons, 1)
+      expect(prisonRegisterStore.setActivePrisons).toHaveBeenCalledWith(activePrisons, 1)
     })
 
     it('should not get prison by ID given retrieving from cache and API both throw errors', async () => {
@@ -211,7 +211,7 @@ describe('prisonService', () => {
       expect(prisonRegisterStore.getActivePrisons).toHaveBeenCalled()
       expect(mockedPrisonMapper).not.toHaveBeenCalled()
       expect(prisonRegisterClient.getAllPrisons).toHaveBeenCalled()
-      expect(prisonRegisterStore.setActivePrisons).toHaveBeenCalledWith(allPrisons, 1)
+      expect(prisonRegisterStore.setActivePrisons).toHaveBeenCalledWith(activePrisons, 1)
     })
   })
 
