@@ -8,15 +8,14 @@ export default class PrisonRegisterClient {
   }
 
   async getPrisonByPrisonId(prisonId: string, token: string): Promise<PrisonResponse> {
-    return PrisonRegisterClient.restClient(token).get({
+    return PrisonRegisterClient.restClient(token).get<PrisonResponse>({
       path: `/prisons/id/${prisonId}`,
     })
   }
 
   async getAllPrisons(token: string): Promise<Array<PrisonResponse>> {
-    const allPrisonResponses = PrisonRegisterClient.restClient(token).get({
+    return PrisonRegisterClient.restClient(token).get<Array<PrisonResponse>>({
       path: '/prisons',
     })
-    return allPrisonResponses as Promise<Array<PrisonResponse>>
   }
 }
