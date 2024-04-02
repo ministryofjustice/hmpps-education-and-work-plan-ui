@@ -32,11 +32,7 @@
         value="{{ config.fieldName }},{{ newSortOrder }}"
         type="submit"
         class="sortable-table-header__button">
-      <span class="govuk-visually-hidden">Sort by</span>
       {{ config.headerText }}
-      <span class="govuk-visually-hidden">
-        ({{ config.sortOrder if config.sortBy === config.fieldName else 'not sorted' }})
-      </span>
     </button>
   </th>
 
