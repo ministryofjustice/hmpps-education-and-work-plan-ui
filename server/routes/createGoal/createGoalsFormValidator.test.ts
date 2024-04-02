@@ -17,7 +17,7 @@ describe('createGoalsFormValidator', () => {
 
   it('should validate given validators return no errors', () => {
     // Given
-    const form = {
+    const form: CreateGoalsForm = {
       prisonNumber: 'A1234BC',
       goals: [
         {
@@ -26,7 +26,7 @@ describe('createGoalsFormValidator', () => {
           steps: [{ title: 'Book Spanish course' }],
         },
       ],
-    } as CreateGoalsForm
+    }
 
     mockedValidateGoalTitle.mockReturnValue([])
     mockedValidateTargetCompletionDate.mockReturnValue([])
@@ -40,7 +40,7 @@ describe('createGoalsFormValidator', () => {
   })
 
   it('should validate given goal title errors', () => {
-    const form = {
+    const form: CreateGoalsForm = {
       prisonNumber: 'A1234BC',
       goals: [
         {
@@ -49,7 +49,7 @@ describe('createGoalsFormValidator', () => {
           steps: [{ title: 'Book Spanish course' }],
         },
       ],
-    } as CreateGoalsForm
+    }
 
     mockedValidateGoalTitle.mockReturnValue(['some-title-error'])
     mockedValidateTargetCompletionDate.mockReturnValue([])
@@ -63,7 +63,7 @@ describe('createGoalsFormValidator', () => {
   })
 
   it('should validate given goal target completion date errors', () => {
-    const form = {
+    const form: CreateGoalsForm = {
       prisonNumber: 'A1234BC',
       goals: [
         {
@@ -72,7 +72,7 @@ describe('createGoalsFormValidator', () => {
           steps: [{ title: 'Book Spanish course' }],
         },
       ],
-    } as CreateGoalsForm
+    }
 
     mockedValidateGoalTitle.mockReturnValue([])
     mockedValidateTargetCompletionDate.mockReturnValue(['some-target-completion-date-error'])
@@ -86,7 +86,7 @@ describe('createGoalsFormValidator', () => {
   })
 
   it('should validate given step title errors', () => {
-    const form = {
+    const form: CreateGoalsForm = {
       prisonNumber: 'A1234BC',
       goals: [
         {
@@ -95,7 +95,7 @@ describe('createGoalsFormValidator', () => {
           steps: [{ title: '' }],
         },
       ],
-    } as CreateGoalsForm
+    }
 
     mockedValidateGoalTitle.mockReturnValue([])
     mockedValidateTargetCompletionDate.mockReturnValue([])
@@ -105,6 +105,62 @@ describe('createGoalsFormValidator', () => {
     const errors = validateCreateGoalsForm(form)
 
     // Then
-    expect(errors).toEqual([{ href: '#steps[0].title', text: 'some-step-title-error' }])
+    expect(errors).toEqual([{ href: '#goals[0].steps[0].title', text: 'some-step-title-error' }])
+  })
+
+  it('should validate given several errors in several goals and steps', () => {
+    const form: CreateGoalsForm = {
+      prisonNumber: 'A1234BC',
+      goals: [
+        {
+          title: 'This goal and its steps is OK',
+          targetCompletionDate: '2024-02-26',
+          steps: [{ title: 'Book Spanish course' }],
+        },
+        {
+          title: 'This goal is missing its date',
+          targetCompletionDate: '',
+          steps: [{ title: 'Book Spanish course' }],
+        },
+        {
+          title: 'This goal is missing a step title',
+          targetCompletionDate: '2024-02-26',
+          steps: [{ title: 'Book Spanish course' }, { title: '' }, { title: 'Attend Spanish course' }],
+        },
+        {
+          title: '',
+          targetCompletionDate: '2024-02-26',
+          steps: [{ title: 'Book Spanish course' }],
+        },
+      ],
+    }
+
+    mockedValidateGoalTitle //
+      .mockReturnValueOnce([])
+      .mockReturnValueOnce([])
+      .mockReturnValueOnce([])
+      .mockReturnValueOnce(['some-title-error'])
+    mockedValidateTargetCompletionDate //
+      .mockReturnValueOnce([])
+      .mockReturnValueOnce(['some-target-completion-date-error'])
+      .mockReturnValueOnce([])
+      .mockReturnValueOnce([])
+    mockedValidateStepTitle //
+      .mockReturnValueOnce([])
+      .mockReturnValueOnce([])
+      .mockReturnValueOnce([])
+      .mockReturnValueOnce(['some-step-title-error'])
+      .mockReturnValueOnce([])
+      .mockReturnValueOnce([])
+
+    // When
+    const errors = validateCreateGoalsForm(form)
+
+    // Then
+    expect(errors).toEqual([
+      { href: '#goals[1].targetCompletionDate', text: 'some-target-completion-date-error' },
+      { href: '#goals[2].steps[1].title', text: 'some-step-title-error' },
+      { href: '#goals[3].title', text: 'some-title-error' },
+    ])
   })
 })

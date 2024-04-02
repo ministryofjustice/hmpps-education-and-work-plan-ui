@@ -7,20 +7,24 @@ import goalTargetCompletionDateValidator from '../../validators/goalTargetComple
 export default function validateCreateGoalsForm(createGoalsForm: CreateGoalsForm): Array<Record<string, string>> {
   const errors: Array<Record<string, string>> = []
 
-  errors.push(...formatErrors('goals[0].title', validateGoalTitle(createGoalsForm.goals[0].title)))
-  errors.push(
-    ...formatErrors(
-      'goals[0].targetCompletionDate',
-      goalTargetCompletionDateValidator(
-        createGoalsForm.goals[0].targetCompletionDate,
-        createGoalsForm.goals[0]['targetCompletionDate-day'],
-        createGoalsForm.goals[0]['targetCompletionDate-month'],
-        createGoalsForm.goals[0]['targetCompletionDate-year'],
+  createGoalsForm.goals.forEach((goal, goalIndex) => {
+    errors.push(...formatErrors(`goals[${goalIndex}].title`, validateGoalTitle(goal.title)))
+    errors.push(
+      ...formatErrors(
+        `goals[${goalIndex}].targetCompletionDate`,
+        goalTargetCompletionDateValidator(
+          goal.targetCompletionDate,
+          goal['targetCompletionDate-day'],
+          goal['targetCompletionDate-month'],
+          goal['targetCompletionDate-year'],
+        ),
       ),
-    ),
-  )
-  createGoalsForm.goals[0].steps.forEach((step, idx) => {
-    errors.push(...formatErrors(`steps[${idx}].title`, validateStepTitle(step.title)))
+    )
+
+    goal.steps.forEach((step, stepIndex) => {
+      errors.push(...formatErrors(`goals[${goalIndex}].steps[${stepIndex}].title`, validateStepTitle(step.title)))
+    })
   })
+
   return errors
 }
