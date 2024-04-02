@@ -8,7 +8,7 @@ export default class PrisonerSearchClient {
   }
 
   async getPrisonerByPrisonNumber(prisonNumber: string, token: string): Promise<Prisoner> {
-    return PrisonerSearchClient.restClient(token).get({
+    return PrisonerSearchClient.restClient(token).get<Prisoner>({
       path: `/prisoner/${prisonNumber}`,
     })
   }
@@ -19,14 +19,14 @@ export default class PrisonerSearchClient {
     pageSize: number,
     token: string,
   ): Promise<PagedCollectionOfPrisoners> {
-    return PrisonerSearchClient.restClient(token).get({
+    return PrisonerSearchClient.restClient(token).get<PagedCollectionOfPrisoners>({
       path: `/prisoner-search/prison/${prisonId}`,
       headers: {
         'content-type': 'application/json',
       },
       query: {
-        page: `${page}`, // coerce `page` (which is a `number`) into a `string` because query string param values are all strings.
-        size: `${pageSize}`, // coerce `pageSize` (which is a `number`) into a `string` because query string param values are all strings.
+        page,
+        size: pageSize,
       },
     })
   }

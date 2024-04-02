@@ -58,7 +58,7 @@ describe('prisonRegisterClient', () => {
         userMessage: 'An unexpected error occurred',
         developerMessage: 'An unexpected error occurred',
       }
-      prisonRegisterApi.get('/prisons').reply(500, expectedResponseBody)
+      prisonRegisterApi.get('/prisons').thrice().reply(500, expectedResponseBody)
 
       // When
       try {
@@ -126,7 +126,7 @@ describe('prisonRegisterClient', () => {
         userMessage: 'An unexpected error occurred',
         developerMessage: 'An unexpected error occurred',
       }
-      prisonRegisterApi.get(`/prisons/id/${prisonId}`).reply(500, expectedResponseBody)
+      prisonRegisterApi.get(`/prisons/id/${prisonId}`).thrice().reply(500, expectedResponseBody)
 
       // When
       try {
