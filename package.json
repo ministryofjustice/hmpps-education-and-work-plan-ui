@@ -91,8 +91,9 @@
     ]
   },
   "dependencies": {
-    "@microsoft/applicationinsights-web": "^3.0.4",
+    "@aws-sdk/client-sqs": "^3.547.0",
     "@microsoft/applicationinsights-clickanalytics-js": "^3.0.4",
+    "@microsoft/applicationinsights-web": "^3.0.4",
     "@ministryofjustice/frontend": "^2.0.0",
     "agentkeepalive": "^4.5.0",
     "applicationinsights": "^2.9.1",
@@ -143,6 +144,7 @@
     "@typescript-eslint/eslint-plugin": "^6.16.0",
     "@typescript-eslint/parser": "^6.16.0",
     "audit-ci": "^6.6.1",
+    "aws-sdk-client-mock": "^4.0.0",
     "cheerio": "^1.0.0-rc.12",
     "concurrently": "^8.2.2",
     "cookie-session": "^2.0.0",
