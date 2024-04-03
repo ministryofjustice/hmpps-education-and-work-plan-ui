@@ -80,6 +80,7 @@ Note: Using `nvm` (or [fnm](https://github.com/Schniz/fnm)), run `nvm install --
 Create a `.env` which should override environment variables required to run locally:
 ```properties
 HMPPS_AUTH_URL=http://localhost:9090/auth
+MANAGE_USERS_API_URL=http://localhost:9091/manage-users-api
 TOKEN_VERIFICATION_API_URL=https://token-verification-api-dev.prison.service.justice.gov.uk
 TOKEN_VERIFICATION_ENABLED=false
 EDUCATION_AND_WORK_PLAN_API_URL=http://localhost:8080
