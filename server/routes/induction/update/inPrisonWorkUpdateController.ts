@@ -8,6 +8,8 @@ import { InductionService } from '../../../services'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
 import InPrisonWorkValue from '../../../enums/inPrisonWorkValue'
 import logger from '../../../../logger'
+import { getPreviousPage } from '../../pageFlowHistory'
+import getDynamicBackLinkAriaText from '../dynamicAriaTextResolver'
 
 /**
  * Controller for the Update of the In Prison Work screen of the Induction.
@@ -19,12 +21,15 @@ export default class InPrisonWorkUpdateController extends InPrisonWorkController
 
   getBackLinkUrl(req: Request): string {
     const { prisonNumber } = req.params
+    const { pageFlowHistory } = req.session
+    if (pageFlowHistory) {
+      return getPreviousPage(pageFlowHistory)
+    }
     return `/plan/${prisonNumber}/view/work-and-interests`
   }
 
   getBackLinkAriaText(req: Request): string {
-    const { prisonerSummary } = req.session
-    return `Back to ${prisonerSummary.firstName} ${prisonerSummary.lastName}'s learning and work progress`
+    return getDynamicBackLinkAriaText(req, this.getBackLinkUrl(req))
   }
 
   submitInPrisonWorkForm: RequestHandler = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
@@ -47,8 +52,16 @@ export default class InPrisonWorkUpdateController extends InPrisonWorkController
       return res.redirect(`/prisoners/${prisonNumber}/induction/in-prison-work`)
     }
 
-    // create an updated InductionDto with any new values and then map it to a CreateOrUpdateInductionDTO to call the API
+    // update the InductionDto with any new values
     const updatedInduction = this.updatedInductionDtoWithInPrisonWork(inductionDto, inPrisonWorkForm)
+
+    // if we are switching from the long question set to the short one, forward to the next page in the flow
+    if (req.session.updateInductionQuestionSet) {
+      req.session.inductionDto = updatedInduction
+      return res.redirect(`/prisoners/${prisonNumber}/induction/in-prison-training`)
+    }
+
+    // otherwise map the InductionDTO to a CreateOrUpdateInductionDTO to call the API
     const updateInductionDto = toCreateOrUpdateInductionDto(prisonId, updatedInduction)
 
     try {

@@ -12,7 +12,7 @@ export default class CiagInductionClient {
     token: string,
   ): Promise<CiagInductionSummaryListResponse> {
     const requestBody: GetCiagInductionSummariesRequest = { offenderIds: prisonNumbers }
-    return CiagInductionClient.restClient(token).post({
+    return CiagInductionClient.restClient(token).post<CiagInductionSummaryListResponse>({
       path: '/ciag/induction/list',
       data: requestBody,
     })

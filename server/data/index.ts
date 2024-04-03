@@ -22,7 +22,7 @@ import EducationAndWorkPlanClient from './educationAndWorkPlanClient'
 import CuriousClient from './curiousClient'
 import CiagInductionClient from './ciagInductionClient'
 import FrontendComponentApiClient from './frontendComponentApiClient'
-import PrisonRegisterStore from './cache/prisonRegisterStore'
+import PrisonRegisterStore from './prisonRegisterStore/prisonRegisterStore'
 import PrisonRegisterClient from './prisonRegisterClient'
 
 type RestClientBuilder<T> = (token: string) => T
@@ -39,7 +39,7 @@ export const dataAccess = () => ({
   curiousClient: new CuriousClient(),
   ciagInductionClient: new CiagInductionClient(),
   frontendComponentApiClient: new FrontendComponentApiClient(),
-  prisonRegisterStore: new PrisonRegisterStore(),
+  prisonRegisterStore: new PrisonRegisterStore(createRedisClient('prisonRegister:')),
   prisonRegisterClient: new PrisonRegisterClient(),
 })
 

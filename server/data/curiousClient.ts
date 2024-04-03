@@ -8,24 +8,22 @@ export default class CuriousClient {
   }
 
   async getLearnerProfile(prisonNumber: string, token: string): Promise<Array<LearnerProfile>> {
-    const learnerProfiles = CuriousClient.restClient(token).get({
+    return CuriousClient.restClient(token).get<Array<LearnerProfile>>({
       path: `/learnerProfile/${prisonNumber}`,
     })
-    return learnerProfiles as Promise<Array<LearnerProfile>>
   }
 
   async getLearnerNeurodivergence(prisonNumber: string, token: string): Promise<Array<LearnerNeurodivergence>> {
-    const learnerNeurodivergence = CuriousClient.restClient(token).get({
+    return CuriousClient.restClient(token).get<Array<LearnerNeurodivergence>>({
       path: `/learnerNeurodivergence/${prisonNumber}`,
     })
-    return learnerNeurodivergence as Promise<Array<LearnerNeurodivergence>>
   }
 
   async getLearnerEducationPage(prisonNumber: string, token: string, page = 0): Promise<LearnerEductionPagedResponse> {
-    return CuriousClient.restClient(token).get({
+    return CuriousClient.restClient(token).get<LearnerEductionPagedResponse>({
       path: `/learnerEducation/${prisonNumber}`,
       query: {
-        page: `${page}`, // coerce `page` (which is a `number`) into a `string` because query string param values are all strings.
+        page,
       },
     })
   }

@@ -7,6 +7,7 @@ import logger from '../../../../logger'
 import { InductionService } from '../../../services'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
 import { setCurrentPage, getPreviousPage, isPageInFlow } from '../../pageFlowHistory'
+import getDynamicBackLinkAriaText from '../dynamicAriaTextResolver'
 
 export default class QualificationsListUpdateController extends QualificationsListController {
   constructor(private readonly inductionService: InductionService) {
@@ -17,9 +18,9 @@ export default class QualificationsListUpdateController extends QualificationsLi
     const { prisonNumber } = req.params
     const { pageFlowHistory } = req.session
     if (pageFlowHistory) {
-      // TODO - this needs thinking through!
       // We cannot go back to /qualification-detail (if applicable), since the page forms have been removed from the session
-      // To make things more complex, it's possible we haven't come to this page yet, since we may have gone to /want-to-add-qualifications first
+      // To add further complexity, it's possible we haven't come to this page yet, since we may have gone to /want-to-add-qualifications
+      // first (when switching from long route to short route and the prisoner does not have any recorded qualifications)
       const previousPage = isPageInFlow(pageFlowHistory, `/prisoners/${prisonNumber}/induction/qualifications`)
         ? `/prisoners/${prisonNumber}/induction/qualifications`
         : `/prisoners/${prisonNumber}/induction/want-to-add-qualifications`
@@ -31,8 +32,7 @@ export default class QualificationsListUpdateController extends QualificationsLi
   }
 
   getBackLinkAriaText(req: Request): string {
-    const { prisonerSummary } = req.session
-    return `Back to ${prisonerSummary.firstName} ${prisonerSummary.lastName}'s learning and work progress`
+    return getDynamicBackLinkAriaText(req, this.getBackLinkUrl(req))
   }
 
   submitQualificationsListView: RequestHandler = async (
@@ -67,6 +67,11 @@ export default class QualificationsListUpdateController extends QualificationsLi
         `Induction has no qualifications. Redirect the user to Highest Level of Education in order to start adding qualification(s)`,
       )
       return res.redirect(`/prisoners/${prisonNumber}/induction/highest-level-of-education`)
+    }
+
+    // if we are changing the main question set, then proceed to additional-training without calling the API
+    if (req.session.updateInductionQuestionSet) {
+      return res.redirect(`/prisoners/${prisonNumber}/induction/additional-training`)
     }
 
     // By submitting the form without adding/removing any other educational qualifications, the user is indicating their

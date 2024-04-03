@@ -58,7 +58,13 @@ export default class AdditionalTrainingUpdateController extends AdditionalTraini
     const updatedInduction = this.updatedInductionDtoWithAdditionalTraining(inductionDto, additionalTrainingForm)
 
     if (req.session.updateInductionQuestionSet) {
-      // TODO redirect to next page in the question set
+      req.session.inductionDto = updatedInduction
+      const { updateInductionQuestionSet } = req.session
+      const nextPage =
+        updateInductionQuestionSet.hopingToWorkOnRelease === 'YES'
+          ? `/prisoners/${prisonNumber}/induction/has-worked-before`
+          : `/prisoners/${prisonNumber}/induction/in-prison-work`
+      return res.redirect(nextPage)
     }
 
     const updateInductionDto = toCreateOrUpdateInductionDto(prisonId, updatedInduction)
