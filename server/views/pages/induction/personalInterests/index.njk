@@ -68,7 +68,7 @@
               {
                 value: "COMMUNITY",
                 checked: form.personalInterests.includes("COMMUNITY"),
-                text: "COMMUNITY" | formatPersonalInterests,
+                text: "COMMUNITY" | formatPersonalInterest,
                 hint: {
                   text: "things like volunteering with local organisations or charities"
                 }
@@ -76,7 +76,7 @@
               {
                 value: "CRAFTS",
                 checked: form.personalInterests.includes("CRAFTS"),
-                text: "CRAFTS" | formatPersonalInterests,
+                text: "CRAFTS" | formatPersonalInterest,
                 hint: {
                   text: "things like DIY, sewing or woodworking"
                 }
@@ -84,7 +84,7 @@
               {
                 value: "CREATIVE",
                 checked: form.personalInterests.includes("CREATIVE"),
-                text: "CREATIVE" | formatPersonalInterests,
+                text: "CREATIVE" | formatPersonalInterest,
                 hint: {
                   text: "things like writing, cooking or photography"
                 }
@@ -92,7 +92,7 @@
                {
                 value: "DIGITAL",
                 checked: form.personalInterests.includes("DIGITAL"),
-                text: "DIGITAL" | formatPersonalInterests,
+                text: "DIGITAL" | formatPersonalInterest,
                 hint: {
                   text: "things like computer gaming, making movies or coding"
                 }
@@ -100,7 +100,7 @@
               {
                 value: "KNOWLEDGE_BASED",
                 checked: form.personalInterests.includes("KNOWLEDGE_BASED"),
-                text: "KNOWLEDGE_BASED" | formatPersonalInterests,
+                text: "KNOWLEDGE_BASED" | formatPersonalInterest,
                 hint: {
                   text: "things like quizzes, local history or learning a language"
                 }
@@ -108,7 +108,7 @@
               {
                 value: "MUSICAL",
                 checked: form.personalInterests.includes("MUSICAL"),
-                text: "MUSICAL" | formatPersonalInterests,
+                text: "MUSICAL" | formatPersonalInterest,
                 hint: {
                   text: "things like singing, playing an instrument or dancing"
                 }
@@ -116,7 +116,7 @@
               {
                 value: "OUTDOOR",
                 checked: form.personalInterests.includes("OUTDOOR"),
-                text: "OUTDOOR" | formatPersonalInterests,
+                text: "OUTDOOR" | formatPersonalInterest,
                 hint: {
                   text: "things like cycling, hiking or gardening"
                 }
@@ -124,7 +124,7 @@
               {
                 value: "NATURE_AND_ANIMALS",
                 checked: form.personalInterests.includes("NATURE_AND_ANIMALS"),
-                text: "NATURE_AND_ANIMALS" | formatPersonalInterests,
+                text: "NATURE_AND_ANIMALS" | formatPersonalInterest,
                 hint: {
                   text: "things like looking after pets, fishing or birdwatching"
                 }
@@ -132,7 +132,7 @@
               {
                 value: "SOCIAL",
                 checked: form.personalInterests.includes("SOCIAL"),
-                text: "SOCIAL" | formatPersonalInterests,
+                text: "SOCIAL" | formatPersonalInterest,
                 hint: {
                   text: "things like spending time with friends or going to the cinema"
                 }
@@ -140,7 +140,7 @@
               {
                 value: "SOLO_ACTIVITIES",
                 checked: form.personalInterests.includes("SOLO_ACTIVITIES"),
-                text: "SOLO_ACTIVITIES" | formatPersonalInterests,
+                text: "SOLO_ACTIVITIES" | formatPersonalInterest,
                 hint: {
                   text: "  things like reading, watching TV or listening to music"
                 }
@@ -148,7 +148,7 @@
               {
                 value: "SOLO_SPORTS",
                 checked: form.personalInterests.includes("SOLO_SPORTS"),
-                text: "SOLO_SPORTS" | formatPersonalInterests,
+                text: "SOLO_SPORTS" | formatPersonalInterest,
                 hint: {
                   text: "things like golf, running or swimming"
                 }
@@ -156,7 +156,7 @@
               {
                 value: "TEAM_SPORTS",
                 checked: form.personalInterests.includes("TEAM_SPORTS"),
-                text: "TEAM_SPORTS" | formatPersonalInterests,
+                text: "TEAM_SPORTS" | formatPersonalInterest,
                 hint: {
                   text: "things like football, netball or cricket"
                 }
@@ -164,7 +164,7 @@
               {
                 value: "WELLNESS",
                 checked: form.personalInterests.includes("WELLNESS"),
-                text: "WELLNESS" | formatPersonalInterests,
+                text: "WELLNESS" | formatPersonalInterest,
                 hint: {
                   text: "things like yoga, meditation or going to the gym"
                 }
@@ -172,8 +172,8 @@
               {
                 value: "OTHER",
                 checked: form.personalInterests.includes("OTHER"),
-                text: "OTHER" | formatPersonalInterests,
-                attributes: { "aria-label": "OTHER" | formatPersonalInterests + " (Opens a dialogue box)" },
+                text: "OTHER" | formatPersonalInterest,
+                attributes: { "aria-label": "OTHER" | formatPersonalInterest + " (Opens a dialogue box)" },
                 conditional: {
                   html: otherHtml
                 }
@@ -184,7 +184,7 @@
               {
                 value: "NONE",
                 checked: form.personalInterests.includes("NONE"),
-                text: "NONE" | formatPersonalInterests,
+                text: "NONE" | formatPersonalInterest,
                 behaviour: "exclusive"
               }
             ],

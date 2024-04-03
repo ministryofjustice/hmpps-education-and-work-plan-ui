@@ -1,0 +1,19 @@
+<h2 class="govuk-heading-m">Things that may affect their ability to work</h2>
+
+<dl class="govuk-summary-list govuk-!-margin-bottom-8">
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key govuk-!-width-one-quarter">
+      Potential affect on ability to work
+    </dt>
+    <dd class="govuk-summary-list__value" data-qa="abilityToWork">
+      {% for item in inductionDto.workOnRelease.affectAbilityToWork %}
+        <div data-qa="skills-{{ loop.index }}">{{ item | formatAbilityToWorkConstraint }}{{ ' - ' + inductionDto.workOnRelease.affectAbilityToWorkOther if item === 'OTHER' }}{{ ',' if inductionDto.workOnRelease.affectAbilityToWork.length !== loop.index }}</div>
+      {% endfor %}
+    </dd>
+    <dd class="govuk-summary-list__actions">
+      <a class="govuk-link" href="/prisoners/{{ prisonerSummary.prisonNumber }}/induction/affect-ability-to-work" data-qa="affectAbilityToWorkLink">
+        Change<span class="govuk-visually-hidden"> things that may affect ability to work</span>
+      </a>
+    </dd>
+  </div>
+</dl>

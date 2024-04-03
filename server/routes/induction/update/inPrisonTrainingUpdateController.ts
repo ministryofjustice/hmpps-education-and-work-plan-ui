@@ -61,8 +61,7 @@ export default class InPrisonTrainingUpdateController extends InPrisonTrainingCo
     // if we are switching from the long question set to the short one, forward to the check your answers page
     if (req.session.updateInductionQuestionSet) {
       req.session.inductionDto = updatedInduction
-      // TODO - forward to check your answers
-      return res.redirect(`/plan/${prisonNumber}/view/work-and-interests`)
+      return res.redirect(`/prisoners/${prisonNumber}/induction/check-your-answers`)
     }
 
     const updateInductionDto = toCreateOrUpdateInductionDto(prisonId, updatedInduction)
