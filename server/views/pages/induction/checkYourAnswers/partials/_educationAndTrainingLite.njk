@@ -1,13 +1,12 @@
 <h2 class="govuk-heading-m govuk-!-margin-top-2 govuk-!-margin-bottom-6">Qualifications and training</h2>
 
-<!-- TODO - the CIAG UI includes "and record.wantsToAddQualifications === 'YES'" - do we need this? -->
 <dl class="govuk-summary-list {{ 'govuk-!-margin-bottom-8' if (inductionDto.previousQualifications.qualifications.length) else 'govuk-!-margin-bottom-0' }}">
   <div class="govuk-summary-list__row">
     <dt class="govuk-summary-list__key govuk-!-width-one-quarter">
       Has educational qualifications they want recorded					
     </dt>
     <dd class="govuk-summary-list__value" data-qa="wantsToAddQualifications">
-      {{ inductionDto.previousQualifications.qualifications.length | formatYesNo }}
+      {{ (inductionDto.previousQualifications.qualifications.length > 0) | formatYesNo }}
     </dd>
     <dd class="govuk-summary-list__actions">
       <a class="govuk-link" href="/prisoners/{{ prisonerSummary.prisonNumber }}/induction/want-to-add-qualifications" data-qa="wantsToAddQualificationsLink">
@@ -17,12 +16,15 @@
   </div>
 </dl>
 
-<!-- TODO - the CIAG UI includes "and record.wantsToAddQualifications === 'YES'" - do we need this? -->
 {% if inductionDto.previousQualifications.qualifications.length %}
-  <h3 class="govuk-heading-s govuk-!-margin-top-2 govuk-!-margin-bottom-3">
-    Educational qualifications
-    <span><a class="gov-link govuk-!-font-weight-regular" style="float:right; color:#1d70b8" href="/prisoners/{{ prisonerSummary.prisonNumber }}/induction/qualifications" data-qa="qualificationsLink">Change <span class="govuk-visually-hidden"> qualifications</span></a></span>
-  </h3>
+  <div class="app-u-heading-with-change-link">
+    <h3 class="govuk-heading-s govuk-!-margin-bottom-3">
+      Educational qualifications
+    </h3>
+    <span class="govuk-body-m">
+      <a class="govuk-link" href="/prisoners/{{ prisonerSummary.prisonNumber }}/induction/qualifications" data-qa="qualificationsLink">Change<span class="govuk-visually-hidden"> qualifications</span></a>
+    </span>
+  </div>
 
   <table class="govuk-table govuk-!-margin-bottom-6" data-qa="qualifications">
     <thead class="govuk-table__head">
