@@ -46,21 +46,17 @@ declare module 'forms' {
 
   export interface CreateGoalsForm {
     prisonNumber: string
-    goals: [
-      {
+    goals: Array<{
+      title?: string
+      targetCompletionDate?: string
+      'targetCompletionDate-day'?: string
+      'targetCompletionDate-month'?: string
+      'targetCompletionDate-year'?: string
+      steps: Array<{
         title?: string
-        targetCompletionDate?: string
-        'targetCompletionDate-day'?: string
-        'targetCompletionDate-month'?: string
-        'targetCompletionDate-year'?: string
-        steps: [
-          {
-            title?: string
-          },
-        ]
-        note?: string
-      },
-    ]
+      }>
+      note?: string
+    }>
     action?: 'add-another-step' | 'submit-form'
   }
 }
