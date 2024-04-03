@@ -1,6 +1,5 @@
 import type { RequestHandler } from 'express'
-import { UTCDate } from '@date-fns/utc'
-import { startOfDay } from 'date-fns'
+import { startOfToday } from 'date-fns'
 import CreateGoalsView from './createGoalsView'
 import futureGoalTargetDateCalculator from '../futureGoalTargetDateCalculator'
 import validateCreateGoalsForm from './createGoalsFormValidator'
@@ -22,7 +21,7 @@ export default class CreateGoalsController {
     }
     req.session.createGoalsForm = undefined
 
-    const today = startOfDay(new UTCDate())
+    const today = startOfToday()
     const futureGoalTargetDates = [
       futureGoalTargetDateCalculator(today, 3),
       futureGoalTargetDateCalculator(today, 6),

@@ -1,10 +1,6 @@
-/**
- * Unit tests for createGoalsController.
- */
 import { SessionData } from 'express-session'
 import { NextFunction, Request, Response } from 'express'
-import { UTCDate } from '@date-fns/utc'
-import { startOfDay } from 'date-fns'
+import { startOfToday } from 'date-fns'
 import type { CreateGoalsForm } from 'forms'
 import CreateGoalsController from './createGoalsController'
 import aValidPrisonerSummary from '../../testsupport/prisonerSummaryTestDataBuilder'
@@ -13,6 +9,9 @@ import validateCreateGoalsForm from './createGoalsFormValidator'
 
 jest.mock('./createGoalsFormValidator')
 
+/**
+ * Unit tests for createGoalsController.
+ */
 describe('createGoalsController', () => {
   const mockedCreateGoalsFormValidator = validateCreateGoalsForm as jest.MockedFn<typeof validateCreateGoalsForm>
 
@@ -57,7 +56,7 @@ describe('createGoalsController', () => {
         goals: [{ steps: [] }],
       }
 
-      const today = startOfDay(new UTCDate())
+      const today = startOfToday()
       const expectedFutureGoalTargetDates = [
         futureGoalTargetDateCalculator(today, 3),
         futureGoalTargetDateCalculator(today, 6),
@@ -98,7 +97,7 @@ describe('createGoalsController', () => {
       }
       req.session.createGoalsForm = expectedCreateGoalsForm
 
-      const today = startOfDay(new UTCDate())
+      const today = startOfToday()
       const expectedFutureGoalTargetDates = [
         futureGoalTargetDateCalculator(today, 3),
         futureGoalTargetDateCalculator(today, 6),
