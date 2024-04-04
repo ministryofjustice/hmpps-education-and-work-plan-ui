@@ -53,7 +53,12 @@ describe('createGoalsController', () => {
 
       const expectedCreateGoalsForm: CreateGoalsForm = {
         prisonNumber,
-        goals: [{ steps: [] }],
+        goals: [
+          {
+            title: '',
+            steps: [{ title: '' }],
+          },
+        ],
       }
 
       const today = startOfToday()

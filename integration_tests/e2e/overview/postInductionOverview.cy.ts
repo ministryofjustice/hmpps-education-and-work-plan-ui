@@ -1,5 +1,5 @@
 import Page from '../../pages/page'
-import CreateGoalPage from '../../pages/goal/CreateGoalPage'
+import CreateGoalsPage from '../../pages/goal/CreateGoalsPage'
 import OverviewPage from '../../pages/overview/OverviewPage'
 
 context('Prisoner Overview page - Post Induction', () => {
@@ -132,6 +132,6 @@ context('Prisoner Overview page - Post Induction', () => {
     overviewPage.clickAddGoalButton()
 
     // Then
-    Page.verifyOnPage(CreateGoalPage)
+    Page.verifyOnPage(CreateGoalsPage)
   })
 })

@@ -1,5 +1,5 @@
 import Page, { PageElement } from '../page'
-import CreateGoalPage from '../goal/CreateGoalPage'
+import CreateGoalsPage from '../goal/CreateGoalsPage'
 import UpdateGoalPage from '../goal/UpdateGoalPage'
 // eslint-disable-next-line import/no-cycle
 import FunctionalSkillsPage from '../functionalSkills/FunctionalSkillsPage'
@@ -45,9 +45,9 @@ export default class OverviewPage extends Page {
     return this
   }
 
-  clickAddGoalButton(): CreateGoalPage {
+  clickAddGoalButton(): CreateGoalsPage {
     this.addGoalButton().click()
-    return Page.verifyOnPage(CreateGoalPage)
+    return Page.verifyOnPage(CreateGoalsPage)
   }
 
   clickMakeProgressPlan() {

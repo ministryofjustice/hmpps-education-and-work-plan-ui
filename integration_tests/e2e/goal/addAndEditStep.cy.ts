@@ -4,7 +4,9 @@ import AddNotePage from '../../pages/goal/AddNotePage'
 import ReviewPage from '../../pages/goal/ReviewPage'
 import OverviewPage from '../../pages/overview/OverviewPage'
 
-context('Add and edit a step', () => {
+// Original 'Add and edit a step' cypress tests disabled because the feature toggle to use the new Create Goal journey is enabled.
+// These tests will be removed when the feature is complete and the feature toggle is removed.
+context.skip('Add and edit a step', () => {
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubSignInAsUserWithEditAuthority')
