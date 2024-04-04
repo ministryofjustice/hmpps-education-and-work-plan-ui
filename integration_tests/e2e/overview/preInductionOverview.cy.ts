@@ -2,7 +2,7 @@ import Page from '../../pages/page'
 import OverviewPage from '../../pages/overview/OverviewPage'
 import CreateCiagInductionPage from '../../pages/ciagUi/createCiagInductionPage'
 import Error500Page from '../../pages/error500'
-import CreateGoalPage from '../../pages/goal/CreateGoalPage'
+import CreateGoalsPage from '../../pages/goal/CreateGoalsPage'
 
 context('Prisoner Overview page - Pre Induction', () => {
   beforeEach(() => {
@@ -122,7 +122,7 @@ context('Prisoner Overview page - Pre Induction', () => {
     overviewPage.clickAddGoalButton()
 
     // Then
-    Page.verifyOnPage(CreateGoalPage)
+    Page.verifyOnPage(CreateGoalsPage)
   })
 
   it('should display service unavailable message given PLP API returns a 500 when retrieving the Induction', () => {

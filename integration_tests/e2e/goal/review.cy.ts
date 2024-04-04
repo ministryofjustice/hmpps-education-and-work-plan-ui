@@ -3,9 +3,10 @@ import AddStepPage from '../../pages/goal/AddStepPage'
 import AddNotePage from '../../pages/goal/AddNotePage'
 import ReviewPage from '../../pages/goal/ReviewPage'
 import OverviewPage from '../../pages/overview/OverviewPage'
-import CreateGoalPage from '../../pages/goal/CreateGoalPage'
 
-context('Review goal(s)', () => {
+// Original 'Review goal(s)' cypress tests disabled because the feature toggle to use the new Create Goal journey is enabled.
+// These tests will be removed when the feature is complete and the feature toggle is removed.
+context.skip('Review goal(s)', () => {
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubSignInAsUserWithEditAuthority')
@@ -106,7 +107,7 @@ context('Review goal(s)', () => {
     cy.visit(`/plan/${prisonNumber}/view/overview`)
     const overviewPage = Page.verifyOnPage(OverviewPage)
 
-    let createGoalPage = overviewPage.clickAddGoalButton()
+    const createGoalPage = overviewPage.clickAddGoalButton()
     createGoalPage //
       .setGoalTitle('Learn French')
       .setTargetCompletionDate0to3Months()
@@ -128,9 +129,9 @@ context('Review goal(s)', () => {
     // When
     reviewPage.addAnotherGoal()
 
-    createGoalPage = Page.verifyOnPage(CreateGoalPage)
+    // createGoalPage = Page.verifyOnPage(CreateGoalPage)
     createGoalPage //
-      .isForGoalIndex(2)
+      // .isForGoalIndex(2)
       .setGoalTitle('Learn Spanish')
       .setTargetCompletionDate0to3Months()
       .submitPage()

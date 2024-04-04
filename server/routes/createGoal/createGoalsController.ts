@@ -1,5 +1,6 @@
 import type { RequestHandler } from 'express'
 import { startOfToday } from 'date-fns'
+import type { CreateGoalsForm } from 'forms'
 import CreateGoalsView from './createGoalsView'
 import futureGoalTargetDateCalculator from '../futureGoalTargetDateCalculator'
 import validateCreateGoalsForm from './createGoalsFormValidator'
@@ -15,7 +16,8 @@ export default class CreateGoalsController {
       prisonNumber,
       goals: [
         {
-          steps: [],
+          title: '',
+          steps: [{ title: '' }],
         },
       ],
     }
@@ -35,8 +37,17 @@ export default class CreateGoalsController {
   // TODO: RR-748 - Implement submit handler for new create goal journey
   submitCreateGoalsForm: RequestHandler = async (req, res, next): Promise<void> => {
     const { prisonNumber } = req.params
-    req.session.createGoalsForm = { ...req.body }
-    const { createGoalsForm } = req.session
+
+    const createGoalsForm = { ...req.body } as CreateGoalsForm
+    if (!createGoalsForm.goals) {
+      createGoalsForm.goals = []
+    }
+    createGoalsForm.goals.forEach((goal, goalIndex) => {
+      if (!goal.steps) {
+        createGoalsForm.goals[goalIndex].steps = []
+      }
+    })
+    req.session.createGoalsForm = createGoalsForm
 
     const errors = validateCreateGoalsForm(createGoalsForm)
     if (errors.length > 0) {

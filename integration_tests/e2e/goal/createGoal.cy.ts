@@ -4,7 +4,9 @@ import AddStepPage from '../../pages/goal/AddStepPage'
 import AuthorisationErrorPage from '../../pages/authorisationError'
 import OverviewPage from '../../pages/overview/OverviewPage'
 
-context('Create a goal', () => {
+// Original 'Create a goal' cypress tests disabled because the feature toggle to use the new Create Goal journey is enabled.
+// These tests will be removed when the feature is complete and the feature toggle is removed.
+context.skip('Create a goal', () => {
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubSignInAsUserWithEditAuthority')
