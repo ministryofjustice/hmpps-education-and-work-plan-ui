@@ -1,10 +1,10 @@
-import moment from 'moment'
+import { UTCDate } from '@date-fns/utc'
 import futureGoalTargetDateCalculator from './futureGoalTargetDateCalculator'
 
 describe('futureGoalTargetDateCalculator', () => {
   it('should return a date 3 months in the future', () => {
     // Given
-    const today = moment('2024-02-26').toDate()
+    const today = new UTCDate('2024-02-26')
     // When
     const actual = futureGoalTargetDateCalculator(today, 3)
     // Then
@@ -12,7 +12,7 @@ describe('futureGoalTargetDateCalculator', () => {
   })
   it('should return a date 6 months in the future', () => {
     // Given
-    const today = moment('2024-02-26').toDate()
+    const today = new UTCDate('2024-02-26')
     // When
     const actual = futureGoalTargetDateCalculator(today, 6)
     // Then
@@ -20,7 +20,7 @@ describe('futureGoalTargetDateCalculator', () => {
   })
   it('should return a date 12 months in the future', () => {
     // Given
-    const today = moment('2024-02-26').toDate()
+    const today = new UTCDate('2024-02-26')
     // When
     const actual = futureGoalTargetDateCalculator(today, 12)
     // Then
@@ -28,7 +28,7 @@ describe('futureGoalTargetDateCalculator', () => {
   })
   it('should return the last day of month, if the day of the month on the original date is greater than the number of days in the final month', () => {
     // Given
-    const today = moment('2023-11-30').toDate()
+    const today = new UTCDate('2023-11-30')
     // When
     const actual = futureGoalTargetDateCalculator(today, 3)
     // Then

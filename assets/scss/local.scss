@@ -44,3 +44,13 @@
   font-size: inherit;
   line-height: inherit;
 }
+
+.app-u-heading-with-change-link {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: nowrap;
+
+  span {
+    align-content: center;
+  }
+}

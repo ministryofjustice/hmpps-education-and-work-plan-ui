@@ -13,16 +13,14 @@ export default class CheckYourAnswersUpdateController extends CheckYourAnswersCo
     super()
   }
 
-  getBackLinkUrl(req: Request): string {
+  getBackLinkUrl(_req: Request): string {
     // Default implementation - the back link is not displayed on the Check Your Answers page
-    const { prisonNumber } = req.params
-    return `/plan/${prisonNumber}/view/overview`
+    return undefined
   }
 
-  getBackLinkAriaText(req: Request): string {
+  getBackLinkAriaText(_req: Request): string {
     // Default implementation - the back link is not displayed on the Check Your Answers page
-    const { prisonerSummary } = req.session
-    return `Back to ${prisonerSummary.firstName} ${prisonerSummary.lastName}'s learning and work progress`
+    return undefined
   }
 
   submitCheckYourAnswers: RequestHandler = async (req: Request, res: Response, next: NextFunction): Promise<void> => {

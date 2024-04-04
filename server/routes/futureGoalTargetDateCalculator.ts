@@ -1,12 +1,12 @@
-import moment from 'moment'
+import { add, format } from 'date-fns'
 
 export default function futureGoalTargetDate(
   startDate: Date,
   additionalMonths: number,
 ): { text: string; value: string } {
-  const futureDate = moment(startDate).add(additionalMonths, 'months')
+  const futureDate = add(startDate, { months: additionalMonths })
   return {
-    value: futureDate.format('YYYY-MM-DD'),
-    text: `in ${additionalMonths} months (${futureDate.format('D MMMM YYYY')})`,
+    value: format(futureDate, 'yyyy-MM-dd'),
+    text: `in ${additionalMonths} months (${format(futureDate, 'd MMMM yyyy')})`,
   }
 }

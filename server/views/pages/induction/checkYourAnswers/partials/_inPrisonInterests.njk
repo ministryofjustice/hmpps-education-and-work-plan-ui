@@ -22,7 +22,7 @@
     </dt>
     <dd class="govuk-summary-list__value" data-qa="inPrisonEducation">
       {% for item in inductionDto.inPrisonInterests.inPrisonTrainingInterests %}
-        <div data-qa="inPrisonEducation-{{ loop.index }}">{{ item.TrainingType | formatInPrisonTrainingInterest }}{{ ' - ' + item.trainingTypeOther if item.trainingType === 'OTHER' }}{{ ',' if inductionDto.inPrisonInterests.inPrisonTrainingInterests.length !== loop.index }}</div>
+        <div data-qa="inPrisonEducation-{{ loop.index }}">{{ item.trainingType | formatInPrisonTraining }}{{ ' - ' + item.trainingTypeOther if item.trainingType === 'OTHER' }}{{ ',' if inductionDto.inPrisonInterests.inPrisonTrainingInterests.length !== loop.index }}</div>
       {% endfor %}
     </dd>
     <dd class="govuk-summary-list__actions">
