@@ -16,6 +16,7 @@ import { createRedisClient } from './redisClient'
 import RedisTokenStore from './tokenStore/redisTokenStore'
 import InMemoryTokenStore from './tokenStore/inMemoryTokenStore'
 import config from '../config'
+import HmppsAuditClient from './hmppsAuditClient'
 import PrisonerSearchClient from './prisonerSearchClient'
 import EducationAndWorkPlanClient from './educationAndWorkPlanClient'
 import CuriousClient from './curiousClient'
@@ -31,6 +32,7 @@ export const dataAccess = () => ({
   hmppsAuthClient: new HmppsAuthClient(
     config.redis.enabled ? new RedisTokenStore(createRedisClient()) : new InMemoryTokenStore(),
   ),
+  hmppsAuditClient: new HmppsAuditClient(config.sqs.audit),
   manageUsersApiClient: new ManageUsersApiClient(),
   prisonerSearchClient: new PrisonerSearchClient(),
   educationAndWorkPlanClient: new EducationAndWorkPlanClient(),
@@ -46,6 +48,7 @@ export type DataAccess = ReturnType<typeof dataAccess>
 export {
   HmppsAuthClient,
   RestClientBuilder,
+  HmppsAuditClient,
   ManageUsersApiClient,
   PrisonerSearchClient,
   EducationAndWorkPlanClient,

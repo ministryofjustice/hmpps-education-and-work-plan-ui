@@ -1,4 +1,5 @@
 import { dataAccess } from '../data'
+import AuditService from './auditService'
 import UserService from './userService'
 import PrisonerSearchService from './prisonerSearchService'
 import EducationAndWorkPlanService from './educationAndWorkPlanService'
@@ -16,6 +17,7 @@ export const services = () => {
   const {
     hmppsAuthClient,
     applicationInfo,
+    hmppsAuditClient,
     manageUsersApiClient,
     prisonerSearchClient,
     educationAndWorkPlanClient,
@@ -26,6 +28,7 @@ export const services = () => {
     prisonRegisterClient,
   } = dataAccess()
 
+  const auditService = new AuditService(hmppsAuditClient)
   const userService = new UserService(manageUsersApiClient)
   const prisonerSearchService = new PrisonerSearchService(hmppsAuthClient, prisonerSearchClient)
   const educationAndWorkPlanService = new EducationAndWorkPlanService(educationAndWorkPlanClient)
@@ -43,6 +46,7 @@ export const services = () => {
 
   return {
     applicationInfo,
+    auditService,
     userService,
     prisonerSearchService,
     educationAndWorkPlanService,
