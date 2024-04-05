@@ -34,7 +34,7 @@ export interface ApiConfig {
 }
 
 const auditConfig = () => {
-  const auditEnabled = toBoolean(get('AUDIT_ENABLED', 'false'))
+  const auditEnabled = toBoolean(get('AUDIT_ENABLED', false))
   return {
     enabled: auditEnabled,
     queueUrl: get(

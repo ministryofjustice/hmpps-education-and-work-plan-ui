@@ -41,26 +41,59 @@ export default class CreateGoalsPage extends Page {
     return this
   }
 
+  addNewEmptyStepToGoal(goalNumber: number = 1): CreateGoalsPage {
+    this.addAnotherStepButtonForGoal(goalNumber).click()
+    return this
+  }
+
+  setStepTitle(title: string, goalNumber: number, stepNumber: number): CreateGoalsPage {
+    this.stepTitleField(goalNumber, stepNumber).clear().type(title)
+    return this
+  }
+
+  clearStepTitle(goalNumber: number, stepNumber: number): CreateGoalsPage {
+    this.stepTitleField(goalNumber, stepNumber).clear()
+    return this
+  }
+
+  goalHasNumberOfStepsFields(goalNumber: number, expectedNumberOfStepsFields: number): CreateGoalsPage {
+    this.goalStepTitleFields(goalNumber).should('have.length', expectedNumberOfStepsFields)
+    return this
+  }
+
   submitPage() {
     this.submitButton().click()
   }
 
-  private zeroIndexedGoalNumber = (goalNumber: number): number => Math.min(0, goalNumber - 1)
-
   private goalTitleField = (goalNumber: number): PageElement =>
-    cy.get(`[name="goals[${this.zeroIndexedGoalNumber(goalNumber)}][title]"]`)
+    cy.get(`[name="goals[${zeroIndexed(goalNumber)}][title]"]`)
 
   private goalTargetDateRadioButtons = (goalNumber: number): PageElement =>
-    cy.get(`[name="goals[${this.zeroIndexedGoalNumber(goalNumber)}][targetCompletionDate]"][type="radio"]`)
+    cy.get(`[name="goals[${zeroIndexed(goalNumber)}][targetCompletionDate]"][type="radio"]`)
 
   private goalTargetDateDayField = (goalNumber: number): PageElement =>
-    cy.get(`[name="${this.zeroIndexedGoalNumber(goalNumber)}][targetCompletionDate-day]"]`)
+    cy.get(`[name="${zeroIndexed(goalNumber)}][targetCompletionDate-day]"]`)
 
   private goalTargetDateMonthField = (goalNumber: number): PageElement =>
-    cy.get(`[name="${this.zeroIndexedGoalNumber(goalNumber)}][targetCompletionDate-month]"]`)
+    cy.get(`[name="${zeroIndexed(goalNumber)}][targetCompletionDate-month]"]`)
 
   private goalTargetDateYearField = (goalNumber: number): PageElement =>
-    cy.get(`[name="${this.zeroIndexedGoalNumber(goalNumber)}][targetCompletionDate-year]"]`)
+    cy.get(`[name="${zeroIndexed(goalNumber)}][targetCompletionDate-year]"]`)
+
+  private goalStepTitleFields = (goalNumber: number): PageElement =>
+    // Return elements whose name attribute is goals[zeroIndexedGoalNumber][steps][.*][title]
+    // CSS attribute selectors don't have a true regex pattern matching syntax, so we do it with a "starts with" and "ends with" approach
+    cy
+      .get(`[name^="goals[${zeroIndexed(goalNumber)}][steps]["]`) // elements whose name attribute starts with `goals[zeroIndexedGoalNumber][steps][`
+      .filter('[name$="][title]"]') // filter those elements to those whose name attribute ends with `][title]`
 
   private submitButton = (): PageElement => cy.get('#submit-button')
+
+  private addAnotherStepButtonForGoal = (goalNumber: number): PageElement =>
+    cy.get(`#add-another-step-to-goal-${zeroIndexed(goalNumber)}-button`)
+
+  private stepTitleField = (goalNumber: number, stepNumber: number): PageElement =>
+    cy.get(`[name="goals[${zeroIndexed(goalNumber)}][steps][${zeroIndexed(stepNumber)}][title]"]`)
 }
+
+const zeroIndexed = (indexNumber: number): number => Math.min(0, indexNumber - 1)
