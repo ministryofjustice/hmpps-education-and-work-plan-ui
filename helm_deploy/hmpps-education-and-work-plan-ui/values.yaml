@@ -1,5 +1,6 @@
 generic-service:
   nameOverride: hmpps-education-and-work-plan-ui
+  productId: DPS027
   serviceAccountName: hmpps-education-and-work-plan # Needed to access AWS resources like SQS queues and SNS topics
 
   replicaCount: 4
@@ -47,6 +48,7 @@ generic-service:
     REDIS_ENABLED: "true"
     REDIS_TLS_ENABLED: "true"
     TOKEN_VERIFICATION_ENABLED: "true"
+    PRODUCT_ID: "DPS027"
     APPLICATIONINSIGHTS_CONNECTION_STRING: "InstrumentationKey=$(APPINSIGHTS_INSTRUMENTATIONKEY);IngestionEndpoint=https://northeurope-0.in.applicationinsights.azure.com/;LiveEndpoint=https://northeurope.livediagnostics.monitor.azure.com/"
     PRISONER_SEARCH_API_DEFAULT_PAGE_SIZE: "9999"
     PRISONER_LIST_UI_DEFAULT_PAGINATION_PAGE_SIZE: "50"
