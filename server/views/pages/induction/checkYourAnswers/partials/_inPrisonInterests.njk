@@ -1,0 +1,34 @@
+<h2 class="govuk-heading-m">Work and education in prison</h2>
+
+<dl class="govuk-summary-list govuk-!-margin-bottom-8">
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key govuk-!-width-one-quarter">
+      Work interests in prison
+    </dt>
+    <dd class="govuk-summary-list__value" data-qa="inPrisonWork">
+      {% for item in inductionDto.inPrisonInterests.inPrisonWorkInterests %}
+        <div data-qa="inPrisonWork-{{ loop.index }}">{{ item.workType | formatInPrisonWorkInterest }}{{ ' - ' + item.workTypeOther if item.workType === 'OTHER' }}{{ ',' if inductionDto.inPrisonInterests.inPrisonWorkInterests.length !== loop.index }}</div>
+      {% endfor %}
+    </dd>
+    <dd class="govuk-summary-list__actions">
+      <a class="govuk-link" href="/prisoners/{{ prisonerSummary.prisonNumber }}/induction/in-prison-work" data-qa="inPrisonWorkLink">
+        Change<span class="govuk-visually-hidden"> work interests in prison</span>
+      </a>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key govuk-!-width-one-quarter">
+      Training and education interests in prison
+    </dt>
+    <dd class="govuk-summary-list__value" data-qa="inPrisonEducation">
+      {% for item in inductionDto.inPrisonInterests.inPrisonTrainingInterests %}
+        <div data-qa="inPrisonEducation-{{ loop.index }}">{{ item.trainingType | formatInPrisonTraining }}{{ ' - ' + item.trainingTypeOther if item.trainingType === 'OTHER' }}{{ ',' if inductionDto.inPrisonInterests.inPrisonTrainingInterests.length !== loop.index }}</div>
+      {% endfor %}
+    </dd>
+    <dd class="govuk-summary-list__actions">
+      <a class="govuk-link" href="/prisoners/{{ prisonerSummary.prisonNumber }}/induction/in-prison-training" data-qa="inPrisonEducationLink">
+        Change<span class="govuk-visually-hidden"> training and education interests in prison</span>
+      </a>
+    </dd>
+  </div>
+</dl>

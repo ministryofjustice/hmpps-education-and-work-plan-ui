@@ -63,14 +63,14 @@ const createGoalRoutes = (router: Router, services: Services, createGoalControll
 }
 
 const newCreateGoalRoutes = (router: Router, services: Services, createGoalsController: CreateGoalsController) => {
-  router.use('/plan/:prisonNumber/goals/:goalIndex/create', [checkUserHasEditAuthority()])
-  router.get('/plan/:prisonNumber/goals/:goalIndex/create', [
+  router.use('/plan/:prisonNumber/goals/create', [checkUserHasEditAuthority()])
+  router.get('/plan/:prisonNumber/goals/create', [
     retrievePrisonerSummaryIfNotInSession(services.prisonerSearchService),
     createGoalsController.getCreateGoalsView,
   ])
-  router.post('/plan/:prisonNumber/goals/:goalIndex/create', [
+  router.post('/plan/:prisonNumber/goals/create', [
     checkPrisonerSummaryExistsInSession,
-    checkCreateGoalFormExistsInSession,
+    // TODO - RR-748 - write router request handler to check CreateGoalsForm exists in session,
     createGoalsController.submitCreateGoalsForm,
   ])
 }

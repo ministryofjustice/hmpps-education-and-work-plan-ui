@@ -39,7 +39,7 @@ export interface ApiConfig {
 }
 
 const auditConfig = () => {
-  const auditEnabled = get('AUDIT_ENABLED', 'false') === 'true'
+  const auditEnabled = toBoolean(get('AUDIT_ENABLED', 'false'))
   return {
     enabled: auditEnabled,
     queueUrl: get(
@@ -152,6 +152,9 @@ export default {
       agent: new AgentConfig(Number(get('ACTIVITIES_AND_WORK_PLAN_API_TIMEOUT_RESPONSE', 10000))),
     },
   },
+  sqs: {
+    audit: auditConfig(),
+  },
   domain: get('INGRESS_URL', 'http://localhost:3000', requiredInProduction),
   environmentName: get('ENVIRONMENT_NAME', ''),
   dpsHomeUrl: get('DPS_URL', 'http://localhost:3000/', requiredInProduction),
@@ -191,8 +194,5 @@ export default {
       get('NEW_COURSE_AND_QUALIFICATION_HISTORY_ENABLED', false, requiredInProduction),
     ),
     newCreateGoalJourneyEnabled: toBoolean(get('NEW_CREATE_GOAL_JOURNEY_ENABLED', false, requiredInProduction)),
-  },
-  sqs: {
-    audit: auditConfig(),
   },
 }

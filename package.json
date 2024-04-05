@@ -93,7 +93,8 @@
     ]
   },
   "dependencies": {
-    "@aws-sdk/client-sqs": "^3.540.0",
+    "@aws-sdk/client-sqs": "^3.547.0",
+    "@date-fns/utc": "^1.2.0",
     "@microsoft/applicationinsights-web": "^3.0.4",
     "@microsoft/applicationinsights-clickanalytics-js": "^3.0.4",
     "@ministryofjustice/frontend": "^2.1.2",
@@ -106,6 +107,7 @@
     "connect-flash": "^0.1.1",
     "connect-redis": "^7.1.1",
     "csurf": "^1.11.0",
+    "date-fns": "^3.6.0",
     "express": "^4.19.2",
     "express-prom-bundle": "^7.0.0",
     "express-session": "^1.18.0",

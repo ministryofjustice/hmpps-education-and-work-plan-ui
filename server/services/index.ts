@@ -17,8 +17,8 @@ export const services = () => {
   const {
     hmppsAuthClient,
     applicationInfo,
-    manageUsersApiClient,
     hmppsAuditClient,
+    manageUsersApiClient,
     prisonerSearchClient,
     educationAndWorkPlanClient,
     curiousClient,
@@ -28,8 +28,8 @@ export const services = () => {
     prisonRegisterClient,
   } = dataAccess()
 
-  const userService = new UserService(manageUsersApiClient)
   const auditService = new AuditService(hmppsAuditClient)
+  const userService = new UserService(manageUsersApiClient)
   const prisonerSearchService = new PrisonerSearchService(hmppsAuthClient, prisonerSearchClient)
   const educationAndWorkPlanService = new EducationAndWorkPlanService(educationAndWorkPlanClient)
   const inductionService = new InductionService(educationAndWorkPlanClient)
@@ -46,8 +46,8 @@ export const services = () => {
 
   return {
     applicationInfo,
-    userService,
     auditService,
+    userService,
     prisonerSearchService,
     educationAndWorkPlanService,
     inductionService,

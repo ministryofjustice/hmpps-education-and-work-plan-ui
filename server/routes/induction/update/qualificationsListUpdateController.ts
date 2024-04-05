@@ -18,6 +18,11 @@ export default class QualificationsListUpdateController extends QualificationsLi
     const { prisonNumber } = req.params
     const { pageFlowHistory } = req.session
     if (pageFlowHistory) {
+      // TODO - The intention here is to revert the position of the current page index to /qualifications or /want-to-add-qualifications (effectively so that /qualification-level and /qualification-detail are removed, if applicable)
+      // However it's not simply a case of checking if the induction has qualifications (though that needs to be included in the logic, along with whether /want-to-add-qualifications is in the history (which won't be the case during the long route!))
+
+      // Currently /want-to-add-qualifications is being left in the history when /qualifications should be. This manifests itself on the /additional-training page
+
       // We cannot go back to /qualification-detail (if applicable), since the page forms have been removed from the session
       // To add further complexity, it's possible we haven't come to this page yet, since we may have gone to /want-to-add-qualifications
       // first (when switching from long route to short route and the prisoner does not have any recorded qualifications)

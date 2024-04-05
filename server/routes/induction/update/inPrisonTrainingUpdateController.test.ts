@@ -300,8 +300,7 @@ describe('inPrisonTrainingUpdateController', () => {
         },
       ]
       req.session.updateInductionQuestionSet = { hopingToWorkOnRelease: 'NO' }
-      // TODO - this should be the check your answers page
-      const expectedNextPage = '/plan/A1234BC/view/work-and-interests'
+      const expectedNextPage = '/prisoners/A1234BC/induction/check-your-answers'
 
       // When
       await controller.submitInPrisonTrainingForm(

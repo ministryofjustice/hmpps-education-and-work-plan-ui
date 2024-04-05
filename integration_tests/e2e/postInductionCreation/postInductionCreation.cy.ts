@@ -7,7 +7,7 @@
  */
 import Page from '../../pages/page'
 import OverviewPage from '../../pages/overview/OverviewPage'
-import CreateGoalPage from '../../pages/goal/CreateGoalPage'
+import CreateGoalsPage from '../../pages/goal/CreateGoalsPage'
 
 context(`Show the relevant screen after an Induction has been created`, () => {
   beforeEach(() => {
@@ -35,7 +35,7 @@ context(`Show the relevant screen after an Induction has been created`, () => {
     cy.visit(`/plan/${prisonNumber}/induction-created`)
 
     // Then
-    Page.verifyOnPage(CreateGoalPage)
+    Page.verifyOnPage(CreateGoalsPage)
   })
 
   it('should display the Overview page given the prisoner already has an Action Plan with goals', () => {

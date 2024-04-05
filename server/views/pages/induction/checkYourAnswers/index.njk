@@ -1,0 +1,45 @@
+{% extends "../../../partials/layout.njk" %}
+
+{% set pageId = "induction-check-your-answers" %}
+{% set title = "Check and save your answers before adding " + prisonerSummary.firstName + " " + prisonerSummary.lastName + "'s goals" %}
+
+{#
+Data supplied to this template:
+  * prisonerSummary - object with firstName and lastName
+  * inductionDto - the updated InductionDto containing the required data to render each section
+#}
+
+{% block content %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h1 class="govuk-heading-l">{{ title }}</h1>
+
+      <form class="form" method="post" novalidate="">
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+
+        {% include './partials/_workOnRelease.njk' %}
+        
+        {% if inductionDto.workOnRelease.hopingToWork === 'YES' %}
+          {% include './partials/_educationAndTraining.njk' %}
+          {% include './partials/_workExperience.njk' %}
+          {% include './partials/_skillsAndInterests.njk' %}
+          {% include './partials/_abilityToWork.njk' %}
+        {% else %}
+          {% include './partials/_educationAndTrainingLite.njk' %}
+          {% include './partials/_inPrisonInterests.njk' %}
+        {% endif %}
+
+        <div class="govuk-form-group">
+          {{ govukButton({
+            id: "submit-button",
+            text: "Save and continue",
+            type: "submit",
+            attributes: {"data-qa": "submit-button"}
+          }) }}
+        </div>
+      </form>
+    </div>
+  </div>
+
+{% endblock %}

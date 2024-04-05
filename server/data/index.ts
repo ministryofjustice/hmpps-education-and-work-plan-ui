@@ -32,8 +32,8 @@ export const dataAccess = () => ({
   hmppsAuthClient: new HmppsAuthClient(
     config.redis.enabled ? new RedisTokenStore(createRedisClient()) : new InMemoryTokenStore(),
   ),
-  manageUsersApiClient: new ManageUsersApiClient(),
   hmppsAuditClient: new HmppsAuditClient(config.sqs.audit),
+  manageUsersApiClient: new ManageUsersApiClient(),
   prisonerSearchClient: new PrisonerSearchClient(),
   educationAndWorkPlanClient: new EducationAndWorkPlanClient(),
   curiousClient: new CuriousClient(),
@@ -48,8 +48,8 @@ export type DataAccess = ReturnType<typeof dataAccess>
 export {
   HmppsAuthClient,
   RestClientBuilder,
-  ManageUsersApiClient,
   HmppsAuditClient,
+  ManageUsersApiClient,
   PrisonerSearchClient,
   EducationAndWorkPlanClient,
   CuriousClient,

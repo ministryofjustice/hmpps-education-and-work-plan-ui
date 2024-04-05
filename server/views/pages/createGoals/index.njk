@@ -43,7 +43,7 @@
           <div class="govuk-summary-card__content">
 
             {{ govukCharacterCount({
-              name: "goals[" + goalLoop.index0 + "].title",
+              name: "goals[" + goalLoop.index0 + "][title]",
               id: "goals[" + goalLoop.index0 + "].title",
               value: form.goals[(goalLoop.index0)].title,
               maxlength: 512,
@@ -66,7 +66,7 @@
 
             {% set anotherDateHtml %}
               {{ govukDateInput({
-                id: "another-date",
+                id: "goals[" + goalLoop.index0 + "].another-date",
                 fieldset: {
                   legend: {
                     text: "What date are they aiming to achieve this by?",
@@ -78,23 +78,23 @@
                 },
                 items: [
                   {
-                    id: 'another-date-day',
+                    id: 'goals[' + goalLoop.index0 + '].targetCompletionDate-day',
                     label: 'Day',
-                    name: "goals[" + goalLoop.index0 + "].targetCompletionDate-day",
+                    name: "goals[" + goalLoop.index0 + "][targetCompletionDate-day]",
                     classes: 'govuk-input--width-2',
                     value: form.goals[(goalLoop.index0)]['targetCompletionDate-day']
                   },
                   {
-                    id: 'another-date-month',
+                    id: 'goals[' + goalLoop.index0 + '].targetCompletionDate-month',
                     label: 'Month',
-                    name: "goals[" + goalLoop.index0 + "].targetCompletionDate-month",
+                    name: "goals[" + goalLoop.index0 + "][targetCompletionDate-month]",
                     classes: 'govuk-input--width-2',
                     value: form.goals[(goalLoop.index0)]['targetCompletionDate-month']
                   },
                   {
-                    id: 'another-date-year',
+                    id: 'goals[' + goalLoop.index0 + '].targetCompletionDate-year',
                     label: 'Year',
-                    name: "goals[" + goalLoop.index0 + "].targetCompletionDate-year",
+                    name: "goals[" + goalLoop.index0 + "][targetCompletionDate-year]",
                     classes: 'govuk-input--width-4',
                     value: form.goals[(goalLoop.index0)]['targetCompletionDate-year']
                   }
@@ -112,7 +112,7 @@
             %}
 
             {{ govukRadios({
-              name: "goals[" + goalLoop.index0 + "].targetCompletionDate",
+              name: "goals[" + goalLoop.index0 + "][targetCompletionDate]",
               id: "goals[" + goalLoop.index0 + "].targetCompletionDate",
               value: form.goals[(goalLoop.index0)].targetCompletionDate,
               fieldset: {
@@ -130,7 +130,7 @@
               <div class="govuk-form-group">
                 {% set stepTitleLabel = 'Step ' + stepLoop.index %}
                 {{ govukCharacterCount({
-                  name: "goals[" + goalLoop.index0 + "].steps[" + stepLoop.index0 + "].title",
+                  name: "goals[" + goalLoop.index0 + "][steps][" + stepLoop.index0 + "][title]",
                   id: "goals[" + goalLoop.index0 + "].steps[" + stepLoop.index0 + "].title",
                   value: form.goals[(goalLoop.index0)].steps[(stepLoop.index0)].title,
                   maxlength: 512,
@@ -143,7 +143,7 @@
                   hint: {
                     text: "Describe this step"
                   },
-                  errorMessage: errors | findError('goals[" + goalLoop.index0 + "].steps[" + stepLoop.index0 + "].title')
+                  errorMessage: errors | findError('goals[' + goalLoop.index0 + '].steps[' + stepLoop.index0 + '].title')
                 }) }}
               </div>
             {% endfor %}
@@ -161,7 +161,7 @@
             <div class="govuk-form-group">
               <div class="govuk-form-group">
                 <h1 class="govuk-label-wrapper">
-                  <label class="govuk-label govuk-label--s" for="goals[0].note">
+                  <label class="govuk-label govuk-label--s" for="goals[{{ goalLoop.index0 }}][note]">
                     Add a note to this goal (optional)
                   </label>
                 </h1>
@@ -173,7 +173,7 @@
                   </strong>
                 </div>
                 {{ errors | findError("goals[" + goalLoop.index0 + "].note") }}
-                <textarea class="govuk-textarea" id="goals[{{ goalLoop.index0 }}].note" name="goals[{{ goalLoop.index0 }}].note" rows="5" aria-describedby="warning-text">{{ form.goals[goalLoop.index0].note }}</textarea>
+                <textarea class="govuk-textarea" id="goals[{{ goalLoop.index0 }}][note]" name="goals[{{ goalLoop.index0 }}][note]" rows="5" aria-describedby="warning-text">{{ form.goals[goalLoop.index0].note }}</textarea>
               </div>
             </div>
 

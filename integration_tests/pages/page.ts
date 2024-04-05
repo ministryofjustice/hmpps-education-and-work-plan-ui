@@ -50,12 +50,12 @@ export default abstract class Page {
   }
 
   hasErrorCount(expected: number) {
-    cy.get('.govuk-error-summary__list').should('have.length', expected)
+    cy.get('.govuk-error-summary__list li').should('have.length', expected)
     return this
   }
 
   hasFieldInError(field: string) {
-    cy.get(`#${field}-error`).should('exist')
+    cy.get(`#${Cypress.$.escapeSelector(field)}-error`).should('exist')
     return this
   }
 

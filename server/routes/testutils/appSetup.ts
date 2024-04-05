@@ -43,6 +43,7 @@ function appSetup(services: Services, production: boolean, userSupplier: () => E
   nunjucksSetup(app, testAppInfo)
   app.use(cookieSession({ keys: [''] }))
   app.use((req, res, next) => {
+    req.id = uuidv4()
     req.user = userSupplier()
     req.flash = flashProvider
     res.locals = {

@@ -1,5 +1,6 @@
 import { Router } from 'express'
 import { EducationAndWorkPlanService, Services } from '../../services'
+import config from '../../config'
 
 /**
  * Definitions for the route immediately following the CIAG UI Induction creation.
@@ -13,9 +14,13 @@ export default (router: Router, services: Services) => {
     const userToken = req.user.token
     const { prisonNumber } = req.params
 
+    const createGoalUrl = config.featureToggles.newCreateGoalJourneyEnabled
+      ? `/plan/${prisonNumber}/goals/create`
+      : `/plan/${prisonNumber}/goals/1/create`
+
     return (await prisonerHasActionPlan(prisonNumber, userToken, services.educationAndWorkPlanService))
       ? res.redirect(`/plan/${prisonNumber}/view/overview`) // Action Plan with goal(s) exists already. Redirect to the Overview page
-      : res.redirect(`/plan/${prisonNumber}/goals/1/create`) // Action Plan goals do not exist yet. Redirect to the Create Goal flow routes.
+      : res.redirect(createGoalUrl) // Action Plan goals do not exist yet. Redirect to the Create Goal flow routes.
   })
 }
 
