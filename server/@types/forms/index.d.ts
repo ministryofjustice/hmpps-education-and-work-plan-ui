@@ -57,7 +57,7 @@ declare module 'forms' {
       }>
       note?: string
     }>
-    action?: 'add-another-step' | 'submit-form'
+    action?: string
   }
 }
 
