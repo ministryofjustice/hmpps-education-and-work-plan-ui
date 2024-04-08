@@ -150,9 +150,9 @@
 
             <div class="govuk-form-group govuk-!-margin-bottom-2">
               {{ govukButton({
-                id: "add-another-step-button",
+                id: "add-another-step-to-goal-" + goalLoop.index0 + "-button",
                 name: "action",
-                value: "add-another-step",
+                value: "add-another-step|" + goalLoop.index0,
                 text: "Add another step to this goal",
                 classes: "govuk-button--secondary"
               }) }}

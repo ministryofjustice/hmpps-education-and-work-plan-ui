@@ -55,6 +55,15 @@ export default class CreateGoalsController {
       return res.redirect(`/plan/${prisonNumber}/goals/create`)
     }
 
+    if (createGoalsForm.action.startsWith('add-another-step')) {
+      const formActionParameters = createGoalsForm.action.split('|')
+      const goalNumber = parseInt(formActionParameters[1], 10)
+
+      createGoalsForm.goals[goalNumber].steps.push({ title: '' })
+      req.session.createGoalsForm = createGoalsForm
+      return res.redirect(`/plan/${prisonNumber}/goals/create`)
+    }
+
     return res.redirect(`/plan/${prisonNumber}/view/overview`)
   }
 }
