@@ -3,29 +3,22 @@ import type { Timeline } from 'viewModels'
 import moment from 'moment'
 import PrisonService from './prisonService'
 import TimelineService from './timelineService'
-import { EducationAndWorkPlanClient } from '../data'
+import EducationAndWorkPlanClient from '../data/educationAndWorkPlanClient'
 import { toTimeline } from '../data/mappers/timelineMapper'
 import aValidTimelineResponse from '../testsupport/timelineResponseTestDataBuilder'
 import aValidTimeline from '../testsupport/timelineTestDataBuilder'
 import config from '../config'
 
 jest.mock('../data/mappers/timelineMapper')
+jest.mock('./prisonService')
+jest.mock('../data/educationAndWorkPlanClient')
 
 describe('timelineService', () => {
   const mockedTimelineMapper = toTimeline as jest.MockedFunction<typeof toTimeline>
 
-  const educationAndWorkPlanClient = {
-    getTimeline: jest.fn(),
-  }
-
-  const prisonService = {
-    lookupPrison: jest.fn(),
-  }
-
-  const timelineService = new TimelineService(
-    educationAndWorkPlanClient as unknown as EducationAndWorkPlanClient,
-    prisonService as unknown as PrisonService,
-  )
+  const educationAndWorkPlanClient = new EducationAndWorkPlanClient() as jest.Mocked<EducationAndWorkPlanClient>
+  const prisonService = new PrisonService(null, null, null) as jest.Mocked<PrisonService>
+  const timelineService = new TimelineService(educationAndWorkPlanClient, prisonService)
 
   beforeEach(() => {
     jest.resetAllMocks()
@@ -157,8 +150,8 @@ describe('timelineService', () => {
       }
       mockedTimelineMapper.mockReturnValue(timeline)
 
-      prisonService.lookupPrison.mockResolvedValueOnce({ prisonId: 'ASI', prisonName: 'Ashfield (HMP)' })
-      prisonService.lookupPrison.mockResolvedValueOnce({ prisonId: 'MDI', prisonName: 'Moorland (HMP & YOI)' })
+      prisonService.getPrisonByPrisonId.mockResolvedValueOnce({ prisonId: 'ASI', prisonName: 'Ashfield (HMP)' })
+      prisonService.getPrisonByPrisonId.mockResolvedValueOnce({ prisonId: 'MDI', prisonName: 'Moorland (HMP & YOI)' })
 
       // When
       const actual = await timelineService.getTimeline(prisonNumber, userToken, username)
@@ -168,8 +161,8 @@ describe('timelineService', () => {
       expect(actual.events[1].prison.prisonName).toEqual('Moorland (HMP & YOI)')
 
       expect(mockedTimelineMapper).toHaveBeenCalledWith(timelineResponse)
-      expect(prisonService.lookupPrison).toHaveBeenCalledWith('ASI', username)
-      expect(prisonService.lookupPrison).toHaveBeenCalledWith('MDI', username)
+      expect(prisonService.getPrisonByPrisonId).toHaveBeenCalledWith('ASI', username)
+      expect(prisonService.getPrisonByPrisonId).toHaveBeenCalledWith('MDI', username)
     })
 
     it('should get timeline given prison name lookups fail', async () => {
@@ -212,7 +205,7 @@ describe('timelineService', () => {
       }
       mockedTimelineMapper.mockReturnValue(timeline)
 
-      prisonService.lookupPrison.mockReturnValue({ prisonId: 'MDI', prisonName: undefined })
+      prisonService.getPrisonByPrisonId.mockResolvedValue({ prisonId: 'MDI', prisonName: undefined })
 
       // When
       const actual = await timelineService.getTimeline(prisonNumber, userToken, username)
@@ -222,8 +215,8 @@ describe('timelineService', () => {
       expect(actual.events[1].prison.prisonName).toBeUndefined()
 
       expect(mockedTimelineMapper).toHaveBeenCalledWith(timelineResponse)
-      expect(prisonService.lookupPrison).toHaveBeenCalledWith('ASI', username)
-      expect(prisonService.lookupPrison).toHaveBeenCalledWith('MDI', username)
+      expect(prisonService.getPrisonByPrisonId).toHaveBeenCalledWith('ASI', username)
+      expect(prisonService.getPrisonByPrisonId).toHaveBeenCalledWith('MDI', username)
     })
   })
 })

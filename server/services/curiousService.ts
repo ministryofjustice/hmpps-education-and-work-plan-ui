@@ -163,7 +163,7 @@ export default class CuriousService {
   ): Promise<Array<InPrisonCourse>> {
     return Promise.all(
       inPrisonCourses.map(async inPrisonCourse => {
-        const prison = await this.prisonService.lookupPrison(inPrisonCourse.prisonId, username)
+        const prison = await this.prisonService.getPrisonByPrisonId(inPrisonCourse.prisonId, username)
         return {
           ...inPrisonCourse,
           prisonName: prison?.prisonName,

@@ -38,7 +38,7 @@ export default class FunctionalSkillsController {
 
   setPrisonNamesOnAssessments = async (assessments: Array<Assessment>, req: Request): Promise<Array<Assessment>> => {
     const assessmentsWithPrisonLookups = assessments.map(async assessment => {
-      const prison = await this.prisonService.lookupPrison(assessment.prisonId, req.user.username)
+      const prison = await this.prisonService.getPrisonByPrisonId(assessment.prisonId, req.user.username)
       return {
         ...assessment,
         prisonName: prison?.prisonName,
