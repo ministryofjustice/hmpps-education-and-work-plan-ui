@@ -5,8 +5,11 @@ import { SessionData } from 'express-session'
 import { NextFunction, Request, Response } from 'express'
 import OverviewController from './overviewController'
 import aValidPrisonerSupportNeeds from '../../testsupport/supportNeedsTestDataBuilder'
-import { CuriousService, InductionService } from '../../services'
+import CuriousService from '../../services/curiousService'
 import EducationAndWorkPlanService from '../../services/educationAndWorkPlanService'
+import InductionService from '../../services/inductionService'
+import PrisonService from '../../services/prisonService'
+import TimelineService from '../../services/timelineService'
 import { aValidActionPlan, aValidActionPlanWithOneGoal } from '../../testsupport/actionPlanTestDataBuilder'
 import {
   aValidEnglishInPrisonCourse,
@@ -16,41 +19,31 @@ import {
 import aValidLongQuestionSetWorkAndInterests from '../../testsupport/workAndInterestsTestDataBuilder'
 import aValidPrisonerSummary from '../../testsupport/prisonerSummaryTestDataBuilder'
 import { aValidShortQuestionSetEducationAndTraining } from '../../testsupport/educationAndTrainingTestDataBuilder'
-import TimelineService from '../../services/timelineService'
-import PrisonService from '../../services/prisonService'
 import aValidTimeline from '../../testsupport/timelineTestDataBuilder'
 import filterTimelineEvents from '../timelineResolver'
 
 jest.mock('../timelineResolver')
+jest.mock('../../services/curiousService')
+jest.mock('../../services/educationAndWorkPlanService')
+jest.mock('../../services/inductionService')
+jest.mock('../../services/prisonService')
+jest.mock('../../services/timelineService')
 
 describe('overviewController', () => {
   const mockedTimelineResolver = filterTimelineEvents as jest.MockedFunction<typeof filterTimelineEvents>
 
-  const curiousService = {
-    getPrisonerSupportNeeds: jest.fn(),
-    getPrisonerFunctionalSkills: jest.fn(),
-  }
-  const educationAndWorkPlanService = {
-    getActionPlan: jest.fn(),
-  }
-  const inductionService = {
-    getWorkAndInterests: jest.fn(),
-    getEducationAndTraining: jest.fn(),
-    inductionExists: jest.fn(),
-  }
-  const timelineService = {
-    getTimeline: jest.fn(),
-  }
-  const prisonService = {
-    lookupPrison: jest.fn(),
-  }
+  const curiousService = new CuriousService(null, null, null) as jest.Mocked<CuriousService>
+  const educationAndWorkPlanService = new EducationAndWorkPlanService(null) as jest.Mocked<EducationAndWorkPlanService>
+  const inductionService = new InductionService(null) as jest.Mocked<InductionService>
+  const timelineService = new TimelineService(null, null) as jest.Mocked<TimelineService>
+  const prisonService = new PrisonService(null, null, null) as jest.Mocked<PrisonService>
 
   const controller = new OverviewController(
-    curiousService as unknown as CuriousService,
-    educationAndWorkPlanService as unknown as EducationAndWorkPlanService,
-    inductionService as unknown as InductionService,
-    timelineService as unknown as TimelineService,
-    prisonService as unknown as PrisonService,
+    curiousService,
+    educationAndWorkPlanService,
+    inductionService,
+    timelineService,
+    prisonService,
   )
 
   const req = {
@@ -289,7 +282,7 @@ describe('overviewController', () => {
 
       const expectedSupportNeeds = aValidPrisonerSupportNeeds()
       curiousService.getPrisonerSupportNeeds.mockResolvedValue(expectedSupportNeeds)
-      prisonService.lookupPrison.mockResolvedValue({ prisonId, prisonName: 'Moorland (HMP & YOI)' })
+      prisonService.getPrisonByPrisonId.mockResolvedValue({ prisonId, prisonName: 'Moorland (HMP & YOI)' })
       const expectedView = {
         prisonerSummary,
         tab: expectedTab,
@@ -305,7 +298,7 @@ describe('overviewController', () => {
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/overview/index', expectedView)
-      expect(prisonService.lookupPrison).toHaveBeenCalledWith(prisonId, 'a-dps-user')
+      expect(prisonService.getPrisonByPrisonId).toHaveBeenCalledWith(prisonId, 'a-dps-user')
     })
   })
 

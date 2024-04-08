@@ -1,7 +1,8 @@
 import type { LearnerEductionPagedResponse } from 'curiousApiClient'
 import type { FunctionalSkills, Neurodiversity, InPrisonCourseRecords, PrisonerSupportNeeds, Prison } from 'viewModels'
 import moment from 'moment'
-import { CuriousClient, HmppsAuthClient } from '../data'
+import CuriousClient from '../data/curiousClient'
+import HmppsAuthClient from '../data/hmppsAuthClient'
 import CuriousService from './curiousService'
 import aValidLearnerProfile from '../testsupport/learnerProfileTestDataBuilder'
 import aValidLearnerNeurodivergence from '../testsupport/learnerNeurodivergenceTestDataBuilder'
@@ -13,24 +14,15 @@ import {
 } from '../testsupport/learnerEducationPagedResponseTestDataBuilder'
 import PrisonService from './prisonService'
 
-describe('curiousService', () => {
-  const hmppsAuthClient = {
-    getSystemClientToken: jest.fn(),
-  }
-  const curiousClient = {
-    getLearnerProfile: jest.fn(),
-    getLearnerNeurodivergence: jest.fn(),
-    getLearnerEducationPage: jest.fn(),
-  }
-  const prisonService = {
-    lookupPrison: jest.fn(),
-  }
+jest.mock('../data/curiousClient')
+jest.mock('../data/hmppsAuthClient')
+jest.mock('./prisonService')
 
-  const curiousService = new CuriousService(
-    hmppsAuthClient as unknown as HmppsAuthClient,
-    curiousClient as unknown as CuriousClient,
-    prisonService as unknown as PrisonService,
-  )
+describe('curiousService', () => {
+  const hmppsAuthClient = new HmppsAuthClient(null) as jest.Mocked<HmppsAuthClient>
+  const curiousClient = new CuriousClient() as jest.Mocked<CuriousClient>
+  const prisonService = new PrisonService(null, null, null) as jest.Mocked<PrisonService>
+  const curiousService = new CuriousService(hmppsAuthClient, curiousClient, prisonService)
 
   beforeEach(() => {
     jest.resetAllMocks()
@@ -333,7 +325,7 @@ describe('curiousService', () => {
   })
 
   describe('getPrisonerInPrisonCourses', () => {
-    const mockPrisonLookup = (prisonId: string): Prison => {
+    const mockPrisonLookup = (prisonId: string): Promise<Prison> => {
       let prisonName: string
       if (prisonId === 'MDI') {
         prisonName = 'Moorland (HMP & YOI)'
@@ -342,7 +334,7 @@ describe('curiousService', () => {
       } else {
         return undefined
       }
-      return { prisonId, prisonName }
+      return Promise.resolve({ prisonId, prisonName })
     }
 
     it('should get In Prison Courses', async () => {
@@ -353,7 +345,7 @@ describe('curiousService', () => {
       const systemToken = 'a-system-token'
       hmppsAuthClient.getSystemClientToken.mockResolvedValue(systemToken)
 
-      prisonService.lookupPrison.mockImplementation(mockPrisonLookup)
+      prisonService.getPrisonByPrisonId.mockImplementation(mockPrisonLookup)
 
       const learnerEducationPage1Of1: LearnerEductionPagedResponse = learnerEducationPagedResponse(prisonNumber)
       curiousClient.getLearnerEducationPage.mockResolvedValue(learnerEducationPage1Of1)
@@ -466,8 +458,8 @@ describe('curiousService', () => {
       // Then
       expect(actual).toEqual(expected)
       expect(curiousClient.getLearnerEducationPage).toHaveBeenCalledWith(prisonNumber, systemToken, 0)
-      expect(prisonService.lookupPrison).toHaveBeenCalledWith('MDI', username)
-      expect(prisonService.lookupPrison).toHaveBeenCalledWith('WDI', username)
+      expect(prisonService.getPrisonByPrisonId).toHaveBeenCalledWith('MDI', username)
+      expect(prisonService.getPrisonByPrisonId).toHaveBeenCalledWith('WDI', username)
     })
 
     it('should get In Prison Courses given there is only 1 page of data in Curious for the prisoner', async () => {
@@ -478,7 +470,7 @@ describe('curiousService', () => {
       const systemToken = 'a-system-token'
       hmppsAuthClient.getSystemClientToken.mockResolvedValue(systemToken)
 
-      prisonService.lookupPrison.mockImplementation(mockPrisonLookup)
+      prisonService.getPrisonByPrisonId.mockImplementation(mockPrisonLookup)
 
       const learnerEducationPage1Of1: LearnerEductionPagedResponse = learnerEducationPagedResponsePage1Of1(prisonNumber)
       curiousClient.getLearnerEducationPage.mockResolvedValue(learnerEducationPage1Of1)
@@ -542,7 +534,7 @@ describe('curiousService', () => {
       const systemToken = 'a-system-token'
       hmppsAuthClient.getSystemClientToken.mockResolvedValue(systemToken)
 
-      prisonService.lookupPrison.mockImplementation(mockPrisonLookup)
+      prisonService.getPrisonByPrisonId.mockImplementation(mockPrisonLookup)
 
       const learnerEducationPage1Of2: LearnerEductionPagedResponse = learnerEducationPagedResponsePage1Of2(prisonNumber)
       curiousClient.getLearnerEducationPage.mockResolvedValueOnce(learnerEducationPage1Of2)
@@ -640,7 +632,7 @@ describe('curiousService', () => {
       // Then
       expect(actual).toEqual(expected)
       expect(curiousClient.getLearnerEducationPage).toHaveBeenCalledWith(prisonNumber, systemToken, 0)
-      expect(prisonService.lookupPrison).not.toHaveBeenCalled()
+      expect(prisonService.getPrisonByPrisonId).not.toHaveBeenCalled()
     })
 
     it('should not get In Prison Courses given the Curious API request for page 2 returns an error response', async () => {
@@ -672,7 +664,7 @@ describe('curiousService', () => {
       expect(actual).toEqual(expected)
       expect(curiousClient.getLearnerEducationPage).toHaveBeenCalledWith(prisonNumber, systemToken, 0)
       expect(curiousClient.getLearnerEducationPage).toHaveBeenCalledWith(prisonNumber, systemToken, 1)
-      expect(prisonService.lookupPrison).not.toHaveBeenCalled()
+      expect(prisonService.getPrisonByPrisonId).not.toHaveBeenCalled()
     })
 
     it('should handle retrieval of In Prison Courses given Curious returns not found error for the learner education', async () => {
@@ -709,7 +701,7 @@ describe('curiousService', () => {
       // Then
       expect(actual).toEqual(expected)
       expect(curiousClient.getLearnerEducationPage).toHaveBeenCalledWith(prisonNumber, systemToken, 0)
-      expect(prisonService.lookupPrison).not.toHaveBeenCalled()
+      expect(prisonService.getPrisonByPrisonId).not.toHaveBeenCalled()
     })
   })
 })

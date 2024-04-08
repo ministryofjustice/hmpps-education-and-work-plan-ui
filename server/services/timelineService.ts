@@ -48,7 +48,7 @@ export default class TimelineService {
     // effectively spamming `prison-register-api` !
     const firstEvent: TimelineEvent = {
       ...events[0],
-      prison: await this.prisonService.lookupPrison(events[0].prison.prisonId, username),
+      prison: await this.prisonService.getPrisonByPrisonId(events[0].prison.prisonId, username),
       contextualInfo: isPrisonTransfer(events[0])
         ? await this.getTransferredFromPrisonName(events[0], username)
         : events[0].contextualInfo,
@@ -59,7 +59,7 @@ export default class TimelineService {
     const otherEvents: Array<Promise<TimelineEvent>> = events.slice(1).map(async (event): Promise<TimelineEvent> => {
       return {
         ...event,
-        prison: await this.prisonService.lookupPrison(event.prison.prisonId, username),
+        prison: await this.prisonService.getPrisonByPrisonId(event.prison.prisonId, username),
         contextualInfo: isPrisonTransfer(event)
           ? await this.getTransferredFromPrisonName(event, username)
           : event.contextualInfo,
@@ -87,7 +87,7 @@ export default class TimelineService {
   }
 
   private getTransferredFromPrisonName = async (event: TimelineEvent, username: string): Promise<string> =>
-    (await this.prisonService.lookupPrison(event.contextualInfo, username))?.prisonName
+    (await this.prisonService.getPrisonByPrisonId(event.contextualInfo, username))?.prisonName
 }
 
 const isPrisonTransfer = (event: TimelineEvent): boolean => event.eventType === 'PRISON_TRANSFER'

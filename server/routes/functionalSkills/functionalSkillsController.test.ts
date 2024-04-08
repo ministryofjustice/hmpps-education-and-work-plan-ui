@@ -2,7 +2,8 @@ import { NextFunction, Request, Response } from 'express'
 import { SessionData } from 'express-session'
 import moment from 'moment'
 import type { Assessment, Prison } from 'viewModels'
-import { CuriousService, PrisonService } from '../../services'
+import CuriousService from '../../services/curiousService'
+import PrisonService from '../../services/prisonService'
 import FunctionalSkillsController from './functionalSkillsController'
 import aValidPrisonerSummary from '../../testsupport/prisonerSummaryTestDataBuilder'
 import {
@@ -11,19 +12,13 @@ import {
   validFunctionalSkillsWithNoAssessments,
 } from '../../testsupport/functionalSkillsTestDataBuilder'
 
+jest.mock('../../services/curiousService')
+jest.mock('../../services/prisonService')
+
 describe('functionalSkillsController', () => {
-  const curiousService = {
-    getPrisonerFunctionalSkills: jest.fn(),
-  }
-
-  const prisonService = {
-    lookupPrison: jest.fn(),
-  }
-
-  const controller = new FunctionalSkillsController(
-    curiousService as unknown as CuriousService,
-    prisonService as unknown as PrisonService,
-  )
+  const curiousService = new CuriousService(null, null, null) as jest.Mocked<CuriousService>
+  const prisonService = new PrisonService(null, null, null) as jest.Mocked<PrisonService>
+  const controller = new FunctionalSkillsController(curiousService, prisonService)
 
   const req = {
     session: {} as SessionData,
@@ -48,7 +43,7 @@ describe('functionalSkillsController', () => {
   const FIVE_DAYS_AGO = moment(NOW).subtract(5, 'days').toDate()
   const TEN_DAYS_AGO = moment(NOW).subtract(10, 'days').toDate()
 
-  const mockPrisonLookup = (prisonId: string): Prison => {
+  const mockPrisonLookup = (prisonId: string): Promise<Prison> => {
     let prisonName: string
     if (prisonId === 'MDI') {
       prisonName = 'Moorland (HMP & YOI)'
@@ -59,7 +54,7 @@ describe('functionalSkillsController', () => {
     if (prisonId === 'WMI') {
       prisonName = 'Wymott (HMP & YOI)'
     }
-    return { prisonId, prisonName }
+    return Promise.resolve({ prisonId, prisonName })
   }
 
   describe('getFunctionalSkillsView', () => {
@@ -71,7 +66,7 @@ describe('functionalSkillsController', () => {
       const prisonerSummary = aValidPrisonerSummary(prisonNumber)
       req.session.prisonerSummary = prisonerSummary
 
-      prisonService.lookupPrison.mockImplementation(mockPrisonLookup)
+      prisonService.getPrisonByPrisonId.mockImplementation(mockPrisonLookup)
 
       const functionalSkills = validFunctionalSkills({
         prisonNumber,
@@ -242,7 +237,7 @@ describe('functionalSkillsController', () => {
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/functionalSkills/index', expectedView)
       expect(curiousService.getPrisonerFunctionalSkills).toHaveBeenCalledWith(prisonNumber, 'AUSER_GEN')
-      expect(prisonService.lookupPrison).not.toHaveBeenCalled()
+      expect(prisonService.getPrisonByPrisonId).not.toHaveBeenCalled()
     })
 
     it('should get functional skills view given curious service has problem retrieving data', async () => {
@@ -280,7 +275,7 @@ describe('functionalSkillsController', () => {
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/functionalSkills/index', expectedView)
       expect(curiousService.getPrisonerFunctionalSkills).toHaveBeenCalledWith(prisonNumber, 'AUSER_GEN')
-      expect(prisonService.lookupPrison).not.toHaveBeenCalled()
+      expect(prisonService.getPrisonByPrisonId).not.toHaveBeenCalled()
     })
   })
 })
