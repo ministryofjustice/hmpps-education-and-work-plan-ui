@@ -15,7 +15,7 @@ import checkCreateGoalFormExistsInSession from '../routerRequestHandlers/checkCr
  */
 export default (router: Router, services: Services) => {
   const createGoalController = new CreateGoalController(services.educationAndWorkPlanService)
-  const createGoalsController = new CreateGoalsController()
+  const createGoalsController = new CreateGoalsController(services.educationAndWorkPlanService)
   if (config.featureToggles.newCreateGoalJourneyEnabled) {
     // TODO: RR-734 - Create route classes new create goal journey
     newCreateGoalRoutes(router, services, createGoalsController)

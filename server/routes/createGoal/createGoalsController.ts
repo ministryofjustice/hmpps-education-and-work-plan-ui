@@ -1,12 +1,16 @@
+import createError from 'http-errors'
 import type { RequestHandler } from 'express'
 import { startOfToday } from 'date-fns'
 import type { CreateGoalsForm } from 'forms'
+import logger from '../../../logger'
 import CreateGoalsView from './createGoalsView'
 import futureGoalTargetDateCalculator from '../futureGoalTargetDateCalculator'
 import validateCreateGoalsForm from './createGoalsFormValidator'
+import toCreateGoalDtos from '../../data/mappers/createGoalDtoMapper'
+import EducationAndWorkPlanService from '../../services/educationAndWorkPlanService'
 
 export default class CreateGoalsController {
-  constructor() {}
+  constructor(private readonly educationAndWorkPlanService: EducationAndWorkPlanService) {}
 
   getCreateGoalsView: RequestHandler = async (req, res, next): Promise<void> => {
     const { prisonNumber } = req.params
@@ -34,9 +38,10 @@ export default class CreateGoalsController {
     return res.render('pages/createGoals/index', { ...view.renderArgs })
   }
 
-  // TODO: RR-748 - Implement submit handler for new create goal journey
   submitCreateGoalsForm: RequestHandler = async (req, res, next): Promise<void> => {
     const { prisonNumber } = req.params
+    const { prisonerSummary } = req.session
+    const { prisonId } = prisonerSummary
 
     const createGoalsForm = { ...req.body } as CreateGoalsForm
     if (!createGoalsForm.goals) {
@@ -64,6 +69,15 @@ export default class CreateGoalsController {
       return res.redirect(`/plan/${prisonNumber}/goals/create`)
     }
 
-    return res.redirect(`/plan/${prisonNumber}/view/overview`)
+    try {
+      const createGoalDtos = toCreateGoalDtos(createGoalsForm, prisonId)
+      await this.educationAndWorkPlanService.createGoals(createGoalDtos, req.user.token)
+
+      req.session.createGoalsForm = undefined
+      return res.redirect(`/plan/${prisonNumber}/view/overview`)
+    } catch (e) {
+      logger.error(`Error creating goal(s) for prisoner ${prisonNumber}`, e)
+      return next(createError(500, `Error creating goal(s) for prisoner ${prisonNumber}. Error: ${e}`))
+    }
   }
 }

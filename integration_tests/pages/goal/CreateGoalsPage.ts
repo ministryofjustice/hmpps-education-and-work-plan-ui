@@ -41,6 +41,16 @@ export default class CreateGoalsPage extends Page {
     return this
   }
 
+  setGoalNote(note: string, goalNumber: number = 1): CreateGoalsPage {
+    this.goalNoteField(goalNumber).clear().type(note)
+    return this
+  }
+
+  clearNoteTitle(goalNumber: number = 1): CreateGoalsPage {
+    this.goalNoteField(goalNumber).clear()
+    return this
+  }
+
   addNewEmptyStepToGoal(goalNumber: number = 1): CreateGoalsPage {
     this.addAnotherStepButtonForGoal(goalNumber).click()
     return this
@@ -87,6 +97,9 @@ export default class CreateGoalsPage extends Page {
       .get(`[name^="goals[${zeroIndexed(goalNumber)}][steps]["]`) // elements whose name attribute starts with `goals[zeroIndexedGoalNumber][steps][`
       .filter('[name$="][title]"]') // filter those elements to those whose name attribute ends with `][title]`
 
+  private goalNoteField = (goalNumber: number): PageElement =>
+    cy.get(`[name="goals[${zeroIndexed(goalNumber)}][note]"]`)
+
   private submitButton = (): PageElement => cy.get('#submit-button')
 
   private addAnotherStepButtonForGoal = (goalNumber: number): PageElement =>
@@ -96,4 +109,4 @@ export default class CreateGoalsPage extends Page {
     cy.get(`[name="goals[${zeroIndexed(goalNumber)}][steps][${zeroIndexed(stepNumber)}][title]"]`)
 }
 
-const zeroIndexed = (indexNumber: number): number => Math.min(0, indexNumber - 1)
+const zeroIndexed = (indexNumber: number): number => Math.max(0, indexNumber - 1)
