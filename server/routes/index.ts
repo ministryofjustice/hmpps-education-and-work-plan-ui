@@ -1,5 +1,4 @@
 import { Router } from 'express'
-
 import type { Services } from '../services'
 import createGoal from './createGoal'
 import updateGoal from './updateGoal'
