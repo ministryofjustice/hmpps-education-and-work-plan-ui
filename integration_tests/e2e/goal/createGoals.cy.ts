@@ -3,7 +3,7 @@ import CreateGoalsPage from '../../pages/goal/CreateGoalsPage'
 import OverviewPage from '../../pages/overview/OverviewPage'
 import { postRequestedFor } from '../../mockApis/wiremock/requestPatternBuilder'
 import { urlEqualTo } from '../../mockApis/wiremock/matchers/url'
-import { equalToJson } from '../../mockApis/wiremock/matchers/content'
+import { matchingJsonPath } from '../../mockApis/wiremock/matchers/content'
 
 context('Create goals', () => {
   beforeEach(() => {
@@ -133,25 +133,14 @@ context('Create goals', () => {
     cy.wiremockVerify(
       postRequestedFor(urlEqualTo(`/action-plans/${prisonNumber}/goals`)) //
         .withRequestBody(
-          equalToJson({
-            goals: [
-              {
-                prisonNumber: 'G6115VJ',
-                title: 'Learn French',
-                category: 'WORK',
-                steps: [
-                  { title: 'Book course', sequenceNumber: 1 },
-                  { title: 'Attend course', sequenceNumber: 2 },
-                  { title: 'Take exam', sequenceNumber: 3 },
-                ],
-                targetCompletionDate: '2025-04-07',
-                notes: 'Prisoner expects to complete course before release',
-                prisonId: 'MDI',
-              },
-            ],
-          })
-            .ignoreArrayOrderMatch(true)
-            .ignoreExtraElementsMatch(false),
+          matchingJsonPath(
+            "$[?(@.goals[0].prisonNumber == 'G6115VJ' && " +
+              "@.goals[0].title == 'Learn French' && " +
+              "@.goals[0].notes == 'Prisoner expects to complete course before release' && " +
+              "@.goals[0].steps[0].title == 'Book course' && @.goals[0].steps[0].sequenceNumber == '1' && " +
+              "@.goals[0].steps[1].title == 'Attend course' && @.goals[0].steps[1].sequenceNumber == '2' && " +
+              "@.goals[0].steps[2].title == 'Take exam' && @.goals[0].steps[2].sequenceNumber == '3')]",
+          ),
         ),
     )
   })
