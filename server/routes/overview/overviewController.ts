@@ -73,7 +73,7 @@ export default class OverviewController {
     if (supportNeeds.healthAndSupportNeeds) {
       await Promise.all(
         supportNeeds.healthAndSupportNeeds.map(async supportNeed => {
-          const prison = await this.prisonService.lookupPrison(supportNeed.prisonId, req.user.username)
+          const prison = await this.prisonService.getPrisonByPrisonId(supportNeed.prisonId, req.user.username)
           if (prison) {
             // TODO refactor to avoid param-reassign eslint rule
             // eslint-disable-next-line no-param-reassign
@@ -87,7 +87,7 @@ export default class OverviewController {
     if (supportNeeds.neurodiversities) {
       await Promise.all(
         supportNeeds.neurodiversities.map(async supportNeed => {
-          const prison = await this.prisonService.lookupPrison(supportNeed.prisonId, req.user.username)
+          const prison = await this.prisonService.getPrisonByPrisonId(supportNeed.prisonId, req.user.username)
           if (prison) {
             // TODO refactor to avoid param-reassign eslint rule
             // eslint-disable-next-line no-param-reassign
