@@ -113,7 +113,7 @@
 
             {{ govukRadios({
               name: "goals[" + goalLoop.index0 + "][targetCompletionDate]",
-              id: "goals[" + goalLoop.index0 + "].targetCompletionDate",
+              idPrefix: "goals[" + goalLoop.index0 + "].targetCompletionDate",
               value: form.goals[(goalLoop.index0)].targetCompletionDate,
               fieldset: {
                 legend: {
@@ -165,7 +165,7 @@
                     Add a note to this goal (optional)
                   </label>
                 </h1>
-                <div class="govuk-warning-text govuk-!-margin-top-4" id="warning-text">
+                <div class="govuk-warning-text govuk-!-margin-top-4">
                   <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
                   <strong class="govuk-warning-text__text">
                     <span class="govuk-visually-hidden">Warning</span>
@@ -180,6 +180,16 @@
           </div>
         </div>
         {% endfor %}
+
+        <div class="govuk-form-group">
+          {{ govukButton({
+            id: "add-another-goal-button",
+            name: "action",
+            value: "add-another-goal",
+            text: "Add another goal",
+            classes: "govuk-button--secondary"
+          }) }}
+        </div>
 
         {{ govukButton({
           id: "submit-button",

@@ -279,5 +279,52 @@ describe('createGoalsController', () => {
       expect(req.session.createGoalsForm).toEqual(expectedCreateGoalsForm)
       expect(mockedCreateGoalsFormValidator).toHaveBeenCalledWith(submittedCreateGoalsForm)
     })
+
+    it('should add another goal', async () => {
+      // Given
+      const submittedCreateGoalsForm: CreateGoalsForm = {
+        prisonNumber,
+        goals: [
+          {
+            title: 'Learn French',
+            targetCompletionDate: '2024-12-31',
+            steps: [{ title: 'Book Course' }],
+          },
+          {
+            title: 'Learn Spanish',
+            targetCompletionDate: '2025-04-10',
+            steps: [{ title: 'Find available courses' }],
+          },
+          {
+            title: 'Attend bricklaying workshop',
+            targetCompletionDate: '2024-12-31',
+            steps: [{ title: 'Apply to get on activity' }, { title: 'Attend activity' }, { title: 'Pass exam' }],
+          },
+        ],
+        action: 'add-another-goal',
+      }
+      req.body = submittedCreateGoalsForm
+
+      req.session.createGoalsForm = undefined
+
+      mockedCreateGoalsFormValidator.mockReturnValue(errors)
+
+      const expectedCreateGoalsForm = {
+        ...submittedCreateGoalsForm,
+        goals: [...submittedCreateGoalsForm.goals, { title: '', steps: [{ title: '' }] }],
+      }
+
+      // When
+      await controller.submitCreateGoalsForm(
+        req as undefined as Request,
+        res as undefined as Response,
+        next as undefined as NextFunction,
+      )
+
+      // Then
+      expect(res.redirect).toHaveBeenCalledWith('/plan/A1234BC/goals/create#goals[3].title')
+      expect(req.session.createGoalsForm).toEqual(expectedCreateGoalsForm)
+      expect(mockedCreateGoalsFormValidator).toHaveBeenCalledWith(submittedCreateGoalsForm)
+    })
   })
 })
