@@ -18,12 +18,7 @@ export default class CreateGoalsController {
 
     const createGoalsForm = req.session.createGoalsForm || {
       prisonNumber,
-      goals: [
-        {
-          title: '',
-          steps: [{ title: '' }],
-        },
-      ],
+      goals: [emptyGoal()],
     }
     req.session.createGoalsForm = undefined
 
@@ -64,13 +59,21 @@ export default class CreateGoalsController {
       const formActionParameters = createGoalsForm.action.split('|')
       const goalNumber = parseInt(formActionParameters[1], 10)
 
-      createGoalsForm.goals[goalNumber].steps.push({ title: '' })
+      createGoalsForm.goals[goalNumber].steps.push(emptyStep())
       req.session.createGoalsForm = createGoalsForm
 
       const newStepTitleFieldId = `goals[${goalNumber}].steps[${
         createGoalsForm.goals[goalNumber].steps.length - 1
       }].title`
       return res.redirect(`/plan/${prisonNumber}/goals/create#${newStepTitleFieldId}`)
+    }
+
+    if (createGoalsForm.action === 'add-another-goal') {
+      createGoalsForm.goals.push(emptyGoal())
+      req.session.createGoalsForm = createGoalsForm
+
+      const newGoalTitleFieldId = `goals[${createGoalsForm.goals.length - 1}].title`
+      return res.redirect(`/plan/${prisonNumber}/goals/create#${newGoalTitleFieldId}`)
     }
 
     try {
@@ -85,4 +88,15 @@ export default class CreateGoalsController {
       return next(createError(500, `Error creating goal(s) for prisoner ${prisonNumber}. Error: ${e}`))
     }
   }
+}
+
+const emptyGoal = () => {
+  return {
+    title: '',
+    steps: [emptyStep()],
+  }
+}
+
+const emptyStep = () => {
+  return { title: '' }
 }

@@ -18,6 +18,11 @@ export default class CreateGoalsPage extends Page {
     return this
   }
 
+  goalTitleFieldIsFocussed(goalNumber: number): CreateGoalsPage {
+    this.goalTitleField(goalNumber).should('have.focus')
+    return this
+  }
+
   setTargetCompletionDate0to3Months(goalNumber: number = 1): CreateGoalsPage {
     this.goalTargetDateRadioButtons(goalNumber).eq(0).check() // 0-3 months option is the first radio button (zero indexed)
     return this
@@ -76,6 +81,11 @@ export default class CreateGoalsPage extends Page {
     return this
   }
 
+  addNewEmptyGoal(): CreateGoalsPage {
+    this.addAnotherGoalButton().click()
+    return this
+  }
+
   submitPage() {
     this.submitButton().click()
   }
@@ -112,6 +122,8 @@ export default class CreateGoalsPage extends Page {
 
   private stepTitleField = (goalNumber: number, stepNumber: number): PageElement =>
     cy.get(`[name="goals[${zeroIndexed(goalNumber)}][steps][${zeroIndexed(stepNumber)}][title]"]`)
+
+  private addAnotherGoalButton = (): PageElement => cy.get(`#add-another-goal-button`)
 }
 
 const zeroIndexed = (indexNumber: number): number => Math.max(0, indexNumber - 1)

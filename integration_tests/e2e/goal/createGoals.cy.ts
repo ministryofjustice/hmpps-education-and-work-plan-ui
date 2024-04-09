@@ -108,6 +108,29 @@ context('Create goals', () => {
       .stepTitleFieldIsFocussed(1, 2)
   })
 
+  it('should be able to add an empty goal', () => {
+    // Given
+    const prisonNumber = 'G6115VJ'
+    cy.signIn()
+
+    cy.visit(`/plan/${prisonNumber}/goals/create`)
+    const createGoalPage = Page.verifyOnPage(CreateGoalsPage)
+
+    createGoalPage //
+      .setGoalTitle('Learn French', 1)
+      .setTargetCompletionDate6to12Months(1)
+      .setStepTitle('Book course', 1, 1)
+
+    // When
+    createGoalPage.addNewEmptyGoal()
+
+    // Then
+    Page.verifyOnPage(CreateGoalsPage)
+    createGoalPage //
+      .hasNoErrors()
+      .goalTitleFieldIsFocussed(2)
+  })
+
   it('should create goals given valid form submission', () => {
     // Given
     const prisonNumber = 'G6115VJ'
@@ -125,6 +148,10 @@ context('Create goals', () => {
       .addNewEmptyStepToGoal(1)
       .setStepTitle('Take exam', 1, 3)
       .setGoalNote('Prisoner expects to complete course before release', 1)
+      .addNewEmptyGoal()
+      .setGoalTitle('Improve communication skills', 2)
+      .setTargetCompletionDate0to3Months(2)
+      .setStepTitle('Make friends on wing', 2, 1)
 
     // When
     createGoalPage.submitPage()
@@ -135,12 +162,19 @@ context('Create goals', () => {
       postRequestedFor(urlEqualTo(`/action-plans/${prisonNumber}/goals`)) //
         .withRequestBody(
           matchingJsonPath(
-            "$[?(@.goals[0].prisonNumber == 'G6115VJ' && " +
+            '$[?(@.goals.size() == 2 && ' +
+              "@.goals[0].prisonNumber == 'G6115VJ' && " +
               "@.goals[0].title == 'Learn French' && " +
               "@.goals[0].notes == 'Prisoner expects to complete course before release' && " +
+              '@.goals[0].steps.size() == 3 && ' +
               "@.goals[0].steps[0].title == 'Book course' && @.goals[0].steps[0].sequenceNumber == '1' && " +
               "@.goals[0].steps[1].title == 'Attend course' && @.goals[0].steps[1].sequenceNumber == '2' && " +
-              "@.goals[0].steps[2].title == 'Take exam' && @.goals[0].steps[2].sequenceNumber == '3')]",
+              "@.goals[0].steps[2].title == 'Take exam' && @.goals[0].steps[2].sequenceNumber == '3' && " +
+              "@.goals[1].prisonNumber == 'G6115VJ' && " +
+              "@.goals[1].title == 'Improve communication skills' && " +
+              "@.goals[1].notes == '' && " +
+              '@.goals[1].steps.size() == 1 && ' +
+              "@.goals[1].steps[0].title == 'Make friends on wing' && @.goals[1].steps[0].sequenceNumber == '1')]",
           ),
         ),
     )
