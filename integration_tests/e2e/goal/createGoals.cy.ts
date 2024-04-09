@@ -1,6 +1,9 @@
 import Page from '../../pages/page'
 import CreateGoalsPage from '../../pages/goal/CreateGoalsPage'
 import OverviewPage from '../../pages/overview/OverviewPage'
+import { postRequestedFor } from '../../mockApis/wiremock/requestPatternBuilder'
+import { urlEqualTo } from '../../mockApis/wiremock/matchers/url'
+import { matchingJsonPath } from '../../mockApis/wiremock/matchers/content'
 
 context('Create goals', () => {
   beforeEach(() => {
@@ -18,6 +21,7 @@ context('Create goals', () => {
     cy.task('stubLearnerProfile')
     cy.task('stubLearnerEducation')
     cy.task('stubGetAllPrisons')
+    cy.task('createGoals')
   })
 
   it('should be able to navigate directly to Create Goal page', () => {
@@ -101,5 +105,43 @@ context('Create goals', () => {
     createGoalPage //
       .hasNoErrors()
       .goalHasNumberOfStepsFields(1, 2)
+  })
+
+  it('should create goals given valid form submission', () => {
+    // Given
+    const prisonNumber = 'G6115VJ'
+    cy.signIn()
+
+    cy.visit(`/plan/${prisonNumber}/goals/create`)
+    const createGoalPage = Page.verifyOnPage(CreateGoalsPage)
+
+    createGoalPage //
+      .setGoalTitle('Learn French', 1)
+      .setTargetCompletionDate6to12Months(1)
+      .setStepTitle('Book course', 1, 1)
+      .addNewEmptyStepToGoal(1)
+      .setStepTitle('Attend course', 1, 2)
+      .addNewEmptyStepToGoal(1)
+      .setStepTitle('Take exam', 1, 3)
+      .setGoalNote('Prisoner expects to complete course before release', 1)
+
+    // When
+    createGoalPage.submitPage()
+
+    // Then
+    Page.verifyOnPage(OverviewPage)
+    cy.wiremockVerify(
+      postRequestedFor(urlEqualTo(`/action-plans/${prisonNumber}/goals`)) //
+        .withRequestBody(
+          matchingJsonPath(
+            "$[?(@.goals[0].prisonNumber == 'G6115VJ' && " +
+              "@.goals[0].title == 'Learn French' && " +
+              "@.goals[0].notes == 'Prisoner expects to complete course before release' && " +
+              "@.goals[0].steps[0].title == 'Book course' && @.goals[0].steps[0].sequenceNumber == '1' && " +
+              "@.goals[0].steps[1].title == 'Attend course' && @.goals[0].steps[1].sequenceNumber == '2' && " +
+              "@.goals[0].steps[2].title == 'Take exam' && @.goals[0].steps[2].sequenceNumber == '3')]",
+          ),
+        ),
+    )
   })
 })

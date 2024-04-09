@@ -1,25 +1,33 @@
 import { SessionData } from 'express-session'
 import { NextFunction, Request, Response } from 'express'
 import { startOfToday } from 'date-fns'
+import type { CreateGoalDto } from 'dto'
 import type { CreateGoalsForm } from 'forms'
 import CreateGoalsController from './createGoalsController'
 import aValidPrisonerSummary from '../../testsupport/prisonerSummaryTestDataBuilder'
 import futureGoalTargetDateCalculator from '../futureGoalTargetDateCalculator'
 import validateCreateGoalsForm from './createGoalsFormValidator'
+import EducationAndWorkPlanService from '../../services/educationAndWorkPlanService'
+import toCreateGoalDtos from '../../data/mappers/createGoalDtoMapper'
 
 jest.mock('./createGoalsFormValidator')
+jest.mock('../../data/mappers/createGoalDtoMapper')
+jest.mock('../../services/educationAndWorkPlanService')
 
 /**
  * Unit tests for createGoalsController.
  */
 describe('createGoalsController', () => {
   const mockedCreateGoalsFormValidator = validateCreateGoalsForm as jest.MockedFn<typeof validateCreateGoalsForm>
+  const mockedCreateGoalDtosMapper = toCreateGoalDtos as jest.MockedFn<typeof toCreateGoalDtos>
 
-  const controller = new CreateGoalsController()
+  const educationAndWorkPlanService = new EducationAndWorkPlanService(null) as jest.Mocked<EducationAndWorkPlanService>
+  const controller = new CreateGoalsController(educationAndWorkPlanService)
 
   const req = {
     session: {} as SessionData,
     body: {},
+    user: {} as Express.User,
     params: {} as Record<string, string>,
     flash: jest.fn(),
   }
@@ -129,6 +137,64 @@ describe('createGoalsController', () => {
   })
 
   describe('submitCreateGoalsForm', () => {
+    it('should call API to create goals and redirect to overview given value CreateGoalsForm', async () => {
+      // Given
+      req.user.token = 'some-token'
+      const submittedCreateGoalsForm: CreateGoalsForm = {
+        prisonNumber,
+        goals: [
+          {
+            title: 'Learn French',
+            targetCompletionDate: '2024-12-31',
+            steps: [{ title: 'Book Course' }],
+          },
+          {
+            title: 'Learn Spanish',
+            targetCompletionDate: '2025-04-10',
+            steps: [{ title: 'Find available courses' }],
+          },
+        ],
+        action: 'submit-form',
+      }
+      req.body = submittedCreateGoalsForm
+
+      req.session.createGoalsForm = undefined
+
+      mockedCreateGoalsFormValidator.mockReturnValue(errors)
+
+      const expectedCreateGoalDtos: Array<CreateGoalDto> = [
+        {
+          prisonNumber,
+          prisonId: expectedPrisonId,
+          title: 'Learn French',
+          steps: [{ title: 'Book Course', sequenceNumber: 1 }],
+          targetCompletionDate: new Date('2024-12-31T00:00:00.000Z'),
+        },
+        {
+          prisonNumber,
+          prisonId: expectedPrisonId,
+          title: 'Learn Spanish',
+          steps: [{ title: 'Find available courses', sequenceNumber: 1 }],
+          targetCompletionDate: new Date('2025-04-10T00:00:00.000Z'),
+        },
+      ]
+      mockedCreateGoalDtosMapper.mockReturnValue(expectedCreateGoalDtos)
+
+      // When
+      await controller.submitCreateGoalsForm(
+        req as undefined as Request,
+        res as undefined as Response,
+        next as undefined as NextFunction,
+      )
+
+      // Then
+      expect(res.redirect).toHaveBeenCalledWith('/plan/A1234BC/view/overview')
+      expect(mockedCreateGoalsFormValidator).toHaveBeenCalledWith(submittedCreateGoalsForm)
+      expect(mockedCreateGoalDtosMapper).toHaveBeenCalledWith(submittedCreateGoalsForm, expectedPrisonId)
+      expect(educationAndWorkPlanService.createGoals).toHaveBeenCalledWith(expectedCreateGoalDtos, 'some-token')
+      expect(req.session.createGoalsForm).toBeUndefined()
+    })
+
     it('should redirect to create goals form given form validation fails', async () => {
       // Given
       const expectedCreateGoalsForm: CreateGoalsForm = {
