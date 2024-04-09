@@ -19,6 +19,17 @@
 
 {% block content %}
 
+  {% if tab === 'overview' and showGoalCreationSuccessMessage %}
+    {{ mojBanner({
+      text: 'Goals added',
+      type: 'success',
+      iconFallbackText: 'Success',
+      attributes: {
+        'data-qa': 'goal-creation-success-message'
+      }
+    }) }}
+  {% endif %}
+
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
       <span class="govuk-caption-l">Learning and work progress</span>

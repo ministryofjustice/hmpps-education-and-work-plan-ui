@@ -94,6 +94,11 @@ export default abstract class Page {
     return this
   }
 
+  refreshPage() {
+    cy.reload()
+    return this
+  }
+
   breadCrumb = (): PageElement => cy.get('.govuk-breadcrumbs')
 
   headerUserName = (): PageElement => cy.get('[data-qa=header-user-name]')

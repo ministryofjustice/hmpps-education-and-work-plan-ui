@@ -193,6 +193,8 @@ describe('createGoalsController', () => {
       expect(mockedCreateGoalDtosMapper).toHaveBeenCalledWith(submittedCreateGoalsForm, expectedPrisonId)
       expect(educationAndWorkPlanService.createGoals).toHaveBeenCalledWith(expectedCreateGoalDtos, 'some-token')
       expect(req.session.createGoalsForm).toBeUndefined()
+      expect(req.flash).toHaveBeenCalledWith('goalsSuccessfullyCreated', 'true')
+      expect(req.flash).not.toHaveBeenCalledWith('errors')
     })
 
     it('should redirect to create goals form given form validation fails', async () => {
@@ -225,6 +227,7 @@ describe('createGoalsController', () => {
       // Then
       expect(res.redirect).toHaveBeenCalledWith('/plan/A1234BC/goals/create')
       expect(req.flash).toHaveBeenCalledWith('errors', errors)
+      expect(req.flash).not.toHaveBeenCalledWith('goalsSuccessfullyCreated')
       expect(req.session.createGoalsForm).toEqual(expectedCreateGoalsForm)
       expect(mockedCreateGoalsFormValidator).toHaveBeenCalledWith(expectedCreateGoalsForm)
     })
@@ -258,7 +261,10 @@ describe('createGoalsController', () => {
 
       mockedCreateGoalsFormValidator.mockReturnValue(errors)
 
-      const expectedCreateGoalsForm = { ...submittedCreateGoalsForm }
+      const expectedCreateGoalsForm = {
+        ...submittedCreateGoalsForm,
+        goals: submittedCreateGoalsForm.goals.map(goal => ({ ...goal, steps: [...goal.steps] })),
+      }
       expectedCreateGoalsForm.goals[1].steps.push({ title: '' })
 
       // When
@@ -269,7 +275,7 @@ describe('createGoalsController', () => {
       )
 
       // Then
-      expect(res.redirect).toHaveBeenCalledWith('/plan/A1234BC/goals/create')
+      expect(res.redirect).toHaveBeenCalledWith('/plan/A1234BC/goals/create#goals[1].steps[1].title')
       expect(req.session.createGoalsForm).toEqual(expectedCreateGoalsForm)
       expect(mockedCreateGoalsFormValidator).toHaveBeenCalledWith(submittedCreateGoalsForm)
     })
