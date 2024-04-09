@@ -121,6 +121,8 @@ describe('overviewController', () => {
       }
       res.locals.curiousInPrisonCourses = inPrisonCourses
 
+      req.flash.mockImplementation(key => (key === 'goalsSuccessfullyCreated' ? ['true'] : undefined))
+
       const expectedPrisonerSummary = aValidPrisonerSummary(prisonNumber)
       const expectedView = {
         prisonerSummary: expectedPrisonerSummary,
@@ -130,6 +132,7 @@ describe('overviewController', () => {
         functionalSkills: expectedFunctionalSkills,
         inPrisonCourses,
         isPostInduction: true,
+        showGoalCreationSuccessMessage: true,
       }
 
       // When
@@ -198,6 +201,8 @@ describe('overviewController', () => {
       }
       res.locals.curiousInPrisonCourses = inPrisonCourses
 
+      req.flash.mockImplementation(key => (key === 'goalsSuccessfullyCreated' ? ['true'] : undefined))
+
       const expectedPrisonerSummary = aValidPrisonerSummary(prisonNumber)
       const expectedView = {
         prisonerSummary: expectedPrisonerSummary,
@@ -207,6 +212,7 @@ describe('overviewController', () => {
         functionalSkills: expectedFunctionalSkills,
         inPrisonCourses,
         isPostInduction: false,
+        showGoalCreationSuccessMessage: true,
       }
 
       // When

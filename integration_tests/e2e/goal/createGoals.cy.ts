@@ -105,6 +105,7 @@ context('Create goals', () => {
     createGoalPage //
       .hasNoErrors()
       .goalHasNumberOfStepsFields(1, 2)
+      .stepTitleFieldIsFocussed(1, 2)
   })
 
   it('should create goals given valid form submission', () => {
@@ -143,5 +144,32 @@ context('Create goals', () => {
           ),
         ),
     )
+  })
+
+  it(`should display 'goals created successfully' message`, () => {
+    // Given
+    const prisonNumber = 'G6115VJ'
+    cy.signIn()
+
+    cy.visit(`/plan/${prisonNumber}/view/overview`)
+    let overviewPage = Page.verifyOnPage(OverviewPage)
+    overviewPage.doesNotHaveGoalsCreatedSuccessfullyMessage()
+
+    const createGoalPage = overviewPage.clickAddGoalButton()
+
+    createGoalPage //
+      .setGoalTitle('Learn French', 1)
+      .setTargetCompletionDate6to12Months(1)
+      .setStepTitle('Book course', 1, 1)
+
+    // When
+    createGoalPage.submitPage()
+
+    // Then
+    overviewPage = Page.verifyOnPage(OverviewPage)
+    overviewPage //
+      .hasGoalsCreatedSuccessfullyMessage()
+      .refreshPage()
+      .doesNotHaveGoalsCreatedSuccessfullyMessage()
   })
 })

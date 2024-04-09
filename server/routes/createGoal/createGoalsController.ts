@@ -66,7 +66,11 @@ export default class CreateGoalsController {
 
       createGoalsForm.goals[goalNumber].steps.push({ title: '' })
       req.session.createGoalsForm = createGoalsForm
-      return res.redirect(`/plan/${prisonNumber}/goals/create`)
+
+      const newStepTitleFieldId = `goals[${goalNumber}].steps[${
+        createGoalsForm.goals[goalNumber].steps.length - 1
+      }].title`
+      return res.redirect(`/plan/${prisonNumber}/goals/create#${newStepTitleFieldId}`)
     }
 
     try {
@@ -74,6 +78,7 @@ export default class CreateGoalsController {
       await this.educationAndWorkPlanService.createGoals(createGoalDtos, req.user.token)
 
       req.session.createGoalsForm = undefined
+      req.flash('goalsSuccessfullyCreated', 'true')
       return res.redirect(`/plan/${prisonNumber}/view/overview`)
     } catch (e) {
       logger.error(`Error creating goal(s) for prisoner ${prisonNumber}`, e)

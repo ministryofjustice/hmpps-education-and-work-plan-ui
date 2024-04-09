@@ -66,6 +66,11 @@ export default class CreateGoalsPage extends Page {
     return this
   }
 
+  stepTitleFieldIsFocussed(goalNumber: number, stepNumber: number): CreateGoalsPage {
+    this.stepTitleField(goalNumber, stepNumber).should('have.focus')
+    return this
+  }
+
   goalHasNumberOfStepsFields(goalNumber: number, expectedNumberOfStepsFields: number): CreateGoalsPage {
     this.goalStepTitleFields(goalNumber).should('have.length', expectedNumberOfStepsFields)
     return this
