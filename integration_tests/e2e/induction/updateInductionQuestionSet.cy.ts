@@ -41,7 +41,7 @@ context(`Change Induction question set by updating the answer to 'Hoping to work
 
   it(`should update a long question set Induction into a short question set Induction given form submitted with 'Hoping to work on release' as No`, () => {
     // Given
-    cy.task('stubGetInductionLongQuestionSet') // Short question set Induction with Hoping to work on release as YES
+    cy.task('stubGetInductionLongQuestionSet') // Long question set Induction with Hoping to work on release as YES
 
     const prisonNumber = 'G6115VJ'
     cy.visit(`/prisoners/${prisonNumber}/induction/hoping-to-work-on-release`)
