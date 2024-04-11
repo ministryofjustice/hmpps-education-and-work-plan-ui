@@ -42,8 +42,8 @@ export default abstract class PreviousWorkExperienceTypesController extends Indu
 const toPreviousWorkExperienceTypesForm = (inductionDto: InductionDto): PreviousWorkExperienceTypesForm => {
   return {
     typeOfWorkExperience:
-      inductionDto.previousWorkExperiences?.experiences.map(experience => experience.experienceType) || [],
-    typeOfWorkExperienceOther: inductionDto.previousWorkExperiences?.experiences.find(
+      inductionDto.previousWorkExperiences?.experiences?.map(experience => experience.experienceType) || [],
+    typeOfWorkExperienceOther: inductionDto.previousWorkExperiences?.experiences?.find(
       experience => experience.experienceType === TypeOfWorkExperienceValue.OTHER,
     )?.experienceTypeOther,
   }

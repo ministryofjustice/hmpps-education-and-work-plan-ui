@@ -2,7 +2,8 @@ import { NextFunction, Request, RequestHandler, Response } from 'express'
 import createError from 'http-errors'
 import type { InductionDto } from 'inductionDto'
 import type { WorkedBeforeForm } from 'inductionForms'
-import WorkExperienceController from '../common/workedBeforeController'
+import type { PageFlow } from 'viewModels'
+import WorkedBeforeController from '../common/workedBeforeController'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
 import logger from '../../../../logger'
 import { InductionService } from '../../../services'
@@ -12,9 +13,9 @@ import getDynamicBackLinkAriaText from '../dynamicAriaTextResolver'
 import { getPreviousPage } from '../../pageFlowHistory'
 
 /**
- * Controller for the Update of the WorkExperience screen of the Induction.
+ * Controller for the Update of the Worked Before screen of the Induction.
  */
-export default class WorkedBeforeUpdateController extends WorkExperienceController {
+export default class WorkedBeforeUpdateController extends WorkedBeforeController {
   constructor(private readonly inductionService: InductionService) {
     super()
   }
@@ -49,16 +50,21 @@ export default class WorkedBeforeUpdateController extends WorkExperienceControll
       return res.redirect(`/prisoners/${prisonNumber}/induction/has-worked-before`)
     }
 
-    // update InductionDto with any new values
     const updatedInduction = this.updatedInductionDtoWithHasWorkedBefore(inductionDto, workedBeforeForm)
-    // TODO - check to see if we are switching the main question set (in this case from the short one to the long one)
-    // if (req.session.updateInductionQuestionSet) {
-    // req.session.inductionDto = updatedInduction
-    // Then, depending on workedBeforeForm.hasWorkedBefore, forward to /previous-work-experience or /work-interest-types
 
-    // otherwise map the InductionDto to a CreateOrUpdateInductionDTO to call the API
-    const updateInductionDto = toCreateOrUpdateInductionDto(prisonId, updatedInduction)
+    if (req.session.updateInductionQuestionSet) {
+      req.session.inductionDto = updatedInduction
+      const nextPage =
+        workedBeforeForm.hasWorkedBefore === 'YES'
+          ? `/prisoners/${prisonNumber}/induction/previous-work-experience`
+          : `/prisoners/${prisonNumber}/induction/work-interest-types`
+      req.session.pageFlowHistory = this.buildPageFlowHistory(prisonNumber)
+      req.session.workedBeforeForm = undefined
+      return res.redirect(nextPage)
+    }
+
     try {
+      const updateInductionDto = toCreateOrUpdateInductionDto(prisonId, updatedInduction)
       await this.inductionService.updateInduction(prisonNumber, updateInductionDto, req.user.token)
 
       req.session.workedBeforeForm = undefined
@@ -80,6 +86,14 @@ export default class WorkedBeforeUpdateController extends WorkExperienceControll
         ...inductionDto.previousWorkExperiences,
         hasWorkedBefore: workedBeforeForm.hasWorkedBefore === YesNoValue.YES,
       },
+    }
+  }
+
+  private buildPageFlowHistory = (prisonNumber: string): PageFlow => {
+    const pageUrls = [`/prisoners/${prisonNumber}/induction/has-worked-before`]
+    return {
+      pageUrls,
+      currentPageIndex: 0,
     }
   }
 }

@@ -18,6 +18,12 @@ export default abstract class PersonalInterestsController extends InductionContr
     const personalInterestsForm = req.session.personalInterestsForm || toPersonalInterestsForm(inductionDto)
     req.session.personalInterestsForm = undefined
 
+    // Check if we are in the midst of changing the main induction question set (in this case from short route to long route)
+    if (req.session.updateInductionQuestionSet) {
+      const { prisonNumber } = req.params
+      this.addCurrentPageToHistory(req, `/prisoners/${prisonNumber}/induction/personal-interests`)
+    }
+
     const view = new PersonalInterestsView(
       prisonerSummary,
       this.getBackLinkUrl(req),
@@ -31,8 +37,8 @@ export default abstract class PersonalInterestsController extends InductionContr
 
 const toPersonalInterestsForm = (inductionDto: InductionDto): PersonalInterestsForm => {
   return {
-    personalInterests: inductionDto.personalSkillsAndInterests?.interests.map(interest => interest.interestType) || [],
-    personalInterestsOther: inductionDto.personalSkillsAndInterests?.interests.find(
+    personalInterests: inductionDto.personalSkillsAndInterests?.interests?.map(interest => interest.interestType) || [],
+    personalInterestsOther: inductionDto.personalSkillsAndInterests?.interests?.find(
       interest => interest.interestType === PersonalInterestsValue.OTHER,
     )?.interestTypeOther,
   }

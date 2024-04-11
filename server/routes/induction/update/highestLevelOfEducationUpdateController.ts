@@ -89,8 +89,7 @@ export default class HighestLevelOfEducationUpdateController extends HighestLeve
 
       // if there is no page history (i.e. because we're not changing the main question set), start one here before commencing the add qualification mini flow
       if (!req.session.pageFlowHistory) {
-        const pageFlowHistory = this.buildPageFlowHistory(prisonNumber)
-        req.session.pageFlowHistory = pageFlowHistory
+        req.session.pageFlowHistory = this.buildPageFlowHistory(prisonNumber)
       }
       return res.redirect(`/prisoners/${prisonNumber}/induction/qualification-level`)
     }

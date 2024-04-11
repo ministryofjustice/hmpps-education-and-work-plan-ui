@@ -2,7 +2,7 @@ import createError from 'http-errors'
 import { NextFunction, Request, Response } from 'express'
 import type { SessionData } from 'express-session'
 import type { AchievedQualificationDto } from 'inductionDto'
-import { InductionService } from '../../../services'
+import InductionService from '../../../services/inductionService'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
 import { aLongQuestionSetInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
 import validateHighestLevelOfEducationForm from './highestLevelOfEducationFormValidator'
@@ -14,6 +14,7 @@ import QualificationLevelValue from '../../../enums/qualificationLevelValue'
 
 jest.mock('./highestLevelOfEducationFormValidator')
 jest.mock('../../../data/mappers/createOrUpdateInductionDtoMapper')
+jest.mock('../../../services/inductionService')
 
 describe('highestLevelOfEducationUpdateController', () => {
   const mockedFormValidator = validateHighestLevelOfEducationForm as jest.MockedFunction<
@@ -23,11 +24,8 @@ describe('highestLevelOfEducationUpdateController', () => {
     typeof toCreateOrUpdateInductionDto
   >
 
-  const inductionService = {
-    updateInduction: jest.fn(),
-  }
-
-  const controller = new HighestLevelOfEducationUpdateController(inductionService as unknown as InductionService)
+  const inductionService = new InductionService(null) as jest.Mocked<InductionService>
+  const controller = new HighestLevelOfEducationUpdateController(inductionService)
 
   const req = {
     session: {} as SessionData,

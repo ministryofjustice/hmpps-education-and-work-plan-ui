@@ -1,16 +1,18 @@
 import createError from 'http-errors'
 import type { SessionData } from 'express-session'
 import { NextFunction, Request, Response } from 'express'
+import type { PageFlow } from 'viewModels'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
 import { aLongQuestionSetInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
 import validatePersonalInterestsForm from './personalInterestsFormValidator'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
-import { InductionService } from '../../../services'
-import { aShortQuestionSetUpdateInductionRequest } from '../../../testsupport/updateInductionRequestTestDataBuilder'
+import InductionService from '../../../services/inductionService'
+import { aLongQuestionSetUpdateInductionRequest } from '../../../testsupport/updateInductionRequestTestDataBuilder'
 import PersonalInterestsUpdateController from './personalInterestsUpdateController'
 
 jest.mock('./personalInterestsFormValidator')
 jest.mock('../../../data/mappers/createOrUpdateInductionDtoMapper')
+jest.mock('../../../services/inductionService')
 
 describe('personalInterestsUpdateController', () => {
   const mockedFormValidator = validatePersonalInterestsForm as jest.MockedFunction<typeof validatePersonalInterestsForm>
@@ -18,11 +20,8 @@ describe('personalInterestsUpdateController', () => {
     typeof toCreateOrUpdateInductionDto
   >
 
-  const inductionService = {
-    updateInduction: jest.fn(),
-  }
-
-  const controller = new PersonalInterestsUpdateController(inductionService as unknown as InductionService)
+  const inductionService = new InductionService(null) as jest.Mocked<InductionService>
+  const controller = new PersonalInterestsUpdateController(inductionService)
 
   const req = {
     session: {} as SessionData,
@@ -123,6 +122,55 @@ describe('personalInterestsUpdateController', () => {
       expect(req.session.personalInterestsForm).toBeUndefined()
       expect(req.session.inductionDto).toEqual(inductionDto)
     })
+
+    it('should get the Personal Interests view given there is an updateInductionQuestionSet on the session', async () => {
+      // Given
+      const prisonNumber = 'A1234BC'
+      req.params.prisonNumber = prisonNumber
+
+      const prisonerSummary = aValidPrisonerSummary()
+      req.session.prisonerSummary = prisonerSummary
+      const inductionDto = aLongQuestionSetInductionDto()
+      req.session.inductionDto = inductionDto
+      req.session.updateInductionQuestionSet = {
+        hopingToWorkOnRelease: 'YES',
+      }
+      req.session.pageFlowHistory = {
+        pageUrls: [`/prisoners/${prisonNumber}/induction/skills`],
+        currentPageIndex: 0,
+      }
+
+      const expectedPersonalInterestsForm = {
+        personalInterests: ['COMMUNITY', 'CREATIVE', 'MUSICAL'],
+        personalInterestsOther: '',
+      }
+      req.session.personalInterestsForm = expectedPersonalInterestsForm
+
+      const expectedView = {
+        prisonerSummary,
+        form: expectedPersonalInterestsForm,
+        backLinkUrl: '/prisoners/A1234BC/induction/skills',
+        backLinkAriaText: 'Back to What skills does Jimmy Lightfingers feel they have?',
+        errors,
+      }
+
+      const expectedPageFlowHistory = {
+        pageUrls: ['/prisoners/A1234BC/induction/skills', '/prisoners/A1234BC/induction/personal-interests'],
+        currentPageIndex: 1,
+      }
+
+      // When
+      await controller.getPersonalInterestsView(
+        req as undefined as Request,
+        res as undefined as Response,
+        next as undefined as NextFunction,
+      )
+
+      // Then
+      expect(res.render).toHaveBeenCalledWith('pages/induction/personalInterests/index', expectedView)
+      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(req.session.pageFlowHistory).toEqual(expectedPageFlowHistory)
+    })
   })
 
   describe('submitPersonalInterestsForm', () => {
@@ -179,7 +227,7 @@ describe('personalInterestsUpdateController', () => {
       }
       req.body = personalInterestsForm
       req.session.personalInterestsForm = undefined
-      const updateInductionDto = aShortQuestionSetUpdateInductionRequest()
+      const updateInductionDto = aLongQuestionSetUpdateInductionRequest()
 
       mockedCreateOrUpdateInductionDtoMapper.mockReturnValueOnce(updateInductionDto)
       mockedFormValidator.mockReturnValue(errors)
@@ -213,6 +261,60 @@ describe('personalInterestsUpdateController', () => {
       expect(req.session.inductionDto).toBeUndefined()
     })
 
+    it('should update InductionDto and redirect to Factors Affecting Ability To Work given long question set journey', async () => {
+      // Given
+      req.user.token = 'some-token'
+      const prisonNumber = 'A1234BC'
+      req.params.prisonNumber = prisonNumber
+
+      const prisonerSummary = aValidPrisonerSummary()
+      req.session.prisonerSummary = prisonerSummary
+      const inductionDto = aLongQuestionSetInductionDto()
+      req.session.inductionDto = inductionDto
+
+      const personalInterestsForm = {
+        personalInterests: ['CREATIVE', 'OTHER'],
+        personalInterestsOther: 'Renewable energy',
+      }
+      req.body = personalInterestsForm
+      req.session.personalInterestsForm = undefined
+
+      mockedFormValidator.mockReturnValue(errors)
+
+      req.session.updateInductionQuestionSet = { hopingToWorkOnRelease: 'YES' }
+      const expectedNextPage = '/prisoners/A1234BC/induction/affect-ability-to-work'
+
+      const expectedUpdatedPersonalInterests = [
+        {
+          interestType: 'CREATIVE',
+          interestTypeOther: undefined,
+        },
+        {
+          interestType: 'OTHER',
+          interestTypeOther: 'Renewable energy',
+        },
+      ]
+
+      const expectedPageFlowHistory: PageFlow = {
+        pageUrls: ['/prisoners/A1234BC/induction/personal-interests'],
+        currentPageIndex: 0,
+      }
+
+      // When
+      await controller.submitPersonalInterestsForm(
+        req as undefined as Request,
+        res as undefined as Response,
+        next as undefined as NextFunction,
+      )
+
+      // Then
+      expect(req.session.inductionDto.personalSkillsAndInterests.interests).toEqual(expectedUpdatedPersonalInterests)
+      expect(res.redirect).toHaveBeenCalledWith(expectedNextPage)
+      expect(req.session.workInterestTypesForm).toBeUndefined()
+      expect(inductionService.updateInduction).not.toHaveBeenCalled()
+      expect(req.session.pageFlowHistory).toEqual(expectedPageFlowHistory)
+    })
+
     it('should not update Induction given error calling service', async () => {
       // Given
       req.user.token = 'some-token'
@@ -230,7 +332,7 @@ describe('personalInterestsUpdateController', () => {
       }
       req.body = personalInterestsForm
       req.session.personalInterestsForm = undefined
-      const updateInductionDto = aShortQuestionSetUpdateInductionRequest()
+      const updateInductionDto = aLongQuestionSetUpdateInductionRequest()
 
       mockedCreateOrUpdateInductionDtoMapper.mockReturnValueOnce(updateInductionDto)
       mockedFormValidator.mockReturnValue(errors)
