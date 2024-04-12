@@ -49,11 +49,11 @@ export default function createApp(services: Services): express.Application {
 
   app.get('*', getFrontendComponents(services))
 
-  app.use(auditMiddleware(services))
-
   app.get('/accessibility-statement', async (req, res, next) => {
     res.render('pages/accessibilityStatement/index')
   })
+
+  app.use(auditMiddleware(services))
 
   app.use(routes(services))
 
