@@ -93,6 +93,7 @@ context('Create goals', () => {
     const createGoalPage = Page.verifyOnPage(CreateGoalsPage)
 
     createGoalPage //
+      .hasNoRemoveStepButtons()
       .setGoalTitle('Learn French', 1)
       .setTargetCompletionDate6to12Months(1)
       .setStepTitle('Book course', 1, 1)
@@ -103,9 +104,43 @@ context('Create goals', () => {
     // Then
     Page.verifyOnPage(CreateGoalsPage)
     createGoalPage //
+      .hasNumberOfRemoveStepButtonsForGoal(1, 2)
       .hasNoErrors()
       .goalHasNumberOfStepsFields(1, 2)
       .stepTitleFieldIsFocussed(1, 2)
+  })
+
+  it('should be able to remove a step from a goal', () => {
+    // Given
+    const prisonNumber = 'G6115VJ'
+    cy.signIn()
+
+    cy.visit(`/plan/${prisonNumber}/goals/create`)
+    const createGoalPage = Page.verifyOnPage(CreateGoalsPage)
+
+    createGoalPage //
+      .hasNoRemoveStepButtons()
+      .setGoalTitle('Learn French', 1)
+      .setTargetCompletionDate6to12Months(1)
+      .setStepTitle('Book course', 1, 1)
+      .addNewEmptyStepToGoal(1)
+      .hasNumberOfRemoveStepButtonsForGoal(1, 2)
+      .setStepTitle('Attend course', 1, 2)
+      .addNewEmptyStepToGoal(1)
+      .hasNumberOfRemoveStepButtonsForGoal(1, 3)
+      .setStepTitle('Take exam', 1, 3)
+
+    // When
+    createGoalPage.removeStep(1, 2) // remove step 2 ("Attend course")
+
+    // Then
+    Page.verifyOnPage(CreateGoalsPage)
+    createGoalPage //
+      .hasNoErrors()
+      .goalHasNumberOfStepsFields(1, 2)
+      .stepTitleFieldIsFocussed(1, 2)
+      .stepTitleIs('Book course', 1, 1)
+      .stepTitleIs('Take exam', 1, 2)
   })
 
   it('should be able to add an empty goal', () => {

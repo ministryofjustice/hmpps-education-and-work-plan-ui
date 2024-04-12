@@ -127,8 +127,16 @@
 
             {% for steps in form.goals[goalLoop.index0].steps %}
               {% set stepLoop = loop %}
-              <div class="govuk-form-group">
-                {% set stepTitleLabel = 'Step ' + stepLoop.index %}
+
+              {% call govukFieldset({
+                classes: 'moj-add-another__item',
+                legend: {
+                  text: 'Description and actions for step ' + stepLoop.index + ' of goal ' + goalLoop.index,
+                  classes: 'govuk-visually-hidden',
+                  isPageHeading: false
+                }
+              }) %}
+
                 {{ govukCharacterCount({
                   name: "goals[" + goalLoop.index0 + "][steps][" + stepLoop.index0 + "][title]",
                   id: "goals[" + goalLoop.index0 + "].steps[" + stepLoop.index0 + "].title",
@@ -136,7 +144,7 @@
                   maxlength: 512,
                   rows: 2,
                   label: {
-                    text: stepTitleLabel,
+                    text: 'Step ' + stepLoop.index,
                     classes: "govuk-label--s",
                     isPageHeading: false
                   },
@@ -145,7 +153,19 @@
                   },
                   errorMessage: errors | findError('goals[' + goalLoop.index0 + '].steps[' + stepLoop.index0 + '].title')
                 }) }}
-              </div>
+
+                {% if stepLoop.length > 1 %}
+                  {{ govukButton({
+                    name: "action",
+                    value: "remove-step|" + goalLoop.index0 + "|" + stepLoop.index0,
+                    text: "Remove step",
+                    classes: "govuk-button--secondary moj-add-another__remove-button",
+                    attributes: {
+                      'data-qa': 'remove-step-button'
+                    }
+                  }) }}
+                {% endif %}
+              {% endcall %}
             {% endfor %}
 
             <div class="govuk-form-group govuk-!-margin-bottom-2">

@@ -210,6 +210,7 @@ describe('createGoalsController', () => {
             steps: [{ title: 'Book Course' }],
           },
         ],
+        action: 'submit-form',
       }
       req.body = expectedCreateGoalsForm
       req.session.createGoalsForm = undefined
@@ -262,10 +263,26 @@ describe('createGoalsController', () => {
       mockedCreateGoalsFormValidator.mockReturnValue(errors)
 
       const expectedCreateGoalsForm = {
-        ...submittedCreateGoalsForm,
-        goals: submittedCreateGoalsForm.goals.map(goal => ({ ...goal, steps: [...goal.steps] })),
+        prisonNumber,
+        goals: [
+          {
+            title: 'Learn French',
+            targetCompletionDate: '2024-12-31',
+            steps: [{ title: 'Book Course' }],
+          },
+          {
+            title: 'Learn Spanish',
+            targetCompletionDate: '2025-04-10',
+            steps: [{ title: 'Find available courses' }, { title: '' }], // expect new step as the last step of this goal
+          },
+          {
+            title: 'Attend bricklaying workshop',
+            targetCompletionDate: '2024-12-31',
+            steps: [{ title: 'Apply to get on activity' }, { title: 'Attend activity' }, { title: 'Pass exam' }],
+          },
+        ],
+        action: 'add-another-step|1',
       }
-      expectedCreateGoalsForm.goals[1].steps.push({ title: '' })
 
       // When
       await controller.submitCreateGoalsForm(
@@ -278,6 +295,160 @@ describe('createGoalsController', () => {
       expect(res.redirect).toHaveBeenCalledWith('/plan/A1234BC/goals/create#goals[1].steps[1].title')
       expect(req.session.createGoalsForm).toEqual(expectedCreateGoalsForm)
       expect(mockedCreateGoalsFormValidator).toHaveBeenCalledWith(submittedCreateGoalsForm)
+    })
+
+    Array.of(
+      'add-another-step|',
+      'add-another-step|-1',
+      'add-another-step|A',
+      'add-another-step',
+      'add-another-step|2',
+    ).forEach(formAction => {
+      it(`should not add a step to a goal given form action ${formAction}`, async () => {
+        // Given
+        const submittedCreateGoalsForm: CreateGoalsForm = {
+          prisonNumber,
+          goals: [
+            {
+              title: 'Learn Spanish',
+              targetCompletionDate: '2025-04-10',
+              steps: [{ title: 'Find available courses' }],
+            },
+            {
+              title: 'Attend bricklaying workshop',
+              targetCompletionDate: '2024-12-31',
+              steps: [{ title: 'Apply to get on activity' }, { title: 'Attend activity' }, { title: 'Pass exam' }],
+            },
+          ],
+          action: formAction,
+        }
+        req.body = submittedCreateGoalsForm
+
+        req.session.createGoalsForm = undefined
+
+        mockedCreateGoalsFormValidator.mockReturnValue(errors)
+
+        // When
+        await controller.submitCreateGoalsForm(
+          req as undefined as Request,
+          res as undefined as Response,
+          next as undefined as NextFunction,
+        )
+
+        // Then
+        expect(res.redirect).toHaveBeenCalledWith('/plan/A1234BC/goals/create')
+        expect(req.session.createGoalsForm).toEqual(submittedCreateGoalsForm)
+        expect(mockedCreateGoalsFormValidator).toHaveBeenCalledWith(submittedCreateGoalsForm)
+      })
+    })
+
+    it('should remove a step from a goal', async () => {
+      // Given
+      const submittedCreateGoalsForm: CreateGoalsForm = {
+        prisonNumber,
+        goals: [
+          {
+            title: 'Learn French',
+            targetCompletionDate: '2024-12-31',
+            steps: [{ title: 'Book Course' }],
+          },
+          {
+            title: 'Learn Spanish',
+            targetCompletionDate: '2025-04-10',
+            steps: [{ title: 'Find available courses' }],
+          },
+          {
+            title: 'Attend bricklaying workshop',
+            targetCompletionDate: '2024-12-31',
+            steps: [{ title: 'Apply to get on activity' }, { title: 'Attend activity' }, { title: 'Pass exam' }],
+          },
+        ],
+        action: 'remove-step|2|1', // remove from goal 3 step 2 (zero indexed array elements)
+      }
+      req.body = submittedCreateGoalsForm
+
+      req.session.createGoalsForm = undefined
+
+      const expectedCreateGoalsForm = {
+        prisonNumber,
+        goals: [
+          {
+            title: 'Learn French',
+            targetCompletionDate: '2024-12-31',
+            steps: [{ title: 'Book Course' }],
+          },
+          {
+            title: 'Learn Spanish',
+            targetCompletionDate: '2025-04-10',
+            steps: [{ title: 'Find available courses' }],
+          },
+          {
+            title: 'Attend bricklaying workshop',
+            targetCompletionDate: '2024-12-31',
+            steps: [{ title: 'Apply to get on activity' }, { title: 'Pass exam' }], // expect "Attend activity" step to be removed
+          },
+        ],
+        action: 'remove-step|2|1',
+      }
+
+      // When
+      await controller.submitCreateGoalsForm(
+        req as undefined as Request,
+        res as undefined as Response,
+        next as undefined as NextFunction,
+      )
+
+      // Then
+      expect(res.redirect).toHaveBeenCalledWith('/plan/A1234BC/goals/create#goals[2].steps[1].title') // focus the bricklaying course as that is the last step in the goal
+      expect(req.session.createGoalsForm).toEqual(expectedCreateGoalsForm)
+      expect(mockedCreateGoalsFormValidator).not.toHaveBeenCalled()
+    })
+
+    Array.of(
+      'remove-step||',
+      'remove-step|-1|-1',
+      'remove-step|1|-1',
+      'remove-step|-1|1',
+      'remove-step|A|1',
+      'remove-step|1|A',
+      'remove-step',
+      'remove-step|2|0',
+      'remove-step|1|3',
+    ).forEach(formAction => {
+      it(`should not remove a step from a goal given form action ${formAction}`, async () => {
+        // Given
+        const submittedCreateGoalsForm: CreateGoalsForm = {
+          prisonNumber,
+          goals: [
+            {
+              title: 'Learn Spanish',
+              targetCompletionDate: '2025-04-10',
+              steps: [{ title: 'Find available courses' }],
+            },
+            {
+              title: 'Attend bricklaying workshop',
+              targetCompletionDate: '2024-12-31',
+              steps: [{ title: 'Apply to get on activity' }, { title: 'Attend activity' }, { title: 'Pass exam' }],
+            },
+          ],
+          action: formAction,
+        }
+        req.body = submittedCreateGoalsForm
+
+        req.session.createGoalsForm = undefined
+
+        // When
+        await controller.submitCreateGoalsForm(
+          req as undefined as Request,
+          res as undefined as Response,
+          next as undefined as NextFunction,
+        )
+
+        // Then
+        expect(res.redirect).toHaveBeenCalledWith('/plan/A1234BC/goals/create')
+        expect(req.session.createGoalsForm).toEqual(submittedCreateGoalsForm)
+        expect(mockedCreateGoalsFormValidator).not.toHaveBeenCalled()
+      })
     })
 
     it('should add another goal', async () => {
@@ -310,8 +481,29 @@ describe('createGoalsController', () => {
       mockedCreateGoalsFormValidator.mockReturnValue(errors)
 
       const expectedCreateGoalsForm = {
-        ...submittedCreateGoalsForm,
-        goals: [...submittedCreateGoalsForm.goals, { title: '', steps: [{ title: '' }] }],
+        prisonNumber,
+        goals: [
+          {
+            title: 'Learn French',
+            targetCompletionDate: '2024-12-31',
+            steps: [{ title: 'Book Course' }],
+          },
+          {
+            title: 'Learn Spanish',
+            targetCompletionDate: '2025-04-10',
+            steps: [{ title: 'Find available courses' }],
+          },
+          {
+            title: 'Attend bricklaying workshop',
+            targetCompletionDate: '2024-12-31',
+            steps: [{ title: 'Apply to get on activity' }, { title: 'Attend activity' }, { title: 'Pass exam' }],
+          },
+          {
+            title: '',
+            steps: [{ title: '' }],
+          },
+        ],
+        action: 'add-another-goal',
       }
 
       // When

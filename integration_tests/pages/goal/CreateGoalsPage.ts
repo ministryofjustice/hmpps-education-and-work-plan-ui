@@ -71,13 +71,37 @@ export default class CreateGoalsPage extends Page {
     return this
   }
 
+  stepTitleIs(expectedStepTitle: string, goalNumber: number, stepNumber: number): CreateGoalsPage {
+    this.stepTitleField(goalNumber, stepNumber).should('have.value', expectedStepTitle)
+    return this
+  }
+
   stepTitleFieldIsFocussed(goalNumber: number, stepNumber: number): CreateGoalsPage {
     this.stepTitleField(goalNumber, stepNumber).should('have.focus')
     return this
   }
 
   goalHasNumberOfStepsFields(goalNumber: number, expectedNumberOfStepsFields: number): CreateGoalsPage {
-    this.goalStepTitleFields(goalNumber).should('have.length', expectedNumberOfStepsFields)
+    this.goalStepTitleFields(goalNumber) //
+      .should('be.visible')
+      .should('have.length', expectedNumberOfStepsFields)
+    return this
+  }
+
+  hasNoRemoveStepButtons(): CreateGoalsPage {
+    this.removeStepButtons().should('not.exist')
+    return this
+  }
+
+  hasNumberOfRemoveStepButtonsForGoal(goalNumber: number, expectedNumberOfButtons): CreateGoalsPage {
+    this.removeStepButtonsForGoal(goalNumber) //
+      .should('be.visible')
+      .should('have.length', expectedNumberOfButtons)
+    return this
+  }
+
+  removeStep(goalNumber: number, stepNumber: number): CreateGoalsPage {
+    this.removeStepButton(goalNumber, stepNumber).click()
     return this
   }
 
@@ -122,6 +146,14 @@ export default class CreateGoalsPage extends Page {
 
   private stepTitleField = (goalNumber: number, stepNumber: number): PageElement =>
     cy.get(`[name="goals[${zeroIndexed(goalNumber)}][steps][${zeroIndexed(stepNumber)}][title]"]`)
+
+  private removeStepButtons = (): PageElement => cy.get('[data-qa=remove-step-button]')
+
+  private removeStepButtonsForGoal = (goalNumber: number): PageElement =>
+    this.removeStepButtons().filter(`[value^="remove-step|${zeroIndexed(goalNumber)}|"]`)
+
+  private removeStepButton = (goalNumber: number, stepNumber: number): PageElement =>
+    this.removeStepButtonsForGoal(goalNumber).filter(`[value$="|${zeroIndexed(stepNumber)}"]`)
 
   private addAnotherGoalButton = (): PageElement => cy.get(`#add-another-goal-button`)
 }

@@ -49,6 +49,32 @@ export default class CreateGoalsController {
     })
     req.session.createGoalsForm = createGoalsForm
 
+    // Handle the removal of steps before any validation, otherwise it would be impossible to remove an empty step
+    if (createGoalsForm.action.startsWith('remove-step')) {
+      const formActionParameters = createGoalsForm.action.split('|')
+      const goalNumber = parseInt(formActionParameters[1], 10)
+      const stepNumber = parseInt(formActionParameters[2], 10)
+
+      const validGoalNumber =
+        !Number.isNaN(goalNumber) && goalNumber >= 0 && goalNumber <= createGoalsForm.goals.length - 1
+      const validStepNumber =
+        validGoalNumber &&
+        !Number.isNaN(stepNumber) &&
+        stepNumber >= 0 &&
+        stepNumber <= createGoalsForm.goals[goalNumber].steps.length - 1
+      if (!validGoalNumber || !validStepNumber) {
+        // An invalid goalNumber or stepNumber was passed on the form action. Do nothing; redisplay the form.
+        logger.warn(`Invalid request to remove a step with form action field 'action: "${createGoalsForm.action}"'`)
+        return res.redirect(`/plan/${prisonNumber}/goals/create`)
+      }
+
+      createGoalsForm.goals[goalNumber].steps.splice(stepNumber, 1)
+      req.session.createGoalsForm = createGoalsForm
+
+      const lastStepTitleFieldId = `goals[${goalNumber}].steps[${createGoalsForm.goals[goalNumber].steps.length - 1}].title`
+      return res.redirect(`/plan/${prisonNumber}/goals/create#${lastStepTitleFieldId}`)
+    }
+
     const errors = validateCreateGoalsForm(createGoalsForm)
     if (errors.length > 0) {
       req.flash('errors', errors)
@@ -58,6 +84,17 @@ export default class CreateGoalsController {
     if (createGoalsForm.action.startsWith('add-another-step')) {
       const formActionParameters = createGoalsForm.action.split('|')
       const goalNumber = parseInt(formActionParameters[1], 10)
+
+      const validGoalNumber =
+        !Number.isNaN(goalNumber) && goalNumber >= 0 && goalNumber <= createGoalsForm.goals.length - 1
+
+      if (!validGoalNumber) {
+        // An invalid goalNumber was passed on the form action. Do nothing; redisplay the form.
+        logger.warn(
+          `Invalid request to add a step to a goal with form action field 'action: "${createGoalsForm.action}"'`,
+        )
+        return res.redirect(`/plan/${prisonNumber}/goals/create`)
+      }
 
       createGoalsForm.goals[goalNumber].steps.push(emptyStep())
       req.session.createGoalsForm = createGoalsForm
