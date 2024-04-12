@@ -39,7 +39,23 @@
             <h2 class="govuk-summary-card__title">
               Goal {{ goalLoop.index }}
             </h2>
+            <ul class="govuk-summary-card__actions govuk-!-display-none-print govuk-!-margin-0">
+              <li class="govuk-summary-card__action">
+                {% if goalLoop.length > 1 %}
+                  {{ govukButton({
+                    name: "action",
+                    value: "remove-goal|" + goalLoop.index0,
+                    text: "Remove goal",
+                    classes: "govuk-button--secondary govuk-!-margin-bottom-0",
+                    attributes: {
+                      'data-qa': 'remove-goal-button'
+                    }
+                  }) }}
+                {% endif %}
+              </li>
+            </ul>
           </div>
+
           <div class="govuk-summary-card__content">
 
             {{ govukCharacterCount({
