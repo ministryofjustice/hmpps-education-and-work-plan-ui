@@ -55,7 +55,7 @@ describe('auditMiddleware', () => {
     })
   })
 
-  it('should only raise a page view audit attempt if request not successful', async () => {
+  it('should raise just the page view audit attempt event if request not successful', async () => {
     // Given
     prisonerListService.getPrisonerSearchSummariesForPrisonId.mockRejectedValue(null)
 
