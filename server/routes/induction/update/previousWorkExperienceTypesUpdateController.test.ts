@@ -3,7 +3,7 @@ import { NextFunction, Request, Response } from 'express'
 import type { SessionData } from 'express-session'
 import type { InductionDto, PreviousWorkExperienceDto } from 'inductionDto'
 import type { PageFlow } from 'viewModels'
-import { InductionService } from '../../../services'
+import InductionService from '../../../services/inductionService'
 import PreviousWorkExperienceTypesUpdateController from './previousWorkExperienceTypesUpdateController'
 import validatePreviousWorkExperienceTypesForm from './previousWorkExperienceTypesFormValidator'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
@@ -13,6 +13,7 @@ import { aLongQuestionSetUpdateInductionDto } from '../../../testsupport/updateI
 
 jest.mock('./previousWorkExperienceTypesFormValidator')
 jest.mock('../../../data/mappers/createOrUpdateInductionDtoMapper')
+jest.mock('../../../services/inductionService')
 
 describe('previousWorkExperienceTypesUpdateController', () => {
   const mockedFormValidator = validatePreviousWorkExperienceTypesForm as jest.MockedFunction<
@@ -22,11 +23,8 @@ describe('previousWorkExperienceTypesUpdateController', () => {
     typeof toCreateOrUpdateInductionDto
   >
 
-  const inductionService = {
-    updateInduction: jest.fn(),
-  }
-
-  const controller = new PreviousWorkExperienceTypesUpdateController(inductionService as unknown as InductionService)
+  const inductionService = new InductionService(null) as jest.Mocked<InductionService>
+  const controller = new PreviousWorkExperienceTypesUpdateController(inductionService)
 
   const req = {
     session: {} as SessionData,

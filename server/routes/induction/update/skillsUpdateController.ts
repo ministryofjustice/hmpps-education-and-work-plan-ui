@@ -2,12 +2,15 @@ import { NextFunction, Request, RequestHandler, Response } from 'express'
 import createError from 'http-errors'
 import type { InductionDto, PersonalSkillDto } from 'inductionDto'
 import type { SkillsForm } from 'inductionForms'
+import type { PageFlow } from 'viewModels'
 import SkillsController from '../common/skillsController'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
 import logger from '../../../../logger'
 import { InductionService } from '../../../services'
 import validateSkillsForm from './skillsFormValidator'
 import SkillsValue from '../../../enums/skillsValue'
+import { getPreviousPage } from '../../pageFlowHistory'
+import getDynamicBackLinkAriaText from '../dynamicAriaTextResolver'
 
 /**
  * Controller for the Update of the Skills screen of the Induction.
@@ -19,12 +22,15 @@ export default class SkillsUpdateController extends SkillsController {
 
   getBackLinkUrl(req: Request): string {
     const { prisonNumber } = req.params
+    const { pageFlowHistory } = req.session
+    if (pageFlowHistory) {
+      return getPreviousPage(pageFlowHistory)
+    }
     return `/plan/${prisonNumber}/view/work-and-interests`
   }
 
   getBackLinkAriaText(req: Request): string {
-    const { prisonerSummary } = req.session
-    return `Back to ${prisonerSummary.firstName} ${prisonerSummary.lastName}'s learning and work progress`
+    return getDynamicBackLinkAriaText(req, this.getBackLinkUrl(req))
   }
 
   submitSkillsForm: RequestHandler = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
@@ -47,11 +53,18 @@ export default class SkillsUpdateController extends SkillsController {
       return res.redirect(`/prisoners/${prisonNumber}/induction/skills`)
     }
 
-    // create an updated InductionDto with any new values and then map it to a CreateOrUpdateInductionDTO to call the API
     const updatedInduction = this.updatedInductionDtoWithSkills(inductionDto, skillsForm)
-    const updateInductionDto = toCreateOrUpdateInductionDto(prisonId, updatedInduction)
+
+    if (req.session.updateInductionQuestionSet) {
+      req.session.inductionDto = updatedInduction
+      const nextPage = `/prisoners/${prisonNumber}/induction/personal-interests`
+      req.session.pageFlowHistory = this.buildPageFlowHistory(prisonNumber)
+      req.session.skillsForm = undefined
+      return res.redirect(nextPage)
+    }
 
     try {
+      const updateInductionDto = toCreateOrUpdateInductionDto(prisonId, updatedInduction)
       await this.inductionService.updateInduction(prisonNumber, updateInductionDto, req.user.token)
 
       req.session.skillsForm = undefined
@@ -76,6 +89,14 @@ export default class SkillsUpdateController extends SkillsController {
         ...inductionDto.personalSkillsAndInterests,
         skills: updatedSkills,
       },
+    }
+  }
+
+  private buildPageFlowHistory = (prisonNumber: string): PageFlow => {
+    const pageUrls = [`/prisoners/${prisonNumber}/induction/skills`]
+    return {
+      pageUrls,
+      currentPageIndex: 0,
     }
   }
 }

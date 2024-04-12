@@ -11,22 +11,20 @@ import {
 import { validFunctionalSkills } from '../../../testsupport/functionalSkillsTestDataBuilder'
 import QualificationLevelValue from '../../../enums/qualificationLevelValue'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
-import { InductionService } from '../../../services'
+import InductionService from '../../../services/inductionService'
 import { aLongQuestionSetUpdateInductionDto } from '../../../testsupport/updateInductionDtoTestDataBuilder'
 import EducationLevelValue from '../../../enums/educationLevelValue'
 
 jest.mock('../../../data/mappers/createOrUpdateInductionDtoMapper')
+jest.mock('../../../services/inductionService')
 
 describe('qualificationsListUpdateController', () => {
   const mockedCreateOrUpdateInductionDtoMapper = toCreateOrUpdateInductionDto as jest.MockedFunction<
     typeof toCreateOrUpdateInductionDto
   >
 
-  const inductionService = {
-    updateInduction: jest.fn(),
-  }
-
-  const controller = new QualificationsListUpdateController(inductionService as unknown as InductionService)
+  const inductionService = new InductionService(null) as jest.Mocked<InductionService>
+  const controller = new QualificationsListUpdateController(inductionService)
 
   const req = {
     session: {} as SessionData,

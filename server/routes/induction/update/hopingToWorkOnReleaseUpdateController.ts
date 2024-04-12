@@ -53,8 +53,7 @@ export default class HopingToWorkOnReleaseUpdateController extends HopingToWorkO
           ? `/prisoners/${prisonNumber}/induction/qualifications`
           : `/prisoners/${prisonNumber}/induction/reasons-not-to-get-work`
       // start of the flow - always initialise the page history here
-      const pageFlowHistory = this.buildPageFlowHistory(prisonNumber)
-      req.session.pageFlowHistory = pageFlowHistory
+      req.session.pageFlowHistory = this.buildPageFlowHistory(prisonNumber)
       return res.redirect(nextPage)
     }
 

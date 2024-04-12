@@ -9,12 +9,13 @@ import {
 import HopingToGetWorkValue from '../../../enums/hopingToGetWorkValue'
 import validateHopingToWorkOnReleaseForm from './hopingToWorkOnReleaseFormValidator'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
-import { InductionService } from '../../../services'
+import InductionService from '../../../services/inductionService'
 import { aShortQuestionSetUpdateInductionDto } from '../../../testsupport/updateInductionDtoTestDataBuilder'
 import { aLongQuestionSetUpdateInductionRequest } from '../../../testsupport/updateInductionRequestTestDataBuilder'
 
 jest.mock('./hopingToWorkOnReleaseFormValidator')
 jest.mock('../../../data/mappers/createOrUpdateInductionDtoMapper')
+jest.mock('../../../services/inductionService')
 
 describe('hopingToWorkOnReleaseUpdateController', () => {
   const mockedFormValidator = validateHopingToWorkOnReleaseForm as jest.MockedFunction<
@@ -24,11 +25,8 @@ describe('hopingToWorkOnReleaseUpdateController', () => {
     typeof toCreateOrUpdateInductionDto
   >
 
-  const inductionService = {
-    updateInduction: jest.fn(),
-  }
-
-  const controller = new HopingToWorkOnReleaseUpdateController(inductionService as unknown as InductionService)
+  const inductionService = new InductionService(null) as jest.Mocked<InductionService>
+  const controller = new HopingToWorkOnReleaseUpdateController(inductionService)
 
   const req = {
     session: {} as SessionData,

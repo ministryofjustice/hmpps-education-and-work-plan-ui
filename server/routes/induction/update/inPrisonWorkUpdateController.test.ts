@@ -6,11 +6,12 @@ import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataB
 import { aShortQuestionSetInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
 import validateInPrisonWorkForm from './inPrisonWorkFormValidator'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
-import { InductionService } from '../../../services'
+import InductionService from '../../../services/inductionService'
 import { aShortQuestionSetUpdateInductionRequest } from '../../../testsupport/updateInductionRequestTestDataBuilder'
 
 jest.mock('./inPrisonWorkFormValidator')
 jest.mock('../../../data/mappers/createOrUpdateInductionDtoMapper')
+jest.mock('../../../services/inductionService')
 
 describe('inPrisonWorkUpdateController', () => {
   const mockedFormValidator = validateInPrisonWorkForm as jest.MockedFunction<typeof validateInPrisonWorkForm>
@@ -18,11 +19,8 @@ describe('inPrisonWorkUpdateController', () => {
     typeof toCreateOrUpdateInductionDto
   >
 
-  const inductionService = {
-    updateInduction: jest.fn(),
-  }
-
-  const controller = new InPrisonWorkUpdateController(inductionService as unknown as InductionService)
+  const inductionService = new InductionService(null) as jest.Mocked<InductionService>
+  const controller = new InPrisonWorkUpdateController(inductionService)
 
   const req = {
     session: {} as SessionData,
@@ -124,7 +122,7 @@ describe('inPrisonWorkUpdateController', () => {
       expect(req.session.inductionDto).toEqual(inductionDto)
     })
 
-    it('should get the In Prison Work view given short question set journey', async () => {
+    it('should get the In Prison Work view given there is an updateInductionQuestionSet on the session', async () => {
       // Given
       const prisonNumber = 'A1234BC'
       req.params.prisonNumber = prisonNumber
@@ -261,7 +259,7 @@ describe('inPrisonWorkUpdateController', () => {
       expect(req.session.inductionDto).toBeUndefined()
     })
 
-    it('should update InductionDto and redirect to In Prison Training view given short question set journey', async () => {
+    it('should update InductionDto and redirect to In Prison Training view there is an updateInductionQuestionSet on the session', async () => {
       // Given
       req.user.token = 'some-token'
       const prisonNumber = 'A1234BC'

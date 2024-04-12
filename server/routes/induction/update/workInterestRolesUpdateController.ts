@@ -2,10 +2,13 @@ import { NextFunction, Request, RequestHandler, Response } from 'express'
 import createError from 'http-errors'
 import type { InductionDto } from 'inductionDto'
 import type { WorkInterestRolesForm } from 'inductionForms'
+import type { PageFlow } from 'viewModels'
 import WorkInterestRolesController from '../common/workInterestRolesController'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
 import logger from '../../../../logger'
 import { InductionService } from '../../../services'
+import { getPreviousPage } from '../../pageFlowHistory'
+import getDynamicBackLinkAriaText from '../dynamicAriaTextResolver'
 
 /**
  * Controller for updating a Prisoner's Future Work Interest Roles part of an Induction.
@@ -17,12 +20,15 @@ export default class WorkInterestRolesUpdateController extends WorkInterestRoles
 
   getBackLinkUrl(req: Request): string {
     const { prisonNumber } = req.params
+    const { pageFlowHistory } = req.session
+    if (pageFlowHistory) {
+      return getPreviousPage(pageFlowHistory)
+    }
     return `/plan/${prisonNumber}/view/work-and-interests`
   }
 
   getBackLinkAriaText(req: Request): string {
-    const { prisonerSummary } = req.session
-    return `Back to ${prisonerSummary.firstName} ${prisonerSummary.lastName}'s learning and work progress`
+    return getDynamicBackLinkAriaText(req, this.getBackLinkUrl(req))
   }
 
   submitWorkInterestRolesForm: RequestHandler = async (
@@ -39,9 +45,17 @@ export default class WorkInterestRolesUpdateController extends WorkInterestRoles
     const { workInterestRolesForm } = req.session
 
     const updatedInduction = this.updatedInductionDtoWithWorkInterestRoles(inductionDto, workInterestRolesForm)
-    const updateInductionDto = toCreateOrUpdateInductionDto(prisonId, updatedInduction)
+
+    if (req.session.updateInductionQuestionSet) {
+      req.session.inductionDto = updatedInduction
+      const nextPage = `/prisoners/${prisonNumber}/induction/skills`
+      req.session.pageFlowHistory = this.buildPageFlowHistory(prisonNumber)
+      req.session.workInterestRolesForm = undefined
+      return res.redirect(nextPage)
+    }
 
     try {
+      const updateInductionDto = toCreateOrUpdateInductionDto(prisonId, updatedInduction)
       await this.inductionService.updateInduction(prisonNumber, updateInductionDto, req.user.token)
 
       req.session.workInterestRolesForm = undefined
@@ -70,6 +84,14 @@ export default class WorkInterestRolesUpdateController extends WorkInterestRoles
         ...inductionDto.futureWorkInterests,
         interests: updatedWorkInterests,
       },
+    }
+  }
+
+  private buildPageFlowHistory = (prisonNumber: string): PageFlow => {
+    const pageUrls = [`/prisoners/${prisonNumber}/induction/work-interest-roles`]
+    return {
+      pageUrls,
+      currentPageIndex: 0,
     }
   }
 }

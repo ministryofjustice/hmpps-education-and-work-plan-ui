@@ -148,7 +148,7 @@ const updatedInductionDtoWithPreviousWorkExperiences = (
 ): InductionDto => {
   const updatedPreviousWorkExperiences: Array<PreviousWorkExperienceDto> =
     previousWorkExperienceTypesForm.typeOfWorkExperience.map(workType => {
-      const existingWorkExperience = inductionDto.previousWorkExperiences?.experiences.find(
+      const existingWorkExperience = inductionDto.previousWorkExperiences?.experiences?.find(
         experience => experience.experienceType === workType,
       )
       const isWorkTypeOther = workType === TypeOfWorkExperienceValue.OTHER
@@ -188,7 +188,7 @@ const updatedInductionDtoWithPreviousWorkExperiences = (
  * Returns the list of [TypeOfWorkExperienceValue] for the Previous Work Experiences on the current induction
  */
 const previousWorkExperienceTypesOnCurrentInduction = (inductionDto: InductionDto): Array<TypeOfWorkExperienceValue> =>
-  inductionDto.previousWorkExperiences.experiences.map(experience => experience.experienceType)
+  inductionDto.previousWorkExperiences.experiences?.map(experience => experience.experienceType) || []
 
 /**
  * Given the current Induction and the [PreviousWorkExperienceTypesForm], returns a list of [TypeOfWorkExperienceValue]

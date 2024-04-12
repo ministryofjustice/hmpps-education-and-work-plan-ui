@@ -5,13 +5,14 @@ import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataB
 import { aLongQuestionSetInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
 import validateAbilityToWorkForm from './affectAbilityToWorkFormValidator'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
-import { InductionService } from '../../../services'
+import InductionService from '../../../services/inductionService'
 import { aLongQuestionSetUpdateInductionRequest } from '../../../testsupport/updateInductionRequestTestDataBuilder'
 import AbilityToWorkUpdateController from './affectAbilityToWorkUpdateController'
 import AbilityToWorkValue from '../../../enums/abilityToWorkValue'
 
 jest.mock('./affectAbilityToWorkFormValidator')
 jest.mock('../../../data/mappers/createOrUpdateInductionDtoMapper')
+jest.mock('../../../services/inductionService')
 
 describe('affectAbilityToWorkUpdateController', () => {
   const mockedFormValidator = validateAbilityToWorkForm as jest.MockedFunction<typeof validateAbilityToWorkForm>
@@ -19,11 +20,8 @@ describe('affectAbilityToWorkUpdateController', () => {
     typeof toCreateOrUpdateInductionDto
   >
 
-  const inductionService = {
-    updateInduction: jest.fn(),
-  }
-
-  const controller = new AbilityToWorkUpdateController(inductionService as unknown as InductionService)
+  const inductionService = new InductionService(null) as jest.Mocked<InductionService>
+  const controller = new AbilityToWorkUpdateController(inductionService)
 
   const req = {
     session: {} as SessionData,
@@ -132,6 +130,62 @@ describe('affectAbilityToWorkUpdateController', () => {
       expect(req.session.affectAbilityToWorkForm).toBeUndefined()
       expect(req.session.inductionDto).toEqual(inductionDto)
     })
+
+    it('should get the Ability To Work view given there is an updateInductionQuestionSet on the session', async () => {
+      // Given
+      const prisonNumber = 'A1234BC'
+      req.params.prisonNumber = prisonNumber
+
+      const prisonerSummary = aValidPrisonerSummary()
+      req.session.prisonerSummary = prisonerSummary
+      const inductionDto = aLongQuestionSetInductionDto()
+      req.session.inductionDto = inductionDto
+      req.session.updateInductionQuestionSet = {
+        hopingToWorkOnRelease: 'YES',
+      }
+      req.session.pageFlowHistory = {
+        pageUrls: [`/prisoners/${prisonNumber}/induction/personal-interests`],
+        currentPageIndex: 0,
+      }
+
+      const expectedAbilityToWorkForm = {
+        affectAbilityToWork: [
+          AbilityToWorkValue.CARING_RESPONSIBILITIES,
+          AbilityToWorkValue.HEALTH_ISSUES,
+          AbilityToWorkValue.OTHER,
+        ],
+        affectAbilityToWorkOther: 'Variable mental health',
+      }
+      req.session.affectAbilityToWorkForm = expectedAbilityToWorkForm
+
+      const expectedView = {
+        prisonerSummary,
+        form: expectedAbilityToWorkForm,
+        backLinkUrl: '/prisoners/A1234BC/induction/personal-interests',
+        backLinkAriaText: `Back to What are Jimmy Lightfingers's interests?`,
+        errors,
+      }
+
+      const expectedPageFlowHistory = {
+        pageUrls: [
+          '/prisoners/A1234BC/induction/personal-interests',
+          '/prisoners/A1234BC/induction/affect-ability-to-work',
+        ],
+        currentPageIndex: 1,
+      }
+
+      // When
+      await controller.getAffectAbilityToWorkView(
+        req as undefined as Request,
+        res as undefined as Response,
+        next as undefined as NextFunction,
+      )
+
+      // Then
+      expect(res.render).toHaveBeenCalledWith('pages/induction/affectAbilityToWork/index', expectedView)
+      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(req.session.pageFlowHistory).toEqual(expectedPageFlowHistory)
+    })
   })
 
   describe('submitAbilityToWorkForm', () => {
@@ -216,6 +270,49 @@ describe('affectAbilityToWorkUpdateController', () => {
       expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/view/work-and-interests`)
       expect(req.session.affectAbilityToWorkForm).toBeUndefined()
       expect(req.session.inductionDto).toBeUndefined()
+    })
+
+    it('should update InductionDto and redirect to Check Your Answers view given there is an updateInductionQuestionSet on the session', async () => {
+      // Given
+      req.user.token = 'some-token'
+      const prisonNumber = 'A1234BC'
+      req.params.prisonNumber = prisonNumber
+
+      const prisonerSummary = aValidPrisonerSummary()
+      req.session.prisonerSummary = prisonerSummary
+      const inductionDto = aLongQuestionSetInductionDto()
+      req.session.inductionDto = inductionDto
+
+      const affectAbilityToWorkForm = {
+        affectAbilityToWork: [AbilityToWorkValue.CARING_RESPONSIBILITIES, AbilityToWorkValue.OTHER],
+        affectAbilityToWorkOther: 'Variable mental health',
+      }
+      req.body = affectAbilityToWorkForm
+      req.session.affectAbilityToWorkForm = undefined
+
+      mockedFormValidator.mockReturnValue(errors)
+
+      req.session.updateInductionQuestionSet = { hopingToWorkOnRelease: 'YES' }
+
+      const expectedUpdatedAbilityToWork = ['CARING_RESPONSIBILITIES', 'OTHER']
+
+      const expectedUpdatedAbilityToWorkOther = 'Variable mental health'
+      const expectedNextPage = '/prisoners/A1234BC/induction/check-your-answers'
+
+      // When
+      await controller.submitAffectAbilityToWorkForm(
+        req as undefined as Request,
+        res as undefined as Response,
+        next as undefined as NextFunction,
+      )
+
+      // Then
+      const updatedInductionDto = req.session.inductionDto
+      expect(updatedInductionDto.workOnRelease.affectAbilityToWork).toEqual(expectedUpdatedAbilityToWork)
+      expect(updatedInductionDto.workOnRelease.affectAbilityToWorkOther).toEqual(expectedUpdatedAbilityToWorkOther)
+
+      expect(res.redirect).toHaveBeenCalledWith(expectedNextPage)
+      expect(req.session.affectAbilityToWorkForm).toBeUndefined()
     })
 
     it('should not update Induction given error calling service', async () => {

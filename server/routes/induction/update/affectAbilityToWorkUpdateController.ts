@@ -7,6 +7,8 @@ import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateIn
 import logger from '../../../../logger'
 import { InductionService } from '../../../services'
 import validateAffectAbilityToWorkForm from './affectAbilityToWorkFormValidator'
+import { getPreviousPage } from '../../pageFlowHistory'
+import getDynamicBackLinkAriaText from '../dynamicAriaTextResolver'
 
 /**
  * Controller for the Update of the Factors Affecting a Prisoner's Ability To Work screen of the Induction.
@@ -18,12 +20,15 @@ export default class AffectAbilityToWorkUpdateController extends AffectAbilityTo
 
   getBackLinkUrl(req: Request): string {
     const { prisonNumber } = req.params
+    const { pageFlowHistory } = req.session
+    if (pageFlowHistory) {
+      return getPreviousPage(pageFlowHistory)
+    }
     return `/plan/${prisonNumber}/view/work-and-interests`
   }
 
   getBackLinkAriaText(req: Request): string {
-    const { prisonerSummary } = req.session
-    return `Back to ${prisonerSummary.firstName} ${prisonerSummary.lastName}'s learning and work progress`
+    return getDynamicBackLinkAriaText(req, this.getBackLinkUrl(req))
   }
 
   submitAffectAbilityToWorkForm: RequestHandler = async (
@@ -53,9 +58,16 @@ export default class AffectAbilityToWorkUpdateController extends AffectAbilityTo
     }
 
     const updatedInduction = this.updatedInductionDtoWithAffectAbilityToWork(inductionDto, affectAbilityToWorkForm)
-    const updateInductionDto = toCreateOrUpdateInductionDto(prisonId, updatedInduction)
+
+    // if we are switching from the short question set to the long one, forward to the check your answers page
+    if (req.session.updateInductionQuestionSet) {
+      req.session.inductionDto = updatedInduction
+      req.session.affectAbilityToWorkForm = undefined
+      return res.redirect(`/prisoners/${prisonNumber}/induction/check-your-answers`)
+    }
 
     try {
+      const updateInductionDto = toCreateOrUpdateInductionDto(prisonId, updatedInduction)
       await this.inductionService.updateInduction(prisonNumber, updateInductionDto, req.user.token)
 
       req.session.affectAbilityToWorkForm = undefined

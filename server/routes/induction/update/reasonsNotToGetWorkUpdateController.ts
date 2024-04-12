@@ -70,8 +70,8 @@ export default class ReasonsNotToGetWorkUpdateController extends ReasonsNotToGet
     }
 
     // Otherwise update the Induction in the API and return to the main work-and-interests tab
-    const updateInductionDto = toCreateOrUpdateInductionDto(prisonId, updatedInduction)
     try {
+      const updateInductionDto = toCreateOrUpdateInductionDto(prisonId, updatedInduction)
       await this.inductionService.updateInduction(prisonNumber, updateInductionDto, req.user.token)
 
       req.session.reasonsNotToGetWorkForm = undefined

@@ -3,24 +3,22 @@ import { NextFunction, Request, Response } from 'express'
 import createError from 'http-errors'
 import type { PageFlow, UpdateInductionQuestionSet } from 'viewModels'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
-import { InductionService } from '../../../services'
+import InductionService from '../../../services/inductionService'
 import CheckYourAnswersUpdateController from './checkYourAnswersUpdateController'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
 import { aShortQuestionSetInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
 import { aShortQuestionSetUpdateInductionDto } from '../../../testsupport/updateInductionDtoTestDataBuilder'
 
 jest.mock('../../../data/mappers/createOrUpdateInductionDtoMapper')
+jest.mock('../../../services/inductionService')
 
 describe('checkYourAnswersUpdateController', () => {
   const mockedCreateOrUpdateInductionDtoMapper = toCreateOrUpdateInductionDto as jest.MockedFunction<
     typeof toCreateOrUpdateInductionDto
   >
 
-  const inductionService = {
-    updateInduction: jest.fn(),
-  }
-
-  const controller = new CheckYourAnswersUpdateController(inductionService as unknown as InductionService)
+  const inductionService = new InductionService(null) as jest.Mocked<InductionService>
+  const controller = new CheckYourAnswersUpdateController(inductionService)
 
   const req = {
     session: {} as SessionData,
