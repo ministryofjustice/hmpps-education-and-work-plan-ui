@@ -260,8 +260,6 @@ describe('createGoalsController', () => {
 
       req.session.createGoalsForm = undefined
 
-      mockedCreateGoalsFormValidator.mockReturnValue(errors)
-
       const expectedCreateGoalsForm = {
         prisonNumber,
         goals: [
@@ -294,7 +292,7 @@ describe('createGoalsController', () => {
       // Then
       expect(res.redirect).toHaveBeenCalledWith('/plan/A1234BC/goals/create#goals[1].steps[1].title')
       expect(req.session.createGoalsForm).toEqual(expectedCreateGoalsForm)
-      expect(mockedCreateGoalsFormValidator).toHaveBeenCalledWith(submittedCreateGoalsForm)
+      expect(mockedCreateGoalsFormValidator).not.toHaveBeenCalled()
     })
 
     Array.of(
@@ -326,8 +324,6 @@ describe('createGoalsController', () => {
 
         req.session.createGoalsForm = undefined
 
-        mockedCreateGoalsFormValidator.mockReturnValue(errors)
-
         // When
         await controller.submitCreateGoalsForm(
           req as undefined as Request,
@@ -338,7 +334,7 @@ describe('createGoalsController', () => {
         // Then
         expect(res.redirect).toHaveBeenCalledWith('/plan/A1234BC/goals/create')
         expect(req.session.createGoalsForm).toEqual(submittedCreateGoalsForm)
-        expect(mockedCreateGoalsFormValidator).toHaveBeenCalledWith(submittedCreateGoalsForm)
+        expect(mockedCreateGoalsFormValidator).not.toHaveBeenCalled()
       })
     })
 
@@ -478,8 +474,6 @@ describe('createGoalsController', () => {
 
       req.session.createGoalsForm = undefined
 
-      mockedCreateGoalsFormValidator.mockReturnValue(errors)
-
       const expectedCreateGoalsForm = {
         prisonNumber,
         goals: [
@@ -516,7 +510,7 @@ describe('createGoalsController', () => {
       // Then
       expect(res.redirect).toHaveBeenCalledWith('/plan/A1234BC/goals/create#goals[3].title')
       expect(req.session.createGoalsForm).toEqual(expectedCreateGoalsForm)
-      expect(mockedCreateGoalsFormValidator).toHaveBeenCalledWith(submittedCreateGoalsForm)
+      expect(mockedCreateGoalsFormValidator).not.toHaveBeenCalled()
     })
 
     it('should remove a goal', async () => {

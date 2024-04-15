@@ -61,7 +61,7 @@ context('Create goals', () => {
       .hasFieldInError('goals[0].steps[0].title')
   })
 
-  it('should not be able to add an empty step to a goal given form has validation errors', () => {
+  it('should be able to add an empty step, and validation only performed on final form submission', () => {
     // Given
     const prisonNumber = 'G6115VJ'
     cy.signIn()
@@ -73,15 +73,21 @@ context('Create goals', () => {
       .setGoalTitle('Learn French', 1)
       .setTargetCompletionDate6to12Months(1)
       .clearStepTitle(1, 1)
+      .addNewEmptyStepToGoal(1)
+      .hasNoErrors()
+      .goalTitleIs('Learn French', 1)
+      .stepTitleIs('', 1, 1)
+      .stepTitleIs('', 1, 2)
 
     // When
-    createGoalPage.addNewEmptyStepToGoal(1)
+    createGoalPage.submitPage()
 
     // Then
     Page.verifyOnPage(CreateGoalsPage)
     createGoalPage //
-      .hasErrorCount(1)
+      .hasErrorCount(2)
       .hasFieldInError('goals[0].steps[0].title')
+      .hasFieldInError('goals[0].steps[1].title')
   })
 
   it('should be able to add an empty step to a goal', () => {

@@ -1,4 +1,4 @@
-import moment from 'moment'
+import { isBefore, isValid, parse } from 'date-fns'
 
 export default function goalTargetCompletionDateValidator(
   targetCompletionDate?: string,
@@ -9,28 +9,28 @@ export default function goalTargetCompletionDateValidator(
   const errors: Array<string> = []
 
   if (!targetCompletionDate) {
-    errors.push('Select a target completion date')
+    errors.push('Select when they are aiming to achieve this goal by')
     return errors
   }
 
-  let proposedDate: moment.Moment
+  const today = new Date()
+  let proposedDate: Date
   if (targetCompletionDate === 'another-date') {
     if (!(isOneOrTwoDigits(day) && isOneOrTwoDigits(month) && isFourDigits(year))) {
-      errors.push('Enter a valid date')
+      errors.push('Enter a valid date for when they are aiming to achieve this goal by')
       return errors
     }
-    proposedDate = moment(`${year}-${month?.padStart(2, '0')}-${day?.padStart(2, '0')}`, 'YYYY-MM-DD')
+    proposedDate = parse(`${year}-${month?.padStart(2, '0')}-${day?.padStart(2, '0')}`, 'yyyy-MM-dd', today)
   } else {
-    proposedDate = moment(targetCompletionDate, 'YYYY-MM-DD')
+    proposedDate = parse(targetCompletionDate, 'yyyy-MM-dd', today)
   }
 
-  if (!proposedDate.isValid()) {
-    errors.push('Enter a valid date')
+  if (!isValid(proposedDate)) {
+    errors.push('Enter a valid date for when they are aiming to achieve this goal by')
   }
 
-  const today = moment()
-  if (proposedDate.isBefore(today)) {
-    errors.push('Enter a date in the future')
+  if (isBefore(proposedDate, today)) {
+    errors.push('Enter a valid date. Date must be in the future')
   }
 
   return errors

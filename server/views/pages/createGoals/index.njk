@@ -67,6 +67,10 @@
                 text: "Describe the goal",
                 classes: "govuk-label--s"
               },
+              charactersOverLimitText: {
+                one: 'Goal must be 512 characters or less',
+                other: 'Goal must be 512 characters or less'
+              },
               errorMessage: errors | findError("goals[" + goalLoop.index0 + "].title")
             }) }}
 
@@ -85,7 +89,7 @@
                 id: "goals[" + goalLoop.index0 + "].another-date",
                 fieldset: {
                   legend: {
-                    text: "What date are they aiming to achieve this by?",
+                    text: "When are they aiming to achieve this goal by?",
                     classes: "govuk-visually-hidden"
                   }
                 },
@@ -133,13 +137,15 @@
               value: form.goals[(goalLoop.index0)].targetCompletionDate,
               fieldset: {
                 legend: {
-                  text: "When are they aiming to achieve this by?",
+                  text: "When are they aiming to achieve this goal by?",
                   classes: "govuk-fieldset__legend--s"
                 }
               },
               items: targetCompletionDateItems,
               errorMessage: errors | findError("goals[" + goalLoop.index0 + "].targetCompletionDate")
             }) }}
+
+            <h3 class="govuk-heading-s">Add steps to help them achieve this goal</h3>
 
             {% for steps in form.goals[goalLoop.index0].steps %}
               {% set stepLoop = loop %}
@@ -166,6 +172,10 @@
                   },
                   hint: {
                     text: "Describe this step"
+                  },
+                  charactersOverLimitText: {
+                    one: 'Step must be 512 characters or less',
+                    other: 'Step must be 512 characters or less'
                   },
                   errorMessage: errors | findError('goals[' + goalLoop.index0 + '].steps[' + stepLoop.index0 + '].title')
                 }) }}
