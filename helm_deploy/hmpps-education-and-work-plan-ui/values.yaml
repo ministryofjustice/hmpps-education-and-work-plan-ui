@@ -62,6 +62,7 @@ generic-service:
     NEW_COURSE_AND_QUALIFICATION_HISTORY_ENABLED: "false"
     NEW_CREATE_GOAL_JOURNEY_ENABLED: "false"
     AUDIT_SERVICE_NAME: "hmpps-education-and-work-plan"
+    AUDIT_ENABLED: "true"
 
   # Pre-existing kubernetes secrets to load as environment variables in the deployment.
   # namespace_secrets:
@@ -79,6 +80,8 @@ generic-service:
     education-work-plan-ui-elasticache-redis:
       REDIS_HOST: "primary_endpoint_address"
       REDIS_AUTH_TOKEN: "auth_token"
+    sqs-hmpps-audit-secret:
+      AUDIT_SQS_QUEUE_URL: 'sqs_queue_url'
 
   allowlist:
     groups:
