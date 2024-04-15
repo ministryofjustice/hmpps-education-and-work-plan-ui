@@ -7,7 +7,7 @@ const stubPrisonerList = (prisonId = 'BXI', page = 0, pageSize = 9999): SuperAge
   stubFor({
     request: {
       method: 'GET',
-      urlPathPattern: `/prisoner-search/prison/${prisonId}`,
+      urlPathPattern: `/prisoner-search-api/prisoner-search/prison/${prisonId}`,
       queryParameters: {
         page: { equalTo: `${page}` },
         size: { equalTo: `${pageSize}` },
@@ -309,7 +309,7 @@ const stubPrisonerListFromPrisonerSearchSummaries = (
   stubFor({
     request: {
       method: 'GET',
-      urlPathPattern: `/prisoner-search/prison/${options?.prisonId || 'BXI'}`,
+      urlPathPattern: `/prisoner-search-api/prisoner-search/prison/${options?.prisonId || 'BXI'}`,
       queryParameters: {
         page: { equalTo: `${options?.page || 0}` },
         size: { equalTo: `${options?.pageSize || 9999}` },
@@ -345,7 +345,7 @@ const stubPrisonerList500error = (prisonId = 'BXI', page = 0, pageSize = 9999): 
   stubFor({
     request: {
       method: 'GET',
-      urlPathPattern: `/prisoner-search/prison/${prisonId}`,
+      urlPathPattern: `/prisoner-search-api/prisoner-search/prison/${prisonId}`,
       queryParameters: {
         page: { equalTo: `${page}` },
         size: { equalTo: `${pageSize}` },

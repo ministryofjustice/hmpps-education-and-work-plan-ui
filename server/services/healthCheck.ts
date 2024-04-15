@@ -1,7 +1,6 @@
 import promClient from 'prom-client'
 import { serviceCheckFactory } from '../data/healthCheck'
-import config from '../config'
-import type { AgentConfig } from '../config'
+import config, { AgentConfig } from '../config'
 import type { ApplicationInfo } from '../applicationInfo'
 
 const healthCheckGauge = new promClient.Gauge({
@@ -50,8 +49,8 @@ function gatherCheckInfo(aggregateStatus: Record<string, unknown>, currentStatus
 }
 
 const apiChecks = Object.entries(config.apis)
-  .filter(([_, config]) => config.includeInHealthCheck)
-  .map(([serviceName, config]) => service(serviceName, `${config.url}/health/ping`, config.agent))
+  .filter(([_, apiConfig]) => apiConfig.includeInHealthCheck)
+  .map(([serviceName, apiConfig]) => service(serviceName, `${apiConfig.url}/health/ping`, apiConfig.agent))
 
 export default function healthCheck(
   applicationInfo: ApplicationInfo,

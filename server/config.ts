@@ -158,7 +158,7 @@ export default {
         deadline: Number(get('ACTIVITIES_AND_WORK_PLAN_API_TIMEOUT_DEADLINE', 10000)),
       },
       agent: new AgentConfig(Number(get('ACTIVITIES_AND_WORK_PLAN_API_TIMEOUT_RESPONSE', 10000))),
-      includeInHealthCheck: true,
+      includeInHealthCheck: false,
     },
   },
   sqs: {

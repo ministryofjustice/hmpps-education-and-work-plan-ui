@@ -1,12 +1,13 @@
 import { SuperAgentRequest } from 'superagent'
 import { stubFor } from './wiremock'
 import { allPrisons, prisonsKeyedByPrisonId } from '../mockData/prisonRegisterData'
+import stubPing from './common'
 
 const stubGetAllPrisons = (): SuperAgentRequest =>
   stubFor({
     request: {
       method: 'GET',
-      urlPattern: '/prisons',
+      urlPattern: '/prison-register-api/prisons',
     },
     response: {
       status: 200,
@@ -19,7 +20,7 @@ const getPrisonById = (prisonId = 'MDI'): SuperAgentRequest =>
   stubFor({
     request: {
       method: 'GET',
-      urlPattern: `/prisons/id/${prisonId}`,
+      urlPattern: `/prison-register-api/prisons/id/${prisonId}`,
     },
     response: {
       status: 200,
@@ -34,7 +35,7 @@ const stubPrisonById404Error = (prisonId = 'MDI'): SuperAgentRequest =>
   stubFor({
     request: {
       method: 'GET',
-      urlPattern: `/prisons/id/${prisonId}`,
+      urlPattern: `/prison-register-api/prisons/id/${prisonId}`,
     },
     response: {
       status: 404,
@@ -49,4 +50,9 @@ const stubPrisonById404Error = (prisonId = 'MDI'): SuperAgentRequest =>
     },
   })
 
-export default { stubGetAllPrisons, getPrisonById, stubPrisonById404Error }
+export default {
+  stubGetAllPrisons,
+  getPrisonById,
+  stubPrisonById404Error,
+  stubPrisonRegisterApiPing: stubPing('prison-register-api'),
+}

@@ -1,3 +1,4 @@
+import stubPing from './common'
 import { stubFor } from './wiremock'
 
 const stubUser = (name: string = 'john smith') =>
@@ -19,18 +20,7 @@ const stubUser = (name: string = 'john smith') =>
     },
   })
 
-const ping = () =>
-  stubFor({
-    request: {
-      method: 'GET',
-      urlPattern: '/manage-users-api/health/ping',
-    },
-    response: {
-      status: 200,
-    },
-  })
-
 export default {
   stubManageUser: stubUser,
-  stubManageUsersPing: ping,
+  stubManageUsersApiPing: stubPing('manage-users-api'),
 }
