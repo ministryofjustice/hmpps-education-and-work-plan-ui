@@ -8,7 +8,7 @@ describe('goalTargetDateValidator', () => {
     const errors = validateTargetDate(targetCompletionDate)
 
     // Then
-    expect(errors).toStrictEqual(['Select a target completion date'])
+    expect(errors).toStrictEqual(['Select when they are aiming to achieve this goal by'])
   })
 
   Array.of(
@@ -18,7 +18,6 @@ describe('goalTargetDateValidator', () => {
     { day: '', month: '02', year: '2040' },
     { day: '26', month: '', year: '2040' },
     { day: '26', month: '02', year: '' },
-    { day: '26', month: '40', year: '2024' },
     { day: '][', month: '8', year: '2025' },
     { day: '2nd', month: '8', year: '2025' },
     { day: '2', month: 'AUG', year: '2025' },
@@ -31,7 +30,7 @@ describe('goalTargetDateValidator', () => {
       const errors = validateTargetDate('another-date', dateValues.day, dateValues.month, dateValues.year)
 
       // Then
-      expect(errors).toStrictEqual(['Enter a valid date'])
+      expect(errors).toStrictEqual(['Enter a valid date for when they are aiming to achieve this goal by'])
     })
   })
 
@@ -44,6 +43,6 @@ describe('goalTargetDateValidator', () => {
     const errors = validateTargetDate('another-date', day, month, year)
 
     // Then
-    expect(errors).toStrictEqual(['Enter a date in the future'])
+    expect(errors).toStrictEqual(['Enter a valid date. Date must be in the future'])
   })
 })

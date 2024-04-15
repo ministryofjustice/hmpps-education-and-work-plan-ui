@@ -49,26 +49,24 @@ export default class CreateGoalsController {
     })
     req.session.createGoalsForm = createGoalsForm
 
-    // Handle the removal of steps or goals before any validation, otherwise it would be impossible to remove an empty step or empty goal
+    // Handle any form actions (eg: removal or addition of steps or goals) before any validation
     if (createGoalsForm.action.startsWith('remove-step')) {
       return handleRemoveStep(createGoalsForm, prisonNumber, req, res)
     }
     if (createGoalsForm.action.startsWith('remove-goal')) {
       return handleRemoveGoal(createGoalsForm, prisonNumber, req, res)
     }
+    if (createGoalsForm.action.startsWith('add-another-step')) {
+      return handleAddAnotherStep(createGoalsForm, prisonNumber, req, res)
+    }
+    if (createGoalsForm.action === 'add-another-goal') {
+      return handleAddAnotherGoal(createGoalsForm, prisonNumber, req, res)
+    }
 
     const errors = validateCreateGoalsForm(createGoalsForm)
     if (errors.length > 0) {
       req.flash('errors', errors)
       return res.redirect(`/plan/${prisonNumber}/goals/create`)
-    }
-
-    if (createGoalsForm.action.startsWith('add-another-step')) {
-      return handleAddAnotherStep(createGoalsForm, prisonNumber, req, res)
-    }
-
-    if (createGoalsForm.action === 'add-another-goal') {
-      return handleAddAnotherGoal(createGoalsForm, prisonNumber, req, res)
     }
 
     try {
