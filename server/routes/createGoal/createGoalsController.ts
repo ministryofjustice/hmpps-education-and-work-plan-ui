@@ -107,10 +107,10 @@ const handleRemoveStep = (
   const stepNumber = parseInt(formActionParameters[2], 10)
 
   const isValidGoalNumber =
-    !Number.isNaN(goalNumber) && goalNumber >= 0 && goalNumber <= createGoalsForm.goals.length - 1
+    Number.isInteger(goalNumber) && goalNumber >= 0 && goalNumber <= createGoalsForm.goals.length - 1
   const isValidStepNumber =
     isValidGoalNumber &&
-    !Number.isNaN(stepNumber) &&
+    Number.isInteger(stepNumber) &&
     stepNumber >= 0 &&
     stepNumber <= createGoalsForm.goals[goalNumber].steps.length - 1
   if (!isValidGoalNumber || !isValidStepNumber) {
@@ -136,7 +136,7 @@ const handleRemoveGoal = (
   const goalNumber = parseInt(formActionParameters[1], 10)
 
   const isValidGoalNumber =
-    !Number.isNaN(goalNumber) && goalNumber >= 0 && goalNumber <= createGoalsForm.goals.length - 1
+    Number.isInteger(goalNumber) && goalNumber >= 0 && goalNumber <= createGoalsForm.goals.length - 1
   if (!isValidGoalNumber) {
     // An invalid goalNumber was passed on the form action. Do nothing; redisplay the form.
     logger.warn(`Invalid request to remove a goal with form action field 'action: "${createGoalsForm.action}"'`)
@@ -161,7 +161,7 @@ const handleAddAnotherStep = (
   const goalNumber = parseInt(formActionParameters[1], 10)
 
   const isValidGoalNumber =
-    !Number.isNaN(goalNumber) && goalNumber >= 0 && goalNumber <= createGoalsForm.goals.length - 1
+    Number.isInteger(goalNumber) && goalNumber >= 0 && goalNumber <= createGoalsForm.goals.length - 1
   if (!isValidGoalNumber) {
     // An invalid goalNumber was passed on the form action. Do nothing; redisplay the form.
     logger.warn(`Invalid request to add a step to a goal with form action field 'action: "${createGoalsForm.action}"'`)
