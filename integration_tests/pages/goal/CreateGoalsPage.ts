@@ -93,7 +93,7 @@ export default class CreateGoalsPage extends Page {
     return this
   }
 
-  hasNumberOfRemoveStepButtonsForGoal(goalNumber: number, expectedNumberOfButtons): CreateGoalsPage {
+  hasNumberOfRemoveStepButtonsForGoal(goalNumber: number, expectedNumberOfButtons: number): CreateGoalsPage {
     this.removeStepButtonsForGoal(goalNumber) //
       .should('be.visible')
       .should('have.length', expectedNumberOfButtons)
@@ -107,6 +107,28 @@ export default class CreateGoalsPage extends Page {
 
   addNewEmptyGoal(): CreateGoalsPage {
     this.addAnotherGoalButton().click()
+    return this
+  }
+
+  hasNoRemoveGoalButtons(): CreateGoalsPage {
+    this.removeGoalButtons().should('not.exist')
+    return this
+  }
+
+  hasNumberOfRemoveGoalButtons(expectedNumberOfButtons: number): CreateGoalsPage {
+    this.removeGoalButtons() //
+      .should('be.visible')
+      .should('have.length', expectedNumberOfButtons)
+    return this
+  }
+
+  removeGoal(goalNumber: number): CreateGoalsPage {
+    this.removeGoalButton(goalNumber).click()
+    return this
+  }
+
+  goalTitleIs(expectedGoalTitle: string, goalNumber: number): CreateGoalsPage {
+    this.goalTitleField(goalNumber).should('have.value', expectedGoalTitle)
     return this
   }
 
@@ -156,6 +178,11 @@ export default class CreateGoalsPage extends Page {
     this.removeStepButtonsForGoal(goalNumber).filter(`[value$="|${zeroIndexed(stepNumber)}"]`)
 
   private addAnotherGoalButton = (): PageElement => cy.get(`#add-another-goal-button`)
+
+  private removeGoalButtons = (): PageElement => cy.get('[data-qa=remove-goal-button]')
+
+  private removeGoalButton = (goalNumber: number): PageElement =>
+    this.removeGoalButtons().filter(`[value="remove-goal|${zeroIndexed(goalNumber)}"]`)
 }
 
 const zeroIndexed = (indexNumber: number): number => Math.max(0, indexNumber - 1)

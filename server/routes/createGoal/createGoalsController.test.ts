@@ -399,7 +399,7 @@ describe('createGoalsController', () => {
       )
 
       // Then
-      expect(res.redirect).toHaveBeenCalledWith('/plan/A1234BC/goals/create#goals[2].steps[1].title') // focus the bricklaying course as that is the last step in the goal
+      expect(res.redirect).toHaveBeenCalledWith('/plan/A1234BC/goals/create#goals[2].steps[1].title') // focus the Pass exam step of the bricklaying course as that is the last step in the goal
       expect(req.session.createGoalsForm).toEqual(expectedCreateGoalsForm)
       expect(mockedCreateGoalsFormValidator).not.toHaveBeenCalled()
     })
@@ -517,6 +517,101 @@ describe('createGoalsController', () => {
       expect(res.redirect).toHaveBeenCalledWith('/plan/A1234BC/goals/create#goals[3].title')
       expect(req.session.createGoalsForm).toEqual(expectedCreateGoalsForm)
       expect(mockedCreateGoalsFormValidator).toHaveBeenCalledWith(submittedCreateGoalsForm)
+    })
+
+    it('should remove a goal', async () => {
+      // Given
+      const submittedCreateGoalsForm: CreateGoalsForm = {
+        prisonNumber,
+        goals: [
+          {
+            title: 'Learn French',
+            targetCompletionDate: '2024-12-31',
+            steps: [{ title: 'Book Course' }],
+          },
+          {
+            title: 'Learn Spanish',
+            targetCompletionDate: '2025-04-10',
+            steps: [{ title: 'Find available courses' }],
+          },
+          {
+            title: 'Attend bricklaying workshop',
+            targetCompletionDate: '2024-12-31',
+            steps: [{ title: 'Apply to get on activity' }, { title: 'Attend activity' }, { title: 'Pass exam' }],
+          },
+        ],
+        action: 'remove-goal|1', // remove goal 2 (zero indexed array elements)
+      }
+      req.body = submittedCreateGoalsForm
+
+      req.session.createGoalsForm = undefined
+
+      const expectedCreateGoalsForm = {
+        prisonNumber,
+        goals: [
+          {
+            title: 'Learn French',
+            targetCompletionDate: '2024-12-31',
+            steps: [{ title: 'Book Course' }],
+          },
+          // expect Learn Spanish goal to be removed
+          {
+            title: 'Attend bricklaying workshop',
+            targetCompletionDate: '2024-12-31',
+            steps: [{ title: 'Apply to get on activity' }, { title: 'Attend activity' }, { title: 'Pass exam' }],
+          },
+        ],
+        action: 'remove-goal|1',
+      }
+
+      // When
+      await controller.submitCreateGoalsForm(
+        req as undefined as Request,
+        res as undefined as Response,
+        next as undefined as NextFunction,
+      )
+
+      // Then
+      expect(res.redirect).toHaveBeenCalledWith('/plan/A1234BC/goals/create#goals[1].steps[2].title') // focus the Pass exam step of the bricklaying course as that is the last step in the goal
+      expect(req.session.createGoalsForm).toEqual(expectedCreateGoalsForm)
+      expect(mockedCreateGoalsFormValidator).not.toHaveBeenCalled()
+    })
+
+    Array.of('remove-goal|', 'remove-goal|-1', 'remove-goal|A', 'remove-goal', 'remove-goal|2').forEach(formAction => {
+      it(`should not remove a goal given form action ${formAction}`, async () => {
+        // Given
+        const submittedCreateGoalsForm: CreateGoalsForm = {
+          prisonNumber,
+          goals: [
+            {
+              title: 'Learn Spanish',
+              targetCompletionDate: '2025-04-10',
+              steps: [{ title: 'Find available courses' }],
+            },
+            {
+              title: 'Attend bricklaying workshop',
+              targetCompletionDate: '2024-12-31',
+              steps: [{ title: 'Apply to get on activity' }, { title: 'Attend activity' }, { title: 'Pass exam' }],
+            },
+          ],
+          action: formAction,
+        }
+        req.body = submittedCreateGoalsForm
+
+        req.session.createGoalsForm = undefined
+
+        // When
+        await controller.submitCreateGoalsForm(
+          req as undefined as Request,
+          res as undefined as Response,
+          next as undefined as NextFunction,
+        )
+
+        // Then
+        expect(res.redirect).toHaveBeenCalledWith('/plan/A1234BC/goals/create')
+        expect(req.session.createGoalsForm).toEqual(submittedCreateGoalsForm)
+        expect(mockedCreateGoalsFormValidator).not.toHaveBeenCalled()
+      })
     })
   })
 })

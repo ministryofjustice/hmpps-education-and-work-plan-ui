@@ -152,6 +152,7 @@ context('Create goals', () => {
     const createGoalPage = Page.verifyOnPage(CreateGoalsPage)
 
     createGoalPage //
+      .hasNoRemoveGoalButtons()
       .setGoalTitle('Learn French', 1)
       .setTargetCompletionDate6to12Months(1)
       .setStepTitle('Book course', 1, 1)
@@ -162,8 +163,40 @@ context('Create goals', () => {
     // Then
     Page.verifyOnPage(CreateGoalsPage)
     createGoalPage //
+      .hasNumberOfRemoveGoalButtons(2)
       .hasNoErrors()
       .goalTitleFieldIsFocussed(2)
+  })
+
+  it('should be able to remove a goal', () => {
+    // Given
+    const prisonNumber = 'G6115VJ'
+    cy.signIn()
+
+    cy.visit(`/plan/${prisonNumber}/goals/create`)
+    const createGoalPage = Page.verifyOnPage(CreateGoalsPage)
+
+    createGoalPage //
+      .hasNoRemoveGoalButtons()
+      .setGoalTitle('Learn French', 1)
+      .setTargetCompletionDate6to12Months(1)
+      .setStepTitle('Book course', 1, 1)
+      .addNewEmptyGoal()
+      .hasNumberOfRemoveGoalButtons(2)
+      .setGoalTitle('Become a carpenter', 2)
+      .setTargetCompletionDate6to12Months(2)
+      .setStepTitle('Apply to get on woodworking activity', 2, 1)
+
+    // When
+    createGoalPage.removeGoal(1) // remove goal 1 ("Learn French")
+
+    // Then
+    Page.verifyOnPage(CreateGoalsPage)
+    createGoalPage //
+      .hasNoRemoveGoalButtons()
+      .hasNoErrors()
+      .stepTitleFieldIsFocussed(1, 1)
+      .goalTitleIs('Become a carpenter', 1)
   })
 
   it('should create goals given valid form submission', () => {
