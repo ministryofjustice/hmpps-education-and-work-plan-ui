@@ -12,10 +12,13 @@ const pageViewEventMap: Record<string, Page> = {
   '/plan/:prisonNumber/view/timeline': Page.TIMELINE,
   '/plan/:prisonNumber/functional-skills': Page.FUNCTIONAL_SKILLS,
   '/plan/:prisonNumber/goals/create': Page.CREATE_GOALS,
+
+  // TODO - RR-769 - Remove route auditing for original Create Goal journey
   '/plan/:prisonNumber/goals/:goalIndex/add-step/:stepIndex': Page.CREATE_GOAL_ADD_STEP,
   '/plan/:prisonNumber/goals/:goalIndex/add-note': Page.CREATE_GOAL_ADD_NOTE,
   '/plan/:prisonNumber/goals/:goalIndex/create': Page.CREATE_GOAL,
   '/plan/:prisonNumber/goals/review': Page.CREATE_GOALS_REVIEW,
+
   '/plan/:prisonNumber/goals/:goalReference/update': Page.UPDATE_GOALS,
   '/plan/:prisonNumber/goals/:goalReference/update/review': Page.UPDATE_GOALS_REVIEW,
   '/plan/:prisonNumber/in-prison-courses-and-qualifications': Page.IN_PRISON_COURSES_AND_QUALIFICATIONS,
