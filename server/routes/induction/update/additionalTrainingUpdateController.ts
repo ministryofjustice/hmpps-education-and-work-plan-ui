@@ -2,13 +2,12 @@ import { NextFunction, Request, RequestHandler, Response } from 'express'
 import createError from 'http-errors'
 import type { InductionDto } from 'inductionDto'
 import type { AdditionalTrainingForm } from 'inductionForms'
-import type { PageFlow } from 'viewModels'
 import AdditionalTrainingController from '../common/additionalTrainingController'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
 import logger from '../../../../logger'
 import { InductionService } from '../../../services'
 import validateAdditionalTrainingForm from './additionalTrainingFormValidator'
-import { getPreviousPage } from '../../pageFlowHistory'
+import { buildNewPageFlowHistory, getPreviousPage } from '../../pageFlowHistory'
 import getDynamicBackLinkAriaText from '../dynamicAriaTextResolver'
 
 /**
@@ -65,7 +64,7 @@ export default class AdditionalTrainingUpdateController extends AdditionalTraini
         updateInductionQuestionSet.hopingToWorkOnRelease === 'YES'
           ? `/prisoners/${prisonNumber}/induction/has-worked-before`
           : `/prisoners/${prisonNumber}/induction/in-prison-work`
-      req.session.pageFlowHistory = this.buildPageFlowHistory(prisonNumber)
+      req.session.pageFlowHistory = buildNewPageFlowHistory(req)
       req.session.additionalTrainingForm = undefined
       return res.redirect(nextPage)
     }
@@ -94,13 +93,6 @@ export default class AdditionalTrainingUpdateController extends AdditionalTraini
         trainingTypes: additionalTrainingForm.additionalTraining,
         trainingTypeOther: additionalTrainingForm.additionalTrainingOther,
       },
-    }
-  }
-
-  buildPageFlowHistory = (prisonNumber: string): PageFlow => {
-    return {
-      pageUrls: [`/prisoners/${prisonNumber}/induction/additional-training`],
-      currentPageIndex: 0,
     }
   }
 }

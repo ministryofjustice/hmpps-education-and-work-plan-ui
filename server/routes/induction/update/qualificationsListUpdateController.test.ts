@@ -26,11 +26,14 @@ describe('qualificationsListUpdateController', () => {
   const inductionService = new InductionService(null) as jest.Mocked<InductionService>
   const controller = new QualificationsListUpdateController(inductionService)
 
+  const prisonNumber = 'A1234BC'
+
   const req = {
     session: {} as SessionData,
     body: {},
     user: {} as Express.User,
     params: {} as Record<string, string>,
+    path: '',
   }
   const res = {
     redirect: jest.fn(),
@@ -44,14 +47,13 @@ describe('qualificationsListUpdateController', () => {
     req.body = {}
     req.user = {} as Express.User
     req.params = {} as Record<string, string>
+    req.params.prisonNumber = prisonNumber
+    req.path = `/prisoners/${prisonNumber}/induction/qualifications`
   })
 
   describe('getQualificationsListView', () => {
     it('should get the Qualifications List view', async () => {
       // Given
-      const prisonNumber = 'A1234BC'
-      req.params.prisonNumber = prisonNumber
-
       const prisonerSummary = aValidPrisonerSummary()
       req.session.prisonerSummary = prisonerSummary
       const inductionDto = aLongQuestionSetInductionDto()
@@ -90,8 +92,6 @@ describe('qualificationsListUpdateController', () => {
     it('should update Induction and call API and redirect to Education and Training tab given page submitted without addQualification or removeQualification flags', async () => {
       // Given
       req.user.token = 'some-token'
-      const prisonNumber = 'A1234BC'
-      req.params.prisonNumber = prisonNumber
 
       const prisonerSummary = aValidPrisonerSummary()
       req.session.prisonerSummary = prisonerSummary
@@ -135,8 +135,6 @@ describe('qualificationsListUpdateController', () => {
     it('should not update Induction given error calling service', async () => {
       // Given
       req.user.token = 'some-token'
-      const prisonNumber = 'A1234BC'
-      req.params.prisonNumber = prisonNumber
 
       const prisonerSummary = aValidPrisonerSummary()
       req.session.prisonerSummary = prisonerSummary
@@ -184,8 +182,6 @@ describe('qualificationsListUpdateController', () => {
     it('should update Induction but not call API and redirect to Education and Training tab given page submitted with removeQualification', async () => {
       // Given
       req.user.token = 'some-token'
-      const prisonNumber = 'A1234BC'
-      req.params.prisonNumber = prisonNumber
 
       const prisonerSummary = aValidPrisonerSummary()
       req.session.prisonerSummary = prisonerSummary
@@ -226,8 +222,6 @@ describe('qualificationsListUpdateController', () => {
   it('should redirect to Qualification Level page given page submitted with addQualification', async () => {
     // Given
     req.user.token = 'some-token'
-    const prisonNumber = 'A1234BC'
-    req.params.prisonNumber = prisonNumber
 
     const prisonerSummary = aValidPrisonerSummary()
     req.session.prisonerSummary = prisonerSummary

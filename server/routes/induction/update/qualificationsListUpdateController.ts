@@ -1,12 +1,11 @@
 import createError from 'http-errors'
 import { NextFunction, Request, RequestHandler, Response } from 'express'
 import type { InductionDto } from 'inductionDto'
-import type { PageFlow } from 'viewModels'
 import QualificationsListController from '../common/qualificationsListController'
 import logger from '../../../../logger'
 import { InductionService } from '../../../services'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
-import { setCurrentPage, getPreviousPage, isPageInFlow } from '../../pageFlowHistory'
+import { setCurrentPage, getPreviousPage, isPageInFlow, buildNewPageFlowHistory } from '../../pageFlowHistory'
 import getDynamicBackLinkAriaText from '../dynamicAriaTextResolver'
 import EducationLevelValue from '../../../enums/educationLevelValue'
 
@@ -56,7 +55,7 @@ export default class QualificationsListUpdateController extends QualificationsLi
 
     if (userClickedOnButton(req, 'addQualification')) {
       if (!req.session.pageFlowHistory) {
-        req.session.pageFlowHistory = this.buildPageFlowHistory(prisonNumber)
+        req.session.pageFlowHistory = buildNewPageFlowHistory(req)
       }
       return res.redirect(`/prisoners/${prisonNumber}/induction/qualification-level`)
     }
@@ -96,14 +95,6 @@ export default class QualificationsListUpdateController extends QualificationsLi
     } catch (e) {
       logger.error(`Error updating Induction for prisoner ${prisonNumber}`, e)
       return next(createError(500, `Error updating Induction for prisoner ${prisonNumber}. Error: ${e}`))
-    }
-  }
-
-  buildPageFlowHistory = (prisonNumber: string): PageFlow => {
-    const pageUrls = [`/prisoners/${prisonNumber}/induction/qualifications`]
-    return {
-      pageUrls,
-      currentPageIndex: 0,
     }
   }
 }

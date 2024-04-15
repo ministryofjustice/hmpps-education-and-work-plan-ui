@@ -22,12 +22,15 @@ describe('workInterestRolesUpdateController', () => {
   const inductionService = new InductionService(null) as jest.Mocked<InductionService>
   const controller = new WorkInterestRolesUpdateController(inductionService)
 
+  const prisonNumber = 'A1234BC'
+
   const req = {
     session: {} as SessionData,
     body: {},
     user: {} as Express.User,
     params: {} as Record<string, string>,
     flash: jest.fn(),
+    path: '',
   }
   const res = {
     redirect: jest.fn(),
@@ -43,6 +46,8 @@ describe('workInterestRolesUpdateController', () => {
     req.body = {}
     req.user = {} as Express.User
     req.params = {} as Record<string, string>
+    req.params.prisonNumber = prisonNumber
+    req.path = `/prisoners/${prisonNumber}/induction/work-interest-roles`
 
     errors = []
   })
@@ -50,9 +55,6 @@ describe('workInterestRolesUpdateController', () => {
   describe('getWorkInterestRolesView', () => {
     it('should get the Work Interest Roles view given there is no WorkInterestRolesForm on the session', async () => {
       // Given
-      const prisonNumber = 'A1234BC'
-      req.params.prisonNumber = prisonNumber
-
       const prisonerSummary = aValidPrisonerSummary()
       req.session.prisonerSummary = prisonerSummary
       const inductionDto = aLongQuestionSetInductionDto()
@@ -91,9 +93,6 @@ describe('workInterestRolesUpdateController', () => {
 
     it('should get the Work Interest Roles view given there is an WorkInterestRolesForm already on the session', async () => {
       // Given
-      const prisonNumber = 'A1234BC'
-      req.params.prisonNumber = prisonNumber
-
       const prisonerSummary = aValidPrisonerSummary()
       req.session.prisonerSummary = prisonerSummary
       const inductionDto = aLongQuestionSetInductionDto()
@@ -132,9 +131,6 @@ describe('workInterestRolesUpdateController', () => {
 
     it('should get the Work Interest Roles view given there is an updateInductionQuestionSet on the session', async () => {
       // Given
-      const prisonNumber = 'A1234BC'
-      req.params.prisonNumber = prisonNumber
-
       const prisonerSummary = aValidPrisonerSummary()
       req.session.prisonerSummary = prisonerSummary
       const inductionDto = aLongQuestionSetInductionDto()
@@ -191,8 +187,6 @@ describe('workInterestRolesUpdateController', () => {
     it('should update Induction and call API and redirect to work and interests page', async () => {
       // Given
       req.user.token = 'some-token'
-      const prisonNumber = 'A1234BC'
-      req.params.prisonNumber = prisonNumber
 
       const prisonerSummary = aValidPrisonerSummary()
       req.session.prisonerSummary = prisonerSummary
@@ -250,8 +244,6 @@ describe('workInterestRolesUpdateController', () => {
     it('should update InductionDto and redirect to Personal Skills given long question set journey', async () => {
       // Given
       req.user.token = 'some-token'
-      const prisonNumber = 'A1234BC'
-      req.params.prisonNumber = prisonNumber
 
       const prisonerSummary = aValidPrisonerSummary()
       req.session.prisonerSummary = prisonerSummary
@@ -313,8 +305,6 @@ describe('workInterestRolesUpdateController', () => {
     it('should not update Induction given error calling service', async () => {
       // Given
       req.user.token = 'some-token'
-      const prisonNumber = 'A1234BC'
-      req.params.prisonNumber = prisonNumber
 
       const prisonerSummary = aValidPrisonerSummary()
       req.session.prisonerSummary = prisonerSummary

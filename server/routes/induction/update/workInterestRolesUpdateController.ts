@@ -2,12 +2,11 @@ import { NextFunction, Request, RequestHandler, Response } from 'express'
 import createError from 'http-errors'
 import type { InductionDto } from 'inductionDto'
 import type { WorkInterestRolesForm } from 'inductionForms'
-import type { PageFlow } from 'viewModels'
 import WorkInterestRolesController from '../common/workInterestRolesController'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
 import logger from '../../../../logger'
 import { InductionService } from '../../../services'
-import { getPreviousPage } from '../../pageFlowHistory'
+import { buildNewPageFlowHistory, getPreviousPage } from '../../pageFlowHistory'
 import getDynamicBackLinkAriaText from '../dynamicAriaTextResolver'
 
 /**
@@ -49,7 +48,7 @@ export default class WorkInterestRolesUpdateController extends WorkInterestRoles
     if (req.session.updateInductionQuestionSet) {
       req.session.inductionDto = updatedInduction
       const nextPage = `/prisoners/${prisonNumber}/induction/skills`
-      req.session.pageFlowHistory = this.buildPageFlowHistory(prisonNumber)
+      req.session.pageFlowHistory = buildNewPageFlowHistory(req)
       req.session.workInterestRolesForm = undefined
       return res.redirect(nextPage)
     }
@@ -84,14 +83,6 @@ export default class WorkInterestRolesUpdateController extends WorkInterestRoles
         ...inductionDto.futureWorkInterests,
         interests: updatedWorkInterests,
       },
-    }
-  }
-
-  private buildPageFlowHistory = (prisonNumber: string): PageFlow => {
-    const pageUrls = [`/prisoners/${prisonNumber}/induction/work-interest-roles`]
-    return {
-      pageUrls,
-      currentPageIndex: 0,
     }
   }
 }

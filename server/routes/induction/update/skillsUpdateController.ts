@@ -2,14 +2,13 @@ import { NextFunction, Request, RequestHandler, Response } from 'express'
 import createError from 'http-errors'
 import type { InductionDto, PersonalSkillDto } from 'inductionDto'
 import type { SkillsForm } from 'inductionForms'
-import type { PageFlow } from 'viewModels'
 import SkillsController from '../common/skillsController'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
 import logger from '../../../../logger'
 import { InductionService } from '../../../services'
 import validateSkillsForm from './skillsFormValidator'
 import SkillsValue from '../../../enums/skillsValue'
-import { getPreviousPage } from '../../pageFlowHistory'
+import { buildNewPageFlowHistory, getPreviousPage } from '../../pageFlowHistory'
 import getDynamicBackLinkAriaText from '../dynamicAriaTextResolver'
 
 /**
@@ -58,7 +57,7 @@ export default class SkillsUpdateController extends SkillsController {
     if (req.session.updateInductionQuestionSet) {
       req.session.inductionDto = updatedInduction
       const nextPage = `/prisoners/${prisonNumber}/induction/personal-interests`
-      req.session.pageFlowHistory = this.buildPageFlowHistory(prisonNumber)
+      req.session.pageFlowHistory = buildNewPageFlowHistory(req)
       req.session.skillsForm = undefined
       return res.redirect(nextPage)
     }
@@ -89,14 +88,6 @@ export default class SkillsUpdateController extends SkillsController {
         ...inductionDto.personalSkillsAndInterests,
         skills: updatedSkills,
       },
-    }
-  }
-
-  private buildPageFlowHistory = (prisonNumber: string): PageFlow => {
-    const pageUrls = [`/prisoners/${prisonNumber}/induction/skills`]
-    return {
-      pageUrls,
-      currentPageIndex: 0,
     }
   }
 }

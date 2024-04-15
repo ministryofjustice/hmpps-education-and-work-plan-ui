@@ -2,7 +2,6 @@ import { NextFunction, Request, RequestHandler, Response } from 'express'
 import createError from 'http-errors'
 import type { InductionDto } from 'inductionDto'
 import type { WorkedBeforeForm } from 'inductionForms'
-import type { PageFlow } from 'viewModels'
 import WorkedBeforeController from '../common/workedBeforeController'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
 import logger from '../../../../logger'
@@ -10,7 +9,7 @@ import { InductionService } from '../../../services'
 import validateWorkedBeforeForm from './workedBeforeFormValidator'
 import YesNoValue from '../../../enums/yesNoValue'
 import getDynamicBackLinkAriaText from '../dynamicAriaTextResolver'
-import { getPreviousPage } from '../../pageFlowHistory'
+import { buildNewPageFlowHistory, getPreviousPage } from '../../pageFlowHistory'
 
 /**
  * Controller for the Update of the Worked Before screen of the Induction.
@@ -58,7 +57,7 @@ export default class WorkedBeforeUpdateController extends WorkedBeforeController
         workedBeforeForm.hasWorkedBefore === 'YES'
           ? `/prisoners/${prisonNumber}/induction/previous-work-experience`
           : `/prisoners/${prisonNumber}/induction/work-interest-types`
-      req.session.pageFlowHistory = this.buildPageFlowHistory(prisonNumber)
+      req.session.pageFlowHistory = buildNewPageFlowHistory(req)
       req.session.workedBeforeForm = undefined
       return res.redirect(nextPage)
     }
@@ -86,14 +85,6 @@ export default class WorkedBeforeUpdateController extends WorkedBeforeController
         ...inductionDto.previousWorkExperiences,
         hasWorkedBefore: workedBeforeForm.hasWorkedBefore === YesNoValue.YES,
       },
-    }
-  }
-
-  private buildPageFlowHistory = (prisonNumber: string): PageFlow => {
-    const pageUrls = [`/prisoners/${prisonNumber}/induction/has-worked-before`]
-    return {
-      pageUrls,
-      currentPageIndex: 0,
     }
   }
 }

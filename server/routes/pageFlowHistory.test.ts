@@ -1,5 +1,13 @@
+import { Request } from 'express'
 import type { PageFlow } from 'viewModels'
-import { setCurrentPage, getPreviousPage, isFirstPage, isLastPage, isPageInFlow } from './pageFlowHistory'
+import {
+  buildNewPageFlowHistory,
+  setCurrentPage,
+  getPreviousPage,
+  isFirstPage,
+  isLastPage,
+  isPageInFlow,
+} from './pageFlowHistory'
 
 describe('pageFlowHistory', () => {
   const PAGE_FLOW_HISTORY: PageFlow = {
@@ -7,6 +15,23 @@ describe('pageFlowHistory', () => {
     currentPageIndex: 2,
   }
 
+  describe('buildNewPageFlowHistory', () => {
+    it('should builds new page flow history', () => {
+      // Given
+      const req = { path: '/prisoners/A1234BC/induction/check-your-answers' } as Request
+
+      const expected: PageFlow = {
+        pageUrls: ['/prisoners/A1234BC/induction/check-your-answers'],
+        currentPageIndex: 0,
+      }
+      // When
+
+      const actual = buildNewPageFlowHistory(req)
+
+      // Then
+      expect(actual).toEqual(expected)
+    })
+  })
   describe('getPreviousPage', () => {
     it('should get previous page given pageFlowHistory is not on the first page', () => {
       // Given

@@ -27,12 +27,15 @@ describe('highestLevelOfEducationUpdateController', () => {
   const inductionService = new InductionService(null) as jest.Mocked<InductionService>
   const controller = new HighestLevelOfEducationUpdateController(inductionService)
 
+  const prisonNumber = 'A1234BC'
+
   const req = {
     session: {} as SessionData,
     body: {},
     user: {} as Express.User,
     params: {} as Record<string, string>,
     flash: jest.fn(),
+    path: '',
   }
   const res = {
     redirect: jest.fn(),
@@ -48,6 +51,8 @@ describe('highestLevelOfEducationUpdateController', () => {
     req.body = {}
     req.user = {} as Express.User
     req.params = {} as Record<string, string>
+    req.params.prisonNumber = prisonNumber
+    req.path = `/prisoners/${prisonNumber}/induction/highest-level-of-education`
 
     errors = []
   })
@@ -55,9 +60,6 @@ describe('highestLevelOfEducationUpdateController', () => {
   describe('getHighestLevelOfEducationView', () => {
     it('should get the Highest Level of Education view given there is no HighestLevelOfEducationForm on the session', async () => {
       // Given
-      const prisonNumber = 'A1234BC'
-      req.params.prisonNumber = prisonNumber
-
       const prisonerSummary = aValidPrisonerSummary()
       req.session.prisonerSummary = prisonerSummary
       const inductionDto = aLongQuestionSetInductionDto()
@@ -94,9 +96,6 @@ describe('highestLevelOfEducationUpdateController', () => {
 
     it('should get the Highest Level of Education view given long question set journey', async () => {
       // Given
-      const prisonNumber = 'A1234BC'
-      req.params.prisonNumber = prisonNumber
-
       const prisonerSummary = aValidPrisonerSummary()
       req.session.prisonerSummary = prisonerSummary
       const inductionDto = aLongQuestionSetInductionDto()
@@ -133,9 +132,6 @@ describe('highestLevelOfEducationUpdateController', () => {
 
     it('should get the Highest Level of Education view given there is a pageFlowHistory already on the session', async () => {
       // Given
-      const prisonNumber = 'A1234BC'
-      req.params.prisonNumber = prisonNumber
-
       const prisonerSummary = aValidPrisonerSummary()
       req.session.prisonerSummary = prisonerSummary
       const inductionDto = aLongQuestionSetInductionDto()
@@ -189,9 +185,6 @@ describe('highestLevelOfEducationUpdateController', () => {
   describe('submitHighestLevelOfEducationForm', () => {
     it('should not update Induction given form is submitted with validation errors', async () => {
       // Given
-      const prisonNumber = 'A1234BC'
-      req.params.prisonNumber = prisonNumber
-
       const prisonerSummary = aValidPrisonerSummary()
       req.session.prisonerSummary = prisonerSummary
       const inductionDto = aLongQuestionSetInductionDto()
@@ -228,8 +221,6 @@ describe('highestLevelOfEducationUpdateController', () => {
     it('should update Induction given form is submitted with no changes to the Highest Level of Education', async () => {
       // Given
       req.user.token = 'some-token'
-      const prisonNumber = 'A1234BC'
-      req.params.prisonNumber = prisonNumber
 
       const prisonerSummary = aValidPrisonerSummary()
       req.session.prisonerSummary = prisonerSummary
@@ -277,8 +268,6 @@ describe('highestLevelOfEducationUpdateController', () => {
     it('should update Induction containing previous qualifications given form submitted with non exam level highest level of education', async () => {
       // Given
       req.user.token = 'some-token'
-      const prisonNumber = 'A1234BC'
-      req.params.prisonNumber = prisonNumber
 
       const prisonerSummary = aValidPrisonerSummary()
       req.session.prisonerSummary = prisonerSummary
@@ -324,8 +313,6 @@ describe('highestLevelOfEducationUpdateController', () => {
     it('should update Induction containing previous qualifications given form submitted with exam level highest level of education', async () => {
       // Given
       req.user.token = 'some-token'
-      const prisonNumber = 'A1234BC'
-      req.params.prisonNumber = prisonNumber
 
       const prisonerSummary = aValidPrisonerSummary()
       req.session.prisonerSummary = prisonerSummary
@@ -371,8 +358,6 @@ describe('highestLevelOfEducationUpdateController', () => {
     it('should update Induction containing no previous qualifications given form submitted with non exam level highest level of education', async () => {
       // Given
       req.user.token = 'some-token'
-      const prisonNumber = 'A1234BC'
-      req.params.prisonNumber = prisonNumber
 
       const prisonerSummary = aValidPrisonerSummary()
       req.session.prisonerSummary = prisonerSummary
@@ -418,8 +403,6 @@ describe('highestLevelOfEducationUpdateController', () => {
     it('should update Induction containing no previous qualifications given form submitted with exam level highest level of education', async () => {
       // Given
       req.user.token = 'some-token'
-      const prisonNumber = 'A1234BC'
-      req.params.prisonNumber = prisonNumber
 
       const prisonerSummary = aValidPrisonerSummary()
       req.session.prisonerSummary = prisonerSummary
@@ -463,8 +446,6 @@ describe('highestLevelOfEducationUpdateController', () => {
     it('should not update Induction given error calling service', async () => {
       // Given
       req.user.token = 'some-token'
-      const prisonNumber = 'A1234BC'
-      req.params.prisonNumber = prisonNumber
 
       const prisonerSummary = aValidPrisonerSummary()
       req.session.prisonerSummary = prisonerSummary

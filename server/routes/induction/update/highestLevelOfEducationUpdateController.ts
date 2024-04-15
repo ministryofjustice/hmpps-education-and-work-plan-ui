@@ -2,14 +2,13 @@ import createError from 'http-errors'
 import { NextFunction, Request, RequestHandler, Response } from 'express'
 import type { InductionDto } from 'inductionDto'
 import type { HighestLevelOfEducationForm } from 'inductionForms'
-import type { PageFlow } from 'viewModels'
 import HighestLevelOfEducationController from '../common/highestLevelOfEducationController'
 import { InductionService } from '../../../services'
 import validateHighestLevelOfEducationForm from './highestLevelOfEducationFormValidator'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
 import EducationLevelValue from '../../../enums/educationLevelValue'
 import logger from '../../../../logger'
-import { getPreviousPage } from '../../pageFlowHistory'
+import { buildNewPageFlowHistory, getPreviousPage } from '../../pageFlowHistory'
 import getDynamicBackLinkAriaText from '../dynamicAriaTextResolver'
 
 /**
@@ -89,17 +88,9 @@ export default class HighestLevelOfEducationUpdateController extends HighestLeve
 
       // if there is no page history (i.e. because we're not changing the main question set), start one here before commencing the add qualification mini flow
       if (!req.session.pageFlowHistory) {
-        req.session.pageFlowHistory = this.buildPageFlowHistory(prisonNumber)
+        req.session.pageFlowHistory = buildNewPageFlowHistory(req)
       }
       return res.redirect(`/prisoners/${prisonNumber}/induction/qualification-level`)
-    }
-  }
-
-  buildPageFlowHistory = (prisonNumber: string): PageFlow => {
-    const pageUrls = [`/prisoners/${prisonNumber}/induction/highest-level-of-education`]
-    return {
-      pageUrls,
-      currentPageIndex: 0,
     }
   }
 }
