@@ -2,7 +2,7 @@ const prisoners = {
   A00001A: {
     request: {
       method: 'GET',
-      urlPattern: '/prisoner/A00001A',
+      urlPattern: '/prisoner-search-api/prisoner/A00001A',
     },
     response: {
       status: 200,
@@ -23,7 +23,7 @@ const prisoners = {
   H4115SD: {
     request: {
       method: 'GET',
-      urlPattern: '/prisoner/H4115SD',
+      urlPattern: '/prisoner-search-api/prisoner/H4115SD',
     },
     response: {
       status: 200,
@@ -44,7 +44,7 @@ const prisoners = {
   G5005GD: {
     request: {
       method: 'GET',
-      urlPattern: '/prisoner/G5005GD',
+      urlPattern: '/prisoner-search-api/prisoner/G5005GD',
     },
     response: {
       status: 200,
@@ -65,7 +65,7 @@ const prisoners = {
   G6115VJ: {
     request: {
       method: 'GET',
-      urlPattern: '/prisoner/G6115VJ',
+      urlPattern: '/prisoner-search-api/prisoner/G6115VJ',
     },
     response: {
       status: 200,

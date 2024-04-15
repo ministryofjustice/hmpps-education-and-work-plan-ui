@@ -5,6 +5,7 @@ import { SuperAgentRequest } from 'superagent'
 import { stubFor } from './wiremock'
 import actionPlans from '../mockData/actionPlanByPrisonNumberData'
 import timelinesKeyedByPrisonNumber from '../mockData/timelineData'
+import stubPing from './common'
 
 const createGoals = (): SuperAgentRequest =>
   stubFor({
@@ -734,6 +735,8 @@ export default {
 
   stubUpdateInduction,
   stubUpdateInduction500Error,
+
+  stubEducationAndWorkPlanApiPing: stubPing(),
 }
 
 /**

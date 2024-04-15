@@ -3,6 +3,7 @@ import { Response } from 'superagent'
 
 import { stubFor, getMatchingRequests } from './wiremock'
 import tokenVerification from './tokenVerification'
+import stubPing from './common'
 
 const createToken = (roles: string[] = []) => {
   // authorities in the session are always prefixed by ROLE.
@@ -34,17 +35,6 @@ const favicon = () =>
     request: {
       method: 'GET',
       urlPattern: '/favicon.ico',
-    },
-    response: {
-      status: 200,
-    },
-  })
-
-const ping = () =>
-  stubFor({
-    request: {
-      method: 'GET',
-      urlPattern: '/auth/health/ping',
     },
     response: {
       status: 200,
@@ -158,7 +148,7 @@ const stubUserRoles = () =>
 
 export default {
   getSignInUrl,
-  stubAuthPing: ping,
+  stubAuthPing: stubPing('auth'),
   stubSignIn: (roles: string[]): Promise<[Response, Response, Response, Response, Response, Response]> =>
     Promise.all([favicon(), redirect(), signOut(), manageDetails(), token(roles), tokenVerification.stubVerifyToken()]),
   stubAuthUser: (name = 'john smith'): Promise<[Response, Response]> => Promise.all([stubUser(name), stubUserRoles()]),
