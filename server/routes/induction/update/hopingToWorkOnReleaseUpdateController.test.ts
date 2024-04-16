@@ -28,12 +28,15 @@ describe('hopingToWorkOnReleaseUpdateController', () => {
   const inductionService = new InductionService(null) as jest.Mocked<InductionService>
   const controller = new HopingToWorkOnReleaseUpdateController(inductionService)
 
+  const prisonNumber = 'A1234BC'
+
   const req = {
     session: {} as SessionData,
     body: {},
     user: {} as Express.User,
     params: {} as Record<string, string>,
     flash: jest.fn(),
+    path: '',
   }
   const res = {
     redirect: jest.fn(),
@@ -49,6 +52,8 @@ describe('hopingToWorkOnReleaseUpdateController', () => {
     req.body = {}
     req.user = {} as Express.User
     req.params = {} as Record<string, string>
+    req.params.prisonNumber = prisonNumber
+    req.path = `/prisoners/${prisonNumber}/induction/hoping-to-work-on-release`
 
     errors = []
   })
@@ -56,9 +61,6 @@ describe('hopingToWorkOnReleaseUpdateController', () => {
   describe('getHopingToWorkOnReleaseView', () => {
     it('should get the Hoping To Work On Release view given there is no HopingToWorkOnReleaseForm on the session', async () => {
       // Given
-      const prisonNumber = 'A1234BC'
-      req.params.prisonNumber = prisonNumber
-
       const prisonerSummary = aValidPrisonerSummary()
       req.session.prisonerSummary = prisonerSummary
       const inductionDto = aLongQuestionSetInductionDto()
@@ -92,9 +94,6 @@ describe('hopingToWorkOnReleaseUpdateController', () => {
 
     it('should get the Hoping To Work On Release view given there is a HopingToWorkOnReleaseForm already on the session', async () => {
       // Given
-      const prisonNumber = 'A1234BC'
-      req.params.prisonNumber = prisonNumber
-
       const prisonerSummary = aValidPrisonerSummary()
       req.session.prisonerSummary = prisonerSummary
       const inductionDto = aLongQuestionSetInductionDto()
@@ -130,9 +129,6 @@ describe('hopingToWorkOnReleaseUpdateController', () => {
   describe('submitHopingToWorkOnReleaseForm', () => {
     it('should not update Induction given form is submitted with validation errors', async () => {
       // Given
-      const prisonNumber = 'A1234BC'
-      req.params.prisonNumber = prisonNumber
-
       const prisonerSummary = aValidPrisonerSummary()
       req.session.prisonerSummary = prisonerSummary
       const inductionDto = aLongQuestionSetInductionDto()
@@ -176,8 +172,6 @@ describe('hopingToWorkOnReleaseUpdateController', () => {
       it(`should update Induction whose current value is ${spec.inductionValue} given form is submitted with value ${spec.formValue} `, async () => {
         // Given
         req.user.token = 'some-token'
-        const prisonNumber = 'A1234BC'
-        req.params.prisonNumber = prisonNumber
 
         const prisonerSummary = aValidPrisonerSummary()
         req.session.prisonerSummary = prisonerSummary

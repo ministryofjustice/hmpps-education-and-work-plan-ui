@@ -2,13 +2,13 @@ import createError from 'http-errors'
 import { NextFunction, Request, RequestHandler, Response } from 'express'
 import type { InductionDto } from 'inductionDto'
 import type { HopingToWorkOnReleaseForm } from 'inductionForms'
-import type { PageFlow } from 'viewModels'
 import HopingToWorkOnReleaseController from '../common/hopingToWorkOnReleaseController'
 import validateHopingToWorkOnReleaseForm from './hopingToWorkOnReleaseFormValidator'
 import { InductionService } from '../../../services'
 import HopingToGetWorkValue from '../../../enums/hopingToGetWorkValue'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
 import logger from '../../../../logger'
+import { buildNewPageFlowHistory } from '../../pageFlowHistory'
 
 export default class HopingToWorkOnReleaseUpdateController extends HopingToWorkOnReleaseController {
   constructor(private readonly inductionService: InductionService) {
@@ -53,7 +53,7 @@ export default class HopingToWorkOnReleaseUpdateController extends HopingToWorkO
           ? `/prisoners/${prisonNumber}/induction/qualifications`
           : `/prisoners/${prisonNumber}/induction/reasons-not-to-get-work`
       // start of the flow - always initialise the page history here
-      req.session.pageFlowHistory = this.buildPageFlowHistory(prisonNumber)
+      req.session.pageFlowHistory = buildNewPageFlowHistory(req)
       return res.redirect(nextPage)
     }
 
@@ -68,13 +68,6 @@ export default class HopingToWorkOnReleaseUpdateController extends HopingToWorkO
     req.session.hopingToWorkOnReleaseForm = undefined
     req.session.inductionDto = undefined
     return res.redirect(`/plan/${prisonNumber}/view/work-and-interests`)
-  }
-
-  buildPageFlowHistory = (prisonNumber: string): PageFlow => {
-    return {
-      pageUrls: [`/prisoners/${prisonNumber}/induction/hoping-to-work-on-release`],
-      currentPageIndex: 0,
-    }
   }
 }
 

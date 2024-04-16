@@ -26,12 +26,15 @@ describe('additionalTrainingUpdateController', () => {
   const inductionService = new InductionService(null) as jest.Mocked<InductionService>
   const controller = new AdditionalTrainingUpdateController(inductionService)
 
+  const prisonNumber = 'A1234BC'
+
   const req = {
     session: {} as SessionData,
     body: {},
     user: {} as Express.User,
     params: {} as Record<string, string>,
     flash: jest.fn(),
+    path: '',
   }
   const res = {
     redirect: jest.fn(),
@@ -47,6 +50,8 @@ describe('additionalTrainingUpdateController', () => {
     req.body = {}
     req.user = {} as Express.User
     req.params = {} as Record<string, string>
+    req.params.prisonNumber = prisonNumber
+    req.path = `/prisoners/${prisonNumber}/induction/additional-training`
 
     errors = []
   })
@@ -54,9 +59,6 @@ describe('additionalTrainingUpdateController', () => {
   describe('getAdditionalTrainingView', () => {
     it('should get Additional Training view given there is no AdditionalTrainingForm on the session', async () => {
       // Given
-      const prisonNumber = 'A1234BC'
-      req.params.prisonNumber = prisonNumber
-
       const prisonerSummary = aValidPrisonerSummary()
       req.session.prisonerSummary = prisonerSummary
       const inductionDto = aShortQuestionSetInductionDto()
@@ -90,9 +92,6 @@ describe('additionalTrainingUpdateController', () => {
 
     it('should get the Additional Training view given there is an AdditionalTrainingForm already on the session', async () => {
       // Given
-      const prisonNumber = 'A1234BC'
-      req.params.prisonNumber = prisonNumber
-
       const prisonerSummary = aValidPrisonerSummary()
       req.session.prisonerSummary = prisonerSummary
       const inductionDto = aShortQuestionSetInductionDto()
@@ -127,9 +126,6 @@ describe('additionalTrainingUpdateController', () => {
 
     it('should get Additional Training view given there is an updateInductionQuestionSet on the session', async () => {
       // Given
-      const prisonNumber = 'A1234BC'
-      req.params.prisonNumber = prisonNumber
-
       const prisonerSummary = aValidPrisonerSummary()
       req.session.prisonerSummary = prisonerSummary
       const inductionDto = aShortQuestionSetInductionDto()
@@ -177,9 +173,6 @@ describe('additionalTrainingUpdateController', () => {
   describe('submitAdditionalTrainingForm', () => {
     it('should not update Induction given form is submitted with validation errors', async () => {
       // Given
-      const prisonNumber = 'A1234BC'
-      req.params.prisonNumber = prisonNumber
-
       const prisonerSummary = aValidPrisonerSummary()
       req.session.prisonerSummary = prisonerSummary
       const inductionDto = aShortQuestionSetInductionDto()
@@ -217,8 +210,6 @@ describe('additionalTrainingUpdateController', () => {
     it('should update Induction and call API and redirect to education and training page', async () => {
       // Given
       req.user.token = 'some-token'
-      const prisonNumber = 'A1234BC'
-      req.params.prisonNumber = prisonNumber
 
       const prisonerSummary = aValidPrisonerSummary()
       req.session.prisonerSummary = prisonerSummary
@@ -262,8 +253,6 @@ describe('additionalTrainingUpdateController', () => {
     it('should update InductionDto and redirect to Has Worked Before view given long question set journey', async () => {
       // Given
       req.user.token = 'some-token'
-      const prisonNumber = 'A1234BC'
-      req.params.prisonNumber = prisonNumber
 
       const prisonerSummary = aValidPrisonerSummary()
       req.session.prisonerSummary = prisonerSummary
@@ -308,8 +297,6 @@ describe('additionalTrainingUpdateController', () => {
     it('should update InductionDto and redirect to In Prison Work view given short question set journey', async () => {
       // Given
       req.user.token = 'some-token'
-      const prisonNumber = 'A1234BC'
-      req.params.prisonNumber = prisonNumber
 
       const prisonerSummary = aValidPrisonerSummary()
       req.session.prisonerSummary = prisonerSummary
@@ -354,8 +341,6 @@ describe('additionalTrainingUpdateController', () => {
     it('should not update Induction given error calling service', async () => {
       // Given
       req.user.token = 'some-token'
-      const prisonNumber = 'A1234BC'
-      req.params.prisonNumber = prisonNumber
 
       const prisonerSummary = aValidPrisonerSummary()
       req.session.prisonerSummary = prisonerSummary

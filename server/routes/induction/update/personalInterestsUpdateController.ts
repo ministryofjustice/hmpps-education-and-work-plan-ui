@@ -2,14 +2,13 @@ import { NextFunction, Request, RequestHandler, Response } from 'express'
 import createError from 'http-errors'
 import type { InductionDto, PersonalInterestDto } from 'inductionDto'
 import type { PersonalInterestsForm } from 'inductionForms'
-import type { PageFlow } from 'viewModels'
 import PersonalInterestsController from '../common/personalInterestsController'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
 import logger from '../../../../logger'
 import { InductionService } from '../../../services'
 import validatePersonalInterestsForm from './personalInterestsFormValidator'
 import PersonalInterestsValue from '../../../enums/personalInterestsValue'
-import { getPreviousPage } from '../../pageFlowHistory'
+import { buildNewPageFlowHistory, getPreviousPage } from '../../pageFlowHistory'
 import getDynamicBackLinkAriaText from '../dynamicAriaTextResolver'
 
 /**
@@ -62,7 +61,7 @@ export default class PersonalInterestsUpdateController extends PersonalInterests
     if (req.session.updateInductionQuestionSet) {
       req.session.inductionDto = updatedInduction
       const nextPage = `/prisoners/${prisonNumber}/induction/affect-ability-to-work`
-      req.session.pageFlowHistory = this.buildPageFlowHistory(prisonNumber)
+      req.session.pageFlowHistory = buildNewPageFlowHistory(req)
       req.session.personalInterestsForm = undefined
       return res.redirect(nextPage)
     }
@@ -97,14 +96,6 @@ export default class PersonalInterestsUpdateController extends PersonalInterests
         ...inductionDto.personalSkillsAndInterests,
         interests: updatedInterests,
       },
-    }
-  }
-
-  private buildPageFlowHistory = (prisonNumber: string): PageFlow => {
-    const pageUrls = [`/prisoners/${prisonNumber}/induction/personal-interests`]
-    return {
-      pageUrls,
-      currentPageIndex: 0,
     }
   }
 }
