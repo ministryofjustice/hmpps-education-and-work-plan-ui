@@ -8,6 +8,8 @@ import logger from '../../../../logger'
 import { InductionService } from '../../../services'
 import validatePersonalInterestsForm from './personalInterestsFormValidator'
 import PersonalInterestsValue from '../../../enums/personalInterestsValue'
+import { buildNewPageFlowHistory, getPreviousPage } from '../../pageFlowHistory'
+import getDynamicBackLinkAriaText from '../dynamicAriaTextResolver'
 
 /**
  * Controller for the Update of the Personal Interests screen of the Induction.
@@ -19,12 +21,15 @@ export default class PersonalInterestsUpdateController extends PersonalInterests
 
   getBackLinkUrl(req: Request): string {
     const { prisonNumber } = req.params
+    const { pageFlowHistory } = req.session
+    if (pageFlowHistory) {
+      return getPreviousPage(pageFlowHistory)
+    }
     return `/plan/${prisonNumber}/view/work-and-interests`
   }
 
   getBackLinkAriaText(req: Request): string {
-    const { prisonerSummary } = req.session
-    return `Back to ${prisonerSummary.firstName} ${prisonerSummary.lastName}'s learning and work progress`
+    return getDynamicBackLinkAriaText(req, this.getBackLinkUrl(req))
   }
 
   submitPersonalInterestsForm: RequestHandler = async (
@@ -52,9 +57,17 @@ export default class PersonalInterestsUpdateController extends PersonalInterests
     }
 
     const updatedInduction = this.updatedInductionDtoWithPersonalInterests(inductionDto, personalInterestsForm)
-    const updateInductionDto = toCreateOrUpdateInductionDto(prisonId, updatedInduction)
+
+    if (req.session.updateInductionQuestionSet) {
+      req.session.inductionDto = updatedInduction
+      const nextPage = `/prisoners/${prisonNumber}/induction/affect-ability-to-work`
+      req.session.pageFlowHistory = buildNewPageFlowHistory(req)
+      req.session.personalInterestsForm = undefined
+      return res.redirect(nextPage)
+    }
 
     try {
+      const updateInductionDto = toCreateOrUpdateInductionDto(prisonId, updatedInduction)
       await this.inductionService.updateInduction(prisonNumber, updateInductionDto, req.user.token)
 
       req.session.personalInterestsForm = undefined

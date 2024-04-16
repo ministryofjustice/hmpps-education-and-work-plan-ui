@@ -19,7 +19,7 @@ describe('goalTitleValidator', () => {
     const errors = validateGoalTitle()
 
     // Then
-    expect(errors).toStrictEqual(['Enter the goal'])
+    expect(errors).toStrictEqual(['Enter the goal description'])
   })
 
   it('should validate given an empty goal title', () => {
@@ -29,7 +29,7 @@ describe('goalTitleValidator', () => {
     // When
     const errors = validateGoalTitle(title)
 
-    expect(errors).toStrictEqual(['Enter the goal'])
+    expect(errors).toStrictEqual(['Enter the goal description'])
   })
 
   it('should validate given a title that is too long', () => {
@@ -39,6 +39,6 @@ describe('goalTitleValidator', () => {
     // When
     const errors = validateGoalTitle(title)
 
-    expect(errors).toStrictEqual(['Goal must be 512 characters or less'])
+    expect(errors).toStrictEqual(['The goal description must be 512 characters or less'])
   })
 })

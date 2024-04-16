@@ -39,7 +39,23 @@
             <h2 class="govuk-summary-card__title">
               Goal {{ goalLoop.index }}
             </h2>
+            <ul class="govuk-summary-card__actions govuk-!-display-none-print govuk-!-margin-0">
+              <li class="govuk-summary-card__action">
+                {% if goalLoop.length > 1 %}
+                  {{ govukButton({
+                    name: "action",
+                    value: "remove-goal|" + goalLoop.index0,
+                    text: "Remove goal",
+                    classes: "govuk-button--secondary govuk-!-margin-bottom-0",
+                    attributes: {
+                      'data-qa': 'remove-goal-button'
+                    }
+                  }) }}
+                {% endif %}
+              </li>
+            </ul>
           </div>
+
           <div class="govuk-summary-card__content">
 
             {{ govukCharacterCount({
@@ -50,6 +66,10 @@
               label: {
                 text: "Describe the goal",
                 classes: "govuk-label--s"
+              },
+              charactersOverLimitText: {
+                one: 'Goal must be 512 characters or less',
+                other: 'Goal must be 512 characters or less'
               },
               errorMessage: errors | findError("goals[" + goalLoop.index0 + "].title")
             }) }}
@@ -69,7 +89,7 @@
                 id: "goals[" + goalLoop.index0 + "].another-date",
                 fieldset: {
                   legend: {
-                    text: "What date are they aiming to achieve this by?",
+                    text: "When are they aiming to achieve this goal by?",
                     classes: "govuk-visually-hidden"
                   }
                 },
@@ -113,11 +133,11 @@
 
             {{ govukRadios({
               name: "goals[" + goalLoop.index0 + "][targetCompletionDate]",
-              id: "goals[" + goalLoop.index0 + "].targetCompletionDate",
+              idPrefix: "goals[" + goalLoop.index0 + "].targetCompletionDate",
               value: form.goals[(goalLoop.index0)].targetCompletionDate,
               fieldset: {
                 legend: {
-                  text: "When are they aiming to achieve this by?",
+                  text: "When are they aiming to achieve this goal by?",
                   classes: "govuk-fieldset__legend--s"
                 }
               },
@@ -125,10 +145,20 @@
               errorMessage: errors | findError("goals[" + goalLoop.index0 + "].targetCompletionDate")
             }) }}
 
+            <h3 class="govuk-heading-s">Add steps to help them achieve this goal</h3>
+
             {% for steps in form.goals[goalLoop.index0].steps %}
               {% set stepLoop = loop %}
-              <div class="govuk-form-group">
-                {% set stepTitleLabel = 'Step ' + stepLoop.index %}
+
+              {% call govukFieldset({
+                classes: 'moj-add-another__item',
+                legend: {
+                  text: 'Description and actions for step ' + stepLoop.index + ' of goal ' + goalLoop.index,
+                  classes: 'govuk-visually-hidden',
+                  isPageHeading: false
+                }
+              }) %}
+
                 {{ govukCharacterCount({
                   name: "goals[" + goalLoop.index0 + "][steps][" + stepLoop.index0 + "][title]",
                   id: "goals[" + goalLoop.index0 + "].steps[" + stepLoop.index0 + "].title",
@@ -136,16 +166,32 @@
                   maxlength: 512,
                   rows: 2,
                   label: {
-                    text: stepTitleLabel,
+                    text: 'Step ' + stepLoop.index,
                     classes: "govuk-label--s",
                     isPageHeading: false
                   },
                   hint: {
                     text: "Describe this step"
                   },
+                  charactersOverLimitText: {
+                    one: 'Step must be 512 characters or less',
+                    other: 'Step must be 512 characters or less'
+                  },
                   errorMessage: errors | findError('goals[' + goalLoop.index0 + '].steps[' + stepLoop.index0 + '].title')
                 }) }}
-              </div>
+
+                {% if stepLoop.length > 1 %}
+                  {{ govukButton({
+                    name: "action",
+                    value: "remove-step|" + goalLoop.index0 + "|" + stepLoop.index0,
+                    text: "Remove step",
+                    classes: "govuk-button--secondary moj-add-another__remove-button",
+                    attributes: {
+                      'data-qa': 'remove-step-button'
+                    }
+                  }) }}
+                {% endif %}
+              {% endcall %}
             {% endfor %}
 
             <div class="govuk-form-group govuk-!-margin-bottom-2">
@@ -165,7 +211,7 @@
                     Add a note to this goal (optional)
                   </label>
                 </h1>
-                <div class="govuk-warning-text govuk-!-margin-top-4" id="warning-text">
+                <div class="govuk-warning-text govuk-!-margin-top-4">
                   <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
                   <strong class="govuk-warning-text__text">
                     <span class="govuk-visually-hidden">Warning</span>
@@ -180,6 +226,16 @@
           </div>
         </div>
         {% endfor %}
+
+        <div class="govuk-form-group">
+          {{ govukButton({
+            id: "add-another-goal-button",
+            name: "action",
+            value: "add-another-goal",
+            text: "Add another goal",
+            classes: "govuk-button--secondary"
+          }) }}
+        </div>
 
         {{ govukButton({
           id: "submit-button",

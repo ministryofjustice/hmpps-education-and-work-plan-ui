@@ -1,9 +1,22 @@
+import { Request } from 'express'
 import type { PageFlow } from 'viewModels'
 
 /**
  * Module exposing utility functions that operate on [PageFlow] instances. This is to maintain a history of pages
  * that have been visited as part of a journey (e.g. for back links on forms).
  */
+
+/**
+ * Builds and returns a new [PageFlow] instance to be used as a Page Flow History, using the current route as the
+ * initial page in the history.
+ */
+const buildNewPageFlowHistory = (req: Request): PageFlow => {
+  const pageUrls = [req.path]
+  return {
+    pageUrls,
+    currentPageIndex: 0,
+  }
+}
 
 /**
  * Either adds the provided page url to the last position in the specified [PageFlow], or if the page has been
@@ -70,4 +83,4 @@ const setCurrentPageIndex = (pageFlowHistory: PageFlow, currentPagePath: string)
   return pageFlowHistory
 }
 
-export { setCurrentPage, getPreviousPage, isFirstPage, isLastPage, isPageInFlow }
+export { buildNewPageFlowHistory, setCurrentPage, getPreviousPage, isFirstPage, isLastPage, isPageInFlow }

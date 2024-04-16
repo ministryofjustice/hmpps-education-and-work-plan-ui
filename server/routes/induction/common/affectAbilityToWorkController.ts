@@ -21,6 +21,12 @@ export default abstract class AffectAbilityToWorkController extends InductionCon
     const affectAbilityToWorkForm = req.session.affectAbilityToWorkForm || toAffectAbilityToWorkForm(inductionDto)
     req.session.affectAbilityToWorkForm = undefined
 
+    // Check if we are in the midst of changing the main induction question set (in this case from short route to long route)
+    if (req.session.updateInductionQuestionSet) {
+      const { prisonNumber } = req.params
+      this.addCurrentPageToHistory(req, `/prisoners/${prisonNumber}/induction/affect-ability-to-work`)
+    }
+
     const view = new AffectAbilityToWorkView(
       prisonerSummary,
       this.getBackLinkUrl(req),

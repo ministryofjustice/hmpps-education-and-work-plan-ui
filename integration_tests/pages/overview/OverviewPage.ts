@@ -133,36 +133,50 @@ export default class OverviewPage extends Page {
     return this
   }
 
-  prisonNumberLabel = (): PageElement => cy.get('[data-qa=prison-number]')
+  hasGoalsCreatedSuccessfullyMessage(): OverviewPage {
+    this.goalCreationSuccessMessage().should('be.visible')
+    return this
+  }
 
-  activeTab = (): PageElement => cy.get('.moj-sub-navigation__link[aria-current=page]')
+  doesNotHaveGoalsCreatedSuccessfullyMessage(): OverviewPage {
+    this.goalCreationSuccessMessage().should('not.exist')
+    return this
+  }
 
-  addGoalButton = (): PageElement => cy.get('#add-goal-button')
+  private prisonNumberLabel = (): PageElement => cy.get('[data-qa=prison-number]')
 
-  functionalSkillsSidebarTable = (): PageElement => cy.get('#functional-skills-sidebar-table')
+  private activeTab = (): PageElement => cy.get('.moj-sub-navigation__link[aria-current=page]')
 
-  functionalSkillsSidebarErrorHeading = (): PageElement => cy.get('[data-qa=functional-skills-sidebar-error-heading]')
+  private addGoalButton = (): PageElement => cy.get('#add-goal-button')
 
-  mostRecentQualificationsSidebarTable = (): PageElement => cy.get('#qualifications-achievements-sidebar-table')
+  private functionalSkillsSidebarTable = (): PageElement => cy.get('#functional-skills-sidebar-table')
 
-  mostRecentQualificationsSidebarErrorHeading = (): PageElement =>
+  private functionalSkillsSidebarErrorHeading = (): PageElement =>
+    cy.get('[data-qa=functional-skills-sidebar-error-heading]')
+
+  private mostRecentQualificationsSidebarTable = (): PageElement => cy.get('#qualifications-achievements-sidebar-table')
+
+  private mostRecentQualificationsSidebarErrorHeading = (): PageElement =>
     cy.get('[data-qa=qualifications-achievements-sidebar-error-heading]')
 
-  goalSummaryCards = (): PageElement => cy.get('[data-qa=goal-summary-card]')
+  private goalSummaryCards = (): PageElement => cy.get('[data-qa=goal-summary-card]')
 
-  goalUpdateButton = (idx: number): PageElement => cy.get(`[data-qa=goal-${idx}-update-button]`)
+  private goalUpdateButton = (idx: number): PageElement => cy.get(`[data-qa=goal-${idx}-update-button]`)
 
-  workExperienceSummaryCard = (): PageElement => cy.get('#work-experience-summary-card')
+  private workExperienceSummaryCard = (): PageElement => cy.get('#work-experience-summary-card')
 
-  viewAllFunctionalSkillsButton = (): PageElement => cy.get('[data-qa=view-all-functional-skills-button]')
+  private viewAllFunctionalSkillsButton = (): PageElement => cy.get('[data-qa=view-all-functional-skills-button]')
 
-  notesExpander = (idx: number): PageElement => cy.get(`[data-qa=overview-notes-expander-${idx}]`)
+  private notesExpander = (idx: number): PageElement => cy.get(`[data-qa=overview-notes-expander-${idx}]`)
 
-  preInductionOverviewPanel = (): PageElement => cy.get('[data-qa=pre-induction-overview]')
+  private preInductionOverviewPanel = (): PageElement => cy.get('[data-qa=pre-induction-overview]')
 
-  postInductionOverviewPanel = (): PageElement => cy.get('[data-qa=post-induction-overview]')
+  private postInductionOverviewPanel = (): PageElement => cy.get('[data-qa=post-induction-overview]')
 
-  makeProgressPlanLink = (): PageElement => cy.get('[data-qa=pre-induction-overview] a.govuk-notification-banner__link')
+  private makeProgressPlanLink = (): PageElement =>
+    cy.get('[data-qa=pre-induction-overview] a.govuk-notification-banner__link')
 
-  printThisPageLink = (): PageElement => cy.get('#print-link')
+  private printThisPageLink = (): PageElement => cy.get('#print-link')
+
+  private goalCreationSuccessMessage = (): PageElement => cy.get('[data-qa=goal-creation-success-message]')
 }

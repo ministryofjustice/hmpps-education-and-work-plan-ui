@@ -19,7 +19,7 @@ describe('stepTitleValidator', () => {
     const errors = validateStepTitle()
 
     // Then
-    expect(errors).toStrictEqual(['Enter the step title'])
+    expect(errors).toStrictEqual(['Enter the step needed to work towards the goal'])
   })
 
   it('should validate given an empty step title', () => {
@@ -29,7 +29,7 @@ describe('stepTitleValidator', () => {
     // When
     const errors = validateStepTitle(title)
 
-    expect(errors).toStrictEqual(['Enter the step title'])
+    expect(errors).toStrictEqual(['Enter the step needed to work towards the goal'])
   })
 
   it('should validate given a title that is too long', () => {
@@ -39,6 +39,6 @@ describe('stepTitleValidator', () => {
     // When
     const errors = validateStepTitle(title)
 
-    expect(errors).toStrictEqual(['Step title must be 512 characters or less'])
+    expect(errors).toStrictEqual(['The step description must be 512 characters or less'])
   })
 })

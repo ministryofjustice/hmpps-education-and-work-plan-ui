@@ -18,6 +18,11 @@ export default class CreateGoalsPage extends Page {
     return this
   }
 
+  goalTitleFieldIsFocussed(goalNumber: number): CreateGoalsPage {
+    this.goalTitleField(goalNumber).should('have.focus')
+    return this
+  }
+
   setTargetCompletionDate0to3Months(goalNumber: number = 1): CreateGoalsPage {
     this.goalTargetDateRadioButtons(goalNumber).eq(0).check() // 0-3 months option is the first radio button (zero indexed)
     return this
@@ -66,8 +71,64 @@ export default class CreateGoalsPage extends Page {
     return this
   }
 
+  stepTitleIs(expectedStepTitle: string, goalNumber: number, stepNumber: number): CreateGoalsPage {
+    this.stepTitleField(goalNumber, stepNumber).should('have.value', expectedStepTitle)
+    return this
+  }
+
+  stepTitleFieldIsFocussed(goalNumber: number, stepNumber: number): CreateGoalsPage {
+    this.stepTitleField(goalNumber, stepNumber).should('have.focus')
+    return this
+  }
+
   goalHasNumberOfStepsFields(goalNumber: number, expectedNumberOfStepsFields: number): CreateGoalsPage {
-    this.goalStepTitleFields(goalNumber).should('have.length', expectedNumberOfStepsFields)
+    this.goalStepTitleFields(goalNumber) //
+      .should('be.visible')
+      .should('have.length', expectedNumberOfStepsFields)
+    return this
+  }
+
+  hasNoRemoveStepButtons(): CreateGoalsPage {
+    this.removeStepButtons().should('not.exist')
+    return this
+  }
+
+  hasNumberOfRemoveStepButtonsForGoal(goalNumber: number, expectedNumberOfButtons: number): CreateGoalsPage {
+    this.removeStepButtonsForGoal(goalNumber) //
+      .should('be.visible')
+      .should('have.length', expectedNumberOfButtons)
+    return this
+  }
+
+  removeStep(goalNumber: number, stepNumber: number): CreateGoalsPage {
+    this.removeStepButton(goalNumber, stepNumber).click()
+    return this
+  }
+
+  addNewEmptyGoal(): CreateGoalsPage {
+    this.addAnotherGoalButton().click()
+    return this
+  }
+
+  hasNoRemoveGoalButtons(): CreateGoalsPage {
+    this.removeGoalButtons().should('not.exist')
+    return this
+  }
+
+  hasNumberOfRemoveGoalButtons(expectedNumberOfButtons: number): CreateGoalsPage {
+    this.removeGoalButtons() //
+      .should('be.visible')
+      .should('have.length', expectedNumberOfButtons)
+    return this
+  }
+
+  removeGoal(goalNumber: number): CreateGoalsPage {
+    this.removeGoalButton(goalNumber).click()
+    return this
+  }
+
+  goalTitleIs(expectedGoalTitle: string, goalNumber: number): CreateGoalsPage {
+    this.goalTitleField(goalNumber).should('have.value', expectedGoalTitle)
     return this
   }
 
@@ -107,6 +168,21 @@ export default class CreateGoalsPage extends Page {
 
   private stepTitleField = (goalNumber: number, stepNumber: number): PageElement =>
     cy.get(`[name="goals[${zeroIndexed(goalNumber)}][steps][${zeroIndexed(stepNumber)}][title]"]`)
+
+  private removeStepButtons = (): PageElement => cy.get('[data-qa=remove-step-button]')
+
+  private removeStepButtonsForGoal = (goalNumber: number): PageElement =>
+    this.removeStepButtons().filter(`[value^="remove-step|${zeroIndexed(goalNumber)}|"]`)
+
+  private removeStepButton = (goalNumber: number, stepNumber: number): PageElement =>
+    this.removeStepButtonsForGoal(goalNumber).filter(`[value$="|${zeroIndexed(stepNumber)}"]`)
+
+  private addAnotherGoalButton = (): PageElement => cy.get(`#add-another-goal-button`)
+
+  private removeGoalButtons = (): PageElement => cy.get('[data-qa=remove-goal-button]')
+
+  private removeGoalButton = (goalNumber: number): PageElement =>
+    this.removeGoalButtons().filter(`[value="remove-goal|${zeroIndexed(goalNumber)}"]`)
 }
 
 const zeroIndexed = (indexNumber: number): number => Math.max(0, indexNumber - 1)

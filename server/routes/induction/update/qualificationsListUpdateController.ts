@@ -1,13 +1,13 @@
 import createError from 'http-errors'
 import { NextFunction, Request, RequestHandler, Response } from 'express'
 import type { InductionDto } from 'inductionDto'
-import type { PageFlow } from 'viewModels'
 import QualificationsListController from '../common/qualificationsListController'
 import logger from '../../../../logger'
 import { InductionService } from '../../../services'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
-import { setCurrentPage, getPreviousPage, isPageInFlow } from '../../pageFlowHistory'
+import { setCurrentPage, getPreviousPage, isPageInFlow, buildNewPageFlowHistory } from '../../pageFlowHistory'
 import getDynamicBackLinkAriaText from '../dynamicAriaTextResolver'
+import EducationLevelValue from '../../../enums/educationLevelValue'
 
 export default class QualificationsListUpdateController extends QualificationsListController {
   constructor(private readonly inductionService: InductionService) {
@@ -55,8 +55,7 @@ export default class QualificationsListUpdateController extends QualificationsLi
 
     if (userClickedOnButton(req, 'addQualification')) {
       if (!req.session.pageFlowHistory) {
-        const pageFlowHistory = this.buildPageFlowHistory(prisonNumber)
-        req.session.pageFlowHistory = pageFlowHistory
+        req.session.pageFlowHistory = buildNewPageFlowHistory(req)
       }
       return res.redirect(`/prisoners/${prisonNumber}/induction/qualification-level`)
     }
@@ -74,17 +73,19 @@ export default class QualificationsListUpdateController extends QualificationsLi
       return res.redirect(`/prisoners/${prisonNumber}/induction/highest-level-of-education`)
     }
 
+    const updatedInduction = updatedInductionDtoWithDefaultedHighestLevelOfEducation(inductionDto)
+
     // if we are changing the main question set, then proceed to additional-training without calling the API
     if (req.session.updateInductionQuestionSet) {
+      req.session.inductionDto = updatedInduction
       return res.redirect(`/prisoners/${prisonNumber}/induction/additional-training`)
     }
 
     // By submitting the form without adding/removing any other educational qualifications, the user is indicating their
     // updates to Educational Qualifications are complete.
     // Update the Induction and return to Education and Training
-    const updateInductionDto = toCreateOrUpdateInductionDto(prisonId, inductionDto)
-
     try {
+      const updateInductionDto = toCreateOrUpdateInductionDto(prisonId, updatedInduction)
       await this.inductionService.updateInduction(prisonNumber, updateInductionDto, req.user.token)
 
       // TODO - reset all forms relating to education here, as the "journey" is complete
@@ -94,14 +95,6 @@ export default class QualificationsListUpdateController extends QualificationsLi
     } catch (e) {
       logger.error(`Error updating Induction for prisoner ${prisonNumber}`, e)
       return next(createError(500, `Error updating Induction for prisoner ${prisonNumber}. Error: ${e}`))
-    }
-  }
-
-  buildPageFlowHistory = (prisonNumber: string): PageFlow => {
-    const pageUrls = [`/prisoners/${prisonNumber}/induction/qualifications`]
-    return {
-      pageUrls,
-      currentPageIndex: 0,
     }
   }
 }
@@ -123,6 +116,16 @@ const inductionWithRemovedQualification = (
     previousQualifications: {
       ...inductionDto.previousQualifications,
       qualifications: updatedQualifications,
+    },
+  }
+}
+
+const updatedInductionDtoWithDefaultedHighestLevelOfEducation = (inductionDto: InductionDto): InductionDto => {
+  return {
+    ...inductionDto,
+    previousQualifications: {
+      ...inductionDto.previousQualifications,
+      educationLevel: inductionDto.previousQualifications.educationLevel || EducationLevelValue.NOT_SURE,
     },
   }
 }

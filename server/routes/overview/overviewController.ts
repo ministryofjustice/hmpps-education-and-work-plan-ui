@@ -37,6 +37,8 @@ export default class OverviewController {
 
       const actionPlan = await this.educationAndWorkPlanService.getActionPlan(prisonNumber, req.user.token)
 
+      const showGoalCreationSuccessMessage = req.flash('goalsSuccessfullyCreated').length > 0
+
       let view: PostInductionOverviewView | PreInductionOverviewView
       if (ciagInductionExists) {
         view = new PostInductionOverviewView(
@@ -45,6 +47,7 @@ export default class OverviewController {
           actionPlan,
           functionalSkills,
           res.locals.curiousInPrisonCourses,
+          showGoalCreationSuccessMessage,
         )
       } else {
         view = new PreInductionOverviewView(
@@ -53,6 +56,7 @@ export default class OverviewController {
           actionPlan,
           functionalSkills,
           res.locals.curiousInPrisonCourses,
+          showGoalCreationSuccessMessage,
         )
       }
 

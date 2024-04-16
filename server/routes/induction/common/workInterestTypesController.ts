@@ -15,6 +15,12 @@ export default abstract class WorkInterestTypesController extends InductionContr
   getWorkInterestTypesView: RequestHandler = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { prisonerSummary, inductionDto } = req.session
 
+    // Check if we are in the midst of changing the main induction question set (in this case from short route to long route)
+    if (req.session.updateInductionQuestionSet) {
+      const { prisonNumber } = req.params
+      this.addCurrentPageToHistory(req, `/prisoners/${prisonNumber}/induction/work-interest-types`)
+    }
+
     const workInterestTypesForm = req.session.workInterestTypesForm || toWorkInterestTypesForm(inductionDto)
     req.session.workInterestTypesForm = undefined
 

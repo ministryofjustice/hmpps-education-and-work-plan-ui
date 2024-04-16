@@ -38,8 +38,8 @@ export default abstract class InPrisonTrainingController extends InductionContro
 const toInPrisonTrainingForm = (inductionDto: InductionDto): InPrisonTrainingForm => {
   return {
     inPrisonTraining:
-      inductionDto.inPrisonInterests?.inPrisonTrainingInterests.map(training => training.trainingType) || [],
-    inPrisonTrainingOther: inductionDto.inPrisonInterests?.inPrisonTrainingInterests.find(
+      inductionDto.inPrisonInterests?.inPrisonTrainingInterests?.map(training => training.trainingType) || [],
+    inPrisonTrainingOther: inductionDto.inPrisonInterests?.inPrisonTrainingInterests?.find(
       training => training.trainingType === InPrisonTrainingValue.OTHER,
     )?.trainingTypeOther,
   }

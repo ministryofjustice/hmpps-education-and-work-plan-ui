@@ -7,6 +7,6 @@ export default function futureGoalTargetDate(
   const futureDate = add(startDate, { months: additionalMonths })
   return {
     value: format(futureDate, 'yyyy-MM-dd'),
-    text: `in ${additionalMonths} months (${format(futureDate, 'd MMMM yyyy')})`,
+    text: `in ${additionalMonths} months (by ${format(futureDate, 'd MMMM yyyy')})`,
   }
 }

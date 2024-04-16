@@ -18,6 +18,12 @@ export default abstract class SkillsController extends InductionController {
     const skillsForm = req.session.skillsForm || toSkillsForm(inductionDto)
     req.session.skillsForm = undefined
 
+    // Check if we are in the midst of changing the main induction question set (in this case from short route to long route)
+    if (req.session.updateInductionQuestionSet) {
+      const { prisonNumber } = req.params
+      this.addCurrentPageToHistory(req, `/prisoners/${prisonNumber}/induction/skills`)
+    }
+
     const view = new SkillsView(
       prisonerSummary,
       this.getBackLinkUrl(req),

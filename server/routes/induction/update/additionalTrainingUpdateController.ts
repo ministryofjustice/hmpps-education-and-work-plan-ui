@@ -7,7 +7,7 @@ import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateIn
 import logger from '../../../../logger'
 import { InductionService } from '../../../services'
 import validateAdditionalTrainingForm from './additionalTrainingFormValidator'
-import { getPreviousPage } from '../../pageFlowHistory'
+import { buildNewPageFlowHistory, getPreviousPage } from '../../pageFlowHistory'
 import getDynamicBackLinkAriaText from '../dynamicAriaTextResolver'
 
 /**
@@ -64,12 +64,13 @@ export default class AdditionalTrainingUpdateController extends AdditionalTraini
         updateInductionQuestionSet.hopingToWorkOnRelease === 'YES'
           ? `/prisoners/${prisonNumber}/induction/has-worked-before`
           : `/prisoners/${prisonNumber}/induction/in-prison-work`
+      req.session.pageFlowHistory = buildNewPageFlowHistory(req)
+      req.session.additionalTrainingForm = undefined
       return res.redirect(nextPage)
     }
 
-    const updateInductionDto = toCreateOrUpdateInductionDto(prisonId, updatedInduction)
-
     try {
+      const updateInductionDto = toCreateOrUpdateInductionDto(prisonId, updatedInduction)
       await this.inductionService.updateInduction(prisonNumber, updateInductionDto, req.user.token)
 
       req.session.additionalTrainingForm = undefined

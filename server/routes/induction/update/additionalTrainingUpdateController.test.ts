@@ -1,17 +1,19 @@
 import createError from 'http-errors'
 import type { SessionData } from 'express-session'
 import { NextFunction, Request, Response } from 'express'
+import type { PageFlow } from 'viewModels'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
 import { aShortQuestionSetInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
 import validateAdditionalTrainingForm from './additionalTrainingFormValidator'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
-import { InductionService } from '../../../services'
+import InductionService from '../../../services/inductionService'
 import { aShortQuestionSetUpdateInductionRequest } from '../../../testsupport/updateInductionRequestTestDataBuilder'
 import AdditionalTrainingUpdateController from './additionalTrainingUpdateController'
 import AdditionalTrainingValue from '../../../enums/additionalTrainingValue'
 
 jest.mock('./additionalTrainingFormValidator')
 jest.mock('../../../data/mappers/createOrUpdateInductionDtoMapper')
+jest.mock('../../../services/inductionService')
 
 describe('additionalTrainingUpdateController', () => {
   const mockedFormValidator = validateAdditionalTrainingForm as jest.MockedFunction<
@@ -21,11 +23,10 @@ describe('additionalTrainingUpdateController', () => {
     typeof toCreateOrUpdateInductionDto
   >
 
-  const inductionService = {
-    updateInduction: jest.fn(),
-  }
+  const inductionService = new InductionService(null) as jest.Mocked<InductionService>
+  const controller = new AdditionalTrainingUpdateController(inductionService)
 
-  const controller = new AdditionalTrainingUpdateController(inductionService as unknown as InductionService)
+  const prisonNumber = 'A1234BC'
 
   const req = {
     session: {} as SessionData,
@@ -33,6 +34,7 @@ describe('additionalTrainingUpdateController', () => {
     user: {} as Express.User,
     params: {} as Record<string, string>,
     flash: jest.fn(),
+    path: '',
   }
   const res = {
     redirect: jest.fn(),
@@ -48,6 +50,8 @@ describe('additionalTrainingUpdateController', () => {
     req.body = {}
     req.user = {} as Express.User
     req.params = {} as Record<string, string>
+    req.params.prisonNumber = prisonNumber
+    req.path = `/prisoners/${prisonNumber}/induction/additional-training`
 
     errors = []
   })
@@ -55,9 +59,6 @@ describe('additionalTrainingUpdateController', () => {
   describe('getAdditionalTrainingView', () => {
     it('should get Additional Training view given there is no AdditionalTrainingForm on the session', async () => {
       // Given
-      const prisonNumber = 'A1234BC'
-      req.params.prisonNumber = prisonNumber
-
       const prisonerSummary = aValidPrisonerSummary()
       req.session.prisonerSummary = prisonerSummary
       const inductionDto = aShortQuestionSetInductionDto()
@@ -91,9 +92,6 @@ describe('additionalTrainingUpdateController', () => {
 
     it('should get the Additional Training view given there is an AdditionalTrainingForm already on the session', async () => {
       // Given
-      const prisonNumber = 'A1234BC'
-      req.params.prisonNumber = prisonNumber
-
       const prisonerSummary = aValidPrisonerSummary()
       req.session.prisonerSummary = prisonerSummary
       const inductionDto = aShortQuestionSetInductionDto()
@@ -126,11 +124,8 @@ describe('additionalTrainingUpdateController', () => {
       expect(req.session.inductionDto).toEqual(inductionDto)
     })
 
-    it('should get Additional Training view given there is a pageFlowHistory on the session', async () => {
+    it('should get Additional Training view given there is an updateInductionQuestionSet on the session', async () => {
       // Given
-      const prisonNumber = 'A1234BC'
-      req.params.prisonNumber = prisonNumber
-
       const prisonerSummary = aValidPrisonerSummary()
       req.session.prisonerSummary = prisonerSummary
       const inductionDto = aShortQuestionSetInductionDto()
@@ -178,9 +173,6 @@ describe('additionalTrainingUpdateController', () => {
   describe('submitAdditionalTrainingForm', () => {
     it('should not update Induction given form is submitted with validation errors', async () => {
       // Given
-      const prisonNumber = 'A1234BC'
-      req.params.prisonNumber = prisonNumber
-
       const prisonerSummary = aValidPrisonerSummary()
       req.session.prisonerSummary = prisonerSummary
       const inductionDto = aShortQuestionSetInductionDto()
@@ -218,8 +210,6 @@ describe('additionalTrainingUpdateController', () => {
     it('should update Induction and call API and redirect to education and training page', async () => {
       // Given
       req.user.token = 'some-token'
-      const prisonNumber = 'A1234BC'
-      req.params.prisonNumber = prisonNumber
 
       const prisonerSummary = aValidPrisonerSummary()
       req.session.prisonerSummary = prisonerSummary
@@ -257,13 +247,12 @@ describe('additionalTrainingUpdateController', () => {
       expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/view/education-and-training`)
       expect(req.session.additionalTrainingForm).toBeUndefined()
       expect(req.session.inductionDto).toBeUndefined()
+      expect(req.session.pageFlowHistory).toBeUndefined()
     })
 
     it('should update InductionDto and redirect to Has Worked Before view given long question set journey', async () => {
       // Given
       req.user.token = 'some-token'
-      const prisonNumber = 'A1234BC'
-      req.params.prisonNumber = prisonNumber
 
       const prisonerSummary = aValidPrisonerSummary()
       req.session.prisonerSummary = prisonerSummary
@@ -284,6 +273,11 @@ describe('additionalTrainingUpdateController', () => {
       req.session.updateInductionQuestionSet = { hopingToWorkOnRelease: 'NOT_SURE' }
       const expectedNextPage = '/prisoners/A1234BC/induction/in-prison-work'
 
+      const expectedPageFlowHistory: PageFlow = {
+        pageUrls: ['/prisoners/A1234BC/induction/additional-training'],
+        currentPageIndex: 0,
+      }
+
       // When
       await controller.submitAdditionalTrainingForm(
         req as undefined as Request,
@@ -296,14 +290,13 @@ describe('additionalTrainingUpdateController', () => {
       expect(updatedInductionDto.previousTraining.trainingTypes).toEqual(expectedUpdatedAdditionalTraining)
       expect(updatedInductionDto.previousTraining.trainingTypeOther).toEqual(expectedUpdatedAdditionalTrainingOther)
       expect(res.redirect).toHaveBeenCalledWith(expectedNextPage)
-      expect(req.session.additionalTrainingForm).toEqual(additionalTrainingForm)
+      expect(req.session.additionalTrainingForm).toBeUndefined()
+      expect(req.session.pageFlowHistory).toEqual(expectedPageFlowHistory)
     })
 
     it('should update InductionDto and redirect to In Prison Work view given short question set journey', async () => {
       // Given
       req.user.token = 'some-token'
-      const prisonNumber = 'A1234BC'
-      req.params.prisonNumber = prisonNumber
 
       const prisonerSummary = aValidPrisonerSummary()
       req.session.prisonerSummary = prisonerSummary
@@ -324,6 +317,11 @@ describe('additionalTrainingUpdateController', () => {
       req.session.updateInductionQuestionSet = { hopingToWorkOnRelease: 'YES' }
       const expectedNextPage = '/prisoners/A1234BC/induction/has-worked-before'
 
+      const expectedPageFlowHistory: PageFlow = {
+        pageUrls: ['/prisoners/A1234BC/induction/additional-training'],
+        currentPageIndex: 0,
+      }
+
       // When
       await controller.submitAdditionalTrainingForm(
         req as undefined as Request,
@@ -336,14 +334,13 @@ describe('additionalTrainingUpdateController', () => {
       expect(updatedInductionDto.previousTraining.trainingTypes).toEqual(expectedUpdatedAdditionalTraining)
       expect(updatedInductionDto.previousTraining.trainingTypeOther).toEqual(expectedUpdatedAdditionalTrainingOther)
       expect(res.redirect).toHaveBeenCalledWith(expectedNextPage)
-      expect(req.session.additionalTrainingForm).toEqual(additionalTrainingForm)
+      expect(req.session.additionalTrainingForm).toBeUndefined()
+      expect(req.session.pageFlowHistory).toEqual(expectedPageFlowHistory)
     })
 
     it('should not update Induction given error calling service', async () => {
       // Given
       req.user.token = 'some-token'
-      const prisonNumber = 'A1234BC'
-      req.params.prisonNumber = prisonNumber
 
       const prisonerSummary = aValidPrisonerSummary()
       req.session.prisonerSummary = prisonerSummary

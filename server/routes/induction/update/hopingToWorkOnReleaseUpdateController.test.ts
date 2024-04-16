@@ -9,12 +9,13 @@ import {
 import HopingToGetWorkValue from '../../../enums/hopingToGetWorkValue'
 import validateHopingToWorkOnReleaseForm from './hopingToWorkOnReleaseFormValidator'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
-import { InductionService } from '../../../services'
+import InductionService from '../../../services/inductionService'
 import { aShortQuestionSetUpdateInductionDto } from '../../../testsupport/updateInductionDtoTestDataBuilder'
 import { aLongQuestionSetUpdateInductionRequest } from '../../../testsupport/updateInductionRequestTestDataBuilder'
 
 jest.mock('./hopingToWorkOnReleaseFormValidator')
 jest.mock('../../../data/mappers/createOrUpdateInductionDtoMapper')
+jest.mock('../../../services/inductionService')
 
 describe('hopingToWorkOnReleaseUpdateController', () => {
   const mockedFormValidator = validateHopingToWorkOnReleaseForm as jest.MockedFunction<
@@ -24,11 +25,10 @@ describe('hopingToWorkOnReleaseUpdateController', () => {
     typeof toCreateOrUpdateInductionDto
   >
 
-  const inductionService = {
-    updateInduction: jest.fn(),
-  }
+  const inductionService = new InductionService(null) as jest.Mocked<InductionService>
+  const controller = new HopingToWorkOnReleaseUpdateController(inductionService)
 
-  const controller = new HopingToWorkOnReleaseUpdateController(inductionService as unknown as InductionService)
+  const prisonNumber = 'A1234BC'
 
   const req = {
     session: {} as SessionData,
@@ -36,6 +36,7 @@ describe('hopingToWorkOnReleaseUpdateController', () => {
     user: {} as Express.User,
     params: {} as Record<string, string>,
     flash: jest.fn(),
+    path: '',
   }
   const res = {
     redirect: jest.fn(),
@@ -51,6 +52,8 @@ describe('hopingToWorkOnReleaseUpdateController', () => {
     req.body = {}
     req.user = {} as Express.User
     req.params = {} as Record<string, string>
+    req.params.prisonNumber = prisonNumber
+    req.path = `/prisoners/${prisonNumber}/induction/hoping-to-work-on-release`
 
     errors = []
   })
@@ -58,9 +61,6 @@ describe('hopingToWorkOnReleaseUpdateController', () => {
   describe('getHopingToWorkOnReleaseView', () => {
     it('should get the Hoping To Work On Release view given there is no HopingToWorkOnReleaseForm on the session', async () => {
       // Given
-      const prisonNumber = 'A1234BC'
-      req.params.prisonNumber = prisonNumber
-
       const prisonerSummary = aValidPrisonerSummary()
       req.session.prisonerSummary = prisonerSummary
       const inductionDto = aLongQuestionSetInductionDto()
@@ -94,9 +94,6 @@ describe('hopingToWorkOnReleaseUpdateController', () => {
 
     it('should get the Hoping To Work On Release view given there is a HopingToWorkOnReleaseForm already on the session', async () => {
       // Given
-      const prisonNumber = 'A1234BC'
-      req.params.prisonNumber = prisonNumber
-
       const prisonerSummary = aValidPrisonerSummary()
       req.session.prisonerSummary = prisonerSummary
       const inductionDto = aLongQuestionSetInductionDto()
@@ -132,9 +129,6 @@ describe('hopingToWorkOnReleaseUpdateController', () => {
   describe('submitHopingToWorkOnReleaseForm', () => {
     it('should not update Induction given form is submitted with validation errors', async () => {
       // Given
-      const prisonNumber = 'A1234BC'
-      req.params.prisonNumber = prisonNumber
-
       const prisonerSummary = aValidPrisonerSummary()
       req.session.prisonerSummary = prisonerSummary
       const inductionDto = aLongQuestionSetInductionDto()
@@ -178,8 +172,6 @@ describe('hopingToWorkOnReleaseUpdateController', () => {
       it(`should update Induction whose current value is ${spec.inductionValue} given form is submitted with value ${spec.formValue} `, async () => {
         // Given
         req.user.token = 'some-token'
-        const prisonNumber = 'A1234BC'
-        req.params.prisonNumber = prisonNumber
 
         const prisonerSummary = aValidPrisonerSummary()
         req.session.prisonerSummary = prisonerSummary

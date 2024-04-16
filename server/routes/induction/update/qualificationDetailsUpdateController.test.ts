@@ -12,6 +12,7 @@ describe('qualificationDetailsUpdateController', () => {
   const mockedFormValidator = validateQualificationDetailsForm as jest.MockedFunction<
     typeof validateQualificationDetailsForm
   >
+
   const controller = new QualificationDetailsUpdateController()
 
   const req = {

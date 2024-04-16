@@ -62,9 +62,8 @@ export default class InPrisonWorkUpdateController extends InPrisonWorkController
     }
 
     // otherwise map the InductionDTO to a CreateOrUpdateInductionDTO to call the API
-    const updateInductionDto = toCreateOrUpdateInductionDto(prisonId, updatedInduction)
-
     try {
+      const updateInductionDto = toCreateOrUpdateInductionDto(prisonId, updatedInduction)
       await this.inductionService.updateInduction(prisonNumber, updateInductionDto, req.user.token)
 
       req.session.inPrisonWorkForm = undefined

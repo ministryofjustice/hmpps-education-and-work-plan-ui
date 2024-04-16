@@ -2,6 +2,7 @@ import createError from 'http-errors'
 import { NextFunction, Request, RequestHandler, Response } from 'express'
 import type { InductionDto, PreviousWorkExperienceDto } from 'inductionDto'
 import type { PreviousWorkExperienceDetailForm } from 'inductionForms'
+import type { PageFlow } from 'viewModels'
 import { InductionService } from '../../../services'
 import PreviousWorkExperienceDetailController from '../common/previousWorkExperienceDetailController'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
@@ -80,6 +81,14 @@ export default class PreviousWorkExperienceDetailUpdateController extends Previo
       return res.redirect(getNextPage(pageFlowQueue))
     }
 
+    if (req.session.updateInductionQuestionSet) {
+      req.session.inductionDto = updatedInduction
+      const nextPage = `/prisoners/${prisonNumber}/induction/work-interest-types`
+      req.session.pageFlowHistory = this.buildPageFlowHistory(prisonNumber)
+      req.session.previousWorkExperienceDetailForm = undefined
+      return res.redirect(nextPage)
+    }
+
     try {
       const updateInductionDto = toCreateOrUpdateInductionDto(prisonId, updatedInduction)
       await this.inductionService.updateInduction(prisonNumber, updateInductionDto, req.user.token)
@@ -118,6 +127,14 @@ export default class PreviousWorkExperienceDetailUpdateController extends Previo
         ...inductionDto.previousWorkExperiences,
         experiences: updatedPreviousWorkExperiences,
       },
+    }
+  }
+
+  private buildPageFlowHistory = (prisonNumber: string): PageFlow => {
+    const pageUrls = [`/prisoners/${prisonNumber}/induction/previous-work-experience`]
+    return {
+      pageUrls,
+      currentPageIndex: 0,
     }
   }
 }

@@ -5,13 +5,14 @@ import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataB
 import { aShortQuestionSetInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
 import validateInPrisonTrainingForm from './inPrisonTrainingFormValidator'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
-import { InductionService } from '../../../services'
+import InductionService from '../../../services/inductionService'
 import { aShortQuestionSetUpdateInductionRequest } from '../../../testsupport/updateInductionRequestTestDataBuilder'
 import InPrisonTrainingUpdateController from './inPrisonTrainingUpdateController'
 import InPrisonTrainingValue from '../../../enums/inPrisonTrainingValue'
 
 jest.mock('./inPrisonTrainingFormValidator')
 jest.mock('../../../data/mappers/createOrUpdateInductionDtoMapper')
+jest.mock('../../../services/inductionService')
 
 describe('inPrisonTrainingUpdateController', () => {
   const mockedFormValidator = validateInPrisonTrainingForm as jest.MockedFunction<typeof validateInPrisonTrainingForm>
@@ -19,11 +20,8 @@ describe('inPrisonTrainingUpdateController', () => {
     typeof toCreateOrUpdateInductionDto
   >
 
-  const inductionService = {
-    updateInduction: jest.fn(),
-  }
-
-  const controller = new InPrisonTrainingUpdateController(inductionService as unknown as InductionService)
+  const inductionService = new InductionService(null) as jest.Mocked<InductionService>
+  const controller = new InPrisonTrainingUpdateController(inductionService)
 
   const req = {
     session: {} as SessionData,
@@ -129,7 +127,7 @@ describe('inPrisonTrainingUpdateController', () => {
       expect(req.session.inductionDto).toEqual(inductionDto)
     })
 
-    it('should get the In Prison Training view given given short question set journey', async () => {
+    it('should get the In Prison Training view given there is an updateInductionQuestionSet on the session', async () => {
       // Given
       const prisonNumber = 'A1234BC'
       req.params.prisonNumber = prisonNumber
@@ -270,7 +268,7 @@ describe('inPrisonTrainingUpdateController', () => {
       expect(req.session.inductionDto).toBeUndefined()
     })
 
-    it('should update InductionDto and redirect to Check Your Answers view given short question set journey', async () => {
+    it('should update InductionDto and redirect to Check Your Answers view given there is an updateInductionQuestionSet on the session', async () => {
       // Given
       req.user.token = 'some-token'
       const prisonNumber = 'A1234BC'
@@ -313,7 +311,7 @@ describe('inPrisonTrainingUpdateController', () => {
       const updatedInductionDto = req.session.inductionDto
       expect(updatedInductionDto.inPrisonInterests.inPrisonTrainingInterests).toEqual(expectedUpdatedInPrisonTraining)
       expect(res.redirect).toHaveBeenCalledWith(expectedNextPage)
-      expect(req.session.inPrisonTrainingForm).toEqual(inPrisonTrainingForm)
+      expect(req.session.inPrisonTrainingForm).toBeUndefined()
     })
 
     it('should not update Induction given error calling service', async () => {

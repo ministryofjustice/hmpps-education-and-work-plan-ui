@@ -5,13 +5,14 @@ import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataB
 import { aShortQuestionSetInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
 import validateReasonsNotToGetWorkForm from './reasonsNotToGetWorkFormValidator'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
-import { InductionService } from '../../../services'
+import InductionService from '../../../services/inductionService'
 import { aShortQuestionSetUpdateInductionRequest } from '../../../testsupport/updateInductionRequestTestDataBuilder'
 import ReasonsNotToGetWorkUpdateController from './reasonsNotToGetWorkUpdateController'
 import ReasonsNotToGetWorkValue from '../../../enums/reasonNotToGetWorkValue'
 
 jest.mock('./reasonsNotToGetWorkFormValidator')
 jest.mock('../../../data/mappers/createOrUpdateInductionDtoMapper')
+jest.mock('../../../services/inductionService')
 
 describe('reasonsNotToGetWorkUpdateController', () => {
   const mockedFormValidator = validateReasonsNotToGetWorkForm as jest.MockedFunction<
@@ -21,11 +22,8 @@ describe('reasonsNotToGetWorkUpdateController', () => {
     typeof toCreateOrUpdateInductionDto
   >
 
-  const inductionService = {
-    updateInduction: jest.fn(),
-  }
-
-  const controller = new ReasonsNotToGetWorkUpdateController(inductionService as unknown as InductionService)
+  const inductionService = new InductionService(null) as jest.Mocked<InductionService>
+  const controller = new ReasonsNotToGetWorkUpdateController(inductionService)
 
   const req = {
     session: {} as SessionData,
@@ -129,7 +127,7 @@ describe('reasonsNotToGetWorkUpdateController', () => {
       expect(req.session.pageFlowHistory).toBeUndefined()
     })
 
-    it('should get the Reasons Not To Get Work view given short induction question journey', async () => {
+    it('should get the Reasons Not To Get Work view given there is an updateInductionQuestionSet on the session', async () => {
       // Given
       const prisonNumber = 'A1234BC'
       req.params.prisonNumber = prisonNumber
@@ -266,7 +264,7 @@ describe('reasonsNotToGetWorkUpdateController', () => {
       expect(req.session.inductionDto).toBeUndefined()
     })
 
-    it('should submit reasons not to get work and move to qualifications page', async () => {
+    it('should submit reasons not to get work and move to qualifications page given there is an updateInductionQuestionSet on the session', async () => {
       // Given
       req.user.token = 'some-token'
       const prisonNumber = 'A1234BC'
@@ -301,7 +299,7 @@ describe('reasonsNotToGetWorkUpdateController', () => {
       expect(req.session.inductionDto).toEqual(inductionDto)
     })
 
-    it('should submit reasons not to get work and redirect to Want to Add Qualifications view given short induction set journey and Prisoner has no qualifications', async () => {
+    it('should submit reasons not to get work and redirect to Want to Add Qualifications view given there is an updateInductionQuestionSet on the session and Prisoner has no qualifications', async () => {
       // Given
       req.user.token = 'some-token'
       const prisonNumber = 'A1234BC'

@@ -6,13 +6,14 @@ import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataB
 import { aLongQuestionSetInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
 import validateWorkedBeforeForm from './workedBeforeFormValidator'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
-import { InductionService } from '../../../services'
+import InductionService from '../../../services/inductionService'
 import { aShortQuestionSetUpdateInductionRequest } from '../../../testsupport/updateInductionRequestTestDataBuilder'
 import WorkedBeforeController from './workedBeforeUpdateController'
 import YesNoValue from '../../../enums/yesNoValue'
 
 jest.mock('./workedBeforeFormValidator')
 jest.mock('../../../data/mappers/createOrUpdateInductionDtoMapper')
+jest.mock('../../../services/inductionService')
 
 describe('workedBeforeUpdateController', () => {
   const mockedFormValidator = validateWorkedBeforeForm as jest.MockedFunction<typeof validateWorkedBeforeForm>
@@ -20,11 +21,10 @@ describe('workedBeforeUpdateController', () => {
     typeof toCreateOrUpdateInductionDto
   >
 
-  const inductionService = {
-    updateInduction: jest.fn(),
-  }
+  const inductionService = new InductionService(null) as jest.Mocked<InductionService>
+  const controller = new WorkedBeforeController(inductionService)
 
-  const controller = new WorkedBeforeController(inductionService as unknown as InductionService)
+  const prisonNumber = 'A1234BC'
 
   const req = {
     session: {} as SessionData,
@@ -32,6 +32,7 @@ describe('workedBeforeUpdateController', () => {
     user: {} as Express.User,
     params: {} as Record<string, string>,
     flash: jest.fn(),
+    path: '',
   }
   const res = {
     redirect: jest.fn(),
@@ -47,6 +48,8 @@ describe('workedBeforeUpdateController', () => {
     req.body = {}
     req.user = {} as Express.User
     req.params = {} as Record<string, string>
+    req.params.prisonNumber = prisonNumber
+    req.path = `/prisoners/${prisonNumber}/induction/has-worked-before`
 
     errors = []
   })
@@ -54,9 +57,6 @@ describe('workedBeforeUpdateController', () => {
   describe('getWorkedBeforeView', () => {
     it('should get the WorkedBefore view given there is no WorkedBeforeForm on the session', async () => {
       // Given
-      const prisonNumber = 'A1234BC'
-      req.params.prisonNumber = prisonNumber
-
       const prisonerSummary = aValidPrisonerSummary()
       req.session.prisonerSummary = prisonerSummary
       const inductionDto = aLongQuestionSetInductionDto()
@@ -90,9 +90,6 @@ describe('workedBeforeUpdateController', () => {
 
     it('should get the WorkedBefore view given there is an WorkedBeforeForm already on the session', async () => {
       // Given
-      const prisonNumber = 'A1234BC'
-      req.params.prisonNumber = prisonNumber
-
       const prisonerSummary = aValidPrisonerSummary()
       req.session.prisonerSummary = prisonerSummary
       const inductionDto = aLongQuestionSetInductionDto()
@@ -123,14 +120,59 @@ describe('workedBeforeUpdateController', () => {
       expect(req.session.workedBeforeForm).toBeUndefined()
       expect(req.session.inductionDto).toEqual(inductionDto)
     })
+
+    it('should get the WorkedBefore view given there is an updateInductionQuestionSet on the session', async () => {
+      // Given
+      const prisonerSummary = aValidPrisonerSummary()
+      req.session.prisonerSummary = prisonerSummary
+      const inductionDto = aLongQuestionSetInductionDto()
+      req.session.inductionDto = inductionDto
+      req.session.updateInductionQuestionSet = {
+        hopingToWorkOnRelease: 'YES',
+      }
+      req.session.pageFlowHistory = {
+        pageUrls: [`/prisoners/${prisonNumber}/induction/additional-training`],
+        currentPageIndex: 0,
+      }
+
+      const expectedWorkedBeforeForm = {
+        hasWorkedBefore: YesNoValue.NO,
+      }
+      req.session.workedBeforeForm = expectedWorkedBeforeForm
+
+      const expectedView = {
+        prisonerSummary,
+        form: expectedWorkedBeforeForm,
+        backLinkUrl: '/prisoners/A1234BC/induction/additional-training',
+        backLinkAriaText: 'Back to Does Jimmy Lightfingers have any other training or vocational qualifications?',
+        errors,
+      }
+
+      const expectedPageFlowHistory = {
+        pageUrls: [
+          '/prisoners/A1234BC/induction/additional-training',
+          '/prisoners/A1234BC/induction/has-worked-before',
+        ],
+        currentPageIndex: 1,
+      }
+
+      // When
+      await controller.getWorkedBeforeView(
+        req as undefined as Request,
+        res as undefined as Response,
+        next as undefined as NextFunction,
+      )
+
+      // Then
+      expect(res.render).toHaveBeenCalledWith('pages/induction/workedBefore/index', expectedView)
+      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(req.session.pageFlowHistory).toEqual(expectedPageFlowHistory)
+    })
   })
 
   describe('submitWorkedBeforeForm', () => {
     it('should not update Induction given form is submitted with validation errors', async () => {
       // Given
-      const prisonNumber = 'A1234BC'
-      req.params.prisonNumber = prisonNumber
-
       const prisonerSummary = aValidPrisonerSummary()
       req.session.prisonerSummary = prisonerSummary
       const inductionDto = aLongQuestionSetInductionDto()
@@ -164,8 +206,6 @@ describe('workedBeforeUpdateController', () => {
     it('should update Induction and call API and redirect to work and interests page', async () => {
       // Given
       req.user.token = 'some-token'
-      const prisonNumber = 'A1234BC'
-      req.params.prisonNumber = prisonNumber
 
       const prisonerSummary = aValidPrisonerSummary()
       req.session.prisonerSummary = prisonerSummary
@@ -201,11 +241,75 @@ describe('workedBeforeUpdateController', () => {
       expect(req.session.inductionDto).toBeUndefined()
     })
 
+    it('should update InductionDto and redirect to Previous Work Experience given long question set journey and has worked before is YES', async () => {
+      // Given
+      req.user.token = 'some-token'
+
+      const prisonerSummary = aValidPrisonerSummary()
+      req.session.prisonerSummary = prisonerSummary
+      const inductionDto = aLongQuestionSetInductionDto()
+      req.session.inductionDto = inductionDto
+
+      const workedBeforeForm = {
+        hasWorkedBefore: YesNoValue.YES,
+      }
+      req.body = workedBeforeForm
+      req.session.workedBeforeForm = undefined
+
+      mockedFormValidator.mockReturnValue(errors)
+
+      req.session.updateInductionQuestionSet = { hopingToWorkOnRelease: 'YES' }
+      const expectedNextPage = '/prisoners/A1234BC/induction/previous-work-experience'
+
+      // When
+      await controller.submitWorkedBeforeForm(
+        req as undefined as Request,
+        res as undefined as Response,
+        next as undefined as NextFunction,
+      )
+
+      // Then
+      expect(req.session.inductionDto.previousWorkExperiences.hasWorkedBefore).toEqual(true)
+      expect(res.redirect).toHaveBeenCalledWith(expectedNextPage)
+      expect(req.session.workedBeforeForm).toBeUndefined()
+    })
+
+    it('should update InductionDto and redirect to Work Interests given long question set journey and has worked before is NO', async () => {
+      // Given
+      req.user.token = 'some-token'
+
+      const prisonerSummary = aValidPrisonerSummary()
+      req.session.prisonerSummary = prisonerSummary
+      const inductionDto = aLongQuestionSetInductionDto()
+      req.session.inductionDto = inductionDto
+
+      const workedBeforeForm = {
+        hasWorkedBefore: YesNoValue.NO,
+      }
+      req.body = workedBeforeForm
+      req.session.workedBeforeForm = undefined
+
+      mockedFormValidator.mockReturnValue(errors)
+
+      req.session.updateInductionQuestionSet = { hopingToWorkOnRelease: 'YES' }
+      const expectedNextPage = '/prisoners/A1234BC/induction/work-interest-types'
+
+      // When
+      await controller.submitWorkedBeforeForm(
+        req as undefined as Request,
+        res as undefined as Response,
+        next as undefined as NextFunction,
+      )
+
+      // Then
+      expect(req.session.inductionDto.previousWorkExperiences.hasWorkedBefore).toEqual(false)
+      expect(res.redirect).toHaveBeenCalledWith(expectedNextPage)
+      expect(req.session.workedBeforeForm).toBeUndefined()
+    })
+
     it('should not update Induction given error calling service', async () => {
       // Given
       req.user.token = 'some-token'
-      const prisonNumber = 'A1234BC'
-      req.params.prisonNumber = prisonNumber
 
       const prisonerSummary = aValidPrisonerSummary()
       req.session.prisonerSummary = prisonerSummary
