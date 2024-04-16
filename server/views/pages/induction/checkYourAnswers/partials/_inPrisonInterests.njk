@@ -7,7 +7,9 @@
     </dt>
     <dd class="govuk-summary-list__value" data-qa="inPrisonWork">
       {% for item in inductionDto.inPrisonInterests.inPrisonWorkInterests %}
-        <div data-qa="inPrisonWork-{{ loop.index }}">{{ item.workType | formatInPrisonWorkInterest }}{{ ' - ' + item.workTypeOther if item.workType === 'OTHER' }}{{ ',' if inductionDto.inPrisonInterests.inPrisonWorkInterests.length !== loop.index }}</div>
+        <div data-qa="inPrisonWork-{{ item.workType }}">
+          {{ item.workType | formatInPrisonWorkInterest }}{{ ' - ' + item.workTypeOther if item.workType === 'OTHER' }}{{ ',' if inductionDto.inPrisonInterests.inPrisonWorkInterests.length !== loop.index }}
+        </div>
       {% endfor %}
     </dd>
     <dd class="govuk-summary-list__actions">
@@ -22,7 +24,9 @@
     </dt>
     <dd class="govuk-summary-list__value" data-qa="inPrisonEducation">
       {% for item in inductionDto.inPrisonInterests.inPrisonTrainingInterests %}
-        <div data-qa="inPrisonEducation-{{ loop.index }}">{{ item.trainingType | formatInPrisonTraining }}{{ ' - ' + item.trainingTypeOther if item.trainingType === 'OTHER' }}{{ ',' if inductionDto.inPrisonInterests.inPrisonTrainingInterests.length !== loop.index }}</div>
+        <div data-qa="inPrisonEducation-{{ item.trainingType }}">
+          {{ item.trainingType | formatInPrisonTraining }}{{ ' - ' + item.trainingTypeOther if item.trainingType === 'OTHER' }}{{ ',' if inductionDto.inPrisonInterests.inPrisonTrainingInterests.length !== loop.index }}
+        </div>
       {% endfor %}
     </dd>
     <dd class="govuk-summary-list__actions">

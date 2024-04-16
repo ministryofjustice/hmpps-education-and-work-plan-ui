@@ -2,10 +2,14 @@
 
 {% if inductionDto.previousQualifications.qualifications.length %}
 
-  <h3 class="govuk-heading-s govuk-!-margin-top-2 govuk-!-margin-bottom-3">
-    Educational qualifications
-    <span><a class="gov-link govuk-!-font-weight-regular" style="float:right; color:#1d70b8" href="/prisoners/{{ prisonerSummary.prisonNumber }}/induction/qualifications" data-qa="qualificationsLink">Change <span class="govuk-visually-hidden"> there educational qualifications</span></a></span>
-  </h3>
+  <div class="app-u-heading-with-change-link">
+    <h3 class="govuk-heading-s govuk-!-margin-top-2 govuk-!-margin-bottom-3">
+      Educational qualifications
+    </h3>
+    <span class="govuk-body-m">
+      <a class="govuk-link" href="/prisoners/{{ prisonerSummary.prisonNumber }}/induction/qualifications" data-qa="qualificationsLink">Change<span class="govuk-visually-hidden"> their educational qualifications</span></a>
+    </span>
+  </div>
 
   <table class="govuk-table govuk-!-margin-bottom-6" data-qa="qualifications">
     <thead class="govuk-table__head">
@@ -50,7 +54,9 @@
     </dt>
     <dd class="govuk-summary-list__value" data-qa="additionalTraining">
       {% for item in inductionDto.previousTraining.trainingTypes %}
-        <div data-qa="additionalTraining-{{ loop.index }}">{{ item | formatAdditionalTraining }}{{ ' - ' + inductionDto.previousTraining.trainingTypeOther if item === 'OTHER' }}{{ ',' if inductionDto.previousTraining.trainingTypes.length !== loop.index }}</div>
+        <div data-qa="additionalTraining-{{ item }}">
+          {{ item | formatAdditionalTraining }}{{ ' - ' + inductionDto.previousTraining.trainingTypeOther if item === 'OTHER' }}{{ ',' if inductionDto.previousTraining.trainingTypes.length !== loop.index }}
+        </div>
       {% endfor %}
     </dd>
     <dd class="govuk-summary-list__actions">

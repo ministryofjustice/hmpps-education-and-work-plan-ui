@@ -18,6 +18,11 @@ export default abstract class HopingToWorkOnReleaseController extends InductionC
   ): Promise<void> => {
     const { prisonerSummary, inductionDto } = req.session
 
+    if (req.session.pageFlowHistory) {
+      const { prisonNumber } = req.params
+      this.addCurrentPageToHistory(req, `/prisoners/${prisonNumber}/induction/hoping-to-work-on-release`)
+    }
+
     const hopingToWorkOnReleaseForm = req.session.hopingToWorkOnReleaseForm || toHopingToWorkOnReleaseForm(inductionDto)
     req.session.hopingToWorkOnReleaseForm = undefined
 

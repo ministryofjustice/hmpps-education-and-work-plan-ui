@@ -295,7 +295,45 @@ describe('reasonsNotToGetWorkUpdateController', () => {
 
       // Then
       expect(res.redirect).toHaveBeenCalledWith(expectedNextPage)
-      expect(req.session.reasonsNotToGetWorkForm).toEqual(reasonsNotToGetWorkForm)
+      expect(req.session.reasonsNotToGetWorkForm).toBeUndefined()
+      expect(req.session.inductionDto).toEqual(inductionDto)
+    })
+
+    it('should update InductionDto and redirect to Check Your Answers given previous page was Check Your Answers', async () => {
+      // Given
+      req.user.token = 'some-token'
+      const prisonNumber = 'A1234BC'
+      req.params.prisonNumber = prisonNumber
+
+      const prisonerSummary = aValidPrisonerSummary()
+      req.session.prisonerSummary = prisonerSummary
+      const inductionDto = aShortQuestionSetInductionDto()
+      req.session.inductionDto = inductionDto
+
+      const reasonsNotToGetWorkForm = {
+        reasonsNotToGetWork: [ReasonsNotToGetWorkValue.HEALTH, ReasonsNotToGetWorkValue.OTHER],
+        reasonsNotToGetWorkOther: 'Will be of retirement age at release',
+      }
+      req.body = reasonsNotToGetWorkForm
+      req.session.reasonsNotToGetWorkForm = undefined
+      mockedFormValidator.mockReturnValue(errors)
+
+      req.session.pageFlowHistory = {
+        pageUrls: ['/prisoners/A1234BC/induction/check-your-answers', '/prisoners/A1234BC/induction/in-prison-work'],
+        currentPageIndex: 1,
+      }
+      const expectedNextPage = '/prisoners/A1234BC/induction/check-your-answers'
+
+      // When
+      await controller.submitReasonsNotToGetWorkForm(
+        req as undefined as Request,
+        res as undefined as Response,
+        next as undefined as NextFunction,
+      )
+
+      // Then
+      expect(res.redirect).toHaveBeenCalledWith(expectedNextPage)
+      expect(req.session.reasonsNotToGetWorkForm).toBeUndefined()
       expect(req.session.inductionDto).toEqual(inductionDto)
     })
 
@@ -332,7 +370,7 @@ describe('reasonsNotToGetWorkUpdateController', () => {
 
       // Then
       expect(res.redirect).toHaveBeenCalledWith(expectedNextPage)
-      expect(req.session.reasonsNotToGetWorkForm).toEqual(reasonsNotToGetWorkForm)
+      expect(req.session.reasonsNotToGetWorkForm).toBeUndefined()
       expect(req.session.inductionDto).toEqual(inductionDto)
     })
 
@@ -383,7 +421,14 @@ describe('reasonsNotToGetWorkUpdateController', () => {
       expect(inductionService.updateInduction).toHaveBeenCalledWith(prisonNumber, updateInductionDto, 'some-token')
       expect(next).toHaveBeenCalledWith(expectedError)
       expect(req.session.reasonsNotToGetWorkForm).toEqual(reasonsNotToGetWorkForm)
-      expect(req.session.inductionDto).toEqual(inductionDto)
+      const updatedInductionDto = req.session.inductionDto
+      expect(updatedInductionDto.workOnRelease.notHopingToWorkReasons).toEqual([
+        ReasonsNotToGetWorkValue.FULL_TIME_CARER,
+        ReasonsNotToGetWorkValue.OTHER,
+      ])
+      expect(updatedInductionDto.workOnRelease.notHopingToWorkOtherReason).toEqual(
+        'Will be of retirement age at release',
+      )
     })
   })
 })

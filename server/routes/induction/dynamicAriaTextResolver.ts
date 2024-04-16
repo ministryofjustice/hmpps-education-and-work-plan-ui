@@ -47,6 +47,7 @@ const getDynamicBackLinkAriaText = (req: Request, backLinkUrl: string): string =
     '/prisoners/{PRISON_NUMBER}/induction/work-interest-roles': `Back to Is ${prisonerName} interested in any particular jobs?`,
     '/prisoners/{PRISON_NUMBER}/induction/skills': `Back to What skills does ${prisonerName} feel they have?`,
     '/prisoners/{PRISON_NUMBER}/induction/personal-interests': `Back to What are ${prisonerName}'s interests?`,
+    '/prisoners/{PRISON_NUMBER}/induction/check-your-answers': `Back to Check and save your answers before adding ${prisonerName}'s goals`,
   }
   const uriKey = backLinkUrl.replace(prisonNumber, '{PRISON_NUMBER}')
   return ariaTextByUri[uriKey] || ''

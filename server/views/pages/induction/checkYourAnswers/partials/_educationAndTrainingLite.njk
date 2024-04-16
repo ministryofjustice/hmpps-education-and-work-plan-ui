@@ -22,7 +22,7 @@
       Educational qualifications
     </h3>
     <span class="govuk-body-m">
-      <a class="govuk-link" href="/prisoners/{{ prisonerSummary.prisonNumber }}/induction/qualifications" data-qa="qualificationsLink">Change<span class="govuk-visually-hidden"> qualifications</span></a>
+      <a class="govuk-link" href="/prisoners/{{ prisonerSummary.prisonNumber }}/induction/qualifications" data-qa="qualificationsLink">Change<span class="govuk-visually-hidden"> their educational qualifications</span></a>
     </span>
   </div>
 
@@ -53,7 +53,9 @@
     </dt>
     <dd class="govuk-summary-list__value" data-qa="additionalTraining">
       {% for item in inductionDto.previousTraining.trainingTypes %}
-        <div data-qa="additionalTraining-{{ loop.index }}">{{ item | formatAdditionalTraining }}{{ ' - ' + inductionDto.previousTraining.trainingTypeOther if item === 'OTHER' }}{{ ',' if inductionDto.previousTraining.trainingTypes.length !== loop.index }}</div>
+        <div data-qa="additionalTraining-{{ item }}">
+          {{ item | formatAdditionalTraining }}{{ ' - ' + inductionDto.previousTraining.trainingTypeOther if item === 'OTHER' }}{{ ',' if inductionDto.previousTraining.trainingTypes.length !== loop.index }}
+        </div>
       {% endfor %}
     </dd>
     <dd class="govuk-summary-list__actions">

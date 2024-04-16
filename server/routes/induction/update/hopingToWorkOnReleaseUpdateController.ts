@@ -8,7 +8,8 @@ import { InductionService } from '../../../services'
 import HopingToGetWorkValue from '../../../enums/hopingToGetWorkValue'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
 import logger from '../../../../logger'
-import { buildNewPageFlowHistory } from '../../pageFlowHistory'
+import { buildNewPageFlowHistory, getPreviousPage } from '../../pageFlowHistory'
+import getDynamicBackLinkAriaText from '../dynamicAriaTextResolver'
 
 export default class HopingToWorkOnReleaseUpdateController extends HopingToWorkOnReleaseController {
   constructor(private readonly inductionService: InductionService) {
@@ -17,12 +18,15 @@ export default class HopingToWorkOnReleaseUpdateController extends HopingToWorkO
 
   getBackLinkUrl(req: Request): string {
     const { prisonNumber } = req.params
+    const { pageFlowHistory } = req.session
+    if (pageFlowHistory) {
+      return getPreviousPage(pageFlowHistory)
+    }
     return `/plan/${prisonNumber}/view/work-and-interests`
   }
 
   getBackLinkAriaText(req: Request): string {
-    const { prisonerSummary } = req.session
-    return `Back to ${prisonerSummary.firstName} ${prisonerSummary.lastName}'s learning and work progress`
+    return getDynamicBackLinkAriaText(req, this.getBackLinkUrl(req))
   }
 
   submitHopingToWorkOnReleaseForm: RequestHandler = async (
@@ -55,6 +59,12 @@ export default class HopingToWorkOnReleaseUpdateController extends HopingToWorkO
       // start of the flow - always initialise the page history here
       req.session.pageFlowHistory = buildNewPageFlowHistory(req)
       return res.redirect(nextPage)
+    }
+
+    // If the previous page was Check Your Answers, forward to Check Your Answers again
+    if (this.previousPageWasCheckYourAnswers(req)) {
+      req.session.inPrisonWorkForm = undefined
+      return res.redirect(`/prisoners/${prisonNumber}/induction/check-your-answers`)
     }
 
     try {

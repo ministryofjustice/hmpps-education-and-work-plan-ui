@@ -58,10 +58,17 @@ export default class ReasonsNotToGetWorkUpdateController extends ReasonsNotToGet
     }
 
     const updatedInduction = this.updatedInductionDtoWithReasonsNotToGetWork(inductionDto, reasonsNotToGetWorkForm)
+    req.session.inductionDto = updatedInduction
+
+    // If the previous page was Check Your Answers, forward to Check Your Answers again
+    if (this.previousPageWasCheckYourAnswers(req)) {
+      req.session.reasonsNotToGetWorkForm = undefined
+      return res.redirect(`/prisoners/${prisonNumber}/induction/check-your-answers`)
+    }
 
     // Check if we are in the midst of changing the main induction question set from long route to short route
     if (req.session.updateInductionQuestionSet) {
-      req.session.inductionDto = updatedInduction
+      req.session.reasonsNotToGetWorkForm = undefined
       const nextPage =
         inductionDto.previousQualifications?.qualifications?.length > 0
           ? `/prisoners/${prisonNumber}/induction/qualifications`

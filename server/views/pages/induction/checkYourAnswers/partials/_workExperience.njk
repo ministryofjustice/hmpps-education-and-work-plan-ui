@@ -49,7 +49,7 @@
         </p>
       </dd>
       <dd class="govuk-summary-list__actions">
-        <a class="govuk-link govuk-link--no-visited-state" href="/prisoners/{{ prisonerSummary.prisonNumber }}/induction/previous-work-experience/{{ item.experienceType | lower }}" data-qa="workExperience-link-{{ loop.index }}">
+        <a class="govuk-link govuk-link--no-visited-state" href="/prisoners/{{ prisonerSummary.prisonNumber }}/induction/previous-work-experience/{{ item.experienceType | lower }}" data-qa="workExperienceDetailLink-{{ item.experienceType }}">
           Change<span class="govuk-visually-hidden"> {{ item.experienceType | formatJobType }}</span>
         </a>
       </dd>
