@@ -179,7 +179,7 @@ describe('qualificationsListUpdateController', () => {
       expect(req.session.inductionDto).toEqual(inductionDto)
     })
 
-    it('should update Induction but not call API and redirect to Education and Training tab given page submitted with removeQualification', async () => {
+    it('should update Induction but not call API and redisplay Qualification List Page given page submitted with removeQualification', async () => {
       // Given
       req.user.token = 'some-token'
 
@@ -242,5 +242,35 @@ describe('qualificationsListUpdateController', () => {
     // Then
     expect(req.session.pageFlowHistory).toEqual(expectedPageFlowHistory)
     expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/induction/qualification-level')
+  })
+
+  it('should update InductionDto and redirect to Check Your Answers given previous page was Check Your Answers', async () => {
+    // Given
+    req.user.token = 'some-token'
+    req.params.prisonNumber = prisonNumber
+
+    const prisonerSummary = aValidPrisonerSummary()
+    req.session.prisonerSummary = prisonerSummary
+    const inductionDto = aLongQuestionSetInductionDto()
+    req.session.inductionDto = inductionDto
+
+    req.body = {}
+
+    req.session.pageFlowHistory = {
+      pageUrls: ['/prisoners/A1234BC/induction/check-your-answers', '/prisoners/A1234BC/induction/qualifications'],
+      currentPageIndex: 1,
+    }
+    const expectedNextPage = '/prisoners/A1234BC/induction/check-your-answers'
+
+    // When
+    await controller.submitQualificationsListView(
+      req as undefined as Request,
+      res as undefined as Response,
+      next as undefined as NextFunction,
+    )
+
+    // Then
+    expect(res.redirect).toHaveBeenCalledWith(expectedNextPage)
+    expect(req.session.inductionDto).toEqual(inductionDto)
   })
 })

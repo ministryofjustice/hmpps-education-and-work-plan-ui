@@ -26,7 +26,7 @@
     </span>
   </div>
 
-  <table class="govuk-table govuk-!-margin-bottom-6" data-qa="qualifications">
+  <table class="govuk-table govuk-!-margin-bottom-6" data-qa="educational-qualifications-table">
     <thead class="govuk-table__head">
       <tr class="govuk-table__row">
         <th scope="col" class="govuk-table__header govuk-!-width-one-quarter">Level</th>
@@ -37,9 +37,9 @@
     <tbody class="govuk-table__body">
       {% for item in inductionDto.previousQualifications.qualifications %}
           <tr class="govuk-table__row" >
-            <td class="govuk-table__cell" data-qa="qualifications-level-{{ loop.index }}">{{ item.level | formatQualificationLevel }}</td>
-            <td class="govuk-table__cell" data-qa="qualifications-subject-{{ loop.index }}">{{ item.subject }}</td>
-            <td class="govuk-table__cell" data-qa="qualifications-grade-{{ loop.index }}">{{ item.grade }}</td>
+            <td class="govuk-table__cell" data-qa="educational-qualification-level">{{ item.level | formatQualificationLevel }}</td>
+            <td class="govuk-table__cell" data-qa="educational-qualification-subject">{{ item.subject }}</td>
+            <td class="govuk-table__cell" data-qa="educational-qualification-grade">{{ item.grade }}</td>
           </tr>
       {% endfor %}
     </tbody>
