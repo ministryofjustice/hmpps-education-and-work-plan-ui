@@ -12,6 +12,8 @@ import ReasonNotToGetWorkValue from '../../../server/enums/reasonNotToGetWorkVal
 import HopingToWorkOnReleasePage from './HopingToWorkOnReleasePage'
 import HopingToGetWorkValue from '../../../server/enums/hopingToGetWorkValue'
 import QualificationsListPage from './QualificationsListPage'
+import HighestLevelOfEducationPage from './HighestLevelOfEducationPage'
+import EducationLevelValue from '../../../server/enums/educationLevelValue'
 
 export default class CheckYourAnswersPage extends Page {
   constructor() {
@@ -111,6 +113,16 @@ export default class CheckYourAnswersPage extends Page {
     return Page.verifyOnPage(QualificationsListPage)
   }
 
+  hasHighestLevelOfEducation(expected: EducationLevelValue): CheckYourAnswersPage {
+    this.highestLevelOfEducation(expected).should('be.visible')
+    return this
+  }
+
+  clickHighestLevelOfEducationLink(): HighestLevelOfEducationPage {
+    this.highestLevelOfEducationChangeLink().click()
+    return Page.verifyOnPage(HighestLevelOfEducationPage)
+  }
+
   clickReasonsForNotWantingToWorkChangeLink(): ReasonsNotToGetWorkPage {
     this.reasonsForNotWantingToWorkOnReleaseChangeLink().click()
     return Page.verifyOnPage(ReasonsNotToGetWorkPage)
@@ -137,9 +149,12 @@ export default class CheckYourAnswersPage extends Page {
 
   private wantsToAddQualificationsChangeLink = (): PageElement => cy.get('[data-qa=wantsToAddQualificationsLink]')
 
-  educationalQualificationsTable = (): PageElement => cy.get('[data-qa=educational-qualifications-table]')
+  private educationalQualificationsTable = (): PageElement => cy.get('[data-qa=educational-qualifications-table]')
 
   private qualificationsChangeLink = (): PageElement => cy.get('[data-qa=qualificationsLink]')
+
+  private highestLevelOfEducation = (educationLevel: EducationLevelValue): PageElement =>
+    cy.get(`[data-qa=highestLevelOfEducation-${educationLevel}`)
 
   private highestLevelOfEducationChangeLink = (): PageElement => cy.get('[data-qa=educationLevelLink]')
 

@@ -39,7 +39,7 @@
     <dt class="govuk-summary-list__key govuk-!-width-one-quarter ">
       Highest level of education before prison
     </dt>
-    <dd class="govuk-summary-list__value" data-qa="educationLevel">
+    <dd class="govuk-summary-list__value" data-qa="highestLevelOfEducation-{{ inductionDto.previousQualifications.educationLevel }}">
       {{ inductionDto.previousQualifications.educationLevel | formatEducationLevel if inductionDto.previousQualifications.educationLevel }}
     </dd>
     <dd class="govuk-summary-list__actions">

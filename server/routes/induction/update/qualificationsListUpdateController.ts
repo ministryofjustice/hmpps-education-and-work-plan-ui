@@ -121,6 +121,11 @@ const inductionWithRemovedQualification = (
     previousQualifications: {
       ...inductionDto.previousQualifications,
       qualifications: updatedQualifications,
+      // If there are still qualifications then we can use the previous highest level of education; otherwise there are no qualifications so we cannot be sure of the highest level of education
+      educationLevel:
+        updatedQualifications.length > 0
+          ? inductionDto.previousQualifications.educationLevel
+          : EducationLevelValue.NOT_SURE,
     },
   }
 }
