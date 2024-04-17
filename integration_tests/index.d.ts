@@ -9,5 +9,13 @@ declare namespace Cypress {
     wiremockVerify(requestPatternBuilder: RequestPatternBuilder, expectedCount?: number): Chainable<*>
 
     wiremockVerifyNoInteractions(requestPatternBuilder: RequestPatternBuilder): Chainable<*>
+
+    signInAsUserWithViewAuthorityToArriveOnPrisonerListPage()
+
+    signInAsUserWithEditAuthorityToArriveOnPrisonerListPage()
+
+    updateShortQuestionSetInductionToArriveOnCheckYourAnswers(prisonNumber?: string)
+
+    updateLongQuestionSetInductionToArriveOnCheckYourAnswers(prisonNumber?: string)
   }
 }

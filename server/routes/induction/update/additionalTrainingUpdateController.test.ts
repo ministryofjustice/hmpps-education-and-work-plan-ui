@@ -217,8 +217,8 @@ describe('additionalTrainingUpdateController', () => {
       req.session.inductionDto = inductionDto
 
       const additionalTrainingForm = {
-        additionalTraining: [AdditionalTrainingValue.FULL_UK_DRIVING_LICENCE, AdditionalTrainingValue.OTHER],
-        additionalTrainingOther: 'Beginners cookery for IT professionals',
+        additionalTraining: [AdditionalTrainingValue.HGV_LICENCE, AdditionalTrainingValue.OTHER],
+        additionalTrainingOther: 'Italian cookery for IT professionals',
       }
       req.body = additionalTrainingForm
       req.session.additionalTrainingForm = undefined
@@ -226,8 +226,8 @@ describe('additionalTrainingUpdateController', () => {
 
       mockedCreateOrUpdateInductionDtoMapper.mockReturnValueOnce(updateInductionDto)
       mockedFormValidator.mockReturnValue(errors)
-      const expectedUpdatedAdditionalTraining = ['FULL_UK_DRIVING_LICENCE', 'OTHER']
-      const expectedUpdatedAdditionalTrainingOther = 'Beginners cookery for IT professionals'
+      const expectedUpdatedAdditionalTraining = ['HGV_LICENCE', 'OTHER']
+      const expectedUpdatedAdditionalTrainingOther = 'Italian cookery for IT professionals'
 
       // When
       await controller.submitAdditionalTrainingForm(
@@ -260,15 +260,15 @@ describe('additionalTrainingUpdateController', () => {
       req.session.inductionDto = inductionDto
 
       const additionalTrainingForm = {
-        additionalTraining: [AdditionalTrainingValue.FULL_UK_DRIVING_LICENCE, AdditionalTrainingValue.OTHER],
-        additionalTrainingOther: 'Beginners cookery for IT professionals',
+        additionalTraining: [AdditionalTrainingValue.HGV_LICENCE, AdditionalTrainingValue.OTHER],
+        additionalTrainingOther: 'Italian cookery for IT professionals',
       }
       req.body = additionalTrainingForm
       req.session.additionalTrainingForm = undefined
 
       mockedFormValidator.mockReturnValue(errors)
-      const expectedUpdatedAdditionalTraining = ['FULL_UK_DRIVING_LICENCE', 'OTHER']
-      const expectedUpdatedAdditionalTrainingOther = 'Beginners cookery for IT professionals'
+      const expectedUpdatedAdditionalTraining = ['HGV_LICENCE', 'OTHER']
+      const expectedUpdatedAdditionalTrainingOther = 'Italian cookery for IT professionals'
 
       req.session.updateInductionQuestionSet = { hopingToWorkOnRelease: 'NOT_SURE' }
       const expectedNextPage = '/prisoners/A1234BC/induction/in-prison-work'
@@ -294,7 +294,7 @@ describe('additionalTrainingUpdateController', () => {
       expect(req.session.pageFlowHistory).toEqual(expectedPageFlowHistory)
     })
 
-    it('should update InductionDto and redirect to In Prison Work view given short question set journey', async () => {
+    it('should update InductionDto and redirect to In Prison Work view given there is an updateInductionQuestionSet on the session', async () => {
       // Given
       req.user.token = 'some-token'
 
@@ -304,15 +304,15 @@ describe('additionalTrainingUpdateController', () => {
       req.session.inductionDto = inductionDto
 
       const additionalTrainingForm = {
-        additionalTraining: [AdditionalTrainingValue.FULL_UK_DRIVING_LICENCE, AdditionalTrainingValue.OTHER],
-        additionalTrainingOther: 'Beginners cookery for IT professionals',
+        additionalTraining: [AdditionalTrainingValue.HGV_LICENCE, AdditionalTrainingValue.OTHER],
+        additionalTrainingOther: 'Italian cookery for IT professionals',
       }
       req.body = additionalTrainingForm
       req.session.additionalTrainingForm = undefined
 
       mockedFormValidator.mockReturnValue(errors)
-      const expectedUpdatedAdditionalTraining = ['FULL_UK_DRIVING_LICENCE', 'OTHER']
-      const expectedUpdatedAdditionalTrainingOther = 'Beginners cookery for IT professionals'
+      const expectedUpdatedAdditionalTraining = ['HGV_LICENCE', 'OTHER']
+      const expectedUpdatedAdditionalTrainingOther = 'Italian cookery for IT professionals'
 
       req.session.updateInductionQuestionSet = { hopingToWorkOnRelease: 'YES' }
       const expectedNextPage = '/prisoners/A1234BC/induction/has-worked-before'
@@ -338,6 +338,50 @@ describe('additionalTrainingUpdateController', () => {
       expect(req.session.pageFlowHistory).toEqual(expectedPageFlowHistory)
     })
 
+    it('should update InductionDto and redirect to Check Your Answers given previous page was Check Your Answers', async () => {
+      // Given
+      req.user.token = 'some-token'
+
+      const prisonerSummary = aValidPrisonerSummary()
+      req.session.prisonerSummary = prisonerSummary
+      const inductionDto = aShortQuestionSetInductionDto()
+      req.session.inductionDto = inductionDto
+
+      const additionalTrainingForm = {
+        additionalTraining: [AdditionalTrainingValue.HGV_LICENCE, AdditionalTrainingValue.OTHER],
+        additionalTrainingOther: 'Italian cookery for IT professionals',
+      }
+      req.body = additionalTrainingForm
+      req.session.additionalTrainingForm = undefined
+
+      mockedFormValidator.mockReturnValue(errors)
+      const expectedUpdatedAdditionalTraining = ['HGV_LICENCE', 'OTHER']
+      const expectedUpdatedAdditionalTrainingOther = 'Italian cookery for IT professionals'
+
+      req.session.pageFlowHistory = {
+        pageUrls: [
+          '/prisoners/A1234BC/induction/check-your-answers',
+          '/prisoners/A1234BC/induction/additional-training',
+        ],
+        currentPageIndex: 1,
+      }
+      const expectedNextPage = '/prisoners/A1234BC/induction/check-your-answers'
+
+      // When
+      await controller.submitAdditionalTrainingForm(
+        req as undefined as Request,
+        res as undefined as Response,
+        next as undefined as NextFunction,
+      )
+
+      // Then
+      const updatedInductionDto = req.session.inductionDto
+      expect(updatedInductionDto.previousTraining.trainingTypes).toEqual(expectedUpdatedAdditionalTraining)
+      expect(updatedInductionDto.previousTraining.trainingTypeOther).toEqual(expectedUpdatedAdditionalTrainingOther)
+      expect(res.redirect).toHaveBeenCalledWith(expectedNextPage)
+      expect(req.session.additionalTrainingForm).toBeUndefined()
+    })
+
     it('should not update Induction given error calling service', async () => {
       // Given
       req.user.token = 'some-token'
@@ -348,8 +392,8 @@ describe('additionalTrainingUpdateController', () => {
       req.session.inductionDto = inductionDto
 
       const additionalTrainingForm = {
-        additionalTraining: [AdditionalTrainingValue.FULL_UK_DRIVING_LICENCE, AdditionalTrainingValue.OTHER],
-        additionalTrainingOther: 'Beginners cookery for IT professionals',
+        additionalTraining: [AdditionalTrainingValue.HGV_LICENCE, AdditionalTrainingValue.OTHER],
+        additionalTrainingOther: 'Italian cookery for IT professionals',
       }
       req.body = additionalTrainingForm
       req.session.additionalTrainingForm = undefined
@@ -357,8 +401,8 @@ describe('additionalTrainingUpdateController', () => {
 
       mockedCreateOrUpdateInductionDtoMapper.mockReturnValueOnce(updateInductionDto)
       mockedFormValidator.mockReturnValue(errors)
-      const expectedUpdatedAdditionalTraining = ['FULL_UK_DRIVING_LICENCE', 'OTHER']
-      const expectedUpdatedAdditionalTrainingOther = 'Beginners cookery for IT professionals'
+      const expectedUpdatedAdditionalTraining = ['HGV_LICENCE', 'OTHER']
+      const expectedUpdatedAdditionalTrainingOther = 'Italian cookery for IT professionals'
 
       inductionService.updateInduction.mockRejectedValue(createError(500, 'Service unavailable'))
       const expectedError = createError(
@@ -383,7 +427,12 @@ describe('additionalTrainingUpdateController', () => {
       expect(inductionService.updateInduction).toHaveBeenCalledWith(prisonNumber, updateInductionDto, 'some-token')
       expect(next).toHaveBeenCalledWith(expectedError)
       expect(req.session.additionalTrainingForm).toEqual(additionalTrainingForm)
-      expect(req.session.inductionDto).toEqual(inductionDto)
+      const updatedInductionDto = req.session.inductionDto
+      expect(updatedInductionDto.previousTraining.trainingTypes).toEqual([
+        AdditionalTrainingValue.HGV_LICENCE,
+        AdditionalTrainingValue.OTHER,
+      ])
+      expect(updatedInductionDto.previousTraining.trainingTypeOther).toEqual('Italian cookery for IT professionals')
     })
   })
 })

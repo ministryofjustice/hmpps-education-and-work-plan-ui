@@ -4,7 +4,7 @@
     <dt class="govuk-summary-list__key govuk-!-width-one-quarter">
       Hoping to work on release
     </dt>
-    <dd class="govuk-summary-list__value" data-qa="hopingToGetWork">
+    <dd class="govuk-summary-list__value" data-qa="hopingToGetWork-{{ inductionDto.workOnRelease.hopingToWork }}">
       {{ inductionDto.workOnRelease.hopingToWork | formatYesNo }}
     </dd>
     <dd class="govuk-summary-list__actions">
@@ -21,7 +21,9 @@
       </dt>
       <dd class="govuk-summary-list__value" data-qa="reasonToNotGetWork">
         {% for item in inductionDto.workOnRelease.notHopingToWorkReasons %}
-          <div data-qa="reasonToNotGetWork-{{ loop.index }}">{{ item | formatReasonNotToGetWork }}{{ ' - ' + inductionDto.workOnRelease.notHopingToWorkOtherReason if item === 'OTHER' }}{{ ',' if inductionDto.workOnRelease.notHopingToWorkReasons.length !== loop.index }}</div>
+          <div data-qa="reasonToNotGetWork-{{ item }}">
+            {{ item | formatReasonNotToGetWork }}{{ ' - ' + inductionDto.workOnRelease.notHopingToWorkOtherReason if item === 'OTHER' }}{{ ',' if inductionDto.workOnRelease.notHopingToWorkReasons.length !== loop.index }}
+          </div>
         {% endfor %}
       </dd>
       <dd class="govuk-summary-list__actions">
