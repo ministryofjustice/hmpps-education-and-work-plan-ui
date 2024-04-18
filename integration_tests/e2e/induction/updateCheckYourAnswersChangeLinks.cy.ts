@@ -115,7 +115,6 @@ context(`Change links on the Check Your Answers page when updating an Induction`
     // Because we've just removed all qualifications, "Do they want to add qualifications" will be set to No
     // Change whether they want to add qualifications
     Page.verifyOnPage(CheckYourAnswersPage)
-    Page.verifyOnPage(CheckYourAnswersPage)
     checkYourAnswersPage
       .hasNoEducationalQualificationsDisplayed()
       .clickWantsToAddQualificationsChangeLink()
