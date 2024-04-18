@@ -1,7 +1,8 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express'
 import createError from 'http-errors'
-import type { InductionDto } from 'inductionDto'
+import type { InductionDto, PreviousWorkExperienceDto } from 'inductionDto'
 import type { WorkedBeforeForm } from 'inductionForms'
+import type { PageFlow } from 'viewModels'
 import WorkedBeforeController from '../common/workedBeforeController'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
 import logger from '../../../../logger'
@@ -10,6 +11,7 @@ import validateWorkedBeforeForm from './workedBeforeFormValidator'
 import YesNoValue from '../../../enums/yesNoValue'
 import getDynamicBackLinkAriaText from '../dynamicAriaTextResolver'
 import { buildNewPageFlowHistory, getPreviousPage } from '../../pageFlowHistory'
+import { getNextPage } from '../../pageFlowQueue'
 
 /**
  * Controller for the Update of the Worked Before screen of the Induction.
@@ -51,6 +53,20 @@ export default class WorkedBeforeUpdateController extends WorkedBeforeController
 
     const updatedInduction = this.updatedInductionDtoWithHasWorkedBefore(inductionDto, workedBeforeForm)
 
+    // If the previous page was Check Your Answers, decide whether to redirect back check answers on submission
+    if (this.previousPageWasCheckYourAnswers(req)) {
+      req.session.inductionDto = updatedInduction
+      // Not worked before is selected, redirect to Check Your Answers
+      req.session.workedBeforeForm = undefined
+      if (workedBeforeForm.hasWorkedBefore === YesNoValue.NO) {
+        return res.redirect(`/prisoners/${prisonNumber}/induction/check-your-answers`)
+      }
+      // Prisoner has worked before, redirect through previous work experience flow
+      const pageFlowQueue = this.buildPageFlowQueue(prisonNumber)
+      req.session.pageFlowQueue = pageFlowQueue
+      return res.redirect(getNextPage(pageFlowQueue))
+    }
+
     if (req.session.updateInductionQuestionSet) {
       req.session.inductionDto = updatedInduction
       const nextPage =
@@ -79,12 +95,28 @@ export default class WorkedBeforeUpdateController extends WorkedBeforeController
     inductionDto: InductionDto,
     workedBeforeForm: WorkedBeforeForm,
   ): InductionDto {
+    let previousExperience: Array<PreviousWorkExperienceDto> = []
+    if (workedBeforeForm.hasWorkedBefore === YesNoValue.YES && inductionDto.previousWorkExperiences?.experiences) {
+      previousExperience = [...inductionDto.previousWorkExperiences.experiences]
+    }
     return {
       ...inductionDto,
       previousWorkExperiences: {
         ...inductionDto.previousWorkExperiences,
+        experiences: previousExperience,
         hasWorkedBefore: workedBeforeForm.hasWorkedBefore === YesNoValue.YES,
       },
+    }
+  }
+
+  private buildPageFlowQueue(prisonNumber: string): PageFlow {
+    return {
+      pageUrls: [
+        `/prisoners/${prisonNumber}/induction/has-worked-before`,
+        `/prisoners/${prisonNumber}/induction/previous-work-experience`,
+        `/prisoners/${prisonNumber}/induction/check-your-answers`,
+      ],
+      currentPageIndex: 0,
     }
   }
 }

@@ -10,7 +10,7 @@ import validatePreviousWorkExperienceTypesForm from './previousWorkExperienceTyp
 import TypeOfWorkExperienceValue from '../../../enums/typeOfWorkExperienceValue'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
 import previousWorkExperienceTypeScreenOrderComparator from '../previousWorkExperienceTypeScreenOrderComparator'
-import { getNextPage } from '../../pageFlowQueue'
+import { appendPagesFromCurrentPage, getNextPage } from '../../pageFlowQueue'
 import { getPreviousPage } from '../../pageFlowHistory'
 import getDynamicBackLinkAriaText from '../dynamicAriaTextResolver'
 
@@ -110,7 +110,12 @@ export default class PreviousWorkExperienceTypesUpdateController extends Previou
 
     req.session.previousWorkExperienceTypesForm = undefined
 
-    const pageFlowQueue = this.buildPageFlowQueue(workExperienceTypesToShowDetailsFormFor, prisonNumber)
+    const currentPageFlow = req.session.pageFlowQueue
+    const pageFlowQueue = this.buildPageFlowQueue(
+      workExperienceTypesToShowDetailsFormFor,
+      prisonNumber,
+      currentPageFlow,
+    )
     req.session.pageFlowQueue = pageFlowQueue
     return res.redirect(getNextPage(pageFlowQueue))
   }
@@ -118,14 +123,16 @@ export default class PreviousWorkExperienceTypesUpdateController extends Previou
   buildPageFlowQueue = (
     previousWorkExperienceTypes: Array<TypeOfWorkExperienceValue>,
     prisonNumber: string,
+    currentPageFlow?: PageFlow,
   ): PageFlow => {
-    const previousWorkExperienceTypesPageUrl = `/prisoners/${prisonNumber}/induction/previous-work-experience`
-    const pageUrls = [
-      previousWorkExperienceTypesPageUrl,
-      ...previousWorkExperienceTypes.map(
-        workType => `/prisoners/${prisonNumber}/induction/previous-work-experience/${workType.toLowerCase()}`,
-      ),
-    ]
+    const nextPages = previousWorkExperienceTypes.map(
+      workType => `/prisoners/${prisonNumber}/induction/previous-work-experience/${workType.toLowerCase()}`,
+    )
+
+    if (currentPageFlow) {
+      return appendPagesFromCurrentPage(currentPageFlow, nextPages)
+    }
+    const pageUrls = [`/prisoners/${prisonNumber}/induction/previous-work-experience`, ...nextPages]
     return {
       pageUrls,
       currentPageIndex: 0,

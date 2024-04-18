@@ -48,6 +48,18 @@ const setCurrentPageIndex = (pageFlowQueue: PageFlow, currentPagePath: string): 
 }
 
 /**
+ * Given an existing PageFlow, appends new pages from the current page index
+ */
+const appendPagesFromCurrentPage = (pageFlowQueue: PageFlow, pages: Array<string>): PageFlow => ({
+  ...pageFlowQueue,
+  pageUrls: [
+    ...pageFlowQueue.pageUrls.slice(0, pageFlowQueue.currentPageIndex + 1),
+    ...pages,
+    ...pageFlowQueue.pageUrls.slice(pageFlowQueue.currentPageIndex + 1),
+  ],
+})
+
+/**
  * Returns true if the current page in the specified [PageFlowQueue] is the first page.
  */
 const isFirstPage = (pageFlowQueue: PageFlow): boolean => pageFlowQueue.currentPageIndex === 0
@@ -58,4 +70,12 @@ const isFirstPage = (pageFlowQueue: PageFlow): boolean => pageFlowQueue.currentP
 const isLastPage = (pageFlowQueue: PageFlow): boolean =>
   pageFlowQueue.currentPageIndex === pageFlowQueue.pageUrls.length - 1
 
-export { setCurrentPageIndex, getCurrentPage, getNextPage, getPreviousPage, isFirstPage, isLastPage }
+export {
+  setCurrentPageIndex,
+  getCurrentPage,
+  getNextPage,
+  getPreviousPage,
+  appendPagesFromCurrentPage,
+  isFirstPage,
+  isLastPage,
+}

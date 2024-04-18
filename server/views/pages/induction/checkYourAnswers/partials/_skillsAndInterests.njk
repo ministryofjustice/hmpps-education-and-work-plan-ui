@@ -23,7 +23,7 @@
     </dt>
     <dd class="govuk-summary-list__value" data-qa="particularJobInterests">
       {% for item in inductionDto.futureWorkInterests.interests %}
-        <p class="govuk-body"  data-qa="particularJobInterests-{{ loop.index }}">
+        <p class="govuk-body"  data-qa="particularJobInterests-{{ item.workType }}">
           {{ item.workTypeOther if item.workType === 'OTHER' else item.workType | formatJobType }}:<br>
           {{ item.role if item.role else 'Not entered'}}
         </p>

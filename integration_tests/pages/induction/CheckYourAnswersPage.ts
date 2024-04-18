@@ -15,6 +15,10 @@ import QualificationsListPage from './QualificationsListPage'
 import HighestLevelOfEducationPage from './HighestLevelOfEducationPage'
 import EducationLevelValue from '../../../server/enums/educationLevelValue'
 import WantToAddQualificationsPage from './WantToAddQualificationsPage'
+import WorkedBeforePage from './WorkedBeforePage'
+import YesNoValue from '../../../server/enums/yesNoValue'
+import WorkInterestTypeValue from '../../../server/enums/workInterestTypeValue'
+import PreviousWorkExperienceTypesPage from './PreviousWorkExperienceTypesPage'
 
 export default class CheckYourAnswersPage extends Page {
   constructor() {
@@ -144,6 +148,26 @@ export default class CheckYourAnswersPage extends Page {
     return Page.verifyOnPage(HopingToWorkOnReleasePage)
   }
 
+  hasWorkedBefore(expected: YesNoValue): CheckYourAnswersPage {
+    this.hasWorkedBeforeValue().contains(expected, {matchCase: false})
+    return this
+  }
+
+  clickHasWorkedBeforeChangeLink(): WorkedBeforePage {
+    this.hasWorkedBeforeChangeLink().click()
+    return Page.verifyOnPage(WorkedBeforePage)
+  }
+
+  hasParticularJobInterest(expected: WorkInterestTypeValue): CheckYourAnswersPage {
+    this.particularJobInterests(expected).should('be.visible')
+    return this
+  }
+
+  clickWorkExperienceTypesChangeLink(): PreviousWorkExperienceTypesPage {
+    this.workExperienceTypesChangeLink().click()
+    return Page.verifyOnPage(PreviousWorkExperienceTypesPage);
+  }
+
   submitPage(): WorkAndInterestsPage {
     this.submitButton().click()
     return Page.verifyOnPage(WorkAndInterestsPage)
@@ -178,11 +202,15 @@ export default class CheckYourAnswersPage extends Page {
 
   private workInterestsChangeLink = (): PageElement => cy.get('[data-qa=workInterestsLink]')
 
+  private particularJobInterests = (expected: WorkInterestTypeValue) => cy.get(`[data-qa^=particularJobInterests-${expected}]`)
+
   private particularJobInterestsChangeLink = (): PageElement => cy.get('[data-qa=particularJobInterestsLink]')
 
   private personalSkillsChangeLink = (): PageElement => cy.get('[data-qa=skillsLink]')
 
   private personalInterestsChangeLink = (): PageElement => cy.get('[data-qa=personalInterestsLink]')
+
+  private hasWorkedBeforeValue = (): PageElement => cy.get('[data-qa=hasWorkedBefore]')
 
   private hasWorkedBeforeChangeLink = (): PageElement => cy.get('[data-qa=hasWorkedBeforeLink]')
 

@@ -6,7 +6,7 @@
       Worked before
     </dt>
     <dd class="govuk-summary-list__value" data-qa="hasWorkedBefore">
-      {{ inductionDto.previousWorkExperiences.hasWorkedBefore | formatYesNo if inductionDto.previousWorkExperiences.hasWorkedBefore }}
+      {{ inductionDto.previousWorkExperiences.hasWorkedBefore | formatYesNo if inductionDto.previousWorkExperiences.hasWorkedBefore or inductionDto.previousWorkExperiences.hasWorkedBefore === false }}
     </dd>
     <dd class="govuk-summary-list__actions">
       <a class="govuk-link govuk-link--no-visited-state" href="/prisoners/{{ prisonerSummary.prisonNumber }}/induction/has-worked-before" data-qa="hasWorkedBeforeLink">
