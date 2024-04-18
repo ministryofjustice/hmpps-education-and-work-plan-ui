@@ -1,6 +1,7 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express'
 import type { Assessment } from 'viewModels'
 import type { WantToAddQualificationsForm } from 'inductionForms'
+import type { InductionDto } from 'inductionDto'
 import InductionController from './inductionController'
 import WantToAddQualificationsView from './wantToAddQualificationsView'
 import dateComparator from '../../dateComparator'
@@ -18,15 +19,19 @@ export default abstract class WantToAddQualificationsController extends Inductio
     res: Response,
     next: NextFunction,
   ): Promise<void> => {
-    const { prisonerSummary, prisonerFunctionalSkills } = req.session
+    const { prisonerSummary, prisonerFunctionalSkills, inductionDto } = req.session
     const { prisonNumber } = req.params
+
+    // There will always be a page flow history for this page, because you can only get here from the Induction "Reasons Not To Work"
+    // or "Check Your Answers" pages; both of which correctly setup the page flow history before coming here.
     this.addCurrentPageToHistory(req, `/prisoners/${prisonNumber}/induction/want-to-add-qualifications`)
 
     const functionalSkills = {
       ...prisonerFunctionalSkills,
       assessments: mostRecentAssessments(prisonerFunctionalSkills.assessments || []),
     }
-    const wantToAddQualificationsForm = req.session.wantToAddQualificationsForm || createWantToAddQualificationsForm()
+    const wantToAddQualificationsForm =
+      req.session.wantToAddQualificationsForm || createWantToAddQualificationsForm(inductionDto)
     req.session.wantToAddQualificationsForm = undefined
 
     const view = new WantToAddQualificationsView(
@@ -71,8 +76,18 @@ const assessmentsGroupedByTypeSortedByDateDesc = (assessments: Array<Assessment>
   return assessmentsByType
 }
 
-const createWantToAddQualificationsForm = (): WantToAddQualificationsForm => {
+const createWantToAddQualificationsForm = (inductionDto: InductionDto): WantToAddQualificationsForm => {
+  const numberOfQualificationsAlreadyOnInduction = inductionDto.previousQualifications?.qualifications?.length
+  if (Number.isInteger(numberOfQualificationsAlreadyOnInduction)) {
+    return {
+      wantToAddQualifications: numberOfQualificationsAlreadyOnInduction > 0 ? YesNoValue.YES : YesNoValue.NO,
+    }
+  }
+
+  // There is no previousQualifications or qualifications objects on the induction, so this is a new Induction where
+  // this is the first time the question is being asked. Therefore the field `wantToAddQualifications` should be
+  // undefined so that the user is forced to answer it.
   return {
-    wantToAddQualifications: YesNoValue.NO,
+    wantToAddQualifications: undefined,
   }
 }

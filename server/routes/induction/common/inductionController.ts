@@ -1,5 +1,5 @@
 import { Request } from 'express'
-import { getPreviousPage, setCurrentPage } from '../../pageFlowHistory'
+import { getPreviousPage, pageFlowHistoryContains, setCurrentPage } from '../../pageFlowHistory'
 
 /**
  * Abstract controller class defining functionality common to all Induction screens and journeys.
@@ -29,5 +29,13 @@ export default abstract class InductionController {
   previousPageWasCheckYourAnswers(req: Request): boolean {
     const { pageFlowHistory } = req.session
     return pageFlowHistory && getPreviousPage(pageFlowHistory).endsWith('/check-your-answers')
+  }
+
+  /**
+   * Returns `true` if the Page Flow History contains Check Your Answers (anywhere in the history)
+   */
+  checkYourAnswersIsInThePageHistory(req: Request): boolean {
+    const { pageFlowHistory } = req.session
+    return pageFlowHistory && pageFlowHistoryContains(pageFlowHistory, /\/check-your-answers$/)
   }
 }

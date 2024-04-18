@@ -7,6 +7,7 @@ import {
   isFirstPage,
   isLastPage,
   isPageInFlow,
+  pageFlowHistoryContains,
 } from './pageFlowHistory'
 
 describe('pageFlowHistory', () => {
@@ -152,6 +153,51 @@ describe('pageFlowHistory', () => {
 
       // Then
       expect(actual).toEqual(expected)
+    })
+  })
+
+  describe('pageFlowHistoryContains', () => {
+    const pageFlowHistory: PageFlow = {
+      pageUrls: ['/prisoners/A1234BC/induction/check-your-answers', '/prisoners/A1234BC/induction/qualifications'],
+      currentPageIndex: 1,
+    }
+
+    Array.of<RegExp>(
+      / /,
+      /checkYourAnswers/,
+      /check-Your-Answers/,
+      /check-your-answers\//,
+      /\/checkYourAnswers/,
+      /\/check-Your-Answers/,
+      /\/check-your-answers\//,
+      /Qualifications/,
+    ).forEach(expected => {
+      it(`should return false given ${expected}`, () => {
+        // Given
+
+        // When
+        const actual = pageFlowHistoryContains(pageFlowHistory, expected)
+
+        // Then
+        expect(actual).toEqual(false)
+      })
+    })
+
+    Array.of<RegExp>(
+      /check-your-answers/,
+      /\/check-your-answers/,
+      /^\/prisoners\/.*\/induction\/check.*$/,
+      /qualifications/,
+    ).forEach(expected => {
+      it(`should return true given ${expected}`, () => {
+        // Given
+
+        // When
+        const actual = pageFlowHistoryContains(pageFlowHistory, expected)
+
+        // Then
+        expect(actual).toEqual(true)
+      })
     })
   })
 })
