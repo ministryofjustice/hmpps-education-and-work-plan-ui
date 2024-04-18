@@ -50,6 +50,15 @@ export default class HighestLevelOfEducationUpdateController extends HighestLeve
       return res.redirect(`/prisoners/${prisonNumber}/induction/highest-level-of-education`)
     }
 
+    const updatedInduction = updatedInductionDtoWithHighestLevelOfEducation(inductionDto, highestLevelOfEducationForm)
+    req.session.inductionDto = updatedInduction
+    req.session.highestLevelOfEducationForm = undefined
+
+    // If the previous page was Check Your Answers, forward to Check Your Answers again
+    if (this.previousPageWasCheckYourAnswers(req)) {
+      return res.redirect(`/prisoners/${prisonNumber}/induction/check-your-answers`)
+    }
+
     if (
       // The Induction already has qualifications, regardless of the new Highest Level of Education
       inductionHasEducationQualifications(inductionDto) ||
@@ -60,18 +69,9 @@ export default class HighestLevelOfEducationUpdateController extends HighestLeve
         'Induction can be updated with new Highest Level of Education without asking further questions about educational qualifications',
       )
 
-      // Update the Induction with the new Highest Level of Education
-      const updatedInduction = updatedInductionDtoWithHighestLevelOfEducation(inductionDto, highestLevelOfEducationForm)
-      // TODO forward to next page in long question set route
-      // if (req.session.updateInductionQuestionSet) {
-      // req.session.inductionDto = updatedInduction
-
-      // Otherwise, call the API to persist the changes
-      const updateInductionDto = toCreateOrUpdateInductionDto(prisonId, updatedInduction)
-
       try {
+        const updateInductionDto = toCreateOrUpdateInductionDto(prisonId, updatedInduction)
         await this.inductionService.updateInduction(prisonNumber, updateInductionDto, req.user.token)
-        req.session.highestLevelOfEducationForm = undefined
         req.session.inductionDto = undefined
         return res.redirect(`/plan/${prisonNumber}/view/education-and-training`)
       } catch (e) {
@@ -80,11 +80,6 @@ export default class HighestLevelOfEducationUpdateController extends HighestLeve
       }
     } else {
       logger.debug('New Highest Level of Education requires asking further questions about educational qualifications')
-      req.session.inductionDto = updatedInductionDtoWithHighestLevelOfEducation(
-        inductionDto,
-        highestLevelOfEducationForm,
-      )
-      req.session.highestLevelOfEducationForm = undefined
 
       // if there is no page history (i.e. because we're not changing the main question set), start one here before commencing the add qualification mini flow
       if (!req.session.pageFlowHistory) {

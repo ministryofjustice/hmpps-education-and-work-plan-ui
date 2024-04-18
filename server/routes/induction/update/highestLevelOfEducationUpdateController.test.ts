@@ -443,6 +443,49 @@ describe('highestLevelOfEducationUpdateController', () => {
       expect(req.session.pageFlowHistory).toEqual(expectedPageFlowHistory)
     })
 
+    it('should update InductionDto and redirect to Check Your Answers given previous page was Check Your Answers', async () => {
+      // Given
+      req.user.token = 'some-token'
+      req.params.prisonNumber = prisonNumber
+
+      const prisonerSummary = aValidPrisonerSummary()
+      req.session.prisonerSummary = prisonerSummary
+      const inductionDto = aLongQuestionSetInductionDto()
+      req.session.inductionDto = inductionDto
+
+      const highestLevelOfEducationForm = {
+        educationLevel: EducationLevelValue.NOT_SURE,
+      }
+      req.body = highestLevelOfEducationForm
+      req.session.highestLevelOfEducationForm = undefined
+      const updateInductionDto = aLongQuestionSetUpdateInductionRequest()
+
+      mockedCreateOrUpdateInductionDtoMapper.mockReturnValueOnce(updateInductionDto)
+      mockedFormValidator.mockReturnValue(errors)
+
+      req.session.pageFlowHistory = {
+        pageUrls: [
+          '/prisoners/A1234BC/induction/check-your-answers',
+          '/prisoners/A1234BC/induction/highest-level-of-education',
+        ],
+        currentPageIndex: 1,
+      }
+      const expectedNextPage = '/prisoners/A1234BC/induction/check-your-answers'
+
+      // When
+      await controller.submitHighestLevelOfEducationForm(
+        req as undefined as Request,
+        res as undefined as Response,
+        next as undefined as NextFunction,
+      )
+
+      // Then
+      const updatedInductionDto = req.session.inductionDto
+      expect(updatedInductionDto.previousQualifications.educationLevel).toEqual(EducationLevelValue.NOT_SURE)
+      expect(res.redirect).toHaveBeenCalledWith(expectedNextPage)
+      expect(req.session.inPrisonWorkForm).toBeUndefined()
+    })
+
     it('should not update Induction given error calling service', async () => {
       // Given
       req.user.token = 'some-token'
@@ -489,8 +532,8 @@ describe('highestLevelOfEducationUpdateController', () => {
 
       expect(inductionService.updateInduction).toHaveBeenCalledWith(prisonNumber, updateInductionDto, 'some-token')
       expect(next).toHaveBeenCalledWith(expectedError)
-      expect(req.session.highestLevelOfEducationForm).toEqual(highestLevelOfEducationForm)
-      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(req.session.highestLevelOfEducationForm).toBeUndefined()
+      expect(req.session.inductionDto).toEqual(updatedInduction)
     })
   })
 })
