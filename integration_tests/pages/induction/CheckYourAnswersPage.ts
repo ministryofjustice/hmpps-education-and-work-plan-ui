@@ -11,6 +11,7 @@ import ReasonsNotToGetWorkPage from './ReasonsNotToGetWorkPage'
 import ReasonNotToGetWorkValue from '../../../server/enums/reasonNotToGetWorkValue'
 import HopingToWorkOnReleasePage from './HopingToWorkOnReleasePage'
 import HopingToGetWorkValue from '../../../server/enums/hopingToGetWorkValue'
+import QualificationsListPage from './QualificationsListPage'
 
 export default class CheckYourAnswersPage extends Page {
   constructor() {
@@ -86,6 +87,30 @@ export default class CheckYourAnswersPage extends Page {
     return this
   }
 
+  hasEducationalQualifications(expected: Array<string>): CheckYourAnswersPage {
+    this.educationalQualificationsTable()
+      .find('[data-qa=educational-qualification-subject]')
+      .then(subjectTableCells => {
+        const subjects = subjectTableCells.map((idx, el) => el.textContent).get()
+        cy.wrap(subjects)
+          .should('have.length', expected.length)
+          .each(value => {
+            expect(expected).to.contain(value)
+          })
+      })
+    return this
+  }
+
+  hasNoEducationalQualificationsDisplayed(): CheckYourAnswersPage {
+    this.educationalQualificationsTable().should('not.exist')
+    return this
+  }
+
+  clickQualificationsChangeLink(): QualificationsListPage {
+    this.qualificationsChangeLink().click()
+    return Page.verifyOnPage(QualificationsListPage)
+  }
+
   clickReasonsForNotWantingToWorkChangeLink(): ReasonsNotToGetWorkPage {
     this.reasonsForNotWantingToWorkOnReleaseChangeLink().click()
     return Page.verifyOnPage(ReasonsNotToGetWorkPage)
@@ -111,6 +136,8 @@ export default class CheckYourAnswersPage extends Page {
   private factorsAffectingAbilityToWorkChangeLink = (): PageElement => cy.get('[data-qa=affectAbilityToWorkLink]')
 
   private wantsToAddQualificationsChangeLink = (): PageElement => cy.get('[data-qa=wantsToAddQualificationsLink]')
+
+  educationalQualificationsTable = (): PageElement => cy.get('[data-qa=educational-qualifications-table]')
 
   private qualificationsChangeLink = (): PageElement => cy.get('[data-qa=qualificationsLink]')
 

@@ -66,6 +66,11 @@ export default class QualificationsListUpdateController extends QualificationsLi
       return res.redirect(`/prisoners/${prisonNumber}/induction/qualifications`)
     }
 
+    // If the previous page was Check Your Answers, forward to Check Your Answers again
+    if (this.previousPageWasCheckYourAnswers(req)) {
+      return res.redirect(`/prisoners/${prisonNumber}/induction/check-your-answers`)
+    }
+
     if (inductionHasNoQualifications(inductionDto)) {
       logger.debug(
         `Induction has no qualifications. Redirect the user to Highest Level of Education in order to start adding qualification(s)`,

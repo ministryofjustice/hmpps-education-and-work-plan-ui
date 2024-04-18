@@ -8,6 +8,10 @@ import ReasonNotToGetWorkValue from '../../../server/enums/reasonNotToGetWorkVal
 import InPrisonWorkValue from '../../../server/enums/inPrisonWorkValue'
 import InPrisonTrainingValue from '../../../server/enums/inPrisonTrainingValue'
 import AdditionalTrainingValue from '../../../server/enums/additionalTrainingValue'
+import QualificationLevelValue from '../../../server/enums/qualificationLevelValue'
+import QualificationLevelPage from '../../pages/induction/QualificationLevelPage'
+import QualificationDetailsPage from '../../pages/induction/QualificationDetailsPage'
+import QualificationsListPage from '../../pages/induction/QualificationsListPage'
 
 context(`Change links on the Check Your Answers page when updating an Induction`, () => {
   const prisonNumber = 'G6115VJ'
@@ -72,6 +76,40 @@ context(`Change links on the Check Your Answers page when updating an Induction`
       .chooseInPrisonTraining(InPrisonTrainingValue.NUMERACY_SKILLS)
       .submitPage()
 
+    // Change Educational Qualifications - remove 1 qualification
+    Page.verifyOnPage(CheckYourAnswersPage)
+      .clickQualificationsChangeLink()
+      .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/check-your-answers`)
+      .removeQualification(2) // The original induction has 4 qualifications on it. Remove the 2nd one
+      .submitPage()
+    // Change Educational Qualifications - add 1 qualification
+    Page.verifyOnPage(CheckYourAnswersPage)
+      .clickQualificationsChangeLink()
+      .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/check-your-answers`)
+      .clickToAddAnotherQualification()
+    Page.verifyOnPage(QualificationLevelPage) //
+      .selectQualificationLevel(QualificationLevelValue.LEVEL_1)
+      .submitPage()
+    Page.verifyOnPage(QualificationDetailsPage) //
+      .setQualificationSubject('Chemistry')
+      .setQualificationGrade('Merit')
+      .submitPage()
+    Page.verifyOnPage(QualificationsListPage) //
+      .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/check-your-answers`)
+      .submitPage()
+    // Back on Check Your Answers we can check we have the correct qualifications
+    Page.verifyOnPage(CheckYourAnswersPage) //
+      .hasEducationalQualifications(['French', 'Maths', 'English', 'Chemistry'])
+    // Change Educational Qualifications - remove all remaining qualifications
+    Page.verifyOnPage(CheckYourAnswersPage)
+      .clickQualificationsChangeLink()
+      .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/check-your-answers`)
+      .removeQualification(4) // The induction now has 4 qualifications on it. Remove them all
+      .removeQualification(3)
+      .removeQualification(2)
+      .removeQualification(1)
+      .submitPage()
+
     // Then
     Page.verifyOnPage(CheckYourAnswersPage) //
       .hasHopingToWorkOnRelease(HopingToGetWorkValue.NOT_SURE)
@@ -79,6 +117,7 @@ context(`Change links on the Check Your Answers page when updating an Induction`
       .hasAdditionalTraining([AdditionalTrainingValue.MANUAL_HANDLING, AdditionalTrainingValue.CSCS_CARD])
       .hasInPrisonWorkInterests([InPrisonWorkValue.PRISON_LAUNDRY, InPrisonWorkValue.PRISON_LIBRARY])
       .hasInPrisonTrainingInterests([InPrisonTrainingValue.CATERING, InPrisonTrainingValue.NUMERACY_SKILLS])
+      .hasNoEducationalQualificationsDisplayed()
   })
 
   // TODO - RR-736 Implement this test
