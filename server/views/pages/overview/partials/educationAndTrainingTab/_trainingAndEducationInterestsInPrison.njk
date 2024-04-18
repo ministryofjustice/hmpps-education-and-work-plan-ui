@@ -32,7 +32,7 @@ asked at the Induction.
               </dd>
               <dd class="govuk-summary-list__actions govuk-!-display-none-print">
                 {%- set inPrisonTrainingChangeLinkUrl -%}
-                  {%- if featureToggles.induction.update.inPrisonTrainingSectionEnabled -%}
+                  {%- if featureToggles.induction.update.enabled -%}
                     /prisoners/{{ prisonerSummary.prisonNumber }}/induction/in-prison-training
                   {%- else -%}
                     {{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}/in-prison-education/update

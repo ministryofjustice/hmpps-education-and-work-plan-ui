@@ -26,7 +26,7 @@ questions are different.
 
           <dd class="govuk-summary-list__actions govuk-!-display-none-print">
             {%- set hasWorkedBeforeChangeLinkUrl -%}
-              {%- if featureToggles.induction.update.workExperienceSectionEnabled -%}
+              {%- if featureToggles.induction.update.enabled -%}
                 /prisoners/{{ prisonerSummary.prisonNumber }}/induction/has-worked-before
               {%- else -%}
                 {{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}/has-worked-before/update
@@ -54,7 +54,7 @@ questions are different.
             </dd>
             <dd class="govuk-summary-list__actions govuk-!-display-none-print">
               {%- set previousWorkExperienceChangeLinkUrl -%}
-                {%- if featureToggles.induction.update.workExperienceSectionEnabled -%}
+                {%- if featureToggles.induction.update.enabled -%}
                   /prisoners/{{ prisonerSummary.prisonNumber }}/induction/previous-work-experience
                 {%- else -%}
                   {{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}/type-of-work-experience/update
@@ -78,7 +78,7 @@ questions are different.
               </dd>
               <dd class="govuk-summary-list__actions govuk-!-display-none-print">
                 {%- set workExperienceDetailChangeLinkUrl -%}
-                  {%- if featureToggles.induction.update.workExperienceSectionEnabled -%}
+                  {%- if featureToggles.induction.update.enabled -%}
                     /prisoners/{{ prisonerSummary.prisonNumber }}/induction/previous-work-experience/{{ workExperienceDetails.type | lower }}
                   {%- else -%}
                     {{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}/work-details/{% if workExperienceDetails.type == 'Other' %}{{ workExperienceDetails.other | lower }}{% else %}{{ workExperienceDetails.type | lower }}{% endif %}/update
@@ -115,7 +115,7 @@ questions are different.
           </dd>
           <dd class="govuk-summary-list__actions govuk-!-display-none-print">
             {%- set hopingToWorkOnReleaseChangeLinkUrl -%}
-              {%- if featureToggles.induction.update.workInterestsSectionEnabled -%}
+              {%- if featureToggles.induction.update.enabled -%}
                 /prisoners/{{ prisonerSummary.prisonNumber }}/induction/hoping-to-work-on-release
               {%- else -%}
                 {{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}/hoping-to-get-work/update
@@ -146,7 +146,7 @@ questions are different.
           </dd>
           <dd class="govuk-summary-list__actions govuk-!-display-none-print">
             {%- set affectAbilityToWorkChangeLinkUrl -%}
-              {%- if featureToggles.induction.update.workInterestsSectionEnabled -%}
+              {%- if featureToggles.induction.update.enabled -%}
                 /prisoners/{{ prisonerSummary.prisonNumber }}/induction/affect-ability-to-work
               {%- else -%}
                 {{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}/ability-to-work/update
@@ -176,7 +176,7 @@ questions are different.
           </dd>
           <dd class="govuk-summary-list__actions govuk-!-display-none-print">
             {%- set workInterestTypesChangeLinkUrl -%}
-              {%- if featureToggles.induction.update.workInterestsSectionEnabled -%}
+              {%- if featureToggles.induction.update.enabled -%}
                 /prisoners/{{ prisonerSummary.prisonNumber }}/induction/work-interest-types
               {%- else -%}
                 {{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}/work-interests/update
@@ -202,7 +202,7 @@ questions are different.
           </dd>
           <dd class="govuk-summary-list__actions govuk-!-display-none-print">
             {%- set workInterestRolesChangeLinkUrl -%}
-              {%- if featureToggles.induction.update.workInterestsSectionEnabled -%}
+              {%- if featureToggles.induction.update.enabled -%}
                 /prisoners/{{ prisonerSummary.prisonNumber }}/induction/work-interest-roles
               {%- else -%}
                 {{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}particular-job-interests/update
@@ -244,7 +244,7 @@ questions are different.
           </dd>
           <dd class="govuk-summary-list__actions govuk-!-display-none-print">
             {%- set skillsChangeLinkUrl -%}
-              {%- if featureToggles.induction.update.skillsAndInterestsSectionEnabled -%}
+              {%- if featureToggles.induction.update.enabled -%}
                 /prisoners/{{ prisonerSummary.prisonNumber }}/induction/skills
               {%- else -%}
                 {{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}/skills/update
@@ -274,7 +274,7 @@ questions are different.
           </dd>
           <dd class="govuk-summary-list__actions govuk-!-display-none-print">
             {%- set personalInterestsChangeLinkUrl -%}
-              {%- if featureToggles.induction.update.skillsAndInterestsSectionEnabled -%}
+              {%- if featureToggles.induction.update.enabled -%}
                 /prisoners/{{ prisonerSummary.prisonNumber }}/induction/personal-interests
               {%- else -%}
                 {{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}/personal-interests/update
