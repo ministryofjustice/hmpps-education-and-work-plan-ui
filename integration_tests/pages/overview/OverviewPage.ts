@@ -3,6 +3,7 @@ import CreateGoalsPage from '../goal/CreateGoalsPage'
 import UpdateGoalPage from '../goal/UpdateGoalPage'
 // eslint-disable-next-line import/no-cycle
 import FunctionalSkillsPage from '../functionalSkills/FunctionalSkillsPage'
+import HopingToWorkOnReleasePage from '../induction/HopingToWorkOnReleasePage'
 
 /**
  * Cypress page class representing the Overview tab of the Overview Page
@@ -50,8 +51,9 @@ export default class OverviewPage extends Page {
     return Page.verifyOnPage(CreateGoalsPage)
   }
 
-  clickMakeProgressPlan() {
+  clickMakeProgressPlan(): HopingToWorkOnReleasePage {
     this.makeProgressPlanLink().click()
+    return Page.verifyOnPage(HopingToWorkOnReleasePage)
   }
 
   activeTabIs(expected: string): OverviewPage {

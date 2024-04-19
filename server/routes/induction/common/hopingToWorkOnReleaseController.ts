@@ -39,6 +39,6 @@ export default abstract class HopingToWorkOnReleaseController extends InductionC
 
 const toHopingToWorkOnReleaseForm = (inductionDto: InductionDto): HopingToWorkOnReleaseForm => {
   return {
-    hopingToGetWork: inductionDto.workOnRelease?.hopingToWork,
+    hopingToGetWork: inductionDto?.workOnRelease?.hopingToWork,
   }
 }

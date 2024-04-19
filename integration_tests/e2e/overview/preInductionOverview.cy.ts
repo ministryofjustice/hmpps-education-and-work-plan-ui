@@ -1,36 +1,20 @@
 import Page from '../../pages/page'
 import OverviewPage from '../../pages/overview/OverviewPage'
-import CreateCiagInductionPage from '../../pages/ciagUi/createCiagInductionPage'
 import Error500Page from '../../pages/error500'
 import CreateGoalsPage from '../../pages/goal/CreateGoalsPage'
+import HopingToWorkOnReleasePage from '../../pages/induction/HopingToWorkOnReleasePage'
 
 context('Prisoner Overview page - Pre Induction', () => {
+  const prisonNumber = 'G6115VJ'
+
   beforeEach(() => {
-    cy.task('reset')
-    cy.task('stubSignInAsUserWithEditAuthority')
-    cy.task('stubAuthUser')
-    cy.task('stubGetHeaderComponent')
-    cy.task('stubGetFooterComponent')
-    cy.task('stubPrisonerList')
-    cy.task('stubCiagInductionList')
-    cy.task('stubActionPlansList')
-    cy.task('getPrisonerById', 'G6115VJ')
-    cy.task('getPrisonerById', 'A00001A')
+    cy.signInAsUserWithEditAuthorityToArriveOnPrisonerListPage()
+    cy.task('getActionPlan')
     cy.task('stubGetInduction404Error')
-    cy.task('getActionPlan', 'G6115VJ')
-    cy.task('getActionPlan', 'A00001A')
-    cy.task('stubLearnerProfile', 'G6115VJ')
-    cy.task('stubLearnerProfile', 'A00001A')
-    cy.task('stubLearnerEducation', 'G6115VJ')
-    cy.task('stubLearnerEducation', 'A00001A')
   })
 
   it('should render prisoner Overview page with Create Induction panel and Add Goal button given user has edit authority', () => {
     // Given
-    cy.task('stubSignInAsUserWithEditAuthority')
-    cy.signIn()
-
-    const prisonNumber = 'G6115VJ'
 
     // When
     cy.visit(`/plan/${prisonNumber}/view/overview`)
@@ -47,10 +31,6 @@ context('Prisoner Overview page - Pre Induction', () => {
 
   it('should render prisoner Overview page listing prisoner goals given prisoner has goals that were created pre-induction', () => {
     // Given
-    cy.task('stubSignInAsUserWithEditAuthority')
-    cy.signIn()
-
-    const prisonNumber = 'G6115VJ'
 
     // When
     cy.visit(`/plan/${prisonNumber}/view/overview`)
@@ -65,29 +45,26 @@ context('Prisoner Overview page - Pre Induction', () => {
 
   it('should render prisoner Overview page listing no prisoner goals given prisoner has no goals created pre-induction', () => {
     // Given
-    cy.task('stubSignInAsUserWithEditAuthority')
-    cy.signIn()
-
-    const prisonNumber = 'A00001A'
+    const prisonNumberForPrisonerWithNoGoals = 'A00001A'
+    cy.task('getActionPlan', prisonNumberForPrisonerWithNoGoals)
+    cy.task('getPrisonerById', prisonNumberForPrisonerWithNoGoals)
+    cy.task('stubLearnerProfile', prisonNumberForPrisonerWithNoGoals)
+    cy.task('stubLearnerEducation', prisonNumberForPrisonerWithNoGoals)
+    cy.task('stubGetInduction404Error', prisonNumberForPrisonerWithNoGoals)
 
     // When
-    cy.visit(`/plan/${prisonNumber}/view/overview`)
+    cy.visit(`/plan/${prisonNumberForPrisonerWithNoGoals}/view/overview`)
 
     // Then
     const overviewPage = Page.verifyOnPage(OverviewPage)
     overviewPage //
-      .isForPrisoner(prisonNumber)
+      .isForPrisoner(prisonNumberForPrisonerWithNoGoals)
       .isPreInduction()
       .hasNoGoalsDisplayed()
   })
 
-  it(`should navigate to CIAG create induction page given 'make a progress plan' is clicked`, () => {
+  it(`should navigate to create Induction page given 'make a progress plan' is clicked`, () => {
     // Given
-    cy.task('stubCreateCiagInductionUi')
-    cy.signIn()
-
-    const prisonNumber = 'G6115VJ'
-
     cy.visit(`/plan/${prisonNumber}/view/overview`)
 
     const overviewPage = Page.verifyOnPage(OverviewPage)
@@ -100,16 +77,12 @@ context('Prisoner Overview page - Pre Induction', () => {
     overviewPage.clickMakeProgressPlan()
 
     // Then
-    Page.verifyOnPage(CreateCiagInductionPage)
+    Page.verifyOnPage(HopingToWorkOnReleasePage) //
+      .hasBackLinkTo(`/plan/${prisonNumber}/view/overview`)
   })
 
   it(`should navigate to Create Goal page given 'add goal' button is clicked`, () => {
     // Given
-    cy.task('stubCreateCiagInductionUi')
-    cy.signIn()
-
-    const prisonNumber = 'G6115VJ'
-
     cy.visit(`/plan/${prisonNumber}/view/overview`)
 
     const overviewPage = Page.verifyOnPage(OverviewPage)
@@ -127,10 +100,6 @@ context('Prisoner Overview page - Pre Induction', () => {
 
   it('should display service unavailable message given PLP API returns a 500 when retrieving the Induction', () => {
     // Given
-    cy.task('stubSignInAsUserWithViewAuthority')
-    cy.signIn()
-
-    const prisonNumber = 'G6115VJ'
     cy.task('stubGetInduction500Error')
 
     // When

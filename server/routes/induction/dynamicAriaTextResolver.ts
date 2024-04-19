@@ -15,6 +15,7 @@ const getDynamicBackLinkAriaText = (req: Request, backLinkUrl: string): string =
   const prisonerName = `${prisonerSummary.firstName} ${prisonerSummary.lastName}`
 
   const ariaTextByUri: Record<string, string> = {
+    '/plan/{PRISON_NUMBER}/view/overview': `Back to ${prisonerName}'s learning and work progress`,
     '/plan/{PRISON_NUMBER}/view/education-and-training': `Back to ${prisonerName}'s learning and work progress`,
     '/plan/{PRISON_NUMBER}/view/work-and-interests': `Back to ${prisonerName}'s learning and work progress`,
     '/prisoners/{PRISON_NUMBER}/induction/hoping-to-work-on-release': `Back to Is ${prisonerName} hoping to get work when they're released?`,
