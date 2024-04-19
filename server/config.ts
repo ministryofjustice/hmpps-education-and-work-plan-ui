@@ -181,22 +181,11 @@ export default {
       get('INCLUDE_PRISON_TIMELINE_EVENTS_ENABLED', false, requiredInProduction),
     ),
     induction: {
+      create: {
+        enabled: toBoolean(get('CREATE_INDUCTION_ENABLED', false, requiredInProduction)),
+      },
       update: {
-        skillsAndInterestsSectionEnabled: toBoolean(
-          get('UPDATE_INDUCTION_SKILLS_AND_INTERESTS_SECTION_ENABLED', false, requiredInProduction),
-        ),
-        workExperienceSectionEnabled: toBoolean(
-          get('UPDATE_INDUCTION_WORK_EXPERIENCE_SECTION_ENABLED', false, requiredInProduction),
-        ),
-        workInterestsSectionEnabled: toBoolean(
-          get('UPDATE_INDUCTION_WORK_INTERESTS_SECTION_ENABLED', false, requiredInProduction),
-        ),
-        inPrisonTrainingSectionEnabled: toBoolean(
-          get('UPDATE_INDUCTION_IN_PRISON_TRAINING_SECTION_ENABLED', false, requiredInProduction),
-        ),
-        prePrisonEducationSectionEnabled: toBoolean(
-          get('UPDATE_INDUCTION_PRE_PRISON_EDUCATION_SECTION_ENABLED', false, requiredInProduction),
-        ),
+        enabled: toBoolean(get('UPDATE_INDUCTION_ENABLED', false, requiredInProduction)),
       },
     },
     newCourseAndQualificationHistoryEnabled: toBoolean(

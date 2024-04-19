@@ -17,7 +17,7 @@ as the follow up questions are different.
         <div class="app-summary-card__change-link">
           <h3 class="govuk-heading-s app-summary-card__change-link__heading">Educational qualifications</h3>
           {%- set educationalQualificationsChangeLinkUrl -%}
-            {%- if featureToggles.induction.update.prePrisonEducationSectionEnabled -%}
+            {%- if featureToggles.induction.update.enabled -%}
               /prisoners/{{ prisonerSummary.prisonNumber }}/induction/qualifications
             {%- else -%}
               {{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}/qualifications-list/update
@@ -75,7 +75,7 @@ as the follow up questions are different.
             </dd>
             <dd class="govuk-summary-list__actions govuk-!-display-none-print">
               {%- set additionalTrainingChangeLinkUrl -%}
-                {%- if featureToggles.induction.update.prePrisonEducationSectionEnabled -%}
+                {%- if featureToggles.induction.update.enabled -%}
                   /prisoners/{{ prisonerSummary.prisonNumber }}/induction/additional-training
                 {%- else -%}
                   {{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}/additional-training/update

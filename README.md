@@ -172,13 +172,11 @@ This UI consumes, and is therefore dependent on, data from the following APIs:
 ## Feature Toggles
 Features can be toggled by setting the relevant environment variable.
 
-| Name                                                  | Default Value | Type    | Description                                                                                                    |
-|-------------------------------------------------------|---------------|---------|----------------------------------------------------------------------------------------------------------------|
-| SOME_TOGGLE_ENABLED                                   | false         | Boolean | Example feature toggle, for demonstration purposes.                                                            |
-| INCLUDE_PRISON_TIMELINE_EVENTS_ENABLED                | false         | Boolean | Set to true to include Prison Movement related events within a Prisoner's Timeline.                            |
-| UPDATE_INDUCTION_SKILLS_AND_INTERESTS_SECTION_ENABLED | false         | Boolean | Set to true to enable update of Skills & Interests section of Induction via PLP screens.                       |
-| UPDATE_INDUCTION_WORK_EXPERIENCE_SECTION_ENABLED      | false         | Boolean | Set to true to enable update of Work Experience section of Induction via PLP screens.                          |
-| UPDATE_INDUCTION_WORK_INTERESTS_SECTION_ENABLED       | false         | Boolean | Set to true to enable update of Work Interests section of Induction via PLP screens.                           |
-| UPDATE_INDUCTION_IN_PRISON_TRAINING_SECTION_ENABLED   | false         | Boolean | Set to true to enable update of In-prison Education & Training Interests section of Induction via PLP screens. |
-| NEW_COURSE_AND_QUALIFICATION_HISTORY_ENABLED          | false         | Boolean | Set to true to show the new In-prison qualifications and achievements history on the Education & training tab. |
-| NEW_CREATE_GOAL_JOURNEY_ENABLED          | false         | Boolean | Set to true to show the new create a goal journey |
+| Name                                         | Default Value | Type    | Description                                                                                                    |
+|----------------------------------------------|---------------|---------|----------------------------------------------------------------------------------------------------------------|
+| SOME_TOGGLE_ENABLED                          | false         | Boolean | Example feature toggle, for demonstration purposes.                                                            |
+| INCLUDE_PRISON_TIMELINE_EVENTS_ENABLED       | false         | Boolean | Set to true to include Prison Movement related events within a Prisoner's Timeline.                            |
+| CREATE_INDUCTION_ENABLED                     | false         | Boolean | Set to true to enable the creation of Inductions via PLP screens. Set to false to use the CIAG UI screens.     |
+| UPDATE_INDUCTION_ENABLED                     | false         | Boolean | Set to true to enable updating of Inductions via PLP screens. Set to false to use the CIAG UI screens.         |
+| NEW_COURSE_AND_QUALIFICATION_HISTORY_ENABLED | false         | Boolean | Set to true to show the new In-prison qualifications and achievements history on the Education & training tab. |
+| NEW_CREATE_GOAL_JOURNEY_ENABLED              | false         | Boolean | Set to true to show the new create a goal journey                                                              |

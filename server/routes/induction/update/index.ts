@@ -30,7 +30,7 @@ import retrievePrisonerSummaryIfNotInSession from '../../routerRequestHandlers/r
  * Route definitions for updating the various sections of an Induction
  *
  * All routes adopt the pattern:
- * /prisoners/<prison-number>/induction/<page/section-id>
+ * /prisoners/<prison-number>/induction/<page-or-section-id>
  */
 export default (router: Router, services: Services) => {
   const { inductionService } = services
@@ -56,7 +56,7 @@ export default (router: Router, services: Services) => {
   const wantToAddQualificationsUpdateController = new WantToAddQualificationsUpdateController()
   const checkYourAnswersUpdateController = new CheckYourAnswersUpdateController(inductionService)
 
-  if (isAnyUpdateSectionEnabled()) {
+  if (config.featureToggles.induction.update.enabled) {
     router.get('/prisoners/:prisonNumber/induction/**', [
       checkUserHasEditAuthority(),
       retrievePrisonerSummaryIfNotInSession(services.prisonerSearchService),
@@ -69,18 +69,16 @@ export default (router: Router, services: Services) => {
       retrieveInductionIfNotInSession(services.inductionService),
       setCurrentPageInPageFlowQueue,
     ])
-  }
 
-  if (config.featureToggles.induction.update.inPrisonTrainingSectionEnabled) {
+    // In Prison Training
     router.get('/prisoners/:prisonNumber/induction/in-prison-training', [
       inPrisonTrainingUpdateController.getInPrisonTrainingView,
     ])
     router.post('/prisoners/:prisonNumber/induction/in-prison-training', [
       inPrisonTrainingUpdateController.submitInPrisonTrainingForm,
     ])
-  }
 
-  if (config.featureToggles.induction.update.skillsAndInterestsSectionEnabled) {
+    // Personal Skills and Interests
     router.get('/prisoners/:prisonNumber/induction/personal-interests', [
       personalInterestsUpdateController.getPersonalInterestsView,
     ])
@@ -90,9 +88,8 @@ export default (router: Router, services: Services) => {
 
     router.get('/prisoners/:prisonNumber/induction/skills', [skillsUpdateController.getSkillsView])
     router.post('/prisoners/:prisonNumber/induction/skills', [skillsUpdateController.submitSkillsForm])
-  }
 
-  if (config.featureToggles.induction.update.workExperienceSectionEnabled) {
+    // Previous Work Experience
     router.get('/prisoners/:prisonNumber/induction/has-worked-before', [
       workedBeforeUpdateController.getWorkedBeforeView,
     ])
@@ -113,9 +110,8 @@ export default (router: Router, services: Services) => {
     router.post('/prisoners/:prisonNumber/induction/previous-work-experience/:typeOfWorkExperience', [
       previousWorkExperienceDetailUpdateController.submitPreviousWorkExperienceDetailForm,
     ])
-  }
 
-  if (config.featureToggles.induction.update.workInterestsSectionEnabled) {
+    // Work Interests
     router.get('/prisoners/:prisonNumber/induction/hoping-to-work-on-release', [
       hopingToWorkOnReleaseController.getHopingToWorkOnReleaseView,
     ])
@@ -156,15 +152,15 @@ export default (router: Router, services: Services) => {
       inPrisonWorkUpdateController.submitInPrisonWorkForm,
     ])
 
+    // Check Your Answers
     router.get('/prisoners/:prisonNumber/induction/check-your-answers', [
       checkYourAnswersUpdateController.getCheckYourAnswersView,
     ])
     router.post('/prisoners/:prisonNumber/induction/check-your-answers', [
       checkYourAnswersUpdateController.submitCheckYourAnswers,
     ])
-  }
 
-  if (config.featureToggles.induction.update.prePrisonEducationSectionEnabled) {
+    // Pre Prison Education
     router.get('/prisoners/:prisonNumber/induction/qualifications', [
       retrieveFunctionalSkillsIfNotInSession(services.curiousService),
       qualificationsListUpdateController.getQualificationsListView,
@@ -210,10 +206,3 @@ export default (router: Router, services: Services) => {
     ])
   }
 }
-
-const isAnyUpdateSectionEnabled = (): boolean =>
-  config.featureToggles.induction.update.skillsAndInterestsSectionEnabled ||
-  config.featureToggles.induction.update.workExperienceSectionEnabled ||
-  config.featureToggles.induction.update.workInterestsSectionEnabled ||
-  config.featureToggles.induction.update.inPrisonTrainingSectionEnabled ||
-  config.featureToggles.induction.update.prePrisonEducationSectionEnabled
