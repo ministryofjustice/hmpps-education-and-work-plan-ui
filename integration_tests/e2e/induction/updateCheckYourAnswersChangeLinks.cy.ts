@@ -154,19 +154,6 @@ context(`Change links on the Check Your Answers page when updating an Induction`
       .hasEducationalQualifications(['Physics'])
   })
 
-  /* TODO - RR-736 finish the implementation of this test by clicking all Change links:
-   * Hoping To Work On Release (perhaps not do this one as it will turn the induction back into a short question set!)
-   * Educational Qualifications - Done
-   * Highest Level of Education - Done
-   * Other Training
-   * Worked Before
-   * Work history
-   * Type of work interested in
-   * Particular job roles
-   * Personal Skills
-   * Personal Interests
-   * Factors affecting ability to work
-   */
   it('should support all Change links on a Long Question Set Induction', () => {
     // Given
     cy.updateLongQuestionSetInductionToArriveOnCheckYourAnswers(prisonNumber)
