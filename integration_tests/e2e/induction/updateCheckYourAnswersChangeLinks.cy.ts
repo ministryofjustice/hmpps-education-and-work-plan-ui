@@ -210,7 +210,7 @@ context(`Change links on the Check Your Answers page when updating an Induction`
       .chooseAdditionalTraining(AdditionalTrainingValue.CSCS_CARD)
       .submitPage()
 
-    // Change Other Training (Yes -> No)
+    // Change Worked before (Yes -> No)
     Page.verifyOnPage(CheckYourAnswersPage)
       .hasWorkedBefore(YesNoValue.YES)
       .clickHasWorkedBeforeChangeLink()
@@ -218,8 +218,8 @@ context(`Change links on the Check Your Answers page when updating an Induction`
       .selectWorkedBefore(YesNoValue.NO)
       .submitPage()
 
-    // Change Other Training (No -> Yes)
-    // Requires entering previous work experience details
+    // Change Worked before (No -> Yes)
+    // Requires journey to enter previous work experience details
     Page.verifyOnPage(CheckYourAnswersPage)
       .hasWorkedBefore(YesNoValue.NO)
       .clickHasWorkedBeforeChangeLink()
@@ -241,7 +241,7 @@ context(`Change links on the Check Your Answers page when updating an Induction`
       .setJobDetails('Coaching and motivating customers fitness goals')
       .submitPage()
 
-    // Change type of work experience
+    // Change work experience types
     Page.verifyOnPage(CheckYourAnswersPage)
       .clickWorkExperienceTypesChangeLink()
       .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/check-your-answers`)
@@ -255,7 +255,7 @@ context(`Change links on the Check Your Answers page when updating an Induction`
       .submitPage()
     Page.verifyOnPage(CheckYourAnswersPage)
 
-    // Change details of work experience
+    // Change work experience details
     Page.verifyOnPage(CheckYourAnswersPage)
       .clickWorkExperienceDetailChangeLink(TypeOfWorkExperienceValue.WAREHOUSING)
       .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/check-your-answers`)
@@ -263,7 +263,7 @@ context(`Change links on the Check Your Answers page when updating an Induction`
       .setJobDetails('Organising pallets')
       .submitPage()
 
-    // Change work interested in
+    // Change work interests
     Page.verifyOnPage(CheckYourAnswersPage)
       .clickWorkInterestsChangeLink()
       .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/check-your-answers`)
@@ -272,7 +272,7 @@ context(`Change links on the Check Your Answers page when updating an Induction`
       .chooseWorkInterestType(WorkInterestTypeValue.OUTDOOR)
       .submitPage()
 
-    // Change work interested in
+    // Change work interest roles
     Page.verifyOnPage(CheckYourAnswersPage)
       .clickParticularJobInterestsChangeLink()
       .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/check-your-answers`)
@@ -289,7 +289,7 @@ context(`Change links on the Check Your Answers page when updating an Induction`
       .chooseSkill(SkillsValue.RESILIENCE)
       .submitPage()
 
-    // Change interests
+    // Change personal interests
     Page.verifyOnPage(CheckYourAnswersPage)
       .clickPersonalInterestsChangeLink()
       .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/check-your-answers`)
@@ -298,6 +298,7 @@ context(`Change links on the Check Your Answers page when updating an Induction`
       .choosePersonalInterest(PersonalInterestsValue.DIGITAL)
       .submitPage()
 
+    // Change affecting ability to work
     Page.verifyOnPage(CheckYourAnswersPage)
       .clickFactorsAffectingAbilityToWorkChangeLink()
       .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/check-your-answers`)
