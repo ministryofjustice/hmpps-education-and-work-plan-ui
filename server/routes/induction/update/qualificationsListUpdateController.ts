@@ -72,6 +72,12 @@ export default class QualificationsListUpdateController extends QualificationsLi
     }
 
     if (inductionHasNoQualifications(inductionDto)) {
+      // If check-your-answers is in the page history but it's not the previous page, then the user has indicated they want to add qualifications from the Check Your Answers page
+      if (this.checkYourAnswersIsInThePageHistory(req)) {
+        // Skip the highest level of education as its not asked in this scenario, and go straight to asking about the qualifications
+        return res.redirect(`/prisoners/${prisonNumber}/induction/qualification-level`)
+      }
+
       logger.debug(
         `Induction has no qualifications. Redirect the user to Highest Level of Education in order to start adding qualification(s)`,
       )
@@ -79,10 +85,15 @@ export default class QualificationsListUpdateController extends QualificationsLi
     }
 
     const updatedInduction = updatedInductionDtoWithDefaultedHighestLevelOfEducation(inductionDto)
+    req.session.inductionDto = updatedInduction
+
+    // If check-your-answers is in the page history then we need to redirect back to there
+    if (this.checkYourAnswersIsInThePageHistory(req)) {
+      return res.redirect(`/prisoners/${prisonNumber}/induction/check-your-answers`)
+    }
 
     // if we are changing the main question set, then proceed to additional-training without calling the API
     if (req.session.updateInductionQuestionSet) {
-      req.session.inductionDto = updatedInduction
       return res.redirect(`/prisoners/${prisonNumber}/induction/additional-training`)
     }
 
@@ -93,8 +104,9 @@ export default class QualificationsListUpdateController extends QualificationsLi
       const updateInductionDto = toCreateOrUpdateInductionDto(prisonId, updatedInduction)
       await this.inductionService.updateInduction(prisonNumber, updateInductionDto, req.user.token)
 
-      // TODO - reset all forms relating to education here, as the "journey" is complete
       req.session.highestLevelOfEducationForm = undefined
+      req.session.qualificationLevelForm = undefined
+      req.session.qualificationDetailsForm = undefined
       req.session.inductionDto = undefined
       return res.redirect(`/plan/${prisonNumber}/view/education-and-training`)
     } catch (e) {

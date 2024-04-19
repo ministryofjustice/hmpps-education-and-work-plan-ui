@@ -13,6 +13,7 @@ import QualificationLevelPage from '../../pages/induction/QualificationLevelPage
 import QualificationDetailsPage from '../../pages/induction/QualificationDetailsPage'
 import QualificationsListPage from '../../pages/induction/QualificationsListPage'
 import EducationLevelValue from '../../../server/enums/educationLevelValue'
+import YesNoValue from '../../../server/enums/yesNoValue'
 
 context(`Change links on the Check Your Answers page when updating an Induction`, () => {
   const prisonNumber = 'G6115VJ'
@@ -111,6 +112,31 @@ context(`Change links on the Check Your Answers page when updating an Induction`
       .removeQualification(1)
       .submitPage()
 
+    // Because we've just removed all qualifications, "Do they want to add qualifications" will be set to No
+    // Change whether they want to add qualifications
+    Page.verifyOnPage(CheckYourAnswersPage)
+    checkYourAnswersPage
+      .hasNoEducationalQualificationsDisplayed()
+      .clickWantsToAddQualificationsChangeLink()
+      .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/check-your-answers`)
+      .selectHopingWorkOnRelease(YesNoValue.YES)
+      .submitPage()
+    Page.verifyOnPage(QualificationsListPage) //
+      .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/want-to-add-qualifications`)
+      .submitPage()
+    Page.verifyOnPage(QualificationLevelPage) //
+      .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/qualifications`)
+      .selectQualificationLevel(QualificationLevelValue.LEVEL_1)
+      .submitPage()
+    Page.verifyOnPage(QualificationDetailsPage) //
+      .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/qualification-level`)
+      .setQualificationSubject('Physics')
+      .setQualificationGrade('C')
+      .submitPage()
+    Page.verifyOnPage(QualificationsListPage) //
+      .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/want-to-add-qualifications`)
+      .submitPage()
+
     // Then
     Page.verifyOnPage(CheckYourAnswersPage) //
       .hasHopingToWorkOnRelease(HopingToGetWorkValue.NOT_SURE)
@@ -118,7 +144,7 @@ context(`Change links on the Check Your Answers page when updating an Induction`
       .hasAdditionalTraining([AdditionalTrainingValue.MANUAL_HANDLING, AdditionalTrainingValue.CSCS_CARD])
       .hasInPrisonWorkInterests([InPrisonWorkValue.PRISON_LAUNDRY, InPrisonWorkValue.PRISON_LIBRARY])
       .hasInPrisonTrainingInterests([InPrisonTrainingValue.CATERING, InPrisonTrainingValue.NUMERACY_SKILLS])
-      .hasNoEducationalQualificationsDisplayed()
+      .hasEducationalQualifications(['Physics'])
   })
 
   /* TODO - RR-736 finish the implementation of this test by clicking all Change links:

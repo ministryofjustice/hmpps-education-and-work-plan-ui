@@ -83,4 +83,19 @@ const setCurrentPageIndex = (pageFlowHistory: PageFlow, currentPagePath: string)
   return pageFlowHistory
 }
 
-export { buildNewPageFlowHistory, setCurrentPage, getPreviousPage, isFirstPage, isLastPage, isPageInFlow }
+/**
+ * Return `true` if the specified page flow history contains a page URL that matches the expected page URL
+ */
+const pageFlowHistoryContains = (pageFlowHistory: PageFlow, expectedPageUrl: RegExp): boolean => {
+  return pageFlowHistory && pageFlowHistory.pageUrls.find(pageUrl => expectedPageUrl.test(pageUrl)) != null
+}
+
+export {
+  buildNewPageFlowHistory,
+  setCurrentPage,
+  getPreviousPage,
+  isFirstPage,
+  isLastPage,
+  isPageInFlow,
+  pageFlowHistoryContains,
+}

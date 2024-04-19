@@ -14,6 +14,7 @@ import HopingToGetWorkValue from '../../../server/enums/hopingToGetWorkValue'
 import QualificationsListPage from './QualificationsListPage'
 import HighestLevelOfEducationPage from './HighestLevelOfEducationPage'
 import EducationLevelValue from '../../../server/enums/educationLevelValue'
+import WantToAddQualificationsPage from './WantToAddQualificationsPage'
 
 export default class CheckYourAnswersPage extends Page {
   constructor() {
@@ -121,6 +122,11 @@ export default class CheckYourAnswersPage extends Page {
   clickHighestLevelOfEducationLink(): HighestLevelOfEducationPage {
     this.highestLevelOfEducationChangeLink().click()
     return Page.verifyOnPage(HighestLevelOfEducationPage)
+  }
+
+  clickWantsToAddQualificationsChangeLink(): WantToAddQualificationsPage {
+    this.wantsToAddQualificationsChangeLink().click()
+    return Page.verifyOnPage(WantToAddQualificationsPage)
   }
 
   clickReasonsForNotWantingToWorkChangeLink(): ReasonsNotToGetWorkPage {
