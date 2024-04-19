@@ -350,5 +350,100 @@ describe('workedBeforeUpdateController', () => {
       expect(req.session.workedBeforeForm).toEqual(workedBeforeForm)
       expect(req.session.inductionDto).toEqual(inductionDto)
     })
+
+    it('should update induction DTO and redirect back to check answers page if "no" is selected and coming from check your answers', async () => {
+      // Given
+      const prisonerSummary = aValidPrisonerSummary()
+      req.session.prisonerSummary = prisonerSummary
+      req.session.inductionDto = aLongQuestionSetInductionDto()
+      req.session.pageFlowHistory = {
+        pageUrls: [
+          `/prisoners/${prisonerSummary.prisonNumber}/induction/check-your-answers`,
+          `/prisoners/${prisonerSummary.prisonNumber}/induction/hoping-to-work-on-release`,
+        ],
+        currentPageIndex: 1,
+      }
+
+      req.body = {
+        hasWorkedBefore: YesNoValue.NO,
+      }
+
+      // The actual implementations are fine for this test
+      const actualToCreateOrUpdateInductionDto = jest.requireActual(
+        '../../../data/mappers/createOrUpdateInductionDtoMapper',
+      ).default
+      mockedCreateOrUpdateInductionDtoMapper.mockImplementation(actualToCreateOrUpdateInductionDto)
+      const actualWorkedBeforeFormValidator = jest.requireActual('./workedBeforeFormValidator').default
+      mockedFormValidator.mockImplementation(actualWorkedBeforeFormValidator)
+
+      expect(req.session.inductionDto.previousWorkExperiences.hasWorkedBefore).toEqual(true)
+      expect(req.session.inductionDto.previousWorkExperiences.experiences).toHaveLength(2)
+
+      // When
+      await controller.submitWorkedBeforeForm(
+        req as undefined as Request,
+        res as undefined as Response,
+        next as undefined as NextFunction,
+      )
+
+      // Then
+      expect(req.session.inductionDto.previousWorkExperiences.hasWorkedBefore).toEqual(false)
+      expect(req.session.inductionDto.previousWorkExperiences.experiences).toHaveLength(0)
+      expect(res.redirect).toHaveBeenCalledWith(
+        `/prisoners/${prisonerSummary.prisonNumber}/induction/check-your-answers`,
+      )
+    })
+
+    it('should update induction DTO and redirect through previous work experience flow before returning to check answers page if "yes" is selected and coming from check your answers', async () => {
+      // Given
+      const prisonerSummary = aValidPrisonerSummary()
+      req.session.prisonerSummary = prisonerSummary
+      req.session.inductionDto = aLongQuestionSetInductionDto()
+      req.session.pageFlowHistory = {
+        pageUrls: [
+          `/prisoners/${prisonerSummary.prisonNumber}/induction/check-your-answers`,
+          `/prisoners/${prisonerSummary.prisonNumber}/induction/hoping-to-work-on-release`,
+        ],
+        currentPageIndex: 1,
+      }
+
+      req.body = {
+        hasWorkedBefore: YesNoValue.YES,
+      }
+
+      // The actual implementations are fine for this test
+      const actualToCreateOrUpdateInductionDto = jest.requireActual(
+        '../../../data/mappers/createOrUpdateInductionDtoMapper',
+      ).default
+      mockedCreateOrUpdateInductionDtoMapper.mockImplementation(actualToCreateOrUpdateInductionDto)
+      const actualWorkedBeforeFormValidator = jest.requireActual('./workedBeforeFormValidator').default
+      mockedFormValidator.mockImplementation(actualWorkedBeforeFormValidator)
+
+      expect(req.session.inductionDto.previousWorkExperiences.hasWorkedBefore).toEqual(true)
+      expect(req.session.inductionDto.previousWorkExperiences.experiences).toHaveLength(2)
+      expect(req.session.pageFlowQueue).toEqual(undefined)
+
+      // When
+      await controller.submitWorkedBeforeForm(
+        req as undefined as Request,
+        res as undefined as Response,
+        next as undefined as NextFunction,
+      )
+
+      // Then
+      expect(req.session.inductionDto.previousWorkExperiences.hasWorkedBefore).toEqual(true)
+      expect(req.session.inductionDto.previousWorkExperiences.experiences).toHaveLength(2)
+      expect(req.session.pageFlowQueue).toEqual({
+        pageUrls: [
+          `/prisoners/${prisonerSummary.prisonNumber}/induction/has-worked-before`,
+          `/prisoners/${prisonerSummary.prisonNumber}/induction/previous-work-experience`,
+          `/prisoners/${prisonerSummary.prisonNumber}/induction/check-your-answers`,
+        ],
+        currentPageIndex: 0,
+      })
+      expect(res.redirect).toHaveBeenCalledWith(
+        `/prisoners/${prisonerSummary.prisonNumber}/induction/previous-work-experience`,
+      )
+    })
   })
 })

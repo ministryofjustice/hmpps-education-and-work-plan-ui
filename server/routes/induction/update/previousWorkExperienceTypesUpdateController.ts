@@ -10,7 +10,7 @@ import validatePreviousWorkExperienceTypesForm from './previousWorkExperienceTyp
 import TypeOfWorkExperienceValue from '../../../enums/typeOfWorkExperienceValue'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
 import previousWorkExperienceTypeScreenOrderComparator from '../previousWorkExperienceTypeScreenOrderComparator'
-import { addPages, appendPagesFromCurrentPage, getNextPage } from '../../pageFlowQueue'
+import { appendPagesFromCurrentPage, getNextPage } from '../../pageFlowQueue'
 import { getPreviousPage } from '../../pageFlowHistory'
 import getDynamicBackLinkAriaText from '../dynamicAriaTextResolver'
 

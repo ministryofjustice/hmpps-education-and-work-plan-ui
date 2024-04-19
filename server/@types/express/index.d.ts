@@ -26,6 +26,7 @@ import type {
   WorkInterestRolesForm,
   WorkInterestTypesForm,
 } from 'inductionForms'
+import type { InductionDto } from 'inductionDto'
 import type { UserDetails } from '../../services/userService'
 
 export default {}

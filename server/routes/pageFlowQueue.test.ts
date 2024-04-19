@@ -1,5 +1,6 @@
 import type { PageFlow } from 'viewModels'
 import {
+  appendPagesFromCurrentPage,
   getCurrentPage,
   getNextPage,
   getPreviousPage,
@@ -146,6 +147,26 @@ describe('pageFlowQueue', () => {
 
       // Then
       expect(actual).toBeFalsy()
+    })
+  })
+
+  describe('appendPagesFromCurrentPage', () => {
+    it('should add additional pages to the flow after the current page', () => {
+      // Given
+      const pageFlowQueue = pageFlowQueueOnPageUrl('/second-page')
+
+      // When
+      const actual = appendPagesFromCurrentPage(pageFlowQueue, ['/second-page-part-2', '/second-page-part-3'])
+
+      // Then
+      expect(actual.pageUrls).toEqual([
+        '/first-page',
+        '/second-page',
+        '/second-page-part-2',
+        '/second-page-part-3',
+        '/third-page',
+      ])
+      expect(getNextPage(actual)).toEqual('/second-page-part-2')
     })
   })
 
