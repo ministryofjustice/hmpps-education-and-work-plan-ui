@@ -17,6 +17,10 @@ import YesNoValue from '../../../server/enums/yesNoValue'
 import PreviousWorkExperienceTypesPage from '../../pages/induction/PreviousWorkExperienceTypesPage'
 import TypeOfWorkExperienceValue from '../../../server/enums/typeOfWorkExperienceValue'
 import PreviousWorkExperienceDetailPage from '../../pages/induction/PreviousWorkExperienceDetailPage'
+import SkillsValue from '../../../server/enums/skillsValue'
+import PersonalInterestsValue from '../../../server/enums/personalInterestsValue'
+import AbilityToWorkValue from '../../../server/enums/abilityToWorkValue'
+import WorkInterestTypeValue from '../../../server/enums/workInterestTypeValue'
 
 context(`Change links on the Check Your Answers page when updating an Induction`, () => {
   const prisonNumber = 'G6115VJ'
@@ -25,7 +29,7 @@ context(`Change links on the Check Your Answers page when updating an Induction`
     cy.signInAsUserWithEditAuthorityToArriveOnPrisonerListPage()
   })
 
-  it.skip('should support all Change links on a Short Question Set Induction', () => {
+  it('should support all Change links on a Short Question Set Induction', () => {
     // Given
     cy.updateShortQuestionSetInductionToArriveOnCheckYourAnswers(prisonNumber)
     const checkYourAnswersPage = Page.verifyOnPage(CheckYourAnswersPage)
@@ -169,7 +173,7 @@ context(`Change links on the Check Your Answers page when updating an Induction`
     Page.verifyOnPage(CheckYourAnswersPage)
 
     // When
-    // Change Hoping To WOrk On Release (Yes only)
+    // Change Hoping To Work On Release (Yes only)
     Page.verifyOnPage(CheckYourAnswersPage)
       .clickHopingToWorkOnReleaseChangeLink()
       .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/check-your-answers`)
@@ -236,44 +240,106 @@ context(`Change links on the Check Your Answers page when updating an Induction`
       .selectWorkedBefore(YesNoValue.YES)
       .submitPage()
     Page.verifyOnPage(PreviousWorkExperienceTypesPage)
-      .choosePreviousWorkExperience(TypeOfWorkExperienceValue.TECHNICAL)
+      .choosePreviousWorkExperience(TypeOfWorkExperienceValue.OFFICE)
       .choosePreviousWorkExperience(TypeOfWorkExperienceValue.SPORTS)
       .submitPage()
     Page.verifyOnPage(PreviousWorkExperienceDetailPage)
       .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/previous-work-experience`)
-      .setJobRole('Gym instructor')
-      .setJobDetails('Coaching and motivating customers fitness goals')
-      .submitPage()
-    Page.verifyOnPage(PreviousWorkExperienceDetailPage)
-      .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/previous-work-experience/technical`)
       .setJobRole('Office junior')
       .setJobDetails('Filing and photocopying: Sept 2000 - Dec 2009')
       .submitPage()
+    Page.verifyOnPage(PreviousWorkExperienceDetailPage)
+      .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/previous-work-experience/office`)
+      .setJobRole('Gym instructor')
+      .setJobDetails('Coaching and motivating customers fitness goals')
+      .submitPage()
 
-    // Change Type of work experience
+    // Change type of work experience
     Page.verifyOnPage(CheckYourAnswersPage)
       .clickWorkExperienceTypesChangeLink()
       .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/check-your-answers`)
-      .deSelectPreviousWorkExperience(TypeOfWorkExperienceValue.TECHNICAL)
+      .deSelectPreviousWorkExperience(TypeOfWorkExperienceValue.OFFICE)
       .choosePreviousWorkExperience(TypeOfWorkExperienceValue.WAREHOUSING)
       .submitPage()
     Page.verifyOnPage(PreviousWorkExperienceDetailPage)
       .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/previous-work-experience`)
-      .setJobRole('Office junior')
-      .setJobDetails('Filing and photocopying: Sept 2000 - Dec 2009')
+      .setJobRole('Warehouse worker')
+      .setJobDetails('Receiving and shipping goods')
       .submitPage()
-    Page.verifyOnPage(PreviousWorkExperienceDetailPage)
-      .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/previous-work-experience/technical`)
-      .setJobRole('Office junior')
-      .setJobDetails('Filing and photocopying: Sept 2000 - Dec 2009')
+    Page.verifyOnPage(CheckYourAnswersPage)
+
+    // Change details of work experience
+    Page.verifyOnPage(CheckYourAnswersPage)
+      .clickWorkExperienceDetailChangeLink(TypeOfWorkExperienceValue.WAREHOUSING)
+      .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/check-your-answers`)
+      .setJobRole('Forklift driver')
+      .setJobDetails('Organising pallets')
       .submitPage()
-      /*
+
+    // Change work interested in
+    Page.verifyOnPage(CheckYourAnswersPage)
+      .clickWorkInterestsChangeLink()
+      .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/check-your-answers`)
+      .deSelectWorkInterestType(WorkInterestTypeValue.DRIVING)
+      .chooseWorkInterestType(WorkInterestTypeValue.MANUFACTURING)
+      .chooseWorkInterestType(WorkInterestTypeValue.OUTDOOR)
+      .submitPage()
+
+    // Change work interested in
+    Page.verifyOnPage(CheckYourAnswersPage)
+      .clickParticularJobInterestsChangeLink()
+      .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/check-your-answers`)
+      .setWorkInterestRole(WorkInterestTypeValue.MANUFACTURING, 'Welder')
+      .setWorkInterestRole(WorkInterestTypeValue.OUTDOOR, 'Gardener')
+      .submitPage()
+
+    // Change skills
+    Page.verifyOnPage(CheckYourAnswersPage)
+      .clickPersonalSkillsChangeLink()
+      .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/check-your-answers`)
+      .deSelectSkill(SkillsValue.TEAMWORK)
+      .chooseSkill(SkillsValue.POSITIVE_ATTITUDE)
+      .chooseSkill(SkillsValue.RESILIENCE)
+      .submitPage()
+
+    // Change interests
+    Page.verifyOnPage(CheckYourAnswersPage)
+      .clickPersonalInterestsChangeLink()
+      .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/check-your-answers`)
+      .deSelectPersonalInterest(PersonalInterestsValue.SOCIAL)
+      .choosePersonalInterest(PersonalInterestsValue.CRAFTS)
+      .choosePersonalInterest(PersonalInterestsValue.DIGITAL)
+      .submitPage()
+
+    Page.verifyOnPage(CheckYourAnswersPage)
+      .clickFactorsAffectingAbilityToWorkChangeLink()
+      .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/check-your-answers`)
+      .deSelectAffectAbilityToWork(AbilityToWorkValue.HEALTH_ISSUES)
+      .chooseAffectAbilityToWork(AbilityToWorkValue.LIMITED_BY_OFFENSE)
+      .chooseAffectAbilityToWork(AbilityToWorkValue.NO_RIGHT_TO_WORK)
+      .submitPage()
 
     // Then
-    /*Page.verifyOnPage(CheckYourAnswersPage) //
+    Page.verifyOnPage(CheckYourAnswersPage) //
+      .hasHopingToWorkOnRelease(HopingToGetWorkValue.YES)
       .hasHighestLevelOfEducation(EducationLevelValue.NOT_SURE) // Highest level of education is NOT_SURE because we removed all the qualifications
       .hasNoEducationalQualificationsDisplayed()
-      .hasHopingToWorkOnRelease(HopingToGetWorkValue.YES)
-      .hasAdditionalTraining([AdditionalTrainingValue.MANUAL_HANDLING, AdditionalTrainingValue.CSCS_CARD])*/
+      .hasWorkedBefore(YesNoValue.YES)
+      .hasTypeOfWorkExperienceType(TypeOfWorkExperienceValue.SPORTS)
+      .hasTypeOfWorkExperienceType(TypeOfWorkExperienceValue.WAREHOUSING)
+      .hasWorkExperience(
+        TypeOfWorkExperienceValue.SPORTS,
+        'Gym instructor',
+        'Coaching and motivating customers fitness goals',
+      )
+      .hasWorkExperience(TypeOfWorkExperienceValue.WAREHOUSING, 'Forklift driver', 'Organising pallets')
+      .hasWorkInterest(WorkInterestTypeValue.OUTDOOR)
+      .hasWorkInterest(WorkInterestTypeValue.MANUFACTURING)
+      .hasPersonalSkill(SkillsValue.POSITIVE_ATTITUDE)
+      .hasPersonalSkill(SkillsValue.RESILIENCE)
+      .hasPersonalInterest(PersonalInterestsValue.CRAFTS)
+      .hasPersonalInterest(PersonalInterestsValue.DIGITAL)
+      .hasFactorsAffectingAbilityToWork(AbilityToWorkValue.LIMITED_BY_OFFENSE)
+      .hasFactorsAffectingAbilityToWork(AbilityToWorkValue.NO_RIGHT_TO_WORK)
   })
 })

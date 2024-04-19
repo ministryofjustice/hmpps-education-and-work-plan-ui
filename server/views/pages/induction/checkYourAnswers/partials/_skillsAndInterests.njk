@@ -7,7 +7,7 @@
     </dt>
     <dd class="govuk-summary-list__value" data-qa="workInterests">
       {% for item in inductionDto.futureWorkInterests.interests %}
-        <div data-qa="workInterests-{{ loop.index }}">{{ item.workType | formatJobType }}{{ ' - ' + item.workTypeOther if item.workType === 'OTHER' }}{{ ',' if inductionDto.futureWorkInterests.interests.length !== loop.index }}</div>
+        <div data-qa="workInterests-{{ item.workType }}">{{ item.workType | formatJobType }}{{ ' - ' + item.workTypeOther if item.workType === 'OTHER' }}{{ ',' if inductionDto.futureWorkInterests.interests.length !== loop.index }}</div>
       {% endfor %}
     </dd>
     <dd class="govuk-summary-list__actions">
@@ -42,7 +42,7 @@
     </dt>
     <dd class="govuk-summary-list__value" data-qa="skills">
       {% for item in inductionDto.personalSkillsAndInterests.skills %}
-        <div data-qa="skills-{{ loop.index }}">{{ item.skillType | formatSkill }}{{ ' - ' + item.skillTypeOther if item.skillType === 'OTHER' }}{{ ',' if inductionDto.personalSkillsAndInterests.skills.length !== loop.index }}</div>
+        <div data-qa="skills-{{ item.skillType }}">{{ item.skillType | formatSkill }}{{ ' - ' + item.skillTypeOther if item.skillType === 'OTHER' }}{{ ',' if inductionDto.personalSkillsAndInterests.skills.length !== loop.index }}</div>
       {% endfor %}
     </dd>
     <dd class="govuk-summary-list__actions">
@@ -57,7 +57,7 @@
     </dt>
     <dd class="govuk-summary-list__value" data-qa="personalInterests">
       {% for item in inductionDto.personalSkillsAndInterests.interests %}
-        <div data-qa="personalInterests-{{ loop.index }}">{{ item.interestType | formatPersonalInterest }}{{ ' - ' + item.interestTypeOther if item.interestType === 'OTHER' }}{{ ',' if inductionDto.personalSkillsAndInterests.interests.length !== loop.index }}</div>
+        <div data-qa="personalInterests-{{ item.interestType }}">{{ item.interestType | formatPersonalInterest }}{{ ' - ' + item.interestTypeOther if item.interestType === 'OTHER' }}{{ ',' if inductionDto.personalSkillsAndInterests.interests.length !== loop.index }}</div>
       {% endfor %}
     </dd>
     <dd class="govuk-summary-list__actions">

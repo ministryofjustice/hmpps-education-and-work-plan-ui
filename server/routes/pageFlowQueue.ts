@@ -60,6 +60,14 @@ const appendPagesFromCurrentPage = (pageFlowQueue: PageFlow, pages: Array<string
 })
 
 /**
+ * Given an existing PageFlow, adds new pages to the end of the queue
+ */
+const addPages = (pageFlowQueue: PageFlow, pages: Array<string>): PageFlow => ({
+  ...pageFlowQueue,
+  pageUrls: [...pageFlowQueue.pageUrls, ...pages],
+})
+
+/**
  * Returns true if the current page in the specified [PageFlowQueue] is the first page.
  */
 const isFirstPage = (pageFlowQueue: PageFlow): boolean => pageFlowQueue.currentPageIndex === 0
@@ -75,6 +83,7 @@ export {
   getCurrentPage,
   getNextPage,
   getPreviousPage,
+  addPages,
   appendPagesFromCurrentPage,
   isFirstPage,
   isLastPage,

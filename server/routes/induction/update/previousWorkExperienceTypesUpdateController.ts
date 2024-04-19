@@ -10,7 +10,7 @@ import validatePreviousWorkExperienceTypesForm from './previousWorkExperienceTyp
 import TypeOfWorkExperienceValue from '../../../enums/typeOfWorkExperienceValue'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
 import previousWorkExperienceTypeScreenOrderComparator from '../previousWorkExperienceTypeScreenOrderComparator'
-import { appendPagesFromCurrentPage, getNextPage } from '../../pageFlowQueue'
+import { addPages, appendPagesFromCurrentPage, getNextPage } from '../../pageFlowQueue'
 import { getPreviousPage } from '../../pageFlowHistory'
 import getDynamicBackLinkAriaText from '../dynamicAriaTextResolver'
 
@@ -110,12 +110,13 @@ export default class PreviousWorkExperienceTypesUpdateController extends Previou
 
     req.session.previousWorkExperienceTypesForm = undefined
 
-    const currentPageFlow = req.session.pageFlowQueue
     const pageFlowQueue = this.buildPageFlowQueue(
       workExperienceTypesToShowDetailsFormFor,
       prisonNumber,
-      currentPageFlow,
+      this.previousPageWasCheckYourAnswers(req),
+      req.session.pageFlowQueue,
     )
+
     req.session.pageFlowQueue = pageFlowQueue
     return res.redirect(getNextPage(pageFlowQueue))
   }
@@ -123,16 +124,22 @@ export default class PreviousWorkExperienceTypesUpdateController extends Previou
   buildPageFlowQueue = (
     previousWorkExperienceTypes: Array<TypeOfWorkExperienceValue>,
     prisonNumber: string,
+    fromCheckAnswers: boolean,
     currentPageFlow?: PageFlow,
   ): PageFlow => {
     const nextPages = previousWorkExperienceTypes.map(
       workType => `/prisoners/${prisonNumber}/induction/previous-work-experience/${workType.toLowerCase()}`,
     )
 
-    if (currentPageFlow) {
+    // If not coming from check answers and on an existing page flow, append to the current flow
+    if (currentPageFlow && !fromCheckAnswers) {
       return appendPagesFromCurrentPage(currentPageFlow, nextPages)
     }
     const pageUrls = [`/prisoners/${prisonNumber}/induction/previous-work-experience`, ...nextPages]
+    // If coming from check answers, redirect back at end of journey flow
+    if (fromCheckAnswers) {
+      pageUrls.push(`/prisoners/${prisonNumber}/induction/check-your-answers`)
+    }
     return {
       pageUrls,
       currentPageIndex: 0,
@@ -195,7 +202,7 @@ const updatedInductionDtoWithPreviousWorkExperiences = (
  * Returns the list of [TypeOfWorkExperienceValue] for the Previous Work Experiences on the current induction
  */
 const previousWorkExperienceTypesOnCurrentInduction = (inductionDto: InductionDto): Array<TypeOfWorkExperienceValue> =>
-  inductionDto.previousWorkExperiences.experiences?.map(experience => experience.experienceType) || []
+  inductionDto.previousWorkExperiences?.experiences?.map(experience => experience.experienceType) || []
 
 /**
  * Given the current Induction and the [PreviousWorkExperienceTypesForm], returns a list of [TypeOfWorkExperienceValue]

@@ -7,7 +7,7 @@
     </dt>
     <dd class="govuk-summary-list__value" data-qa="abilityToWork">
       {% for item in inductionDto.workOnRelease.affectAbilityToWork %}
-        <div data-qa="skills-{{ loop.index }}">{{ item | formatAbilityToWorkConstraint }}{{ ' - ' + inductionDto.workOnRelease.affectAbilityToWorkOther if item === 'OTHER' }}{{ ',' if inductionDto.workOnRelease.affectAbilityToWork.length !== loop.index }}</div>
+        <div data-qa="affectingAbilityToWork-{{ item }}">{{ item | formatAbilityToWorkConstraint }}{{ ' - ' + inductionDto.workOnRelease.affectAbilityToWorkOther if item === 'OTHER' }}{{ ',' if inductionDto.workOnRelease.affectAbilityToWork.length !== loop.index }}</div>
       {% endfor %}
     </dd>
     <dd class="govuk-summary-list__actions">

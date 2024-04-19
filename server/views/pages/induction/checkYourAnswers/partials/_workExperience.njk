@@ -5,8 +5,8 @@
     <dt class="govuk-summary-list__key govuk-!-width-one-quarter">
       Worked before
     </dt>
-    <dd class="govuk-summary-list__value" data-qa="hasWorkedBefore">
-      {{ inductionDto.previousWorkExperiences.hasWorkedBefore | formatYesNo if inductionDto.previousWorkExperiences.hasWorkedBefore or inductionDto.previousWorkExperiences.hasWorkedBefore === false }}
+    <dd class="govuk-summary-list__value" data-qa="hasWorkedBefore-{{inductionDto.previousWorkExperiences.hasWorkedBefore}}">
+      {{ inductionDto.previousWorkExperiences.hasWorkedBefore | formatYesNo }}
     </dd>
     <dd class="govuk-summary-list__actions">
       <a class="govuk-link govuk-link--no-visited-state" href="/prisoners/{{ prisonerSummary.prisonNumber }}/induction/has-worked-before" data-qa="hasWorkedBeforeLink">
@@ -22,7 +22,7 @@
       </dt>
       <dd class="govuk-summary-list__value" data-qa="typeOfWorkExperience">
         {% for item in inductionDto.previousWorkExperiences.experiences %}
-          <div>{{ item.experienceType | formatJobType }}{{ ' - ' + item.experienceTypeOther if item.experienceType === 'OTHER' }}{{ ',' if inductionDto.previousWorkExperiences.experiences.length !== loop.index }}</div>
+          <div data-qa="typeOfWorkExperience-{{item.experienceType}}">{{ item.experienceType | formatJobType }}{{ ' - ' + item.experienceTypeOther if item.experienceType === 'OTHER' }}{{ ',' if inductionDto.previousWorkExperiences.experiences.length !== loop.index }}</div>
         {% endfor %}
       </dd>
       <dd class="govuk-summary-list__actions">
@@ -39,11 +39,11 @@
         {{ item.experienceType | formatJobType }} experience details
       </dt>
       <dd class="govuk-summary-list__value">
-        <p class="govuk-body" data-qa="workExperience-role-{{ loop.index }}">
+        <p class="govuk-body" data-qa="workExperience-role-{{ item.experienceType }}">
           Job role:<br>
           {{ item.role }}
         </p>
-        <p class="govuk-body" data-qa="workExperience-details-{{ loop.index }}">
+        <p class="govuk-body" data-qa="workExperience-details-{{ item.experienceType }}">
           Main tasks and responsibilities:<br>
           {{ item.details }}
         </p>
