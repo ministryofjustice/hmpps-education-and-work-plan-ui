@@ -121,7 +121,7 @@ describe('hopingToWorkOnReleaseCreateController', () => {
       // Given
       const prisonerSummary = aValidPrisonerSummary()
       req.session.prisonerSummary = prisonerSummary
-      const inductionDto = { prisonNumber }
+      const inductionDto = { prisonNumber } as InductionDto
       req.session.inductionDto = inductionDto
 
       const invalidHopingToWorkOnReleaseForm = {
@@ -156,7 +156,7 @@ describe('hopingToWorkOnReleaseCreateController', () => {
       // Given
       const prisonerSummary = aValidPrisonerSummary()
       req.session.prisonerSummary = prisonerSummary
-      const inductionDto = { prisonNumber }
+      const inductionDto = { prisonNumber } as InductionDto
       req.session.inductionDto = inductionDto
 
       const hopingToWorkOnReleaseForm = {
@@ -193,7 +193,7 @@ describe('hopingToWorkOnReleaseCreateController', () => {
           // Given
           const prisonerSummary = aValidPrisonerSummary()
           req.session.prisonerSummary = prisonerSummary
-          const inductionDto = { prisonNumber }
+          const inductionDto = { prisonNumber } as InductionDto
           req.session.inductionDto = inductionDto
 
           const hopingToWorkOnReleaseForm = {
