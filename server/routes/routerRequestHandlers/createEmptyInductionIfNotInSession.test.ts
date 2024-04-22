@@ -1,5 +1,6 @@
 import { SessionData } from 'express-session'
 import { NextFunction, Request, Response } from 'express'
+import type { InductionDto } from 'inductionDto'
 import createEmptyInductionIfNotInSession from './createEmptyInductionIfNotInSession'
 
 describe('createEmptyInductionIfNotInSession', () => {
@@ -40,7 +41,7 @@ describe('createEmptyInductionIfNotInSession', () => {
     // Given
     req.params.prisonNumber = 'A1234BC'
 
-    req.session.inductionDto = { prisonNumber: 'Z1234ZZ' }
+    req.session.inductionDto = { prisonNumber: 'Z1234ZZ' } as InductionDto
 
     const expectedInduction = { prisonNumber: 'A1234BC' }
 
@@ -63,9 +64,9 @@ describe('createEmptyInductionIfNotInSession', () => {
     const expectedInduction = {
       prisonNumber: 'A1234BC',
       workOnRelease: {
-        hopingToGetWork: true,
+        hopingToWork: true,
       },
-    }
+    } as InductionDto
 
     req.session.inductionDto = expectedInduction
 
