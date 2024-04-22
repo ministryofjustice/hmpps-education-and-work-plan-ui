@@ -6,6 +6,7 @@ import overview from './overview'
 import functionalSkills from './functionalSkills'
 import prisonerList from './prisonerList'
 import postInductionCreation from './postInductionCreation'
+import createInduction from './induction/create'
 import updateInduction from './induction/update'
 import inPrisonCoursesAndQualifications from './inPrisonCoursesAndQualifications'
 
@@ -21,6 +22,7 @@ export default function routes(services: Services): Router {
 
   postInductionCreation(router, services)
 
+  createInduction(router, services)
   updateInduction(router, services)
 
   return router

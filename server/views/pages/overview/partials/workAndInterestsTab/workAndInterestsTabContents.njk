@@ -17,9 +17,17 @@
 
     <div class="govuk-grid-row">
       <div class="govuk-grid-column-two-thirds">
+        {%- set createInductionUrl -%}
+          {%- if featureToggles.induction.create.enabled -%}
+            /prisoners/{{ prisonerSummary.prisonNumber }}/create-induction/hoping-to-work-on-release
+          {%- else -%}
+            {{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}/hoping-to-get-work/new
+          {%- endif -%}
+        {%- endset -%}
+
         <p class="govuk-body">
           To add work experience and interests information you need to
-          <a href="{{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}/hoping-to-get-work/new" class="govuk-link" data-qa="link-to-create-induction">create a learning and work progress plan</a>
+          <a href="{{ createInductionUrl }}" class="govuk-link" data-qa="link-to-create-induction">create a learning and work progress plan</a>
           with {{ prisonerSummary.firstName }} {{ prisonerSummary.lastName }}.
         </p>
       </div>
