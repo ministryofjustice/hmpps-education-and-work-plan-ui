@@ -9,6 +9,7 @@ import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateIn
 import InductionService from '../../../services/inductionService'
 import { aLongQuestionSetUpdateInductionRequest } from '../../../testsupport/updateInductionRequestTestDataBuilder'
 import SkillsUpdateController from './skillsUpdateController'
+import SkillsValue from '../../../enums/skillsValue'
 
 jest.mock('./skillsFormValidator')
 jest.mock('../../../data/mappers/createOrUpdateInductionDtoMapper')
@@ -355,6 +356,48 @@ describe('skillsUpdateController', () => {
       expect(next).toHaveBeenCalledWith(expectedError)
       expect(req.session.skillsForm).toEqual(skillsForm)
       expect(req.session.inductionDto).toEqual(inductionDto)
+    })
+
+    it('should update induction DTO and redirect back to check your answers page when coming from check your answers', async () => {
+      // Given
+      const prisonerSummary = aValidPrisonerSummary()
+      req.session.prisonerSummary = prisonerSummary
+      req.session.inductionDto = aLongQuestionSetInductionDto()
+      req.session.pageFlowHistory = {
+        pageUrls: [
+          `/prisoners/${prisonerSummary.prisonNumber}/induction/check-your-answers`,
+          `/prisoners/${prisonerSummary.prisonNumber}/induction/skills`,
+        ],
+        currentPageIndex: 1,
+      }
+
+      req.body = {
+        skills: [SkillsValue.POSITIVE_ATTITUDE, SkillsValue.RESILIENCE],
+      }
+
+      // The actual implementations are fine for this test
+      const actualToCreateOrUpdateInductionDto = jest.requireActual(
+        '../../../data/mappers/createOrUpdateInductionDtoMapper',
+      ).default
+      mockedCreateOrUpdateInductionDtoMapper.mockImplementation(actualToCreateOrUpdateInductionDto)
+      const actualSkillsFormValidator = jest.requireActual('./skillsFormValidator').default
+      mockedFormValidator.mockImplementation(actualSkillsFormValidator)
+
+      // When
+      await controller.submitSkillsForm(
+        req as undefined as Request,
+        res as undefined as Response,
+        next as undefined as NextFunction,
+      )
+
+      // Then
+      expect(req.session.inductionDto.personalSkillsAndInterests.skills).toEqual([
+        { skillType: SkillsValue.POSITIVE_ATTITUDE },
+        { skillType: SkillsValue.RESILIENCE },
+      ])
+      expect(res.redirect).toHaveBeenCalledWith(
+        `/prisoners/${prisonerSummary.prisonNumber}/induction/check-your-answers`,
+      )
     })
   })
 })

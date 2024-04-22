@@ -81,6 +81,13 @@ export default class PreviousWorkExperienceDetailUpdateController extends Previo
       return res.redirect(getNextPage(pageFlowQueue))
     }
 
+    // If the previous page was Check Your Answers, forward to Check Your Answers again
+    if (this.previousPageWasCheckYourAnswers(req)) {
+      req.session.inductionDto = updatedInduction
+      req.session.previousWorkExperienceDetailForm = undefined
+      return res.redirect(`/prisoners/${prisonNumber}/induction/check-your-answers`)
+    }
+
     if (req.session.updateInductionQuestionSet) {
       req.session.inductionDto = updatedInduction
       const nextPage = `/prisoners/${prisonNumber}/induction/work-interest-types`

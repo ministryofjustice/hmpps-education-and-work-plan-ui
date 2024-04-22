@@ -371,5 +371,52 @@ describe('workInterestRolesUpdateController', () => {
       expect(req.session.workInterestRolesForm).toEqual(expectedWorkInterestsForm)
       expect(req.session.inductionDto).toEqual(inductionDto)
     })
+
+    it('should update induction DTO and redirect back to check your answers page when coming from check your answers', async () => {
+      // Given
+      const prisonerSummary = aValidPrisonerSummary()
+      req.session.prisonerSummary = prisonerSummary
+      req.session.inductionDto = aLongQuestionSetInductionDto()
+      req.session.inductionDto.futureWorkInterests.interests = [
+        { workType: WorkInterestTypeValue.DRIVING },
+        { workType: WorkInterestTypeValue.HOSPITALITY },
+      ]
+      req.session.pageFlowHistory = {
+        pageUrls: [
+          `/prisoners/${prisonerSummary.prisonNumber}/induction/check-your-answers`,
+          `/prisoners/${prisonerSummary.prisonNumber}/induction/work-interest-roles`,
+        ],
+        currentPageIndex: 1,
+      }
+
+      req.body = {
+        workInterestRoles: {
+          [WorkInterestTypeValue.DRIVING]: 'Taxi driver',
+          [WorkInterestTypeValue.HOSPITALITY]: 'Cleaner',
+        },
+      }
+
+      // The actual implementation is fine for this test
+      const actualToCreateOrUpdateInductionDto = jest.requireActual(
+        '../../../data/mappers/createOrUpdateInductionDtoMapper',
+      ).default
+      mockedCreateOrUpdateInductionDtoMapper.mockImplementation(actualToCreateOrUpdateInductionDto)
+
+      // When
+      await controller.submitWorkInterestRolesForm(
+        req as undefined as Request,
+        res as undefined as Response,
+        next as undefined as NextFunction,
+      )
+
+      // Then
+      expect(req.session.inductionDto.futureWorkInterests.interests).toEqual([
+        { workType: WorkInterestTypeValue.DRIVING, role: 'Taxi driver' },
+        { workType: WorkInterestTypeValue.HOSPITALITY, role: 'Cleaner' },
+      ])
+      expect(res.redirect).toHaveBeenCalledWith(
+        `/prisoners/${prisonerSummary.prisonNumber}/induction/check-your-answers`,
+      )
+    })
   })
 })

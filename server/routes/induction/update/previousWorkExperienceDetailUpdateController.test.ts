@@ -287,6 +287,61 @@ describe('previousWorkExperienceDetailUpdateController', () => {
         expect(res.redirect).not.toHaveBeenCalled()
         expect(next).toHaveBeenCalledWith(expectedError)
       })
+
+      it('should update induction DTO and redirect back to check your answers page when coming from check your answers', async () => {
+        // Given
+        const prisonerSummary = aValidPrisonerSummary()
+        req.session.prisonerSummary = prisonerSummary
+        req.session.inductionDto = aLongQuestionSetInductionDto()
+        req.session.pageFlowHistory = {
+          pageUrls: [
+            `/prisoners/${prisonerSummary.prisonNumber}/induction/check-your-answers`,
+            `/prisoners/${prisonerSummary.prisonNumber}/induction/previous-work-experience/construction`,
+          ],
+          currentPageIndex: 1,
+        }
+        req.params.typeOfWorkExperience = TypeOfWorkExperienceValue.CONSTRUCTION.toLocaleLowerCase()
+        req.body = {
+          jobRole: 'Roofer',
+          jobDetails: 'Building and maintaining roofs',
+        }
+
+        // The actual implementations are fine for this test
+        const actualToCreateOrUpdateInductionDto = jest.requireActual(
+          '../../../data/mappers/createOrUpdateInductionDtoMapper',
+        ).default
+        mockedCreateOrUpdateInductionDtoMapper.mockImplementation(actualToCreateOrUpdateInductionDto)
+        const actualPreviousWorkExperienceDetailFormValidator = jest.requireActual(
+          './previousWorkExperienceDetailFormValidator',
+        ).default
+        mockedFormValidator.mockImplementation(actualPreviousWorkExperienceDetailFormValidator)
+
+        const expectedExperience: PreviousWorkExperienceDto = {
+          experienceType: TypeOfWorkExperienceValue.CONSTRUCTION,
+          experienceTypeOther: null,
+          role: 'Roofer',
+          details: 'Building and maintaining roofs',
+        }
+
+        expect(req.session.inductionDto.previousWorkExperiences.experiences).not.toEqual(
+          expect.arrayContaining([expectedExperience]),
+        )
+
+        // When
+        await controller.submitPreviousWorkExperienceDetailForm(
+          req as undefined as Request,
+          res as undefined as Response,
+          next as undefined as NextFunction,
+        )
+
+        // Then
+        expect(req.session.inductionDto.previousWorkExperiences.experiences).toEqual(
+          expect.arrayContaining([expectedExperience]),
+        )
+        expect(res.redirect).toHaveBeenCalledWith(
+          `/prisoners/${prisonerSummary.prisonNumber}/induction/check-your-answers`,
+        )
+      })
     })
 
     describe('no PageFlowQueue on the session', () => {

@@ -358,5 +358,48 @@ describe('personalInterestsUpdateController', () => {
       expect(req.session.personalInterestsForm).toEqual(personalInterestsForm)
       expect(req.session.inductionDto).toEqual(inductionDto)
     })
+
+    it('should update induction DTO and redirect back to check your answers page when coming from check your answers', async () => {
+      // Given
+      const prisonerSummary = aValidPrisonerSummary()
+      req.session.prisonerSummary = prisonerSummary
+      req.session.inductionDto = aLongQuestionSetInductionDto()
+      req.session.pageFlowHistory = {
+        pageUrls: [
+          `/prisoners/${prisonerSummary.prisonNumber}/induction/check-your-answers`,
+          `/prisoners/${prisonerSummary.prisonNumber}/induction/personal-interests`,
+        ],
+        currentPageIndex: 1,
+      }
+
+      req.body = {
+        personalInterests: ['KNOWLEDGE_BASED', 'OTHER'],
+        personalInterestsOther: 'Writing poetry and short stories',
+      }
+
+      // The actual implementations are fine for this test
+      const actualToCreateOrUpdateInductionDto = jest.requireActual(
+        '../../../data/mappers/createOrUpdateInductionDtoMapper',
+      ).default
+      mockedCreateOrUpdateInductionDtoMapper.mockImplementation(actualToCreateOrUpdateInductionDto)
+      const actualPersonalInterestsFormValidator = jest.requireActual('./personalInterestsFormValidator').default
+      mockedFormValidator.mockImplementation(actualPersonalInterestsFormValidator)
+
+      // When
+      await controller.submitPersonalInterestsForm(
+        req as undefined as Request,
+        res as undefined as Response,
+        next as undefined as NextFunction,
+      )
+
+      // Then
+      expect(req.session.inductionDto.personalSkillsAndInterests.interests).toEqual([
+        { interestType: 'KNOWLEDGE_BASED' },
+        { interestType: 'OTHER', interestTypeOther: 'Writing poetry and short stories' },
+      ])
+      expect(res.redirect).toHaveBeenCalledWith(
+        `/prisoners/${prisonerSummary.prisonNumber}/induction/check-your-answers`,
+      )
+    })
   })
 })

@@ -15,6 +15,19 @@ import QualificationsListPage from './QualificationsListPage'
 import HighestLevelOfEducationPage from './HighestLevelOfEducationPage'
 import EducationLevelValue from '../../../server/enums/educationLevelValue'
 import WantToAddQualificationsPage from './WantToAddQualificationsPage'
+import WorkedBeforePage from './WorkedBeforePage'
+import YesNoValue from '../../../server/enums/yesNoValue'
+import WorkInterestTypeValue from '../../../server/enums/workInterestTypeValue'
+import PreviousWorkExperienceTypesPage from './PreviousWorkExperienceTypesPage'
+import PreviousWorkExperienceDetailPage from './PreviousWorkExperienceDetailPage'
+import FutureWorkInterestTypesPage from './FutureWorkInterestTypesPage'
+import FutureWorkInterestRolesPage from './FutureWorkInterestRolesPage'
+import SkillsPage from './SkillsPage'
+import PersonalInterestsPage from './PersonalInterestsPage'
+import AffectAbilityToWorkPage from './AffectAbilityToWorkPage'
+import SkillsValue from '../../../server/enums/skillsValue'
+import PersonalInterestsValue from '../../../server/enums/personalInterestsValue'
+import AbilityToWorkValue from '../../../server/enums/abilityToWorkValue'
 
 export default class CheckYourAnswersPage extends Page {
   constructor() {
@@ -144,12 +157,100 @@ export default class CheckYourAnswersPage extends Page {
     return Page.verifyOnPage(HopingToWorkOnReleasePage)
   }
 
+  hasWorkedBefore(expected: YesNoValue): CheckYourAnswersPage {
+    this.hasWorkedBeforeValue(expected).should('be.visible')
+    return this
+  }
+
+  clickHasWorkedBeforeChangeLink(): WorkedBeforePage {
+    this.hasWorkedBeforeChangeLink().click()
+    return Page.verifyOnPage(WorkedBeforePage)
+  }
+
+  hasParticularJobInterest(expected: WorkInterestTypeValue): CheckYourAnswersPage {
+    this.particularJobInterests(expected).should('be.visible')
+    return this
+  }
+
+  hasTypeOfWorkExperienceType(expected: TypeOfWorkExperienceValue): CheckYourAnswersPage {
+    this.typeOfWorkExperienceType(expected).should('be.visible')
+    return this
+  }
+
+  hasWorkExperience(
+    expectedType: TypeOfWorkExperienceValue,
+    expectedRole: string,
+    expectedDetails: string,
+  ): CheckYourAnswersPage {
+    this.hasWorkExperienceRole(expectedType).should('contain.text', expectedRole)
+    this.hasWorkExperienceDetails(expectedType).should('contain.text', expectedDetails)
+    return this
+  }
+
+  clickWorkExperienceTypesChangeLink(): PreviousWorkExperienceTypesPage {
+    this.workExperienceTypesChangeLink().click()
+    return Page.verifyOnPage(PreviousWorkExperienceTypesPage)
+  }
+
+  clickWorkExperienceDetailChangeLink(expected: TypeOfWorkExperienceValue): PreviousWorkExperienceDetailPage {
+    this.workExperienceDetailChangeLink(expected).click()
+    return Page.verifyOnPage(PreviousWorkExperienceDetailPage)
+  }
+
+  hasWorkInterest(expectedType: WorkInterestTypeValue): CheckYourAnswersPage {
+    this.workInterest(expectedType).should('be.visible')
+    return this
+  }
+
+  clickWorkInterestsChangeLink(): FutureWorkInterestTypesPage {
+    this.workInterestsChangeLink().click()
+    return Page.verifyOnPage(FutureWorkInterestTypesPage)
+  }
+
+  clickParticularJobInterestsChangeLink(): FutureWorkInterestRolesPage {
+    this.particularJobInterestsChangeLink().click()
+    return Page.verifyOnPage(FutureWorkInterestRolesPage)
+  }
+
+  hasPersonalSkill(expected: SkillsValue): CheckYourAnswersPage {
+    this.personalSkill(expected).should('be.visible')
+    return this
+  }
+
+  clickPersonalSkillsChangeLink(): SkillsPage {
+    this.personalSkillsChangeLink().click()
+    return Page.verifyOnPage(SkillsPage)
+  }
+
+  hasPersonalInterest(expected: PersonalInterestsValue): CheckYourAnswersPage {
+    this.personalInterest(expected).should('be.visible')
+    return this
+  }
+
+  clickPersonalInterestsChangeLink(): PersonalInterestsPage {
+    this.personalInterestsChangeLink().click()
+    return Page.verifyOnPage(PersonalInterestsPage)
+  }
+
+  hasFactorsAffectingAbilityToWork(expected: AbilityToWorkValue): CheckYourAnswersPage {
+    this.factorsAffectingAbilityToWork(expected).should('be.visible')
+    return this
+  }
+
+  clickFactorsAffectingAbilityToWorkChangeLink(): AffectAbilityToWorkPage {
+    this.factorsAffectingAbilityToWorkChangeLink().click()
+    return Page.verifyOnPage(AffectAbilityToWorkPage)
+  }
+
   submitPage(): WorkAndInterestsPage {
     this.submitButton().click()
     return Page.verifyOnPage(WorkAndInterestsPage)
   }
 
   private submitButton = (): PageElement => cy.get('#submit-button')
+
+  private factorsAffectingAbilityToWork = (expected: AbilityToWorkValue): PageElement =>
+    cy.get(`[data-qa=affectingAbilityToWork-${expected}]`)
 
   private factorsAffectingAbilityToWorkChangeLink = (): PageElement => cy.get('[data-qa=affectAbilityToWorkLink]')
 
@@ -176,17 +277,41 @@ export default class CheckYourAnswersPage extends Page {
 
   private inPrisonTrainingInterestsChangeLink = (): PageElement => cy.get('[data-qa=inPrisonEducationLink]')
 
+  private workInterest = (expected: WorkInterestTypeValue): PageElement => cy.get(`[data-qa=workInterests-${expected}]`)
+
   private workInterestsChangeLink = (): PageElement => cy.get('[data-qa=workInterestsLink]')
+
+  private particularJobInterests = (expected: WorkInterestTypeValue) =>
+    cy.get(`[data-qa^=particularJobInterests-${expected}]`)
 
   private particularJobInterestsChangeLink = (): PageElement => cy.get('[data-qa=particularJobInterestsLink]')
 
+  private personalSkill = (expected: SkillsValue): PageElement => cy.get(`[data-qa=skills-${expected}]`)
+
   private personalSkillsChangeLink = (): PageElement => cy.get('[data-qa=skillsLink]')
+
+  private personalInterest = (expected: PersonalInterestsValue): PageElement =>
+    cy.get(`[data-qa=personalInterests-${expected}]`)
 
   private personalInterestsChangeLink = (): PageElement => cy.get('[data-qa=personalInterestsLink]')
 
+  private hasWorkedBeforeValue(expected: YesNoValue): PageElement {
+    const booleanValue = expected === YesNoValue.YES ? 'true' : 'false'
+    return cy.get(`[data-qa=hasWorkedBefore-${booleanValue}]`)
+  }
+
   private hasWorkedBeforeChangeLink = (): PageElement => cy.get('[data-qa=hasWorkedBeforeLink]')
 
+  private typeOfWorkExperienceType = (expected: TypeOfWorkExperienceValue): PageElement =>
+    cy.get(`[data-qa=typeOfWorkExperience-${expected}]`)
+
   private workExperienceTypesChangeLink = (): PageElement => cy.get('[data-qa=typeOfWorkExperienceLink]')
+
+  private hasWorkExperienceRole = (expected: TypeOfWorkExperienceValue): PageElement =>
+    cy.get(`[data-qa=workExperience-role-${expected}]`)
+
+  private hasWorkExperienceDetails = (expected: TypeOfWorkExperienceValue): PageElement =>
+    cy.get(`[data-qa=workExperience-details-${expected}]`)
 
   private workExperienceDetailChangeLink = (workExperienceType: TypeOfWorkExperienceValue): PageElement =>
     cy.get(`[data-qa=workExperienceDetailLink-${workExperienceType}]`)

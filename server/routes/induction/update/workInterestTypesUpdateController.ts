@@ -58,6 +58,12 @@ export default class WorkInterestTypesUpdateController extends WorkInterestTypes
 
     const updatedInduction = this.updatedInductionDtoWithWorkInterestTypes(inductionDto, workInterestTypesForm)
 
+    // If the previous page was Check Your Answers, decide whether to redirect back check answers on submission
+    if (this.previousPageWasCheckYourAnswers(req)) {
+      req.session.inductionDto = updatedInduction
+      return res.redirect(`/prisoners/${prisonNumber}/induction/check-your-answers`)
+    }
+
     if (req.session.updateInductionQuestionSet) {
       req.session.inductionDto = updatedInduction
       const nextPage = `/prisoners/${prisonNumber}/induction/work-interest-roles`
