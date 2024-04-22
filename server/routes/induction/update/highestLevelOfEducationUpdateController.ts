@@ -1,12 +1,10 @@
 import createError from 'http-errors'
 import { NextFunction, Request, RequestHandler, Response } from 'express'
 import type { InductionDto } from 'inductionDto'
-import type { HighestLevelOfEducationForm } from 'inductionForms'
 import HighestLevelOfEducationController from '../common/highestLevelOfEducationController'
 import { InductionService } from '../../../services'
-import validateHighestLevelOfEducationForm from './highestLevelOfEducationFormValidator'
+import validateHighestLevelOfEducationForm from '../../validators/induction/highestLevelOfEducationFormValidator'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
-import EducationLevelValue from '../../../enums/educationLevelValue'
 import logger from '../../../../logger'
 import { buildNewPageFlowHistory, getPreviousPage } from '../../pageFlowHistory'
 import getDynamicBackLinkAriaText from '../dynamicAriaTextResolver'
@@ -50,7 +48,10 @@ export default class HighestLevelOfEducationUpdateController extends HighestLeve
       return res.redirect(`/prisoners/${prisonNumber}/induction/highest-level-of-education`)
     }
 
-    const updatedInduction = updatedInductionDtoWithHighestLevelOfEducation(inductionDto, highestLevelOfEducationForm)
+    const updatedInduction = this.updatedInductionDtoWithHighestLevelOfEducation(
+      inductionDto,
+      highestLevelOfEducationForm,
+    )
     req.session.inductionDto = updatedInduction
     req.session.highestLevelOfEducationForm = undefined
 
@@ -63,7 +64,7 @@ export default class HighestLevelOfEducationUpdateController extends HighestLeve
       // The Induction already has qualifications, regardless of the new Highest Level of Education
       inductionHasEducationQualifications(inductionDto) ||
       // Or if the new Highest Level of Education does not require qualifications, regardless of whether qualifications already exist on the induction
-      highestLevelOfEducationDoesNotRequireQualifications(highestLevelOfEducationForm)
+      this.highestLevelOfEducationDoesNotRequireQualifications(highestLevelOfEducationForm)
     ) {
       logger.debug(
         'Induction can be updated with new Highest Level of Education without asking further questions about educational qualifications',
@@ -87,30 +88,6 @@ export default class HighestLevelOfEducationUpdateController extends HighestLeve
       }
       return res.redirect(`/prisoners/${prisonNumber}/induction/qualification-level`)
     }
-  }
-}
-
-const highestLevelOfEducationDoesNotRequireQualifications = (
-  highestLevelOfEducationForm: HighestLevelOfEducationForm,
-): boolean => {
-  const levelsOfEducationThatDoNotRequireQualifications = [
-    EducationLevelValue.NOT_SURE,
-    EducationLevelValue.PRIMARY_SCHOOL,
-    EducationLevelValue.SECONDARY_SCHOOL_LEFT_BEFORE_TAKING_EXAMS,
-  ]
-  return levelsOfEducationThatDoNotRequireQualifications.includes(highestLevelOfEducationForm?.educationLevel)
-}
-
-const updatedInductionDtoWithHighestLevelOfEducation = (
-  inductionDto: InductionDto,
-  highestLevelOfEducationForm: HighestLevelOfEducationForm,
-): InductionDto => {
-  return {
-    ...inductionDto,
-    previousQualifications: {
-      ...inductionDto.previousQualifications,
-      educationLevel: highestLevelOfEducationForm.educationLevel,
-    },
   }
 }
 

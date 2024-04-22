@@ -5,14 +5,14 @@ import type { AchievedQualificationDto } from 'inductionDto'
 import InductionService from '../../../services/inductionService'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
 import { aLongQuestionSetInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
-import validateHighestLevelOfEducationForm from './highestLevelOfEducationFormValidator'
+import validateHighestLevelOfEducationForm from '../../validators/induction/highestLevelOfEducationFormValidator'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
 import HighestLevelOfEducationUpdateController from './highestLevelOfEducationUpdateController'
 import EducationLevelValue from '../../../enums/educationLevelValue'
 import { aLongQuestionSetUpdateInductionRequest } from '../../../testsupport/updateInductionRequestTestDataBuilder'
 import QualificationLevelValue from '../../../enums/qualificationLevelValue'
 
-jest.mock('./highestLevelOfEducationFormValidator')
+jest.mock('../../validators/induction/highestLevelOfEducationFormValidator')
 jest.mock('../../../data/mappers/createOrUpdateInductionDtoMapper')
 jest.mock('../../../services/inductionService')
 

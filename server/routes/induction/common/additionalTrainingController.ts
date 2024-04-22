@@ -20,8 +20,7 @@ export default abstract class AdditionalTrainingController extends InductionCont
 
     // Check if we are in the midst of changing the main induction question set (e.g. from long route to short route)
     if (req.session.updateInductionQuestionSet) {
-      const { prisonNumber } = req.params
-      this.addCurrentPageToHistory(req, `/prisoners/${prisonNumber}/induction/additional-training`)
+      this.addCurrentPageToHistory(req)
     }
 
     const additionalTrainingForm = req.session.additionalTrainingForm || toAdditionalTrainingForm(inductionDto)

@@ -3,19 +3,16 @@ import type { SessionData } from 'express-session'
 import { NextFunction, Request, Response } from 'express'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
 import { aLongQuestionSetInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
-import validateAbilityToWorkForm from './affectAbilityToWorkFormValidator'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
 import InductionService from '../../../services/inductionService'
 import { aLongQuestionSetUpdateInductionRequest } from '../../../testsupport/updateInductionRequestTestDataBuilder'
 import AbilityToWorkUpdateController from './affectAbilityToWorkUpdateController'
 import AbilityToWorkValue from '../../../enums/abilityToWorkValue'
 
-jest.mock('./affectAbilityToWorkFormValidator')
 jest.mock('../../../data/mappers/createOrUpdateInductionDtoMapper')
 jest.mock('../../../services/inductionService')
 
 describe('affectAbilityToWorkUpdateController', () => {
-  const mockedFormValidator = validateAbilityToWorkForm as jest.MockedFunction<typeof validateAbilityToWorkForm>
   const mockedCreateOrUpdateInductionDtoMapper = toCreateOrUpdateInductionDto as jest.MockedFunction<
     typeof toCreateOrUpdateInductionDto
   >
@@ -23,12 +20,18 @@ describe('affectAbilityToWorkUpdateController', () => {
   const inductionService = new InductionService(null) as jest.Mocked<InductionService>
   const controller = new AbilityToWorkUpdateController(inductionService)
 
+  const prisonNumber = 'A1234BC'
+  const prisonerSummary = aValidPrisonerSummary()
+
+  const noErrors: Array<Record<string, string>> = []
+
   const req = {
     session: {} as SessionData,
     body: {},
     user: {} as Express.User,
     params: {} as Record<string, string>,
     flash: jest.fn(),
+    path: '',
   }
   const res = {
     redirect: jest.fn(),
@@ -36,26 +39,18 @@ describe('affectAbilityToWorkUpdateController', () => {
   }
   const next = jest.fn()
 
-  let errors: Array<Record<string, string>>
-
   beforeEach(() => {
     jest.resetAllMocks()
-    req.session = {} as SessionData
+    req.session = { prisonerSummary } as SessionData
     req.body = {}
-    req.user = {} as Express.User
-    req.params = {} as Record<string, string>
-
-    errors = []
+    req.user = { token: 'some-token' } as Express.User
+    req.params = { prisonNumber }
+    req.path = `/prisoners/${prisonNumber}/induction/affect-ability-to-work`
   })
 
   describe('getAbilityToWorkView', () => {
     it('should get the Ability To Work view given there is no AbilityToWorkForm on the session', async () => {
       // Given
-      const prisonNumber = 'A1234BC'
-      req.params.prisonNumber = prisonNumber
-
-      const prisonerSummary = aValidPrisonerSummary()
-      req.session.prisonerSummary = prisonerSummary
       const inductionDto = aLongQuestionSetInductionDto()
       req.session.inductionDto = inductionDto
       req.session.affectAbilityToWorkForm = undefined
@@ -74,7 +69,7 @@ describe('affectAbilityToWorkUpdateController', () => {
         form: expectedAbilityToWorkForm,
         backLinkUrl: '/plan/A1234BC/view/work-and-interests',
         backLinkAriaText: `Back to Jimmy Lightfingers's learning and work progress`,
-        errors,
+        errors: noErrors,
       }
 
       // When
@@ -92,11 +87,6 @@ describe('affectAbilityToWorkUpdateController', () => {
 
     it('should get the Ability To Work view given there is an AbilityToWorkForm already on the session', async () => {
       // Given
-      const prisonNumber = 'A1234BC'
-      req.params.prisonNumber = prisonNumber
-
-      const prisonerSummary = aValidPrisonerSummary()
-      req.session.prisonerSummary = prisonerSummary
       const inductionDto = aLongQuestionSetInductionDto()
       req.session.inductionDto = inductionDto
 
@@ -115,7 +105,7 @@ describe('affectAbilityToWorkUpdateController', () => {
         form: expectedAbilityToWorkForm,
         backLinkUrl: '/plan/A1234BC/view/work-and-interests',
         backLinkAriaText: `Back to Jimmy Lightfingers's learning and work progress`,
-        errors,
+        errors: noErrors,
       }
 
       // When
@@ -133,11 +123,6 @@ describe('affectAbilityToWorkUpdateController', () => {
 
     it('should get the Ability To Work view given there is an updateInductionQuestionSet on the session', async () => {
       // Given
-      const prisonNumber = 'A1234BC'
-      req.params.prisonNumber = prisonNumber
-
-      const prisonerSummary = aValidPrisonerSummary()
-      req.session.prisonerSummary = prisonerSummary
       const inductionDto = aLongQuestionSetInductionDto()
       req.session.inductionDto = inductionDto
       req.session.updateInductionQuestionSet = {
@@ -163,7 +148,7 @@ describe('affectAbilityToWorkUpdateController', () => {
         form: expectedAbilityToWorkForm,
         backLinkUrl: '/prisoners/A1234BC/induction/personal-interests',
         backLinkAriaText: `Back to What are Jimmy Lightfingers's interests?`,
-        errors,
+        errors: noErrors,
       }
 
       const expectedPageFlowHistory = {
@@ -191,11 +176,6 @@ describe('affectAbilityToWorkUpdateController', () => {
   describe('submitAbilityToWorkForm', () => {
     it('should not update Induction given form is submitted with validation errors', async () => {
       // Given
-      const prisonNumber = 'A1234BC'
-      req.params.prisonNumber = prisonNumber
-
-      const prisonerSummary = aValidPrisonerSummary()
-      req.session.prisonerSummary = prisonerSummary
       const inductionDto = aLongQuestionSetInductionDto()
       req.session.inductionDto = inductionDto
 
@@ -206,13 +186,12 @@ describe('affectAbilityToWorkUpdateController', () => {
       req.body = invalidAbilityToWorkForm
       req.session.affectAbilityToWorkForm = undefined
 
-      errors = [
+      const expectedErrors = [
         {
           href: '#affectAbilityToWorkOther',
-          text: `Select factors affecting Jimmy Lightfingers's ability to work or select 'None of these'`,
+          text: `Enter factors affecting Jimmy Lightfingers's ability to work`,
         },
       ]
-      mockedFormValidator.mockReturnValue(errors)
 
       // When
       await controller.submitAffectAbilityToWorkForm(
@@ -223,19 +202,13 @@ describe('affectAbilityToWorkUpdateController', () => {
 
       // Then
       expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/induction/affect-ability-to-work')
-      expect(req.flash).toHaveBeenCalledWith('errors', errors)
+      expect(req.flash).toHaveBeenCalledWith('errors', expectedErrors)
       expect(req.session.affectAbilityToWorkForm).toEqual(invalidAbilityToWorkForm)
       expect(req.session.inductionDto).toEqual(inductionDto)
     })
 
     it('should update Induction and call API and redirect to work and interests page', async () => {
       // Given
-      req.user.token = 'some-token'
-      const prisonNumber = 'A1234BC'
-      req.params.prisonNumber = prisonNumber
-
-      const prisonerSummary = aValidPrisonerSummary()
-      req.session.prisonerSummary = prisonerSummary
       const inductionDto = aLongQuestionSetInductionDto()
       req.session.inductionDto = inductionDto
 
@@ -248,7 +221,7 @@ describe('affectAbilityToWorkUpdateController', () => {
       const updateInductionDto = aLongQuestionSetUpdateInductionRequest()
 
       mockedCreateOrUpdateInductionDtoMapper.mockReturnValueOnce(updateInductionDto)
-      mockedFormValidator.mockReturnValue(errors)
+
       const expectedUpdatedAbilityToWork = ['CARING_RESPONSIBILITIES', 'OTHER']
       const expectedUpdatedAbilityToWorkOther = 'Variable mental health'
 
@@ -274,12 +247,6 @@ describe('affectAbilityToWorkUpdateController', () => {
 
     it('should update InductionDto and redirect to Check Your Answers view given there is an updateInductionQuestionSet on the session', async () => {
       // Given
-      req.user.token = 'some-token'
-      const prisonNumber = 'A1234BC'
-      req.params.prisonNumber = prisonNumber
-
-      const prisonerSummary = aValidPrisonerSummary()
-      req.session.prisonerSummary = prisonerSummary
       const inductionDto = aLongQuestionSetInductionDto()
       req.session.inductionDto = inductionDto
 
@@ -289,8 +256,6 @@ describe('affectAbilityToWorkUpdateController', () => {
       }
       req.body = affectAbilityToWorkForm
       req.session.affectAbilityToWorkForm = undefined
-
-      mockedFormValidator.mockReturnValue(errors)
 
       req.session.updateInductionQuestionSet = { hopingToWorkOnRelease: 'YES' }
 
@@ -317,12 +282,6 @@ describe('affectAbilityToWorkUpdateController', () => {
 
     it('should not update Induction given error calling service', async () => {
       // Given
-      req.user.token = 'some-token'
-      const prisonNumber = 'A1234BC'
-      req.params.prisonNumber = prisonNumber
-
-      const prisonerSummary = aValidPrisonerSummary()
-      req.session.prisonerSummary = prisonerSummary
       const inductionDto = aLongQuestionSetInductionDto()
       req.session.inductionDto = inductionDto
 
@@ -335,7 +294,7 @@ describe('affectAbilityToWorkUpdateController', () => {
       const updateInductionDto = aLongQuestionSetUpdateInductionRequest()
 
       mockedCreateOrUpdateInductionDtoMapper.mockReturnValueOnce(updateInductionDto)
-      mockedFormValidator.mockReturnValue(errors)
+
       const expectedUpdatedAbilityToWork = ['CARING_RESPONSIBILITIES', 'OTHER']
       const expectedUpdatedAbilityToWorkOther = 'Variable mental health'
 

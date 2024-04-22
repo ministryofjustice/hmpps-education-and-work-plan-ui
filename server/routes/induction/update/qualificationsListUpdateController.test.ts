@@ -225,7 +225,7 @@ describe('qualificationsListUpdateController', () => {
 
     const prisonerSummary = aValidPrisonerSummary()
     req.session.prisonerSummary = prisonerSummary
-    req.body = { addQualification: '0' }
+    req.body = { addQualification: '' }
 
     const expectedPageFlowHistory = {
       pageUrls: [`/prisoners/${prisonNumber}/induction/qualifications`],

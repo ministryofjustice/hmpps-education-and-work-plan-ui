@@ -3,19 +3,16 @@ import type { SessionData } from 'express-session'
 import { NextFunction, Request, Response } from 'express'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
 import { aShortQuestionSetInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
-import validateInPrisonTrainingForm from './inPrisonTrainingFormValidator'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
 import InductionService from '../../../services/inductionService'
 import { aShortQuestionSetUpdateInductionRequest } from '../../../testsupport/updateInductionRequestTestDataBuilder'
 import InPrisonTrainingUpdateController from './inPrisonTrainingUpdateController'
 import InPrisonTrainingValue from '../../../enums/inPrisonTrainingValue'
 
-jest.mock('./inPrisonTrainingFormValidator')
 jest.mock('../../../data/mappers/createOrUpdateInductionDtoMapper')
 jest.mock('../../../services/inductionService')
 
 describe('inPrisonTrainingUpdateController', () => {
-  const mockedFormValidator = validateInPrisonTrainingForm as jest.MockedFunction<typeof validateInPrisonTrainingForm>
   const mockedCreateOrUpdateInductionDtoMapper = toCreateOrUpdateInductionDto as jest.MockedFunction<
     typeof toCreateOrUpdateInductionDto
   >
@@ -23,12 +20,18 @@ describe('inPrisonTrainingUpdateController', () => {
   const inductionService = new InductionService(null) as jest.Mocked<InductionService>
   const controller = new InPrisonTrainingUpdateController(inductionService)
 
+  const prisonNumber = 'A1234BC'
+  const prisonerSummary = aValidPrisonerSummary()
+
+  const noErrors: Array<Record<string, string>> = []
+
   const req = {
     session: {} as SessionData,
     body: {},
     user: {} as Express.User,
     params: {} as Record<string, string>,
     flash: jest.fn(),
+    path: '',
   }
   const res = {
     redirect: jest.fn(),
@@ -36,26 +39,18 @@ describe('inPrisonTrainingUpdateController', () => {
   }
   const next = jest.fn()
 
-  let errors: Array<Record<string, string>>
-
   beforeEach(() => {
     jest.resetAllMocks()
-    req.session = {} as SessionData
+    req.session = { prisonerSummary } as SessionData
     req.body = {}
-    req.user = {} as Express.User
-    req.params = {} as Record<string, string>
-
-    errors = []
+    req.user = { token: 'some-token' } as Express.User
+    req.params = { prisonNumber }
+    req.path = `/prisoners/${prisonNumber}/induction/in-prison-training`
   })
 
   describe('getInPrisonTrainingView', () => {
     it('should get the In Prison Training view given there is no InPrisonTrainingForm on the session', async () => {
       // Given
-      const prisonNumber = 'A1234BC'
-      req.params.prisonNumber = prisonNumber
-
-      const prisonerSummary = aValidPrisonerSummary()
-      req.session.prisonerSummary = prisonerSummary
       const inductionDto = aShortQuestionSetInductionDto()
       req.session.inductionDto = inductionDto
       req.session.inPrisonTrainingForm = undefined
@@ -74,7 +69,7 @@ describe('inPrisonTrainingUpdateController', () => {
         form: expectedInPrisonTrainingForm,
         backLinkUrl: '/plan/A1234BC/view/education-and-training',
         backLinkAriaText: `Back to Jimmy Lightfingers's learning and work progress`,
-        errors,
+        errors: noErrors,
       }
 
       // When
@@ -92,11 +87,6 @@ describe('inPrisonTrainingUpdateController', () => {
 
     it('should get the In Prison Training view given there is an InPrisonTrainingForm already on the session', async () => {
       // Given
-      const prisonNumber = 'A1234BC'
-      req.params.prisonNumber = prisonNumber
-
-      const prisonerSummary = aValidPrisonerSummary()
-      req.session.prisonerSummary = prisonerSummary
       const inductionDto = aShortQuestionSetInductionDto()
       req.session.inductionDto = inductionDto
 
@@ -111,7 +101,7 @@ describe('inPrisonTrainingUpdateController', () => {
         form: expectedInPrisonTrainingForm,
         backLinkUrl: '/plan/A1234BC/view/education-and-training',
         backLinkAriaText: `Back to Jimmy Lightfingers's learning and work progress`,
-        errors,
+        errors: noErrors,
       }
 
       // When
@@ -129,11 +119,6 @@ describe('inPrisonTrainingUpdateController', () => {
 
     it('should get the In Prison Training view given there is an updateInductionQuestionSet on the session', async () => {
       // Given
-      const prisonNumber = 'A1234BC'
-      req.params.prisonNumber = prisonNumber
-
-      const prisonerSummary = aValidPrisonerSummary()
-      req.session.prisonerSummary = prisonerSummary
       const inductionDto = aShortQuestionSetInductionDto()
       req.session.inductionDto = inductionDto
 
@@ -156,7 +141,7 @@ describe('inPrisonTrainingUpdateController', () => {
         form: expectedInPrisonTrainingForm,
         backLinkUrl: '/prisoners/A1234BC/induction/in-prison-work',
         backLinkAriaText: 'Back to What type of work would Jimmy Lightfingers like to do in prison?',
-        errors,
+        errors: noErrors,
       }
       const expectedPageFlowHistory = {
         pageUrls: ['/prisoners/A1234BC/induction/in-prison-work', '/prisoners/A1234BC/induction/in-prison-training'],
@@ -180,11 +165,6 @@ describe('inPrisonTrainingUpdateController', () => {
   describe('submitInPrisonTrainingForm', () => {
     it('should not update Induction given form is submitted with validation errors', async () => {
       // Given
-      const prisonNumber = 'A1234BC'
-      req.params.prisonNumber = prisonNumber
-
-      const prisonerSummary = aValidPrisonerSummary()
-      req.session.prisonerSummary = prisonerSummary
       const inductionDto = aShortQuestionSetInductionDto()
       req.session.inductionDto = inductionDto
 
@@ -195,13 +175,12 @@ describe('inPrisonTrainingUpdateController', () => {
       req.body = invalidInPrisonTrainingForm
       req.session.inPrisonTrainingForm = undefined
 
-      errors = [
+      const expectedErrors = [
         {
           href: '#inPrisonTrainingOther',
-          text: `Select the type of training Jimmy Lightfingers would like to do in prison`,
+          text: 'Enter the type of type of training Jimmy Lightfingers would like to do in prison',
         },
       ]
-      mockedFormValidator.mockReturnValue(errors)
 
       // When
       await controller.submitInPrisonTrainingForm(
@@ -212,19 +191,13 @@ describe('inPrisonTrainingUpdateController', () => {
 
       // Then
       expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/induction/in-prison-training')
-      expect(req.flash).toHaveBeenCalledWith('errors', errors)
+      expect(req.flash).toHaveBeenCalledWith('errors', expectedErrors)
       expect(req.session.inPrisonTrainingForm).toEqual(invalidInPrisonTrainingForm)
       expect(req.session.inductionDto).toEqual(inductionDto)
     })
 
     it('should update Induction and call API and redirect to education and training page', async () => {
       // Given
-      req.user.token = 'some-token'
-      const prisonNumber = 'A1234BC'
-      req.params.prisonNumber = prisonNumber
-
-      const prisonerSummary = aValidPrisonerSummary()
-      req.session.prisonerSummary = prisonerSummary
       const inductionDto = aShortQuestionSetInductionDto()
       req.session.inductionDto = inductionDto
 
@@ -237,7 +210,7 @@ describe('inPrisonTrainingUpdateController', () => {
       const updateInductionDto = aShortQuestionSetUpdateInductionRequest()
 
       mockedCreateOrUpdateInductionDtoMapper.mockReturnValueOnce(updateInductionDto)
-      mockedFormValidator.mockReturnValue(errors)
+
       const expectedUpdatedInPrisonTraining = [
         {
           trainingType: 'FORKLIFT_DRIVING',
@@ -270,12 +243,6 @@ describe('inPrisonTrainingUpdateController', () => {
 
     it('should update InductionDto and redirect to Check Your Answers view given there is an updateInductionQuestionSet on the session', async () => {
       // Given
-      req.user.token = 'some-token'
-      const prisonNumber = 'A1234BC'
-      req.params.prisonNumber = prisonNumber
-
-      const prisonerSummary = aValidPrisonerSummary()
-      req.session.prisonerSummary = prisonerSummary
       const inductionDto = aShortQuestionSetInductionDto()
       req.session.inductionDto = inductionDto
 
@@ -286,7 +253,6 @@ describe('inPrisonTrainingUpdateController', () => {
       req.body = inPrisonTrainingForm
       req.session.inPrisonTrainingForm = undefined
 
-      mockedFormValidator.mockReturnValue(errors)
       const expectedUpdatedInPrisonTraining = [
         {
           trainingType: 'FORKLIFT_DRIVING',
@@ -316,12 +282,6 @@ describe('inPrisonTrainingUpdateController', () => {
 
     it('should not update Induction given error calling service', async () => {
       // Given
-      req.user.token = 'some-token'
-      const prisonNumber = 'A1234BC'
-      req.params.prisonNumber = prisonNumber
-
-      const prisonerSummary = aValidPrisonerSummary()
-      req.session.prisonerSummary = prisonerSummary
       const inductionDto = aShortQuestionSetInductionDto()
       req.session.inductionDto = inductionDto
 
@@ -334,7 +294,7 @@ describe('inPrisonTrainingUpdateController', () => {
       const updateInductionDto = aShortQuestionSetUpdateInductionRequest()
 
       mockedCreateOrUpdateInductionDtoMapper.mockReturnValueOnce(updateInductionDto)
-      mockedFormValidator.mockReturnValue(errors)
+
       const expectedUpdatedInPrisonTraining = [
         {
           trainingType: 'FORKLIFT_DRIVING',

@@ -18,10 +18,9 @@ export default abstract class PreviousWorkExperienceTypesController extends Indu
     next: NextFunction,
   ): Promise<void> => {
     const { prisonerSummary, inductionDto } = req.session
-    const { prisonNumber } = req.params
     // Check if we are in the midst of changing the main induction question set (e.g. from long route to short route)
     if (req.session.updateInductionQuestionSet) {
-      this.addCurrentPageToHistory(req, `/prisoners/${prisonNumber}/induction/previous-work-experience`)
+      this.addCurrentPageToHistory(req)
     }
 
     const previousWorkExperienceDetailsForm =

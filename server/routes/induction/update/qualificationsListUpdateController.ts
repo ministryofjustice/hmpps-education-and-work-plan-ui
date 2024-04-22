@@ -52,7 +52,6 @@ export default class QualificationsListUpdateController extends QualificationsLi
     // Behaviour and subsequent routing of the submission of the Qualifications List page depends on whether the page
     // is submitted with the values `addQualification`, `removeQualification`; and if neither whether the Induction has
     // qualifications already on it or not.
-
     if (userClickedOnButton(req, 'addQualification')) {
       if (!req.session.pageFlowHistory) {
         req.session.pageFlowHistory = buildNewPageFlowHistory(req)
@@ -71,7 +70,7 @@ export default class QualificationsListUpdateController extends QualificationsLi
       return res.redirect(`/prisoners/${prisonNumber}/induction/check-your-answers`)
     }
 
-    if (inductionHasNoQualifications(inductionDto)) {
+    if (!inductionHasQualifications(inductionDto)) {
       // If check-your-answers is in the page history but it's not the previous page, then the user has indicated they want to add qualifications from the Check Your Answers page
       if (this.checkYourAnswersIsInThePageHistory(req)) {
         // Skip the highest level of education as its not asked in this scenario, and go straight to asking about the qualifications
@@ -116,8 +115,8 @@ export default class QualificationsListUpdateController extends QualificationsLi
   }
 }
 
-const inductionHasNoQualifications = (inductionDto: InductionDto): boolean =>
-  inductionDto.previousQualifications?.qualifications.length === 0
+const inductionHasQualifications = (inductionDto: InductionDto): boolean =>
+  inductionDto.previousQualifications?.qualifications?.length > 0
 
 const userClickedOnButton = (request: Request, buttonName: string): boolean =>
   Object.prototype.hasOwnProperty.call(request.body, buttonName)
