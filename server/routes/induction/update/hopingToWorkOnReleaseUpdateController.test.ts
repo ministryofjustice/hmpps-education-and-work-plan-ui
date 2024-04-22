@@ -8,7 +8,7 @@ import {
   aShortQuestionSetInductionDto,
 } from '../../../testsupport/inductionDtoTestDataBuilder'
 import HopingToGetWorkValue from '../../../enums/hopingToGetWorkValue'
-import validateHopingToWorkOnReleaseForm from './hopingToWorkOnReleaseFormValidator'
+import validateHopingToWorkOnReleaseForm from '../../validators/induction/hopingToWorkOnReleaseFormValidator'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
 import InductionService from '../../../services/inductionService'
 import { aShortQuestionSetUpdateInductionDto } from '../../../testsupport/updateInductionDtoTestDataBuilder'
@@ -17,7 +17,7 @@ import {
   aShortQuestionSetUpdateInductionRequest,
 } from '../../../testsupport/updateInductionRequestTestDataBuilder'
 
-jest.mock('./hopingToWorkOnReleaseFormValidator')
+jest.mock('../../validators/induction/hopingToWorkOnReleaseFormValidator')
 jest.mock('../../../data/mappers/createOrUpdateInductionDtoMapper')
 jest.mock('../../../services/inductionService')
 
