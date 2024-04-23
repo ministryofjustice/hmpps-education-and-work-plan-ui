@@ -1,5 +1,5 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express'
-import type { InductionDto } from 'inductionDto'
+import type { InductionDto, PreviousWorkExperienceDto } from 'inductionDto'
 import type { WorkedBeforeForm } from 'inductionForms'
 import InductionController from './inductionController'
 import WorkedBeforeView from './workedBeforeView'
@@ -31,6 +31,21 @@ export default abstract class WorkedBeforeController extends InductionController
       req.flash('errors'),
     )
     return res.render('pages/induction/workedBefore/index', { ...view.renderArgs })
+  }
+
+  updatedInductionDtoWithHasWorkedBefore(inductionDto: InductionDto, workedBeforeForm: WorkedBeforeForm): InductionDto {
+    let previousExperience: Array<PreviousWorkExperienceDto> = []
+    if (workedBeforeForm.hasWorkedBefore === YesNoValue.YES && inductionDto.previousWorkExperiences?.experiences) {
+      previousExperience = [...inductionDto.previousWorkExperiences.experiences]
+    }
+    return {
+      ...inductionDto,
+      previousWorkExperiences: {
+        ...inductionDto.previousWorkExperiences,
+        experiences: previousExperience,
+        hasWorkedBefore: workedBeforeForm.hasWorkedBefore === YesNoValue.YES,
+      },
+    }
   }
 }
 

@@ -5,21 +5,16 @@ import type { InductionDto, PreviousWorkExperienceDto } from 'inductionDto'
 import type { PageFlow } from 'viewModels'
 import InductionService from '../../../services/inductionService'
 import PreviousWorkExperienceTypesUpdateController from './previousWorkExperienceTypesUpdateController'
-import validatePreviousWorkExperienceTypesForm from './previousWorkExperienceTypesFormValidator'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
 import { aLongQuestionSetInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
 import { aLongQuestionSetUpdateInductionDto } from '../../../testsupport/updateInductionDtoTestDataBuilder'
 import TypeOfWorkExperienceValue from '../../../enums/typeOfWorkExperienceValue'
 
-jest.mock('./previousWorkExperienceTypesFormValidator')
 jest.mock('../../../data/mappers/createOrUpdateInductionDtoMapper')
 jest.mock('../../../services/inductionService')
 
 describe('previousWorkExperienceTypesUpdateController', () => {
-  const mockedFormValidator = validatePreviousWorkExperienceTypesForm as jest.MockedFunction<
-    typeof validatePreviousWorkExperienceTypesForm
-  >
   const mockedCreateOrUpdateInductionDtoMapper = toCreateOrUpdateInductionDto as jest.MockedFunction<
     typeof toCreateOrUpdateInductionDto
   >
@@ -27,12 +22,18 @@ describe('previousWorkExperienceTypesUpdateController', () => {
   const inductionService = new InductionService(null) as jest.Mocked<InductionService>
   const controller = new PreviousWorkExperienceTypesUpdateController(inductionService)
 
+  const prisonNumber = 'A1234BC'
+  const prisonerSummary = aValidPrisonerSummary()
+
+  const noErrors: Array<Record<string, string>> = []
+
   const req = {
     session: {} as SessionData,
     body: {},
     user: {} as Express.User,
     params: {} as Record<string, string>,
     flash: jest.fn(),
+    path: '',
   }
   const res = {
     redirect: jest.fn(),
@@ -40,26 +41,18 @@ describe('previousWorkExperienceTypesUpdateController', () => {
   }
   const next = jest.fn()
 
-  let errors: Array<Record<string, string>>
-
   beforeEach(() => {
     jest.resetAllMocks()
-    req.session = {} as SessionData
+    req.session = { prisonerSummary } as SessionData
     req.body = {}
-    req.user = {} as Express.User
-    req.params = {} as Record<string, string>
-
-    errors = []
+    req.user = { token: 'some-token' } as Express.User
+    req.params = { prisonNumber }
+    req.path = `/prisoners/${prisonNumber}/induction/previous-work-experience`
   })
 
   describe('getPreviousWorkExperienceTypesView', () => {
     it('should get the Previous Work Experience Types view given there is no PreviousWorkExperienceTypesForm on the session', async () => {
       // Given
-      const prisonNumber = 'A1234BC'
-      req.params.prisonNumber = prisonNumber
-
-      const prisonerSummary = aValidPrisonerSummary()
-      req.session.prisonerSummary = prisonerSummary
       const inductionDto = aLongQuestionSetInductionDto({ hasWorkedBefore: true })
       req.session.inductionDto = inductionDto
       req.session.previousWorkExperienceTypesForm = undefined
@@ -69,12 +62,20 @@ describe('previousWorkExperienceTypesUpdateController', () => {
         typeOfWorkExperienceOther: 'Retail delivery',
       }
 
+      req.session.pageFlowHistory = {
+        pageUrls: [
+          `/prisoners/${prisonNumber}/induction/qualifications`,
+          `/prisoners/${prisonNumber}/induction/has-worked-before`,
+        ],
+        currentPageIndex: 1,
+      }
+
       const expectedView = {
         prisonerSummary,
         form: expectedPreviousWorkExperienceTypesForm,
-        backLinkUrl: '/plan/A1234BC/view/work-and-interests',
-        backLinkAriaText: `Back to Jimmy Lightfingers's learning and work progress`,
-        errors,
+        backLinkUrl: '/prisoners/A1234BC/induction/has-worked-before',
+        backLinkAriaText: 'Back to Has Jimmy Lightfingers worked before?',
+        errors: noErrors,
       }
 
       // When
@@ -91,15 +92,18 @@ describe('previousWorkExperienceTypesUpdateController', () => {
       )
       expect(req.session.previousWorkExperienceTypesForm).toBeUndefined()
       expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(req.session.pageFlowHistory).toEqual({
+        pageUrls: [
+          '/prisoners/A1234BC/induction/qualifications',
+          '/prisoners/A1234BC/induction/has-worked-before',
+          '/prisoners/A1234BC/induction/previous-work-experience',
+        ],
+        currentPageIndex: 2,
+      })
     })
 
     it('should get the Previous Work Experience Types view given there is an PreviousWorkExperienceTypesForm already on the session', async () => {
       // Given
-      const prisonNumber = 'A1234BC'
-      req.params.prisonNumber = prisonNumber
-
-      const prisonerSummary = aValidPrisonerSummary()
-      req.session.prisonerSummary = prisonerSummary
       const inductionDto = aLongQuestionSetInductionDto({ hasWorkedBefore: true })
       req.session.inductionDto = inductionDto
 
@@ -109,12 +113,20 @@ describe('previousWorkExperienceTypesUpdateController', () => {
       }
       req.session.previousWorkExperienceTypesForm = expectedPreviousWorkExperienceTypesForm
 
+      req.session.pageFlowHistory = {
+        pageUrls: [
+          `/prisoners/${prisonNumber}/induction/qualifications`,
+          `/prisoners/${prisonNumber}/induction/has-worked-before`,
+        ],
+        currentPageIndex: 1,
+      }
+
       const expectedView = {
         prisonerSummary,
         form: expectedPreviousWorkExperienceTypesForm,
-        backLinkUrl: '/plan/A1234BC/view/work-and-interests',
-        backLinkAriaText: `Back to Jimmy Lightfingers's learning and work progress`,
-        errors,
+        backLinkUrl: '/prisoners/A1234BC/induction/has-worked-before',
+        backLinkAriaText: 'Back to Has Jimmy Lightfingers worked before?',
+        errors: noErrors,
       }
 
       // When
@@ -131,17 +143,20 @@ describe('previousWorkExperienceTypesUpdateController', () => {
       )
       expect(req.session.previousWorkExperienceDetailForm).toBeUndefined()
       expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(req.session.pageFlowHistory).toEqual({
+        pageUrls: [
+          '/prisoners/A1234BC/induction/qualifications',
+          '/prisoners/A1234BC/induction/has-worked-before',
+          '/prisoners/A1234BC/induction/previous-work-experience',
+        ],
+        currentPageIndex: 2,
+      })
     })
   })
 
   describe('submitPreviousWorkExperienceTypesForm', () => {
     it('should not update Induction given form is submitted with validation errors', async () => {
       // Given
-      const prisonNumber = 'A1234BC'
-      req.params.prisonNumber = prisonNumber
-
-      const prisonerSummary = aValidPrisonerSummary()
-      req.session.prisonerSummary = prisonerSummary
       const inductionDto = aLongQuestionSetInductionDto({ hasWorkedBefore: true })
       req.session.inductionDto = inductionDto
 
@@ -152,10 +167,9 @@ describe('previousWorkExperienceTypesUpdateController', () => {
       req.body = invalidPreviousWorkExperienceTypesForm
       req.session.previousWorkExperienceTypesForm = undefined
 
-      errors = [
+      const expectedErrors = [
         { href: '#typeOfWorkExperienceOther', text: 'Enter the type of work Jimmy Lightfingers has done before' },
       ]
-      mockedFormValidator.mockReturnValue(errors)
 
       // When
       await controller.submitPreviousWorkExperienceTypesForm(
@@ -166,18 +180,13 @@ describe('previousWorkExperienceTypesUpdateController', () => {
 
       // Then
       expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/induction/previous-work-experience')
-      expect(req.flash).toHaveBeenCalledWith('errors', errors)
+      expect(req.flash).toHaveBeenCalledWith('errors', expectedErrors)
       expect(req.session.previousWorkExperienceTypesForm).toEqual(invalidPreviousWorkExperienceTypesForm)
       expect(req.session.inductionDto).toEqual(inductionDto)
     })
 
     it('should not update Induction given form is submitted with no changes to the original Induction', async () => {
       // Given
-      const prisonNumber = 'A1234BC'
-      req.params.prisonNumber = prisonNumber
-
-      const prisonerSummary = aValidPrisonerSummary()
-      req.session.prisonerSummary = prisonerSummary
       const inductionDto = aLongQuestionSetInductionDto({ hasWorkedBefore: true })
       // The induction has work experience of CONSTRUCTION and OTHER (Retail delivery)
       req.session.inductionDto = inductionDto
@@ -188,8 +197,6 @@ describe('previousWorkExperienceTypesUpdateController', () => {
       }
       req.body = previousWorkExperienceTypesForm
       req.session.previousWorkExperienceTypesForm = undefined
-
-      mockedFormValidator.mockReturnValue(errors)
 
       // When
       await controller.submitPreviousWorkExperienceTypesForm(
@@ -208,12 +215,6 @@ describe('previousWorkExperienceTypesUpdateController', () => {
 
     it('should update Induction given form is submitted where the only change is a removal of a work type', async () => {
       // Given
-      req.user.token = 'some-token'
-      const prisonNumber = 'A1234BC'
-      req.params.prisonNumber = prisonNumber
-
-      const prisonerSummary = aValidPrisonerSummary()
-      req.session.prisonerSummary = prisonerSummary
       const inductionDto = aLongQuestionSetInductionDto({ hasWorkedBefore: true })
       // The induction has work experience of CONSTRUCTION and OTHER (Retail delivery)
       req.session.inductionDto = inductionDto
@@ -228,7 +229,6 @@ describe('previousWorkExperienceTypesUpdateController', () => {
       const updateInductionDto = aLongQuestionSetUpdateInductionDto({ hasWorkedBefore: true })
       mockedCreateOrUpdateInductionDtoMapper.mockReturnValueOnce(updateInductionDto)
 
-      mockedFormValidator.mockReturnValue(errors)
       const expectedPreviousWorkExperiences: Array<PreviousWorkExperienceDto> = [
         {
           details: 'Self employed franchise operator delivering milk and associated diary products.',
@@ -259,12 +259,6 @@ describe('previousWorkExperienceTypesUpdateController', () => {
 
     it('should not update Induction given error calling service', async () => {
       // Given
-      req.user.token = 'some-token'
-      const prisonNumber = 'A1234BC'
-      req.params.prisonNumber = prisonNumber
-
-      const prisonerSummary = aValidPrisonerSummary()
-      req.session.prisonerSummary = prisonerSummary
       const inductionDto = aLongQuestionSetInductionDto({ hasWorkedBefore: true })
       // The induction has work experience of CONSTRUCTION and OTHER (Retail delivery)
       req.session.inductionDto = inductionDto
@@ -279,7 +273,6 @@ describe('previousWorkExperienceTypesUpdateController', () => {
       const updateInductionDto = aLongQuestionSetUpdateInductionDto({ hasWorkedBefore: true })
       mockedCreateOrUpdateInductionDtoMapper.mockReturnValueOnce(updateInductionDto)
 
-      mockedFormValidator.mockReturnValue(errors)
       const expectedPreviousWorkExperiences: Array<PreviousWorkExperienceDto> = [
         {
           details: 'Self employed franchise operator delivering milk and associated diary products.',
@@ -316,12 +309,6 @@ describe('previousWorkExperienceTypesUpdateController', () => {
 
     it('should build a page flow queue and redirect to the next page given new Previous Work Experience Types are submitted', async () => {
       // Given
-      req.user.token = 'some-token'
-      const prisonNumber = 'A1234BC'
-      req.params.prisonNumber = prisonNumber
-
-      const prisonerSummary = aValidPrisonerSummary()
-      req.session.prisonerSummary = prisonerSummary
       const inductionDto = aLongQuestionSetInductionDto({ hasWorkedBefore: true })
       // The induction has work experience of CONSTRUCTION and OTHER (Retail delivery)
       req.session.inductionDto = inductionDto
@@ -333,7 +320,6 @@ describe('previousWorkExperienceTypesUpdateController', () => {
       req.body = previousWorkExperienceTypesForm
       req.session.previousWorkExperienceTypesForm = undefined
 
-      mockedFormValidator.mockReturnValue(errors)
       const expectedPreviousWorkExperiences: Array<PreviousWorkExperienceDto> = [
         {
           details: undefined,
@@ -387,12 +373,6 @@ describe('previousWorkExperienceTypesUpdateController', () => {
 
     it('should build a page flow queue and redirect to the next page given only the value for OTHER has changed', async () => {
       // Given
-      req.user.token = 'some-token'
-      const prisonNumber = 'A1234BC'
-      req.params.prisonNumber = prisonNumber
-
-      const prisonerSummary = aValidPrisonerSummary()
-      req.session.prisonerSummary = prisonerSummary
       const inductionDto = aLongQuestionSetInductionDto({ hasWorkedBefore: true })
       // The induction has work experience of CONSTRUCTION and OTHER (Retail delivery)
       req.session.inductionDto = inductionDto
@@ -404,7 +384,6 @@ describe('previousWorkExperienceTypesUpdateController', () => {
       req.body = previousWorkExperienceTypesForm
       req.session.previousWorkExperienceTypesForm = undefined
 
-      mockedFormValidator.mockReturnValue(errors)
       const expectedPreviousWorkExperiences: Array<PreviousWorkExperienceDto> = [
         {
           details: 'Groundwork and basic block work and bricklaying',
@@ -445,9 +424,6 @@ describe('previousWorkExperienceTypesUpdateController', () => {
 
     it('should build a page flow queue and redirect to the next page before returning to check your answers if coming from check your answers', async () => {
       // Given
-      const prisonerSummary = aValidPrisonerSummary()
-      req.params.prisonNumber = prisonerSummary.prisonNumber
-      req.session.prisonerSummary = prisonerSummary
       req.session.inductionDto = aLongQuestionSetInductionDto()
       req.session.pageFlowHistory = {
         pageUrls: [
@@ -465,10 +441,6 @@ describe('previousWorkExperienceTypesUpdateController', () => {
         '../../../data/mappers/createOrUpdateInductionDtoMapper',
       ).default
       mockedCreateOrUpdateInductionDtoMapper.mockImplementation(actualToCreateOrUpdateInductionDto)
-      const actualPreviousWorkExperienceTypesFormValidator = jest.requireActual(
-        './previousWorkExperienceTypesFormValidator',
-      ).default
-      mockedFormValidator.mockImplementation(actualPreviousWorkExperienceTypesFormValidator)
 
       expect(req.session.pageFlowQueue).toEqual(undefined)
 

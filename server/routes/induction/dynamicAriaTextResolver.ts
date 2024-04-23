@@ -23,6 +23,23 @@ const getDynamicBackLinkAriaText = (req: Request, backLinkUrl: string): string =
     '/prisoners/{PRISON_NUMBER}/create-induction/qualifications': `Back to ${prisonerName}'s qualifications`,
     '/prisoners/{PRISON_NUMBER}/create-induction/qualification-level': `Back to What level of qualification does ${prisonerName} want to add`,
     '/prisoners/{PRISON_NUMBER}/create-induction/additional-training': `Back to Does ${prisonerName} have any other training or vocational qualifications?`,
+    '/prisoners/{PRISON_NUMBER}/create-induction/has-worked-before': `Back to Has ${prisonerName} worked before?`,
+    '/prisoners/{PRISON_NUMBER}/create-induction/previous-work-experience': `Back to What type of work has ${prisonerName} done before?`,
+    '/prisoners/{PRISON_NUMBER}/create-induction/previous-work-experience/outdoor': `Back to What did ${prisonerName} do in their animal care and farming job?`,
+    '/prisoners/{PRISON_NUMBER}/create-induction/previous-work-experience/cleaning_and_maintenance': `Back to What did ${prisonerName} do in their cleaning and maintenance job?`,
+    '/prisoners/{PRISON_NUMBER}/create-induction/previous-work-experience/construction': `Back to What did ${prisonerName} do in their construction and trade job?`,
+    '/prisoners/{PRISON_NUMBER}/create-induction/previous-work-experience/driving': `Back to What did ${prisonerName} do in their driving and transport job?`,
+    '/prisoners/{PRISON_NUMBER}/create-induction/previous-work-experience/beauty': `Back to What did ${prisonerName} do in their hair, beauty and wellbeing job?`,
+    '/prisoners/{PRISON_NUMBER}/create-induction/previous-work-experience/hospitality': `Back to What did ${prisonerName} do in their hospitality and catering job?`,
+    '/prisoners/{PRISON_NUMBER}/create-induction/previous-work-experience/technical': `Back to What did ${prisonerName} do in their IT and digital job?`,
+    '/prisoners/{PRISON_NUMBER}/create-induction/previous-work-experience/manufacturing': `Back to What did ${prisonerName} do in their manufacturing and technical job?`,
+    '/prisoners/{PRISON_NUMBER}/create-induction/previous-work-experience/office': `Back to What did ${prisonerName} do in their office or desk-based job?`,
+    '/prisoners/{PRISON_NUMBER}/create-induction/previous-work-experience/retail': `Back to What did ${prisonerName} do in their retail and sales job?`,
+    '/prisoners/{PRISON_NUMBER}/create-induction/previous-work-experience/sports': `Back to What did ${prisonerName} do in their sport and fitness job?`,
+    '/prisoners/{PRISON_NUMBER}/create-induction/previous-work-experience/warehousing': `Back to What did ${prisonerName} do in their warehousing and storage job?`,
+    '/prisoners/{PRISON_NUMBER}/create-induction/previous-work-experience/education_training': `Back to What did ${prisonerName} do in their training and support job?`,
+    '/prisoners/{PRISON_NUMBER}/create-induction/previous-work-experience/waste_management': `Back to What did ${prisonerName} do in their waste management job?`,
+    '/prisoners/{PRISON_NUMBER}/create-induction/previous-work-experience/other': `Back to What did ${prisonerName} do in their other job?`,
 
     '/prisoners/{PRISON_NUMBER}/induction/hoping-to-work-on-release': `Back to Is ${prisonerName} hoping to get work when they're released?`,
     '/prisoners/{PRISON_NUMBER}/induction/previous-work-experience': `Back to What type of work has ${prisonerName} done before?`,
@@ -55,6 +72,7 @@ const getDynamicBackLinkAriaText = (req: Request, backLinkUrl: string): string =
     '/prisoners/{PRISON_NUMBER}/induction/skills': `Back to What skills does ${prisonerName} feel they have?`,
     '/prisoners/{PRISON_NUMBER}/induction/personal-interests': `Back to What are ${prisonerName}'s interests?`,
     '/prisoners/{PRISON_NUMBER}/induction/check-your-answers': `Back to Check and save your answers before adding ${prisonerName}'s goals`,
+    '/prisoners/{PRISON_NUMBER}/induction/has-worked-before': `Back to Has ${prisonerName} worked before?`,
   }
   const uriKey = backLinkUrl.replace(prisonNumber, '{PRISON_NUMBER}')
   return ariaTextByUri[uriKey] || ''

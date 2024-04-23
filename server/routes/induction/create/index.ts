@@ -13,6 +13,9 @@ import setCurrentPageInPageFlowQueue from '../../routerRequestHandlers/setCurren
 import QualificationDetailsCreateController from './qualificationDetailsCreateController'
 import AdditionalTrainingCreateController from './additionalTrainingCreateController'
 import WorkedBeforeCreateController from './workedBeforeCreateController'
+import PreviousWorkExperienceTypesCreateController from './previousWorkExperienceTypesCreateController'
+import PreviousWorkExperienceDetailCreateController from './previousWorkExperienceDetailCreateController'
+import WorkInterestTypesCreateController from './workInterestTypesCreateController'
 
 /**
  * Route definitions for creating an Induction
@@ -28,6 +31,9 @@ export default (router: Router, services: Services) => {
   const qualificationDetailsCreateController = new QualificationDetailsCreateController()
   const additionalTrainingCreateController = new AdditionalTrainingCreateController()
   const workedBeforeCreateController = new WorkedBeforeCreateController()
+  const previousWorkExperienceTypesCreateController = new PreviousWorkExperienceTypesCreateController()
+  const previousWorkExperienceDetailCreateController = new PreviousWorkExperienceDetailCreateController()
+  const workInterestTypesCreateController = new WorkInterestTypesCreateController()
 
   if (config.featureToggles.induction.create.enabled) {
     router.get('/prisoners/:prisonNumber/create-induction/**', [
@@ -88,6 +94,27 @@ export default (router: Router, services: Services) => {
 
     router.get('/prisoners/:prisonNumber/create-induction/has-worked-before', [
       workedBeforeCreateController.getWorkedBeforeView,
+    ])
+    router.post('/prisoners/:prisonNumber/create-induction/has-worked-before', [
+      workedBeforeCreateController.submitWorkedBeforeForm,
+    ])
+
+    router.get('/prisoners/:prisonNumber/create-induction/previous-work-experience', [
+      previousWorkExperienceTypesCreateController.getPreviousWorkExperienceTypesView,
+    ])
+    router.post('/prisoners/:prisonNumber/create-induction/previous-work-experience', [
+      previousWorkExperienceTypesCreateController.submitPreviousWorkExperienceTypesForm,
+    ])
+
+    router.get('/prisoners/:prisonNumber/create-induction/previous-work-experience/:typeOfWorkExperience', [
+      previousWorkExperienceDetailCreateController.getPreviousWorkExperienceDetailView,
+    ])
+    router.post('/prisoners/:prisonNumber/create-induction/previous-work-experience/:typeOfWorkExperience', [
+      previousWorkExperienceDetailCreateController.submitPreviousWorkExperienceDetailForm,
+    ])
+
+    router.get('/prisoners/:prisonNumber/create-induction/work-interest-types', [
+      workInterestTypesCreateController.getWorkInterestTypesView,
     ])
   }
 }

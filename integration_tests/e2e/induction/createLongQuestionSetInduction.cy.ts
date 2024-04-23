@@ -10,6 +10,11 @@ import QualificationDetailsPage from '../../pages/induction/QualificationDetails
 import AdditionalTrainingPage from '../../pages/induction/AdditionalTrainingPage'
 import AdditionalTrainingValue from '../../../server/enums/additionalTrainingValue'
 import WorkedBeforePage from '../../pages/induction/WorkedBeforePage'
+import YesNoValue from '../../../server/enums/yesNoValue'
+import PreviousWorkExperienceTypesPage from '../../pages/induction/PreviousWorkExperienceTypesPage'
+import TypeOfWorkExperienceValue from '../../../server/enums/typeOfWorkExperienceValue'
+import PreviousWorkExperienceDetailPage from '../../pages/induction/PreviousWorkExperienceDetailPage'
+import FutureWorkInterestTypesPage from '../../pages/induction/FutureWorkInterestTypesPage'
 
 context('Create a long question set Induction', () => {
   beforeEach(() => {
@@ -119,6 +124,48 @@ context('Create a long question set Induction', () => {
     // Have You Worked Before page is next
     Page.verifyOnPage(WorkedBeforePage) //
       .hasBackLinkTo('/prisoners/A00001A/create-induction/additional-training')
+      .submitPage() // submit the page without answering the question to trigger a validation error
+    Page.verifyOnPage(WorkedBeforePage) //
+      .hasBackLinkTo('/prisoners/A00001A/create-induction/additional-training')
+      .hasErrorCount(1)
+      .hasFieldInError('hasWorkedBefore')
+      .selectWorkedBefore(YesNoValue.YES)
+      .submitPage()
+
+    // Post-release Work Interest Types is the next page
+    Page.verifyOnPage(PreviousWorkExperienceTypesPage)
+      .hasBackLinkTo('/prisoners/A00001A/create-induction/has-worked-before')
+      .submitPage() // submit the page without answering the question to trigger a validation error
+    Page.verifyOnPage(PreviousWorkExperienceTypesPage)
+      .hasBackLinkTo('/prisoners/A00001A/create-induction/has-worked-before')
+      .hasErrorCount(1)
+      .hasFieldInError('typeOfWorkExperience')
+      .choosePreviousWorkExperience(TypeOfWorkExperienceValue.CONSTRUCTION)
+      .choosePreviousWorkExperience(TypeOfWorkExperienceValue.OTHER)
+      .setOtherPreviousWorkExperienceType('Entertainment industry')
+      .submitPage()
+
+    // Post-release Work Interest Details page is next - once for each work industry type submitted on the previous page
+    Page.verifyOnPage(PreviousWorkExperienceDetailPage) //
+      .hasBackLinkTo('/prisoners/A00001A/create-induction/previous-work-experience')
+      .submitPage() // submit the page without answering the question to trigger a validation error
+    Page.verifyOnPage(PreviousWorkExperienceDetailPage) //
+      .hasBackLinkTo('/prisoners/A00001A/create-induction/previous-work-experience')
+      .hasErrorCount(2)
+      .hasFieldInError('jobRole')
+      .hasFieldInError('jobDetails')
+      .setJobRole('General labourer')
+      .setJobDetails('Basic ground works and building')
+      .submitPage()
+    Page.verifyOnPage(PreviousWorkExperienceDetailPage) //
+      .hasBackLinkTo('/prisoners/A00001A/create-induction/previous-work-experience/construction')
+      .setJobRole('Nightclub DJ')
+      .setJobDetails('Self employed DJ operating in bars and clubs')
+      .submitPage()
+
+    // Future Work Interest Types page is next
+    Page.verifyOnPage(FutureWorkInterestTypesPage) //
+      .hasBackLinkTo('/prisoners/A00001A/create-induction/previous-work-experience')
 
     // Then
   })

@@ -1,7 +1,7 @@
 import createError from 'http-errors'
 import { NextFunction, Request, RequestHandler, Response } from 'express'
 import type { PreviousWorkExperienceDetailForm } from 'inductionForms'
-import type { InductionDto } from 'inductionDto'
+import type { InductionDto, PreviousWorkExperienceDto } from 'inductionDto'
 import InductionController from './inductionController'
 import PreviousWorkExperienceDetailView from './previousWorkExperienceDetailView'
 import TypeOfWorkExperienceValue from '../../../enums/typeOfWorkExperienceValue'
@@ -35,7 +35,7 @@ export default abstract class PreviousWorkExperienceDetailController extends Ind
     }
 
     // Check if we are in the midst of changing the main induction question set (e.g. from long route to short route)
-    if (req.session.updateInductionQuestionSet) {
+    if (req.session.updateInductionQuestionSet || req.session.pageFlowHistory) {
       this.addCurrentPageToHistory(req)
     }
 
@@ -87,6 +87,34 @@ export default abstract class PreviousWorkExperienceDetailController extends Ind
     }
 
     return previousWorkExperienceType
+  }
+
+  protected updatedInductionDtoWithPreviousWorkExperienceDetail(
+    inductionDto: InductionDto,
+    previousWorkExperienceDetailForm: PreviousWorkExperienceDetailForm,
+    previousWorkExperienceType: TypeOfWorkExperienceValue,
+  ): InductionDto {
+    const updatedPreviousWorkExperiences: Array<PreviousWorkExperienceDto> =
+      inductionDto.previousWorkExperiences?.experiences?.map(experience => {
+        if (experience.experienceType === previousWorkExperienceType) {
+          return {
+            ...experience,
+            role: previousWorkExperienceDetailForm.jobRole,
+            details: previousWorkExperienceDetailForm.jobDetails,
+          }
+        }
+        return {
+          ...experience,
+        }
+      }) || []
+
+    return {
+      ...inductionDto,
+      previousWorkExperiences: {
+        ...inductionDto.previousWorkExperiences,
+        experiences: updatedPreviousWorkExperiences,
+      },
+    }
   }
 }
 
