@@ -20,11 +20,10 @@ export default abstract class WantToAddQualificationsController extends Inductio
     next: NextFunction,
   ): Promise<void> => {
     const { prisonerSummary, prisonerFunctionalSkills, inductionDto } = req.session
-    const { prisonNumber } = req.params
 
     // There will always be a page flow history for this page, because you can only get here from the Induction "Reasons Not To Work"
     // or "Check Your Answers" pages; both of which correctly setup the page flow history before coming here.
-    this.addCurrentPageToHistory(req, `/prisoners/${prisonNumber}/induction/want-to-add-qualifications`)
+    this.addCurrentPageToHistory(req)
 
     const functionalSkills = {
       ...prisonerFunctionalSkills,

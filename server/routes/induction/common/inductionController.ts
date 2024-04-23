@@ -15,11 +15,11 @@ export default abstract class InductionController {
    */
   abstract getBackLinkAriaText(req: Request): string
 
-  addCurrentPageToHistory(req: Request, currentPageUri: string) {
+  addCurrentPageToHistory(req: Request) {
     if (!req.session.pageFlowHistory) {
       req.session.pageFlowHistory = { pageUrls: [], currentPageIndex: 0 }
     }
-    const updatedPageFlowHistory = setCurrentPage(req.session.pageFlowHistory, currentPageUri)
+    const updatedPageFlowHistory = setCurrentPage(req.session.pageFlowHistory, req.path)
     req.session.pageFlowHistory = updatedPageFlowHistory
   }
 

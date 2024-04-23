@@ -25,14 +25,15 @@ describe('pageFlowHistory', () => {
         pageUrls: ['/prisoners/A1234BC/induction/check-your-answers'],
         currentPageIndex: 0,
       }
-      // When
 
+      // When
       const actual = buildNewPageFlowHistory(req)
 
       // Then
       expect(actual).toEqual(expected)
     })
   })
+
   describe('getPreviousPage', () => {
     it('should get previous page given pageFlowHistory is not on the first page', () => {
       // Given

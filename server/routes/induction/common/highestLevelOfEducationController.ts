@@ -3,6 +3,7 @@ import type { InductionDto } from 'inductionDto'
 import type { HighestLevelOfEducationForm } from 'inductionForms'
 import InductionController from './inductionController'
 import HighestLevelOfEducationView from './highestLevelOfEducationView'
+import EducationLevelValue from '../../../enums/educationLevelValue'
 
 /**
  * Abstract controller class defining functionality common to both the Create and Update Induction journeys.
@@ -19,9 +20,8 @@ export default abstract class HighestLevelOfEducationController extends Inductio
     const { prisonerSummary, inductionDto } = req.session
 
     // Check if we are in the midst of changing the main induction question set (in this case from short route to long route)
-    if (req.session.updateInductionQuestionSet) {
-      const { prisonNumber } = req.params
-      this.addCurrentPageToHistory(req, `/prisoners/${prisonNumber}/induction/highest-level-of-education`)
+    if (req.session.updateInductionQuestionSet || req.session.pageFlowHistory) {
+      this.addCurrentPageToHistory(req)
     }
 
     const highestLevelOfEducationForm =
@@ -36,6 +36,30 @@ export default abstract class HighestLevelOfEducationController extends Inductio
       req.flash('errors'),
     )
     return res.render('pages/induction/prePrisonEducation/highestLevelOfEducation', { ...view.renderArgs })
+  }
+
+  highestLevelOfEducationDoesNotRequireQualifications = (
+    highestLevelOfEducationForm: HighestLevelOfEducationForm,
+  ): boolean => {
+    const levelsOfEducationThatDoNotRequireQualifications = [
+      EducationLevelValue.NOT_SURE,
+      EducationLevelValue.PRIMARY_SCHOOL,
+      EducationLevelValue.SECONDARY_SCHOOL_LEFT_BEFORE_TAKING_EXAMS,
+    ]
+    return levelsOfEducationThatDoNotRequireQualifications.includes(highestLevelOfEducationForm?.educationLevel)
+  }
+
+  updatedInductionDtoWithHighestLevelOfEducation = (
+    inductionDto: InductionDto,
+    highestLevelOfEducationForm: HighestLevelOfEducationForm,
+  ): InductionDto => {
+    return {
+      ...inductionDto,
+      previousQualifications: {
+        ...inductionDto.previousQualifications,
+        educationLevel: highestLevelOfEducationForm.educationLevel,
+      },
+    }
   }
 }
 

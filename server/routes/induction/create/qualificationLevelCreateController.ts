@@ -1,13 +1,10 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express'
 import QualificationLevelController from '../common/qualificationLevelController'
-import validateQualificationLevelForm from '../../validators/induction/qualificationLevelFormValidator'
-import { getPreviousPage } from '../../pageFlowHistory'
 import getDynamicBackLinkAriaText from '../dynamicAriaTextResolver'
+import { getPreviousPage } from '../../pageFlowHistory'
+import validateQualificationLevelForm from '../../validators/induction/qualificationLevelFormValidator'
 
-/**
- * Controller for the Update of the Qualification Level screen of the Induction.
- */
-export default class QualificationLevelUpdateController extends QualificationLevelController {
+export default class QualificationLevelCreateController extends QualificationLevelController {
   getBackLinkUrl(req: Request): string {
     const { pageFlowHistory } = req.session
     return getPreviousPage(pageFlowHistory)
@@ -31,9 +28,9 @@ export default class QualificationLevelUpdateController extends QualificationLev
     const errors = validateQualificationLevelForm(qualificationLevelForm, prisonerSummary)
     if (errors.length > 0) {
       req.flash('errors', errors)
-      return res.redirect(`/prisoners/${prisonNumber}/induction/qualification-level`)
+      return res.redirect(`/prisoners/${prisonNumber}/create-induction/qualification-level`)
     }
 
-    return res.redirect(`/prisoners/${prisonNumber}/induction/qualification-details`)
+    return res.redirect(`/prisoners/${prisonNumber}/create-induction/qualification-details`)
   }
 }

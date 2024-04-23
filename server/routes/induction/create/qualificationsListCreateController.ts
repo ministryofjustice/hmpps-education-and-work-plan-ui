@@ -1,6 +1,7 @@
-import { Request } from 'express'
+import { NextFunction, Request, RequestHandler, Response } from 'express'
+import type { InductionDto } from 'inductionDto'
 import QualificationsListController from '../common/qualificationsListController'
-import { getPreviousPage } from '../../pageFlowHistory'
+import { buildNewPageFlowHistory, getPreviousPage } from '../../pageFlowHistory'
 import getDynamicBackLinkAriaText from '../dynamicAriaTextResolver'
 
 export default class QualificationsListCreateController extends QualificationsListController {
@@ -15,5 +16,55 @@ export default class QualificationsListCreateController extends QualificationsLi
 
   getBackLinkAriaText(req: Request): string {
     return getDynamicBackLinkAriaText(req, this.getBackLinkUrl(req))
+  }
+
+  submitQualificationsListView: RequestHandler = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> => {
+    const { prisonNumber } = req.params
+    const { inductionDto } = req.session
+
+    if (!req.session.pageFlowHistory) {
+      req.session.pageFlowHistory = buildNewPageFlowHistory(req)
+    }
+
+    if (userClickedOnButton(req, 'addQualification')) {
+      return res.redirect(`/prisoners/${prisonNumber}/create-induction/qualification-level`)
+    }
+
+    if (userClickedOnButton(req, 'removeQualification')) {
+      const qualificationIndexToRemove = req.body.removeQualification as number
+      req.session.inductionDto = inductionWithRemovedQualification(inductionDto, qualificationIndexToRemove)
+      return res.redirect(`/prisoners/${prisonNumber}/create-induction/qualifications`)
+    }
+
+    if (inductionHasQualifications(inductionDto)) {
+      return res.redirect(`/prisoners/${prisonNumber}/create-induction/additional-training`)
+    }
+
+    return res.redirect(`/prisoners/${prisonNumber}/create-induction/highest-level-of-education`)
+  }
+}
+
+const inductionHasQualifications = (inductionDto: InductionDto): boolean =>
+  inductionDto.previousQualifications?.qualifications?.length > 0
+
+const userClickedOnButton = (request: Request, buttonName: string): boolean =>
+  Object.prototype.hasOwnProperty.call(request.body, buttonName)
+
+const inductionWithRemovedQualification = (
+  inductionDto: InductionDto,
+  qualificationIndexToRemove: number,
+): InductionDto => {
+  const updatedQualifications = [...inductionDto.previousQualifications.qualifications]
+  updatedQualifications.splice(qualificationIndexToRemove, 1)
+  return {
+    ...inductionDto,
+    previousQualifications: {
+      ...inductionDto.previousQualifications,
+      qualifications: updatedQualifications,
+    },
   }
 }

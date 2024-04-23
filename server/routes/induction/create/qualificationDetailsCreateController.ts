@@ -1,13 +1,10 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express'
 import QualificationDetailsController from '../common/qualificationDetailsController'
-import validateQualificationDetailsForm from '../../validators/induction/qualificationDetailsFormValidator'
 import { getPreviousPage } from '../../pageFlowHistory'
 import getDynamicBackLinkAriaText from '../dynamicAriaTextResolver'
+import validateQualificationDetailsForm from '../../validators/induction/qualificationDetailsFormValidator'
 
-/**
- * Controller for the Update of the Qualification Details screen of the Induction.
- */
-export default class QualificationDetailsUpdateController extends QualificationDetailsController {
+export default class QualificationDetailsCreateController extends QualificationDetailsController {
   getBackLinkUrl(req: Request): string {
     const { pageFlowHistory } = req.session
     return getPreviousPage(pageFlowHistory)
@@ -35,7 +32,7 @@ export default class QualificationDetailsUpdateController extends QualificationD
     )
     if (errors.length > 0) {
       req.flash('errors', errors)
-      return res.redirect(`/prisoners/${prisonNumber}/induction/qualification-details`)
+      return res.redirect(`/prisoners/${prisonNumber}/create-induction/qualification-details`)
     }
 
     const updatedInduction = this.addQualificationToInductionDto(
@@ -48,11 +45,8 @@ export default class QualificationDetailsUpdateController extends QualificationD
     req.session.qualificationDetailsForm = undefined
     req.session.qualificationLevelForm = undefined
 
-    if (req.session.updateInductionQuestionSet) {
-      return res.redirect(`/prisoners/${prisonNumber}/induction/qualifications`)
-    }
-
     req.session.pageFlowHistory = undefined
-    return res.redirect(`/prisoners/${prisonNumber}/induction/qualifications`)
+
+    return res.redirect(`/prisoners/${prisonNumber}/create-induction/qualifications`)
   }
 }

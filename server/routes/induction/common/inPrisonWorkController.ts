@@ -17,8 +17,7 @@ export default abstract class InPrisonWorkController extends InductionController
 
     // Check if we are in the midst of changing the main induction question set (in this case from long route to short route)
     if (req.session.updateInductionQuestionSet) {
-      const { prisonNumber } = req.params
-      this.addCurrentPageToHistory(req, `/prisoners/${prisonNumber}/induction/in-prison-work`)
+      this.addCurrentPageToHistory(req)
     }
 
     const inPrisonWorkForm = req.session.inPrisonWorkForm || toInPrisonWorkForm(inductionDto)

@@ -17,8 +17,7 @@ export default abstract class WorkInterestTypesController extends InductionContr
 
     // Check if we are in the midst of changing the main induction question set (in this case from short route to long route)
     if (req.session.updateInductionQuestionSet) {
-      const { prisonNumber } = req.params
-      this.addCurrentPageToHistory(req, `/prisoners/${prisonNumber}/induction/work-interest-types`)
+      this.addCurrentPageToHistory(req)
     }
 
     const workInterestTypesForm = req.session.workInterestTypesForm || toWorkInterestTypesForm(inductionDto)

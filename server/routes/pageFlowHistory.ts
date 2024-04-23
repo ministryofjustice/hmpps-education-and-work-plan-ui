@@ -26,10 +26,11 @@ const buildNewPageFlowHistory = (req: Request): PageFlow => {
  */
 const setCurrentPage = (pageFlowHistory: PageFlow, pageUrl: string): PageFlow => {
   const pageIndex = pageFlowHistory.pageUrls.findIndex(page => page === pageUrl)
+  const pageUrls = [...pageFlowHistory.pageUrls]
   if (pageIndex < 0) {
-    pageFlowHistory.pageUrls.push(pageUrl)
+    pageUrls.push(pageUrl)
   }
-  return setCurrentPageIndex(pageFlowHistory, pageUrl)
+  return setCurrentPageIndex({ ...pageFlowHistory, pageUrls }, pageUrl)
 }
 
 /**
@@ -74,9 +75,11 @@ const setCurrentPageIndex = (pageFlowHistory: PageFlow, currentPagePath: string)
   const pageIndex = pageFlowHistory.pageUrls.findIndex(page => page === currentPagePath)
   if (pageIndex > -1) {
     // simplify the page history by removing any pages that have previously been added after this one
-    pageFlowHistory.pageUrls.splice(pageIndex + 1)
+    const pageUrls = [...pageFlowHistory.pageUrls]
+    pageUrls.splice(pageIndex + 1)
     return {
       ...pageFlowHistory,
+      pageUrls,
       currentPageIndex: pageIndex,
     }
   }

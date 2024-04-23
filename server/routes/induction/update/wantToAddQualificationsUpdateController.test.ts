@@ -2,20 +2,17 @@ import { NextFunction, Request, Response } from 'express'
 import type { SessionData } from 'express-session'
 import WantToAddQualificationsUpdateController from './wantToAddQualificationsUpdateController'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
-import validateWantToAddQualificationsForm from './wantToAddQualificationsFormValidator'
 import YesNoValue from '../../../enums/yesNoValue'
 import { validFunctionalSkills } from '../../../testsupport/functionalSkillsTestDataBuilder'
 import { aShortQuestionSetInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
 
-jest.mock('./wantToAddQualificationsFormValidator')
-jest.mock('../../../data/mappers/createOrUpdateInductionDtoMapper')
-
 describe('wantToAddQualificationsUpdateController', () => {
-  const mockedFormValidator = validateWantToAddQualificationsForm as jest.MockedFunction<
-    typeof validateWantToAddQualificationsForm
-  >
-
   const controller = new WantToAddQualificationsUpdateController()
+
+  const prisonNumber = 'A1234BC'
+  const prisonerSummary = aValidPrisonerSummary()
+
+  const noErrors: Array<Record<string, string>> = []
 
   const req = {
     session: {} as SessionData,
@@ -23,6 +20,7 @@ describe('wantToAddQualificationsUpdateController', () => {
     user: {} as Express.User,
     params: {} as Record<string, string>,
     flash: jest.fn(),
+    path: '',
   }
   const res = {
     redirect: jest.fn(),
@@ -30,28 +28,21 @@ describe('wantToAddQualificationsUpdateController', () => {
   }
   const next = jest.fn()
 
-  let errors: Array<Record<string, string>>
-
   beforeEach(() => {
     jest.resetAllMocks()
-    req.session = {} as SessionData
+    req.session = { prisonerSummary } as SessionData
     req.body = {}
-    req.user = {} as Express.User
-    req.params = {} as Record<string, string>
-
-    errors = []
+    req.user = { token: 'some-token' } as Express.User
+    req.params = { prisonNumber } as Record<string, string>
+    req.path = `/prisoners/${prisonNumber}/induction/want-to-add-qualifications`
   })
 
   describe('getWantToAddQualificationsView', () => {
     it('should get the Want To Add Qualifications view given there is no WantToAddQualificationsForm on the session and the induction has qualifications', async () => {
       // Given
-      const prisonNumber = 'A1234BC'
-      req.params.prisonNumber = prisonNumber
       const inductionDto = aShortQuestionSetInductionDto()
       req.session.inductionDto = inductionDto
 
-      const prisonerSummary = aValidPrisonerSummary()
-      req.session.prisonerSummary = prisonerSummary
       req.session.pageFlowHistory = {
         pageUrls: [
           `/prisoners/${prisonNumber}/induction/hoping-to-work-on-release`,
@@ -75,7 +66,7 @@ describe('wantToAddQualificationsUpdateController', () => {
         backLinkAriaText: `Back to What could stop Jimmy Lightfingers working when they are released?`,
         form: expectedWantToAddQualificationsForm,
         functionalSkills: expectedFunctionalSkills,
-        errors,
+        errors: noErrors,
       }
       const expectedPageFlowHistory = {
         pageUrls: [
@@ -104,14 +95,10 @@ describe('wantToAddQualificationsUpdateController', () => {
 
     it('should get the Want To Add Qualifications view given there is no WantToAddQualificationsForm on the session and the induction has no qualifications', async () => {
       // Given
-      const prisonNumber = 'A1234BC'
-      req.params.prisonNumber = prisonNumber
       const inductionDto = aShortQuestionSetInductionDto()
       inductionDto.previousQualifications.qualifications = []
       req.session.inductionDto = inductionDto
 
-      const prisonerSummary = aValidPrisonerSummary()
-      req.session.prisonerSummary = prisonerSummary
       req.session.pageFlowHistory = {
         pageUrls: [
           `/prisoners/${prisonNumber}/induction/hoping-to-work-on-release`,
@@ -135,7 +122,7 @@ describe('wantToAddQualificationsUpdateController', () => {
         backLinkAriaText: `Back to What could stop Jimmy Lightfingers working when they are released?`,
         form: expectedWantToAddQualificationsForm,
         functionalSkills: expectedFunctionalSkills,
-        errors,
+        errors: noErrors,
       }
 
       // When
@@ -155,14 +142,10 @@ describe('wantToAddQualificationsUpdateController', () => {
 
     it('should get the Want To Add Qualifications view given there is no WantToAddQualificationsForm on the session and the induction has no qualification data at all', async () => {
       // Given
-      const prisonNumber = 'A1234BC'
-      req.params.prisonNumber = prisonNumber
       const inductionDto = aShortQuestionSetInductionDto()
       inductionDto.previousQualifications = undefined
       req.session.inductionDto = inductionDto
 
-      const prisonerSummary = aValidPrisonerSummary()
-      req.session.prisonerSummary = prisonerSummary
       req.session.pageFlowHistory = {
         pageUrls: [
           `/prisoners/${prisonNumber}/induction/hoping-to-work-on-release`,
@@ -186,7 +169,7 @@ describe('wantToAddQualificationsUpdateController', () => {
         backLinkAriaText: `Back to What could stop Jimmy Lightfingers working when they are released?`,
         form: expectedWantToAddQualificationsForm,
         functionalSkills: expectedFunctionalSkills,
-        errors,
+        errors: noErrors,
       }
 
       // When
@@ -206,13 +189,9 @@ describe('wantToAddQualificationsUpdateController', () => {
 
     it('should get the Want To Add Qualifications view given there is a WantToAddQualificationsForm already on the session', async () => {
       // Given
-      const prisonNumber = 'A1234BC'
-      req.params.prisonNumber = prisonNumber
       const inductionDto = aShortQuestionSetInductionDto()
       req.session.inductionDto = inductionDto
 
-      const prisonerSummary = aValidPrisonerSummary()
-      req.session.prisonerSummary = prisonerSummary
       req.session.pageFlowHistory = {
         pageUrls: [
           `/prisoners/${prisonNumber}/induction/hoping-to-work-on-release`,
@@ -236,7 +215,7 @@ describe('wantToAddQualificationsUpdateController', () => {
         backLinkAriaText: `Back to What could stop Jimmy Lightfingers working when they are released?`,
         form: expectedWantToAddQualificationsForm,
         functionalSkills: expectedFunctionalSkills,
-        errors,
+        errors: noErrors,
       }
       const expectedPageFlowHistory = {
         pageUrls: [
@@ -266,13 +245,8 @@ describe('wantToAddQualificationsUpdateController', () => {
   describe('submitWantToAddQualificationsForm', () => {
     it('should not proceed to next page given form is submitted with validation errors', async () => {
       // Given
-      const prisonNumber = 'A1234BC'
-      req.params.prisonNumber = prisonNumber
       const inductionDto = aShortQuestionSetInductionDto()
       req.session.inductionDto = inductionDto
-
-      const prisonerSummary = aValidPrisonerSummary()
-      req.session.prisonerSummary = prisonerSummary
 
       const invalidWantToAddQualificationsForm = {
         wantToAddQualifications: '',
@@ -280,13 +254,12 @@ describe('wantToAddQualificationsUpdateController', () => {
       req.body = invalidWantToAddQualificationsForm
       req.session.wantToAddQualificationsForm = undefined
 
-      errors = [
+      const expectedErrors = [
         {
           href: '#wantToAddQualifications',
           text: `Select whether Jimmy Lightfingers wants to record any other educational qualifications`,
         },
       ]
-      mockedFormValidator.mockReturnValue(errors)
 
       // When
       await controller.submitWantToAddQualificationsForm(
@@ -297,26 +270,19 @@ describe('wantToAddQualificationsUpdateController', () => {
 
       // Then
       expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/induction/want-to-add-qualifications')
-      expect(req.flash).toHaveBeenCalledWith('errors', errors)
+      expect(req.flash).toHaveBeenCalledWith('errors', expectedErrors)
       expect(req.session.wantToAddQualificationsForm).toEqual(invalidWantToAddQualificationsForm)
     })
 
     it(`should proceed to qualification level page given user wants to add a qualification`, async () => {
       // Given
       req.user.token = 'some-token'
-      const prisonNumber = 'A1234BC'
-      req.params.prisonNumber = prisonNumber
       const inductionDto = aShortQuestionSetInductionDto()
       req.session.inductionDto = inductionDto
-
-      const prisonerSummary = aValidPrisonerSummary()
-      req.session.prisonerSummary = prisonerSummary
 
       const wantToAddQualificationsForm = { wantToAddQualifications: YesNoValue.YES }
       req.body = wantToAddQualificationsForm
       req.session.wantToAddQualificationsForm = undefined
-
-      mockedFormValidator.mockReturnValue(errors)
 
       // When
       await controller.submitWantToAddQualificationsForm(
@@ -333,19 +299,12 @@ describe('wantToAddQualificationsUpdateController', () => {
     it(`should proceed to additional training page given user wants to add a qualification`, async () => {
       // Given
       req.user.token = 'some-token'
-      const prisonNumber = 'A1234BC'
-      req.params.prisonNumber = prisonNumber
       const inductionDto = aShortQuestionSetInductionDto()
       req.session.inductionDto = inductionDto
-
-      const prisonerSummary = aValidPrisonerSummary()
-      req.session.prisonerSummary = prisonerSummary
 
       const wantToAddQualificationsForm = { wantToAddQualifications: YesNoValue.NO }
       req.body = wantToAddQualificationsForm
       req.session.wantToAddQualificationsForm = undefined
-
-      mockedFormValidator.mockReturnValue(errors)
 
       // When
       await controller.submitWantToAddQualificationsForm(
@@ -362,8 +321,6 @@ describe('wantToAddQualificationsUpdateController', () => {
     it(`should redirect back to Check Your Answers page given user user has come from Check Your Answers and induction has no qualifications and they dont want to record any qualifications`, async () => {
       // Given
       req.user.token = 'some-token'
-      const prisonNumber = 'A1234BC'
-      req.params.prisonNumber = prisonNumber
       const inductionDto = aShortQuestionSetInductionDto()
       inductionDto.previousQualifications.qualifications = [] // No qualifications on the existing induction
       req.session.inductionDto = inductionDto
@@ -376,14 +333,9 @@ describe('wantToAddQualificationsUpdateController', () => {
         currentPageIndex: 1,
       }
 
-      const prisonerSummary = aValidPrisonerSummary()
-      req.session.prisonerSummary = prisonerSummary
-
       const wantToAddQualificationsForm = { wantToAddQualifications: YesNoValue.NO }
       req.body = wantToAddQualificationsForm
       req.session.wantToAddQualificationsForm = undefined
-
-      mockedFormValidator.mockReturnValue(errors)
 
       // When
       await controller.submitWantToAddQualificationsForm(
@@ -401,8 +353,6 @@ describe('wantToAddQualificationsUpdateController', () => {
     it(`should redirect back to Check Your Answers page given user user has come from Check Your Answers and induction has qualifications and they do want qualifications recorded`, async () => {
       // Given
       req.user.token = 'some-token'
-      const prisonNumber = 'A1234BC'
-      req.params.prisonNumber = prisonNumber
       const inductionDto = aShortQuestionSetInductionDto()
       req.session.inductionDto = inductionDto
 
@@ -414,14 +364,9 @@ describe('wantToAddQualificationsUpdateController', () => {
         currentPageIndex: 1,
       }
 
-      const prisonerSummary = aValidPrisonerSummary()
-      req.session.prisonerSummary = prisonerSummary
-
       const wantToAddQualificationsForm = { wantToAddQualifications: YesNoValue.YES }
       req.body = wantToAddQualificationsForm
       req.session.wantToAddQualificationsForm = undefined
-
-      mockedFormValidator.mockReturnValue(errors)
 
       // When
       await controller.submitWantToAddQualificationsForm(
@@ -439,8 +384,6 @@ describe('wantToAddQualificationsUpdateController', () => {
     it(`should update inductionDto and redirect back to Check Your Answers page given user user has come from Check Your Answers and induction has qualifications and they do not want qualifications recorded`, async () => {
       // Given
       req.user.token = 'some-token'
-      const prisonNumber = 'A1234BC'
-      req.params.prisonNumber = prisonNumber
       const inductionDto = aShortQuestionSetInductionDto()
       req.session.inductionDto = inductionDto
 
@@ -452,14 +395,9 @@ describe('wantToAddQualificationsUpdateController', () => {
         currentPageIndex: 1,
       }
 
-      const prisonerSummary = aValidPrisonerSummary()
-      req.session.prisonerSummary = prisonerSummary
-
       const wantToAddQualificationsForm = { wantToAddQualifications: YesNoValue.NO }
       req.body = wantToAddQualificationsForm
       req.session.wantToAddQualificationsForm = undefined
-
-      mockedFormValidator.mockReturnValue(errors)
 
       // When
       await controller.submitWantToAddQualificationsForm(

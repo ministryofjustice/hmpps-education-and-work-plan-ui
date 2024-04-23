@@ -18,7 +18,6 @@ export default abstract class QualificationsListController extends InductionCont
     next: NextFunction,
   ): Promise<void> => {
     const { prisonerSummary, inductionDto, prisonerFunctionalSkills } = req.session
-    const { prisonNumber } = req.params
 
     const qualifications: Array<AchievedQualificationDto> = inductionDto.previousQualifications?.qualifications
 
@@ -28,7 +27,7 @@ export default abstract class QualificationsListController extends InductionCont
     }
 
     if (this.checkYourAnswersIsInThePageHistory(req)) {
-      this.addCurrentPageToHistory(req, `/prisoners/${prisonNumber}/induction/qualifications`)
+      this.addCurrentPageToHistory(req)
     }
 
     const view = new QualificationsListView(
