@@ -11,6 +11,8 @@ import HighestLevelOfEducationCreateController from './highestLevelOfEducationCr
 import QualificationLevelCreateController from './qualificationLevelCreateController'
 import setCurrentPageInPageFlowQueue from '../../routerRequestHandlers/setCurrentPageInPageFlowQueue'
 import QualificationDetailsCreateController from './qualificationDetailsCreateController'
+import AdditionalTrainingCreateController from './additionalTrainingCreateController'
+import WorkedBeforeCreateController from './workedBeforeCreateController'
 
 /**
  * Route definitions for creating an Induction
@@ -24,6 +26,8 @@ export default (router: Router, services: Services) => {
   const highestLevelOfEducationCreateController = new HighestLevelOfEducationCreateController()
   const qualificationLevelCreateController = new QualificationLevelCreateController()
   const qualificationDetailsCreateController = new QualificationDetailsCreateController()
+  const additionalTrainingCreateController = new AdditionalTrainingCreateController()
+  const workedBeforeCreateController = new WorkedBeforeCreateController()
 
   if (config.featureToggles.induction.create.enabled) {
     router.get('/prisoners/:prisonNumber/create-induction/**', [
@@ -73,6 +77,17 @@ export default (router: Router, services: Services) => {
     ])
     router.post('/prisoners/:prisonNumber/create-induction/qualification-details', [
       qualificationDetailsCreateController.submitQualificationDetailsForm,
+    ])
+
+    router.get('/prisoners/:prisonNumber/create-induction/additional-training', [
+      additionalTrainingCreateController.getAdditionalTrainingView,
+    ])
+    router.post('/prisoners/:prisonNumber/create-induction/additional-training', [
+      additionalTrainingCreateController.submitAdditionalTrainingForm,
+    ])
+
+    router.get('/prisoners/:prisonNumber/create-induction/has-worked-before', [
+      workedBeforeCreateController.getWorkedBeforeView,
     ])
   }
 }

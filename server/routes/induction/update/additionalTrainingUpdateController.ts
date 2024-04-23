@@ -1,12 +1,10 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express'
 import createError from 'http-errors'
-import type { InductionDto } from 'inductionDto'
-import type { AdditionalTrainingForm } from 'inductionForms'
 import AdditionalTrainingController from '../common/additionalTrainingController'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
 import logger from '../../../../logger'
 import { InductionService } from '../../../services'
-import validateAdditionalTrainingForm from './additionalTrainingFormValidator'
+import validateAdditionalTrainingForm from '../../validators/induction/additionalTrainingFormValidator'
 import { buildNewPageFlowHistory, getPreviousPage } from '../../pageFlowHistory'
 import getDynamicBackLinkAriaText from '../dynamicAriaTextResolver'
 
@@ -85,20 +83,6 @@ export default class AdditionalTrainingUpdateController extends AdditionalTraini
     } catch (e) {
       logger.error(`Error updating Induction for prisoner ${prisonNumber}`, e)
       return next(createError(500, `Error updating Induction for prisoner ${prisonNumber}. Error: ${e}`))
-    }
-  }
-
-  private updatedInductionDtoWithAdditionalTraining(
-    inductionDto: InductionDto,
-    additionalTrainingForm: AdditionalTrainingForm,
-  ): InductionDto {
-    return {
-      ...inductionDto,
-      previousTraining: {
-        ...inductionDto.previousTraining,
-        trainingTypes: additionalTrainingForm.additionalTraining,
-        trainingTypeOther: additionalTrainingForm.additionalTrainingOther,
-      },
     }
   }
 }

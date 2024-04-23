@@ -19,7 +19,7 @@ export default abstract class AdditionalTrainingController extends InductionCont
     const { prisonerSummary, inductionDto } = req.session
 
     // Check if we are in the midst of changing the main induction question set (e.g. from long route to short route)
-    if (req.session.updateInductionQuestionSet) {
+    if (req.session.updateInductionQuestionSet || req.session.pageFlowHistory) {
       this.addCurrentPageToHistory(req)
     }
 
@@ -35,11 +35,25 @@ export default abstract class AdditionalTrainingController extends InductionCont
     )
     return res.render('pages/induction/additionalTraining/index', { ...view.renderArgs })
   }
+
+  updatedInductionDtoWithAdditionalTraining(
+    inductionDto: InductionDto,
+    additionalTrainingForm: AdditionalTrainingForm,
+  ): InductionDto {
+    return {
+      ...inductionDto,
+      previousTraining: {
+        ...inductionDto.previousTraining,
+        trainingTypes: additionalTrainingForm.additionalTraining,
+        trainingTypeOther: additionalTrainingForm.additionalTrainingOther,
+      },
+    }
+  }
 }
 
 const toAdditionalTrainingForm = (inductionDto: InductionDto): AdditionalTrainingForm => {
   return {
-    additionalTraining: inductionDto.previousTraining.trainingTypes,
-    additionalTrainingOther: inductionDto.previousTraining.trainingTypeOther,
+    additionalTraining: [...(inductionDto.previousTraining?.trainingTypes || [])],
+    additionalTrainingOther: inductionDto.previousTraining?.trainingTypeOther,
   }
 }

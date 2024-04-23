@@ -22,6 +22,7 @@ const getDynamicBackLinkAriaText = (req: Request, backLinkUrl: string): string =
     '/prisoners/{PRISON_NUMBER}/create-induction/hoping-to-work-on-release': `Back to Is ${prisonerName} hoping to get work when they're released?`,
     '/prisoners/{PRISON_NUMBER}/create-induction/qualifications': `Back to ${prisonerName}'s qualifications`,
     '/prisoners/{PRISON_NUMBER}/create-induction/qualification-level': `Back to What level of qualification does ${prisonerName} want to add`,
+    '/prisoners/{PRISON_NUMBER}/create-induction/additional-training': `Back to Does ${prisonerName} have any other training or vocational qualifications?`,
 
     '/prisoners/{PRISON_NUMBER}/induction/hoping-to-work-on-release': `Back to Is ${prisonerName} hoping to get work when they're released?`,
     '/prisoners/{PRISON_NUMBER}/induction/previous-work-experience': `Back to What type of work has ${prisonerName} done before?`,

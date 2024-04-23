@@ -16,7 +16,7 @@ export default abstract class WorkedBeforeController extends InductionController
     const { prisonerSummary, inductionDto } = req.session
 
     // Check if we are in the midst of changing the main induction question set (in this case from short route to long route)
-    if (req.session.updateInductionQuestionSet) {
+    if (req.session.updateInductionQuestionSet || req.session.pageFlowHistory) {
       this.addCurrentPageToHistory(req)
     }
 
@@ -35,7 +35,17 @@ export default abstract class WorkedBeforeController extends InductionController
 }
 
 const toWorkedBeforeForm = (inductionDto: InductionDto): WorkedBeforeForm => {
+  const hasWorkedBefore = inductionDto.previousWorkExperiences?.hasWorkedBefore
+
+  if (hasWorkedBefore === true || hasWorkedBefore === false) {
+    return {
+      hasWorkedBefore: hasWorkedBefore === true ? YesNoValue.YES : YesNoValue.NO,
+    }
+  }
+
+  // hasWorkedBefore in the Induction is neither true nor false, meaning this is a new Induction. Set the form field
+  // to undefined to force the user to answer it
   return {
-    hasWorkedBefore: inductionDto.previousWorkExperiences?.hasWorkedBefore === true ? YesNoValue.YES : YesNoValue.NO,
+    hasWorkedBefore: undefined,
   }
 }

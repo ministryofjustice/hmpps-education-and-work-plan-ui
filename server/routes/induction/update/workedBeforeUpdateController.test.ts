@@ -4,27 +4,27 @@ import type { SessionData } from 'express-session'
 import { NextFunction, Request, Response } from 'express'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
 import { aLongQuestionSetInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
-import validateWorkedBeforeForm from './workedBeforeFormValidator'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
 import InductionService from '../../../services/inductionService'
 import { aShortQuestionSetUpdateInductionRequest } from '../../../testsupport/updateInductionRequestTestDataBuilder'
-import WorkedBeforeController from './workedBeforeUpdateController'
+import WorkedBeforeUpdateController from './workedBeforeUpdateController'
 import YesNoValue from '../../../enums/yesNoValue'
 
-jest.mock('./workedBeforeFormValidator')
 jest.mock('../../../data/mappers/createOrUpdateInductionDtoMapper')
 jest.mock('../../../services/inductionService')
 
 describe('workedBeforeUpdateController', () => {
-  const mockedFormValidator = validateWorkedBeforeForm as jest.MockedFunction<typeof validateWorkedBeforeForm>
   const mockedCreateOrUpdateInductionDtoMapper = toCreateOrUpdateInductionDto as jest.MockedFunction<
     typeof toCreateOrUpdateInductionDto
   >
 
   const inductionService = new InductionService(null) as jest.Mocked<InductionService>
-  const controller = new WorkedBeforeController(inductionService)
+  const controller = new WorkedBeforeUpdateController(inductionService)
 
   const prisonNumber = 'A1234BC'
+  const prisonerSummary = aValidPrisonerSummary()
+
+  const noErrors: Array<Record<string, string>> = []
 
   const req = {
     session: {} as SessionData,
@@ -40,25 +40,18 @@ describe('workedBeforeUpdateController', () => {
   }
   const next = jest.fn()
 
-  let errors: Array<Record<string, string>>
-
   beforeEach(() => {
     jest.resetAllMocks()
-    req.session = {} as SessionData
+    req.session = { prisonerSummary } as SessionData
     req.body = {}
-    req.user = {} as Express.User
-    req.params = {} as Record<string, string>
-    req.params.prisonNumber = prisonNumber
+    req.user = { token: 'some-token' } as Express.User
+    req.params = { prisonNumber }
     req.path = `/prisoners/${prisonNumber}/induction/has-worked-before`
-
-    errors = []
   })
 
   describe('getWorkedBeforeView', () => {
     it('should get the WorkedBefore view given there is no WorkedBeforeForm on the session', async () => {
       // Given
-      const prisonerSummary = aValidPrisonerSummary()
-      req.session.prisonerSummary = prisonerSummary
       const inductionDto = aLongQuestionSetInductionDto()
       req.session.inductionDto = inductionDto
       req.session.workedBeforeForm = undefined
@@ -72,7 +65,7 @@ describe('workedBeforeUpdateController', () => {
         form: expectedWorkedBeforeForm,
         backLinkUrl: '/plan/A1234BC/view/work-and-interests',
         backLinkAriaText: `Back to Jimmy Lightfingers's learning and work progress`,
-        errors,
+        errors: noErrors,
       }
 
       // When
@@ -90,8 +83,6 @@ describe('workedBeforeUpdateController', () => {
 
     it('should get the WorkedBefore view given there is an WorkedBeforeForm already on the session', async () => {
       // Given
-      const prisonerSummary = aValidPrisonerSummary()
-      req.session.prisonerSummary = prisonerSummary
       const inductionDto = aLongQuestionSetInductionDto()
       req.session.inductionDto = inductionDto
 
@@ -105,7 +96,7 @@ describe('workedBeforeUpdateController', () => {
         form: expectedWorkedBeforeForm,
         backLinkUrl: '/plan/A1234BC/view/work-and-interests',
         backLinkAriaText: `Back to Jimmy Lightfingers's learning and work progress`,
-        errors,
+        errors: noErrors,
       }
 
       // When
@@ -123,8 +114,6 @@ describe('workedBeforeUpdateController', () => {
 
     it('should get the WorkedBefore view given there is an updateInductionQuestionSet on the session', async () => {
       // Given
-      const prisonerSummary = aValidPrisonerSummary()
-      req.session.prisonerSummary = prisonerSummary
       const inductionDto = aLongQuestionSetInductionDto()
       req.session.inductionDto = inductionDto
       req.session.updateInductionQuestionSet = {
@@ -145,7 +134,7 @@ describe('workedBeforeUpdateController', () => {
         form: expectedWorkedBeforeForm,
         backLinkUrl: '/prisoners/A1234BC/induction/additional-training',
         backLinkAriaText: 'Back to Does Jimmy Lightfingers have any other training or vocational qualifications?',
-        errors,
+        errors: noErrors,
       }
 
       const expectedPageFlowHistory = {
@@ -173,8 +162,6 @@ describe('workedBeforeUpdateController', () => {
   describe('submitWorkedBeforeForm', () => {
     it('should not update Induction given form is submitted with validation errors', async () => {
       // Given
-      const prisonerSummary = aValidPrisonerSummary()
-      req.session.prisonerSummary = prisonerSummary
       const inductionDto = aLongQuestionSetInductionDto()
       req.session.inductionDto = inductionDto
 
@@ -184,10 +171,9 @@ describe('workedBeforeUpdateController', () => {
       req.body = invalidWorkedBeforeForm
       req.session.workedBeforeForm = undefined
 
-      errors = [
-        { href: '#hasWorkedBefore', text: 'Select whether Jimmy Lightfingers has worked before being in prison' },
+      const expectedErrors = [
+        { href: '#hasWorkedBefore', text: 'Select whether Jimmy Lightfingers has worked before or not' },
       ]
-      mockedFormValidator.mockReturnValue(errors)
 
       // When
       await controller.submitWorkedBeforeForm(
@@ -198,17 +184,13 @@ describe('workedBeforeUpdateController', () => {
 
       // Then
       expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/induction/has-worked-before')
-      expect(req.flash).toHaveBeenCalledWith('errors', errors)
+      expect(req.flash).toHaveBeenCalledWith('errors', expectedErrors)
       expect(req.session.workedBeforeForm).toEqual(invalidWorkedBeforeForm)
       expect(req.session.inductionDto).toEqual(inductionDto)
     })
 
     it('should update Induction and call API and redirect to work and interests page', async () => {
       // Given
-      req.user.token = 'some-token'
-
-      const prisonerSummary = aValidPrisonerSummary()
-      req.session.prisonerSummary = prisonerSummary
       const inductionDto = aLongQuestionSetInductionDto()
       req.session.inductionDto = inductionDto
 
@@ -220,7 +202,6 @@ describe('workedBeforeUpdateController', () => {
       const updateInductionDto = aShortQuestionSetUpdateInductionRequest()
 
       mockedCreateOrUpdateInductionDtoMapper.mockReturnValueOnce(updateInductionDto)
-      mockedFormValidator.mockReturnValue(errors)
 
       // When
       await controller.submitWorkedBeforeForm(
@@ -243,10 +224,6 @@ describe('workedBeforeUpdateController', () => {
 
     it('should update InductionDto and redirect to Previous Work Experience given long question set journey and has worked before is YES', async () => {
       // Given
-      req.user.token = 'some-token'
-
-      const prisonerSummary = aValidPrisonerSummary()
-      req.session.prisonerSummary = prisonerSummary
       const inductionDto = aLongQuestionSetInductionDto()
       req.session.inductionDto = inductionDto
 
@@ -255,8 +232,6 @@ describe('workedBeforeUpdateController', () => {
       }
       req.body = workedBeforeForm
       req.session.workedBeforeForm = undefined
-
-      mockedFormValidator.mockReturnValue(errors)
 
       req.session.updateInductionQuestionSet = { hopingToWorkOnRelease: 'YES' }
       const expectedNextPage = '/prisoners/A1234BC/induction/previous-work-experience'
@@ -276,10 +251,6 @@ describe('workedBeforeUpdateController', () => {
 
     it('should update InductionDto and redirect to Work Interests given long question set journey and has worked before is NO', async () => {
       // Given
-      req.user.token = 'some-token'
-
-      const prisonerSummary = aValidPrisonerSummary()
-      req.session.prisonerSummary = prisonerSummary
       const inductionDto = aLongQuestionSetInductionDto()
       req.session.inductionDto = inductionDto
 
@@ -288,8 +259,6 @@ describe('workedBeforeUpdateController', () => {
       }
       req.body = workedBeforeForm
       req.session.workedBeforeForm = undefined
-
-      mockedFormValidator.mockReturnValue(errors)
 
       req.session.updateInductionQuestionSet = { hopingToWorkOnRelease: 'YES' }
       const expectedNextPage = '/prisoners/A1234BC/induction/work-interest-types'
@@ -309,10 +278,6 @@ describe('workedBeforeUpdateController', () => {
 
     it('should not update Induction given error calling service', async () => {
       // Given
-      req.user.token = 'some-token'
-
-      const prisonerSummary = aValidPrisonerSummary()
-      req.session.prisonerSummary = prisonerSummary
       const inductionDto = aLongQuestionSetInductionDto()
       req.session.inductionDto = inductionDto
 
@@ -324,7 +289,6 @@ describe('workedBeforeUpdateController', () => {
       const updateInductionDto = aShortQuestionSetUpdateInductionRequest()
 
       mockedCreateOrUpdateInductionDtoMapper.mockReturnValueOnce(updateInductionDto)
-      mockedFormValidator.mockReturnValue(errors)
 
       inductionService.updateInduction.mockRejectedValue(createError(500, 'Service unavailable'))
       const expectedError = createError(
@@ -353,8 +317,6 @@ describe('workedBeforeUpdateController', () => {
 
     it('should update induction DTO and redirect back to check answers page if "no" is selected and coming from check your answers', async () => {
       // Given
-      const prisonerSummary = aValidPrisonerSummary()
-      req.session.prisonerSummary = prisonerSummary
       req.session.inductionDto = aLongQuestionSetInductionDto()
       req.session.pageFlowHistory = {
         pageUrls: [
@@ -373,8 +335,6 @@ describe('workedBeforeUpdateController', () => {
         '../../../data/mappers/createOrUpdateInductionDtoMapper',
       ).default
       mockedCreateOrUpdateInductionDtoMapper.mockImplementation(actualToCreateOrUpdateInductionDto)
-      const actualWorkedBeforeFormValidator = jest.requireActual('./workedBeforeFormValidator').default
-      mockedFormValidator.mockImplementation(actualWorkedBeforeFormValidator)
 
       expect(req.session.inductionDto.previousWorkExperiences.hasWorkedBefore).toEqual(true)
       expect(req.session.inductionDto.previousWorkExperiences.experiences).toHaveLength(2)
@@ -396,8 +356,6 @@ describe('workedBeforeUpdateController', () => {
 
     it('should update induction DTO and redirect through previous work experience flow before returning to check answers page if "yes" is selected and coming from check your answers', async () => {
       // Given
-      const prisonerSummary = aValidPrisonerSummary()
-      req.session.prisonerSummary = prisonerSummary
       req.session.inductionDto = aLongQuestionSetInductionDto()
       req.session.pageFlowHistory = {
         pageUrls: [
@@ -416,8 +374,6 @@ describe('workedBeforeUpdateController', () => {
         '../../../data/mappers/createOrUpdateInductionDtoMapper',
       ).default
       mockedCreateOrUpdateInductionDtoMapper.mockImplementation(actualToCreateOrUpdateInductionDto)
-      const actualWorkedBeforeFormValidator = jest.requireActual('./workedBeforeFormValidator').default
-      mockedFormValidator.mockImplementation(actualWorkedBeforeFormValidator)
 
       expect(req.session.inductionDto.previousWorkExperiences.hasWorkedBefore).toEqual(true)
       expect(req.session.inductionDto.previousWorkExperiences.experiences).toHaveLength(2)
