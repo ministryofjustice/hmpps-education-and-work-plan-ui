@@ -7,6 +7,9 @@ import EducationLevelValue from '../../../server/enums/educationLevelValue'
 import QualificationLevelPage from '../../pages/induction/QualificationLevelPage'
 import QualificationLevelValue from '../../../server/enums/qualificationLevelValue'
 import QualificationDetailsPage from '../../pages/induction/QualificationDetailsPage'
+import AdditionalTrainingPage from '../../pages/induction/AdditionalTrainingPage'
+import AdditionalTrainingValue from '../../../server/enums/additionalTrainingValue'
+import WorkedBeforePage from '../../pages/induction/WorkedBeforePage'
 
 context('Create a long question set Induction', () => {
   beforeEach(() => {
@@ -101,6 +104,21 @@ context('Create a long question set Induction', () => {
       .submitPage()
 
     // Additional Training page is next
+    Page.verifyOnPage(AdditionalTrainingPage) //
+      .hasBackLinkTo('/prisoners/A00001A/create-induction/qualifications')
+      .submitPage() // submit the page without answering the question to trigger a validation error
+    Page.verifyOnPage(AdditionalTrainingPage) //
+      .hasBackLinkTo('/prisoners/A00001A/create-induction/qualifications')
+      .hasErrorCount(1)
+      .hasFieldInError('additionalTraining')
+      .chooseAdditionalTraining(AdditionalTrainingValue.HGV_LICENCE)
+      .chooseAdditionalTraining(AdditionalTrainingValue.OTHER)
+      .setAdditionalTrainingOther('Basic accountancy course')
+      .submitPage()
+
+    // Have You Worked Before page is next
+    Page.verifyOnPage(WorkedBeforePage) //
+      .hasBackLinkTo('/prisoners/A00001A/create-induction/additional-training')
 
     // Then
   })

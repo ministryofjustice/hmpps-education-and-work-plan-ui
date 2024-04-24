@@ -3,22 +3,20 @@ import type { SessionData } from 'express-session'
 import { NextFunction, Request, Response } from 'express'
 import type { PageFlow } from 'viewModels'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
-import { aShortQuestionSetInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
-import validateAdditionalTrainingForm from './additionalTrainingFormValidator'
+import {
+  aLongQuestionSetInductionDto,
+  aShortQuestionSetInductionDto,
+} from '../../../testsupport/inductionDtoTestDataBuilder'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
 import InductionService from '../../../services/inductionService'
 import { aShortQuestionSetUpdateInductionRequest } from '../../../testsupport/updateInductionRequestTestDataBuilder'
 import AdditionalTrainingUpdateController from './additionalTrainingUpdateController'
 import AdditionalTrainingValue from '../../../enums/additionalTrainingValue'
 
-jest.mock('./additionalTrainingFormValidator')
 jest.mock('../../../data/mappers/createOrUpdateInductionDtoMapper')
 jest.mock('../../../services/inductionService')
 
 describe('additionalTrainingUpdateController', () => {
-  const mockedFormValidator = validateAdditionalTrainingForm as jest.MockedFunction<
-    typeof validateAdditionalTrainingForm
-  >
   const mockedCreateOrUpdateInductionDtoMapper = toCreateOrUpdateInductionDto as jest.MockedFunction<
     typeof toCreateOrUpdateInductionDto
   >
@@ -27,6 +25,9 @@ describe('additionalTrainingUpdateController', () => {
   const controller = new AdditionalTrainingUpdateController(inductionService)
 
   const prisonNumber = 'A1234BC'
+  const prisonerSummary = aValidPrisonerSummary()
+
+  const noErrors: Array<Record<string, string>> = []
 
   const req = {
     session: {} as SessionData,
@@ -42,25 +43,18 @@ describe('additionalTrainingUpdateController', () => {
   }
   const next = jest.fn()
 
-  let errors: Array<Record<string, string>>
-
   beforeEach(() => {
     jest.resetAllMocks()
-    req.session = {} as SessionData
+    req.session = { prisonerSummary } as SessionData
     req.body = {}
-    req.user = {} as Express.User
-    req.params = {} as Record<string, string>
-    req.params.prisonNumber = prisonNumber
+    req.user = { token: 'some-token' } as Express.User
+    req.params = { prisonNumber }
     req.path = `/prisoners/${prisonNumber}/induction/additional-training`
-
-    errors = []
   })
 
   describe('getAdditionalTrainingView', () => {
     it('should get Additional Training view given there is no AdditionalTrainingForm on the session', async () => {
       // Given
-      const prisonerSummary = aValidPrisonerSummary()
-      req.session.prisonerSummary = prisonerSummary
       const inductionDto = aShortQuestionSetInductionDto()
       req.session.inductionDto = inductionDto
       req.session.additionalTrainingForm = undefined
@@ -74,7 +68,7 @@ describe('additionalTrainingUpdateController', () => {
         form: expectedAdditionalTrainingForm,
         backLinkUrl: '/plan/A1234BC/view/education-and-training',
         backLinkAriaText: `Back to Jimmy Lightfingers's learning and work progress`,
-        errors,
+        errors: noErrors,
       }
 
       // When
@@ -92,8 +86,6 @@ describe('additionalTrainingUpdateController', () => {
 
     it('should get the Additional Training view given there is an AdditionalTrainingForm already on the session', async () => {
       // Given
-      const prisonerSummary = aValidPrisonerSummary()
-      req.session.prisonerSummary = prisonerSummary
       const inductionDto = aShortQuestionSetInductionDto()
       req.session.inductionDto = inductionDto
 
@@ -108,7 +100,7 @@ describe('additionalTrainingUpdateController', () => {
         form: expectedAdditionalTrainingForm,
         backLinkUrl: '/plan/A1234BC/view/education-and-training',
         backLinkAriaText: `Back to Jimmy Lightfingers's learning and work progress`,
-        errors,
+        errors: noErrors,
       }
 
       // When
@@ -126,8 +118,6 @@ describe('additionalTrainingUpdateController', () => {
 
     it('should get Additional Training view given there is an updateInductionQuestionSet on the session', async () => {
       // Given
-      const prisonerSummary = aValidPrisonerSummary()
-      req.session.prisonerSummary = prisonerSummary
       const inductionDto = aShortQuestionSetInductionDto()
       req.session.inductionDto = inductionDto
       req.session.additionalTrainingForm = undefined
@@ -149,7 +139,7 @@ describe('additionalTrainingUpdateController', () => {
         form: expectedAdditionalTrainingForm,
         backLinkUrl: '/prisoners/A1234BC/induction/qualifications',
         backLinkAriaText: `Back to Jimmy Lightfingers's qualifications`,
-        errors,
+        errors: noErrors,
       }
       const expectedPageFlowHistory = {
         pageUrls: ['/prisoners/A1234BC/induction/qualifications', '/prisoners/A1234BC/induction/additional-training'],
@@ -173,8 +163,6 @@ describe('additionalTrainingUpdateController', () => {
   describe('submitAdditionalTrainingForm', () => {
     it('should not update Induction given form is submitted with validation errors', async () => {
       // Given
-      const prisonerSummary = aValidPrisonerSummary()
-      req.session.prisonerSummary = prisonerSummary
       const inductionDto = aShortQuestionSetInductionDto()
       req.session.inductionDto = inductionDto
 
@@ -185,13 +173,12 @@ describe('additionalTrainingUpdateController', () => {
       req.body = invalidAdditionalTrainingForm
       req.session.additionalTrainingForm = undefined
 
-      errors = [
+      const expectedErrors = [
         {
           href: '#additionalTrainingOther',
-          text: `Select the type of training or vocational qualification Jimmy Lightfingers has`,
+          text: 'Enter the type of training or vocational qualification Jimmy Lightfingers has',
         },
       ]
-      mockedFormValidator.mockReturnValue(errors)
 
       // When
       await controller.submitAdditionalTrainingForm(
@@ -202,17 +189,13 @@ describe('additionalTrainingUpdateController', () => {
 
       // Then
       expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/induction/additional-training')
-      expect(req.flash).toHaveBeenCalledWith('errors', errors)
+      expect(req.flash).toHaveBeenCalledWith('errors', expectedErrors)
       expect(req.session.additionalTrainingForm).toEqual(invalidAdditionalTrainingForm)
       expect(req.session.inductionDto).toEqual(inductionDto)
     })
 
     it('should update Induction and call API and redirect to education and training page', async () => {
       // Given
-      req.user.token = 'some-token'
-
-      const prisonerSummary = aValidPrisonerSummary()
-      req.session.prisonerSummary = prisonerSummary
       const inductionDto = aShortQuestionSetInductionDto()
       req.session.inductionDto = inductionDto
 
@@ -225,7 +208,7 @@ describe('additionalTrainingUpdateController', () => {
       const updateInductionDto = aShortQuestionSetUpdateInductionRequest()
 
       mockedCreateOrUpdateInductionDtoMapper.mockReturnValueOnce(updateInductionDto)
-      mockedFormValidator.mockReturnValue(errors)
+
       const expectedUpdatedAdditionalTraining = ['HGV_LICENCE', 'OTHER']
       const expectedUpdatedAdditionalTrainingOther = 'Italian cookery for IT professionals'
 
@@ -252,11 +235,7 @@ describe('additionalTrainingUpdateController', () => {
 
     it('should update InductionDto and redirect to Has Worked Before view given long question set journey', async () => {
       // Given
-      req.user.token = 'some-token'
-
-      const prisonerSummary = aValidPrisonerSummary()
-      req.session.prisonerSummary = prisonerSummary
-      const inductionDto = aShortQuestionSetInductionDto()
+      const inductionDto = aLongQuestionSetInductionDto()
       req.session.inductionDto = inductionDto
 
       const additionalTrainingForm = {
@@ -266,7 +245,6 @@ describe('additionalTrainingUpdateController', () => {
       req.body = additionalTrainingForm
       req.session.additionalTrainingForm = undefined
 
-      mockedFormValidator.mockReturnValue(errors)
       const expectedUpdatedAdditionalTraining = ['HGV_LICENCE', 'OTHER']
       const expectedUpdatedAdditionalTrainingOther = 'Italian cookery for IT professionals'
 
@@ -294,12 +272,8 @@ describe('additionalTrainingUpdateController', () => {
       expect(req.session.pageFlowHistory).toEqual(expectedPageFlowHistory)
     })
 
-    it('should update InductionDto and redirect to In Prison Work view given there is an updateInductionQuestionSet on the session', async () => {
+    it('should update InductionDto and redirect to In Prison Work view given short question set journey', async () => {
       // Given
-      req.user.token = 'some-token'
-
-      const prisonerSummary = aValidPrisonerSummary()
-      req.session.prisonerSummary = prisonerSummary
       const inductionDto = aShortQuestionSetInductionDto()
       req.session.inductionDto = inductionDto
 
@@ -310,7 +284,6 @@ describe('additionalTrainingUpdateController', () => {
       req.body = additionalTrainingForm
       req.session.additionalTrainingForm = undefined
 
-      mockedFormValidator.mockReturnValue(errors)
       const expectedUpdatedAdditionalTraining = ['HGV_LICENCE', 'OTHER']
       const expectedUpdatedAdditionalTrainingOther = 'Italian cookery for IT professionals'
 
@@ -340,10 +313,6 @@ describe('additionalTrainingUpdateController', () => {
 
     it('should update InductionDto and redirect to Check Your Answers given previous page was Check Your Answers', async () => {
       // Given
-      req.user.token = 'some-token'
-
-      const prisonerSummary = aValidPrisonerSummary()
-      req.session.prisonerSummary = prisonerSummary
       const inductionDto = aShortQuestionSetInductionDto()
       req.session.inductionDto = inductionDto
 
@@ -354,7 +323,6 @@ describe('additionalTrainingUpdateController', () => {
       req.body = additionalTrainingForm
       req.session.additionalTrainingForm = undefined
 
-      mockedFormValidator.mockReturnValue(errors)
       const expectedUpdatedAdditionalTraining = ['HGV_LICENCE', 'OTHER']
       const expectedUpdatedAdditionalTrainingOther = 'Italian cookery for IT professionals'
 
@@ -384,10 +352,6 @@ describe('additionalTrainingUpdateController', () => {
 
     it('should not update Induction given error calling service', async () => {
       // Given
-      req.user.token = 'some-token'
-
-      const prisonerSummary = aValidPrisonerSummary()
-      req.session.prisonerSummary = prisonerSummary
       const inductionDto = aShortQuestionSetInductionDto()
       req.session.inductionDto = inductionDto
 
@@ -400,7 +364,7 @@ describe('additionalTrainingUpdateController', () => {
       const updateInductionDto = aShortQuestionSetUpdateInductionRequest()
 
       mockedCreateOrUpdateInductionDtoMapper.mockReturnValueOnce(updateInductionDto)
-      mockedFormValidator.mockReturnValue(errors)
+
       const expectedUpdatedAdditionalTraining = ['HGV_LICENCE', 'OTHER']
       const expectedUpdatedAdditionalTrainingOther = 'Italian cookery for IT professionals'
 
