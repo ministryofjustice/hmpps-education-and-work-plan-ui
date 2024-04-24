@@ -1,13 +1,11 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express'
 import createError from 'http-errors'
-import type { InductionDto, PreviousWorkExperienceDto } from 'inductionDto'
-import type { WorkedBeforeForm } from 'inductionForms'
 import type { PageFlow } from 'viewModels'
 import WorkedBeforeController from '../common/workedBeforeController'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
 import logger from '../../../../logger'
 import { InductionService } from '../../../services'
-import validateWorkedBeforeForm from './workedBeforeFormValidator'
+import validateWorkedBeforeForm from '../../validators/induction/workedBeforeFormValidator'
 import YesNoValue from '../../../enums/yesNoValue'
 import getDynamicBackLinkAriaText from '../dynamicAriaTextResolver'
 import { buildNewPageFlowHistory, getPreviousPage } from '../../pageFlowHistory'
@@ -88,24 +86,6 @@ export default class WorkedBeforeUpdateController extends WorkedBeforeController
     } catch (e) {
       logger.error(`Error updating Induction for prisoner ${prisonNumber}`, e)
       return next(createError(500, `Error updating Induction for prisoner ${prisonNumber}. Error: ${e}`))
-    }
-  }
-
-  private updatedInductionDtoWithHasWorkedBefore(
-    inductionDto: InductionDto,
-    workedBeforeForm: WorkedBeforeForm,
-  ): InductionDto {
-    let previousExperience: Array<PreviousWorkExperienceDto> = []
-    if (workedBeforeForm.hasWorkedBefore === YesNoValue.YES && inductionDto.previousWorkExperiences?.experiences) {
-      previousExperience = [...inductionDto.previousWorkExperiences.experiences]
-    }
-    return {
-      ...inductionDto,
-      previousWorkExperiences: {
-        ...inductionDto.previousWorkExperiences,
-        experiences: previousExperience,
-        hasWorkedBefore: workedBeforeForm.hasWorkedBefore === YesNoValue.YES,
-      },
     }
   }
 

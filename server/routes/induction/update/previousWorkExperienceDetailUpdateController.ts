@@ -1,13 +1,12 @@
 import createError from 'http-errors'
 import { NextFunction, Request, RequestHandler, Response } from 'express'
-import type { InductionDto, PreviousWorkExperienceDto } from 'inductionDto'
-import type { PreviousWorkExperienceDetailForm } from 'inductionForms'
+import type { InductionDto } from 'inductionDto'
 import type { PageFlow } from 'viewModels'
 import { InductionService } from '../../../services'
 import PreviousWorkExperienceDetailController from '../common/previousWorkExperienceDetailController'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
 import logger from '../../../../logger'
-import validatePreviousWorkExperienceDetailForm from './previousWorkExperienceDetailFormValidator'
+import validatePreviousWorkExperienceDetailForm from '../../validators/induction/previousWorkExperienceDetailFormValidator'
 import TypeOfWorkExperienceValue from '../../../enums/typeOfWorkExperienceValue'
 import { getNextPage, isLastPage } from '../../pageFlowQueue'
 import { getPreviousPage } from '../../pageFlowHistory'
@@ -106,34 +105,6 @@ export default class PreviousWorkExperienceDetailUpdateController extends Previo
     } catch (e) {
       logger.error(`Error updating Induction for prisoner ${prisonNumber}`, e)
       return next(createError(500, `Error updating Induction for prisoner ${prisonNumber}. Error: ${e}`))
-    }
-  }
-
-  private updatedInductionDtoWithPreviousWorkExperienceDetail(
-    inductionDto: InductionDto,
-    previousWorkExperienceDetailForm: PreviousWorkExperienceDetailForm,
-    previousWorkExperienceType: TypeOfWorkExperienceValue,
-  ): InductionDto {
-    const updatedPreviousWorkExperiences: Array<PreviousWorkExperienceDto> =
-      inductionDto.previousWorkExperiences?.experiences?.map(experience => {
-        if (experience.experienceType === previousWorkExperienceType) {
-          return {
-            ...experience,
-            role: previousWorkExperienceDetailForm.jobRole,
-            details: previousWorkExperienceDetailForm.jobDetails,
-          }
-        }
-        return {
-          ...experience,
-        }
-      }) || []
-
-    return {
-      ...inductionDto,
-      previousWorkExperiences: {
-        ...inductionDto.previousWorkExperiences,
-        experiences: updatedPreviousWorkExperiences,
-      },
     }
   }
 

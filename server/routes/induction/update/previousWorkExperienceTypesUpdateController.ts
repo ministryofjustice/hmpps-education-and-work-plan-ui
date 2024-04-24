@@ -1,12 +1,12 @@
 import createError from 'http-errors'
 import { NextFunction, Request, RequestHandler, Response } from 'express'
-import type { InductionDto, PreviousWorkExperienceDto } from 'inductionDto'
+import type { InductionDto } from 'inductionDto'
 import type { PreviousWorkExperienceTypesForm } from 'inductionForms'
 import type { PageFlow } from 'viewModels'
 import logger from '../../../../logger'
 import PreviousWorkExperienceTypesController from '../common/previousWorkExperienceTypesController'
 import { InductionService } from '../../../services'
-import validatePreviousWorkExperienceTypesForm from './previousWorkExperienceTypesFormValidator'
+import validatePreviousWorkExperienceTypesForm from '../../validators/induction/previousWorkExperienceTypesFormValidator'
 import TypeOfWorkExperienceValue from '../../../enums/typeOfWorkExperienceValue'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
 import previousWorkExperienceTypeScreenOrderComparator from '../previousWorkExperienceTypeScreenOrderComparator'
@@ -57,6 +57,12 @@ export default class PreviousWorkExperienceTypesUpdateController extends Previou
       return res.redirect(`/prisoners/${prisonNumber}/induction/previous-work-experience`)
     }
 
+    // create an updated InductionDto with any changes to Previous Work Experiences
+    const updatedInduction = this.updatedInductionDtoWithPreviousWorkExperiences(
+      inductionDto,
+      previousWorkExperienceTypesForm,
+    )
+
     if (
       noChangesToPreviousWorkExperienceSubmitted(inductionDto, previousWorkExperienceTypesForm) ||
       onlyRemovalsWereMadeToPreviousWorkExperienceSubmitted(inductionDto, previousWorkExperienceTypesForm)
@@ -66,14 +72,8 @@ export default class PreviousWorkExperienceTypesUpdateController extends Previou
           'Previous Work Experiences changes are only removed types so Induction can be updated without asking for work experience details',
         )
 
-        // create an updated InductionDto with any changes to Previous Work Experiences and then map it to a CreateOrUpdateInductionDTO to call the API
-        const updatedInduction = updatedInductionDtoWithPreviousWorkExperiences(
-          inductionDto,
-          previousWorkExperienceTypesForm,
-        )
-        const updateInductionDto = toCreateOrUpdateInductionDto(prisonerSummary.prisonId, updatedInduction)
-
         try {
+          const updateInductionDto = toCreateOrUpdateInductionDto(prisonerSummary.prisonId, updatedInduction)
           await this.inductionService.updateInduction(prisonerSummary.prisonNumber, updateInductionDto, req.user.token)
           req.session.previousWorkExperienceTypesForm = undefined
           req.session.inductionDto = undefined
@@ -92,10 +92,7 @@ export default class PreviousWorkExperienceTypesUpdateController extends Previou
 
     // Update the InductionDTO in the session with changes to Previous Work Experiences, but do not persist to the API
     // The user will be redirected to each Previous Work Experience Detail page in turn
-    req.session.inductionDto = updatedInductionDtoWithPreviousWorkExperiences(
-      inductionDto,
-      previousWorkExperienceTypesForm,
-    )
+    req.session.inductionDto = updatedInduction
 
     /* We need to show the Details page for each of:
          - any additional job types that have been added by the form submission
@@ -144,57 +141,6 @@ export default class PreviousWorkExperienceTypesUpdateController extends Previou
       pageUrls,
       currentPageIndex: 0,
     }
-  }
-}
-
-/**
- * Returns an [InductionDto] that represents the Induction with the changes from the [PreviousWorkExperienceTypesForm]
- * This method returns an [InductionDto] based on the passed in DTO with
- *   * Any Previous Work Experiences removed where they are removed (missing) in the [PreviousWorkExperienceTypesForm]
- *   * The value for Other has been changed where it has been changed in the [PreviousWorkExperienceTypesForm]
- *   * Any new Previous Work Experiences added where they are new (additional) in the [PreviousWorkExperienceTypesForm]
- *     In the case of new Previous Work Experiences, a new array element is added with the corresponding type, but the
- *     `role` and `details` fields are left undefined as the user has not entered these details yet.
- */
-const updatedInductionDtoWithPreviousWorkExperiences = (
-  inductionDto: InductionDto,
-  previousWorkExperienceTypesForm: PreviousWorkExperienceTypesForm,
-): InductionDto => {
-  const updatedPreviousWorkExperiences: Array<PreviousWorkExperienceDto> =
-    previousWorkExperienceTypesForm.typeOfWorkExperience.map(workType => {
-      const existingWorkExperience = inductionDto.previousWorkExperiences?.experiences?.find(
-        experience => experience.experienceType === workType,
-      )
-      const isWorkTypeOther = workType === TypeOfWorkExperienceValue.OTHER
-      const workTypeOtherValueHasBeenChanged =
-        isWorkTypeOther &&
-        previousWorkExperienceTypesForm.typeOfWorkExperienceOther !== existingWorkExperience?.experienceTypeOther
-
-      return !existingWorkExperience
-        ? {
-            // It's a new Previous Work Experience that is not already on the Induction. Add it but with undefined role and details fields
-            experienceType: workType,
-            experienceTypeOther: isWorkTypeOther ? previousWorkExperienceTypesForm.typeOfWorkExperienceOther : null,
-            role: undefined,
-            details: undefined,
-          }
-        : {
-            // It's a Previous Work Experience that is already on the Induction. Map it, but if the work type is OTHER
-            // map the typeOfWorkExperienceOther field from the form and clear the previous role and details values
-            // IE. it's a different kind of "other" so the previous role and details will likely not apply.
-            experienceType: workType,
-            experienceTypeOther: isWorkTypeOther ? previousWorkExperienceTypesForm.typeOfWorkExperienceOther : null,
-            role: isWorkTypeOther && workTypeOtherValueHasBeenChanged ? undefined : existingWorkExperience?.role,
-            details: isWorkTypeOther && workTypeOtherValueHasBeenChanged ? undefined : existingWorkExperience?.details,
-          }
-    })
-
-  return {
-    ...inductionDto,
-    previousWorkExperiences: {
-      ...inductionDto.previousWorkExperiences,
-      experiences: updatedPreviousWorkExperiences,
-    },
   }
 }
 
