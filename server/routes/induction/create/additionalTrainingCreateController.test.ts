@@ -191,7 +191,7 @@ describe('additionalTrainingCreateController', () => {
       expect(req.session.additionalTrainingForm).toBeUndefined()
     })
 
-    it('should update InductionDto and redirect to In Prison Work view given shprt question set journey', async () => {
+    it('should update InductionDto and redirect to In Prison Work view given short question set journey', async () => {
       // Given
       const inductionDto = aShortQuestionSetInductionDto()
       inductionDto.previousTraining = undefined
