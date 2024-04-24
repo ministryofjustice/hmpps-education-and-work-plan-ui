@@ -1,12 +1,10 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express'
 import createError from 'http-errors'
-import type { InductionDto } from 'inductionDto'
-import type { ReasonsNotToGetWorkForm } from 'inductionForms'
 import ReasonsNotToGetWorkController from '../common/reasonsNotToGetWorkController'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
 import logger from '../../../../logger'
 import { InductionService } from '../../../services'
-import validateReasonsNotToGetWorkForm from './reasonsNotToGetWorkFormValidator'
+import validateReasonsNotToGetWorkForm from '../../validators/induction/reasonsNotToGetWorkFormValidator'
 import { getPreviousPage } from '../../pageFlowHistory'
 import getDynamicBackLinkAriaText from '../dynamicAriaTextResolver'
 
@@ -87,20 +85,6 @@ export default class ReasonsNotToGetWorkUpdateController extends ReasonsNotToGet
     } catch (e) {
       logger.error(`Error updating Induction for prisoner ${prisonNumber}`, e)
       return next(createError(500, `Error updating Induction for prisoner ${prisonNumber}. Error: ${e}`))
-    }
-  }
-
-  private updatedInductionDtoWithReasonsNotToGetWork(
-    inductionDto: InductionDto,
-    reasonsNotToGetWorkForm: ReasonsNotToGetWorkForm,
-  ): InductionDto {
-    return {
-      ...inductionDto,
-      workOnRelease: {
-        ...inductionDto.workOnRelease,
-        notHopingToWorkReasons: reasonsNotToGetWorkForm.reasonsNotToGetWork,
-        notHopingToWorkOtherReason: reasonsNotToGetWorkForm.reasonsNotToGetWorkOther,
-      },
     }
   }
 }

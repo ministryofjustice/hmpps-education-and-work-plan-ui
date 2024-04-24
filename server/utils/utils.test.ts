@@ -1,4 +1,4 @@
-import { convertToTitleCase, initialiseName } from './utils'
+import { asArray, convertToTitleCase, initialiseName } from './utils'
 
 describe('convert to title case', () => {
   it.each([
@@ -26,5 +26,17 @@ describe('initialise name', () => {
     ['Double barrelled', 'Robert-John Smith-Jones-Wilson', 'R. Smith-Jones-Wilson'],
   ])('%s initialiseName(%s, %s)', (_: string, a: string, expected: string) => {
     expect(initialiseName(a)).toEqual(expected)
+  })
+})
+
+describe('asArray', () => {
+  it.each([
+    ['Null', null, []],
+    ['Undefined', undefined, []],
+    ['Empty string', '', []],
+    ['String', 'a string', ['a string']],
+    ['Array', ['string 1', 'string 2'], ['string 1', 'string 2']],
+  ])('%s value asArray(%s, %s)', (_: string, a: string | Array<string>, expected: string | Array<string>) => {
+    expect(asArray(a)).toEqual(expected)
   })
 })

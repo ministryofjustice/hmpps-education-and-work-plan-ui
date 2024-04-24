@@ -35,11 +35,25 @@ export default abstract class ReasonsNotToGetWorkController extends InductionCon
     )
     return res.render('pages/induction/reasonsNotToGetWork/index', { ...view.renderArgs })
   }
+
+  protected updatedInductionDtoWithReasonsNotToGetWork(
+    inductionDto: InductionDto,
+    reasonsNotToGetWorkForm: ReasonsNotToGetWorkForm,
+  ): InductionDto {
+    return {
+      ...inductionDto,
+      workOnRelease: {
+        ...inductionDto.workOnRelease,
+        notHopingToWorkReasons: reasonsNotToGetWorkForm.reasonsNotToGetWork ?? [],
+        notHopingToWorkOtherReason: reasonsNotToGetWorkForm.reasonsNotToGetWorkOther,
+      },
+    }
+  }
 }
 
 const toReasonsNotToGetWorkForm = (inductionDto: InductionDto): ReasonsNotToGetWorkForm => {
   return {
-    reasonsNotToGetWork: inductionDto.workOnRelease.notHopingToWorkReasons,
-    reasonsNotToGetWorkOther: inductionDto.workOnRelease.notHopingToWorkOtherReason,
+    reasonsNotToGetWork: inductionDto?.workOnRelease?.notHopingToWorkReasons ?? [],
+    reasonsNotToGetWorkOther: inductionDto?.workOnRelease?.notHopingToWorkOtherReason,
   }
 }
