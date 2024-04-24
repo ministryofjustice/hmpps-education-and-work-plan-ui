@@ -4,19 +4,16 @@ import { NextFunction, Request, Response } from 'express'
 import type { PageFlow } from 'viewModels'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
 import { aLongQuestionSetInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
-import validateSkillsForm from './skillsFormValidator'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
 import InductionService from '../../../services/inductionService'
 import { aLongQuestionSetUpdateInductionRequest } from '../../../testsupport/updateInductionRequestTestDataBuilder'
 import SkillsUpdateController from './skillsUpdateController'
 import SkillsValue from '../../../enums/skillsValue'
 
-jest.mock('./skillsFormValidator')
 jest.mock('../../../data/mappers/createOrUpdateInductionDtoMapper')
 jest.mock('../../../services/inductionService')
 
 describe('skillsUpdateController', () => {
-  const mockedFormValidator = validateSkillsForm as jest.MockedFunction<typeof validateSkillsForm>
   const mockedCreateOrUpdateInductionDtoMapper = toCreateOrUpdateInductionDto as jest.MockedFunction<
     typeof toCreateOrUpdateInductionDto
   >
@@ -25,6 +22,9 @@ describe('skillsUpdateController', () => {
   const controller = new SkillsUpdateController(inductionService)
 
   const prisonNumber = 'A1234BC'
+  const prisonerSummary = aValidPrisonerSummary()
+
+  const noErrors: Array<Record<string, string>> = []
 
   const req = {
     session: {} as SessionData,
@@ -40,25 +40,18 @@ describe('skillsUpdateController', () => {
   }
   const next = jest.fn()
 
-  let errors: Array<Record<string, string>>
-
   beforeEach(() => {
     jest.resetAllMocks()
-    req.session = {} as SessionData
+    req.session = { prisonerSummary } as SessionData
     req.body = {}
-    req.user = {} as Express.User
-    req.params = {} as Record<string, string>
-    req.params.prisonNumber = prisonNumber
+    req.user = { token: 'some-token' } as Express.User
+    req.params = { prisonNumber }
     req.path = `/prisoners/${prisonNumber}/induction/skills`
-
-    errors = []
   })
 
   describe('getSkillsView', () => {
     it('should get the Skills view given there is no SkillsForm on the session', async () => {
       // Given
-      const prisonerSummary = aValidPrisonerSummary()
-      req.session.prisonerSummary = prisonerSummary
       const inductionDto = aLongQuestionSetInductionDto()
       req.session.inductionDto = inductionDto
       req.session.skillsForm = undefined
@@ -73,7 +66,7 @@ describe('skillsUpdateController', () => {
         form: expectedSkillsForm,
         backLinkUrl: '/plan/A1234BC/view/work-and-interests',
         backLinkAriaText: `Back to Jimmy Lightfingers's learning and work progress`,
-        errors,
+        errors: noErrors,
       }
 
       // When
@@ -91,8 +84,6 @@ describe('skillsUpdateController', () => {
 
     it('should get the Skills view given there is an SkillsForm already on the session', async () => {
       // Given
-      const prisonerSummary = aValidPrisonerSummary()
-      req.session.prisonerSummary = prisonerSummary
       const inductionDto = aLongQuestionSetInductionDto()
       req.session.inductionDto = inductionDto
 
@@ -107,7 +98,7 @@ describe('skillsUpdateController', () => {
         form: expectedSkillsForm,
         backLinkUrl: '/plan/A1234BC/view/work-and-interests',
         backLinkAriaText: `Back to Jimmy Lightfingers's learning and work progress`,
-        errors,
+        errors: noErrors,
       }
 
       // When
@@ -125,8 +116,6 @@ describe('skillsUpdateController', () => {
 
     it('should get the Skills view given there is an updateInductionQuestionSet on the session', async () => {
       // Given
-      const prisonerSummary = aValidPrisonerSummary()
-      req.session.prisonerSummary = prisonerSummary
       const inductionDto = aLongQuestionSetInductionDto()
       req.session.inductionDto = inductionDto
       req.session.updateInductionQuestionSet = {
@@ -148,7 +137,7 @@ describe('skillsUpdateController', () => {
         form: expectedSkillsForm,
         backLinkUrl: '/prisoners/A1234BC/induction/work-interest-roles',
         backLinkAriaText: 'Back to Is Jimmy Lightfingers interested in any particular jobs?',
-        errors,
+        errors: noErrors,
       }
 
       const expectedPageFlowHistory = {
@@ -173,8 +162,6 @@ describe('skillsUpdateController', () => {
   describe('submitSkillsForm', () => {
     it('should not update Induction given form is submitted with validation errors', async () => {
       // Given
-      const prisonerSummary = aValidPrisonerSummary()
-      req.session.prisonerSummary = prisonerSummary
       const inductionDto = aLongQuestionSetInductionDto()
       req.session.inductionDto = inductionDto
 
@@ -185,8 +172,7 @@ describe('skillsUpdateController', () => {
       req.body = invalidSkillsForm
       req.session.skillsForm = undefined
 
-      errors = [{ href: '#skillsOther', text: 'Enter the skill that Jimmy Lightfingers feels they have' }]
-      mockedFormValidator.mockReturnValue(errors)
+      const expectedErrors = [{ href: '#skillsOther', text: 'Enter the skill that Jimmy Lightfingers feels they have' }]
 
       // When
       await controller.submitSkillsForm(
@@ -197,17 +183,13 @@ describe('skillsUpdateController', () => {
 
       // Then
       expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/induction/skills')
-      expect(req.flash).toHaveBeenCalledWith('errors', errors)
+      expect(req.flash).toHaveBeenCalledWith('errors', expectedErrors)
       expect(req.session.skillsForm).toEqual(invalidSkillsForm)
       expect(req.session.inductionDto).toEqual(inductionDto)
     })
 
     it('should update Induction and call API and redirect to work and interests page', async () => {
       // Given
-      req.user.token = 'some-token'
-
-      const prisonerSummary = aValidPrisonerSummary()
-      req.session.prisonerSummary = prisonerSummary
       const inductionDto = aLongQuestionSetInductionDto()
       req.session.inductionDto = inductionDto
 
@@ -220,7 +202,7 @@ describe('skillsUpdateController', () => {
       const updateInductionDto = aLongQuestionSetUpdateInductionRequest()
 
       mockedCreateOrUpdateInductionDtoMapper.mockReturnValueOnce(updateInductionDto)
-      mockedFormValidator.mockReturnValue(errors)
+
       const expectedUpdatedSkills = [
         {
           skillType: 'TEAMWORK',
@@ -253,10 +235,6 @@ describe('skillsUpdateController', () => {
 
     it('should update InductionDto and redirect to Personal Interests given long question set journey', async () => {
       // Given
-      req.user.token = 'some-token'
-
-      const prisonerSummary = aValidPrisonerSummary()
-      req.session.prisonerSummary = prisonerSummary
       const inductionDto = aLongQuestionSetInductionDto()
       req.session.inductionDto = inductionDto
 
@@ -266,8 +244,6 @@ describe('skillsUpdateController', () => {
       }
       req.body = skillsForm
       req.session.skillsForm = undefined
-
-      mockedFormValidator.mockReturnValue(errors)
 
       req.session.updateInductionQuestionSet = { hopingToWorkOnRelease: 'YES' }
       const expectedNextPage = '/prisoners/A1234BC/induction/personal-interests'
@@ -305,10 +281,6 @@ describe('skillsUpdateController', () => {
 
     it('should not update Induction given error calling service', async () => {
       // Given
-      req.user.token = 'some-token'
-
-      const prisonerSummary = aValidPrisonerSummary()
-      req.session.prisonerSummary = prisonerSummary
       const inductionDto = aLongQuestionSetInductionDto()
       req.session.inductionDto = inductionDto
 
@@ -321,7 +293,7 @@ describe('skillsUpdateController', () => {
       const updateInductionDto = aLongQuestionSetUpdateInductionRequest()
 
       mockedCreateOrUpdateInductionDtoMapper.mockReturnValueOnce(updateInductionDto)
-      mockedFormValidator.mockReturnValue(errors)
+
       const expectedUpdatedSkills = [
         {
           skillType: 'TEAMWORK',
@@ -360,8 +332,6 @@ describe('skillsUpdateController', () => {
 
     it('should update induction DTO and redirect back to check your answers page when coming from check your answers', async () => {
       // Given
-      const prisonerSummary = aValidPrisonerSummary()
-      req.session.prisonerSummary = prisonerSummary
       req.session.inductionDto = aLongQuestionSetInductionDto()
       req.session.pageFlowHistory = {
         pageUrls: [
@@ -380,8 +350,6 @@ describe('skillsUpdateController', () => {
         '../../../data/mappers/createOrUpdateInductionDtoMapper',
       ).default
       mockedCreateOrUpdateInductionDtoMapper.mockImplementation(actualToCreateOrUpdateInductionDto)
-      const actualSkillsFormValidator = jest.requireActual('./skillsFormValidator').default
-      mockedFormValidator.mockImplementation(actualSkillsFormValidator)
 
       // When
       await controller.submitSkillsForm(

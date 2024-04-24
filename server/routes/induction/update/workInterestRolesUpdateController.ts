@@ -1,6 +1,5 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express'
 import createError from 'http-errors'
-import type { InductionDto } from 'inductionDto'
 import type { WorkInterestRolesForm } from 'inductionForms'
 import WorkInterestRolesController from '../common/workInterestRolesController'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
@@ -40,22 +39,19 @@ export default class WorkInterestRolesUpdateController extends WorkInterestRoles
     const { prisonId } = prisonerSummary
 
     const workInterestRoles = new Map(Object.entries({ ...req.body.workInterestRoles }))
-    req.session.workInterestRolesForm = { workInterestRoles } as WorkInterestRolesForm
-    const { workInterestRolesForm } = req.session
+    const workInterestRolesForm = { workInterestRoles } as WorkInterestRolesForm
 
     const updatedInduction = this.updatedInductionDtoWithWorkInterestRoles(inductionDto, workInterestRolesForm)
+    req.session.inductionDto = updatedInduction
 
     // If the previous page was Check Your Answers, decide whether to redirect back check answers on submission
     if (this.previousPageWasCheckYourAnswers(req)) {
-      req.session.inductionDto = updatedInduction
       return res.redirect(`/prisoners/${prisonNumber}/induction/check-your-answers`)
     }
 
     if (req.session.updateInductionQuestionSet) {
-      req.session.inductionDto = updatedInduction
       const nextPage = `/prisoners/${prisonNumber}/induction/skills`
       req.session.pageFlowHistory = buildNewPageFlowHistory(req)
-      req.session.workInterestRolesForm = undefined
       return res.redirect(nextPage)
     }
 
@@ -63,32 +59,11 @@ export default class WorkInterestRolesUpdateController extends WorkInterestRoles
       const updateInductionDto = toCreateOrUpdateInductionDto(prisonId, updatedInduction)
       await this.inductionService.updateInduction(prisonNumber, updateInductionDto, req.user.token)
 
-      req.session.workInterestRolesForm = undefined
       req.session.inductionDto = undefined
       return res.redirect(`/plan/${prisonNumber}/view/work-and-interests`)
     } catch (e) {
       logger.error(`Error updating Induction for prisoner ${prisonNumber}`, e)
       return next(createError(500, `Error updating Induction for prisoner ${prisonNumber}. Error: ${e}`))
-    }
-  }
-
-  private updatedInductionDtoWithWorkInterestRoles(
-    inductionDto: InductionDto,
-    workInterestRolesForm: WorkInterestRolesForm,
-  ): InductionDto {
-    const updatedWorkInterests = inductionDto.futureWorkInterests.interests.map(interest => {
-      return {
-        workType: interest.workType,
-        workTypeOther: interest.workTypeOther,
-        role: workInterestRolesForm.workInterestRoles?.get(interest.workType),
-      }
-    })
-    return {
-      ...inductionDto,
-      futureWorkInterests: {
-        ...inductionDto.futureWorkInterests,
-        interests: updatedWorkInterests,
-      },
     }
   }
 }

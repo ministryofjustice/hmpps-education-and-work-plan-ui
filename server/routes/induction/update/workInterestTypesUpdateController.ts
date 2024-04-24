@@ -1,13 +1,10 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express'
 import createError from 'http-errors'
-import type { FutureWorkInterestDto, InductionDto } from 'inductionDto'
-import type { WorkInterestTypesForm } from 'inductionForms'
 import WorkInterestTypesController from '../common/workInterestTypesController'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
 import logger from '../../../../logger'
 import { InductionService } from '../../../services'
-import validateWorkInterestTypesForm from './workInterestTypesFormValidator'
-import WorkInterestTypeValue from '../../../enums/workInterestTypeValue'
+import validateWorkInterestTypesForm from '../../validators/induction/workInterestTypesFormValidator'
 import { buildNewPageFlowHistory, getPreviousPage } from '../../pageFlowHistory'
 import getDynamicBackLinkAriaText from '../dynamicAriaTextResolver'
 
@@ -82,27 +79,6 @@ export default class WorkInterestTypesUpdateController extends WorkInterestTypes
     } catch (e) {
       logger.error(`Error updating Induction for prisoner ${prisonNumber}`, e)
       return next(createError(500, `Error updating Induction for prisoner ${prisonNumber}. Error: ${e}`))
-    }
-  }
-
-  private updatedInductionDtoWithWorkInterestTypes(
-    inductionDto: InductionDto,
-    workInterestTypesForm: WorkInterestTypesForm,
-  ): InductionDto {
-    const updatedWorkInterests: Array<FutureWorkInterestDto> = workInterestTypesForm.workInterestTypes.map(workType => {
-      return {
-        workType,
-        workTypeOther:
-          workType === WorkInterestTypeValue.OTHER ? workInterestTypesForm.workInterestTypesOther : undefined,
-        role: inductionDto.futureWorkInterests?.interests.find(interest => interest.workType === workType)?.role,
-      }
-    })
-    return {
-      ...inductionDto,
-      futureWorkInterests: {
-        ...inductionDto.futureWorkInterests,
-        interests: updatedWorkInterests,
-      },
     }
   }
 }

@@ -23,6 +23,7 @@ describe('workInterestRolesUpdateController', () => {
   const controller = new WorkInterestRolesUpdateController(inductionService)
 
   const prisonNumber = 'A1234BC'
+  const prisonerSummary = aValidPrisonerSummary()
 
   const req = {
     session: {} as SessionData,
@@ -38,28 +39,20 @@ describe('workInterestRolesUpdateController', () => {
   }
   const next = jest.fn()
 
-  let errors: Array<Record<string, string>>
-
   beforeEach(() => {
     jest.resetAllMocks()
-    req.session = {} as SessionData
+    req.session = { prisonerSummary } as SessionData
     req.body = {}
-    req.user = {} as Express.User
-    req.params = {} as Record<string, string>
-    req.params.prisonNumber = prisonNumber
+    req.user = { token: 'some-token' } as Express.User
+    req.params = { prisonNumber }
     req.path = `/prisoners/${prisonNumber}/induction/work-interest-roles`
-
-    errors = []
   })
 
   describe('getWorkInterestRolesView', () => {
-    it('should get the Work Interest Roles view given there is no WorkInterestRolesForm on the session', async () => {
+    it('should get the Work Interest Roles view', async () => {
       // Given
-      const prisonerSummary = aValidPrisonerSummary()
-      req.session.prisonerSummary = prisonerSummary
       const inductionDto = aLongQuestionSetInductionDto()
       req.session.inductionDto = inductionDto
-      req.session.workInterestRolesForm = undefined
 
       const expectedWorkInterestRolesForm = {
         workInterestRoles: new Map<WorkInterestTypeValue, string>([
@@ -75,7 +68,6 @@ describe('workInterestRolesUpdateController', () => {
         form: expectedWorkInterestRolesForm,
         backLinkUrl: '/plan/A1234BC/view/work-and-interests',
         backLinkAriaText: `Back to Jimmy Lightfingers's learning and work progress`,
-        errors,
       }
 
       // When
@@ -87,52 +79,11 @@ describe('workInterestRolesUpdateController', () => {
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/induction/workInterests/workInterestRoles', expectedView)
-      expect(req.session.workInterestRolesForm).toBeUndefined()
-      expect(req.session.inductionDto).toEqual(inductionDto)
-    })
-
-    it('should get the Work Interest Roles view given there is an WorkInterestRolesForm already on the session', async () => {
-      // Given
-      const prisonerSummary = aValidPrisonerSummary()
-      req.session.prisonerSummary = prisonerSummary
-      const inductionDto = aLongQuestionSetInductionDto()
-      req.session.inductionDto = inductionDto
-
-      const expectedWorkInterestRolesForm = {
-        workInterestRoles: new Map<WorkInterestTypeValue, string>([
-          [WorkInterestTypeValue.RETAIL, null],
-          [WorkInterestTypeValue.CONSTRUCTION, 'General labourer'],
-          [WorkInterestTypeValue.OTHER, 'Being a stunt double for Tom Cruise, even though he does all his own stunts'],
-        ]),
-        workInterestTypesOther: 'Film, TV and Media',
-      }
-      req.session.workInterestRolesForm = expectedWorkInterestRolesForm
-
-      const expectedView = {
-        prisonerSummary,
-        form: expectedWorkInterestRolesForm,
-        backLinkUrl: '/plan/A1234BC/view/work-and-interests',
-        backLinkAriaText: `Back to Jimmy Lightfingers's learning and work progress`,
-        errors,
-      }
-
-      // When
-      await controller.getWorkInterestRolesView(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
-
-      // Then
-      expect(res.render).toHaveBeenCalledWith('pages/induction/workInterests/workInterestRoles', expectedView)
-      expect(req.session.workInterestRolesForm).toBeUndefined()
       expect(req.session.inductionDto).toEqual(inductionDto)
     })
 
     it('should get the Work Interest Roles view given there is an updateInductionQuestionSet on the session', async () => {
       // Given
-      const prisonerSummary = aValidPrisonerSummary()
-      req.session.prisonerSummary = prisonerSummary
       const inductionDto = aLongQuestionSetInductionDto()
       req.session.inductionDto = inductionDto
       req.session.updateInductionQuestionSet = {
@@ -149,16 +100,14 @@ describe('workInterestRolesUpdateController', () => {
           [WorkInterestTypeValue.CONSTRUCTION, 'General labourer'],
           [WorkInterestTypeValue.OTHER, 'Being a stunt double for Tom Cruise, even though he does all his own stunts'],
         ]),
-        workInterestTypesOther: 'Film, TV and Media',
+        workInterestTypesOther: 'Film, TV and media',
       }
-      req.session.workInterestRolesForm = expectedWorkInterestRolesForm
 
       const expectedView = {
         prisonerSummary,
         form: expectedWorkInterestRolesForm,
         backLinkUrl: '/prisoners/A1234BC/induction/work-interest-types',
         backLinkAriaText: 'Back to What type of work is Jimmy Lightfingers interested in?',
-        errors,
       }
 
       const expectedPageFlowHistory = {
@@ -186,10 +135,6 @@ describe('workInterestRolesUpdateController', () => {
   describe('submitWorkInterestRolesForm', () => {
     it('should update Induction and call API and redirect to work and interests page', async () => {
       // Given
-      req.user.token = 'some-token'
-
-      const prisonerSummary = aValidPrisonerSummary()
-      req.session.prisonerSummary = prisonerSummary
       const inductionDto = aLongQuestionSetInductionDto()
       req.session.inductionDto = inductionDto
 
@@ -200,7 +145,6 @@ describe('workInterestRolesUpdateController', () => {
           OTHER: 'Being a stunt double for Tom Cruise, even though he does all his own stunts',
         },
       }
-      req.session.workInterestRolesForm = undefined
       const updateInductionDto = aLongQuestionSetUpdateInductionRequest()
 
       mockedCreateOrUpdateInductionDtoMapper.mockReturnValueOnce(updateInductionDto)
@@ -237,16 +181,11 @@ describe('workInterestRolesUpdateController', () => {
 
       expect(inductionService.updateInduction).toHaveBeenCalledWith(prisonNumber, updateInductionDto, 'some-token')
       expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/view/work-and-interests`)
-      expect(req.session.workInterestRolesForm).toBeUndefined()
       expect(req.session.inductionDto).toBeUndefined()
     })
 
     it('should update InductionDto and redirect to Personal Skills given long question set journey', async () => {
       // Given
-      req.user.token = 'some-token'
-
-      const prisonerSummary = aValidPrisonerSummary()
-      req.session.prisonerSummary = prisonerSummary
       const inductionDto = aLongQuestionSetInductionDto()
       req.session.inductionDto = inductionDto
 
@@ -257,7 +196,6 @@ describe('workInterestRolesUpdateController', () => {
           OTHER: 'Being a stunt double for Tom Cruise, even though he does all his own stunts',
         },
       }
-      req.session.workInterestRolesForm = undefined
 
       req.session.updateInductionQuestionSet = { hopingToWorkOnRelease: 'YES' }
       const expectedNextPage = '/prisoners/A1234BC/induction/skills'
@@ -297,17 +235,12 @@ describe('workInterestRolesUpdateController', () => {
         req.session.inductionDto.futureWorkInterests.interests
       expect(futureWorkInterestsOnInduction).toEqual(expectedUpdatedWorkInterests)
       expect(res.redirect).toHaveBeenCalledWith(expectedNextPage)
-      expect(req.session.workInterestTypesForm).toBeUndefined()
       expect(inductionService.updateInduction).not.toHaveBeenCalled()
       expect(req.session.pageFlowHistory).toEqual(expectedPageFlowHistory)
     })
 
     it('should not update Induction given error calling service', async () => {
       // Given
-      req.user.token = 'some-token'
-
-      const prisonerSummary = aValidPrisonerSummary()
-      req.session.prisonerSummary = prisonerSummary
       const inductionDto = aLongQuestionSetInductionDto()
       req.session.inductionDto = inductionDto
 
@@ -318,7 +251,6 @@ describe('workInterestRolesUpdateController', () => {
           OTHER: 'Being a stunt double for Tom Cruise, even though he does all his own stunts',
         },
       }
-      req.session.workInterestRolesForm = undefined
       const updateInductionDto = aLongQuestionSetUpdateInductionRequest()
 
       mockedCreateOrUpdateInductionDtoMapper.mockReturnValueOnce(updateInductionDto)
@@ -339,13 +271,6 @@ describe('workInterestRolesUpdateController', () => {
           role: 'Being a stunt double for Tom Cruise, even though he does all his own stunts',
         },
       ]
-      const expectedWorkInterestsForm = {
-        workInterestRoles: new Map<WorkInterestTypeValue, string>([
-          [WorkInterestTypeValue.RETAIL, null],
-          [WorkInterestTypeValue.CONSTRUCTION, 'General labourer'],
-          [WorkInterestTypeValue.OTHER, 'Being a stunt double for Tom Cruise, even though he does all his own stunts'],
-        ]),
-      }
 
       inductionService.updateInduction.mockRejectedValue(createError(500, 'Service unavailable'))
       const expectedError = createError(
@@ -368,14 +293,11 @@ describe('workInterestRolesUpdateController', () => {
 
       expect(inductionService.updateInduction).toHaveBeenCalledWith(prisonNumber, updateInductionDto, 'some-token')
       expect(next).toHaveBeenCalledWith(expectedError)
-      expect(req.session.workInterestRolesForm).toEqual(expectedWorkInterestsForm)
       expect(req.session.inductionDto).toEqual(inductionDto)
     })
 
     it('should update induction DTO and redirect back to check your answers page when coming from check your answers', async () => {
       // Given
-      const prisonerSummary = aValidPrisonerSummary()
-      req.session.prisonerSummary = prisonerSummary
       req.session.inductionDto = aLongQuestionSetInductionDto()
       req.session.inductionDto.futureWorkInterests.interests = [
         { workType: WorkInterestTypeValue.DRIVING },

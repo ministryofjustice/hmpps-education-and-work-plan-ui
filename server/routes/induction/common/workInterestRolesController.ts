@@ -20,17 +20,35 @@ export default abstract class WorkInterestRolesController extends InductionContr
       this.addCurrentPageToHistory(req)
     }
 
-    const workInterestRolesForm = req.session.workInterestRolesForm || toWorkInterestRolesForm(inductionDto)
-    req.session.workInterestRolesForm = undefined
+    const workInterestRolesForm = toWorkInterestRolesForm(inductionDto)
 
     const view = new WorkInterestRolesView(
       prisonerSummary,
       this.getBackLinkUrl(req),
       this.getBackLinkAriaText(req),
       workInterestRolesForm,
-      req.flash('errors'),
     )
     return res.render('pages/induction/workInterests/workInterestRoles', { ...view.renderArgs })
+  }
+
+  protected updatedInductionDtoWithWorkInterestRoles(
+    inductionDto: InductionDto,
+    workInterestRolesForm: WorkInterestRolesForm,
+  ): InductionDto {
+    const updatedWorkInterests = inductionDto.futureWorkInterests.interests.map(interest => {
+      return {
+        workType: interest.workType,
+        workTypeOther: interest.workTypeOther,
+        role: workInterestRolesForm.workInterestRoles?.get(interest.workType),
+      }
+    })
+    return {
+      ...inductionDto,
+      futureWorkInterests: {
+        ...inductionDto.futureWorkInterests,
+        interests: updatedWorkInterests,
+      },
+    }
   }
 }
 
