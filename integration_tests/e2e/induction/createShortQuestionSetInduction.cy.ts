@@ -10,7 +10,7 @@ context('Create a short question set Induction', () => {
     cy.signInAsUserWithEditAuthorityToArriveOnPrisonerListPage()
   })
 
-  it('should create a long question set Induction', () => {
+  it('should create a short question set Induction', () => {
     // Given
     const prisonNumberForPrisonerWithNoInduction = 'A00001A'
     cy.task('getActionPlan', prisonNumberForPrisonerWithNoInduction)
@@ -26,6 +26,11 @@ context('Create a short question set Induction', () => {
     overviewPage.clickMakeProgressPlan()
     Page.verifyOnPage(HopingToWorkOnReleasePage) //
       .hasBackLinkTo('/plan/A00001A/view/overview')
+      .submitPage() // submit the page without answering the question to trigger a validation error
+    Page.verifyOnPage(HopingToWorkOnReleasePage) //
+      .hasBackLinkTo('/plan/A00001A/view/overview')
+      .hasErrorCount(1)
+      .hasFieldInError('hopingToGetWork')
       .selectHopingWorkOnRelease(HopingToGetWorkValue.NO)
       .submitPage()
     Page.verifyOnPage(ReasonsNotToGetWorkPage)

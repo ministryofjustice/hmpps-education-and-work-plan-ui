@@ -34,9 +34,11 @@ describe('asArray', () => {
     ['Null', null, []],
     ['Undefined', undefined, []],
     ['Empty string', '', []],
+    ['False', false, [false]],
     ['String', 'a string', ['a string']],
     ['Array', ['string 1', 'string 2'], ['string 1', 'string 2']],
-  ])('%s value asArray(%s, %s)', (_: string, a: string | Array<string>, expected: string | Array<string>) => {
+    ['Empty Array', [], []],
+  ])('%s value asArray(%s, %s)', (_: string, a: unknown, expected: Array<unknown>) => {
     expect(asArray(a)).toEqual(expected)
   })
 })

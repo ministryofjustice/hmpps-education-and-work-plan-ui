@@ -3,6 +3,7 @@ import type { InductionDto } from 'inductionDto'
 import type { ReasonsNotToGetWorkForm } from 'inductionForms'
 import InductionController from './inductionController'
 import ReasonsNotToGetWorkView from './reasonsNotToGetWorkView'
+import { buildNewPageFlowHistory } from '../../pageFlowHistory'
 
 /**
  * Abstract controller class defining functionality common to both the Create and Update Induction journeys.
@@ -18,8 +19,11 @@ export default abstract class ReasonsNotToGetWorkController extends InductionCon
   ): Promise<void> => {
     const { prisonerSummary, inductionDto } = req.session
 
-    // Check if we are in the midst of changing the main induction question set (i.e. from long route to short route)
-    if (req.session.updateInductionQuestionSet) {
+    if (!req.session.pageFlowHistory) {
+      req.session.pageFlowHistory = buildNewPageFlowHistory(req)
+    }
+
+    if (req.session.updateInductionQuestionSet || req.session.pageFlowHistory) {
       this.addCurrentPageToHistory(req)
     }
 
@@ -44,7 +48,7 @@ export default abstract class ReasonsNotToGetWorkController extends InductionCon
       ...inductionDto,
       workOnRelease: {
         ...inductionDto.workOnRelease,
-        notHopingToWorkReasons: reasonsNotToGetWorkForm.reasonsNotToGetWork ?? [],
+        notHopingToWorkReasons: reasonsNotToGetWorkForm.reasonsNotToGetWork || [],
         notHopingToWorkOtherReason: reasonsNotToGetWorkForm.reasonsNotToGetWorkOther,
       },
     }
@@ -53,7 +57,7 @@ export default abstract class ReasonsNotToGetWorkController extends InductionCon
 
 const toReasonsNotToGetWorkForm = (inductionDto: InductionDto): ReasonsNotToGetWorkForm => {
   return {
-    reasonsNotToGetWork: inductionDto?.workOnRelease?.notHopingToWorkReasons ?? [],
-    reasonsNotToGetWorkOther: inductionDto?.workOnRelease?.notHopingToWorkOtherReason,
+    reasonsNotToGetWork: inductionDto.workOnRelease.notHopingToWorkReasons || [],
+    reasonsNotToGetWorkOther: inductionDto.workOnRelease.notHopingToWorkOtherReason,
   }
 }

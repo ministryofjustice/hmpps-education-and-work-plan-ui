@@ -14,7 +14,8 @@ export default class ReasonsNotToGetWorkCreateController extends ReasonsNotToGet
     const { prisonNumber } = req.params
     const { pageFlowHistory } = req.session
     if (pageFlowHistory) {
-      return getPreviousPage(pageFlowHistory)
+      const previousPage = getPreviousPage(pageFlowHistory)
+      if (previousPage) return previousPage
     }
     return `/prisoners/${prisonNumber}/create-induction/hoping-to-work-on-release`
   }
@@ -46,10 +47,6 @@ export default class ReasonsNotToGetWorkCreateController extends ReasonsNotToGet
     req.session.inductionDto = this.updatedInductionDtoWithReasonsNotToGetWork(inductionDto, reasonsNotToGetWorkForm)
     req.session.reasonsNotToGetWorkForm = undefined
 
-    const nextPage =
-      inductionDto.previousQualifications?.qualifications?.length > 0
-        ? `/prisoners/${prisonNumber}/create-induction/qualifications`
-        : `/prisoners/${prisonNumber}/create-induction/want-to-add-qualifications`
-    return res.redirect(nextPage)
+    return res.redirect(`/prisoners/${prisonNumber}/create-induction/want-to-add-qualifications`)
   }
 }

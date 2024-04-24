@@ -22,7 +22,7 @@ export const initialiseName = (fullName?: string): string | null => {
   return `${array[0][0]}. ${array.reverse()[0]}`
 }
 
-export function asArray(value?: string | string[]): string[] {
+export function asArray<T>(value?: T | T[]): T[] {
   if (Array.isArray(value)) return value
   if (value === undefined || value === null || value === '') return []
   return [value]

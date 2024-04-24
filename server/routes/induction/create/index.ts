@@ -19,6 +19,7 @@ import WorkInterestTypesCreateController from './workInterestTypesCreateControll
 import WorkInterestRolesCreateController from './workInterestRolesCreateController'
 import SkillsCreateController from './skillsCreateController'
 import ReasonsNotToGetWorkCreateController from './reasonsNotToGetWorkCreateController'
+import asyncMiddleware from '../../../middleware/asyncMiddleware'
 
 /**
  * Route definitions for creating an Induction
@@ -136,7 +137,7 @@ export default (router: Router, services: Services) => {
     router.get('/prisoners/:prisonNumber/create-induction/skills', [skillsCreateController.getSkillsView])
 
     router.get('/prisoners/:prisonNumber/create-induction/reasons-not-to-get-work', [
-      reasonsNotToGetWorkCreateController.getReasonsNotToGetWorkView,
+      asyncMiddleware(reasonsNotToGetWorkCreateController.getReasonsNotToGetWorkView),
     ])
     router.post('/prisoners/:prisonNumber/create-induction/reasons-not-to-get-work', [
       reasonsNotToGetWorkCreateController.submitReasonsNotToGetWorkForm,

@@ -5,7 +5,7 @@ import type { ReasonsNotToGetWorkForm } from 'inductionForms'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
 import ReasonsNotToGetWorkCreateController from './reasonsNotToGetWorkCreateController'
 import ReasonNotToGetWorkValue from '../../../enums/reasonNotToGetWorkValue'
-import QualificationLevelValue from '../../../enums/qualificationLevelValue'
+import HopingToGetWorkValue from '../../../enums/hopingToGetWorkValue'
 
 describe('reasonsNotToGetWorkCreateController', () => {
   const controller = new ReasonsNotToGetWorkCreateController()
@@ -21,6 +21,7 @@ describe('reasonsNotToGetWorkCreateController', () => {
   beforeEach(() => {
     jest.resetAllMocks()
     req = {
+      path: `/prisoners/${prisonNumber}/create-induction/reasons-not-to-get-work`,
       session: {} as SessionData,
       body: {},
       user: {} as Express.User,
@@ -40,7 +41,12 @@ describe('reasonsNotToGetWorkCreateController', () => {
       const prisonerSummary = aValidPrisonerSummary()
       req.session.prisonerSummary = prisonerSummary
 
-      const inductionDto: InductionDto = undefined
+      const inductionDto: InductionDto = {
+        prisonNumber,
+        workOnRelease: {
+          hopingToWork: HopingToGetWorkValue.NO,
+        },
+      } as InductionDto
       req.session.inductionDto = inductionDto
 
       req.session.reasonsNotToGetWorkForm = undefined
@@ -49,6 +55,11 @@ describe('reasonsNotToGetWorkCreateController', () => {
         reasonsNotToGetWork: [],
       }
 
+      req.session.pageFlowHistory = {
+        pageUrls: [`/prisoners/${prisonNumber}/create-induction/hoping-to-work-on-release`],
+        currentPageIndex: 0,
+      }
+
       const expectedView = {
         prisonerSummary,
         form: expectedReasonsNotToGetWorkForm,
@@ -64,6 +75,13 @@ describe('reasonsNotToGetWorkCreateController', () => {
       expect(res.render).toHaveBeenCalledWith('pages/induction/reasonsNotToGetWork/index', expectedView)
       expect(req.session.hopingToWorkOnReleaseForm).toBeUndefined()
       expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(req.session.pageFlowHistory).toEqual({
+        pageUrls: [
+          '/prisoners/A1234BC/create-induction/hoping-to-work-on-release',
+          '/prisoners/A1234BC/create-induction/reasons-not-to-get-work',
+        ],
+        currentPageIndex: 1,
+      })
     })
 
     it('should get the reasons not to get work create view with form data', async () => {
@@ -71,13 +89,23 @@ describe('reasonsNotToGetWorkCreateController', () => {
       const prisonerSummary = aValidPrisonerSummary()
       req.session.prisonerSummary = prisonerSummary
 
-      const inductionDto: InductionDto = undefined
+      const inductionDto: InductionDto = {
+        prisonNumber,
+        workOnRelease: {
+          hopingToWork: HopingToGetWorkValue.NO,
+        },
+      } as InductionDto
       req.session.inductionDto = inductionDto
 
       const expectedReasonsNotToGetWorkForm: ReasonsNotToGetWorkForm = {
         reasonsNotToGetWork: [ReasonNotToGetWorkValue.HEALTH, ReasonNotToGetWorkValue.LIMIT_THEIR_ABILITY],
       }
       req.session.reasonsNotToGetWorkForm = expectedReasonsNotToGetWorkForm
+
+      req.session.pageFlowHistory = {
+        pageUrls: [`/prisoners/${prisonNumber}/create-induction/hoping-to-work-on-release`],
+        currentPageIndex: 0,
+      }
 
       const expectedView = {
         prisonerSummary,
@@ -94,6 +122,13 @@ describe('reasonsNotToGetWorkCreateController', () => {
       expect(res.render).toHaveBeenCalledWith('pages/induction/reasonsNotToGetWork/index', expectedView)
       expect(req.session.hopingToWorkOnReleaseForm).toBeUndefined()
       expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(req.session.pageFlowHistory).toEqual({
+        pageUrls: [
+          '/prisoners/A1234BC/create-induction/hoping-to-work-on-release',
+          '/prisoners/A1234BC/create-induction/reasons-not-to-get-work',
+        ],
+        currentPageIndex: 1,
+      })
     })
   })
 
@@ -102,9 +137,16 @@ describe('reasonsNotToGetWorkCreateController', () => {
       // Given
       const prisonerSummary = aValidPrisonerSummary()
       req.session.prisonerSummary = prisonerSummary
-      const inductionDto = { prisonNumber } as InductionDto
+      const inductionDto = {
+        prisonNumber,
+        workOnRelease: {
+          hopingToWork: HopingToGetWorkValue.NO,
+        },
+      } as InductionDto
       req.session.inductionDto = inductionDto
-      req.body = {}
+      req.body = {
+        reasonsNotToGetWork: [ReasonNotToGetWorkValue.NOT_SURE, ReasonNotToGetWorkValue.HEALTH],
+      }
 
       const expectedErrors = [
         {
@@ -119,7 +161,9 @@ describe('reasonsNotToGetWorkCreateController', () => {
       // Then
       expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-induction/reasons-not-to-get-work')
       expect(req.flash).toHaveBeenCalledWith('errors', expectedErrors)
-      expect(req.session.hopingToWorkOnReleaseForm).toEqual(undefined)
+      expect(req.session.reasonsNotToGetWorkForm).toEqual({
+        reasonsNotToGetWork: ['NOT_SURE', 'HEALTH'],
+      })
       expect(req.session.inductionDto).toEqual(inductionDto)
     })
 
@@ -127,7 +171,12 @@ describe('reasonsNotToGetWorkCreateController', () => {
       // Given
       const prisonerSummary = aValidPrisonerSummary()
       req.session.prisonerSummary = prisonerSummary
-      const inductionDto = { prisonNumber } as InductionDto
+      const inductionDto = {
+        prisonNumber,
+        workOnRelease: {
+          hopingToWork: HopingToGetWorkValue.NO,
+        },
+      } as InductionDto
       req.session.inductionDto = inductionDto
 
       req.body = {
@@ -137,6 +186,7 @@ describe('reasonsNotToGetWorkCreateController', () => {
       const expectedInduction = {
         prisonNumber,
         workOnRelease: {
+          hopingToWork: HopingToGetWorkValue.NO,
           notHopingToWorkReasons: ['FULL_TIME_CARER', 'LACKS_CONFIDENCE_OR_MOTIVATION'],
         },
       } as InductionDto
@@ -147,55 +197,7 @@ describe('reasonsNotToGetWorkCreateController', () => {
       // Then
       expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-induction/want-to-add-qualifications')
       expect(req.flash).toHaveBeenCalledTimes(0)
-      expect(req.session.hopingToWorkOnReleaseForm).toEqual(undefined)
-      expect(req.session.inductionDto).toEqual(expectedInduction)
-    })
-
-    it('should update induction DTO and redirect to qualifcations page', async () => {
-      // Given
-      const prisonerSummary = aValidPrisonerSummary()
-      req.session.prisonerSummary = prisonerSummary
-      const inductionDto = {
-        prisonNumber,
-        previousQualifications: {
-          qualifications: [
-            {
-              subject: 'Maths',
-              level: QualificationLevelValue.LEVEL_1,
-              grade: 'C',
-            },
-          ],
-        },
-      } as InductionDto
-      req.session.inductionDto = inductionDto
-
-      req.body = {
-        reasonsNotToGetWork: ['FULL_TIME_CARER', 'LACKS_CONFIDENCE_OR_MOTIVATION'],
-      }
-
-      const expectedInduction = {
-        prisonNumber,
-        previousQualifications: {
-          qualifications: [
-            {
-              subject: 'Maths',
-              level: QualificationLevelValue.LEVEL_1,
-              grade: 'C',
-            },
-          ],
-        },
-        workOnRelease: {
-          notHopingToWorkReasons: ['FULL_TIME_CARER', 'LACKS_CONFIDENCE_OR_MOTIVATION'],
-        },
-      } as InductionDto
-
-      // When
-      await controller.submitReasonsNotToGetWorkForm(req, res, next)
-
-      // Then
-      expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-induction/qualifications')
-      expect(req.flash).toHaveBeenCalledTimes(0)
-      expect(req.session.hopingToWorkOnReleaseForm).toEqual(undefined)
+      expect(req.session.reasonsNotToGetWorkForm).toEqual(undefined)
       expect(req.session.inductionDto).toEqual(expectedInduction)
     })
   })
