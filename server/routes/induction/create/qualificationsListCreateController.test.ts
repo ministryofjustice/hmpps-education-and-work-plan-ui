@@ -152,11 +152,6 @@ describe('qualificationsListCreateController', () => {
       const inductionDto = aLongQuestionSetInductionDto()
       req.session.inductionDto = inductionDto
 
-      const expectedPageFlowHistory = {
-        pageUrls: [`/prisoners/${prisonNumber}/create-induction/qualifications`],
-        currentPageIndex: 0,
-      }
-
       // When
       await controller.submitQualificationsListView(
         req as undefined as Request,
@@ -165,8 +160,8 @@ describe('qualificationsListCreateController', () => {
       )
 
       // Then
-      expect(req.session.pageFlowHistory).toEqual(expectedPageFlowHistory)
       expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-induction/additional-training')
+      expect(req.session.pageFlowHistory).toBeUndefined()
     })
   })
 })

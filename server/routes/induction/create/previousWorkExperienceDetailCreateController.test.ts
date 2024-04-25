@@ -408,14 +408,6 @@ describe('previousWorkExperienceDetailCreateController', () => {
         },
       ]
 
-      const expectedPageFlowHistory = {
-        pageUrls: [
-          `/prisoners/${prisonNumber}/create-induction/has-worked-before`,
-          `/prisoners/${prisonNumber}/create-induction/previous-work-experience`,
-        ],
-        currentPageIndex: 1,
-      }
-
       // When
       await controller.submitPreviousWorkExperienceDetailForm(
         req as undefined as Request,
@@ -427,7 +419,7 @@ describe('previousWorkExperienceDetailCreateController', () => {
       expect(res.redirect).toHaveBeenCalledWith(expectedNextPage)
       expect(req.session.previousWorkExperienceDetailForm).toBeUndefined()
       expect(req.session.pageFlowQueue).toBeUndefined()
-      expect(req.session.pageFlowHistory).toEqual(expectedPageFlowHistory)
+      expect(req.session.pageFlowHistory).toBeUndefined()
       expect(req.session.inductionDto.previousWorkExperiences.experiences).toEqual(expectedWorkExperiences)
     })
   })

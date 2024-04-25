@@ -16,7 +16,7 @@ export default abstract class WorkedBeforeController extends InductionController
     const { prisonerSummary, inductionDto } = req.session
 
     // Check if we are in the midst of changing the main induction question set (in this case from short route to long route)
-    if (req.session.updateInductionQuestionSet || req.session.pageFlowHistory) {
+    if (req.session.updateInductionQuestionSet) {
       this.addCurrentPageToHistory(req)
     }
 

@@ -1,7 +1,6 @@
 import createError from 'http-errors'
 import { NextFunction, Request, RequestHandler, Response } from 'express'
 import type { InductionDto } from 'inductionDto'
-import type { PageFlow } from 'viewModels'
 import PreviousWorkExperienceDetailController from '../common/previousWorkExperienceDetailController'
 import { getPreviousPage } from '../../pageFlowHistory'
 import getDynamicBackLinkAriaText from '../dynamicAriaTextResolver'
@@ -59,37 +58,17 @@ export default class PreviousWorkExperienceDetailCreateController extends Previo
     req.session.inductionDto = updatedInduction
     req.session.previousWorkExperienceDetailForm = undefined
 
-    const { pageFlowQueue, pageFlowHistory } = req.session
+    const { pageFlowQueue } = req.session
     if (!isLastPage(pageFlowQueue)) {
       // We are not on the last page of the queue yet - redirect to the next page in the queue
       return res.redirect(getNextPage(pageFlowQueue))
     }
 
     // We are at the end of the page flow queue
-    // Tidy up by removing the page flow queue, removing the individual job detail pages from the page history, and
+    // Tidy up by removing both the page flow queue and the page history, and
     // redirect to next page in the question set (post-release work interests)
     req.session.pageFlowQueue = undefined
-    req.session.pageFlowHistory = pageFlowHistoryWithWorkExperienceDetailPagesRemoved(pageFlowHistory, prisonNumber)
+    req.session.pageFlowHistory = undefined
     return res.redirect(`/prisoners/${prisonNumber}/create-induction/work-interest-types`)
-  }
-}
-
-const pageFlowHistoryWithWorkExperienceDetailPagesRemoved = (
-  pageFlowHistory: PageFlow,
-  prisonNumber: string,
-): PageFlow => {
-  const indexOfWorkExperienceTypesPage = pageFlowHistory.pageUrls.lastIndexOf(
-    `/prisoners/${prisonNumber}/create-induction/previous-work-experience`,
-  )
-  if (indexOfWorkExperienceTypesPage === -1) {
-    return pageFlowHistory
-  }
-
-  const pageUrls = [...pageFlowHistory.pageUrls]
-  pageUrls.splice(indexOfWorkExperienceTypesPage + 1)
-
-  return {
-    pageUrls,
-    currentPageIndex: indexOfWorkExperienceTypesPage,
   }
 }
