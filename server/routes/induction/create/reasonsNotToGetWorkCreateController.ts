@@ -2,7 +2,6 @@ import { NextFunction, Request, RequestHandler, Response } from 'express'
 import type { ReasonsNotToGetWorkForm } from 'inductionForms'
 import ReasonsNotToGetWorkController from '../common/reasonsNotToGetWorkController'
 import validateReasonsNotToGetWorkForm from '../../validators/induction/reasonsNotToGetWorkFormValidator'
-import { getPreviousPage } from '../../pageFlowHistory'
 import getDynamicBackLinkAriaText from '../dynamicAriaTextResolver'
 import { asArray } from '../../../utils/utils'
 
@@ -12,11 +11,6 @@ import { asArray } from '../../../utils/utils'
 export default class ReasonsNotToGetWorkCreateController extends ReasonsNotToGetWorkController {
   getBackLinkUrl(req: Request): string {
     const { prisonNumber } = req.params
-    const { pageFlowHistory } = req.session
-    if (pageFlowHistory) {
-      const previousPage = getPreviousPage(pageFlowHistory)
-      if (previousPage) return previousPage
-    }
     return `/prisoners/${prisonNumber}/create-induction/hoping-to-work-on-release`
   }
 

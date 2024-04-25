@@ -3,7 +3,6 @@ import type { InductionDto } from 'inductionDto'
 import type { ReasonsNotToGetWorkForm } from 'inductionForms'
 import InductionController from './inductionController'
 import ReasonsNotToGetWorkView from './reasonsNotToGetWorkView'
-import { buildNewPageFlowHistory } from '../../pageFlowHistory'
 
 /**
  * Abstract controller class defining functionality common to both the Create and Update Induction journeys.
@@ -19,11 +18,7 @@ export default abstract class ReasonsNotToGetWorkController extends InductionCon
   ): Promise<void> => {
     const { prisonerSummary, inductionDto } = req.session
 
-    if (!req.session.pageFlowHistory) {
-      req.session.pageFlowHistory = buildNewPageFlowHistory(req)
-    }
-
-    if (req.session.updateInductionQuestionSet || req.session.pageFlowHistory) {
+    if (req.session.updateInductionQuestionSet) {
       this.addCurrentPageToHistory(req)
     }
 

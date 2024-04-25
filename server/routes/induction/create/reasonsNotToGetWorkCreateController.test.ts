@@ -75,13 +75,6 @@ describe('reasonsNotToGetWorkCreateController', () => {
       expect(res.render).toHaveBeenCalledWith('pages/induction/reasonsNotToGetWork/index', expectedView)
       expect(req.session.hopingToWorkOnReleaseForm).toBeUndefined()
       expect(req.session.inductionDto).toEqual(inductionDto)
-      expect(req.session.pageFlowHistory).toEqual({
-        pageUrls: [
-          '/prisoners/A1234BC/create-induction/hoping-to-work-on-release',
-          '/prisoners/A1234BC/create-induction/reasons-not-to-get-work',
-        ],
-        currentPageIndex: 1,
-      })
     })
 
     it('should get the reasons not to get work create view with form data', async () => {
@@ -122,13 +115,6 @@ describe('reasonsNotToGetWorkCreateController', () => {
       expect(res.render).toHaveBeenCalledWith('pages/induction/reasonsNotToGetWork/index', expectedView)
       expect(req.session.hopingToWorkOnReleaseForm).toBeUndefined()
       expect(req.session.inductionDto).toEqual(inductionDto)
-      expect(req.session.pageFlowHistory).toEqual({
-        pageUrls: [
-          '/prisoners/A1234BC/create-induction/hoping-to-work-on-release',
-          '/prisoners/A1234BC/create-induction/reasons-not-to-get-work',
-        ],
-        currentPageIndex: 1,
-      })
     })
   })
 

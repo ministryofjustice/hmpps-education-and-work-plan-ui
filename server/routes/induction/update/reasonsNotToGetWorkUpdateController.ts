@@ -20,8 +20,7 @@ export default class ReasonsNotToGetWorkUpdateController extends ReasonsNotToGet
     const { prisonNumber } = req.params
     const { pageFlowHistory } = req.session
     if (pageFlowHistory) {
-      const previousPage = getPreviousPage(pageFlowHistory)
-      if (previousPage) return previousPage
+      return getPreviousPage(pageFlowHistory)
     }
     return `/plan/${prisonNumber}/view/work-and-interests`
   }
