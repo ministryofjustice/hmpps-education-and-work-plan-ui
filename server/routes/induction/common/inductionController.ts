@@ -28,7 +28,7 @@ export default abstract class InductionController {
    */
   previousPageWasCheckYourAnswers(req: Request): boolean {
     const { pageFlowHistory } = req.session
-    return pageFlowHistory && getPreviousPage(pageFlowHistory)?.endsWith('/check-your-answers')
+    return pageFlowHistory && getPreviousPage(pageFlowHistory).endsWith('/check-your-answers')
   }
 
   /**

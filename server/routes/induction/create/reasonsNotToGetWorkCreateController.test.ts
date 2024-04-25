@@ -55,11 +55,6 @@ describe('reasonsNotToGetWorkCreateController', () => {
         reasonsNotToGetWork: [],
       }
 
-      req.session.pageFlowHistory = {
-        pageUrls: [`/prisoners/${prisonNumber}/create-induction/hoping-to-work-on-release`],
-        currentPageIndex: 0,
-      }
-
       const expectedView = {
         prisonerSummary,
         form: expectedReasonsNotToGetWorkForm,
@@ -94,11 +89,6 @@ describe('reasonsNotToGetWorkCreateController', () => {
         reasonsNotToGetWork: [ReasonNotToGetWorkValue.HEALTH, ReasonNotToGetWorkValue.LIMIT_THEIR_ABILITY],
       }
       req.session.reasonsNotToGetWorkForm = expectedReasonsNotToGetWorkForm
-
-      req.session.pageFlowHistory = {
-        pageUrls: [`/prisoners/${prisonNumber}/create-induction/hoping-to-work-on-release`],
-        currentPageIndex: 0,
-      }
 
       const expectedView = {
         prisonerSummary,
