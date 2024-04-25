@@ -4,11 +4,11 @@ import config from '../../config'
 import CreateGoalController from './createGoalController'
 import CreateGoalsController from './createGoalsController'
 import { checkUserHasEditAuthority } from '../../middleware/roleBasedAccessControl'
-import retrievePrisonerSummaryIfNotInSession from '../routerRequestHandlers/retrievePrisonerSummaryIfNotInSession'
 import checkNewGoalsFormExistsInSession from '../routerRequestHandlers/checkNewGoalsFormExistsInSession'
 import checkPrisonerSummaryExistsInSession from '../routerRequestHandlers/checkPrisonerSummaryExistsInSession'
 import checkAddStepFormsArrayExistsInSession from '../routerRequestHandlers/checkAddStepFormsArrayExistsInSession'
 import checkCreateGoalFormExistsInSession from '../routerRequestHandlers/checkCreateGoalFormExistsInSession'
+import asyncMiddleware from '../../middleware/asyncMiddleware'
 
 /**
  * Route definitions for the pages relating to Creating A Goal
@@ -28,20 +28,17 @@ export default (router: Router, services: Services) => {
     checkPrisonerSummaryExistsInSession,
     checkNewGoalsFormExistsInSession,
   ])
-  router.get('/plan/:prisonNumber/goals/review', [createGoalController.getReviewGoalView])
-  router.post('/plan/:prisonNumber/goals/review', [createGoalController.submitReviewGoal])
+  router.get('/plan/:prisonNumber/goals/review', [asyncMiddleware(createGoalController.getReviewGoalView)])
+  router.post('/plan/:prisonNumber/goals/review', [asyncMiddleware(createGoalController.submitReviewGoal)])
 }
 
 const createGoalRoutes = (router: Router, services: Services, createGoalController: CreateGoalController) => {
   router.use('/plan/:prisonNumber/goals/:goalIndex/create', [checkUserHasEditAuthority()])
-  router.get('/plan/:prisonNumber/goals/:goalIndex/create', [
-    retrievePrisonerSummaryIfNotInSession(services.prisonerSearchService),
-    createGoalController.getCreateGoalView,
-  ])
+  router.get('/plan/:prisonNumber/goals/:goalIndex/create', [asyncMiddleware(createGoalController.getCreateGoalView)])
   router.post('/plan/:prisonNumber/goals/:goalIndex/create', [
     checkPrisonerSummaryExistsInSession,
     checkCreateGoalFormExistsInSession,
-    createGoalController.submitCreateGoalForm,
+    asyncMiddleware(createGoalController.submitCreateGoalForm),
   ])
 
   router.use('/plan/:prisonNumber/goals/:goalIndex/add-step/:stepIndex', [
@@ -49,8 +46,12 @@ const createGoalRoutes = (router: Router, services: Services, createGoalControll
     checkPrisonerSummaryExistsInSession,
     checkCreateGoalFormExistsInSession,
   ])
-  router.get('/plan/:prisonNumber/goals/:goalIndex/add-step/:stepIndex', [createGoalController.getAddStepView])
-  router.post('/plan/:prisonNumber/goals/:goalIndex/add-step/:stepIndex', [createGoalController.submitAddStepForm])
+  router.get('/plan/:prisonNumber/goals/:goalIndex/add-step/:stepIndex', [
+    asyncMiddleware(createGoalController.getAddStepView),
+  ])
+  router.post('/plan/:prisonNumber/goals/:goalIndex/add-step/:stepIndex', [
+    asyncMiddleware(createGoalController.submitAddStepForm),
+  ])
 
   router.use('/plan/:prisonNumber/goals/:goalIndex/add-note', [
     checkUserHasEditAuthority(),
@@ -58,19 +59,18 @@ const createGoalRoutes = (router: Router, services: Services, createGoalControll
     checkCreateGoalFormExistsInSession,
     checkAddStepFormsArrayExistsInSession,
   ])
-  router.get('/plan/:prisonNumber/goals/:goalIndex/add-note', [createGoalController.getAddNoteView])
-  router.post('/plan/:prisonNumber/goals/:goalIndex/add-note', [createGoalController.submitAddNoteForm])
+  router.get('/plan/:prisonNumber/goals/:goalIndex/add-note', [asyncMiddleware(createGoalController.getAddNoteView)])
+  router.post('/plan/:prisonNumber/goals/:goalIndex/add-note', [
+    asyncMiddleware(createGoalController.submitAddNoteForm),
+  ])
 }
 
 const newCreateGoalRoutes = (router: Router, services: Services, createGoalsController: CreateGoalsController) => {
   router.use('/plan/:prisonNumber/goals/create', [checkUserHasEditAuthority()])
-  router.get('/plan/:prisonNumber/goals/create', [
-    retrievePrisonerSummaryIfNotInSession(services.prisonerSearchService),
-    createGoalsController.getCreateGoalsView,
-  ])
+  router.get('/plan/:prisonNumber/goals/create', [asyncMiddleware(createGoalsController.getCreateGoalsView)])
   router.post('/plan/:prisonNumber/goals/create', [
     checkPrisonerSummaryExistsInSession,
     // TODO - RR-748 - write router request handler to check CreateGoalsForm exists in session,
-    createGoalsController.submitCreateGoalsForm,
+    asyncMiddleware(createGoalsController.submitCreateGoalsForm),
   ])
 }

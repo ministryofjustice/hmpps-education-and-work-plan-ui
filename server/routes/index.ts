@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import type { Services } from '../services'
+import { type Services } from '../services'
 import createGoal from './createGoal'
 import updateGoal from './updateGoal'
 import overview from './overview'
@@ -9,10 +9,15 @@ import postInductionCreation from './postInductionCreation'
 import createInduction from './induction/create'
 import updateInduction from './induction/update'
 import inPrisonCoursesAndQualifications from './inPrisonCoursesAndQualifications'
+import retrievePrisonerSummaryIfNotInSession from './routerRequestHandlers/retrievePrisonerSummaryIfNotInSession'
 
 export default function routes(services: Services): Router {
   const router = Router()
 
+  // Route middleware
+  prisonerSummarySetup(router, services)
+
+  // Application routes
   prisonerList(router, services)
   overview(router, services)
   createGoal(router, services)
@@ -26,4 +31,9 @@ export default function routes(services: Services): Router {
   updateInduction(router, services)
 
   return router
+}
+
+// Setup prisoner summary session for routes with prisonNumber param
+function prisonerSummarySetup(router: Router, services: Services) {
+  router.param('prisonNumber', retrievePrisonerSummaryIfNotInSession(services.prisonerSearchService))
 }

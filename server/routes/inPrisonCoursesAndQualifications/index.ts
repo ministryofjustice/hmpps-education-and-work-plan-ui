@@ -4,7 +4,7 @@ import { Services } from '../../services'
 import { checkUserHasViewAuthority } from '../../middleware/roleBasedAccessControl'
 import InPrisonCoursesAndQualificationsController from './inPrisonCoursesAndQualificationsController'
 import retrieveCuriousInPrisonCourses from '../routerRequestHandlers/retrieveCuriousInPrisonCourses'
-import retrievePrisonerSummaryIfNotInSession from '../routerRequestHandlers/retrievePrisonerSummaryIfNotInSession'
+import asyncMiddleware from '../../middleware/asyncMiddleware'
 
 /**
  * Route definitions for the pages relating to In Prison Courses & Qualifications
@@ -15,9 +15,8 @@ export default (router: Router, services: Services) => {
   if (config.featureToggles.newCourseAndQualificationHistoryEnabled) {
     router.get('/plan/:prisonNumber/in-prison-courses-and-qualifications', [
       checkUserHasViewAuthority(),
-      retrievePrisonerSummaryIfNotInSession(services.prisonerSearchService),
       retrieveCuriousInPrisonCourses(services.curiousService),
-      inPrisonCoursesAndQualificationsController.getInPrisonCoursesAndQualificationsView,
+      asyncMiddleware(inPrisonCoursesAndQualificationsController.getInPrisonCoursesAndQualificationsView),
     ])
   }
 }

@@ -2,7 +2,7 @@ import type { Router } from 'express'
 import { Services } from '../../services'
 import { checkUserHasViewAuthority } from '../../middleware/roleBasedAccessControl'
 import FunctionalSkillsController from './functionalSkillsController'
-import retrievePrisonerSummaryIfNotInSession from '../routerRequestHandlers/retrievePrisonerSummaryIfNotInSession'
+import asyncMiddleware from '../../middleware/asyncMiddleware'
 
 /**
  * Route definitions for the pages relating to Functional Skills
@@ -12,7 +12,6 @@ export default (router: Router, services: Services) => {
 
   router.get('/plan/:prisonNumber/functional-skills', [
     checkUserHasViewAuthority(),
-    retrievePrisonerSummaryIfNotInSession(services.prisonerSearchService),
-    functionalSkillsController.getFunctionalSkillsView,
+    asyncMiddleware(functionalSkillsController.getFunctionalSkillsView),
   ])
 }
