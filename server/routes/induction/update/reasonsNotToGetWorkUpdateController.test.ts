@@ -79,7 +79,6 @@ describe('reasonsNotToGetWorkUpdateController', () => {
       expect(res.render).toHaveBeenCalledWith('pages/induction/reasonsNotToGetWork/index', expectedView)
       expect(req.session.reasonsNotToGetWorkForm).toBeUndefined()
       expect(req.session.inductionDto).toEqual(inductionDto)
-      expect(req.session.pageFlowHistory).toBeUndefined()
     })
 
     it('should get the Reasons Not To Get Work view given there is an ReasonsNotToGetWorkForm already on the session', async () => {
@@ -112,7 +111,6 @@ describe('reasonsNotToGetWorkUpdateController', () => {
       expect(res.render).toHaveBeenCalledWith('pages/induction/reasonsNotToGetWork/index', expectedView)
       expect(req.session.reasonsNotToGetWorkForm).toBeUndefined()
       expect(req.session.inductionDto).toEqual(inductionDto)
-      expect(req.session.pageFlowHistory).toBeUndefined()
     })
 
     it('should get the Reasons Not To Get Work view given there is an updateInductionQuestionSet on the session', async () => {

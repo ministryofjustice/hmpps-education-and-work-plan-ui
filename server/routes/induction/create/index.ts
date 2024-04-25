@@ -18,6 +18,8 @@ import PreviousWorkExperienceDetailCreateController from './previousWorkExperien
 import WorkInterestTypesCreateController from './workInterestTypesCreateController'
 import WorkInterestRolesCreateController from './workInterestRolesCreateController'
 import SkillsCreateController from './skillsCreateController'
+import ReasonsNotToGetWorkCreateController from './reasonsNotToGetWorkCreateController'
+import asyncMiddleware from '../../../middleware/asyncMiddleware'
 
 /**
  * Route definitions for creating an Induction
@@ -38,6 +40,7 @@ export default (router: Router, services: Services) => {
   const workInterestTypesCreateController = new WorkInterestTypesCreateController()
   const workInterestRolesCreateController = new WorkInterestRolesCreateController()
   const skillsCreateController = new SkillsCreateController()
+  const reasonsNotToGetWorkCreateController = new ReasonsNotToGetWorkCreateController()
 
   if (config.featureToggles.induction.create.enabled) {
     router.get('/prisoners/:prisonNumber/create-induction/**', [
@@ -132,5 +135,12 @@ export default (router: Router, services: Services) => {
     ])
 
     router.get('/prisoners/:prisonNumber/create-induction/skills', [skillsCreateController.getSkillsView])
+
+    router.get('/prisoners/:prisonNumber/create-induction/reasons-not-to-get-work', [
+      asyncMiddleware(reasonsNotToGetWorkCreateController.getReasonsNotToGetWorkView),
+    ])
+    router.post('/prisoners/:prisonNumber/create-induction/reasons-not-to-get-work', [
+      reasonsNotToGetWorkCreateController.submitReasonsNotToGetWorkForm,
+    ])
   }
 }

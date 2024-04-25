@@ -21,3 +21,9 @@ export const initialiseName = (fullName?: string): string | null => {
   const array = fullName.split(' ')
   return `${array[0][0]}. ${array.reverse()[0]}`
 }
+
+export function asArray<T>(value?: T | T[]): T[] {
+  if (Array.isArray(value)) return value
+  if (value === undefined || value === null || value === '') return []
+  return [value]
+}
