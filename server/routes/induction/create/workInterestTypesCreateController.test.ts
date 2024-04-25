@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from 'express'
 import type { SessionData } from 'express-session'
 import type { WorkInterestTypesForm } from 'inductionForms'
+import type { FutureWorkInterestDto } from 'inductionDto'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
 import { aLongQuestionSetInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
 import WorkInterestTypeValue from '../../../enums/workInterestTypeValue'
@@ -106,6 +107,77 @@ describe('workInterestTypesCreateController', () => {
       expect(res.render).toHaveBeenCalledWith('pages/induction/workInterests/workInterestTypes', expectedView)
       expect(req.session.workInterestTypesForm).toBeUndefined()
       expect(req.session.inductionDto).toEqual(inductionDto)
+    })
+  })
+
+  describe('submitWorkInterestTypesForm', () => {
+    it('should not update Induction given form is submitted with validation errors', async () => {
+      // Given
+      const inductionDto = aLongQuestionSetInductionDto()
+      inductionDto.futureWorkInterests = undefined
+      req.session.inductionDto = inductionDto
+
+      const invalidWorkInterestTypesForm = {
+        workInterestTypes: [WorkInterestTypeValue.OTHER],
+        workInterestTypesOther: '',
+      }
+      req.body = invalidWorkInterestTypesForm
+      req.session.workInterestTypesForm = undefined
+
+      const expectedErrors = [
+        {
+          href: '#workInterestTypesOther',
+          text: 'Enter the type of work Jimmy Lightfingers is interested in',
+        },
+      ]
+
+      // When
+      await controller.submitWorkInterestTypesForm(
+        req as undefined as Request,
+        res as undefined as Response,
+        next as undefined as NextFunction,
+      )
+
+      // Then
+      expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-induction/work-interest-types')
+      expect(req.flash).toHaveBeenCalledWith('errors', expectedErrors)
+      expect(req.session.workInterestTypesForm).toEqual(invalidWorkInterestTypesForm)
+      expect(req.session.inductionDto).toEqual(inductionDto)
+    })
+
+    it('should update InductionDto and redirect to Work Interests Details', async () => {
+      // Given
+      const inductionDto = aLongQuestionSetInductionDto()
+      inductionDto.futureWorkInterests = undefined
+      req.session.inductionDto = inductionDto
+
+      const workInterestTypesForm = {
+        workInterestTypes: [WorkInterestTypeValue.DRIVING, WorkInterestTypeValue.OTHER],
+        workInterestTypesOther: 'Natural world',
+      }
+      req.body = workInterestTypesForm
+      req.session.workInterestTypesForm = undefined
+
+      const expectedNextPage = '/prisoners/A1234BC/create-induction/work-interest-roles'
+
+      const expectedFutureWorkInterests: Array<FutureWorkInterestDto> = [
+        { workType: WorkInterestTypeValue.DRIVING, workTypeOther: undefined, role: undefined },
+        { workType: WorkInterestTypeValue.OTHER, workTypeOther: 'Natural world', role: undefined },
+      ]
+
+      // When
+      await controller.submitWorkInterestTypesForm(
+        req as undefined as Request,
+        res as undefined as Response,
+        next as undefined as NextFunction,
+      )
+
+      // Then
+      const futureWorkInterestsOnInduction: Array<FutureWorkInterestDto> =
+        req.session.inductionDto.futureWorkInterests.interests
+      expect(futureWorkInterestsOnInduction).toEqual(expectedFutureWorkInterests)
+      expect(res.redirect).toHaveBeenCalledWith(expectedNextPage)
+      expect(req.session.workInterestTypesForm).toBeUndefined()
     })
   })
 })

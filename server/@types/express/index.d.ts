@@ -23,7 +23,6 @@ import type {
   SkillsForm,
   WantToAddQualificationsForm,
   WorkedBeforeForm,
-  WorkInterestRolesForm,
   WorkInterestTypesForm,
 } from 'inductionForms'
 import type { InductionDto } from 'inductionDto'
@@ -60,7 +59,6 @@ declare module 'express-session' {
     affectAbilityToWorkForm: AffectAbilityToWorkForm
     reasonsNotToGetWorkForm: ReasonsNotToGetWorkForm
     workInterestTypesForm: WorkInterestTypesForm
-    workInterestRolesForm: WorkInterestRolesForm
     wantToAddQualificationsForm: WantToAddQualificationsForm
     highestLevelOfEducationForm: HighestLevelOfEducationForm
     qualificationLevelForm: QualificationLevelForm

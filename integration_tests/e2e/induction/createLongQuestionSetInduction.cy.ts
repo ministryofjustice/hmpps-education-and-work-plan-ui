@@ -15,6 +15,9 @@ import PreviousWorkExperienceTypesPage from '../../pages/induction/PreviousWorkE
 import TypeOfWorkExperienceValue from '../../../server/enums/typeOfWorkExperienceValue'
 import PreviousWorkExperienceDetailPage from '../../pages/induction/PreviousWorkExperienceDetailPage'
 import FutureWorkInterestTypesPage from '../../pages/induction/FutureWorkInterestTypesPage'
+import WorkInterestTypeValue from '../../../server/enums/workInterestTypeValue'
+import FutureWorkInterestRolesPage from '../../pages/induction/FutureWorkInterestRolesPage'
+import SkillsPage from '../../pages/induction/SkillsPage'
 
 context('Create a long question set Induction', () => {
   beforeEach(() => {
@@ -166,6 +169,28 @@ context('Create a long question set Induction', () => {
     // Future Work Interest Types page is next
     Page.verifyOnPage(FutureWorkInterestTypesPage) //
       .hasBackLinkTo('/prisoners/A00001A/create-induction/has-worked-before')
+      .submitPage() // submit the page without answering the question to trigger a validation error
+    Page.verifyOnPage(FutureWorkInterestTypesPage) //
+      .hasBackLinkTo('/prisoners/A00001A/create-induction/has-worked-before')
+      .hasErrorCount(1)
+      .hasFieldInError('workInterestTypes')
+      .chooseWorkInterestType(WorkInterestTypeValue.OUTDOOR)
+      .chooseWorkInterestType(WorkInterestTypeValue.DRIVING)
+      .chooseWorkInterestType(WorkInterestTypeValue.OTHER)
+      .setWorkInterestTypesOther('Natural world')
+      .submitPage()
+
+    // Future Work Interest Roles page is next, with a field for each work interest type
+    Page.verifyOnPage(FutureWorkInterestRolesPage) //
+      .hasBackLinkTo('/prisoners/A00001A/create-induction/work-interest-types')
+      .setWorkInterestRole(WorkInterestTypeValue.OUTDOOR, 'Farm hand')
+      .setWorkInterestRole(WorkInterestTypeValue.DRIVING, 'Delivery driver')
+      .setWorkInterestRole(WorkInterestTypeValue.OTHER, 'Botanist')
+      .submitPage()
+
+    // Personal Skills page is next
+    Page.verifyOnPage(SkillsPage) //
+      .hasBackLinkTo('/prisoners/A00001A/create-induction/work-interest-roles')
 
     // Then
   })

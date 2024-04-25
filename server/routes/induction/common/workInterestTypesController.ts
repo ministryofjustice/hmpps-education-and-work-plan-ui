@@ -1,5 +1,5 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express'
-import type { InductionDto } from 'inductionDto'
+import type { FutureWorkInterestDto, InductionDto } from 'inductionDto'
 import type { WorkInterestTypesForm } from 'inductionForms'
 import InductionController from './inductionController'
 import WorkInterestTypesView from './workInterestTypesView'
@@ -31,6 +31,27 @@ export default abstract class WorkInterestTypesController extends InductionContr
       req.flash('errors'),
     )
     return res.render('pages/induction/workInterests/workInterestTypes', { ...view.renderArgs })
+  }
+
+  protected updatedInductionDtoWithWorkInterestTypes(
+    inductionDto: InductionDto,
+    workInterestTypesForm: WorkInterestTypesForm,
+  ): InductionDto {
+    const updatedWorkInterests: Array<FutureWorkInterestDto> = workInterestTypesForm.workInterestTypes.map(workType => {
+      return {
+        workType,
+        workTypeOther:
+          workType === WorkInterestTypeValue.OTHER ? workInterestTypesForm.workInterestTypesOther : undefined,
+        role: inductionDto.futureWorkInterests?.interests.find(interest => interest.workType === workType)?.role,
+      }
+    })
+    return {
+      ...inductionDto,
+      futureWorkInterests: {
+        ...inductionDto.futureWorkInterests,
+        interests: updatedWorkInterests,
+      },
+    }
   }
 }
 

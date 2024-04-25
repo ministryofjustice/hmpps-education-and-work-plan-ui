@@ -16,6 +16,8 @@ import WorkedBeforeCreateController from './workedBeforeCreateController'
 import PreviousWorkExperienceTypesCreateController from './previousWorkExperienceTypesCreateController'
 import PreviousWorkExperienceDetailCreateController from './previousWorkExperienceDetailCreateController'
 import WorkInterestTypesCreateController from './workInterestTypesCreateController'
+import WorkInterestRolesCreateController from './workInterestRolesCreateController'
+import SkillsCreateController from './skillsCreateController'
 
 /**
  * Route definitions for creating an Induction
@@ -34,6 +36,8 @@ export default (router: Router, services: Services) => {
   const previousWorkExperienceTypesCreateController = new PreviousWorkExperienceTypesCreateController()
   const previousWorkExperienceDetailCreateController = new PreviousWorkExperienceDetailCreateController()
   const workInterestTypesCreateController = new WorkInterestTypesCreateController()
+  const workInterestRolesCreateController = new WorkInterestRolesCreateController()
+  const skillsCreateController = new SkillsCreateController()
 
   if (config.featureToggles.induction.create.enabled) {
     router.get('/prisoners/:prisonNumber/create-induction/**', [
@@ -116,5 +120,17 @@ export default (router: Router, services: Services) => {
     router.get('/prisoners/:prisonNumber/create-induction/work-interest-types', [
       workInterestTypesCreateController.getWorkInterestTypesView,
     ])
+    router.post('/prisoners/:prisonNumber/create-induction/work-interest-types', [
+      workInterestTypesCreateController.submitWorkInterestTypesForm,
+    ])
+
+    router.get('/prisoners/:prisonNumber/create-induction/work-interest-roles', [
+      workInterestRolesCreateController.getWorkInterestRolesView,
+    ])
+    router.post('/prisoners/:prisonNumber/create-induction/work-interest-roles', [
+      workInterestRolesCreateController.submitWorkInterestRolesForm,
+    ])
+
+    router.get('/prisoners/:prisonNumber/create-induction/skills', [skillsCreateController.getSkillsView])
   }
 }
