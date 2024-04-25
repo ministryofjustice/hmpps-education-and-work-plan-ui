@@ -1,15 +1,14 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express'
 import createError from 'http-errors'
-import type { InductionDto, PersonalInterestDto } from 'inductionDto'
 import type { PersonalInterestsForm } from 'inductionForms'
 import PersonalInterestsController from '../common/personalInterestsController'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
 import logger from '../../../../logger'
 import { InductionService } from '../../../services'
-import validatePersonalInterestsForm from './personalInterestsFormValidator'
-import PersonalInterestsValue from '../../../enums/personalInterestsValue'
+import validatePersonalInterestsForm from '../../validators/induction/personalInterestsFormValidator'
 import { buildNewPageFlowHistory, getPreviousPage } from '../../pageFlowHistory'
 import getDynamicBackLinkAriaText from '../dynamicAriaTextResolver'
+import { asArray } from '../../../utils/utils'
 
 /**
  * Controller for the Update of the Personal Interests screen of the Induction.
@@ -41,14 +40,11 @@ export default class PersonalInterestsUpdateController extends PersonalInterests
     const { prisonerSummary, inductionDto } = req.session
     const { prisonId } = prisonerSummary
 
-    req.session.personalInterestsForm = { ...req.body }
-    if (!req.session.personalInterestsForm.personalInterests) {
-      req.session.personalInterestsForm.personalInterests = []
+    const personalInterestsForm: PersonalInterestsForm = {
+      personalInterests: asArray(req.body.personalInterests),
+      personalInterestsOther: req.body.personalInterestsOther,
     }
-    if (!Array.isArray(req.session.personalInterestsForm.personalInterests)) {
-      req.session.personalInterestsForm.personalInterests = [req.session.personalInterestsForm.personalInterests]
-    }
-    const { personalInterestsForm } = req.session
+    req.session.personalInterestsForm = personalInterestsForm
 
     const errors = validatePersonalInterestsForm(personalInterestsForm, prisonerSummary)
     if (errors.length > 0) {
@@ -82,26 +78,6 @@ export default class PersonalInterestsUpdateController extends PersonalInterests
     } catch (e) {
       logger.error(`Error updating Induction for prisoner ${prisonNumber}`, e)
       return next(createError(500, `Error updating Induction for prisoner ${prisonNumber}. Error: ${e}`))
-    }
-  }
-
-  private updatedInductionDtoWithPersonalInterests(
-    inductionDto: InductionDto,
-    personalInterestsForm: PersonalInterestsForm,
-  ): InductionDto {
-    const updatedInterests: PersonalInterestDto[] = personalInterestsForm.personalInterests.map(interest => {
-      return {
-        interestType: interest,
-        interestTypeOther:
-          interest === PersonalInterestsValue.OTHER ? personalInterestsForm.personalInterestsOther : undefined,
-      }
-    })
-    return {
-      ...inductionDto,
-      personalSkillsAndInterests: {
-        ...inductionDto.personalSkillsAndInterests,
-        interests: updatedInterests,
-      },
     }
   }
 }

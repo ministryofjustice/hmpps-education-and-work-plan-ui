@@ -1,14 +1,14 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express'
 import createError from 'http-errors'
-import type { InductionDto } from 'inductionDto'
 import type { AffectAbilityToWorkForm } from 'inductionForms'
 import AffectAbilityToWorkController from '../common/affectAbilityToWorkController'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
 import logger from '../../../../logger'
 import { InductionService } from '../../../services'
-import validateAffectAbilityToWorkForm from './affectAbilityToWorkFormValidator'
+import validateAffectAbilityToWorkForm from '../../validators/induction/affectAbilityToWorkFormValidator'
 import { getPreviousPage } from '../../pageFlowHistory'
 import getDynamicBackLinkAriaText from '../dynamicAriaTextResolver'
+import { asArray } from '../../../utils/utils'
 
 /**
  * Controller for the Update of the Factors Affecting a Prisoner's Ability To Work screen of the Induction.
@@ -40,16 +40,11 @@ export default class AffectAbilityToWorkUpdateController extends AffectAbilityTo
     const { prisonerSummary, inductionDto } = req.session
     const { prisonId } = prisonerSummary
 
-    req.session.affectAbilityToWorkForm = { ...req.body }
-    if (!req.session.affectAbilityToWorkForm.affectAbilityToWork) {
-      req.session.affectAbilityToWorkForm.affectAbilityToWork = []
+    const affectAbilityToWorkForm: AffectAbilityToWorkForm = {
+      affectAbilityToWork: asArray(req.body.affectAbilityToWork),
+      affectAbilityToWorkOther: req.body.affectAbilityToWorkOther,
     }
-    if (!Array.isArray(req.session.affectAbilityToWorkForm.affectAbilityToWork)) {
-      req.session.affectAbilityToWorkForm.affectAbilityToWork = [
-        req.session.affectAbilityToWorkForm.affectAbilityToWork,
-      ]
-    }
-    const { affectAbilityToWorkForm } = req.session
+    req.session.affectAbilityToWorkForm = affectAbilityToWorkForm
 
     const errors = validateAffectAbilityToWorkForm(affectAbilityToWorkForm, prisonerSummary)
     if (errors.length > 0) {
@@ -76,20 +71,6 @@ export default class AffectAbilityToWorkUpdateController extends AffectAbilityTo
     } catch (e) {
       logger.error(`Error updating Induction for prisoner ${prisonNumber}`, e)
       return next(createError(500, `Error updating Induction for prisoner ${prisonNumber}. Error: ${e}`))
-    }
-  }
-
-  private updatedInductionDtoWithAffectAbilityToWork(
-    inductionDto: InductionDto,
-    affectAbilityToWorkForm: AffectAbilityToWorkForm,
-  ): InductionDto {
-    return {
-      ...inductionDto,
-      workOnRelease: {
-        ...inductionDto.workOnRelease,
-        affectAbilityToWork: affectAbilityToWorkForm.affectAbilityToWork,
-        affectAbilityToWorkOther: affectAbilityToWorkForm.affectAbilityToWorkOther,
-      },
     }
   }
 }

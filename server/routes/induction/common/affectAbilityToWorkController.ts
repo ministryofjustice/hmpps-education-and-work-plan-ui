@@ -35,11 +35,25 @@ export default abstract class AffectAbilityToWorkController extends InductionCon
     )
     return res.render('pages/induction/affectAbilityToWork/index', { ...view.renderArgs })
   }
+
+  protected updatedInductionDtoWithAffectAbilityToWork(
+    inductionDto: InductionDto,
+    affectAbilityToWorkForm: AffectAbilityToWorkForm,
+  ): InductionDto {
+    return {
+      ...inductionDto,
+      workOnRelease: {
+        ...inductionDto.workOnRelease,
+        affectAbilityToWork: affectAbilityToWorkForm.affectAbilityToWork,
+        affectAbilityToWorkOther: affectAbilityToWorkForm.affectAbilityToWorkOther,
+      },
+    }
+  }
 }
 
 const toAffectAbilityToWorkForm = (inductionDto: InductionDto): AffectAbilityToWorkForm => {
   return {
-    affectAbilityToWork: inductionDto.workOnRelease.affectAbilityToWork,
+    affectAbilityToWork: inductionDto.workOnRelease.affectAbilityToWork || [],
     affectAbilityToWorkOther: inductionDto.workOnRelease.affectAbilityToWorkOther,
   }
 }

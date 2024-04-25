@@ -1,5 +1,5 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express'
-import type { InductionDto } from 'inductionDto'
+import type { InductionDto, PersonalInterestDto } from 'inductionDto'
 import type { PersonalInterestsForm } from 'inductionForms'
 import InductionController from './inductionController'
 import PersonalInterestsView from './personalInterestsView'
@@ -31,6 +31,26 @@ export default abstract class PersonalInterestsController extends InductionContr
       req.flash('errors'),
     )
     return res.render('pages/induction/personalInterests/index', { ...view.renderArgs })
+  }
+
+  protected updatedInductionDtoWithPersonalInterests(
+    inductionDto: InductionDto,
+    personalInterestsForm: PersonalInterestsForm,
+  ): InductionDto {
+    const updatedInterests: PersonalInterestDto[] = personalInterestsForm.personalInterests.map(interest => {
+      return {
+        interestType: interest,
+        interestTypeOther:
+          interest === PersonalInterestsValue.OTHER ? personalInterestsForm.personalInterestsOther : undefined,
+      }
+    })
+    return {
+      ...inductionDto,
+      personalSkillsAndInterests: {
+        ...inductionDto.personalSkillsAndInterests,
+        interests: updatedInterests,
+      },
+    }
   }
 }
 

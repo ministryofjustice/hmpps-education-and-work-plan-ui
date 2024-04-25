@@ -1,6 +1,9 @@
-import { Request } from 'express'
+import { NextFunction, Request, RequestHandler, Response } from 'express'
+import type { SkillsForm } from 'inductionForms'
 import SkillsController from '../common/skillsController'
 import getDynamicBackLinkAriaText from '../dynamicAriaTextResolver'
+import validateSkillsForm from '../../validators/induction/skillsFormValidator'
+import { asArray } from '../../../utils/utils'
 
 export default class SkillsCreateController extends SkillsController {
   getBackLinkUrl(req: Request): string {
@@ -10,5 +13,28 @@ export default class SkillsCreateController extends SkillsController {
 
   getBackLinkAriaText(req: Request): string {
     return getDynamicBackLinkAriaText(req, this.getBackLinkUrl(req))
+  }
+
+  submitSkillsForm: RequestHandler = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    const { prisonNumber } = req.params
+    const { prisonerSummary, inductionDto } = req.session
+
+    const skillsForm: SkillsForm = {
+      skills: asArray(req.body.skills),
+      skillsOther: req.body.skillsOther,
+    }
+    req.session.skillsForm = skillsForm
+
+    const errors = validateSkillsForm(skillsForm, prisonerSummary)
+    if (errors.length > 0) {
+      req.flash('errors', errors)
+      return res.redirect(`/prisoners/${prisonNumber}/create-induction/skills`)
+    }
+
+    const updatedInduction = this.updatedInductionDtoWithSkills(inductionDto, skillsForm)
+    req.session.inductionDto = updatedInduction
+    req.session.skillsForm = undefined
+
+    return res.redirect(`/prisoners/${prisonNumber}/create-induction/personal-interests`)
   }
 }
