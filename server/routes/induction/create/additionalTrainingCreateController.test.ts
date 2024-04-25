@@ -52,14 +52,6 @@ describe('additionalTrainingCreateController', () => {
         additionalTrainingOther: undefined,
       }
 
-      req.session.pageFlowHistory = {
-        pageUrls: [
-          `/prisoners/${prisonNumber}/create-induction/qualifications`,
-          `/prisoners/${prisonNumber}/create-induction/additional-training`,
-        ],
-        currentPageIndex: 1,
-      }
-
       const expectedView = {
         prisonerSummary,
         form: expectedAdditionalTrainingForm,
@@ -92,14 +84,6 @@ describe('additionalTrainingCreateController', () => {
         additionalTrainingOther: 'Beginners cookery for IT professionals',
       }
       req.session.additionalTrainingForm = expectedAdditionalTrainingForm
-
-      req.session.pageFlowHistory = {
-        pageUrls: [
-          `/prisoners/${prisonNumber}/create-induction/qualifications`,
-          `/prisoners/${prisonNumber}/create-induction/additional-training`,
-        ],
-        currentPageIndex: 1,
-      }
 
       const expectedView = {
         prisonerSummary,

@@ -165,7 +165,7 @@ context('Create a long question set Induction', () => {
 
     // Future Work Interest Types page is next
     Page.verifyOnPage(FutureWorkInterestTypesPage) //
-      .hasBackLinkTo('/prisoners/A00001A/create-induction/previous-work-experience')
+      .hasBackLinkTo('/prisoners/A00001A/create-induction/has-worked-before')
 
     // Then
   })

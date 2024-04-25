@@ -2,7 +2,7 @@ import { NextFunction, Request, RequestHandler, Response } from 'express'
 import type { PageFlow } from 'viewModels'
 import type { InductionDto } from 'inductionDto'
 import PreviousWorkExperienceTypesController from '../common/previousWorkExperienceTypesController'
-import { getPreviousPage } from '../../pageFlowHistory'
+import { buildNewPageFlowHistory } from '../../pageFlowHistory'
 import getDynamicBackLinkAriaText from '../dynamicAriaTextResolver'
 import validatePreviousWorkExperienceTypesForm from '../../validators/induction/previousWorkExperienceTypesFormValidator'
 import previousWorkExperienceTypeScreenOrderComparator from '../previousWorkExperienceTypeScreenOrderComparator'
@@ -11,8 +11,8 @@ import { getNextPage } from '../../pageFlowQueue'
 
 export default class PreviousWorkExperienceTypesCreateController extends PreviousWorkExperienceTypesController {
   getBackLinkUrl(req: Request): string {
-    const { pageFlowHistory } = req.session
-    return getPreviousPage(pageFlowHistory)
+    const { prisonNumber } = req.params
+    return `/prisoners/${prisonNumber}/create-induction/has-worked-before`
   }
 
   getBackLinkAriaText(req: Request): string {
@@ -53,6 +53,8 @@ export default class PreviousWorkExperienceTypesCreateController extends Previou
     // We need to show the Details page for each work experience type
     const pageFlowQueue = buildPageFlowQueue(updatedInduction, prisonNumber)
     req.session.pageFlowQueue = pageFlowQueue
+    // We also need the page flow history so subsequent pages know where we have been and can display the correct back link
+    req.session.pageFlowHistory = buildNewPageFlowHistory(req)
     req.session.previousWorkExperienceTypesForm = undefined
 
     return res.redirect(getNextPage(pageFlowQueue))

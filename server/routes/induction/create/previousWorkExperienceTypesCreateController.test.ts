@@ -51,14 +51,6 @@ describe('previousWorkExperienceTypesCreateController', () => {
         typeOfWorkExperienceOther: undefined,
       }
 
-      req.session.pageFlowHistory = {
-        pageUrls: [
-          `/prisoners/${prisonNumber}/create-induction/qualifications`,
-          `/prisoners/${prisonNumber}/create-induction/has-worked-before`,
-        ],
-        currentPageIndex: 1,
-      }
-
       const expectedView = {
         prisonerSummary,
         form: expectedPreviousWorkExperienceTypesForm,
@@ -81,14 +73,6 @@ describe('previousWorkExperienceTypesCreateController', () => {
       )
       expect(req.session.previousWorkExperienceTypesForm).toBeUndefined()
       expect(req.session.inductionDto).toEqual(inductionDto)
-      expect(req.session.pageFlowHistory).toEqual({
-        pageUrls: [
-          '/prisoners/A1234BC/create-induction/qualifications',
-          '/prisoners/A1234BC/create-induction/has-worked-before',
-          '/prisoners/A1234BC/create-induction/previous-work-experience',
-        ],
-        currentPageIndex: 2,
-      })
     })
 
     it('should get the Previous Work Experience Types view given there is an PreviousWorkExperienceTypesForm already on the session', async () => {
@@ -102,14 +86,6 @@ describe('previousWorkExperienceTypesCreateController', () => {
         typeOfWorkExperienceOther: 'Entertainment industry',
       }
       req.session.previousWorkExperienceTypesForm = expectedPreviousWorkExperienceTypesForm
-
-      req.session.pageFlowHistory = {
-        pageUrls: [
-          `/prisoners/${prisonNumber}/create-induction/qualifications`,
-          `/prisoners/${prisonNumber}/create-induction/has-worked-before`,
-        ],
-        currentPageIndex: 1,
-      }
 
       const expectedView = {
         prisonerSummary,
@@ -133,14 +109,6 @@ describe('previousWorkExperienceTypesCreateController', () => {
       )
       expect(req.session.previousWorkExperienceDetailForm).toBeUndefined()
       expect(req.session.inductionDto).toEqual(inductionDto)
-      expect(req.session.pageFlowHistory).toEqual({
-        pageUrls: [
-          '/prisoners/A1234BC/create-induction/qualifications',
-          '/prisoners/A1234BC/create-induction/has-worked-before',
-          '/prisoners/A1234BC/create-induction/previous-work-experience',
-        ],
-        currentPageIndex: 2,
-      })
     })
   })
 
@@ -189,6 +157,9 @@ describe('previousWorkExperienceTypesCreateController', () => {
       req.body = previousWorkExperienceTypesForm
       req.session.previousWorkExperienceTypesForm = undefined
 
+      req.session.pageFlowQueue = undefined
+      req.session.pageFlowHistory = undefined
+
       const expectedPreviousWorkExperiences: Array<PreviousWorkExperienceDto> = [
         {
           details: undefined,
@@ -212,6 +183,12 @@ describe('previousWorkExperienceTypesCreateController', () => {
         ],
         currentPageIndex: 0,
       }
+
+      const expectedPageFlowHistory: PageFlow = {
+        pageUrls: ['/prisoners/A1234BC/create-induction/previous-work-experience'],
+        currentPageIndex: 0,
+      }
+
       // When
       await controller.submitPreviousWorkExperienceTypesForm(
         req as undefined as Request,
@@ -224,6 +201,7 @@ describe('previousWorkExperienceTypesCreateController', () => {
         `/prisoners/${prisonNumber}/create-induction/previous-work-experience/outdoor`,
       )
       expect(req.session.pageFlowQueue).toEqual(expectedPageFlowQueue)
+      expect(req.session.pageFlowHistory).toEqual(expectedPageFlowHistory)
       expect(req.session.previousWorkExperienceTypesForm).toBeUndefined()
       const updatedInductionDto: InductionDto = req.session.inductionDto
       expect(updatedInductionDto.previousWorkExperiences.experiences).toEqual(expectedPreviousWorkExperiences)

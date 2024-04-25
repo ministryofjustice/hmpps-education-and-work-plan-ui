@@ -49,14 +49,6 @@ describe('workedBeforeCreateController', () => {
         hasWorkedBefore: undefined,
       }
 
-      req.session.pageFlowHistory = {
-        pageUrls: [
-          `/prisoners/${prisonNumber}/create-induction/additional-training`,
-          `/prisoners/${prisonNumber}/create-induction/has-worked-before`,
-        ],
-        currentPageIndex: 1,
-      }
-
       const expectedView = {
         prisonerSummary,
         form: expectedWorkedBeforeForm,
@@ -88,14 +80,6 @@ describe('workedBeforeCreateController', () => {
         hasWorkedBefore: YesNoValue.NO,
       }
       req.session.workedBeforeForm = expectedWorkedBeforeForm
-
-      req.session.pageFlowHistory = {
-        pageUrls: [
-          `/prisoners/${prisonNumber}/create-induction/additional-training`,
-          `/prisoners/${prisonNumber}/create-induction/has-worked-before`,
-        ],
-        currentPageIndex: 1,
-      }
 
       const expectedView = {
         prisonerSummary,

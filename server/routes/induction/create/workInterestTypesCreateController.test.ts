@@ -50,19 +50,11 @@ describe('workInterestTypesCreateController', () => {
         workInterestTypesOther: undefined,
       }
 
-      req.session.pageFlowHistory = {
-        pageUrls: [
-          `/prisoners/${prisonNumber}/create-induction/previous-work-experience`,
-          `/prisoners/${prisonNumber}/create-induction/work-interest-types`,
-        ],
-        currentPageIndex: 1,
-      }
-
       const expectedView = {
         prisonerSummary,
         form: expectedWorkInterestTypesForm,
-        backLinkUrl: '/prisoners/A1234BC/create-induction/previous-work-experience',
-        backLinkAriaText: 'Back to What type of work has Jimmy Lightfingers done before?',
+        backLinkUrl: '/prisoners/A1234BC/create-induction/has-worked-before',
+        backLinkAriaText: 'Back to Has Jimmy Lightfingers worked before?',
         errors: noErrors,
       }
 
@@ -95,19 +87,11 @@ describe('workInterestTypesCreateController', () => {
       }
       req.session.workInterestTypesForm = expectedWorkInterestTypesForm
 
-      req.session.pageFlowHistory = {
-        pageUrls: [
-          `/prisoners/${prisonNumber}/create-induction/previous-work-experience`,
-          `/prisoners/${prisonNumber}/create-induction/work-interest-types`,
-        ],
-        currentPageIndex: 1,
-      }
-
       const expectedView = {
         prisonerSummary,
         form: expectedWorkInterestTypesForm,
-        backLinkUrl: '/prisoners/A1234BC/create-induction/previous-work-experience',
-        backLinkAriaText: 'Back to What type of work has Jimmy Lightfingers done before?',
+        backLinkUrl: '/prisoners/A1234BC/create-induction/has-worked-before',
+        backLinkAriaText: 'Back to Has Jimmy Lightfingers worked before?',
         errors: noErrors,
       }
 

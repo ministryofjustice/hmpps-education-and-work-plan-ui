@@ -1,14 +1,14 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express'
 import AdditionalTrainingController from '../common/additionalTrainingController'
-import { getPreviousPage } from '../../pageFlowHistory'
 import getDynamicBackLinkAriaText from '../dynamicAriaTextResolver'
 import validateAdditionalTrainingForm from '../../validators/induction/additionalTrainingFormValidator'
 import YesNoValue from '../../../enums/yesNoValue'
 
 export default class AdditionalTrainingCreateController extends AdditionalTrainingController {
   getBackLinkUrl(req: Request): string {
-    const { pageFlowHistory } = req.session
-    return getPreviousPage(pageFlowHistory)
+    const { prisonNumber } = req.params
+    // TODO - we will need logic here to detect induction question set - Long Question Set goes back to Qualifications, Short Question Set goes back to Do You Want To Add Qualifications
+    return `/prisoners/${prisonNumber}/create-induction/qualifications`
   }
 
   getBackLinkAriaText(req: Request): string {

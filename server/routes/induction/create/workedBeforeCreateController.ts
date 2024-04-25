@@ -1,13 +1,12 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express'
 import WorkedBeforeController from '../common/workedBeforeController'
-import { getPreviousPage } from '../../pageFlowHistory'
 import getDynamicBackLinkAriaText from '../dynamicAriaTextResolver'
 import validateWorkedBeforeForm from '../../validators/induction/workedBeforeFormValidator'
 
 export default class WorkedBeforeCreateController extends WorkedBeforeController {
   getBackLinkUrl(req: Request): string {
-    const { pageFlowHistory } = req.session
-    return getPreviousPage(pageFlowHistory)
+    const { prisonNumber } = req.params
+    return `/prisoners/${prisonNumber}/create-induction/additional-training`
   }
 
   getBackLinkAriaText(req: Request): string {

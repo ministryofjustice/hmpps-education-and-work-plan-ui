@@ -5,15 +5,10 @@ import HopingToWorkOnReleaseController from '../common/hopingToWorkOnReleaseCont
 import getDynamicBackLinkAriaText from '../dynamicAriaTextResolver'
 import validateHopingToWorkOnReleaseForm from '../../validators/induction/hopingToWorkOnReleaseFormValidator'
 import YesNoValue from '../../../enums/yesNoValue'
-import { getPreviousPage } from '../../pageFlowHistory'
 
 export default class HopingToWorkOnReleaseCreateController extends HopingToWorkOnReleaseController {
   getBackLinkUrl(req: Request): string {
     const { prisonNumber } = req.params
-    const { pageFlowHistory } = req.session
-    if (pageFlowHistory) {
-      return getPreviousPage(pageFlowHistory)
-    }
     return `/plan/${prisonNumber}/view/overview`
   }
 

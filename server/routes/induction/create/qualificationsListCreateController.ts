@@ -1,16 +1,12 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express'
 import type { InductionDto } from 'inductionDto'
 import QualificationsListController from '../common/qualificationsListController'
-import { buildNewPageFlowHistory, getPreviousPage } from '../../pageFlowHistory'
+import { buildNewPageFlowHistory } from '../../pageFlowHistory'
 import getDynamicBackLinkAriaText from '../dynamicAriaTextResolver'
 
 export default class QualificationsListCreateController extends QualificationsListController {
   getBackLinkUrl(req: Request): string {
     const { prisonNumber } = req.params
-    const { pageFlowHistory } = req.session
-    if (pageFlowHistory) {
-      return getPreviousPage(pageFlowHistory)
-    }
     return `/prisoners/${prisonNumber}/create-induction/hoping-to-work-on-release`
   }
 
@@ -26,9 +22,7 @@ export default class QualificationsListCreateController extends QualificationsLi
     const { prisonNumber } = req.params
     const { inductionDto } = req.session
 
-    if (!req.session.pageFlowHistory) {
-      req.session.pageFlowHistory = buildNewPageFlowHistory(req)
-    }
+    req.session.pageFlowHistory = buildNewPageFlowHistory(req)
 
     if (userClickedOnButton(req, 'addQualification')) {
       return res.redirect(`/prisoners/${prisonNumber}/create-induction/qualification-level`)
@@ -41,6 +35,8 @@ export default class QualificationsListCreateController extends QualificationsLi
     }
 
     if (inductionHasQualifications(inductionDto)) {
+      // Remove the page flow history as it was only needed here to track the journey through qualifications
+      req.session.pageFlowHistory = undefined
       return res.redirect(`/prisoners/${prisonNumber}/create-induction/additional-training`)
     }
 
