@@ -1,15 +1,14 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express'
 import createError from 'http-errors'
-import type { InductionDto, PersonalSkillDto } from 'inductionDto'
 import type { SkillsForm } from 'inductionForms'
 import SkillsController from '../common/skillsController'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
 import logger from '../../../../logger'
 import { InductionService } from '../../../services'
-import validateSkillsForm from './skillsFormValidator'
-import SkillsValue from '../../../enums/skillsValue'
+import validateSkillsForm from '../../validators/induction/skillsFormValidator'
 import { buildNewPageFlowHistory, getPreviousPage } from '../../pageFlowHistory'
 import getDynamicBackLinkAriaText from '../dynamicAriaTextResolver'
+import { asArray } from '../../../utils/utils'
 
 /**
  * Controller for the Update of the Skills screen of the Induction.
@@ -37,14 +36,11 @@ export default class SkillsUpdateController extends SkillsController {
     const { prisonerSummary, inductionDto } = req.session
     const { prisonId } = prisonerSummary
 
-    req.session.skillsForm = { ...req.body }
-    if (!req.session.skillsForm.skills) {
-      req.session.skillsForm.skills = []
+    const skillsForm: SkillsForm = {
+      skills: asArray(req.body.skills),
+      skillsOther: req.body.skillsOther,
     }
-    if (!Array.isArray(req.session.skillsForm.skills)) {
-      req.session.skillsForm.skills = [req.session.skillsForm.skills]
-    }
-    const { skillsForm } = req.session
+    req.session.skillsForm = skillsForm
 
     const errors = validateSkillsForm(skillsForm, prisonerSummary)
     if (errors.length > 0) {
@@ -78,22 +74,6 @@ export default class SkillsUpdateController extends SkillsController {
     } catch (e) {
       logger.error(`Error updating Induction for prisoner ${prisonNumber}`, e)
       return next(createError(500, `Error updating Induction for prisoner ${prisonNumber}. Error: ${e}`))
-    }
-  }
-
-  private updatedInductionDtoWithSkills(inductionDto: InductionDto, skillsForm: SkillsForm): InductionDto {
-    const updatedSkills: PersonalSkillDto[] = skillsForm.skills.map(skill => {
-      return {
-        skillType: skill,
-        skillTypeOther: skill === SkillsValue.OTHER ? skillsForm.skillsOther : undefined,
-      }
-    })
-    return {
-      ...inductionDto,
-      personalSkillsAndInterests: {
-        ...inductionDto.personalSkillsAndInterests,
-        skills: updatedSkills,
-      },
     }
   }
 }

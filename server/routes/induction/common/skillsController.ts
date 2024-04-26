@@ -1,5 +1,5 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express'
-import type { InductionDto } from 'inductionDto'
+import type { InductionDto, PersonalSkillDto } from 'inductionDto'
 import type { SkillsForm } from 'inductionForms'
 import InductionController from './inductionController'
 import SkillsView from './skillsView'
@@ -31,6 +31,22 @@ export default abstract class SkillsController extends InductionController {
       req.flash('errors'),
     )
     return res.render('pages/induction/skills/index', { ...view.renderArgs })
+  }
+
+  protected updatedInductionDtoWithSkills(inductionDto: InductionDto, skillsForm: SkillsForm): InductionDto {
+    const updatedSkills: PersonalSkillDto[] = skillsForm.skills.map(skill => {
+      return {
+        skillType: skill,
+        skillTypeOther: skill === SkillsValue.OTHER ? skillsForm.skillsOther : undefined,
+      }
+    })
+    return {
+      ...inductionDto,
+      personalSkillsAndInterests: {
+        ...inductionDto.personalSkillsAndInterests,
+        skills: updatedSkills,
+      },
+    }
   }
 }
 

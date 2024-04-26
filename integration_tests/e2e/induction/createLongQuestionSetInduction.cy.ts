@@ -18,6 +18,12 @@ import FutureWorkInterestTypesPage from '../../pages/induction/FutureWorkInteres
 import WorkInterestTypeValue from '../../../server/enums/workInterestTypeValue'
 import FutureWorkInterestRolesPage from '../../pages/induction/FutureWorkInterestRolesPage'
 import SkillsPage from '../../pages/induction/SkillsPage'
+import SkillsValue from '../../../server/enums/skillsValue'
+import PersonalInterestsPage from '../../pages/induction/PersonalInterestsPage'
+import PersonalInterestsValue from '../../../server/enums/personalInterestsValue'
+import AffectAbilityToWorkPage from '../../pages/induction/AffectAbilityToWorkPage'
+import AbilityToWorkValue from '../../../server/enums/abilityToWorkValue'
+import CheckYourAnswersPage from '../../pages/induction/CheckYourAnswersPage'
 
 context('Create a long question set Induction', () => {
   beforeEach(() => {
@@ -191,6 +197,39 @@ context('Create a long question set Induction', () => {
     // Personal Skills page is next
     Page.verifyOnPage(SkillsPage) //
       .hasBackLinkTo('/prisoners/A00001A/create-induction/work-interest-roles')
+      .submitPage() // submit the page without answering the question to trigger a validation error
+    Page.verifyOnPage(SkillsPage) //
+      .hasBackLinkTo('/prisoners/A00001A/create-induction/work-interest-roles')
+      .hasErrorCount(1)
+      .hasFieldInError('skills')
+      .chooseSkill(SkillsValue.POSITIVE_ATTITUDE)
+      .submitPage()
+
+    // Personal Interests page is next
+    Page.verifyOnPage(PersonalInterestsPage) //
+      .hasBackLinkTo('/prisoners/A00001A/create-induction/skills')
+      .submitPage() // submit the page without answering the question to trigger a validation error
+    Page.verifyOnPage(PersonalInterestsPage) //
+      .hasBackLinkTo('/prisoners/A00001A/create-induction/skills')
+      .hasErrorCount(1)
+      .hasFieldInError('personalInterests')
+      .choosePersonalInterest(PersonalInterestsValue.COMMUNITY)
+      .choosePersonalInterest(PersonalInterestsValue.DIGITAL)
+      .submitPage()
+
+    // Factors Affecting Ability To Work is the next page
+    Page.verifyOnPage(AffectAbilityToWorkPage) //
+      .hasBackLinkTo('/prisoners/A00001A/create-induction/personal-interests')
+      .submitPage() // submit the page without answering the question to trigger a validation error
+    Page.verifyOnPage(AffectAbilityToWorkPage) //
+      .hasBackLinkTo('/prisoners/A00001A/create-induction/personal-interests')
+      .hasErrorCount(1)
+      .hasFieldInError('affectAbilityToWork')
+      .chooseAffectAbilityToWork(AbilityToWorkValue.NONE)
+      .submitPage()
+
+    // Check Your Answers is the last page
+    Page.verifyOnPage(CheckYourAnswersPage)
 
     // Then
   })

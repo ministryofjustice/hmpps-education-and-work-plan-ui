@@ -20,6 +20,9 @@ describe('checkYourAnswersUpdateController', () => {
   const inductionService = new InductionService(null) as jest.Mocked<InductionService>
   const controller = new CheckYourAnswersUpdateController(inductionService)
 
+  const prisonNumber = 'A1234BC'
+  const prisonerSummary = aValidPrisonerSummary()
+
   const req = {
     session: {} as SessionData,
     user: {} as Express.User,
@@ -34,19 +37,14 @@ describe('checkYourAnswersUpdateController', () => {
 
   beforeEach(() => {
     jest.resetAllMocks()
-    req.session = {} as SessionData
-    req.user = {} as Express.User
-    req.params = {} as Record<string, string>
+    req.session = { prisonerSummary } as SessionData
+    req.user = { token: 'some-token' } as Express.User
+    req.params = { prisonNumber }
   })
 
   describe('getCheckYourAnswersView', () => {
     it('should get the Check Your Answers view', async () => {
       // Given
-      const prisonNumber = 'A1234BC'
-      req.params.prisonNumber = prisonNumber
-
-      const prisonerSummary = aValidPrisonerSummary()
-      req.session.prisonerSummary = prisonerSummary
       const inductionDto = aShortQuestionSetInductionDto()
       req.session.inductionDto = inductionDto
 
@@ -69,12 +67,6 @@ describe('checkYourAnswersUpdateController', () => {
   describe('submitCheckYourAnswers', () => {
     it('should update Induction and call API and redirect to work and interests page', async () => {
       // Given
-      req.user.token = 'some-token'
-      const prisonNumber = 'A1234BC'
-      req.params.prisonNumber = prisonNumber
-
-      const prisonerSummary = aValidPrisonerSummary()
-      req.session.prisonerSummary = prisonerSummary
       const inductionDto = aShortQuestionSetInductionDto()
       req.session.inductionDto = inductionDto
 
@@ -110,12 +102,6 @@ describe('checkYourAnswersUpdateController', () => {
 
     it('should not update Induction given error calling service', async () => {
       // Given
-      req.user.token = 'some-token'
-      const prisonNumber = 'A1234BC'
-      req.params.prisonNumber = prisonNumber
-
-      const prisonerSummary = aValidPrisonerSummary()
-      req.session.prisonerSummary = prisonerSummary
       const inductionDto = aShortQuestionSetInductionDto()
       req.session.inductionDto = inductionDto
 

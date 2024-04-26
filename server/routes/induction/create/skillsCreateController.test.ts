@@ -1,9 +1,11 @@
 import { NextFunction, Request, Response } from 'express'
 import type { SessionData } from 'express-session'
 import type { SkillsForm } from 'inductionForms'
+import type { PersonalSkillDto } from 'inductionDto'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
 import { aLongQuestionSetInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
 import SkillsCreateController from './skillsCreateController'
+import SkillsValue from '../../../enums/skillsValue'
 
 describe('skillsCreateController', () => {
   const controller = new SkillsCreateController()
@@ -101,6 +103,69 @@ describe('skillsCreateController', () => {
       expect(res.render).toHaveBeenCalledWith('pages/induction/skills/index', expectedView)
       expect(req.session.skillsForm).toBeUndefined()
       expect(req.session.inductionDto).toEqual(inductionDto)
+    })
+  })
+
+  describe('submitSkillsForm', () => {
+    it('should not update Induction given form is submitted with validation errors', async () => {
+      // Given
+      const inductionDto = aLongQuestionSetInductionDto()
+      inductionDto.personalSkillsAndInterests.skills = undefined
+      req.session.inductionDto = inductionDto
+
+      const invalidSkillsForm = {
+        skills: ['OTHER'],
+        skillsOther: '',
+      }
+      req.body = invalidSkillsForm
+      req.session.skillsForm = undefined
+
+      const expectedErrors = [{ href: '#skillsOther', text: 'Enter the skill that Jimmy Lightfingers feels they have' }]
+
+      // When
+      await controller.submitSkillsForm(
+        req as undefined as Request,
+        res as undefined as Response,
+        next as undefined as NextFunction,
+      )
+
+      // Then
+      expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-induction/skills')
+      expect(req.flash).toHaveBeenCalledWith('errors', expectedErrors)
+      expect(req.session.skillsForm).toEqual(invalidSkillsForm)
+      expect(req.session.inductionDto).toEqual(inductionDto)
+    })
+
+    it('should update inductionDto and redirect to personal interests page', async () => {
+      // Given
+      const inductionDto = aLongQuestionSetInductionDto()
+      inductionDto.personalSkillsAndInterests.skills = undefined
+      req.session.inductionDto = inductionDto
+
+      const skillsForm = {
+        skills: ['TEAMWORK', 'OTHER'],
+        skillsOther: 'Circus skills',
+      }
+      req.body = skillsForm
+      req.session.skillsForm = undefined
+
+      const expectedSkills: Array<PersonalSkillDto> = [
+        { skillType: SkillsValue.TEAMWORK, skillTypeOther: undefined },
+        { skillType: SkillsValue.OTHER, skillTypeOther: 'Circus skills' },
+      ]
+
+      // When
+      await controller.submitSkillsForm(
+        req as undefined as Request,
+        res as undefined as Response,
+        next as undefined as NextFunction,
+      )
+
+      // Then
+      const updatedInduction = req.session.inductionDto
+      expect(updatedInduction.personalSkillsAndInterests.skills).toEqual(expectedSkills)
+      expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-induction/personal-interests')
+      expect(req.session.skillsForm).toBeUndefined()
     })
   })
 })

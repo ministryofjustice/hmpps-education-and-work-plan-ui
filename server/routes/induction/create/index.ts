@@ -1,6 +1,7 @@
 import { Router } from 'express'
 import { Services } from '../../../services'
 import config from '../../../config'
+import asyncMiddleware from '../../../middleware/asyncMiddleware'
 import { checkUserHasEditAuthority } from '../../../middleware/roleBasedAccessControl'
 import retrievePrisonerSummaryIfNotInSession from '../../routerRequestHandlers/retrievePrisonerSummaryIfNotInSession'
 import HopingToWorkOnReleaseCreateController from './hopingToWorkOnReleaseCreateController'
@@ -18,8 +19,10 @@ import PreviousWorkExperienceDetailCreateController from './previousWorkExperien
 import WorkInterestTypesCreateController from './workInterestTypesCreateController'
 import WorkInterestRolesCreateController from './workInterestRolesCreateController'
 import SkillsCreateController from './skillsCreateController'
+import PersonalInterestsCreateController from './personalInterestsCreateController'
+import AffectAbilityToWorkCreateController from './affectAbilityToWorkCreateController'
+import CheckYourAnswersCreateController from './checkYourAnswersCreateController'
 import ReasonsNotToGetWorkCreateController from './reasonsNotToGetWorkCreateController'
-import asyncMiddleware from '../../../middleware/asyncMiddleware'
 
 /**
  * Route definitions for creating an Induction
@@ -40,6 +43,9 @@ export default (router: Router, services: Services) => {
   const workInterestTypesCreateController = new WorkInterestTypesCreateController()
   const workInterestRolesCreateController = new WorkInterestRolesCreateController()
   const skillsCreateController = new SkillsCreateController()
+  const personalInterestsCreateController = new PersonalInterestsCreateController()
+  const affectAbilityToWorkCreateController = new AffectAbilityToWorkCreateController()
+  const checkYourAnswersCreateController = new CheckYourAnswersCreateController()
   const reasonsNotToGetWorkCreateController = new ReasonsNotToGetWorkCreateController()
 
   if (config.featureToggles.induction.create.enabled) {
@@ -135,12 +141,31 @@ export default (router: Router, services: Services) => {
     ])
 
     router.get('/prisoners/:prisonNumber/create-induction/skills', [skillsCreateController.getSkillsView])
+    router.post('/prisoners/:prisonNumber/create-induction/skills', [skillsCreateController.submitSkillsForm])
+
+    router.get('/prisoners/:prisonNumber/create-induction/personal-interests', [
+      personalInterestsCreateController.getPersonalInterestsView,
+    ])
+    router.post('/prisoners/:prisonNumber/create-induction/personal-interests', [
+      personalInterestsCreateController.submitPersonalInterestsForm,
+    ])
+
+    router.get('/prisoners/:prisonNumber/create-induction/affect-ability-to-work', [
+      affectAbilityToWorkCreateController.getAffectAbilityToWorkView,
+    ])
+    router.post('/prisoners/:prisonNumber/create-induction/affect-ability-to-work', [
+      affectAbilityToWorkCreateController.submitAffectAbilityToWorkForm,
+    ])
 
     router.get('/prisoners/:prisonNumber/create-induction/reasons-not-to-get-work', [
       asyncMiddleware(reasonsNotToGetWorkCreateController.getReasonsNotToGetWorkView),
     ])
     router.post('/prisoners/:prisonNumber/create-induction/reasons-not-to-get-work', [
       reasonsNotToGetWorkCreateController.submitReasonsNotToGetWorkForm,
+    ])
+
+    router.get('/prisoners/:prisonNumber/create-induction/check-your-answers', [
+      checkYourAnswersCreateController.getCheckYourAnswersView,
     ])
   }
 }
