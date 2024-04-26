@@ -7,6 +7,7 @@ import type {
   TimelineResponse,
   InductionResponse,
   UpdateInductionRequest,
+  CreateInductionRequest,
 } from 'educationAndWorkPlanApiClient'
 import RestClient from './restClient'
 import config from '../config'
@@ -60,10 +61,21 @@ export default class EducationAndWorkPlanClient {
     prisonNumber: string,
     updateInductionRequest: UpdateInductionRequest,
     token: string,
-  ): Promise<void> {
+  ): Promise<never> {
     return EducationAndWorkPlanClient.restClient(token).put({
       path: `/inductions/${prisonNumber}`,
       data: updateInductionRequest,
+    })
+  }
+
+  async createInduction(
+    prisonNumber: string,
+    createInductionRequest: CreateInductionRequest,
+    token: string,
+  ): Promise<never> {
+    return EducationAndWorkPlanClient.restClient(token).post({
+      path: `/inductions/${prisonNumber}`,
+      data: createInductionRequest,
     })
   }
 }

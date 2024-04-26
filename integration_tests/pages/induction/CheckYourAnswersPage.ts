@@ -1,5 +1,4 @@
 import Page, { PageElement } from '../page'
-import WorkAndInterestsPage from '../overview/WorkAndInterestsPage'
 import TypeOfWorkExperienceValue from '../../../server/enums/typeOfWorkExperienceValue'
 import InPrisonTrainingPage from './InPrisonTrainingPage'
 import InPrisonTrainingValue from '../../../server/enums/inPrisonTrainingValue'
@@ -242,9 +241,8 @@ export default class CheckYourAnswersPage extends Page {
     return Page.verifyOnPage(AffectAbilityToWorkPage)
   }
 
-  submitPage(): WorkAndInterestsPage {
+  submitPage() {
     this.submitButton().click()
-    return Page.verifyOnPage(WorkAndInterestsPage)
   }
 
   private submitButton = (): PageElement => cy.get('#submit-button')

@@ -12,6 +12,7 @@ import aValidActionPlanSummaryResponse from '../testsupport/actionPlanSummaryRes
 import aValidTimelineResponse from '../testsupport/timelineResponseTestDataBuilder'
 import { aShortQuestionSetInduction } from '../testsupport/inductionResponseTestDataBuilder'
 import { aShortQuestionSetUpdateInductionRequest } from '../testsupport/updateInductionRequestTestDataBuilder'
+import { aShortQuestionSetCreateInductionRequest } from '../testsupport/createInductionRequestTestDataBuilder'
 
 describe('educationAndWorkPlanClient', () => {
   const educationAndWorkPlanClient = new EducationAndWorkPlanClient()
@@ -323,17 +324,15 @@ describe('educationAndWorkPlanClient', () => {
       const systemToken = 'a-system-token'
       const updateInductionRequest = aShortQuestionSetUpdateInductionRequest()
 
-      const expectedResponseBody = {}
-      educationAndWorkPlanApi
+      educationAndWorkPlanApi //
         .put(`/inductions/${prisonNumber}`, updateInductionRequest)
-        .reply(204, expectedResponseBody)
+        .reply(204)
 
       // When
-      const actual = await educationAndWorkPlanClient.updateInduction(prisonNumber, updateInductionRequest, systemToken)
+      await educationAndWorkPlanClient.updateInduction(prisonNumber, updateInductionRequest, systemToken)
 
       // Then
       expect(nock.isDone()).toBe(true)
-      expect(actual).toEqual(expectedResponseBody)
     })
 
     it('should not update Induction given API returns error response', async () => {
@@ -354,6 +353,51 @@ describe('educationAndWorkPlanClient', () => {
       // When
       try {
         await educationAndWorkPlanClient.updateInduction(prisonNumber, updateInductionRequest, systemToken)
+      } catch (e) {
+        // Then
+        expect(nock.isDone()).toBe(true)
+        expect(e.status).toEqual(500)
+        expect(e.data).toEqual(expectedResponseBody)
+      }
+    })
+  })
+
+  describe('createInduction', () => {
+    it('should create Induction', async () => {
+      // Given
+      const prisonNumber = 'A1234BC'
+      const systemToken = 'a-system-token'
+      const createInductionRequest = aShortQuestionSetCreateInductionRequest()
+
+      educationAndWorkPlanApi //
+        .post(`/inductions/${prisonNumber}`, createInductionRequest)
+        .reply(201)
+
+      // When
+      await educationAndWorkPlanClient.createInduction(prisonNumber, createInductionRequest, systemToken)
+
+      // Then
+      expect(nock.isDone()).toBe(true)
+    })
+
+    it('should not create Induction given API returns error response', async () => {
+      // Given
+      const prisonNumber = 'A1234BC'
+      const systemToken = 'a-system-token'
+      const createInductionRequest = aShortQuestionSetCreateInductionRequest()
+
+      const expectedResponseBody = {
+        status: 500,
+        userMessage: 'An unexpected error occurred',
+        developerMessage: 'An unexpected error occurred',
+      }
+      educationAndWorkPlanApi
+        .post(`/inductions/${prisonNumber}`, createInductionRequest)
+        .reply(500, expectedResponseBody)
+
+      // When
+      try {
+        await educationAndWorkPlanClient.createInduction(prisonNumber, createInductionRequest, systemToken)
       } catch (e) {
         // Then
         expect(nock.isDone()).toBe(true)

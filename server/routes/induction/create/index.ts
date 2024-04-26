@@ -45,7 +45,7 @@ export default (router: Router, services: Services) => {
   const skillsCreateController = new SkillsCreateController()
   const personalInterestsCreateController = new PersonalInterestsCreateController()
   const affectAbilityToWorkCreateController = new AffectAbilityToWorkCreateController()
-  const checkYourAnswersCreateController = new CheckYourAnswersCreateController()
+  const checkYourAnswersCreateController = new CheckYourAnswersCreateController(services.inductionService)
   const reasonsNotToGetWorkCreateController = new ReasonsNotToGetWorkCreateController()
 
   if (config.featureToggles.induction.create.enabled) {
@@ -166,6 +166,9 @@ export default (router: Router, services: Services) => {
 
     router.get('/prisoners/:prisonNumber/create-induction/check-your-answers', [
       checkYourAnswersCreateController.getCheckYourAnswersView,
+    ])
+    router.post('/prisoners/:prisonNumber/create-induction/check-your-answers', [
+      checkYourAnswersCreateController.submitCheckYourAnswers,
     ])
   }
 }
