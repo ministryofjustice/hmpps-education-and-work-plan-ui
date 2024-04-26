@@ -4,6 +4,23 @@
 {% set title = "Check and save your answers before adding " + prisonerSummary.firstName + " " + prisonerSummary.lastName + "'s goals" %}
 
 {#
+Induction "Check your answers" page template.
+This template is used for both the Create and Update journeys (ie. creating a new Induction, and updating answers in an existing Induction)
+It is the same template used for both use cases. The route paths are:
+
+* Create journey - /prisoners/:prisonNumber/create-induction/check-your-answers
+* Update journey - /prisoners/:prisonNumber/induction/check-your-answers
+
+The Change links in this template deliberately use relative URLs, eg:
+
+  <a class="govuk-link" href="affect-ability-to-work" data-qa="affectAbilityToWorkLink">
+    Change<span class="govuk-visually-hidden"> things that may affect ability to work</span>
+  </a>
+
+This is very deliberate and allows for the Change links to either reference the `create-induction` or `induction` path
+elements without adding logic into the view or template.
+
+
 Data supplied to this template:
   * prisonerSummary - object with firstName and lastName
   * inductionDto - the updated InductionDto containing the required data to render each section
