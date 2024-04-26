@@ -84,6 +84,7 @@ describe('checkYourAnswersCreateController', () => {
       expect(inductionService.createInduction).toHaveBeenCalledWith(prisonNumber, createInductionDto, 'some-token')
       expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/induction-created`)
       expect(req.session.inductionDto).toBeUndefined()
+      expect(req.session.pageFlowHistory).toBeUndefined()
     })
 
     it('should not create Induction given error calling service', async () => {
