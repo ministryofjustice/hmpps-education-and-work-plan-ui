@@ -24,6 +24,10 @@ import PersonalInterestsValue from '../../../server/enums/personalInterestsValue
 import AffectAbilityToWorkPage from '../../pages/induction/AffectAbilityToWorkPage'
 import AbilityToWorkValue from '../../../server/enums/abilityToWorkValue'
 import CheckYourAnswersPage from '../../pages/induction/CheckYourAnswersPage'
+import CreateGoalsPage from '../../pages/goal/CreateGoalsPage'
+import { postRequestedFor } from '../../mockApis/wiremock/requestPatternBuilder'
+import { urlEqualTo } from '../../mockApis/wiremock/matchers/url'
+import { matchingJsonPath } from '../../mockApis/wiremock/matchers/content'
 
 context('Create a long question set Induction', () => {
   beforeEach(() => {
@@ -38,6 +42,7 @@ context('Create a long question set Induction', () => {
     cy.task('stubLearnerProfile', prisonNumberForPrisonerWithNoInduction)
     cy.task('stubLearnerEducation', prisonNumberForPrisonerWithNoInduction)
     cy.task('stubGetInduction404Error', prisonNumberForPrisonerWithNoInduction)
+    cy.task('stubCreateInduction', prisonNumberForPrisonerWithNoInduction)
     cy.visit(`/plan/${prisonNumberForPrisonerWithNoInduction}/view/overview`)
 
     const overviewPage = Page.verifyOnPage(OverviewPage)
@@ -228,9 +233,53 @@ context('Create a long question set Induction', () => {
       .chooseAffectAbilityToWork(AbilityToWorkValue.NONE)
       .submitPage()
 
-    // Check Your Answers is the last page
-    Page.verifyOnPage(CheckYourAnswersPage)
+    // Check Your Answers is the final page. Submit the page to create the induction
+    Page.verifyOnPage(CheckYourAnswersPage) //
+      .submitPage()
 
     // Then
+    Page.verifyOnPage(CreateGoalsPage)
+    cy.wiremockVerify(
+      postRequestedFor(urlEqualTo(`/inductions/${prisonNumberForPrisonerWithNoInduction}`)) //
+        .withRequestBody(
+          matchingJsonPath(
+            "$[?(@.workOnRelease.hopingToWork == 'YES' && " +
+              "@.previousQualifications.educationLevel == 'FURTHER_EDUCATION_COLLEGE' && " +
+              '@.previousQualifications.qualifications.size() == 1 && ' +
+              "@.previousQualifications.qualifications[0].subject == 'Physics' && " +
+              "@.previousQualifications.qualifications[0].grade == 'B' && " +
+              "@.previousQualifications.qualifications[0].level == 'LEVEL_4' && " +
+              '@.previousTraining.trainingTypes.size() == 2 && ' +
+              "@.previousTraining.trainingTypes[0] == 'HGV_LICENCE' && " +
+              "@.previousTraining.trainingTypes[1] == 'OTHER' && " +
+              "@.previousTraining.trainingTypeOther == 'Basic accountancy course' && " +
+              '@.previousWorkExperiences.hasWorkedBefore == true && ' +
+              '@.previousWorkExperiences.experiences.size() == 2 && ' +
+              "@.previousWorkExperiences.experiences[0].experienceType == 'CONSTRUCTION' && " +
+              "@.previousWorkExperiences.experiences[0].role == 'General labourer' && " +
+              "@.previousWorkExperiences.experiences[0].details == 'Basic ground works and building' && " +
+              "@.previousWorkExperiences.experiences[1].experienceType == 'OTHER' && " +
+              "@.previousWorkExperiences.experiences[1].experienceTypeOther == 'Entertainment industry' && " +
+              "@.previousWorkExperiences.experiences[1].role == 'Nightclub DJ' && " +
+              "@.previousWorkExperiences.experiences[1].details == 'Self employed DJ operating in bars and clubs' && " +
+              '@.futureWorkInterests.interests.size() == 3 && ' +
+              "@.futureWorkInterests.interests[0].workType == 'OUTDOOR' && " +
+              "@.futureWorkInterests.interests[0].role == 'Farm hand' && " +
+              "@.futureWorkInterests.interests[1].workType == 'DRIVING' && " +
+              "@.futureWorkInterests.interests[1].role == 'Delivery driver' && " +
+              "@.futureWorkInterests.interests[2].workType == 'OTHER' && " +
+              "@.futureWorkInterests.interests[2].workTypeOther == 'Natural world' && " +
+              "@.futureWorkInterests.interests[2].role == 'Botanist' && " +
+              '@.personalSkillsAndInterests.skills.size() == 1 && ' +
+              "@.personalSkillsAndInterests.skills[0].skillType == 'POSITIVE_ATTITUDE' && " +
+              '@.personalSkillsAndInterests.interests.size() == 2 && ' +
+              "@.personalSkillsAndInterests.interests[0].interestType == 'COMMUNITY' && " +
+              "@.personalSkillsAndInterests.interests[1].interestType == 'DIGITAL' && " +
+              '@.workOnRelease.affectAbilityToWork.size() == 1 && ' +
+              "@.workOnRelease.affectAbilityToWork[0] == 'NONE' && " +
+              "@.workOnRelease.affectAbilityToWorkOther == '')]",
+          ),
+        ),
+    )
   })
 })

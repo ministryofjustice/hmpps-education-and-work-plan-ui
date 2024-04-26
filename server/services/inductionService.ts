@@ -6,6 +6,7 @@ import toWorkAndInterests from '../data/mappers/workAndInterestMapper'
 import toEducationAndTraining from '../data/mappers/educationAndTrainingMapper'
 import toInductionDto from '../data/mappers/inductionDtoMapper'
 import toUpdateInductionRequest from '../data/mappers/updateInductionMapper'
+import toCreateInductionRequest from '../data/mappers/createInductionMapper'
 
 export default class InductionService {
   constructor(private readonly educationAndWorkPlanClient: EducationAndWorkPlanClient) {}
@@ -42,12 +43,26 @@ export default class InductionService {
     prisonNumber: string,
     updateInductionDto: CreateOrUpdateInductionDto,
     token: string,
-  ): Promise<unknown> {
+  ): Promise<never> {
     try {
       const updateInductionRequest = toUpdateInductionRequest(updateInductionDto)
       return await this.educationAndWorkPlanClient.updateInduction(prisonNumber, updateInductionRequest, token)
     } catch (error) {
       logger.error(`Error updating Induction for prisoner [${prisonNumber}] in the Education And Work Plan API `, error)
+      throw error
+    }
+  }
+
+  async createInduction(
+    prisonNumber: string,
+    createInductionDto: CreateOrUpdateInductionDto,
+    token: string,
+  ): Promise<never> {
+    try {
+      const createInductionRequest = toCreateInductionRequest(createInductionDto)
+      return await this.educationAndWorkPlanClient.createInduction(prisonNumber, createInductionRequest, token)
+    } catch (error) {
+      logger.error(`Error creating Induction for prisoner [${prisonNumber}] in the Education And Work Plan API `, error)
       throw error
     }
   }
