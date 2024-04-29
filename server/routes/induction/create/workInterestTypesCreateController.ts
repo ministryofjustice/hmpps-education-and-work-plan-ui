@@ -2,10 +2,15 @@ import { NextFunction, Request, RequestHandler, Response } from 'express'
 import WorkInterestTypesController from '../common/workInterestTypesController'
 import getDynamicBackLinkAriaText from '../dynamicAriaTextResolver'
 import validateWorkInterestTypesForm from '../../validators/induction/workInterestTypesFormValidator'
+import { getPreviousPage } from '../../pageFlowHistory'
 
 export default class WorkInterestTypesCreateController extends WorkInterestTypesController {
   getBackLinkUrl(req: Request): string {
     const { prisonNumber } = req.params
+    const { pageFlowHistory } = req.session
+    if (pageFlowHistory) {
+      return getPreviousPage(pageFlowHistory)
+    }
     return `/prisoners/${prisonNumber}/create-induction/has-worked-before`
   }
 
@@ -40,6 +45,8 @@ export default class WorkInterestTypesCreateController extends WorkInterestTypes
     req.session.inductionDto = updatedInduction
     req.session.workInterestTypesForm = undefined
 
-    return res.redirect(`/prisoners/${prisonNumber}/create-induction/work-interest-roles`)
+    return this.previousPageWasCheckYourAnswers(req)
+      ? res.redirect(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
+      : res.redirect(`/prisoners/${prisonNumber}/create-induction/work-interest-roles`)
   }
 }

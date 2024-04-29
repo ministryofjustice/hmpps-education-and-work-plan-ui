@@ -15,6 +15,8 @@ export default abstract class WorkInterestRolesController extends InductionContr
   getWorkInterestRolesView: RequestHandler = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { prisonerSummary, inductionDto } = req.session
 
+    this.addCurrentPageToFlowHistoryWhenComingFromCheckYourAnswers(req)
+
     // Check if we are in the midst of changing the main induction question set (in this case from short route to long route)
     if (req.session.updateInductionQuestionSet) {
       this.addCurrentPageToHistory(req)
