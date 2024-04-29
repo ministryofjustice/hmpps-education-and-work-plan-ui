@@ -6,6 +6,7 @@ import CheckYourAnswersPage from '../../pages/induction/CheckYourAnswersPage'
 import AbilityToWorkValue from '../../../server/enums/abilityToWorkValue'
 import HopingToGetWorkValue from '../../../server/enums/hopingToGetWorkValue'
 import PersonalInterestsValue from '../../../server/enums/personalInterestsValue'
+import SkillsValue from '../../../server/enums/skillsValue'
 
 context(`Change links on the Check Your Answers page when creating an Induction`, () => {
   const prisonNumber = 'G6115VJ'
@@ -38,6 +39,15 @@ context(`Change links on the Check Your Answers page when creating an Induction`
       .choosePersonalInterest(PersonalInterestsValue.DIGITAL)
       .submitPage()
 
+    // Change skills
+    Page.verifyOnPage(CheckYourAnswersPage)
+      .clickPersonalSkillsChangeLink()
+      .hasBackLinkTo(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
+      .deSelectSkill(SkillsValue.POSITIVE_ATTITUDE)
+      .chooseSkill(SkillsValue.TEAMWORK)
+      .chooseSkill(SkillsValue.RESILIENCE)
+      .submitPage()
+
     // Then
     Page.verifyOnPage(CheckYourAnswersPage) //
       .hasHopingToWorkOnRelease(HopingToGetWorkValue.YES)
@@ -45,5 +55,7 @@ context(`Change links on the Check Your Answers page when creating an Induction`
       .hasFactorsAffectingAbilityToWork(AbilityToWorkValue.NO_RIGHT_TO_WORK)
       .hasPersonalInterest(PersonalInterestsValue.CRAFTS)
       .hasPersonalInterest(PersonalInterestsValue.DIGITAL)
+      .hasPersonalSkill(SkillsValue.TEAMWORK)
+      .hasPersonalSkill(SkillsValue.RESILIENCE)
   })
 })
