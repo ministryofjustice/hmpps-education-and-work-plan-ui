@@ -18,6 +18,8 @@ export default abstract class SkillsController extends InductionController {
     const skillsForm = req.session.skillsForm || toSkillsForm(inductionDto)
     req.session.skillsForm = undefined
 
+    this.addCurrentPageToFlowHistoryWhenComingFromCheckYourAnswers(req)
+
     // Check if we are in the midst of changing the main induction question set (in this case from short route to long route)
     if (req.session.updateInductionQuestionSet) {
       this.addCurrentPageToHistory(req)

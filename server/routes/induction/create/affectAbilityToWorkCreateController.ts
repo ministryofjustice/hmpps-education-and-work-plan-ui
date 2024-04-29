@@ -4,10 +4,15 @@ import AffectAbilityToWorkController from '../common/affectAbilityToWorkControll
 import getDynamicBackLinkAriaText from '../dynamicAriaTextResolver'
 import validateAffectAbilityToWorkForm from '../../validators/induction/affectAbilityToWorkFormValidator'
 import { asArray } from '../../../utils/utils'
+import { getPreviousPage } from '../../pageFlowHistory'
 
 export default class AffectAbilityToWorkCreateController extends AffectAbilityToWorkController {
   getBackLinkUrl(req: Request): string {
     const { prisonNumber } = req.params
+    const { pageFlowHistory } = req.session
+    if (pageFlowHistory) {
+      return getPreviousPage(pageFlowHistory)
+    }
     return `/prisoners/${prisonNumber}/create-induction/personal-interests`
   }
 

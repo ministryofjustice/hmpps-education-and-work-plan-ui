@@ -30,6 +30,7 @@ export default class CheckYourAnswersCreateController extends CheckYourAnswersCo
     try {
       await this.inductionService.createInduction(prisonNumber, createInductionDto, req.user.token)
 
+      req.session.pageFlowHistory = undefined
       req.session.inductionDto = undefined
       return res.redirect(`/plan/${prisonNumber}/induction-created`)
     } catch (e) {

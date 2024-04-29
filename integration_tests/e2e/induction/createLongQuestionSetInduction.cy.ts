@@ -146,7 +146,7 @@ context('Create a long question set Induction', () => {
       .selectWorkedBefore(YesNoValue.YES)
       .submitPage()
 
-    // Post-release Work Interest Types is the next page
+    // Previous Work Experience Types is the next page
     Page.verifyOnPage(PreviousWorkExperienceTypesPage)
       .hasBackLinkTo('/prisoners/A00001A/create-induction/has-worked-before')
       .submitPage() // submit the page without answering the question to trigger a validation error
@@ -159,7 +159,7 @@ context('Create a long question set Induction', () => {
       .setOtherPreviousWorkExperienceType('Entertainment industry')
       .submitPage()
 
-    // Post-release Work Interest Details page is next - once for each work industry type submitted on the previous page
+    // Previous Work Experience Details page is next - once for each work industry type submitted on the previous page
     Page.verifyOnPage(PreviousWorkExperienceDetailPage) //
       .hasBackLinkTo('/prisoners/A00001A/create-induction/previous-work-experience')
       .submitPage() // submit the page without answering the question to trigger a validation error

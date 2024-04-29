@@ -1,12 +1,19 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express'
+import type { AdditionalTrainingForm } from 'inductionForms'
 import AdditionalTrainingController from '../common/additionalTrainingController'
 import getDynamicBackLinkAriaText from '../dynamicAriaTextResolver'
 import validateAdditionalTrainingForm from '../../validators/induction/additionalTrainingFormValidator'
 import YesNoValue from '../../../enums/yesNoValue'
+import { getPreviousPage } from '../../pageFlowHistory'
+import { asArray } from '../../../utils/utils'
 
 export default class AdditionalTrainingCreateController extends AdditionalTrainingController {
   getBackLinkUrl(req: Request): string {
     const { prisonNumber } = req.params
+    const { pageFlowHistory } = req.session
+    if (pageFlowHistory) {
+      return getPreviousPage(pageFlowHistory)
+    }
     // TODO - we will need logic here to detect induction question set - Long Question Set goes back to Qualifications, Short Question Set goes back to Do You Want To Add Qualifications
     return `/prisoners/${prisonNumber}/create-induction/qualifications`
   }
@@ -23,14 +30,11 @@ export default class AdditionalTrainingCreateController extends AdditionalTraini
     const { prisonNumber } = req.params
     const { prisonerSummary, inductionDto } = req.session
 
-    req.session.additionalTrainingForm = { ...req.body }
-    if (!req.session.additionalTrainingForm.additionalTraining) {
-      req.session.additionalTrainingForm.additionalTraining = []
+    const additionalTrainingForm: AdditionalTrainingForm = {
+      additionalTraining: asArray(req.body.additionalTraining),
+      additionalTrainingOther: req.body.additionalTrainingOther,
     }
-    if (!Array.isArray(req.session.additionalTrainingForm.additionalTraining)) {
-      req.session.additionalTrainingForm.additionalTraining = [req.session.additionalTrainingForm.additionalTraining]
-    }
-    const { additionalTrainingForm } = req.session
+    req.session.additionalTrainingForm = additionalTrainingForm
 
     const errors = validateAdditionalTrainingForm(additionalTrainingForm, prisonerSummary)
     if (errors.length > 0) {
