@@ -24,7 +24,7 @@ import CheckYourAnswersUpdateController from './checkYourAnswersUpdateController
 import setCurrentPageInPageFlowQueue from '../../routerRequestHandlers/setCurrentPageInPageFlowQueue'
 import retrieveFunctionalSkillsIfNotInSession from '../../routerRequestHandlers/retrieveFunctionalSkillsIfNotInSession'
 import retrieveInductionIfNotInSession from '../../routerRequestHandlers/retrieveInductionIfNotInSession'
-import retrievePrisonerSummaryIfNotInSession from '../../routerRequestHandlers/retrievePrisonerSummaryIfNotInSession'
+import asyncMiddleware from '../../../middleware/asyncMiddleware'
 
 /**
  * Route definitions for updating the various sections of an Induction
@@ -59,150 +59,150 @@ export default (router: Router, services: Services) => {
   if (config.featureToggles.induction.update.enabled) {
     router.get('/prisoners/:prisonNumber/induction/**', [
       checkUserHasEditAuthority(),
-      retrievePrisonerSummaryIfNotInSession(services.prisonerSearchService),
       retrieveInductionIfNotInSession(services.inductionService),
       setCurrentPageInPageFlowQueue,
     ])
     router.post('/prisoners/:prisonNumber/induction/**', [
       checkUserHasEditAuthority(),
-      retrievePrisonerSummaryIfNotInSession(services.prisonerSearchService),
       retrieveInductionIfNotInSession(services.inductionService),
       setCurrentPageInPageFlowQueue,
     ])
 
     // In Prison Training
     router.get('/prisoners/:prisonNumber/induction/in-prison-training', [
-      inPrisonTrainingUpdateController.getInPrisonTrainingView,
+      asyncMiddleware(inPrisonTrainingUpdateController.getInPrisonTrainingView),
     ])
     router.post('/prisoners/:prisonNumber/induction/in-prison-training', [
-      inPrisonTrainingUpdateController.submitInPrisonTrainingForm,
+      asyncMiddleware(inPrisonTrainingUpdateController.submitInPrisonTrainingForm),
     ])
 
     // Personal Skills and Interests
     router.get('/prisoners/:prisonNumber/induction/personal-interests', [
-      personalInterestsUpdateController.getPersonalInterestsView,
+      asyncMiddleware(personalInterestsUpdateController.getPersonalInterestsView),
     ])
     router.post('/prisoners/:prisonNumber/induction/personal-interests', [
-      personalInterestsUpdateController.submitPersonalInterestsForm,
+      asyncMiddleware(personalInterestsUpdateController.submitPersonalInterestsForm),
     ])
 
-    router.get('/prisoners/:prisonNumber/induction/skills', [skillsUpdateController.getSkillsView])
-    router.post('/prisoners/:prisonNumber/induction/skills', [skillsUpdateController.submitSkillsForm])
+    router.get('/prisoners/:prisonNumber/induction/skills', [asyncMiddleware(skillsUpdateController.getSkillsView)])
+    router.post('/prisoners/:prisonNumber/induction/skills', [asyncMiddleware(skillsUpdateController.submitSkillsForm)])
 
     // Previous Work Experience
     router.get('/prisoners/:prisonNumber/induction/has-worked-before', [
-      workedBeforeUpdateController.getWorkedBeforeView,
+      asyncMiddleware(workedBeforeUpdateController.getWorkedBeforeView),
     ])
     router.post('/prisoners/:prisonNumber/induction/has-worked-before', [
-      workedBeforeUpdateController.submitWorkedBeforeForm,
+      asyncMiddleware(workedBeforeUpdateController.submitWorkedBeforeForm),
     ])
 
     router.get('/prisoners/:prisonNumber/induction/previous-work-experience', [
-      previousWorkExperienceTypesUpdateController.getPreviousWorkExperienceTypesView,
+      asyncMiddleware(previousWorkExperienceTypesUpdateController.getPreviousWorkExperienceTypesView),
     ])
     router.post('/prisoners/:prisonNumber/induction/previous-work-experience', [
-      previousWorkExperienceTypesUpdateController.submitPreviousWorkExperienceTypesForm,
+      asyncMiddleware(previousWorkExperienceTypesUpdateController.submitPreviousWorkExperienceTypesForm),
     ])
 
     router.get('/prisoners/:prisonNumber/induction/previous-work-experience/:typeOfWorkExperience', [
-      previousWorkExperienceDetailUpdateController.getPreviousWorkExperienceDetailView,
+      asyncMiddleware(previousWorkExperienceDetailUpdateController.getPreviousWorkExperienceDetailView),
     ])
     router.post('/prisoners/:prisonNumber/induction/previous-work-experience/:typeOfWorkExperience', [
-      previousWorkExperienceDetailUpdateController.submitPreviousWorkExperienceDetailForm,
+      asyncMiddleware(previousWorkExperienceDetailUpdateController.submitPreviousWorkExperienceDetailForm),
     ])
 
     // Work Interests
     router.get('/prisoners/:prisonNumber/induction/hoping-to-work-on-release', [
-      hopingToWorkOnReleaseController.getHopingToWorkOnReleaseView,
+      asyncMiddleware(hopingToWorkOnReleaseController.getHopingToWorkOnReleaseView),
     ])
     router.post('/prisoners/:prisonNumber/induction/hoping-to-work-on-release', [
-      hopingToWorkOnReleaseController.submitHopingToWorkOnReleaseForm,
+      asyncMiddleware(hopingToWorkOnReleaseController.submitHopingToWorkOnReleaseForm),
     ])
 
     router.get('/prisoners/:prisonNumber/induction/affect-ability-to-work', [
-      affectAbilityToWorkUpdateController.getAffectAbilityToWorkView,
+      asyncMiddleware(affectAbilityToWorkUpdateController.getAffectAbilityToWorkView),
     ])
     router.post('/prisoners/:prisonNumber/induction/affect-ability-to-work', [
-      affectAbilityToWorkUpdateController.submitAffectAbilityToWorkForm,
+      asyncMiddleware(affectAbilityToWorkUpdateController.submitAffectAbilityToWorkForm),
     ])
 
     router.get('/prisoners/:prisonNumber/induction/reasons-not-to-get-work', [
-      reasonsNotToGetWorkUpdateController.getReasonsNotToGetWorkView,
+      asyncMiddleware(reasonsNotToGetWorkUpdateController.getReasonsNotToGetWorkView),
     ])
     router.post('/prisoners/:prisonNumber/induction/reasons-not-to-get-work', [
-      reasonsNotToGetWorkUpdateController.submitReasonsNotToGetWorkForm,
+      asyncMiddleware(reasonsNotToGetWorkUpdateController.submitReasonsNotToGetWorkForm),
     ])
 
     router.get('/prisoners/:prisonNumber/induction/work-interest-types', [
-      workInterestTypesUpdateController.getWorkInterestTypesView,
+      asyncMiddleware(workInterestTypesUpdateController.getWorkInterestTypesView),
     ])
     router.post('/prisoners/:prisonNumber/induction/work-interest-types', [
-      workInterestTypesUpdateController.submitWorkInterestTypesForm,
+      asyncMiddleware(workInterestTypesUpdateController.submitWorkInterestTypesForm),
     ])
 
     router.get('/prisoners/:prisonNumber/induction/work-interest-roles', [
-      workInterestRolesUpdateController.getWorkInterestRolesView,
+      asyncMiddleware(workInterestRolesUpdateController.getWorkInterestRolesView),
     ])
     router.post('/prisoners/:prisonNumber/induction/work-interest-roles', [
-      workInterestRolesUpdateController.submitWorkInterestRolesForm,
+      asyncMiddleware(workInterestRolesUpdateController.submitWorkInterestRolesForm),
     ])
 
-    router.get('/prisoners/:prisonNumber/induction/in-prison-work', [inPrisonWorkUpdateController.getInPrisonWorkView])
+    router.get('/prisoners/:prisonNumber/induction/in-prison-work', [
+      asyncMiddleware(inPrisonWorkUpdateController.getInPrisonWorkView),
+    ])
     router.post('/prisoners/:prisonNumber/induction/in-prison-work', [
-      inPrisonWorkUpdateController.submitInPrisonWorkForm,
+      asyncMiddleware(inPrisonWorkUpdateController.submitInPrisonWorkForm),
     ])
 
     // Check Your Answers
     router.get('/prisoners/:prisonNumber/induction/check-your-answers', [
-      checkYourAnswersUpdateController.getCheckYourAnswersView,
+      asyncMiddleware(checkYourAnswersUpdateController.getCheckYourAnswersView),
     ])
     router.post('/prisoners/:prisonNumber/induction/check-your-answers', [
-      checkYourAnswersUpdateController.submitCheckYourAnswers,
+      asyncMiddleware(checkYourAnswersUpdateController.submitCheckYourAnswers),
     ])
 
     // Pre Prison Education
     router.get('/prisoners/:prisonNumber/induction/qualifications', [
       retrieveFunctionalSkillsIfNotInSession(services.curiousService),
-      qualificationsListUpdateController.getQualificationsListView,
+      asyncMiddleware(qualificationsListUpdateController.getQualificationsListView),
     ])
     router.post('/prisoners/:prisonNumber/induction/qualifications', [
-      qualificationsListUpdateController.submitQualificationsListView,
+      asyncMiddleware(qualificationsListUpdateController.submitQualificationsListView),
     ])
 
     router.get('/prisoners/:prisonNumber/induction/want-to-add-qualifications', [
       retrieveFunctionalSkillsIfNotInSession(services.curiousService),
-      wantToAddQualificationsUpdateController.getWantToAddQualificationsView,
+      asyncMiddleware(wantToAddQualificationsUpdateController.getWantToAddQualificationsView),
     ])
     router.post('/prisoners/:prisonNumber/induction/want-to-add-qualifications', [
-      wantToAddQualificationsUpdateController.submitWantToAddQualificationsForm,
+      asyncMiddleware(wantToAddQualificationsUpdateController.submitWantToAddQualificationsForm),
     ])
 
     router.get('/prisoners/:prisonNumber/induction/highest-level-of-education', [
-      highestLevelOfEducationUpdateController.getHighestLevelOfEducationView,
+      asyncMiddleware(highestLevelOfEducationUpdateController.getHighestLevelOfEducationView),
     ])
     router.post('/prisoners/:prisonNumber/induction/highest-level-of-education', [
-      highestLevelOfEducationUpdateController.submitHighestLevelOfEducationForm,
+      asyncMiddleware(highestLevelOfEducationUpdateController.submitHighestLevelOfEducationForm),
     ])
 
     router.get('/prisoners/:prisonNumber/induction/qualification-level', [
-      qualificationLevelUpdateController.getQualificationLevelView,
+      asyncMiddleware(qualificationLevelUpdateController.getQualificationLevelView),
     ])
     router.post('/prisoners/:prisonNumber/induction/qualification-level', [
-      qualificationLevelUpdateController.submitQualificationLevelForm,
+      asyncMiddleware(qualificationLevelUpdateController.submitQualificationLevelForm),
     ])
 
     router.get('/prisoners/:prisonNumber/induction/qualification-details', [
-      qualificationDetailsUpdateController.getQualificationDetailsView,
+      asyncMiddleware(qualificationDetailsUpdateController.getQualificationDetailsView),
     ])
     router.post('/prisoners/:prisonNumber/induction/qualification-details', [
-      qualificationDetailsUpdateController.submitQualificationDetailsForm,
+      asyncMiddleware(qualificationDetailsUpdateController.submitQualificationDetailsForm),
     ])
 
     router.get('/prisoners/:prisonNumber/induction/additional-training', [
-      additionalTrainingUpdateController.getAdditionalTrainingView,
+      asyncMiddleware(additionalTrainingUpdateController.getAdditionalTrainingView),
     ])
     router.post('/prisoners/:prisonNumber/induction/additional-training', [
-      additionalTrainingUpdateController.submitAdditionalTrainingForm,
+      asyncMiddleware(additionalTrainingUpdateController.submitAdditionalTrainingForm),
     ])
   }
 }

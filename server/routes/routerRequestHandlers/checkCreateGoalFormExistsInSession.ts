@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from 'express'
 import logger from '../../../logger'
+import asyncMiddleware from '../../middleware/asyncMiddleware'
 
 /**
  * Request handler function to check the CreateGoalForm exists in the session for the prisoner referenced in the
@@ -7,7 +8,7 @@ import logger from '../../../logger'
  * In the case of an 'edit mode' request, the handler function gets the relevant new goal from the array of new goals held
  * in session first.
  */
-const checkCreateGoalFormExistsInSession = async (req: Request, res: Response, next: NextFunction) => {
+const checkCreateGoalFormExistsInSession = asyncMiddleware(async (req: Request, res: Response, next: NextFunction) => {
   if (isEditMode(req)) {
     // If the request is an edit mode request we need to get the relevant newGoal object from the newGoals array
     const { goalIndex } = req.params
@@ -28,7 +29,7 @@ const checkCreateGoalFormExistsInSession = async (req: Request, res: Response, n
   } else {
     next()
   }
-}
+})
 const isEditMode = (req: Request): boolean => req.query?.mode === 'edit'
 
 export default checkCreateGoalFormExistsInSession

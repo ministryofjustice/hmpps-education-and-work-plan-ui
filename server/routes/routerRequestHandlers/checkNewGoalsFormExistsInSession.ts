@@ -1,12 +1,13 @@
 import { NextFunction, Request, Response } from 'express'
 import logger from '../../../logger'
+import asyncMiddleware from '../../middleware/asyncMiddleware'
 
 /**
  * Request handler function to check the NewGoal array exists in the session and contains at least 1 element, where each
  * element contains an AddNoteForm (if a given element does not contain an AddNoteForm it means the pages are being navigated
  * out of sequence)
  */
-const checkNewGoalsFormExistsInSession = async (req: Request, res: Response, next: NextFunction) => {
+const checkNewGoalsFormExistsInSession = asyncMiddleware(async (req: Request, res: Response, next: NextFunction) => {
   if (!req.session.newGoals) {
     logger.warn(
       `No NewGoal objects in session - user attempting to navigate to path ${req.path} out of sequence. Redirecting to start of Create Goal journey.`,
@@ -23,5 +24,5 @@ const checkNewGoalsFormExistsInSession = async (req: Request, res: Response, nex
   } else {
     next()
   }
-}
+})
 export default checkNewGoalsFormExistsInSession
