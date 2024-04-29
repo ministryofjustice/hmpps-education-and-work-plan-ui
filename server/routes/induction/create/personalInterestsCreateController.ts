@@ -4,10 +4,15 @@ import PersonalInterestsController from '../common/personalInterestsController'
 import getDynamicBackLinkAriaText from '../dynamicAriaTextResolver'
 import { asArray } from '../../../utils/utils'
 import validatePersonalInterestsForm from '../../validators/induction/personalInterestsFormValidator'
+import { getPreviousPage } from '../../pageFlowHistory'
 
 export default class PersonalInterestsCreateController extends PersonalInterestsController {
   getBackLinkUrl(req: Request): string {
     const { prisonNumber } = req.params
+    const { pageFlowHistory } = req.session
+    if (pageFlowHistory) {
+      return getPreviousPage(pageFlowHistory)
+    }
     return `/prisoners/${prisonNumber}/create-induction/skills`
   }
 
@@ -39,6 +44,8 @@ export default class PersonalInterestsCreateController extends PersonalInterests
     req.session.inductionDto = updatedInduction
     req.session.personalInterestsForm = undefined
 
-    return res.redirect(`/prisoners/${prisonNumber}/create-induction/affect-ability-to-work`)
+    return this.previousPageWasCheckYourAnswers(req)
+      ? res.redirect(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
+      : res.redirect(`/prisoners/${prisonNumber}/create-induction/affect-ability-to-work`)
   }
 }

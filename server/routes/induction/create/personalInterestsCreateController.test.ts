@@ -104,6 +104,52 @@ describe('personalInterestsCreateController', () => {
       expect(req.session.personalInterestsForm).toBeUndefined()
       expect(req.session.inductionDto).toEqual(inductionDto)
     })
+
+    it('should get the Ability To Work view given the previous page was Check Your Answers', async () => {
+      // Given
+      const inductionDto = aLongQuestionSetInductionDto()
+      inductionDto.personalSkillsAndInterests.interests = undefined
+      req.session.inductionDto = inductionDto
+
+      req.session.pageFlowHistory = {
+        pageUrls: ['/prisoners/A1234BC/create-induction/check-your-answers'],
+        currentPageIndex: 0,
+      }
+
+      const expectedPageFlowHistory = {
+        pageUrls: [
+          '/prisoners/A1234BC/create-induction/check-your-answers',
+          '/prisoners/A1234BC/create-induction/personal-interests',
+        ],
+        currentPageIndex: 1,
+      }
+
+      const expectedPersonalInterestsForm: PersonalInterestsForm = {
+        personalInterests: [],
+        personalInterestsOther: undefined,
+      }
+
+      const expectedView = {
+        prisonerSummary,
+        form: expectedPersonalInterestsForm,
+        backLinkUrl: '/prisoners/A1234BC/create-induction/check-your-answers',
+        backLinkAriaText: `Back to Check and save your answers before adding Jimmy Lightfingers's goals`,
+        errors: noErrors,
+      }
+
+      // When
+      await controller.getPersonalInterestsView(
+        req as undefined as Request,
+        res as undefined as Response,
+        next as undefined as NextFunction,
+      )
+
+      // Then
+      expect(res.render).toHaveBeenCalledWith('pages/induction/personalInterests/index', expectedView)
+      expect(req.session.personalInterestsForm).toBeUndefined()
+      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(req.session.pageFlowHistory).toEqual(expectedPageFlowHistory)
+    })
   })
 
   describe('submitPersonalInterestsForm', () => {
@@ -165,6 +211,46 @@ describe('personalInterestsCreateController', () => {
       const updatedInduction = req.session.inductionDto
       expect(updatedInduction.personalSkillsAndInterests.interests).toEqual(expectedInterests)
       expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-induction/affect-ability-to-work')
+      expect(req.session.skillsForm).toBeUndefined()
+    })
+
+    it('should update inductionDto and redirect to Check Your Answers given previous page was Check Your Answers', async () => {
+      // Given
+      const inductionDto = aLongQuestionSetInductionDto()
+      inductionDto.personalSkillsAndInterests.interests = undefined
+      req.session.inductionDto = inductionDto
+
+      const personalInterestsForm = {
+        personalInterests: ['CREATIVE', 'OTHER'],
+        personalInterestsOther: 'Renewable energy',
+      }
+      req.body = personalInterestsForm
+      req.session.personalInterestsForm = undefined
+
+      const expectedInterests: Array<PersonalInterestDto> = [
+        { interestType: PersonalInterestsValue.CREATIVE, interestTypeOther: undefined },
+        { interestType: PersonalInterestsValue.OTHER, interestTypeOther: 'Renewable energy' },
+      ]
+
+      req.session.pageFlowHistory = {
+        pageUrls: [
+          '/prisoners/A1234BC/create-induction/check-your-answers',
+          '/prisoners/A1234BC/create-induction/personal-interests',
+        ],
+        currentPageIndex: 1,
+      }
+
+      // When
+      await controller.submitPersonalInterestsForm(
+        req as undefined as Request,
+        res as undefined as Response,
+        next as undefined as NextFunction,
+      )
+
+      // Then
+      const updatedInduction = req.session.inductionDto
+      expect(updatedInduction.personalSkillsAndInterests.interests).toEqual(expectedInterests)
+      expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-induction/check-your-answers')
       expect(req.session.skillsForm).toBeUndefined()
     })
   })

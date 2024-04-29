@@ -104,6 +104,52 @@ describe('skillsCreateController', () => {
       expect(req.session.skillsForm).toBeUndefined()
       expect(req.session.inductionDto).toEqual(inductionDto)
     })
+
+    it('should get the Skills view given the previous page was Check Your Answers', async () => {
+      // Given
+      const inductionDto = aLongQuestionSetInductionDto()
+      inductionDto.personalSkillsAndInterests.skills = undefined
+      req.session.inductionDto = inductionDto
+
+      req.session.pageFlowHistory = {
+        pageUrls: ['/prisoners/A1234BC/create-induction/check-your-answers'],
+        currentPageIndex: 0,
+      }
+
+      const expectedPageFlowHistory = {
+        pageUrls: [
+          '/prisoners/A1234BC/create-induction/check-your-answers',
+          '/prisoners/A1234BC/create-induction/skills',
+        ],
+        currentPageIndex: 1,
+      }
+
+      const expectedSkillsForm: SkillsForm = {
+        skills: [],
+        skillsOther: undefined,
+      }
+
+      const expectedView = {
+        prisonerSummary,
+        form: expectedSkillsForm,
+        backLinkUrl: '/prisoners/A1234BC/create-induction/check-your-answers',
+        backLinkAriaText: `Back to Check and save your answers before adding Jimmy Lightfingers's goals`,
+        errors: noErrors,
+      }
+
+      // When
+      await controller.getSkillsView(
+        req as undefined as Request,
+        res as undefined as Response,
+        next as undefined as NextFunction,
+      )
+
+      // Then
+      expect(res.render).toHaveBeenCalledWith('pages/induction/skills/index', expectedView)
+      expect(req.session.personalInterestsForm).toBeUndefined()
+      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(req.session.pageFlowHistory).toEqual(expectedPageFlowHistory)
+    })
   })
 
   describe('submitSkillsForm', () => {
@@ -165,6 +211,46 @@ describe('skillsCreateController', () => {
       const updatedInduction = req.session.inductionDto
       expect(updatedInduction.personalSkillsAndInterests.skills).toEqual(expectedSkills)
       expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-induction/personal-interests')
+      expect(req.session.skillsForm).toBeUndefined()
+    })
+
+    it('should update inductionDto and redirect to Check Your Answers given previous page was Check Your Answers', async () => {
+      // Given
+      const inductionDto = aLongQuestionSetInductionDto()
+      inductionDto.personalSkillsAndInterests.skills = undefined
+      req.session.inductionDto = inductionDto
+
+      const skillsForm = {
+        skills: ['TEAMWORK', 'OTHER'],
+        skillsOther: 'Circus skills',
+      }
+      req.body = skillsForm
+      req.session.skillsForm = undefined
+
+      const expectedSkills: Array<PersonalSkillDto> = [
+        { skillType: SkillsValue.TEAMWORK, skillTypeOther: undefined },
+        { skillType: SkillsValue.OTHER, skillTypeOther: 'Circus skills' },
+      ]
+
+      req.session.pageFlowHistory = {
+        pageUrls: [
+          '/prisoners/A1234BC/create-induction/check-your-answers',
+          '/prisoners/A1234BC/create-induction/skills',
+        ],
+        currentPageIndex: 1,
+      }
+
+      // When
+      await controller.submitSkillsForm(
+        req as undefined as Request,
+        res as undefined as Response,
+        next as undefined as NextFunction,
+      )
+
+      // Then
+      const updatedInduction = req.session.inductionDto
+      expect(updatedInduction.personalSkillsAndInterests.skills).toEqual(expectedSkills)
+      expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-induction/check-your-answers')
       expect(req.session.skillsForm).toBeUndefined()
     })
   })

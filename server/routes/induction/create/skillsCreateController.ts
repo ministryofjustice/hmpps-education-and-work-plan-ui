@@ -4,10 +4,15 @@ import SkillsController from '../common/skillsController'
 import getDynamicBackLinkAriaText from '../dynamicAriaTextResolver'
 import validateSkillsForm from '../../validators/induction/skillsFormValidator'
 import { asArray } from '../../../utils/utils'
+import { getPreviousPage } from '../../pageFlowHistory'
 
 export default class SkillsCreateController extends SkillsController {
   getBackLinkUrl(req: Request): string {
     const { prisonNumber } = req.params
+    const { pageFlowHistory } = req.session
+    if (pageFlowHistory) {
+      return getPreviousPage(pageFlowHistory)
+    }
     return `/prisoners/${prisonNumber}/create-induction/work-interest-roles`
   }
 
@@ -35,6 +40,8 @@ export default class SkillsCreateController extends SkillsController {
     req.session.inductionDto = updatedInduction
     req.session.skillsForm = undefined
 
-    return res.redirect(`/prisoners/${prisonNumber}/create-induction/personal-interests`)
+    return this.previousPageWasCheckYourAnswers(req)
+      ? res.redirect(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
+      : res.redirect(`/prisoners/${prisonNumber}/create-induction/personal-interests`)
   }
 }

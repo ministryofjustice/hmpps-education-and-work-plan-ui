@@ -18,6 +18,8 @@ export default abstract class PersonalInterestsController extends InductionContr
     const personalInterestsForm = req.session.personalInterestsForm || toPersonalInterestsForm(inductionDto)
     req.session.personalInterestsForm = undefined
 
+    this.addCurrentPageToFlowHistoryWhenComingFromCheckYourAnswers(req)
+
     // Check if we are in the midst of changing the main induction question set (in this case from short route to long route)
     if (req.session.updateInductionQuestionSet) {
       this.addCurrentPageToHistory(req)
