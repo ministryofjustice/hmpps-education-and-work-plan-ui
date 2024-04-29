@@ -8,7 +8,7 @@
       {{ inductionDto.workOnRelease.hopingToWork | formatYesNo }}
     </dd>
     <dd class="govuk-summary-list__actions">
-      <a class="govuk-link" href="/prisoners/{{ prisonerSummary.prisonNumber }}/induction/hoping-to-work-on-release" data-qa="hopingToGetWorkLink">
+      <a class="govuk-link" href="hoping-to-work-on-release" data-qa="hopingToGetWorkLink">
         Change<span class="govuk-visually-hidden"> whether they're hoping to work when they're released</span>
       </a>
     </dd>
@@ -27,7 +27,7 @@
         {% endfor %}
       </dd>
       <dd class="govuk-summary-list__actions">
-        <a class="govuk-link" href="/prisoners/{{ prisonerSummary.prisonNumber }}/induction/reasons-not-to-get-work" data-qa="reasonToNotGetWorkLink">
+        <a class="govuk-link" href="reasons-not-to-get-work" data-qa="reasonToNotGetWorkLink">
           Change<span class="govuk-visually-hidden"> what could stop work on release</span>
         </a>
       </dd>

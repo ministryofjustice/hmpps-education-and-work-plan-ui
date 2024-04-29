@@ -7,7 +7,7 @@
       Educational qualifications
     </h3>
     <span class="govuk-body-m">
-      <a class="govuk-link" href="/prisoners/{{ prisonerSummary.prisonNumber }}/induction/qualifications" data-qa="qualificationsLink">Change<span class="govuk-visually-hidden"> their educational qualifications</span></a>
+      <a class="govuk-link" href="qualifications" data-qa="qualificationsLink">Change<span class="govuk-visually-hidden"> their educational qualifications</span></a>
     </span>
   </div>
 
@@ -43,7 +43,7 @@
       {{ inductionDto.previousQualifications.educationLevel | formatEducationLevel if inductionDto.previousQualifications.educationLevel }}
     </dd>
     <dd class="govuk-summary-list__actions">
-      <a class="govuk-link govuk-link--no-visited-state" href="/prisoners/{{ prisonerSummary.prisonNumber }}/induction/highest-level-of-education" data-qa="educationLevelLink">
+      <a class="govuk-link govuk-link--no-visited-state" href="highest-level-of-education" data-qa="educationLevelLink">
         Change<span class="govuk-visually-hidden"> highest level of education before prison</span>
       </a>
     </dd>
@@ -60,7 +60,7 @@
       {% endfor %}
     </dd>
     <dd class="govuk-summary-list__actions">
-      <a class="govuk-link govuk-link--no-visited-state" href="/prisoners/{{ prisonerSummary.prisonNumber }}/induction/additional-training" data-qa="additionalTrainingLink">
+      <a class="govuk-link govuk-link--no-visited-state" href="additional-training" data-qa="additionalTrainingLink">
         Change<span class="govuk-visually-hidden"> other training or qualifications they have</span>
       </a>
     </dd>
