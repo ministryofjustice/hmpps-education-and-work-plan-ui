@@ -8,6 +8,7 @@ import HopingToGetWorkValue from '../../../server/enums/hopingToGetWorkValue'
 import PersonalInterestsValue from '../../../server/enums/personalInterestsValue'
 import SkillsValue from '../../../server/enums/skillsValue'
 import AdditionalTrainingValue from '../../../server/enums/additionalTrainingValue'
+import WorkInterestTypeValue from '../../../server/enums/workInterestTypeValue'
 
 context(`Change links on the Check Your Answers page when creating an Induction`, () => {
   const prisonNumber = 'G6115VJ'
@@ -58,6 +59,23 @@ context(`Change links on the Check Your Answers page when creating an Induction`
       .chooseAdditionalTraining(AdditionalTrainingValue.CSCS_CARD)
       .submitPage()
 
+    // Change work interests
+    Page.verifyOnPage(CheckYourAnswersPage)
+      .clickWorkInterestsChangeLink()
+      .hasBackLinkTo(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
+      .deSelectWorkInterestType(WorkInterestTypeValue.DRIVING)
+      .chooseWorkInterestType(WorkInterestTypeValue.MANUFACTURING)
+      .chooseWorkInterestType(WorkInterestTypeValue.OUTDOOR)
+      .submitPage()
+
+    // Change work interest roles
+    Page.verifyOnPage(CheckYourAnswersPage)
+      .clickParticularJobInterestsChangeLink()
+      .hasBackLinkTo(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
+      .setWorkInterestRole(WorkInterestTypeValue.MANUFACTURING, 'Welder')
+      .setWorkInterestRole(WorkInterestTypeValue.OUTDOOR, 'Gardener')
+      .submitPage()
+
     // Then
     Page.verifyOnPage(CheckYourAnswersPage) //
       .hasHopingToWorkOnRelease(HopingToGetWorkValue.YES)
@@ -68,5 +86,7 @@ context(`Change links on the Check Your Answers page when creating an Induction`
       .hasPersonalSkill(SkillsValue.TEAMWORK)
       .hasPersonalSkill(SkillsValue.RESILIENCE)
       .hasAdditionalTraining([AdditionalTrainingValue.MANUAL_HANDLING, AdditionalTrainingValue.CSCS_CARD])
+      .hasWorkInterest(WorkInterestTypeValue.OUTDOOR)
+      .hasWorkInterest(WorkInterestTypeValue.MANUFACTURING)
   })
 })

@@ -108,6 +108,53 @@ describe('workInterestTypesCreateController', () => {
       expect(req.session.workInterestTypesForm).toBeUndefined()
       expect(req.session.inductionDto).toEqual(inductionDto)
     })
+
+    it('should get the Work Interest Types view given the previous page was Check Your Answers', async () => {
+      // Given
+      const inductionDto = aLongQuestionSetInductionDto()
+      inductionDto.futureWorkInterests = undefined
+      req.session.inductionDto = inductionDto
+      req.session.workInterestTypesForm = undefined
+
+      req.session.pageFlowHistory = {
+        pageUrls: ['/prisoners/A1234BC/create-induction/check-your-answers'],
+        currentPageIndex: 0,
+      }
+
+      const expectedPageFlowHistory = {
+        pageUrls: [
+          '/prisoners/A1234BC/create-induction/check-your-answers',
+          '/prisoners/A1234BC/create-induction/work-interest-types',
+        ],
+        currentPageIndex: 1,
+      }
+
+      const expectedWorkInterestTypesForm: WorkInterestTypesForm = {
+        workInterestTypes: [],
+        workInterestTypesOther: undefined,
+      }
+
+      const expectedView = {
+        prisonerSummary,
+        form: expectedWorkInterestTypesForm,
+        backLinkUrl: '/prisoners/A1234BC/create-induction/check-your-answers',
+        backLinkAriaText: `Back to Check and save your answers before adding Jimmy Lightfingers's goals`,
+        errors: noErrors,
+      }
+
+      // When
+      await controller.getWorkInterestTypesView(
+        req as undefined as Request,
+        res as undefined as Response,
+        next as undefined as NextFunction,
+      )
+
+      // Then
+      expect(res.render).toHaveBeenCalledWith('pages/induction/workInterests/workInterestTypes', expectedView)
+      expect(req.session.workInterestTypesForm).toBeUndefined()
+      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(req.session.pageFlowHistory).toEqual(expectedPageFlowHistory)
+    })
   })
 
   describe('submitWorkInterestTypesForm', () => {
@@ -177,6 +224,47 @@ describe('workInterestTypesCreateController', () => {
         req.session.inductionDto.futureWorkInterests.interests
       expect(futureWorkInterestsOnInduction).toEqual(expectedFutureWorkInterests)
       expect(res.redirect).toHaveBeenCalledWith(expectedNextPage)
+      expect(req.session.workInterestTypesForm).toBeUndefined()
+    })
+
+    it('should update inductionDto and redirect to Check Your Answers given previous page was Check Your Answers', async () => {
+      // Given
+      const inductionDto = aLongQuestionSetInductionDto()
+      inductionDto.futureWorkInterests = undefined
+      req.session.inductionDto = inductionDto
+
+      const workInterestTypesForm = {
+        workInterestTypes: [WorkInterestTypeValue.DRIVING, WorkInterestTypeValue.OTHER],
+        workInterestTypesOther: 'Natural world',
+      }
+      req.body = workInterestTypesForm
+      req.session.workInterestTypesForm = undefined
+
+      const expectedFutureWorkInterests: Array<FutureWorkInterestDto> = [
+        { workType: WorkInterestTypeValue.DRIVING, workTypeOther: undefined, role: undefined },
+        { workType: WorkInterestTypeValue.OTHER, workTypeOther: 'Natural world', role: undefined },
+      ]
+
+      req.session.pageFlowHistory = {
+        pageUrls: [
+          '/prisoners/A1234BC/create-induction/check-your-answers',
+          '/prisoners/A1234BC/create-induction/work-interest-types',
+        ],
+        currentPageIndex: 1,
+      }
+
+      // When
+      await controller.submitWorkInterestTypesForm(
+        req as undefined as Request,
+        res as undefined as Response,
+        next as undefined as NextFunction,
+      )
+
+      // Then
+      const futureWorkInterestsOnInduction: Array<FutureWorkInterestDto> =
+        req.session.inductionDto.futureWorkInterests.interests
+      expect(futureWorkInterestsOnInduction).toEqual(expectedFutureWorkInterests)
+      expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-induction/check-your-answers')
       expect(req.session.workInterestTypesForm).toBeUndefined()
     })
   })
