@@ -5,6 +5,7 @@ import Page from '../../pages/page'
 import CheckYourAnswersPage from '../../pages/induction/CheckYourAnswersPage'
 import AbilityToWorkValue from '../../../server/enums/abilityToWorkValue'
 import HopingToGetWorkValue from '../../../server/enums/hopingToGetWorkValue'
+import PersonalInterestsValue from '../../../server/enums/personalInterestsValue'
 
 context(`Change links on the Check Your Answers page when creating an Induction`, () => {
   const prisonNumber = 'G6115VJ'
@@ -28,10 +29,21 @@ context(`Change links on the Check Your Answers page when creating an Induction`
       .chooseAffectAbilityToWork(AbilityToWorkValue.NO_RIGHT_TO_WORK)
       .submitPage()
 
+    // Change personal interests
+    Page.verifyOnPage(CheckYourAnswersPage)
+      .clickPersonalInterestsChangeLink()
+      .hasBackLinkTo(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
+      .deSelectPersonalInterest(PersonalInterestsValue.COMMUNITY)
+      .choosePersonalInterest(PersonalInterestsValue.CRAFTS)
+      .choosePersonalInterest(PersonalInterestsValue.DIGITAL)
+      .submitPage()
+
     // Then
     Page.verifyOnPage(CheckYourAnswersPage) //
       .hasHopingToWorkOnRelease(HopingToGetWorkValue.YES)
       .hasFactorsAffectingAbilityToWork(AbilityToWorkValue.LIMITED_BY_OFFENSE)
       .hasFactorsAffectingAbilityToWork(AbilityToWorkValue.NO_RIGHT_TO_WORK)
+      .hasPersonalInterest(PersonalInterestsValue.CRAFTS)
+      .hasPersonalInterest(PersonalInterestsValue.DIGITAL)
   })
 })
