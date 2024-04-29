@@ -18,6 +18,8 @@ export default abstract class AdditionalTrainingController extends InductionCont
   ): Promise<void> => {
     const { prisonerSummary, inductionDto } = req.session
 
+    this.addCurrentPageToFlowHistoryWhenComingFromCheckYourAnswers(req)
+
     // Check if we are in the midst of changing the main induction question set (e.g. from long route to short route)
     if (req.session.updateInductionQuestionSet) {
       this.addCurrentPageToHistory(req)
