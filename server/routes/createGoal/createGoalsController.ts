@@ -1,23 +1,20 @@
 import createError from 'http-errors'
 import type { Request, RequestHandler, Response } from 'express'
 import { startOfToday } from 'date-fns'
-import type { CreateGoalsForm } from 'forms'
 import logger from '../../../logger'
 import CreateGoalsView from './createGoalsView'
 import futureGoalTargetDateCalculator from '../futureGoalTargetDateCalculator'
-import validateCreateGoalsForm from './createGoalsFormValidator'
 import toCreateGoalDtos from '../../data/mappers/createGoalDtoMapper'
 import EducationAndWorkPlanService from '../../services/educationAndWorkPlanService'
+import { CreateGoalsForm } from './validators/GoalForm'
 
 export default class CreateGoalsController {
   constructor(private readonly educationAndWorkPlanService: EducationAndWorkPlanService) {}
 
-  getCreateGoalsView: RequestHandler = async (req, res, next): Promise<void> => {
-    const { prisonNumber } = req.params
+  getCreateGoalsView: RequestHandler = async (req, res): Promise<void> => {
     const { prisonerSummary } = req.session
 
-    const createGoalsForm = req.session.createGoalsForm || {
-      prisonNumber,
+    const createGoalsForm: CreateGoalsForm = req.session.createGoalsForm || {
       goals: [emptyGoal()],
     }
     req.session.createGoalsForm = undefined
@@ -29,7 +26,7 @@ export default class CreateGoalsController {
       futureGoalTargetDateCalculator(today, 12),
     ]
 
-    const view = new CreateGoalsView(prisonerSummary, createGoalsForm, futureGoalTargetDates, req.flash('errors'))
+    const view = new CreateGoalsView(prisonerSummary, futureGoalTargetDates, createGoalsForm)
     return res.render('pages/createGoals/index', { ...view.renderArgs })
   }
 
@@ -39,17 +36,9 @@ export default class CreateGoalsController {
     const { prisonId } = prisonerSummary
 
     const createGoalsForm = { ...req.body } as CreateGoalsForm
-    if (!createGoalsForm.goals) {
-      createGoalsForm.goals = []
-    }
-    createGoalsForm.goals.forEach((goal, goalIndex) => {
-      if (!goal.steps) {
-        createGoalsForm.goals[goalIndex].steps = []
-      }
-    })
     req.session.createGoalsForm = createGoalsForm
 
-    // Handle any form actions (eg: removal or addition of steps or goals) before any validation
+    // Handle any non-submit form actions (eg: removal or addition of steps or goals)
     if (createGoalsForm.action.startsWith('remove-step')) {
       return handleRemoveStep(createGoalsForm, prisonNumber, req, res)
     }
@@ -62,20 +51,16 @@ export default class CreateGoalsController {
     if (createGoalsForm.action === 'add-another-goal') {
       return handleAddAnotherGoal(createGoalsForm, prisonNumber, req, res)
     }
-
-    const errors = validateCreateGoalsForm(createGoalsForm)
-    if (errors.length > 0) {
-      req.flash('errors', errors)
-      return res.redirect(`/plan/${prisonNumber}/goals/create`)
+    if (createGoalsForm.action !== 'submit-form') {
+      return res.redirect('back')
     }
 
     try {
-      const createGoalDtos = toCreateGoalDtos(createGoalsForm, prisonId)
+      const createGoalDtos = toCreateGoalDtos(createGoalsForm, prisonNumber, prisonId)
       await this.educationAndWorkPlanService.createGoals(createGoalDtos, req.user.token)
 
       req.session.createGoalsForm = undefined
-      req.flash('goalsSuccessfullyCreated', 'true')
-      return res.redirect(`/plan/${prisonNumber}/view/overview`)
+      return res.redirectWithSuccess(`/plan/${prisonNumber}/view/overview`, 'Goals added')
     } catch (e) {
       logger.error(`Error creating goal(s) for prisoner ${prisonNumber}`, e)
       return next(createError(500, `Error creating goal(s) for prisoner ${prisonNumber}. Error: ${e}`))
@@ -120,7 +105,7 @@ const handleRemoveStep = (
   createGoalsForm.goals[goalNumber].steps.splice(stepNumber, 1)
   req.session.createGoalsForm = createGoalsForm
 
-  const lastStepTitleFieldId = `goals[${goalNumber}].steps[${createGoalsForm.goals[goalNumber].steps.length - 1}].title`
+  const lastStepTitleFieldId = `goals-${goalNumber}-steps-${createGoalsForm.goals[goalNumber].steps.length - 1}-title`
   return res.redirect(`/plan/${prisonNumber}/goals/create#${lastStepTitleFieldId}`)
 }
 
@@ -145,7 +130,7 @@ const handleRemoveGoal = (
   req.session.createGoalsForm = createGoalsForm
 
   const lastGoalIndex = createGoalsForm.goals.length - 1
-  const lastStepTitleFieldId = `goals[${lastGoalIndex}].steps[${createGoalsForm.goals[lastGoalIndex].steps.length - 1}].title`
+  const lastStepTitleFieldId = `goals-${lastGoalIndex}-steps-${createGoalsForm.goals[lastGoalIndex].steps.length - 1}-title`
   return res.redirect(`/plan/${prisonNumber}/goals/create#${lastStepTitleFieldId}`)
 }
 
@@ -169,7 +154,7 @@ const handleAddAnotherStep = (
   createGoalsForm.goals[goalNumber].steps.push(emptyStep())
   req.session.createGoalsForm = createGoalsForm
 
-  const newStepTitleFieldId = `goals[${goalNumber}].steps[${createGoalsForm.goals[goalNumber].steps.length - 1}].title`
+  const newStepTitleFieldId = `goals-${goalNumber}-steps-${createGoalsForm.goals[goalNumber].steps.length - 1}-title`
   return res.redirect(`/plan/${prisonNumber}/goals/create#${newStepTitleFieldId}`)
 }
 
@@ -183,6 +168,6 @@ const handleAddAnotherGoal = (
   req.session.createGoalsForm = createGoalsForm
 
   const lastGoalIndex = createGoalsForm.goals.length - 1
-  const newGoalTitleFieldId = `goals[${lastGoalIndex}].title`
+  const newGoalTitleFieldId = `goals-${lastGoalIndex}-title`
   return res.redirect(`/plan/${prisonNumber}/goals/create#${newGoalTitleFieldId}`)
 }

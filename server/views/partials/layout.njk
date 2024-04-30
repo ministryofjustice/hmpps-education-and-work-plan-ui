@@ -65,6 +65,29 @@
 
     {% block beforeContent %}{% endblock %}
     <main class="govuk-main-wrapper govuk-!-padding-top-0 {{ mainClasses }}" id="main-content" role="main"{% if mainLang %} lang="{{ mainLang }}"{% endif %}>
+      {% if successMessage %}
+        {{ mojBanner({
+          text: successMessage.message,
+          type: 'success',
+          iconFallbackText: 'Success',
+          attributes: {
+            'data-qa': 'goal-creation-success-message'
+          }
+        }) }}
+      {% endif %}
+      
+      {% if validationErrors.length > 0 %}
+        <div class="govuk-grid-row">
+          <div class="govuk-grid-column-two-thirds">
+            {{ govukErrorSummary({
+              titleText: 'There is a problem',
+              errorList: validationErrors | buildErrorSummaryList,
+              attributes: { 'data-qa-errors': true }
+            }) }}
+          </div>
+        </div>
+      {% endif %}
+
       {% block content %}{% endblock %}
     </main>
   </div>

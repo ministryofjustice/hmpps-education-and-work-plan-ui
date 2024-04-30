@@ -7,7 +7,6 @@
     "outDir": "./dist",
     "sourceMap": true,
     "skipLibCheck": true,
-    "noEmit": false,
     "allowJs": true,
     "checkJs": true,
     "resolveJsonModule": true,
@@ -15,6 +14,7 @@
     "allowSyntheticDefaultImports": true,
     "noImplicitAny": true,
     "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
     "typeRoots": ["./server/@types", "./node_modules/@types"]
   },
   "exclude": ["node_modules", "assets/**/*.js", "integration_tests", "dist", "cypress.config.ts"],

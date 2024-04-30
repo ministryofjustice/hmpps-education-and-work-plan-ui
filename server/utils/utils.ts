@@ -1,3 +1,5 @@
+import { FieldValidationError } from '../middleware/validationMiddleware'
+
 const properCase = (word: string): string =>
   word.length >= 1 ? word[0].toUpperCase() + word.toLowerCase().slice(1) : word
 
@@ -26,4 +28,12 @@ export function asArray<T>(value?: T | T[]): T[] {
   if (Array.isArray(value)) return value
   if (value === undefined || value === null || value === '') return []
   return [value]
+}
+
+export const buildErrorSummaryList = (array: FieldValidationError[]) => {
+  if (!array) return null
+  return array.map((error: FieldValidationError) => ({
+    text: error.message,
+    href: `#${error.field}`,
+  }))
 }

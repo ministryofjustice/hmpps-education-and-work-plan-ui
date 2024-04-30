@@ -27,8 +27,15 @@ import type {
 } from 'inductionForms'
 import type { InductionDto } from 'inductionDto'
 import type { UserDetails } from '../../services/userService'
+import type { CreateGoalsForm } from '../../routes/createGoal/validators/GoalForm'
 
 export default {}
+
+declare module 'express-serve-static-core' {
+  interface Response {
+    redirectWithSuccess?(path: string, message: string): void
+  }
+}
 
 declare module 'express-session' {
   // Declare that the session will potentially contain these additional fields

@@ -1,3 +1,5 @@
+import 'reflect-metadata'
+
 import express from 'express'
 
 import createError from 'http-errors'
@@ -22,6 +24,8 @@ import config from './config'
 import routes from './routes'
 import type { Services } from './services'
 import auditMiddleware from './middleware/auditMiddleware'
+import errorMessageMiddleware from './middleware/errorMessageMiddleware'
+import successMiddleware from './middleware/successMiddleware'
 
 export default function createApp(services: Services): express.Application {
   const app = express()
@@ -40,6 +44,7 @@ export default function createApp(services: Services): express.Application {
 
   app.locals.environmentName = config.environmentName
   app.locals.environmentNameColour = config.environmentName === 'PRE-PRODUCTION' ? 'govuk-tag--green' : ''
+  app.locals.test = 'test'
 
   nunjucksSetup(app, services.applicationInfo)
   app.use(setUpAuthentication())
@@ -54,7 +59,8 @@ export default function createApp(services: Services): express.Application {
   })
 
   app.use(auditMiddleware(services))
-
+  app.use(successMiddleware)
+  app.use(errorMessageMiddleware())
   app.use(routes(services))
 
   app.use((req, res, next) => next(createError(404, 'Not found')))

@@ -2,15 +2,14 @@ import { SessionData } from 'express-session'
 import { NextFunction, Request, Response } from 'express'
 import { startOfToday } from 'date-fns'
 import type { CreateGoalDto } from 'dto'
-import type { CreateGoalsForm } from 'forms'
 import CreateGoalsController from './createGoalsController'
 import aValidPrisonerSummary from '../../testsupport/prisonerSummaryTestDataBuilder'
 import futureGoalTargetDateCalculator from '../futureGoalTargetDateCalculator'
-import validateCreateGoalsForm from './createGoalsFormValidator'
 import EducationAndWorkPlanService from '../../services/educationAndWorkPlanService'
 import toCreateGoalDtos from '../../data/mappers/createGoalDtoMapper'
+import { simpleDateFromDate } from '../../validators/classValidatorTypes/SimpleDate'
+import { CreateGoalsForm } from './validators/GoalForm'
 
-jest.mock('./createGoalsFormValidator')
 jest.mock('../../data/mappers/createGoalDtoMapper')
 jest.mock('../../services/educationAndWorkPlanService')
 
@@ -18,7 +17,6 @@ jest.mock('../../services/educationAndWorkPlanService')
  * Unit tests for createGoalsController.
  */
 describe('createGoalsController', () => {
-  const mockedCreateGoalsFormValidator = validateCreateGoalsForm as jest.MockedFn<typeof validateCreateGoalsForm>
   const mockedCreateGoalDtosMapper = toCreateGoalDtos as jest.MockedFn<typeof toCreateGoalDtos>
 
   const educationAndWorkPlanService = new EducationAndWorkPlanService(null) as jest.Mocked<EducationAndWorkPlanService>
@@ -29,10 +27,10 @@ describe('createGoalsController', () => {
     body: {},
     user: {} as Express.User,
     params: {} as Record<string, string>,
-    flash: jest.fn(),
   }
   const res = {
     redirect: jest.fn(),
+    redirectWithSuccess: jest.fn(),
     render: jest.fn(),
   }
   const next = jest.fn()
@@ -40,7 +38,6 @@ describe('createGoalsController', () => {
   const prisonNumber = 'A1234BC'
   const expectedPrisonId = 'MDI'
   const prisonerSummary = aValidPrisonerSummary(prisonNumber, expectedPrisonId)
-  let errors: Array<Record<string, string>>
 
   beforeEach(() => {
     jest.resetAllMocks()
@@ -50,8 +47,6 @@ describe('createGoalsController', () => {
 
     req.params.prisonNumber = prisonNumber
     req.session.prisonerSummary = prisonerSummary
-
-    errors = []
   })
 
   describe('getCreateGoalsView', () => {
@@ -60,7 +55,6 @@ describe('createGoalsController', () => {
       req.session.createGoalsForm = undefined
 
       const expectedCreateGoalsForm: CreateGoalsForm = {
-        prisonNumber,
         goals: [
           {
             title: '',
@@ -79,7 +73,6 @@ describe('createGoalsController', () => {
         prisonerSummary,
         form: expectedCreateGoalsForm,
         futureGoalTargetDates: expectedFutureGoalTargetDates,
-        errors,
       }
 
       // When
@@ -97,13 +90,10 @@ describe('createGoalsController', () => {
     it('should get create goals view given form object is already on the session', async () => {
       // Given
       const expectedCreateGoalsForm: CreateGoalsForm = {
-        prisonNumber,
         goals: [
           {
             title: 'Learn French',
-            'targetCompletionDate-day': '31',
-            'targetCompletionDate-month': '12',
-            'targetCompletionDate-year': '2024',
+            anotherDate: simpleDateFromDate(new Date('2024-12-31')),
             steps: [{ title: 'Book Course' }, { title: 'Attend Course' }],
           },
         ],
@@ -120,7 +110,6 @@ describe('createGoalsController', () => {
         prisonerSummary,
         form: expectedCreateGoalsForm,
         futureGoalTargetDates: expectedFutureGoalTargetDates,
-        errors,
       }
 
       // When
@@ -141,7 +130,6 @@ describe('createGoalsController', () => {
       // Given
       req.user.token = 'some-token'
       const submittedCreateGoalsForm: CreateGoalsForm = {
-        prisonNumber,
         goals: [
           {
             title: 'Learn French',
@@ -159,8 +147,6 @@ describe('createGoalsController', () => {
       req.body = submittedCreateGoalsForm
 
       req.session.createGoalsForm = undefined
-
-      mockedCreateGoalsFormValidator.mockReturnValue(errors)
 
       const expectedCreateGoalDtos: Array<CreateGoalDto> = [
         {
@@ -188,55 +174,15 @@ describe('createGoalsController', () => {
       )
 
       // Then
-      expect(res.redirect).toHaveBeenCalledWith('/plan/A1234BC/view/overview')
-      expect(mockedCreateGoalsFormValidator).toHaveBeenCalledWith(submittedCreateGoalsForm)
-      expect(mockedCreateGoalDtosMapper).toHaveBeenCalledWith(submittedCreateGoalsForm, expectedPrisonId)
+      expect(res.redirectWithSuccess).toHaveBeenCalledWith('/plan/A1234BC/view/overview', 'Goals added')
+      expect(mockedCreateGoalDtosMapper).toHaveBeenCalledWith(submittedCreateGoalsForm, prisonNumber, expectedPrisonId)
       expect(educationAndWorkPlanService.createGoals).toHaveBeenCalledWith(expectedCreateGoalDtos, 'some-token')
       expect(req.session.createGoalsForm).toBeUndefined()
-      expect(req.flash).toHaveBeenCalledWith('goalsSuccessfullyCreated', 'true')
-      expect(req.flash).not.toHaveBeenCalledWith('errors')
-    })
-
-    it('should redirect to create goals form given form validation fails', async () => {
-      // Given
-      const expectedCreateGoalsForm: CreateGoalsForm = {
-        prisonNumber,
-        goals: [
-          {
-            title: '',
-            'targetCompletionDate-day': '31',
-            'targetCompletionDate-month': '12',
-            'targetCompletionDate-year': '2024',
-            steps: [{ title: 'Book Course' }],
-          },
-        ],
-        action: 'submit-form',
-      }
-      req.body = expectedCreateGoalsForm
-      req.session.createGoalsForm = undefined
-
-      errors = [{ href: '#goals[0].title', text: 'some-title-error' }]
-      mockedCreateGoalsFormValidator.mockReturnValue(errors)
-
-      // When
-      await controller.submitCreateGoalsForm(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
-
-      // Then
-      expect(res.redirect).toHaveBeenCalledWith('/plan/A1234BC/goals/create')
-      expect(req.flash).toHaveBeenCalledWith('errors', errors)
-      expect(req.flash).not.toHaveBeenCalledWith('goalsSuccessfullyCreated')
-      expect(req.session.createGoalsForm).toEqual(expectedCreateGoalsForm)
-      expect(mockedCreateGoalsFormValidator).toHaveBeenCalledWith(expectedCreateGoalsForm)
     })
 
     it('should add a step to a goal', async () => {
       // Given
       const submittedCreateGoalsForm: CreateGoalsForm = {
-        prisonNumber,
         goals: [
           {
             title: 'Learn French',
@@ -261,7 +207,6 @@ describe('createGoalsController', () => {
       req.session.createGoalsForm = undefined
 
       const expectedCreateGoalsForm = {
-        prisonNumber,
         goals: [
           {
             title: 'Learn French',
@@ -290,9 +235,8 @@ describe('createGoalsController', () => {
       )
 
       // Then
-      expect(res.redirect).toHaveBeenCalledWith('/plan/A1234BC/goals/create#goals[1].steps[1].title')
+      expect(res.redirect).toHaveBeenCalledWith('/plan/A1234BC/goals/create#goals-1-steps-1-title')
       expect(req.session.createGoalsForm).toEqual(expectedCreateGoalsForm)
-      expect(mockedCreateGoalsFormValidator).not.toHaveBeenCalled()
     })
 
     Array.of(
@@ -305,7 +249,6 @@ describe('createGoalsController', () => {
       it(`should not add a step to a goal given form action ${formAction}`, async () => {
         // Given
         const submittedCreateGoalsForm: CreateGoalsForm = {
-          prisonNumber,
           goals: [
             {
               title: 'Learn Spanish',
@@ -334,14 +277,12 @@ describe('createGoalsController', () => {
         // Then
         expect(res.redirect).toHaveBeenCalledWith('/plan/A1234BC/goals/create')
         expect(req.session.createGoalsForm).toEqual(submittedCreateGoalsForm)
-        expect(mockedCreateGoalsFormValidator).not.toHaveBeenCalled()
       })
     })
 
     it('should remove a step from a goal', async () => {
       // Given
       const submittedCreateGoalsForm: CreateGoalsForm = {
-        prisonNumber,
         goals: [
           {
             title: 'Learn French',
@@ -366,7 +307,6 @@ describe('createGoalsController', () => {
       req.session.createGoalsForm = undefined
 
       const expectedCreateGoalsForm = {
-        prisonNumber,
         goals: [
           {
             title: 'Learn French',
@@ -395,9 +335,8 @@ describe('createGoalsController', () => {
       )
 
       // Then
-      expect(res.redirect).toHaveBeenCalledWith('/plan/A1234BC/goals/create#goals[2].steps[1].title') // focus the Pass exam step of the bricklaying course as that is the last step in the goal
+      expect(res.redirect).toHaveBeenCalledWith('/plan/A1234BC/goals/create#goals-2-steps-1-title') // focus the Pass exam step of the bricklaying course as that is the last step in the goal
       expect(req.session.createGoalsForm).toEqual(expectedCreateGoalsForm)
-      expect(mockedCreateGoalsFormValidator).not.toHaveBeenCalled()
     })
 
     Array.of(
@@ -414,7 +353,6 @@ describe('createGoalsController', () => {
       it(`should not remove a step from a goal given form action ${formAction}`, async () => {
         // Given
         const submittedCreateGoalsForm: CreateGoalsForm = {
-          prisonNumber,
           goals: [
             {
               title: 'Learn Spanish',
@@ -443,14 +381,12 @@ describe('createGoalsController', () => {
         // Then
         expect(res.redirect).toHaveBeenCalledWith('/plan/A1234BC/goals/create')
         expect(req.session.createGoalsForm).toEqual(submittedCreateGoalsForm)
-        expect(mockedCreateGoalsFormValidator).not.toHaveBeenCalled()
       })
     })
 
     it('should add another goal', async () => {
       // Given
       const submittedCreateGoalsForm: CreateGoalsForm = {
-        prisonNumber,
         goals: [
           {
             title: 'Learn French',
@@ -475,7 +411,6 @@ describe('createGoalsController', () => {
       req.session.createGoalsForm = undefined
 
       const expectedCreateGoalsForm = {
-        prisonNumber,
         goals: [
           {
             title: 'Learn French',
@@ -508,15 +443,13 @@ describe('createGoalsController', () => {
       )
 
       // Then
-      expect(res.redirect).toHaveBeenCalledWith('/plan/A1234BC/goals/create#goals[3].title')
+      expect(res.redirect).toHaveBeenCalledWith('/plan/A1234BC/goals/create#goals-3-title')
       expect(req.session.createGoalsForm).toEqual(expectedCreateGoalsForm)
-      expect(mockedCreateGoalsFormValidator).not.toHaveBeenCalled()
     })
 
     it('should remove a goal', async () => {
       // Given
       const submittedCreateGoalsForm: CreateGoalsForm = {
-        prisonNumber,
         goals: [
           {
             title: 'Learn French',
@@ -541,7 +474,6 @@ describe('createGoalsController', () => {
       req.session.createGoalsForm = undefined
 
       const expectedCreateGoalsForm = {
-        prisonNumber,
         goals: [
           {
             title: 'Learn French',
@@ -566,16 +498,14 @@ describe('createGoalsController', () => {
       )
 
       // Then
-      expect(res.redirect).toHaveBeenCalledWith('/plan/A1234BC/goals/create#goals[1].steps[2].title') // focus the Pass exam step of the bricklaying course as that is the last step in the goal
+      expect(res.redirect).toHaveBeenCalledWith('/plan/A1234BC/goals/create#goals-1-steps-2-title') // focus the Pass exam step of the bricklaying course as that is the last step in the goal
       expect(req.session.createGoalsForm).toEqual(expectedCreateGoalsForm)
-      expect(mockedCreateGoalsFormValidator).not.toHaveBeenCalled()
     })
 
     Array.of('remove-goal|', 'remove-goal|-1', 'remove-goal|A', 'remove-goal', 'remove-goal|2').forEach(formAction => {
       it(`should not remove a goal given form action ${formAction}`, async () => {
         // Given
         const submittedCreateGoalsForm: CreateGoalsForm = {
-          prisonNumber,
           goals: [
             {
               title: 'Learn Spanish',
@@ -604,7 +534,6 @@ describe('createGoalsController', () => {
         // Then
         expect(res.redirect).toHaveBeenCalledWith('/plan/A1234BC/goals/create')
         expect(req.session.createGoalsForm).toEqual(submittedCreateGoalsForm)
-        expect(mockedCreateGoalsFormValidator).not.toHaveBeenCalled()
       })
     })
   })

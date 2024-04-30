@@ -9,6 +9,8 @@ import checkPrisonerSummaryExistsInSession from '../routerRequestHandlers/checkP
 import checkAddStepFormsArrayExistsInSession from '../routerRequestHandlers/checkAddStepFormsArrayExistsInSession'
 import checkCreateGoalFormExistsInSession from '../routerRequestHandlers/checkCreateGoalFormExistsInSession'
 import asyncMiddleware from '../../middleware/asyncMiddleware'
+import validationMiddleware from '../../middleware/validationMiddleware'
+import { CreateGoalsForm } from './validators/GoalForm'
 
 /**
  * Route definitions for the pages relating to Creating A Goal
@@ -70,6 +72,7 @@ const newCreateGoalRoutes = (router: Router, services: Services, createGoalsCont
   router.get('/plan/:prisonNumber/goals/create', [asyncMiddleware(createGoalsController.getCreateGoalsView)])
   router.post('/plan/:prisonNumber/goals/create', [
     checkPrisonerSummaryExistsInSession,
+    validationMiddleware(CreateGoalsForm),
     // TODO - RR-748 - write router request handler to check CreateGoalsForm exists in session,
     asyncMiddleware(createGoalsController.submitCreateGoalsForm),
   ])

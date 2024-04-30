@@ -1,6 +1,7 @@
-import type { CreateGoalsForm } from 'forms'
 import type { CreateGoalDto } from 'dto'
 import toCreateGoalDtos from './createGoalDtoMapper'
+import { simpleDateFromDate } from '../../validators/classValidatorTypes/SimpleDate'
+import { CreateGoalsForm } from '../../routes/createGoal/validators/GoalForm'
 
 describe('toCreateGoalDtos', () => {
   it('should map to toCreateGoalDtos', () => {
@@ -8,7 +9,6 @@ describe('toCreateGoalDtos', () => {
     const prisonNumber = 'A1234BC'
     const prisonId = 'MDI'
     const createGoalsForm: CreateGoalsForm = {
-      prisonNumber,
       goals: [
         {
           title: 'Goal 1',
@@ -19,9 +19,7 @@ describe('toCreateGoalDtos', () => {
         {
           title: 'Goal 2',
           targetCompletionDate: 'another-date',
-          'targetCompletionDate-day': '28',
-          'targetCompletionDate-month': '2',
-          'targetCompletionDate-year': '2025',
+          anotherDate: simpleDateFromDate(new Date('2025-2-28')),
           steps: [{ title: 'Goal 2, Step 1' }],
           note: 'Goal 2 notes',
         },
@@ -51,7 +49,7 @@ describe('toCreateGoalDtos', () => {
     ]
 
     // When
-    const actual = toCreateGoalDtos(createGoalsForm, prisonId)
+    const actual = toCreateGoalDtos(createGoalsForm, prisonNumber, prisonId)
 
     // Then
     expect(actual).toEqual(expected)
@@ -62,14 +60,13 @@ describe('toCreateGoalDtos', () => {
     const prisonNumber = 'A1234BC'
     const prisonId = 'MDI'
     const createGoalsForm: CreateGoalsForm = {
-      prisonNumber,
       goals: [],
     }
 
     const expected: Array<CreateGoalDto> = []
 
     // When
-    const actual = toCreateGoalDtos(createGoalsForm, prisonId)
+    const actual = toCreateGoalDtos(createGoalsForm, prisonNumber, prisonId)
 
     // Then
     expect(actual).toEqual(expected)
@@ -77,13 +74,14 @@ describe('toCreateGoalDtos', () => {
 
   it('should map to toCreateGoalDtos given undefined CreateGoalsForm', () => {
     // Given
+    const prisonNumber = 'A1234BC'
     const prisonId = 'MDI'
     const createGoalsForm: CreateGoalsForm = undefined
 
     const expected: Array<CreateGoalDto> = []
 
     // When
-    const actual = toCreateGoalDtos(createGoalsForm, prisonId)
+    const actual = toCreateGoalDtos(createGoalsForm, prisonNumber, prisonId)
 
     // Then
     expect(actual).toEqual(expected)
