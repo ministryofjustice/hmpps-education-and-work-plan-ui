@@ -58,16 +58,27 @@ export default class PreviousWorkExperienceDetailCreateController extends Previo
     req.session.inductionDto = updatedInduction
     req.session.previousWorkExperienceDetailForm = undefined
 
+    if (this.previousPageWasCheckYourAnswers(req)) {
+      return res.redirect(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
+    }
+
     const { pageFlowQueue } = req.session
     if (!isLastPage(pageFlowQueue)) {
       // We are not on the last page of the queue yet - redirect to the next page in the queue
       return res.redirect(getNextPage(pageFlowQueue))
     }
 
-    // We are at the end of the page flow queue
-    // Tidy up by removing both the page flow queue and the page history, and
-    // redirect to next page in the question set (post-release work interests)
+    // We are at the end of the page flow queue. Tidy up by removing both the page flow queue
     req.session.pageFlowQueue = undefined
+
+    const userHasComeFromCheckYourAnswers = this.checkYourAnswersIsTheFirstPageInThePageHistory(req)
+    if (userHasComeFromCheckYourAnswers) {
+      // If the page flow history started with Check Your Answers then we need to redirect the user back to there now that they have been to every page on the queue
+      req.session.pageFlowHistory = undefined
+      return res.redirect(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
+    }
+
+    // Otherwise redirect to next page in the question set (post-release work interests)
     req.session.pageFlowHistory = undefined
     return res.redirect(`/prisoners/${prisonNumber}/create-induction/work-interest-types`)
   }

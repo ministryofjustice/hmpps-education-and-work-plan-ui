@@ -57,6 +57,14 @@ export default abstract class InductionController {
   }
 
   /**
+   * Returns `true` if the first page in the Page Flow History is Check Your Answers
+   */
+  checkYourAnswersIsTheFirstPageInThePageHistory(req: Request): boolean {
+    const { pageFlowHistory } = req.session
+    return pageFlowHistory && pageFlowHistory.pageUrls.at(0).match(/\/check-your-answers$/) !== null
+  }
+
+  /**
    * If the previous page was Check Your Answers the user is following a Change link from Check Your Answers.
    * Add the current page to the page flow history so that the Back link redirects correctly back to Check Your Answers.
    */
