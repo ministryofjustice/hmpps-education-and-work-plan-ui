@@ -101,6 +101,52 @@ describe('workedBeforeCreateController', () => {
       expect(req.session.workedBeforeForm).toBeUndefined()
       expect(req.session.inductionDto).toEqual(inductionDto)
     })
+
+    it('should get the WorkedBefore view given the previous page was Check Your Answers', async () => {
+      // Given
+      const inductionDto = aLongQuestionSetInductionDto()
+      inductionDto.previousWorkExperiences = undefined
+      req.session.inductionDto = inductionDto
+
+      req.session.pageFlowHistory = {
+        pageUrls: ['/prisoners/A1234BC/create-induction/check-your-answers'],
+        currentPageIndex: 0,
+      }
+
+      const expectedPageFlowHistory = {
+        pageUrls: [
+          '/prisoners/A1234BC/create-induction/check-your-answers',
+          '/prisoners/A1234BC/create-induction/has-worked-before',
+        ],
+        currentPageIndex: 1,
+      }
+
+      const expectedWorkedBeforeForm = {
+        hasWorkedBefore: YesNoValue.NO,
+      }
+      req.session.workedBeforeForm = expectedWorkedBeforeForm
+
+      const expectedView = {
+        prisonerSummary,
+        form: expectedWorkedBeforeForm,
+        backLinkUrl: '/prisoners/A1234BC/create-induction/check-your-answers',
+        backLinkAriaText: `Back to Check and save your answers before adding Jimmy Lightfingers's goals`,
+        errors: noErrors,
+      }
+
+      // When
+      await controller.getWorkedBeforeView(
+        req as undefined as Request,
+        res as undefined as Response,
+        next as undefined as NextFunction,
+      )
+
+      // Then
+      expect(res.render).toHaveBeenCalledWith('pages/induction/workedBefore/index', expectedView)
+      expect(req.session.workedBeforeForm).toBeUndefined()
+      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(req.session.pageFlowHistory).toEqual(expectedPageFlowHistory)
+    })
   })
 
   describe('submitWorkedBeforeForm', () => {
@@ -184,6 +230,76 @@ describe('workedBeforeCreateController', () => {
       expect(req.session.workedBeforeForm).toBeUndefined()
       const updatedInduction = req.session.inductionDto
       expect(updatedInduction.previousWorkExperiences.hasWorkedBefore).toEqual(false)
+    })
+
+    it('should update inductionDto and redirect to Check Your Answers given previous page was Check Your Answers and worked before is changed to No', async () => {
+      // Given
+      const inductionDto = aLongQuestionSetInductionDto()
+      req.session.inductionDto = inductionDto
+
+      const workedBeforeForm: WorkedBeforeForm = {
+        hasWorkedBefore: YesNoValue.NO,
+      }
+      req.body = workedBeforeForm
+      req.session.workedBeforeForm = undefined
+
+      req.session.pageFlowHistory = {
+        pageUrls: [
+          '/prisoners/A1234BC/create-induction/check-your-answers',
+          '/prisoners/A1234BC/create-induction/has-worked-before',
+        ],
+        currentPageIndex: 1,
+      }
+
+      // When
+      await controller.submitWorkedBeforeForm(
+        req as undefined as Request,
+        res as undefined as Response,
+        next as undefined as NextFunction,
+      )
+
+      // Then
+      const updatedInduction = req.session.inductionDto
+      expect(updatedInduction.previousWorkExperiences.hasWorkedBefore).toEqual(false)
+      expect(updatedInduction.previousWorkExperiences.experiences).toEqual([])
+      expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-induction/check-your-answers')
+      expect(req.session.workedBeforeForm).toBeUndefined()
+    })
+
+    it('should update inductionDto and redirect to Previous Work Experience given previous page was Check Your Answers and worked before is changed to Yes', async () => {
+      // Given
+      const inductionDto = aLongQuestionSetInductionDto()
+      inductionDto.previousWorkExperiences.hasWorkedBefore = false
+      inductionDto.previousWorkExperiences.experiences = []
+      req.session.inductionDto = inductionDto
+
+      const workedBeforeForm: WorkedBeforeForm = {
+        hasWorkedBefore: YesNoValue.YES,
+      }
+      req.body = workedBeforeForm
+      req.session.workedBeforeForm = undefined
+
+      req.session.pageFlowHistory = {
+        pageUrls: [
+          '/prisoners/A1234BC/create-induction/check-your-answers',
+          '/prisoners/A1234BC/create-induction/has-worked-before',
+        ],
+        currentPageIndex: 1,
+      }
+
+      // When
+      await controller.submitWorkedBeforeForm(
+        req as undefined as Request,
+        res as undefined as Response,
+        next as undefined as NextFunction,
+      )
+
+      // Then
+      const updatedInduction = req.session.inductionDto
+      expect(updatedInduction.previousWorkExperiences.hasWorkedBefore).toEqual(true)
+      expect(updatedInduction.previousWorkExperiences.experiences).toEqual([])
+      expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-induction/previous-work-experience')
+      expect(req.session.workedBeforeForm).toBeUndefined()
     })
   })
 })

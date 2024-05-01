@@ -181,6 +181,59 @@ describe('previousWorkExperienceDetailCreateController', () => {
       expect(res.render).not.toHaveBeenCalled()
       expect(next).toHaveBeenCalledWith(expectedError)
     })
+
+    it('should get the Previous Work Experience Detail view given the previous page was Check Your Answers', async () => {
+      // Given
+      req.params.typeOfWorkExperience = 'construction'
+      req.path = `/prisoners/${prisonNumber}/create-induction/previous-work-experience/construction`
+
+      const inductionDto = inductionDtoWithWorkExperienceTypes()
+      req.session.inductionDto = inductionDto
+      req.session.previousWorkExperienceDetailForm = undefined
+
+      req.session.pageFlowHistory = {
+        pageUrls: ['/prisoners/A1234BC/create-induction/check-your-answers'],
+        currentPageIndex: 0,
+      }
+
+      const expectedPageFlowHistory = {
+        pageUrls: [
+          '/prisoners/A1234BC/create-induction/check-your-answers',
+          '/prisoners/A1234BC/create-induction/previous-work-experience/construction',
+        ],
+        currentPageIndex: 1,
+      }
+
+      const expectedPreviousWorkExperienceDetailForm = {
+        jobRole: '',
+        jobDetails: '',
+      }
+
+      const expectedView = {
+        prisonerSummary,
+        form: expectedPreviousWorkExperienceDetailForm,
+        backLinkUrl: '/prisoners/A1234BC/create-induction/check-your-answers',
+        backLinkAriaText: `Back to Check and save your answers before adding Jimmy Lightfingers's goals`,
+        typeOfWorkExperience: 'CONSTRUCTION',
+        errors: noErrors,
+      }
+
+      // When
+      await controller.getPreviousWorkExperienceDetailView(
+        req as undefined as Request,
+        res as undefined as Response,
+        next as undefined as NextFunction,
+      )
+
+      // Then
+      expect(res.render).toHaveBeenCalledWith(
+        'pages/induction/previousWorkExperience/workExperienceDetail',
+        expectedView,
+      )
+      expect(req.session.previousWorkExperienceDetailForm).toBeUndefined()
+      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(req.session.pageFlowHistory).toEqual(expectedPageFlowHistory)
+    })
   })
 
   describe('submitPreviousWorkExperienceDetailForm', () => {
@@ -421,6 +474,138 @@ describe('previousWorkExperienceDetailCreateController', () => {
       expect(req.session.pageFlowQueue).toBeUndefined()
       expect(req.session.pageFlowHistory).toBeUndefined()
       expect(req.session.inductionDto.previousWorkExperiences.experiences).toEqual(expectedWorkExperiences)
+    })
+
+    it('should update inductionDto and redirect to Check Your Answers given previous page was Check Your Answers', async () => {
+      // Given
+      req.params.typeOfWorkExperience = 'construction'
+      req.path = `/prisoners/${prisonNumber}/create-induction/previous-work-experience/construction`
+
+      const inductionDto = inductionDtoWithWorkExperienceTypes()
+      req.session.inductionDto = inductionDto
+
+      const previousWorkExperienceDetailForm = {
+        jobRole: 'General labourer',
+        jobDetails: 'Basic ground works and building',
+      }
+      req.body = previousWorkExperienceDetailForm
+      req.session.previousWorkExperienceDetailForm = undefined
+
+      const expectedWorkExperiences = [
+        {
+          experienceType: TypeOfWorkExperienceValue.CONSTRUCTION,
+          experienceTypeOther: null as string,
+          role: 'General labourer',
+          details: 'Basic ground works and building',
+        },
+        {
+          experienceType: TypeOfWorkExperienceValue.OTHER,
+          experienceTypeOther: 'Retail delivery',
+          role: undefined as string,
+          details: undefined as string,
+        },
+      ]
+
+      req.session.pageFlowHistory = {
+        pageUrls: [
+          '/prisoners/A1234BC/create-induction/check-your-answers',
+          '/prisoners/A1234BC/create-induction/previous-work-experience/construction',
+        ],
+        currentPageIndex: 1,
+      }
+
+      // When
+      await controller.submitPreviousWorkExperienceDetailForm(
+        req as undefined as Request,
+        res as undefined as Response,
+        next as undefined as NextFunction,
+      )
+
+      // Then
+      const updatedInduction = req.session.inductionDto
+      expect(updatedInduction.previousWorkExperiences.experiences).toEqual(expectedWorkExperiences)
+      expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-induction/check-your-answers')
+      expect(req.session.previousWorkExperienceDetailForm).toBeUndefined()
+    })
+
+    it('should update inductionDto and redirect to Check Your Answers given we are at the end of the page queue and the first page in the history was Check Your Answers', async () => {
+      // Given
+      req.params.typeOfWorkExperience = 'other'
+      req.path = `/prisoners/${prisonNumber}/create-induction/previous-work-experience/other`
+
+      const inductionDto = inductionDtoWithWorkExperienceTypes()
+      // Modify the first experience (construction) with job role and details, so that when the last experience is submitted (other) we have a complete set of populated work experiences
+      inductionDto.previousWorkExperiences.experiences = inductionDto.previousWorkExperiences.experiences.map(
+        (experience, idx) => {
+          if (idx === 0) {
+            return {
+              ...experience,
+              role: 'General labourer',
+              details: 'Basic ground works and building',
+            }
+          }
+          return experience
+        },
+      )
+      req.session.inductionDto = inductionDto
+
+      const previousWorkExperienceDetailForm = {
+        jobRole: 'Milkman',
+        jobDetails: 'Self employed franchise operator delivering milk and associated diary products.',
+      }
+      req.body = previousWorkExperienceDetailForm
+      req.session.previousWorkExperienceDetailForm = undefined
+
+      const pageFlowQueue = {
+        pageUrls: [
+          `/prisoners/${prisonNumber}/create-induction/previous-work-experience`,
+          `/prisoners/${prisonNumber}/create-induction/previous-work-experience/construction`,
+          `/prisoners/${prisonNumber}/create-induction/previous-work-experience/other`, // current page in queue
+        ],
+        currentPageIndex: 2,
+      }
+      req.session.pageFlowQueue = pageFlowQueue
+
+      const pageFlowHistory = {
+        pageUrls: [
+          `/prisoners/${prisonNumber}/create-induction/check-your-answers`,
+          `/prisoners/${prisonNumber}/create-induction/previous-work-experience`,
+          `/prisoners/${prisonNumber}/create-induction/previous-work-experience/construction`,
+          `/prisoners/${prisonNumber}/create-induction/previous-work-experience/other`,
+        ],
+        currentPageIndex: 3,
+      }
+      req.session.pageFlowHistory = pageFlowHistory
+
+      const expectedWorkExperiences = [
+        {
+          experienceType: TypeOfWorkExperienceValue.CONSTRUCTION,
+          experienceTypeOther: null,
+          role: 'General labourer',
+          details: 'Basic ground works and building',
+        },
+        {
+          experienceType: TypeOfWorkExperienceValue.OTHER,
+          experienceTypeOther: 'Retail delivery',
+          role: 'Milkman',
+          details: 'Self employed franchise operator delivering milk and associated diary products.',
+        },
+      ]
+
+      // When
+      await controller.submitPreviousWorkExperienceDetailForm(
+        req as undefined as Request,
+        res as undefined as Response,
+        next as undefined as NextFunction,
+      )
+
+      // Then
+      const updatedInduction = req.session.inductionDto
+      expect(updatedInduction.previousWorkExperiences.experiences).toEqual(expectedWorkExperiences)
+      expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-induction/check-your-answers')
+      expect(req.session.previousWorkExperienceDetailForm).toBeUndefined()
+      expect(req.session.pageFlowHistory).toBeUndefined()
+      expect(req.session.pageFlowQueue).toBeUndefined()
     })
   })
 })

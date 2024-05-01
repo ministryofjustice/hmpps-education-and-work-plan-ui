@@ -1,6 +1,7 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express'
 import createError from 'http-errors'
 import type { PageFlow } from 'viewModels'
+import type { WorkedBeforeForm } from 'inductionForms'
 import WorkedBeforeController from '../common/workedBeforeController'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
 import logger from '../../../../logger'
@@ -37,11 +38,8 @@ export default class WorkedBeforeUpdateController extends WorkedBeforeController
     const { prisonerSummary, inductionDto } = req.session
     const { prisonId } = prisonerSummary
 
-    req.session.workedBeforeForm = { ...req.body }
-    if (!req.session.workedBeforeForm.hasWorkedBefore == null) {
-      req.session.workedBeforeForm.hasWorkedBefore = true
-    }
-    const { workedBeforeForm } = req.session
+    const workedBeforeForm: WorkedBeforeForm = { ...req.body }
+    req.session.workedBeforeForm = workedBeforeForm
 
     const errors = validateWorkedBeforeForm(workedBeforeForm, prisonerSummary)
     if (errors.length > 0) {

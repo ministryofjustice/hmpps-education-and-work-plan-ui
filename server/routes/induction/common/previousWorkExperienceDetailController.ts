@@ -34,6 +34,8 @@ export default abstract class PreviousWorkExperienceDetailController extends Ind
       return next(createError(404, `Previous Work Experience type ${typeOfWorkExperience} not found on Induction`))
     }
 
+    this.addCurrentPageToFlowHistoryWhenComingFromCheckYourAnswers(req)
+
     // Check if we are in the midst of changing the main induction question set (e.g. from long route to short route)
     if (req.session.updateInductionQuestionSet || req.session.pageFlowHistory) {
       this.addCurrentPageToHistory(req)
