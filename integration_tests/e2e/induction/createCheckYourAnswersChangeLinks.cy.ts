@@ -13,6 +13,11 @@ import TypeOfWorkExperienceValue from '../../../server/enums/typeOfWorkExperienc
 import PreviousWorkExperienceDetailPage from '../../pages/induction/PreviousWorkExperienceDetailPage'
 import YesNoValue from '../../../server/enums/yesNoValue'
 import PreviousWorkExperienceTypesPage from '../../pages/induction/PreviousWorkExperienceTypesPage'
+import QualificationLevelPage from '../../pages/induction/QualificationLevelPage'
+import QualificationLevelValue from '../../../server/enums/qualificationLevelValue'
+import QualificationDetailsPage from '../../pages/induction/QualificationDetailsPage'
+import QualificationsListPage from '../../pages/induction/QualificationsListPage'
+import EducationLevelValue from '../../../server/enums/educationLevelValue'
 
 context(`Change links on the Check Your Answers page when creating an Induction`, () => {
   const prisonNumber = 'G6115VJ'
@@ -132,6 +137,39 @@ context(`Change links on the Check Your Answers page when creating an Induction`
       .hasBackLinkTo(`/prisoners/${prisonNumber}/create-induction/previous-work-experience/office`)
       .setJobRole('Gym instructor')
       .setJobDetails('Coaching and motivating customers fitness goals')
+      .submitPage()
+
+    // Change Highest Level of Education
+    Page.verifyOnPage(CheckYourAnswersPage)
+      .clickHighestLevelOfEducationLink()
+      .hasBackLinkTo(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
+      .selectHighestLevelOfEducation(EducationLevelValue.UNDERGRADUATE_DEGREE_AT_UNIVERSITY)
+      .submitPage()
+
+    // Change Educational Qualifications - add 1 qualification
+    Page.verifyOnPage(CheckYourAnswersPage)
+      .clickQualificationsChangeLink()
+      .hasBackLinkTo(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
+      .clickToAddAnotherQualification()
+    Page.verifyOnPage(QualificationLevelPage) //
+      .hasBackLinkTo(`/prisoners/${prisonNumber}/create-induction/qualifications`)
+      .selectQualificationLevel(QualificationLevelValue.LEVEL_1)
+      .submitPage()
+    Page.verifyOnPage(QualificationDetailsPage) //
+      .hasBackLinkTo(`/prisoners/${prisonNumber}/create-induction/qualification-level`)
+      .setQualificationSubject('Chemistry')
+      .setQualificationGrade('Merit')
+      .submitPage()
+    Page.verifyOnPage(QualificationsListPage) //
+      .hasBackLinkTo(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
+      .submitPage()
+
+    // Change Educational Qualifications - remove all remaining qualifications
+    Page.verifyOnPage(CheckYourAnswersPage)
+      .clickQualificationsChangeLink()
+      .hasBackLinkTo(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
+      .removeQualification(2) // The induction now has 2 qualifications on it. Remove them all
+      .removeQualification(1)
       .submitPage()
 
     // Then

@@ -41,8 +41,7 @@ export default abstract class InductionController {
     }
 
     if (pageFlowHistory.currentPageIndex === 0 && pageFlowHistory.pageUrls.length === 1) {
-      const currentPage = pageFlowHistory.pageUrls[0]
-      return currentPage.endsWith('/check-your-answers')
+      return this.checkYourAnswersIsTheFirstPageInThePageHistory(req)
     }
 
     return false

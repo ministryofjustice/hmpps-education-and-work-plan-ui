@@ -1,12 +1,16 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express'
 import type { InductionDto } from 'inductionDto'
 import QualificationsListController from '../common/qualificationsListController'
-import { buildNewPageFlowHistory } from '../../pageFlowHistory'
+import { buildNewPageFlowHistory, getPreviousPage } from '../../pageFlowHistory'
 import getDynamicBackLinkAriaText from '../dynamicAriaTextResolver'
 
 export default class QualificationsListCreateController extends QualificationsListController {
   getBackLinkUrl(req: Request): string {
     const { prisonNumber } = req.params
+    const { pageFlowHistory } = req.session
+    if (pageFlowHistory) {
+      return getPreviousPage(pageFlowHistory)
+    }
     return `/prisoners/${prisonNumber}/create-induction/hoping-to-work-on-release`
   }
 
@@ -22,7 +26,9 @@ export default class QualificationsListCreateController extends QualificationsLi
     const { prisonNumber } = req.params
     const { inductionDto } = req.session
 
-    req.session.pageFlowHistory = buildNewPageFlowHistory(req)
+    if (!req.session.pageFlowHistory) {
+      req.session.pageFlowHistory = buildNewPageFlowHistory(req)
+    }
 
     if (userClickedOnButton(req, 'addQualification')) {
       return res.redirect(`/prisoners/${prisonNumber}/create-induction/qualification-level`)
@@ -32,6 +38,12 @@ export default class QualificationsListCreateController extends QualificationsLi
       const qualificationIndexToRemove = req.body.removeQualification as number
       req.session.inductionDto = inductionWithRemovedQualification(inductionDto, qualificationIndexToRemove)
       return res.redirect(`/prisoners/${prisonNumber}/create-induction/qualifications`)
+    }
+
+    const previousPageWasCheckYourAnswers = this.previousPageWasCheckYourAnswers(req)
+    if (previousPageWasCheckYourAnswers) {
+      req.session.pageFlowHistory = undefined
+      return res.redirect(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
     }
 
     if (inductionHasQualifications(inductionDto)) {
