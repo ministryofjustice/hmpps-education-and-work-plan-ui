@@ -107,6 +107,54 @@ describe('highestLevelOfEducationCreateController', () => {
       expect(req.session.highestLevelOfEducationForm).toBeUndefined()
       expect(req.session.inductionDto).toEqual(inductionDto)
     })
+
+    it('should get the Highest Level of Education view given the previous page was Check Your Answers', async () => {
+      // Given
+      const inductionDto = aLongQuestionSetInductionDto()
+      inductionDto.personalSkillsAndInterests.skills = undefined
+      req.session.inductionDto = inductionDto
+
+      req.session.pageFlowHistory = {
+        pageUrls: ['/prisoners/A1234BC/create-induction/check-your-answers'],
+        currentPageIndex: 0,
+      }
+
+      const expectedPageFlowHistory = {
+        pageUrls: [
+          '/prisoners/A1234BC/create-induction/check-your-answers',
+          '/prisoners/A1234BC/create-induction/highest-level-of-education',
+        ],
+        currentPageIndex: 1,
+      }
+
+      const expectedHighestLevelOfEducationForm = {
+        educationLevel: EducationLevelValue.SECONDARY_SCHOOL_TOOK_EXAMS,
+      }
+
+      const expectedView = {
+        prisonerSummary,
+        form: expectedHighestLevelOfEducationForm,
+        backLinkUrl: '/prisoners/A1234BC/create-induction/check-your-answers',
+        backLinkAriaText: `Back to Check and save your answers before adding Jimmy Lightfingers's goals`,
+        errors: noErrors,
+      }
+
+      // When
+      await controller.getHighestLevelOfEducationView(
+        req as undefined as Request,
+        res as undefined as Response,
+        next as undefined as NextFunction,
+      )
+
+      // Then
+      expect(res.render).toHaveBeenCalledWith(
+        'pages/induction/prePrisonEducation/highestLevelOfEducation',
+        expectedView,
+      )
+      expect(req.session.highestLevelOfEducationForm).toBeUndefined()
+      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(req.session.pageFlowHistory).toEqual(expectedPageFlowHistory)
+    })
   })
 
   describe('submitHighestLevelOfEducationForm', () => {
@@ -205,6 +253,46 @@ describe('highestLevelOfEducationCreateController', () => {
       expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-induction/additional-training')
       expect(req.session.highestLevelOfEducationForm).toBeUndefined()
       expect(req.session.inductionDto).toEqual(expectedInduction)
+    })
+
+    it('should update inductionDto and redirect to Check Your Answers given previous page was Check Your Answers', async () => {
+      // Given
+      const inductionDto = aLongQuestionSetInductionDto()
+      inductionDto.previousQualifications = undefined
+      req.session.inductionDto = inductionDto
+
+      const highestLevelOfEducationForm = {
+        educationLevel: EducationLevelValue.FURTHER_EDUCATION_COLLEGE,
+      }
+      req.body = highestLevelOfEducationForm
+      req.session.highestLevelOfEducationForm = undefined
+
+      const expectedInduction = {
+        ...inductionDto,
+        previousQualifications: {
+          educationLevel: EducationLevelValue.FURTHER_EDUCATION_COLLEGE,
+        },
+      } as InductionDto
+
+      req.session.pageFlowHistory = {
+        pageUrls: [
+          '/prisoners/A1234BC/create-induction/check-your-answers',
+          '/prisoners/A1234BC/create-induction/highest-level-of-education',
+        ],
+        currentPageIndex: 1,
+      }
+
+      // When
+      await controller.submitHighestLevelOfEducationForm(
+        req as undefined as Request,
+        res as undefined as Response,
+        next as undefined as NextFunction,
+      )
+
+      // Then
+      expect(req.session.inductionDto).toEqual(expectedInduction)
+      expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-induction/check-your-answers')
+      expect(req.session.highestLevelOfEducationForm).toBeUndefined()
     })
   })
 })

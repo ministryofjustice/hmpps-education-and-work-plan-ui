@@ -41,13 +41,12 @@ describe('qualificationsListCreateController', () => {
     it('should get the Qualifications List view', async () => {
       // Given
       const inductionDto = aLongQuestionSetInductionDto()
+      inductionDto.previousQualifications.qualifications = []
       req.session.inductionDto = inductionDto
       const functionalSkills = validFunctionalSkills()
       req.session.prisonerFunctionalSkills = functionalSkills
 
-      const expectedQualifications: Array<AchievedQualificationDto> = [
-        { subject: 'Pottery', grade: 'C', level: QualificationLevelValue.LEVEL_4 },
-      ]
+      const expectedQualifications: Array<AchievedQualificationDto> = []
 
       const expectedFunctionalSkills = functionalSkills
 
@@ -69,6 +68,53 @@ describe('qualificationsListCreateController', () => {
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/induction/prePrisonEducation/qualificationsList', expectedView)
       expect(req.session.inductionDto).toEqual(inductionDto)
+    })
+
+    it('should get the Qualifications List view given the previous page was Check Your Answers', async () => {
+      // Given
+      const inductionDto = aLongQuestionSetInductionDto()
+      req.session.inductionDto = inductionDto
+      const functionalSkills = validFunctionalSkills()
+      req.session.prisonerFunctionalSkills = functionalSkills
+
+      req.session.pageFlowHistory = {
+        pageUrls: ['/prisoners/A1234BC/create-induction/check-your-answers'],
+        currentPageIndex: 0,
+      }
+
+      const expectedPageFlowHistory = {
+        pageUrls: [
+          '/prisoners/A1234BC/create-induction/check-your-answers',
+          '/prisoners/A1234BC/create-induction/qualifications',
+        ],
+        currentPageIndex: 1,
+      }
+
+      const expectedQualifications: Array<AchievedQualificationDto> = [
+        { subject: 'Pottery', grade: 'C', level: QualificationLevelValue.LEVEL_4 },
+      ]
+
+      const expectedFunctionalSkills = functionalSkills
+
+      const expectedView = {
+        prisonerSummary,
+        backLinkUrl: '/prisoners/A1234BC/create-induction/check-your-answers',
+        backLinkAriaText: `Back to Check and save your answers before adding Jimmy Lightfingers's goals`,
+        qualifications: expectedQualifications,
+        functionalSkills: expectedFunctionalSkills,
+      }
+
+      // When
+      await controller.getQualificationsListView(
+        req as undefined as Request,
+        res as undefined as Response,
+        next as undefined as NextFunction,
+      )
+
+      // Then
+      expect(res.render).toHaveBeenCalledWith('pages/induction/prePrisonEducation/qualificationsList', expectedView)
+      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(req.session.pageFlowHistory).toEqual(expectedPageFlowHistory)
     })
   })
 
@@ -147,10 +193,18 @@ describe('qualificationsListCreateController', () => {
       expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-induction/highest-level-of-education')
     })
 
-    it('should redirect to Additional Training Page given page submitted with no qualifications on the Induction', async () => {
+    it('should redirect to Additional Training Page given user has not come from Check Your Answers and page submitted with qualifications on the Induction', async () => {
       // Given
       const inductionDto = aLongQuestionSetInductionDto()
       req.session.inductionDto = inductionDto
+      /* The long question set induction has Secondary School with Exams as the highest level of education, and the following qualification:
+           - Level 4 Pottery, Grade C
+       */
+
+      req.session.pageFlowHistory = {
+        pageUrls: [`/prisoners/${prisonNumber}/create-induction/qualifications`],
+        currentPageIndex: 0,
+      }
 
       // When
       await controller.submitQualificationsListView(
@@ -161,6 +215,31 @@ describe('qualificationsListCreateController', () => {
 
       // Then
       expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-induction/additional-training')
+      expect(req.session.pageFlowHistory).toBeUndefined()
+    })
+
+    it('should redirect to Check Your Answers given user has come from Check Your Answers and page submitted with qualifications on the Induction', async () => {
+      // Given
+      const inductionDto = aLongQuestionSetInductionDto()
+      req.session.inductionDto = inductionDto
+      /* The long question set induction has Secondary School with Exams as the highest level of education, and the following qualification:
+           - Level 4 Pottery, Grade C
+       */
+
+      req.session.pageFlowHistory = {
+        pageUrls: [`/prisoners/${prisonNumber}/create-induction/check-your-answers`],
+        currentPageIndex: 0,
+      }
+
+      // When
+      await controller.submitQualificationsListView(
+        req as undefined as Request,
+        res as undefined as Response,
+        next as undefined as NextFunction,
+      )
+
+      // Then
+      expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-induction/check-your-answers')
       expect(req.session.pageFlowHistory).toBeUndefined()
     })
   })
