@@ -81,7 +81,7 @@
           <div class="govuk-grid-column-two-thirds">
             {{ govukErrorSummary({
               titleText: 'There is a problem',
-              errorList: validationErrors | buildErrorSummaryList,
+              errorList: validationErrors,
               attributes: { 'data-qa-errors': true }
             }) }}
           </div>

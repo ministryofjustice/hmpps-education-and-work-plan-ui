@@ -44,7 +44,6 @@ export default function createApp(services: Services): express.Application {
 
   app.locals.environmentName = config.environmentName
   app.locals.environmentNameColour = config.environmentName === 'PRE-PRODUCTION' ? 'govuk-tag--green' : ''
-  app.locals.test = 'test'
 
   nunjucksSetup(app, services.applicationInfo)
   app.use(setUpAuthentication())

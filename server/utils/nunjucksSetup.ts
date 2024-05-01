@@ -2,7 +2,7 @@
 import nunjucks, { Environment } from 'nunjucks'
 import express from 'express'
 import path from 'path'
-import { buildErrorSummaryList, initialiseName } from './utils'
+import { initialiseName } from './utils'
 import { ApplicationInfo } from '../applicationInfo'
 import config from '../config'
 import formatDateFilter from '../filters/formatDateFilter'
@@ -71,7 +71,6 @@ export function registerNunjucks(app?: express.Express): Environment {
 
   njkEnv.addFilter('initialiseName', initialiseName)
   njkEnv.addFilter('findError', findErrorFilter)
-  njkEnv.addFilter('buildErrorSummaryList', buildErrorSummaryList)
   njkEnv.addFilter('formatDate', formatDateFilter)
   njkEnv.addFilter('formatFunctionalSkillType', formatFunctionalSkillTypeFilter)
   njkEnv.addFilter('formatStepStatusValue', formatStepStatusValueFilter)

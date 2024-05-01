@@ -57,8 +57,8 @@ context('Create goals', () => {
     Page.verifyOnPage(CreateGoalsPage)
     createGoalPage //
       .hasErrorCount(2)
-      .hasFieldInError('goals[0].title')
-      .hasFieldInError('goals[0].steps[0].title')
+      .hasFieldInError('goals-0-title')
+      .hasFieldInError('goals-0-steps-0-title')
   })
 
   it('should be able to add an empty step, and validation only performed on final form submission', () => {
@@ -86,8 +86,8 @@ context('Create goals', () => {
     Page.verifyOnPage(CreateGoalsPage)
     createGoalPage //
       .hasErrorCount(2)
-      .hasFieldInError('goals[0].steps[0].title')
-      .hasFieldInError('goals[0].steps[1].title')
+      .hasFieldInError('goals-0-steps-0-title')
+      .hasFieldInError('goals-0-steps-1-title')
   })
 
   it('should be able to add an empty step to a goal', () => {

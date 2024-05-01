@@ -7,6 +7,14 @@ export type FieldValidationError = {
   message: string
 }
 
+export const buildErrorSummaryList = (array: FieldValidationError[]) => {
+  if (!array) return null
+  return array.map((error: FieldValidationError) => ({
+    text: error.message,
+    href: `#${error.field}`,
+  }))
+}
+
 export const flattenErrors = (errorList: ValidationError[], parentPrefix?: string): FieldValidationError[] => {
   const propPrefix = parentPrefix ? `${parentPrefix}-` : ''
   return errorList.flatMap(err => {
@@ -37,8 +45,11 @@ export default function validationMiddleware(type: new () => object): RequestHan
       return next()
     }
 
+    const fieldValidationErrors = flattenErrors(errors)
+    const validationErrors = buildErrorSummaryList(fieldValidationErrors)
+
     req.flash('formValues', JSON.stringify(req.body))
-    req.flash('validationErrors', JSON.stringify(flattenErrors(errors)))
+    req.flash('validationErrors', JSON.stringify(validationErrors))
 
     return res.redirect('back')
   }
