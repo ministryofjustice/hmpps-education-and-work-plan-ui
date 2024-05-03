@@ -4,6 +4,7 @@ import config from '../../../config'
 import asyncMiddleware from '../../../middleware/asyncMiddleware'
 import { checkUserHasEditAuthority } from '../../../middleware/roleBasedAccessControl'
 import HopingToWorkOnReleaseCreateController from './hopingToWorkOnReleaseCreateController'
+import WantToAddQualificationsCreateController from './wantToAddQualificationsCreateController'
 import createEmptyInductionIfNotInSession from '../../routerRequestHandlers/createEmptyInductionIfNotInSession'
 import QualificationsListCreateController from './qualificationsListCreateController'
 import retrieveFunctionalSkillsIfNotInSession from '../../routerRequestHandlers/retrieveFunctionalSkillsIfNotInSession'
@@ -31,6 +32,7 @@ import ReasonsNotToGetWorkCreateController from './reasonsNotToGetWorkCreateCont
  */
 export default (router: Router, services: Services) => {
   const hopingToWorkOnReleaseCreateController = new HopingToWorkOnReleaseCreateController()
+  const wantToAddQualificationsCreateController = new WantToAddQualificationsCreateController()
   const qualificationsListCreateController = new QualificationsListCreateController()
   const highestLevelOfEducationCreateController = new HighestLevelOfEducationCreateController()
   const qualificationLevelCreateController = new QualificationLevelCreateController()
@@ -64,6 +66,14 @@ export default (router: Router, services: Services) => {
     ])
     router.post('/prisoners/:prisonNumber/create-induction/hoping-to-work-on-release', [
       asyncMiddleware(hopingToWorkOnReleaseCreateController.submitHopingToWorkOnReleaseForm),
+    ])
+
+    router.get('/prisoners/:prisonNumber/create-induction/want-to-add-qualifications', [
+      retrieveFunctionalSkillsIfNotInSession(services.curiousService),
+      asyncMiddleware(wantToAddQualificationsCreateController.getWantToAddQualificationsView),
+    ])
+    router.post('/prisoners/:prisonNumber/create-induction/want-to-add-qualifications', [
+      asyncMiddleware(wantToAddQualificationsCreateController.submitWantToAddQualificationsForm),
     ])
 
     router.get('/prisoners/:prisonNumber/create-induction/qualifications', [

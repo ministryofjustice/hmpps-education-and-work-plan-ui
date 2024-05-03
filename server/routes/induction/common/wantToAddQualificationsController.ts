@@ -29,6 +29,7 @@ export default abstract class WantToAddQualificationsController extends Inductio
       ...prisonerFunctionalSkills,
       assessments: mostRecentAssessments(prisonerFunctionalSkills.assessments || []),
     }
+
     const wantToAddQualificationsForm =
       req.session.wantToAddQualificationsForm || createWantToAddQualificationsForm(inductionDto)
     req.session.wantToAddQualificationsForm = undefined
