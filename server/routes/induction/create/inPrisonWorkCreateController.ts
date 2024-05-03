@@ -34,6 +34,6 @@ export default class InPrisonWorkCreateController extends InPrisonWorkController
     const updatedInduction = this.updatedInductionDtoWithInPrisonWork(inductionDto, inPrisonWorkForm)
     req.session.inductionDto = updatedInduction
 
-    return res.redirect(`/prisoners/${prisonNumber}/induction/in-prison-training`)
+    return res.redirect(`/prisoners/${prisonNumber}/create-induction/in-prison-training`)
   }
 }
