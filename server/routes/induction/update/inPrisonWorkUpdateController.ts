@@ -1,12 +1,9 @@
-import type { InPrisonWorkForm } from 'inductionForms'
-import type { InductionDto, InPrisonWorkInterestDto } from 'inductionDto'
 import { NextFunction, Request, RequestHandler, Response } from 'express'
 import createError from 'http-errors'
 import InPrisonWorkController from '../common/inPrisonWorkController'
-import validateInPrisonWorkForm from './inPrisonWorkFormValidator'
+import validateInPrisonWorkForm from '../../validators/induction/inPrisonWorkFormValidator'
 import { InductionService } from '../../../services'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
-import InPrisonWorkValue from '../../../enums/inPrisonWorkValue'
 import logger from '../../../../logger'
 import { getPreviousPage } from '../../pageFlowHistory'
 import getDynamicBackLinkAriaText from '../dynamicAriaTextResolver'
@@ -79,25 +76,6 @@ export default class InPrisonWorkUpdateController extends InPrisonWorkController
     } catch (e) {
       logger.error(`Error updating Induction for prisoner ${prisonNumber}`, e)
       return next(createError(500, `Error updating Induction for prisoner ${prisonNumber}. Error: ${e}`))
-    }
-  }
-
-  private updatedInductionDtoWithInPrisonWork(
-    inductionDto: InductionDto,
-    inPrisonWorkForm: InPrisonWorkForm,
-  ): InductionDto {
-    const updatedPrisonWorkInterests: InPrisonWorkInterestDto[] = inPrisonWorkForm.inPrisonWork.map(interest => {
-      return {
-        workType: interest,
-        workTypeOther: interest === InPrisonWorkValue.OTHER ? inPrisonWorkForm.inPrisonWorkOther : undefined,
-      }
-    })
-    return {
-      ...inductionDto,
-      inPrisonInterests: {
-        ...inductionDto.inPrisonInterests,
-        inPrisonWorkInterests: updatedPrisonWorkInterests,
-      },
     }
   }
 }

@@ -1,4 +1,4 @@
-import type { InductionDto } from 'inductionDto'
+import type { InductionDto, InPrisonWorkInterestDto } from 'inductionDto'
 import type { InPrisonWorkForm } from 'inductionForms'
 import { NextFunction, Request, RequestHandler, Response } from 'express'
 import InPrisonWorkView from './inPrisonWorkView'
@@ -32,13 +32,32 @@ export default abstract class InPrisonWorkController extends InductionController
     )
     return res.render('pages/induction/inPrisonWork/index', { ...view.renderArgs })
   }
+
+  protected updatedInductionDtoWithInPrisonWork(
+    inductionDto: InductionDto,
+    inPrisonWorkForm: InPrisonWorkForm,
+  ): InductionDto {
+    const updatedPrisonWorkInterests: InPrisonWorkInterestDto[] = inPrisonWorkForm.inPrisonWork.map(interest => {
+      return {
+        workType: interest,
+        workTypeOther: interest === InPrisonWorkValue.OTHER ? inPrisonWorkForm.inPrisonWorkOther : undefined,
+      }
+    })
+    return {
+      ...inductionDto,
+      inPrisonInterests: {
+        ...inductionDto.inPrisonInterests,
+        inPrisonWorkInterests: updatedPrisonWorkInterests,
+      },
+    }
+  }
 }
 
 const toInPrisonWorkForm = (inductionDto: InductionDto): InPrisonWorkForm => {
   return {
     inPrisonWork:
-      inductionDto.inPrisonInterests?.inPrisonWorkInterests.map(workInterest => workInterest.workType) || [],
-    inPrisonWorkOther: inductionDto.inPrisonInterests?.inPrisonWorkInterests.find(
+      inductionDto.inPrisonInterests?.inPrisonWorkInterests?.map(workInterest => workInterest.workType) || [],
+    inPrisonWorkOther: inductionDto.inPrisonInterests?.inPrisonWorkInterests?.find(
       workInterest => workInterest.workType === InPrisonWorkValue.OTHER,
     )?.workTypeOther,
   }

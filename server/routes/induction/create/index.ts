@@ -22,6 +22,7 @@ import PersonalInterestsCreateController from './personalInterestsCreateControll
 import AffectAbilityToWorkCreateController from './affectAbilityToWorkCreateController'
 import CheckYourAnswersCreateController from './checkYourAnswersCreateController'
 import ReasonsNotToGetWorkCreateController from './reasonsNotToGetWorkCreateController'
+import InPrisonWorkCreateController from './inPrisonWorkCreateController'
 
 /**
  * Route definitions for creating an Induction
@@ -46,6 +47,7 @@ export default (router: Router, services: Services) => {
   const affectAbilityToWorkCreateController = new AffectAbilityToWorkCreateController()
   const checkYourAnswersCreateController = new CheckYourAnswersCreateController(services.inductionService)
   const reasonsNotToGetWorkCreateController = new ReasonsNotToGetWorkCreateController()
+  const inPrisonWorkCreateController = new InPrisonWorkCreateController()
 
   if (config.featureToggles.induction.create.enabled) {
     router.get('/prisoners/:prisonNumber/create-induction/**', [
@@ -167,6 +169,10 @@ export default (router: Router, services: Services) => {
     ])
     router.post('/prisoners/:prisonNumber/create-induction/reasons-not-to-get-work', [
       asyncMiddleware(reasonsNotToGetWorkCreateController.submitReasonsNotToGetWorkForm),
+    ])
+
+    router.get('/prisoners/:prisonNumber/create-induction/in-prison-work', [
+      asyncMiddleware(inPrisonWorkCreateController.getInPrisonWorkView),
     ])
 
     router.get('/prisoners/:prisonNumber/create-induction/check-your-answers', [
