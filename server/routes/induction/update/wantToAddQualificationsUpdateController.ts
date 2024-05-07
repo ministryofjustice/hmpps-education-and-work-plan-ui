@@ -2,11 +2,11 @@ import { NextFunction, Request, RequestHandler, Response } from 'express'
 import type { InductionDto } from 'inductionDto'
 import type { WantToAddQualificationsForm } from 'inductionForms'
 import WantToAddQualificationsController from '../common/wantToAddQualificationsController'
-import validateWantToAddQualificationsForm from './wantToAddQualificationsFormValidator'
 import YesNoValue from '../../../enums/yesNoValue'
 import { getPreviousPage } from '../../pageFlowHistory'
 import getDynamicBackLinkAriaText from '../dynamicAriaTextResolver'
 import EducationLevelValue from '../../../enums/educationLevelValue'
+import validateWantToAddQualificationsForm from '../../validators/induction/wantToAddQualificationsFormValidator'
 
 export default class WantToAddQualificationsUpdateController extends WantToAddQualificationsController {
   getBackLinkUrl(req: Request): string {

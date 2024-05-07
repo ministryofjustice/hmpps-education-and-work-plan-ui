@@ -1,6 +1,6 @@
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
-import validateWorkedBeforeForm from './wantToAddQualificationsFormValidator'
 import YesNoValue from '../../../enums/yesNoValue'
+import wantToAddQualificationsFormValidator from './wantToAddQualificationsFormValidator'
 
 describe('wantToAddQualificationsFormValidator', () => {
   const prisonerSummary = aValidPrisonerSummary()
@@ -11,7 +11,7 @@ describe('wantToAddQualificationsFormValidator', () => {
       const expected: Array<Record<string, string>> = []
 
       // When
-      const actual = validateWorkedBeforeForm({ wantToAddQualifications: YesNoValue.YES }, prisonerSummary)
+      const actual = wantToAddQualificationsFormValidator({ wantToAddQualifications: YesNoValue.YES }, prisonerSummary)
 
       // Then
       expect(actual).toEqual(expected)
@@ -29,7 +29,7 @@ describe('wantToAddQualificationsFormValidator', () => {
       ]
 
       // When
-      const actual = validateWorkedBeforeForm({ wantToAddQualifications: undefined }, prisonerSummary)
+      const actual = wantToAddQualificationsFormValidator({ wantToAddQualifications: undefined }, prisonerSummary)
 
       // Then
       expect(actual).toEqual(expected)

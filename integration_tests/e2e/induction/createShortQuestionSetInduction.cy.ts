@@ -4,6 +4,8 @@ import HopingToGetWorkValue from '../../../server/enums/hopingToGetWorkValue'
 import HopingToWorkOnReleasePage from '../../pages/induction/HopingToWorkOnReleasePage'
 import ReasonsNotToGetWorkPage from '../../pages/induction/ReasonsNotToGetWorkPage'
 import ReasonNotToGetWorkValue from '../../../server/enums/reasonNotToGetWorkValue'
+import WantToAddQualificationsPage from '../../pages/induction/WantToAddQualificationsPage'
+import YesNoValue from '../../../server/enums/yesNoValue'
 
 context('Create a short question set Induction', () => {
   beforeEach(() => {
@@ -38,6 +40,9 @@ context('Create a short question set Induction', () => {
       .chooseReasonNotToGetWork(ReasonNotToGetWorkValue.HEALTH)
       .chooseReasonNotToGetWork(ReasonNotToGetWorkValue.FULL_TIME_CARER)
       .submitPage()
+    Page.verifyOnPage(WantToAddQualificationsPage)
+      .hasBackLinkTo('/prisoners/A00001A/create-induction/reasons-not-to-get-work')
+      .selectHopingWorkOnRelease(YesNoValue.NO)
     // Then
   })
 })
