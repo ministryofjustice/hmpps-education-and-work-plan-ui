@@ -3,9 +3,9 @@ import type { AdditionalTrainingForm } from 'inductionForms'
 import AdditionalTrainingController from '../common/additionalTrainingController'
 import getDynamicBackLinkAriaText from '../dynamicAriaTextResolver'
 import validateAdditionalTrainingForm from '../../validators/induction/additionalTrainingFormValidator'
-import YesNoValue from '../../../enums/yesNoValue'
 import { getPreviousPage } from '../../pageFlowHistory'
 import { asArray } from '../../../utils/utils'
+import HopingToGetWorkValue from '../../../enums/hopingToGetWorkValue'
 
 export default class AdditionalTrainingCreateController extends AdditionalTrainingController {
   getBackLinkUrl(req: Request): string {
@@ -14,7 +14,6 @@ export default class AdditionalTrainingCreateController extends AdditionalTraini
     if (pageFlowHistory) {
       return getPreviousPage(pageFlowHistory)
     }
-    // TODO - we will need logic here to detect induction question set - Long Question Set goes back to Qualifications, Short Question Set goes back to Do You Want To Add Qualifications
     return `/prisoners/${prisonNumber}/create-induction/qualifications`
   }
 
@@ -51,7 +50,7 @@ export default class AdditionalTrainingCreateController extends AdditionalTraini
       return res.redirect(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
     }
 
-    if (updatedInduction.workOnRelease.hopingToWork === YesNoValue.YES) {
+    if (updatedInduction.workOnRelease.hopingToWork === HopingToGetWorkValue.YES) {
       // Long question set Induction
       return res.redirect(`/prisoners/${prisonNumber}/create-induction/has-worked-before`)
     }
