@@ -52,9 +52,15 @@ describe('wantToAddQualificationsCreateController', () => {
       const functionalSkills = validFunctionalSkills()
       req.session.prisonerFunctionalSkills = functionalSkills
       req.session.wantToAddQualificationsForm = undefined
+      req.session.pageFlowHistory = undefined
 
       const expectedWantToAddQualificationsForm: WantToAddQualificationsForm = {
         wantToAddQualifications: undefined,
+      }
+
+      const expectedPageFlowHistory = {
+        pageUrls: ['/prisoners/A1234BC/create-induction/want-to-add-qualifications'],
+        currentPageIndex: 0,
       }
 
       const expectedFunctionalSkills = functionalSkills
@@ -76,6 +82,7 @@ describe('wantToAddQualificationsCreateController', () => {
         expectedView,
       )
       expect(req.session.wantToAddQualificationsForm).toBeUndefined()
+      expect(req.session.pageFlowHistory).toEqual(expectedPageFlowHistory)
     })
   })
 

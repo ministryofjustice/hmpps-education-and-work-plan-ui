@@ -27,6 +27,8 @@ export default class WantToAddQualificationsCreateController extends WantToAddQu
       return res.redirect(`/prisoners/${prisonNumber}/create-induction/want-to-add-qualifications`)
     }
 
+    this.addCurrentPageToHistory(req)
+
     req.session.wantToAddQualificationsForm = undefined
 
     const nextPage =
