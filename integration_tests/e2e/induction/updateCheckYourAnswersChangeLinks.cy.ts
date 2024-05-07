@@ -126,7 +126,7 @@ context(`Change links on the Check Your Answers page when updating an Induction`
       .hasNoEducationalQualificationsDisplayed()
       .clickWantsToAddQualificationsChangeLink()
       .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/check-your-answers`)
-      .selectHopingWorkOnRelease(YesNoValue.YES)
+      .selectWantToAddQualifications(YesNoValue.YES)
       .submitPage()
     Page.verifyOnPage(QualificationsListPage) //
       .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/want-to-add-qualifications`)

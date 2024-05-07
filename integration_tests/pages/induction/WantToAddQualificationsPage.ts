@@ -10,7 +10,7 @@ export default class WantToAddQualificationsPage extends InductionPage {
     super('induction-want-to-add-educational-qualifications')
   }
 
-  selectHopingWorkOnRelease(value: YesNoValue): WantToAddQualificationsPage {
+  selectWantToAddQualifications(value: YesNoValue): WantToAddQualificationsPage {
     this.radio(value).click()
     return this
   }
