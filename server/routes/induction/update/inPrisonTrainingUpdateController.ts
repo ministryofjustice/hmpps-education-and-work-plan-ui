@@ -1,15 +1,14 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express'
 import createError from 'http-errors'
-import type { InductionDto, InPrisonTrainingInterestDto } from 'inductionDto'
 import type { InPrisonTrainingForm } from 'inductionForms'
 import InPrisonTrainingController from '../common/inPrisonTrainingController'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
 import logger from '../../../../logger'
 import { InductionService } from '../../../services'
-import validateInPrisonTrainingForm from './inPrisonTrainingFormValidator'
-import InPrisonTrainingValue from '../../../enums/inPrisonTrainingValue'
+import validateInPrisonTrainingForm from '../../validators/induction/inPrisonTrainingFormValidator'
 import { getPreviousPage } from '../../pageFlowHistory'
 import getDynamicBackLinkAriaText from '../dynamicAriaTextResolver'
+import { asArray } from '../../../utils/utils'
 
 /**
  * Controller for Updating a Prisoner's In-Prison Education and Training screen of the Induction.
@@ -41,14 +40,11 @@ export default class InPrisonTrainingUpdateController extends InPrisonTrainingCo
     const { prisonerSummary, inductionDto } = req.session
     const { prisonId } = prisonerSummary
 
-    req.session.inPrisonTrainingForm = { ...req.body }
-    if (!req.session.inPrisonTrainingForm.inPrisonTraining) {
-      req.session.inPrisonTrainingForm.inPrisonTraining = []
+    const inPrisonTrainingForm: InPrisonTrainingForm = {
+      inPrisonTraining: asArray(req.body.inPrisonTraining),
+      inPrisonTrainingOther: req.body.inPrisonTrainingOther,
     }
-    if (!Array.isArray(req.session.inPrisonTrainingForm.inPrisonTraining)) {
-      req.session.inPrisonTrainingForm.inPrisonTraining = [req.session.inPrisonTrainingForm.inPrisonTraining]
-    }
-    const { inPrisonTrainingForm } = req.session
+    req.session.inPrisonTrainingForm = inPrisonTrainingForm
 
     const errors = validateInPrisonTrainingForm(inPrisonTrainingForm, prisonerSummary)
     if (errors.length > 0) {
@@ -75,28 +71,6 @@ export default class InPrisonTrainingUpdateController extends InPrisonTrainingCo
     } catch (e) {
       logger.error(`Error updating Induction for prisoner ${prisonNumber}`, e)
       return next(createError(500, `Error updating Induction for prisoner ${prisonNumber}. Error: ${e}`))
-    }
-  }
-
-  private updatedInductionDtoWithInPrisonTraining(
-    inductionDto: InductionDto,
-    inPrisonTrainingForm: InPrisonTrainingForm,
-  ): InductionDto {
-    const updatedPrisonTrainingInterests: InPrisonTrainingInterestDto[] = inPrisonTrainingForm.inPrisonTraining.map(
-      training => {
-        return {
-          trainingType: training,
-          trainingTypeOther:
-            training === InPrisonTrainingValue.OTHER ? inPrisonTrainingForm.inPrisonTrainingOther : undefined,
-        }
-      },
-    )
-    return {
-      ...inductionDto,
-      inPrisonInterests: {
-        ...inductionDto.inPrisonInterests,
-        inPrisonTrainingInterests: updatedPrisonTrainingInterests,
-      },
     }
   }
 }
