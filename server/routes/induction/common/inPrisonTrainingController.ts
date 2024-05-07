@@ -1,5 +1,5 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express'
-import type { InductionDto } from 'inductionDto'
+import type { InductionDto, InPrisonTrainingInterestDto } from 'inductionDto'
 import type { InPrisonTrainingForm } from 'inductionForms'
 import InductionController from './inductionController'
 import InPrisonTrainingView from './inPrisonTrainingView'
@@ -31,6 +31,28 @@ export default abstract class InPrisonTrainingController extends InductionContro
       req.flash('errors'),
     )
     return res.render('pages/induction/inPrisonTraining/index', { ...view.renderArgs })
+  }
+
+  protected updatedInductionDtoWithInPrisonTraining(
+    inductionDto: InductionDto,
+    inPrisonTrainingForm: InPrisonTrainingForm,
+  ): InductionDto {
+    const updatedPrisonTrainingInterests: InPrisonTrainingInterestDto[] = inPrisonTrainingForm.inPrisonTraining.map(
+      training => {
+        return {
+          trainingType: training,
+          trainingTypeOther:
+            training === InPrisonTrainingValue.OTHER ? inPrisonTrainingForm.inPrisonTrainingOther : undefined,
+        }
+      },
+    )
+    return {
+      ...inductionDto,
+      inPrisonInterests: {
+        ...inductionDto.inPrisonInterests,
+        inPrisonTrainingInterests: updatedPrisonTrainingInterests,
+      },
+    }
   }
 }
 
