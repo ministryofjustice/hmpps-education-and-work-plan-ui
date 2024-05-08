@@ -15,8 +15,12 @@ export default abstract class InPrisonWorkController extends InductionController
   getInPrisonWorkView: RequestHandler = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { prisonerSummary, inductionDto } = req.session
 
-    // Check if we are in the midst of changing the main induction question set (in this case from long route to short route)
-    if (req.session.updateInductionQuestionSet) {
+    this.addCurrentPageToFlowHistoryWhenComingFromCheckYourAnswers(req)
+
+    // Add the current page to the page flow history if we either:
+    //   are in the midst of changing the main induction question set (e.g. from long route to short route)
+    //   or we already have a page flow history
+    if (req.session.updateInductionQuestionSet || req.session.pageFlowHistory) {
       this.addCurrentPageToHistory(req)
     }
 

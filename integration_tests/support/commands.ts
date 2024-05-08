@@ -33,6 +33,7 @@ import QualificationLevelPage from '../pages/induction/QualificationLevelPage'
 import QualificationLevelValue from '../../server/enums/qualificationLevelValue'
 import QualificationDetailsPage from '../pages/induction/QualificationDetailsPage'
 import AdditionalTrainingValue from '../../server/enums/additionalTrainingValue'
+import WantToAddQualificationsPage from '../pages/induction/WantToAddQualificationsPage'
 
 Cypress.Commands.add('signIn', (options = { failOnStatusCode: false }) => {
   cy.request('/')
@@ -205,6 +206,57 @@ Cypress.Commands.add('createLongQuestionSetInductionToArriveOnCheckYourAnswers',
   // Arrive on Check Your Answers page
   Page.verifyOnPage(CheckYourAnswersPage)
 })
+
+Cypress.Commands.add(
+  'createShortQuestionSetInductionToArriveOnCheckYourAnswers',
+  (prisonNumber = 'G6115VJ', withQualifications = true) => {
+    /* Create a Short Question Set Induction by answering all the questions to get to the Check Your Answers page. */
+    cy.visit(`/prisoners/${prisonNumber}/create-induction/hoping-to-work-on-release`)
+
+    // Hoping To Work On Release is the first page
+    Page.verifyOnPage(HopingToWorkOnReleasePage) //
+      .selectHopingWorkOnRelease(HopingToGetWorkValue.NO)
+      .submitPage()
+    // Reasons Not To Get Work is the next page
+    Page.verifyOnPage(ReasonsNotToGetWorkPage) //
+      .chooseReasonNotToGetWork(ReasonNotToGetWorkValue.FULL_TIME_CARER)
+      .submitPage()
+    // Want To Add Qualifications is the next page
+    Page.verifyOnPage(WantToAddQualificationsPage) //
+      .selectWantToAddQualifications(withQualifications ? YesNoValue.YES : YesNoValue.NO)
+      .submitPage()
+
+    if (withQualifications) {
+      // Qualification Level page is next
+      Page.verifyOnPage(QualificationLevelPage) //
+        .selectQualificationLevel(QualificationLevelValue.LEVEL_4)
+        .submitPage()
+      // Qualification Detail page is next
+      Page.verifyOnPage(QualificationDetailsPage) //
+        .setQualificationSubject('Computer science')
+        .setQualificationGrade('A*')
+        .submitPage()
+      // Qualifications List page is again. Submit the page using its main CTA to move forward to the next screen
+      Page.verifyOnPage(QualificationsListPage) //
+        .submitPage()
+    }
+
+    // Additional Training page is next
+    Page.verifyOnPage(AdditionalTrainingPage) //
+      .chooseAdditionalTraining(AdditionalTrainingValue.HGV_LICENCE)
+      .submitPage()
+    // In Prison Work Interests page is next
+    Page.verifyOnPage(InPrisonWorkPage) //
+      .chooseWorkType(InPrisonWorkValue.PRISON_LIBRARY)
+      .submitPage()
+    // In Prison Training Interests page is next
+    Page.verifyOnPage(InPrisonTrainingPage) //
+      .chooseInPrisonTraining(InPrisonTrainingValue.FORKLIFT_DRIVING)
+      .submitPage()
+    // Arrive on Check Your Answers page
+    Page.verifyOnPage(CheckYourAnswersPage)
+  },
+)
 
 const signInWithAuthority = (authority: 'EDIT' | 'VIEW') => {
   cy.task('reset')

@@ -4,6 +4,7 @@ import ReasonsNotToGetWorkController from '../common/reasonsNotToGetWorkControll
 import validateReasonsNotToGetWorkForm from '../../validators/induction/reasonsNotToGetWorkFormValidator'
 import getDynamicBackLinkAriaText from '../dynamicAriaTextResolver'
 import { asArray } from '../../../utils/utils'
+import { getPreviousPage } from '../../pageFlowHistory'
 
 /**
  * Controller for Reasons Not To Get Work after release screen of the create induction journey.
@@ -11,6 +12,10 @@ import { asArray } from '../../../utils/utils'
 export default class ReasonsNotToGetWorkCreateController extends ReasonsNotToGetWorkController {
   getBackLinkUrl(req: Request): string {
     const { prisonNumber } = req.params
+    const { pageFlowHistory } = req.session
+    if (pageFlowHistory) {
+      return getPreviousPage(pageFlowHistory)
+    }
     return `/prisoners/${prisonNumber}/create-induction/hoping-to-work-on-release`
   }
 
@@ -41,6 +46,8 @@ export default class ReasonsNotToGetWorkCreateController extends ReasonsNotToGet
     req.session.inductionDto = this.updatedInductionDtoWithReasonsNotToGetWork(inductionDto, reasonsNotToGetWorkForm)
     req.session.reasonsNotToGetWorkForm = undefined
 
-    return res.redirect(`/prisoners/${prisonNumber}/create-induction/want-to-add-qualifications`)
+    return this.previousPageWasCheckYourAnswers(req)
+      ? res.redirect(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
+      : res.redirect(`/prisoners/${prisonNumber}/create-induction/want-to-add-qualifications`)
   }
 }

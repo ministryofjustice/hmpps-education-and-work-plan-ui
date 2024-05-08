@@ -4,10 +4,15 @@ import InPrisonTrainingController from '../common/inPrisonTrainingController'
 import getDynamicBackLinkAriaText from '../dynamicAriaTextResolver'
 import validateInPrisonTrainingForm from '../../validators/induction/inPrisonTrainingFormValidator'
 import { asArray } from '../../../utils/utils'
+import { getPreviousPage } from '../../pageFlowHistory'
 
 export default class InPrisonTrainingCreateController extends InPrisonTrainingController {
   getBackLinkUrl(req: Request): string {
     const { prisonNumber } = req.params
+    const { pageFlowHistory } = req.session
+    if (pageFlowHistory) {
+      return getPreviousPage(pageFlowHistory)
+    }
     return `/prisoners/${prisonNumber}/create-induction/in-prison-work`
   }
 

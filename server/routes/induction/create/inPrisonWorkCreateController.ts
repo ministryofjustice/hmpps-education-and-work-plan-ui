@@ -4,10 +4,15 @@ import InPrisonWorkController from '../common/inPrisonWorkController'
 import getDynamicBackLinkAriaText from '../dynamicAriaTextResolver'
 import validateInPrisonWorkForm from '../../validators/induction/inPrisonWorkFormValidator'
 import { asArray } from '../../../utils/utils'
+import { getPreviousPage } from '../../pageFlowHistory'
 
 export default class InPrisonWorkCreateController extends InPrisonWorkController {
   getBackLinkUrl(req: Request): string {
     const { prisonNumber } = req.params
+    const { pageFlowHistory } = req.session
+    if (pageFlowHistory) {
+      return getPreviousPage(pageFlowHistory)
+    }
     return `/prisoners/${prisonNumber}/create-induction/additional-training`
   }
 
@@ -34,6 +39,8 @@ export default class InPrisonWorkCreateController extends InPrisonWorkController
     const updatedInduction = this.updatedInductionDtoWithInPrisonWork(inductionDto, inPrisonWorkForm)
     req.session.inductionDto = updatedInduction
 
-    return res.redirect(`/prisoners/${prisonNumber}/create-induction/in-prison-training`)
+    return this.previousPageWasCheckYourAnswers(req)
+      ? res.redirect(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
+      : res.redirect(`/prisoners/${prisonNumber}/create-induction/in-prison-training`)
   }
 }

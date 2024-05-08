@@ -18,6 +18,9 @@ import QualificationLevelValue from '../../../server/enums/qualificationLevelVal
 import QualificationDetailsPage from '../../pages/induction/QualificationDetailsPage'
 import QualificationsListPage from '../../pages/induction/QualificationsListPage'
 import EducationLevelValue from '../../../server/enums/educationLevelValue'
+import InPrisonTrainingValue from '../../../server/enums/inPrisonTrainingValue'
+import InPrisonWorkValue from '../../../server/enums/inPrisonWorkValue'
+import ReasonNotToGetWorkValue from '../../../server/enums/reasonNotToGetWorkValue'
 
 context(`Change links on the Check Your Answers page when creating an Induction`, () => {
   const prisonNumber = 'G6115VJ'
@@ -195,5 +198,87 @@ context(`Change links on the Check Your Answers page when creating an Induction`
         'Gym instructor',
         'Coaching and motivating customers fitness goals',
       )
+      .hasNoEducationalQualificationsDisplayed()
+  })
+
+  it('should support all Change links on a Short Question Set Induction', () => {
+    // Given
+    cy.createShortQuestionSetInductionToArriveOnCheckYourAnswers(prisonNumber)
+    Page.verifyOnPage(CheckYourAnswersPage)
+
+    // When
+    // Change in-prison training interests
+    Page.verifyOnPage(CheckYourAnswersPage)
+      .clickInPrisonTrainingInterestsChangeLink()
+      .hasBackLinkTo(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
+      .deSelectInPrisonTraining(InPrisonTrainingValue.FORKLIFT_DRIVING)
+      .chooseInPrisonTraining(InPrisonTrainingValue.BARBERING_AND_HAIRDRESSING)
+      .chooseInPrisonTraining(InPrisonTrainingValue.RUNNING_A_BUSINESS)
+      .submitPage()
+
+    // Change in-prison work interests
+    Page.verifyOnPage(CheckYourAnswersPage)
+      .clickInPrisonWorkInterestsChangeLink()
+      .hasBackLinkTo(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
+      .deSelectWorkType(InPrisonWorkValue.PRISON_LIBRARY)
+      .chooseWorkType(InPrisonWorkValue.MAINTENANCE)
+      .chooseWorkType(InPrisonWorkValue.TEXTILES_AND_SEWING)
+      .submitPage()
+
+    // Change Other Training
+    Page.verifyOnPage(CheckYourAnswersPage)
+      .clickAdditionalTrainingChangeLink()
+      .hasBackLinkTo(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
+      .deSelectAdditionalTraining(AdditionalTrainingValue.HGV_LICENCE)
+      .chooseAdditionalTraining(AdditionalTrainingValue.MANUAL_HANDLING)
+      .chooseAdditionalTraining(AdditionalTrainingValue.CSCS_CARD)
+      .submitPage()
+
+    // Change Educational Qualifications - add 1 qualification
+    Page.verifyOnPage(CheckYourAnswersPage)
+      .clickQualificationsChangeLink()
+      .hasBackLinkTo(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
+      .clickToAddAnotherQualification()
+    Page.verifyOnPage(QualificationLevelPage) //
+      .hasBackLinkTo(`/prisoners/${prisonNumber}/create-induction/qualifications`)
+      .selectQualificationLevel(QualificationLevelValue.LEVEL_1)
+      .submitPage()
+    Page.verifyOnPage(QualificationDetailsPage) //
+      .hasBackLinkTo(`/prisoners/${prisonNumber}/create-induction/qualification-level`)
+      .setQualificationSubject('Chemistry')
+      .setQualificationGrade('Merit')
+      .submitPage()
+    Page.verifyOnPage(QualificationsListPage) //
+      .hasBackLinkTo(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
+      .submitPage()
+
+    // Change Educational Qualifications - remove all remaining qualifications
+    Page.verifyOnPage(CheckYourAnswersPage)
+      .clickQualificationsChangeLink()
+      .hasBackLinkTo(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
+      .removeQualification(2) // The induction now has 2 qualifications on it. Remove them all
+      .removeQualification(1)
+      .submitPage()
+
+    // Change reasons for not wanting to work on release
+    Page.verifyOnPage(CheckYourAnswersPage)
+      .clickReasonsForNotWantingToWorkChangeLink()
+      .hasBackLinkTo(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
+      .deSelectReasonNotToGetWork(ReasonNotToGetWorkValue.FULL_TIME_CARER)
+      .chooseReasonNotToGetWork(ReasonNotToGetWorkValue.NO_RIGHT_TO_WORK)
+      .chooseReasonNotToGetWork(ReasonNotToGetWorkValue.RETIRED)
+      .submitPage()
+
+    // Then
+    Page.verifyOnPage(CheckYourAnswersPage) //
+      .hasHopingToWorkOnRelease(HopingToGetWorkValue.NO)
+      .hasReasonsForNotWantingToWork([ReasonNotToGetWorkValue.NO_RIGHT_TO_WORK, ReasonNotToGetWorkValue.RETIRED])
+      .hasNoEducationalQualificationsDisplayed()
+      .hasAdditionalTraining([AdditionalTrainingValue.MANUAL_HANDLING, AdditionalTrainingValue.CSCS_CARD])
+      .hasInPrisonWorkInterests([InPrisonWorkValue.MAINTENANCE, InPrisonWorkValue.TEXTILES_AND_SEWING])
+      .hasInPrisonTrainingInterests([
+        InPrisonTrainingValue.BARBERING_AND_HAIRDRESSING,
+        InPrisonTrainingValue.RUNNING_A_BUSINESS,
+      ])
   })
 })
