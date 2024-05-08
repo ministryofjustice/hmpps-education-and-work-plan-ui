@@ -43,11 +43,19 @@ export default class ReasonsNotToGetWorkCreateController extends ReasonsNotToGet
       return res.redirect(`/prisoners/${prisonNumber}/create-induction/reasons-not-to-get-work`)
     }
 
-    req.session.inductionDto = this.updatedInductionDtoWithReasonsNotToGetWork(inductionDto, reasonsNotToGetWorkForm)
+    const updatedInduction = this.updatedInductionDtoWithReasonsNotToGetWork(inductionDto, reasonsNotToGetWorkForm)
+    req.session.inductionDto = updatedInduction
     req.session.reasonsNotToGetWorkForm = undefined
 
-    return this.previousPageWasCheckYourAnswers(req)
-      ? res.redirect(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
+    if (this.previousPageWasCheckYourAnswers(req)) {
+      return res.redirect(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
+    }
+
+    // If there are already qualifications on the Induction (in the case the user has navigated back or is changing from
+    // a long to short question set via Check Your Answers) we don't need to ask if the user wants to add qualifications
+    // and instead can simply show them on the Qualifications list page.
+    return updatedInduction.previousQualifications?.qualifications?.length > 0
+      ? res.redirect(`/prisoners/${prisonNumber}/create-induction/qualifications`)
       : res.redirect(`/prisoners/${prisonNumber}/create-induction/want-to-add-qualifications`)
   }
 }

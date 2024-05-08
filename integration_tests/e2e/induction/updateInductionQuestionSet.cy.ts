@@ -32,10 +32,10 @@ import AffectAbilityToWorkPage from '../../pages/induction/AffectAbilityToWorkPa
 import AbilityToWorkValue from '../../../server/enums/abilityToWorkValue'
 
 /**
- * Cypress tests that change the Induction question set by updating the answer to 'Hoping to work on release'
+ * Cypress tests that change the question set of an existing Induction by updating the answer to 'Hoping to work on release'
  * Refer to the screen/process flow description and diagram in `/docs/induction.md`
  */
-context(`Change Induction question set by updating the answer to 'Hoping to work on release'`, () => {
+context(`Change existing Induction question set by updating the answer to 'Hoping to work on release'`, () => {
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubSignInAsUserWithEditAuthority')
