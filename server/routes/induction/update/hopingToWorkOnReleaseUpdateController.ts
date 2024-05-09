@@ -50,7 +50,7 @@ export default class HopingToWorkOnReleaseUpdateController extends HopingToWorkO
     const updatedInduction = updatedInductionDtoWithHopingToWorkOnRelease(inductionDto, hopingToWorkOnReleaseForm)
     req.session.inductionDto = updatedInduction
 
-    if (changeWillResultInANewQuestionSet(inductionDto, hopingToWorkOnReleaseForm)) {
+    if (this.changeWillResultInANewQuestionSet(inductionDto, hopingToWorkOnReleaseForm)) {
       req.session.updateInductionQuestionSet = { hopingToWorkOnRelease: hopingToWorkOnReleaseForm.hopingToGetWork }
       const nextPage =
         hopingToWorkOnReleaseForm.hopingToGetWork === HopingToGetWorkValue.YES
@@ -79,29 +79,6 @@ export default class HopingToWorkOnReleaseUpdateController extends HopingToWorkO
     req.session.inductionDto = undefined
     return res.redirect(`/plan/${prisonNumber}/view/work-and-interests`)
   }
-}
-
-/**
- * Returns true if the new answer to "Hoping to work on release" will cause a new question set to be asked.
- * In the context of updating the Induction with the new answer to this question, it means we need to present the user
- * with other screens/questions to build up a valid Induction.
- * IE. we cannot simply update the Induction from "Hoping to work on release = NO" to "Hoping to work on release = YES"
- * because the resultant Induction will have missing data, as there are different questions asked based on whether the
- * prisoner is hoping to work on release or not.
- */
-const changeWillResultInANewQuestionSet = (
-  currentInductionDto: InductionDto,
-  hopingToWorkOnReleaseForm: HopingToWorkOnReleaseForm,
-): boolean => {
-  const currentInductionValue = currentInductionDto.workOnRelease?.hopingToWork
-  const proposedValue = hopingToWorkOnReleaseForm.hopingToGetWork
-
-  return (
-    (currentInductionValue === HopingToGetWorkValue.YES &&
-      (proposedValue === HopingToGetWorkValue.NO || proposedValue === HopingToGetWorkValue.NOT_SURE)) ||
-    ((currentInductionValue === HopingToGetWorkValue.NO || currentInductionValue === HopingToGetWorkValue.NOT_SURE) &&
-      proposedValue === HopingToGetWorkValue.YES)
-  )
 }
 
 const updatedInductionDtoWithHopingToWorkOnRelease = (

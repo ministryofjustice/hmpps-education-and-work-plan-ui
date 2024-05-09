@@ -167,7 +167,41 @@ describe('reasonsNotToGetWorkCreateController', () => {
       expect(req.session.inductionDto).toEqual(inductionDto)
     })
 
-    it('should update induction DTO and redirect to want to add qualifcations page', async () => {
+    it('should update induction DTO and redirect to want to add qualifications page given induction with no qualifications on it', async () => {
+      // Given
+      const inductionDto = aShortQuestionSetInductionDto()
+      inductionDto.workOnRelease.notHopingToWorkReasons = undefined
+      inductionDto.workOnRelease.notHopingToWorkOtherReason = undefined
+      inductionDto.previousQualifications = undefined
+      req.session.inductionDto = inductionDto
+
+      const reasonsNotToGetWorkForm: ReasonsNotToGetWorkForm = {
+        reasonsNotToGetWork: ['FULL_TIME_CARER', 'LACKS_CONFIDENCE_OR_MOTIVATION', 'OTHER'],
+        reasonsNotToGetWorkOther: 'Will be retired by the time he is released',
+      }
+      req.body = reasonsNotToGetWorkForm
+      req.session.reasonsNotToGetWorkForm = undefined
+
+      const expectedReasons = [
+        ReasonNotToGetWorkValue.FULL_TIME_CARER,
+        ReasonNotToGetWorkValue.LACKS_CONFIDENCE_OR_MOTIVATION,
+        ReasonNotToGetWorkValue.OTHER,
+      ]
+      const expectedOtherReason = 'Will be retired by the time he is released'
+
+      // When
+      await controller.submitReasonsNotToGetWorkForm(req, res, next)
+
+      // Then
+      expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-induction/want-to-add-qualifications')
+      expect(req.flash).toHaveBeenCalledTimes(0)
+      expect(req.session.reasonsNotToGetWorkForm).toBeUndefined()
+      const updatedInduction = req.session.inductionDto
+      expect(updatedInduction.workOnRelease.notHopingToWorkReasons).toEqual(expectedReasons)
+      expect(updatedInduction.workOnRelease.notHopingToWorkOtherReason).toEqual(expectedOtherReason)
+    })
+
+    it('should update induction DTO and redirect to qualifications list page given induction with qualifications already on it', async () => {
       // Given
       const inductionDto = aShortQuestionSetInductionDto()
       inductionDto.workOnRelease.notHopingToWorkReasons = undefined
@@ -192,7 +226,7 @@ describe('reasonsNotToGetWorkCreateController', () => {
       await controller.submitReasonsNotToGetWorkForm(req, res, next)
 
       // Then
-      expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-induction/want-to-add-qualifications')
+      expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-induction/qualifications')
       expect(req.flash).toHaveBeenCalledTimes(0)
       expect(req.session.reasonsNotToGetWorkForm).toBeUndefined()
       const updatedInduction = req.session.inductionDto
