@@ -140,7 +140,7 @@ export default class CreateGoalsPage extends Page {
     cy.get(`[name="goals[${zeroIndexed(goalNumber)}][title]"]`)
 
   private goalTargetDateRadioButtons = (goalNumber: number): PageElement =>
-    cy.get(`[name="goals[${zeroIndexed(goalNumber)}][targetCompletionDate]"][type="radio"]`)
+    cy.get(`[name="goals[${zeroIndexed(goalNumber)}][targetCompletionDateOption]"][type="radio"]`)
 
   private goalTargetDateDayField = (goalNumber: number): PageElement =>
     cy.get(`[name="${zeroIndexed(goalNumber)}][targetCompletionDate-day]"]`)

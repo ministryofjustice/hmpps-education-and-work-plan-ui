@@ -1,7 +1,8 @@
 import type { CreateGoalDto } from 'dto'
+import { addMonths, startOfToday } from 'date-fns'
 import toCreateGoalDtos from './createGoalDtoMapper'
 import { simpleDateFromDate } from '../../validators/classValidatorTypes/SimpleDate'
-import { CreateGoalsForm } from '../../routes/createGoal/validators/GoalForm'
+import { CreateGoalsForm, GoalCompleteDateOptions } from '../../routes/createGoal/validators/GoalForm'
 
 describe('toCreateGoalDtos', () => {
   it('should map to toCreateGoalDtos', () => {
@@ -12,13 +13,13 @@ describe('toCreateGoalDtos', () => {
       goals: [
         {
           title: 'Goal 1',
-          targetCompletionDate: '2024-12-31',
+          targetCompletionDateOption: GoalCompleteDateOptions.THREE_MONTHS,
           steps: [{ title: 'Goal 1, Step 1' }, { title: 'Goal 1, Step 2' }],
           note: 'Goal 1 notes',
         },
         {
           title: 'Goal 2',
-          targetCompletionDate: 'another-date',
+          targetCompletionDateOption: GoalCompleteDateOptions.ANOTHER_DATE,
           anotherDate: simpleDateFromDate(new Date('2025-2-28')),
           steps: [{ title: 'Goal 2, Step 1' }],
           note: 'Goal 2 notes',
@@ -35,7 +36,7 @@ describe('toCreateGoalDtos', () => {
           { title: 'Goal 1, Step 1', sequenceNumber: 1 },
           { title: 'Goal 1, Step 2', sequenceNumber: 2 },
         ],
-        targetCompletionDate: new Date('2024-12-31T00:00:00.000Z'),
+        targetCompletionDate: addMonths(startOfToday(), 3),
         note: 'Goal 1 notes',
       },
       {

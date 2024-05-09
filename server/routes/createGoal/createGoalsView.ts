@@ -1,22 +1,19 @@
 import type { PrisonerSummary } from 'viewModels'
-import { CreateGoalsForm } from './validators/GoalForm'
+import { GoalCompleteDateOptions } from './validators/GoalForm'
 
 export default class CreateGoalsView {
   constructor(
     private readonly prisonerSummary: PrisonerSummary,
-    private readonly futureGoalTargetDates: Array<{ text: string; value: string }>,
-    private readonly createGoalsForm?: CreateGoalsForm,
+    private readonly goalCompleteDateOptions: typeof GoalCompleteDateOptions,
   ) {}
 
   get renderArgs(): {
     prisonerSummary: PrisonerSummary
-    form: CreateGoalsForm
-    futureGoalTargetDates: Array<{ text: string; value: string }>
+    goalCompleteDateOptions: typeof GoalCompleteDateOptions
   } {
     return {
       prisonerSummary: this.prisonerSummary,
-      futureGoalTargetDates: this.futureGoalTargetDates,
-      form: this.createGoalsForm,
+      goalCompleteDateOptions: this.goalCompleteDateOptions,
     }
   }
 }

@@ -1,12 +1,14 @@
 import createError from 'http-errors'
-import type { Request, RequestHandler, Response } from 'express'
-import { startOfToday } from 'date-fns'
-import logger from '../../../logger'
+import type { RequestHandler } from 'express'
 import CreateGoalsView from './createGoalsView'
-import futureGoalTargetDateCalculator from '../futureGoalTargetDateCalculator'
 import toCreateGoalDtos from '../../data/mappers/createGoalDtoMapper'
 import EducationAndWorkPlanService from '../../services/educationAndWorkPlanService'
-import { CreateGoalsForm } from './validators/GoalForm'
+import {
+  CreateGoalFormAction,
+  CreateGoalsForm,
+  GoalCompleteDateOptions,
+  PartialCreateGoalsForm,
+} from './validators/GoalForm'
 
 export default class CreateGoalsController {
   constructor(private readonly educationAndWorkPlanService: EducationAndWorkPlanService) {}
@@ -14,160 +16,119 @@ export default class CreateGoalsController {
   getCreateGoalsView: RequestHandler = async (req, res): Promise<void> => {
     const { prisonerSummary } = req.session
 
-    const createGoalsForm: CreateGoalsForm = req.session.createGoalsForm || {
-      goals: [emptyGoal()],
-    }
-    req.session.createGoalsForm = undefined
-
-    const today = startOfToday()
-    const futureGoalTargetDates = [
-      futureGoalTargetDateCalculator(today, 3),
-      futureGoalTargetDateCalculator(today, 6),
-      futureGoalTargetDateCalculator(today, 12),
-    ]
-
-    const view = new CreateGoalsView(prisonerSummary, futureGoalTargetDates, createGoalsForm)
+    const view = new CreateGoalsView(prisonerSummary, GoalCompleteDateOptions)
     return res.render('pages/createGoals/index', { ...view.renderArgs })
+  }
+
+  submitAction: RequestHandler = async (req, res) => {
+    const { action, prisonNumber } = req.params
+    const goalNumber = +req.query.goalNumber
+    const stepNumber = +req.query.stepNumber
+    const createGoalsForm = req.body as PartialCreateGoalsForm
+
+    // Handle any non-submit form actions (eg: removal or addition of steps or goals)
+    let fieldID = ''
+    let updatedForm = createGoalsForm
+    if (action === CreateGoalFormAction.REMOVE_STEP) {
+      const result = handleRemoveStep(createGoalsForm, goalNumber, stepNumber)
+      if (result) {
+        updatedForm = result
+        fieldID = `#goals-${goalNumber}-steps-${updatedForm.goals[goalNumber].steps.length - 1}-title`
+      }
+    } else if (action === CreateGoalFormAction.REMOVE_GOAL) {
+      const result = handleRemoveGoal(createGoalsForm, goalNumber)
+      if (result) {
+        updatedForm = result
+        fieldID = `#goals-${goalNumber}-title`
+      }
+    } else if (action === CreateGoalFormAction.ADD_STEP) {
+      const result = handleAddAnotherStep(createGoalsForm, goalNumber)
+      if (result) {
+        updatedForm = result
+        fieldID = `#goals-${goalNumber}-steps-${updatedForm.goals[goalNumber].steps.length - 1}-title`
+      }
+    } else if (action === CreateGoalFormAction.ADD_GOAL) {
+      const result = handleAddAnotherGoal(createGoalsForm)
+      if (result) {
+        updatedForm = result
+        fieldID = `#goals-${updatedForm.goals.length - 1}-title`
+      }
+    }
+
+    req.flash('formValues', JSON.stringify(updatedForm))
+    return res.redirect(`/plan/${prisonNumber}/goals/create${fieldID}`)
   }
 
   submitCreateGoalsForm: RequestHandler = async (req, res, next): Promise<void> => {
     const { prisonNumber } = req.params
     const { prisonerSummary } = req.session
     const { prisonId } = prisonerSummary
-
     const createGoalsForm = { ...req.body } as CreateGoalsForm
-    req.session.createGoalsForm = createGoalsForm
-
-    // Handle any non-submit form actions (eg: removal or addition of steps or goals)
-    if (createGoalsForm.action.startsWith('remove-step')) {
-      return handleRemoveStep(createGoalsForm, prisonNumber, req, res)
-    }
-    if (createGoalsForm.action.startsWith('remove-goal')) {
-      return handleRemoveGoal(createGoalsForm, prisonNumber, req, res)
-    }
-    if (createGoalsForm.action.startsWith('add-another-step')) {
-      return handleAddAnotherStep(createGoalsForm, prisonNumber, req, res)
-    }
-    if (createGoalsForm.action === 'add-another-goal') {
-      return handleAddAnotherGoal(createGoalsForm, prisonNumber, req, res)
-    }
-    if (createGoalsForm.action !== 'submit-form') {
-      return res.redirect('back')
-    }
 
     try {
       const createGoalDtos = toCreateGoalDtos(createGoalsForm, prisonNumber, prisonId)
       await this.educationAndWorkPlanService.createGoals(createGoalDtos, req.user.token)
-
-      req.session.createGoalsForm = undefined
-      return res.redirectWithSuccess(`/plan/${prisonNumber}/view/overview`, 'Goals added')
     } catch (e) {
-      logger.error(`Error creating goal(s) for prisoner ${prisonNumber}`, e)
-      return next(createError(500, `Error creating goal(s) for prisoner ${prisonNumber}. Error: ${e}`))
+      return next(createError(500, `Error creating goal(s) for prisoner ${prisonNumber}`, e))
     }
+
+    return res.redirectWithSuccess(`/plan/${prisonNumber}/view/overview`, 'Goals added')
   }
 }
 
-const emptyGoal = () => {
-  return {
-    title: '',
-    steps: [emptyStep()],
-  }
-}
+const emptyGoal = () => ({
+  title: '',
+  steps: [emptyStep()],
+})
 
-const emptyStep = () => {
-  return { title: '' }
-}
+const emptyStep = () => ({
+  title: '',
+})
 
 const handleRemoveStep = (
-  createGoalsForm: CreateGoalsForm,
-  prisonNumber: string,
-  req: Request,
-  res: Response,
-): void => {
-  const formActionParameters = createGoalsForm.action.split('|')
-  const goalNumber = parseInt(formActionParameters[1], 10)
-  const stepNumber = parseInt(formActionParameters[2], 10)
+  goalsForm: PartialCreateGoalsForm,
+  goalNumber: number,
+  stepNumber: number,
+): PartialCreateGoalsForm => {
+  const updatedGoalsForm = { ...goalsForm }
 
-  const isValidGoalNumber =
-    Number.isInteger(goalNumber) && goalNumber >= 0 && goalNumber <= createGoalsForm.goals.length - 1
-  const isValidStepNumber =
-    isValidGoalNumber &&
-    Number.isInteger(stepNumber) &&
-    stepNumber >= 0 &&
-    stepNumber <= createGoalsForm.goals[goalNumber].steps.length - 1
-  if (!isValidGoalNumber || !isValidStepNumber) {
-    // An invalid goalNumber or stepNumber was passed on the form action. Do nothing; redisplay the form.
-    logger.warn(`Invalid request to remove a step with form action field 'action: "${createGoalsForm.action}"'`)
-    return res.redirect(`/plan/${prisonNumber}/goals/create`)
-  }
+  if (Number.isNaN(goalNumber) || goalNumber < 0 || goalNumber >= updatedGoalsForm.goals.length) return null
+  const goal = updatedGoalsForm.goals[goalNumber]
 
-  createGoalsForm.goals[goalNumber].steps.splice(stepNumber, 1)
-  req.session.createGoalsForm = createGoalsForm
+  if (Number.isNaN(stepNumber) || stepNumber < 0 || stepNumber > goal.steps.length - 1) return null
+  goal.steps = [...goal.steps.slice(0, stepNumber), ...goal.steps.slice(stepNumber + 1)]
 
-  const lastStepTitleFieldId = `goals-${goalNumber}-steps-${createGoalsForm.goals[goalNumber].steps.length - 1}-title`
-  return res.redirect(`/plan/${prisonNumber}/goals/create#${lastStepTitleFieldId}`)
+  return updatedGoalsForm
 }
 
-const handleRemoveGoal = (
-  createGoalsForm: CreateGoalsForm,
-  prisonNumber: string,
-  req: Request,
-  res: Response,
-): void => {
-  const formActionParameters = createGoalsForm.action.split('|')
-  const goalNumber = parseInt(formActionParameters[1], 10)
+const handleRemoveGoal = (goalsForm: PartialCreateGoalsForm, goalNumber: number): PartialCreateGoalsForm => {
+  const updatedGoalsForm = { ...goalsForm }
 
-  const isValidGoalNumber =
-    Number.isInteger(goalNumber) && goalNumber >= 0 && goalNumber <= createGoalsForm.goals.length - 1
-  if (!isValidGoalNumber) {
-    // An invalid goalNumber was passed on the form action. Do nothing; redisplay the form.
-    logger.warn(`Invalid request to remove a goal with form action field 'action: "${createGoalsForm.action}"'`)
-    return res.redirect(`/plan/${prisonNumber}/goals/create`)
-  }
+  if (Number.isNaN(goalNumber) || goalNumber < 0 || goalNumber >= updatedGoalsForm.goals.length) return null
 
-  createGoalsForm.goals.splice(goalNumber, 1)
-  req.session.createGoalsForm = createGoalsForm
+  updatedGoalsForm.goals = [
+    ...updatedGoalsForm.goals.slice(0, goalNumber),
+    ...updatedGoalsForm.goals.slice(goalNumber + 1),
+  ]
 
-  const lastGoalIndex = createGoalsForm.goals.length - 1
-  const lastStepTitleFieldId = `goals-${lastGoalIndex}-steps-${createGoalsForm.goals[lastGoalIndex].steps.length - 1}-title`
-  return res.redirect(`/plan/${prisonNumber}/goals/create#${lastStepTitleFieldId}`)
+  return updatedGoalsForm
 }
 
-const handleAddAnotherStep = (
-  createGoalsForm: CreateGoalsForm,
-  prisonNumber: string,
-  req: Request,
-  res: Response,
-): void => {
-  const formActionParameters = createGoalsForm.action.split('|')
-  const goalNumber = parseInt(formActionParameters[1], 10)
+const handleAddAnotherStep = (goalsForm: PartialCreateGoalsForm, goalNumber: number): PartialCreateGoalsForm => {
+  const updatedGoalsForm = { ...goalsForm }
 
-  const isValidGoalNumber =
-    Number.isInteger(goalNumber) && goalNumber >= 0 && goalNumber <= createGoalsForm.goals.length - 1
-  if (!isValidGoalNumber) {
-    // An invalid goalNumber was passed on the form action. Do nothing; redisplay the form.
-    logger.warn(`Invalid request to add a step to a goal with form action field 'action: "${createGoalsForm.action}"'`)
-    return res.redirect(`/plan/${prisonNumber}/goals/create`)
-  }
+  if (Number.isNaN(goalNumber) || goalNumber < 0 || goalNumber >= updatedGoalsForm.goals.length) return null
+  const goal = updatedGoalsForm.goals[goalNumber]
 
-  createGoalsForm.goals[goalNumber].steps.push(emptyStep())
-  req.session.createGoalsForm = createGoalsForm
+  goal.steps = [...goal.steps, emptyStep()]
+  updatedGoalsForm.goals[goalNumber] = goal
 
-  const newStepTitleFieldId = `goals-${goalNumber}-steps-${createGoalsForm.goals[goalNumber].steps.length - 1}-title`
-  return res.redirect(`/plan/${prisonNumber}/goals/create#${newStepTitleFieldId}`)
+  return updatedGoalsForm
 }
 
-const handleAddAnotherGoal = (
-  createGoalsForm: CreateGoalsForm,
-  prisonNumber: string,
-  req: Request,
-  res: Response,
-): void => {
-  createGoalsForm.goals.push(emptyGoal())
-  req.session.createGoalsForm = createGoalsForm
-
-  const lastGoalIndex = createGoalsForm.goals.length - 1
-  const newGoalTitleFieldId = `goals-${lastGoalIndex}-title`
-  return res.redirect(`/plan/${prisonNumber}/goals/create#${newGoalTitleFieldId}`)
+const handleAddAnotherGoal = (goalsForm: PartialCreateGoalsForm): PartialCreateGoalsForm => {
+  return {
+    ...goalsForm,
+    goals: [...goalsForm.goals, emptyGoal()],
+  }
 }

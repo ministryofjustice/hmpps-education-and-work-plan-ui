@@ -2,6 +2,7 @@
 import nunjucks, { Environment } from 'nunjucks'
 import express from 'express'
 import path from 'path'
+import { addMonths } from 'date-fns'
 import { initialiseName } from './utils'
 import { ApplicationInfo } from '../applicationInfo'
 import config from '../config'
@@ -51,6 +52,12 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
     })
   }
 
+  // Date now
+  app.use((req, res, next) => {
+    res.locals.now = Date.now()
+    next()
+  })
+
   registerNunjucks(app)
 }
 
@@ -92,6 +99,7 @@ export function registerNunjucks(app?: express.Express): Environment {
   njkEnv.addFilter('formatPrisonMovementEvent', formatPrisonMovementEventFilter)
   njkEnv.addFilter('formatCuriousCourseStatus', formatCuriousCourseStatusFilter)
   njkEnv.addFilter('fallbackMessage', fallbackMessageFilter)
+  njkEnv.addFilter('addMonths', addMonths)
 
   njkEnv.addGlobal('dpsUrl', config.dpsHomeUrl)
   njkEnv.addGlobal('feedbackUrl', config.feedbackUrl)

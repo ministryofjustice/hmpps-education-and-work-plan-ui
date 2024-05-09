@@ -1,6 +1,6 @@
 import { validate } from 'class-validator'
 import { plainToInstance } from 'class-transformer'
-import { GoalForm } from './GoalForm'
+import { GoalCompleteDateOptions, GoalForm } from './GoalForm'
 import { flattenErrors } from '../../../middleware/validationMiddleware'
 
 describe('GoalForm', () => {
@@ -8,7 +8,7 @@ describe('GoalForm', () => {
     // Given
     const body = {
       title: 'Learn Spanish',
-      targetCompletionDate: '2024-02-26',
+      targetCompletionDateOption: GoalCompleteDateOptions.THREE_MONTHS,
       steps: [{ title: 'Book Spanish course' }],
     }
 
@@ -24,7 +24,7 @@ describe('GoalForm', () => {
     // Given
     const body = {
       title: '',
-      targetCompletionDate: '2024-02-26',
+      targetCompletionDateOption: GoalCompleteDateOptions.THREE_MONTHS,
       steps: [{ title: 'Book Spanish course' }],
     }
 
@@ -44,7 +44,7 @@ describe('GoalForm', () => {
   it('should validate given goal target completion date errors', async () => {
     const body = {
       title: 'Learn Spanish',
-      targetCompletionDate: '',
+      targetCompletionDateOption: '',
       steps: [{ title: 'Book Spanish course' }],
     }
 
@@ -55,7 +55,7 @@ describe('GoalForm', () => {
     // Then
     expect(validationErrors).toEqual([
       {
-        field: 'targetCompletionDate',
+        field: 'targetCompletionDateOption',
         message: 'Select when they are aiming to achieve this goal by',
       },
     ])
@@ -64,7 +64,7 @@ describe('GoalForm', () => {
   it('should validate given step title errors', async () => {
     const body = {
       title: 'Learn Spanish',
-      targetCompletionDate: '2024-02-26',
+      targetCompletionDateOption: GoalCompleteDateOptions.THREE_MONTHS,
       steps: [{ title: '' }],
     }
 
@@ -84,7 +84,7 @@ describe('GoalForm', () => {
   it('should validate given several errors in several goals and steps', async () => {
     const body = {
       title: '',
-      targetCompletionDate: 'another-date',
+      targetCompletionDateOption: GoalCompleteDateOptions.ANOTHER_DATE,
       steps: [{ title: '' }],
     }
 

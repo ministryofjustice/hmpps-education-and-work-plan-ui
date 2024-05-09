@@ -10,7 +10,7 @@ import checkAddStepFormsArrayExistsInSession from '../routerRequestHandlers/chec
 import checkCreateGoalFormExistsInSession from '../routerRequestHandlers/checkCreateGoalFormExistsInSession'
 import asyncMiddleware from '../../middleware/asyncMiddleware'
 import validationMiddleware from '../../middleware/validationMiddleware'
-import { CreateGoalsForm } from './validators/GoalForm'
+import { CreateGoalsForm, PartialCreateGoalsForm } from './validators/GoalForm'
 
 /**
  * Route definitions for the pages relating to Creating A Goal
@@ -75,5 +75,11 @@ const newCreateGoalRoutes = (router: Router, services: Services, createGoalsCont
     validationMiddleware(CreateGoalsForm),
     // TODO - RR-748 - write router request handler to check CreateGoalsForm exists in session,
     asyncMiddleware(createGoalsController.submitCreateGoalsForm),
+  ])
+
+  router.post('/plan/:prisonNumber/goals/create/:action(REMOVE_STEP|REMOVE_GOAL|ADD_STEP|ADD_GOAL)', [
+    checkPrisonerSummaryExistsInSession,
+    validationMiddleware(PartialCreateGoalsForm),
+    asyncMiddleware(createGoalsController.submitAction),
   ])
 }

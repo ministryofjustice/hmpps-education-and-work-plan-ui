@@ -201,7 +201,7 @@ context('Create goals', () => {
     createGoalPage //
       .hasNoRemoveGoalButtons()
       .hasNoErrors()
-      .stepTitleFieldIsFocussed(1, 1)
+      .goalTitleFieldIsFocussed(1)
       .goalTitleIs('Become a carpenter', 1)
   })
 
