@@ -93,6 +93,48 @@ describe('inPrisonWorkCreateController', () => {
       expect(req.session.inPrisonWorkForm).toBeUndefined()
       expect(req.session.inductionDto).toEqual(inductionDto)
     })
+
+    it('should get the In Prison Work view given the previous page was Check Your Answers', async () => {
+      // Given
+      const inductionDto = aShortQuestionSetInductionDto()
+      req.session.inductionDto = inductionDto
+
+      req.session.pageFlowHistory = {
+        pageUrls: ['/prisoners/A1234BC/create-induction/check-your-answers'],
+        currentPageIndex: 0,
+      }
+
+      const expectedPageFlowHistory = {
+        pageUrls: [
+          '/prisoners/A1234BC/create-induction/check-your-answers',
+          '/prisoners/A1234BC/create-induction/in-prison-work',
+        ],
+        currentPageIndex: 1,
+      }
+
+      const expectedInPrisonWorkForm: InPrisonWorkForm = {
+        inPrisonWork: ['PRISON_LIBRARY', 'WELDING_AND_METALWORK'],
+        inPrisonWorkOther: '',
+      }
+      req.session.inPrisonWorkForm = expectedInPrisonWorkForm
+
+      const expectedView = {
+        prisonerSummary,
+        form: expectedInPrisonWorkForm,
+        backLinkUrl: '/prisoners/A1234BC/create-induction/check-your-answers',
+        backLinkAriaText: `Back to Check and save your answers before adding Jimmy Lightfingers's goals`,
+        errors: noErrors,
+      }
+
+      // When
+      await controller.getInPrisonWorkView(req, res, next)
+
+      // Then
+      expect(res.render).toHaveBeenCalledWith('pages/induction/inPrisonWork/index', expectedView)
+      expect(req.session.inPrisonWorkForm).toBeUndefined()
+      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(req.session.pageFlowHistory).toEqual(expectedPageFlowHistory)
+    })
   })
 
   describe('submitInPrisonWorkForm', () => {
@@ -153,6 +195,41 @@ describe('inPrisonWorkCreateController', () => {
       expect(updatedInduction.inPrisonInterests.inPrisonWorkInterests).toEqual(expectedInPrisonWorkInterests)
       expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-induction/in-prison-training')
       expect(req.session.inPrisonWorkForm).toBeUndefined()
+    })
+
+    it('should update inductionDto and redirect to Check Your Answers given previous page was Check Your Answers', async () => {
+      // Given
+      const inductionDto = aShortQuestionSetInductionDto()
+      req.session.inductionDto = inductionDto
+
+      const inPrisonWorkForm: InPrisonWorkForm = {
+        inPrisonWork: ['KITCHENS_AND_COOKING', 'OTHER'],
+        inPrisonWorkOther: 'Any odd-jobs I can pick up to pass the time',
+      }
+      req.body = inPrisonWorkForm
+      req.session.inPrisonWorkForm = undefined
+
+      const expectedInPrisonWorkInterests: Array<InPrisonWorkInterestDto> = [
+        { workType: InPrisonWorkValue.KITCHENS_AND_COOKING, workTypeOther: undefined },
+        { workType: InPrisonWorkValue.OTHER, workTypeOther: 'Any odd-jobs I can pick up to pass the time' },
+      ]
+
+      req.session.pageFlowHistory = {
+        pageUrls: [
+          '/prisoners/A1234BC/create-induction/check-your-answers',
+          '/prisoners/A1234BC/create-induction/in-prison-work',
+        ],
+        currentPageIndex: 1,
+      }
+
+      // When
+      await controller.submitInPrisonWorkForm(req, res, next)
+
+      // Then
+      const updatedInduction = req.session.inductionDto
+      expect(updatedInduction.inPrisonInterests.inPrisonWorkInterests).toEqual(expectedInPrisonWorkInterests)
+      expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-induction/check-your-answers')
+      expect(req.session.skillsForm).toBeUndefined()
     })
   })
 })

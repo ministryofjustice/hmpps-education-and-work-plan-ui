@@ -18,6 +18,8 @@ export default abstract class ReasonsNotToGetWorkController extends InductionCon
   ): Promise<void> => {
     const { prisonerSummary, inductionDto } = req.session
 
+    this.addCurrentPageToFlowHistoryWhenComingFromCheckYourAnswers(req)
+
     if (req.session.updateInductionQuestionSet) {
       this.addCurrentPageToHistory(req)
     }
