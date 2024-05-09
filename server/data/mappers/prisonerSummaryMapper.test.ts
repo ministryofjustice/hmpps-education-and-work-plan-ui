@@ -29,6 +29,8 @@ describe('prisonerSummaryMapper', () => {
       receptionDate: '',
       dateOfBirth: '',
       cellLocation: 'A-1-102',
+      restrictedPatient: false,
+      supportingPrisonId: undefined,
     }
 
     const expected: PrisonerSummary = {
@@ -40,6 +42,8 @@ describe('prisonerSummaryMapper', () => {
       receptionDate: null,
       dateOfBirth: null,
       location: 'A-1-102',
+      restrictedPatient: false,
+      supportingPrisonId: undefined,
     }
 
     // When
@@ -60,6 +64,8 @@ describe('prisonerSummaryMapper', () => {
       receptionDate: '1999-08-29',
       dateOfBirth: '1969-02-12',
       cellLocation: 'A-1-102',
+      restrictedPatient: true,
+      supportingPrisonId: 'LEI',
     }
 
     const expected: PrisonerSummary = {
@@ -71,6 +77,8 @@ describe('prisonerSummaryMapper', () => {
       receptionDate: moment('1999-08-29').toDate(),
       dateOfBirth: moment('1969-02-12').toDate(),
       location: 'A-1-102',
+      restrictedPatient: true,
+      supportingPrisonId: 'LEI',
     }
 
     // When

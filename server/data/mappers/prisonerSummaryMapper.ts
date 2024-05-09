@@ -12,6 +12,8 @@ export default function toPrisonerSummary(prisoner: Prisoner): PrisonerSummary {
     receptionDate: prisoner.receptionDate ? moment(prisoner.receptionDate, 'YYYY-MM-DD').toDate() : null,
     dateOfBirth: prisoner.dateOfBirth ? moment(prisoner.dateOfBirth, 'YYYY-MM-DD').toDate() : null,
     location: prisoner.cellLocation,
+    restrictedPatient: prisoner.restrictedPatient,
+    supportingPrisonId: prisoner.supportingPrisonId,
   }
 }
 

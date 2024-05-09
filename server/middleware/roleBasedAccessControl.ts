@@ -5,6 +5,12 @@ enum ApplicationRoles {
   ROLE_EDUCATION_WORK_PLAN_VIEWER = 'ROLE_EDUCATION_WORK_PLAN_VIEWER',
 }
 
+enum DpsRoles {
+  ROLE_GLOBAL_SEARCH = 'ROLE_GLOBAL_SEARCH',
+  ROLE_INACTIVE_BOOKINGS = 'ROLE_INACTIVE_BOOKINGS',
+  ROLE_POM = 'ROLE_POM',
+}
+
 const checkUserHasEditAuthority = () => authorisationMiddleware([ApplicationRoles.ROLE_EDUCATION_WORK_PLAN_EDITOR])
 
 const checkUserHasViewAuthority = () =>
@@ -13,4 +19,4 @@ const checkUserHasViewAuthority = () =>
     ApplicationRoles.ROLE_EDUCATION_WORK_PLAN_VIEWER,
   ])
 
-export { ApplicationRoles, checkUserHasEditAuthority, checkUserHasViewAuthority }
+export { ApplicationRoles, DpsRoles, checkUserHasEditAuthority, checkUserHasViewAuthority }

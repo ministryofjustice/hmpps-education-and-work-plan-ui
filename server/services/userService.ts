@@ -1,7 +1,6 @@
 import { jwtDecode } from 'jwt-decode'
 import { convertToTitleCase } from '../utils/utils'
-import type { User } from '../data/manageUsersApiClient'
-import ManageUsersApiClient from '../data/manageUsersApiClient'
+import ManageUsersApiClient, { User, UserCaseloadDetail } from '../data/manageUsersApiClient'
 
 export interface UserDetails extends User {
   name?: string
@@ -20,5 +19,9 @@ export default class UserService {
   getUserRoles(token: string): string[] {
     const { authorities: roles = [] } = jwtDecode(token) as { authorities?: string[] }
     return roles.map(role => role.substring(role.indexOf('_') + 1))
+  }
+
+  async getUserCaseLoads(token: string): Promise<UserCaseloadDetail> {
+    return this.manageUsersApiClient.getUserCaseLoads(token)
   }
 }

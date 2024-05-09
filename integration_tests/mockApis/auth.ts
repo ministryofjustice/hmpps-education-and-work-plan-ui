@@ -4,6 +4,7 @@ import { Response } from 'superagent'
 import { stubFor, getMatchingRequests } from './wiremock'
 import tokenVerification from './tokenVerification'
 import stubPing from './common'
+import manageUsersApi from './manageUsersApi'
 
 const createToken = (roles: string[] = []) => {
   // authorities in the session are always prefixed by ROLE.
@@ -127,6 +128,7 @@ const stubUser = (name: string) =>
         active: true,
         name,
         activeCaseLoadId: 'BXI',
+        authSource: 'nomis',
       },
     },
   })
@@ -151,5 +153,6 @@ export default {
   stubAuthPing: stubPing('auth'),
   stubSignIn: (roles: string[]): Promise<[Response, Response, Response, Response, Response, Response]> =>
     Promise.all([favicon(), redirect(), signOut(), manageDetails(), token(roles), tokenVerification.stubVerifyToken()]),
-  stubAuthUser: (name = 'john smith'): Promise<[Response, Response]> => Promise.all([stubUser(name), stubUserRoles()]),
+  stubAuthUser: (name = 'john smith'): Promise<[Response, Response, Response]> =>
+    Promise.all([stubUser(name), stubUserRoles(), manageUsersApi.stubGetUserCaseloads()]),
 }
