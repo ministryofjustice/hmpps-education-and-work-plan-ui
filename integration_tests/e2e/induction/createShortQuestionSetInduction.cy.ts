@@ -167,6 +167,7 @@ context('Create a short question set Induction', () => {
               "@.workOnRelease.notHopingToWorkReasons[0] == 'FULL_TIME_CARER' && " +
               "@.workOnRelease.notHopingToWorkReasons[1] == 'HEALTH' && " +
               "@.workOnRelease.notHopingToWorkOtherReason == '' && " +
+              "@.previousQualifications.educationLevel == 'NOT_SURE' && " +
               '@.previousQualifications.qualifications.size() == 1 && ' +
               "@.previousQualifications.qualifications[0].subject == 'Physics' && " +
               "@.previousQualifications.qualifications[0].grade == 'B' && " +
@@ -238,7 +239,8 @@ context('Create a short question set Induction', () => {
               '@.workOnRelease.notHopingToWorkReasons.size() == 1 && ' +
               "@.workOnRelease.notHopingToWorkReasons[0] == 'FULL_TIME_CARER' && " +
               "@.workOnRelease.notHopingToWorkOtherReason == '' && " +
-              '!@.previousQualifications && ' +
+              "@.previousQualifications.educationLevel == 'NOT_SURE' && " +
+              '@.previousQualifications.qualifications.size() == 0 && ' +
               '@.previousTraining.trainingTypes.size() == 1 && ' +
               "@.previousTraining.trainingTypes[0] == 'HGV_LICENCE' && " +
               '@.inPrisonInterests.inPrisonWorkInterests.size() == 1 && ' +
