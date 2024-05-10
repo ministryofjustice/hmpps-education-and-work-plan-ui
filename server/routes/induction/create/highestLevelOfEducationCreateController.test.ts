@@ -206,6 +206,7 @@ describe('highestLevelOfEducationCreateController', () => {
       const expectedInduction = {
         ...inductionDto,
         previousQualifications: {
+          qualifications: [],
           educationLevel: EducationLevelValue.FURTHER_EDUCATION_COLLEGE,
         },
       } as InductionDto
@@ -238,6 +239,7 @@ describe('highestLevelOfEducationCreateController', () => {
       const expectedInduction = {
         ...inductionDto,
         previousQualifications: {
+          qualifications: [],
           educationLevel: EducationLevelValue.PRIMARY_SCHOOL,
         },
       } as InductionDto
@@ -270,6 +272,7 @@ describe('highestLevelOfEducationCreateController', () => {
       const expectedInduction = {
         ...inductionDto,
         previousQualifications: {
+          qualifications: [],
           educationLevel: EducationLevelValue.FURTHER_EDUCATION_COLLEGE,
         },
       } as InductionDto

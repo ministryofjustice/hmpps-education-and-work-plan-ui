@@ -59,6 +59,7 @@ export default abstract class HighestLevelOfEducationController extends Inductio
       ...inductionDto,
       previousQualifications: {
         ...inductionDto.previousQualifications,
+        qualifications: [...(inductionDto.previousQualifications?.qualifications || [])],
         educationLevel: highestLevelOfEducationForm.educationLevel,
       },
     }

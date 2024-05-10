@@ -230,6 +230,7 @@ context(`Change new Induction question set by updating 'Hoping to work on releas
         .withRequestBody(
           matchingJsonPath(
             "$[?(@.workOnRelease.hopingToWork == 'YES' && " +
+              "@.previousQualifications.educationLevel == 'NOT_SURE' && " +
               '@.previousQualifications.qualifications.size() == 2 && ' +
               "@.previousQualifications.qualifications[0].subject == 'Computer science' && " +
               "@.previousQualifications.qualifications[0].grade == 'A*' && " +

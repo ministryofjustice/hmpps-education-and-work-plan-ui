@@ -1,12 +1,12 @@
 import { Request, Response } from 'express'
-import type { InductionDto } from 'inductionDto'
 import type { WantToAddQualificationsForm } from 'inductionForms'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
 import { validFunctionalSkills } from '../../../testsupport/functionalSkillsTestDataBuilder'
 import HopingToGetWorkValue from '../../../enums/hopingToGetWorkValue'
-import ReasonNotToGetWorkValue from '../../../enums/reasonNotToGetWorkValue'
 import WantToAddQualificationsCreateController from './wantToAddQualificationsCreateController'
 import YesNoValue from '../../../enums/yesNoValue'
+import { aShortQuestionSetInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
+import EducationLevelValue from '../../../enums/educationLevelValue'
 
 describe('wantToAddQualificationsCreateController', () => {
   const controller = new WantToAddQualificationsCreateController()
@@ -16,14 +16,12 @@ describe('wantToAddQualificationsCreateController', () => {
 
   const noErrors: Array<Record<string, string>> = []
 
-  // A DTO for this step of the create journey
-  const partialInductionDto = {
-    prisonNumber,
-    workOnRelease: {
-      hopingToWork: HopingToGetWorkValue.NO,
-      notHopingToWorkReasons: [ReasonNotToGetWorkValue.HEALTH],
-    },
-  } as InductionDto
+  // Returns a DTO for this step of the create journey
+  const partialInductionDto = () => {
+    const inductionDto = aShortQuestionSetInductionDto({ hopingToGetWork: HopingToGetWorkValue.NO })
+    inductionDto.previousQualifications = undefined
+    return inductionDto
+  }
 
   let req: Request
   const res = {
@@ -47,7 +45,7 @@ describe('wantToAddQualificationsCreateController', () => {
   describe('getWantToAddQualificationsView', () => {
     it('should get the Want To Add Qualifications view', async () => {
       // Given
-      req.session.inductionDto = partialInductionDto
+      req.session.inductionDto = partialInductionDto()
 
       const functionalSkills = validFunctionalSkills()
       req.session.prisonerFunctionalSkills = functionalSkills
@@ -82,7 +80,7 @@ describe('wantToAddQualificationsCreateController', () => {
   describe('submitWantToAddQualificationsForm', () => {
     it('should not proceed to next page given form is submitted with validation errors', async () => {
       // Given
-      req.session.inductionDto = partialInductionDto
+      req.session.inductionDto = partialInductionDto()
 
       const invalidWantToAddQualificationsForm = {
         wantToAddQualifications: '',
@@ -104,12 +102,13 @@ describe('wantToAddQualificationsCreateController', () => {
       expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-induction/want-to-add-qualifications')
       expect(req.flash).toHaveBeenCalledWith('errors', expectedErrors)
       expect(req.session.wantToAddQualificationsForm).toEqual(invalidWantToAddQualificationsForm)
+      expect(req.session.inductionDto.previousQualifications).toBeUndefined()
     })
 
     it(`should proceed to qualification level page given user wants to add qualifications`, async () => {
       // Given
       req.user.token = 'some-token'
-      req.session.inductionDto = partialInductionDto
+      req.session.inductionDto = partialInductionDto()
 
       req.body = { wantToAddQualifications: YesNoValue.YES }
       req.session.wantToAddQualificationsForm = undefined
@@ -120,12 +119,14 @@ describe('wantToAddQualificationsCreateController', () => {
       // Then
       expect(res.redirect).toHaveBeenCalledWith(`/prisoners/${prisonNumber}/create-induction/qualification-level`)
       expect(req.session.wantToAddQualificationsForm).toBeUndefined()
+      expect(req.session.inductionDto.previousQualifications.qualifications).toEqual([])
+      expect(req.session.inductionDto.previousQualifications.educationLevel).toEqual(EducationLevelValue.NOT_SURE)
     })
 
     it(`should proceed to additional training page given user does not want to add qualifications`, async () => {
       // Given
       req.user.token = 'some-token'
-      req.session.inductionDto = partialInductionDto
+      req.session.inductionDto = partialInductionDto()
 
       req.body = { wantToAddQualifications: YesNoValue.NO }
       req.session.wantToAddQualificationsForm = undefined
@@ -136,6 +137,8 @@ describe('wantToAddQualificationsCreateController', () => {
       // Then
       expect(res.redirect).toHaveBeenCalledWith(`/prisoners/${prisonNumber}/create-induction/additional-training`)
       expect(req.session.wantToAddQualificationsForm).toBeUndefined()
+      expect(req.session.inductionDto.previousQualifications.qualifications).toEqual([])
+      expect(req.session.inductionDto.previousQualifications.educationLevel).toEqual(EducationLevelValue.NOT_SURE)
     })
   })
 })
