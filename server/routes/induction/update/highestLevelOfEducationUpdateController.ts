@@ -60,6 +60,14 @@ export default class HighestLevelOfEducationUpdateController extends HighestLeve
       return res.redirect(`/prisoners/${prisonNumber}/induction/check-your-answers`)
     }
 
+    // If we are in the midst of changing the question set we need to redirect to the next screen depending on whether
+    // the new Highest Level of Education requires qualifications or not.
+    if (req.session.updateInductionQuestionSet) {
+      return this.highestLevelOfEducationDoesNotRequireQualifications(highestLevelOfEducationForm)
+        ? res.redirect(`/prisoners/${prisonNumber}/induction/additional-training`)
+        : res.redirect(`/prisoners/${prisonNumber}/induction/qualification-level`)
+    }
+
     if (
       // The Induction already has qualifications, regardless of the new Highest Level of Education
       inductionHasEducationQualifications(inductionDto) ||
