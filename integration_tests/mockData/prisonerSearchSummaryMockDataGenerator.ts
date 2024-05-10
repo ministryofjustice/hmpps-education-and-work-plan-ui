@@ -19,6 +19,8 @@ const prisonerSearchSummaryMockDataGenerator = (numberOfRecords = 500): Array<Pr
       receptionDate: randomReceptionDate(),
       releaseDate: randomReleaseDate(),
       location: generateRandomLocation(),
+      restrictedPatient: randomNumber(0, 1) === 1,
+      supportingPrisonId: 'MDI',
       hasCiagInduction: randomNumber(0, 1) === 1,
       hasActionPlan: randomNumber(0, 1) === 1,
     }

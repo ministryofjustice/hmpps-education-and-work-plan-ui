@@ -10,6 +10,8 @@ export default function aValidPrisonerSearchSummary(options?: {
   receptionDate?: string
   dateOfBirth?: string
   location?: string
+  restrictedPatient?: boolean
+  supportingPrisonId?: string
   hasCiagInduction?: boolean
   hasActionPlan?: boolean
 }): PrisonerSearchSummary {
@@ -22,6 +24,11 @@ export default function aValidPrisonerSearchSummary(options?: {
     receptionDate: options?.receptionDate === '' ? null : moment(options?.receptionDate || '1999-08-29').toDate(),
     dateOfBirth: options?.dateOfBirth === '' ? null : moment(options?.dateOfBirth || '1969-02-12').toDate(),
     location: options?.location || 'A-1-102',
+    restrictedPatient:
+      !options || options.restrictedPatient === null || options.restrictedPatient === undefined
+        ? false
+        : options.restrictedPatient,
+    supportingPrisonId: options?.supportingPrisonId,
     hasCiagInduction:
       !options || options.hasCiagInduction === null || options.hasCiagInduction === undefined
         ? true

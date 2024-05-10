@@ -8,6 +8,8 @@ declare module 'viewModels' {
     receptionDate?: Date
     dateOfBirth?: Date
     location: string
+    restrictedPatient: boolean
+    supportingPrisonId?: string
   }
 
   export interface PrisonerSearchSummary extends PrisonerSummary {
