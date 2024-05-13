@@ -40,6 +40,10 @@ Cypress.Commands.add('signIn', (options = { failOnStatusCode: false }) => {
   return cy.task('getSignInUrl').then((url: string) => cy.visit(url, options))
 })
 
+Cypress.Commands.add('signOut', () => {
+  return cy.visit('/sign-out')
+})
+
 Cypress.Commands.add('wiremockVerify', (requestPatternBuilder: RequestPatternBuilder, expectedCount?: number) => {
   return cy.wrap(verify(expectedCount == null ? 1 : expectedCount, requestPatternBuilder)).should('be.true')
 })

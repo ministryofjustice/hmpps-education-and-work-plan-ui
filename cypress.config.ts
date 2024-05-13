@@ -33,7 +33,7 @@ export default defineConfig({
         reset: resetStubs,
         ...auth,
 
-        stubSignIn: () => auth.stubSignIn([]),
+        stubSignIn: (roles: []) => auth.stubSignIn(roles),
         stubSignInAsUserWithEditAuthority: () => auth.stubSignIn(['ROLE_EDUCATION_WORK_PLAN_EDITOR']),
         stubSignInAsUserWithViewAuthority: () => auth.stubSignIn(['ROLE_EDUCATION_WORK_PLAN_VIEWER']),
 

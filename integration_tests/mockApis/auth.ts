@@ -151,7 +151,7 @@ const stubUserRoles = () =>
 export default {
   getSignInUrl,
   stubAuthPing: stubPing('auth'),
-  stubSignIn: (roles: string[]): Promise<[Response, Response, Response, Response, Response, Response]> =>
+  stubSignIn: (roles = []): Promise<[Response, Response, Response, Response, Response, Response]> =>
     Promise.all([favicon(), redirect(), signOut(), manageDetails(), token(roles), tokenVerification.stubVerifyToken()]),
   stubAuthUser: (name = 'john smith'): Promise<[Response, Response, Response]> =>
     Promise.all([stubUser(name), stubUserRoles(), manageUsersApi.stubGetUserCaseloads()]),

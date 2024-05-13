@@ -41,6 +41,9 @@ const pageViewEventMap: Record<string, Page> = {
   '/prisoners/:prisonNumber/induction/qualification-level': Page.INDUCTION_UPDATE_QUALIFICATION_LEVEL,
   '/prisoners/:prisonNumber/induction/qualification-details': Page.INDUCTION_UPDATE_QUALIFICATION_DETAILS,
   '/prisoners/:prisonNumber/induction/additional-training': Page.INDUCTION_UPDATE_ADDITIONAL_TRAINING,
+
+  '/prisoner/:prisonNumber/work-and-skills/in-prison-courses-and-qualifications':
+    Page.IN_PRISON_COURSES_AND_QUALIFICATIONS,
 }
 
 export default function auditMiddleware({ auditService }: Services): Router {
