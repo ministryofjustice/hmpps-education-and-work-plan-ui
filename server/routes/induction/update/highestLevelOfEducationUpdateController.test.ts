@@ -1,25 +1,23 @@
 import createError from 'http-errors'
-import { NextFunction, Request, Response } from 'express'
+import { Request, Response } from 'express'
 import type { SessionData } from 'express-session'
-import type { AchievedQualificationDto } from 'inductionDto'
+import type { AchievedQualificationDto, PreviousQualificationsDto } from 'inductionDto'
 import InductionService from '../../../services/inductionService'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
-import { aLongQuestionSetInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
-import validateHighestLevelOfEducationForm from '../../validators/induction/highestLevelOfEducationFormValidator'
+import {
+  aLongQuestionSetInductionDto,
+  aShortQuestionSetInductionDto,
+} from '../../../testsupport/inductionDtoTestDataBuilder'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
 import HighestLevelOfEducationUpdateController from './highestLevelOfEducationUpdateController'
 import EducationLevelValue from '../../../enums/educationLevelValue'
 import { aLongQuestionSetUpdateInductionRequest } from '../../../testsupport/updateInductionRequestTestDataBuilder'
 import QualificationLevelValue from '../../../enums/qualificationLevelValue'
 
-jest.mock('../../validators/induction/highestLevelOfEducationFormValidator')
 jest.mock('../../../data/mappers/createOrUpdateInductionDtoMapper')
 jest.mock('../../../services/inductionService')
 
 describe('highestLevelOfEducationUpdateController', () => {
-  const mockedFormValidator = validateHighestLevelOfEducationForm as jest.MockedFunction<
-    typeof validateHighestLevelOfEducationForm
-  >
   const mockedCreateOrUpdateInductionDtoMapper = toCreateOrUpdateInductionDto as jest.MockedFunction<
     typeof toCreateOrUpdateInductionDto
   >
@@ -28,40 +26,32 @@ describe('highestLevelOfEducationUpdateController', () => {
   const controller = new HighestLevelOfEducationUpdateController(inductionService)
 
   const prisonNumber = 'A1234BC'
+  const prisonerSummary = aValidPrisonerSummary()
 
-  const req = {
-    session: {} as SessionData,
-    body: {},
-    user: {} as Express.User,
-    params: {} as Record<string, string>,
-    flash: jest.fn(),
-    path: '',
-  }
+  const noErrors: Array<Record<string, string>> = []
+
+  let req: Request
   const res = {
     redirect: jest.fn(),
     render: jest.fn(),
-  }
+  } as unknown as Response
   const next = jest.fn()
-
-  let errors: Array<Record<string, string>>
 
   beforeEach(() => {
     jest.resetAllMocks()
-    req.session = {} as SessionData
-    req.body = {}
-    req.user = {} as Express.User
-    req.params = {} as Record<string, string>
-    req.params.prisonNumber = prisonNumber
-    req.path = `/prisoners/${prisonNumber}/induction/highest-level-of-education`
-
-    errors = []
+    req = {
+      session: { prisonerSummary } as SessionData,
+      body: {},
+      user: { token: 'some-token' } as Express.User,
+      params: { prisonNumber } as Record<string, string>,
+      path: `/prisoners/${prisonNumber}/induction/highest-level-of-education`,
+      flash: jest.fn(),
+    } as unknown as Request
   })
 
   describe('getHighestLevelOfEducationView', () => {
     it('should get the Highest Level of Education view given there is no HighestLevelOfEducationForm on the session', async () => {
       // Given
-      const prisonerSummary = aValidPrisonerSummary()
-      req.session.prisonerSummary = prisonerSummary
       const inductionDto = aLongQuestionSetInductionDto()
       req.session.inductionDto = inductionDto
       req.session.highestLevelOfEducationForm = undefined
@@ -75,15 +65,11 @@ describe('highestLevelOfEducationUpdateController', () => {
         form: expectedHighestLevelOfEducationForm,
         backLinkUrl: '/plan/A1234BC/view/education-and-training',
         backLinkAriaText: `Back to Jimmy Lightfingers's learning and work progress`,
-        errors,
+        errors: noErrors,
       }
 
       // When
-      await controller.getHighestLevelOfEducationView(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.getHighestLevelOfEducationView(req, res, next)
 
       // Then
       expect(res.render).toHaveBeenCalledWith(
@@ -96,8 +82,6 @@ describe('highestLevelOfEducationUpdateController', () => {
 
     it('should get the Highest Level of Education view given long question set journey', async () => {
       // Given
-      const prisonerSummary = aValidPrisonerSummary()
-      req.session.prisonerSummary = prisonerSummary
       const inductionDto = aLongQuestionSetInductionDto()
       req.session.inductionDto = inductionDto
 
@@ -111,15 +95,11 @@ describe('highestLevelOfEducationUpdateController', () => {
         form: expectedHighestLevelOfEducationForm,
         backLinkUrl: '/plan/A1234BC/view/education-and-training',
         backLinkAriaText: `Back to Jimmy Lightfingers's learning and work progress`,
-        errors,
+        errors: noErrors,
       }
 
       // When
-      await controller.getHighestLevelOfEducationView(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.getHighestLevelOfEducationView(req, res, next)
 
       // Then
       expect(res.render).toHaveBeenCalledWith(
@@ -132,8 +112,6 @@ describe('highestLevelOfEducationUpdateController', () => {
 
     it('should get the Highest Level of Education view given there is a pageFlowHistory already on the session', async () => {
       // Given
-      const prisonerSummary = aValidPrisonerSummary()
-      req.session.prisonerSummary = prisonerSummary
       const inductionDto = aLongQuestionSetInductionDto()
       req.session.inductionDto = inductionDto
 
@@ -155,7 +133,7 @@ describe('highestLevelOfEducationUpdateController', () => {
         form: expectedHighestLevelOfEducationForm,
         backLinkUrl: '/prisoners/A1234BC/induction/qualifications',
         backLinkAriaText: `Back to Jimmy Lightfingers's qualifications`,
-        errors,
+        errors: noErrors,
       }
       const expectedPageFlowHistory = {
         pageUrls: [
@@ -166,11 +144,7 @@ describe('highestLevelOfEducationUpdateController', () => {
       }
 
       // When
-      await controller.getHighestLevelOfEducationView(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.getHighestLevelOfEducationView(req, res, next)
 
       // Then
       expect(res.render).toHaveBeenCalledWith(
@@ -185,8 +159,6 @@ describe('highestLevelOfEducationUpdateController', () => {
   describe('submitHighestLevelOfEducationForm', () => {
     it('should not update Induction given form is submitted with validation errors', async () => {
       // Given
-      const prisonerSummary = aValidPrisonerSummary()
-      req.session.prisonerSummary = prisonerSummary
       const inductionDto = aLongQuestionSetInductionDto()
       req.session.inductionDto = inductionDto
 
@@ -196,35 +168,25 @@ describe('highestLevelOfEducationUpdateController', () => {
       req.body = invalidHighestLevelOfEducationForm
       req.session.highestLevelOfEducationForm = undefined
 
-      errors = [
+      const expectedErrors = [
         {
           href: '#educationLevel',
           text: `Select Jimmy Lightfingers's highest level of education`,
         },
       ]
-      mockedFormValidator.mockReturnValue(errors)
 
       // When
-      await controller.submitHighestLevelOfEducationForm(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.submitHighestLevelOfEducationForm(req, res, next)
 
       // Then
       expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/induction/highest-level-of-education')
-      expect(req.flash).toHaveBeenCalledWith('errors', errors)
+      expect(req.flash).toHaveBeenCalledWith('errors', expectedErrors)
       expect(req.session.highestLevelOfEducationForm).toEqual(invalidHighestLevelOfEducationForm)
       expect(req.session.inductionDto).toEqual(inductionDto)
     })
 
     it('should update Induction given form is submitted with no changes to the Highest Level of Education', async () => {
       // Given
-      req.user.token = 'some-token'
-
-      const prisonerSummary = aValidPrisonerSummary()
-      req.session.prisonerSummary = prisonerSummary
-
       // Long question set induction has SECONDARY_SCHOOL_TOOK_EXAMS as highest level of education
       const inductionDto = aLongQuestionSetInductionDto()
       req.session.inductionDto = inductionDto
@@ -235,8 +197,6 @@ describe('highestLevelOfEducationUpdateController', () => {
       req.body = highestLevelOfEducationForm
       req.session.highestLevelOfEducationForm = undefined
 
-      mockedFormValidator.mockReturnValue(errors)
-
       const updateInductionDto = aLongQuestionSetUpdateInductionRequest()
       mockedCreateOrUpdateInductionDtoMapper.mockReturnValueOnce(updateInductionDto)
 
@@ -246,11 +206,7 @@ describe('highestLevelOfEducationUpdateController', () => {
       ]
 
       // When
-      await controller.submitHighestLevelOfEducationForm(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.submitHighestLevelOfEducationForm(req, res, next)
 
       // Then
       // Extract the first call to the mock and the second argument (i.e. the updated Induction)
@@ -267,11 +223,6 @@ describe('highestLevelOfEducationUpdateController', () => {
 
     it('should update Induction containing previous qualifications given form submitted with non exam level highest level of education', async () => {
       // Given
-      req.user.token = 'some-token'
-
-      const prisonerSummary = aValidPrisonerSummary()
-      req.session.prisonerSummary = prisonerSummary
-
       // Long question set induction has SECONDARY_SCHOOL_TOOK_EXAMS as highest level of education, with a single qualification of Pottery, Level 4, Grade C
       const inductionDto = aLongQuestionSetInductionDto()
       req.session.inductionDto = inductionDto
@@ -282,8 +233,6 @@ describe('highestLevelOfEducationUpdateController', () => {
       req.body = highestLevelOfEducationForm
       req.session.highestLevelOfEducationForm = undefined
 
-      mockedFormValidator.mockReturnValue(errors)
-
       const updateInductionDto = aLongQuestionSetUpdateInductionRequest()
       mockedCreateOrUpdateInductionDtoMapper.mockReturnValueOnce(updateInductionDto)
 
@@ -291,11 +240,7 @@ describe('highestLevelOfEducationUpdateController', () => {
       const expectedQualifications = [{ subject: 'Pottery', grade: 'C', level: 'LEVEL_4' }]
 
       // When
-      await controller.submitHighestLevelOfEducationForm(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.submitHighestLevelOfEducationForm(req, res, next)
 
       // Then
       // Extract the first call to the mock and the second argument (i.e. the updated Induction)
@@ -312,11 +257,6 @@ describe('highestLevelOfEducationUpdateController', () => {
 
     it('should update Induction containing previous qualifications given form submitted with exam level highest level of education', async () => {
       // Given
-      req.user.token = 'some-token'
-
-      const prisonerSummary = aValidPrisonerSummary()
-      req.session.prisonerSummary = prisonerSummary
-
       // Long question set induction has SECONDARY_SCHOOL_TOOK_EXAMS as highest level of education, with a single qualification of Pottery, Level 4, Grade C
       const inductionDto = aLongQuestionSetInductionDto()
       req.session.inductionDto = inductionDto
@@ -327,8 +267,6 @@ describe('highestLevelOfEducationUpdateController', () => {
       req.body = highestLevelOfEducationForm
       req.session.highestLevelOfEducationForm = undefined
 
-      mockedFormValidator.mockReturnValue(errors)
-
       const updateInductionDto = aLongQuestionSetUpdateInductionRequest()
       mockedCreateOrUpdateInductionDtoMapper.mockReturnValueOnce(updateInductionDto)
 
@@ -336,11 +274,7 @@ describe('highestLevelOfEducationUpdateController', () => {
       const expectedQualifications = [{ subject: 'Pottery', grade: 'C', level: 'LEVEL_4' }]
 
       // When
-      await controller.submitHighestLevelOfEducationForm(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.submitHighestLevelOfEducationForm(req, res, next)
 
       // Then
       // Extract the first call to the mock and the second argument (i.e. the updated Induction)
@@ -357,11 +291,6 @@ describe('highestLevelOfEducationUpdateController', () => {
 
     it('should update Induction containing no previous qualifications given form submitted with non exam level highest level of education', async () => {
       // Given
-      req.user.token = 'some-token'
-
-      const prisonerSummary = aValidPrisonerSummary()
-      req.session.prisonerSummary = prisonerSummary
-
       const inductionDto = aLongQuestionSetInductionDto()
       inductionDto.previousQualifications.qualifications = [] // Induction has no previous qualifications
       req.session.inductionDto = inductionDto
@@ -372,8 +301,6 @@ describe('highestLevelOfEducationUpdateController', () => {
       req.body = highestLevelOfEducationForm
       req.session.highestLevelOfEducationForm = undefined
 
-      mockedFormValidator.mockReturnValue(errors)
-
       const updateInductionDto = aLongQuestionSetUpdateInductionRequest()
       mockedCreateOrUpdateInductionDtoMapper.mockReturnValueOnce(updateInductionDto)
 
@@ -381,11 +308,7 @@ describe('highestLevelOfEducationUpdateController', () => {
       const expectedQualifications: Array<AchievedQualificationDto> = []
 
       // When
-      await controller.submitHighestLevelOfEducationForm(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.submitHighestLevelOfEducationForm(req, res, next)
 
       // Then
       // Extract the first call to the mock and the second argument (i.e. the updated Induction)
@@ -402,11 +325,6 @@ describe('highestLevelOfEducationUpdateController', () => {
 
     it('should update Induction containing no previous qualifications given form submitted with exam level highest level of education', async () => {
       // Given
-      req.user.token = 'some-token'
-
-      const prisonerSummary = aValidPrisonerSummary()
-      req.session.prisonerSummary = prisonerSummary
-
       const inductionDto = aLongQuestionSetInductionDto()
       inductionDto.previousQualifications.qualifications = [] // Induction has no previous qualifications
       req.session.inductionDto = inductionDto
@@ -417,8 +335,6 @@ describe('highestLevelOfEducationUpdateController', () => {
       req.body = highestLevelOfEducationForm
       req.session.highestLevelOfEducationForm = undefined
 
-      mockedFormValidator.mockReturnValue(errors)
-
       const expectedUpdatedHighestLevelOfEducation = 'FURTHER_EDUCATION_COLLEGE'
       const expectedQualifications: Array<AchievedQualificationDto> = []
       const expectedPageFlowHistory = {
@@ -427,11 +343,7 @@ describe('highestLevelOfEducationUpdateController', () => {
       }
 
       // When
-      await controller.submitHighestLevelOfEducationForm(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.submitHighestLevelOfEducationForm(req, res, next)
 
       // Then
       const updatedInductionDto = req.session.inductionDto
@@ -445,11 +357,6 @@ describe('highestLevelOfEducationUpdateController', () => {
 
     it('should update InductionDto and redirect to Check Your Answers given previous page was Check Your Answers', async () => {
       // Given
-      req.user.token = 'some-token'
-      req.params.prisonNumber = prisonNumber
-
-      const prisonerSummary = aValidPrisonerSummary()
-      req.session.prisonerSummary = prisonerSummary
       const inductionDto = aLongQuestionSetInductionDto()
       req.session.inductionDto = inductionDto
 
@@ -461,7 +368,6 @@ describe('highestLevelOfEducationUpdateController', () => {
       const updateInductionDto = aLongQuestionSetUpdateInductionRequest()
 
       mockedCreateOrUpdateInductionDtoMapper.mockReturnValueOnce(updateInductionDto)
-      mockedFormValidator.mockReturnValue(errors)
 
       req.session.pageFlowHistory = {
         pageUrls: [
@@ -473,26 +379,75 @@ describe('highestLevelOfEducationUpdateController', () => {
       const expectedNextPage = '/prisoners/A1234BC/induction/check-your-answers'
 
       // When
-      await controller.submitHighestLevelOfEducationForm(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.submitHighestLevelOfEducationForm(req, res, next)
 
       // Then
       const updatedInductionDto = req.session.inductionDto
       expect(updatedInductionDto.previousQualifications.educationLevel).toEqual(EducationLevelValue.NOT_SURE)
       expect(res.redirect).toHaveBeenCalledWith(expectedNextPage)
-      expect(req.session.inPrisonWorkForm).toBeUndefined()
+      expect(req.session.highestLevelOfEducationForm).toBeUndefined()
+    })
+
+    it('should update InductionDto and redirect to Additional Training given the question set is being updated and the highest level of education does not need qualifications', async () => {
+      // Given
+      const inductionDto = aShortQuestionSetInductionDto()
+      inductionDto.previousQualifications = {
+        educationLevel: EducationLevelValue.NOT_SURE,
+        qualifications: [],
+      } as PreviousQualificationsDto
+      req.session.inductionDto = inductionDto
+
+      req.session.updateInductionQuestionSet = {
+        hopingToWorkOnRelease: 'YES',
+      }
+
+      const highestLevelOfEducationForm = {
+        educationLevel: EducationLevelValue.PRIMARY_SCHOOL,
+      }
+      req.body = highestLevelOfEducationForm
+      req.session.highestLevelOfEducationForm = undefined
+
+      const expectedNextPage = '/prisoners/A1234BC/induction/additional-training'
+
+      // When
+      await controller.submitHighestLevelOfEducationForm(req, res, next)
+
+      // Then
+      expect(res.redirect).toHaveBeenCalledWith(expectedNextPage)
+      expect(req.session.highestLevelOfEducationForm).toBeUndefined()
+    })
+
+    it('should update InductionDto and redirect to Qualification Level given the question set is being updated and the highest level of education does need qualifications', async () => {
+      // Given
+      const inductionDto = aShortQuestionSetInductionDto()
+      inductionDto.previousQualifications = {
+        educationLevel: EducationLevelValue.NOT_SURE,
+        qualifications: [],
+      } as PreviousQualificationsDto
+      req.session.inductionDto = inductionDto
+
+      req.session.updateInductionQuestionSet = {
+        hopingToWorkOnRelease: 'YES',
+      }
+
+      const highestLevelOfEducationForm = {
+        educationLevel: EducationLevelValue.SECONDARY_SCHOOL_TOOK_EXAMS,
+      }
+      req.body = highestLevelOfEducationForm
+      req.session.highestLevelOfEducationForm = undefined
+
+      const expectedNextPage = '/prisoners/A1234BC/induction/qualification-level'
+
+      // When
+      await controller.submitHighestLevelOfEducationForm(req, res, next)
+
+      // Then
+      expect(res.redirect).toHaveBeenCalledWith(expectedNextPage)
+      expect(req.session.highestLevelOfEducationForm).toBeUndefined()
     })
 
     it('should not update Induction given error calling service', async () => {
       // Given
-      req.user.token = 'some-token'
-
-      const prisonerSummary = aValidPrisonerSummary()
-      req.session.prisonerSummary = prisonerSummary
-
       const inductionDto = aLongQuestionSetInductionDto()
       req.session.inductionDto = inductionDto
 
@@ -501,8 +456,6 @@ describe('highestLevelOfEducationUpdateController', () => {
       }
       req.body = highestLevelOfEducationForm
       req.session.highestLevelOfEducationForm = undefined
-
-      mockedFormValidator.mockReturnValue(errors)
 
       const updateInductionDto = aLongQuestionSetUpdateInductionRequest()
       mockedCreateOrUpdateInductionDtoMapper.mockReturnValueOnce(updateInductionDto)
@@ -517,11 +470,7 @@ describe('highestLevelOfEducationUpdateController', () => {
       )
 
       // When
-      await controller.submitHighestLevelOfEducationForm(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.submitHighestLevelOfEducationForm(req, res, next)
 
       // Then
       // Extract the first call to the mock and the second argument (i.e. the updated Induction)
