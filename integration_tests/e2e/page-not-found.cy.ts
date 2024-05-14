@@ -1,6 +1,6 @@
 import Page from '../pages/page'
 import Error404Page from '../pages/error404'
-import AuthorisationErrorPage from '../pages/authorisationError'
+import AuthSignInPage from '../pages/authSignIn'
 
 context('404 Page Not Found', () => {
   beforeEach(() => {
@@ -14,22 +14,38 @@ context('404 Page Not Found', () => {
     cy.task('stubActionPlansList')
   })
 
-  it('should redirect to auth-error page given user does not have any authorities', () => {
+  it('should redirect to auth sign-in page given unauthenticated user', () => {
     // Given
-    cy.task('stubSignIn')
+    cy.signOut()
+
+    const prisonNumber = 'G6115VJ'
+
+    // When
+    cy.visit(`/plan/${prisonNumber}/view/overview`, { failOnStatusCode: false })
+
+    // Then
+    Page.verifyOnPage(AuthSignInPage)
+  })
+
+  it('should redirect to 404 page given user does not have any authorities', () => {
+    // Given
+    const userRoles = []
+    cy.task('stubSignIn', userRoles)
     cy.signIn()
 
     const prisonNumber = 'G6115VJ'
 
     // When
-    cy.visit(`/plan/${prisonNumber}/view/overview/unknown`, { failOnStatusCode: false })
+    cy.visit(`/plan/${prisonNumber}/view/overview`, { failOnStatusCode: false })
 
     // Then
-    Page.verifyOnPage(AuthorisationErrorPage)
+    Page.verifyOnPage(Error404Page)
   })
 
-  it('should redirect the 404 page when an authenticated user navigates to a non-existent page', () => {
+  it('should redirect to 404 page when user with PLP roles navigates to a non-existent page', () => {
     // Given
+    const userRoles = ['ROLE_EDUCATION_AND_WORK_PLAN_EDITOR']
+    cy.task('stubSignIn', userRoles)
     cy.signIn()
 
     const prisonNumber = 'G6115VJ'

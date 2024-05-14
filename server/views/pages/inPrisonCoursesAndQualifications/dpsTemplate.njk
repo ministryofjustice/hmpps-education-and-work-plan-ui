@@ -1,3 +1,10 @@
+{# Nunjucks template to display the prisoner's in-prison courses and qualifications when linked to from DPS
+   The differences between this view and it's PLP equivalent are:
+     * The breadcrumbs are different and do not link back to the prisoners PLP
+     * There is no prisoner banner
+     * The main page h1 does not include 'Learning and work progress'
+     * There is a link back to the prisoner's DPS profile at the bottom of the page
+#}
 {% extends "../../partials/layout.njk" %}
 
 {% set pageTitle = "Prisoner's in-prison courses and qualifications" %}
@@ -11,10 +18,7 @@
         <a class="govuk-breadcrumbs__link" href="{{ dpsUrl }}">Digital Prison Services</a>
       </li>
       <li class="govuk-breadcrumbs__list-item">
-        <a class="govuk-breadcrumbs__link" href="{{ prisonerListUrl }}">Manage learning and work progress</a>
-      </li>
-      <li class="govuk-breadcrumbs__list-item">
-        <a class="govuk-breadcrumbs__link" href="/plan/{{ prisonerSummary.prisonNumber }}/view/education-and-training">{{ prisonerSummary.firstName }} {{ prisonerSummary.lastName }}'s learning and work progress</a>
+        <a class="govuk-breadcrumbs__link" href="{{ dpsUrl }}/prisoner/{{ prisonerSummary.prisonNumber }}">{{ prisonerSummary.firstName }} {{ prisonerSummary.lastName }}</a>
       </li>
     </ol>
   </nav>
@@ -22,11 +26,8 @@
 
 {% block content %}
 
-  {% include "../../partials/prisonerBanner.njk" %}
-
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-three-quarters app-u-print-full-width">
-      <span class="govuk-caption-l">Learning and work progress</span>
       <h1 class="govuk-heading-l">{{ prisonerSummary.firstName }} {{ prisonerSummary.lastName }}'s in-prison courses and qualifications</h1>
     </div>
     <div class="govuk-grid-column-one-quarter">
@@ -105,6 +106,10 @@
         <p class="govuk-body">Reload the page or try again later. Other parts of this service may still be available.</p>
 
       {% endif %}
+
+      <p class="govuk-body">
+        <a class="govuk-link" href="{{ dpsUrl }}/prisoner/{{ prisonerSummary.prisonNumber }}">Return to prisoner profile</a>
+      </p>
     </div>
   </div>
 

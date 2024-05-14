@@ -18,17 +18,18 @@ export default function routes(services: Services): Router {
   prisonerSummarySetup(router, services)
 
   // Application routes
-  prisonerList(router, services)
+  inPrisonCoursesAndQualifications(router, services)
+  functionalSkills(router, services)
+
   overview(router, services)
   createGoal(router, services)
   updateGoal(router, services)
-  functionalSkills(router, services)
-  inPrisonCoursesAndQualifications(router, services)
-
-  postInductionCreation(router, services)
 
   createInduction(router, services)
   updateInduction(router, services)
+  postInductionCreation(router, services)
+
+  prisonerList(router, services)
 
   return router
 }
