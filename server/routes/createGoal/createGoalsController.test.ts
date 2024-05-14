@@ -33,6 +33,7 @@ describe('createGoalsController', () => {
   }
   const res = {
     redirect: jest.fn(),
+    redirectWithSuccess: jest.fn(),
     render: jest.fn(),
   }
   const next = jest.fn()
@@ -188,12 +189,11 @@ describe('createGoalsController', () => {
       )
 
       // Then
-      expect(res.redirect).toHaveBeenCalledWith('/plan/A1234BC/view/overview')
+      expect(res.redirectWithSuccess).toHaveBeenCalledWith('/plan/A1234BC/view/overview', 'Goals added')
       expect(mockedCreateGoalsFormValidator).toHaveBeenCalledWith(submittedCreateGoalsForm)
       expect(mockedCreateGoalDtosMapper).toHaveBeenCalledWith(submittedCreateGoalsForm, expectedPrisonId)
       expect(educationAndWorkPlanService.createGoals).toHaveBeenCalledWith(expectedCreateGoalDtos, 'some-token')
       expect(req.session.createGoalsForm).toBeUndefined()
-      expect(req.flash).toHaveBeenCalledWith('goalsSuccessfullyCreated', 'true')
       expect(req.flash).not.toHaveBeenCalledWith('errors')
     })
 
@@ -228,7 +228,7 @@ describe('createGoalsController', () => {
       // Then
       expect(res.redirect).toHaveBeenCalledWith('/plan/A1234BC/goals/create')
       expect(req.flash).toHaveBeenCalledWith('errors', errors)
-      expect(req.flash).not.toHaveBeenCalledWith('goalsSuccessfullyCreated')
+      expect(res.redirectWithSuccess).toHaveBeenCalledTimes(0)
       expect(req.session.createGoalsForm).toEqual(expectedCreateGoalsForm)
       expect(mockedCreateGoalsFormValidator).toHaveBeenCalledWith(expectedCreateGoalsForm)
     })

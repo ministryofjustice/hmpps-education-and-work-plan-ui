@@ -63,6 +63,17 @@
       }
     }) }}
 
+    {% if successMessage %}
+      {{ mojBanner({
+        text: successMessage.message,
+        type: 'success',
+        iconFallbackText: 'Success',
+        attributes: {
+          'data-qa': 'goal-creation-success-message'
+        }
+      }) }}
+    {% endif %}
+
     {% block beforeContent %}{% endblock %}
     <main class="govuk-main-wrapper govuk-!-padding-top-0 {{ mainClasses }}" id="main-content" role="main"{% if mainLang %} lang="{{ mainLang }}"{% endif %}>
       {% block content %}{% endblock %}
