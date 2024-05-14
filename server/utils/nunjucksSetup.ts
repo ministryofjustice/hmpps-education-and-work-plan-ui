@@ -2,6 +2,7 @@
 import nunjucks, { Environment } from 'nunjucks'
 import express from 'express'
 import path from 'path'
+import { addMonths, constructNow, startOfToday } from 'date-fns'
 import { initialiseName } from './utils'
 import { ApplicationInfo } from '../applicationInfo'
 import config from '../config'
@@ -51,6 +52,13 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
     })
   }
 
+  // Add the current datetime (now) and the current date (today) to res.locals so the views can make use of them as necessary
+  app.use((req, res, next) => {
+    res.locals.now = constructNow(new Date())
+    res.locals.today = startOfToday()
+    next()
+  })
+
   registerNunjucks(app)
 }
 
@@ -92,6 +100,7 @@ export function registerNunjucks(app?: express.Express): Environment {
   njkEnv.addFilter('formatPrisonMovementEvent', formatPrisonMovementEventFilter)
   njkEnv.addFilter('formatCuriousCourseStatus', formatCuriousCourseStatusFilter)
   njkEnv.addFilter('fallbackMessage', fallbackMessageFilter)
+  njkEnv.addFilter('addMonths', addMonths)
 
   njkEnv.addGlobal('dpsUrl', config.dpsHomeUrl)
   njkEnv.addGlobal('feedbackUrl', config.feedbackUrl)

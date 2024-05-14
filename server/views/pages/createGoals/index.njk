@@ -74,16 +74,6 @@
               errorMessage: errors | findError("goals[" + goalLoop.index0 + "].title")
             }) }}
 
-            {% set targetCompletionDateItems = [] %}
-
-            {% for futureGoalTargetDate in futureGoalTargetDates %}
-              {% set targetCompletionDateItems = (targetCompletionDateItems.push({
-                "value": futureGoalTargetDate.value,
-                "text": futureGoalTargetDate.text
-                }), targetCompletionDateItems)
-              %}
-            {% endfor %}
-
             {% set anotherDateHtml %}
               {{ govukDateInput({
                 id: "goals[" + goalLoop.index0 + "].another-date",
@@ -122,15 +112,6 @@
               }) }}
             {% endset -%}
 
-            {% set targetCompletionDateItems = (targetCompletionDateItems.push({
-              "value": "another-date",
-              "text": "set another date",
-              "conditional": {
-                "html": anotherDateHtml
-              }
-              }), targetCompletionDateItems)
-            %}
-
             {{ govukRadios({
               name: "goals[" + goalLoop.index0 + "][targetCompletionDate]",
               idPrefix: "goals[" + goalLoop.index0 + "].targetCompletionDate",
@@ -141,7 +122,24 @@
                   classes: "govuk-fieldset__legend--s"
                 }
               },
-              items: targetCompletionDateItems,
+              items: [
+                {
+                  "value": goalTargetCompletionDateOptions.THREE_MONTHS,
+                  "text": "in 3 months (by " + today | addMonths(3) | formatDate('d MMMM yyyy') + ")"
+                }, {
+                  "value": goalTargetCompletionDateOptions.SIX_MONTHS,
+                  "text": "in 6 months (by " + today | addMonths(6) | formatDate('d MMMM yyyy') + ")"
+                }, {
+                  "value": goalTargetCompletionDateOptions.TWELVE_MONTHS,
+                  "text": "in 12 months (by " + today | addMonths(12) | formatDate('d MMMM yyyy') + ")"
+                }, {
+                  "value": goalTargetCompletionDateOptions.ANOTHER_DATE,
+                  "text": "set another date",
+                  "conditional": {
+                    "html": anotherDateHtml
+                  }
+                }
+              ],
               errorMessage: errors | findError("goals[" + goalLoop.index0 + "].targetCompletionDate")
             }) }}
 

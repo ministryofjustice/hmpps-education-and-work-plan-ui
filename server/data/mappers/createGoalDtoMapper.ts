@@ -1,6 +1,7 @@
 import type { CreateGoalsForm } from 'forms'
 import type { AddStepDto, CreateGoalDto } from 'dto'
-import { startOfDay } from 'date-fns'
+import { addMonths, parse, startOfToday } from 'date-fns'
+import GoalTargetCompletionDateOption from '../../enums/goalTargetCompletionDateOption'
 
 const toCreateGoalDtos = (createGoalsForm: CreateGoalsForm, prisonId: string): Array<CreateGoalDto> => {
   return (createGoalsForm?.goals || []).map(goal => {
@@ -23,21 +24,29 @@ const toAddStepDto = (step: { title?: string }, stepIndexNumber: number): AddSte
 }
 
 const toTargetCompletionDate = (goalDateFields: {
-  targetCompletionDate?: string
+  targetCompletionDate?: GoalTargetCompletionDateOption
   'targetCompletionDate-day'?: string
   'targetCompletionDate-month'?: string
   'targetCompletionDate-year'?: string
 }): Date => {
-  if (goalDateFields.targetCompletionDate) {
-    if (goalDateFields.targetCompletionDate === 'another-date') {
+  const today = startOfToday()
+  switch (goalDateFields.targetCompletionDate) {
+    case GoalTargetCompletionDateOption.THREE_MONTHS: {
+      return addMonths(today, 3)
+    }
+    case GoalTargetCompletionDateOption.SIX_MONTHS: {
+      return addMonths(today, 6)
+    }
+    case GoalTargetCompletionDateOption.TWELVE_MONTHS: {
+      return addMonths(today, 12)
+    }
+    default: {
       const day = goalDateFields['targetCompletionDate-day'].padStart(2, '0')
       const month = goalDateFields['targetCompletionDate-month'].padStart(2, '0')
       const year = goalDateFields['targetCompletionDate-year']
-      return startOfDay(new Date(`${year}-${month}-${day}`))
+      return parse(`${year}-${month}-${day}`, 'yyyy-MM-dd', today)
     }
-    return startOfDay(new Date(goalDateFields.targetCompletionDate))
   }
-  return null
 }
 
 export default toCreateGoalDtos
