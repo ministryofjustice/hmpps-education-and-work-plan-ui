@@ -172,10 +172,6 @@ export default (router: Router, services: Services) => {
       asyncMiddleware(affectAbilityToWorkCreateController.submitAffectAbilityToWorkForm),
     ])
 
-    router.get('/prisoners/:prisonNumber/create-induction/skills', [
-      asyncMiddleware(skillsCreateController.getSkillsView),
-    ])
-
     router.get('/prisoners/:prisonNumber/create-induction/reasons-not-to-get-work', [
       asyncMiddleware(reasonsNotToGetWorkCreateController.getReasonsNotToGetWorkView),
     ])
