@@ -72,7 +72,52 @@ describe('auditMiddleware', () => {
         query: {},
       },
     })
-    expect(auditService.logPageView).toHaveBeenCalledTimes(0)
+    expect(auditService.logPageView).not.toHaveBeenCalledWith(Page.PRISONER_LIST, {
+      who: 'user1',
+      correlationId: expect.any(String),
+      details: {
+        params: {},
+        query: {},
+      },
+    })
+  })
+
+  it('should raise a page view audit event for the error page when a request is not successful', async () => {
+    // Given
+    prisonerListService.getPrisonerSearchSummariesForPrisonId.mockRejectedValue(null)
+
+    // When
+    const response = await request(app).get('/')
+
+    // Then
+    expect(response.statusCode).toBe(500)
+    expect(auditService.logPageView).toHaveBeenCalledWith(Page.ERROR, {
+      who: 'user1',
+      correlationId: expect.any(String),
+      details: {
+        params: {},
+        query: {},
+      },
+    })
+  })
+
+  it('should raise a page view audit event for the not found page when a route is not found', async () => {
+    // Given
+    prisonerListService.getPrisonerSearchSummariesForPrisonId.mockRejectedValue(null)
+
+    // When
+    const response = await request(app).get('/unknown')
+
+    // Then
+    expect(response.statusCode).toBe(404)
+    expect(auditService.logPageView).toHaveBeenCalledWith(Page.NOT_FOUND, {
+      who: 'user1',
+      correlationId: expect.any(String),
+      details: {
+        params: {},
+        query: {},
+      },
+    })
   })
 
   it('should raise page view audit events with query parameters', async () => {

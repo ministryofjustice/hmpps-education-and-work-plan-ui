@@ -28,8 +28,6 @@ import formatTimelineEventFilter from '../filters/formatTimelineEventFilter'
 import formatPrisonMovementEventFilter from '../filters/formatPrisonMovementEventFilter'
 import formatCuriousCourseStatusFilter from '../filters/formatCuriousCourseStatusFilter'
 
-const production = process.env.NODE_ENV === 'production'
-
 export default function nunjucksSetup(app: express.Express, applicationInfo: ApplicationInfo): void {
   app.set('view engine', 'njk')
 
@@ -40,7 +38,7 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
   app.locals.applicationInsightsRoleName = applicationInfo.applicationName
 
   // Cachebusting version string
-  if (production) {
+  if (config.production) {
     // Version only changes with new commits
     app.locals.version = applicationInfo.gitShortHash
   } else {

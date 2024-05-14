@@ -2,26 +2,65 @@ import { NextFunction, Request, Response, Router } from 'express'
 import { Services } from '../services'
 import { Page, PageViewEventDetails } from '../services/auditService'
 import asyncMiddleware from './asyncMiddleware'
+import logger from '../../logger'
 
 const pageViewEventMap: Record<string, Page> = {
   '/': Page.PRISONER_LIST,
+  '/prisoner/:prisonNumber/work-and-skills/in-prison-courses-and-qualifications':
+    Page.IN_PRISON_COURSES_AND_QUALIFICATIONS,
+
+  // Overview pages
   '/plan/:prisonNumber/view/overview': Page.OVERVIEW,
   '/plan/:prisonNumber/view/support-needs': Page.SUPPORT_NEEDS,
   '/plan/:prisonNumber/view/education-and-training': Page.EDUCATION_AND_TRAINING,
   '/plan/:prisonNumber/view/work-and-interests': Page.WORK_AND_INTERESTS,
   '/plan/:prisonNumber/view/timeline': Page.TIMELINE,
-  '/plan/:prisonNumber/functional-skills': Page.FUNCTIONAL_SKILLS,
-  '/plan/:prisonNumber/goals/create': Page.CREATE_GOALS,
 
+  // Create goals
+  '/plan/:prisonNumber/goals/create': Page.CREATE_GOALS,
   // TODO - RR-769 - Remove route auditing for original Create Goal journey
   '/plan/:prisonNumber/goals/:goalIndex/add-step/:stepIndex': Page.CREATE_GOAL_ADD_STEP,
   '/plan/:prisonNumber/goals/:goalIndex/add-note': Page.CREATE_GOAL_ADD_NOTE,
   '/plan/:prisonNumber/goals/:goalIndex/create': Page.CREATE_GOAL,
   '/plan/:prisonNumber/goals/review': Page.CREATE_GOALS_REVIEW,
 
+  // Update goals
   '/plan/:prisonNumber/goals/:goalReference/update': Page.UPDATE_GOALS,
   '/plan/:prisonNumber/goals/:goalReference/update/review': Page.UPDATE_GOALS_REVIEW,
+
+  // Functional skills
+  '/plan/:prisonNumber/functional-skills': Page.FUNCTIONAL_SKILLS,
+
+  // In prison course and qualifications
   '/plan/:prisonNumber/in-prison-courses-and-qualifications': Page.IN_PRISON_COURSES_AND_QUALIFICATIONS,
+
+  // Create induction
+  '/prisoners/:prisonNumber/create-induction/hoping-to-work-on-release':
+    Page.INDUCTION_CREATE_HOPING_TO_WORK_ON_RELEASE,
+  '/prisoners/:prisonNumber/create-induction/want-to-add-qualifications': Page.INDUCTION_CREATE_ADD_QUALIFICATION,
+  '/prisoners/:prisonNumber/create-induction/qualifications': Page.INDUCTION_CREATE_QUALIFICATIONS,
+  '/prisoners/:prisonNumber/create-induction/highest-level-of-education':
+    Page.INDUCTION_CREATE_HIGHEST_LEVEL_OF_EDUCATION,
+  '/prisoners/:prisonNumber/create-induction/qualification-level': Page.INDUCTION_CREATE_QUALIFICATION_LEVEL,
+  '/prisoners/:prisonNumber/create-induction/additional-training': Page.INDUCTION_CREATE_ADDITIONAL_TRAINING,
+  '/prisoners/:prisonNumber/create-induction/qualification-details': Page.INDUCTION_CREATE_QUALIFICATION_DETAILS,
+  '/prisoners/:prisonNumber/create-induction/qualification-training': Page.INDUCTION_CREATE_ADDITIONAL_TRAINING,
+  '/prisoners/:prisonNumber/create-induction/has-worked-before': Page.INDUCTION_CREATE_HAS_WORKED_BEFORE,
+  '/prisoners/:prisonNumber/create-induction/previous-work-experience':
+    Page.INDUCTION_CREATE_PREVIOUS_WORK_EXPERIENCE_TYPE,
+  '/prisoners/:prisonNumber/create-induction/previous-work-experience/:typeOfWorkExperience':
+    Page.INDUCTION_CREATE_PREVIOUS_WORK_EXPERIENCE_DETAILS,
+  '/prisoners/:prisonNumber/create-induction/work-interest-types': Page.INDUCTION_CREATE_WORK_INTEREST_TYPES,
+  '/prisoners/:prisonNumber/create-induction/work-interest-roles': Page.INDUCTION_CREATE_WORK_INTEREST_ROLES,
+  '/prisoners/:prisonNumber/create-induction/skills': Page.INDUCTION_CREATE_SKILLS,
+  '/prisoners/:prisonNumber/create-induction/personal-interests': Page.INDUCTION_CREATE_PERSONAL_INTERESTS,
+  '/prisoners/:prisonNumber/create-induction/affect-ability-to-work': Page.INDUCTION_CREATE_AFFECT_ABILITY_TO_WORK,
+  '/prisoners/:prisonNumber/create-induction/reasons-not-to-get-work': Page.INDUCTION_CREATE_REASONS_NOT_TO_GET_WORK,
+  '/prisoners/:prisonNumber/create-induction/in-prison-work': Page.INDUCTION_CREATE_IN_PRISON_WORK,
+  '/prisoners/:prisonNumber/create-induction/in-prison-training': Page.INDUCTION_CREATE_IN_PRISON_TRAINING,
+  '/prisoners/:prisonNumber/create-induction/check-your-answers': Page.INDUCTION_CREATE_CHECK_YOUR_ANSWERS,
+
+  // Update induction
   '/prisoners/:prisonNumber/induction/in-prison-training': Page.INDUCTION_UPDATE_IN_PRISON_TRAINING,
   '/prisoners/:prisonNumber/induction/personal-interests': Page.INDUCTION_UPDATE_PERSONAL_INTERESTS,
   '/prisoners/:prisonNumber/induction/skills': Page.INDUCTION_UPDATE_SKILLS,
@@ -41,14 +80,19 @@ const pageViewEventMap: Record<string, Page> = {
   '/prisoners/:prisonNumber/induction/qualification-level': Page.INDUCTION_UPDATE_QUALIFICATION_LEVEL,
   '/prisoners/:prisonNumber/induction/qualification-details': Page.INDUCTION_UPDATE_QUALIFICATION_DETAILS,
   '/prisoners/:prisonNumber/induction/additional-training': Page.INDUCTION_UPDATE_ADDITIONAL_TRAINING,
+  '/prisoners/:prisonNumber/induction/check-your-answers': Page.INDUCTION_UPDATE_CHECK_YOUR_ANSWERS,
 
-  '/prisoner/:prisonNumber/work-and-skills/in-prison-courses-and-qualifications':
-    Page.IN_PRISON_COURSES_AND_QUALIFICATIONS,
+  // Non audit routes. These routes do not raise an audit event
+  '/plan/:prisonNumber/induction-created': null,
 }
 
-export default function auditMiddleware({ auditService }: Services): Router {
+export default function auditMiddleware({ auditService }: Services) {
   const auditPageView = (page: Page) =>
     asyncMiddleware(async (req: Request, res: Response, next: NextFunction) => {
+      res.locals.auditPageViewEvent = page
+
+      if (!page) return next()
+
       const auditDetails: PageViewEventDetails = {
         who: req.user.username ?? 'UNKNOWN',
         correlationId: req.id,
@@ -71,7 +115,7 @@ export default function auditMiddleware({ auditService }: Services): Router {
         }
       })
 
-      next()
+      return next()
     })
 
   const router = Router()
@@ -79,4 +123,13 @@ export default function auditMiddleware({ auditService }: Services): Router {
   Object.entries(pageViewEventMap).forEach(([route, pageViewEvent]) => router.get(route, auditPageView(pageViewEvent)))
 
   return router
+}
+
+// Checks page view has been auditted, if no audit event has been raised router will be skipped
+export function checkPageViewAuditted(router: Router) {
+  router.get('*', (req: Request, res: Response, next: NextFunction) => {
+    if (res.locals.auditPageViewEvent || res.locals.auditPageViewEvent === null) return next()
+    logger.error(`No audit event found for route, "${req.path}". Skipping router.`)
+    return next('router')
+  })
 }

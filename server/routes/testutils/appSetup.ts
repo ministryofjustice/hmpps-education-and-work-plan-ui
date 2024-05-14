@@ -56,7 +56,7 @@ function appSetup(services: Services, production: boolean, userSupplier: () => E
   app.use(auditMiddleware(services))
   app.use(routes(services))
   app.use((req, res, next) => next(createError(404, 'Not found')))
-  app.use(errorHandler(production))
+  app.use(errorHandler(services, production))
 
   return app
 }
