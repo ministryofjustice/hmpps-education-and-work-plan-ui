@@ -2,12 +2,12 @@ import type { Timeline, TimelineEvent } from 'viewModels'
 import type { TimelineEventResponse } from 'educationAndWorkPlanApiClient'
 import EducationAndWorkPlanClient from '../data/educationAndWorkPlanClient'
 import { toTimeline } from '../data/mappers/timelineMapper'
-import config from '../config'
 import logger from '../../logger'
 import PrisonService from './prisonService'
 
 const PLP_TIMELINE_EVENTS = ['ACTION_PLAN_CREATED', 'INDUCTION_UPDATED', 'GOAL_UPDATED', 'GOAL_CREATED']
 const PRISON_TIMELINE_EVENTS = ['PRISON_ADMISSION', 'PRISON_RELEASE', 'PRISON_TRANSFER']
+const SUPPORTED_TIMELINE_EVENTS = [...PLP_TIMELINE_EVENTS, ...PRISON_TIMELINE_EVENTS]
 
 export default class TimelineService {
   constructor(
@@ -18,7 +18,7 @@ export default class TimelineService {
   async getTimeline(prisonNumber: string, token: string, username: string): Promise<Timeline> {
     try {
       const timelineResponse = await this.educationAndWorkPlanClient.getTimeline(prisonNumber, token)
-      timelineResponse.events = timelineResponse.events.filter(this.filterTimelineEvents)
+      timelineResponse.events = timelineResponse.events.filter(filterTimelineEvents)
 
       const timeline = toTimeline(timelineResponse)
       timeline.events = await this.addPrisonNameToPrisons(timeline.events, username)
@@ -77,17 +77,11 @@ export default class TimelineService {
     return Promise.all(eventPromises)
   }
 
-  private filterTimelineEvents = (event: TimelineEventResponse): boolean => {
-    // TODO RR-610 - remove feature toggle and revert back to one SUPPORTED_TIMELINE_EVENTS array
-    const SUPPORTED_TIMELINE_EVENTS = config.featureToggles.includePrisonTimelineEventsEnabled
-      ? Array.of(...PLP_TIMELINE_EVENTS, ...PRISON_TIMELINE_EVENTS)
-      : PLP_TIMELINE_EVENTS
-
-    return SUPPORTED_TIMELINE_EVENTS.includes(event.eventType)
-  }
-
   private getTransferredFromPrisonName = async (event: TimelineEvent, username: string): Promise<string> =>
     (await this.prisonService.getPrisonByPrisonId(event.contextualInfo, username))?.prisonName
 }
 
 const isPrisonTransfer = (event: TimelineEvent): boolean => event.eventType === 'PRISON_TRANSFER'
+
+const filterTimelineEvents = (event: TimelineEventResponse): boolean =>
+  SUPPORTED_TIMELINE_EVENTS.includes(event.eventType)
