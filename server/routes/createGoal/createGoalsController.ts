@@ -12,13 +12,9 @@ export default class CreateGoalsController {
   constructor(private readonly educationAndWorkPlanService: EducationAndWorkPlanService) {}
 
   getCreateGoalsView: RequestHandler = async (req, res, next): Promise<void> => {
-    const { prisonNumber } = req.params
     const { prisonerSummary } = req.session
 
-    const createGoalsForm = req.session.createGoalsForm || {
-      prisonNumber,
-      goals: [emptyGoal()],
-    }
+    const { createGoalsForm } = req.session
     req.session.createGoalsForm = undefined
 
     const view = new CreateGoalsView(
