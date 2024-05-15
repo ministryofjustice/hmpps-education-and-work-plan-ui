@@ -1,5 +1,5 @@
-import moment from 'moment'
 import type { PrisonerSearchSummary } from 'viewModels'
+import { format } from 'date-fns'
 import { SuperAgentRequest } from 'superagent'
 import { stubFor } from './wiremock'
 
@@ -326,13 +326,13 @@ const stubPrisonerListFromPrisonerSearchSummaries = (
             firstName: prisonerSearchSummary.firstName,
             lastName: prisonerSearchSummary.lastName,
             dateOfBirth: prisonerSearchSummary.dateOfBirth
-              ? moment(prisonerSearchSummary.dateOfBirth).format('YYYY-MM-DD')
+              ? format(prisonerSearchSummary.dateOfBirth, 'yyyy-MM-dd')
               : undefined,
             receptionDate: prisonerSearchSummary.receptionDate
-              ? moment(prisonerSearchSummary.receptionDate).format('YYYY-MM-DD')
+              ? format(prisonerSearchSummary.receptionDate, 'yyyy-MM-dd')
               : undefined,
             releaseDate: prisonerSearchSummary.releaseDate
-              ? moment(prisonerSearchSummary.releaseDate).format('YYYY-MM-DD')
+              ? format(prisonerSearchSummary.releaseDate, 'yyyy-MM-dd')
               : undefined,
             cellLocation: prisonerSearchSummary.location,
           }

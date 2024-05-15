@@ -1,5 +1,5 @@
 import type { PrisonerSearchSummary } from 'viewModels'
-import moment from 'moment'
+import { addDays, format, startOfToday } from 'date-fns'
 import { randomUUID } from 'crypto'
 import { SuperAgentRequest } from 'superagent'
 import { stubFor } from './wiremock'
@@ -777,6 +777,6 @@ export default {
  * Approximately 5% will return undefined, meaning the action plan has no review date.
  */
 const randomReviewDate = (): string | undefined =>
-  randomNumber(1, 100) > 5 ? moment().add(randomNumber(30, 5475), 'days').format('YYYY-MM-DD') : undefined
+  randomNumber(1, 100) > 5 ? format(addDays(startOfToday(), randomNumber(30, 5475)), 'yyyy-MM-dd') : undefined
 
 const randomNumber = (min: number, max: number): number => Math.floor(Math.random() * (max - min) + min)
