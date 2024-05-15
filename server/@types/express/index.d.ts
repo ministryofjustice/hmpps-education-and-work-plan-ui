@@ -75,6 +75,10 @@ export declare global {
       authSource: string
     }
 
+    interface Response {
+      redirectWithSuccess?(path: string, message: string): void
+    }
+
     interface Request {
       verified?: boolean
       id: string

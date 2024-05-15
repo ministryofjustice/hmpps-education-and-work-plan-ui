@@ -71,8 +71,7 @@ export default class CreateGoalsController {
       await this.educationAndWorkPlanService.createGoals(createGoalDtos, req.user.token)
 
       req.session.createGoalsForm = undefined
-      req.flash('goalsSuccessfullyCreated', 'true')
-      return res.redirect(`/plan/${prisonNumber}/view/overview`)
+      return res.redirectWithSuccess(`/plan/${prisonNumber}/view/overview`, 'Goals added')
     } catch (e) {
       logger.error(`Error creating goal(s) for prisoner ${prisonNumber}`, e)
       return next(createError(500, `Error creating goal(s) for prisoner ${prisonNumber}. Error: ${e}`))
