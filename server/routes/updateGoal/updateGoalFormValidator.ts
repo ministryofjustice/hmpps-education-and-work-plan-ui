@@ -10,17 +10,18 @@ export default function validateUpdateGoalForm(updateGoalForm: UpdateGoalForm): 
   const errors: Array<Record<string, string>> = []
 
   errors.push(...formatErrors('title', validateGoalTitle(updateGoalForm.title)))
-  errors.push(
-    ...formatErrors(
-      'targetCompletionDate',
-      goalTargetCompletionDateValidator(
-        updateGoalForm.targetCompletionDate,
-        updateGoalForm['targetCompletionDate-day'],
-        updateGoalForm['targetCompletionDate-month'],
-        updateGoalForm['targetCompletionDate-year'],
+  if (updateGoalForm.targetCompletionDate === 'another-date') {
+    errors.push(
+      ...formatErrors(
+        'targetCompletionDate',
+        goalTargetCompletionDateValidator(
+          updateGoalForm['targetCompletionDate-day'],
+          updateGoalForm['targetCompletionDate-month'],
+          updateGoalForm['targetCompletionDate-year'],
+        ),
       ),
-    ),
-  )
+    )
+  }
   errors.push(...formatErrors('status', validateGoalStatus(updateGoalForm.status)))
   updateGoalForm.steps.forEach((step, idx) => {
     errors.push(...formatErrors(`steps[${idx}][title]`, validateStepTitle(step.title)))

@@ -7,16 +7,20 @@ export default function validateCreateGoalForm(createGoalForm: CreateGoalForm): 
   const errors: Array<Record<string, string>> = []
 
   errors.push(...formatErrors('title', validateGoalTitle(createGoalForm.title)))
-  errors.push(
-    ...formatErrors(
-      'targetCompletionDate',
-      goalTargetCompletionDateValidator(
-        createGoalForm.targetCompletionDate,
-        createGoalForm['targetCompletionDate-day'],
-        createGoalForm['targetCompletionDate-month'],
-        createGoalForm['targetCompletionDate-year'],
+
+  if (!createGoalForm.targetCompletionDate) {
+    errors.push(...formatErrors('targetCompletionDate', ['Select when they are aiming to achieve this goal by']))
+  } else if (createGoalForm.targetCompletionDate === 'another-date') {
+    errors.push(
+      ...formatErrors(
+        'targetCompletionDate',
+        goalTargetCompletionDateValidator(
+          createGoalForm['targetCompletionDate-day'],
+          createGoalForm['targetCompletionDate-month'],
+          createGoalForm['targetCompletionDate-year'],
+        ),
       ),
-    ),
-  )
+    )
+  }
   return errors
 }

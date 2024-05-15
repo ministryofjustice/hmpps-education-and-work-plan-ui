@@ -48,7 +48,7 @@ declare module 'forms' {
     prisonNumber: string
     goals: Array<{
       title?: string
-      targetCompletionDate?: string
+      targetCompletionDate?: GoalTargetCompletionDateOption
       'targetCompletionDate-day'?: string
       'targetCompletionDate-month'?: string
       'targetCompletionDate-year'?: string

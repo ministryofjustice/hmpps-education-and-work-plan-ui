@@ -1,14 +1,13 @@
 import { SessionData } from 'express-session'
 import { NextFunction, Request, Response } from 'express'
-import { startOfToday } from 'date-fns'
 import type { CreateGoalDto } from 'dto'
 import type { CreateGoalsForm } from 'forms'
 import CreateGoalsController from './createGoalsController'
 import aValidPrisonerSummary from '../../testsupport/prisonerSummaryTestDataBuilder'
-import futureGoalTargetDateCalculator from '../futureGoalTargetDateCalculator'
 import validateCreateGoalsForm from './createGoalsFormValidator'
 import EducationAndWorkPlanService from '../../services/educationAndWorkPlanService'
 import toCreateGoalDtos from '../../data/mappers/createGoalDtoMapper'
+import GoalTargetCompletionDateOption from '../../enums/goalTargetCompletionDateOption'
 
 jest.mock('./createGoalsFormValidator')
 jest.mock('../../data/mappers/createGoalDtoMapper')
@@ -69,16 +68,10 @@ describe('createGoalsController', () => {
         ],
       }
 
-      const today = startOfToday()
-      const expectedFutureGoalTargetDates = [
-        futureGoalTargetDateCalculator(today, 3),
-        futureGoalTargetDateCalculator(today, 6),
-        futureGoalTargetDateCalculator(today, 12),
-      ]
       const expectedView = {
         prisonerSummary,
         form: expectedCreateGoalsForm,
-        futureGoalTargetDates: expectedFutureGoalTargetDates,
+        goalTargetCompletionDateOptions: GoalTargetCompletionDateOption,
         errors,
       }
 
@@ -110,16 +103,10 @@ describe('createGoalsController', () => {
       }
       req.session.createGoalsForm = expectedCreateGoalsForm
 
-      const today = startOfToday()
-      const expectedFutureGoalTargetDates = [
-        futureGoalTargetDateCalculator(today, 3),
-        futureGoalTargetDateCalculator(today, 6),
-        futureGoalTargetDateCalculator(today, 12),
-      ]
       const expectedView = {
         prisonerSummary,
         form: expectedCreateGoalsForm,
-        futureGoalTargetDates: expectedFutureGoalTargetDates,
+        goalTargetCompletionDateOptions: GoalTargetCompletionDateOption,
         errors,
       }
 

@@ -1,6 +1,8 @@
+import { addMonths, parse, startOfToday } from 'date-fns'
 import type { CreateGoalsForm } from 'forms'
 import type { CreateGoalDto } from 'dto'
 import toCreateGoalDtos from './createGoalDtoMapper'
+import GoalTargetCompletionDateOption from '../../enums/goalTargetCompletionDateOption'
 
 describe('toCreateGoalDtos', () => {
   it('should map to toCreateGoalDtos', () => {
@@ -12,13 +14,13 @@ describe('toCreateGoalDtos', () => {
       goals: [
         {
           title: 'Goal 1',
-          targetCompletionDate: '2024-12-31',
+          targetCompletionDate: GoalTargetCompletionDateOption.THREE_MONTHS,
           steps: [{ title: 'Goal 1, Step 1' }, { title: 'Goal 1, Step 2' }],
           note: 'Goal 1 notes',
         },
         {
           title: 'Goal 2',
-          targetCompletionDate: 'another-date',
+          targetCompletionDate: GoalTargetCompletionDateOption.ANOTHER_DATE,
           'targetCompletionDate-day': '28',
           'targetCompletionDate-month': '2',
           'targetCompletionDate-year': '2025',
@@ -37,7 +39,7 @@ describe('toCreateGoalDtos', () => {
           { title: 'Goal 1, Step 1', sequenceNumber: 1 },
           { title: 'Goal 1, Step 2', sequenceNumber: 2 },
         ],
-        targetCompletionDate: new Date('2024-12-31T00:00:00.000Z'),
+        targetCompletionDate: addMonths(startOfToday(), 3),
         note: 'Goal 1 notes',
       },
       {
@@ -45,7 +47,7 @@ describe('toCreateGoalDtos', () => {
         prisonId,
         title: 'Goal 2',
         steps: [{ title: 'Goal 2, Step 1', sequenceNumber: 1 }],
-        targetCompletionDate: new Date('2025-02-28T00:00:00.000Z'),
+        targetCompletionDate: parse('2025-02-28', 'yyyy-MM-dd', startOfToday()),
         note: 'Goal 2 notes',
       },
     ]
