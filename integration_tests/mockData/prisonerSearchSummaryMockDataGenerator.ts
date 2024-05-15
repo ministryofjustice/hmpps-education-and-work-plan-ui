@@ -1,5 +1,5 @@
 import type { PrisonerSearchSummary } from 'viewModels'
-import moment from 'moment'
+import { addDays, startOfToday, subDays } from 'date-fns'
 
 /**
  * Generator function that can be called as a cypress task that generates and returns an array of random `PrisonerSearchSummary`
@@ -46,19 +46,19 @@ const randomSurname = (): string => SURNAMES[randomNumber(1, SURNAMES.length) - 
 /**
  * Returns a random date sometime between 6570 days (18 years) and 25550 days (70 years) years before today
  */
-const randomDateOfBirth = (): Date => moment().subtract(randomNumber(6570, 25550), 'days').toDate()
+const randomDateOfBirth = (): Date => subDays(startOfToday(), randomNumber(6570, 25550))
 
 /**
  * Returns a random date sometime between 1 day (yesterday) and 5475 days (15 years) years before today
  */
-const randomReceptionDate = (): Date => moment().subtract(randomNumber(1, 5475), 'days').toDate()
+const randomReceptionDate = (): Date => subDays(startOfToday(), randomNumber(1, 5475))
 
 /**
  * Returns a random date sometime between 30 days and 5475 days (15 years) years after today; or undefined.
  * Approximately 5% will return undefined, meaning the prisoner has no release date.
  */
 const randomReleaseDate = (): Date | undefined =>
-  randomNumber(1, 100) > 5 ? moment().add(randomNumber(30, 5475), 'days').toDate() : undefined
+  randomNumber(1, 100) > 5 ? addDays(startOfToday(), randomNumber(30, 5475)) : undefined
 
 const randomLetters = (numberOfLetters: number): string => {
   const letters: Array<string> = []

@@ -1,5 +1,5 @@
+import { startOfToday, subMonths } from 'date-fns'
 import { SuperAgentRequest } from 'superagent'
-import moment from 'moment'
 import { stubFor } from './wiremock'
 
 const stubNeurodivergenceForPrisonerWithAllCategoriesOfSupportNeed = (prisonNumber = 'G6115VJ'): SuperAgentRequest =>
@@ -342,9 +342,9 @@ const stubLearnerEducationWithCompletedCoursesInLast12Months = (
             courseCode: '246674',
             isAccredited: true,
             aimSequenceNumber: 1,
-            learningStartDate: moment().subtract(8, 'months').toDate(),
-            learningPlannedEndDate: moment().subtract(2, 'months').toDate(),
-            learningActualEndDate: moment().subtract(1, 'months').toDate(),
+            learningStartDate: subMonths(startOfToday(), 8),
+            learningPlannedEndDate: subMonths(startOfToday(), 2),
+            learningActualEndDate: subMonths(startOfToday(), 1),
             learnersAimType: 'Component learning aim within a programme',
             miNotionalNVQLevelV2: 'Level 5',
             sectorSubjectAreaTier1: 'Science and Mathematics',
@@ -426,9 +426,9 @@ const stubLearnerEducationWithCompletedCoursesOlderThanLast12Months = (
             courseCode: '246674',
             isAccredited: true,
             aimSequenceNumber: 1,
-            learningStartDate: moment().subtract(24, 'months').toDate(),
-            learningPlannedEndDate: moment().subtract(20, 'months').toDate(),
-            learningActualEndDate: moment().subtract(21, 'months').toDate(),
+            learningStartDate: subMonths(startOfToday(), 24),
+            learningPlannedEndDate: subMonths(startOfToday(), 20),
+            learningActualEndDate: subMonths(startOfToday(), 21),
             learnersAimType: 'Component learning aim within a programme',
             miNotionalNVQLevelV2: 'Level 5',
             sectorSubjectAreaTier1: 'Science and Mathematics',
