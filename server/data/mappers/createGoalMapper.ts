@@ -1,5 +1,6 @@
 import type { CreateGoalRequest, CreateStepRequest } from 'educationAndWorkPlanApiClient'
 import type { AddStepDto, CreateGoalDto } from 'dto'
+import { format } from 'date-fns'
 
 const toCreateGoalRequest = (createGoalDto: CreateGoalDto): CreateGoalRequest => {
   return {
@@ -7,7 +8,7 @@ const toCreateGoalRequest = (createGoalDto: CreateGoalDto): CreateGoalRequest =>
     title: createGoalDto.title,
     category: 'WORK',
     steps: toAddStepRequests(createGoalDto),
-    targetCompletionDate: toDateString(createGoalDto.targetCompletionDate),
+    targetCompletionDate: format(createGoalDto.targetCompletionDate, 'yyyy-MM-dd'),
     notes: createGoalDto.note,
     prisonId: createGoalDto.prisonId,
   }
@@ -22,10 +23,6 @@ const toAddStepRequest = (addStepDto: AddStepDto): CreateStepRequest => {
     title: addStepDto.title,
     sequenceNumber: addStepDto.sequenceNumber,
   }
-}
-
-const toDateString = (date: Date): string => {
-  return date?.toISOString().split('T')[0]
 }
 
 export { toCreateGoalRequest, toAddStepRequest }
