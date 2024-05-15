@@ -1,7 +1,6 @@
 import express from 'express'
 
 import createError from 'http-errors'
-import flash from 'connect-flash'
 
 import nunjucksSetup from './utils/nunjucksSetup'
 import errorHandler from './errorHandler'
@@ -43,14 +42,12 @@ export default function createApp(services: Services): express.Application {
   app.locals.environmentName = config.environmentName
   app.locals.environmentNameColour = config.environmentName === 'PRE-PRODUCTION' ? 'govuk-tag--green' : ''
 
-  app.use(flash())
-  app.use(successMiddleware)
-
   nunjucksSetup(app, services.applicationInfo)
   app.use(setUpAuthentication())
   app.use(authorisationMiddleware())
   app.use(setUpCsrf())
   app.use(setUpCurrentUser(services))
+  app.use(successMiddleware)
 
   app.get('*', getFrontendComponents(services))
 

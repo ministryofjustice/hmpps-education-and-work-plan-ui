@@ -30,12 +30,6 @@ import type { UserDetails } from '../../services/userService'
 
 export default {}
 
-declare module 'express-serve-static-core' {
-  interface Response {
-    redirectWithSuccess?(path: string, message: string): void
-  }
-}
-
 declare module 'express-session' {
   // Declare that the session will potentially contain these additional fields
   interface SessionData {
@@ -79,6 +73,10 @@ export declare global {
       username: string
       token: string
       authSource: string
+    }
+
+    interface Response {
+      redirectWithSuccess?(path: string, message: string): void
     }
 
     interface Request {
