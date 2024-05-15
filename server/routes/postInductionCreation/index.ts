@@ -1,6 +1,5 @@
 import { Router } from 'express'
 import { EducationAndWorkPlanService, Services } from '../../services'
-import config from '../../config'
 import asyncMiddleware from '../../middleware/asyncMiddleware'
 
 /**
@@ -8,7 +7,7 @@ import asyncMiddleware from '../../middleware/asyncMiddleware'
  */
 export default (router: Router, services: Services) => {
   /**
-   * The CIAG UI redirects to '/plan/:prisonNumber/induction-created' after creating the Induction.
+   * The Induction screens redirect to '/plan/:prisonNumber/induction-created' after creating the Induction.
    * This route handler redirects to the relevant PLP route depending on whether the prisoner already has goals or not.
    */
   router.get(
@@ -17,13 +16,9 @@ export default (router: Router, services: Services) => {
       const userToken = req.user.token
       const { prisonNumber } = req.params
 
-      const createGoalUrl = config.featureToggles.newCreateGoalJourneyEnabled
-        ? `/plan/${prisonNumber}/goals/create`
-        : `/plan/${prisonNumber}/goals/1/create`
-
       return (await prisonerHasActionPlan(prisonNumber, userToken, services.educationAndWorkPlanService))
         ? res.redirect(`/plan/${prisonNumber}/view/overview`) // Action Plan with goal(s) exists already. Redirect to the Overview page
-        : res.redirect(createGoalUrl) // Action Plan goals do not exist yet. Redirect to the Create Goal flow routes.
+        : res.redirect(`/plan/${prisonNumber}/goals/create`) // Action Plan goals do not exist yet. Redirect to the Create Goals flow routes.
     }),
   )
 }

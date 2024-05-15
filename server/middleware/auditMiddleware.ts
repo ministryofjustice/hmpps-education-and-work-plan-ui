@@ -18,11 +18,6 @@ const pageViewEventMap: Record<string, Page> = {
 
   // Create goals
   '/plan/:prisonNumber/goals/create': Page.CREATE_GOALS,
-  // TODO - RR-769 - Remove route auditing for original Create Goal journey
-  '/plan/:prisonNumber/goals/:goalIndex/add-step/:stepIndex': Page.CREATE_GOAL_ADD_STEP,
-  '/plan/:prisonNumber/goals/:goalIndex/add-note': Page.CREATE_GOAL_ADD_NOTE,
-  '/plan/:prisonNumber/goals/:goalIndex/create': Page.CREATE_GOAL,
-  '/plan/:prisonNumber/goals/review': Page.CREATE_GOALS_REVIEW,
 
   // Update goals
   '/plan/:prisonNumber/goals/:goalReference/update': Page.UPDATE_GOALS,

@@ -57,7 +57,6 @@ generic-service:
     CREATE_INDUCTION_ENABLED: "false"
     UPDATE_INDUCTION_ENABLED: "false"
     NEW_COURSE_AND_QUALIFICATION_HISTORY_ENABLED: "false"
-    NEW_CREATE_GOAL_JOURNEY_ENABLED: "true"
     AUDIT_SERVICE_NAME: "hmpps-education-and-work-plan"
     AUDIT_ENABLED: "true"
 

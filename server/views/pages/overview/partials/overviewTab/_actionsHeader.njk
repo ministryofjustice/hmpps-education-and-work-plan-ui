@@ -12,17 +12,9 @@
       <div class="moj-button-menu">
         <div class="moj-button-menu__wrapper">
 
-          {%- set createGoalsUrl -%}
-            {%- if featureToggles.newCreateGoalJourneyEnabled -%}
-              /plan/{{ prisonNumber }}/goals/create
-            {%- else -%}
-              /plan/{{ prisonNumber }}/goals/1/create
-            {%- endif -%}
-          {%- endset -%}
-
           {{ govukButton({
             text: "Add a new goal",
-            href: createGoalsUrl,
+            href: "/plan/" + prisonNumber + "/goals/create",
             id: "add-goal-button",
             classes: "moj-button-menu__item moj-page-header-actions__action govuk-!-display-none-print"
           }) }}
