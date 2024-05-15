@@ -156,15 +156,14 @@ describe('auditMiddleware', () => {
   it('should raise page view audit events with the user subject and path params', async () => {
     // Given
     const prisonNumber = 'A1234AA'
-    const goalIndex = '1'
     prisonerSearchService.getPrisonerByPrisonNumber.mockResolvedValue(aValidPrisoner({ prisonNumber }))
 
     // When
-    const response = await request(app).get(`/plan/${prisonNumber}/goals/${goalIndex}/create`)
+    const response = await request(app).get(`/plan/${prisonNumber}/goals/create`)
 
     // Then
     expect(response.statusCode).toBe(200)
-    expect(auditService.logPageViewAttempt).toHaveBeenCalledWith(Page.CREATE_GOAL, {
+    expect(auditService.logPageViewAttempt).toHaveBeenCalledWith(Page.CREATE_GOALS, {
       who: 'user1',
       subjectType: 'PRISONER_ID',
       subjectId: prisonNumber,
@@ -172,12 +171,11 @@ describe('auditMiddleware', () => {
       details: {
         params: {
           prisonNumber,
-          goalIndex,
         },
         query: {},
       },
     })
-    expect(auditService.logPageView).toHaveBeenCalledWith(Page.CREATE_GOAL, {
+    expect(auditService.logPageView).toHaveBeenCalledWith(Page.CREATE_GOALS, {
       who: 'user1',
       subjectType: 'PRISONER_ID',
       subjectId: prisonNumber,
@@ -185,7 +183,6 @@ describe('auditMiddleware', () => {
       details: {
         params: {
           prisonNumber,
-          goalIndex,
         },
         query: {},
       },

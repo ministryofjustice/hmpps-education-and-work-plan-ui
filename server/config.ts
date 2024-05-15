@@ -188,6 +188,5 @@ export default {
     newCourseAndQualificationHistoryEnabled: toBoolean(
       get('NEW_COURSE_AND_QUALIFICATION_HISTORY_ENABLED', false, requiredInProduction),
     ),
-    newCreateGoalJourneyEnabled: toBoolean(get('NEW_CREATE_GOAL_JOURNEY_ENABLED', false, requiredInProduction)),
   },
 }
