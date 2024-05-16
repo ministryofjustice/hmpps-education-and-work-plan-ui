@@ -30,9 +30,9 @@
 
       <form class="form" method="post" novalidate="">
         <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
-        <input type="hidden" name="prisonNumber" value="{{ form.prisonNumber }}" />
+        <input type="hidden" name="prisonNumber" value="{{ prisonerSummary.prisonNumber }}" />
 
-        {% for goals in form.goals %}
+        {% for goals in form.goals or range(1) %}
         {% set goalLoop = loop %}
         <div class="govuk-summary-card">
           <div class="govuk-summary-card__title-wrapper">
@@ -145,7 +145,7 @@
 
             <h3 class="govuk-heading-s">Add steps to help them achieve this goal</h3>
 
-            {% for steps in form.goals[goalLoop.index0].steps %}
+            {% for steps in form.goals[goalLoop.index0].steps or range(1) %}
               {% set stepLoop = loop %}
 
               {% call govukFieldset({

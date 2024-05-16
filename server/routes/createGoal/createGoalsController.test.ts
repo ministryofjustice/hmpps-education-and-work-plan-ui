@@ -55,23 +55,12 @@ describe('createGoalsController', () => {
   })
 
   describe('getCreateGoalsView', () => {
-    it('should get create goals view given form object is not already on the session', async () => {
+    it('should get create goals view with no form object on the session', async () => {
       // Given
       req.session.createGoalsForm = undefined
 
-      const expectedCreateGoalsForm: CreateGoalsForm = {
-        prisonNumber,
-        goals: [
-          {
-            title: '',
-            steps: [{ title: '' }],
-          },
-        ],
-      }
-
       const expectedView = {
         prisonerSummary,
-        form: expectedCreateGoalsForm,
         goalTargetCompletionDateOptions: GoalTargetCompletionDateOption,
         errors,
       }
