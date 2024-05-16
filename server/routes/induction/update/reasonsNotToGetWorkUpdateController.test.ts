@@ -23,18 +23,16 @@ describe('reasonsNotToGetWorkUpdateController', () => {
   const prisonNumber = 'A1234BC'
   const prisonerSummary = aValidPrisonerSummary()
 
-  const noErrors: Array<Record<string, string>> = []
-
   const req = {
     session: {} as SessionData,
     body: {},
     user: {} as Express.User,
     params: {} as Record<string, string>,
-    flash: jest.fn(),
     path: '',
   }
   const res = {
     redirect: jest.fn(),
+    redirectWithErrors: jest.fn(),
     render: jest.fn(),
   }
   const next = jest.fn()
@@ -65,7 +63,6 @@ describe('reasonsNotToGetWorkUpdateController', () => {
         form: expectedReasonsNotToGetWorkForm,
         backLinkUrl: '/plan/A1234BC/view/work-and-interests',
         backLinkAriaText: `Back to Jimmy Lightfingers's learning and work progress`,
-        errors: noErrors,
       }
 
       // When
@@ -97,7 +94,6 @@ describe('reasonsNotToGetWorkUpdateController', () => {
         form: expectedReasonsNotToGetWorkForm,
         backLinkUrl: '/plan/A1234BC/view/work-and-interests',
         backLinkAriaText: `Back to Jimmy Lightfingers's learning and work progress`,
-        errors: noErrors,
       }
 
       // When
@@ -136,7 +132,6 @@ describe('reasonsNotToGetWorkUpdateController', () => {
         form: expectedReasonsNotToGetWorkForm,
         backLinkUrl: '/prisoners/A1234BC/induction/hoping-to-work-on-release',
         backLinkAriaText: `Back to Is Jimmy Lightfingers hoping to get work when they're released?`,
-        errors: noErrors,
       }
       const expectedPageFlowHistory = {
         pageUrls: [
@@ -189,8 +184,10 @@ describe('reasonsNotToGetWorkUpdateController', () => {
       )
 
       // Then
-      expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/induction/reasons-not-to-get-work')
-      expect(req.flash).toHaveBeenCalledWith('errors', expectedErrors)
+      expect(res.redirectWithErrors).toHaveBeenCalledWith(
+        '/prisoners/A1234BC/induction/reasons-not-to-get-work',
+        expectedErrors,
+      )
       expect(req.session.reasonsNotToGetWorkForm).toEqual(invalidReasonsNotToGetWorkForm)
       expect(req.session.inductionDto).toEqual(inductionDto)
     })

@@ -36,8 +36,7 @@ export default class PersonalInterestsCreateController extends PersonalInterests
 
     const errors = validatePersonalInterestsForm(personalInterestsForm, prisonerSummary)
     if (errors.length > 0) {
-      req.flash('errors', errors)
-      return res.redirect(`/prisoners/${prisonNumber}/create-induction/personal-interests`)
+      return res.redirectWithErrors(`/prisoners/${prisonNumber}/create-induction/personal-interests`, errors)
     }
 
     const updatedInduction = this.updatedInductionDtoWithPersonalInterests(inductionDto, personalInterestsForm)

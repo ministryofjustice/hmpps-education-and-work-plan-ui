@@ -32,7 +32,6 @@ export default abstract class ReasonsNotToGetWorkController extends InductionCon
       this.getBackLinkUrl(req),
       this.getBackLinkAriaText(req),
       reasonsNotToGetWorkForm,
-      req.flash('errors'),
     )
     return res.render('pages/induction/reasonsNotToGetWork/index', { ...view.renderArgs })
   }

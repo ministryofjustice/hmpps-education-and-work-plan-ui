@@ -14,8 +14,6 @@ describe('wantToAddQualificationsCreateController', () => {
   const prisonNumber = 'A1234BC'
   const prisonerSummary = aValidPrisonerSummary()
 
-  const noErrors: Array<Record<string, string>> = []
-
   // Returns a DTO for this step of the create journey
   const partialInductionDto = () => {
     const inductionDto = aShortQuestionSetInductionDto({ hopingToGetWork: HopingToGetWorkValue.NO })
@@ -26,6 +24,7 @@ describe('wantToAddQualificationsCreateController', () => {
   let req: Request
   const res = {
     redirect: jest.fn(),
+    redirectWithErrors: jest.fn(),
     render: jest.fn(),
   } as unknown as Response
   const next = jest.fn()
@@ -37,7 +36,6 @@ describe('wantToAddQualificationsCreateController', () => {
       body: {},
       user: { token: 'some-token' },
       params: { prisonNumber },
-      flash: jest.fn(),
       path: `/prisoners/${prisonNumber}/create-induction/want-to-add-qualifications`,
     } as unknown as Request
   })
@@ -62,7 +60,6 @@ describe('wantToAddQualificationsCreateController', () => {
         backLinkAriaText: `Back to What could stop Jimmy Lightfingers working when they are released?`,
         form: expectedWantToAddQualificationsForm,
         functionalSkills: expectedFunctionalSkills,
-        errors: noErrors,
       }
 
       // When
@@ -99,8 +96,10 @@ describe('wantToAddQualificationsCreateController', () => {
       await controller.submitWantToAddQualificationsForm(req, res, next)
 
       // Then
-      expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-induction/want-to-add-qualifications')
-      expect(req.flash).toHaveBeenCalledWith('errors', expectedErrors)
+      expect(res.redirectWithErrors).toHaveBeenCalledWith(
+        '/prisoners/A1234BC/create-induction/want-to-add-qualifications',
+        expectedErrors,
+      )
       expect(req.session.wantToAddQualificationsForm).toEqual(invalidWantToAddQualificationsForm)
       expect(req.session.inductionDto.previousQualifications).toBeUndefined()
     })

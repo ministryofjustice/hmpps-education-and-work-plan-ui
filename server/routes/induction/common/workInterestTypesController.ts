@@ -30,7 +30,6 @@ export default abstract class WorkInterestTypesController extends InductionContr
       this.getBackLinkUrl(req),
       this.getBackLinkAriaText(req),
       workInterestTypesForm,
-      req.flash('errors'),
     )
     return res.render('pages/induction/workInterests/workInterestTypes', { ...view.renderArgs })
   }

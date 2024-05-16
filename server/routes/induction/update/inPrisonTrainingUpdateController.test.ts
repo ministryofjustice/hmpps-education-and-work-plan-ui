@@ -23,18 +23,16 @@ describe('inPrisonTrainingUpdateController', () => {
   const prisonNumber = 'A1234BC'
   const prisonerSummary = aValidPrisonerSummary()
 
-  const noErrors: Array<Record<string, string>> = []
-
   const req = {
     session: {} as SessionData,
     body: {},
     user: {} as Express.User,
     params: {} as Record<string, string>,
-    flash: jest.fn(),
     path: '',
   }
   const res = {
     redirect: jest.fn(),
+    redirectWithErrors: jest.fn(),
     render: jest.fn(),
   }
   const next = jest.fn()
@@ -69,7 +67,6 @@ describe('inPrisonTrainingUpdateController', () => {
         form: expectedInPrisonTrainingForm,
         backLinkUrl: '/plan/A1234BC/view/education-and-training',
         backLinkAriaText: `Back to Jimmy Lightfingers's learning and work progress`,
-        errors: noErrors,
       }
 
       // When
@@ -101,7 +98,6 @@ describe('inPrisonTrainingUpdateController', () => {
         form: expectedInPrisonTrainingForm,
         backLinkUrl: '/plan/A1234BC/view/education-and-training',
         backLinkAriaText: `Back to Jimmy Lightfingers's learning and work progress`,
-        errors: noErrors,
       }
 
       // When
@@ -141,7 +137,6 @@ describe('inPrisonTrainingUpdateController', () => {
         form: expectedInPrisonTrainingForm,
         backLinkUrl: '/prisoners/A1234BC/induction/in-prison-work',
         backLinkAriaText: 'Back to What type of work would Jimmy Lightfingers like to do in prison?',
-        errors: noErrors,
       }
       const expectedPageFlowHistory = {
         pageUrls: ['/prisoners/A1234BC/induction/in-prison-work', '/prisoners/A1234BC/induction/in-prison-training'],
@@ -190,8 +185,10 @@ describe('inPrisonTrainingUpdateController', () => {
       )
 
       // Then
-      expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/induction/in-prison-training')
-      expect(req.flash).toHaveBeenCalledWith('errors', expectedErrors)
+      expect(res.redirectWithErrors).toHaveBeenCalledWith(
+        '/prisoners/A1234BC/induction/in-prison-training',
+        expectedErrors,
+      )
       expect(req.session.inPrisonTrainingForm).toEqual(invalidInPrisonTrainingForm)
       expect(req.session.inductionDto).toEqual(inductionDto)
     })

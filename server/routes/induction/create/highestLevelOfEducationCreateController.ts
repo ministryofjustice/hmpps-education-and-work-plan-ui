@@ -31,8 +31,7 @@ export default class HighestLevelOfEducationCreateController extends HighestLeve
 
     const errors = validateHighestLevelOfEducationForm(highestLevelOfEducationForm, prisonerSummary)
     if (errors.length > 0) {
-      req.flash('errors', errors)
-      return res.redirect(`/prisoners/${prisonNumber}/create-induction/highest-level-of-education`)
+      return res.redirectWithErrors(`/prisoners/${prisonNumber}/create-induction/highest-level-of-education`, errors)
     }
 
     const updatedInduction = this.updatedInductionDtoWithHighestLevelOfEducation(

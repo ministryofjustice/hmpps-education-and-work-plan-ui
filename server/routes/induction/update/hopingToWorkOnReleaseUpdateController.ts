@@ -43,8 +43,7 @@ export default class HopingToWorkOnReleaseUpdateController extends HopingToWorkO
 
     const errors = validateHopingToWorkOnReleaseForm(hopingToWorkOnReleaseForm, prisonerSummary)
     if (errors.length > 0) {
-      req.flash('errors', errors)
-      return res.redirect(`/prisoners/${prisonNumber}/induction/hoping-to-work-on-release`)
+      return res.redirectWithErrors(`/prisoners/${prisonNumber}/induction/hoping-to-work-on-release`, errors)
     }
 
     const updatedInduction = updatedInductionDtoWithHopingToWorkOnRelease(inductionDto, hopingToWorkOnReleaseForm)

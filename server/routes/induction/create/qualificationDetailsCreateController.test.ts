@@ -11,18 +11,16 @@ describe('qualificationDetailsCreateController', () => {
   const prisonNumber = 'A1234BC'
   const prisonerSummary = aValidPrisonerSummary()
 
-  const noErrors: Array<Record<string, string>> = []
-
   const req = {
     session: {} as SessionData,
     body: {},
     user: {} as Express.User,
     params: {} as Record<string, string>,
-    flash: jest.fn(),
     path: '',
   }
   const res = {
     redirect: jest.fn(),
+    redirectWithErrors: jest.fn(),
     render: jest.fn(),
   }
   const next = jest.fn()
@@ -64,7 +62,6 @@ describe('qualificationDetailsCreateController', () => {
         qualificationLevel: QualificationLevelValue.LEVEL_3,
         backLinkUrl: '/prisoners/A1234BC/create-induction/qualification-level',
         backLinkAriaText: 'Back to What level of qualification does Jimmy Lightfingers want to add',
-        errors: noErrors,
       }
       const expectedPageFlowHistory = {
         pageUrls: [
@@ -118,7 +115,6 @@ describe('qualificationDetailsCreateController', () => {
         qualificationLevel: QualificationLevelValue.LEVEL_3,
         backLinkUrl: '/prisoners/A1234BC/create-induction/qualification-level',
         backLinkAriaText: 'Back to What level of qualification does Jimmy Lightfingers want to add',
-        errors: noErrors,
       }
       const expectedPageFlowHistory = {
         pageUrls: [
@@ -186,8 +182,10 @@ describe('qualificationDetailsCreateController', () => {
       )
 
       // Then
-      expect(res.redirect).toHaveBeenCalledWith(`/prisoners/${prisonNumber}/create-induction/qualification-details`)
-      expect(req.flash).toHaveBeenCalledWith('errors', expectedErrors)
+      expect(res.redirectWithErrors).toHaveBeenCalledWith(
+        `/prisoners/${prisonNumber}/create-induction/qualification-details`,
+        expectedErrors,
+      )
       expect(req.session.qualificationDetailsForm).toEqual(invalidQualificationDetailsForm)
       expect(req.session.qualificationLevelForm).toEqual(qualificationLevelForm)
       expect(req.session.inductionDto).toEqual(inductionDto)

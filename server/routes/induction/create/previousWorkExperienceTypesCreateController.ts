@@ -40,9 +40,9 @@ export default class PreviousWorkExperienceTypesCreateController extends Previou
     req.session.previousWorkExperienceTypesForm = previousWorkExperienceTypesForm
 
     const errors = validatePreviousWorkExperienceTypesForm(previousWorkExperienceTypesForm, prisonerSummary)
+
     if (errors.length > 0) {
-      req.flash('errors', errors)
-      return res.redirect(`/prisoners/${prisonNumber}/create-induction/previous-work-experience`)
+      return res.redirectWithErrors(`/prisoners/${prisonNumber}/create-induction/previous-work-experience`, errors)
     }
 
     const updatedInduction = this.updatedInductionDtoWithPreviousWorkExperiences(

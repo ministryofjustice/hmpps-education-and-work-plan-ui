@@ -30,7 +30,6 @@ export default abstract class WorkedBeforeController extends InductionController
       this.getBackLinkUrl(req),
       this.getBackLinkAriaText(req),
       workedBeforeForm,
-      req.flash('errors'),
     )
     return res.render('pages/induction/workedBefore/index', { ...view.renderArgs })
   }

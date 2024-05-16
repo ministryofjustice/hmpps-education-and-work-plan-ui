@@ -61,8 +61,10 @@ export default class PreviousWorkExperienceDetailUpdateController extends Previo
 
     const errors = validatePreviousWorkExperienceDetailForm(previousWorkExperienceDetailForm, prisonerSummary)
     if (errors.length > 0) {
-      req.flash('errors', errors)
-      return res.redirect(`/prisoners/${prisonNumber}/induction/previous-work-experience/${typeOfWorkExperience}`)
+      return res.redirectWithErrors(
+        `/prisoners/${prisonNumber}/induction/previous-work-experience/${typeOfWorkExperience}`,
+        errors,
+      )
     }
 
     const updatedInduction = this.updatedInductionDtoWithPreviousWorkExperienceDetail(

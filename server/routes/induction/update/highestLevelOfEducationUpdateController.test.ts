@@ -28,11 +28,10 @@ describe('highestLevelOfEducationUpdateController', () => {
   const prisonNumber = 'A1234BC'
   const prisonerSummary = aValidPrisonerSummary()
 
-  const noErrors: Array<Record<string, string>> = []
-
   let req: Request
   const res = {
     redirect: jest.fn(),
+    redirectWithErrors: jest.fn(),
     render: jest.fn(),
   } as unknown as Response
   const next = jest.fn()
@@ -45,7 +44,6 @@ describe('highestLevelOfEducationUpdateController', () => {
       user: { token: 'some-token' } as Express.User,
       params: { prisonNumber } as Record<string, string>,
       path: `/prisoners/${prisonNumber}/induction/highest-level-of-education`,
-      flash: jest.fn(),
     } as unknown as Request
   })
 
@@ -65,7 +63,6 @@ describe('highestLevelOfEducationUpdateController', () => {
         form: expectedHighestLevelOfEducationForm,
         backLinkUrl: '/plan/A1234BC/view/education-and-training',
         backLinkAriaText: `Back to Jimmy Lightfingers's learning and work progress`,
-        errors: noErrors,
       }
 
       // When
@@ -95,7 +92,6 @@ describe('highestLevelOfEducationUpdateController', () => {
         form: expectedHighestLevelOfEducationForm,
         backLinkUrl: '/plan/A1234BC/view/education-and-training',
         backLinkAriaText: `Back to Jimmy Lightfingers's learning and work progress`,
-        errors: noErrors,
       }
 
       // When
@@ -133,7 +129,6 @@ describe('highestLevelOfEducationUpdateController', () => {
         form: expectedHighestLevelOfEducationForm,
         backLinkUrl: '/prisoners/A1234BC/induction/qualifications',
         backLinkAriaText: `Back to Jimmy Lightfingers's qualifications`,
-        errors: noErrors,
       }
       const expectedPageFlowHistory = {
         pageUrls: [
@@ -179,8 +174,10 @@ describe('highestLevelOfEducationUpdateController', () => {
       await controller.submitHighestLevelOfEducationForm(req, res, next)
 
       // Then
-      expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/induction/highest-level-of-education')
-      expect(req.flash).toHaveBeenCalledWith('errors', expectedErrors)
+      expect(res.redirectWithErrors).toHaveBeenCalledWith(
+        '/prisoners/A1234BC/induction/highest-level-of-education',
+        expectedErrors,
+      )
       expect(req.session.highestLevelOfEducationForm).toEqual(invalidHighestLevelOfEducationForm)
       expect(req.session.inductionDto).toEqual(inductionDto)
     })

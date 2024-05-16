@@ -32,8 +32,7 @@ export default class SkillsCreateController extends SkillsController {
 
     const errors = validateSkillsForm(skillsForm, prisonerSummary)
     if (errors.length > 0) {
-      req.flash('errors', errors)
-      return res.redirect(`/prisoners/${prisonNumber}/create-induction/skills`)
+      return res.redirectWithErrors(`/prisoners/${prisonNumber}/create-induction/skills`, errors)
     }
 
     const updatedInduction = this.updatedInductionDtoWithSkills(inductionDto, skillsForm)

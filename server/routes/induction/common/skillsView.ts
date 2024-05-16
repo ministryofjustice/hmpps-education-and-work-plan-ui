@@ -7,7 +7,6 @@ export default class SkillsView {
     private readonly backLinkUrl: string,
     private readonly backLinkAriaText: string,
     private readonly skillsForm: SkillsForm,
-    private readonly errors?: Array<Record<string, string>>,
   ) {}
 
   get renderArgs(): {
@@ -15,14 +14,12 @@ export default class SkillsView {
     backLinkUrl: string
     backLinkAriaText: string
     form: SkillsForm
-    errors?: Array<Record<string, string>>
   } {
     return {
       prisonerSummary: this.prisonerSummary,
       backLinkUrl: this.backLinkUrl,
       backLinkAriaText: this.backLinkAriaText,
       form: this.skillsForm,
-      errors: this.errors || [],
     }
   }
 }

@@ -31,7 +31,6 @@ export default abstract class HopingToWorkOnReleaseController extends InductionC
       this.getBackLinkUrl(req),
       this.getBackLinkAriaText(req),
       hopingToWorkOnReleaseForm,
-      req.flash('errors'),
     )
     return res.render('pages/induction/hopingToWorkOnRelease/index', { ...view.renderArgs })
   }

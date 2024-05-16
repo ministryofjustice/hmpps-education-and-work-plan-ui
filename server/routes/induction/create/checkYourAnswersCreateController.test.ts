@@ -33,7 +33,6 @@ describe('checkYourAnswersCreateController', () => {
       session: { prisonerSummary } as SessionData,
       user: { token: 'some-token' } as Express.User,
       params: { prisonNumber } as Record<string, string>,
-      flash: jest.fn(),
     } as unknown as Request
     res = {
       redirect: jest.fn(),

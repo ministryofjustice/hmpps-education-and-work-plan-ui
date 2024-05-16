@@ -13,8 +13,6 @@ describe('inPrisonTrainingCreateController', () => {
   const prisonNumber = 'A1234BC'
   const prisonerSummary = aValidPrisonerSummary()
 
-  const noErrors: Array<Record<string, string>> = []
-
   let req: Request
   let res: Response
   const next = jest.fn()
@@ -26,11 +24,11 @@ describe('inPrisonTrainingCreateController', () => {
       body: {},
       user: {} as Express.User,
       params: { prisonNumber } as Record<string, string>,
-      flash: jest.fn(),
       path: `/prisoners/${prisonNumber}/create-induction/in-prison-training`,
     } as unknown as Request
     res = {
       redirect: jest.fn(),
+      redirectWithErrors: jest.fn(),
       render: jest.fn(),
     } as unknown as Response
   })
@@ -53,7 +51,6 @@ describe('inPrisonTrainingCreateController', () => {
         form: expectedInPrisonTrainingForm,
         backLinkUrl: '/prisoners/A1234BC/create-induction/in-prison-work',
         backLinkAriaText: 'Back to What type of work would Jimmy Lightfingers like to do in prison?',
-        errors: noErrors,
       }
 
       // When
@@ -82,7 +79,6 @@ describe('inPrisonTrainingCreateController', () => {
         form: expectedInPrisonTrainingForm,
         backLinkUrl: '/prisoners/A1234BC/create-induction/in-prison-work',
         backLinkAriaText: 'Back to What type of work would Jimmy Lightfingers like to do in prison?',
-        errors: noErrors,
       }
 
       // When
@@ -123,7 +119,6 @@ describe('inPrisonTrainingCreateController', () => {
         form: expectedInPrisonTrainingForm,
         backLinkUrl: '/prisoners/A1234BC/create-induction/check-your-answers',
         backLinkAriaText: `Back to Check and save your answers before adding Jimmy Lightfingers's goals`,
-        errors: noErrors,
       }
 
       // When
@@ -166,8 +161,10 @@ describe('inPrisonTrainingCreateController', () => {
       )
 
       // Then
-      expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-induction/in-prison-training')
-      expect(req.flash).toHaveBeenCalledWith('errors', expectedErrors)
+      expect(res.redirectWithErrors).toHaveBeenCalledWith(
+        '/prisoners/A1234BC/create-induction/in-prison-training',
+        expectedErrors,
+      )
       expect(req.session.inPrisonTrainingForm).toEqual(invalidInPrisonTrainingForm)
       expect(req.session.inductionDto).toEqual(inductionDto)
     })

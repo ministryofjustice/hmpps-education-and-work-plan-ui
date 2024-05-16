@@ -7,7 +7,6 @@ export default class AffectAbilityToWorkView {
     private readonly backLinkUrl: string,
     private readonly backLinkAriaText: string,
     private readonly workInterestTypesForm: WorkInterestTypesForm,
-    private readonly errors?: Array<Record<string, string>>,
   ) {}
 
   get renderArgs(): {
@@ -15,14 +14,12 @@ export default class AffectAbilityToWorkView {
     backLinkUrl: string
     backLinkAriaText: string
     form: WorkInterestTypesForm
-    errors?: Array<Record<string, string>>
   } {
     return {
       prisonerSummary: this.prisonerSummary,
       backLinkUrl: this.backLinkUrl,
       backLinkAriaText: this.backLinkAriaText,
       form: this.workInterestTypesForm,
-      errors: this.errors || [],
     }
   }
 }

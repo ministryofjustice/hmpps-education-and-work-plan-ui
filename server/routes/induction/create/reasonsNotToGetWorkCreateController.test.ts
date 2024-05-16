@@ -16,8 +16,6 @@ describe('reasonsNotToGetWorkCreateController', () => {
   let res: Response
   const next = jest.fn()
 
-  const noErrors: Array<Record<string, string>> = []
-
   beforeEach(() => {
     jest.resetAllMocks()
     req = {
@@ -26,11 +24,11 @@ describe('reasonsNotToGetWorkCreateController', () => {
       body: {},
       user: {} as Express.User,
       params: { prisonNumber } as Record<string, string>,
-      flash: jest.fn(),
     } as unknown as Request
 
     res = {
       redirect: jest.fn(),
+      redirectWithErrors: jest.fn(),
       render: jest.fn(),
     } as unknown as Response
   })
@@ -53,7 +51,6 @@ describe('reasonsNotToGetWorkCreateController', () => {
         form: expectedReasonsNotToGetWorkForm,
         backLinkUrl: '/prisoners/A1234BC/create-induction/hoping-to-work-on-release',
         backLinkAriaText: `Back to Is Jimmy Lightfingers hoping to get work when they're released?`,
-        errors: noErrors,
       }
 
       // When
@@ -82,7 +79,6 @@ describe('reasonsNotToGetWorkCreateController', () => {
         form: expectedReasonsNotToGetWorkForm,
         backLinkUrl: '/prisoners/A1234BC/create-induction/hoping-to-work-on-release',
         backLinkAriaText: `Back to Is Jimmy Lightfingers hoping to get work when they're released?`,
-        errors: noErrors,
       }
 
       // When
@@ -122,7 +118,6 @@ describe('reasonsNotToGetWorkCreateController', () => {
         form: expectedReasonsNotToGetWorkForm,
         backLinkUrl: '/prisoners/A1234BC/create-induction/check-your-answers',
         backLinkAriaText: `Back to Check and save your answers before adding Jimmy Lightfingers's goals`,
-        errors: noErrors,
       }
 
       // When
@@ -161,8 +156,10 @@ describe('reasonsNotToGetWorkCreateController', () => {
       await controller.submitReasonsNotToGetWorkForm(req, res, next)
 
       // Then
-      expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-induction/reasons-not-to-get-work')
-      expect(req.flash).toHaveBeenCalledWith('errors', expectedErrors)
+      expect(res.redirectWithErrors).toHaveBeenCalledWith(
+        '/prisoners/A1234BC/create-induction/reasons-not-to-get-work',
+        expectedErrors,
+      )
       expect(req.session.reasonsNotToGetWorkForm).toEqual(invalidReasonsNotToGetWOrkForm)
       expect(req.session.inductionDto).toEqual(inductionDto)
     })
@@ -194,7 +191,6 @@ describe('reasonsNotToGetWorkCreateController', () => {
 
       // Then
       expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-induction/want-to-add-qualifications')
-      expect(req.flash).toHaveBeenCalledTimes(0)
       expect(req.session.reasonsNotToGetWorkForm).toBeUndefined()
       const updatedInduction = req.session.inductionDto
       expect(updatedInduction.workOnRelease.notHopingToWorkReasons).toEqual(expectedReasons)
@@ -227,7 +223,6 @@ describe('reasonsNotToGetWorkCreateController', () => {
 
       // Then
       expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-induction/qualifications')
-      expect(req.flash).toHaveBeenCalledTimes(0)
       expect(req.session.reasonsNotToGetWorkForm).toBeUndefined()
       const updatedInduction = req.session.inductionDto
       expect(updatedInduction.workOnRelease.notHopingToWorkReasons).toEqual(expectedReasons)

@@ -35,7 +35,6 @@ export default abstract class PreviousWorkExperienceTypesController extends Indu
       this.getBackLinkUrl(req),
       this.getBackLinkAriaText(req),
       previousWorkExperienceDetailsForm,
-      req.flash('errors'),
     )
     return res.render('pages/induction/previousWorkExperience/workExperienceTypes', { ...view.renderArgs })
   }

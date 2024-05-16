@@ -9,7 +9,6 @@ export default class PreviousWorkExperienceDetailView {
     private readonly backLinkAriaText: string,
     private readonly previousWorkExperienceDetailForm: PreviousWorkExperienceDetailForm,
     private readonly typeOfWorkExperience: TypeOfWorkExperienceValue,
-    private readonly errors?: Array<Record<string, string>>,
   ) {}
 
   get renderArgs(): {
@@ -18,7 +17,6 @@ export default class PreviousWorkExperienceDetailView {
     backLinkAriaText: string
     form: PreviousWorkExperienceDetailForm
     typeOfWorkExperience: TypeOfWorkExperienceValue
-    errors?: Array<Record<string, string>>
   } {
     return {
       prisonerSummary: this.prisonerSummary,
@@ -26,7 +24,6 @@ export default class PreviousWorkExperienceDetailView {
       backLinkAriaText: this.backLinkAriaText,
       form: this.previousWorkExperienceDetailForm,
       typeOfWorkExperience: this.typeOfWorkExperience,
-      errors: this.errors || [],
     }
   }
 }

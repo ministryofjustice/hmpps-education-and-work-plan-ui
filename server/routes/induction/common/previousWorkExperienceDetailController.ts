@@ -52,7 +52,6 @@ export default abstract class PreviousWorkExperienceDetailController extends Ind
       this.getBackLinkAriaText(req),
       previousWorkExperienceDetailsForm,
       previousWorkExperienceType,
-      req.flash('errors'),
     )
     return res.render('pages/induction/previousWorkExperience/workExperienceDetail', { ...view.renderArgs })
   }

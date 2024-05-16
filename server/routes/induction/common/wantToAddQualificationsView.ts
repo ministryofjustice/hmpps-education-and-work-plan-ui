@@ -8,7 +8,6 @@ export default class WantToAddQualificationsView {
     private readonly backLinkAriaText: string,
     private readonly wantToAddQualificationsForm: WantToAddQualificationsForm,
     private readonly functionalSkills: FunctionalSkills,
-    private readonly errors?: Array<Record<string, string>>,
   ) {}
 
   get renderArgs(): {
@@ -17,7 +16,6 @@ export default class WantToAddQualificationsView {
     backLinkAriaText: string
     form: WantToAddQualificationsForm
     functionalSkills: FunctionalSkills
-    errors?: Array<Record<string, string>>
   } {
     return {
       prisonerSummary: this.prisonerSummary,
@@ -25,7 +23,6 @@ export default class WantToAddQualificationsView {
       backLinkAriaText: this.backLinkAriaText,
       form: this.wantToAddQualificationsForm,
       functionalSkills: this.functionalSkills,
-      errors: this.errors || [],
     }
   }
 }

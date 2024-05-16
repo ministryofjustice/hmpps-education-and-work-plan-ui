@@ -12,18 +12,16 @@ describe('wantToAddQualificationsUpdateController', () => {
   const prisonNumber = 'A1234BC'
   const prisonerSummary = aValidPrisonerSummary()
 
-  const noErrors: Array<Record<string, string>> = []
-
   const req = {
     session: {} as SessionData,
     body: {},
     user: {} as Express.User,
     params: {} as Record<string, string>,
-    flash: jest.fn(),
     path: '',
   }
   const res = {
     redirect: jest.fn(),
+    redirectWithErrors: jest.fn(),
     render: jest.fn(),
   }
   const next = jest.fn()
@@ -66,7 +64,6 @@ describe('wantToAddQualificationsUpdateController', () => {
         backLinkAriaText: `Back to What could stop Jimmy Lightfingers working when they are released?`,
         form: expectedWantToAddQualificationsForm,
         functionalSkills: expectedFunctionalSkills,
-        errors: noErrors,
       }
       const expectedPageFlowHistory = {
         pageUrls: [
@@ -122,7 +119,6 @@ describe('wantToAddQualificationsUpdateController', () => {
         backLinkAriaText: `Back to What could stop Jimmy Lightfingers working when they are released?`,
         form: expectedWantToAddQualificationsForm,
         functionalSkills: expectedFunctionalSkills,
-        errors: noErrors,
       }
 
       // When
@@ -169,7 +165,6 @@ describe('wantToAddQualificationsUpdateController', () => {
         backLinkAriaText: `Back to What could stop Jimmy Lightfingers working when they are released?`,
         form: expectedWantToAddQualificationsForm,
         functionalSkills: expectedFunctionalSkills,
-        errors: noErrors,
       }
 
       // When
@@ -215,7 +210,6 @@ describe('wantToAddQualificationsUpdateController', () => {
         backLinkAriaText: `Back to What could stop Jimmy Lightfingers working when they are released?`,
         form: expectedWantToAddQualificationsForm,
         functionalSkills: expectedFunctionalSkills,
-        errors: noErrors,
       }
       const expectedPageFlowHistory = {
         pageUrls: [
@@ -269,8 +263,10 @@ describe('wantToAddQualificationsUpdateController', () => {
       )
 
       // Then
-      expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/induction/want-to-add-qualifications')
-      expect(req.flash).toHaveBeenCalledWith('errors', expectedErrors)
+      expect(res.redirectWithErrors).toHaveBeenCalledWith(
+        '/prisoners/A1234BC/induction/want-to-add-qualifications',
+        expectedErrors,
+      )
       expect(req.session.wantToAddQualificationsForm).toEqual(invalidWantToAddQualificationsForm)
     })
 

@@ -33,7 +33,6 @@ export default abstract class AffectAbilityToWorkController extends InductionCon
       this.getBackLinkUrl(req),
       this.getBackLinkAriaText(req),
       affectAbilityToWorkForm,
-      req.flash('errors'),
     )
     return res.render('pages/induction/affectAbilityToWork/index', { ...view.renderArgs })
   }

@@ -39,8 +39,7 @@ export default class ReasonsNotToGetWorkCreateController extends ReasonsNotToGet
 
     const errors = validateReasonsNotToGetWorkForm(reasonsNotToGetWorkForm, prisonerSummary)
     if (errors.length > 0) {
-      req.flash('errors', errors)
-      return res.redirect(`/prisoners/${prisonNumber}/create-induction/reasons-not-to-get-work`)
+      return res.redirectWithErrors(`/prisoners/${prisonNumber}/create-induction/reasons-not-to-get-work`, errors)
     }
 
     const updatedInduction = this.updatedInductionDtoWithReasonsNotToGetWork(inductionDto, reasonsNotToGetWorkForm)

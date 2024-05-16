@@ -41,7 +41,6 @@ export default abstract class QualificationDetailsController extends InductionCo
       this.getBackLinkAriaText(req),
       qualificationDetailsForm,
       qualificationLevelForm.qualificationLevel,
-      req.flash('errors'),
     )
     return res.render('pages/induction/prePrisonEducation/qualificationDetails', { ...view.renderArgs })
   }

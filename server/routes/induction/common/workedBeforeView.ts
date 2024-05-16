@@ -7,7 +7,6 @@ export default class WorkedBeforeView {
     private readonly backLinkUrl: string,
     private readonly backLinkAriaText: string,
     private readonly workedBeforeForm: WorkedBeforeForm,
-    private readonly errors?: Array<Record<string, string>>,
   ) {}
 
   get renderArgs(): {
@@ -15,14 +14,12 @@ export default class WorkedBeforeView {
     backLinkUrl: string
     backLinkAriaText: string
     form: WorkedBeforeForm
-    errors?: Array<Record<string, string>>
   } {
     return {
       prisonerSummary: this.prisonerSummary,
       backLinkUrl: this.backLinkUrl,
       backLinkAriaText: this.backLinkAriaText,
       form: this.workedBeforeForm,
-      errors: this.errors || [],
     }
   }
 }

@@ -44,9 +44,9 @@ export default class PreviousWorkExperienceDetailCreateController extends Previo
 
     const errors = validatePreviousWorkExperienceDetailForm(previousWorkExperienceDetailForm, prisonerSummary)
     if (errors.length > 0) {
-      req.flash('errors', errors)
-      return res.redirect(
+      return res.redirectWithErrors(
         `/prisoners/${prisonNumber}/create-induction/previous-work-experience/${typeOfWorkExperience}`,
+        errors,
       )
     }
 

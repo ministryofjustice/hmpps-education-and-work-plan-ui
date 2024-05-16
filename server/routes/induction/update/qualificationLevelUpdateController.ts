@@ -30,8 +30,7 @@ export default class QualificationLevelUpdateController extends QualificationLev
 
     const errors = validateQualificationLevelForm(qualificationLevelForm, prisonerSummary)
     if (errors.length > 0) {
-      req.flash('errors', errors)
-      return res.redirect(`/prisoners/${prisonNumber}/induction/qualification-level`)
+      return res.redirectWithErrors(`/prisoners/${prisonNumber}/induction/qualification-level`, errors)
     }
 
     return res.redirect(`/prisoners/${prisonNumber}/induction/qualification-details`)

@@ -24,18 +24,16 @@ describe('skillsUpdateController', () => {
   const prisonNumber = 'A1234BC'
   const prisonerSummary = aValidPrisonerSummary()
 
-  const noErrors: Array<Record<string, string>> = []
-
   const req = {
     session: {} as SessionData,
     body: {},
     user: {} as Express.User,
     params: {} as Record<string, string>,
-    flash: jest.fn(),
     path: '',
   }
   const res = {
     redirect: jest.fn(),
+    redirectWithErrors: jest.fn(),
     render: jest.fn(),
   }
   const next = jest.fn()
@@ -66,7 +64,6 @@ describe('skillsUpdateController', () => {
         form: expectedSkillsForm,
         backLinkUrl: '/plan/A1234BC/view/work-and-interests',
         backLinkAriaText: `Back to Jimmy Lightfingers's learning and work progress`,
-        errors: noErrors,
       }
 
       // When
@@ -98,7 +95,6 @@ describe('skillsUpdateController', () => {
         form: expectedSkillsForm,
         backLinkUrl: '/plan/A1234BC/view/work-and-interests',
         backLinkAriaText: `Back to Jimmy Lightfingers's learning and work progress`,
-        errors: noErrors,
       }
 
       // When
@@ -137,7 +133,6 @@ describe('skillsUpdateController', () => {
         form: expectedSkillsForm,
         backLinkUrl: '/prisoners/A1234BC/induction/work-interest-roles',
         backLinkAriaText: 'Back to Is Jimmy Lightfingers interested in any particular jobs?',
-        errors: noErrors,
       }
 
       const expectedPageFlowHistory = {
@@ -182,8 +177,7 @@ describe('skillsUpdateController', () => {
       )
 
       // Then
-      expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/induction/skills')
-      expect(req.flash).toHaveBeenCalledWith('errors', expectedErrors)
+      expect(res.redirectWithErrors).toHaveBeenCalledWith('/prisoners/A1234BC/induction/skills', expectedErrors)
       expect(req.session.skillsForm).toEqual(invalidSkillsForm)
       expect(req.session.inductionDto).toEqual(inductionDto)
     })
