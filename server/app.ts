@@ -22,7 +22,8 @@ import config from './config'
 import routes from './routes'
 import type { Services } from './services'
 import auditMiddleware from './middleware/auditMiddleware'
-import successMiddleware from './middleware/successMiddleware'
+import successMessageMiddleware from './middleware/successMessageMiddleware'
+import errorMessageMiddleware from './middleware/errorMessageMiddleware'
 
 export default function createApp(services: Services): express.Application {
   const app = express()
@@ -47,7 +48,8 @@ export default function createApp(services: Services): express.Application {
   app.use(authorisationMiddleware())
   app.use(setUpCsrf())
   app.use(setUpCurrentUser(services))
-  app.use(successMiddleware)
+  app.use(successMessageMiddleware)
+  app.use(errorMessageMiddleware)
 
   app.get('*', getFrontendComponents(services))
 

@@ -28,11 +28,11 @@ describe('createGoalsController', () => {
     body: {},
     user: {} as Express.User,
     params: {} as Record<string, string>,
-    flash: jest.fn(),
   }
   const res = {
     redirect: jest.fn(),
     redirectWithSuccess: jest.fn(),
+    redirectWithErrors: jest.fn(),
     render: jest.fn(),
   }
   const next = jest.fn()
@@ -73,7 +73,6 @@ describe('createGoalsController', () => {
         prisonerSummary,
         form: expectedCreateGoalsForm,
         goalTargetCompletionDateOptions: GoalTargetCompletionDateOption,
-        errors,
       }
 
       // When
@@ -108,7 +107,6 @@ describe('createGoalsController', () => {
         prisonerSummary,
         form: expectedCreateGoalsForm,
         goalTargetCompletionDateOptions: GoalTargetCompletionDateOption,
-        errors,
       }
 
       // When
@@ -181,7 +179,6 @@ describe('createGoalsController', () => {
       expect(mockedCreateGoalDtosMapper).toHaveBeenCalledWith(submittedCreateGoalsForm, expectedPrisonId)
       expect(educationAndWorkPlanService.createGoals).toHaveBeenCalledWith(expectedCreateGoalDtos, 'some-token')
       expect(req.session.createGoalsForm).toBeUndefined()
-      expect(req.flash).not.toHaveBeenCalledWith('errors')
     })
 
     it('should redirect to create goals form given form validation fails', async () => {
@@ -213,9 +210,7 @@ describe('createGoalsController', () => {
       )
 
       // Then
-      expect(res.redirect).toHaveBeenCalledWith('/plan/A1234BC/goals/create')
-      expect(req.flash).toHaveBeenCalledWith('errors', errors)
-      expect(res.redirectWithSuccess).toHaveBeenCalledTimes(0)
+      expect(res.redirectWithErrors).toHaveBeenCalledWith('/plan/A1234BC/goals/create', errors)
       expect(req.session.createGoalsForm).toEqual(expectedCreateGoalsForm)
       expect(mockedCreateGoalsFormValidator).toHaveBeenCalledWith(expectedCreateGoalsForm)
     })
