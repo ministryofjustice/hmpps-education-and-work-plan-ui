@@ -51,10 +51,10 @@ describe('overviewController', () => {
     body: {},
     user: {} as Express.User,
     params: {} as Record<string, string>,
-    flash: jest.fn(),
   }
   const res = {
     redirect: jest.fn(),
+    redirectWithErrors: jest.fn(),
     render: jest.fn(),
     locals: {} as Record<string, unknown>,
   }
@@ -121,8 +121,6 @@ describe('overviewController', () => {
       }
       res.locals.curiousInPrisonCourses = inPrisonCourses
 
-      req.flash.mockImplementation(key => (key === 'goalsSuccessfullyCreated' ? ['true'] : undefined))
-
       const expectedPrisonerSummary = aValidPrisonerSummary(prisonNumber)
       const expectedView = {
         prisonerSummary: expectedPrisonerSummary,
@@ -132,7 +130,6 @@ describe('overviewController', () => {
         functionalSkills: expectedFunctionalSkills,
         inPrisonCourses,
         isPostInduction: true,
-        showGoalCreationSuccessMessage: true,
       }
 
       // When
@@ -201,8 +198,6 @@ describe('overviewController', () => {
       }
       res.locals.curiousInPrisonCourses = inPrisonCourses
 
-      req.flash.mockImplementation(key => (key === 'goalsSuccessfullyCreated' ? ['true'] : undefined))
-
       const expectedPrisonerSummary = aValidPrisonerSummary(prisonNumber)
       const expectedView = {
         prisonerSummary: expectedPrisonerSummary,
@@ -212,7 +207,6 @@ describe('overviewController', () => {
         functionalSkills: expectedFunctionalSkills,
         inPrisonCourses,
         isPostInduction: false,
-        showGoalCreationSuccessMessage: true,
       }
 
       // When

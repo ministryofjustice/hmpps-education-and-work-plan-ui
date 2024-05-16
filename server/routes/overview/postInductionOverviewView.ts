@@ -7,7 +7,6 @@ export default class PostInductionOverviewView {
     private readonly actionPlan: ActionPlan,
     private readonly functionalSkills: FunctionalSkills,
     private readonly inPrisonCourses: InPrisonCourseRecords,
-    private readonly showGoalCreationSuccessMessage: boolean,
   ) {}
 
   get renderArgs(): {
@@ -18,7 +17,6 @@ export default class PostInductionOverviewView {
     functionalSkills: FunctionalSkills
     inPrisonCourses: InPrisonCourseRecords
     isPostInduction: boolean
-    showGoalCreationSuccessMessage: boolean
   } {
     return {
       prisonNumber: this.prisonNumber,
@@ -28,7 +26,6 @@ export default class PostInductionOverviewView {
       functionalSkills: this.functionalSkills,
       inPrisonCourses: this.inPrisonCourses,
       isPostInduction: true,
-      showGoalCreationSuccessMessage: this.showGoalCreationSuccessMessage,
     }
   }
 }
