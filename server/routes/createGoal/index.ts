@@ -16,4 +16,9 @@ export default (router: Router, services: Services) => {
     checkPrisonerSummaryExistsInSession,
     asyncMiddleware(createGoalsController.submitCreateGoalsForm),
   ])
+
+  router.post('/plan/:prisonNumber/goals/create/:action(REMOVE_STEP|REMOVE_GOAL|ADD_STEP|ADD_GOAL)', [
+    checkPrisonerSummaryExistsInSession,
+    asyncMiddleware(createGoalsController.submitAction),
+  ])
 }
