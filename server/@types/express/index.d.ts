@@ -77,6 +77,7 @@ export declare global {
 
     interface Response {
       redirectWithSuccess?(path: string, message: string): void
+      redirectWithErrors?(path: string, message: Record<string, string>[]): void
     }
 
     interface Request {
@@ -84,7 +85,6 @@ export declare global {
       id: string
       logout(done: (err: unknown) => void): void
       flash(type: string, message: Array<Record<string, string>>): number
-      flash(message: 'errors'): Array<Record<string, string>>
     }
   }
 }

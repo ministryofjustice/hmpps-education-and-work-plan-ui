@@ -13,18 +13,16 @@ describe('personalInterestsCreateController', () => {
   const prisonNumber = 'A1234BC'
   const prisonerSummary = aValidPrisonerSummary()
 
-  const noErrors: Array<Record<string, string>> = []
-
   const req = {
     session: {} as SessionData,
     body: {},
     user: {} as Express.User,
     params: {} as Record<string, string>,
-    flash: jest.fn(),
     path: '',
   }
   const res = {
     redirect: jest.fn(),
+    redirectWithErrors: jest.fn(),
     render: jest.fn(),
   }
   const next = jest.fn()
@@ -56,7 +54,6 @@ describe('personalInterestsCreateController', () => {
         form: expectedPersonalInterestsForm,
         backLinkUrl: '/prisoners/A1234BC/create-induction/skills',
         backLinkAriaText: 'Back to What skills does Jimmy Lightfingers feel they have?',
-        errors: noErrors,
       }
 
       // When
@@ -89,7 +86,6 @@ describe('personalInterestsCreateController', () => {
         form: expectedPersonalInterestsForm,
         backLinkUrl: '/prisoners/A1234BC/create-induction/skills',
         backLinkAriaText: 'Back to What skills does Jimmy Lightfingers feel they have?',
-        errors: noErrors,
       }
 
       // When
@@ -134,7 +130,6 @@ describe('personalInterestsCreateController', () => {
         form: expectedPersonalInterestsForm,
         backLinkUrl: '/prisoners/A1234BC/create-induction/check-your-answers',
         backLinkAriaText: `Back to Check and save your answers before adding Jimmy Lightfingers's goals`,
-        errors: noErrors,
       }
 
       // When
@@ -176,8 +171,10 @@ describe('personalInterestsCreateController', () => {
       )
 
       // Then
-      expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-induction/personal-interests')
-      expect(req.flash).toHaveBeenCalledWith('errors', expectedErrors)
+      expect(res.redirectWithErrors).toHaveBeenCalledWith(
+        '/prisoners/A1234BC/create-induction/personal-interests',
+        expectedErrors,
+      )
       expect(req.session.personalInterestsForm).toEqual(invalidPersonalInterestsForm)
       expect(req.session.inductionDto).toEqual(inductionDto)
     })

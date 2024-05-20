@@ -25,18 +25,16 @@ describe('workInterestTypesUpdateController', () => {
   const prisonNumber = 'A1234BC'
   const prisonerSummary = aValidPrisonerSummary()
 
-  const noErrors: Array<Record<string, string>> = []
-
   const req = {
     session: {} as SessionData,
     body: {},
     user: {} as Express.User,
     params: {} as Record<string, string>,
-    flash: jest.fn(),
     path: '',
   }
   const res = {
     redirect: jest.fn(),
+    redirectWithErrors: jest.fn(),
     render: jest.fn(),
   }
   const next = jest.fn()
@@ -71,7 +69,6 @@ describe('workInterestTypesUpdateController', () => {
         form: expectedWorkInterestTypesForm,
         backLinkUrl: '/plan/A1234BC/view/work-and-interests',
         backLinkAriaText: `Back to Jimmy Lightfingers's learning and work progress`,
-        errors: noErrors,
       }
 
       // When
@@ -107,7 +104,6 @@ describe('workInterestTypesUpdateController', () => {
         form: expectedWorkInterestTypesForm,
         backLinkUrl: '/plan/A1234BC/view/work-and-interests',
         backLinkAriaText: `Back to Jimmy Lightfingers's learning and work progress`,
-        errors: noErrors,
       }
 
       // When
@@ -150,7 +146,6 @@ describe('workInterestTypesUpdateController', () => {
         form: expectedWorkInterestTypesForm,
         backLinkUrl: '/prisoners/A1234BC/induction/previous-work-experience',
         backLinkAriaText: 'Back to What type of work has Jimmy Lightfingers done before?',
-        errors: noErrors,
       }
 
       const expectedPageFlowHistory = {
@@ -203,8 +198,10 @@ describe('workInterestTypesUpdateController', () => {
       )
 
       // Then
-      expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/induction/work-interest-types')
-      expect(req.flash).toHaveBeenCalledWith('errors', expectedErrors)
+      expect(res.redirectWithErrors).toHaveBeenCalledWith(
+        '/prisoners/A1234BC/induction/work-interest-types',
+        expectedErrors,
+      )
       expect(req.session.workInterestTypesForm).toEqual(invalidWorkInterestTypesForm)
       expect(req.session.inductionDto).toEqual(inductionDto)
     })

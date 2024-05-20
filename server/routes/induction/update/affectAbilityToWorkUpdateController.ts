@@ -48,8 +48,7 @@ export default class AffectAbilityToWorkUpdateController extends AffectAbilityTo
 
     const errors = validateAffectAbilityToWorkForm(affectAbilityToWorkForm, prisonerSummary)
     if (errors.length > 0) {
-      req.flash('errors', errors)
-      return res.redirect(`/prisoners/${prisonNumber}/induction/affect-ability-to-work`)
+      return res.redirectWithErrors(`/prisoners/${prisonNumber}/induction/affect-ability-to-work`, errors)
     }
 
     const updatedInduction = this.updatedInductionDtoWithAffectAbilityToWork(inductionDto, affectAbilityToWorkForm)

@@ -13,18 +13,16 @@ describe('skillsCreateController', () => {
   const prisonNumber = 'A1234BC'
   const prisonerSummary = aValidPrisonerSummary()
 
-  const noErrors: Array<Record<string, string>> = []
-
   const req = {
     session: {} as SessionData,
     body: {},
     user: {} as Express.User,
     params: {} as Record<string, string>,
-    flash: jest.fn(),
     path: '',
   }
   const res = {
     redirect: jest.fn(),
+    redirectWithErrors: jest.fn(),
     render: jest.fn(),
   }
   const next = jest.fn()
@@ -56,7 +54,6 @@ describe('skillsCreateController', () => {
         form: expectedSkillsForm,
         backLinkUrl: '/prisoners/A1234BC/create-induction/work-interest-roles',
         backLinkAriaText: 'Back to Is Jimmy Lightfingers interested in any particular jobs?',
-        errors: noErrors,
       }
 
       // When
@@ -89,7 +86,6 @@ describe('skillsCreateController', () => {
         form: expectedSkillsForm,
         backLinkUrl: '/prisoners/A1234BC/create-induction/work-interest-roles',
         backLinkAriaText: 'Back to Is Jimmy Lightfingers interested in any particular jobs?',
-        errors: noErrors,
       }
 
       // When
@@ -134,7 +130,6 @@ describe('skillsCreateController', () => {
         form: expectedSkillsForm,
         backLinkUrl: '/prisoners/A1234BC/create-induction/check-your-answers',
         backLinkAriaText: `Back to Check and save your answers before adding Jimmy Lightfingers's goals`,
-        errors: noErrors,
       }
 
       // When
@@ -176,8 +171,7 @@ describe('skillsCreateController', () => {
       )
 
       // Then
-      expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-induction/skills')
-      expect(req.flash).toHaveBeenCalledWith('errors', expectedErrors)
+      expect(res.redirectWithErrors).toHaveBeenCalledWith('/prisoners/A1234BC/create-induction/skills', expectedErrors)
       expect(req.session.skillsForm).toEqual(invalidSkillsForm)
       expect(req.session.inductionDto).toEqual(inductionDto)
     })

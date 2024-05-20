@@ -17,12 +17,7 @@ export default class CreateGoalsController {
     const { createGoalsForm } = req.session
     req.session.createGoalsForm = undefined
 
-    const view = new CreateGoalsView(
-      prisonerSummary,
-      createGoalsForm,
-      GoalTargetCompletionDateOption,
-      req.flash('errors'),
-    )
+    const view = new CreateGoalsView(prisonerSummary, createGoalsForm, GoalTargetCompletionDateOption)
     return res.render('pages/createGoals/index', { ...view.renderArgs })
   }
 
@@ -58,8 +53,7 @@ export default class CreateGoalsController {
 
     const errors = validateCreateGoalsForm(createGoalsForm)
     if (errors.length > 0) {
-      req.flash('errors', errors)
-      return res.redirect(`/plan/${prisonNumber}/goals/create`)
+      return res.redirectWithErrors(`/plan/${prisonNumber}/goals/create`, errors)
     }
 
     try {

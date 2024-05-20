@@ -23,18 +23,16 @@ describe('personalInterestsUpdateController', () => {
   const prisonNumber = 'A1234BC'
   const prisonerSummary = aValidPrisonerSummary()
 
-  const noErrors: Array<Record<string, string>> = []
-
   const req = {
     session: {} as SessionData,
     body: {},
     user: {} as Express.User,
     params: {} as Record<string, string>,
-    flash: jest.fn(),
     path: '',
   }
   const res = {
     redirect: jest.fn(),
+    redirectWithErrors: jest.fn(),
     render: jest.fn(),
   }
   const next = jest.fn()
@@ -65,7 +63,6 @@ describe('personalInterestsUpdateController', () => {
         form: expectedPersonalInterestsForm,
         backLinkUrl: '/plan/A1234BC/view/work-and-interests',
         backLinkAriaText: `Back to Jimmy Lightfingers's learning and work progress`,
-        errors: noErrors,
       }
 
       // When
@@ -97,7 +94,6 @@ describe('personalInterestsUpdateController', () => {
         form: expectedPersonalInterestsForm,
         backLinkUrl: '/plan/A1234BC/view/work-and-interests',
         backLinkAriaText: `Back to Jimmy Lightfingers's learning and work progress`,
-        errors: noErrors,
       }
 
       // When
@@ -136,7 +132,6 @@ describe('personalInterestsUpdateController', () => {
         form: expectedPersonalInterestsForm,
         backLinkUrl: '/prisoners/A1234BC/induction/skills',
         backLinkAriaText: 'Back to What skills does Jimmy Lightfingers feel they have?',
-        errors: noErrors,
       }
 
       const expectedPageFlowHistory = {
@@ -181,8 +176,10 @@ describe('personalInterestsUpdateController', () => {
       )
 
       // Then
-      expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/induction/personal-interests')
-      expect(req.flash).toHaveBeenCalledWith('errors', expectedErrors)
+      expect(res.redirectWithErrors).toHaveBeenCalledWith(
+        '/prisoners/A1234BC/induction/personal-interests',
+        expectedErrors,
+      )
       expect(req.session.personalInterestsForm).toEqual(invalidPersonalInterestsForm)
       expect(req.session.inductionDto).toEqual(inductionDto)
     })

@@ -15,18 +15,16 @@ describe('qualificationLevelCreateController', () => {
   const prisonNumber = 'A1234BC'
   const prisonerSummary = aValidPrisonerSummary()
 
-  const noErrors: Array<Record<string, string>> = []
-
   const req = {
     session: {} as SessionData,
     body: {},
     user: {} as Express.User,
     params: {} as Record<string, string>,
-    flash: jest.fn(),
     path: '',
   }
   const res = {
     redirect: jest.fn(),
+    redirectWithErrors: jest.fn(),
     render: jest.fn(),
   }
   const next = jest.fn()
@@ -61,7 +59,6 @@ describe('qualificationLevelCreateController', () => {
         educationLevel: EducationLevelValue.SECONDARY_SCHOOL_TOOK_EXAMS,
         backLinkUrl: `/prisoners/${prisonNumber}/create-induction/qualifications`,
         backLinkAriaText: "Back to Jimmy Lightfingers's qualifications",
-        errors: noErrors,
       }
       const expectedPageFlowHistory = {
         pageUrls: [
@@ -103,7 +100,6 @@ describe('qualificationLevelCreateController', () => {
         educationLevel: EducationLevelValue.SECONDARY_SCHOOL_TOOK_EXAMS,
         backLinkUrl: '/prisoners/A1234BC/create-induction/qualifications',
         backLinkAriaText: "Back to Jimmy Lightfingers's qualifications",
-        errors: noErrors,
       }
       const expectedPageFlowHistory = {
         pageUrls: [
@@ -163,8 +159,10 @@ describe('qualificationLevelCreateController', () => {
       )
 
       // Then
-      expect(res.redirect).toHaveBeenCalledWith(`/prisoners/${prisonNumber}/create-induction/qualification-level`)
-      expect(req.flash).toHaveBeenCalledWith('errors', expectedErrors)
+      expect(res.redirectWithErrors).toHaveBeenCalledWith(
+        `/prisoners/${prisonNumber}/create-induction/qualification-level`,
+        expectedErrors,
+      )
       expect(req.session.qualificationLevelForm).toEqual(invalidQualificationLevelForm)
       expect(req.session.inductionDto).toEqual(inductionDto)
       expect(req.session.pageFlowHistory).toEqual(pageFlowHistory)

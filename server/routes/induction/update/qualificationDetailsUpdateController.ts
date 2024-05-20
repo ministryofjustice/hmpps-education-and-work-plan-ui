@@ -34,8 +34,7 @@ export default class QualificationDetailsUpdateController extends QualificationD
       prisonerSummary,
     )
     if (errors.length > 0) {
-      req.flash('errors', errors)
-      return res.redirect(`/prisoners/${prisonNumber}/induction/qualification-details`)
+      return res.redirectWithErrors(`/prisoners/${prisonNumber}/induction/qualification-details`, errors)
     }
 
     const updatedInduction = this.addQualificationToInductionDto(

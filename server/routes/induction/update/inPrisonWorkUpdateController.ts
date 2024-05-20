@@ -45,8 +45,7 @@ export default class InPrisonWorkUpdateController extends InPrisonWorkController
 
     const errors = validateInPrisonWorkForm(inPrisonWorkForm, prisonerSummary)
     if (errors.length > 0) {
-      req.flash('errors', errors)
-      return res.redirect(`/prisoners/${prisonNumber}/induction/in-prison-work`)
+      return res.redirectWithErrors(`/prisoners/${prisonNumber}/induction/in-prison-work`, errors)
     }
 
     // update the InductionDto with any new values

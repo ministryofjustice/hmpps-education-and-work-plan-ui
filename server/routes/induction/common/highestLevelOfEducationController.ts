@@ -35,7 +35,6 @@ export default abstract class HighestLevelOfEducationController extends Inductio
       this.getBackLinkUrl(req),
       this.getBackLinkAriaText(req),
       highestLevelOfEducationForm,
-      req.flash('errors'),
     )
     return res.render('pages/induction/prePrisonEducation/highestLevelOfEducation', { ...view.renderArgs })
   }

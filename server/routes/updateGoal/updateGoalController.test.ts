@@ -34,10 +34,10 @@ describe('updateGoalController', () => {
     body: {},
     user: {} as Express.User,
     params: {} as Record<string, string>,
-    flash: jest.fn(),
   }
   const res = {
     redirect: jest.fn(),
+    redirectWithErrors: jest.fn(),
     render: jest.fn(),
   }
   const next = jest.fn()
@@ -96,7 +96,6 @@ describe('updateGoalController', () => {
           text: 'by 29 February 2024 (goal created on 16 January 2023)',
           value: '2024-02-29',
         },
-        errors,
       }
 
       // When
@@ -223,8 +222,7 @@ describe('updateGoalController', () => {
       )
 
       // Then
-      expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/goals/${goalReference}/update`)
-      expect(req.flash).toHaveBeenCalledWith('errors', errors)
+      expect(res.redirectWithErrors).toHaveBeenCalledWith(`/plan/${prisonNumber}/goals/${goalReference}/update`, errors)
       expect(req.session.updateGoalForm).toEqual(expectedUpdateGoalForm)
     })
   })

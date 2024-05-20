@@ -33,7 +33,6 @@ export default abstract class AdditionalTrainingController extends InductionCont
       this.getBackLinkUrl(req),
       this.getBackLinkAriaText(req),
       additionalTrainingForm,
-      req.flash('errors'),
     )
     return res.render('pages/induction/additionalTraining/index', { ...view.renderArgs })
   }

@@ -31,9 +31,8 @@ export default class InPrisonWorkCreateController extends InPrisonWorkController
 
     const errors = validateInPrisonWorkForm(inPrisonWorkForm, prisonerSummary)
     if (errors.length > 0) {
-      req.flash('errors', errors)
       req.session.inPrisonWorkForm = inPrisonWorkForm
-      return res.redirect(`/prisoners/${prisonNumber}/create-induction/in-prison-work`)
+      return res.redirectWithErrors(`/prisoners/${prisonNumber}/create-induction/in-prison-work`, errors)
     }
 
     const updatedInduction = this.updatedInductionDtoWithInPrisonWork(inductionDto, inPrisonWorkForm)

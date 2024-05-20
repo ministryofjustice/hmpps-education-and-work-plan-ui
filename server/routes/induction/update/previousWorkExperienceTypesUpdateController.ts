@@ -53,8 +53,7 @@ export default class PreviousWorkExperienceTypesUpdateController extends Previou
 
     const errors = validatePreviousWorkExperienceTypesForm(previousWorkExperienceTypesForm, prisonerSummary)
     if (errors.length > 0) {
-      req.flash('errors', errors)
-      return res.redirect(`/prisoners/${prisonNumber}/induction/previous-work-experience`)
+      return res.redirectWithErrors(`/prisoners/${prisonNumber}/induction/previous-work-experience`, errors)
     }
 
     // create an updated InductionDto with any changes to Previous Work Experiences

@@ -39,11 +39,11 @@ describe('hopingToWorkOnReleaseUpdateController', () => {
     body: {},
     user: {} as Express.User,
     params: {} as Record<string, string>,
-    flash: jest.fn(),
     path: '',
   }
   const res = {
     redirect: jest.fn(),
+    redirectWithErrors: jest.fn(),
     render: jest.fn(),
   }
   const next = jest.fn()
@@ -80,7 +80,6 @@ describe('hopingToWorkOnReleaseUpdateController', () => {
         form: expectedHopingToWorkOnReleaseForm,
         backLinkUrl: '/plan/A1234BC/view/work-and-interests',
         backLinkAriaText: `Back to Jimmy Lightfingers's learning and work progress`,
-        errors,
       }
 
       // When
@@ -113,7 +112,6 @@ describe('hopingToWorkOnReleaseUpdateController', () => {
         form: expectedHopingToWorkOnReleaseForm,
         backLinkUrl: '/plan/A1234BC/view/work-and-interests',
         backLinkAriaText: `Back to Jimmy Lightfingers's learning and work progress`,
-        errors,
       }
 
       // When
@@ -150,7 +148,6 @@ describe('hopingToWorkOnReleaseUpdateController', () => {
         form: expectedHopingToWorkOnReleaseForm,
         backLinkUrl: '/prisoners/A1234BC/induction/check-your-answers',
         backLinkAriaText: `Back to Check and save your answers before adding Jimmy Lightfingers's goals`,
-        errors,
       }
       const expectedPageFlowHistory = {
         pageUrls: [
@@ -204,8 +201,10 @@ describe('hopingToWorkOnReleaseUpdateController', () => {
       )
 
       // Then
-      expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/induction/hoping-to-work-on-release')
-      expect(req.flash).toHaveBeenCalledWith('errors', errors)
+      expect(res.redirectWithErrors).toHaveBeenCalledWith(
+        '/prisoners/A1234BC/induction/hoping-to-work-on-release',
+        errors,
+      )
       expect(req.session.hopingToWorkOnReleaseForm).toEqual(invalidHopingToWorkOnReleaseForm)
       expect(req.session.inductionDto).toEqual(inductionDto)
     })

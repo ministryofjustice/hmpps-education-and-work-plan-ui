@@ -30,8 +30,7 @@ export default class WorkedBeforeCreateController extends WorkedBeforeController
 
     const errors = validateWorkedBeforeForm(workedBeforeForm, prisonerSummary)
     if (errors.length > 0) {
-      req.flash('errors', errors)
-      return res.redirect(`/prisoners/${prisonNumber}/create-induction/has-worked-before`)
+      return res.redirectWithErrors(`/prisoners/${prisonNumber}/create-induction/has-worked-before`, errors)
     }
 
     const updatedInduction = this.updatedInductionDtoWithHasWorkedBefore(inductionDto, workedBeforeForm)

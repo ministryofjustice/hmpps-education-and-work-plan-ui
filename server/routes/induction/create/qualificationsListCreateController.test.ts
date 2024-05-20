@@ -19,7 +19,6 @@ describe('qualificationsListCreateController', () => {
     body: {},
     user: {} as Express.User,
     params: {} as Record<string, string>,
-    flash: jest.fn(),
     path: '',
   }
   const res = {

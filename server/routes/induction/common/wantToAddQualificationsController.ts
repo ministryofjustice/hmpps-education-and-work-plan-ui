@@ -40,7 +40,6 @@ export default abstract class WantToAddQualificationsController extends Inductio
       this.getBackLinkAriaText(req),
       wantToAddQualificationsForm,
       functionalSkills,
-      req.flash('errors'),
     )
     return res.render('pages/induction/prePrisonEducation/wantToAddQualifications', { ...view.renderArgs })
   }

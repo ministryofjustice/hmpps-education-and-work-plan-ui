@@ -32,7 +32,6 @@ export default abstract class InPrisonWorkController extends InductionController
       this.getBackLinkUrl(req),
       this.getBackLinkAriaText(req),
       inPrisonWorkForm,
-      req.flash('errors'),
     )
     return res.render('pages/induction/inPrisonWork/index', { ...view.renderArgs })
   }

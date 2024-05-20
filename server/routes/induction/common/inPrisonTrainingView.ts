@@ -7,7 +7,6 @@ export default class InPrisonTrainingView {
     private readonly backLinkUrl: string,
     private readonly backLinkAriaText: string,
     private readonly inPrisonTrainingForm: InPrisonTrainingForm,
-    private readonly errors?: Array<Record<string, string>>,
   ) {}
 
   get renderArgs(): {
@@ -15,14 +14,12 @@ export default class InPrisonTrainingView {
     backLinkUrl: string
     backLinkAriaText: string
     form: InPrisonTrainingForm
-    errors?: Array<Record<string, string>>
   } {
     return {
       prisonerSummary: this.prisonerSummary,
       backLinkUrl: this.backLinkUrl,
       backLinkAriaText: this.backLinkAriaText,
       form: this.inPrisonTrainingForm,
-      errors: this.errors || [],
     }
   }
 }

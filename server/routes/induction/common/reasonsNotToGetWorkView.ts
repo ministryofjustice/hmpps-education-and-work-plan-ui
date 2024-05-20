@@ -7,7 +7,6 @@ export default class ReasonsNotToGetWorkView {
     private readonly backLinkUrl: string,
     private readonly backLinkAriaText: string,
     private readonly reasonsNotToGetWorkForm: ReasonsNotToGetWorkForm,
-    private readonly errors?: Array<Record<string, string>>,
   ) {}
 
   get renderArgs(): {
@@ -15,14 +14,12 @@ export default class ReasonsNotToGetWorkView {
     backLinkUrl: string
     backLinkAriaText: string
     form: ReasonsNotToGetWorkForm
-    errors?: Array<Record<string, string>>
   } {
     return {
       prisonerSummary: this.prisonerSummary,
       backLinkUrl: this.backLinkUrl,
       backLinkAriaText: this.backLinkAriaText,
       form: this.reasonsNotToGetWorkForm,
-      errors: this.errors || [],
     }
   }
 }

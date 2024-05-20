@@ -43,12 +43,7 @@ export default class UpdateGoalController {
         'D MMMM YYYY',
       )})`,
     }
-    const view = new UpdateGoalView(
-      prisonerSummary,
-      updateGoalForm,
-      goalTargetCompletionDateOption,
-      req.flash('errors'),
-    )
+    const view = new UpdateGoalView(prisonerSummary, updateGoalForm, goalTargetCompletionDateOption)
     return res.render('pages/goal/update/index', { ...view.renderArgs })
   }
 
@@ -75,8 +70,7 @@ export default class UpdateGoalController {
 
     const errors = validateUpdateGoalForm(updateGoalForm)
     if (errors.length > 0) {
-      req.flash('errors', errors)
-      return res.redirect(`/plan/${prisonNumber}/goals/${goalReference}/update`)
+      return res.redirectWithErrors(`/plan/${prisonNumber}/goals/${goalReference}/update`, errors)
     }
 
     // Redirect to the desired page based on the form action

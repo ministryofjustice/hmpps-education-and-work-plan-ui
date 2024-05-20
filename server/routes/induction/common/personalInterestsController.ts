@@ -30,7 +30,6 @@ export default abstract class PersonalInterestsController extends InductionContr
       this.getBackLinkUrl(req),
       this.getBackLinkAriaText(req),
       personalInterestsForm,
-      req.flash('errors'),
     )
     return res.render('pages/induction/personalInterests/index', { ...view.renderArgs })
   }

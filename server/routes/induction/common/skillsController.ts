@@ -25,13 +25,7 @@ export default abstract class SkillsController extends InductionController {
       this.addCurrentPageToHistory(req)
     }
 
-    const view = new SkillsView(
-      prisonerSummary,
-      this.getBackLinkUrl(req),
-      this.getBackLinkAriaText(req),
-      skillsForm,
-      req.flash('errors'),
-    )
+    const view = new SkillsView(prisonerSummary, this.getBackLinkUrl(req), this.getBackLinkAriaText(req), skillsForm)
     return res.render('pages/induction/skills/index', { ...view.renderArgs })
   }
 

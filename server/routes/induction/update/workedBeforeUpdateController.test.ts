@@ -24,18 +24,16 @@ describe('workedBeforeUpdateController', () => {
   const prisonNumber = 'A1234BC'
   const prisonerSummary = aValidPrisonerSummary()
 
-  const noErrors: Array<Record<string, string>> = []
-
   const req = {
     session: {} as SessionData,
     body: {},
     user: {} as Express.User,
     params: {} as Record<string, string>,
-    flash: jest.fn(),
     path: '',
   }
   const res = {
     redirect: jest.fn(),
+    redirectWithErrors: jest.fn(),
     render: jest.fn(),
   }
   const next = jest.fn()
@@ -65,7 +63,6 @@ describe('workedBeforeUpdateController', () => {
         form: expectedWorkedBeforeForm,
         backLinkUrl: '/plan/A1234BC/view/work-and-interests',
         backLinkAriaText: `Back to Jimmy Lightfingers's learning and work progress`,
-        errors: noErrors,
       }
 
       // When
@@ -96,7 +93,6 @@ describe('workedBeforeUpdateController', () => {
         form: expectedWorkedBeforeForm,
         backLinkUrl: '/plan/A1234BC/view/work-and-interests',
         backLinkAriaText: `Back to Jimmy Lightfingers's learning and work progress`,
-        errors: noErrors,
       }
 
       // When
@@ -134,7 +130,6 @@ describe('workedBeforeUpdateController', () => {
         form: expectedWorkedBeforeForm,
         backLinkUrl: '/prisoners/A1234BC/induction/additional-training',
         backLinkAriaText: 'Back to Does Jimmy Lightfingers have any other training or vocational qualifications?',
-        errors: noErrors,
       }
 
       const expectedPageFlowHistory = {
@@ -183,8 +178,10 @@ describe('workedBeforeUpdateController', () => {
       )
 
       // Then
-      expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/induction/has-worked-before')
-      expect(req.flash).toHaveBeenCalledWith('errors', expectedErrors)
+      expect(res.redirectWithErrors).toHaveBeenCalledWith(
+        '/prisoners/A1234BC/induction/has-worked-before',
+        expectedErrors,
+      )
       expect(req.session.workedBeforeForm).toEqual(invalidWorkedBeforeForm)
       expect(req.session.inductionDto).toEqual(inductionDto)
     })

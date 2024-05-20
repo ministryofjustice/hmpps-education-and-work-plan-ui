@@ -9,7 +9,6 @@ export default class QualificationLevelView {
     private readonly backLinkAriaText: string,
     private readonly qualificationLevelForm: QualificationLevelForm,
     private readonly educationLevel: EducationLevelValue,
-    private readonly errors?: Array<Record<string, string>>,
   ) {}
 
   get renderArgs(): {
@@ -18,7 +17,6 @@ export default class QualificationLevelView {
     backLinkAriaText: string
     form: QualificationLevelForm
     educationLevel: EducationLevelValue
-    errors?: Array<Record<string, string>>
   } {
     return {
       prisonerSummary: this.prisonerSummary,
@@ -26,7 +24,6 @@ export default class QualificationLevelView {
       backLinkAriaText: this.backLinkAriaText,
       form: this.qualificationLevelForm,
       educationLevel: this.educationLevel,
-      errors: this.errors || [],
     }
   }
 }

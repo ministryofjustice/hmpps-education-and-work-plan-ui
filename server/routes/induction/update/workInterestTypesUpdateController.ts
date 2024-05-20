@@ -49,8 +49,7 @@ export default class WorkInterestTypesUpdateController extends WorkInterestTypes
 
     const errors = validateWorkInterestTypesForm(workInterestTypesForm, prisonerSummary)
     if (errors.length > 0) {
-      req.flash('errors', errors)
-      return res.redirect(`/prisoners/${prisonNumber}/induction/work-interest-types`)
+      return res.redirectWithErrors(`/prisoners/${prisonNumber}/induction/work-interest-types`, errors)
     }
 
     const updatedInduction = this.updatedInductionDtoWithWorkInterestTypes(inductionDto, workInterestTypesForm)

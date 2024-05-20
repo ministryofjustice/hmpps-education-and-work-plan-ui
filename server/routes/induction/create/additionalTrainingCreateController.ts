@@ -37,8 +37,7 @@ export default class AdditionalTrainingCreateController extends AdditionalTraini
 
     const errors = validateAdditionalTrainingForm(additionalTrainingForm, prisonerSummary)
     if (errors.length > 0) {
-      req.flash('errors', errors)
-      return res.redirect(`/prisoners/${prisonNumber}/create-induction/additional-training`)
+      return res.redirectWithErrors(`/prisoners/${prisonNumber}/create-induction/additional-training`, errors)
     }
 
     const updatedInduction = this.updatedInductionDtoWithAdditionalTraining(inductionDto, additionalTrainingForm)

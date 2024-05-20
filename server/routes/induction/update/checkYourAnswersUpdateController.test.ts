@@ -27,7 +27,6 @@ describe('checkYourAnswersUpdateController', () => {
     session: {} as SessionData,
     user: {} as Express.User,
     params: {} as Record<string, string>,
-    flash: jest.fn(),
   }
   const res = {
     redirect: jest.fn(),

@@ -48,8 +48,7 @@ export default class InPrisonTrainingUpdateController extends InPrisonTrainingCo
 
     const errors = validateInPrisonTrainingForm(inPrisonTrainingForm, prisonerSummary)
     if (errors.length > 0) {
-      req.flash('errors', errors)
-      return res.redirect(`/prisoners/${prisonNumber}/induction/in-prison-training`)
+      return res.redirectWithErrors(`/prisoners/${prisonNumber}/induction/in-prison-training`, errors)
     }
 
     const updatedInduction = this.updatedInductionDtoWithInPrisonTraining(inductionDto, inPrisonTrainingForm)

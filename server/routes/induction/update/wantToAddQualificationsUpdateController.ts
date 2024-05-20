@@ -35,8 +35,7 @@ export default class WantToAddQualificationsUpdateController extends WantToAddQu
 
     const errors = validateWantToAddQualificationsForm(wantToAddQualificationsForm, prisonerSummary)
     if (errors.length > 0) {
-      req.flash('errors', errors)
-      return res.redirect(`/prisoners/${prisonNumber}/induction/want-to-add-qualifications`)
+      return res.redirectWithErrors(`/prisoners/${prisonNumber}/induction/want-to-add-qualifications`, errors)
     }
 
     req.session.wantToAddQualificationsForm = undefined
