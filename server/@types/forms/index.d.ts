@@ -57,7 +57,6 @@ declare module 'forms' {
       }>
       note?: string
     }>
-    action?: string
   }
 }
 

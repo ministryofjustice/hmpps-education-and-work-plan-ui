@@ -35,11 +35,11 @@
                 {% if goalLoop.length > 1 %}
                   {{ govukButton({
                     name: "action",
-                    value: "remove-goal|" + goalLoop.index0,
                     text: "Remove goal",
                     classes: "govuk-button--secondary govuk-!-margin-bottom-0",
                     attributes: {
-                      'data-qa': 'remove-goal-button'
+                      'data-qa': 'remove-goal-button',
+                      formaction: 'create/REMOVE_GOAL?goalNumber=' + goalLoop.index0
                     }
                   }) }}
                 {% endif %}
@@ -172,24 +172,25 @@
                 {% if stepLoop.length > 1 %}
                   {{ govukButton({
                     name: "action",
-                    value: "remove-step|" + goalLoop.index0 + "|" + stepLoop.index0,
                     text: "Remove step",
                     classes: "govuk-button--secondary moj-add-another__remove-button",
                     attributes: {
-                      'data-qa': 'remove-step-button'
+                      'data-qa': 'remove-step-button',
+                      formaction: 'create/REMOVE_STEP?goalNumber=' + goalLoop.index0 + "&stepNumber=" + stepLoop.index0
                     }
                   }) }}
                 {% endif %}
               {% endcall %}
             {% endfor %}
-
             <div class="govuk-form-group govuk-!-margin-bottom-2">
               {{ govukButton({
                 id: "add-another-step-to-goal-" + goalLoop.index0 + "-button",
                 name: "action",
-                value: "add-another-step|" + goalLoop.index0,
                 text: "Add another step to this goal",
-                classes: "govuk-button--secondary"
+                classes: "govuk-button--secondary",
+                attributes: {
+                  formaction: 'create/ADD_STEP?goalNumber=' + goalLoop.index0
+                }
               }) }}
             </div>
 
@@ -220,9 +221,11 @@
           {{ govukButton({
             id: "add-another-goal-button",
             name: "action",
-            value: "add-another-goal",
             text: "Add another goal",
-            classes: "govuk-button--secondary"
+            classes: "govuk-button--secondary",
+            attributes: {
+              formaction: 'create/ADD_GOAL'
+            }
           }) }}
         </div>
 

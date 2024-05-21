@@ -1,4 +1,3 @@
-import { SessionData } from 'express-session'
 import { NextFunction, Request, Response } from 'express'
 import type { CreateGoalDto } from 'dto'
 import type { CreateGoalsForm } from 'forms'
@@ -23,18 +22,13 @@ describe('createGoalsController', () => {
   const educationAndWorkPlanService = new EducationAndWorkPlanService(null) as jest.Mocked<EducationAndWorkPlanService>
   const controller = new CreateGoalsController(educationAndWorkPlanService)
 
-  const req = {
-    session: {} as SessionData,
-    body: {},
-    user: {} as Express.User,
-    params: {} as Record<string, string>,
-  }
+  let req: Request
   const res = {
     redirect: jest.fn(),
     redirectWithSuccess: jest.fn(),
     redirectWithErrors: jest.fn(),
     render: jest.fn(),
-  }
+  } as unknown as Response
   const next = jest.fn()
 
   const prisonNumber = 'A1234BC'
@@ -44,12 +38,14 @@ describe('createGoalsController', () => {
 
   beforeEach(() => {
     jest.resetAllMocks()
-    req.session = {} as SessionData
-    req.body = {}
-    req.params = {} as Record<string, string>
 
-    req.params.prisonNumber = prisonNumber
-    req.session.prisonerSummary = prisonerSummary
+    req = {
+      session: { prisonerSummary },
+      body: {},
+      user: {},
+      params: { prisonNumber },
+      query: {},
+    } as unknown as Request
 
     errors = []
   })
@@ -99,11 +95,7 @@ describe('createGoalsController', () => {
       }
 
       // When
-      await controller.getCreateGoalsView(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.getCreateGoalsView(req, res, next)
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/createGoals/index', expectedView)
@@ -129,7 +121,6 @@ describe('createGoalsController', () => {
             steps: [{ title: 'Find available courses' }],
           },
         ],
-        action: 'submit-form',
       }
       req.body = submittedCreateGoalsForm
 
@@ -156,11 +147,7 @@ describe('createGoalsController', () => {
       mockedCreateGoalDtosMapper.mockReturnValue(expectedCreateGoalDtos)
 
       // When
-      await controller.submitCreateGoalsForm(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.submitCreateGoalsForm(req, res, next)
 
       // Then
       expect(res.redirectWithSuccess).toHaveBeenCalledWith('/plan/A1234BC/view/overview', 'Goals added')
@@ -183,7 +170,6 @@ describe('createGoalsController', () => {
             steps: [{ title: 'Book Course' }],
           },
         ],
-        action: 'submit-form',
       }
       req.body = expectedCreateGoalsForm
       req.session.createGoalsForm = undefined
@@ -192,11 +178,7 @@ describe('createGoalsController', () => {
       mockedCreateGoalsFormValidator.mockReturnValue(errors)
 
       // When
-      await controller.submitCreateGoalsForm(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.submitCreateGoalsForm(req, res, next)
 
       // Then
       expect(res.redirectWithErrors).toHaveBeenCalledWith('/plan/A1234BC/goals/create', errors)
@@ -225,9 +207,10 @@ describe('createGoalsController', () => {
             steps: [{ title: 'Apply to get on activity' }, { title: 'Attend activity' }, { title: 'Pass exam' }],
           },
         ],
-        action: 'add-another-step|1',
       }
       req.body = submittedCreateGoalsForm
+      req.params.action = 'ADD_STEP'
+      req.query.goalNumber = '1'
 
       req.session.createGoalsForm = undefined
 
@@ -250,15 +233,10 @@ describe('createGoalsController', () => {
             steps: [{ title: 'Apply to get on activity' }, { title: 'Attend activity' }, { title: 'Pass exam' }],
           },
         ],
-        action: 'add-another-step|1',
       }
 
       // When
-      await controller.submitCreateGoalsForm(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.submitAction(req, res, next)
 
       // Then
       expect(res.redirect).toHaveBeenCalledWith('/plan/A1234BC/goals/create#goals[1].steps[1].title')
@@ -266,47 +244,36 @@ describe('createGoalsController', () => {
       expect(mockedCreateGoalsFormValidator).not.toHaveBeenCalled()
     })
 
-    Array.of(
-      'add-another-step|',
-      'add-another-step|-1',
-      'add-another-step|A',
-      'add-another-step',
-      'add-another-step|2',
-    ).forEach(formAction => {
-      it(`should not add a step to a goal given form action ${formAction}`, async () => {
-        // Given
-        const submittedCreateGoalsForm: CreateGoalsForm = {
-          prisonNumber,
-          goals: [
-            {
-              title: 'Learn Spanish',
-              targetCompletionDate: '2025-04-10',
-              steps: [{ title: 'Find available courses' }],
-            },
-            {
-              title: 'Attend bricklaying workshop',
-              targetCompletionDate: '2024-12-31',
-              steps: [{ title: 'Apply to get on activity' }, { title: 'Attend activity' }, { title: 'Pass exam' }],
-            },
-          ],
-          action: formAction,
-        }
-        req.body = submittedCreateGoalsForm
+    it.each([undefined, '-1', 'A', '2'])(`should not add a step to a goal given form action %s`, async goalNumber => {
+      // Given
+      const submittedCreateGoalsForm: CreateGoalsForm = {
+        prisonNumber,
+        goals: [
+          {
+            title: 'Learn Spanish',
+            targetCompletionDate: '2025-04-10',
+            steps: [{ title: 'Find available courses' }],
+          },
+          {
+            title: 'Attend bricklaying workshop',
+            targetCompletionDate: '2024-12-31',
+            steps: [{ title: 'Apply to get on activity' }, { title: 'Attend activity' }, { title: 'Pass exam' }],
+          },
+        ],
+      }
+      req.body = submittedCreateGoalsForm
+      req.params.action = 'ADD_STEP'
+      req.query = { goalNumber }
 
-        req.session.createGoalsForm = undefined
+      req.session.createGoalsForm = undefined
 
-        // When
-        await controller.submitCreateGoalsForm(
-          req as undefined as Request,
-          res as undefined as Response,
-          next as undefined as NextFunction,
-        )
+      // When
+      await controller.submitAction(req, res, next)
 
-        // Then
-        expect(res.redirect).toHaveBeenCalledWith('/plan/A1234BC/goals/create')
-        expect(req.session.createGoalsForm).toEqual(submittedCreateGoalsForm)
-        expect(mockedCreateGoalsFormValidator).not.toHaveBeenCalled()
-      })
+      // Then
+      expect(res.redirect).toHaveBeenCalledWith('/plan/A1234BC/goals/create')
+      expect(req.session.createGoalsForm).toEqual(submittedCreateGoalsForm)
+      expect(mockedCreateGoalsFormValidator).not.toHaveBeenCalled()
     })
 
     it('should remove a step from a goal', async () => {
@@ -330,9 +297,13 @@ describe('createGoalsController', () => {
             steps: [{ title: 'Apply to get on activity' }, { title: 'Attend activity' }, { title: 'Pass exam' }],
           },
         ],
-        action: 'remove-step|2|1', // remove from goal 3 step 2 (zero indexed array elements)
       }
       req.body = submittedCreateGoalsForm
+      req.params.action = 'REMOVE_STEP'
+      req.query = {
+        goalNumber: '2',
+        stepNumber: '1',
+      }
 
       req.session.createGoalsForm = undefined
 
@@ -355,15 +326,10 @@ describe('createGoalsController', () => {
             steps: [{ title: 'Apply to get on activity' }, { title: 'Pass exam' }], // expect "Attend activity" step to be removed
           },
         ],
-        action: 'remove-step|2|1',
       }
 
       // When
-      await controller.submitCreateGoalsForm(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.submitAction(req, res, next)
 
       // Then
       expect(res.redirect).toHaveBeenCalledWith('/plan/A1234BC/goals/create#goals[2].steps[1].title') // focus the Pass exam step of the bricklaying course as that is the last step in the goal
@@ -371,18 +337,18 @@ describe('createGoalsController', () => {
       expect(mockedCreateGoalsFormValidator).not.toHaveBeenCalled()
     })
 
-    Array.of(
-      'remove-step||',
-      'remove-step|-1|-1',
-      'remove-step|1|-1',
-      'remove-step|-1|1',
-      'remove-step|A|1',
-      'remove-step|1|A',
-      'remove-step',
-      'remove-step|2|0',
-      'remove-step|1|3',
-    ).forEach(formAction => {
-      it(`should not remove a step from a goal given form action ${formAction}`, async () => {
+    it.each([
+      [undefined, undefined],
+      ['-1', '-1'],
+      ['1', '-1'],
+      ['-1', '1'],
+      ['A', '1'],
+      ['1', 'A'],
+      ['2', '0'],
+      ['1', '3'],
+    ])(
+      `should not remove a step from a goal given goal number, %s and step number, %s`,
+      async (goalNumber, stepNumber) => {
         // Given
         const submittedCreateGoalsForm: CreateGoalsForm = {
           prisonNumber,
@@ -398,25 +364,24 @@ describe('createGoalsController', () => {
               steps: [{ title: 'Apply to get on activity' }, { title: 'Attend activity' }, { title: 'Pass exam' }],
             },
           ],
-          action: formAction,
         }
         req.body = submittedCreateGoalsForm
+        req.query = {
+          goalNumber,
+          stepNumber,
+        }
 
         req.session.createGoalsForm = undefined
 
         // When
-        await controller.submitCreateGoalsForm(
-          req as undefined as Request,
-          res as undefined as Response,
-          next as undefined as NextFunction,
-        )
+        await controller.submitAction(req, res, next)
 
         // Then
         expect(res.redirect).toHaveBeenCalledWith('/plan/A1234BC/goals/create')
         expect(req.session.createGoalsForm).toEqual(submittedCreateGoalsForm)
         expect(mockedCreateGoalsFormValidator).not.toHaveBeenCalled()
-      })
-    })
+      },
+    )
 
     it('should add another goal', async () => {
       // Given
@@ -439,9 +404,9 @@ describe('createGoalsController', () => {
             steps: [{ title: 'Apply to get on activity' }, { title: 'Attend activity' }, { title: 'Pass exam' }],
           },
         ],
-        action: 'add-another-goal',
       }
       req.body = submittedCreateGoalsForm
+      req.params.action = 'ADD_GOAL'
 
       req.session.createGoalsForm = undefined
 
@@ -468,15 +433,10 @@ describe('createGoalsController', () => {
             steps: [{ title: '' }],
           },
         ],
-        action: 'add-another-goal',
       }
 
       // When
-      await controller.submitCreateGoalsForm(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.submitAction(req, res, next)
 
       // Then
       expect(res.redirect).toHaveBeenCalledWith('/plan/A1234BC/goals/create#goals[3].title')
@@ -486,6 +446,9 @@ describe('createGoalsController', () => {
 
     it('should remove a goal', async () => {
       // Given
+      req.params.action = 'REMOVE_GOAL'
+      req.query.goalNumber = '1'
+
       const submittedCreateGoalsForm: CreateGoalsForm = {
         prisonNumber,
         goals: [
@@ -505,7 +468,6 @@ describe('createGoalsController', () => {
             steps: [{ title: 'Apply to get on activity' }, { title: 'Attend activity' }, { title: 'Pass exam' }],
           },
         ],
-        action: 'remove-goal|1', // remove goal 2 (zero indexed array elements)
       }
       req.body = submittedCreateGoalsForm
 
@@ -526,15 +488,10 @@ describe('createGoalsController', () => {
             steps: [{ title: 'Apply to get on activity' }, { title: 'Attend activity' }, { title: 'Pass exam' }],
           },
         ],
-        action: 'remove-goal|1',
       }
 
       // When
-      await controller.submitCreateGoalsForm(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.submitAction(req, res, next)
 
       // Then
       expect(res.redirect).toHaveBeenCalledWith('/plan/A1234BC/goals/create#goals[1].steps[2].title') // focus the Pass exam step of the bricklaying course as that is the last step in the goal
@@ -542,9 +499,13 @@ describe('createGoalsController', () => {
       expect(mockedCreateGoalsFormValidator).not.toHaveBeenCalled()
     })
 
-    Array.of('remove-goal|', 'remove-goal|-1', 'remove-goal|A', 'remove-goal', 'remove-goal|2').forEach(formAction => {
-      it(`should not remove a goal given form action ${formAction}`, async () => {
+    it.each([undefined, '-1', 'A', '2'])(
+      `should not remove a goal given form give goal number, %s`,
+      async goalNumber => {
         // Given
+        req.params.action = 'REMOVE_GOAL'
+        req.query = { goalNumber }
+
         const submittedCreateGoalsForm: CreateGoalsForm = {
           prisonNumber,
           goals: [
@@ -559,24 +520,18 @@ describe('createGoalsController', () => {
               steps: [{ title: 'Apply to get on activity' }, { title: 'Attend activity' }, { title: 'Pass exam' }],
             },
           ],
-          action: formAction,
         }
         req.body = submittedCreateGoalsForm
-
         req.session.createGoalsForm = undefined
 
         // When
-        await controller.submitCreateGoalsForm(
-          req as undefined as Request,
-          res as undefined as Response,
-          next as undefined as NextFunction,
-        )
+        await controller.submitAction(req, res, next)
 
         // Then
         expect(res.redirect).toHaveBeenCalledWith('/plan/A1234BC/goals/create')
         expect(req.session.createGoalsForm).toEqual(submittedCreateGoalsForm)
         expect(mockedCreateGoalsFormValidator).not.toHaveBeenCalled()
-      })
-    })
+      },
+    )
   })
 })

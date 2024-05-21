@@ -172,17 +172,19 @@ export default class CreateGoalsPage extends Page {
   private removeStepButtons = (): PageElement => cy.get('[data-qa=remove-step-button]')
 
   private removeStepButtonsForGoal = (goalNumber: number): PageElement =>
-    this.removeStepButtons().filter(`[value^="remove-step|${zeroIndexed(goalNumber)}|"]`)
+    this.removeStepButtons().filter(`[formaction^="create/REMOVE_STEP?goalNumber=${zeroIndexed(goalNumber)}"]`)
 
   private removeStepButton = (goalNumber: number, stepNumber: number): PageElement =>
-    this.removeStepButtonsForGoal(goalNumber).filter(`[value$="|${zeroIndexed(stepNumber)}"]`)
+    this.removeStepButtonsForGoal(goalNumber).filter(
+      `[formaction^="create/REMOVE_STEP?goalNumber=${zeroIndexed(goalNumber)}&stepNumber=${zeroIndexed(stepNumber)}"]`,
+    )
 
   private addAnotherGoalButton = (): PageElement => cy.get(`#add-another-goal-button`)
 
   private removeGoalButtons = (): PageElement => cy.get('[data-qa=remove-goal-button]')
 
   private removeGoalButton = (goalNumber: number): PageElement =>
-    this.removeGoalButtons().filter(`[value="remove-goal|${zeroIndexed(goalNumber)}"]`)
+    this.removeGoalButtons().filter(`[formaction="create/REMOVE_GOAL?goalNumber=${zeroIndexed(goalNumber)}"]`)
 }
 
 const zeroIndexed = (indexNumber: number): number => Math.max(0, indexNumber - 1)
