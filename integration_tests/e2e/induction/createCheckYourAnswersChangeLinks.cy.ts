@@ -281,4 +281,59 @@ context(`Change links on the Check Your Answers page when creating an Induction`
         InPrisonTrainingValue.RUNNING_A_BUSINESS,
       ])
   })
+
+  it('should remove all qualifications on a Short Question Set Induction when Do They Want To Add Qualifications is changed to No', () => {
+    // Given
+    const createInductionWithQualifications = true
+    cy.createShortQuestionSetInductionToArriveOnCheckYourAnswers(prisonNumber, createInductionWithQualifications)
+    Page.verifyOnPage(CheckYourAnswersPage)
+      .hasWantsToAddQualificationsAs(YesNoValue.YES) // Induction starts off with qualifications
+      .hasEducationalQualificationsDisplayed()
+
+    // When
+    Page.verifyOnPage(CheckYourAnswersPage) //
+      .clickWantsToAddQualificationsChangeLink()
+      .hasBackLinkTo(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
+      .selectWantToAddQualifications(YesNoValue.NO)
+      .submitPage()
+
+    // Then
+    Page.verifyOnPage(CheckYourAnswersPage)
+      .hasWantsToAddQualificationsAs(YesNoValue.NO)
+      .hasNoEducationalQualificationsDisplayed()
+  })
+
+  it('should start the qualifications mini-flow on a Short Question Set Induction with no qualifications when Do They Want To Add Qualifications is changed to Yes', () => {
+    // Given
+    const createInductionWithQualifications = false
+    cy.createShortQuestionSetInductionToArriveOnCheckYourAnswers(prisonNumber, createInductionWithQualifications)
+    Page.verifyOnPage(CheckYourAnswersPage)
+      .hasWantsToAddQualificationsAs(YesNoValue.NO) // Induction starts off with no qualifications
+      .hasNoEducationalQualificationsDisplayed()
+
+    // When
+    Page.verifyOnPage(CheckYourAnswersPage) //
+      .clickWantsToAddQualificationsChangeLink()
+      .hasBackLinkTo(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
+      .selectWantToAddQualifications(YesNoValue.YES)
+      .submitPage()
+
+    Page.verifyOnPage(QualificationLevelPage) //
+      .hasBackLinkTo(`/prisoners/${prisonNumber}/create-induction/want-to-add-qualifications`)
+      .selectQualificationLevel(QualificationLevelValue.LEVEL_1)
+      .submitPage()
+    Page.verifyOnPage(QualificationDetailsPage) //
+      .hasBackLinkTo(`/prisoners/${prisonNumber}/create-induction/qualification-level`)
+      .setQualificationSubject('Chemistry')
+      .setQualificationGrade('Merit')
+      .submitPage()
+    Page.verifyOnPage(QualificationsListPage) //
+      .hasBackLinkTo(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
+      .submitPage()
+
+    // Then
+    Page.verifyOnPage(CheckYourAnswersPage)
+      .hasWantsToAddQualificationsAs(YesNoValue.YES)
+      .hasEducationalQualifications(['Chemistry'])
+  })
 })
