@@ -11,6 +11,11 @@ export default class PreviousWorkExperienceDetailPage extends InductionPage {
     return this
   }
 
+  hasJobRole(expected: string): PreviousWorkExperienceDetailPage {
+    this.jobRoleField().should('have.value', expected)
+    return this
+  }
+
   clearJobRole(): PreviousWorkExperienceDetailPage {
     this.jobRoleField().clear()
     return this
@@ -18,6 +23,11 @@ export default class PreviousWorkExperienceDetailPage extends InductionPage {
 
   setJobDetails(value: string): PreviousWorkExperienceDetailPage {
     this.jobDetailsField().clear().type(value)
+    return this
+  }
+
+  hasJobDetails(expected: string): PreviousWorkExperienceDetailPage {
+    this.jobDetailsField().should('have.value', expected)
     return this
   }
 

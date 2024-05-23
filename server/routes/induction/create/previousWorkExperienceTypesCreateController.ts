@@ -52,7 +52,7 @@ export default class PreviousWorkExperienceTypesCreateController extends Previou
     req.session.inductionDto = updatedInduction
 
     // We need to show the Details page for each work experience type.
-    const pageFlowQueue = buildPageFlowQueue(inductionDto, updatedInduction, prisonNumber)
+    const pageFlowQueue = buildPageFlowQueue(updatedInduction, prisonNumber)
     req.session.pageFlowQueue = pageFlowQueue
 
     const userHasComeFromCheckYourAnswers = this.checkYourAnswersIsTheFirstPageInThePageHistory(req)
@@ -69,29 +69,14 @@ export default class PreviousWorkExperienceTypesCreateController extends Previou
 
 /**
  * Builds and returns a Page Flow Queue to show the Details page for each work experience type. The list of pages to be
- * added to the queue is derived by the difference between the work types on the updated induction (ie. after the
- * induction has had the form values added) with the work types on the original (un-modified) induction.
- *   * For a new Induction in the Create journey this will result in all of the work types that were submitted on the form
- *   * For a new Induction that is being changed via the Change link on Check Your Answers this will result in just the
- *     additional work types that have been added (and therefore the user is not asked to provide the details for work
- *     types they have already added)
+ * added to the queue is the list of work types on the updated induction.
  */
-const buildPageFlowQueue = (
-  originalInduction: InductionDto,
-  updatedInduction: InductionDto,
-  prisonNumber: string,
-): PageFlow => {
-  const workExperienceTypesOnPreviousInduction = (originalInduction.previousWorkExperiences.experiences || []).map(
-    experience => experience.experienceType,
-  )
+const buildPageFlowQueue = (updatedInduction: InductionDto, prisonNumber: string): PageFlow => {
   const workExperienceTypesOnUpdatedInduction = (updatedInduction.previousWorkExperiences.experiences || []).map(
     experience => experience.experienceType,
   )
-  const workExperienceDetailPagesToShow = workExperienceTypesOnUpdatedInduction.filter(
-    type => !workExperienceTypesOnPreviousInduction.includes(type),
-  )
 
-  const workExperienceTypesToShowDetailsFormFor = [...workExperienceDetailPagesToShow].sort(
+  const workExperienceTypesToShowDetailsFormFor = [...workExperienceTypesOnUpdatedInduction].sort(
     previousWorkExperienceTypeScreenOrderComparator, // sort them by the order presented on screen (which is not alphabetic on the enum values)
   )
   logger.debug(
