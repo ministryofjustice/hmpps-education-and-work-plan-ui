@@ -121,6 +121,11 @@ export default class CheckYourAnswersPage extends Page {
     return this
   }
 
+  hasEducationalQualificationsDisplayed(): CheckYourAnswersPage {
+    this.educationalQualificationsTable().should('be.visible')
+    return this
+  }
+
   clickQualificationsChangeLink(): QualificationsListPage {
     this.qualificationsChangeLink().click()
     return Page.verifyOnPage(QualificationsListPage)
@@ -139,6 +144,11 @@ export default class CheckYourAnswersPage extends Page {
   clickWantsToAddQualificationsChangeLink(): WantToAddQualificationsPage {
     this.wantsToAddQualificationsChangeLink().click()
     return Page.verifyOnPage(WantToAddQualificationsPage)
+  }
+
+  hasWantsToAddQualificationsAs(expected: YesNoValue): CheckYourAnswersPage {
+    this.wantsToAddQualifications().should('contain.text', expected === YesNoValue.YES ? 'Yes' : 'No')
+    return this
   }
 
   clickReasonsForNotWantingToWorkChangeLink(): ReasonsNotToGetWorkPage {
@@ -251,6 +261,8 @@ export default class CheckYourAnswersPage extends Page {
     cy.get(`[data-qa=affectingAbilityToWork-${expected}]`)
 
   private factorsAffectingAbilityToWorkChangeLink = (): PageElement => cy.get('[data-qa=affectAbilityToWorkLink]')
+
+  private wantsToAddQualifications = (): PageElement => cy.get('[data-qa=wantsToAddQualifications]')
 
   private wantsToAddQualificationsChangeLink = (): PageElement => cy.get('[data-qa=wantsToAddQualificationsLink]')
 

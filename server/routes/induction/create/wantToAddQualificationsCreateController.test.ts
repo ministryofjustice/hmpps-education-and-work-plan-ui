@@ -1,5 +1,6 @@
 import { Request, Response } from 'express'
 import type { WantToAddQualificationsForm } from 'inductionForms'
+import type { AchievedQualificationDto, PreviousQualificationsDto } from 'inductionDto'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
 import { validFunctionalSkills } from '../../../testsupport/functionalSkillsTestDataBuilder'
 import HopingToGetWorkValue from '../../../enums/hopingToGetWorkValue'
@@ -7,6 +8,7 @@ import WantToAddQualificationsCreateController from './wantToAddQualificationsCr
 import YesNoValue from '../../../enums/yesNoValue'
 import { aShortQuestionSetInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
 import EducationLevelValue from '../../../enums/educationLevelValue'
+import QualificationLevelValue from '../../../enums/qualificationLevelValue'
 
 describe('wantToAddQualificationsCreateController', () => {
   const controller = new WantToAddQualificationsCreateController()
@@ -41,9 +43,14 @@ describe('wantToAddQualificationsCreateController', () => {
   })
 
   describe('getWantToAddQualificationsView', () => {
-    it('should get the Want To Add Qualifications view', async () => {
+    it('should get the Want To Add Qualifications view given previous page was Reasons Not To Get Work', async () => {
       // Given
       req.session.inductionDto = partialInductionDto()
+
+      req.session.pageFlowHistory = {
+        pageUrls: ['/prisoners/A1234BC/create-induction/reasons-not-to-get-work'],
+        currentPageIndex: 0,
+      }
 
       const functionalSkills = validFunctionalSkills()
       req.session.prisonerFunctionalSkills = functionalSkills
@@ -58,6 +65,43 @@ describe('wantToAddQualificationsCreateController', () => {
         prisonerSummary,
         backLinkUrl: '/prisoners/A1234BC/create-induction/reasons-not-to-get-work',
         backLinkAriaText: `Back to What could stop Jimmy Lightfingers working when they are released?`,
+        form: expectedWantToAddQualificationsForm,
+        functionalSkills: expectedFunctionalSkills,
+      }
+
+      // When
+      await controller.getWantToAddQualificationsView(req, res, next)
+
+      // Then
+      expect(res.render).toHaveBeenCalledWith(
+        'pages/induction/prePrisonEducation/wantToAddQualifications',
+        expectedView,
+      )
+      expect(req.session.wantToAddQualificationsForm).toBeUndefined()
+    })
+
+    it('should get the Want To Add Qualifications view given previous page was Check Your Answers', async () => {
+      // Given
+      req.session.inductionDto = partialInductionDto()
+
+      req.session.pageFlowHistory = {
+        pageUrls: ['/prisoners/A1234BC/create-induction/check-your-answers'],
+        currentPageIndex: 0,
+      }
+
+      const functionalSkills = validFunctionalSkills()
+      req.session.prisonerFunctionalSkills = functionalSkills
+      req.session.wantToAddQualificationsForm = undefined
+
+      const expectedWantToAddQualificationsForm: WantToAddQualificationsForm = {
+        wantToAddQualifications: undefined,
+      }
+
+      const expectedFunctionalSkills = functionalSkills
+      const expectedView = {
+        prisonerSummary,
+        backLinkUrl: '/prisoners/A1234BC/create-induction/check-your-answers',
+        backLinkAriaText: `Back to Check and save your answers before adding Jimmy Lightfingers's goals`,
         form: expectedWantToAddQualificationsForm,
         functionalSkills: expectedFunctionalSkills,
       }
@@ -137,6 +181,124 @@ describe('wantToAddQualificationsCreateController', () => {
       expect(res.redirect).toHaveBeenCalledWith(`/prisoners/${prisonNumber}/create-induction/additional-training`)
       expect(req.session.wantToAddQualificationsForm).toBeUndefined()
       expect(req.session.inductionDto.previousQualifications.qualifications).toEqual([])
+      expect(req.session.inductionDto.previousQualifications.educationLevel).toEqual(EducationLevelValue.NOT_SURE)
+    })
+
+    it('should redirect to check your answers given previous page was check your answers and induction form with no qualifications was submitted with no change', async () => {
+      // Given
+      req.user.token = 'some-token'
+      const inductionDto = partialInductionDto()
+      const existingQualifications: Array<AchievedQualificationDto> = [] // Empty array of qualifications meaning the user has previously said No to Do The Want To Record Qualifications
+      inductionDto.previousQualifications = { qualifications: existingQualifications } as PreviousQualificationsDto
+      req.session.inductionDto = inductionDto
+
+      req.session.pageFlowHistory = {
+        pageUrls: [
+          '/prisoners/A1234BC/create-induction/check-your-answers',
+          '/prisoners/A1234BC/create-induction/want-to-add-qualifications',
+        ],
+        currentPageIndex: 1,
+      }
+
+      req.body = { wantToAddQualifications: YesNoValue.NO }
+      req.session.wantToAddQualificationsForm = undefined
+
+      // When
+      await controller.submitWantToAddQualificationsForm(req, res, next)
+
+      // Then
+      expect(res.redirect).toHaveBeenCalledWith(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
+      expect(req.session.wantToAddQualificationsForm).toBeUndefined()
+      expect(req.session.inductionDto.previousQualifications.qualifications).toEqual(existingQualifications)
+    })
+
+    it('should redirect to check your answers given previous page was check your answers and induction form with some qualifications was submitted with no change', async () => {
+      // Given
+      req.user.token = 'some-token'
+      const inductionDto = partialInductionDto()
+      const existingQualifications: Array<AchievedQualificationDto> = [
+        { subject: 'Maths', grade: 'C', level: QualificationLevelValue.LEVEL_1 },
+      ] // Array of qualifications meaning the user has previously said Yes to Do The Want To Record Qualifications
+      inductionDto.previousQualifications = { qualifications: existingQualifications } as PreviousQualificationsDto
+      req.session.inductionDto = inductionDto
+
+      req.session.pageFlowHistory = {
+        pageUrls: [
+          '/prisoners/A1234BC/create-induction/check-your-answers',
+          '/prisoners/A1234BC/create-induction/want-to-add-qualifications',
+        ],
+        currentPageIndex: 1,
+      }
+
+      req.body = { wantToAddQualifications: YesNoValue.YES }
+      req.session.wantToAddQualificationsForm = undefined
+
+      // When
+      await controller.submitWantToAddQualificationsForm(req, res, next)
+
+      // Then
+      expect(res.redirect).toHaveBeenCalledWith(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
+      expect(req.session.wantToAddQualificationsForm).toBeUndefined()
+      expect(req.session.inductionDto.previousQualifications.qualifications).toEqual(existingQualifications)
+    })
+
+    it('should redirect to check your answers given previous page was check your answers and induction form with some qualifications was submitted changing the answer to No', async () => {
+      // Given
+      req.user.token = 'some-token'
+      const inductionDto = partialInductionDto()
+      const existingQualifications: Array<AchievedQualificationDto> = [
+        { subject: 'Maths', grade: 'C', level: QualificationLevelValue.LEVEL_1 },
+      ] // Array of qualifications meaning the user has previously said Yes to Do The Want To Record Qualifications
+      inductionDto.previousQualifications = { qualifications: existingQualifications } as PreviousQualificationsDto
+      req.session.inductionDto = inductionDto
+
+      req.session.pageFlowHistory = {
+        pageUrls: [
+          '/prisoners/A1234BC/create-induction/check-your-answers',
+          '/prisoners/A1234BC/create-induction/want-to-add-qualifications',
+        ],
+        currentPageIndex: 1,
+      }
+
+      req.body = { wantToAddQualifications: YesNoValue.NO }
+      req.session.wantToAddQualificationsForm = undefined
+
+      // When
+      await controller.submitWantToAddQualificationsForm(req, res, next)
+
+      // Then
+      expect(res.redirect).toHaveBeenCalledWith(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
+      expect(req.session.wantToAddQualificationsForm).toBeUndefined()
+      expect(req.session.inductionDto.previousQualifications.qualifications).toEqual([]) // expect qualifications to have been removed from the Induction
+      expect(req.session.inductionDto.previousQualifications.educationLevel).toEqual(EducationLevelValue.NOT_SURE)
+    })
+
+    it('should redirect to qualification level given previous page was check your answers and induction form with no qualifications was submitted changing the answer to Yes', async () => {
+      // Given
+      req.user.token = 'some-token'
+      const inductionDto = partialInductionDto()
+      const existingQualifications: Array<AchievedQualificationDto> = [] // Empty array of qualifications meaning the user has previously said No to Do The Want To Record Qualifications
+      inductionDto.previousQualifications = { qualifications: existingQualifications } as PreviousQualificationsDto
+      req.session.inductionDto = inductionDto
+
+      req.session.pageFlowHistory = {
+        pageUrls: [
+          '/prisoners/A1234BC/create-induction/check-your-answers',
+          '/prisoners/A1234BC/create-induction/want-to-add-qualifications',
+        ],
+        currentPageIndex: 1,
+      }
+
+      req.body = { wantToAddQualifications: YesNoValue.YES }
+      req.session.wantToAddQualificationsForm = undefined
+
+      // When
+      await controller.submitWantToAddQualificationsForm(req, res, next)
+
+      // Then
+      expect(res.redirect).toHaveBeenCalledWith(`/prisoners/${prisonNumber}/create-induction/qualification-level`)
+      expect(req.session.wantToAddQualificationsForm).toBeUndefined()
+      expect(req.session.inductionDto.previousQualifications.qualifications).toEqual(existingQualifications) // expect qualifications to still be empty
       expect(req.session.inductionDto.previousQualifications.educationLevel).toEqual(EducationLevelValue.NOT_SURE)
     })
   })

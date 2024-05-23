@@ -6,6 +6,7 @@ import InductionController from './inductionController'
 import WantToAddQualificationsView from './wantToAddQualificationsView'
 import dateComparator from '../../dateComparator'
 import YesNoValue from '../../../enums/yesNoValue'
+import EducationLevelValue from '../../../enums/educationLevelValue'
 
 /**
  * Abstract controller class defining functionality common to both the Create and Update Induction journeys.
@@ -42,6 +43,34 @@ export default abstract class WantToAddQualificationsController extends Inductio
       functionalSkills,
     )
     return res.render('pages/induction/prePrisonEducation/wantToAddQualifications', { ...view.renderArgs })
+  }
+
+  protected formSubmittedFromCheckYourAnswersWithNoChangeMade = (
+    form: WantToAddQualificationsForm,
+    inductionDto: InductionDto,
+  ): boolean => {
+    const qualificationsExistOnInduction: boolean = inductionDto.previousQualifications?.qualifications?.length > 0
+    return (
+      (!qualificationsExistOnInduction && this.formSubmittedIndicatingQualificationsShouldNotBeRecorded(form)) ||
+      (qualificationsExistOnInduction && this.formSubmittedIndicatingQualificationsShouldBeRecorded(form))
+    )
+  }
+
+  protected formSubmittedIndicatingQualificationsShouldNotBeRecorded = (form: WantToAddQualificationsForm): boolean =>
+    form.wantToAddQualifications === YesNoValue.NO
+
+  protected formSubmittedIndicatingQualificationsShouldBeRecorded = (form: WantToAddQualificationsForm): boolean =>
+    form.wantToAddQualifications === YesNoValue.YES
+
+  protected inductionWithRemovedQualifications = (inductionDto: InductionDto): InductionDto => {
+    return {
+      ...inductionDto,
+      previousQualifications: {
+        ...inductionDto.previousQualifications,
+        qualifications: [],
+        educationLevel: EducationLevelValue.NOT_SURE, // Having removed all qualifications we cannot be sure of the Highest Level of Education, so set to NOT_SURE
+      },
+    }
   }
 }
 

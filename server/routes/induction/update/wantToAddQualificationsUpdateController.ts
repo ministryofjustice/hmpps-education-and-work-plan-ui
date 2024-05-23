@@ -1,11 +1,8 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express'
-import type { InductionDto } from 'inductionDto'
-import type { WantToAddQualificationsForm } from 'inductionForms'
 import WantToAddQualificationsController from '../common/wantToAddQualificationsController'
 import YesNoValue from '../../../enums/yesNoValue'
 import { getPreviousPage } from '../../pageFlowHistory'
 import getDynamicBackLinkAriaText from '../dynamicAriaTextResolver'
-import EducationLevelValue from '../../../enums/educationLevelValue'
 import validateWantToAddQualificationsForm from '../../validators/induction/wantToAddQualificationsFormValidator'
 
 export default class WantToAddQualificationsUpdateController extends WantToAddQualificationsController {
@@ -42,15 +39,15 @@ export default class WantToAddQualificationsUpdateController extends WantToAddQu
 
     // If the previous page was Check Your Answers
     if (this.previousPageWasCheckYourAnswers(req)) {
-      if (formSubmittedFromCheckYourAnswersWithNoChangeMade(wantToAddQualificationsForm, inductionDto)) {
+      if (this.formSubmittedFromCheckYourAnswersWithNoChangeMade(wantToAddQualificationsForm, inductionDto)) {
         // No changes made, redirect back to Check Your Answers
         return res.redirect(`/prisoners/${prisonNumber}/induction/check-your-answers`)
       }
 
-      if (formSubmittedIndicatingQualificationsShouldNotBeRecorded(wantToAddQualificationsForm)) {
+      if (this.formSubmittedIndicatingQualificationsShouldNotBeRecorded(wantToAddQualificationsForm)) {
         // User has come from the Check Your Answers page and has said they do not want to record any qualifications
         // We need to remove any qualifications that may have been set on the Induction
-        const updatedInduction = inductionWithRemovedQualifications(inductionDto)
+        const updatedInduction = this.inductionWithRemovedQualifications(inductionDto)
         req.session.inductionDto = updatedInduction
         return res.redirect(`/prisoners/${prisonNumber}/induction/check-your-answers`)
       }
@@ -67,31 +64,3 @@ export default class WantToAddQualificationsUpdateController extends WantToAddQu
     return res.redirect(nextPage)
   }
 }
-
-const inductionWithRemovedQualifications = (inductionDto: InductionDto): InductionDto => {
-  return {
-    ...inductionDto,
-    previousQualifications: {
-      ...inductionDto.previousQualifications,
-      qualifications: [],
-      educationLevel: EducationLevelValue.NOT_SURE, // Having removed all qualifications we cannot be sure of the Highest Level of Education, so set to NOT_SURE
-    },
-  }
-}
-
-const formSubmittedFromCheckYourAnswersWithNoChangeMade = (
-  form: WantToAddQualificationsForm,
-  inductionDto: InductionDto,
-): boolean => {
-  const qualificationsExistOnInduction: boolean = inductionDto.previousQualifications?.qualifications?.length > 0
-  return (
-    (!qualificationsExistOnInduction && formSubmittedIndicatingQualificationsShouldNotBeRecorded(form)) ||
-    (qualificationsExistOnInduction && formSubmittedIndicatingQualificationsShouldBeRecorded(form))
-  )
-}
-
-const formSubmittedIndicatingQualificationsShouldNotBeRecorded = (form: WantToAddQualificationsForm): boolean =>
-  form.wantToAddQualifications === YesNoValue.NO
-
-const formSubmittedIndicatingQualificationsShouldBeRecorded = (form: WantToAddQualificationsForm): boolean =>
-  form.wantToAddQualifications === YesNoValue.YES
