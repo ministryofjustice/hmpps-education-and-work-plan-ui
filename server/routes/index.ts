@@ -11,11 +11,12 @@ import updateInduction from './induction/update'
 import inPrisonCoursesAndQualifications from './inPrisonCoursesAndQualifications'
 import retrievePrisonerSummaryIfNotInSession from './routerRequestHandlers/retrievePrisonerSummaryIfNotInSession'
 import { checkPageViewAuditted } from '../middleware/auditMiddleware'
+import notesRoutes from './notes'
 
 export default function routes(services: Services): Router {
   const router = Router()
 
-  // Checks page has been auditted, if no audit event has been raised router will be skipped
+  // Checks page has been audited, if no audit event has been raised router will be skipped
   checkPageViewAuditted(router)
 
   // Route middleware
@@ -32,6 +33,8 @@ export default function routes(services: Services): Router {
   createInduction(router, services)
   updateInduction(router, services)
   postInductionCreation(router, services)
+
+  router.use('/plan/:prisonNumber/notes', notesRoutes())
 
   prisonerList(router, services)
 
