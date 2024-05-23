@@ -31,7 +31,7 @@
               {% if event.eventType == 'ACTION_PLAN_CREATED' or event.eventType == 'GOAL_UPDATED' or event.eventType == 'GOAL_CREATED' or event.eventType == 'MULTIPLE_GOALS_CREATED' %}
               <div class="moj-timeline__description govuk-!-display-none-print">
                 <p class="govuk-body govuk-!-margin-bottom-0">
-                  <a href="/plan/{{ prisonerSummary.prisonNumber }}/view/overview">
+                  <a href="/plan/{{ prisonerSummary.prisonNumber }}/view/overview" data-id="timeline-prisoner-{{ prisonerSummary.prisonNumber }}">
                     {% if event.eventType == 'ACTION_PLAN_CREATED' %}
                       View {{ prisonerSummary.firstName }} {{ prisonerSummary.lastName | title }}'s learning and work progress
                     {% elif event.eventType == 'GOAL_UPDATED' or event.eventType == 'GOAL_CREATED' or event.eventType == 'MULTIPLE_GOALS_CREATED' %}

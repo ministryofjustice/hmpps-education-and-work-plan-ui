@@ -65,7 +65,7 @@
           {% for prisoner in currentPageOfRecords %}
             <tr class="govuk-table__row">
               <td class="govuk-table__cell">
-                <a href="/plan/{{ prisoner.prisonNumber }}/view/overview" rel="noopener noreferrer" class="govuk-link govuk-link--no-visited-state">
+                <a href="/plan/{{ prisoner.prisonNumber }}/view/overview" data-id="prisoner-list-prisoner-{{ prisoner.prisonNumber }}" rel="noopener noreferrer" class="govuk-link govuk-link--no-visited-state">
                   {{ prisoner.lastName }}, {{ prisoner.firstName }}
                 </a>
                 <br>

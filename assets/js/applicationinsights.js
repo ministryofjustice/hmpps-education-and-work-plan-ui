@@ -8,6 +8,16 @@ window.applicationInsights = (function () {
         const clickPluginInstance = new Microsoft.ApplicationInsights.ClickAnalyticsPlugin()
         const clickPluginConfig = {
           autoCapture: true,
+          callback: {
+            contentName: function (element) {
+              // If there is a id, use this as the content name
+              if (element.dataset.id) return element.dataset.id
+
+              // If this element is in the header or footer it could contain
+              // personal data so we use a default value instead
+              if (!element.closest('main')) return 'Unknown'
+            },
+          },
           dataTags: {
             useDefaultContentNameOrId: true,
           },
