@@ -280,6 +280,7 @@ describe('previousWorkExperienceTypesCreateController', () => {
         pageUrls: [
           '/prisoners/A1234BC/create-induction/previous-work-experience',
           '/prisoners/A1234BC/create-induction/previous-work-experience/outdoor',
+          '/prisoners/A1234BC/create-induction/previous-work-experience/construction',
           '/prisoners/A1234BC/create-induction/previous-work-experience/retail',
         ],
         currentPageIndex: 0,

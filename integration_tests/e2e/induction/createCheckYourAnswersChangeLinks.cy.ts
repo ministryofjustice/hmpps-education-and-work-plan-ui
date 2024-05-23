@@ -96,15 +96,20 @@ context(`Change links on the Check Your Answers page when creating an Induction`
       .setJobDetails('Organising building works and hiring of casual labour')
       .submitPage()
 
-    // Change the previous work experience types which will show the user a work experience detail page for each new work experience
+    // Change the previous work experience types which will show the user a work experience detail page for each work experience (inc. existing ones)
     Page.verifyOnPage(CheckYourAnswersPage)
       .clickWorkExperienceTypesChangeLink()
       .hasBackLinkTo(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
       .choosePreviousWorkExperience(TypeOfWorkExperienceValue.BEAUTY)
       .choosePreviousWorkExperience(TypeOfWorkExperienceValue.DRIVING)
       .submitPage()
-    Page.verifyOnPage(PreviousWorkExperienceDetailPage) // Job details page for "driving"
+    Page.verifyOnPage(PreviousWorkExperienceDetailPage) // Job details page for "construction" - assert existing values are still there but make no changes to them
       .hasBackLinkTo(`/prisoners/${prisonNumber}/create-induction/previous-work-experience`)
+      .hasJobRole('Building site manager')
+      .hasJobDetails('Organising building works and hiring of casual labour')
+      .submitPage()
+    Page.verifyOnPage(PreviousWorkExperienceDetailPage) // Job details page for "driving"
+      .hasBackLinkTo(`/prisoners/${prisonNumber}/create-induction/previous-work-experience/construction`)
       .setJobRole('Driving instructor')
       .setJobDetails('Teaching customers to drive')
       .submitPage()
