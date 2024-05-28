@@ -22,7 +22,7 @@ export default function createErrorHandler({ auditService }: Services, productio
     res.status(error.status || 500)
 
     const auditDetails: PageViewEventDetails = {
-      who: req.user.username ?? 'UNKNOWN',
+      who: req.user?.username ?? 'UNKNOWN',
       correlationId: req.id,
       details: {
         params: req.params,
