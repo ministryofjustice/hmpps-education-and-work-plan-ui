@@ -396,7 +396,9 @@ declare module 'viewModels' {
     prison: Prison
     timestamp: Date
     correlationId: string
-    contextualInfo?: string
+    contextualInfo: {
+      [key: string]: string
+    }
     actionedByDisplayName?: string
   }
 

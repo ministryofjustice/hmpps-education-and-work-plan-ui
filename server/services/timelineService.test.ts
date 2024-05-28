@@ -67,7 +67,7 @@ describe('timelineService', () => {
             },
             timestamp: moment('2023-09-01T10:46:38.565Z').toDate(),
             correlationId: '847aa5ad-2068-40e1-aec0-66b19007c494',
-            contextualInfo: '',
+            contextualInfo: {},
             actionedByDisplayName: 'Ralph Gen',
           },
           {
@@ -80,7 +80,9 @@ describe('timelineService', () => {
             },
             timestamp: moment('2023-09-01T10:47:38.565Z').toDate(),
             correlationId: '246aa049-c5df-459d-8231-bdeab3936d0f',
-            contextualInfo: '',
+            contextualInfo: {
+              GOAL_TITLE: 'Learn French',
+            },
             actionedByDisplayName: 'Ralph Gen',
           },
         ],
@@ -122,7 +124,7 @@ describe('timelineService', () => {
             },
             timestamp: moment('2023-09-01T10:46:38.565Z').toDate(),
             correlationId: '847aa5ad-2068-40e1-aec0-66b19007c494',
-            contextualInfo: '',
+            contextualInfo: {},
             actionedByDisplayName: 'Ralph Gen',
           },
           {
@@ -135,7 +137,9 @@ describe('timelineService', () => {
             },
             timestamp: moment('2023-09-01T10:47:38.565Z').toDate(),
             correlationId: '246aa049-c5df-459d-8231-bdeab3936d0f',
-            contextualInfo: '',
+            contextualInfo: {
+              GOAL_TITLE: 'Learn French',
+            },
             actionedByDisplayName: 'Ralph Gen',
           },
         ],

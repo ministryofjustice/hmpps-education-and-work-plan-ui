@@ -22,7 +22,9 @@ type CoreBuilderOptions = {
   prison?: Prison
   timestamp?: Date
   correlationId?: string
-  contextualInfo?: string
+  contextualInfo?: {
+    [key: string]: string
+  }
   actionedByDisplayName?: string
 }
 
@@ -37,7 +39,7 @@ const baseTimelineEventTemplate = (options?: CoreBuilderOptions): TimelineEvent 
     },
     timestamp: moment('2023-08-01T10:46:38.565Z').toDate(),
     correlationId: options?.correlationId || '6457a634-6dbe-4179-983b-74e92883232c',
-    contextualInfo: options?.contextualInfo,
+    contextualInfo: options?.contextualInfo || {},
     actionedByDisplayName: options?.actionedByDisplayName,
   }
 }

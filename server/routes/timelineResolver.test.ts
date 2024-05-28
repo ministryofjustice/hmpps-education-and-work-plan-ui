@@ -16,7 +16,7 @@ describe('timelineResolver', () => {
           prisonName: undefined,
         },
         timestamp: moment('2023-08-01T10:47:38.560Z').toDate(),
-        contextualInfo: undefined,
+        contextualInfo: {},
         actionedByDisplayName: undefined,
       }
       const correlationIdForActionPlanAndGoalCreateEvents = '246aa049-c5df-459d-8231-bdeab3936d0f'
@@ -30,7 +30,7 @@ describe('timelineResolver', () => {
           prisonName: undefined,
         },
         timestamp: moment('2023-09-01T10:47:38.560Z').toDate(),
-        contextualInfo: '',
+        contextualInfo: {},
         actionedByDisplayName: 'Ralph Gen',
       }
       const actionPlanGoalCreateEvents: Array<TimelineEvent> = [
@@ -44,7 +44,9 @@ describe('timelineResolver', () => {
             prisonName: undefined,
           },
           timestamp: moment('2023-09-01T10:47:38.560Z').toDate(),
-          contextualInfo: '',
+          contextualInfo: {
+            GOAL_TITLE: 'Learn French',
+          },
           actionedByDisplayName: 'Ralph Gen',
         },
         {
@@ -57,7 +59,9 @@ describe('timelineResolver', () => {
             prisonName: undefined,
           },
           timestamp: moment('2023-09-01T10:47:38.560Z').toDate(),
-          contextualInfo: '',
+          contextualInfo: {
+            GOAL_TITLE: 'Learn Spanish',
+          },
           actionedByDisplayName: 'Ralph Gen',
         },
       ]
@@ -72,7 +76,9 @@ describe('timelineResolver', () => {
           prisonName: undefined,
         },
         timestamp: moment('2023-10-01T10:47:38.565Z').toDate(),
-        contextualInfo: '',
+        contextualInfo: {
+          GOAL_TITLE: 'Learn German',
+        },
         actionedByDisplayName: 'Ralph Gen',
       }
       const inductionUpdateEvent: TimelineEvent = {
@@ -85,7 +91,7 @@ describe('timelineResolver', () => {
           prisonName: undefined,
         },
         timestamp: moment('2023-10-01T12:12:02.014Z').toDate(),
-        contextualInfo: '',
+        contextualInfo: {},
         actionedByDisplayName: 'Ralph Gen',
       }
       const goalUpdateEvent: TimelineEvent = {
@@ -98,7 +104,9 @@ describe('timelineResolver', () => {
           prisonName: undefined,
         },
         timestamp: moment('2023-10-02T09:54:13.987Z').toDate(),
-        contextualInfo: '',
+        contextualInfo: {
+          GOAL_TITLE: 'Learn Spanish',
+        },
         actionedByDisplayName: 'Ralph Gen',
       }
 
@@ -127,7 +135,10 @@ describe('timelineResolver', () => {
               prisonName: undefined,
             },
             timestamp: moment('2023-09-01T10:47:38.560Z').toDate(),
-            contextualInfo: '',
+            contextualInfo: {
+              GOAL_TITLE_0: 'Learn French',
+              GOAL_TITLE_1: 'Learn Spanish',
+            },
             actionedByDisplayName: 'Ralph Gen',
           },
           {

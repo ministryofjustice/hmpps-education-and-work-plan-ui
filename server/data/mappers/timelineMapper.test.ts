@@ -17,7 +17,7 @@ describe('timelineMapper', () => {
           actionedBy: 'RALPH_GEN',
           timestamp: '2023-09-01T10:47:38.565Z',
           correlationId: '246aa049-c5df-459d-8231-bdeab3936d0f',
-          contextualInfo: '',
+          contextualInfo: {},
           actionedByDisplayName: 'Ralph Gen',
         },
       ],
@@ -37,7 +37,7 @@ describe('timelineMapper', () => {
           },
           timestamp: moment('2023-09-01T10:47:38.565Z').toDate(),
           correlationId: '246aa049-c5df-459d-8231-bdeab3936d0f',
-          contextualInfo: '',
+          contextualInfo: {},
           actionedByDisplayName: 'Ralph Gen',
         },
       ],
@@ -60,7 +60,7 @@ describe('timelineMapper', () => {
       actionedBy: 'RALPH_GEN',
       timestamp: '2023-09-01T10:47:38.565Z',
       correlationId: '246aa049-c5df-459d-8231-bdeab3936d0f',
-      contextualInfo: '',
+      contextualInfo: {},
       actionedByDisplayName: 'Ralph Gen',
     }
 
@@ -74,7 +74,7 @@ describe('timelineMapper', () => {
       },
       timestamp: moment('2023-09-01T10:47:38.565Z').toDate(),
       correlationId: '246aa049-c5df-459d-8231-bdeab3936d0f',
-      contextualInfo: '',
+      contextualInfo: {},
       actionedByDisplayName: 'Ralph Gen',
     }
 

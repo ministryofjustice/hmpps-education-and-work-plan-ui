@@ -13,7 +13,7 @@ const timelinesKeyedByPrisonNumber: Record<string, TimelineResponse> = {
         actionedBy: 'system',
         timestamp: '2023-11-04T14:15:38.185Z',
         correlationId: '5b1f46e9-8e14-4f1f-b5f0-da528031eddd',
-        contextualInfo: null,
+        contextualInfo: {},
         actionedByDisplayName: null,
       },
       {
@@ -24,7 +24,7 @@ const timelinesKeyedByPrisonNumber: Record<string, TimelineResponse> = {
         actionedBy: 'CBELL_GEN',
         timestamp: '2023-12-04T14:15:38.185Z',
         correlationId: '04b69310-dbec-42c3-8b7b-c5111c6f6f5b',
-        contextualInfo: null,
+        contextualInfo: {},
         actionedByDisplayName: 'Catriona Bell',
       },
       {
@@ -35,7 +35,7 @@ const timelinesKeyedByPrisonNumber: Record<string, TimelineResponse> = {
         actionedBy: 'CBELL_GEN',
         timestamp: '2023-12-04T14:16:18.511Z',
         correlationId: '69dbf409-d815-4132-9675-9c1a4e0f86b2',
-        contextualInfo: null,
+        contextualInfo: {},
         actionedByDisplayName: 'Catriona Bell',
       },
       {
@@ -46,7 +46,9 @@ const timelinesKeyedByPrisonNumber: Record<string, TimelineResponse> = {
         actionedBy: 'CBELL_GEN',
         timestamp: '2023-12-04T14:16:18.511Z',
         correlationId: '69dbf409-d815-4132-9675-9c1a4e0f86b2',
-        contextualInfo: 'Improve English',
+        contextualInfo: {
+          GOAL_TITLE: 'Improve English',
+        },
         actionedByDisplayName: 'Catriona Bell',
       },
       {
@@ -57,7 +59,9 @@ const timelinesKeyedByPrisonNumber: Record<string, TimelineResponse> = {
         actionedBy: 'system',
         timestamp: '2024-01-04T14:15:38.185Z',
         correlationId: 'fcffb4a8-ff53-4723-91bf-aeff262a21f7',
-        contextualInfo: 'BXI',
+        contextualInfo: {
+          PRISON_TRANSFERRED_FROM: 'BXI',
+        },
         actionedByDisplayName: null,
       },
       {
@@ -68,7 +72,7 @@ const timelinesKeyedByPrisonNumber: Record<string, TimelineResponse> = {
         actionedBy: 'system',
         timestamp: '2024-01-19T14:15:38.185Z',
         correlationId: '88116e89-3f82-40da-955a-7a9ebc6ed313',
-        contextualInfo: null,
+        contextualInfo: {},
         actionedByDisplayName: null,
       },
     ],
@@ -85,7 +89,7 @@ const timelinesKeyedByPrisonNumber: Record<string, TimelineResponse> = {
         actionedBy: 'system',
         timestamp: '2023-11-04T14:15:38.185Z',
         correlationId: '5b1f46e9-8e14-4f1f-b5f0-da528031eddd',
-        contextualInfo: null,
+        contextualInfo: {},
         actionedByDisplayName: null,
       },
       {
@@ -96,7 +100,7 @@ const timelinesKeyedByPrisonNumber: Record<string, TimelineResponse> = {
         actionedBy: 'CBELL_GEN',
         timestamp: '2023-12-04T14:21:24.258Z',
         correlationId: 'ebcba256-9ea0-4af5-ad11-ffc0c7281adf',
-        contextualInfo: null,
+        contextualInfo: {},
         actionedByDisplayName: 'Catriona Bell',
       },
       {
@@ -107,7 +111,7 @@ const timelinesKeyedByPrisonNumber: Record<string, TimelineResponse> = {
         actionedBy: 'CBELL_GEN',
         timestamp: '2023-12-04T14:23:08.081Z',
         correlationId: 'b0300db5-6c30-479d-891f-94a7c22c2950',
-        contextualInfo: null,
+        contextualInfo: {},
         actionedByDisplayName: 'Catriona Bell',
       },
       {
@@ -118,7 +122,9 @@ const timelinesKeyedByPrisonNumber: Record<string, TimelineResponse> = {
         actionedBy: 'CBELL_GEN',
         timestamp: '2023-12-04T14:23:08.081Z',
         correlationId: 'b0300db5-6c30-479d-891f-94a7c22c2950',
-        contextualInfo: 'Improve money management',
+        contextualInfo: {
+          GOAL_TITLE: 'Improve money management',
+        },
         actionedByDisplayName: 'Catriona Bell',
       },
       {
@@ -129,7 +135,9 @@ const timelinesKeyedByPrisonNumber: Record<string, TimelineResponse> = {
         actionedBy: 'CBELL_GEN',
         timestamp: '2023-12-04T14:23:08.081Z',
         correlationId: 'b0300db5-6c30-479d-891f-94a7c22c2950',
-        contextualInfo: 'Improve relationship with family',
+        contextualInfo: {
+          GOAL_TITLE: 'Improve relationship with family',
+        },
         actionedByDisplayName: 'Catriona Bell',
       },
     ],
