@@ -75,7 +75,7 @@ Data supplied to this template:
   {% set options = options.concat(level5) %}
 {% endif %}
 
-{% if ['UNDERGRADUATE_DEGREE_AT_UNIVERSITY', 'POSTGRADUATE_DEGREE_AT_UNIVERSITY'].includes(educationLevel) or educationLevel === '' %}
+{% if ['UNDERGRADUATE_DEGREE_AT_UNIVERSITY', 'POSTGRADUATE_DEGREE_AT_UNIVERSITY'].includes(educationLevel) or educationLevel === 'NOT_SURE' or not educationLevel %}
   {% set title = "What level of qualification does " + prisonerSummary.firstName + " " + prisonerSummary.lastName + " want to add?" %}
   {% set level6 = {
         value: "LEVEL_6",
@@ -89,7 +89,7 @@ Data supplied to this template:
   {% set options = options.concat(level6) %}
 {% endif %}
 
-{% if educationLevel === 'POSTGRADUATE_DEGREE_AT_UNIVERSITY' or educationLevel === '' %}
+{% if educationLevel === 'POSTGRADUATE_DEGREE_AT_UNIVERSITY' or educationLevel === 'NOT_SURE' or not educationLevel %}
   {% set title = "What level of qualification does " + prisonerSummary.firstName + " " + prisonerSummary.lastName + " want to add?" %}
   {% set level7 = {
         value: "LEVEL_7",
