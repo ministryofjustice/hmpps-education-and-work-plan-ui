@@ -17,6 +17,10 @@ parameters:
     type: string
     default: 20.10-browsers
 
+  redis-version:
+    type: string
+    default: '7.2'
+
 jobs:
   build:
     executor:
@@ -72,7 +76,7 @@ jobs:
     executor:
       name: hmpps/node_redis
       node_tag: << pipeline.parameters.node-version >>
-      redis_tag: "7.0"
+      redis_tag: << pipeline.parameters.redis-version >>
     steps:
       - checkout
       - attach_workspace:
