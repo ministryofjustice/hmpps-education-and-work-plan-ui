@@ -9,7 +9,7 @@ export default function formatPrisonMovementEventFilter(event: TimelineEvent): s
   }
   if (eventType === 'PRISON_TRANSFER') {
     return timelineEventValue
-      .replace('[OLD_PRISON]', event.contextualInfo)
+      .replace('[OLD_PRISON]', event.contextualInfo.PRISON_TRANSFERRED_FROM)
       .replace('[NEW_PRISON]', event.prison.prisonName || event.prison.prisonId)
   }
 

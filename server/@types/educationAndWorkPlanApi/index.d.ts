@@ -4,15 +4,6 @@
  */
 
 export interface paths {
-  '/queue-admin/retry-dlq/{dlqName}': {
-    put: operations['retryDlq']
-  }
-  '/queue-admin/retry-all-dlqs': {
-    put: operations['retryAllDlqs']
-  }
-  '/queue-admin/purge-queue/{queueName}': {
-    put: operations['purgeQueue']
-  }
   '/inductions/{prisonNumber}': {
     get: operations['getInduction']
     put: operations['updateInduction']
@@ -42,8 +33,12 @@ export interface paths {
   '/timelines/{prisonNumber}': {
     get: operations['getTimeline']
   }
-  '/queue-admin/get-dlq-messages/{dlqName}': {
-    get: operations['getDlqMessages']
+  '/subject-access-request': {
+    /**
+     * Provides content for a prisoner to satisfy the needs of a subject access request on their behalf
+     * @description Requires role SAR_DATA_ACCESS or additional role as specified by hmpps.sar.additionalAccessRole configuration.
+     */
+    get: operations['getSarContentByReference']
   }
 }
 
@@ -51,21 +46,6 @@ export type webhooks = Record<string, never>
 
 export interface components {
   schemas: {
-    DlqMessage: {
-      body: {
-        [key: string]: Record<string, never> | undefined
-      }
-      messageId: string
-    }
-    RetryDlqResult: {
-      /** Format: int32 */
-      messagesFoundCount: number
-      messages: components['schemas']['DlqMessage'][]
-    }
-    PurgeQueueResult: {
-      /** Format: int32 */
-      messagesFoundCount: number
-    }
     /**
      * @description A list of the Prisoner's previous qualifications.
      * @example null
@@ -1529,6 +1509,15 @@ export interface components {
         | 'PRISON_RELEASE'
         | 'PRISON_TRANSFER'
       /**
+       * @description An object containing properties of contextual information that's relevant to the event in question. For example a property called `GOAL_TITLE` with value being the title of a Goal that was completed. The object may contain any number of properties. The API spec does not define the property names, but there is a defined set as part of the domain: - GOAL_TITLE - STEP_TITLE - PRISON_TRANSFERRED_FROM
+       * @example {
+       *   "GOAL_TITLE": "Learn French"
+       * }
+       */
+      contextualInfo: {
+        [key: string]: string
+      }
+      /**
        * @description The identifier of the prison that the prisoner was at when the event occurred.
        * @example BXI
        */
@@ -1550,11 +1539,6 @@ export interface components {
        * @example 113d1833-0ce1-45ad-ab44-878c9d589358
        */
       correlationId: string
-      /**
-       * @description Contextual information that's relevant to the event in question. For example the title of a Goal that was completed.
-       * @example Learn French
-       */
-      contextualInfo?: string
       /**
        * @description The display name of the person who caused this event, if applicable.
        * @example Alex Smith
@@ -1579,12 +1563,17 @@ export interface components {
        */
       events: components['schemas']['TimelineEventResponse'][]
     }
-    GetDlqResult: {
+    HmppsSubjectAccessRequestContent: {
+      /** @description The content of the subject access request response */
+      content: Record<string, never>
+    }
+    ErrorResponse: {
       /** Format: int32 */
-      messagesFoundCount: number
-      /** Format: int32 */
-      messagesReturnedCount: number
-      messages: components['schemas']['DlqMessage'][]
+      status: number
+      errorCode?: string
+      userMessage?: string
+      developerMessage?: string
+      moreInfo?: string
     }
     /** @example null */
     FutureWorkInterestsResponse: {
@@ -2127,7 +2116,7 @@ export interface components {
       reference: string
       /**
        * @description The ID of the Prisoner. AKA the prison number.
-       * @example null
+       * @example A1234BC
        */
       offenderId: string
       /**
@@ -2643,49 +2632,11 @@ export interface components {
   pathItems: never
 }
 
+export type $defs = Record<string, never>
+
 export type external = Record<string, never>
 
 export interface operations {
-  retryDlq: {
-    parameters: {
-      path: {
-        dlqName: string
-      }
-    }
-    responses: {
-      /** @description OK */
-      200: {
-        content: {
-          '*/*': components['schemas']['RetryDlqResult']
-        }
-      }
-    }
-  }
-  retryAllDlqs: {
-    responses: {
-      /** @description OK */
-      200: {
-        content: {
-          '*/*': components['schemas']['RetryDlqResult'][]
-        }
-      }
-    }
-  }
-  purgeQueue: {
-    parameters: {
-      path: {
-        queueName: string
-      }
-    }
-    responses: {
-      /** @description OK */
-      200: {
-        content: {
-          '*/*': components['schemas']['PurgeQueueResult']
-        }
-      }
-    }
-  }
   getInduction: {
     parameters: {
       path: {
@@ -2714,7 +2665,9 @@ export interface operations {
     }
     responses: {
       /** @description No Content */
-      204: never
+      204: {
+        content: never
+      }
     }
   }
   createInduction: {
@@ -2730,7 +2683,9 @@ export interface operations {
     }
     responses: {
       /** @description Created */
-      201: never
+      201: {
+        content: never
+      }
     }
   }
   getInduction_1: {
@@ -2761,7 +2716,9 @@ export interface operations {
     }
     responses: {
       /** @description No Content */
-      204: never
+      204: {
+        content: never
+      }
     }
   }
   createInduction_1: {
@@ -2777,7 +2734,9 @@ export interface operations {
     }
     responses: {
       /** @description Created */
-      201: never
+      201: {
+        content: never
+      }
     }
   }
   updateGoal: {
@@ -2794,7 +2753,9 @@ export interface operations {
     }
     responses: {
       /** @description No Content */
-      204: never
+      204: {
+        content: never
+      }
     }
   }
   getInductionSummaries: {
@@ -2855,7 +2816,9 @@ export interface operations {
     }
     responses: {
       /** @description Created */
-      201: never
+      201: {
+        content: never
+      }
     }
   }
   createGoals: {
@@ -2871,7 +2834,9 @@ export interface operations {
     }
     responses: {
       /** @description Created */
-      201: never
+      201: {
+        content: never
+      }
     }
   }
   getTimeline: {
@@ -2889,20 +2854,58 @@ export interface operations {
       }
     }
   }
-  getDlqMessages: {
+  /**
+   * Provides content for a prisoner to satisfy the needs of a subject access request on their behalf
+   * @description Requires role SAR_DATA_ACCESS or additional role as specified by hmpps.sar.additionalAccessRole configuration.
+   */
+  getSarContentByReference: {
     parameters: {
       query?: {
-        maxMessages?: number
-      }
-      path: {
-        dlqName: string
+        /** @description NOMIS Prison Reference Number */
+        prn?: string
+        /** @description nDelius Case Reference Number */
+        crn?: string
+        /** @description Optional parameter denoting minimum date of event occurrence which should be returned in the response */
+        fromDate?: string
+        /** @description Optional parameter denoting maximum date of event occurrence which should be returned in the response */
+        toDate?: string
       }
     }
     responses: {
-      /** @description OK */
+      /** @description Request successfully processed - content found */
       200: {
         content: {
-          '*/*': components['schemas']['GetDlqResult']
+          'application/json': components['schemas']['HmppsSubjectAccessRequestContent']
+        }
+      }
+      /** @description Request successfully processed - no content found */
+      204: {
+        content: {
+          'application/json': Record<string, never>
+        }
+      }
+      /** @description Subject Identifier is not recognised by this service */
+      209: {
+        content: {
+          'application/json': Record<string, never>
+        }
+      }
+      /** @description The client does not have authorisation to make this request */
+      401: {
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unexpected error occurred */
+      500: {
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
         }
       }
     }

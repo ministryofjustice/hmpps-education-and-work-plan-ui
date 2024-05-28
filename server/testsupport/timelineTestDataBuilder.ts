@@ -17,7 +17,7 @@ export default function aValidTimeline(): Timeline {
         },
         timestamp: moment('2023-08-01T10:46:38.565Z').toDate(),
         correlationId: '6457a634-6dbe-4179-983b-74e92883232c',
-        contextualInfo: undefined,
+        contextualInfo: {},
         actionedByDisplayName: undefined,
       },
       {
@@ -30,7 +30,7 @@ export default function aValidTimeline(): Timeline {
         },
         timestamp: moment('2023-09-01T10:47:38.565Z').toDate(),
         correlationId: '246aa049-c5df-459d-8231-bdeab3936d0f',
-        contextualInfo: '',
+        contextualInfo: {},
         actionedByDisplayName: 'Ralph Gen',
       },
       {
@@ -43,7 +43,9 @@ export default function aValidTimeline(): Timeline {
         },
         timestamp: moment('2023-09-23T15:47:38.565Z').toDate(),
         correlationId: '0838330d-606f-480a-b55f-3228e1be122d',
-        contextualInfo: '',
+        contextualInfo: {
+          GOAL_TITLE: 'Learn French',
+        },
         actionedByDisplayName: 'Ralph Gen',
       },
       {
@@ -56,7 +58,9 @@ export default function aValidTimeline(): Timeline {
         },
         timestamp: moment('2023-09-24T08:47:38.565Z').toDate(),
         correlationId: '9805d096-cd52-406b-84b0-f4c1d735f3bd',
-        contextualInfo: '',
+        contextualInfo: {
+          GOAL_TITLE: 'Learn French',
+        },
         actionedByDisplayName: 'Ralph Gen',
       },
       {
@@ -69,7 +73,9 @@ export default function aValidTimeline(): Timeline {
         },
         timestamp: moment('2023-10-01T10:46:38.565Z').toDate(),
         correlationId: 'd2b08b98-77f6-4351-ac60-8c595075f809',
-        contextualInfo: 'MDI',
+        contextualInfo: {
+          PRISON_TRANSFERRED_FROM: 'MDI',
+        },
         actionedByDisplayName: undefined,
       },
       {
@@ -82,7 +88,9 @@ export default function aValidTimeline(): Timeline {
         },
         timestamp: moment('2023-11-29T18:47:38.565Z').toDate(),
         correlationId: 'db35c8d4-d5c3-4ec8-8554-a3e31f099b3a',
-        contextualInfo: '',
+        contextualInfo: {
+          GOAL_TITLE: 'Learn French',
+        },
         actionedByDisplayName: 'Ralph Gen',
       },
       {
@@ -95,7 +103,7 @@ export default function aValidTimeline(): Timeline {
         },
         timestamp: moment('2023-12-01T10:46:38.565Z').toDate(),
         correlationId: '7e82200d-6251-4d38-9207-1ce49650dedf',
-        contextualInfo: undefined,
+        contextualInfo: {},
         actionedByDisplayName: undefined,
       },
       {
@@ -108,7 +116,7 @@ export default function aValidTimeline(): Timeline {
         },
         timestamp: moment('2024-01-01T10:46:38.565Z').toDate(),
         correlationId: '94e445d5-e4fa-4e32-93f5-0e5d6e3dbb2d',
-        contextualInfo: undefined,
+        contextualInfo: {},
         actionedByDisplayName: undefined,
       },
     ],

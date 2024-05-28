@@ -47,6 +47,14 @@ const eventsWithMergedCreateGoalEvents = (
         goalCreatedEvents.length > 1
           ? ({
               ...goalCreatedEvents[goalCreatedEvents.length - 1],
+              contextualInfo: goalCreatedEvents // Map all the goal created events contextualInfo properties into an object containing them all with an incremental number
+                .map((event, idx) =>
+                  idx > 0 ? event.contextualInfo : { GOAL_TITLE_0: event.contextualInfo.GOAL_TITLE },
+                )
+                .reduce((previous, current, idx) => ({
+                  ...previous,
+                  [`GOAL_TITLE_${idx}`]: current.GOAL_TITLE,
+                })),
               eventType: 'MULTIPLE_GOALS_CREATED',
             } as TimelineEvent)
           : goalCreatedEvents[0],
