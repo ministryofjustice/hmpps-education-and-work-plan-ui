@@ -13,10 +13,10 @@ export default class ReasonsNotToGetWorkCreateController extends ReasonsNotToGet
   getBackLinkUrl(req: Request): string {
     const { prisonNumber } = req.params
     const { pageFlowHistory } = req.session
-    if (pageFlowHistory) {
-      return getPreviousPage(pageFlowHistory)
-    }
-    return `/prisoners/${prisonNumber}/create-induction/hoping-to-work-on-release`
+    const nextPage =
+      (pageFlowHistory && getPreviousPage(pageFlowHistory)) ||
+      `/prisoners/${prisonNumber}/create-induction/hoping-to-work-on-release`
+    return nextPage
   }
 
   getBackLinkAriaText(req: Request): string {
