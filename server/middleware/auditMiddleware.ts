@@ -92,7 +92,7 @@ export default function auditMiddleware({ auditService }: Services) {
       if (!page) return next()
 
       const auditDetails: PageViewEventDetails = {
-        who: req.user.username ?? 'UNKNOWN',
+        who: req.user?.username ?? 'UNKNOWN',
         correlationId: req.id,
         details: {
           params: req.params,
