@@ -1,6 +1,6 @@
 import express, { Express } from 'express'
 import cookieSession from 'cookie-session'
-import createError from 'http-errors'
+import { NotFound } from 'http-errors'
 import { v4 as uuidv4 } from 'uuid'
 
 import routes from '../index'
@@ -55,7 +55,7 @@ function appSetup(services: Services, production: boolean, userSupplier: () => E
   app.use(express.urlencoded({ extended: true }))
   app.use(auditMiddleware(services))
   app.use(routes(services))
-  app.use((req, res, next) => next(createError(404, 'Not found')))
+  app.use((req, res, next) => next(new NotFound()))
   app.use(errorHandler(services, production))
 
   return app

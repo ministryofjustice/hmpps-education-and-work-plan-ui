@@ -40,9 +40,6 @@ export default function createApp(services: Services): express.Application {
   app.use(setUpWebRequestParsing())
   app.use(setUpStaticResources())
 
-  app.locals.environmentName = config.environmentName
-  app.locals.environmentNameColour = config.environmentName === 'PRE-PRODUCTION' ? 'govuk-tag--green' : ''
-
   nunjucksSetup(app, services.applicationInfo)
   app.use(setUpAuthentication())
   app.use(authorisationMiddleware())

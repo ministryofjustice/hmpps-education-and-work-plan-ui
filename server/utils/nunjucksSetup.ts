@@ -34,6 +34,8 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
 
   app.locals.asset_path = '/assets/'
   app.locals.applicationName = 'Digital Prison Services'
+  app.locals.environmentName = config.environmentName
+  app.locals.environmentNameColour = config.environmentName === 'PRE-PRODUCTION' ? 'govuk-tag--green' : ''
 
   app.locals.applicationInsightsConnectionString = config.applicationInsights.connectionString
   app.locals.applicationInsightsRoleName = applicationInfo.applicationName
