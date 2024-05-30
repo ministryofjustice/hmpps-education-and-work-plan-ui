@@ -59,6 +59,7 @@ context(`Change new Induction question set by updating 'Hoping to work on releas
     // When
     Page.verifyOnPage(CheckYourAnswersPage) //
       .clickHopingToWorkOnReleaseChangeLink()
+      .hasBackLinkTo(`/prisoners/${prisonNumberForPrisonerWithNoInduction}/create-induction/check-your-answers`)
       .selectHopingWorkOnRelease(HopingToGetWorkValue.NO)
       .submitPage()
 
@@ -140,6 +141,7 @@ context(`Change new Induction question set by updating 'Hoping to work on releas
     // When
     Page.verifyOnPage(CheckYourAnswersPage) //
       .clickHopingToWorkOnReleaseChangeLink()
+      .hasBackLinkTo(`/prisoners/${prisonNumberForPrisonerWithNoInduction}/create-induction/check-your-answers`)
       .selectHopingWorkOnRelease(HopingToGetWorkValue.YES)
       .submitPage()
 
@@ -278,6 +280,7 @@ context(`Change new Induction question set by updating 'Hoping to work on releas
     // When
     Page.verifyOnPage(CheckYourAnswersPage) //
       .clickHopingToWorkOnReleaseChangeLink()
+      .hasBackLinkTo(`/prisoners/${prisonNumberForPrisonerWithNoInduction}/create-induction/check-your-answers`)
       .selectHopingWorkOnRelease(HopingToGetWorkValue.YES)
       .submitPage()
 
