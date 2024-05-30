@@ -99,7 +99,7 @@ context('Create a short question set Induction', () => {
 
     // Qualifications List page is displayed again. Add another qualification
     Page.verifyOnPage(QualificationsListPage) //
-      .hasBackLinkTo('/prisoners/A00001A/create-induction/hoping-to-work-on-release')
+      .hasBackLinkTo('/prisoners/A00001A/create-induction/want-to-add-qualifications')
       .hasEducationalQualifications(['Computer science'])
       .clickToAddAnotherQualification()
     Page.verifyOnPage(QualificationLevelPage)
@@ -114,7 +114,7 @@ context('Create a short question set Induction', () => {
 
     // Qualifications List page is displayed again. Remove a qualification
     Page.verifyOnPage(QualificationsListPage) //
-      .hasBackLinkTo('/prisoners/A00001A/create-induction/hoping-to-work-on-release')
+      .hasBackLinkTo('/prisoners/A00001A/create-induction/want-to-add-qualifications')
       .hasEducationalQualifications(['Computer science', 'Physics'])
       .removeQualification(1) // remove Computer science
       .hasEducationalQualifications(['Physics'])

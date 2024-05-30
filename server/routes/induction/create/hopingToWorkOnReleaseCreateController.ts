@@ -45,7 +45,7 @@ export default class HopingToWorkOnReleaseCreateController extends HopingToWorkO
 
     if (updatedInduction.workOnRelease.hopingToWork === YesNoValue.YES) {
       // Long question set Induction
-      return res.redirect(`/prisoners/${prisonNumber}/create-induction/qualifications`)
+      return res.redirect(`/prisoners/${prisonNumber}/create-induction/work-interest-types`)
     }
     // Short question set Induction
     return res.redirect(`/prisoners/${prisonNumber}/create-induction/reasons-not-to-get-work`)

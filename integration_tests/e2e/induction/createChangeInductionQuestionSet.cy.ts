@@ -143,10 +143,22 @@ context(`Change new Induction question set by updating 'Hoping to work on releas
       .selectHopingWorkOnRelease(HopingToGetWorkValue.YES)
       .submitPage()
 
+    // Work Interests page is the next page. This is not asked on the short question set.
+    Page.verifyOnPage(FutureWorkInterestTypesPage) //
+      .hasBackLinkTo(`/prisoners/${prisonNumberForPrisonerWithNoInduction}/create-induction/hoping-to-work-on-release`)
+      .chooseWorkInterestType(WorkInterestTypeValue.CONSTRUCTION)
+      .chooseWorkInterestType(WorkInterestTypeValue.DRIVING)
+      .submitPage()
+    Page.verifyOnPage(FutureWorkInterestRolesPage) //
+      .hasBackLinkTo(`/prisoners/${prisonNumberForPrisonerWithNoInduction}/create-induction/work-interest-types`)
+      .setWorkInterestRole(WorkInterestTypeValue.CONSTRUCTION, 'General builder')
+      .setWorkInterestRole(WorkInterestTypeValue.DRIVING, 'Driving instructor')
+      .submitPage()
+
     // Qualifications List is the next page. Qualifications are asked on the short question set, so this will already have qualifications set
     // Add a new qualification; just to test going through each page in the flow
     Page.verifyOnPage(QualificationsListPage) //
-      .hasBackLinkTo(`/prisoners/${prisonNumberForPrisonerWithNoInduction}/create-induction/hoping-to-work-on-release`)
+      .hasBackLinkTo(`/prisoners/${prisonNumberForPrisonerWithNoInduction}/create-induction/work-interest-roles`)
       .clickToAddAnotherQualification()
       .selectQualificationLevel(QualificationLevelValue.LEVEL_4)
       .submitPage()
@@ -190,21 +202,9 @@ context(`Change new Induction question set by updating 'Hoping to work on releas
       .setJobDetails('Filing and photocopying: Sept 2000 - Dec 2009')
       .submitPage()
 
-    // Work Interests page is the next page. This is not asked on the short question set.
-    Page.verifyOnPage(FutureWorkInterestTypesPage) //
-      .hasBackLinkTo(`/prisoners/${prisonNumberForPrisonerWithNoInduction}/create-induction/has-worked-before`)
-      .chooseWorkInterestType(WorkInterestTypeValue.CONSTRUCTION)
-      .chooseWorkInterestType(WorkInterestTypeValue.DRIVING)
-      .submitPage()
-    Page.verifyOnPage(FutureWorkInterestRolesPage) //
-      .hasBackLinkTo(`/prisoners/${prisonNumberForPrisonerWithNoInduction}/create-induction/work-interest-types`)
-      .setWorkInterestRole(WorkInterestTypeValue.CONSTRUCTION, 'General builder')
-      .setWorkInterestRole(WorkInterestTypeValue.DRIVING, 'Driving instructor')
-      .submitPage()
-
     // Personal skills page is the next page. This is not asked on the short question set.
     Page.verifyOnPage(SkillsPage) //
-      .hasBackLinkTo(`/prisoners/${prisonNumberForPrisonerWithNoInduction}/create-induction/work-interest-roles`)
+      .hasBackLinkTo(`/prisoners/${prisonNumberForPrisonerWithNoInduction}/create-induction/has-worked-before`)
       .chooseSkill(SkillsValue.TEAMWORK)
       .chooseSkill(SkillsValue.WILLINGNESS_TO_LEARN)
       .submitPage()
@@ -281,10 +281,22 @@ context(`Change new Induction question set by updating 'Hoping to work on releas
       .selectHopingWorkOnRelease(HopingToGetWorkValue.YES)
       .submitPage()
 
+    // Work Interests page is the next page. This is not asked on the short question set.
+    Page.verifyOnPage(FutureWorkInterestTypesPage) //
+      .hasBackLinkTo(`/prisoners/${prisonNumberForPrisonerWithNoInduction}/create-induction/hoping-to-work-on-release`)
+      .chooseWorkInterestType(WorkInterestTypeValue.CONSTRUCTION)
+      .chooseWorkInterestType(WorkInterestTypeValue.DRIVING)
+      .submitPage()
+    Page.verifyOnPage(FutureWorkInterestRolesPage) //
+      .hasBackLinkTo(`/prisoners/${prisonNumberForPrisonerWithNoInduction}/create-induction/work-interest-types`)
+      .setWorkInterestRole(WorkInterestTypeValue.CONSTRUCTION, 'General builder')
+      .setWorkInterestRole(WorkInterestTypeValue.DRIVING, 'Driving instructor')
+      .submitPage()
+
     // Qualifications List is the next page. Qualifications are asked on the short question set, but none were added in the original induction
     // so the page will show no qualifications and just a single CTA which will move the user onto Highest Level of Education
     Page.verifyOnPage(QualificationsListPage) //
-      .hasBackLinkTo(`/prisoners/${prisonNumberForPrisonerWithNoInduction}/create-induction/hoping-to-work-on-release`)
+      .hasBackLinkTo(`/prisoners/${prisonNumberForPrisonerWithNoInduction}/create-induction/work-interest-roles`)
       .submitPage()
     Page.verifyOnPage(HighestLevelOfEducationPage) //
       .hasBackLinkTo(`/prisoners/${prisonNumberForPrisonerWithNoInduction}/create-induction/qualifications`)
@@ -334,21 +346,9 @@ context(`Change new Induction question set by updating 'Hoping to work on releas
       .setJobDetails('Filing and photocopying: Sept 2000 - Dec 2009')
       .submitPage()
 
-    // Work Interests page is the next page. This is not asked on the short question set.
-    Page.verifyOnPage(FutureWorkInterestTypesPage) //
-      .hasBackLinkTo(`/prisoners/${prisonNumberForPrisonerWithNoInduction}/create-induction/has-worked-before`)
-      .chooseWorkInterestType(WorkInterestTypeValue.CONSTRUCTION)
-      .chooseWorkInterestType(WorkInterestTypeValue.DRIVING)
-      .submitPage()
-    Page.verifyOnPage(FutureWorkInterestRolesPage) //
-      .hasBackLinkTo(`/prisoners/${prisonNumberForPrisonerWithNoInduction}/create-induction/work-interest-types`)
-      .setWorkInterestRole(WorkInterestTypeValue.CONSTRUCTION, 'General builder')
-      .setWorkInterestRole(WorkInterestTypeValue.DRIVING, 'Driving instructor')
-      .submitPage()
-
     // Personal skills page is the next page. This is not asked on the short question set.
     Page.verifyOnPage(SkillsPage) //
-      .hasBackLinkTo(`/prisoners/${prisonNumberForPrisonerWithNoInduction}/create-induction/work-interest-roles`)
+      .hasBackLinkTo(`/prisoners/${prisonNumberForPrisonerWithNoInduction}/create-induction/has-worked-before`)
       .chooseSkill(SkillsValue.TEAMWORK)
       .chooseSkill(SkillsValue.WILLINGNESS_TO_LEARN)
       .submitPage()
