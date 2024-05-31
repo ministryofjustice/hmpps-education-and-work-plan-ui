@@ -10,10 +10,10 @@ export default class WorkInterestTypesCreateController extends WorkInterestTypes
   getBackLinkUrl(req: Request): string {
     const { prisonNumber } = req.params
     const { pageFlowHistory } = req.session
-    if (pageFlowHistory) {
-      return getPreviousPage(pageFlowHistory)
-    }
-    return `/prisoners/${prisonNumber}/create-induction/has-worked-before`
+    const previousPage =
+      (pageFlowHistory && getPreviousPage(pageFlowHistory)) ||
+      `/prisoners/${prisonNumber}/create-induction/hoping-to-work-on-release`
+    return previousPage
   }
 
   getBackLinkAriaText(req: Request): string {

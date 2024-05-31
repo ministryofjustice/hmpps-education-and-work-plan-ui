@@ -546,7 +546,7 @@ describe('previousWorkExperienceDetailUpdateController', () => {
         expect(inductionService.updateInduction).not.toHaveBeenCalled()
       })
 
-      it('should update InductionDto and redirect to Induction work interests page given a PageFlowQueue that is on the last page and we are updating the entire Induction question set', async () => {
+      it('should update InductionDto and redirect to Personal Skills page given a PageFlowQueue that is on the last page and we are updating the entire Induction question set', async () => {
         // Given
         req.params.typeOfWorkExperience = 'construction'
         req.path = `/prisoners/${prisonNumber}/induction/previous-work-experience/construction`
@@ -594,7 +594,7 @@ describe('previousWorkExperienceDetailUpdateController', () => {
         expect(previousConstructionWorkExperience.details).toEqual(
           'General labouring, building walls, basic plastering',
         )
-        expect(res.redirect).toHaveBeenCalledWith(`/prisoners/${prisonNumber}/induction/work-interest-types`)
+        expect(res.redirect).toHaveBeenCalledWith(`/prisoners/${prisonNumber}/induction/skills`)
         expect(req.session.previousWorkExperienceDetailForm).toBeUndefined()
         expect(inductionService.updateInduction).not.toHaveBeenCalled()
         expect(req.session.pageFlowHistory).toEqual(expectedPageFlowHistory)
