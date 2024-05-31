@@ -5,6 +5,10 @@ import OverviewController from './overviewController'
 import retrieveCuriousInPrisonCourses from '../routerRequestHandlers/retrieveCuriousInPrisonCourses'
 import removeInductionFormsFromSession from '../routerRequestHandlers/removeInductionFormsFromSession'
 import asyncMiddleware from '../../middleware/asyncMiddleware'
+import TimelineController from './timelineController'
+import SupportNeedsController from './supportNeedsController'
+import WorkAndInterestsController from './workAndInterestsController'
+import EducationAndTrainingController from './educationAndTrainingController'
 
 /**
  * Route definitions for the pages relating to the main Overview page
@@ -14,8 +18,14 @@ export default (router: Router, services: Services) => {
     services.curiousService,
     services.educationAndWorkPlanService,
     services.inductionService,
-    services.timelineService,
-    services.prisonService,
+  )
+
+  const timelineController = new TimelineController(services.timelineService)
+  const supportNeedsController = new SupportNeedsController(services.curiousService, services.prisonService)
+  const workAndInterestsController = new WorkAndInterestsController(services.inductionService)
+  const educationAndTrainingController = new EducationAndTrainingController(
+    services.curiousService,
+    services.inductionService,
   )
 
   router.use('/plan/:prisonNumber/view/*', [checkUserHasViewAuthority(), removeInductionFormsFromSession])
@@ -25,16 +35,16 @@ export default (router: Router, services: Services) => {
     asyncMiddleware(overViewController.getOverviewView),
   ])
 
-  router.get('/plan/:prisonNumber/view/support-needs', [asyncMiddleware(overViewController.getSupportNeedsView)])
+  router.get('/plan/:prisonNumber/view/support-needs', [asyncMiddleware(supportNeedsController.getSupportNeedsView)])
 
   router.get('/plan/:prisonNumber/view/education-and-training', [
     retrieveCuriousInPrisonCourses(services.curiousService),
-    asyncMiddleware(overViewController.getEducationAndTrainingView),
+    asyncMiddleware(educationAndTrainingController.getEducationAndTrainingView),
   ])
 
   router.get('/plan/:prisonNumber/view/work-and-interests', [
-    asyncMiddleware(overViewController.getWorkAndInterestsView),
+    asyncMiddleware(workAndInterestsController.getWorkAndInterestsView),
   ])
 
-  router.get('/plan/:prisonNumber/view/timeline', [asyncMiddleware(overViewController.getTimelineView)])
+  router.get('/plan/:prisonNumber/view/timeline', [asyncMiddleware(timelineController.getTimelineView)])
 }
