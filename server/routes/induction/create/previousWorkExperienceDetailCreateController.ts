@@ -78,8 +78,8 @@ export default class PreviousWorkExperienceDetailCreateController extends Previo
       return res.redirect(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
     }
 
-    // Otherwise redirect to next page in the question set (post-release work interests)
+    // Otherwise redirect to next page in the question set (personal skills)
     req.session.pageFlowHistory = undefined
-    return res.redirect(`/prisoners/${prisonNumber}/create-induction/work-interest-types`)
+    return res.redirect(`/prisoners/${prisonNumber}/create-induction/skills`)
   }
 }

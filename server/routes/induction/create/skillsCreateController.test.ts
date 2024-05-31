@@ -52,8 +52,8 @@ describe('skillsCreateController', () => {
       const expectedView = {
         prisonerSummary,
         form: expectedSkillsForm,
-        backLinkUrl: '/prisoners/A1234BC/create-induction/work-interest-roles',
-        backLinkAriaText: 'Back to Is Jimmy Lightfingers interested in any particular jobs?',
+        backLinkUrl: '/prisoners/A1234BC/create-induction/has-worked-before',
+        backLinkAriaText: 'Back to Has Jimmy Lightfingers worked before?',
       }
 
       // When
@@ -84,8 +84,8 @@ describe('skillsCreateController', () => {
       const expectedView = {
         prisonerSummary,
         form: expectedSkillsForm,
-        backLinkUrl: '/prisoners/A1234BC/create-induction/work-interest-roles',
-        backLinkAriaText: 'Back to Is Jimmy Lightfingers interested in any particular jobs?',
+        backLinkUrl: '/prisoners/A1234BC/create-induction/has-worked-before',
+        backLinkAriaText: 'Back to Has Jimmy Lightfingers worked before?',
       }
 
       // When

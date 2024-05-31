@@ -134,7 +134,7 @@ describe('hopingToWorkOnReleaseCreateController', () => {
       expect(req.session.inductionDto).toEqual(inductionDto)
     })
 
-    it('should update Induction in session and redirect to qualifications page given form is submitted with Hoping To Work as Yes', async () => {
+    it('should update Induction in session and redirect to Work Interest Types page given form is submitted with Hoping To Work as Yes', async () => {
       // Given
       const inductionDto = { prisonNumber } as InductionDto
       req.session.inductionDto = inductionDto
@@ -160,7 +160,7 @@ describe('hopingToWorkOnReleaseCreateController', () => {
       )
 
       // Then
-      expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-induction/qualifications')
+      expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-induction/work-interest-types')
       expect(req.session.hopingToWorkOnReleaseForm).toBeUndefined()
       expect(req.session.inductionDto).toEqual(expectedInduction)
     })
