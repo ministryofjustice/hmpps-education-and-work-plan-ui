@@ -22,12 +22,11 @@ export default class PreviousWorkExperienceDetailUpdateController extends Previo
   }
 
   getBackLinkUrl(req: Request): string {
-    const { pageFlowHistory } = req.session
-    if (pageFlowHistory) {
-      return getPreviousPage(pageFlowHistory)
-    }
     const { prisonNumber } = req.params
-    return `/plan/${prisonNumber}/view/work-and-interests`
+    const { pageFlowHistory } = req.session
+    const previousPage =
+      (pageFlowHistory && getPreviousPage(pageFlowHistory)) || `/plan/${prisonNumber}/view/work-and-interests`
+    return previousPage
   }
 
   getBackLinkAriaText(req: Request): string {
@@ -91,7 +90,7 @@ export default class PreviousWorkExperienceDetailUpdateController extends Previo
 
     if (req.session.updateInductionQuestionSet) {
       req.session.inductionDto = updatedInduction
-      const nextPage = `/prisoners/${prisonNumber}/induction/work-interest-types`
+      const nextPage = `/prisoners/${prisonNumber}/induction/skills`
       req.session.pageFlowHistory = this.buildPageFlowHistory(prisonNumber)
       req.session.previousWorkExperienceDetailForm = undefined
       return res.redirect(nextPage)

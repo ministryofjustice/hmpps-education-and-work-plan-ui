@@ -246,7 +246,7 @@ describe('workedBeforeUpdateController', () => {
       expect(req.session.workedBeforeForm).toBeUndefined()
     })
 
-    it('should update InductionDto and redirect to Work Interests given long question set journey and has worked before is NO', async () => {
+    it('should update InductionDto and redirect to Personal Skills given long question set journey and has worked before is NO', async () => {
       // Given
       const inductionDto = aLongQuestionSetInductionDto()
       req.session.inductionDto = inductionDto
@@ -258,7 +258,7 @@ describe('workedBeforeUpdateController', () => {
       req.session.workedBeforeForm = undefined
 
       req.session.updateInductionQuestionSet = { hopingToWorkOnRelease: 'YES' }
-      const expectedNextPage = '/prisoners/A1234BC/induction/work-interest-types'
+      const expectedNextPage = '/prisoners/A1234BC/induction/skills'
 
       // When
       await controller.submitWorkedBeforeForm(

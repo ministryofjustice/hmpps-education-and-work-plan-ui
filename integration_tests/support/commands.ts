@@ -102,6 +102,13 @@ Cypress.Commands.add('updateLongQuestionSetInductionToArriveOnCheckYourAnswers',
   Page.verifyOnPage(HopingToWorkOnReleasePage) //
     .selectHopingWorkOnRelease(HopingToGetWorkValue.YES)
     .submitPage()
+  // Work Interests page is the next page. This is not asked on the short question set.
+  Page.verifyOnPage(FutureWorkInterestTypesPage) //
+    .chooseWorkInterestType(WorkInterestTypeValue.DRIVING)
+    .submitPage()
+  Page.verifyOnPage(FutureWorkInterestRolesPage) //
+    .setWorkInterestRole(WorkInterestTypeValue.DRIVING, 'Driving instructor')
+    .submitPage()
   // Qualifications List is the next page. Qualifications are asked on the short question set, so this will already have qualifications set
   Page.verifyOnPage(QualificationsListPage) //
     .submitPage()
@@ -120,13 +127,6 @@ Cypress.Commands.add('updateLongQuestionSetInductionToArriveOnCheckYourAnswers',
   Page.verifyOnPage(PreviousWorkExperienceDetailPage) //
     .setJobRole('Office junior')
     .setJobDetails('Filing and photocopying')
-    .submitPage()
-  // Work Interests page is the next page. This is not asked on the short question set.
-  Page.verifyOnPage(FutureWorkInterestTypesPage) //
-    .chooseWorkInterestType(WorkInterestTypeValue.DRIVING)
-    .submitPage()
-  Page.verifyOnPage(FutureWorkInterestRolesPage) //
-    .setWorkInterestRole(WorkInterestTypeValue.DRIVING, 'Driving instructor')
     .submitPage()
   // Personal skills page is the next page. This is not asked on the short question set.
   Page.verifyOnPage(SkillsPage) //
@@ -151,6 +151,14 @@ Cypress.Commands.add('createLongQuestionSetInductionToArriveOnCheckYourAnswers',
   // Hoping To Work On Release is the first page
   Page.verifyOnPage(HopingToWorkOnReleasePage) //
     .selectHopingWorkOnRelease(HopingToGetWorkValue.YES)
+    .submitPage()
+  // Future Work Interest Types page is next
+  Page.verifyOnPage(FutureWorkInterestTypesPage) //
+    .chooseWorkInterestType(WorkInterestTypeValue.DRIVING)
+    .submitPage()
+  // Future Work Interest Roles page is next
+  Page.verifyOnPage(FutureWorkInterestRolesPage) //
+    .setWorkInterestRole(WorkInterestTypeValue.DRIVING, 'Delivery driver')
     .submitPage()
   // Qualifications List page is next
   Page.verifyOnPage(QualificationsListPage) //
@@ -186,14 +194,6 @@ Cypress.Commands.add('createLongQuestionSetInductionToArriveOnCheckYourAnswers',
   Page.verifyOnPage(PreviousWorkExperienceDetailPage) //
     .setJobRole('General labourer')
     .setJobDetails('Basic ground works and building')
-    .submitPage()
-  // Future Work Interest Types page is next
-  Page.verifyOnPage(FutureWorkInterestTypesPage) //
-    .chooseWorkInterestType(WorkInterestTypeValue.DRIVING)
-    .submitPage()
-  // Future Work Interest Roles page is next
-  Page.verifyOnPage(FutureWorkInterestRolesPage) //
-    .setWorkInterestRole(WorkInterestTypeValue.DRIVING, 'Delivery driver')
     .submitPage()
   // Personal Skills page is next
   Page.verifyOnPage(SkillsPage) //
