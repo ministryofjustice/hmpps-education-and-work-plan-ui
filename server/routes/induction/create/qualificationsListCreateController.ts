@@ -3,15 +3,22 @@ import type { InductionDto } from 'inductionDto'
 import QualificationsListController from '../common/qualificationsListController'
 import { buildNewPageFlowHistory, getPreviousPage } from '../../pageFlowHistory'
 import getDynamicBackLinkAriaText from '../dynamicAriaTextResolver'
+import HopingToGetWorkValue from '../../../enums/hopingToGetWorkValue'
 
 export default class QualificationsListCreateController extends QualificationsListController {
   getBackLinkUrl(req: Request): string {
     const { prisonNumber } = req.params
-    const { pageFlowHistory } = req.session
-    if (pageFlowHistory) {
-      return getPreviousPage(pageFlowHistory)
+    const { pageFlowHistory, inductionDto } = req.session
+    let previousPage = pageFlowHistory && getPreviousPage(pageFlowHistory)
+    if (!previousPage) {
+      // No previous page from the Page Flow History
+      // The previous page in this case is based on whether it's a short or long question set induction
+      previousPage =
+        inductionDto.workOnRelease.hopingToWork === HopingToGetWorkValue.YES
+          ? `/prisoners/${prisonNumber}/create-induction/work-interest-roles` // Previous page in Long question set
+          : `/prisoners/${prisonNumber}/create-induction/want-to-add-qualifications` // Previous page in Short question set
     }
-    return `/prisoners/${prisonNumber}/create-induction/hoping-to-work-on-release`
+    return previousPage
   }
 
   getBackLinkAriaText(req: Request): string {

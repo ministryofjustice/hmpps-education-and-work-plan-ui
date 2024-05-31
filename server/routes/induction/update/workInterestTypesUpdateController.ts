@@ -19,10 +19,9 @@ export default class WorkInterestTypesUpdateController extends WorkInterestTypes
   getBackLinkUrl(req: Request): string {
     const { prisonNumber } = req.params
     const { pageFlowHistory } = req.session
-    if (pageFlowHistory) {
-      return getPreviousPage(pageFlowHistory)
-    }
-    return `/plan/${prisonNumber}/view/work-and-interests`
+    const previousPage =
+      (pageFlowHistory && getPreviousPage(pageFlowHistory)) || `/plan/${prisonNumber}/view/work-and-interests`
+    return previousPage
   }
 
   getBackLinkAriaText(req: Request): string {

@@ -391,7 +391,7 @@ describe('previousWorkExperienceDetailCreateController', () => {
       expect(req.session.inductionDto.previousWorkExperiences.experiences).toEqual(expectedWorkExperiences)
     })
 
-    it('should update inductionDto and redirect to in prison work interests given we are on the last page of the queue', async () => {
+    it('should update inductionDto and redirect to Personal Skills given we are on the last page of the queue', async () => {
       // Given
       req.params.typeOfWorkExperience = 'other'
       req.path = `/prisoners/${prisonNumber}/create-induction/previous-work-experience/other`
@@ -440,7 +440,7 @@ describe('previousWorkExperienceDetailCreateController', () => {
       }
       req.session.pageFlowHistory = pageFlowHistory
 
-      const expectedNextPage = `/prisoners/${prisonNumber}/create-induction/work-interest-types`
+      const expectedNextPage = `/prisoners/${prisonNumber}/create-induction/skills`
       const expectedWorkExperiences = [
         {
           experienceType: TypeOfWorkExperienceValue.CONSTRUCTION,
