@@ -23,10 +23,9 @@ export default class WorkedBeforeUpdateController extends WorkedBeforeController
   getBackLinkUrl(req: Request): string {
     const { prisonNumber } = req.params
     const { pageFlowHistory } = req.session
-    if (pageFlowHistory) {
-      return getPreviousPage(pageFlowHistory)
-    }
-    return `/plan/${prisonNumber}/view/work-and-interests`
+    const previousPage =
+      (pageFlowHistory && getPreviousPage(pageFlowHistory)) || `/plan/${prisonNumber}/view/work-and-interests`
+    return previousPage
   }
 
   getBackLinkAriaText(req: Request): string {
@@ -67,7 +66,7 @@ export default class WorkedBeforeUpdateController extends WorkedBeforeController
       const nextPage =
         workedBeforeForm.hasWorkedBefore === 'YES'
           ? `/prisoners/${prisonNumber}/induction/previous-work-experience`
-          : `/prisoners/${prisonNumber}/induction/work-interest-types`
+          : `/prisoners/${prisonNumber}/induction/skills`
       req.session.pageFlowHistory = buildNewPageFlowHistory(req)
       req.session.workedBeforeForm = undefined
       return res.redirect(nextPage)

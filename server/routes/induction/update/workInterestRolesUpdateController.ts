@@ -19,10 +19,9 @@ export default class WorkInterestRolesUpdateController extends WorkInterestRoles
   getBackLinkUrl(req: Request): string {
     const { prisonNumber } = req.params
     const { pageFlowHistory } = req.session
-    if (pageFlowHistory) {
-      return getPreviousPage(pageFlowHistory)
-    }
-    return `/plan/${prisonNumber}/view/work-and-interests`
+    const previousPage =
+      (pageFlowHistory && getPreviousPage(pageFlowHistory)) || `/plan/${prisonNumber}/view/work-and-interests`
+    return previousPage
   }
 
   getBackLinkAriaText(req: Request): string {
@@ -50,7 +49,7 @@ export default class WorkInterestRolesUpdateController extends WorkInterestRoles
     }
 
     if (req.session.updateInductionQuestionSet) {
-      const nextPage = `/prisoners/${prisonNumber}/induction/skills`
+      const nextPage = `/prisoners/${prisonNumber}/induction/qualifications`
       req.session.pageFlowHistory = buildNewPageFlowHistory(req)
       return res.redirect(nextPage)
     }

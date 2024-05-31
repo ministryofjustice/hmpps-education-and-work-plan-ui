@@ -3,7 +3,10 @@ import type { SessionData } from 'express-session'
 import type { AchievedQualificationDto, InductionDto } from 'inductionDto'
 import QualificationsListCreateController from './qualificationsListCreateController'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
-import { aLongQuestionSetInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
+import {
+  aLongQuestionSetInductionDto,
+  aShortQuestionSetInductionDto,
+} from '../../../testsupport/inductionDtoTestDataBuilder'
 import { validFunctionalSkills } from '../../../testsupport/functionalSkillsTestDataBuilder'
 import QualificationLevelValue from '../../../enums/qualificationLevelValue'
 import EducationLevelValue from '../../../enums/educationLevelValue'
@@ -37,7 +40,7 @@ describe('qualificationsListCreateController', () => {
   })
 
   describe('getQualificationsListView', () => {
-    it('should get the Qualifications List view', async () => {
+    it('should get the Qualifications List view given a Long question set induction', async () => {
       // Given
       const inductionDto = aLongQuestionSetInductionDto()
       inductionDto.previousQualifications.qualifications = []
@@ -51,8 +54,41 @@ describe('qualificationsListCreateController', () => {
 
       const expectedView = {
         prisonerSummary,
-        backLinkUrl: '/prisoners/A1234BC/create-induction/hoping-to-work-on-release',
-        backLinkAriaText: `Back to Is Jimmy Lightfingers hoping to get work when they're released?`,
+        backLinkUrl: '/prisoners/A1234BC/create-induction/work-interest-roles',
+        backLinkAriaText: 'Back to Is Jimmy Lightfingers interested in any particular jobs?',
+        qualifications: expectedQualifications,
+        functionalSkills: expectedFunctionalSkills,
+      }
+
+      // When
+      await controller.getQualificationsListView(
+        req as undefined as Request,
+        res as undefined as Response,
+        next as undefined as NextFunction,
+      )
+
+      // Then
+      expect(res.render).toHaveBeenCalledWith('pages/induction/prePrisonEducation/qualificationsList', expectedView)
+      expect(req.session.inductionDto).toEqual(inductionDto)
+    })
+
+    it('should get the Qualifications List view given a Short question set induction', async () => {
+      // Given
+      const inductionDto = aShortQuestionSetInductionDto()
+      inductionDto.previousQualifications.qualifications = []
+      req.session.inductionDto = inductionDto
+      const functionalSkills = validFunctionalSkills()
+      req.session.prisonerFunctionalSkills = functionalSkills
+
+      const expectedQualifications: Array<AchievedQualificationDto> = []
+
+      const expectedFunctionalSkills = functionalSkills
+
+      const expectedView = {
+        prisonerSummary,
+        backLinkUrl: '/prisoners/A1234BC/create-induction/want-to-add-qualifications',
+        backLinkAriaText:
+          'Back to Does Jimmy Lightfingers have any other educational qualifications they want to be recorded?',
         qualifications: expectedQualifications,
         functionalSkills: expectedFunctionalSkills,
       }

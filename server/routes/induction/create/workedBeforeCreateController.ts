@@ -11,10 +11,10 @@ export default class WorkedBeforeCreateController extends WorkedBeforeController
   getBackLinkUrl(req: Request): string {
     const { prisonNumber } = req.params
     const { pageFlowHistory } = req.session
-    if (pageFlowHistory) {
-      return getPreviousPage(pageFlowHistory)
-    }
-    return `/prisoners/${prisonNumber}/create-induction/additional-training`
+    const previousPage =
+      (pageFlowHistory && getPreviousPage(pageFlowHistory)) ||
+      `/prisoners/${prisonNumber}/create-induction/additional-training`
+    return previousPage
   }
 
   getBackLinkAriaText(req: Request): string {
@@ -43,8 +43,8 @@ export default class WorkedBeforeCreateController extends WorkedBeforeController
         return res.redirect(`/prisoners/${prisonNumber}/create-induction/previous-work-experience`)
       }
 
-      // Prisoner has not worked before; skip straight to work interests post release
-      return res.redirect(`/prisoners/${prisonNumber}/create-induction/work-interest-types`)
+      // Prisoner has not worked before; skip straight to Personal Skills
+      return res.redirect(`/prisoners/${prisonNumber}/create-induction/skills`)
     }
 
     if (!prisonerHasWorkedBefore) {
