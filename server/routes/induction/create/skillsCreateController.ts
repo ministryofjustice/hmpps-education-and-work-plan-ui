@@ -10,10 +10,10 @@ export default class SkillsCreateController extends SkillsController {
   getBackLinkUrl(req: Request): string {
     const { prisonNumber } = req.params
     const { pageFlowHistory } = req.session
-    if (pageFlowHistory) {
-      return getPreviousPage(pageFlowHistory)
-    }
-    return `/prisoners/${prisonNumber}/create-induction/work-interest-roles`
+    const previousPage =
+      (pageFlowHistory && getPreviousPage(pageFlowHistory)) ||
+      `/prisoners/${prisonNumber}/create-induction/has-worked-before`
+    return previousPage
   }
 
   getBackLinkAriaText(req: Request): string {

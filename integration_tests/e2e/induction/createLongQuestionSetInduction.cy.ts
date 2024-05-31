@@ -60,9 +60,31 @@ context('Create a long question set Induction', () => {
       .selectHopingWorkOnRelease(HopingToGetWorkValue.YES) // Answer the question and submit the page
       .submitPage()
 
+    // Future Work Interest Types page is next
+    Page.verifyOnPage(FutureWorkInterestTypesPage) //
+      .hasBackLinkTo('/prisoners/A00001A/create-induction/hoping-to-work-on-release')
+      .submitPage() // submit the page without answering the question to trigger a validation error
+    Page.verifyOnPage(FutureWorkInterestTypesPage) //
+      .hasBackLinkTo('/prisoners/A00001A/create-induction/hoping-to-work-on-release')
+      .hasErrorCount(1)
+      .hasFieldInError('workInterestTypes')
+      .chooseWorkInterestType(WorkInterestTypeValue.OUTDOOR)
+      .chooseWorkInterestType(WorkInterestTypeValue.DRIVING)
+      .chooseWorkInterestType(WorkInterestTypeValue.OTHER)
+      .setWorkInterestTypesOther('Natural world')
+      .submitPage()
+
+    // Future Work Interest Roles page is next, with a field for each work interest type
+    Page.verifyOnPage(FutureWorkInterestRolesPage) //
+      .hasBackLinkTo('/prisoners/A00001A/create-induction/work-interest-types')
+      .setWorkInterestRole(WorkInterestTypeValue.OUTDOOR, 'Farm hand')
+      .setWorkInterestRole(WorkInterestTypeValue.DRIVING, 'Delivery driver')
+      .setWorkInterestRole(WorkInterestTypeValue.OTHER, 'Botanist')
+      .submitPage()
+
     // Qualifications List page is next
     Page.verifyOnPage(QualificationsListPage) //
-      .hasBackLinkTo('/prisoners/A00001A/create-induction/hoping-to-work-on-release')
+      .hasBackLinkTo('/prisoners/A00001A/create-induction/work-interest-roles')
       .hasNoEducationalQualificationsDisplayed()
       .submitPage() // Submit page - there are no other CTAs at this point as there are Qualifications currently recorded.
     Page.verifyOnPage(HighestLevelOfEducationPage)
@@ -101,7 +123,7 @@ context('Create a long question set Induction', () => {
 
     // Qualifications List page is displayed again. Add another qualification
     Page.verifyOnPage(QualificationsListPage) //
-      .hasBackLinkTo('/prisoners/A00001A/create-induction/hoping-to-work-on-release')
+      .hasBackLinkTo('/prisoners/A00001A/create-induction/work-interest-roles')
       .hasEducationalQualifications(['Computer science'])
       .clickToAddAnotherQualification()
     Page.verifyOnPage(QualificationLevelPage)
@@ -116,7 +138,7 @@ context('Create a long question set Induction', () => {
 
     // Qualifications List page is displayed again. Remove a qualification
     Page.verifyOnPage(QualificationsListPage) //
-      .hasBackLinkTo('/prisoners/A00001A/create-induction/hoping-to-work-on-release')
+      .hasBackLinkTo('/prisoners/A00001A/create-induction/work-interest-roles')
       .hasEducationalQualifications(['Computer science', 'Physics'])
       .removeQualification(1) // remove Computer science
       .hasEducationalQualifications(['Physics'])
@@ -177,34 +199,12 @@ context('Create a long question set Induction', () => {
       .setJobDetails('Self employed DJ operating in bars and clubs')
       .submitPage()
 
-    // Future Work Interest Types page is next
-    Page.verifyOnPage(FutureWorkInterestTypesPage) //
-      .hasBackLinkTo('/prisoners/A00001A/create-induction/has-worked-before')
-      .submitPage() // submit the page without answering the question to trigger a validation error
-    Page.verifyOnPage(FutureWorkInterestTypesPage) //
-      .hasBackLinkTo('/prisoners/A00001A/create-induction/has-worked-before')
-      .hasErrorCount(1)
-      .hasFieldInError('workInterestTypes')
-      .chooseWorkInterestType(WorkInterestTypeValue.OUTDOOR)
-      .chooseWorkInterestType(WorkInterestTypeValue.DRIVING)
-      .chooseWorkInterestType(WorkInterestTypeValue.OTHER)
-      .setWorkInterestTypesOther('Natural world')
-      .submitPage()
-
-    // Future Work Interest Roles page is next, with a field for each work interest type
-    Page.verifyOnPage(FutureWorkInterestRolesPage) //
-      .hasBackLinkTo('/prisoners/A00001A/create-induction/work-interest-types')
-      .setWorkInterestRole(WorkInterestTypeValue.OUTDOOR, 'Farm hand')
-      .setWorkInterestRole(WorkInterestTypeValue.DRIVING, 'Delivery driver')
-      .setWorkInterestRole(WorkInterestTypeValue.OTHER, 'Botanist')
-      .submitPage()
-
     // Personal Skills page is next
     Page.verifyOnPage(SkillsPage) //
-      .hasBackLinkTo('/prisoners/A00001A/create-induction/work-interest-roles')
+      .hasBackLinkTo('/prisoners/A00001A/create-induction/has-worked-before')
       .submitPage() // submit the page without answering the question to trigger a validation error
     Page.verifyOnPage(SkillsPage) //
-      .hasBackLinkTo('/prisoners/A00001A/create-induction/work-interest-roles')
+      .hasBackLinkTo('/prisoners/A00001A/create-induction/has-worked-before')
       .hasErrorCount(1)
       .hasFieldInError('skills')
       .chooseSkill(SkillsValue.POSITIVE_ATTITUDE)

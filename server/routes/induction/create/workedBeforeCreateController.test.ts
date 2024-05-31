@@ -203,7 +203,7 @@ describe('workedBeforeCreateController', () => {
       expect(updatedInduction.previousWorkExperiences.hasWorkedBefore).toEqual(true)
     })
 
-    it('should update InductionDto and display Work Interest Types page given form is submitted with worked before NO', async () => {
+    it('should update InductionDto and display Personal Skills page given form is submitted with worked before NO', async () => {
       // Given
       const inductionDto = aLongQuestionSetInductionDto()
       inductionDto.previousWorkExperiences = undefined
@@ -223,7 +223,7 @@ describe('workedBeforeCreateController', () => {
       )
 
       // Then
-      expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-induction/work-interest-types')
+      expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-induction/skills')
       expect(req.session.workedBeforeForm).toBeUndefined()
       const updatedInduction = req.session.inductionDto
       expect(updatedInduction.previousWorkExperiences.hasWorkedBefore).toEqual(false)

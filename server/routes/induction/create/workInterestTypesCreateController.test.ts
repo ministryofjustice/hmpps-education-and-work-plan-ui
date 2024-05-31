@@ -52,8 +52,8 @@ describe('workInterestTypesCreateController', () => {
       const expectedView = {
         prisonerSummary,
         form: expectedWorkInterestTypesForm,
-        backLinkUrl: '/prisoners/A1234BC/create-induction/has-worked-before',
-        backLinkAriaText: 'Back to Has Jimmy Lightfingers worked before?',
+        backLinkUrl: '/prisoners/A1234BC/create-induction/hoping-to-work-on-release',
+        backLinkAriaText: `Back to Is Jimmy Lightfingers hoping to get work when they're released?`,
       }
 
       // When
@@ -88,8 +88,8 @@ describe('workInterestTypesCreateController', () => {
       const expectedView = {
         prisonerSummary,
         form: expectedWorkInterestTypesForm,
-        backLinkUrl: '/prisoners/A1234BC/create-induction/has-worked-before',
-        backLinkAriaText: 'Back to Has Jimmy Lightfingers worked before?',
+        backLinkUrl: '/prisoners/A1234BC/create-induction/hoping-to-work-on-release',
+        backLinkAriaText: `Back to Is Jimmy Lightfingers hoping to get work when they're released?`,
       }
 
       // When

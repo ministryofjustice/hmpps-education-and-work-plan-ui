@@ -8,10 +8,10 @@ export default class WorkInterestRolesCreateController extends WorkInterestRoles
   getBackLinkUrl(req: Request): string {
     const { prisonNumber } = req.params
     const { pageFlowHistory } = req.session
-    if (pageFlowHistory) {
-      return getPreviousPage(pageFlowHistory)
-    }
-    return `/prisoners/${prisonNumber}/create-induction/work-interest-types`
+    const previousPage =
+      (pageFlowHistory && getPreviousPage(pageFlowHistory)) ||
+      `/prisoners/${prisonNumber}/create-induction/work-interest-types`
+    return previousPage
   }
 
   getBackLinkAriaText(req: Request): string {
@@ -33,6 +33,6 @@ export default class WorkInterestRolesCreateController extends WorkInterestRoles
 
     return this.previousPageWasCheckYourAnswers(req)
       ? res.redirect(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
-      : res.redirect(`/prisoners/${prisonNumber}/create-induction/skills`)
+      : res.redirect(`/prisoners/${prisonNumber}/create-induction/qualifications`)
   }
 }
