@@ -80,13 +80,11 @@ Cypress.Commands.add('updateShortQuestionSetInductionToArriveOnCheckYourAnswers'
   // Additional Training is the next page. This is asked on the long question set, so this will already have answers set
   Page.verifyOnPage(AdditionalTrainingPage) //
     .submitPage()
-  // In Prison Work Interests is the next page, and is only asked on the short question set, so will not have any previous answer from the original long question set Induction
+  // In Prison Work Interests is the next page. This is asked on the long question set, so this will already have answers set
   Page.verifyOnPage(InPrisonWorkPage) //
-    .chooseWorkType(InPrisonWorkValue.CLEANING_AND_HYGIENE)
     .submitPage()
-  // In Prison Training Interests is the next page, and is only asked on the short question set, so will not have any previous answer from the original long question set Induction
+  // In Prison Training Interests is the next page. This is asked on the long question set, so this will already have answers set
   Page.verifyOnPage(InPrisonTrainingPage) //
-    .chooseInPrisonTraining(InPrisonTrainingValue.BARBERING_AND_HAIRDRESSING)
     .submitPage()
   // Arrive on Check Your Answers page
   Page.verifyOnPage(CheckYourAnswersPage)
@@ -139,6 +137,12 @@ Cypress.Commands.add('updateLongQuestionSetInductionToArriveOnCheckYourAnswers',
   // Factors Affecting Ability To Work is the next page. This is not asked on the short question set.
   Page.verifyOnPage(AffectAbilityToWorkPage) //
     .chooseAffectAbilityToWork(AbilityToWorkValue.HEALTH_ISSUES)
+    .submitPage()
+  // In Prison Work Interests is the next page. This is asked on the long question set, so this will already have answers set
+  Page.verifyOnPage(InPrisonWorkPage) //
+    .submitPage()
+  // In Prison Training Interests is the next page. This is asked on the long question set, so this will already have answers set
+  Page.verifyOnPage(InPrisonTrainingPage) //
     .submitPage()
   // Arrive on Check Your Answers page
   Page.verifyOnPage(CheckYourAnswersPage)
@@ -206,6 +210,14 @@ Cypress.Commands.add('createLongQuestionSetInductionToArriveOnCheckYourAnswers',
   // Factors Affecting Ability To Work is the next page
   Page.verifyOnPage(AffectAbilityToWorkPage) //
     .chooseAffectAbilityToWork(AbilityToWorkValue.NONE)
+    .submitPage()
+  // In Prison Work Interests page is next
+  Page.verifyOnPage(InPrisonWorkPage) //
+    .chooseWorkType(InPrisonWorkValue.PRISON_LIBRARY)
+    .submitPage()
+  // In Prison Training Interests page is next
+  Page.verifyOnPage(InPrisonTrainingPage) //
+    .chooseInPrisonTraining(InPrisonTrainingValue.FORKLIFT_DRIVING)
     .submitPage()
   // Arrive on Check Your Answers page
   Page.verifyOnPage(CheckYourAnswersPage)

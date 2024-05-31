@@ -81,13 +81,11 @@ const toCreateOrUpdatePreviousWorkExperiencesDto = (
 const toCreateOrUpdateInPrisonInterestsDto = (
   inPrisonInterests: InPrisonInterestsDto,
 ): CreateOrUpdateInPrisonInterestsDto => {
-  return inPrisonInterests
-    ? {
-        reference: inPrisonInterests.reference,
-        inPrisonWorkInterests: inPrisonInterests.inPrisonWorkInterests,
-        inPrisonTrainingInterests: inPrisonInterests.inPrisonTrainingInterests,
-      }
-    : undefined
+  return {
+    reference: inPrisonInterests?.reference,
+    inPrisonWorkInterests: inPrisonInterests?.inPrisonWorkInterests || [],
+    inPrisonTrainingInterests: inPrisonInterests?.inPrisonTrainingInterests || [],
+  }
 }
 
 const toCreateOrUpdatePersonalSkillsAndInterestsDto = (

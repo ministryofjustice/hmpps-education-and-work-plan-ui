@@ -33,6 +33,18 @@ const aLongQuestionSetUpdateInductionDto = (
       notHopingToWorkReasons: null,
       notHopingToWorkOtherReason: null,
     },
+    inPrisonInterests: {
+      reference: 'ae6a6a94-df32-4a90-b39d-ff1a100a6da0',
+      inPrisonWorkInterests: [
+        { workType: InPrisonWorkValue.CLEANING_AND_HYGIENE, workTypeOther: null },
+        { workType: InPrisonWorkValue.OTHER, workTypeOther: 'Gardening and grounds keeping' },
+      ],
+      inPrisonTrainingInterests: [
+        { trainingType: InPrisonTrainingValue.FORKLIFT_DRIVING, trainingTypeOther: null },
+        { trainingType: InPrisonTrainingValue.CATERING, trainingTypeOther: null },
+        { trainingType: InPrisonTrainingValue.OTHER, trainingTypeOther: 'Advanced origami' },
+      ],
+    },
     previousWorkExperiences: {
       reference: 'bb45462e-8225-490d-8c1c-ad6692223d4d',
       hasWorkedBefore:

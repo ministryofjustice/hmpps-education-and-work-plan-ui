@@ -35,6 +35,24 @@ context(`Change links on the Check Your Answers page when creating an Induction`
     Page.verifyOnPage(CheckYourAnswersPage)
 
     // When
+    // Change in-prison training interests
+    Page.verifyOnPage(CheckYourAnswersPage)
+      .clickInPrisonTrainingInterestsChangeLink()
+      .hasBackLinkTo(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
+      .deSelectInPrisonTraining(InPrisonTrainingValue.FORKLIFT_DRIVING)
+      .chooseInPrisonTraining(InPrisonTrainingValue.BARBERING_AND_HAIRDRESSING)
+      .chooseInPrisonTraining(InPrisonTrainingValue.RUNNING_A_BUSINESS)
+      .submitPage()
+
+    // Change in-prison work interests
+    Page.verifyOnPage(CheckYourAnswersPage)
+      .clickInPrisonWorkInterestsChangeLink()
+      .hasBackLinkTo(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
+      .deSelectWorkType(InPrisonWorkValue.PRISON_LIBRARY)
+      .chooseWorkType(InPrisonWorkValue.MAINTENANCE)
+      .chooseWorkType(InPrisonWorkValue.TEXTILES_AND_SEWING)
+      .submitPage()
+
     // Change affecting ability to work
     Page.verifyOnPage(CheckYourAnswersPage)
       .clickFactorsAffectingAbilityToWorkChangeLink()
@@ -204,6 +222,11 @@ context(`Change links on the Check Your Answers page when creating an Induction`
         'Coaching and motivating customers fitness goals',
       )
       .hasNoEducationalQualificationsDisplayed()
+      .hasInPrisonWorkInterests([InPrisonWorkValue.MAINTENANCE, InPrisonWorkValue.TEXTILES_AND_SEWING])
+      .hasInPrisonTrainingInterests([
+        InPrisonTrainingValue.BARBERING_AND_HAIRDRESSING,
+        InPrisonTrainingValue.RUNNING_A_BUSINESS,
+      ])
   })
 
   it('should support all Change links on a Short Question Set Induction', () => {

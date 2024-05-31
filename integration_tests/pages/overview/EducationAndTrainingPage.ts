@@ -103,6 +103,11 @@ export default class EducationAndTrainingPage extends Page {
     return Page.verifyOnPage(InPrisonTrainingPage)
   }
 
+  inPrisonTrainingChangeLinkHasText(expected: string): EducationAndTrainingPage {
+    this.inPrisonTrainingChangeLink().should('contain.text', expected)
+    return this
+  }
+
   clickToChangeHighestLevelOfEducation(): HighestLevelOfEducationPage {
     this.highestLevelOfEducationChangeLink().click()
     return Page.verifyOnPage(HighestLevelOfEducationPage)
