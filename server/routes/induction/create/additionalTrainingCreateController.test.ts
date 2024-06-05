@@ -219,7 +219,7 @@ describe('additionalTrainingCreateController', () => {
       expect(req.session.additionalTrainingForm).toBeUndefined()
     })
 
-    it('should update InductionDto and redirect to In Prison Work view given short question set journey', async () => {
+    it('should update InductionDto and redirect to Skills page given short question set journey', async () => {
       // Given
       const inductionDto = aShortQuestionSetInductionDto()
       inductionDto.previousTraining = undefined
@@ -236,7 +236,7 @@ describe('additionalTrainingCreateController', () => {
       const expectedUpdatedAdditionalTrainingOther = 'Italian cookery for IT professionals'
 
       req.session.updateInductionQuestionSet = { hopingToWorkOnRelease: 'YES' }
-      const expectedNextPage = '/prisoners/A1234BC/create-induction/in-prison-work'
+      const expectedNextPage = '/prisoners/A1234BC/create-induction/skills'
 
       // When
       await controller.submitAdditionalTrainingForm(

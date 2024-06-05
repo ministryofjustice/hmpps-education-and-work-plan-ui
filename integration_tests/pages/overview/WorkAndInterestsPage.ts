@@ -68,9 +68,19 @@ export default class WorkAndInterestsPage extends Page {
     return Page.verifyOnPage(SkillsPage)
   }
 
+  skillsChangeLinkHasText(expected: string): WorkAndInterestsPage {
+    this.skillsChangeLink().should('contain.text', expected)
+    return this
+  }
+
   clickPersonalInterestsChangeLink(): PersonalInterestsPage {
     this.personalInterestsChangeLink().click()
     return Page.verifyOnPage(PersonalInterestsPage)
+  }
+
+  personalInterestsChangeLinkHasText(expected: string): WorkAndInterestsPage {
+    this.personalInterestsChangeLink().should('contain.text', expected)
+    return this
   }
 
   clickWorkedBeforeChangeLink(): WorkedBeforePage {
