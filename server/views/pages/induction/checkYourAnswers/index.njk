@@ -44,8 +44,9 @@ Data supplied to this template:
           {% include './partials/_abilityToWork.njk' %}
         {% else %}
           {% include './partials/_educationAndTrainingLite.njk' %}
-          {% include './partials/_inPrisonInterests.njk' %}
         {% endif %}
+
+        {% include './partials/_inPrisonInterests.njk' %}
 
         <div class="govuk-form-group">
           {{ govukButton({

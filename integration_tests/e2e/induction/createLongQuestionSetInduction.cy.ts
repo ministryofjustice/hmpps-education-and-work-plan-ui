@@ -28,6 +28,10 @@ import CreateGoalsPage from '../../pages/goal/CreateGoalsPage'
 import { postRequestedFor } from '../../mockApis/wiremock/requestPatternBuilder'
 import { urlEqualTo } from '../../mockApis/wiremock/matchers/url'
 import { matchingJsonPath } from '../../mockApis/wiremock/matchers/content'
+import InPrisonWorkPage from '../../pages/induction/InPrisonWorkPage'
+import InPrisonWorkValue from '../../../server/enums/inPrisonWorkValue'
+import InPrisonTrainingPage from '../../pages/induction/InPrisonTrainingPage'
+import InPrisonTrainingValue from '../../../server/enums/inPrisonTrainingValue'
 
 context('Create a long question set Induction', () => {
   beforeEach(() => {
@@ -233,6 +237,25 @@ context('Create a long question set Induction', () => {
       .chooseAffectAbilityToWork(AbilityToWorkValue.NONE)
       .submitPage()
 
+    // In Prison Work Interests page is next
+    Page.verifyOnPage(InPrisonWorkPage) //
+      .hasBackLinkTo('/prisoners/A00001A/create-induction/affect-ability-to-work')
+      .submitPage() // submit the page without answering the question to trigger a validation error
+    Page.verifyOnPage(InPrisonWorkPage) //
+      .hasBackLinkTo('/prisoners/A00001A/create-induction/affect-ability-to-work')
+      .chooseWorkType(InPrisonWorkValue.KITCHENS_AND_COOKING)
+      .chooseWorkType(InPrisonWorkValue.PRISON_LIBRARY)
+      .submitPage()
+
+    // In Prison Training Interests page is next
+    Page.verifyOnPage(InPrisonTrainingPage) //
+      .hasBackLinkTo('/prisoners/A00001A/create-induction/in-prison-work')
+      .submitPage() // submit the page without answering the question to trigger a validation error
+    Page.verifyOnPage(InPrisonTrainingPage) //
+      .hasBackLinkTo('/prisoners/A00001A/create-induction/in-prison-work')
+      .chooseInPrisonTraining(InPrisonTrainingValue.FORKLIFT_DRIVING)
+      .submitPage()
+
     // Check Your Answers is the final page. Submit the page to create the induction
     Page.verifyOnPage(CheckYourAnswersPage) //
       .submitPage()
@@ -277,7 +300,12 @@ context('Create a long question set Induction', () => {
               "@.personalSkillsAndInterests.interests[1].interestType == 'DIGITAL' && " +
               '@.workOnRelease.affectAbilityToWork.size() == 1 && ' +
               "@.workOnRelease.affectAbilityToWork[0] == 'NONE' && " +
-              "@.workOnRelease.affectAbilityToWorkOther == '')]",
+              "@.workOnRelease.affectAbilityToWorkOther == '' && " +
+              '@.inPrisonInterests.inPrisonWorkInterests.size() == 2 && ' +
+              "@.inPrisonInterests.inPrisonWorkInterests[0].workType == 'KITCHENS_AND_COOKING' && " +
+              "@.inPrisonInterests.inPrisonWorkInterests[1].workType == 'PRISON_LIBRARY' && " +
+              '@.inPrisonInterests.inPrisonTrainingInterests.size() == 1 && ' +
+              "@.inPrisonInterests.inPrisonTrainingInterests[0].trainingType == 'FORKLIFT_DRIVING')]",
           ),
         ),
     )

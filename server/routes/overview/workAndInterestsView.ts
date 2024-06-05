@@ -1,20 +1,27 @@
-import type { PrisonerSummary, WorkAndInterests } from 'viewModels'
+import type { PrisonerSummary } from 'viewModels'
+import type { InductionDto } from 'inductionDto'
 
 export default class WorkAndInterestsView {
   constructor(
     private readonly prisonerSummary: PrisonerSummary,
-    private readonly workAndInterests: WorkAndInterests,
+    private readonly induction: {
+      problemRetrievingData: boolean
+      inductionDto?: InductionDto
+    },
   ) {}
 
   get renderArgs(): {
     tab: string
     prisonerSummary: PrisonerSummary
-    workAndInterests: WorkAndInterests
+    induction: {
+      problemRetrievingData: boolean
+      inductionDto?: InductionDto
+    }
   } {
     return {
       tab: 'work-and-interests',
       prisonerSummary: this.prisonerSummary,
-      workAndInterests: this.workAndInterests,
+      induction: this.induction,
     }
   }
 }
