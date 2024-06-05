@@ -95,9 +95,23 @@ context(`Change existing Induction question set by updating the answer to 'Hopin
       .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/want-to-add-qualifications`)
       .submitPage()
 
+    // Personal skills page is the next page. This is asked on the long question set, so this will already have answers set, but we will remove some
+    Page.verifyOnPage(SkillsPage)
+      .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/additional-training`)
+      .deSelectSkill(SkillsValue.POSITIVE_ATTITUDE)
+      .deSelectSkill(SkillsValue.OTHER)
+      .submitPage()
+
+    // Personal Interests is the next page. This is asked on the long question set, so this will already have answers set, but we will remove some
+    Page.verifyOnPage(PersonalInterestsPage)
+      .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/skills`)
+      .deSelectPersonalInterest(PersonalInterestsValue.DIGITAL)
+      .deSelectPersonalInterest(PersonalInterestsValue.OTHER)
+      .submitPage()
+
     // In Prison Work Interests is the next page. This is asked on the long question set, so this will already have answers set but we will add one
     Page.verifyOnPage(InPrisonWorkPage) //
-      .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/additional-training`)
+      .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/personal-interests`)
       .chooseWorkType(InPrisonWorkValue.CLEANING_AND_HYGIENE)
       .submitPage()
 
@@ -142,6 +156,12 @@ context(`Change existing Induction question set by updating the answer to 'Hopin
               "@.previousTraining.trainingTypes[1] == 'HGV_LICENCE' && " +
               "@.previousTraining.trainingTypes[2] == 'OTHER' && " +
               "@.previousTraining.trainingTypeOther == 'Accountancy Certification' && " +
+              '@.personalSkillsAndInterests.skills.size() == 2 && ' +
+              "@.personalSkillsAndInterests.skills[0].skillType == 'COMMUNICATION' && " +
+              "@.personalSkillsAndInterests.skills[1].skillType == 'THINKING_AND_PROBLEM_SOLVING' && " +
+              '@.personalSkillsAndInterests.interests.size() == 2 && ' +
+              "@.personalSkillsAndInterests.interests[0].interestType == 'CREATIVE' && " +
+              "@.personalSkillsAndInterests.interests[1].interestType == 'SOLO_ACTIVITIES' && " +
               '@.inPrisonInterests.inPrisonWorkInterests.size() == 2 && ' +
               "@.inPrisonInterests.inPrisonWorkInterests[0].workType == 'CLEANING_AND_HYGIENE' && !@.inPrisonInterests.inPrisonWorkInterests[0].workTypeOther && " +
               "@.inPrisonInterests.inPrisonWorkInterests[1].workType == 'MAINTENANCE' && !@.inPrisonInterests.inPrisonWorkInterests[1].workTypeOther && " +
@@ -226,18 +246,18 @@ context(`Change existing Induction question set by updating the answer to 'Hopin
       .setJobDetails('Filing and photocopying: Sept 2000 - Dec 2009')
       .submitPage()
 
-    // Personal skills page is the next page. This is not asked on the short question set.
+    // Personal skills page is the next page. This is asked on the short question set, so this will already have answers set, but we will remove some
     Page.verifyOnPage(SkillsPage)
       .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/previous-work-experience`)
-      .chooseSkill(SkillsValue.TEAMWORK)
-      .chooseSkill(SkillsValue.WILLINGNESS_TO_LEARN)
+      .deSelectSkill(SkillsValue.POSITIVE_ATTITUDE)
+      .deSelectSkill(SkillsValue.OTHER)
       .submitPage()
 
-    // Personal Interests is the next page. This is not asked on the short question set.
+    // Personal Interests is the next page. This is asked on the short question set, so this will already have answers set, but we will remove some
     Page.verifyOnPage(PersonalInterestsPage)
       .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/skills`)
-      .choosePersonalInterest(PersonalInterestsValue.OUTDOOR)
-      .choosePersonalInterest(PersonalInterestsValue.SOCIAL)
+      .deSelectPersonalInterest(PersonalInterestsValue.DIGITAL)
+      .deSelectPersonalInterest(PersonalInterestsValue.OTHER)
       .submitPage()
 
     // Factors Affecting Ability To Work is the next page. This is not asked on the short question set.
@@ -293,11 +313,11 @@ context(`Change existing Induction question set by updating the answer to 'Hopin
               "@.futureWorkInterests.interests[1].workType == 'DRIVING' && " +
               "@.futureWorkInterests.interests[1].role == 'Driving instructor' && " +
               '@.personalSkillsAndInterests.skills.size() == 2 && ' +
-              "@.personalSkillsAndInterests.skills[0].skillType == 'TEAMWORK' && " +
-              "@.personalSkillsAndInterests.skills[1].skillType == 'WILLINGNESS_TO_LEARN' && " +
+              "@.personalSkillsAndInterests.skills[0].skillType == 'COMMUNICATION' && " +
+              "@.personalSkillsAndInterests.skills[1].skillType == 'THINKING_AND_PROBLEM_SOLVING' && " +
               '@.personalSkillsAndInterests.interests.size() == 2 && ' +
-              "@.personalSkillsAndInterests.interests[0].interestType == 'OUTDOOR' && " +
-              "@.personalSkillsAndInterests.interests[1].interestType == 'SOCIAL' && " +
+              "@.personalSkillsAndInterests.interests[0].interestType == 'CREATIVE' && " +
+              "@.personalSkillsAndInterests.interests[1].interestType == 'SOLO_ACTIVITIES' && " +
               '@.workOnRelease.affectAbilityToWork.size() == 1 && ' +
               "@.workOnRelease.affectAbilityToWork[0] == 'HEALTH_ISSUES' && " +
               "@.workOnRelease.affectAbilityToWorkOther == '' && " +

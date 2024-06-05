@@ -102,4 +102,34 @@ context('Update Skills in the Induction', () => {
     skillsPage.hasFieldInError('skillsOther')
     cy.wiremockVerifyNoInteractions(putRequestedFor(urlEqualTo(`/inductions/${prisonNumber}`)))
   })
+
+  it('should update Skills given short question set induction that was created with no personal skills', () => {
+    // Given
+    const prisonNumber = 'G6115VJ'
+    cy.task('stubGetInductionShortQuestionSetCreatedWithOriginalQuestionSet') // The original question set did not ask about personal skills for the Short question set
+    cy.visit(`/plan/${prisonNumber}/view/work-and-interests`)
+    Page.verifyOnPage(WorkAndInterestsPage) //
+      .skillsChangeLinkHasText('Add')
+      .clickSkillsChangeLink()
+
+    // When
+    Page.verifyOnPage(SkillsPage) //
+      .chooseSkill(SkillsValue.SELF_MANAGEMENT)
+      .chooseSkill(SkillsValue.OTHER)
+      .setOtherSkillType('Circus skills')
+      .submitPage()
+
+    // Then
+    Page.verifyOnPage(WorkAndInterestsPage)
+    cy.wiremockVerify(
+      putRequestedFor(urlEqualTo(`/inductions/${prisonNumber}`)) //
+        .withRequestBody(
+          matchingJsonPath(
+            '$[?(@.personalSkillsAndInterests.skills.size() == 2 && ' +
+              "@.personalSkillsAndInterests.skills[0].skillType == 'SELF_MANAGEMENT' && !@.personalSkillsAndInterests.skills[0].skillTypeOther && " +
+              "@.personalSkillsAndInterests.skills[1].skillType == 'OTHER' && @.personalSkillsAndInterests.skills[1].skillTypeOther == 'Circus skills')]",
+          ),
+        ),
+    )
+  })
 })
