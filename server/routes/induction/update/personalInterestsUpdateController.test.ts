@@ -8,6 +8,7 @@ import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateIn
 import InductionService from '../../../services/inductionService'
 import { aLongQuestionSetUpdateInductionRequest } from '../../../testsupport/updateInductionRequestTestDataBuilder'
 import PersonalInterestsUpdateController from './personalInterestsUpdateController'
+import { aShortQuestionSetInduction } from '../../../testsupport/inductionResponseTestDataBuilder'
 
 jest.mock('../../../data/mappers/createOrUpdateInductionDtoMapper')
 jest.mock('../../../services/inductionService')
@@ -243,6 +244,52 @@ describe('personalInterestsUpdateController', () => {
 
       req.session.updateInductionQuestionSet = { hopingToWorkOnRelease: 'YES' }
       const expectedNextPage = '/prisoners/A1234BC/induction/affect-ability-to-work'
+
+      const expectedUpdatedPersonalInterests = [
+        {
+          interestType: 'CREATIVE',
+          interestTypeOther: undefined,
+        },
+        {
+          interestType: 'OTHER',
+          interestTypeOther: 'Renewable energy',
+        },
+      ]
+
+      const expectedPageFlowHistory: PageFlow = {
+        pageUrls: ['/prisoners/A1234BC/induction/personal-interests'],
+        currentPageIndex: 0,
+      }
+
+      // When
+      await controller.submitPersonalInterestsForm(
+        req as undefined as Request,
+        res as undefined as Response,
+        next as undefined as NextFunction,
+      )
+
+      // Then
+      expect(req.session.inductionDto.personalSkillsAndInterests.interests).toEqual(expectedUpdatedPersonalInterests)
+      expect(res.redirect).toHaveBeenCalledWith(expectedNextPage)
+      expect(req.session.workInterestTypesForm).toBeUndefined()
+      expect(inductionService.updateInduction).not.toHaveBeenCalled()
+      expect(req.session.pageFlowHistory).toEqual(expectedPageFlowHistory)
+    })
+
+    it('should update InductionDto and redirect to In-Prison Work Interests given short question set journey', async () => {
+      // Given
+      const inductionDto = aShortQuestionSetInduction()
+      req.session.inductionDto = inductionDto
+
+      const personalInterestsForm = {
+        personalInterests: ['CREATIVE', 'OTHER'],
+        personalInterestsOther: 'Renewable energy',
+      }
+      req.body = personalInterestsForm
+      req.session.personalInterestsForm = undefined
+
+      req.session.updateInductionQuestionSet = { hopingToWorkOnRelease: 'YES' }
+      const expectedNextPage = '/prisoners/A1234BC/induction/in-prison-work'
 
       const expectedUpdatedPersonalInterests = [
         {

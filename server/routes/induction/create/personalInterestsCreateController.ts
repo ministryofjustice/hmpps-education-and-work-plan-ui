@@ -5,15 +5,15 @@ import getDynamicBackLinkAriaText from '../dynamicAriaTextResolver'
 import { asArray } from '../../../utils/utils'
 import validatePersonalInterestsForm from '../../validators/induction/personalInterestsFormValidator'
 import { getPreviousPage } from '../../pageFlowHistory'
+import HopingToGetWorkValue from '../../../enums/hopingToGetWorkValue'
 
 export default class PersonalInterestsCreateController extends PersonalInterestsController {
   getBackLinkUrl(req: Request): string {
     const { prisonNumber } = req.params
     const { pageFlowHistory } = req.session
-    if (pageFlowHistory) {
-      return getPreviousPage(pageFlowHistory)
-    }
-    return `/prisoners/${prisonNumber}/create-induction/skills`
+    const previousPage =
+      (pageFlowHistory && getPreviousPage(pageFlowHistory)) || `/prisoners/${prisonNumber}/create-induction/skills`
+    return previousPage
   }
 
   getBackLinkAriaText(req: Request): string {
@@ -43,8 +43,12 @@ export default class PersonalInterestsCreateController extends PersonalInterests
     req.session.inductionDto = updatedInduction
     req.session.personalInterestsForm = undefined
 
-    return this.previousPageWasCheckYourAnswers(req)
-      ? res.redirect(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
-      : res.redirect(`/prisoners/${prisonNumber}/create-induction/affect-ability-to-work`)
+    if (this.previousPageWasCheckYourAnswers(req)) {
+      return res.redirect(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
+    }
+
+    return updatedInduction.workOnRelease.hopingToWork === HopingToGetWorkValue.YES
+      ? res.redirect(`/prisoners/${prisonNumber}/create-induction/affect-ability-to-work`) // Next page for long question set is factors affecting ability to work
+      : res.redirect(`/prisoners/${prisonNumber}/create-induction/in-prison-work`) // Next page for short question set is In-Prison Work Interests
   }
 }
