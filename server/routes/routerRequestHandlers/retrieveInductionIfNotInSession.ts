@@ -3,7 +3,7 @@ import { NextFunction, Request, RequestHandler, Response } from 'express'
 import { InductionService } from '../../services'
 
 /**
- *  Middleware function that returns a Request handler function to retrieve the Induction from InductionService, map to a PrisonerSummary, and store in the session
+ *  Middleware function that returns a Request handler function to retrieve the Induction from InductionService and store in the session
  */
 const retrieveInductionIfNotInSession = (inductionService: InductionService): RequestHandler => {
   return async (req: Request, res: Response, next: NextFunction) => {
