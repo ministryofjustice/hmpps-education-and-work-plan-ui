@@ -5,7 +5,6 @@ import {
   aLongQuestionSetInductionDto,
   aShortQuestionSetInductionDto,
 } from '../../../testsupport/inductionDtoTestDataBuilder'
-import EducationLevelValue from '../../../enums/educationLevelValue'
 import QualificationLevelCreateController from './qualificationLevelCreateController'
 import QualificationLevelValue from '../../../enums/qualificationLevelValue'
 
@@ -56,7 +55,6 @@ describe('qualificationLevelCreateController', () => {
       const expectedView = {
         prisonerSummary,
         form: expectedQualificationLevelForm,
-        educationLevel: EducationLevelValue.SECONDARY_SCHOOL_TOOK_EXAMS,
         backLinkUrl: `/prisoners/${prisonNumber}/create-induction/qualifications`,
         backLinkAriaText: "Back to Jimmy Lightfingers's qualifications",
       }
@@ -97,7 +95,6 @@ describe('qualificationLevelCreateController', () => {
       const expectedView = {
         prisonerSummary,
         form: expectedQualificationLevelForm,
-        educationLevel: EducationLevelValue.SECONDARY_SCHOOL_TOOK_EXAMS,
         backLinkUrl: '/prisoners/A1234BC/create-induction/qualifications',
         backLinkAriaText: "Back to Jimmy Lightfingers's qualifications",
       }

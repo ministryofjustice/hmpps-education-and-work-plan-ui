@@ -14,7 +14,7 @@ export default abstract class QualificationLevelController extends InductionCont
     res: Response,
     next: NextFunction,
   ): Promise<void> => {
-    const { pageFlowHistory, prisonerSummary, inductionDto } = req.session
+    const { pageFlowHistory, prisonerSummary } = req.session
     if (!pageFlowHistory) {
       return res.redirect(`/plan/${prisonerSummary.prisonNumber}/view/education-and-training`)
     }
@@ -23,13 +23,11 @@ export default abstract class QualificationLevelController extends InductionCont
     const qualificationLevelForm = req.session.qualificationLevelForm || { qualificationLevel: '' }
     req.session.qualificationLevelForm = undefined
 
-    const educationLevel = inductionDto.previousQualifications?.educationLevel || ''
     const view = new QualificationLevelView(
       prisonerSummary,
       this.getBackLinkUrl(req),
       this.getBackLinkAriaText(req),
       qualificationLevelForm,
-      educationLevel,
     )
     return res.render('pages/induction/prePrisonEducation/qualificationLevel', { ...view.renderArgs })
   }
