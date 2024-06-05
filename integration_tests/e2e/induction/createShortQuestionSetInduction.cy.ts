@@ -21,6 +21,10 @@ import CheckYourAnswersPage from '../../pages/induction/CheckYourAnswersPage'
 import { postRequestedFor } from '../../mockApis/wiremock/requestPatternBuilder'
 import { urlEqualTo } from '../../mockApis/wiremock/matchers/url'
 import { matchingJsonPath } from '../../mockApis/wiremock/matchers/content'
+import SkillsPage from '../../pages/induction/SkillsPage'
+import SkillsValue from '../../../server/enums/skillsValue'
+import PersonalInterestsPage from '../../pages/induction/PersonalInterestsPage'
+import PersonalInterestsValue from '../../../server/enums/personalInterestsValue'
 
 context('Create a short question set Induction', () => {
   const prisonNumberForPrisonerWithNoInduction = 'A00001A'
@@ -133,12 +137,35 @@ context('Create a short question set Induction', () => {
       .setAdditionalTrainingOther('Basic accountancy course')
       .submitPage()
 
-    // In Prison Work Interests page is next
-    Page.verifyOnPage(InPrisonWorkPage) //
+    // Personal Skills page is next
+    Page.verifyOnPage(SkillsPage) //
       .hasBackLinkTo('/prisoners/A00001A/create-induction/additional-training')
       .submitPage() // submit the page without answering the question to trigger a validation error
-    Page.verifyOnPage(InPrisonWorkPage) //
+    Page.verifyOnPage(SkillsPage) //
       .hasBackLinkTo('/prisoners/A00001A/create-induction/additional-training')
+      .hasErrorCount(1)
+      .hasFieldInError('skills')
+      .chooseSkill(SkillsValue.POSITIVE_ATTITUDE)
+      .submitPage()
+
+    // Personal Interests page is next
+    Page.verifyOnPage(PersonalInterestsPage) //
+      .hasBackLinkTo('/prisoners/A00001A/create-induction/skills')
+      .submitPage() // submit the page without answering the question to trigger a validation error
+    Page.verifyOnPage(PersonalInterestsPage) //
+      .hasBackLinkTo('/prisoners/A00001A/create-induction/skills')
+      .hasErrorCount(1)
+      .hasFieldInError('personalInterests')
+      .choosePersonalInterest(PersonalInterestsValue.COMMUNITY)
+      .choosePersonalInterest(PersonalInterestsValue.DIGITAL)
+      .submitPage()
+
+    // In Prison Work Interests page is next
+    Page.verifyOnPage(InPrisonWorkPage) //
+      .hasBackLinkTo('/prisoners/A00001A/create-induction/personal-interests')
+      .submitPage() // submit the page without answering the question to trigger a validation error
+    Page.verifyOnPage(InPrisonWorkPage) //
+      .hasBackLinkTo('/prisoners/A00001A/create-induction/personal-interests')
       .chooseWorkType(InPrisonWorkValue.KITCHENS_AND_COOKING)
       .chooseWorkType(InPrisonWorkValue.PRISON_LIBRARY)
       .submitPage()
@@ -176,6 +203,11 @@ context('Create a short question set Induction', () => {
               "@.previousTraining.trainingTypes[0] == 'HGV_LICENCE' && " +
               "@.previousTraining.trainingTypes[1] == 'OTHER' && " +
               "@.previousTraining.trainingTypeOther == 'Basic accountancy course' && " +
+              '@.personalSkillsAndInterests.skills.size() == 1 && ' +
+              "@.personalSkillsAndInterests.skills[0].skillType == 'POSITIVE_ATTITUDE' && " +
+              '@.personalSkillsAndInterests.interests.size() == 2 && ' +
+              "@.personalSkillsAndInterests.interests[0].interestType == 'COMMUNITY' && " +
+              "@.personalSkillsAndInterests.interests[1].interestType == 'DIGITAL' && " +
               '@.inPrisonInterests.inPrisonWorkInterests.size() == 2 && ' +
               "@.inPrisonInterests.inPrisonWorkInterests[0].workType == 'KITCHENS_AND_COOKING' && " +
               "@.inPrisonInterests.inPrisonWorkInterests[1].workType == 'PRISON_LIBRARY' && " +
@@ -213,9 +245,21 @@ context('Create a short question set Induction', () => {
       .chooseAdditionalTraining(AdditionalTrainingValue.HGV_LICENCE)
       .submitPage()
 
+    // Personal Skills page is next
+    Page.verifyOnPage(SkillsPage) //
+      .hasBackLinkTo('/prisoners/A00001A/create-induction/additional-training')
+      .chooseSkill(SkillsValue.POSITIVE_ATTITUDE)
+      .submitPage()
+
+    // Personal Interests page is next
+    Page.verifyOnPage(PersonalInterestsPage) //
+      .hasBackLinkTo('/prisoners/A00001A/create-induction/skills')
+      .choosePersonalInterest(PersonalInterestsValue.COMMUNITY)
+      .submitPage()
+
     // In Prison Work Interests page is next
     Page.verifyOnPage(InPrisonWorkPage) //
-      .hasBackLinkTo('/prisoners/A00001A/create-induction/additional-training')
+      .hasBackLinkTo('/prisoners/A00001A/create-induction/personal-interests')
       .chooseWorkType(InPrisonWorkValue.PRISON_LIBRARY)
       .submitPage()
 
@@ -243,6 +287,10 @@ context('Create a short question set Induction', () => {
               '@.previousQualifications.qualifications.size() == 0 && ' +
               '@.previousTraining.trainingTypes.size() == 1 && ' +
               "@.previousTraining.trainingTypes[0] == 'HGV_LICENCE' && " +
+              '@.personalSkillsAndInterests.skills.size() == 1 && ' +
+              "@.personalSkillsAndInterests.skills[0].skillType == 'POSITIVE_ATTITUDE' && " +
+              '@.personalSkillsAndInterests.interests.size() == 1 && ' +
+              "@.personalSkillsAndInterests.interests[0].interestType == 'COMMUNITY' && " +
               '@.inPrisonInterests.inPrisonWorkInterests.size() == 1 && ' +
               "@.inPrisonInterests.inPrisonWorkInterests[0].workType == 'PRISON_LIBRARY' && " +
               '@.inPrisonInterests.inPrisonTrainingInterests.size() == 1 && ' +

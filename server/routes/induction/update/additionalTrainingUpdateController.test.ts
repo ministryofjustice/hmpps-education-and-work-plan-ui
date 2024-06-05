@@ -246,7 +246,7 @@ describe('additionalTrainingUpdateController', () => {
       const expectedUpdatedAdditionalTrainingOther = 'Italian cookery for IT professionals'
 
       req.session.updateInductionQuestionSet = { hopingToWorkOnRelease: 'NOT_SURE' }
-      const expectedNextPage = '/prisoners/A1234BC/induction/in-prison-work'
+      const expectedNextPage = '/prisoners/A1234BC/induction/skills'
 
       const expectedPageFlowHistory: PageFlow = {
         pageUrls: ['/prisoners/A1234BC/induction/additional-training'],

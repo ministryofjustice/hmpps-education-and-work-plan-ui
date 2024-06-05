@@ -129,6 +129,8 @@ const aLongQuestionSetInduction = (
 const aShortQuestionSetInduction = (
   options?: CoreBuilderOptions & {
     hopingToGetWork?: 'NO' | 'NOT_SURE'
+    hasSkills?: boolean
+    hasInterests?: boolean
   },
 ): InductionResponse => {
   return {
@@ -154,6 +156,26 @@ const aShortQuestionSetInduction = (
         { trainingType: 'CATERING', trainingTypeOther: null },
         { trainingType: 'OTHER', trainingTypeOther: 'Advanced origami' },
       ],
+    },
+    personalSkillsAndInterests: {
+      reference: '517c470f-f9b5-4d49-9148-4458fe358439',
+      ...auditFields(options),
+      skills:
+        !options || options.hasSkills === null || options.hasSkills === undefined || options.hasSkills === true
+          ? [
+              { skillType: 'TEAMWORK', skillTypeOther: null },
+              { skillType: 'WILLINGNESS_TO_LEARN', skillTypeOther: null },
+              { skillType: 'OTHER', skillTypeOther: 'Tenacity' },
+            ]
+          : [],
+      interests:
+        !options || options.hasInterests === null || options.hasInterests === undefined || options.hasInterests === true
+          ? [
+              { interestType: 'CREATIVE', interestTypeOther: null },
+              { interestType: 'DIGITAL', interestTypeOther: null },
+              { interestType: 'OTHER', interestTypeOther: 'Renewable energy' },
+            ]
+          : [],
     },
     previousQualifications: {
       reference: 'dea24acc-fde5-4ead-a9eb-e1757de2542c',

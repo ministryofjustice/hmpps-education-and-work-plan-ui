@@ -80,6 +80,12 @@ Cypress.Commands.add('updateShortQuestionSetInductionToArriveOnCheckYourAnswers'
   // Additional Training is the next page. This is asked on the long question set, so this will already have answers set
   Page.verifyOnPage(AdditionalTrainingPage) //
     .submitPage()
+  // Personal Skills page is next. This is asked on the long question set, so this will already have answers set
+  Page.verifyOnPage(SkillsPage) //
+    .submitPage()
+  // Personal Interests page is next. This is asked on the long question set, so this will already have answers set
+  Page.verifyOnPage(PersonalInterestsPage) //
+    .submitPage()
   // In Prison Work Interests is the next page. This is asked on the long question set, so this will already have answers set
   Page.verifyOnPage(InPrisonWorkPage) //
     .submitPage()
@@ -126,13 +132,11 @@ Cypress.Commands.add('updateLongQuestionSetInductionToArriveOnCheckYourAnswers',
     .setJobRole('Office junior')
     .setJobDetails('Filing and photocopying')
     .submitPage()
-  // Personal skills page is the next page. This is not asked on the short question set.
+  // Personal skills page is the next page. This is asked on the long question set, so this will already have answers set
   Page.verifyOnPage(SkillsPage) //
-    .chooseSkill(SkillsValue.TEAMWORK)
     .submitPage()
-  // Personal Interests is the next page. This is not asked on the short question set.
+  // Personal Interests is the next page. This is asked on the long question set, so this will already have answers set
   Page.verifyOnPage(PersonalInterestsPage) //
-    .choosePersonalInterest(PersonalInterestsValue.SOCIAL)
     .submitPage()
   // Factors Affecting Ability To Work is the next page. This is not asked on the short question set.
   Page.verifyOnPage(AffectAbilityToWorkPage) //
@@ -260,6 +264,14 @@ Cypress.Commands.add(
     // Additional Training page is next
     Page.verifyOnPage(AdditionalTrainingPage) //
       .chooseAdditionalTraining(AdditionalTrainingValue.HGV_LICENCE)
+      .submitPage()
+    // Personal Skills page is next
+    Page.verifyOnPage(SkillsPage) //
+      .chooseSkill(SkillsValue.POSITIVE_ATTITUDE)
+      .submitPage()
+    // Personal Interests page is next
+    Page.verifyOnPage(PersonalInterestsPage) //
+      .choosePersonalInterest(PersonalInterestsValue.COMMUNITY)
       .submitPage()
     // In Prison Work Interests page is next
     Page.verifyOnPage(InPrisonWorkPage) //
