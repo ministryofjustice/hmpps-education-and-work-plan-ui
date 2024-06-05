@@ -5,15 +5,20 @@ import getDynamicBackLinkAriaText from '../dynamicAriaTextResolver'
 import validateInPrisonWorkForm from '../../validators/induction/inPrisonWorkFormValidator'
 import { asArray } from '../../../utils/utils'
 import { getPreviousPage } from '../../pageFlowHistory'
+import HopingToGetWorkValue from '../../../enums/hopingToGetWorkValue'
 
 export default class InPrisonWorkCreateController extends InPrisonWorkController {
   getBackLinkUrl(req: Request): string {
     const { prisonNumber } = req.params
-    const { pageFlowHistory } = req.session
-    if (pageFlowHistory) {
-      return getPreviousPage(pageFlowHistory)
+    const { pageFlowHistory, inductionDto } = req.session
+    let previousPage = pageFlowHistory && getPreviousPage(pageFlowHistory)
+    if (!previousPage) {
+      previousPage =
+        inductionDto.workOnRelease.hopingToWork === HopingToGetWorkValue.YES
+          ? `/prisoners/${prisonNumber}/create-induction/affect-ability-to-work` // Long question set induction
+          : `/prisoners/${prisonNumber}/create-induction/additional-training` // Short question set induction
     }
-    return `/prisoners/${prisonNumber}/create-induction/additional-training`
+    return previousPage
   }
 
   getBackLinkAriaText(req: Request): string {

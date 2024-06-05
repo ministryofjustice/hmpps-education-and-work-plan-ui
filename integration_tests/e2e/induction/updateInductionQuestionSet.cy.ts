@@ -95,13 +95,13 @@ context(`Change existing Induction question set by updating the answer to 'Hopin
       .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/want-to-add-qualifications`)
       .submitPage()
 
-    // In Prison Work Interests is the next page, and is only asked on the short question set, so will not have any previous answer from the original long question set Induction
+    // In Prison Work Interests is the next page. This is asked on the long question set, so this will already have answers set but we will add one
     Page.verifyOnPage(InPrisonWorkPage) //
       .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/additional-training`)
       .chooseWorkType(InPrisonWorkValue.CLEANING_AND_HYGIENE)
       .submitPage()
 
-    // In Prison Training Interests is the next page, and is only asked on the short question set, so will not have any previous answer from the original long question set Induction
+    // In Prison Training Interests is the next page. This is asked on the long question set, so this will already have answers set but we will add one
     Page.verifyOnPage(InPrisonTrainingPage) //
       .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/in-prison-work`)
       .chooseInPrisonTraining(InPrisonTrainingValue.BARBERING_AND_HAIRDRESSING)
@@ -142,10 +142,12 @@ context(`Change existing Induction question set by updating the answer to 'Hopin
               "@.previousTraining.trainingTypes[1] == 'HGV_LICENCE' && " +
               "@.previousTraining.trainingTypes[2] == 'OTHER' && " +
               "@.previousTraining.trainingTypeOther == 'Accountancy Certification' && " +
-              '@.inPrisonInterests.inPrisonWorkInterests.size() == 1 && ' +
+              '@.inPrisonInterests.inPrisonWorkInterests.size() == 2 && ' +
               "@.inPrisonInterests.inPrisonWorkInterests[0].workType == 'CLEANING_AND_HYGIENE' && !@.inPrisonInterests.inPrisonWorkInterests[0].workTypeOther && " +
-              '@.inPrisonInterests.inPrisonTrainingInterests.size() == 1 && ' +
-              "@.inPrisonInterests.inPrisonTrainingInterests[0].trainingType == 'BARBERING_AND_HAIRDRESSING' && !@.inPrisonInterests.inPrisonTrainingInterests[0].trainingTypeOther)]",
+              "@.inPrisonInterests.inPrisonWorkInterests[1].workType == 'MAINTENANCE' && !@.inPrisonInterests.inPrisonWorkInterests[1].workTypeOther && " +
+              '@.inPrisonInterests.inPrisonTrainingInterests.size() == 2 && ' +
+              "@.inPrisonInterests.inPrisonTrainingInterests[0].trainingType == 'BARBERING_AND_HAIRDRESSING' && !@.inPrisonInterests.inPrisonTrainingInterests[0].trainingTypeOther && " +
+              "@.inPrisonInterests.inPrisonTrainingInterests[1].trainingType == 'MACHINERY_TICKETS' && !@.inPrisonInterests.inPrisonTrainingInterests[1].trainingTypeOther)]",
           ),
         ),
     )
@@ -244,6 +246,18 @@ context(`Change existing Induction question set by updating the answer to 'Hopin
       .chooseAffectAbilityToWork(AbilityToWorkValue.HEALTH_ISSUES)
       .submitPage()
 
+    // In Prison Work Interests is the next page. This is asked on the short question set, so this will already have answers set
+    Page.verifyOnPage(InPrisonWorkPage) //
+      .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/affect-ability-to-work`)
+      .chooseWorkType(InPrisonWorkValue.CLEANING_AND_HYGIENE)
+      .submitPage()
+
+    // In Prison Training Interests is the next page. This is asked on the short question set, so this will already have answers set
+    Page.verifyOnPage(InPrisonTrainingPage) //
+      .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/in-prison-work`)
+      .chooseInPrisonTraining(InPrisonTrainingValue.BARBERING_AND_HAIRDRESSING)
+      .submitPage()
+
     // Check Your Answers is the final page. Submit the page to save the induction
     Page.verifyOnPage(CheckYourAnswersPage) //
       .submitPage()
@@ -286,7 +300,12 @@ context(`Change existing Induction question set by updating the answer to 'Hopin
               "@.personalSkillsAndInterests.interests[1].interestType == 'SOCIAL' && " +
               '@.workOnRelease.affectAbilityToWork.size() == 1 && ' +
               "@.workOnRelease.affectAbilityToWork[0] == 'HEALTH_ISSUES' && " +
-              "@.workOnRelease.affectAbilityToWorkOther == '')]",
+              "@.workOnRelease.affectAbilityToWorkOther == '' && " +
+              "@.inPrisonInterests.inPrisonWorkInterests[0].workType == 'CLEANING_AND_HYGIENE' && !@.inPrisonInterests.inPrisonWorkInterests[0].workTypeOther && " +
+              "@.inPrisonInterests.inPrisonWorkInterests[1].workType == 'MAINTENANCE' && !@.inPrisonInterests.inPrisonWorkInterests[1].workTypeOther && " +
+              '@.inPrisonInterests.inPrisonTrainingInterests.size() == 2 && ' +
+              "@.inPrisonInterests.inPrisonTrainingInterests[0].trainingType == 'BARBERING_AND_HAIRDRESSING' && !@.inPrisonInterests.inPrisonTrainingInterests[0].trainingTypeOther && " +
+              "@.inPrisonInterests.inPrisonTrainingInterests[1].trainingType == 'MACHINERY_TICKETS' && !@.inPrisonInterests.inPrisonTrainingInterests[1].trainingTypeOther)]",
           ),
         ),
     )
