@@ -10,20 +10,21 @@ The 'Training and eduction in prison' summary card is only shown if the short qu
 {% include './_functionalSkills.njk' %}
 {% include './_inPrisonQualificationsCompletedInLast12Months.njk' %}
 
-{% if not educationAndTraining.problemRetrievingData %}
+{% if not induction.problemRetrievingData %}
 
-  {% if educationAndTraining.data %}
+  {% if induction.inductionDto %}
 
-    {% if educationAndTraining.inductionQuestionSet == 'LONG_QUESTION_SET' %}
+    {% if induction.inductionDto.workOnRelease.hopingToWork === 'YES' %}
       <section data-qa="qualifications-and-education-history-long-question-set">
         {% include './_qualificationsAndEducationHistory_inductionLongQuestionSet.njk' %}
       </section>
     {% else %}
       <section data-qa="qualifications-and-education-history-short-question-set">
         {% include './_qualificationsAndEducationHistory_inductionShortQuestionSet.njk' %}
-        {% include './_trainingAndEducationInterestsInPrison.njk' %}
       </section>
     {% endif %}
+
+    {% include './_trainingAndEducationInterestsInPrison.njk' %}
 
   {% else %}
     <div class="govuk-grid-row">

@@ -194,7 +194,7 @@ describe('affectAbilityToWorkCreateController', () => {
       expect(req.session.inductionDto).toEqual(inductionDto)
     })
 
-    it('should update inductionDto and redirect to check your answers page', async () => {
+    it('should update inductionDto and redirect to In Prison Work Interests page', async () => {
       // Given
       const inductionDto = aLongQuestionSetInductionDto()
       inductionDto.workOnRelease.affectAbilityToWork = undefined
@@ -222,7 +222,7 @@ describe('affectAbilityToWorkCreateController', () => {
         AbilityToWorkValue.OTHER,
       ])
       expect(updatedInduction.workOnRelease.affectAbilityToWorkOther).toEqual('Variable mental health')
-      expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-induction/check-your-answers')
+      expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-induction/in-prison-work')
       expect(req.session.affectAbilityToWorkForm).toBeUndefined()
     })
   })

@@ -6,7 +6,7 @@
  * This comparator function can be used to sort an array of ENUM strings, resulting in the array being sorted
  * alphabetically, except 'OTHER' which will always be at the end of the array.
  */
-const enumComparator = (left: string, right: string): -1 | 0 | 1 => {
+const enumComparator = <T extends string>(left: T, right: T): -1 | 0 | 1 => {
   if (left === 'OTHER') {
     return 1
   }

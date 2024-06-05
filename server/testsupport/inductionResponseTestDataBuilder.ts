@@ -23,6 +23,19 @@ const aLongQuestionSetInduction = (
       notHopingToWorkReasons: null,
       notHopingToWorkOtherReason: null,
     },
+    inPrisonInterests: {
+      reference: 'ae6a6a94-df32-4a90-b39d-ff1a100a6da0',
+      ...auditFields(options),
+      inPrisonWorkInterests: [
+        { workType: 'CLEANING_AND_HYGIENE', workTypeOther: null },
+        { workType: 'OTHER', workTypeOther: 'Gardening and grounds keeping' },
+      ],
+      inPrisonTrainingInterests: [
+        { trainingType: 'FORKLIFT_DRIVING', trainingTypeOther: null },
+        { trainingType: 'CATERING', trainingTypeOther: null },
+        { trainingType: 'OTHER', trainingTypeOther: 'Advanced origami' },
+      ],
+    },
     previousWorkExperiences: {
       reference: 'bb45462e-8225-490d-8c1c-ad6692223d4d',
       ...auditFields(options),

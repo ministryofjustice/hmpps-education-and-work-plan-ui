@@ -120,6 +120,11 @@ export default class WorkAndInterestsPage extends Page {
     return Page.verifyOnPage(InPrisonWorkPage)
   }
 
+  inPrisonWorkChangeLinkHasText(expected: string): WorkAndInterestsPage {
+    this.inPrisonWorkChangeLink().should('contain.text', expected)
+    return this
+  }
+
   activeTab = (): PageElement => cy.get('.moj-sub-navigation__link[aria-current=page]')
 
   workInterestsSummaryCard = (): PageElement => cy.get('#work-interests-summary-card')

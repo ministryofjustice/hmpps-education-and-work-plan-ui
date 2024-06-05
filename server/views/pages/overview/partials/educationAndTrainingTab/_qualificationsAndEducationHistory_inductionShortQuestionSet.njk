@@ -24,7 +24,7 @@ as the follow up questions are different.
             {%- endif -%}
           {%- endset -%}
           <a class="govuk-link app-summary-card__change-link__link govuk-!-display-none-print" href="{{ educationalQualificationsChangeLinkUrl }}" data-qa="educational-qualifications-change-link">
-            {% if educationAndTraining.data.shortQuestionSetAnswers.educationalQualifications | length %}
+            {% if induction.inductionDto.previousQualifications.qualifications | length %}
               Change<span class="govuk-visually-hidden"> qualifications by adding or removing qualifications</span>
             {% else %}
               Change<span class="govuk-visually-hidden"> qualifications by setting the highest level of education and adding one or more qualifications if they took exams</span></a>
@@ -32,7 +32,7 @@ as the follow up questions are different.
           </a>
         </div>
 
-        {% if educationAndTraining.data.shortQuestionSetAnswers.educationalQualifications | length %}
+        {% if induction.inductionDto.previousQualifications.qualifications | length %}
           <table class="govuk-table govuk-!-margin-top-4">
             <caption class="govuk-table__caption govuk-table__caption--m govuk-visually-hidden">Details of prisoners educational qualifications</caption>
             <thead class="govuk-table__head">
@@ -43,7 +43,7 @@ as the follow up questions are different.
             </tr>
             </thead>
             <tbody class="govuk-table__body">
-            {% for qualification in educationAndTraining.data.shortQuestionSetAnswers.educationalQualifications %}
+            {% for qualification in induction.inductionDto.previousQualifications.qualifications | achievedQualificationObjectsSortedInScreenOrder %}
               <tr class="govuk-table__row">
                 <td class="govuk-table__cell">{{ qualification.subject }}</td>
                 <td class="govuk-table__cell">{{ qualification.level | formatQualificationLevel }}</td>
@@ -64,9 +64,9 @@ as the follow up questions are different.
             </dt>
             <dd class="govuk-summary-list__value">
               <ul class="govuk-list">
-                {% for additionalTraining in educationAndTraining.data.shortQuestionSetAnswers.additionalTraining %}
-                  {% if additionalTraining == 'OTHER' %}
-                    <li>Other - {{ educationAndTraining.data.shortQuestionSetAnswers.otherAdditionalTraining }}</li>
+                {% for additionalTraining in induction.inductionDto.previousTraining.trainingTypes | sortedAlphabeticallyWithOtherLast%}
+                  {% if additionalTraining === 'OTHER' %}
+                    <li>Other - {{ induction.inductionDto.previousTraining.trainingTypeOther }}</li>
                   {% else %}
                     <li>{{ additionalTraining | formatAdditionalTraining }}</li>
                   {% endif %}
@@ -88,7 +88,7 @@ as the follow up questions are different.
           </div>
         </dl>
 
-        <p class="govuk-hint govuk-body govuk-!-font-size-16">Last updated: {{ educationAndTraining.data.shortQuestionSetAnswers.updatedAt | formatDate('D MMMM YYYY') }}<span class="govuk-!-display-none-print"> by {{ educationAndTraining.data.shortQuestionSetAnswers.updatedBy }}</span></p>
+        <p class="govuk-hint govuk-body govuk-!-font-size-16">Last updated: {{ induction.inductionDto.previousQualifications.updatedAt | formatDate('D MMMM YYYY') }}<span class="govuk-!-display-none-print"> by {{ induction.inductionDto.previousQualifications.updatedByDisplayName }}</span></p>
 
       </div>
     </div>

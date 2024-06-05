@@ -92,4 +92,36 @@ context('Update in-prison training interests within an Induction', () => {
     inPrisonTrainingPage.hasFieldInError('inPrisonTraining')
     cy.wiremockVerifyNoInteractions(putRequestedFor(urlEqualTo(`/inductions/${prisonNumber}`)))
   })
+
+  it('should update in-prison training interests given long question set induction that was created with no in-prison training interests', () => {
+    // Given
+    const prisonNumber = 'G6115VJ'
+    cy.task('stubGetInductionLongQuestionSetCreatedWithOriginalQuestionSet') // The original question set did not ask about in-prison training interests for the Long question set
+    cy.visit(`/plan/${prisonNumber}/view/education-and-training`)
+    Page.verifyOnPage(EducationAndTrainingPage) //
+      .inPrisonTrainingChangeLinkHasText('Add')
+      .clickToChangeInPrisonTraining()
+
+    // When
+    Page.verifyOnPage(InPrisonTrainingPage)
+      .chooseInPrisonTraining(InPrisonTrainingValue.CATERING)
+      .chooseInPrisonTraining(InPrisonTrainingValue.OTHER)
+      .setInPrisonTrainingOther('Art and craft')
+      .submitPage()
+
+    // Then
+    Page.verifyOnPage(EducationAndTrainingPage)
+    cy.wiremockVerify(
+      putRequestedFor(urlEqualTo(`/inductions/${prisonNumber}`)) //
+        .withRequestBody(
+          matchingJsonPath(
+            '$[?(@.inPrisonInterests.inPrisonTrainingInterests.size() == 2 && ' +
+              "@.inPrisonInterests.inPrisonTrainingInterests[0].trainingType == 'CATERING' && " +
+              '!@.inPrisonInterests.inPrisonTrainingInterests[0].trainingTypeOther && ' +
+              "@.inPrisonInterests.inPrisonTrainingInterests[1].trainingType == 'OTHER' && " +
+              "@.inPrisonInterests.inPrisonTrainingInterests[1].trainingTypeOther == 'Art and craft')]",
+          ),
+        ),
+    )
+  })
 })
