@@ -27,9 +27,7 @@ import FutureWorkInterestTypesPage from '../../pages/induction/FutureWorkInteres
 import WorkInterestTypeValue from '../../../server/enums/workInterestTypeValue'
 import FutureWorkInterestRolesPage from '../../pages/induction/FutureWorkInterestRolesPage'
 import SkillsPage from '../../pages/induction/SkillsPage'
-import SkillsValue from '../../../server/enums/skillsValue'
 import PersonalInterestsPage from '../../pages/induction/PersonalInterestsPage'
-import PersonalInterestsValue from '../../../server/enums/personalInterestsValue'
 import AffectAbilityToWorkPage from '../../pages/induction/AffectAbilityToWorkPage'
 import AbilityToWorkValue from '../../../server/enums/abilityToWorkValue'
 import HighestLevelOfEducationPage from '../../pages/induction/HighestLevelOfEducationPage'
@@ -87,9 +85,19 @@ context(`Change new Induction question set by updating 'Hoping to work on releas
       .hasBackLinkTo(`/prisoners/${prisonNumberForPrisonerWithNoInduction}/create-induction/qualifications`)
       .submitPage()
 
+    // Personal skills page is the next page. This is asked on the short question set, so this will already have answers set
+    Page.verifyOnPage(SkillsPage) //
+      .hasBackLinkTo(`/prisoners/${prisonNumberForPrisonerWithNoInduction}/create-induction/additional-training`)
+      .submitPage()
+
+    // Personal Interests is the next page. This is asked on the short question set, so this will already have answers set
+    Page.verifyOnPage(PersonalInterestsPage) //
+      .hasBackLinkTo(`/prisoners/${prisonNumberForPrisonerWithNoInduction}/create-induction/skills`)
+      .submitPage()
+
     // In Prison Work Interests is the next page. This is asked on the long question set, so this will already have answers set
     Page.verifyOnPage(InPrisonWorkPage) //
-      .hasBackLinkTo(`/prisoners/${prisonNumberForPrisonerWithNoInduction}/create-induction/additional-training`)
+      .hasBackLinkTo(`/prisoners/${prisonNumberForPrisonerWithNoInduction}/create-induction/personal-interests`)
       .submitPage()
 
     // In Prison Training Interests is the next page. This is asked on the short question set, so this will already have answers set
@@ -120,6 +128,10 @@ context(`Change new Induction question set by updating 'Hoping to work on releas
               "@.previousQualifications.qualifications[1].level == 'LEVEL_4' && " +
               '@.previousTraining.trainingTypes.size() == 1 && ' +
               "@.previousTraining.trainingTypes[0] == 'HGV_LICENCE' && " +
+              '@.personalSkillsAndInterests.skills.size() == 1 && ' +
+              "@.personalSkillsAndInterests.skills[0].skillType == 'POSITIVE_ATTITUDE' && " +
+              '@.personalSkillsAndInterests.interests.size() == 1 && ' +
+              "@.personalSkillsAndInterests.interests[0].interestType == 'COMMUNITY' && " +
               '@.inPrisonInterests.inPrisonWorkInterests.size() == 1 && ' +
               "@.inPrisonInterests.inPrisonWorkInterests[0].workType == 'PRISON_LIBRARY' && !@.inPrisonInterests.inPrisonWorkInterests[0].workTypeOther && " +
               '@.inPrisonInterests.inPrisonTrainingInterests.size() == 1 && ' +
@@ -200,18 +212,14 @@ context(`Change new Induction question set by updating 'Hoping to work on releas
       .setJobDetails('Filing and photocopying: Sept 2000 - Dec 2009')
       .submitPage()
 
-    // Personal skills page is the next page. This is not asked on the short question set.
+    // Personal skills page is the next page. This is asked on the short question set, so this will already have answers set
     Page.verifyOnPage(SkillsPage) //
       .hasBackLinkTo(`/prisoners/${prisonNumberForPrisonerWithNoInduction}/create-induction/has-worked-before`)
-      .chooseSkill(SkillsValue.TEAMWORK)
-      .chooseSkill(SkillsValue.WILLINGNESS_TO_LEARN)
       .submitPage()
 
-    // Personal Interests is the next page. This is not asked on the short question set.
+    // Personal Interests is the next page. This is asked on the short question set, so this will already have answers set
     Page.verifyOnPage(PersonalInterestsPage) //
       .hasBackLinkTo(`/prisoners/${prisonNumberForPrisonerWithNoInduction}/create-induction/skills`)
-      .choosePersonalInterest(PersonalInterestsValue.OUTDOOR)
-      .choosePersonalInterest(PersonalInterestsValue.SOCIAL)
       .submitPage()
 
     // Factors Affecting Ability To Work is the next page. This is not asked on the short question set.
@@ -264,12 +272,10 @@ context(`Change new Induction question set by updating 'Hoping to work on releas
               "@.futureWorkInterests.interests[0].role == 'General builder' && " +
               "@.futureWorkInterests.interests[1].workType == 'DRIVING' && " +
               "@.futureWorkInterests.interests[1].role == 'Driving instructor' && " +
-              '@.personalSkillsAndInterests.skills.size() == 2 && ' +
-              "@.personalSkillsAndInterests.skills[0].skillType == 'TEAMWORK' && " +
-              "@.personalSkillsAndInterests.skills[1].skillType == 'WILLINGNESS_TO_LEARN' && " +
-              '@.personalSkillsAndInterests.interests.size() == 2 && ' +
-              "@.personalSkillsAndInterests.interests[0].interestType == 'OUTDOOR' && " +
-              "@.personalSkillsAndInterests.interests[1].interestType == 'SOCIAL' && " +
+              '@.personalSkillsAndInterests.skills.size() == 1 && ' +
+              "@.personalSkillsAndInterests.skills[0].skillType == 'POSITIVE_ATTITUDE' && " +
+              '@.personalSkillsAndInterests.interests.size() == 1 && ' +
+              "@.personalSkillsAndInterests.interests[0].interestType == 'COMMUNITY' && " +
               '@.workOnRelease.affectAbilityToWork.size() == 1 && ' +
               "@.workOnRelease.affectAbilityToWork[0] == 'HEALTH_ISSUES' && " +
               "@.workOnRelease.affectAbilityToWorkOther == '' && " +
@@ -359,18 +365,14 @@ context(`Change new Induction question set by updating 'Hoping to work on releas
       .setJobDetails('Filing and photocopying: Sept 2000 - Dec 2009')
       .submitPage()
 
-    // Personal skills page is the next page. This is not asked on the short question set.
+    // Personal skills page is the next page. This is asked on the short question set, so this will already have answers set
     Page.verifyOnPage(SkillsPage) //
       .hasBackLinkTo(`/prisoners/${prisonNumberForPrisonerWithNoInduction}/create-induction/has-worked-before`)
-      .chooseSkill(SkillsValue.TEAMWORK)
-      .chooseSkill(SkillsValue.WILLINGNESS_TO_LEARN)
       .submitPage()
 
-    // Personal Interests is the next page. This is not asked on the short question set.
+    // Personal Interests is the next page. This is asked on the short question set, so this will already have answers set
     Page.verifyOnPage(PersonalInterestsPage) //
       .hasBackLinkTo(`/prisoners/${prisonNumberForPrisonerWithNoInduction}/create-induction/skills`)
-      .choosePersonalInterest(PersonalInterestsValue.OUTDOOR)
-      .choosePersonalInterest(PersonalInterestsValue.SOCIAL)
       .submitPage()
 
     // Factors Affecting Ability To Work is the next page. This is not asked on the short question set.
@@ -420,12 +422,10 @@ context(`Change new Induction question set by updating 'Hoping to work on releas
               "@.futureWorkInterests.interests[0].role == 'General builder' && " +
               "@.futureWorkInterests.interests[1].workType == 'DRIVING' && " +
               "@.futureWorkInterests.interests[1].role == 'Driving instructor' && " +
-              '@.personalSkillsAndInterests.skills.size() == 2 && ' +
-              "@.personalSkillsAndInterests.skills[0].skillType == 'TEAMWORK' && " +
-              "@.personalSkillsAndInterests.skills[1].skillType == 'WILLINGNESS_TO_LEARN' && " +
-              '@.personalSkillsAndInterests.interests.size() == 2 && ' +
-              "@.personalSkillsAndInterests.interests[0].interestType == 'OUTDOOR' && " +
-              "@.personalSkillsAndInterests.interests[1].interestType == 'SOCIAL' && " +
+              '@.personalSkillsAndInterests.skills.size() == 1 && ' +
+              "@.personalSkillsAndInterests.skills[0].skillType == 'POSITIVE_ATTITUDE' && " +
+              '@.personalSkillsAndInterests.interests.size() == 1 && ' +
+              "@.personalSkillsAndInterests.interests[0].interestType == 'COMMUNITY' && " +
               '@.workOnRelease.affectAbilityToWork.size() == 1 && ' +
               "@.workOnRelease.affectAbilityToWork[0] == 'HEALTH_ISSUES' && " +
               "@.workOnRelease.affectAbilityToWorkOther == '' && " +

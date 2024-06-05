@@ -102,4 +102,34 @@ context('Update Personal Interests in the Induction', () => {
     personalInterestsPage.hasFieldInError('personalInterestsOther')
     cy.wiremockVerifyNoInteractions(putRequestedFor(urlEqualTo(`/inductions/${prisonNumber}`)))
   })
+
+  it('should update personal interests given short question set induction that was created with no personal interests', () => {
+    // Given
+    const prisonNumber = 'G6115VJ'
+    cy.task('stubGetInductionShortQuestionSetCreatedWithOriginalQuestionSet') // The original question set did not ask about personal interests for the Short question set
+    cy.visit(`/plan/${prisonNumber}/view/work-and-interests`)
+    Page.verifyOnPage(WorkAndInterestsPage) //
+      .personalInterestsChangeLinkHasText('Add')
+      .clickPersonalInterestsChangeLink()
+
+    // When
+    Page.verifyOnPage(PersonalInterestsPage) //
+      .choosePersonalInterest(PersonalInterestsValue.SOCIAL)
+      .choosePersonalInterest(PersonalInterestsValue.OTHER)
+      .setOtherPersonalInterestType('Cryptocurrency')
+      .submitPage()
+
+    // Then
+    Page.verifyOnPage(WorkAndInterestsPage)
+    cy.wiremockVerify(
+      putRequestedFor(urlEqualTo(`/inductions/${prisonNumber}`)) //
+        .withRequestBody(
+          matchingJsonPath(
+            '$[?(@.personalSkillsAndInterests.interests.size() == 2 && ' +
+              "@.personalSkillsAndInterests.interests[0].interestType == 'SOCIAL' && !@.personalSkillsAndInterests.interests[0].interestTypeOther && " +
+              "@.personalSkillsAndInterests.interests[1].interestType == 'OTHER' && @.personalSkillsAndInterests.interests[1].interestTypeOther == 'Cryptocurrency')]",
+          ),
+        ),
+    )
+  })
 })

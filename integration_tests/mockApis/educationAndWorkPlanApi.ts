@@ -846,6 +846,148 @@ const stubGetInductionShortQuestionSet = (prisonNumber = 'G6115VJ'): SuperAgentR
           trainingTypes: ['FULL_UK_DRIVING_LICENCE'],
           trainingTypeOther: null,
         },
+        personalSkillsAndInterests: {
+          reference: '517c470f-f9b5-4d49-9148-4458fe358439',
+          createdBy: 'A_USER_GEN',
+          createdByDisplayName: 'Alex Smith',
+          createdAt: '2023-08-29T11:29:22.8793',
+          createdAtPrison: 'MDI',
+          updatedBy: 'A_USER_GEN',
+          updatedByDisplayName: 'Alex Smith',
+          updatedAt: '2023-08-29T10:29:22.457',
+          updatedAtPrison: 'MDI',
+          skills: [
+            {
+              skillType: 'COMMUNICATION',
+              skillTypeOther: null,
+            },
+            {
+              skillType: 'POSITIVE_ATTITUDE',
+              skillTypeOther: null,
+            },
+            {
+              skillType: 'THINKING_AND_PROBLEM_SOLVING',
+              skillTypeOther: null,
+            },
+            {
+              skillType: 'OTHER',
+              skillTypeOther: 'Logical thinking',
+            },
+          ],
+          interests: [
+            {
+              interestType: 'CREATIVE',
+              interestTypeOther: null,
+            },
+            {
+              interestType: 'DIGITAL',
+              interestTypeOther: null,
+            },
+            {
+              interestType: 'SOLO_ACTIVITIES',
+              interestTypeOther: null,
+            },
+            {
+              interestType: 'OTHER',
+              interestTypeOther: 'Car boot sales',
+            },
+          ],
+        },
+        inPrisonInterests: {
+          reference: 'ae6a6a94-df32-4a90-b39d-ff1a100a6da0',
+          createdBy: 'A_USER_GEN',
+          createdByDisplayName: 'Alex Smith',
+          createdAt: '2023-08-29T11:29:22.8793',
+          createdAtPrison: 'MDI',
+          updatedBy: 'A_USER_GEN',
+          updatedByDisplayName: 'Alex Smith',
+          updatedAt: '2023-06-19T09:39:44Z',
+          updatedAtPrison: 'MDI',
+          inPrisonWorkInterests: [
+            {
+              workType: 'MAINTENANCE',
+              workTypeOther: null,
+            },
+          ],
+          inPrisonTrainingInterests: [
+            {
+              trainingType: 'MACHINERY_TICKETS',
+              trainingTypeOther: null,
+            },
+          ],
+        },
+      },
+    },
+  })
+
+const stubGetInductionShortQuestionSetCreatedWithOriginalQuestionSet = (prisonNumber = 'G6115VJ'): SuperAgentRequest =>
+  stubFor({
+    request: {
+      method: 'GET',
+      urlPattern: `/inductions/${prisonNumber}`,
+    },
+    response: {
+      status: 200,
+      headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+      jsonBody: {
+        reference: '814ade0a-a3b2-46a3-862f-79211ba13f7b',
+        prisonNumber,
+        createdBy: 'A_USER_GEN',
+        createdByDisplayName: 'Alex Smith',
+        createdAt: '2023-08-29T11:29:22.8793',
+        createdAtPrison: 'MDI',
+        updatedBy: 'A_USER_GEN',
+        updatedByDisplayName: 'Alex Smith',
+        updatedAt: '2023-06-19T09:39:44Z',
+        updatedAtPrison: 'MDI',
+        workOnRelease: {
+          reference: 'bdebe39f-6f85-459b-81be-a26341c3fe3c',
+          createdBy: 'A_USER_GEN',
+          createdByDisplayName: 'Alex Smith',
+          createdAt: '2023-08-29T11:29:22.8793',
+          createdAtPrison: 'MDI',
+          updatedBy: 'A_USER_GEN',
+          updatedByDisplayName: 'Alex Smith',
+          updatedAt: '2023-06-19T09:39:44Z',
+          updatedAtPrison: 'MDI',
+          hopingToWork: 'NO',
+          affectAbilityToWork: [],
+          affectAbilityToWorkOther: null,
+          notHopingToWorkReasons: ['LIMIT_THEIR_ABILITY'],
+          notHopingToWorkOtherReason: null,
+        },
+        previousQualifications: {
+          reference: 'dea24acc-fde5-4ead-a9eb-e1757de2542c',
+          createdBy: 'A_USER_GEN',
+          createdByDisplayName: 'Alex Smith',
+          createdAt: '2023-08-29T11:29:22.8793',
+          createdAtPrison: 'MDI',
+          updatedBy: 'A_USER_GEN',
+          updatedByDisplayName: 'Alex Smith',
+          updatedAt: '2023-06-19T09:39:44Z',
+          updatedAtPrison: 'MDI',
+          educationLevel: null,
+          qualifications: [
+            {
+              subject: 'English',
+              grade: 'C',
+              level: 'LEVEL_6',
+            },
+          ],
+        },
+        previousTraining: {
+          reference: 'a8e1fe50-1e3b-4784-a27f-ee1c54fc7616',
+          createdBy: 'A_USER_GEN',
+          createdByDisplayName: 'Alex Smith',
+          createdAt: '2023-08-29T11:29:22.8793',
+          createdAtPrison: 'MDI',
+          updatedBy: 'A_USER_GEN',
+          updatedByDisplayName: 'Alex Smith',
+          updatedAt: '2023-06-19T09:39:44Z',
+          updatedAtPrison: 'MDI',
+          trainingTypes: ['FULL_UK_DRIVING_LICENCE'],
+          trainingTypeOther: null,
+        },
         inPrisonInterests: {
           reference: 'ae6a6a94-df32-4a90-b39d-ff1a100a6da0',
           createdBy: 'A_USER_GEN',
@@ -989,6 +1131,7 @@ export default {
   stubGetTimeline500Error,
 
   stubGetInductionShortQuestionSet,
+  stubGetInductionShortQuestionSetCreatedWithOriginalQuestionSet,
   stubGetInductionLongQuestionSet,
   stubGetInductionLongQuestionSetWithNoQualifications,
   stubGetInductionLongQuestionSetCreatedWithOriginalQuestionSet,

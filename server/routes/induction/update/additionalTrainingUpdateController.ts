@@ -66,7 +66,7 @@ export default class AdditionalTrainingUpdateController extends AdditionalTraini
       const nextPage =
         updateInductionQuestionSet.hopingToWorkOnRelease === 'YES'
           ? `/prisoners/${prisonNumber}/induction/has-worked-before`
-          : `/prisoners/${prisonNumber}/induction/in-prison-work`
+          : `/prisoners/${prisonNumber}/induction/skills`
       req.session.pageFlowHistory = buildNewPageFlowHistory(req)
       req.session.additionalTrainingForm = undefined
       return res.redirect(nextPage)
