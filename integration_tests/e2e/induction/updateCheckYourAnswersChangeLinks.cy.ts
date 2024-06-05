@@ -70,7 +70,7 @@ context(`Change links on the Check Your Answers page when updating an Induction`
     checkYourAnswersPage
       .clickInPrisonWorkInterestsChangeLink()
       .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/check-your-answers`)
-      .deSelectWorkType(InPrisonWorkValue.CLEANING_AND_HYGIENE)
+      .deSelectWorkType(InPrisonWorkValue.MAINTENANCE)
       .chooseWorkType(InPrisonWorkValue.PRISON_LAUNDRY)
       .chooseWorkType(InPrisonWorkValue.PRISON_LIBRARY)
       .submitPage()
@@ -80,7 +80,7 @@ context(`Change links on the Check Your Answers page when updating an Induction`
     checkYourAnswersPage
       .clickInPrisonTrainingInterestsChangeLink()
       .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/check-your-answers`)
-      .deSelectInPrisonTraining(InPrisonTrainingValue.BARBERING_AND_HAIRDRESSING)
+      .deSelectInPrisonTraining(InPrisonTrainingValue.MACHINERY_TICKETS)
       .chooseInPrisonTraining(InPrisonTrainingValue.CATERING)
       .chooseInPrisonTraining(InPrisonTrainingValue.NUMERACY_SKILLS)
       .submitPage()
@@ -210,6 +210,24 @@ context(`Change links on the Check Your Answers page when updating an Induction`
       .chooseAdditionalTraining(AdditionalTrainingValue.CSCS_CARD)
       .submitPage()
 
+    // Change In Prison Work Interests
+    Page.verifyOnPage(CheckYourAnswersPage)
+      .clickInPrisonWorkInterestsChangeLink()
+      .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/check-your-answers`)
+      .deSelectWorkType(InPrisonWorkValue.MAINTENANCE)
+      .chooseWorkType(InPrisonWorkValue.PRISON_LAUNDRY)
+      .chooseWorkType(InPrisonWorkValue.PRISON_LIBRARY)
+      .submitPage()
+
+    // Change In Prison Training Interests
+    Page.verifyOnPage(CheckYourAnswersPage)
+      .clickInPrisonTrainingInterestsChangeLink()
+      .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/check-your-answers`)
+      .deSelectInPrisonTraining(InPrisonTrainingValue.MACHINERY_TICKETS)
+      .chooseInPrisonTraining(InPrisonTrainingValue.CATERING)
+      .chooseInPrisonTraining(InPrisonTrainingValue.NUMERACY_SKILLS)
+      .submitPage()
+
     // Change Worked before (Yes -> No)
     Page.verifyOnPage(CheckYourAnswersPage)
       .hasWorkedBefore(YesNoValue.YES)
@@ -329,5 +347,7 @@ context(`Change links on the Check Your Answers page when updating an Induction`
       .hasPersonalInterest(PersonalInterestsValue.DIGITAL)
       .hasFactorsAffectingAbilityToWork(AbilityToWorkValue.LIMITED_BY_OFFENSE)
       .hasFactorsAffectingAbilityToWork(AbilityToWorkValue.NO_RIGHT_TO_WORK)
+      .hasInPrisonWorkInterests([InPrisonWorkValue.PRISON_LAUNDRY, InPrisonWorkValue.PRISON_LIBRARY])
+      .hasInPrisonTrainingInterests([InPrisonTrainingValue.CATERING, InPrisonTrainingValue.NUMERACY_SKILLS])
   })
 })

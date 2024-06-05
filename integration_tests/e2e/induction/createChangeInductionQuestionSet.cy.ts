@@ -13,9 +13,7 @@ import QualificationLevelValue from '../../../server/enums/qualificationLevelVal
 import QualificationDetailsPage from '../../pages/induction/QualificationDetailsPage'
 import AdditionalTrainingPage from '../../pages/induction/AdditionalTrainingPage'
 import InPrisonWorkPage from '../../pages/induction/InPrisonWorkPage'
-import InPrisonWorkValue from '../../../server/enums/inPrisonWorkValue'
 import InPrisonTrainingPage from '../../pages/induction/InPrisonTrainingPage'
-import InPrisonTrainingValue from '../../../server/enums/inPrisonTrainingValue'
 import CreateGoalsPage from '../../pages/goal/CreateGoalsPage'
 import { postRequestedFor } from '../../mockApis/wiremock/requestPatternBuilder'
 import { urlEqualTo } from '../../mockApis/wiremock/matchers/url'
@@ -89,16 +87,14 @@ context(`Change new Induction question set by updating 'Hoping to work on releas
       .hasBackLinkTo(`/prisoners/${prisonNumberForPrisonerWithNoInduction}/create-induction/qualifications`)
       .submitPage()
 
-    // In Prison Work Interests is the next page, and is only asked on the short question set, so will not have any previous answer from the original long question set Induction
+    // In Prison Work Interests is the next page. This is asked on the long question set, so this will already have answers set
     Page.verifyOnPage(InPrisonWorkPage) //
       .hasBackLinkTo(`/prisoners/${prisonNumberForPrisonerWithNoInduction}/create-induction/additional-training`)
-      .chooseWorkType(InPrisonWorkValue.CLEANING_AND_HYGIENE)
       .submitPage()
 
-    // In Prison Training Interests is the next page, and is only asked on the short question set, so will not have any previous answer from the original long question set Induction
+    // In Prison Training Interests is the next page. This is asked on the short question set, so this will already have answers set
     Page.verifyOnPage(InPrisonTrainingPage) //
       .hasBackLinkTo(`/prisoners/${prisonNumberForPrisonerWithNoInduction}/create-induction/in-prison-work`)
-      .chooseInPrisonTraining(InPrisonTrainingValue.BARBERING_AND_HAIRDRESSING)
       .submitPage()
 
     // Check Your Answers is the final page. Submit the page to save the induction
@@ -125,9 +121,9 @@ context(`Change new Induction question set by updating 'Hoping to work on releas
               '@.previousTraining.trainingTypes.size() == 1 && ' +
               "@.previousTraining.trainingTypes[0] == 'HGV_LICENCE' && " +
               '@.inPrisonInterests.inPrisonWorkInterests.size() == 1 && ' +
-              "@.inPrisonInterests.inPrisonWorkInterests[0].workType == 'CLEANING_AND_HYGIENE' && !@.inPrisonInterests.inPrisonWorkInterests[0].workTypeOther && " +
+              "@.inPrisonInterests.inPrisonWorkInterests[0].workType == 'PRISON_LIBRARY' && !@.inPrisonInterests.inPrisonWorkInterests[0].workTypeOther && " +
               '@.inPrisonInterests.inPrisonTrainingInterests.size() == 1 && ' +
-              "@.inPrisonInterests.inPrisonTrainingInterests[0].trainingType == 'BARBERING_AND_HAIRDRESSING' && !@.inPrisonInterests.inPrisonTrainingInterests[0].trainingTypeOther)]",
+              "@.inPrisonInterests.inPrisonTrainingInterests[0].trainingType == 'FORKLIFT_DRIVING' && !@.inPrisonInterests.inPrisonTrainingInterests[0].trainingTypeOther)]",
           ),
         ),
     )
@@ -224,6 +220,16 @@ context(`Change new Induction question set by updating 'Hoping to work on releas
       .chooseAffectAbilityToWork(AbilityToWorkValue.HEALTH_ISSUES)
       .submitPage()
 
+    // In Prison Work Interests is the next page. This is asked on the short question set, so this will already have answers set
+    Page.verifyOnPage(InPrisonWorkPage) //
+      .hasBackLinkTo(`/prisoners/${prisonNumberForPrisonerWithNoInduction}/create-induction/affect-ability-to-work`)
+      .submitPage()
+
+    // In Prison Training Interests is the next page. This is asked on the short question set, so this will already have answers set
+    Page.verifyOnPage(InPrisonTrainingPage) //
+      .hasBackLinkTo(`/prisoners/${prisonNumberForPrisonerWithNoInduction}/create-induction/in-prison-work`)
+      .submitPage()
+
     // Check Your Answers is the final page. Submit the page to save the induction
     Page.verifyOnPage(CheckYourAnswersPage) //
       .submitPage()
@@ -266,7 +272,11 @@ context(`Change new Induction question set by updating 'Hoping to work on releas
               "@.personalSkillsAndInterests.interests[1].interestType == 'SOCIAL' && " +
               '@.workOnRelease.affectAbilityToWork.size() == 1 && ' +
               "@.workOnRelease.affectAbilityToWork[0] == 'HEALTH_ISSUES' && " +
-              "@.workOnRelease.affectAbilityToWorkOther == '')]",
+              "@.workOnRelease.affectAbilityToWorkOther == '' && " +
+              '@.inPrisonInterests.inPrisonWorkInterests.size() == 1 && ' +
+              "@.inPrisonInterests.inPrisonWorkInterests[0].workType == 'PRISON_LIBRARY' && !@.inPrisonInterests.inPrisonWorkInterests[0].workTypeOther && " +
+              '@.inPrisonInterests.inPrisonTrainingInterests.size() == 1 && ' +
+              "@.inPrisonInterests.inPrisonTrainingInterests[0].trainingType == 'FORKLIFT_DRIVING' && !@.inPrisonInterests.inPrisonTrainingInterests[0].trainingTypeOther)]",
           ),
         ),
     )
@@ -369,6 +379,16 @@ context(`Change new Induction question set by updating 'Hoping to work on releas
       .chooseAffectAbilityToWork(AbilityToWorkValue.HEALTH_ISSUES)
       .submitPage()
 
+    // In Prison Work Interests is the next page. This is asked on the short question set, so this will already have answers set
+    Page.verifyOnPage(InPrisonWorkPage) //
+      .hasBackLinkTo(`/prisoners/${prisonNumberForPrisonerWithNoInduction}/create-induction/affect-ability-to-work`)
+      .submitPage()
+
+    // In Prison Training Interests is the next page. This is asked on the short question set, so this will already have answers set
+    Page.verifyOnPage(InPrisonTrainingPage) //
+      .hasBackLinkTo(`/prisoners/${prisonNumberForPrisonerWithNoInduction}/create-induction/in-prison-work`)
+      .submitPage()
+
     // Check Your Answers is the final page. Submit the page to save the induction
     Page.verifyOnPage(CheckYourAnswersPage) //
       .submitPage()
@@ -408,7 +428,11 @@ context(`Change new Induction question set by updating 'Hoping to work on releas
               "@.personalSkillsAndInterests.interests[1].interestType == 'SOCIAL' && " +
               '@.workOnRelease.affectAbilityToWork.size() == 1 && ' +
               "@.workOnRelease.affectAbilityToWork[0] == 'HEALTH_ISSUES' && " +
-              "@.workOnRelease.affectAbilityToWorkOther == '')]",
+              "@.workOnRelease.affectAbilityToWorkOther == '' && " +
+              '@.inPrisonInterests.inPrisonWorkInterests.size() == 1 && ' +
+              "@.inPrisonInterests.inPrisonWorkInterests[0].workType == 'PRISON_LIBRARY' && !@.inPrisonInterests.inPrisonWorkInterests[0].workTypeOther && " +
+              '@.inPrisonInterests.inPrisonTrainingInterests.size() == 1 && ' +
+              "@.inPrisonInterests.inPrisonTrainingInterests[0].trainingType == 'FORKLIFT_DRIVING' && !@.inPrisonInterests.inPrisonTrainingInterests[0].trainingTypeOther)]",
           ),
         ),
     )

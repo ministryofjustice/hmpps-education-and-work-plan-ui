@@ -28,6 +28,10 @@ import formatQualificationLevelHintFilter from '../filters/formatQualificationLe
 import formatTimelineEventFilter from '../filters/formatTimelineEventFilter'
 import formatPrisonMovementEventFilter from '../filters/formatPrisonMovementEventFilter'
 import formatCuriousCourseStatusFilter from '../filters/formatCuriousCourseStatusFilter'
+import sortedAlphabeticallyWithOtherLastFilter from '../filters/sortedAlphabeticallyWithOtherLastFilter'
+import objectsSortedAlphabeticallyWithOtherLastByFilter from '../filters/objectsSortedAlphabeticallyWithOtherLastByFilter'
+import previousWorkExperienceObjectsSortedInScreenOrderFilter from '../filters/previousWorkExperienceObjectsSortedInScreenOrderFilter'
+import achievedQualificationObjectsSortedInScreenOrderFilter from '../filters/achievedQualificationObjectsSortedInScreenOrderFilter'
 
 export default function nunjucksSetup(app: express.Express, applicationInfo: ApplicationInfo): void {
   app.set('view engine', 'njk')
@@ -100,6 +104,17 @@ export function registerNunjucks(app?: express.Express): Environment {
   njkEnv.addFilter('formatPrisonMovementEvent', formatPrisonMovementEventFilter)
   njkEnv.addFilter('formatCuriousCourseStatus', formatCuriousCourseStatusFilter)
   njkEnv.addFilter('fallbackMessage', fallbackMessageFilter)
+  njkEnv.addFilter('sortedAlphabeticallyWithOtherLast', sortedAlphabeticallyWithOtherLastFilter)
+  njkEnv.addFilter('objectsSortedAlphabeticallyWithOtherLastBy', objectsSortedAlphabeticallyWithOtherLastByFilter)
+  njkEnv.addFilter(
+    'previousWorkExperienceObjectsSortedInScreenOrder',
+    previousWorkExperienceObjectsSortedInScreenOrderFilter,
+  )
+  njkEnv.addFilter(
+    'achievedQualificationObjectsSortedInScreenOrder',
+    achievedQualificationObjectsSortedInScreenOrderFilter,
+  )
+
   njkEnv.addFilter('addMonths', addMonths)
 
   njkEnv.addGlobal('dpsUrl', config.dpsHomeUrl)

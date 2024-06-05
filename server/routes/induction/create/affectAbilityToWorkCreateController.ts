@@ -43,6 +43,8 @@ export default class AffectAbilityToWorkCreateController extends AffectAbilityTo
     req.session.inductionDto = updatedInduction
     req.session.affectAbilityToWorkForm = undefined
 
-    return res.redirect(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
+    return this.previousPageWasCheckYourAnswers(req)
+      ? res.redirect(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
+      : res.redirect(`/prisoners/${prisonNumber}/create-induction/in-prison-work`)
   }
 }
