@@ -26,8 +26,6 @@ generic-service:
     ACTIVITIES_API_URL: "https://activities-api-dev.prison.service.justice.gov.uk"
     ENVIRONMENT_NAME: "DEV"
     NEW_COURSE_AND_QUALIFICATION_HISTORY_ENABLED: "true"
-    CREATE_INDUCTION_ENABLED: "true"
-    UPDATE_INDUCTION_ENABLED: "true"
 
   allowlist:
     uservision-accessibility-testers: 5.181.59.114/32
