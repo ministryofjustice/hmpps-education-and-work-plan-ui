@@ -1,4 +1,6 @@
 {# Skills and interests summary card #}
+{% set inductionHasSkillsRecorded = induction.inductionDto.inPrisonInterests.skills | length > 0 %}
+{% set inductionHasInterestsRecorded = induction.inductionDto.inPrisonInterests.interests | length > 0 %}
 <div class="govuk-summary-card" id="skills-and-interests-summary-card">
   <div class="govuk-summary-card__title-wrapper">
     <h2 class="govuk-summary-card__title">Skills and interests</h2>
@@ -12,15 +14,19 @@
           Skills
         </dt>
         <dd class="govuk-summary-list__value">
-          <ul class="govuk-list">
-            {% for skill in induction.inductionDto.personalSkillsAndInterests.skills | objectsSortedAlphabeticallyWithOtherLastBy('skillType') %}
-              {% if skill.skillType === 'OTHER' %}
-                <li>Other - {{ skill.skillTypeOther }}</li>
-              {% else %}
-                <li>{{ skill.skillType | formatSkill }}</li>
-              {% endif %}
-            {% endfor %}
-          </ul>
+          {% if inductionHasSkillsRecorded %}
+            <ul class="govuk-list">
+              {% for skill in induction.inductionDto.personalSkillsAndInterests.skills | objectsSortedAlphabeticallyWithOtherLastBy('skillType') %}
+                {% if skill.skillType === 'OTHER' %}
+                  <li>Other - {{ skill.skillTypeOther }}</li>
+                {% else %}
+                  <li>{{ skill.skillType | formatSkill }}</li>
+                {% endif %}
+              {% endfor %}
+            </ul>
+          {% else %}
+            <p class='govuk-body'>Not recorded.</p>
+          {% endif %}
         </dd>
         <dd class="govuk-summary-list__actions govuk-!-display-none-print">
           {%- set skillsChangeLinkUrl -%}
@@ -31,7 +37,7 @@
             {%- endif -%}
           {%- endset -%}
           <a class="govuk-link" href="{{ skillsChangeLinkUrl }}" data-qa="skills-change-link">
-            Change<span class="govuk-visually-hidden"> skills</span>
+            {{ 'Change' if inductionHasSkillsRecorded else 'Add' }}<span class="govuk-visually-hidden"> skills</span>
           </a>
         </dd>
       </div>
@@ -42,15 +48,19 @@
           Personal interests
         </dt>
         <dd class="govuk-summary-list__value">
-          <ul class="govuk-list">
-            {% for personalInterest in induction.inductionDto.personalSkillsAndInterests.interests | objectsSortedAlphabeticallyWithOtherLastBy('interestType') %}
-              {% if personalInterest.interestType === 'OTHER' %}
-                <li>Other - {{ personalInterest.interestTypeOther }}</li>
-              {% else %}
-                <li>{{ personalInterest.interestType | formatPersonalInterest }}</li>
-              {% endif %}
-            {% endfor %}
-          </ul>
+          {% if inductionHasInterestsRecorded %}
+            <ul class="govuk-list">
+              {% for personalInterest in induction.inductionDto.personalSkillsAndInterests.interests | objectsSortedAlphabeticallyWithOtherLastBy('interestType') %}
+                {% if personalInterest.interestType === 'OTHER' %}
+                  <li>Other - {{ personalInterest.interestTypeOther }}</li>
+                {% else %}
+                  <li>{{ personalInterest.interestType | formatPersonalInterest }}</li>
+                {% endif %}
+              {% endfor %}
+            </ul>
+          {% else %}
+            <p class='govuk-body'>Not recorded.</p>
+          {% endif %}
         </dd>
         <dd class="govuk-summary-list__actions govuk-!-display-none-print">
           {%- set personalInterestsChangeLinkUrl -%}
@@ -61,11 +71,14 @@
             {%- endif -%}
           {%- endset -%}
           <a class="govuk-link" href="{{ personalInterestsChangeLinkUrl }}" data-qa="personal-interests-change-link">
-            Change<span class="govuk-visually-hidden"> personal interests</span>
+            {{ 'Change' if inductionHasInterestsRecorded else 'Add' }}<span class="govuk-visually-hidden"> personal interests</span>
           </a>
         </dd>
       </div>
     </dl>
-    <p class="govuk-hint govuk-body govuk-!-font-size-16">Last updated: {{ induction.inductionDto.personalSkillsAndInterests.updatedAt | formatDate('DD MMMM YYYY') }}<span class="govuk-!-display-none-print"> by {{ induction.inductionDto.personalSkillsAndInterests.updatedByDisplayName }}</span></p>
+
+    {% if inductionHasSkillsRecorded or inductionHasInterestsRecorded %}
+      <p class="govuk-hint govuk-body govuk-!-font-size-16">Last updated: {{ induction.inductionDto.personalSkillsAndInterests.updatedAt | formatDate('DD MMMM YYYY') }}<span class="govuk-!-display-none-print"> by {{ induction.inductionDto.personalSkillsAndInterests.updatedByDisplayName }}</span></p>
+    {% endif %}
   </div>
 </div>

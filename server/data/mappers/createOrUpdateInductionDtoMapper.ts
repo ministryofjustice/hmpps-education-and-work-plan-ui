@@ -91,13 +91,11 @@ const toCreateOrUpdateInPrisonInterestsDto = (
 const toCreateOrUpdatePersonalSkillsAndInterestsDto = (
   personalSkillsAndInterests: PersonalSkillsAndInterestsDto,
 ): CreateOrUpdatePersonalSkillsAndInterestsDto => {
-  return personalSkillsAndInterests
-    ? {
-        reference: personalSkillsAndInterests.reference,
-        skills: personalSkillsAndInterests.skills,
-        interests: personalSkillsAndInterests.interests,
-      }
-    : undefined
+  return {
+    reference: personalSkillsAndInterests?.reference,
+    skills: personalSkillsAndInterests?.skills || [],
+    interests: personalSkillsAndInterests?.interests || [],
+  }
 }
 
 const toCreateOrUpdateFutureWorkInterestsDto = (

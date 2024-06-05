@@ -137,6 +137,8 @@ const aLongQuestionSetUpdateInductionRequest = (
 const aShortQuestionSetUpdateInductionRequest = (
   options?: CoreBuilderOptions & {
     hopingToGetWork?: HopingToGetWorkValue.NO | HopingToGetWorkValue.NOT_SURE
+    hasSkills?: boolean
+    hasInterests?: boolean
   },
 ): UpdateInductionRequest => {
   return {
@@ -160,6 +162,25 @@ const aShortQuestionSetUpdateInductionRequest = (
         { trainingType: InPrisonTrainingValue.CATERING, trainingTypeOther: null },
         { trainingType: InPrisonTrainingValue.OTHER, trainingTypeOther: 'Advanced origami' },
       ],
+    },
+    personalSkillsAndInterests: {
+      reference: '517c470f-f9b5-4d49-9148-4458fe358439',
+      skills:
+        !options || options.hasSkills === null || options.hasSkills === undefined || options.hasSkills === true
+          ? [
+              { skillType: SkillsValue.TEAMWORK, skillTypeOther: null },
+              { skillType: SkillsValue.WILLINGNESS_TO_LEARN, skillTypeOther: null },
+              { skillType: SkillsValue.OTHER, skillTypeOther: 'Tenacity' },
+            ]
+          : [],
+      interests:
+        !options || options.hasInterests === null || options.hasInterests === undefined || options.hasInterests === true
+          ? [
+              { interestType: PersonalInterestsValue.CREATIVE, interestTypeOther: null },
+              { interestType: PersonalInterestsValue.DIGITAL, interestTypeOther: null },
+              { interestType: PersonalInterestsValue.OTHER, interestTypeOther: 'Renewable energy' },
+            ]
+          : [],
     },
     previousQualifications: {
       reference: 'dea24acc-fde5-4ead-a9eb-e1757de2542c',
