@@ -53,11 +53,17 @@ export default class AffectAbilityToWorkUpdateController extends AffectAbilityTo
 
     const updatedInduction = this.updatedInductionDtoWithAffectAbilityToWork(inductionDto, affectAbilityToWorkForm)
 
-    // if we are switching from the short question set to the long one, forward to the check your answers page
+    // If the previous page was Check Your Answers, decide whether to redirect back check answers on submission
+    if (this.previousPageWasCheckYourAnswers(req)) {
+      req.session.inductionDto = updatedInduction
+      return res.redirect(`/prisoners/${prisonNumber}/induction/check-your-answers`)
+    }
+
+    // if we are switching from the short question set to the long one, forward to the In Prison Work Interests page
     if (req.session.updateInductionQuestionSet) {
       req.session.inductionDto = updatedInduction
       req.session.affectAbilityToWorkForm = undefined
-      return res.redirect(`/prisoners/${prisonNumber}/induction/check-your-answers`)
+      return res.redirect(`/prisoners/${prisonNumber}/induction/in-prison-work`)
     }
 
     try {

@@ -242,7 +242,7 @@ describe('affectAbilityToWorkUpdateController', () => {
       expect(req.session.inductionDto).toBeUndefined()
     })
 
-    it('should update InductionDto and redirect to Check Your Answers view given there is an updateInductionQuestionSet on the session', async () => {
+    it('should update InductionDto and redirect to In Prison Work Interests view given there is an updateInductionQuestionSet on the session', async () => {
       // Given
       const inductionDto = aLongQuestionSetInductionDto()
       req.session.inductionDto = inductionDto
@@ -259,7 +259,7 @@ describe('affectAbilityToWorkUpdateController', () => {
       const expectedUpdatedAbilityToWork = ['CARING_RESPONSIBILITIES', 'OTHER']
 
       const expectedUpdatedAbilityToWorkOther = 'Variable mental health'
-      const expectedNextPage = '/prisoners/A1234BC/induction/check-your-answers'
+      const expectedNextPage = '/prisoners/A1234BC/induction/in-prison-work'
 
       // When
       await controller.submitAffectAbilityToWorkForm(

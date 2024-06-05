@@ -1,0 +1,48 @@
+{# In-Prison Work Interests summary card #}
+{% set inductionHasInPrisonWorkInterestsRecorded = induction.inductionDto.inPrisonInterests.inPrisonWorkInterests | length > 0 %}
+<div class="govuk-summary-card" id="in-prison-work-interests-summary-card">
+  <div class="govuk-summary-card__title-wrapper">
+    <h2 class="govuk-summary-card__title">Work interests in prison</h2>
+  </div>
+  <div class="govuk-summary-card__content">
+    <dl class="govuk-summary-list">
+      {# List the type of work the Prisoner is hoping to do whilst in prison #}
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+          Work interests in prison
+        </dt>
+        <dd class="govuk-summary-list__value">
+          {% if inductionHasInPrisonWorkInterestsRecorded %}
+            <ul class="govuk-list">
+              {% for inPrisonWorkInterest in induction.inductionDto.inPrisonInterests.inPrisonWorkInterests | objectsSortedAlphabeticallyWithOtherLastBy('workType') %}
+                {% if inPrisonWorkInterest.workType === 'OTHER' %}
+                  <li>Other - {{ inPrisonWorkInterest.workTypeOther }}</li>
+                {% else %}
+                  <li>{{ inPrisonWorkInterest.workType | formatInPrisonWorkInterest }}</li>
+                {% endif %}
+              {% endfor %}
+            </ul>
+          {% else %}
+            <p class='govuk-body'>Not recorded.</p>
+          {% endif %}
+        </dd>
+        <dd class="govuk-summary-list__actions govuk-!-display-none-print">
+          {%- set inPrisonWorkChangeLinkUrl -%}
+            {%- if featureToggles.induction.update.enabled -%}
+              /prisoners/{{ prisonerSummary.prisonNumber }}/induction/in-prison-work
+            {%- else -%}
+              {{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}/in-prison-work/update
+            {%- endif -%}
+          {%- endset -%}
+          <a class="govuk-link" href="{{ inPrisonWorkChangeLinkUrl }}" data-qa="in-prison-work-change-link">
+            {{ 'Change' if inductionHasInPrisonWorkInterestsRecorded else 'Add' }}<span class="govuk-visually-hidden"> work interests whilst in prison</span>
+          </a>
+        </dd>
+      </div>
+    </dl>
+
+    {% if inductionHasInPrisonWorkInterestsRecorded %}
+      <p class="govuk-hint govuk-body govuk-!-font-size-16">Last updated: {{ induction.inductionDto.inPrisonInterests.updatedAt | formatDate('DD MMMM YYYY') }}<span class="govuk-!-display-none-print"> by {{ induction.inductionDto.inPrisonInterests.updatedByDisplayName }}</span></p>
+    {% endif %}
+  </div>
+</div>

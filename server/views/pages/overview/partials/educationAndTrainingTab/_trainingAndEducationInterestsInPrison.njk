@@ -1,7 +1,8 @@
 {#
-'Training and education interests in prison' summary card on the 'Education and training' tab - content for the short question set
-asked at the Induction.
+'Training and education interests in prison' summary card on the 'Education and training' tab
 #}
+
+{% set inductionHasInPrisonTrainingInterestsRecorded = induction.inductionDto.inPrisonInterests.inPrisonTrainingInterests | length > 0 %}
 
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds app-u-print-full-width">
@@ -12,47 +13,44 @@ asked at the Induction.
       </div>
 
       <div class="govuk-summary-card__content">
-        {% if not educationAndTraining.problemRetrievingData %}
-  
-          <dl class="govuk-summary-list">
-            <div class="govuk-summary-list__row">
-              <dt class="govuk-summary-list__key">
-                Training and eduction interests
-              </dt>
-              <dd class="govuk-summary-list__value">
+        <dl class="govuk-summary-list">
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              Training and eduction interests
+            </dt>
+            <dd class="govuk-summary-list__value">
+              {% if inductionHasInPrisonTrainingInterestsRecorded %}
                 <ul class="govuk-list">
-                  {% for education in educationAndTraining.data.shortQuestionSetAnswers.inPrisonInterestsEducation.inPrisonInterestsEducation %}
-                    {% if education == 'OTHER' %}
-                      <li>Other - {{ educationAndTraining.data.shortQuestionSetAnswers.inPrisonInterestsEducation.inPrisonInterestsEducationOther }}</li>
+                  {% for training in induction.inductionDto.inPrisonInterests.inPrisonTrainingInterests | objectsSortedAlphabeticallyWithOtherLastBy('trainingType') %}
+                    {% if training.trainingType === 'OTHER' %}
+                      <li>Other - {{ training.trainingTypeOther }}</li>
                     {% else %}
-                      <li>{{ education | formatInPrisonTraining }}</li>
-                    {% endif %}  
+                      <li>{{ training.trainingType | formatInPrisonTraining }}</li>
+                    {% endif %}
                   {% endfor %}
                 </ul>
-              </dd>
-              <dd class="govuk-summary-list__actions govuk-!-display-none-print">
-                {%- set inPrisonTrainingChangeLinkUrl -%}
-                  {%- if featureToggles.induction.update.enabled -%}
-                    /prisoners/{{ prisonerSummary.prisonNumber }}/induction/in-prison-training
-                  {%- else -%}
-                    {{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}/in-prison-education/update
-                  {%- endif -%}
-                {%- endset -%}
-                <a class="govuk-link" href="{{ inPrisonTrainingChangeLinkUrl }}" data-qa="in-prison-training-change-link">
-                  Change<span class="govuk-visually-hidden"> training and eduction interests</span>
-                </a>
-              </dd>
-            </div>
-          </dl>
-          <p class="govuk-hint govuk-body govuk-!-font-size-16">Last updated: {{ educationAndTraining.data.shortQuestionSetAnswers.inPrisonInterestsEducation.updatedAt | formatDate('D MMMM YYYY') }}<span class="govuk-!-display-none-print"> by {{ educationAndTraining.data.shortQuestionSetAnswers.inPrisonInterestsEducation.updatedBy }}</span></p>
+              {% else %}
+                <p class='govuk-body'>Not recorded.</p>
+              {% endif %}
+            </dd>
+            <dd class="govuk-summary-list__actions govuk-!-display-none-print">
+              {%- set inPrisonTrainingChangeLinkUrl -%}
+                {%- if featureToggles.induction.update.enabled -%}
+                  /prisoners/{{ prisonerSummary.prisonNumber }}/induction/in-prison-training
+                {%- else -%}
+                  {{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}/in-prison-education/update
+                {%- endif -%}
+              {%- endset -%}
+              <a class="govuk-link" href="{{ inPrisonTrainingChangeLinkUrl }}" data-qa="in-prison-training-change-link">
+                {{ 'Change' if inductionHasInPrisonTrainingInterestsRecorded else 'Add' }}<span class="govuk-visually-hidden"> training and eduction interests</span>
+              </a>
+            </dd>
+          </div>
+        </dl>
 
-        {% else %}
-
-          <h3 class="govuk-heading-s" data-qa="induction-unavailable-message">We cannot show these details right now</h3>
-          <p class="govuk-body">Reload the page or try again later. Other parts of this service may still be available.</p>
-
+        {% if inductionHasInPrisonTrainingInterestsRecorded %}
+          <p class="govuk-hint govuk-body govuk-!-font-size-16">Last updated: {{ induction.inductionDto.inPrisonInterests.updatedAt | formatDate('D MMMM YYYY') }}<span class="govuk-!-display-none-print"> by {{ induction.inductionDto.inPrisonInterests.updatedByDisplayName }}</span></p>
         {% endif %}
-
       </div>
     </div>
 
