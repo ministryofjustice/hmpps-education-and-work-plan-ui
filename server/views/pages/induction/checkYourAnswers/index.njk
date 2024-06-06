@@ -40,12 +40,12 @@ Data supplied to this template:
         {% if inductionDto.workOnRelease.hopingToWork === 'YES' %}
           {% include './partials/_educationAndTraining.njk' %}
           {% include './partials/_workExperience.njk' %}
-          {% include './partials/_skillsAndInterests.njk' %}
           {% include './partials/_abilityToWork.njk' %}
         {% else %}
           {% include './partials/_educationAndTrainingLite.njk' %}
         {% endif %}
 
+        {% include './partials/_skillsAndInterests.njk' %}
         {% include './partials/_inPrisonInterests.njk' %}
 
         <div class="govuk-form-group">
