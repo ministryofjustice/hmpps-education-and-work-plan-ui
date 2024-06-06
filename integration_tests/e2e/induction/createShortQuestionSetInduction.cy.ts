@@ -25,6 +25,8 @@ import SkillsPage from '../../pages/induction/SkillsPage'
 import SkillsValue from '../../../server/enums/skillsValue'
 import PersonalInterestsPage from '../../pages/induction/PersonalInterestsPage'
 import PersonalInterestsValue from '../../../server/enums/personalInterestsValue'
+import HighestLevelOfEducationPage from '../../pages/induction/HighestLevelOfEducationPage'
+import EducationLevelValue from '../../../server/enums/educationLevelValue'
 
 context('Create a short question set Induction', () => {
   const prisonNumberForPrisonerWithNoInduction = 'A00001A'
@@ -67,11 +69,21 @@ context('Create a short question set Induction', () => {
       .chooseReasonNotToGetWork(ReasonNotToGetWorkValue.FULL_TIME_CARER)
       .submitPage()
 
-    Page.verifyOnPage(WantToAddQualificationsPage)
+    Page.verifyOnPage(HighestLevelOfEducationPage)
       .hasBackLinkTo('/prisoners/A00001A/create-induction/reasons-not-to-get-work')
       .submitPage() // submit the page without answering the question to trigger a validation error
-    Page.verifyOnPage(WantToAddQualificationsPage)
+    Page.verifyOnPage(HighestLevelOfEducationPage)
       .hasBackLinkTo('/prisoners/A00001A/create-induction/reasons-not-to-get-work')
+      .hasErrorCount(1)
+      .hasFieldInError('educationLevel')
+      .selectHighestLevelOfEducation(EducationLevelValue.FURTHER_EDUCATION_COLLEGE)
+      .submitPage()
+
+    Page.verifyOnPage(WantToAddQualificationsPage)
+      .hasBackLinkTo('/prisoners/A00001A/create-induction/highest-level-of-education')
+      .submitPage() // submit the page without answering the question to trigger a validation error
+    Page.verifyOnPage(WantToAddQualificationsPage)
+      .hasBackLinkTo('/prisoners/A00001A/create-induction/highest-level-of-education')
       .hasErrorCount(1)
       .hasFieldInError('wantToAddQualifications')
       .selectWantToAddQualifications(YesNoValue.YES)
@@ -194,7 +206,7 @@ context('Create a short question set Induction', () => {
               "@.workOnRelease.notHopingToWorkReasons[0] == 'FULL_TIME_CARER' && " +
               "@.workOnRelease.notHopingToWorkReasons[1] == 'HEALTH' && " +
               "@.workOnRelease.notHopingToWorkOtherReason == '' && " +
-              "@.previousQualifications.educationLevel == 'NOT_SURE' && " +
+              "@.previousQualifications.educationLevel == 'FURTHER_EDUCATION_COLLEGE' && " +
               '@.previousQualifications.qualifications.size() == 1 && ' +
               "@.previousQualifications.qualifications[0].subject == 'Physics' && " +
               "@.previousQualifications.qualifications[0].grade == 'B' && " +
@@ -234,8 +246,13 @@ context('Create a short question set Induction', () => {
       .chooseReasonNotToGetWork(ReasonNotToGetWorkValue.FULL_TIME_CARER)
       .submitPage()
 
-    Page.verifyOnPage(WantToAddQualificationsPage)
+    Page.verifyOnPage(HighestLevelOfEducationPage)
       .hasBackLinkTo('/prisoners/A00001A/create-induction/reasons-not-to-get-work')
+      .selectHighestLevelOfEducation(EducationLevelValue.FURTHER_EDUCATION_COLLEGE)
+      .submitPage()
+
+    Page.verifyOnPage(WantToAddQualificationsPage)
+      .hasBackLinkTo('/prisoners/A00001A/create-induction/highest-level-of-education')
       .selectWantToAddQualifications(YesNoValue.NO)
       .submitPage()
 
@@ -283,7 +300,7 @@ context('Create a short question set Induction', () => {
               '@.workOnRelease.notHopingToWorkReasons.size() == 1 && ' +
               "@.workOnRelease.notHopingToWorkReasons[0] == 'FULL_TIME_CARER' && " +
               "@.workOnRelease.notHopingToWorkOtherReason == '' && " +
-              "@.previousQualifications.educationLevel == 'NOT_SURE' && " +
+              "@.previousQualifications.educationLevel == 'FURTHER_EDUCATION_COLLEGE' && " +
               '@.previousQualifications.qualifications.size() == 0 && ' +
               '@.previousTraining.trainingTypes.size() == 1 && ' +
               "@.previousTraining.trainingTypes[0] == 'HGV_LICENCE' && " +
