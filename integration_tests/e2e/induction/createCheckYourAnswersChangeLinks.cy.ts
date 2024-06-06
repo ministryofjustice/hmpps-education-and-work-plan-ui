@@ -253,6 +253,24 @@ context(`Change links on the Check Your Answers page when creating an Induction`
       .chooseWorkType(InPrisonWorkValue.TEXTILES_AND_SEWING)
       .submitPage()
 
+    // Change personal interests
+    Page.verifyOnPage(CheckYourAnswersPage)
+      .clickPersonalInterestsChangeLink()
+      .hasBackLinkTo(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
+      .deSelectPersonalInterest(PersonalInterestsValue.COMMUNITY)
+      .choosePersonalInterest(PersonalInterestsValue.CRAFTS)
+      .choosePersonalInterest(PersonalInterestsValue.DIGITAL)
+      .submitPage()
+
+    // Change skills
+    Page.verifyOnPage(CheckYourAnswersPage)
+      .clickPersonalSkillsChangeLink()
+      .hasBackLinkTo(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
+      .deSelectSkill(SkillsValue.POSITIVE_ATTITUDE)
+      .chooseSkill(SkillsValue.TEAMWORK)
+      .chooseSkill(SkillsValue.RESILIENCE)
+      .submitPage()
+
     // Change Other Training
     Page.verifyOnPage(CheckYourAnswersPage)
       .clickAdditionalTrainingChangeLink()
@@ -302,6 +320,10 @@ context(`Change links on the Check Your Answers page when creating an Induction`
       .hasHopingToWorkOnRelease(HopingToGetWorkValue.NO)
       .hasReasonsForNotWantingToWork([ReasonNotToGetWorkValue.NO_RIGHT_TO_WORK, ReasonNotToGetWorkValue.RETIRED])
       .hasNoEducationalQualificationsDisplayed()
+      .hasPersonalInterest(PersonalInterestsValue.CRAFTS)
+      .hasPersonalInterest(PersonalInterestsValue.DIGITAL)
+      .hasPersonalSkill(SkillsValue.TEAMWORK)
+      .hasPersonalSkill(SkillsValue.RESILIENCE)
       .hasAdditionalTraining([AdditionalTrainingValue.MANUAL_HANDLING, AdditionalTrainingValue.CSCS_CARD])
       .hasInPrisonWorkInterests([InPrisonWorkValue.MAINTENANCE, InPrisonWorkValue.TEXTILES_AND_SEWING])
       .hasInPrisonTrainingInterests([
