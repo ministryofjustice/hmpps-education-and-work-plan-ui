@@ -230,7 +230,7 @@ describe('reasonsNotToGetWorkUpdateController', () => {
       expect(req.session.inductionDto).toBeUndefined()
     })
 
-    it('should submit reasons not to get work and move to qualifications page given there is an updateInductionQuestionSet on the session', async () => {
+    it('should submit reasons not to get work and move to highest level of education page given there is an updateInductionQuestionSet on the session', async () => {
       // Given
       const inductionDto = aShortQuestionSetInductionDto()
       req.session.inductionDto = inductionDto
@@ -243,7 +243,7 @@ describe('reasonsNotToGetWorkUpdateController', () => {
       req.session.reasonsNotToGetWorkForm = undefined
 
       req.session.updateInductionQuestionSet = { hopingToWorkOnRelease: 'NO' }
-      const expectedNextPage = `/prisoners/${prisonNumber}/induction/qualifications`
+      const expectedNextPage = `/prisoners/${prisonNumber}/induction/highest-level-of-education`
 
       // When
       await controller.submitReasonsNotToGetWorkForm(
@@ -275,36 +275,6 @@ describe('reasonsNotToGetWorkUpdateController', () => {
         currentPageIndex: 1,
       }
       const expectedNextPage = '/prisoners/A1234BC/induction/check-your-answers'
-
-      // When
-      await controller.submitReasonsNotToGetWorkForm(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
-
-      // Then
-      expect(res.redirect).toHaveBeenCalledWith(expectedNextPage)
-      expect(req.session.reasonsNotToGetWorkForm).toBeUndefined()
-      expect(req.session.inductionDto).toEqual(inductionDto)
-    })
-
-    it('should submit reasons not to get work and redirect to Want to Add Qualifications view given there is an updateInductionQuestionSet on the session and Prisoner has no qualifications', async () => {
-      // Given
-      const inductionDto = aShortQuestionSetInductionDto()
-      // Remove any qualifications to invoke the want-to-add-qualifications route
-      inductionDto.previousQualifications.qualifications.splice(0)
-      req.session.inductionDto = inductionDto
-
-      const reasonsNotToGetWorkForm = {
-        reasonsNotToGetWork: [ReasonsNotToGetWorkValue.HEALTH, ReasonsNotToGetWorkValue.OTHER],
-        reasonsNotToGetWorkOther: 'Will be of retirement age at release',
-      }
-      req.body = reasonsNotToGetWorkForm
-      req.session.reasonsNotToGetWorkForm = undefined
-
-      req.session.updateInductionQuestionSet = { hopingToWorkOnRelease: 'NO' }
-      const expectedNextPage = `/prisoners/${prisonNumber}/induction/want-to-add-qualifications`
 
       // When
       await controller.submitReasonsNotToGetWorkForm(

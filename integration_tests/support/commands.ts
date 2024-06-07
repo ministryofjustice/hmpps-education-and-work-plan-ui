@@ -74,8 +74,22 @@ Cypress.Commands.add('updateShortQuestionSetInductionToArriveOnCheckYourAnswers'
   Page.verifyOnPage(ReasonsNotToGetWorkPage) //
     .chooseReasonNotToGetWork(ReasonNotToGetWorkValue.HEALTH)
     .submitPage()
-  // Qualifications List is the next page. Qualifications are asked on the long question set, so this will already have qualifications set
+  // Highest Level of Education page is next. This is asked on the long question set, so this will already have answers set
+  Page.verifyOnPage(HighestLevelOfEducationPage) //
+    .submitPage()
+  // Want To Add Qualifications is the next page. Qualifications are asked on the long question set, so this will already have qualifications set
+  Page.verifyOnPage(WantToAddQualificationsPage) //
+    .submitPage()
+  Page.verifyOnPage(QualificationLevelPage) //
+    .selectQualificationLevel(QualificationLevelValue.ENTRY_LEVEL)
+    .submitPage()
+  Page.verifyOnPage(QualificationDetailsPage)
+    .setQualificationSubject('Basic reading')
+    .setQualificationGrade('Pass')
+    .submitPage()
+  // Qualifications List is the next page. Remove the qualification just added
   Page.verifyOnPage(QualificationsListPage) //
+    .removeQualification(5)
     .submitPage()
   // Additional Training is the next page. This is asked on the long question set, so this will already have answers set
   Page.verifyOnPage(AdditionalTrainingPage) //
@@ -100,7 +114,7 @@ Cypress.Commands.add('updateLongQuestionSetInductionToArriveOnCheckYourAnswers',
   /* Update a Short Question Set Induction by answering the Do They Want To Work On Release question to YES to turn it
    * into a Long Question Set Induction. Answer all the questions to get to the Check Your Answers page.
    */
-  cy.task('stubGetInductionShortQuestionSet') // Long question set Induction with Hoping to work on release as YES
+  cy.task('stubGetInductionShortQuestionSet') // Short question set Induction with Hoping to work on release as NO
   cy.visit(`/prisoners/${prisonNumber}/induction/hoping-to-work-on-release`)
   // Hoping To Work On Release is the first page
   Page.verifyOnPage(HopingToWorkOnReleasePage) //
@@ -113,8 +127,22 @@ Cypress.Commands.add('updateLongQuestionSetInductionToArriveOnCheckYourAnswers',
   Page.verifyOnPage(FutureWorkInterestRolesPage) //
     .setWorkInterestRole(WorkInterestTypeValue.DRIVING, 'Driving instructor')
     .submitPage()
-  // Qualifications List is the next page. Qualifications are asked on the short question set, so this will already have qualifications set
+  // Highest Level of Education page is next. This is asked on the short question set, so this will already have answers set
+  Page.verifyOnPage(HighestLevelOfEducationPage) //
+    .submitPage()
+  // Want To Add Qualifications is the next page. Qualifications are asked on the short question set, so this will already have qualifications set
+  Page.verifyOnPage(WantToAddQualificationsPage) //
+    .submitPage()
+  Page.verifyOnPage(QualificationLevelPage) //
+    .selectQualificationLevel(QualificationLevelValue.ENTRY_LEVEL)
+    .submitPage()
+  Page.verifyOnPage(QualificationDetailsPage)
+    .setQualificationSubject('Basic reading')
+    .setQualificationGrade('Pass')
+    .submitPage()
+  // Qualifications List is the next page. Remove the qualification just added
   Page.verifyOnPage(QualificationsListPage) //
+    .removeQualification(2)
     .submitPage()
   // Additional Training is the next page. This is asked on the short question set, so this will already have answers set
   Page.verifyOnPage(AdditionalTrainingPage) //
@@ -152,80 +180,89 @@ Cypress.Commands.add('updateLongQuestionSetInductionToArriveOnCheckYourAnswers',
   Page.verifyOnPage(CheckYourAnswersPage)
 })
 
-Cypress.Commands.add('createLongQuestionSetInductionToArriveOnCheckYourAnswers', (prisonNumber = 'G6115VJ') => {
-  /* Create a Long Question Set Induction by answering all the questions to get to the Check Your Answers page. */
-  cy.visit(`/prisoners/${prisonNumber}/create-induction/hoping-to-work-on-release`)
+Cypress.Commands.add(
+  'createLongQuestionSetInductionToArriveOnCheckYourAnswers',
+  (prisonNumber = 'G6115VJ', withQualifications = true) => {
+    /* Create a Long Question Set Induction by answering all the questions to get to the Check Your Answers page. */
+    cy.visit(`/prisoners/${prisonNumber}/create-induction/hoping-to-work-on-release`)
 
-  // Hoping To Work On Release is the first page
-  Page.verifyOnPage(HopingToWorkOnReleasePage) //
-    .selectHopingWorkOnRelease(HopingToGetWorkValue.YES)
-    .submitPage()
-  // Future Work Interest Types page is next
-  Page.verifyOnPage(FutureWorkInterestTypesPage) //
-    .chooseWorkInterestType(WorkInterestTypeValue.DRIVING)
-    .submitPage()
-  // Future Work Interest Roles page is next
-  Page.verifyOnPage(FutureWorkInterestRolesPage) //
-    .setWorkInterestRole(WorkInterestTypeValue.DRIVING, 'Delivery driver')
-    .submitPage()
-  // Qualifications List page is next
-  Page.verifyOnPage(QualificationsListPage) //
-    .submitPage() // Submit page - there are no other CTAs at this point as there are Qualifications currently recorded.
-  Page.verifyOnPage(HighestLevelOfEducationPage)
-    .selectHighestLevelOfEducation(EducationLevelValue.FURTHER_EDUCATION_COLLEGE)
-    .submitPage()
-  // Qualification Level page is next
-  Page.verifyOnPage(QualificationLevelPage) //
-    .selectQualificationLevel(QualificationLevelValue.LEVEL_4)
-    .submitPage()
-  // Qualification Detail page is next
-  Page.verifyOnPage(QualificationDetailsPage) //
-    .setQualificationSubject('Computer science')
-    .setQualificationGrade('A*')
-    .submitPage()
-  // Qualifications List page is displayed again. Submit the page using its main CTA to move forward to the next screen
-  Page.verifyOnPage(QualificationsListPage) //
-    .submitPage()
-  // Additional Training page is next
-  Page.verifyOnPage(AdditionalTrainingPage) //
-    .chooseAdditionalTraining(AdditionalTrainingValue.HGV_LICENCE)
-    .submitPage()
-  // Have You Worked Before page is next
-  Page.verifyOnPage(WorkedBeforePage) //
-    .selectWorkedBefore(YesNoValue.YES)
-    .submitPage()
-  // Previous Work Experience Types is the next page
-  Page.verifyOnPage(PreviousWorkExperienceTypesPage) //
-    .choosePreviousWorkExperience(TypeOfWorkExperienceValue.CONSTRUCTION)
-    .submitPage()
-  // Previous Work Experience Details page is next
-  Page.verifyOnPage(PreviousWorkExperienceDetailPage) //
-    .setJobRole('General labourer')
-    .setJobDetails('Basic ground works and building')
-    .submitPage()
-  // Personal Skills page is next
-  Page.verifyOnPage(SkillsPage) //
-    .chooseSkill(SkillsValue.POSITIVE_ATTITUDE)
-    .submitPage()
-  // Personal Interests page is next
-  Page.verifyOnPage(PersonalInterestsPage) //
-    .choosePersonalInterest(PersonalInterestsValue.COMMUNITY)
-    .submitPage()
-  // Factors Affecting Ability To Work is the next page
-  Page.verifyOnPage(AffectAbilityToWorkPage) //
-    .chooseAffectAbilityToWork(AbilityToWorkValue.NONE)
-    .submitPage()
-  // In Prison Work Interests page is next
-  Page.verifyOnPage(InPrisonWorkPage) //
-    .chooseWorkType(InPrisonWorkValue.PRISON_LIBRARY)
-    .submitPage()
-  // In Prison Training Interests page is next
-  Page.verifyOnPage(InPrisonTrainingPage) //
-    .chooseInPrisonTraining(InPrisonTrainingValue.FORKLIFT_DRIVING)
-    .submitPage()
-  // Arrive on Check Your Answers page
-  Page.verifyOnPage(CheckYourAnswersPage)
-})
+    // Hoping To Work On Release is the first page
+    Page.verifyOnPage(HopingToWorkOnReleasePage) //
+      .selectHopingWorkOnRelease(HopingToGetWorkValue.YES)
+      .submitPage()
+    // Future Work Interest Types page is next
+    Page.verifyOnPage(FutureWorkInterestTypesPage) //
+      .chooseWorkInterestType(WorkInterestTypeValue.DRIVING)
+      .submitPage()
+    // Future Work Interest Roles page is next
+    Page.verifyOnPage(FutureWorkInterestRolesPage) //
+      .setWorkInterestRole(WorkInterestTypeValue.DRIVING, 'Delivery driver')
+      .submitPage()
+    // Highest Level of Education page is next
+    Page.verifyOnPage(HighestLevelOfEducationPage)
+      .selectHighestLevelOfEducation(EducationLevelValue.FURTHER_EDUCATION_COLLEGE)
+      .submitPage()
+    // Want To Add Qualifications is the next page
+    Page.verifyOnPage(WantToAddQualificationsPage) //
+      .selectWantToAddQualifications(withQualifications ? YesNoValue.YES : YesNoValue.NO)
+      .submitPage()
+
+    if (withQualifications) {
+      // Qualification Level page is next
+      Page.verifyOnPage(QualificationLevelPage) //
+        .selectQualificationLevel(QualificationLevelValue.LEVEL_4)
+        .submitPage()
+      // Qualification Detail page is next
+      Page.verifyOnPage(QualificationDetailsPage) //
+        .setQualificationSubject('Computer science')
+        .setQualificationGrade('A*')
+        .submitPage()
+      // Qualifications List page is again. Submit the page using its main CTA to move forward to the next screen
+      Page.verifyOnPage(QualificationsListPage) //
+        .submitPage()
+    }
+
+    // Additional Training page is next
+    Page.verifyOnPage(AdditionalTrainingPage) //
+      .chooseAdditionalTraining(AdditionalTrainingValue.HGV_LICENCE)
+      .submitPage()
+    // Have You Worked Before page is next
+    Page.verifyOnPage(WorkedBeforePage) //
+      .selectWorkedBefore(YesNoValue.YES)
+      .submitPage()
+    // Previous Work Experience Types is the next page
+    Page.verifyOnPage(PreviousWorkExperienceTypesPage) //
+      .choosePreviousWorkExperience(TypeOfWorkExperienceValue.CONSTRUCTION)
+      .submitPage()
+    // Previous Work Experience Details page is next
+    Page.verifyOnPage(PreviousWorkExperienceDetailPage) //
+      .setJobRole('General labourer')
+      .setJobDetails('Basic ground works and building')
+      .submitPage()
+    // Personal Skills page is next
+    Page.verifyOnPage(SkillsPage) //
+      .chooseSkill(SkillsValue.POSITIVE_ATTITUDE)
+      .submitPage()
+    // Personal Interests page is next
+    Page.verifyOnPage(PersonalInterestsPage) //
+      .choosePersonalInterest(PersonalInterestsValue.COMMUNITY)
+      .submitPage()
+    // Factors Affecting Ability To Work is the next page
+    Page.verifyOnPage(AffectAbilityToWorkPage) //
+      .chooseAffectAbilityToWork(AbilityToWorkValue.NONE)
+      .submitPage()
+    // In Prison Work Interests page is next
+    Page.verifyOnPage(InPrisonWorkPage) //
+      .chooseWorkType(InPrisonWorkValue.PRISON_LIBRARY)
+      .submitPage()
+    // In Prison Training Interests page is next
+    Page.verifyOnPage(InPrisonTrainingPage) //
+      .chooseInPrisonTraining(InPrisonTrainingValue.FORKLIFT_DRIVING)
+      .submitPage()
+    // Arrive on Check Your Answers page
+    Page.verifyOnPage(CheckYourAnswersPage)
+  },
+)
 
 Cypress.Commands.add(
   'createShortQuestionSetInductionToArriveOnCheckYourAnswers',
@@ -240,6 +277,10 @@ Cypress.Commands.add(
     // Reasons Not To Get Work is the next page
     Page.verifyOnPage(ReasonsNotToGetWorkPage) //
       .chooseReasonNotToGetWork(ReasonNotToGetWorkValue.FULL_TIME_CARER)
+      .submitPage()
+    // Highest Level of Education page is next
+    Page.verifyOnPage(HighestLevelOfEducationPage)
+      .selectHighestLevelOfEducation(EducationLevelValue.FURTHER_EDUCATION_COLLEGE)
       .submitPage()
     // Want To Add Qualifications is the next page
     Page.verifyOnPage(WantToAddQualificationsPage) //

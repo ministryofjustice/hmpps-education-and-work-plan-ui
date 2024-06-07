@@ -32,13 +32,14 @@ import InPrisonWorkPage from '../../pages/induction/InPrisonWorkPage'
 import InPrisonWorkValue from '../../../server/enums/inPrisonWorkValue'
 import InPrisonTrainingPage from '../../pages/induction/InPrisonTrainingPage'
 import InPrisonTrainingValue from '../../../server/enums/inPrisonTrainingValue'
+import WantToAddQualificationsPage from '../../pages/induction/WantToAddQualificationsPage'
 
 context('Create a long question set Induction', () => {
   beforeEach(() => {
     cy.signInAsUserWithEditAuthorityToArriveOnPrisonerListPage()
   })
 
-  it('should create a long question set Induction', () => {
+  it('should create a long question set Induction with qualifications, triggering validation on every screen', () => {
     // Given
     const prisonNumberForPrisonerWithNoInduction = 'A00001A'
     cy.task('getActionPlan', prisonNumberForPrisonerWithNoInduction)
@@ -86,27 +87,34 @@ context('Create a long question set Induction', () => {
       .setWorkInterestRole(WorkInterestTypeValue.OTHER, 'Botanist')
       .submitPage()
 
-    // Qualifications List page is next
-    Page.verifyOnPage(QualificationsListPage) //
-      .hasBackLinkTo('/prisoners/A00001A/create-induction/work-interest-roles')
-      .hasNoEducationalQualificationsDisplayed()
-      .submitPage() // Submit page - there are no other CTAs at this point as there are Qualifications currently recorded.
+    // Highest level of education is next
     Page.verifyOnPage(HighestLevelOfEducationPage)
-      .hasBackLinkTo('/prisoners/A00001A/create-induction/qualifications')
+      .hasBackLinkTo('/prisoners/A00001A/create-induction/work-interest-roles')
       .submitPage() // submit the page without answering the question to trigger a validation error
     Page.verifyOnPage(HighestLevelOfEducationPage)
-      .hasBackLinkTo('/prisoners/A00001A/create-induction/qualifications')
+      .hasBackLinkTo('/prisoners/A00001A/create-induction/work-interest-roles')
       .hasErrorCount(1)
       .hasFieldInError('educationLevel')
       .selectHighestLevelOfEducation(EducationLevelValue.FURTHER_EDUCATION_COLLEGE)
       .submitPage()
 
-    // Qualification Level page is next
-    Page.verifyOnPage(QualificationLevelPage)
+    // Want To Add Qualifications page is next
+    Page.verifyOnPage(WantToAddQualificationsPage)
       .hasBackLinkTo('/prisoners/A00001A/create-induction/highest-level-of-education')
       .submitPage() // submit the page without answering the question to trigger a validation error
-    Page.verifyOnPage(QualificationLevelPage)
+    Page.verifyOnPage(WantToAddQualificationsPage)
       .hasBackLinkTo('/prisoners/A00001A/create-induction/highest-level-of-education')
+      .hasErrorCount(1)
+      .hasFieldInError('wantToAddQualifications')
+      .selectWantToAddQualifications(YesNoValue.YES)
+      .submitPage()
+
+    // Qualification Level page is next
+    Page.verifyOnPage(QualificationLevelPage)
+      .hasBackLinkTo('/prisoners/A00001A/create-induction/want-to-add-qualifications')
+      .submitPage() // submit the page without answering the question to trigger a validation error
+    Page.verifyOnPage(QualificationLevelPage)
+      .hasBackLinkTo('/prisoners/A00001A/create-induction/want-to-add-qualifications')
       .hasErrorCount(1)
       .hasFieldInError('qualificationLevel')
       .selectQualificationLevel(QualificationLevelValue.LEVEL_4)
@@ -304,6 +312,142 @@ context('Create a long question set Induction', () => {
               '@.inPrisonInterests.inPrisonWorkInterests.size() == 2 && ' +
               "@.inPrisonInterests.inPrisonWorkInterests[0].workType == 'KITCHENS_AND_COOKING' && " +
               "@.inPrisonInterests.inPrisonWorkInterests[1].workType == 'PRISON_LIBRARY' && " +
+              '@.inPrisonInterests.inPrisonTrainingInterests.size() == 1 && ' +
+              "@.inPrisonInterests.inPrisonTrainingInterests[0].trainingType == 'FORKLIFT_DRIVING')]",
+          ),
+        ),
+    )
+  })
+
+  it('should create a long question set Induction with no qualifications', () => {
+    // Given
+    const prisonNumberForPrisonerWithNoInduction = 'A00001A'
+    cy.task('getActionPlan', prisonNumberForPrisonerWithNoInduction)
+    cy.task('getPrisonerById', prisonNumberForPrisonerWithNoInduction)
+    cy.task('stubLearnerProfile', prisonNumberForPrisonerWithNoInduction)
+    cy.task('stubLearnerEducation', prisonNumberForPrisonerWithNoInduction)
+    cy.task('stubGetInduction404Error', prisonNumberForPrisonerWithNoInduction)
+    cy.task('stubCreateInduction', prisonNumberForPrisonerWithNoInduction)
+    cy.visit(`/plan/${prisonNumberForPrisonerWithNoInduction}/view/overview`)
+
+    // When
+    Page.verifyOnPage(OverviewPage) //
+      .clickMakeProgressPlan()
+      .hasBackLinkTo('/plan/A00001A/view/overview')
+      .selectHopingWorkOnRelease(HopingToGetWorkValue.YES) // Answer the question and submit the page
+      .submitPage()
+
+    // Future Work Interest Types page is next
+    Page.verifyOnPage(FutureWorkInterestTypesPage) //
+      .hasBackLinkTo('/prisoners/A00001A/create-induction/hoping-to-work-on-release')
+      .chooseWorkInterestType(WorkInterestTypeValue.OUTDOOR)
+      .submitPage()
+
+    // Future Work Interest Roles page is next, with a field for each work interest type
+    Page.verifyOnPage(FutureWorkInterestRolesPage) //
+      .hasBackLinkTo('/prisoners/A00001A/create-induction/work-interest-types')
+      .setWorkInterestRole(WorkInterestTypeValue.OUTDOOR, 'Farm hand')
+      .submitPage()
+
+    // Highest level of education is next
+    Page.verifyOnPage(HighestLevelOfEducationPage)
+      .hasBackLinkTo('/prisoners/A00001A/create-induction/work-interest-roles')
+      .selectHighestLevelOfEducation(EducationLevelValue.FURTHER_EDUCATION_COLLEGE)
+      .submitPage()
+
+    // Want To Add Qualifications page is next
+    Page.verifyOnPage(WantToAddQualificationsPage)
+      .hasBackLinkTo('/prisoners/A00001A/create-induction/highest-level-of-education')
+      .selectWantToAddQualifications(YesNoValue.NO)
+      .submitPage()
+
+    // Additional Training page is next
+    Page.verifyOnPage(AdditionalTrainingPage) //
+      .hasBackLinkTo('/prisoners/A00001A/create-induction/want-to-add-qualifications')
+      .chooseAdditionalTraining(AdditionalTrainingValue.HGV_LICENCE)
+      .submitPage()
+
+    // Have You Worked Before page is next
+    Page.verifyOnPage(WorkedBeforePage) //
+      .hasBackLinkTo('/prisoners/A00001A/create-induction/additional-training')
+      .selectWorkedBefore(YesNoValue.YES)
+      .submitPage()
+
+    // Previous Work Experience Types is the next page
+    Page.verifyOnPage(PreviousWorkExperienceTypesPage)
+      .hasBackLinkTo('/prisoners/A00001A/create-induction/has-worked-before')
+      .choosePreviousWorkExperience(TypeOfWorkExperienceValue.CONSTRUCTION)
+      .submitPage()
+
+    // Previous Work Experience Details page is next - once for each work industry type submitted on the previous page
+    Page.verifyOnPage(PreviousWorkExperienceDetailPage) //
+      .hasBackLinkTo('/prisoners/A00001A/create-induction/previous-work-experience')
+      .setJobRole('General labourer')
+      .setJobDetails('Basic ground works and building')
+      .submitPage()
+
+    // Personal Skills page is next
+    Page.verifyOnPage(SkillsPage) //
+      .hasBackLinkTo('/prisoners/A00001A/create-induction/has-worked-before')
+      .chooseSkill(SkillsValue.POSITIVE_ATTITUDE)
+      .submitPage()
+
+    // Personal Interests page is next
+    Page.verifyOnPage(PersonalInterestsPage) //
+      .hasBackLinkTo('/prisoners/A00001A/create-induction/skills')
+      .choosePersonalInterest(PersonalInterestsValue.COMMUNITY)
+      .submitPage()
+
+    // Factors Affecting Ability To Work is the next page
+    Page.verifyOnPage(AffectAbilityToWorkPage) //
+      .hasBackLinkTo('/prisoners/A00001A/create-induction/personal-interests')
+      .chooseAffectAbilityToWork(AbilityToWorkValue.NONE)
+      .submitPage()
+
+    // In Prison Work Interests page is next
+    Page.verifyOnPage(InPrisonWorkPage) //
+      .hasBackLinkTo('/prisoners/A00001A/create-induction/affect-ability-to-work')
+      .chooseWorkType(InPrisonWorkValue.KITCHENS_AND_COOKING)
+      .submitPage()
+
+    // In Prison Training Interests page is next
+    Page.verifyOnPage(InPrisonTrainingPage) //
+      .hasBackLinkTo('/prisoners/A00001A/create-induction/in-prison-work')
+      .chooseInPrisonTraining(InPrisonTrainingValue.FORKLIFT_DRIVING)
+      .submitPage()
+
+    // Check Your Answers is the final page. Submit the page to create the induction
+    Page.verifyOnPage(CheckYourAnswersPage) //
+      .submitPage()
+
+    // Then
+    Page.verifyOnPage(CreateGoalsPage)
+    cy.wiremockVerify(
+      postRequestedFor(urlEqualTo(`/inductions/${prisonNumberForPrisonerWithNoInduction}`)) //
+        .withRequestBody(
+          matchingJsonPath(
+            "$[?(@.workOnRelease.hopingToWork == 'YES' && " +
+              "@.previousQualifications.educationLevel == 'FURTHER_EDUCATION_COLLEGE' && " +
+              '@.previousQualifications.qualifications.size() == 0 && ' +
+              '@.previousTraining.trainingTypes.size() == 1 && ' +
+              "@.previousTraining.trainingTypes[0] == 'HGV_LICENCE' && " +
+              '@.previousWorkExperiences.hasWorkedBefore == true && ' +
+              '@.previousWorkExperiences.experiences.size() == 1 && ' +
+              "@.previousWorkExperiences.experiences[0].experienceType == 'CONSTRUCTION' && " +
+              "@.previousWorkExperiences.experiences[0].role == 'General labourer' && " +
+              "@.previousWorkExperiences.experiences[0].details == 'Basic ground works and building' && " +
+              '@.futureWorkInterests.interests.size() == 1 && ' +
+              "@.futureWorkInterests.interests[0].workType == 'OUTDOOR' && " +
+              "@.futureWorkInterests.interests[0].role == 'Farm hand' && " +
+              '@.personalSkillsAndInterests.skills.size() == 1 && ' +
+              "@.personalSkillsAndInterests.skills[0].skillType == 'POSITIVE_ATTITUDE' && " +
+              '@.personalSkillsAndInterests.interests.size() == 1 && ' +
+              "@.personalSkillsAndInterests.interests[0].interestType == 'COMMUNITY' && " +
+              '@.workOnRelease.affectAbilityToWork.size() == 1 && ' +
+              "@.workOnRelease.affectAbilityToWork[0] == 'NONE' && " +
+              "@.workOnRelease.affectAbilityToWorkOther == '' && " +
+              '@.inPrisonInterests.inPrisonWorkInterests.size() == 1 && ' +
+              "@.inPrisonInterests.inPrisonWorkInterests[0].workType == 'KITCHENS_AND_COOKING' && " +
               '@.inPrisonInterests.inPrisonTrainingInterests.size() == 1 && ' +
               "@.inPrisonInterests.inPrisonTrainingInterests[0].trainingType == 'FORKLIFT_DRIVING')]",
           ),

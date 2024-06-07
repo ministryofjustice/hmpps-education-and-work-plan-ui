@@ -332,19 +332,19 @@ context(`Change links on the Check Your Answers page when creating an Induction`
       ])
   })
 
-  it('should remove all qualifications on a Short Question Set Induction when Do They Want To Add Qualifications is changed to No', () => {
+  it('should remove all qualifications', () => {
     // Given
     const createInductionWithQualifications = true
     cy.createShortQuestionSetInductionToArriveOnCheckYourAnswers(prisonNumber, createInductionWithQualifications)
-    Page.verifyOnPage(CheckYourAnswersPage)
-      .hasWantsToAddQualificationsAs(YesNoValue.YES) // Induction starts off with qualifications
+    // Induction has 1 qualification at this point
+    Page.verifyOnPage(CheckYourAnswersPage) //
       .hasEducationalQualificationsDisplayed()
 
     // When
     Page.verifyOnPage(CheckYourAnswersPage) //
-      .clickWantsToAddQualificationsChangeLink()
+      .clickQualificationsChangeLink()
       .hasBackLinkTo(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
-      .selectWantToAddQualifications(YesNoValue.NO)
+      .removeQualification(1)
       .submitPage()
 
     // Then
@@ -382,8 +382,7 @@ context(`Change links on the Check Your Answers page when creating an Induction`
       .submitPage()
 
     // Then
-    Page.verifyOnPage(CheckYourAnswersPage)
-      .hasWantsToAddQualificationsAs(YesNoValue.YES)
+    Page.verifyOnPage(CheckYourAnswersPage) //
       .hasEducationalQualifications(['Chemistry'])
   })
 })

@@ -1,8 +1,5 @@
 {#
-'Qualifications and education history' summary card on the 'Education and training' tab - content for the short question set
-asked at the Induction.
-The 'Qualifications and education history' summary card is different to the one presented if the long question set was asked,
-as the follow up questions are different.
+'Qualifications and education history' summary card on the 'Education and training' tab
 #}
 
 <div class="govuk-grid-row">
@@ -58,13 +55,42 @@ as the follow up questions are different.
 
         <h3 class="govuk-heading-s">Other qualifications and history</h3>
         <dl class="govuk-summary-list" id="other-qualifications-list">
+
+          {% set inductionHasHighestLevelOfEducationRecorded = induction.inductionDto.previousQualifications.educationLevel and induction.inductionDto.previousQualifications.educationLevel !== '' %}
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              Highest level of education before prison
+            </dt>
+            <dd class="govuk-summary-list__value">
+              <p class='govuk-body'>
+                {% if inductionHasHighestLevelOfEducationRecorded %}
+                  {{ induction.inductionDto.previousQualifications.educationLevel | formatEducationLevel }}
+                {% else %}
+                  Not recorded.
+                {% endif %}
+              </p>
+            </dd>
+            <dd class="govuk-summary-list__actions govuk-!-display-none-print">
+              {%- set highestLevelOfEducationChangeLinkUrl -%}
+                {%- if featureToggles.induction.update.enabled -%}
+                  /prisoners/{{ prisonerSummary.prisonNumber }}/induction/highest-level-of-education
+                {%- else -%}
+                  {{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}/education-level/update
+                {%- endif -%}
+              {%- endset -%}
+              <a class="govuk-link" href="{{ highestLevelOfEducationChangeLinkUrl }}" data-qa="highest-level-of-education-change-link">
+                {{ 'Change' if inductionHasHighestLevelOfEducationRecorded else 'Add' }}<span class="govuk-visually-hidden"> highest level of education before prison</span>
+              </a>
+            </dd>
+          </div>
+
           <div class="govuk-summary-list__row">
             <dt class="govuk-summary-list__key">
               Other training or qualifications
             </dt>
             <dd class="govuk-summary-list__value">
               <ul class="govuk-list">
-                {% for additionalTraining in induction.inductionDto.previousTraining.trainingTypes | sortedAlphabeticallyWithOtherLast%}
+                {% for additionalTraining in induction.inductionDto.previousTraining.trainingTypes | sortedAlphabeticallyWithOtherLast %}
                   {% if additionalTraining === 'OTHER' %}
                     <li>Other - {{ induction.inductionDto.previousTraining.trainingTypeOther }}</li>
                   {% else %}

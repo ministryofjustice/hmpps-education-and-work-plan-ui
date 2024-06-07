@@ -14,7 +14,7 @@ export default class WantToAddQualificationsCreateController extends WantToAddQu
     if (pageFlowHistory && pageFlowHistory.pageUrls.length > 1) {
       return getPreviousPage(pageFlowHistory)
     }
-    return `/prisoners/${prisonNumber}/create-induction/reasons-not-to-get-work`
+    return `/prisoners/${prisonNumber}/create-induction/highest-level-of-education`
   }
 
   getBackLinkAriaText(req: Request): string {
@@ -35,7 +35,10 @@ export default class WantToAddQualificationsCreateController extends WantToAddQu
 
     req.session.wantToAddQualificationsForm = undefined
 
-    const updatedInduction = updatedInductionDtoWithDefaultQualificationData(inductionDto)
+    const updatedInduction = updatedInductionDtoWithDefaultQualificationData(
+      inductionDto,
+      wantToAddQualificationsForm.wantToAddQualifications === YesNoValue.YES,
+    )
     req.session.inductionDto = updatedInduction
 
     // If the previous page was Check Your Answers
@@ -65,12 +68,16 @@ export default class WantToAddQualificationsCreateController extends WantToAddQu
   }
 }
 
-const updatedInductionDtoWithDefaultQualificationData = (inductionDto: InductionDto): InductionDto => {
+const updatedInductionDtoWithDefaultQualificationData = (
+  inductionDto: InductionDto,
+  wantToAddQualifications: boolean,
+): InductionDto => {
+  const qualifications = wantToAddQualifications ? [...(inductionDto.previousQualifications?.qualifications || [])] : []
   return {
     ...inductionDto,
     previousQualifications: {
       ...inductionDto.previousQualifications,
-      qualifications: [...(inductionDto.previousQualifications?.qualifications || [])],
+      qualifications,
       educationLevel: inductionDto.previousQualifications?.educationLevel || EducationLevelValue.NOT_SURE,
     },
   }

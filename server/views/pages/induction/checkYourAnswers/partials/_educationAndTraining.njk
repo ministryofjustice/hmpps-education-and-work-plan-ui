@@ -1,6 +1,6 @@
 <h2 class="govuk-heading-m govuk-!-margin-top-2 govuk-!-margin-bottom-6">Qualifications and training</h2>
 
-{% if inductionDto.previousQualifications.qualifications.length %}
+{% if inductionDto.previousQualifications.qualifications | length > 0 %}
 
   <div class="app-u-heading-with-change-link">
     <h3 class="govuk-heading-s govuk-!-margin-top-2 govuk-!-margin-bottom-3">
@@ -48,6 +48,23 @@
       </a>
     </dd>
   </div>
+
+  {% if inductionDto.previousQualifications.qualifications | length === 0 %}
+    <div class="govuk-summary-list__row">
+      <dt class="govuk-summary-list__key govuk-!-width-one-quarter ">
+        Has educational qualifications they want recorded
+      </dt>
+      <dd class="govuk-summary-list__value" data-qa="wantsToAddQualifications">
+        No
+      </dd>
+      <dd class="govuk-summary-list__actions">
+        <a class="govuk-link govuk-link--no-visited-state" href="want-to-add-qualifications" data-qa="wantsToAddQualificationsLink">
+          Change<span class="govuk-visually-hidden"> whether they want to add qualifications</span>
+        </a>
+      </dd>
+    </div>
+  {% endif %}
+
   <div class="govuk-summary-list__row">
     <dt class="govuk-summary-list__key govuk-!-width-one-quarter">
       Other training or qualifications
@@ -64,7 +81,5 @@
         Change<span class="govuk-visually-hidden"> other training or qualifications they have</span>
       </a>
     </dd>
-  </div>
-  <div class="govuk-summary-list__row">
   </div>
 </dl>

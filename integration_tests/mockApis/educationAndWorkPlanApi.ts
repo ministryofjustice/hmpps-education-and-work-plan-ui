@@ -824,7 +824,7 @@ const stubGetInductionShortQuestionSet = (prisonNumber = 'G6115VJ'): SuperAgentR
           updatedByDisplayName: 'Alex Smith',
           updatedAt: '2023-06-19T09:39:44Z',
           updatedAtPrison: 'MDI',
-          educationLevel: null,
+          educationLevel: 'UNDERGRADUATE_DEGREE_AT_UNIVERSITY',
           qualifications: [
             {
               subject: 'English',
@@ -832,19 +832,6 @@ const stubGetInductionShortQuestionSet = (prisonNumber = 'G6115VJ'): SuperAgentR
               level: 'LEVEL_6',
             },
           ],
-        },
-        previousTraining: {
-          reference: 'a8e1fe50-1e3b-4784-a27f-ee1c54fc7616',
-          createdBy: 'A_USER_GEN',
-          createdByDisplayName: 'Alex Smith',
-          createdAt: '2023-08-29T11:29:22.8793',
-          createdAtPrison: 'MDI',
-          updatedBy: 'A_USER_GEN',
-          updatedByDisplayName: 'Alex Smith',
-          updatedAt: '2023-06-19T09:39:44Z',
-          updatedAtPrison: 'MDI',
-          trainingTypes: ['FULL_UK_DRIVING_LICENCE'],
-          trainingTypeOther: null,
         },
         personalSkillsAndInterests: {
           reference: '517c470f-f9b5-4d49-9148-4458fe358439',
@@ -892,6 +879,19 @@ const stubGetInductionShortQuestionSet = (prisonNumber = 'G6115VJ'): SuperAgentR
               interestTypeOther: 'Car boot sales',
             },
           ],
+        },
+        previousTraining: {
+          reference: 'a8e1fe50-1e3b-4784-a27f-ee1c54fc7616',
+          createdBy: 'A_USER_GEN',
+          createdByDisplayName: 'Alex Smith',
+          createdAt: '2023-08-29T11:29:22.8793',
+          createdAtPrison: 'MDI',
+          updatedBy: 'A_USER_GEN',
+          updatedByDisplayName: 'Alex Smith',
+          updatedAt: '2023-06-19T09:39:44Z',
+          updatedAtPrison: 'MDI',
+          trainingTypes: ['FULL_UK_DRIVING_LICENCE'],
+          trainingTypeOther: null,
         },
         inPrisonInterests: {
           reference: 'ae6a6a94-df32-4a90-b39d-ff1a100a6da0',
