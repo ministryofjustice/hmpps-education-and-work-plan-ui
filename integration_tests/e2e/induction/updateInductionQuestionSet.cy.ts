@@ -30,6 +30,9 @@ import PersonalInterestsPage from '../../pages/induction/PersonalInterestsPage'
 import PersonalInterestsValue from '../../../server/enums/personalInterestsValue'
 import AffectAbilityToWorkPage from '../../pages/induction/AffectAbilityToWorkPage'
 import AbilityToWorkValue from '../../../server/enums/abilityToWorkValue'
+import HighestLevelOfEducationPage from '../../pages/induction/HighestLevelOfEducationPage'
+import WantToAddQualificationsPage from '../../pages/induction/WantToAddQualificationsPage'
+import QualificationLevelPage from '../../pages/induction/QualificationLevelPage'
 
 /**
  * Cypress tests that change the question set of an existing Induction by updating the answer to 'Hoping to work on release'
@@ -74,11 +77,20 @@ context(`Change existing Induction question set by updating the answer to 'Hopin
       .chooseReasonNotToGetWork(ReasonNotToGetWorkValue.HEALTH)
       .submitPage()
 
-    // Qualifications List is the next page. Qualifications are asked on the long question set, so this will already have qualifications set
-    // Add a new qualification; just to test going through each page in the flow
-    Page.verifyOnPage(QualificationsListPage)
+    // Highest Level of Education is next. It is asked on the long question set so will already have an answer set
+    Page.verifyOnPage(HighestLevelOfEducationPage)
       .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/reasons-not-to-get-work`)
-      .clickToAddAnotherQualification()
+      .submitPage()
+
+    // Do You Want To Add Qualification is next. The long question set induction already has qualifications do this will already be set to Yes
+    Page.verifyOnPage(WantToAddQualificationsPage)
+      .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/highest-level-of-education`)
+      .submitPage()
+
+    // Qualifications are asked on the long question set, so this will already have qualifications set
+    // Add a new qualification; just to test going through each page in the flow
+    Page.verifyOnPage(QualificationLevelPage)
+      .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/want-to-add-qualifications`)
       .selectQualificationLevel(QualificationLevelValue.LEVEL_4)
       .submitPage()
     Page.verifyOnPage(QualificationDetailsPage)
@@ -87,7 +99,7 @@ context(`Change existing Induction question set by updating the answer to 'Hopin
       .setQualificationGrade('Distinction')
       .submitPage()
     Page.verifyOnPage(QualificationsListPage)
-      .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/reasons-not-to-get-work`)
+      .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/highest-level-of-education`)
       .submitPage()
 
     // Additional Training is the next page. This is asked on the long question set, so this will already have answers set
@@ -200,11 +212,20 @@ context(`Change existing Induction question set by updating the answer to 'Hopin
       .setWorkInterestRole(WorkInterestTypeValue.DRIVING, 'Driving instructor')
       .submitPage()
 
-    // Qualifications List is the next page. Qualifications are asked on the short question set, so this will already have qualifications set
-    // Add a new qualification; just to test going through each page in the flow
-    Page.verifyOnPage(QualificationsListPage)
+    // Highest Level of Education is next. It is asked on the short question set so will already have an answer set
+    Page.verifyOnPage(HighestLevelOfEducationPage)
       .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/work-interest-roles`)
-      .clickToAddAnotherQualification()
+      .submitPage()
+
+    // Do You Want To Add Qualification is next. The short question set induction already has qualifications do this will already be set to Yes
+    Page.verifyOnPage(WantToAddQualificationsPage)
+      .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/highest-level-of-education`)
+      .submitPage()
+
+    // Qualifications are asked on the long question set, so this will already have qualifications set
+    // Add a new qualification; just to test going through each page in the flow
+    Page.verifyOnPage(QualificationLevelPage)
+      .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/want-to-add-qualifications`)
       .selectQualificationLevel(QualificationLevelValue.LEVEL_4)
       .submitPage()
     Page.verifyOnPage(QualificationDetailsPage)
@@ -213,7 +234,7 @@ context(`Change existing Induction question set by updating the answer to 'Hopin
       .setQualificationGrade('Distinction')
       .submitPage()
     Page.verifyOnPage(QualificationsListPage)
-      .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/work-interest-roles`)
+      .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/highest-level-of-education`)
       .submitPage()
 
     // Additional Training is the next page. This is asked on the short question set, so this will already have answers set
@@ -289,7 +310,7 @@ context(`Change existing Induction question set by updating the answer to 'Hopin
         .withRequestBody(
           matchingJsonPath(
             "$[?(@.workOnRelease.hopingToWork == 'YES' && " +
-              "@.previousQualifications.educationLevel == 'NOT_SURE' && " +
+              "@.previousQualifications.educationLevel == 'UNDERGRADUATE_DEGREE_AT_UNIVERSITY' && " +
               '@.previousQualifications.qualifications.size() == 2 && ' +
               "@.previousQualifications.qualifications[0].subject == 'English' && " +
               "@.previousQualifications.qualifications[0].grade == 'C' && " +

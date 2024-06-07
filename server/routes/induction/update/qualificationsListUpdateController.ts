@@ -65,24 +65,6 @@ export default class QualificationsListUpdateController extends QualificationsLi
       return res.redirect(`/prisoners/${prisonNumber}/induction/qualifications`)
     }
 
-    // If the previous page was Check Your Answers, forward to Check Your Answers again
-    if (this.previousPageWasCheckYourAnswers(req)) {
-      return res.redirect(`/prisoners/${prisonNumber}/induction/check-your-answers`)
-    }
-
-    if (!inductionHasQualifications(inductionDto)) {
-      // If check-your-answers is in the page history but it's not the previous page, then the user has indicated they want to add qualifications from the Check Your Answers page
-      if (this.checkYourAnswersIsInThePageHistory(req)) {
-        // Skip the highest level of education as its not asked in this scenario, and go straight to asking about the qualifications
-        return res.redirect(`/prisoners/${prisonNumber}/induction/qualification-level`)
-      }
-
-      logger.debug(
-        `Induction has no qualifications. Redirect the user to Highest Level of Education in order to start adding qualification(s)`,
-      )
-      return res.redirect(`/prisoners/${prisonNumber}/induction/highest-level-of-education`)
-    }
-
     const updatedInduction = updatedInductionDtoWithDefaultedHighestLevelOfEducation(inductionDto)
     req.session.inductionDto = updatedInduction
 
@@ -115,9 +97,6 @@ export default class QualificationsListUpdateController extends QualificationsLi
   }
 }
 
-const inductionHasQualifications = (inductionDto: InductionDto): boolean =>
-  inductionDto.previousQualifications?.qualifications?.length > 0
-
 const userClickedOnButton = (request: Request, buttonName: string): boolean =>
   Object.prototype.hasOwnProperty.call(request.body, buttonName)
 
@@ -132,11 +111,6 @@ const inductionWithRemovedQualification = (
     previousQualifications: {
       ...inductionDto.previousQualifications,
       qualifications: updatedQualifications,
-      // If there are still qualifications then we can use the previous highest level of education; otherwise there are no qualifications so we cannot be sure of the highest level of education
-      educationLevel:
-        updatedQualifications.length > 0
-          ? inductionDto.previousQualifications.educationLevel
-          : EducationLevelValue.NOT_SURE,
     },
   }
 }

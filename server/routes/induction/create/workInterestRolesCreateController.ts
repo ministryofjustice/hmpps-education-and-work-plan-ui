@@ -33,6 +33,6 @@ export default class WorkInterestRolesCreateController extends WorkInterestRoles
 
     return this.previousPageWasCheckYourAnswers(req)
       ? res.redirect(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
-      : res.redirect(`/prisoners/${prisonNumber}/create-induction/qualifications`)
+      : res.redirect(`/prisoners/${prisonNumber}/create-induction/highest-level-of-education`)
   }
 }

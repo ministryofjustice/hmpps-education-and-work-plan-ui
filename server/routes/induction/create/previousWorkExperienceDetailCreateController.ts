@@ -72,8 +72,8 @@ export default class PreviousWorkExperienceDetailCreateController extends Previo
     req.session.pageFlowQueue = undefined
 
     const userHasComeFromCheckYourAnswers = this.checkYourAnswersIsTheFirstPageInThePageHistory(req)
-    if (userHasComeFromCheckYourAnswers) {
-      // If the page flow history started with Check Your Answers then we need to redirect the user back to there now that they have been to every page on the queue
+    if (userHasComeFromCheckYourAnswers && !req.session.updateInductionQuestionSet) {
+      // If the page flow history started with Check Your Answers and we are not changing the question set then we need to redirect the user back to there now that they have been to every page on the queue
       req.session.pageFlowHistory = undefined
       return res.redirect(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
     }

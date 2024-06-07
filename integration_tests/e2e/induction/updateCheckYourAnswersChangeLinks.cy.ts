@@ -85,6 +85,13 @@ context(`Change links on the Check Your Answers page when updating an Induction`
       .chooseInPrisonTraining(InPrisonTrainingValue.NUMERACY_SKILLS)
       .submitPage()
 
+    // Change Highest Level of Education
+    Page.verifyOnPage(CheckYourAnswersPage)
+      .clickHighestLevelOfEducationLink()
+      .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/check-your-answers`)
+      .selectHighestLevelOfEducation(EducationLevelValue.FURTHER_EDUCATION_COLLEGE)
+      .submitPage()
+
     // Change Educational Qualifications - remove 1 qualification
     Page.verifyOnPage(CheckYourAnswersPage)
       .clickQualificationsChangeLink()
@@ -128,11 +135,9 @@ context(`Change links on the Check Your Answers page when updating an Induction`
       .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/check-your-answers`)
       .selectWantToAddQualifications(YesNoValue.YES)
       .submitPage()
-    Page.verifyOnPage(QualificationsListPage) //
-      .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/want-to-add-qualifications`)
-      .submitPage()
+
     Page.verifyOnPage(QualificationLevelPage) //
-      .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/qualifications`)
+      .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/want-to-add-qualifications`)
       .selectQualificationLevel(QualificationLevelValue.LEVEL_1)
       .submitPage()
     Page.verifyOnPage(QualificationDetailsPage) //
@@ -141,7 +146,7 @@ context(`Change links on the Check Your Answers page when updating an Induction`
       .setQualificationGrade('C')
       .submitPage()
     Page.verifyOnPage(QualificationsListPage) //
-      .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/want-to-add-qualifications`)
+      .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/qualification-details`)
       .submitPage()
 
     // Then
@@ -152,6 +157,7 @@ context(`Change links on the Check Your Answers page when updating an Induction`
       .hasInPrisonWorkInterests([InPrisonWorkValue.PRISON_LAUNDRY, InPrisonWorkValue.PRISON_LIBRARY])
       .hasInPrisonTrainingInterests([InPrisonTrainingValue.CATERING, InPrisonTrainingValue.NUMERACY_SKILLS])
       .hasEducationalQualifications(['Physics'])
+      .hasHighestLevelOfEducation(EducationLevelValue.FURTHER_EDUCATION_COLLEGE)
   })
 
   it('should support all Change links on a Long Question Set Induction', () => {
@@ -328,7 +334,7 @@ context(`Change links on the Check Your Answers page when updating an Induction`
     // Then
     Page.verifyOnPage(CheckYourAnswersPage) //
       .hasHopingToWorkOnRelease(HopingToGetWorkValue.YES)
-      .hasHighestLevelOfEducation(EducationLevelValue.NOT_SURE) // Highest level of education is NOT_SURE because we removed all the qualifications
+      .hasHighestLevelOfEducation(EducationLevelValue.FURTHER_EDUCATION_COLLEGE) // Highest level of education should not have changed even though we removed all the qualifications
       .hasNoEducationalQualificationsDisplayed()
       .hasWorkedBefore(YesNoValue.YES)
       .hasTypeOfWorkExperienceType(TypeOfWorkExperienceValue.SPORTS)

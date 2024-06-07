@@ -195,7 +195,7 @@ context('Prisoner Overview page - Education And Training tab', () => {
   })
 
   describe('should retrieve and render data from PLP API Induction data', () => {
-    it('should display Qualifications And Education given Induction was the long question set', () => {
+    it('should display Qualifications And Education data', () => {
       // Given
       cy.task('stubGetInductionLongQuestionSet')
 
@@ -211,26 +211,6 @@ context('Prisoner Overview page - Education And Training tab', () => {
       // Then
       educationAndTrainingPage //
         .activeTabIs('Education and training')
-        .isShowingLongQuestionSetAnswers()
-    })
-
-    it('should display Qualifications And Education given Induction was the short question set', () => {
-      // Given
-      cy.task('stubGetInductionShortQuestionSet')
-
-      cy.signIn()
-      const prisonNumber = 'G6115VJ'
-      cy.visit(`/plan/${prisonNumber}/view/overview`)
-      const overviewPage = Page.verifyOnPage(OverviewPage)
-
-      // When
-      overviewPage.selectTab('Education and training')
-      const educationAndTrainingPage = Page.verifyOnPage(EducationAndTrainingPage)
-
-      // Then
-      educationAndTrainingPage //
-        .activeTabIs('Education and training')
-        .isShowingShortQuestionSetAnswers()
     })
 
     it('should display Induction unavailable message given PLP API is unavailable when retrieving the Induction', () => {

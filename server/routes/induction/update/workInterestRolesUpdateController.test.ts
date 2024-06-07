@@ -183,7 +183,7 @@ describe('workInterestRolesUpdateController', () => {
       expect(req.session.inductionDto).toBeUndefined()
     })
 
-    it('should update InductionDto and redirect to Qualifications given long question set journey', async () => {
+    it('should update InductionDto and redirect to Highest Level of Education given long question set journey', async () => {
       // Given
       const inductionDto = aLongQuestionSetInductionDto()
       req.session.inductionDto = inductionDto
@@ -197,7 +197,7 @@ describe('workInterestRolesUpdateController', () => {
       }
 
       req.session.updateInductionQuestionSet = { hopingToWorkOnRelease: 'YES' }
-      const expectedNextPage = '/prisoners/A1234BC/induction/qualifications'
+      const expectedNextPage = '/prisoners/A1234BC/induction/highest-level-of-education'
 
       const expectedUpdatedWorkInterests: Array<FutureWorkInterestDto> = [
         {
