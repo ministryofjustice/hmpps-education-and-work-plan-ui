@@ -68,7 +68,7 @@ export default abstract class WantToAddQualificationsController extends Inductio
       previousQualifications: {
         ...inductionDto.previousQualifications,
         qualifications: [],
-        educationLevel: EducationLevelValue.NOT_SURE, // Having removed all qualifications we cannot be sure of the Highest Level of Education, so set to NOT_SURE
+        educationLevel: inductionDto.previousQualifications?.educationLevel || EducationLevelValue.NOT_SURE, // Keep the Highest Level of Education unless it is not set in which case set to NOT_SURE
       },
     }
   }

@@ -21,18 +21,6 @@ export default class EducationAndTrainingPage extends Page {
     return this
   }
 
-  isShowingLongQuestionSetAnswers(): EducationAndTrainingPage {
-    this.longQuestionSetContent().should('be.visible')
-    this.shortQuestionSetContent().should('not.exist')
-    return this
-  }
-
-  isShowingShortQuestionSetAnswers(): EducationAndTrainingPage {
-    this.shortQuestionSetContent().should('be.visible')
-    this.longQuestionSetContent().should('not.exist')
-    return this
-  }
-
   hasFunctionalSkillWithAssessmentScoreDisplayed(
     expectedType: 'ENGLISH' | 'MATHS' | 'DIGITAL_LITERACY',
   ): EducationAndTrainingPage {
@@ -113,6 +101,11 @@ export default class EducationAndTrainingPage extends Page {
     return Page.verifyOnPage(HighestLevelOfEducationPage)
   }
 
+  highestLevelOfEducationChangeLinkHasText(expected: string): EducationAndTrainingPage {
+    this.highestLevelOfEducationChangeLink().should('contain.text', expected)
+    return this
+  }
+
   clickToChangeAdditionalTraining(): AdditionalTrainingPage {
     this.additionalTrainingChangeLink().click()
     return Page.verifyOnPage(AdditionalTrainingPage)
@@ -149,11 +142,6 @@ export default class EducationAndTrainingPage extends Page {
   curiousUnavailableMessage = (): PageElement => cy.get('[data-qa=curious-unavailable-message]')
 
   viewAllFunctionalSkillsButton = (): PageElement => cy.get('[data-qa=view-all-functional-skills-button]')
-
-  longQuestionSetContent = (): PageElement => cy.get('[data-qa=qualifications-and-education-history-long-question-set')
-
-  shortQuestionSetContent = (): PageElement =>
-    cy.get('[data-qa=qualifications-and-education-history-short-question-set')
 
   inductionUnavailableMessage = (): PageElement => cy.get('[data-qa=induction-unavailable-message]')
 

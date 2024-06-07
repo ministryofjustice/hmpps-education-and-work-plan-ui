@@ -43,14 +43,9 @@ describe('wantToAddQualificationsCreateController', () => {
   })
 
   describe('getWantToAddQualificationsView', () => {
-    it('should get the Want To Add Qualifications view given previous page was Reasons Not To Get Work', async () => {
+    it('should get the Want To Add Qualifications view', async () => {
       // Given
       req.session.inductionDto = partialInductionDto()
-
-      req.session.pageFlowHistory = {
-        pageUrls: ['/prisoners/A1234BC/create-induction/reasons-not-to-get-work'],
-        currentPageIndex: 0,
-      }
 
       const functionalSkills = validFunctionalSkills()
       req.session.prisonerFunctionalSkills = functionalSkills
@@ -63,8 +58,8 @@ describe('wantToAddQualificationsCreateController', () => {
       const expectedFunctionalSkills = functionalSkills
       const expectedView = {
         prisonerSummary,
-        backLinkUrl: '/prisoners/A1234BC/create-induction/reasons-not-to-get-work',
-        backLinkAriaText: `Back to What could stop Jimmy Lightfingers working when they are released?`,
+        backLinkUrl: '/prisoners/A1234BC/create-induction/highest-level-of-education',
+        backLinkAriaText: `Back to What's the highest level of education Jimmy Lightfingers completed before entering prison?`,
         form: expectedWantToAddQualificationsForm,
         functionalSkills: expectedFunctionalSkills,
       }

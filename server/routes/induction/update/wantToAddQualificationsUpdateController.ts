@@ -12,7 +12,7 @@ export default class WantToAddQualificationsUpdateController extends WantToAddQu
     if (pageFlowHistory) {
       return getPreviousPage(pageFlowHistory)
     }
-    return `/prisoners/${prisonNumber}/induction/reasons-not-to-get-work`
+    return `/prisoners/${prisonNumber}/induction/highest-level-of-education`
   }
 
   getBackLinkAriaText(req: Request): string {
@@ -53,7 +53,7 @@ export default class WantToAddQualificationsUpdateController extends WantToAddQu
       }
 
       // User has come from the Check Your Answers page and has said they DO want to record qualifications
-      return res.redirect(`/prisoners/${prisonNumber}/induction/qualifications`)
+      return res.redirect(`/prisoners/${prisonNumber}/induction/qualification-level`)
     }
 
     const nextPage =

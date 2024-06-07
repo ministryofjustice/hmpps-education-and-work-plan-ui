@@ -49,7 +49,7 @@ export default class WorkInterestRolesUpdateController extends WorkInterestRoles
     }
 
     if (req.session.updateInductionQuestionSet) {
-      const nextPage = `/prisoners/${prisonNumber}/induction/qualifications`
+      const nextPage = `/prisoners/${prisonNumber}/induction/highest-level-of-education`
       req.session.pageFlowHistory = buildNewPageFlowHistory(req)
       return res.redirect(nextPage)
     }
