@@ -66,11 +66,7 @@ export default class ReasonsNotToGetWorkUpdateController extends ReasonsNotToGet
     // Check if we are in the midst of changing the main induction question set from long route to short route
     if (req.session.updateInductionQuestionSet) {
       req.session.reasonsNotToGetWorkForm = undefined
-      const nextPage =
-        inductionDto.previousQualifications?.qualifications?.length > 0
-          ? `/prisoners/${prisonNumber}/induction/qualifications`
-          : `/prisoners/${prisonNumber}/induction/want-to-add-qualifications`
-      return res.redirect(nextPage)
+      return res.redirect(`/prisoners/${prisonNumber}/induction/highest-level-of-education`)
     }
 
     // Otherwise update the Induction in the API and return to the main work-and-interests tab

@@ -137,4 +137,34 @@ context('Update highest level of education within an Induction', () => {
         ),
     )
   })
+
+  it('should update highest level of education given short question set induction that was created with no highest level of education', () => {
+    // Given
+    const prisonNumber = 'G6115VJ'
+    cy.task('stubGetInductionShortQuestionSetCreatedWithOriginalQuestionSet') // The original question set did not ask about Highest Level of Education for the Short question set
+    cy.visit(`/plan/${prisonNumber}/view/education-and-training`)
+    Page.verifyOnPage(EducationAndTrainingPage) //
+      .highestLevelOfEducationChangeLinkHasText('Add')
+      .clickToChangeHighestLevelOfEducation()
+
+    // When
+    Page.verifyOnPage(HighestLevelOfEducationPage)
+      .selectHighestLevelOfEducation(EducationLevelValue.SECONDARY_SCHOOL_LEFT_BEFORE_TAKING_EXAMS)
+      .submitPage()
+
+    // Then
+    Page.verifyOnPage(EducationAndTrainingPage)
+    cy.wiremockVerify(
+      putRequestedFor(urlEqualTo(`/inductions/${prisonNumber}`)) //
+        .withRequestBody(
+          matchingJsonPath(
+            "$[?(@.previousQualifications.educationLevel == 'SECONDARY_SCHOOL_LEFT_BEFORE_TAKING_EXAMS' && " +
+              '@.previousQualifications.qualifications.size() == 1 && ' +
+              "@.previousQualifications.qualifications[0].subject == 'English' && " +
+              "@.previousQualifications.qualifications[0].grade == 'C' && " +
+              "@.previousQualifications.qualifications[0].level == 'LEVEL_6')]",
+          ),
+        ),
+    )
+  })
 })

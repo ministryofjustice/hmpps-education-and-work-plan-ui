@@ -33,6 +33,7 @@ import AbilityToWorkValue from '../../../server/enums/abilityToWorkValue'
 import HighestLevelOfEducationPage from '../../pages/induction/HighestLevelOfEducationPage'
 import EducationLevelValue from '../../../server/enums/educationLevelValue'
 import QualificationLevelPage from '../../pages/induction/QualificationLevelPage'
+import WantToAddQualificationsPage from '../../pages/induction/WantToAddQualificationsPage'
 
 context(`Change new Induction question set by updating 'Hoping to work on release' from Check Your Answers`, () => {
   const prisonNumberForPrisonerWithNoInduction = 'A00001A'
@@ -65,11 +66,19 @@ context(`Change new Induction question set by updating 'Hoping to work on releas
       .chooseReasonNotToGetWork(ReasonNotToGetWorkValue.HEALTH)
       .submitPage()
 
-    // Qualifications List is the next page. Qualifications are asked on the long question set, so this will already have qualifications set
-    // Add a new qualification; just to test going through each page in the flow
-    Page.verifyOnPage(QualificationsListPage) //
+    // Highest Level of Education is next. This is asked on the long question set, so this will already have answers set
+    Page.verifyOnPage(HighestLevelOfEducationPage) //
       .hasBackLinkTo(`/prisoners/${prisonNumberForPrisonerWithNoInduction}/create-induction/reasons-not-to-get-work`)
-      .clickToAddAnotherQualification()
+      .submitPage()
+
+    // Want To Add Qualifications page is next. Qualifications were already added as part of the long question set Induction, so this will already be set to Yes
+    Page.verifyOnPage(WantToAddQualificationsPage)
+      .hasBackLinkTo(`/prisoners/${prisonNumberForPrisonerWithNoInduction}/create-induction/highest-level-of-education`)
+      .submitPage()
+
+    // Qualification Level page is next. Add a new qualification just to test going through each page in the flow
+    Page.verifyOnPage(QualificationLevelPage)
+      .hasBackLinkTo(`/prisoners/${prisonNumberForPrisonerWithNoInduction}/create-induction/want-to-add-qualifications`)
       .selectQualificationLevel(QualificationLevelValue.LEVEL_4)
       .submitPage()
     Page.verifyOnPage(QualificationDetailsPage) //
@@ -141,7 +150,7 @@ context(`Change new Induction question set by updating 'Hoping to work on releas
     )
   })
 
-  it(`should change a short question set Induction with qualifications into a long question set Induction given 'Hoping to work on release' is changed to Yes from Check Your Answers`, () => {
+  it(`should change a short question set Induction with qualifications into a long question set Induction with no qualifications given 'Hoping to work on release' is changed to Yes from Check Your Answers`, () => {
     // Given
     cy.createShortQuestionSetInductionToArriveOnCheckYourAnswers(prisonNumberForPrisonerWithNoInduction, true)
     Page.verifyOnPage(CheckYourAnswersPage)
@@ -165,24 +174,20 @@ context(`Change new Induction question set by updating 'Hoping to work on releas
       .setWorkInterestRole(WorkInterestTypeValue.DRIVING, 'Driving instructor')
       .submitPage()
 
-    // Qualifications List is the next page. Qualifications are asked on the short question set, so this will already have qualifications set
-    // Add a new qualification; just to test going through each page in the flow
-    Page.verifyOnPage(QualificationsListPage) //
+    // Highest Level of Education is next. This is asked on the short question set, so this will already have answers set
+    Page.verifyOnPage(HighestLevelOfEducationPage) //
       .hasBackLinkTo(`/prisoners/${prisonNumberForPrisonerWithNoInduction}/create-induction/work-interest-roles`)
-      .clickToAddAnotherQualification()
-      .selectQualificationLevel(QualificationLevelValue.LEVEL_4)
       .submitPage()
-    Page.verifyOnPage(QualificationDetailsPage) //
-      .hasBackLinkTo(`/prisoners/${prisonNumberForPrisonerWithNoInduction}/create-induction/qualification-level`)
-      .setQualificationSubject('Spanish')
-      .setQualificationGrade('Distinction')
-      .submitPage()
-    Page.verifyOnPage(QualificationsListPage) //
+
+    // Want To Add Qualifications page is next. Qualifications were already added as part of the short question set Induction, so this will already be set to Yes. Change to No
+    Page.verifyOnPage(WantToAddQualificationsPage)
+      .hasBackLinkTo(`/prisoners/${prisonNumberForPrisonerWithNoInduction}/create-induction/highest-level-of-education`)
+      .selectWantToAddQualifications(YesNoValue.NO)
       .submitPage()
 
     // Additional Training is the next page. This is asked on the short question set, so this will already have answers set
     Page.verifyOnPage(AdditionalTrainingPage) //
-      .hasBackLinkTo(`/prisoners/${prisonNumberForPrisonerWithNoInduction}/create-induction/qualifications`)
+      .hasBackLinkTo(`/prisoners/${prisonNumberForPrisonerWithNoInduction}/create-induction/want-to-add-qualifications`)
       .submitPage()
 
     // 'Has the prisoner worked before' is the next page. This is not asked on the short question set.
@@ -249,14 +254,8 @@ context(`Change new Induction question set by updating 'Hoping to work on releas
         .withRequestBody(
           matchingJsonPath(
             "$[?(@.workOnRelease.hopingToWork == 'YES' && " +
-              "@.previousQualifications.educationLevel == 'NOT_SURE' && " +
-              '@.previousQualifications.qualifications.size() == 2 && ' +
-              "@.previousQualifications.qualifications[0].subject == 'Computer science' && " +
-              "@.previousQualifications.qualifications[0].grade == 'A*' && " +
-              "@.previousQualifications.qualifications[0].level == 'LEVEL_4' && " +
-              "@.previousQualifications.qualifications[1].subject == 'Spanish' && " +
-              "@.previousQualifications.qualifications[1].grade == 'Distinction' && " +
-              "@.previousQualifications.qualifications[1].level == 'LEVEL_4' && " +
+              "@.previousQualifications.educationLevel == 'FURTHER_EDUCATION_COLLEGE' && " +
+              '@.previousQualifications.qualifications.size() == 0 && ' +
               '@.previousTraining.trainingTypes.size() == 1 && ' +
               "@.previousTraining.trainingTypes[0] == 'HGV_LICENCE' && " +
               '@.previousWorkExperiences.hasWorkedBefore == true && ' +
@@ -312,17 +311,20 @@ context(`Change new Induction question set by updating 'Hoping to work on releas
       .setWorkInterestRole(WorkInterestTypeValue.DRIVING, 'Driving instructor')
       .submitPage()
 
-    // Qualifications List is the next page. Qualifications are asked on the short question set, but none were added in the original induction
-    // so the page will show no qualifications and just a single CTA which will move the user onto Highest Level of Education
-    Page.verifyOnPage(QualificationsListPage) //
-      .hasBackLinkTo(`/prisoners/${prisonNumberForPrisonerWithNoInduction}/create-induction/work-interest-roles`)
-      .submitPage()
+    // Highest Level of Education is next. This is asked on the short question set, so this will already have answers set, but we will change it
     Page.verifyOnPage(HighestLevelOfEducationPage) //
-      .hasBackLinkTo(`/prisoners/${prisonNumberForPrisonerWithNoInduction}/create-induction/qualifications`)
+      .hasBackLinkTo(`/prisoners/${prisonNumberForPrisonerWithNoInduction}/create-induction/work-interest-roles`)
       .selectHighestLevelOfEducation(EducationLevelValue.POSTGRADUATE_DEGREE_AT_UNIVERSITY)
       .submitPage()
+
+    // Want To Add Qualifications page is next. Qualifications were not added as part of the short question set Induction, so this will already be set to No. Change to Yes
+    Page.verifyOnPage(WantToAddQualificationsPage)
+      .hasBackLinkTo(`/prisoners/${prisonNumberForPrisonerWithNoInduction}/create-induction/highest-level-of-education`)
+      .selectWantToAddQualifications(YesNoValue.YES)
+      .submitPage()
+
     Page.verifyOnPage(QualificationLevelPage)
-      .hasBackLinkTo('/prisoners/A00001A/create-induction/highest-level-of-education')
+      .hasBackLinkTo(`/prisoners/${prisonNumberForPrisonerWithNoInduction}/create-induction/want-to-add-qualifications`)
       .selectQualificationLevel(QualificationLevelValue.LEVEL_8)
       .submitPage()
     Page.verifyOnPage(QualificationDetailsPage) //

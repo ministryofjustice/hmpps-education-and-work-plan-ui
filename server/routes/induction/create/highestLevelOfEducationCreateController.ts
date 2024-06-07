@@ -3,15 +3,22 @@ import HighestLevelOfEducationController from '../common/highestLevelOfEducation
 import getDynamicBackLinkAriaText from '../dynamicAriaTextResolver'
 import validateHighestLevelOfEducationForm from '../../validators/induction/highestLevelOfEducationFormValidator'
 import { getPreviousPage } from '../../pageFlowHistory'
+import HopingToGetWorkValue from '../../../enums/hopingToGetWorkValue'
 
 export default class HighestLevelOfEducationCreateController extends HighestLevelOfEducationController {
   getBackLinkUrl(req: Request): string {
     const { prisonNumber } = req.params
-    const { pageFlowHistory } = req.session
-    if (pageFlowHistory) {
-      return getPreviousPage(pageFlowHistory)
+    const { pageFlowHistory, inductionDto } = req.session
+    let previousPage = pageFlowHistory && getPreviousPage(pageFlowHistory)
+    if (!previousPage) {
+      // No previous page from the Page Flow History
+      // The previous page in this case is based on whether it's a short or long question set induction
+      previousPage =
+        inductionDto.workOnRelease.hopingToWork === HopingToGetWorkValue.YES
+          ? `/prisoners/${prisonNumber}/create-induction/work-interest-roles` // Previous page in Long question set
+          : `/prisoners/${prisonNumber}/create-induction/reasons-not-to-get-work` // Previous page in Short question set
     }
-    return `/prisoners/${prisonNumber}/create-induction/qualifications`
+    return previousPage
   }
 
   getBackLinkAriaText(req: Request): string {
@@ -41,15 +48,9 @@ export default class HighestLevelOfEducationCreateController extends HighestLeve
     req.session.inductionDto = updatedInduction
     req.session.highestLevelOfEducationForm = undefined
 
-    // If the previous page was Check Your Answers, forward to Check Your Answers again
-    if (this.previousPageWasCheckYourAnswers(req)) {
-      return res.redirect(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
-    }
-
-    if (this.highestLevelOfEducationDoesNotRequireQualifications(highestLevelOfEducationForm)) {
-      return res.redirect(`/prisoners/${prisonNumber}/create-induction/additional-training`)
-    }
-
-    return res.redirect(`/prisoners/${prisonNumber}/create-induction/qualification-level`)
+    const nextPage = this.previousPageWasCheckYourAnswers(req)
+      ? `/prisoners/${prisonNumber}/create-induction/check-your-answers`
+      : `/prisoners/${prisonNumber}/create-induction/want-to-add-qualifications`
+    return res.redirect(nextPage)
   }
 }

@@ -3,7 +3,6 @@ import type { InductionDto } from 'inductionDto'
 import type { HighestLevelOfEducationForm } from 'inductionForms'
 import InductionController from './inductionController'
 import HighestLevelOfEducationView from './highestLevelOfEducationView'
-import EducationLevelValue from '../../../enums/educationLevelValue'
 
 /**
  * Abstract controller class defining functionality common to both the Create and Update Induction journeys.
@@ -39,17 +38,6 @@ export default abstract class HighestLevelOfEducationController extends Inductio
     return res.render('pages/induction/prePrisonEducation/highestLevelOfEducation', { ...view.renderArgs })
   }
 
-  highestLevelOfEducationDoesNotRequireQualifications = (
-    highestLevelOfEducationForm: HighestLevelOfEducationForm,
-  ): boolean => {
-    const levelsOfEducationThatDoNotRequireQualifications = [
-      EducationLevelValue.NOT_SURE,
-      EducationLevelValue.PRIMARY_SCHOOL,
-      EducationLevelValue.SECONDARY_SCHOOL_LEFT_BEFORE_TAKING_EXAMS,
-    ]
-    return levelsOfEducationThatDoNotRequireQualifications.includes(highestLevelOfEducationForm?.educationLevel)
-  }
-
   updatedInductionDtoWithHighestLevelOfEducation = (
     inductionDto: InductionDto,
     highestLevelOfEducationForm: HighestLevelOfEducationForm,
@@ -58,7 +46,7 @@ export default abstract class HighestLevelOfEducationController extends Inductio
       ...inductionDto,
       previousQualifications: {
         ...inductionDto.previousQualifications,
-        qualifications: [...(inductionDto.previousQualifications?.qualifications || [])],
+        qualifications: inductionDto.previousQualifications?.qualifications, // [...(inductionDto.previousQualifications?.qualifications || [])],
         educationLevel: highestLevelOfEducationForm.educationLevel,
       },
     }

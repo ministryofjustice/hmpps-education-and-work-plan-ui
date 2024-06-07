@@ -20,7 +20,7 @@ declare namespace Cypress {
 
     updateLongQuestionSetInductionToArriveOnCheckYourAnswers(prisonNumber?: string)
 
-    createLongQuestionSetInductionToArriveOnCheckYourAnswers(prisonNumber?: string)
+    createLongQuestionSetInductionToArriveOnCheckYourAnswers(prisonNumber?: string, withQualifications?: boolean)
 
     createShortQuestionSetInductionToArriveOnCheckYourAnswers(prisonNumber?: string, withQualifications?: boolean)
   }
