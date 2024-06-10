@@ -186,7 +186,7 @@ describe('additionalTrainingCreateController', () => {
       expect(req.session.inductionDto).toEqual(inductionDto)
     })
 
-    it('should update InductionDto and redirect to Has Worked Before view given long question set journey', async () => {
+    it('should update InductionDto and redirect to Has Worked Before', async () => {
       // Given
       const inductionDto = aLongQuestionSetInductionDto()
       inductionDto.previousTraining = undefined
@@ -203,40 +203,6 @@ describe('additionalTrainingCreateController', () => {
       const expectedUpdatedAdditionalTrainingOther = 'Italian cookery for IT professionals'
 
       const expectedNextPage = '/prisoners/A1234BC/create-induction/has-worked-before'
-
-      // When
-      await controller.submitAdditionalTrainingForm(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
-
-      // Then
-      const updatedInductionDto = req.session.inductionDto
-      expect(updatedInductionDto.previousTraining.trainingTypes).toEqual(expectedUpdatedAdditionalTraining)
-      expect(updatedInductionDto.previousTraining.trainingTypeOther).toEqual(expectedUpdatedAdditionalTrainingOther)
-      expect(res.redirect).toHaveBeenCalledWith(expectedNextPage)
-      expect(req.session.additionalTrainingForm).toBeUndefined()
-    })
-
-    it('should update InductionDto and redirect to Skills page given short question set journey', async () => {
-      // Given
-      const inductionDto = aShortQuestionSetInductionDto()
-      inductionDto.previousTraining = undefined
-      req.session.inductionDto = inductionDto
-
-      const additionalTrainingForm = {
-        additionalTraining: [AdditionalTrainingValue.HGV_LICENCE, AdditionalTrainingValue.OTHER],
-        additionalTrainingOther: 'Italian cookery for IT professionals',
-      }
-      req.body = additionalTrainingForm
-      req.session.additionalTrainingForm = undefined
-
-      const expectedUpdatedAdditionalTraining = ['HGV_LICENCE', 'OTHER']
-      const expectedUpdatedAdditionalTrainingOther = 'Italian cookery for IT professionals'
-
-      req.session.updateInductionQuestionSet = { hopingToWorkOnRelease: 'YES' }
-      const expectedNextPage = '/prisoners/A1234BC/create-induction/skills'
 
       // When
       await controller.submitAdditionalTrainingForm(

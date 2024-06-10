@@ -62,14 +62,9 @@ export default class AdditionalTrainingUpdateController extends AdditionalTraini
     }
 
     if (req.session.updateInductionQuestionSet) {
-      const { updateInductionQuestionSet } = req.session
-      const nextPage =
-        updateInductionQuestionSet.hopingToWorkOnRelease === 'YES'
-          ? `/prisoners/${prisonNumber}/induction/has-worked-before`
-          : `/prisoners/${prisonNumber}/induction/skills`
       req.session.pageFlowHistory = buildNewPageFlowHistory(req)
       req.session.additionalTrainingForm = undefined
-      return res.redirect(nextPage)
+      return res.redirect(`/prisoners/${prisonNumber}/induction/has-worked-before`)
     }
 
     try {
