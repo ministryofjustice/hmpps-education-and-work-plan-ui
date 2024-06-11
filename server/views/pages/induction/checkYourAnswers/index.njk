@@ -37,9 +37,9 @@ Data supplied to this template:
 
         {% include './partials/_workOnRelease.njk' %}
         {% include './partials/_educationAndTraining.njk' %}
+        {% include './partials/_workExperience.njk' %}
 
         {% if inductionDto.workOnRelease.hopingToWork === 'YES' %}
-          {% include './partials/_workExperience.njk' %}
           {% include './partials/_abilityToWork.njk' %}
         {% endif %}
 

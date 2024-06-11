@@ -893,6 +893,32 @@ const stubGetInductionShortQuestionSet = (prisonNumber = 'G6115VJ'): SuperAgentR
           trainingTypes: ['FULL_UK_DRIVING_LICENCE'],
           trainingTypeOther: null,
         },
+        previousWorkExperiences: {
+          reference: 'bb45462e-8225-490d-8c1c-ad6692223d4d',
+          createdBy: 'A_USER_GEN',
+          createdByDisplayName: 'Alex Smith',
+          createdAt: '2023-08-29T11:29:22.8793',
+          createdAtPrison: 'MDI',
+          updatedBy: 'A_USER_GEN',
+          updatedByDisplayName: 'Alex Smith',
+          updatedAt: '2023-08-29T10:29:22.457',
+          updatedAtPrison: 'MDI',
+          hasWorkedBefore: true,
+          experiences: [
+            {
+              experienceType: 'OFFICE',
+              experienceTypeOther: null,
+              role: 'Accountant',
+              details: 'Some daily tasks',
+            },
+            {
+              experienceType: 'OTHER',
+              experienceTypeOther: 'Finance',
+              role: 'Trader',
+              details: 'Some trading tasks',
+            },
+          ],
+        },
         inPrisonInterests: {
           reference: 'ae6a6a94-df32-4a90-b39d-ff1a100a6da0',
           createdBy: 'A_USER_GEN',

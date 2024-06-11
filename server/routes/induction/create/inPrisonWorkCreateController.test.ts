@@ -52,8 +52,8 @@ describe('inPrisonWorkCreateController', () => {
       const expectedView = {
         prisonerSummary,
         form: expectedInPrisonWorkForm,
-        backLinkUrl: '/prisoners/A1234BC/create-induction/additional-training',
-        backLinkAriaText: 'Back to Does Jimmy Lightfingers have any other training or vocational qualifications?',
+        backLinkUrl: '/prisoners/A1234BC/create-induction/personal-interests',
+        backLinkAriaText: `Back to What are Jimmy Lightfingers's interests?`,
       }
 
       // When
@@ -108,8 +108,8 @@ describe('inPrisonWorkCreateController', () => {
       const expectedView = {
         prisonerSummary,
         form: expectedInPrisonWorkForm,
-        backLinkUrl: '/prisoners/A1234BC/create-induction/additional-training',
-        backLinkAriaText: 'Back to Does Jimmy Lightfingers have any other training or vocational qualifications?',
+        backLinkUrl: '/prisoners/A1234BC/create-induction/personal-interests',
+        backLinkAriaText: `Back to What are Jimmy Lightfingers's interests?`,
       }
 
       // When

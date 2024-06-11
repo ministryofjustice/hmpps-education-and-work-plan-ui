@@ -94,6 +94,20 @@ Cypress.Commands.add('updateShortQuestionSetInductionToArriveOnCheckYourAnswers'
   // Additional Training is the next page. This is asked on the long question set, so this will already have answers set
   Page.verifyOnPage(AdditionalTrainingPage) //
     .submitPage()
+  // 'Has the prisoner worked before' is the next page. This is asked on the long question set so will have answers but
+  // we will make a change to exercise the screen flow
+  Page.verifyOnPage(WorkedBeforePage) //
+    .submitPage()
+  // Remove office and other, and select
+  Page.verifyOnPage(PreviousWorkExperienceTypesPage) //
+    .deSelectPreviousWorkExperience(TypeOfWorkExperienceValue.OFFICE)
+    .deSelectPreviousWorkExperience(TypeOfWorkExperienceValue.OTHER)
+    .choosePreviousWorkExperience(TypeOfWorkExperienceValue.WAREHOUSING)
+    .submitPage()
+  Page.verifyOnPage(PreviousWorkExperienceDetailPage) //
+    .setJobRole('Forklift driver')
+    .setJobDetails('Stacking shelves with a forklift')
+    .submitPage()
   // Personal Skills page is next. This is asked on the long question set, so this will already have answers set
   Page.verifyOnPage(SkillsPage) //
     .submitPage()
@@ -147,18 +161,19 @@ Cypress.Commands.add('updateLongQuestionSetInductionToArriveOnCheckYourAnswers',
   // Additional Training is the next page. This is asked on the short question set, so this will already have answers set
   Page.verifyOnPage(AdditionalTrainingPage) //
     .submitPage()
-  // 'Has the prisoner worked before' is the next page. This is not asked on the short question set.
-  // Answer 'Yes' to create an Induction that has details of the prisoners previous work experience.
+  // 'Has the prisoner worked before' is the next page. This is asked on the short question set so will have answers but
+  // we will make a change to exercise the screen flow
   Page.verifyOnPage(WorkedBeforePage) //
-    .selectWorkedBefore(YesNoValue.YES)
     .submitPage()
-  // Previous Work Experience types is the next page. This is not asked on the short question set.
+  // Remove office and other, and select
   Page.verifyOnPage(PreviousWorkExperienceTypesPage) //
-    .choosePreviousWorkExperience(TypeOfWorkExperienceValue.OFFICE)
+    .deSelectPreviousWorkExperience(TypeOfWorkExperienceValue.OFFICE)
+    .deSelectPreviousWorkExperience(TypeOfWorkExperienceValue.OTHER)
+    .choosePreviousWorkExperience(TypeOfWorkExperienceValue.WAREHOUSING)
     .submitPage()
   Page.verifyOnPage(PreviousWorkExperienceDetailPage) //
-    .setJobRole('Office junior')
-    .setJobDetails('Filing and photocopying')
+    .setJobRole('Forklift driver')
+    .setJobDetails('Stacking shelves with a forklift')
     .submitPage()
   // Personal skills page is the next page. This is asked on the long question set, so this will already have answers set
   Page.verifyOnPage(SkillsPage) //
@@ -305,6 +320,19 @@ Cypress.Commands.add(
     // Additional Training page is next
     Page.verifyOnPage(AdditionalTrainingPage) //
       .chooseAdditionalTraining(AdditionalTrainingValue.HGV_LICENCE)
+      .submitPage()
+    // Have You Worked Before page is next
+    Page.verifyOnPage(WorkedBeforePage) //
+      .selectWorkedBefore(YesNoValue.YES)
+      .submitPage()
+    // Previous Work Experience Types is the next page
+    Page.verifyOnPage(PreviousWorkExperienceTypesPage) //
+      .choosePreviousWorkExperience(TypeOfWorkExperienceValue.CONSTRUCTION)
+      .submitPage()
+    // Previous Work Experience Details page is next
+    Page.verifyOnPage(PreviousWorkExperienceDetailPage) //
+      .setJobRole('General labourer')
+      .setJobDetails('Basic ground works and building')
       .submitPage()
     // Personal Skills page is next
     Page.verifyOnPage(SkillsPage) //
