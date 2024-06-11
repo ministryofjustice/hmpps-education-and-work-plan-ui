@@ -230,49 +230,11 @@ describe('additionalTrainingUpdateController', () => {
       expect(req.session.pageFlowHistory).toBeUndefined()
     })
 
-    it('should update InductionDto and redirect to Has Worked Before view given long question set journey', async () => {
+    it('should update InductionDto and redirect to Has Worked Before given the question set is being changed', async () => {
       // Given
       const inductionDto = aLongQuestionSetInductionDto()
       req.session.inductionDto = inductionDto
-
-      const additionalTrainingForm = {
-        additionalTraining: [AdditionalTrainingValue.HGV_LICENCE, AdditionalTrainingValue.OTHER],
-        additionalTrainingOther: 'Italian cookery for IT professionals',
-      }
-      req.body = additionalTrainingForm
-      req.session.additionalTrainingForm = undefined
-
-      const expectedUpdatedAdditionalTraining = ['HGV_LICENCE', 'OTHER']
-      const expectedUpdatedAdditionalTrainingOther = 'Italian cookery for IT professionals'
-
       req.session.updateInductionQuestionSet = { hopingToWorkOnRelease: 'NOT_SURE' }
-      const expectedNextPage = '/prisoners/A1234BC/induction/skills'
-
-      const expectedPageFlowHistory: PageFlow = {
-        pageUrls: ['/prisoners/A1234BC/induction/additional-training'],
-        currentPageIndex: 0,
-      }
-
-      // When
-      await controller.submitAdditionalTrainingForm(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
-
-      // Then
-      const updatedInductionDto = req.session.inductionDto
-      expect(updatedInductionDto.previousTraining.trainingTypes).toEqual(expectedUpdatedAdditionalTraining)
-      expect(updatedInductionDto.previousTraining.trainingTypeOther).toEqual(expectedUpdatedAdditionalTrainingOther)
-      expect(res.redirect).toHaveBeenCalledWith(expectedNextPage)
-      expect(req.session.additionalTrainingForm).toBeUndefined()
-      expect(req.session.pageFlowHistory).toEqual(expectedPageFlowHistory)
-    })
-
-    it('should update InductionDto and redirect to In Prison Work view given short question set journey', async () => {
-      // Given
-      const inductionDto = aShortQuestionSetInductionDto()
-      req.session.inductionDto = inductionDto
 
       const additionalTrainingForm = {
         additionalTraining: [AdditionalTrainingValue.HGV_LICENCE, AdditionalTrainingValue.OTHER],
@@ -284,7 +246,6 @@ describe('additionalTrainingUpdateController', () => {
       const expectedUpdatedAdditionalTraining = ['HGV_LICENCE', 'OTHER']
       const expectedUpdatedAdditionalTrainingOther = 'Italian cookery for IT professionals'
 
-      req.session.updateInductionQuestionSet = { hopingToWorkOnRelease: 'YES' }
       const expectedNextPage = '/prisoners/A1234BC/induction/has-worked-before'
 
       const expectedPageFlowHistory: PageFlow = {

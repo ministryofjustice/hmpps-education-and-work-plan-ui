@@ -27,6 +27,10 @@ import PersonalInterestsPage from '../../pages/induction/PersonalInterestsPage'
 import PersonalInterestsValue from '../../../server/enums/personalInterestsValue'
 import HighestLevelOfEducationPage from '../../pages/induction/HighestLevelOfEducationPage'
 import EducationLevelValue from '../../../server/enums/educationLevelValue'
+import WorkedBeforePage from '../../pages/induction/WorkedBeforePage'
+import PreviousWorkExperienceTypesPage from '../../pages/induction/PreviousWorkExperienceTypesPage'
+import TypeOfWorkExperienceValue from '../../../server/enums/typeOfWorkExperienceValue'
+import PreviousWorkExperienceDetailPage from '../../pages/induction/PreviousWorkExperienceDetailPage'
 
 context('Create a short question set Induction', () => {
   const prisonNumberForPrisonerWithNoInduction = 'A00001A'
@@ -149,12 +153,54 @@ context('Create a short question set Induction', () => {
       .setAdditionalTrainingOther('Basic accountancy course')
       .submitPage()
 
-    // Personal Skills page is next
-    Page.verifyOnPage(SkillsPage) //
+    // Have You Worked Before page is next
+    Page.verifyOnPage(WorkedBeforePage) //
       .hasBackLinkTo('/prisoners/A00001A/create-induction/additional-training')
       .submitPage() // submit the page without answering the question to trigger a validation error
-    Page.verifyOnPage(SkillsPage) //
+    Page.verifyOnPage(WorkedBeforePage) //
       .hasBackLinkTo('/prisoners/A00001A/create-induction/additional-training')
+      .hasErrorCount(1)
+      .hasFieldInError('hasWorkedBefore')
+      .selectWorkedBefore(YesNoValue.YES)
+      .submitPage()
+
+    // Previous Work Experience Types is the next page
+    Page.verifyOnPage(PreviousWorkExperienceTypesPage)
+      .hasBackLinkTo('/prisoners/A00001A/create-induction/has-worked-before')
+      .submitPage() // submit the page without answering the question to trigger a validation error
+    Page.verifyOnPage(PreviousWorkExperienceTypesPage)
+      .hasBackLinkTo('/prisoners/A00001A/create-induction/has-worked-before')
+      .hasErrorCount(1)
+      .hasFieldInError('typeOfWorkExperience')
+      .choosePreviousWorkExperience(TypeOfWorkExperienceValue.CONSTRUCTION)
+      .choosePreviousWorkExperience(TypeOfWorkExperienceValue.OTHER)
+      .setOtherPreviousWorkExperienceType('Entertainment industry')
+      .submitPage()
+
+    // Previous Work Experience Details page is next - once for each work industry type submitted on the previous page
+    Page.verifyOnPage(PreviousWorkExperienceDetailPage) //
+      .hasBackLinkTo('/prisoners/A00001A/create-induction/previous-work-experience')
+      .submitPage() // submit the page without answering the question to trigger a validation error
+    Page.verifyOnPage(PreviousWorkExperienceDetailPage) //
+      .hasBackLinkTo('/prisoners/A00001A/create-induction/previous-work-experience')
+      .hasErrorCount(2)
+      .hasFieldInError('jobRole')
+      .hasFieldInError('jobDetails')
+      .setJobRole('General labourer')
+      .setJobDetails('Basic ground works and building')
+      .submitPage()
+    Page.verifyOnPage(PreviousWorkExperienceDetailPage) //
+      .hasBackLinkTo('/prisoners/A00001A/create-induction/previous-work-experience/construction')
+      .setJobRole('Nightclub DJ')
+      .setJobDetails('Self employed DJ operating in bars and clubs')
+      .submitPage()
+
+    // Personal Skills page is next
+    Page.verifyOnPage(SkillsPage) //
+      .hasBackLinkTo('/prisoners/A00001A/create-induction/has-worked-before')
+      .submitPage() // submit the page without answering the question to trigger a validation error
+    Page.verifyOnPage(SkillsPage) //
+      .hasBackLinkTo('/prisoners/A00001A/create-induction/has-worked-before')
       .hasErrorCount(1)
       .hasFieldInError('skills')
       .chooseSkill(SkillsValue.POSITIVE_ATTITUDE)
@@ -215,6 +261,15 @@ context('Create a short question set Induction', () => {
               "@.previousTraining.trainingTypes[0] == 'HGV_LICENCE' && " +
               "@.previousTraining.trainingTypes[1] == 'OTHER' && " +
               "@.previousTraining.trainingTypeOther == 'Basic accountancy course' && " +
+              '@.previousWorkExperiences.hasWorkedBefore == true && ' +
+              '@.previousWorkExperiences.experiences.size() == 2 && ' +
+              "@.previousWorkExperiences.experiences[0].experienceType == 'CONSTRUCTION' && " +
+              "@.previousWorkExperiences.experiences[0].role == 'General labourer' && " +
+              "@.previousWorkExperiences.experiences[0].details == 'Basic ground works and building' && " +
+              "@.previousWorkExperiences.experiences[1].experienceType == 'OTHER' && " +
+              "@.previousWorkExperiences.experiences[1].experienceTypeOther == 'Entertainment industry' && " +
+              "@.previousWorkExperiences.experiences[1].role == 'Nightclub DJ' && " +
+              "@.previousWorkExperiences.experiences[1].details == 'Self employed DJ operating in bars and clubs' && " +
               '@.personalSkillsAndInterests.skills.size() == 1 && ' +
               "@.personalSkillsAndInterests.skills[0].skillType == 'POSITIVE_ATTITUDE' && " +
               '@.personalSkillsAndInterests.interests.size() == 2 && ' +
@@ -230,7 +285,7 @@ context('Create a short question set Induction', () => {
     )
   })
 
-  it('should create a short question set Induction with no qualifications', () => {
+  it('should create a short question set Induction with no qualifications and no previous work', () => {
     // Given
     const overviewPage = Page.verifyOnPage(OverviewPage)
 
@@ -262,9 +317,15 @@ context('Create a short question set Induction', () => {
       .chooseAdditionalTraining(AdditionalTrainingValue.HGV_LICENCE)
       .submitPage()
 
+    // Have You Worked Before page is next
+    Page.verifyOnPage(WorkedBeforePage) //
+      .hasBackLinkTo('/prisoners/A00001A/create-induction/additional-training')
+      .selectWorkedBefore(YesNoValue.NO)
+      .submitPage()
+
     // Personal Skills page is next
     Page.verifyOnPage(SkillsPage) //
-      .hasBackLinkTo('/prisoners/A00001A/create-induction/additional-training')
+      .hasBackLinkTo('/prisoners/A00001A/create-induction/has-worked-before')
       .chooseSkill(SkillsValue.POSITIVE_ATTITUDE)
       .submitPage()
 
@@ -304,6 +365,8 @@ context('Create a short question set Induction', () => {
               '@.previousQualifications.qualifications.size() == 0 && ' +
               '@.previousTraining.trainingTypes.size() == 1 && ' +
               "@.previousTraining.trainingTypes[0] == 'HGV_LICENCE' && " +
+              '@.previousWorkExperiences.hasWorkedBefore == false && ' +
+              '@.previousWorkExperiences.experiences.size() == 0 && ' +
               '@.personalSkillsAndInterests.skills.size() == 1 && ' +
               "@.personalSkillsAndInterests.skills[0].skillType == 'POSITIVE_ATTITUDE' && " +
               '@.personalSkillsAndInterests.interests.size() == 1 && ' +
