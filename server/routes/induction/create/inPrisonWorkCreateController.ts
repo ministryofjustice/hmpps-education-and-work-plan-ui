@@ -16,7 +16,7 @@ export default class InPrisonWorkCreateController extends InPrisonWorkController
       previousPage =
         inductionDto.workOnRelease.hopingToWork === HopingToGetWorkValue.YES
           ? `/prisoners/${prisonNumber}/create-induction/affect-ability-to-work` // Long question set induction
-          : `/prisoners/${prisonNumber}/create-induction/additional-training` // Short question set induction
+          : `/prisoners/${prisonNumber}/create-induction/personal-interests` // Short question set induction
     }
     return previousPage
   }

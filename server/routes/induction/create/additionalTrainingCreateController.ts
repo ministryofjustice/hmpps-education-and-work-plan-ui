@@ -5,7 +5,6 @@ import getDynamicBackLinkAriaText from '../dynamicAriaTextResolver'
 import validateAdditionalTrainingForm from '../../validators/induction/additionalTrainingFormValidator'
 import { buildNewPageFlowHistory, getPreviousPage } from '../../pageFlowHistory'
 import { asArray } from '../../../utils/utils'
-import HopingToGetWorkValue from '../../../enums/hopingToGetWorkValue'
 
 export default class AdditionalTrainingCreateController extends AdditionalTrainingController {
   getBackLinkUrl(req: Request): string {
@@ -52,11 +51,6 @@ export default class AdditionalTrainingCreateController extends AdditionalTraini
     // For the Create journey we need the page flow history so subsequent pages know where we have been and can display the correct back link
     req.session.pageFlowHistory = buildNewPageFlowHistory(req)
 
-    if (updatedInduction.workOnRelease.hopingToWork === HopingToGetWorkValue.YES) {
-      // Long question set Induction
-      return res.redirect(`/prisoners/${prisonNumber}/create-induction/has-worked-before`)
-    }
-    // Short question set Induction
-    return res.redirect(`/prisoners/${prisonNumber}/create-induction/skills`)
+    return res.redirect(`/prisoners/${prisonNumber}/create-induction/has-worked-before`)
   }
 }
