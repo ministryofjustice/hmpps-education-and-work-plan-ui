@@ -21,7 +21,6 @@ import { matchingJsonPath } from '../../mockApis/wiremock/matchers/content'
 import WorkedBeforePage from '../../pages/induction/WorkedBeforePage'
 import YesNoValue from '../../../server/enums/yesNoValue'
 import PreviousWorkExperienceTypesPage from '../../pages/induction/PreviousWorkExperienceTypesPage'
-import TypeOfWorkExperienceValue from '../../../server/enums/typeOfWorkExperienceValue'
 import PreviousWorkExperienceDetailPage from '../../pages/induction/PreviousWorkExperienceDetailPage'
 import FutureWorkInterestTypesPage from '../../pages/induction/FutureWorkInterestTypesPage'
 import WorkInterestTypeValue from '../../../server/enums/workInterestTypeValue'
@@ -94,9 +93,23 @@ context(`Change new Induction question set by updating 'Hoping to work on releas
       .hasBackLinkTo(`/prisoners/${prisonNumberForPrisonerWithNoInduction}/create-induction/qualifications`)
       .submitPage()
 
+    // 'Has the prisoner worked before' is the next page. This is asked on the long question set, so this will already have an answer set
+    Page.verifyOnPage(WorkedBeforePage) //
+      .hasBackLinkTo(`/prisoners/${prisonNumberForPrisonerWithNoInduction}/create-induction/additional-training`)
+      .submitPage()
+
+    // Preview Work Experience types is the next page. This is asked on the long question set, so this will already have an answer set
+    // Leave the already selected previous work experience type as that will cause the next page (work experience detail) to be displayed.
+    Page.verifyOnPage(PreviousWorkExperienceTypesPage) //
+      .hasBackLinkTo(`/prisoners/${prisonNumberForPrisonerWithNoInduction}/create-induction/has-worked-before`)
+      .submitPage()
+    Page.verifyOnPage(PreviousWorkExperienceDetailPage) //
+      .hasBackLinkTo(`/prisoners/${prisonNumberForPrisonerWithNoInduction}/create-induction/previous-work-experience`)
+      .submitPage()
+
     // Personal skills page is the next page. This is asked on the short question set, so this will already have answers set
     Page.verifyOnPage(SkillsPage) //
-      .hasBackLinkTo(`/prisoners/${prisonNumberForPrisonerWithNoInduction}/create-induction/additional-training`)
+      .hasBackLinkTo(`/prisoners/${prisonNumberForPrisonerWithNoInduction}/create-induction/has-worked-before`)
       .submitPage()
 
     // Personal Interests is the next page. This is asked on the short question set, so this will already have answers set
@@ -137,6 +150,11 @@ context(`Change new Induction question set by updating 'Hoping to work on releas
               "@.previousQualifications.qualifications[1].level == 'LEVEL_4' && " +
               '@.previousTraining.trainingTypes.size() == 1 && ' +
               "@.previousTraining.trainingTypes[0] == 'HGV_LICENCE' && " +
+              '@.previousWorkExperiences.hasWorkedBefore == true && ' +
+              '@.previousWorkExperiences.experiences.size() == 1 && ' +
+              "@.previousWorkExperiences.experiences[0].experienceType == 'CONSTRUCTION' && " +
+              "@.previousWorkExperiences.experiences[0].role == 'General labourer' && " +
+              "@.previousWorkExperiences.experiences[0].details == 'Basic ground works and building' && " +
               '@.personalSkillsAndInterests.skills.size() == 1 && ' +
               "@.personalSkillsAndInterests.skills[0].skillType == 'POSITIVE_ATTITUDE' && " +
               '@.personalSkillsAndInterests.interests.size() == 1 && ' +
@@ -190,31 +208,19 @@ context(`Change new Induction question set by updating 'Hoping to work on releas
       .hasBackLinkTo(`/prisoners/${prisonNumberForPrisonerWithNoInduction}/create-induction/want-to-add-qualifications`)
       .submitPage()
 
-    // 'Has the prisoner worked before' is the next page. This is not asked on the short question set.
+    // 'Has the prisoner worked before' is the next page. This is asked on the short question set, so this will already have an answer set
     // Answer 'Yes' to test going through the subsequent pages that ask about previous work experience.
     Page.verifyOnPage(WorkedBeforePage) //
       .hasBackLinkTo(`/prisoners/${prisonNumberForPrisonerWithNoInduction}/create-induction/additional-training`)
-      .selectWorkedBefore(YesNoValue.YES)
       .submitPage()
 
-    // Preview Work Experience types is the next page. This is not asked on the short question set.
-    // Select 2 previous work experience types as that will cause the next page (work experience detail) to be displayed twice.
+    // Preview Work Experience types is the next page. This is asked on the short question set, so this will already have an answer set
+    // Leave the already selected previous work experience type as that will cause the next page (work experience detail) to be displayed.
     Page.verifyOnPage(PreviousWorkExperienceTypesPage) //
       .hasBackLinkTo(`/prisoners/${prisonNumberForPrisonerWithNoInduction}/create-induction/has-worked-before`)
-      .choosePreviousWorkExperience(TypeOfWorkExperienceValue.TECHNICAL)
-      .choosePreviousWorkExperience(TypeOfWorkExperienceValue.OFFICE)
       .submitPage()
     Page.verifyOnPage(PreviousWorkExperienceDetailPage) //
       .hasBackLinkTo(`/prisoners/${prisonNumberForPrisonerWithNoInduction}/create-induction/previous-work-experience`)
-      .setJobRole('Software developer')
-      .setJobDetails('Designing, developing and testing software: Dec 2009 - Aug 2020')
-      .submitPage()
-    Page.verifyOnPage(PreviousWorkExperienceDetailPage) //
-      .hasBackLinkTo(
-        `/prisoners/${prisonNumberForPrisonerWithNoInduction}/create-induction/previous-work-experience/technical`,
-      )
-      .setJobRole('Office junior')
-      .setJobDetails('Filing and photocopying: Sept 2000 - Dec 2009')
       .submitPage()
 
     // Personal skills page is the next page. This is asked on the short question set, so this will already have answers set
@@ -259,13 +265,10 @@ context(`Change new Induction question set by updating 'Hoping to work on releas
               '@.previousTraining.trainingTypes.size() == 1 && ' +
               "@.previousTraining.trainingTypes[0] == 'HGV_LICENCE' && " +
               '@.previousWorkExperiences.hasWorkedBefore == true && ' +
-              '@.previousWorkExperiences.experiences.size() == 2 && ' +
-              "@.previousWorkExperiences.experiences[0].experienceType == 'TECHNICAL' && " +
-              "@.previousWorkExperiences.experiences[0].role == 'Software developer' && " +
-              "@.previousWorkExperiences.experiences[0].details == 'Designing, developing and testing software: Dec 2009 - Aug 2020' && " +
-              "@.previousWorkExperiences.experiences[1].experienceType == 'OFFICE' && " +
-              "@.previousWorkExperiences.experiences[1].role == 'Office junior' && " +
-              "@.previousWorkExperiences.experiences[1].details == 'Filing and photocopying: Sept 2000 - Dec 2009' && " +
+              '@.previousWorkExperiences.experiences.size() == 1 && ' +
+              "@.previousWorkExperiences.experiences[0].experienceType == 'CONSTRUCTION' && " +
+              "@.previousWorkExperiences.experiences[0].role == 'General labourer' && " +
+              "@.previousWorkExperiences.experiences[0].details == 'Basic ground works and building' && " +
               '@.futureWorkInterests.interests.size() == 2 && ' +
               "@.futureWorkInterests.interests[0].workType == 'CONSTRUCTION' && " +
               "@.futureWorkInterests.interests[0].role == 'General builder' && " +
@@ -340,31 +343,19 @@ context(`Change new Induction question set by updating 'Hoping to work on releas
       .hasBackLinkTo(`/prisoners/${prisonNumberForPrisonerWithNoInduction}/create-induction/qualifications`)
       .submitPage()
 
-    // 'Has the prisoner worked before' is the next page. This is not asked on the short question set.
+    // 'Has the prisoner worked before' is the next page. This is asked on the short question set, so this will already have an answer set
     // Answer 'Yes' to test going through the subsequent pages that ask about previous work experience.
     Page.verifyOnPage(WorkedBeforePage) //
       .hasBackLinkTo(`/prisoners/${prisonNumberForPrisonerWithNoInduction}/create-induction/additional-training`)
-      .selectWorkedBefore(YesNoValue.YES)
       .submitPage()
 
-    // Preview Work Experience types is the next page. This is not asked on the short question set.
-    // Select 2 previous work experience types as that will cause the next page (work experience detail) to be displayed twice.
+    // Preview Work Experience types is the next page. This is asked on the short question set, so this will already have an answer set
+    // Leave the already selected previous work experience type as that will cause the next page (work experience detail) to be displayed.
     Page.verifyOnPage(PreviousWorkExperienceTypesPage) //
       .hasBackLinkTo(`/prisoners/${prisonNumberForPrisonerWithNoInduction}/create-induction/has-worked-before`)
-      .choosePreviousWorkExperience(TypeOfWorkExperienceValue.TECHNICAL)
-      .choosePreviousWorkExperience(TypeOfWorkExperienceValue.OFFICE)
       .submitPage()
     Page.verifyOnPage(PreviousWorkExperienceDetailPage) //
       .hasBackLinkTo(`/prisoners/${prisonNumberForPrisonerWithNoInduction}/create-induction/previous-work-experience`)
-      .setJobRole('Software developer')
-      .setJobDetails('Designing, developing and testing software: Dec 2009 - Aug 2020')
-      .submitPage()
-    Page.verifyOnPage(PreviousWorkExperienceDetailPage) //
-      .hasBackLinkTo(
-        `/prisoners/${prisonNumberForPrisonerWithNoInduction}/create-induction/previous-work-experience/technical`,
-      )
-      .setJobRole('Office junior')
-      .setJobDetails('Filing and photocopying: Sept 2000 - Dec 2009')
       .submitPage()
 
     // Personal skills page is the next page. This is asked on the short question set, so this will already have answers set
@@ -412,13 +403,11 @@ context(`Change new Induction question set by updating 'Hoping to work on releas
               '@.previousTraining.trainingTypes.size() == 1 && ' +
               "@.previousTraining.trainingTypes[0] == 'HGV_LICENCE' && " +
               '@.previousWorkExperiences.hasWorkedBefore == true && ' +
-              '@.previousWorkExperiences.experiences.size() == 2 && ' +
-              "@.previousWorkExperiences.experiences[0].experienceType == 'TECHNICAL' && " +
-              "@.previousWorkExperiences.experiences[0].role == 'Software developer' && " +
-              "@.previousWorkExperiences.experiences[0].details == 'Designing, developing and testing software: Dec 2009 - Aug 2020' && " +
-              "@.previousWorkExperiences.experiences[1].experienceType == 'OFFICE' && " +
-              "@.previousWorkExperiences.experiences[1].role == 'Office junior' && " +
-              "@.previousWorkExperiences.experiences[1].details == 'Filing and photocopying: Sept 2000 - Dec 2009' && " +
+              '@.previousWorkExperiences.experiences.size() == 1 && ' +
+              '@.previousWorkExperiences.experiences.size() == 1 && ' +
+              "@.previousWorkExperiences.experiences[0].experienceType == 'CONSTRUCTION' && " +
+              "@.previousWorkExperiences.experiences[0].role == 'General labourer' && " +
+              "@.previousWorkExperiences.experiences[0].details == 'Basic ground works and building' && " +
               '@.futureWorkInterests.interests.size() == 2 && ' +
               "@.futureWorkInterests.interests[0].workType == 'CONSTRUCTION' && " +
               "@.futureWorkInterests.interests[0].role == 'General builder' && " +

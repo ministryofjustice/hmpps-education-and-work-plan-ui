@@ -149,6 +149,37 @@ context(`Change links on the Check Your Answers page when updating an Induction`
       .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/qualification-details`)
       .submitPage()
 
+    // Change Worked before (Yes -> No)
+    Page.verifyOnPage(CheckYourAnswersPage)
+      .hasWorkedBefore(YesNoValue.YES)
+      .clickHasWorkedBeforeChangeLink()
+      .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/check-your-answers`)
+      .selectWorkedBefore(YesNoValue.NO)
+      .submitPage()
+
+    // Change Worked before (No -> Yes)
+    // Requires journey to enter previous work experience details
+    Page.verifyOnPage(CheckYourAnswersPage)
+      .hasWorkedBefore(YesNoValue.NO)
+      .clickHasWorkedBeforeChangeLink()
+      .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/check-your-answers`)
+      .selectWorkedBefore(YesNoValue.YES)
+      .submitPage()
+    Page.verifyOnPage(PreviousWorkExperienceTypesPage)
+      .choosePreviousWorkExperience(TypeOfWorkExperienceValue.OFFICE)
+      .choosePreviousWorkExperience(TypeOfWorkExperienceValue.SPORTS)
+      .submitPage()
+    Page.verifyOnPage(PreviousWorkExperienceDetailPage)
+      .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/previous-work-experience`)
+      .setJobRole('Office junior')
+      .setJobDetails('Filing and photocopying: Sept 2000 - Dec 2009')
+      .submitPage()
+    Page.verifyOnPage(PreviousWorkExperienceDetailPage)
+      .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/previous-work-experience/office`)
+      .setJobRole('Gym instructor')
+      .setJobDetails('Coaching and motivating customers fitness goals')
+      .submitPage()
+
     // Then
     Page.verifyOnPage(CheckYourAnswersPage) //
       .hasHopingToWorkOnRelease(HopingToGetWorkValue.NOT_SURE)
@@ -158,6 +189,19 @@ context(`Change links on the Check Your Answers page when updating an Induction`
       .hasInPrisonTrainingInterests([InPrisonTrainingValue.CATERING, InPrisonTrainingValue.NUMERACY_SKILLS])
       .hasEducationalQualifications(['Physics'])
       .hasHighestLevelOfEducation(EducationLevelValue.FURTHER_EDUCATION_COLLEGE)
+      .hasWorkedBefore(YesNoValue.YES)
+      .hasTypeOfWorkExperienceType(TypeOfWorkExperienceValue.OFFICE)
+      .hasTypeOfWorkExperienceType(TypeOfWorkExperienceValue.SPORTS)
+      .hasWorkExperience(
+        TypeOfWorkExperienceValue.OFFICE,
+        'Office junior',
+        'Filing and photocopying: Sept 2000 - Dec 2009',
+      )
+      .hasWorkExperience(
+        TypeOfWorkExperienceValue.SPORTS,
+        'Gym instructor',
+        'Coaching and motivating customers fitness goals',
+      )
   })
 
   it('should support all Change links on a Long Question Set Induction', () => {

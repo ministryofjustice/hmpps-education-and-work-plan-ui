@@ -107,9 +107,27 @@ context(`Change existing Induction question set by updating the answer to 'Hopin
       .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/want-to-add-qualifications`)
       .submitPage()
 
+    // 'Has the prisoner worked before' is the next page. This is asked on the short question set so will already have answers.
+    Page.verifyOnPage(WorkedBeforePage) //
+      .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/additional-training`)
+      .selectWorkedBefore(YesNoValue.YES)
+      .submitPage()
+
+    // Preview Work Experience types is the next page. This is asked on the short question set so will already have answers.
+    // Add another previous work experience types as that will cause the next page (work experience detail) to be displayed.
+    Page.verifyOnPage(PreviousWorkExperienceTypesPage) //
+      .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/has-worked-before`)
+      .choosePreviousWorkExperience(TypeOfWorkExperienceValue.TECHNICAL)
+      .submitPage()
+    Page.verifyOnPage(PreviousWorkExperienceDetailPage)
+      .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/previous-work-experience`)
+      .setJobRole('Software developer')
+      .setJobDetails('Designing, developing and testing software: Dec 2009 - Aug 2020')
+      .submitPage()
+
     // Personal skills page is the next page. This is asked on the long question set, so this will already have answers set, but we will remove some
     Page.verifyOnPage(SkillsPage)
-      .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/additional-training`)
+      .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/previous-work-experience`)
       .deSelectSkill(SkillsValue.POSITIVE_ATTITUDE)
       .deSelectSkill(SkillsValue.OTHER)
       .submitPage()
@@ -168,6 +186,17 @@ context(`Change existing Induction question set by updating the answer to 'Hopin
               "@.previousTraining.trainingTypes[1] == 'HGV_LICENCE' && " +
               "@.previousTraining.trainingTypes[2] == 'OTHER' && " +
               "@.previousTraining.trainingTypeOther == 'Accountancy Certification' && " +
+              '@.previousWorkExperiences.hasWorkedBefore == true && ' +
+              '@.previousWorkExperiences.experiences.size() == 3 && ' +
+              "@.previousWorkExperiences.experiences[0].experienceType == 'TECHNICAL' && " +
+              "@.previousWorkExperiences.experiences[0].role == 'Software developer' && " +
+              "@.previousWorkExperiences.experiences[0].details == 'Designing, developing and testing software: Dec 2009 - Aug 2020' && " +
+              "@.previousWorkExperiences.experiences[1].experienceType == 'OFFICE' && " +
+              "@.previousWorkExperiences.experiences[1].role == 'Accountant' && " +
+              "@.previousWorkExperiences.experiences[1].details == 'Some daily tasks' && " +
+              "@.previousWorkExperiences.experiences[2].experienceType == 'OTHER' && @.previousWorkExperiences.experiences[2].experienceTypeOther == 'Finance' && " +
+              "@.previousWorkExperiences.experiences[2].role == 'Trader' && " +
+              "@.previousWorkExperiences.experiences[2].details == 'Some trading tasks' && " +
               '@.personalSkillsAndInterests.skills.size() == 2 && ' +
               "@.personalSkillsAndInterests.skills[0].skillType == 'COMMUNICATION' && " +
               "@.personalSkillsAndInterests.skills[1].skillType == 'THINKING_AND_PROBLEM_SOLVING' && " +
@@ -242,29 +271,22 @@ context(`Change existing Induction question set by updating the answer to 'Hopin
       .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/want-to-add-qualifications`)
       .submitPage()
 
-    // 'Has the prisoner worked before' is the next page. This is not asked on the short question set.
-    // Answer 'Yes' to test going through the subsequent pages that ask about previous work experience.
+    // 'Has the prisoner worked before' is the next page. This is asked on the short question set so will already have answers.
     Page.verifyOnPage(WorkedBeforePage) //
       .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/additional-training`)
       .selectWorkedBefore(YesNoValue.YES)
       .submitPage()
 
-    // Preview Work Experience types is the next page. This is not asked on the short question set.
-    // Select 2 previous work experience types as that will cause the next page (work experience detail) to be displayed twice.
+    // Preview Work Experience types is the next page. This is asked on the short question set so will already have answers.
+    // Add another previous work experience types as that will cause the next page (work experience detail) to be displayed.
     Page.verifyOnPage(PreviousWorkExperienceTypesPage) //
       .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/has-worked-before`)
       .choosePreviousWorkExperience(TypeOfWorkExperienceValue.TECHNICAL)
-      .choosePreviousWorkExperience(TypeOfWorkExperienceValue.OFFICE)
       .submitPage()
     Page.verifyOnPage(PreviousWorkExperienceDetailPage)
       .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/previous-work-experience`)
       .setJobRole('Software developer')
       .setJobDetails('Designing, developing and testing software: Dec 2009 - Aug 2020')
-      .submitPage()
-    Page.verifyOnPage(PreviousWorkExperienceDetailPage)
-      .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/previous-work-experience/technical`)
-      .setJobRole('Office junior')
-      .setJobDetails('Filing and photocopying: Sept 2000 - Dec 2009')
       .submitPage()
 
     // Personal skills page is the next page. This is asked on the short question set, so this will already have answers set, but we will remove some
@@ -321,13 +343,16 @@ context(`Change existing Induction question set by updating the answer to 'Hopin
               '@.previousTraining.trainingTypes.size() == 1 && ' +
               "@.previousTraining.trainingTypes[0] == 'FULL_UK_DRIVING_LICENCE' && " +
               '@.previousWorkExperiences.hasWorkedBefore == true && ' +
-              '@.previousWorkExperiences.experiences.size() == 2 && ' +
+              '@.previousWorkExperiences.experiences.size() == 3 && ' +
               "@.previousWorkExperiences.experiences[0].experienceType == 'TECHNICAL' && " +
               "@.previousWorkExperiences.experiences[0].role == 'Software developer' && " +
               "@.previousWorkExperiences.experiences[0].details == 'Designing, developing and testing software: Dec 2009 - Aug 2020' && " +
               "@.previousWorkExperiences.experiences[1].experienceType == 'OFFICE' && " +
-              "@.previousWorkExperiences.experiences[1].role == 'Office junior' && " +
-              "@.previousWorkExperiences.experiences[1].details == 'Filing and photocopying: Sept 2000 - Dec 2009' && " +
+              "@.previousWorkExperiences.experiences[1].role == 'Accountant' && " +
+              "@.previousWorkExperiences.experiences[1].details == 'Some daily tasks' && " +
+              "@.previousWorkExperiences.experiences[2].experienceType == 'OTHER' && @.previousWorkExperiences.experiences[2].experienceTypeOther == 'Finance' && " +
+              "@.previousWorkExperiences.experiences[2].role == 'Trader' && " +
+              "@.previousWorkExperiences.experiences[2].details == 'Some trading tasks' && " +
               '@.futureWorkInterests.interests.size() == 2 && ' +
               "@.futureWorkInterests.interests[0].workType == 'CONSTRUCTION' && " +
               "@.futureWorkInterests.interests[0].role == 'General builder' && " +
