@@ -34,15 +34,9 @@ const aLongQuestionSetCreateInductionRequest = (
       notHopingToWorkOtherReason: null,
     },
     previousWorkExperiences: {
-      hasWorkedBefore:
-        !options || options.hasWorkedBefore === null || options.hasWorkedBefore === undefined
-          ? HasWorkedBeforeValue.YES
-          : options.hasWorkedBefore,
+      hasWorkedBefore: options?.hasWorkedBefore || HasWorkedBeforeValue.YES,
       experiences:
-        !options ||
-        options.hasWorkedBefore === null ||
-        options.hasWorkedBefore === undefined ||
-        options.hasWorkedBefore === HasWorkedBeforeValue.YES
+        (options?.hasWorkedBefore || HasWorkedBeforeValue.YES) === HasWorkedBeforeValue.YES
           ? [
               {
                 experienceType: TypeOfWorkExperienceValue.CONSTRUCTION,

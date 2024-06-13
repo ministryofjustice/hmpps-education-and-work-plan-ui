@@ -48,15 +48,9 @@ const aLongQuestionSetUpdateInductionDto = (
     },
     previousWorkExperiences: {
       reference: 'bb45462e-8225-490d-8c1c-ad6692223d4d',
-      hasWorkedBefore:
-        !options || options.hasWorkedBefore === null || options.hasWorkedBefore === undefined
-          ? HasWorkedBeforeValue.YES
-          : options.hasWorkedBefore,
+      hasWorkedBefore: options?.hasWorkedBefore || HasWorkedBeforeValue.YES,
       experiences:
-        !options ||
-        options.hasWorkedBefore === null ||
-        options.hasWorkedBefore === undefined ||
-        options.hasWorkedBefore === HasWorkedBeforeValue.YES
+        (options?.hasWorkedBefore || HasWorkedBeforeValue.YES) === HasWorkedBeforeValue.YES
           ? [
               {
                 experienceType: TypeOfWorkExperienceValue.CONSTRUCTION,
