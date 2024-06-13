@@ -24,9 +24,10 @@ context('Update educational qualifications within an Induction', () => {
     cy.signIn()
   })
 
-  it('should display the Qualifications List page given Curious is unavailable', () => {
+  it('should display the Qualifications List page given Curious is unavailable for both Functional Skills and In-Prison Courses & Qualifications', () => {
     // Given
-    cy.task('stubLearnerProfile401Error')
+    cy.task('stubLearnerProfile401Error') // Functional Skills from come the Learner Profile
+    cy.task('stubLearnerEducation401Error') // In-Prison Courses & Qualifications come from the Learner Education
 
     const prisonNumber = 'G6115VJ'
 
@@ -44,7 +45,8 @@ context('Update educational qualifications within an Induction', () => {
     */
     qualificationsListPage //
       .hasEducationalQualifications(['French', 'Maths', 'Maths', 'English'])
-      .hasCuriousUnavailableMessageDisplayed()
+      .hasFunctionalSkillsCuriousUnavailableMessageDisplayed()
+      .hasInPrisonCoursesCuriousUnavailableMessageDisplayed()
   })
 
   it('should update Induction and redirect back to Education & Training page given Qualifications List page is submitted without having made any changes', () => {

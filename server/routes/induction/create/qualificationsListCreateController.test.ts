@@ -1,5 +1,4 @@
-import { NextFunction, Request, Response } from 'express'
-import type { SessionData } from 'express-session'
+import { Request, Response } from 'express'
 import type { AchievedQualificationDto, InductionDto } from 'inductionDto'
 import QualificationsListCreateController from './qualificationsListCreateController'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
@@ -10,33 +9,35 @@ import {
 import { validFunctionalSkills } from '../../../testsupport/functionalSkillsTestDataBuilder'
 import QualificationLevelValue from '../../../enums/qualificationLevelValue'
 import EducationLevelValue from '../../../enums/educationLevelValue'
+import validInPrisonCourseRecords from '../../../testsupport/inPrisonCourseRecordsTestDataBuilder'
 
 describe('qualificationsListCreateController', () => {
   const controller = new QualificationsListCreateController()
 
   const prisonNumber = 'A1234BC'
   const prisonerSummary = aValidPrisonerSummary()
+  const functionalSkills = validFunctionalSkills()
+  const inPrisonCourses = validInPrisonCourseRecords()
 
-  const req = {
-    session: {} as SessionData,
-    body: {},
-    user: {} as Express.User,
-    params: {} as Record<string, string>,
-    path: '',
-  }
+  let req: Request
   const res = {
     redirect: jest.fn(),
     render: jest.fn(),
-  }
+    locals: {
+      prisonerFunctionalSkills: functionalSkills,
+      curiousInPrisonCourses: inPrisonCourses,
+    },
+  } as unknown as Response
   const next = jest.fn()
 
   beforeEach(() => {
     jest.resetAllMocks()
-    req.session = { prisonerSummary } as SessionData
-    req.body = {}
-    req.user = {} as Express.User
-    req.params = { prisonNumber }
-    req.path = `/prisoners/${prisonNumber}/create-induction/qualifications`
+    req = {
+      body: {},
+      session: { prisonerSummary },
+      params: { prisonNumber },
+      path: `/prisoners/${prisonNumber}/create-induction/qualifications`,
+    } as unknown as Request
   })
 
   describe('getQualificationsListView', () => {
@@ -45,27 +46,20 @@ describe('qualificationsListCreateController', () => {
       const inductionDto = aLongQuestionSetInductionDto()
       inductionDto.previousQualifications.qualifications = []
       req.session.inductionDto = inductionDto
-      const functionalSkills = validFunctionalSkills()
-      req.session.prisonerFunctionalSkills = functionalSkills
 
       const expectedQualifications: Array<AchievedQualificationDto> = []
-
-      const expectedFunctionalSkills = functionalSkills
 
       const expectedView = {
         prisonerSummary,
         backLinkUrl: '/prisoners/A1234BC/create-induction/work-interest-roles',
         backLinkAriaText: 'Back to Is Jimmy Lightfingers interested in any particular jobs?',
         qualifications: expectedQualifications,
-        functionalSkills: expectedFunctionalSkills,
+        functionalSkills,
+        inPrisonCourses,
       }
 
       // When
-      await controller.getQualificationsListView(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.getQualificationsListView(req, res, next)
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/induction/prePrisonEducation/qualificationsList', expectedView)
@@ -77,12 +71,8 @@ describe('qualificationsListCreateController', () => {
       const inductionDto = aShortQuestionSetInductionDto()
       inductionDto.previousQualifications.qualifications = []
       req.session.inductionDto = inductionDto
-      const functionalSkills = validFunctionalSkills()
-      req.session.prisonerFunctionalSkills = functionalSkills
 
       const expectedQualifications: Array<AchievedQualificationDto> = []
-
-      const expectedFunctionalSkills = functionalSkills
 
       const expectedView = {
         prisonerSummary,
@@ -90,15 +80,12 @@ describe('qualificationsListCreateController', () => {
         backLinkAriaText:
           'Back to Does Jimmy Lightfingers have any other educational qualifications they want to be recorded?',
         qualifications: expectedQualifications,
-        functionalSkills: expectedFunctionalSkills,
+        functionalSkills,
+        inPrisonCourses,
       }
 
       // When
-      await controller.getQualificationsListView(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.getQualificationsListView(req, res, next)
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/induction/prePrisonEducation/qualificationsList', expectedView)
@@ -109,8 +96,6 @@ describe('qualificationsListCreateController', () => {
       // Given
       const inductionDto = aLongQuestionSetInductionDto()
       req.session.inductionDto = inductionDto
-      const functionalSkills = validFunctionalSkills()
-      req.session.prisonerFunctionalSkills = functionalSkills
 
       req.session.pageFlowHistory = {
         pageUrls: ['/prisoners/A1234BC/create-induction/check-your-answers'],
@@ -129,22 +114,17 @@ describe('qualificationsListCreateController', () => {
         { subject: 'Pottery', grade: 'C', level: QualificationLevelValue.LEVEL_4 },
       ]
 
-      const expectedFunctionalSkills = functionalSkills
-
       const expectedView = {
         prisonerSummary,
         backLinkUrl: '/prisoners/A1234BC/create-induction/check-your-answers',
         backLinkAriaText: `Back to Check and save your answers before adding Jimmy Lightfingers's goals`,
         qualifications: expectedQualifications,
-        functionalSkills: expectedFunctionalSkills,
+        functionalSkills,
+        inPrisonCourses,
       }
 
       // When
-      await controller.getQualificationsListView(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.getQualificationsListView(req, res, next)
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/induction/prePrisonEducation/qualificationsList', expectedView)
@@ -168,11 +148,7 @@ describe('qualificationsListCreateController', () => {
       const expectedQualifications: Array<AchievedQualificationDto> = []
 
       // When
-      await controller.submitQualificationsListView(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.submitQualificationsListView(req, res, next)
 
       // Then
       const updatedInduction: InductionDto = req.session.inductionDto
@@ -194,11 +170,7 @@ describe('qualificationsListCreateController', () => {
       }
 
       // When
-      await controller.submitQualificationsListView(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.submitQualificationsListView(req, res, next)
 
       // Then
       expect(req.session.pageFlowHistory).toEqual(expectedPageFlowHistory)
@@ -217,11 +189,7 @@ describe('qualificationsListCreateController', () => {
       }
 
       // When
-      await controller.submitQualificationsListView(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.submitQualificationsListView(req, res, next)
 
       // Then
       expect(req.session.pageFlowHistory).toEqual(expectedPageFlowHistory)
@@ -242,11 +210,7 @@ describe('qualificationsListCreateController', () => {
       }
 
       // When
-      await controller.submitQualificationsListView(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.submitQualificationsListView(req, res, next)
 
       // Then
       expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-induction/additional-training')
@@ -267,11 +231,7 @@ describe('qualificationsListCreateController', () => {
       }
 
       // When
-      await controller.submitQualificationsListView(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.submitQualificationsListView(req, res, next)
 
       // Then
       expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-induction/check-your-answers')

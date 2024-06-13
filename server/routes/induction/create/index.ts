@@ -7,7 +7,7 @@ import HopingToWorkOnReleaseCreateController from './hopingToWorkOnReleaseCreate
 import WantToAddQualificationsCreateController from './wantToAddQualificationsCreateController'
 import createEmptyInductionIfNotInSession from '../../routerRequestHandlers/createEmptyInductionIfNotInSession'
 import QualificationsListCreateController from './qualificationsListCreateController'
-import retrieveFunctionalSkillsIfNotInSession from '../../routerRequestHandlers/retrieveFunctionalSkillsIfNotInSession'
+import retrieveCuriousFunctionalSkills from '../../routerRequestHandlers/retrieveCuriousFunctionalSkills'
 import HighestLevelOfEducationCreateController from './highestLevelOfEducationCreateController'
 import QualificationLevelCreateController from './qualificationLevelCreateController'
 import setCurrentPageInPageFlowQueue from '../../routerRequestHandlers/setCurrentPageInPageFlowQueue'
@@ -25,6 +25,7 @@ import CheckYourAnswersCreateController from './checkYourAnswersCreateController
 import ReasonsNotToGetWorkCreateController from './reasonsNotToGetWorkCreateController'
 import InPrisonWorkCreateController from './inPrisonWorkCreateController'
 import InPrisonTrainingCreateController from './inPrisonTrainingCreateController'
+import retrieveCuriousInPrisonCourses from '../../routerRequestHandlers/retrieveCuriousInPrisonCourses'
 
 /**
  * Route definitions for creating an Induction
@@ -73,7 +74,8 @@ export default (router: Router, services: Services) => {
     ])
 
     router.get('/prisoners/:prisonNumber/create-induction/want-to-add-qualifications', [
-      retrieveFunctionalSkillsIfNotInSession(services.curiousService),
+      retrieveCuriousFunctionalSkills(services.curiousService),
+      retrieveCuriousInPrisonCourses(services.curiousService),
       asyncMiddleware(wantToAddQualificationsCreateController.getWantToAddQualificationsView),
     ])
     router.post('/prisoners/:prisonNumber/create-induction/want-to-add-qualifications', [
@@ -81,7 +83,8 @@ export default (router: Router, services: Services) => {
     ])
 
     router.get('/prisoners/:prisonNumber/create-induction/qualifications', [
-      retrieveFunctionalSkillsIfNotInSession(services.curiousService),
+      retrieveCuriousFunctionalSkills(services.curiousService),
+      retrieveCuriousInPrisonCourses(services.curiousService),
       asyncMiddleware(qualificationsListCreateController.getQualificationsListView),
     ])
     router.post('/prisoners/:prisonNumber/create-induction/qualifications', [

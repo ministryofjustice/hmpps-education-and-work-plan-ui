@@ -9,12 +9,15 @@ import YesNoValue from '../../../enums/yesNoValue'
 import { aShortQuestionSetInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
 import EducationLevelValue from '../../../enums/educationLevelValue'
 import QualificationLevelValue from '../../../enums/qualificationLevelValue'
+import validInPrisonCourseRecords from '../../../testsupport/inPrisonCourseRecordsTestDataBuilder'
 
 describe('wantToAddQualificationsCreateController', () => {
   const controller = new WantToAddQualificationsCreateController()
 
   const prisonNumber = 'A1234BC'
   const prisonerSummary = aValidPrisonerSummary()
+  const functionalSkills = validFunctionalSkills()
+  const inPrisonCourses = validInPrisonCourseRecords()
 
   // Returns a DTO for this step of the create journey
   const partialInductionDto = () => {
@@ -28,6 +31,10 @@ describe('wantToAddQualificationsCreateController', () => {
     redirect: jest.fn(),
     redirectWithErrors: jest.fn(),
     render: jest.fn(),
+    locals: {
+      prisonerFunctionalSkills: functionalSkills,
+      curiousInPrisonCourses: inPrisonCourses,
+    },
   } as unknown as Response
   const next = jest.fn()
 
@@ -46,22 +53,19 @@ describe('wantToAddQualificationsCreateController', () => {
     it('should get the Want To Add Qualifications view', async () => {
       // Given
       req.session.inductionDto = partialInductionDto()
-
-      const functionalSkills = validFunctionalSkills()
-      req.session.prisonerFunctionalSkills = functionalSkills
       req.session.wantToAddQualificationsForm = undefined
 
       const expectedWantToAddQualificationsForm: WantToAddQualificationsForm = {
         wantToAddQualifications: undefined,
       }
 
-      const expectedFunctionalSkills = functionalSkills
       const expectedView = {
         prisonerSummary,
         backLinkUrl: '/prisoners/A1234BC/create-induction/highest-level-of-education',
         backLinkAriaText: `Back to What's the highest level of education Jimmy Lightfingers completed before entering prison?`,
         form: expectedWantToAddQualificationsForm,
-        functionalSkills: expectedFunctionalSkills,
+        functionalSkills,
+        inPrisonCourses,
       }
 
       // When
@@ -84,21 +88,19 @@ describe('wantToAddQualificationsCreateController', () => {
         currentPageIndex: 0,
       }
 
-      const functionalSkills = validFunctionalSkills()
-      req.session.prisonerFunctionalSkills = functionalSkills
       req.session.wantToAddQualificationsForm = undefined
 
       const expectedWantToAddQualificationsForm: WantToAddQualificationsForm = {
         wantToAddQualifications: undefined,
       }
 
-      const expectedFunctionalSkills = functionalSkills
       const expectedView = {
         prisonerSummary,
         backLinkUrl: '/prisoners/A1234BC/create-induction/check-your-answers',
         backLinkAriaText: `Back to Check and save your answers before adding Jimmy Lightfingers's goals`,
         form: expectedWantToAddQualificationsForm,
-        functionalSkills: expectedFunctionalSkills,
+        functionalSkills,
+        inPrisonCourses,
       }
 
       // When
