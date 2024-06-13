@@ -10,6 +10,7 @@ import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataB
 import { aLongQuestionSetInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
 import { aLongQuestionSetUpdateInductionDto } from '../../../testsupport/updateInductionDtoTestDataBuilder'
 import TypeOfWorkExperienceValue from '../../../enums/typeOfWorkExperienceValue'
+import HasWorkedBeforeValue from '../../../enums/hasWorkedBeforeValue'
 
 jest.mock('../../../data/mappers/createOrUpdateInductionDtoMapper')
 jest.mock('../../../services/inductionService')
@@ -51,7 +52,7 @@ describe('previousWorkExperienceTypesUpdateController', () => {
   describe('getPreviousWorkExperienceTypesView', () => {
     it('should get the Previous Work Experience Types view given there is no PreviousWorkExperienceTypesForm on the session', async () => {
       // Given
-      const inductionDto = aLongQuestionSetInductionDto({ hasWorkedBefore: true })
+      const inductionDto = aLongQuestionSetInductionDto({ hasWorkedBefore: HasWorkedBeforeValue.YES })
       req.session.inductionDto = inductionDto
       req.session.previousWorkExperienceTypesForm = undefined
 
@@ -101,7 +102,7 @@ describe('previousWorkExperienceTypesUpdateController', () => {
 
     it('should get the Previous Work Experience Types view given there is an PreviousWorkExperienceTypesForm already on the session', async () => {
       // Given
-      const inductionDto = aLongQuestionSetInductionDto({ hasWorkedBefore: true })
+      const inductionDto = aLongQuestionSetInductionDto({ hasWorkedBefore: HasWorkedBeforeValue.YES })
       req.session.inductionDto = inductionDto
 
       const expectedPreviousWorkExperienceTypesForm = {
@@ -153,7 +154,7 @@ describe('previousWorkExperienceTypesUpdateController', () => {
   describe('submitPreviousWorkExperienceTypesForm', () => {
     it('should not update Induction given form is submitted with validation errors', async () => {
       // Given
-      const inductionDto = aLongQuestionSetInductionDto({ hasWorkedBefore: true })
+      const inductionDto = aLongQuestionSetInductionDto({ hasWorkedBefore: HasWorkedBeforeValue.YES })
       req.session.inductionDto = inductionDto
 
       const invalidPreviousWorkExperienceTypesForm = {
@@ -185,7 +186,7 @@ describe('previousWorkExperienceTypesUpdateController', () => {
 
     it('should not update Induction given form is submitted with no changes to the original Induction', async () => {
       // Given
-      const inductionDto = aLongQuestionSetInductionDto({ hasWorkedBefore: true })
+      const inductionDto = aLongQuestionSetInductionDto({ hasWorkedBefore: HasWorkedBeforeValue.YES })
       // The induction has work experience of CONSTRUCTION and OTHER (Retail delivery)
       req.session.inductionDto = inductionDto
 
@@ -213,7 +214,7 @@ describe('previousWorkExperienceTypesUpdateController', () => {
 
     it('should update Induction given form is submitted where the only change is a removal of a work type', async () => {
       // Given
-      const inductionDto = aLongQuestionSetInductionDto({ hasWorkedBefore: true })
+      const inductionDto = aLongQuestionSetInductionDto({ hasWorkedBefore: HasWorkedBeforeValue.YES })
       // The induction has work experience of CONSTRUCTION and OTHER (Retail delivery)
       req.session.inductionDto = inductionDto
 
@@ -224,7 +225,7 @@ describe('previousWorkExperienceTypesUpdateController', () => {
       req.body = previousWorkExperienceTypesForm
       req.session.previousWorkExperienceTypesForm = undefined
 
-      const updateInductionDto = aLongQuestionSetUpdateInductionDto({ hasWorkedBefore: true })
+      const updateInductionDto = aLongQuestionSetUpdateInductionDto({ hasWorkedBefore: HasWorkedBeforeValue.YES })
       mockedCreateOrUpdateInductionDtoMapper.mockReturnValueOnce(updateInductionDto)
 
       const expectedPreviousWorkExperiences: Array<PreviousWorkExperienceDto> = [
@@ -257,7 +258,7 @@ describe('previousWorkExperienceTypesUpdateController', () => {
 
     it('should not update Induction given error calling service', async () => {
       // Given
-      const inductionDto = aLongQuestionSetInductionDto({ hasWorkedBefore: true })
+      const inductionDto = aLongQuestionSetInductionDto({ hasWorkedBefore: HasWorkedBeforeValue.YES })
       // The induction has work experience of CONSTRUCTION and OTHER (Retail delivery)
       req.session.inductionDto = inductionDto
 
@@ -268,7 +269,7 @@ describe('previousWorkExperienceTypesUpdateController', () => {
       req.body = previousWorkExperienceTypesForm
       req.session.previousWorkExperienceTypesForm = undefined
 
-      const updateInductionDto = aLongQuestionSetUpdateInductionDto({ hasWorkedBefore: true })
+      const updateInductionDto = aLongQuestionSetUpdateInductionDto({ hasWorkedBefore: HasWorkedBeforeValue.YES })
       mockedCreateOrUpdateInductionDtoMapper.mockReturnValueOnce(updateInductionDto)
 
       const expectedPreviousWorkExperiences: Array<PreviousWorkExperienceDto> = [
@@ -307,7 +308,7 @@ describe('previousWorkExperienceTypesUpdateController', () => {
 
     it('should build a page flow queue and redirect to the next page given new Previous Work Experience Types are submitted', async () => {
       // Given
-      const inductionDto = aLongQuestionSetInductionDto({ hasWorkedBefore: true })
+      const inductionDto = aLongQuestionSetInductionDto({ hasWorkedBefore: HasWorkedBeforeValue.YES })
       // The induction has work experience of CONSTRUCTION and OTHER (Retail delivery)
       req.session.inductionDto = inductionDto
 
@@ -371,7 +372,7 @@ describe('previousWorkExperienceTypesUpdateController', () => {
 
     it('should build a page flow queue and redirect to the next page given only the value for OTHER has changed', async () => {
       // Given
-      const inductionDto = aLongQuestionSetInductionDto({ hasWorkedBefore: true })
+      const inductionDto = aLongQuestionSetInductionDto({ hasWorkedBefore: HasWorkedBeforeValue.YES })
       // The induction has work experience of CONSTRUCTION and OTHER (Retail delivery)
       req.session.inductionDto = inductionDto
 

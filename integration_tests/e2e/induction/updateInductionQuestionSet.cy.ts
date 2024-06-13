@@ -17,7 +17,6 @@ import InPrisonWorkValue from '../../../server/enums/inPrisonWorkValue'
 import InPrisonTrainingValue from '../../../server/enums/inPrisonTrainingValue'
 import CheckYourAnswersPage from '../../pages/induction/CheckYourAnswersPage'
 import WorkedBeforePage from '../../pages/induction/WorkedBeforePage'
-import YesNoValue from '../../../server/enums/yesNoValue'
 import PreviousWorkExperienceTypesPage from '../../pages/induction/PreviousWorkExperienceTypesPage'
 import TypeOfWorkExperienceValue from '../../../server/enums/typeOfWorkExperienceValue'
 import PreviousWorkExperienceDetailPage from '../../pages/induction/PreviousWorkExperienceDetailPage'
@@ -30,6 +29,7 @@ import PersonalInterestsPage from '../../pages/induction/PersonalInterestsPage'
 import PersonalInterestsValue from '../../../server/enums/personalInterestsValue'
 import AffectAbilityToWorkPage from '../../pages/induction/AffectAbilityToWorkPage'
 import AbilityToWorkValue from '../../../server/enums/abilityToWorkValue'
+import HasWorkedBeforeValue from '../../../server/enums/hasWorkedBeforeValue'
 
 /**
  * Cypress tests that change the question set of an existing Induction by updating the answer to 'Hoping to work on release'
@@ -205,7 +205,7 @@ context(`Change existing Induction question set by updating the answer to 'Hopin
     // Answer 'Yes' to test going through the subsequent pages that ask about previous work experience.
     Page.verifyOnPage(WorkedBeforePage) //
       .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/additional-training`)
-      .selectWorkedBefore(YesNoValue.YES)
+      .selectWorkedBefore(HasWorkedBeforeValue.YES)
       .submitPage()
 
     // Preview Work Experience types is the next page. This is not asked on the short question set.
@@ -279,7 +279,7 @@ context(`Change existing Induction question set by updating the answer to 'Hopin
               "@.previousQualifications.qualifications[1].level == 'LEVEL_4' && " +
               '@.previousTraining.trainingTypes.size() == 1 && ' +
               "@.previousTraining.trainingTypes[0] == 'FULL_UK_DRIVING_LICENCE' && " +
-              '@.previousWorkExperiences.hasWorkedBefore == true && ' +
+              "@.previousWorkExperiences.hasWorkedBefore === 'YES' && " +
               '@.previousWorkExperiences.experiences.size() == 2 && ' +
               "@.previousWorkExperiences.experiences[0].experienceType == 'TECHNICAL' && " +
               "@.previousWorkExperiences.experiences[0].role == 'Software developer' && " +

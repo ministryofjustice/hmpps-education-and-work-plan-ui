@@ -21,6 +21,7 @@ import EducationLevelValue from '../../../server/enums/educationLevelValue'
 import InPrisonTrainingValue from '../../../server/enums/inPrisonTrainingValue'
 import InPrisonWorkValue from '../../../server/enums/inPrisonWorkValue'
 import ReasonNotToGetWorkValue from '../../../server/enums/reasonNotToGetWorkValue'
+import HasWorkedBeforeValue from '../../../server/enums/hasWorkedBeforeValue'
 
 context(`Change links on the Check Your Answers page when creating an Induction`, () => {
   const prisonNumber = 'G6115VJ'
@@ -141,14 +142,14 @@ context(`Change links on the Check Your Answers page when creating an Induction`
     Page.verifyOnPage(CheckYourAnswersPage)
       .clickHasWorkedBeforeChangeLink()
       .hasBackLinkTo(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
-      .selectWorkedBefore(YesNoValue.NO)
+      .selectWorkedBefore(HasWorkedBeforeValue.NO)
       .submitPage()
     // Change worked before from No to Yes, which means the user is taken through the journey to add work experiences
     Page.verifyOnPage(CheckYourAnswersPage)
-      .hasWorkedBefore(YesNoValue.NO) // expect the value to now be No
+      .hasWorkedBefore(HasWorkedBeforeValue.NO) // expect the value to now be No
       .clickHasWorkedBeforeChangeLink()
       .hasBackLinkTo(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
-      .selectWorkedBefore(YesNoValue.YES)
+      .selectWorkedBefore(HasWorkedBeforeValue.YES)
       .submitPage()
     Page.verifyOnPage(PreviousWorkExperienceTypesPage)
       .choosePreviousWorkExperience(TypeOfWorkExperienceValue.OFFICE)
@@ -210,7 +211,7 @@ context(`Change links on the Check Your Answers page when creating an Induction`
       .hasAdditionalTraining([AdditionalTrainingValue.MANUAL_HANDLING, AdditionalTrainingValue.CSCS_CARD])
       .hasWorkInterest(WorkInterestTypeValue.OUTDOOR)
       .hasWorkInterest(WorkInterestTypeValue.MANUFACTURING)
-      .hasWorkedBefore(YesNoValue.YES)
+      .hasWorkedBefore(HasWorkedBeforeValue.YES)
       .hasWorkExperience(
         TypeOfWorkExperienceValue.OFFICE,
         'Office junior',
@@ -227,6 +228,54 @@ context(`Change links on the Check Your Answers page when creating an Induction`
         InPrisonTrainingValue.BARBERING_AND_HAIRDRESSING,
         InPrisonTrainingValue.RUNNING_A_BUSINESS,
       ])
+  })
+  it('should support changing has worked before from Yes to Not relevant', () => {
+    // Given
+    cy.createLongQuestionSetInductionToArriveOnCheckYourAnswers(prisonNumber)
+    Page.verifyOnPage(CheckYourAnswersPage)
+
+    // When
+    // Change worked before (changing Yes to Not relevant which will return the user to Check Your Answers)
+    Page.verifyOnPage(CheckYourAnswersPage)
+      .clickHasWorkedBeforeChangeLink()
+      .hasBackLinkTo(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
+      .selectWorkedBefore(HasWorkedBeforeValue.NOT_RELEVANT)
+      .submitPage()
+    // Change worked before from Not relevant to Yes, which means the user is taken through the journey to add work experiences
+    Page.verifyOnPage(CheckYourAnswersPage)
+      .hasWorkedBefore(HasWorkedBeforeValue.NOT_RELEVANT) // expect the value to now be Not relevant
+      .clickHasWorkedBeforeChangeLink()
+      .hasBackLinkTo(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
+      .selectWorkedBefore(HasWorkedBeforeValue.YES)
+      .submitPage()
+    Page.verifyOnPage(PreviousWorkExperienceTypesPage)
+      .choosePreviousWorkExperience(TypeOfWorkExperienceValue.OFFICE)
+      .choosePreviousWorkExperience(TypeOfWorkExperienceValue.SPORTS)
+      .submitPage()
+    Page.verifyOnPage(PreviousWorkExperienceDetailPage)
+      .hasBackLinkTo(`/prisoners/${prisonNumber}/create-induction/previous-work-experience`)
+      .setJobRole('Office junior')
+      .setJobDetails('Filing and photocopying: Sept 2000 - Dec 2009')
+      .submitPage()
+    Page.verifyOnPage(PreviousWorkExperienceDetailPage)
+      .hasBackLinkTo(`/prisoners/${prisonNumber}/create-induction/previous-work-experience/office`)
+      .setJobRole('Gym instructor')
+      .setJobDetails('Coaching and motivating customers fitness goals')
+      .submitPage()
+
+    // Then
+    Page.verifyOnPage(CheckYourAnswersPage) //
+      .hasWorkedBefore(HasWorkedBeforeValue.YES)
+      .hasWorkExperience(
+        TypeOfWorkExperienceValue.OFFICE,
+        'Office junior',
+        'Filing and photocopying: Sept 2000 - Dec 2009',
+      )
+      .hasWorkExperience(
+        TypeOfWorkExperienceValue.SPORTS,
+        'Gym instructor',
+        'Coaching and motivating customers fitness goals',
+      )
   })
 
   it('should support all Change links on a Short Question Set Induction', () => {
