@@ -21,6 +21,7 @@ import SkillsValue from '../../../server/enums/skillsValue'
 import PersonalInterestsValue from '../../../server/enums/personalInterestsValue'
 import AbilityToWorkValue from '../../../server/enums/abilityToWorkValue'
 import WorkInterestTypeValue from '../../../server/enums/workInterestTypeValue'
+import HasWorkedBeforeValue from '../../../server/enums/hasWorkedBeforeValue'
 
 context(`Change links on the Check Your Answers page when updating an Induction`, () => {
   const prisonNumber = 'G6115VJ'
@@ -151,19 +152,19 @@ context(`Change links on the Check Your Answers page when updating an Induction`
 
     // Change Worked before (Yes -> No)
     Page.verifyOnPage(CheckYourAnswersPage)
-      .hasWorkedBefore(YesNoValue.YES)
+      .hasWorkedBefore(HasWorkedBeforeValue.YES)
       .clickHasWorkedBeforeChangeLink()
       .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/check-your-answers`)
-      .selectWorkedBefore(YesNoValue.NO)
+      .selectWorkedBefore(HasWorkedBeforeValue.NO)
       .submitPage()
 
     // Change Worked before (No -> Yes)
     // Requires journey to enter previous work experience details
     Page.verifyOnPage(CheckYourAnswersPage)
-      .hasWorkedBefore(YesNoValue.NO)
+      .hasWorkedBefore(HasWorkedBeforeValue.NO)
       .clickHasWorkedBeforeChangeLink()
       .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/check-your-answers`)
-      .selectWorkedBefore(YesNoValue.YES)
+      .selectWorkedBefore(HasWorkedBeforeValue.YES)
       .submitPage()
     Page.verifyOnPage(PreviousWorkExperienceTypesPage)
       .choosePreviousWorkExperience(TypeOfWorkExperienceValue.OFFICE)
@@ -189,7 +190,7 @@ context(`Change links on the Check Your Answers page when updating an Induction`
       .hasInPrisonTrainingInterests([InPrisonTrainingValue.CATERING, InPrisonTrainingValue.NUMERACY_SKILLS])
       .hasEducationalQualifications(['Physics'])
       .hasHighestLevelOfEducation(EducationLevelValue.FURTHER_EDUCATION_COLLEGE)
-      .hasWorkedBefore(YesNoValue.YES)
+      .hasWorkedBefore(HasWorkedBeforeValue.YES)
       .hasTypeOfWorkExperienceType(TypeOfWorkExperienceValue.OFFICE)
       .hasTypeOfWorkExperienceType(TypeOfWorkExperienceValue.SPORTS)
       .hasWorkExperience(
@@ -280,19 +281,19 @@ context(`Change links on the Check Your Answers page when updating an Induction`
 
     // Change Worked before (Yes -> No)
     Page.verifyOnPage(CheckYourAnswersPage)
-      .hasWorkedBefore(YesNoValue.YES)
+      .hasWorkedBefore(HasWorkedBeforeValue.YES)
       .clickHasWorkedBeforeChangeLink()
       .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/check-your-answers`)
-      .selectWorkedBefore(YesNoValue.NO)
+      .selectWorkedBefore(HasWorkedBeforeValue.NO)
       .submitPage()
 
     // Change Worked before (No -> Yes)
     // Requires journey to enter previous work experience details
     Page.verifyOnPage(CheckYourAnswersPage)
-      .hasWorkedBefore(YesNoValue.NO)
+      .hasWorkedBefore(HasWorkedBeforeValue.NO)
       .clickHasWorkedBeforeChangeLink()
       .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/check-your-answers`)
-      .selectWorkedBefore(YesNoValue.YES)
+      .selectWorkedBefore(HasWorkedBeforeValue.YES)
       .submitPage()
     Page.verifyOnPage(PreviousWorkExperienceTypesPage)
       .choosePreviousWorkExperience(TypeOfWorkExperienceValue.OFFICE)
@@ -380,7 +381,7 @@ context(`Change links on the Check Your Answers page when updating an Induction`
       .hasHopingToWorkOnRelease(HopingToGetWorkValue.YES)
       .hasHighestLevelOfEducation(EducationLevelValue.FURTHER_EDUCATION_COLLEGE) // Highest level of education should not have changed even though we removed all the qualifications
       .hasNoEducationalQualificationsDisplayed()
-      .hasWorkedBefore(YesNoValue.YES)
+      .hasWorkedBefore(HasWorkedBeforeValue.YES)
       .hasTypeOfWorkExperienceType(TypeOfWorkExperienceValue.SPORTS)
       .hasTypeOfWorkExperienceType(TypeOfWorkExperienceValue.WAREHOUSING)
       .hasWorkExperience(
@@ -399,5 +400,51 @@ context(`Change links on the Check Your Answers page when updating an Induction`
       .hasFactorsAffectingAbilityToWork(AbilityToWorkValue.NO_RIGHT_TO_WORK)
       .hasInPrisonWorkInterests([InPrisonWorkValue.PRISON_LAUNDRY, InPrisonWorkValue.PRISON_LIBRARY])
       .hasInPrisonTrainingInterests([InPrisonTrainingValue.CATERING, InPrisonTrainingValue.NUMERACY_SKILLS])
+  })
+  it('should support changing has worked before to Not relevant', () => {
+    // Given
+    cy.updateLongQuestionSetInductionToArriveOnCheckYourAnswers(prisonNumber)
+    Page.verifyOnPage(CheckYourAnswersPage)
+
+    // When
+    // Change Worked before (Yes -> Not relevant)
+    Page.verifyOnPage(CheckYourAnswersPage)
+      .hasWorkedBefore(HasWorkedBeforeValue.YES)
+      .clickHasWorkedBeforeChangeLink()
+      .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/check-your-answers`)
+      .selectWorkedBefore(HasWorkedBeforeValue.NOT_RELEVANT)
+      .submitPage()
+
+    // Change Worked before (No -> Yes)
+    // Requires journey to enter previous work experience details
+    Page.verifyOnPage(CheckYourAnswersPage)
+      .hasWorkedBefore(HasWorkedBeforeValue.NOT_RELEVANT)
+      .clickHasWorkedBeforeChangeLink()
+      .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/check-your-answers`)
+      .selectWorkedBefore(HasWorkedBeforeValue.YES)
+      .submitPage()
+    Page.verifyOnPage(PreviousWorkExperienceTypesPage)
+      .choosePreviousWorkExperience(TypeOfWorkExperienceValue.OFFICE)
+      .choosePreviousWorkExperience(TypeOfWorkExperienceValue.SPORTS)
+      .submitPage()
+    Page.verifyOnPage(PreviousWorkExperienceDetailPage)
+      .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/previous-work-experience`)
+      .setJobRole('Office junior')
+      .setJobDetails('Filing and photocopying: Sept 2000 - Dec 2009')
+      .submitPage()
+    Page.verifyOnPage(PreviousWorkExperienceDetailPage)
+      .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/previous-work-experience/office`)
+      .setJobRole('Gym instructor')
+      .setJobDetails('Coaching and motivating customers fitness goals')
+      .submitPage()
+
+    // Then
+    Page.verifyOnPage(CheckYourAnswersPage)
+      .hasWorkedBefore(HasWorkedBeforeValue.YES)
+      .hasWorkExperience(
+        TypeOfWorkExperienceValue.SPORTS,
+        'Gym instructor',
+        'Coaching and motivating customers fitness goals',
+      )
   })
 })

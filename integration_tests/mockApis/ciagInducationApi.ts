@@ -28,7 +28,7 @@ const stubCiagInductionList = (): SuperAgentRequest =>
             abilityToWork: ['CARING_RESPONSIBILITIES'],
             reasonToNotGetWork: ['LIMIT_THEIR_ABILITY'],
             workExperience: {
-              hasWorkedBefore: true,
+              hasWorkedBefore: 'YES',
               modifiedBy: 'string',
               modifiedDateTime: '2023-10-20T13:05:05.212Z',
               id: 0,

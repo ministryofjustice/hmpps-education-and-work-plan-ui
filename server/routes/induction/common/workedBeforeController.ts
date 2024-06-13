@@ -3,7 +3,7 @@ import type { InductionDto, PreviousWorkExperienceDto } from 'inductionDto'
 import type { WorkedBeforeForm } from 'inductionForms'
 import InductionController from './inductionController'
 import WorkedBeforeView from './workedBeforeView'
-import YesNoValue from '../../../enums/yesNoValue'
+import HasWorkedBeforeValue from '../../../enums/hasWorkedBeforeValue'
 
 /**
  * Abstract controller class defining functionality common to both the Create and Update Induction journeys.
@@ -39,7 +39,10 @@ export default abstract class WorkedBeforeController extends InductionController
     workedBeforeForm: WorkedBeforeForm,
   ): InductionDto {
     const previousExperience: Array<PreviousWorkExperienceDto> = []
-    if (workedBeforeForm.hasWorkedBefore === YesNoValue.YES && inductionDto.previousWorkExperiences?.experiences) {
+    if (
+      workedBeforeForm.hasWorkedBefore === HasWorkedBeforeValue.YES &&
+      inductionDto.previousWorkExperiences?.experiences
+    ) {
       previousExperience.push(...inductionDto.previousWorkExperiences.experiences)
     }
     return {
@@ -47,7 +50,7 @@ export default abstract class WorkedBeforeController extends InductionController
       previousWorkExperiences: {
         ...inductionDto.previousWorkExperiences,
         experiences: previousExperience,
-        hasWorkedBefore: workedBeforeForm.hasWorkedBefore === YesNoValue.YES,
+        hasWorkedBefore: workedBeforeForm.hasWorkedBefore,
       },
     }
   }
@@ -55,10 +58,9 @@ export default abstract class WorkedBeforeController extends InductionController
 
 const toWorkedBeforeForm = (inductionDto: InductionDto): WorkedBeforeForm => {
   const hasWorkedBefore = inductionDto.previousWorkExperiences?.hasWorkedBefore
-
-  if (hasWorkedBefore === true || hasWorkedBefore === false) {
+  if (hasWorkedBefore) {
     return {
-      hasWorkedBefore: hasWorkedBefore === true ? YesNoValue.YES : YesNoValue.NO,
+      hasWorkedBefore,
     }
   }
 
