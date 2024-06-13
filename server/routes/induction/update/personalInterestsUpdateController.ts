@@ -9,7 +9,6 @@ import validatePersonalInterestsForm from '../../validators/induction/personalIn
 import { buildNewPageFlowHistory, getPreviousPage } from '../../pageFlowHistory'
 import getDynamicBackLinkAriaText from '../dynamicAriaTextResolver'
 import { asArray } from '../../../utils/utils'
-import HopingToGetWorkValue from '../../../enums/hopingToGetWorkValue'
 
 /**
  * Controller for the Update of the Personal Interests screen of the Induction.
@@ -62,13 +61,9 @@ export default class PersonalInterestsUpdateController extends PersonalInterests
 
     if (req.session.updateInductionQuestionSet) {
       req.session.inductionDto = updatedInduction
-      const nextPage =
-        updatedInduction.workOnRelease.hopingToWork === HopingToGetWorkValue.YES
-          ? `/prisoners/${prisonNumber}/induction/affect-ability-to-work` // Next page for long question set is factors affecting ability to work
-          : `/prisoners/${prisonNumber}/induction/in-prison-work` // Next page for long question set is In-Prison Work Interests
       req.session.pageFlowHistory = buildNewPageFlowHistory(req)
       req.session.personalInterestsForm = undefined
-      return res.redirect(nextPage)
+      return res.redirect(`/prisoners/${prisonNumber}/induction/in-prison-work`)
     }
 
     try {

@@ -35,9 +35,9 @@ context('Update factors affecting the ability to work within an Induction', () =
 
     // When
     affectAbilityToWorkPage //
-      .deSelectAffectAbilityToWork(AbilityToWorkValue.LIMITED_BY_OFFENSE)
-      .deSelectAffectAbilityToWork(AbilityToWorkValue.HEALTH_ISSUES)
-      .chooseAffectAbilityToWork(AbilityToWorkValue.HEALTH_ISSUES)
+      .deSelectAffectAbilityToWork(AbilityToWorkValue.LIMITED_BY_OFFENCE)
+      .deSelectAffectAbilityToWork(AbilityToWorkValue.NEEDS_WORK_ADJUSTMENTS_DUE_TO_HEALTH)
+      .chooseAffectAbilityToWork(AbilityToWorkValue.NEEDS_WORK_ADJUSTMENTS_DUE_TO_HEALTH)
       .chooseAffectAbilityToWork(AbilityToWorkValue.OTHER)
       .setAffectAbilityToWorkOther('Variable mental health')
       .submitPage()
@@ -49,7 +49,7 @@ context('Update factors affecting the ability to work within an Induction', () =
         .withRequestBody(
           matchingJsonPath(
             '$[?(@.workOnRelease.affectAbilityToWork.size() == 2 && ' +
-              "@.workOnRelease.affectAbilityToWork[0] == 'HEALTH_ISSUES' && " +
+              "@.workOnRelease.affectAbilityToWork[0] == 'NEEDS_WORK_ADJUSTMENTS_DUE_TO_HEALTH' && " +
               "@.workOnRelease.affectAbilityToWork[1] == 'OTHER' && " +
               "@.workOnRelease.affectAbilityToWorkOther == 'Variable mental health')]",
           ),

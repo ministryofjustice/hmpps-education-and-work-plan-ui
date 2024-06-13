@@ -52,8 +52,8 @@ describe('affectAbilityToWorkCreateController', () => {
       const expectedView = {
         prisonerSummary,
         form: expectedAbilityToWorkForm,
-        backLinkUrl: '/prisoners/A1234BC/create-induction/personal-interests',
-        backLinkAriaText: `Back to What are Jimmy Lightfingers's interests?`,
+        backLinkUrl: '/prisoners/A1234BC/create-induction/work-interest-roles',
+        backLinkAriaText: 'Back to Is Jimmy Lightfingers interested in any particular jobs?',
       }
 
       // When
@@ -79,7 +79,7 @@ describe('affectAbilityToWorkCreateController', () => {
       const expectedAbilityToWorkForm: AffectAbilityToWorkForm = {
         affectAbilityToWork: [
           AbilityToWorkValue.CARING_RESPONSIBILITIES,
-          AbilityToWorkValue.HEALTH_ISSUES,
+          AbilityToWorkValue.NEEDS_WORK_ADJUSTMENTS_DUE_TO_HEALTH,
           AbilityToWorkValue.OTHER,
         ],
         affectAbilityToWorkOther: 'Variable mental health',
@@ -89,8 +89,8 @@ describe('affectAbilityToWorkCreateController', () => {
       const expectedView = {
         prisonerSummary,
         form: expectedAbilityToWorkForm,
-        backLinkUrl: '/prisoners/A1234BC/create-induction/personal-interests',
-        backLinkAriaText: `Back to What are Jimmy Lightfingers's interests?`,
+        backLinkUrl: '/prisoners/A1234BC/create-induction/work-interest-roles',
+        backLinkAriaText: 'Back to Is Jimmy Lightfingers interested in any particular jobs?',
       }
 
       // When
@@ -128,7 +128,7 @@ describe('affectAbilityToWorkCreateController', () => {
       const expectedAbilityToWorkForm: AffectAbilityToWorkForm = {
         affectAbilityToWork: [
           AbilityToWorkValue.CARING_RESPONSIBILITIES,
-          AbilityToWorkValue.HEALTH_ISSUES,
+          AbilityToWorkValue.NEEDS_WORK_ADJUSTMENTS_DUE_TO_HEALTH,
           AbilityToWorkValue.OTHER,
         ],
         affectAbilityToWorkOther: 'Variable mental health',
@@ -194,7 +194,7 @@ describe('affectAbilityToWorkCreateController', () => {
       expect(req.session.inductionDto).toEqual(inductionDto)
     })
 
-    it('should update inductionDto and redirect to In Prison Work Interests page', async () => {
+    it('should update inductionDto and redirect to Highest Level of Education page', async () => {
       // Given
       const inductionDto = aLongQuestionSetInductionDto()
       inductionDto.workOnRelease.affectAbilityToWork = undefined
@@ -222,7 +222,7 @@ describe('affectAbilityToWorkCreateController', () => {
         AbilityToWorkValue.OTHER,
       ])
       expect(updatedInduction.workOnRelease.affectAbilityToWorkOther).toEqual('Variable mental health')
-      expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-induction/in-prison-work')
+      expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-induction/highest-level-of-education')
       expect(req.session.affectAbilityToWorkForm).toBeUndefined()
     })
   })

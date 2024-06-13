@@ -5,7 +5,6 @@ import SkillsPage from '../../pages/induction/SkillsPage'
 import PersonalInterestsPage from '../../pages/induction/PersonalInterestsPage'
 import WorkedBeforePage from '../../pages/induction/WorkedBeforePage'
 import AffectAbilityToWorkPage from '../../pages/induction/AffectAbilityToWorkPage'
-import ReasonsNotToGetWorkPage from '../../pages/induction/ReasonsNotToGetWorkPage'
 import PreviousWorkExperienceDetailPage from '../../pages/induction/PreviousWorkExperienceDetailPage'
 import TypeOfWorkExperienceValue from '../../../server/enums/typeOfWorkExperienceValue'
 import FutureWorkInterestTypesPage from '../../pages/induction/FutureWorkInterestTypesPage'
@@ -212,7 +211,7 @@ context('Prisoner Overview page - Work and Interests tab', () => {
       Page.verifyOnPage(HopingToWorkOnReleasePage)
     })
 
-    it(`should link to change Induction 'Reasons Not To Get Work' question given short question set induction`, () => {
+    it(`should link to change Induction 'Affect Ability To Work' question given short question set induction`, () => {
       // Given
       cy.task('stubGetInductionShortQuestionSet')
 
@@ -222,10 +221,10 @@ context('Prisoner Overview page - Work and Interests tab', () => {
       const workAndInterestsPage = Page.verifyOnPage(WorkAndInterestsPage)
 
       // When
-      workAndInterestsPage.clickReasonsNotToGetWorkWorkChangeLink()
+      workAndInterestsPage.clickAffectAbilityToWorkChangeLink()
 
       // Then
-      Page.verifyOnPage(ReasonsNotToGetWorkPage)
+      Page.verifyOnPage(AffectAbilityToWorkPage)
     })
 
     it(`should link to change Induction 'Previous Work Experience Types' question given long question set induction`, () => {

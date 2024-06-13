@@ -4,7 +4,6 @@
 import Page from '../../pages/page'
 import CheckYourAnswersPage from '../../pages/induction/CheckYourAnswersPage'
 import HopingToGetWorkValue from '../../../server/enums/hopingToGetWorkValue'
-import ReasonNotToGetWorkValue from '../../../server/enums/reasonNotToGetWorkValue'
 import InPrisonWorkValue from '../../../server/enums/inPrisonWorkValue'
 import InPrisonTrainingValue from '../../../server/enums/inPrisonTrainingValue'
 import AdditionalTrainingValue from '../../../server/enums/additionalTrainingValue'
@@ -44,14 +43,13 @@ context(`Change links on the Check Your Answers page when updating an Induction`
       .selectHopingWorkOnRelease(HopingToGetWorkValue.NOT_SURE)
       .submitPage()
 
-    // Change Reasons For Not Wanting To Work
+    // Change affecting ability to work
     Page.verifyOnPage(CheckYourAnswersPage)
-    checkYourAnswersPage
-      .clickReasonsForNotWantingToWorkChangeLink()
+      .clickFactorsAffectingAbilityToWorkChangeLink()
       .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/check-your-answers`)
-      .deSelectReasonNotToGetWork(ReasonNotToGetWorkValue.HEALTH)
-      .chooseReasonNotToGetWork(ReasonNotToGetWorkValue.RETIRED)
-      .chooseReasonNotToGetWork(ReasonNotToGetWorkValue.NO_REASON)
+      .deSelectAffectAbilityToWork(AbilityToWorkValue.LIMITED_BY_OFFENCE)
+      .chooseAffectAbilityToWork(AbilityToWorkValue.RETIRED)
+      .chooseAffectAbilityToWork(AbilityToWorkValue.REFUSED_SUPPORT_WITH_NO_REASON)
       .submitPage()
 
     // Change Other Training
@@ -184,7 +182,8 @@ context(`Change links on the Check Your Answers page when updating an Induction`
     // Then
     Page.verifyOnPage(CheckYourAnswersPage) //
       .hasHopingToWorkOnRelease(HopingToGetWorkValue.NOT_SURE)
-      .hasReasonsForNotWantingToWork([ReasonNotToGetWorkValue.RETIRED, ReasonNotToGetWorkValue.NO_REASON])
+      .hasFactorsAffectingAbilityToWork(AbilityToWorkValue.REFUSED_SUPPORT_WITH_NO_REASON)
+      .hasFactorsAffectingAbilityToWork(AbilityToWorkValue.RETIRED)
       .hasAdditionalTraining([AdditionalTrainingValue.MANUAL_HANDLING, AdditionalTrainingValue.CSCS_CARD])
       .hasInPrisonWorkInterests([InPrisonWorkValue.PRISON_LAUNDRY, InPrisonWorkValue.PRISON_LIBRARY])
       .hasInPrisonTrainingInterests([InPrisonTrainingValue.CATERING, InPrisonTrainingValue.NUMERACY_SKILLS])
@@ -371,8 +370,8 @@ context(`Change links on the Check Your Answers page when updating an Induction`
     Page.verifyOnPage(CheckYourAnswersPage)
       .clickFactorsAffectingAbilityToWorkChangeLink()
       .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/check-your-answers`)
-      .deSelectAffectAbilityToWork(AbilityToWorkValue.HEALTH_ISSUES)
-      .chooseAffectAbilityToWork(AbilityToWorkValue.LIMITED_BY_OFFENSE)
+      .deSelectAffectAbilityToWork(AbilityToWorkValue.NEEDS_WORK_ADJUSTMENTS_DUE_TO_HEALTH)
+      .chooseAffectAbilityToWork(AbilityToWorkValue.LIMITED_BY_OFFENCE)
       .chooseAffectAbilityToWork(AbilityToWorkValue.NO_RIGHT_TO_WORK)
       .submitPage()
 
@@ -396,7 +395,7 @@ context(`Change links on the Check Your Answers page when updating an Induction`
       .hasPersonalSkill(SkillsValue.RESILIENCE)
       .hasPersonalInterest(PersonalInterestsValue.CRAFTS)
       .hasPersonalInterest(PersonalInterestsValue.DIGITAL)
-      .hasFactorsAffectingAbilityToWork(AbilityToWorkValue.LIMITED_BY_OFFENSE)
+      .hasFactorsAffectingAbilityToWork(AbilityToWorkValue.LIMITED_BY_OFFENCE)
       .hasFactorsAffectingAbilityToWork(AbilityToWorkValue.NO_RIGHT_TO_WORK)
       .hasInPrisonWorkInterests([InPrisonWorkValue.PRISON_LAUNDRY, InPrisonWorkValue.PRISON_LIBRARY])
       .hasInPrisonTrainingInterests([InPrisonTrainingValue.CATERING, InPrisonTrainingValue.NUMERACY_SKILLS])

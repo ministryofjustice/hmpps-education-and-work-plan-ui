@@ -53,8 +53,8 @@ export default class HopingToWorkOnReleaseUpdateController extends HopingToWorkO
       req.session.updateInductionQuestionSet = { hopingToWorkOnRelease: hopingToWorkOnReleaseForm.hopingToGetWork }
       const nextPage =
         hopingToWorkOnReleaseForm.hopingToGetWork === HopingToGetWorkValue.YES
-          ? `/prisoners/${prisonNumber}/induction/work-interest-types` // Resultant induction will be a Long question set induction
-          : `/prisoners/${prisonNumber}/induction/reasons-not-to-get-work` // Resultant induction will be a short question set induction
+          ? `/prisoners/${prisonNumber}/induction/work-interest-types`
+          : `/prisoners/${prisonNumber}/induction/affect-ability-to-work`
       // start of the flow - always initialise the page history here
       req.session.pageFlowHistory = buildNewPageFlowHistory(req)
       return res.redirect(nextPage)

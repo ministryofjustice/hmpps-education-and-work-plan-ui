@@ -3,8 +3,6 @@ import { verify } from '../mockApis/wiremock'
 import Page from '../pages/page'
 import HopingToWorkOnReleasePage from '../pages/induction/HopingToWorkOnReleasePage'
 import HopingToGetWorkValue from '../../server/enums/hopingToGetWorkValue'
-import ReasonsNotToGetWorkPage from '../pages/induction/ReasonsNotToGetWorkPage'
-import ReasonNotToGetWorkValue from '../../server/enums/reasonNotToGetWorkValue'
 import QualificationsListPage from '../pages/induction/QualificationsListPage'
 import AdditionalTrainingPage from '../pages/induction/AdditionalTrainingPage'
 import InPrisonWorkPage from '../pages/induction/InPrisonWorkPage'
@@ -71,9 +69,8 @@ Cypress.Commands.add('updateShortQuestionSetInductionToArriveOnCheckYourAnswers'
   Page.verifyOnPage(HopingToWorkOnReleasePage) //
     .selectHopingWorkOnRelease(HopingToGetWorkValue.NO)
     .submitPage()
-  // Reasons Not To Work is the next page, and is only asked on the short question set, so will not have any previous answer from the original long question set Induction
-  Page.verifyOnPage(ReasonsNotToGetWorkPage) //
-    .chooseReasonNotToGetWork(ReasonNotToGetWorkValue.HEALTH)
+  // Factors Affecting Ability To Work is the next page. It is asked on the long question set so will already have answers
+  Page.verifyOnPage(AffectAbilityToWorkPage) //
     .submitPage()
   // Highest Level of Education page is next. This is asked on the long question set, so this will already have answers set
   Page.verifyOnPage(HighestLevelOfEducationPage) //
@@ -142,6 +139,9 @@ Cypress.Commands.add('updateLongQuestionSetInductionToArriveOnCheckYourAnswers',
   Page.verifyOnPage(FutureWorkInterestRolesPage) //
     .setWorkInterestRole(WorkInterestTypeValue.DRIVING, 'Driving instructor')
     .submitPage()
+  // Factors Affecting Ability To Work is the next page. It is asked on the short question set so will already have answers
+  Page.verifyOnPage(AffectAbilityToWorkPage) //
+    .submitPage()
   // Highest Level of Education page is next. This is asked on the short question set, so this will already have answers set
   Page.verifyOnPage(HighestLevelOfEducationPage) //
     .submitPage()
@@ -182,10 +182,6 @@ Cypress.Commands.add('updateLongQuestionSetInductionToArriveOnCheckYourAnswers',
   // Personal Interests is the next page. This is asked on the long question set, so this will already have answers set
   Page.verifyOnPage(PersonalInterestsPage) //
     .submitPage()
-  // Factors Affecting Ability To Work is the next page. This is not asked on the short question set.
-  Page.verifyOnPage(AffectAbilityToWorkPage) //
-    .chooseAffectAbilityToWork(AbilityToWorkValue.HEALTH_ISSUES)
-    .submitPage()
   // In Prison Work Interests is the next page. This is asked on the long question set, so this will already have answers set
   Page.verifyOnPage(InPrisonWorkPage) //
     .submitPage()
@@ -213,6 +209,10 @@ Cypress.Commands.add(
     // Future Work Interest Roles page is next
     Page.verifyOnPage(FutureWorkInterestRolesPage) //
       .setWorkInterestRole(WorkInterestTypeValue.DRIVING, 'Delivery driver')
+      .submitPage()
+    // Factors Affecting Ability To Work is the next page
+    Page.verifyOnPage(AffectAbilityToWorkPage) //
+      .chooseAffectAbilityToWork(AbilityToWorkValue.NONE)
       .submitPage()
     // Highest Level of Education page is next
     Page.verifyOnPage(HighestLevelOfEducationPage)
@@ -263,10 +263,6 @@ Cypress.Commands.add(
     Page.verifyOnPage(PersonalInterestsPage) //
       .choosePersonalInterest(PersonalInterestsValue.COMMUNITY)
       .submitPage()
-    // Factors Affecting Ability To Work is the next page
-    Page.verifyOnPage(AffectAbilityToWorkPage) //
-      .chooseAffectAbilityToWork(AbilityToWorkValue.NONE)
-      .submitPage()
     // In Prison Work Interests page is next
     Page.verifyOnPage(InPrisonWorkPage) //
       .chooseWorkType(InPrisonWorkValue.PRISON_LIBRARY)
@@ -290,9 +286,9 @@ Cypress.Commands.add(
     Page.verifyOnPage(HopingToWorkOnReleasePage) //
       .selectHopingWorkOnRelease(HopingToGetWorkValue.NO)
       .submitPage()
-    // Reasons Not To Get Work is the next page
-    Page.verifyOnPage(ReasonsNotToGetWorkPage) //
-      .chooseReasonNotToGetWork(ReasonNotToGetWorkValue.FULL_TIME_CARER)
+    // Factors Affecting Ability To Work is the next page
+    Page.verifyOnPage(AffectAbilityToWorkPage) //
+      .chooseAffectAbilityToWork(AbilityToWorkValue.CARING_RESPONSIBILITIES)
       .submitPage()
     // Highest Level of Education page is next
     Page.verifyOnPage(HighestLevelOfEducationPage)

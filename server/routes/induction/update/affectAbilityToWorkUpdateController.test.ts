@@ -56,7 +56,7 @@ describe('affectAbilityToWorkUpdateController', () => {
       const expectedAbilityToWorkForm = {
         affectAbilityToWork: [
           AbilityToWorkValue.CARING_RESPONSIBILITIES,
-          AbilityToWorkValue.HEALTH_ISSUES,
+          AbilityToWorkValue.NEEDS_WORK_ADJUSTMENTS_DUE_TO_HEALTH,
           AbilityToWorkValue.OTHER,
         ],
         affectAbilityToWorkOther: 'Variable mental health',
@@ -90,7 +90,7 @@ describe('affectAbilityToWorkUpdateController', () => {
       const expectedAbilityToWorkForm = {
         affectAbilityToWork: [
           AbilityToWorkValue.CARING_RESPONSIBILITIES,
-          AbilityToWorkValue.HEALTH_ISSUES,
+          AbilityToWorkValue.NEEDS_WORK_ADJUSTMENTS_DUE_TO_HEALTH,
           AbilityToWorkValue.OTHER,
         ],
         affectAbilityToWorkOther: 'Variable mental health',
@@ -132,7 +132,7 @@ describe('affectAbilityToWorkUpdateController', () => {
       const expectedAbilityToWorkForm = {
         affectAbilityToWork: [
           AbilityToWorkValue.CARING_RESPONSIBILITIES,
-          AbilityToWorkValue.HEALTH_ISSUES,
+          AbilityToWorkValue.NEEDS_WORK_ADJUSTMENTS_DUE_TO_HEALTH,
           AbilityToWorkValue.OTHER,
         ],
         affectAbilityToWorkOther: 'Variable mental health',
@@ -242,7 +242,7 @@ describe('affectAbilityToWorkUpdateController', () => {
       expect(req.session.inductionDto).toBeUndefined()
     })
 
-    it('should update InductionDto and redirect to In Prison Work Interests view given there is an updateInductionQuestionSet on the session', async () => {
+    it('should update InductionDto and redirect to Highest Level of Education given there is an updateInductionQuestionSet on the session', async () => {
       // Given
       const inductionDto = aLongQuestionSetInductionDto()
       req.session.inductionDto = inductionDto
@@ -259,7 +259,7 @@ describe('affectAbilityToWorkUpdateController', () => {
       const expectedUpdatedAbilityToWork = ['CARING_RESPONSIBILITIES', 'OTHER']
 
       const expectedUpdatedAbilityToWorkOther = 'Variable mental health'
-      const expectedNextPage = '/prisoners/A1234BC/induction/in-prison-work'
+      const expectedNextPage = '/prisoners/A1234BC/induction/highest-level-of-education'
 
       // When
       await controller.submitAffectAbilityToWorkForm(

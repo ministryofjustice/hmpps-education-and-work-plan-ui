@@ -2,8 +2,6 @@ import OverviewPage from '../../pages/overview/OverviewPage'
 import Page from '../../pages/page'
 import HopingToGetWorkValue from '../../../server/enums/hopingToGetWorkValue'
 import HopingToWorkOnReleasePage from '../../pages/induction/HopingToWorkOnReleasePage'
-import ReasonsNotToGetWorkPage from '../../pages/induction/ReasonsNotToGetWorkPage'
-import ReasonNotToGetWorkValue from '../../../server/enums/reasonNotToGetWorkValue'
 import WantToAddQualificationsPage from '../../pages/induction/WantToAddQualificationsPage'
 import YesNoValue from '../../../server/enums/yesNoValue'
 import QualificationLevelPage from '../../pages/induction/QualificationLevelPage'
@@ -32,6 +30,8 @@ import PreviousWorkExperienceTypesPage from '../../pages/induction/PreviousWorkE
 import TypeOfWorkExperienceValue from '../../../server/enums/typeOfWorkExperienceValue'
 import PreviousWorkExperienceDetailPage from '../../pages/induction/PreviousWorkExperienceDetailPage'
 import HasWorkedBeforeValue from '../../../server/enums/hasWorkedBeforeValue'
+import AffectAbilityToWorkPage from '../../pages/induction/AffectAbilityToWorkPage'
+import AbilityToWorkValue from '../../../server/enums/abilityToWorkValue'
 
 context('Create a short question set Induction', () => {
   const prisonNumberForPrisonerWithNoInduction = 'A00001A'
@@ -63,22 +63,23 @@ context('Create a short question set Induction', () => {
       .selectHopingWorkOnRelease(HopingToGetWorkValue.NO)
       .submitPage()
 
-    Page.verifyOnPage(ReasonsNotToGetWorkPage)
+    // Factors Affecting Ability To Work is the next page
+    Page.verifyOnPage(AffectAbilityToWorkPage) //
       .hasBackLinkTo('/prisoners/A00001A/create-induction/hoping-to-work-on-release')
       .submitPage() // submit the page without answering the question to trigger a validation error
-    Page.verifyOnPage(ReasonsNotToGetWorkPage)
+    Page.verifyOnPage(AffectAbilityToWorkPage) //
       .hasBackLinkTo('/prisoners/A00001A/create-induction/hoping-to-work-on-release')
       .hasErrorCount(1)
-      .hasFieldInError('reasonsNotToGetWork')
-      .chooseReasonNotToGetWork(ReasonNotToGetWorkValue.HEALTH)
-      .chooseReasonNotToGetWork(ReasonNotToGetWorkValue.FULL_TIME_CARER)
+      .hasFieldInError('affectAbilityToWork')
+      .chooseAffectAbilityToWork(AbilityToWorkValue.NEEDS_WORK_ADJUSTMENTS_DUE_TO_HEALTH)
+      .chooseAffectAbilityToWork(AbilityToWorkValue.CARING_RESPONSIBILITIES)
       .submitPage()
 
     Page.verifyOnPage(HighestLevelOfEducationPage)
-      .hasBackLinkTo('/prisoners/A00001A/create-induction/reasons-not-to-get-work')
+      .hasBackLinkTo('/prisoners/A00001A/create-induction/affect-ability-to-work')
       .submitPage() // submit the page without answering the question to trigger a validation error
     Page.verifyOnPage(HighestLevelOfEducationPage)
-      .hasBackLinkTo('/prisoners/A00001A/create-induction/reasons-not-to-get-work')
+      .hasBackLinkTo('/prisoners/A00001A/create-induction/affect-ability-to-work')
       .hasErrorCount(1)
       .hasFieldInError('educationLevel')
       .selectHighestLevelOfEducation(EducationLevelValue.FURTHER_EDUCATION_COLLEGE)
@@ -249,10 +250,10 @@ context('Create a short question set Induction', () => {
         .withRequestBody(
           matchingJsonPath(
             "$[?(@.workOnRelease.hopingToWork == 'NO' && " +
-              '@.workOnRelease.notHopingToWorkReasons.size() == 2 && ' +
-              "@.workOnRelease.notHopingToWorkReasons[0] == 'FULL_TIME_CARER' && " +
-              "@.workOnRelease.notHopingToWorkReasons[1] == 'HEALTH' && " +
-              "@.workOnRelease.notHopingToWorkOtherReason == '' && " +
+              '@.workOnRelease.affectAbilityToWork.size() == 2 && ' +
+              "@.workOnRelease.affectAbilityToWork[0] == 'CARING_RESPONSIBILITIES' && " +
+              "@.workOnRelease.affectAbilityToWork[1] == 'NEEDS_WORK_ADJUSTMENTS_DUE_TO_HEALTH' && " +
+              "@.workOnRelease.affectAbilityToWorkOther == '' && " +
               "@.previousQualifications.educationLevel == 'FURTHER_EDUCATION_COLLEGE' && " +
               '@.previousQualifications.qualifications.size() == 1 && ' +
               "@.previousQualifications.qualifications[0].subject == 'Physics' && " +
@@ -297,13 +298,13 @@ context('Create a short question set Induction', () => {
       .selectHopingWorkOnRelease(HopingToGetWorkValue.NO)
       .submitPage()
 
-    Page.verifyOnPage(ReasonsNotToGetWorkPage)
+    Page.verifyOnPage(AffectAbilityToWorkPage)
       .hasBackLinkTo('/prisoners/A00001A/create-induction/hoping-to-work-on-release')
-      .chooseReasonNotToGetWork(ReasonNotToGetWorkValue.FULL_TIME_CARER)
+      .chooseAffectAbilityToWork(AbilityToWorkValue.CARING_RESPONSIBILITIES)
       .submitPage()
 
     Page.verifyOnPage(HighestLevelOfEducationPage)
-      .hasBackLinkTo('/prisoners/A00001A/create-induction/reasons-not-to-get-work')
+      .hasBackLinkTo('/prisoners/A00001A/create-induction/affect-ability-to-work')
       .selectHighestLevelOfEducation(EducationLevelValue.FURTHER_EDUCATION_COLLEGE)
       .submitPage()
 
@@ -359,9 +360,9 @@ context('Create a short question set Induction', () => {
         .withRequestBody(
           matchingJsonPath(
             "$[?(@.workOnRelease.hopingToWork == 'NO' && " +
-              '@.workOnRelease.notHopingToWorkReasons.size() == 1 && ' +
-              "@.workOnRelease.notHopingToWorkReasons[0] == 'FULL_TIME_CARER' && " +
-              "@.workOnRelease.notHopingToWorkOtherReason == '' && " +
+              '@.workOnRelease.affectAbilityToWork.size() == 1 && ' +
+              "@.workOnRelease.affectAbilityToWork[0] == 'CARING_RESPONSIBILITIES' && " +
+              "@.workOnRelease.affectAbilityToWorkOther == '' && " +
               "@.previousQualifications.educationLevel == 'FURTHER_EDUCATION_COLLEGE' && " +
               '@.previousQualifications.qualifications.size() == 0 && ' +
               '@.previousTraining.trainingTypes.size() == 1 && ' +

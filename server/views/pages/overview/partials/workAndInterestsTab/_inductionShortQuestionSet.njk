@@ -37,33 +37,32 @@ questions are different.
           </dd>
         </div>
 
-        {# Prisoner is not hoping to work on release (or is not sure), hence the Short question set was asked #}
-        {# List the reasons the Prisoner is not hoping to work on release #}
+        {# List any constraints on ability to work #}
         <div class="govuk-summary-list__row">
           <dt class="govuk-summary-list__key">
-            What could stop work on release
+            Potential affect on ability to work
           </dt>
           <dd class="govuk-summary-list__value">
             <ul class="govuk-list">
-              {% for reasonNotToGetWork in induction.inductionDto.workOnRelease.notHopingToWorkReasons | sortedAlphabeticallyWithOtherLast %}
-                {% if reasonNotToGetWork === 'OTHER' %}
-                  <li>Other - {{ induction.inductionDto.workOnRelease.notHopingToWorkOtherReason }}</li>
+              {% for abilityToWorkConstraint in induction.inductionDto.workOnRelease.affectAbilityToWork | sortedAlphabeticallyWithOtherLast %}
+                {% if abilityToWorkConstraint === 'OTHER' %}
+                  <li>Other - {{ induction.inductionDto.workOnRelease.affectAbilityToWorkOther }}</li>
                 {% else %}
-                  <li>{{ reasonNotToGetWork | formatReasonNotToGetWork }}</li>
+                  <li>{{ abilityToWorkConstraint | formatAbilityToWorkConstraint }}</li>
                 {% endif %}
               {% endfor %}
             </ul>
           </dd>
           <dd class="govuk-summary-list__actions govuk-!-display-none-print">
-            {%- set reasonsNotToGetWorkChangeLinkUrl -%}
+            {%- set affectAbilityToWorkChangeLinkUrl -%}
               {%- if featureToggles.induction.update.enabled -%}
-                /prisoners/{{ prisonerSummary.prisonNumber }}/induction/reasons-not-to-get-work
+                /prisoners/{{ prisonerSummary.prisonNumber }}/induction/affect-ability-to-work
               {%- else -%}
-                {{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}/reason-to-not-get-work/update
+                {{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}/ability-to-work/update
               {%- endif -%}
             {%- endset -%}
-            <a class="govuk-link" href="{{ reasonsNotToGetWorkChangeLinkUrl }}" data-qa="reasons-not-to-get-work-change-link">
-              Change<span class="govuk-visually-hidden"> what could stop work on release</span>
+            <a class="govuk-link" href="{{ affectAbilityToWorkChangeLinkUrl }}" data-qa="affect-ability-to-work-change-link">
+              Change<span class="govuk-visually-hidden"> potential affect on ability to work</span>
             </a>
           </dd>
         </div>

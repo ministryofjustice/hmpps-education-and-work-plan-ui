@@ -3,21 +3,14 @@ import HighestLevelOfEducationController from '../common/highestLevelOfEducation
 import getDynamicBackLinkAriaText from '../dynamicAriaTextResolver'
 import validateHighestLevelOfEducationForm from '../../validators/induction/highestLevelOfEducationFormValidator'
 import { getPreviousPage } from '../../pageFlowHistory'
-import HopingToGetWorkValue from '../../../enums/hopingToGetWorkValue'
 
 export default class HighestLevelOfEducationCreateController extends HighestLevelOfEducationController {
   getBackLinkUrl(req: Request): string {
     const { prisonNumber } = req.params
-    const { pageFlowHistory, inductionDto } = req.session
-    let previousPage = pageFlowHistory && getPreviousPage(pageFlowHistory)
-    if (!previousPage) {
-      // No previous page from the Page Flow History
-      // The previous page in this case is based on whether it's a short or long question set induction
-      previousPage =
-        inductionDto.workOnRelease.hopingToWork === HopingToGetWorkValue.YES
-          ? `/prisoners/${prisonNumber}/create-induction/work-interest-roles` // Previous page in Long question set
-          : `/prisoners/${prisonNumber}/create-induction/reasons-not-to-get-work` // Previous page in Short question set
-    }
+    const { pageFlowHistory } = req.session
+    const previousPage =
+      (pageFlowHistory && getPreviousPage(pageFlowHistory)) ||
+      `/prisoners/${prisonNumber}/create-induction/affect-ability-to-work`
     return previousPage
   }
 

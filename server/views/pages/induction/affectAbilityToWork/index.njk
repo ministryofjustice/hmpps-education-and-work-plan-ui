@@ -1,7 +1,7 @@
 {% extends "../../../partials/layout.njk" %}
 
 {% set pageId = "induction-affect-ability-to-work" %}
-{% set title = "Is there anything that " + prisonerSummary.firstName + " " + prisonerSummary.lastName + " feels may affect their ability to work after they're released?" %}
+{% set title = "What does " + prisonerSummary.firstName + " " + prisonerSummary.lastName + " feel could stop or affect them working when they are out of prison?" %}
 {% set pageTitle = title %}
 
 {#
@@ -57,9 +57,9 @@ Data supplied to this template:
             },
             items: [
               {
-                value: "LIMITED_BY_OFFENSE",
-                checked: form.affectAbilityToWork.includes("LIMITED_BY_OFFENSE"),
-                text: "LIMITED_BY_OFFENSE" | formatAbilityToWorkConstraint
+                value: "LIMITED_BY_OFFENCE",
+                checked: form.affectAbilityToWork.includes("LIMITED_BY_OFFENCE"),
+                text: "LIMITED_BY_OFFENCE" | formatAbilityToWorkConstraint
               },
               {
                 value: "CARING_RESPONSIBILITIES",
@@ -67,14 +67,39 @@ Data supplied to this template:
                 text: "CARING_RESPONSIBILITIES" | formatAbilityToWorkConstraint
               },
               {
-                value: "HEALTH_ISSUES",
-                checked: form.affectAbilityToWork.includes("HEALTH_ISSUES"),
-                text: "HEALTH_ISSUES" | formatAbilityToWorkConstraint
+                value: "NEEDS_WORK_ADJUSTMENTS_DUE_TO_HEALTH",
+                checked: form.affectAbilityToWork.includes("NEEDS_WORK_ADJUSTMENTS_DUE_TO_HEALTH"),
+                text: "NEEDS_WORK_ADJUSTMENTS_DUE_TO_HEALTH" | formatAbilityToWorkConstraint
               },
-               {
+              {
+                value: "UNABLE_TO_WORK_DUE_TO_HEALTH",
+                checked: form.affectAbilityToWork.includes("UNABLE_TO_WORK_DUE_TO_HEALTH"),
+                text: "UNABLE_TO_WORK_DUE_TO_HEALTH" | formatAbilityToWorkConstraint
+              },
+              {
+                value: "LACKS_CONFIDENCE_OR_MOTIVATION",
+                checked: form.affectAbilityToWork.includes("LACKS_CONFIDENCE_OR_MOTIVATION"),
+                text: "LACKS_CONFIDENCE_OR_MOTIVATION" | formatAbilityToWorkConstraint
+              },
+              {
+                value: "REFUSED_SUPPORT_WITH_NO_REASON",
+                checked: form.affectAbilityToWork.includes("REFUSED_SUPPORT_WITH_NO_REASON"),
+                text: "REFUSED_SUPPORT_WITH_NO_REASON" | formatAbilityToWorkConstraint
+              },
+              {
+                value: "RETIRED",
+                checked: form.affectAbilityToWork.includes("RETIRED"),
+                text: "RETIRED" | formatAbilityToWorkConstraint
+              },
+              {
                 value: "NO_RIGHT_TO_WORK",
                 checked: form.affectAbilityToWork.includes("NO_RIGHT_TO_WORK"),
                 text: "NO_RIGHT_TO_WORK" | formatAbilityToWorkConstraint
+              },
+              {
+                value: "NOT_SURE",
+                checked: form.affectAbilityToWork.includes("NOT_SURE"),
+                text: "NOT_SURE" | formatAbilityToWorkConstraint
               },
               {
                 value: "OTHER",

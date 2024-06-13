@@ -6,8 +6,6 @@ import InPrisonWorkPage from './InPrisonWorkPage'
 import InPrisonWorkValue from '../../../server/enums/inPrisonWorkValue'
 import AdditionalTrainingPage from './AdditionalTrainingPage'
 import AdditionalTrainingValue from '../../../server/enums/additionalTrainingValue'
-import ReasonsNotToGetWorkPage from './ReasonsNotToGetWorkPage'
-import ReasonNotToGetWorkValue from '../../../server/enums/reasonNotToGetWorkValue'
 import HopingToWorkOnReleasePage from './HopingToWorkOnReleasePage'
 import HopingToGetWorkValue from '../../../server/enums/hopingToGetWorkValue'
 import QualificationsListPage from './QualificationsListPage'
@@ -88,21 +86,6 @@ export default class CheckYourAnswersPage extends Page {
     return Page.verifyOnPage(AdditionalTrainingPage)
   }
 
-  hasReasonsForNotWantingToWork(expected: Array<ReasonNotToGetWorkValue>): CheckYourAnswersPage {
-    this.reasonsForNotWantingToWorkOnReleaseSelections().then(reasonsForNotWantingToWorkSelections => {
-      const reasonsForNotWantingToWorkSelectionsDataQaAttributes = reasonsForNotWantingToWorkSelections
-        .map((idx, el) => el.getAttribute('data-qa'))
-        .get()
-      cy.wrap(reasonsForNotWantingToWorkSelectionsDataQaAttributes)
-        .should('have.length', expected.length)
-        .each(dataQaAttribute => {
-          const expectedDataQaAttributes = expected.map(value => `reasonToNotGetWork-${value}`)
-          expect(expectedDataQaAttributes).to.contain(dataQaAttribute)
-        })
-    })
-    return this
-  }
-
   hasEducationalQualifications(expected: Array<string>): CheckYourAnswersPage {
     this.educationalQualificationsTable()
       .find('[data-qa=educational-qualification-subject]')
@@ -150,11 +133,6 @@ export default class CheckYourAnswersPage extends Page {
   hasWantsToAddQualificationsAs(expected: YesNoValue): CheckYourAnswersPage {
     this.wantsToAddQualifications().should('contain.text', expected === YesNoValue.YES ? 'Yes' : 'No')
     return this
-  }
-
-  clickReasonsForNotWantingToWorkChangeLink(): ReasonsNotToGetWorkPage {
-    this.reasonsForNotWantingToWorkOnReleaseChangeLink().click()
-    return Page.verifyOnPage(ReasonsNotToGetWorkPage)
   }
 
   hasHopingToWorkOnRelease(expected: HopingToGetWorkValue): CheckYourAnswersPage {
@@ -330,8 +308,4 @@ export default class CheckYourAnswersPage extends Page {
     cy.get(`[data-qa=hopingToGetWork-${expected}`)
 
   private hopingToWorkOnReleaseChangeLink = (): PageElement => cy.get('[data-qa=hopingToGetWorkLink]')
-
-  private reasonsForNotWantingToWorkOnReleaseSelections = (): PageElement => cy.get('[data-qa^=reasonToNotGetWork-]')
-
-  private reasonsForNotWantingToWorkOnReleaseChangeLink = (): PageElement => cy.get('[data-qa=reasonToNotGetWorkLink]')
 }

@@ -127,7 +127,7 @@ describe('workInterestRolesCreateController', () => {
   })
 
   describe('submitWorkInterestRolesForm', () => {
-    it('should update InductionDto and redirect to Highest Level of Education', async () => {
+    it('should update InductionDto and redirect to Affect Ability To Work', async () => {
       // Given
       const inductionDto = aLongQuestionSetInductionDto()
       inductionDto.futureWorkInterests.interests = [
@@ -145,7 +145,7 @@ describe('workInterestRolesCreateController', () => {
         },
       }
 
-      const expectedNextPage = '/prisoners/A1234BC/create-induction/highest-level-of-education'
+      const expectedNextPage = '/prisoners/A1234BC/create-induction/affect-ability-to-work'
 
       const expectedUpdatedWorkInterests: Array<FutureWorkInterestDto> = [
         {

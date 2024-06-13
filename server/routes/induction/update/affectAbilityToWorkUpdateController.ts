@@ -59,11 +59,11 @@ export default class AffectAbilityToWorkUpdateController extends AffectAbilityTo
       return res.redirect(`/prisoners/${prisonNumber}/induction/check-your-answers`)
     }
 
-    // if we are switching from the short question set to the long one, forward to the In Prison Work Interests page
+    // if we are switching from the short question set to the long one, forward to the Highest Level of Education page
     if (req.session.updateInductionQuestionSet) {
       req.session.inductionDto = updatedInduction
       req.session.affectAbilityToWorkForm = undefined
-      return res.redirect(`/prisoners/${prisonNumber}/induction/in-prison-work`)
+      return res.redirect(`/prisoners/${prisonNumber}/induction/highest-level-of-education`)
     }
 
     try {

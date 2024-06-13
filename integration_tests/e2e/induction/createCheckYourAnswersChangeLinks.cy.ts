@@ -20,7 +20,6 @@ import QualificationsListPage from '../../pages/induction/QualificationsListPage
 import EducationLevelValue from '../../../server/enums/educationLevelValue'
 import InPrisonTrainingValue from '../../../server/enums/inPrisonTrainingValue'
 import InPrisonWorkValue from '../../../server/enums/inPrisonWorkValue'
-import ReasonNotToGetWorkValue from '../../../server/enums/reasonNotToGetWorkValue'
 import HasWorkedBeforeValue from '../../../server/enums/hasWorkedBeforeValue'
 
 context(`Change links on the Check Your Answers page when creating an Induction`, () => {
@@ -59,7 +58,7 @@ context(`Change links on the Check Your Answers page when creating an Induction`
       .clickFactorsAffectingAbilityToWorkChangeLink()
       .hasBackLinkTo(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
       .deSelectAffectAbilityToWork(AbilityToWorkValue.NONE)
-      .chooseAffectAbilityToWork(AbilityToWorkValue.LIMITED_BY_OFFENSE)
+      .chooseAffectAbilityToWork(AbilityToWorkValue.LIMITED_BY_OFFENCE)
       .chooseAffectAbilityToWork(AbilityToWorkValue.NO_RIGHT_TO_WORK)
       .submitPage()
 
@@ -202,7 +201,7 @@ context(`Change links on the Check Your Answers page when creating an Induction`
     // Then
     Page.verifyOnPage(CheckYourAnswersPage) //
       .hasHopingToWorkOnRelease(HopingToGetWorkValue.YES)
-      .hasFactorsAffectingAbilityToWork(AbilityToWorkValue.LIMITED_BY_OFFENSE)
+      .hasFactorsAffectingAbilityToWork(AbilityToWorkValue.LIMITED_BY_OFFENCE)
       .hasFactorsAffectingAbilityToWork(AbilityToWorkValue.NO_RIGHT_TO_WORK)
       .hasPersonalInterest(PersonalInterestsValue.CRAFTS)
       .hasPersonalInterest(PersonalInterestsValue.DIGITAL)
@@ -229,6 +228,7 @@ context(`Change links on the Check Your Answers page when creating an Induction`
         InPrisonTrainingValue.RUNNING_A_BUSINESS,
       ])
   })
+
   it('should support changing has worked before from Yes to Not relevant', () => {
     // Given
     cy.createLongQuestionSetInductionToArriveOnCheckYourAnswers(prisonNumber)
@@ -414,19 +414,20 @@ context(`Change links on the Check Your Answers page when creating an Induction`
       .removeQualification(1)
       .submitPage()
 
-    // Change reasons for not wanting to work on release
+    // Change affecting ability to work
     Page.verifyOnPage(CheckYourAnswersPage)
-      .clickReasonsForNotWantingToWorkChangeLink()
+      .clickFactorsAffectingAbilityToWorkChangeLink()
       .hasBackLinkTo(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
-      .deSelectReasonNotToGetWork(ReasonNotToGetWorkValue.FULL_TIME_CARER)
-      .chooseReasonNotToGetWork(ReasonNotToGetWorkValue.NO_RIGHT_TO_WORK)
-      .chooseReasonNotToGetWork(ReasonNotToGetWorkValue.RETIRED)
+      .deSelectAffectAbilityToWork(AbilityToWorkValue.CARING_RESPONSIBILITIES)
+      .chooseAffectAbilityToWork(AbilityToWorkValue.NO_RIGHT_TO_WORK)
+      .chooseAffectAbilityToWork(AbilityToWorkValue.RETIRED)
       .submitPage()
 
     // Then
     Page.verifyOnPage(CheckYourAnswersPage) //
       .hasHopingToWorkOnRelease(HopingToGetWorkValue.NO)
-      .hasReasonsForNotWantingToWork([ReasonNotToGetWorkValue.NO_RIGHT_TO_WORK, ReasonNotToGetWorkValue.RETIRED])
+      .hasFactorsAffectingAbilityToWork(AbilityToWorkValue.NO_RIGHT_TO_WORK)
+      .hasFactorsAffectingAbilityToWork(AbilityToWorkValue.RETIRED)
       .hasWorkedBefore(HasWorkedBeforeValue.YES)
       .hasWorkExperience(
         TypeOfWorkExperienceValue.OFFICE,

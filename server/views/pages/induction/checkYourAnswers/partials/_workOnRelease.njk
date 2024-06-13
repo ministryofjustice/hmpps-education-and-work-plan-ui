@@ -49,25 +49,5 @@
         </a>
       </dd>
     </div>
-
-  {% else %}
-
-    <div class="govuk-summary-list__row">
-      <dt class="govuk-summary-list__key govuk-!-width-one-quarter">
-        What could stop work on release
-      </dt>
-      <dd class="govuk-summary-list__value" data-qa="reasonToNotGetWork">
-        {% for item in inductionDto.workOnRelease.notHopingToWorkReasons %}
-          <div data-qa="reasonToNotGetWork-{{ item }}">
-            {{ item | formatReasonNotToGetWork }}{{ ' - ' + inductionDto.workOnRelease.notHopingToWorkOtherReason if item === 'OTHER' }}{{ ',' if inductionDto.workOnRelease.notHopingToWorkReasons.length !== loop.index }}
-          </div>
-        {% endfor %}
-      </dd>
-      <dd class="govuk-summary-list__actions">
-        <a class="govuk-link" href="reasons-not-to-get-work" data-qa="reasonToNotGetWorkLink">
-          Change<span class="govuk-visually-hidden"> what could stop work on release</span>
-        </a>
-      </dd>
-    </div>
   {% endif %}
 </dl>

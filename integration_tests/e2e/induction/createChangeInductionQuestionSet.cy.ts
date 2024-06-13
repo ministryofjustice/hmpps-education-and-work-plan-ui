@@ -6,8 +6,6 @@
 import Page from '../../pages/page'
 import CheckYourAnswersPage from '../../pages/induction/CheckYourAnswersPage'
 import HopingToGetWorkValue from '../../../server/enums/hopingToGetWorkValue'
-import ReasonsNotToGetWorkPage from '../../pages/induction/ReasonsNotToGetWorkPage'
-import ReasonNotToGetWorkValue from '../../../server/enums/reasonNotToGetWorkValue'
 import QualificationsListPage from '../../pages/induction/QualificationsListPage'
 import QualificationLevelValue from '../../../server/enums/qualificationLevelValue'
 import QualificationDetailsPage from '../../pages/induction/QualificationDetailsPage'
@@ -27,7 +25,6 @@ import FutureWorkInterestRolesPage from '../../pages/induction/FutureWorkInteres
 import SkillsPage from '../../pages/induction/SkillsPage'
 import PersonalInterestsPage from '../../pages/induction/PersonalInterestsPage'
 import AffectAbilityToWorkPage from '../../pages/induction/AffectAbilityToWorkPage'
-import AbilityToWorkValue from '../../../server/enums/abilityToWorkValue'
 import HighestLevelOfEducationPage from '../../pages/induction/HighestLevelOfEducationPage'
 import EducationLevelValue from '../../../server/enums/educationLevelValue'
 import QualificationLevelPage from '../../pages/induction/QualificationLevelPage'
@@ -59,15 +56,14 @@ context(`Change new Induction question set by updating 'Hoping to work on releas
       .selectHopingWorkOnRelease(HopingToGetWorkValue.NO)
       .submitPage()
 
-    // Reasons Not To Work is the next page, and is only asked on the short question set, so will not have any previous answer from the original long question set Induction
-    Page.verifyOnPage(ReasonsNotToGetWorkPage) //
+    // Factors Affecting Ability To Work is the next page. This is asked on the long question set, so this will already have answers set
+    Page.verifyOnPage(AffectAbilityToWorkPage) //
       .hasBackLinkTo(`/prisoners/${prisonNumberForPrisonerWithNoInduction}/create-induction/hoping-to-work-on-release`)
-      .chooseReasonNotToGetWork(ReasonNotToGetWorkValue.HEALTH)
       .submitPage()
 
     // Highest Level of Education is next. This is asked on the long question set, so this will already have answers set
     Page.verifyOnPage(HighestLevelOfEducationPage) //
-      .hasBackLinkTo(`/prisoners/${prisonNumberForPrisonerWithNoInduction}/create-induction/reasons-not-to-get-work`)
+      .hasBackLinkTo(`/prisoners/${prisonNumberForPrisonerWithNoInduction}/create-induction/affect-ability-to-work`)
       .submitPage()
 
     // Want To Add Qualifications page is next. Qualifications were already added as part of the long question set Induction, so this will already be set to Yes
@@ -138,8 +134,9 @@ context(`Change new Induction question set by updating 'Hoping to work on releas
         .withRequestBody(
           matchingJsonPath(
             "$[?(@.workOnRelease.hopingToWork == 'NO' && " +
-              '@.workOnRelease.notHopingToWorkReasons.size() == 1 && ' +
-              "@.workOnRelease.notHopingToWorkReasons[0] == 'HEALTH' && " +
+              '@.workOnRelease.affectAbilityToWork.size() == 1 && ' +
+              "@.workOnRelease.affectAbilityToWork[0] == 'NONE' && " +
+              "@.workOnRelease.affectAbilityToWorkOther == '' && " +
               "@.previousQualifications.educationLevel == 'FURTHER_EDUCATION_COLLEGE' && " +
               '@.previousQualifications.qualifications.size() == 2 && ' +
               "@.previousQualifications.qualifications[0].subject == 'Computer science' && " +
@@ -192,9 +189,14 @@ context(`Change new Induction question set by updating 'Hoping to work on releas
       .setWorkInterestRole(WorkInterestTypeValue.DRIVING, 'Driving instructor')
       .submitPage()
 
+    // Factors Affecting Ability To Work is the next page. This is asked on the short question set, so this will already have answers set
+    Page.verifyOnPage(AffectAbilityToWorkPage) //
+      .hasBackLinkTo(`/prisoners/${prisonNumberForPrisonerWithNoInduction}/create-induction/work-interest-roles`)
+      .submitPage()
+
     // Highest Level of Education is next. This is asked on the short question set, so this will already have answers set
     Page.verifyOnPage(HighestLevelOfEducationPage) //
-      .hasBackLinkTo(`/prisoners/${prisonNumberForPrisonerWithNoInduction}/create-induction/work-interest-roles`)
+      .hasBackLinkTo(`/prisoners/${prisonNumberForPrisonerWithNoInduction}/create-induction/affect-ability-to-work`)
       .submitPage()
 
     // Want To Add Qualifications page is next. Qualifications were already added as part of the short question set Induction, so this will already be set to Yes. Change to No
@@ -233,15 +235,9 @@ context(`Change new Induction question set by updating 'Hoping to work on releas
       .hasBackLinkTo(`/prisoners/${prisonNumberForPrisonerWithNoInduction}/create-induction/skills`)
       .submitPage()
 
-    // Factors Affecting Ability To Work is the next page. This is not asked on the short question set.
-    Page.verifyOnPage(AffectAbilityToWorkPage) //
-      .hasBackLinkTo(`/prisoners/${prisonNumberForPrisonerWithNoInduction}/create-induction/personal-interests`)
-      .chooseAffectAbilityToWork(AbilityToWorkValue.HEALTH_ISSUES)
-      .submitPage()
-
     // In Prison Work Interests is the next page. This is asked on the short question set, so this will already have answers set
     Page.verifyOnPage(InPrisonWorkPage) //
-      .hasBackLinkTo(`/prisoners/${prisonNumberForPrisonerWithNoInduction}/create-induction/affect-ability-to-work`)
+      .hasBackLinkTo(`/prisoners/${prisonNumberForPrisonerWithNoInduction}/create-induction/personal-interests`)
       .submitPage()
 
     // In Prison Training Interests is the next page. This is asked on the short question set, so this will already have answers set
@@ -279,7 +275,7 @@ context(`Change new Induction question set by updating 'Hoping to work on releas
               '@.personalSkillsAndInterests.interests.size() == 1 && ' +
               "@.personalSkillsAndInterests.interests[0].interestType == 'COMMUNITY' && " +
               '@.workOnRelease.affectAbilityToWork.size() == 1 && ' +
-              "@.workOnRelease.affectAbilityToWork[0] == 'HEALTH_ISSUES' && " +
+              "@.workOnRelease.affectAbilityToWork[0] == 'CARING_RESPONSIBILITIES' && " +
               "@.workOnRelease.affectAbilityToWorkOther == '' && " +
               '@.inPrisonInterests.inPrisonWorkInterests.size() == 1 && ' +
               "@.inPrisonInterests.inPrisonWorkInterests[0].workType == 'PRISON_LIBRARY' && !@.inPrisonInterests.inPrisonWorkInterests[0].workTypeOther && " +
@@ -314,9 +310,14 @@ context(`Change new Induction question set by updating 'Hoping to work on releas
       .setWorkInterestRole(WorkInterestTypeValue.DRIVING, 'Driving instructor')
       .submitPage()
 
+    // Factors Affecting Ability To Work is the next page. This is asked on the short question set, so this will already have answers set
+    Page.verifyOnPage(AffectAbilityToWorkPage) //
+      .hasBackLinkTo(`/prisoners/${prisonNumberForPrisonerWithNoInduction}/create-induction/work-interest-roles`)
+      .submitPage()
+
     // Highest Level of Education is next. This is asked on the short question set, so this will already have answers set, but we will change it
     Page.verifyOnPage(HighestLevelOfEducationPage) //
-      .hasBackLinkTo(`/prisoners/${prisonNumberForPrisonerWithNoInduction}/create-induction/work-interest-roles`)
+      .hasBackLinkTo(`/prisoners/${prisonNumberForPrisonerWithNoInduction}/create-induction/affect-ability-to-work`)
       .selectHighestLevelOfEducation(EducationLevelValue.POSTGRADUATE_DEGREE_AT_UNIVERSITY)
       .submitPage()
 
@@ -368,15 +369,9 @@ context(`Change new Induction question set by updating 'Hoping to work on releas
       .hasBackLinkTo(`/prisoners/${prisonNumberForPrisonerWithNoInduction}/create-induction/skills`)
       .submitPage()
 
-    // Factors Affecting Ability To Work is the next page. This is not asked on the short question set.
-    Page.verifyOnPage(AffectAbilityToWorkPage) //
-      .hasBackLinkTo(`/prisoners/${prisonNumberForPrisonerWithNoInduction}/create-induction/personal-interests`)
-      .chooseAffectAbilityToWork(AbilityToWorkValue.HEALTH_ISSUES)
-      .submitPage()
-
     // In Prison Work Interests is the next page. This is asked on the short question set, so this will already have answers set
     Page.verifyOnPage(InPrisonWorkPage) //
-      .hasBackLinkTo(`/prisoners/${prisonNumberForPrisonerWithNoInduction}/create-induction/affect-ability-to-work`)
+      .hasBackLinkTo(`/prisoners/${prisonNumberForPrisonerWithNoInduction}/create-induction/personal-interests`)
       .submitPage()
 
     // In Prison Training Interests is the next page. This is asked on the short question set, so this will already have answers set
@@ -418,7 +413,7 @@ context(`Change new Induction question set by updating 'Hoping to work on releas
               '@.personalSkillsAndInterests.interests.size() == 1 && ' +
               "@.personalSkillsAndInterests.interests[0].interestType == 'COMMUNITY' && " +
               '@.workOnRelease.affectAbilityToWork.size() == 1 && ' +
-              "@.workOnRelease.affectAbilityToWork[0] == 'HEALTH_ISSUES' && " +
+              "@.workOnRelease.affectAbilityToWork[0] == 'CARING_RESPONSIBILITIES' && " +
               "@.workOnRelease.affectAbilityToWorkOther == '' && " +
               '@.inPrisonInterests.inPrisonWorkInterests.size() == 1 && ' +
               "@.inPrisonInterests.inPrisonWorkInterests[0].workType == 'PRISON_LIBRARY' && !@.inPrisonInterests.inPrisonWorkInterests[0].workTypeOther && " +

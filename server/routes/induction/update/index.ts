@@ -10,7 +10,6 @@ import WorkedBeforeUpdateController from './workedBeforeUpdateController'
 import PreviousWorkExperienceDetailUpdateController from './previousWorkExperienceDetailUpdateController'
 import PreviousWorkExperienceTypesUpdateController from './previousWorkExperienceTypesUpdateController'
 import AffectAbilityToWorkUpdateController from './affectAbilityToWorkUpdateController'
-import ReasonsNotToGetWorkUpdateController from './reasonsNotToGetWorkUpdateController'
 import WorkInterestTypesUpdateController from './workInterestTypesUpdateController'
 import WorkInterestRolesUpdateController from './workInterestRolesUpdateController'
 import HighestLevelOfEducationUpdateController from './highestLevelOfEducationUpdateController'
@@ -46,7 +45,6 @@ export default (router: Router, services: Services) => {
     inductionService,
   )
   const affectAbilityToWorkUpdateController = new AffectAbilityToWorkUpdateController(inductionService)
-  const reasonsNotToGetWorkUpdateController = new ReasonsNotToGetWorkUpdateController(inductionService)
   const workInterestTypesUpdateController = new WorkInterestTypesUpdateController(inductionService)
   const workInterestRolesUpdateController = new WorkInterestRolesUpdateController(inductionService)
   const highestLevelOfEducationUpdateController = new HighestLevelOfEducationUpdateController(inductionService)
@@ -123,13 +121,6 @@ export default (router: Router, services: Services) => {
     ])
     router.post('/prisoners/:prisonNumber/induction/affect-ability-to-work', [
       asyncMiddleware(affectAbilityToWorkUpdateController.submitAffectAbilityToWorkForm),
-    ])
-
-    router.get('/prisoners/:prisonNumber/induction/reasons-not-to-get-work', [
-      asyncMiddleware(reasonsNotToGetWorkUpdateController.getReasonsNotToGetWorkView),
-    ])
-    router.post('/prisoners/:prisonNumber/induction/reasons-not-to-get-work', [
-      asyncMiddleware(reasonsNotToGetWorkUpdateController.submitReasonsNotToGetWorkForm),
     ])
 
     router.get('/prisoners/:prisonNumber/induction/work-interest-types', [

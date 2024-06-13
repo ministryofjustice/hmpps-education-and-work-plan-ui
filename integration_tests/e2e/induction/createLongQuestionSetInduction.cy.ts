@@ -88,12 +88,23 @@ context('Create a long question set Induction', () => {
       .setWorkInterestRole(WorkInterestTypeValue.OTHER, 'Botanist')
       .submitPage()
 
-    // Highest level of education is next
-    Page.verifyOnPage(HighestLevelOfEducationPage)
+    // Factors Affecting Ability To Work is the next page
+    Page.verifyOnPage(AffectAbilityToWorkPage) //
       .hasBackLinkTo('/prisoners/A00001A/create-induction/work-interest-roles')
       .submitPage() // submit the page without answering the question to trigger a validation error
-    Page.verifyOnPage(HighestLevelOfEducationPage)
+    Page.verifyOnPage(AffectAbilityToWorkPage) //
       .hasBackLinkTo('/prisoners/A00001A/create-induction/work-interest-roles')
+      .hasErrorCount(1)
+      .hasFieldInError('affectAbilityToWork')
+      .chooseAffectAbilityToWork(AbilityToWorkValue.NONE)
+      .submitPage()
+
+    // Highest level of education is next
+    Page.verifyOnPage(HighestLevelOfEducationPage)
+      .hasBackLinkTo('/prisoners/A00001A/create-induction/affect-ability-to-work')
+      .submitPage() // submit the page without answering the question to trigger a validation error
+    Page.verifyOnPage(HighestLevelOfEducationPage)
+      .hasBackLinkTo('/prisoners/A00001A/create-induction/affect-ability-to-work')
       .hasErrorCount(1)
       .hasFieldInError('educationLevel')
       .selectHighestLevelOfEducation(EducationLevelValue.FURTHER_EDUCATION_COLLEGE)
@@ -235,23 +246,12 @@ context('Create a long question set Induction', () => {
       .choosePersonalInterest(PersonalInterestsValue.DIGITAL)
       .submitPage()
 
-    // Factors Affecting Ability To Work is the next page
-    Page.verifyOnPage(AffectAbilityToWorkPage) //
-      .hasBackLinkTo('/prisoners/A00001A/create-induction/personal-interests')
-      .submitPage() // submit the page without answering the question to trigger a validation error
-    Page.verifyOnPage(AffectAbilityToWorkPage) //
-      .hasBackLinkTo('/prisoners/A00001A/create-induction/personal-interests')
-      .hasErrorCount(1)
-      .hasFieldInError('affectAbilityToWork')
-      .chooseAffectAbilityToWork(AbilityToWorkValue.NONE)
-      .submitPage()
-
     // In Prison Work Interests page is next
     Page.verifyOnPage(InPrisonWorkPage) //
-      .hasBackLinkTo('/prisoners/A00001A/create-induction/affect-ability-to-work')
+      .hasBackLinkTo('/prisoners/A00001A/create-induction/personal-interests')
       .submitPage() // submit the page without answering the question to trigger a validation error
     Page.verifyOnPage(InPrisonWorkPage) //
-      .hasBackLinkTo('/prisoners/A00001A/create-induction/affect-ability-to-work')
+      .hasBackLinkTo('/prisoners/A00001A/create-induction/personal-interests')
       .chooseWorkType(InPrisonWorkValue.KITCHENS_AND_COOKING)
       .chooseWorkType(InPrisonWorkValue.PRISON_LIBRARY)
       .submitPage()
@@ -350,9 +350,15 @@ context('Create a long question set Induction', () => {
       .setWorkInterestRole(WorkInterestTypeValue.OUTDOOR, 'Farm hand')
       .submitPage()
 
+    // Factors Affecting Ability To Work is the next page
+    Page.verifyOnPage(AffectAbilityToWorkPage) //
+      .hasBackLinkTo('/prisoners/A00001A/create-induction/work-interest-roles')
+      .chooseAffectAbilityToWork(AbilityToWorkValue.NONE)
+      .submitPage()
+
     // Highest level of education is next
     Page.verifyOnPage(HighestLevelOfEducationPage)
-      .hasBackLinkTo('/prisoners/A00001A/create-induction/work-interest-roles')
+      .hasBackLinkTo('/prisoners/A00001A/create-induction/affect-ability-to-work')
       .selectHighestLevelOfEducation(EducationLevelValue.FURTHER_EDUCATION_COLLEGE)
       .submitPage()
 
@@ -399,15 +405,9 @@ context('Create a long question set Induction', () => {
       .choosePersonalInterest(PersonalInterestsValue.COMMUNITY)
       .submitPage()
 
-    // Factors Affecting Ability To Work is the next page
-    Page.verifyOnPage(AffectAbilityToWorkPage) //
-      .hasBackLinkTo('/prisoners/A00001A/create-induction/personal-interests')
-      .chooseAffectAbilityToWork(AbilityToWorkValue.NONE)
-      .submitPage()
-
     // In Prison Work Interests page is next
     Page.verifyOnPage(InPrisonWorkPage) //
-      .hasBackLinkTo('/prisoners/A00001A/create-induction/affect-ability-to-work')
+      .hasBackLinkTo('/prisoners/A00001A/create-induction/personal-interests')
       .chooseWorkType(InPrisonWorkValue.KITCHENS_AND_COOKING)
       .submitPage()
 
