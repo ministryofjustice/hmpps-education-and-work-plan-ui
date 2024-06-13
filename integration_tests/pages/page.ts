@@ -32,12 +32,30 @@ export default abstract class Page {
 
   runAxe = (): void => {
     cy.injectAxe()
-    cy.checkA11y(null, {
-      includedImpacts: ['critical', 'serious'],
-      rules: {
-        'aria-allowed-attr': { enabled: false },
+    cy.checkA11y(
+      null,
+      {
+        includedImpacts: ['critical', 'serious'],
+        rules: {
+          'aria-allowed-attr': { enabled: false },
+        },
       },
-    })
+      violations => {
+        cy.task(
+          'log',
+          `${violations.length} accessibility violation${
+            violations.length === 1 ? '' : 's'
+          } ${violations.length === 1 ? 'was' : 'were'} detected`,
+        )
+        const violationData = violations.map(({ id, impact, description, nodes }) => ({
+          id,
+          impact,
+          description,
+          nodes: nodes.length,
+        }))
+        cy.task('table', violationData)
+      },
+    )
   }
 
   signOut = (): PageElement => cy.get('[data-qa=signOut]')
