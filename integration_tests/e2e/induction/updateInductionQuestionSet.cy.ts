@@ -17,7 +17,6 @@ import InPrisonWorkValue from '../../../server/enums/inPrisonWorkValue'
 import InPrisonTrainingValue from '../../../server/enums/inPrisonTrainingValue'
 import CheckYourAnswersPage from '../../pages/induction/CheckYourAnswersPage'
 import WorkedBeforePage from '../../pages/induction/WorkedBeforePage'
-import YesNoValue from '../../../server/enums/yesNoValue'
 import PreviousWorkExperienceTypesPage from '../../pages/induction/PreviousWorkExperienceTypesPage'
 import TypeOfWorkExperienceValue from '../../../server/enums/typeOfWorkExperienceValue'
 import PreviousWorkExperienceDetailPage from '../../pages/induction/PreviousWorkExperienceDetailPage'
@@ -33,6 +32,7 @@ import AbilityToWorkValue from '../../../server/enums/abilityToWorkValue'
 import HighestLevelOfEducationPage from '../../pages/induction/HighestLevelOfEducationPage'
 import WantToAddQualificationsPage from '../../pages/induction/WantToAddQualificationsPage'
 import QualificationLevelPage from '../../pages/induction/QualificationLevelPage'
+import HasWorkedBeforeValue from '../../../server/enums/hasWorkedBeforeValue'
 
 /**
  * Cypress tests that change the question set of an existing Induction by updating the answer to 'Hoping to work on release'
@@ -110,7 +110,7 @@ context(`Change existing Induction question set by updating the answer to 'Hopin
     // 'Has the prisoner worked before' is the next page. This is asked on the short question set so will already have answers.
     Page.verifyOnPage(WorkedBeforePage) //
       .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/additional-training`)
-      .selectWorkedBefore(YesNoValue.YES)
+      .selectWorkedBefore(HasWorkedBeforeValue.YES)
       .submitPage()
 
     // Preview Work Experience types is the next page. This is asked on the short question set so will already have answers.
@@ -186,7 +186,7 @@ context(`Change existing Induction question set by updating the answer to 'Hopin
               "@.previousTraining.trainingTypes[1] == 'HGV_LICENCE' && " +
               "@.previousTraining.trainingTypes[2] == 'OTHER' && " +
               "@.previousTraining.trainingTypeOther == 'Accountancy Certification' && " +
-              '@.previousWorkExperiences.hasWorkedBefore == true && ' +
+              "@.previousWorkExperiences.hasWorkedBefore === 'YES' && " +
               '@.previousWorkExperiences.experiences.size() == 3 && ' +
               "@.previousWorkExperiences.experiences[0].experienceType == 'TECHNICAL' && " +
               "@.previousWorkExperiences.experiences[0].role == 'Software developer' && " +
@@ -274,7 +274,7 @@ context(`Change existing Induction question set by updating the answer to 'Hopin
     // 'Has the prisoner worked before' is the next page. This is asked on the short question set so will already have answers.
     Page.verifyOnPage(WorkedBeforePage) //
       .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/additional-training`)
-      .selectWorkedBefore(YesNoValue.YES)
+      .selectWorkedBefore(HasWorkedBeforeValue.YES)
       .submitPage()
 
     // Preview Work Experience types is the next page. This is asked on the short question set so will already have answers.
@@ -342,7 +342,7 @@ context(`Change existing Induction question set by updating the answer to 'Hopin
               "@.previousQualifications.qualifications[1].level == 'LEVEL_4' && " +
               '@.previousTraining.trainingTypes.size() == 1 && ' +
               "@.previousTraining.trainingTypes[0] == 'FULL_UK_DRIVING_LICENCE' && " +
-              '@.previousWorkExperiences.hasWorkedBefore == true && ' +
+              "@.previousWorkExperiences.hasWorkedBefore === 'YES' && " +
               '@.previousWorkExperiences.experiences.size() == 3 && ' +
               "@.previousWorkExperiences.experiences[0].experienceType == 'TECHNICAL' && " +
               "@.previousWorkExperiences.experiences[0].role == 'Software developer' && " +

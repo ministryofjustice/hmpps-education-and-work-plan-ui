@@ -294,7 +294,7 @@ const stubGetInductionLongQuestionSet = (prisonNumber = 'G6115VJ'): SuperAgentRe
           updatedByDisplayName: 'Alex Smith',
           updatedAt: '2023-08-29T10:29:22.457',
           updatedAtPrison: 'MDI',
-          hasWorkedBefore: true,
+          hasWorkedBefore: 'YES',
           experiences: [
             {
               experienceType: 'OFFICE',
@@ -664,7 +664,7 @@ const stubGetInductionLongQuestionSetWithNoQualifications = (prisonNumber = 'G61
           updatedByDisplayName: 'Alex Smith',
           updatedAt: '2023-08-29T10:29:22.457',
           updatedAtPrison: 'MDI',
-          hasWorkedBefore: true,
+          hasWorkedBefore: 'YES',
           experiences: [
             {
               experienceType: 'OFFICE',

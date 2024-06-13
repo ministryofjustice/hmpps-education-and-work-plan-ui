@@ -6,6 +6,7 @@ import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataB
 import { aLongQuestionSetInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
 import PreviousWorkExperienceDetailCreateController from './previousWorkExperienceDetailCreateController'
 import TypeOfWorkExperienceValue from '../../../enums/typeOfWorkExperienceValue'
+import HasWorkedBeforeValue from '../../../enums/hasWorkedBeforeValue'
 
 describe('previousWorkExperienceDetailCreateController', () => {
   const controller = new PreviousWorkExperienceDetailCreateController()
@@ -606,7 +607,7 @@ describe('previousWorkExperienceDetailCreateController', () => {
 })
 
 const inductionDtoWithWorkExperienceTypes = (): InductionDto => {
-  const inductionDto = aLongQuestionSetInductionDto({ hasWorkedBefore: true })
+  const inductionDto = aLongQuestionSetInductionDto({ hasWorkedBefore: HasWorkedBeforeValue.YES })
   inductionDto.previousWorkExperiences.experiences = [
     {
       experienceType: TypeOfWorkExperienceValue.CONSTRUCTION,

@@ -397,8 +397,11 @@ export interface components {
     }
     /** @example null */
     UpdatePreviousWorkExperiencesRequest: {
-      /** @example false */
-      hasWorkedBefore: boolean
+      /**
+       * @example null
+       * @enum {string}
+       */
+      hasWorkedBefore: 'YES' | 'NO' | 'NOT_RELEVANT'
       /**
        * Format: uuid
        * @description A unique reference for a PreviousWorkExperiences resource (if it already exists).
@@ -571,8 +574,11 @@ export interface components {
     }
     /** @example null */
     UpdatePreviousWorkRequest: {
-      /** @example false */
-      hasWorkedBefore: boolean
+      /**
+       * @example null
+       * @enum {string}
+       */
+      hasWorkedBefore: 'YES' | 'NO' | 'NOT_RELEVANT'
       /**
        * Format: uuid
        * @description A unique reference for this Prisoner's previous work experience.
@@ -995,8 +1001,11 @@ export interface components {
     }
     /** @example null */
     CreatePreviousWorkExperiencesRequest: {
-      /** @example false */
-      hasWorkedBefore: boolean
+      /**
+       * @example null
+       * @enum {string}
+       */
+      hasWorkedBefore: 'YES' | 'NO' | 'NOT_RELEVANT'
       /**
        * @description A list of the Prisoner's previous work experiences.
        * @example null
@@ -1145,8 +1154,11 @@ export interface components {
     }
     /** @example null */
     CreatePreviousWorkRequest: {
-      /** @example false */
-      hasWorkedBefore: boolean
+      /**
+       * @example null
+       * @enum {string}
+       */
+      hasWorkedBefore: 'YES' | 'NO' | 'NOT_RELEVANT'
       /**
        * @description A list of the Prisoner's type of previous work experience.
        * @example null
@@ -1964,8 +1976,11 @@ export interface components {
        * @example 814ade0a-a3b2-46a3-862f-79211ba13f7b
        */
       reference: string
-      /** @example false */
-      hasWorkedBefore: boolean
+      /**
+       * @example null
+       * @enum {string}
+       */
+      hasWorkedBefore: 'YES' | 'NO' | 'NOT_RELEVANT'
       /**
        * @description A list of the Prisoner's previous work experiences.
        * @example null
@@ -2259,8 +2274,11 @@ export interface components {
     }
     /** @example null */
     PreviousWorkResponse: {
-      /** @example false */
-      hasWorkedBefore: boolean
+      /**
+       * @example null
+       * @enum {string}
+       */
+      hasWorkedBefore: 'YES' | 'NO' | 'NOT_RELEVANT'
       /**
        * @description The DPS username of the person who last updated this Prisoner's previous work.
        * @example asmith_gen
