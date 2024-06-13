@@ -7,10 +7,10 @@ import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateIn
 import logger from '../../../../logger'
 import { InductionService } from '../../../services'
 import validateWorkedBeforeForm from '../../validators/induction/workedBeforeFormValidator'
-import YesNoValue from '../../../enums/yesNoValue'
 import getDynamicBackLinkAriaText from '../dynamicAriaTextResolver'
 import { buildNewPageFlowHistory, getPreviousPage } from '../../pageFlowHistory'
 import { getNextPage } from '../../pageFlowQueue'
+import HasWorkedBeforeValue from '../../../enums/hasWorkedBeforeValue'
 
 /**
  * Controller for the Update of the Worked Before screen of the Induction.
@@ -52,7 +52,10 @@ export default class WorkedBeforeUpdateController extends WorkedBeforeController
       req.session.inductionDto = updatedInduction
       // Not worked before is selected, redirect to Check Your Answers
       req.session.workedBeforeForm = undefined
-      if (workedBeforeForm.hasWorkedBefore === YesNoValue.NO) {
+      if (
+        workedBeforeForm.hasWorkedBefore === HasWorkedBeforeValue.NO ||
+        workedBeforeForm.hasWorkedBefore === HasWorkedBeforeValue.NOT_RELEVANT
+      ) {
         return res.redirect(`/prisoners/${prisonNumber}/induction/check-your-answers`)
       }
       // Prisoner has worked before, redirect through previous work experience flow

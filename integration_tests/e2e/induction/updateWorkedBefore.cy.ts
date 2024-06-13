@@ -1,10 +1,10 @@
 import Page from '../../pages/page'
-import YesNoValue from '../../../server/enums/yesNoValue'
 import WorkedBeforePage from '../../pages/induction/WorkedBeforePage'
 import WorkAndInterestsPage from '../../pages/overview/WorkAndInterestsPage'
 import { putRequestedFor } from '../../mockApis/wiremock/requestPatternBuilder'
 import { urlEqualTo } from '../../mockApis/wiremock/matchers/url'
 import { matchingJsonPath } from '../../mockApis/wiremock/matchers/content'
+import HasWorkedBeforeValue from '../../../server/enums/hasWorkedBeforeValue'
 
 context('Update whether a prisoner has worked before in an Induction', () => {
   beforeEach(() => {
@@ -25,7 +25,7 @@ context('Update whether a prisoner has worked before in an Induction', () => {
     cy.signIn()
   })
 
-  it('should update Worked Before given page submitted with changed value and no validation errors', () => {
+  it('should update Worked Before to No given page submitted with changed value and no validation errors', () => {
     // Given
     const prisonNumber = 'G6115VJ'
     cy.visit(`prisoners/${prisonNumber}/induction/has-worked-before`)
@@ -35,7 +35,7 @@ context('Update whether a prisoner has worked before in an Induction', () => {
 
     // When
     workedBeforePage //
-      .selectWorkedBefore(YesNoValue.NO)
+      .selectWorkedBefore(HasWorkedBeforeValue.NO)
 
     workedBeforePage //
       .submitPage()
@@ -44,7 +44,30 @@ context('Update whether a prisoner has worked before in an Induction', () => {
     Page.verifyOnPage(WorkAndInterestsPage)
     cy.wiremockVerify(
       putRequestedFor(urlEqualTo(`/inductions/${prisonNumber}`)) //
-        .withRequestBody(matchingJsonPath(`$[?(@.previousWorkExperiences.hasWorkedBefore == false)]`)),
+        .withRequestBody(matchingJsonPath(`$[?(@.previousWorkExperiences.hasWorkedBefore == 'NO')]`)),
+    )
+  })
+
+  it('should update Worked Before to Not relevant given page submitted with changed value and no validation errors', () => {
+    // Given
+    const prisonNumber = 'G6115VJ'
+    cy.visit(`prisoners/${prisonNumber}/induction/has-worked-before`)
+    const workedBeforePage = Page.verifyOnPage(WorkedBeforePage)
+      .hasBackLinkTo(`/plan/${prisonNumber}/view/work-and-interests`)
+      .backLinkHasAriaLabel(`Back to Daniel Craig's learning and work progress`)
+
+    // When
+    workedBeforePage //
+      .selectWorkedBefore(HasWorkedBeforeValue.NOT_RELEVANT)
+
+    workedBeforePage //
+      .submitPage()
+
+    // Then
+    Page.verifyOnPage(WorkAndInterestsPage)
+    cy.wiremockVerify(
+      putRequestedFor(urlEqualTo(`/inductions/${prisonNumber}`)) //
+        .withRequestBody(matchingJsonPath(`$[?(@.previousWorkExperiences.hasWorkedBefore == 'NOT_RELEVANT')]`)),
     )
   })
 })

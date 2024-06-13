@@ -32,6 +32,8 @@ declare module 'dto' {
 }
 
 declare module 'inductionDto' {
+  import HasWorkedBeforeValue from '../../enums/hasWorkedBeforeValue'
+
   /**
    * Interface defining common reference and audit related properties that DTO types can inherit through extension.
    */
@@ -77,7 +79,7 @@ declare module 'inductionDto' {
   }
 
   export interface PreviousWorkExperiencesDto extends ReferencedAndAuditable {
-    hasWorkedBefore: boolean
+    hasWorkedBefore: HasWorkedBeforeValue
     experiences: Array<PreviousWorkExperienceDto>
   }
 
@@ -130,7 +132,7 @@ declare module 'inductionDto' {
 
   export interface CreateOrUpdatePreviousWorkExperiencesDto {
     reference?: string
-    hasWorkedBefore: boolean
+    hasWorkedBefore: HasWorkedBeforeValue
     experiences?: PreviousWorkExperienceDto[]
   }
 

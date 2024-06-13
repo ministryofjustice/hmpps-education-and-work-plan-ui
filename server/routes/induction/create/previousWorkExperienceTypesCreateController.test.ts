@@ -6,6 +6,7 @@ import type { PreviousWorkExperienceTypesForm } from 'inductionForms'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
 import { aLongQuestionSetInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
 import PreviousWorkExperienceTypesCreateController from './previousWorkExperienceTypesCreateController'
+import HasWorkedBeforeValue from '../../../enums/hasWorkedBeforeValue'
 
 describe('previousWorkExperienceTypesCreateController', () => {
   const controller = new PreviousWorkExperienceTypesCreateController()
@@ -39,7 +40,7 @@ describe('previousWorkExperienceTypesCreateController', () => {
   describe('getPreviousWorkExperienceTypesView', () => {
     it('should get the Previous Work Experience Types view given there is no PreviousWorkExperienceTypesForm on the session', async () => {
       // Given
-      const inductionDto = aLongQuestionSetInductionDto({ hasWorkedBefore: true })
+      const inductionDto = aLongQuestionSetInductionDto({ hasWorkedBefore: HasWorkedBeforeValue.YES })
       inductionDto.previousWorkExperiences.experiences = undefined
       req.session.inductionDto = inductionDto
       req.session.previousWorkExperienceTypesForm = undefined
@@ -74,7 +75,7 @@ describe('previousWorkExperienceTypesCreateController', () => {
 
     it('should get the Previous Work Experience Types view given there is an PreviousWorkExperienceTypesForm already on the session', async () => {
       // Given
-      const inductionDto = aLongQuestionSetInductionDto({ hasWorkedBefore: true })
+      const inductionDto = aLongQuestionSetInductionDto({ hasWorkedBefore: HasWorkedBeforeValue.YES })
       inductionDto.previousWorkExperiences.experiences = undefined
       req.session.inductionDto = inductionDto
 
@@ -109,7 +110,7 @@ describe('previousWorkExperienceTypesCreateController', () => {
 
     it('should get the Previous Work Experience Types view given the previous page was Check Your Answers', async () => {
       // Given
-      const inductionDto = aLongQuestionSetInductionDto({ hasWorkedBefore: true })
+      const inductionDto = aLongQuestionSetInductionDto({ hasWorkedBefore: HasWorkedBeforeValue.YES })
       inductionDto.previousWorkExperiences.experiences = undefined
       req.session.inductionDto = inductionDto
 
@@ -159,7 +160,7 @@ describe('previousWorkExperienceTypesCreateController', () => {
   describe('submitPreviousWorkExperienceTypesForm', () => {
     it('should not update Induction given form is submitted with validation errors', async () => {
       // Given
-      const inductionDto = aLongQuestionSetInductionDto({ hasWorkedBefore: true })
+      const inductionDto = aLongQuestionSetInductionDto({ hasWorkedBefore: HasWorkedBeforeValue.YES })
       inductionDto.previousWorkExperiences.experiences = undefined
       req.session.inductionDto = inductionDto
 
@@ -192,7 +193,7 @@ describe('previousWorkExperienceTypesCreateController', () => {
 
     it('should build a page flow queue and redirect to the next page given Previous Work Experience Types are submitted', async () => {
       // Given
-      const inductionDto = aLongQuestionSetInductionDto({ hasWorkedBefore: true })
+      const inductionDto = aLongQuestionSetInductionDto({ hasWorkedBefore: HasWorkedBeforeValue.YES })
       inductionDto.previousWorkExperiences.experiences = undefined
       req.session.inductionDto = inductionDto
 
@@ -255,7 +256,7 @@ describe('previousWorkExperienceTypesCreateController', () => {
 
     it('should build a page flow queue and redirect to the next page given previous page was Check Your Answers', async () => {
       // Given
-      const inductionDto = aLongQuestionSetInductionDto({ hasWorkedBefore: true })
+      const inductionDto = aLongQuestionSetInductionDto({ hasWorkedBefore: HasWorkedBeforeValue.YES })
       // Long question set Induction already has populated work experiences of CONSTRUCTION and OTHER
       req.session.inductionDto = inductionDto
 

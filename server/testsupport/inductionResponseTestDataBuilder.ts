@@ -1,9 +1,10 @@
 import type { InductionResponse } from 'educationAndWorkPlanApiClient'
 import AbilityToWorkValue from '../enums/abilityToWorkValue'
+import HasWorkedBeforeValue from '../enums/hasWorkedBeforeValue'
 
 const aLongQuestionSetInduction = (
   options?: CoreBuilderOptions & {
-    hasWorkedBefore?: boolean
+    hasWorkedBefore?: HasWorkedBeforeValue
     hasSkills?: boolean
     hasInterests?: boolean
   },
@@ -39,15 +40,9 @@ const aLongQuestionSetInduction = (
     previousWorkExperiences: {
       reference: 'bb45462e-8225-490d-8c1c-ad6692223d4d',
       ...auditFields(options),
-      hasWorkedBefore:
-        !options || options.hasWorkedBefore === null || options.hasWorkedBefore === undefined
-          ? true
-          : options.hasWorkedBefore,
+      hasWorkedBefore: options?.hasWorkedBefore || HasWorkedBeforeValue.YES,
       experiences:
-        !options ||
-        options.hasWorkedBefore === null ||
-        options.hasWorkedBefore === undefined ||
-        options.hasWorkedBefore === true
+        (options?.hasWorkedBefore || HasWorkedBeforeValue.YES) === HasWorkedBeforeValue.YES
           ? [
               {
                 experienceType: 'CONSTRUCTION',

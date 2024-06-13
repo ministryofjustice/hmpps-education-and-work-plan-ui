@@ -4,8 +4,8 @@ import type { InductionDto } from 'inductionDto'
 import WorkedBeforeController from '../common/workedBeforeController'
 import getDynamicBackLinkAriaText from '../dynamicAriaTextResolver'
 import validateWorkedBeforeForm from '../../validators/induction/workedBeforeFormValidator'
-import YesNoValue from '../../../enums/yesNoValue'
 import { getPreviousPage } from '../../pageFlowHistory'
+import HasWorkedBeforeValue from '../../../enums/hasWorkedBeforeValue'
 
 export default class WorkedBeforeCreateController extends WorkedBeforeController {
   getBackLinkUrl(req: Request): string {
@@ -34,7 +34,8 @@ export default class WorkedBeforeCreateController extends WorkedBeforeController
     }
 
     const updatedInduction = this.updatedInductionDtoWithHasWorkedBefore(inductionDto, workedBeforeForm)
-    const prisonerHasWorkedBefore = updatedInduction.previousWorkExperiences.hasWorkedBefore
+    const prisonerHasWorkedBefore =
+      updatedInduction.previousWorkExperiences.hasWorkedBefore === HasWorkedBeforeValue.YES
     req.session.inductionDto = updatedInduction
     req.session.workedBeforeForm = undefined
 
@@ -60,7 +61,7 @@ export default class WorkedBeforeCreateController extends WorkedBeforeController
     const updatedInduction = super.updatedInductionDtoWithHasWorkedBefore(inductionDto, workedBeforeForm)
 
     // If the prisoner has worked before return the updated induction
-    if (workedBeforeForm.hasWorkedBefore === YesNoValue.YES) {
+    if (workedBeforeForm.hasWorkedBefore === HasWorkedBeforeValue.YES) {
       return updatedInduction
     }
 

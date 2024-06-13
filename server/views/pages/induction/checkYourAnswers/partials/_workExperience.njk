@@ -6,7 +6,7 @@
       Worked before
     </dt>
     <dd class="govuk-summary-list__value" data-qa="hasWorkedBefore-{{inductionDto.previousWorkExperiences.hasWorkedBefore}}">
-      {{ inductionDto.previousWorkExperiences.hasWorkedBefore | formatYesNo }}
+      {{ inductionDto.previousWorkExperiences.hasWorkedBefore | formatHasWorkedBefore }}
     </dd>
     <dd class="govuk-summary-list__actions">
       <a class="govuk-link govuk-link--no-visited-state" href="has-worked-before" data-qa="hasWorkedBeforeLink">
@@ -15,7 +15,7 @@
     </dd>
   </div>
 
-  {% if inductionDto.previousWorkExperiences.hasWorkedBefore === true %}
+  {% if inductionDto.previousWorkExperiences.hasWorkedBefore === 'YES' %}
     <div class="govuk-summary-list__row">
       <dt class="govuk-summary-list__key govuk-!-width-one-quarter">
         Type of work experience
