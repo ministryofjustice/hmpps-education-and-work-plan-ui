@@ -11,10 +11,11 @@ import QualificationLevelValue from '../enums/qualificationLevelValue'
 import AdditionalTrainingValue from '../enums/additionalTrainingValue'
 import InPrisonWorkValue from '../enums/inPrisonWorkValue'
 import InPrisonTrainingValue from '../enums/inPrisonTrainingValue'
+import HasWorkedBeforeValue from '../enums/hasWorkedBeforeValue'
 
 const aLongQuestionSetCreateInductionDto = (
   options?: CoreBuilderOptions & {
-    hasWorkedBefore?: boolean
+    hasWorkedBefore?: HasWorkedBeforeValue
     hasSkills?: boolean
     hasInterests?: boolean
   },
@@ -35,13 +36,13 @@ const aLongQuestionSetCreateInductionDto = (
     previousWorkExperiences: {
       hasWorkedBefore:
         !options || options.hasWorkedBefore === null || options.hasWorkedBefore === undefined
-          ? true
+          ? HasWorkedBeforeValue.YES
           : options.hasWorkedBefore,
       experiences:
         !options ||
         options.hasWorkedBefore === null ||
         options.hasWorkedBefore === undefined ||
-        options.hasWorkedBefore === true
+        options.hasWorkedBefore === HasWorkedBeforeValue.YES
           ? [
               {
                 experienceType: TypeOfWorkExperienceValue.CONSTRUCTION,

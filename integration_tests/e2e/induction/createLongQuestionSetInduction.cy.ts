@@ -10,7 +10,6 @@ import QualificationDetailsPage from '../../pages/induction/QualificationDetails
 import AdditionalTrainingPage from '../../pages/induction/AdditionalTrainingPage'
 import AdditionalTrainingValue from '../../../server/enums/additionalTrainingValue'
 import WorkedBeforePage from '../../pages/induction/WorkedBeforePage'
-import YesNoValue from '../../../server/enums/yesNoValue'
 import PreviousWorkExperienceTypesPage from '../../pages/induction/PreviousWorkExperienceTypesPage'
 import TypeOfWorkExperienceValue from '../../../server/enums/typeOfWorkExperienceValue'
 import PreviousWorkExperienceDetailPage from '../../pages/induction/PreviousWorkExperienceDetailPage'
@@ -33,6 +32,8 @@ import InPrisonWorkValue from '../../../server/enums/inPrisonWorkValue'
 import InPrisonTrainingPage from '../../pages/induction/InPrisonTrainingPage'
 import InPrisonTrainingValue from '../../../server/enums/inPrisonTrainingValue'
 import WantToAddQualificationsPage from '../../pages/induction/WantToAddQualificationsPage'
+import HasWorkedBeforeValue from '../../../server/enums/hasWorkedBeforeValue'
+import YesNoValue from '../../../server/enums/yesNoValue'
 
 context('Create a long question set Induction', () => {
   beforeEach(() => {
@@ -177,7 +178,7 @@ context('Create a long question set Induction', () => {
       .hasBackLinkTo('/prisoners/A00001A/create-induction/additional-training')
       .hasErrorCount(1)
       .hasFieldInError('hasWorkedBefore')
-      .selectWorkedBefore(YesNoValue.YES)
+      .selectWorkedBefore(HasWorkedBeforeValue.YES)
       .submitPage()
 
     // Previous Work Experience Types is the next page
@@ -284,7 +285,7 @@ context('Create a long question set Induction', () => {
               "@.previousTraining.trainingTypes[0] == 'HGV_LICENCE' && " +
               "@.previousTraining.trainingTypes[1] == 'OTHER' && " +
               "@.previousTraining.trainingTypeOther == 'Basic accountancy course' && " +
-              '@.previousWorkExperiences.hasWorkedBefore == true && ' +
+              "@.previousWorkExperiences.hasWorkedBefore == 'YES' && " +
               '@.previousWorkExperiences.experiences.size() == 2 && ' +
               "@.previousWorkExperiences.experiences[0].experienceType == 'CONSTRUCTION' && " +
               "@.previousWorkExperiences.experiences[0].role == 'General labourer' && " +
@@ -370,7 +371,7 @@ context('Create a long question set Induction', () => {
     // Have You Worked Before page is next
     Page.verifyOnPage(WorkedBeforePage) //
       .hasBackLinkTo('/prisoners/A00001A/create-induction/additional-training')
-      .selectWorkedBefore(YesNoValue.YES)
+      .selectWorkedBefore(HasWorkedBeforeValue.YES)
       .submitPage()
 
     // Previous Work Experience Types is the next page
@@ -431,7 +432,7 @@ context('Create a long question set Induction', () => {
               '@.previousQualifications.qualifications.size() == 0 && ' +
               '@.previousTraining.trainingTypes.size() == 1 && ' +
               "@.previousTraining.trainingTypes[0] == 'HGV_LICENCE' && " +
-              '@.previousWorkExperiences.hasWorkedBefore == true && ' +
+              "@.previousWorkExperiences.hasWorkedBefore === 'YES' && " +
               '@.previousWorkExperiences.experiences.size() == 1 && ' +
               "@.previousWorkExperiences.experiences[0].experienceType == 'CONSTRUCTION' && " +
               "@.previousWorkExperiences.experiences[0].role == 'General labourer' && " +

@@ -8,7 +8,7 @@ import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateIn
 import InductionService from '../../../services/inductionService'
 import { aShortQuestionSetUpdateInductionRequest } from '../../../testsupport/updateInductionRequestTestDataBuilder'
 import WorkedBeforeUpdateController from './workedBeforeUpdateController'
-import YesNoValue from '../../../enums/yesNoValue'
+import HasWorkedBeforeValue from '../../../enums/hasWorkedBeforeValue'
 
 jest.mock('../../../data/mappers/createOrUpdateInductionDtoMapper')
 jest.mock('../../../services/inductionService')
@@ -55,7 +55,7 @@ describe('workedBeforeUpdateController', () => {
       req.session.workedBeforeForm = undefined
 
       const expectedWorkedBeforeForm = {
-        hasWorkedBefore: YesNoValue.YES,
+        hasWorkedBefore: HasWorkedBeforeValue.YES,
       }
 
       const expectedView = {
@@ -84,7 +84,7 @@ describe('workedBeforeUpdateController', () => {
       req.session.inductionDto = inductionDto
 
       const expectedWorkedBeforeForm = {
-        hasWorkedBefore: YesNoValue.NO,
+        hasWorkedBefore: HasWorkedBeforeValue.NO,
       }
       req.session.workedBeforeForm = expectedWorkedBeforeForm
 
@@ -121,7 +121,7 @@ describe('workedBeforeUpdateController', () => {
       }
 
       const expectedWorkedBeforeForm = {
-        hasWorkedBefore: YesNoValue.NO,
+        hasWorkedBefore: HasWorkedBeforeValue.NO,
       }
       req.session.workedBeforeForm = expectedWorkedBeforeForm
 
@@ -192,7 +192,7 @@ describe('workedBeforeUpdateController', () => {
       req.session.inductionDto = inductionDto
 
       const workedBeforeForm = {
-        hasWorkedBefore: YesNoValue.NO,
+        hasWorkedBefore: HasWorkedBeforeValue.NO,
       }
       req.body = workedBeforeForm
       req.session.workedBeforeForm = undefined
@@ -211,7 +211,7 @@ describe('workedBeforeUpdateController', () => {
       // Extract the first call to the mock and the second argument (i.e. the updated Induction)
       const updatedInduction = mockedCreateOrUpdateInductionDtoMapper.mock.calls[0][1]
       expect(mockedCreateOrUpdateInductionDtoMapper).toHaveBeenCalledWith(prisonerSummary.prisonId, updatedInduction)
-      expect(updatedInduction.previousWorkExperiences.hasWorkedBefore).toEqual(false)
+      expect(updatedInduction.previousWorkExperiences.hasWorkedBefore).toEqual('NO')
 
       expect(inductionService.updateInduction).toHaveBeenCalledWith(prisonNumber, updateInductionDto, 'some-token')
       expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/view/work-and-interests`)
@@ -225,7 +225,7 @@ describe('workedBeforeUpdateController', () => {
       req.session.inductionDto = inductionDto
 
       const workedBeforeForm = {
-        hasWorkedBefore: YesNoValue.YES,
+        hasWorkedBefore: HasWorkedBeforeValue.YES,
       }
       req.body = workedBeforeForm
       req.session.workedBeforeForm = undefined
@@ -241,37 +241,39 @@ describe('workedBeforeUpdateController', () => {
       )
 
       // Then
-      expect(req.session.inductionDto.previousWorkExperiences.hasWorkedBefore).toEqual(true)
+      expect(req.session.inductionDto.previousWorkExperiences.hasWorkedBefore).toEqual('YES')
       expect(res.redirect).toHaveBeenCalledWith(expectedNextPage)
       expect(req.session.workedBeforeForm).toBeUndefined()
     })
+    it.each([HasWorkedBeforeValue.NO, HasWorkedBeforeValue.NOT_RELEVANT])(
+      'should update InductionDto and redirect to Personal Skills given long question set journey and has worked before is a negative response',
+      async (negativeResponse: HasWorkedBeforeValue) => {
+        // Given
+        const inductionDto = aLongQuestionSetInductionDto()
+        req.session.inductionDto = inductionDto
 
-    it('should update InductionDto and redirect to Personal Skills given long question set journey and has worked before is NO', async () => {
-      // Given
-      const inductionDto = aLongQuestionSetInductionDto()
-      req.session.inductionDto = inductionDto
+        const workedBeforeForm = {
+          hasWorkedBefore: negativeResponse,
+        }
+        req.body = workedBeforeForm
+        req.session.workedBeforeForm = undefined
 
-      const workedBeforeForm = {
-        hasWorkedBefore: YesNoValue.NO,
-      }
-      req.body = workedBeforeForm
-      req.session.workedBeforeForm = undefined
+        req.session.updateInductionQuestionSet = { hopingToWorkOnRelease: 'YES' }
+        const expectedNextPage = '/prisoners/A1234BC/induction/skills'
 
-      req.session.updateInductionQuestionSet = { hopingToWorkOnRelease: 'YES' }
-      const expectedNextPage = '/prisoners/A1234BC/induction/skills'
+        // When
+        await controller.submitWorkedBeforeForm(
+          req as undefined as Request,
+          res as undefined as Response,
+          next as undefined as NextFunction,
+        )
 
-      // When
-      await controller.submitWorkedBeforeForm(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
-
-      // Then
-      expect(req.session.inductionDto.previousWorkExperiences.hasWorkedBefore).toEqual(false)
-      expect(res.redirect).toHaveBeenCalledWith(expectedNextPage)
-      expect(req.session.workedBeforeForm).toBeUndefined()
-    })
+        // Then
+        expect(req.session.inductionDto.previousWorkExperiences.hasWorkedBefore).toEqual(negativeResponse)
+        expect(res.redirect).toHaveBeenCalledWith(expectedNextPage)
+        expect(req.session.workedBeforeForm).toBeUndefined()
+      },
+    )
 
     it('should not update Induction given error calling service', async () => {
       // Given
@@ -279,7 +281,7 @@ describe('workedBeforeUpdateController', () => {
       req.session.inductionDto = inductionDto
 
       const workedBeforeForm = {
-        hasWorkedBefore: YesNoValue.YES,
+        hasWorkedBefore: HasWorkedBeforeValue.YES,
       }
       req.body = workedBeforeForm
       req.session.workedBeforeForm = undefined
@@ -304,7 +306,7 @@ describe('workedBeforeUpdateController', () => {
       // Extract the first call to the mock and the second argument (i.e. the updated Induction)
       const updatedInduction = mockedCreateOrUpdateInductionDtoMapper.mock.calls[0][1]
       expect(mockedCreateOrUpdateInductionDtoMapper).toHaveBeenCalledWith(prisonerSummary.prisonId, updatedInduction)
-      expect(updatedInduction.previousWorkExperiences.hasWorkedBefore).toEqual(true)
+      expect(updatedInduction.previousWorkExperiences.hasWorkedBefore).toEqual('YES')
 
       expect(inductionService.updateInduction).toHaveBeenCalledWith(prisonNumber, updateInductionDto, 'some-token')
       expect(next).toHaveBeenCalledWith(expectedError)
@@ -312,44 +314,47 @@ describe('workedBeforeUpdateController', () => {
       expect(req.session.inductionDto).toEqual(inductionDto)
     })
 
-    it('should update induction DTO and redirect back to check answers page if "no" is selected and coming from check your answers', async () => {
-      // Given
-      req.session.inductionDto = aLongQuestionSetInductionDto()
-      req.session.pageFlowHistory = {
-        pageUrls: [
+    it.each([HasWorkedBeforeValue.NO, HasWorkedBeforeValue.NOT_RELEVANT])(
+      'should update induction DTO and redirect back to check answers page if a negative value is selected and coming from check your answers',
+      async (negativeResponse: HasWorkedBeforeValue) => {
+        // Given
+        req.session.inductionDto = aLongQuestionSetInductionDto()
+        req.session.pageFlowHistory = {
+          pageUrls: [
+            `/prisoners/${prisonerSummary.prisonNumber}/induction/check-your-answers`,
+            `/prisoners/${prisonerSummary.prisonNumber}/induction/hoping-to-work-on-release`,
+          ],
+          currentPageIndex: 1,
+        }
+
+        req.body = {
+          hasWorkedBefore: negativeResponse,
+        }
+
+        // The actual implementations are fine for this test
+        const actualToCreateOrUpdateInductionDto = jest.requireActual(
+          '../../../data/mappers/createOrUpdateInductionDtoMapper',
+        ).default
+        mockedCreateOrUpdateInductionDtoMapper.mockImplementation(actualToCreateOrUpdateInductionDto)
+
+        expect(req.session.inductionDto.previousWorkExperiences.hasWorkedBefore).toEqual('YES')
+        expect(req.session.inductionDto.previousWorkExperiences.experiences).toHaveLength(2)
+
+        // When
+        await controller.submitWorkedBeforeForm(
+          req as undefined as Request,
+          res as undefined as Response,
+          next as undefined as NextFunction,
+        )
+
+        // Then
+        expect(req.session.inductionDto.previousWorkExperiences.hasWorkedBefore).toEqual(negativeResponse)
+        expect(req.session.inductionDto.previousWorkExperiences.experiences).toHaveLength(0)
+        expect(res.redirect).toHaveBeenCalledWith(
           `/prisoners/${prisonerSummary.prisonNumber}/induction/check-your-answers`,
-          `/prisoners/${prisonerSummary.prisonNumber}/induction/hoping-to-work-on-release`,
-        ],
-        currentPageIndex: 1,
-      }
-
-      req.body = {
-        hasWorkedBefore: YesNoValue.NO,
-      }
-
-      // The actual implementations are fine for this test
-      const actualToCreateOrUpdateInductionDto = jest.requireActual(
-        '../../../data/mappers/createOrUpdateInductionDtoMapper',
-      ).default
-      mockedCreateOrUpdateInductionDtoMapper.mockImplementation(actualToCreateOrUpdateInductionDto)
-
-      expect(req.session.inductionDto.previousWorkExperiences.hasWorkedBefore).toEqual(true)
-      expect(req.session.inductionDto.previousWorkExperiences.experiences).toHaveLength(2)
-
-      // When
-      await controller.submitWorkedBeforeForm(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
-
-      // Then
-      expect(req.session.inductionDto.previousWorkExperiences.hasWorkedBefore).toEqual(false)
-      expect(req.session.inductionDto.previousWorkExperiences.experiences).toHaveLength(0)
-      expect(res.redirect).toHaveBeenCalledWith(
-        `/prisoners/${prisonerSummary.prisonNumber}/induction/check-your-answers`,
-      )
-    })
+        )
+      },
+    )
 
     it('should update induction DTO and redirect through previous work experience flow before returning to check answers page if "yes" is selected and coming from check your answers', async () => {
       // Given
@@ -363,7 +368,7 @@ describe('workedBeforeUpdateController', () => {
       }
 
       req.body = {
-        hasWorkedBefore: YesNoValue.YES,
+        hasWorkedBefore: HasWorkedBeforeValue.YES,
       }
 
       // The actual implementations are fine for this test
@@ -372,7 +377,7 @@ describe('workedBeforeUpdateController', () => {
       ).default
       mockedCreateOrUpdateInductionDtoMapper.mockImplementation(actualToCreateOrUpdateInductionDto)
 
-      expect(req.session.inductionDto.previousWorkExperiences.hasWorkedBefore).toEqual(true)
+      expect(req.session.inductionDto.previousWorkExperiences.hasWorkedBefore).toEqual('YES')
       expect(req.session.inductionDto.previousWorkExperiences.experiences).toHaveLength(2)
       expect(req.session.pageFlowQueue).toEqual(undefined)
 
@@ -384,7 +389,7 @@ describe('workedBeforeUpdateController', () => {
       )
 
       // Then
-      expect(req.session.inductionDto.previousWorkExperiences.hasWorkedBefore).toEqual(true)
+      expect(req.session.inductionDto.previousWorkExperiences.hasWorkedBefore).toEqual('YES')
       expect(req.session.inductionDto.previousWorkExperiences.experiences).toHaveLength(2)
       expect(req.session.pageFlowQueue).toEqual({
         pageUrls: [

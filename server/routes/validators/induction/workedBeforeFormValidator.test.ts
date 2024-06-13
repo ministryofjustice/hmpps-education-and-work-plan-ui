@@ -1,6 +1,6 @@
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
 import validateWorkedBeforeForm from './workedBeforeFormValidator'
-import YesNoValue from '../../../enums/yesNoValue'
+import HasWorkedBeforeValue from '../../../enums/hasWorkedBeforeValue'
 
 describe('workedBeforeFormValidator', () => {
   const prisonerSummary = aValidPrisonerSummary()
@@ -11,7 +11,7 @@ describe('workedBeforeFormValidator', () => {
       const expected: Array<Record<string, string>> = []
 
       // When
-      const actual = validateWorkedBeforeForm({ hasWorkedBefore: YesNoValue.YES }, prisonerSummary)
+      const actual = validateWorkedBeforeForm({ hasWorkedBefore: HasWorkedBeforeValue.YES }, prisonerSummary)
 
       // Then
       expect(actual).toEqual(expected)

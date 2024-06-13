@@ -19,7 +19,6 @@ import { postRequestedFor } from '../../mockApis/wiremock/requestPatternBuilder'
 import { urlEqualTo } from '../../mockApis/wiremock/matchers/url'
 import { matchingJsonPath } from '../../mockApis/wiremock/matchers/content'
 import WorkedBeforePage from '../../pages/induction/WorkedBeforePage'
-import YesNoValue from '../../../server/enums/yesNoValue'
 import PreviousWorkExperienceTypesPage from '../../pages/induction/PreviousWorkExperienceTypesPage'
 import PreviousWorkExperienceDetailPage from '../../pages/induction/PreviousWorkExperienceDetailPage'
 import FutureWorkInterestTypesPage from '../../pages/induction/FutureWorkInterestTypesPage'
@@ -33,6 +32,7 @@ import HighestLevelOfEducationPage from '../../pages/induction/HighestLevelOfEdu
 import EducationLevelValue from '../../../server/enums/educationLevelValue'
 import QualificationLevelPage from '../../pages/induction/QualificationLevelPage'
 import WantToAddQualificationsPage from '../../pages/induction/WantToAddQualificationsPage'
+import YesNoValue from '../../../server/enums/yesNoValue'
 
 context(`Change new Induction question set by updating 'Hoping to work on release' from Check Your Answers`, () => {
   const prisonNumberForPrisonerWithNoInduction = 'A00001A'
@@ -150,7 +150,7 @@ context(`Change new Induction question set by updating 'Hoping to work on releas
               "@.previousQualifications.qualifications[1].level == 'LEVEL_4' && " +
               '@.previousTraining.trainingTypes.size() == 1 && ' +
               "@.previousTraining.trainingTypes[0] == 'HGV_LICENCE' && " +
-              '@.previousWorkExperiences.hasWorkedBefore == true && ' +
+              "@.previousWorkExperiences.hasWorkedBefore === 'YES' && " +
               '@.previousWorkExperiences.experiences.size() == 1 && ' +
               "@.previousWorkExperiences.experiences[0].experienceType == 'CONSTRUCTION' && " +
               "@.previousWorkExperiences.experiences[0].role == 'General labourer' && " +
@@ -264,7 +264,7 @@ context(`Change new Induction question set by updating 'Hoping to work on releas
               '@.previousQualifications.qualifications.size() == 0 && ' +
               '@.previousTraining.trainingTypes.size() == 1 && ' +
               "@.previousTraining.trainingTypes[0] == 'HGV_LICENCE' && " +
-              '@.previousWorkExperiences.hasWorkedBefore == true && ' +
+              "@.previousWorkExperiences.hasWorkedBefore == 'YES' && " +
               '@.previousWorkExperiences.experiences.size() == 1 && ' +
               "@.previousWorkExperiences.experiences[0].experienceType == 'CONSTRUCTION' && " +
               "@.previousWorkExperiences.experiences[0].role == 'General labourer' && " +
@@ -402,7 +402,7 @@ context(`Change new Induction question set by updating 'Hoping to work on releas
               "@.previousQualifications.qualifications[0].level == 'LEVEL_8' && " +
               '@.previousTraining.trainingTypes.size() == 1 && ' +
               "@.previousTraining.trainingTypes[0] == 'HGV_LICENCE' && " +
-              '@.previousWorkExperiences.hasWorkedBefore == true && ' +
+              "@.previousWorkExperiences.hasWorkedBefore == 'YES' && " +
               '@.previousWorkExperiences.experiences.size() == 1 && ' +
               '@.previousWorkExperiences.experiences.size() == 1 && ' +
               "@.previousWorkExperiences.experiences[0].experienceType == 'CONSTRUCTION' && " +

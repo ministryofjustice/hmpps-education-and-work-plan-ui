@@ -10,7 +10,7 @@
     * backLinkUrl - url of the back link
     * backLinkAriaText - the aria label for the back link
     * form - form object containing the following fields:
-      * hasWorkedBefore - value for the "has worked before" question
+    * hasWorkedBefore - value for the "has worked before" question
     * errors? - validation errors
 #}
 
@@ -38,13 +38,18 @@
             items: [
               {
                 value: 'YES',
-                text: 'YES' | formatYesNo,
+                text: 'YES' | formatHasWorkedBefore,
                 checked: form.hasWorkedBefore === 'YES'
               },
               {
                 value: 'NO',
-                text: 'NO' | formatYesNo,
+                text: 'NO' | formatHasWorkedBefore,
                 checked: form.hasWorkedBefore === 'NO'
+              },
+              {
+                value: 'NOT_RELEVANT',
+                text: 'NOT_RELEVANT' | formatHasWorkedBefore,
+                checked: form.hasWorkedBefore === 'NOT_RELEVANT'
               }
             ],
             errorMessage: errors | findError('hasWorkedBefore')

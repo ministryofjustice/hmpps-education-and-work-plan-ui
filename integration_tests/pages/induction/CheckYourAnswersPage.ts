@@ -27,6 +27,7 @@ import AffectAbilityToWorkPage from './AffectAbilityToWorkPage'
 import SkillsValue from '../../../server/enums/skillsValue'
 import PersonalInterestsValue from '../../../server/enums/personalInterestsValue'
 import AbilityToWorkValue from '../../../server/enums/abilityToWorkValue'
+import HasWorkedBeforeValue from '../../../server/enums/hasWorkedBeforeValue'
 
 export default class CheckYourAnswersPage extends Page {
   constructor() {
@@ -166,7 +167,7 @@ export default class CheckYourAnswersPage extends Page {
     return Page.verifyOnPage(HopingToWorkOnReleasePage)
   }
 
-  hasWorkedBefore(expected: YesNoValue): CheckYourAnswersPage {
+  hasWorkedBefore(expected: HasWorkedBeforeValue): CheckYourAnswersPage {
     this.hasWorkedBeforeValue(expected).should('be.visible')
     return this
   }
@@ -305,9 +306,8 @@ export default class CheckYourAnswersPage extends Page {
 
   private personalInterestsChangeLink = (): PageElement => cy.get('[data-qa=personalInterestsLink]')
 
-  private hasWorkedBeforeValue(expected: YesNoValue): PageElement {
-    const booleanValue = expected === YesNoValue.YES ? 'true' : 'false'
-    return cy.get(`[data-qa=hasWorkedBefore-${booleanValue}]`)
+  private hasWorkedBeforeValue(expected: HasWorkedBeforeValue): PageElement {
+    return cy.get(`[data-qa=hasWorkedBefore-${expected}]`)
   }
 
   private hasWorkedBeforeChangeLink = (): PageElement => cy.get('[data-qa=hasWorkedBeforeLink]')

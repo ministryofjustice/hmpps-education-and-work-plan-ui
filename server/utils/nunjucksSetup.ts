@@ -12,6 +12,7 @@ import formatFunctionalSkillTypeFilter from '../filters/formatFunctionalSkillTyp
 import formatStepStatusValueFilter from '../filters/formatStepStatusValueFilter'
 import formatGoalStatusValueFilter from '../filters/formatGoalStatusValueFilter'
 import formatYesNoFilter from '../filters/formatYesNoFilter'
+import formatHasWorkedBeforeFilter from '../filters/formatHasWorkedBeforeFilter'
 import formatAbilityToWorkConstraintFilter from '../filters/formatAbilityToWorkConstraintFilter'
 import formatJobTypeFilter from '../filters/formatJobTypeFilter'
 import formatEducationLevelFilter from '../filters/formatEducationLevelFilter'
@@ -103,6 +104,7 @@ export function registerNunjucks(app?: express.Express): Environment {
   njkEnv.addFilter('formatTimelineEvent', formatTimelineEventFilter)
   njkEnv.addFilter('formatPrisonMovementEvent', formatPrisonMovementEventFilter)
   njkEnv.addFilter('formatCuriousCourseStatus', formatCuriousCourseStatusFilter)
+  njkEnv.addFilter('formatHasWorkedBefore', formatHasWorkedBeforeFilter)
   njkEnv.addFilter('fallbackMessage', fallbackMessageFilter)
   njkEnv.addFilter('sortedAlphabeticallyWithOtherLast', sortedAlphabeticallyWithOtherLastFilter)
   njkEnv.addFilter('objectsSortedAlphabeticallyWithOtherLastBy', objectsSortedAlphabeticallyWithOtherLastByFilter)
