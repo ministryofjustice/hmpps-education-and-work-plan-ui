@@ -34,6 +34,7 @@ import QualificationLevelValue from '../../server/enums/qualificationLevelValue'
 import QualificationDetailsPage from '../pages/induction/QualificationDetailsPage'
 import AdditionalTrainingValue from '../../server/enums/additionalTrainingValue'
 import WantToAddQualificationsPage from '../pages/induction/WantToAddQualificationsPage'
+import HasWorkedBeforeValue from '../../server/enums/hasWorkedBeforeValue'
 
 Cypress.Commands.add('signIn', (options = { failOnStatusCode: false }) => {
   cy.request('/')
@@ -164,6 +165,7 @@ Cypress.Commands.add('updateLongQuestionSetInductionToArriveOnCheckYourAnswers',
   // 'Has the prisoner worked before' is the next page. This is asked on the short question set so will have answers but
   // we will make a change to exercise the screen flow
   Page.verifyOnPage(WorkedBeforePage) //
+    .selectWorkedBefore(HasWorkedBeforeValue.YES)
     .submitPage()
   // Remove office and other, and select
   Page.verifyOnPage(PreviousWorkExperienceTypesPage) //
@@ -243,7 +245,7 @@ Cypress.Commands.add(
       .submitPage()
     // Have You Worked Before page is next
     Page.verifyOnPage(WorkedBeforePage) //
-      .selectWorkedBefore(YesNoValue.YES)
+      .selectWorkedBefore(HasWorkedBeforeValue.YES)
       .submitPage()
     // Previous Work Experience Types is the next page
     Page.verifyOnPage(PreviousWorkExperienceTypesPage) //
@@ -323,7 +325,7 @@ Cypress.Commands.add(
       .submitPage()
     // Have You Worked Before page is next
     Page.verifyOnPage(WorkedBeforePage) //
-      .selectWorkedBefore(YesNoValue.YES)
+      .selectWorkedBefore(HasWorkedBeforeValue.YES)
       .submitPage()
     // Previous Work Experience Types is the next page
     Page.verifyOnPage(PreviousWorkExperienceTypesPage) //
