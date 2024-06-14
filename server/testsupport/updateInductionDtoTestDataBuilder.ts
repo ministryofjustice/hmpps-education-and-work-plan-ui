@@ -1,5 +1,4 @@
 import type { CreateOrUpdateInductionDto } from 'inductionDto'
-import ReasonNotToGetWorkValue from '../enums/reasonNotToGetWorkValue'
 import HopingToGetWorkValue from '../enums/hopingToGetWorkValue'
 import AbilityToWorkValue from '../enums/abilityToWorkValue'
 import TypeOfWorkExperienceValue from '../enums/typeOfWorkExperienceValue'
@@ -27,12 +26,10 @@ const aLongQuestionSetUpdateInductionDto = (
       hopingToWork: HopingToGetWorkValue.YES,
       affectAbilityToWork: [
         AbilityToWorkValue.CARING_RESPONSIBILITIES,
-        AbilityToWorkValue.HEALTH_ISSUES,
+        AbilityToWorkValue.NEEDS_WORK_ADJUSTMENTS_DUE_TO_HEALTH,
         AbilityToWorkValue.OTHER,
       ],
       affectAbilityToWorkOther: 'Variable mental health',
-      notHopingToWorkReasons: null,
-      notHopingToWorkOtherReason: null,
     },
     inPrisonInterests: {
       reference: 'ae6a6a94-df32-4a90-b39d-ff1a100a6da0',
@@ -141,10 +138,8 @@ const aShortQuestionSetUpdateInductionDto = (
     workOnRelease: {
       reference: 'bdebe39f-6f85-459b-81be-a26341c3fe3c',
       hopingToWork: options?.hopingToGetWork || HopingToGetWorkValue.NO,
-      affectAbilityToWork: [AbilityToWorkValue.CARING_RESPONSIBILITIES, AbilityToWorkValue.OTHER],
-      affectAbilityToWorkOther: 'Variable mental health',
-      notHopingToWorkReasons: [ReasonNotToGetWorkValue.HEALTH, ReasonNotToGetWorkValue.OTHER],
-      notHopingToWorkOtherReason: 'Will be of retirement age at release',
+      affectAbilityToWork: [AbilityToWorkValue.UNABLE_TO_WORK_DUE_TO_HEALTH, AbilityToWorkValue.OTHER],
+      affectAbilityToWorkOther: 'Will be of retirement age at release',
     },
     inPrisonInterests: {
       reference: 'ae6a6a94-df32-4a90-b39d-ff1a100a6da0',

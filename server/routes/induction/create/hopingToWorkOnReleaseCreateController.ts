@@ -46,12 +46,11 @@ export default class HopingToWorkOnReleaseCreateController extends HopingToWorkO
       req.session.updateInductionQuestionSet = { hopingToWorkOnRelease: hopingToWorkOnReleaseForm.hopingToGetWork }
     }
 
-    if (updatedInduction.workOnRelease.hopingToWork === YesNoValue.YES) {
-      // Long question set Induction
-      return res.redirect(`/prisoners/${prisonNumber}/create-induction/work-interest-types`)
-    }
-    // Short question set Induction
-    return res.redirect(`/prisoners/${prisonNumber}/create-induction/reasons-not-to-get-work`)
+    const nextPage =
+      updatedInduction.workOnRelease.hopingToWork === YesNoValue.YES
+        ? `/prisoners/${prisonNumber}/create-induction/work-interest-types`
+        : `/prisoners/${prisonNumber}/create-induction/affect-ability-to-work`
+    return res.redirect(nextPage)
   }
 }
 

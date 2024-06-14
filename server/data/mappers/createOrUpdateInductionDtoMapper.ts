@@ -35,8 +35,6 @@ const toCreateOrUpdateWorkOnReleaseDto = (workOnRelease: WorkOnReleaseDto): Crea
   return {
     reference: workOnRelease.reference,
     hopingToWork: workOnRelease.hopingToWork,
-    notHopingToWorkReasons: workOnRelease.notHopingToWorkReasons,
-    notHopingToWorkOtherReason: workOnRelease.notHopingToWorkOtherReason,
     affectAbilityToWork: workOnRelease.affectAbilityToWork,
     affectAbilityToWorkOther: workOnRelease.affectAbilityToWorkOther,
   }

@@ -5,7 +5,6 @@ import getDynamicBackLinkAriaText from '../dynamicAriaTextResolver'
 import { asArray } from '../../../utils/utils'
 import validatePersonalInterestsForm from '../../validators/induction/personalInterestsFormValidator'
 import { getPreviousPage } from '../../pageFlowHistory'
-import HopingToGetWorkValue from '../../../enums/hopingToGetWorkValue'
 
 export default class PersonalInterestsCreateController extends PersonalInterestsController {
   getBackLinkUrl(req: Request): string {
@@ -43,12 +42,9 @@ export default class PersonalInterestsCreateController extends PersonalInterests
     req.session.inductionDto = updatedInduction
     req.session.personalInterestsForm = undefined
 
-    if (this.previousPageWasCheckYourAnswers(req)) {
-      return res.redirect(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
-    }
-
-    return updatedInduction.workOnRelease.hopingToWork === HopingToGetWorkValue.YES
-      ? res.redirect(`/prisoners/${prisonNumber}/create-induction/affect-ability-to-work`) // Next page for long question set is factors affecting ability to work
-      : res.redirect(`/prisoners/${prisonNumber}/create-induction/in-prison-work`) // Next page for short question set is In-Prison Work Interests
+    const nextPage = this.previousPageWasCheckYourAnswers(req)
+      ? `/prisoners/${prisonNumber}/create-induction/check-your-answers`
+      : `/prisoners/${prisonNumber}/create-induction/in-prison-work`
+    return res.redirect(nextPage)
   }
 }

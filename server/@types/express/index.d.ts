@@ -13,7 +13,6 @@ import type {
   PreviousWorkExperienceTypesForm,
   QualificationDetailsForm,
   QualificationLevelForm,
-  ReasonsNotToGetWorkForm,
   SkillsForm,
   WantToAddQualificationsForm,
   WorkedBeforeForm,
@@ -50,7 +49,6 @@ declare module 'express-session' {
     previousWorkExperienceTypesForm: PreviousWorkExperienceTypesForm
     previousWorkExperienceDetailForm: PreviousWorkExperienceDetailForm
     affectAbilityToWorkForm: AffectAbilityToWorkForm
-    reasonsNotToGetWorkForm: ReasonsNotToGetWorkForm
     workInterestTypesForm: WorkInterestTypesForm
     wantToAddQualificationsForm: WantToAddQualificationsForm
     highestLevelOfEducationForm: HighestLevelOfEducationForm

@@ -49,7 +49,7 @@ const getDynamicBackLinkAriaText = (req: Request, backLinkUrl: string): string =
     '/prisoners/{PRISON_NUMBER}/create-induction/reasons-not-to-get-work': `Back to What could stop ${prisonerName} working when they are released?`,
     '/prisoners/{PRISON_NUMBER}/create-induction/in-prison-work': `Back to What type of work would ${prisonerName} like to do in prison?`,
     '/prisoners/{PRISON_NUMBER}/create-induction/in-prison-training': `Back to What type of training and education activities would ${prisonerName} like to do in prison?`,
-    '/prisoners/{PRISON_NUMBER}/create-induction/affect-ability-to-work': `Back to Is there anything that ${prisonerName} feels may affect their ability to work after they're released?`,
+    '/prisoners/{PRISON_NUMBER}/create-induction/affect-ability-to-work': `Back to What does ${prisonerName} feel could stop or affect them working when they are out of prison?`,
     '/prisoners/{PRISON_NUMBER}/create-induction/check-your-answers': `Back to Check and save your answers before adding ${prisonerName}'s goals`,
 
     '/prisoners/{PRISON_NUMBER}/induction/hoping-to-work-on-release': `Back to Is ${prisonerName} hoping to get work when they're released?`,
@@ -84,7 +84,7 @@ const getDynamicBackLinkAriaText = (req: Request, backLinkUrl: string): string =
     '/prisoners/{PRISON_NUMBER}/induction/personal-interests': `Back to What are ${prisonerName}'s interests?`,
     '/prisoners/{PRISON_NUMBER}/induction/check-your-answers': `Back to Check and save your answers before adding ${prisonerName}'s goals`,
     '/prisoners/{PRISON_NUMBER}/induction/has-worked-before': `Back to Has ${prisonerName} worked before?`,
-    '/prisoners/{PRISON_NUMBER}/induction/affect-ability-to-work': `Back to Is there anything that ${prisonerName} feels may affect their ability to work after they're released?`,
+    '/prisoners/{PRISON_NUMBER}/induction/affect-ability-to-work': `Back to What does ${prisonerName} feel could stop or affect them working when they are out of prison?`,
   }
   const uriKey = backLinkUrl.replace(prisonNumber, '{PRISON_NUMBER}')
   return ariaTextByUri[uriKey] || ''

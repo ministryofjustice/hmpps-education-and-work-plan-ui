@@ -10,7 +10,7 @@ export default class AdditionalTrainingPage extends InductionPage {
     super('induction-additional-training')
   }
 
-  chooseAdditionalTraining(option: AdditionalTrainingValue): AdditionalTrainingPage {
+  selectAdditionalTraining(option: AdditionalTrainingValue): AdditionalTrainingPage {
     this.checkbox(option).then(checkbox => {
       if (!checkbox.attr('checked')) {
         cy.wrap(checkbox).click()

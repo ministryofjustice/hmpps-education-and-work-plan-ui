@@ -36,8 +36,8 @@ context('Update additional training within an Induction', () => {
     // When
     additionalTrainingPage //
       .deSelectAdditionalTraining(AdditionalTrainingValue.FULL_UK_DRIVING_LICENCE)
-      .chooseAdditionalTraining(AdditionalTrainingValue.CSCS_CARD)
-      .chooseAdditionalTraining(AdditionalTrainingValue.OTHER)
+      .selectAdditionalTraining(AdditionalTrainingValue.CSCS_CARD)
+      .selectAdditionalTraining(AdditionalTrainingValue.OTHER)
       .setAdditionalTrainingOther('Fire safety training')
       .submitPage()
 
@@ -64,7 +64,7 @@ context('Update additional training within an Induction', () => {
 
     // When
     additionalTrainingPage //
-      .chooseAdditionalTraining(AdditionalTrainingValue.NONE)
+      .selectAdditionalTraining(AdditionalTrainingValue.NONE)
       .submitPage()
 
     // Then
@@ -87,7 +87,7 @@ context('Update additional training within an Induction', () => {
 
     // When
     additionalTrainingPage //
-      .chooseAdditionalTraining(AdditionalTrainingValue.OTHER)
+      .selectAdditionalTraining(AdditionalTrainingValue.OTHER)
       .clearAdditionalTrainingOther()
       .submitPage()
 

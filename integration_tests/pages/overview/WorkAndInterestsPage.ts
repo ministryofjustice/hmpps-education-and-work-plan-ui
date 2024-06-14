@@ -3,7 +3,6 @@ import SkillsPage from '../induction/SkillsPage'
 import PersonalInterestsPage from '../induction/PersonalInterestsPage'
 import WorkedBeforePage from '../induction/WorkedBeforePage'
 import AffectAbilityToWorkPage from '../induction/AffectAbilityToWorkPage'
-import ReasonsNotToGetWorkPage from '../induction/ReasonsNotToGetWorkPage'
 import PreviousWorkExperienceDetailPage from '../induction/PreviousWorkExperienceDetailPage'
 import TypeOfWorkExperienceValue from '../../../server/enums/typeOfWorkExperienceValue'
 import FutureWorkInterestTypesPage from '../induction/FutureWorkInterestTypesPage'
@@ -98,11 +97,6 @@ export default class WorkAndInterestsPage extends Page {
     return Page.verifyOnPage(AffectAbilityToWorkPage)
   }
 
-  clickReasonsNotToGetWorkWorkChangeLink(): ReasonsNotToGetWorkPage {
-    this.reasonsNotToGetWorkChangeLink().click()
-    return Page.verifyOnPage(ReasonsNotToGetWorkPage)
-  }
-
   clickFutureWorkInterestTypesChangeLink(): FutureWorkInterestTypesPage {
     this.futureWorkInterestTypesChangeLink().click()
     return Page.verifyOnPage(FutureWorkInterestTypesPage)
@@ -160,8 +154,6 @@ export default class WorkAndInterestsPage extends Page {
   hopingToWorkOnReleaseChangeLink = (): PageElement => cy.get('[data-qa=hoping-to-work-on-release-change-link')
 
   affectAbilityToWorkChangeLink = (): PageElement => cy.get('[data-qa=affect-ability-to-work-change-link')
-
-  reasonsNotToGetWorkChangeLink = (): PageElement => cy.get('[data-qa=reasons-not-to-get-work-change-link')
 
   futureWorkInterestTypesChangeLink = (): PageElement => cy.get('[data-qa=work-interest-types-change-link')
 

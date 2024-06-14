@@ -4,7 +4,6 @@
 import Page from '../../pages/page'
 import CheckYourAnswersPage from '../../pages/induction/CheckYourAnswersPage'
 import HopingToGetWorkValue from '../../../server/enums/hopingToGetWorkValue'
-import ReasonNotToGetWorkValue from '../../../server/enums/reasonNotToGetWorkValue'
 import InPrisonWorkValue from '../../../server/enums/inPrisonWorkValue'
 import InPrisonTrainingValue from '../../../server/enums/inPrisonTrainingValue'
 import AdditionalTrainingValue from '../../../server/enums/additionalTrainingValue'
@@ -44,14 +43,14 @@ context(`Change links on the Check Your Answers page when updating an Induction`
       .selectHopingWorkOnRelease(HopingToGetWorkValue.NOT_SURE)
       .submitPage()
 
-    // Change Reasons For Not Wanting To Work
+    // Change affecting ability to work
     Page.verifyOnPage(CheckYourAnswersPage)
-    checkYourAnswersPage
-      .clickReasonsForNotWantingToWorkChangeLink()
+      .clickFactorsAffectingAbilityToWorkChangeLink()
       .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/check-your-answers`)
-      .deSelectReasonNotToGetWork(ReasonNotToGetWorkValue.HEALTH)
-      .chooseReasonNotToGetWork(ReasonNotToGetWorkValue.RETIRED)
-      .chooseReasonNotToGetWork(ReasonNotToGetWorkValue.NO_REASON)
+      .deSelectAffectAbilityToWork(AbilityToWorkValue.LIMITED_BY_OFFENCE)
+      .deSelectAffectAbilityToWork(AbilityToWorkValue.OTHER)
+      .selectAffectAbilityToWork(AbilityToWorkValue.RETIRED)
+      .selectAffectAbilityToWork(AbilityToWorkValue.REFUSED_SUPPORT_WITH_NO_REASON)
       .submitPage()
 
     // Change Other Training
@@ -62,8 +61,8 @@ context(`Change links on the Check Your Answers page when updating an Induction`
       .deSelectAdditionalTraining(AdditionalTrainingValue.FULL_UK_DRIVING_LICENCE)
       .deSelectAdditionalTraining(AdditionalTrainingValue.HGV_LICENCE)
       .deSelectAdditionalTraining(AdditionalTrainingValue.OTHER)
-      .chooseAdditionalTraining(AdditionalTrainingValue.MANUAL_HANDLING)
-      .chooseAdditionalTraining(AdditionalTrainingValue.CSCS_CARD)
+      .selectAdditionalTraining(AdditionalTrainingValue.MANUAL_HANDLING)
+      .selectAdditionalTraining(AdditionalTrainingValue.CSCS_CARD)
       .submitPage()
 
     // Change In Prison Work Interests
@@ -72,8 +71,8 @@ context(`Change links on the Check Your Answers page when updating an Induction`
       .clickInPrisonWorkInterestsChangeLink()
       .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/check-your-answers`)
       .deSelectWorkType(InPrisonWorkValue.MAINTENANCE)
-      .chooseWorkType(InPrisonWorkValue.PRISON_LAUNDRY)
-      .chooseWorkType(InPrisonWorkValue.PRISON_LIBRARY)
+      .selectWorkType(InPrisonWorkValue.PRISON_LAUNDRY)
+      .selectWorkType(InPrisonWorkValue.PRISON_LIBRARY)
       .submitPage()
 
     // Change In Prison Training Interests
@@ -82,8 +81,8 @@ context(`Change links on the Check Your Answers page when updating an Induction`
       .clickInPrisonTrainingInterestsChangeLink()
       .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/check-your-answers`)
       .deSelectInPrisonTraining(InPrisonTrainingValue.MACHINERY_TICKETS)
-      .chooseInPrisonTraining(InPrisonTrainingValue.CATERING)
-      .chooseInPrisonTraining(InPrisonTrainingValue.NUMERACY_SKILLS)
+      .selectInPrisonTraining(InPrisonTrainingValue.CATERING)
+      .selectInPrisonTraining(InPrisonTrainingValue.NUMERACY_SKILLS)
       .submitPage()
 
     // Change Highest Level of Education
@@ -167,8 +166,8 @@ context(`Change links on the Check Your Answers page when updating an Induction`
       .selectWorkedBefore(HasWorkedBeforeValue.YES)
       .submitPage()
     Page.verifyOnPage(PreviousWorkExperienceTypesPage)
-      .choosePreviousWorkExperience(TypeOfWorkExperienceValue.OFFICE)
-      .choosePreviousWorkExperience(TypeOfWorkExperienceValue.SPORTS)
+      .selectPreviousWorkExperience(TypeOfWorkExperienceValue.OFFICE)
+      .selectPreviousWorkExperience(TypeOfWorkExperienceValue.SPORTS)
       .submitPage()
     Page.verifyOnPage(PreviousWorkExperienceDetailPage)
       .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/previous-work-experience`)
@@ -184,7 +183,7 @@ context(`Change links on the Check Your Answers page when updating an Induction`
     // Then
     Page.verifyOnPage(CheckYourAnswersPage) //
       .hasHopingToWorkOnRelease(HopingToGetWorkValue.NOT_SURE)
-      .hasReasonsForNotWantingToWork([ReasonNotToGetWorkValue.RETIRED, ReasonNotToGetWorkValue.NO_REASON])
+      .hasFactorsAffectingAbilityToWork([AbilityToWorkValue.REFUSED_SUPPORT_WITH_NO_REASON, AbilityToWorkValue.RETIRED])
       .hasAdditionalTraining([AdditionalTrainingValue.MANUAL_HANDLING, AdditionalTrainingValue.CSCS_CARD])
       .hasInPrisonWorkInterests([InPrisonWorkValue.PRISON_LAUNDRY, InPrisonWorkValue.PRISON_LIBRARY])
       .hasInPrisonTrainingInterests([InPrisonTrainingValue.CATERING, InPrisonTrainingValue.NUMERACY_SKILLS])
@@ -257,8 +256,8 @@ context(`Change links on the Check Your Answers page when updating an Induction`
       .deSelectAdditionalTraining(AdditionalTrainingValue.FULL_UK_DRIVING_LICENCE)
       .deSelectAdditionalTraining(AdditionalTrainingValue.HGV_LICENCE)
       .deSelectAdditionalTraining(AdditionalTrainingValue.OTHER)
-      .chooseAdditionalTraining(AdditionalTrainingValue.MANUAL_HANDLING)
-      .chooseAdditionalTraining(AdditionalTrainingValue.CSCS_CARD)
+      .selectAdditionalTraining(AdditionalTrainingValue.MANUAL_HANDLING)
+      .selectAdditionalTraining(AdditionalTrainingValue.CSCS_CARD)
       .submitPage()
 
     // Change In Prison Work Interests
@@ -266,8 +265,8 @@ context(`Change links on the Check Your Answers page when updating an Induction`
       .clickInPrisonWorkInterestsChangeLink()
       .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/check-your-answers`)
       .deSelectWorkType(InPrisonWorkValue.MAINTENANCE)
-      .chooseWorkType(InPrisonWorkValue.PRISON_LAUNDRY)
-      .chooseWorkType(InPrisonWorkValue.PRISON_LIBRARY)
+      .selectWorkType(InPrisonWorkValue.PRISON_LAUNDRY)
+      .selectWorkType(InPrisonWorkValue.PRISON_LIBRARY)
       .submitPage()
 
     // Change In Prison Training Interests
@@ -275,8 +274,8 @@ context(`Change links on the Check Your Answers page when updating an Induction`
       .clickInPrisonTrainingInterestsChangeLink()
       .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/check-your-answers`)
       .deSelectInPrisonTraining(InPrisonTrainingValue.MACHINERY_TICKETS)
-      .chooseInPrisonTraining(InPrisonTrainingValue.CATERING)
-      .chooseInPrisonTraining(InPrisonTrainingValue.NUMERACY_SKILLS)
+      .selectInPrisonTraining(InPrisonTrainingValue.CATERING)
+      .selectInPrisonTraining(InPrisonTrainingValue.NUMERACY_SKILLS)
       .submitPage()
 
     // Change Worked before (Yes -> No)
@@ -296,8 +295,8 @@ context(`Change links on the Check Your Answers page when updating an Induction`
       .selectWorkedBefore(HasWorkedBeforeValue.YES)
       .submitPage()
     Page.verifyOnPage(PreviousWorkExperienceTypesPage)
-      .choosePreviousWorkExperience(TypeOfWorkExperienceValue.OFFICE)
-      .choosePreviousWorkExperience(TypeOfWorkExperienceValue.SPORTS)
+      .selectPreviousWorkExperience(TypeOfWorkExperienceValue.OFFICE)
+      .selectPreviousWorkExperience(TypeOfWorkExperienceValue.SPORTS)
       .submitPage()
     Page.verifyOnPage(PreviousWorkExperienceDetailPage)
       .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/previous-work-experience`)
@@ -315,7 +314,7 @@ context(`Change links on the Check Your Answers page when updating an Induction`
       .clickWorkExperienceTypesChangeLink()
       .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/check-your-answers`)
       .deSelectPreviousWorkExperience(TypeOfWorkExperienceValue.OFFICE)
-      .choosePreviousWorkExperience(TypeOfWorkExperienceValue.WAREHOUSING)
+      .selectPreviousWorkExperience(TypeOfWorkExperienceValue.WAREHOUSING)
       .submitPage()
     Page.verifyOnPage(PreviousWorkExperienceDetailPage)
       .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/previous-work-experience`)
@@ -337,8 +336,8 @@ context(`Change links on the Check Your Answers page when updating an Induction`
       .clickWorkInterestsChangeLink()
       .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/check-your-answers`)
       .deSelectWorkInterestType(WorkInterestTypeValue.DRIVING)
-      .chooseWorkInterestType(WorkInterestTypeValue.MANUFACTURING)
-      .chooseWorkInterestType(WorkInterestTypeValue.OUTDOOR)
+      .selectWorkInterestType(WorkInterestTypeValue.MANUFACTURING)
+      .selectWorkInterestType(WorkInterestTypeValue.OUTDOOR)
       .submitPage()
 
     // Change work interest roles
@@ -354,8 +353,8 @@ context(`Change links on the Check Your Answers page when updating an Induction`
       .clickPersonalSkillsChangeLink()
       .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/check-your-answers`)
       .deSelectSkill(SkillsValue.TEAMWORK)
-      .chooseSkill(SkillsValue.POSITIVE_ATTITUDE)
-      .chooseSkill(SkillsValue.RESILIENCE)
+      .selectSkill(SkillsValue.POSITIVE_ATTITUDE)
+      .selectSkill(SkillsValue.RESILIENCE)
       .submitPage()
 
     // Change personal interests
@@ -363,17 +362,17 @@ context(`Change links on the Check Your Answers page when updating an Induction`
       .clickPersonalInterestsChangeLink()
       .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/check-your-answers`)
       .deSelectPersonalInterest(PersonalInterestsValue.SOCIAL)
-      .choosePersonalInterest(PersonalInterestsValue.CRAFTS)
-      .choosePersonalInterest(PersonalInterestsValue.DIGITAL)
+      .selectPersonalInterest(PersonalInterestsValue.CRAFTS)
+      .selectPersonalInterest(PersonalInterestsValue.DIGITAL)
       .submitPage()
 
     // Change affecting ability to work
     Page.verifyOnPage(CheckYourAnswersPage)
       .clickFactorsAffectingAbilityToWorkChangeLink()
       .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/check-your-answers`)
-      .deSelectAffectAbilityToWork(AbilityToWorkValue.HEALTH_ISSUES)
-      .chooseAffectAbilityToWork(AbilityToWorkValue.LIMITED_BY_OFFENSE)
-      .chooseAffectAbilityToWork(AbilityToWorkValue.NO_RIGHT_TO_WORK)
+      .deSelectAffectAbilityToWork(AbilityToWorkValue.NEEDS_WORK_ADJUSTMENTS_DUE_TO_HEALTH)
+      .selectAffectAbilityToWork(AbilityToWorkValue.LIMITED_BY_OFFENCE)
+      .selectAffectAbilityToWork(AbilityToWorkValue.NO_RIGHT_TO_WORK)
       .submitPage()
 
     // Then
@@ -396,8 +395,7 @@ context(`Change links on the Check Your Answers page when updating an Induction`
       .hasPersonalSkill(SkillsValue.RESILIENCE)
       .hasPersonalInterest(PersonalInterestsValue.CRAFTS)
       .hasPersonalInterest(PersonalInterestsValue.DIGITAL)
-      .hasFactorsAffectingAbilityToWork(AbilityToWorkValue.LIMITED_BY_OFFENSE)
-      .hasFactorsAffectingAbilityToWork(AbilityToWorkValue.NO_RIGHT_TO_WORK)
+      .hasFactorsAffectingAbilityToWork([AbilityToWorkValue.LIMITED_BY_OFFENCE, AbilityToWorkValue.NO_RIGHT_TO_WORK])
       .hasInPrisonWorkInterests([InPrisonWorkValue.PRISON_LAUNDRY, InPrisonWorkValue.PRISON_LIBRARY])
       .hasInPrisonTrainingInterests([InPrisonTrainingValue.CATERING, InPrisonTrainingValue.NUMERACY_SKILLS])
   })
@@ -424,8 +422,8 @@ context(`Change links on the Check Your Answers page when updating an Induction`
       .selectWorkedBefore(HasWorkedBeforeValue.YES)
       .submitPage()
     Page.verifyOnPage(PreviousWorkExperienceTypesPage)
-      .choosePreviousWorkExperience(TypeOfWorkExperienceValue.OFFICE)
-      .choosePreviousWorkExperience(TypeOfWorkExperienceValue.SPORTS)
+      .selectPreviousWorkExperience(TypeOfWorkExperienceValue.OFFICE)
+      .selectPreviousWorkExperience(TypeOfWorkExperienceValue.SPORTS)
       .submitPage()
     Page.verifyOnPage(PreviousWorkExperienceDetailPage)
       .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/previous-work-experience`)

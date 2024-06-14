@@ -36,13 +36,9 @@ Data supplied to this template:
         <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
 
         {% include './partials/_workOnRelease.njk' %}
+        {% include './partials/_abilityToWork.njk' %}
         {% include './partials/_educationAndTraining.njk' %}
         {% include './partials/_workExperience.njk' %}
-
-        {% if inductionDto.workOnRelease.hopingToWork === 'YES' %}
-          {% include './partials/_abilityToWork.njk' %}
-        {% endif %}
-
         {% include './partials/_skillsAndInterests.njk' %}
         {% include './partials/_inPrisonInterests.njk' %}
 

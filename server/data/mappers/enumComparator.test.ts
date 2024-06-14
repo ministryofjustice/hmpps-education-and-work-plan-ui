@@ -1,7 +1,7 @@
 import enumComparator from './enumComparator'
 import InPrisonWorkValue from '../../enums/inPrisonWorkValue'
-import ReasonNotToGetWorkValue from '../../enums/reasonNotToGetWorkValue'
 import InPrisonTrainingValue from '../../enums/inPrisonTrainingValue'
+import AbilityToWorkValue from '../../enums/abilityToWorkValue'
 
 describe('enumComparator', () => {
   it(`should determine if a ENUM string is alphabetically before another ENUM string`, () => {
@@ -30,8 +30,8 @@ describe('enumComparator', () => {
 
   it(`should determine if a ENUM string is alphabetically after another ENUM string`, () => {
     // Given
-    const enum1 = ReasonNotToGetWorkValue.RETIRED
-    const enum2 = ReasonNotToGetWorkValue.HEALTH
+    const enum1 = AbilityToWorkValue.RETIRED
+    const enum2 = AbilityToWorkValue.NEEDS_WORK_ADJUSTMENTS_DUE_TO_HEALTH
 
     // When
     const actual = enumComparator(enum1, enum2)

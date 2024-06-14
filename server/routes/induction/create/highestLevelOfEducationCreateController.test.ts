@@ -50,8 +50,9 @@ describe('highestLevelOfEducationCreateController', () => {
       const expectedView = {
         prisonerSummary,
         form: expectedHighestLevelOfEducationForm,
-        backLinkUrl: '/prisoners/A1234BC/create-induction/work-interest-roles',
-        backLinkAriaText: 'Back to Is Jimmy Lightfingers interested in any particular jobs?',
+        backLinkUrl: '/prisoners/A1234BC/create-induction/affect-ability-to-work',
+        backLinkAriaText:
+          'Back to What does Jimmy Lightfingers feel could stop or affect them working when they are out of prison?',
       }
 
       // When
@@ -84,8 +85,9 @@ describe('highestLevelOfEducationCreateController', () => {
       const expectedView = {
         prisonerSummary,
         form: expectedHighestLevelOfEducationForm,
-        backLinkUrl: '/prisoners/A1234BC/create-induction/work-interest-roles',
-        backLinkAriaText: 'Back to Is Jimmy Lightfingers interested in any particular jobs?',
+        backLinkUrl: '/prisoners/A1234BC/create-induction/affect-ability-to-work',
+        backLinkAriaText:
+          'Back to What does Jimmy Lightfingers feel could stop or affect them working when they are out of prison?',
       }
 
       // When

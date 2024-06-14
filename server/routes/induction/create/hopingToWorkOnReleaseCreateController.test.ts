@@ -167,7 +167,7 @@ describe('hopingToWorkOnReleaseCreateController', () => {
 
     Array.of<HopingToGetWorkValue>(HopingToGetWorkValue.NO, HopingToGetWorkValue.NOT_SURE).forEach(
       hopingToGetWorkValue => {
-        it(`should update Induction in session and redirect to reasons not to get work page given form is submitted with Hoping To Work as ${hopingToGetWorkValue}`, async () => {
+        it(`should update Induction in session and redirect to factors affecting ability to work page given form is submitted with Hoping To Work as ${hopingToGetWorkValue}`, async () => {
           // Given
           const inductionDto = { prisonNumber } as InductionDto
           req.session.inductionDto = inductionDto
@@ -193,7 +193,7 @@ describe('hopingToWorkOnReleaseCreateController', () => {
           )
 
           // Then
-          expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-induction/reasons-not-to-get-work')
+          expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-induction/affect-ability-to-work')
           expect(req.session.hopingToWorkOnReleaseForm).toBeUndefined()
           expect(req.session.inductionDto).toEqual(expectedInduction)
         })

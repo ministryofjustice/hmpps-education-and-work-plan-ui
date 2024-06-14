@@ -10,7 +10,7 @@ export default class FutureWorkInterestTypesPage extends InductionPage {
     super('induction-future-work-interest-types')
   }
 
-  chooseWorkInterestType(option: WorkInterestTypeValue): FutureWorkInterestTypesPage {
+  selectWorkInterestType(option: WorkInterestTypeValue): FutureWorkInterestTypesPage {
     this.checkbox(option).then(checkbox => {
       if (!checkbox.attr('checked')) {
         cy.wrap(checkbox).click()

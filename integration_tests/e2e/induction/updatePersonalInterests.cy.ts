@@ -39,8 +39,8 @@ context('Update Personal Interests in the Induction', () => {
     personalInterestsPage //
       .deSelectPersonalInterest(PersonalInterestsValue.SOLO_ACTIVITIES)
       .deSelectPersonalInterest(PersonalInterestsValue.CREATIVE)
-      .choosePersonalInterest(PersonalInterestsValue.SOCIAL)
-      .choosePersonalInterest(PersonalInterestsValue.OTHER)
+      .selectPersonalInterest(PersonalInterestsValue.SOCIAL)
+      .selectPersonalInterest(PersonalInterestsValue.OTHER)
       .setOtherPersonalInterestType('Cryptocurrency')
       .submitPage()
 
@@ -69,7 +69,7 @@ context('Update Personal Interests in the Induction', () => {
 
     // When
     personalInterestsPage //
-      .choosePersonalInterest(PersonalInterestsValue.NONE)
+      .selectPersonalInterest(PersonalInterestsValue.NONE)
       .submitPage()
 
     // Then
@@ -93,7 +93,7 @@ context('Update Personal Interests in the Induction', () => {
 
     // When
     personalInterestsPage //
-      .choosePersonalInterest(PersonalInterestsValue.OTHER)
+      .selectPersonalInterest(PersonalInterestsValue.OTHER)
       .clearOtherPersonalInterestType()
       .submitPage()
 
@@ -114,8 +114,8 @@ context('Update Personal Interests in the Induction', () => {
 
     // When
     Page.verifyOnPage(PersonalInterestsPage) //
-      .choosePersonalInterest(PersonalInterestsValue.SOCIAL)
-      .choosePersonalInterest(PersonalInterestsValue.OTHER)
+      .selectPersonalInterest(PersonalInterestsValue.SOCIAL)
+      .selectPersonalInterest(PersonalInterestsValue.OTHER)
       .setOtherPersonalInterestType('Cryptocurrency')
       .submitPage()
 
