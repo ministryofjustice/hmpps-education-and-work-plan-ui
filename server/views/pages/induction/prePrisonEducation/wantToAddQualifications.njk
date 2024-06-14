@@ -10,6 +10,7 @@ Data supplied to this template:
   * backLinkUrl - url of the back link
   * backLinkAriaText - the aria label for the back link
   * functionalSkills - The most recent Functional Skills assessments from Curious
+  * inPrisonCourses - All in-prison courses and qualifications from Curious
   * form - form object containing the following fields:
     * wantToAddQualifications - whether the prisoner wants to add educational qualifications to their Induction
   * errors? - validation errors
@@ -28,43 +29,9 @@ Data supplied to this template:
         <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
 
         {# List functional skills assessments from Curious #}
-        {% if not functionalSkills.problemRetrievingData %}
-          {% if functionalSkills.assessments.length %}
-            <table class="govuk-table">
-              <caption class="govuk-table__caption govuk-table__caption--m">Current functional skills assessment scores</caption>
-              <caption class="govuk-table__caption govuk-!-font-weight-regular govuk-body">Functional skills assessment scores inform in-prison work and education allocations.</caption>
-
-              <thead class="govuk-table__head">
-              <tr class="govuk-table__row">
-                <th scope="col" class="govuk-table__header">Assessment</th>
-                <th scope="col" class="govuk-table__header">Level</th>
-                <th scope="col" class="govuk-table__header">Assessment date</th>
-              </tr>
-              </thead>
-              <tbody class="govuk-table__body">
-              {% for item in functionalSkills.assessments %}
-                <tr class="govuk-table__row">
-                  <td class="govuk-table__cell">{{ item.type | formatFunctionalSkillType }}</td>
-                  <td class="govuk-table__cell"> {{ item.grade }}</td>
-                  <td class="govuk-table__cell">{{ item.assessmentDate | formatDate('DD MMM yyyy') }}</td>
-                </tr>
-              {% endfor %}
-              </tbody>
-            </table>
-          {% else %}
-            <h2 class="govuk-heading-m">Functional skills assessment levels</h2>
-            <p>Functional skills assessment scores inform in-prison work and education allocations.</p>
-
-            <p>{{  prisonerSummary.firstName + " " + prisonerSummary.lastName }} has no recorded functional skills assessment scores.</p>
-            <br>
-          {% endif %}
-        {% else %}
-          <h2 class="govuk-heading-m">Functional skills assessment levels</h2>
-          <h3 class="govuk-heading-s" data-qa="curious-unavailable-message">We cannot show these details from Curious right now</h3>
-          <p class="govuk-body">Reload the page or try again later. Other parts of this service may still be available.</p>
-          <br>
-        {% endif %}
-
+        {% include './partials/_functionalSkillsAssessments.njk' %}
+        {# List in-prison courses and qualifications from Curious #}
+        {% include './partials/_inPrisonCoursesAndQualifications.njk' %}
 
         {{ govukRadios({
           name: "wantToAddQualifications",

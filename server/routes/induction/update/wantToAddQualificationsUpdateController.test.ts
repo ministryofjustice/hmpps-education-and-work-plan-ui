@@ -1,5 +1,4 @@
-import { NextFunction, Request, Response } from 'express'
-import type { SessionData } from 'express-session'
+import { Request, Response } from 'express'
 import WantToAddQualificationsUpdateController from './wantToAddQualificationsUpdateController'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
 import YesNoValue from '../../../enums/yesNoValue'
@@ -12,27 +11,24 @@ describe('wantToAddQualificationsUpdateController', () => {
   const prisonNumber = 'A1234BC'
   const prisonerSummary = aValidPrisonerSummary()
 
-  const req = {
-    session: {} as SessionData,
-    body: {},
-    user: {} as Express.User,
-    params: {} as Record<string, string>,
-    path: '',
-  }
+  let req: Request
   const res = {
     redirect: jest.fn(),
     redirectWithErrors: jest.fn(),
     render: jest.fn(),
-  }
+    locals: {} as Record<string, unknown>,
+  } as unknown as Response
   const next = jest.fn()
 
   beforeEach(() => {
     jest.resetAllMocks()
-    req.session = { prisonerSummary } as SessionData
-    req.body = {}
-    req.user = { token: 'some-token' } as Express.User
-    req.params = { prisonNumber } as Record<string, string>
-    req.path = `/prisoners/${prisonNumber}/induction/want-to-add-qualifications`
+    req = {
+      session: { prisonerSummary },
+      body: {},
+      user: { token: 'some-token' },
+      params: { prisonNumber },
+      path: `/prisoners/${prisonNumber}/induction/want-to-add-qualifications`,
+    } as unknown as Request
   })
 
   describe('getWantToAddQualificationsView', () => {
@@ -50,7 +46,7 @@ describe('wantToAddQualificationsUpdateController', () => {
       }
 
       const functionalSkills = validFunctionalSkills()
-      req.session.prisonerFunctionalSkills = functionalSkills
+      res.locals.prisonerFunctionalSkills = functionalSkills
       req.session.wantToAddQualificationsForm = undefined
 
       const expectedWantToAddQualificationsForm = {
@@ -75,11 +71,7 @@ describe('wantToAddQualificationsUpdateController', () => {
       }
 
       // When
-      await controller.getWantToAddQualificationsView(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.getWantToAddQualificationsView(req, res, next)
 
       // Then
       expect(res.render).toHaveBeenCalledWith(
@@ -105,7 +97,7 @@ describe('wantToAddQualificationsUpdateController', () => {
       }
 
       const functionalSkills = validFunctionalSkills()
-      req.session.prisonerFunctionalSkills = functionalSkills
+      res.locals.prisonerFunctionalSkills = functionalSkills
       req.session.wantToAddQualificationsForm = undefined
 
       const expectedWantToAddQualificationsForm = {
@@ -122,11 +114,7 @@ describe('wantToAddQualificationsUpdateController', () => {
       }
 
       // When
-      await controller.getWantToAddQualificationsView(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.getWantToAddQualificationsView(req, res, next)
 
       // Then
       expect(res.render).toHaveBeenCalledWith(
@@ -151,7 +139,7 @@ describe('wantToAddQualificationsUpdateController', () => {
       }
 
       const functionalSkills = validFunctionalSkills()
-      req.session.prisonerFunctionalSkills = functionalSkills
+      res.locals.prisonerFunctionalSkills = functionalSkills
       req.session.wantToAddQualificationsForm = undefined
 
       const expectedWantToAddQualificationsForm = {
@@ -168,11 +156,7 @@ describe('wantToAddQualificationsUpdateController', () => {
       }
 
       // When
-      await controller.getWantToAddQualificationsView(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.getWantToAddQualificationsView(req, res, next)
 
       // Then
       expect(res.render).toHaveBeenCalledWith(
@@ -196,7 +180,7 @@ describe('wantToAddQualificationsUpdateController', () => {
       }
 
       const functionalSkills = validFunctionalSkills()
-      req.session.prisonerFunctionalSkills = functionalSkills
+      res.locals.prisonerFunctionalSkills = functionalSkills
 
       const expectedWantToAddQualificationsForm = {
         wantToAddQualifications: YesNoValue.YES,
@@ -221,11 +205,7 @@ describe('wantToAddQualificationsUpdateController', () => {
       }
 
       // When
-      await controller.getWantToAddQualificationsView(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.getWantToAddQualificationsView(req, res, next)
 
       // Then
       expect(res.render).toHaveBeenCalledWith(
@@ -256,11 +236,7 @@ describe('wantToAddQualificationsUpdateController', () => {
       ]
 
       // When
-      await controller.submitWantToAddQualificationsForm(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.submitWantToAddQualificationsForm(req, res, next)
 
       // Then
       expect(res.redirectWithErrors).toHaveBeenCalledWith(
@@ -281,11 +257,7 @@ describe('wantToAddQualificationsUpdateController', () => {
       req.session.wantToAddQualificationsForm = undefined
 
       // When
-      await controller.submitWantToAddQualificationsForm(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.submitWantToAddQualificationsForm(req, res, next)
 
       // Then
       expect(res.redirect).toHaveBeenCalledWith(`/prisoners/${prisonNumber}/induction/qualification-level`)
@@ -303,11 +275,7 @@ describe('wantToAddQualificationsUpdateController', () => {
       req.session.wantToAddQualificationsForm = undefined
 
       // When
-      await controller.submitWantToAddQualificationsForm(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.submitWantToAddQualificationsForm(req, res, next)
 
       // Then
       expect(res.redirect).toHaveBeenCalledWith(`/prisoners/${prisonNumber}/induction/additional-training`)
@@ -334,11 +302,7 @@ describe('wantToAddQualificationsUpdateController', () => {
       req.session.wantToAddQualificationsForm = undefined
 
       // When
-      await controller.submitWantToAddQualificationsForm(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.submitWantToAddQualificationsForm(req, res, next)
 
       // Then
       expect(res.redirect).toHaveBeenCalledWith(`/prisoners/${prisonNumber}/induction/check-your-answers`)
@@ -365,11 +329,7 @@ describe('wantToAddQualificationsUpdateController', () => {
       req.session.wantToAddQualificationsForm = undefined
 
       // When
-      await controller.submitWantToAddQualificationsForm(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.submitWantToAddQualificationsForm(req, res, next)
 
       // Then
       expect(res.redirect).toHaveBeenCalledWith(`/prisoners/${prisonNumber}/induction/check-your-answers`)
@@ -396,11 +356,7 @@ describe('wantToAddQualificationsUpdateController', () => {
       req.session.wantToAddQualificationsForm = undefined
 
       // When
-      await controller.submitWantToAddQualificationsForm(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.submitWantToAddQualificationsForm(req, res, next)
 
       // Then
       expect(res.redirect).toHaveBeenCalledWith(`/prisoners/${prisonNumber}/induction/check-your-answers`)

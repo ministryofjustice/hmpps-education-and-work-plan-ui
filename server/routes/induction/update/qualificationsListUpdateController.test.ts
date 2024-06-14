@@ -1,6 +1,5 @@
 import createError from 'http-errors'
-import { NextFunction, Request, Response } from 'express'
-import type { SessionData } from 'express-session'
+import { Request, Response } from 'express'
 import type { AchievedQualificationDto, InductionDto } from 'inductionDto'
 import QualificationsListUpdateController from './qualificationsListUpdateController'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
@@ -27,39 +26,34 @@ describe('qualificationsListUpdateController', () => {
   const controller = new QualificationsListUpdateController(inductionService)
 
   const prisonNumber = 'A1234BC'
+  const prisonerSummary = aValidPrisonerSummary()
 
-  const req = {
-    session: {} as SessionData,
-    body: {},
-    user: {} as Express.User,
-    params: {} as Record<string, string>,
-    path: '',
-  }
+  let req: Request
   const res = {
     redirect: jest.fn(),
     render: jest.fn(),
-  }
+    locals: {} as Record<string, unknown>,
+  } as unknown as Response
   const next = jest.fn()
 
   beforeEach(() => {
     jest.resetAllMocks()
-    req.session = {} as SessionData
-    req.body = {}
-    req.user = {} as Express.User
-    req.params = {} as Record<string, string>
-    req.params.prisonNumber = prisonNumber
-    req.path = `/prisoners/${prisonNumber}/induction/qualifications`
+    req = {
+      body: {},
+      session: { prisonerSummary },
+      params: { prisonNumber },
+      path: `/prisoners/${prisonNumber}/induction/qualifications`,
+      user: { token: 'some-token' },
+    } as unknown as Request
   })
 
   describe('getQualificationsListView', () => {
     it('should get the Qualifications List view', async () => {
       // Given
-      const prisonerSummary = aValidPrisonerSummary()
-      req.session.prisonerSummary = prisonerSummary
       const inductionDto = aLongQuestionSetInductionDto()
       req.session.inductionDto = inductionDto
       const functionalSkills = validFunctionalSkills()
-      req.session.prisonerFunctionalSkills = functionalSkills
+      res.locals.prisonerFunctionalSkills = functionalSkills
 
       const expectedQualifications: Array<AchievedQualificationDto> = [
         { subject: 'Pottery', grade: 'C', level: QualificationLevelValue.LEVEL_4 },
@@ -76,11 +70,7 @@ describe('qualificationsListUpdateController', () => {
       }
 
       // When
-      await controller.getQualificationsListView(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.getQualificationsListView(req, res, next)
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/induction/prePrisonEducation/qualificationsList', expectedView)
@@ -91,11 +81,6 @@ describe('qualificationsListUpdateController', () => {
   describe('submitQualificationsListView', () => {
     it('should update Induction and call API and redirect to Education and Training tab given page submitted without addQualification or removeQualification flags', async () => {
       // Given
-      req.user.token = 'some-token'
-
-      const prisonerSummary = aValidPrisonerSummary()
-      req.session.prisonerSummary = prisonerSummary
-
       req.body = {}
 
       const inductionDto = aLongQuestionSetInductionDto()
@@ -112,11 +97,7 @@ describe('qualificationsListUpdateController', () => {
       ]
 
       // When
-      await controller.submitQualificationsListView(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.submitQualificationsListView(req, res, next)
 
       // Then
       // Extract the first call to the mock and the second argument (i.e. the updated Induction)
@@ -134,11 +115,6 @@ describe('qualificationsListUpdateController', () => {
 
     it('should not update Induction given error calling service', async () => {
       // Given
-      req.user.token = 'some-token'
-
-      const prisonerSummary = aValidPrisonerSummary()
-      req.session.prisonerSummary = prisonerSummary
-
       req.body = {}
 
       const inductionDto = aLongQuestionSetInductionDto()
@@ -161,11 +137,7 @@ describe('qualificationsListUpdateController', () => {
       )
 
       // When
-      await controller.submitQualificationsListView(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.submitQualificationsListView(req, res, next)
 
       // Then
       // Extract the first call to the mock and the second argument (i.e. the updated Induction)
@@ -181,11 +153,6 @@ describe('qualificationsListUpdateController', () => {
 
     it('should update Induction but not call API and redisplay Qualification List Page given page submitted with removeQualification', async () => {
       // Given
-      req.user.token = 'some-token'
-
-      const prisonerSummary = aValidPrisonerSummary()
-      req.session.prisonerSummary = prisonerSummary
-
       const inductionDto = aShortQuestionSetInductionDto()
       req.session.inductionDto = inductionDto
       /* The short question set induction has no highest level of education, but does have qualifications:
@@ -201,11 +168,7 @@ describe('qualificationsListUpdateController', () => {
       ]
 
       // When
-      await controller.submitQualificationsListView(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.submitQualificationsListView(req, res, next)
 
       // Then
       const updatedInduction: InductionDto = req.session.inductionDto
@@ -221,10 +184,6 @@ describe('qualificationsListUpdateController', () => {
 
   it('should redirect to Qualification Level page given page submitted with addQualification', async () => {
     // Given
-    req.user.token = 'some-token'
-
-    const prisonerSummary = aValidPrisonerSummary()
-    req.session.prisonerSummary = prisonerSummary
     req.body = { addQualification: '' }
 
     const expectedPageFlowHistory = {
@@ -233,11 +192,7 @@ describe('qualificationsListUpdateController', () => {
     }
 
     // When
-    await controller.submitQualificationsListView(
-      req as undefined as Request,
-      res as undefined as Response,
-      next as undefined as NextFunction,
-    )
+    await controller.submitQualificationsListView(req, res, next)
 
     // Then
     expect(req.session.pageFlowHistory).toEqual(expectedPageFlowHistory)
@@ -246,11 +201,6 @@ describe('qualificationsListUpdateController', () => {
 
   it('should update InductionDto and redirect to Check Your Answers given previous page was Check Your Answers', async () => {
     // Given
-    req.user.token = 'some-token'
-    req.params.prisonNumber = prisonNumber
-
-    const prisonerSummary = aValidPrisonerSummary()
-    req.session.prisonerSummary = prisonerSummary
     const inductionDto = aLongQuestionSetInductionDto()
     req.session.inductionDto = inductionDto
 
@@ -263,11 +213,7 @@ describe('qualificationsListUpdateController', () => {
     const expectedNextPage = '/prisoners/A1234BC/induction/check-your-answers'
 
     // When
-    await controller.submitQualificationsListView(
-      req as undefined as Request,
-      res as undefined as Response,
-      next as undefined as NextFunction,
-    )
+    await controller.submitQualificationsListView(req, res, next)
 
     // Then
     expect(res.redirect).toHaveBeenCalledWith(expectedNextPage)

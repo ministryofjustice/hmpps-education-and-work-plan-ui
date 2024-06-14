@@ -1,4 +1,4 @@
-import type { FunctionalSkills, PrisonerSummary } from 'viewModels'
+import type { FunctionalSkills, InPrisonCourseRecords, PrisonerSummary } from 'viewModels'
 import type { WantToAddQualificationsForm } from 'inductionForms'
 
 export default class WantToAddQualificationsView {
@@ -8,6 +8,7 @@ export default class WantToAddQualificationsView {
     private readonly backLinkAriaText: string,
     private readonly wantToAddQualificationsForm: WantToAddQualificationsForm,
     private readonly functionalSkills: FunctionalSkills,
+    private readonly inPrisonCourses: InPrisonCourseRecords,
   ) {}
 
   get renderArgs(): {
@@ -16,6 +17,7 @@ export default class WantToAddQualificationsView {
     backLinkAriaText: string
     form: WantToAddQualificationsForm
     functionalSkills: FunctionalSkills
+    inPrisonCourses: InPrisonCourseRecords
   } {
     return {
       prisonerSummary: this.prisonerSummary,
@@ -23,6 +25,7 @@ export default class WantToAddQualificationsView {
       backLinkAriaText: this.backLinkAriaText,
       form: this.wantToAddQualificationsForm,
       functionalSkills: this.functionalSkills,
+      inPrisonCourses: this.inPrisonCourses,
     }
   }
 }

@@ -1,4 +1,4 @@
-import type { FunctionalSkills, PrisonerSummary } from 'viewModels'
+import type { FunctionalSkills, InPrisonCourseRecords, PrisonerSummary } from 'viewModels'
 import type { AchievedQualificationDto } from 'inductionDto'
 
 export default class QualificationsListView {
@@ -8,6 +8,7 @@ export default class QualificationsListView {
     private readonly backLinkAriaText: string,
     private readonly qualifications: Array<AchievedQualificationDto>,
     private readonly functionalSkills: FunctionalSkills,
+    private readonly inPrisonCourses: InPrisonCourseRecords,
   ) {}
 
   get renderArgs(): {
@@ -16,6 +17,7 @@ export default class QualificationsListView {
     backLinkAriaText: string
     qualifications: Array<AchievedQualificationDto>
     functionalSkills: FunctionalSkills
+    inPrisonCourses: InPrisonCourseRecords
   } {
     return {
       prisonerSummary: this.prisonerSummary,
@@ -23,6 +25,7 @@ export default class QualificationsListView {
       backLinkAriaText: this.backLinkAriaText,
       qualifications: this.qualifications,
       functionalSkills: this.functionalSkills,
+      inPrisonCourses: this.inPrisonCourses,
     }
   }
 }
