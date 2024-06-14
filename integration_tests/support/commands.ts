@@ -165,7 +165,6 @@ Cypress.Commands.add('updateLongQuestionSetInductionToArriveOnCheckYourAnswers',
   // 'Has the prisoner worked before' is the next page. This is asked on the short question set so will have answers but
   // we will make a change to exercise the screen flow
   Page.verifyOnPage(WorkedBeforePage) //
-    .selectWorkedBefore(HasWorkedBeforeValue.YES)
     .submitPage()
   // Remove office and other, and select
   Page.verifyOnPage(PreviousWorkExperienceTypesPage) //
