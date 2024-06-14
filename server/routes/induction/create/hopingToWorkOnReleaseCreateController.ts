@@ -39,13 +39,6 @@ export default class HopingToWorkOnReleaseCreateController extends HopingToWorkO
     req.session.inductionDto = updatedInduction
     req.session.hopingToWorkOnReleaseForm = undefined
 
-    // A change to "Hoping to work on release" on a new Induction via the Change link on Check Your Answers will
-    // result in a new question set being asked. To correctly handle the flow and back links in subsequent pages
-    // we need to set the updateInductionQuestionSet flag
-    if (this.changeWillResultInANewQuestionSet(inductionDto, hopingToWorkOnReleaseForm)) {
-      req.session.updateInductionQuestionSet = { hopingToWorkOnRelease: hopingToWorkOnReleaseForm.hopingToGetWork }
-    }
-
     const nextPage =
       updatedInduction.workOnRelease.hopingToWork === YesNoValue.YES
         ? `/prisoners/${prisonNumber}/create-induction/work-interest-types`

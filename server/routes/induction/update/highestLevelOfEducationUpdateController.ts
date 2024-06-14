@@ -58,11 +58,6 @@ export default class HighestLevelOfEducationUpdateController extends HighestLeve
       return res.redirect(`/prisoners/${prisonNumber}/induction/check-your-answers`)
     }
 
-    // If we are in the midst of changing the question set we need to redirect to the next screen
-    if (req.session.updateInductionQuestionSet) {
-      return res.redirect(`/prisoners/${prisonNumber}/induction/want-to-add-qualifications`)
-    }
-
     try {
       const updateInductionDto = toCreateOrUpdateInductionDto(prisonId, updatedInduction)
       await this.inductionService.updateInduction(prisonNumber, updateInductionDto, req.user.token)

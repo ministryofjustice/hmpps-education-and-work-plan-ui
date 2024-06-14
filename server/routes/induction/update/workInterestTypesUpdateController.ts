@@ -5,7 +5,7 @@ import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateIn
 import logger from '../../../../logger'
 import { InductionService } from '../../../services'
 import validateWorkInterestTypesForm from '../../validators/induction/workInterestTypesFormValidator'
-import { buildNewPageFlowHistory, getPreviousPage } from '../../pageFlowHistory'
+import { getPreviousPage } from '../../pageFlowHistory'
 import getDynamicBackLinkAriaText from '../dynamicAriaTextResolver'
 
 /**
@@ -57,14 +57,6 @@ export default class WorkInterestTypesUpdateController extends WorkInterestTypes
     if (this.previousPageWasCheckYourAnswers(req)) {
       req.session.inductionDto = updatedInduction
       return res.redirect(`/prisoners/${prisonNumber}/induction/check-your-answers`)
-    }
-
-    if (req.session.updateInductionQuestionSet) {
-      req.session.inductionDto = updatedInduction
-      const nextPage = `/prisoners/${prisonNumber}/induction/work-interest-roles`
-      req.session.pageFlowHistory = buildNewPageFlowHistory(req)
-      req.session.workInterestTypesForm = undefined
-      return res.redirect(nextPage)
     }
 
     try {

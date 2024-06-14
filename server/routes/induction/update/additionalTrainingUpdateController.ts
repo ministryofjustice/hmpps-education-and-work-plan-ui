@@ -5,7 +5,7 @@ import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateIn
 import logger from '../../../../logger'
 import { InductionService } from '../../../services'
 import validateAdditionalTrainingForm from '../../validators/induction/additionalTrainingFormValidator'
-import { buildNewPageFlowHistory, getPreviousPage } from '../../pageFlowHistory'
+import { getPreviousPage } from '../../pageFlowHistory'
 import getDynamicBackLinkAriaText from '../dynamicAriaTextResolver'
 
 /**
@@ -59,12 +59,6 @@ export default class AdditionalTrainingUpdateController extends AdditionalTraini
     if (this.previousPageWasCheckYourAnswers(req)) {
       req.session.additionalTrainingForm = undefined
       return res.redirect(`/prisoners/${prisonNumber}/induction/check-your-answers`)
-    }
-
-    if (req.session.updateInductionQuestionSet) {
-      req.session.pageFlowHistory = buildNewPageFlowHistory(req)
-      req.session.additionalTrainingForm = undefined
-      return res.redirect(`/prisoners/${prisonNumber}/induction/has-worked-before`)
     }
 
     try {

@@ -17,11 +17,6 @@ export default abstract class WorkInterestTypesController extends InductionContr
 
     this.addCurrentPageToFlowHistoryWhenComingFromCheckYourAnswers(req)
 
-    // Check if we are in the midst of changing the main induction question set (in this case from short route to long route)
-    if (req.session.updateInductionQuestionSet) {
-      this.addCurrentPageToHistory(req)
-    }
-
     const workInterestTypesForm = req.session.workInterestTypesForm || toWorkInterestTypesForm(inductionDto)
     req.session.workInterestTypesForm = undefined
 

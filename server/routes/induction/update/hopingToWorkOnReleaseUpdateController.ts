@@ -5,10 +5,9 @@ import type { HopingToWorkOnReleaseForm } from 'inductionForms'
 import HopingToWorkOnReleaseController from '../common/hopingToWorkOnReleaseController'
 import validateHopingToWorkOnReleaseForm from '../../validators/induction/hopingToWorkOnReleaseFormValidator'
 import { InductionService } from '../../../services'
-import HopingToGetWorkValue from '../../../enums/hopingToGetWorkValue'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
 import logger from '../../../../logger'
-import { buildNewPageFlowHistory, getPreviousPage } from '../../pageFlowHistory'
+import { getPreviousPage } from '../../pageFlowHistory'
 import getDynamicBackLinkAriaText from '../dynamicAriaTextResolver'
 
 export default class HopingToWorkOnReleaseUpdateController extends HopingToWorkOnReleaseController {
@@ -48,17 +47,6 @@ export default class HopingToWorkOnReleaseUpdateController extends HopingToWorkO
 
     const updatedInduction = updatedInductionDtoWithHopingToWorkOnRelease(inductionDto, hopingToWorkOnReleaseForm)
     req.session.inductionDto = updatedInduction
-
-    if (this.changeWillResultInANewQuestionSet(inductionDto, hopingToWorkOnReleaseForm)) {
-      req.session.updateInductionQuestionSet = { hopingToWorkOnRelease: hopingToWorkOnReleaseForm.hopingToGetWork }
-      const nextPage =
-        hopingToWorkOnReleaseForm.hopingToGetWork === HopingToGetWorkValue.YES
-          ? `/prisoners/${prisonNumber}/induction/work-interest-types`
-          : `/prisoners/${prisonNumber}/induction/affect-ability-to-work`
-      // start of the flow - always initialise the page history here
-      req.session.pageFlowHistory = buildNewPageFlowHistory(req)
-      return res.redirect(nextPage)
-    }
 
     // If the previous page was Check Your Answers, forward to Check Your Answers again
     if (this.previousPageWasCheckYourAnswers(req)) {

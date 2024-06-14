@@ -47,8 +47,7 @@ export default class QualificationsListCreateController extends QualificationsLi
       return res.redirect(`/prisoners/${prisonNumber}/create-induction/qualifications`)
     }
 
-    const changingQuestionSet = req.session.updateInductionQuestionSet != null
-    if (this.previousPageWasCheckYourAnswers(req) && !changingQuestionSet) {
+    if (this.previousPageWasCheckYourAnswers(req)) {
       req.session.pageFlowHistory = undefined
       return res.redirect(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
     }
@@ -56,7 +55,6 @@ export default class QualificationsListCreateController extends QualificationsLi
     if (inductionHasQualifications(inductionDto)) {
       // Remove the page flow history as it was only needed here to track the journey through qualifications
       req.session.pageFlowHistory = undefined
-      req.session.updateInductionQuestionSet = undefined
       return res.redirect(`/prisoners/${prisonNumber}/create-induction/additional-training`)
     }
 

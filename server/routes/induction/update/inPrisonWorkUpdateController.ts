@@ -58,12 +58,6 @@ export default class InPrisonWorkUpdateController extends InPrisonWorkController
       return res.redirect(`/prisoners/${prisonNumber}/induction/check-your-answers`)
     }
 
-    // if we are switching from the long question set to the short one, forward to the next page in the flow
-    if (req.session.updateInductionQuestionSet) {
-      req.session.inPrisonWorkForm = undefined
-      return res.redirect(`/prisoners/${prisonNumber}/induction/in-prison-training`)
-    }
-
     // otherwise map the InductionDTO to a CreateOrUpdateInductionDTO to call the API
     try {
       const updateInductionDto = toCreateOrUpdateInductionDto(prisonId, updatedInduction)
