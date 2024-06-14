@@ -36,7 +36,16 @@ export default defineConfig({
         stubSignIn: (roles: []) => auth.stubSignIn(roles),
         stubSignInAsUserWithEditAuthority: () => auth.stubSignIn(['ROLE_EDUCATION_WORK_PLAN_EDITOR']),
         stubSignInAsUserWithViewAuthority: () => auth.stubSignIn(['ROLE_EDUCATION_WORK_PLAN_VIEWER']),
-
+        log(message) {
+          // eslint-disable-next-line no-console
+          console.log(message)
+          return null
+        },
+        table(message) {
+          // eslint-disable-next-line no-console
+          console.table(message)
+          return null
+        },
         ...manageUsersApi,
         ...tokenVerification,
         ...prisonerSearchApi,
