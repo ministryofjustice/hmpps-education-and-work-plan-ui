@@ -220,8 +220,16 @@ export default class CheckYourAnswersPage extends Page {
     return Page.verifyOnPage(PersonalInterestsPage)
   }
 
-  hasFactorsAffectingAbilityToWork(expected: AbilityToWorkValue): CheckYourAnswersPage {
-    this.factorsAffectingAbilityToWork(expected).should('be.visible')
+  hasFactorsAffectingAbilityToWork(expected: Array<AbilityToWorkValue>): CheckYourAnswersPage {
+    this.factorsAffectingAbilityToWork().should(factorsAffectingAbilityToWork => {
+      const selectedFactorsAffectingAbilityToWork = factorsAffectingAbilityToWork
+        .map((idx, el) => {
+          const elementQaAttribute = el.getAttribute('data-qa') // get the `qa-data` attribute from the element - will be in the form `affectingAbilityToWork-<AbilityToWorkValue>`; eg: `affectingAbilityToWork-LIMITED_BY_OFFENCE`
+          return elementQaAttribute.split('-')[1] // split `affectingAbilityToWork-<AbilityToWorkValue>` eg: `affectingAbilityToWork-LIMITED_BY_OFFENCE` on `-` and return the 2nd element (eg: `LIMITED_BY_OFFENCE`)
+        })
+        .get()
+      expect(selectedFactorsAffectingAbilityToWork).to.eql(expected)
+    })
     return this
   }
 
@@ -236,8 +244,7 @@ export default class CheckYourAnswersPage extends Page {
 
   private submitButton = (): PageElement => cy.get('#submit-button')
 
-  private factorsAffectingAbilityToWork = (expected: AbilityToWorkValue): PageElement =>
-    cy.get(`[data-qa=affectingAbilityToWork-${expected}]`)
+  private factorsAffectingAbilityToWork = (): PageElement => cy.get(`[data-qa^=affectingAbilityToWork-]`)
 
   private factorsAffectingAbilityToWorkChangeLink = (): PageElement => cy.get('[data-qa=affectAbilityToWorkLink]')
 

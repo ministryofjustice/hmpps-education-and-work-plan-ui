@@ -48,6 +48,7 @@ context(`Change links on the Check Your Answers page when updating an Induction`
       .clickFactorsAffectingAbilityToWorkChangeLink()
       .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/check-your-answers`)
       .deSelectAffectAbilityToWork(AbilityToWorkValue.LIMITED_BY_OFFENCE)
+      .deSelectAffectAbilityToWork(AbilityToWorkValue.OTHER)
       .chooseAffectAbilityToWork(AbilityToWorkValue.RETIRED)
       .chooseAffectAbilityToWork(AbilityToWorkValue.REFUSED_SUPPORT_WITH_NO_REASON)
       .submitPage()
@@ -182,8 +183,7 @@ context(`Change links on the Check Your Answers page when updating an Induction`
     // Then
     Page.verifyOnPage(CheckYourAnswersPage) //
       .hasHopingToWorkOnRelease(HopingToGetWorkValue.NOT_SURE)
-      .hasFactorsAffectingAbilityToWork(AbilityToWorkValue.REFUSED_SUPPORT_WITH_NO_REASON)
-      .hasFactorsAffectingAbilityToWork(AbilityToWorkValue.RETIRED)
+      .hasFactorsAffectingAbilityToWork([AbilityToWorkValue.REFUSED_SUPPORT_WITH_NO_REASON, AbilityToWorkValue.RETIRED])
       .hasAdditionalTraining([AdditionalTrainingValue.MANUAL_HANDLING, AdditionalTrainingValue.CSCS_CARD])
       .hasInPrisonWorkInterests([InPrisonWorkValue.PRISON_LAUNDRY, InPrisonWorkValue.PRISON_LIBRARY])
       .hasInPrisonTrainingInterests([InPrisonTrainingValue.CATERING, InPrisonTrainingValue.NUMERACY_SKILLS])
@@ -395,8 +395,7 @@ context(`Change links on the Check Your Answers page when updating an Induction`
       .hasPersonalSkill(SkillsValue.RESILIENCE)
       .hasPersonalInterest(PersonalInterestsValue.CRAFTS)
       .hasPersonalInterest(PersonalInterestsValue.DIGITAL)
-      .hasFactorsAffectingAbilityToWork(AbilityToWorkValue.LIMITED_BY_OFFENCE)
-      .hasFactorsAffectingAbilityToWork(AbilityToWorkValue.NO_RIGHT_TO_WORK)
+      .hasFactorsAffectingAbilityToWork([AbilityToWorkValue.LIMITED_BY_OFFENCE, AbilityToWorkValue.NO_RIGHT_TO_WORK])
       .hasInPrisonWorkInterests([InPrisonWorkValue.PRISON_LAUNDRY, InPrisonWorkValue.PRISON_LIBRARY])
       .hasInPrisonTrainingInterests([InPrisonTrainingValue.CATERING, InPrisonTrainingValue.NUMERACY_SKILLS])
   })

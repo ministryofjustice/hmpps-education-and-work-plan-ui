@@ -201,8 +201,7 @@ context(`Change links on the Check Your Answers page when creating an Induction`
     // Then
     Page.verifyOnPage(CheckYourAnswersPage) //
       .hasHopingToWorkOnRelease(HopingToGetWorkValue.YES)
-      .hasFactorsAffectingAbilityToWork(AbilityToWorkValue.LIMITED_BY_OFFENCE)
-      .hasFactorsAffectingAbilityToWork(AbilityToWorkValue.NO_RIGHT_TO_WORK)
+      .hasFactorsAffectingAbilityToWork([AbilityToWorkValue.LIMITED_BY_OFFENCE, AbilityToWorkValue.NO_RIGHT_TO_WORK])
       .hasPersonalInterest(PersonalInterestsValue.CRAFTS)
       .hasPersonalInterest(PersonalInterestsValue.DIGITAL)
       .hasPersonalSkill(SkillsValue.TEAMWORK)
@@ -426,8 +425,7 @@ context(`Change links on the Check Your Answers page when creating an Induction`
     // Then
     Page.verifyOnPage(CheckYourAnswersPage) //
       .hasHopingToWorkOnRelease(HopingToGetWorkValue.NO)
-      .hasFactorsAffectingAbilityToWork(AbilityToWorkValue.NO_RIGHT_TO_WORK)
-      .hasFactorsAffectingAbilityToWork(AbilityToWorkValue.RETIRED)
+      .hasFactorsAffectingAbilityToWork([AbilityToWorkValue.RETIRED, AbilityToWorkValue.NO_RIGHT_TO_WORK])
       .hasWorkedBefore(HasWorkedBeforeValue.YES)
       .hasWorkExperience(
         TypeOfWorkExperienceValue.OFFICE,
