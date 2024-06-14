@@ -22,9 +22,10 @@ import HopingToWorkOnReleaseUpdateController from './hopingToWorkOnReleaseUpdate
 import WantToAddQualificationsUpdateController from './wantToAddQualificationsUpdateController'
 import CheckYourAnswersUpdateController from './checkYourAnswersUpdateController'
 import setCurrentPageInPageFlowQueue from '../../routerRequestHandlers/setCurrentPageInPageFlowQueue'
-import retrieveFunctionalSkillsIfNotInSession from '../../routerRequestHandlers/retrieveFunctionalSkillsIfNotInSession'
+import retrieveCuriousFunctionalSkills from '../../routerRequestHandlers/retrieveCuriousFunctionalSkills'
 import retrieveInductionIfNotInSession from '../../routerRequestHandlers/retrieveInductionIfNotInSession'
 import asyncMiddleware from '../../../middleware/asyncMiddleware'
+import retrieveCuriousInPrisonCourses from '../../routerRequestHandlers/retrieveCuriousInPrisonCourses'
 
 /**
  * Route definitions for updating the various sections of an Induction
@@ -162,7 +163,8 @@ export default (router: Router, services: Services) => {
 
     // Pre Prison Education
     router.get('/prisoners/:prisonNumber/induction/qualifications', [
-      retrieveFunctionalSkillsIfNotInSession(services.curiousService),
+      retrieveCuriousFunctionalSkills(services.curiousService),
+      retrieveCuriousInPrisonCourses(services.curiousService),
       asyncMiddleware(qualificationsListUpdateController.getQualificationsListView),
     ])
     router.post('/prisoners/:prisonNumber/induction/qualifications', [
@@ -170,7 +172,8 @@ export default (router: Router, services: Services) => {
     ])
 
     router.get('/prisoners/:prisonNumber/induction/want-to-add-qualifications', [
-      retrieveFunctionalSkillsIfNotInSession(services.curiousService),
+      retrieveCuriousFunctionalSkills(services.curiousService),
+      retrieveCuriousInPrisonCourses(services.curiousService),
       asyncMiddleware(wantToAddQualificationsUpdateController.getWantToAddQualificationsView),
     ])
     router.post('/prisoners/:prisonNumber/induction/want-to-add-qualifications', [
