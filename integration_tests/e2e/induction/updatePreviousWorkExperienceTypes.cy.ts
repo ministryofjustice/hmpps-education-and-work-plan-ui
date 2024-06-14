@@ -102,8 +102,8 @@ context('Update previous work experience types in the Induction', () => {
       const previousWorkExperienceTypesPage = Page.verifyOnPage(PreviousWorkExperienceTypesPage)
 
       previousWorkExperienceTypesPage //
-        .choosePreviousWorkExperience(TypeOfWorkExperienceValue.OUTDOOR)
-        .choosePreviousWorkExperience(TypeOfWorkExperienceValue.CONSTRUCTION)
+        .selectPreviousWorkExperience(TypeOfWorkExperienceValue.OUTDOOR)
+        .selectPreviousWorkExperience(TypeOfWorkExperienceValue.CONSTRUCTION)
         .submitPage()
 
       // Populate the Detail page for "OUTDOOR"
@@ -189,8 +189,8 @@ context('Update previous work experience types in the Induction', () => {
 
       previousWorkExperienceTypesPage //
         .deSelectPreviousWorkExperience(TypeOfWorkExperienceValue.OFFICE)
-        .choosePreviousWorkExperience(TypeOfWorkExperienceValue.OUTDOOR)
-        .choosePreviousWorkExperience(TypeOfWorkExperienceValue.CONSTRUCTION)
+        .selectPreviousWorkExperience(TypeOfWorkExperienceValue.OUTDOOR)
+        .selectPreviousWorkExperience(TypeOfWorkExperienceValue.CONSTRUCTION)
         .setOtherPreviousWorkExperienceType('Health and fitness')
         .submitPage()
 

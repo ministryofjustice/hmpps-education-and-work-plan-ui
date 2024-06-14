@@ -10,7 +10,7 @@ export default class InPrisonWorkPage extends InductionPage {
     super('induction-in-prison-work')
   }
 
-  chooseWorkType(option: InPrisonWorkValue): InPrisonWorkPage {
+  selectWorkType(option: InPrisonWorkValue): InPrisonWorkPage {
     this.checkbox(option).then(checkbox => {
       if (!checkbox.attr('checked')) {
         cy.wrap(checkbox).click()

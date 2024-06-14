@@ -100,7 +100,7 @@ Cypress.Commands.add('updateShortQuestionSetInductionToArriveOnCheckYourAnswers'
   Page.verifyOnPage(PreviousWorkExperienceTypesPage) //
     .deSelectPreviousWorkExperience(TypeOfWorkExperienceValue.OFFICE)
     .deSelectPreviousWorkExperience(TypeOfWorkExperienceValue.OTHER)
-    .choosePreviousWorkExperience(TypeOfWorkExperienceValue.WAREHOUSING)
+    .selectPreviousWorkExperience(TypeOfWorkExperienceValue.WAREHOUSING)
     .submitPage()
   Page.verifyOnPage(PreviousWorkExperienceDetailPage) //
     .setJobRole('Forklift driver')
@@ -134,7 +134,7 @@ Cypress.Commands.add('updateLongQuestionSetInductionToArriveOnCheckYourAnswers',
     .submitPage()
   // Work Interests page is the next page. This is not asked on the short question set.
   Page.verifyOnPage(FutureWorkInterestTypesPage) //
-    .chooseWorkInterestType(WorkInterestTypeValue.DRIVING)
+    .selectWorkInterestType(WorkInterestTypeValue.DRIVING)
     .submitPage()
   Page.verifyOnPage(FutureWorkInterestRolesPage) //
     .setWorkInterestRole(WorkInterestTypeValue.DRIVING, 'Driving instructor')
@@ -170,7 +170,7 @@ Cypress.Commands.add('updateLongQuestionSetInductionToArriveOnCheckYourAnswers',
   Page.verifyOnPage(PreviousWorkExperienceTypesPage) //
     .deSelectPreviousWorkExperience(TypeOfWorkExperienceValue.OFFICE)
     .deSelectPreviousWorkExperience(TypeOfWorkExperienceValue.OTHER)
-    .choosePreviousWorkExperience(TypeOfWorkExperienceValue.WAREHOUSING)
+    .selectPreviousWorkExperience(TypeOfWorkExperienceValue.WAREHOUSING)
     .submitPage()
   Page.verifyOnPage(PreviousWorkExperienceDetailPage) //
     .setJobRole('Forklift driver')
@@ -204,7 +204,7 @@ Cypress.Commands.add(
       .submitPage()
     // Future Work Interest Types page is next
     Page.verifyOnPage(FutureWorkInterestTypesPage) //
-      .chooseWorkInterestType(WorkInterestTypeValue.DRIVING)
+      .selectWorkInterestType(WorkInterestTypeValue.DRIVING)
       .submitPage()
     // Future Work Interest Roles page is next
     Page.verifyOnPage(FutureWorkInterestRolesPage) //
@@ -212,7 +212,7 @@ Cypress.Commands.add(
       .submitPage()
     // Factors Affecting Ability To Work is the next page
     Page.verifyOnPage(AffectAbilityToWorkPage) //
-      .chooseAffectAbilityToWork(AbilityToWorkValue.NONE)
+      .selectAffectAbilityToWork(AbilityToWorkValue.NONE)
       .submitPage()
     // Highest Level of Education page is next
     Page.verifyOnPage(HighestLevelOfEducationPage)
@@ -240,7 +240,7 @@ Cypress.Commands.add(
 
     // Additional Training page is next
     Page.verifyOnPage(AdditionalTrainingPage) //
-      .chooseAdditionalTraining(AdditionalTrainingValue.HGV_LICENCE)
+      .selectAdditionalTraining(AdditionalTrainingValue.HGV_LICENCE)
       .submitPage()
     // Have You Worked Before page is next
     Page.verifyOnPage(WorkedBeforePage) //
@@ -248,7 +248,7 @@ Cypress.Commands.add(
       .submitPage()
     // Previous Work Experience Types is the next page
     Page.verifyOnPage(PreviousWorkExperienceTypesPage) //
-      .choosePreviousWorkExperience(TypeOfWorkExperienceValue.CONSTRUCTION)
+      .selectPreviousWorkExperience(TypeOfWorkExperienceValue.CONSTRUCTION)
       .submitPage()
     // Previous Work Experience Details page is next
     Page.verifyOnPage(PreviousWorkExperienceDetailPage) //
@@ -257,19 +257,19 @@ Cypress.Commands.add(
       .submitPage()
     // Personal Skills page is next
     Page.verifyOnPage(SkillsPage) //
-      .chooseSkill(SkillsValue.POSITIVE_ATTITUDE)
+      .selectSkill(SkillsValue.POSITIVE_ATTITUDE)
       .submitPage()
     // Personal Interests page is next
     Page.verifyOnPage(PersonalInterestsPage) //
-      .choosePersonalInterest(PersonalInterestsValue.COMMUNITY)
+      .selectPersonalInterest(PersonalInterestsValue.COMMUNITY)
       .submitPage()
     // In Prison Work Interests page is next
     Page.verifyOnPage(InPrisonWorkPage) //
-      .chooseWorkType(InPrisonWorkValue.PRISON_LIBRARY)
+      .selectWorkType(InPrisonWorkValue.PRISON_LIBRARY)
       .submitPage()
     // In Prison Training Interests page is next
     Page.verifyOnPage(InPrisonTrainingPage) //
-      .chooseInPrisonTraining(InPrisonTrainingValue.FORKLIFT_DRIVING)
+      .selectInPrisonTraining(InPrisonTrainingValue.FORKLIFT_DRIVING)
       .submitPage()
     // Arrive on Check Your Answers page
     Page.verifyOnPage(CheckYourAnswersPage)
@@ -288,7 +288,7 @@ Cypress.Commands.add(
       .submitPage()
     // Factors Affecting Ability To Work is the next page
     Page.verifyOnPage(AffectAbilityToWorkPage) //
-      .chooseAffectAbilityToWork(AbilityToWorkValue.CARING_RESPONSIBILITIES)
+      .selectAffectAbilityToWork(AbilityToWorkValue.CARING_RESPONSIBILITIES)
       .submitPage()
     // Highest Level of Education page is next
     Page.verifyOnPage(HighestLevelOfEducationPage)
@@ -316,7 +316,7 @@ Cypress.Commands.add(
 
     // Additional Training page is next
     Page.verifyOnPage(AdditionalTrainingPage) //
-      .chooseAdditionalTraining(AdditionalTrainingValue.HGV_LICENCE)
+      .selectAdditionalTraining(AdditionalTrainingValue.HGV_LICENCE)
       .submitPage()
     // Have You Worked Before page is next
     Page.verifyOnPage(WorkedBeforePage) //
@@ -324,7 +324,7 @@ Cypress.Commands.add(
       .submitPage()
     // Previous Work Experience Types is the next page
     Page.verifyOnPage(PreviousWorkExperienceTypesPage) //
-      .choosePreviousWorkExperience(TypeOfWorkExperienceValue.CONSTRUCTION)
+      .selectPreviousWorkExperience(TypeOfWorkExperienceValue.CONSTRUCTION)
       .submitPage()
     // Previous Work Experience Details page is next
     Page.verifyOnPage(PreviousWorkExperienceDetailPage) //
@@ -333,19 +333,19 @@ Cypress.Commands.add(
       .submitPage()
     // Personal Skills page is next
     Page.verifyOnPage(SkillsPage) //
-      .chooseSkill(SkillsValue.POSITIVE_ATTITUDE)
+      .selectSkill(SkillsValue.POSITIVE_ATTITUDE)
       .submitPage()
     // Personal Interests page is next
     Page.verifyOnPage(PersonalInterestsPage) //
-      .choosePersonalInterest(PersonalInterestsValue.COMMUNITY)
+      .selectPersonalInterest(PersonalInterestsValue.COMMUNITY)
       .submitPage()
     // In Prison Work Interests page is next
     Page.verifyOnPage(InPrisonWorkPage) //
-      .chooseWorkType(InPrisonWorkValue.PRISON_LIBRARY)
+      .selectWorkType(InPrisonWorkValue.PRISON_LIBRARY)
       .submitPage()
     // In Prison Training Interests page is next
     Page.verifyOnPage(InPrisonTrainingPage) //
-      .chooseInPrisonTraining(InPrisonTrainingValue.FORKLIFT_DRIVING)
+      .selectInPrisonTraining(InPrisonTrainingValue.FORKLIFT_DRIVING)
       .submitPage()
     // Arrive on Check Your Answers page
     Page.verifyOnPage(CheckYourAnswersPage)

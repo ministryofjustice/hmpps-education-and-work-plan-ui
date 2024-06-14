@@ -71,8 +71,8 @@ context('Create a short question set Induction', () => {
       .hasBackLinkTo('/prisoners/A00001A/create-induction/hoping-to-work-on-release')
       .hasErrorCount(1)
       .hasFieldInError('affectAbilityToWork')
-      .chooseAffectAbilityToWork(AbilityToWorkValue.NEEDS_WORK_ADJUSTMENTS_DUE_TO_HEALTH)
-      .chooseAffectAbilityToWork(AbilityToWorkValue.CARING_RESPONSIBILITIES)
+      .selectAffectAbilityToWork(AbilityToWorkValue.NEEDS_WORK_ADJUSTMENTS_DUE_TO_HEALTH)
+      .selectAffectAbilityToWork(AbilityToWorkValue.CARING_RESPONSIBILITIES)
       .submitPage()
 
     Page.verifyOnPage(HighestLevelOfEducationPage)
@@ -150,8 +150,8 @@ context('Create a short question set Induction', () => {
       .hasBackLinkTo('/prisoners/A00001A/create-induction/qualifications')
       .hasErrorCount(1)
       .hasFieldInError('additionalTraining')
-      .chooseAdditionalTraining(AdditionalTrainingValue.HGV_LICENCE)
-      .chooseAdditionalTraining(AdditionalTrainingValue.OTHER)
+      .selectAdditionalTraining(AdditionalTrainingValue.HGV_LICENCE)
+      .selectAdditionalTraining(AdditionalTrainingValue.OTHER)
       .setAdditionalTrainingOther('Basic accountancy course')
       .submitPage()
 
@@ -174,8 +174,8 @@ context('Create a short question set Induction', () => {
       .hasBackLinkTo('/prisoners/A00001A/create-induction/has-worked-before')
       .hasErrorCount(1)
       .hasFieldInError('typeOfWorkExperience')
-      .choosePreviousWorkExperience(TypeOfWorkExperienceValue.CONSTRUCTION)
-      .choosePreviousWorkExperience(TypeOfWorkExperienceValue.OTHER)
+      .selectPreviousWorkExperience(TypeOfWorkExperienceValue.CONSTRUCTION)
+      .selectPreviousWorkExperience(TypeOfWorkExperienceValue.OTHER)
       .setOtherPreviousWorkExperienceType('Entertainment industry')
       .submitPage()
 
@@ -205,7 +205,7 @@ context('Create a short question set Induction', () => {
       .hasBackLinkTo('/prisoners/A00001A/create-induction/has-worked-before')
       .hasErrorCount(1)
       .hasFieldInError('skills')
-      .chooseSkill(SkillsValue.POSITIVE_ATTITUDE)
+      .selectSkill(SkillsValue.POSITIVE_ATTITUDE)
       .submitPage()
 
     // Personal Interests page is next
@@ -216,8 +216,8 @@ context('Create a short question set Induction', () => {
       .hasBackLinkTo('/prisoners/A00001A/create-induction/skills')
       .hasErrorCount(1)
       .hasFieldInError('personalInterests')
-      .choosePersonalInterest(PersonalInterestsValue.COMMUNITY)
-      .choosePersonalInterest(PersonalInterestsValue.DIGITAL)
+      .selectPersonalInterest(PersonalInterestsValue.COMMUNITY)
+      .selectPersonalInterest(PersonalInterestsValue.DIGITAL)
       .submitPage()
 
     // In Prison Work Interests page is next
@@ -226,8 +226,8 @@ context('Create a short question set Induction', () => {
       .submitPage() // submit the page without answering the question to trigger a validation error
     Page.verifyOnPage(InPrisonWorkPage) //
       .hasBackLinkTo('/prisoners/A00001A/create-induction/personal-interests')
-      .chooseWorkType(InPrisonWorkValue.KITCHENS_AND_COOKING)
-      .chooseWorkType(InPrisonWorkValue.PRISON_LIBRARY)
+      .selectWorkType(InPrisonWorkValue.KITCHENS_AND_COOKING)
+      .selectWorkType(InPrisonWorkValue.PRISON_LIBRARY)
       .submitPage()
 
     // In Prison Training Interests page is next
@@ -236,7 +236,7 @@ context('Create a short question set Induction', () => {
       .submitPage() // submit the page without answering the question to trigger a validation error
     Page.verifyOnPage(InPrisonTrainingPage) //
       .hasBackLinkTo('/prisoners/A00001A/create-induction/in-prison-work')
-      .chooseInPrisonTraining(InPrisonTrainingValue.FORKLIFT_DRIVING)
+      .selectInPrisonTraining(InPrisonTrainingValue.FORKLIFT_DRIVING)
       .submitPage()
 
     // Check Your Answers is the final page. Submit the page to create the induction
@@ -300,7 +300,7 @@ context('Create a short question set Induction', () => {
 
     Page.verifyOnPage(AffectAbilityToWorkPage)
       .hasBackLinkTo('/prisoners/A00001A/create-induction/hoping-to-work-on-release')
-      .chooseAffectAbilityToWork(AbilityToWorkValue.CARING_RESPONSIBILITIES)
+      .selectAffectAbilityToWork(AbilityToWorkValue.CARING_RESPONSIBILITIES)
       .submitPage()
 
     Page.verifyOnPage(HighestLevelOfEducationPage)
@@ -316,7 +316,7 @@ context('Create a short question set Induction', () => {
     // Additional Training page is next
     Page.verifyOnPage(AdditionalTrainingPage) //
       .hasBackLinkTo('/prisoners/A00001A/create-induction/want-to-add-qualifications')
-      .chooseAdditionalTraining(AdditionalTrainingValue.HGV_LICENCE)
+      .selectAdditionalTraining(AdditionalTrainingValue.HGV_LICENCE)
       .submitPage()
 
     // Have You Worked Before page is next
@@ -328,25 +328,25 @@ context('Create a short question set Induction', () => {
     // Personal Skills page is next
     Page.verifyOnPage(SkillsPage) //
       .hasBackLinkTo('/prisoners/A00001A/create-induction/has-worked-before')
-      .chooseSkill(SkillsValue.POSITIVE_ATTITUDE)
+      .selectSkill(SkillsValue.POSITIVE_ATTITUDE)
       .submitPage()
 
     // Personal Interests page is next
     Page.verifyOnPage(PersonalInterestsPage) //
       .hasBackLinkTo('/prisoners/A00001A/create-induction/skills')
-      .choosePersonalInterest(PersonalInterestsValue.COMMUNITY)
+      .selectPersonalInterest(PersonalInterestsValue.COMMUNITY)
       .submitPage()
 
     // In Prison Work Interests page is next
     Page.verifyOnPage(InPrisonWorkPage) //
       .hasBackLinkTo('/prisoners/A00001A/create-induction/personal-interests')
-      .chooseWorkType(InPrisonWorkValue.PRISON_LIBRARY)
+      .selectWorkType(InPrisonWorkValue.PRISON_LIBRARY)
       .submitPage()
 
     // In Prison Training Interests page is next
     Page.verifyOnPage(InPrisonTrainingPage) //
       .hasBackLinkTo('/prisoners/A00001A/create-induction/in-prison-work')
-      .chooseInPrisonTraining(InPrisonTrainingValue.FORKLIFT_DRIVING)
+      .selectInPrisonTraining(InPrisonTrainingValue.FORKLIFT_DRIVING)
       .submitPage()
 
     // Check Your Answers is the final page. Submit the page to create the induction

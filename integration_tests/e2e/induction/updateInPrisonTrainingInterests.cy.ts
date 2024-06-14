@@ -36,8 +36,8 @@ context('Update in-prison training interests within an Induction', () => {
     // When
     inPrisonTrainingPage //
       .deSelectInPrisonTraining(InPrisonTrainingValue.MACHINERY_TICKETS)
-      .chooseInPrisonTraining(InPrisonTrainingValue.CATERING)
-      .chooseInPrisonTraining(InPrisonTrainingValue.OTHER)
+      .selectInPrisonTraining(InPrisonTrainingValue.CATERING)
+      .selectInPrisonTraining(InPrisonTrainingValue.OTHER)
       .setInPrisonTrainingOther('Art and craft')
       .submitPage()
 
@@ -65,7 +65,7 @@ context('Update in-prison training interests within an Induction', () => {
 
     // When
     inPrisonTrainingPage //
-      .chooseInPrisonTraining(InPrisonTrainingValue.OTHER)
+      .selectInPrisonTraining(InPrisonTrainingValue.OTHER)
       .clearInPrisonTrainingOther()
       .submitPage()
 
@@ -104,8 +104,8 @@ context('Update in-prison training interests within an Induction', () => {
 
     // When
     Page.verifyOnPage(InPrisonTrainingPage)
-      .chooseInPrisonTraining(InPrisonTrainingValue.CATERING)
-      .chooseInPrisonTraining(InPrisonTrainingValue.OTHER)
+      .selectInPrisonTraining(InPrisonTrainingValue.CATERING)
+      .selectInPrisonTraining(InPrisonTrainingValue.OTHER)
       .setInPrisonTrainingOther('Art and craft')
       .submitPage()
 

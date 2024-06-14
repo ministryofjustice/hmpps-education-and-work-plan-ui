@@ -37,8 +37,8 @@ context('Update factors affecting the ability to work within an Induction', () =
     affectAbilityToWorkPage //
       .deSelectAffectAbilityToWork(AbilityToWorkValue.LIMITED_BY_OFFENCE)
       .deSelectAffectAbilityToWork(AbilityToWorkValue.NEEDS_WORK_ADJUSTMENTS_DUE_TO_HEALTH)
-      .chooseAffectAbilityToWork(AbilityToWorkValue.NEEDS_WORK_ADJUSTMENTS_DUE_TO_HEALTH)
-      .chooseAffectAbilityToWork(AbilityToWorkValue.OTHER)
+      .selectAffectAbilityToWork(AbilityToWorkValue.NEEDS_WORK_ADJUSTMENTS_DUE_TO_HEALTH)
+      .selectAffectAbilityToWork(AbilityToWorkValue.OTHER)
       .setAffectAbilityToWorkOther('Variable mental health')
       .submitPage()
 
@@ -65,7 +65,7 @@ context('Update factors affecting the ability to work within an Induction', () =
 
     // When
     affectAbilityToWorkPage //
-      .chooseAffectAbilityToWork(AbilityToWorkValue.NONE)
+      .selectAffectAbilityToWork(AbilityToWorkValue.NONE)
       .submitPage()
 
     // Then
@@ -88,7 +88,7 @@ context('Update factors affecting the ability to work within an Induction', () =
 
     // When
     affectAbilityToWorkPage //
-      .chooseAffectAbilityToWork(AbilityToWorkValue.OTHER)
+      .selectAffectAbilityToWork(AbilityToWorkValue.OTHER)
       .clearAffectAbilityToWorkOther()
       .submitPage()
 

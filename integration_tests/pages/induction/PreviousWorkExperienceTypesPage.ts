@@ -7,7 +7,7 @@ export default class PreviousWorkExperienceTypesPage extends InductionPage {
     super('induction-previous-work-experience-types')
   }
 
-  choosePreviousWorkExperience(option: TypeOfWorkExperienceValue): PreviousWorkExperienceTypesPage {
+  selectPreviousWorkExperience(option: TypeOfWorkExperienceValue): PreviousWorkExperienceTypesPage {
     this.checkbox(option).then(checkbox => {
       if (!checkbox.attr('checked')) {
         cy.wrap(checkbox).click()

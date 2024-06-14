@@ -35,8 +35,8 @@ context('Update in-prison work interests within an Induction', () => {
 
     // When
     inPrisonWorkPage //
-      .chooseWorkType(InPrisonWorkValue.CLEANING_AND_HYGIENE)
-      .chooseWorkType(InPrisonWorkValue.OTHER)
+      .selectWorkType(InPrisonWorkValue.CLEANING_AND_HYGIENE)
+      .selectWorkType(InPrisonWorkValue.OTHER)
       .setOtherWorkType('Painting and decorating')
       .submitPage()
 
@@ -63,7 +63,7 @@ context('Update in-prison work interests within an Induction', () => {
 
     // When
     inPrisonWorkPage //
-      .chooseWorkType(InPrisonWorkValue.OTHER)
+      .selectWorkType(InPrisonWorkValue.OTHER)
       .clearOtherWorkType()
       .submitPage()
 
@@ -84,8 +84,8 @@ context('Update in-prison work interests within an Induction', () => {
 
     // When
     Page.verifyOnPage(InPrisonWorkPage)
-      .chooseWorkType(InPrisonWorkValue.CLEANING_AND_HYGIENE)
-      .chooseWorkType(InPrisonWorkValue.OTHER)
+      .selectWorkType(InPrisonWorkValue.CLEANING_AND_HYGIENE)
+      .selectWorkType(InPrisonWorkValue.OTHER)
       .setOtherWorkType('Painting and decorating')
       .submitPage()
 

@@ -180,8 +180,8 @@ context(`Change new Induction question set by updating 'Hoping to work on releas
     // Work Interests page is the next page. This is not asked on the short question set.
     Page.verifyOnPage(FutureWorkInterestTypesPage) //
       .hasBackLinkTo(`/prisoners/${prisonNumberForPrisonerWithNoInduction}/create-induction/hoping-to-work-on-release`)
-      .chooseWorkInterestType(WorkInterestTypeValue.CONSTRUCTION)
-      .chooseWorkInterestType(WorkInterestTypeValue.DRIVING)
+      .selectWorkInterestType(WorkInterestTypeValue.CONSTRUCTION)
+      .selectWorkInterestType(WorkInterestTypeValue.DRIVING)
       .submitPage()
     Page.verifyOnPage(FutureWorkInterestRolesPage) //
       .hasBackLinkTo(`/prisoners/${prisonNumberForPrisonerWithNoInduction}/create-induction/work-interest-types`)
@@ -301,8 +301,8 @@ context(`Change new Induction question set by updating 'Hoping to work on releas
     // Work Interests page is the next page. This is not asked on the short question set.
     Page.verifyOnPage(FutureWorkInterestTypesPage) //
       .hasBackLinkTo(`/prisoners/${prisonNumberForPrisonerWithNoInduction}/create-induction/hoping-to-work-on-release`)
-      .chooseWorkInterestType(WorkInterestTypeValue.CONSTRUCTION)
-      .chooseWorkInterestType(WorkInterestTypeValue.DRIVING)
+      .selectWorkInterestType(WorkInterestTypeValue.CONSTRUCTION)
+      .selectWorkInterestType(WorkInterestTypeValue.DRIVING)
       .submitPage()
     Page.verifyOnPage(FutureWorkInterestRolesPage) //
       .hasBackLinkTo(`/prisoners/${prisonNumberForPrisonerWithNoInduction}/create-induction/work-interest-types`)

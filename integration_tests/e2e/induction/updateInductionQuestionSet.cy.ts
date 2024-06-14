@@ -113,7 +113,7 @@ context(`Change existing Induction question set by updating the answer to 'Hopin
     // Add another previous work experience types as that will cause the next page (work experience detail) to be displayed.
     Page.verifyOnPage(PreviousWorkExperienceTypesPage) //
       .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/has-worked-before`)
-      .choosePreviousWorkExperience(TypeOfWorkExperienceValue.TECHNICAL)
+      .selectPreviousWorkExperience(TypeOfWorkExperienceValue.TECHNICAL)
       .submitPage()
     Page.verifyOnPage(PreviousWorkExperienceDetailPage)
       .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/previous-work-experience`)
@@ -138,13 +138,13 @@ context(`Change existing Induction question set by updating the answer to 'Hopin
     // In Prison Work Interests is the next page. This is asked on the long question set, so this will already have answers set but we will add one
     Page.verifyOnPage(InPrisonWorkPage) //
       .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/personal-interests`)
-      .chooseWorkType(InPrisonWorkValue.CLEANING_AND_HYGIENE)
+      .selectWorkType(InPrisonWorkValue.CLEANING_AND_HYGIENE)
       .submitPage()
 
     // In Prison Training Interests is the next page. This is asked on the long question set, so this will already have answers set but we will add one
     Page.verifyOnPage(InPrisonTrainingPage) //
       .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/in-prison-work`)
-      .chooseInPrisonTraining(InPrisonTrainingValue.BARBERING_AND_HAIRDRESSING)
+      .selectInPrisonTraining(InPrisonTrainingValue.BARBERING_AND_HAIRDRESSING)
       .submitPage()
 
     // Check Your Answers is the final page. Submit the page to save the induction
@@ -230,8 +230,8 @@ context(`Change existing Induction question set by updating the answer to 'Hopin
     // Work Interests page is the next page. This is not asked on the short question set.
     Page.verifyOnPage(FutureWorkInterestTypesPage)
       .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/hoping-to-work-on-release`)
-      .chooseWorkInterestType(WorkInterestTypeValue.CONSTRUCTION)
-      .chooseWorkInterestType(WorkInterestTypeValue.DRIVING)
+      .selectWorkInterestType(WorkInterestTypeValue.CONSTRUCTION)
+      .selectWorkInterestType(WorkInterestTypeValue.DRIVING)
       .submitPage()
     Page.verifyOnPage(FutureWorkInterestRolesPage)
       .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/work-interest-types`)
@@ -284,7 +284,7 @@ context(`Change existing Induction question set by updating the answer to 'Hopin
     // Add another previous work experience types as that will cause the next page (work experience detail) to be displayed.
     Page.verifyOnPage(PreviousWorkExperienceTypesPage) //
       .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/has-worked-before`)
-      .choosePreviousWorkExperience(TypeOfWorkExperienceValue.TECHNICAL)
+      .selectPreviousWorkExperience(TypeOfWorkExperienceValue.TECHNICAL)
       .submitPage()
     Page.verifyOnPage(PreviousWorkExperienceDetailPage)
       .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/previous-work-experience`)
@@ -309,13 +309,13 @@ context(`Change existing Induction question set by updating the answer to 'Hopin
     // In Prison Work Interests is the next page. This is asked on the short question set, so this will already have answers set
     Page.verifyOnPage(InPrisonWorkPage) //
       .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/personal-interests`)
-      .chooseWorkType(InPrisonWorkValue.CLEANING_AND_HYGIENE)
+      .selectWorkType(InPrisonWorkValue.CLEANING_AND_HYGIENE)
       .submitPage()
 
     // In Prison Training Interests is the next page. This is asked on the short question set, so this will already have answers set
     Page.verifyOnPage(InPrisonTrainingPage) //
       .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/in-prison-work`)
-      .chooseInPrisonTraining(InPrisonTrainingValue.BARBERING_AND_HAIRDRESSING)
+      .selectInPrisonTraining(InPrisonTrainingValue.BARBERING_AND_HAIRDRESSING)
       .submitPage()
 
     // Check Your Answers is the final page. Submit the page to save the induction

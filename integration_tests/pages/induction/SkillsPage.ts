@@ -10,7 +10,7 @@ export default class SkillsPage extends InductionPage {
     super('induction-skills')
   }
 
-  chooseSkill(option: SkillsValue): SkillsPage {
+  selectSkill(option: SkillsValue): SkillsPage {
     this.checkbox(option).then(checkbox => {
       if (!checkbox.attr('checked')) {
         cy.wrap(checkbox).click()
