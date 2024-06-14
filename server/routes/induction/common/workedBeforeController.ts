@@ -64,7 +64,7 @@ const toWorkedBeforeForm = (inductionDto: InductionDto): WorkedBeforeForm => {
     }
   }
 
-  // hasWorkedBefore in the Induction is neither true nor false, meaning this is a new Induction. Set the form field
+  // hasWorkedBefore in the Induction is not set, meaning this is a new Induction. Set the form field
   // to undefined to force the user to answer it
   return {
     hasWorkedBefore: undefined,

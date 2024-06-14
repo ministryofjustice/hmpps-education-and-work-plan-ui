@@ -272,7 +272,7 @@ describe('workedBeforeCreateController', () => {
     it('should update inductionDto and redirect to Previous Work Experience given previous page was Check Your Answers and worked before is changed to Yes', async () => {
       // Given
       const inductionDto = aLongQuestionSetInductionDto()
-      inductionDto.previousWorkExperiences.hasWorkedBefore = false
+      inductionDto.previousWorkExperiences.hasWorkedBefore = 'NO'
       inductionDto.previousWorkExperiences.experiences = []
       req.session.inductionDto = inductionDto
 
