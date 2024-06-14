@@ -5,15 +5,22 @@ import getDynamicBackLinkAriaText from '../dynamicAriaTextResolver'
 import validateAffectAbilityToWorkForm from '../../validators/induction/affectAbilityToWorkFormValidator'
 import { asArray } from '../../../utils/utils'
 import { getPreviousPage } from '../../pageFlowHistory'
+import HopingToGetWorkValue from '../../../enums/hopingToGetWorkValue'
 
 export default class AffectAbilityToWorkCreateController extends AffectAbilityToWorkController {
   getBackLinkUrl(req: Request): string {
     const { prisonNumber } = req.params
-    const { pageFlowHistory } = req.session
-    if (pageFlowHistory) {
-      return getPreviousPage(pageFlowHistory)
+    const { pageFlowHistory, inductionDto } = req.session
+    let previousPage = pageFlowHistory && getPreviousPage(pageFlowHistory)
+    if (!previousPage) {
+      // No previous page from the Page Flow History
+      // The previous page in this case is based on whether the prisoner hopes to work or not
+      previousPage =
+        inductionDto.workOnRelease.hopingToWork === HopingToGetWorkValue.YES
+          ? `/prisoners/${prisonNumber}/create-induction/work-interest-roles`
+          : `/prisoners/${prisonNumber}/create-induction/hoping-to-work-on-release`
     }
-    return `/prisoners/${prisonNumber}/create-induction/personal-interests`
+    return previousPage
   }
 
   getBackLinkAriaText(req: Request): string {
@@ -43,8 +50,9 @@ export default class AffectAbilityToWorkCreateController extends AffectAbilityTo
     req.session.inductionDto = updatedInduction
     req.session.affectAbilityToWorkForm = undefined
 
-    return this.previousPageWasCheckYourAnswers(req)
-      ? res.redirect(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
-      : res.redirect(`/prisoners/${prisonNumber}/create-induction/in-prison-work`)
+    const nextPage = this.previousPageWasCheckYourAnswers(req)
+      ? `/prisoners/${prisonNumber}/create-induction/check-your-answers`
+      : `/prisoners/${prisonNumber}/create-induction/highest-level-of-education`
+    return res.redirect(nextPage)
   }
 }

@@ -10,7 +10,7 @@ export default class InPrisonTrainingPage extends InductionPage {
     super('induction-in-prison-training')
   }
 
-  chooseInPrisonTraining(option: InPrisonTrainingValue): InPrisonTrainingPage {
+  selectInPrisonTraining(option: InPrisonTrainingValue): InPrisonTrainingPage {
     this.checkbox(option).then(checkbox => {
       if (!checkbox.attr('checked')) {
         cy.wrap(checkbox).click()

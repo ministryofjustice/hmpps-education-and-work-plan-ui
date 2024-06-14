@@ -10,7 +10,7 @@ export default class PersonalInterestsPage extends InductionPage {
     super('induction-personal-interests')
   }
 
-  choosePersonalInterest(option: PersonalInterestsValue): PersonalInterestsPage {
+  selectPersonalInterest(option: PersonalInterestsValue): PersonalInterestsPage {
     this.checkbox(option).then(checkbox => {
       if (!checkbox.attr('checked')) {
         cy.wrap(checkbox).click()

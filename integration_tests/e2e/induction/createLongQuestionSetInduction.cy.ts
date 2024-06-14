@@ -74,9 +74,9 @@ context('Create a long question set Induction', () => {
       .hasBackLinkTo('/prisoners/A00001A/create-induction/hoping-to-work-on-release')
       .hasErrorCount(1)
       .hasFieldInError('workInterestTypes')
-      .chooseWorkInterestType(WorkInterestTypeValue.OUTDOOR)
-      .chooseWorkInterestType(WorkInterestTypeValue.DRIVING)
-      .chooseWorkInterestType(WorkInterestTypeValue.OTHER)
+      .selectWorkInterestType(WorkInterestTypeValue.OUTDOOR)
+      .selectWorkInterestType(WorkInterestTypeValue.DRIVING)
+      .selectWorkInterestType(WorkInterestTypeValue.OTHER)
       .setWorkInterestTypesOther('Natural world')
       .submitPage()
 
@@ -88,12 +88,23 @@ context('Create a long question set Induction', () => {
       .setWorkInterestRole(WorkInterestTypeValue.OTHER, 'Botanist')
       .submitPage()
 
-    // Highest level of education is next
-    Page.verifyOnPage(HighestLevelOfEducationPage)
+    // Factors Affecting Ability To Work is the next page
+    Page.verifyOnPage(AffectAbilityToWorkPage) //
       .hasBackLinkTo('/prisoners/A00001A/create-induction/work-interest-roles')
       .submitPage() // submit the page without answering the question to trigger a validation error
-    Page.verifyOnPage(HighestLevelOfEducationPage)
+    Page.verifyOnPage(AffectAbilityToWorkPage) //
       .hasBackLinkTo('/prisoners/A00001A/create-induction/work-interest-roles')
+      .hasErrorCount(1)
+      .hasFieldInError('affectAbilityToWork')
+      .selectAffectAbilityToWork(AbilityToWorkValue.NONE)
+      .submitPage()
+
+    // Highest level of education is next
+    Page.verifyOnPage(HighestLevelOfEducationPage)
+      .hasBackLinkTo('/prisoners/A00001A/create-induction/affect-ability-to-work')
+      .submitPage() // submit the page without answering the question to trigger a validation error
+    Page.verifyOnPage(HighestLevelOfEducationPage)
+      .hasBackLinkTo('/prisoners/A00001A/create-induction/affect-ability-to-work')
       .hasErrorCount(1)
       .hasFieldInError('educationLevel')
       .selectHighestLevelOfEducation(EducationLevelValue.FURTHER_EDUCATION_COLLEGE)
@@ -165,8 +176,8 @@ context('Create a long question set Induction', () => {
       .hasBackLinkTo('/prisoners/A00001A/create-induction/qualifications')
       .hasErrorCount(1)
       .hasFieldInError('additionalTraining')
-      .chooseAdditionalTraining(AdditionalTrainingValue.HGV_LICENCE)
-      .chooseAdditionalTraining(AdditionalTrainingValue.OTHER)
+      .selectAdditionalTraining(AdditionalTrainingValue.HGV_LICENCE)
+      .selectAdditionalTraining(AdditionalTrainingValue.OTHER)
       .setAdditionalTrainingOther('Basic accountancy course')
       .submitPage()
 
@@ -189,8 +200,8 @@ context('Create a long question set Induction', () => {
       .hasBackLinkTo('/prisoners/A00001A/create-induction/has-worked-before')
       .hasErrorCount(1)
       .hasFieldInError('typeOfWorkExperience')
-      .choosePreviousWorkExperience(TypeOfWorkExperienceValue.CONSTRUCTION)
-      .choosePreviousWorkExperience(TypeOfWorkExperienceValue.OTHER)
+      .selectPreviousWorkExperience(TypeOfWorkExperienceValue.CONSTRUCTION)
+      .selectPreviousWorkExperience(TypeOfWorkExperienceValue.OTHER)
       .setOtherPreviousWorkExperienceType('Entertainment industry')
       .submitPage()
 
@@ -220,7 +231,7 @@ context('Create a long question set Induction', () => {
       .hasBackLinkTo('/prisoners/A00001A/create-induction/has-worked-before')
       .hasErrorCount(1)
       .hasFieldInError('skills')
-      .chooseSkill(SkillsValue.POSITIVE_ATTITUDE)
+      .selectSkill(SkillsValue.POSITIVE_ATTITUDE)
       .submitPage()
 
     // Personal Interests page is next
@@ -231,29 +242,18 @@ context('Create a long question set Induction', () => {
       .hasBackLinkTo('/prisoners/A00001A/create-induction/skills')
       .hasErrorCount(1)
       .hasFieldInError('personalInterests')
-      .choosePersonalInterest(PersonalInterestsValue.COMMUNITY)
-      .choosePersonalInterest(PersonalInterestsValue.DIGITAL)
-      .submitPage()
-
-    // Factors Affecting Ability To Work is the next page
-    Page.verifyOnPage(AffectAbilityToWorkPage) //
-      .hasBackLinkTo('/prisoners/A00001A/create-induction/personal-interests')
-      .submitPage() // submit the page without answering the question to trigger a validation error
-    Page.verifyOnPage(AffectAbilityToWorkPage) //
-      .hasBackLinkTo('/prisoners/A00001A/create-induction/personal-interests')
-      .hasErrorCount(1)
-      .hasFieldInError('affectAbilityToWork')
-      .chooseAffectAbilityToWork(AbilityToWorkValue.NONE)
+      .selectPersonalInterest(PersonalInterestsValue.COMMUNITY)
+      .selectPersonalInterest(PersonalInterestsValue.DIGITAL)
       .submitPage()
 
     // In Prison Work Interests page is next
     Page.verifyOnPage(InPrisonWorkPage) //
-      .hasBackLinkTo('/prisoners/A00001A/create-induction/affect-ability-to-work')
+      .hasBackLinkTo('/prisoners/A00001A/create-induction/personal-interests')
       .submitPage() // submit the page without answering the question to trigger a validation error
     Page.verifyOnPage(InPrisonWorkPage) //
-      .hasBackLinkTo('/prisoners/A00001A/create-induction/affect-ability-to-work')
-      .chooseWorkType(InPrisonWorkValue.KITCHENS_AND_COOKING)
-      .chooseWorkType(InPrisonWorkValue.PRISON_LIBRARY)
+      .hasBackLinkTo('/prisoners/A00001A/create-induction/personal-interests')
+      .selectWorkType(InPrisonWorkValue.KITCHENS_AND_COOKING)
+      .selectWorkType(InPrisonWorkValue.PRISON_LIBRARY)
       .submitPage()
 
     // In Prison Training Interests page is next
@@ -262,7 +262,7 @@ context('Create a long question set Induction', () => {
       .submitPage() // submit the page without answering the question to trigger a validation error
     Page.verifyOnPage(InPrisonTrainingPage) //
       .hasBackLinkTo('/prisoners/A00001A/create-induction/in-prison-work')
-      .chooseInPrisonTraining(InPrisonTrainingValue.FORKLIFT_DRIVING)
+      .selectInPrisonTraining(InPrisonTrainingValue.FORKLIFT_DRIVING)
       .submitPage()
 
     // Check Your Answers is the final page. Submit the page to create the induction
@@ -341,7 +341,7 @@ context('Create a long question set Induction', () => {
     // Future Work Interest Types page is next
     Page.verifyOnPage(FutureWorkInterestTypesPage) //
       .hasBackLinkTo('/prisoners/A00001A/create-induction/hoping-to-work-on-release')
-      .chooseWorkInterestType(WorkInterestTypeValue.OUTDOOR)
+      .selectWorkInterestType(WorkInterestTypeValue.OUTDOOR)
       .submitPage()
 
     // Future Work Interest Roles page is next, with a field for each work interest type
@@ -350,9 +350,15 @@ context('Create a long question set Induction', () => {
       .setWorkInterestRole(WorkInterestTypeValue.OUTDOOR, 'Farm hand')
       .submitPage()
 
+    // Factors Affecting Ability To Work is the next page
+    Page.verifyOnPage(AffectAbilityToWorkPage) //
+      .hasBackLinkTo('/prisoners/A00001A/create-induction/work-interest-roles')
+      .selectAffectAbilityToWork(AbilityToWorkValue.NONE)
+      .submitPage()
+
     // Highest level of education is next
     Page.verifyOnPage(HighestLevelOfEducationPage)
-      .hasBackLinkTo('/prisoners/A00001A/create-induction/work-interest-roles')
+      .hasBackLinkTo('/prisoners/A00001A/create-induction/affect-ability-to-work')
       .selectHighestLevelOfEducation(EducationLevelValue.FURTHER_EDUCATION_COLLEGE)
       .submitPage()
 
@@ -365,7 +371,7 @@ context('Create a long question set Induction', () => {
     // Additional Training page is next
     Page.verifyOnPage(AdditionalTrainingPage) //
       .hasBackLinkTo('/prisoners/A00001A/create-induction/want-to-add-qualifications')
-      .chooseAdditionalTraining(AdditionalTrainingValue.HGV_LICENCE)
+      .selectAdditionalTraining(AdditionalTrainingValue.HGV_LICENCE)
       .submitPage()
 
     // Have You Worked Before page is next
@@ -377,7 +383,7 @@ context('Create a long question set Induction', () => {
     // Previous Work Experience Types is the next page
     Page.verifyOnPage(PreviousWorkExperienceTypesPage)
       .hasBackLinkTo('/prisoners/A00001A/create-induction/has-worked-before')
-      .choosePreviousWorkExperience(TypeOfWorkExperienceValue.CONSTRUCTION)
+      .selectPreviousWorkExperience(TypeOfWorkExperienceValue.CONSTRUCTION)
       .submitPage()
 
     // Previous Work Experience Details page is next - once for each work industry type submitted on the previous page
@@ -390,31 +396,25 @@ context('Create a long question set Induction', () => {
     // Personal Skills page is next
     Page.verifyOnPage(SkillsPage) //
       .hasBackLinkTo('/prisoners/A00001A/create-induction/has-worked-before')
-      .chooseSkill(SkillsValue.POSITIVE_ATTITUDE)
+      .selectSkill(SkillsValue.POSITIVE_ATTITUDE)
       .submitPage()
 
     // Personal Interests page is next
     Page.verifyOnPage(PersonalInterestsPage) //
       .hasBackLinkTo('/prisoners/A00001A/create-induction/skills')
-      .choosePersonalInterest(PersonalInterestsValue.COMMUNITY)
-      .submitPage()
-
-    // Factors Affecting Ability To Work is the next page
-    Page.verifyOnPage(AffectAbilityToWorkPage) //
-      .hasBackLinkTo('/prisoners/A00001A/create-induction/personal-interests')
-      .chooseAffectAbilityToWork(AbilityToWorkValue.NONE)
+      .selectPersonalInterest(PersonalInterestsValue.COMMUNITY)
       .submitPage()
 
     // In Prison Work Interests page is next
     Page.verifyOnPage(InPrisonWorkPage) //
-      .hasBackLinkTo('/prisoners/A00001A/create-induction/affect-ability-to-work')
-      .chooseWorkType(InPrisonWorkValue.KITCHENS_AND_COOKING)
+      .hasBackLinkTo('/prisoners/A00001A/create-induction/personal-interests')
+      .selectWorkType(InPrisonWorkValue.KITCHENS_AND_COOKING)
       .submitPage()
 
     // In Prison Training Interests page is next
     Page.verifyOnPage(InPrisonTrainingPage) //
       .hasBackLinkTo('/prisoners/A00001A/create-induction/in-prison-work')
-      .chooseInPrisonTraining(InPrisonTrainingValue.FORKLIFT_DRIVING)
+      .selectInPrisonTraining(InPrisonTrainingValue.FORKLIFT_DRIVING)
       .submitPage()
 
     // Check Your Answers is the final page. Submit the page to create the induction

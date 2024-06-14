@@ -120,13 +120,8 @@ declare module 'inductionForms' {
   }
 
   export interface AffectAbilityToWorkForm {
-    affectAbilityToWork: Array<AffectAbilityToWorkValue>
+    affectAbilityToWork: Array<AbilityToWorkValue>
     affectAbilityToWorkOther?: string
-  }
-
-  export interface ReasonsNotToGetWorkForm {
-    reasonsNotToGetWork: Array<ReasonNotToGetWorkValue>
-    reasonsNotToGetWorkOther?: string
   }
 
   export interface WorkInterestTypesForm {

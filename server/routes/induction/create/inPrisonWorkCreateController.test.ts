@@ -3,10 +3,7 @@ import type { SessionData } from 'express-session'
 import type { InPrisonWorkForm } from 'inductionForms'
 import type { InPrisonWorkInterestDto } from 'inductionDto'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
-import {
-  aLongQuestionSetInductionDto,
-  aShortQuestionSetInductionDto,
-} from '../../../testsupport/inductionDtoTestDataBuilder'
+import { aShortQuestionSetInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
 import InPrisonWorkCreateController from './inPrisonWorkCreateController'
 import InPrisonWorkValue from '../../../enums/inPrisonWorkValue'
 
@@ -37,7 +34,7 @@ describe('inPrisonWorkCreateController', () => {
   })
 
   describe('getInPrisonWorkView', () => {
-    it('should get the In Prison Work view given a short question set induction with no InPrisonWork on the session', async () => {
+    it('should get the In Prison Work view given no InPrisonWork on the session', async () => {
       // Given
       const inductionDto = aShortQuestionSetInductionDto()
       inductionDto.inPrisonInterests.inPrisonWorkInterests = undefined
@@ -54,34 +51,6 @@ describe('inPrisonWorkCreateController', () => {
         form: expectedInPrisonWorkForm,
         backLinkUrl: '/prisoners/A1234BC/create-induction/personal-interests',
         backLinkAriaText: `Back to What are Jimmy Lightfingers's interests?`,
-      }
-
-      // When
-      await controller.getInPrisonWorkView(req, res, next)
-
-      // Then
-      expect(res.render).toHaveBeenCalledWith('pages/induction/inPrisonWork/index', expectedView)
-      expect(req.session.inPrisonWorkForm).toBeUndefined()
-      expect(req.session.inductionDto).toEqual(inductionDto)
-    })
-
-    it('should get the In Prison Work view given a long question set induction with no InPrisonWork on the session', async () => {
-      // Given
-      const inductionDto = aLongQuestionSetInductionDto()
-      inductionDto.inPrisonInterests.inPrisonWorkInterests = undefined
-      req.session.inductionDto = inductionDto
-      req.session.inPrisonWorkForm = undefined
-
-      const expectedInPrisonWorkForm: InPrisonWorkForm = {
-        inPrisonWork: [],
-        inPrisonWorkOther: undefined,
-      }
-
-      const expectedView = {
-        prisonerSummary,
-        form: expectedInPrisonWorkForm,
-        backLinkUrl: '/prisoners/A1234BC/create-induction/affect-ability-to-work',
-        backLinkAriaText: `Back to Is there anything that Jimmy Lightfingers feels may affect their ability to work after they're released?`,
       }
 
       // When

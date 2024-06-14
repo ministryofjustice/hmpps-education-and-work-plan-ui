@@ -39,8 +39,8 @@ context('Update Skills in the Induction', () => {
     skillsPage //
       .deSelectSkill(SkillsValue.COMMUNICATION)
       .deSelectSkill(SkillsValue.THINKING_AND_PROBLEM_SOLVING)
-      .chooseSkill(SkillsValue.SELF_MANAGEMENT)
-      .chooseSkill(SkillsValue.OTHER)
+      .selectSkill(SkillsValue.SELF_MANAGEMENT)
+      .selectSkill(SkillsValue.OTHER)
       .setOtherSkillType('Circus skills')
       .submitPage()
 
@@ -69,7 +69,7 @@ context('Update Skills in the Induction', () => {
 
     // When
     skillsPage //
-      .chooseSkill(SkillsValue.NONE)
+      .selectSkill(SkillsValue.NONE)
       .submitPage()
 
     // Then
@@ -93,7 +93,7 @@ context('Update Skills in the Induction', () => {
 
     // When
     skillsPage //
-      .chooseSkill(SkillsValue.OTHER)
+      .selectSkill(SkillsValue.OTHER)
       .clearOtherSkillType()
       .submitPage()
 
@@ -114,8 +114,8 @@ context('Update Skills in the Induction', () => {
 
     // When
     Page.verifyOnPage(SkillsPage) //
-      .chooseSkill(SkillsValue.SELF_MANAGEMENT)
-      .chooseSkill(SkillsValue.OTHER)
+      .selectSkill(SkillsValue.SELF_MANAGEMENT)
+      .selectSkill(SkillsValue.OTHER)
       .setOtherSkillType('Circus skills')
       .submitPage()
 

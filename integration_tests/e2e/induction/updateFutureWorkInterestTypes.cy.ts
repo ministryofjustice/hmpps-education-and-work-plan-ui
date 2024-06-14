@@ -33,8 +33,8 @@ context('Update future work interest types within an Induction', () => {
 
     // When
     futureWorkInterestTypesPage //
-      .chooseWorkInterestType(WorkInterestTypeValue.WASTE_MANAGEMENT)
-      .chooseWorkInterestType(WorkInterestTypeValue.OTHER)
+      .selectWorkInterestType(WorkInterestTypeValue.WASTE_MANAGEMENT)
+      .selectWorkInterestType(WorkInterestTypeValue.OTHER)
       .setWorkInterestTypesOther('Renewable energy')
       .submitPage()
 
@@ -67,7 +67,7 @@ context('Update future work interest types within an Induction', () => {
 
     // When
     futureWorkInterestTypesPage //
-      .chooseWorkInterestType(WorkInterestTypeValue.OTHER)
+      .selectWorkInterestType(WorkInterestTypeValue.OTHER)
       .clearWorkInterestTypesOther()
       .submitPage()
 

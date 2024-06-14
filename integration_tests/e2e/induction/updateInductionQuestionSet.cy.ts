@@ -5,8 +5,6 @@ import { putRequestedFor } from '../../mockApis/wiremock/requestPatternBuilder'
 import { urlEqualTo } from '../../mockApis/wiremock/matchers/url'
 import { matchingJsonPath } from '../../mockApis/wiremock/matchers/content'
 import WorkAndInterestsPage from '../../pages/overview/WorkAndInterestsPage'
-import ReasonsNotToGetWorkPage from '../../pages/induction/ReasonsNotToGetWorkPage'
-import ReasonNotToGetWorkValue from '../../../server/enums/reasonNotToGetWorkValue'
 import QualificationsListPage from '../../pages/induction/QualificationsListPage'
 import QualificationLevelValue from '../../../server/enums/qualificationLevelValue'
 import QualificationDetailsPage from '../../pages/induction/QualificationDetailsPage'
@@ -28,7 +26,6 @@ import SkillsValue from '../../../server/enums/skillsValue'
 import PersonalInterestsPage from '../../pages/induction/PersonalInterestsPage'
 import PersonalInterestsValue from '../../../server/enums/personalInterestsValue'
 import AffectAbilityToWorkPage from '../../pages/induction/AffectAbilityToWorkPage'
-import AbilityToWorkValue from '../../../server/enums/abilityToWorkValue'
 import HighestLevelOfEducationPage from '../../pages/induction/HighestLevelOfEducationPage'
 import WantToAddQualificationsPage from '../../pages/induction/WantToAddQualificationsPage'
 import QualificationLevelPage from '../../pages/induction/QualificationLevelPage'
@@ -71,15 +68,14 @@ context(`Change existing Induction question set by updating the answer to 'Hopin
       .selectHopingWorkOnRelease(HopingToGetWorkValue.NO)
       .submitPage()
 
-    // Reasons Not To Work is the next page, and is only asked on the short question set, so will not have any previous answer from the original long question set Induction
-    Page.verifyOnPage(ReasonsNotToGetWorkPage)
+    // Factors Affecting Ability To Work is the next page. This is asked on the long question set, so this will already have answers set
+    Page.verifyOnPage(AffectAbilityToWorkPage) //
       .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/hoping-to-work-on-release`)
-      .chooseReasonNotToGetWork(ReasonNotToGetWorkValue.HEALTH)
       .submitPage()
 
     // Highest Level of Education is next. It is asked on the long question set so will already have an answer set
     Page.verifyOnPage(HighestLevelOfEducationPage)
-      .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/reasons-not-to-get-work`)
+      .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/affect-ability-to-work`)
       .submitPage()
 
     // Do You Want To Add Qualification is next. The long question set induction already has qualifications do this will already be set to Yes
@@ -117,7 +113,7 @@ context(`Change existing Induction question set by updating the answer to 'Hopin
     // Add another previous work experience types as that will cause the next page (work experience detail) to be displayed.
     Page.verifyOnPage(PreviousWorkExperienceTypesPage) //
       .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/has-worked-before`)
-      .choosePreviousWorkExperience(TypeOfWorkExperienceValue.TECHNICAL)
+      .selectPreviousWorkExperience(TypeOfWorkExperienceValue.TECHNICAL)
       .submitPage()
     Page.verifyOnPage(PreviousWorkExperienceDetailPage)
       .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/previous-work-experience`)
@@ -142,13 +138,13 @@ context(`Change existing Induction question set by updating the answer to 'Hopin
     // In Prison Work Interests is the next page. This is asked on the long question set, so this will already have answers set but we will add one
     Page.verifyOnPage(InPrisonWorkPage) //
       .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/personal-interests`)
-      .chooseWorkType(InPrisonWorkValue.CLEANING_AND_HYGIENE)
+      .selectWorkType(InPrisonWorkValue.CLEANING_AND_HYGIENE)
       .submitPage()
 
     // In Prison Training Interests is the next page. This is asked on the long question set, so this will already have answers set but we will add one
     Page.verifyOnPage(InPrisonTrainingPage) //
       .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/in-prison-work`)
-      .chooseInPrisonTraining(InPrisonTrainingValue.BARBERING_AND_HAIRDRESSING)
+      .selectInPrisonTraining(InPrisonTrainingValue.BARBERING_AND_HAIRDRESSING)
       .submitPage()
 
     // Check Your Answers is the final page. Submit the page to save the induction
@@ -162,8 +158,10 @@ context(`Change existing Induction question set by updating the answer to 'Hopin
         .withRequestBody(
           matchingJsonPath(
             "$[?(@.workOnRelease.hopingToWork == 'NO' && " +
-              '@.workOnRelease.notHopingToWorkReasons.size() == 1 && ' +
-              "@.workOnRelease.notHopingToWorkReasons[0] == 'HEALTH' && " +
+              '@.workOnRelease.affectAbilityToWork.size() == 2 && ' +
+              "@.workOnRelease.affectAbilityToWork[0] == 'LIMITED_BY_OFFENCE' && " +
+              "@.workOnRelease.affectAbilityToWork[1] == 'OTHER' && " +
+              "@.workOnRelease.affectAbilityToWorkOther == 'Live in the wrong location' && " +
               "@.previousQualifications.educationLevel == 'UNDERGRADUATE_DEGREE_AT_UNIVERSITY' && " +
               '@.previousQualifications.qualifications.size() == 5 && ' +
               "@.previousQualifications.qualifications[0].subject == 'French' && " +
@@ -232,8 +230,8 @@ context(`Change existing Induction question set by updating the answer to 'Hopin
     // Work Interests page is the next page. This is not asked on the short question set.
     Page.verifyOnPage(FutureWorkInterestTypesPage)
       .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/hoping-to-work-on-release`)
-      .chooseWorkInterestType(WorkInterestTypeValue.CONSTRUCTION)
-      .chooseWorkInterestType(WorkInterestTypeValue.DRIVING)
+      .selectWorkInterestType(WorkInterestTypeValue.CONSTRUCTION)
+      .selectWorkInterestType(WorkInterestTypeValue.DRIVING)
       .submitPage()
     Page.verifyOnPage(FutureWorkInterestRolesPage)
       .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/work-interest-types`)
@@ -241,9 +239,14 @@ context(`Change existing Induction question set by updating the answer to 'Hopin
       .setWorkInterestRole(WorkInterestTypeValue.DRIVING, 'Driving instructor')
       .submitPage()
 
+    // Factors Affecting Ability To Work is the next page. This is asked on the long question set, so this will already have answers set
+    Page.verifyOnPage(AffectAbilityToWorkPage) //
+      .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/work-interest-roles`)
+      .submitPage()
+
     // Highest Level of Education is next. It is asked on the short question set so will already have an answer set
     Page.verifyOnPage(HighestLevelOfEducationPage)
-      .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/work-interest-roles`)
+      .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/affect-ability-to-work`)
       .submitPage()
 
     // Do You Want To Add Qualification is next. The short question set induction already has qualifications do this will already be set to Yes
@@ -281,7 +284,7 @@ context(`Change existing Induction question set by updating the answer to 'Hopin
     // Add another previous work experience types as that will cause the next page (work experience detail) to be displayed.
     Page.verifyOnPage(PreviousWorkExperienceTypesPage) //
       .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/has-worked-before`)
-      .choosePreviousWorkExperience(TypeOfWorkExperienceValue.TECHNICAL)
+      .selectPreviousWorkExperience(TypeOfWorkExperienceValue.TECHNICAL)
       .submitPage()
     Page.verifyOnPage(PreviousWorkExperienceDetailPage)
       .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/previous-work-experience`)
@@ -303,22 +306,16 @@ context(`Change existing Induction question set by updating the answer to 'Hopin
       .deSelectPersonalInterest(PersonalInterestsValue.OTHER)
       .submitPage()
 
-    // Factors Affecting Ability To Work is the next page. This is not asked on the short question set.
-    Page.verifyOnPage(AffectAbilityToWorkPage)
-      .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/personal-interests`)
-      .chooseAffectAbilityToWork(AbilityToWorkValue.HEALTH_ISSUES)
-      .submitPage()
-
     // In Prison Work Interests is the next page. This is asked on the short question set, so this will already have answers set
     Page.verifyOnPage(InPrisonWorkPage) //
-      .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/affect-ability-to-work`)
-      .chooseWorkType(InPrisonWorkValue.CLEANING_AND_HYGIENE)
+      .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/personal-interests`)
+      .selectWorkType(InPrisonWorkValue.CLEANING_AND_HYGIENE)
       .submitPage()
 
     // In Prison Training Interests is the next page. This is asked on the short question set, so this will already have answers set
     Page.verifyOnPage(InPrisonTrainingPage) //
       .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/in-prison-work`)
-      .chooseInPrisonTraining(InPrisonTrainingValue.BARBERING_AND_HAIRDRESSING)
+      .selectInPrisonTraining(InPrisonTrainingValue.BARBERING_AND_HAIRDRESSING)
       .submitPage()
 
     // Check Your Answers is the final page. Submit the page to save the induction
@@ -365,7 +362,7 @@ context(`Change existing Induction question set by updating the answer to 'Hopin
               "@.personalSkillsAndInterests.interests[0].interestType == 'CREATIVE' && " +
               "@.personalSkillsAndInterests.interests[1].interestType == 'SOLO_ACTIVITIES' && " +
               '@.workOnRelease.affectAbilityToWork.size() == 1 && ' +
-              "@.workOnRelease.affectAbilityToWork[0] == 'HEALTH_ISSUES' && " +
+              "@.workOnRelease.affectAbilityToWork[0] == 'LIMITED_BY_OFFENCE' && " +
               "@.workOnRelease.affectAbilityToWorkOther == '' && " +
               "@.inPrisonInterests.inPrisonWorkInterests[0].workType == 'CLEANING_AND_HYGIENE' && !@.inPrisonInterests.inPrisonWorkInterests[0].workTypeOther && " +
               "@.inPrisonInterests.inPrisonWorkInterests[1].workType == 'MAINTENANCE' && !@.inPrisonInterests.inPrisonWorkInterests[1].workTypeOther && " +
