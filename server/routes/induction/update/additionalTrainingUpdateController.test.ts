@@ -2,10 +2,10 @@ import createError from 'http-errors'
 import type { SessionData } from 'express-session'
 import { NextFunction, Request, Response } from 'express'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
-import { aShortQuestionSetInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
+import aValidInductionDto from '../../../testsupport/inductionDtoTestDataBuilder'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
 import InductionService from '../../../services/inductionService'
-import { aShortQuestionSetUpdateInductionRequest } from '../../../testsupport/updateInductionRequestTestDataBuilder'
+import aValidUpdateInductionRequest from '../../../testsupport/updateInductionRequestTestDataBuilder'
 import AdditionalTrainingUpdateController from './additionalTrainingUpdateController'
 import AdditionalTrainingValue from '../../../enums/additionalTrainingValue'
 
@@ -49,12 +49,16 @@ describe('additionalTrainingUpdateController', () => {
   describe('getAdditionalTrainingView', () => {
     it('should get Additional Training view given there is no AdditionalTrainingForm on the session', async () => {
       // Given
-      const inductionDto = aShortQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       req.session.inductionDto = inductionDto
       req.session.additionalTrainingForm = undefined
       const expectedAdditionalTrainingForm = {
-        additionalTraining: [AdditionalTrainingValue.FULL_UK_DRIVING_LICENCE, AdditionalTrainingValue.OTHER],
-        additionalTrainingOther: 'Beginners cookery for IT professionals',
+        additionalTraining: [
+          AdditionalTrainingValue.FIRST_AID_CERTIFICATE,
+          AdditionalTrainingValue.MANUAL_HANDLING,
+          AdditionalTrainingValue.OTHER,
+        ],
+        additionalTrainingOther: 'Advanced origami',
       }
 
       const expectedView = {
@@ -79,7 +83,7 @@ describe('additionalTrainingUpdateController', () => {
 
     it('should get the Additional Training view given there is an AdditionalTrainingForm already on the session', async () => {
       // Given
-      const inductionDto = aShortQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       req.session.inductionDto = inductionDto
 
       const expectedAdditionalTrainingForm = {
@@ -112,7 +116,7 @@ describe('additionalTrainingUpdateController', () => {
   describe('submitAdditionalTrainingForm', () => {
     it('should not update Induction given form is submitted with validation errors', async () => {
       // Given
-      const inductionDto = aShortQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       req.session.inductionDto = inductionDto
 
       const invalidAdditionalTrainingForm = {
@@ -147,7 +151,7 @@ describe('additionalTrainingUpdateController', () => {
 
     it('should update Induction and call API and redirect to education and training page', async () => {
       // Given
-      const inductionDto = aShortQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       req.session.inductionDto = inductionDto
 
       const additionalTrainingForm = {
@@ -156,7 +160,7 @@ describe('additionalTrainingUpdateController', () => {
       }
       req.body = additionalTrainingForm
       req.session.additionalTrainingForm = undefined
-      const updateInductionDto = aShortQuestionSetUpdateInductionRequest()
+      const updateInductionDto = aValidUpdateInductionRequest()
 
       mockedCreateOrUpdateInductionDtoMapper.mockReturnValueOnce(updateInductionDto)
 
@@ -186,7 +190,7 @@ describe('additionalTrainingUpdateController', () => {
 
     it('should not update Induction given error calling service', async () => {
       // Given
-      const inductionDto = aShortQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       req.session.inductionDto = inductionDto
 
       const additionalTrainingForm = {
@@ -195,7 +199,7 @@ describe('additionalTrainingUpdateController', () => {
       }
       req.body = additionalTrainingForm
       req.session.additionalTrainingForm = undefined
-      const updateInductionDto = aShortQuestionSetUpdateInductionRequest()
+      const updateInductionDto = aValidUpdateInductionRequest()
 
       mockedCreateOrUpdateInductionDtoMapper.mockReturnValueOnce(updateInductionDto)
 

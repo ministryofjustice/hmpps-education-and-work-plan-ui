@@ -2,10 +2,10 @@ import createError from 'http-errors'
 import type { SessionData } from 'express-session'
 import { NextFunction, Request, Response } from 'express'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
-import { aLongQuestionSetInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
+import aValidInductionDto from '../../../testsupport/inductionDtoTestDataBuilder'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
 import InductionService from '../../../services/inductionService'
-import { aLongQuestionSetUpdateInductionRequest } from '../../../testsupport/updateInductionRequestTestDataBuilder'
+import aValidUpdateInductionRequest from '../../../testsupport/updateInductionRequestTestDataBuilder'
 import SkillsUpdateController from './skillsUpdateController'
 
 jest.mock('../../../data/mappers/createOrUpdateInductionDtoMapper')
@@ -48,7 +48,7 @@ describe('skillsUpdateController', () => {
   describe('getSkillsView', () => {
     it('should get the Skills view given there is no SkillsForm on the session', async () => {
       // Given
-      const inductionDto = aLongQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       req.session.inductionDto = inductionDto
       req.session.skillsForm = undefined
 
@@ -79,7 +79,7 @@ describe('skillsUpdateController', () => {
 
     it('should get the Skills view given there is an SkillsForm already on the session', async () => {
       // Given
-      const inductionDto = aLongQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       req.session.inductionDto = inductionDto
 
       const expectedSkillsForm = {
@@ -112,7 +112,7 @@ describe('skillsUpdateController', () => {
   describe('submitSkillsForm', () => {
     it('should not update Induction given form is submitted with validation errors', async () => {
       // Given
-      const inductionDto = aLongQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       req.session.inductionDto = inductionDto
 
       const invalidSkillsForm = {
@@ -139,7 +139,7 @@ describe('skillsUpdateController', () => {
 
     it('should update Induction and call API and redirect to work and interests page', async () => {
       // Given
-      const inductionDto = aLongQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       req.session.inductionDto = inductionDto
 
       const skillsForm = {
@@ -148,7 +148,7 @@ describe('skillsUpdateController', () => {
       }
       req.body = skillsForm
       req.session.skillsForm = undefined
-      const updateInductionDto = aLongQuestionSetUpdateInductionRequest()
+      const updateInductionDto = aValidUpdateInductionRequest()
 
       mockedCreateOrUpdateInductionDtoMapper.mockReturnValueOnce(updateInductionDto)
 
@@ -184,7 +184,7 @@ describe('skillsUpdateController', () => {
 
     it('should not update Induction given error calling service', async () => {
       // Given
-      const inductionDto = aLongQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       req.session.inductionDto = inductionDto
 
       const skillsForm = {
@@ -193,7 +193,7 @@ describe('skillsUpdateController', () => {
       }
       req.body = skillsForm
       req.session.skillsForm = undefined
-      const updateInductionDto = aLongQuestionSetUpdateInductionRequest()
+      const updateInductionDto = aValidUpdateInductionRequest()
 
       mockedCreateOrUpdateInductionDtoMapper.mockReturnValueOnce(updateInductionDto)
 

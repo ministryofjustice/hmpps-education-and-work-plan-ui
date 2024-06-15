@@ -9,7 +9,7 @@ import {
 } from '../../testsupport/inPrisonCourseTestDataBuilder'
 import CuriousService from '../../services/curiousService'
 import EducationAndTrainingController from './educationAndTrainingController'
-import { aLongQuestionSetInductionDto } from '../../testsupport/inductionDtoTestDataBuilder'
+import aValidInductionDto from '../../testsupport/inductionDtoTestDataBuilder'
 
 jest.mock('../../services/curiousService')
 
@@ -23,7 +23,7 @@ describe('educationAndTrainingController', () => {
 
   const induction = {
     problemRetrievingData: false,
-    inductionDto: aLongQuestionSetInductionDto(),
+    inductionDto: aValidInductionDto(),
   }
 
   const inPrisonCourses: InPrisonCourseRecords = {

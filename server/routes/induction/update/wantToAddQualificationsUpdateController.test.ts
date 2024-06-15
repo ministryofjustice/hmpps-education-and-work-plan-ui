@@ -3,7 +3,7 @@ import WantToAddQualificationsUpdateController from './wantToAddQualificationsUp
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
 import YesNoValue from '../../../enums/yesNoValue'
 import { validFunctionalSkills } from '../../../testsupport/functionalSkillsTestDataBuilder'
-import { aShortQuestionSetInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
+import aValidInductionDto from '../../../testsupport/inductionDtoTestDataBuilder'
 
 describe('wantToAddQualificationsUpdateController', () => {
   const controller = new WantToAddQualificationsUpdateController()
@@ -34,7 +34,7 @@ describe('wantToAddQualificationsUpdateController', () => {
   describe('getWantToAddQualificationsView', () => {
     it('should get the Want To Add Qualifications view given there is no WantToAddQualificationsForm on the session and the induction has qualifications', async () => {
       // Given
-      const inductionDto = aShortQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       req.session.inductionDto = inductionDto
 
       req.session.pageFlowHistory = {
@@ -84,7 +84,7 @@ describe('wantToAddQualificationsUpdateController', () => {
 
     it('should get the Want To Add Qualifications view given there is no WantToAddQualificationsForm on the session and the induction has no qualifications', async () => {
       // Given
-      const inductionDto = aShortQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       inductionDto.previousQualifications.qualifications = []
       req.session.inductionDto = inductionDto
 
@@ -126,7 +126,7 @@ describe('wantToAddQualificationsUpdateController', () => {
 
     it('should get the Want To Add Qualifications view given there is no WantToAddQualificationsForm on the session and the induction has no qualification data at all', async () => {
       // Given
-      const inductionDto = aShortQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       inductionDto.previousQualifications = undefined
       req.session.inductionDto = inductionDto
 
@@ -168,7 +168,7 @@ describe('wantToAddQualificationsUpdateController', () => {
 
     it('should get the Want To Add Qualifications view given there is a WantToAddQualificationsForm already on the session', async () => {
       // Given
-      const inductionDto = aShortQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       req.session.inductionDto = inductionDto
 
       req.session.pageFlowHistory = {
@@ -219,7 +219,7 @@ describe('wantToAddQualificationsUpdateController', () => {
   describe('submitWantToAddQualificationsForm', () => {
     it('should not proceed to next page given form is submitted with validation errors', async () => {
       // Given
-      const inductionDto = aShortQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       req.session.inductionDto = inductionDto
 
       const invalidWantToAddQualificationsForm = {
@@ -249,7 +249,7 @@ describe('wantToAddQualificationsUpdateController', () => {
     it(`should proceed to qualification level page given user wants to add a qualification`, async () => {
       // Given
       req.user.token = 'some-token'
-      const inductionDto = aShortQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       req.session.inductionDto = inductionDto
 
       const wantToAddQualificationsForm = { wantToAddQualifications: YesNoValue.YES }
@@ -267,7 +267,7 @@ describe('wantToAddQualificationsUpdateController', () => {
     it(`should proceed to additional training page given user wants to add a qualification`, async () => {
       // Given
       req.user.token = 'some-token'
-      const inductionDto = aShortQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       req.session.inductionDto = inductionDto
 
       const wantToAddQualificationsForm = { wantToAddQualifications: YesNoValue.NO }

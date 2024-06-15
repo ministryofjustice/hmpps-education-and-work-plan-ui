@@ -12,17 +12,17 @@ import InPrisonWorkValue from '../enums/inPrisonWorkValue'
 import InPrisonTrainingValue from '../enums/inPrisonTrainingValue'
 import HasWorkedBeforeValue from '../enums/hasWorkedBeforeValue'
 
-const aLongQuestionSetCreateInductionDto = (
+const aValidCreateOrUpdateInductionDto = (
   options?: CoreBuilderOptions & {
+    hopingToGetWork?: HopingToGetWorkValue
     hasWorkedBefore?: HasWorkedBeforeValue
-    hasSkills?: boolean
-    hasInterests?: boolean
+    hasQualifications?: boolean
   },
 ): CreateOrUpdateInductionDto => {
   return {
     ...baseCreateInductionDtoTemplate(options),
     workOnRelease: {
-      hopingToWork: HopingToGetWorkValue.YES,
+      hopingToWork: options?.hopingToGetWork || HopingToGetWorkValue.YES,
       affectAbilityToWork: [
         AbilityToWorkValue.CARING_RESPONSIBILITIES,
         AbilityToWorkValue.NEEDS_WORK_ADJUSTMENTS_DUE_TO_HEALTH,
@@ -70,55 +70,16 @@ const aLongQuestionSetCreateInductionDto = (
       ],
     },
     personalSkillsAndInterests: {
-      skills:
-        !options || options.hasSkills === null || options.hasSkills === undefined || options.hasSkills === true
-          ? [
-              { skillType: SkillsValue.TEAMWORK, skillTypeOther: null },
-              { skillType: SkillsValue.WILLINGNESS_TO_LEARN, skillTypeOther: null },
-              { skillType: SkillsValue.OTHER, skillTypeOther: 'Tenacity' },
-            ]
-          : [],
-      interests:
-        !options || options.hasInterests === null || options.hasInterests === undefined || options.hasInterests === true
-          ? [
-              { interestType: PersonalInterestsValue.CREATIVE, interestTypeOther: null },
-              { interestType: PersonalInterestsValue.DIGITAL, interestTypeOther: null },
-              { interestType: PersonalInterestsValue.OTHER, interestTypeOther: 'Renewable energy' },
-            ]
-          : [],
-    },
-    previousQualifications: {
-      educationLevel: EducationLevelValue.SECONDARY_SCHOOL_TOOK_EXAMS,
-      qualifications: [
-        {
-          subject: 'Pottery',
-          grade: 'C',
-          level: QualificationLevelValue.LEVEL_4,
-        },
+      skills: [
+        { skillType: SkillsValue.TEAMWORK, skillTypeOther: null },
+        { skillType: SkillsValue.WILLINGNESS_TO_LEARN, skillTypeOther: null },
+        { skillType: SkillsValue.OTHER, skillTypeOther: 'Tenacity' },
       ],
-    },
-    previousTraining: {
-      trainingTypes: [
-        AdditionalTrainingValue.FIRST_AID_CERTIFICATE,
-        AdditionalTrainingValue.MANUAL_HANDLING,
-        AdditionalTrainingValue.OTHER,
+      interests: [
+        { interestType: PersonalInterestsValue.CREATIVE, interestTypeOther: null },
+        { interestType: PersonalInterestsValue.DIGITAL, interestTypeOther: null },
+        { interestType: PersonalInterestsValue.OTHER, interestTypeOther: 'Renewable energy' },
       ],
-      trainingTypeOther: 'Advanced origami',
-    },
-  }
-}
-
-const aShortQuestionSetCreateInductionDto = (
-  options?: CoreBuilderOptions & {
-    hopingToGetWork?: HopingToGetWorkValue.NO | HopingToGetWorkValue.NOT_SURE
-  },
-): CreateOrUpdateInductionDto => {
-  return {
-    ...baseCreateInductionDtoTemplate(options),
-    workOnRelease: {
-      hopingToWork: options?.hopingToGetWork || HopingToGetWorkValue.NO,
-      affectAbilityToWork: [AbilityToWorkValue.UNABLE_TO_WORK_DUE_TO_HEALTH, AbilityToWorkValue.OTHER],
-      affectAbilityToWorkOther: 'Will be of retirement age at release',
     },
     inPrisonInterests: {
       inPrisonWorkInterests: [
@@ -132,23 +93,28 @@ const aShortQuestionSetCreateInductionDto = (
       ],
     },
     previousQualifications: {
-      educationLevel: null,
-      qualifications: [
-        {
-          subject: 'English',
-          grade: 'C',
-          level: QualificationLevelValue.LEVEL_6,
-        },
-        {
-          subject: 'Maths',
-          grade: 'A*',
-          level: QualificationLevelValue.LEVEL_6,
-        },
-      ],
+      educationLevel: EducationLevelValue.SECONDARY_SCHOOL_TOOK_EXAMS,
+      qualifications:
+        !options ||
+        options.hasQualifications === null ||
+        options.hasQualifications === undefined ||
+        options.hasQualifications === true
+          ? [
+              {
+                subject: 'Pottery',
+                grade: 'C',
+                level: QualificationLevelValue.LEVEL_4,
+              },
+            ]
+          : [],
     },
     previousTraining: {
-      trainingTypes: [AdditionalTrainingValue.FULL_UK_DRIVING_LICENCE, AdditionalTrainingValue.OTHER],
-      trainingTypeOther: 'Beginners cookery for IT professionals',
+      trainingTypes: [
+        AdditionalTrainingValue.FIRST_AID_CERTIFICATE,
+        AdditionalTrainingValue.MANUAL_HANDLING,
+        AdditionalTrainingValue.OTHER,
+      ],
+      trainingTypeOther: 'Advanced origami',
     },
   }
 }
@@ -170,4 +136,4 @@ const baseCreateInductionDtoTemplate = (options?: CoreBuilderOptions): CreateOrU
   }
 }
 
-export { aLongQuestionSetCreateInductionDto, aShortQuestionSetCreateInductionDto }
+export default aValidCreateOrUpdateInductionDto

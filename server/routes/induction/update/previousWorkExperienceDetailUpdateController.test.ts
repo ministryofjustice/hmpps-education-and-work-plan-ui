@@ -6,9 +6,9 @@ import type { PageFlow } from 'viewModels'
 import InductionService from '../../../services/inductionService'
 import PreviousWorkExperienceDetailUpdateController from './previousWorkExperienceDetailUpdateController'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
-import { aLongQuestionSetInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
+import aValidInductionDto from '../../../testsupport/inductionDtoTestDataBuilder'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
-import { aLongQuestionSetUpdateInductionDto } from '../../../testsupport/updateInductionDtoTestDataBuilder'
+import aValidCreateOrUpdateInductionDto from '../../../testsupport/updateInductionDtoTestDataBuilder'
 import HasWorkedBeforeValue from '../../../enums/hasWorkedBeforeValue'
 
 jest.mock('../../../data/mappers/createOrUpdateInductionDtoMapper')
@@ -54,7 +54,7 @@ describe('previousWorkExperienceDetailUpdateController', () => {
       req.params.typeOfWorkExperience = 'construction'
       req.path = `/prisoners/${prisonNumber}/induction/previous-work-experience/construction`
 
-      const inductionDto = aLongQuestionSetInductionDto({ hasWorkedBefore: HasWorkedBeforeValue.YES })
+      const inductionDto = aValidInductionDto({ hasWorkedBefore: HasWorkedBeforeValue.YES })
       req.session.inductionDto = inductionDto
       req.session.previousWorkExperienceDetailForm = undefined
 
@@ -92,7 +92,7 @@ describe('previousWorkExperienceDetailUpdateController', () => {
       req.params.typeOfWorkExperience = 'construction'
       req.path = `/prisoners/${prisonNumber}/induction/previous-work-experience/construction`
 
-      const inductionDto = aLongQuestionSetInductionDto({ hasWorkedBefore: HasWorkedBeforeValue.YES })
+      const inductionDto = aValidInductionDto({ hasWorkedBefore: HasWorkedBeforeValue.YES })
       req.session.inductionDto = inductionDto
 
       const expectedPreviousWorkExperienceDetailForm = {
@@ -130,7 +130,7 @@ describe('previousWorkExperienceDetailUpdateController', () => {
       req.params.typeOfWorkExperience = 'retail'
       req.path = `/prisoners/${prisonNumber}/induction/previous-work-experience/retail`
 
-      const inductionDto = aLongQuestionSetInductionDto({ hasWorkedBefore: HasWorkedBeforeValue.YES })
+      const inductionDto = aValidInductionDto({ hasWorkedBefore: HasWorkedBeforeValue.YES })
       // The induction has work experience of construction and other, but not retail
       req.session.inductionDto = inductionDto
       req.session.previousWorkExperienceDetailForm = undefined
@@ -179,7 +179,7 @@ describe('previousWorkExperienceDetailUpdateController', () => {
         req.params.typeOfWorkExperience = 'construction'
         req.path = `/prisoners/${prisonNumber}/induction/previous-work-experience/construction`
 
-        const inductionDto = aLongQuestionSetInductionDto({ hasWorkedBefore: HasWorkedBeforeValue.YES })
+        const inductionDto = aValidInductionDto({ hasWorkedBefore: HasWorkedBeforeValue.YES })
         req.session.inductionDto = inductionDto
 
         const invalidPreviousWorkExperienceDetailForm = {
@@ -214,7 +214,7 @@ describe('previousWorkExperienceDetailUpdateController', () => {
         req.params.typeOfWorkExperience = 'some-non-valid-work-experience-type'
         req.path = `/prisoners/${prisonNumber}/induction/previous-work-experience/some-non-valid-work-experience-type`
 
-        const inductionDto = aLongQuestionSetInductionDto({ hasWorkedBefore: HasWorkedBeforeValue.YES })
+        const inductionDto = aValidInductionDto({ hasWorkedBefore: HasWorkedBeforeValue.YES })
         req.session.inductionDto = inductionDto
 
         const expectedError = createError(
@@ -239,7 +239,7 @@ describe('previousWorkExperienceDetailUpdateController', () => {
         req.params.typeOfWorkExperience = 'retail'
         req.path = `/prisoners/${prisonNumber}/induction/previous-work-experience/retail`
 
-        const inductionDto = aLongQuestionSetInductionDto({ hasWorkedBefore: HasWorkedBeforeValue.YES })
+        const inductionDto = aValidInductionDto({ hasWorkedBefore: HasWorkedBeforeValue.YES })
         // The induction has work experience of construction and other, but not retail
         req.session.inductionDto = inductionDto
         req.session.previousWorkExperienceDetailForm = undefined
@@ -278,7 +278,7 @@ describe('previousWorkExperienceDetailUpdateController', () => {
         req.params.typeOfWorkExperience = 'construction'
         req.path = `/prisoners/${prisonNumber}/induction/previous-work-experience/construction`
 
-        const inductionDto = aLongQuestionSetInductionDto({ hasWorkedBefore: HasWorkedBeforeValue.YES })
+        const inductionDto = aValidInductionDto({ hasWorkedBefore: HasWorkedBeforeValue.YES })
         req.session.inductionDto = inductionDto
 
         const previousWorkExperienceDetailForm = {
@@ -288,7 +288,7 @@ describe('previousWorkExperienceDetailUpdateController', () => {
         req.body = previousWorkExperienceDetailForm
         req.session.previousWorkExperienceDetailForm = undefined
 
-        const updateInductionDto = aLongQuestionSetUpdateInductionDto()
+        const updateInductionDto = aValidCreateOrUpdateInductionDto()
 
         mockedCreateOrUpdateInductionDtoMapper.mockReturnValueOnce(updateInductionDto)
 
@@ -333,7 +333,7 @@ describe('previousWorkExperienceDetailUpdateController', () => {
         req.params.typeOfWorkExperience = 'construction'
         req.path = `/prisoners/${prisonNumber}/induction/previous-work-experience/construction`
 
-        const inductionDto = aLongQuestionSetInductionDto({ hasWorkedBefore: HasWorkedBeforeValue.YES })
+        const inductionDto = aValidInductionDto({ hasWorkedBefore: HasWorkedBeforeValue.YES })
         req.session.inductionDto = inductionDto
 
         const previousWorkExperienceDetailForm = {
@@ -343,7 +343,7 @@ describe('previousWorkExperienceDetailUpdateController', () => {
         req.body = previousWorkExperienceDetailForm
         req.session.previousWorkExperienceDetailForm = undefined
 
-        const updateInductionDto = aLongQuestionSetUpdateInductionDto()
+        const updateInductionDto = aValidCreateOrUpdateInductionDto()
 
         mockedCreateOrUpdateInductionDtoMapper.mockReturnValueOnce(updateInductionDto)
 
@@ -405,7 +405,7 @@ describe('previousWorkExperienceDetailUpdateController', () => {
         }
         req.session.pageFlowQueue = pageFlowQueue
 
-        const inductionDto = aLongQuestionSetInductionDto({ hasWorkedBefore: HasWorkedBeforeValue.YES })
+        const inductionDto = aValidInductionDto({ hasWorkedBefore: HasWorkedBeforeValue.YES })
         req.session.inductionDto = inductionDto
 
         const previousWorkExperienceDetailForm = {
@@ -415,7 +415,7 @@ describe('previousWorkExperienceDetailUpdateController', () => {
         req.body = previousWorkExperienceDetailForm
         req.session.previousWorkExperienceDetailForm = undefined
 
-        const updateInductionDto = aLongQuestionSetUpdateInductionDto()
+        const updateInductionDto = aValidCreateOrUpdateInductionDto()
 
         mockedCreateOrUpdateInductionDtoMapper.mockReturnValueOnce(updateInductionDto)
 
@@ -469,7 +469,7 @@ describe('previousWorkExperienceDetailUpdateController', () => {
         }
         req.session.pageFlowQueue = pageFlowQueue
 
-        const inductionDto = aLongQuestionSetInductionDto({ hasWorkedBefore: HasWorkedBeforeValue.YES })
+        const inductionDto = aValidInductionDto({ hasWorkedBefore: HasWorkedBeforeValue.YES })
         req.session.inductionDto = inductionDto
 
         const previousWorkExperienceDetailForm = {
@@ -479,7 +479,7 @@ describe('previousWorkExperienceDetailUpdateController', () => {
         req.body = previousWorkExperienceDetailForm
         req.session.previousWorkExperienceDetailForm = undefined
 
-        const updateInductionDto = aLongQuestionSetUpdateInductionDto()
+        const updateInductionDto = aValidCreateOrUpdateInductionDto()
 
         mockedCreateOrUpdateInductionDtoMapper.mockReturnValueOnce(updateInductionDto)
 

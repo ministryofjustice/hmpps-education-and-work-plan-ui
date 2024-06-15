@@ -10,9 +10,9 @@ import {
 import aValidActionPlanSummaryListResponse from '../testsupport/actionPlanSummaryListResponseTestDataBuilder'
 import aValidActionPlanSummaryResponse from '../testsupport/actionPlanSummaryResponseTestDataBuilder'
 import aValidTimelineResponse from '../testsupport/timelineResponseTestDataBuilder'
-import { aShortQuestionSetInduction } from '../testsupport/inductionResponseTestDataBuilder'
-import { aShortQuestionSetUpdateInductionRequest } from '../testsupport/updateInductionRequestTestDataBuilder'
-import { aShortQuestionSetCreateInductionRequest } from '../testsupport/createInductionRequestTestDataBuilder'
+import aValidInductionResponse from '../testsupport/inductionResponseTestDataBuilder'
+import aValidUpdateInductionRequest from '../testsupport/updateInductionRequestTestDataBuilder'
+import aValidCreateInductionRequest from '../testsupport/createInductionRequestTestDataBuilder'
 
 describe('educationAndWorkPlanClient', () => {
   const educationAndWorkPlanClient = new EducationAndWorkPlanClient()
@@ -260,7 +260,7 @@ describe('educationAndWorkPlanClient', () => {
       const prisonNumber = 'A1234BC'
       const systemToken = 'a-system-token'
 
-      const expectedInduction = aShortQuestionSetInduction()
+      const expectedInduction = aValidInductionResponse()
       educationAndWorkPlanApi.get(`/inductions/${prisonNumber}`).reply(200, expectedInduction)
 
       // When
@@ -322,7 +322,7 @@ describe('educationAndWorkPlanClient', () => {
       // Given
       const prisonNumber = 'A1234BC'
       const systemToken = 'a-system-token'
-      const updateInductionRequest = aShortQuestionSetUpdateInductionRequest()
+      const updateInductionRequest = aValidUpdateInductionRequest()
 
       educationAndWorkPlanApi //
         .put(`/inductions/${prisonNumber}`, updateInductionRequest)
@@ -339,7 +339,7 @@ describe('educationAndWorkPlanClient', () => {
       // Given
       const prisonNumber = 'A1234BC'
       const systemToken = 'a-system-token'
-      const updateInductionRequest = aShortQuestionSetUpdateInductionRequest()
+      const updateInductionRequest = aValidUpdateInductionRequest()
 
       const expectedResponseBody = {
         status: 500,
@@ -367,7 +367,7 @@ describe('educationAndWorkPlanClient', () => {
       // Given
       const prisonNumber = 'A1234BC'
       const systemToken = 'a-system-token'
-      const createInductionRequest = aShortQuestionSetCreateInductionRequest()
+      const createInductionRequest = aValidCreateInductionRequest()
 
       educationAndWorkPlanApi //
         .post(`/inductions/${prisonNumber}`, createInductionRequest)
@@ -384,7 +384,7 @@ describe('educationAndWorkPlanClient', () => {
       // Given
       const prisonNumber = 'A1234BC'
       const systemToken = 'a-system-token'
-      const createInductionRequest = aShortQuestionSetCreateInductionRequest()
+      const createInductionRequest = aValidCreateInductionRequest()
 
       const expectedResponseBody = {
         status: 500,

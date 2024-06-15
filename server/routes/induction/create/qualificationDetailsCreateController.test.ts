@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from 'express'
 import type { SessionData } from 'express-session'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
 import QualificationDetailsCreateController from './qualificationDetailsCreateController'
-import { aLongQuestionSetInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
+import aValidInductionDto from '../../../testsupport/inductionDtoTestDataBuilder'
 import QualificationLevelValue from '../../../enums/qualificationLevelValue'
 
 describe('qualificationDetailsCreateController', () => {
@@ -37,7 +37,7 @@ describe('qualificationDetailsCreateController', () => {
   describe('getQualificationDetailsView', () => {
     it('should get the Qualification Details view given there is no QualificationDetailsForm on the session', async () => {
       // Given
-      const inductionDto = aLongQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       inductionDto.previousQualifications.qualifications = undefined
       req.session.inductionDto = inductionDto
       const qualificationLevelForm = { qualificationLevel: QualificationLevelValue.LEVEL_3 }
@@ -88,7 +88,7 @@ describe('qualificationDetailsCreateController', () => {
 
     it('should get the Qualification Details view given there is a QualificationDetailsForm already on the session', async () => {
       // Given
-      const inductionDto = aLongQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       inductionDto.previousQualifications.qualifications = undefined
       req.session.inductionDto = inductionDto
       const qualificationLevelForm = {
@@ -143,7 +143,7 @@ describe('qualificationDetailsCreateController', () => {
   describe('submitQualificationDetailsForm', () => {
     it('should not proceed to qualifications page given form submitted with validation errors', async () => {
       // Given
-      const inductionDto = aLongQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       inductionDto.previousQualifications.qualifications = undefined
       req.session.inductionDto = inductionDto
       const qualificationLevelForm = {
@@ -194,7 +194,7 @@ describe('qualificationDetailsCreateController', () => {
 
     it('should proceed to qualifications page', async () => {
       // Given
-      const inductionDto = aLongQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       inductionDto.previousQualifications.qualifications = undefined
       req.session.inductionDto = inductionDto
       const pageFlowHistory = {

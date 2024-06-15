@@ -2,10 +2,10 @@ import createError from 'http-errors'
 import type { SessionData } from 'express-session'
 import { NextFunction, Request, Response } from 'express'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
-import { aShortQuestionSetInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
+import aValidInductionDto from '../../../testsupport/inductionDtoTestDataBuilder'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
 import InductionService from '../../../services/inductionService'
-import { aShortQuestionSetUpdateInductionRequest } from '../../../testsupport/updateInductionRequestTestDataBuilder'
+import aValidUpdateInductionRequest from '../../../testsupport/updateInductionRequestTestDataBuilder'
 import InPrisonTrainingUpdateController from './inPrisonTrainingUpdateController'
 import InPrisonTrainingValue from '../../../enums/inPrisonTrainingValue'
 
@@ -49,7 +49,7 @@ describe('inPrisonTrainingUpdateController', () => {
   describe('getInPrisonTrainingView', () => {
     it('should get the In Prison Training view given there is no InPrisonTrainingForm on the session', async () => {
       // Given
-      const inductionDto = aShortQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       req.session.inductionDto = inductionDto
       req.session.inPrisonTrainingForm = undefined
 
@@ -84,7 +84,7 @@ describe('inPrisonTrainingUpdateController', () => {
 
     it('should get the In Prison Training view given there is an InPrisonTrainingForm already on the session', async () => {
       // Given
-      const inductionDto = aShortQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       req.session.inductionDto = inductionDto
 
       const expectedInPrisonTrainingForm = {
@@ -117,7 +117,7 @@ describe('inPrisonTrainingUpdateController', () => {
   describe('submitInPrisonTrainingForm', () => {
     it('should not update Induction given form is submitted with validation errors', async () => {
       // Given
-      const inductionDto = aShortQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       req.session.inductionDto = inductionDto
 
       const invalidInPrisonTrainingForm = {
@@ -152,7 +152,7 @@ describe('inPrisonTrainingUpdateController', () => {
 
     it('should update Induction and call API and redirect to education and training page', async () => {
       // Given
-      const inductionDto = aShortQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       req.session.inductionDto = inductionDto
 
       const inPrisonTrainingForm = {
@@ -161,7 +161,7 @@ describe('inPrisonTrainingUpdateController', () => {
       }
       req.body = inPrisonTrainingForm
       req.session.inPrisonTrainingForm = undefined
-      const updateInductionDto = aShortQuestionSetUpdateInductionRequest()
+      const updateInductionDto = aValidUpdateInductionRequest()
 
       mockedCreateOrUpdateInductionDtoMapper.mockReturnValueOnce(updateInductionDto)
 
@@ -197,7 +197,7 @@ describe('inPrisonTrainingUpdateController', () => {
 
     it('should not update Induction given error calling service', async () => {
       // Given
-      const inductionDto = aShortQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       req.session.inductionDto = inductionDto
 
       const inPrisonTrainingForm = {
@@ -206,7 +206,7 @@ describe('inPrisonTrainingUpdateController', () => {
       }
       req.body = inPrisonTrainingForm
       req.session.inPrisonTrainingForm = undefined
-      const updateInductionDto = aShortQuestionSetUpdateInductionRequest()
+      const updateInductionDto = aValidUpdateInductionRequest()
 
       mockedCreateOrUpdateInductionDtoMapper.mockReturnValueOnce(updateInductionDto)
 

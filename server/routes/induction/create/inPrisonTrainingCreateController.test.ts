@@ -3,7 +3,7 @@ import type { SessionData } from 'express-session'
 import type { InPrisonTrainingForm } from 'inductionForms'
 import type { InPrisonTrainingInterestDto } from 'inductionDto'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
-import { aShortQuestionSetInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
+import aValidInductionDto from '../../../testsupport/inductionDtoTestDataBuilder'
 import InPrisonTrainingCreateController from './inPrisonTrainingCreateController'
 import InPrisonTrainingValue from '../../../enums/inPrisonTrainingValue'
 
@@ -36,7 +36,7 @@ describe('inPrisonTrainingCreateController', () => {
   describe('getInPrisonTrainingView', () => {
     it('should get the In Prison Training view given there is no InPrisonTraining on the session', async () => {
       // Given
-      const inductionDto = aShortQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       inductionDto.inPrisonInterests.inPrisonTrainingInterests = undefined
       req.session.inductionDto = inductionDto
       req.session.inPrisonTrainingForm = undefined
@@ -64,7 +64,7 @@ describe('inPrisonTrainingCreateController', () => {
 
     it('should get the In Prison Training view given there is an InPrisonTraining already on the session', async () => {
       // Given
-      const inductionDto = aShortQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       inductionDto.inPrisonInterests.inPrisonTrainingInterests = undefined
       req.session.inductionDto = inductionDto
 
@@ -92,7 +92,7 @@ describe('inPrisonTrainingCreateController', () => {
 
     it('should get the In Prison Training view given the previous page was Check Your Answers', async () => {
       // Given
-      const inductionDto = aShortQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       req.session.inductionDto = inductionDto
 
       req.session.pageFlowHistory = {
@@ -135,7 +135,7 @@ describe('inPrisonTrainingCreateController', () => {
   describe('submitInPrisonTrainingForm', () => {
     it('should not update Induction given form is submitted with validation errors', async () => {
       // Given
-      const inductionDto = aShortQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       inductionDto.inPrisonInterests.inPrisonTrainingInterests = undefined
       req.session.inductionDto = inductionDto
 
@@ -171,7 +171,7 @@ describe('inPrisonTrainingCreateController', () => {
 
     it('should update inductionDto and redirect to Check Your Answers page', async () => {
       // Given
-      const inductionDto = aShortQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       inductionDto.inPrisonInterests.inPrisonTrainingInterests = undefined
       req.session.inductionDto = inductionDto
 

@@ -1,7 +1,7 @@
 import type { SessionData } from 'express-session'
 import { NextFunction, Request, Response } from 'express'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
-import { aLongQuestionSetInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
+import aValidInductionDto from '../../../testsupport/inductionDtoTestDataBuilder'
 import QualificationDetailsUpdateController from './qualificationDetailsUpdateController'
 import QualificationLevelValue from '../../../enums/qualificationLevelValue'
 
@@ -37,7 +37,7 @@ describe('qualificationDetailsUpdateController', () => {
   describe('getQualificationDetailsView', () => {
     it('should get the Qualification Details view given there is no QualificationDetailsForm on the session', async () => {
       // Given
-      const inductionDto = aLongQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       req.session.inductionDto = inductionDto
       const qualificationLevelForm = { qualificationLevel: QualificationLevelValue.LEVEL_3 }
       req.session.qualificationLevelForm = qualificationLevelForm
@@ -87,7 +87,7 @@ describe('qualificationDetailsUpdateController', () => {
 
     it('should get the Qualification Details view given there is a QualificationDetailsForm already on the session', async () => {
       // Given
-      const inductionDto = aLongQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       req.session.inductionDto = inductionDto
       const qualificationLevelForm = {
         qualificationLevel: QualificationLevelValue.LEVEL_3,
@@ -139,7 +139,7 @@ describe('qualificationDetailsUpdateController', () => {
 
     it('should redirect to the Qualifications view given there is no pageFlowHistory on the session', async () => {
       // Given
-      const inductionDto = aLongQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       req.session.inductionDto = inductionDto
       req.session.pageFlowHistory = undefined
 
@@ -156,7 +156,7 @@ describe('qualificationDetailsUpdateController', () => {
 
     it('should redirect to the Qualification Level view given there is no QualificationLevelForm on the session', async () => {
       // Given
-      const inductionDto = aLongQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       req.session.inductionDto = inductionDto
       req.session.qualificationLevelForm = undefined
       req.session.pageFlowHistory = {
@@ -182,7 +182,7 @@ describe('qualificationDetailsUpdateController', () => {
   describe('submitQualificationDetailsForm', () => {
     it('should not proceed to qualifications page given form submitted with validation errors', async () => {
       // Given
-      const inductionDto = aLongQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       req.session.inductionDto = inductionDto
       const qualificationLevelForm = {
         qualificationLevel: QualificationLevelValue.LEVEL_3,
@@ -232,7 +232,7 @@ describe('qualificationDetailsUpdateController', () => {
 
     it('should proceed to qualifications page', async () => {
       // Given
-      const inductionDto = aLongQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       req.session.inductionDto = inductionDto
       const pageFlowHistory = {
         pageUrls: [

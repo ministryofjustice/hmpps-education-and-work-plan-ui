@@ -2,7 +2,7 @@ import { Request, Response } from 'express'
 import type { InductionDto } from 'inductionDto'
 import InductionService from '../../services/inductionService'
 import retrieveInduction from './retrieveInduction'
-import { aLongQuestionSetInductionDto } from '../../testsupport/inductionDtoTestDataBuilder'
+import aValidInductionDto from '../../testsupport/inductionDtoTestDataBuilder'
 
 jest.mock('../../services/inductionService')
 describe('retrieveInduction', () => {
@@ -31,7 +31,7 @@ describe('retrieveInduction', () => {
 
   it('should retrieve Induction and store on res.locals', async () => {
     // Given
-    const inductionDto = aLongQuestionSetInductionDto()
+    const inductionDto = aValidInductionDto()
     inductionService.getInduction.mockResolvedValue(inductionDto)
 
     const expected = {
