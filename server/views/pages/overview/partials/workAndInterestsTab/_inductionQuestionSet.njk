@@ -5,7 +5,7 @@ The 'Work interests' summary card is different to the one presented if the short
 questions are different.
 #}
 
-<section data-qa="work-and-interests-long-question-set">
+<section data-qa="work-and-interests-question-set">
 
   {# Work experience summary card #}
   <div class="govuk-summary-card" id="work-experience-summary-card">
@@ -38,7 +38,7 @@ questions are different.
           </dd>
         </div>
 
-        {% if induction.inductionDto.previousWorkExperiences.hasWorkedBefore %}
+        {% if induction.inductionDto.previousWorkExperiences.hasWorkedBefore === 'YES' %}
           {# Prisoner has worked before #}
           <div class="govuk-summary-list__row">
             <dt class="govuk-summary-list__key">
@@ -156,7 +156,7 @@ questions are different.
             </a>
           </dd>
         </div>
-
+        {% if induction.inductionDto.workOnRelease.hopingToWork === 'YES' and induction.inductionDto.futureWorkInterests %}
         {# List the types of work the Prisoner is interested in doing post-release #}
         <div class="govuk-summary-list__row">
           <dt class="govuk-summary-list__key">
@@ -212,6 +212,7 @@ questions are different.
             </a>
           </dd>
         </div>
+        {% endif %}
       </dl>
       <p class="govuk-hint govuk-body govuk-!-font-size-16">Last updated: {{ induction.inductionDto.futureWorkInterests.updatedAt | formatDate('DD MMMM YYYY') }}<span class="govuk-!-display-none-print"> by {{ induction.inductionDto.futureWorkInterests.updatedByDisplayName }}</span></p>
     </div>
