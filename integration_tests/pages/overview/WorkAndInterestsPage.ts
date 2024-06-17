@@ -25,19 +25,7 @@ export default class WorkAndInterestsPage extends Page {
     return this
   }
 
-  isShowingLongQuestionSetAnswers(): WorkAndInterestsPage {
-    this.longQuestionSetContent().should('be.visible')
-    this.shortQuestionSetContent().should('not.exist')
-    return this
-  }
-
-  isShowingShortQuestionSetAnswers(): WorkAndInterestsPage {
-    this.shortQuestionSetContent().should('be.visible')
-    this.longQuestionSetContent().should('not.exist')
-    return this
-  }
-
-  hasWorkInterests(): WorkAndInterestsPage {
+  hasWorkInterestsDisplayed(): WorkAndInterestsPage {
     this.workInterestsSummaryCard().should('be.visible')
     return this
   }
@@ -49,6 +37,11 @@ export default class WorkAndInterestsPage extends Page {
 
   hasSkillsAndInterestsDisplayed(): WorkAndInterestsPage {
     this.skillsAndInterestSummaryCard().should('be.visible')
+    return this
+  }
+
+  hasInPrisonWorkInterestsSummaryCardDisplayed(): WorkAndInterestsPage {
+    this.inPrisonWorkInterestsSummaryCard().should('be.visible')
     return this
   }
 
@@ -137,13 +130,11 @@ export default class WorkAndInterestsPage extends Page {
 
   skillsAndInterestSummaryCard = (): PageElement => cy.get('#skills-and-interests-summary-card')
 
+  inPrisonWorkInterestsSummaryCard = (): PageElement => cy.get('#in-prison-work-interests-summary-card')
+
   inductionUnavailableMessage = (): PageElement => cy.get('[data-qa=induction-unavailable-message]')
 
   createInductionLink = (): PageElement => cy.get('[data-qa=link-to-create-induction]')
-
-  longQuestionSetContent = (): PageElement => cy.get('[data-qa=work-and-interests-long-question-set')
-
-  shortQuestionSetContent = (): PageElement => cy.get('[data-qa=work-and-interests-short-question-set')
 
   skillsChangeLink = (): PageElement => cy.get('[data-qa=skills-change-link')
 
