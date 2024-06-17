@@ -16,7 +16,7 @@ context('Prisoner Overview page - Common functionality for both pre and post ind
     cy.task('getActionPlan')
     cy.task('stubLearnerProfile')
     cy.task('stubLearnerEducation')
-    cy.task('stubGetInductionShortQuestionSet')
+    cy.task('stubGetInduction')
     cy.task('stubGetAllPrisons')
   })
 

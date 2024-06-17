@@ -26,7 +26,7 @@ context('Update Hoping to work on release within an Induction', () => {
 
   it(`should update Induction given form submitted with new value for 'Hoping to work on release' that does not result in a new question set`, () => {
     // Given
-    cy.task('stubGetInductionShortQuestionSet') // Short question set Induction with Hoping to work on release as NO
+    cy.task('stubGetInduction', { hopingToGetWork: HopingToGetWorkValue.NO })
 
     const prisonNumber = 'G6115VJ'
     cy.visit(`/prisoners/${prisonNumber}/induction/hoping-to-work-on-release`)

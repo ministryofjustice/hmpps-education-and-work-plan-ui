@@ -23,7 +23,7 @@ context('Update educational qualifications within an Induction - add new qualifi
     cy.task('stubLearnerProfile')
     cy.task('stubLearnerEducation')
     cy.task('stubUpdateInduction')
-    cy.task('stubGetInductionLongQuestionSet')
+    cy.task('stubGetInduction')
     cy.signIn()
   })
 
@@ -47,7 +47,7 @@ context('Update educational qualifications within an Induction - add new qualifi
       .setQualificationGrade('B')
       .submitPage()
 
-    /* Long question set has qualifications:
+    /* Induction has the following qualifications:
          French, grade C, LEVEL_3
          Maths, grade A, level LEVEL_3
          Maths, grade 1st, level LEVEL_6

@@ -21,7 +21,7 @@ context('Update Skills in the Induction', () => {
     cy.task('stubLearnerProfile')
     cy.task('stubLearnerEducation')
     cy.task('stubUpdateInduction')
-    cy.task('stubGetInductionLongQuestionSet')
+    cy.task('stubGetInduction')
     cy.signIn()
   })
 
@@ -33,7 +33,7 @@ context('Update Skills in the Induction', () => {
       .hasBackLinkTo(`/plan/${prisonNumber}/view/work-and-interests`)
       .backLinkHasAriaLabel(`Back to Daniel Craig's learning and work progress`)
 
-    // stubGetInductionLongQuestionSet has skills of Communication, Positive Attitude, Thinking & Problem Solving, and Other (Logical Thinking)
+    // Induction has skills of Communication, Positive Attitude, Thinking & Problem Solving, and Other (Logical Thinking)
 
     // When
     skillsPage //
@@ -65,7 +65,7 @@ context('Update Skills in the Induction', () => {
     cy.visit(`/prisoners/${prisonNumber}/induction/skills`)
     const skillsPage = Page.verifyOnPage(SkillsPage)
 
-    // stubGetInductionLongQuestionSet has skills of Communication, Positive Attitude, Thinking & Problem Solving, and Other (Logical Thinking)
+    // Induction has skills of Communication, Positive Attitude, Thinking & Problem Solving, and Other (Logical Thinking)
 
     // When
     skillsPage //
@@ -103,10 +103,10 @@ context('Update Skills in the Induction', () => {
     cy.wiremockVerifyNoInteractions(putRequestedFor(urlEqualTo(`/inductions/${prisonNumber}`)))
   })
 
-  it('should update Skills given short question set induction that was created with no personal skills', () => {
+  it('should update Skills given induction created with the original short question set which did not ask about personal skills', () => {
     // Given
     const prisonNumber = 'G6115VJ'
-    cy.task('stubGetInductionShortQuestionSetCreatedWithOriginalQuestionSet') // The original question set did not ask about personal skills for the Short question set
+    cy.task('stubGetOriginalQuestionSetInduction', { questionSet: 'SHORT' }) // The original short question set Induction did not ask about personal skills
     cy.visit(`/plan/${prisonNumber}/view/work-and-interests`)
     Page.verifyOnPage(WorkAndInterestsPage) //
       .skillsChangeLinkHasText('Add')

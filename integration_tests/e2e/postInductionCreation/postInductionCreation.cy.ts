@@ -29,7 +29,7 @@ context(`Show the relevant screen after an Induction has been created`, () => {
     cy.signIn()
     cy.task('getActionPlan', prisonNumber) // The Action Plan returned from the API for prisoner A00001A has no goals
     cy.task('getPrisonerById', prisonNumber)
-    cy.task('stubGetInductionShortQuestionSet', prisonNumber)
+    cy.task('stubGetInduction', { prisonNumber })
 
     // When
     cy.visit(`/plan/${prisonNumber}/induction-created`)
@@ -44,7 +44,7 @@ context(`Show the relevant screen after an Induction has been created`, () => {
     cy.signIn()
     cy.task('getActionPlan', prisonNumber)
     cy.task('getPrisonerById', prisonNumber)
-    cy.task('stubGetInductionShortQuestionSet', prisonNumber)
+    cy.task('stubGetInduction', { prisonNumber })
 
     // When
     cy.visit(`/plan/${prisonNumber}/induction-created`)
@@ -63,7 +63,7 @@ context(`Show the relevant screen after an Induction has been created`, () => {
     cy.signIn()
     cy.task('getActionPlan500Error', prisonNumber)
     cy.task('getPrisonerById', prisonNumber)
-    cy.task('stubGetInductionShortQuestionSet', prisonNumber)
+    cy.task('stubGetInduction', { prisonNumber })
 
     // When
     cy.visit(`/plan/${prisonNumber}/induction-created`)
