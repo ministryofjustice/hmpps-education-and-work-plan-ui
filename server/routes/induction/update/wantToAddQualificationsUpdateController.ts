@@ -25,7 +25,7 @@ export default class WantToAddQualificationsUpdateController extends WantToAddQu
     next: NextFunction,
   ): Promise<void> => {
     const { prisonNumber } = req.params
-    const { prisonerSummary, inductionDto } = req.session
+    const { prisonerSummary } = req.session
 
     req.session.wantToAddQualificationsForm = { ...req.body }
     const { wantToAddQualificationsForm } = req.session
@@ -36,25 +36,6 @@ export default class WantToAddQualificationsUpdateController extends WantToAddQu
     }
 
     req.session.wantToAddQualificationsForm = undefined
-
-    // If the previous page was Check Your Answers
-    if (this.previousPageWasCheckYourAnswers(req)) {
-      if (this.formSubmittedFromCheckYourAnswersWithNoChangeMade(wantToAddQualificationsForm, inductionDto)) {
-        // No changes made, redirect back to Check Your Answers
-        return res.redirect(`/prisoners/${prisonNumber}/induction/check-your-answers`)
-      }
-
-      if (this.formSubmittedIndicatingQualificationsShouldNotBeRecorded(wantToAddQualificationsForm)) {
-        // User has come from the Check Your Answers page and has said they do not want to record any qualifications
-        // We need to remove any qualifications that may have been set on the Induction
-        const updatedInduction = this.inductionWithRemovedQualifications(inductionDto)
-        req.session.inductionDto = updatedInduction
-        return res.redirect(`/prisoners/${prisonNumber}/induction/check-your-answers`)
-      }
-
-      // User has come from the Check Your Answers page and has said they DO want to record qualifications
-      return res.redirect(`/prisoners/${prisonNumber}/induction/qualification-level`)
-    }
 
     const nextPage =
       wantToAddQualificationsForm.wantToAddQualifications === YesNoValue.YES

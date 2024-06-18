@@ -185,48 +185,6 @@ describe('inPrisonWorkUpdateController', () => {
       expect(req.session.inductionDto).toBeUndefined()
     })
 
-    it('should update InductionDto and redirect to Check Your Answers given previous page was Check Your Answers', async () => {
-      // Given
-      const inductionDto = aShortQuestionSetInductionDto()
-      req.session.inductionDto = inductionDto
-
-      const inPrisonWorkForm = {
-        inPrisonWork: ['COMPUTERS_OR_DESK_BASED', 'OTHER'],
-        inPrisonWorkOther: 'Gambling',
-      }
-      req.body = inPrisonWorkForm
-      req.session.inPrisonWorkForm = undefined
-
-      const expectedUpdatedWorkInterests = [
-        {
-          workType: 'COMPUTERS_OR_DESK_BASED',
-          workTypeOther: undefined,
-        },
-        {
-          workType: 'OTHER',
-          workTypeOther: 'Gambling',
-        },
-      ]
-
-      req.session.pageFlowHistory = {
-        pageUrls: ['/prisoners/A1234BC/induction/check-your-answers', '/prisoners/A1234BC/induction/in-prison-work'],
-        currentPageIndex: 1,
-      }
-      const expectedNextPage = '/prisoners/A1234BC/induction/check-your-answers'
-
-      // When
-      await controller.submitInPrisonWorkForm(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
-
-      // Then
-      expect(req.session.inductionDto.inPrisonInterests.inPrisonWorkInterests).toEqual(expectedUpdatedWorkInterests)
-      expect(res.redirect).toHaveBeenCalledWith(expectedNextPage)
-      expect(req.session.inPrisonWorkForm).toBeUndefined()
-    })
-
     it('should not update Induction given error calling service', async () => {
       // Given
       const inductionDto = aShortQuestionSetInductionDto()

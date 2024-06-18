@@ -43,11 +43,6 @@ export default class WorkInterestRolesUpdateController extends WorkInterestRoles
     const updatedInduction = this.updatedInductionDtoWithWorkInterestRoles(inductionDto, workInterestRolesForm)
     req.session.inductionDto = updatedInduction
 
-    // If the previous page was Check Your Answers, decide whether to redirect back check answers on submission
-    if (this.previousPageWasCheckYourAnswers(req)) {
-      return res.redirect(`/prisoners/${prisonNumber}/induction/check-your-answers`)
-    }
-
     try {
       const updateInductionDto = toCreateOrUpdateInductionDto(prisonId, updatedInduction)
       await this.inductionService.updateInduction(prisonNumber, updateInductionDto, req.user.token)

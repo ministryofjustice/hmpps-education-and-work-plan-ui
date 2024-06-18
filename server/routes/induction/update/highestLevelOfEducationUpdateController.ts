@@ -53,11 +53,6 @@ export default class HighestLevelOfEducationUpdateController extends HighestLeve
     req.session.inductionDto = updatedInduction
     req.session.highestLevelOfEducationForm = undefined
 
-    // If the previous page was Check Your Answers, forward to Check Your Answers again
-    if (this.previousPageWasCheckYourAnswers(req)) {
-      return res.redirect(`/prisoners/${prisonNumber}/induction/check-your-answers`)
-    }
-
     try {
       const updateInductionDto = toCreateOrUpdateInductionDto(prisonId, updatedInduction)
       await this.inductionService.updateInduction(prisonNumber, updateInductionDto, req.user.token)

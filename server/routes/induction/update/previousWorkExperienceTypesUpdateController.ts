@@ -109,7 +109,6 @@ export default class PreviousWorkExperienceTypesUpdateController extends Previou
     const pageFlowQueue = this.buildPageFlowQueue(
       workExperienceTypesToShowDetailsFormFor,
       prisonNumber,
-      this.previousPageWasCheckYourAnswers(req),
       req.session.pageFlowQueue,
     )
 
@@ -120,22 +119,16 @@ export default class PreviousWorkExperienceTypesUpdateController extends Previou
   buildPageFlowQueue = (
     previousWorkExperienceTypes: Array<TypeOfWorkExperienceValue>,
     prisonNumber: string,
-    fromCheckAnswers: boolean,
     currentPageFlow?: PageFlow,
   ): PageFlow => {
     const nextPages = previousWorkExperienceTypes.map(
       workType => `/prisoners/${prisonNumber}/induction/previous-work-experience/${workType.toLowerCase()}`,
     )
 
-    // If not coming from check answers and on an existing page flow, append to the current flow
-    if (currentPageFlow && !fromCheckAnswers) {
+    if (currentPageFlow) {
       return appendPagesFromCurrentPage(currentPageFlow, nextPages)
     }
     const pageUrls = [`/prisoners/${prisonNumber}/induction/previous-work-experience`, ...nextPages]
-    // If coming from check answers, redirect back at end of journey flow
-    if (fromCheckAnswers) {
-      pageUrls.push(`/prisoners/${prisonNumber}/induction/check-your-answers`)
-    }
     return {
       pageUrls,
       currentPageIndex: 0,

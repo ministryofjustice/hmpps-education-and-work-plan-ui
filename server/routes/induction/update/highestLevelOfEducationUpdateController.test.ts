@@ -246,39 +246,6 @@ describe('highestLevelOfEducationUpdateController', () => {
       expect(req.session.inductionDto).toBeUndefined()
     })
 
-    it('should update InductionDto and redirect to Check Your Answers given previous page was Check Your Answers', async () => {
-      // Given
-      const inductionDto = aLongQuestionSetInductionDto()
-      req.session.inductionDto = inductionDto
-
-      const highestLevelOfEducationForm = {
-        educationLevel: EducationLevelValue.NOT_SURE,
-      }
-      req.body = highestLevelOfEducationForm
-      req.session.highestLevelOfEducationForm = undefined
-      const updateInductionDto = aLongQuestionSetUpdateInductionRequest()
-
-      mockedCreateOrUpdateInductionDtoMapper.mockReturnValueOnce(updateInductionDto)
-
-      req.session.pageFlowHistory = {
-        pageUrls: [
-          '/prisoners/A1234BC/induction/check-your-answers',
-          '/prisoners/A1234BC/induction/highest-level-of-education',
-        ],
-        currentPageIndex: 1,
-      }
-      const expectedNextPage = '/prisoners/A1234BC/induction/check-your-answers'
-
-      // When
-      await controller.submitHighestLevelOfEducationForm(req, res, next)
-
-      // Then
-      const updatedInductionDto = req.session.inductionDto
-      expect(updatedInductionDto.previousQualifications.educationLevel).toEqual(EducationLevelValue.NOT_SURE)
-      expect(res.redirect).toHaveBeenCalledWith(expectedNextPage)
-      expect(req.session.highestLevelOfEducationForm).toBeUndefined()
-    })
-
     it('should not update Induction given error calling service', async () => {
       // Given
       const inductionDto = aLongQuestionSetInductionDto()

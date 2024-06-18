@@ -19,7 +19,6 @@ import QualificationLevelUpdateController from './qualificationLevelUpdateContro
 import QualificationDetailsUpdateController from './qualificationDetailsUpdateController'
 import HopingToWorkOnReleaseUpdateController from './hopingToWorkOnReleaseUpdateController'
 import WantToAddQualificationsUpdateController from './wantToAddQualificationsUpdateController'
-import CheckYourAnswersUpdateController from './checkYourAnswersUpdateController'
 import setCurrentPageInPageFlowQueue from '../../routerRequestHandlers/setCurrentPageInPageFlowQueue'
 import retrieveCuriousFunctionalSkills from '../../routerRequestHandlers/retrieveCuriousFunctionalSkills'
 import retrieveInductionIfNotInSession from '../../routerRequestHandlers/retrieveInductionIfNotInSession'
@@ -53,7 +52,6 @@ export default (router: Router, services: Services) => {
   const additionalTrainingUpdateController = new AdditionalTrainingUpdateController(inductionService)
   const qualificationsListUpdateController = new QualificationsListUpdateController(inductionService)
   const wantToAddQualificationsUpdateController = new WantToAddQualificationsUpdateController()
-  const checkYourAnswersUpdateController = new CheckYourAnswersUpdateController(inductionService)
 
   if (config.featureToggles.induction.update.enabled) {
     router.get('/prisoners/:prisonNumber/induction/**', [
@@ -142,14 +140,6 @@ export default (router: Router, services: Services) => {
     ])
     router.post('/prisoners/:prisonNumber/induction/in-prison-work', [
       asyncMiddleware(inPrisonWorkUpdateController.submitInPrisonWorkForm),
-    ])
-
-    // Check Your Answers
-    router.get('/prisoners/:prisonNumber/induction/check-your-answers', [
-      asyncMiddleware(checkYourAnswersUpdateController.getCheckYourAnswersView),
-    ])
-    router.post('/prisoners/:prisonNumber/induction/check-your-answers', [
-      asyncMiddleware(checkYourAnswersUpdateController.submitCheckYourAnswers),
     ])
 
     // Pre Prison Education
