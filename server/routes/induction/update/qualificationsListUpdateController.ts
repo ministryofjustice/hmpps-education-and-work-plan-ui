@@ -73,11 +73,6 @@ export default class QualificationsListUpdateController extends QualificationsLi
       return res.redirect(`/prisoners/${prisonNumber}/induction/check-your-answers`)
     }
 
-    // if we are changing the main question set, then proceed to additional-training without calling the API
-    if (req.session.updateInductionQuestionSet) {
-      return res.redirect(`/prisoners/${prisonNumber}/induction/additional-training`)
-    }
-
     // By submitting the form without adding/removing any other educational qualifications, the user is indicating their
     // updates to Educational Qualifications are complete.
     // Update the Induction and return to Education and Training

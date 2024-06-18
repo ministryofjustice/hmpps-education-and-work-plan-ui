@@ -1,7 +1,6 @@
 import createError from 'http-errors'
 import { NextFunction, Request, RequestHandler, Response } from 'express'
 import type { InductionDto } from 'inductionDto'
-import type { PageFlow } from 'viewModels'
 import { InductionService } from '../../../services'
 import PreviousWorkExperienceDetailController from '../common/previousWorkExperienceDetailController'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
@@ -88,14 +87,6 @@ export default class PreviousWorkExperienceDetailUpdateController extends Previo
       return res.redirect(`/prisoners/${prisonNumber}/induction/check-your-answers`)
     }
 
-    if (req.session.updateInductionQuestionSet) {
-      req.session.inductionDto = updatedInduction
-      const nextPage = `/prisoners/${prisonNumber}/induction/skills`
-      req.session.pageFlowHistory = this.buildPageFlowHistory(prisonNumber)
-      req.session.previousWorkExperienceDetailForm = undefined
-      return res.redirect(nextPage)
-    }
-
     try {
       const updateInductionDto = toCreateOrUpdateInductionDto(prisonId, updatedInduction)
       await this.inductionService.updateInduction(prisonNumber, updateInductionDto, req.user.token)
@@ -106,14 +97,6 @@ export default class PreviousWorkExperienceDetailUpdateController extends Previo
     } catch (e) {
       logger.error(`Error updating Induction for prisoner ${prisonNumber}`, e)
       return next(createError(500, `Error updating Induction for prisoner ${prisonNumber}. Error: ${e}`))
-    }
-  }
-
-  private buildPageFlowHistory = (prisonNumber: string): PageFlow => {
-    const pageUrls = [`/prisoners/${prisonNumber}/induction/previous-work-experience`]
-    return {
-      pageUrls,
-      currentPageIndex: 0,
     }
   }
 }

@@ -1,7 +1,7 @@
 import type { SessionData } from 'express-session'
 import { NextFunction, Request, Response } from 'express'
 import createError from 'http-errors'
-import type { PageFlow, UpdateInductionQuestionSet } from 'viewModels'
+import type { PageFlow } from 'viewModels'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
 import InductionService from '../../../services/inductionService'
 import CheckYourAnswersUpdateController from './checkYourAnswersUpdateController'
@@ -74,8 +74,6 @@ describe('checkYourAnswersUpdateController', () => {
         currentPageIndex: 0,
       }
       req.session.pageFlowHistory = pageFlowHistory
-      const updateInductionQuestionSet: UpdateInductionQuestionSet = { hopingToWorkOnRelease: 'NO' }
-      req.session.updateInductionQuestionSet = updateInductionQuestionSet
 
       const updateInductionDto = aShortQuestionSetUpdateInductionDto()
       mockedCreateOrUpdateInductionDtoMapper.mockReturnValueOnce(updateInductionDto)
@@ -96,7 +94,6 @@ describe('checkYourAnswersUpdateController', () => {
       expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/view/work-and-interests`)
       expect(req.session.inductionDto).toBeUndefined()
       expect(req.session.pageFlowHistory).toBeUndefined()
-      expect(req.session.updateInductionQuestionSet).toBeUndefined()
     })
 
     it('should not update Induction given error calling service', async () => {
@@ -109,8 +106,6 @@ describe('checkYourAnswersUpdateController', () => {
         currentPageIndex: 0,
       }
       req.session.pageFlowHistory = pageFlowHistory
-      const updateInductionQuestionSet: UpdateInductionQuestionSet = { hopingToWorkOnRelease: 'NO' }
-      req.session.updateInductionQuestionSet = updateInductionQuestionSet
 
       const updateInductionDto = aShortQuestionSetUpdateInductionDto()
       mockedCreateOrUpdateInductionDtoMapper.mockReturnValueOnce(updateInductionDto)
@@ -137,7 +132,6 @@ describe('checkYourAnswersUpdateController', () => {
       expect(next).toHaveBeenCalledWith(expectedError)
       expect(req.session.inductionDto).toEqual(inductionDto)
       expect(req.session.pageFlowHistory).toEqual(pageFlowHistory)
-      expect(req.session.updateInductionQuestionSet).toEqual(updateInductionQuestionSet)
     })
   })
 })

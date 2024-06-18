@@ -444,12 +444,10 @@ describe('previousWorkExperienceDetailUpdateController', () => {
       // A PageFlowQueue on the session means the user is adding new Previous Work Experiences as part of updating the
       // Induction from the Work & Interests tab
 
-      it('should update Induction and call API and redirect to work and interests page given a PageFlowQueue that is on the last page and we are not updating the entire Induction question set', async () => {
+      it('should update Induction and call API and redirect to work and interests page given a PageFlowQueue that is on the last page', async () => {
         // Given
         req.params.typeOfWorkExperience = 'construction'
         req.path = `/prisoners/${prisonNumber}/induction/previous-work-experience/construction`
-
-        req.session.updateInductionQuestionSet = undefined
 
         const pageFlowQueue: PageFlow = {
           pageUrls: [`/prisoners/${prisonNumber}/induction/previous-work-experience/construction`],
@@ -545,60 +543,6 @@ describe('previousWorkExperienceDetailUpdateController', () => {
         // Then
         expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/induction/previous-work-experience/retail')
         expect(inductionService.updateInduction).not.toHaveBeenCalled()
-      })
-
-      it('should update InductionDto and redirect to Personal Skills page given a PageFlowQueue that is on the last page and we are updating the entire Induction question set', async () => {
-        // Given
-        req.params.typeOfWorkExperience = 'construction'
-        req.path = `/prisoners/${prisonNumber}/induction/previous-work-experience/construction`
-
-        req.session.updateInductionQuestionSet = { hopingToWorkOnRelease: 'YES' }
-
-        const pageFlowQueue: PageFlow = {
-          pageUrls: [
-            `/prisoners/${prisonNumber}/induction/previous-work-experience`,
-            `/prisoners/${prisonNumber}/induction/previous-work-experience/construction`,
-          ],
-          currentPageIndex: 1,
-        }
-        req.session.pageFlowQueue = pageFlowQueue
-
-        const inductionDto = aLongQuestionSetInductionDto({ hasWorkedBefore: HasWorkedBeforeValue.YES })
-        req.session.inductionDto = inductionDto
-
-        const previousWorkExperienceDetailForm = {
-          jobRole: 'General labourer',
-          jobDetails: 'General labouring, building walls, basic plastering',
-        }
-        req.body = previousWorkExperienceDetailForm
-        req.session.previousWorkExperienceDetailForm = undefined
-
-        const expectedPageFlowHistory: PageFlow = {
-          pageUrls: ['/prisoners/A1234BC/induction/previous-work-experience'],
-          currentPageIndex: 0,
-        }
-
-        // When
-        await controller.submitPreviousWorkExperienceDetailForm(
-          req as undefined as Request,
-          res as undefined as Response,
-          next as undefined as NextFunction,
-        )
-
-        // Then
-        const previousWorkExperiencesOnInduction: Array<PreviousWorkExperienceDto> =
-          req.session.inductionDto.previousWorkExperiences.experiences
-        const previousConstructionWorkExperience = previousWorkExperiencesOnInduction.find(
-          experience => experience.experienceType === TypeOfWorkExperienceValue.CONSTRUCTION,
-        )
-        expect(previousConstructionWorkExperience.role).toEqual('General labourer')
-        expect(previousConstructionWorkExperience.details).toEqual(
-          'General labouring, building walls, basic plastering',
-        )
-        expect(res.redirect).toHaveBeenCalledWith(`/prisoners/${prisonNumber}/induction/skills`)
-        expect(req.session.previousWorkExperienceDetailForm).toBeUndefined()
-        expect(inductionService.updateInduction).not.toHaveBeenCalled()
-        expect(req.session.pageFlowHistory).toEqual(expectedPageFlowHistory)
       })
     })
   })

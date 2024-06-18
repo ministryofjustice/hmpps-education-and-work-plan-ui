@@ -71,15 +71,11 @@ export default class PreviousWorkExperienceDetailCreateController extends Previo
     // We are at the end of the page flow queue. Tidy up by removing both the page flow queue
     req.session.pageFlowQueue = undefined
 
-    const userHasComeFromCheckYourAnswers = this.checkYourAnswersIsTheFirstPageInThePageHistory(req)
-    if (userHasComeFromCheckYourAnswers && !req.session.updateInductionQuestionSet) {
-      // If the page flow history started with Check Your Answers and we are not changing the question set then we need to redirect the user back to there now that they have been to every page on the queue
-      req.session.pageFlowHistory = undefined
-      return res.redirect(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
-    }
+    const nextPage = this.checkYourAnswersIsTheFirstPageInThePageHistory(req)
+      ? `/prisoners/${prisonNumber}/create-induction/check-your-answers`
+      : `/prisoners/${prisonNumber}/create-induction/skills`
 
-    // Otherwise redirect to next page in the question set (personal skills)
     req.session.pageFlowHistory = undefined
-    return res.redirect(`/prisoners/${prisonNumber}/create-induction/skills`)
+    return res.redirect(nextPage)
   }
 }

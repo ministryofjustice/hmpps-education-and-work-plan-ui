@@ -8,7 +8,7 @@ import logger from '../../../../logger'
 import { InductionService } from '../../../services'
 import validateWorkedBeforeForm from '../../validators/induction/workedBeforeFormValidator'
 import getDynamicBackLinkAriaText from '../dynamicAriaTextResolver'
-import { buildNewPageFlowHistory, getPreviousPage } from '../../pageFlowHistory'
+import { getPreviousPage } from '../../pageFlowHistory'
 import { getNextPage } from '../../pageFlowQueue'
 import HasWorkedBeforeValue from '../../../enums/hasWorkedBeforeValue'
 
@@ -62,17 +62,6 @@ export default class WorkedBeforeUpdateController extends WorkedBeforeController
       const pageFlowQueue = this.buildPageFlowQueue(prisonNumber)
       req.session.pageFlowQueue = pageFlowQueue
       return res.redirect(getNextPage(pageFlowQueue))
-    }
-
-    if (req.session.updateInductionQuestionSet) {
-      req.session.inductionDto = updatedInduction
-      const nextPage =
-        workedBeforeForm.hasWorkedBefore === 'YES'
-          ? `/prisoners/${prisonNumber}/induction/previous-work-experience`
-          : `/prisoners/${prisonNumber}/induction/skills`
-      req.session.pageFlowHistory = buildNewPageFlowHistory(req)
-      req.session.workedBeforeForm = undefined
-      return res.redirect(nextPage)
     }
 
     try {

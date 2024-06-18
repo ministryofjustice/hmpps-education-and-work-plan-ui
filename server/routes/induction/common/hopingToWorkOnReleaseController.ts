@@ -3,7 +3,6 @@ import type { InductionDto } from 'inductionDto'
 import type { HopingToWorkOnReleaseForm } from 'inductionForms'
 import InductionController from './inductionController'
 import HopingToWorkOnReleaseView from './hopingToWorkOnReleaseView'
-import HopingToGetWorkValue from '../../../enums/hopingToGetWorkValue'
 
 /**
  * Abstract controller class defining functionality common to both the Create and Update Induction journeys.
@@ -33,29 +32,6 @@ export default abstract class HopingToWorkOnReleaseController extends InductionC
       hopingToWorkOnReleaseForm,
     )
     return res.render('pages/induction/hopingToWorkOnRelease/index', { ...view.renderArgs })
-  }
-
-  /**
-   * Returns true if the new answer to "Hoping to work on release" will cause a new question set to be asked.
-   * In the context of updating the Induction with the new answer to this question, it means we need to present the user
-   * with other screens/questions to build up a valid Induction.
-   * IE. we cannot simply update the Induction from "Hoping to work on release = NO" to "Hoping to work on release = YES"
-   * because the resultant Induction will have missing data, as there are different questions asked based on whether the
-   * prisoner is hoping to work on release or not.
-   */
-  protected changeWillResultInANewQuestionSet(
-    currentInductionDto: InductionDto,
-    hopingToWorkOnReleaseForm: HopingToWorkOnReleaseForm,
-  ): boolean {
-    const currentInductionValue = currentInductionDto.workOnRelease?.hopingToWork
-    const proposedValue = hopingToWorkOnReleaseForm.hopingToGetWork
-
-    return (
-      (currentInductionValue === HopingToGetWorkValue.YES &&
-        (proposedValue === HopingToGetWorkValue.NO || proposedValue === HopingToGetWorkValue.NOT_SURE)) ||
-      ((currentInductionValue === HopingToGetWorkValue.NO || currentInductionValue === HopingToGetWorkValue.NOT_SURE) &&
-        proposedValue === HopingToGetWorkValue.YES)
-    )
   }
 }
 

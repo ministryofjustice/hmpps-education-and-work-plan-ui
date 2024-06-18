@@ -1,7 +1,6 @@
 import createError from 'http-errors'
 import type { SessionData } from 'express-session'
 import { NextFunction, Request, Response } from 'express'
-import type { PageFlow } from 'viewModels'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
 import { aLongQuestionSetInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
@@ -109,49 +108,6 @@ describe('skillsUpdateController', () => {
       expect(req.session.skillsForm).toBeUndefined()
       expect(req.session.inductionDto).toEqual(inductionDto)
     })
-
-    it('should get the Skills view given there is an updateInductionQuestionSet on the session', async () => {
-      // Given
-      const inductionDto = aLongQuestionSetInductionDto()
-      req.session.inductionDto = inductionDto
-      req.session.updateInductionQuestionSet = {
-        hopingToWorkOnRelease: 'YES',
-      }
-      req.session.pageFlowHistory = {
-        pageUrls: [`/prisoners/${prisonNumber}/induction/work-interest-roles`],
-        currentPageIndex: 0,
-      }
-
-      const expectedSkillsForm = {
-        skills: ['SELF_MANAGEMENT', 'TEAMWORK', 'THINKING_AND_PROBLEM_SOLVING'],
-        skillsOther: '',
-      }
-      req.session.skillsForm = expectedSkillsForm
-
-      const expectedView = {
-        prisonerSummary,
-        form: expectedSkillsForm,
-        backLinkUrl: '/prisoners/A1234BC/induction/work-interest-roles',
-        backLinkAriaText: 'Back to Is Jimmy Lightfingers interested in any particular jobs?',
-      }
-
-      const expectedPageFlowHistory = {
-        pageUrls: ['/prisoners/A1234BC/induction/work-interest-roles', '/prisoners/A1234BC/induction/skills'],
-        currentPageIndex: 1,
-      }
-
-      // When
-      await controller.getSkillsView(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
-
-      // Then
-      expect(res.render).toHaveBeenCalledWith('pages/induction/skills/index', expectedView)
-      expect(req.session.inductionDto).toEqual(inductionDto)
-      expect(req.session.pageFlowHistory).toEqual(expectedPageFlowHistory)
-    })
   })
 
   describe('submitSkillsForm', () => {
@@ -225,52 +181,6 @@ describe('skillsUpdateController', () => {
       expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/view/work-and-interests`)
       expect(req.session.skillsForm).toBeUndefined()
       expect(req.session.inductionDto).toBeUndefined()
-    })
-
-    it('should update InductionDto and redirect to Personal Interests given long question set journey', async () => {
-      // Given
-      const inductionDto = aLongQuestionSetInductionDto()
-      req.session.inductionDto = inductionDto
-
-      const skillsForm = {
-        skills: ['TEAMWORK', 'OTHER'],
-        skillsOther: 'Circus skills',
-      }
-      req.body = skillsForm
-      req.session.skillsForm = undefined
-
-      req.session.updateInductionQuestionSet = { hopingToWorkOnRelease: 'YES' }
-      const expectedNextPage = '/prisoners/A1234BC/induction/personal-interests'
-
-      const expectedUpdatedSkills = [
-        {
-          skillType: 'TEAMWORK',
-          skillTypeOther: undefined,
-        },
-        {
-          skillType: 'OTHER',
-          skillTypeOther: 'Circus skills',
-        },
-      ]
-
-      const expectedPageFlowHistory: PageFlow = {
-        pageUrls: ['/prisoners/A1234BC/induction/skills'],
-        currentPageIndex: 0,
-      }
-
-      // When
-      await controller.submitSkillsForm(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
-
-      // Then
-      expect(req.session.inductionDto.personalSkillsAndInterests.skills).toEqual(expectedUpdatedSkills)
-      expect(res.redirect).toHaveBeenCalledWith(expectedNextPage)
-      expect(req.session.workInterestTypesForm).toBeUndefined()
-      expect(inductionService.updateInduction).not.toHaveBeenCalled()
-      expect(req.session.pageFlowHistory).toEqual(expectedPageFlowHistory)
     })
 
     it('should not update Induction given error calling service', async () => {

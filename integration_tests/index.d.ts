@@ -16,10 +16,6 @@ declare namespace Cypress {
 
     signInAsUserWithEditAuthorityToArriveOnPrisonerListPage()
 
-    updateShortQuestionSetInductionToArriveOnCheckYourAnswers(prisonNumber?: string)
-
-    updateLongQuestionSetInductionToArriveOnCheckYourAnswers(prisonNumber?: string)
-
     createLongQuestionSetInductionToArriveOnCheckYourAnswers(prisonNumber?: string, withQualifications?: boolean)
 
     createShortQuestionSetInductionToArriveOnCheckYourAnswers(prisonNumber?: string, withQualifications?: boolean)

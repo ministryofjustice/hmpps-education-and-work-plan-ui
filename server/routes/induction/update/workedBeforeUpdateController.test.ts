@@ -107,51 +107,6 @@ describe('workedBeforeUpdateController', () => {
       expect(req.session.workedBeforeForm).toBeUndefined()
       expect(req.session.inductionDto).toEqual(inductionDto)
     })
-
-    it('should get the WorkedBefore view given there is an updateInductionQuestionSet on the session', async () => {
-      // Given
-      const inductionDto = aLongQuestionSetInductionDto()
-      req.session.inductionDto = inductionDto
-      req.session.updateInductionQuestionSet = {
-        hopingToWorkOnRelease: 'YES',
-      }
-      req.session.pageFlowHistory = {
-        pageUrls: [`/prisoners/${prisonNumber}/induction/additional-training`],
-        currentPageIndex: 0,
-      }
-
-      const expectedWorkedBeforeForm = {
-        hasWorkedBefore: HasWorkedBeforeValue.NO,
-      }
-      req.session.workedBeforeForm = expectedWorkedBeforeForm
-
-      const expectedView = {
-        prisonerSummary,
-        form: expectedWorkedBeforeForm,
-        backLinkUrl: '/prisoners/A1234BC/induction/additional-training',
-        backLinkAriaText: 'Back to Does Jimmy Lightfingers have any other training or vocational qualifications?',
-      }
-
-      const expectedPageFlowHistory = {
-        pageUrls: [
-          '/prisoners/A1234BC/induction/additional-training',
-          '/prisoners/A1234BC/induction/has-worked-before',
-        ],
-        currentPageIndex: 1,
-      }
-
-      // When
-      await controller.getWorkedBeforeView(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
-
-      // Then
-      expect(res.render).toHaveBeenCalledWith('pages/induction/workedBefore/index', expectedView)
-      expect(req.session.inductionDto).toEqual(inductionDto)
-      expect(req.session.pageFlowHistory).toEqual(expectedPageFlowHistory)
-    })
   })
 
   describe('submitWorkedBeforeForm', () => {
@@ -218,62 +173,6 @@ describe('workedBeforeUpdateController', () => {
       expect(req.session.workedBeforeForm).toBeUndefined()
       expect(req.session.inductionDto).toBeUndefined()
     })
-
-    it('should update InductionDto and redirect to Previous Work Experience given long question set journey and has worked before is YES', async () => {
-      // Given
-      const inductionDto = aLongQuestionSetInductionDto()
-      req.session.inductionDto = inductionDto
-
-      const workedBeforeForm = {
-        hasWorkedBefore: HasWorkedBeforeValue.YES,
-      }
-      req.body = workedBeforeForm
-      req.session.workedBeforeForm = undefined
-
-      req.session.updateInductionQuestionSet = { hopingToWorkOnRelease: 'YES' }
-      const expectedNextPage = '/prisoners/A1234BC/induction/previous-work-experience'
-
-      // When
-      await controller.submitWorkedBeforeForm(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
-
-      // Then
-      expect(req.session.inductionDto.previousWorkExperiences.hasWorkedBefore).toEqual('YES')
-      expect(res.redirect).toHaveBeenCalledWith(expectedNextPage)
-      expect(req.session.workedBeforeForm).toBeUndefined()
-    })
-    it.each([HasWorkedBeforeValue.NO, HasWorkedBeforeValue.NOT_RELEVANT])(
-      'should update InductionDto and redirect to Personal Skills given long question set journey and has worked before is a negative response',
-      async (negativeResponse: HasWorkedBeforeValue) => {
-        // Given
-        const inductionDto = aLongQuestionSetInductionDto()
-        req.session.inductionDto = inductionDto
-
-        const workedBeforeForm = {
-          hasWorkedBefore: negativeResponse,
-        }
-        req.body = workedBeforeForm
-        req.session.workedBeforeForm = undefined
-
-        req.session.updateInductionQuestionSet = { hopingToWorkOnRelease: 'YES' }
-        const expectedNextPage = '/prisoners/A1234BC/induction/skills'
-
-        // When
-        await controller.submitWorkedBeforeForm(
-          req as undefined as Request,
-          res as undefined as Response,
-          next as undefined as NextFunction,
-        )
-
-        // Then
-        expect(req.session.inductionDto.previousWorkExperiences.hasWorkedBefore).toEqual(negativeResponse)
-        expect(res.redirect).toHaveBeenCalledWith(expectedNextPage)
-        expect(req.session.workedBeforeForm).toBeUndefined()
-      },
-    )
 
     it('should not update Induction given error calling service', async () => {
       // Given

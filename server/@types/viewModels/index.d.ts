@@ -212,8 +212,4 @@ declare module 'viewModels' {
     pageUrls: Array<string>
     currentPageIndex: number
   }
-
-  export interface UpdateInductionQuestionSet {
-    hopingToWorkOnRelease: 'YES' | 'NO' | 'NOT_SURE'
-  }
 }
