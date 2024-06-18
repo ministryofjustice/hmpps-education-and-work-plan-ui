@@ -3,7 +3,7 @@ import type { SessionData } from 'express-session'
 import type { SkillsForm } from 'inductionForms'
 import type { PersonalSkillDto } from 'inductionDto'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
-import { aLongQuestionSetInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
+import aValidInductionDto from '../../../testsupport/inductionDtoTestDataBuilder'
 import SkillsCreateController from './skillsCreateController'
 import SkillsValue from '../../../enums/skillsValue'
 
@@ -39,7 +39,7 @@ describe('skillsCreateController', () => {
   describe('getSkillsView', () => {
     it('should get the Skills view given there is no SkillsForm on the session', async () => {
       // Given
-      const inductionDto = aLongQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       inductionDto.personalSkillsAndInterests.skills = undefined
       req.session.inductionDto = inductionDto
       req.session.skillsForm = undefined
@@ -71,7 +71,7 @@ describe('skillsCreateController', () => {
 
     it('should get the Skills view given there is an SkillsForm already on the session', async () => {
       // Given
-      const inductionDto = aLongQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       inductionDto.personalSkillsAndInterests.skills = undefined
       req.session.inductionDto = inductionDto
 
@@ -103,7 +103,7 @@ describe('skillsCreateController', () => {
 
     it('should get the Skills view given the previous page was Check Your Answers', async () => {
       // Given
-      const inductionDto = aLongQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       inductionDto.personalSkillsAndInterests.skills = undefined
       req.session.inductionDto = inductionDto
 
@@ -150,7 +150,7 @@ describe('skillsCreateController', () => {
   describe('submitSkillsForm', () => {
     it('should not update Induction given form is submitted with validation errors', async () => {
       // Given
-      const inductionDto = aLongQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       inductionDto.personalSkillsAndInterests.skills = undefined
       req.session.inductionDto = inductionDto
 
@@ -178,7 +178,7 @@ describe('skillsCreateController', () => {
 
     it('should update inductionDto and redirect to personal interests page', async () => {
       // Given
-      const inductionDto = aLongQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       inductionDto.personalSkillsAndInterests.skills = undefined
       req.session.inductionDto = inductionDto
 
@@ -210,7 +210,7 @@ describe('skillsCreateController', () => {
 
     it('should update inductionDto and redirect to Check Your Answers given previous page was Check Your Answers', async () => {
       // Given
-      const inductionDto = aLongQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       inductionDto.personalSkillsAndInterests.skills = undefined
       req.session.inductionDto = inductionDto
 

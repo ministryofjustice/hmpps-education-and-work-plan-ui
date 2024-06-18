@@ -3,7 +3,7 @@ import type { SessionData } from 'express-session'
 import createError from 'http-errors'
 import type { InductionDto } from 'inductionDto'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
-import { aLongQuestionSetInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
+import aValidInductionDto from '../../../testsupport/inductionDtoTestDataBuilder'
 import PreviousWorkExperienceDetailCreateController from './previousWorkExperienceDetailCreateController'
 import TypeOfWorkExperienceValue from '../../../enums/typeOfWorkExperienceValue'
 import HasWorkedBeforeValue from '../../../enums/hasWorkedBeforeValue'
@@ -607,7 +607,7 @@ describe('previousWorkExperienceDetailCreateController', () => {
 })
 
 const inductionDtoWithWorkExperienceTypes = (): InductionDto => {
-  const inductionDto = aLongQuestionSetInductionDto({ hasWorkedBefore: HasWorkedBeforeValue.YES })
+  const inductionDto = aValidInductionDto({ hasWorkedBefore: HasWorkedBeforeValue.YES })
   inductionDto.previousWorkExperiences.experiences = [
     {
       experienceType: TypeOfWorkExperienceValue.CONSTRUCTION,

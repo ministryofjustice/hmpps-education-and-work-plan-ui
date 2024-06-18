@@ -3,15 +3,12 @@ import { Request, Response } from 'express'
 import type { AchievedQualificationDto, InductionDto } from 'inductionDto'
 import QualificationsListUpdateController from './qualificationsListUpdateController'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
-import {
-  aLongQuestionSetInductionDto,
-  aShortQuestionSetInductionDto,
-} from '../../../testsupport/inductionDtoTestDataBuilder'
+import aValidInductionDto from '../../../testsupport/inductionDtoTestDataBuilder'
 import { validFunctionalSkills } from '../../../testsupport/functionalSkillsTestDataBuilder'
 import QualificationLevelValue from '../../../enums/qualificationLevelValue'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
 import InductionService from '../../../services/inductionService'
-import { aLongQuestionSetUpdateInductionDto } from '../../../testsupport/updateInductionDtoTestDataBuilder'
+import aValidCreateOrUpdateInductionDto from '../../../testsupport/updateInductionDtoTestDataBuilder'
 import EducationLevelValue from '../../../enums/educationLevelValue'
 
 jest.mock('../../../data/mappers/createOrUpdateInductionDtoMapper')
@@ -50,7 +47,7 @@ describe('qualificationsListUpdateController', () => {
   describe('getQualificationsListView', () => {
     it('should get the Qualifications List view', async () => {
       // Given
-      const inductionDto = aLongQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       req.session.inductionDto = inductionDto
       const functionalSkills = validFunctionalSkills()
       res.locals.prisonerFunctionalSkills = functionalSkills
@@ -83,11 +80,11 @@ describe('qualificationsListUpdateController', () => {
       // Given
       req.body = {}
 
-      const inductionDto = aLongQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       req.session.inductionDto = inductionDto
 
-      const updateInductionDto = aLongQuestionSetUpdateInductionDto()
-      // Long question set Update Induction DTO contains highest level of education as SECONDARY_SCHOOL_TOOK_EXAMS
+      const updateInductionDto = aValidCreateOrUpdateInductionDto()
+      // UInduction DTO contains highest level of education as SECONDARY_SCHOOL_TOOK_EXAMS
       // with 1 qualification: Level 4 Pottery grade C
       mockedCreateOrUpdateInductionDtoMapper.mockReturnValueOnce(updateInductionDto)
 
@@ -117,11 +114,11 @@ describe('qualificationsListUpdateController', () => {
       // Given
       req.body = {}
 
-      const inductionDto = aLongQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       req.session.inductionDto = inductionDto
 
-      const updateInductionDto = aLongQuestionSetUpdateInductionDto()
-      // Long question set Update Induction DTO contains highest level of education as SECONDARY_SCHOOL_TOOK_EXAMS
+      const updateInductionDto = aValidCreateOrUpdateInductionDto()
+      // Induction DTO contains highest level of education as SECONDARY_SCHOOL_TOOK_EXAMS
       // with 1 qualification: Level 4 Pottery grade C
       mockedCreateOrUpdateInductionDtoMapper.mockReturnValueOnce(updateInductionDto)
 
@@ -153,19 +150,16 @@ describe('qualificationsListUpdateController', () => {
 
     it('should update Induction but not call API and redisplay Qualification List Page given page submitted with removeQualification', async () => {
       // Given
-      const inductionDto = aShortQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       req.session.inductionDto = inductionDto
-      /* The short question set induction has no highest level of education, but does have qualifications:
-           - Level 6 English, Grade C
-           - Level 6 Maths, Grade A*
+      /* The induction has 1 qualification:
+           - Level 4 Pottery, Grade C
        */
 
       req.body = { removeQualification: '0' } // We expect to delete English, as it is the first qualification (zero indexed)
 
-      const expectedHighestLevelOfEducation: EducationLevelValue = null
-      const expectedQualifications: Array<AchievedQualificationDto> = [
-        { subject: 'Maths', grade: 'A*', level: QualificationLevelValue.LEVEL_6 },
-      ]
+      const expectedHighestLevelOfEducation = EducationLevelValue.SECONDARY_SCHOOL_TOOK_EXAMS
+      const expectedQualifications: Array<AchievedQualificationDto> = []
 
       // When
       await controller.submitQualificationsListView(req, res, next)

@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from 'express'
 import type { SessionData } from 'express-session'
 import type { WorkedBeforeForm } from 'inductionForms'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
-import { aLongQuestionSetInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
+import aValidInductionDto from '../../../testsupport/inductionDtoTestDataBuilder'
 import WorkedBeforeCreateController from './workedBeforeCreateController'
 import HasWorkedBeforeValue from '../../../enums/hasWorkedBeforeValue'
 
@@ -38,7 +38,7 @@ describe('workedBeforeCreateController', () => {
   describe('getWorkedBeforeView', () => {
     it('should get the WorkedBefore view given there is no WorkedBeforeForm on the session', async () => {
       // Given
-      const inductionDto = aLongQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       inductionDto.previousWorkExperiences = undefined
       req.session.inductionDto = inductionDto
       req.session.workedBeforeForm = undefined
@@ -69,7 +69,7 @@ describe('workedBeforeCreateController', () => {
 
     it('should get the WorkedBefore view given there is an WorkedBeforeForm already on the session', async () => {
       // Given
-      const inductionDto = aLongQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       inductionDto.previousWorkExperiences = undefined
       req.session.inductionDto = inductionDto
 
@@ -100,7 +100,7 @@ describe('workedBeforeCreateController', () => {
 
     it('should get the WorkedBefore view given the previous page was Check Your Answers', async () => {
       // Given
-      const inductionDto = aLongQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       inductionDto.previousWorkExperiences = undefined
       req.session.inductionDto = inductionDto
 
@@ -147,7 +147,7 @@ describe('workedBeforeCreateController', () => {
   describe('submitWorkedBeforeForm', () => {
     it('should not update Induction given form is submitted with validation errors', async () => {
       // Given
-      const inductionDto = aLongQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       inductionDto.previousWorkExperiences = undefined
       req.session.inductionDto = inductionDto
 
@@ -179,7 +179,7 @@ describe('workedBeforeCreateController', () => {
 
     it('should update InductionDto and display Previous Work Experience page given form is submitted with worked before YES', async () => {
       // Given
-      const inductionDto = aLongQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       inductionDto.previousWorkExperiences = undefined
       req.session.inductionDto = inductionDto
 
@@ -207,7 +207,7 @@ describe('workedBeforeCreateController', () => {
       'should update InductionDto and display Personal Skills page given form is submitted with worked before with negative value',
       async (negativeResponse: HasWorkedBeforeValue) => {
         // Given
-        const inductionDto = aLongQuestionSetInductionDto()
+        const inductionDto = aValidInductionDto()
         inductionDto.previousWorkExperiences = undefined
         req.session.inductionDto = inductionDto
 
@@ -236,7 +236,7 @@ describe('workedBeforeCreateController', () => {
       'should update inductionDto and redirect to Check Your Answers given previous page was Check Your Answers and worked before is changed to a negative response',
       async (negativeResponse: HasWorkedBeforeValue) => {
         // Given
-        const inductionDto = aLongQuestionSetInductionDto()
+        const inductionDto = aValidInductionDto()
         req.session.inductionDto = inductionDto
 
         const workedBeforeForm: WorkedBeforeForm = {
@@ -271,7 +271,7 @@ describe('workedBeforeCreateController', () => {
 
     it('should update inductionDto and redirect to Previous Work Experience given previous page was Check Your Answers and worked before is changed to Yes', async () => {
       // Given
-      const inductionDto = aLongQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       inductionDto.previousWorkExperiences.hasWorkedBefore = 'NO'
       inductionDto.previousWorkExperiences.experiences = []
       req.session.inductionDto = inductionDto

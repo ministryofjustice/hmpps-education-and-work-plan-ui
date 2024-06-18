@@ -12,11 +12,11 @@ export default class QualificationsListCreateController extends QualificationsLi
     let previousPage = pageFlowHistory && getPreviousPage(pageFlowHistory)
     if (!previousPage) {
       // No previous page from the Page Flow History
-      // The previous page in this case is based on whether it's a short or long question set induction
+      // The previous page in this case is based on whether the prisoner is hoping to work on release
       previousPage =
         inductionDto.workOnRelease.hopingToWork === HopingToGetWorkValue.YES
-          ? `/prisoners/${prisonNumber}/create-induction/work-interest-roles` // Previous page in Long question set
-          : `/prisoners/${prisonNumber}/create-induction/want-to-add-qualifications` // Previous page in Short question set
+          ? `/prisoners/${prisonNumber}/create-induction/work-interest-roles`
+          : `/prisoners/${prisonNumber}/create-induction/want-to-add-qualifications`
     }
     return previousPage
   }

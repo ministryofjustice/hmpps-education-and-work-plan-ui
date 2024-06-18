@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from 'express'
 import type { SessionData } from 'express-session'
 import type { FutureWorkInterestDto } from 'inductionDto'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
-import { aLongQuestionSetInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
+import aValidInductionDto from '../../../testsupport/inductionDtoTestDataBuilder'
 import WorkInterestTypeValue from '../../../enums/workInterestTypeValue'
 import WorkInterestRolesCreateController from './workInterestRolesCreateController'
 
@@ -37,7 +37,7 @@ describe('workInterestRolesCreateController', () => {
   describe('getWorkInterestRolesView', () => {
     it('should get the Work Interest Roles view', async () => {
       // Given
-      const inductionDto = aLongQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       inductionDto.futureWorkInterests.interests = [
         { workType: WorkInterestTypeValue.RETAIL, workTypeOther: undefined, role: undefined },
         { workType: WorkInterestTypeValue.CONSTRUCTION, workTypeOther: undefined, role: undefined },
@@ -75,7 +75,7 @@ describe('workInterestRolesCreateController', () => {
 
     it('should get the Work Interest Types view given the previous page was Check Your Answers', async () => {
       // Given
-      const inductionDto = aLongQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       inductionDto.futureWorkInterests.interests = [
         { workType: WorkInterestTypeValue.RETAIL, workTypeOther: undefined, role: undefined },
         { workType: WorkInterestTypeValue.CONSTRUCTION, workTypeOther: undefined, role: undefined },
@@ -129,7 +129,7 @@ describe('workInterestRolesCreateController', () => {
   describe('submitWorkInterestRolesForm', () => {
     it('should update InductionDto and redirect to Affect Ability To Work', async () => {
       // Given
-      const inductionDto = aLongQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       inductionDto.futureWorkInterests.interests = [
         { workType: WorkInterestTypeValue.RETAIL, workTypeOther: undefined, role: undefined },
         { workType: WorkInterestTypeValue.CONSTRUCTION, workTypeOther: undefined, role: undefined },
@@ -181,7 +181,7 @@ describe('workInterestRolesCreateController', () => {
 
     it('should update inductionDto and redirect to Check Your Answers given previous page was Check Your Answers', async () => {
       // Given
-      const inductionDto = aLongQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       inductionDto.futureWorkInterests.interests = [
         { workType: WorkInterestTypeValue.RETAIL, workTypeOther: undefined, role: undefined },
         { workType: WorkInterestTypeValue.CONSTRUCTION, workTypeOther: undefined, role: undefined },

@@ -3,7 +3,7 @@ import type { SessionData } from 'express-session'
 import type { InductionDto } from 'inductionDto'
 import HighestLevelOfEducationCreateController from './highestLevelOfEducationCreateController'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
-import { aLongQuestionSetInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
+import aValidInductionDto from '../../../testsupport/inductionDtoTestDataBuilder'
 import EducationLevelValue from '../../../enums/educationLevelValue'
 
 describe('highestLevelOfEducationCreateController', () => {
@@ -38,7 +38,7 @@ describe('highestLevelOfEducationCreateController', () => {
   describe('getHighestLevelOfEducationView', () => {
     it('should get the Highest Level of Education view given the induction on the session has no qualification related data set', async () => {
       // Given
-      const inductionDto = aLongQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       inductionDto.previousQualifications = undefined
       req.session.inductionDto = inductionDto
       req.session.highestLevelOfEducationForm = undefined
@@ -73,7 +73,7 @@ describe('highestLevelOfEducationCreateController', () => {
 
     it('should get the Highest Level of Education view a Highest Level of Education form is on the session', async () => {
       // Given
-      const inductionDto = aLongQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       inductionDto.previousQualifications = undefined
       req.session.inductionDto = inductionDto
 
@@ -108,7 +108,7 @@ describe('highestLevelOfEducationCreateController', () => {
 
     it('should get the Highest Level of Education view given the previous page was Check Your Answers', async () => {
       // Given
-      const inductionDto = aLongQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       inductionDto.personalSkillsAndInterests.skills = undefined
       req.session.inductionDto = inductionDto
 
@@ -157,7 +157,7 @@ describe('highestLevelOfEducationCreateController', () => {
   describe('submitHighestLevelOfEducationForm', () => {
     it('should redisplay page given form is submitted with validation errors', async () => {
       // Given
-      const inductionDto = aLongQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       inductionDto.previousQualifications = undefined
       req.session.inductionDto = inductionDto
 
@@ -192,7 +192,7 @@ describe('highestLevelOfEducationCreateController', () => {
 
     it('should redirect to Do You Want To Record Any Qualifications page', async () => {
       // Given
-      const inductionDto = aLongQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       inductionDto.previousQualifications = undefined
       req.session.inductionDto = inductionDto
 
@@ -225,7 +225,7 @@ describe('highestLevelOfEducationCreateController', () => {
 
     it('should update inductionDto and redirect to Check Your Answers given previous page was Check Your Answers', async () => {
       // Given
-      const inductionDto = aLongQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       inductionDto.previousQualifications = undefined
       req.session.inductionDto = inductionDto
 

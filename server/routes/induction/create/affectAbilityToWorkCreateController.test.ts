@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from 'express'
 import type { SessionData } from 'express-session'
 import type { AffectAbilityToWorkForm } from 'inductionForms'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
-import { aLongQuestionSetInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
+import aValidInductionDto from '../../../testsupport/inductionDtoTestDataBuilder'
 import AbilityToWorkValue from '../../../enums/abilityToWorkValue'
 import AffectAbilityToWorkCreateController from './affectAbilityToWorkCreateController'
 
@@ -38,7 +38,7 @@ describe('affectAbilityToWorkCreateController', () => {
   describe('getAbilityToWorkView', () => {
     it('should get the Ability To Work view given there is no AbilityToWorkForm on the session', async () => {
       // Given
-      const inductionDto = aLongQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       inductionDto.workOnRelease.affectAbilityToWork = undefined
       inductionDto.workOnRelease.affectAbilityToWorkOther = undefined
       req.session.inductionDto = inductionDto
@@ -71,7 +71,7 @@ describe('affectAbilityToWorkCreateController', () => {
 
     it('should get the Ability To Work view given there is an AbilityToWorkForm already on the session', async () => {
       // Given
-      const inductionDto = aLongQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       inductionDto.workOnRelease.affectAbilityToWork = undefined
       inductionDto.workOnRelease.affectAbilityToWorkOther = undefined
       req.session.inductionDto = inductionDto
@@ -108,7 +108,7 @@ describe('affectAbilityToWorkCreateController', () => {
 
     it('should get the Ability To Work view given the previous page was Check Your Answers', async () => {
       // Given
-      const inductionDto = aLongQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       req.session.inductionDto = inductionDto
       req.session.affectAbilityToWorkForm = undefined
 
@@ -159,7 +159,7 @@ describe('affectAbilityToWorkCreateController', () => {
   describe('submitAbilityToWorkForm', () => {
     it('should not update Induction given form is submitted with validation errors', async () => {
       // Given
-      const inductionDto = aLongQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       inductionDto.workOnRelease.affectAbilityToWork = undefined
       inductionDto.workOnRelease.affectAbilityToWorkOther = undefined
       req.session.inductionDto = inductionDto
@@ -196,7 +196,7 @@ describe('affectAbilityToWorkCreateController', () => {
 
     it('should update inductionDto and redirect to Highest Level of Education page', async () => {
       // Given
-      const inductionDto = aLongQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       inductionDto.workOnRelease.affectAbilityToWork = undefined
       inductionDto.workOnRelease.affectAbilityToWorkOther = undefined
       req.session.inductionDto = inductionDto

@@ -4,11 +4,11 @@ import type { SessionData } from 'express-session'
 import type { AchievedQualificationDto } from 'inductionDto'
 import InductionService from '../../../services/inductionService'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
-import { aLongQuestionSetInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
+import aValidInductionDto from '../../../testsupport/inductionDtoTestDataBuilder'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
 import HighestLevelOfEducationUpdateController from './highestLevelOfEducationUpdateController'
 import EducationLevelValue from '../../../enums/educationLevelValue'
-import { aLongQuestionSetUpdateInductionRequest } from '../../../testsupport/updateInductionRequestTestDataBuilder'
+import aValidUpdateInductionRequest from '../../../testsupport/updateInductionRequestTestDataBuilder'
 import QualificationLevelValue from '../../../enums/qualificationLevelValue'
 
 jest.mock('../../../data/mappers/createOrUpdateInductionDtoMapper')
@@ -47,7 +47,7 @@ describe('highestLevelOfEducationUpdateController', () => {
   describe('getHighestLevelOfEducationView', () => {
     it('should get the Highest Level of Education view given there is no HighestLevelOfEducationForm on the session', async () => {
       // Given
-      const inductionDto = aLongQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       req.session.inductionDto = inductionDto
       req.session.highestLevelOfEducationForm = undefined
 
@@ -74,9 +74,9 @@ describe('highestLevelOfEducationUpdateController', () => {
       expect(req.session.inductionDto).toEqual(inductionDto)
     })
 
-    it('should get the Highest Level of Education view given long question set journey', async () => {
+    it('should get the Highest Level of Education view given there is a HighestLevelOfEducationForm on the session', async () => {
       // Given
-      const inductionDto = aLongQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       req.session.inductionDto = inductionDto
 
       const expectedHighestLevelOfEducationForm = {
@@ -105,7 +105,7 @@ describe('highestLevelOfEducationUpdateController', () => {
 
     it('should get the Highest Level of Education view given there is a pageFlowHistory already on the session', async () => {
       // Given
-      const inductionDto = aLongQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       req.session.inductionDto = inductionDto
 
       req.session.pageFlowHistory = {
@@ -148,7 +148,7 @@ describe('highestLevelOfEducationUpdateController', () => {
   describe('submitHighestLevelOfEducationForm', () => {
     it('should not update Induction given form is submitted with validation errors', async () => {
       // Given
-      const inductionDto = aLongQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       req.session.inductionDto = inductionDto
 
       const invalidHighestLevelOfEducationForm = {
@@ -178,8 +178,8 @@ describe('highestLevelOfEducationUpdateController', () => {
 
     it('should update Induction given form is submitted with no changes to the Highest Level of Education', async () => {
       // Given
-      // Long question set induction has SECONDARY_SCHOOL_TOOK_EXAMS as highest level of education
-      const inductionDto = aLongQuestionSetInductionDto()
+      // Induction has SECONDARY_SCHOOL_TOOK_EXAMS as highest level of education
+      const inductionDto = aValidInductionDto()
       req.session.inductionDto = inductionDto
 
       const highestLevelOfEducationForm = {
@@ -188,7 +188,7 @@ describe('highestLevelOfEducationUpdateController', () => {
       req.body = highestLevelOfEducationForm
       req.session.highestLevelOfEducationForm = undefined
 
-      const updateInductionDto = aLongQuestionSetUpdateInductionRequest()
+      const updateInductionDto = aValidUpdateInductionRequest()
       mockedCreateOrUpdateInductionDtoMapper.mockReturnValueOnce(updateInductionDto)
 
       const expectedUpdatedHighestLevelOfEducation = 'SECONDARY_SCHOOL_TOOK_EXAMS'
@@ -214,8 +214,8 @@ describe('highestLevelOfEducationUpdateController', () => {
 
     it('should update Induction given form is submitted with change to Highest Level of Education', async () => {
       // Given
-      // Long question set induction has SECONDARY_SCHOOL_TOOK_EXAMS as highest level of education, with a single qualification of Pottery, Level 4, Grade C
-      const inductionDto = aLongQuestionSetInductionDto()
+      // Induction has SECONDARY_SCHOOL_TOOK_EXAMS as highest level of education, with a single qualification of Pottery, Level 4, Grade C
+      const inductionDto = aValidInductionDto()
       req.session.inductionDto = inductionDto
 
       const highestLevelOfEducationForm = {
@@ -224,7 +224,7 @@ describe('highestLevelOfEducationUpdateController', () => {
       req.body = highestLevelOfEducationForm
       req.session.highestLevelOfEducationForm = undefined
 
-      const updateInductionDto = aLongQuestionSetUpdateInductionRequest()
+      const updateInductionDto = aValidUpdateInductionRequest()
       mockedCreateOrUpdateInductionDtoMapper.mockReturnValueOnce(updateInductionDto)
 
       const expectedUpdatedHighestLevelOfEducation = 'POSTGRADUATE_DEGREE_AT_UNIVERSITY'
@@ -248,7 +248,7 @@ describe('highestLevelOfEducationUpdateController', () => {
 
     it('should not update Induction given error calling service', async () => {
       // Given
-      const inductionDto = aLongQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       req.session.inductionDto = inductionDto
 
       const highestLevelOfEducationForm = {
@@ -257,7 +257,7 @@ describe('highestLevelOfEducationUpdateController', () => {
       req.body = highestLevelOfEducationForm
       req.session.highestLevelOfEducationForm = undefined
 
-      const updateInductionDto = aLongQuestionSetUpdateInductionRequest()
+      const updateInductionDto = aValidUpdateInductionRequest()
       mockedCreateOrUpdateInductionDtoMapper.mockReturnValueOnce(updateInductionDto)
 
       const expectedUpdatedHighestLevelOfEducation = 'PRIMARY_SCHOOL'

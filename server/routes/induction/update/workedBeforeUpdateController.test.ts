@@ -3,10 +3,10 @@ import type { WorkedBeforeForm } from 'inductionForms'
 import type { SessionData } from 'express-session'
 import { NextFunction, Request, Response } from 'express'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
-import { aLongQuestionSetInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
+import aValidInductionDto from '../../../testsupport/inductionDtoTestDataBuilder'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
 import InductionService from '../../../services/inductionService'
-import { aShortQuestionSetUpdateInductionRequest } from '../../../testsupport/updateInductionRequestTestDataBuilder'
+import aValidUpdateInductionRequest from '../../../testsupport/updateInductionRequestTestDataBuilder'
 import WorkedBeforeUpdateController from './workedBeforeUpdateController'
 import HasWorkedBeforeValue from '../../../enums/hasWorkedBeforeValue'
 
@@ -50,7 +50,7 @@ describe('workedBeforeUpdateController', () => {
   describe('getWorkedBeforeView', () => {
     it('should get the WorkedBefore view given there is no WorkedBeforeForm on the session', async () => {
       // Given
-      const inductionDto = aLongQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       req.session.inductionDto = inductionDto
       req.session.workedBeforeForm = undefined
 
@@ -80,7 +80,7 @@ describe('workedBeforeUpdateController', () => {
 
     it('should get the WorkedBefore view given there is an WorkedBeforeForm already on the session', async () => {
       // Given
-      const inductionDto = aLongQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       req.session.inductionDto = inductionDto
 
       const expectedWorkedBeforeForm = {
@@ -112,7 +112,7 @@ describe('workedBeforeUpdateController', () => {
   describe('submitWorkedBeforeForm', () => {
     it('should not update Induction given form is submitted with validation errors', async () => {
       // Given
-      const inductionDto = aLongQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       req.session.inductionDto = inductionDto
 
       const invalidWorkedBeforeForm: WorkedBeforeForm = {
@@ -143,7 +143,7 @@ describe('workedBeforeUpdateController', () => {
 
     it('should update Induction and call API and redirect to work and interests page', async () => {
       // Given
-      const inductionDto = aLongQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       req.session.inductionDto = inductionDto
 
       const workedBeforeForm = {
@@ -151,7 +151,7 @@ describe('workedBeforeUpdateController', () => {
       }
       req.body = workedBeforeForm
       req.session.workedBeforeForm = undefined
-      const updateInductionDto = aShortQuestionSetUpdateInductionRequest()
+      const updateInductionDto = aValidUpdateInductionRequest()
 
       mockedCreateOrUpdateInductionDtoMapper.mockReturnValueOnce(updateInductionDto)
 
@@ -176,7 +176,7 @@ describe('workedBeforeUpdateController', () => {
 
     it('should not update Induction given error calling service', async () => {
       // Given
-      const inductionDto = aLongQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       req.session.inductionDto = inductionDto
 
       const workedBeforeForm = {
@@ -184,7 +184,7 @@ describe('workedBeforeUpdateController', () => {
       }
       req.body = workedBeforeForm
       req.session.workedBeforeForm = undefined
-      const updateInductionDto = aShortQuestionSetUpdateInductionRequest()
+      const updateInductionDto = aValidUpdateInductionRequest()
 
       mockedCreateOrUpdateInductionDtoMapper.mockReturnValueOnce(updateInductionDto)
 

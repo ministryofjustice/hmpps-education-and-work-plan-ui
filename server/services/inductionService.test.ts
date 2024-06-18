@@ -1,14 +1,13 @@
 import EducationAndWorkPlanClient from '../data/educationAndWorkPlanClient'
 import InductionService from './inductionService'
-import { aLongQuestionSetInduction } from '../testsupport/inductionResponseTestDataBuilder'
-import { aLongQuestionSetInductionDto } from '../testsupport/inductionDtoTestDataBuilder'
-import { aLongQuestionSetUpdateInductionRequest } from '../testsupport/updateInductionRequestTestDataBuilder'
+import aValidInductionResponse from '../testsupport/inductionResponseTestDataBuilder'
+import aValidInductionDto from '../testsupport/inductionDtoTestDataBuilder'
+import aValidUpdateInductionRequest from '../testsupport/updateInductionRequestTestDataBuilder'
 import toInductionDto from '../data/mappers/inductionDtoMapper'
 import toCreateInductionRequest from '../data/mappers/createInductionMapper'
 import toUpdateInductionRequest from '../data/mappers/updateInductionMapper'
-import { aLongQuestionSetUpdateInductionDto } from '../testsupport/updateInductionDtoTestDataBuilder'
-import { aLongQuestionSetCreateInductionDto } from '../testsupport/createInductionDtoTestDataBuilder'
-import { aLongQuestionSetCreateInductionRequest } from '../testsupport/createInductionRequestTestDataBuilder'
+import aValidCreateOrUpdateInductionDto from '../testsupport/createInductionDtoTestDataBuilder'
+import aValidCreateInductionRequest from '../testsupport/createInductionRequestTestDataBuilder'
 
 jest.mock('../data/educationAndWorkPlanClient')
 jest.mock('../data/mappers/inductionDtoMapper')
@@ -33,7 +32,7 @@ describe('inductionService', () => {
       const prisonNumber = 'A1234BC'
       const userToken = 'a-user-token'
 
-      educationAndWorkPlanClient.getInduction.mockResolvedValue(aLongQuestionSetInduction())
+      educationAndWorkPlanClient.getInduction.mockResolvedValue(aValidInductionResponse())
 
       const expected = true
 
@@ -102,9 +101,9 @@ describe('inductionService', () => {
       const prisonNumber = 'A1234BC'
       const userToken = 'a-user-token'
 
-      const inductionResponse = aLongQuestionSetInduction()
+      const inductionResponse = aValidInductionResponse()
       educationAndWorkPlanClient.getInduction.mockResolvedValue(inductionResponse)
-      const expectedInductionDto = aLongQuestionSetInductionDto()
+      const expectedInductionDto = aValidInductionDto()
       mockedInductionDtoMapper.mockReturnValue(expectedInductionDto)
 
       // When
@@ -175,8 +174,8 @@ describe('inductionService', () => {
       const prisonNumber = 'A1234BC'
       const userToken = 'a-user-token'
 
-      const updateInductionDto = aLongQuestionSetUpdateInductionDto()
-      const updateInductionRequest = aLongQuestionSetUpdateInductionRequest()
+      const updateInductionDto = aValidCreateOrUpdateInductionDto()
+      const updateInductionRequest = aValidUpdateInductionRequest()
       educationAndWorkPlanClient.updateInduction.mockResolvedValue(updateInductionRequest)
       mockedUpdateInductionMapper.mockReturnValue(updateInductionRequest)
 
@@ -196,8 +195,8 @@ describe('inductionService', () => {
       // Given
       const prisonNumber = 'A1234BC'
       const userToken = 'a-user-token'
-      const updateInductionDto = aLongQuestionSetUpdateInductionDto()
-      const updateInductionRequest = aLongQuestionSetUpdateInductionRequest()
+      const updateInductionDto = aValidCreateOrUpdateInductionDto()
+      const updateInductionRequest = aValidUpdateInductionRequest()
       mockedUpdateInductionMapper.mockReturnValue(updateInductionRequest)
 
       const eductionAndWorkPlanApiError = {
@@ -221,7 +220,7 @@ describe('inductionService', () => {
       expect(actual).toEqual(eductionAndWorkPlanApiError)
       expect(educationAndWorkPlanClient.updateInduction).toHaveBeenCalledWith(
         prisonNumber,
-        updateInductionDto,
+        updateInductionRequest,
         userToken,
       )
       expect(mockedUpdateInductionMapper).toHaveBeenCalledWith(updateInductionDto)
@@ -234,8 +233,8 @@ describe('inductionService', () => {
       const prisonNumber = 'A1234BC'
       const userToken = 'a-user-token'
 
-      const createInductionDto = aLongQuestionSetCreateInductionDto()
-      const createInductionRequest = aLongQuestionSetCreateInductionRequest()
+      const createInductionDto = aValidCreateOrUpdateInductionDto()
+      const createInductionRequest = aValidCreateInductionRequest()
       mockedCreateInductionMapper.mockReturnValue(createInductionRequest)
 
       // When
@@ -254,8 +253,8 @@ describe('inductionService', () => {
       // Given
       const prisonNumber = 'A1234BC'
       const userToken = 'a-user-token'
-      const createInductionDto = aLongQuestionSetCreateInductionDto()
-      const createInductionRequest = aLongQuestionSetCreateInductionRequest()
+      const createInductionDto = aValidCreateOrUpdateInductionDto()
+      const createInductionRequest = aValidCreateInductionRequest()
       mockedCreateInductionMapper.mockReturnValue(createInductionRequest)
 
       const eductionAndWorkPlanApiError = {

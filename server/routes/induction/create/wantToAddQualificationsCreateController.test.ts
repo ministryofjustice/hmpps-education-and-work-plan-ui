@@ -3,10 +3,9 @@ import type { WantToAddQualificationsForm } from 'inductionForms'
 import type { AchievedQualificationDto, PreviousQualificationsDto } from 'inductionDto'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
 import { validFunctionalSkills } from '../../../testsupport/functionalSkillsTestDataBuilder'
-import HopingToGetWorkValue from '../../../enums/hopingToGetWorkValue'
 import WantToAddQualificationsCreateController from './wantToAddQualificationsCreateController'
 import YesNoValue from '../../../enums/yesNoValue'
-import { aShortQuestionSetInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
+import aValidInductionDto from '../../../testsupport/inductionDtoTestDataBuilder'
 import EducationLevelValue from '../../../enums/educationLevelValue'
 import QualificationLevelValue from '../../../enums/qualificationLevelValue'
 import validInPrisonCourseRecords from '../../../testsupport/inPrisonCourseRecordsTestDataBuilder'
@@ -21,7 +20,7 @@ describe('wantToAddQualificationsCreateController', () => {
 
   // Returns a DTO for this step of the create journey
   const partialInductionDto = () => {
-    const inductionDto = aShortQuestionSetInductionDto({ hopingToGetWork: HopingToGetWorkValue.NO })
+    const inductionDto = aValidInductionDto({ hasQualifications: false })
     inductionDto.previousQualifications = undefined
     return inductionDto
   }
