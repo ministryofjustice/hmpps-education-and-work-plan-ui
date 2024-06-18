@@ -21,7 +21,7 @@ context('Update previous work experience details in the Induction', () => {
     cy.task('stubLearnerProfile')
     cy.task('stubLearnerEducation')
     cy.task('stubUpdateInduction')
-    cy.task('stubGetInductionLongQuestionSet')
+    cy.task('stubGetInduction')
     cy.signIn()
   })
 
@@ -29,7 +29,7 @@ context('Update previous work experience details in the Induction', () => {
     // Given
     const prisonNumber = 'G6115VJ'
 
-    // stubGetInductionLongQuestionSet has previous work experiences of Office and Other
+    // Induction has previous work experiences of Office and Other
     cy.visit(`/prisoners/${prisonNumber}/induction/previous-work-experience/office`)
     const previousWorkExperienceDetailPage = Page.verifyOnPage(PreviousWorkExperienceDetailPage)
       .hasBackLinkTo(`/plan/${prisonNumber}/view/work-and-interests`)
@@ -61,7 +61,7 @@ context('Update previous work experience details in the Induction', () => {
     // Given
     const prisonNumber = 'G6115VJ'
 
-    // stubGetInductionLongQuestionSet has previous work experiences of Office and Other
+    // Induction has previous work experiences of Office and Other
     cy.visit(`/prisoners/${prisonNumber}/induction/previous-work-experience/office`)
     let previousWorkExperienceDetailPage = Page.verifyOnPage(PreviousWorkExperienceDetailPage)
 
@@ -80,7 +80,7 @@ context('Update previous work experience details in the Induction', () => {
   it('should display 404 page given Previous Work Experience Type specified on path that does not exist in the Induction', () => {
     // Given
     const prisonNumber = 'G6115VJ'
-    // stubGetInductionLongQuestionSet has previous work experiences of Office and Other
+    // Induction has previous work experiences of Office and Other
 
     // When
     cy.visit(`/prisoners/${prisonNumber}/induction/previous-work-experience/construction`, {
@@ -94,7 +94,7 @@ context('Update previous work experience details in the Induction', () => {
   it('should display 404 page given invalid Previous Work Experience Type specified on path', () => {
     // Given
     const prisonNumber = 'G6115VJ'
-    // stubGetInductionLongQuestionSet has previous work experiences of Office and Other
+    // Induction has previous work experiences of Office and Other
 
     // When
     cy.visit(`/prisoners/${prisonNumber}/induction/previous-work-experience/some-invalid-type`, {

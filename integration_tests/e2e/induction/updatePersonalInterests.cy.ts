@@ -21,7 +21,7 @@ context('Update Personal Interests in the Induction', () => {
     cy.task('stubLearnerProfile')
     cy.task('stubLearnerEducation')
     cy.task('stubUpdateInduction')
-    cy.task('stubGetInductionLongQuestionSet')
+    cy.task('stubGetInduction')
     cy.signIn()
   })
 
@@ -33,7 +33,7 @@ context('Update Personal Interests in the Induction', () => {
       .hasBackLinkTo(`/plan/${prisonNumber}/view/work-and-interests`)
       .backLinkHasAriaLabel(`Back to Daniel Craig's learning and work progress`)
 
-    // stubGetInductionLongQuestionSet has personal interests of Creative, Digital, Solo Activity, and Other (Car boot sales)
+    // Induction has personal interests of Creative, Digital, Solo Activity, and Other (Car boot sales)
 
     // When
     personalInterestsPage //
@@ -65,7 +65,7 @@ context('Update Personal Interests in the Induction', () => {
     cy.visit(`/prisoners/${prisonNumber}/induction/personal-interests`)
     const personalInterestsPage = Page.verifyOnPage(PersonalInterestsPage)
 
-    // stubGetInductionLongQuestionSet has personal interests of Creative, Digital, Solo Activity, and Other (Car boot sales)
+    // Induction has personal interests of Creative, Digital, Solo Activity, and Other (Car boot sales)
 
     // When
     personalInterestsPage //
@@ -103,10 +103,10 @@ context('Update Personal Interests in the Induction', () => {
     cy.wiremockVerifyNoInteractions(putRequestedFor(urlEqualTo(`/inductions/${prisonNumber}`)))
   })
 
-  it('should update personal interests given short question set induction that was created with no personal interests', () => {
+  it('should update personal interests given induction created with the original short question set that did not ask about personal interests', () => {
     // Given
     const prisonNumber = 'G6115VJ'
-    cy.task('stubGetInductionShortQuestionSetCreatedWithOriginalQuestionSet') // The original question set did not ask about personal interests for the Short question set
+    cy.task('stubGetOriginalQuestionSetInduction', { questionSet: 'SHORT' }) // The original short question set Induction did not ask about personal interests
     cy.visit(`/plan/${prisonNumber}/view/work-and-interests`)
     Page.verifyOnPage(WorkAndInterestsPage) //
       .personalInterestsChangeLinkHasText('Add')

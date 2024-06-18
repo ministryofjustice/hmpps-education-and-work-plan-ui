@@ -20,7 +20,7 @@ context('Update educational qualifications within an Induction', () => {
     cy.task('stubLearnerProfile')
     cy.task('stubLearnerEducation')
     cy.task('stubUpdateInduction')
-    cy.task('stubGetInductionLongQuestionSet')
+    cy.task('stubGetInduction')
     cy.signIn()
   })
 
@@ -36,8 +36,7 @@ context('Update educational qualifications within an Induction', () => {
     const qualificationsListPage = Page.verifyOnPage(QualificationsListPage)
 
     // Then
-    /* Long question set induction has highest level of education of UNDERGRADUATE_DEGREE_AT_UNIVERSITY
-       with the following qualifications:
+    /* Induction has highest level of education of UNDERGRADUATE_DEGREE_AT_UNIVERSITY with the following qualifications:
          French, grade C, LEVEL_3
          Maths, grade A, level LEVEL_3
          Maths, grade 1st, level LEVEL_6
@@ -57,8 +56,7 @@ context('Update educational qualifications within an Induction', () => {
       .hasBackLinkTo(`/plan/G6115VJ/view/education-and-training`)
       .backLinkHasAriaLabel(`Back to Daniel Craig's learning and work progress`)
 
-    /* Long question set induction has highest level of education of UNDERGRADUATE_DEGREE_AT_UNIVERSITY
-       with the following qualifications:
+    /* Induction has highest level of education of UNDERGRADUATE_DEGREE_AT_UNIVERSITY with the following qualifications:
          French, grade C, LEVEL_3
          Maths, grade A, level LEVEL_3
          Maths, grade 1st, level LEVEL_6
@@ -102,8 +100,7 @@ context('Update educational qualifications within an Induction', () => {
     cy.visit(`/prisoners/${prisonNumber}/induction/qualifications`)
     const qualificationsListPage = Page.verifyOnPage(QualificationsListPage)
 
-    /* Long question set induction has highest level of education of UNDERGRADUATE_DEGREE_AT_UNIVERSITY
-       with the following qualifications:
+    /* Induction has highest level of education of UNDERGRADUATE_DEGREE_AT_UNIVERSITY with the following qualifications:
          French, grade C, LEVEL_3
          Maths, grade A, level LEVEL_3
          Maths, grade 1st, level LEVEL_6
@@ -145,8 +142,7 @@ context('Update educational qualifications within an Induction', () => {
     cy.visit(`/prisoners/${prisonNumber}/induction/qualifications`)
     const qualificationsListPage = Page.verifyOnPage(QualificationsListPage)
 
-    /* Long question set induction has highest level of education of UNDERGRADUATE_DEGREE_AT_UNIVERSITY
-       with the following qualifications:
+    /* Induction has highest level of education of UNDERGRADUATE_DEGREE_AT_UNIVERSITY with the following qualifications:
          French, grade C, LEVEL_3
          Maths, grade A, level LEVEL_3
          Maths, grade 1st, level LEVEL_6
