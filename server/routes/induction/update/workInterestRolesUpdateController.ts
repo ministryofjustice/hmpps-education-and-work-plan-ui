@@ -5,7 +5,7 @@ import WorkInterestRolesController from '../common/workInterestRolesController'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
 import logger from '../../../../logger'
 import { InductionService } from '../../../services'
-import { buildNewPageFlowHistory, getPreviousPage } from '../../pageFlowHistory'
+import { getPreviousPage } from '../../pageFlowHistory'
 import getDynamicBackLinkAriaText from '../dynamicAriaTextResolver'
 
 /**
@@ -46,12 +46,6 @@ export default class WorkInterestRolesUpdateController extends WorkInterestRoles
     // If the previous page was Check Your Answers, decide whether to redirect back check answers on submission
     if (this.previousPageWasCheckYourAnswers(req)) {
       return res.redirect(`/prisoners/${prisonNumber}/induction/check-your-answers`)
-    }
-
-    if (req.session.updateInductionQuestionSet) {
-      const nextPage = `/prisoners/${prisonNumber}/induction/affect-ability-to-work`
-      req.session.pageFlowHistory = buildNewPageFlowHistory(req)
-      return res.redirect(nextPage)
     }
 
     try {

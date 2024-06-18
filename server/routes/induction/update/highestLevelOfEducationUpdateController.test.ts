@@ -1,13 +1,10 @@
 import createError from 'http-errors'
 import { Request, Response } from 'express'
 import type { SessionData } from 'express-session'
-import type { AchievedQualificationDto, PreviousQualificationsDto } from 'inductionDto'
+import type { AchievedQualificationDto } from 'inductionDto'
 import InductionService from '../../../services/inductionService'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
-import {
-  aLongQuestionSetInductionDto,
-  aShortQuestionSetInductionDto,
-} from '../../../testsupport/inductionDtoTestDataBuilder'
+import { aLongQuestionSetInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
 import HighestLevelOfEducationUpdateController from './highestLevelOfEducationUpdateController'
 import EducationLevelValue from '../../../enums/educationLevelValue'
@@ -111,9 +108,6 @@ describe('highestLevelOfEducationUpdateController', () => {
       const inductionDto = aLongQuestionSetInductionDto()
       req.session.inductionDto = inductionDto
 
-      req.session.updateInductionQuestionSet = {
-        hopingToWorkOnRelease: 'YES',
-      }
       req.session.pageFlowHistory = {
         pageUrls: [`/prisoners/${prisonNumber}/induction/qualifications`],
         currentPageIndex: 0,
@@ -281,35 +275,6 @@ describe('highestLevelOfEducationUpdateController', () => {
       // Then
       const updatedInductionDto = req.session.inductionDto
       expect(updatedInductionDto.previousQualifications.educationLevel).toEqual(EducationLevelValue.NOT_SURE)
-      expect(res.redirect).toHaveBeenCalledWith(expectedNextPage)
-      expect(req.session.highestLevelOfEducationForm).toBeUndefined()
-    })
-
-    it('should update InductionDto and redirect to Do You Want To Add Qualifications given the question set is being updated', async () => {
-      // Given
-      const inductionDto = aShortQuestionSetInductionDto()
-      inductionDto.previousQualifications = {
-        educationLevel: EducationLevelValue.NOT_SURE,
-        qualifications: [],
-      } as PreviousQualificationsDto
-      req.session.inductionDto = inductionDto
-
-      req.session.updateInductionQuestionSet = {
-        hopingToWorkOnRelease: 'YES',
-      }
-
-      const highestLevelOfEducationForm = {
-        educationLevel: EducationLevelValue.PRIMARY_SCHOOL,
-      }
-      req.body = highestLevelOfEducationForm
-      req.session.highestLevelOfEducationForm = undefined
-
-      const expectedNextPage = '/prisoners/A1234BC/induction/want-to-add-qualifications'
-
-      // When
-      await controller.submitHighestLevelOfEducationForm(req, res, next)
-
-      // Then
       expect(res.redirect).toHaveBeenCalledWith(expectedNextPage)
       expect(req.session.highestLevelOfEducationForm).toBeUndefined()
     })

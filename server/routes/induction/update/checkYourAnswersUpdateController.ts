@@ -34,7 +34,6 @@ export default class CheckYourAnswersUpdateController extends CheckYourAnswersCo
       await this.inductionService.updateInduction(prisonNumber, updateInductionDto, req.user.token)
 
       req.session.pageFlowHistory = undefined
-      req.session.updateInductionQuestionSet = undefined
       req.session.inductionDto = undefined
       return res.redirect(`/plan/${prisonNumber}/view/work-and-interests`)
     } catch (e) {

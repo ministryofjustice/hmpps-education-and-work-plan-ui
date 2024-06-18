@@ -1,7 +1,6 @@
 import createError from 'http-errors'
 import type { SessionData } from 'express-session'
 import type { FutureWorkInterestDto } from 'inductionDto'
-import type { PageFlow } from 'viewModels'
 import { NextFunction, Request, Response } from 'express'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
 import { aLongQuestionSetInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
@@ -118,56 +117,6 @@ describe('workInterestTypesUpdateController', () => {
       expect(req.session.workInterestTypesForm).toBeUndefined()
       expect(req.session.inductionDto).toEqual(inductionDto)
     })
-
-    it('should get the Work Interest Types view given there is an updateInductionQuestionSet on the session', async () => {
-      // Given
-      const inductionDto = aLongQuestionSetInductionDto()
-      req.session.inductionDto = inductionDto
-      req.session.updateInductionQuestionSet = {
-        hopingToWorkOnRelease: 'YES',
-      }
-      req.session.pageFlowHistory = {
-        pageUrls: [`/prisoners/${prisonNumber}/induction/previous-work-experience`],
-        currentPageIndex: 0,
-      }
-
-      const expectedWorkInterestTypesForm = {
-        workInterestTypes: [
-          WorkInterestTypeValue.RETAIL,
-          WorkInterestTypeValue.CONSTRUCTION,
-          WorkInterestTypeValue.OTHER,
-        ],
-        workInterestTypesOther: 'Film, TV and media',
-      }
-      req.session.workInterestTypesForm = expectedWorkInterestTypesForm
-
-      const expectedView = {
-        prisonerSummary,
-        form: expectedWorkInterestTypesForm,
-        backLinkUrl: '/prisoners/A1234BC/induction/previous-work-experience',
-        backLinkAriaText: 'Back to What type of work has Jimmy Lightfingers done before?',
-      }
-
-      const expectedPageFlowHistory = {
-        pageUrls: [
-          '/prisoners/A1234BC/induction/previous-work-experience',
-          '/prisoners/A1234BC/induction/work-interest-types',
-        ],
-        currentPageIndex: 1,
-      }
-
-      // When
-      await controller.getWorkInterestTypesView(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
-
-      // Then
-      expect(res.render).toHaveBeenCalledWith('pages/induction/workInterests/workInterestTypes', expectedView)
-      expect(req.session.inductionDto).toEqual(inductionDto)
-      expect(req.session.pageFlowHistory).toEqual(expectedPageFlowHistory)
-    })
   })
 
   describe('submitWorkInterestTypesForm', () => {
@@ -252,47 +201,6 @@ describe('workInterestTypesUpdateController', () => {
       expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/view/work-and-interests`)
       expect(req.session.workInterestTypesForm).toBeUndefined()
       expect(req.session.inductionDto).toBeUndefined()
-    })
-
-    it('should update InductionDto and redirect to Work Interests Details given long question set journey', async () => {
-      // Given
-      const inductionDto = aLongQuestionSetInductionDto()
-      req.session.inductionDto = inductionDto
-
-      const workInterestTypesForm = {
-        workInterestTypes: [WorkInterestTypeValue.DRIVING],
-        workInterestTypesOther: '',
-      }
-      req.body = workInterestTypesForm
-      req.session.workInterestTypesForm = undefined
-
-      req.session.updateInductionQuestionSet = { hopingToWorkOnRelease: 'YES' }
-      const expectedNextPage = '/prisoners/A1234BC/induction/work-interest-roles'
-
-      const expectedFutureWorkInterests: Array<FutureWorkInterestDto> = [
-        { workType: WorkInterestTypeValue.DRIVING, workTypeOther: undefined, role: undefined },
-      ]
-
-      const expectedPageFlowHistory: PageFlow = {
-        pageUrls: ['/prisoners/A1234BC/induction/work-interest-types'],
-        currentPageIndex: 0,
-      }
-
-      // When
-      await controller.submitWorkInterestTypesForm(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
-
-      // Then
-      const futureWorkInterestsOnInduction: Array<FutureWorkInterestDto> =
-        req.session.inductionDto.futureWorkInterests.interests
-      expect(futureWorkInterestsOnInduction).toEqual(expectedFutureWorkInterests)
-      expect(res.redirect).toHaveBeenCalledWith(expectedNextPage)
-      expect(req.session.workInterestTypesForm).toBeUndefined()
-      expect(inductionService.updateInduction).not.toHaveBeenCalled()
-      expect(req.session.pageFlowHistory).toEqual(expectedPageFlowHistory)
     })
 
     it('should not update Induction given error calling service', async () => {

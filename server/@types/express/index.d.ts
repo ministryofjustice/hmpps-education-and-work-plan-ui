@@ -1,4 +1,4 @@
-import type { PageFlow, PrisonerSummary, PrisonerSupportNeeds, UpdateInductionQuestionSet } from 'viewModels'
+import type { PageFlow, PrisonerSummary, PrisonerSupportNeeds } from 'viewModels'
 import type { UpdateGoalForm } from 'forms'
 import type { NewGoal } from 'compositeForms'
 import type {
@@ -39,7 +39,6 @@ declare module 'express-session' {
     pageFlowQueue: PageFlow
     // Induction related objects held on the session
     inductionDto: InductionDto
-    updateInductionQuestionSet: UpdateInductionQuestionSet
     hopingToWorkOnReleaseForm: HopingToWorkOnReleaseForm
     inPrisonWorkForm: InPrisonWorkForm
     inPrisonTrainingForm: InPrisonTrainingForm
