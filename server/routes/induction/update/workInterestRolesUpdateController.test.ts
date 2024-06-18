@@ -3,10 +3,10 @@ import type { SessionData } from 'express-session'
 import type { FutureWorkInterestDto } from 'inductionDto'
 import { NextFunction, Request, Response } from 'express'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
-import { aLongQuestionSetInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
+import aValidInductionDto from '../../../testsupport/inductionDtoTestDataBuilder'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
 import InductionService from '../../../services/inductionService'
-import { aLongQuestionSetUpdateInductionRequest } from '../../../testsupport/updateInductionRequestTestDataBuilder'
+import aValidUpdateInductionRequest from '../../../testsupport/updateInductionRequestTestDataBuilder'
 import WorkInterestRolesUpdateController from './workInterestRolesUpdateController'
 import WorkInterestTypeValue from '../../../enums/workInterestTypeValue'
 
@@ -49,7 +49,7 @@ describe('workInterestRolesUpdateController', () => {
   describe('getWorkInterestRolesView', () => {
     it('should get the Work Interest Roles view', async () => {
       // Given
-      const inductionDto = aLongQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       req.session.inductionDto = inductionDto
 
       const expectedWorkInterestRolesForm = {
@@ -84,7 +84,7 @@ describe('workInterestRolesUpdateController', () => {
   describe('submitWorkInterestRolesForm', () => {
     it('should update Induction and call API and redirect to work and interests page', async () => {
       // Given
-      const inductionDto = aLongQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       req.session.inductionDto = inductionDto
 
       req.body = {
@@ -94,7 +94,7 @@ describe('workInterestRolesUpdateController', () => {
           OTHER: 'Being a stunt double for Tom Cruise, even though he does all his own stunts',
         },
       }
-      const updateInductionDto = aLongQuestionSetUpdateInductionRequest()
+      const updateInductionDto = aValidUpdateInductionRequest()
 
       mockedCreateOrUpdateInductionDtoMapper.mockReturnValueOnce(updateInductionDto)
       const expectedUpdatedWorkInterests: Array<FutureWorkInterestDto> = [
@@ -135,7 +135,7 @@ describe('workInterestRolesUpdateController', () => {
 
     it('should not update Induction given error calling service', async () => {
       // Given
-      const inductionDto = aLongQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       req.session.inductionDto = inductionDto
 
       req.body = {
@@ -145,7 +145,7 @@ describe('workInterestRolesUpdateController', () => {
           OTHER: 'Being a stunt double for Tom Cruise, even though he does all his own stunts',
         },
       }
-      const updateInductionDto = aLongQuestionSetUpdateInductionRequest()
+      const updateInductionDto = aValidUpdateInductionRequest()
 
       mockedCreateOrUpdateInductionDtoMapper.mockReturnValueOnce(updateInductionDto)
       const expectedUpdatedWorkInterests: Array<FutureWorkInterestDto> = [

@@ -3,7 +3,7 @@ import type { SessionData } from 'express-session'
 import type { InPrisonWorkForm } from 'inductionForms'
 import type { InPrisonWorkInterestDto } from 'inductionDto'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
-import { aShortQuestionSetInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
+import aValidInductionDto from '../../../testsupport/inductionDtoTestDataBuilder'
 import InPrisonWorkCreateController from './inPrisonWorkCreateController'
 import InPrisonWorkValue from '../../../enums/inPrisonWorkValue'
 
@@ -36,7 +36,7 @@ describe('inPrisonWorkCreateController', () => {
   describe('getInPrisonWorkView', () => {
     it('should get the In Prison Work view given no InPrisonWork on the session', async () => {
       // Given
-      const inductionDto = aShortQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       inductionDto.inPrisonInterests.inPrisonWorkInterests = undefined
       req.session.inductionDto = inductionDto
       req.session.inPrisonWorkForm = undefined
@@ -64,7 +64,7 @@ describe('inPrisonWorkCreateController', () => {
 
     it('should get the In Prison Work view given there is an InPrisonWork already on the session', async () => {
       // Given
-      const inductionDto = aShortQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       inductionDto.inPrisonInterests.inPrisonWorkInterests = undefined
       req.session.inductionDto = inductionDto
 
@@ -92,7 +92,7 @@ describe('inPrisonWorkCreateController', () => {
 
     it('should get the In Prison Work view given the previous page was Check Your Answers', async () => {
       // Given
-      const inductionDto = aShortQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       req.session.inductionDto = inductionDto
 
       req.session.pageFlowHistory = {
@@ -135,7 +135,7 @@ describe('inPrisonWorkCreateController', () => {
   describe('submitInPrisonWorkForm', () => {
     it('should not update Induction given form is submitted with validation errors', async () => {
       // Given
-      const inductionDto = aShortQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       inductionDto.inPrisonInterests.inPrisonWorkInterests = undefined
       req.session.inductionDto = inductionDto
 
@@ -168,7 +168,7 @@ describe('inPrisonWorkCreateController', () => {
 
     it('should update inductionDto and redirect to in-prison training interests page', async () => {
       // Given
-      const inductionDto = aShortQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       inductionDto.inPrisonInterests.inPrisonWorkInterests = undefined
       req.session.inductionDto = inductionDto
 
@@ -196,7 +196,7 @@ describe('inPrisonWorkCreateController', () => {
 
     it('should update inductionDto and redirect to Check Your Answers given previous page was Check Your Answers', async () => {
       // Given
-      const inductionDto = aShortQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       req.session.inductionDto = inductionDto
 
       const inPrisonWorkForm: InPrisonWorkForm = {

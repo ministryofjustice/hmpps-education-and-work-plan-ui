@@ -3,10 +3,10 @@ import type { SessionData } from 'express-session'
 import type { FutureWorkInterestDto } from 'inductionDto'
 import { NextFunction, Request, Response } from 'express'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
-import { aLongQuestionSetInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
+import aValidInductionDto from '../../../testsupport/inductionDtoTestDataBuilder'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
 import InductionService from '../../../services/inductionService'
-import { aLongQuestionSetUpdateInductionRequest } from '../../../testsupport/updateInductionRequestTestDataBuilder'
+import aValidUpdateInductionRequest from '../../../testsupport/updateInductionRequestTestDataBuilder'
 import WorkInterestTypesUpdateController from './workInterestTypesUpdateController'
 import WorkInterestTypeValue from '../../../enums/workInterestTypeValue'
 
@@ -50,7 +50,7 @@ describe('workInterestTypesUpdateController', () => {
   describe('getWorkInterestTypesView', () => {
     it('should get the Work Interest Types view given there is no WorkInterestTypesForm on the session', async () => {
       // Given
-      const inductionDto = aLongQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       req.session.inductionDto = inductionDto
       req.session.workInterestTypesForm = undefined
 
@@ -85,7 +85,7 @@ describe('workInterestTypesUpdateController', () => {
 
     it('should get the Work Interest Types view given there is an WorkInterestTypesForm already on the session', async () => {
       // Given
-      const inductionDto = aLongQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       req.session.inductionDto = inductionDto
 
       const expectedWorkInterestTypesForm = {
@@ -122,7 +122,7 @@ describe('workInterestTypesUpdateController', () => {
   describe('submitWorkInterestTypesForm', () => {
     it('should not update Induction given form is submitted with validation errors', async () => {
       // Given
-      const inductionDto = aLongQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       req.session.inductionDto = inductionDto
 
       const invalidWorkInterestTypesForm = {
@@ -157,7 +157,7 @@ describe('workInterestTypesUpdateController', () => {
 
     it('should update Induction and call API and redirect to work and interests page', async () => {
       // Given
-      const inductionDto = aLongQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       req.session.inductionDto = inductionDto
 
       const workInterestTypesForm = {
@@ -166,7 +166,7 @@ describe('workInterestTypesUpdateController', () => {
       }
       req.body = workInterestTypesForm
       req.session.workInterestTypesForm = undefined
-      const updateInductionDto = aLongQuestionSetUpdateInductionRequest()
+      const updateInductionDto = aValidUpdateInductionRequest()
 
       mockedCreateOrUpdateInductionDtoMapper.mockReturnValueOnce(updateInductionDto)
 
@@ -205,7 +205,7 @@ describe('workInterestTypesUpdateController', () => {
 
     it('should not update Induction given error calling service', async () => {
       // Given
-      const inductionDto = aLongQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       req.session.inductionDto = inductionDto
 
       const workInterestTypesForm = {
@@ -214,7 +214,7 @@ describe('workInterestTypesUpdateController', () => {
       }
       req.body = workInterestTypesForm
       req.session.workInterestTypesForm = undefined
-      const updateInductionDto = aLongQuestionSetUpdateInductionRequest()
+      const updateInductionDto = aValidUpdateInductionRequest()
 
       mockedCreateOrUpdateInductionDtoMapper.mockReturnValueOnce(updateInductionDto)
 

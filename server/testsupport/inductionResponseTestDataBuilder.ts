@@ -1,12 +1,13 @@
 import type { InductionResponse } from 'educationAndWorkPlanApiClient'
 import AbilityToWorkValue from '../enums/abilityToWorkValue'
 import HasWorkedBeforeValue from '../enums/hasWorkedBeforeValue'
+import HopingToGetWorkValue from '../enums/hopingToGetWorkValue'
 
-const aLongQuestionSetInduction = (
+const aValidInductionResponse = (
   options?: CoreBuilderOptions & {
+    hopingToGetWork?: HopingToGetWorkValue
     hasWorkedBefore?: HasWorkedBeforeValue
-    hasSkills?: boolean
-    hasInterests?: boolean
+    hasQualifications?: boolean
   },
 ): InductionResponse => {
   return {
@@ -14,7 +15,7 @@ const aLongQuestionSetInduction = (
     workOnRelease: {
       reference: 'bdebe39f-6f85-459b-81be-a26341c3fe3c',
       ...auditFields(options),
-      hopingToWork: 'YES',
+      hopingToWork: options?.hopingToGetWork || HopingToGetWorkValue.YES,
       affectAbilityToWork: [
         AbilityToWorkValue.CARING_RESPONSIBILITIES,
         AbilityToWorkValue.NEEDS_WORK_ADJUSTMENTS_DUE_TO_HEALTH,
@@ -81,115 +82,40 @@ const aLongQuestionSetInduction = (
     personalSkillsAndInterests: {
       reference: '517c470f-f9b5-4d49-9148-4458fe358439',
       ...auditFields(options),
-      skills:
-        !options || options.hasSkills === null || options.hasSkills === undefined || options.hasSkills === true
-          ? [
-              { skillType: 'TEAMWORK', skillTypeOther: null },
-              { skillType: 'WILLINGNESS_TO_LEARN', skillTypeOther: null },
-              { skillType: 'OTHER', skillTypeOther: 'Tenacity' },
-            ]
-          : [],
-      interests:
-        !options || options.hasInterests === null || options.hasInterests === undefined || options.hasInterests === true
-          ? [
-              { interestType: 'CREATIVE', interestTypeOther: null },
-              { interestType: 'DIGITAL', interestTypeOther: null },
-              { interestType: 'OTHER', interestTypeOther: 'Renewable energy' },
-            ]
-          : [],
+      skills: [
+        { skillType: 'TEAMWORK', skillTypeOther: null },
+        { skillType: 'WILLINGNESS_TO_LEARN', skillTypeOther: null },
+        { skillType: 'OTHER', skillTypeOther: 'Tenacity' },
+      ],
+      interests: [
+        { interestType: 'CREATIVE', interestTypeOther: null },
+        { interestType: 'DIGITAL', interestTypeOther: null },
+        { interestType: 'OTHER', interestTypeOther: 'Renewable energy' },
+      ],
     },
     previousQualifications: {
       reference: 'dea24acc-fde5-4ead-a9eb-e1757de2542c',
       ...auditFields(options),
       educationLevel: 'SECONDARY_SCHOOL_TOOK_EXAMS',
-      qualifications: [
-        {
-          subject: 'Pottery',
-          grade: 'C',
-          level: 'LEVEL_4',
-        },
-      ],
+      qualifications:
+        !options ||
+        options.hasQualifications === null ||
+        options.hasQualifications === undefined ||
+        options.hasQualifications === true
+          ? [
+              {
+                subject: 'Pottery',
+                grade: 'C',
+                level: 'LEVEL_4',
+              },
+            ]
+          : [],
     },
     previousTraining: {
       reference: 'a8e1fe50-1e3b-4784-a27f-ee1c54fc7616',
       ...auditFields(options),
       trainingTypes: ['FIRST_AID_CERTIFICATE', 'MANUAL_HANDLING', 'OTHER'],
       trainingTypeOther: 'Advanced origami',
-    },
-  }
-}
-
-const aShortQuestionSetInduction = (
-  options?: CoreBuilderOptions & {
-    hopingToGetWork?: 'NO' | 'NOT_SURE'
-    hasSkills?: boolean
-    hasInterests?: boolean
-  },
-): InductionResponse => {
-  return {
-    ...baseInductionResponseTemplate(options),
-    workOnRelease: {
-      reference: 'bdebe39f-6f85-459b-81be-a26341c3fe3c',
-      ...auditFields(options),
-      hopingToWork: options?.hopingToGetWork || 'NO',
-      affectAbilityToWork: [AbilityToWorkValue.UNABLE_TO_WORK_DUE_TO_HEALTH, AbilityToWorkValue.OTHER],
-      affectAbilityToWorkOther: 'Will be of retirement age at release',
-    },
-    inPrisonInterests: {
-      reference: 'ae6a6a94-df32-4a90-b39d-ff1a100a6da0',
-      ...auditFields(options),
-      inPrisonWorkInterests: [
-        { workType: 'CLEANING_AND_HYGIENE', workTypeOther: null },
-        { workType: 'OTHER', workTypeOther: 'Gardening and grounds keeping' },
-      ],
-      inPrisonTrainingInterests: [
-        { trainingType: 'FORKLIFT_DRIVING', trainingTypeOther: null },
-        { trainingType: 'CATERING', trainingTypeOther: null },
-        { trainingType: 'OTHER', trainingTypeOther: 'Advanced origami' },
-      ],
-    },
-    personalSkillsAndInterests: {
-      reference: '517c470f-f9b5-4d49-9148-4458fe358439',
-      ...auditFields(options),
-      skills:
-        !options || options.hasSkills === null || options.hasSkills === undefined || options.hasSkills === true
-          ? [
-              { skillType: 'TEAMWORK', skillTypeOther: null },
-              { skillType: 'WILLINGNESS_TO_LEARN', skillTypeOther: null },
-              { skillType: 'OTHER', skillTypeOther: 'Tenacity' },
-            ]
-          : [],
-      interests:
-        !options || options.hasInterests === null || options.hasInterests === undefined || options.hasInterests === true
-          ? [
-              { interestType: 'CREATIVE', interestTypeOther: null },
-              { interestType: 'DIGITAL', interestTypeOther: null },
-              { interestType: 'OTHER', interestTypeOther: 'Renewable energy' },
-            ]
-          : [],
-    },
-    previousQualifications: {
-      reference: 'dea24acc-fde5-4ead-a9eb-e1757de2542c',
-      ...auditFields(options),
-      educationLevel: null,
-      qualifications: [
-        {
-          subject: 'English',
-          grade: 'C',
-          level: 'LEVEL_6',
-        },
-        {
-          subject: 'Maths',
-          grade: 'A*',
-          level: 'LEVEL_6',
-        },
-      ],
-    },
-    previousTraining: {
-      reference: 'a8e1fe50-1e3b-4784-a27f-ee1c54fc7616',
-      ...auditFields(options),
-      trainingTypes: ['FULL_UK_DRIVING_LICENCE', 'OTHER'],
-      trainingTypeOther: 'Beginners cookery for IT professionals',
     },
   }
 }
@@ -245,4 +171,4 @@ const auditFields = (
   }
 }
 
-export { aLongQuestionSetInduction, aShortQuestionSetInduction }
+export default aValidInductionResponse

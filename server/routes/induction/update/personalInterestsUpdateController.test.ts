@@ -2,10 +2,10 @@ import createError from 'http-errors'
 import type { SessionData } from 'express-session'
 import { NextFunction, Request, Response } from 'express'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
-import { aLongQuestionSetInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
+import aValidInductionDto from '../../../testsupport/inductionDtoTestDataBuilder'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
 import InductionService from '../../../services/inductionService'
-import { aLongQuestionSetUpdateInductionRequest } from '../../../testsupport/updateInductionRequestTestDataBuilder'
+import aValidUpdateInductionRequest from '../../../testsupport/updateInductionRequestTestDataBuilder'
 import PersonalInterestsUpdateController from './personalInterestsUpdateController'
 
 jest.mock('../../../data/mappers/createOrUpdateInductionDtoMapper')
@@ -48,7 +48,7 @@ describe('personalInterestsUpdateController', () => {
   describe('getPersonalInterestsView', () => {
     it('should get the Personal interests view given there is no PersonalInterestsForm on the session', async () => {
       // Given
-      const inductionDto = aLongQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       req.session.inductionDto = inductionDto
       req.session.personalInterestsForm = undefined
 
@@ -79,7 +79,7 @@ describe('personalInterestsUpdateController', () => {
 
     it('should get the Personal interests view given there is an PersonalInterestsForm already on the session', async () => {
       // Given
-      const inductionDto = aLongQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       req.session.inductionDto = inductionDto
 
       const expectedPersonalInterestsForm = {
@@ -112,7 +112,7 @@ describe('personalInterestsUpdateController', () => {
   describe('submitPersonalInterestsForm', () => {
     it('should not update Induction given form is submitted with validation errors', async () => {
       // Given
-      const inductionDto = aLongQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       req.session.inductionDto = inductionDto
 
       const invalidPersonalInterestsForm = {
@@ -142,7 +142,7 @@ describe('personalInterestsUpdateController', () => {
 
     it('should update Induction and call API and redirect to work and interests page', async () => {
       // Given
-      const inductionDto = aLongQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       req.session.inductionDto = inductionDto
 
       const personalInterestsForm = {
@@ -151,7 +151,7 @@ describe('personalInterestsUpdateController', () => {
       }
       req.body = personalInterestsForm
       req.session.personalInterestsForm = undefined
-      const updateInductionDto = aLongQuestionSetUpdateInductionRequest()
+      const updateInductionDto = aValidUpdateInductionRequest()
 
       mockedCreateOrUpdateInductionDtoMapper.mockReturnValueOnce(updateInductionDto)
 
@@ -187,7 +187,7 @@ describe('personalInterestsUpdateController', () => {
 
     it('should not update Induction given error calling service', async () => {
       // Given
-      const inductionDto = aLongQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       req.session.inductionDto = inductionDto
 
       const personalInterestsForm = {
@@ -196,7 +196,7 @@ describe('personalInterestsUpdateController', () => {
       }
       req.body = personalInterestsForm
       req.session.personalInterestsForm = undefined
-      const updateInductionDto = aLongQuestionSetUpdateInductionRequest()
+      const updateInductionDto = aValidUpdateInductionRequest()
 
       mockedCreateOrUpdateInductionDtoMapper.mockReturnValueOnce(updateInductionDto)
 
