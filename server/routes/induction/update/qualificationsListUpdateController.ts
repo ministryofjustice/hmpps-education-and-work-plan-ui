@@ -68,11 +68,6 @@ export default class QualificationsListUpdateController extends QualificationsLi
     const updatedInduction = updatedInductionDtoWithDefaultedHighestLevelOfEducation(inductionDto)
     req.session.inductionDto = updatedInduction
 
-    // If check-your-answers is in the page history then we need to redirect back to there
-    if (this.checkYourAnswersIsInThePageHistory(req)) {
-      return res.redirect(`/prisoners/${prisonNumber}/induction/check-your-answers`)
-    }
-
     // By submitting the form without adding/removing any other educational qualifications, the user is indicating their
     // updates to Educational Qualifications are complete.
     // Update the Induction and return to Education and Training

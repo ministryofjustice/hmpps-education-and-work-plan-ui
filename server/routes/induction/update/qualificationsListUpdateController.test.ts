@@ -198,25 +198,4 @@ describe('qualificationsListUpdateController', () => {
     expect(req.session.pageFlowHistory).toEqual(expectedPageFlowHistory)
     expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/induction/qualification-level')
   })
-
-  it('should update InductionDto and redirect to Check Your Answers given previous page was Check Your Answers', async () => {
-    // Given
-    const inductionDto = aLongQuestionSetInductionDto()
-    req.session.inductionDto = inductionDto
-
-    req.body = {}
-
-    req.session.pageFlowHistory = {
-      pageUrls: ['/prisoners/A1234BC/induction/check-your-answers', '/prisoners/A1234BC/induction/qualifications'],
-      currentPageIndex: 1,
-    }
-    const expectedNextPage = '/prisoners/A1234BC/induction/check-your-answers'
-
-    // When
-    await controller.submitQualificationsListView(req, res, next)
-
-    // Then
-    expect(res.redirect).toHaveBeenCalledWith(expectedNextPage)
-    expect(req.session.inductionDto).toEqual(inductionDto)
-  })
 })

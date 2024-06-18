@@ -9,7 +9,6 @@ import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateIn
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
 import { aLongQuestionSetInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
 import { aLongQuestionSetUpdateInductionDto } from '../../../testsupport/updateInductionDtoTestDataBuilder'
-import TypeOfWorkExperienceValue from '../../../enums/typeOfWorkExperienceValue'
 import HasWorkedBeforeValue from '../../../enums/hasWorkedBeforeValue'
 
 jest.mock('../../../data/mappers/createOrUpdateInductionDtoMapper')
@@ -419,50 +418,6 @@ describe('previousWorkExperienceTypesUpdateController', () => {
       expect(req.session.previousWorkExperienceTypesForm).toBeUndefined()
       const updatedInductionDto: InductionDto = req.session.inductionDto
       expect(updatedInductionDto.previousWorkExperiences.experiences).toEqual(expectedPreviousWorkExperiences)
-    })
-
-    it('should build a page flow queue and redirect to the next page before returning to check your answers if coming from check your answers', async () => {
-      // Given
-      req.session.inductionDto = aLongQuestionSetInductionDto()
-      req.session.pageFlowHistory = {
-        pageUrls: [
-          `/prisoners/${prisonerSummary.prisonNumber}/induction/check-your-answers`,
-          `/prisoners/${prisonerSummary.prisonNumber}/induction/previous-work-experience`,
-        ],
-        currentPageIndex: 1,
-      }
-      req.body = {
-        typeOfWorkExperience: [TypeOfWorkExperienceValue.HOSPITALITY, TypeOfWorkExperienceValue.DRIVING],
-      }
-
-      // The actual implementations are fine for this test
-      const actualToCreateOrUpdateInductionDto = jest.requireActual(
-        '../../../data/mappers/createOrUpdateInductionDtoMapper',
-      ).default
-      mockedCreateOrUpdateInductionDtoMapper.mockImplementation(actualToCreateOrUpdateInductionDto)
-
-      expect(req.session.pageFlowQueue).toEqual(undefined)
-
-      // When
-      await controller.submitPreviousWorkExperienceTypesForm(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
-
-      // Then
-      expect(req.session.pageFlowQueue).toEqual({
-        pageUrls: [
-          `/prisoners/${prisonerSummary.prisonNumber}/induction/previous-work-experience`,
-          `/prisoners/${prisonerSummary.prisonNumber}/induction/previous-work-experience/driving`,
-          `/prisoners/${prisonerSummary.prisonNumber}/induction/previous-work-experience/hospitality`,
-          `/prisoners/${prisonerSummary.prisonNumber}/induction/check-your-answers`,
-        ],
-        currentPageIndex: 0,
-      })
-      expect(res.redirect).toHaveBeenCalledWith(
-        `/prisoners/${prisonerSummary.prisonNumber}/induction/previous-work-experience/driving`,
-      )
     })
   })
 })

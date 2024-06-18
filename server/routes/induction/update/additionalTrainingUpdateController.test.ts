@@ -184,45 +184,6 @@ describe('additionalTrainingUpdateController', () => {
       expect(req.session.pageFlowHistory).toBeUndefined()
     })
 
-    it('should update InductionDto and redirect to Check Your Answers given previous page was Check Your Answers', async () => {
-      // Given
-      const inductionDto = aShortQuestionSetInductionDto()
-      req.session.inductionDto = inductionDto
-
-      const additionalTrainingForm = {
-        additionalTraining: [AdditionalTrainingValue.HGV_LICENCE, AdditionalTrainingValue.OTHER],
-        additionalTrainingOther: 'Italian cookery for IT professionals',
-      }
-      req.body = additionalTrainingForm
-      req.session.additionalTrainingForm = undefined
-
-      const expectedUpdatedAdditionalTraining = ['HGV_LICENCE', 'OTHER']
-      const expectedUpdatedAdditionalTrainingOther = 'Italian cookery for IT professionals'
-
-      req.session.pageFlowHistory = {
-        pageUrls: [
-          '/prisoners/A1234BC/induction/check-your-answers',
-          '/prisoners/A1234BC/induction/additional-training',
-        ],
-        currentPageIndex: 1,
-      }
-      const expectedNextPage = '/prisoners/A1234BC/induction/check-your-answers'
-
-      // When
-      await controller.submitAdditionalTrainingForm(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
-
-      // Then
-      const updatedInductionDto = req.session.inductionDto
-      expect(updatedInductionDto.previousTraining.trainingTypes).toEqual(expectedUpdatedAdditionalTraining)
-      expect(updatedInductionDto.previousTraining.trainingTypeOther).toEqual(expectedUpdatedAdditionalTrainingOther)
-      expect(res.redirect).toHaveBeenCalledWith(expectedNextPage)
-      expect(req.session.additionalTrainingForm).toBeUndefined()
-    })
-
     it('should not update Induction given error calling service', async () => {
       // Given
       const inductionDto = aShortQuestionSetInductionDto()

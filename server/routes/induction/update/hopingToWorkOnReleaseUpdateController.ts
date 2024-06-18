@@ -48,12 +48,6 @@ export default class HopingToWorkOnReleaseUpdateController extends HopingToWorkO
     const updatedInduction = updatedInductionDtoWithHopingToWorkOnRelease(inductionDto, hopingToWorkOnReleaseForm)
     req.session.inductionDto = updatedInduction
 
-    // If the previous page was Check Your Answers, forward to Check Your Answers again
-    if (this.previousPageWasCheckYourAnswers(req)) {
-      req.session.inPrisonWorkForm = undefined
-      return res.redirect(`/prisoners/${prisonNumber}/induction/check-your-answers`)
-    }
-
     try {
       const updateInductionDto = toCreateOrUpdateInductionDto(prisonId, updatedInduction)
       await this.inductionService.updateInduction(prisonNumber, updateInductionDto, req.user.token)

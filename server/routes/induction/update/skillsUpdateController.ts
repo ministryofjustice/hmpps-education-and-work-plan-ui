@@ -48,12 +48,6 @@ export default class SkillsUpdateController extends SkillsController {
 
     const updatedInduction = this.updatedInductionDtoWithSkills(inductionDto, skillsForm)
 
-    // If the previous page was Check Your Answers, decide whether to redirect back check answers on submission
-    if (this.previousPageWasCheckYourAnswers(req)) {
-      req.session.inductionDto = updatedInduction
-      return res.redirect(`/prisoners/${prisonNumber}/induction/check-your-answers`)
-    }
-
     try {
       const updateInductionDto = toCreateOrUpdateInductionDto(prisonId, updatedInduction)
       await this.inductionService.updateInduction(prisonNumber, updateInductionDto, req.user.token)

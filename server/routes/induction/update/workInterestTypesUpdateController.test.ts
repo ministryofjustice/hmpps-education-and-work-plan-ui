@@ -256,43 +256,5 @@ describe('workInterestTypesUpdateController', () => {
       expect(req.session.workInterestTypesForm).toEqual(workInterestTypesForm)
       expect(req.session.inductionDto).toEqual(inductionDto)
     })
-
-    it('should update induction DTO and redirect back to check your answers page when coming from check your answers', async () => {
-      // Given
-      req.session.inductionDto = aLongQuestionSetInductionDto()
-      req.session.inductionDto.futureWorkInterests.interests = []
-      req.session.pageFlowHistory = {
-        pageUrls: [
-          `/prisoners/${prisonerSummary.prisonNumber}/induction/check-your-answers`,
-          `/prisoners/${prisonerSummary.prisonNumber}/induction/work-interest-types`,
-        ],
-        currentPageIndex: 1,
-      }
-      req.body = {
-        workInterestTypes: [WorkInterestTypeValue.CONSTRUCTION, WorkInterestTypeValue.DRIVING],
-      }
-
-      // The actual implementations are fine for this test
-      const actualToCreateOrUpdateInductionDto = jest.requireActual(
-        '../../../data/mappers/createOrUpdateInductionDtoMapper',
-      ).default
-      mockedCreateOrUpdateInductionDtoMapper.mockImplementation(actualToCreateOrUpdateInductionDto)
-
-      // When
-      await controller.submitWorkInterestTypesForm(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
-
-      // Then
-      expect(req.session.inductionDto.futureWorkInterests.interests).toEqual([
-        { workType: WorkInterestTypeValue.CONSTRUCTION },
-        { workType: WorkInterestTypeValue.DRIVING },
-      ])
-      expect(res.redirect).toHaveBeenCalledWith(
-        `/prisoners/${prisonerSummary.prisonNumber}/induction/check-your-answers`,
-      )
-    })
   })
 })

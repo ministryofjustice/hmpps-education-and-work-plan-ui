@@ -55,12 +55,6 @@ export default class AdditionalTrainingUpdateController extends AdditionalTraini
     const updatedInduction = this.updatedInductionDtoWithAdditionalTraining(inductionDto, additionalTrainingForm)
     req.session.inductionDto = updatedInduction
 
-    // If the previous page was Check Your Answers, forward to Check Your Answers again
-    if (this.previousPageWasCheckYourAnswers(req)) {
-      req.session.additionalTrainingForm = undefined
-      return res.redirect(`/prisoners/${prisonNumber}/induction/check-your-answers`)
-    }
-
     try {
       const updateInductionDto = toCreateOrUpdateInductionDto(prisonId, updatedInduction)
       await this.inductionService.updateInduction(prisonNumber, updateInductionDto, req.user.token)
