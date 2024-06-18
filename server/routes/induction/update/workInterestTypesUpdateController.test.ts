@@ -1,6 +1,6 @@
 import createError from 'http-errors'
 import type { SessionData } from 'express-session'
-import type { FutureWorkInterestDto } from 'inductionDto'
+import type { FutureWorkInterestDto, FutureWorkInterestsDto } from 'inductionDto'
 import { NextFunction, Request, Response } from 'express'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
 import aValidInductionDto from '../../../testsupport/inductionDtoTestDataBuilder'
@@ -9,6 +9,7 @@ import InductionService from '../../../services/inductionService'
 import aValidUpdateInductionRequest from '../../../testsupport/updateInductionRequestTestDataBuilder'
 import WorkInterestTypesUpdateController from './workInterestTypesUpdateController'
 import WorkInterestTypeValue from '../../../enums/workInterestTypeValue'
+import HopingToGetWorkValue from '../../../enums/hopingToGetWorkValue'
 
 jest.mock('../../../data/mappers/createOrUpdateInductionDtoMapper')
 jest.mock('../../../services/inductionService')
@@ -255,6 +256,37 @@ describe('workInterestTypesUpdateController', () => {
       expect(next).toHaveBeenCalledWith(expectedError)
       expect(req.session.workInterestTypesForm).toEqual(workInterestTypesForm)
       expect(req.session.inductionDto).toEqual(inductionDto)
+    })
+
+    it('should redirect to Work Interest Roles and not call the API to update Induction given form is submitted and there is a hopingToWork on the session', async () => {
+      // Given
+      const inductionDto = aValidInductionDto({ hopingToGetWork: HopingToGetWorkValue.YES })
+      inductionDto.futureWorkInterests = {} as FutureWorkInterestsDto
+      req.session.inductionDto = inductionDto
+      req.session.hopingToWorkOnReleaseForm = { hopingToGetWork: HopingToGetWorkValue.YES }
+
+      const workInterestTypesForm = {
+        workInterestTypes: [WorkInterestTypeValue.CONSTRUCTION],
+      }
+      req.body = workInterestTypesForm
+      req.session.workInterestTypesForm = undefined
+
+      const expectedFutureWorkInterests = {
+        interests: [{ role: undefined, workType: WorkInterestTypeValue.CONSTRUCTION, workTypeOther: undefined }],
+      } as FutureWorkInterestsDto
+
+      // When
+      await controller.submitWorkInterestTypesForm(
+        req as undefined as Request,
+        res as undefined as Response,
+        next as undefined as NextFunction,
+      )
+
+      // Then
+      expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/induction/work-interest-roles')
+      expect(req.session.workInterestTypesForm).toEqual(workInterestTypesForm)
+      const updatedInduction = req.session.inductionDto
+      expect(updatedInduction.futureWorkInterests).toEqual(expectedFutureWorkInterests)
     })
   })
 })

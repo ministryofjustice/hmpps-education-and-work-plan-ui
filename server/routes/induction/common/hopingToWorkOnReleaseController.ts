@@ -51,6 +51,11 @@ export default abstract class HopingToWorkOnReleaseController extends InductionC
       },
     }
   }
+
+  protected answerHasNotBeenChanged = (
+    originalInduction: InductionDto,
+    hopingToWorkOnReleaseForm: HopingToWorkOnReleaseForm,
+  ): boolean => originalInduction.workOnRelease.hopingToWork === hopingToWorkOnReleaseForm.hopingToGetWork
 }
 
 const toHopingToWorkOnReleaseForm = (inductionDto: InductionDto): HopingToWorkOnReleaseForm => {

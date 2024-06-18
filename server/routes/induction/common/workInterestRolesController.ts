@@ -15,7 +15,7 @@ export default abstract class WorkInterestRolesController extends InductionContr
   getWorkInterestRolesView: RequestHandler = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { prisonerSummary, inductionDto } = req.session
 
-    this.addCurrentPageToFlowHistoryWhenComingFromCheckYourAnswers(req)
+    this.addCurrentPageToHistory(req)
 
     const workInterestRolesForm = toWorkInterestRolesForm(inductionDto)
 
