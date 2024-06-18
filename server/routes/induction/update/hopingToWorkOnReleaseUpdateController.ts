@@ -1,7 +1,5 @@
 import createError from 'http-errors'
 import { NextFunction, Request, RequestHandler, Response } from 'express'
-import type { InductionDto } from 'inductionDto'
-import type { HopingToWorkOnReleaseForm } from 'inductionForms'
 import HopingToWorkOnReleaseController from '../common/hopingToWorkOnReleaseController'
 import validateHopingToWorkOnReleaseForm from '../../validators/induction/hopingToWorkOnReleaseFormValidator'
 import { InductionService } from '../../../services'
@@ -45,7 +43,7 @@ export default class HopingToWorkOnReleaseUpdateController extends HopingToWorkO
       return res.redirectWithErrors(`/prisoners/${prisonNumber}/induction/hoping-to-work-on-release`, errors)
     }
 
-    const updatedInduction = updatedInductionDtoWithHopingToWorkOnRelease(inductionDto, hopingToWorkOnReleaseForm)
+    const updatedInduction = this.updatedInductionDtoWithHopingToWorkOnRelease(inductionDto, hopingToWorkOnReleaseForm)
     req.session.inductionDto = updatedInduction
 
     try {
@@ -59,18 +57,5 @@ export default class HopingToWorkOnReleaseUpdateController extends HopingToWorkO
     req.session.hopingToWorkOnReleaseForm = undefined
     req.session.inductionDto = undefined
     return res.redirect(`/plan/${prisonNumber}/view/work-and-interests`)
-  }
-}
-
-const updatedInductionDtoWithHopingToWorkOnRelease = (
-  inductionDto: InductionDto,
-  hopingToWorkOnReleaseForm: HopingToWorkOnReleaseForm,
-): InductionDto => {
-  return {
-    ...inductionDto,
-    workOnRelease: {
-      ...inductionDto.workOnRelease,
-      hopingToWork: hopingToWorkOnReleaseForm.hopingToGetWork,
-    },
   }
 }
