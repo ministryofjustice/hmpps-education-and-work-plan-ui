@@ -255,7 +255,7 @@ context(`Change links on the Check Your Answers page when creating an Induction`
       .submitPage()
 
     Page.verifyOnPage(FutureWorkInterestRolesPage)
-      .hasBackLinkTo(`/prisoners/${prisonNumber}/create-induction/hoping-to-work-on-release`)
+      .hasBackLinkTo(`/prisoners/${prisonNumber}/create-induction/work-interest-types`)
       .setWorkInterestRole(WorkInterestTypeValue.MANUFACTURING, 'Welder')
       .setWorkInterestRole(WorkInterestTypeValue.OUTDOOR, 'Gardener')
       .submitPage()

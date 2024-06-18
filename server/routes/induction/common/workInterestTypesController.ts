@@ -15,7 +15,7 @@ export default abstract class WorkInterestTypesController extends InductionContr
   getWorkInterestTypesView: RequestHandler = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { prisonerSummary, inductionDto } = req.session
 
-    this.addCurrentPageToFlowHistoryWhenComingFromCheckYourAnswers(req)
+    this.addCurrentPageToHistory(req)
 
     const workInterestTypesForm = req.session.workInterestTypesForm || toWorkInterestTypesForm(inductionDto)
     req.session.workInterestTypesForm = undefined
@@ -38,7 +38,7 @@ export default abstract class WorkInterestTypesController extends InductionContr
         workType,
         workTypeOther:
           workType === WorkInterestTypeValue.OTHER ? workInterestTypesForm.workInterestTypesOther : undefined,
-        role: inductionDto.futureWorkInterests?.interests.find(interest => interest.workType === workType)?.role,
+        role: inductionDto.futureWorkInterests?.interests?.find(interest => interest.workType === workType)?.role,
       }
     })
     return {

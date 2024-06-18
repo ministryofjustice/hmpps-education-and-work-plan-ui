@@ -1,6 +1,4 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express'
-import type { InductionDto } from 'inductionDto'
-import type { HopingToWorkOnReleaseForm } from 'inductionForms'
 import HopingToWorkOnReleaseController from '../common/hopingToWorkOnReleaseController'
 import getDynamicBackLinkAriaText from '../dynamicAriaTextResolver'
 import validateHopingToWorkOnReleaseForm from '../../validators/induction/hopingToWorkOnReleaseFormValidator'
@@ -36,7 +34,10 @@ export default class HopingToWorkOnReleaseCreateController extends HopingToWorkO
     }
 
     // If the previous page was Check Your Answers and the user has not changed the answer, go back to Check Your Answers
-    if (this.previousPageWasCheckYourAnswers(req) && answerHasNotBeenChanged(inductionDto, hopingToWorkOnReleaseForm)) {
+    if (
+      this.previousPageWasCheckYourAnswers(req) &&
+      this.answerHasNotBeenChanged(inductionDto, hopingToWorkOnReleaseForm)
+    ) {
       res.redirect(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
     }
 
@@ -63,8 +64,3 @@ export default class HopingToWorkOnReleaseCreateController extends HopingToWorkO
     return res.redirect(nextPage)
   }
 }
-
-const answerHasNotBeenChanged = (
-  originalInduction: InductionDto,
-  hopingToWorkOnReleaseForm: HopingToWorkOnReleaseForm,
-): boolean => originalInduction.workOnRelease.hopingToWork === hopingToWorkOnReleaseForm.hopingToGetWork

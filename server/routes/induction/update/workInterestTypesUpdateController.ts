@@ -53,6 +53,14 @@ export default class WorkInterestTypesUpdateController extends WorkInterestTypes
 
     const updatedInduction = this.updatedInductionDtoWithWorkInterestTypes(inductionDto, workInterestTypesForm)
 
+    // If there is a hopingToWorkOnReleaseForm on the session it means the user is updating a prisoners induction by changing whether they want to work on release.
+    // In this case we need to go to Work Interest Roles in order to complete the capture the prisoners future work interests.
+    if (req.session.hopingToWorkOnReleaseForm) {
+      req.session.inductionDto = updatedInduction
+      return res.redirect(`/prisoners/${prisonNumber}/induction/work-interest-roles`)
+    }
+
+    // Else we can simply call the API to update the Induction and return to Work & Interests tab
     try {
       const updateInductionDto = toCreateOrUpdateInductionDto(prisonId, updatedInduction)
       await this.inductionService.updateInduction(prisonNumber, updateInductionDto, req.user.token)
