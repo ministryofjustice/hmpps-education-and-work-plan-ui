@@ -100,6 +100,11 @@ export default class WorkAndInterestsPage extends Page {
     return Page.verifyOnPage(FutureWorkInterestRolesPage)
   }
 
+  doesNotHaveFutureWorkInterestRolesChangeLink(): WorkAndInterestsPage {
+    this.futureWorkInterestRolesChangeLink().should('not.exist')
+    return this
+  }
+
   clickPreviousWorkExperienceTypesChangeLink(): PreviousWorkExperienceTypesPage {
     this.previousWorkExperienceTypesChangeLink().click()
     return Page.verifyOnPage(PreviousWorkExperienceTypesPage)

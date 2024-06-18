@@ -20,7 +20,7 @@ context('Update in-prison work interests within an Induction', () => {
     cy.task('getActionPlan')
     cy.task('stubLearnerProfile')
     cy.task('stubLearnerEducation')
-    cy.task('stubGetInductionShortQuestionSet')
+    cy.task('stubGetInduction')
     cy.task('stubUpdateInduction')
     cy.signIn()
   })
@@ -73,10 +73,10 @@ context('Update in-prison work interests within an Induction', () => {
     cy.wiremockVerifyNoInteractions(putRequestedFor(urlEqualTo(`/inductions/${prisonNumber}`)))
   })
 
-  it('should update in-prison work interests given long question set induction that was created with no in-prison work interests', () => {
+  it('should update in-prison work interests given induction created with the original long question set which did not ask about in-prison work interests', () => {
     // Given
     const prisonNumber = 'G6115VJ'
-    cy.task('stubGetInductionLongQuestionSetCreatedWithOriginalQuestionSet') // The original question set did not ask about in-prison work interests for the Long question set
+    cy.task('stubGetOriginalQuestionSetInduction', { questionSet: 'LONG' }) // The original long question set Induction did not ask about in-prison work interests
     cy.visit(`/plan/${prisonNumber}/view/work-and-interests`)
     Page.verifyOnPage(WorkAndInterestsPage) //
       .inPrisonWorkChangeLinkHasText('Add')

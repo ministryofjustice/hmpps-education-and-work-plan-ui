@@ -35,12 +35,12 @@ import WantToAddQualificationsPage from '../../pages/induction/WantToAddQualific
 import HasWorkedBeforeValue from '../../../server/enums/hasWorkedBeforeValue'
 import YesNoValue from '../../../server/enums/yesNoValue'
 
-context('Create a long question set Induction', () => {
+context('Create an Induction', () => {
   beforeEach(() => {
     cy.signInAsUserWithEditAuthorityToArriveOnPrisonerListPage()
   })
 
-  it('should create a long question set Induction with qualifications, triggering validation on every screen', () => {
+  it('should create an induction with qualifications, triggering validation on every screen', () => {
     // Given
     const prisonNumberForPrisonerWithNoInduction = 'A00001A'
     cy.task('getActionPlan', prisonNumberForPrisonerWithNoInduction)
@@ -320,7 +320,7 @@ context('Create a long question set Induction', () => {
     )
   })
 
-  it('should create a long question set Induction with no qualifications', () => {
+  it('should create an Induction with no qualifications', () => {
     // Given
     const prisonNumberForPrisonerWithNoInduction = 'A00001A'
     cy.task('getActionPlan', prisonNumberForPrisonerWithNoInduction)
