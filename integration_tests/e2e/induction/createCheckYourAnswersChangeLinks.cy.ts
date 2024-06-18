@@ -21,6 +21,8 @@ import EducationLevelValue from '../../../server/enums/educationLevelValue'
 import InPrisonTrainingValue from '../../../server/enums/inPrisonTrainingValue'
 import InPrisonWorkValue from '../../../server/enums/inPrisonWorkValue'
 import HasWorkedBeforeValue from '../../../server/enums/hasWorkedBeforeValue'
+import FutureWorkInterestRolesPage from '../../pages/induction/FutureWorkInterestRolesPage'
+import FutureWorkInterestTypesPage from '../../pages/induction/FutureWorkInterestTypesPage'
 
 context(`Change links on the Check Your Answers page when creating an Induction`, () => {
   const prisonNumber = 'G6115VJ'
@@ -29,9 +31,14 @@ context(`Change links on the Check Your Answers page when creating an Induction`
     cy.signInAsUserWithEditAuthorityToArriveOnPrisonerListPage()
   })
 
-  it('should support all Change links on the Check Your Answers page when creating an Induction', () => {
+  it('should support all Change links on the Check Your Answers page when creating an Induction with all options', () => {
     // Given
-    cy.createInductionToArriveOnCheckYourAnswers({ prisonNumber })
+    cy.createInductionToArriveOnCheckYourAnswers({
+      prisonNumber,
+      hasWorkedBefore: HasWorkedBeforeValue.YES,
+      hopingToGetWork: HopingToGetWorkValue.YES,
+      withQualifications: true,
+    })
     Page.verifyOnPage(CheckYourAnswersPage)
 
     // When
@@ -228,9 +235,59 @@ context(`Change links on the Check Your Answers page when creating an Induction`
       ])
   })
 
+  it('should support changing Hoping To Work from No to Yes', () => {
+    // Given
+    cy.createInductionToArriveOnCheckYourAnswers({ prisonNumber, hopingToGetWork: HopingToGetWorkValue.NO })
+    Page.verifyOnPage(CheckYourAnswersPage)
+
+    // When
+    Page.verifyOnPage(CheckYourAnswersPage)
+      .hasHopingToWorkOnRelease(HopingToGetWorkValue.NO)
+      .clickHopingToWorkOnReleaseChangeLink()
+      .hasBackLinkTo(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
+      .selectHopingWorkOnRelease(HopingToGetWorkValue.YES)
+      .submitPage()
+
+    Page.verifyOnPage(FutureWorkInterestTypesPage)
+      .hasBackLinkTo(`/prisoners/${prisonNumber}/create-induction/hoping-to-work-on-release`)
+      .selectWorkInterestType(WorkInterestTypeValue.MANUFACTURING)
+      .selectWorkInterestType(WorkInterestTypeValue.OUTDOOR)
+      .submitPage()
+
+    Page.verifyOnPage(FutureWorkInterestRolesPage)
+      .hasBackLinkTo(`/prisoners/${prisonNumber}/create-induction/hoping-to-work-on-release`)
+      .setWorkInterestRole(WorkInterestTypeValue.MANUFACTURING, 'Welder')
+      .setWorkInterestRole(WorkInterestTypeValue.OUTDOOR, 'Gardener')
+      .submitPage()
+
+    // Then
+    Page.verifyOnPage(CheckYourAnswersPage) //
+      .hasHopingToWorkOnRelease(HopingToGetWorkValue.YES)
+      .hasWorkInterest(WorkInterestTypeValue.OUTDOOR)
+      .hasWorkInterest(WorkInterestTypeValue.MANUFACTURING)
+  })
+
+  it('should support changing Hoping To Work from Yes to No', () => {
+    // Given
+    cy.createInductionToArriveOnCheckYourAnswers({ prisonNumber, hopingToGetWork: HopingToGetWorkValue.YES })
+    Page.verifyOnPage(CheckYourAnswersPage)
+
+    // When
+    Page.verifyOnPage(CheckYourAnswersPage)
+      .hasHopingToWorkOnRelease(HopingToGetWorkValue.YES)
+      .clickHopingToWorkOnReleaseChangeLink()
+      .hasBackLinkTo(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
+      .selectHopingWorkOnRelease(HopingToGetWorkValue.NO)
+      .submitPage()
+
+    // Then
+    Page.verifyOnPage(CheckYourAnswersPage) //
+      .hasHopingToWorkOnRelease(HopingToGetWorkValue.NO)
+  })
+
   it('should support changing has worked before from Yes to Not relevant', () => {
     // Given
-    cy.createInductionToArriveOnCheckYourAnswers({ prisonNumber })
+    cy.createInductionToArriveOnCheckYourAnswers({ prisonNumber, hasWorkedBefore: HasWorkedBeforeValue.YES })
     Page.verifyOnPage(CheckYourAnswersPage)
 
     // When
