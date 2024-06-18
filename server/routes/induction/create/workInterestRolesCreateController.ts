@@ -31,7 +31,7 @@ export default class WorkInterestRolesCreateController extends WorkInterestRoles
 
     req.session.inductionDto = this.updatedInductionDtoWithWorkInterestRoles(inductionDto, workInterestRolesForm)
 
-    const nextPage = this.previousPageWasCheckYourAnswers(req)
+    const nextPage = this.checkYourAnswersIsInThePageHistory(req)
       ? `/prisoners/${prisonNumber}/create-induction/check-your-answers`
       : `/prisoners/${prisonNumber}/create-induction/affect-ability-to-work`
     return res.redirect(nextPage)

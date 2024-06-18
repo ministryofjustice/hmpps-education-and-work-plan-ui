@@ -61,7 +61,12 @@ Cypress.Commands.add('signInAsUserWithEditAuthorityToArriveOnPrisonerListPage', 
 
 Cypress.Commands.add(
   'createInductionToArriveOnCheckYourAnswers',
-  (options?: { prisonNumber?: string; withQualifications?: boolean }) => {
+  (options?: {
+    prisonNumber?: string
+    hopingToGetWork?: HopingToGetWorkValue
+    hasWorkedBefore?: HasWorkedBeforeValue
+    withQualifications?: boolean
+  }) => {
     const addQualificationsToInduction =
       !options ||
       options.withQualifications === null ||
@@ -73,16 +78,18 @@ Cypress.Commands.add(
 
     // Hoping To Work On Release is the first page
     Page.verifyOnPage(HopingToWorkOnReleasePage) //
-      .selectHopingWorkOnRelease(HopingToGetWorkValue.YES)
+      .selectHopingWorkOnRelease(options?.hopingToGetWork || HopingToGetWorkValue.YES)
       .submitPage()
-    // Future Work Interest Types page is next
-    Page.verifyOnPage(FutureWorkInterestTypesPage) //
-      .selectWorkInterestType(WorkInterestTypeValue.DRIVING)
-      .submitPage()
-    // Future Work Interest Roles page is next
-    Page.verifyOnPage(FutureWorkInterestRolesPage) //
-      .setWorkInterestRole(WorkInterestTypeValue.DRIVING, 'Delivery driver')
-      .submitPage()
+    if (!options || !options.hopingToGetWork || options.hopingToGetWork === HopingToGetWorkValue.YES) {
+      // Future Work Interest Types page is next
+      Page.verifyOnPage(FutureWorkInterestTypesPage) //
+        .selectWorkInterestType(WorkInterestTypeValue.DRIVING)
+        .submitPage()
+      // Future Work Interest Roles page is next
+      Page.verifyOnPage(FutureWorkInterestRolesPage) //
+        .setWorkInterestRole(WorkInterestTypeValue.DRIVING, 'Delivery driver')
+        .submitPage()
+    }
     // Factors Affecting Ability To Work is the next page
     Page.verifyOnPage(AffectAbilityToWorkPage) //
       .selectAffectAbilityToWork(AbilityToWorkValue.NONE)
@@ -117,17 +124,19 @@ Cypress.Commands.add(
       .submitPage()
     // Have You Worked Before page is next
     Page.verifyOnPage(WorkedBeforePage) //
-      .selectWorkedBefore(HasWorkedBeforeValue.YES)
+      .selectWorkedBefore(options?.hasWorkedBefore || HasWorkedBeforeValue.YES)
       .submitPage()
-    // Previous Work Experience Types is the next page
-    Page.verifyOnPage(PreviousWorkExperienceTypesPage) //
-      .selectPreviousWorkExperience(TypeOfWorkExperienceValue.CONSTRUCTION)
-      .submitPage()
-    // Previous Work Experience Details page is next
-    Page.verifyOnPage(PreviousWorkExperienceDetailPage) //
-      .setJobRole('General labourer')
-      .setJobDetails('Basic ground works and building')
-      .submitPage()
+    if (!options || !options.hasWorkedBefore || options.hasWorkedBefore === HasWorkedBeforeValue.YES) {
+      // Previous Work Experience Types is the next page
+      Page.verifyOnPage(PreviousWorkExperienceTypesPage) //
+        .selectPreviousWorkExperience(TypeOfWorkExperienceValue.CONSTRUCTION)
+        .submitPage()
+      // Previous Work Experience Details page is next
+      Page.verifyOnPage(PreviousWorkExperienceDetailPage) //
+        .setJobRole('General labourer')
+        .setJobDetails('Basic ground works and building')
+        .submitPage()
+    }
     // Personal Skills page is next
     Page.verifyOnPage(SkillsPage) //
       .selectSkill(SkillsValue.POSITIVE_ATTITUDE)

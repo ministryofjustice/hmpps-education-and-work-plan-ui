@@ -33,6 +33,24 @@ export default abstract class HopingToWorkOnReleaseController extends InductionC
     )
     return res.render('pages/induction/hopingToWorkOnRelease/index', { ...view.renderArgs })
   }
+
+  protected updatedInductionDtoWithHopingToWorkOnRelease = (
+    inductionDto: InductionDto,
+    hopingToWorkOnReleaseForm: HopingToWorkOnReleaseForm,
+  ): InductionDto => {
+    return {
+      ...inductionDto,
+      workOnRelease: {
+        ...inductionDto.workOnRelease,
+        hopingToWork: hopingToWorkOnReleaseForm.hopingToGetWork,
+      },
+      futureWorkInterests: {
+        ...inductionDto.futureWorkInterests,
+        // Set array of future work interests to empty array. However this page is submitted and whetever the submitted answer we should always set this to an empty array so that the data makes sense for subsequent screens
+        interests: [],
+      },
+    }
+  }
 }
 
 const toHopingToWorkOnReleaseForm = (inductionDto: InductionDto): HopingToWorkOnReleaseForm => {
