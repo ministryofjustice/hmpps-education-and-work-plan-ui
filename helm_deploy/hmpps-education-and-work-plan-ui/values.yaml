@@ -55,6 +55,7 @@ generic-service:
     FEEDBACK_URL: "https://eu.surveymonkey.com/r/H9CYM7B"
     CREATE_INDUCTION_ENABLED: "true"
     UPDATE_INDUCTION_ENABLED: "true"
+    ARCHIVE_GOALS_ENABLED: "false"
     AUDIT_SERVICE_NAME: "hmpps-education-and-work-plan"
     AUDIT_ENABLED: "true"
 

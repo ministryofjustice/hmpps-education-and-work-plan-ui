@@ -185,5 +185,8 @@ export default {
         enabled: toBoolean(get('UPDATE_INDUCTION_ENABLED', false, requiredInProduction)),
       },
     },
+    goals: {
+      archiveEnabled: toBoolean(get('ARCHIVE_GOALS_ENABLED', false, requiredInProduction)),
+    },
   },
 }
