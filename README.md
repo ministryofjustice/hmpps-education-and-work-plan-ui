@@ -177,4 +177,3 @@ Features can be toggled by setting the relevant environment variable.
 | SOME_TOGGLE_ENABLED                          | false         | Boolean | Example feature toggle, for demonstration purposes.                                                            |
 | CREATE_INDUCTION_ENABLED                     | false         | Boolean | Set to true to enable the creation of Inductions via PLP screens. Set to false to use the CIAG UI screens.     |
 | UPDATE_INDUCTION_ENABLED                     | false         | Boolean | Set to true to enable updating of Inductions via PLP screens. Set to false to use the CIAG UI screens.         |
-| NEW_COURSE_AND_QUALIFICATION_HISTORY_ENABLED | false         | Boolean | Set to true to show the new In-prison qualifications and achievements history on the Education & training tab. |
