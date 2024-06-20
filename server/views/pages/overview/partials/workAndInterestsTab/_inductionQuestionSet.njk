@@ -214,7 +214,11 @@ questions are different.
         </div>
         {% endif %}
       </dl>
-      <p class="govuk-hint govuk-body govuk-!-font-size-16">Last updated: {{ induction.inductionDto.futureWorkInterests.updatedAt | formatDate('DD MMMM YYYY') }}<span class="govuk-!-display-none-print"> by {{ induction.inductionDto.futureWorkInterests.updatedByDisplayName }}</span></p>
+      {% if induction.inductionDto.futureWorkInterests %}
+        <p class="govuk-hint govuk-body govuk-!-font-size-16" data-qa="work-interests-last-updated">Last updated: {{ induction.inductionDto.futureWorkInterests.updatedAt | formatDate('DD MMMM YYYY') }}<span class="govuk-!-display-none-print"> by {{ induction.inductionDto.futureWorkInterests.updatedByDisplayName }}</span></p>
+      {% else %}
+        <p class="govuk-hint govuk-body govuk-!-font-size-16" data-qa="work-interests-last-updated">Last updated: {{ induction.inductionDto.workOnRelease.updatedAt | formatDate('DD MMMM YYYY') }}<span class="govuk-!-display-none-print"> by {{ induction.inductionDto.workOnRelease.updatedByDisplayName }}</span></p>
+      {% endif %}
     </div>
   </div>
 
