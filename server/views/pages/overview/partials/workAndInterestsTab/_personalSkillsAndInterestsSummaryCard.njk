@@ -1,6 +1,6 @@
 {# Skills and interests summary card #}
-{% set inductionHasSkillsRecorded = induction.inductionDto.inPrisonInterests.skills | length > 0 %}
-{% set inductionHasInterestsRecorded = induction.inductionDto.inPrisonInterests.interests | length > 0 %}
+{% set inductionHasSkillsRecorded = induction.inductionDto.personalSkillsAndInterests.skills | length > 0 %}
+{% set inductionHasInterestsRecorded = induction.inductionDto.personalSkillsAndInterests.interests | length > 0 %}
 <div class="govuk-summary-card" id="skills-and-interests-summary-card">
   <div class="govuk-summary-card__title-wrapper">
     <h2 class="govuk-summary-card__title">Skills and interests</h2>
@@ -15,7 +15,7 @@
         </dt>
         <dd class="govuk-summary-list__value">
           {% if inductionHasSkillsRecorded %}
-            <ul class="govuk-list">
+            <ul class="govuk-list" data-qa="skills">
               {% for skill in induction.inductionDto.personalSkillsAndInterests.skills | objectsSortedAlphabeticallyWithOtherLastBy('skillType') %}
                 {% if skill.skillType === 'OTHER' %}
                   <li>Other - {{ skill.skillTypeOther }}</li>
@@ -25,7 +25,7 @@
               {% endfor %}
             </ul>
           {% else %}
-            <p class='govuk-body'>Not recorded.</p>
+            <p class='govuk-body' data-qa='skills-not-recorded'>Not recorded.</p>
           {% endif %}
         </dd>
         <dd class="govuk-summary-list__actions govuk-!-display-none-print">
@@ -49,7 +49,7 @@
         </dt>
         <dd class="govuk-summary-list__value">
           {% if inductionHasInterestsRecorded %}
-            <ul class="govuk-list">
+            <ul class="govuk-list" data-qa="personal-interests">
               {% for personalInterest in induction.inductionDto.personalSkillsAndInterests.interests | objectsSortedAlphabeticallyWithOtherLastBy('interestType') %}
                 {% if personalInterest.interestType === 'OTHER' %}
                   <li>Other - {{ personalInterest.interestTypeOther }}</li>
@@ -59,7 +59,7 @@
               {% endfor %}
             </ul>
           {% else %}
-            <p class='govuk-body'>Not recorded.</p>
+            <p class='govuk-body' data-qa='personal-interests-not-recorded'>Not recorded.</p>
           {% endif %}
         </dd>
         <dd class="govuk-summary-list__actions govuk-!-display-none-print">
@@ -78,7 +78,7 @@
     </dl>
 
     {% if inductionHasSkillsRecorded or inductionHasInterestsRecorded %}
-      <p class="govuk-hint govuk-body govuk-!-font-size-16">Last updated: {{ induction.inductionDto.personalSkillsAndInterests.updatedAt | formatDate('DD MMMM YYYY') }}<span class="govuk-!-display-none-print"> by {{ induction.inductionDto.personalSkillsAndInterests.updatedByDisplayName }}</span></p>
+      <p class="govuk-hint govuk-body govuk-!-font-size-16" data-qa="last-updated">Last updated: {{ induction.inductionDto.personalSkillsAndInterests.updatedAt | formatDate('DD MMMM YYYY') }}<span class="govuk-!-display-none-print"> by {{ induction.inductionDto.personalSkillsAndInterests.updatedByDisplayName }}</span></p>
     {% endif %}
   </div>
 </div>
