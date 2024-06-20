@@ -20,8 +20,12 @@ questions are different.
           <dt class="govuk-summary-list__key">
             Worked before
           </dt>
-          <dd class="govuk-summary-list__value">
-            {{ induction.inductionDto.previousWorkExperiences.hasWorkedBefore | formatHasWorkedBefore }}
+          <dd class="govuk-summary-list__value" data-qa="has-worked-before-answer">
+            {% if induction.inductionDto.previousWorkExperiences %}
+              {{ induction.inductionDto.previousWorkExperiences.hasWorkedBefore | formatHasWorkedBefore }}
+            {% else %}
+              Not entered.
+            {% endif %}
           </dd>
 
           <dd class="govuk-summary-list__actions govuk-!-display-none-print">
@@ -33,7 +37,7 @@ questions are different.
               {%- endif -%}
             {%- endset -%}
             <a class="govuk-link" href="{{ hasWorkedBeforeChangeLinkUrl }}" data-qa="has-worked-before-change-link">
-              Change<span class="govuk-visually-hidden"> worked before</span>
+              {% if induction.inductionDto.previousWorkExperiences %}Change{% else %}Add{% endif %}<span class="govuk-visually-hidden"> worked before</span>
             </a>
           </dd>
         </div>
@@ -93,7 +97,11 @@ questions are different.
 
         {% endif %}
       </dl>
-      <p class="govuk-hint govuk-body govuk-!-font-size-16">Last updated: {{ induction.inductionDto.previousWorkExperiences.updatedAt | formatDate('DD MMMM YYYY') }}<span class="govuk-!-display-none-print"> by {{ induction.inductionDto.previousWorkExperiences.updatedByDisplayName }}</span></p>
+      {% if induction.inductionDto.previousWorkExperiences %}
+        <p class="govuk-hint govuk-body govuk-!-font-size-16" data-qa="work-experience-last-updated">Last updated: {{ induction.inductionDto.previousWorkExperiences.updatedAt | formatDate('DD MMMM YYYY') }}<span class="govuk-!-display-none-print"> by {{ induction.inductionDto.previousWorkExperiences.updatedByDisplayName }}</span></p>
+      {% else %}
+        <p class="govuk-hint govuk-body govuk-!-font-size-16" data-qa="work-experience-last-updated">Last updated: {{ induction.inductionDto.workOnRelease.updatedAt | formatDate('DD MMMM YYYY') }}<span class="govuk-!-display-none-print"> by {{ induction.inductionDto.workOnRelease.updatedByDisplayName }}</span></p>
+      {% endif %}
     </div>
   </div>
 
