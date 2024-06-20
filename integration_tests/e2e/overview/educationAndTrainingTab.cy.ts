@@ -5,6 +5,7 @@ import InPrisonTrainingPage from '../../pages/induction/InPrisonTrainingPage'
 import HighestLevelOfEducationPage from '../../pages/induction/HighestLevelOfEducationPage'
 import AdditionalTrainingPage from '../../pages/induction/AdditionalTrainingPage'
 import QualificationsListPage from '../../pages/induction/QualificationsListPage'
+import QualificationLevelPage from '../../pages/induction/QualificationLevelPage'
 
 context('Prisoner Overview page - Education And Training tab', () => {
   beforeEach(() => {
@@ -304,9 +305,9 @@ context('Prisoner Overview page - Education And Training tab', () => {
       Page.verifyOnPage(AdditionalTrainingPage)
     })
 
-    it(`should link to the change Educational Qualifications page`, () => {
+    it(`should link to the change Educational Qualifications page given induction has qualifications`, () => {
       // Given
-      cy.task('stubGetInduction')
+      cy.task('stubGetInduction', { hasQualifications: true })
 
       cy.signIn()
       const prisonNumber = 'G6115VJ'
@@ -314,10 +315,28 @@ context('Prisoner Overview page - Education And Training tab', () => {
       const educationAndTrainingPage = Page.verifyOnPage(EducationAndTrainingPage)
 
       // When
-      educationAndTrainingPage.clickToChangeEducationalQualifications()
+      educationAndTrainingPage.clickToChangeEducationalQualifications(QualificationsListPage)
 
       // Then
-      Page.verifyOnPage(QualificationsListPage)
+      Page.verifyOnPage(QualificationsListPage) // Expect to be on the Qualifications List page because the induction had qualifications to start with
+        .hasBackLinkTo(`/plan/${prisonNumber}/view/education-and-training`)
+    })
+
+    it(`should link to the change Educational Qualifications page given induction has no qualifications`, () => {
+      // Given
+      cy.task('stubGetInduction', { hasQualifications: false })
+
+      cy.signIn()
+      const prisonNumber = 'G6115VJ'
+      cy.visit(`/plan/${prisonNumber}/view/education-and-training`)
+      const educationAndTrainingPage = Page.verifyOnPage(EducationAndTrainingPage)
+
+      // When
+      educationAndTrainingPage.clickToChangeEducationalQualifications(QualificationLevelPage)
+
+      // Then
+      Page.verifyOnPage(QualificationLevelPage) // Expect to be on the Qualification Level page because the induction had no qualifications to start with
+        .hasBackLinkTo(`/plan/${prisonNumber}/view/education-and-training`)
     })
   })
 })

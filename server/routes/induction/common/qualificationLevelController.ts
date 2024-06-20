@@ -14,10 +14,8 @@ export default abstract class QualificationLevelController extends InductionCont
     res: Response,
     next: NextFunction,
   ): Promise<void> => {
-    const { pageFlowHistory, prisonerSummary } = req.session
-    if (!pageFlowHistory) {
-      return res.redirect(`/plan/${prisonerSummary.prisonNumber}/view/education-and-training`)
-    }
+    const { prisonerSummary } = req.session
+
     this.addCurrentPageToHistory(req)
 
     const qualificationLevelForm = req.session.qualificationLevelForm || { qualificationLevel: '' }

@@ -5,7 +5,6 @@ import InPrisonCoursesAndQualificationsPage from '../inPrisonCoursesAndQualifica
 import InPrisonTrainingPage from '../induction/InPrisonTrainingPage'
 import HighestLevelOfEducationPage from '../induction/HighestLevelOfEducationPage'
 import AdditionalTrainingPage from '../induction/AdditionalTrainingPage'
-import QualificationsListPage from '../induction/QualificationsListPage'
 
 /**
  * Cypress page class representing the Education And Training tab of the Overview Page
@@ -111,9 +110,9 @@ export default class EducationAndTrainingPage extends Page {
     return Page.verifyOnPage(AdditionalTrainingPage)
   }
 
-  clickToChangeEducationalQualifications(): QualificationsListPage {
+  clickToChangeEducationalQualifications<T extends Page>(constructor: new () => T): T {
     this.educationalQualificationsChangeLink().click()
-    return Page.verifyOnPage(QualificationsListPage)
+    return Page.verifyOnPage(constructor)
   }
 
   doesNotHaveLinkToViewAllCourses(): EducationAndTrainingPage {
