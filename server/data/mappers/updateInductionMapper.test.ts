@@ -1,30 +1,12 @@
-import {
-  aLongQuestionSetUpdateInductionDto,
-  aShortQuestionSetUpdateInductionDto,
-} from '../../testsupport/updateInductionDtoTestDataBuilder'
-import {
-  aLongQuestionSetUpdateInductionRequest,
-  aShortQuestionSetUpdateInductionRequest,
-} from '../../testsupport/updateInductionRequestTestDataBuilder'
+import aValidCreateOrUpdateInductionDto from '../../testsupport/updateInductionDtoTestDataBuilder'
+import aValidUpdateInductionRequest from '../../testsupport/updateInductionRequestTestDataBuilder'
 import toUpdateInductionRequest from './updateInductionMapper'
 
 describe('updateInductionMapper', () => {
-  it('should map to UpdateInductionRequest given a short question set CreateOrUpdateInductionDto', () => {
+  it('should map a CreateOrUpdateInductionDto to an UpdateInductionRequest', () => {
     // Given
-    const updateInductionDto = aShortQuestionSetUpdateInductionDto()
-    const expected = aShortQuestionSetUpdateInductionRequest()
-
-    // When
-    const actual = toUpdateInductionRequest(updateInductionDto)
-
-    // Then
-    expect(actual).toEqual(expected)
-  })
-
-  it('should map to UpdateInductionRequest given a long question set CreateOrUpdateInductionDto', () => {
-    // Given
-    const updateInductionDto = aLongQuestionSetUpdateInductionDto()
-    const expected = aLongQuestionSetUpdateInductionRequest()
+    const updateInductionDto = aValidCreateOrUpdateInductionDto()
+    const expected = aValidUpdateInductionRequest()
 
     // When
     const actual = toUpdateInductionRequest(updateInductionDto)

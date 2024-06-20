@@ -3,7 +3,7 @@ import type { SessionData } from 'express-session'
 import type { PersonalInterestsForm } from 'inductionForms'
 import type { PersonalInterestDto } from 'inductionDto'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
-import { aLongQuestionSetInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
+import aValidInductionDto from '../../../testsupport/inductionDtoTestDataBuilder'
 import PersonalInterestsCreateController from './personalInterestsCreateController'
 import PersonalInterestsValue from '../../../enums/personalInterestsValue'
 
@@ -39,7 +39,7 @@ describe('personalInterestsCreateController', () => {
   describe('getPersonalInterestsView', () => {
     it('should get the Personal interests view given there is no PersonalInterestsForm on the session', async () => {
       // Given
-      const inductionDto = aLongQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       inductionDto.personalSkillsAndInterests.interests = undefined
       req.session.inductionDto = inductionDto
       req.session.personalInterestsForm = undefined
@@ -71,7 +71,7 @@ describe('personalInterestsCreateController', () => {
 
     it('should get the Personal interests view given there is an PersonalInterestsForm already on the session', async () => {
       // Given
-      const inductionDto = aLongQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       inductionDto.personalSkillsAndInterests.interests = undefined
       req.session.inductionDto = inductionDto
 
@@ -103,7 +103,7 @@ describe('personalInterestsCreateController', () => {
 
     it('should get the Ability To Work view given the previous page was Check Your Answers', async () => {
       // Given
-      const inductionDto = aLongQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       inductionDto.personalSkillsAndInterests.interests = undefined
       req.session.inductionDto = inductionDto
 
@@ -150,7 +150,7 @@ describe('personalInterestsCreateController', () => {
   describe('submitPersonalInterestsForm', () => {
     it('should not update Induction given form is submitted with validation errors', async () => {
       // Given
-      const inductionDto = aLongQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       inductionDto.personalSkillsAndInterests.interests = undefined
       req.session.inductionDto = inductionDto
 
@@ -179,9 +179,9 @@ describe('personalInterestsCreateController', () => {
       expect(req.session.inductionDto).toEqual(inductionDto)
     })
 
-    it('should update inductionDto and redirect to factors affecting ability to work page', async () => {
+    it('should update inductionDto and redirect to in-prison-work page', async () => {
       // Given
-      const inductionDto = aLongQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       inductionDto.personalSkillsAndInterests.interests = undefined
       req.session.inductionDto = inductionDto
 
@@ -207,13 +207,13 @@ describe('personalInterestsCreateController', () => {
       // Then
       const updatedInduction = req.session.inductionDto
       expect(updatedInduction.personalSkillsAndInterests.interests).toEqual(expectedInterests)
-      expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-induction/affect-ability-to-work')
+      expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-induction/in-prison-work')
       expect(req.session.skillsForm).toBeUndefined()
     })
 
     it('should update inductionDto and redirect to Check Your Answers given previous page was Check Your Answers', async () => {
       // Given
-      const inductionDto = aLongQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       inductionDto.personalSkillsAndInterests.interests = undefined
       req.session.inductionDto = inductionDto
 

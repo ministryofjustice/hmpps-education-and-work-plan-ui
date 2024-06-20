@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from 'express'
+import { Request, Response } from 'express'
 import { parse, startOfDay } from 'date-fns'
 import type { FunctionalSkills, InPrisonCourseRecords } from 'viewModels'
 import aValidPrisonerSummary from '../../testsupport/prisonerSummaryTestDataBuilder'
@@ -7,22 +7,24 @@ import {
   aValidEnglishInPrisonCourseCompletedWithinLast12Months,
   aValidMathsInPrisonCourse,
 } from '../../testsupport/inPrisonCourseTestDataBuilder'
-import { aValidShortQuestionSetEducationAndTraining } from '../../testsupport/educationAndTrainingTestDataBuilder'
 import CuriousService from '../../services/curiousService'
-import InductionService from '../../services/inductionService'
 import EducationAndTrainingController from './educationAndTrainingController'
+import aValidInductionDto from '../../testsupport/inductionDtoTestDataBuilder'
 
 jest.mock('../../services/curiousService')
-jest.mock('../../services/inductionService')
 
 describe('educationAndTrainingController', () => {
   const curiousService = new CuriousService(null, null, null) as jest.Mocked<CuriousService>
-  const inductionService = new InductionService(null) as jest.Mocked<InductionService>
 
-  const controller = new EducationAndTrainingController(curiousService, inductionService)
+  const controller = new EducationAndTrainingController(curiousService)
 
   const prisonNumber = 'A1234GC'
   const prisonerSummary = aValidPrisonerSummary(prisonNumber)
+
+  const induction = {
+    problemRetrievingData: false,
+    inductionDto: aValidInductionDto(),
+  }
 
   const inPrisonCourses: InPrisonCourseRecords = {
     problemRetrievingData: false,
@@ -37,13 +39,10 @@ describe('educationAndTrainingController', () => {
     coursesCompletedInLast12Months: [aValidEnglishInPrisonCourseCompletedWithinLast12Months()],
   }
 
+  const expectedTab = 'education-and-training'
+
   let req: Request
-  const res = {
-    render: jest.fn(),
-    locals: {
-      curiousInPrisonCourses: inPrisonCourses,
-    },
-  } as unknown as Response
+  let res: Response
   const next = jest.fn()
 
   beforeEach(() => {
@@ -52,17 +51,23 @@ describe('educationAndTrainingController', () => {
       session: { prisonerSummary },
       user: {
         username: 'a-dps-user',
-        token: 'a-user-token',
       },
-      params: { prisonNumber },
+      params: {
+        prisonNumber,
+        tab: expectedTab,
+      },
     } as unknown as Request
+    res = {
+      render: jest.fn(),
+      locals: {
+        curiousInPrisonCourses: inPrisonCourses,
+        induction,
+      },
+    } as unknown as Response
   })
 
   it('should get eduction and training view', async () => {
     // Given
-    const expectedTab = 'education-and-training'
-    req.params.tab = expectedTab
-
     const functionalSkillsFromCurious = {
       problemRetrievingData: false,
       assessments: [
@@ -93,28 +98,19 @@ describe('educationAndTrainingController', () => {
       ],
     } as FunctionalSkills
 
-    const expectedEducationAndTraining = aValidShortQuestionSetEducationAndTraining()
-    inductionService.getEducationAndTraining.mockResolvedValue(expectedEducationAndTraining)
-
-    const expectedPrisonerSummary = aValidPrisonerSummary(prisonNumber)
-
     const expectedView = {
-      prisonerSummary: expectedPrisonerSummary,
+      prisonerSummary,
       tab: expectedTab,
       functionalSkills: expectedFunctionalSkills,
       inPrisonCourses,
-      educationAndTraining: expectedEducationAndTraining,
+      induction,
     }
 
     // When
-    await controller.getEducationAndTrainingView(
-      req as undefined as Request,
-      res as undefined as Response,
-      next as undefined as NextFunction,
-    )
+    await controller.getEducationAndTrainingView(req, res, next)
 
     // Then
     expect(res.render).toHaveBeenCalledWith('pages/overview/index', expectedView)
-    expect(inductionService.getEducationAndTraining).toHaveBeenCalledWith(prisonNumber, 'a-user-token')
+    expect(curiousService.getPrisonerFunctionalSkills).toHaveBeenCalledWith(prisonNumber, 'a-dps-user')
   })
 })

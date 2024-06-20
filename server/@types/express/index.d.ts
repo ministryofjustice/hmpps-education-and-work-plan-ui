@@ -1,10 +1,4 @@
-import type {
-  FunctionalSkills,
-  PageFlow,
-  PrisonerSummary,
-  PrisonerSupportNeeds,
-  UpdateInductionQuestionSet,
-} from 'viewModels'
+import type { PageFlow, PrisonerSummary, PrisonerSupportNeeds } from 'viewModels'
 import type { UpdateGoalForm } from 'forms'
 import type { NewGoal } from 'compositeForms'
 import type {
@@ -19,7 +13,6 @@ import type {
   PreviousWorkExperienceTypesForm,
   QualificationDetailsForm,
   QualificationLevelForm,
-  ReasonsNotToGetWorkForm,
   SkillsForm,
   WantToAddQualificationsForm,
   WorkedBeforeForm,
@@ -44,10 +37,8 @@ declare module 'express-session' {
     prisonerListSortOptions: string
     pageFlowHistory: PageFlow
     pageFlowQueue: PageFlow
-    prisonerFunctionalSkills: FunctionalSkills
     // Induction related objects held on the session
     inductionDto: InductionDto
-    updateInductionQuestionSet: UpdateInductionQuestionSet
     hopingToWorkOnReleaseForm: HopingToWorkOnReleaseForm
     inPrisonWorkForm: InPrisonWorkForm
     inPrisonTrainingForm: InPrisonTrainingForm
@@ -57,7 +48,6 @@ declare module 'express-session' {
     previousWorkExperienceTypesForm: PreviousWorkExperienceTypesForm
     previousWorkExperienceDetailForm: PreviousWorkExperienceDetailForm
     affectAbilityToWorkForm: AffectAbilityToWorkForm
-    reasonsNotToGetWorkForm: ReasonsNotToGetWorkForm
     workInterestTypesForm: WorkInterestTypesForm
     wantToAddQualificationsForm: WantToAddQualificationsForm
     highestLevelOfEducationForm: HighestLevelOfEducationForm

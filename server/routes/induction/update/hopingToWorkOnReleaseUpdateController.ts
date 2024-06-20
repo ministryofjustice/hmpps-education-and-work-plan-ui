@@ -1,15 +1,13 @@
 import createError from 'http-errors'
 import { NextFunction, Request, RequestHandler, Response } from 'express'
-import type { InductionDto } from 'inductionDto'
-import type { HopingToWorkOnReleaseForm } from 'inductionForms'
 import HopingToWorkOnReleaseController from '../common/hopingToWorkOnReleaseController'
 import validateHopingToWorkOnReleaseForm from '../../validators/induction/hopingToWorkOnReleaseFormValidator'
 import { InductionService } from '../../../services'
-import HopingToGetWorkValue from '../../../enums/hopingToGetWorkValue'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
 import logger from '../../../../logger'
 import { buildNewPageFlowHistory, getPreviousPage } from '../../pageFlowHistory'
 import getDynamicBackLinkAriaText from '../dynamicAriaTextResolver'
+import HopingToGetWorkValue from '../../../enums/hopingToGetWorkValue'
 
 export default class HopingToWorkOnReleaseUpdateController extends HopingToWorkOnReleaseController {
   constructor(private readonly inductionService: InductionService) {
@@ -46,26 +44,23 @@ export default class HopingToWorkOnReleaseUpdateController extends HopingToWorkO
       return res.redirectWithErrors(`/prisoners/${prisonNumber}/induction/hoping-to-work-on-release`, errors)
     }
 
-    const updatedInduction = updatedInductionDtoWithHopingToWorkOnRelease(inductionDto, hopingToWorkOnReleaseForm)
+    // If the user has not changed the answer, go back to Work & Interests
+    if (this.answerHasNotBeenChanged(inductionDto, hopingToWorkOnReleaseForm)) {
+      req.session.hopingToWorkOnReleaseForm = undefined
+      req.session.inductionDto = undefined
+      return res.redirect(`/plan/${prisonNumber}/view/work-and-interests`)
+    }
+
+    const updatedInduction = this.updatedInductionDtoWithHopingToWorkOnRelease(inductionDto, hopingToWorkOnReleaseForm)
     req.session.inductionDto = updatedInduction
 
-    if (this.changeWillResultInANewQuestionSet(inductionDto, hopingToWorkOnReleaseForm)) {
-      req.session.updateInductionQuestionSet = { hopingToWorkOnRelease: hopingToWorkOnReleaseForm.hopingToGetWork }
-      const nextPage =
-        hopingToWorkOnReleaseForm.hopingToGetWork === HopingToGetWorkValue.YES
-          ? `/prisoners/${prisonNumber}/induction/qualifications`
-          : `/prisoners/${prisonNumber}/induction/reasons-not-to-get-work`
-      // start of the flow - always initialise the page history here
+    // If the new answer for Hoping To Work On Release is YES then we need to go to Work Interest Types in order to capture the prisoners future work interests.
+    if (hopingToWorkOnReleaseForm.hopingToGetWork === HopingToGetWorkValue.YES) {
       req.session.pageFlowHistory = buildNewPageFlowHistory(req)
-      return res.redirect(nextPage)
+      return res.redirect(`/prisoners/${prisonNumber}/induction/work-interest-types`)
     }
 
-    // If the previous page was Check Your Answers, forward to Check Your Answers again
-    if (this.previousPageWasCheckYourAnswers(req)) {
-      req.session.inPrisonWorkForm = undefined
-      return res.redirect(`/prisoners/${prisonNumber}/induction/check-your-answers`)
-    }
-
+    // Else we can simply call the API to update the Induction and return to Work & Interests tab
     try {
       const updateInductionDto = toCreateOrUpdateInductionDto(prisonId, updatedInduction)
       await this.inductionService.updateInduction(prisonNumber, updateInductionDto, req.user.token)
@@ -77,18 +72,5 @@ export default class HopingToWorkOnReleaseUpdateController extends HopingToWorkO
     req.session.hopingToWorkOnReleaseForm = undefined
     req.session.inductionDto = undefined
     return res.redirect(`/plan/${prisonNumber}/view/work-and-interests`)
-  }
-}
-
-const updatedInductionDtoWithHopingToWorkOnRelease = (
-  inductionDto: InductionDto,
-  hopingToWorkOnReleaseForm: HopingToWorkOnReleaseForm,
-): InductionDto => {
-  return {
-    ...inductionDto,
-    workOnRelease: {
-      ...inductionDto.workOnRelease,
-      hopingToWork: hopingToWorkOnReleaseForm.hopingToGetWork,
-    },
   }
 }

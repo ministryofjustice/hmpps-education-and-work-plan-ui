@@ -1,12 +1,8 @@
 import type { SessionData } from 'express-session'
 import { NextFunction, Request, Response } from 'express'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
-import {
-  aLongQuestionSetInductionDto,
-  aShortQuestionSetInductionDto,
-} from '../../../testsupport/inductionDtoTestDataBuilder'
+import aValidInductionDto from '../../../testsupport/inductionDtoTestDataBuilder'
 import QualificationLevelUpdateController from './qualificationLevelUpdateController'
-import EducationLevelValue from '../../../enums/educationLevelValue'
 import QualificationLevelValue from '../../../enums/qualificationLevelValue'
 
 describe('qualificationLevelUpdateController', () => {
@@ -41,7 +37,7 @@ describe('qualificationLevelUpdateController', () => {
   describe('getQualificationLevelView', () => {
     it('should get the QualificationLevel view given there is no QualificationLevelForm on the session', async () => {
       // Given
-      const inductionDto = aLongQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       req.session.inductionDto = inductionDto
       req.session.qualificationLevelForm = undefined
       req.session.pageFlowHistory = {
@@ -56,7 +52,6 @@ describe('qualificationLevelUpdateController', () => {
       const expectedView = {
         prisonerSummary,
         form: expectedQualificationLevelForm,
-        educationLevel: EducationLevelValue.SECONDARY_SCHOOL_TOOK_EXAMS,
         backLinkUrl: `/prisoners/${prisonNumber}/induction/qualifications`,
         backLinkAriaText: "Back to Jimmy Lightfingers's qualifications",
       }
@@ -84,7 +79,7 @@ describe('qualificationLevelUpdateController', () => {
 
     it('should get the QualificationLevel view given there is an QualificationLevelForm already on the session', async () => {
       // Given
-      const inductionDto = aLongQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       req.session.inductionDto = inductionDto
       req.session.pageFlowHistory = {
         pageUrls: [`/prisoners/${prisonNumber}/induction/qualifications`],
@@ -97,7 +92,6 @@ describe('qualificationLevelUpdateController', () => {
       const expectedView = {
         prisonerSummary,
         form: expectedQualificationLevelForm,
-        educationLevel: EducationLevelValue.SECONDARY_SCHOOL_TOOK_EXAMS,
         backLinkUrl: '/prisoners/A1234BC/induction/qualifications',
         backLinkAriaText: "Back to Jimmy Lightfingers's qualifications",
       }
@@ -127,7 +121,7 @@ describe('qualificationLevelUpdateController', () => {
   describe('submitQualificationLevelForm', () => {
     it('should not proceed to qualification detail page given form submitted with validation errors', async () => {
       // Given
-      const inductionDto = aShortQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       req.session.inductionDto = inductionDto
       const pageFlowHistory = {
         pageUrls: [
@@ -170,7 +164,7 @@ describe('qualificationLevelUpdateController', () => {
 
     it('should proceed to qualification detail page', async () => {
       // Given
-      const inductionDto = aShortQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       req.session.inductionDto = inductionDto
       const pageFlowHistory = {
         pageUrls: [

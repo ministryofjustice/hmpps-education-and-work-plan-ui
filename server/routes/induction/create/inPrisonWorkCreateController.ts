@@ -10,10 +10,10 @@ export default class InPrisonWorkCreateController extends InPrisonWorkController
   getBackLinkUrl(req: Request): string {
     const { prisonNumber } = req.params
     const { pageFlowHistory } = req.session
-    if (pageFlowHistory) {
-      return getPreviousPage(pageFlowHistory)
-    }
-    return `/prisoners/${prisonNumber}/create-induction/additional-training`
+    const previousPage =
+      (pageFlowHistory && getPreviousPage(pageFlowHistory)) ||
+      `/prisoners/${prisonNumber}/create-induction/personal-interests`
+    return previousPage
   }
 
   getBackLinkAriaText(req: Request): string {

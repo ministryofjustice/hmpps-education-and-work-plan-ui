@@ -4,8 +4,6 @@ import EducationAndTrainingPage from '../../pages/overview/EducationAndTrainingP
 import { putRequestedFor } from '../../mockApis/wiremock/requestPatternBuilder'
 import { urlEqualTo } from '../../mockApis/wiremock/matchers/url'
 import { matchingJsonPath } from '../../mockApis/wiremock/matchers/content'
-import HighestLevelOfEducationPage from '../../pages/induction/HighestLevelOfEducationPage'
-import EducationLevelValue from '../../../server/enums/educationLevelValue'
 
 context('Update educational qualifications within an Induction', () => {
   beforeEach(() => {
@@ -22,13 +20,14 @@ context('Update educational qualifications within an Induction', () => {
     cy.task('stubLearnerProfile')
     cy.task('stubLearnerEducation')
     cy.task('stubUpdateInduction')
-    cy.task('stubGetInductionLongQuestionSet')
+    cy.task('stubGetInduction')
     cy.signIn()
   })
 
-  it('should display the Qualifications List page given Curious is unavailable', () => {
+  it('should display the Qualifications List page given Curious is unavailable for both Functional Skills and In-Prison Courses & Qualifications', () => {
     // Given
-    cy.task('stubLearnerProfile401Error')
+    cy.task('stubLearnerProfile401Error') // Functional Skills from come the Learner Profile
+    cy.task('stubLearnerEducation401Error') // In-Prison Courses & Qualifications come from the Learner Education
 
     const prisonNumber = 'G6115VJ'
 
@@ -37,8 +36,7 @@ context('Update educational qualifications within an Induction', () => {
     const qualificationsListPage = Page.verifyOnPage(QualificationsListPage)
 
     // Then
-    /* Long question set induction has highest level of education of UNDERGRADUATE_DEGREE_AT_UNIVERSITY
-       with the following qualifications:
+    /* Induction has highest level of education of UNDERGRADUATE_DEGREE_AT_UNIVERSITY with the following qualifications:
          French, grade C, LEVEL_3
          Maths, grade A, level LEVEL_3
          Maths, grade 1st, level LEVEL_6
@@ -46,7 +44,8 @@ context('Update educational qualifications within an Induction', () => {
     */
     qualificationsListPage //
       .hasEducationalQualifications(['French', 'Maths', 'Maths', 'English'])
-      .hasCuriousUnavailableMessageDisplayed()
+      .hasFunctionalSkillsCuriousUnavailableMessageDisplayed()
+      .hasInPrisonCoursesCuriousUnavailableMessageDisplayed()
   })
 
   it('should update Induction and redirect back to Education & Training page given Qualifications List page is submitted without having made any changes', () => {
@@ -57,8 +56,7 @@ context('Update educational qualifications within an Induction', () => {
       .hasBackLinkTo(`/plan/G6115VJ/view/education-and-training`)
       .backLinkHasAriaLabel(`Back to Daniel Craig's learning and work progress`)
 
-    /* Long question set induction has highest level of education of UNDERGRADUATE_DEGREE_AT_UNIVERSITY
-       with the following qualifications:
+    /* Induction has highest level of education of UNDERGRADUATE_DEGREE_AT_UNIVERSITY with the following qualifications:
          French, grade C, LEVEL_3
          Maths, grade A, level LEVEL_3
          Maths, grade 1st, level LEVEL_6
@@ -102,8 +100,7 @@ context('Update educational qualifications within an Induction', () => {
     cy.visit(`/prisoners/${prisonNumber}/induction/qualifications`)
     const qualificationsListPage = Page.verifyOnPage(QualificationsListPage)
 
-    /* Long question set induction has highest level of education of UNDERGRADUATE_DEGREE_AT_UNIVERSITY
-       with the following qualifications:
+    /* Induction has highest level of education of UNDERGRADUATE_DEGREE_AT_UNIVERSITY with the following qualifications:
          French, grade C, LEVEL_3
          Maths, grade A, level LEVEL_3
          Maths, grade 1st, level LEVEL_6
@@ -139,51 +136,41 @@ context('Update educational qualifications within an Induction', () => {
     )
   })
 
-  describe('screen flow tests', () => {
-    it('should update Induction and redirect to Education & Training page given all qualifications removed and added Highest Level of Qualification as non exam level', () => {
-      // Given
-      const prisonNumber = 'G6115VJ'
-      cy.visit(`/prisoners/${prisonNumber}/induction/qualifications`)
-      const qualificationsListPage = Page.verifyOnPage(QualificationsListPage) //
-        .hasBackLinkTo(`/plan/G6115VJ/view/education-and-training`)
-        .backLinkHasAriaLabel(`Back to Daniel Craig's learning and work progress`)
+  it('should remove all qualifications and call API to update Induction', () => {
+    // Given
+    const prisonNumber = 'G6115VJ'
+    cy.visit(`/prisoners/${prisonNumber}/induction/qualifications`)
+    const qualificationsListPage = Page.verifyOnPage(QualificationsListPage)
 
-      /* Long question set induction has highest level of education of UNDERGRADUATE_DEGREE_AT_UNIVERSITY
-         with the following qualifications:
-           French, grade C, LEVEL_3
-           Maths, grade A, level LEVEL_3
-           Maths, grade 1st, level LEVEL_6
-           English, grade A, level LEVEL_3
-      */
+    /* Induction has highest level of education of UNDERGRADUATE_DEGREE_AT_UNIVERSITY with the following qualifications:
+         French, grade C, LEVEL_3
+         Maths, grade A, level LEVEL_3
+         Maths, grade 1st, level LEVEL_6
+         English, grade A, level LEVEL_3
+    */
 
-      qualificationsListPage //
-        .hasEducationalQualifications(['French', 'Maths', 'Maths', 'English'])
+    qualificationsListPage //
+      .hasEducationalQualifications(['French', 'Maths', 'Maths', 'English'])
 
-      // When
-      qualificationsListPage // remove all the existing qualifications
-        .removeQualification(4)
-        .removeQualification(3)
-        .removeQualification(2)
-        .removeQualification(1)
-      qualificationsListPage.hasNoEducationalQualificationsDisplayed()
-      qualificationsListPage.submitPage()
+    // When
+    qualificationsListPage //
+      .removeQualification(4) // Remove Level 3 English
+      .removeQualification(3) // Remove Level 6 Maths
+      .removeQualification(2) // Remove Level 3 Maths
+      .removeQualification(1) // Remove Level 3 French
+    qualificationsListPage.hasNoEducationalQualificationsDisplayed()
+    qualificationsListPage.submitPage()
 
-      const highestLevelOfEducationPage = Page.verifyOnPage(HighestLevelOfEducationPage)
-      highestLevelOfEducationPage //
-        .selectHighestLevelOfEducation(EducationLevelValue.PRIMARY_SCHOOL)
-        .submitPage()
-
-      // Then
-      Page.verifyOnPage(EducationAndTrainingPage)
-      cy.wiremockVerify(
-        putRequestedFor(urlEqualTo(`/inductions/${prisonNumber}`)) //
-          .withRequestBody(
-            matchingJsonPath(
-              "$[?(@.previousQualifications.educationLevel == 'PRIMARY_SCHOOL' && " +
-                '@.previousQualifications.qualifications.size() == 0)]',
-            ),
+    // Then
+    Page.verifyOnPage(EducationAndTrainingPage)
+    cy.wiremockVerify(
+      putRequestedFor(urlEqualTo(`/inductions/${prisonNumber}`)) //
+        .withRequestBody(
+          matchingJsonPath(
+            "$[?(@.previousQualifications.educationLevel == 'UNDERGRADUATE_DEGREE_AT_UNIVERSITY' && " +
+              '@.previousQualifications.qualifications.size() == 0)]',
           ),
-      )
-    })
+        ),
+    )
   })
 })

@@ -21,7 +21,7 @@ context('Update additional training within an Induction', () => {
     cy.task('stubLearnerProfile')
     cy.task('stubLearnerEducation')
     cy.task('stubUpdateInduction')
-    cy.task('stubGetInductionShortQuestionSet')
+    cy.task('stubGetInduction')
     cy.signIn()
   })
 
@@ -36,9 +36,8 @@ context('Update additional training within an Induction', () => {
     // When
     additionalTrainingPage //
       .deSelectAdditionalTraining(AdditionalTrainingValue.FULL_UK_DRIVING_LICENCE)
-      .chooseAdditionalTraining(AdditionalTrainingValue.CSCS_CARD)
-      .chooseAdditionalTraining(AdditionalTrainingValue.OTHER)
-      .setAdditionalTrainingOther('Fire safety training')
+      .deSelectAdditionalTraining(AdditionalTrainingValue.OTHER)
+      .selectAdditionalTraining(AdditionalTrainingValue.CSCS_CARD)
       .submitPage()
 
     // Then
@@ -49,8 +48,7 @@ context('Update additional training within an Induction', () => {
           matchingJsonPath(
             '$[?(@.previousTraining.trainingTypes.size() == 2 && ' +
               "@.previousTraining.trainingTypes[0] == 'CSCS_CARD' && " +
-              "@.previousTraining.trainingTypes[1] == 'OTHER' && " +
-              "@.previousTraining.trainingTypeOther == 'Fire safety training')]",
+              "@.previousTraining.trainingTypes[1] == 'HGV_LICENCE')]",
           ),
         ),
     )
@@ -64,7 +62,7 @@ context('Update additional training within an Induction', () => {
 
     // When
     additionalTrainingPage //
-      .chooseAdditionalTraining(AdditionalTrainingValue.NONE)
+      .selectAdditionalTraining(AdditionalTrainingValue.NONE)
       .submitPage()
 
     // Then
@@ -87,7 +85,6 @@ context('Update additional training within an Induction', () => {
 
     // When
     additionalTrainingPage //
-      .chooseAdditionalTraining(AdditionalTrainingValue.OTHER)
       .clearAdditionalTrainingOther()
       .submitPage()
 
@@ -106,6 +103,8 @@ context('Update additional training within an Induction', () => {
     // When
     additionalTrainingPage //
       .deSelectAdditionalTraining(AdditionalTrainingValue.FULL_UK_DRIVING_LICENCE)
+      .deSelectAdditionalTraining(AdditionalTrainingValue.HGV_LICENCE)
+      .deSelectAdditionalTraining(AdditionalTrainingValue.OTHER)
       .submitPage()
 
     // Then

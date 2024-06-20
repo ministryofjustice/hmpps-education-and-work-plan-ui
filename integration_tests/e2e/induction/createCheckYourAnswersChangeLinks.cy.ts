@@ -20,7 +20,9 @@ import QualificationsListPage from '../../pages/induction/QualificationsListPage
 import EducationLevelValue from '../../../server/enums/educationLevelValue'
 import InPrisonTrainingValue from '../../../server/enums/inPrisonTrainingValue'
 import InPrisonWorkValue from '../../../server/enums/inPrisonWorkValue'
-import ReasonNotToGetWorkValue from '../../../server/enums/reasonNotToGetWorkValue'
+import HasWorkedBeforeValue from '../../../server/enums/hasWorkedBeforeValue'
+import FutureWorkInterestRolesPage from '../../pages/induction/FutureWorkInterestRolesPage'
+import FutureWorkInterestTypesPage from '../../pages/induction/FutureWorkInterestTypesPage'
 
 context(`Change links on the Check Your Answers page when creating an Induction`, () => {
   const prisonNumber = 'G6115VJ'
@@ -29,19 +31,42 @@ context(`Change links on the Check Your Answers page when creating an Induction`
     cy.signInAsUserWithEditAuthorityToArriveOnPrisonerListPage()
   })
 
-  it('should support all Change links on a Long Question Set Induction', () => {
+  it('should support all Change links on the Check Your Answers page when creating an Induction with all options', () => {
     // Given
-    cy.createLongQuestionSetInductionToArriveOnCheckYourAnswers(prisonNumber)
+    cy.createInductionToArriveOnCheckYourAnswers({
+      prisonNumber,
+      hasWorkedBefore: HasWorkedBeforeValue.YES,
+      hopingToGetWork: HopingToGetWorkValue.YES,
+      withQualifications: true,
+    })
     Page.verifyOnPage(CheckYourAnswersPage)
 
     // When
+    // Change in-prison training interests
+    Page.verifyOnPage(CheckYourAnswersPage)
+      .clickInPrisonTrainingInterestsChangeLink()
+      .hasBackLinkTo(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
+      .deSelectInPrisonTraining(InPrisonTrainingValue.FORKLIFT_DRIVING)
+      .selectInPrisonTraining(InPrisonTrainingValue.BARBERING_AND_HAIRDRESSING)
+      .selectInPrisonTraining(InPrisonTrainingValue.RUNNING_A_BUSINESS)
+      .submitPage()
+
+    // Change in-prison work interests
+    Page.verifyOnPage(CheckYourAnswersPage)
+      .clickInPrisonWorkInterestsChangeLink()
+      .hasBackLinkTo(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
+      .deSelectWorkType(InPrisonWorkValue.PRISON_LIBRARY)
+      .selectWorkType(InPrisonWorkValue.MAINTENANCE)
+      .selectWorkType(InPrisonWorkValue.TEXTILES_AND_SEWING)
+      .submitPage()
+
     // Change affecting ability to work
     Page.verifyOnPage(CheckYourAnswersPage)
       .clickFactorsAffectingAbilityToWorkChangeLink()
       .hasBackLinkTo(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
       .deSelectAffectAbilityToWork(AbilityToWorkValue.NONE)
-      .chooseAffectAbilityToWork(AbilityToWorkValue.LIMITED_BY_OFFENSE)
-      .chooseAffectAbilityToWork(AbilityToWorkValue.NO_RIGHT_TO_WORK)
+      .selectAffectAbilityToWork(AbilityToWorkValue.LIMITED_BY_OFFENCE)
+      .selectAffectAbilityToWork(AbilityToWorkValue.NO_RIGHT_TO_WORK)
       .submitPage()
 
     // Change personal interests
@@ -49,8 +74,8 @@ context(`Change links on the Check Your Answers page when creating an Induction`
       .clickPersonalInterestsChangeLink()
       .hasBackLinkTo(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
       .deSelectPersonalInterest(PersonalInterestsValue.COMMUNITY)
-      .choosePersonalInterest(PersonalInterestsValue.CRAFTS)
-      .choosePersonalInterest(PersonalInterestsValue.DIGITAL)
+      .selectPersonalInterest(PersonalInterestsValue.CRAFTS)
+      .selectPersonalInterest(PersonalInterestsValue.DIGITAL)
       .submitPage()
 
     // Change skills
@@ -58,8 +83,8 @@ context(`Change links on the Check Your Answers page when creating an Induction`
       .clickPersonalSkillsChangeLink()
       .hasBackLinkTo(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
       .deSelectSkill(SkillsValue.POSITIVE_ATTITUDE)
-      .chooseSkill(SkillsValue.TEAMWORK)
-      .chooseSkill(SkillsValue.RESILIENCE)
+      .selectSkill(SkillsValue.TEAMWORK)
+      .selectSkill(SkillsValue.RESILIENCE)
       .submitPage()
 
     // Change Other Training
@@ -67,8 +92,8 @@ context(`Change links on the Check Your Answers page when creating an Induction`
       .clickAdditionalTrainingChangeLink()
       .hasBackLinkTo(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
       .deSelectAdditionalTraining(AdditionalTrainingValue.HGV_LICENCE)
-      .chooseAdditionalTraining(AdditionalTrainingValue.MANUAL_HANDLING)
-      .chooseAdditionalTraining(AdditionalTrainingValue.CSCS_CARD)
+      .selectAdditionalTraining(AdditionalTrainingValue.MANUAL_HANDLING)
+      .selectAdditionalTraining(AdditionalTrainingValue.CSCS_CARD)
       .submitPage()
 
     // Change work interests
@@ -76,8 +101,8 @@ context(`Change links on the Check Your Answers page when creating an Induction`
       .clickWorkInterestsChangeLink()
       .hasBackLinkTo(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
       .deSelectWorkInterestType(WorkInterestTypeValue.DRIVING)
-      .chooseWorkInterestType(WorkInterestTypeValue.MANUFACTURING)
-      .chooseWorkInterestType(WorkInterestTypeValue.OUTDOOR)
+      .selectWorkInterestType(WorkInterestTypeValue.MANUFACTURING)
+      .selectWorkInterestType(WorkInterestTypeValue.OUTDOOR)
       .submitPage()
 
     // Change work interest roles
@@ -100,8 +125,8 @@ context(`Change links on the Check Your Answers page when creating an Induction`
     Page.verifyOnPage(CheckYourAnswersPage)
       .clickWorkExperienceTypesChangeLink()
       .hasBackLinkTo(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
-      .choosePreviousWorkExperience(TypeOfWorkExperienceValue.BEAUTY)
-      .choosePreviousWorkExperience(TypeOfWorkExperienceValue.DRIVING)
+      .selectPreviousWorkExperience(TypeOfWorkExperienceValue.BEAUTY)
+      .selectPreviousWorkExperience(TypeOfWorkExperienceValue.DRIVING)
       .submitPage()
     Page.verifyOnPage(PreviousWorkExperienceDetailPage) // Job details page for "construction" - assert existing values are still there but make no changes to them
       .hasBackLinkTo(`/prisoners/${prisonNumber}/create-induction/previous-work-experience`)
@@ -123,18 +148,18 @@ context(`Change links on the Check Your Answers page when creating an Induction`
     Page.verifyOnPage(CheckYourAnswersPage)
       .clickHasWorkedBeforeChangeLink()
       .hasBackLinkTo(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
-      .selectWorkedBefore(YesNoValue.NO)
+      .selectWorkedBefore(HasWorkedBeforeValue.NO)
       .submitPage()
     // Change worked before from No to Yes, which means the user is taken through the journey to add work experiences
     Page.verifyOnPage(CheckYourAnswersPage)
-      .hasWorkedBefore(YesNoValue.NO) // expect the value to now be No
+      .hasWorkedBefore(HasWorkedBeforeValue.NO) // expect the value to now be No
       .clickHasWorkedBeforeChangeLink()
       .hasBackLinkTo(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
-      .selectWorkedBefore(YesNoValue.YES)
+      .selectWorkedBefore(HasWorkedBeforeValue.YES)
       .submitPage()
     Page.verifyOnPage(PreviousWorkExperienceTypesPage)
-      .choosePreviousWorkExperience(TypeOfWorkExperienceValue.OFFICE)
-      .choosePreviousWorkExperience(TypeOfWorkExperienceValue.SPORTS)
+      .selectPreviousWorkExperience(TypeOfWorkExperienceValue.OFFICE)
+      .selectPreviousWorkExperience(TypeOfWorkExperienceValue.SPORTS)
       .submitPage()
     Page.verifyOnPage(PreviousWorkExperienceDetailPage)
       .hasBackLinkTo(`/prisoners/${prisonNumber}/create-induction/previous-work-experience`)
@@ -183,8 +208,7 @@ context(`Change links on the Check Your Answers page when creating an Induction`
     // Then
     Page.verifyOnPage(CheckYourAnswersPage) //
       .hasHopingToWorkOnRelease(HopingToGetWorkValue.YES)
-      .hasFactorsAffectingAbilityToWork(AbilityToWorkValue.LIMITED_BY_OFFENSE)
-      .hasFactorsAffectingAbilityToWork(AbilityToWorkValue.NO_RIGHT_TO_WORK)
+      .hasFactorsAffectingAbilityToWork([AbilityToWorkValue.LIMITED_BY_OFFENCE, AbilityToWorkValue.NO_RIGHT_TO_WORK])
       .hasPersonalInterest(PersonalInterestsValue.CRAFTS)
       .hasPersonalInterest(PersonalInterestsValue.DIGITAL)
       .hasPersonalSkill(SkillsValue.TEAMWORK)
@@ -192,7 +216,7 @@ context(`Change links on the Check Your Answers page when creating an Induction`
       .hasAdditionalTraining([AdditionalTrainingValue.MANUAL_HANDLING, AdditionalTrainingValue.CSCS_CARD])
       .hasWorkInterest(WorkInterestTypeValue.OUTDOOR)
       .hasWorkInterest(WorkInterestTypeValue.MANUFACTURING)
-      .hasWorkedBefore(YesNoValue.YES)
+      .hasWorkedBefore(HasWorkedBeforeValue.YES)
       .hasWorkExperience(
         TypeOfWorkExperienceValue.OFFICE,
         'Office junior',
@@ -204,82 +228,6 @@ context(`Change links on the Check Your Answers page when creating an Induction`
         'Coaching and motivating customers fitness goals',
       )
       .hasNoEducationalQualificationsDisplayed()
-  })
-
-  it('should support all Change links on a Short Question Set Induction', () => {
-    // Given
-    cy.createShortQuestionSetInductionToArriveOnCheckYourAnswers(prisonNumber)
-    Page.verifyOnPage(CheckYourAnswersPage)
-
-    // When
-    // Change in-prison training interests
-    Page.verifyOnPage(CheckYourAnswersPage)
-      .clickInPrisonTrainingInterestsChangeLink()
-      .hasBackLinkTo(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
-      .deSelectInPrisonTraining(InPrisonTrainingValue.FORKLIFT_DRIVING)
-      .chooseInPrisonTraining(InPrisonTrainingValue.BARBERING_AND_HAIRDRESSING)
-      .chooseInPrisonTraining(InPrisonTrainingValue.RUNNING_A_BUSINESS)
-      .submitPage()
-
-    // Change in-prison work interests
-    Page.verifyOnPage(CheckYourAnswersPage)
-      .clickInPrisonWorkInterestsChangeLink()
-      .hasBackLinkTo(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
-      .deSelectWorkType(InPrisonWorkValue.PRISON_LIBRARY)
-      .chooseWorkType(InPrisonWorkValue.MAINTENANCE)
-      .chooseWorkType(InPrisonWorkValue.TEXTILES_AND_SEWING)
-      .submitPage()
-
-    // Change Other Training
-    Page.verifyOnPage(CheckYourAnswersPage)
-      .clickAdditionalTrainingChangeLink()
-      .hasBackLinkTo(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
-      .deSelectAdditionalTraining(AdditionalTrainingValue.HGV_LICENCE)
-      .chooseAdditionalTraining(AdditionalTrainingValue.MANUAL_HANDLING)
-      .chooseAdditionalTraining(AdditionalTrainingValue.CSCS_CARD)
-      .submitPage()
-
-    // Change Educational Qualifications - add 1 qualification
-    Page.verifyOnPage(CheckYourAnswersPage)
-      .clickQualificationsChangeLink()
-      .hasBackLinkTo(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
-      .clickToAddAnotherQualification()
-    Page.verifyOnPage(QualificationLevelPage) //
-      .hasBackLinkTo(`/prisoners/${prisonNumber}/create-induction/qualifications`)
-      .selectQualificationLevel(QualificationLevelValue.LEVEL_1)
-      .submitPage()
-    Page.verifyOnPage(QualificationDetailsPage) //
-      .hasBackLinkTo(`/prisoners/${prisonNumber}/create-induction/qualification-level`)
-      .setQualificationSubject('Chemistry')
-      .setQualificationGrade('Merit')
-      .submitPage()
-    Page.verifyOnPage(QualificationsListPage) //
-      .hasBackLinkTo(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
-      .submitPage()
-
-    // Change Educational Qualifications - remove all remaining qualifications
-    Page.verifyOnPage(CheckYourAnswersPage)
-      .clickQualificationsChangeLink()
-      .hasBackLinkTo(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
-      .removeQualification(2) // The induction now has 2 qualifications on it. Remove them all
-      .removeQualification(1)
-      .submitPage()
-
-    // Change reasons for not wanting to work on release
-    Page.verifyOnPage(CheckYourAnswersPage)
-      .clickReasonsForNotWantingToWorkChangeLink()
-      .hasBackLinkTo(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
-      .deSelectReasonNotToGetWork(ReasonNotToGetWorkValue.FULL_TIME_CARER)
-      .chooseReasonNotToGetWork(ReasonNotToGetWorkValue.NO_RIGHT_TO_WORK)
-      .chooseReasonNotToGetWork(ReasonNotToGetWorkValue.RETIRED)
-      .submitPage()
-
-    // Then
-    Page.verifyOnPage(CheckYourAnswersPage) //
-      .hasHopingToWorkOnRelease(HopingToGetWorkValue.NO)
-      .hasReasonsForNotWantingToWork([ReasonNotToGetWorkValue.NO_RIGHT_TO_WORK, ReasonNotToGetWorkValue.RETIRED])
-      .hasNoEducationalQualificationsDisplayed()
-      .hasAdditionalTraining([AdditionalTrainingValue.MANUAL_HANDLING, AdditionalTrainingValue.CSCS_CARD])
       .hasInPrisonWorkInterests([InPrisonWorkValue.MAINTENANCE, InPrisonWorkValue.TEXTILES_AND_SEWING])
       .hasInPrisonTrainingInterests([
         InPrisonTrainingValue.BARBERING_AND_HAIRDRESSING,
@@ -287,19 +235,117 @@ context(`Change links on the Check Your Answers page when creating an Induction`
       ])
   })
 
-  it('should remove all qualifications on a Short Question Set Induction when Do They Want To Add Qualifications is changed to No', () => {
+  it('should support changing Hoping To Work from No to Yes', () => {
     // Given
-    const createInductionWithQualifications = true
-    cy.createShortQuestionSetInductionToArriveOnCheckYourAnswers(prisonNumber, createInductionWithQualifications)
+    cy.createInductionToArriveOnCheckYourAnswers({ prisonNumber, hopingToGetWork: HopingToGetWorkValue.NO })
     Page.verifyOnPage(CheckYourAnswersPage)
-      .hasWantsToAddQualificationsAs(YesNoValue.YES) // Induction starts off with qualifications
+
+    // When
+    Page.verifyOnPage(CheckYourAnswersPage)
+      .hasHopingToWorkOnRelease(HopingToGetWorkValue.NO)
+      .clickHopingToWorkOnReleaseChangeLink()
+      .hasBackLinkTo(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
+      .selectHopingWorkOnRelease(HopingToGetWorkValue.YES)
+      .submitPage()
+
+    Page.verifyOnPage(FutureWorkInterestTypesPage)
+      .hasBackLinkTo(`/prisoners/${prisonNumber}/create-induction/hoping-to-work-on-release`)
+      .selectWorkInterestType(WorkInterestTypeValue.MANUFACTURING)
+      .selectWorkInterestType(WorkInterestTypeValue.OUTDOOR)
+      .submitPage()
+
+    Page.verifyOnPage(FutureWorkInterestRolesPage)
+      .hasBackLinkTo(`/prisoners/${prisonNumber}/create-induction/work-interest-types`)
+      .setWorkInterestRole(WorkInterestTypeValue.MANUFACTURING, 'Welder')
+      .setWorkInterestRole(WorkInterestTypeValue.OUTDOOR, 'Gardener')
+      .submitPage()
+
+    // Then
+    Page.verifyOnPage(CheckYourAnswersPage) //
+      .hasHopingToWorkOnRelease(HopingToGetWorkValue.YES)
+      .hasWorkInterest(WorkInterestTypeValue.OUTDOOR)
+      .hasWorkInterest(WorkInterestTypeValue.MANUFACTURING)
+  })
+
+  it('should support changing Hoping To Work from Yes to No', () => {
+    // Given
+    cy.createInductionToArriveOnCheckYourAnswers({ prisonNumber, hopingToGetWork: HopingToGetWorkValue.YES })
+    Page.verifyOnPage(CheckYourAnswersPage)
+
+    // When
+    Page.verifyOnPage(CheckYourAnswersPage)
+      .hasHopingToWorkOnRelease(HopingToGetWorkValue.YES)
+      .clickHopingToWorkOnReleaseChangeLink()
+      .hasBackLinkTo(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
+      .selectHopingWorkOnRelease(HopingToGetWorkValue.NO)
+      .submitPage()
+
+    // Then
+    Page.verifyOnPage(CheckYourAnswersPage) //
+      .hasHopingToWorkOnRelease(HopingToGetWorkValue.NO)
+  })
+
+  it('should support changing has worked before from Yes to Not relevant', () => {
+    // Given
+    cy.createInductionToArriveOnCheckYourAnswers({ prisonNumber, hasWorkedBefore: HasWorkedBeforeValue.YES })
+    Page.verifyOnPage(CheckYourAnswersPage)
+
+    // When
+    // Change worked before (changing Yes to Not relevant which will return the user to Check Your Answers)
+    Page.verifyOnPage(CheckYourAnswersPage)
+      .clickHasWorkedBeforeChangeLink()
+      .hasBackLinkTo(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
+      .selectWorkedBefore(HasWorkedBeforeValue.NOT_RELEVANT)
+      .submitPage()
+    // Change worked before from Not relevant to Yes, which means the user is taken through the journey to add work experiences
+    Page.verifyOnPage(CheckYourAnswersPage)
+      .hasWorkedBefore(HasWorkedBeforeValue.NOT_RELEVANT) // expect the value to now be Not relevant
+      .clickHasWorkedBeforeChangeLink()
+      .hasBackLinkTo(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
+      .selectWorkedBefore(HasWorkedBeforeValue.YES)
+      .submitPage()
+    Page.verifyOnPage(PreviousWorkExperienceTypesPage)
+      .selectPreviousWorkExperience(TypeOfWorkExperienceValue.OFFICE)
+      .selectPreviousWorkExperience(TypeOfWorkExperienceValue.SPORTS)
+      .submitPage()
+    Page.verifyOnPage(PreviousWorkExperienceDetailPage)
+      .hasBackLinkTo(`/prisoners/${prisonNumber}/create-induction/previous-work-experience`)
+      .setJobRole('Office junior')
+      .setJobDetails('Filing and photocopying: Sept 2000 - Dec 2009')
+      .submitPage()
+    Page.verifyOnPage(PreviousWorkExperienceDetailPage)
+      .hasBackLinkTo(`/prisoners/${prisonNumber}/create-induction/previous-work-experience/office`)
+      .setJobRole('Gym instructor')
+      .setJobDetails('Coaching and motivating customers fitness goals')
+      .submitPage()
+
+    // Then
+    Page.verifyOnPage(CheckYourAnswersPage) //
+      .hasWorkedBefore(HasWorkedBeforeValue.YES)
+      .hasWorkExperience(
+        TypeOfWorkExperienceValue.OFFICE,
+        'Office junior',
+        'Filing and photocopying: Sept 2000 - Dec 2009',
+      )
+      .hasWorkExperience(
+        TypeOfWorkExperienceValue.SPORTS,
+        'Gym instructor',
+        'Coaching and motivating customers fitness goals',
+      )
+  })
+
+  it('should remove all qualifications', () => {
+    // Given
+    cy.createInductionToArriveOnCheckYourAnswers({ prisonNumber, withQualifications: true })
+    // Induction has 1 qualification at this point
+    Page.verifyOnPage(CheckYourAnswersPage) //
       .hasEducationalQualificationsDisplayed()
 
     // When
     Page.verifyOnPage(CheckYourAnswersPage) //
-      .clickWantsToAddQualificationsChangeLink()
+      .clickQualificationsChangeLink()
       .hasBackLinkTo(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
-      .selectWantToAddQualifications(YesNoValue.NO)
+      .removeQualification(1)
       .submitPage()
 
     // Then
@@ -308,10 +354,9 @@ context(`Change links on the Check Your Answers page when creating an Induction`
       .hasNoEducationalQualificationsDisplayed()
   })
 
-  it('should start the qualifications mini-flow on a Short Question Set Induction with no qualifications when Do They Want To Add Qualifications is changed to Yes', () => {
+  it('should start the qualifications mini-flow for an Induction with no qualifications when Do They Want To Add Qualifications is changed to Yes', () => {
     // Given
-    const createInductionWithQualifications = false
-    cy.createShortQuestionSetInductionToArriveOnCheckYourAnswers(prisonNumber, createInductionWithQualifications)
+    cy.createInductionToArriveOnCheckYourAnswers({ prisonNumber, withQualifications: false })
     Page.verifyOnPage(CheckYourAnswersPage)
       .hasWantsToAddQualificationsAs(YesNoValue.NO) // Induction starts off with no qualifications
       .hasNoEducationalQualificationsDisplayed()
@@ -337,8 +382,7 @@ context(`Change links on the Check Your Answers page when creating an Induction`
       .submitPage()
 
     // Then
-    Page.verifyOnPage(CheckYourAnswersPage)
-      .hasWantsToAddQualificationsAs(YesNoValue.YES)
+    Page.verifyOnPage(CheckYourAnswersPage) //
       .hasEducationalQualifications(['Chemistry'])
   })
 })

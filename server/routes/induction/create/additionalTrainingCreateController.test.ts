@@ -2,10 +2,7 @@ import type { SessionData } from 'express-session'
 import { NextFunction, Request, Response } from 'express'
 import type { AdditionalTrainingForm } from 'inductionForms'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
-import {
-  aLongQuestionSetInductionDto,
-  aShortQuestionSetInductionDto,
-} from '../../../testsupport/inductionDtoTestDataBuilder'
+import aValidInductionDto from '../../../testsupport/inductionDtoTestDataBuilder'
 import AdditionalTrainingValue from '../../../enums/additionalTrainingValue'
 import AdditionalTrainingCreateController from './additionalTrainingCreateController'
 
@@ -41,7 +38,7 @@ describe('additionalTrainingCreateController', () => {
   describe('getAdditionalTrainingView', () => {
     it('should get Additional Training view given there is no AdditionalTrainingForm on the session', async () => {
       // Given
-      const inductionDto = aShortQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       inductionDto.previousTraining = undefined
       req.session.inductionDto = inductionDto
       req.session.additionalTrainingForm = undefined
@@ -72,7 +69,7 @@ describe('additionalTrainingCreateController', () => {
 
     it('should get the Additional Training view given there is an AdditionalTrainingForm already on the session', async () => {
       // Given
-      const inductionDto = aShortQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       inductionDto.previousTraining = undefined
       req.session.inductionDto = inductionDto
 
@@ -104,7 +101,7 @@ describe('additionalTrainingCreateController', () => {
 
     it('should get the Ability To Work view given the previous page was Check Your Answers', async () => {
       // Given
-      const inductionDto = aLongQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       inductionDto.previousTraining = undefined
       req.session.inductionDto = inductionDto
       req.session.additionalTrainingForm = undefined
@@ -152,7 +149,7 @@ describe('additionalTrainingCreateController', () => {
   describe('submitAdditionalTrainingForm', () => {
     it('should not update Induction given form is submitted with validation errors', async () => {
       // Given
-      const inductionDto = aShortQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       inductionDto.previousTraining = undefined
       req.session.inductionDto = inductionDto
 
@@ -186,9 +183,9 @@ describe('additionalTrainingCreateController', () => {
       expect(req.session.inductionDto).toEqual(inductionDto)
     })
 
-    it('should update InductionDto and redirect to Has Worked Before view given long question set journey', async () => {
+    it('should update InductionDto and redirect to Has Worked Before', async () => {
       // Given
-      const inductionDto = aLongQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       inductionDto.previousTraining = undefined
       req.session.inductionDto = inductionDto
 
@@ -219,43 +216,9 @@ describe('additionalTrainingCreateController', () => {
       expect(req.session.additionalTrainingForm).toBeUndefined()
     })
 
-    it('should update InductionDto and redirect to In Prison Work view given short question set journey', async () => {
-      // Given
-      const inductionDto = aShortQuestionSetInductionDto()
-      inductionDto.previousTraining = undefined
-      req.session.inductionDto = inductionDto
-
-      const additionalTrainingForm = {
-        additionalTraining: [AdditionalTrainingValue.HGV_LICENCE, AdditionalTrainingValue.OTHER],
-        additionalTrainingOther: 'Italian cookery for IT professionals',
-      }
-      req.body = additionalTrainingForm
-      req.session.additionalTrainingForm = undefined
-
-      const expectedUpdatedAdditionalTraining = ['HGV_LICENCE', 'OTHER']
-      const expectedUpdatedAdditionalTrainingOther = 'Italian cookery for IT professionals'
-
-      req.session.updateInductionQuestionSet = { hopingToWorkOnRelease: 'YES' }
-      const expectedNextPage = '/prisoners/A1234BC/create-induction/in-prison-work'
-
-      // When
-      await controller.submitAdditionalTrainingForm(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
-
-      // Then
-      const updatedInductionDto = req.session.inductionDto
-      expect(updatedInductionDto.previousTraining.trainingTypes).toEqual(expectedUpdatedAdditionalTraining)
-      expect(updatedInductionDto.previousTraining.trainingTypeOther).toEqual(expectedUpdatedAdditionalTrainingOther)
-      expect(res.redirect).toHaveBeenCalledWith(expectedNextPage)
-      expect(req.session.additionalTrainingForm).toBeUndefined()
-    })
-
     it('should update InductionDto and redirect to Check Your Answers given previous page was Check Your Answers', async () => {
       // Given
-      const inductionDto = aShortQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       req.session.inductionDto = inductionDto
 
       const additionalTrainingForm = {

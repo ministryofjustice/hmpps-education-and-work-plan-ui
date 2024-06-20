@@ -3,7 +3,7 @@ import type { SessionData } from 'express-session'
 import type { InductionDto } from 'inductionDto'
 import HighestLevelOfEducationCreateController from './highestLevelOfEducationCreateController'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
-import { aLongQuestionSetInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
+import aValidInductionDto from '../../../testsupport/inductionDtoTestDataBuilder'
 import EducationLevelValue from '../../../enums/educationLevelValue'
 
 describe('highestLevelOfEducationCreateController', () => {
@@ -38,7 +38,7 @@ describe('highestLevelOfEducationCreateController', () => {
   describe('getHighestLevelOfEducationView', () => {
     it('should get the Highest Level of Education view given the induction on the session has no qualification related data set', async () => {
       // Given
-      const inductionDto = aLongQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       inductionDto.previousQualifications = undefined
       req.session.inductionDto = inductionDto
       req.session.highestLevelOfEducationForm = undefined
@@ -50,8 +50,9 @@ describe('highestLevelOfEducationCreateController', () => {
       const expectedView = {
         prisonerSummary,
         form: expectedHighestLevelOfEducationForm,
-        backLinkUrl: '/prisoners/A1234BC/create-induction/qualifications',
-        backLinkAriaText: `Back to Jimmy Lightfingers's qualifications`,
+        backLinkUrl: '/prisoners/A1234BC/create-induction/affect-ability-to-work',
+        backLinkAriaText:
+          'Back to What does Jimmy Lightfingers feel could stop or affect them working when they are out of prison?',
       }
 
       // When
@@ -72,7 +73,7 @@ describe('highestLevelOfEducationCreateController', () => {
 
     it('should get the Highest Level of Education view a Highest Level of Education form is on the session', async () => {
       // Given
-      const inductionDto = aLongQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       inductionDto.previousQualifications = undefined
       req.session.inductionDto = inductionDto
 
@@ -84,8 +85,9 @@ describe('highestLevelOfEducationCreateController', () => {
       const expectedView = {
         prisonerSummary,
         form: expectedHighestLevelOfEducationForm,
-        backLinkUrl: '/prisoners/A1234BC/create-induction/qualifications',
-        backLinkAriaText: `Back to Jimmy Lightfingers's qualifications`,
+        backLinkUrl: '/prisoners/A1234BC/create-induction/affect-ability-to-work',
+        backLinkAriaText:
+          'Back to What does Jimmy Lightfingers feel could stop or affect them working when they are out of prison?',
       }
 
       // When
@@ -106,7 +108,7 @@ describe('highestLevelOfEducationCreateController', () => {
 
     it('should get the Highest Level of Education view given the previous page was Check Your Answers', async () => {
       // Given
-      const inductionDto = aLongQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       inductionDto.personalSkillsAndInterests.skills = undefined
       req.session.inductionDto = inductionDto
 
@@ -155,7 +157,7 @@ describe('highestLevelOfEducationCreateController', () => {
   describe('submitHighestLevelOfEducationForm', () => {
     it('should redisplay page given form is submitted with validation errors', async () => {
       // Given
-      const inductionDto = aLongQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       inductionDto.previousQualifications = undefined
       req.session.inductionDto = inductionDto
 
@@ -188,9 +190,9 @@ describe('highestLevelOfEducationCreateController', () => {
       expect(req.session.inductionDto).toEqual(inductionDto)
     })
 
-    it('should redirect to Qualification Level page given form is submitted with level of education that requires exams', async () => {
+    it('should redirect to Do You Want To Record Any Qualifications page', async () => {
       // Given
-      const inductionDto = aLongQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       inductionDto.previousQualifications = undefined
       req.session.inductionDto = inductionDto
 
@@ -203,7 +205,7 @@ describe('highestLevelOfEducationCreateController', () => {
       const expectedInduction = {
         ...inductionDto,
         previousQualifications: {
-          qualifications: [],
+          qualifications: undefined,
           educationLevel: EducationLevelValue.FURTHER_EDUCATION_COLLEGE,
         },
       } as InductionDto
@@ -216,47 +218,14 @@ describe('highestLevelOfEducationCreateController', () => {
       )
 
       // Then
-      expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-induction/qualification-level')
-      expect(req.session.highestLevelOfEducationForm).toBeUndefined()
-      expect(req.session.inductionDto).toEqual(expectedInduction)
-    })
-
-    it('should redirect to Additional Training page given form is submitted with level of education that does not require exams', async () => {
-      // Given
-      const inductionDto = aLongQuestionSetInductionDto()
-      inductionDto.previousQualifications = undefined
-      req.session.inductionDto = inductionDto
-
-      const highestLevelOfEducationForm = {
-        educationLevel: EducationLevelValue.PRIMARY_SCHOOL,
-      }
-      req.body = highestLevelOfEducationForm
-      req.session.highestLevelOfEducationForm = undefined
-
-      const expectedInduction = {
-        ...inductionDto,
-        previousQualifications: {
-          qualifications: [],
-          educationLevel: EducationLevelValue.PRIMARY_SCHOOL,
-        },
-      } as InductionDto
-
-      // When
-      await controller.submitHighestLevelOfEducationForm(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
-
-      // Then
-      expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-induction/additional-training')
+      expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-induction/want-to-add-qualifications')
       expect(req.session.highestLevelOfEducationForm).toBeUndefined()
       expect(req.session.inductionDto).toEqual(expectedInduction)
     })
 
     it('should update inductionDto and redirect to Check Your Answers given previous page was Check Your Answers', async () => {
       // Given
-      const inductionDto = aLongQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       inductionDto.previousQualifications = undefined
       req.session.inductionDto = inductionDto
 
@@ -269,7 +238,7 @@ describe('highestLevelOfEducationCreateController', () => {
       const expectedInduction = {
         ...inductionDto,
         previousQualifications: {
-          qualifications: [],
+          qualifications: undefined,
           educationLevel: EducationLevelValue.FURTHER_EDUCATION_COLLEGE,
         },
       } as InductionDto

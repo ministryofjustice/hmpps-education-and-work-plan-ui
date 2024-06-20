@@ -21,11 +21,11 @@ context('Update highest level of education within an Induction', () => {
     cy.task('stubLearnerProfile')
     cy.task('stubLearnerEducation')
     cy.task('stubUpdateInduction')
-    cy.task('stubGetInductionLongQuestionSet')
+    cy.task('stubGetInduction')
     cy.signIn()
   })
 
-  /* Long question set induction has highest level of education of UNDERGRADUATE_DEGREE_AT_UNIVERSITY
+  /* Induction has highest level of education of UNDERGRADUATE_DEGREE_AT_UNIVERSITY
      with the following qualifications:
        French, grade C, LEVEL_3
        Maths, grade A, level LEVEL_3
@@ -111,8 +111,8 @@ context('Update highest level of education within an Induction', () => {
 
   it('should update Induction containing no previous qualifications given form submitted with non exam level highest level of education', () => {
     // Given
-    cy.task('stubGetInductionLongQuestionSetWithNoQualifications')
-    // Induction has highest level of education as PRIMARY_SCHOOL with no previously recorded qualifications
+    cy.task('stubGetInduction', { hasQualifications: false })
+    // Induction has highest level of education as UNDERGRADUATE_DEGREE_AT_UNIVERSITY with no previously recorded qualifications
 
     const prisonNumber = 'G6115VJ'
     cy.visit(`/prisoners/${prisonNumber}/induction/highest-level-of-education`)
@@ -133,6 +133,33 @@ context('Update highest level of education within an Induction', () => {
           matchingJsonPath(
             "$[?(@.previousQualifications.educationLevel == 'SECONDARY_SCHOOL_LEFT_BEFORE_TAKING_EXAMS' && " +
               '@.previousQualifications.qualifications.size() == 0)]',
+          ),
+        ),
+    )
+  })
+
+  it('should update highest level of education given induction created with the original short question set which did not ask about highest level of education', () => {
+    // Given
+    const prisonNumber = 'G6115VJ'
+    cy.task('stubGetOriginalQuestionSetInduction', { questionSet: 'SHORT' }) // The original short question set Induction did not ask about Highest Level of Education
+    cy.visit(`/plan/${prisonNumber}/view/education-and-training`)
+    Page.verifyOnPage(EducationAndTrainingPage) //
+      .highestLevelOfEducationChangeLinkHasText('Add')
+      .clickToChangeHighestLevelOfEducation()
+
+    // When
+    Page.verifyOnPage(HighestLevelOfEducationPage)
+      .selectHighestLevelOfEducation(EducationLevelValue.SECONDARY_SCHOOL_LEFT_BEFORE_TAKING_EXAMS)
+      .submitPage()
+
+    // Then
+    Page.verifyOnPage(EducationAndTrainingPage)
+    cy.wiremockVerify(
+      putRequestedFor(urlEqualTo(`/inductions/${prisonNumber}`)) //
+        .withRequestBody(
+          matchingJsonPath(
+            "$[?(@.previousQualifications.educationLevel == 'SECONDARY_SCHOOL_LEFT_BEFORE_TAKING_EXAMS' && " +
+              '@.previousQualifications.qualifications.size() == 4)]',
           ),
         ),
     )

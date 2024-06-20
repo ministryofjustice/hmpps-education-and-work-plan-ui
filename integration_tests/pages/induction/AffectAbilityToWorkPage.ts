@@ -10,7 +10,7 @@ export default class AffectAbilityToWorkPage extends InductionPage {
     super('induction-affect-ability-to-work')
   }
 
-  chooseAffectAbilityToWork(option: AbilityToWorkValue): AffectAbilityToWorkPage {
+  selectAffectAbilityToWork(option: AbilityToWorkValue): AffectAbilityToWorkPage {
     this.checkbox(option).then(checkbox => {
       if (!checkbox.attr('checked')) {
         cy.wrap(checkbox).click()

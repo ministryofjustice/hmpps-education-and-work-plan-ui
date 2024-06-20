@@ -21,7 +21,7 @@ context('Update Personal Interests in the Induction', () => {
     cy.task('stubLearnerProfile')
     cy.task('stubLearnerEducation')
     cy.task('stubUpdateInduction')
-    cy.task('stubGetInductionLongQuestionSet')
+    cy.task('stubGetInduction')
     cy.signIn()
   })
 
@@ -33,14 +33,14 @@ context('Update Personal Interests in the Induction', () => {
       .hasBackLinkTo(`/plan/${prisonNumber}/view/work-and-interests`)
       .backLinkHasAriaLabel(`Back to Daniel Craig's learning and work progress`)
 
-    // stubGetInductionLongQuestionSet has personal interests of Creative, Digital, Solo Activity, and Other (Car boot sales)
+    // Induction has personal interests of Creative, Digital, Solo Activity, and Other (Car boot sales)
 
     // When
     personalInterestsPage //
       .deSelectPersonalInterest(PersonalInterestsValue.SOLO_ACTIVITIES)
       .deSelectPersonalInterest(PersonalInterestsValue.CREATIVE)
-      .choosePersonalInterest(PersonalInterestsValue.SOCIAL)
-      .choosePersonalInterest(PersonalInterestsValue.OTHER)
+      .selectPersonalInterest(PersonalInterestsValue.SOCIAL)
+      .selectPersonalInterest(PersonalInterestsValue.OTHER)
       .setOtherPersonalInterestType('Cryptocurrency')
       .submitPage()
 
@@ -65,11 +65,11 @@ context('Update Personal Interests in the Induction', () => {
     cy.visit(`/prisoners/${prisonNumber}/induction/personal-interests`)
     const personalInterestsPage = Page.verifyOnPage(PersonalInterestsPage)
 
-    // stubGetInductionLongQuestionSet has personal interests of Creative, Digital, Solo Activity, and Other (Car boot sales)
+    // Induction has personal interests of Creative, Digital, Solo Activity, and Other (Car boot sales)
 
     // When
     personalInterestsPage //
-      .choosePersonalInterest(PersonalInterestsValue.NONE)
+      .selectPersonalInterest(PersonalInterestsValue.NONE)
       .submitPage()
 
     // Then
@@ -93,7 +93,7 @@ context('Update Personal Interests in the Induction', () => {
 
     // When
     personalInterestsPage //
-      .choosePersonalInterest(PersonalInterestsValue.OTHER)
+      .selectPersonalInterest(PersonalInterestsValue.OTHER)
       .clearOtherPersonalInterestType()
       .submitPage()
 
@@ -101,5 +101,35 @@ context('Update Personal Interests in the Induction', () => {
     personalInterestsPage = Page.verifyOnPage(PersonalInterestsPage)
     personalInterestsPage.hasFieldInError('personalInterestsOther')
     cy.wiremockVerifyNoInteractions(putRequestedFor(urlEqualTo(`/inductions/${prisonNumber}`)))
+  })
+
+  it('should update personal interests given induction created with the original short question set that did not ask about personal interests', () => {
+    // Given
+    const prisonNumber = 'G6115VJ'
+    cy.task('stubGetOriginalQuestionSetInduction', { questionSet: 'SHORT' }) // The original short question set Induction did not ask about personal interests
+    cy.visit(`/plan/${prisonNumber}/view/work-and-interests`)
+    Page.verifyOnPage(WorkAndInterestsPage) //
+      .personalInterestsChangeLinkHasText('Add')
+      .clickPersonalInterestsChangeLink()
+
+    // When
+    Page.verifyOnPage(PersonalInterestsPage) //
+      .selectPersonalInterest(PersonalInterestsValue.SOCIAL)
+      .selectPersonalInterest(PersonalInterestsValue.OTHER)
+      .setOtherPersonalInterestType('Cryptocurrency')
+      .submitPage()
+
+    // Then
+    Page.verifyOnPage(WorkAndInterestsPage)
+    cy.wiremockVerify(
+      putRequestedFor(urlEqualTo(`/inductions/${prisonNumber}`)) //
+        .withRequestBody(
+          matchingJsonPath(
+            '$[?(@.personalSkillsAndInterests.interests.size() == 2 && ' +
+              "@.personalSkillsAndInterests.interests[0].interestType == 'SOCIAL' && !@.personalSkillsAndInterests.interests[0].interestTypeOther && " +
+              "@.personalSkillsAndInterests.interests[1].interestType == 'OTHER' && @.personalSkillsAndInterests.interests[1].interestTypeOther == 'Cryptocurrency')]",
+          ),
+        ),
+    )
   })
 })

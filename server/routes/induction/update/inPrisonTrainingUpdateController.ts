@@ -53,13 +53,6 @@ export default class InPrisonTrainingUpdateController extends InPrisonTrainingCo
 
     const updatedInduction = this.updatedInductionDtoWithInPrisonTraining(inductionDto, inPrisonTrainingForm)
 
-    // if we are switching from the long question set to the short one, forward to the check your answers page
-    if (req.session.updateInductionQuestionSet) {
-      req.session.inductionDto = updatedInduction
-      req.session.inPrisonTrainingForm = undefined
-      return res.redirect(`/prisoners/${prisonNumber}/induction/check-your-answers`)
-    }
-
     try {
       const updateInductionDto = toCreateOrUpdateInductionDto(prisonId, updatedInduction)
       await this.inductionService.updateInduction(prisonNumber, updateInductionDto, req.user.token)

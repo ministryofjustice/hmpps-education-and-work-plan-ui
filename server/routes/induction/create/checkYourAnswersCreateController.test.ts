@@ -2,9 +2,9 @@ import createError from 'http-errors'
 import { NextFunction, Request, Response } from 'express'
 import type { SessionData } from 'express-session'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
-import { aShortQuestionSetInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
+import aValidInductionDto from '../../../testsupport/inductionDtoTestDataBuilder'
 import CheckYourAnswersCreateController from './checkYourAnswersCreateController'
-import { aShortQuestionSetCreateInductionDto } from '../../../testsupport/createInductionDtoTestDataBuilder'
+import aValidCreateOrUpdateInductionDto from '../../../testsupport/createInductionDtoTestDataBuilder'
 import InductionService from '../../../services/inductionService'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
 
@@ -43,7 +43,7 @@ describe('checkYourAnswersCreateController', () => {
   describe('getCheckYourAnswersView', () => {
     it('should get the Check Your Answers view', async () => {
       // Given
-      const inductionDto = aShortQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       req.session.inductionDto = inductionDto
 
       // When
@@ -65,10 +65,10 @@ describe('checkYourAnswersCreateController', () => {
   describe('submitCheckYourAnswers', () => {
     it('should create Induction and call API and redirect to induction created callback page', async () => {
       // Given
-      const inductionDto = aShortQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       req.session.inductionDto = inductionDto
 
-      const createInductionDto = aShortQuestionSetCreateInductionDto()
+      const createInductionDto = aValidCreateOrUpdateInductionDto()
       mockedCreateOrUpdateInductionDtoMapper.mockReturnValueOnce(createInductionDto)
 
       // When
@@ -88,10 +88,10 @@ describe('checkYourAnswersCreateController', () => {
 
     it('should not create Induction given error calling service', async () => {
       // Given
-      const inductionDto = aShortQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       req.session.inductionDto = inductionDto
 
-      const createInductionDto = aShortQuestionSetCreateInductionDto()
+      const createInductionDto = aValidCreateOrUpdateInductionDto()
       mockedCreateOrUpdateInductionDtoMapper.mockReturnValueOnce(createInductionDto)
 
       inductionService.createInduction.mockRejectedValue(createError(500, 'Service unavailable'))

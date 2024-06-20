@@ -8,10 +8,10 @@ export default class WorkInterestRolesCreateController extends WorkInterestRoles
   getBackLinkUrl(req: Request): string {
     const { prisonNumber } = req.params
     const { pageFlowHistory } = req.session
-    if (pageFlowHistory) {
-      return getPreviousPage(pageFlowHistory)
-    }
-    return `/prisoners/${prisonNumber}/create-induction/work-interest-types`
+    const previousPage =
+      (pageFlowHistory && getPreviousPage(pageFlowHistory)) ||
+      `/prisoners/${prisonNumber}/create-induction/work-interest-types`
+    return previousPage
   }
 
   getBackLinkAriaText(req: Request): string {
@@ -31,8 +31,9 @@ export default class WorkInterestRolesCreateController extends WorkInterestRoles
 
     req.session.inductionDto = this.updatedInductionDtoWithWorkInterestRoles(inductionDto, workInterestRolesForm)
 
-    return this.previousPageWasCheckYourAnswers(req)
-      ? res.redirect(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
-      : res.redirect(`/prisoners/${prisonNumber}/create-induction/skills`)
+    const nextPage = this.checkYourAnswersIsInThePageHistory(req)
+      ? `/prisoners/${prisonNumber}/create-induction/check-your-answers`
+      : `/prisoners/${prisonNumber}/create-induction/affect-ability-to-work`
+    return res.redirect(nextPage)
   }
 }

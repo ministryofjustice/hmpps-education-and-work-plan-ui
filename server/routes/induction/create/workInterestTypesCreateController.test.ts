@@ -3,7 +3,7 @@ import type { SessionData } from 'express-session'
 import type { WorkInterestTypesForm } from 'inductionForms'
 import type { FutureWorkInterestDto } from 'inductionDto'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
-import { aLongQuestionSetInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
+import aValidInductionDto from '../../../testsupport/inductionDtoTestDataBuilder'
 import WorkInterestTypeValue from '../../../enums/workInterestTypeValue'
 import WorkInterestTypesCreateController from './workInterestTypesCreateController'
 
@@ -39,7 +39,7 @@ describe('workInterestTypesCreateController', () => {
   describe('getWorkInterestTypesView', () => {
     it('should get the Work Interest Types view given there is no WorkInterestTypesForm on the session', async () => {
       // Given
-      const inductionDto = aLongQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       inductionDto.futureWorkInterests = undefined
       req.session.inductionDto = inductionDto
       req.session.workInterestTypesForm = undefined
@@ -52,8 +52,8 @@ describe('workInterestTypesCreateController', () => {
       const expectedView = {
         prisonerSummary,
         form: expectedWorkInterestTypesForm,
-        backLinkUrl: '/prisoners/A1234BC/create-induction/has-worked-before',
-        backLinkAriaText: 'Back to Has Jimmy Lightfingers worked before?',
+        backLinkUrl: '/prisoners/A1234BC/create-induction/hoping-to-work-on-release',
+        backLinkAriaText: `Back to Is Jimmy Lightfingers hoping to get work when they're released?`,
       }
 
       // When
@@ -71,7 +71,7 @@ describe('workInterestTypesCreateController', () => {
 
     it('should get the Work Interest Types view given there is an WorkInterestTypesForm already on the session', async () => {
       // Given
-      const inductionDto = aLongQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       inductionDto.futureWorkInterests = undefined
       req.session.inductionDto = inductionDto
 
@@ -88,8 +88,8 @@ describe('workInterestTypesCreateController', () => {
       const expectedView = {
         prisonerSummary,
         form: expectedWorkInterestTypesForm,
-        backLinkUrl: '/prisoners/A1234BC/create-induction/has-worked-before',
-        backLinkAriaText: 'Back to Has Jimmy Lightfingers worked before?',
+        backLinkUrl: '/prisoners/A1234BC/create-induction/hoping-to-work-on-release',
+        backLinkAriaText: `Back to Is Jimmy Lightfingers hoping to get work when they're released?`,
       }
 
       // When
@@ -107,7 +107,7 @@ describe('workInterestTypesCreateController', () => {
 
     it('should get the Work Interest Types view given the previous page was Check Your Answers', async () => {
       // Given
-      const inductionDto = aLongQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       inductionDto.futureWorkInterests = undefined
       req.session.inductionDto = inductionDto
       req.session.workInterestTypesForm = undefined
@@ -155,7 +155,7 @@ describe('workInterestTypesCreateController', () => {
   describe('submitWorkInterestTypesForm', () => {
     it('should not update Induction given form is submitted with validation errors', async () => {
       // Given
-      const inductionDto = aLongQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       inductionDto.futureWorkInterests = undefined
       req.session.inductionDto = inductionDto
 
@@ -191,7 +191,7 @@ describe('workInterestTypesCreateController', () => {
 
     it('should update InductionDto and redirect to Work Interests Details', async () => {
       // Given
-      const inductionDto = aLongQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       inductionDto.futureWorkInterests = undefined
       req.session.inductionDto = inductionDto
 
@@ -226,7 +226,7 @@ describe('workInterestTypesCreateController', () => {
 
     it('should update inductionDto and redirect to Check Your Answers given previous page was Check Your Answers', async () => {
       // Given
-      const inductionDto = aLongQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       inductionDto.futureWorkInterests = undefined
       req.session.inductionDto = inductionDto
 

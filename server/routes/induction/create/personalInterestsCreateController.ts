@@ -10,10 +10,9 @@ export default class PersonalInterestsCreateController extends PersonalInterests
   getBackLinkUrl(req: Request): string {
     const { prisonNumber } = req.params
     const { pageFlowHistory } = req.session
-    if (pageFlowHistory) {
-      return getPreviousPage(pageFlowHistory)
-    }
-    return `/prisoners/${prisonNumber}/create-induction/skills`
+    const previousPage =
+      (pageFlowHistory && getPreviousPage(pageFlowHistory)) || `/prisoners/${prisonNumber}/create-induction/skills`
+    return previousPage
   }
 
   getBackLinkAriaText(req: Request): string {
@@ -43,8 +42,9 @@ export default class PersonalInterestsCreateController extends PersonalInterests
     req.session.inductionDto = updatedInduction
     req.session.personalInterestsForm = undefined
 
-    return this.previousPageWasCheckYourAnswers(req)
-      ? res.redirect(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
-      : res.redirect(`/prisoners/${prisonNumber}/create-induction/affect-ability-to-work`)
+    const nextPage = this.previousPageWasCheckYourAnswers(req)
+      ? `/prisoners/${prisonNumber}/create-induction/check-your-answers`
+      : `/prisoners/${prisonNumber}/create-induction/in-prison-work`
+    return res.redirect(nextPage)
   }
 }

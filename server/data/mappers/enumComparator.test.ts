@@ -1,13 +1,16 @@
 import enumComparator from './enumComparator'
+import InPrisonWorkValue from '../../enums/inPrisonWorkValue'
+import InPrisonTrainingValue from '../../enums/inPrisonTrainingValue'
+import AbilityToWorkValue from '../../enums/abilityToWorkValue'
 
 describe('enumComparator', () => {
   it(`should determine if a ENUM string is alphabetically before another ENUM string`, () => {
     // Given
-    const enumString1 = 'CLEANING_AND_HYGIENE'
-    const enumString2 = 'WOODWORK_AND_JOINERY'
+    const enum1 = InPrisonWorkValue.CLEANING_AND_HYGIENE
+    const enum2 = InPrisonWorkValue.WOODWORK_AND_JOINERY
 
     // When
-    const actual = enumComparator(enumString1, enumString2)
+    const actual = enumComparator(enum1, enum2)
 
     // Then
     expect(actual).toEqual(-1)
@@ -15,11 +18,11 @@ describe('enumComparator', () => {
 
   it(`should determine if a ENUM string is alphabetically before another ENUM string using character later in the string`, () => {
     // Given
-    const enumString1 = 'PRISON_LAUNDRY'
-    const enumString2 = 'PRISON_LIBRARY'
+    const enum1 = InPrisonWorkValue.PRISON_LAUNDRY
+    const enum2 = InPrisonWorkValue.PRISON_LIBRARY
 
     // When
-    const actual = enumComparator(enumString1, enumString2)
+    const actual = enumComparator(enum1, enum2)
 
     // Then
     expect(actual).toEqual(-1)
@@ -27,11 +30,11 @@ describe('enumComparator', () => {
 
   it(`should determine if a ENUM string is alphabetically after another ENUM string`, () => {
     // Given
-    const enumString1 = 'RETIRED'
-    const enumString2 = 'HEALTH'
+    const enum1 = AbilityToWorkValue.RETIRED
+    const enum2 = AbilityToWorkValue.NEEDS_WORK_ADJUSTMENTS_DUE_TO_HEALTH
 
     // When
-    const actual = enumComparator(enumString1, enumString2)
+    const actual = enumComparator(enum1, enum2)
 
     // Then
     expect(actual).toEqual(1)
@@ -39,11 +42,11 @@ describe('enumComparator', () => {
 
   it(`should return 1 given a ENUM string which is 'OTHER' and another ENUM string is alphabetically before 'OTHER'`, () => {
     // Given
-    const enumString1 = 'OTHER'
-    const enumString2 = 'CLEANING_AND_HYGIENE'
+    const enum1 = InPrisonWorkValue.OTHER
+    const enum2 = InPrisonWorkValue.CLEANING_AND_HYGIENE
 
     // When
-    const actual = enumComparator(enumString1, enumString2)
+    const actual = enumComparator(enum1, enum2)
 
     // Then
     expect(actual).toEqual(1)
@@ -51,11 +54,11 @@ describe('enumComparator', () => {
 
   it(`should return 1 given a ENUM string which 'OTHER' and another ENUM string is alphabetically after 'OTHER'`, () => {
     // Given
-    const enumString1 = 'OTHER'
-    const enumString2 = 'WOODWORK_AND_JOINERY'
+    const enum1 = InPrisonWorkValue.OTHER
+    const enum2 = InPrisonWorkValue.WOODWORK_AND_JOINERY
 
     // When
-    const actual = enumComparator(enumString1, enumString2)
+    const actual = enumComparator(enum1, enum2)
 
     // Then
     expect(actual).toEqual(1)
@@ -63,11 +66,11 @@ describe('enumComparator', () => {
 
   it(`should return -1 given an ENUM string is alphabetically before 'OTHER' and ENUM string iss 'OTHER'`, () => {
     // Given
-    const enumString1 = 'CLEANING_AND_HYGIENE'
-    const enumString2 = 'OTHER'
+    const enum1 = InPrisonWorkValue.CLEANING_AND_HYGIENE
+    const enum2 = InPrisonWorkValue.OTHER
 
     // When
-    const actual = enumComparator(enumString1, enumString2)
+    const actual = enumComparator(enum1, enum2)
 
     // Then
     expect(actual).toEqual(-1)
@@ -75,11 +78,11 @@ describe('enumComparator', () => {
 
   it(`should return -1 given an ENUM string is alphabetically after 'OTHER' and ENUM string is 'OTHER'`, () => {
     // Given
-    const enumString1 = 'WOODWORK_AND_JOINERY'
-    const enumString2 = 'OTHER'
+    const enum1 = InPrisonWorkValue.WOODWORK_AND_JOINERY
+    const enum2 = InPrisonWorkValue.OTHER
 
     // When
-    const actual = enumComparator(enumString1, enumString2)
+    const actual = enumComparator(enum1, enum2)
 
     // Then
     expect(actual).toEqual(-1)
@@ -87,14 +90,14 @@ describe('enumComparator', () => {
 
   it('should sort an array ENUM strings alphabetically, but with OTHER at the end', () => {
     // Given
-    const enumString1 = 'WELDING_AND_METALWORK'
-    const enumString2 = 'OTHER'
-    const enumString3 = 'BARBERING_AND_HAIRDRESSING'
-    const enumString4 = 'ENGLISH_LANGUAGE_SKILLS'
+    const enum1 = InPrisonTrainingValue.WELDING_AND_METALWORK
+    const enum2 = InPrisonTrainingValue.OTHER
+    const enum3 = InPrisonTrainingValue.BARBERING_AND_HAIRDRESSING
+    const enum4 = InPrisonTrainingValue.ENGLISH_LANGUAGE_SKILLS
 
-    const enums = [enumString1, enumString2, enumString3, enumString4]
+    const enums = [enum1, enum2, enum3, enum4]
 
-    const expected = [enumString3, enumString4, enumString1, enumString2] // alphabetically on ENUM string, with OTHER at the end
+    const expected = [enum3, enum4, enum1, enum2] // alphabetically on ENUM string, with OTHER at the end
 
     // When
     enums.sort(enumComparator)

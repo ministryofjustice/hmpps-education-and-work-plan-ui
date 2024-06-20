@@ -1,14 +1,12 @@
 import createError from 'http-errors'
 import type { SessionData } from 'express-session'
 import { NextFunction, Request, Response } from 'express'
-import type { PageFlow } from 'viewModels'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
-import { aLongQuestionSetInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
+import aValidInductionDto from '../../../testsupport/inductionDtoTestDataBuilder'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
 import InductionService from '../../../services/inductionService'
-import { aLongQuestionSetUpdateInductionRequest } from '../../../testsupport/updateInductionRequestTestDataBuilder'
+import aValidUpdateInductionRequest from '../../../testsupport/updateInductionRequestTestDataBuilder'
 import SkillsUpdateController from './skillsUpdateController'
-import SkillsValue from '../../../enums/skillsValue'
 
 jest.mock('../../../data/mappers/createOrUpdateInductionDtoMapper')
 jest.mock('../../../services/inductionService')
@@ -50,7 +48,7 @@ describe('skillsUpdateController', () => {
   describe('getSkillsView', () => {
     it('should get the Skills view given there is no SkillsForm on the session', async () => {
       // Given
-      const inductionDto = aLongQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       req.session.inductionDto = inductionDto
       req.session.skillsForm = undefined
 
@@ -81,7 +79,7 @@ describe('skillsUpdateController', () => {
 
     it('should get the Skills view given there is an SkillsForm already on the session', async () => {
       // Given
-      const inductionDto = aLongQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       req.session.inductionDto = inductionDto
 
       const expectedSkillsForm = {
@@ -109,55 +107,12 @@ describe('skillsUpdateController', () => {
       expect(req.session.skillsForm).toBeUndefined()
       expect(req.session.inductionDto).toEqual(inductionDto)
     })
-
-    it('should get the Skills view given there is an updateInductionQuestionSet on the session', async () => {
-      // Given
-      const inductionDto = aLongQuestionSetInductionDto()
-      req.session.inductionDto = inductionDto
-      req.session.updateInductionQuestionSet = {
-        hopingToWorkOnRelease: 'YES',
-      }
-      req.session.pageFlowHistory = {
-        pageUrls: [`/prisoners/${prisonNumber}/induction/work-interest-roles`],
-        currentPageIndex: 0,
-      }
-
-      const expectedSkillsForm = {
-        skills: ['SELF_MANAGEMENT', 'TEAMWORK', 'THINKING_AND_PROBLEM_SOLVING'],
-        skillsOther: '',
-      }
-      req.session.skillsForm = expectedSkillsForm
-
-      const expectedView = {
-        prisonerSummary,
-        form: expectedSkillsForm,
-        backLinkUrl: '/prisoners/A1234BC/induction/work-interest-roles',
-        backLinkAriaText: 'Back to Is Jimmy Lightfingers interested in any particular jobs?',
-      }
-
-      const expectedPageFlowHistory = {
-        pageUrls: ['/prisoners/A1234BC/induction/work-interest-roles', '/prisoners/A1234BC/induction/skills'],
-        currentPageIndex: 1,
-      }
-
-      // When
-      await controller.getSkillsView(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
-
-      // Then
-      expect(res.render).toHaveBeenCalledWith('pages/induction/skills/index', expectedView)
-      expect(req.session.inductionDto).toEqual(inductionDto)
-      expect(req.session.pageFlowHistory).toEqual(expectedPageFlowHistory)
-    })
   })
 
   describe('submitSkillsForm', () => {
     it('should not update Induction given form is submitted with validation errors', async () => {
       // Given
-      const inductionDto = aLongQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       req.session.inductionDto = inductionDto
 
       const invalidSkillsForm = {
@@ -184,7 +139,7 @@ describe('skillsUpdateController', () => {
 
     it('should update Induction and call API and redirect to work and interests page', async () => {
       // Given
-      const inductionDto = aLongQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       req.session.inductionDto = inductionDto
 
       const skillsForm = {
@@ -193,7 +148,7 @@ describe('skillsUpdateController', () => {
       }
       req.body = skillsForm
       req.session.skillsForm = undefined
-      const updateInductionDto = aLongQuestionSetUpdateInductionRequest()
+      const updateInductionDto = aValidUpdateInductionRequest()
 
       mockedCreateOrUpdateInductionDtoMapper.mockReturnValueOnce(updateInductionDto)
 
@@ -227,55 +182,9 @@ describe('skillsUpdateController', () => {
       expect(req.session.inductionDto).toBeUndefined()
     })
 
-    it('should update InductionDto and redirect to Personal Interests given long question set journey', async () => {
-      // Given
-      const inductionDto = aLongQuestionSetInductionDto()
-      req.session.inductionDto = inductionDto
-
-      const skillsForm = {
-        skills: ['TEAMWORK', 'OTHER'],
-        skillsOther: 'Circus skills',
-      }
-      req.body = skillsForm
-      req.session.skillsForm = undefined
-
-      req.session.updateInductionQuestionSet = { hopingToWorkOnRelease: 'YES' }
-      const expectedNextPage = '/prisoners/A1234BC/induction/personal-interests'
-
-      const expectedUpdatedSkills = [
-        {
-          skillType: 'TEAMWORK',
-          skillTypeOther: undefined,
-        },
-        {
-          skillType: 'OTHER',
-          skillTypeOther: 'Circus skills',
-        },
-      ]
-
-      const expectedPageFlowHistory: PageFlow = {
-        pageUrls: ['/prisoners/A1234BC/induction/skills'],
-        currentPageIndex: 0,
-      }
-
-      // When
-      await controller.submitSkillsForm(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
-
-      // Then
-      expect(req.session.inductionDto.personalSkillsAndInterests.skills).toEqual(expectedUpdatedSkills)
-      expect(res.redirect).toHaveBeenCalledWith(expectedNextPage)
-      expect(req.session.workInterestTypesForm).toBeUndefined()
-      expect(inductionService.updateInduction).not.toHaveBeenCalled()
-      expect(req.session.pageFlowHistory).toEqual(expectedPageFlowHistory)
-    })
-
     it('should not update Induction given error calling service', async () => {
       // Given
-      const inductionDto = aLongQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       req.session.inductionDto = inductionDto
 
       const skillsForm = {
@@ -284,7 +193,7 @@ describe('skillsUpdateController', () => {
       }
       req.body = skillsForm
       req.session.skillsForm = undefined
-      const updateInductionDto = aLongQuestionSetUpdateInductionRequest()
+      const updateInductionDto = aValidUpdateInductionRequest()
 
       mockedCreateOrUpdateInductionDtoMapper.mockReturnValueOnce(updateInductionDto)
 
@@ -322,44 +231,6 @@ describe('skillsUpdateController', () => {
       expect(next).toHaveBeenCalledWith(expectedError)
       expect(req.session.skillsForm).toEqual(skillsForm)
       expect(req.session.inductionDto).toEqual(inductionDto)
-    })
-
-    it('should update induction DTO and redirect back to check your answers page when coming from check your answers', async () => {
-      // Given
-      req.session.inductionDto = aLongQuestionSetInductionDto()
-      req.session.pageFlowHistory = {
-        pageUrls: [
-          `/prisoners/${prisonerSummary.prisonNumber}/induction/check-your-answers`,
-          `/prisoners/${prisonerSummary.prisonNumber}/induction/skills`,
-        ],
-        currentPageIndex: 1,
-      }
-
-      req.body = {
-        skills: [SkillsValue.POSITIVE_ATTITUDE, SkillsValue.RESILIENCE],
-      }
-
-      // The actual implementations are fine for this test
-      const actualToCreateOrUpdateInductionDto = jest.requireActual(
-        '../../../data/mappers/createOrUpdateInductionDtoMapper',
-      ).default
-      mockedCreateOrUpdateInductionDtoMapper.mockImplementation(actualToCreateOrUpdateInductionDto)
-
-      // When
-      await controller.submitSkillsForm(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
-
-      // Then
-      expect(req.session.inductionDto.personalSkillsAndInterests.skills).toEqual([
-        { skillType: SkillsValue.POSITIVE_ATTITUDE },
-        { skillType: SkillsValue.RESILIENCE },
-      ])
-      expect(res.redirect).toHaveBeenCalledWith(
-        `/prisoners/${prisonerSummary.prisonNumber}/induction/check-your-answers`,
-      )
     })
   })
 })

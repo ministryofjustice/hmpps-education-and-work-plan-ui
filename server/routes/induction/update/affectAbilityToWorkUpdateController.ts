@@ -53,13 +53,6 @@ export default class AffectAbilityToWorkUpdateController extends AffectAbilityTo
 
     const updatedInduction = this.updatedInductionDtoWithAffectAbilityToWork(inductionDto, affectAbilityToWorkForm)
 
-    // if we are switching from the short question set to the long one, forward to the check your answers page
-    if (req.session.updateInductionQuestionSet) {
-      req.session.inductionDto = updatedInduction
-      req.session.affectAbilityToWorkForm = undefined
-      return res.redirect(`/prisoners/${prisonNumber}/induction/check-your-answers`)
-    }
-
     try {
       const updateInductionDto = toCreateOrUpdateInductionDto(prisonId, updatedInduction)
       await this.inductionService.updateInduction(prisonNumber, updateInductionDto, req.user.token)

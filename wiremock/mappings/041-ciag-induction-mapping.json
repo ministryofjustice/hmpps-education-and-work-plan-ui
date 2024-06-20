@@ -21,7 +21,7 @@
       "abilityToWork": ["CARING_RESPONSIBILITIES"],
       "reasonToNotGetWork": ["LIMIT_THEIR_ABILITY"],
       "workExperience": {
-        "hasWorkedBefore": true,
+        "hasWorkedBefore": "YES",
         "modifiedBy": "asmith_gen",
         "modifiedDateTime": "2023-08-23T12:18:16.902Z",
         "id": 1234,

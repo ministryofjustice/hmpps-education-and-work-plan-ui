@@ -22,7 +22,7 @@ context('Update previous work experience types in the Induction', () => {
     cy.task('stubLearnerProfile')
     cy.task('stubLearnerEducation')
     cy.task('stubUpdateInduction')
-    cy.task('stubGetInductionLongQuestionSet')
+    cy.task('stubGetInduction')
     cy.signIn()
   })
 
@@ -30,7 +30,7 @@ context('Update previous work experience types in the Induction', () => {
     // Given
     const prisonNumber = 'G6115VJ'
 
-    // stubGetInductionLongQuestionSet has previous work experiences of Office and Other
+    // Induction has previous work experiences of Office and Other
     cy.visit(`/prisoners/${prisonNumber}/induction/previous-work-experience`)
     let previousWorkExperienceTypesPage = Page.verifyOnPage(PreviousWorkExperienceTypesPage)
       .hasBackLinkTo(`/plan/${prisonNumber}/view/work-and-interests`)
@@ -52,7 +52,7 @@ context('Update previous work experience types in the Induction', () => {
     // Given
     const prisonNumber = 'G6115VJ'
 
-    // stubGetInductionLongQuestionSet has previous work experiences of Office and Other
+    // Induction has previous work experiences of Office and Other
     cy.visit(`/prisoners/${prisonNumber}/induction/previous-work-experience`)
     const previousWorkExperienceTypesPage = Page.verifyOnPage(PreviousWorkExperienceTypesPage)
 
@@ -69,7 +69,7 @@ context('Update previous work experience types in the Induction', () => {
     // Given
     const prisonNumber = 'G6115VJ'
 
-    // stubGetInductionLongQuestionSet has previous work experiences of Office and Other
+    // Induction has previous work experiences of Office and Other
     cy.visit(`/prisoners/${prisonNumber}/induction/previous-work-experience`)
     const previousWorkExperienceTypesPage = Page.verifyOnPage(PreviousWorkExperienceTypesPage)
 
@@ -97,13 +97,13 @@ context('Update previous work experience types in the Induction', () => {
       // Given
       const prisonNumber = 'G6115VJ'
 
-      // stubGetInductionLongQuestionSet has previous work experiences of Office and Other
+      // Induction has previous work experiences of Office and Other
       cy.visit(`/prisoners/${prisonNumber}/induction/previous-work-experience`)
       const previousWorkExperienceTypesPage = Page.verifyOnPage(PreviousWorkExperienceTypesPage)
 
       previousWorkExperienceTypesPage //
-        .choosePreviousWorkExperience(TypeOfWorkExperienceValue.OUTDOOR)
-        .choosePreviousWorkExperience(TypeOfWorkExperienceValue.CONSTRUCTION)
+        .selectPreviousWorkExperience(TypeOfWorkExperienceValue.OUTDOOR)
+        .selectPreviousWorkExperience(TypeOfWorkExperienceValue.CONSTRUCTION)
         .submitPage()
 
       // Populate the Detail page for "OUTDOOR"
@@ -146,7 +146,7 @@ context('Update previous work experience types in the Induction', () => {
       // Given
       const prisonNumber = 'G6115VJ'
 
-      // stubGetInductionLongQuestionSet has previous work experiences of Office and Other
+      // Induction has previous work experiences of Office and Other
       cy.visit(`/prisoners/${prisonNumber}/induction/previous-work-experience`)
       const previousWorkExperienceTypesPage = Page.verifyOnPage(PreviousWorkExperienceTypesPage)
 
@@ -183,14 +183,14 @@ context('Update previous work experience types in the Induction', () => {
       // Given
       const prisonNumber = 'G6115VJ'
 
-      // stubGetInductionLongQuestionSet has previous work experiences of Office and Other
+      // Induction has previous work experiences of Office and Other
       cy.visit(`/prisoners/${prisonNumber}/induction/previous-work-experience`)
       const previousWorkExperienceTypesPage = Page.verifyOnPage(PreviousWorkExperienceTypesPage)
 
       previousWorkExperienceTypesPage //
         .deSelectPreviousWorkExperience(TypeOfWorkExperienceValue.OFFICE)
-        .choosePreviousWorkExperience(TypeOfWorkExperienceValue.OUTDOOR)
-        .choosePreviousWorkExperience(TypeOfWorkExperienceValue.CONSTRUCTION)
+        .selectPreviousWorkExperience(TypeOfWorkExperienceValue.OUTDOOR)
+        .selectPreviousWorkExperience(TypeOfWorkExperienceValue.CONSTRUCTION)
         .setOtherPreviousWorkExperienceType('Health and fitness')
         .submitPage()
 

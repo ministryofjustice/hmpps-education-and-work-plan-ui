@@ -16,12 +16,11 @@ declare namespace Cypress {
 
     signInAsUserWithEditAuthorityToArriveOnPrisonerListPage()
 
-    updateShortQuestionSetInductionToArriveOnCheckYourAnswers(prisonNumber?: string)
-
-    updateLongQuestionSetInductionToArriveOnCheckYourAnswers(prisonNumber?: string)
-
-    createLongQuestionSetInductionToArriveOnCheckYourAnswers(prisonNumber?: string)
-
-    createShortQuestionSetInductionToArriveOnCheckYourAnswers(prisonNumber?: string, withQualifications?: boolean)
+    createInductionToArriveOnCheckYourAnswers(options?: {
+      prisonNumber?: string
+      hopingToGetWork?: HopingToGetWorkValue
+      hasWorkedBefore?: HasWorkedBeforeValue
+      withQualifications?: boolean
+    })
   }
 }

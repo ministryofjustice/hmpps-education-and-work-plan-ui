@@ -5,7 +5,6 @@ import SkillsPage from '../../pages/induction/SkillsPage'
 import PersonalInterestsPage from '../../pages/induction/PersonalInterestsPage'
 import WorkedBeforePage from '../../pages/induction/WorkedBeforePage'
 import AffectAbilityToWorkPage from '../../pages/induction/AffectAbilityToWorkPage'
-import ReasonsNotToGetWorkPage from '../../pages/induction/ReasonsNotToGetWorkPage'
 import PreviousWorkExperienceDetailPage from '../../pages/induction/PreviousWorkExperienceDetailPage'
 import TypeOfWorkExperienceValue from '../../../server/enums/typeOfWorkExperienceValue'
 import FutureWorkInterestTypesPage from '../../pages/induction/FutureWorkInterestTypesPage'
@@ -13,6 +12,8 @@ import FutureWorkInterestRolesPage from '../../pages/induction/FutureWorkInteres
 import PreviousWorkExperienceTypesPage from '../../pages/induction/PreviousWorkExperienceTypesPage'
 import InPrisonWorkPage from '../../pages/induction/InPrisonWorkPage'
 import HopingToWorkOnReleasePage from '../../pages/induction/HopingToWorkOnReleasePage'
+import HopingToGetWorkValue from '../../../server/enums/hopingToGetWorkValue'
+import HasWorkedBeforeValue from '../../../server/enums/hasWorkedBeforeValue'
 
 context('Prisoner Overview page - Work and Interests tab', () => {
   beforeEach(() => {
@@ -25,15 +26,15 @@ context('Prisoner Overview page - Work and Interests tab', () => {
     cy.task('stubCiagInductionList')
     cy.task('stubActionPlansList')
     cy.task('getPrisonerById')
-    cy.task('stubGetInductionShortQuestionSet')
+    cy.task('stubGetInduction')
     cy.task('getActionPlan')
     cy.task('stubLearnerProfile')
     cy.task('stubLearnerEducation')
   })
 
-  it('should display Work and interests data given the long question set Induction was performed', () => {
+  it('should display Work and interests data given the person answered that they want to work during Induction', () => {
     // Given
-    cy.task('stubGetInductionLongQuestionSet')
+    cy.task('stubGetInduction', { hopingToGetWork: HopingToGetWorkValue.YES })
 
     cy.signIn()
     const prisonNumber = 'G6115VJ'
@@ -47,15 +48,15 @@ context('Prisoner Overview page - Work and Interests tab', () => {
     // Then
     workAndInterestsPage //
       .activeTabIs('Work and interests')
-      .isShowingLongQuestionSetAnswers()
-      .hasWorkInterests()
       .hasWorkExperienceDisplayed()
+      .hasWorkInterestsDisplayed()
+      .hasInPrisonWorkInterestsSummaryCardDisplayed()
       .hasSkillsAndInterestsDisplayed()
   })
 
-  it('should display Work and interests data given the short question set Induction was performed', () => {
+  it('should display Work and interests data given the person answered that they do not want to work during Induction', () => {
     // Given
-    cy.task('stubGetInductionShortQuestionSet')
+    cy.task('stubGetInduction', { hopingToGetWork: HopingToGetWorkValue.NO })
 
     cy.signIn()
     const prisonNumber = 'G6115VJ'
@@ -69,8 +70,10 @@ context('Prisoner Overview page - Work and Interests tab', () => {
     // Then
     workAndInterestsPage //
       .activeTabIs('Work and interests')
-      .isShowingShortQuestionSetAnswers()
-      .hasWorkInterests()
+      .hasWorkExperienceDisplayed()
+      .hasWorkInterestsDisplayed()
+      .hasInPrisonWorkInterestsSummaryCardDisplayed()
+      .hasSkillsAndInterestsDisplayed()
   })
 
   it('should display Induction unavailable message given PLP API is unavailable when retrieving the Induction', () => {
@@ -116,9 +119,9 @@ context('Prisoner Overview page - Work and Interests tab', () => {
   })
 
   describe('should display change links to Induction questions', () => {
-    it(`should link to change Induction 'Hoping to work on release' question given long question set induction`, () => {
+    it(`should link to change Induction 'Hoping to work on release' question`, () => {
       // Given
-      cy.task('stubGetInductionLongQuestionSet')
+      cy.task('stubGetInduction')
 
       cy.signIn()
       const prisonNumber = 'G6115VJ'
@@ -132,9 +135,9 @@ context('Prisoner Overview page - Work and Interests tab', () => {
       Page.verifyOnPage(HopingToWorkOnReleasePage)
     })
 
-    it(`should link to change Induction 'Skills' question given long question set induction`, () => {
+    it(`should link to change Induction 'Skills' question`, () => {
       // Given
-      cy.task('stubGetInductionLongQuestionSet')
+      cy.task('stubGetInduction')
 
       cy.signIn()
       const prisonNumber = 'G6115VJ'
@@ -148,9 +151,9 @@ context('Prisoner Overview page - Work and Interests tab', () => {
       Page.verifyOnPage(SkillsPage)
     })
 
-    it(`should link to change Induction 'Personal Interests' question given long question set induction`, () => {
+    it(`should link to change Induction 'Personal Interests' question`, () => {
       // Given
-      cy.task('stubGetInductionLongQuestionSet')
+      cy.task('stubGetInduction')
 
       cy.signIn()
       const prisonNumber = 'G6115VJ'
@@ -164,9 +167,9 @@ context('Prisoner Overview page - Work and Interests tab', () => {
       Page.verifyOnPage(PersonalInterestsPage)
     })
 
-    it(`should link to change Induction 'Worked Before' question given long question set induction`, () => {
+    it(`should link to change Induction 'Worked Before' question`, () => {
       // Given
-      cy.task('stubGetInductionLongQuestionSet')
+      cy.task('stubGetInduction')
 
       cy.signIn()
       const prisonNumber = 'G6115VJ'
@@ -180,9 +183,9 @@ context('Prisoner Overview page - Work and Interests tab', () => {
       Page.verifyOnPage(WorkedBeforePage)
     })
 
-    it(`should link to change Induction 'Affect Ability To Work' question given long question set induction`, () => {
+    it(`should link to change Induction 'Affect Ability To Work' question`, () => {
       // Given
-      cy.task('stubGetInductionLongQuestionSet')
+      cy.task('stubGetInduction')
 
       cy.signIn()
       const prisonNumber = 'G6115VJ'
@@ -196,41 +199,9 @@ context('Prisoner Overview page - Work and Interests tab', () => {
       Page.verifyOnPage(AffectAbilityToWorkPage)
     })
 
-    it(`should link to change Induction 'Hoping to work on release' question given short question set induction`, () => {
+    it(`should link to change Induction 'Previous Work Experience Types' question given person has worked before`, () => {
       // Given
-      cy.task('stubGetInductionShortQuestionSet')
-
-      cy.signIn()
-      const prisonNumber = 'G6115VJ'
-      cy.visit(`/plan/${prisonNumber}/view/work-and-interests`)
-      const workAndInterestsPage = Page.verifyOnPage(WorkAndInterestsPage)
-
-      // When
-      workAndInterestsPage.clickHopingToWorkOnReleaseChangeLink()
-
-      // Then
-      Page.verifyOnPage(HopingToWorkOnReleasePage)
-    })
-
-    it(`should link to change Induction 'Reasons Not To Get Work' question given short question set induction`, () => {
-      // Given
-      cy.task('stubGetInductionShortQuestionSet')
-
-      cy.signIn()
-      const prisonNumber = 'G6115VJ'
-      cy.visit(`/plan/${prisonNumber}/view/work-and-interests`)
-      const workAndInterestsPage = Page.verifyOnPage(WorkAndInterestsPage)
-
-      // When
-      workAndInterestsPage.clickReasonsNotToGetWorkWorkChangeLink()
-
-      // Then
-      Page.verifyOnPage(ReasonsNotToGetWorkPage)
-    })
-
-    it(`should link to change Induction 'Previous Work Experience Types' question given long question set induction`, () => {
-      // Given
-      cy.task('stubGetInductionLongQuestionSet') // Long question set induction has previous work experiences of Office and Other
+      cy.task('stubGetInduction', { hasWorkedBefore: HasWorkedBeforeValue.YES }) // Induction has previous work experiences of Office and Other
 
       cy.signIn()
       const prisonNumber = 'G6115VJ'
@@ -247,9 +218,9 @@ context('Prisoner Overview page - Work and Interests tab', () => {
         .hasOtherPreviousWorkExperienceType('Finance')
     })
 
-    it(`should link to change Induction 'Previous Work Experience Detail' question given long question set induction`, () => {
+    it(`should link to change Induction 'Previous Work Experience Detail' question given person has worked before`, () => {
       // Given
-      cy.task('stubGetInductionLongQuestionSet') // Long question set induction has previous work experiences of Office and Other
+      cy.task('stubGetInduction', { hasWorkedBefore: HasWorkedBeforeValue.YES }) // Induction has previous work experiences of Office and Other
 
       cy.signIn()
       const prisonNumber = 'G6115VJ'
@@ -263,9 +234,9 @@ context('Prisoner Overview page - Work and Interests tab', () => {
       Page.verifyOnPage(PreviousWorkExperienceDetailPage)
     })
 
-    it(`should link to change Induction 'Future Work Interest Types' question given long question set induction`, () => {
+    it(`should link to change Induction 'Future Work Interest Types' question given person does want to work`, () => {
       // Given
-      cy.task('stubGetInductionLongQuestionSet')
+      cy.task('stubGetInduction', { hopingToGetWork: HopingToGetWorkValue.YES })
 
       cy.signIn()
       const prisonNumber = 'G6115VJ'
@@ -279,9 +250,9 @@ context('Prisoner Overview page - Work and Interests tab', () => {
       Page.verifyOnPage(FutureWorkInterestTypesPage)
     })
 
-    it(`should link to change Induction 'Future Work Interest Roles' question given long question set induction`, () => {
+    it(`should link to change Induction 'Future Work Interest Roles' question given person does want to work`, () => {
       // Given
-      cy.task('stubGetInductionLongQuestionSet')
+      cy.task('stubGetInduction', { hopingToGetWork: HopingToGetWorkValue.YES })
 
       cy.signIn()
       const prisonNumber = 'G6115VJ'
@@ -295,9 +266,35 @@ context('Prisoner Overview page - Work and Interests tab', () => {
       Page.verifyOnPage(FutureWorkInterestRolesPage)
     })
 
-    it(`should link to change Induction 'In Prison Work' question given short question set induction`, () => {
+    it(`should not link to change Induction 'Future Work Interest Types' question given person does not want to work`, () => {
       // Given
-      cy.task('stubGetInductionShortQuestionSet')
+      cy.task('stubGetInduction', { hopingToGetWork: HopingToGetWorkValue.NO })
+
+      cy.signIn()
+      const prisonNumber = 'G6115VJ'
+      cy.visit(`/plan/${prisonNumber}/view/work-and-interests`)
+      const workAndInterestsPage = Page.verifyOnPage(WorkAndInterestsPage)
+
+      // Then
+      workAndInterestsPage.doesNotHaveFutureWorkInterestRolesChangeLink()
+    })
+
+    it(`should not link to change Induction 'Future Work Interest Roles' question given person does not want to work`, () => {
+      // Given
+      cy.task('stubGetInduction', { hopingToGetWork: HopingToGetWorkValue.NO })
+
+      cy.signIn()
+      const prisonNumber = 'G6115VJ'
+      cy.visit(`/plan/${prisonNumber}/view/work-and-interests`)
+      const workAndInterestsPage = Page.verifyOnPage(WorkAndInterestsPage)
+
+      // Then
+      workAndInterestsPage.doesNotHaveFutureWorkInterestRolesChangeLink()
+    })
+
+    it(`should link to change Induction 'In Prison Work' question`, () => {
+      // Given
+      cy.task('stubGetInduction')
 
       cy.signIn()
       const prisonNumber = 'G6115VJ'

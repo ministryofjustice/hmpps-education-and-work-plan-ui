@@ -13,7 +13,6 @@ import type {
   PreviousWorkExperienceTypesForm,
   QualificationDetailsForm,
   QualificationLevelForm,
-  ReasonsNotToGetWorkForm,
   SkillsForm,
   WantToAddQualificationsForm,
   WorkedBeforeForm,
@@ -47,7 +46,6 @@ describe('removeInductionFormsFromSession', () => {
     req.session.previousWorkExperienceTypesForm = {} as PreviousWorkExperienceTypesForm
     req.session.previousWorkExperienceDetailForm = {} as PreviousWorkExperienceDetailForm
     req.session.affectAbilityToWorkForm = {} as AffectAbilityToWorkForm
-    req.session.reasonsNotToGetWorkForm = {} as ReasonsNotToGetWorkForm
     req.session.workInterestTypesForm = {} as WorkInterestTypesForm
     req.session.inPrisonTrainingForm = {} as InPrisonTrainingForm
     req.session.wantToAddQualificationsForm = {} as WantToAddQualificationsForm
@@ -76,7 +74,6 @@ describe('removeInductionFormsFromSession', () => {
     expect(req.session.previousWorkExperienceTypesForm).toBeUndefined()
     expect(req.session.previousWorkExperienceDetailForm).toBeUndefined()
     expect(req.session.affectAbilityToWorkForm).toBeUndefined()
-    expect(req.session.reasonsNotToGetWorkForm).toBeUndefined()
     expect(req.session.workInterestTypesForm).toBeUndefined()
     expect(req.session.inPrisonTrainingForm).toBeUndefined()
     expect(req.session.wantToAddQualificationsForm).toBeUndefined()

@@ -4,17 +4,17 @@ import type { InductionDto } from 'inductionDto'
 import WorkedBeforeController from '../common/workedBeforeController'
 import getDynamicBackLinkAriaText from '../dynamicAriaTextResolver'
 import validateWorkedBeforeForm from '../../validators/induction/workedBeforeFormValidator'
-import YesNoValue from '../../../enums/yesNoValue'
 import { getPreviousPage } from '../../pageFlowHistory'
+import HasWorkedBeforeValue from '../../../enums/hasWorkedBeforeValue'
 
 export default class WorkedBeforeCreateController extends WorkedBeforeController {
   getBackLinkUrl(req: Request): string {
     const { prisonNumber } = req.params
     const { pageFlowHistory } = req.session
-    if (pageFlowHistory) {
-      return getPreviousPage(pageFlowHistory)
-    }
-    return `/prisoners/${prisonNumber}/create-induction/additional-training`
+    const previousPage =
+      (pageFlowHistory && getPreviousPage(pageFlowHistory)) ||
+      `/prisoners/${prisonNumber}/create-induction/additional-training`
+    return previousPage
   }
 
   getBackLinkAriaText(req: Request): string {
@@ -34,7 +34,8 @@ export default class WorkedBeforeCreateController extends WorkedBeforeController
     }
 
     const updatedInduction = this.updatedInductionDtoWithHasWorkedBefore(inductionDto, workedBeforeForm)
-    const prisonerHasWorkedBefore = updatedInduction.previousWorkExperiences.hasWorkedBefore
+    const prisonerHasWorkedBefore =
+      updatedInduction.previousWorkExperiences.hasWorkedBefore === HasWorkedBeforeValue.YES
     req.session.inductionDto = updatedInduction
     req.session.workedBeforeForm = undefined
 
@@ -43,8 +44,8 @@ export default class WorkedBeforeCreateController extends WorkedBeforeController
         return res.redirect(`/prisoners/${prisonNumber}/create-induction/previous-work-experience`)
       }
 
-      // Prisoner has not worked before; skip straight to work interests post release
-      return res.redirect(`/prisoners/${prisonNumber}/create-induction/work-interest-types`)
+      // Prisoner has not worked before; skip straight to Personal Skills
+      return res.redirect(`/prisoners/${prisonNumber}/create-induction/skills`)
     }
 
     if (!prisonerHasWorkedBefore) {
@@ -60,7 +61,7 @@ export default class WorkedBeforeCreateController extends WorkedBeforeController
     const updatedInduction = super.updatedInductionDtoWithHasWorkedBefore(inductionDto, workedBeforeForm)
 
     // If the prisoner has worked before return the updated induction
-    if (workedBeforeForm.hasWorkedBefore === YesNoValue.YES) {
+    if (workedBeforeForm.hasWorkedBefore === HasWorkedBeforeValue.YES) {
       return updatedInduction
     }
 

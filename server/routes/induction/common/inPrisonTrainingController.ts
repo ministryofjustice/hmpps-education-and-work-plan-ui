@@ -17,10 +17,7 @@ export default abstract class InPrisonTrainingController extends InductionContro
 
     this.addCurrentPageToFlowHistoryWhenComingFromCheckYourAnswers(req)
 
-    // Add the current page to the page flow history if we either:
-    //   are in the midst of changing the main induction question set (e.g. from long route to short route)
-    //   or we already have a page flow history
-    if (req.session.updateInductionQuestionSet || req.session.pageFlowHistory) {
+    if (req.session.pageFlowHistory) {
       this.addCurrentPageToHistory(req)
     }
 

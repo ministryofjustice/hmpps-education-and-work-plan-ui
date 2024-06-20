@@ -20,7 +20,7 @@ context('Update in-prison work interests within an Induction', () => {
     cy.task('getActionPlan')
     cy.task('stubLearnerProfile')
     cy.task('stubLearnerEducation')
-    cy.task('stubGetInductionShortQuestionSet')
+    cy.task('stubGetInduction')
     cy.task('stubUpdateInduction')
     cy.signIn()
   })
@@ -35,8 +35,8 @@ context('Update in-prison work interests within an Induction', () => {
 
     // When
     inPrisonWorkPage //
-      .chooseWorkType(InPrisonWorkValue.CLEANING_AND_HYGIENE)
-      .chooseWorkType(InPrisonWorkValue.OTHER)
+      .selectWorkType(InPrisonWorkValue.CLEANING_AND_HYGIENE)
+      .selectWorkType(InPrisonWorkValue.OTHER)
       .setOtherWorkType('Painting and decorating')
       .submitPage()
 
@@ -63,7 +63,7 @@ context('Update in-prison work interests within an Induction', () => {
 
     // When
     inPrisonWorkPage //
-      .chooseWorkType(InPrisonWorkValue.OTHER)
+      .selectWorkType(InPrisonWorkValue.OTHER)
       .clearOtherWorkType()
       .submitPage()
 
@@ -71,5 +71,35 @@ context('Update in-prison work interests within an Induction', () => {
     inPrisonWorkPage = Page.verifyOnPage(InPrisonWorkPage)
     inPrisonWorkPage.hasFieldInError('inPrisonWorkOther')
     cy.wiremockVerifyNoInteractions(putRequestedFor(urlEqualTo(`/inductions/${prisonNumber}`)))
+  })
+
+  it('should update in-prison work interests given induction created with the original long question set which did not ask about in-prison work interests', () => {
+    // Given
+    const prisonNumber = 'G6115VJ'
+    cy.task('stubGetOriginalQuestionSetInduction', { questionSet: 'LONG' }) // The original long question set Induction did not ask about in-prison work interests
+    cy.visit(`/plan/${prisonNumber}/view/work-and-interests`)
+    Page.verifyOnPage(WorkAndInterestsPage) //
+      .inPrisonWorkChangeLinkHasText('Add')
+      .clickInPrisonWorkChangeLink()
+
+    // When
+    Page.verifyOnPage(InPrisonWorkPage)
+      .selectWorkType(InPrisonWorkValue.CLEANING_AND_HYGIENE)
+      .selectWorkType(InPrisonWorkValue.OTHER)
+      .setOtherWorkType('Painting and decorating')
+      .submitPage()
+
+    // Then
+    Page.verifyOnPage(WorkAndInterestsPage)
+    cy.wiremockVerify(
+      putRequestedFor(urlEqualTo(`/inductions/${prisonNumber}`)) //
+        .withRequestBody(
+          matchingJsonPath(
+            '$[?(@.inPrisonInterests.inPrisonWorkInterests.size() == 2 && ' +
+              "@.inPrisonInterests.inPrisonWorkInterests[0].workType == 'CLEANING_AND_HYGIENE' && !@.inPrisonInterests.inPrisonWorkInterests[0].workTypeOther && " +
+              "@.inPrisonInterests.inPrisonWorkInterests[1].workType == 'OTHER' && @.inPrisonInterests.inPrisonWorkInterests[1].workTypeOther == 'Painting and decorating')]",
+          ),
+        ),
+    )
   })
 })

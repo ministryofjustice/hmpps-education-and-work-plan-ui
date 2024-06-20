@@ -12,6 +12,7 @@ import formatFunctionalSkillTypeFilter from '../filters/formatFunctionalSkillTyp
 import formatStepStatusValueFilter from '../filters/formatStepStatusValueFilter'
 import formatGoalStatusValueFilter from '../filters/formatGoalStatusValueFilter'
 import formatYesNoFilter from '../filters/formatYesNoFilter'
+import formatHasWorkedBeforeFilter from '../filters/formatHasWorkedBeforeFilter'
 import formatAbilityToWorkConstraintFilter from '../filters/formatAbilityToWorkConstraintFilter'
 import formatJobTypeFilter from '../filters/formatJobTypeFilter'
 import formatEducationLevelFilter from '../filters/formatEducationLevelFilter'
@@ -28,6 +29,10 @@ import formatQualificationLevelHintFilter from '../filters/formatQualificationLe
 import formatTimelineEventFilter from '../filters/formatTimelineEventFilter'
 import formatPrisonMovementEventFilter from '../filters/formatPrisonMovementEventFilter'
 import formatCuriousCourseStatusFilter from '../filters/formatCuriousCourseStatusFilter'
+import sortedAlphabeticallyWithOtherLastFilter from '../filters/sortedAlphabeticallyWithOtherLastFilter'
+import objectsSortedAlphabeticallyWithOtherLastByFilter from '../filters/objectsSortedAlphabeticallyWithOtherLastByFilter'
+import previousWorkExperienceObjectsSortedInScreenOrderFilter from '../filters/previousWorkExperienceObjectsSortedInScreenOrderFilter'
+import achievedQualificationObjectsSortedInScreenOrderFilter from '../filters/achievedQualificationObjectsSortedInScreenOrderFilter'
 
 export default function nunjucksSetup(app: express.Express, applicationInfo: ApplicationInfo): void {
   app.set('view engine', 'njk')
@@ -99,7 +104,19 @@ export function registerNunjucks(app?: express.Express): Environment {
   njkEnv.addFilter('formatTimelineEvent', formatTimelineEventFilter)
   njkEnv.addFilter('formatPrisonMovementEvent', formatPrisonMovementEventFilter)
   njkEnv.addFilter('formatCuriousCourseStatus', formatCuriousCourseStatusFilter)
+  njkEnv.addFilter('formatHasWorkedBefore', formatHasWorkedBeforeFilter)
   njkEnv.addFilter('fallbackMessage', fallbackMessageFilter)
+  njkEnv.addFilter('sortedAlphabeticallyWithOtherLast', sortedAlphabeticallyWithOtherLastFilter)
+  njkEnv.addFilter('objectsSortedAlphabeticallyWithOtherLastBy', objectsSortedAlphabeticallyWithOtherLastByFilter)
+  njkEnv.addFilter(
+    'previousWorkExperienceObjectsSortedInScreenOrder',
+    previousWorkExperienceObjectsSortedInScreenOrderFilter,
+  )
+  njkEnv.addFilter(
+    'achievedQualificationObjectsSortedInScreenOrder',
+    achievedQualificationObjectsSortedInScreenOrderFilter,
+  )
+
   njkEnv.addFilter('addMonths', addMonths)
 
   njkEnv.addGlobal('dpsUrl', config.dpsHomeUrl)

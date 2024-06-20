@@ -1,0 +1,221 @@
+{#
+'Work and interests' tab - content for the long question set asked at the Induction
+Contains 'Work experience', 'Work interests' and 'Skills and interests' summary cards.
+The 'Work interests' summary card is different to the one presented if the short question set was asked, as the follow up
+questions are different.
+#}
+
+<section data-qa="work-and-interests-question-set">
+
+  {# Work experience summary card #}
+  <div class="govuk-summary-card" id="work-experience-summary-card">
+    <div class="govuk-summary-card__title-wrapper">
+      <h2 class="govuk-summary-card__title">Work experience</h2>
+    </div>
+    <div class="govuk-summary-card__content">
+      <dl class="govuk-summary-list">
+
+        {# Has the Prisoner worked before? #}
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">
+            Worked before
+          </dt>
+          <dd class="govuk-summary-list__value">
+            {{ induction.inductionDto.previousWorkExperiences.hasWorkedBefore | formatHasWorkedBefore }}
+          </dd>
+
+          <dd class="govuk-summary-list__actions govuk-!-display-none-print">
+            {%- set hasWorkedBeforeChangeLinkUrl -%}
+              {%- if featureToggles.induction.update.enabled -%}
+                /prisoners/{{ prisonerSummary.prisonNumber }}/induction/has-worked-before
+              {%- else -%}
+                {{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}/has-worked-before/update
+              {%- endif -%}
+            {%- endset -%}
+            <a class="govuk-link" href="{{ hasWorkedBeforeChangeLinkUrl }}" data-qa="has-worked-before-change-link">
+              Change<span class="govuk-visually-hidden"> worked before</span>
+            </a>
+          </dd>
+        </div>
+
+        {% if induction.inductionDto.previousWorkExperiences.hasWorkedBefore === 'YES' %}
+          {# Prisoner has worked before #}
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              Type of work experience
+            </dt>
+            <dd class="govuk-summary-list__value">
+              {# List each previous job #}
+              <ul class="govuk-list">
+                {% for typeOfWorkExperience in induction.inductionDto.previousWorkExperiences.experiences | previousWorkExperienceObjectsSortedInScreenOrder %}
+                  <li>{{ typeOfWorkExperience.experienceType | formatJobType }}</li>
+                {% endfor %}
+              </ul>
+            </dd>
+            <dd class="govuk-summary-list__actions govuk-!-display-none-print">
+              {%- set previousWorkExperienceChangeLinkUrl -%}
+                {%- if featureToggles.induction.update.enabled -%}
+                  /prisoners/{{ prisonerSummary.prisonNumber }}/induction/previous-work-experience
+                {%- else -%}
+                  {{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}/type-of-work-experience/update
+                {%- endif -%}
+              {%- endset -%}
+              <a class="govuk-link" href="{{ previousWorkExperienceChangeLinkUrl }}" data-qa="previous-work-experience-change-link">
+                Change<span class="govuk-visually-hidden"> type of work experience</span>
+              </a>
+            </dd>
+          </div>
+
+          {# List the detail of each previous job #}
+          {% for workExperienceDetails in induction.inductionDto.previousWorkExperiences.experiences | previousWorkExperienceObjectsSortedInScreenOrder %}
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                {% if workExperienceDetails.experienceType === 'Other' %}Other - {{ workExperienceDetails.experienceTypeOther }}{% else %}{{ workExperienceDetails.experienceType | formatJobType }}{% endif %} experience details
+              </dt>
+              <dd class="govuk-summary-list__value">
+                <p>Job role:<br> {{ workExperienceDetails.role }}</p>
+                <p>Roles and responsibilities:<br> {{ workExperienceDetails.details }}</p>
+              </dd>
+              <dd class="govuk-summary-list__actions govuk-!-display-none-print">
+                {%- set workExperienceDetailChangeLinkUrl -%}
+                  {%- if featureToggles.induction.update.enabled -%}
+                    /prisoners/{{ prisonerSummary.prisonNumber }}/induction/previous-work-experience/{{ workExperienceDetails.experienceType | lower }}
+                  {%- else -%}
+                    {{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}/work-details/{{ workExperienceDetails.experienceType | lower }}/update
+                  {%- endif -%}
+                {%- endset -%}
+                <a class="govuk-link" href="{{ workExperienceDetailChangeLinkUrl }}" data-qa="previous-work-experience-details-{{ workExperienceDetails.experienceType }}-change-link">
+                  Change<span class="govuk-visually-hidden"> {{ workExperienceDetails.experienceType | formatJobType }} experience details</span>
+                </a>
+              </dd>
+            </div>
+          {% endfor %}
+
+        {% endif %}
+      </dl>
+      <p class="govuk-hint govuk-body govuk-!-font-size-16">Last updated: {{ induction.inductionDto.previousWorkExperiences.updatedAt | formatDate('DD MMMM YYYY') }}<span class="govuk-!-display-none-print"> by {{ induction.inductionDto.previousWorkExperiences.updatedByDisplayName }}</span></p>
+    </div>
+  </div>
+
+  {# Work interests summary card #}
+  <div class="govuk-summary-card" id="work-interests-summary-card">
+    <div class="govuk-summary-card__title-wrapper">
+      <h2 class="govuk-summary-card__title">Work interests</h2>
+    </div>
+    <div class="govuk-summary-card__content">
+      <dl class="govuk-summary-list">
+
+        {# Is the Prisoner hoping to work on release #}
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">
+            Hoping to work on release
+          </dt>
+          <dd class="govuk-summary-list__value">
+            {{ induction.inductionDto.workOnRelease.hopingToWork | formatYesNo }}
+          </dd>
+          <dd class="govuk-summary-list__actions govuk-!-display-none-print">
+            {%- set hopingToWorkOnReleaseChangeLinkUrl -%}
+              {%- if featureToggles.induction.update.enabled -%}
+                /prisoners/{{ prisonerSummary.prisonNumber }}/induction/hoping-to-work-on-release
+              {%- else -%}
+                {{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}/hoping-to-get-work/update
+              {%- endif -%}
+            {%- endset -%}
+            <a class="govuk-link" href="{{ hopingToWorkOnReleaseChangeLinkUrl }}" data-qa="hoping-to-work-on-release-change-link">
+              Change<span class="govuk-visually-hidden"> hoping to work on release</span>
+            </a>
+          </dd>
+        </div>
+
+        {# List any constraints on ability to work #}
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">
+            Potential affect on ability to work
+          </dt>
+          <dd class="govuk-summary-list__value">
+            <ul class="govuk-list">
+              {% for abilityToWorkConstraint in induction.inductionDto.workOnRelease.affectAbilityToWork | sortedAlphabeticallyWithOtherLast %}
+                {% if abilityToWorkConstraint === 'OTHER' %}
+                  <li>Other - {{ induction.inductionDto.workOnRelease.affectAbilityToWorkOther }}</li>
+                {% else %}
+                  <li>{{ abilityToWorkConstraint | formatAbilityToWorkConstraint }}</li>
+                {% endif %}
+              {% endfor %}
+            </ul>
+          </dd>
+          <dd class="govuk-summary-list__actions govuk-!-display-none-print">
+            {%- set affectAbilityToWorkChangeLinkUrl -%}
+              {%- if featureToggles.induction.update.enabled -%}
+                /prisoners/{{ prisonerSummary.prisonNumber }}/induction/affect-ability-to-work
+              {%- else -%}
+                {{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}/ability-to-work/update
+              {%- endif -%}
+            {%- endset -%}
+            <a class="govuk-link" href="{{ affectAbilityToWorkChangeLinkUrl }}" data-qa="affect-ability-to-work-change-link">
+              Change<span class="govuk-visually-hidden"> potential affect on ability to work</span>
+            </a>
+          </dd>
+        </div>
+        {% if induction.inductionDto.workOnRelease.hopingToWork === 'YES' and induction.inductionDto.futureWorkInterests %}
+        {# List the types of work the Prisoner is interested in doing post-release #}
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">
+            Type of work
+          </dt>
+          <dd class="govuk-summary-list__value">
+            <ul class="govuk-list">
+              {% for job in induction.inductionDto.futureWorkInterests.interests | objectsSortedAlphabeticallyWithOtherLastBy('workType') %}
+                {% if job.workType === 'OTHER' %}
+                  <li>Other - {{ job.workTypeOther }}</li>
+                {% else %}
+                  <li>{{ job.workType | formatJobType }}</li>
+                {% endif %}
+              {% endfor %}
+            </ul>
+          </dd>
+          <dd class="govuk-summary-list__actions govuk-!-display-none-print">
+            {%- set workInterestTypesChangeLinkUrl -%}
+              {%- if featureToggles.induction.update.enabled -%}
+                /prisoners/{{ prisonerSummary.prisonNumber }}/induction/work-interest-types
+              {%- else -%}
+                {{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}/work-interests/update
+              {%- endif -%}
+            {%- endset -%}
+            <a class="govuk-link" href="{{ workInterestTypesChangeLinkUrl }}" data-qa="work-interest-types-change-link">
+              Change<span class="govuk-visually-hidden"> type of work</span>
+            </a>
+          </dd>
+        </div>
+
+        {# List any specific job roles the Prisoner is interested in doing post-release #}
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">
+            Specific job role of interest
+          </dt>
+          <dd class="govuk-summary-list__value">
+            <ul class="govuk-list">
+              {% for job in induction.inductionDto.futureWorkInterests.interests | objectsSortedAlphabeticallyWithOtherLastBy('workType') %}
+                <li>{{ job.role or 'None' }}</li>
+              {% endfor %}
+            </ul>
+          </dd>
+          <dd class="govuk-summary-list__actions govuk-!-display-none-print">
+            {%- set workInterestRolesChangeLinkUrl -%}
+              {%- if featureToggles.induction.update.enabled -%}
+                /prisoners/{{ prisonerSummary.prisonNumber }}/induction/work-interest-roles
+              {%- else -%}
+                {{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}particular-job-interests/update
+              {%- endif -%}
+            {%- endset -%}
+            <a class="govuk-link" href="{{ workInterestRolesChangeLinkUrl }}" data-qa="work-interest-roles-change-link">
+              Change<span class="govuk-visually-hidden"> specific job role of interest</span>
+            </a>
+          </dd>
+        </div>
+        {% endif %}
+      </dl>
+      <p class="govuk-hint govuk-body govuk-!-font-size-16">Last updated: {{ induction.inductionDto.futureWorkInterests.updatedAt | formatDate('DD MMMM YYYY') }}<span class="govuk-!-display-none-print"> by {{ induction.inductionDto.futureWorkInterests.updatedByDisplayName }}</span></p>
+    </div>
+  </div>
+
+</section>

@@ -20,12 +20,13 @@ export default abstract class WantToAddQualificationsController extends Inductio
     res: Response,
     next: NextFunction,
   ): Promise<void> => {
-    const { prisonerSummary, prisonerFunctionalSkills, inductionDto } = req.session
+    const { prisonerSummary, inductionDto } = req.session
 
     // There will always be a page flow history for this page, because you can only get here from the Induction "Reasons Not To Work"
     // or "Check Your Answers" pages; both of which correctly setup the page flow history before coming here.
     this.addCurrentPageToHistory(req)
 
+    const { prisonerFunctionalSkills, curiousInPrisonCourses } = res.locals
     const functionalSkills = {
       ...prisonerFunctionalSkills,
       assessments: mostRecentAssessments(prisonerFunctionalSkills.assessments || []),
@@ -41,6 +42,7 @@ export default abstract class WantToAddQualificationsController extends Inductio
       this.getBackLinkAriaText(req),
       wantToAddQualificationsForm,
       functionalSkills,
+      curiousInPrisonCourses,
     )
     return res.render('pages/induction/prePrisonEducation/wantToAddQualifications', { ...view.renderArgs })
   }
@@ -68,7 +70,7 @@ export default abstract class WantToAddQualificationsController extends Inductio
       previousQualifications: {
         ...inductionDto.previousQualifications,
         qualifications: [],
-        educationLevel: EducationLevelValue.NOT_SURE, // Having removed all qualifications we cannot be sure of the Highest Level of Education, so set to NOT_SURE
+        educationLevel: inductionDto.previousQualifications?.educationLevel || EducationLevelValue.NOT_SURE, // Keep the Highest Level of Education unless it is not set in which case set to NOT_SURE
       },
     }
   }

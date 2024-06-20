@@ -2,7 +2,7 @@ import createError from 'http-errors'
 import { NextFunction, Request, Response } from 'express'
 import { SessionData } from 'express-session'
 import { InductionService } from '../../services'
-import { aShortQuestionSetInductionDto } from '../../testsupport/inductionDtoTestDataBuilder'
+import aValidInductionDto from '../../testsupport/inductionDtoTestDataBuilder'
 import retrieveInductionIfNotInSession from './retrieveInductionIfNotInSession'
 
 describe('retrieveInductionIfNotInSession', () => {
@@ -44,7 +44,7 @@ describe('retrieveInductionIfNotInSession', () => {
 
     const prisonNumber = 'A1234GC'
     req.params.prisonNumber = prisonNumber
-    const expectedInductionDto = aShortQuestionSetInductionDto({ prisonNumber })
+    const expectedInductionDto = aValidInductionDto({ prisonNumber })
     inductionService.getInduction.mockResolvedValue(expectedInductionDto)
 
     // When
@@ -61,11 +61,11 @@ describe('retrieveInductionIfNotInSession', () => {
     const token = 'a-user-token'
     req.user.token = token
 
-    req.session.inductionDto = aShortQuestionSetInductionDto({ prisonNumber: 'Z1234XY' })
+    req.session.inductionDto = aValidInductionDto({ prisonNumber: 'Z1234XY' })
 
     const prisonNumber = 'A1234GC'
     req.params.prisonNumber = prisonNumber
-    const expectedInductionDto = aShortQuestionSetInductionDto({ prisonNumber })
+    const expectedInductionDto = aValidInductionDto({ prisonNumber })
     inductionService.getInduction.mockResolvedValue(expectedInductionDto)
 
     // When
@@ -84,10 +84,10 @@ describe('retrieveInductionIfNotInSession', () => {
 
     const prisonNumber = 'A1234GC'
 
-    req.session.inductionDto = aShortQuestionSetInductionDto({ prisonNumber })
+    req.session.inductionDto = aValidInductionDto({ prisonNumber })
 
     req.params.prisonNumber = prisonNumber
-    const expectedInductionDto = aShortQuestionSetInductionDto({ prisonNumber })
+    const expectedInductionDto = aValidInductionDto({ prisonNumber })
 
     // When
     await requestHandler(req as undefined as Request, res as undefined as Response, next as undefined as NextFunction)

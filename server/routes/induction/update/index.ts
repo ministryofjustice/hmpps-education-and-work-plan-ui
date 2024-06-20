@@ -10,7 +10,6 @@ import WorkedBeforeUpdateController from './workedBeforeUpdateController'
 import PreviousWorkExperienceDetailUpdateController from './previousWorkExperienceDetailUpdateController'
 import PreviousWorkExperienceTypesUpdateController from './previousWorkExperienceTypesUpdateController'
 import AffectAbilityToWorkUpdateController from './affectAbilityToWorkUpdateController'
-import ReasonsNotToGetWorkUpdateController from './reasonsNotToGetWorkUpdateController'
 import WorkInterestTypesUpdateController from './workInterestTypesUpdateController'
 import WorkInterestRolesUpdateController from './workInterestRolesUpdateController'
 import HighestLevelOfEducationUpdateController from './highestLevelOfEducationUpdateController'
@@ -20,11 +19,11 @@ import QualificationLevelUpdateController from './qualificationLevelUpdateContro
 import QualificationDetailsUpdateController from './qualificationDetailsUpdateController'
 import HopingToWorkOnReleaseUpdateController from './hopingToWorkOnReleaseUpdateController'
 import WantToAddQualificationsUpdateController from './wantToAddQualificationsUpdateController'
-import CheckYourAnswersUpdateController from './checkYourAnswersUpdateController'
 import setCurrentPageInPageFlowQueue from '../../routerRequestHandlers/setCurrentPageInPageFlowQueue'
-import retrieveFunctionalSkillsIfNotInSession from '../../routerRequestHandlers/retrieveFunctionalSkillsIfNotInSession'
+import retrieveCuriousFunctionalSkills from '../../routerRequestHandlers/retrieveCuriousFunctionalSkills'
 import retrieveInductionIfNotInSession from '../../routerRequestHandlers/retrieveInductionIfNotInSession'
 import asyncMiddleware from '../../../middleware/asyncMiddleware'
+import retrieveCuriousInPrisonCourses from '../../routerRequestHandlers/retrieveCuriousInPrisonCourses'
 
 /**
  * Route definitions for updating the various sections of an Induction
@@ -45,7 +44,6 @@ export default (router: Router, services: Services) => {
     inductionService,
   )
   const affectAbilityToWorkUpdateController = new AffectAbilityToWorkUpdateController(inductionService)
-  const reasonsNotToGetWorkUpdateController = new ReasonsNotToGetWorkUpdateController(inductionService)
   const workInterestTypesUpdateController = new WorkInterestTypesUpdateController(inductionService)
   const workInterestRolesUpdateController = new WorkInterestRolesUpdateController(inductionService)
   const highestLevelOfEducationUpdateController = new HighestLevelOfEducationUpdateController(inductionService)
@@ -54,7 +52,6 @@ export default (router: Router, services: Services) => {
   const additionalTrainingUpdateController = new AdditionalTrainingUpdateController(inductionService)
   const qualificationsListUpdateController = new QualificationsListUpdateController(inductionService)
   const wantToAddQualificationsUpdateController = new WantToAddQualificationsUpdateController()
-  const checkYourAnswersUpdateController = new CheckYourAnswersUpdateController(inductionService)
 
   if (config.featureToggles.induction.update.enabled) {
     router.get('/prisoners/:prisonNumber/induction/**', [
@@ -124,13 +121,6 @@ export default (router: Router, services: Services) => {
       asyncMiddleware(affectAbilityToWorkUpdateController.submitAffectAbilityToWorkForm),
     ])
 
-    router.get('/prisoners/:prisonNumber/induction/reasons-not-to-get-work', [
-      asyncMiddleware(reasonsNotToGetWorkUpdateController.getReasonsNotToGetWorkView),
-    ])
-    router.post('/prisoners/:prisonNumber/induction/reasons-not-to-get-work', [
-      asyncMiddleware(reasonsNotToGetWorkUpdateController.submitReasonsNotToGetWorkForm),
-    ])
-
     router.get('/prisoners/:prisonNumber/induction/work-interest-types', [
       asyncMiddleware(workInterestTypesUpdateController.getWorkInterestTypesView),
     ])
@@ -152,17 +142,10 @@ export default (router: Router, services: Services) => {
       asyncMiddleware(inPrisonWorkUpdateController.submitInPrisonWorkForm),
     ])
 
-    // Check Your Answers
-    router.get('/prisoners/:prisonNumber/induction/check-your-answers', [
-      asyncMiddleware(checkYourAnswersUpdateController.getCheckYourAnswersView),
-    ])
-    router.post('/prisoners/:prisonNumber/induction/check-your-answers', [
-      asyncMiddleware(checkYourAnswersUpdateController.submitCheckYourAnswers),
-    ])
-
     // Pre Prison Education
     router.get('/prisoners/:prisonNumber/induction/qualifications', [
-      retrieveFunctionalSkillsIfNotInSession(services.curiousService),
+      retrieveCuriousFunctionalSkills(services.curiousService),
+      retrieveCuriousInPrisonCourses(services.curiousService),
       asyncMiddleware(qualificationsListUpdateController.getQualificationsListView),
     ])
     router.post('/prisoners/:prisonNumber/induction/qualifications', [
@@ -170,7 +153,8 @@ export default (router: Router, services: Services) => {
     ])
 
     router.get('/prisoners/:prisonNumber/induction/want-to-add-qualifications', [
-      retrieveFunctionalSkillsIfNotInSession(services.curiousService),
+      retrieveCuriousFunctionalSkills(services.curiousService),
+      retrieveCuriousInPrisonCourses(services.curiousService),
       asyncMiddleware(wantToAddQualificationsUpdateController.getWantToAddQualificationsView),
     ])
     router.post('/prisoners/:prisonNumber/induction/want-to-add-qualifications', [

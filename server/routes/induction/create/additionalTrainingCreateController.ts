@@ -3,18 +3,17 @@ import type { AdditionalTrainingForm } from 'inductionForms'
 import AdditionalTrainingController from '../common/additionalTrainingController'
 import getDynamicBackLinkAriaText from '../dynamicAriaTextResolver'
 import validateAdditionalTrainingForm from '../../validators/induction/additionalTrainingFormValidator'
-import { getPreviousPage } from '../../pageFlowHistory'
+import { buildNewPageFlowHistory, getPreviousPage } from '../../pageFlowHistory'
 import { asArray } from '../../../utils/utils'
-import HopingToGetWorkValue from '../../../enums/hopingToGetWorkValue'
 
 export default class AdditionalTrainingCreateController extends AdditionalTrainingController {
   getBackLinkUrl(req: Request): string {
     const { prisonNumber } = req.params
     const { pageFlowHistory } = req.session
-    if (pageFlowHistory) {
-      return getPreviousPage(pageFlowHistory)
-    }
-    return `/prisoners/${prisonNumber}/create-induction/qualifications`
+    const previousPage =
+      (pageFlowHistory && getPreviousPage(pageFlowHistory)) ||
+      `/prisoners/${prisonNumber}/create-induction/qualifications`
+    return previousPage
   }
 
   getBackLinkAriaText(req: Request): string {
@@ -49,11 +48,9 @@ export default class AdditionalTrainingCreateController extends AdditionalTraini
       return res.redirect(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
     }
 
-    if (updatedInduction.workOnRelease.hopingToWork === HopingToGetWorkValue.YES) {
-      // Long question set Induction
-      return res.redirect(`/prisoners/${prisonNumber}/create-induction/has-worked-before`)
-    }
-    // Short question set Induction
-    return res.redirect(`/prisoners/${prisonNumber}/create-induction/in-prison-work`)
+    // For the Create journey we need the page flow history so subsequent pages know where we have been and can display the correct back link
+    req.session.pageFlowHistory = buildNewPageFlowHistory(req)
+
+    return res.redirect(`/prisoners/${prisonNumber}/create-induction/has-worked-before`)
   }
 }

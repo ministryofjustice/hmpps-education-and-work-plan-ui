@@ -3,7 +3,6 @@ import SkillsPage from '../induction/SkillsPage'
 import PersonalInterestsPage from '../induction/PersonalInterestsPage'
 import WorkedBeforePage from '../induction/WorkedBeforePage'
 import AffectAbilityToWorkPage from '../induction/AffectAbilityToWorkPage'
-import ReasonsNotToGetWorkPage from '../induction/ReasonsNotToGetWorkPage'
 import PreviousWorkExperienceDetailPage from '../induction/PreviousWorkExperienceDetailPage'
 import TypeOfWorkExperienceValue from '../../../server/enums/typeOfWorkExperienceValue'
 import FutureWorkInterestTypesPage from '../induction/FutureWorkInterestTypesPage'
@@ -26,19 +25,7 @@ export default class WorkAndInterestsPage extends Page {
     return this
   }
 
-  isShowingLongQuestionSetAnswers(): WorkAndInterestsPage {
-    this.longQuestionSetContent().should('be.visible')
-    this.shortQuestionSetContent().should('not.exist')
-    return this
-  }
-
-  isShowingShortQuestionSetAnswers(): WorkAndInterestsPage {
-    this.shortQuestionSetContent().should('be.visible')
-    this.longQuestionSetContent().should('not.exist')
-    return this
-  }
-
-  hasWorkInterests(): WorkAndInterestsPage {
+  hasWorkInterestsDisplayed(): WorkAndInterestsPage {
     this.workInterestsSummaryCard().should('be.visible')
     return this
   }
@@ -50,6 +37,11 @@ export default class WorkAndInterestsPage extends Page {
 
   hasSkillsAndInterestsDisplayed(): WorkAndInterestsPage {
     this.skillsAndInterestSummaryCard().should('be.visible')
+    return this
+  }
+
+  hasInPrisonWorkInterestsSummaryCardDisplayed(): WorkAndInterestsPage {
+    this.inPrisonWorkInterestsSummaryCard().should('be.visible')
     return this
   }
 
@@ -68,9 +60,19 @@ export default class WorkAndInterestsPage extends Page {
     return Page.verifyOnPage(SkillsPage)
   }
 
+  skillsChangeLinkHasText(expected: string): WorkAndInterestsPage {
+    this.skillsChangeLink().should('contain.text', expected)
+    return this
+  }
+
   clickPersonalInterestsChangeLink(): PersonalInterestsPage {
     this.personalInterestsChangeLink().click()
     return Page.verifyOnPage(PersonalInterestsPage)
+  }
+
+  personalInterestsChangeLinkHasText(expected: string): WorkAndInterestsPage {
+    this.personalInterestsChangeLink().should('contain.text', expected)
+    return this
   }
 
   clickWorkedBeforeChangeLink(): WorkedBeforePage {
@@ -88,11 +90,6 @@ export default class WorkAndInterestsPage extends Page {
     return Page.verifyOnPage(AffectAbilityToWorkPage)
   }
 
-  clickReasonsNotToGetWorkWorkChangeLink(): ReasonsNotToGetWorkPage {
-    this.reasonsNotToGetWorkChangeLink().click()
-    return Page.verifyOnPage(ReasonsNotToGetWorkPage)
-  }
-
   clickFutureWorkInterestTypesChangeLink(): FutureWorkInterestTypesPage {
     this.futureWorkInterestTypesChangeLink().click()
     return Page.verifyOnPage(FutureWorkInterestTypesPage)
@@ -101,6 +98,11 @@ export default class WorkAndInterestsPage extends Page {
   clickFutureWorkInterestRolesChangeLink(): FutureWorkInterestRolesPage {
     this.futureWorkInterestRolesChangeLink().click()
     return Page.verifyOnPage(FutureWorkInterestRolesPage)
+  }
+
+  doesNotHaveFutureWorkInterestRolesChangeLink(): WorkAndInterestsPage {
+    this.futureWorkInterestRolesChangeLink().should('not.exist')
+    return this
   }
 
   clickPreviousWorkExperienceTypesChangeLink(): PreviousWorkExperienceTypesPage {
@@ -120,6 +122,11 @@ export default class WorkAndInterestsPage extends Page {
     return Page.verifyOnPage(InPrisonWorkPage)
   }
 
+  inPrisonWorkChangeLinkHasText(expected: string): WorkAndInterestsPage {
+    this.inPrisonWorkChangeLink().should('contain.text', expected)
+    return this
+  }
+
   activeTab = (): PageElement => cy.get('.moj-sub-navigation__link[aria-current=page]')
 
   workInterestsSummaryCard = (): PageElement => cy.get('#work-interests-summary-card')
@@ -128,13 +135,11 @@ export default class WorkAndInterestsPage extends Page {
 
   skillsAndInterestSummaryCard = (): PageElement => cy.get('#skills-and-interests-summary-card')
 
+  inPrisonWorkInterestsSummaryCard = (): PageElement => cy.get('#in-prison-work-interests-summary-card')
+
   inductionUnavailableMessage = (): PageElement => cy.get('[data-qa=induction-unavailable-message]')
 
   createInductionLink = (): PageElement => cy.get('[data-qa=link-to-create-induction]')
-
-  longQuestionSetContent = (): PageElement => cy.get('[data-qa=work-and-interests-long-question-set')
-
-  shortQuestionSetContent = (): PageElement => cy.get('[data-qa=work-and-interests-short-question-set')
 
   skillsChangeLink = (): PageElement => cy.get('[data-qa=skills-change-link')
 
@@ -145,8 +150,6 @@ export default class WorkAndInterestsPage extends Page {
   hopingToWorkOnReleaseChangeLink = (): PageElement => cy.get('[data-qa=hoping-to-work-on-release-change-link')
 
   affectAbilityToWorkChangeLink = (): PageElement => cy.get('[data-qa=affect-ability-to-work-change-link')
-
-  reasonsNotToGetWorkChangeLink = (): PageElement => cy.get('[data-qa=reasons-not-to-get-work-change-link')
 
   futureWorkInterestTypesChangeLink = (): PageElement => cy.get('[data-qa=work-interest-types-change-link')
 

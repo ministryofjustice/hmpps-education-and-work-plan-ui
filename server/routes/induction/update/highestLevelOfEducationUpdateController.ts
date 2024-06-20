@@ -1,12 +1,11 @@
 import createError from 'http-errors'
 import { NextFunction, Request, RequestHandler, Response } from 'express'
-import type { InductionDto } from 'inductionDto'
 import HighestLevelOfEducationController from '../common/highestLevelOfEducationController'
 import { InductionService } from '../../../services'
 import validateHighestLevelOfEducationForm from '../../validators/induction/highestLevelOfEducationFormValidator'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
 import logger from '../../../../logger'
-import { buildNewPageFlowHistory, getPreviousPage } from '../../pageFlowHistory'
+import { getPreviousPage } from '../../pageFlowHistory'
 import getDynamicBackLinkAriaText from '../dynamicAriaTextResolver'
 
 /**
@@ -54,52 +53,14 @@ export default class HighestLevelOfEducationUpdateController extends HighestLeve
     req.session.inductionDto = updatedInduction
     req.session.highestLevelOfEducationForm = undefined
 
-    // If the previous page was Check Your Answers, forward to Check Your Answers again
-    if (this.previousPageWasCheckYourAnswers(req)) {
-      return res.redirect(`/prisoners/${prisonNumber}/induction/check-your-answers`)
-    }
-
-    // If we are in the midst of changing the question set we need to redirect to the next screen depending on whether
-    // the new Highest Level of Education requires qualifications or not.
-    if (req.session.updateInductionQuestionSet) {
-      return this.highestLevelOfEducationDoesNotRequireQualifications(highestLevelOfEducationForm)
-        ? res.redirect(`/prisoners/${prisonNumber}/induction/additional-training`)
-        : res.redirect(`/prisoners/${prisonNumber}/induction/qualification-level`)
-    }
-
-    if (
-      // The Induction already has qualifications, regardless of the new Highest Level of Education
-      inductionHasEducationQualifications(inductionDto) ||
-      // Or if the new Highest Level of Education does not require qualifications, regardless of whether qualifications already exist on the induction
-      this.highestLevelOfEducationDoesNotRequireQualifications(highestLevelOfEducationForm)
-    ) {
-      logger.debug(
-        'Induction can be updated with new Highest Level of Education without asking further questions about educational qualifications',
-      )
-
-      try {
-        const updateInductionDto = toCreateOrUpdateInductionDto(prisonId, updatedInduction)
-        await this.inductionService.updateInduction(prisonNumber, updateInductionDto, req.user.token)
-        req.session.inductionDto = undefined
-        return res.redirect(`/plan/${prisonNumber}/view/education-and-training`)
-      } catch (e) {
-        logger.error(`Error updating Induction for prisoner ${prisonNumber}`, e)
-        return next(createError(500, `Error updating Induction for prisoner ${prisonNumber}. Error: ${e}`))
-      }
-    } else {
-      logger.debug('New Highest Level of Education requires asking further questions about educational qualifications')
-
-      // if there is no page history (i.e. because we're not changing the main question set), start one here before commencing the add qualification mini flow
-      if (!req.session.pageFlowHistory) {
-        req.session.pageFlowHistory = buildNewPageFlowHistory(req)
-      }
-      return res.redirect(`/prisoners/${prisonNumber}/induction/qualification-level`)
+    try {
+      const updateInductionDto = toCreateOrUpdateInductionDto(prisonId, updatedInduction)
+      await this.inductionService.updateInduction(prisonNumber, updateInductionDto, req.user.token)
+      req.session.inductionDto = undefined
+      return res.redirect(`/plan/${prisonNumber}/view/education-and-training`)
+    } catch (e) {
+      logger.error(`Error updating Induction for prisoner ${prisonNumber}`, e)
+      return next(createError(500, `Error updating Induction for prisoner ${prisonNumber}. Error: ${e}`))
     }
   }
 }
-
-/**
- * Return true if the given [InductionDto] contains one or more pre-prison educational qualifications
- */
-const inductionHasEducationQualifications = (inductionDto: InductionDto): boolean =>
-  inductionDto.previousQualifications?.qualifications?.length > 0

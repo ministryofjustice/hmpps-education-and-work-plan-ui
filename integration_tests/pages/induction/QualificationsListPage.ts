@@ -46,8 +46,13 @@ export default class QualificationsListPage extends InductionPage {
     return this
   }
 
-  hasCuriousUnavailableMessageDisplayed() {
-    this.curiousUnavailableMessage().should('be.exist')
+  hasFunctionalSkillsCuriousUnavailableMessageDisplayed() {
+    this.functionalSKillsCuriousUnavailableMessage().should('be.exist')
+    return this
+  }
+
+  hasInPrisonCoursesCuriousUnavailableMessageDisplayed() {
+    this.inPrisonCoursesCuriousUnavailableMessage().should('be.exist')
     return this
   }
 
@@ -61,5 +66,9 @@ export default class QualificationsListPage extends InductionPage {
 
   educationalQualificationsTable = (): PageElement => cy.get('[data-qa=educational-qualifications-table]')
 
-  curiousUnavailableMessage = (): PageElement => cy.get('[data-qa=curious-unavailable-message]')
+  functionalSKillsCuriousUnavailableMessage = (): PageElement =>
+    cy.get('[data-qa=functional-skills-curious-unavailable-message]')
+
+  inPrisonCoursesCuriousUnavailableMessage = (): PageElement =>
+    cy.get('[data-qa=in-prison-courses-curious-unavailable-message]')
 }

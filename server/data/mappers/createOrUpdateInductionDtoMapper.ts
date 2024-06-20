@@ -35,8 +35,6 @@ const toCreateOrUpdateWorkOnReleaseDto = (workOnRelease: WorkOnReleaseDto): Crea
   return {
     reference: workOnRelease.reference,
     hopingToWork: workOnRelease.hopingToWork,
-    notHopingToWorkReasons: workOnRelease.notHopingToWorkReasons,
-    notHopingToWorkOtherReason: workOnRelease.notHopingToWorkOtherReason,
     affectAbilityToWork: workOnRelease.affectAbilityToWork,
     affectAbilityToWorkOther: workOnRelease.affectAbilityToWorkOther,
   }
@@ -81,25 +79,21 @@ const toCreateOrUpdatePreviousWorkExperiencesDto = (
 const toCreateOrUpdateInPrisonInterestsDto = (
   inPrisonInterests: InPrisonInterestsDto,
 ): CreateOrUpdateInPrisonInterestsDto => {
-  return inPrisonInterests
-    ? {
-        reference: inPrisonInterests.reference,
-        inPrisonWorkInterests: inPrisonInterests.inPrisonWorkInterests,
-        inPrisonTrainingInterests: inPrisonInterests.inPrisonTrainingInterests,
-      }
-    : undefined
+  return {
+    reference: inPrisonInterests?.reference,
+    inPrisonWorkInterests: inPrisonInterests?.inPrisonWorkInterests || [],
+    inPrisonTrainingInterests: inPrisonInterests?.inPrisonTrainingInterests || [],
+  }
 }
 
 const toCreateOrUpdatePersonalSkillsAndInterestsDto = (
   personalSkillsAndInterests: PersonalSkillsAndInterestsDto,
 ): CreateOrUpdatePersonalSkillsAndInterestsDto => {
-  return personalSkillsAndInterests
-    ? {
-        reference: personalSkillsAndInterests.reference,
-        skills: personalSkillsAndInterests.skills,
-        interests: personalSkillsAndInterests.interests,
-      }
-    : undefined
+  return {
+    reference: personalSkillsAndInterests?.reference,
+    skills: personalSkillsAndInterests?.skills || [],
+    interests: personalSkillsAndInterests?.interests || [],
+  }
 }
 
 const toCreateOrUpdateFutureWorkInterestsDto = (

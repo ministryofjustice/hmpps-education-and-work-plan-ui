@@ -3,19 +3,12 @@ import { NextFunction, Request, Response } from 'express'
 import type { SessionData } from 'express-session'
 import HopingToWorkOnReleaseUpdateController from './hopingToWorkOnReleaseUpdateController'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
-import {
-  aLongQuestionSetInductionDto,
-  aShortQuestionSetInductionDto,
-} from '../../../testsupport/inductionDtoTestDataBuilder'
+import aValidInductionDto from '../../../testsupport/inductionDtoTestDataBuilder'
 import HopingToGetWorkValue from '../../../enums/hopingToGetWorkValue'
 import validateHopingToWorkOnReleaseForm from '../../validators/induction/hopingToWorkOnReleaseFormValidator'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
 import InductionService from '../../../services/inductionService'
-import { aShortQuestionSetUpdateInductionDto } from '../../../testsupport/updateInductionDtoTestDataBuilder'
-import {
-  aLongQuestionSetUpdateInductionRequest,
-  aShortQuestionSetUpdateInductionRequest,
-} from '../../../testsupport/updateInductionRequestTestDataBuilder'
+import aValidUpdateInductionRequest from '../../../testsupport/updateInductionRequestTestDataBuilder'
 
 jest.mock('../../validators/induction/hopingToWorkOnReleaseFormValidator')
 jest.mock('../../../data/mappers/createOrUpdateInductionDtoMapper')
@@ -67,7 +60,7 @@ describe('hopingToWorkOnReleaseUpdateController', () => {
       // Given
       const prisonerSummary = aValidPrisonerSummary()
       req.session.prisonerSummary = prisonerSummary
-      const inductionDto = aLongQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       req.session.inductionDto = inductionDto
       req.session.hopingToWorkOnReleaseForm = undefined
 
@@ -99,7 +92,7 @@ describe('hopingToWorkOnReleaseUpdateController', () => {
       // Given
       const prisonerSummary = aValidPrisonerSummary()
       req.session.prisonerSummary = prisonerSummary
-      const inductionDto = aLongQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       req.session.inductionDto = inductionDto
 
       const expectedHopingToWorkOnReleaseForm = {
@@ -126,49 +119,6 @@ describe('hopingToWorkOnReleaseUpdateController', () => {
       expect(req.session.hopingToWorkOnReleaseForm).toBeUndefined()
       expect(req.session.inductionDto).toEqual(inductionDto)
     })
-
-    it('should get the Hoping To Work On Release view given there is a page flow history on the session', async () => {
-      // Given
-      const prisonerSummary = aValidPrisonerSummary()
-      req.session.prisonerSummary = prisonerSummary
-      const inductionDto = aLongQuestionSetInductionDto()
-      req.session.inductionDto = inductionDto
-      req.session.hopingToWorkOnReleaseForm = undefined
-
-      const expectedHopingToWorkOnReleaseForm = {
-        hopingToGetWork: HopingToGetWorkValue.YES,
-      }
-      req.session.pageFlowHistory = {
-        pageUrls: [`/prisoners/${prisonNumber}/induction/check-your-answers`],
-        currentPageIndex: 0,
-      }
-
-      const expectedView = {
-        prisonerSummary,
-        form: expectedHopingToWorkOnReleaseForm,
-        backLinkUrl: '/prisoners/A1234BC/induction/check-your-answers',
-        backLinkAriaText: `Back to Check and save your answers before adding Jimmy Lightfingers's goals`,
-      }
-      const expectedPageFlowHistory = {
-        pageUrls: [
-          '/prisoners/A1234BC/induction/check-your-answers',
-          '/prisoners/A1234BC/induction/hoping-to-work-on-release',
-        ],
-        currentPageIndex: 1,
-      }
-
-      // When
-      await controller.getHopingToWorkOnReleaseView(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
-
-      // Then
-      expect(res.render).toHaveBeenCalledWith('pages/induction/hopingToWorkOnRelease/index', expectedView)
-      expect(req.session.inductionDto).toEqual(inductionDto)
-      expect(req.session.pageFlowHistory).toEqual(expectedPageFlowHistory)
-    })
   })
 
   describe('submitHopingToWorkOnReleaseForm', () => {
@@ -176,7 +126,7 @@ describe('hopingToWorkOnReleaseUpdateController', () => {
       // Given
       const prisonerSummary = aValidPrisonerSummary()
       req.session.prisonerSummary = prisonerSummary
-      const inductionDto = aLongQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       req.session.inductionDto = inductionDto
 
       const invalidHopingToWorkOnReleaseForm = {
@@ -209,41 +159,27 @@ describe('hopingToWorkOnReleaseUpdateController', () => {
       expect(req.session.inductionDto).toEqual(inductionDto)
     })
 
-    Array.of(
-      { inductionValue: HopingToGetWorkValue.YES, formValue: HopingToGetWorkValue.YES },
-      { inductionValue: HopingToGetWorkValue.NO, formValue: HopingToGetWorkValue.NO },
-      { inductionValue: HopingToGetWorkValue.NOT_SURE, formValue: HopingToGetWorkValue.NOT_SURE },
-      { inductionValue: HopingToGetWorkValue.NO, formValue: HopingToGetWorkValue.NOT_SURE },
-      { inductionValue: HopingToGetWorkValue.NOT_SURE, formValue: HopingToGetWorkValue.NO },
-    ).forEach(spec => {
-      it(`should update Induction whose current value is ${spec.inductionValue} given form is submitted with value ${spec.formValue} `, async () => {
+    it.each([HopingToGetWorkValue.NO, HopingToGetWorkValue.NOT_SURE])(
+      `should update Induction given form is submitted with value from YES to %s`,
+      async (hopingToGetWorkValue: HopingToGetWorkValue) => {
         // Given
         req.user.token = 'some-token'
 
         const prisonerSummary = aValidPrisonerSummary()
         req.session.prisonerSummary = prisonerSummary
 
-        const inductionDto =
-          spec.inductionValue === HopingToGetWorkValue.YES
-            ? aLongQuestionSetInductionDto()
-            : aShortQuestionSetInductionDto()
-        inductionDto.workOnRelease.hopingToWork = spec.inductionValue
+        const inductionDto = aValidInductionDto({ hopingToGetWork: HopingToGetWorkValue.YES })
         req.session.inductionDto = inductionDto
 
-        const hopingToWorkOnReleaseForm = { hopingToGetWork: spec.formValue }
+        const hopingToWorkOnReleaseForm = { hopingToGetWork: hopingToGetWorkValue }
         req.body = hopingToWorkOnReleaseForm
         req.session.hopingToWorkOnReleaseForm = undefined
 
         mockedFormValidator.mockReturnValue(errors)
 
-        const updateInductionDto =
-          spec.inductionValue === HopingToGetWorkValue.YES
-            ? aLongQuestionSetUpdateInductionRequest()
-            : aShortQuestionSetUpdateInductionDto()
-        updateInductionDto.workOnRelease.hopingToWork = spec.formValue
+        const updateInductionDto = aValidUpdateInductionRequest()
+        updateInductionDto.workOnRelease.hopingToWork = hopingToGetWorkValue
         mockedCreateOrUpdateInductionDtoMapper.mockReturnValueOnce(updateInductionDto)
-
-        const expectedHopingToWorkOnReleaseValue = spec.formValue
 
         // When
         await controller.submitHopingToWorkOnReleaseForm(
@@ -256,57 +192,48 @@ describe('hopingToWorkOnReleaseUpdateController', () => {
         // Extract the first call to the mock and the second argument (i.e. the updated Induction)
         const updatedInduction = mockedCreateOrUpdateInductionDtoMapper.mock.calls[0][1]
         expect(mockedCreateOrUpdateInductionDtoMapper).toHaveBeenCalledWith(prisonerSummary.prisonId, updatedInduction)
-        expect(updatedInduction.workOnRelease.hopingToWork).toEqual(expectedHopingToWorkOnReleaseValue)
+        expect(updatedInduction.workOnRelease.hopingToWork).toEqual(hopingToGetWorkValue)
+        expect(updatedInduction.futureWorkInterests.interests).toEqual([])
 
         expect(inductionService.updateInduction).toHaveBeenCalledWith(prisonNumber, updateInductionDto, 'some-token')
         expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/view/work-and-interests`)
         expect(req.session.hopingToWorkOnReleaseForm).toBeUndefined()
         expect(req.session.inductionDto).toBeUndefined()
-      })
-    })
+      },
+    )
 
-    it('should update InductionDto and redirect to Check Your Answers given previous page was Check Your Answers', async () => {
-      // Given
-      req.user.token = 'some-token'
-      req.params.prisonNumber = prisonNumber
+    it.each([HopingToGetWorkValue.NO, HopingToGetWorkValue.NOT_SURE])(
+      `should redirect to Work Interest Types and not call the API to update Induction given form is submitted with value from %s to YES`,
+      async (previousHopingToGetWorkValue: HopingToGetWorkValue) => {
+        // Given
+        const prisonerSummary = aValidPrisonerSummary()
+        req.session.prisonerSummary = prisonerSummary
 
-      const prisonerSummary = aValidPrisonerSummary()
-      req.session.prisonerSummary = prisonerSummary
-      const inductionDto = aShortQuestionSetInductionDto()
-      req.session.inductionDto = inductionDto
+        const inductionDto = aValidInductionDto({ hopingToGetWork: previousHopingToGetWorkValue })
+        req.session.inductionDto = inductionDto
 
-      const hopingToWorkOnReleaseForm = {
-        hopingToGetWork: HopingToGetWorkValue.NOT_SURE,
-      }
-      req.body = hopingToWorkOnReleaseForm
-      req.session.hopingToWorkOnReleaseForm = undefined
-      const updateInductionDto = aShortQuestionSetUpdateInductionRequest()
+        const hopingToWorkOnReleaseForm = { hopingToGetWork: HopingToGetWorkValue.YES }
+        req.body = hopingToWorkOnReleaseForm
+        req.session.hopingToWorkOnReleaseForm = undefined
 
-      mockedCreateOrUpdateInductionDtoMapper.mockReturnValueOnce(updateInductionDto)
-      mockedFormValidator.mockReturnValue(errors)
+        mockedFormValidator.mockReturnValue(errors)
 
-      req.session.pageFlowHistory = {
-        pageUrls: [
-          '/prisoners/A1234BC/induction/check-your-answers',
-          '/prisoners/A1234BC/induction/hoping-to-work-on-release',
-        ],
-        currentPageIndex: 1,
-      }
-      const expectedNextPage = '/prisoners/A1234BC/induction/check-your-answers'
+        // When
+        await controller.submitHopingToWorkOnReleaseForm(
+          req as undefined as Request,
+          res as undefined as Response,
+          next as undefined as NextFunction,
+        )
 
-      // When
-      await controller.submitHopingToWorkOnReleaseForm(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
-
-      // Then
-      const updatedInductionDto = req.session.inductionDto
-      expect(updatedInductionDto.workOnRelease.hopingToWork).toEqual(HopingToGetWorkValue.NOT_SURE)
-      expect(res.redirect).toHaveBeenCalledWith(expectedNextPage)
-      expect(req.session.inPrisonWorkForm).toBeUndefined()
-    })
+        // Then
+        expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/induction/work-interest-types')
+        expect(req.session.hopingToWorkOnReleaseForm).toEqual(hopingToWorkOnReleaseForm)
+        const updatedInduction = req.session.inductionDto
+        expect(updatedInduction.workOnRelease.hopingToWork).toEqual(HopingToGetWorkValue.YES)
+        expect(updatedInduction.futureWorkInterests.interests).toEqual([])
+        expect(inductionService.updateInduction).not.toHaveBeenCalled()
+      },
+    )
 
     it('should not update Induction given error calling service', async () => {
       // Given
@@ -315,7 +242,7 @@ describe('hopingToWorkOnReleaseUpdateController', () => {
 
       const prisonerSummary = aValidPrisonerSummary()
       req.session.prisonerSummary = prisonerSummary
-      const inductionDto = aShortQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       req.session.inductionDto = inductionDto
 
       const hopingToWorkOnReleaseForm = {
@@ -323,7 +250,7 @@ describe('hopingToWorkOnReleaseUpdateController', () => {
       }
       req.body = hopingToWorkOnReleaseForm
       req.session.hopingToWorkOnReleaseForm = undefined
-      const updateInductionDto = aShortQuestionSetUpdateInductionRequest()
+      const updateInductionDto = aValidUpdateInductionRequest()
 
       mockedCreateOrUpdateInductionDtoMapper.mockReturnValueOnce(updateInductionDto)
       mockedFormValidator.mockReturnValue(errors)
@@ -353,5 +280,40 @@ describe('hopingToWorkOnReleaseUpdateController', () => {
       const updatedInductionDto = req.session.inductionDto
       expect(updatedInductionDto.workOnRelease.hopingToWork).toEqual(HopingToGetWorkValue.NOT_SURE)
     })
+
+    it.each([HopingToGetWorkValue.YES, HopingToGetWorkValue.NO, HopingToGetWorkValue.NOT_SURE])(
+      'should redirect to Work & Interests given Hoping To Work has not been changed from %s',
+      async (hopingToGetWorkValue: HopingToGetWorkValue) => {
+        // Given
+        req.params.prisonNumber = prisonNumber
+
+        const prisonerSummary = aValidPrisonerSummary()
+        req.session.prisonerSummary = prisonerSummary
+
+        const inductionDto = aValidInductionDto({ hopingToGetWork: hopingToGetWorkValue })
+        req.session.inductionDto = inductionDto
+
+        const hopingToWorkOnReleaseForm = {
+          hopingToGetWork: hopingToGetWorkValue,
+        }
+        req.body = hopingToWorkOnReleaseForm
+        req.session.hopingToWorkOnReleaseForm = undefined
+
+        mockedFormValidator.mockReturnValue(errors)
+
+        // When
+        await controller.submitHopingToWorkOnReleaseForm(
+          req as undefined as Request,
+          res as undefined as Response,
+          next as undefined as NextFunction,
+        )
+
+        // Then
+        expect(res.redirect).toHaveBeenCalledWith('/plan/A1234BC/view/work-and-interests')
+        expect(req.session.hopingToWorkOnReleaseForm).toBeUndefined()
+        expect(req.session.inductionDto).toBeUndefined()
+        expect(inductionService.updateInduction).not.toHaveBeenCalled()
+      },
+    )
   })
 })

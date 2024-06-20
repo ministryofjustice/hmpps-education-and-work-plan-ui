@@ -21,7 +21,7 @@ context('Update Skills in the Induction', () => {
     cy.task('stubLearnerProfile')
     cy.task('stubLearnerEducation')
     cy.task('stubUpdateInduction')
-    cy.task('stubGetInductionLongQuestionSet')
+    cy.task('stubGetInduction')
     cy.signIn()
   })
 
@@ -33,14 +33,14 @@ context('Update Skills in the Induction', () => {
       .hasBackLinkTo(`/plan/${prisonNumber}/view/work-and-interests`)
       .backLinkHasAriaLabel(`Back to Daniel Craig's learning and work progress`)
 
-    // stubGetInductionLongQuestionSet has skills of Communication, Positive Attitude, Thinking & Problem Solving, and Other (Logical Thinking)
+    // Induction has skills of Communication, Positive Attitude, Thinking & Problem Solving, and Other (Logical Thinking)
 
     // When
     skillsPage //
       .deSelectSkill(SkillsValue.COMMUNICATION)
       .deSelectSkill(SkillsValue.THINKING_AND_PROBLEM_SOLVING)
-      .chooseSkill(SkillsValue.SELF_MANAGEMENT)
-      .chooseSkill(SkillsValue.OTHER)
+      .selectSkill(SkillsValue.SELF_MANAGEMENT)
+      .selectSkill(SkillsValue.OTHER)
       .setOtherSkillType('Circus skills')
       .submitPage()
 
@@ -65,11 +65,11 @@ context('Update Skills in the Induction', () => {
     cy.visit(`/prisoners/${prisonNumber}/induction/skills`)
     const skillsPage = Page.verifyOnPage(SkillsPage)
 
-    // stubGetInductionLongQuestionSet has skills of Communication, Positive Attitude, Thinking & Problem Solving, and Other (Logical Thinking)
+    // Induction has skills of Communication, Positive Attitude, Thinking & Problem Solving, and Other (Logical Thinking)
 
     // When
     skillsPage //
-      .chooseSkill(SkillsValue.NONE)
+      .selectSkill(SkillsValue.NONE)
       .submitPage()
 
     // Then
@@ -93,7 +93,7 @@ context('Update Skills in the Induction', () => {
 
     // When
     skillsPage //
-      .chooseSkill(SkillsValue.OTHER)
+      .selectSkill(SkillsValue.OTHER)
       .clearOtherSkillType()
       .submitPage()
 
@@ -101,5 +101,35 @@ context('Update Skills in the Induction', () => {
     skillsPage = Page.verifyOnPage(SkillsPage)
     skillsPage.hasFieldInError('skillsOther')
     cy.wiremockVerifyNoInteractions(putRequestedFor(urlEqualTo(`/inductions/${prisonNumber}`)))
+  })
+
+  it('should update Skills given induction created with the original short question set which did not ask about personal skills', () => {
+    // Given
+    const prisonNumber = 'G6115VJ'
+    cy.task('stubGetOriginalQuestionSetInduction', { questionSet: 'SHORT' }) // The original short question set Induction did not ask about personal skills
+    cy.visit(`/plan/${prisonNumber}/view/work-and-interests`)
+    Page.verifyOnPage(WorkAndInterestsPage) //
+      .skillsChangeLinkHasText('Add')
+      .clickSkillsChangeLink()
+
+    // When
+    Page.verifyOnPage(SkillsPage) //
+      .selectSkill(SkillsValue.SELF_MANAGEMENT)
+      .selectSkill(SkillsValue.OTHER)
+      .setOtherSkillType('Circus skills')
+      .submitPage()
+
+    // Then
+    Page.verifyOnPage(WorkAndInterestsPage)
+    cy.wiremockVerify(
+      putRequestedFor(urlEqualTo(`/inductions/${prisonNumber}`)) //
+        .withRequestBody(
+          matchingJsonPath(
+            '$[?(@.personalSkillsAndInterests.skills.size() == 2 && ' +
+              "@.personalSkillsAndInterests.skills[0].skillType == 'SELF_MANAGEMENT' && !@.personalSkillsAndInterests.skills[0].skillTypeOther && " +
+              "@.personalSkillsAndInterests.skills[1].skillType == 'OTHER' && @.personalSkillsAndInterests.skills[1].skillTypeOther == 'Circus skills')]",
+          ),
+        ),
+    )
   })
 })

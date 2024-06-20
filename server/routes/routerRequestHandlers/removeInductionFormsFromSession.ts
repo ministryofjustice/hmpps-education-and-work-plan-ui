@@ -17,7 +17,6 @@ const removeInductionFormsFromSession = async (req: Request, res: Response, next
   req.session.previousWorkExperienceTypesForm = undefined
   req.session.previousWorkExperienceDetailForm = undefined
   req.session.affectAbilityToWorkForm = undefined
-  req.session.reasonsNotToGetWorkForm = undefined
   req.session.workInterestTypesForm = undefined
   req.session.inPrisonTrainingForm = undefined
   req.session.wantToAddQualificationsForm = undefined

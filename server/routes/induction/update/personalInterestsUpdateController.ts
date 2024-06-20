@@ -6,7 +6,7 @@ import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateIn
 import logger from '../../../../logger'
 import { InductionService } from '../../../services'
 import validatePersonalInterestsForm from '../../validators/induction/personalInterestsFormValidator'
-import { buildNewPageFlowHistory, getPreviousPage } from '../../pageFlowHistory'
+import { getPreviousPage } from '../../pageFlowHistory'
 import getDynamicBackLinkAriaText from '../dynamicAriaTextResolver'
 import { asArray } from '../../../utils/utils'
 
@@ -52,20 +52,6 @@ export default class PersonalInterestsUpdateController extends PersonalInterests
     }
 
     const updatedInduction = this.updatedInductionDtoWithPersonalInterests(inductionDto, personalInterestsForm)
-
-    // If the previous page was Check Your Answers, decide whether to redirect back check answers on submission
-    if (this.previousPageWasCheckYourAnswers(req)) {
-      req.session.inductionDto = updatedInduction
-      return res.redirect(`/prisoners/${prisonNumber}/induction/check-your-answers`)
-    }
-
-    if (req.session.updateInductionQuestionSet) {
-      req.session.inductionDto = updatedInduction
-      const nextPage = `/prisoners/${prisonNumber}/induction/affect-ability-to-work`
-      req.session.pageFlowHistory = buildNewPageFlowHistory(req)
-      req.session.personalInterestsForm = undefined
-      return res.redirect(nextPage)
-    }
 
     try {
       const updateInductionDto = toCreateOrUpdateInductionDto(prisonId, updatedInduction)

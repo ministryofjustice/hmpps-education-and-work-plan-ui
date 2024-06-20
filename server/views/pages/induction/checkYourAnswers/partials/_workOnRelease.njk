@@ -14,21 +14,38 @@
     </dd>
   </div>
 
-  {% if inductionDto.workOnRelease.hopingToWork !== 'YES' %}
+  {% if inductionDto.workOnRelease.hopingToWork === 'YES' %}
     <div class="govuk-summary-list__row">
       <dt class="govuk-summary-list__key govuk-!-width-one-quarter">
-        What could stop work on release
+        Type of work interested in
       </dt>
-      <dd class="govuk-summary-list__value" data-qa="reasonToNotGetWork">
-        {% for item in inductionDto.workOnRelease.notHopingToWorkReasons %}
-          <div data-qa="reasonToNotGetWork-{{ item }}">
-            {{ item | formatReasonNotToGetWork }}{{ ' - ' + inductionDto.workOnRelease.notHopingToWorkOtherReason if item === 'OTHER' }}{{ ',' if inductionDto.workOnRelease.notHopingToWorkReasons.length !== loop.index }}
-          </div>
+      <dd class="govuk-summary-list__value" data-qa="workInterests">
+        {% for item in inductionDto.futureWorkInterests.interests %}
+          <div data-qa="workInterests-{{ item.workType }}">{{ item.workType | formatJobType }}{{ ' - ' + item.workTypeOther if item.workType === 'OTHER' }}{{ ',' if inductionDto.futureWorkInterests.interests.length !== loop.index }}</div>
         {% endfor %}
       </dd>
       <dd class="govuk-summary-list__actions">
-        <a class="govuk-link" href="reasons-not-to-get-work" data-qa="reasonToNotGetWorkLink">
-          Change<span class="govuk-visually-hidden"> what could stop work on release</span>
+        <a class="govuk-link govuk-link--no-visited-state" href="work-interest-types" data-qa="workInterestsLink">
+          Change<span class="govuk-visually-hidden"> type of work interested in</span>
+        </a>
+      </dd>
+    </div>
+
+    <div class="govuk-summary-list__row">
+      <dt class="govuk-summary-list__key govuk-!-width-one-quarter">
+        Particular job roles of interest
+      </dt>
+      <dd class="govuk-summary-list__value" data-qa="particularJobInterests">
+        {% for item in inductionDto.futureWorkInterests.interests %}
+          <p class="govuk-body"  data-qa="particularJobInterests-{{ item.workType }}">
+            {{ item.workTypeOther if item.workType === 'OTHER' else item.workType | formatJobType }}:<br>
+            {{ item.role if item.role else 'Not entered'}}
+          </p>
+        {% endfor %}
+      </dd>
+      <dd class="govuk-summary-list__actions">
+        <a class="govuk-link govuk-link--no-visited-state" href="work-interest-roles" data-qa="particularJobInterestsLink">
+          Change<span class="govuk-visually-hidden"> particular job roles of interest</span>
         </a>
       </dd>
     </div>

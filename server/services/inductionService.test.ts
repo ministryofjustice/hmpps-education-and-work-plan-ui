@@ -1,30 +1,20 @@
-import type { EducationAndTraining, WorkAndInterests } from 'viewModels'
 import EducationAndWorkPlanClient from '../data/educationAndWorkPlanClient'
 import InductionService from './inductionService'
-import { aLongQuestionSetInduction } from '../testsupport/inductionResponseTestDataBuilder'
-import aValidLongQuestionSetWorkAndInterests from '../testsupport/workAndInterestsTestDataBuilder'
-import { aValidLongQuestionSetEducationAndTraining } from '../testsupport/educationAndTrainingTestDataBuilder'
-import { aLongQuestionSetInductionDto } from '../testsupport/inductionDtoTestDataBuilder'
-import { aLongQuestionSetUpdateInductionRequest } from '../testsupport/updateInductionRequestTestDataBuilder'
-import toWorkAndInterests from '../data/mappers/workAndInterestMapper'
-import toEducationAndTraining from '../data/mappers/educationAndTrainingMapper'
+import aValidInductionResponse from '../testsupport/inductionResponseTestDataBuilder'
+import aValidInductionDto from '../testsupport/inductionDtoTestDataBuilder'
+import aValidUpdateInductionRequest from '../testsupport/updateInductionRequestTestDataBuilder'
 import toInductionDto from '../data/mappers/inductionDtoMapper'
 import toCreateInductionRequest from '../data/mappers/createInductionMapper'
 import toUpdateInductionRequest from '../data/mappers/updateInductionMapper'
-import { aLongQuestionSetUpdateInductionDto } from '../testsupport/updateInductionDtoTestDataBuilder'
-import { aLongQuestionSetCreateInductionDto } from '../testsupport/createInductionDtoTestDataBuilder'
-import { aLongQuestionSetCreateInductionRequest } from '../testsupport/createInductionRequestTestDataBuilder'
+import aValidCreateOrUpdateInductionDto from '../testsupport/createInductionDtoTestDataBuilder'
+import aValidCreateInductionRequest from '../testsupport/createInductionRequestTestDataBuilder'
 
 jest.mock('../data/educationAndWorkPlanClient')
-jest.mock('../data/mappers/workAndInterestMapper')
-jest.mock('../data/mappers/educationAndTrainingMapper')
 jest.mock('../data/mappers/inductionDtoMapper')
 jest.mock('../data/mappers/updateInductionMapper')
 jest.mock('../data/mappers/createInductionMapper')
 
 describe('inductionService', () => {
-  const mockedWorkAndInterestsMapper = toWorkAndInterests as jest.MockedFunction<typeof toWorkAndInterests>
-  const mockedEducationAndTrainingMapper = toEducationAndTraining as jest.MockedFunction<typeof toEducationAndTraining>
   const mockedInductionDtoMapper = toInductionDto as jest.MockedFunction<typeof toInductionDto>
   const mockedUpdateInductionMapper = toUpdateInductionRequest as jest.MockedFunction<typeof toUpdateInductionRequest>
   const mockedCreateInductionMapper = toCreateInductionRequest as jest.MockedFunction<typeof toCreateInductionRequest>
@@ -36,177 +26,13 @@ describe('inductionService', () => {
     jest.resetAllMocks()
   })
 
-  describe('getWorkAndInterests', () => {
-    it('should handle retrieval of work and interests given Education and Work Plan API returns an unexpected error for the Induction', async () => {
-      // Given
-      const prisonNumber = 'A1234BC'
-      const userToken = 'a-user-token'
-
-      const eductionAndWorkPlanApiError = {
-        status: 500,
-        data: {
-          status: 500,
-          userMessage: 'An unexpected error occurred',
-          developerMessage: 'An unexpected error occurred',
-        },
-      }
-      educationAndWorkPlanClient.getInduction.mockRejectedValue(eductionAndWorkPlanApiError)
-
-      const expectedWorkAndInterests: WorkAndInterests = {
-        problemRetrievingData: true,
-        inductionQuestionSet: undefined,
-        data: undefined,
-      }
-
-      // When
-      const actual = await inductionService.getWorkAndInterests(prisonNumber, userToken)
-
-      // Then
-      expect(actual).toEqual(expectedWorkAndInterests)
-      expect(educationAndWorkPlanClient.getInduction).toHaveBeenCalledWith(prisonNumber, userToken)
-      expect(mockedEducationAndTrainingMapper).not.toHaveBeenCalled()
-    })
-
-    it('should handle retrieval of work and interests given Education and Work Plan API returns Not Found for the Induction', async () => {
-      // Given
-      const prisonNumber = 'A1234BC'
-      const userToken = 'a-user-token'
-
-      const eductionAndWorkPlanApiError = {
-        status: 404,
-        data: {
-          status: 404,
-          userMessage: `Induction not found for prisoner [${prisonNumber}]`,
-          developerMessage: `Induction not found for prisoner [${prisonNumber}]`,
-        },
-      }
-      educationAndWorkPlanClient.getInduction.mockRejectedValue(eductionAndWorkPlanApiError)
-
-      const expectedWorkAndInterests: WorkAndInterests = {
-        problemRetrievingData: false,
-        inductionQuestionSet: undefined,
-        data: undefined,
-      }
-
-      // When
-      const actual = await inductionService.getWorkAndInterests(prisonNumber, userToken)
-
-      // Then
-      expect(actual).toEqual(expectedWorkAndInterests)
-      expect(educationAndWorkPlanClient.getInduction).toHaveBeenCalledWith(prisonNumber, userToken)
-      expect(mockedEducationAndTrainingMapper).not.toHaveBeenCalled()
-    })
-
-    it('should retrieve work and interests given Education and Work Plan API returns an Induction', async () => {
-      // Given
-      const prisonNumber = 'A1234BC'
-      const userToken = 'a-user-token'
-
-      const induction = aLongQuestionSetInduction()
-      educationAndWorkPlanClient.getInduction.mockResolvedValue(induction)
-
-      const expectedWorkAndInterests = aValidLongQuestionSetWorkAndInterests()
-      mockedWorkAndInterestsMapper.mockReturnValue(expectedWorkAndInterests)
-
-      // When
-      const actual = await inductionService.getWorkAndInterests(prisonNumber, userToken)
-
-      // Then
-      expect(actual).toEqual(expectedWorkAndInterests)
-      expect(educationAndWorkPlanClient.getInduction).toHaveBeenCalledWith(prisonNumber, userToken)
-      expect(mockedWorkAndInterestsMapper).toHaveBeenCalledWith(induction)
-    })
-  })
-
-  describe('getEducationAndTraining', () => {
-    it('should handle retrieval of Education and Training given Education and Work Plan API returns an unexpected error for the Induction', async () => {
-      // Given
-      const prisonNumber = 'A1234BC'
-      const userToken = 'a-user-token'
-
-      const eductionAndWorkPlanApiError = {
-        status: 500,
-        data: {
-          status: 500,
-          userMessage: 'An unexpected error occurred',
-          developerMessage: 'An unexpected error occurred',
-        },
-      }
-      educationAndWorkPlanClient.getInduction.mockRejectedValue(eductionAndWorkPlanApiError)
-
-      const expectedEducationAndTraining: EducationAndTraining = {
-        problemRetrievingData: true,
-        inductionQuestionSet: undefined,
-        data: undefined,
-      }
-
-      // When
-      const actual = await inductionService.getEducationAndTraining(prisonNumber, userToken)
-
-      // Then
-      expect(actual).toEqual(expectedEducationAndTraining)
-      expect(educationAndWorkPlanClient.getInduction).toHaveBeenCalledWith(prisonNumber, userToken)
-      expect(mockedEducationAndTrainingMapper).not.toHaveBeenCalled()
-    })
-
-    it('should handle retrieval of Education and Training given Education and Work Plan API returns Not Found for the Induction', async () => {
-      // Given
-      const prisonNumber = 'A1234BC'
-      const userToken = 'a-user-token'
-
-      const eductionAndWorkPlanApiError = {
-        status: 404,
-        data: {
-          status: 404,
-          userMessage: `Induction not found for prisoner [${prisonNumber}]`,
-          developerMessage: `Induction not found for prisoner [${prisonNumber}]`,
-        },
-      }
-      educationAndWorkPlanClient.getInduction.mockRejectedValue(eductionAndWorkPlanApiError)
-
-      const expectedEducationAndTraining: EducationAndTraining = {
-        problemRetrievingData: false,
-        inductionQuestionSet: undefined,
-        data: undefined,
-      }
-
-      // When
-      const actual = await inductionService.getEducationAndTraining(prisonNumber, userToken)
-
-      // Then
-      expect(actual).toEqual(expectedEducationAndTraining)
-      expect(educationAndWorkPlanClient.getInduction).toHaveBeenCalledWith(prisonNumber, userToken)
-      expect(mockedEducationAndTrainingMapper).not.toHaveBeenCalled()
-    })
-
-    it('should retrieve Education and Training given Education and Work Plan API returns an Induction', async () => {
-      // Given
-      const prisonNumber = 'A1234BC'
-      const userToken = 'a-user-token'
-
-      const induction = aLongQuestionSetInduction()
-      educationAndWorkPlanClient.getInduction.mockResolvedValue(induction)
-
-      const expectedEducationAndTraining = aValidLongQuestionSetEducationAndTraining()
-      mockedEducationAndTrainingMapper.mockReturnValue(expectedEducationAndTraining)
-
-      // When
-      const actual = await inductionService.getEducationAndTraining(prisonNumber, userToken)
-
-      // Then
-      expect(actual).toEqual(expectedEducationAndTraining)
-      expect(educationAndWorkPlanClient.getInduction).toHaveBeenCalledWith(prisonNumber, userToken)
-      expect(mockedEducationAndTrainingMapper).toHaveBeenCalledWith(induction)
-    })
-  })
-
   describe('inductionExists', () => {
     it('should determine if Induction exists given Education and Work Plan API returns an Induction', async () => {
       // Given
       const prisonNumber = 'A1234BC'
       const userToken = 'a-user-token'
 
-      educationAndWorkPlanClient.getInduction.mockResolvedValue(aLongQuestionSetInduction())
+      educationAndWorkPlanClient.getInduction.mockResolvedValue(aValidInductionResponse())
 
       const expected = true
 
@@ -275,9 +101,9 @@ describe('inductionService', () => {
       const prisonNumber = 'A1234BC'
       const userToken = 'a-user-token'
 
-      const inductionResponse = aLongQuestionSetInduction()
+      const inductionResponse = aValidInductionResponse()
       educationAndWorkPlanClient.getInduction.mockResolvedValue(inductionResponse)
-      const expectedInductionDto = aLongQuestionSetInductionDto()
+      const expectedInductionDto = aValidInductionDto()
       mockedInductionDtoMapper.mockReturnValue(expectedInductionDto)
 
       // When
@@ -348,8 +174,8 @@ describe('inductionService', () => {
       const prisonNumber = 'A1234BC'
       const userToken = 'a-user-token'
 
-      const updateInductionDto = aLongQuestionSetUpdateInductionDto()
-      const updateInductionRequest = aLongQuestionSetUpdateInductionRequest()
+      const updateInductionDto = aValidCreateOrUpdateInductionDto()
+      const updateInductionRequest = aValidUpdateInductionRequest()
       educationAndWorkPlanClient.updateInduction.mockResolvedValue(updateInductionRequest)
       mockedUpdateInductionMapper.mockReturnValue(updateInductionRequest)
 
@@ -369,8 +195,8 @@ describe('inductionService', () => {
       // Given
       const prisonNumber = 'A1234BC'
       const userToken = 'a-user-token'
-      const updateInductionDto = aLongQuestionSetUpdateInductionDto()
-      const updateInductionRequest = aLongQuestionSetUpdateInductionRequest()
+      const updateInductionDto = aValidCreateOrUpdateInductionDto()
+      const updateInductionRequest = aValidUpdateInductionRequest()
       mockedUpdateInductionMapper.mockReturnValue(updateInductionRequest)
 
       const eductionAndWorkPlanApiError = {
@@ -394,7 +220,7 @@ describe('inductionService', () => {
       expect(actual).toEqual(eductionAndWorkPlanApiError)
       expect(educationAndWorkPlanClient.updateInduction).toHaveBeenCalledWith(
         prisonNumber,
-        updateInductionDto,
+        updateInductionRequest,
         userToken,
       )
       expect(mockedUpdateInductionMapper).toHaveBeenCalledWith(updateInductionDto)
@@ -407,8 +233,8 @@ describe('inductionService', () => {
       const prisonNumber = 'A1234BC'
       const userToken = 'a-user-token'
 
-      const createInductionDto = aLongQuestionSetCreateInductionDto()
-      const createInductionRequest = aLongQuestionSetCreateInductionRequest()
+      const createInductionDto = aValidCreateOrUpdateInductionDto()
+      const createInductionRequest = aValidCreateInductionRequest()
       mockedCreateInductionMapper.mockReturnValue(createInductionRequest)
 
       // When
@@ -427,8 +253,8 @@ describe('inductionService', () => {
       // Given
       const prisonNumber = 'A1234BC'
       const userToken = 'a-user-token'
-      const createInductionDto = aLongQuestionSetCreateInductionDto()
-      const createInductionRequest = aLongQuestionSetCreateInductionRequest()
+      const createInductionDto = aValidCreateOrUpdateInductionDto()
+      const createInductionRequest = aValidCreateInductionRequest()
       mockedCreateInductionMapper.mockReturnValue(createInductionRequest)
 
       const eductionAndWorkPlanApiError = {

@@ -21,7 +21,7 @@ context('Update in-prison training interests within an Induction', () => {
     cy.task('stubLearnerProfile')
     cy.task('stubLearnerEducation')
     cy.task('stubUpdateInduction')
-    cy.task('stubGetInductionShortQuestionSet')
+    cy.task('stubGetInduction')
     cy.signIn()
   })
 
@@ -36,8 +36,8 @@ context('Update in-prison training interests within an Induction', () => {
     // When
     inPrisonTrainingPage //
       .deSelectInPrisonTraining(InPrisonTrainingValue.MACHINERY_TICKETS)
-      .chooseInPrisonTraining(InPrisonTrainingValue.CATERING)
-      .chooseInPrisonTraining(InPrisonTrainingValue.OTHER)
+      .selectInPrisonTraining(InPrisonTrainingValue.CATERING)
+      .selectInPrisonTraining(InPrisonTrainingValue.OTHER)
       .setInPrisonTrainingOther('Art and craft')
       .submitPage()
 
@@ -65,7 +65,7 @@ context('Update in-prison training interests within an Induction', () => {
 
     // When
     inPrisonTrainingPage //
-      .chooseInPrisonTraining(InPrisonTrainingValue.OTHER)
+      .selectInPrisonTraining(InPrisonTrainingValue.OTHER)
       .clearInPrisonTrainingOther()
       .submitPage()
 
@@ -91,5 +91,37 @@ context('Update in-prison training interests within an Induction', () => {
     inPrisonTrainingPage.hasErrorCount(1)
     inPrisonTrainingPage.hasFieldInError('inPrisonTraining')
     cy.wiremockVerifyNoInteractions(putRequestedFor(urlEqualTo(`/inductions/${prisonNumber}`)))
+  })
+
+  it('should update in-prison training interests given induction created with the original long question set which did not ask about in-prison training interests', () => {
+    // Given
+    const prisonNumber = 'G6115VJ'
+    cy.task('stubGetOriginalQuestionSetInduction', { questionSet: 'LONG' }) // The original long question set Induction did not ask about in-prison training interests
+    cy.visit(`/plan/${prisonNumber}/view/education-and-training`)
+    Page.verifyOnPage(EducationAndTrainingPage) //
+      .inPrisonTrainingChangeLinkHasText('Add')
+      .clickToChangeInPrisonTraining()
+
+    // When
+    Page.verifyOnPage(InPrisonTrainingPage)
+      .selectInPrisonTraining(InPrisonTrainingValue.CATERING)
+      .selectInPrisonTraining(InPrisonTrainingValue.OTHER)
+      .setInPrisonTrainingOther('Art and craft')
+      .submitPage()
+
+    // Then
+    Page.verifyOnPage(EducationAndTrainingPage)
+    cy.wiremockVerify(
+      putRequestedFor(urlEqualTo(`/inductions/${prisonNumber}`)) //
+        .withRequestBody(
+          matchingJsonPath(
+            '$[?(@.inPrisonInterests.inPrisonTrainingInterests.size() == 2 && ' +
+              "@.inPrisonInterests.inPrisonTrainingInterests[0].trainingType == 'CATERING' && " +
+              '!@.inPrisonInterests.inPrisonTrainingInterests[0].trainingTypeOther && ' +
+              "@.inPrisonInterests.inPrisonTrainingInterests[1].trainingType == 'OTHER' && " +
+              "@.inPrisonInterests.inPrisonTrainingInterests[1].trainingTypeOther == 'Art and craft')]",
+          ),
+        ),
+    )
   })
 })

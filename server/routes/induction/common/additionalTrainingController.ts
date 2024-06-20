@@ -18,10 +18,7 @@ export default abstract class AdditionalTrainingController extends InductionCont
   ): Promise<void> => {
     const { prisonerSummary, inductionDto } = req.session
 
-    // Add the current page to the page flow history if we either:
-    //   are in the midst of changing the main induction question set (e.g. from long route to short route)
-    //   or we already have a page flow history
-    if (req.session.updateInductionQuestionSet || req.session.pageFlowHistory) {
+    if (req.session.pageFlowHistory) {
       this.addCurrentPageToHistory(req)
     }
 

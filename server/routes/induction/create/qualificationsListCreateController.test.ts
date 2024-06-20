@@ -1,68 +1,89 @@
-import { NextFunction, Request, Response } from 'express'
-import type { SessionData } from 'express-session'
+import { Request, Response } from 'express'
 import type { AchievedQualificationDto, InductionDto } from 'inductionDto'
 import QualificationsListCreateController from './qualificationsListCreateController'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
-import { aLongQuestionSetInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
+import aValidInductionDto from '../../../testsupport/inductionDtoTestDataBuilder'
 import { validFunctionalSkills } from '../../../testsupport/functionalSkillsTestDataBuilder'
 import QualificationLevelValue from '../../../enums/qualificationLevelValue'
 import EducationLevelValue from '../../../enums/educationLevelValue'
+import validInPrisonCourseRecords from '../../../testsupport/inPrisonCourseRecordsTestDataBuilder'
+import HopingToGetWorkValue from '../../../enums/hopingToGetWorkValue'
 
 describe('qualificationsListCreateController', () => {
   const controller = new QualificationsListCreateController()
 
   const prisonNumber = 'A1234BC'
   const prisonerSummary = aValidPrisonerSummary()
+  const functionalSkills = validFunctionalSkills()
+  const inPrisonCourses = validInPrisonCourseRecords()
 
-  const req = {
-    session: {} as SessionData,
-    body: {},
-    user: {} as Express.User,
-    params: {} as Record<string, string>,
-    path: '',
-  }
+  let req: Request
   const res = {
     redirect: jest.fn(),
     render: jest.fn(),
-  }
+    locals: {
+      prisonerFunctionalSkills: functionalSkills,
+      curiousInPrisonCourses: inPrisonCourses,
+    },
+  } as unknown as Response
   const next = jest.fn()
 
   beforeEach(() => {
     jest.resetAllMocks()
-    req.session = { prisonerSummary } as SessionData
-    req.body = {}
-    req.user = {} as Express.User
-    req.params = { prisonNumber }
-    req.path = `/prisoners/${prisonNumber}/create-induction/qualifications`
+    req = {
+      body: {},
+      session: { prisonerSummary },
+      params: { prisonNumber },
+      path: `/prisoners/${prisonNumber}/create-induction/qualifications`,
+    } as unknown as Request
   })
 
   describe('getQualificationsListView', () => {
-    it('should get the Qualifications List view', async () => {
+    it('should get the Qualifications List view given the Induction has Hoping To Get Work as Yes', async () => {
       // Given
-      const inductionDto = aLongQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto({ hopingToGetWork: HopingToGetWorkValue.YES })
       inductionDto.previousQualifications.qualifications = []
       req.session.inductionDto = inductionDto
-      const functionalSkills = validFunctionalSkills()
-      req.session.prisonerFunctionalSkills = functionalSkills
 
       const expectedQualifications: Array<AchievedQualificationDto> = []
 
-      const expectedFunctionalSkills = functionalSkills
-
       const expectedView = {
         prisonerSummary,
-        backLinkUrl: '/prisoners/A1234BC/create-induction/hoping-to-work-on-release',
-        backLinkAriaText: `Back to Is Jimmy Lightfingers hoping to get work when they're released?`,
+        backLinkUrl: '/prisoners/A1234BC/create-induction/work-interest-roles',
+        backLinkAriaText: 'Back to Is Jimmy Lightfingers interested in any particular jobs?',
         qualifications: expectedQualifications,
-        functionalSkills: expectedFunctionalSkills,
+        functionalSkills,
+        inPrisonCourses,
       }
 
       // When
-      await controller.getQualificationsListView(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.getQualificationsListView(req, res, next)
+
+      // Then
+      expect(res.render).toHaveBeenCalledWith('pages/induction/prePrisonEducation/qualificationsList', expectedView)
+      expect(req.session.inductionDto).toEqual(inductionDto)
+    })
+
+    it('should get the Qualifications List view given the Induction has Hoping To Get Work as No', async () => {
+      // Given
+      const inductionDto = aValidInductionDto({ hopingToGetWork: HopingToGetWorkValue.NO })
+      inductionDto.previousQualifications.qualifications = []
+      req.session.inductionDto = inductionDto
+
+      const expectedQualifications: Array<AchievedQualificationDto> = []
+
+      const expectedView = {
+        prisonerSummary,
+        backLinkUrl: '/prisoners/A1234BC/create-induction/want-to-add-qualifications',
+        backLinkAriaText:
+          'Back to Does Jimmy Lightfingers have any other educational qualifications they want to be recorded?',
+        qualifications: expectedQualifications,
+        functionalSkills,
+        inPrisonCourses,
+      }
+
+      // When
+      await controller.getQualificationsListView(req, res, next)
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/induction/prePrisonEducation/qualificationsList', expectedView)
@@ -71,10 +92,8 @@ describe('qualificationsListCreateController', () => {
 
     it('should get the Qualifications List view given the previous page was Check Your Answers', async () => {
       // Given
-      const inductionDto = aLongQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       req.session.inductionDto = inductionDto
-      const functionalSkills = validFunctionalSkills()
-      req.session.prisonerFunctionalSkills = functionalSkills
 
       req.session.pageFlowHistory = {
         pageUrls: ['/prisoners/A1234BC/create-induction/check-your-answers'],
@@ -93,22 +112,17 @@ describe('qualificationsListCreateController', () => {
         { subject: 'Pottery', grade: 'C', level: QualificationLevelValue.LEVEL_4 },
       ]
 
-      const expectedFunctionalSkills = functionalSkills
-
       const expectedView = {
         prisonerSummary,
         backLinkUrl: '/prisoners/A1234BC/create-induction/check-your-answers',
         backLinkAriaText: `Back to Check and save your answers before adding Jimmy Lightfingers's goals`,
         qualifications: expectedQualifications,
-        functionalSkills: expectedFunctionalSkills,
+        functionalSkills,
+        inPrisonCourses,
       }
 
       // When
-      await controller.getQualificationsListView(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.getQualificationsListView(req, res, next)
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/induction/prePrisonEducation/qualificationsList', expectedView)
@@ -120,9 +134,9 @@ describe('qualificationsListCreateController', () => {
   describe('submitQualificationsListView', () => {
     it('should update Induction and redisplay Qualification List Page given page submitted with removeQualification', async () => {
       // Given
-      const inductionDto = aLongQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       req.session.inductionDto = inductionDto
-      /* The long question set induction has Secondary School with Exams as the highest level of education, and the following qualification:
+      /* The Induction has Secondary School with Exams as the highest level of education, and the following qualification:
            - Level 4 Pottery, Grade C
        */
 
@@ -132,11 +146,7 @@ describe('qualificationsListCreateController', () => {
       const expectedQualifications: Array<AchievedQualificationDto> = []
 
       // When
-      await controller.submitQualificationsListView(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.submitQualificationsListView(req, res, next)
 
       // Then
       const updatedInduction: InductionDto = req.session.inductionDto
@@ -147,7 +157,7 @@ describe('qualificationsListCreateController', () => {
 
     it('should redirect to Qualification Level Page given page submitted with addQualification', async () => {
       // Given
-      const inductionDto = aLongQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       req.session.inductionDto = inductionDto
 
       req.body = { addQualification: '' }
@@ -158,11 +168,7 @@ describe('qualificationsListCreateController', () => {
       }
 
       // When
-      await controller.submitQualificationsListView(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.submitQualificationsListView(req, res, next)
 
       // Then
       expect(req.session.pageFlowHistory).toEqual(expectedPageFlowHistory)
@@ -171,7 +177,7 @@ describe('qualificationsListCreateController', () => {
 
     it('should redirect to Highest Level of Education Page given page submitted with no qualifications on the Induction', async () => {
       // Given
-      const inductionDto = aLongQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       inductionDto.previousQualifications = undefined // No qualifications on the Induction
       req.session.inductionDto = inductionDto
 
@@ -181,11 +187,7 @@ describe('qualificationsListCreateController', () => {
       }
 
       // When
-      await controller.submitQualificationsListView(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.submitQualificationsListView(req, res, next)
 
       // Then
       expect(req.session.pageFlowHistory).toEqual(expectedPageFlowHistory)
@@ -194,9 +196,9 @@ describe('qualificationsListCreateController', () => {
 
     it('should redirect to Additional Training Page given user has not come from Check Your Answers and page submitted with qualifications on the Induction', async () => {
       // Given
-      const inductionDto = aLongQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       req.session.inductionDto = inductionDto
-      /* The long question set induction has Secondary School with Exams as the highest level of education, and the following qualification:
+      /* The Induction has Secondary School with Exams as the highest level of education, and the following qualification:
            - Level 4 Pottery, Grade C
        */
 
@@ -206,11 +208,7 @@ describe('qualificationsListCreateController', () => {
       }
 
       // When
-      await controller.submitQualificationsListView(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.submitQualificationsListView(req, res, next)
 
       // Then
       expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-induction/additional-training')
@@ -219,9 +217,9 @@ describe('qualificationsListCreateController', () => {
 
     it('should redirect to Check Your Answers given user has come from Check Your Answers and page submitted with qualifications on the Induction', async () => {
       // Given
-      const inductionDto = aLongQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       req.session.inductionDto = inductionDto
-      /* The long question set induction has Secondary School with Exams as the highest level of education, and the following qualification:
+      /* The Induction has Secondary School with Exams as the highest level of education, and the following qualification:
            - Level 4 Pottery, Grade C
        */
 
@@ -231,11 +229,7 @@ describe('qualificationsListCreateController', () => {
       }
 
       // When
-      await controller.submitQualificationsListView(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.submitQualificationsListView(req, res, next)
 
       // Then
       expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-induction/check-your-answers')

@@ -17,11 +17,11 @@ context('Prisoner Overview page - Education And Training tab', () => {
     cy.task('stubCiagInductionList')
     cy.task('stubActionPlansList')
     cy.task('getPrisonerById')
-    cy.task('stubGetInductionShortQuestionSet')
+    cy.task('stubGetInduction')
     cy.task('getActionPlan')
     cy.task('stubLearnerProfile')
     cy.task('stubLearnerEducation')
-    cy.task('stubGetInductionLongQuestionSet')
+    cy.task('stubGetInduction')
     cy.task('stubGetAllPrisons')
   })
 
@@ -195,9 +195,9 @@ context('Prisoner Overview page - Education And Training tab', () => {
   })
 
   describe('should retrieve and render data from PLP API Induction data', () => {
-    it('should display Qualifications And Education given Induction was the long question set', () => {
+    it('should display Qualifications And Education data', () => {
       // Given
-      cy.task('stubGetInductionLongQuestionSet')
+      cy.task('stubGetInduction')
 
       cy.signIn()
       const prisonNumber = 'G6115VJ'
@@ -211,26 +211,6 @@ context('Prisoner Overview page - Education And Training tab', () => {
       // Then
       educationAndTrainingPage //
         .activeTabIs('Education and training')
-        .isShowingLongQuestionSetAnswers()
-    })
-
-    it('should display Qualifications And Education given Induction was the short question set', () => {
-      // Given
-      cy.task('stubGetInductionShortQuestionSet')
-
-      cy.signIn()
-      const prisonNumber = 'G6115VJ'
-      cy.visit(`/plan/${prisonNumber}/view/overview`)
-      const overviewPage = Page.verifyOnPage(OverviewPage)
-
-      // When
-      overviewPage.selectTab('Education and training')
-      const educationAndTrainingPage = Page.verifyOnPage(EducationAndTrainingPage)
-
-      // Then
-      educationAndTrainingPage //
-        .activeTabIs('Education and training')
-        .isShowingShortQuestionSetAnswers()
     })
 
     it('should display Induction unavailable message given PLP API is unavailable when retrieving the Induction', () => {
@@ -278,7 +258,7 @@ context('Prisoner Overview page - Education And Training tab', () => {
   describe('should display change links to Induction questions', () => {
     it(`should link to the change in-prison training interests page`, () => {
       // Given
-      cy.task('stubGetInductionShortQuestionSet')
+      cy.task('stubGetInduction')
 
       cy.signIn()
       const prisonNumber = 'G6115VJ'
@@ -294,7 +274,7 @@ context('Prisoner Overview page - Education And Training tab', () => {
 
     it(`should link to the change Highest Level of Education page`, () => {
       // Given
-      cy.task('stubGetInductionLongQuestionSet')
+      cy.task('stubGetInduction')
 
       cy.signIn()
       const prisonNumber = 'G6115VJ'
@@ -308,9 +288,9 @@ context('Prisoner Overview page - Education And Training tab', () => {
       Page.verifyOnPage(HighestLevelOfEducationPage)
     })
 
-    it(`should link to the change Additional Training page given long question set`, () => {
+    it(`should link to the change Additional Training page`, () => {
       // Given
-      cy.task('stubGetInductionLongQuestionSet')
+      cy.task('stubGetInduction')
 
       cy.signIn()
       const prisonNumber = 'G6115VJ'
@@ -324,41 +304,9 @@ context('Prisoner Overview page - Education And Training tab', () => {
       Page.verifyOnPage(AdditionalTrainingPage)
     })
 
-    it(`should link to the change Additional Training page given short question set`, () => {
+    it(`should link to the change Educational Qualifications page`, () => {
       // Given
-      cy.task('stubGetInductionShortQuestionSet')
-
-      cy.signIn()
-      const prisonNumber = 'G6115VJ'
-      cy.visit(`/plan/${prisonNumber}/view/education-and-training`)
-      const educationAndTrainingPage = Page.verifyOnPage(EducationAndTrainingPage)
-
-      // When
-      educationAndTrainingPage.clickToChangeAdditionalTraining()
-
-      // Then
-      Page.verifyOnPage(AdditionalTrainingPage)
-    })
-
-    it(`should link to the change Educational Qualifications page given long question set`, () => {
-      // Given
-      cy.task('stubGetInductionLongQuestionSet')
-
-      cy.signIn()
-      const prisonNumber = 'G6115VJ'
-      cy.visit(`/plan/${prisonNumber}/view/education-and-training`)
-      const educationAndTrainingPage = Page.verifyOnPage(EducationAndTrainingPage)
-
-      // When
-      educationAndTrainingPage.clickToChangeEducationalQualifications()
-
-      // Then
-      Page.verifyOnPage(QualificationsListPage)
-    })
-
-    it(`should link to the change Educational Qualifications page given short question set`, () => {
-      // Given
-      cy.task('stubGetInductionShortQuestionSet')
+      cy.task('stubGetInduction')
 
       cy.signIn()
       const prisonNumber = 'G6115VJ'

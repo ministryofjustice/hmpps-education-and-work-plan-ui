@@ -5,7 +5,7 @@ import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateIn
 import logger from '../../../../logger'
 import { InductionService } from '../../../services'
 import validateWorkInterestTypesForm from '../../validators/induction/workInterestTypesFormValidator'
-import { buildNewPageFlowHistory, getPreviousPage } from '../../pageFlowHistory'
+import { getPreviousPage } from '../../pageFlowHistory'
 import getDynamicBackLinkAriaText from '../dynamicAriaTextResolver'
 
 /**
@@ -19,10 +19,9 @@ export default class WorkInterestTypesUpdateController extends WorkInterestTypes
   getBackLinkUrl(req: Request): string {
     const { prisonNumber } = req.params
     const { pageFlowHistory } = req.session
-    if (pageFlowHistory) {
-      return getPreviousPage(pageFlowHistory)
-    }
-    return `/plan/${prisonNumber}/view/work-and-interests`
+    const previousPage =
+      (pageFlowHistory && getPreviousPage(pageFlowHistory)) || `/plan/${prisonNumber}/view/work-and-interests`
+    return previousPage
   }
 
   getBackLinkAriaText(req: Request): string {
@@ -54,20 +53,14 @@ export default class WorkInterestTypesUpdateController extends WorkInterestTypes
 
     const updatedInduction = this.updatedInductionDtoWithWorkInterestTypes(inductionDto, workInterestTypesForm)
 
-    // If the previous page was Check Your Answers, decide whether to redirect back check answers on submission
-    if (this.previousPageWasCheckYourAnswers(req)) {
+    // If there is a hopingToWorkOnReleaseForm on the session it means the user is updating a prisoners induction by changing whether they want to work on release.
+    // In this case we need to go to Work Interest Roles in order to complete the capture the prisoners future work interests.
+    if (req.session.hopingToWorkOnReleaseForm) {
       req.session.inductionDto = updatedInduction
-      return res.redirect(`/prisoners/${prisonNumber}/induction/check-your-answers`)
+      return res.redirect(`/prisoners/${prisonNumber}/induction/work-interest-roles`)
     }
 
-    if (req.session.updateInductionQuestionSet) {
-      req.session.inductionDto = updatedInduction
-      const nextPage = `/prisoners/${prisonNumber}/induction/work-interest-roles`
-      req.session.pageFlowHistory = buildNewPageFlowHistory(req)
-      req.session.workInterestTypesForm = undefined
-      return res.redirect(nextPage)
-    }
-
+    // Else we can simply call the API to update the Induction and return to Work & Interests tab
     try {
       const updateInductionDto = toCreateOrUpdateInductionDto(prisonId, updatedInduction)
       await this.inductionService.updateInduction(prisonNumber, updateInductionDto, req.user.token)

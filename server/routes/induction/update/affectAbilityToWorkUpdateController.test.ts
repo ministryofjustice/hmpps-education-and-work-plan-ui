@@ -2,10 +2,10 @@ import createError from 'http-errors'
 import type { SessionData } from 'express-session'
 import { NextFunction, Request, Response } from 'express'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
-import { aLongQuestionSetInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
+import aValidInductionDto from '../../../testsupport/inductionDtoTestDataBuilder'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
 import InductionService from '../../../services/inductionService'
-import { aLongQuestionSetUpdateInductionRequest } from '../../../testsupport/updateInductionRequestTestDataBuilder'
+import aValidUpdateInductionRequest from '../../../testsupport/updateInductionRequestTestDataBuilder'
 import AbilityToWorkUpdateController from './affectAbilityToWorkUpdateController'
 import AbilityToWorkValue from '../../../enums/abilityToWorkValue'
 
@@ -49,14 +49,14 @@ describe('affectAbilityToWorkUpdateController', () => {
   describe('getAbilityToWorkView', () => {
     it('should get the Ability To Work view given there is no AbilityToWorkForm on the session', async () => {
       // Given
-      const inductionDto = aLongQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       req.session.inductionDto = inductionDto
       req.session.affectAbilityToWorkForm = undefined
 
       const expectedAbilityToWorkForm = {
         affectAbilityToWork: [
           AbilityToWorkValue.CARING_RESPONSIBILITIES,
-          AbilityToWorkValue.HEALTH_ISSUES,
+          AbilityToWorkValue.NEEDS_WORK_ADJUSTMENTS_DUE_TO_HEALTH,
           AbilityToWorkValue.OTHER,
         ],
         affectAbilityToWorkOther: 'Variable mental health',
@@ -84,13 +84,13 @@ describe('affectAbilityToWorkUpdateController', () => {
 
     it('should get the Ability To Work view given there is an AbilityToWorkForm already on the session', async () => {
       // Given
-      const inductionDto = aLongQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       req.session.inductionDto = inductionDto
 
       const expectedAbilityToWorkForm = {
         affectAbilityToWork: [
           AbilityToWorkValue.CARING_RESPONSIBILITIES,
-          AbilityToWorkValue.HEALTH_ISSUES,
+          AbilityToWorkValue.NEEDS_WORK_ADJUSTMENTS_DUE_TO_HEALTH,
           AbilityToWorkValue.OTHER,
         ],
         affectAbilityToWorkOther: 'Variable mental health',
@@ -116,62 +116,12 @@ describe('affectAbilityToWorkUpdateController', () => {
       expect(req.session.affectAbilityToWorkForm).toBeUndefined()
       expect(req.session.inductionDto).toEqual(inductionDto)
     })
-
-    it('should get the Ability To Work view given there is an updateInductionQuestionSet on the session', async () => {
-      // Given
-      const inductionDto = aLongQuestionSetInductionDto()
-      req.session.inductionDto = inductionDto
-      req.session.updateInductionQuestionSet = {
-        hopingToWorkOnRelease: 'YES',
-      }
-      req.session.pageFlowHistory = {
-        pageUrls: [`/prisoners/${prisonNumber}/induction/personal-interests`],
-        currentPageIndex: 0,
-      }
-
-      const expectedAbilityToWorkForm = {
-        affectAbilityToWork: [
-          AbilityToWorkValue.CARING_RESPONSIBILITIES,
-          AbilityToWorkValue.HEALTH_ISSUES,
-          AbilityToWorkValue.OTHER,
-        ],
-        affectAbilityToWorkOther: 'Variable mental health',
-      }
-      req.session.affectAbilityToWorkForm = expectedAbilityToWorkForm
-
-      const expectedView = {
-        prisonerSummary,
-        form: expectedAbilityToWorkForm,
-        backLinkUrl: '/prisoners/A1234BC/induction/personal-interests',
-        backLinkAriaText: `Back to What are Jimmy Lightfingers's interests?`,
-      }
-
-      const expectedPageFlowHistory = {
-        pageUrls: [
-          '/prisoners/A1234BC/induction/personal-interests',
-          '/prisoners/A1234BC/induction/affect-ability-to-work',
-        ],
-        currentPageIndex: 1,
-      }
-
-      // When
-      await controller.getAffectAbilityToWorkView(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
-
-      // Then
-      expect(res.render).toHaveBeenCalledWith('pages/induction/affectAbilityToWork/index', expectedView)
-      expect(req.session.inductionDto).toEqual(inductionDto)
-      expect(req.session.pageFlowHistory).toEqual(expectedPageFlowHistory)
-    })
   })
 
   describe('submitAbilityToWorkForm', () => {
     it('should not update Induction given form is submitted with validation errors', async () => {
       // Given
-      const inductionDto = aLongQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       req.session.inductionDto = inductionDto
 
       const invalidAbilityToWorkForm = {
@@ -206,7 +156,7 @@ describe('affectAbilityToWorkUpdateController', () => {
 
     it('should update Induction and call API and redirect to work and interests page', async () => {
       // Given
-      const inductionDto = aLongQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       req.session.inductionDto = inductionDto
 
       const affectAbilityToWorkForm = {
@@ -215,7 +165,7 @@ describe('affectAbilityToWorkUpdateController', () => {
       }
       req.body = affectAbilityToWorkForm
       req.session.affectAbilityToWorkForm = undefined
-      const updateInductionDto = aLongQuestionSetUpdateInductionRequest()
+      const updateInductionDto = aValidUpdateInductionRequest()
 
       mockedCreateOrUpdateInductionDtoMapper.mockReturnValueOnce(updateInductionDto)
 
@@ -242,44 +192,9 @@ describe('affectAbilityToWorkUpdateController', () => {
       expect(req.session.inductionDto).toBeUndefined()
     })
 
-    it('should update InductionDto and redirect to Check Your Answers view given there is an updateInductionQuestionSet on the session', async () => {
-      // Given
-      const inductionDto = aLongQuestionSetInductionDto()
-      req.session.inductionDto = inductionDto
-
-      const affectAbilityToWorkForm = {
-        affectAbilityToWork: [AbilityToWorkValue.CARING_RESPONSIBILITIES, AbilityToWorkValue.OTHER],
-        affectAbilityToWorkOther: 'Variable mental health',
-      }
-      req.body = affectAbilityToWorkForm
-      req.session.affectAbilityToWorkForm = undefined
-
-      req.session.updateInductionQuestionSet = { hopingToWorkOnRelease: 'YES' }
-
-      const expectedUpdatedAbilityToWork = ['CARING_RESPONSIBILITIES', 'OTHER']
-
-      const expectedUpdatedAbilityToWorkOther = 'Variable mental health'
-      const expectedNextPage = '/prisoners/A1234BC/induction/check-your-answers'
-
-      // When
-      await controller.submitAffectAbilityToWorkForm(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
-
-      // Then
-      const updatedInductionDto = req.session.inductionDto
-      expect(updatedInductionDto.workOnRelease.affectAbilityToWork).toEqual(expectedUpdatedAbilityToWork)
-      expect(updatedInductionDto.workOnRelease.affectAbilityToWorkOther).toEqual(expectedUpdatedAbilityToWorkOther)
-
-      expect(res.redirect).toHaveBeenCalledWith(expectedNextPage)
-      expect(req.session.affectAbilityToWorkForm).toBeUndefined()
-    })
-
     it('should not update Induction given error calling service', async () => {
       // Given
-      const inductionDto = aLongQuestionSetInductionDto()
+      const inductionDto = aValidInductionDto()
       req.session.inductionDto = inductionDto
 
       const affectAbilityToWorkForm = {
@@ -288,7 +203,7 @@ describe('affectAbilityToWorkUpdateController', () => {
       }
       req.body = affectAbilityToWorkForm
       req.session.affectAbilityToWorkForm = undefined
-      const updateInductionDto = aLongQuestionSetUpdateInductionRequest()
+      const updateInductionDto = aValidUpdateInductionRequest()
 
       mockedCreateOrUpdateInductionDtoMapper.mockReturnValueOnce(updateInductionDto)
 

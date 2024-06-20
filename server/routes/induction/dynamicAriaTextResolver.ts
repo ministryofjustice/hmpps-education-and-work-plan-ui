@@ -20,6 +20,8 @@ const getDynamicBackLinkAriaText = (req: Request, backLinkUrl: string): string =
     '/plan/{PRISON_NUMBER}/view/work-and-interests': `Back to ${prisonerName}'s learning and work progress`,
 
     '/prisoners/{PRISON_NUMBER}/create-induction/hoping-to-work-on-release': `Back to Is ${prisonerName} hoping to get work when they're released?`,
+    '/prisoners/{PRISON_NUMBER}/create-induction/highest-level-of-education': `Back to What's the highest level of education ${prisonerName} completed before entering prison?`,
+    '/prisoners/{PRISON_NUMBER}/create-induction/want-to-add-qualifications': `Back to Does ${prisonerName} have any other educational qualifications they want to be recorded?`,
     '/prisoners/{PRISON_NUMBER}/create-induction/qualifications': `Back to ${prisonerName}'s qualifications`,
     '/prisoners/{PRISON_NUMBER}/create-induction/qualification-level': `Back to What level of qualification does ${prisonerName} want to add`,
     '/prisoners/{PRISON_NUMBER}/create-induction/additional-training': `Back to Does ${prisonerName} have any other training or vocational qualifications?`,
@@ -45,9 +47,10 @@ const getDynamicBackLinkAriaText = (req: Request, backLinkUrl: string): string =
     '/prisoners/{PRISON_NUMBER}/create-induction/skills': `Back to What skills does ${prisonerName} feel they have?`,
     '/prisoners/{PRISON_NUMBER}/create-induction/personal-interests': `Back to What are ${prisonerName}'s interests?`,
     '/prisoners/{PRISON_NUMBER}/create-induction/reasons-not-to-get-work': `Back to What could stop ${prisonerName} working when they are released?`,
-    '/prisoners/{PRISON_NUMBER}/create-induction/check-your-answers': `Back to Check and save your answers before adding ${prisonerName}'s goals`,
     '/prisoners/{PRISON_NUMBER}/create-induction/in-prison-work': `Back to What type of work would ${prisonerName} like to do in prison?`,
     '/prisoners/{PRISON_NUMBER}/create-induction/in-prison-training': `Back to What type of training and education activities would ${prisonerName} like to do in prison?`,
+    '/prisoners/{PRISON_NUMBER}/create-induction/affect-ability-to-work': `Back to What does ${prisonerName} feel could stop or affect them working when they are out of prison?`,
+    '/prisoners/{PRISON_NUMBER}/create-induction/check-your-answers': `Back to Check and save your answers before adding ${prisonerName}'s goals`,
 
     '/prisoners/{PRISON_NUMBER}/induction/hoping-to-work-on-release': `Back to Is ${prisonerName} hoping to get work when they're released?`,
     '/prisoners/{PRISON_NUMBER}/induction/previous-work-experience': `Back to What type of work has ${prisonerName} done before?`,
@@ -81,6 +84,7 @@ const getDynamicBackLinkAriaText = (req: Request, backLinkUrl: string): string =
     '/prisoners/{PRISON_NUMBER}/induction/personal-interests': `Back to What are ${prisonerName}'s interests?`,
     '/prisoners/{PRISON_NUMBER}/induction/check-your-answers': `Back to Check and save your answers before adding ${prisonerName}'s goals`,
     '/prisoners/{PRISON_NUMBER}/induction/has-worked-before': `Back to Has ${prisonerName} worked before?`,
+    '/prisoners/{PRISON_NUMBER}/induction/affect-ability-to-work': `Back to What does ${prisonerName} feel could stop or affect them working when they are out of prison?`,
   }
   const uriKey = backLinkUrl.replace(prisonNumber, '{PRISON_NUMBER}')
   return ariaTextByUri[uriKey] || ''

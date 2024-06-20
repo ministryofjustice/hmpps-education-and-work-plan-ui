@@ -6,10 +6,10 @@ import type { PageFlow } from 'viewModels'
 import InductionService from '../../../services/inductionService'
 import PreviousWorkExperienceDetailUpdateController from './previousWorkExperienceDetailUpdateController'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
-import { aLongQuestionSetInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
+import aValidInductionDto from '../../../testsupport/inductionDtoTestDataBuilder'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
-import { aLongQuestionSetUpdateInductionDto } from '../../../testsupport/updateInductionDtoTestDataBuilder'
-import TypeOfWorkExperienceValue from '../../../enums/typeOfWorkExperienceValue'
+import aValidCreateOrUpdateInductionDto from '../../../testsupport/updateInductionDtoTestDataBuilder'
+import HasWorkedBeforeValue from '../../../enums/hasWorkedBeforeValue'
 
 jest.mock('../../../data/mappers/createOrUpdateInductionDtoMapper')
 jest.mock('../../../services/inductionService')
@@ -54,7 +54,7 @@ describe('previousWorkExperienceDetailUpdateController', () => {
       req.params.typeOfWorkExperience = 'construction'
       req.path = `/prisoners/${prisonNumber}/induction/previous-work-experience/construction`
 
-      const inductionDto = aLongQuestionSetInductionDto({ hasWorkedBefore: true })
+      const inductionDto = aValidInductionDto({ hasWorkedBefore: HasWorkedBeforeValue.YES })
       req.session.inductionDto = inductionDto
       req.session.previousWorkExperienceDetailForm = undefined
 
@@ -92,7 +92,7 @@ describe('previousWorkExperienceDetailUpdateController', () => {
       req.params.typeOfWorkExperience = 'construction'
       req.path = `/prisoners/${prisonNumber}/induction/previous-work-experience/construction`
 
-      const inductionDto = aLongQuestionSetInductionDto({ hasWorkedBefore: true })
+      const inductionDto = aValidInductionDto({ hasWorkedBefore: HasWorkedBeforeValue.YES })
       req.session.inductionDto = inductionDto
 
       const expectedPreviousWorkExperienceDetailForm = {
@@ -130,7 +130,7 @@ describe('previousWorkExperienceDetailUpdateController', () => {
       req.params.typeOfWorkExperience = 'retail'
       req.path = `/prisoners/${prisonNumber}/induction/previous-work-experience/retail`
 
-      const inductionDto = aLongQuestionSetInductionDto({ hasWorkedBefore: true })
+      const inductionDto = aValidInductionDto({ hasWorkedBefore: HasWorkedBeforeValue.YES })
       // The induction has work experience of construction and other, but not retail
       req.session.inductionDto = inductionDto
       req.session.previousWorkExperienceDetailForm = undefined
@@ -179,7 +179,7 @@ describe('previousWorkExperienceDetailUpdateController', () => {
         req.params.typeOfWorkExperience = 'construction'
         req.path = `/prisoners/${prisonNumber}/induction/previous-work-experience/construction`
 
-        const inductionDto = aLongQuestionSetInductionDto({ hasWorkedBefore: true })
+        const inductionDto = aValidInductionDto({ hasWorkedBefore: HasWorkedBeforeValue.YES })
         req.session.inductionDto = inductionDto
 
         const invalidPreviousWorkExperienceDetailForm = {
@@ -214,7 +214,7 @@ describe('previousWorkExperienceDetailUpdateController', () => {
         req.params.typeOfWorkExperience = 'some-non-valid-work-experience-type'
         req.path = `/prisoners/${prisonNumber}/induction/previous-work-experience/some-non-valid-work-experience-type`
 
-        const inductionDto = aLongQuestionSetInductionDto({ hasWorkedBefore: true })
+        const inductionDto = aValidInductionDto({ hasWorkedBefore: HasWorkedBeforeValue.YES })
         req.session.inductionDto = inductionDto
 
         const expectedError = createError(
@@ -239,7 +239,7 @@ describe('previousWorkExperienceDetailUpdateController', () => {
         req.params.typeOfWorkExperience = 'retail'
         req.path = `/prisoners/${prisonNumber}/induction/previous-work-experience/retail`
 
-        const inductionDto = aLongQuestionSetInductionDto({ hasWorkedBefore: true })
+        const inductionDto = aValidInductionDto({ hasWorkedBefore: HasWorkedBeforeValue.YES })
         // The induction has work experience of construction and other, but not retail
         req.session.inductionDto = inductionDto
         req.session.previousWorkExperienceDetailForm = undefined
@@ -264,55 +264,6 @@ describe('previousWorkExperienceDetailUpdateController', () => {
         expect(res.redirect).not.toHaveBeenCalled()
         expect(next).toHaveBeenCalledWith(expectedError)
       })
-
-      it('should update induction DTO and redirect back to check your answers page when coming from check your answers', async () => {
-        // Given
-        req.session.inductionDto = aLongQuestionSetInductionDto()
-        req.session.pageFlowHistory = {
-          pageUrls: [
-            `/prisoners/${prisonerSummary.prisonNumber}/induction/check-your-answers`,
-            `/prisoners/${prisonerSummary.prisonNumber}/induction/previous-work-experience/construction`,
-          ],
-          currentPageIndex: 1,
-        }
-        req.params.typeOfWorkExperience = TypeOfWorkExperienceValue.CONSTRUCTION.toLocaleLowerCase()
-        req.body = {
-          jobRole: 'Roofer',
-          jobDetails: 'Building and maintaining roofs',
-        }
-
-        // The actual implementations are fine for this test
-        const actualToCreateOrUpdateInductionDto = jest.requireActual(
-          '../../../data/mappers/createOrUpdateInductionDtoMapper',
-        ).default
-        mockedCreateOrUpdateInductionDtoMapper.mockImplementation(actualToCreateOrUpdateInductionDto)
-
-        const expectedExperience: PreviousWorkExperienceDto = {
-          experienceType: TypeOfWorkExperienceValue.CONSTRUCTION,
-          experienceTypeOther: null,
-          role: 'Roofer',
-          details: 'Building and maintaining roofs',
-        }
-
-        expect(req.session.inductionDto.previousWorkExperiences.experiences).not.toEqual(
-          expect.arrayContaining([expectedExperience]),
-        )
-
-        // When
-        await controller.submitPreviousWorkExperienceDetailForm(
-          req as undefined as Request,
-          res as undefined as Response,
-          next as undefined as NextFunction,
-        )
-
-        // Then
-        expect(req.session.inductionDto.previousWorkExperiences.experiences).toEqual(
-          expect.arrayContaining([expectedExperience]),
-        )
-        expect(res.redirect).toHaveBeenCalledWith(
-          `/prisoners/${prisonerSummary.prisonNumber}/induction/check-your-answers`,
-        )
-      })
     })
 
     describe('no PageFlowQueue on the session', () => {
@@ -327,7 +278,7 @@ describe('previousWorkExperienceDetailUpdateController', () => {
         req.params.typeOfWorkExperience = 'construction'
         req.path = `/prisoners/${prisonNumber}/induction/previous-work-experience/construction`
 
-        const inductionDto = aLongQuestionSetInductionDto({ hasWorkedBefore: true })
+        const inductionDto = aValidInductionDto({ hasWorkedBefore: HasWorkedBeforeValue.YES })
         req.session.inductionDto = inductionDto
 
         const previousWorkExperienceDetailForm = {
@@ -337,7 +288,7 @@ describe('previousWorkExperienceDetailUpdateController', () => {
         req.body = previousWorkExperienceDetailForm
         req.session.previousWorkExperienceDetailForm = undefined
 
-        const updateInductionDto = aLongQuestionSetUpdateInductionDto()
+        const updateInductionDto = aValidCreateOrUpdateInductionDto()
 
         mockedCreateOrUpdateInductionDtoMapper.mockReturnValueOnce(updateInductionDto)
 
@@ -382,7 +333,7 @@ describe('previousWorkExperienceDetailUpdateController', () => {
         req.params.typeOfWorkExperience = 'construction'
         req.path = `/prisoners/${prisonNumber}/induction/previous-work-experience/construction`
 
-        const inductionDto = aLongQuestionSetInductionDto({ hasWorkedBefore: true })
+        const inductionDto = aValidInductionDto({ hasWorkedBefore: HasWorkedBeforeValue.YES })
         req.session.inductionDto = inductionDto
 
         const previousWorkExperienceDetailForm = {
@@ -392,7 +343,7 @@ describe('previousWorkExperienceDetailUpdateController', () => {
         req.body = previousWorkExperienceDetailForm
         req.session.previousWorkExperienceDetailForm = undefined
 
-        const updateInductionDto = aLongQuestionSetUpdateInductionDto()
+        const updateInductionDto = aValidCreateOrUpdateInductionDto()
 
         mockedCreateOrUpdateInductionDtoMapper.mockReturnValueOnce(updateInductionDto)
 
@@ -443,12 +394,10 @@ describe('previousWorkExperienceDetailUpdateController', () => {
       // A PageFlowQueue on the session means the user is adding new Previous Work Experiences as part of updating the
       // Induction from the Work & Interests tab
 
-      it('should update Induction and call API and redirect to work and interests page given a PageFlowQueue that is on the last page and we are not updating the entire Induction question set', async () => {
+      it('should update Induction and call API and redirect to work and interests page given a PageFlowQueue that is on the last page', async () => {
         // Given
         req.params.typeOfWorkExperience = 'construction'
         req.path = `/prisoners/${prisonNumber}/induction/previous-work-experience/construction`
-
-        req.session.updateInductionQuestionSet = undefined
 
         const pageFlowQueue: PageFlow = {
           pageUrls: [`/prisoners/${prisonNumber}/induction/previous-work-experience/construction`],
@@ -456,7 +405,7 @@ describe('previousWorkExperienceDetailUpdateController', () => {
         }
         req.session.pageFlowQueue = pageFlowQueue
 
-        const inductionDto = aLongQuestionSetInductionDto({ hasWorkedBefore: true })
+        const inductionDto = aValidInductionDto({ hasWorkedBefore: HasWorkedBeforeValue.YES })
         req.session.inductionDto = inductionDto
 
         const previousWorkExperienceDetailForm = {
@@ -466,7 +415,7 @@ describe('previousWorkExperienceDetailUpdateController', () => {
         req.body = previousWorkExperienceDetailForm
         req.session.previousWorkExperienceDetailForm = undefined
 
-        const updateInductionDto = aLongQuestionSetUpdateInductionDto()
+        const updateInductionDto = aValidCreateOrUpdateInductionDto()
 
         mockedCreateOrUpdateInductionDtoMapper.mockReturnValueOnce(updateInductionDto)
 
@@ -520,7 +469,7 @@ describe('previousWorkExperienceDetailUpdateController', () => {
         }
         req.session.pageFlowQueue = pageFlowQueue
 
-        const inductionDto = aLongQuestionSetInductionDto({ hasWorkedBefore: true })
+        const inductionDto = aValidInductionDto({ hasWorkedBefore: HasWorkedBeforeValue.YES })
         req.session.inductionDto = inductionDto
 
         const previousWorkExperienceDetailForm = {
@@ -530,7 +479,7 @@ describe('previousWorkExperienceDetailUpdateController', () => {
         req.body = previousWorkExperienceDetailForm
         req.session.previousWorkExperienceDetailForm = undefined
 
-        const updateInductionDto = aLongQuestionSetUpdateInductionDto()
+        const updateInductionDto = aValidCreateOrUpdateInductionDto()
 
         mockedCreateOrUpdateInductionDtoMapper.mockReturnValueOnce(updateInductionDto)
 
@@ -544,60 +493,6 @@ describe('previousWorkExperienceDetailUpdateController', () => {
         // Then
         expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/induction/previous-work-experience/retail')
         expect(inductionService.updateInduction).not.toHaveBeenCalled()
-      })
-
-      it('should update InductionDto and redirect to Induction work interests page given a PageFlowQueue that is on the last page and we are updating the entire Induction question set', async () => {
-        // Given
-        req.params.typeOfWorkExperience = 'construction'
-        req.path = `/prisoners/${prisonNumber}/induction/previous-work-experience/construction`
-
-        req.session.updateInductionQuestionSet = { hopingToWorkOnRelease: 'YES' }
-
-        const pageFlowQueue: PageFlow = {
-          pageUrls: [
-            `/prisoners/${prisonNumber}/induction/previous-work-experience`,
-            `/prisoners/${prisonNumber}/induction/previous-work-experience/construction`,
-          ],
-          currentPageIndex: 1,
-        }
-        req.session.pageFlowQueue = pageFlowQueue
-
-        const inductionDto = aLongQuestionSetInductionDto({ hasWorkedBefore: true })
-        req.session.inductionDto = inductionDto
-
-        const previousWorkExperienceDetailForm = {
-          jobRole: 'General labourer',
-          jobDetails: 'General labouring, building walls, basic plastering',
-        }
-        req.body = previousWorkExperienceDetailForm
-        req.session.previousWorkExperienceDetailForm = undefined
-
-        const expectedPageFlowHistory: PageFlow = {
-          pageUrls: ['/prisoners/A1234BC/induction/previous-work-experience'],
-          currentPageIndex: 0,
-        }
-
-        // When
-        await controller.submitPreviousWorkExperienceDetailForm(
-          req as undefined as Request,
-          res as undefined as Response,
-          next as undefined as NextFunction,
-        )
-
-        // Then
-        const previousWorkExperiencesOnInduction: Array<PreviousWorkExperienceDto> =
-          req.session.inductionDto.previousWorkExperiences.experiences
-        const previousConstructionWorkExperience = previousWorkExperiencesOnInduction.find(
-          experience => experience.experienceType === TypeOfWorkExperienceValue.CONSTRUCTION,
-        )
-        expect(previousConstructionWorkExperience.role).toEqual('General labourer')
-        expect(previousConstructionWorkExperience.details).toEqual(
-          'General labouring, building walls, basic plastering',
-        )
-        expect(res.redirect).toHaveBeenCalledWith(`/prisoners/${prisonNumber}/induction/work-interest-types`)
-        expect(req.session.previousWorkExperienceDetailForm).toBeUndefined()
-        expect(inductionService.updateInduction).not.toHaveBeenCalled()
-        expect(req.session.pageFlowHistory).toEqual(expectedPageFlowHistory)
       })
     })
   })

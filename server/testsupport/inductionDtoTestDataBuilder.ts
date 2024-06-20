@@ -1,5 +1,4 @@
 import type { InductionDto } from 'inductionDto'
-import ReasonNotToGetWorkValue from '../enums/reasonNotToGetWorkValue'
 import HopingToGetWorkValue from '../enums/hopingToGetWorkValue'
 import TypeOfWorkExperienceValue from '../enums/typeOfWorkExperienceValue'
 import WorkInterestTypeValue from '../enums/workInterestTypeValue'
@@ -11,12 +10,13 @@ import AdditionalTrainingValue from '../enums/additionalTrainingValue'
 import InPrisonWorkValue from '../enums/inPrisonWorkValue'
 import InPrisonTrainingValue from '../enums/inPrisonTrainingValue'
 import AbilityToWorkValue from '../enums/abilityToWorkValue'
+import HasWorkedBeforeValue from '../enums/hasWorkedBeforeValue'
 
-const aLongQuestionSetInductionDto = (
+const aValidInductionDto = (
   options?: CoreBuilderOptions & {
-    hasWorkedBefore?: boolean
-    hasSkills?: boolean
-    hasInterests?: boolean
+    hopingToGetWork?: HopingToGetWorkValue
+    hasWorkedBefore?: HasWorkedBeforeValue
+    hasQualifications?: boolean
   },
 ): InductionDto => {
   return {
@@ -24,28 +24,33 @@ const aLongQuestionSetInductionDto = (
     workOnRelease: {
       reference: 'bdebe39f-6f85-459b-81be-a26341c3fe3c',
       ...auditFields(options),
-      hopingToWork: HopingToGetWorkValue.YES,
+      hopingToWork: options?.hopingToGetWork || HopingToGetWorkValue.YES,
       affectAbilityToWork: [
         AbilityToWorkValue.CARING_RESPONSIBILITIES,
-        AbilityToWorkValue.HEALTH_ISSUES,
+        AbilityToWorkValue.NEEDS_WORK_ADJUSTMENTS_DUE_TO_HEALTH,
         AbilityToWorkValue.OTHER,
       ],
       affectAbilityToWorkOther: 'Variable mental health',
-      notHopingToWorkReasons: null,
-      notHopingToWorkOtherReason: null,
+    },
+    inPrisonInterests: {
+      reference: 'ae6a6a94-df32-4a90-b39d-ff1a100a6da0',
+      ...auditFields(options),
+      inPrisonWorkInterests: [
+        { workType: InPrisonWorkValue.CLEANING_AND_HYGIENE, workTypeOther: null },
+        { workType: InPrisonWorkValue.OTHER, workTypeOther: 'Gardening and grounds keeping' },
+      ],
+      inPrisonTrainingInterests: [
+        { trainingType: InPrisonTrainingValue.FORKLIFT_DRIVING, trainingTypeOther: null },
+        { trainingType: InPrisonTrainingValue.CATERING, trainingTypeOther: null },
+        { trainingType: InPrisonTrainingValue.OTHER, trainingTypeOther: 'Advanced origami' },
+      ],
     },
     previousWorkExperiences: {
       reference: 'bb45462e-8225-490d-8c1c-ad6692223d4d',
       ...auditFields(options),
-      hasWorkedBefore:
-        !options || options.hasWorkedBefore === null || options.hasWorkedBefore === undefined
-          ? true
-          : options.hasWorkedBefore,
+      hasWorkedBefore: options?.hasWorkedBefore || HasWorkedBeforeValue.YES,
       experiences:
-        !options ||
-        options.hasWorkedBefore === null ||
-        options.hasWorkedBefore === undefined ||
-        options.hasWorkedBefore === true
+        (options?.hasWorkedBefore || HasWorkedBeforeValue.YES) === HasWorkedBeforeValue.YES
           ? [
               {
                 experienceType: TypeOfWorkExperienceValue.CONSTRUCTION,
@@ -86,34 +91,34 @@ const aLongQuestionSetInductionDto = (
     personalSkillsAndInterests: {
       reference: '517c470f-f9b5-4d49-9148-4458fe358439',
       ...auditFields(options),
-      skills:
-        !options || options.hasSkills === null || options.hasSkills === undefined || options.hasSkills === true
-          ? [
-              { skillType: SkillsValue.TEAMWORK, skillTypeOther: null },
-              { skillType: SkillsValue.WILLINGNESS_TO_LEARN, skillTypeOther: null },
-              { skillType: SkillsValue.OTHER, skillTypeOther: 'Tenacity' },
-            ]
-          : [],
-      interests:
-        !options || options.hasInterests === null || options.hasInterests === undefined || options.hasInterests === true
-          ? [
-              { interestType: PersonalInterestsValue.CREATIVE, interestTypeOther: null },
-              { interestType: PersonalInterestsValue.DIGITAL, interestTypeOther: null },
-              { interestType: PersonalInterestsValue.OTHER, interestTypeOther: 'Renewable energy' },
-            ]
-          : [],
+      skills: [
+        { skillType: SkillsValue.TEAMWORK, skillTypeOther: null },
+        { skillType: SkillsValue.WILLINGNESS_TO_LEARN, skillTypeOther: null },
+        { skillType: SkillsValue.OTHER, skillTypeOther: 'Tenacity' },
+      ],
+      interests: [
+        { interestType: PersonalInterestsValue.CREATIVE, interestTypeOther: null },
+        { interestType: PersonalInterestsValue.DIGITAL, interestTypeOther: null },
+        { interestType: PersonalInterestsValue.OTHER, interestTypeOther: 'Renewable energy' },
+      ],
     },
     previousQualifications: {
       reference: 'dea24acc-fde5-4ead-a9eb-e1757de2542c',
       ...auditFields(options),
       educationLevel: EducationLevelValue.SECONDARY_SCHOOL_TOOK_EXAMS,
-      qualifications: [
-        {
-          subject: 'Pottery',
-          grade: 'C',
-          level: QualificationLevelValue.LEVEL_4,
-        },
-      ],
+      qualifications:
+        !options ||
+        options.hasQualifications === null ||
+        options.hasQualifications === undefined ||
+        options.hasQualifications === true
+          ? [
+              {
+                subject: 'Pottery',
+                grade: 'C',
+                level: QualificationLevelValue.LEVEL_4,
+              },
+            ]
+          : [],
     },
     previousTraining: {
       reference: 'a8e1fe50-1e3b-4784-a27f-ee1c54fc7616',
@@ -124,61 +129,6 @@ const aLongQuestionSetInductionDto = (
         AdditionalTrainingValue.OTHER,
       ],
       trainingTypeOther: 'Advanced origami',
-    },
-  }
-}
-
-const aShortQuestionSetInductionDto = (
-  options?: CoreBuilderOptions & {
-    hopingToGetWork?: HopingToGetWorkValue.NO | HopingToGetWorkValue.NOT_SURE
-  },
-): InductionDto => {
-  return {
-    ...baseInductionDtoTemplate(options),
-    workOnRelease: {
-      reference: 'bdebe39f-6f85-459b-81be-a26341c3fe3c',
-      ...auditFields(options),
-      hopingToWork: options?.hopingToGetWork || HopingToGetWorkValue.NO,
-      affectAbilityToWork: [AbilityToWorkValue.CARING_RESPONSIBILITIES, AbilityToWorkValue.OTHER],
-      affectAbilityToWorkOther: 'Variable mental health',
-      notHopingToWorkReasons: [ReasonNotToGetWorkValue.HEALTH, ReasonNotToGetWorkValue.OTHER],
-      notHopingToWorkOtherReason: 'Will be of retirement age at release',
-    },
-    inPrisonInterests: {
-      reference: 'ae6a6a94-df32-4a90-b39d-ff1a100a6da0',
-      ...auditFields(options),
-      inPrisonWorkInterests: [
-        { workType: InPrisonWorkValue.CLEANING_AND_HYGIENE, workTypeOther: null },
-        { workType: InPrisonWorkValue.OTHER, workTypeOther: 'Gardening and grounds keeping' },
-      ],
-      inPrisonTrainingInterests: [
-        { trainingType: InPrisonTrainingValue.FORKLIFT_DRIVING, trainingTypeOther: null },
-        { trainingType: InPrisonTrainingValue.CATERING, trainingTypeOther: null },
-        { trainingType: InPrisonTrainingValue.OTHER, trainingTypeOther: 'Advanced origami' },
-      ],
-    },
-    previousQualifications: {
-      reference: 'dea24acc-fde5-4ead-a9eb-e1757de2542c',
-      ...auditFields(options),
-      educationLevel: null,
-      qualifications: [
-        {
-          subject: 'English',
-          grade: 'C',
-          level: QualificationLevelValue.LEVEL_6,
-        },
-        {
-          subject: 'Maths',
-          grade: 'A*',
-          level: QualificationLevelValue.LEVEL_6,
-        },
-      ],
-    },
-    previousTraining: {
-      reference: 'a8e1fe50-1e3b-4784-a27f-ee1c54fc7616',
-      ...auditFields(options),
-      trainingTypes: [AdditionalTrainingValue.FULL_UK_DRIVING_LICENCE, AdditionalTrainingValue.OTHER],
-      trainingTypeOther: 'Beginners cookery for IT professionals',
     },
   }
 }
@@ -234,4 +184,4 @@ const auditFields = (
   }
 }
 
-export { aLongQuestionSetInductionDto, aShortQuestionSetInductionDto }
+export default aValidInductionDto

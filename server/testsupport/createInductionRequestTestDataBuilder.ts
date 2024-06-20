@@ -1,5 +1,4 @@
 import type { CreateInductionRequest } from 'educationAndWorkPlanApiClient'
-import ReasonNotToGetWorkValue from '../enums/reasonNotToGetWorkValue'
 import HopingToGetWorkValue from '../enums/hopingToGetWorkValue'
 import AbilityToWorkValue from '../enums/abilityToWorkValue'
 import TypeOfWorkExperienceValue from '../enums/typeOfWorkExperienceValue'
@@ -11,37 +10,30 @@ import QualificationLevelValue from '../enums/qualificationLevelValue'
 import AdditionalTrainingValue from '../enums/additionalTrainingValue'
 import InPrisonWorkValue from '../enums/inPrisonWorkValue'
 import InPrisonTrainingValue from '../enums/inPrisonTrainingValue'
+import HasWorkedBeforeValue from '../enums/hasWorkedBeforeValue'
 
-const aLongQuestionSetCreateInductionRequest = (
+const aValidCreateInductionRequest = (
   options?: CoreBuilderOptions & {
-    hasWorkedBefore?: boolean
-    hasSkills?: boolean
-    hasInterests?: boolean
+    hopingToGetWork?: HopingToGetWorkValue
+    hasWorkedBefore?: HasWorkedBeforeValue
+    hasQualifications?: boolean
   },
 ): CreateInductionRequest => {
   return {
     ...baseCreateInductionRequestTemplate(options),
     workOnRelease: {
-      hopingToWork: HopingToGetWorkValue.YES,
+      hopingToWork: options?.hopingToGetWork || HopingToGetWorkValue.YES,
       affectAbilityToWork: [
         AbilityToWorkValue.CARING_RESPONSIBILITIES,
-        AbilityToWorkValue.HEALTH_ISSUES,
+        AbilityToWorkValue.NEEDS_WORK_ADJUSTMENTS_DUE_TO_HEALTH,
         AbilityToWorkValue.OTHER,
       ],
       affectAbilityToWorkOther: 'Variable mental health',
-      notHopingToWorkReasons: null,
-      notHopingToWorkOtherReason: null,
     },
     previousWorkExperiences: {
-      hasWorkedBefore:
-        !options || options.hasWorkedBefore === null || options.hasWorkedBefore === undefined
-          ? true
-          : options.hasWorkedBefore,
+      hasWorkedBefore: options?.hasWorkedBefore || HasWorkedBeforeValue.YES,
       experiences:
-        !options ||
-        options.hasWorkedBefore === null ||
-        options.hasWorkedBefore === undefined ||
-        options.hasWorkedBefore === true
+        (options?.hasWorkedBefore || HasWorkedBeforeValue.YES) === HasWorkedBeforeValue.YES
           ? [
               {
                 experienceType: TypeOfWorkExperienceValue.CONSTRUCTION,
@@ -78,57 +70,16 @@ const aLongQuestionSetCreateInductionRequest = (
       ],
     },
     personalSkillsAndInterests: {
-      skills:
-        !options || options.hasSkills === null || options.hasSkills === undefined || options.hasSkills === true
-          ? [
-              { skillType: SkillsValue.TEAMWORK, skillTypeOther: null },
-              { skillType: SkillsValue.WILLINGNESS_TO_LEARN, skillTypeOther: null },
-              { skillType: SkillsValue.OTHER, skillTypeOther: 'Tenacity' },
-            ]
-          : [],
-      interests:
-        !options || options.hasInterests === null || options.hasInterests === undefined || options.hasInterests === true
-          ? [
-              { interestType: PersonalInterestsValue.CREATIVE, interestTypeOther: null },
-              { interestType: PersonalInterestsValue.DIGITAL, interestTypeOther: null },
-              { interestType: PersonalInterestsValue.OTHER, interestTypeOther: 'Renewable energy' },
-            ]
-          : [],
-    },
-    previousQualifications: {
-      educationLevel: EducationLevelValue.SECONDARY_SCHOOL_TOOK_EXAMS,
-      qualifications: [
-        {
-          subject: 'Pottery',
-          grade: 'C',
-          level: QualificationLevelValue.LEVEL_4,
-        },
+      skills: [
+        { skillType: SkillsValue.TEAMWORK, skillTypeOther: null },
+        { skillType: SkillsValue.WILLINGNESS_TO_LEARN, skillTypeOther: null },
+        { skillType: SkillsValue.OTHER, skillTypeOther: 'Tenacity' },
       ],
-    },
-    previousTraining: {
-      trainingTypes: [
-        AdditionalTrainingValue.FIRST_AID_CERTIFICATE,
-        AdditionalTrainingValue.MANUAL_HANDLING,
-        AdditionalTrainingValue.OTHER,
+      interests: [
+        { interestType: PersonalInterestsValue.CREATIVE, interestTypeOther: null },
+        { interestType: PersonalInterestsValue.DIGITAL, interestTypeOther: null },
+        { interestType: PersonalInterestsValue.OTHER, interestTypeOther: 'Renewable energy' },
       ],
-      trainingTypeOther: 'Advanced origami',
-    },
-  }
-}
-
-const aShortQuestionSetCreateInductionRequest = (
-  options?: CoreBuilderOptions & {
-    hopingToGetWork?: HopingToGetWorkValue.NO | HopingToGetWorkValue.NOT_SURE
-  },
-): CreateInductionRequest => {
-  return {
-    ...baseCreateInductionRequestTemplate(options),
-    workOnRelease: {
-      hopingToWork: options?.hopingToGetWork || HopingToGetWorkValue.NO,
-      affectAbilityToWork: [AbilityToWorkValue.CARING_RESPONSIBILITIES, AbilityToWorkValue.OTHER],
-      affectAbilityToWorkOther: 'Variable mental health',
-      notHopingToWorkReasons: [ReasonNotToGetWorkValue.HEALTH, ReasonNotToGetWorkValue.OTHER],
-      notHopingToWorkOtherReason: 'Will be of retirement age at release',
     },
     inPrisonInterests: {
       inPrisonWorkInterests: [
@@ -142,23 +93,28 @@ const aShortQuestionSetCreateInductionRequest = (
       ],
     },
     previousQualifications: {
-      educationLevel: null,
-      qualifications: [
-        {
-          subject: 'English',
-          grade: 'C',
-          level: QualificationLevelValue.LEVEL_6,
-        },
-        {
-          subject: 'Maths',
-          grade: 'A*',
-          level: QualificationLevelValue.LEVEL_6,
-        },
-      ],
+      educationLevel: EducationLevelValue.SECONDARY_SCHOOL_TOOK_EXAMS,
+      qualifications:
+        !options ||
+        options.hasQualifications === null ||
+        options.hasQualifications === undefined ||
+        options.hasQualifications === true
+          ? [
+              {
+                subject: 'Pottery',
+                grade: 'C',
+                level: QualificationLevelValue.LEVEL_4,
+              },
+            ]
+          : [],
     },
     previousTraining: {
-      trainingTypes: [AdditionalTrainingValue.FULL_UK_DRIVING_LICENCE, AdditionalTrainingValue.OTHER],
-      trainingTypeOther: 'Beginners cookery for IT professionals',
+      trainingTypes: [
+        AdditionalTrainingValue.FIRST_AID_CERTIFICATE,
+        AdditionalTrainingValue.MANUAL_HANDLING,
+        AdditionalTrainingValue.OTHER,
+      ],
+      trainingTypeOther: 'Advanced origami',
     },
   }
 }
@@ -180,4 +136,4 @@ const baseCreateInductionRequestTemplate = (options?: CoreBuilderOptions): Creat
   }
 }
 
-export { aLongQuestionSetCreateInductionRequest, aShortQuestionSetCreateInductionRequest }
+export default aValidCreateInductionRequest

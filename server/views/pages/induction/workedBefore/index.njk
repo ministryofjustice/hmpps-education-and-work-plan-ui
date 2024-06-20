@@ -38,13 +38,18 @@
             items: [
               {
                 value: 'YES',
-                text: 'YES' | formatYesNo,
+                text: 'YES' | formatHasWorkedBefore,
                 checked: form.hasWorkedBefore === 'YES'
               },
               {
                 value: 'NO',
-                text: 'NO' | formatYesNo,
+                text: 'NO' | formatHasWorkedBefore,
                 checked: form.hasWorkedBefore === 'NO'
+              },
+              {
+                value: 'NOT_RELEVANT',
+                text: 'NOT_RELEVANT' | formatHasWorkedBefore,
+                checked: form.hasWorkedBefore === 'NOT_RELEVANT'
               }
             ],
             errorMessage: errors | findError('hasWorkedBefore')

@@ -3,9 +3,10 @@ import type { SessionData } from 'express-session'
 import createError from 'http-errors'
 import type { InductionDto } from 'inductionDto'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
-import { aLongQuestionSetInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
+import aValidInductionDto from '../../../testsupport/inductionDtoTestDataBuilder'
 import PreviousWorkExperienceDetailCreateController from './previousWorkExperienceDetailCreateController'
 import TypeOfWorkExperienceValue from '../../../enums/typeOfWorkExperienceValue'
+import HasWorkedBeforeValue from '../../../enums/hasWorkedBeforeValue'
 
 describe('previousWorkExperienceDetailCreateController', () => {
   const controller = new PreviousWorkExperienceDetailCreateController()
@@ -391,7 +392,7 @@ describe('previousWorkExperienceDetailCreateController', () => {
       expect(req.session.inductionDto.previousWorkExperiences.experiences).toEqual(expectedWorkExperiences)
     })
 
-    it('should update inductionDto and redirect to in prison work interests given we are on the last page of the queue', async () => {
+    it('should update inductionDto and redirect to Personal Skills given we are on the last page of the queue', async () => {
       // Given
       req.params.typeOfWorkExperience = 'other'
       req.path = `/prisoners/${prisonNumber}/create-induction/previous-work-experience/other`
@@ -440,7 +441,7 @@ describe('previousWorkExperienceDetailCreateController', () => {
       }
       req.session.pageFlowHistory = pageFlowHistory
 
-      const expectedNextPage = `/prisoners/${prisonNumber}/create-induction/work-interest-types`
+      const expectedNextPage = `/prisoners/${prisonNumber}/create-induction/skills`
       const expectedWorkExperiences = [
         {
           experienceType: TypeOfWorkExperienceValue.CONSTRUCTION,
@@ -606,7 +607,7 @@ describe('previousWorkExperienceDetailCreateController', () => {
 })
 
 const inductionDtoWithWorkExperienceTypes = (): InductionDto => {
-  const inductionDto = aLongQuestionSetInductionDto({ hasWorkedBefore: true })
+  const inductionDto = aValidInductionDto({ hasWorkedBefore: HasWorkedBeforeValue.YES })
   inductionDto.previousWorkExperiences.experiences = [
     {
       experienceType: TypeOfWorkExperienceValue.CONSTRUCTION,
