@@ -15,7 +15,14 @@
           <h3 class="govuk-heading-s app-summary-card__change-link__heading">Educational qualifications</h3>
           {%- set educationalQualificationsChangeLinkUrl -%}
             {%- if featureToggles.induction.update.enabled -%}
-              /prisoners/{{ prisonerSummary.prisonNumber }}/induction/qualifications
+              {# The target of the change link is different depending on whether the induction has qualifications already recorded on not #}
+              {%- if induction.inductionDto.previousQualifications.qualifications | length -%}
+                {# If the induction has qualifications the change link should be to the qualifications list screen, which allows the user to add/remove qualifications #}
+                /prisoners/{{ prisonerSummary.prisonNumber }}/induction/qualifications
+              {%- else -%}
+                {# If the induction does not have any qualifications the change link should be to the qualification level screen, which allows the user enter the first qualification #}
+                /prisoners/{{ prisonerSummary.prisonNumber }}/induction/qualification-level
+              {%- endif -%}
             {%- else -%}
               {{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}/qualifications-list/update
             {%- endif -%}

@@ -9,8 +9,11 @@ import getDynamicBackLinkAriaText from '../dynamicAriaTextResolver'
  */
 export default class QualificationLevelUpdateController extends QualificationLevelController {
   getBackLinkUrl(req: Request): string {
+    const { prisonNumber } = req.params
     const { pageFlowHistory } = req.session
-    return getPreviousPage(pageFlowHistory)
+    const previousPage =
+      (pageFlowHistory && getPreviousPage(pageFlowHistory)) || `/plan/${prisonNumber}/view/education-and-training`
+    return previousPage
   }
 
   getBackLinkAriaText(req: Request): string {
