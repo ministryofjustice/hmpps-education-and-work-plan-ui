@@ -285,7 +285,7 @@ context(`Change links on the Check Your Answers page when creating an Induction`
       .hasHopingToWorkOnRelease(HopingToGetWorkValue.NO)
   })
 
-  it('should support changing has worked before from Yes to Not relevant', () => {
+  it('should support changing has worked before from Yes to Not relevant and back to Yes', () => {
     // Given
     cy.createInductionToArriveOnCheckYourAnswers({ prisonNumber, hasWorkedBefore: HasWorkedBeforeValue.YES })
     Page.verifyOnPage(CheckYourAnswersPage)
@@ -296,6 +296,9 @@ context(`Change links on the Check Your Answers page when creating an Induction`
       .clickHasWorkedBeforeChangeLink()
       .hasBackLinkTo(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
       .selectWorkedBefore(HasWorkedBeforeValue.NOT_RELEVANT)
+      .setNotRelevantReason(
+        'Chris feels his previous work experience is not relevant as he is not planning on working upon release.',
+      )
       .submitPage()
     // Change worked before from Not relevant to Yes, which means the user is taken through the journey to add work experiences
     Page.verifyOnPage(CheckYourAnswersPage)
@@ -331,6 +334,30 @@ context(`Change links on the Check Your Answers page when creating an Induction`
         TypeOfWorkExperienceValue.SPORTS,
         'Gym instructor',
         'Coaching and motivating customers fitness goals',
+      )
+  })
+
+  it('should support changing has worked before from Yes to Not relevant', () => {
+    // Given
+    cy.createInductionToArriveOnCheckYourAnswers({ prisonNumber, hasWorkedBefore: HasWorkedBeforeValue.YES })
+    Page.verifyOnPage(CheckYourAnswersPage)
+
+    // When
+    // Change worked before (changing Yes to Not relevant which will return the user to Check Your Answers)
+    Page.verifyOnPage(CheckYourAnswersPage)
+      .clickHasWorkedBeforeChangeLink()
+      .hasBackLinkTo(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
+      .selectWorkedBefore(HasWorkedBeforeValue.NOT_RELEVANT)
+      .setNotRelevantReason(
+        'Chris feels his previous work experience is not relevant as he is not planning on working upon release.',
+      )
+      .submitPage()
+
+    // Then
+    Page.verifyOnPage(CheckYourAnswersPage) //
+      .hasWorkedBefore(HasWorkedBeforeValue.NOT_RELEVANT)
+      .hasWorkedBeforeNotRelevantReason(
+        'Chris feels his previous work experience is not relevant as he is not planning on working upon release.',
       )
   })
 

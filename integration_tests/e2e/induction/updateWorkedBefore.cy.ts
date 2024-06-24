@@ -59,15 +59,21 @@ context('Update whether a prisoner has worked before in an Induction', () => {
     // When
     workedBeforePage //
       .selectWorkedBefore(HasWorkedBeforeValue.NOT_RELEVANT)
-
-    workedBeforePage //
+      .setNotRelevantReason(
+        'Chris feels his previous work experience is not relevant as he is not planning on working upon release.',
+      )
       .submitPage()
 
     // Then
     Page.verifyOnPage(WorkAndInterestsPage)
     cy.wiremockVerify(
       putRequestedFor(urlEqualTo(`/inductions/${prisonNumber}`)) //
-        .withRequestBody(matchingJsonPath(`$[?(@.previousWorkExperiences.hasWorkedBefore == 'NOT_RELEVANT')]`)),
+        .withRequestBody(
+          matchingJsonPath(
+            "$[?(@.previousWorkExperiences.hasWorkedBefore == 'NOT_RELEVANT' && " +
+              "@.previousWorkExperiences.hasWorkedBeforeNotRelevantReason == 'Chris feels his previous work experience is not relevant as he is not planning on working upon release.')]",
+          ),
+        ),
     )
   })
 })

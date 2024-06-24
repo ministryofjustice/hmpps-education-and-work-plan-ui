@@ -78,6 +78,7 @@ declare module 'inductionDto' {
 
   export interface PreviousWorkExperiencesDto extends ReferencedAndAuditable {
     hasWorkedBefore: HasWorkedBeforeValue
+    hasWorkedBeforeNotRelevantReason?: string
     experiences: Array<PreviousWorkExperienceDto>
   }
 
@@ -129,6 +130,7 @@ declare module 'inductionDto' {
   export interface CreateOrUpdatePreviousWorkExperiencesDto {
     reference?: string
     hasWorkedBefore: HasWorkedBeforeValue
+    hasWorkedBeforeNotRelevantReason?: string
     experiences?: PreviousWorkExperienceDto[]
   }
 

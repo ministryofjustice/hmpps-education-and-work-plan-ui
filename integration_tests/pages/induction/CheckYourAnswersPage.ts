@@ -150,6 +150,11 @@ export default class CheckYourAnswersPage extends Page {
     return this
   }
 
+  hasWorkedBeforeNotRelevantReason(expected: string): CheckYourAnswersPage {
+    this.hasWorkedBeforeValue(HasWorkedBeforeValue.NOT_RELEVANT).should('contain.text', `Not relevant - ${expected}`)
+    return this
+  }
+
   clickHasWorkedBeforeChangeLink(): WorkedBeforePage {
     this.hasWorkedBeforeChangeLink().click()
     return Page.verifyOnPage(WorkedBeforePage)

@@ -71,6 +71,7 @@ const toCreateOrUpdatePreviousWorkExperiencesDto = (
     ? {
         reference: previousWorkExperiences.reference,
         hasWorkedBefore: previousWorkExperiences.hasWorkedBefore,
+        hasWorkedBeforeNotRelevantReason: previousWorkExperiences.hasWorkedBeforeNotRelevantReason,
         experiences: previousWorkExperiences.experiences,
       }
     : undefined

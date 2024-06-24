@@ -286,6 +286,7 @@ context('Create an Induction', () => {
               "@.previousTraining.trainingTypes[1] == 'OTHER' && " +
               "@.previousTraining.trainingTypeOther == 'Basic accountancy course' && " +
               "@.previousWorkExperiences.hasWorkedBefore == 'YES' && " +
+              '!@.previousWorkExperiences.hasWorkedBeforeNotRelevantReason && ' +
               '@.previousWorkExperiences.experiences.size() == 2 && ' +
               "@.previousWorkExperiences.experiences[0].experienceType == 'CONSTRUCTION' && " +
               "@.previousWorkExperiences.experiences[0].role == 'General labourer' && " +
