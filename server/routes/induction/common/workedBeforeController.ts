@@ -46,6 +46,10 @@ export default abstract class WorkedBeforeController extends InductionController
         ...inductionDto.previousWorkExperiences,
         experiences: previousExperience,
         hasWorkedBefore: workedBeforeForm.hasWorkedBefore,
+        hasWorkedBeforeNotRelevantReason:
+          workedBeforeForm.hasWorkedBefore === HasWorkedBeforeValue.NOT_RELEVANT
+            ? workedBeforeForm.hasWorkedBeforeNotRelevantReason
+            : undefined,
       },
     }
   }
@@ -56,12 +60,14 @@ const toWorkedBeforeForm = (inductionDto: InductionDto): WorkedBeforeForm => {
   if (hasWorkedBefore) {
     return {
       hasWorkedBefore,
+      hasWorkedBeforeNotRelevantReason: inductionDto.previousWorkExperiences.hasWorkedBeforeNotRelevantReason,
     }
   }
 
-  // hasWorkedBefore in the Induction is not set, meaning this is a new Induction. Set the form field
-  // to undefined to force the user to answer it
+  // hasWorkedBefore in the Induction is not set, meaning this is a new Induction. Set the form fields
+  // to undefined to force the user to answer them
   return {
     hasWorkedBefore: undefined,
+    hasWorkedBeforeNotRelevantReason: undefined,
   }
 }

@@ -5,48 +5,171 @@
 
 export interface paths {
   '/inductions/{prisonNumber}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     get: operations['getInduction']
     put: operations['updateInduction']
     post: operations['createInduction']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/conversations/{prisonNumber}/{conversationReference}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     get: operations['getConversation']
     put: operations['updateConversation']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/action-plans/{prisonNumber}/goals/{goalReference}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
     put: operations['updateGoal']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/conversations/{prisonNumber}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     get: operations['getConversations']
+    put?: never
     post: operations['createConversation']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/ciag/induction/list': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
     post: operations['getInductionSummaries']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/action-plans': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
     post: operations['getActionPlanSummaries']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/action-plans/{prisonNumber}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     get: operations['getActionPlan']
+    put?: never
     post: operations['createActionPlan']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/action-plans/{prisonNumber}/goals': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
     post: operations['createGoals']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/timelines/{prisonNumber}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     get: operations['getTimeline']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/subject-access-request': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * Provides content for a prisoner to satisfy the needs of a subject access request on their behalf
      * @description Requires role SAR_DATA_ACCESS or additional role as specified by hmpps.sar.additionalAccessRole configuration.
      */
     get: operations['getSarContentByReference']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
 }
-
 export type webhooks = Record<string, never>
-
 export interface components {
   schemas: {
     /**
@@ -412,6 +535,11 @@ export interface components {
        */
       reference?: string
       /**
+       * @description The reason why the whether the prisoner has worked before is not relevant. Mandatory when 'hasWorkedBefore' is 'NOT_RELEVANT'
+       * @example Chris has declined to talk about his previous work experience as he is not looking for work on release because he is of retirement age.
+       */
+      hasWorkedBeforeNotRelevantReason?: string
+      /**
        * @description A list of the Prisoner's previous work experiences.
        * @example null
        */
@@ -654,6 +782,11 @@ export interface components {
        * @enum {string}
        */
       hasWorkedBefore: 'YES' | 'NO' | 'NOT_RELEVANT'
+      /**
+       * @description The reason why the whether the prisoner has worked before is not relevant. Mandatory when 'hasWorkedBefore' is 'NOT_RELEVANT'
+       * @example Chris has declined to talk about his previous work experience as he is not looking for work on release because he is of retirement age.
+       */
+      hasWorkedBeforeNotRelevantReason?: string
       /**
        * @description A list of the Prisoner's previous work experiences.
        * @example null
@@ -908,11 +1041,11 @@ export interface components {
       /**
        * @description An object containing properties of contextual information that's relevant to the event in question. For example a property called `GOAL_TITLE` with value being the title of a Goal that was completed. The object may contain any number of properties. The API spec does not define the property names, but there is a defined set as part of the domain: - GOAL_TITLE - STEP_TITLE - PRISON_TRANSFERRED_FROM
        * @example {
-       *   "GOAL_TITLE": "Learn French"
-       * }
+       *       "GOAL_TITLE": "Learn French"
+       *     }
        */
       contextualInfo: {
-        [key: string]: string
+        [key: string]: string | undefined
       }
       /**
        * @description The identifier of the prison that the prisoner was at when the event occurred.
@@ -1413,6 +1546,11 @@ export interface components {
        * @example BXI
        */
       updatedAtPrison: string
+      /**
+       * @description The reason why the whether the prisoner has worked before is not relevant. Only populated when 'hasWorkedBefore' is 'NOT_RELEVANT'.
+       * @example Chris has declined to talk about his previous work experience as he is not looking for work on release because he is of retirement age.
+       */
+      hasWorkedBeforeNotRelevantReason?: string
     }
     /** @example null */
     WorkOnReleaseResponse: {
@@ -1702,21 +1840,24 @@ export interface components {
   headers: never
   pathItems: never
 }
-
 export type $defs = Record<string, never>
-
-export type external = Record<string, never>
-
 export interface operations {
   getInduction: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         prisonNumber: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['InductionResponse']
         }
@@ -1725,9 +1866,12 @@ export interface operations {
   }
   updateInduction: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         prisonNumber: string
       }
+      cookie?: never
     }
     requestBody: {
       content: {
@@ -1737,15 +1881,21 @@ export interface operations {
     responses: {
       /** @description No Content */
       204: {
-        content: never
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
       }
     }
   }
   createInduction: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         prisonNumber: string
       }
+      cookie?: never
     }
     requestBody: {
       content: {
@@ -1755,20 +1905,30 @@ export interface operations {
     responses: {
       /** @description Created */
       201: {
-        content: never
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
       }
     }
   }
   getConversation: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         prisonNumber: string
         conversationReference: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ConversationResponse']
         }
@@ -1777,10 +1937,13 @@ export interface operations {
   }
   updateConversation: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         prisonNumber: string
         conversationReference: string
       }
+      cookie?: never
     }
     requestBody: {
       content: {
@@ -1790,6 +1953,9 @@ export interface operations {
     responses: {
       /** @description No Content */
       204: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['Conversation']
         }
@@ -1798,10 +1964,13 @@ export interface operations {
   }
   updateGoal: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         prisonNumber: string
         goalReference: string
       }
+      cookie?: never
     }
     requestBody: {
       content: {
@@ -1811,7 +1980,10 @@ export interface operations {
     responses: {
       /** @description No Content */
       204: {
-        content: never
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
       }
     }
   }
@@ -1821,13 +1993,19 @@ export interface operations {
         page?: number
         pageSize?: number
       }
+      header?: never
       path: {
         prisonNumber: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ConversationsResponse']
         }
@@ -1836,9 +2014,12 @@ export interface operations {
   }
   createConversation: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         prisonNumber: string
       }
+      cookie?: never
     }
     requestBody: {
       content: {
@@ -1848,11 +2029,20 @@ export interface operations {
     responses: {
       /** @description Created */
       201: {
-        content: never
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
       }
     }
   }
   getInductionSummaries: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     requestBody: {
       content: {
         'application/json': components['schemas']['GetCiagInductionSummariesRequest']
@@ -1861,6 +2051,9 @@ export interface operations {
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['CiagInductionSummaryListResponse']
         }
@@ -1868,6 +2061,12 @@ export interface operations {
     }
   }
   getActionPlanSummaries: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     requestBody: {
       content: {
         'application/json': components['schemas']['GetActionPlanSummariesRequest']
@@ -1876,6 +2075,9 @@ export interface operations {
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ActionPlanSummaryListResponse']
         }
@@ -1884,13 +2086,20 @@ export interface operations {
   }
   getActionPlan: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         prisonNumber: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ActionPlanResponse']
         }
@@ -1899,9 +2108,12 @@ export interface operations {
   }
   createActionPlan: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         prisonNumber: string
       }
+      cookie?: never
     }
     requestBody: {
       content: {
@@ -1911,15 +2123,21 @@ export interface operations {
     responses: {
       /** @description Created */
       201: {
-        content: never
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
       }
     }
   }
   createGoals: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         prisonNumber: string
       }
+      cookie?: never
     }
     requestBody: {
       content: {
@@ -1929,29 +2147,35 @@ export interface operations {
     responses: {
       /** @description Created */
       201: {
-        content: never
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
       }
     }
   }
   getTimeline: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         prisonNumber: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['TimelineResponse']
         }
       }
     }
   }
-  /**
-   * Provides content for a prisoner to satisfy the needs of a subject access request on their behalf
-   * @description Requires role SAR_DATA_ACCESS or additional role as specified by hmpps.sar.additionalAccessRole configuration.
-   */
   getSarContentByReference: {
     parameters: {
       query?: {
@@ -1964,40 +2188,62 @@ export interface operations {
         /** @description Optional parameter denoting maximum date of event occurrence which should be returned in the response */
         toDate?: string
       }
+      header?: never
+      path?: never
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description Request successfully processed - content found */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['HmppsSubjectAccessRequestContent']
         }
       }
       /** @description Request successfully processed - no content found */
       204: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': Record<string, never>
         }
       }
       /** @description Subject Identifier is not recognised by this service */
       209: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': Record<string, never>
         }
       }
       /** @description The client does not have authorisation to make this request */
       401: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Forbidden, requires an appropriate role */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unexpected error occurred */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }

@@ -6,7 +6,7 @@
       Worked before
     </dt>
     <dd class="govuk-summary-list__value" data-qa="hasWorkedBefore-{{inductionDto.previousWorkExperiences.hasWorkedBefore}}">
-      {{ inductionDto.previousWorkExperiences.hasWorkedBefore | formatHasWorkedBefore }}
+      {{ inductionDto.previousWorkExperiences.hasWorkedBefore | formatHasWorkedBefore }}{{ ' - ' + inductionDto.previousWorkExperiences.hasWorkedBeforeNotRelevantReason if inductionDto.previousWorkExperiences.hasWorkedBefore === 'NOT_RELEVANT' }}
     </dd>
     <dd class="govuk-summary-list__actions">
       <a class="govuk-link govuk-link--no-visited-state" href="has-worked-before" data-qa="hasWorkedBeforeLink">

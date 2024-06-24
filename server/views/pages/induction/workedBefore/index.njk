@@ -11,6 +11,7 @@
     * backLinkAriaText - the aria label for the back link
     * form - form object containing the following fields:
       * hasWorkedBefore - value for the "has worked before" question
+      * hasWorkedBeforeNotRelevantReason - value for the reason when "has worked before" is answered as "Not relevant"
     * errors? - validation errors
 #}
 
@@ -25,7 +26,23 @@
       <form class="form" method="post" novalidate="">
         <div class="govuk-form-group">
           <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
-        
+
+          {% set reasonHtml %}
+            {{ govukTextarea({
+              id: "hasWorkedBeforeNotRelevantReason",
+              name: "hasWorkedBeforeNotRelevantReason",
+              rows: "2",
+              value: form.hasWorkedBeforeNotRelevantReason,
+              type: "text",
+              label: {
+                text: "Give details",
+                attributes: { "aria-live": "polite" }
+              },
+              attributes: { "aria-label" : "Give details as to why whether they have worked before is not relevant" },
+              errorMessage: errors | findError('hasWorkedBeforeNotRelevantReason')
+            }) }}
+          {% endset -%}
+
           {{ govukRadios({
             name: 'hasWorkedBefore',
             fieldset: {
@@ -49,7 +66,10 @@
               {
                 value: 'NOT_RELEVANT',
                 text: 'NOT_RELEVANT' | formatHasWorkedBefore,
-                checked: form.hasWorkedBefore === 'NOT_RELEVANT'
+                checked: form.hasWorkedBefore === 'NOT_RELEVANT',
+                conditional: {
+                  html: reasonHtml
+                }
               }
             ],
             errorMessage: errors | findError('hasWorkedBefore')

@@ -107,6 +107,7 @@ declare module 'inductionForms' {
 
   export interface WorkedBeforeForm {
     hasWorkedBefore: HasWorkedBeforeValue
+    hasWorkedBeforeNotRelevantReason?: string
   }
 
   export interface PreviousWorkExperienceTypesForm {
