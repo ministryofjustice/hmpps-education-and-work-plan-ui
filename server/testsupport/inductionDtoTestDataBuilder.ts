@@ -19,6 +19,7 @@ const aValidInductionDto = (
     hasQualifications?: boolean
   },
 ): InductionDto => {
+  const hasWorkedBefore = options?.hasWorkedBefore || HasWorkedBeforeValue.YES
   return {
     ...baseInductionDtoTemplate(options),
     workOnRelease: {
@@ -48,9 +49,11 @@ const aValidInductionDto = (
     previousWorkExperiences: {
       reference: 'bb45462e-8225-490d-8c1c-ad6692223d4d',
       ...auditFields(options),
-      hasWorkedBefore: options?.hasWorkedBefore || HasWorkedBeforeValue.YES,
+      hasWorkedBefore,
+      hasWorkedBeforeNotRelevantReason:
+        hasWorkedBefore === HasWorkedBeforeValue.NOT_RELEVANT ? 'Some reason' : undefined,
       experiences:
-        (options?.hasWorkedBefore || HasWorkedBeforeValue.YES) === HasWorkedBeforeValue.YES
+        hasWorkedBefore === HasWorkedBeforeValue.YES
           ? [
               {
                 experienceType: TypeOfWorkExperienceValue.CONSTRUCTION,

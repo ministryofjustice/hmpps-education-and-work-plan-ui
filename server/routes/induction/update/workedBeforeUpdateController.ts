@@ -8,6 +8,7 @@ import { InductionService } from '../../../services'
 import validateWorkedBeforeForm from '../../validators/induction/workedBeforeFormValidator'
 import getDynamicBackLinkAriaText from '../dynamicAriaTextResolver'
 import { getPreviousPage } from '../../pageFlowHistory'
+import HasWorkedBeforeValue from '../../../enums/hasWorkedBeforeValue'
 
 /**
  * Controller for the Update of the Worked Before screen of the Induction.
@@ -43,13 +44,20 @@ export default class WorkedBeforeUpdateController extends WorkedBeforeController
     }
 
     const updatedInduction = this.updatedInductionDtoWithHasWorkedBefore(inductionDto, workedBeforeForm)
+    const prisonerHasWorkedBefore =
+      updatedInduction.previousWorkExperiences.hasWorkedBefore === HasWorkedBeforeValue.YES
 
+    if (prisonerHasWorkedBefore) {
+      req.session.inductionDto = updatedInduction
+      req.session.workedBeforeForm = undefined
+      return res.redirect(`/prisoners/${prisonNumber}/induction/previous-work-experience`)
+    }
     try {
       const updateInductionDto = toCreateOrUpdateInductionDto(prisonId, updatedInduction)
       await this.inductionService.updateInduction(prisonNumber, updateInductionDto, req.user.token)
 
-      req.session.workedBeforeForm = undefined
       req.session.inductionDto = undefined
+      req.session.workedBeforeForm = undefined
       return res.redirect(`/plan/${prisonNumber}/view/work-and-interests`)
     } catch (e) {
       logger.error(`Error updating Induction for prisoner ${prisonNumber}`, e)
