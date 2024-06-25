@@ -1,8 +1,37 @@
-<div class="actions-list">
-  <ul class="govuk-list actions-list-list">
-    <span class="govuk-heading-m actions-list-header">Actions</span>
-    {% for action in actions %}
-      <li><a class="govuk-link" {% if action.dataQa %} data-qa="{{ action.dataQa }}" {% endif %}href="{{ action.href }}">{{ action.title }}</a></li>
-    {% endfor %}
-  </ul>
-</div>
+{% from "govuk/macros/attributes.njk" import govukAttributes %}
+
+{% if params.actions | length %}
+
+  {#- Set classes for this component #}
+  {%- set classNames = "govuk-summary-card actions-card" -%}
+  {%- if params.classes %}
+    {% set classNames = classNames + " " + params.classes %}
+  {% endif %}
+
+  {#- Define component attributes #}
+  {%- set componentAttributes %} class="{{ classNames }}" {{- govukAttributes(params.attributes) -}} {% if params.id %} id="{{ params.id }}"{% endif %}{% endset %}
+
+  <div {{ componentAttributes | safe }}>
+    <div class="govuk-summary-card__title-wrapper govuk-!-padding-bottom-2">
+      <h2 class="govuk-summary-card__title govuk-!-font-size-24">Actions</h2>
+    </div>
+    <div class="govuk-summary-card__content govuk-!-padding-top-0">
+      <ul class="govuk-list govuk-!-margin-0">
+        {% for action in params.actions %}
+
+          {% if action['render-if'] == null or action['render-if'] === true %}
+            {#- Set classes for this action #}
+            {%- set classNames = "govuk-link" -%}
+            {%- if action.classes %}
+              {% set classNames = classNames + " " + action.classes %}
+            {% endif %}
+            {%- set actionAttributes %} class="{{ classNames }}" {{- govukAttributes(action.attributes) -}} {% if action.id %} id="{{ action.id }}"{% endif %}{% endset %}
+            <li class="govuk-!-padding-top-3 govuk-!-padding-bottom-4 govuk-!-margin-0">
+              <a {{ actionAttributes | safe }} href="{{ action.href }}">{{ action.title }}</a>
+            </li>
+          {% endif %}
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+{% endif %}
