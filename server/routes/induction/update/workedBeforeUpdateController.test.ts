@@ -141,7 +141,40 @@ describe('workedBeforeUpdateController', () => {
       expect(req.session.inductionDto).toEqual(inductionDto)
     })
 
-    it('should update Induction and call API and redirect to work and interests page', async () => {
+    it('should update Induction in session and redirect to previous work experience page if answering YES', async () => {
+      // Given
+      const inductionDto = aValidInductionDto({ hasWorkedBefore: HasWorkedBeforeValue.NO })
+      req.session.inductionDto = inductionDto
+
+      const workedBeforeForm = {
+        hasWorkedBefore: HasWorkedBeforeValue.YES,
+      }
+      req.body = workedBeforeForm
+      req.session.workedBeforeForm = undefined
+      const updateInductionDto = aValidUpdateInductionRequest()
+
+      mockedCreateOrUpdateInductionDtoMapper.mockReturnValueOnce(updateInductionDto)
+
+      // When
+      await controller.submitWorkedBeforeForm(
+        req as undefined as Request,
+        res as undefined as Response,
+        next as undefined as NextFunction,
+      )
+
+      // Then
+      expect(res.redirect).toHaveBeenCalledWith(`/prisoners/${prisonNumber}/induction/previous-work-experience`)
+      expect(req.session.workedBeforeForm).toBeUndefined()
+      expect(req.session.inductionDto).toStrictEqual({
+        ...inductionDto,
+        previousWorkExperiences: {
+          ...inductionDto.previousWorkExperiences,
+          hasWorkedBefore: HasWorkedBeforeValue.YES,
+          hasWorkedBeforeNotRelevantReason: undefined,
+        },
+      })
+    })
+    it('should update Induction and call API and redirect to work and interests page if answering NO', async () => {
       // Given
       const inductionDto = aValidInductionDto()
       req.session.inductionDto = inductionDto
@@ -174,13 +207,48 @@ describe('workedBeforeUpdateController', () => {
       expect(req.session.inductionDto).toBeUndefined()
     })
 
+    it('should update Induction and call API and redirect to work and interests page if answering NOT_RELEVANT', async () => {
+      // Given
+      const inductionDto = aValidInductionDto()
+      req.session.inductionDto = inductionDto
+
+      const workedBeforeForm = {
+        hasWorkedBefore: HasWorkedBeforeValue.NOT_RELEVANT,
+        hasWorkedBeforeNotRelevantReason: 'Some reason',
+      }
+      req.body = workedBeforeForm
+      req.session.workedBeforeForm = undefined
+      const updateInductionDto = aValidUpdateInductionRequest()
+
+      mockedCreateOrUpdateInductionDtoMapper.mockReturnValueOnce(updateInductionDto)
+
+      // When
+      await controller.submitWorkedBeforeForm(
+        req as undefined as Request,
+        res as undefined as Response,
+        next as undefined as NextFunction,
+      )
+
+      // Then
+      // Extract the first call to the mock and the second argument (i.e. the updated Induction)
+      const updatedInduction = mockedCreateOrUpdateInductionDtoMapper.mock.calls[0][1]
+      expect(mockedCreateOrUpdateInductionDtoMapper).toHaveBeenCalledWith(prisonerSummary.prisonId, updatedInduction)
+      expect(updatedInduction.previousWorkExperiences.hasWorkedBefore).toEqual('NOT_RELEVANT')
+      expect(updatedInduction.previousWorkExperiences.hasWorkedBeforeNotRelevantReason).toEqual('Some reason')
+
+      expect(inductionService.updateInduction).toHaveBeenCalledWith(prisonNumber, updateInductionDto, 'some-token')
+      expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/view/work-and-interests`)
+      expect(req.session.workedBeforeForm).toBeUndefined()
+      expect(req.session.inductionDto).toBeUndefined()
+    })
+
     it('should not update Induction given error calling service', async () => {
       // Given
       const inductionDto = aValidInductionDto()
       req.session.inductionDto = inductionDto
 
       const workedBeforeForm = {
-        hasWorkedBefore: HasWorkedBeforeValue.YES,
+        hasWorkedBefore: HasWorkedBeforeValue.NO,
       }
       req.body = workedBeforeForm
       req.session.workedBeforeForm = undefined
@@ -205,7 +273,7 @@ describe('workedBeforeUpdateController', () => {
       // Extract the first call to the mock and the second argument (i.e. the updated Induction)
       const updatedInduction = mockedCreateOrUpdateInductionDtoMapper.mock.calls[0][1]
       expect(mockedCreateOrUpdateInductionDtoMapper).toHaveBeenCalledWith(prisonerSummary.prisonId, updatedInduction)
-      expect(updatedInduction.previousWorkExperiences.hasWorkedBefore).toEqual('YES')
+      expect(updatedInduction.previousWorkExperiences.hasWorkedBefore).toEqual('NO')
 
       expect(inductionService.updateInduction).toHaveBeenCalledWith(prisonNumber, updateInductionDto, 'some-token')
       expect(next).toHaveBeenCalledWith(expectedError)
