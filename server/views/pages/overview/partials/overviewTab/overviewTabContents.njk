@@ -8,6 +8,17 @@
   </div>
 
   <div class="govuk-grid-column-one-third app-u-print-full-width">
+    {{ actionsCard({
+      actions: [
+        { title: 'Add a new goal', href: '/plan/' + prisonNumber + '/goals/create', id: 'add-goal-button', 'render-if': hasEditAuthority },
+        { title: 'View archived goals', href: '#' }
+      ],
+      attributes: {
+        'data-qa': 'actions-card'
+      },
+      classes: 'govuk-!-display-none-print'
+    }) if featureToggles.goals.archiveEnabled }}
+
     {% include './functionalSkillsSidebar.njk' %}
     {% include './qualificationsAndAchievementsSidebar.njk' %}
   </div>

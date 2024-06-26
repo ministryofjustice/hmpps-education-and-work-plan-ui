@@ -212,10 +212,4 @@ declare module 'viewModels' {
     pageUrls: Array<string>
     currentPageIndex: number
   }
-
-  export interface Action {
-    title: string
-    href: string
-    dataQa?: string
-  }
 }

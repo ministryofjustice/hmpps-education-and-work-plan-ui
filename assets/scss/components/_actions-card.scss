@@ -1,0 +1,12 @@
+.actions-card {
+  .govuk-summary-card__title-wrapper {
+    background: none;
+    border-bottom: 2px solid $govuk-border-colour;
+  }
+  li {
+    border-bottom: 1px solid $govuk-border-colour;
+  }
+  li:last-of-type {
+    border: none;
+  }
+}
