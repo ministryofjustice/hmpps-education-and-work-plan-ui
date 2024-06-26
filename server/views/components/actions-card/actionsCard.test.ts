@@ -1,6 +1,6 @@
 import nunjucks from 'nunjucks'
 import * as cheerio from 'cheerio'
-import type { Action } from 'viewModels'
+import type { ActionCardParams, Action } from 'viewComponents'
 
 nunjucks.configure([
   'node_modules/govuk-frontend/dist/',
@@ -8,6 +8,7 @@ nunjucks.configure([
   'server/views/',
   __dirname,
 ])
+
 describe('Tests for actions card component', () => {
   describe('Core action card component', () => {
     it('Should render the action card component given actions', () => {
@@ -15,7 +16,7 @@ describe('Tests for actions card component', () => {
         { title: 'Do a thing', href: '/thing' },
         { title: 'Do another thing', href: '/another-thing' },
       ]
-      const params = { actions }
+      const params: ActionCardParams = { actions }
 
       const content = nunjucks.render('test.njk', { params })
 
@@ -29,7 +30,7 @@ describe('Tests for actions card component', () => {
         { title: 'Do a thing', href: '/thing' },
         { title: 'Do another thing', href: '/another-thing' },
       ]
-      const params = {
+      const params: ActionCardParams = {
         id: 'my-actions-card',
         actions,
       }
@@ -46,7 +47,7 @@ describe('Tests for actions card component', () => {
         { title: 'Do a thing', href: '/thing' },
         { title: 'Do another thing', href: '/another-thing' },
       ]
-      const params = {
+      const params: ActionCardParams = {
         actions,
         attributes: { 'data-qa': 'my-actions-card' },
       }
@@ -61,7 +62,7 @@ describe('Tests for actions card component', () => {
     it.each([undefined, null, ...[]])(
       'Should not render the action card component given %s actions',
       (actions: Array<Action>) => {
-        const params = { actions }
+        const params: ActionCardParams = { actions }
 
         const content = nunjucks.render('test.njk', { params })
 
@@ -78,7 +79,7 @@ describe('Tests for actions card component', () => {
         { title: 'Do a thing', href: '/thing' },
         { title: 'Do another thing', href: '/another-thing' },
       ]
-      const params = { actions }
+      const params: ActionCardParams = { actions }
 
       const content = nunjucks.render('test.njk', { params })
 
@@ -96,7 +97,7 @@ describe('Tests for actions card component', () => {
         { title: 'Do a thing', href: '/thing', attributes: { 'data-qa': 'thing-link' } },
         { title: 'Do another thing', href: '/another-thing', attributes: { 'data-qa': 'another-thing-link' } },
       ]
-      const params = { actions }
+      const params: ActionCardParams = { actions }
 
       const content = nunjucks.render('test.njk', { params })
 
@@ -110,7 +111,7 @@ describe('Tests for actions card component', () => {
         { title: 'Do a thing', href: '/thing', id: 'thing-link' },
         { title: 'Do another thing', href: '/another-thing', id: 'another-thing-link' },
       ]
-      const params = { actions }
+      const params: ActionCardParams = { actions }
 
       const content = nunjucks.render('test.njk', { params })
 
@@ -124,7 +125,7 @@ describe('Tests for actions card component', () => {
         { title: 'Do a thing', href: '/thing' },
         { title: 'Do another thing', href: '/another-thing', 'render-if': false },
       ]
-      const params = { actions }
+      const params: ActionCardParams = { actions }
 
       const content = nunjucks.render('test.njk', { params })
 

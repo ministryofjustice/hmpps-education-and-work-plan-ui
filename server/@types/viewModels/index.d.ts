@@ -212,12 +212,4 @@ declare module 'viewModels' {
     pageUrls: Array<string>
     currentPageIndex: number
   }
-
-  export interface Action {
-    title: string
-    href: string
-    id?: string
-    attributes?: Record<string, string>
-    'render-if'?: boolean
-  }
 }
