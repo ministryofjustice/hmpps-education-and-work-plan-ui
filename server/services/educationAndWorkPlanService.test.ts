@@ -1,3 +1,5 @@
+import type { ArchiveGoalDto } from 'dto'
+import type { ArchiveGoalRequest } from 'educationAndWorkPlanApiClient'
 import { EducationAndWorkPlanClient } from '../data'
 import EducationAndWorkPlanService from './educationAndWorkPlanService'
 import { aValidCreateGoalDtoWithOneStep } from '../testsupport/createGoalDtoTestDataBuilder'
@@ -6,11 +8,13 @@ import { aValidActionPlanResponseWithOneGoal } from '../testsupport/actionPlanRe
 import { aValidUpdateGoalDtoWithOneStep } from '../testsupport/updateGoalDtoTestDataBuilder'
 import { aValidUpdateGoalRequestWithOneUpdatedStep } from '../testsupport/updateGoalRequestTestDataBuilder'
 import { aValidCreateGoalsRequestWithOneGoal } from '../testsupport/createGoalsRequestTestDataBuilder'
+import ReasonToArchiveGoalValue from '../enums/ReasonToArchiveGoalValue'
 
 describe('educationAndWorkPlanService', () => {
   const educationAndWorkPlanClient = {
     createGoals: jest.fn(),
     updateGoal: jest.fn(),
+    archiveGoal: jest.fn(),
     getActionPlan: jest.fn(),
   }
 
@@ -117,6 +121,46 @@ describe('educationAndWorkPlanService', () => {
         .catch(error => {
           return error
         })
+
+      // Then
+      expect(actual).toEqual(Error('Service Unavailable'))
+    })
+  })
+
+  describe('archiveGoal', () => {
+    const prisonNumber = 'A1234BC'
+    const userToken = 'a-user-token'
+    const goalReference = '95b18362-fe56-4234-9ad2-11ef98b974a3'
+    const reason = ReasonToArchiveGoalValue.PRISONER_NO_LONGER_WANTS_TO_WORK_TOWARDS_GOAL
+    const archiveGoalDto: ArchiveGoalDto = {
+      prisonNumber,
+      goalReference,
+      reason,
+    }
+    const archiveGoalRequest: ArchiveGoalRequest = {
+      goalReference,
+      reason,
+    }
+    it('should archive Goal', async () => {
+      // Given
+
+      educationAndWorkPlanClient.archiveGoal.mockImplementation(() => Promise.resolve(archiveGoalDto))
+
+      // When
+      await educationAndWorkPlanService.archiveGoal(archiveGoalDto, userToken)
+
+      // Then
+      expect(educationAndWorkPlanClient.archiveGoal).toHaveBeenCalledWith(prisonNumber, archiveGoalRequest, userToken)
+    })
+
+    it('should not archive Goal given educationAndWorkPlanClient returns an error', async () => {
+      // Given
+      educationAndWorkPlanClient.archiveGoal.mockImplementation(() => Promise.reject(Error('Service Unavailable')))
+
+      // When
+      const actual = await educationAndWorkPlanService.archiveGoal(archiveGoalDto, userToken).catch(error => {
+        return error
+      })
 
       // Then
       expect(actual).toEqual(Error('Service Unavailable'))

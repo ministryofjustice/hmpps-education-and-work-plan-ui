@@ -33,6 +33,7 @@ import sortedAlphabeticallyWithOtherLastFilter from '../filters/sortedAlphabetic
 import objectsSortedAlphabeticallyWithOtherLastByFilter from '../filters/objectsSortedAlphabeticallyWithOtherLastByFilter'
 import previousWorkExperienceObjectsSortedInScreenOrderFilter from '../filters/previousWorkExperienceObjectsSortedInScreenOrderFilter'
 import achievedQualificationObjectsSortedInScreenOrderFilter from '../filters/achievedQualificationObjectsSortedInScreenOrderFilter'
+import formatReasonToArchiveGoalFilter from '../filters/formatReasonToArchiveGoalFilter'
 
 export default function nunjucksSetup(app: express.Express, applicationInfo: ApplicationInfo): void {
   app.set('view engine', 'njk')
@@ -116,6 +117,7 @@ export function registerNunjucks(app?: express.Express): Environment {
     'achievedQualificationObjectsSortedInScreenOrder',
     achievedQualificationObjectsSortedInScreenOrderFilter,
   )
+  njkEnv.addFilter('formatReasonToArchiveGoal', formatReasonToArchiveGoalFilter)
 
   njkEnv.addFilter('addMonths', addMonths)
 

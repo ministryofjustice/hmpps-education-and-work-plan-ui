@@ -23,6 +23,10 @@ const pageViewEventMap: Record<string, Page> = {
   '/plan/:prisonNumber/goals/:goalReference/update': Page.UPDATE_GOALS,
   '/plan/:prisonNumber/goals/:goalReference/update/review': Page.UPDATE_GOALS_REVIEW,
 
+  // Archive goals
+  '/plan/:prisonNumber/goals/:goalReference/archive': Page.ARCHIVE_GOALS,
+  '/plan/:prisonNumber/goals/:goalReference/archive/review': Page.ARCHIVE_GOALS_REVIEW,
+
   // Functional skills
   '/plan/:prisonNumber/functional-skills': Page.FUNCTIONAL_SKILLS,
 

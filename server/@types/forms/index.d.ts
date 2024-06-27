@@ -58,6 +58,17 @@ declare module 'forms' {
       note?: string
     }>
   }
+
+  export interface ArchiveGoalForm {
+    reference: string
+    title: string
+    reason?:
+      | 'PRISONER_NO_LONGER_WANTS_TO_WORK_TOWARDS_GOAL'
+      | 'PRISONER_NO_LONGER_WANTS_TO_WORK_WITH_CIAG'
+      | 'SUITABLE_ACTIVITIES_NOT_AVAILABLE_IN_THIS_PRISON'
+      | 'OTHER'
+    reasonOther?: string
+  }
 }
 
 /**

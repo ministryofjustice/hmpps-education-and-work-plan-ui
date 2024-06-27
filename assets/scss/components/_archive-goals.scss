@@ -1,0 +1,9 @@
+.archive-goal-summary {
+  background-color: govuk-colour("light-grey");
+  @include govuk-responsive-padding(4, 'all');
+  @include govuk-responsive-margin(4, 'bottom');
+
+  h3 {
+    @include govuk-responsive-margin(2, 'bottom');
+  }
+}

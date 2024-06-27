@@ -12,11 +12,11 @@
           <li class="govuk-summary-card__action">
             <a class="govuk-link" href="/plan/{{ prisonerSummary.prisonNumber }}/goals/{{ goal.goalReference }}/update" data-qa="goal-{{ goal.sequenceNumber }}-update-button">Update<span class="govuk-visually-hidden"> goal {{ goal.sequenceNumber }}</span></a>
           </li>
-          {# Not MVP, Jira to created for archiving goals
-              <li class="govuk-summary-card__action">
-                <a class="govuk-link" href="goal-inactive-alert">Archive</a>
-              </li>
-          #}
+          {%- if featureToggles.goals.archiveEnabled -%}
+            <li class="govuk-summary-card__action">
+              <a class="govuk-link" href="/plan/{{ prisonerSummary.prisonNumber }}/goals/{{ goal.goalReference }}/archive" data-qa="goal-{{ goal.sequenceNumber }}-archive-button">Archive<span class="govuk-visually-hidden"> goal {{ goal.sequenceNumber }}</span></a>
+            </li>
+          {% endif %}
         {% endif %}
       </ul>
     </div>
