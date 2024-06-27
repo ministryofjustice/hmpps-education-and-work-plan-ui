@@ -24,6 +24,15 @@ describe('timelineService', () => {
   const prisonNumber = 'A1234BC'
   const username = 'a-dps-user'
   const userToken = 'a-user-token'
+  const supportedTimelineEvents = [
+    'ACTION_PLAN_CREATED',
+    'INDUCTION_UPDATED',
+    'GOAL_UPDATED',
+    'GOAL_CREATED',
+    'PRISON_ADMISSION',
+    'PRISON_RELEASE',
+    'PRISON_TRANSFER',
+  ]
 
   describe('getTimeline', () => {
     it('should get timeline given prison name lookups for several different prisons', async () => {
@@ -81,6 +90,12 @@ describe('timelineService', () => {
       expect(mockedTimelineMapper).toHaveBeenCalledWith(timelineResponse)
       expect(prisonService.getPrisonByPrisonId).toHaveBeenCalledWith('ASI', username)
       expect(prisonService.getPrisonByPrisonId).toHaveBeenCalledWith('MDI', username)
+
+      expect(educationAndWorkPlanClient.getTimeline).toHaveBeenCalledWith(
+        prisonNumber,
+        userToken,
+        supportedTimelineEvents,
+      )
     })
 
     it('should get timeline given prison name lookups fail', async () => {
@@ -137,6 +152,12 @@ describe('timelineService', () => {
       expect(mockedTimelineMapper).toHaveBeenCalledWith(timelineResponse)
       expect(prisonService.getPrisonByPrisonId).toHaveBeenCalledWith('ASI', username)
       expect(prisonService.getPrisonByPrisonId).toHaveBeenCalledWith('MDI', username)
+
+      expect(educationAndWorkPlanClient.getTimeline).toHaveBeenCalledWith(
+        prisonNumber,
+        userToken,
+        supportedTimelineEvents,
+      )
     })
   })
 })

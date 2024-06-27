@@ -2,10 +2,6 @@ import { parseISO } from 'date-fns'
 import type { TimelineResponse, TimelineEventResponse } from 'educationAndWorkPlanApiClient'
 import type { Timeline, TimelineEvent } from 'viewModels'
 
-const PLP_TIMELINE_EVENTS = ['ACTION_PLAN_CREATED', 'INDUCTION_UPDATED', 'GOAL_UPDATED', 'GOAL_CREATED']
-const PRISON_TIMELINE_EVENTS = ['PRISON_ADMISSION', 'PRISON_RELEASE', 'PRISON_TRANSFER']
-const SUPPORTED_TIMELINE_EVENTS = [...PLP_TIMELINE_EVENTS, ...PRISON_TIMELINE_EVENTS]
-
 /**
  * Maps an API [TimelineResponse] into a view model [Timeline]
  *
@@ -17,7 +13,7 @@ const toTimeline = (timelineResponse: TimelineResponse): Timeline => {
     problemRetrievingData: false,
     reference: timelineResponse.reference,
     prisonNumber: timelineResponse.prisonNumber,
-    events: timelineResponse.events.filter(filterTimelineEvents).map(toTimelineEvent),
+    events: timelineResponse.events.map(toTimelineEvent),
   }
 }
 
@@ -40,8 +36,5 @@ const toTimelineEvent = (timelineEventResponse: TimelineEventResponse): Timeline
 const toDate = (dateString: string): Date => {
   return dateString ? parseISO(dateString) : null
 }
-
-const filterTimelineEvents = (event: TimelineEventResponse): boolean =>
-  SUPPORTED_TIMELINE_EVENTS.includes(event.eventType)
 
 export default toTimeline

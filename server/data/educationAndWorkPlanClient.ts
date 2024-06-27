@@ -8,6 +8,7 @@ import type {
   InductionResponse,
   UpdateInductionRequest,
   CreateInductionRequest,
+  TimelineEventResponse,
 } from 'educationAndWorkPlanApiClient'
 import RestClient from './restClient'
 import config from '../config'
@@ -45,10 +46,18 @@ export default class EducationAndWorkPlanClient {
     })
   }
 
-  async getTimeline(prisonNumber: string, token: string): Promise<TimelineResponse> {
-    return EducationAndWorkPlanClient.restClient(token).get<TimelineResponse>({
+  async getTimeline(prisonNumber: string, token: string, eventTypes?: Array<string>): Promise<TimelineResponse> {
+    const timeline = await EducationAndWorkPlanClient.restClient(token).get<TimelineResponse>({
       path: `/timelines/${prisonNumber}`,
     })
+    // TODO - remove this filtering of the response and replace with a query string param whe the API supports filtering via query string
+    if (!eventTypes) {
+      return timeline
+    }
+    return {
+      ...timeline,
+      events: (timeline.events as Array<TimelineEventResponse>).filter(event => eventTypes.includes(event.eventType)),
+    }
   }
 
   async getInduction(prisonNumber: string, token: string): Promise<InductionResponse> {
