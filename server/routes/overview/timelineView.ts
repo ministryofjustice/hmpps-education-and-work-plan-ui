@@ -1,4 +1,5 @@
 import type { PrisonerSummary, Timeline } from 'viewModels'
+import prepareTimelineForView from './prepareTimelineForView'
 
 export default class TimelineView {
   constructor(
@@ -14,7 +15,7 @@ export default class TimelineView {
     return {
       tab: 'timeline',
       prisonerSummary: this.prisonerSummary,
-      timeline: this.timeline,
+      timeline: prepareTimelineForView(this.timeline),
     }
   }
 }
