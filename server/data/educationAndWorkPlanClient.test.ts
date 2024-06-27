@@ -1,4 +1,5 @@
 import nock from 'nock'
+import type { ArchiveGoalRequest } from 'educationAndWorkPlanApiClient'
 import config from '../config'
 import EducationAndWorkPlanClient from './educationAndWorkPlanClient'
 import { aValidActionPlanResponseWithOneGoal } from '../testsupport/actionPlanResponseTestDataBuilder'
@@ -13,6 +14,7 @@ import aValidTimelineResponse from '../testsupport/timelineResponseTestDataBuild
 import aValidInductionResponse from '../testsupport/inductionResponseTestDataBuilder'
 import aValidUpdateInductionRequest from '../testsupport/updateInductionRequestTestDataBuilder'
 import aValidCreateInductionRequest from '../testsupport/createInductionRequestTestDataBuilder'
+import ReasonToArchiveGoalValue from '../enums/ReasonToArchiveGoalValue'
 
 describe('educationAndWorkPlanClient', () => {
   const educationAndWorkPlanClient = new EducationAndWorkPlanClient()
@@ -433,6 +435,52 @@ describe('educationAndWorkPlanClient', () => {
       // When
       try {
         await educationAndWorkPlanClient.createInduction(prisonNumber, createInductionRequest, systemToken)
+      } catch (e) {
+        // Then
+        expect(nock.isDone()).toBe(true)
+        expect(e.status).toEqual(500)
+        expect(e.data).toEqual(expectedResponseBody)
+      }
+    })
+  })
+  describe('archiveGoal', () => {
+    const prisonNumber = 'A1234BC'
+    const systemToken = 'a-system-token'
+    const goalReference = 'c77cd2fb-40e0-4354-982a-5c8017e92b26'
+    const reason = ReasonToArchiveGoalValue.PRISONER_NO_LONGER_WANTS_TO_WORK_TOWARDS_GOAL
+    const archiveGoalRequest: ArchiveGoalRequest = {
+      goalReference,
+      reason,
+    }
+    it('should archive Goal', async () => {
+      // Given
+      const expectedResponseBody = {}
+      educationAndWorkPlanApi
+        .put(`/action-plans/${prisonNumber}/goals/${goalReference}/archive`, archiveGoalRequest)
+        .reply(204, expectedResponseBody)
+
+      // When
+      const actual = await educationAndWorkPlanClient.archiveGoal(prisonNumber, archiveGoalRequest, systemToken)
+
+      // Then
+      expect(nock.isDone()).toBe(true)
+      expect(actual).toEqual(expectedResponseBody)
+    })
+
+    it('should not archive Goal given API returns an error response', async () => {
+      // Given
+      const expectedResponseBody = {
+        status: 500,
+        userMessage: 'An unexpected error occurred',
+        developerMessage: 'An unexpected error occurred',
+      }
+      educationAndWorkPlanApi
+        .put(`/action-plans/${prisonNumber}/goals/${goalReference}/archive`, archiveGoalRequest)
+        .reply(500, expectedResponseBody)
+
+      // When
+      try {
+        await educationAndWorkPlanClient.archiveGoal(prisonNumber, archiveGoalRequest, systemToken)
       } catch (e) {
         // Then
         expect(nock.isDone()).toBe(true)

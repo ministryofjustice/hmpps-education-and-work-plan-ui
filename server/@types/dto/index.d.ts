@@ -1,4 +1,6 @@
 declare module 'dto' {
+  import ReasonToArchiveGoalValue from '../../enums/ReasonToArchiveGoalValue'
+
   export interface CreateGoalDto {
     prisonNumber: string
     title: string
@@ -28,6 +30,13 @@ declare module 'dto' {
     status: string
     title: string
     sequenceNumber: number
+  }
+
+  export interface ArchiveGoalDto {
+    goalReference: string
+    prisonNumber: string
+    reason: ReasonToArchiveGoalValue
+    reasonOther?: string
   }
 }
 

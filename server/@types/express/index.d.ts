@@ -1,5 +1,5 @@
 import type { PageFlow, PrisonerSummary, PrisonerSupportNeeds } from 'viewModels'
-import type { UpdateGoalForm } from 'forms'
+import type { ArchiveGoalForm, UpdateGoalForm } from 'forms'
 import type { NewGoal } from 'compositeForms'
 import type {
   AdditionalTrainingForm,
@@ -34,6 +34,7 @@ declare module 'express-session' {
     newGoals: Array<NewGoal> // An array of NewGoal representing the Goals that have been added
     createGoalsForm: CreateGoalsForm
     updateGoalForm: UpdateGoalForm
+    archiveGoalForm: ArchiveGoalForm
     prisonerListSortOptions: string
     pageFlowHistory: PageFlow
     pageFlowQueue: PageFlow
@@ -67,13 +68,16 @@ export declare global {
 
     interface Response {
       redirectWithSuccess?(path: string, message: string): void
+
       redirectWithErrors?(path: string, message: Record<string, string>[]): void
     }
 
     interface Request {
       verified?: boolean
       id: string
+
       logout(done: (err: unknown) => void): void
+
       flash(type: string, message: Array<Record<string, string>>): number
     }
   }

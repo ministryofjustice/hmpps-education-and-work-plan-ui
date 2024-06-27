@@ -12,6 +12,7 @@ import inPrisonCoursesAndQualifications from './inPrisonCoursesAndQualifications
 import retrievePrisonerSummaryIfNotInSession from './routerRequestHandlers/retrievePrisonerSummaryIfNotInSession'
 import { checkPageViewAuditted } from '../middleware/auditMiddleware'
 import notesRoutes from './notes'
+import archiveGoal from './archiveGoal'
 
 export default function routes(services: Services): Router {
   const router = Router()
@@ -29,6 +30,7 @@ export default function routes(services: Services): Router {
   overview(router, services)
   createGoal(router, services)
   updateGoal(router, services)
+  archiveGoal(router, services)
 
   createInduction(router, services)
   updateInduction(router, services)

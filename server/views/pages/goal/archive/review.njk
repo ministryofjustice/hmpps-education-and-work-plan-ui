@@ -1,0 +1,54 @@
+{% extends "../../../partials/layout.njk" %}
+
+{% set pageId = "review-archive-goal" %}
+{% set pageTitle = "Confirm you want to archive the goal" %}
+
+{% block beforeContent %}
+  {% include "../../../partials/breadcrumb.njk" %}
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <h1 class="govuk-heading-l">Are you sure you want to archive this goal?</h1>
+      <section class="archive-goal-summary">
+        <h3 class="govuk-heading-s">Goal</h3>
+        <p class="govuk-body" data-qa="goal-to-be-archived-summary">{{ form.title }}</p>
+      </section>
+
+      <form class="form" method="post" novalidate="">
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+        <input type="hidden" name="reference" value="{{ form.reference }}" data-qa="goal-reference" />
+        <input type="hidden" name="title" value="{{ form.title }}" data-qa="goal-title" />
+
+        <div class="govuk-form-group">
+          {{ govukButton({
+            id: "submit-button",
+            name: "action",
+            value: "submit-form",
+            text: "Yes, archive goal",
+            classes: "moj-button-menu__item",
+            attributes: {
+              'data-qa': 'goal-archive-review-submit-button'
+            }
+          }) }}
+
+          {{ govukButton({
+            type: "a",
+            href: "/plan/" + prisonerSummary.prisonNumber + "/view/overview",
+            id: "back-to-archive-goal-button",
+            text: "No, go back to learning and work progress plan",
+            classes: "moj-button-menu__item govuk-button--secondary",
+            attributes: {
+              'data-qa': 'goal-archive-review-back-button'
+            }
+          }) }}
+        </div>
+
+      </form>
+
+    </div>
+  </div>
+
+{% endblock %}

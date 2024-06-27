@@ -4,6 +4,7 @@ import UpdateGoalPage from '../goal/UpdateGoalPage'
 // eslint-disable-next-line import/no-cycle
 import FunctionalSkillsPage from '../functionalSkills/FunctionalSkillsPage'
 import HopingToWorkOnReleasePage from '../induction/HopingToWorkOnReleasePage'
+import ArchiveGoalPage from '../goal/ArchiveGoalPage'
 
 /**
  * Cypress page class representing the Overview tab of the Overview Page
@@ -86,6 +87,11 @@ export default class OverviewPage extends Page {
     return Page.verifyOnPage(UpdateGoalPage)
   }
 
+  clickArchiveButtonForFirstGoal(): ArchiveGoalPage {
+    this.goalArchiveButton(1).click()
+    return Page.verifyOnPage(ArchiveGoalPage)
+  }
+
   hasEmptyGoalsSection(): OverviewPage {
     cy.get('h2').contains('Goals in progress')
     this.goalSummaryCards().should('not.exist')
@@ -164,6 +170,8 @@ export default class OverviewPage extends Page {
   private goalSummaryCards = (): PageElement => cy.get('[data-qa=goal-summary-card]')
 
   private goalUpdateButton = (idx: number): PageElement => cy.get(`[data-qa=goal-${idx}-update-button]`)
+
+  private goalArchiveButton = (idx: number): PageElement => cy.get(`[data-qa=goal-${idx}-archive-button]`)
 
   private workExperienceSummaryCard = (): PageElement => cy.get('#work-experience-summary-card')
 

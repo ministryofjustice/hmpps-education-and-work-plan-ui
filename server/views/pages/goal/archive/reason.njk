@@ -1,0 +1,91 @@
+{% extends "../../../partials/layout.njk" %}
+
+{% set pageId = "archive-goal" %}
+{% set pageTitle = "You are archiving a goal for the prisoner" %}
+
+{% block beforeContent %}
+  {% include "../../../partials/breadcrumb.njk" %}
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <h1 class="govuk-heading-l">Select a reason for archiving this goal</h1>
+      <section class="archive-goal-summary">
+        <h3 class="govuk-heading-s">Goal</h3>
+        <p class="govuk-body" data-qa="goal-to-be-archived-summary">{{ form.title }}</p>
+      </section>
+
+        <form class="form" method="post" novalidate="">
+          <div class="govuk-form-group">
+            <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+            <input type="hidden" name="reference" value="{{ form.reference }}" data-qa="goal-reference" />
+            <input type="hidden" name="title" value="{{ form.title }}" data-qa="goal-title" />
+
+            {% set reasonHtml %}
+              {{ govukCharacterCount({
+                id: "reasonOther",
+                name: "reasonOther",
+                rows: "2",
+                value: form.reasonOther,
+                maxlength: 200,
+                label: {
+                  text: "Give details",
+                  attributes: { "aria-live": "polite" }
+                },
+                attributes: { "aria-label" : "Give details as to why the goal is being archived" },
+                errorMessage: errors | findError('reasonOther')
+              }) }}
+            {% endset -%}
+
+            {{ govukRadios({
+              name: 'reason',
+              id: 'reason',
+              fieldset: {
+                legend: {
+                  text: title,
+                  isPageHeading: true,
+                  classes: 'govuk-fieldset__legend--l'
+                }
+              },
+              items: [
+                {
+                  value: 'PRISONER_NO_LONGER_WANTS_TO_WORK_TOWARDS_GOAL',
+                  text: 'PRISONER_NO_LONGER_WANTS_TO_WORK_TOWARDS_GOAL' | formatReasonToArchiveGoal,
+                  checked: form.reason === 'PRISONER_NO_LONGER_WANTS_TO_WORK_TOWARDS_GOAL'
+                },
+                {
+                  value: 'SUITABLE_ACTIVITIES_NOT_AVAILABLE_IN_THIS_PRISON',
+                  text: 'SUITABLE_ACTIVITIES_NOT_AVAILABLE_IN_THIS_PRISON' | formatReasonToArchiveGoal,
+                  checked: form.reason === 'SUITABLE_ACTIVITIES_NOT_AVAILABLE_IN_THIS_PRISON'
+                },
+                {
+                  value: 'PRISONER_NO_LONGER_WANTS_TO_WORK_WITH_CIAG',
+                  text: 'PRISONER_NO_LONGER_WANTS_TO_WORK_WITH_CIAG' | formatReasonToArchiveGoal,
+                  checked: form.reason === 'PRISONER_NO_LONGER_WANTS_TO_WORK_WITH_CIAG'
+                },
+                {
+                  value: 'OTHER',
+                  text: 'OTHER' | formatReasonToArchiveGoal,
+                  checked: form.reason === 'OTHER',
+                  conditional: {
+                    html: reasonHtml
+                  }
+                }
+              ],
+              errorMessage: errors | findError('reason')
+            }) }}
+          </div>
+          {{ govukButton({
+            id: 'submit-button',
+            text: 'Continue and archive goal',
+            type: 'submit',
+            attributes: {'data-qa': 'submit-button'}
+          }) }}
+        </form>
+
+    </div>
+  </div>
+
+{% endblock %}

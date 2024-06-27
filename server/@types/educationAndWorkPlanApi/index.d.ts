@@ -52,6 +52,38 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/action-plans/{prisonNumber}/goals/{goalReference}/unarchive': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put: operations['unarchiveGoal']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/action-plans/{prisonNumber}/goals/{goalReference}/archive': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put: operations['archiveGoal']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/conversations/{prisonNumber}': {
     parameters: {
       query?: never
@@ -169,7 +201,9 @@ export interface paths {
     trace?: never
   }
 }
+
 export type webhooks = Record<string, never>
+
 export interface components {
   schemas: {
     /**
@@ -634,11 +668,6 @@ export interface components {
        */
       targetCompletionDate: string
       /**
-       * @example null
-       * @enum {string}
-       */
-      status: 'ACTIVE' | 'COMPLETED' | 'ARCHIVED'
-      /**
        * @description A List of at least one Step.
        * @example null
        */
@@ -681,6 +710,36 @@ export interface components {
        * @example d38a6c41-13d1-1d05-13c2-24619966119b
        */
       stepReference?: string
+    }
+    UnarchiveGoalRequest: {
+      /**
+       * Format: uuid
+       * @description The Goal's unique reference. This is used as an identifier to unarchive the required Goal.
+       * @example c88a6c48-97e2-4c04-93b5-98619966447b
+       */
+      goalReference: string
+    }
+    ArchiveGoalRequest: {
+      /**
+       * Format: uuid
+       * @description The Goal's unique reference. This is used as an identifier to archive the required Goal.
+       * @example c88a6c48-97e2-4c04-93b5-98619966447b
+       */
+      goalReference: string
+      /**
+       * @example null
+       * @enum {string}
+       */
+      reason:
+        | 'PRISONER_NO_LONGER_WANTS_TO_WORK_TOWARDS_GOAL'
+        | 'PRISONER_NO_LONGER_WANTS_TO_WORK_WITH_CIAG'
+        | 'SUITABLE_ACTIVITIES_NOT_AVAILABLE_IN_THIS_PRISON'
+        | 'OTHER'
+      /**
+       * @description Describes the reason for archiving if 'OTHER' is selected, it is mandatory in this scenario.
+       * @example null
+       */
+      reasonOther?: string
     }
     /** @example null */
     CreateFutureWorkInterestsRequest: {
@@ -1041,7 +1100,7 @@ export interface components {
       /**
        * @description An object containing properties of contextual information that's relevant to the event in question. For example a property called `GOAL_TITLE` with value being the title of a Goal that was completed. The object may contain any number of properties. The API spec does not define the property names, but there is a defined set as part of the domain: - GOAL_TITLE - STEP_TITLE - PRISON_TRANSFERRED_FROM
        * @example {
-       *       "GOAL_TITLE": "Learn French"
+       *       'GOAL_TITLE': 'Learn French'
        *     }
        */
       contextualInfo: {
@@ -1804,6 +1863,20 @@ export interface components {
        * @example Pay close attention to Peter's behaviour.
        */
       notes?: string
+      /**
+       * @example null
+       * @enum {string}
+       */
+      archiveReason?:
+        | 'PRISONER_NO_LONGER_WANTS_TO_WORK_TOWARDS_GOAL'
+        | 'PRISONER_NO_LONGER_WANTS_TO_WORK_WITH_CIAG'
+        | 'SUITABLE_ACTIVITIES_NOT_AVAILABLE_IN_THIS_PRISON'
+        | 'OTHER'
+      /**
+       * @description Describes the reason for archiving if 'OTHER' is selected, it is mandatory in this scenario.
+       * @example null
+       */
+      archiveReasonOther?: string
     }
     /**
      * @description A List of at least one Step.
@@ -1840,7 +1913,9 @@ export interface components {
   headers: never
   pathItems: never
 }
+
 export type $defs = Record<string, never>
+
 export interface operations {
   getInduction: {
     parameters: {
@@ -1984,6 +2059,60 @@ export interface operations {
           [name: string]: unknown
         }
         content?: never
+      }
+    }
+  }
+  unarchiveGoal: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        prisonNumber: string
+        goalReference: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['UnarchiveGoalRequest']
+      }
+    }
+    responses: {
+      /** @description No Content */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': Record<string, never>
+        }
+      }
+    }
+  }
+  archiveGoal: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        prisonNumber: string
+        goalReference: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['ArchiveGoalRequest']
+      }
+    }
+    responses: {
+      /** @description No Content */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': Record<string, never>
+        }
       }
     }
   }

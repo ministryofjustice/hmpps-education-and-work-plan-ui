@@ -8,6 +8,7 @@ import type {
   InductionResponse,
   UpdateInductionRequest,
   CreateInductionRequest,
+  ArchiveGoalRequest,
   TimelineEventResponse,
 } from 'educationAndWorkPlanApiClient'
 import RestClient from './restClient'
@@ -35,6 +36,13 @@ export default class EducationAndWorkPlanClient {
     return EducationAndWorkPlanClient.restClient(token).put({
       path: `/action-plans/${prisonNumber}/goals/${updateGoalRequest.goalReference}`,
       data: updateGoalRequest,
+    })
+  }
+
+  async archiveGoal(prisonNumber: string, archiveGoalRequest: ArchiveGoalRequest, token: string): Promise<void> {
+    return EducationAndWorkPlanClient.restClient(token).put({
+      path: `/action-plans/${prisonNumber}/goals/${archiveGoalRequest.goalReference}/archive`,
+      data: archiveGoalRequest,
     })
   }
 
