@@ -22,7 +22,6 @@ describe('updateGoalMapper', () => {
     const expectedCreateGoalRequest: UpdateGoalRequest = {
       goalReference: updateGoalDto.goalReference,
       title: updateGoalDto.title,
-      status: updateGoalDto.status,
       steps: [expectedUpdateStepRequest1, expectedUpdateStepRequest2],
       notes: updateGoalDto.notes,
       targetCompletionDate: '2024-02-29',

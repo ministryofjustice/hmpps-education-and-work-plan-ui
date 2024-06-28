@@ -23,7 +23,6 @@ describe('updateGoalFormValidator', () => {
       'targetCompletionDate-day': null,
       'targetCompletionDate-month': null,
       'targetCompletionDate-year': null,
-      status: 'ACTIVE',
       note: 'Prisoner is not good at listening',
       steps: [
         {
@@ -43,35 +42,6 @@ describe('updateGoalFormValidator', () => {
     expect(errors).toEqual([{ href: '#title', text: expect.any(String) }])
   })
 
-  it('should validate given goal status errors', () => {
-    const form: UpdateGoalForm = {
-      reference: '95b18362-fe56-4234-9ad2-11ef98b974a3',
-      title: 'Learn Spanish',
-      createdAt: '2023-01-16',
-      targetCompletionDate: '2024-02-29',
-      'targetCompletionDate-day': null,
-      'targetCompletionDate-month': null,
-      'targetCompletionDate-year': null,
-      status: undefined,
-      note: 'Prisoner is not good at listening',
-      steps: [
-        {
-          reference: 'c77cd2fb-40e0-4354-982a-5c8017e92b26',
-          title: 'Book course',
-          stepNumber: 1,
-          status: 'ACTIVE',
-        },
-      ],
-      originalTargetCompletionDate: '2024-02-29',
-    }
-
-    // When
-    const errors = validateUpdateGoalForm(form)
-
-    // Then
-    expect(errors).toEqual([{ href: '#status', text: expect.any(String) }])
-  })
-
   it('should validate given goal target completion date errors', () => {
     const form: UpdateGoalForm = {
       reference: '95b18362-fe56-4234-9ad2-11ef98b974a3',
@@ -81,7 +51,6 @@ describe('updateGoalFormValidator', () => {
       'targetCompletionDate-day': null,
       'targetCompletionDate-month': null,
       'targetCompletionDate-year': null,
-      status: 'ACTIVE',
       note: 'Prisoner is not good at listening',
       steps: [
         {
@@ -110,7 +79,6 @@ describe('updateGoalFormValidator', () => {
       'targetCompletionDate-day': null,
       'targetCompletionDate-month': null,
       'targetCompletionDate-year': null,
-      status: 'ACTIVE',
       note: 'Prisoner is not good at listening',
       steps: [
         {
@@ -139,7 +107,6 @@ describe('updateGoalFormValidator', () => {
       'targetCompletionDate-day': null,
       'targetCompletionDate-month': null,
       'targetCompletionDate-year': null,
-      status: 'ACTIVE',
       note: 'Prisoner is not good at listening',
       steps: [
         {

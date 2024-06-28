@@ -11,7 +11,6 @@ const aValidUpdateGoalDtoWithOneStep = (): UpdateGoalDto => {
   return {
     goalReference: '95b18362-fe56-4234-9ad2-11ef98b974a3',
     targetCompletionDate: moment('2024-02-29').toDate(),
-    status: 'ACTIVE',
     title: 'Learn Spanish',
     steps: [updateStepDto],
     notes: 'Prisoner is not good at listening',
@@ -35,7 +34,6 @@ const aValidUpdateGoalDtoWithMultipleSteps = (): UpdateGoalDto => {
   return {
     goalReference: '95b18362-fe56-4234-9ad2-11ef98b974a3',
     targetCompletionDate: moment('2024-02-29').toDate(),
-    status: 'ACTIVE',
     title: 'Learn Spanish',
     steps: [updateStepDto1, updateStepDto2],
     notes: 'Prisoner is not good at listening',
