@@ -1,7 +1,6 @@
 import type { UpdateGoalForm } from 'forms'
 import formatErrors from '../errorFormatter'
 import validateGoalTitle from '../../validators/goalTitleValidator'
-import validateGoalStatus from '../../validators/goalStatusValidator'
 import validateStepTitle from '../../validators/stepTitleValidator'
 import validateStepStatus from '../../validators/stepStatusValidator'
 import goalTargetCompletionDateValidator from '../../validators/goalTargetCompletionDateValidator'
@@ -22,7 +21,6 @@ export default function validateUpdateGoalForm(updateGoalForm: UpdateGoalForm): 
       ),
     )
   }
-  errors.push(...formatErrors('status', validateGoalStatus(updateGoalForm.status)))
   updateGoalForm.steps.forEach((step, idx) => {
     errors.push(...formatErrors(`steps[${idx}][title]`, validateStepTitle(step.title)))
     errors.push(...formatErrors(`steps[${idx}][status]`, validateStepStatus(step.status)))

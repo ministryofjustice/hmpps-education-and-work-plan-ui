@@ -28,7 +28,6 @@ describe('updateGoalFormToUpdateGoalDtoMapper', () => {
     const expectedUpdateGoalDto: UpdateGoalDto = {
       goalReference: updateGoalForm.reference,
       title: updateGoalForm.title,
-      status: updateGoalForm.status,
       steps: [expectedUpdateStepDto1, expectedUpdateStepDto2],
       targetCompletionDate: moment.utc('2024-02-29').toDate(),
       notes: updateGoalForm.note,
@@ -56,7 +55,6 @@ describe('updateGoalFormToUpdateGoalDtoMapper', () => {
     const expectedUpdateGoalDto: UpdateGoalDto = {
       goalReference: updateGoalForm.reference,
       title: updateGoalForm.title,
-      status: updateGoalForm.status,
       steps: [expectedUpdateStepDto],
       targetCompletionDate: moment.utc('2024-02-29').toDate(),
       notes: updateGoalForm.note,
@@ -84,7 +82,6 @@ describe('updateGoalFormToUpdateGoalDtoMapper', () => {
     const expectedUpdateGoalDto: UpdateGoalDto = {
       goalReference: updateGoalForm.reference,
       title: updateGoalForm.title,
-      status: updateGoalForm.status,
       steps: [expectedUpdateStepDto],
       targetCompletionDate: moment.utc('2024-06-29').toDate(),
       notes: updateGoalForm.note,

@@ -30,7 +30,6 @@ declare module 'forms' {
     'targetCompletionDate-day'?: string
     'targetCompletionDate-month'?: string
     'targetCompletionDate-year'?: string
-    status?: 'ACTIVE' | 'COMPLETED' | 'ARCHIVED'
     note?: string
     steps: Array<UpdateStepForm>
     action?: 'add-another-step' | 'submit-form' | 'delete-step-[0]'

@@ -77,7 +77,6 @@ describe('updateGoalController', () => {
         'targetCompletionDate-day': null,
         'targetCompletionDate-month': null,
         'targetCompletionDate-year': null,
-        status: goal.status,
         note: goal.note,
         steps: [
           {

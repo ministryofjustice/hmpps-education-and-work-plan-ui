@@ -18,7 +18,6 @@ declare module 'dto' {
   export interface UpdateGoalDto {
     goalReference: string
     title: string
-    status: string
     steps: Array<UpdateStepDto>
     targetCompletionDate: Date
     notes?: string

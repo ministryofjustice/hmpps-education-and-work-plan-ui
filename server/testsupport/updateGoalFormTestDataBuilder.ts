@@ -9,7 +9,6 @@ const aValidUpdateGoalForm = (reference = '95b18362-fe56-4234-9ad2-11ef98b974a3'
     'targetCompletionDate-day': null,
     'targetCompletionDate-month': null,
     'targetCompletionDate-year': null,
-    status: 'ACTIVE',
     note: 'Prisoner is not good at listening',
     steps: [
       {
@@ -41,7 +40,6 @@ const aValidUpdateGoalFormWithIndividualTargetDateFields = (
     'targetCompletionDate-day': '29',
     'targetCompletionDate-month': '02',
     'targetCompletionDate-year': '2024',
-    status: 'ACTIVE',
     note: 'Prisoner is not good at listening',
     steps: [
       {
@@ -67,7 +65,6 @@ const aValidUpdateGoalFormDuringDaylightSavingTime = (
     'targetCompletionDate-day': null,
     'targetCompletionDate-month': null,
     'targetCompletionDate-year': null,
-    status: 'ACTIVE',
     note: 'Prisoner is not good at listening',
     steps: [
       {

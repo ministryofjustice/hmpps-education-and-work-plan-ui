@@ -5,7 +5,6 @@ const toUpdateGoalRequest = (updateGoalDto: UpdateGoalDto): UpdateGoalRequest =>
   return {
     goalReference: updateGoalDto.goalReference,
     title: updateGoalDto.title,
-    status: updateGoalDto.status,
     steps: updateGoalDto.steps.map(step => toUpdateStepRequest(step)),
     targetCompletionDate: toDateString(updateGoalDto.targetCompletionDate),
     notes: updateGoalDto.notes,

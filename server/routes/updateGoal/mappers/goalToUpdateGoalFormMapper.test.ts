@@ -20,7 +20,6 @@ describe('goalToUpdateGoalFormMapper', () => {
         'targetCompletionDate-day': null,
         'targetCompletionDate-month': null,
         'targetCompletionDate-year': null,
-        status: 'ACTIVE',
         steps: [
           {
             reference: 'c88a6c48-97e2-4c04-93b5-98619966447b',
