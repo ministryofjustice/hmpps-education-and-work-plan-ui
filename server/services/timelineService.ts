@@ -1,7 +1,6 @@
 import type { Timeline, TimelineEvent } from 'viewModels'
-import type { TimelineEventResponse } from 'educationAndWorkPlanApiClient'
 import EducationAndWorkPlanClient from '../data/educationAndWorkPlanClient'
-import { toTimeline } from '../data/mappers/timelineMapper'
+import toTimeline from '../data/mappers/timelineMapper'
 import logger from '../../logger'
 import PrisonService from './prisonService'
 
@@ -17,12 +16,18 @@ export default class TimelineService {
 
   async getTimeline(prisonNumber: string, token: string, username: string): Promise<Timeline> {
     try {
-      const timelineResponse = await this.educationAndWorkPlanClient.getTimeline(prisonNumber, token)
-      timelineResponse.events = timelineResponse.events.filter(filterTimelineEvents)
+      const timelineResponse = await this.educationAndWorkPlanClient.getTimeline(
+        prisonNumber,
+        token,
+        SUPPORTED_TIMELINE_EVENTS,
+      )
 
       const timeline = toTimeline(timelineResponse)
-      timeline.events = await this.addPrisonNameToPrisons(timeline.events, username)
-      return timeline
+      const timelineWithPrisonNamesPopulated: Timeline = {
+        ...timeline,
+        events: await this.addPrisonNameToPrisons(timeline.events, username),
+      }
+      return timelineWithPrisonNamesPopulated
     } catch (error) {
       if (error.status === 404) {
         logger.info(`No Timeline for prisoner [${prisonNumber}]: ${error}`)
@@ -82,6 +87,3 @@ export default class TimelineService {
 }
 
 const isPrisonTransfer = (event: TimelineEvent): boolean => event.eventType === 'PRISON_TRANSFER'
-
-const filterTimelineEvents = (event: TimelineEventResponse): boolean =>
-  SUPPORTED_TIMELINE_EVENTS.includes(event.eventType)

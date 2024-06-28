@@ -4,14 +4,11 @@ import aValidPrisonerSummary from '../../testsupport/prisonerSummaryTestDataBuil
 import aValidTimeline from '../../testsupport/timelineTestDataBuilder'
 import TimelineService from '../../services/timelineService'
 import TimelineController from './timelineController'
-import filterTimelineEvents from '../timelineResolver'
+import prepareTimelineForView from './prepareTimelineForView'
 
-jest.mock('../timelineResolver')
 jest.mock('../../services/timelineService')
 
 describe('timelineController', () => {
-  const mockedTimelineResolver = filterTimelineEvents as jest.MockedFunction<typeof filterTimelineEvents>
-
   const timelineService = new TimelineService(null, null) as jest.Mocked<TimelineService>
   const controller = new TimelineController(timelineService)
 
@@ -41,9 +38,10 @@ describe('timelineController', () => {
     const expectedTab = 'timeline'
     req.params.tab = expectedTab
 
-    const expectedTimeline: Timeline = aValidTimeline()
-    timelineService.getTimeline.mockResolvedValue(expectedTimeline)
-    mockedTimelineResolver.mockReturnValue(expectedTimeline)
+    const timeline: Timeline = aValidTimeline()
+    timelineService.getTimeline.mockResolvedValue(timeline)
+
+    const expectedTimeline = prepareTimelineForView(timeline)
 
     const expectedView = {
       prisonerSummary,

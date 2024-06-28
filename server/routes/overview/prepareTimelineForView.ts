@@ -1,8 +1,15 @@
 import type { Timeline, TimelineEvent } from 'viewModels'
-import moment from 'moment'
-import dateComparator from './dateComparator'
+import { subSeconds } from 'date-fns'
+import dateComparator from '../dateComparator'
 
-const filterTimelineEvents = (timeline: Timeline): Timeline => {
+/**
+ * Prepares a [Timeline] for rendering in the view.
+ * Specifically this means:
+ *   * grouping GOAL_CREATED events with the same correlationId into single MULTIPLE_GOALS_CREATED events
+ *   * sorting events chronologically
+ *   * ensuring that the ACTION_PLAN_CREATED event appears before any related GOAL_CREATED events
+ */
+const prepareTimelineForView = (timeline: Timeline): Timeline => {
   // If there is no Timeline data or there was a problem retrieving data, return the timeline as-is
   if (!timeline || timeline.problemRetrievingData) {
     return timeline
@@ -73,8 +80,8 @@ const sortTimelineEvents = (timelineEvents: Array<TimelineEvent>): Array<Timelin
   return timelineEventsSortedByDateDesc
 }
 
-// Ensure the ACTION_PLAN_CREATED event appears after any related GOAL_CREATED events that were created at the same time. In theory
-// the ACTION_PLAN_CREATED event should be after its related GOAL_CREATED events (because it was the first to occur). However, if
+// Ensure the ACTION_PLAN_CREATED event appears before any related GOAL_CREATED events that were created at the same time. In theory
+// the ACTION_PLAN_CREATED event should be before its related GOAL_CREATED events (because it was the first to occur). However, if
 // the related GOAL_CREATED events have the exact same time (down to the millisecond), then this sorting may not always have worked
 // as expected. This method looks for the ACTION_PLAN_CREATED event in the array and subtracts a second from its timestamp, thereby
 // ensuring it always appears in the correct position on the timeline UI.
@@ -88,11 +95,11 @@ const modifyActionPlanCreatedTimestamp = (timelineEvents: Array<TimelineEvent>):
   }
   const mutatedActionPlanEvent = {
     ...actionPlanCreatedEvent,
-    timestamp: moment.utc(actionPlanCreatedEvent.timestamp).subtract(1, 'second').toDate(),
+    timestamp: subSeconds(actionPlanCreatedEvent.timestamp, 1),
   }
   const index = timelineEvents.indexOf(actionPlanCreatedEvent)
   timelineEvents.splice(index, 1, mutatedActionPlanEvent)
   return timelineEvents
 }
 
-export default filterTimelineEvents
+export default prepareTimelineForView

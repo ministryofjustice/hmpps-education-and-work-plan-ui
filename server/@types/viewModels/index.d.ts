@@ -205,7 +205,7 @@ declare module 'viewModels' {
 
   export interface Prison {
     prisonId: string
-    prisonName: string
+    prisonName?: string
   }
 
   export interface PageFlow {

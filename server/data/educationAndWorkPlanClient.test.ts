@@ -213,7 +213,7 @@ describe('educationAndWorkPlanClient', () => {
   })
 
   describe('getTimeline', () => {
-    it('should get Timeline', async () => {
+    it('should get Timeline given no filtering by event type', async () => {
       // Given
       const prisonNumber = 'A1234BC'
       const systemToken = 'a-system-token'
@@ -224,6 +224,41 @@ describe('educationAndWorkPlanClient', () => {
 
       // When
       const actual = await educationAndWorkPlanClient.getTimeline(prisonNumber, systemToken)
+
+      // Then
+      expect(nock.isDone()).toBe(true)
+      expect(actual).toEqual(expectedTimelineResponse)
+    })
+
+    it('should get Timeline filtered by event type', async () => {
+      // Given
+      const prisonNumber = 'A1234BC'
+      const systemToken = 'a-system-token'
+
+      const timelineResponseFromApi = aValidTimelineResponse()
+      educationAndWorkPlanApi.get(`/timelines/${prisonNumber}`).reply(200, timelineResponseFromApi)
+
+      const expectedTimelineResponse = {
+        ...timelineResponseFromApi,
+        events: [
+          {
+            reference: '3f0423e5-200b-48c9-8414-f04e336897ff',
+            sourceReference: 'f190e844-3aa1-4f04-81d5-6be2bf9721cc',
+            eventType: 'GOAL_CREATED',
+            prisonId: 'MDI',
+            actionedBy: 'RALPH_GEN',
+            timestamp: '2023-09-23T15:47:38.565Z',
+            correlationId: '0838330d-606f-480a-b55f-3228e1be122d',
+            contextualInfo: {
+              GOAL_TITLE: 'Learn French',
+            },
+            actionedByDisplayName: 'Ralph Gen',
+          },
+        ],
+      }
+
+      // When
+      const actual = await educationAndWorkPlanClient.getTimeline(prisonNumber, systemToken, ['GOAL_CREATED'])
 
       // Then
       expect(nock.isDone()).toBe(true)

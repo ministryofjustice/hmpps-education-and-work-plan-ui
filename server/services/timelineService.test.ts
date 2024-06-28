@@ -1,12 +1,10 @@
-import type { TimelineResponse } from 'educationAndWorkPlanApiClient'
 import type { Timeline } from 'viewModels'
 import moment from 'moment'
 import PrisonService from './prisonService'
 import TimelineService from './timelineService'
 import EducationAndWorkPlanClient from '../data/educationAndWorkPlanClient'
-import { toTimeline } from '../data/mappers/timelineMapper'
+import toTimeline from '../data/mappers/timelineMapper'
 import aValidTimelineResponse from '../testsupport/timelineResponseTestDataBuilder'
-import aValidTimeline from '../testsupport/timelineTestDataBuilder'
 
 jest.mock('../data/mappers/timelineMapper')
 jest.mock('./prisonService')
@@ -26,27 +24,17 @@ describe('timelineService', () => {
   const prisonNumber = 'A1234BC'
   const username = 'a-dps-user'
   const userToken = 'a-user-token'
+  const supportedTimelineEvents = [
+    'ACTION_PLAN_CREATED',
+    'INDUCTION_UPDATED',
+    'GOAL_UPDATED',
+    'GOAL_CREATED',
+    'PRISON_ADMISSION',
+    'PRISON_RELEASE',
+    'PRISON_TRANSFER',
+  ]
 
   describe('getTimeline', () => {
-    it('should get all timeline events', async () => {
-      // Given
-      const timelineResponse: TimelineResponse = aValidTimelineResponse()
-      educationAndWorkPlanClient.getTimeline.mockResolvedValue(timelineResponse)
-
-      const timeline: Timeline = aValidTimeline()
-      mockedTimelineMapper.mockReturnValue(timeline)
-
-      // When
-      const actual = await timelineService.getTimeline(prisonNumber, userToken, username)
-
-      // Then
-      expect(actual).toEqual(timeline)
-      expect(educationAndWorkPlanClient.getTimeline).toHaveBeenCalledWith(prisonNumber, userToken)
-      expect(mockedTimelineMapper).toHaveBeenCalledWith(timelineResponse)
-    })
-  })
-
-  describe('lookup prison names', () => {
     it('should get timeline given prison name lookups for several different prisons', async () => {
       // Given
       const timelineResponse = aValidTimelineResponse()
@@ -102,6 +90,12 @@ describe('timelineService', () => {
       expect(mockedTimelineMapper).toHaveBeenCalledWith(timelineResponse)
       expect(prisonService.getPrisonByPrisonId).toHaveBeenCalledWith('ASI', username)
       expect(prisonService.getPrisonByPrisonId).toHaveBeenCalledWith('MDI', username)
+
+      expect(educationAndWorkPlanClient.getTimeline).toHaveBeenCalledWith(
+        prisonNumber,
+        userToken,
+        supportedTimelineEvents,
+      )
     })
 
     it('should get timeline given prison name lookups fail', async () => {
@@ -158,6 +152,12 @@ describe('timelineService', () => {
       expect(mockedTimelineMapper).toHaveBeenCalledWith(timelineResponse)
       expect(prisonService.getPrisonByPrisonId).toHaveBeenCalledWith('ASI', username)
       expect(prisonService.getPrisonByPrisonId).toHaveBeenCalledWith('MDI', username)
+
+      expect(educationAndWorkPlanClient.getTimeline).toHaveBeenCalledWith(
+        prisonNumber,
+        userToken,
+        supportedTimelineEvents,
+      )
     })
   })
 })
