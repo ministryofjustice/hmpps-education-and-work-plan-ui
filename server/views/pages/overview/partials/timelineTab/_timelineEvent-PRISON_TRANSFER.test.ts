@@ -3,7 +3,6 @@ import * as cheerio from 'cheerio'
 import { parseISO } from 'date-fns'
 import aTimelineEvent from '../../../../../testsupport/timelineEventTestDataBuilder'
 import formatDateFilter from '../../../../../filters/formatDateFilter'
-import formatPrisonMovementEventFilter from '../../../../../filters/formatPrisonMovementEventFilter'
 
 const njkEnv = nunjucks.configure([
   'node_modules/govuk-frontend/dist/',
@@ -13,7 +12,6 @@ const njkEnv = nunjucks.configure([
 ])
 njkEnv //
   .addFilter('formatDate', formatDateFilter)
-  .addFilter('formatPrisonMovementEvent', formatPrisonMovementEventFilter)
 
 describe('_timelineEvent-PRISON_TRANSFER', () => {
   it('should display PRISON_TRANSFER timeline event', () => {

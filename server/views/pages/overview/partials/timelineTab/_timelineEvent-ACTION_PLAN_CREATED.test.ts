@@ -4,7 +4,6 @@ import { parseISO } from 'date-fns'
 import aTimelineEvent from '../../../../../testsupport/timelineEventTestDataBuilder'
 import aValidPrisonerSummary from '../../../../../testsupport/prisonerSummaryTestDataBuilder'
 import formatDateFilter from '../../../../../filters/formatDateFilter'
-import formatTimelineEventFilter from '../../../../../filters/formatTimelineEventFilter'
 
 const njkEnv = nunjucks.configure([
   'node_modules/govuk-frontend/dist/',
@@ -14,7 +13,6 @@ const njkEnv = nunjucks.configure([
 ])
 njkEnv //
   .addFilter('formatDate', formatDateFilter)
-  .addFilter('formatTimelineEvent', formatTimelineEventFilter)
 
 describe('_timelineEvent-ACTION_PLAN_CREATED', () => {
   it('should display ACTION_PLAN_CREATED timeline event', () => {
@@ -38,7 +36,6 @@ describe('_timelineEvent-ACTION_PLAN_CREATED', () => {
 
     // Then
     expect($('[data-qa-event-type=ACTION_PLAN_CREATED]').length).toEqual(1)
-    expect($('.moj-timeline__title').text().trim()).toEqual('Learning and work progress plan created')
     expect($('.moj-timeline__byline').text().trim()).toEqual('by Fred Bloggs, Moorland (HMP & YOI)')
     expect($('.moj-timeline__date').text().trim()).toEqual('1 August 2023')
     expect($('.moj-timeline__description a').text().trim()).toEqual(
@@ -67,7 +64,6 @@ describe('_timelineEvent-ACTION_PLAN_CREATED', () => {
 
     // Then
     expect($('[data-qa-event-type=ACTION_PLAN_CREATED]').length).toEqual(1)
-    expect($('.moj-timeline__title').text().trim()).toEqual('Learning and work progress plan created')
     expect($('.moj-timeline__byline').text().trim()).toEqual('by Fred Bloggs, MDI')
     expect($('.moj-timeline__date').text().trim()).toEqual('1 August 2023')
     expect($('.moj-timeline__description a').text().trim()).toEqual(

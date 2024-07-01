@@ -1,8 +1,6 @@
 import nunjucks from 'nunjucks'
 import * as cheerio from 'cheerio'
 import formatDateFilter from '../../../../../filters/formatDateFilter'
-import formatPrisonMovementEventFilter from '../../../../../filters/formatPrisonMovementEventFilter'
-import formatTimelineEventFilter from '../../../../../filters/formatTimelineEventFilter'
 import aValidPrisonerSummary from '../../../../../testsupport/prisonerSummaryTestDataBuilder'
 import aValidTimeline from '../../../../../testsupport/timelineTestDataBuilder'
 import aTimelineEvent from '../../../../../testsupport/timelineEventTestDataBuilder'
@@ -16,8 +14,6 @@ describe('timelineTabContents', () => {
   ])
   njkEnv //
     .addFilter('formatDate', formatDateFilter)
-    .addFilter('formatTimelineEvent', formatTimelineEventFilter)
-    .addFilter('formatPrisonMovementEvent', formatPrisonMovementEventFilter)
 
   it('should render a timeline event for each supported timeline event type', () => {
     // Given

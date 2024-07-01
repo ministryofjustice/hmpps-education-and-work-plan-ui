@@ -1,6 +1,6 @@
 <div class="moj-timeline__item" data-qa-event-type="PRISON_ADMISSION">
   <div class="moj-timeline__header">
-    <h2 class="moj-timeline__title">{{ event | formatPrisonMovementEvent }}</h2>
+    <h2 class="moj-timeline__title">Entered {{ event.prison.prisonName if event.prison.prisonName else event.prison.prisonId }}</h2>
   </div>
 
   <p class="moj-timeline__date">

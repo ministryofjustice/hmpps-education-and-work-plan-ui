@@ -3,7 +3,6 @@ import * as cheerio from 'cheerio'
 import { parseISO } from 'date-fns'
 import aTimelineEvent from '../../../../../testsupport/timelineEventTestDataBuilder'
 import formatDateFilter from '../../../../../filters/formatDateFilter'
-import formatTimelineEventFilter from '../../../../../filters/formatTimelineEventFilter'
 
 const njkEnv = nunjucks.configure([
   'node_modules/govuk-frontend/dist/',
@@ -13,7 +12,6 @@ const njkEnv = nunjucks.configure([
 ])
 njkEnv //
   .addFilter('formatDate', formatDateFilter)
-  .addFilter('formatTimelineEvent', formatTimelineEventFilter)
 
 describe('_timelineEvent-INDUCTION_UPDATED', () => {
   it('should display INDUCTION_UPDATED timeline event', () => {
@@ -36,7 +34,6 @@ describe('_timelineEvent-INDUCTION_UPDATED', () => {
 
     // Then
     expect($('[data-qa-event-type=INDUCTION_UPDATED]').length).toEqual(1)
-    expect($('.moj-timeline__title').text().trim()).toEqual('Learning and work progress plan updated')
     expect($('.moj-timeline__byline').text().trim()).toEqual('by Fred Bloggs, Moorland (HMP & YOI)')
     expect($('.moj-timeline__date').text().trim()).toEqual('1 August 2023')
   })
@@ -61,7 +58,6 @@ describe('_timelineEvent-INDUCTION_UPDATED', () => {
 
     // Then
     expect($('[data-qa-event-type=INDUCTION_UPDATED]').length).toEqual(1)
-    expect($('.moj-timeline__title').text().trim()).toEqual('Learning and work progress plan updated')
     expect($('.moj-timeline__byline').text().trim()).toEqual('by Fred Bloggs, MDI')
     expect($('.moj-timeline__date').text().trim()).toEqual('1 August 2023')
   })

@@ -26,8 +26,6 @@ import formatInPrisonTrainingFilter from '../filters/formatInPrisonTrainingFilte
 import formatReasonNotToGetWorkFilter from '../filters/formatReasonNotToGetWorkFilter'
 import formatQualificationLevelFilter from '../filters/formatQualificationLevelFilter'
 import formatQualificationLevelHintFilter from '../filters/formatQualificationLevelHintFilter'
-import formatTimelineEventFilter from '../filters/formatTimelineEventFilter'
-import formatPrisonMovementEventFilter from '../filters/formatPrisonMovementEventFilter'
 import formatCuriousCourseStatusFilter from '../filters/formatCuriousCourseStatusFilter'
 import sortedAlphabeticallyWithOtherLastFilter from '../filters/sortedAlphabeticallyWithOtherLastFilter'
 import objectsSortedAlphabeticallyWithOtherLastByFilter from '../filters/objectsSortedAlphabeticallyWithOtherLastByFilter'
@@ -102,8 +100,6 @@ export function registerNunjucks(app?: express.Express): Environment {
   njkEnv.addFilter('formatReasonNotToGetWork', formatReasonNotToGetWorkFilter)
   njkEnv.addFilter('formatQualificationLevel', formatQualificationLevelFilter)
   njkEnv.addFilter('formatQualificationLevelHint', formatQualificationLevelHintFilter)
-  njkEnv.addFilter('formatTimelineEvent', formatTimelineEventFilter)
-  njkEnv.addFilter('formatPrisonMovementEvent', formatPrisonMovementEventFilter)
   njkEnv.addFilter('formatCuriousCourseStatus', formatCuriousCourseStatusFilter)
   njkEnv.addFilter('formatHasWorkedBefore', formatHasWorkedBeforeFilter)
   njkEnv.addFilter('fallbackMessage', fallbackMessageFilter)
