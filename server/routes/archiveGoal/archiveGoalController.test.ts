@@ -34,6 +34,7 @@ describe('archiveGoalController', () => {
   }
   const res = {
     redirect: jest.fn(),
+    redirectWithSuccess: jest.fn(),
     redirectWithErrors: jest.fn(),
     render: jest.fn(),
   }
@@ -238,7 +239,7 @@ describe('archiveGoalController', () => {
 
       // Then
       expect(educationAndWorkPlanService.archiveGoal).toHaveBeenCalledWith(expectedArchiveGoalDto, 'some-token')
-      expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/view/overview`)
+      expect(res.redirectWithSuccess).toHaveBeenCalledWith(`/plan/${prisonNumber}/view/overview`, 'Goal archived')
       expect(req.session.archiveGoalForm).toBeUndefined()
     })
     it('should handle a failure archiving the goal', async () => {

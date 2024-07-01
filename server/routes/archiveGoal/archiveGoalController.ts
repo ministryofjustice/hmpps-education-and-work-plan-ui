@@ -72,7 +72,7 @@ export default class ArchiveGoalController {
     const archiveGoalDto = toArchiveGoalDto(prisonNumber, archiveGoalForm)
     try {
       await this.educationAndWorkPlanService.archiveGoal(archiveGoalDto, req.user.token)
-      return res.redirect(`/plan/${prisonNumber}/view/overview`)
+      return res.redirectWithSuccess(`/plan/${prisonNumber}/view/overview`, 'Goal archived')
     } catch (e) {
       return next(createError(500, `Error archiving goal for prisoner ${prisonNumber}`))
     }

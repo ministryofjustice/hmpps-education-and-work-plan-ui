@@ -141,13 +141,15 @@ export default class OverviewPage extends Page {
     return this
   }
 
-  hasGoalsCreatedSuccessfullyMessage(): OverviewPage {
-    this.goalCreationSuccessMessage().should('be.visible')
+  hasSuccessMessage(message: string): OverviewPage {
+    this.successMessage() //
+      .should('be.visible')
+      .and('contain.text', message)
     return this
   }
 
-  doesNotHaveGoalsCreatedSuccessfullyMessage(): OverviewPage {
-    this.goalCreationSuccessMessage().should('not.exist')
+  doesNotHaveSuccessMessage(): OverviewPage {
+    this.successMessage().should('not.exist')
     return this
   }
 
@@ -188,5 +190,5 @@ export default class OverviewPage extends Page {
 
   private printThisPageLink = (): PageElement => cy.get('#print-link')
 
-  private goalCreationSuccessMessage = (): PageElement => cy.get('[data-qa=goal-creation-success-message]')
+  private successMessage = (): PageElement => cy.get('[data-qa=overview-success-message]')
 }
