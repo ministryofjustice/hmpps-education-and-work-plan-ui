@@ -261,7 +261,7 @@ context('Create goals', () => {
 
     cy.visit(`/plan/${prisonNumber}/view/overview`)
     let overviewPage = Page.verifyOnPage(OverviewPage)
-    overviewPage.doesNotHaveGoalsCreatedSuccessfullyMessage()
+    overviewPage.doesNotHaveSuccessMessage()
 
     const createGoalPage = overviewPage.clickAddGoalButton()
 
@@ -276,8 +276,8 @@ context('Create goals', () => {
     // Then
     overviewPage = Page.verifyOnPage(OverviewPage)
     overviewPage //
-      .hasGoalsCreatedSuccessfullyMessage()
+      .hasSuccessMessage('Goals added')
       .refreshPage()
-      .doesNotHaveGoalsCreatedSuccessfullyMessage()
+      .doesNotHaveSuccessMessage()
   })
 })

@@ -159,7 +159,8 @@ context('Archive a goal', () => {
     reviewPage.clickYes()
 
     // Then
-    Page.verifyOnPage(OverviewPage)
+    Page.verifyOnPage(OverviewPage) //
+      .hasSuccessMessage('Goal archived')
     cy.wiremockVerify(
       putRequestedFor(urlEqualTo(`/action-plans/${prisonNumber}/goals/${goalReference}/archive`)) //
         .withRequestBody(
