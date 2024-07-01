@@ -10,8 +10,6 @@
           {% for event in timeline.events %}
             {% if event.eventType in supportedTimelineEventTypes %}
               {% include './_timelineEvent-' + event.eventType + '.njk' %}
-            {% else %}
-              {# A timeline event type we dont currently support in the view. Do nothing and skip it #}
             {% endif %}
           {% endfor %}
         </div>
