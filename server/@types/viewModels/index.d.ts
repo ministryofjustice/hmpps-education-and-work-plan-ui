@@ -175,11 +175,21 @@ declare module 'viewModels' {
     reference: string
     sourceReference: string
     eventType:
+      | 'INDUCTION_CREATED'
+      | 'INDUCTION_UPDATED'
       | 'ACTION_PLAN_CREATED'
       | 'GOAL_CREATED'
       | 'MULTIPLE_GOALS_CREATED'
       | 'GOAL_UPDATED'
-      | 'INDUCTION_UPDATED'
+      | 'GOAL_COMPLETED'
+      | 'GOAL_ARCHIVED'
+      | 'GOAL_UNARCHIVED'
+      | 'STEP_UPDATED'
+      | 'STEP_NOT_STARTED'
+      | 'STEP_STARTED'
+      | 'STEP_COMPLETED'
+      | 'CONVERSATION_CREATED'
+      | 'CONVERSATION_UPDATED'
       | 'PRISON_ADMISSION'
       | 'PRISON_RELEASE'
       | 'PRISON_TRANSFER'

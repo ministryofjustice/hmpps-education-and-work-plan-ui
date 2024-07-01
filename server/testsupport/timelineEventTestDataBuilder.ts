@@ -1,4 +1,4 @@
-import moment from 'moment'
+import { parseISO } from 'date-fns'
 import type { Prison, TimelineEvent } from 'viewModels'
 
 const aTimelineEvent = (options?: CoreBuilderOptions): TimelineEvent => {
@@ -11,11 +11,21 @@ type CoreBuilderOptions = {
   reference?: string
   sourceReference?: string
   eventType?:
+    | 'INDUCTION_CREATED'
+    | 'INDUCTION_UPDATED'
     | 'ACTION_PLAN_CREATED'
     | 'GOAL_CREATED'
     | 'MULTIPLE_GOALS_CREATED'
     | 'GOAL_UPDATED'
-    | 'INDUCTION_UPDATED'
+    | 'GOAL_COMPLETED'
+    | 'GOAL_ARCHIVED'
+    | 'GOAL_UNARCHIVED'
+    | 'STEP_UPDATED'
+    | 'STEP_NOT_STARTED'
+    | 'STEP_STARTED'
+    | 'STEP_COMPLETED'
+    | 'CONVERSATION_CREATED'
+    | 'CONVERSATION_UPDATED'
     | 'PRISON_ADMISSION'
     | 'PRISON_RELEASE'
     | 'PRISON_TRANSFER'
@@ -35,9 +45,9 @@ const baseTimelineEventTemplate = (options?: CoreBuilderOptions): TimelineEvent 
     eventType: options?.eventType || 'PRISON_ADMISSION',
     prison: {
       prisonId: options?.prison?.prisonId || 'MDI',
-      prisonName: undefined,
+      prisonName: options?.prison?.prisonName,
     },
-    timestamp: moment('2023-08-01T10:46:38.565Z').toDate(),
+    timestamp: parseISO('2023-08-01T10:46:38.565Z'),
     correlationId: options?.correlationId || '6457a634-6dbe-4179-983b-74e92883232c',
     contextualInfo: options?.contextualInfo || {},
     actionedByDisplayName: options?.actionedByDisplayName,

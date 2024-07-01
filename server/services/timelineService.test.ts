@@ -29,6 +29,8 @@ describe('timelineService', () => {
     'INDUCTION_UPDATED',
     'GOAL_UPDATED',
     'GOAL_CREATED',
+    'GOAL_ARCHIVED',
+    'GOAL_UNARCHIVED',
     'PRISON_ADMISSION',
     'PRISON_RELEASE',
     'PRISON_TRANSFER',

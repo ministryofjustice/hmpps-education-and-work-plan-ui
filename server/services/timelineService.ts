@@ -4,7 +4,14 @@ import toTimeline from '../data/mappers/timelineMapper'
 import logger from '../../logger'
 import PrisonService from './prisonService'
 
-const PLP_TIMELINE_EVENTS = ['ACTION_PLAN_CREATED', 'INDUCTION_UPDATED', 'GOAL_UPDATED', 'GOAL_CREATED']
+const PLP_TIMELINE_EVENTS = [
+  'ACTION_PLAN_CREATED',
+  'INDUCTION_UPDATED',
+  'GOAL_UPDATED',
+  'GOAL_CREATED',
+  'GOAL_ARCHIVED',
+  'GOAL_UNARCHIVED',
+]
 const PRISON_TIMELINE_EVENTS = ['PRISON_ADMISSION', 'PRISON_RELEASE', 'PRISON_TRANSFER']
 const SUPPORTED_TIMELINE_EVENTS = [...PLP_TIMELINE_EVENTS, ...PRISON_TIMELINE_EVENTS]
 
