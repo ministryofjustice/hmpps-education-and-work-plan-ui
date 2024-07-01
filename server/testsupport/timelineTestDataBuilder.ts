@@ -1,12 +1,20 @@
-import moment from 'moment/moment'
-import type { Timeline } from 'viewModels'
+import { parseISO } from 'date-fns'
+import type { Timeline, TimelineEvent } from 'viewModels'
 
-export default function aValidTimeline(): Timeline {
+export default function aValidTimeline(options?: {
+  reference?: string
+  prisonNumber?: string
+  events?: Array<TimelineEvent>
+  problemRetrievingData?: boolean
+}): Timeline {
   return {
-    problemRetrievingData: false,
-    reference: '6add2455-30f1-4b3e-a23e-1baf2d761e8f',
-    prisonNumber: 'A1234BC',
-    events: [
+    problemRetrievingData:
+      !options || options.problemRetrievingData === null || options.problemRetrievingData === undefined
+        ? false
+        : options.problemRetrievingData,
+    reference: options?.reference || '6add2455-30f1-4b3e-a23e-1baf2d761e8f',
+    prisonNumber: options?.prisonNumber || 'A1234BC',
+    events: options?.events || [
       {
         reference: 'f49a3412-df7f-41d2-ac04-ffd35e453af4',
         sourceReference: '1211013',
@@ -15,7 +23,7 @@ export default function aValidTimeline(): Timeline {
           prisonId: 'MDI',
           prisonName: undefined,
         },
-        timestamp: moment('2023-08-01T10:46:38.565Z').toDate(),
+        timestamp: parseISO('2023-08-01T10:46:38.565Z'),
         correlationId: '6457a634-6dbe-4179-983b-74e92883232c',
         contextualInfo: {},
         actionedByDisplayName: undefined,
@@ -28,7 +36,7 @@ export default function aValidTimeline(): Timeline {
           prisonId: 'MDI',
           prisonName: undefined,
         },
-        timestamp: moment('2023-09-01T10:47:38.565Z').toDate(),
+        timestamp: parseISO('2023-09-01T10:47:38.565Z'),
         correlationId: '246aa049-c5df-459d-8231-bdeab3936d0f',
         contextualInfo: {},
         actionedByDisplayName: 'Ralph Gen',
@@ -41,7 +49,7 @@ export default function aValidTimeline(): Timeline {
           prisonId: 'MDI',
           prisonName: undefined,
         },
-        timestamp: moment('2023-09-23T15:47:38.565Z').toDate(),
+        timestamp: parseISO('2023-09-23T15:47:38.565Z'),
         correlationId: '0838330d-606f-480a-b55f-3228e1be122d',
         contextualInfo: {
           GOAL_TITLE: 'Learn French',
@@ -56,7 +64,7 @@ export default function aValidTimeline(): Timeline {
           prisonId: 'MDI',
           prisonName: undefined,
         },
-        timestamp: moment('2023-09-24T08:47:38.565Z').toDate(),
+        timestamp: parseISO('2023-09-24T08:47:38.565Z'),
         correlationId: '9805d096-cd52-406b-84b0-f4c1d735f3bd',
         contextualInfo: {
           GOAL_TITLE: 'Learn French',
@@ -71,7 +79,7 @@ export default function aValidTimeline(): Timeline {
           prisonId: 'BXI',
           prisonName: undefined,
         },
-        timestamp: moment('2023-10-01T10:46:38.565Z').toDate(),
+        timestamp: parseISO('2023-10-01T10:46:38.565Z'),
         correlationId: 'd2b08b98-77f6-4351-ac60-8c595075f809',
         contextualInfo: {
           PRISON_TRANSFERRED_FROM: 'MDI',
@@ -86,7 +94,7 @@ export default function aValidTimeline(): Timeline {
           prisonId: 'BXI',
           prisonName: undefined,
         },
-        timestamp: moment('2023-11-29T18:47:38.565Z').toDate(),
+        timestamp: parseISO('2023-11-29T18:47:38.565Z'),
         correlationId: 'db35c8d4-d5c3-4ec8-8554-a3e31f099b3a',
         contextualInfo: {
           GOAL_TITLE: 'Learn French',
@@ -101,7 +109,7 @@ export default function aValidTimeline(): Timeline {
           prisonId: 'BXI',
           prisonName: undefined,
         },
-        timestamp: moment('2023-12-01T10:46:38.565Z').toDate(),
+        timestamp: parseISO('2023-12-01T10:46:38.565Z'),
         correlationId: '7e82200d-6251-4d38-9207-1ce49650dedf',
         contextualInfo: {},
         actionedByDisplayName: undefined,
@@ -114,7 +122,7 @@ export default function aValidTimeline(): Timeline {
           prisonId: 'MDI',
           prisonName: undefined,
         },
-        timestamp: moment('2024-01-01T10:46:38.565Z').toDate(),
+        timestamp: parseISO('2024-01-01T10:46:38.565Z'),
         correlationId: '94e445d5-e4fa-4e32-93f5-0e5d6e3dbb2d',
         contextualInfo: {},
         actionedByDisplayName: undefined,
