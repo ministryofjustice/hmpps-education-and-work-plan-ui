@@ -119,7 +119,6 @@ export function registerNunjucks(app?: express.Express): Environment {
 
   njkEnv.addGlobal('dpsUrl', config.dpsHomeUrl)
   njkEnv.addGlobal('feedbackUrl', config.feedbackUrl)
-  njkEnv.addGlobal('ciagInductionUrl', config.ciagInductionUrl)
   njkEnv.addGlobal('prisonerListUrl', '/')
   njkEnv.addGlobal('featureToggles', config.featureToggles)
 

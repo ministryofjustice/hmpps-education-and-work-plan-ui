@@ -29,14 +29,7 @@
           {% endif %}
         </dd>
         <dd class="govuk-summary-list__actions govuk-!-display-none-print">
-          {%- set skillsChangeLinkUrl -%}
-            {%- if featureToggles.induction.update.enabled -%}
-              /prisoners/{{ prisonerSummary.prisonNumber }}/induction/skills
-            {%- else -%}
-              {{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}/skills/update
-            {%- endif -%}
-          {%- endset -%}
-          <a class="govuk-link" href="{{ skillsChangeLinkUrl }}" data-qa="skills-change-link">
+          <a class="govuk-link" href="/prisoners/{{ prisonerSummary.prisonNumber }}/induction/skills" data-qa="skills-change-link">
             {{ 'Change' if inductionHasSkillsRecorded else 'Add' }}<span class="govuk-visually-hidden"> skills</span>
           </a>
         </dd>
@@ -63,14 +56,7 @@
           {% endif %}
         </dd>
         <dd class="govuk-summary-list__actions govuk-!-display-none-print">
-          {%- set personalInterestsChangeLinkUrl -%}
-            {%- if featureToggles.induction.update.enabled -%}
-              /prisoners/{{ prisonerSummary.prisonNumber }}/induction/personal-interests
-            {%- else -%}
-              {{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}/personal-interests/update
-            {%- endif -%}
-          {%- endset -%}
-          <a class="govuk-link" href="{{ personalInterestsChangeLinkUrl }}" data-qa="personal-interests-change-link">
+          <a class="govuk-link" href="/prisoners/{{ prisonerSummary.prisonNumber }}/induction/personal-interests" data-qa="personal-interests-change-link">
             {{ 'Change' if inductionHasInterestsRecorded else 'Add' }}<span class="govuk-visually-hidden"> personal interests</span>
           </a>
         </dd>
