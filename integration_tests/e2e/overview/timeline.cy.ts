@@ -14,13 +14,17 @@ context('Prisoner Overview page - Timeline tab', () => {
     cy.task('stubActionPlansList')
     cy.task('getPrisonerById', 'G6115VJ')
     cy.task('getPrisonerById', 'H4115SD')
+    cy.task('getPrisonerById', 'G5005GD')
     cy.task('getActionPlan', 'G6115VJ')
     cy.task('getActionPlan', 'H4115SD')
+    cy.task('getActionPlan', 'G5005GD')
     cy.task('stubGetInduction')
     cy.task('stubLearnerProfile', 'G6115VJ')
     cy.task('stubLearnerProfile', 'H4115SD')
+    cy.task('stubLearnerProfile', 'G5005GD')
     cy.task('stubLearnerEducation', 'G6115VJ')
     cy.task('stubLearnerEducation', 'H4115SD')
+    cy.task('stubLearnerEducation', 'G5005GD')
     cy.task('stubGetAllPrisons')
   })
 
@@ -68,6 +72,35 @@ context('Prisoner Overview page - Timeline tab', () => {
       .activeTabIs('Timeline')
       .hasTimelineDisplayed()
       .hasTimelineEventsInOrder(['MULTIPLE_GOALS_CREATED', 'ACTION_PLAN_CREATED', 'PRISON_ADMISSION'])
+  })
+
+  it('should display timeline given prisoner where goals have been archived and un-archived', () => {
+    // Given
+    const prisonNumber = 'G5005GD'
+    cy.task('stubGetTimeline', prisonNumber) // Prison number G5005GD has a timeline where 4 goals have been achived, and 1 goal un-archived
+
+    cy.signIn()
+    cy.visit(`/plan/${prisonNumber}/view/overview`)
+    const overviewPage = Page.verifyOnPage(OverviewPage)
+
+    // When
+    overviewPage.selectTab('Timeline')
+    const timelinePage = Page.verifyOnPage(TimelinePage)
+
+    // Then
+    timelinePage //
+      .activeTabIs('Timeline')
+      .hasTimelineDisplayed()
+      .hasTimelineEventsInOrder([
+        'GOAL_UNARCHIVED',
+        'GOAL_ARCHIVED',
+        'GOAL_ARCHIVED',
+        'GOAL_ARCHIVED',
+        'GOAL_ARCHIVED',
+        'MULTIPLE_GOALS_CREATED',
+        'ACTION_PLAN_CREATED',
+        'PRISON_ADMISSION',
+      ])
   })
 
   it('should display timeline data unavailable message given timeline API is unavailable', () => {

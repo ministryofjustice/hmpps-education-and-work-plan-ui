@@ -1,6 +1,7 @@
 import nunjucks from 'nunjucks'
 import * as cheerio from 'cheerio'
 import formatDateFilter from '../../../../../filters/formatDateFilter'
+import formatReasonToArchiveGoalFilter from '../../../../../filters/formatReasonToArchiveGoalFilter'
 import aValidPrisonerSummary from '../../../../../testsupport/prisonerSummaryTestDataBuilder'
 import aValidTimeline from '../../../../../testsupport/timelineTestDataBuilder'
 import aTimelineEvent from '../../../../../testsupport/timelineEventTestDataBuilder'
@@ -14,6 +15,7 @@ describe('timelineTabContents', () => {
   ])
   njkEnv //
     .addFilter('formatDate', formatDateFilter)
+    .addFilter('formatReasonToArchiveGoal', formatReasonToArchiveGoalFilter)
 
   it('should render a timeline event for each supported timeline event type', () => {
     // Given
@@ -24,14 +26,14 @@ describe('timelineTabContents', () => {
         aTimelineEvent({ eventType: 'ACTION_PLAN_CREATED' }),
         aTimelineEvent({ eventType: 'GOAL_CREATED' }),
         aTimelineEvent({ eventType: 'GOAL_UPDATED' }),
+        aTimelineEvent({ eventType: 'GOAL_ARCHIVED' }),
+        aTimelineEvent({ eventType: 'GOAL_UNARCHIVED' }),
         aTimelineEvent({ eventType: 'INDUCTION_UPDATED' }),
         aTimelineEvent({ eventType: 'MULTIPLE_GOALS_CREATED' }),
         aTimelineEvent({ eventType: 'PRISON_ADMISSION' }),
         aTimelineEvent({ eventType: 'PRISON_TRANSFER' }),
         aTimelineEvent({ eventType: 'PRISON_RELEASE' }),
         // event types that are not supported in the UI rendering
-        aTimelineEvent({ eventType: 'GOAL_ARCHIVED' }),
-        aTimelineEvent({ eventType: 'GOAL_UNARCHIVED' }),
         aTimelineEvent({ eventType: 'INDUCTION_CREATED' }),
         aTimelineEvent({ eventType: 'GOAL_COMPLETED' }),
         aTimelineEvent({ eventType: 'STEP_UPDATED' }),
@@ -50,10 +52,12 @@ describe('timelineTabContents', () => {
     const $ = cheerio.load(content)
 
     // Then
-    expect($('[data-qa-event-type]').length).toEqual(8)
+    expect($('[data-qa-event-type]').length).toEqual(10)
     expect($('[data-qa-event-type=ACTION_PLAN_CREATED]').length).toEqual(1)
     expect($('[data-qa-event-type=GOAL_CREATED]').length).toEqual(1)
     expect($('[data-qa-event-type=GOAL_UPDATED]').length).toEqual(1)
+    expect($('[data-qa-event-type=GOAL_ARCHIVED]').length).toEqual(1)
+    expect($('[data-qa-event-type=GOAL_UNARCHIVED]').length).toEqual(1)
     expect($('[data-qa-event-type=MULTIPLE_GOALS_CREATED]').length).toEqual(1)
     expect($('[data-qa-event-type=PRISON_ADMISSION]').length).toEqual(1)
     expect($('[data-qa-event-type=PRISON_TRANSFER]').length).toEqual(1)
