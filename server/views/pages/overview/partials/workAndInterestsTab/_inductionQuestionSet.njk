@@ -29,14 +29,7 @@ questions are different.
           </dd>
 
           <dd class="govuk-summary-list__actions govuk-!-display-none-print">
-            {%- set hasWorkedBeforeChangeLinkUrl -%}
-              {%- if featureToggles.induction.update.enabled -%}
-                /prisoners/{{ prisonerSummary.prisonNumber }}/induction/has-worked-before
-              {%- else -%}
-                {{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}/has-worked-before/update
-              {%- endif -%}
-            {%- endset -%}
-            <a class="govuk-link" href="{{ hasWorkedBeforeChangeLinkUrl }}" data-qa="has-worked-before-change-link">
+            <a class="govuk-link" href="/prisoners/{{ prisonerSummary.prisonNumber }}/induction/has-worked-before" data-qa="has-worked-before-change-link">
               {% if induction.inductionDto.previousWorkExperiences %}Change{% else %}Add{% endif %}<span class="govuk-visually-hidden"> worked before</span>
             </a>
           </dd>
@@ -57,14 +50,7 @@ questions are different.
               </ul>
             </dd>
             <dd class="govuk-summary-list__actions govuk-!-display-none-print">
-              {%- set previousWorkExperienceChangeLinkUrl -%}
-                {%- if featureToggles.induction.update.enabled -%}
-                  /prisoners/{{ prisonerSummary.prisonNumber }}/induction/previous-work-experience
-                {%- else -%}
-                  {{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}/type-of-work-experience/update
-                {%- endif -%}
-              {%- endset -%}
-              <a class="govuk-link" href="{{ previousWorkExperienceChangeLinkUrl }}" data-qa="previous-work-experience-change-link">
+              <a class="govuk-link" href="/prisoners/{{ prisonerSummary.prisonNumber }}/induction/previous-work-experience" data-qa="previous-work-experience-change-link">
                 Change<span class="govuk-visually-hidden"> type of work experience</span>
               </a>
             </dd>
@@ -82,11 +68,7 @@ questions are different.
               </dd>
               <dd class="govuk-summary-list__actions govuk-!-display-none-print">
                 {%- set workExperienceDetailChangeLinkUrl -%}
-                  {%- if featureToggles.induction.update.enabled -%}
-                    /prisoners/{{ prisonerSummary.prisonNumber }}/induction/previous-work-experience/{{ workExperienceDetails.experienceType | lower }}
-                  {%- else -%}
-                    {{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}/work-details/{{ workExperienceDetails.experienceType | lower }}/update
-                  {%- endif -%}
+                  /prisoners/{{ prisonerSummary.prisonNumber }}/induction/previous-work-experience/{{ workExperienceDetails.experienceType | lower }}
                 {%- endset -%}
                 <a class="govuk-link" href="{{ workExperienceDetailChangeLinkUrl }}" data-qa="previous-work-experience-details-{{ workExperienceDetails.experienceType }}-change-link">
                   Change<span class="govuk-visually-hidden"> {{ workExperienceDetails.experienceType | formatJobType }} experience details</span>
@@ -122,14 +104,7 @@ questions are different.
             {{ induction.inductionDto.workOnRelease.hopingToWork | formatYesNo }}
           </dd>
           <dd class="govuk-summary-list__actions govuk-!-display-none-print">
-            {%- set hopingToWorkOnReleaseChangeLinkUrl -%}
-              {%- if featureToggles.induction.update.enabled -%}
-                /prisoners/{{ prisonerSummary.prisonNumber }}/induction/hoping-to-work-on-release
-              {%- else -%}
-                {{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}/hoping-to-get-work/update
-              {%- endif -%}
-            {%- endset -%}
-            <a class="govuk-link" href="{{ hopingToWorkOnReleaseChangeLinkUrl }}" data-qa="hoping-to-work-on-release-change-link">
+            <a class="govuk-link" href="/prisoners/{{ prisonerSummary.prisonNumber }}/induction/hoping-to-work-on-release" data-qa="hoping-to-work-on-release-change-link">
               Change<span class="govuk-visually-hidden"> hoping to work on release</span>
             </a>
           </dd>
@@ -152,14 +127,7 @@ questions are different.
             </ul>
           </dd>
           <dd class="govuk-summary-list__actions govuk-!-display-none-print">
-            {%- set affectAbilityToWorkChangeLinkUrl -%}
-              {%- if featureToggles.induction.update.enabled -%}
-                /prisoners/{{ prisonerSummary.prisonNumber }}/induction/affect-ability-to-work
-              {%- else -%}
-                {{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}/ability-to-work/update
-              {%- endif -%}
-            {%- endset -%}
-            <a class="govuk-link" href="{{ affectAbilityToWorkChangeLinkUrl }}" data-qa="affect-ability-to-work-change-link">
+            <a class="govuk-link" href="/prisoners/{{ prisonerSummary.prisonNumber }}/induction/affect-ability-to-work" data-qa="affect-ability-to-work-change-link">
               Change<span class="govuk-visually-hidden"> potential affect on ability to work</span>
             </a>
           </dd>
@@ -182,14 +150,7 @@ questions are different.
             </ul>
           </dd>
           <dd class="govuk-summary-list__actions govuk-!-display-none-print">
-            {%- set workInterestTypesChangeLinkUrl -%}
-              {%- if featureToggles.induction.update.enabled -%}
-                /prisoners/{{ prisonerSummary.prisonNumber }}/induction/work-interest-types
-              {%- else -%}
-                {{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}/work-interests/update
-              {%- endif -%}
-            {%- endset -%}
-            <a class="govuk-link" href="{{ workInterestTypesChangeLinkUrl }}" data-qa="work-interest-types-change-link">
+            <a class="govuk-link" href="/prisoners/{{ prisonerSummary.prisonNumber }}/induction/work-interest-types" data-qa="work-interest-types-change-link">
               Change<span class="govuk-visually-hidden"> type of work</span>
             </a>
           </dd>
@@ -208,14 +169,7 @@ questions are different.
             </ul>
           </dd>
           <dd class="govuk-summary-list__actions govuk-!-display-none-print">
-            {%- set workInterestRolesChangeLinkUrl -%}
-              {%- if featureToggles.induction.update.enabled -%}
-                /prisoners/{{ prisonerSummary.prisonNumber }}/induction/work-interest-roles
-              {%- else -%}
-                {{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}particular-job-interests/update
-              {%- endif -%}
-            {%- endset -%}
-            <a class="govuk-link" href="{{ workInterestRolesChangeLinkUrl }}" data-qa="work-interest-roles-change-link">
+            <a class="govuk-link" href="/prisoners/{{ prisonerSummary.prisonNumber }}/induction/work-interest-roles" data-qa="work-interest-roles-change-link">
               Change<span class="govuk-visually-hidden"> specific job role of interest</span>
             </a>
           </dd>

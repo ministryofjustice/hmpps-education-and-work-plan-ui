@@ -167,7 +167,6 @@ export default {
   domain: get('INGRESS_URL', 'http://localhost:3000', requiredInProduction),
   environmentName: get('ENVIRONMENT_NAME', ''),
   dpsHomeUrl: get('DPS_URL', 'http://localhost:3000/', requiredInProduction),
-  ciagInductionUrl: get('CIAG_INDUCTION_UI_URL', 'http://localhost:3000', requiredInProduction),
   applicationInsights: {
     connectionString: get('APPLICATIONINSIGHTS_CONNECTION_STRING', null),
   },
@@ -177,14 +176,6 @@ export default {
   ),
   featureToggles: {
     // someToggleEnabled: toBoolean(get('SOME_TOGGLE_ENABLED', false)),
-    induction: {
-      create: {
-        enabled: toBoolean(get('CREATE_INDUCTION_ENABLED', false, requiredInProduction)),
-      },
-      update: {
-        enabled: toBoolean(get('UPDATE_INDUCTION_ENABLED', false, requiredInProduction)),
-      },
-    },
     goals: {
       archiveEnabled: toBoolean(get('ARCHIVE_GOALS_ENABLED', false, requiredInProduction)),
     },

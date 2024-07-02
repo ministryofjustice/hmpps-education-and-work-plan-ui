@@ -27,14 +27,7 @@
           {% endif %}
         </dd>
         <dd class="govuk-summary-list__actions govuk-!-display-none-print">
-          {%- set inPrisonWorkChangeLinkUrl -%}
-            {%- if featureToggles.induction.update.enabled -%}
-              /prisoners/{{ prisonerSummary.prisonNumber }}/induction/in-prison-work
-            {%- else -%}
-              {{ ciagInductionUrl }}/plan/create/{{ prisonerSummary.prisonNumber }}/in-prison-work/update
-            {%- endif -%}
-          {%- endset -%}
-          <a class="govuk-link" href="{{ inPrisonWorkChangeLinkUrl }}" data-qa="in-prison-work-change-link">
+          <a class="govuk-link" href="/prisoners/{{ prisonerSummary.prisonNumber }}/induction/in-prison-work" data-qa="in-prison-work-change-link">
             {{ 'Change' if inductionHasInPrisonWorkInterestsRecorded else 'Add' }}<span class="govuk-visually-hidden"> work interests whilst in prison</span>
           </a>
         </dd>
