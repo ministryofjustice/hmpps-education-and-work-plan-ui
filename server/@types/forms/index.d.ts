@@ -68,6 +68,11 @@ declare module 'forms' {
       | 'OTHER'
     reasonOther?: string
   }
+
+  export interface UnarchiveGoalForm {
+    reference: string
+    title: string
+  }
 }
 
 /**

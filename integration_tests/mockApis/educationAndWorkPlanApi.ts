@@ -757,12 +757,28 @@ const archiveGoal = (
     },
   })
 
+const unarchiveGoal = (
+  prisonNumber = 'G6115VJ',
+  goalReference = '10efc562-be8f-4675-9283-9ede0c19dade',
+): SuperAgentRequest =>
+  stubFor({
+    request: {
+      method: 'PUT',
+      urlPattern: `/action-plans/${prisonNumber}/goals/${goalReference}/unarchive`,
+    },
+    response: {
+      status: 204,
+      headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+    },
+  })
+
 export default {
   createGoals,
   getActionPlan,
   updateGoal,
   updateGoal500Error,
   archiveGoal,
+  unarchiveGoal,
   getActionPlanForPrisonerWithNoGoals,
   getActionPlan500Error,
   stubActionPlansList,

@@ -1,5 +1,5 @@
 import nock from 'nock'
-import type { ArchiveGoalRequest } from 'educationAndWorkPlanApiClient'
+import type { ArchiveGoalRequest, UnarchiveGoalRequest } from 'educationAndWorkPlanApiClient'
 import config from '../config'
 import EducationAndWorkPlanClient from './educationAndWorkPlanClient'
 import { aValidActionPlanResponseWithOneGoal } from '../testsupport/actionPlanResponseTestDataBuilder'
@@ -443,6 +443,7 @@ describe('educationAndWorkPlanClient', () => {
       }
     })
   })
+
   describe('archiveGoal', () => {
     const prisonNumber = 'A1234BC'
     const systemToken = 'a-system-token'
@@ -452,6 +453,7 @@ describe('educationAndWorkPlanClient', () => {
       goalReference,
       reason,
     }
+
     it('should archive Goal', async () => {
       // Given
       const expectedResponseBody = {}
@@ -481,6 +483,50 @@ describe('educationAndWorkPlanClient', () => {
       // When
       try {
         await educationAndWorkPlanClient.archiveGoal(prisonNumber, archiveGoalRequest, systemToken)
+      } catch (e) {
+        // Then
+        expect(nock.isDone()).toBe(true)
+        expect(e.status).toEqual(500)
+        expect(e.data).toEqual(expectedResponseBody)
+      }
+    })
+  })
+
+  describe('unarchiveGoal', () => {
+    const prisonNumber = 'A1234BC'
+    const systemToken = 'a-system-token'
+    const goalReference = 'c77cd2fb-40e0-4354-982a-5c8017e92b26'
+    const unarchiveGoalRequest: UnarchiveGoalRequest = { goalReference }
+
+    it('should unarchive Goal', async () => {
+      // Given
+      const expectedResponseBody = {}
+      educationAndWorkPlanApi
+        .put(`/action-plans/${prisonNumber}/goals/${goalReference}/unarchive`, unarchiveGoalRequest)
+        .reply(204, expectedResponseBody)
+
+      // When
+      const actual = await educationAndWorkPlanClient.unarchiveGoal(prisonNumber, unarchiveGoalRequest, systemToken)
+
+      // Then
+      expect(nock.isDone()).toBe(true)
+      expect(actual).toEqual(expectedResponseBody)
+    })
+
+    it('should not unarchive Goal given API returns an error response', async () => {
+      // Given
+      const expectedResponseBody = {
+        status: 500,
+        userMessage: 'An unexpected error occurred',
+        developerMessage: 'An unexpected error occurred',
+      }
+      educationAndWorkPlanApi
+        .put(`/action-plans/${prisonNumber}/goals/${goalReference}/unarchive`, unarchiveGoalRequest)
+        .reply(500, expectedResponseBody)
+
+      // When
+      try {
+        await educationAndWorkPlanClient.unarchiveGoal(prisonNumber, unarchiveGoalRequest, systemToken)
       } catch (e) {
         // Then
         expect(nock.isDone()).toBe(true)
