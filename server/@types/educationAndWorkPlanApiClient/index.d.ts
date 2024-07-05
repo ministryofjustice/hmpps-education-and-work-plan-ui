@@ -9,6 +9,7 @@ declare module 'educationAndWorkPlanApiClient' {
   export type UpdateStepRequest = components['schemas']['UpdateStepRequest']
 
   export type ArchiveGoalRequest = components['schemas']['ArchiveGoalRequest']
+  export type UnarchiveGoalRequest = components['schemas']['UnarchiveGoalRequest']
 
   export type ActionPlanResponse = components['schemas']['ActionPlanResponse']
   export type GoalResponse = components['schemas']['GoalResponse']

@@ -13,6 +13,7 @@ import retrievePrisonerSummaryIfNotInSession from './routerRequestHandlers/retri
 import { checkPageViewAuditted } from '../middleware/auditMiddleware'
 import notesRoutes from './notes'
 import archiveGoal from './archiveGoal'
+import unarchiveGoal from './unarchiveGoal'
 
 export default function routes(services: Services): Router {
   const router = Router()
@@ -31,6 +32,7 @@ export default function routes(services: Services): Router {
   createGoal(router, services)
   updateGoal(router, services)
   archiveGoal(router, services)
+  unarchiveGoal(router, services)
 
   createInduction(router, services)
   updateInduction(router, services)

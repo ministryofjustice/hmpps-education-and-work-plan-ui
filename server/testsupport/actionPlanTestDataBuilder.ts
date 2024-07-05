@@ -30,11 +30,17 @@ const aValidActionPlanWithOneGoal = (options?: {
   })
 }
 
-const aValidGoal = (options?: { goalReference?: string; steps?: Array<Step>; sequenceNumber?: number }): Goal => {
+const aValidGoal = (options?: {
+  title?: string
+  goalReference?: string
+  steps?: Array<Step>
+  sequenceNumber?: number
+  status?: 'ACTIVE' | 'COMPLETED' | 'ARCHIVED'
+}): Goal => {
   return {
     goalReference: options?.goalReference || 'd38a6c41-13d1-1d05-13c2-24619966119b',
-    title: 'Learn Spanish',
-    status: 'ACTIVE',
+    title: options?.title || 'Learn Spanish',
+    status: options?.status || 'ACTIVE',
     steps: options?.steps || [aValidStep(), anotherValidStep()],
     createdBy: 'asmith_gen',
     createdByDisplayName: 'Alex Smith',

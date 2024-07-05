@@ -1,6 +1,6 @@
-import type { ArchiveGoalDto } from 'dto'
-import type { ArchiveGoalRequest } from 'educationAndWorkPlanApiClient'
-import { EducationAndWorkPlanClient } from '../data'
+import type { ArchiveGoalDto, UnarchiveGoalDto } from 'dto'
+import type { ArchiveGoalRequest, UnarchiveGoalRequest } from 'educationAndWorkPlanApiClient'
+import EducationAndWorkPlanClient from '../data/educationAndWorkPlanClient'
 import EducationAndWorkPlanService from './educationAndWorkPlanService'
 import { aValidCreateGoalDtoWithOneStep } from '../testsupport/createGoalDtoTestDataBuilder'
 import { aValidActionPlanWithOneGoal } from '../testsupport/actionPlanTestDataBuilder'
@@ -10,17 +10,13 @@ import { aValidUpdateGoalRequestWithOneUpdatedStep } from '../testsupport/update
 import { aValidCreateGoalsRequestWithOneGoal } from '../testsupport/createGoalsRequestTestDataBuilder'
 import ReasonToArchiveGoalValue from '../enums/ReasonToArchiveGoalValue'
 
-describe('educationAndWorkPlanService', () => {
-  const educationAndWorkPlanClient = {
-    createGoals: jest.fn(),
-    updateGoal: jest.fn(),
-    archiveGoal: jest.fn(),
-    getActionPlan: jest.fn(),
-  }
+jest.mock('../data/educationAndWorkPlanClient')
 
-  const educationAndWorkPlanService = new EducationAndWorkPlanService(
-    educationAndWorkPlanClient as unknown as EducationAndWorkPlanClient,
-  )
+describe('educationAndWorkPlanService', () => {
+  const educationAndWorkPlanClient =
+    new EducationAndWorkPlanClient() as unknown as jest.Mocked<EducationAndWorkPlanClient>
+
+  const educationAndWorkPlanService = new EducationAndWorkPlanService(educationAndWorkPlanClient)
 
   beforeEach(() => {
     jest.resetAllMocks()
@@ -32,7 +28,6 @@ describe('educationAndWorkPlanService', () => {
       const userToken = 'a-user-token'
       const createGoalDto = aValidCreateGoalDtoWithOneStep()
       const createGoalsRequest = aValidCreateGoalsRequestWithOneGoal()
-      educationAndWorkPlanClient.createGoals.mockImplementation(() => Promise.resolve(createGoalDto))
 
       // When
       await educationAndWorkPlanService.createGoals([createGoalDto], userToken)
@@ -46,7 +41,7 @@ describe('educationAndWorkPlanService', () => {
       const userToken = 'a-user-token'
       const createGoalDto = aValidCreateGoalDtoWithOneStep()
 
-      educationAndWorkPlanClient.createGoals.mockImplementation(() => Promise.reject(Error('Service Unavailable')))
+      educationAndWorkPlanClient.createGoals.mockRejectedValue(Error('Service Unavailable'))
 
       // When
       const actual = await educationAndWorkPlanService.createGoals([createGoalDto], userToken).catch(error => {
@@ -64,7 +59,7 @@ describe('educationAndWorkPlanService', () => {
       const prisonNumber = 'A1234BC'
       const userToken = 'a-user-token'
       const actionPlanResponse = aValidActionPlanResponseWithOneGoal()
-      educationAndWorkPlanClient.getActionPlan.mockImplementation(() => Promise.resolve(actionPlanResponse))
+      educationAndWorkPlanClient.getActionPlan.mockResolvedValue(actionPlanResponse)
       const expectedActionPlan = aValidActionPlanWithOneGoal()
 
       // When
@@ -80,7 +75,7 @@ describe('educationAndWorkPlanService', () => {
       const prisonNumber = 'A1234BC'
       const userToken = 'a-user-token'
 
-      educationAndWorkPlanClient.getActionPlan.mockImplementation(() => Promise.reject(Error('Service Unavailable')))
+      educationAndWorkPlanClient.getActionPlan.mockRejectedValue(Error('Service Unavailable'))
 
       // When
       const actual = await educationAndWorkPlanService.getActionPlan(prisonNumber, userToken)
@@ -98,7 +93,6 @@ describe('educationAndWorkPlanService', () => {
       const userToken = 'a-user-token'
       const updateGoalDto = aValidUpdateGoalDtoWithOneStep()
       const updateGoalRequest = aValidUpdateGoalRequestWithOneUpdatedStep()
-      educationAndWorkPlanClient.updateGoal.mockImplementation(() => Promise.resolve(updateGoalDto))
 
       // When
       await educationAndWorkPlanService.updateGoal(prisonNumber, updateGoalDto, userToken)
@@ -113,7 +107,7 @@ describe('educationAndWorkPlanService', () => {
       const userToken = 'a-user-token'
       const updateGoalDto = aValidUpdateGoalDtoWithOneStep()
 
-      educationAndWorkPlanClient.updateGoal.mockImplementation(() => Promise.reject(Error('Service Unavailable')))
+      educationAndWorkPlanClient.updateGoal.mockRejectedValue(Error('Service Unavailable'))
 
       // When
       const actual = await educationAndWorkPlanService
@@ -141,10 +135,9 @@ describe('educationAndWorkPlanService', () => {
       goalReference,
       reason,
     }
+
     it('should archive Goal', async () => {
       // Given
-
-      educationAndWorkPlanClient.archiveGoal.mockImplementation(() => Promise.resolve(archiveGoalDto))
 
       // When
       await educationAndWorkPlanService.archiveGoal(archiveGoalDto, userToken)
@@ -155,10 +148,45 @@ describe('educationAndWorkPlanService', () => {
 
     it('should not archive Goal given educationAndWorkPlanClient returns an error', async () => {
       // Given
-      educationAndWorkPlanClient.archiveGoal.mockImplementation(() => Promise.reject(Error('Service Unavailable')))
+      educationAndWorkPlanClient.archiveGoal.mockRejectedValue(Error('Service Unavailable'))
 
       // When
       const actual = await educationAndWorkPlanService.archiveGoal(archiveGoalDto, userToken).catch(error => {
+        return error
+      })
+
+      // Then
+      expect(actual).toEqual(Error('Service Unavailable'))
+    })
+  })
+
+  describe('unarchiveGoal', () => {
+    const prisonNumber = 'A1234BC'
+    const userToken = 'a-user-token'
+    const goalReference = '95b18362-fe56-4234-9ad2-11ef98b974a3'
+    const unarchiveGoalDto: UnarchiveGoalDto = { prisonNumber, goalReference }
+    const unarchiveGoalRequest: UnarchiveGoalRequest = { goalReference }
+
+    it('should unarchive Goal', async () => {
+      // Given
+
+      // When
+      await educationAndWorkPlanService.unarchiveGoal(unarchiveGoalDto, userToken)
+
+      // Then
+      expect(educationAndWorkPlanClient.unarchiveGoal).toHaveBeenCalledWith(
+        prisonNumber,
+        unarchiveGoalRequest,
+        userToken,
+      )
+    })
+
+    it('should not unarchive Goal given educationAndWorkPlanClient returns an error', async () => {
+      // Given
+      educationAndWorkPlanClient.unarchiveGoal.mockRejectedValue(Error('Service Unavailable'))
+
+      // When
+      const actual = await educationAndWorkPlanService.unarchiveGoal(unarchiveGoalDto, userToken).catch(error => {
         return error
       })
 
