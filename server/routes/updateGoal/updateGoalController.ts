@@ -20,7 +20,7 @@ export default class UpdateGoalController {
     if (req.session.updateGoalForm) {
       updateGoalForm = req.session.updateGoalForm
     } else {
-      const actionPlan = await this.educationAndWorkPlanService.getActionPlan(prisonNumber, req.user.token)
+      const actionPlan = await this.educationAndWorkPlanService.getActionPlan(prisonNumber, req.user.username)
       if (actionPlan.problemRetrievingData) {
         return next(createError(500, `Error retrieving plan for prisoner ${prisonNumber}`))
       }
@@ -106,7 +106,7 @@ export default class UpdateGoalController {
     const { prisonId } = prisonerSummary
     const updateGoalDto = toUpdateGoalDto(updateGoalForm, prisonId)
     try {
-      await this.educationAndWorkPlanService.updateGoal(prisonNumber, updateGoalDto, req.user.token)
+      await this.educationAndWorkPlanService.updateGoal(prisonNumber, updateGoalDto, req.user.username)
       return res.redirect(`/plan/${prisonNumber}/view/overview`)
     } catch (e) {
       return next(createError(500, `Error updating plan for prisoner ${prisonNumber}`))

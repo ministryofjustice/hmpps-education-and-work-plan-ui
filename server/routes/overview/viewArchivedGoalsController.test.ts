@@ -9,7 +9,10 @@ import ViewArchivedGoalsController from './viewArchivedGoalsController'
 jest.mock('../../services/educationAndWorkPlanService')
 
 describe('viewArchivedGoalsController', () => {
-  const educationAndWorkPlanService = new EducationAndWorkPlanService(null) as jest.Mocked<EducationAndWorkPlanService>
+  const educationAndWorkPlanService = new EducationAndWorkPlanService(
+    null,
+    null,
+  ) as jest.Mocked<EducationAndWorkPlanService>
 
   const controller = new ViewArchivedGoalsController(educationAndWorkPlanService)
 

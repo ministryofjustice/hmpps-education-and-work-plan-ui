@@ -3,6 +3,7 @@ import EducationAndWorkPlanClient from '../data/educationAndWorkPlanClient'
 import toTimeline from '../data/mappers/timelineMapper'
 import logger from '../../logger'
 import PrisonService from './prisonService'
+import { HmppsAuthClient } from '../data'
 
 const PLP_TIMELINE_EVENTS = [
   'ACTION_PLAN_CREATED',
@@ -19,13 +20,15 @@ export default class TimelineService {
   constructor(
     private readonly educationAndWorkPlanClient: EducationAndWorkPlanClient,
     private readonly prisonService: PrisonService,
+    private readonly hmppsAuthClient: HmppsAuthClient,
   ) {}
 
-  async getTimeline(prisonNumber: string, token: string, username: string): Promise<Timeline> {
+  async getTimeline(prisonNumber: string, username: string): Promise<Timeline> {
+    const systemToken = await this.hmppsAuthClient.getSystemClientToken(username)
     try {
       const timelineResponse = await this.educationAndWorkPlanClient.getTimeline(
         prisonNumber,
-        token,
+        systemToken,
         SUPPORTED_TIMELINE_EVENTS,
       )
 

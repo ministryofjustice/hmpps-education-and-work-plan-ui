@@ -22,7 +22,7 @@ describe('hopingToWorkOnReleaseUpdateController', () => {
     typeof toCreateOrUpdateInductionDto
   >
 
-  const inductionService = new InductionService(null) as jest.Mocked<InductionService>
+  const inductionService = new InductionService(null, null) as jest.Mocked<InductionService>
   const controller = new HopingToWorkOnReleaseUpdateController(inductionService)
 
   const prisonNumber = 'A1234BC'
@@ -163,7 +163,7 @@ describe('hopingToWorkOnReleaseUpdateController', () => {
       `should update Induction given form is submitted with value from YES to %s`,
       async (hopingToGetWorkValue: HopingToGetWorkValue) => {
         // Given
-        req.user.token = 'some-token'
+        req.user.username = 'a-dps-user'
 
         const prisonerSummary = aValidPrisonerSummary()
         req.session.prisonerSummary = prisonerSummary
@@ -195,7 +195,7 @@ describe('hopingToWorkOnReleaseUpdateController', () => {
         expect(updatedInduction.workOnRelease.hopingToWork).toEqual(hopingToGetWorkValue)
         expect(updatedInduction.futureWorkInterests.interests).toEqual([])
 
-        expect(inductionService.updateInduction).toHaveBeenCalledWith(prisonNumber, updateInductionDto, 'some-token')
+        expect(inductionService.updateInduction).toHaveBeenCalledWith(prisonNumber, updateInductionDto, 'a-dps-user')
         expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/view/work-and-interests`)
         expect(req.session.hopingToWorkOnReleaseForm).toBeUndefined()
         expect(req.session.inductionDto).toBeUndefined()
@@ -237,7 +237,7 @@ describe('hopingToWorkOnReleaseUpdateController', () => {
 
     it('should not update Induction given error calling service', async () => {
       // Given
-      req.user.token = 'some-token'
+      req.user.username = 'a-dps-user'
       req.params.prisonNumber = prisonNumber
 
       const prisonerSummary = aValidPrisonerSummary()
@@ -274,7 +274,7 @@ describe('hopingToWorkOnReleaseUpdateController', () => {
       expect(mockedCreateOrUpdateInductionDtoMapper).toHaveBeenCalledWith(prisonerSummary.prisonId, updatedInduction)
       expect(updatedInduction.workOnRelease.hopingToWork).toEqual(HopingToGetWorkValue.NOT_SURE)
 
-      expect(inductionService.updateInduction).toHaveBeenCalledWith(prisonNumber, updateInductionDto, 'some-token')
+      expect(inductionService.updateInduction).toHaveBeenCalledWith(prisonNumber, updateInductionDto, 'a-dps-user')
       expect(next).toHaveBeenCalledWith(expectedError)
       expect(req.session.hopingToWorkOnReleaseForm).toEqual(hopingToWorkOnReleaseForm)
       const updatedInductionDto = req.session.inductionDto

@@ -63,7 +63,7 @@ export default class WorkInterestTypesUpdateController extends WorkInterestTypes
     // Else we can simply call the API to update the Induction and return to Work & Interests tab
     try {
       const updateInductionDto = toCreateOrUpdateInductionDto(prisonId, updatedInduction)
-      await this.inductionService.updateInduction(prisonNumber, updateInductionDto, req.user.token)
+      await this.inductionService.updateInduction(prisonNumber, updateInductionDto, req.user.username)
 
       req.session.workInterestTypesForm = undefined
       req.session.inductionDto = undefined

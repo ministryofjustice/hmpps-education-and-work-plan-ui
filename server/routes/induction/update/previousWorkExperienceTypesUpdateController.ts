@@ -73,7 +73,11 @@ export default class PreviousWorkExperienceTypesUpdateController extends Previou
 
         try {
           const updateInductionDto = toCreateOrUpdateInductionDto(prisonerSummary.prisonId, updatedInduction)
-          await this.inductionService.updateInduction(prisonerSummary.prisonNumber, updateInductionDto, req.user.token)
+          await this.inductionService.updateInduction(
+            prisonerSummary.prisonNumber,
+            updateInductionDto,
+            req.user.username,
+          )
           req.session.previousWorkExperienceTypesForm = undefined
           req.session.inductionDto = undefined
         } catch (e) {

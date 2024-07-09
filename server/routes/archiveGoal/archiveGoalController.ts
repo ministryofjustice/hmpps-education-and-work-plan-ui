@@ -18,7 +18,7 @@ export default class ArchiveGoalController {
     if (req.session.archiveGoalForm && req.session.archiveGoalForm.reference === goalReference) {
       archiveGoalForm = req.session.archiveGoalForm
     } else {
-      const actionPlan = await this.educationAndWorkPlanService.getActionPlan(prisonNumber, req.user.token)
+      const actionPlan = await this.educationAndWorkPlanService.getActionPlan(prisonNumber, req.user.username)
       if (actionPlan.problemRetrievingData) {
         return next(createError(500, `Error retrieving plan for prisoner ${prisonNumber}`))
       }
@@ -71,7 +71,7 @@ export default class ArchiveGoalController {
 
     const archiveGoalDto = toArchiveGoalDto(prisonNumber, archiveGoalForm)
     try {
-      await this.educationAndWorkPlanService.archiveGoal(archiveGoalDto, req.user.token)
+      await this.educationAndWorkPlanService.archiveGoal(archiveGoalDto, req.user.username)
       return res.redirectWithSuccess(`/plan/${prisonNumber}/view/overview`, 'Goal archived')
     } catch (e) {
       return next(createError(500, `Error archiving goal for prisoner ${prisonNumber}`))

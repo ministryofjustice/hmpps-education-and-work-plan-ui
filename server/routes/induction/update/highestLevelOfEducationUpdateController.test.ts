@@ -19,7 +19,7 @@ describe('highestLevelOfEducationUpdateController', () => {
     typeof toCreateOrUpdateInductionDto
   >
 
-  const inductionService = new InductionService(null) as jest.Mocked<InductionService>
+  const inductionService = new InductionService(null, null) as jest.Mocked<InductionService>
   const controller = new HighestLevelOfEducationUpdateController(inductionService)
 
   const prisonNumber = 'A1234BC'
@@ -38,7 +38,7 @@ describe('highestLevelOfEducationUpdateController', () => {
     req = {
       session: { prisonerSummary } as SessionData,
       body: {},
-      user: { token: 'some-token' } as Express.User,
+      user: { username: 'a-dps-user' } as Express.User,
       params: { prisonNumber } as Record<string, string>,
       path: `/prisoners/${prisonNumber}/induction/highest-level-of-education`,
     } as unknown as Request
@@ -206,7 +206,7 @@ describe('highestLevelOfEducationUpdateController', () => {
       expect(updatedInduction.previousQualifications.educationLevel).toEqual(expectedUpdatedHighestLevelOfEducation)
       expect(updatedInduction.previousQualifications.qualifications).toEqual(expectedQualifications)
 
-      expect(inductionService.updateInduction).toHaveBeenCalledWith(prisonNumber, updateInductionDto, 'some-token')
+      expect(inductionService.updateInduction).toHaveBeenCalledWith(prisonNumber, updateInductionDto, 'a-dps-user')
       expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/view/education-and-training`)
       expect(req.session.highestLevelOfEducationForm).toBeUndefined()
       expect(req.session.inductionDto).toBeUndefined()
@@ -240,7 +240,7 @@ describe('highestLevelOfEducationUpdateController', () => {
       expect(updatedInduction.previousQualifications.educationLevel).toEqual(expectedUpdatedHighestLevelOfEducation)
       expect(updatedInduction.previousQualifications.qualifications).toEqual(expectedQualifications)
 
-      expect(inductionService.updateInduction).toHaveBeenCalledWith(prisonNumber, updateInductionDto, 'some-token')
+      expect(inductionService.updateInduction).toHaveBeenCalledWith(prisonNumber, updateInductionDto, 'a-dps-user')
       expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/view/education-and-training`)
       expect(req.session.highestLevelOfEducationForm).toBeUndefined()
       expect(req.session.inductionDto).toBeUndefined()
@@ -279,7 +279,7 @@ describe('highestLevelOfEducationUpdateController', () => {
       expect(updatedInduction.previousQualifications.educationLevel).toEqual(expectedUpdatedHighestLevelOfEducation)
       expect(updatedInduction.previousQualifications.qualifications).toEqual(expectedQualifications)
 
-      expect(inductionService.updateInduction).toHaveBeenCalledWith(prisonNumber, updateInductionDto, 'some-token')
+      expect(inductionService.updateInduction).toHaveBeenCalledWith(prisonNumber, updateInductionDto, 'a-dps-user')
       expect(next).toHaveBeenCalledWith(expectedError)
       expect(req.session.highestLevelOfEducationForm).toBeUndefined()
       expect(req.session.inductionDto).toEqual(updatedInduction)

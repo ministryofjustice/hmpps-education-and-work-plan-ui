@@ -31,8 +31,8 @@ export const services = () => {
   const auditService = new AuditService(hmppsAuditClient)
   const userService = new UserService(manageUsersApiClient)
   const prisonerSearchService = new PrisonerSearchService(hmppsAuthClient, prisonerSearchClient)
-  const educationAndWorkPlanService = new EducationAndWorkPlanService(educationAndWorkPlanClient)
-  const inductionService = new InductionService(educationAndWorkPlanClient)
+  const educationAndWorkPlanService = new EducationAndWorkPlanService(educationAndWorkPlanClient, hmppsAuthClient)
+  const inductionService = new InductionService(educationAndWorkPlanClient, hmppsAuthClient)
   const prisonService = new PrisonService(prisonRegisterStore, prisonRegisterClient, hmppsAuthClient)
   const curiousService = new CuriousService(hmppsAuthClient, curiousClient, prisonService)
   const frontendComponentService = new FrontendComponentService(frontendComponentApiClient)
@@ -42,7 +42,7 @@ export const services = () => {
     educationAndWorkPlanClient,
     ciagInductionClient,
   )
-  const timelineService = new TimelineService(educationAndWorkPlanClient, prisonService)
+  const timelineService = new TimelineService(educationAndWorkPlanClient, prisonService, hmppsAuthClient)
 
   return {
     applicationInfo,

@@ -34,7 +34,6 @@ describe('functionalSkillsController', () => {
     jest.resetAllMocks()
     req.params = {}
     req.session = {} as SessionData
-    req.user.token = 'some-token'
     req.user.username = 'AUSER_GEN'
   })
 

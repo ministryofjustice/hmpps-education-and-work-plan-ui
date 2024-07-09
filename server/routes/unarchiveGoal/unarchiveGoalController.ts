@@ -12,7 +12,7 @@ export default class UnarchiveGoalController {
     const { prisonNumber, goalReference } = req.params
     const { prisonerSummary } = req.session
 
-    const actionPlan = await this.educationAndWorkPlanService.getActionPlan(prisonNumber, req.user.token)
+    const actionPlan = await this.educationAndWorkPlanService.getActionPlan(prisonNumber, req.user.username)
     if (actionPlan.problemRetrievingData) {
       return next(createError(500, `Error retrieving plan for prisoner ${prisonNumber}`))
     }
@@ -37,7 +37,7 @@ export default class UnarchiveGoalController {
 
     const unarchiveGoalDto = toUnarchiveGoalDto(prisonNumber, unarchiveGoalForm)
     try {
-      await this.educationAndWorkPlanService.unarchiveGoal(unarchiveGoalDto, req.user.token)
+      await this.educationAndWorkPlanService.unarchiveGoal(unarchiveGoalDto, req.user.username)
       return res.redirectWithSuccess(`/plan/${prisonNumber}/view/overview`, 'Goal reactivated')
     } catch (e) {
       return next(createError(500, `Error unarchiving goal for prisoner ${prisonNumber}`))

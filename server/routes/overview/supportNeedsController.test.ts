@@ -27,10 +27,7 @@ describe('supportNeedsController', () => {
     jest.resetAllMocks()
     req = {
       session: { prisonerSummary },
-      user: {
-        username: 'a-dps-user',
-        token: 'a-user-token',
-      },
+      user: { username: 'a-dps-user' },
       params: { prisonNumber },
     } as unknown as Request
   })

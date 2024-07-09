@@ -31,7 +31,6 @@ describe('workInterestTypesCreateController', () => {
     jest.resetAllMocks()
     req.session = { prisonerSummary } as SessionData
     req.body = {}
-    req.user = { token: 'some-token' } as Express.User
     req.params = { prisonNumber }
     req.path = `/prisoners/${prisonNumber}/create-induction/work-interest-types`
   })

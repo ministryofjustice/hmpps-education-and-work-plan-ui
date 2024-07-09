@@ -29,7 +29,6 @@ describe('qualificationLevelUpdateController', () => {
     jest.resetAllMocks()
     req.session = { prisonerSummary } as SessionData
     req.body = {}
-    req.user = { token: 'some-token' } as Express.User
     req.params = { prisonNumber }
     req.path = `/prisoners/${prisonNumber}/induction/qualification-level`
   })

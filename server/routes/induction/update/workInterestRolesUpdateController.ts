@@ -45,7 +45,7 @@ export default class WorkInterestRolesUpdateController extends WorkInterestRoles
 
     try {
       const updateInductionDto = toCreateOrUpdateInductionDto(prisonId, updatedInduction)
-      await this.inductionService.updateInduction(prisonNumber, updateInductionDto, req.user.token)
+      await this.inductionService.updateInduction(prisonNumber, updateInductionDto, req.user.username)
 
       req.session.inductionDto = undefined
       return res.redirect(`/plan/${prisonNumber}/view/work-and-interests`)
