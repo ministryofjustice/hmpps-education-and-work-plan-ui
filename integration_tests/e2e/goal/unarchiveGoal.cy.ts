@@ -1,10 +1,17 @@
 import Page from '../../pages/page'
 import UnarchiveGoalPage from '../../pages/goal/UnarchiveGoalPage'
 import OverviewPage from '../../pages/overview/OverviewPage'
-import AuthorisationErrorPage from '../../pages/authorisationError'
-import { putRequestedFor } from '../../mockApis/wiremock/requestPatternBuilder'
+// import AuthorisationErrorPage from '../../pages/authorisationError'
+// import { putRequestedFor } from '../../mockApis/wiremock/requestPatternBuilder'
+// import { urlEqualTo } from '../../mockApis/wiremock/matchers/url'
+// import { matchingJsonPath } from '../../mockApis/wiremock/matchers/content'
+import GoalStatusValue from '../../../server/enums/goalStatusValue'
+import { aValidGoalResponse } from '../../../server/testsupport/actionPlanResponseTestDataBuilder'
 import { urlEqualTo } from '../../mockApis/wiremock/matchers/url'
+import { putRequestedFor } from '../../mockApis/wiremock/requestPatternBuilder'
 import { matchingJsonPath } from '../../mockApis/wiremock/matchers/content'
+import AuthorisationErrorPage from '../../pages/authorisationError'
+import ViewArchivedGoalsPage from '../../pages/goal/ViewArchivedGoalsPage'
 
 context('Unarchive a goal', () => {
   const prisonNumber = 'G6115VJ'
@@ -34,6 +41,25 @@ context('Unarchive a goal', () => {
 
     // When
     cy.visit(`/plan/${prisonNumber}/goals/${goalReference}/unarchive`)
+
+    // Then
+    const unarchiveGoalPage = Page.verifyOnPage(UnarchiveGoalPage)
+    unarchiveGoalPage.isForGoal(goalReference)
+  })
+
+  it('should be able to navigate to the unarchive goal page from the overview page', () => {
+    // Given
+    cy.signIn()
+    cy.visit(`/plan/${prisonNumber}/view/overview`)
+    const archivedGoal = { ...aValidGoalResponse(), status: GoalStatusValue.ARCHIVED, goalReference }
+    cy.task('getGoalsByStatus', { status: GoalStatusValue.ARCHIVED, goals: [archivedGoal] })
+    const overviewPage = Page.verifyOnPage(OverviewPage)
+
+    // When
+    overviewPage //
+      .clickViewArchivedGoalsButton()
+      .hasNumberOfGoals(1)
+      .clickReactivateButtonForFirstGoal()
 
     // Then
     const unarchiveGoalPage = Page.verifyOnPage(UnarchiveGoalPage)
@@ -74,8 +100,7 @@ context('Unarchive a goal', () => {
     )
   })
 
-  // TODO - enable this test when the Archived Goals page is complete
-  it.skip(`should not unarchive goal and display Archived Goals page given user clicks No`, () => {
+  it(`should not unarchive goal and display Archived Goals page given user clicks No`, () => {
     // Given
     cy.signIn()
 
@@ -86,8 +111,7 @@ context('Unarchive a goal', () => {
     unarchiveGoalPage.clickNo()
 
     // Then
-    // TODO - add the reference to the Archived Goals page here
-    // Page.verifyOnPage(xxxPage)
+    Page.verifyOnPage(ViewArchivedGoalsPage)
     cy.wiremockVerifyNoInteractions(
       putRequestedFor(urlEqualTo(`/action-plans/${prisonNumber}/goals/${goalReference}/unarchive`)),
     )

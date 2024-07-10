@@ -5,6 +5,7 @@ import UpdateGoalPage from '../goal/UpdateGoalPage'
 import FunctionalSkillsPage from '../functionalSkills/FunctionalSkillsPage'
 import HopingToWorkOnReleasePage from '../induction/HopingToWorkOnReleasePage'
 import ArchiveGoalPage from '../goal/ArchiveGoalPage'
+import ViewArchivedGoalsPage from '../goal/ViewArchivedGoalsPage'
 
 /**
  * Cypress page class representing the Overview tab of the Overview Page
@@ -50,6 +51,11 @@ export default class OverviewPage extends Page {
   clickAddGoalButton(): CreateGoalsPage {
     this.addGoalButton().click()
     return Page.verifyOnPage(CreateGoalsPage)
+  }
+
+  clickViewArchivedGoalsButton(): ViewArchivedGoalsPage {
+    this.viewArchivedGoalsButton().click()
+    return Page.verifyOnPage(ViewArchivedGoalsPage)
   }
 
   clickMakeProgressPlan(): HopingToWorkOnReleasePage {
@@ -163,6 +169,8 @@ export default class OverviewPage extends Page {
   private activeTab = (): PageElement => cy.get('.moj-sub-navigation__link[aria-current=page]')
 
   private addGoalButton = (): PageElement => cy.get('#add-goal-button')
+
+  private viewArchivedGoalsButton = (): PageElement => cy.get('#view-archived-goals-button')
 
   private functionalSkillsSidebarTable = (): PageElement => cy.get('#functional-skills-sidebar-table')
 

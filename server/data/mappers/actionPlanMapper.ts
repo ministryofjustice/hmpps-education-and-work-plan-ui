@@ -3,25 +3,25 @@ import type { ActionPlan, Goal, Step } from 'viewModels'
 import dateComparator from '../../routes/dateComparator'
 
 const toActionPlan = (actionPlanResponse: ActionPlanResponse, problemRetrievingData: boolean): ActionPlan => {
-  const goalReferencesInCreationDateOrder = goalReferencesSortedByCreationDate(actionPlanResponse.goals)
+  const goals = toOrderedGoals(actionPlanResponse.goals)
   return {
     prisonNumber: actionPlanResponse.prisonNumber,
-    goals: actionPlanResponse.goals.map((goal: GoalResponse) => {
-      const goalSequenceNumber = goalReferencesInCreationDateOrder.indexOf(goal.goalReference) + 1
-      return toGoal(goal, goalSequenceNumber)
-    }),
+    goals,
     problemRetrievingData,
   }
 }
 
 const toGoals = (response: GetGoalsResponse): Goal[] => {
-  const goalReferencesInCreationDateOrder = goalReferencesSortedByCreationDate(response.goals)
-  return response.goals.map((goal: GoalResponse) => {
+  return toOrderedGoals(response.goals)
+}
+
+function toOrderedGoals(goals: GoalResponse[]): Goal[] {
+  const goalReferencesInCreationDateOrder = goalReferencesSortedByCreationDate(goals)
+  return goals.map((goal: GoalResponse) => {
     const goalSequenceNumber = goalReferencesInCreationDateOrder.indexOf(goal.goalReference) + 1
     return toGoal(goal, goalSequenceNumber)
   })
 }
-
 const toGoal = (goalResponse: GoalResponse, goalSequenceNumber: number): Goal => {
   return {
     goalReference: goalResponse.goalReference,
