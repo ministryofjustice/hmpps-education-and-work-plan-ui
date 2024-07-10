@@ -14,7 +14,7 @@ context('Prisoner Overview page - Post Induction', () => {
     cy.task('stubActionPlansList')
     cy.task('getPrisonerById')
     cy.task('stubGetInduction')
-    cy.task('getActionPlan')
+    cy.task('getGoalsByStatus')
     cy.task('stubLearnerProfile')
     cy.task('stubLearnerEducation')
   })
@@ -63,7 +63,6 @@ context('Prisoner Overview page - Post Induction', () => {
   it('should display prisoner Goals', () => {
     // Given
     cy.task('stubSignInAsUserWithViewAuthority')
-    cy.task('getActionPlan')
 
     cy.signIn()
     const prisonNumber = 'G6115VJ'
@@ -84,7 +83,7 @@ context('Prisoner Overview page - Post Induction', () => {
   it('should display goals section given prisoner has no goals', () => {
     // Given
     cy.task('stubSignInAsUserWithViewAuthority')
-    cy.task('getActionPlanForPrisonerWithNoGoals')
+    cy.task('getGoalsByStatus404')
 
     cy.signIn()
     const prisonNumber = 'G6115VJ'
@@ -104,7 +103,7 @@ context('Prisoner Overview page - Post Induction', () => {
   it('should display service unavailable message given EWP API returns a 500', () => {
     // Given
     cy.task('stubSignInAsUserWithViewAuthority')
-    cy.task('getActionPlan500Error')
+    cy.task('getGoalsByStatus500')
 
     cy.signIn()
     const prisonNumber = 'G6115VJ'

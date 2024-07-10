@@ -42,7 +42,7 @@ context(`Show the relevant screen after an Induction has been created`, () => {
     // Given
     const prisonNumber = 'G6115VJ'
     cy.signIn()
-    cy.task('getActionPlan', prisonNumber)
+    cy.task('getGoalsByStatus', { prisonNumber })
     cy.task('getPrisonerById', prisonNumber)
     cy.task('stubGetInduction', { prisonNumber })
 
@@ -61,7 +61,7 @@ context(`Show the relevant screen after an Induction has been created`, () => {
     // Given
     const prisonNumber = 'G6115VJ'
     cy.signIn()
-    cy.task('getActionPlan500Error', prisonNumber)
+    cy.task('getGoalsByStatus500', prisonNumber)
     cy.task('getPrisonerById', prisonNumber)
     cy.task('stubGetInduction', { prisonNumber })
 

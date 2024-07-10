@@ -6,8 +6,61 @@ import OverviewPage from '../../pages/overview/OverviewPage'
 import { putRequestedFor } from '../../mockApis/wiremock/requestPatternBuilder'
 import { urlEqualTo } from '../../mockApis/wiremock/matchers/url'
 import { matchingJsonPath } from '../../mockApis/wiremock/matchers/content'
+import GoalStatusValue from '../../../server/enums/goalStatusValue'
 
 context('Archive a goal', () => {
+  const prisonNumber = 'G6115VJ'
+  const goalToArchive = {
+    goalReference: '10efc562-be8f-4675-9283-9ede0c19dade',
+    title: 'Learn French',
+    status: 'ACTIVE',
+    steps: [
+      {
+        stepReference: '177e45eb-c8fe-438b-aa81-1bf9157efa05',
+        title: 'Book French course',
+        status: 'NOT_STARTED',
+        sequenceNumber: 1,
+      },
+      {
+        stepReference: '32992dd1-7dc6-4480-b2fc-61bc36a6a775',
+        title: 'Complete French course',
+        status: 'NOT_STARTED',
+        sequenceNumber: 2,
+      },
+    ],
+    createdBy: 'auser_gen',
+    createdAt: '2023-07-20T08:29:15.386Z',
+    updatedBy: 'auser_gen',
+    updatedAt: '2023-07-20T08:29:15.386Z',
+    targetCompletionDate: '2124-01-29',
+    notes: 'Billy will struggle to concentrate for long periods.',
+  }
+  const goalToKeep = {
+    goalReference: '09dfc562-be8f-4675-9283-9ede0c19cccc',
+    title: 'Learn Spanish',
+    status: 'ACTIVE',
+    steps: [
+      {
+        stepReference: '167e45eb-c8fe-438b-aa81-1bf9157efa05',
+        title: 'Book Spanish course',
+        status: 'NOT_STARTED',
+        sequenceNumber: 1,
+      },
+      {
+        stepReference: '29992dd1-7dc6-4480-b2fc-61bc36a6a775',
+        title: 'Complete Spanish course',
+        status: 'NOT_STARTED',
+        sequenceNumber: 2,
+      },
+    ],
+    createdBy: 'auser_gen',
+    createdAt: '2023-07-20T09:29:15.386Z',
+    updatedBy: 'auser_gen',
+    updatedAt: '2023-07-20T09:29:15.386Z',
+    targetCompletionDate: '2124-01-29',
+    notes: 'Billy will struggle to concentrate for long periods.',
+  }
+
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubSignInAsUserWithEditAuthority')
@@ -23,11 +76,16 @@ context('Archive a goal', () => {
     cy.task('stubLearnerProfile')
     cy.task('stubLearnerEducation')
     cy.task('archiveGoal')
+    cy.task('stubGetAllPrisons')
+    cy.task('getGoalsByStatus', {
+      prisonNumber: 'G6115VJ',
+      status: GoalStatusValue.ACTIVE,
+      goals: [goalToArchive, goalToKeep],
+    })
   })
 
   it('should be able to navigate directly to archive goal page', () => {
     // Given
-    const prisonNumber = 'G6115VJ'
     const goalReference = '10efc562-be8f-4675-9283-9ede0c19dade'
     cy.signIn()
 
@@ -41,7 +99,6 @@ context('Archive a goal', () => {
 
   it('should be able to navigate to archive goal page from overview', () => {
     // Given
-    const prisonNumber = 'G6115VJ'
     cy.signIn()
 
     cy.visit(`/plan/${prisonNumber}/view/overview`)
@@ -56,7 +113,6 @@ context('Archive a goal', () => {
 
   it('should not submit the form if there are validation errors on the page', () => {
     // Given
-    const prisonNumber = 'G6115VJ'
     const goalReference = '10efc562-be8f-4675-9283-9ede0c19dade'
     cy.signIn()
     cy.visit(`/plan/${prisonNumber}/goals/${goalReference}/archive`)
@@ -74,7 +130,6 @@ context('Archive a goal', () => {
 
   it('should not submit the form if other reason not entered', () => {
     // Given
-    const prisonNumber = 'G6115VJ'
     const goalReference = '10efc562-be8f-4675-9283-9ede0c19dade'
     cy.signIn()
     cy.visit(`/plan/${prisonNumber}/goals/${goalReference}/archive`)
@@ -94,7 +149,6 @@ context('Archive a goal', () => {
 
   it('should show a hint for the number of characters remaining', () => {
     // Given
-    const prisonNumber = 'G6115VJ'
     const goalReference = '10efc562-be8f-4675-9283-9ede0c19dade'
     cy.signIn()
     cy.visit(`/plan/${prisonNumber}/goals/${goalReference}/archive`)
@@ -121,7 +175,6 @@ context('Archive a goal', () => {
 
   it('should ask for confirmation and return to overview if choosing no', () => {
     // Given
-    const prisonNumber = 'G6115VJ'
     const goalReference = '10efc562-be8f-4675-9283-9ede0c19dade'
     cy.signIn()
     cy.visit(`/plan/${prisonNumber}/goals/${goalReference}/archive`)
@@ -142,25 +195,40 @@ context('Archive a goal', () => {
     )
   })
 
-  it('should ask for confirmation and archive the goal then return to overview if choosing yes', () => {
+  it('Should be able to archive a goal successfully', () => {
     // Given
-    const prisonNumber = 'G6115VJ'
-    const goalReference = '10efc562-be8f-4675-9283-9ede0c19dade'
+    const { goalReference } = goalToArchive
+    cy.task('archiveGoal', { prisonNumber, goalReference })
     cy.signIn()
-    cy.visit(`/plan/${prisonNumber}/goals/${goalReference}/archive`)
-    const archiveGoalPage = Page.verifyOnPage(ArchiveGoalPage)
+    cy.visit(`/plan/${prisonNumber}/view/overview`)
+    const overviewPage = Page.verifyOnPage(OverviewPage)
+
+    // When
+    const archiveGoalPage = overviewPage //
+      .hasGoalsDisplayed()
+      .hasNumberOfGoals(2)
+      .clickArchiveButtonForFirstGoal()
+
     archiveGoalPage //
       .selectReason(ReasonToArchiveGoalValue.OTHER)
       .enterReason('Just because...')
       .submitPage()
 
-    // When
+    cy.task('getGoalsByStatus', {
+      prisonNumber: 'G6115VJ',
+      status: GoalStatusValue.ACTIVE,
+      goals: [goalToKeep],
+    })
+
     const reviewPage = Page.verifyOnPage(ReviewArchiveGoalPage)
     reviewPage.clickYes()
 
     // Then
     Page.verifyOnPage(OverviewPage) //
       .hasSuccessMessage('Goal archived')
+      .hasGoalsDisplayed()
+      .hasNumberOfGoals(1)
+
     cy.wiremockVerify(
       putRequestedFor(urlEqualTo(`/action-plans/${prisonNumber}/goals/${goalReference}/archive`)) //
         .withRequestBody(

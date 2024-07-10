@@ -2,7 +2,7 @@
 
 {% set createInductionBanner %}
   <p class="govuk-notification-banner__heading">
-    {% if actionPlan.goals | length %}
+    {% if goalsOrProblem.goals | length %}
       Add education, work, skills and interests to
       <a class="govuk-notification-banner__link" href="/prisoners/{{ prisonerSummary.prisonNumber }}/create-induction/hoping-to-work-on-release">complete {{ prisonerSummary.firstName | safe }}'s progress plan now</a>.
     {% else %}
@@ -14,7 +14,7 @@
 
 <section data-qa="pre-induction-overview">
 
-    {% if not actionPlan.problemRetrievingData %}
+    {% if not goalsOrProblem.problemRetrievingData %}
 
       {% include './_actionsHeader.njk' %}
 

@@ -1,4 +1,4 @@
-import type { ActionPlanResponse, GoalResponse, StepResponse } from 'educationAndWorkPlanApiClient'
+import type { ActionPlanResponse, GetGoalsResponse, GoalResponse, StepResponse } from 'educationAndWorkPlanApiClient'
 import type { ActionPlan, Goal, Step } from 'viewModels'
 import dateComparator from '../../routes/dateComparator'
 
@@ -12,6 +12,14 @@ const toActionPlan = (actionPlanResponse: ActionPlanResponse, problemRetrievingD
     }),
     problemRetrievingData,
   }
+}
+
+const toGoals = (response: GetGoalsResponse): Goal[] => {
+  const goalReferencesInCreationDateOrder = goalReferencesSortedByCreationDate(response.goals)
+  return response.goals.map((goal: GoalResponse) => {
+    const goalSequenceNumber = goalReferencesInCreationDateOrder.indexOf(goal.goalReference) + 1
+    return toGoal(goal, goalSequenceNumber)
+  })
 }
 
 const toGoal = (goalResponse: GoalResponse, goalSequenceNumber: number): Goal => {
@@ -57,4 +65,4 @@ const toDate = (dateString: string): Date => {
   return dateString ? new Date(dateString) : null
 }
 
-export { toActionPlan, toGoal }
+export { toActionPlan, toGoal, toGoals }

@@ -2,7 +2,10 @@ import nock from 'nock'
 import type { ArchiveGoalRequest, UnarchiveGoalRequest } from 'educationAndWorkPlanApiClient'
 import config from '../config'
 import EducationAndWorkPlanClient from './educationAndWorkPlanClient'
-import { aValidActionPlanResponseWithOneGoal } from '../testsupport/actionPlanResponseTestDataBuilder'
+import {
+  aValidActionPlanResponseWithOneGoal,
+  aValidGoalResponse,
+} from '../testsupport/actionPlanResponseTestDataBuilder'
 import { aValidUpdateGoalRequestWithOneUpdatedStep } from '../testsupport/updateGoalRequestTestDataBuilder'
 import {
   aValidCreateGoalsRequestWithOneGoal,
@@ -15,6 +18,7 @@ import aValidInductionResponse from '../testsupport/inductionResponseTestDataBui
 import aValidUpdateInductionRequest from '../testsupport/updateInductionRequestTestDataBuilder'
 import aValidCreateInductionRequest from '../testsupport/createInductionRequestTestDataBuilder'
 import ReasonToArchiveGoalValue from '../enums/ReasonToArchiveGoalValue'
+import GoalStatusValue from '../enums/goalStatusValue'
 
 describe('educationAndWorkPlanClient', () => {
   const educationAndWorkPlanClient = new EducationAndWorkPlanClient()
@@ -117,7 +121,56 @@ describe('educationAndWorkPlanClient', () => {
       }
     })
   })
+  describe('getGoalsByStatus', () => {
+    it('should get Goals', async () => {
+      // Given
+      const prisonNumber = 'A1234BC'
+      const systemToken = 'a-system-token'
 
+      const expectedResponseBody = {
+        goals: [aValidGoalResponse()],
+      }
+      educationAndWorkPlanApi //
+        .get(`/action-plans/${prisonNumber}/goals?status=ACTIVE`)
+        .reply(200, expectedResponseBody)
+
+      // When
+      const actual = await educationAndWorkPlanClient.getGoalsByStatus(
+        prisonNumber,
+        GoalStatusValue.ACTIVE,
+        systemToken,
+      )
+
+      // Then
+      expect(nock.isDone()).toBe(true)
+      expect(actual).toEqual(expectedResponseBody)
+    })
+
+    it('should return status code with errors as 404 means no plan has been created', async () => {
+      // Given
+      const prisonNumber = 'A1234BC'
+      const systemToken = 'a-system-token'
+
+      const expectedResponseBody = {
+        status: 404,
+        userMessage: 'Some error',
+        developerMessage: 'Some error',
+      }
+      educationAndWorkPlanApi //
+        .get(`/action-plans/${prisonNumber}/goals?status=ACTIVE`)
+        .reply(404, expectedResponseBody)
+
+      // When
+      try {
+        await educationAndWorkPlanClient.getGoalsByStatus(prisonNumber, GoalStatusValue.ACTIVE, systemToken)
+      } catch (e) {
+        // Then
+        expect(nock.isDone()).toBe(true)
+        expect(e.status).toEqual(404)
+        expect(e.data).toEqual(expectedResponseBody)
+      }
+    })
+  })
   describe('updateGoal', () => {
     it('should update Goal', async () => {
       // Given

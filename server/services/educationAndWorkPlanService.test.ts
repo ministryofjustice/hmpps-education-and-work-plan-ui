@@ -1,14 +1,20 @@
 import type { ArchiveGoalDto, UnarchiveGoalDto } from 'dto'
 import type { ArchiveGoalRequest, UnarchiveGoalRequest } from 'educationAndWorkPlanApiClient'
+import type { GoalsOrProblem } from 'viewModels'
+import createError from 'http-errors'
 import EducationAndWorkPlanClient from '../data/educationAndWorkPlanClient'
 import EducationAndWorkPlanService from './educationAndWorkPlanService'
 import { aValidCreateGoalDtoWithOneStep } from '../testsupport/createGoalDtoTestDataBuilder'
-import { aValidActionPlanWithOneGoal } from '../testsupport/actionPlanTestDataBuilder'
-import { aValidActionPlanResponseWithOneGoal } from '../testsupport/actionPlanResponseTestDataBuilder'
+import { aValidActionPlanWithOneGoal, aValidGoal } from '../testsupport/actionPlanTestDataBuilder'
+import {
+  aValidActionPlanResponseWithOneGoal,
+  aValidGoalResponse,
+} from '../testsupport/actionPlanResponseTestDataBuilder'
 import { aValidUpdateGoalDtoWithOneStep } from '../testsupport/updateGoalDtoTestDataBuilder'
 import { aValidUpdateGoalRequestWithOneUpdatedStep } from '../testsupport/updateGoalRequestTestDataBuilder'
 import { aValidCreateGoalsRequestWithOneGoal } from '../testsupport/createGoalsRequestTestDataBuilder'
 import ReasonToArchiveGoalValue from '../enums/ReasonToArchiveGoalValue'
+import GoalStatusValue from '../enums/goalStatusValue'
 
 jest.mock('../data/educationAndWorkPlanClient')
 
@@ -85,7 +91,57 @@ describe('educationAndWorkPlanService', () => {
       expect(actual.problemRetrievingData).toEqual(true)
     })
   })
+  describe('getGoalsByStatus', () => {
+    it('should get goals by status', async () => {
+      // Given
+      const prisonNumber = 'A1234BC'
+      const status = GoalStatusValue.ACTIVE
+      const userToken = 'a-user-token'
+      educationAndWorkPlanClient.getGoalsByStatus.mockResolvedValue({ goals: [aValidGoalResponse()] })
+      const expectedResponse: GoalsOrProblem = { goals: [aValidGoal()], problemRetrievingData: false }
 
+      // When
+      const actual = await educationAndWorkPlanService.getGoalsByStatus(prisonNumber, status, userToken)
+
+      // Then
+      expect(educationAndWorkPlanClient.getGoalsByStatus).toHaveBeenCalledWith(prisonNumber, status, userToken)
+      expect(actual).toEqual(expectedResponse)
+    })
+
+    it('should return a problem loading the data if the status is not 404', async () => {
+      // Given
+      const prisonNumber = 'A1234BC'
+      const status = GoalStatusValue.ACTIVE
+      const userToken = 'a-user-token'
+
+      educationAndWorkPlanClient.getGoalsByStatus.mockRejectedValue(createError(500, 'Service unavailable'))
+      const expectedResponse: GoalsOrProblem = { goals: undefined, problemRetrievingData: true }
+
+      // When
+      const actual = await educationAndWorkPlanService.getGoalsByStatus(prisonNumber, status, userToken)
+
+      // Then
+      expect(educationAndWorkPlanClient.getGoalsByStatus).toHaveBeenCalledWith(prisonNumber, status, userToken)
+      expect(actual).toEqual(expectedResponse)
+    })
+
+    it('should return no problem loading the data and undefined goals if the status is 404', async () => {
+      // Given
+      const prisonNumber = 'A1234BC'
+      const status = GoalStatusValue.ACTIVE
+      const userToken = 'a-user-token'
+
+      educationAndWorkPlanClient.getGoalsByStatus.mockRejectedValue(createError(404, 'Service unavailable'))
+      const expectedResponse: GoalsOrProblem = { goals: undefined, problemRetrievingData: false }
+
+      // When
+      const actual = await educationAndWorkPlanService.getGoalsByStatus(prisonNumber, status, userToken)
+
+      // Then
+      expect(educationAndWorkPlanClient.getGoalsByStatus).toHaveBeenCalledWith(prisonNumber, status, userToken)
+      expect(actual).toEqual(expectedResponse)
+    })
+  })
   describe('updateGoal', () => {
     it('should update Goal', async () => {
       // Given

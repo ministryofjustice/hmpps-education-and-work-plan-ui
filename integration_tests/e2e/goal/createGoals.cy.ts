@@ -18,6 +18,7 @@ context('Create goals', () => {
     cy.task('getPrisonerById')
     cy.task('stubGetInduction')
     cy.task('getActionPlan')
+    cy.task('getGoalsByStatus')
     cy.task('stubLearnerProfile')
     cy.task('stubLearnerEducation')
     cy.task('stubGetAllPrisons')

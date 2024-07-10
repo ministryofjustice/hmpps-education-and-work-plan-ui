@@ -6,6 +6,7 @@ import { mostRecentFunctionalSkills } from '../functionalSkillsResolver'
 import PostInductionOverviewView from './postInductionOverviewView'
 import PreInductionOverviewView from './preInductionOverviewView'
 import logger from '../../../logger'
+import GoalStatusValue from '../../enums/goalStatusValue'
 
 export default class OverviewController {
   constructor(
@@ -26,14 +27,18 @@ export default class OverviewController {
       const allFunctionalSkills = await this.curiousService.getPrisonerFunctionalSkills(prisonNumber, req.user.username)
       const functionalSkills = mostRecentFunctionalSkills(allFunctionalSkills)
 
-      const actionPlan = await this.educationAndWorkPlanService.getActionPlan(prisonNumber, req.user.token)
+      const goalsOrProblem = await this.educationAndWorkPlanService.getGoalsByStatus(
+        prisonNumber,
+        GoalStatusValue.ACTIVE,
+        req.user.token,
+      )
 
       let view: PostInductionOverviewView | PreInductionOverviewView
       if (ciagInductionExists) {
         view = new PostInductionOverviewView(
           prisonNumber,
           prisonerSummary,
-          actionPlan,
+          goalsOrProblem,
           functionalSkills,
           res.locals.curiousInPrisonCourses,
         )
@@ -41,7 +46,7 @@ export default class OverviewController {
         view = new PreInductionOverviewView(
           prisonNumber,
           prisonerSummary,
-          actionPlan,
+          goalsOrProblem,
           functionalSkills,
           res.locals.curiousInPrisonCourses,
         )

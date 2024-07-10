@@ -1,6 +1,6 @@
 {# Template to render the prisoner's list of Goals on the Overview tab #}
 
-{% for goal in actionPlan.goals %}
+{% for goal in goalsOrProblem.goals %}
   <div class="govuk-summary-card" data-qa="goal-summary-card">
     <div class="govuk-summary-card__title-wrapper">
       <h3 class="govuk-summary-card__title">Goal {{ goal.sequenceNumber }}
