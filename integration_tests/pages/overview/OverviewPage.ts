@@ -82,6 +82,11 @@ export default class OverviewPage extends Page {
     return this
   }
 
+  hasNumberOfGoals(numberOfGoals: number): OverviewPage {
+    this.goalSummaryCards().should('have.length', numberOfGoals)
+    return this
+  }
+
   clickUpdateButtonForFirstGoal(): UpdateGoalPage {
     this.goalUpdateButton(1).click()
     return Page.verifyOnPage(UpdateGoalPage)

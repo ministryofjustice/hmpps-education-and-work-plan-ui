@@ -155,7 +155,7 @@ export interface paths {
       path?: never
       cookie?: never
     }
-    get?: never
+    get: operations['getGoals']
     put?: never
     post: operations['createGoals']
     delete?: never
@@ -201,9 +201,7 @@ export interface paths {
     trace?: never
   }
 }
-
 export type webhooks = Record<string, never>
-
 export interface components {
   schemas: {
     /**
@@ -467,7 +465,7 @@ export interface components {
        */
       reference: string
       /**
-       * @description The identifier of the prison that the prisoner is currently resident at.
+       * @description The Prison identifier.
        * @example BXI
        */
       prisonId: string
@@ -617,7 +615,7 @@ export interface components {
     }
     UpdateConversationRequest: {
       /**
-       * @description The identifier of the prison that the prisoner is currently resident at.
+       * @description The Prison identifier.
        * @example BXI
        */
       prisonId: string
@@ -673,7 +671,7 @@ export interface components {
        */
       steps: components['schemas']['UpdateStepRequest'][]
       /**
-       * @description The identifier of the prison that the prisoner is currently resident at.
+       * @description The Prison identifier.
        * @example BXI
        */
       prisonId: string
@@ -764,7 +762,7 @@ export interface components {
     }
     CreateInductionRequest: {
       /**
-       * @description The identifier of the prison that the prisoner is currently resident at.
+       * @description The Prison identifier.
        * @example BXI
        */
       prisonId: string
@@ -884,7 +882,7 @@ export interface components {
     }
     CreateConversationRequest: {
       /**
-       * @description The identifier of the prison that the prisoner is currently resident at.
+       * @description The Prison identifier.
        * @example BXI
        */
       prisonId: string
@@ -1025,7 +1023,7 @@ export interface components {
        */
       steps: components['schemas']['CreateStepRequest'][]
       /**
-       * @description The identifier of the prison that the prisoner is currently resident at.
+       * @description The Prison identifier.
        * @example BXI
        */
       prisonId: string
@@ -1107,7 +1105,7 @@ export interface components {
         [key: string]: string | undefined
       }
       /**
-       * @description The identifier of the prison that the prisoner was at when the event occurred.
+       * @description The Prison identifier.
        * @example BXI
        */
       prisonId: string
@@ -1152,6 +1150,10 @@ export interface components {
        */
       events: components['schemas']['TimelineEventResponse'][]
     }
+    HmppsSubjectAccessRequestContent: {
+      /** @description The content of the subject access request response */
+      content: Record<string, never>
+    }
     ErrorResponse: {
       /** Format: int32 */
       status: number
@@ -1159,10 +1161,6 @@ export interface components {
       userMessage?: string
       developerMessage?: string
       moreInfo?: string
-    }
-    HmppsSubjectAccessRequestContent: {
-      /** @description The content of the subject access request response */
-      content: Record<string, never>
     }
     /** @example null */
     FutureWorkInterestsResponse: {
@@ -1785,6 +1783,13 @@ export interface components {
        */
       reviewDate?: string
     }
+    GetGoalsResponse: {
+      /**
+       * @description A List of zero or more Goals.
+       * @example null
+       */
+      goals: components['schemas']['GoalResponse'][]
+    }
     /**
      * @description A List of at least one or more Goals.
      * @example null
@@ -1913,9 +1918,7 @@ export interface components {
   headers: never
   pathItems: never
 }
-
 export type $defs = Record<string, never>
-
 export interface operations {
   getInduction: {
     parameters: {
@@ -2256,6 +2259,30 @@ export interface operations {
           [name: string]: unknown
         }
         content?: never
+      }
+    }
+  }
+  getGoals: {
+    parameters: {
+      query?: {
+        status?: 'ACTIVE' | 'COMPLETED' | 'ARCHIVED'
+      }
+      header?: never
+      path: {
+        prisonNumber: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': Record<string, never>
+        }
       }
     }
   }

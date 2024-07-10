@@ -15,7 +15,7 @@ context(`Display a prisoner's functional skills`, () => {
     cy.task('stubCiagInductionList')
     cy.task('stubActionPlansList')
     cy.task('getPrisonerById')
-    cy.task('getActionPlan')
+    cy.task('getGoalsByStatus')
     cy.task('stubLearnerProfile')
     cy.task('stubLearnerEducation')
     cy.task('stubGetInduction')

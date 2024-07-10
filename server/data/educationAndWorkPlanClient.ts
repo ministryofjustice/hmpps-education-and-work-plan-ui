@@ -11,9 +11,11 @@ import type {
   ArchiveGoalRequest,
   UnarchiveGoalRequest,
   TimelineEventResponse,
+  GetGoalsResponse,
 } from 'educationAndWorkPlanApiClient'
 import RestClient from './restClient'
 import config from '../config'
+import GoalStatusValue from '../enums/goalStatusValue'
 
 export default class EducationAndWorkPlanClient {
   private static restClient(token: string): RestClient {
@@ -30,6 +32,12 @@ export default class EducationAndWorkPlanClient {
   async getActionPlan(prisonNumber: string, token: string): Promise<ActionPlanResponse> {
     return EducationAndWorkPlanClient.restClient(token).get<ActionPlanResponse>({
       path: `/action-plans/${prisonNumber}`,
+    })
+  }
+
+  async getGoalsByStatus(prisonNumber: string, status: GoalStatusValue, token: string): Promise<GetGoalsResponse> {
+    return EducationAndWorkPlanClient.restClient(token).get<GetGoalsResponse>({
+      path: `/action-plans/${prisonNumber}/goals?status=${status}`,
     })
   }
 

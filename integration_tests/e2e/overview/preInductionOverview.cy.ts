@@ -9,7 +9,7 @@ context('Prisoner Overview page - Pre Induction', () => {
 
   beforeEach(() => {
     cy.signInAsUserWithEditAuthorityToArriveOnPrisonerListPage()
-    cy.task('getActionPlan')
+    cy.task('getGoalsByStatus')
     cy.task('stubGetInduction404Error')
   })
 
@@ -46,7 +46,7 @@ context('Prisoner Overview page - Pre Induction', () => {
   it('should render prisoner Overview page listing no prisoner goals given prisoner has no goals created pre-induction', () => {
     // Given
     const prisonNumberForPrisonerWithNoGoals = 'A00001A'
-    cy.task('getActionPlan', prisonNumberForPrisonerWithNoGoals)
+    cy.task('getGoalsByStatus404', prisonNumberForPrisonerWithNoGoals)
     cy.task('getPrisonerById', prisonNumberForPrisonerWithNoGoals)
     cy.task('stubLearnerProfile', prisonNumberForPrisonerWithNoGoals)
     cy.task('stubLearnerEducation', prisonNumberForPrisonerWithNoGoals)

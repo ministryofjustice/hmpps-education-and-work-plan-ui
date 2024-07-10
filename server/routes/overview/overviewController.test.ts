@@ -1,13 +1,14 @@
 import createError from 'http-errors'
 import { Request, Response } from 'express'
-import type { FunctionalSkills, InPrisonCourseRecords } from 'viewModels'
+import type { FunctionalSkills, GoalsOrProblem, InPrisonCourseRecords } from 'viewModels'
 import OverviewController from './overviewController'
 import CuriousService from '../../services/curiousService'
 import EducationAndWorkPlanService from '../../services/educationAndWorkPlanService'
 import InductionService from '../../services/inductionService'
-import { aValidActionPlan, aValidActionPlanWithOneGoal } from '../../testsupport/actionPlanTestDataBuilder'
+import { aValidGoal } from '../../testsupport/actionPlanTestDataBuilder'
 import { aValidEnglishInPrisonCourse, aValidMathsInPrisonCourse } from '../../testsupport/inPrisonCourseTestDataBuilder'
 import aValidPrisonerSummary from '../../testsupport/prisonerSummaryTestDataBuilder'
+import GoalStatusValue from '../../enums/goalStatusValue'
 
 jest.mock('../../services/curiousService')
 jest.mock('../../services/educationAndWorkPlanService')
@@ -64,8 +65,8 @@ describe('overviewController', () => {
 
     inductionService.inductionExists.mockResolvedValue(true)
 
-    const actionPlan = aValidActionPlanWithOneGoal()
-    educationAndWorkPlanService.getActionPlan.mockResolvedValue(actionPlan)
+    const goalsOrProblem: GoalsOrProblem = { goals: [aValidGoal()], problemRetrievingData: false }
+    educationAndWorkPlanService.getGoalsByStatus.mockResolvedValue(goalsOrProblem)
 
     const functionalSkillsFromCurious = {
       problemRetrievingData: false,
@@ -90,7 +91,7 @@ describe('overviewController', () => {
       prisonerSummary: expectedPrisonerSummary,
       tab: expectedTab,
       prisonNumber,
-      actionPlan,
+      goalsOrProblem,
       functionalSkills: expectedFunctionalSkills,
       inPrisonCourses,
       isPostInduction: true,
@@ -101,7 +102,11 @@ describe('overviewController', () => {
 
     // Then
     expect(res.render).toHaveBeenCalledWith('pages/overview/index', expectedView)
-    expect(educationAndWorkPlanService.getActionPlan).toHaveBeenCalledWith(prisonNumber, 'a-user-token')
+    expect(educationAndWorkPlanService.getGoalsByStatus).toHaveBeenCalledWith(
+      prisonNumber,
+      GoalStatusValue.ACTIVE,
+      'a-user-token',
+    )
     expect(inductionService.inductionExists).toHaveBeenCalledWith(prisonNumber, 'a-user-token')
     expect(req.session.newGoal).toBeUndefined()
     expect(req.session.newGoals).toBeUndefined()
@@ -114,8 +119,8 @@ describe('overviewController', () => {
 
     inductionService.inductionExists.mockResolvedValue(false)
 
-    const actionPlan = aValidActionPlan({ goals: [] })
-    educationAndWorkPlanService.getActionPlan.mockResolvedValue(actionPlan)
+    const goalsOrProblem: GoalsOrProblem = { goals: undefined, problemRetrievingData: false }
+    educationAndWorkPlanService.getGoalsByStatus.mockResolvedValue(goalsOrProblem)
 
     const functionalSkillsFromCurious = {
       problemRetrievingData: false,
@@ -140,7 +145,7 @@ describe('overviewController', () => {
       prisonerSummary: expectedPrisonerSummary,
       tab: expectedTab,
       prisonNumber,
-      actionPlan,
+      goalsOrProblem,
       functionalSkills: expectedFunctionalSkills,
       inPrisonCourses,
       isPostInduction: false,
@@ -151,7 +156,11 @@ describe('overviewController', () => {
 
     // Then
     expect(res.render).toHaveBeenCalledWith('pages/overview/index', expectedView)
-    expect(educationAndWorkPlanService.getActionPlan).toHaveBeenCalledWith(prisonNumber, 'a-user-token')
+    expect(educationAndWorkPlanService.getGoalsByStatus).toHaveBeenCalledWith(
+      prisonNumber,
+      GoalStatusValue.ACTIVE,
+      'a-user-token',
+    )
     expect(inductionService.inductionExists).toHaveBeenCalledWith(prisonNumber, 'a-user-token')
     expect(req.session.newGoal).toBeUndefined()
     expect(req.session.newGoals).toBeUndefined()
@@ -176,7 +185,7 @@ describe('overviewController', () => {
     expect(next).toHaveBeenCalledWith(expectedError)
     expect(res.render).not.toHaveBeenCalled()
     expect(inductionService.inductionExists).toHaveBeenCalledWith(prisonNumber, 'a-user-token')
-    expect(educationAndWorkPlanService.getActionPlan).not.toHaveBeenCalled()
+    expect(educationAndWorkPlanService.getGoalsByStatus).not.toHaveBeenCalled()
     expect(curiousService.getPrisonerFunctionalSkills).not.toHaveBeenCalled()
     expect(req.session.newGoal).toBeUndefined()
     expect(req.session.newGoals).toBeUndefined()
