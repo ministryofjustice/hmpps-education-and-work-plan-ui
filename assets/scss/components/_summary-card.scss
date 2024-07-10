@@ -20,3 +20,9 @@
     @include govuk-font($size: 19);
   }
 }
+
+.goal-summary-card-actions {
+  .govuk-summary-card__action {
+    border-right: 0;
+  }
+}
