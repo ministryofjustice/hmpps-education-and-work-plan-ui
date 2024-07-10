@@ -1,0 +1,45 @@
+{% extends "../../partials/layout.njk" %}
+
+{% set pageTitle = "Prisoner's learning and work progress" %}
+
+{% set pageId = "view-archived-goals" %}
+
+{% block beforeContent %}
+  {% include "../../partials/breadcrumb.njk" %}
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <span class="govuk-caption-l">Learning and work progress</span>
+      <h1 class="govuk-heading-l">{{ prisonerSummary.firstName }} {{ prisonerSummary.lastName }}'s learning and work progress</h1>
+    </div>
+    <div class="govuk-grid-column-one-third">
+        {% include "../../partials/printThisPage.njk" %}
+    </div>
+  </div>
+
+  {% include "../../partials/prisonerBanner.njk" %}
+
+  <div class="moj-page-header-actions">
+    <div class="moj-page-header-actions__title">
+      <h2 class="govuk-heading-m">Archived goals</h2>
+    </div>
+  </div>
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds app-u-print-full-width">
+      <section data-qa="view-archived-goals-list">
+        {% if not goalsOrProblem.problemRetrievingData %}
+          {% include './partials/_goalsList.njk' %}
+        {% else %}
+          <h2 class="govuk-heading-m">Sorry, the service is currently unavailable.</h2>
+          <p class="govuk-body">
+            Retrieving goals is currently unavailable. Please try again later.
+          </p>
+        {% endif %}
+      </section>
+    </div>
+  </div>
+
+{% endblock %}

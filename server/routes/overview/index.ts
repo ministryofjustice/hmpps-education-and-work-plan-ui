@@ -10,6 +10,7 @@ import SupportNeedsController from './supportNeedsController'
 import WorkAndInterestsController from './workAndInterestsController'
 import EducationAndTrainingController from './educationAndTrainingController'
 import retrieveInduction from '../routerRequestHandlers/retrieveInduction'
+import ViewArchivedGoalsController from './viewArchivedGoalsController'
 
 /**
  * Route definitions for the pages relating to the main Overview page
@@ -25,6 +26,7 @@ export default (router: Router, services: Services) => {
   const supportNeedsController = new SupportNeedsController(services.curiousService, services.prisonService)
   const workAndInterestsController = new WorkAndInterestsController()
   const educationAndTrainingController = new EducationAndTrainingController(services.curiousService)
+  const viewArchivedGoalsController = new ViewArchivedGoalsController(services.educationAndWorkPlanService)
 
   router.use('/plan/:prisonNumber/view/*', [checkUserHasViewAuthority(), removeInductionFormsFromSession])
 
@@ -47,4 +49,8 @@ export default (router: Router, services: Services) => {
   ])
 
   router.get('/plan/:prisonNumber/view/timeline', [asyncMiddleware(timelineController.getTimelineView)])
+
+  router.get('/plan/:prisonNumber/view/archived-goals', [
+    asyncMiddleware(viewArchivedGoalsController.viewArchivedGoals),
+  ])
 }

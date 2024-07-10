@@ -11,7 +11,7 @@
     {{ actionsCard({
       actions: [
         { title: 'Add a new goal', href: '/plan/' + prisonNumber + '/goals/create', id: 'add-goal-button', 'render-if': hasEditAuthority },
-        { title: 'View archived goals', href: '#' }
+        { title: 'View archived goals', href: '/plan/' + prisonNumber + '/view/archived-goals', id: 'view-archived-goals-button' }
       ],
       attributes: {
         'data-qa': 'actions-card'

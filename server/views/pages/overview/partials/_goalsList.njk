@@ -9,12 +9,19 @@
       </h3>
       <ul class="govuk-summary-card__actions govuk-!-display-none-print">
         {% if hasEditAuthority %}
-          <li class="govuk-summary-card__action">
-            <a class="govuk-link" href="/plan/{{ prisonerSummary.prisonNumber }}/goals/{{ goal.goalReference }}/update" data-qa="goal-{{ goal.sequenceNumber }}-update-button">Update<span class="govuk-visually-hidden"> goal {{ goal.sequenceNumber }}</span></a>
-          </li>
-          {%- if featureToggles.goals.archiveEnabled -%}
+          {% if tab === 'overview' %}
             <li class="govuk-summary-card__action">
-              <a class="govuk-link" href="/plan/{{ prisonerSummary.prisonNumber }}/goals/{{ goal.goalReference }}/archive" data-qa="goal-{{ goal.sequenceNumber }}-archive-button">Archive<span class="govuk-visually-hidden"> goal {{ goal.sequenceNumber }}</span></a>
+              <a class="govuk-link" href="/plan/{{ prisonerSummary.prisonNumber }}/goals/{{ goal.goalReference }}/update" data-qa="goal-{{ goal.sequenceNumber }}-update-button">Update<span class="govuk-visually-hidden"> goal {{ goal.sequenceNumber }}</span></a>
+            </li>
+            {%- if featureToggles.goals.archiveEnabled -%}
+              <li class="govuk-summary-card__action">
+                <a class="govuk-link" href="/plan/{{ prisonerSummary.prisonNumber }}/goals/{{ goal.goalReference }}/archive" data-qa="goal-{{ goal.sequenceNumber }}-archive-button">Archive<span class="govuk-visually-hidden"> goal {{ goal.sequenceNumber }}</span></a>
+              </li>
+            {% endif %}
+          {% endif %}
+          {% if tab === 'view-archived-goals' and featureToggles.goals.archiveEnabled %}
+            <li class="govuk-summary-card__action">
+              <a class="govuk-link" href="/plan/{{ prisonerSummary.prisonNumber }}/goals/{{ goal.goalReference }}/unarchive" data-qa="goal-{{ goal.sequenceNumber }}-unarchive-button">Reactivate<span class="govuk-visually-hidden"> goal {{ goal.sequenceNumber }}</span></a>
             </li>
           {% endif %}
         {% endif %}
