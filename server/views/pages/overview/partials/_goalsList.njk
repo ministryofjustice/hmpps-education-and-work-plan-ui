@@ -7,7 +7,7 @@
         <span class="govuk-caption-m">Created on {{ goal.createdAt | formatDate('D MMMM YYYY') }}<span class="govuk-!-display-none-print"> by {{ goal.createdByDisplayName }}</span>,
         <br> aiming to achieve this <strong>by {{ goal.targetCompletionDate | formatDate('D MMMM YYYY') }}</strong></span>
       </h3>
-      <ul class="govuk-summary-card__actions govuk-!-display-none-print">
+      <ul class="govuk-summary-card__actions goal-summary-card-actions govuk-!-display-none-print">
         {% if hasEditAuthority %}
           {% if tab === 'overview' %}
             <li class="govuk-summary-card__action">
