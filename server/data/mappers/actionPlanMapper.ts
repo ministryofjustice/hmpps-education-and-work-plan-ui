@@ -15,13 +15,18 @@ const toGoals = (response: GetGoalsResponse): Goal[] => {
   return toOrderedGoals(response.goals)
 }
 
+/**
+ * Sets a goal sequence by creation date (oldest = 1) and returns them in creation order (newest first)
+ */
 function toOrderedGoals(goals: GoalResponse[]): Goal[] {
-  const goalReferencesInCreationDateOrder = goalReferencesSortedByCreationDate(goals)
-  return goals.map((goal: GoalResponse) => {
-    const goalSequenceNumber = goalReferencesInCreationDateOrder.indexOf(goal.goalReference) + 1
-    return toGoal(goal, goalSequenceNumber)
-  })
+  return [...goals]
+    .sort((left: GoalResponse, right: GoalResponse) =>
+      dateComparator(toDate(left.createdAt), toDate(right.createdAt), 'ASC'),
+    )
+    .map((goal, index) => toGoal(goal, index + 1))
+    .reverse()
 }
+
 const toGoal = (goalResponse: GoalResponse, goalSequenceNumber: number): Goal => {
   return {
     goalReference: goalResponse.goalReference,
@@ -38,18 +43,6 @@ const toGoal = (goalResponse: GoalResponse, goalSequenceNumber: number): Goal =>
     note: goalResponse.notes,
     sequenceNumber: goalSequenceNumber,
   }
-}
-
-/**
- * Sorts the goals by creation date descending in a non-destructive manner (function arg is pass by reference) and
- * returns an array of the goal reference numbers.
- */
-const goalReferencesSortedByCreationDate = (goals: Array<GoalResponse>): Array<string> => {
-  return [...goals]
-    .sort((left: GoalResponse, right: GoalResponse) =>
-      dateComparator(toDate(left.createdAt), toDate(right.createdAt), 'ASC'),
-    )
-    .map(goal => goal.goalReference)
 }
 
 const toStep = (stepResponse: StepResponse): Step => {
