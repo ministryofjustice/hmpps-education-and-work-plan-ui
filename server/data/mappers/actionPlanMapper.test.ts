@@ -120,7 +120,7 @@ describe('actionPlanMapper', () => {
     }
 
     const getGoalsResponse: GetGoalsResponse = {
-      goals: [mathsGoal, spanishGoal, englishGoal], // Goals are returned from the API in createdBy order descending
+      goals: [mathsGoal, englishGoal, spanishGoal], // Goals are NOT returned from the API in createdBy order descending
     }
 
     // When
