@@ -15,7 +15,7 @@ export default class ArchiveGoalController {
     const { prisonerSummary } = req.session
 
     let archiveGoalForm: ArchiveGoalForm
-    if (req.session.archiveGoalForm) {
+    if (req.session.archiveGoalForm && req.session.archiveGoalForm.reference === goalReference) {
       archiveGoalForm = req.session.archiveGoalForm
     } else {
       const actionPlan = await this.educationAndWorkPlanService.getActionPlan(prisonNumber, req.user.token)
@@ -76,5 +76,11 @@ export default class ArchiveGoalController {
     } catch (e) {
       return next(createError(500, `Error archiving goal for prisoner ${prisonNumber}`))
     }
+  }
+
+  cancelArchiveGoal: RequestHandler = async (req, res, next): Promise<void> => {
+    const { prisonNumber } = req.params
+    req.session.archiveGoalForm = undefined
+    return res.redirect(`/plan/${prisonNumber}/view/overview`)
   }
 }

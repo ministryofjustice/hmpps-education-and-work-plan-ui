@@ -24,4 +24,8 @@ export default (router: Router, services: Services) => {
   router.post('/plan/:prisonNumber/goals/:goalReference/archive/review', [
     asyncMiddleware(archiveGoalController.submitReviewArchiveGoal),
   ])
+  router.use('/plan/:prisonNumber/goals/:goalReference/archive/cancel', [checkUserHasEditAuthority()])
+  router.get('/plan/:prisonNumber/goals/:goalReference/archive/cancel', [
+    asyncMiddleware(archiveGoalController.cancelArchiveGoal),
+  ])
 }
