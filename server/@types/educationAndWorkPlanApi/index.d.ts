@@ -1783,13 +1783,6 @@ export interface components {
        */
       reviewDate?: string
     }
-    GetGoalsResponse: {
-      /**
-       * @description A List of zero or more Goals.
-       * @example null
-       */
-      goals: components['schemas']['GoalResponse'][]
-    }
     /**
      * @description A List of at least one or more Goals.
      * @example null
@@ -1910,6 +1903,13 @@ export interface components {
        * @example 1
        */
       sequenceNumber: number
+    }
+    GetGoalsResponse: {
+      /**
+       * @description A List containing zero or more Goals.
+       * @example null
+       */
+      goals: components['schemas']['GoalResponse'][]
     }
   }
   responses: never
@@ -2086,9 +2086,7 @@ export interface operations {
         headers: {
           [name: string]: unknown
         }
-        content: {
-          'application/json': Record<string, never>
-        }
+        content?: never
       }
     }
   }
@@ -2113,9 +2111,7 @@ export interface operations {
         headers: {
           [name: string]: unknown
         }
-        content: {
-          'application/json': Record<string, never>
-        }
+        content?: never
       }
     }
   }
@@ -2281,7 +2277,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': Record<string, never>
+          'application/json': components['schemas']['GetGoalsResponse']
         }
       }
     }
