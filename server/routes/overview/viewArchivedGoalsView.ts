@@ -1,20 +1,20 @@
-import type { GoalsOrProblem, PrisonerSummary } from 'viewModels'
+import type { Goals, PrisonerSummary } from 'viewModels'
 
 export default class ViewArchivedGoalsView {
   constructor(
     private readonly prisonerSummary: PrisonerSummary,
-    private readonly goalsOrProblem: GoalsOrProblem,
+    private readonly goals: Goals,
   ) {}
 
   get renderArgs(): {
     tab: string
     prisonerSummary: PrisonerSummary
-    goalsOrProblem: GoalsOrProblem
+    goals: Goals
   } {
     return {
       tab: 'view-archived-goals',
       prisonerSummary: this.prisonerSummary,
-      goalsOrProblem: this.goalsOrProblem,
+      goals: this.goals,
     }
   }
 }

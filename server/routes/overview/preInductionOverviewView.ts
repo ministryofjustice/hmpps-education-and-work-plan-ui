@@ -1,10 +1,10 @@
-import type { FunctionalSkills, GoalsOrProblem, InPrisonCourseRecords, PrisonerSummary } from 'viewModels'
+import type { FunctionalSkills, Goals, InPrisonCourseRecords, PrisonerSummary } from 'viewModels'
 
 export default class PreInductionOverviewView {
   constructor(
     private readonly prisonNumber: string,
     private readonly prisonerSummary: PrisonerSummary,
-    private readonly goalsOrProblem: GoalsOrProblem,
+    private readonly goals: Goals,
     private readonly functionalSkills: FunctionalSkills,
     private readonly inPrisonCourses: InPrisonCourseRecords,
   ) {}
@@ -13,7 +13,7 @@ export default class PreInductionOverviewView {
     prisonNumber: string
     tab: string
     prisonerSummary: PrisonerSummary
-    goalsOrProblem: GoalsOrProblem
+    goals: Goals
     functionalSkills: FunctionalSkills
     inPrisonCourses: InPrisonCourseRecords
     isPostInduction: boolean
@@ -22,7 +22,7 @@ export default class PreInductionOverviewView {
       prisonNumber: this.prisonNumber,
       tab: 'overview',
       prisonerSummary: this.prisonerSummary,
-      goalsOrProblem: this.goalsOrProblem,
+      goals: this.goals,
       functionalSkills: this.functionalSkills,
       inPrisonCourses: this.inPrisonCourses,
       isPostInduction: false,

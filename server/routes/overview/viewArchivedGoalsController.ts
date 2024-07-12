@@ -8,12 +8,12 @@ export default class ViewArchivedGoalsController {
 
   viewArchivedGoals: RequestHandler = async (req, res, next): Promise<void> => {
     const { prisonNumber } = req.params
-    const goalsOrProblem = await this.educationAndWorkPlanService.getGoalsByStatus(
+    const goals = await this.educationAndWorkPlanService.getGoalsByStatus(
       prisonNumber,
       GoalStatusValue.ARCHIVED,
       req.user.token,
     )
-    const view = new ViewArchivedGoalsView(req.session.prisonerSummary, goalsOrProblem)
+    const view = new ViewArchivedGoalsView(req.session.prisonerSummary, goals)
     res.render('pages/overview/viewArchivedGoals', { ...view.renderArgs })
   }
 }

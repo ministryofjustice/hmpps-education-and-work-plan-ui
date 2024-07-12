@@ -1,6 +1,6 @@
 import type { ArchiveGoalDto, UnarchiveGoalDto } from 'dto'
 import type { ArchiveGoalRequest, UnarchiveGoalRequest } from 'educationAndWorkPlanApiClient'
-import type { GoalsOrProblem } from 'viewModels'
+import type { Goals } from 'viewModels'
 import createError from 'http-errors'
 import EducationAndWorkPlanClient from '../data/educationAndWorkPlanClient'
 import EducationAndWorkPlanService from './educationAndWorkPlanService'
@@ -98,7 +98,7 @@ describe('educationAndWorkPlanService', () => {
       const status = GoalStatusValue.ACTIVE
       const userToken = 'a-user-token'
       educationAndWorkPlanClient.getGoalsByStatus.mockResolvedValue({ goals: [aValidGoalResponse()] })
-      const expectedResponse: GoalsOrProblem = { goals: [aValidGoal()], problemRetrievingData: false }
+      const expectedResponse: Goals = { goals: [aValidGoal()], problemRetrievingData: false }
 
       // When
       const actual = await educationAndWorkPlanService.getGoalsByStatus(prisonNumber, status, userToken)
@@ -115,7 +115,7 @@ describe('educationAndWorkPlanService', () => {
       const userToken = 'a-user-token'
 
       educationAndWorkPlanClient.getGoalsByStatus.mockRejectedValue(createError(500, 'Service unavailable'))
-      const expectedResponse: GoalsOrProblem = { goals: undefined, problemRetrievingData: true }
+      const expectedResponse: Goals = { goals: undefined, problemRetrievingData: true }
 
       // When
       const actual = await educationAndWorkPlanService.getGoalsByStatus(prisonNumber, status, userToken)
@@ -132,7 +132,7 @@ describe('educationAndWorkPlanService', () => {
       const userToken = 'a-user-token'
 
       educationAndWorkPlanClient.getGoalsByStatus.mockRejectedValue(createError(404, 'Service unavailable'))
-      const expectedResponse: GoalsOrProblem = { goals: undefined, problemRetrievingData: false }
+      const expectedResponse: Goals = { goals: undefined, problemRetrievingData: false }
 
       // When
       const actual = await educationAndWorkPlanService.getGoalsByStatus(prisonNumber, status, userToken)

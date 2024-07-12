@@ -27,7 +27,7 @@ export default class OverviewController {
       const allFunctionalSkills = await this.curiousService.getPrisonerFunctionalSkills(prisonNumber, req.user.username)
       const functionalSkills = mostRecentFunctionalSkills(allFunctionalSkills)
 
-      const goalsOrProblem = await this.educationAndWorkPlanService.getGoalsByStatus(
+      const goals = await this.educationAndWorkPlanService.getGoalsByStatus(
         prisonNumber,
         GoalStatusValue.ACTIVE,
         req.user.token,
@@ -38,7 +38,7 @@ export default class OverviewController {
         view = new PostInductionOverviewView(
           prisonNumber,
           prisonerSummary,
-          goalsOrProblem,
+          goals,
           functionalSkills,
           res.locals.curiousInPrisonCourses,
         )
@@ -46,7 +46,7 @@ export default class OverviewController {
         view = new PreInductionOverviewView(
           prisonNumber,
           prisonerSummary,
-          goalsOrProblem,
+          goals,
           functionalSkills,
           res.locals.curiousInPrisonCourses,
         )
