@@ -1,6 +1,6 @@
 import createError from 'http-errors'
 import { Request, Response } from 'express'
-import type { FunctionalSkills, GoalsOrProblem, InPrisonCourseRecords } from 'viewModels'
+import type { FunctionalSkills, Goals, InPrisonCourseRecords } from 'viewModels'
 import OverviewController from './overviewController'
 import CuriousService from '../../services/curiousService'
 import EducationAndWorkPlanService from '../../services/educationAndWorkPlanService'
@@ -65,8 +65,8 @@ describe('overviewController', () => {
 
     inductionService.inductionExists.mockResolvedValue(true)
 
-    const goalsOrProblem: GoalsOrProblem = { goals: [aValidGoal()], problemRetrievingData: false }
-    educationAndWorkPlanService.getGoalsByStatus.mockResolvedValue(goalsOrProblem)
+    const goals: Goals = { goals: [aValidGoal()], problemRetrievingData: false }
+    educationAndWorkPlanService.getGoalsByStatus.mockResolvedValue(goals)
 
     const functionalSkillsFromCurious = {
       problemRetrievingData: false,
@@ -91,7 +91,7 @@ describe('overviewController', () => {
       prisonerSummary: expectedPrisonerSummary,
       tab: expectedTab,
       prisonNumber,
-      goalsOrProblem,
+      goals,
       functionalSkills: expectedFunctionalSkills,
       inPrisonCourses,
       isPostInduction: true,
@@ -119,8 +119,8 @@ describe('overviewController', () => {
 
     inductionService.inductionExists.mockResolvedValue(false)
 
-    const goalsOrProblem: GoalsOrProblem = { goals: undefined, problemRetrievingData: false }
-    educationAndWorkPlanService.getGoalsByStatus.mockResolvedValue(goalsOrProblem)
+    const goals: Goals = { goals: undefined, problemRetrievingData: false }
+    educationAndWorkPlanService.getGoalsByStatus.mockResolvedValue(goals)
 
     const functionalSkillsFromCurious = {
       problemRetrievingData: false,
@@ -145,7 +145,7 @@ describe('overviewController', () => {
       prisonerSummary: expectedPrisonerSummary,
       tab: expectedTab,
       prisonNumber,
-      goalsOrProblem,
+      goals,
       functionalSkills: expectedFunctionalSkills,
       inPrisonCourses,
       isPostInduction: false,

@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import type { GoalsOrProblem } from 'viewModels'
+import type { Goals } from 'viewModels'
 import EducationAndWorkPlanService from '../../services/educationAndWorkPlanService'
 import { aValidGoal } from '../../testsupport/actionPlanTestDataBuilder'
 import aValidPrisonerSummary from '../../testsupport/prisonerSummaryTestDataBuilder'
@@ -37,13 +37,13 @@ describe('viewArchivedGoalsController', () => {
     // Given
     const expectedTab = 'view-archived-goals'
 
-    const goalsOrProblem: GoalsOrProblem = { goals: [aValidGoal()], problemRetrievingData: false }
-    educationAndWorkPlanService.getGoalsByStatus.mockResolvedValue(goalsOrProblem)
+    const goals: Goals = { goals: [aValidGoal()], problemRetrievingData: false }
+    educationAndWorkPlanService.getGoalsByStatus.mockResolvedValue(goals)
 
     const expectedView = {
       prisonerSummary,
       tab: expectedTab,
-      goalsOrProblem,
+      goals,
     }
 
     // When
