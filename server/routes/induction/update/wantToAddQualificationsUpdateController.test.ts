@@ -25,7 +25,6 @@ describe('wantToAddQualificationsUpdateController', () => {
     req = {
       session: { prisonerSummary },
       body: {},
-      user: { token: 'some-token' },
       params: { prisonNumber },
       path: `/prisoners/${prisonNumber}/induction/want-to-add-qualifications`,
     } as unknown as Request
@@ -248,7 +247,6 @@ describe('wantToAddQualificationsUpdateController', () => {
 
     it(`should proceed to qualification level page given user wants to add a qualification`, async () => {
       // Given
-      req.user.token = 'some-token'
       const inductionDto = aValidInductionDto()
       req.session.inductionDto = inductionDto
 
@@ -266,7 +264,6 @@ describe('wantToAddQualificationsUpdateController', () => {
 
     it(`should proceed to additional training page given user wants to add a qualification`, async () => {
       // Given
-      req.user.token = 'some-token'
       const inductionDto = aValidInductionDto()
       req.session.inductionDto = inductionDto
 

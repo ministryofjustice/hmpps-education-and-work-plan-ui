@@ -6,11 +6,11 @@ import aValidInductionDto from '../../testsupport/inductionDtoTestDataBuilder'
 
 jest.mock('../../services/inductionService')
 describe('retrieveInduction', () => {
-  const inductionService = new InductionService(null) as jest.Mocked<InductionService>
+  const inductionService = new InductionService(null, null) as jest.Mocked<InductionService>
   const requestHandler = retrieveInduction(inductionService)
 
   const prisonNumber = 'A1234BC'
-  const userToken = 'a-user-token'
+  const username = 'a-dps-user'
 
   let req: Request
   let res: Response
@@ -19,9 +19,7 @@ describe('retrieveInduction', () => {
   beforeEach(() => {
     jest.resetAllMocks()
     req = {
-      user: {
-        token: userToken,
-      },
+      user: { username },
       params: { prisonNumber },
     } as unknown as Request
     res = {
@@ -44,7 +42,7 @@ describe('retrieveInduction', () => {
 
     // Then
     expect(res.locals.induction).toEqual(expected)
-    expect(inductionService.getInduction).toHaveBeenCalledWith(prisonNumber, userToken)
+    expect(inductionService.getInduction).toHaveBeenCalledWith(prisonNumber, username)
     expect(next).toHaveBeenCalled()
   })
 
@@ -70,7 +68,7 @@ describe('retrieveInduction', () => {
 
     // Then
     expect(res.locals.induction).toEqual(expected)
-    expect(inductionService.getInduction).toHaveBeenCalledWith(prisonNumber, userToken)
+    expect(inductionService.getInduction).toHaveBeenCalledWith(prisonNumber, username)
     expect(next).toHaveBeenCalled()
   })
 
@@ -96,7 +94,7 @@ describe('retrieveInduction', () => {
 
     // Then
     expect(res.locals.induction).toEqual(expected)
-    expect(inductionService.getInduction).toHaveBeenCalledWith(prisonNumber, userToken)
+    expect(inductionService.getInduction).toHaveBeenCalledWith(prisonNumber, username)
     expect(next).toHaveBeenCalled()
   })
 })

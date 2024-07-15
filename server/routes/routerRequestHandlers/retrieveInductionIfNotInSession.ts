@@ -12,7 +12,7 @@ const retrieveInductionIfNotInSession = (inductionService: InductionService): Re
     try {
       // Retrieve the Induction and store in the session if its either not there, or is for a different prisoner
       if (!req.session.inductionDto || req.session.inductionDto.prisonNumber !== prisonNumber) {
-        req.session.inductionDto = await inductionService.getInduction(prisonNumber, req.user.token)
+        req.session.inductionDto = await inductionService.getInduction(prisonNumber, req.user.username)
       }
       next()
     } catch (error) {

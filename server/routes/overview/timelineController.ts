@@ -9,7 +9,7 @@ export default class TimelineController {
     const { prisonNumber } = req.params
     const { prisonerSummary } = req.session
 
-    const timeline = await this.timelineService.getTimeline(prisonNumber, req.user.token, req.user.username)
+    const timeline = await this.timelineService.getTimeline(prisonNumber, req.user.username)
     const view = new TimelineView(prisonerSummary, timeline)
     res.render('pages/overview/index', { ...view.renderArgs })
   }

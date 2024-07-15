@@ -37,8 +37,8 @@ describe('retrieveInductionIfNotInSession', () => {
 
   it('should retrieve induction and store in session given induction not in session', async () => {
     // Given
-    const token = 'a-user-token'
-    req.user.token = token
+    const username = 'a-dps-user'
+    req.user.username = username
 
     req.session.inductionDto = undefined
 
@@ -51,15 +51,15 @@ describe('retrieveInductionIfNotInSession', () => {
     await requestHandler(req as undefined as Request, res as undefined as Response, next as undefined as NextFunction)
 
     // Then
-    expect(inductionService.getInduction).toHaveBeenCalledWith(prisonNumber, token)
+    expect(inductionService.getInduction).toHaveBeenCalledWith(prisonNumber, username)
     expect(req.session.inductionDto).toEqual(expectedInductionDto)
     expect(next).toHaveBeenCalled()
   })
 
   it(`should retrieve induction and store in session given different prisoner's induction already in session`, async () => {
     // Given
-    const token = 'a-user-token'
-    req.user.token = token
+    const username = 'a-dps-user'
+    req.user.username = username
 
     req.session.inductionDto = aValidInductionDto({ prisonNumber: 'Z1234XY' })
 
@@ -72,15 +72,15 @@ describe('retrieveInductionIfNotInSession', () => {
     await requestHandler(req as undefined as Request, res as undefined as Response, next as undefined as NextFunction)
 
     // Then
-    expect(inductionService.getInduction).toHaveBeenCalledWith(prisonNumber, token)
+    expect(inductionService.getInduction).toHaveBeenCalledWith(prisonNumber, username)
     expect(req.session.inductionDto).toEqual(expectedInductionDto)
     expect(next).toHaveBeenCalled()
   })
 
   it(`should not retrieve induction given prisoner's induction already in session`, async () => {
     // Given
-    const token = 'a-user-token'
-    req.user.token = token
+    const username = 'a-dps-user'
+    req.user.username = username
 
     const prisonNumber = 'A1234GC'
 
@@ -100,8 +100,8 @@ describe('retrieveInductionIfNotInSession', () => {
 
   it('should call next function with error given retrieving induction fails with a 404', async () => {
     // Given
-    const token = 'a-user-token'
-    req.user.token = token
+    const username = 'a-dps-user'
+    req.user.username = username
 
     req.session.inductionDto = undefined
 
@@ -118,15 +118,15 @@ describe('retrieveInductionIfNotInSession', () => {
     await requestHandler(req as undefined as Request, res as undefined as Response, next as undefined as NextFunction)
 
     // Then
-    expect(inductionService.getInduction).toHaveBeenCalledWith(prisonNumber, token)
+    expect(inductionService.getInduction).toHaveBeenCalledWith(prisonNumber, username)
     expect(req.session.inductionDto).toBeUndefined()
     expect(next).toHaveBeenCalledWith(expectedError)
   })
 
   it('should call next function with error given retrieving induction fails with a 500', async () => {
     // Given
-    const token = 'a-user-token'
-    req.user.token = token
+    const username = 'a-dps-user'
+    req.user.username = username
 
     req.session.inductionDto = undefined
 
@@ -143,7 +143,7 @@ describe('retrieveInductionIfNotInSession', () => {
     await requestHandler(req as undefined as Request, res as undefined as Response, next as undefined as NextFunction)
 
     // Then
-    expect(inductionService.getInduction).toHaveBeenCalledWith(prisonNumber, token)
+    expect(inductionService.getInduction).toHaveBeenCalledWith(prisonNumber, username)
     expect(req.session.prisonerSummary).toBeUndefined()
     expect(next).toHaveBeenCalledWith(expectedError)
   })

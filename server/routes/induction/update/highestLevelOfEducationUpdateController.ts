@@ -55,7 +55,7 @@ export default class HighestLevelOfEducationUpdateController extends HighestLeve
 
     try {
       const updateInductionDto = toCreateOrUpdateInductionDto(prisonId, updatedInduction)
-      await this.inductionService.updateInduction(prisonNumber, updateInductionDto, req.user.token)
+      await this.inductionService.updateInduction(prisonNumber, updateInductionDto, req.user.username)
       req.session.inductionDto = undefined
       return res.redirect(`/plan/${prisonNumber}/view/education-and-training`)
     } catch (e) {

@@ -57,7 +57,6 @@ describe('prisonerListController', () => {
         activeCaseLoadId: 'BXI',
       },
     }
-    req.user.token = 'some-token'
     req.user.username = 'AUSER_GEN'
     req.session = {} as SessionData
   })
@@ -103,7 +102,6 @@ describe('prisonerListController', () => {
         0,
         9999,
         'AUSER_GEN',
-        'some-token',
       )
     })
 
@@ -129,7 +127,6 @@ describe('prisonerListController', () => {
         0,
         9999,
         'AUSER_GEN',
-        'some-token',
       )
       expect(res.render).not.toHaveBeenCalled()
       expect(next).toHaveBeenCalledWith(expectedError)
@@ -178,7 +175,6 @@ describe('prisonerListController', () => {
           0,
           9999,
           'AUSER_GEN',
-          'some-token',
         )
       })
 
@@ -224,7 +220,6 @@ describe('prisonerListController', () => {
           0,
           9999,
           'AUSER_GEN',
-          'some-token',
         )
       })
 
@@ -271,7 +266,6 @@ describe('prisonerListController', () => {
           0,
           9999,
           'AUSER_GEN',
-          'some-token',
         )
       })
     })
@@ -319,7 +313,6 @@ describe('prisonerListController', () => {
           0,
           9999,
           'AUSER_GEN',
-          'some-token',
         )
         expect(req.session.prisonerListSortOptions).toEqual('name,ascending') // expect current sort options saved in session
       })
@@ -366,7 +359,6 @@ describe('prisonerListController', () => {
           0,
           9999,
           'AUSER_GEN',
-          'some-token',
         )
         expect(req.session.prisonerListSortOptions).toEqual('reception-date,descending') // expect default sort options saved in session
       })
@@ -412,7 +404,6 @@ describe('prisonerListController', () => {
           0,
           9999,
           'AUSER_GEN',
-          'some-token',
         )
         expect(req.session.prisonerListSortOptions).toEqual('name,ascending') // expect current sort options saved in session
       })

@@ -73,7 +73,7 @@ export default class CreateGoalsController {
 
     try {
       const createGoalDtos = toCreateGoalDtos(createGoalsForm, prisonId)
-      await this.educationAndWorkPlanService.createGoals(createGoalDtos, req.user.token)
+      await this.educationAndWorkPlanService.createGoals(createGoalDtos, req.user.username)
 
       req.session.createGoalsForm = undefined
       return res.redirectWithSuccess(`/plan/${prisonNumber}/view/overview`, 'Goals added')

@@ -17,7 +17,7 @@ describe('affectAbilityToWorkUpdateController', () => {
     typeof toCreateOrUpdateInductionDto
   >
 
-  const inductionService = new InductionService(null) as jest.Mocked<InductionService>
+  const inductionService = new InductionService(null, null) as jest.Mocked<InductionService>
   const controller = new AbilityToWorkUpdateController(inductionService)
 
   const prisonNumber = 'A1234BC'
@@ -41,7 +41,7 @@ describe('affectAbilityToWorkUpdateController', () => {
     jest.resetAllMocks()
     req.session = { prisonerSummary } as SessionData
     req.body = {}
-    req.user = { token: 'some-token' } as Express.User
+    req.user = { username: 'a-dps-user' } as Express.User
     req.params = { prisonNumber }
     req.path = `/prisoners/${prisonNumber}/induction/affect-ability-to-work`
   })
@@ -186,7 +186,7 @@ describe('affectAbilityToWorkUpdateController', () => {
       expect(updatedInduction.workOnRelease.affectAbilityToWork).toEqual(expectedUpdatedAbilityToWork)
       expect(updatedInduction.workOnRelease.affectAbilityToWorkOther).toEqual(expectedUpdatedAbilityToWorkOther)
 
-      expect(inductionService.updateInduction).toHaveBeenCalledWith(prisonNumber, updateInductionDto, 'some-token')
+      expect(inductionService.updateInduction).toHaveBeenCalledWith(prisonNumber, updateInductionDto, 'a-dps-user')
       expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/view/work-and-interests`)
       expect(req.session.affectAbilityToWorkForm).toBeUndefined()
       expect(req.session.inductionDto).toBeUndefined()
@@ -230,7 +230,7 @@ describe('affectAbilityToWorkUpdateController', () => {
       expect(updatedInduction.workOnRelease.affectAbilityToWork).toEqual(expectedUpdatedAbilityToWork)
       expect(updatedInduction.workOnRelease.affectAbilityToWorkOther).toEqual(expectedUpdatedAbilityToWorkOther)
 
-      expect(inductionService.updateInduction).toHaveBeenCalledWith(prisonNumber, updateInductionDto, 'some-token')
+      expect(inductionService.updateInduction).toHaveBeenCalledWith(prisonNumber, updateInductionDto, 'a-dps-user')
       expect(next).toHaveBeenCalledWith(expectedError)
       expect(req.session.affectAbilityToWorkForm).toEqual(affectAbilityToWorkForm)
       expect(req.session.inductionDto).toEqual(inductionDto)

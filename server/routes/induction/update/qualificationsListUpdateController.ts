@@ -59,7 +59,7 @@ export default class QualificationsListUpdateController extends QualificationsLi
     // Update the Induction and return to Education and Training
     try {
       const updateInductionDto = toCreateOrUpdateInductionDto(prisonId, updatedInduction)
-      await this.inductionService.updateInduction(prisonNumber, updateInductionDto, req.user.token)
+      await this.inductionService.updateInduction(prisonNumber, updateInductionDto, req.user.username)
 
       req.session.highestLevelOfEducationForm = undefined
       req.session.qualificationLevelForm = undefined

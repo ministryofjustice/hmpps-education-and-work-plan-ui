@@ -14,7 +14,7 @@ const retrieveInduction = (inductionService: InductionService): RequestHandler =
       // Retrieve the Induction and store in res.locals
       res.locals.induction = {
         problemRetrievingData: false,
-        inductionDto: await inductionService.getInduction(prisonNumber, req.user.token),
+        inductionDto: await inductionService.getInduction(prisonNumber, req.user.username),
       }
     } catch (error) {
       res.locals.induction = { ...gracefullyHandleException(error, prisonNumber), inductionDto: undefined }

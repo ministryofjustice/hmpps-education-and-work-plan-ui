@@ -57,7 +57,7 @@ export default class AdditionalTrainingUpdateController extends AdditionalTraini
 
     try {
       const updateInductionDto = toCreateOrUpdateInductionDto(prisonId, updatedInduction)
-      await this.inductionService.updateInduction(prisonNumber, updateInductionDto, req.user.token)
+      await this.inductionService.updateInduction(prisonNumber, updateInductionDto, req.user.username)
 
       req.session.additionalTrainingForm = undefined
       req.session.inductionDto = undefined

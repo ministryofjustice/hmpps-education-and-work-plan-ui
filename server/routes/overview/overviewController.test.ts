@@ -16,8 +16,11 @@ jest.mock('../../services/inductionService')
 
 describe('overviewController', () => {
   const curiousService = new CuriousService(null, null, null) as jest.Mocked<CuriousService>
-  const educationAndWorkPlanService = new EducationAndWorkPlanService(null) as jest.Mocked<EducationAndWorkPlanService>
-  const inductionService = new InductionService(null) as jest.Mocked<InductionService>
+  const educationAndWorkPlanService = new EducationAndWorkPlanService(
+    null,
+    null,
+  ) as jest.Mocked<EducationAndWorkPlanService>
+  const inductionService = new InductionService(null, null) as jest.Mocked<InductionService>
 
   const controller = new OverviewController(curiousService, educationAndWorkPlanService, inductionService)
 
@@ -37,7 +40,11 @@ describe('overviewController', () => {
     coursesCompletedInLast12Months: [],
   }
 
-  let req: Request
+  const req = {
+    session: { prisonerSummary },
+    user: { username: 'a-dps-user' },
+    params: { prisonNumber },
+  } as unknown as Request
   const res = {
     render: jest.fn(),
     locals: {
@@ -48,14 +55,6 @@ describe('overviewController', () => {
 
   beforeEach(() => {
     jest.resetAllMocks()
-    req = {
-      session: { prisonerSummary },
-      user: {
-        username: 'a-dps-user',
-        token: 'a-user-token',
-      },
-      params: { prisonNumber },
-    } as unknown as Request
   })
 
   it('should get overview view given CIAG Induction and PLP Action Plan both exist', async () => {
@@ -105,9 +104,9 @@ describe('overviewController', () => {
     expect(educationAndWorkPlanService.getGoalsByStatus).toHaveBeenCalledWith(
       prisonNumber,
       GoalStatusValue.ACTIVE,
-      'a-user-token',
+      'a-dps-user',
     )
-    expect(inductionService.inductionExists).toHaveBeenCalledWith(prisonNumber, 'a-user-token')
+    expect(inductionService.inductionExists).toHaveBeenCalledWith(prisonNumber, 'a-dps-user')
     expect(req.session.newGoal).toBeUndefined()
     expect(req.session.newGoals).toBeUndefined()
   })
@@ -159,9 +158,9 @@ describe('overviewController', () => {
     expect(educationAndWorkPlanService.getGoalsByStatus).toHaveBeenCalledWith(
       prisonNumber,
       GoalStatusValue.ACTIVE,
-      'a-user-token',
+      'a-dps-user',
     )
-    expect(inductionService.inductionExists).toHaveBeenCalledWith(prisonNumber, 'a-user-token')
+    expect(inductionService.inductionExists).toHaveBeenCalledWith(prisonNumber, 'a-dps-user')
     expect(req.session.newGoal).toBeUndefined()
     expect(req.session.newGoals).toBeUndefined()
   })
@@ -184,7 +183,7 @@ describe('overviewController', () => {
     // Then
     expect(next).toHaveBeenCalledWith(expectedError)
     expect(res.render).not.toHaveBeenCalled()
-    expect(inductionService.inductionExists).toHaveBeenCalledWith(prisonNumber, 'a-user-token')
+    expect(inductionService.inductionExists).toHaveBeenCalledWith(prisonNumber, 'a-dps-user')
     expect(educationAndWorkPlanService.getGoalsByStatus).not.toHaveBeenCalled()
     expect(curiousService.getPrisonerFunctionalSkills).not.toHaveBeenCalled()
     expect(req.session.newGoal).toBeUndefined()

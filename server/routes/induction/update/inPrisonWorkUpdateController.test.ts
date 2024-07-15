@@ -17,7 +17,7 @@ describe('inPrisonWorkUpdateController', () => {
     typeof toCreateOrUpdateInductionDto
   >
 
-  const inductionService = new InductionService(null) as jest.Mocked<InductionService>
+  const inductionService = new InductionService(null, null) as jest.Mocked<InductionService>
   const controller = new InPrisonWorkUpdateController(inductionService)
 
   const prisonNumber = 'A1234BC'
@@ -41,7 +41,7 @@ describe('inPrisonWorkUpdateController', () => {
     jest.resetAllMocks()
     req.session = { prisonerSummary } as SessionData
     req.body = {}
-    req.user = { token: 'some-token' } as Express.User
+    req.user = { username: 'a-dps-user' } as Express.User
     req.params = { prisonNumber }
     req.path = `/prisoners/${prisonNumber}/induction/in-prison-work`
   })
@@ -179,7 +179,7 @@ describe('inPrisonWorkUpdateController', () => {
       expect(mockedCreateOrUpdateInductionDtoMapper).toHaveBeenCalledWith(prisonerSummary.prisonId, updatedInduction)
       expect(updatedInduction.inPrisonInterests.inPrisonWorkInterests).toEqual(expectedUpdatedWorkInterests)
 
-      expect(inductionService.updateInduction).toHaveBeenCalledWith(prisonNumber, updateInductionDto, 'some-token')
+      expect(inductionService.updateInduction).toHaveBeenCalledWith(prisonNumber, updateInductionDto, 'a-dps-user')
       expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/view/work-and-interests`)
       expect(req.session.inPrisonWorkForm).toBeUndefined()
       expect(req.session.inductionDto).toBeUndefined()
@@ -230,7 +230,7 @@ describe('inPrisonWorkUpdateController', () => {
       expect(mockedCreateOrUpdateInductionDtoMapper).toHaveBeenCalledWith(prisonerSummary.prisonId, updatedInduction)
       expect(updatedInduction.inPrisonInterests.inPrisonWorkInterests).toEqual(expectedUpdatedWorkInterests)
 
-      expect(inductionService.updateInduction).toHaveBeenCalledWith(prisonNumber, updateInductionDto, 'some-token')
+      expect(inductionService.updateInduction).toHaveBeenCalledWith(prisonNumber, updateInductionDto, 'a-dps-user')
       expect(next).toHaveBeenCalledWith(expectedError)
       expect(req.session.inPrisonWorkForm).toEqual(inPrisonWorkForm)
       const updatedInductionDto = req.session.inductionDto

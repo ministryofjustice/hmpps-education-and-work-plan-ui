@@ -19,7 +19,10 @@ describe('createGoalsController', () => {
   const mockedCreateGoalsFormValidator = validateCreateGoalsForm as jest.MockedFn<typeof validateCreateGoalsForm>
   const mockedCreateGoalDtosMapper = toCreateGoalDtos as jest.MockedFn<typeof toCreateGoalDtos>
 
-  const educationAndWorkPlanService = new EducationAndWorkPlanService(null) as jest.Mocked<EducationAndWorkPlanService>
+  const educationAndWorkPlanService = new EducationAndWorkPlanService(
+    null,
+    null,
+  ) as jest.Mocked<EducationAndWorkPlanService>
   const controller = new CreateGoalsController(educationAndWorkPlanService)
 
   let req: Request
@@ -106,7 +109,7 @@ describe('createGoalsController', () => {
   describe('submitCreateGoalsForm', () => {
     it('should call API to create goals and redirect to overview given value CreateGoalsForm', async () => {
       // Given
-      req.user.token = 'some-token'
+      req.user.username = 'a-dps-user'
       const submittedCreateGoalsForm: CreateGoalsForm = {
         prisonNumber,
         goals: [
@@ -153,7 +156,7 @@ describe('createGoalsController', () => {
       expect(res.redirectWithSuccess).toHaveBeenCalledWith('/plan/A1234BC/view/overview', 'Goals added')
       expect(mockedCreateGoalsFormValidator).toHaveBeenCalledWith(submittedCreateGoalsForm)
       expect(mockedCreateGoalDtosMapper).toHaveBeenCalledWith(submittedCreateGoalsForm, expectedPrisonId)
-      expect(educationAndWorkPlanService.createGoals).toHaveBeenCalledWith(expectedCreateGoalDtos, 'some-token')
+      expect(educationAndWorkPlanService.createGoals).toHaveBeenCalledWith(expectedCreateGoalDtos, 'a-dps-user')
       expect(req.session.createGoalsForm).toBeUndefined()
     })
 

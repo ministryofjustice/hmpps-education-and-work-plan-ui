@@ -19,7 +19,7 @@ describe('qualificationsListUpdateController', () => {
     typeof toCreateOrUpdateInductionDto
   >
 
-  const inductionService = new InductionService(null) as jest.Mocked<InductionService>
+  const inductionService = new InductionService(null, null) as jest.Mocked<InductionService>
   const controller = new QualificationsListUpdateController(inductionService)
 
   const prisonNumber = 'A1234BC'
@@ -40,7 +40,7 @@ describe('qualificationsListUpdateController', () => {
       session: { prisonerSummary },
       params: { prisonNumber },
       path: `/prisoners/${prisonNumber}/induction/qualifications`,
-      user: { token: 'some-token' },
+      user: { username: 'a-dps-user' },
     } as unknown as Request
   })
 
@@ -103,7 +103,7 @@ describe('qualificationsListUpdateController', () => {
       expect(updatedInduction.previousQualifications.educationLevel).toEqual(expectedHighestLevelOfEducation)
       expect(updatedInduction.previousQualifications.qualifications).toEqual(expectedQualifications)
 
-      expect(inductionService.updateInduction).toHaveBeenCalledWith(prisonNumber, updateInductionDto, 'some-token')
+      expect(inductionService.updateInduction).toHaveBeenCalledWith(prisonNumber, updateInductionDto, 'a-dps-user')
 
       expect(res.redirect).toHaveBeenCalledWith('/plan/A1234BC/view/education-and-training')
       expect(req.session.highestLevelOfEducationForm).toBeUndefined()
@@ -143,7 +143,7 @@ describe('qualificationsListUpdateController', () => {
       expect(updatedInduction.previousQualifications.educationLevel).toEqual(expectedHighestLevelOfEducation)
       expect(updatedInduction.previousQualifications.qualifications).toEqual(expectedQualifications)
 
-      expect(inductionService.updateInduction).toHaveBeenCalledWith(prisonNumber, updateInductionDto, 'some-token')
+      expect(inductionService.updateInduction).toHaveBeenCalledWith(prisonNumber, updateInductionDto, 'a-dps-user')
       expect(next).toHaveBeenCalledWith(expectedError)
       expect(req.session.inductionDto).toEqual(inductionDto)
     })

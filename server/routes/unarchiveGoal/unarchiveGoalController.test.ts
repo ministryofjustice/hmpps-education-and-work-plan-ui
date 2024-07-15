@@ -11,7 +11,10 @@ import { aValidActionPlanWithOneGoal, aValidGoal } from '../../testsupport/actio
 jest.mock('../../services/educationAndWorkPlanService')
 
 describe('unarchiveGoalController', () => {
-  const educationAndWorkPlanService = new EducationAndWorkPlanService(null) as jest.Mocked<EducationAndWorkPlanService>
+  const educationAndWorkPlanService = new EducationAndWorkPlanService(
+    null,
+    null,
+  ) as jest.Mocked<EducationAndWorkPlanService>
   const controller = new UnarchiveGoalController(educationAndWorkPlanService)
 
   const prisonNumber = 'A1234BC'
@@ -21,11 +24,10 @@ describe('unarchiveGoalController', () => {
   const req = {
     session: { prisonerSummary },
     body: {},
-    user: { token: 'a-user-token' },
+    user: { username: 'a-dps-user' },
     params: { prisonNumber, goalReference },
     path: '',
   } as unknown as Request
-
   const res = {
     redirectWithSuccess: jest.fn(),
     render: jest.fn(),
@@ -56,7 +58,7 @@ describe('unarchiveGoalController', () => {
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/goal/unarchive/index', expectedView)
-      expect(educationAndWorkPlanService.getActionPlan).toHaveBeenCalledWith('A1234BC', 'a-user-token')
+      expect(educationAndWorkPlanService.getActionPlan).toHaveBeenCalledWith('A1234BC', 'a-dps-user')
     })
 
     it('should not get update goal view given error getting prisoner action plan', async () => {
@@ -71,7 +73,7 @@ describe('unarchiveGoalController', () => {
 
       // Then
       expect(next).toHaveBeenCalledWith(expectedError)
-      expect(educationAndWorkPlanService.getActionPlan).toHaveBeenCalledWith('A1234BC', 'a-user-token')
+      expect(educationAndWorkPlanService.getActionPlan).toHaveBeenCalledWith('A1234BC', 'a-dps-user')
     })
 
     it('should not get update goal view given requested goal reference is not part of the prisoners action plan', async () => {
@@ -88,7 +90,7 @@ describe('unarchiveGoalController', () => {
 
       // Then
       expect(next).toHaveBeenCalledWith(expectedError)
-      expect(educationAndWorkPlanService.getActionPlan).toHaveBeenCalledWith('A1234BC', 'a-user-token')
+      expect(educationAndWorkPlanService.getActionPlan).toHaveBeenCalledWith('A1234BC', 'a-dps-user')
     })
   })
 
@@ -110,7 +112,7 @@ describe('unarchiveGoalController', () => {
       await controller.submitUnarchiveGoalForm(req, res, next)
 
       // Then
-      expect(educationAndWorkPlanService.unarchiveGoal).toHaveBeenCalledWith(expectedUnarchiveGoalDto, 'a-user-token')
+      expect(educationAndWorkPlanService.unarchiveGoal).toHaveBeenCalledWith(expectedUnarchiveGoalDto, 'a-dps-user')
       expect(res.redirectWithSuccess).toHaveBeenCalledWith(`/plan/${prisonNumber}/view/overview`, 'Goal reactivated')
     })
 
@@ -134,7 +136,7 @@ describe('unarchiveGoalController', () => {
       await controller.submitUnarchiveGoalForm(req, res, next)
 
       // Then
-      expect(educationAndWorkPlanService.unarchiveGoal).toHaveBeenCalledWith(expectedUnarchiveGoalDto, 'a-user-token')
+      expect(educationAndWorkPlanService.unarchiveGoal).toHaveBeenCalledWith(expectedUnarchiveGoalDto, 'a-dps-user')
       expect(next).toHaveBeenCalledWith(expectedError)
     })
   })

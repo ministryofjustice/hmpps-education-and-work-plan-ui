@@ -17,7 +17,7 @@ describe('inPrisonTrainingUpdateController', () => {
     typeof toCreateOrUpdateInductionDto
   >
 
-  const inductionService = new InductionService(null) as jest.Mocked<InductionService>
+  const inductionService = new InductionService(null, null) as jest.Mocked<InductionService>
   const controller = new InPrisonTrainingUpdateController(inductionService)
 
   const prisonNumber = 'A1234BC'
@@ -41,7 +41,7 @@ describe('inPrisonTrainingUpdateController', () => {
     jest.resetAllMocks()
     req.session = { prisonerSummary } as SessionData
     req.body = {}
-    req.user = { token: 'some-token' } as Express.User
+    req.user = { username: 'a-dps-user' } as Express.User
     req.params = { prisonNumber }
     req.path = `/prisoners/${prisonNumber}/induction/in-prison-training`
   })
@@ -189,7 +189,7 @@ describe('inPrisonTrainingUpdateController', () => {
       expect(mockedCreateOrUpdateInductionDtoMapper).toHaveBeenCalledWith(prisonerSummary.prisonId, updatedInduction)
       expect(updatedInduction.inPrisonInterests.inPrisonTrainingInterests).toEqual(expectedUpdatedInPrisonTraining)
 
-      expect(inductionService.updateInduction).toHaveBeenCalledWith(prisonNumber, updateInductionDto, 'some-token')
+      expect(inductionService.updateInduction).toHaveBeenCalledWith(prisonNumber, updateInductionDto, 'a-dps-user')
       expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/view/education-and-training`)
       expect(req.session.inPrisonTrainingForm).toBeUndefined()
       expect(req.session.inductionDto).toBeUndefined()
@@ -240,7 +240,7 @@ describe('inPrisonTrainingUpdateController', () => {
       expect(mockedCreateOrUpdateInductionDtoMapper).toHaveBeenCalledWith(prisonerSummary.prisonId, updatedInduction)
       expect(updatedInduction.inPrisonInterests.inPrisonTrainingInterests).toEqual(expectedUpdatedInPrisonTraining)
 
-      expect(inductionService.updateInduction).toHaveBeenCalledWith(prisonNumber, updateInductionDto, 'some-token')
+      expect(inductionService.updateInduction).toHaveBeenCalledWith(prisonNumber, updateInductionDto, 'a-dps-user')
       expect(next).toHaveBeenCalledWith(expectedError)
       expect(req.session.inPrisonTrainingForm).toEqual(inPrisonTrainingForm)
       expect(req.session.inductionDto).toEqual(inductionDto)

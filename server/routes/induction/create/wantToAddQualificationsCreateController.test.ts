@@ -42,7 +42,6 @@ describe('wantToAddQualificationsCreateController', () => {
     req = {
       session: { prisonerSummary },
       body: {},
-      user: { token: 'some-token' },
       params: { prisonNumber },
       path: `/prisoners/${prisonNumber}/create-induction/want-to-add-qualifications`,
     } as unknown as Request
@@ -146,7 +145,6 @@ describe('wantToAddQualificationsCreateController', () => {
 
     it(`should proceed to qualification level page given user wants to add qualifications`, async () => {
       // Given
-      req.user.token = 'some-token'
       req.session.inductionDto = partialInductionDto()
 
       req.body = { wantToAddQualifications: YesNoValue.YES }
@@ -164,7 +162,6 @@ describe('wantToAddQualificationsCreateController', () => {
 
     it(`should proceed to additional training page given user does not want to add qualifications`, async () => {
       // Given
-      req.user.token = 'some-token'
       req.session.inductionDto = partialInductionDto()
 
       req.body = { wantToAddQualifications: YesNoValue.NO }
@@ -182,7 +179,6 @@ describe('wantToAddQualificationsCreateController', () => {
 
     it('should redirect to check your answers given previous page was check your answers and induction form with no qualifications was submitted with no change', async () => {
       // Given
-      req.user.token = 'some-token'
       const inductionDto = partialInductionDto()
       const existingQualifications: Array<AchievedQualificationDto> = [] // Empty array of qualifications meaning the user has previously said No to Do The Want To Record Qualifications
       inductionDto.previousQualifications = { qualifications: existingQualifications } as PreviousQualificationsDto
@@ -210,7 +206,6 @@ describe('wantToAddQualificationsCreateController', () => {
 
     it('should redirect to check your answers given previous page was check your answers and induction form with some qualifications was submitted with no change', async () => {
       // Given
-      req.user.token = 'some-token'
       const inductionDto = partialInductionDto()
       const existingQualifications: Array<AchievedQualificationDto> = [
         { subject: 'Maths', grade: 'C', level: QualificationLevelValue.LEVEL_1 },
@@ -240,7 +235,6 @@ describe('wantToAddQualificationsCreateController', () => {
 
     it('should redirect to check your answers given previous page was check your answers and induction form with some qualifications was submitted changing the answer to No', async () => {
       // Given
-      req.user.token = 'some-token'
       const inductionDto = partialInductionDto()
       const existingQualifications: Array<AchievedQualificationDto> = [
         { subject: 'Maths', grade: 'C', level: QualificationLevelValue.LEVEL_1 },
@@ -271,7 +265,6 @@ describe('wantToAddQualificationsCreateController', () => {
 
     it('should redirect to qualification level given previous page was check your answers and induction form with no qualifications was submitted changing the answer to Yes', async () => {
       // Given
-      req.user.token = 'some-token'
       const inductionDto = partialInductionDto()
       const existingQualifications: Array<AchievedQualificationDto> = [] // Empty array of qualifications meaning the user has previously said No to Do The Want To Record Qualifications
       inductionDto.previousQualifications = { qualifications: existingQualifications } as PreviousQualificationsDto

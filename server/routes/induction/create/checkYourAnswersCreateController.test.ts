@@ -16,7 +16,7 @@ describe('checkYourAnswersCreateController', () => {
     typeof toCreateOrUpdateInductionDto
   >
 
-  const inductionService = new InductionService(null) as jest.Mocked<InductionService>
+  const inductionService = new InductionService(null, null) as jest.Mocked<InductionService>
   const controller = new CheckYourAnswersCreateController(inductionService)
 
   const prisonNumber = 'A1234BC'
@@ -31,7 +31,7 @@ describe('checkYourAnswersCreateController', () => {
     jest.resetAllMocks()
     req = {
       session: { prisonerSummary } as SessionData,
-      user: { token: 'some-token' } as Express.User,
+      user: { username: 'a-dps-user' } as Express.User,
       params: { prisonNumber } as Record<string, string>,
     } as unknown as Request
     res = {
@@ -80,7 +80,7 @@ describe('checkYourAnswersCreateController', () => {
 
       // Then
       expect(mockedCreateOrUpdateInductionDtoMapper).toHaveBeenCalledWith(prisonerSummary.prisonId, inductionDto)
-      expect(inductionService.createInduction).toHaveBeenCalledWith(prisonNumber, createInductionDto, 'some-token')
+      expect(inductionService.createInduction).toHaveBeenCalledWith(prisonNumber, createInductionDto, 'a-dps-user')
       expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/induction-created`)
       expect(req.session.inductionDto).toBeUndefined()
       expect(req.session.pageFlowHistory).toBeUndefined()
@@ -109,7 +109,7 @@ describe('checkYourAnswersCreateController', () => {
 
       // Then
       expect(mockedCreateOrUpdateInductionDtoMapper).toHaveBeenCalledWith(prisonerSummary.prisonId, inductionDto)
-      expect(inductionService.createInduction).toHaveBeenCalledWith(prisonNumber, createInductionDto, 'some-token')
+      expect(inductionService.createInduction).toHaveBeenCalledWith(prisonNumber, createInductionDto, 'a-dps-user')
       expect(next).toHaveBeenCalledWith(expectedError)
       expect(req.session.inductionDto).toEqual(inductionDto)
     })

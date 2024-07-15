@@ -17,7 +17,6 @@ describe('previousWorkExperienceDetailCreateController', () => {
   const req = {
     session: {} as SessionData,
     body: {},
-    user: {} as Express.User,
     params: {} as Record<string, string>,
     path: '',
   }
@@ -32,7 +31,6 @@ describe('previousWorkExperienceDetailCreateController', () => {
     jest.resetAllMocks()
     req.session = { prisonerSummary } as SessionData
     req.body = {}
-    req.user = { token: 'some-token' } as Express.User
     req.params = { prisonNumber }
     req.path = ''
   })
