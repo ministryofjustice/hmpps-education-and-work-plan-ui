@@ -61,6 +61,7 @@ context('Prisoner Overview page - Pre Induction', () => {
       .isForPrisoner(prisonNumberForPrisonerWithNoGoals)
       .isPreInduction()
       .hasNoGoalsDisplayed()
+      .hasNoServiceUnavailableMessageDisplayed()
   })
 
   it(`should navigate to create Induction page given 'make a progress plan' is clicked`, () => {
