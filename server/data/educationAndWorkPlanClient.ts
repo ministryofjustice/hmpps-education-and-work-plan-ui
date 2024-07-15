@@ -37,7 +37,10 @@ export default class EducationAndWorkPlanClient {
 
   async getGoalsByStatus(prisonNumber: string, status: GoalStatusValue, token: string): Promise<GetGoalsResponse> {
     return EducationAndWorkPlanClient.restClient(token).get<GetGoalsResponse>({
-      path: `/action-plans/${prisonNumber}/goals?status=${status}`,
+      path: `/action-plans/${prisonNumber}/goals`,
+      query: {
+        status,
+      },
     })
   }
 
