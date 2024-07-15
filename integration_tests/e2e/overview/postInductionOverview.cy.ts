@@ -98,6 +98,7 @@ context('Prisoner Overview page - Post Induction', () => {
       .isPostInduction()
       .activeTabIs('Overview')
       .hasEmptyGoalsSection()
+      .hasNoServiceUnavailableMessageDisplayed()
   })
 
   it('should display service unavailable message given EWP API returns a 500', () => {

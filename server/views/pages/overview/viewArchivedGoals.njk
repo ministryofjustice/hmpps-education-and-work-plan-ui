@@ -33,10 +33,7 @@
         {% if not goals.problemRetrievingData %}
           {% include './partials/_goalsList.njk' %}
         {% else %}
-          <h2 class="govuk-heading-m">Sorry, the service is currently unavailable.</h2>
-          <p class="govuk-body">
-            Retrieving goals is currently unavailable. Please try again later.
-          </p>
+          {% include './partials/_unavailableGoals.njk' %}
         {% endif %}
       </section>
     </div>

@@ -138,7 +138,12 @@ export default class OverviewPage extends Page {
   }
 
   hasServiceUnavailableMessageDisplayed(): OverviewPage {
-    cy.get('h2').contains('Sorry, the service is currently unavailable.')
+    this.errorRetrievingGoalsMessage().contains('Sorry, the service is currently unavailable.')
+    return this
+  }
+
+  hasNoServiceUnavailableMessageDisplayed(): OverviewPage {
+    this.errorRetrievingGoalsMessage().should('not.exist')
     return this
   }
 
@@ -183,6 +188,8 @@ export default class OverviewPage extends Page {
     cy.get('[data-qa=qualifications-achievements-sidebar-error-heading]')
 
   private goalSummaryCards = (): PageElement => cy.get('[data-qa=goal-summary-card]')
+
+  private errorRetrievingGoalsMessage = (): PageElement => cy.get('#problem-retrieving-goals-message')
 
   private goalUpdateButton = (idx: number): PageElement => cy.get(`[data-qa=goal-${idx}-update-button]`)
 
