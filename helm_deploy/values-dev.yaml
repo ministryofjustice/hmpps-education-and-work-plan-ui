@@ -24,6 +24,7 @@ generic-service:
     FRONTEND_COMPONENT_API_URL: "https://frontend-components-dev.hmpps.service.justice.gov.uk"
     ACTIVITIES_API_URL: "https://activities-api-dev.prison.service.justice.gov.uk"
     ENVIRONMENT_NAME: "DEV"
+    ARCHIVE_GOALS_ENABLED: "true"
 
   allowlist:
     uservision-accessibility-testers: 5.181.59.114/32
