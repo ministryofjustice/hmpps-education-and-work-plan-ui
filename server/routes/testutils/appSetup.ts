@@ -20,6 +20,7 @@ const testAppInfo: ApplicationInfo = {
   gitRef: 'long ref',
   gitShortHash: 'short ref',
   branchName: 'main',
+  activeAgencies: ['***'],
 }
 
 const testUserWithEditorRole = {
