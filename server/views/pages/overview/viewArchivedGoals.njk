@@ -31,7 +31,24 @@
     <div class="govuk-grid-column-two-thirds app-u-print-full-width">
       <section data-qa="view-archived-goals-list">
         {% if not goals.problemRetrievingData %}
-          {% include './partials/_goalsList.njk' %}
+          {% for goal in goals.goals %}
+            {{ goalSummaryCard({
+              goal: goal,
+              attributes: {
+                'data-qa': 'goal-summary-card'
+              },
+              actions: [
+                {
+                  title: 'Reactivate<span class="govuk-visually-hidden"> goal ' + goal.sequenceNumber  + '</span>',
+                  href: '/plan/' + prisonerSummary.prisonNumber + '/goals/' + goal.goalReference + '/unarchive',
+                  attributes: {
+                  'data-qa': 'goal-'+ goal.sequenceNumber + '-unarchive-button'
+                },
+                  'render-if': hasEditAuthority and featureToggles.goals.archiveEnabled
+                }
+              ]
+            }) }}
+          {% endfor %}
         {% else %}
           {% include './partials/_unavailableGoals.njk' %}
         {% endif %}

@@ -35,14 +35,11 @@ describe('viewArchivedGoalsController', () => {
   })
   it('should get view archived goals page', async () => {
     // Given
-    const expectedTab = 'view-archived-goals'
-
     const goals: Goals = { goals: [aValidGoal()], problemRetrievingData: false }
     educationAndWorkPlanService.getGoalsByStatus.mockResolvedValue(goals)
 
     const expectedView = {
       prisonerSummary,
-      tab: expectedTab,
       goals,
     }
 

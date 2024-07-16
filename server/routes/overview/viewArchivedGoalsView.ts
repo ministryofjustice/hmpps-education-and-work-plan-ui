@@ -7,12 +7,10 @@ export default class ViewArchivedGoalsView {
   ) {}
 
   get renderArgs(): {
-    tab: string
     prisonerSummary: PrisonerSummary
     goals: Goals
   } {
     return {
-      tab: 'view-archived-goals',
       prisonerSummary: this.prisonerSummary,
       goals: this.goals,
     }
