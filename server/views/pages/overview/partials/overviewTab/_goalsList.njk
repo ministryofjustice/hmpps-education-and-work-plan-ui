@@ -1,0 +1,26 @@
+{% for goal in goals.goals %}
+  {{ goalSummaryCard({
+    goal: goal,
+    attributes: {
+      'data-qa': 'goal-summary-card'
+    },
+    actions: [
+      {
+        title: 'Update<span class="govuk-visually-hidden"> goal ' + goal.sequenceNumber  + '</span>',
+        href: '/plan/' + prisonerSummary.prisonNumber + '/goals/' + goal.goalReference + '/update',
+        attributes: {
+        'data-qa': 'goal-'+ goal.sequenceNumber + '-update-button'
+      },
+        'render-if': hasEditAuthority
+      },
+      {
+        title: 'Archive<span class="govuk-visually-hidden"> goal ' + goal.sequenceNumber  + '</span>',
+        href: '/plan/' + prisonerSummary.prisonNumber + '/goals/' + goal.goalReference + '/archive',
+        attributes: {
+        'data-qa': 'goal-'+ goal.sequenceNumber + '-archive-button'
+      },
+        'render-if': hasEditAuthority and featureToggles.goals.archiveEnabled
+      }
+    ]
+  }) }}
+{% endfor %}
