@@ -1,4 +1,4 @@
-import moment from 'moment'
+import { parseISO, startOfDay } from 'date-fns'
 import type { LearnerProfile } from 'curiousApiClient'
 import type { FunctionalSkills } from 'viewModels'
 import toFunctionalSkills from './functionalSkillsMapper'
@@ -44,21 +44,21 @@ describe('functionalSkillsMapper', () => {
       prisonNumber,
       assessments: [
         {
-          assessmentDate: moment('2012-02-16').toDate(),
+          assessmentDate: startOfDay(parseISO('2012-02-16')),
           grade: 'Level 1',
           prisonId: 'MDI',
           prisonName: 'MOORLAND (HMP & YOI)',
           type: 'ENGLISH',
         },
         {
-          assessmentDate: moment('2012-02-18').toDate(),
+          assessmentDate: startOfDay(parseISO('2012-02-18')),
           grade: 'Level 2',
           prisonId: 'MDI',
           prisonName: 'MOORLAND (HMP & YOI)',
           type: 'MATHS',
         },
         {
-          assessmentDate: moment('2022-08-29').toDate(),
+          assessmentDate: startOfDay(parseISO('2022-08-29')),
           grade: 'Level 3',
           prisonId: 'DNI',
           prisonName: 'DONCASTER (HMP)',
