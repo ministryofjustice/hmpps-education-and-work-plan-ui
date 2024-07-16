@@ -57,6 +57,13 @@ generic-service:
     AUDIT_SERVICE_NAME: "hmpps-education-and-work-plan"
     AUDIT_ENABLED: "true"
 
+    # Comma delimited list of prison IDs that our service is rolled out into (active agencies)
+    # Use spaces to aid readability if necessary; these are trimmed when the environment variable is read and processed.
+    # When the service is fully rolled out to all prisons replace the comma delimited list with the wildcard ***
+    # ACTIVE_AGENCIES: "***"
+    # Ref: https://dsdmoj.atlassian.net/wiki/spaces/NDSS/pages/4616488213/Publishing+the+deployment+scope+of+a+product
+    ACTIVE_AGENCIES: "BCI, ESI, FDI, FNI, GHI, HVI, HDI, KMI, LFI, LHI, NHI, NSI, PDI, PNI, RNI, SDI, SFI, SHI, MTI, WEI, WMI"
+
   # Pre-existing kubernetes secrets to load as environment variables in the deployment.
   # namespace_secrets:
   #   [name of kubernetes secret]:

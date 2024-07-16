@@ -26,6 +26,8 @@ generic-service:
     ENVIRONMENT_NAME: "DEV"
     ARCHIVE_GOALS_ENABLED: "true"
 
+    ACTIVE_AGENCIES: "***"
+
   allowlist:
     uservision-accessibility-testers: 5.181.59.114/32
     cymulate-1: 54.217.50.18/32
