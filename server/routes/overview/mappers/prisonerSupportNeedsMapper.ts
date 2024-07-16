@@ -1,6 +1,6 @@
+import { parseISO, startOfDay } from 'date-fns'
 import type { HealthAndSupportNeeds, Neurodiversity, PrisonerSupportNeeds } from 'viewModels'
 import type { LearnerNeurodivergence, LearnerProfile } from 'curiousApiClient'
-import moment from 'moment/moment'
 
 const toPrisonerSupportNeeds = (
   learnerProfiles: Array<LearnerProfile>,
@@ -44,7 +44,7 @@ const toNeurodiversity = (learnerNeurodivergence: LearnerNeurodivergence): Neuro
 }
 
 const dateOrNull = (value: string): Date | undefined => {
-  return value ? moment(value, true).toDate() : undefined
+  return value ? startOfDay(parseISO(value)) : undefined
 }
 
 export { toPrisonerSupportNeeds, toNeurodiversity }

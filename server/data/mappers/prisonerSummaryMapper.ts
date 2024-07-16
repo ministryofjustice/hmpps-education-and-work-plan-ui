@@ -1,16 +1,16 @@
+import { parseISO, startOfDay } from 'date-fns'
 import type { Prisoner } from 'prisonRegisterApiClient'
 import type { PrisonerSummary } from 'viewModels'
-import moment from 'moment/moment'
 
 export default function toPrisonerSummary(prisoner: Prisoner): PrisonerSummary {
   return {
     prisonNumber: prisoner.prisonerNumber,
     prisonId: prisoner.prisonId,
-    releaseDate: prisoner.releaseDate ? moment(prisoner.releaseDate, 'YYYY-MM-DD').toDate() : null,
+    releaseDate: prisoner.releaseDate ? startOfDay(parseISO(prisoner.releaseDate)) : null,
     firstName: capitalize(prisoner.firstName),
     lastName: capitalize(prisoner.lastName),
-    receptionDate: prisoner.receptionDate ? moment(prisoner.receptionDate, 'YYYY-MM-DD').toDate() : null,
-    dateOfBirth: prisoner.dateOfBirth ? moment(prisoner.dateOfBirth, 'YYYY-MM-DD').toDate() : null,
+    receptionDate: prisoner.receptionDate ? startOfDay(parseISO(prisoner.receptionDate)) : null,
+    dateOfBirth: prisoner.dateOfBirth ? startOfDay(parseISO(prisoner.dateOfBirth)) : null,
     location: prisoner.cellLocation,
     restrictedPatient: prisoner.restrictedPatient,
     supportingPrisonId: prisoner.supportingPrisonId,

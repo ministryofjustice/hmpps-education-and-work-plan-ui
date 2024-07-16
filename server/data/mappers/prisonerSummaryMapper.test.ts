@@ -1,4 +1,4 @@
-import moment from 'moment'
+import { parseISO, startOfDay } from 'date-fns'
 import type { Prisoner } from 'prisonRegisterApiClient'
 import type { PrisonerSummary } from 'viewModels'
 import aValidPrisoner from '../../testsupport/prisonerTestDataBuilder'
@@ -71,11 +71,11 @@ describe('prisonerSummaryMapper', () => {
     const expected: PrisonerSummary = {
       prisonNumber: 'A1234BC',
       prisonId: 'BXI',
-      releaseDate: moment('2025-12-31').toDate(),
+      releaseDate: startOfDay(parseISO('2025-12-31')),
       firstName: 'Jimmy',
       lastName: 'Lightfingers',
-      receptionDate: moment('1999-08-29').toDate(),
-      dateOfBirth: moment('1969-02-12').toDate(),
+      receptionDate: startOfDay(parseISO('1999-08-29')),
+      dateOfBirth: startOfDay(parseISO('1969-02-12')),
       location: 'A-1-102',
       restrictedPatient: true,
       supportingPrisonId: 'LEI',

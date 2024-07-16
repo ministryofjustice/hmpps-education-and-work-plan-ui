@@ -1,4 +1,4 @@
-import moment from 'moment'
+import { parseISO, startOfDay } from 'date-fns'
 import type { LearnerEducation } from 'curiousApiClient'
 import type { InPrisonCourse } from 'viewModels'
 
@@ -8,13 +8,13 @@ const toInPrisonCourse = (apiLearnerEducation: LearnerEducation): InPrisonCourse
     prisonName: apiLearnerEducation.establishmentName,
     courseCode: apiLearnerEducation.courseCode,
     courseName: apiLearnerEducation.courseName,
-    courseStartDate: moment(apiLearnerEducation.learningStartDate).utc().toDate(),
+    courseStartDate: startOfDay(parseISO(apiLearnerEducation.learningStartDate)),
     courseStatus: toCourseStatus(apiLearnerEducation.completionStatus),
     courseCompletionDate: apiLearnerEducation.learningActualEndDate
-      ? moment(apiLearnerEducation.learningActualEndDate).utc().toDate()
+      ? startOfDay(parseISO(apiLearnerEducation.learningActualEndDate))
       : null,
     coursePlannedEndDate: apiLearnerEducation.learningPlannedEndDate
-      ? moment(apiLearnerEducation.learningPlannedEndDate).utc().toDate()
+      ? startOfDay(parseISO(apiLearnerEducation.learningPlannedEndDate))
       : null,
     isAccredited: apiLearnerEducation.isAccredited,
     grade: apiLearnerEducation.outcomeGrade || apiLearnerEducation.outcome || null,

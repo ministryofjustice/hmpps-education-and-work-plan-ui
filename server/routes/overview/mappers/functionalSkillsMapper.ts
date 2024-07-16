@@ -1,4 +1,4 @@
-import moment from 'moment'
+import { parseISO, startOfDay } from 'date-fns'
 import type { Assessment as AssemmentDto, LearnerProfile } from 'curiousApiClient'
 import type { Assessment, FunctionalSkills } from 'viewModels'
 
@@ -25,7 +25,7 @@ const toAssessment = (prisonId: string, prisonName: string, assessment: Assemmen
 }
 
 const dateOrNull = (value: string): Date | undefined => {
-  return value ? moment(value, true).toDate() : undefined
+  return value ? startOfDay(parseISO(value)) : undefined
 }
 
 const toAssessmentTypeOrNull = (qualificationType: string): string | undefined => {

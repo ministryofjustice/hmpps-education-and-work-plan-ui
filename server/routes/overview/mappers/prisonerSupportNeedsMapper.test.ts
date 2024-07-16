@@ -1,4 +1,4 @@
-import moment from 'moment'
+import { parseISO, startOfDay } from 'date-fns'
 import type { PrisonerSupportNeeds } from 'viewModels'
 import type { LearnerNeurodivergence, LearnerProfile } from 'curiousApiClient'
 import { toPrisonerSupportNeeds } from './prisonerSupportNeedsMapper'
@@ -63,8 +63,8 @@ describe('prisonerSupportNeedsMapper', () => {
         {
           prisonId: 'MDI',
           prisonName: 'MOORLAND (HMP & YOI)',
-          rapidAssessmentDate: moment('2022-05-18').toDate(),
-          inDepthAssessmentDate: moment('2022-06-01').toDate(),
+          rapidAssessmentDate: startOfDay(parseISO('2022-05-18')),
+          inDepthAssessmentDate: startOfDay(parseISO('2022-06-01')),
           primaryLddAndHealthNeeds: 'Hearing impairment',
           additionalLddAndHealthNeeds: [],
         },
@@ -86,21 +86,21 @@ describe('prisonerSupportNeedsMapper', () => {
           prisonId: 'MDI',
           prisonName: 'MOORLAND (HMP & YOI)',
           supportNeeded: ['Writing support'],
-          supportNeededRecordedDate: moment('2022-02-18').toDate(),
+          supportNeededRecordedDate: startOfDay(parseISO('2022-02-18')),
           selfDeclaredNeurodiversity: ['Dyslexia'],
           selfDeclaredRecordedDate: undefined,
           assessedNeurodiversity: ['ADHD'],
-          assessmentDate: moment('2022-05-18').toDate(),
+          assessmentDate: startOfDay(parseISO('2022-05-18')),
         },
         {
           prisonId: 'DNI',
           prisonName: 'DONCASTER (HMP)',
           supportNeeded: ['No Identified Support Required'],
-          supportNeededRecordedDate: moment('2022-02-18').toDate(),
+          supportNeededRecordedDate: startOfDay(parseISO('2022-02-18')),
           selfDeclaredNeurodiversity: [],
-          selfDeclaredRecordedDate: moment('2022-02-18').toDate(),
+          selfDeclaredRecordedDate: startOfDay(parseISO('2022-02-18')),
           assessedNeurodiversity: ['No Identified Neurodiversity Need'],
-          assessmentDate: moment('2022-05-18').toDate(),
+          assessmentDate: startOfDay(parseISO('2022-05-18')),
         },
       ],
     }
