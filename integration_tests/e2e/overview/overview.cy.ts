@@ -1,6 +1,8 @@
 import Page from '../../pages/page'
 import OverviewPage from '../../pages/overview/OverviewPage'
 import Error404Page from '../../pages/error404'
+import { getRequestedFor } from '../../mockApis/wiremock/requestPatternBuilder'
+import { urlEqualTo } from '../../mockApis/wiremock/matchers/url'
 
 context('Prisoner Overview page - Common functionality for both pre and post induction', () => {
   beforeEach(() => {
@@ -125,5 +127,18 @@ context('Prisoner Overview page - Common functionality for both pre and post ind
 
     // Then
     Page.verifyOnPage(Error404Page)
+  })
+
+  it('should only show active goals', () => {
+    // Given
+    const prisonNumber = 'G6115VJ'
+    cy.signIn()
+
+    // When
+    cy.visit(`/plan/${prisonNumber}/view/overview`)
+
+    // Then
+    Page.verifyOnPage(OverviewPage)
+    cy.wiremockVerify(getRequestedFor(urlEqualTo(`/action-plans/${prisonNumber}/goals?status=ACTIVE`)))
   })
 })
