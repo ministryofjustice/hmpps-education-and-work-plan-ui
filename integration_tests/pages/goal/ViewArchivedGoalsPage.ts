@@ -14,6 +14,11 @@ export default class ViewArchivedGoalsPage extends Page {
     return this
   }
 
+  goalSummaryCardAtPositionContains(position: number, expectedText: string): ViewArchivedGoalsPage {
+    this.goalSummaryCards().eq(position).should('contain.text', expectedText)
+    return this
+  }
+
   clickReactivateButtonForFirstGoal(): UnarchiveGoalPage {
     this.goalReactivateButton(1).click()
     return Page.verifyOnPage(UnarchiveGoalPage)

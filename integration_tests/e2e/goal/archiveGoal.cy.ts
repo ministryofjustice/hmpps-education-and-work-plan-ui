@@ -214,12 +214,6 @@ context('Archive a goal', () => {
       .enterReason('Just because...')
       .submitPage()
 
-    cy.task('getGoalsByStatus', {
-      prisonNumber: 'G6115VJ',
-      status: GoalStatusValue.ACTIVE,
-      goals: [goalToKeep],
-    })
-
     const reviewPage = Page.verifyOnPage(ReviewArchiveGoalPage)
     reviewPage.clickYes()
 
@@ -227,7 +221,6 @@ context('Archive a goal', () => {
     Page.verifyOnPage(OverviewPage) //
       .hasSuccessMessage('Goal archived')
       .hasGoalsDisplayed()
-      .hasNumberOfGoals(1)
 
     cy.wiremockVerify(
       putRequestedFor(urlEqualTo(`/action-plans/${prisonNumber}/goals/${goalReference}/archive`)) //

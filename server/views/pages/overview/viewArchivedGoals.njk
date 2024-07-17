@@ -31,7 +31,7 @@
     <div class="govuk-grid-column-two-thirds app-u-print-full-width">
       <section data-qa="view-archived-goals-list">
         {% if not goals.problemRetrievingData %}
-          {% for goal in goals.goals %}
+          {% for goal in goals.goals | sort(attribute = 'updatedAt', reverse = true) %}
             {{ goalSummaryCard({
               goal: goal,
               attributes: {
