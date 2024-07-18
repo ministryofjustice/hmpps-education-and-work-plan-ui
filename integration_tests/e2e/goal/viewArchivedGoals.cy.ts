@@ -90,7 +90,7 @@ context('Unarchive a goal', () => {
       .goalSummaryCardAtPositionContains(1, aGoalThatWasArchivedFirst.title)
   })
 
-  it('should show archived on & by as well as the reason', () => {
+  it('should show archived date, person and prison as well as the reason', () => {
     // Given
     cy.signIn()
     cy.visit(`/plan/${prisonNumber}/view/overview`)
@@ -99,6 +99,7 @@ context('Unarchive a goal', () => {
       status: GoalStatusValue.ARCHIVED,
       goalReference: uuidv4(),
       updatedAt: '2024-01-02T09:30:00.000Z',
+      updatedAtPrison: 'BXI',
       title: 'I was archived because the prisoner no longer wants to work towards the goal',
       archiveReason: ReasonToArchiveGoalValue.PRISONER_NO_LONGER_WANTS_TO_WORK_TOWARDS_GOAL,
     }
@@ -107,6 +108,7 @@ context('Unarchive a goal', () => {
       status: GoalStatusValue.ARCHIVED,
       goalReference: uuidv4(),
       updatedAt: '2024-01-01T10:30:00.000Z',
+      updatedAtPrison: 'MDI',
       title: 'I was archived with other reason',
       archiveReason: ReasonToArchiveGoalValue.OTHER,
       archiveReasonOther: 'Some other reason',
@@ -123,9 +125,9 @@ context('Unarchive a goal', () => {
     // Then
     archivedGoalsPage //
       .hasNumberOfGoals(2)
-      .lastUpdatedHintAtPositionContains(0, 'Archived on: 02 January 2024 by Alex Smith')
+      .lastUpdatedHintAtPositionContains(0, 'Archived on: 02 January 2024 by Alex Smith, Brixton (HMP)')
       .archiveReasonHintAtPositionContains(0, 'Reason: Prisoner no longer wants to work towards this goal')
-      .lastUpdatedHintAtPositionContains(1, 'Archived on: 01 January 2024 by Alex Smith')
+      .lastUpdatedHintAtPositionContains(1, 'Archived on: 01 January 2024 by Alex Smith, Moorland (HMP & YOI)')
       .archiveReasonHintAtPositionContains(1, 'Reason: Other - Some other reason')
   })
 })

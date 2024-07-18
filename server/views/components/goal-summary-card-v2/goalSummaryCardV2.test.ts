@@ -113,7 +113,7 @@ describe('Tests for goal summary card component', () => {
     const hint = $('[data-qa=goal-last-updated-hint]').first()
     expect(hint.text().trim()).toEqual('Last updated: 23 September 2023 by Alex Smith')
   })
-  it('Should show be able to override last updated hint', () => {
+  it('Should be able to override last updated hint', () => {
     const goal = aValidGoal()
     const params: GoalSummaryCardParams = {
       goal,
@@ -129,6 +129,43 @@ describe('Tests for goal summary card component', () => {
     const hint = $('[data-qa=goal-last-updated-hint]').first()
     expect(hint.text().trim()).toEqual('Archived on: 23 September 2023 by Alex Smith')
   })
+  it('Should show last updated hint with prison name if set', () => {
+    const goal = {
+      ...aValidGoal(),
+      updatedAtPrisonName: 'Brixton (HMP)',
+    }
+    const params: GoalSummaryCardParams = {
+      goal,
+      actions: [],
+      attributes: { 'data-qa': 'goal-summary-card-qa' },
+      id: 'test-goal-card',
+    }
+
+    const content = nunjucks.render('test.njk', { params })
+
+    const $ = cheerio.load(content)
+    const hint = $('[data-qa=goal-last-updated-hint]').first()
+    expect(hint.text().trim()).toEqual('Last updated: 23 September 2023 by Alex Smith, Brixton (HMP)')
+  })
+  it('Should show last updated hint without prison name if missing', () => {
+    const goal = {
+      ...aValidGoal(),
+      updatedAtPrisonName: undefined as string,
+    }
+    const params: GoalSummaryCardParams = {
+      goal,
+      actions: [],
+      attributes: { 'data-qa': 'goal-summary-card-qa' },
+      id: 'test-goal-card',
+    }
+
+    const content = nunjucks.render('test.njk', { params })
+
+    const $ = cheerio.load(content)
+    const hint = $('[data-qa=goal-last-updated-hint]').first()
+    expect(hint.text().trim()).toEqual('Last updated: 23 September 2023 by Alex Smith')
+  })
+
   it('Should show archive reason with no other if the goal is archived', () => {
     const goal = {
       ...aValidGoal(),

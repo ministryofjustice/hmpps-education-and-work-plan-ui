@@ -16,7 +16,10 @@ jest.mock('../../services/inductionService')
 
 describe('overviewController', () => {
   const curiousService = new CuriousService(null, null, null) as jest.Mocked<CuriousService>
-  const educationAndWorkPlanService = new EducationAndWorkPlanService(null) as jest.Mocked<EducationAndWorkPlanService>
+  const educationAndWorkPlanService = new EducationAndWorkPlanService(
+    null,
+    null,
+  ) as jest.Mocked<EducationAndWorkPlanService>
   const inductionService = new InductionService(null) as jest.Mocked<InductionService>
 
   const controller = new OverviewController(curiousService, educationAndWorkPlanService, inductionService)

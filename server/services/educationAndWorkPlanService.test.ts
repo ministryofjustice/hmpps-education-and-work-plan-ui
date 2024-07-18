@@ -15,14 +15,15 @@ import { aValidUpdateGoalRequestWithOneUpdatedStep } from '../testsupport/update
 import { aValidCreateGoalsRequestWithOneGoal } from '../testsupport/createGoalsRequestTestDataBuilder'
 import ReasonToArchiveGoalValue from '../enums/ReasonToArchiveGoalValue'
 import GoalStatusValue from '../enums/goalStatusValue'
+import PrisonService from './prisonService'
 
 jest.mock('../data/educationAndWorkPlanClient')
-
+jest.mock('./prisonService')
 describe('educationAndWorkPlanService', () => {
   const educationAndWorkPlanClient =
     new EducationAndWorkPlanClient() as unknown as jest.Mocked<EducationAndWorkPlanClient>
-
-  const educationAndWorkPlanService = new EducationAndWorkPlanService(educationAndWorkPlanClient)
+  const prisonService = new PrisonService(null, null, null) as unknown as jest.Mocked<PrisonService>
+  const educationAndWorkPlanService = new EducationAndWorkPlanService(educationAndWorkPlanClient, prisonService)
 
   beforeEach(() => {
     jest.resetAllMocks()
@@ -66,6 +67,7 @@ describe('educationAndWorkPlanService', () => {
       const userToken = 'a-user-token'
       const actionPlanResponse = aValidActionPlanResponseWithOneGoal()
       educationAndWorkPlanClient.getActionPlan.mockResolvedValue(actionPlanResponse)
+      prisonService.getAllPrisonNamesById.mockResolvedValue(new Map())
       const expectedActionPlan = aValidActionPlanWithOneGoal()
 
       // When
@@ -76,12 +78,28 @@ describe('educationAndWorkPlanService', () => {
       expect(actual).toEqual(expectedActionPlan)
     })
 
+    it('should get Action Plan anyway given prisonService returns an error getting prison names', async () => {
+      // Given
+      const prisonNumber = 'A1234BC'
+      const userToken = 'a-user-token'
+      const actionPlanResponse = aValidActionPlanResponseWithOneGoal()
+      educationAndWorkPlanClient.getActionPlan.mockResolvedValue(actionPlanResponse)
+      prisonService.getAllPrisonNamesById.mockRejectedValue(Error('Service Unavailable'))
+      const expectedActionPlan = aValidActionPlanWithOneGoal()
+
+      // When
+      const actual = await educationAndWorkPlanService.getActionPlan(prisonNumber, userToken)
+
+      // Then
+      expect(educationAndWorkPlanClient.getActionPlan).toHaveBeenCalledWith(prisonNumber, userToken)
+      expect(actual).toEqual(expectedActionPlan)
+    })
     it('should not get Action Plan given educationAndWorkPlanClient returns an error', async () => {
       // Given
       const prisonNumber = 'A1234BC'
       const userToken = 'a-user-token'
-
       educationAndWorkPlanClient.getActionPlan.mockRejectedValue(Error('Service Unavailable'))
+      prisonService.getAllPrisonNamesById.mockResolvedValue(new Map())
 
       // When
       const actual = await educationAndWorkPlanService.getActionPlan(prisonNumber, userToken)
@@ -98,6 +116,7 @@ describe('educationAndWorkPlanService', () => {
       const status = GoalStatusValue.ACTIVE
       const userToken = 'a-user-token'
       educationAndWorkPlanClient.getGoalsByStatus.mockResolvedValue({ goals: [aValidGoalResponse()] })
+      prisonService.getAllPrisonNamesById.mockResolvedValue(new Map())
       const expectedResponse: Goals = { goals: [aValidGoal()], problemRetrievingData: false }
 
       // When
@@ -115,6 +134,7 @@ describe('educationAndWorkPlanService', () => {
       const userToken = 'a-user-token'
 
       educationAndWorkPlanClient.getGoalsByStatus.mockRejectedValue(createError(500, 'Service unavailable'))
+      prisonService.getAllPrisonNamesById.mockResolvedValue(new Map())
       const expectedResponse: Goals = { goals: undefined, problemRetrievingData: true }
 
       // When
@@ -124,7 +144,23 @@ describe('educationAndWorkPlanService', () => {
       expect(educationAndWorkPlanClient.getGoalsByStatus).toHaveBeenCalledWith(prisonNumber, status, userToken)
       expect(actual).toEqual(expectedResponse)
     })
+    it('should return goals even if an error is returned loading the prison names', async () => {
+      // Given
+      const prisonNumber = 'A1234BC'
+      const status = GoalStatusValue.ACTIVE
+      const userToken = 'a-user-token'
 
+      educationAndWorkPlanClient.getGoalsByStatus.mockResolvedValue({ goals: [aValidGoalResponse()] })
+      prisonService.getAllPrisonNamesById.mockRejectedValue(createError(404, 'Not Found'))
+      const expectedResponse: Goals = { goals: [aValidGoal()], problemRetrievingData: false }
+
+      // When
+      const actual = await educationAndWorkPlanService.getGoalsByStatus(prisonNumber, status, userToken)
+
+      // Then
+      expect(educationAndWorkPlanClient.getGoalsByStatus).toHaveBeenCalledWith(prisonNumber, status, userToken)
+      expect(actual).toEqual(expectedResponse)
+    })
     it('should return no problem loading the data and undefined goals if the status is 404', async () => {
       // Given
       const prisonNumber = 'A1234BC'
