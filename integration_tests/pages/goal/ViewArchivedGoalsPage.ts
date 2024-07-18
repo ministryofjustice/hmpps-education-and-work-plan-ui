@@ -19,12 +19,26 @@ export default class ViewArchivedGoalsPage extends Page {
     return this
   }
 
+  lastUpdatedHintAtPositionContains(position: number, expectedText: string): ViewArchivedGoalsPage {
+    this.lastUpdatedHint().eq(position).should('contain.text', expectedText)
+    return this
+  }
+
+  archiveReasonHintAtPositionContains(position: number, expectedText: string): ViewArchivedGoalsPage {
+    this.archiveReasonHint().eq(position).should('contain.text', expectedText)
+    return this
+  }
+
   clickReactivateButtonForFirstGoal(): UnarchiveGoalPage {
     this.goalReactivateButton(1).click()
     return Page.verifyOnPage(UnarchiveGoalPage)
   }
 
   private goalSummaryCards = (): PageElement => cy.get('[data-qa=goal-summary-card]')
+
+  private lastUpdatedHint = (): PageElement => cy.get('[data-qa=goal-last-updated-hint]')
+
+  private archiveReasonHint = (): PageElement => cy.get('[data-qa=goal-archive-reason-hint]')
 
   private goalReactivateButton = (idx: number): PageElement => cy.get(`[data-qa=goal-${idx}-unarchive-button]`)
 }

@@ -42,6 +42,8 @@ const toGoal = (goalResponse: GoalResponse, goalSequenceNumber: number): Goal =>
     targetCompletionDate: toDate(goalResponse.targetCompletionDate),
     note: goalResponse.notes,
     sequenceNumber: goalSequenceNumber,
+    archiveReason: goalResponse.archiveReason,
+    archiveReasonOther: goalResponse.archiveReasonOther,
   }
 }
 

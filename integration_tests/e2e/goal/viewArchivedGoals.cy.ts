@@ -6,6 +6,7 @@ import { aValidGoalResponse } from '../../../server/testsupport/actionPlanRespon
 import ViewArchivedGoalsPage from '../../pages/goal/ViewArchivedGoalsPage'
 import { getRequestedFor } from '../../mockApis/wiremock/requestPatternBuilder'
 import { urlEqualTo } from '../../mockApis/wiremock/matchers/url'
+import ReasonToArchiveGoalValue from '../../../server/enums/ReasonToArchiveGoalValue'
 
 context('Unarchive a goal', () => {
   const prisonNumber = 'G6115VJ'
@@ -87,5 +88,44 @@ context('Unarchive a goal', () => {
       .hasNumberOfGoals(2)
       .goalSummaryCardAtPositionContains(0, aGoalThatWasMoreRecentlyArchived.title)
       .goalSummaryCardAtPositionContains(1, aGoalThatWasArchivedFirst.title)
+  })
+
+  it('should show archived on & by as well as the reason', () => {
+    // Given
+    cy.signIn()
+    cy.visit(`/plan/${prisonNumber}/view/overview`)
+    const aGoalThatWasArchivedWithASpecificReason = {
+      ...aValidGoalResponse(),
+      status: GoalStatusValue.ARCHIVED,
+      goalReference: uuidv4(),
+      updatedAt: '2024-01-02T09:30:00.000Z',
+      title: 'I was archived because the prisoner no longer wants to work towards the goal',
+      archiveReason: ReasonToArchiveGoalValue.PRISONER_NO_LONGER_WANTS_TO_WORK_TOWARDS_GOAL,
+    }
+    const aGoalThatWasArchivedWithOtherReason = {
+      ...aValidGoalResponse(),
+      status: GoalStatusValue.ARCHIVED,
+      goalReference: uuidv4(),
+      updatedAt: '2024-01-01T10:30:00.000Z',
+      title: 'I was archived with other reason',
+      archiveReason: ReasonToArchiveGoalValue.OTHER,
+      archiveReasonOther: 'Some other reason',
+    }
+    cy.task('getGoalsByStatus', {
+      status: GoalStatusValue.ARCHIVED,
+      goals: [aGoalThatWasArchivedWithASpecificReason, aGoalThatWasArchivedWithOtherReason],
+    })
+    const overviewPage = Page.verifyOnPage(OverviewPage)
+
+    // When
+    const archivedGoalsPage = overviewPage.clickViewArchivedGoalsButton()
+
+    // Then
+    archivedGoalsPage //
+      .hasNumberOfGoals(2)
+      .lastUpdatedHintAtPositionContains(0, 'Archived on: 02 January 2024 by Alex Smith')
+      .archiveReasonHintAtPositionContains(0, 'Reason: Prisoner no longer wants to work towards this goal')
+      .lastUpdatedHintAtPositionContains(1, 'Archived on: 01 January 2024 by Alex Smith')
+      .archiveReasonHintAtPositionContains(1, 'Reason: Other - Some other reason')
   })
 })

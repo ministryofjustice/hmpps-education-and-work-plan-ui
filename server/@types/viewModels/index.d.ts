@@ -88,6 +88,12 @@ declare module 'viewModels' {
     targetCompletionDate: Date
     note?: string
     sequenceNumber: number
+    archiveReason?:
+      | 'PRISONER_NO_LONGER_WANTS_TO_WORK_TOWARDS_GOAL'
+      | 'PRISONER_NO_LONGER_WANTS_TO_WORK_WITH_CIAG'
+      | 'SUITABLE_ACTIVITIES_NOT_AVAILABLE_IN_THIS_PRISON'
+      | 'OTHER'
+    archiveReasonOther?: string
   }
 
   export interface Step {

@@ -1,5 +1,6 @@
 import type { ActionPlanResponse, GetGoalsResponse, GoalResponse } from 'educationAndWorkPlanApiClient'
 import type { ActionPlan, Goal, Step } from 'viewModels'
+import { toDate } from 'date-fns'
 import { toActionPlan, toGoals } from './actionPlanMapper'
 import {
   aValidActionPlanResponseWithOneGoal,
@@ -134,5 +135,65 @@ describe('actionPlanMapper', () => {
     expect(goals[1].sequenceNumber).toEqual(2) // Spanish goal is in the middle, so we expect it to be goal 2
     expect(goals[2].title).toEqual('Pass GCSE English')
     expect(goals[2].sequenceNumber).toEqual(1) // English goal is the oldest, so we expect it to be goal 1
+  })
+  it('should map optional fields given valid GoalsResponse', () => {
+    // Given
+    const aGoal: GoalResponse = {
+      goalReference: 'd38a6c41-13d1-1d05-13c2-24619966119b',
+      title: 'Learn Spanish',
+      status: 'ARCHIVED',
+      steps: [
+        {
+          stepReference: 'c88a6c48-97e2-4c04-93b5-98619966447b',
+          title: 'Book Spanish course',
+          status: 'ACTIVE',
+          sequenceNumber: 1,
+        },
+      ],
+      createdBy: 'asmith_gen',
+      createdByDisplayName: 'Alex Smith',
+      createdAt: '2023-01-16T09:34:12.453Z',
+      updatedBy: 'asmith_gen',
+      updatedByDisplayName: 'Alex Smith',
+      updatedAt: '2023-09-23T13:42:01.401Z',
+      targetCompletionDate: '2024-02-29T00:00:00.000Z',
+      notes: 'Prisoner is not good at listening',
+      archiveReason: 'OTHER',
+      archiveReasonOther: 'Some other reason',
+    }
+    const expectedGoal: Goal = {
+      goalReference: 'd38a6c41-13d1-1d05-13c2-24619966119b',
+      title: 'Learn Spanish',
+      status: 'ARCHIVED',
+      steps: [
+        {
+          stepReference: 'c88a6c48-97e2-4c04-93b5-98619966447b',
+          title: 'Book Spanish course',
+          status: 'ACTIVE',
+          sequenceNumber: 1,
+        },
+      ],
+      createdBy: 'asmith_gen',
+      createdByDisplayName: 'Alex Smith',
+      createdAt: toDate('2023-01-16T09:34:12.453Z'),
+      updatedBy: 'asmith_gen',
+      updatedByDisplayName: 'Alex Smith',
+      updatedAt: toDate('2023-09-23T13:42:01.401Z'),
+      targetCompletionDate: toDate('2024-02-29T00:00:00.000Z'),
+      note: 'Prisoner is not good at listening',
+      sequenceNumber: 1,
+      archiveReason: 'OTHER',
+      archiveReasonOther: 'Some other reason',
+    }
+
+    const getGoalsResponse: GetGoalsResponse = {
+      goals: [aGoal],
+    }
+
+    // When
+    const goals = toGoals(getGoalsResponse)
+
+    // Then
+    expect(goals[0]).toEqual(expectedGoal)
   })
 })
