@@ -9,9 +9,13 @@ import { toUpdateGoalRequest } from '../data/mappers/updateGoalMapper'
 import toArchiveGoalRequest from '../data/mappers/archiveGoalMapper'
 import toUnarchiveGoalRequest from '../data/mappers/unarchiveGoalMapper'
 import GoalStatusValue from '../enums/goalStatusValue'
+import PrisonService from './prisonService'
 
 export default class EducationAndWorkPlanService {
-  constructor(private readonly educationAndWorkPlanClient: EducationAndWorkPlanClient) {}
+  constructor(
+    private readonly educationAndWorkPlanClient: EducationAndWorkPlanClient,
+    private readonly prisonService: PrisonService,
+  ) {}
 
   async createGoals(createGoalDtos: CreateGoalDto[], token: string): Promise<unknown> {
     const createGoalsRequest: CreateGoalsRequest = {
@@ -23,7 +27,8 @@ export default class EducationAndWorkPlanService {
   async getActionPlan(prisonNumber: string, token: string): Promise<ActionPlan> {
     try {
       const actionPlanResponse = await this.educationAndWorkPlanClient.getActionPlan(prisonNumber, token)
-      return toActionPlan(actionPlanResponse, false)
+      const prisonNamesById = await this.getAllPrisonNamesByIdSafely(token)
+      return toActionPlan(actionPlanResponse, false, prisonNamesById)
     } catch (error) {
       logger.error(`Error retrieving Action Plan for Prisoner [${prisonNumber}]: ${error}`)
       return { problemRetrievingData: true } as ActionPlan
@@ -33,7 +38,8 @@ export default class EducationAndWorkPlanService {
   async getGoalsByStatus(prisonNumber: string, status: GoalStatusValue, token: string): Promise<Goals> {
     try {
       const response = await this.educationAndWorkPlanClient.getGoalsByStatus(prisonNumber, status, token)
-      return { goals: toGoals(response), problemRetrievingData: false }
+      const prisonNamesById = await this.getAllPrisonNamesByIdSafely(token)
+      return { goals: toGoals(response, prisonNamesById), problemRetrievingData: false }
     } catch (error) {
       if (error.status === 404) {
         logger.debug(`No plan created yet so no goals with [${status}] for Prisoner [${prisonNumber}]`)
@@ -57,5 +63,14 @@ export default class EducationAndWorkPlanService {
   async unarchiveGoal(unarchiveGoalDto: UnarchiveGoalDto, token: string): Promise<unknown> {
     const unarchiveGoalRequest = toUnarchiveGoalRequest(unarchiveGoalDto)
     return this.educationAndWorkPlanClient.unarchiveGoal(unarchiveGoalDto.prisonNumber, unarchiveGoalRequest, token)
+  }
+
+  private async getAllPrisonNamesByIdSafely(token: string): Promise<Map<string, string>> {
+    try {
+      return await this.prisonService.getAllPrisonNamesById(token)
+    } catch (error) {
+      logger.error(`Error retrieving prison names, defaulting to just IDs: ${error}`)
+      return new Map()
+    }
   }
 }

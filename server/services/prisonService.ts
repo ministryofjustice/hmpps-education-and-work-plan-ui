@@ -39,6 +39,20 @@ export default class PrisonService {
   }
 
   /**
+   * Returns a Map of prison id to prison name
+   */
+  async getAllPrisonNamesById(username: string): Promise<Map<string, string>> {
+    try {
+      const systemToken = await this.hmppsAuthClient.getSystemClientToken(username)
+      const prisons = (await this.getCachedPrisons()) || (await this.retrieveAndCacheActivePrisons(systemToken))
+      return new Map(prisons.map(obj => [obj.prisonId, obj.prisonName]))
+    } catch (e) {
+      logger.error(`Error looking up prisons`, e)
+      return new Map<string, string>()
+    }
+  }
+
+  /**
    * Returns the [PrisonResponse] identified by the specified `prisonId`
    * Return the object from the cache if it exists in the cache, else seed the cache by calling the API and return the
    * specified [PrisonResponse]
@@ -63,6 +77,20 @@ export default class PrisonService {
         return cachedPrison
       }
       logger.debug(`Prison ${prisonId} not found in cache`)
+    } catch (ex) {
+      // Looking up the prisons from the cached data store failed for some reason. Return undefined.
+      logger.error('Error retrieving cached prisons', ex)
+    }
+    return undefined
+  }
+
+  private async getCachedPrisons(): Promise<Array<PrisonResponse>> {
+    try {
+      const allActivePrisons = await this.prisonRegisterStore.getActivePrisons()
+      if (allActivePrisons && allActivePrisons.length > 0) {
+        return allActivePrisons
+      }
+      logger.debug(`Prisons not found in cache`)
     } catch (ex) {
       // Looking up the prisons from the cached data store failed for some reason. Return undefined.
       logger.error('Error retrieving cached prisons', ex)

@@ -8,6 +8,10 @@ import {
 } from '../../testsupport/actionPlanResponseTestDataBuilder'
 
 describe('actionPlanMapper', () => {
+  const examplePrisonNamesById = new Map([
+    ['BXI', 'Brixton (HMP)'],
+    ['MDI', 'Moorland (HMP & YOI)'],
+  ])
   it('should map to ActionPlan given valid ActionPlanResponse', () => {
     // Given
     const actionPlanResponse: ActionPlanResponse = aValidActionPlanResponseWithOneGoal()
@@ -46,7 +50,7 @@ describe('actionPlanMapper', () => {
     }
 
     // When
-    const actionPlan = toActionPlan(actionPlanResponse, problemRetrievingData)
+    const actionPlan = toActionPlan(actionPlanResponse, problemRetrievingData, examplePrisonNamesById)
 
     // Then
     expect(actionPlan).toEqual(expectedActionPlan)
@@ -84,7 +88,7 @@ describe('actionPlanMapper', () => {
     }
 
     // When
-    const actionPlan = toActionPlan(actionPlanResponse, problemRetrievingData)
+    const actionPlan = toActionPlan(actionPlanResponse, problemRetrievingData, examplePrisonNamesById)
 
     // Then
     // Expect goals to be in updatedAt order descending with a sequence number derived from their order of date creation
@@ -125,7 +129,7 @@ describe('actionPlanMapper', () => {
     }
 
     // When
-    const goals = toGoals(getGoalsResponse)
+    const goals = toGoals(getGoalsResponse, examplePrisonNamesById)
 
     // Then
     // Expect goals to be in updatedAt order descending with a sequence number derived from their order of date creation
@@ -152,9 +156,11 @@ describe('actionPlanMapper', () => {
       ],
       createdBy: 'asmith_gen',
       createdByDisplayName: 'Alex Smith',
+      createdAtPrison: 'BXI',
       createdAt: '2023-01-16T09:34:12.453Z',
       updatedBy: 'asmith_gen',
       updatedByDisplayName: 'Alex Smith',
+      updatedAtPrison: 'MDI',
       updatedAt: '2023-09-23T13:42:01.401Z',
       targetCompletionDate: '2024-02-29T00:00:00.000Z',
       notes: 'Prisoner is not good at listening',
@@ -176,8 +182,10 @@ describe('actionPlanMapper', () => {
       createdBy: 'asmith_gen',
       createdByDisplayName: 'Alex Smith',
       createdAt: toDate('2023-01-16T09:34:12.453Z'),
+      createdAtPrisonName: 'Brixton (HMP)',
       updatedBy: 'asmith_gen',
       updatedByDisplayName: 'Alex Smith',
+      updatedAtPrisonName: 'Moorland (HMP & YOI)',
       updatedAt: toDate('2023-09-23T13:42:01.401Z'),
       targetCompletionDate: toDate('2024-02-29T00:00:00.000Z'),
       note: 'Prisoner is not good at listening',
@@ -191,9 +199,43 @@ describe('actionPlanMapper', () => {
     }
 
     // When
-    const goals = toGoals(getGoalsResponse)
+    const goals = toGoals(getGoalsResponse, examplePrisonNamesById)
 
     // Then
     expect(goals[0]).toEqual(expectedGoal)
+  })
+  it('should map prison name to id if not in prison names', () => {
+    // Given
+    const aGoal: GoalResponse = {
+      ...aValidGoalResponse(),
+      updatedAtPrison: 'XXX',
+    }
+
+    const getGoalsResponse: GetGoalsResponse = {
+      goals: [aGoal],
+    }
+
+    // When
+    const goals = toGoals(getGoalsResponse, examplePrisonNamesById)
+
+    // Then
+    expect(goals[0].updatedAtPrisonName).toEqual('XXX')
+  })
+  it('should map prison id to id if not in prison names', () => {
+    // Given
+    const aGoal: GoalResponse = {
+      ...aValidGoalResponse(),
+      updatedAtPrison: undefined,
+    }
+
+    const getGoalsResponse: GetGoalsResponse = {
+      goals: [aGoal],
+    }
+
+    // When
+    const goals = toGoals(getGoalsResponse, examplePrisonNamesById)
+
+    // Then
+    expect(goals[0].updatedAtPrisonName).toEqual(undefined)
   })
 })

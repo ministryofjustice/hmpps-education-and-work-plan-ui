@@ -2,8 +2,12 @@ import type { ActionPlanResponse, GetGoalsResponse, GoalResponse, StepResponse }
 import type { ActionPlan, Goal, Step } from 'viewModels'
 import dateComparator from '../../routes/dateComparator'
 
-const toActionPlan = (actionPlanResponse: ActionPlanResponse, problemRetrievingData: boolean): ActionPlan => {
-  const goals = toOrderedGoals(actionPlanResponse.goals)
+const toActionPlan = (
+  actionPlanResponse: ActionPlanResponse,
+  problemRetrievingData: boolean,
+  prisonNamesById: Map<string, string>,
+): ActionPlan => {
+  const goals = toOrderedGoals(actionPlanResponse.goals, prisonNamesById)
   return {
     prisonNumber: actionPlanResponse.prisonNumber,
     goals,
@@ -11,23 +15,23 @@ const toActionPlan = (actionPlanResponse: ActionPlanResponse, problemRetrievingD
   }
 }
 
-const toGoals = (response: GetGoalsResponse): Goal[] => {
-  return toOrderedGoals(response.goals)
+const toGoals = (response: GetGoalsResponse, prisonNamesById: Map<string, string>): Goal[] => {
+  return toOrderedGoals(response.goals, prisonNamesById)
 }
 
 /**
  * Sets a goal sequence by creation date (oldest = 1) and returns them in creation order (newest first)
  */
-function toOrderedGoals(goals: GoalResponse[]): Goal[] {
+function toOrderedGoals(goals: GoalResponse[], prisonNamesById: Map<string, string>): Goal[] {
   return [...goals]
     .sort((left: GoalResponse, right: GoalResponse) =>
       dateComparator(toDate(left.createdAt), toDate(right.createdAt), 'ASC'),
     )
-    .map((goal, index) => toGoal(goal, index + 1))
+    .map((goal, index) => toGoal(goal, index + 1, prisonNamesById))
     .reverse()
 }
 
-const toGoal = (goalResponse: GoalResponse, goalSequenceNumber: number): Goal => {
+const toGoal = (goalResponse: GoalResponse, goalSequenceNumber: number, prisonNamesById: Map<string, string>): Goal => {
   return {
     goalReference: goalResponse.goalReference,
     title: goalResponse.title,
@@ -36,8 +40,10 @@ const toGoal = (goalResponse: GoalResponse, goalSequenceNumber: number): Goal =>
     createdBy: goalResponse.createdBy,
     createdByDisplayName: goalResponse.createdByDisplayName,
     createdAt: toDate(goalResponse.createdAt),
+    createdAtPrisonName: prisonNamesById.get(goalResponse.createdAtPrison) || goalResponse.createdAtPrison,
     updatedBy: goalResponse.updatedBy,
     updatedByDisplayName: goalResponse.updatedByDisplayName,
+    updatedAtPrisonName: prisonNamesById.get(goalResponse.updatedAtPrison) || goalResponse.updatedAtPrison,
     updatedAt: toDate(goalResponse.updatedAt),
     targetCompletionDate: toDate(goalResponse.targetCompletionDate),
     note: goalResponse.notes,

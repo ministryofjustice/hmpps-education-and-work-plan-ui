@@ -82,9 +82,11 @@ declare module 'viewModels' {
     createdBy: string
     createdByDisplayName: string
     createdAt: Date
+    createdAtPrisonName?: string
     updatedBy: string
     updatedByDisplayName: string
     updatedAt: Date
+    updatedAtPrisonName?: string
     targetCompletionDate: Date
     note?: string
     sequenceNumber: number

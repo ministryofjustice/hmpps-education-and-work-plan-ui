@@ -11,7 +11,10 @@ import { aValidActionPlanWithOneGoal, aValidGoal } from '../../testsupport/actio
 jest.mock('../../services/educationAndWorkPlanService')
 
 describe('unarchiveGoalController', () => {
-  const educationAndWorkPlanService = new EducationAndWorkPlanService(null) as jest.Mocked<EducationAndWorkPlanService>
+  const educationAndWorkPlanService = new EducationAndWorkPlanService(
+    null,
+    null,
+  ) as jest.Mocked<EducationAndWorkPlanService>
   const controller = new UnarchiveGoalController(educationAndWorkPlanService)
 
   const prisonNumber = 'A1234BC'
