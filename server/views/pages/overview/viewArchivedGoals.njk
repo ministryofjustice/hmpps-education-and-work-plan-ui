@@ -32,14 +32,16 @@
       <section data-qa="view-archived-goals-list">
         {% if not goals.problemRetrievingData %}
           {% for goal in goals.goals | sort(attribute = 'updatedAt', reverse = true) %}
-            {{ goalSummaryCard({
+            {{ goalSummaryCardV2({
               goal: goal,
               attributes: {
                 'data-qa': 'goal-summary-card'
               },
+              classes: 'archived-goal-summary-card',
+              lastUpdatedLabel: 'Archived on',
               actions: [
                 {
-                  title: 'Reactivate<span class="govuk-visually-hidden"> goal ' + goal.sequenceNumber  + '</span>',
+                  title: 'Reactivate<span class="govuk-visually-hidden"> this goal</span>',
                   href: '/plan/' + prisonerSummary.prisonNumber + '/goals/' + goal.goalReference + '/unarchive',
                   attributes: {
                   'data-qa': 'goal-'+ goal.sequenceNumber + '-unarchive-button'

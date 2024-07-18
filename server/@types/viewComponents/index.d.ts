@@ -23,5 +23,6 @@ declare module 'viewComponents' {
     attributes?: Record<string, string>
     goal: Goal
     actions: Array<Action>
+    lastUpdatedLabel?: string
   }
 }
