@@ -1,4 +1,4 @@
-import type { Assessment } from 'viewModels'
+import type { Assessment, FunctionalSkills } from 'viewModels'
 import { Request, RequestHandler } from 'express'
 import { CuriousService } from '../../services'
 import FunctionalSkillsView from './functionalSkillsView'
@@ -19,7 +19,9 @@ export default class FunctionalSkillsController {
       prisonNumber,
       req.user.username,
     )
-    const allAssessments = await this.setPrisonNamesOnAssessments(functionalSkillsFromCurious.assessments || [], req)
+    const allAssessments = this.hasSomeAssessments(functionalSkillsFromCurious)
+      ? await this.setPrisonNamesOnAssessments(functionalSkillsFromCurious.assessments, req)
+      : []
 
     const { problemRetrievingData } = functionalSkillsFromCurious
     const englishSkills = functionalSkillsByType(allAssessments, 'ENGLISH')
@@ -36,14 +38,18 @@ export default class FunctionalSkillsController {
     res.render('pages/functionalSkills/index', { ...view.renderArgs })
   }
 
+  private hasSomeAssessments(functionalSkillsFromCurious: FunctionalSkills) {
+    return functionalSkillsFromCurious.assessments && functionalSkillsFromCurious.assessments.length > 0
+  }
+
   setPrisonNamesOnAssessments = async (assessments: Array<Assessment>, req: Request): Promise<Array<Assessment>> => {
-    const assessmentsWithPrisonLookups = assessments.map(async assessment => {
-      const prison = await this.prisonService.getPrisonByPrisonId(assessment.prisonId, req.user.username)
-      return {
-        ...assessment,
-        prisonName: prison?.prisonName,
-      }
+    return this.prisonService.getAllPrisonNamesById(req.user.username).then(allPrisonNamesById => {
+      return assessments.map(assessment => {
+        return {
+          ...assessment,
+          prisonName: allPrisonNamesById.get(assessment.prisonId),
+        }
+      })
     })
-    return Promise.all(assessmentsWithPrisonLookups)
   }
 }

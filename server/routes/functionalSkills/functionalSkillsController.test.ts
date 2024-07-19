@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express'
 import { SessionData } from 'express-session'
 import moment from 'moment'
-import type { Assessment, Prison } from 'viewModels'
+import type { Assessment } from 'viewModels'
 import CuriousService from '../../services/curiousService'
 import PrisonService from '../../services/prisonService'
 import FunctionalSkillsController from './functionalSkillsController'
@@ -43,18 +43,13 @@ describe('functionalSkillsController', () => {
   const FIVE_DAYS_AGO = moment(NOW).subtract(5, 'days').toDate()
   const TEN_DAYS_AGO = moment(NOW).subtract(10, 'days').toDate()
 
-  const mockPrisonLookup = (prisonId: string): Promise<Prison> => {
-    let prisonName: string
-    if (prisonId === 'MDI') {
-      prisonName = 'Moorland (HMP & YOI)'
-    }
-    if (prisonId === 'LFI') {
-      prisonName = 'Lancaster Farms (HMP)'
-    }
-    if (prisonId === 'WMI') {
-      prisonName = 'Wymott (HMP & YOI)'
-    }
-    return Promise.resolve({ prisonId, prisonName })
+  const mockAllPrisonNaneLookup = (): Promise<Map<string, string>> => {
+    const prisonNamesById = new Map([
+      ['MDI', 'Moorland (HMP & YOI)'],
+      ['LFI', 'Lancaster Farms (HMP)'],
+      ['WMI', 'Wymott (HMP & YOI)'],
+    ])
+    return Promise.resolve(prisonNamesById)
   }
 
   describe('getFunctionalSkillsView', () => {
@@ -66,7 +61,7 @@ describe('functionalSkillsController', () => {
       const prisonerSummary = aValidPrisonerSummary(prisonNumber)
       req.session.prisonerSummary = prisonerSummary
 
-      prisonService.getPrisonByPrisonId.mockImplementation(mockPrisonLookup)
+      prisonService.getAllPrisonNamesById.mockImplementation(mockAllPrisonNaneLookup)
 
       const functionalSkills = validFunctionalSkills({
         prisonNumber,
