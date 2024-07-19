@@ -35,7 +35,7 @@
 
 .goal-summary-card {
   .govuk-summary-card__title-wrapper {
-    @include govuk-responsive-padding(2, "all");
+    @include govuk-responsive-padding(3, "all");
 
     h3 {
       display: flex;
@@ -54,6 +54,7 @@
     @extend .govuk-summary-card__title-wrapper;
     @include govuk-responsive-padding(0, "top");
     @include govuk-responsive-padding(0, "bottom");
+    @include govuk-responsive-margin(1, "left");
   }
 }
 
