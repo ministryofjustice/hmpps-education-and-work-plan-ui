@@ -161,14 +161,14 @@ export default class CuriousService {
     inPrisonCourses: Array<InPrisonCourse>,
     username: string,
   ): Promise<Array<InPrisonCourse>> {
-    return Promise.all(
-      inPrisonCourses.map(async inPrisonCourse => {
-        const prison = await this.prisonService.getPrisonByPrisonId(inPrisonCourse.prisonId, username)
+    return this.prisonService.getAllPrisonNamesById(username).then(prisonNamesById => {
+      return inPrisonCourses.map(inPrisonCourse => {
+        const prison = prisonNamesById.get(inPrisonCourse.prisonId)
         return {
           ...inPrisonCourse,
-          prisonName: prison?.prisonName,
+          prisonName: prison,
         }
-      }),
-    )
+      })
+    })
   }
 }

@@ -1,5 +1,5 @@
 import type { LearnerEductionPagedResponse } from 'curiousApiClient'
-import type { FunctionalSkills, Neurodiversity, InPrisonCourseRecords, PrisonerSupportNeeds, Prison } from 'viewModels'
+import type { FunctionalSkills, InPrisonCourseRecords, Neurodiversity, PrisonerSupportNeeds } from 'viewModels'
 import moment from 'moment'
 import CuriousClient from '../data/curiousClient'
 import HmppsAuthClient from '../data/hmppsAuthClient'
@@ -325,16 +325,12 @@ describe('curiousService', () => {
   })
 
   describe('getPrisonerInPrisonCourses', () => {
-    const mockPrisonLookup = (prisonId: string): Promise<Prison> => {
-      let prisonName: string
-      if (prisonId === 'MDI') {
-        prisonName = 'Moorland (HMP & YOI)'
-      } else if (prisonId === 'WDI') {
-        prisonName = 'Wakefield (HMP)'
-      } else {
-        return undefined
-      }
-      return Promise.resolve({ prisonId, prisonName })
+    const mockAllPrisonNaneLookup = (): Promise<Map<string, string>> => {
+      const prisonNamesById = new Map([
+        ['MDI', 'Moorland (HMP & YOI)'],
+        ['WDI', 'Wakefield (HMP)'],
+      ])
+      return Promise.resolve(prisonNamesById)
     }
 
     it('should get In Prison Courses', async () => {
@@ -345,7 +341,7 @@ describe('curiousService', () => {
       const systemToken = 'a-system-token'
       hmppsAuthClient.getSystemClientToken.mockResolvedValue(systemToken)
 
-      prisonService.getPrisonByPrisonId.mockImplementation(mockPrisonLookup)
+      prisonService.getAllPrisonNamesById.mockImplementation(mockAllPrisonNaneLookup)
 
       const learnerEducationPage1Of1: LearnerEductionPagedResponse = learnerEducationPagedResponse(prisonNumber)
       curiousClient.getLearnerEducationPage.mockResolvedValue(learnerEducationPage1Of1)
@@ -458,8 +454,7 @@ describe('curiousService', () => {
       // Then
       expect(actual).toEqual(expected)
       expect(curiousClient.getLearnerEducationPage).toHaveBeenCalledWith(prisonNumber, systemToken, 0)
-      expect(prisonService.getPrisonByPrisonId).toHaveBeenCalledWith('MDI', username)
-      expect(prisonService.getPrisonByPrisonId).toHaveBeenCalledWith('WDI', username)
+      expect(prisonService.getAllPrisonNamesById).toHaveBeenCalledWith(username)
     })
 
     it('should get In Prison Courses given there is only 1 page of data in Curious for the prisoner', async () => {
@@ -470,7 +465,7 @@ describe('curiousService', () => {
       const systemToken = 'a-system-token'
       hmppsAuthClient.getSystemClientToken.mockResolvedValue(systemToken)
 
-      prisonService.getPrisonByPrisonId.mockImplementation(mockPrisonLookup)
+      prisonService.getAllPrisonNamesById.mockImplementation(mockAllPrisonNaneLookup)
 
       const learnerEducationPage1Of1: LearnerEductionPagedResponse = learnerEducationPagedResponsePage1Of1(prisonNumber)
       curiousClient.getLearnerEducationPage.mockResolvedValue(learnerEducationPage1Of1)
@@ -534,7 +529,7 @@ describe('curiousService', () => {
       const systemToken = 'a-system-token'
       hmppsAuthClient.getSystemClientToken.mockResolvedValue(systemToken)
 
-      prisonService.getPrisonByPrisonId.mockImplementation(mockPrisonLookup)
+      prisonService.getAllPrisonNamesById.mockImplementation(mockAllPrisonNaneLookup)
 
       const learnerEducationPage1Of2: LearnerEductionPagedResponse = learnerEducationPagedResponsePage1Of2(prisonNumber)
       curiousClient.getLearnerEducationPage.mockResolvedValueOnce(learnerEducationPage1Of2)
@@ -632,7 +627,7 @@ describe('curiousService', () => {
       // Then
       expect(actual).toEqual(expected)
       expect(curiousClient.getLearnerEducationPage).toHaveBeenCalledWith(prisonNumber, systemToken, 0)
-      expect(prisonService.getPrisonByPrisonId).not.toHaveBeenCalled()
+      expect(prisonService.getAllPrisonNamesById).not.toHaveBeenCalled()
     })
 
     it('should not get In Prison Courses given the Curious API request for page 2 returns an error response', async () => {
@@ -664,7 +659,7 @@ describe('curiousService', () => {
       expect(actual).toEqual(expected)
       expect(curiousClient.getLearnerEducationPage).toHaveBeenCalledWith(prisonNumber, systemToken, 0)
       expect(curiousClient.getLearnerEducationPage).toHaveBeenCalledWith(prisonNumber, systemToken, 1)
-      expect(prisonService.getPrisonByPrisonId).not.toHaveBeenCalled()
+      expect(prisonService.getAllPrisonNamesById).not.toHaveBeenCalled()
     })
 
     it('should handle retrieval of In Prison Courses given Curious returns not found error for the learner education', async () => {
@@ -701,7 +696,7 @@ describe('curiousService', () => {
       // Then
       expect(actual).toEqual(expected)
       expect(curiousClient.getLearnerEducationPage).toHaveBeenCalledWith(prisonNumber, systemToken, 0)
-      expect(prisonService.getPrisonByPrisonId).not.toHaveBeenCalled()
+      expect(prisonService.getAllPrisonNamesById).not.toHaveBeenCalled()
     })
   })
 })
