@@ -9,11 +9,8 @@
   </p>
 
   <div class="moj-timeline__description govuk-!-display-none-print">
-    {% set reasonGoalArchived %}
-      {{- event.contextualInfo.GOAL_ARCHIVED_REASON | formatReasonToArchiveGoal }}{{ ' - ' +  event.contextualInfo.GOAL_ARCHIVED_REASON_OTHER if event.contextualInfo.GOAL_ARCHIVED_REASON === 'OTHER'}}
-    {% endset %}
     <p class="govuk-body">
-      Reason: {{ reasonGoalArchived }}
+      Reason: {{ event.contextualInfo.GOAL_ARCHIVED_REASON | formatReasonToArchiveGoal }}{{ ' - ' +  event.contextualInfo.GOAL_ARCHIVED_REASON_OTHER if event.contextualInfo.GOAL_ARCHIVED_REASON === 'OTHER'}}
     </p>
     <p class="govuk-body govuk-!-margin-bottom-0">
       <a href="/plan/{{ prisonerSummary.prisonNumber }}/view/archived-goals" data-id="timeline-prisoner-{{ prisonerSummary.prisonNumber }}">
