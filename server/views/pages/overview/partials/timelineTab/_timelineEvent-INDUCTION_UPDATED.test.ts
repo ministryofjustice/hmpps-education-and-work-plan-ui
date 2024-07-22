@@ -19,10 +19,7 @@ describe('_timelineEvent-INDUCTION_UPDATED', () => {
     const event = aTimelineEvent({
       eventType: 'INDUCTION_UPDATED',
       actionedByDisplayName: 'Fred Bloggs',
-      prison: {
-        prisonId: 'MDI',
-        prisonName: 'Moorland (HMP & YOI)',
-      },
+      prisonName: 'Moorland (HMP & YOI)',
       timestamp: parseISO('2023-08-01T10:46:38.565Z'),
     })
 
@@ -35,30 +32,6 @@ describe('_timelineEvent-INDUCTION_UPDATED', () => {
     // Then
     expect($('[data-qa-event-type=INDUCTION_UPDATED]').length).toEqual(1)
     expect($('.moj-timeline__byline').text().trim()).toEqual('by Fred Bloggs, Moorland (HMP & YOI)')
-    expect($('.moj-timeline__date').text().trim()).toEqual('1 August 2023')
-  })
-
-  it('should display INDUCTION_UPDATED timeline event given prison name not looked up', () => {
-    // Given
-    const event = aTimelineEvent({
-      eventType: 'INDUCTION_UPDATED',
-      actionedByDisplayName: 'Fred Bloggs',
-      prison: {
-        prisonId: 'MDI',
-        prisonName: undefined,
-      },
-      timestamp: parseISO('2023-08-01T10:46:38.565Z'),
-    })
-
-    const model = { event }
-
-    // When
-    const content = nunjucks.render('_timelineEvent-INDUCTION_UPDATED.njk', model)
-    const $ = cheerio.load(content)
-
-    // Then
-    expect($('[data-qa-event-type=INDUCTION_UPDATED]').length).toEqual(1)
-    expect($('.moj-timeline__byline').text().trim()).toEqual('by Fred Bloggs, MDI')
     expect($('.moj-timeline__date').text().trim()).toEqual('1 August 2023')
   })
 })

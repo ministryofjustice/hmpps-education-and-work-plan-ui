@@ -206,7 +206,7 @@ declare module 'viewModels' {
       | 'PRISON_ADMISSION'
       | 'PRISON_RELEASE'
       | 'PRISON_TRANSFER'
-    prison: Prison
+    prisonName: string
     timestamp: Date
     correlationId: string
     contextualInfo: {

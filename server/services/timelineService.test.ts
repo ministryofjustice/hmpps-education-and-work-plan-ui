@@ -35,7 +35,10 @@ describe('timelineService', () => {
     'PRISON_RELEASE',
     'PRISON_TRANSFER',
   ]
-
+  const mockedPrisonNamesById = new Map([
+    ['ASI', 'Ashfield (HMP)'],
+    ['MDI', 'Moorland (HMP & YOI)'],
+  ])
   describe('getTimeline', () => {
     it('should get timeline given prison name lookups for several different prisons', async () => {
       // Given
@@ -51,10 +54,7 @@ describe('timelineService', () => {
             reference: 'f49a3412-df7f-41d2-ac04-ffd35e453af4',
             sourceReference: '32',
             eventType: 'ACTION_PLAN_CREATED',
-            prison: {
-              prisonId: 'ASI',
-              prisonName: undefined,
-            },
+            prisonName: 'ASI',
             timestamp: moment('2023-09-01T10:46:38.565Z').toDate(),
             correlationId: '847aa5ad-2068-40e1-aec0-66b19007c494',
             contextualInfo: {},
@@ -64,10 +64,7 @@ describe('timelineService', () => {
             reference: 'cd98ea4c-b415-48d9-a600-9068cefe65e4x',
             sourceReference: '33bc1045-7368-47c4-a261-4d616b7b51b9',
             eventType: 'GOAL_CREATED',
-            prison: {
-              prisonId: 'MDI',
-              prisonName: undefined,
-            },
+            prisonName: 'MDI',
             timestamp: moment('2023-09-01T10:47:38.565Z').toDate(),
             correlationId: '246aa049-c5df-459d-8231-bdeab3936d0f',
             contextualInfo: {
@@ -78,21 +75,15 @@ describe('timelineService', () => {
         ],
       }
       mockedTimelineMapper.mockReturnValue(timeline)
-
-      prisonService.getPrisonByPrisonId.mockResolvedValueOnce({ prisonId: 'ASI', prisonName: 'Ashfield (HMP)' })
-      prisonService.getPrisonByPrisonId.mockResolvedValueOnce({ prisonId: 'MDI', prisonName: 'Moorland (HMP & YOI)' })
+      prisonService.getAllPrisonNamesById.mockResolvedValueOnce(mockedPrisonNamesById)
 
       // When
       const actual = await timelineService.getTimeline(prisonNumber, userToken, username)
 
       // Then
-      expect(actual.events[0].prison.prisonName).toEqual('Ashfield (HMP)')
-      expect(actual.events[1].prison.prisonName).toEqual('Moorland (HMP & YOI)')
-
-      expect(mockedTimelineMapper).toHaveBeenCalledWith(timelineResponse)
-      expect(prisonService.getPrisonByPrisonId).toHaveBeenCalledWith('ASI', username)
-      expect(prisonService.getPrisonByPrisonId).toHaveBeenCalledWith('MDI', username)
-
+      expect(mockedTimelineMapper).toHaveBeenCalledWith(timelineResponse, mockedPrisonNamesById)
+      expect(prisonService.getAllPrisonNamesById).toHaveBeenCalledWith(username)
+      expect(actual).toEqual(timeline)
       expect(educationAndWorkPlanClient.getTimeline).toHaveBeenCalledWith(
         prisonNumber,
         userToken,
@@ -114,10 +105,7 @@ describe('timelineService', () => {
             reference: 'f49a3412-df7f-41d2-ac04-ffd35e453af4',
             sourceReference: '32',
             eventType: 'ACTION_PLAN_CREATED',
-            prison: {
-              prisonId: 'ASI',
-              prisonName: undefined,
-            },
+            prisonName: 'ASI',
             timestamp: moment('2023-09-01T10:46:38.565Z').toDate(),
             correlationId: '847aa5ad-2068-40e1-aec0-66b19007c494',
             contextualInfo: {},
@@ -127,10 +115,7 @@ describe('timelineService', () => {
             reference: 'cd98ea4c-b415-48d9-a600-9068cefe65e4x',
             sourceReference: '33bc1045-7368-47c4-a261-4d616b7b51b9',
             eventType: 'GOAL_CREATED',
-            prison: {
-              prisonId: 'MDI',
-              prisonName: undefined,
-            },
+            prisonName: 'MDI',
             timestamp: moment('2023-09-01T10:47:38.565Z').toDate(),
             correlationId: '246aa049-c5df-459d-8231-bdeab3936d0f',
             contextualInfo: {
@@ -142,19 +127,15 @@ describe('timelineService', () => {
       }
       mockedTimelineMapper.mockReturnValue(timeline)
 
-      prisonService.getPrisonByPrisonId.mockResolvedValue({ prisonId: 'MDI', prisonName: undefined })
+      prisonService.getAllPrisonNamesById.mockResolvedValue(new Map())
 
       // When
       const actual = await timelineService.getTimeline(prisonNumber, userToken, username)
 
       // Then
-      expect(actual.events[0].prison.prisonName).toBeUndefined()
-      expect(actual.events[1].prison.prisonName).toBeUndefined()
-
-      expect(mockedTimelineMapper).toHaveBeenCalledWith(timelineResponse)
-      expect(prisonService.getPrisonByPrisonId).toHaveBeenCalledWith('ASI', username)
-      expect(prisonService.getPrisonByPrisonId).toHaveBeenCalledWith('MDI', username)
-
+      expect(mockedTimelineMapper).toHaveBeenCalledWith(timelineResponse, new Map())
+      expect(prisonService.getAllPrisonNamesById).toHaveBeenCalledWith(username)
+      expect(actual).toEqual(timeline)
       expect(educationAndWorkPlanClient.getTimeline).toHaveBeenCalledWith(
         prisonNumber,
         userToken,

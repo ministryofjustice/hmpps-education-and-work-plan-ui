@@ -10,10 +10,7 @@ describe('prepareTimelineForView', () => {
       reference: '9d86c486-2bf7-4780-8786-f4f068de1223',
       sourceReference: '12345',
       eventType: 'PRISON_ADMISSION',
-      prison: {
-        prisonId: 'MDI',
-        prisonName: undefined,
-      },
+      prisonName: 'MDI',
       timestamp: parseISO('2023-08-01T10:47:38.560Z'),
       contextualInfo: {},
       actionedByDisplayName: undefined,
@@ -24,10 +21,7 @@ describe('prepareTimelineForView', () => {
       reference: 'd03646e7-d145-41cc-862b-c5802e53b541',
       sourceReference: '4d2558d3-dbd5-43cb-a14c-c95dacec09a1',
       eventType: 'ACTION_PLAN_CREATED',
-      prison: {
-        prisonId: 'MDI',
-        prisonName: undefined,
-      },
+      prisonName: 'MDI',
       timestamp: parseISO('2023-09-01T10:47:38.560Z'),
       contextualInfo: {},
       actionedByDisplayName: 'Ralph Gen',
@@ -38,10 +32,7 @@ describe('prepareTimelineForView', () => {
         reference: 'd5b57b83-92f8-4de9-b97c-e421e0468069',
         sourceReference: '33bc1045-7368-47c4-a261-4d616b7b51b9',
         eventType: 'GOAL_CREATED',
-        prison: {
-          prisonId: 'MDI',
-          prisonName: undefined,
-        },
+        prisonName: 'MDI',
         timestamp: parseISO('2023-09-01T10:47:38.560Z'),
         contextualInfo: {
           GOAL_TITLE: 'Learn French',
@@ -53,10 +44,7 @@ describe('prepareTimelineForView', () => {
         reference: '07744aae-55da-4b96-a10f-ca53ba3da6c5',
         sourceReference: '64bc1045-7368-47c4-a261-4d616b7b51b9',
         eventType: 'GOAL_CREATED',
-        prison: {
-          prisonId: 'MDI',
-          prisonName: undefined,
-        },
+        prisonName: 'MDI',
         timestamp: parseISO('2023-09-01T10:47:38.560Z'),
         contextualInfo: {
           GOAL_TITLE: 'Learn Spanish',
@@ -70,10 +58,7 @@ describe('prepareTimelineForView', () => {
       reference: '3910997a-a027-47c3-ac5f-32eb5760a118',
       sourceReference: '44bc1011-4368-47c4-a261-4d515b7b51c9',
       eventType: 'GOAL_CREATED',
-      prison: {
-        prisonId: 'MDI',
-        prisonName: undefined,
-      },
+      prisonName: 'MDI',
       timestamp: parseISO('2023-10-01T10:47:38.565Z'),
       contextualInfo: {
         GOAL_TITLE: 'Learn German',
@@ -85,10 +70,7 @@ describe('prepareTimelineForView', () => {
       reference: '49da03d3-11fe-4d34-ba8c-10a5af9e82d8',
       sourceReference: '4d2558d3-dbd5-43cb-a14c-c95dacec09a1',
       eventType: 'INDUCTION_UPDATED',
-      prison: {
-        prisonId: 'MDI',
-        prisonName: undefined,
-      },
+      prisonName: 'MDI',
       timestamp: parseISO('2023-10-01T12:12:02.014Z'),
       contextualInfo: {},
       actionedByDisplayName: 'Ralph Gen',
@@ -98,10 +80,7 @@ describe('prepareTimelineForView', () => {
       reference: 'ce9e9872-6104-4b61-a056-2b2eca31b9aa',
       sourceReference: '64bc1045-7368-47c4-a261-4d616b7b51b9',
       eventType: 'GOAL_UPDATED',
-      prison: {
-        prisonId: 'MDI',
-        prisonName: undefined,
-      },
+      prisonName: 'MDI',
       timestamp: parseISO('2023-10-02T09:54:13.987Z'),
       contextualInfo: {
         GOAL_TITLE: 'Learn Spanish',
@@ -129,10 +108,7 @@ describe('prepareTimelineForView', () => {
           reference: '07744aae-55da-4b96-a10f-ca53ba3da6c5',
           sourceReference: '64bc1045-7368-47c4-a261-4d616b7b51b9',
           eventType: 'MULTIPLE_GOALS_CREATED',
-          prison: {
-            prisonId: 'MDI',
-            prisonName: undefined,
-          },
+          prisonName: 'MDI',
           timestamp: parseISO('2023-09-01T10:47:38.560Z'),
           contextualInfo: {
             GOAL_TITLE_0: 'Learn French',

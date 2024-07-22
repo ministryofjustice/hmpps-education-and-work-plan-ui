@@ -21,10 +21,7 @@ describe('_timelineEvent-GOAL_UNARCHIVED', () => {
     const event = aTimelineEvent({
       eventType: 'GOAL_UNARCHIVED',
       actionedByDisplayName: 'Fred Bloggs',
-      prison: {
-        prisonId: 'MDI',
-        prisonName: 'Moorland (HMP & YOI)',
-      },
+      prisonName: 'Moorland (HMP & YOI)',
       timestamp: parseISO('2023-08-01T10:46:38.565Z'),
     })
 
@@ -37,32 +34,6 @@ describe('_timelineEvent-GOAL_UNARCHIVED', () => {
     // Then
     expect($('[data-qa-event-type=GOAL_UNARCHIVED]').length).toEqual(1)
     expect($('.moj-timeline__byline').text().trim()).toEqual('by Fred Bloggs, Moorland (HMP & YOI)')
-    expect($('.moj-timeline__date').text().trim()).toEqual('1 August 2023')
-    expect($('.moj-timeline__description a').text().trim()).toEqual(`View Jimmy Lightfingers's goals`)
-  })
-
-  it('should display GOAL_UNARCHIVED timeline event given prison name not looked up', () => {
-    // Given
-    const prisonerSummary = aValidPrisonerSummary()
-    const event = aTimelineEvent({
-      eventType: 'GOAL_UNARCHIVED',
-      actionedByDisplayName: 'Fred Bloggs',
-      prison: {
-        prisonId: 'MDI',
-        prisonName: undefined,
-      },
-      timestamp: parseISO('2023-08-01T10:46:38.565Z'),
-    })
-
-    const model = { event, prisonerSummary }
-
-    // When
-    const content = nunjucks.render('_timelineEvent-GOAL_UNARCHIVED.njk', model)
-    const $ = cheerio.load(content)
-
-    // Then
-    expect($('[data-qa-event-type=GOAL_UNARCHIVED]').length).toEqual(1)
-    expect($('.moj-timeline__byline').text().trim()).toEqual('by Fred Bloggs, MDI')
     expect($('.moj-timeline__date').text().trim()).toEqual('1 August 2023')
     expect($('.moj-timeline__description a').text().trim()).toEqual(`View Jimmy Lightfingers's goals`)
   })
