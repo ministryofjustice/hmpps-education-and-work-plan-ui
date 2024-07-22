@@ -1,5 +1,5 @@
 import createError from 'http-errors'
-import moment from 'moment'
+import { format, parseISO, startOfDay } from 'date-fns'
 import type { Request, RequestHandler } from 'express'
 import type { UpdateGoalForm, UpdateStepForm } from 'forms'
 import EducationAndWorkPlanService from '../../services/educationAndWorkPlanService'
@@ -40,13 +40,11 @@ export default class UpdateGoalController {
 
     req.session.updateGoalForm = undefined
 
-    const goalCreatedDate = moment(updateGoalForm.createdAt)
-    const goalTargetCompletionDate = moment(updateGoalForm.originalTargetCompletionDate)
+    const goalCreatedDate = startOfDay(parseISO(updateGoalForm.createdAt))
+    const goalTargetCompletionDate = startOfDay(parseISO(updateGoalForm.originalTargetCompletionDate))
     const goalTargetCompletionDateOption = {
-      value: goalTargetCompletionDate.format('YYYY-MM-DD'),
-      text: `by ${goalTargetCompletionDate.format('D MMMM YYYY')} (goal created on ${goalCreatedDate.format(
-        'D MMMM YYYY',
-      )})`,
+      value: format(goalTargetCompletionDate, 'yyyy-MM-dd'),
+      text: `by ${format(goalTargetCompletionDate, 'd MMMM yyyy')} (goal created on ${format(goalCreatedDate, 'd MMMM yyyy')})`,
     }
     const view = new UpdateGoalView(prisonerSummary, updateGoalForm, goalTargetCompletionDateOption)
     return res.render('pages/goal/update/index', { ...view.renderArgs })
