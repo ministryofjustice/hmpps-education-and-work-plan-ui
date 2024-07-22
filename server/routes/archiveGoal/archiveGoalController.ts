@@ -1,4 +1,4 @@
-import type { RequestHandler } from 'express'
+import type { RequestHandler, Request } from 'express'
 import type { ArchiveGoalForm } from 'forms'
 import createError from 'http-errors'
 import EducationAndWorkPlanService from '../../services/educationAndWorkPlanService'
@@ -6,9 +6,14 @@ import ArchiveGoalView from './archiveGoalView'
 import validateArchiveGoalForm from './archiveGoalFormValidator'
 import ReviewArchiveGoalView from './reviewArchiveGoalView'
 import toArchiveGoalDto from './mappers/archiveGoalFormToDtoMapper'
+import { AuditService } from '../../services'
+import { AuditEvent } from '../../data/hmppsAuditClient'
 
 export default class ArchiveGoalController {
-  constructor(private readonly educationAndWorkPlanService: EducationAndWorkPlanService) {}
+  constructor(
+    private readonly educationAndWorkPlanService: EducationAndWorkPlanService,
+    private readonly auditService: AuditService,
+  ) {}
 
   getArchiveGoalView: RequestHandler = async (req, res, next): Promise<void> => {
     const { prisonNumber, goalReference } = req.params
@@ -72,15 +77,29 @@ export default class ArchiveGoalController {
     const archiveGoalDto = toArchiveGoalDto(prisonNumber, archiveGoalForm)
     try {
       await this.educationAndWorkPlanService.archiveGoal(archiveGoalDto, req.user.token)
-      return res.redirectWithSuccess(`/plan/${prisonNumber}/view/overview`, 'Goal archived')
     } catch (e) {
       return next(createError(500, `Error archiving goal for prisoner ${prisonNumber}`))
     }
+
+    await this.auditService.logAuditEvent(archiveGoalAuditEvent(req))
+    return res.redirectWithSuccess(`/plan/${prisonNumber}/view/overview`, 'Goal archived')
   }
 
   cancelArchiveGoal: RequestHandler = async (req, res, next): Promise<void> => {
     const { prisonNumber } = req.params
     req.session.archiveGoalForm = undefined
     return res.redirect(`/plan/${prisonNumber}/view/overview`)
+  }
+}
+
+const archiveGoalAuditEvent = (req: Request): AuditEvent => {
+  const { prisonNumber, goalReference } = req.params
+  return {
+    what: 'ARCHIVE_PRISONER_GOAL',
+    details: { goalReference },
+    subjectType: 'PRISONER_ID',
+    subjectId: prisonNumber,
+    who: req.user?.username ?? 'UNKNOWN',
+    correlationId: req.id,
   }
 }

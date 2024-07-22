@@ -1,70 +1,73 @@
-import { NextFunction, Request, Response } from 'express'
-import type { SessionData } from 'express-session'
+import { Request, Response } from 'express'
 import type { ActionPlan } from 'viewModels'
 import type { ArchiveGoalForm } from 'forms'
 import createError from 'http-errors'
 import type { ArchiveGoalDto } from 'dto'
 import EducationAndWorkPlanService from '../../services/educationAndWorkPlanService'
+import AuditService from '../../services/auditService'
 import aValidPrisonerSummary from '../../testsupport/prisonerSummaryTestDataBuilder'
 import ArchiveGoalController from './archiveGoalController'
-
 import { aValidActionPlanWithOneGoal, aValidGoal, aValidStep } from '../../testsupport/actionPlanTestDataBuilder'
 import validateArchiveGoalForm from './archiveGoalFormValidator'
 import aValidArchiveGoalForm from '../../testsupport/archiveGoalFormTestDataBuilder'
 import ReasonToArchiveGoalValue from '../../enums/ReasonToArchiveGoalValue'
 import toArchiveGoalDto from './mappers/archiveGoalFormToDtoMapper'
+import { AuditEvent } from '../../data/hmppsAuditClient'
 
+jest.mock('../../services/educationAndWorkPlanService')
+jest.mock('../../services/auditService')
 jest.mock('./archiveGoalFormValidator')
 jest.mock('./mappers/archiveGoalFormToDtoMapper')
 
 describe('archiveGoalController', () => {
-  const educationAndWorkPlanService = {
-    getActionPlan: jest.fn(),
-    archiveGoal: jest.fn(),
-  }
   const mockedValidateArchiveGoalForm = validateArchiveGoalForm as jest.MockedFunction<typeof validateArchiveGoalForm>
   const mockedArchiveGoalFormToArchiveGoalDtoMapper = toArchiveGoalDto as jest.MockedFunction<typeof toArchiveGoalDto>
-  const controller = new ArchiveGoalController(educationAndWorkPlanService as unknown as EducationAndWorkPlanService)
+
+  const educationAndWorkPlanService = new EducationAndWorkPlanService(
+    null,
+    null,
+  ) as jest.Mocked<EducationAndWorkPlanService>
+  const auditService = new AuditService(null) as jest.Mocked<AuditService>
+  const controller = new ArchiveGoalController(educationAndWorkPlanService, auditService)
+
+  const prisonNumber = 'A1234GC'
+  const goalReference = '1a2eae63-8102-4155-97cb-43d8fb739caf'
+  const prisonerSummary = aValidPrisonerSummary(prisonNumber, 'BXI')
+  const requestId = 'deff305c-2460-4d07-853e-f8762a8a52c6'
 
   const req = {
-    session: {} as SessionData,
+    session: { prisonerSummary },
     body: {},
-    user: {} as Express.User,
-    params: {} as Record<string, string>,
-  }
+    user: { token: 'some-token', username: 'a-dps-user' },
+    params: { prisonNumber, goalReference },
+    id: requestId,
+  } as unknown as Request
+
   const res = {
     redirect: jest.fn(),
     redirectWithSuccess: jest.fn(),
     redirectWithErrors: jest.fn(),
     render: jest.fn(),
-  }
+  } as unknown as Response
   const next = jest.fn()
 
-  const prisonNumber = 'A1234GC'
-  const goalReference = '1a2eae63-8102-4155-97cb-43d8fb739caf'
-  const prisonerSummary = aValidPrisonerSummary(prisonNumber, 'BXI')
   let errors: Array<Record<string, string>>
 
   beforeEach(() => {
     jest.resetAllMocks()
-    req.session = {} as SessionData
-    req.body = {}
-    req.user = {} as Express.User
-    req.params = {} as Record<string, string>
-
+    req.session.archiveGoalForm = undefined
     req.params.prisonNumber = prisonNumber
     req.params.goalReference = goalReference
-    req.session.prisonerSummary = prisonerSummary
 
     errors = []
   })
+
   describe('getArchiveGoalView', () => {
     it('Should load the page with archive goal form that does not have anything selected yet', async () => {
       // Given
       const step = aValidStep()
       const goal = aValidGoal({ goalReference, steps: [step] })
       const actionPlan = aValidActionPlanWithOneGoal({ prisonNumber, goal })
-      req.user.token = 'some-token'
       educationAndWorkPlanService.getActionPlan.mockResolvedValue(actionPlan)
       const expectedForm: ArchiveGoalForm = {
         reference: goalReference,
@@ -76,11 +79,7 @@ describe('archiveGoalController', () => {
       }
 
       // When
-      await controller.getArchiveGoalView(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.getArchiveGoalView(req, res, next)
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/goal/archive/reason', expectedView)
@@ -92,7 +91,7 @@ describe('archiveGoalController', () => {
       const step = aValidStep()
       const goal = aValidGoal({ goalReference: alternativeReference, steps: [step] })
       const actionPlan = aValidActionPlanWithOneGoal({ prisonNumber, goal })
-      req.user.token = 'some-token'
+
       req.params.goalReference = alternativeReference
       req.session.archiveGoalForm = aValidArchiveGoalForm(goalReference)
 
@@ -107,20 +106,16 @@ describe('archiveGoalController', () => {
       }
 
       // When
-      await controller.getArchiveGoalView(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.getArchiveGoalView(req, res, next)
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/goal/archive/reason', expectedView)
       expect(req.session.archiveGoalForm).toBeUndefined()
       expect(educationAndWorkPlanService.getActionPlan).toHaveBeenCalledWith(prisonNumber, 'some-token')
     })
+
     it('Should use form from session if it is the same goal, e.g., a validation error', async () => {
       // Given
-      req.user.token = 'some-token'
       const archiveGoalForm = aValidArchiveGoalForm(goalReference)
       req.session.archiveGoalForm = archiveGoalForm
 
@@ -130,11 +125,7 @@ describe('archiveGoalController', () => {
       }
 
       // When
-      await controller.getArchiveGoalView(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.getArchiveGoalView(req, res, next)
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/goal/archive/reason', expectedView)
@@ -149,11 +140,7 @@ describe('archiveGoalController', () => {
       const expectedError = createError(500, `Error retrieving plan for prisoner ${prisonNumber}`)
 
       // When
-      await controller.getArchiveGoalView(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.getArchiveGoalView(req, res, next)
 
       // Then
       expect(next).toHaveBeenCalledWith(expectedError)
@@ -170,17 +157,14 @@ describe('archiveGoalController', () => {
       const expectedError = createError(404, `Goal ${goalReference} does not exist in the prisoner's plan`)
 
       // When
-      await controller.getArchiveGoalView(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.getArchiveGoalView(req, res, next)
 
       // Then
       expect(next).toHaveBeenCalledWith(expectedError)
       expect(req.session.archiveGoalForm).toBeUndefined()
     })
   })
+
   describe('submitArchiveGoalForm', () => {
     it('should redirect to review archive goal page given action is submit-form and validation passes', async () => {
       // Given
@@ -192,17 +176,14 @@ describe('archiveGoalController', () => {
       mockedValidateArchiveGoalForm.mockReturnValue([])
 
       // When
-      await controller.submitArchiveGoalForm(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.submitArchiveGoalForm(req, res, next)
 
       // Then
       expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/goals/${goalReference}/archive/review`)
       expect(mockedValidateArchiveGoalForm).toHaveBeenCalledWith(archiveGoalForm)
       expect(req.session.archiveGoalForm).toStrictEqual(archiveGoalForm)
     })
+
     it('should redirect to archive goal form given validation fails', async () => {
       // Given
       req.params.prisonNumber = 'A1234GC'
@@ -214,11 +195,7 @@ describe('archiveGoalController', () => {
       const expectedArchiveGoalForm: ArchiveGoalForm = { reference: goalReference, title: 'Learn German' }
 
       // When
-      await controller.submitArchiveGoalForm(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.submitArchiveGoalForm(req, res, next)
 
       // Then
       expect(res.redirectWithErrors).toHaveBeenCalledWith(
@@ -228,6 +205,7 @@ describe('archiveGoalController', () => {
       expect(req.session.archiveGoalForm).toEqual(expectedArchiveGoalForm)
     })
   })
+
   describe('getReviewArchiveGoalView', () => {
     it('should get the view with the form in the session', async () => {
       // Given
@@ -243,11 +221,7 @@ describe('archiveGoalController', () => {
       req.session.archiveGoalForm = expectedForm
 
       // When
-      await controller.getReviewArchiveGoalView(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.getReviewArchiveGoalView(req, res, next)
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/goal/archive/review', expectedView)
@@ -258,11 +232,7 @@ describe('archiveGoalController', () => {
       req.session.archiveGoalForm = undefined
 
       // When
-      await controller.getReviewArchiveGoalView(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.getReviewArchiveGoalView(req, res, next)
 
       // Then
       expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/goals/${goalReference}/archive`)
@@ -272,7 +242,6 @@ describe('archiveGoalController', () => {
   describe('submitReviewArchiveGoal', () => {
     it('should request the goal is archived', async () => {
       // Given
-      req.user.token = 'some-token'
       req.session.archiveGoalForm = {
         reference: goalReference,
         title: 'Some goal',
@@ -285,21 +254,27 @@ describe('archiveGoalController', () => {
       }
       mockedArchiveGoalFormToArchiveGoalDtoMapper.mockReturnValue(expectedArchiveGoalDto)
 
+      const expectedAuditEvent: AuditEvent = {
+        correlationId: requestId,
+        details: { goalReference },
+        subjectId: prisonNumber,
+        subjectType: 'PRISONER_ID',
+        what: 'ARCHIVE_PRISONER_GOAL',
+        who: 'a-dps-user',
+      }
+
       // When
-      await controller.submitReviewArchiveGoal(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.submitReviewArchiveGoal(req, res, next)
 
       // Then
       expect(educationAndWorkPlanService.archiveGoal).toHaveBeenCalledWith(expectedArchiveGoalDto, 'some-token')
       expect(res.redirectWithSuccess).toHaveBeenCalledWith(`/plan/${prisonNumber}/view/overview`, 'Goal archived')
       expect(req.session.archiveGoalForm).toBeUndefined()
+      expect(auditService.logAuditEvent).toHaveBeenCalledWith(expectedAuditEvent)
     })
+
     it('should handle a failure archiving the goal', async () => {
       // Given
-      req.user.token = 'some-token'
       req.session.archiveGoalForm = {
         reference: goalReference,
         title: 'Some goal',
@@ -315,22 +290,19 @@ describe('archiveGoalController', () => {
       const expectedError = createError(500, `Error archiving goal for prisoner ${prisonNumber}`)
 
       // When
-      await controller.submitReviewArchiveGoal(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.submitReviewArchiveGoal(req, res, next)
 
       // Then
       expect(educationAndWorkPlanService.archiveGoal).toHaveBeenCalledWith(expectedArchiveGoalDto, 'some-token')
       expect(next).toHaveBeenCalledWith(expectedError)
       expect(req.session.archiveGoalForm).toBeUndefined()
+      expect(auditService.logAuditEvent).not.toHaveBeenCalled()
     })
   })
+
   describe('cancelArchiveGoal', () => {
     it('should remove the form from the session on cancel', async () => {
       // Given
-      req.user.token = 'some-token'
       req.session.archiveGoalForm = {
         reference: goalReference,
         title: 'Some goal',
@@ -338,15 +310,12 @@ describe('archiveGoalController', () => {
       }
 
       // When
-      await controller.cancelArchiveGoal(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.cancelArchiveGoal(req, res, next)
 
       // Then
       expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/view/overview`)
       expect(req.session.archiveGoalForm).toBeUndefined()
+      expect(auditService.logAuditEvent).not.toHaveBeenCalled()
     })
   })
 })

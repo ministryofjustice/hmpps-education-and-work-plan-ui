@@ -81,7 +81,7 @@ export default class AuditService {
       ...eventDetails,
       what: `PAGE_VIEW_ATTEMPT_${page}`,
     }
-    await this.hmppsAuditClient.sendMessage(event)
+    await this.logAuditEvent(event)
   }
 
   async logPageView(page: Page, eventDetails: PageViewEventDetails) {
@@ -89,6 +89,6 @@ export default class AuditService {
       ...eventDetails,
       what: `PAGE_VIEW_${page}`,
     }
-    await this.hmppsAuditClient.sendMessage(event)
+    await this.logAuditEvent(event)
   }
 }

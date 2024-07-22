@@ -8,7 +8,8 @@ import asyncMiddleware from '../../middleware/asyncMiddleware'
  * Route definitions for the pages relating to Archiving A Goal
  */
 export default (router: Router, services: Services) => {
-  const archiveGoalController = new ArchiveGoalController(services.educationAndWorkPlanService)
+  const { educationAndWorkPlanService, auditService } = services
+  const archiveGoalController = new ArchiveGoalController(educationAndWorkPlanService, auditService)
 
   router.use('/plan/:prisonNumber/goals/:goalReference/archive', [checkUserHasEditAuthority()])
   router.get('/plan/:prisonNumber/goals/:goalReference/archive', [
