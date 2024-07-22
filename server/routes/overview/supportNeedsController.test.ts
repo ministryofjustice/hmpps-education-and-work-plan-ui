@@ -16,7 +16,6 @@ describe('supportNeedsController', () => {
 
   const prisonNumber = 'A1234GC'
   const prisonerSummary = aValidPrisonerSummary(prisonNumber)
-
   let req: Request
   const res = {
     render: jest.fn(),
@@ -44,7 +43,7 @@ describe('supportNeedsController', () => {
 
     const expectedSupportNeeds = aValidPrisonerSupportNeeds()
     curiousService.getPrisonerSupportNeeds.mockResolvedValue(expectedSupportNeeds)
-    prisonService.getPrisonByPrisonId.mockResolvedValue({ prisonId, prisonName: 'Moorland (HMP & YOI)' })
+    prisonService.getAllPrisonNamesById.mockResolvedValue(new Map([[prisonId, 'Moorland (HMP & YOI)']]))
     const expectedView = {
       prisonerSummary,
       tab: expectedTab,
@@ -56,6 +55,6 @@ describe('supportNeedsController', () => {
 
     // Then
     expect(res.render).toHaveBeenCalledWith('pages/overview/index', expectedView)
-    expect(prisonService.getPrisonByPrisonId).toHaveBeenCalledWith(prisonId, 'a-dps-user')
+    expect(prisonService.getAllPrisonNamesById).toHaveBeenCalledWith('a-dps-user')
   })
 })
