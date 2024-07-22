@@ -2,7 +2,7 @@ import type { Request, Response, NextFunction } from 'express'
 import type { HTTPError } from 'superagent'
 import logger from '../logger'
 import { Services } from './services'
-import { Page, PageViewEventDetails } from './services/auditService'
+import { Page, BaseAuditData } from './services/auditService'
 
 export default function createErrorHandler({ auditService }: Services, production: boolean) {
   return (error: HTTPError, req: Request, res: Response, next: NextFunction): void => {
@@ -21,7 +21,7 @@ export default function createErrorHandler({ auditService }: Services, productio
 
     res.status(error.status || 500)
 
-    const auditDetails: PageViewEventDetails = {
+    const auditDetails: BaseAuditData = {
       who: req.user?.username ?? 'UNKNOWN',
       correlationId: req.id,
       details: {

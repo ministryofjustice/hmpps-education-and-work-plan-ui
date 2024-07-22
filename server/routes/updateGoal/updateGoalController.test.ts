@@ -1,6 +1,5 @@
 import createError from 'http-errors'
 import { NextFunction, Request, Response } from 'express'
-import type { SessionData } from 'express-session'
 import type { ActionPlan } from 'viewModels'
 import type { UpdateGoalForm } from 'forms'
 import EducationAndWorkPlanService from '../../services/educationAndWorkPlanService'
@@ -14,7 +13,10 @@ import {
 } from '../../testsupport/updateGoalDtoTestDataBuilder'
 import { toUpdateGoalDto } from './mappers/updateGoalFormToUpdateGoalDtoMapper'
 import aValidPrisonerSummary from '../../testsupport/prisonerSummaryTestDataBuilder'
+import AuditService, { BaseAuditData } from '../../services/auditService'
 
+jest.mock('../../services/educationAndWorkPlanService')
+jest.mock('../../services/auditService')
 jest.mock('./updateGoalFormValidator')
 jest.mock('./mappers/updateGoalFormToUpdateGoalDtoMapper')
 
@@ -22,42 +24,36 @@ describe('updateGoalController', () => {
   const mockedValidateUpdateGoalForm = validateUpdateGoalForm as jest.MockedFunction<typeof validateUpdateGoalForm>
   const mockedUpdateGoalFormToUpdateGoalDtoMapper = toUpdateGoalDto as jest.MockedFunction<typeof toUpdateGoalDto>
 
-  const educationAndWorkPlanService = {
-    getActionPlan: jest.fn(),
-    updateGoal: jest.fn(),
-  }
-
-  const controller = new UpdateGoalController(educationAndWorkPlanService as unknown as EducationAndWorkPlanService)
-
-  const req = {
-    session: {} as SessionData,
-    body: {},
-    user: {} as Express.User,
-    params: {} as Record<string, string>,
-  }
-  const res = {
-    redirect: jest.fn(),
-    redirectWithErrors: jest.fn(),
-    render: jest.fn(),
-  }
-  const next = jest.fn()
+  const educationAndWorkPlanService = new EducationAndWorkPlanService(
+    null,
+    null,
+  ) as jest.Mocked<EducationAndWorkPlanService>
+  const auditService = new AuditService(null) as jest.Mocked<AuditService>
+  const controller = new UpdateGoalController(educationAndWorkPlanService, auditService)
 
   const prisonNumber = 'A1234GC'
   const goalReference = '1a2eae63-8102-4155-97cb-43d8fb739caf'
   const prisonerSummary = aValidPrisonerSummary(prisonNumber, 'BXI')
-  let errors: Array<Record<string, string>>
+  const requestId = 'deff305c-2460-4d07-853e-f8762a8a52c6'
+
+  const req = {
+    session: { prisonerSummary },
+    body: {},
+    user: { token: 'some-token', username: 'a-dps-user' },
+    params: { prisonNumber, goalReference },
+    id: requestId,
+  } as unknown as Request
+  const res = {
+    redirect: jest.fn(),
+    redirectWithErrors: jest.fn(),
+    render: jest.fn(),
+  } as unknown as Response
+  const next = jest.fn()
+
+  let errors: Array<Record<string, string>> = []
 
   beforeEach(() => {
     jest.resetAllMocks()
-    req.session = {} as SessionData
-    req.body = {}
-    req.user = {} as Express.User
-    req.params = {} as Record<string, string>
-
-    req.params.prisonNumber = prisonNumber
-    req.params.goalReference = goalReference
-    req.session.prisonerSummary = prisonerSummary
-
     errors = []
   })
 
@@ -256,13 +252,19 @@ describe('updateGoalController', () => {
   describe('submitReviewUpdateGoal', () => {
     it('should update goal and redirect to Overview page', async () => {
       // Given
-      req.user.token = 'some-token'
-      req.params.prisonNumber = 'A1234GC'
       const updateGoalForm = aValidUpdateGoalForm(goalReference)
       req.session.updateGoalForm = updateGoalForm
 
       const expectedUpdateGoalDto = aValidUpdateGoalDtoWithOneStep()
       mockedUpdateGoalFormToUpdateGoalDtoMapper.mockReturnValue(expectedUpdateGoalDto)
+
+      const expectedBaseAuditData: BaseAuditData = {
+        correlationId: requestId,
+        details: { goalReference },
+        subjectId: prisonNumber,
+        subjectType: 'PRISONER_ID',
+        who: 'a-dps-user',
+      }
 
       // When
       await controller.submitReviewUpdateGoal(
@@ -280,12 +282,11 @@ describe('updateGoalController', () => {
       expect(mockedUpdateGoalFormToUpdateGoalDtoMapper).toHaveBeenCalledWith(updateGoalForm, prisonerSummary.prisonId)
       expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/view/overview`)
       expect(req.session.updateGoalForm).toBeUndefined()
+      expect(auditService.logUpdateGoal).toHaveBeenCalledWith(expectedBaseAuditData)
     })
 
     it('should not update goal given error calling service to update the goal', async () => {
       // Given
-      req.user.token = 'some-token'
-      req.params.prisonNumber = 'A1234GC'
       const updateGoalForm = aValidUpdateGoalForm(goalReference)
       req.session.updateGoalForm = updateGoalForm
 
@@ -311,6 +312,7 @@ describe('updateGoalController', () => {
       expect(mockedUpdateGoalFormToUpdateGoalDtoMapper).toHaveBeenCalledWith(updateGoalForm, prisonerSummary.prisonId)
       expect(next).toHaveBeenCalledWith(expectedError)
       expect(req.session.updateGoalForm).toBeUndefined()
+      expect(auditService.logUpdateGoal).not.toHaveBeenCalled()
     })
   })
 })

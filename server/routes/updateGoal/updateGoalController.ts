@@ -1,6 +1,6 @@
 import createError from 'http-errors'
 import moment from 'moment'
-import type { RequestHandler } from 'express'
+import type { Request, RequestHandler } from 'express'
 import type { UpdateGoalForm, UpdateStepForm } from 'forms'
 import EducationAndWorkPlanService from '../../services/educationAndWorkPlanService'
 import UpdateGoalView from './updateGoalView'
@@ -8,9 +8,14 @@ import ReviewUpdateGoalView from './reviewUpdateGoalView'
 import { toUpdateGoalForm } from './mappers/goalToUpdateGoalFormMapper'
 import validateUpdateGoalForm from './updateGoalFormValidator'
 import { toUpdateGoalDto } from './mappers/updateGoalFormToUpdateGoalDtoMapper'
+import { AuditService } from '../../services'
+import { BaseAuditData } from '../../services/auditService'
 
 export default class UpdateGoalController {
-  constructor(private readonly educationAndWorkPlanService: EducationAndWorkPlanService) {}
+  constructor(
+    private readonly educationAndWorkPlanService: EducationAndWorkPlanService,
+    private readonly auditService: AuditService,
+  ) {}
 
   getUpdateGoalView: RequestHandler = async (req, res, next): Promise<void> => {
     const { prisonNumber, goalReference } = req.params
@@ -107,9 +112,22 @@ export default class UpdateGoalController {
     const updateGoalDto = toUpdateGoalDto(updateGoalForm, prisonId)
     try {
       await this.educationAndWorkPlanService.updateGoal(prisonNumber, updateGoalDto, req.user.token)
-      return res.redirect(`/plan/${prisonNumber}/view/overview`)
     } catch (e) {
       return next(createError(500, `Error updating plan for prisoner ${prisonNumber}`))
     }
+
+    await this.auditService.logUpdateGoal(updateGoalAuditData(req))
+    return res.redirect(`/plan/${prisonNumber}/view/overview`)
+  }
+}
+
+const updateGoalAuditData = (req: Request): BaseAuditData => {
+  const { prisonNumber, goalReference } = req.params
+  return {
+    details: { goalReference },
+    subjectType: 'PRISONER_ID',
+    subjectId: prisonNumber,
+    who: req.user?.username ?? 'UNKNOWN',
+    correlationId: req.id,
   }
 }

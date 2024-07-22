@@ -1,4 +1,4 @@
-import AuditService, { Page } from './auditService'
+import AuditService, { BaseAuditData, Page } from './auditService'
 import HmppsAuditClient from '../data/hmppsAuditClient'
 
 jest.mock('../data/hmppsAuditClient')
@@ -72,6 +72,84 @@ describe('Audit service', () => {
         subjectType: 'exampleType',
         correlationId: 'request123',
         details: { extraDetails: 'example' },
+      })
+    })
+  })
+
+  describe('logUpdateGoal', () => {
+    it('sends update goal event audit message using audit client', async () => {
+      // Given
+      const baseArchiveAuditData: BaseAuditData = {
+        correlationId: '49380145-d73d-4ad2-8460-f26b039249cc',
+        details: { goalReference: 'a4c91b69-a075-4095-8a12-eccadf7c3d7b' },
+        subjectId: 'A1234BC',
+        subjectType: 'PRISONER_ID',
+        who: 'a-dps-user',
+      }
+
+      // When
+      await auditService.logUpdateGoal(baseArchiveAuditData)
+
+      // Then
+      expect(hmppsAuditClient.sendMessage).toHaveBeenCalledWith({
+        what: 'UPDATE_PRISONER_GOAL',
+        correlationId: '49380145-d73d-4ad2-8460-f26b039249cc',
+        details: { goalReference: 'a4c91b69-a075-4095-8a12-eccadf7c3d7b' },
+        subjectId: 'A1234BC',
+        subjectType: 'PRISONER_ID',
+        who: 'a-dps-user',
+      })
+    })
+  })
+
+  describe('logArchiveGoal', () => {
+    it('sends archive goal event audit message using audit client', async () => {
+      // Given
+      const baseArchiveAuditData: BaseAuditData = {
+        correlationId: '49380145-d73d-4ad2-8460-f26b039249cc',
+        details: { goalReference: 'a4c91b69-a075-4095-8a12-eccadf7c3d7b' },
+        subjectId: 'A1234BC',
+        subjectType: 'PRISONER_ID',
+        who: 'a-dps-user',
+      }
+
+      // When
+      await auditService.logArchiveGoal(baseArchiveAuditData)
+
+      // Then
+      expect(hmppsAuditClient.sendMessage).toHaveBeenCalledWith({
+        what: 'ARCHIVE_PRISONER_GOAL',
+        correlationId: '49380145-d73d-4ad2-8460-f26b039249cc',
+        details: { goalReference: 'a4c91b69-a075-4095-8a12-eccadf7c3d7b' },
+        subjectId: 'A1234BC',
+        subjectType: 'PRISONER_ID',
+        who: 'a-dps-user',
+      })
+    })
+  })
+
+  describe('logUnarchiveGoal', () => {
+    it('sends unarchive goal event audit message using audit client', async () => {
+      // Given
+      const baseArchiveAuditData: BaseAuditData = {
+        correlationId: '49380145-d73d-4ad2-8460-f26b039249cc',
+        details: { goalReference: 'a4c91b69-a075-4095-8a12-eccadf7c3d7b' },
+        subjectId: 'A1234BC',
+        subjectType: 'PRISONER_ID',
+        who: 'a-dps-user',
+      }
+
+      // When
+      await auditService.logUnarchiveGoal(baseArchiveAuditData)
+
+      // Then
+      expect(hmppsAuditClient.sendMessage).toHaveBeenCalledWith({
+        what: 'UNARCHIVE_PRISONER_GOAL',
+        correlationId: '49380145-d73d-4ad2-8460-f26b039249cc',
+        details: { goalReference: 'a4c91b69-a075-4095-8a12-eccadf7c3d7b' },
+        subjectId: 'A1234BC',
+        subjectType: 'PRISONER_ID',
+        who: 'a-dps-user',
       })
     })
   })
