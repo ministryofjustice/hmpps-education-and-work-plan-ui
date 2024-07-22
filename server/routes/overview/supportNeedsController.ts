@@ -14,33 +14,30 @@ export default class SupportNeedsController {
     const { prisonerSummary } = req.session
 
     const supportNeeds = await this.curiousService.getPrisonerSupportNeeds(prisonNumber, req.user.username)
+    const prisonNamesById = await this.prisonService.getAllPrisonNamesById(req.user.username)
 
     // Loop through the healthAndSupport needs array and update the prison name for each need
     if (supportNeeds.healthAndSupportNeeds) {
-      await Promise.all(
-        supportNeeds.healthAndSupportNeeds.map(async supportNeed => {
-          const prison = await this.prisonService.getPrisonByPrisonId(supportNeed.prisonId, req.user.username)
-          if (prison) {
-            // TODO refactor to avoid param-reassign eslint rule
-            // eslint-disable-next-line no-param-reassign
-            supportNeed.prisonName = prison.prisonName
-          }
-        }),
-      )
+      supportNeeds.healthAndSupportNeeds.map(async supportNeed => {
+        const prison = prisonNamesById.get(supportNeed.prisonId)
+        if (prison) {
+          // TODO refactor to avoid param-reassign eslint rule
+          // eslint-disable-next-line no-param-reassign
+          supportNeed.prisonName = prison
+        }
+      })
     }
 
     // Loop through the neurodiversities needs array and update the prison name for each need
     if (supportNeeds.neurodiversities) {
-      await Promise.all(
-        supportNeeds.neurodiversities.map(async supportNeed => {
-          const prison = await this.prisonService.getPrisonByPrisonId(supportNeed.prisonId, req.user.username)
-          if (prison) {
-            // TODO refactor to avoid param-reassign eslint rule
-            // eslint-disable-next-line no-param-reassign
-            supportNeed.prisonName = prison.prisonName
-          }
-        }),
-      )
+      supportNeeds.neurodiversities.map(async supportNeed => {
+        const prison = prisonNamesById.get(supportNeed.prisonId)
+        if (prison) {
+          // TODO refactor to avoid param-reassign eslint rule
+          // eslint-disable-next-line no-param-reassign
+          supportNeed.prisonName = prison
+        }
+      })
     }
 
     const view = new SupportNeedsView(prisonerSummary, supportNeeds)
