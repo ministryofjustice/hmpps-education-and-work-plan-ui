@@ -53,7 +53,7 @@ generic-service:
     PRISONER_SEARCH_API_DEFAULT_PAGE_SIZE: "9999"
     PRISONER_LIST_UI_DEFAULT_PAGINATION_PAGE_SIZE: "50"
     FEEDBACK_URL: "https://eu.surveymonkey.com/r/H9CYM7B"
-    ARCHIVE_GOALS_ENABLED: "false"
+    ARCHIVE_GOALS_ENABLED: "true"
     AUDIT_SERVICE_NAME: "hmpps-education-and-work-plan"
     AUDIT_ENABLED: "true"
 
