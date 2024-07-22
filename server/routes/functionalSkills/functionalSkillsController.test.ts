@@ -232,7 +232,7 @@ describe('functionalSkillsController', () => {
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/functionalSkills/index', expectedView)
       expect(curiousService.getPrisonerFunctionalSkills).toHaveBeenCalledWith(prisonNumber, 'AUSER_GEN')
-      expect(prisonService.getPrisonByPrisonId).not.toHaveBeenCalled()
+      expect(prisonService.getAllPrisonNamesById).not.toHaveBeenCalled()
     })
 
     it('should get functional skills view given curious service has problem retrieving data', async () => {
@@ -270,7 +270,7 @@ describe('functionalSkillsController', () => {
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/functionalSkills/index', expectedView)
       expect(curiousService.getPrisonerFunctionalSkills).toHaveBeenCalledWith(prisonNumber, 'AUSER_GEN')
-      expect(prisonService.getPrisonByPrisonId).not.toHaveBeenCalled()
+      expect(prisonService.getAllPrisonNamesById).not.toHaveBeenCalled()
     })
   })
 })

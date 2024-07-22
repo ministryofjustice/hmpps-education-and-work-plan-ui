@@ -28,10 +28,7 @@ describe('_timelineEvent-GOAL_ARCHIVED', () => {
     const event = aTimelineEvent({
       eventType: 'GOAL_ARCHIVED',
       actionedByDisplayName: 'Fred Bloggs',
-      prison: {
-        prisonId: 'MDI',
-        prisonName: 'Moorland (HMP & YOI)',
-      },
+      prisonName: 'Moorland (HMP & YOI)',
       timestamp: parseISO('2023-08-01T10:46:38.565Z'),
       contextualInfo: {
         GOAL_ARCHIVED_REASON: archiveReason,
@@ -58,10 +55,7 @@ describe('_timelineEvent-GOAL_ARCHIVED', () => {
     const event = aTimelineEvent({
       eventType: 'GOAL_ARCHIVED',
       actionedByDisplayName: 'Fred Bloggs',
-      prison: {
-        prisonId: 'MDI',
-        prisonName: 'Moorland (HMP & YOI)',
-      },
+      prisonName: 'Moorland (HMP & YOI)',
       timestamp: parseISO('2023-08-01T10:46:38.565Z'),
       contextualInfo: {
         GOAL_ARCHIVED_REASON: ReasonToArchiveGoalValue.OTHER,
@@ -84,35 +78,5 @@ describe('_timelineEvent-GOAL_ARCHIVED', () => {
     expect($('.moj-timeline__description p:first-of-type').text().trim()).toEqual(
       'Reason: Other - Prisoner has deceased',
     )
-  })
-
-  it('should display GOAL_ARCHIVED timeline event given prison name not looked up', () => {
-    // Given
-    const prisonerSummary = aValidPrisonerSummary()
-    const event = aTimelineEvent({
-      eventType: 'GOAL_ARCHIVED',
-      actionedByDisplayName: 'Fred Bloggs',
-      prison: {
-        prisonId: 'MDI',
-        prisonName: undefined,
-      },
-      timestamp: parseISO('2023-08-01T10:46:38.565Z'),
-      contextualInfo: {
-        GOAL_ARCHIVED_REASON: 'PRISONER_NO_LONGER_WANTS_TO_WORK_TOWARDS_GOAL',
-      },
-    })
-
-    const model = { event, prisonerSummary }
-
-    // When
-    const content = nunjucks.render('_timelineEvent-GOAL_ARCHIVED.njk', model)
-    const $ = cheerio.load(content)
-
-    // Then
-    expect($('[data-qa-event-type=GOAL_ARCHIVED]').length).toEqual(1)
-    expect($('[data-qa-goal-archive-reason=PRISONER_NO_LONGER_WANTS_TO_WORK_TOWARDS_GOAL]').length).toEqual(1)
-    expect($('.moj-timeline__byline').text().trim()).toEqual('by Fred Bloggs, MDI')
-    expect($('.moj-timeline__date').text().trim()).toEqual('1 August 2023')
-    expect($('.moj-timeline__description a').text().trim()).toEqual(`View Jimmy Lightfingers's archived goals`)
   })
 })

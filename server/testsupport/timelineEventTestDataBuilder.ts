@@ -1,5 +1,5 @@
 import { parseISO } from 'date-fns'
-import type { Prison, TimelineEvent } from 'viewModels'
+import type { TimelineEvent } from 'viewModels'
 
 const aTimelineEvent = (options?: CoreBuilderOptions): TimelineEvent => {
   return {
@@ -29,7 +29,7 @@ type CoreBuilderOptions = {
     | 'PRISON_ADMISSION'
     | 'PRISON_RELEASE'
     | 'PRISON_TRANSFER'
-  prison?: Prison
+  prisonName?: string
   timestamp?: Date
   correlationId?: string
   contextualInfo?: {
@@ -43,10 +43,7 @@ const baseTimelineEventTemplate = (options?: CoreBuilderOptions): TimelineEvent 
     reference: options?.reference || 'f49a3412-df7f-41d2-ac04-ffd35e453af4',
     sourceReference: options?.sourceReference || '1211013',
     eventType: options?.eventType || 'PRISON_ADMISSION',
-    prison: {
-      prisonId: options?.prison?.prisonId || 'MDI',
-      prisonName: options?.prison?.prisonName,
-    },
+    prisonName: options?.prisonName || 'Moorland (HMP & YOI)',
     timestamp: parseISO('2023-08-01T10:46:38.565Z'),
     correlationId: options?.correlationId || '6457a634-6dbe-4179-983b-74e92883232c',
     contextualInfo: options?.contextualInfo || {},

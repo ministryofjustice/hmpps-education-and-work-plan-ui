@@ -1,8 +1,6 @@
-import type { Prison } from 'viewModels'
 import type { PrisonResponse } from 'prisonRegisterApiClient'
 import PrisonRegisterStore from '../data/prisonRegisterStore/prisonRegisterStore'
 import PrisonRegisterClient from '../data/prisonRegisterClient'
-import toPrison from '../data/mappers/prisonMapper'
 import logger from '../../logger'
 import { HmppsAuthClient } from '../data'
 
@@ -17,26 +15,6 @@ export default class PrisonService {
     private readonly prisonRegisterClient: PrisonRegisterClient,
     private readonly hmppsAuthClient: HmppsAuthClient,
   ) {}
-
-  /**
-   * Returns a [Prison] identified by the specified `prisonId`
-   */
-  async getPrisonByPrisonId(prisonId: string, username: string): Promise<Prison> {
-    try {
-      const systemToken = await this.hmppsAuthClient.getSystemClientToken(username)
-      const prisonResponse = await this.getPrison(prisonId, systemToken)
-
-      if (prisonResponse) {
-        return toPrison(prisonResponse)
-      }
-
-      logger.info(`Could not find details for prison ${prisonId}`)
-      return { prisonId, prisonName: undefined }
-    } catch (e) {
-      logger.error(`Error looking up prison ${prisonId}`, e)
-      return { prisonId, prisonName: undefined }
-    }
-  }
 
   /**
    * Returns a Map of prison id to prison name
