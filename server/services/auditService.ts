@@ -61,7 +61,15 @@ export enum Page {
   INDUCTION_UPDATE_CHECK_YOUR_ANSWERS = 'INDUCTION_UPDATE_CHECK_YOUR_ANSWERS',
 }
 
-export interface PageViewEventDetails {
+enum AuditableUserAction {
+  PAGE_VIEW_ATTEMPT = 'PAGE_VIEW_ATTEMPT',
+  PAGE_VIEW = 'PAGE_VIEW',
+  UPDATE_PRISONER_GOAL = 'UPDATE_PRISONER_GOAL',
+  ARCHIVE_PRISONER_GOAL = 'ARCHIVE_PRISONER_GOAL',
+  UNARCHIVE_PRISONER_GOAL = 'UNARCHIVE_PRISONER_GOAL',
+}
+
+export interface BaseAuditData {
   who: string
   subjectId?: string
   subjectType?: string
@@ -76,19 +84,31 @@ export default class AuditService {
     await this.hmppsAuditClient.sendMessage(event)
   }
 
-  async logPageViewAttempt(page: Page, eventDetails: PageViewEventDetails) {
+  async logPageViewAttempt(page: Page, baseAuditData: BaseAuditData) {
     const event: AuditEvent = {
-      ...eventDetails,
-      what: `PAGE_VIEW_ATTEMPT_${page}`,
+      ...baseAuditData,
+      what: `${AuditableUserAction.PAGE_VIEW_ATTEMPT}_${page}`,
     }
     await this.logAuditEvent(event)
   }
 
-  async logPageView(page: Page, eventDetails: PageViewEventDetails) {
+  async logPageView(page: Page, baseAuditData: BaseAuditData) {
     const event: AuditEvent = {
-      ...eventDetails,
-      what: `PAGE_VIEW_${page}`,
+      ...baseAuditData,
+      what: `${AuditableUserAction.PAGE_VIEW}_${page}`,
     }
     await this.logAuditEvent(event)
+  }
+
+  async logUpdateGoal(baseAuditData: BaseAuditData) {
+    await this.logAuditEvent({ ...baseAuditData, what: AuditableUserAction.UPDATE_PRISONER_GOAL })
+  }
+
+  async logArchiveGoal(baseAuditData: BaseAuditData) {
+    await this.logAuditEvent({ ...baseAuditData, what: AuditableUserAction.ARCHIVE_PRISONER_GOAL })
+  }
+
+  async logUnarchiveGoal(baseAuditData: BaseAuditData) {
+    await this.logAuditEvent({ ...baseAuditData, what: AuditableUserAction.UNARCHIVE_PRISONER_GOAL })
   }
 }

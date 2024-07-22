@@ -1,12 +1,17 @@
-import type { RequestHandler } from 'express'
+import type { Request, RequestHandler } from 'express'
 import createError from 'http-errors'
 import type { UnarchiveGoalForm } from 'forms'
 import UnarchiveGoalView from './unarchiveGoalView'
 import EducationAndWorkPlanService from '../../services/educationAndWorkPlanService'
 import toUnarchiveGoalDto from './mappers/unarchiveGoalFormToDtoMapper'
+import { AuditService } from '../../services'
+import { BaseAuditData } from '../../services/auditService'
 
 export default class UnarchiveGoalController {
-  constructor(private readonly educationAndWorkPlanService: EducationAndWorkPlanService) {}
+  constructor(
+    private readonly educationAndWorkPlanService: EducationAndWorkPlanService,
+    private readonly auditService: AuditService,
+  ) {}
 
   getUnarchiveGoalView: RequestHandler = async (req, res, next): Promise<void> => {
     const { prisonNumber, goalReference } = req.params
@@ -38,9 +43,22 @@ export default class UnarchiveGoalController {
     const unarchiveGoalDto = toUnarchiveGoalDto(prisonNumber, unarchiveGoalForm)
     try {
       await this.educationAndWorkPlanService.unarchiveGoal(unarchiveGoalDto, req.user.token)
-      return res.redirectWithSuccess(`/plan/${prisonNumber}/view/overview`, 'Goal reactivated')
     } catch (e) {
       return next(createError(500, `Error unarchiving goal for prisoner ${prisonNumber}`))
     }
+
+    await this.auditService.logUnarchiveGoal(unarchiveGoalAuditData(req))
+    return res.redirectWithSuccess(`/plan/${prisonNumber}/view/overview`, 'Goal reactivated')
+  }
+}
+
+const unarchiveGoalAuditData = (req: Request): BaseAuditData => {
+  const { prisonNumber, goalReference } = req.params
+  return {
+    details: { goalReference },
+    subjectType: 'PRISONER_ID',
+    subjectId: prisonNumber,
+    who: req.user?.username ?? 'UNKNOWN',
+    correlationId: req.id,
   }
 }

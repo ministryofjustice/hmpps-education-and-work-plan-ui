@@ -8,7 +8,8 @@ import asyncMiddleware from '../../middleware/asyncMiddleware'
  * Route definitions for the pages relating to Unarchiving A Goal
  */
 export default (router: Router, services: Services) => {
-  const unarchiveGoalController = new UnarchiveGoalController(services.educationAndWorkPlanService)
+  const { auditService, educationAndWorkPlanService } = services
+  const unarchiveGoalController = new UnarchiveGoalController(educationAndWorkPlanService, auditService)
 
   router.use('/plan/:prisonNumber/goals/:goalReference/unarchive', [checkUserHasEditAuthority()])
   router.get('/plan/:prisonNumber/goals/:goalReference/unarchive', [

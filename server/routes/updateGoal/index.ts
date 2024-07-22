@@ -10,7 +10,8 @@ import asyncMiddleware from '../../middleware/asyncMiddleware'
  * Route definitions for the pages relating to Updating A Goal
  */
 export default (router: Router, services: Services) => {
-  const updateGoalController = new UpdateGoalController(services.educationAndWorkPlanService)
+  const { auditService, educationAndWorkPlanService } = services
+  const updateGoalController = new UpdateGoalController(educationAndWorkPlanService, auditService)
 
   router.use('/plan/:prisonNumber/goals/:goalReference/update', [checkUserHasEditAuthority()])
   router.get('/plan/:prisonNumber/goals/:goalReference/update', [

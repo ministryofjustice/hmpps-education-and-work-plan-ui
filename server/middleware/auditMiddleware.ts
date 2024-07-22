@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response, Router } from 'express'
 import { Services } from '../services'
-import { Page, PageViewEventDetails } from '../services/auditService'
+import { Page, BaseAuditData } from '../services/auditService'
 import asyncMiddleware from './asyncMiddleware'
 import logger from '../../logger'
 
@@ -100,7 +100,7 @@ export default function auditMiddleware({ auditService }: Services) {
 
       if (!page) return next()
 
-      const auditDetails: PageViewEventDetails = {
+      const auditDetails: BaseAuditData = {
         who: req.user?.username ?? 'UNKNOWN',
         correlationId: req.id,
         details: {

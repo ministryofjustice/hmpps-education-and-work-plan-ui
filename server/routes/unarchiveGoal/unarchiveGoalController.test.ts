@@ -5,30 +5,33 @@ import type { UnarchiveGoalForm } from 'forms'
 import type { UnarchiveGoalDto } from 'dto'
 import UnarchiveGoalController from './unarchiveGoalController'
 import EducationAndWorkPlanService from '../../services/educationAndWorkPlanService'
+import AuditService, { BaseAuditData } from '../../services/auditService'
 import aValidPrisonerSummary from '../../testsupport/prisonerSummaryTestDataBuilder'
 import { aValidActionPlanWithOneGoal, aValidGoal } from '../../testsupport/actionPlanTestDataBuilder'
 
 jest.mock('../../services/educationAndWorkPlanService')
+jest.mock('../../services/auditService')
 
 describe('unarchiveGoalController', () => {
   const educationAndWorkPlanService = new EducationAndWorkPlanService(
     null,
     null,
   ) as jest.Mocked<EducationAndWorkPlanService>
-  const controller = new UnarchiveGoalController(educationAndWorkPlanService)
+  const auditService = new AuditService(null) as jest.Mocked<AuditService>
+  const controller = new UnarchiveGoalController(educationAndWorkPlanService, auditService)
 
   const prisonNumber = 'A1234BC'
   const prisonerSummary = aValidPrisonerSummary()
   const goalReference = '1a2eae63-8102-4155-97cb-43d8fb739caf'
+  const requestId = 'deff305c-2460-4d07-853e-f8762a8a52c6'
 
   const req = {
     session: { prisonerSummary },
     body: {},
-    user: { token: 'a-user-token' },
+    user: { token: 'a-user-token', username: 'a-dps-user' },
     params: { prisonNumber, goalReference },
-    path: '',
+    id: requestId,
   } as unknown as Request
-
   const res = {
     redirectWithSuccess: jest.fn(),
     render: jest.fn(),
@@ -109,12 +112,21 @@ describe('unarchiveGoalController', () => {
         prisonNumber,
       }
 
+      const expectedBaseAuditData: BaseAuditData = {
+        correlationId: requestId,
+        details: { goalReference },
+        subjectId: prisonNumber,
+        subjectType: 'PRISONER_ID',
+        who: 'a-dps-user',
+      }
+
       // When
       await controller.submitUnarchiveGoalForm(req, res, next)
 
       // Then
       expect(educationAndWorkPlanService.unarchiveGoal).toHaveBeenCalledWith(expectedUnarchiveGoalDto, 'a-user-token')
       expect(res.redirectWithSuccess).toHaveBeenCalledWith(`/plan/${prisonNumber}/view/overview`, 'Goal reactivated')
+      expect(auditService.logUnarchiveGoal).toHaveBeenCalledWith(expectedBaseAuditData)
     })
 
     it('should not unarchive goal given error calling service to unarchive the goal', async () => {
@@ -139,6 +151,7 @@ describe('unarchiveGoalController', () => {
       // Then
       expect(educationAndWorkPlanService.unarchiveGoal).toHaveBeenCalledWith(expectedUnarchiveGoalDto, 'a-user-token')
       expect(next).toHaveBeenCalledWith(expectedError)
+      expect(auditService.logUnarchiveGoal).not.toHaveBeenCalled()
     })
   })
 })

@@ -4,7 +4,7 @@ import type { ArchiveGoalForm } from 'forms'
 import createError from 'http-errors'
 import type { ArchiveGoalDto } from 'dto'
 import EducationAndWorkPlanService from '../../services/educationAndWorkPlanService'
-import AuditService from '../../services/auditService'
+import AuditService, { BaseAuditData } from '../../services/auditService'
 import aValidPrisonerSummary from '../../testsupport/prisonerSummaryTestDataBuilder'
 import ArchiveGoalController from './archiveGoalController'
 import { aValidActionPlanWithOneGoal, aValidGoal, aValidStep } from '../../testsupport/actionPlanTestDataBuilder'
@@ -12,7 +12,6 @@ import validateArchiveGoalForm from './archiveGoalFormValidator'
 import aValidArchiveGoalForm from '../../testsupport/archiveGoalFormTestDataBuilder'
 import ReasonToArchiveGoalValue from '../../enums/ReasonToArchiveGoalValue'
 import toArchiveGoalDto from './mappers/archiveGoalFormToDtoMapper'
-import { AuditEvent } from '../../data/hmppsAuditClient'
 
 jest.mock('../../services/educationAndWorkPlanService')
 jest.mock('../../services/auditService')
@@ -85,6 +84,7 @@ describe('archiveGoalController', () => {
       expect(res.render).toHaveBeenCalledWith('pages/goal/archive/reason', expectedView)
       expect(req.session.archiveGoalForm).toBeUndefined()
     })
+
     it('Should not use form from session if it is a different goal', async () => {
       // Given
       const alternativeReference = 'some other goal reference'
@@ -132,6 +132,7 @@ describe('archiveGoalController', () => {
       expect(req.session.archiveGoalForm).toBeUndefined()
       expect(educationAndWorkPlanService.getActionPlan).not.toHaveBeenCalled()
     })
+
     it('should not get archive goal view given error getting prisoner action plan', async () => {
       // Given
       const actionPlan = { problemRetrievingData: true } as ActionPlan
@@ -254,12 +255,11 @@ describe('archiveGoalController', () => {
       }
       mockedArchiveGoalFormToArchiveGoalDtoMapper.mockReturnValue(expectedArchiveGoalDto)
 
-      const expectedAuditEvent: AuditEvent = {
+      const expectedBaseAuditData: BaseAuditData = {
         correlationId: requestId,
         details: { goalReference },
         subjectId: prisonNumber,
         subjectType: 'PRISONER_ID',
-        what: 'ARCHIVE_PRISONER_GOAL',
         who: 'a-dps-user',
       }
 
@@ -270,7 +270,7 @@ describe('archiveGoalController', () => {
       expect(educationAndWorkPlanService.archiveGoal).toHaveBeenCalledWith(expectedArchiveGoalDto, 'some-token')
       expect(res.redirectWithSuccess).toHaveBeenCalledWith(`/plan/${prisonNumber}/view/overview`, 'Goal archived')
       expect(req.session.archiveGoalForm).toBeUndefined()
-      expect(auditService.logAuditEvent).toHaveBeenCalledWith(expectedAuditEvent)
+      expect(auditService.logArchiveGoal).toHaveBeenCalledWith(expectedBaseAuditData)
     })
 
     it('should handle a failure archiving the goal', async () => {
@@ -296,7 +296,7 @@ describe('archiveGoalController', () => {
       expect(educationAndWorkPlanService.archiveGoal).toHaveBeenCalledWith(expectedArchiveGoalDto, 'some-token')
       expect(next).toHaveBeenCalledWith(expectedError)
       expect(req.session.archiveGoalForm).toBeUndefined()
-      expect(auditService.logAuditEvent).not.toHaveBeenCalled()
+      expect(auditService.logArchiveGoal).not.toHaveBeenCalled()
     })
   })
 
@@ -315,7 +315,7 @@ describe('archiveGoalController', () => {
       // Then
       expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/view/overview`)
       expect(req.session.archiveGoalForm).toBeUndefined()
-      expect(auditService.logAuditEvent).not.toHaveBeenCalled()
+      expect(auditService.logArchiveGoal).not.toHaveBeenCalled()
     })
   })
 })

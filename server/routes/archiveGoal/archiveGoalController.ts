@@ -7,7 +7,7 @@ import validateArchiveGoalForm from './archiveGoalFormValidator'
 import ReviewArchiveGoalView from './reviewArchiveGoalView'
 import toArchiveGoalDto from './mappers/archiveGoalFormToDtoMapper'
 import { AuditService } from '../../services'
-import { AuditEvent } from '../../data/hmppsAuditClient'
+import { BaseAuditData } from '../../services/auditService'
 
 export default class ArchiveGoalController {
   constructor(
@@ -81,7 +81,7 @@ export default class ArchiveGoalController {
       return next(createError(500, `Error archiving goal for prisoner ${prisonNumber}`))
     }
 
-    await this.auditService.logAuditEvent(archiveGoalAuditEvent(req))
+    await this.auditService.logArchiveGoal(archiveGoalAuditData(req))
     return res.redirectWithSuccess(`/plan/${prisonNumber}/view/overview`, 'Goal archived')
   }
 
@@ -92,10 +92,9 @@ export default class ArchiveGoalController {
   }
 }
 
-const archiveGoalAuditEvent = (req: Request): AuditEvent => {
+const archiveGoalAuditData = (req: Request): BaseAuditData => {
   const { prisonNumber, goalReference } = req.params
   return {
-    what: 'ARCHIVE_PRISONER_GOAL',
     details: { goalReference },
     subjectType: 'PRISONER_ID',
     subjectId: prisonNumber,
