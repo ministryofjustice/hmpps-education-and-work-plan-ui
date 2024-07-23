@@ -108,6 +108,7 @@ describe('timelineMapper', () => {
           correlationId: '246aa049-c5df-459d-8231-bdeab3936d0f',
           contextualInfo: {
             PRISON_TRANSFERRED_FROM: 'ASI',
+            SOME_OTHER_CONTEXT_NOT_LOST: 'test',
           },
           actionedByDisplayName: 'Ralph Gen',
         },
@@ -128,6 +129,7 @@ describe('timelineMapper', () => {
           correlationId: '246aa049-c5df-459d-8231-bdeab3936d0f',
           contextualInfo: {
             PRISON_TRANSFERRED_FROM: 'Ashfield (HMP)',
+            SOME_OTHER_CONTEXT_NOT_LOST: 'test',
           },
           actionedByDisplayName: 'Ralph Gen',
         },
@@ -162,6 +164,7 @@ describe('timelineMapper', () => {
           correlationId: '246aa049-c5df-459d-8231-bdeab3936d0f',
           contextualInfo: {
             PRISON_TRANSFERRED_FROM: 'ASI',
+            SOME_OTHER_CONTEXT_NOT_LOST: 'test',
           },
           actionedByDisplayName: 'Ralph Gen',
         },
@@ -182,6 +185,7 @@ describe('timelineMapper', () => {
           correlationId: '246aa049-c5df-459d-8231-bdeab3936d0f',
           contextualInfo: {
             PRISON_TRANSFERRED_FROM: 'ASI',
+            SOME_OTHER_CONTEXT_NOT_LOST: 'test',
           },
           actionedByDisplayName: 'Ralph Gen',
         },
