@@ -30,6 +30,7 @@ const toTimelineEvent = (
     correlationId: timelineEventResponse.correlationId,
     contextualInfo: isPrisonTransfer(timelineEventResponse)
       ? {
+          ...timelineEventResponse.contextualInfo,
           PRISON_TRANSFERRED_FROM:
             prisonNamesById.get(timelineEventResponse.contextualInfo.PRISON_TRANSFERRED_FROM) ||
             timelineEventResponse.contextualInfo.PRISON_TRANSFERRED_FROM,
