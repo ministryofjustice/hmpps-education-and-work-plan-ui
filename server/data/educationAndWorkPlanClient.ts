@@ -22,9 +22,9 @@ export default class EducationAndWorkPlanClient {
     return new RestClient('Education and Work Plan API Client', config.apis.educationAndWorkPlan, token)
   }
 
-  async createGoals(createGoalsRequest: CreateGoalsRequest, token: string): Promise<void> {
+  async createGoals(prisonNumber: string, createGoalsRequest: CreateGoalsRequest, token: string): Promise<void> {
     return EducationAndWorkPlanClient.restClient(token).post({
-      path: `/action-plans/${createGoalsRequest.goals[0].prisonNumber}/goals`,
+      path: `/action-plans/${prisonNumber}/goals`,
       data: createGoalsRequest,
     })
   }

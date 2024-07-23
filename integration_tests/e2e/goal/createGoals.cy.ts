@@ -237,14 +237,16 @@ context('Create goals', () => {
         .withRequestBody(
           matchingJsonPath(
             '$[?(@.goals.size() == 2 && ' +
-              "@.goals[0].prisonNumber == 'G6115VJ' && " +
+              "@.goals[0].prisonId == 'MDI' && " +
+              '@.goals[0].targetCompletionDate && ' + // assert the targetCompletionDate field exists in the request, but not it's value as the value is based on x months from today
               "@.goals[0].title == 'Learn French' && " +
               "@.goals[0].notes == 'Prisoner expects to complete course before release' && " +
               '@.goals[0].steps.size() == 3 && ' +
               "@.goals[0].steps[0].title == 'Book course' && @.goals[0].steps[0].sequenceNumber == '1' && " +
               "@.goals[0].steps[1].title == 'Attend course' && @.goals[0].steps[1].sequenceNumber == '2' && " +
               "@.goals[0].steps[2].title == 'Take exam' && @.goals[0].steps[2].sequenceNumber == '3' && " +
-              "@.goals[1].prisonNumber == 'G6115VJ' && " +
+              "@.goals[1].prisonId == 'MDI' && " +
+              '@.goals[1].targetCompletionDate && ' + // assert the targetCompletionDate field exists in the request, but not it's value as the value is based on x months from today
               "@.goals[1].title == 'Improve communication skills' && " +
               "@.goals[1].notes == '' && " +
               '@.goals[1].steps.size() == 1 && ' +

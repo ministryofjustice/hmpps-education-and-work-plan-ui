@@ -32,28 +32,32 @@ describe('educationAndWorkPlanService', () => {
   describe('createGoals', () => {
     it('should create Goals', async () => {
       // Given
+      const prisonNumber = 'A1234BC'
       const userToken = 'a-user-token'
       const createGoalDto = aValidCreateGoalDtoWithOneStep()
       const createGoalsRequest = aValidCreateGoalsRequestWithOneGoal()
 
       // When
-      await educationAndWorkPlanService.createGoals([createGoalDto], userToken)
+      await educationAndWorkPlanService.createGoals(prisonNumber, [createGoalDto], userToken)
 
       // Then
-      expect(educationAndWorkPlanClient.createGoals).toHaveBeenCalledWith(createGoalsRequest, userToken)
+      expect(educationAndWorkPlanClient.createGoals).toHaveBeenCalledWith(prisonNumber, createGoalsRequest, userToken)
     })
 
     it('should not create Goal given educationAndWorkPlanClient returns an error', async () => {
       // Given
+      const prisonNumber = 'A1234BC'
       const userToken = 'a-user-token'
       const createGoalDto = aValidCreateGoalDtoWithOneStep()
 
       educationAndWorkPlanClient.createGoals.mockRejectedValue(Error('Service Unavailable'))
 
       // When
-      const actual = await educationAndWorkPlanService.createGoals([createGoalDto], userToken).catch(error => {
-        return error
-      })
+      const actual = await educationAndWorkPlanService
+        .createGoals(prisonNumber, [createGoalDto], userToken)
+        .catch(error => {
+          return error
+        })
 
       // Then
       expect(actual).toEqual(Error('Service Unavailable'))

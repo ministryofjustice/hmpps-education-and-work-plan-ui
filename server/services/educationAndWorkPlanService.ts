@@ -17,11 +17,11 @@ export default class EducationAndWorkPlanService {
     private readonly prisonService: PrisonService,
   ) {}
 
-  async createGoals(createGoalDtos: CreateGoalDto[], token: string): Promise<unknown> {
+  async createGoals(prisonNumber: string, createGoalDtos: CreateGoalDto[], token: string): Promise<unknown> {
     const createGoalsRequest: CreateGoalsRequest = {
       goals: createGoalDtos.map(createGoalDto => toCreateGoalRequest(createGoalDto)),
     }
-    return this.educationAndWorkPlanClient.createGoals(createGoalsRequest, token)
+    return this.educationAndWorkPlanClient.createGoals(prisonNumber, createGoalsRequest, token)
   }
 
   async getActionPlan(prisonNumber: string, token: string): Promise<ActionPlan> {
