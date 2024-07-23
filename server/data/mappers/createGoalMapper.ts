@@ -4,9 +4,7 @@ import { format } from 'date-fns'
 
 const toCreateGoalRequest = (createGoalDto: CreateGoalDto): CreateGoalRequest => {
   return {
-    prisonNumber: createGoalDto.prisonNumber,
     title: createGoalDto.title,
-    category: 'WORK',
     steps: toAddStepRequests(createGoalDto),
     targetCompletionDate: format(createGoalDto.targetCompletionDate, 'yyyy-MM-dd'),
     notes: createGoalDto.note,

@@ -4,15 +4,15 @@ import {
   aValidCreateGoalRequestWithOneStep,
 } from './createGoalRequestTestDataBuilder'
 
-const aValidCreateGoalsRequestWithOneGoal = (prisonNumber = 'A1234BC'): CreateGoalsRequest => {
+const aValidCreateGoalsRequestWithOneGoal = (): CreateGoalsRequest => {
   return {
-    goals: [aValidCreateGoalRequestWithOneStep(prisonNumber)],
+    goals: [aValidCreateGoalRequestWithOneStep()],
   }
 }
 
-const aValidCreateGoalsRequestWitMultipleGoals = (prisonNumber = 'A1234BC'): CreateGoalsRequest => {
+const aValidCreateGoalsRequestWitMultipleGoals = (): CreateGoalsRequest => {
   return {
-    goals: [aValidCreateGoalRequestWithOneStep(prisonNumber), aValidCreateGoalRequestWithMultipleSteps(prisonNumber)],
+    goals: [aValidCreateGoalRequestWithOneStep(), aValidCreateGoalRequestWithMultipleSteps()],
   }
 }
 

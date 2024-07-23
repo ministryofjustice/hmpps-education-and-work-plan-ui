@@ -156,7 +156,11 @@ describe('createGoalsController', () => {
       expect(res.redirectWithSuccess).toHaveBeenCalledWith('/plan/A1234BC/view/overview', 'Goals added')
       expect(mockedCreateGoalsFormValidator).toHaveBeenCalledWith(submittedCreateGoalsForm)
       expect(mockedCreateGoalDtosMapper).toHaveBeenCalledWith(submittedCreateGoalsForm, expectedPrisonId)
-      expect(educationAndWorkPlanService.createGoals).toHaveBeenCalledWith(expectedCreateGoalDtos, 'some-token')
+      expect(educationAndWorkPlanService.createGoals).toHaveBeenCalledWith(
+        prisonNumber,
+        expectedCreateGoalDtos,
+        'some-token',
+      )
       expect(req.session.createGoalsForm).toBeUndefined()
     })
 

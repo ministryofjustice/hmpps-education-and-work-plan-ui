@@ -1,4 +1,5 @@
 import nock from 'nock'
+import isEqual from 'lodash/isEqual'
 import type { ArchiveGoalRequest, UnarchiveGoalRequest } from 'educationAndWorkPlanApiClient'
 import config from '../config'
 import EducationAndWorkPlanClient from './educationAndWorkPlanClient'
@@ -40,14 +41,14 @@ describe('educationAndWorkPlanClient', () => {
       const prisonNumber = 'A1234BC'
       const systemToken = 'a-system-token'
 
-      const createGoalsRequest = aValidCreateGoalsRequestWitMultipleGoals(prisonNumber)
+      const createGoalsRequest = aValidCreateGoalsRequestWitMultipleGoals()
       const expectedResponseBody = {}
       educationAndWorkPlanApi
-        .post(`/action-plans/${prisonNumber}/goals`, createGoalsRequest)
+        .post(`/action-plans/${prisonNumber}/goals`, requestBody => isEqual(requestBody, createGoalsRequest))
         .reply(201, expectedResponseBody)
 
       // When
-      const actual = await educationAndWorkPlanClient.createGoals(createGoalsRequest, systemToken)
+      const actual = await educationAndWorkPlanClient.createGoals(prisonNumber, createGoalsRequest, systemToken)
 
       // Then
       expect(nock.isDone()).toBe(true)
@@ -59,19 +60,19 @@ describe('educationAndWorkPlanClient', () => {
       const prisonNumber = 'A1234BC'
       const systemToken = 'a-system-token'
 
-      const createGoalsRequest = aValidCreateGoalsRequestWithOneGoal(prisonNumber)
+      const createGoalsRequest = aValidCreateGoalsRequestWithOneGoal()
       const expectedResponseBody = {
         status: 500,
         userMessage: 'An unexpected error occurred',
         developerMessage: 'An unexpected error occurred',
       }
       educationAndWorkPlanApi
-        .post(`/action-plans/${prisonNumber}/goals`, createGoalsRequest)
+        .post(`/action-plans/${prisonNumber}/goals`, requestBody => isEqual(requestBody, createGoalsRequest))
         .reply(500, expectedResponseBody)
 
       // When
       try {
-        await educationAndWorkPlanClient.createGoals(createGoalsRequest, systemToken)
+        await educationAndWorkPlanClient.createGoals(prisonNumber, createGoalsRequest, systemToken)
       } catch (e) {
         // Then
         expect(nock.isDone()).toBe(true)
@@ -121,6 +122,7 @@ describe('educationAndWorkPlanClient', () => {
       }
     })
   })
+
   describe('getGoalsByStatus', () => {
     it('should get Goals', async () => {
       // Given
@@ -171,6 +173,7 @@ describe('educationAndWorkPlanClient', () => {
       }
     })
   })
+
   describe('updateGoal', () => {
     it('should update Goal', async () => {
       // Given
@@ -181,7 +184,9 @@ describe('educationAndWorkPlanClient', () => {
       const updateGoalRequest = aValidUpdateGoalRequestWithOneUpdatedStep(goalReference)
       const expectedResponseBody = {}
       educationAndWorkPlanApi
-        .put(`/action-plans/${prisonNumber}/goals/${goalReference}`, updateGoalRequest)
+        .put(`/action-plans/${prisonNumber}/goals/${goalReference}`, requestBody =>
+          isEqual(requestBody, updateGoalRequest),
+        )
         .reply(204, expectedResponseBody)
 
       // When
@@ -205,7 +210,9 @@ describe('educationAndWorkPlanClient', () => {
         developerMessage: 'An unexpected error occurred',
       }
       educationAndWorkPlanApi
-        .put(`/action-plans/${prisonNumber}/goals/${goalReference}`, updateGoalRequest)
+        .put(`/action-plans/${prisonNumber}/goals/${goalReference}`, requestBody =>
+          isEqual(requestBody, updateGoalRequest),
+        )
         .reply(500, expectedResponseBody)
 
       // When
@@ -238,7 +245,9 @@ describe('educationAndWorkPlanClient', () => {
           }),
         ],
       })
-      educationAndWorkPlanApi.post('/action-plans', { prisonNumbers }).reply(200, expectedActionPlanSummaryListResponse)
+      educationAndWorkPlanApi
+        .post('/action-plans', requestBody => isEqual(requestBody, { prisonNumbers }))
+        .reply(200, expectedActionPlanSummaryListResponse)
 
       // When
       const actual = await educationAndWorkPlanClient.getActionPlans(prisonNumbers, systemToken)
@@ -256,7 +265,9 @@ describe('educationAndWorkPlanClient', () => {
       const expectedActionPlanSummaryListResponse = aValidActionPlanSummaryListResponse({
         actionPlanSummaries: [],
       })
-      educationAndWorkPlanApi.post('/action-plans', { prisonNumbers }).reply(200, expectedActionPlanSummaryListResponse)
+      educationAndWorkPlanApi
+        .post('/action-plans', requestBody => isEqual(requestBody, { prisonNumbers }))
+        .reply(200, expectedActionPlanSummaryListResponse)
 
       // When
       const actual = await educationAndWorkPlanClient.getActionPlans(prisonNumbers, systemToken)
@@ -415,7 +426,7 @@ describe('educationAndWorkPlanClient', () => {
       const updateInductionRequest = aValidUpdateInductionRequest()
 
       educationAndWorkPlanApi //
-        .put(`/inductions/${prisonNumber}`, updateInductionRequest)
+        .put(`/inductions/${prisonNumber}`, requestBody => isEqual(requestBody, updateInductionRequest))
         .reply(204)
 
       // When
@@ -437,7 +448,7 @@ describe('educationAndWorkPlanClient', () => {
         developerMessage: 'An unexpected error occurred',
       }
       educationAndWorkPlanApi
-        .put(`/inductions/${prisonNumber}`, updateInductionRequest)
+        .put(`/inductions/${prisonNumber}`, requestBody => isEqual(requestBody, updateInductionRequest))
         .reply(500, expectedResponseBody)
 
       // When
@@ -460,7 +471,7 @@ describe('educationAndWorkPlanClient', () => {
       const createInductionRequest = aValidCreateInductionRequest()
 
       educationAndWorkPlanApi //
-        .post(`/inductions/${prisonNumber}`, createInductionRequest)
+        .post(`/inductions/${prisonNumber}`, requestBody => isEqual(requestBody, createInductionRequest))
         .reply(201)
 
       // When
@@ -482,7 +493,7 @@ describe('educationAndWorkPlanClient', () => {
         developerMessage: 'An unexpected error occurred',
       }
       educationAndWorkPlanApi
-        .post(`/inductions/${prisonNumber}`, createInductionRequest)
+        .post(`/inductions/${prisonNumber}`, requestBody => isEqual(requestBody, createInductionRequest))
         .reply(500, expectedResponseBody)
 
       // When
