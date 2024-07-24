@@ -114,7 +114,7 @@ export default class UpdateGoalController {
       return next(createError(500, `Error updating plan for prisoner ${prisonNumber}`))
     }
 
-    await this.auditService.logUpdateGoal(updateGoalAuditData(req))
+    this.auditService.logUpdateGoal(updateGoalAuditData(req)) // no need to wait for response
     return res.redirect(`/plan/${prisonNumber}/view/overview`)
   }
 }
