@@ -47,7 +47,7 @@ export default class UnarchiveGoalController {
       return next(createError(500, `Error unarchiving goal for prisoner ${prisonNumber}`))
     }
 
-    await this.auditService.logUnarchiveGoal(unarchiveGoalAuditData(req))
+    this.auditService.logUnarchiveGoal(unarchiveGoalAuditData(req)) // no need to wait for response
     return res.redirectWithSuccess(`/plan/${prisonNumber}/view/overview`, 'Goal reactivated')
   }
 }

@@ -81,8 +81,8 @@ export interface BaseAuditData {
 export default class AuditService {
   constructor(private readonly hmppsAuditClient: HmppsAuditClient) {}
 
-  async logAuditEvent(event: AuditEvent) {
-    await this.hmppsAuditClient.sendMessage(event)
+  private async logAuditEvent(event: AuditEvent) {
+    return this.hmppsAuditClient.sendMessage(event, false)
   }
 
   async logPageViewAttempt(page: Page, baseAuditData: BaseAuditData) {
@@ -90,7 +90,7 @@ export default class AuditService {
       ...baseAuditData,
       what: `${AuditableUserAction.PAGE_VIEW_ATTEMPT}_${page}`,
     }
-    await this.logAuditEvent(event)
+    return this.logAuditEvent(event)
   }
 
   async logPageView(page: Page, baseAuditData: BaseAuditData) {
@@ -98,22 +98,22 @@ export default class AuditService {
       ...baseAuditData,
       what: `${AuditableUserAction.PAGE_VIEW}_${page}`,
     }
-    await this.logAuditEvent(event)
+    return this.logAuditEvent(event)
   }
 
   async logCreateGoal(baseAuditData: BaseAuditData) {
-    await this.logAuditEvent({ ...baseAuditData, what: AuditableUserAction.CREATE_PRISONER_GOAL })
+    return this.logAuditEvent({ ...baseAuditData, what: AuditableUserAction.CREATE_PRISONER_GOAL })
   }
 
   async logUpdateGoal(baseAuditData: BaseAuditData) {
-    await this.logAuditEvent({ ...baseAuditData, what: AuditableUserAction.UPDATE_PRISONER_GOAL })
+    return this.logAuditEvent({ ...baseAuditData, what: AuditableUserAction.UPDATE_PRISONER_GOAL })
   }
 
   async logArchiveGoal(baseAuditData: BaseAuditData) {
-    await this.logAuditEvent({ ...baseAuditData, what: AuditableUserAction.ARCHIVE_PRISONER_GOAL })
+    return this.logAuditEvent({ ...baseAuditData, what: AuditableUserAction.ARCHIVE_PRISONER_GOAL })
   }
 
   async logUnarchiveGoal(baseAuditData: BaseAuditData) {
-    await this.logAuditEvent({ ...baseAuditData, what: AuditableUserAction.UNARCHIVE_PRISONER_GOAL })
+    return this.logAuditEvent({ ...baseAuditData, what: AuditableUserAction.UNARCHIVE_PRISONER_GOAL })
   }
 }

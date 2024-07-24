@@ -81,7 +81,7 @@ export default class ArchiveGoalController {
       return next(createError(500, `Error archiving goal for prisoner ${prisonNumber}`))
     }
 
-    await this.auditService.logArchiveGoal(archiveGoalAuditData(req))
+    this.auditService.logArchiveGoal(archiveGoalAuditData(req)) // no need to wait for response
     return res.redirectWithSuccess(`/plan/${prisonNumber}/view/overview`, 'Goal archived')
   }
 

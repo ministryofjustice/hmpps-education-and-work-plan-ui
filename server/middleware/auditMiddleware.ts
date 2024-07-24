@@ -114,7 +114,7 @@ export default function auditMiddleware({ auditService }: Services) {
         auditDetails.subjectId = req.params.prisonNumber
       }
 
-      await auditService.logPageViewAttempt(page, auditDetails)
+      auditService.logPageViewAttempt(page, auditDetails) // no need to wait for response
 
       res.prependOnceListener('finish', () => {
         if (res.statusCode === 200) {
