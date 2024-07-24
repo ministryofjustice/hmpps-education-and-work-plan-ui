@@ -124,7 +124,7 @@ context('Update a goal', () => {
       // The goal loaded from the wiremock stub data has 2 steps. After adding another step, the new step will be referenced as step 3
       .addAnotherStep()
       .setStepTitle(3, 'A brand new step')
-      .setStepStatus(3, 'Started')
+      .setStepStatus(3, 'ACTIVE')
       .submitPage()
 
     const reviewUpdateGoalPage = Page.verifyOnPage(ReviewUpdateGoalPage)

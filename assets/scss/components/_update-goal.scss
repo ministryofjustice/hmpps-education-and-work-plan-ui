@@ -1,0 +1,7 @@
+.step-status-radios .govuk-label{
+  max-width: 100%;
+}
+
+.step-status-radios {
+  @include govuk-responsive-margin(1, "bottom");
+}

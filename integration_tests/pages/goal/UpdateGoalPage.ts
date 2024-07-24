@@ -32,8 +32,8 @@ export default class UpdateGoalPage extends Page {
     return this
   }
 
-  setStepStatus(stepNumber: number, stepStatus: 'Not started' | 'Started' | 'Completed') {
-    this.stepStatusField(stepNumber - 1).select(stepStatus)
+  setStepStatus(stepNumber: number, stepStatus: 'NOT_STARTED' | 'ACTIVE' | 'COMPLETE') {
+    this.stepStatusField(stepNumber - 1, stepStatus).check()
     return this
   }
 
@@ -83,7 +83,8 @@ export default class UpdateGoalPage extends Page {
 
   stepTitleField = (idx: number): PageElement => cy.get(`[data-qa=step-${idx}-title-field]`)
 
-  stepStatusField = (idx: number): PageElement => cy.get(`[data-qa=step-${idx}-status-field]`)
+  stepStatusField = (idx: number, stepStatus: string): PageElement =>
+    cy.get(`[data-qa=step-${idx}-status-field-${stepStatus}]`)
 
   submitButton = (): PageElement => cy.get('[data-qa=goal-update-submit-button]')
 
