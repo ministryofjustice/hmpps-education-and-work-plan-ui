@@ -19,111 +19,119 @@ Data supplied to this template:
 {% endblock %}
 
 {% block content %}
-  <div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
+  <form class="form" method="post" novalidate="">
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
 
-      <form class="form" method="post" novalidate="">
-        <div class="govuk-form-group">
-          <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
-        
-          {{ govukRadios({
-            name: "qualificationLevel",
-            fieldset: {
-              legend: {
-                text: title,
-                isPageHeading: true,
-                classes: "govuk-fieldset__legend--l"
-              }
-            },
-            hint: {
-              text: 'Add their highest level of qualification first. You can add any others afterwards.'
-            },
-            items: [
-              {
-                value: "ENTRY_LEVEL",
-                text: "ENTRY_LEVEL" | formatQualificationLevel,
-                hint: {
-                  text: "ENTRY_LEVEL" | formatQualificationLevelHint
-                },
-                checked: form.qualificationLevel === "ENTRY_LEVEL"
-              },
-              {
-                value: "LEVEL_1",
-                text: "LEVEL_1" | formatQualificationLevel,
-                hint: {
-                  text: "LEVEL_1" | formatQualificationLevelHint
-                },
-                checked: form.qualificationLevel === "LEVEL_1"
-              },
-              {
-                value: "LEVEL_2",
-                text: "LEVEL_2" | formatQualificationLevel,
-                hint: {
-                  text: "LEVEL_2" | formatQualificationLevelHint
-                },
-                checked: form.qualificationLevel === "LEVEL_2"
-              },
-              {
-                value: "LEVEL_3",
-                text: "LEVEL_3" | formatQualificationLevel,
-                hint: {
-                  text: "LEVEL_3" | formatQualificationLevelHint
-                },
-                checked: form.qualificationLevel === "LEVEL_3"
-              },
-              {
-                value: "LEVEL_4",
-                text: "LEVEL_4" | formatQualificationLevel,
-                hint: {
-                  text: "LEVEL_4" | formatQualificationLevelHint
-                },
-                checked: form.qualificationLevel === "LEVEL_4"
-              },
-              {
-                value: "LEVEL_5",
-                text: "LEVEL_5" | formatQualificationLevel,
-                hint: {
-                  text: "LEVEL_5" | formatQualificationLevelHint
-                },
-                checked: form.qualificationLevel === "LEVEL_5"
-              },
-              {
-                value: "LEVEL_6",
-                text: "LEVEL_6" | formatQualificationLevel,
-                hint: {
-                  text: "LEVEL_6" | formatQualificationLevelHint
-                },
-                checked: form.qualificationLevel === "LEVEL_6"
-              },
-              {
-                value: "LEVEL_7",
-                text: "LEVEL_7" | formatQualificationLevel,
-                hint: {
-                  text: "LEVEL_7" | formatQualificationLevelHint
-                },
-                checked: form.qualificationLevel === "LEVEL_7"
-              },
-              {
-                value: "LEVEL_8",
-                text: "LEVEL_8" | formatQualificationLevel,
-                hint: {
-                  text: "LEVEL_8" | formatQualificationLevelHint
-                },
-                checked: form.qualificationLevel === "LEVEL_8"
-              }
-            ],
-            errorMessage: errors | findError('qualificationLevel')
-          }) }}
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+        <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+          <h1 class="govuk-fieldset__heading">{{ title }}</h1>
+        </legend>
+        <div id="qualificationLevel-hint" class="govuk-hint">
+          Add their highest level of qualification first. You can add any others afterwards.
         </div>
+      </div>
+    </div>
+
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+        {{ govukRadios({
+          name: "qualificationLevel",
+          items: [
+            {
+              value: "ENTRY_LEVEL",
+              text: "ENTRY_LEVEL" | formatQualificationLevel,
+              hint: {
+                text: "ENTRY_LEVEL" | formatQualificationLevelHint
+              },
+              checked: form.qualificationLevel === "ENTRY_LEVEL"
+            },
+            {
+              value: "LEVEL_1",
+              text: "LEVEL_1" | formatQualificationLevel,
+              hint: {
+                text: "LEVEL_1" | formatQualificationLevelHint
+              },
+              checked: form.qualificationLevel === "LEVEL_1"
+            },
+            {
+              value: "LEVEL_2",
+              text: "LEVEL_2" | formatQualificationLevel,
+              hint: {
+                text: "LEVEL_2" | formatQualificationLevelHint
+              },
+              checked: form.qualificationLevel === "LEVEL_2"
+            },
+            {
+              value: "LEVEL_3",
+              text: "LEVEL_3" | formatQualificationLevel,
+              hint: {
+                text: "LEVEL_3" | formatQualificationLevelHint
+              },
+              checked: form.qualificationLevel === "LEVEL_3"
+            },
+            {
+              value: "LEVEL_4",
+              text: "LEVEL_4" | formatQualificationLevel,
+              hint: {
+                text: "LEVEL_4" | formatQualificationLevelHint
+              },
+              checked: form.qualificationLevel === "LEVEL_4"
+            },
+            {
+              value: "LEVEL_5",
+              text: "LEVEL_5" | formatQualificationLevel,
+              hint: {
+                text: "LEVEL_5" | formatQualificationLevelHint
+              },
+              checked: form.qualificationLevel === "LEVEL_5"
+            },
+            {
+              value: "LEVEL_6",
+              text: "LEVEL_6" | formatQualificationLevel,
+              hint: {
+                text: "LEVEL_6" | formatQualificationLevelHint
+              },
+              checked: form.qualificationLevel === "LEVEL_6"
+            },
+            {
+              value: "LEVEL_7",
+              text: "LEVEL_7" | formatQualificationLevel,
+              hint: {
+                text: "LEVEL_7" | formatQualificationLevelHint
+              },
+              checked: form.qualificationLevel === "LEVEL_7"
+            },
+            {
+              value: "LEVEL_8",
+              text: "LEVEL_8" | formatQualificationLevel,
+              hint: {
+                text: "LEVEL_8" | formatQualificationLevelHint
+              },
+              checked: form.qualificationLevel === "LEVEL_8"
+            }
+          ],
+          errorMessage: errors | findError('qualificationLevel')
+        }) }}
 
         {{ govukButton({
-            id: "submit-button",
-            text: "Continue",
-            type: "submit",
-            attributes: {"data-qa": "submit-button"}
-          }) }}
-      </form>
+          id: "submit-button",
+          text: "Continue",
+          type: "submit",
+          attributes: {"data-qa": "submit-button"}
+        }) }}
+      </div>
+
+      <div class="govuk-grid-column-one-third">
+        <section id="qualification-level-related-content" class="govuk-body">
+          <h2 class="govuk-heading-m">Related content</h2>
+          <a class="govuk-link" href="https://www.gov.uk/what-different-qualification-levels-mean/list-of-qualification-levels" target="_blank" data-qa="govuk-qualification-level-guidance-link">
+            Find out what different qualifications levels mean on GOV.UK (opens in new tab)
+          </a>
+        </section>
+      </div>
+
     </div>
-  </div>
+  </form>
 
 {% endblock %}
