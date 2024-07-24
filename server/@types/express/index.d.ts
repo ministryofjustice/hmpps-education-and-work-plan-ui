@@ -1,6 +1,5 @@
-import type { PageFlow, PrisonerSummary, PrisonerSupportNeeds } from 'viewModels'
-import type { ArchiveGoalForm, UpdateGoalForm } from 'forms'
-import type { NewGoal } from 'compositeForms'
+import type { PageFlow, PrisonerSummary } from 'viewModels'
+import type { ArchiveGoalForm, CreateGoalsForm, UpdateGoalForm } from 'forms'
 import type {
   AdditionalTrainingForm,
   AffectAbilityToWorkForm,
@@ -28,14 +27,12 @@ declare module 'express-session' {
   interface SessionData {
     returnTo: string
     nowInMinutes: number
+    prisonerListSortOptions: string
+
     prisonerSummary: PrisonerSummary
-    supportNeeds: PrisonerSupportNeeds
-    newGoal: NewGoal // A single NewGoal representing the Goal that is currently being added
-    newGoals: Array<NewGoal> // An array of NewGoal representing the Goals that have been added
     createGoalsForm: CreateGoalsForm
     updateGoalForm: UpdateGoalForm
     archiveGoalForm: ArchiveGoalForm
-    prisonerListSortOptions: string
     pageFlowHistory: PageFlow
     pageFlowQueue: PageFlow
     // Induction related objects held on the session
