@@ -120,6 +120,36 @@
                   isPageHeading: false
                 }
               }) %}
+                {{ govukRadios({
+                  name: 'steps[' + (loop.index-1) + '][status]',
+                  id: 'steps[' + (loop.index-1) + '][status]',
+                  attributes: { 'data-qa': 'step-' + (loop.index-1) + '-status-field' },
+                  classes: "govuk-radios--inline govuk-radios--small",
+                  formGroup: {
+                    classes: "step-status-radios"
+                  },
+                  items: [
+                    {
+                      value: "NOT_STARTED",
+                      text: "Not started",
+                      checked: true if step.status == 'NOT_STARTED' else false,
+                      attributes: { 'data-qa': 'step-' + (loop.index-1) + '-status-field-NOT_STARTED' }
+                    },
+                    {
+                      value: "ACTIVE",
+                      text: "Started",
+                      checked: true if step.status == 'ACTIVE' else false,
+                      attributes: { 'data-qa': 'step-' + (loop.index-1) + '-status-field-ACTIVE' }
+                    },
+                    {
+                      value: "COMPLETE",
+                      text: "Completed",
+                      checked: true if step.status == 'COMPLETE' else false,
+                      attributes: { 'data-qa': 'step-' + (loop.index-1) + '-status-field-COMPLETE' }
+                    }
+                  ],
+                  errorMessage: errors | findError('steps[' + (loop.index-1) + '][status]')
+                }) }}
 
               {{ govukCharacterCount({
                 name: 'steps[' + (loop.index-1) + '][title]',
@@ -133,35 +163,6 @@
                   isPageHeading: false
                 },
                 errorMessage: errors | findError('steps[' + (loop.index-1) + '][title]')
-              }) }}
-
-              {{ govukSelect({
-                name: 'steps[' + (loop.index-1) + '][status]',
-                id: 'steps[' + (loop.index-1) + '][status]',
-                attributes: { 'data-qa': 'step-' + (loop.index-1) + '-status-field' },
-                label: {
-                  text: "Status",
-                  classes: "govuk-fieldset__legend--s",
-                  isPageHeading: false
-                },
-                items: [
-                  {
-                    value: "NOT_STARTED",
-                    text: "Not started",
-                    selected: true if step.status == 'NOT_STARTED' else false
-                  },
-                  {
-                    value: "ACTIVE",
-                    text: "Started",
-                    selected: true if step.status == 'ACTIVE' else false
-                  },
-                  {
-                    value: "COMPLETE",
-                    text: "Completed",
-                    selected: true if step.status == 'COMPLETE' else false
-                  }
-                ],
-                errorMessage: errors | findError('steps[' + (loop.index-1) + '][status]')
               }) }}
 
               {% if loop.length > 1 %}
