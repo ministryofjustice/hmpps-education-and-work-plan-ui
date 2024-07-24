@@ -1,26 +1,5 @@
 declare module 'forms' {
-  export interface CreateGoalForm {
-    prisonNumber: string
-    title?: string
-    targetCompletionDate?: string
-    'targetCompletionDate-day'?: string
-    'targetCompletionDate-month'?: string
-    'targetCompletionDate-year'?: string
-  }
-
-  export interface AddStepForm {
-    stepNumber: number
-    title?: string
-    action?: 'add-another-step' | 'submit-form'
-  }
-
-  export interface AddNoteForm {
-    note?: string
-  }
-
-  export interface ReviewGoalForm {
-    action?: 'add-another-goal' | 'submit-form'
-  }
+  import GoalTargetCompletionDateOption from '../../enums/goalTargetCompletionDateOption'
 
   export interface UpdateGoalForm {
     reference: string
@@ -75,27 +54,21 @@ declare module 'forms' {
   }
 }
 
-/**
- * Module declaring "composite forms", specifically types that contain other forms.
- * The composite form is not a form object in its own right, in that there are no HTML views, forms or express request
- * handlers that bind request form fields to an object of this type. It is a convenience object to allow collating
- * several form objects into a single object held in the session; typically used in multi-page / wizard style screens.
- */
-declare module 'compositeForms' {
-  import type { AddNoteForm, AddStepForm, CreateGoalForm } from 'forms'
-
-  /**
-   * A composite form representing the individual form objects for creating a new Goal
-   */
-  export interface NewGoal {
-    createGoalForm: CreateGoalForm
-    addStepForm: AddStepForm // A single AddStepForm representing the Step that is currently being added
-    addStepForms: Array<AddStepForm> // An array of AddStepForm representing the Steps that have been added
-    addNoteForm: AddNoteForm
-  }
-}
-
 declare module 'inductionForms' {
+  import HopingToGetWorkValue from '../../enums/hopingToGetWorkValue'
+  import InPrisonWorkValue from '../../enums/inPrisonWorkValue'
+  import InPrisonTrainingValue from '../../enums/inPrisonTrainingValue'
+  import SkillsValue from '../../enums/skillsValue'
+  import PersonalInterestsValue from '../../enums/personalInterestsValue'
+  import HasWorkedBeforeValue from '../../enums/hasWorkedBeforeValue'
+  import TypeOfWorkExperienceValue from '../../enums/typeOfWorkExperienceValue'
+  import AbilityToWorkValue from '../../enums/abilityToWorkValue'
+  import WorkInterestTypeValue from '../../enums/workInterestTypeValue'
+  import YesNoValue from '../../enums/yesNoValue'
+  import EducationLevelValue from '../../enums/educationLevelValue'
+  import QualificationLevelValue from '../../enums/qualificationLevelValue'
+  import AdditionalTrainingValue from '../../enums/additionalTrainingValue'
+
   export interface HopingToWorkOnReleaseForm {
     hopingToGetWork: HopingToGetWorkValue
   }

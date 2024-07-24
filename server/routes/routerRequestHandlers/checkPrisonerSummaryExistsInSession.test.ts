@@ -81,7 +81,6 @@ describe('checkPrisonerSummaryExistsInSession', () => {
 
     // Then
     expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/view/overview`)
-    expect(req.session.newGoal).toBeUndefined()
     expect(next).not.toHaveBeenCalled()
   })
 })

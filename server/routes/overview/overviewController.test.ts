@@ -111,8 +111,6 @@ describe('overviewController', () => {
       'a-user-token',
     )
     expect(inductionService.inductionExists).toHaveBeenCalledWith(prisonNumber, 'a-user-token')
-    expect(req.session.newGoal).toBeUndefined()
-    expect(req.session.newGoals).toBeUndefined()
   })
 
   it('should get overview view given CIAG Induction does not exist', async () => {
@@ -165,8 +163,6 @@ describe('overviewController', () => {
       'a-user-token',
     )
     expect(inductionService.inductionExists).toHaveBeenCalledWith(prisonNumber, 'a-user-token')
-    expect(req.session.newGoal).toBeUndefined()
-    expect(req.session.newGoals).toBeUndefined()
   })
 
   it('should not get overview view given CIAG Induction throws an error', async () => {
@@ -190,7 +186,5 @@ describe('overviewController', () => {
     expect(inductionService.inductionExists).toHaveBeenCalledWith(prisonNumber, 'a-user-token')
     expect(educationAndWorkPlanService.getGoalsByStatus).not.toHaveBeenCalled()
     expect(curiousService.getPrisonerFunctionalSkills).not.toHaveBeenCalled()
-    expect(req.session.newGoal).toBeUndefined()
-    expect(req.session.newGoals).toBeUndefined()
   })
 })
