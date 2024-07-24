@@ -86,11 +86,8 @@ export default class CreateGoalsController {
       return next(createError(500, `Error creating goal(s) for prisoner ${prisonNumber}. Error: ${e}`))
     }
 
-    Promise.all(
-      // no need to wait for responses
-      createGoalDtos.map((createGoalDto, idx) =>
-        this.auditService.logCreateGoal(createGoalAuditData(req, idx + 1, createGoalDtos.length)),
-      ),
+    createGoalDtos.forEach(
+      (createGoalDto, idx) => this.auditService.logCreateGoal(createGoalAuditData(req, idx + 1, createGoalDtos.length)), // no need to wait for response
     )
     return res.redirectWithSuccess(`/plan/${prisonNumber}/view/overview`, 'Goals added')
   }
