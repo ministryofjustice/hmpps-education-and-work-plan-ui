@@ -1,16 +1,18 @@
-import { NextFunction, Request, Response } from 'express'
+import { Request, Response } from 'express'
 import type { CreateGoalDto } from 'dto'
 import type { CreateGoalsForm } from 'forms'
 import CreateGoalsController from './createGoalsController'
 import aValidPrisonerSummary from '../../testsupport/prisonerSummaryTestDataBuilder'
 import validateCreateGoalsForm from './createGoalsFormValidator'
 import EducationAndWorkPlanService from '../../services/educationAndWorkPlanService'
+import AuditService, { BaseAuditData } from '../../services/auditService'
 import toCreateGoalDtos from '../../data/mappers/createGoalDtoMapper'
 import GoalTargetCompletionDateOption from '../../enums/goalTargetCompletionDateOption'
 
+jest.mock('../../services/educationAndWorkPlanService')
+jest.mock('../../services/auditService')
 jest.mock('./createGoalsFormValidator')
 jest.mock('../../data/mappers/createGoalDtoMapper')
-jest.mock('../../services/educationAndWorkPlanService')
 
 /**
  * Unit tests for createGoalsController.
@@ -23,9 +25,22 @@ describe('createGoalsController', () => {
     null,
     null,
   ) as jest.Mocked<EducationAndWorkPlanService>
-  const controller = new CreateGoalsController(educationAndWorkPlanService)
+  const auditService = new AuditService(null) as jest.Mocked<AuditService>
+  const controller = new CreateGoalsController(educationAndWorkPlanService, auditService)
 
-  let req: Request
+  const prisonNumber = 'A1234BC'
+  const expectedPrisonId = 'MDI'
+  const prisonerSummary = aValidPrisonerSummary(prisonNumber, expectedPrisonId)
+  const requestId = 'deff305c-2460-4d07-853e-f8762a8a52c6'
+
+  const req = {
+    session: { prisonerSummary },
+    body: {},
+    user: { username: 'a-dps-user' },
+    params: { prisonNumber },
+    query: {},
+    id: requestId,
+  } as unknown as Request
   const res = {
     redirect: jest.fn(),
     redirectWithSuccess: jest.fn(),
@@ -34,22 +49,10 @@ describe('createGoalsController', () => {
   } as unknown as Response
   const next = jest.fn()
 
-  const prisonNumber = 'A1234BC'
-  const expectedPrisonId = 'MDI'
-  const prisonerSummary = aValidPrisonerSummary(prisonNumber, expectedPrisonId)
   let errors: Array<Record<string, string>>
 
   beforeEach(() => {
     jest.resetAllMocks()
-
-    req = {
-      session: { prisonerSummary },
-      body: {},
-      user: {},
-      params: { prisonNumber },
-      query: {},
-    } as unknown as Request
-
     errors = []
   })
 
@@ -64,11 +67,7 @@ describe('createGoalsController', () => {
       }
 
       // When
-      await controller.getCreateGoalsView(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.getCreateGoalsView(req, res, next)
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/createGoals/index', expectedView)
@@ -149,6 +148,21 @@ describe('createGoalsController', () => {
       ]
       mockedCreateGoalDtosMapper.mockReturnValue(expectedCreateGoalDtos)
 
+      const expectedBaseAuditDataForFirstGoal: BaseAuditData = {
+        correlationId: requestId,
+        details: { goalNumber: 1, ofGoalsCreatedInThisRequest: 2 },
+        subjectId: prisonNumber,
+        subjectType: 'PRISONER_ID',
+        who: 'a-dps-user',
+      }
+      const expectedBaseAuditDataForSecondGoal: BaseAuditData = {
+        correlationId: requestId,
+        details: { goalNumber: 2, ofGoalsCreatedInThisRequest: 2 },
+        subjectId: prisonNumber,
+        subjectType: 'PRISONER_ID',
+        who: 'a-dps-user',
+      }
+
       // When
       await controller.submitCreateGoalsForm(req, res, next)
 
@@ -162,6 +176,9 @@ describe('createGoalsController', () => {
         'some-token',
       )
       expect(req.session.createGoalsForm).toBeUndefined()
+      expect(auditService.logCreateGoal).toHaveBeenCalledTimes(2)
+      expect(auditService.logCreateGoal).toHaveBeenCalledWith(expectedBaseAuditDataForFirstGoal)
+      expect(auditService.logCreateGoal).toHaveBeenCalledWith(expectedBaseAuditDataForSecondGoal)
     })
 
     it('should redirect to create goals form given form validation fails', async () => {
@@ -191,6 +208,7 @@ describe('createGoalsController', () => {
       expect(res.redirectWithErrors).toHaveBeenCalledWith('/plan/A1234BC/goals/create', errors)
       expect(req.session.createGoalsForm).toEqual(expectedCreateGoalsForm)
       expect(mockedCreateGoalsFormValidator).toHaveBeenCalledWith(expectedCreateGoalsForm)
+      expect(auditService.logCreateGoal).not.toHaveBeenCalled()
     })
 
     it('should add a step to a goal', async () => {
@@ -249,6 +267,7 @@ describe('createGoalsController', () => {
       expect(res.redirect).toHaveBeenCalledWith('/plan/A1234BC/goals/create#goals[1].steps[1].title')
       expect(req.session.createGoalsForm).toEqual(expectedCreateGoalsForm)
       expect(mockedCreateGoalsFormValidator).not.toHaveBeenCalled()
+      expect(auditService.logCreateGoal).not.toHaveBeenCalled()
     })
 
     it.each([undefined, '-1', 'A', '2'])(`should not add a step to a goal given form action %s`, async goalNumber => {
@@ -281,6 +300,7 @@ describe('createGoalsController', () => {
       expect(res.redirect).toHaveBeenCalledWith('/plan/A1234BC/goals/create')
       expect(req.session.createGoalsForm).toEqual(submittedCreateGoalsForm)
       expect(mockedCreateGoalsFormValidator).not.toHaveBeenCalled()
+      expect(auditService.logCreateGoal).not.toHaveBeenCalled()
     })
 
     it('should remove a step from a goal', async () => {
@@ -342,6 +362,7 @@ describe('createGoalsController', () => {
       expect(res.redirect).toHaveBeenCalledWith('/plan/A1234BC/goals/create#goals[2].steps[1].title') // focus the Pass exam step of the bricklaying course as that is the last step in the goal
       expect(req.session.createGoalsForm).toEqual(expectedCreateGoalsForm)
       expect(mockedCreateGoalsFormValidator).not.toHaveBeenCalled()
+      expect(auditService.logCreateGoal).not.toHaveBeenCalled()
     })
 
     it.each([
@@ -387,6 +408,7 @@ describe('createGoalsController', () => {
         expect(res.redirect).toHaveBeenCalledWith('/plan/A1234BC/goals/create')
         expect(req.session.createGoalsForm).toEqual(submittedCreateGoalsForm)
         expect(mockedCreateGoalsFormValidator).not.toHaveBeenCalled()
+        expect(auditService.logCreateGoal).not.toHaveBeenCalled()
       },
     )
 
@@ -449,6 +471,7 @@ describe('createGoalsController', () => {
       expect(res.redirect).toHaveBeenCalledWith('/plan/A1234BC/goals/create#goals[3].title')
       expect(req.session.createGoalsForm).toEqual(expectedCreateGoalsForm)
       expect(mockedCreateGoalsFormValidator).not.toHaveBeenCalled()
+      expect(auditService.logCreateGoal).not.toHaveBeenCalled()
     })
 
     it('should remove a goal', async () => {
@@ -504,6 +527,7 @@ describe('createGoalsController', () => {
       expect(res.redirect).toHaveBeenCalledWith('/plan/A1234BC/goals/create#goals[1].steps[2].title') // focus the Pass exam step of the bricklaying course as that is the last step in the goal
       expect(req.session.createGoalsForm).toEqual(expectedCreateGoalsForm)
       expect(mockedCreateGoalsFormValidator).not.toHaveBeenCalled()
+      expect(auditService.logCreateGoal).not.toHaveBeenCalled()
     })
 
     it.each([undefined, '-1', 'A', '2'])(
@@ -538,6 +562,7 @@ describe('createGoalsController', () => {
         expect(res.redirect).toHaveBeenCalledWith('/plan/A1234BC/goals/create')
         expect(req.session.createGoalsForm).toEqual(submittedCreateGoalsForm)
         expect(mockedCreateGoalsFormValidator).not.toHaveBeenCalled()
+        expect(auditService.logCreateGoal).not.toHaveBeenCalled()
       },
     )
   })

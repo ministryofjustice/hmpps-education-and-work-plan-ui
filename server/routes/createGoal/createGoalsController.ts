@@ -1,5 +1,5 @@
 import createError from 'http-errors'
-import type { RequestHandler } from 'express'
+import type { Request, RequestHandler } from 'express'
 import type { CreateGoalsForm } from 'forms'
 import logger from '../../../logger'
 import CreateGoalsView from './createGoalsView'
@@ -7,9 +7,14 @@ import validateCreateGoalsForm from './createGoalsFormValidator'
 import toCreateGoalDtos from '../../data/mappers/createGoalDtoMapper'
 import EducationAndWorkPlanService from '../../services/educationAndWorkPlanService'
 import GoalTargetCompletionDateOption from '../../enums/goalTargetCompletionDateOption'
+import { AuditService } from '../../services'
+import { BaseAuditData } from '../../services/auditService'
 
 export default class CreateGoalsController {
-  constructor(private readonly educationAndWorkPlanService: EducationAndWorkPlanService) {}
+  constructor(
+    private readonly educationAndWorkPlanService: EducationAndWorkPlanService,
+    private readonly auditService: AuditService,
+  ) {}
 
   getCreateGoalsView: RequestHandler = async (req, res, next): Promise<void> => {
     const { prisonerSummary } = req.session
@@ -71,16 +76,22 @@ export default class CreateGoalsController {
       return res.redirectWithErrors(`/plan/${prisonNumber}/goals/create`, errors)
     }
 
-    try {
-      const createGoalDtos = toCreateGoalDtos(createGoalsForm, prisonId)
-      await this.educationAndWorkPlanService.createGoals(prisonNumber, createGoalDtos, req.user.token)
+    req.session.createGoalsForm = undefined
+    const createGoalDtos = toCreateGoalDtos(createGoalsForm, prisonId)
 
-      req.session.createGoalsForm = undefined
-      return res.redirectWithSuccess(`/plan/${prisonNumber}/view/overview`, 'Goals added')
+    try {
+      await this.educationAndWorkPlanService.createGoals(prisonNumber, createGoalDtos, req.user.token)
     } catch (e) {
       logger.error(`Error creating goal(s) for prisoner ${prisonNumber}`, e)
       return next(createError(500, `Error creating goal(s) for prisoner ${prisonNumber}. Error: ${e}`))
     }
+
+    await Promise.all(
+      createGoalDtos.map((createGoalDto, idx) =>
+        this.auditService.logCreateGoal(createGoalAuditData(req, idx + 1, createGoalDtos.length)),
+      ),
+    )
+    return res.redirectWithSuccess(`/plan/${prisonNumber}/view/overview`, 'Goals added')
   }
 }
 
@@ -128,5 +139,18 @@ const handleAddAnotherGoal = (createGoalsForm: CreateGoalsForm): CreateGoalsForm
   return {
     ...createGoalsForm,
     goals: [...createGoalsForm.goals, emptyGoal()],
+  }
+}
+
+const createGoalAuditData = (req: Request, goalIdx: number, totalGoalsCreatedInThisRequest: number): BaseAuditData => {
+  return {
+    details: {
+      goalNumber: goalIdx,
+      ofGoalsCreatedInThisRequest: totalGoalsCreatedInThisRequest,
+    },
+    subjectType: 'PRISONER_ID',
+    subjectId: req.params.prisonNumber,
+    who: req.user?.username ?? 'UNKNOWN',
+    correlationId: req.id,
   }
 }
