@@ -64,6 +64,7 @@ export enum Page {
 enum AuditableUserAction {
   PAGE_VIEW_ATTEMPT = 'PAGE_VIEW_ATTEMPT',
   PAGE_VIEW = 'PAGE_VIEW',
+  CREATE_PRISONER_GOAL = 'CREATE_PRISONER_GOAL',
   UPDATE_PRISONER_GOAL = 'UPDATE_PRISONER_GOAL',
   ARCHIVE_PRISONER_GOAL = 'ARCHIVE_PRISONER_GOAL',
   UNARCHIVE_PRISONER_GOAL = 'UNARCHIVE_PRISONER_GOAL',
@@ -98,6 +99,10 @@ export default class AuditService {
       what: `${AuditableUserAction.PAGE_VIEW}_${page}`,
     }
     await this.logAuditEvent(event)
+  }
+
+  async logCreateGoal(baseAuditData: BaseAuditData) {
+    await this.logAuditEvent({ ...baseAuditData, what: AuditableUserAction.CREATE_PRISONER_GOAL })
   }
 
   async logUpdateGoal(baseAuditData: BaseAuditData) {

@@ -4,13 +4,8 @@ import HmppsAuditClient from '../data/hmppsAuditClient'
 jest.mock('../data/hmppsAuditClient')
 
 describe('Audit service', () => {
-  let hmppsAuditClient: jest.Mocked<HmppsAuditClient>
-  let auditService: AuditService
-
-  beforeEach(() => {
-    hmppsAuditClient = new HmppsAuditClient(null) as jest.Mocked<HmppsAuditClient>
-    auditService = new AuditService(hmppsAuditClient)
-  })
+  const hmppsAuditClient = new HmppsAuditClient(null) as jest.Mocked<HmppsAuditClient>
+  const auditService = new AuditService(hmppsAuditClient)
 
   describe('logAuditEvent', () => {
     it('sends audit message using audit client', async () => {
@@ -72,6 +67,38 @@ describe('Audit service', () => {
         subjectType: 'exampleType',
         correlationId: 'request123',
         details: { extraDetails: 'example' },
+      })
+    })
+  })
+
+  describe('logCreateGoal', () => {
+    it('sends create goal event audit message using audit client', async () => {
+      // Given
+      const baseArchiveAuditData: BaseAuditData = {
+        correlationId: '49380145-d73d-4ad2-8460-f26b039249cc',
+        details: {
+          goalNumber: 1,
+          ofGoalsCreatedInThisRequest: 2,
+        },
+        subjectId: 'A1234BC',
+        subjectType: 'PRISONER_ID',
+        who: 'a-dps-user',
+      }
+
+      // When
+      await auditService.logCreateGoal(baseArchiveAuditData)
+
+      // Then
+      expect(hmppsAuditClient.sendMessage).toHaveBeenCalledWith({
+        what: 'CREATE_PRISONER_GOAL',
+        correlationId: '49380145-d73d-4ad2-8460-f26b039249cc',
+        details: {
+          goalNumber: 1,
+          ofGoalsCreatedInThisRequest: 2,
+        },
+        subjectId: 'A1234BC',
+        subjectType: 'PRISONER_ID',
+        who: 'a-dps-user',
       })
     })
   })

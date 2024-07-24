@@ -168,6 +168,18 @@ This UI consumes, and is therefore dependent on, data from the following APIs:
 * `curious-api` - Used to retrieve the prisoner's initial functional skill assessments, neurodiversity support needs, and in-prison qualifications and achievements. Uses the system token.
 * `education-and-work-plan-api` - Used to record and retrieve prisoner action plan and goals, and retrieve timeline events. Uses the user token.
 * `ciag-inducation-api` - Used to return the prisoner's CIAG Induction record. Uses the user token.
+* `hmpps-audit` - HMPPS Audit Service; used to send user action events to HMPPS Audit via the AWS SQS queue specified by the environment variable `AUDIT_SQS_QUEUE_URL`
+
+## HMPPS Audit
+This UI service sends events to HMPP Audit for the following user actions:
+
+* All page view attempts
+* All successful page views
+* All requests resulting in an error page
+* Creating prisoner goals
+* Updating prisoner goals
+* Archiving prisoner goals
+* Reactivating (un-archiving) prisoner goals
 
 ## Feature Toggles
 Features can be toggled by setting the relevant environment variable.
