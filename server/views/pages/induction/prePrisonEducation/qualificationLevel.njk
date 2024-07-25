@@ -22,14 +22,11 @@ Data supplied to this template:
   <form class="form" method="post" novalidate="">
     <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
 
-    <div class="govuk-grid-row">
+    <div class="govuk-grid-row govuk-!-margin-bottom-6">
       <div class="govuk-grid-column-two-thirds">
         <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
           <h1 class="govuk-fieldset__heading">{{ title }}</h1>
         </legend>
-        <div id="qualificationLevel-hint" class="govuk-hint">
-          Add their highest level of qualification first. You can add any others afterwards.
-        </div>
       </div>
     </div>
 
