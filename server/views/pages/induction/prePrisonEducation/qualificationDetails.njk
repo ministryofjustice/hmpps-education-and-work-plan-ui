@@ -41,8 +41,11 @@
               value: form.qualificationSubject,
               type: "text",
               label: {
-                text: "Subject",
+                text: "Subject and type",
                 attributes: { "aria-live": "polite" }
+              },
+              hint: {
+                text: 'For example, English GCSE'
               },
               attributes: { "aria-label" : "Give the subject of the qualification" },
               errorMessage: errors | findError('qualificationSubject')
