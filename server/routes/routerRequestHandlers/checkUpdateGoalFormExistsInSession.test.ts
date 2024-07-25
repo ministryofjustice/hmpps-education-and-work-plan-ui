@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from 'express'
 import type { UpdateGoalForm } from 'forms'
 import { SessionData } from 'express-session'
 import checkUpdateGoalFormExistsInSession from './checkUpdateGoalFormExistsInSession'
+import getPrisonerContext from '../../data/session/prisonerContexts'
 
 describe('checkUpdateGoalFormExistsInSession', () => {
   const req = {
@@ -30,8 +31,9 @@ describe('checkUpdateGoalFormExistsInSession', () => {
   it(`should invoke next handler given update goal form exists in session`, async () => {
     // Given
     const reference = '1a2eae63-8102-4155-97cb-43d8fb739caf'
-
-    req.session.updateGoalForm = {
+    const prisonNumber = 'A1234BC'
+    req.params.prisonNumber = prisonNumber
+    getPrisonerContext(req.session, prisonNumber).updateGoalForm = {
       reference,
     } as UpdateGoalForm
 
@@ -52,7 +54,7 @@ describe('checkUpdateGoalFormExistsInSession', () => {
     const prisonNumber = 'A1234BC'
     req.params.prisonNumber = prisonNumber
 
-    req.session.updateGoalForm = undefined
+    getPrisonerContext(req.session, prisonNumber).updateGoalForm = undefined
 
     // When
     await checkUpdateGoalFormExistsInSession(

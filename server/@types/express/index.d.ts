@@ -52,7 +52,13 @@ declare module 'express-session' {
     qualificationLevelForm: QualificationLevelForm
     qualificationDetailsForm: QualificationDetailsForm
     additionalTrainingForm: AdditionalTrainingForm
+    prisonerContexts: PrisonerContexts
   }
+  export interface PrisonerContext {
+    updateGoalForm?: UpdateGoalForm
+  }
+
+  export type PrisonerContexts = Record<string, PrisonerContext>
 }
 
 export declare global {

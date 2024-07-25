@@ -10,6 +10,7 @@ import validateUpdateGoalForm from './updateGoalFormValidator'
 import { toUpdateGoalDto } from './mappers/updateGoalFormToUpdateGoalDtoMapper'
 import { AuditService } from '../../services'
 import { BaseAuditData } from '../../services/auditService'
+import getPrisonerContext from '../../data/session/prisonerContexts'
 
 export default class UpdateGoalController {
   constructor(
@@ -22,8 +23,8 @@ export default class UpdateGoalController {
     const { prisonerSummary } = req.session
 
     let updateGoalForm: UpdateGoalForm
-    if (req.session.updateGoalForm) {
-      updateGoalForm = req.session.updateGoalForm
+    if (getPrisonerContext(req.session, prisonNumber).updateGoalForm) {
+      updateGoalForm = getPrisonerContext(req.session, prisonNumber).updateGoalForm
     } else {
       const actionPlan = await this.educationAndWorkPlanService.getActionPlan(prisonNumber, req.user.token)
       if (actionPlan.problemRetrievingData) {
@@ -38,7 +39,7 @@ export default class UpdateGoalController {
       updateGoalForm = toUpdateGoalForm(goalToUpdate)
     }
 
-    req.session.updateGoalForm = undefined
+    getPrisonerContext(req.session, prisonNumber).updateGoalForm = undefined
 
     const goalCreatedDate = startOfDay(parseISO(updateGoalForm.createdAt))
     const goalTargetCompletionDate = startOfDay(parseISO(updateGoalForm.originalTargetCompletionDate))
@@ -53,7 +54,7 @@ export default class UpdateGoalController {
   submitUpdateGoalForm: RequestHandler = async (req, res, next): Promise<void> => {
     const { prisonNumber, goalReference } = req.params
     const updateGoalForm: UpdateGoalForm = { ...req.body }
-    req.session.updateGoalForm = updateGoalForm
+    getPrisonerContext(req.session, prisonNumber).updateGoalForm = updateGoalForm
 
     // Remove the desired step on the action delete step
     if (updateGoalForm.action && updateGoalForm.action.startsWith('delete-step-')) {
@@ -91,8 +92,9 @@ export default class UpdateGoalController {
   }
 
   getReviewUpdateGoalView: RequestHandler = async (req, res, next): Promise<void> => {
+    const { prisonNumber } = req.params
     const { prisonerSummary } = req.session
-    const { updateGoalForm } = req.session
+    const { updateGoalForm } = getPrisonerContext(req.session, prisonNumber)
     const { prisonId } = prisonerSummary
 
     const updateGoalDto = toUpdateGoalDto(updateGoalForm, prisonId)
@@ -103,8 +105,9 @@ export default class UpdateGoalController {
   submitReviewUpdateGoal: RequestHandler = async (req, res, next): Promise<void> => {
     const { prisonNumber } = req.params
     const { prisonerSummary } = req.session
-    const { updateGoalForm } = req.session
-    req.session.updateGoalForm = undefined
+    const { updateGoalForm } = getPrisonerContext(req.session, prisonNumber)
+
+    getPrisonerContext(req.session, prisonNumber).updateGoalForm = undefined
 
     const { prisonId } = prisonerSummary
     const updateGoalDto = toUpdateGoalDto(updateGoalForm, prisonId)
