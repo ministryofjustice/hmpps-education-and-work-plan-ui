@@ -1,7 +1,7 @@
 import Page from '../../pages/page'
-import UpdateGoalPage from '../../pages/goal/UpdateGoalPage'
-import ReviewUpdateGoalPage from '../../pages/goal/ReviewUpdateGoalPage'
 import OverviewPage from '../../pages/overview/OverviewPage'
+import ReviewUpdateGoalPage from '../../pages/goal/ReviewUpdateGoalPage'
+import UpdateGoalPage from '../../pages/goal/UpdateGoalPage'
 import AuthorisationErrorPage from '../../pages/authorisationError'
 import Error500Page from '../../pages/error500'
 

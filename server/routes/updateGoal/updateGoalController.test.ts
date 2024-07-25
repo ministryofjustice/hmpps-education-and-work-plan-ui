@@ -14,6 +14,7 @@ import {
 import { toUpdateGoalDto } from './mappers/updateGoalFormToUpdateGoalDtoMapper'
 import aValidPrisonerSummary from '../../testsupport/prisonerSummaryTestDataBuilder'
 import AuditService, { BaseAuditData } from '../../services/auditService'
+import getPrisonerContext from '../../data/session/prisonerContexts'
 
 jest.mock('../../services/educationAndWorkPlanService')
 jest.mock('../../services/auditService')
@@ -102,7 +103,7 @@ describe('updateGoalController', () => {
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/goal/update/index', expectedView)
-      expect(req.session.updateGoalForm).toBeUndefined()
+      expect(getPrisonerContext(req.session, prisonNumber).updateGoalForm).toBeUndefined()
     })
 
     it('should not get update goal view given error getting prisoner action plan', async () => {
@@ -121,7 +122,7 @@ describe('updateGoalController', () => {
 
       // Then
       expect(next).toHaveBeenCalledWith(expectedError)
-      expect(req.session.updateGoalForm).toBeUndefined()
+      expect(getPrisonerContext(req.session, prisonNumber).updateGoalForm).toBeUndefined()
     })
 
     it('should not get update goal view given requested goal reference is not part of the prisoners action plan', async () => {
@@ -142,7 +143,7 @@ describe('updateGoalController', () => {
 
       // Then
       expect(next).toHaveBeenCalledWith(expectedError)
-      expect(req.session.updateGoalForm).toBeUndefined()
+      expect(getPrisonerContext(req.session, prisonNumber).updateGoalForm).toBeUndefined()
     })
   })
 
@@ -193,7 +194,7 @@ describe('updateGoalController', () => {
       expect(mockedValidateUpdateGoalForm).toHaveBeenCalledWith(updateGoalForm)
       expect(educationAndWorkPlanService.updateGoal).not.toHaveBeenCalled()
       expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/goals/${goalReference}/update#steps[2][title]`)
-      expect(req.session.updateGoalForm).toEqual(expectedUpdateGoalForm)
+      expect(getPrisonerContext(req.session, prisonNumber).updateGoalForm).toEqual(expectedUpdateGoalForm)
     })
 
     it('should redirect to update goal form given validation fails', async () => {
@@ -218,7 +219,7 @@ describe('updateGoalController', () => {
 
       // Then
       expect(res.redirectWithErrors).toHaveBeenCalledWith(`/plan/${prisonNumber}/goals/${goalReference}/update`, errors)
-      expect(req.session.updateGoalForm).toEqual(expectedUpdateGoalForm)
+      expect(getPrisonerContext(req.session, prisonNumber).updateGoalForm).toEqual(expectedUpdateGoalForm)
     })
   })
 
@@ -226,7 +227,7 @@ describe('updateGoalController', () => {
     it('should get review update goal view', async () => {
       // Given
       const updateGoalForm = aValidUpdateGoalForm(goalReference)
-      req.session.updateGoalForm = updateGoalForm
+      getPrisonerContext(req.session, prisonNumber).updateGoalForm = updateGoalForm
 
       const expectedUpdateGoalDto = aValidUpdateGoalDtoWithMultipleSteps()
       mockedUpdateGoalFormToUpdateGoalDtoMapper.mockReturnValue(expectedUpdateGoalDto)
@@ -253,7 +254,7 @@ describe('updateGoalController', () => {
     it('should update goal and redirect to Overview page', async () => {
       // Given
       const updateGoalForm = aValidUpdateGoalForm(goalReference)
-      req.session.updateGoalForm = updateGoalForm
+      getPrisonerContext(req.session, prisonNumber).updateGoalForm = updateGoalForm
 
       const expectedUpdateGoalDto = aValidUpdateGoalDtoWithOneStep()
       mockedUpdateGoalFormToUpdateGoalDtoMapper.mockReturnValue(expectedUpdateGoalDto)
@@ -281,14 +282,14 @@ describe('updateGoalController', () => {
       )
       expect(mockedUpdateGoalFormToUpdateGoalDtoMapper).toHaveBeenCalledWith(updateGoalForm, prisonerSummary.prisonId)
       expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/view/overview`)
-      expect(req.session.updateGoalForm).toBeUndefined()
+      expect(getPrisonerContext(req.session, prisonNumber).updateGoalForm).toBeUndefined()
       expect(auditService.logUpdateGoal).toHaveBeenCalledWith(expectedBaseAuditData)
     })
 
     it('should not update goal given error calling service to update the goal', async () => {
       // Given
       const updateGoalForm = aValidUpdateGoalForm(goalReference)
-      req.session.updateGoalForm = updateGoalForm
+      getPrisonerContext(req.session, prisonNumber).updateGoalForm = updateGoalForm
 
       const expectedUpdateGoalDto = aValidUpdateGoalDtoWithOneStep()
       mockedUpdateGoalFormToUpdateGoalDtoMapper.mockReturnValue(expectedUpdateGoalDto)
@@ -311,7 +312,7 @@ describe('updateGoalController', () => {
       )
       expect(mockedUpdateGoalFormToUpdateGoalDtoMapper).toHaveBeenCalledWith(updateGoalForm, prisonerSummary.prisonId)
       expect(next).toHaveBeenCalledWith(expectedError)
-      expect(req.session.updateGoalForm).toBeUndefined()
+      expect(getPrisonerContext(req.session, prisonNumber).updateGoalForm).toBeUndefined()
       expect(auditService.logUpdateGoal).not.toHaveBeenCalled()
     })
   })
