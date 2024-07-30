@@ -177,8 +177,5 @@ export default {
   ),
   featureToggles: {
     // someToggleEnabled: toBoolean(get('SOME_TOGGLE_ENABLED', false)),
-    goals: {
-      archiveEnabled: toBoolean(get('ARCHIVE_GOALS_ENABLED', false, requiredInProduction)),
-    },
   },
 }
