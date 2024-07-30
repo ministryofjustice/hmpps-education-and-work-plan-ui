@@ -187,4 +187,3 @@ Features can be toggled by setting the relevant environment variable.
 | Name                     | Default Value | Type    | Description                                                                                                |
 |--------------------------|---------------|---------|------------------------------------------------------------------------------------------------------------|
 | SOME_TOGGLE_ENABLED      | false         | Boolean | Example feature toggle, for demonstration purposes.                                                        |
-| ARCHIVE_GOALS_ENABLED    | false         | Boolean | Set to true to enable Goal archiving functionality.                                                        |
