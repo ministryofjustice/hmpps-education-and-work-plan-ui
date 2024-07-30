@@ -89,7 +89,6 @@ declare module 'viewModels' {
     updatedAtPrisonName?: string
     targetCompletionDate: Date
     note?: string
-    sequenceNumber: number
     archiveReason?:
       | 'PRISONER_NO_LONGER_WANTS_TO_WORK_TOWARDS_GOAL'
       | 'PRISONER_NO_LONGER_WANTS_TO_WORK_WITH_CIAG'

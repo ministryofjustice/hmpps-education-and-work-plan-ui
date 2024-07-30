@@ -1,13 +1,12 @@
 import type { ActionPlanResponse, GetGoalsResponse, GoalResponse, StepResponse } from 'educationAndWorkPlanApiClient'
 import type { ActionPlan, Goal, Step } from 'viewModels'
-import dateComparator from '../../routes/dateComparator'
 
 const toActionPlan = (
   actionPlanResponse: ActionPlanResponse,
   problemRetrievingData: boolean,
   prisonNamesById: Map<string, string>,
 ): ActionPlan => {
-  const goals = toOrderedGoals(actionPlanResponse.goals, prisonNamesById)
+  const goals = [...actionPlanResponse.goals].map(goal => toGoal(goal, prisonNamesById))
   return {
     prisonNumber: actionPlanResponse.prisonNumber,
     goals,
@@ -16,22 +15,10 @@ const toActionPlan = (
 }
 
 const toGoals = (response: GetGoalsResponse, prisonNamesById: Map<string, string>): Goal[] => {
-  return toOrderedGoals(response.goals, prisonNamesById)
+  return [...response.goals].map(goal => toGoal(goal, prisonNamesById))
 }
 
-/**
- * Sets a goal sequence by creation date (oldest = 1) and returns them in creation order (newest first)
- */
-function toOrderedGoals(goals: GoalResponse[], prisonNamesById: Map<string, string>): Goal[] {
-  return [...goals]
-    .sort((left: GoalResponse, right: GoalResponse) =>
-      dateComparator(toDate(left.createdAt), toDate(right.createdAt), 'ASC'),
-    )
-    .map((goal, index) => toGoal(goal, index + 1, prisonNamesById))
-    .reverse()
-}
-
-const toGoal = (goalResponse: GoalResponse, goalSequenceNumber: number, prisonNamesById: Map<string, string>): Goal => {
+const toGoal = (goalResponse: GoalResponse, prisonNamesById: Map<string, string>): Goal => {
   return {
     goalReference: goalResponse.goalReference,
     title: goalResponse.title,
@@ -47,7 +34,6 @@ const toGoal = (goalResponse: GoalResponse, goalSequenceNumber: number, prisonNa
     updatedAt: toDate(goalResponse.updatedAt),
     targetCompletionDate: toDate(goalResponse.targetCompletionDate),
     note: goalResponse.notes,
-    sequenceNumber: goalSequenceNumber,
     archiveReason: goalResponse.archiveReason,
     archiveReasonOther: goalResponse.archiveReasonOther,
   }

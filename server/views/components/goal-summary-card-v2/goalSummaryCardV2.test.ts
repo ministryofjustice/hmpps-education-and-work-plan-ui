@@ -98,7 +98,7 @@ describe('Tests for goal summary card component', () => {
     expect($('[data-qa=thing-link]')).toHaveLength(1)
     expect($('[data-qa=another-thing-link]')).toHaveLength(0)
   })
-  it('Should show default to "Last updated" for last updated hint', () => {
+  it('Should show default to "Last updated on" for last updated hint', () => {
     const goal = aValidGoal()
     const params: GoalSummaryCardParams = {
       goal,
@@ -111,7 +111,7 @@ describe('Tests for goal summary card component', () => {
 
     const $ = cheerio.load(content)
     const hint = $('[data-qa=goal-last-updated-hint]').first()
-    expect(hint.text().trim()).toEqual('Last updated 23 September 2023 by Alex Smith')
+    expect(hint.text().trim()).toEqual('Last updated on 23 September 2023 by Alex Smith')
   })
   it('Should be able to override last updated hint', () => {
     const goal = aValidGoal()
@@ -145,7 +145,7 @@ describe('Tests for goal summary card component', () => {
 
     const $ = cheerio.load(content)
     const hint = $('[data-qa=goal-last-updated-hint]').first()
-    expect(hint.text().trim()).toEqual('Last updated 23 September 2023 by Alex Smith, Brixton (HMP)')
+    expect(hint.text().trim()).toEqual('Last updated on 23 September 2023 by Alex Smith, Brixton (HMP)')
   })
   it('Should show last updated hint without prison name if missing', () => {
     const goal = {
@@ -163,7 +163,7 @@ describe('Tests for goal summary card component', () => {
 
     const $ = cheerio.load(content)
     const hint = $('[data-qa=goal-last-updated-hint]').first()
-    expect(hint.text().trim()).toEqual('Last updated 23 September 2023 by Alex Smith')
+    expect(hint.text().trim()).toEqual('Last updated on 23 September 2023 by Alex Smith')
   })
 
   it('Should show archive reason with no other if the goal is archived', () => {
