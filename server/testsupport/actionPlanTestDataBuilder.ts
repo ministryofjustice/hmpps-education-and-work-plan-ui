@@ -34,7 +34,6 @@ const aValidGoal = (options?: {
   title?: string
   goalReference?: string
   steps?: Array<Step>
-  sequenceNumber?: number
   status?: 'ACTIVE' | 'COMPLETED' | 'ARCHIVED'
 }): Goal => {
   return {
@@ -50,7 +49,6 @@ const aValidGoal = (options?: {
     updatedAt: new Date('2023-09-23T13:42:01.401Z'),
     targetCompletionDate: new Date('2024-02-29T00:00:00.000Z'),
     note: 'Prisoner is not good at listening',
-    sequenceNumber: options?.sequenceNumber || 1,
   }
 }
 

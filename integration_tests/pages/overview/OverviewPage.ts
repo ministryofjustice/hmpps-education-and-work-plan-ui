@@ -93,6 +93,11 @@ export default class OverviewPage extends Page {
     return this
   }
 
+  goalSummaryCardAtPositionContains(position: number, expectedText: string): OverviewPage {
+    this.goalSummaryCards().eq(position).should('contain.text', expectedText)
+    return this
+  }
+
   clickUpdateButtonForFirstGoal(): UpdateGoalPage {
     this.goalUpdateButton(1).click()
     return Page.verifyOnPage(UpdateGoalPage)
@@ -110,8 +115,8 @@ export default class OverviewPage extends Page {
   }
 
   hasGoalNotesExpander(): OverviewPage {
-    this.notesExpander(1).should('exist')
-    this.notesExpander(1).should('not.have.attr', 'open')
+    this.notesExpander().eq(0).should('exist')
+    this.notesExpander().eq(0).should('not.have.attr', 'open')
     return this
   }
 
@@ -199,7 +204,7 @@ export default class OverviewPage extends Page {
 
   private viewAllFunctionalSkillsButton = (): PageElement => cy.get('[data-qa=view-all-functional-skills-button]')
 
-  private notesExpander = (idx: number): PageElement => cy.get(`[data-qa=overview-notes-expander-${idx}]`)
+  private notesExpander = (): PageElement => cy.get(`[data-qa=overview-notes-expander]`)
 
   private preInductionOverviewPanel = (): PageElement => cy.get('[data-qa=pre-induction-overview]')
 

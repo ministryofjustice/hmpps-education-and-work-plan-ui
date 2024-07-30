@@ -44,7 +44,7 @@
                   title: 'Reactivate<span class="govuk-visually-hidden"> this goal</span>',
                   href: '/plan/' + prisonerSummary.prisonNumber + '/goals/' + goal.goalReference + '/unarchive',
                   attributes: {
-                  'data-qa': 'goal-'+ goal.sequenceNumber + '-unarchive-button'
+                  'data-qa': 'goal-'+ loop.index + '-unarchive-button'
                 },
                   'render-if': hasEditAuthority
                 }

@@ -1,6 +1,9 @@
+import { v4 as uuidv4 } from 'uuid'
 import Page from '../../pages/page'
 import CreateGoalsPage from '../../pages/goal/CreateGoalsPage'
 import OverviewPage from '../../pages/overview/OverviewPage'
+import { aValidGoalResponse } from '../../../server/testsupport/actionPlanResponseTestDataBuilder'
+import GoalStatusValue from '../../../server/enums/goalStatusValue'
 
 context('Prisoner Overview page - Post Induction', () => {
   beforeEach(() => {
@@ -76,8 +79,53 @@ context('Prisoner Overview page - Post Induction', () => {
       .isForPrisoner(prisonNumber)
       .isPostInduction()
       .activeTabIs('Overview')
-      .hasGoalsDisplayed()
+      .hasNumberOfGoals(1)
       .hasGoalNotesExpander()
+  })
+
+  it('should display prisoner Goals in order of target date, soonest first', () => {
+    // Given
+    cy.task('stubSignInAsUserWithViewAuthority')
+
+    cy.signIn()
+    const prisonNumber = 'G6115VJ'
+
+    const aGoalThatIsDueLater = {
+      ...aValidGoalResponse(),
+      goalReference: uuidv4(),
+      title: 'I am due later',
+      targetCompletionDate: '2025-01-01T00:00:00.000Z',
+    }
+    const aGoalThatIsDueSooner = {
+      ...aValidGoalResponse(),
+      goalReference: uuidv4(),
+      title: 'I am due sooner',
+      targetCompletionDate: '2024-12-25T00:00:00.000Z',
+    }
+    const aGoalThatIsDueSometimeBetween = {
+      ...aValidGoalResponse(),
+      goalReference: uuidv4(),
+      title: 'I am due sometime between the others',
+      targetCompletionDate: '2024-12-29T00:00:00.000Z',
+    }
+    cy.task('getGoalsByStatus', {
+      status: GoalStatusValue.ACTIVE,
+      goals: [aGoalThatIsDueLater, aGoalThatIsDueSooner, aGoalThatIsDueSometimeBetween],
+    })
+
+    // When
+    cy.visit(`/plan/${prisonNumber}/view/overview`)
+
+    // Then
+    const poverviewPage = Page.verifyOnPage(OverviewPage)
+    poverviewPage //
+      .isForPrisoner(prisonNumber)
+      .isPostInduction()
+      .activeTabIs('Overview')
+      .hasNumberOfGoals(3)
+      .goalSummaryCardAtPositionContains(0, aGoalThatIsDueSooner.title)
+      .goalSummaryCardAtPositionContains(1, aGoalThatIsDueSometimeBetween.title)
+      .goalSummaryCardAtPositionContains(2, aGoalThatIsDueLater.title)
   })
 
   it('should display goals section given prisoner has no goals', () => {
