@@ -61,7 +61,7 @@ generic-service:
     # When the service is fully rolled out to all prisons replace the comma delimited list with the wildcard ***
     # ACTIVE_AGENCIES: "***"
     # Ref: https://dsdmoj.atlassian.net/wiki/spaces/NDSS/pages/4616488213/Publishing+the+deployment+scope+of+a+product
-    ACTIVE_AGENCIES: "BCI, ESI, FDI, FNI, GHI, HVI, HDI, KMI, LFI, LHI, NHI, NSI, PDI, PNI, RNI, SDI, SFI, SHI, MTI, WEI, WMI, IWI, LLI, MSI"
+    ACTIVE_AGENCIES: "BCI, ESI, FDI, FNI, GHI, HVI, HOI, KMI, LFI, LHI, NHI, NSI, PDI, PNI, RNI, SDI, SFI, SHI, MTI, WEI, WMI, IWI, LLI, MSI, SUI"
 
   # Pre-existing kubernetes secrets to load as environment variables in the deployment.
   # namespace_secrets:
