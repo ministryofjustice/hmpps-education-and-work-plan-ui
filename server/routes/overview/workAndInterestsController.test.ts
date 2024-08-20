@@ -1,7 +1,7 @@
 import { Request, Response } from 'express'
 import aValidPrisonerSummary from '../../testsupport/prisonerSummaryTestDataBuilder'
 import WorkAndInterestsController from './workAndInterestsController'
-import aValidInductionDto from '../../testsupport/inductionDtoTestDataBuilder'
+import { aValidInductionDto } from '../../testsupport/inductionDtoTestDataBuilder'
 
 describe('workAndInterestsController', () => {
   const controller = new WorkAndInterestsController()

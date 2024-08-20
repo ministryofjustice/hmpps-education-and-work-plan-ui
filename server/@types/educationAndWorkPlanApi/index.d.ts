@@ -43,7 +43,7 @@ export interface paths {
       path?: never
       cookie?: never
     }
-    get?: never
+    get: operations['getPrisonerGoal']
     put: operations['updateGoal']
     post?: never
     delete?: never
@@ -200,22 +200,37 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/person/{prisonNumber}/education': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get: operations['getEduction']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
 }
 export type webhooks = Record<string, never>
 export interface components {
   schemas: {
     /**
-     * @description A list of the Prisoner's previous qualifications.
+     * @description A list of the Prisoner's previous qualifications.   These can either be new qualfications without a reference field, or for any qualifications with a reference field they will be treated as updates.
      * @example null
      */
-    AchievedQualification: {
+    CreateOrUpdateAchievedQualificationRequest: {
       /**
        * @description The subject of the qualification.
-       * @example null
+       * @example Maths GCSE
        */
       subject: string
       /**
-       * @description The level of the qualification (if known/relevant).
        * @example null
        * @enum {string}
        */
@@ -230,10 +245,16 @@ export interface components {
         | 'LEVEL_7'
         | 'LEVEL_8'
       /**
-       * @description The grade which was achieved (if known/relevant).
-       * @example null
+       * @description The grade which was achieved (if known/relevant).   Note: This is a free format value and there is no type or enum. Therefore values can be "A", "B", "C" etc, but also "1", "2", "3", "Pass", "Distinction", "Merit", "First class honours" etc. It is up to the consumer to interpret this data as necessary.
+       * @example Distinction
        */
       grade: string
+      /**
+       * Format: uuid
+       * @description The unique reference for this Achieved Qualification if this request object is being used to update the qualification
+       * @example 814ade0a-a3b2-46a3-862f-79211ba13f7b
+       */
+      reference?: string
     }
     /**
      * @description One or more future work interests that the Prisoner has.
@@ -517,10 +538,10 @@ export interface components {
         | 'POSTGRADUATE_DEGREE_AT_UNIVERSITY'
         | 'NOT_SURE'
       /**
-       * @description A list of the Prisoner's previous qualifications.
+       * @description A list of the Prisoner's previous qualifications.   These can either be new qualfications without a reference field, or for any qualifications with a reference field they will be treated as updates.
        * @example null
        */
-      qualifications?: components['schemas']['AchievedQualification'][]
+      qualifications?: components['schemas']['CreateOrUpdateAchievedQualificationRequest'][]
     }
     /** @example null */
     UpdatePreviousTrainingRequest: {
@@ -802,10 +823,10 @@ export interface components {
         | 'POSTGRADUATE_DEGREE_AT_UNIVERSITY'
         | 'NOT_SURE'
       /**
-       * @description A list of the Prisoner's previous qualifications.
+       * @description A list of the Prisoner's previous qualifications.   These can either be new qualfications without a reference field, or for any qualifications with a reference field they will be treated as updates.
        * @example null
        */
-      qualifications?: components['schemas']['AchievedQualification'][]
+      qualifications?: components['schemas']['CreateOrUpdateAchievedQualificationRequest'][]
     }
     /** @example null */
     CreatePreviousTrainingRequest: {
@@ -1098,11 +1119,11 @@ export interface components {
       /**
        * @description An object containing properties of contextual information that's relevant to the event in question. For example a property called `GOAL_TITLE` with value being the title of a Goal that was completed. The object may contain any number of properties. The API spec does not define the property names, but there is a defined set as part of the domain: - GOAL_TITLE - STEP_TITLE - PRISON_TRANSFERRED_FROM
        * @example {
-       *       'GOAL_TITLE': 'Learn French'
+       *       "GOAL_TITLE": "Learn French"
        *     }
        */
       contextualInfo: {
-        [key: string]: string | undefined
+        [key: string]: string
       }
       /**
        * @description The Prison identifier.
@@ -1162,11 +1183,136 @@ export interface components {
       developerMessage?: string
       moreInfo?: string
     }
+    /**
+     * @description A list of achieved qualifications. Can be empty but not null.
+     * @example null
+     */
+    AchievedQualificationResponse: {
+      /**
+       * Format: uuid
+       * @description A unique reference for this Achieved Qualification.
+       * @example 814ade0a-a3b2-46a3-862f-79211ba13f7b
+       */
+      reference: string
+      /**
+       * @description The subject of the qualification.
+       * @example Maths GCSE
+       */
+      subject: string
+      /**
+       * @example null
+       * @enum {string}
+       */
+      level:
+        | 'ENTRY_LEVEL'
+        | 'LEVEL_1'
+        | 'LEVEL_2'
+        | 'LEVEL_3'
+        | 'LEVEL_4'
+        | 'LEVEL_5'
+        | 'LEVEL_6'
+        | 'LEVEL_7'
+        | 'LEVEL_8'
+      /**
+       * @description The grade which was achieved (if known/relevant).   Note: This is a free format value and there is no type or enum. Therefore values can be "A", "B", "C" etc, but also "1", "2", "3", "Pass", "Distinction", "Merit", "First class honours" etc. It is up to the consumer to interpret this data as necessary.
+       * @example Distinction
+       */
+      grade: string
+      /**
+       * @description The DPS username of the person who created this resource.
+       * @example asmith_gen
+       */
+      createdBy: string
+      /**
+       * Format: date-time
+       * @description An ISO-8601 timestamp representing when this resource was created.
+       * @example 2023-06-19T09:39:44Z
+       */
+      createdAt: string
+      /**
+       * @description The DPS username of the person who last updated this resource.
+       * @example asmith_gen
+       */
+      updatedBy: string
+      /**
+       * Format: date-time
+       * @description An ISO-8601 timestamp representing when this resource was last updated. This will be the same as the created date if it has not yet been updated.
+       * @example 2023-06-19T09:39:44Z
+       */
+      updatedAt: string
+    }
+    EducationResponse: {
+      /**
+       * Format: uuid
+       * @description A unique reference for this EducationResponse.
+       * @example 814ade0a-a3b2-46a3-862f-79211ba13f7b
+       */
+      reference: string
+      /**
+       * @example null
+       * @enum {string}
+       */
+      educationLevel:
+        | 'PRIMARY_SCHOOL'
+        | 'SECONDARY_SCHOOL_LEFT_BEFORE_TAKING_EXAMS'
+        | 'SECONDARY_SCHOOL_TOOK_EXAMS'
+        | 'FURTHER_EDUCATION_COLLEGE'
+        | 'UNDERGRADUATE_DEGREE_AT_UNIVERSITY'
+        | 'POSTGRADUATE_DEGREE_AT_UNIVERSITY'
+        | 'NOT_SURE'
+      /**
+       * @description A list of achieved qualifications. Can be empty but not null.
+       * @example null
+       */
+      qualifications: components['schemas']['AchievedQualificationResponse'][]
+      /**
+       * @description The DPS username of the person who created this resource.
+       * @example asmith_gen
+       */
+      createdBy: string
+      /**
+       * @description The display name of the person who created this resource.
+       * @example Alex Smith
+       */
+      createdByDisplayName: string
+      /**
+       * Format: date-time
+       * @description An ISO-8601 timestamp representing when this resource was created.
+       * @example 2023-06-19T09:39:44Z
+       */
+      createdAt: string
+      /**
+       * @description The identifier of the prison that the prisoner was resident at when this resource was created.
+       * @example BXI
+       */
+      createdAtPrison: string
+      /**
+       * @description The DPS username of the person who last updated this resource.
+       * @example asmith_gen
+       */
+      updatedBy: string
+      /**
+       * @description The display name of the person who last updated this resource.
+       * @example Alex Smith
+       */
+      updatedByDisplayName: string
+      /**
+       * Format: date-time
+       * @description An ISO-8601 timestamp representing when this resource was last updated. This will be the same as the created date if it has not yet been updated.
+       * @example 2023-06-19T09:39:44Z
+       */
+      updatedAt: string
+      /**
+       * @description The identifier of the prison that the prisoner was resident at when this resource was updated.
+       * @example BXI
+       */
+      updatedAtPrison: string
+    }
     /** @example null */
     FutureWorkInterestsResponse: {
       /**
        * Format: uuid
-       * @description A unique reference reference for this FutureWorkInterestsResponse.
+       * @description A unique reference for this FutureWorkInterestsResponse.
        * @example 814ade0a-a3b2-46a3-862f-79211ba13f7b
        */
       reference: string
@@ -1222,7 +1368,7 @@ export interface components {
     InPrisonInterestsResponse: {
       /**
        * Format: uuid
-       * @description A unique reference reference for this InPrisonInterestsResponse.
+       * @description A unique reference for this InPrisonInterestsResponse.
        * @example 814ade0a-a3b2-46a3-862f-79211ba13f7b
        */
       reference: string
@@ -1345,7 +1491,7 @@ export interface components {
     PersonalSkillsAndInterestsResponse: {
       /**
        * Format: uuid
-       * @description A unique reference reference for this PersonalSkillsAndInterestsResponse.
+       * @description A unique reference for this PersonalSkillsAndInterestsResponse.
        * @example 814ade0a-a3b2-46a3-862f-79211ba13f7b
        */
       reference: string
@@ -1406,7 +1552,7 @@ export interface components {
     PreviousQualificationsResponse: {
       /**
        * Format: uuid
-       * @description A unique reference reference for this PreviousQualificationsResponse.
+       * @description A unique reference for this PreviousQualificationsResponse.
        * @example 814ade0a-a3b2-46a3-862f-79211ba13f7b
        */
       reference: string
@@ -1426,7 +1572,7 @@ export interface components {
        * @description A list of the Prisoner's previous qualifications. Can be empty but not null.
        * @example null
        */
-      qualifications: components['schemas']['AchievedQualification'][]
+      qualifications: components['schemas']['AchievedQualificationResponse'][]
       /**
        * @description The DPS username of the person who created this resource.
        * @example asmith_gen
@@ -1474,7 +1620,7 @@ export interface components {
     PreviousTrainingResponse: {
       /**
        * Format: uuid
-       * @description A unique reference reference for this PreviousTrainingResponse.
+       * @description A unique reference for this PreviousTrainingResponse.
        * @example 814ade0a-a3b2-46a3-862f-79211ba13f7b
        */
       reference: string
@@ -1547,7 +1693,7 @@ export interface components {
     PreviousWorkExperiencesResponse: {
       /**
        * Format: uuid
-       * @description A unique reference reference for this PreviousWorkExperiencesResponse.
+       * @description A unique reference for this PreviousWorkExperiencesResponse.
        * @example 814ade0a-a3b2-46a3-862f-79211ba13f7b
        */
       reference: string
@@ -1613,7 +1759,7 @@ export interface components {
     WorkOnReleaseResponse: {
       /**
        * Format: uuid
-       * @description A unique reference reference for this WorkOnReleaseResponse.
+       * @description A unique reference for this WorkOnReleaseResponse.
        * @example 814ade0a-a3b2-46a3-862f-79211ba13f7b
        */
       reference: string
@@ -1691,7 +1837,7 @@ export interface components {
     ConversationResponse: {
       /**
        * Format: uuid
-       * @description A unique reference reference for this ConversationResponse.
+       * @description A unique reference for this ConversationResponse.
        * @example 814ade0a-a3b2-46a3-862f-79211ba13f7b
        */
       reference: string
@@ -2040,6 +2186,29 @@ export interface operations {
       }
     }
   }
+  getPrisonerGoal: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        prisonNumber: string
+        goalReference: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['GoalResponse']
+        }
+      }
+    }
+  }
   updateGoal: {
     parameters: {
       query?: never
@@ -2261,7 +2430,7 @@ export interface operations {
   getGoals: {
     parameters: {
       query?: {
-        status?: 'ACTIVE' | 'COMPLETED' | 'ARCHIVED'
+        status?: ('ACTIVE' | 'COMPLETED' | 'ARCHIVED')[]
       }
       header?: never
       path: {
@@ -2398,6 +2567,28 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  getEduction: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        prisonNumber: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          '*/*': components['schemas']['EducationResponse']
         }
       }
     }

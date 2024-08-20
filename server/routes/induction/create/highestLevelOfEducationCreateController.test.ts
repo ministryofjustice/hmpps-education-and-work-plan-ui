@@ -3,7 +3,7 @@ import type { SessionData } from 'express-session'
 import type { InductionDto } from 'inductionDto'
 import HighestLevelOfEducationCreateController from './highestLevelOfEducationCreateController'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
-import aValidInductionDto from '../../../testsupport/inductionDtoTestDataBuilder'
+import { aValidInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
 import EducationLevelValue from '../../../enums/educationLevelValue'
 
 describe('highestLevelOfEducationCreateController', () => {

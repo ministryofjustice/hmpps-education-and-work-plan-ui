@@ -1,7 +1,7 @@
 import type { SessionData } from 'express-session'
 import { NextFunction, Request, Response } from 'express'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
-import aValidInductionDto from '../../../testsupport/inductionDtoTestDataBuilder'
+import { aValidInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
 import QualificationDetailsUpdateController from './qualificationDetailsUpdateController'
 import QualificationLevelValue from '../../../enums/qualificationLevelValue'
 

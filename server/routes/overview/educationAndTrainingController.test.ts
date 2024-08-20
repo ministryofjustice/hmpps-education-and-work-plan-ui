@@ -9,7 +9,7 @@ import {
 } from '../../testsupport/inPrisonCourseTestDataBuilder'
 import CuriousService from '../../services/curiousService'
 import EducationAndTrainingController from './educationAndTrainingController'
-import aValidInductionDto from '../../testsupport/inductionDtoTestDataBuilder'
+import { aValidInductionDto } from '../../testsupport/inductionDtoTestDataBuilder'
 
 jest.mock('../../services/curiousService')
 

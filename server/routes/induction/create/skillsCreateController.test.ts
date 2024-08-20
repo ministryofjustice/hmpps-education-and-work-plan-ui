@@ -3,7 +3,7 @@ import type { SessionData } from 'express-session'
 import type { SkillsForm } from 'inductionForms'
 import type { PersonalSkillDto } from 'inductionDto'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
-import aValidInductionDto from '../../../testsupport/inductionDtoTestDataBuilder'
+import { aValidInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
 import SkillsCreateController from './skillsCreateController'
 import SkillsValue from '../../../enums/skillsValue'
 

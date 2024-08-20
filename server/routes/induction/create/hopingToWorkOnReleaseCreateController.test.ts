@@ -5,7 +5,7 @@ import type { HopingToWorkOnReleaseForm } from 'inductionForms'
 import HopingToWorkOnReleaseCreateController from './hopingToWorkOnReleaseCreateController'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
 import HopingToGetWorkValue from '../../../enums/hopingToGetWorkValue'
-import aValidInductionDto from '../../../testsupport/inductionDtoTestDataBuilder'
+import { aValidInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
 
 describe('hopingToWorkOnReleaseCreateController', () => {
   const controller = new HopingToWorkOnReleaseCreateController()

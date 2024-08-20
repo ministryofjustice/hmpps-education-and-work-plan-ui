@@ -2,7 +2,7 @@ import { Request, Response } from 'express'
 import type { InductionDto } from 'inductionDto'
 import InductionService from '../../services/inductionService'
 import retrieveInduction from './retrieveInduction'
-import aValidInductionDto from '../../testsupport/inductionDtoTestDataBuilder'
+import { aValidInductionDto } from '../../testsupport/inductionDtoTestDataBuilder'
 
 jest.mock('../../services/inductionService')
 describe('retrieveInduction', () => {

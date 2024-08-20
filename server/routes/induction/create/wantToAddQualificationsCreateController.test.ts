@@ -5,7 +5,7 @@ import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataB
 import { validFunctionalSkills } from '../../../testsupport/functionalSkillsTestDataBuilder'
 import WantToAddQualificationsCreateController from './wantToAddQualificationsCreateController'
 import YesNoValue from '../../../enums/yesNoValue'
-import aValidInductionDto from '../../../testsupport/inductionDtoTestDataBuilder'
+import { aValidInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
 import EducationLevelValue from '../../../enums/educationLevelValue'
 import QualificationLevelValue from '../../../enums/qualificationLevelValue'
 import validInPrisonCourseRecords from '../../../testsupport/inPrisonCourseRecordsTestDataBuilder'

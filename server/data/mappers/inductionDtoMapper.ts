@@ -1,5 +1,7 @@
-import type { InductionResponse } from 'educationAndWorkPlanApiClient'
+import type { AchievedQualificationResponse, InductionResponse } from 'educationAndWorkPlanApiClient'
 import type { InductionDto } from 'inductionDto'
+import QualificationLevelValue from '../../enums/qualificationLevelValue'
+import HasWorkedBeforeValue from '../../enums/hasWorkedBeforeValue'
 
 const toInductionDto = (inductionResponse: InductionResponse): InductionDto => {
   if (!inductionResponse) {
@@ -17,6 +19,14 @@ const toInductionDto = (inductionResponse: InductionResponse): InductionDto => {
     previousQualifications: inductionResponse.previousQualifications
       ? {
           ...inductionResponse.previousQualifications,
+          qualifications: inductionResponse.previousQualifications.qualifications.map(
+            (qualification: AchievedQualificationResponse) => ({
+              ...qualification,
+              level: qualification.level as QualificationLevelValue,
+              createdAt: new Date(qualification.createdAt),
+              updatedAt: new Date(qualification.updatedAt),
+            }),
+          ),
           createdAt: new Date(inductionResponse.previousQualifications.createdAt),
           updatedAt: new Date(inductionResponse.previousQualifications.updatedAt),
         }
@@ -31,6 +41,7 @@ const toInductionDto = (inductionResponse: InductionResponse): InductionDto => {
     previousWorkExperiences: inductionResponse.previousWorkExperiences
       ? {
           ...inductionResponse.previousWorkExperiences,
+          hasWorkedBefore: inductionResponse.previousWorkExperiences.hasWorkedBefore as HasWorkedBeforeValue,
           createdAt: new Date(inductionResponse.previousWorkExperiences.createdAt),
           updatedAt: new Date(inductionResponse.previousWorkExperiences.updatedAt),
         }

@@ -3,7 +3,7 @@ import type { SessionData } from 'express-session'
 import type { PersonalInterestsForm } from 'inductionForms'
 import type { PersonalInterestDto } from 'inductionDto'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
-import aValidInductionDto from '../../../testsupport/inductionDtoTestDataBuilder'
+import { aValidInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
 import PersonalInterestsCreateController from './personalInterestsCreateController'
 import PersonalInterestsValue from '../../../enums/personalInterestsValue'
 

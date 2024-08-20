@@ -1,7 +1,7 @@
 import nunjucks from 'nunjucks'
 import * as cheerio from 'cheerio'
 import type { InductionDto } from 'inductionDto'
-import aValidInductionDto from '../../../../../testsupport/inductionDtoTestDataBuilder'
+import { aValidInductionDto } from '../../../../../testsupport/inductionDtoTestDataBuilder'
 import objectsSortedAlphabeticallyWithOtherLastByFilter from '../../../../../filters/objectsSortedAlphabeticallyWithOtherLastByFilter'
 import formatSkillFilter from '../../../../../filters/formatSkillFilter'
 import formatPersonalInterestFilter from '../../../../../filters/formatPersonalInterestFilter'

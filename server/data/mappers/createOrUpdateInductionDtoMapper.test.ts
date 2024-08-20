@@ -1,5 +1,5 @@
 import toCreateOrUpdateInductionDto from './createOrUpdateInductionDtoMapper'
-import aValidInductionDto from '../../testsupport/inductionDtoTestDataBuilder'
+import { aValidInductionDto } from '../../testsupport/inductionDtoTestDataBuilder'
 import aValidCreateOrUpdateInductionDto from '../../testsupport/updateInductionDtoTestDataBuilder'
 
 describe('createOrUpdateInductionDtoMapper', () => {

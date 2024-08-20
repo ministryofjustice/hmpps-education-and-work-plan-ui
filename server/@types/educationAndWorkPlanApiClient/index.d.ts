@@ -24,6 +24,7 @@ declare module 'educationAndWorkPlanApiClient' {
   export type TimelineEventResponse = components['schemas']['TimelineEventResponse']
 
   export type InductionResponse = components['schemas']['InductionResponse']
+  export type AchievedQualificationResponse = components['schemas']['AchievedQualificationResponse']
   export type PersonalSkill = components['schemas']['PersonalSkill']
   export type PersonalInterest = components['schemas']['PersonalInterest']
   export type FutureWorkInterest = components['schemas']['FutureWorkInterest']

@@ -3,7 +3,7 @@ import type { SessionData } from 'express-session'
 import type { InPrisonWorkForm } from 'inductionForms'
 import type { InPrisonWorkInterestDto } from 'inductionDto'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
-import aValidInductionDto from '../../../testsupport/inductionDtoTestDataBuilder'
+import { aValidInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
 import InPrisonWorkCreateController from './inPrisonWorkCreateController'
 import InPrisonWorkValue from '../../../enums/inPrisonWorkValue'
 
