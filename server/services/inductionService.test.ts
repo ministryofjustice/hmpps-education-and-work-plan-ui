@@ -1,7 +1,7 @@
 import EducationAndWorkPlanClient from '../data/educationAndWorkPlanClient'
 import InductionService from './inductionService'
 import aValidInductionResponse from '../testsupport/inductionResponseTestDataBuilder'
-import aValidInductionDto from '../testsupport/inductionDtoTestDataBuilder'
+import { aValidInductionDto } from '../testsupport/inductionDtoTestDataBuilder'
 import aValidUpdateInductionRequest from '../testsupport/updateInductionRequestTestDataBuilder'
 import toInductionDto from '../data/mappers/inductionDtoMapper'
 import toCreateInductionRequest from '../data/mappers/createInductionMapper'

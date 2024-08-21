@@ -136,6 +136,30 @@ const aValidInductionDto = (
   }
 }
 
+const anInductionDtoForAnInductionThatAlreadyExists = (
+  options?: CoreBuilderOptions & {
+    hopingToGetWork?: HopingToGetWorkValue
+    hasWorkedBefore?: HasWorkedBeforeValue
+    hasQualifications?: boolean
+  },
+): InductionDto => {
+  const baseInduction = aValidInductionDto(options)
+  return {
+    ...baseInduction,
+    previousQualifications: {
+      ...baseInduction.previousQualifications,
+      qualifications: baseInduction.previousQualifications.qualifications.map(qualification => ({
+        ...qualification,
+        reference: 'c83891c9-7676-4332-a80b-e9374f56352a',
+        createdBy: options?.createdByDisplayName || 'asmith_gen',
+        createdAt: options?.createdAt || new Date('2023-06-19T09:39:44Z'),
+        updatedBy: options?.updatedBy || 'asmith_gen',
+        updatedAt: options?.updatedAt || new Date('2023-06-19T09:39:44Z'),
+      })),
+    },
+  }
+}
+
 type CoreBuilderOptions = {
   prisonNumber?: string
   createdBy?: string
@@ -187,4 +211,4 @@ const auditFields = (
   }
 }
 
-export default aValidInductionDto
+export { aValidInductionDto, anInductionDtoForAnInductionThatAlreadyExists }

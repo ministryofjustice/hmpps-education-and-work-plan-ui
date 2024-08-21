@@ -7,7 +7,7 @@ import InductionService from '../../../services/inductionService'
 import PreviousWorkExperienceTypesUpdateController from './previousWorkExperienceTypesUpdateController'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
-import aValidInductionDto from '../../../testsupport/inductionDtoTestDataBuilder'
+import { aValidInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
 import aValidCreateOrUpdateInductionDto from '../../../testsupport/updateInductionDtoTestDataBuilder'
 import HasWorkedBeforeValue from '../../../enums/hasWorkedBeforeValue'
 

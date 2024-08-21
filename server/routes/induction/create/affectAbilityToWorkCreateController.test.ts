@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from 'express'
 import type { SessionData } from 'express-session'
 import type { AffectAbilityToWorkForm } from 'inductionForms'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
-import aValidInductionDto from '../../../testsupport/inductionDtoTestDataBuilder'
+import { aValidInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
 import AbilityToWorkValue from '../../../enums/abilityToWorkValue'
 import AffectAbilityToWorkCreateController from './affectAbilityToWorkCreateController'
 

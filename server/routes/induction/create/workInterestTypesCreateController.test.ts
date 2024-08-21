@@ -3,7 +3,7 @@ import type { SessionData } from 'express-session'
 import type { WorkInterestTypesForm } from 'inductionForms'
 import type { FutureWorkInterestDto } from 'inductionDto'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
-import aValidInductionDto from '../../../testsupport/inductionDtoTestDataBuilder'
+import { aValidInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
 import WorkInterestTypeValue from '../../../enums/workInterestTypeValue'
 import WorkInterestTypesCreateController from './workInterestTypesCreateController'
 

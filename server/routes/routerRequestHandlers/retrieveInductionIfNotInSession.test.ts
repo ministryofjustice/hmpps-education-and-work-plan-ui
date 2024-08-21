@@ -2,7 +2,7 @@ import createError from 'http-errors'
 import { NextFunction, Request, Response } from 'express'
 import { SessionData } from 'express-session'
 import { InductionService } from '../../services'
-import aValidInductionDto from '../../testsupport/inductionDtoTestDataBuilder'
+import { aValidInductionDto } from '../../testsupport/inductionDtoTestDataBuilder'
 import retrieveInductionIfNotInSession from './retrieveInductionIfNotInSession'
 
 describe('retrieveInductionIfNotInSession', () => {

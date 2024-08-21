@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from 'express'
 import type { SessionData } from 'express-session'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
 import QualificationDetailsCreateController from './qualificationDetailsCreateController'
-import aValidInductionDto from '../../../testsupport/inductionDtoTestDataBuilder'
+import { aValidInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
 import QualificationLevelValue from '../../../enums/qualificationLevelValue'
 
 describe('qualificationDetailsCreateController', () => {

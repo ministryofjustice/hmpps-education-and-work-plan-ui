@@ -3,7 +3,7 @@ import WantToAddQualificationsUpdateController from './wantToAddQualificationsUp
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
 import YesNoValue from '../../../enums/yesNoValue'
 import { validFunctionalSkills } from '../../../testsupport/functionalSkillsTestDataBuilder'
-import aValidInductionDto from '../../../testsupport/inductionDtoTestDataBuilder'
+import { aValidInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
 
 describe('wantToAddQualificationsUpdateController', () => {
   const controller = new WantToAddQualificationsUpdateController()

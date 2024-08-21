@@ -104,9 +104,14 @@ const aValidInductionResponse = (
         options.hasQualifications === true
           ? [
               {
+                reference: 'c83891c9-7676-4332-a80b-e9374f56352a',
                 subject: 'Pottery',
                 grade: 'C',
                 level: 'LEVEL_4',
+                createdBy: options?.createdByDisplayName || 'asmith_gen',
+                createdAt: options?.createdAt || '2023-06-19T09:39:44Z',
+                updatedBy: options?.updatedBy || 'asmith_gen',
+                updatedAt: options?.updatedAt || '2023-06-19T09:39:44Z',
               },
             ]
           : [],

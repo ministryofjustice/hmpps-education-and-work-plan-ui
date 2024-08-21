@@ -1,12 +1,12 @@
 import aValidInductionResponse from '../../testsupport/inductionResponseTestDataBuilder'
-import aValidInductionDto from '../../testsupport/inductionDtoTestDataBuilder'
+import { anInductionDtoForAnInductionThatAlreadyExists } from '../../testsupport/inductionDtoTestDataBuilder'
 import toInductionDto from './inductionDtoMapper'
 
 describe('inductionDtoMapper', () => {
   it('should map an InductionResponse to a InductionDto', () => {
     // Given
     const inductionResponse = aValidInductionResponse()
-    const expected = aValidInductionDto()
+    const expected = anInductionDtoForAnInductionThatAlreadyExists()
 
     // When
     const actual = toInductionDto(inductionResponse)

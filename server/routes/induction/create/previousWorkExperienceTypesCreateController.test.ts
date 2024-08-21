@@ -4,7 +4,7 @@ import type { InductionDto, PreviousWorkExperienceDto } from 'inductionDto'
 import type { PageFlow } from 'viewModels'
 import type { PreviousWorkExperienceTypesForm } from 'inductionForms'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
-import aValidInductionDto from '../../../testsupport/inductionDtoTestDataBuilder'
+import { aValidInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
 import PreviousWorkExperienceTypesCreateController from './previousWorkExperienceTypesCreateController'
 import HasWorkedBeforeValue from '../../../enums/hasWorkedBeforeValue'
 

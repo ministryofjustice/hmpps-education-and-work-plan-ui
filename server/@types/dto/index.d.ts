@@ -46,6 +46,7 @@ declare module 'dto' {
 
 declare module 'inductionDto' {
   import HasWorkedBeforeValue from '../../enums/hasWorkedBeforeValue'
+  import QualificationLevelValue from '../../enums/qualificationLevelValue'
 
   /**
    * Interface defining common reference and audit related properties that DTO types can inherit through extension.
@@ -168,6 +169,11 @@ declare module 'inductionDto' {
     subject: string
     level: QualificationLevelValue
     grade: string
+    reference?: string
+    createdBy?: string
+    createdAt?: Date
+    updatedBy?: string
+    updatedAt?: Date
   }
 
   export interface PreviousWorkExperienceDto {

@@ -1,6 +1,6 @@
 import nunjucks from 'nunjucks'
 import * as cheerio from 'cheerio'
-import aValidInductionDto from '../../../../../testsupport/inductionDtoTestDataBuilder'
+import { aValidInductionDto } from '../../../../../testsupport/inductionDtoTestDataBuilder'
 import aValidPrisonerSummary from '../../../../../testsupport/prisonerSummaryTestDataBuilder'
 import formatDateFilter from '../../../../../filters/formatDateFilter'
 import formatYesNoFilter from '../../../../../filters/formatYesNoFilter'
