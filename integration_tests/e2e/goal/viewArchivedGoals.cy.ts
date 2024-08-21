@@ -56,6 +56,22 @@ context('Unarchive a goal', () => {
     Page.verifyOnPage(ViewArchivedGoalsPage)
   })
 
+  it('should not show the no archived goals message if there are archived goals', () => {
+    // Given
+    cy.signIn()
+    cy.visit(`/plan/${prisonNumber}/view/overview`)
+    const archivedGoal = { ...aValidGoalResponse(), status: GoalStatusValue.ARCHIVED, goalReference }
+    cy.task('getGoalsByStatus', { status: GoalStatusValue.ARCHIVED, goals: [archivedGoal] })
+    const overviewPage = Page.verifyOnPage(OverviewPage)
+
+    // When
+    const archivedGoalsPage = overviewPage.clickViewArchivedGoalsButton()
+
+    // Then
+    archivedGoalsPage //
+      .noArchivedGoalsMessageShouldNotBeVisible()
+  })
+
   it('should order goals by most recently archived', () => {
     // Given
     cy.signIn()
@@ -129,5 +145,20 @@ context('Unarchive a goal', () => {
       .archiveReasonHintAtPositionContains(0, 'Reason: Prisoner no longer wants to work towards this goal')
       .lastUpdatedHintAtPositionContains(1, 'Archived on 01 January 2024 by Alex Smith, Moorland (HMP & YOI)')
       .archiveReasonHintAtPositionContains(1, 'Reason: Other - Some other reason')
+  })
+
+  it('should be able to navigate to the view archived goals page and have it display a message when there are no archived goals', () => {
+    // Given
+    cy.signIn()
+    cy.task('getGoalsByStatus', { status: GoalStatusValue.ARCHIVED, goals: [] })
+
+    // When
+    cy.visit(`/plan/${prisonNumber}/view/archived-goals`)
+    Page.verifyOnPage(ViewArchivedGoalsPage)
+    const archivedGoalsPage = Page.verifyOnPage(ViewArchivedGoalsPage)
+
+    // Then
+    archivedGoalsPage //
+      .noArchivedGoalsMessageContains('Daniel Craig has no archived goals')
   })
 })
