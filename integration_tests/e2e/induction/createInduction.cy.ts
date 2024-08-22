@@ -278,6 +278,7 @@ context('Create an Induction', () => {
             "$[?(@.workOnRelease.hopingToWork == 'YES' && " +
               "@.previousQualifications.educationLevel == 'FURTHER_EDUCATION_COLLEGE' && " +
               '@.previousQualifications.qualifications.size() == 1 && ' +
+              '!@.previousQualifications.qualifications[0].reference && ' + // assert the qualification has no reference as it is a new qualification that wont have a reference until the API has created it
               "@.previousQualifications.qualifications[0].subject == 'Physics' && " +
               "@.previousQualifications.qualifications[0].grade == 'B' && " +
               "@.previousQualifications.qualifications[0].level == 'LEVEL_4' && " +
