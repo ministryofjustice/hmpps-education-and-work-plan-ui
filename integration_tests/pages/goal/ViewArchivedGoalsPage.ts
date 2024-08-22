@@ -34,13 +34,13 @@ export default class ViewArchivedGoalsPage extends Page {
     return Page.verifyOnPage(UnarchiveGoalPage)
   }
 
-  noArchivedGoalsMessageContains(expectedText: string): ViewArchivedGoalsPage {
-    this.noArchivedGoalsMessage().should('contain.text', expectedText)
+  noArchivedGoalsMessageShouldNotBeVisible(): ViewArchivedGoalsPage {
+    this.noArchivedGoalsMessage().should('not.exist')
     return this
   }
 
-  noArchivedGoalsMessageShouldNotBeVisible(): ViewArchivedGoalsPage {
-    this.noArchivedGoalsMessage().should('not.exist')
+  noArchivedGoalsMessageShouldBeVisible(): ViewArchivedGoalsPage {
+    this.noArchivedGoalsMessage().should('exist')
     return this
   }
 

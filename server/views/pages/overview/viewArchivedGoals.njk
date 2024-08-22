@@ -53,7 +53,7 @@
               }) }}
             {% endfor %}
           {% else %}
-           <p data-qa="no-archived-goals-message">{{ prisonerSummary.firstName + ' ' + prisonerSummary.lastName }} has no archived goals</p>
+           <p class="govuk-body" data-qa="no-archived-goals-message">{{ prisonerSummary.firstName + ' ' + prisonerSummary.lastName }} has no archived goals</p>
           {% endif %}
         {% else %}
           {% include './partials/_unavailableGoals.njk' %}

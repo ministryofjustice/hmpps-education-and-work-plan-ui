@@ -159,6 +159,6 @@ context('Unarchive a goal', () => {
 
     // Then
     archivedGoalsPage //
-      .noArchivedGoalsMessageContains('Daniel Craig has no archived goals')
+      .noArchivedGoalsMessageShouldBeVisible()
   })
 })
