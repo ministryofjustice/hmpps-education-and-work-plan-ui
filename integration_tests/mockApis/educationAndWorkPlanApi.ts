@@ -320,24 +320,36 @@ const stubGetInduction = (options?: {
             options.hasQualifications === true
               ? [
                   {
+                    reference: '45b969cc-00c8-41c9-8a79-133d2ccf6326',
                     subject: 'French',
                     grade: 'C',
                     level: 'LEVEL_3',
+                    createdBy: 'A_USER_GEN',
+                    createdAt: '2023-08-29T11:29:22.8793',
                   },
                   {
+                    reference: '99b56087-3e92-45b1-9082-c609976bbedb',
                     subject: 'Maths',
                     grade: 'A',
                     level: 'LEVEL_3',
+                    createdBy: 'A_USER_GEN',
+                    createdAt: '2023-08-29T11:29:22.8793',
                   },
                   {
+                    reference: 'cd1f3651-04f0-448b-8fec-0e8953d95e01',
                     subject: 'Maths',
                     grade: '1st',
                     level: 'LEVEL_6',
+                    createdBy: 'A_USER_GEN',
+                    createdAt: '2023-08-29T11:29:22.8793',
                   },
                   {
+                    reference: 'cc3e2441-88d1-4474-b483-207b33d143b3',
                     subject: 'English',
                     grade: 'A',
                     level: 'LEVEL_3',
+                    createdBy: 'A_USER_GEN',
+                    createdAt: '2023-08-29T11:29:22.8793',
                   },
                 ]
               : [],

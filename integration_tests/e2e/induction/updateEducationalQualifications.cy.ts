@@ -36,10 +36,10 @@ context('Update educational qualifications within an Induction', () => {
 
     // Then
     /* Induction has highest level of education of UNDERGRADUATE_DEGREE_AT_UNIVERSITY with the following qualifications:
-         French, grade C, LEVEL_3
-         Maths, grade A, level LEVEL_3
-         Maths, grade 1st, level LEVEL_6
-         English, grade A, level LEVEL_3
+         French, grade C, LEVEL_3, 45b969cc-00c8-41c9-8a79-133d2ccf6326
+         Maths, grade A, level LEVEL_3, 99b56087-3e92-45b1-9082-c609976bbedb
+         Maths, grade 1st, level LEVEL_6, cd1f3651-04f0-448b-8fec-0e8953d95e01
+         English, grade A, level LEVEL_3, cc3e2441-88d1-4474-b483-207b33d143b3
     */
     qualificationsListPage //
       .hasEducationalQualifications(['French', 'Maths', 'Maths', 'English'])
@@ -56,10 +56,10 @@ context('Update educational qualifications within an Induction', () => {
       .backLinkHasAriaLabel(`Back to Daniel Craig's learning and work progress`)
 
     /* Induction has highest level of education of UNDERGRADUATE_DEGREE_AT_UNIVERSITY with the following qualifications:
-         French, grade C, LEVEL_3
-         Maths, grade A, level LEVEL_3
-         Maths, grade 1st, level LEVEL_6
-         English, grade A, level LEVEL_3
+         French, grade C, LEVEL_3, 45b969cc-00c8-41c9-8a79-133d2ccf6326
+         Maths, grade A, level LEVEL_3, 99b56087-3e92-45b1-9082-c609976bbedb
+         Maths, grade 1st, level LEVEL_6, cd1f3651-04f0-448b-8fec-0e8953d95e01
+         English, grade A, level LEVEL_3, cc3e2441-88d1-4474-b483-207b33d143b3
     */
 
     qualificationsListPage //
@@ -76,15 +76,19 @@ context('Update educational qualifications within an Induction', () => {
           matchingJsonPath(
             "$[?(@.previousQualifications.educationLevel == 'UNDERGRADUATE_DEGREE_AT_UNIVERSITY' && " +
               '@.previousQualifications.qualifications.size() == 4 && ' +
+              "@.previousQualifications.qualifications[0].reference == '45b969cc-00c8-41c9-8a79-133d2ccf6326' && " +
               "@.previousQualifications.qualifications[0].subject == 'French' && " +
               "@.previousQualifications.qualifications[0].grade == 'C' && " +
               "@.previousQualifications.qualifications[0].level == 'LEVEL_3' && " +
+              "@.previousQualifications.qualifications[1].reference == '99b56087-3e92-45b1-9082-c609976bbedb' && " +
               "@.previousQualifications.qualifications[1].subject == 'Maths' && " +
               "@.previousQualifications.qualifications[1].grade == 'A' && " +
               "@.previousQualifications.qualifications[1].level == 'LEVEL_3' && " +
               "@.previousQualifications.qualifications[2].subject == 'Maths' && " +
+              "@.previousQualifications.qualifications[2].reference == 'cd1f3651-04f0-448b-8fec-0e8953d95e01' && " +
               "@.previousQualifications.qualifications[2].grade == '1st' && " +
               "@.previousQualifications.qualifications[2].level == 'LEVEL_6' && " +
+              "@.previousQualifications.qualifications[3].reference == 'cc3e2441-88d1-4474-b483-207b33d143b3' && " +
               "@.previousQualifications.qualifications[3].subject == 'English' && " +
               "@.previousQualifications.qualifications[3].grade == 'A' && " +
               "@.previousQualifications.qualifications[3].level == 'LEVEL_3')]",
@@ -100,10 +104,10 @@ context('Update educational qualifications within an Induction', () => {
     const qualificationsListPage = Page.verifyOnPage(QualificationsListPage)
 
     /* Induction has highest level of education of UNDERGRADUATE_DEGREE_AT_UNIVERSITY with the following qualifications:
-         French, grade C, LEVEL_3
-         Maths, grade A, level LEVEL_3
-         Maths, grade 1st, level LEVEL_6
-         English, grade A, level LEVEL_3
+         French, grade C, LEVEL_3, 45b969cc-00c8-41c9-8a79-133d2ccf6326
+         Maths, grade A, level LEVEL_3, 99b56087-3e92-45b1-9082-c609976bbedb
+         Maths, grade 1st, level LEVEL_6, cd1f3651-04f0-448b-8fec-0e8953d95e01
+         English, grade A, level LEVEL_3, cc3e2441-88d1-4474-b483-207b33d143b3
     */
 
     qualificationsListPage //
@@ -124,9 +128,11 @@ context('Update educational qualifications within an Induction', () => {
           matchingJsonPath(
             "$[?(@.previousQualifications.educationLevel == 'UNDERGRADUATE_DEGREE_AT_UNIVERSITY' && " +
               '@.previousQualifications.qualifications.size() == 2 && ' +
+              "@.previousQualifications.qualifications[0].reference == '45b969cc-00c8-41c9-8a79-133d2ccf6326' && " +
               "@.previousQualifications.qualifications[0].subject == 'French' && " +
               "@.previousQualifications.qualifications[0].grade == 'C' && " +
               "@.previousQualifications.qualifications[0].level == 'LEVEL_3' && " +
+              "@.previousQualifications.qualifications[1].reference == 'cd1f3651-04f0-448b-8fec-0e8953d95e01' && " +
               "@.previousQualifications.qualifications[1].subject == 'Maths' && " +
               "@.previousQualifications.qualifications[1].grade == '1st' && " +
               "@.previousQualifications.qualifications[1].level == 'LEVEL_6')]",
@@ -142,10 +148,10 @@ context('Update educational qualifications within an Induction', () => {
     const qualificationsListPage = Page.verifyOnPage(QualificationsListPage)
 
     /* Induction has highest level of education of UNDERGRADUATE_DEGREE_AT_UNIVERSITY with the following qualifications:
-         French, grade C, LEVEL_3
-         Maths, grade A, level LEVEL_3
-         Maths, grade 1st, level LEVEL_6
-         English, grade A, level LEVEL_3
+         French, grade C, LEVEL_3, 45b969cc-00c8-41c9-8a79-133d2ccf6326
+         Maths, grade A, level LEVEL_3, 99b56087-3e92-45b1-9082-c609976bbedb
+         Maths, grade 1st, level LEVEL_6, cd1f3651-04f0-448b-8fec-0e8953d95e01
+         English, grade A, level LEVEL_3, cc3e2441-88d1-4474-b483-207b33d143b3
     */
 
     qualificationsListPage //
