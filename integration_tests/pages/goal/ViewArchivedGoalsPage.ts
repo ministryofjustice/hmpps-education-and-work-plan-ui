@@ -34,6 +34,16 @@ export default class ViewArchivedGoalsPage extends Page {
     return Page.verifyOnPage(UnarchiveGoalPage)
   }
 
+  noArchivedGoalsMessageShouldNotBeVisible(): ViewArchivedGoalsPage {
+    this.noArchivedGoalsMessage().should('not.exist')
+    return this
+  }
+
+  noArchivedGoalsMessageShouldBeVisible(): ViewArchivedGoalsPage {
+    this.noArchivedGoalsMessage().should('exist')
+    return this
+  }
+
   private goalSummaryCards = (): PageElement => cy.get('[data-qa=goal-summary-card]')
 
   private lastUpdatedHint = (): PageElement => cy.get('[data-qa=goal-last-updated-hint]')
@@ -41,4 +51,6 @@ export default class ViewArchivedGoalsPage extends Page {
   private archiveReasonHint = (): PageElement => cy.get('[data-qa=goal-archive-reason-hint]')
 
   private goalReactivateButton = (idx: number): PageElement => cy.get(`[data-qa=goal-${idx}-unarchive-button]`)
+
+  private noArchivedGoalsMessage = (): PageElement => cy.get('[data-qa=no-archived-goals-message]')
 }
