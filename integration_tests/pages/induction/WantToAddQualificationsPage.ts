@@ -15,11 +15,5 @@ export default class WantToAddQualificationsPage extends InductionPage {
     return this
   }
 
-  submitPage() {
-    this.submitButton().click()
-  }
-
   radio = (value: YesNoValue): PageElement => cy.get(`.govuk-radios__input[value='${value}']`)
-
-  submitButton = (): PageElement => cy.get('#submit-button')
 }

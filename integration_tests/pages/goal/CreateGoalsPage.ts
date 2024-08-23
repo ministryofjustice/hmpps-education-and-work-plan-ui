@@ -132,10 +132,6 @@ export default class CreateGoalsPage extends Page {
     return this
   }
 
-  submitPage() {
-    this.submitButton().click()
-  }
-
   private goalTitleField = (goalNumber: number): PageElement =>
     cy.get(`[name="goals[${this.zeroIndexed(goalNumber)}][title]"]`)
 
@@ -160,8 +156,6 @@ export default class CreateGoalsPage extends Page {
 
   private goalNoteField = (goalNumber: number): PageElement =>
     cy.get(`[name="goals[${this.zeroIndexed(goalNumber)}][note]"]`)
-
-  private submitButton = (): PageElement => cy.get('#submit-button')
 
   private addAnotherStepButtonForGoal = (goalNumber: number): PageElement =>
     cy.get(`#add-another-step-to-goal-${this.zeroIndexed(goalNumber)}-button`)

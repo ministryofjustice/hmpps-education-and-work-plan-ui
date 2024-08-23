@@ -36,13 +36,7 @@ export default class PreviousWorkExperienceDetailPage extends InductionPage {
     return this
   }
 
-  submitPage() {
-    this.submitButton().click()
-  }
-
   jobRoleField = (): PageElement => cy.get('#jobRole')
 
   jobDetailsField = (): PageElement => cy.get('#jobDetails')
-
-  submitButton = (): PageElement => cy.get('#submit-button')
 }

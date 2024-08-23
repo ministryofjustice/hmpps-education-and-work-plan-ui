@@ -15,11 +15,5 @@ export default class QualificationLevelPage extends InductionPage {
     return this
   }
 
-  submitPage() {
-    this.submitButton().click()
-  }
-
   radio = (value: QualificationLevelValue): PageElement => cy.get(`.govuk-radios__input[value='${value}']`)
-
-  submitButton = (): PageElement => cy.get('#submit-button')
 }

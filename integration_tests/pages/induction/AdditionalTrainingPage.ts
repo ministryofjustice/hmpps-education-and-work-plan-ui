@@ -38,13 +38,7 @@ export default class AdditionalTrainingPage extends InductionPage {
     return this
   }
 
-  submitPage() {
-    this.submitButton().click()
-  }
-
   checkbox = (option: AdditionalTrainingValue): PageElement => cy.get(`.govuk-checkboxes__input[value='${option}']`)
 
   additionalTrainingOtherField = (): PageElement => cy.get('#additionalTrainingOther')
-
-  submitButton = (): PageElement => cy.get('#submit-button')
 }

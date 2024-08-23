@@ -38,13 +38,7 @@ export default class FutureWorkInterestTypesPage extends InductionPage {
     return this
   }
 
-  submitPage() {
-    this.submitButton().click()
-  }
-
   checkbox = (option: WorkInterestTypeValue): PageElement => cy.get(`.govuk-checkboxes__input[value='${option}']`)
 
   workInterestTypesOtherField = (): PageElement => cy.get('#workInterestTypesOther')
-
-  submitButton = (): PageElement => cy.get('#submit-button')
 }

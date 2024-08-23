@@ -26,13 +26,7 @@ export default class ArchiveGoalPage extends Page {
     return this
   }
 
-  submitPage() {
-    this.submitButton().click()
-  }
-
   private goalReferenceInputValue = (): PageElement => cy.get('[data-qa=goal-reference]')
-
-  private submitButton = (): PageElement => cy.get('[data-qa=submit-button]')
 
   private radio = (value: ReasonToArchiveGoalValue): PageElement => cy.get(`.govuk-radios__input[value='${value}']`)
 

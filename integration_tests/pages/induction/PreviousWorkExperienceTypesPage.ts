@@ -52,15 +52,9 @@ export default class PreviousWorkExperienceTypesPage extends InductionPage {
     return this
   }
 
-  submitPage() {
-    this.submitButton().click()
-  }
-
   allSelectedCheckboxes = (): PageElement => cy.get(`.govuk-checkboxes__input:checked`)
 
   checkbox = (option: TypeOfWorkExperienceValue): PageElement => cy.get(`.govuk-checkboxes__input[value='${option}']`)
 
   otherPreviousWorkExperienceField = (): PageElement => cy.get('#typeOfWorkExperienceOther')
-
-  submitButton = (): PageElement => cy.get('#submit-button')
 }

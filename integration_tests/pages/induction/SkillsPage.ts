@@ -38,13 +38,7 @@ export default class SkillsPage extends InductionPage {
     return this
   }
 
-  submitPage() {
-    this.submitButton().click()
-  }
-
   checkbox = (option: SkillsValue): PageElement => cy.get(`.govuk-checkboxes__input[value='${option}']`)
 
   otherSkillField = (): PageElement => cy.get('#skillsOther')
-
-  submitButton = (): PageElement => cy.get('#submit-button')
 }

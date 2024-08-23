@@ -25,13 +25,7 @@ export default class WorkedBeforePage extends InductionPage {
     return this
   }
 
-  submitPage() {
-    this.submitButton().click()
-  }
-
   private radio = (value: HasWorkedBeforeValue): PageElement => cy.get(`.govuk-radios__input[value='${value}']`)
 
   private notRelevantReasonField = (): PageElement => cy.get('#hasWorkedBeforeNotRelevantReason')
-
-  private submitButton = (): PageElement => cy.get('#submit-button')
 }
