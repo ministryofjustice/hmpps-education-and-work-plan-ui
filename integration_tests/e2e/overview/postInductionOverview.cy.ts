@@ -123,9 +123,9 @@ context('Prisoner Overview page - Post Induction', () => {
       .isPostInduction()
       .activeTabIs('Overview')
       .hasNumberOfGoals(3)
-      .goalSummaryCardAtPositionContains(0, aGoalThatIsDueSooner.title)
-      .goalSummaryCardAtPositionContains(1, aGoalThatIsDueSometimeBetween.title)
-      .goalSummaryCardAtPositionContains(2, aGoalThatIsDueLater.title)
+      .goalSummaryCardAtPositionContains(1, aGoalThatIsDueSooner.title)
+      .goalSummaryCardAtPositionContains(2, aGoalThatIsDueSometimeBetween.title)
+      .goalSummaryCardAtPositionContains(3, aGoalThatIsDueLater.title)
   })
 
   it('should display goals section given prisoner has no goals', () => {

@@ -94,7 +94,7 @@ export default class OverviewPage extends Page {
   }
 
   goalSummaryCardAtPositionContains(position: number, expectedText: string): OverviewPage {
-    this.goalSummaryCards().eq(position).should('contain.text', expectedText)
+    this.goalSummaryCards().eq(this.zeroIndexed(position)).should('contain.text', expectedText)
     return this
   }
 
