@@ -38,13 +38,7 @@ export default class AffectAbilityToWorkPage extends InductionPage {
     return this
   }
 
-  submitPage() {
-    this.submitButton().click()
-  }
-
   checkbox = (option: AbilityToWorkValue): PageElement => cy.get(`.govuk-checkboxes__input[value='${option}']`)
 
   affectAbilityToWorkOtherField = (): PageElement => cy.get('#affectAbilityToWorkOther')
-
-  submitButton = (): PageElement => cy.get('#submit-button')
 }

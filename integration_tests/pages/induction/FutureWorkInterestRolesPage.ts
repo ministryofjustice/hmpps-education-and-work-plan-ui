@@ -20,11 +20,5 @@ export default class FutureWorkInterestRolesPage extends InductionPage {
     return this
   }
 
-  submitPage() {
-    this.submitButton().click()
-  }
-
   workInterestRoleField = (workInterestType: WorkInterestTypeValue): PageElement => cy.get(`#${workInterestType}`)
-
-  submitButton = (): PageElement => cy.get('#submit-button')
 }

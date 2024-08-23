@@ -117,9 +117,21 @@ export default abstract class Page {
     return this
   }
 
+  submitPage() {
+    this.submitButton().then($btn => {
+      if ($btn.length > 0) {
+        this.submitButton().click()
+      } else {
+        cy.log('No submit button found on this page.')
+      }
+    })
+  }
+
   breadCrumb = (): PageElement => cy.get('.govuk-breadcrumbs')
 
   headerUserName = (): PageElement => cy.get('[data-qa=header-user-name]')
 
   zeroIndexed = (indexNumber: number): number => Math.max(0, indexNumber - 1)
+
+  submitButton = (): PageElement => cy.get('[data-qa=submit-button], #submit-button')
 }

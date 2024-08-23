@@ -38,13 +38,7 @@ export default class PersonalInterestsPage extends InductionPage {
     return this
   }
 
-  submitPage() {
-    this.submitButton().click()
-  }
-
   checkbox = (option: PersonalInterestsValue): PageElement => cy.get(`.govuk-checkboxes__input[value='${option}']`)
 
   otherPersonalInterestField = (): PageElement => cy.get('#personalInterestsOther')
-
-  submitButton = (): PageElement => cy.get('#submit-button')
 }

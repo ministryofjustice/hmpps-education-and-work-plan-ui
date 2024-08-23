@@ -56,13 +56,7 @@ export default class QualificationsListPage extends InductionPage {
     return this
   }
 
-  submitPage() {
-    this.submitButton().click()
-  }
-
   addAnotherQualificationLink = (): PageElement => cy.get('#addQualification')
-
-  submitButton = (): PageElement => cy.get('#submit-button')
 
   educationalQualificationsTable = (): PageElement => cy.get('[data-qa=educational-qualifications-table]')
 

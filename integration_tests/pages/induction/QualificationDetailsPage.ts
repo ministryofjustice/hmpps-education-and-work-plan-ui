@@ -29,13 +29,7 @@ export default class QualificationDetailsPage extends InductionPage {
     return this
   }
 
-  submitPage() {
-    this.submitButton().click()
-  }
-
   qualificationSubjectField = (): PageElement => cy.get('#qualificationSubject')
 
   qualificationGradeField = (): PageElement => cy.get('#qualificationGrade')
-
-  submitButton = (): PageElement => cy.get('#submit-button')
 }

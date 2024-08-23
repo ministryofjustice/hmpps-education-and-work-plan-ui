@@ -243,12 +243,6 @@ export default class CheckYourAnswersPage extends Page {
     return Page.verifyOnPage(AffectAbilityToWorkPage)
   }
 
-  submitPage() {
-    this.submitButton().click()
-  }
-
-  private submitButton = (): PageElement => cy.get('#submit-button')
-
   private factorsAffectingAbilityToWork = (): PageElement => cy.get(`[data-qa^=affectingAbilityToWork-]`)
 
   private factorsAffectingAbilityToWorkChangeLink = (): PageElement => cy.get('[data-qa=affectAbilityToWorkLink]')

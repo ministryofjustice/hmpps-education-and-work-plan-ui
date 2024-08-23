@@ -38,13 +38,7 @@ export default class InPrisonWorkPage extends InductionPage {
     return this
   }
 
-  submitPage() {
-    this.submitButton().click()
-  }
-
   checkbox = (option: InPrisonWorkValue): PageElement => cy.get(`.govuk-checkboxes__input[value='${option}']`)
 
   otherWorkTypeField = (): PageElement => cy.get('#inPrisonWorkOther')
-
-  submitButton = (): PageElement => cy.get('#submit-button')
 }
