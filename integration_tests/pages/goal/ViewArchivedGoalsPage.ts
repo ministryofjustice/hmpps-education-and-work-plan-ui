@@ -15,17 +15,17 @@ export default class ViewArchivedGoalsPage extends Page {
   }
 
   goalSummaryCardAtPositionContains(position: number, expectedText: string): ViewArchivedGoalsPage {
-    this.goalSummaryCards().eq(position).should('contain.text', expectedText)
+    this.goalSummaryCards().eq(this.zeroIndexed(position)).should('contain.text', expectedText)
     return this
   }
 
   lastUpdatedHintAtPositionContains(position: number, expectedText: string): ViewArchivedGoalsPage {
-    this.lastUpdatedHint().eq(position).should('contain.text', expectedText)
+    this.lastUpdatedHint().eq(this.zeroIndexed(position)).should('contain.text', expectedText)
     return this
   }
 
   archiveReasonHintAtPositionContains(position: number, expectedText: string): ViewArchivedGoalsPage {
-    this.archiveReasonHint().eq(position).should('contain.text', expectedText)
+    this.archiveReasonHint().eq(this.zeroIndexed(position)).should('contain.text', expectedText)
     return this
   }
 

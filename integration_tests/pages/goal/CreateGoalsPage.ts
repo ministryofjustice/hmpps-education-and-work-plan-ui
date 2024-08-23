@@ -137,46 +137,46 @@ export default class CreateGoalsPage extends Page {
   }
 
   private goalTitleField = (goalNumber: number): PageElement =>
-    cy.get(`[name="goals[${zeroIndexed(goalNumber)}][title]"]`)
+    cy.get(`[name="goals[${this.zeroIndexed(goalNumber)}][title]"]`)
 
   private goalTargetDateRadioButtons = (goalNumber: number): PageElement =>
-    cy.get(`[name="goals[${zeroIndexed(goalNumber)}][targetCompletionDate]"][type="radio"]`)
+    cy.get(`[name="goals[${this.zeroIndexed(goalNumber)}][targetCompletionDate]"][type="radio"]`)
 
   private goalTargetDateDayField = (goalNumber: number): PageElement =>
-    cy.get(`[name="${zeroIndexed(goalNumber)}][targetCompletionDate-day]"]`)
+    cy.get(`[name="${this.zeroIndexed(goalNumber)}][targetCompletionDate-day]"]`)
 
   private goalTargetDateMonthField = (goalNumber: number): PageElement =>
-    cy.get(`[name="${zeroIndexed(goalNumber)}][targetCompletionDate-month]"]`)
+    cy.get(`[name="${this.zeroIndexed(goalNumber)}][targetCompletionDate-month]"]`)
 
   private goalTargetDateYearField = (goalNumber: number): PageElement =>
-    cy.get(`[name="${zeroIndexed(goalNumber)}][targetCompletionDate-year]"]`)
+    cy.get(`[name="${this.zeroIndexed(goalNumber)}][targetCompletionDate-year]"]`)
 
   private goalStepTitleFields = (goalNumber: number): PageElement =>
     // Return elements whose name attribute is goals[zeroIndexedGoalNumber][steps][.*][title]
     // CSS attribute selectors don't have a true regex pattern matching syntax, so we do it with a "starts with" and "ends with" approach
     cy
-      .get(`[name^="goals[${zeroIndexed(goalNumber)}][steps]["]`) // elements whose name attribute starts with `goals[zeroIndexedGoalNumber][steps][`
+      .get(`[name^="goals[${this.zeroIndexed(goalNumber)}][steps]["]`) // elements whose name attribute starts with `goals[zeroIndexedGoalNumber][steps][`
       .filter('[name$="][title]"]') // filter those elements to those whose name attribute ends with `][title]`
 
   private goalNoteField = (goalNumber: number): PageElement =>
-    cy.get(`[name="goals[${zeroIndexed(goalNumber)}][note]"]`)
+    cy.get(`[name="goals[${this.zeroIndexed(goalNumber)}][note]"]`)
 
   private submitButton = (): PageElement => cy.get('#submit-button')
 
   private addAnotherStepButtonForGoal = (goalNumber: number): PageElement =>
-    cy.get(`#add-another-step-to-goal-${zeroIndexed(goalNumber)}-button`)
+    cy.get(`#add-another-step-to-goal-${this.zeroIndexed(goalNumber)}-button`)
 
   private stepTitleField = (goalNumber: number, stepNumber: number): PageElement =>
-    cy.get(`[name="goals[${zeroIndexed(goalNumber)}][steps][${zeroIndexed(stepNumber)}][title]"]`)
+    cy.get(`[name="goals[${this.zeroIndexed(goalNumber)}][steps][${this.zeroIndexed(stepNumber)}][title]"]`)
 
   private removeStepButtons = (): PageElement => cy.get('[data-qa=remove-step-button]')
 
   private removeStepButtonsForGoal = (goalNumber: number): PageElement =>
-    this.removeStepButtons().filter(`[formaction^="create/REMOVE_STEP?goalNumber=${zeroIndexed(goalNumber)}"]`)
+    this.removeStepButtons().filter(`[formaction^="create/REMOVE_STEP?goalNumber=${this.zeroIndexed(goalNumber)}"]`)
 
   private removeStepButton = (goalNumber: number, stepNumber: number): PageElement =>
     this.removeStepButtonsForGoal(goalNumber).filter(
-      `[formaction^="create/REMOVE_STEP?goalNumber=${zeroIndexed(goalNumber)}&stepNumber=${zeroIndexed(stepNumber)}"]`,
+      `[formaction^="create/REMOVE_STEP?goalNumber=${this.zeroIndexed(goalNumber)}&stepNumber=${this.zeroIndexed(stepNumber)}"]`,
     )
 
   private addAnotherGoalButton = (): PageElement => cy.get(`#add-another-goal-button`)
@@ -184,7 +184,5 @@ export default class CreateGoalsPage extends Page {
   private removeGoalButtons = (): PageElement => cy.get('[data-qa=remove-goal-button]')
 
   private removeGoalButton = (goalNumber: number): PageElement =>
-    this.removeGoalButtons().filter(`[formaction="create/REMOVE_GOAL?goalNumber=${zeroIndexed(goalNumber)}"]`)
+    this.removeGoalButtons().filter(`[formaction="create/REMOVE_GOAL?goalNumber=${this.zeroIndexed(goalNumber)}"]`)
 }
-
-const zeroIndexed = (indexNumber: number): number => Math.max(0, indexNumber - 1)
