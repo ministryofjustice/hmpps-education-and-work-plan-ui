@@ -120,4 +120,6 @@ export default abstract class Page {
   breadCrumb = (): PageElement => cy.get('.govuk-breadcrumbs')
 
   headerUserName = (): PageElement => cy.get('[data-qa=header-user-name]')
+
+  zeroIndexed = (indexNumber: number): number => Math.max(0, indexNumber - 1)
 }

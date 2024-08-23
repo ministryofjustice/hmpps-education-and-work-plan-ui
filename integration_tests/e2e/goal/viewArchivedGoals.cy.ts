@@ -102,8 +102,8 @@ context('Unarchive a goal', () => {
     // Then
     archivedGoalsPage //
       .hasNumberOfGoals(2)
-      .goalSummaryCardAtPositionContains(0, aGoalThatWasMoreRecentlyArchived.title)
-      .goalSummaryCardAtPositionContains(1, aGoalThatWasArchivedFirst.title)
+      .goalSummaryCardAtPositionContains(1, aGoalThatWasMoreRecentlyArchived.title)
+      .goalSummaryCardAtPositionContains(2, aGoalThatWasArchivedFirst.title)
   })
 
   it('should show archived date, person and prison as well as the reason', () => {
@@ -141,10 +141,10 @@ context('Unarchive a goal', () => {
     // Then
     archivedGoalsPage //
       .hasNumberOfGoals(2)
-      .lastUpdatedHintAtPositionContains(0, 'Archived on 02 January 2024 by Alex Smith, Brixton (HMP)')
-      .archiveReasonHintAtPositionContains(0, 'Reason: Prisoner no longer wants to work towards this goal')
-      .lastUpdatedHintAtPositionContains(1, 'Archived on 01 January 2024 by Alex Smith, Moorland (HMP & YOI)')
-      .archiveReasonHintAtPositionContains(1, 'Reason: Other - Some other reason')
+      .lastUpdatedHintAtPositionContains(1, 'Archived on 02 January 2024 by Alex Smith, Brixton (HMP)')
+      .archiveReasonHintAtPositionContains(1, 'Reason: Prisoner no longer wants to work towards this goal')
+      .lastUpdatedHintAtPositionContains(2, 'Archived on 01 January 2024 by Alex Smith, Moorland (HMP & YOI)')
+      .archiveReasonHintAtPositionContains(2, 'Reason: Other - Some other reason')
   })
 
   it('should be able to navigate to the view archived goals page and have it display a message when there are no archived goals', () => {
