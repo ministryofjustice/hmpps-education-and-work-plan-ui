@@ -32,6 +32,8 @@ export default function setUpStaticResources(): Router {
     router.use('/assets/js/jquery.min.js', express.static(path.join(process.cwd(), dir), cacheControl))
   })
 
+  router.use('/favicon.ico', express.static(path.join(process.cwd(), '/assets/images/favicon.ico'), cacheControl))
+
   // Don't cache dynamic resources
   router.use(noCache())
 
