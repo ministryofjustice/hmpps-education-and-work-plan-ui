@@ -54,7 +54,7 @@ describe('skillsFormValidator', () => {
     })
   })
 
-  describe('sad path - validation of skillsOther field does not pass', () => {
+  describe('sad path - skillsOther field does not exist given skills includes OTHER', () => {
     Array.of<SkillsForm>(
       { skills: ['OTHER'], skillsOther: '' },
       { skills: ['OTHER'], skillsOther: undefined },
@@ -74,5 +74,20 @@ describe('skillsFormValidator', () => {
         expect(actual).toEqual(expected)
       })
     })
+  })
+
+  it(`sad path - skillsOther exceeds length`, () => {
+    // Given
+    const form: SkillsForm = { skillsOther: 'a'.repeat(256), skills: ['OTHER'] }
+
+    const expected: Array<Record<string, string>> = [
+      { href: '#skillsOther', text: 'The skill must be 255 characters or less' },
+    ]
+
+    // When
+    const actual = validateSkillsForm(form, prisonerSummary)
+
+    // Then
+    expect(actual).toEqual(expected)
   })
 })

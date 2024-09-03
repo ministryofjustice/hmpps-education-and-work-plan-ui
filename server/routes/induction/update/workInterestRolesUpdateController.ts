@@ -7,6 +7,8 @@ import logger from '../../../../logger'
 import { InductionService } from '../../../services'
 import { getPreviousPage } from '../../pageFlowHistory'
 import getDynamicBackLinkAriaText from '../dynamicAriaTextResolver'
+import validateWorkInterestRolesForm from '../../validators/induction/workInterestRolesFormValidator'
+import WorkInterestTypeValue from '../../../enums/workInterestTypeValue'
 
 /**
  * Controller for updating a Prisoner's Future Work Interest Roles part of an Induction.
@@ -37,8 +39,17 @@ export default class WorkInterestRolesUpdateController extends WorkInterestRoles
     const { prisonerSummary, inductionDto } = req.session
     const { prisonId } = prisonerSummary
 
-    const workInterestRoles = new Map(Object.entries({ ...req.body.workInterestRoles }))
-    const workInterestRolesForm = { workInterestRoles } as WorkInterestRolesForm
+    const workInterestRoles = Object.entries<string>({ ...req.body.workInterestRoles }) as [
+      WorkInterestTypeValue,
+      string,
+    ][]
+    const workInterestRolesForm: WorkInterestRolesForm = { ...req.body, workInterestRoles }
+    req.session.workInterestRolesForm = workInterestRolesForm
+
+    const errors = validateWorkInterestRolesForm(workInterestRolesForm)
+    if (errors.length > 0) {
+      return res.redirectWithErrors(`/prisoners/${prisonNumber}/induction/work-interest-roles`, errors)
+    }
 
     const updatedInduction = this.updatedInductionDtoWithWorkInterestRoles(inductionDto, workInterestRolesForm)
     req.session.inductionDto = updatedInduction
@@ -47,6 +58,7 @@ export default class WorkInterestRolesUpdateController extends WorkInterestRoles
       const updateInductionDto = toCreateOrUpdateInductionDto(prisonId, updatedInduction)
       await this.inductionService.updateInduction(prisonNumber, updateInductionDto, req.user.token)
 
+      req.session.workInterestRolesForm = undefined
       req.session.inductionDto = undefined
       return res.redirect(`/plan/${prisonNumber}/view/work-and-interests`)
     } catch (e) {

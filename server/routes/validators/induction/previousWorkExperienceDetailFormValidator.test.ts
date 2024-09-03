@@ -44,23 +44,19 @@ describe('previousWorkExperienceDetailFormValidator', () => {
     })
   })
 
-  describe('sad path - jobRole exceeds length', () => {
-    Array.of<PreviousWorkExperienceDetailForm>({ jobRole: 'a'.repeat(201), jobDetails: 'Tending the roses' }).forEach(
-      spec => {
-        it(`form data: ${JSON.stringify(spec)}`, () => {
-          // Given
-          const expected: Array<Record<string, string>> = [
-            { href: '#jobRole', text: 'Job role must be 200 characters or less' },
-          ]
+  it(`sad path - jobRole exceeds length`, () => {
+    // Given
+    const form: PreviousWorkExperienceDetailForm = { jobRole: 'a'.repeat(257), jobDetails: 'Tending the roses' }
 
-          // When
-          const actual = validatePreviousWorkExperienceDetailForm(spec, prisonerSummary)
+    const expected: Array<Record<string, string>> = [
+      { href: '#jobRole', text: 'Job role must be 256 characters or less' },
+    ]
 
-          // Then
-          expect(actual).toEqual(expected)
-        })
-      },
-    )
+    // When
+    const actual = validatePreviousWorkExperienceDetailForm(form, prisonerSummary)
+
+    // Then
+    expect(actual).toEqual(expected)
   })
 
   describe('sad path - jobDetails field does not exist', () => {
@@ -85,11 +81,11 @@ describe('previousWorkExperienceDetailFormValidator', () => {
   })
 
   describe('sad path - jobDetails exceeds length', () => {
-    Array.of<PreviousWorkExperienceDetailForm>({ jobRole: 'Gardener', jobDetails: 'a'.repeat(4001) }).forEach(spec => {
+    Array.of<PreviousWorkExperienceDetailForm>({ jobRole: 'Gardener', jobDetails: 'a'.repeat(513) }).forEach(spec => {
       it(`form data: ${JSON.stringify(spec)}`, () => {
         // Given
         const expected: Array<Record<string, string>> = [
-          { href: '#jobDetails', text: 'Main tasks and responsibilities must be 4000 characters or less' },
+          { href: '#jobDetails', text: 'Main tasks and responsibilities must be 512 characters or less' },
         ]
 
         // When

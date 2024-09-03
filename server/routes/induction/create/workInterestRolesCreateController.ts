@@ -3,6 +3,8 @@ import type { WorkInterestRolesForm } from 'inductionForms'
 import WorkInterestRolesController from '../common/workInterestRolesController'
 import getDynamicBackLinkAriaText from '../dynamicAriaTextResolver'
 import { getPreviousPage } from '../../pageFlowHistory'
+import validateWorkInterestRolesForm from '../../validators/induction/workInterestRolesFormValidator'
+import WorkInterestTypeValue from '../../../enums/workInterestTypeValue'
 
 export default class WorkInterestRolesCreateController extends WorkInterestRolesController {
   getBackLinkUrl(req: Request): string {
@@ -26,10 +28,20 @@ export default class WorkInterestRolesCreateController extends WorkInterestRoles
     const { prisonNumber } = req.params
     const { inductionDto } = req.session
 
-    const workInterestRoles = new Map(Object.entries({ ...req.body.workInterestRoles }))
-    const workInterestRolesForm = { workInterestRoles } as WorkInterestRolesForm
+    const workInterestRoles = Object.entries<string>({ ...req.body.workInterestRoles }) as [
+      WorkInterestTypeValue,
+      string,
+    ][]
+    const workInterestRolesForm: WorkInterestRolesForm = { ...req.body, workInterestRoles }
+    req.session.workInterestRolesForm = workInterestRolesForm
+
+    const errors = validateWorkInterestRolesForm(workInterestRolesForm)
+    if (errors.length > 0) {
+      return res.redirectWithErrors(`/prisoners/${prisonNumber}/create-induction/work-interest-roles`, errors)
+    }
 
     req.session.inductionDto = this.updatedInductionDtoWithWorkInterestRoles(inductionDto, workInterestRolesForm)
+    req.session.workInterestRolesForm = undefined
 
     const nextPage = this.checkYourAnswersIsInThePageHistory(req)
       ? `/prisoners/${prisonNumber}/create-induction/check-your-answers`

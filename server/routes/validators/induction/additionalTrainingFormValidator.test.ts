@@ -54,7 +54,7 @@ describe('additionalTrainingFormValidator', () => {
     })
   })
 
-  describe('sad path - validation of additionalTrainingOther field does not pass', () => {
+  describe('sad path - additionalTrainingOther field does not exist given additionalTraining includes OTHER', () => {
     Array.of<AdditionalTrainingForm>(
       { additionalTraining: ['OTHER'], additionalTrainingOther: '' },
       { additionalTraining: ['OTHER'], additionalTrainingOther: undefined },
@@ -77,5 +77,20 @@ describe('additionalTrainingFormValidator', () => {
         expect(actual).toEqual(expected)
       })
     })
+  })
+
+  it(`sad path - additionalTrainingOther exceeds length`, () => {
+    // Given
+    const form: AdditionalTrainingForm = { additionalTrainingOther: 'a'.repeat(513), additionalTraining: ['OTHER'] }
+
+    const expected: Array<Record<string, string>> = [
+      { href: '#additionalTrainingOther', text: 'The type of training must be 512 characters or less' },
+    ]
+
+    // When
+    const actual = validateAdditionalTrainingForm(form, prisonerSummary)
+
+    // Then
+    expect(actual).toEqual(expected)
   })
 })

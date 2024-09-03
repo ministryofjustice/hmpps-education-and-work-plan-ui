@@ -311,7 +311,7 @@ context('Create an Induction', () => {
               "@.personalSkillsAndInterests.interests[1].interestType == 'DIGITAL' && " +
               '@.workOnRelease.affectAbilityToWork.size() == 1 && ' +
               "@.workOnRelease.affectAbilityToWork[0] == 'NONE' && " +
-              "@.workOnRelease.affectAbilityToWorkOther == '' && " +
+              '!@.workOnRelease.affectAbilityToWorkOther && ' +
               '@.inPrisonInterests.inPrisonWorkInterests.size() == 2 && ' +
               "@.inPrisonInterests.inPrisonWorkInterests[0].workType == 'KITCHENS_AND_COOKING' && " +
               "@.inPrisonInterests.inPrisonWorkInterests[1].workType == 'PRISON_LIBRARY' && " +
@@ -448,7 +448,7 @@ context('Create an Induction', () => {
               "@.personalSkillsAndInterests.interests[0].interestType == 'COMMUNITY' && " +
               '@.workOnRelease.affectAbilityToWork.size() == 1 && ' +
               "@.workOnRelease.affectAbilityToWork[0] == 'NONE' && " +
-              "@.workOnRelease.affectAbilityToWorkOther == '' && " +
+              '!@.workOnRelease.affectAbilityToWorkOther && ' +
               '@.inPrisonInterests.inPrisonWorkInterests.size() == 1 && ' +
               "@.inPrisonInterests.inPrisonWorkInterests[0].workType == 'KITCHENS_AND_COOKING' && " +
               '@.inPrisonInterests.inPrisonTrainingInterests.size() == 1 && ' +

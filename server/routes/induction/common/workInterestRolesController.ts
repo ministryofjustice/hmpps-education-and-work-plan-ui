@@ -1,5 +1,5 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express'
-import type { InductionDto } from 'inductionDto'
+import type { InductionDto, FutureWorkInterestDto } from 'inductionDto'
 import type { WorkInterestRolesForm } from 'inductionForms'
 import InductionController from './inductionController'
 import WorkInterestRolesView from './workInterestRolesView'
@@ -17,7 +17,8 @@ export default abstract class WorkInterestRolesController extends InductionContr
 
     this.addCurrentPageToHistory(req)
 
-    const workInterestRolesForm = toWorkInterestRolesForm(inductionDto)
+    const workInterestRolesForm = req.session.workInterestRolesForm || toWorkInterestRolesForm(inductionDto)
+    req.session.workInterestRolesForm = undefined
 
     const view = new WorkInterestRolesView(
       prisonerSummary,
@@ -32,13 +33,15 @@ export default abstract class WorkInterestRolesController extends InductionContr
     inductionDto: InductionDto,
     workInterestRolesForm: WorkInterestRolesForm,
   ): InductionDto {
-    const updatedWorkInterests = inductionDto.futureWorkInterests.interests.map(interest => {
-      return {
-        workType: interest.workType,
-        workTypeOther: interest.workTypeOther,
-        role: workInterestRolesForm.workInterestRoles?.get(interest.workType),
-      }
-    })
+    const updatedWorkInterests: Array<FutureWorkInterestDto> = inductionDto.futureWorkInterests.interests.map(
+      interest => {
+        return {
+          workType: interest.workType,
+          workTypeOther: interest.workType === WorkInterestTypeValue.OTHER ? interest.workTypeOther : undefined,
+          role: workInterestRolesForm.workInterestRoles?.find(keyValuePair => keyValuePair[0] === interest.workType)[1],
+        }
+      },
+    )
     return {
       ...inductionDto,
       futureWorkInterests: {
@@ -50,10 +53,10 @@ export default abstract class WorkInterestRolesController extends InductionContr
 }
 
 const toWorkInterestRolesForm = (inductionDto: InductionDto): WorkInterestRolesForm => {
-  const workInterestRoles = new Map<WorkInterestTypeValue, string>()
-  inductionDto.futureWorkInterests?.interests.forEach(interest => {
-    workInterestRoles.set(interest.workType, interest.role)
-  })
+  const workInterestRoles: [WorkInterestTypeValue, string][] =
+    inductionDto.futureWorkInterests?.interests.map(interest => {
+      return [interest.workType as WorkInterestTypeValue, interest.role]
+    }) || []
 
   return {
     workInterestRoles,

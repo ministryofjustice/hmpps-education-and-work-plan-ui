@@ -119,7 +119,7 @@ declare module 'inductionForms' {
   }
 
   export interface WorkInterestRolesForm {
-    workInterestRoles: Map<WorkInterestTypeValue, string>
+    workInterestRoles: [WorkInterestTypeValue, string][]
     workInterestTypesOther: string
   }
 

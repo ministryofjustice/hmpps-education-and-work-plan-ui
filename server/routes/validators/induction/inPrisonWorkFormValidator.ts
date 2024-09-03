@@ -3,6 +3,8 @@ import type { PrisonerSummary } from 'viewModels'
 import InPrisonWorkValue from '../../../enums/inPrisonWorkValue'
 import formatErrors from '../../errorFormatter'
 
+const MAX_OTHER_LENGTH = 255
+
 export default function validateInPrisonWorkForm(
   inPrisonWorkForm: InPrisonWorkForm,
   prisonerSummary: PrisonerSummary,
@@ -43,10 +45,14 @@ const validateInPrisonWorkOther = (
 
   const { inPrisonWork, inPrisonWorkOther } = inPrisonWorkForm
 
-  if (inPrisonWork && inPrisonWork.includes(InPrisonWorkValue.OTHER) && !inPrisonWorkOther) {
-    errors.push(
-      `Enter the type of work ${prisonerSummary.firstName} ${prisonerSummary.lastName} would like to do in prison`,
-    )
+  if (inPrisonWork && inPrisonWork.includes(InPrisonWorkValue.OTHER)) {
+    if (!inPrisonWorkOther) {
+      errors.push(
+        `Enter the type of work ${prisonerSummary.firstName} ${prisonerSummary.lastName} would like to do in prison`,
+      )
+    } else if (inPrisonWorkOther.length > MAX_OTHER_LENGTH) {
+      errors.push(`The type of work must be ${MAX_OTHER_LENGTH} characters or less`)
+    }
   }
 
   return errors

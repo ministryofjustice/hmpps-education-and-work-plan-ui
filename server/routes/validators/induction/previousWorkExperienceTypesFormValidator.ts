@@ -3,6 +3,8 @@ import type { PrisonerSummary } from 'viewModels'
 import formatErrors from '../../errorFormatter'
 import TypeOfWorkExperienceValue from '../../../enums/typeOfWorkExperienceValue'
 
+const MAX_OTHER_LENGTH = 256
+
 export default function validatePreviousWorkExperienceTypesForm(
   previousWorkExperienceTypesForm: PreviousWorkExperienceTypesForm,
   prisonerSummary: PrisonerSummary,
@@ -54,12 +56,12 @@ const validateTypeOfWorkExperienceOther = (
 
   const { typeOfWorkExperience, typeOfWorkExperienceOther } = previousWorkExperienceTypesForm
 
-  if (
-    typeOfWorkExperience &&
-    typeOfWorkExperience.includes(TypeOfWorkExperienceValue.OTHER) &&
-    !typeOfWorkExperienceOther
-  ) {
-    errors.push(`Enter the type of work ${prisonerSummary.firstName} ${prisonerSummary.lastName} has done before`)
+  if (typeOfWorkExperience && typeOfWorkExperience.includes(TypeOfWorkExperienceValue.OTHER)) {
+    if (!typeOfWorkExperienceOther) {
+      errors.push(`Enter the type of work ${prisonerSummary.firstName} ${prisonerSummary.lastName} has done before`)
+    } else if (typeOfWorkExperienceOther.length > MAX_OTHER_LENGTH) {
+      errors.push(`The type of work must be ${MAX_OTHER_LENGTH} characters or less`)
+    }
   }
 
   return errors

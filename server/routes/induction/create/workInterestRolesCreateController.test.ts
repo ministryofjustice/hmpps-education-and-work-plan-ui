@@ -21,6 +21,7 @@ describe('workInterestRolesCreateController', () => {
   }
   const res = {
     redirect: jest.fn(),
+    redirectWithErrors: jest.fn(),
     render: jest.fn(),
   }
   const next = jest.fn()
@@ -46,11 +47,11 @@ describe('workInterestRolesCreateController', () => {
       req.session.inductionDto = inductionDto
 
       const expectedWorkInterestRolesForm = {
-        workInterestRoles: new Map<WorkInterestTypeValue, string>([
+        workInterestRoles: [
           [WorkInterestTypeValue.RETAIL, undefined],
           [WorkInterestTypeValue.CONSTRUCTION, undefined],
           [WorkInterestTypeValue.OTHER, undefined],
-        ]),
+        ],
         workInterestTypesOther: 'Film, TV and media',
       }
 
@@ -97,11 +98,11 @@ describe('workInterestRolesCreateController', () => {
       }
 
       const expectedWorkInterestRolesForm = {
-        workInterestRoles: new Map<WorkInterestTypeValue, string>([
+        workInterestRoles: [
           [WorkInterestTypeValue.RETAIL, undefined],
           [WorkInterestTypeValue.CONSTRUCTION, undefined],
           [WorkInterestTypeValue.OTHER, undefined],
-        ]),
+        ],
         workInterestTypesOther: 'Film, TV and media',
       }
 
@@ -127,6 +128,48 @@ describe('workInterestRolesCreateController', () => {
   })
 
   describe('submitWorkInterestRolesForm', () => {
+    it('should not update Induction given form is submitted with validation errors', async () => {
+      // Given
+      const inductionDto = aValidInductionDto()
+      inductionDto.futureWorkInterests.interests = [
+        { workType: WorkInterestTypeValue.RETAIL, workTypeOther: undefined, role: undefined },
+      ]
+      req.session.inductionDto = inductionDto
+
+      const invalidWorkInterestRolesForm = {
+        workInterestRoles: {
+          RETAIL: 'a'.repeat(513),
+          CONSTRUCTION: 'General builders mate',
+        },
+      }
+      req.body = invalidWorkInterestRolesForm
+
+      req.session.workInterestRolesForm = undefined
+
+      const expectedErrors = [{ href: '#RETAIL', text: 'The Retail and sales job role must be 512 characters or less' }]
+      const expectedWorkInterestRolesForm = {
+        workInterestRoles: [
+          [WorkInterestTypeValue.RETAIL, 'a'.repeat(513)],
+          [WorkInterestTypeValue.CONSTRUCTION, 'General builders mate'],
+        ],
+      }
+
+      // When
+      await controller.submitWorkInterestRolesForm(
+        req as undefined as Request,
+        res as undefined as Response,
+        next as undefined as NextFunction,
+      )
+
+      // Then
+      expect(res.redirectWithErrors).toHaveBeenCalledWith(
+        '/prisoners/A1234BC/create-induction/work-interest-roles',
+        expectedErrors,
+      )
+      expect(req.session.workInterestRolesForm).toEqual(expectedWorkInterestRolesForm)
+      expect(req.session.inductionDto).toEqual(inductionDto)
+    })
+
     it('should update InductionDto and redirect to Affect Ability To Work', async () => {
       // Given
       const inductionDto = aValidInductionDto()

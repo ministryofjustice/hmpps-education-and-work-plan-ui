@@ -49,7 +49,7 @@ describe('inPrisonWorkFormValidator', () => {
     })
   })
 
-  describe('sad path - validation of inPrisonWorkOther field does not pass', () => {
+  describe('sad path - inPrisonWorkOther field does not exist given inPrisonWork includes OTHER', () => {
     Array.of<InPrisonWorkForm>(
       { inPrisonWork: ['OTHER'], inPrisonWorkOther: '' },
       { inPrisonWork: ['OTHER'], inPrisonWorkOther: undefined },
@@ -69,5 +69,20 @@ describe('inPrisonWorkFormValidator', () => {
         expect(actual).toEqual(expected)
       })
     })
+  })
+
+  it(`sad path - inPrisonWorkOther exceeds length`, () => {
+    // Given
+    const form: InPrisonWorkForm = { inPrisonWorkOther: 'a'.repeat(256), inPrisonWork: ['OTHER'] }
+
+    const expected: Array<Record<string, string>> = [
+      { href: '#inPrisonWorkOther', text: 'The type of work must be 255 characters or less' },
+    ]
+
+    // When
+    const actual = validateInPrisonWorkForm(form, prisonerSummary)
+
+    // Then
+    expect(actual).toEqual(expected)
   })
 })

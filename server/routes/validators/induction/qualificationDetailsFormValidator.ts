@@ -4,6 +4,9 @@ import formatErrors from '../../errorFormatter'
 import QualificationLevelValue from '../../../enums/qualificationLevelValue'
 import formatQualificationLevelFilter from '../../../filters/formatQualificationLevelFilter'
 
+const MAX_QUALIFICATION_SUBJECT_LENGTH = 100
+const MAX_QUALIFICATION_GRADE_LENGTH = 50
+
 export default function validateQualificationDetailsForm(
   qualificationDetailsForm: QualificationDetailsForm,
   qualificationLevel: QualificationLevelValue,
@@ -39,8 +42,8 @@ const validateQualificationSubject = (
     errors.push(
       `Enter the subject of ${prisonerSummary.firstName} ${prisonerSummary.lastName}'s ${formattedLevel} qualification`,
     )
-  } else if (qualificationSubject.length > 100) {
-    errors.push('Subject must be 100 characters or less')
+  } else if (qualificationSubject.length > MAX_QUALIFICATION_SUBJECT_LENGTH) {
+    errors.push(`Subject must be ${MAX_QUALIFICATION_SUBJECT_LENGTH} characters or less`)
   }
 
   return errors
@@ -59,8 +62,8 @@ const validateQualificationGrade = (
     errors.push(
       `Enter the grade of ${prisonerSummary.firstName} ${prisonerSummary.lastName}'s ${formattedLevel} qualification`,
     )
-  } else if (qualificationGrade.length > 50) {
-    errors.push('Grade must be 50 characters or less')
+  } else if (qualificationGrade.length > MAX_QUALIFICATION_GRADE_LENGTH) {
+    errors.push(`Grade must be ${MAX_QUALIFICATION_GRADE_LENGTH} characters or less`)
   }
 
   return errors
