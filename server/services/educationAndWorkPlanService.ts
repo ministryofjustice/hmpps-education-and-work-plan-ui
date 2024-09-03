@@ -11,7 +11,8 @@ import toUnarchiveGoalRequest from '../data/mappers/unarchiveGoalMapper'
 import GoalStatusValue from '../enums/goalStatusValue'
 import PrisonService from './prisonService'
 import toCreateEducationRequest from '../data/mappers/educationMapper'
-import mockEducationData from '../mockEducationData'
+// TODO remove this once education is tested
+// import mockEducationData from '../mockEducationData'
 
 export default class EducationAndWorkPlanService {
   constructor(

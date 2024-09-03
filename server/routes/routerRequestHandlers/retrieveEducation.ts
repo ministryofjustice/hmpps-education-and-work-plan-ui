@@ -2,7 +2,8 @@ import { NextFunction, Request, RequestHandler, Response } from 'express'
 import { EducationAndWorkPlanService } from '../../services'
 import logger from '../../../logger'
 import asyncMiddleware from '../../middleware/asyncMiddleware'
-import mockEducationData from '../../mockEducationData'
+// TODO remove this once education is tested
+// import mockEducationData from '../mockEducationData'
 
 /**
  *  Middleware function that returns a Request handler function to retrieve the qualifications from EducationAndWorkPlanService and store in res.locals

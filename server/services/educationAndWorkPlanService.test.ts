@@ -16,7 +16,8 @@ import { aValidCreateGoalsRequestWithOneGoal } from '../testsupport/createGoalsR
 import ReasonToArchiveGoalValue from '../enums/ReasonToArchiveGoalValue'
 import GoalStatusValue from '../enums/goalStatusValue'
 import PrisonService from './prisonService'
-import mockEducationData from '../mockEducationData'
+// TODO remove this once education is tested
+// import mockEducationData from '../mockEducationData'
 
 jest.mock('../data/educationAndWorkPlanClient')
 jest.mock('./prisonService')

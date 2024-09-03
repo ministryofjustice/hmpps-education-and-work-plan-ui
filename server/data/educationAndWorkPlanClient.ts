@@ -17,7 +17,8 @@ import type {
 import RestClient from './restClient'
 import config from '../config'
 import GoalStatusValue from '../enums/goalStatusValue'
-import mockEducationData from '../mockEducationData'
+// TODO remove this once education is tested
+// import mockEducationData from '../mockEducationData'
 
 export default class EducationAndWorkPlanClient {
   private static restClient(token: string): RestClient {
