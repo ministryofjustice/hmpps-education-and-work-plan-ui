@@ -208,4 +208,9 @@ declare module 'inductionDto' {
     workTypeOther?: string
     role?: string
   }
+
+  export interface EducationDto extends ReferencedAndAuditable {
+    prisonNumber: string
+    qualifications?: PreviousQualificationsDto
+  }
 }

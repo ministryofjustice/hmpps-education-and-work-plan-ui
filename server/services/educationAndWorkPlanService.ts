@@ -1,5 +1,5 @@
 import type { ArchiveGoalDto, CreateGoalDto, UnarchiveGoalDto, UpdateGoalDto } from 'dto'
-import type { CreateGoalsRequest } from 'educationAndWorkPlanApiClient'
+import type { CreateGoalsRequest, EducationResponse } from 'educationAndWorkPlanApiClient'
 import type { ActionPlan, Goals } from 'viewModels'
 import EducationAndWorkPlanClient from '../data/educationAndWorkPlanClient'
 import { toCreateGoalRequest } from '../data/mappers/createGoalMapper'
@@ -10,6 +10,8 @@ import toArchiveGoalRequest from '../data/mappers/archiveGoalMapper'
 import toUnarchiveGoalRequest from '../data/mappers/unarchiveGoalMapper'
 import GoalStatusValue from '../enums/goalStatusValue'
 import PrisonService from './prisonService'
+import toCreateEducationRequest from '../data/mappers/educationMapper'
+import mockEducationData from '../mockEducationData'
 
 export default class EducationAndWorkPlanService {
   constructor(
@@ -73,4 +75,28 @@ export default class EducationAndWorkPlanService {
       return new Map()
     }
   }
+
+  async getEducation(prisonNumber: string, token: string): Promise<EducationResponse> {
+    try {
+      const educationResponse = await this.educationAndWorkPlanClient.getEducationResponse(prisonNumber, token)
+      return toCreateEducationRequest(educationResponse)
+    } catch (error) {
+      logger.error(`Error retrieving Education for Prisoner [${prisonNumber}]: ${error}`)
+      return { problemRetrievingData: true } as EducationResponse
+    }
+  }
+
+  // Use this to test the view for education outside an induction
+  // TODO delete once tested
+  // async getEducation(prisonNumber: string, token: string): Promise<EducationResponse> {
+  //   try {
+  //     logger.info(`Using mock education data for prisoner ${prisonNumber}`);
+
+  //     const educationResponse = mockEducationData;
+  //     return toCreateEducationRequest(educationResponse);
+  //   } catch (error) {
+  //     logger.error(`Error retrieving Education for Prisoner [${prisonNumber}]: ${error}`);
+  //     return { problemRetrievingData: true } as EducationResponse;
+  //   }
+  // }
 }

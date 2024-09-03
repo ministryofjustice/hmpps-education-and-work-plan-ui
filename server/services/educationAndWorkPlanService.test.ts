@@ -16,6 +16,7 @@ import { aValidCreateGoalsRequestWithOneGoal } from '../testsupport/createGoalsR
 import ReasonToArchiveGoalValue from '../enums/ReasonToArchiveGoalValue'
 import GoalStatusValue from '../enums/goalStatusValue'
 import PrisonService from './prisonService'
+import mockEducationData from '../mockEducationData'
 
 jest.mock('../data/educationAndWorkPlanClient')
 jest.mock('./prisonService')
@@ -288,6 +289,34 @@ describe('educationAndWorkPlanService', () => {
 
       // Then
       expect(actual).toEqual(Error('Service Unavailable'))
+    })
+  })
+
+  describe('getEducation', () => {
+    const prisonNumber = 'A1234BC'
+    const userToken = 'a-user-token'
+
+    it('should get prisoner education', async () => {
+      // Given
+
+      // When
+      await educationAndWorkPlanService.getEducation(prisonNumber, userToken)
+
+      // Then
+      expect(educationAndWorkPlanClient.getEducationResponse).toHaveBeenCalledWith(prisonNumber, userToken)
+    })
+
+    it('should not get prisoner education given educationAndWorkPlanClient returns an error', async () => {
+      // Given
+      educationAndWorkPlanClient.getEducationResponse.mockRejectedValue(Error('Service Unavailable'))
+
+      // When
+      const actual = await educationAndWorkPlanService.getEducation(prisonNumber, userToken).catch(error => {
+        return error
+      })
+
+      // Then
+      expect(actual).toEqual({ problemRetrievingData: true })
     })
   })
 })
