@@ -11,6 +11,7 @@ import WorkAndInterestsController from './workAndInterestsController'
 import EducationAndTrainingController from './educationAndTrainingController'
 import retrieveInduction from '../routerRequestHandlers/retrieveInduction'
 import ViewArchivedGoalsController from './viewArchivedGoalsController'
+import retrieveEducation from '../routerRequestHandlers/retrieveEducation'
 
 /**
  * Route definitions for the pages relating to the main Overview page
@@ -40,6 +41,7 @@ export default (router: Router, services: Services) => {
   router.get('/plan/:prisonNumber/view/education-and-training', [
     retrieveCuriousInPrisonCourses(services.curiousService),
     retrieveInduction(services.inductionService),
+    retrieveEducation(services.educationAndWorkPlanService),
     asyncMiddleware(educationAndTrainingController.getEducationAndTrainingView),
   ])
 

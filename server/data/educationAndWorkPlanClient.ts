@@ -12,6 +12,7 @@ import type {
   UnarchiveGoalRequest,
   TimelineEventResponse,
   GetGoalsResponse,
+  EducationResponse,
 } from 'educationAndWorkPlanApiClient'
 import RestClient from './restClient'
 import config from '../config'
@@ -112,6 +113,12 @@ export default class EducationAndWorkPlanClient {
     return EducationAndWorkPlanClient.restClient(token).post({
       path: `/inductions/${prisonNumber}`,
       data: createInductionRequest,
+    })
+  }
+
+  async getEducationResponse(prisonNumber: string, token: string): Promise<EducationResponse> {
+    return EducationAndWorkPlanClient.restClient(token).get<EducationResponse>({
+      path: `/person/${prisonNumber}/education`,
     })
   }
 }

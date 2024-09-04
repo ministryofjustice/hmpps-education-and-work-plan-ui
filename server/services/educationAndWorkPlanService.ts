@@ -1,5 +1,5 @@
 import type { ArchiveGoalDto, CreateGoalDto, UnarchiveGoalDto, UpdateGoalDto } from 'dto'
-import type { CreateGoalsRequest } from 'educationAndWorkPlanApiClient'
+import type { CreateGoalsRequest, EducationResponse } from 'educationAndWorkPlanApiClient'
 import type { ActionPlan, Goals } from 'viewModels'
 import EducationAndWorkPlanClient from '../data/educationAndWorkPlanClient'
 import { toCreateGoalRequest } from '../data/mappers/createGoalMapper'
@@ -10,6 +10,7 @@ import toArchiveGoalRequest from '../data/mappers/archiveGoalMapper'
 import toUnarchiveGoalRequest from '../data/mappers/unarchiveGoalMapper'
 import GoalStatusValue from '../enums/goalStatusValue'
 import PrisonService from './prisonService'
+import toEducationResponse from '../data/mappers/educationMapper'
 
 export default class EducationAndWorkPlanService {
   constructor(
@@ -71,6 +72,16 @@ export default class EducationAndWorkPlanService {
     } catch (error) {
       logger.error(`Error retrieving prison names, defaulting to just IDs: ${error}`)
       return new Map()
+    }
+  }
+
+  async getEducation(prisonNumber: string, token: string): Promise<EducationResponse> {
+    try {
+      const educationResponse = await this.educationAndWorkPlanClient.getEducationResponse(prisonNumber, token)
+      return toEducationResponse(educationResponse)
+    } catch (error) {
+      logger.error(`Error retrieving Education for Prisoner [${prisonNumber}]: ${error}`)
+      return { problemRetrievingData: true } as EducationResponse
     }
   }
 }

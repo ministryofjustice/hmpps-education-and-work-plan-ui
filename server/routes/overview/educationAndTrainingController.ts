@@ -18,6 +18,7 @@ export default class EducationAndTrainingController {
       functionalSkills,
       res.locals.curiousInPrisonCourses,
       res.locals.induction,
+      res.locals.education,
     )
     res.render('pages/overview/index', { ...view.renderArgs })
   }

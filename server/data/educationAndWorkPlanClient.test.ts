@@ -20,6 +20,7 @@ import aValidUpdateInductionRequest from '../testsupport/updateInductionRequestT
 import aValidCreateInductionRequest from '../testsupport/createInductionRequestTestDataBuilder'
 import ReasonToArchiveGoalValue from '../enums/ReasonToArchiveGoalValue'
 import GoalStatusValue from '../enums/goalStatusValue'
+import aValidEducationResponse from '../testsupport/educationResponseTestDataBuilder'
 
 describe('educationAndWorkPlanClient', () => {
   const educationAndWorkPlanClient = new EducationAndWorkPlanClient()
@@ -591,6 +592,47 @@ describe('educationAndWorkPlanClient', () => {
       // When
       try {
         await educationAndWorkPlanClient.unarchiveGoal(prisonNumber, unarchiveGoalRequest, systemToken)
+      } catch (e) {
+        // Then
+        expect(nock.isDone()).toBe(true)
+        expect(e.status).toEqual(500)
+        expect(e.data).toEqual(expectedResponseBody)
+      }
+    })
+  })
+
+  describe('getEducation', () => {
+    it('should get Education', async () => {
+      // Given
+      const prisonNumber = 'A1234BC'
+      const systemToken = 'a-system-token'
+
+      const expectedEducationResponse = aValidEducationResponse()
+      educationAndWorkPlanApi.get(`/person/${prisonNumber}/education`).reply(200, expectedEducationResponse)
+
+      // When
+      const actual = await educationAndWorkPlanClient.getEducationResponse(prisonNumber, systemToken)
+
+      // Then
+      expect(nock.isDone()).toBe(true)
+      expect(actual).toEqual(expectedEducationResponse)
+    })
+
+    it('should not get Education given API returns error response', async () => {
+      // Given
+      const prisonNumber = 'A1234BC'
+      const systemToken = 'a-system-token'
+
+      const expectedResponseBody = {
+        status: 500,
+        userMessage: 'An unexpected error occurred',
+        developerMessage: 'An unexpected error occurred',
+      }
+      educationAndWorkPlanApi.get(`/person/${prisonNumber}/education`).thrice().reply(500, expectedResponseBody)
+
+      // When
+      try {
+        await educationAndWorkPlanClient.getEducationResponse(prisonNumber, systemToken)
       } catch (e) {
         // Then
         expect(nock.isDone()).toBe(true)
