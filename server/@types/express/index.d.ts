@@ -53,7 +53,6 @@ declare module 'express-session' {
     qualificationDetailsForm: QualificationDetailsForm
     additionalTrainingForm: AdditionalTrainingForm
     prisonerContexts: PrisonerContexts
-    educationDto: EducationDto
   }
   export interface PrisonerContext {
     updateGoalForm?: UpdateGoalForm

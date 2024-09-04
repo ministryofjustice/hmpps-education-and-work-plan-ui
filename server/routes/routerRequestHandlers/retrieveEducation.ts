@@ -2,8 +2,6 @@ import { NextFunction, Request, RequestHandler, Response } from 'express'
 import { EducationAndWorkPlanService } from '../../services'
 import logger from '../../../logger'
 import asyncMiddleware from '../../middleware/asyncMiddleware'
-// TODO remove this once education is tested
-// import mockEducationData from '../mockEducationData'
 
 /**
  *  Middleware function that returns a Request handler function to retrieve the qualifications from EducationAndWorkPlanService and store in res.locals
@@ -24,27 +22,6 @@ const retrieveEducation = (educationAndWorkPlanService: EducationAndWorkPlanServ
     next()
   })
 }
-
-// Use this to test the view for education outside an induction
-// TODO delete once tested
-// const retrieveEducation = (educationAndWorkPlanService: EducationAndWorkPlanService): RequestHandler => {
-//   return asyncMiddleware(async (req: Request, res: Response, next: NextFunction) => {
-//     const { prisonNumber } = req.params;
-
-//     logger.info(`Retrieving mock education data for prisoner ${prisonNumber}`);
-
-//     const educationDto = await educationAndWorkPlanService.getEducation(prisonNumber, req.user.token);
-//     res.locals.education = {
-//       problemRetrievingData: false,
-//       educationDto: educationDto,
-//     };
-
-//     logger.info('req params ', req.params);
-//     logger.info('req session ', req.session);
-
-//     next();
-//   });
-// };
 
 /**
  * Gracefully handle an exception thrown from the educationAndWorkPlanClient by returning an object of

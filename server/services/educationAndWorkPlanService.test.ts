@@ -16,9 +16,10 @@ import { aValidCreateGoalsRequestWithOneGoal } from '../testsupport/createGoalsR
 import ReasonToArchiveGoalValue from '../enums/ReasonToArchiveGoalValue'
 import GoalStatusValue from '../enums/goalStatusValue'
 import PrisonService from './prisonService'
-// TODO remove this once education is tested
-// import mockEducationData from '../mockEducationData'
+import aValidEducationResponse from '../testsupport/educationResponseTestDataBuilder'
+import toEducationResponse from '../data/mappers/educationMapper'
 
+jest.mock('../data/mappers/educationMapper')
 jest.mock('../data/educationAndWorkPlanClient')
 jest.mock('./prisonService')
 describe('educationAndWorkPlanService', () => {
@@ -299,12 +300,17 @@ describe('educationAndWorkPlanService', () => {
 
     it('should get prisoner education', async () => {
       // Given
+      const educationResponse = aValidEducationResponse()
+      educationAndWorkPlanClient.getEducationResponse.mockResolvedValue(educationResponse)
+      const mockedEducationMapper = toEducationResponse as jest.MockedFunction<typeof toEducationResponse>
+      const educationDto = mockedEducationMapper(educationResponse)
 
       // When
-      await educationAndWorkPlanService.getEducation(prisonNumber, userToken)
+      const actual = await educationAndWorkPlanService.getEducation(prisonNumber, userToken)
 
       // Then
       expect(educationAndWorkPlanClient.getEducationResponse).toHaveBeenCalledWith(prisonNumber, userToken)
+      expect(actual).toEqual(educationDto)
     })
 
     it('should not get prisoner education given educationAndWorkPlanClient returns an error', async () => {

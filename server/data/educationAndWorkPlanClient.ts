@@ -17,8 +17,6 @@ import type {
 import RestClient from './restClient'
 import config from '../config'
 import GoalStatusValue from '../enums/goalStatusValue'
-// TODO remove this once education is tested
-// import mockEducationData from '../mockEducationData'
 
 export default class EducationAndWorkPlanClient {
   private static restClient(token: string): RestClient {
@@ -123,11 +121,4 @@ export default class EducationAndWorkPlanClient {
       path: `/person/${prisonNumber}/education`,
     })
   }
-
-  // Use this to test the view for education outside an induction
-  // TODO delete once tested
-  // async getEducationResponse(prisonNumber: string, token: string): Promise<EducationResponse> {
-  //   console.log(`Using mock education data for prisoner ${prisonNumber}`);
-  //   return mockEducationData;
-  // }
 }

@@ -1,5 +1,5 @@
 import aValidEducationResponse from '../../testsupport/educationResponseTestDataBuilder'
-import toCreateEducationRequest from './educationMapper'
+import toEducationResponse from './educationMapper'
 
 describe('educationMapper', () => {
   it('should map an educationDto to an EducationRequest', () => {
@@ -7,7 +7,7 @@ describe('educationMapper', () => {
     const expected = aValidEducationResponse()
 
     // When
-    const actual = toCreateEducationRequest(expected)
+    const actual = toEducationResponse(expected)
 
     // Then
     expect(actual).toEqual(expected)

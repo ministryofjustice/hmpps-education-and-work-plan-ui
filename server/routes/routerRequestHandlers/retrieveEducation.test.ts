@@ -2,7 +2,7 @@ import type { EducationDto } from 'inductionDto'
 import { Request, Response } from 'express'
 import EducationAndWorkPlanService from '../../services/educationAndWorkPlanService'
 import retrieveEducation from './retrieveEducation'
-import aValidEducationResponse from '../../testsupport/educationResponseTestDataBuilder'
+import aValidEducationDto from '../../testsupport/aValidEducationDtoTestDataBuilder'
 
 jest.mock('../../services/educationAndWorkPlanService')
 describe('retrieveEducation', () => {
@@ -34,7 +34,7 @@ describe('retrieveEducation', () => {
 
   it('should retrieve Education and store on res.locals', async () => {
     // Given
-    const educationDto = aValidEducationResponse()
+    const educationDto = aValidEducationDto()
     educationAndWorkPlanService.getEducation.mockResolvedValue(educationDto)
 
     const expected = {

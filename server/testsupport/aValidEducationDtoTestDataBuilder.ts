@@ -2,7 +2,7 @@ import type { EducationResponse } from 'educationAndWorkPlanApiClient'
 import EducationLevelValue from '../enums/educationLevelValue'
 import QualificationLevelValue from '../enums/qualificationLevelValue'
 
-const aValidEducationResponse = (): EducationResponse => ({
+const aValidEducationDto = (): EducationResponse => ({
   createdBy: 'asmith_gen',
   createdByDisplayName: 'Alex Smith',
   createdAt: '2023-06-19T09:39:44Z',
@@ -27,4 +27,4 @@ const aValidEducationResponse = (): EducationResponse => ({
   updatedAt: new Date('2023-06-19T00:00:00Z').toISOString(),
 })
 
-export default aValidEducationResponse
+export default aValidEducationDto
