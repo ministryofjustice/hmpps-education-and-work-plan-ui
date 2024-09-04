@@ -54,7 +54,7 @@ describe('affectAbilityToWorkFormValidator', () => {
     })
   })
 
-  describe('sad path - validation of affectAbilityToWorkOther field does not pass', () => {
+  describe('sad path - affectAbilityToWorkOther field does not exist given affectAbilityToWork includes OTHER', () => {
     Array.of<AffectAbilityToWorkForm>(
       { affectAbilityToWork: ['OTHER'], affectAbilityToWorkOther: '' },
       { affectAbilityToWork: ['OTHER'], affectAbilityToWorkOther: undefined },
@@ -74,5 +74,23 @@ describe('affectAbilityToWorkFormValidator', () => {
         expect(actual).toEqual(expected)
       })
     })
+  })
+
+  it(`sad path - affectAbilityToWorkOther exceeds length`, () => {
+    // Given
+    const form: AffectAbilityToWorkForm = { affectAbilityToWorkOther: 'a'.repeat(513), affectAbilityToWork: ['OTHER'] }
+
+    const expected: Array<Record<string, string>> = [
+      {
+        href: '#affectAbilityToWorkOther',
+        text: 'The factors affecting ability to work must be 512 characters or less',
+      },
+    ]
+
+    // When
+    const actual = validateAffectAbilityToWorkForm(form, prisonerSummary)
+
+    // Then
+    expect(actual).toEqual(expected)
   })
 })

@@ -3,6 +3,8 @@ import type { PrisonerSummary } from 'viewModels'
 import formatErrors from '../../errorFormatter'
 import PersonalInterestsValue from '../../../enums/personalInterestsValue'
 
+const MAX_OTHER_LENGTH = 255
+
 export default function validatePersonalInterestsForm(
   personalInterestsForm: PersonalInterestsForm,
   prisonerSummary: PrisonerSummary,
@@ -51,8 +53,12 @@ const validatePersonalInterestsOther = (
 
   const { personalInterests, personalInterestsOther } = personalInterestsForm
 
-  if (personalInterests && personalInterests.includes(PersonalInterestsValue.OTHER) && !personalInterestsOther) {
-    errors.push(`Enter ${prisonerSummary.firstName} ${prisonerSummary.lastName}'s interests`)
+  if (personalInterests && personalInterests.includes(PersonalInterestsValue.OTHER)) {
+    if (!personalInterestsOther) {
+      errors.push(`Enter ${prisonerSummary.firstName} ${prisonerSummary.lastName}'s interests`)
+    } else if (personalInterestsOther.length > MAX_OTHER_LENGTH) {
+      errors.push(`The interests must be ${MAX_OTHER_LENGTH} characters or less`)
+    }
   }
 
   return errors

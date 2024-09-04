@@ -54,7 +54,7 @@ describe('personalInterestsFormValidator', () => {
     })
   })
 
-  describe('sad path - validation of personalInterestsOther field does not pass', () => {
+  describe('sad path - personalInterestsOther field does not exist given personalInterests includes OTHER', () => {
     Array.of<PersonalInterestsForm>(
       { personalInterests: ['OTHER'], personalInterestsOther: '' },
       { personalInterests: ['OTHER'], personalInterestsOther: undefined },
@@ -74,5 +74,20 @@ describe('personalInterestsFormValidator', () => {
         expect(actual).toEqual(expected)
       })
     })
+  })
+
+  it(`sad path - personalInterestsOther exceeds length`, () => {
+    // Given
+    const form: PersonalInterestsForm = { personalInterestsOther: 'a'.repeat(256), personalInterests: ['OTHER'] }
+
+    const expected: Array<Record<string, string>> = [
+      { href: '#personalInterestsOther', text: 'The interests must be 255 characters or less' },
+    ]
+
+    // When
+    const actual = validatePersonalInterestsForm(form, prisonerSummary)
+
+    // Then
+    expect(actual).toEqual(expected)
   })
 })

@@ -15,6 +15,7 @@ import type {
   SkillsForm,
   WantToAddQualificationsForm,
   WorkedBeforeForm,
+  WorkInterestRolesForm,
   WorkInterestTypesForm,
 } from 'inductionForms'
 import type { InductionDto } from 'inductionDto'
@@ -31,7 +32,6 @@ declare module 'express-session' {
 
     prisonerSummary: PrisonerSummary
     createGoalsForm: CreateGoalsForm
-    updateGoalForm: UpdateGoalForm
     archiveGoalForm: ArchiveGoalForm
     pageFlowHistory: PageFlow
     pageFlowQueue: PageFlow
@@ -46,6 +46,7 @@ declare module 'express-session' {
     previousWorkExperienceTypesForm: PreviousWorkExperienceTypesForm
     previousWorkExperienceDetailForm: PreviousWorkExperienceDetailForm
     affectAbilityToWorkForm: AffectAbilityToWorkForm
+    workInterestRolesForm: WorkInterestRolesForm
     workInterestTypesForm: WorkInterestTypesForm
     wantToAddQualificationsForm: WantToAddQualificationsForm
     highestLevelOfEducationForm: HighestLevelOfEducationForm

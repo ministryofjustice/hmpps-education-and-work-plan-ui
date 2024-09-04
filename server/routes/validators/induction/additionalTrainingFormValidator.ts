@@ -3,6 +3,8 @@ import type { PrisonerSummary } from 'viewModels'
 import formatErrors from '../../errorFormatter'
 import AdditionalTrainingValue from '../../../enums/additionalTrainingValue'
 
+const MAX_OTHER_LENGTH = 512
+
 export default function validateAdditionalTrainingForm(
   additionalTrainingForm: AdditionalTrainingForm,
   prisonerSummary: PrisonerSummary,
@@ -58,10 +60,14 @@ const validateAdditionalTrainingOther = (
 
   const { additionalTraining, additionalTrainingOther } = additionalTrainingForm
 
-  if (additionalTraining && additionalTraining.includes(AdditionalTrainingValue.OTHER) && !additionalTrainingOther) {
-    errors.push(
-      `Enter the type of training or vocational qualification ${prisonerSummary.firstName} ${prisonerSummary.lastName} has`,
-    )
+  if (additionalTraining && additionalTraining.includes(AdditionalTrainingValue.OTHER)) {
+    if (!additionalTrainingOther) {
+      errors.push(
+        `Enter the type of training or vocational qualification ${prisonerSummary.firstName} ${prisonerSummary.lastName} has`,
+      )
+    } else if (additionalTrainingOther.length > MAX_OTHER_LENGTH) {
+      errors.push(`The type of training must be ${MAX_OTHER_LENGTH} characters or less`)
+    }
   }
 
   return errors

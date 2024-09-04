@@ -52,7 +52,7 @@ describe('inPrisonTrainingFormValidator', () => {
     })
   })
 
-  describe('sad path - validation of inPrisonTrainingOther field does not pass', () => {
+  describe('sad path - inPrisonTrainingOther field does not exist given inPrisonTraining includes OTHER', () => {
     Array.of<InPrisonTrainingForm>(
       { inPrisonTraining: ['OTHER'], inPrisonTrainingOther: '' },
       { inPrisonTraining: ['OTHER'], inPrisonTrainingOther: undefined },
@@ -75,5 +75,20 @@ describe('inPrisonTrainingFormValidator', () => {
         expect(actual).toEqual(expected)
       })
     })
+  })
+
+  it(`sad path - inPrisonTrainingOther exceeds length`, () => {
+    // Given
+    const form: InPrisonTrainingForm = { inPrisonTrainingOther: 'a'.repeat(256), inPrisonTraining: ['OTHER'] }
+
+    const expected: Array<Record<string, string>> = [
+      { href: '#inPrisonTrainingOther', text: 'The type of training must be 255 characters or less' },
+    ]
+
+    // When
+    const actual = validateInPrisonTrainingForm(form, prisonerSummary)
+
+    // Then
+    expect(actual).toEqual(expected)
   })
 })

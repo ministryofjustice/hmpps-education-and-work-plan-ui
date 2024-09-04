@@ -12,6 +12,7 @@ Data supplied to this template:
   * form - form object containing the following fields:
     * workInterestRoles - Map of work types and associated roles
     * workInterestTypesOther? - value for when Other is selected
+  * errors? - validation errors
 #}
 
 {% block beforeContent %}
@@ -43,8 +44,13 @@ Data supplied to this template:
                 },
                 hint: {
                   text: "Enter a particular job role (optional)"
-                }
+                },
+                errorMessage: errors | findError(role[0])
               }) }}
+
+              {% if role[0] === 'OTHER' %}
+                <input type="hidden" name="workInterestTypesOther" value="{{ form.workInterestTypesOther }}" />
+              {% endif %}
             {% endfor %}   
         </div>
 

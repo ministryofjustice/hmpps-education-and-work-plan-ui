@@ -52,7 +52,7 @@ describe('workInterestTypesFormValidator', () => {
     })
   })
 
-  describe('sad path - validation of workInterestTypesOther field does not pass', () => {
+  describe('sad path - workInterestTypesOther field does not exist given workInterestTypes includes OTHER', () => {
     Array.of<WorkInterestTypesForm>(
       { workInterestTypes: ['OTHER'], workInterestTypesOther: '' },
       { workInterestTypes: ['OTHER'], workInterestTypesOther: undefined },
@@ -72,5 +72,20 @@ describe('workInterestTypesFormValidator', () => {
         expect(actual).toEqual(expected)
       })
     })
+  })
+
+  it(`sad path - workInterestTypesOther exceeds length`, () => {
+    // Given
+    const form: WorkInterestTypesForm = { workInterestTypesOther: 'a'.repeat(256), workInterestTypes: ['OTHER'] }
+
+    const expected: Array<Record<string, string>> = [
+      { href: '#workInterestTypesOther', text: 'The type of work must be 255 characters or less' },
+    ]
+
+    // When
+    const actual = validateWorkInterestTypesForm(form, prisonerSummary)
+
+    // Then
+    expect(actual).toEqual(expected)
   })
 })

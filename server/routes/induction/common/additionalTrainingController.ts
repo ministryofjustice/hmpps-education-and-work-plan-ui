@@ -3,6 +3,7 @@ import type { InductionDto } from 'inductionDto'
 import type { AdditionalTrainingForm } from 'inductionForms'
 import InductionController from './inductionController'
 import AdditionalTrainingView from './additionalTrainingView'
+import AdditionalTrainingValue from '../../../enums/additionalTrainingValue'
 
 /**
  * Abstract controller class defining functionality common to both the Create and Update Induction journeys.
@@ -43,7 +44,9 @@ export default abstract class AdditionalTrainingController extends InductionCont
       previousTraining: {
         ...inductionDto.previousTraining,
         trainingTypes: additionalTrainingForm.additionalTraining,
-        trainingTypeOther: additionalTrainingForm.additionalTrainingOther,
+        trainingTypeOther: additionalTrainingForm.additionalTraining.includes(AdditionalTrainingValue.OTHER)
+          ? additionalTrainingForm.additionalTrainingOther
+          : undefined,
       },
     }
   }

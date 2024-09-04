@@ -67,5 +67,23 @@ describe('workedBeforeFormValidator', () => {
         expect(actual).toEqual(expected)
       },
     )
+
+    it(`hasWorkedBeforeNotRelevantReason exceeds length`, () => {
+      // Given
+      const form: WorkedBeforeForm = {
+        hasWorkedBeforeNotRelevantReason: 'a'.repeat(513),
+        hasWorkedBefore: HasWorkedBeforeValue.NOT_RELEVANT,
+      }
+
+      const expected: Array<Record<string, string>> = [
+        { href: '#hasWorkedBeforeNotRelevantReason', text: 'The reason must be 512 characters or less' },
+      ]
+
+      // When
+      const actual = validateWorkedBeforeForm(form, prisonerSummary)
+
+      // Then
+      expect(actual).toEqual(expected)
+    })
   })
 })

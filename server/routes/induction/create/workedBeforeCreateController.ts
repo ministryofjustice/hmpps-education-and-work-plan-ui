@@ -62,7 +62,13 @@ export default class WorkedBeforeCreateController extends WorkedBeforeController
 
     // If the prisoner has worked before return the updated induction
     if (workedBeforeForm.hasWorkedBefore === HasWorkedBeforeValue.YES) {
-      return updatedInduction
+      return {
+        ...updatedInduction,
+        previousWorkExperiences: {
+          ...updatedInduction.previousWorkExperiences,
+          hasWorkedBeforeNotRelevantReason: undefined,
+        },
+      }
     }
 
     // If the prisoner has not worked before remove any previous worked experiences from the induction - this caters for the
@@ -71,6 +77,10 @@ export default class WorkedBeforeCreateController extends WorkedBeforeController
       ...updatedInduction,
       previousWorkExperiences: {
         ...updatedInduction.previousWorkExperiences,
+        hasWorkedBeforeNotRelevantReason:
+          workedBeforeForm.hasWorkedBefore === HasWorkedBeforeValue.NOT_RELEVANT
+            ? workedBeforeForm.hasWorkedBeforeNotRelevantReason
+            : undefined,
         experiences: [],
       },
     }

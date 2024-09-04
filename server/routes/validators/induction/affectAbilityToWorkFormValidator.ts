@@ -3,6 +3,8 @@ import type { PrisonerSummary } from 'viewModels'
 import formatErrors from '../../errorFormatter'
 import AbilityToWorkValue from '../../../enums/abilityToWorkValue'
 
+const MAX_OTHER_LENGTH = 512
+
 export default function validateAffectAbilityToWorkForm(
   affectAbilityToWorkForm: AffectAbilityToWorkForm,
   prisonerSummary: PrisonerSummary,
@@ -58,8 +60,12 @@ const validateAffectAbilityToWorkOther = (
 
   const { affectAbilityToWork, affectAbilityToWorkOther } = affectAbilityToWorkForm
 
-  if (affectAbilityToWork && affectAbilityToWork.includes(AbilityToWorkValue.OTHER) && !affectAbilityToWorkOther) {
-    errors.push(`Enter factors affecting ${prisonerSummary.firstName} ${prisonerSummary.lastName}'s ability to work`)
+  if (affectAbilityToWork && affectAbilityToWork.includes(AbilityToWorkValue.OTHER)) {
+    if (!affectAbilityToWorkOther) {
+      errors.push(`Enter factors affecting ${prisonerSummary.firstName} ${prisonerSummary.lastName}'s ability to work`)
+    } else if (affectAbilityToWorkOther.length > MAX_OTHER_LENGTH) {
+      errors.push(`The factors affecting ability to work must be ${MAX_OTHER_LENGTH} characters or less`)
+    }
   }
 
   return errors

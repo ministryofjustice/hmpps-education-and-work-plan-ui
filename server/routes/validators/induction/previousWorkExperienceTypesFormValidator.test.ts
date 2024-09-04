@@ -49,7 +49,7 @@ describe('previousWorkExperienceTypesFormValidator', () => {
     })
   })
 
-  describe('sad path - validation of typeOfWorkExperienceOther field does not pass', () => {
+  describe('sad path - typeOfWorkExperienceOther field does not exist given typeOfWorkExperience includes OTHER', () => {
     Array.of<PreviousWorkExperienceTypesForm>(
       { typeOfWorkExperience: ['OTHER'], typeOfWorkExperienceOther: '' },
       { typeOfWorkExperience: ['OTHER'], typeOfWorkExperienceOther: undefined },
@@ -69,5 +69,23 @@ describe('previousWorkExperienceTypesFormValidator', () => {
         expect(actual).toEqual(expected)
       })
     })
+  })
+
+  it(`sad path - typeOfWorkExperienceOther exceeds length`, () => {
+    // Given
+    const form: PreviousWorkExperienceTypesForm = {
+      typeOfWorkExperienceOther: 'a'.repeat(257),
+      typeOfWorkExperience: ['OTHER'],
+    }
+
+    const expected: Array<Record<string, string>> = [
+      { href: '#typeOfWorkExperienceOther', text: 'The type of work must be 256 characters or less' },
+    ]
+
+    // When
+    const actual = validatePreviousWorkExperienceTypesForm(form, prisonerSummary)
+
+    // Then
+    expect(actual).toEqual(expected)
   })
 })

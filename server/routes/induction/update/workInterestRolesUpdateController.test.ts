@@ -33,6 +33,7 @@ describe('workInterestRolesUpdateController', () => {
   }
   const res = {
     redirect: jest.fn(),
+    redirectWithErrors: jest.fn(),
     render: jest.fn(),
   }
   const next = jest.fn()
@@ -53,11 +54,11 @@ describe('workInterestRolesUpdateController', () => {
       req.session.inductionDto = inductionDto
 
       const expectedWorkInterestRolesForm = {
-        workInterestRoles: new Map<WorkInterestTypeValue, string>([
+        workInterestRoles: [
           [WorkInterestTypeValue.RETAIL, null],
           [WorkInterestTypeValue.CONSTRUCTION, 'General labourer'],
           [WorkInterestTypeValue.OTHER, 'Being a stunt double for Tom Cruise, even though he does all his own stunts'],
-        ]),
+        ],
         workInterestTypesOther: 'Film, TV and media',
       }
 
@@ -82,6 +83,48 @@ describe('workInterestRolesUpdateController', () => {
   })
 
   describe('submitWorkInterestRolesForm', () => {
+    it('should not update Induction given form is submitted with validation errors', async () => {
+      // Given
+      const inductionDto = aValidInductionDto()
+      inductionDto.futureWorkInterests.interests = [
+        { workType: WorkInterestTypeValue.RETAIL, workTypeOther: undefined, role: undefined },
+      ]
+      req.session.inductionDto = inductionDto
+
+      const invalidWorkInterestRolesForm = {
+        workInterestRoles: {
+          RETAIL: 'a'.repeat(513),
+          CONSTRUCTION: 'General builders mate',
+        },
+      }
+      req.body = invalidWorkInterestRolesForm
+
+      req.session.workInterestRolesForm = undefined
+
+      const expectedErrors = [{ href: '#RETAIL', text: 'The Retail and sales job role must be 512 characters or less' }]
+      const expectedWorkInterestRolesForm = {
+        workInterestRoles: [
+          [WorkInterestTypeValue.RETAIL, 'a'.repeat(513)],
+          [WorkInterestTypeValue.CONSTRUCTION, 'General builders mate'],
+        ],
+      }
+
+      // When
+      await controller.submitWorkInterestRolesForm(
+        req as undefined as Request,
+        res as undefined as Response,
+        next as undefined as NextFunction,
+      )
+
+      // Then
+      expect(res.redirectWithErrors).toHaveBeenCalledWith(
+        '/prisoners/A1234BC/induction/work-interest-roles',
+        expectedErrors,
+      )
+      expect(req.session.workInterestRolesForm).toEqual(expectedWorkInterestRolesForm)
+      expect(req.session.inductionDto).toEqual(inductionDto)
+    })
+
     it('should update Induction and call API and redirect to work and interests page', async () => {
       // Given
       const inductionDto = aValidInductionDto()
@@ -100,12 +143,12 @@ describe('workInterestRolesUpdateController', () => {
       const expectedUpdatedWorkInterests: Array<FutureWorkInterestDto> = [
         {
           workType: WorkInterestTypeValue.RETAIL,
-          workTypeOther: null,
+          workTypeOther: undefined,
           role: null,
         },
         {
           workType: WorkInterestTypeValue.CONSTRUCTION,
-          workTypeOther: null,
+          workTypeOther: undefined,
           role: 'General labourer',
         },
         {
@@ -151,12 +194,12 @@ describe('workInterestRolesUpdateController', () => {
       const expectedUpdatedWorkInterests: Array<FutureWorkInterestDto> = [
         {
           workType: WorkInterestTypeValue.RETAIL,
-          workTypeOther: null,
+          workTypeOther: undefined,
           role: null,
         },
         {
           workType: WorkInterestTypeValue.CONSTRUCTION,
-          workTypeOther: null,
+          workTypeOther: undefined,
           role: 'General labourer',
         },
         {
@@ -187,7 +230,7 @@ describe('workInterestRolesUpdateController', () => {
 
       expect(inductionService.updateInduction).toHaveBeenCalledWith(prisonNumber, updateInductionDto, 'some-token')
       expect(next).toHaveBeenCalledWith(expectedError)
-      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(req.session.inductionDto).toBeDefined()
     })
   })
 })

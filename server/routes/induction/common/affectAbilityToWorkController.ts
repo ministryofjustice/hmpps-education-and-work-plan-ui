@@ -3,6 +3,7 @@ import type { InductionDto } from 'inductionDto'
 import type { AffectAbilityToWorkForm } from 'inductionForms'
 import InductionController from './inductionController'
 import AffectAbilityToWorkView from './affectAbilityToWorkView'
+import AbilityToWorkValue from '../../../enums/abilityToWorkValue'
 
 /**
  * Abstract controller class defining functionality common to both the Create and Update Induction journeys.
@@ -45,7 +46,9 @@ export default abstract class AffectAbilityToWorkController extends InductionCon
       workOnRelease: {
         ...inductionDto.workOnRelease,
         affectAbilityToWork: affectAbilityToWorkForm.affectAbilityToWork,
-        affectAbilityToWorkOther: affectAbilityToWorkForm.affectAbilityToWorkOther,
+        affectAbilityToWorkOther: affectAbilityToWorkForm.affectAbilityToWork.includes(AbilityToWorkValue.OTHER)
+          ? affectAbilityToWorkForm.affectAbilityToWorkOther
+          : undefined,
       },
     }
   }
