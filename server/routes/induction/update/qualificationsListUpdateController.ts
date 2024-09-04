@@ -6,7 +6,7 @@ import logger from '../../../../logger'
 import { InductionService } from '../../../services'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
 import { getPreviousPage, buildNewPageFlowHistory } from '../../pageFlowHistory'
-import getDynamicBackLinkAriaText from '../dynamicAriaTextResolver'
+import getDynamicBackLinkAriaText from '../../dynamicAriaTextResolver'
 import EducationLevelValue from '../../../enums/educationLevelValue'
 
 export default class QualificationsListUpdateController extends QualificationsListController {

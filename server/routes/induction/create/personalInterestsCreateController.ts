@@ -1,7 +1,7 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express'
 import type { PersonalInterestsForm } from 'inductionForms'
 import PersonalInterestsController from '../common/personalInterestsController'
-import getDynamicBackLinkAriaText from '../dynamicAriaTextResolver'
+import getDynamicBackLinkAriaText from '../../dynamicAriaTextResolver'
 import { asArray } from '../../../utils/utils'
 import validatePersonalInterestsForm from '../../validators/induction/personalInterestsFormValidator'
 import { getPreviousPage } from '../../pageFlowHistory'

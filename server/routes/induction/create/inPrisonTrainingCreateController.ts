@@ -1,7 +1,7 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express'
 import type { InPrisonTrainingForm } from 'inductionForms'
 import InPrisonTrainingController from '../common/inPrisonTrainingController'
-import getDynamicBackLinkAriaText from '../dynamicAriaTextResolver'
+import getDynamicBackLinkAriaText from '../../dynamicAriaTextResolver'
 import validateInPrisonTrainingForm from '../../validators/induction/inPrisonTrainingFormValidator'
 import { asArray } from '../../../utils/utils'
 import { getPreviousPage } from '../../pageFlowHistory'

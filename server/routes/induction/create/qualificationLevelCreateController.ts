@@ -1,6 +1,6 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express'
 import QualificationLevelController from '../common/qualificationLevelController'
-import getDynamicBackLinkAriaText from '../dynamicAriaTextResolver'
+import getDynamicBackLinkAriaText from '../../dynamicAriaTextResolver'
 import { getPreviousPage } from '../../pageFlowHistory'
 import validateQualificationLevelForm from '../../validators/induction/qualificationLevelFormValidator'
 

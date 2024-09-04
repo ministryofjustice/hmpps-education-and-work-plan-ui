@@ -1,6 +1,6 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express'
 import HighestLevelOfEducationController from '../common/highestLevelOfEducationController'
-import getDynamicBackLinkAriaText from '../dynamicAriaTextResolver'
+import getDynamicBackLinkAriaText from '../../dynamicAriaTextResolver'
 import validateHighestLevelOfEducationForm from '../../validators/induction/highestLevelOfEducationFormValidator'
 import { getPreviousPage } from '../../pageFlowHistory'
 

@@ -2,7 +2,7 @@ import { NextFunction, Request, RequestHandler, Response } from 'express'
 import QualificationLevelController from '../common/qualificationLevelController'
 import validateQualificationLevelForm from '../../validators/induction/qualificationLevelFormValidator'
 import { getPreviousPage } from '../../pageFlowHistory'
-import getDynamicBackLinkAriaText from '../dynamicAriaTextResolver'
+import getDynamicBackLinkAriaText from '../../dynamicAriaTextResolver'
 
 /**
  * Controller for the Update of the Qualification Level screen of the Induction.

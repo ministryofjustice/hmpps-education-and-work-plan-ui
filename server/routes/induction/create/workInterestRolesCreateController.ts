@@ -1,7 +1,7 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express'
 import type { WorkInterestRolesForm } from 'inductionForms'
 import WorkInterestRolesController from '../common/workInterestRolesController'
-import getDynamicBackLinkAriaText from '../dynamicAriaTextResolver'
+import getDynamicBackLinkAriaText from '../../dynamicAriaTextResolver'
 import { getPreviousPage } from '../../pageFlowHistory'
 import validateWorkInterestRolesForm from '../../validators/induction/workInterestRolesFormValidator'
 import WorkInterestTypeValue from '../../../enums/workInterestTypeValue'

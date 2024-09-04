@@ -6,7 +6,7 @@ import logger from '../../../../logger'
 import { InductionService } from '../../../services'
 import validateWorkInterestTypesForm from '../../validators/induction/workInterestTypesFormValidator'
 import { getPreviousPage } from '../../pageFlowHistory'
-import getDynamicBackLinkAriaText from '../dynamicAriaTextResolver'
+import getDynamicBackLinkAriaText from '../../dynamicAriaTextResolver'
 
 /**
  * Controller for updating a Prisoner's Future Work Interest Types part of an Induction.

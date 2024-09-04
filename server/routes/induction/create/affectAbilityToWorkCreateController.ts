@@ -1,7 +1,7 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express'
 import type { AffectAbilityToWorkForm } from 'inductionForms'
 import AffectAbilityToWorkController from '../common/affectAbilityToWorkController'
-import getDynamicBackLinkAriaText from '../dynamicAriaTextResolver'
+import getDynamicBackLinkAriaText from '../../dynamicAriaTextResolver'
 import validateAffectAbilityToWorkForm from '../../validators/induction/affectAbilityToWorkFormValidator'
 import { asArray } from '../../../utils/utils'
 import { getPreviousPage } from '../../pageFlowHistory'

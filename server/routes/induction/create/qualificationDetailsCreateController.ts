@@ -2,7 +2,7 @@ import { NextFunction, Request, RequestHandler, Response } from 'express'
 import type { PageFlow } from 'viewModels'
 import QualificationDetailsController from '../common/qualificationDetailsController'
 import { getPreviousPage } from '../../pageFlowHistory'
-import getDynamicBackLinkAriaText from '../dynamicAriaTextResolver'
+import getDynamicBackLinkAriaText from '../../dynamicAriaTextResolver'
 import validateQualificationDetailsForm from '../../validators/induction/qualificationDetailsFormValidator'
 
 export default class QualificationDetailsCreateController extends QualificationDetailsController {

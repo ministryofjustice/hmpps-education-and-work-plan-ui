@@ -2,7 +2,7 @@ import { NextFunction, Request, RequestHandler, Response } from 'express'
 import type { InductionDto } from 'inductionDto'
 import QualificationsListController from '../common/qualificationsListController'
 import { buildNewPageFlowHistory, getPreviousPage } from '../../pageFlowHistory'
-import getDynamicBackLinkAriaText from '../dynamicAriaTextResolver'
+import getDynamicBackLinkAriaText from '../../dynamicAriaTextResolver'
 import HopingToGetWorkValue from '../../../enums/hopingToGetWorkValue'
 
 export default class QualificationsListCreateController extends QualificationsListController {
