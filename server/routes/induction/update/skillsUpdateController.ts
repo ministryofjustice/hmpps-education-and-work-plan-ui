@@ -7,7 +7,7 @@ import logger from '../../../../logger'
 import { InductionService } from '../../../services'
 import validateSkillsForm from '../../validators/induction/skillsFormValidator'
 import { getPreviousPage } from '../../pageFlowHistory'
-import getDynamicBackLinkAriaText from '../dynamicAriaTextResolver'
+import getDynamicBackLinkAriaText from '../../dynamicAriaTextResolver'
 import { asArray } from '../../../utils/utils'
 
 /**

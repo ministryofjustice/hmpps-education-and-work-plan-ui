@@ -6,7 +6,7 @@ import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateIn
 import logger from '../../../../logger'
 import { InductionService } from '../../../services'
 import validateWorkedBeforeForm from '../../validators/induction/workedBeforeFormValidator'
-import getDynamicBackLinkAriaText from '../dynamicAriaTextResolver'
+import getDynamicBackLinkAriaText from '../../dynamicAriaTextResolver'
 import { getPreviousPage } from '../../pageFlowHistory'
 import HasWorkedBeforeValue from '../../../enums/hasWorkedBeforeValue'
 

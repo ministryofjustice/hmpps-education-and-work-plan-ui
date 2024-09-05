@@ -6,7 +6,7 @@ import { InductionService } from '../../../services'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
 import logger from '../../../../logger'
 import { buildNewPageFlowHistory, getPreviousPage } from '../../pageFlowHistory'
-import getDynamicBackLinkAriaText from '../dynamicAriaTextResolver'
+import getDynamicBackLinkAriaText from '../../dynamicAriaTextResolver'
 import HopingToGetWorkValue from '../../../enums/hopingToGetWorkValue'
 
 export default class HopingToWorkOnReleaseUpdateController extends HopingToWorkOnReleaseController {

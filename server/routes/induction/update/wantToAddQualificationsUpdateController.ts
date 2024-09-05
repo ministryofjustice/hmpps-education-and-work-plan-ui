@@ -2,7 +2,7 @@ import { NextFunction, Request, RequestHandler, Response } from 'express'
 import WantToAddQualificationsController from '../common/wantToAddQualificationsController'
 import YesNoValue from '../../../enums/yesNoValue'
 import { getPreviousPage } from '../../pageFlowHistory'
-import getDynamicBackLinkAriaText from '../dynamicAriaTextResolver'
+import getDynamicBackLinkAriaText from '../../dynamicAriaTextResolver'
 import validateWantToAddQualificationsForm from '../../validators/induction/wantToAddQualificationsFormValidator'
 
 export default class WantToAddQualificationsUpdateController extends WantToAddQualificationsController {

@@ -1,7 +1,7 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express'
 import type { WorkInterestTypesForm } from 'inductionForms'
 import WorkInterestTypesController from '../common/workInterestTypesController'
-import getDynamicBackLinkAriaText from '../dynamicAriaTextResolver'
+import getDynamicBackLinkAriaText from '../../dynamicAriaTextResolver'
 import validateWorkInterestTypesForm from '../../validators/induction/workInterestTypesFormValidator'
 import { getPreviousPage } from '../../pageFlowHistory'
 import { asArray } from '../../../utils/utils'
