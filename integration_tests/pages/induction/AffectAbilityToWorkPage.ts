@@ -1,11 +1,10 @@
-import { PageElement } from '../page'
+import Page, { PageElement } from '../page'
 import AbilityToWorkValue from '../../../server/enums/abilityToWorkValue'
-import InductionPage from './InductionPage'
 
 /**
  * Cypress page class representing the Induction "Affect Ability To Work" page
  */
-export default class AffectAbilityToWorkPage extends InductionPage {
+export default class AffectAbilityToWorkPage extends Page {
   constructor() {
     super('induction-affect-ability-to-work')
   }

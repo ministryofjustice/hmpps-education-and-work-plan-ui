@@ -71,7 +71,7 @@ describe('qualificationLevelUpdateController', () => {
       )
 
       // Then
-      expect(res.render).toHaveBeenCalledWith('pages/induction/prePrisonEducation/qualificationLevel', expectedView)
+      expect(res.render).toHaveBeenCalledWith('pages/prePrisonEducation/qualificationLevel', expectedView)
       expect(req.session.qualificationLevelForm).toBeUndefined()
       expect(req.session.inductionDto).toEqual(inductionDto)
       expect(req.session.pageFlowHistory).toEqual(expectedPageFlowHistory)
@@ -111,7 +111,7 @@ describe('qualificationLevelUpdateController', () => {
       )
 
       // Then
-      expect(res.render).toHaveBeenCalledWith('pages/induction/prePrisonEducation/qualificationLevel', expectedView)
+      expect(res.render).toHaveBeenCalledWith('pages/prePrisonEducation/qualificationLevel', expectedView)
       expect(req.session.qualificationLevelForm).toBeUndefined()
       expect(req.session.inductionDto).toEqual(inductionDto)
       expect(req.session.pageFlowHistory).toEqual(expectedPageFlowHistory)

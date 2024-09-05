@@ -44,7 +44,7 @@ export default abstract class WantToAddQualificationsController extends Inductio
       functionalSkills,
       curiousInPrisonCourses,
     )
-    return res.render('pages/induction/prePrisonEducation/wantToAddQualifications', { ...view.renderArgs })
+    return res.render('pages/prePrisonEducation/wantToAddQualifications', { ...view.renderArgs })
   }
 
   protected formSubmittedFromCheckYourAnswersWithNoChangeMade = (

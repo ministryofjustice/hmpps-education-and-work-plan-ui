@@ -80,7 +80,7 @@ describe('qualificationDetailsCreateController', () => {
       )
 
       // Then
-      expect(res.render).toHaveBeenCalledWith('pages/induction/prePrisonEducation/qualificationDetails', expectedView)
+      expect(res.render).toHaveBeenCalledWith('pages/prePrisonEducation/qualificationDetails', expectedView)
       expect(req.session.qualificationDetailsForm).toBeUndefined()
       expect(req.session.inductionDto).toEqual(inductionDto)
       expect(req.session.pageFlowHistory).toEqual(expectedPageFlowHistory)
@@ -133,7 +133,7 @@ describe('qualificationDetailsCreateController', () => {
       )
 
       // Then
-      expect(res.render).toHaveBeenCalledWith('pages/induction/prePrisonEducation/qualificationDetails', expectedView)
+      expect(res.render).toHaveBeenCalledWith('pages/prePrisonEducation/qualificationDetails', expectedView)
       expect(req.session.qualificationDetailsForm).toBeUndefined()
       expect(req.session.inductionDto).toEqual(inductionDto)
       expect(req.session.pageFlowHistory).toEqual(expectedPageFlowHistory)

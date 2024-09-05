@@ -39,7 +39,7 @@ export default abstract class QualificationsListController extends InductionCont
       functionalSkills,
       curiousInPrisonCourses,
     )
-    return res.render('pages/induction/prePrisonEducation/qualificationsList', { ...view.renderArgs })
+    return res.render('pages/prePrisonEducation/qualificationsList', { ...view.renderArgs })
   }
 }
 

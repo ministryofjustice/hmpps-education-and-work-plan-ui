@@ -42,7 +42,7 @@ export default abstract class QualificationDetailsController extends InductionCo
       qualificationDetailsForm,
       qualificationLevelForm.qualificationLevel,
     )
-    return res.render('pages/induction/prePrisonEducation/qualificationDetails', { ...view.renderArgs })
+    return res.render('pages/prePrisonEducation/qualificationDetails', { ...view.renderArgs })
   }
 
   addQualificationToInductionDto(

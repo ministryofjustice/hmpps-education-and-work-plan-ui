@@ -1,8 +1,7 @@
-import { PageElement } from '../page'
+import Page, { PageElement } from '../page'
 import TypeOfWorkExperienceValue from '../../../server/enums/typeOfWorkExperienceValue'
-import InductionPage from './InductionPage'
 
-export default class PreviousWorkExperienceTypesPage extends InductionPage {
+export default class PreviousWorkExperienceTypesPage extends Page {
   constructor() {
     super('induction-previous-work-experience-types')
   }

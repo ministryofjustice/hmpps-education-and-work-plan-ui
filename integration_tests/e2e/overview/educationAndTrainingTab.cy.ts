@@ -2,10 +2,10 @@ import OverviewPage from '../../pages/overview/OverviewPage'
 import Page from '../../pages/page'
 import EducationAndTrainingPage from '../../pages/overview/EducationAndTrainingPage'
 import InPrisonTrainingPage from '../../pages/induction/InPrisonTrainingPage'
-import HighestLevelOfEducationPage from '../../pages/induction/HighestLevelOfEducationPage'
+import HighestLevelOfEducationPage from '../../pages/prePrisonEducation/HighestLevelOfEducationPage'
 import AdditionalTrainingPage from '../../pages/induction/AdditionalTrainingPage'
-import QualificationsListPage from '../../pages/induction/QualificationsListPage'
-import QualificationLevelPage from '../../pages/induction/QualificationLevelPage'
+import QualificationsListPage from '../../pages/prePrisonEducation/QualificationsListPage'
+import QualificationLevelPage from '../../pages/prePrisonEducation/QualificationLevelPage'
 
 context('Prisoner Overview page - Education And Training tab', () => {
   beforeEach(() => {

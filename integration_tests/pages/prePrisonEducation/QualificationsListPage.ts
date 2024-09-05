@@ -1,13 +1,12 @@
 import Page, { PageElement } from '../page'
 import QualificationLevelPage from './QualificationLevelPage'
-import InductionPage from './InductionPage'
 
 /**
- * Cypress page class representing the Induction "Qualifications List" page
+ * Cypress page class representing the "Qualifications List" page
  */
-export default class QualificationsListPage extends InductionPage {
+export default class QualificationsListPage extends Page {
   constructor() {
-    super('induction-educational-qualifications-list')
+    super('educational-qualifications-list')
   }
 
   hasEducationalQualifications(expected: Array<string>): QualificationsListPage {

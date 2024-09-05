@@ -74,10 +74,7 @@ describe('wantToAddQualificationsUpdateController', () => {
       await controller.getWantToAddQualificationsView(req, res, next)
 
       // Then
-      expect(res.render).toHaveBeenCalledWith(
-        'pages/induction/prePrisonEducation/wantToAddQualifications',
-        expectedView,
-      )
+      expect(res.render).toHaveBeenCalledWith('pages/prePrisonEducation/wantToAddQualifications', expectedView)
       expect(req.session.wantToAddQualificationsForm).toBeUndefined()
       expect(req.session.pageFlowHistory).toEqual(expectedPageFlowHistory)
     })
@@ -117,10 +114,7 @@ describe('wantToAddQualificationsUpdateController', () => {
       await controller.getWantToAddQualificationsView(req, res, next)
 
       // Then
-      expect(res.render).toHaveBeenCalledWith(
-        'pages/induction/prePrisonEducation/wantToAddQualifications',
-        expectedView,
-      )
+      expect(res.render).toHaveBeenCalledWith('pages/prePrisonEducation/wantToAddQualifications', expectedView)
       expect(req.session.wantToAddQualificationsForm).toBeUndefined()
     })
 
@@ -159,10 +153,7 @@ describe('wantToAddQualificationsUpdateController', () => {
       await controller.getWantToAddQualificationsView(req, res, next)
 
       // Then
-      expect(res.render).toHaveBeenCalledWith(
-        'pages/induction/prePrisonEducation/wantToAddQualifications',
-        expectedView,
-      )
+      expect(res.render).toHaveBeenCalledWith('pages/prePrisonEducation/wantToAddQualifications', expectedView)
       expect(req.session.wantToAddQualificationsForm).toBeUndefined()
     })
 
@@ -208,10 +199,7 @@ describe('wantToAddQualificationsUpdateController', () => {
       await controller.getWantToAddQualificationsView(req, res, next)
 
       // Then
-      expect(res.render).toHaveBeenCalledWith(
-        'pages/induction/prePrisonEducation/wantToAddQualifications',
-        expectedView,
-      )
+      expect(res.render).toHaveBeenCalledWith('pages/prePrisonEducation/wantToAddQualifications', expectedView)
       expect(req.session.pageFlowHistory).toEqual(expectedPageFlowHistory)
     })
   })

@@ -1,11 +1,10 @@
-import { PageElement } from '../page'
-import InductionPage from './InductionPage'
+import Page, { PageElement } from '../page'
 import HasWorkedBeforeValue from '../../../server/enums/hasWorkedBeforeValue'
 
 /**
  * Cypress page class representing the "Has Worked Before" Page.
  */
-export default class WorkedBeforePage extends InductionPage {
+export default class WorkedBeforePage extends Page {
   constructor() {
     super('induction-has-worked-before')
   }

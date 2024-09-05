@@ -1,13 +1,12 @@
-import { PageElement } from '../page'
+import Page, { PageElement } from '../page'
 import EducationLevelValue from '../../../server/enums/educationLevelValue'
-import InductionPage from './InductionPage'
 
 /**
- * Cypress page class representing the Induction "Highest Level of Education" page
+ * Cypress page class representing the "Highest Level of Education" page
  */
-export default class HighestLevelOfEducationPage extends InductionPage {
+export default class HighestLevelOfEducationPage extends Page {
   constructor() {
-    super('induction-highest-level-of-education')
+    super('highest-level-of-education')
   }
 
   selectHighestLevelOfEducation(value: EducationLevelValue): HighestLevelOfEducationPage {

@@ -1,13 +1,12 @@
-import { PageElement } from '../page'
+import Page, { PageElement } from '../page'
 import QualificationLevelValue from '../../../server/enums/qualificationLevelValue'
-import InductionPage from './InductionPage'
 
 /**
- * Cypress page class representing the Induction "Qualification Level" page
+ * Cypress page class representing the "Qualification Level" page
  */
-export default class QualificationLevelPage extends InductionPage {
+export default class QualificationLevelPage extends Page {
   constructor() {
-    super('induction-qualification-level')
+    super('qualification-level')
   }
 
   selectQualificationLevel(value: QualificationLevelValue): QualificationLevelPage {

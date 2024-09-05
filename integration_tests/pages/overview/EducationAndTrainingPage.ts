@@ -3,7 +3,7 @@ import Page, { PageElement } from '../page'
 import FunctionalSkillsPage from '../functionalSkills/FunctionalSkillsPage'
 import InPrisonCoursesAndQualificationsPage from '../inPrisonCoursesAndQualifications/InPrisonCoursesAndQualificationsPage'
 import InPrisonTrainingPage from '../induction/InPrisonTrainingPage'
-import HighestLevelOfEducationPage from '../induction/HighestLevelOfEducationPage'
+import HighestLevelOfEducationPage from '../prePrisonEducation/HighestLevelOfEducationPage'
 import AdditionalTrainingPage from '../induction/AdditionalTrainingPage'
 
 /**

@@ -1,7 +1,6 @@
-import { PageElement } from '../page'
-import InductionPage from './InductionPage'
+import Page, { PageElement } from '../page'
 
-export default class PreviousWorkExperienceDetailPage extends InductionPage {
+export default class PreviousWorkExperienceDetailPage extends Page {
   constructor() {
     super('induction-previous-work-experience-detail')
   }
