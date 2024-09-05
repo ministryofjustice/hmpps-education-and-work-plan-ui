@@ -1,11 +1,10 @@
-import InductionPage from './InductionPage'
-import { PageElement } from '../page'
+import Page, { PageElement } from '../page'
 import HopingToGetWorkValue from '../../../server/enums/hopingToGetWorkValue'
 
 /**
  * Cypress page class representing the Induction "Hoping to get work on release" page
  */
-export default class HopingToWorkOnReleasePage extends InductionPage {
+export default class HopingToWorkOnReleasePage extends Page {
   constructor() {
     super('induction-hoping-to-work-on-release')
   }

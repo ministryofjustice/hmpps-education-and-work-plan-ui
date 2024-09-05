@@ -1,10 +1,10 @@
 import Page from '../../pages/page'
 import { putRequestedFor } from '../../mockApis/wiremock/requestPatternBuilder'
 import { urlEqualTo } from '../../mockApis/wiremock/matchers/url'
-import QualificationLevelPage from '../../pages/induction/QualificationLevelPage'
+import QualificationLevelPage from '../../pages/prePrisonEducation/QualificationLevelPage'
 import QualificationLevelValue from '../../../server/enums/qualificationLevelValue'
-import QualificationDetailsPage from '../../pages/induction/QualificationDetailsPage'
-import QualificationsListPage from '../../pages/induction/QualificationsListPage'
+import QualificationDetailsPage from '../../pages/prePrisonEducation/QualificationDetailsPage'
+import QualificationsListPage from '../../pages/prePrisonEducation/QualificationsListPage'
 import EducationAndTrainingPage from '../../pages/overview/EducationAndTrainingPage'
 import { matchingJsonPath } from '../../mockApis/wiremock/matchers/content'
 

@@ -70,7 +70,7 @@ describe('qualificationsListUpdateController', () => {
       await controller.getQualificationsListView(req, res, next)
 
       // Then
-      expect(res.render).toHaveBeenCalledWith('pages/induction/prePrisonEducation/qualificationsList', expectedView)
+      expect(res.render).toHaveBeenCalledWith('pages/prePrisonEducation/qualificationsList', expectedView)
       expect(req.session.inductionDto).toEqual(inductionDto)
     })
   })

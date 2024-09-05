@@ -1,5 +1,5 @@
 import Page from '../../pages/page'
-import QualificationsListPage from '../../pages/induction/QualificationsListPage'
+import QualificationsListPage from '../../pages/prePrisonEducation/QualificationsListPage'
 import EducationAndTrainingPage from '../../pages/overview/EducationAndTrainingPage'
 import { putRequestedFor } from '../../mockApis/wiremock/requestPatternBuilder'
 import { urlEqualTo } from '../../mockApis/wiremock/matchers/url'

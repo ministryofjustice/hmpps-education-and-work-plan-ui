@@ -1,13 +1,12 @@
-import InductionPage from './InductionPage'
-import { PageElement } from '../page'
+import Page, { PageElement } from '../page'
 import YesNoValue from '../../../server/enums/yesNoValue'
 
 /**
- * Cypress page class representing the Induction "Do you want to add educational qualifications" page
+ * Cypress page class representing the "Do you want to add educational qualifications" page
  */
-export default class WantToAddQualificationsPage extends InductionPage {
+export default class WantToAddQualificationsPage extends Page {
   constructor() {
-    super('induction-want-to-add-educational-qualifications')
+    super('want-to-add-educational-qualifications')
   }
 
   selectWantToAddQualifications(value: YesNoValue): WantToAddQualificationsPage {

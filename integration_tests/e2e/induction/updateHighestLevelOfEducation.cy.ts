@@ -2,7 +2,7 @@ import Page from '../../pages/page'
 import { putRequestedFor } from '../../mockApis/wiremock/requestPatternBuilder'
 import { urlEqualTo } from '../../mockApis/wiremock/matchers/url'
 import { matchingJsonPath } from '../../mockApis/wiremock/matchers/content'
-import HighestLevelOfEducationPage from '../../pages/induction/HighestLevelOfEducationPage'
+import HighestLevelOfEducationPage from '../../pages/prePrisonEducation/HighestLevelOfEducationPage'
 import EducationLevelValue from '../../../server/enums/educationLevelValue'
 import EducationAndTrainingPage from '../../pages/overview/EducationAndTrainingPage'
 

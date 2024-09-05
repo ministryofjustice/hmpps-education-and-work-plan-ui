@@ -34,7 +34,7 @@ export default abstract class HighestLevelOfEducationController extends Inductio
       this.getBackLinkAriaText(req),
       highestLevelOfEducationForm,
     )
-    return res.render('pages/induction/prePrisonEducation/highestLevelOfEducation', { ...view.renderArgs })
+    return res.render('pages/prePrisonEducation/highestLevelOfEducation', { ...view.renderArgs })
   }
 
   updatedInductionDtoWithHighestLevelOfEducation = (

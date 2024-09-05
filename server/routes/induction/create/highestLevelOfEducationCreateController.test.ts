@@ -63,10 +63,7 @@ describe('highestLevelOfEducationCreateController', () => {
       )
 
       // Then
-      expect(res.render).toHaveBeenCalledWith(
-        'pages/induction/prePrisonEducation/highestLevelOfEducation',
-        expectedView,
-      )
+      expect(res.render).toHaveBeenCalledWith('pages/prePrisonEducation/highestLevelOfEducation', expectedView)
       expect(req.session.highestLevelOfEducationForm).toBeUndefined()
       expect(req.session.inductionDto).toEqual(inductionDto)
     })
@@ -98,10 +95,7 @@ describe('highestLevelOfEducationCreateController', () => {
       )
 
       // Then
-      expect(res.render).toHaveBeenCalledWith(
-        'pages/induction/prePrisonEducation/highestLevelOfEducation',
-        expectedView,
-      )
+      expect(res.render).toHaveBeenCalledWith('pages/prePrisonEducation/highestLevelOfEducation', expectedView)
       expect(req.session.highestLevelOfEducationForm).toBeUndefined()
       expect(req.session.inductionDto).toEqual(inductionDto)
     })
@@ -144,10 +138,7 @@ describe('highestLevelOfEducationCreateController', () => {
       )
 
       // Then
-      expect(res.render).toHaveBeenCalledWith(
-        'pages/induction/prePrisonEducation/highestLevelOfEducation',
-        expectedView,
-      )
+      expect(res.render).toHaveBeenCalledWith('pages/prePrisonEducation/highestLevelOfEducation', expectedView)
       expect(req.session.highestLevelOfEducationForm).toBeUndefined()
       expect(req.session.inductionDto).toEqual(inductionDto)
       expect(req.session.pageFlowHistory).toEqual(expectedPageFlowHistory)
