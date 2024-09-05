@@ -1,5 +1,5 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express'
-import type { AchievedQualificationDto } from 'inductionDto'
+import type { AchievedQualificationDto } from 'dto'
 import type { Assessment } from 'viewModels'
 import InductionController from './inductionController'
 import QualificationsListView from './qualificationsListView'

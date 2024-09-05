@@ -1,13 +1,13 @@
 import { parseISO } from 'date-fns'
-import type { EducationDto, QualificationDto } from 'dto'
+import type { EducationDto, AchievedQualificationDto } from 'dto'
 import EducationLevelValue from '../enums/educationLevelValue'
-import aValidQualificationDto from './qualificationDtoTestDataBuilder'
+import aValidAchievedQualificationDto from './achievedQualificationDtoTestDataBuilder'
 
 const aValidEducationDto = (options?: {
   prisonNumber?: string
   reference?: string
   educationLevel?: EducationLevelValue
-  qualifications?: Array<QualificationDto>
+  qualifications?: Array<AchievedQualificationDto>
   createdBy?: string
   createdByDisplayName?: string
   createdAt?: Date
@@ -20,7 +20,7 @@ const aValidEducationDto = (options?: {
   prisonNumber: options?.prisonNumber || 'G6115VJ',
   reference: options?.reference || 'dea24acc-fde5-4ead-a9eb-e1757de2542c',
   educationLevel: options?.educationLevel || EducationLevelValue.SECONDARY_SCHOOL_TOOK_EXAMS,
-  qualifications: options?.qualifications || [aValidQualificationDto()],
+  qualifications: options?.qualifications || [aValidAchievedQualificationDto()],
   createdBy: options?.createdBy || 'asmith_gen',
   createdByDisplayName: options?.createdByDisplayName || 'Alex Smith',
   createdAt: options?.createdAt || parseISO('2023-06-19T09:39:44Z'),

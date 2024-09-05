@@ -48,24 +48,24 @@ declare module 'dto' {
   export interface EducationDto extends ReferencedAndAuditable {
     prisonNumber: string
     educationLevel: EducationLevelValue
-    qualifications: Array<QualificationDto>
+    qualifications: Array<AchievedQualificationDto>
   }
 
-  export interface QualificationDto {
-    reference: string
+  export interface AchievedQualificationDto {
     subject: string
-    grade: string
     level: QualificationLevelValue
-    createdBy: string
-    createdAt: Date
-    updatedBy: string
-    updatedAt: Date
+    grade: string
+    reference?: string
+    createdBy?: string
+    createdAt?: Date
+    updatedBy?: string
+    updatedAt?: Date
   }
 }
 
 declare module 'inductionDto' {
+  import type { AchievedQualificationDto } from 'dto'
   import HasWorkedBeforeValue from '../../enums/hasWorkedBeforeValue'
-  import QualificationLevelValue from '../../enums/qualificationLevelValue'
 
   export interface InductionDto extends ReferencedAndAuditable {
     prisonNumber: string
@@ -167,17 +167,6 @@ declare module 'inductionDto' {
   export interface CreateOrUpdateFutureWorkInterestsDto {
     reference?: string
     interests: FutureWorkInterestDto[]
-  }
-
-  export interface AchievedQualificationDto {
-    subject: string
-    level: QualificationLevelValue
-    grade: string
-    reference?: string
-    createdBy?: string
-    createdAt?: Date
-    updatedBy?: string
-    updatedAt?: Date
   }
 
   export interface PreviousWorkExperienceDto {

@@ -1,7 +1,7 @@
 import createError from 'http-errors'
 import { Request, Response } from 'express'
 import type { SessionData } from 'express-session'
-import type { AchievedQualificationDto } from 'inductionDto'
+import type { AchievedQualificationDto } from 'dto'
 import InductionService from '../../../services/inductionService'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
 import { aValidInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
