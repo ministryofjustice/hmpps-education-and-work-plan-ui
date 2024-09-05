@@ -1,12 +1,12 @@
 import nunjucks from 'nunjucks'
 import * as cheerio from 'cheerio'
-import type { EducationDto } from 'inductionDto'
+import type { EducationDto } from 'dto'
 import formatQualificationLevel from '../../../../../filters/formatQualificationLevelFilter'
 import formatEducationLevel from '../../../../../filters/formatEducationLevelFilter'
 import formatDateFilter from '../../../../../filters/formatDateFilter'
 import aValidPrisonerSummary from '../../../../../testsupport/prisonerSummaryTestDataBuilder'
 import achievedQualificationObjectsSortedInScreenOrderFilter from '../../../../../filters/achievedQualificationObjectsSortedInScreenOrderFilter'
-import aValidEducationResponse from '../../../../../testsupport/educationResponseTestDataBuilder'
+import aValidEducationDto from '../../../../../testsupport/educationDtoTestDataBuilder'
 
 const njkEnv = nunjucks.configure([
   'node_modules/govuk-frontend/dist/',
@@ -23,7 +23,7 @@ njkEnv
 describe('_educationAndQualificationsHistoryWithoutInduction.njk', () => {
   it('should display qualifications table when there are educational qualifications recorded outside of an induction', () => {
     // Given
-    const educationDto = aValidEducationResponse()
+    const educationDto = aValidEducationDto()
     const pageViewModel = educationAndTrainingView(educationDto)
 
     // When
@@ -37,7 +37,7 @@ describe('_educationAndQualificationsHistoryWithoutInduction.njk', () => {
       })
 
     // Then
-    expect(qualifications).toEqual([['Pottery', 'Level 4', 'C']])
+    expect(qualifications).toEqual([['GCSE Maths', 'Level 2', 'A*']])
 
     expect($('[data-qa=educational-qualifications-change-link]').text().replace(/\s+/g, ' ').trim()).toEqual(
       'Change qualifications by adding or removing qualifications',
@@ -64,7 +64,7 @@ describe('_educationAndQualificationsHistoryWithoutInduction.njk', () => {
 
   it('should display highest level of education when recorded', () => {
     // Given
-    const educationDto = aValidEducationResponse()
+    const educationDto = aValidEducationDto()
     const pageViewModel = educationAndTrainingView(educationDto)
 
     // When
@@ -79,7 +79,7 @@ describe('_educationAndQualificationsHistoryWithoutInduction.njk', () => {
 
   it('should display "Not recorded" when highest level of education is not recorded', () => {
     // Given
-    const educationDto = aValidEducationResponse()
+    const educationDto = aValidEducationDto()
     educationDto.educationLevel = ''
     const pageViewModel = educationAndTrainingView(educationDto)
 
@@ -95,7 +95,7 @@ describe('_educationAndQualificationsHistoryWithoutInduction.njk', () => {
 
   it('should display last updated information', () => {
     // Given
-    const educationDto = aValidEducationResponse()
+    const educationDto = aValidEducationDto()
     const pageViewModel = educationAndTrainingView(educationDto)
 
     // When

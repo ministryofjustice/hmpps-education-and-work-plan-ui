@@ -1,8 +1,37 @@
-import type { EducationResponse } from 'educationAndWorkPlanApiClient'
-import type { EducationDto } from 'inductionDto'
+import { parseISO } from 'date-fns'
+import type { AchievedQualificationResponse, EducationResponse } from 'educationAndWorkPlanApiClient'
+import type { EducationDto, QualificationDto } from 'dto'
+import EducationLevelValue from '../../enums/educationLevelValue'
+import QualificationLevelValue from '../../enums/qualificationLevelValue'
 
-function toEducationResponse(educationDto: EducationDto): EducationResponse {
-  return { ...educationDto }
+const toEducationDto = (educationResponse: EducationResponse, prisonNumber: string): EducationDto => {
+  return {
+    prisonNumber,
+    educationLevel: EducationLevelValue[educationResponse.educationLevel as keyof typeof EducationLevelValue],
+    qualifications: educationResponse.qualifications.map(toQualificationDto),
+    reference: educationResponse.reference,
+    createdBy: educationResponse.createdBy,
+    createdByDisplayName: educationResponse.createdByDisplayName,
+    createdAt: parseISO(educationResponse.createdAt),
+    createdAtPrison: educationResponse.createdAtPrison,
+    updatedBy: educationResponse.updatedBy,
+    updatedByDisplayName: educationResponse.updatedByDisplayName,
+    updatedAt: parseISO(educationResponse.updatedAt),
+    updatedAtPrison: educationResponse.updatedAtPrison,
+  }
 }
 
-export default toEducationResponse
+const toQualificationDto = (achievedQualificationResponse: AchievedQualificationResponse): QualificationDto => {
+  return {
+    subject: achievedQualificationResponse.subject,
+    level: QualificationLevelValue[achievedQualificationResponse.level as keyof typeof QualificationLevelValue],
+    grade: achievedQualificationResponse.grade,
+    reference: achievedQualificationResponse.reference,
+    createdBy: achievedQualificationResponse.createdBy,
+    createdAt: parseISO(achievedQualificationResponse.createdAt),
+    updatedBy: achievedQualificationResponse.updatedBy,
+    updatedAt: parseISO(achievedQualificationResponse.updatedAt),
+  }
+}
+
+export default toEducationDto

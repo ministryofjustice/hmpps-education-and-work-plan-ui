@@ -1,15 +1,18 @@
-import aValidEducationDto from '../../testsupport/aValidEducationDtoTestDataBuilder'
-import toEducationResponse from './educationMapper'
+import aValidEducationDto from '../../testsupport/educationDtoTestDataBuilder'
+import toEducationDto from './educationMapper'
+import aValidEducationResponse from '../../testsupport/educationResponseTestDataBuilder'
 
 describe('educationMapper', () => {
   it('should map an EducationResponse to a EducationDto', () => {
     // Given
-    const expected = aValidEducationDto()
+    const prisonNumber = 'A1234BC'
+    const educationResponse = aValidEducationResponse()
+    const expectedDto = aValidEducationDto({ prisonNumber })
 
     // When
-    const actual = toEducationResponse(expected)
+    const actual = toEducationDto(educationResponse, prisonNumber)
 
     // Then
-    expect(actual).toEqual(expected)
+    expect(actual).toEqual(expectedDto)
   })
 })

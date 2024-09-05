@@ -1,5 +1,7 @@
 declare module 'dto' {
   import ReasonToArchiveGoalValue from '../../enums/ReasonToArchiveGoalValue'
+  import EducationLevelValue from '../../enums/educationLevelValue'
+  import QualificationLevelValue from '../../enums/qualificationLevelValue'
 
   export interface CreateGoalDto {
     prisonNumber: string
@@ -42,26 +44,28 @@ declare module 'dto' {
     goalReference: string
     prisonNumber: string
   }
+
+  export interface EducationDto extends ReferencedAndAuditable {
+    prisonNumber: string
+    educationLevel: EducationLevelValue
+    qualifications: Array<QualificationDto>
+  }
+
+  export interface QualificationDto {
+    reference: string
+    subject: string
+    grade: string
+    level: QualificationLevelValue
+    createdBy: string
+    createdAt: Date
+    updatedBy: string
+    updatedAt: Date
+  }
 }
 
 declare module 'inductionDto' {
   import HasWorkedBeforeValue from '../../enums/hasWorkedBeforeValue'
   import QualificationLevelValue from '../../enums/qualificationLevelValue'
-
-  /**
-   * Interface defining common reference and audit related properties that DTO types can inherit through extension.
-   */
-  interface ReferencedAndAuditable {
-    reference: string
-    createdBy: string
-    createdByDisplayName: string
-    createdAt: Date
-    createdAtPrison: string
-    updatedBy: string
-    updatedByDisplayName: string
-    updatedAt: Date
-    updatedAtPrison: string
-  }
 
   export interface InductionDto extends ReferencedAndAuditable {
     prisonNumber: string
@@ -208,9 +212,19 @@ declare module 'inductionDto' {
     workTypeOther?: string
     role?: string
   }
+}
 
-  export interface EducationDto extends ReferencedAndAuditable {
-    prisonNumber: string
-    qualifications?: PreviousQualificationsDto
-  }
+/**
+ * Interface defining common reference and audit related properties that DTO types can inherit through extension.
+ */
+interface ReferencedAndAuditable {
+  reference: string
+  createdBy: string
+  createdByDisplayName: string
+  createdAt: Date
+  createdAtPrison: string
+  updatedBy: string
+  updatedByDisplayName: string
+  updatedAt: Date
+  updatedAtPrison: string
 }

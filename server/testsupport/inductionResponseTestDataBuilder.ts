@@ -165,7 +165,7 @@ const auditFields = (
   updatedAtPrison: string
 } => {
   return {
-    createdBy: options?.createdByDisplayName || 'asmith_gen',
+    createdBy: options?.createdBy || 'asmith_gen',
     createdByDisplayName: options?.createdByDisplayName || 'Alex Smith',
     createdAt: options?.createdAt || '2023-06-19T09:39:44Z',
     createdAtPrison: options?.createdAtPrison || 'MDI',

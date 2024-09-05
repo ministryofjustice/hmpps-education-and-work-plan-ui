@@ -17,16 +17,20 @@ import ReasonToArchiveGoalValue from '../enums/ReasonToArchiveGoalValue'
 import GoalStatusValue from '../enums/goalStatusValue'
 import PrisonService from './prisonService'
 import aValidEducationResponse from '../testsupport/educationResponseTestDataBuilder'
-import toEducationResponse from '../data/mappers/educationMapper'
+import toEducationDto from '../data/mappers/educationMapper'
+import aValidEducationDto from '../testsupport/educationDtoTestDataBuilder'
 
 jest.mock('../data/mappers/educationMapper')
 jest.mock('../data/educationAndWorkPlanClient')
 jest.mock('./prisonService')
+
 describe('educationAndWorkPlanService', () => {
   const educationAndWorkPlanClient =
     new EducationAndWorkPlanClient() as unknown as jest.Mocked<EducationAndWorkPlanClient>
   const prisonService = new PrisonService(null, null, null) as unknown as jest.Mocked<PrisonService>
   const educationAndWorkPlanService = new EducationAndWorkPlanService(educationAndWorkPlanClient, prisonService)
+
+  const mockedEducationMapper = toEducationDto as jest.MockedFunction<typeof toEducationDto>
 
   beforeEach(() => {
     jest.resetAllMocks()
@@ -302,20 +306,30 @@ describe('educationAndWorkPlanService', () => {
       // Given
       const educationResponse = aValidEducationResponse()
       educationAndWorkPlanClient.getEducationResponse.mockResolvedValue(educationResponse)
-      const mockedEducationMapper = toEducationResponse as jest.MockedFunction<typeof toEducationResponse>
-      const educationDto = mockedEducationMapper(educationResponse)
+
+      const expectedEducationDto = aValidEducationDto({ prisonNumber })
+      mockedEducationMapper.mockReturnValue(expectedEducationDto)
 
       // When
       const actual = await educationAndWorkPlanService.getEducation(prisonNumber, userToken)
 
       // Then
+      expect(actual).toEqual(expectedEducationDto)
       expect(educationAndWorkPlanClient.getEducationResponse).toHaveBeenCalledWith(prisonNumber, userToken)
-      expect(actual).toEqual(educationDto)
+      expect(mockedEducationMapper).toHaveBeenCalledWith(educationResponse, prisonNumber)
     })
 
     it('should not get prisoner education given educationAndWorkPlanClient returns an error', async () => {
       // Given
-      educationAndWorkPlanClient.getEducationResponse.mockRejectedValue(Error('Service Unavailable'))
+      const eductionAndWorkPlanApiError = {
+        status: 500,
+        data: {
+          status: 500,
+          userMessage: 'An unexpected error occurred',
+          developerMessage: 'An unexpected error occurred',
+        },
+      }
+      educationAndWorkPlanClient.getEducationResponse.mockRejectedValue(eductionAndWorkPlanApiError)
 
       // When
       const actual = await educationAndWorkPlanService.getEducation(prisonNumber, userToken).catch(error => {
@@ -323,7 +337,9 @@ describe('educationAndWorkPlanService', () => {
       })
 
       // Then
-      expect(actual).toEqual({ problemRetrievingData: true })
+      expect(actual).toEqual(eductionAndWorkPlanApiError)
+      expect(educationAndWorkPlanClient.getEducationResponse).toHaveBeenCalledWith(prisonNumber, userToken)
+      expect(mockedEducationMapper).not.toHaveBeenCalled()
     })
   })
 })

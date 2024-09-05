@@ -2,7 +2,7 @@ import nunjucks, { Template } from 'nunjucks'
 import * as fs from 'fs'
 import * as cheerio from 'cheerio'
 import aValidPrisonerSummary from '../../../../../testsupport/prisonerSummaryTestDataBuilder'
-import aValidEducationResponse from '../../../../../testsupport/educationResponseTestDataBuilder'
+import aValidEducationDto from '../../../../../testsupport/educationDtoTestDataBuilder'
 
 describe('educationAndTrainingTabContents', () => {
   const template = fs.readFileSync(
@@ -25,7 +25,7 @@ describe('educationAndTrainingTabContents', () => {
   it('should render the correct content when qualificationsEnabled is true', () => {
     // Given
     njkEnv.addGlobal('featureToggles', { qualificationsEnabled: true })
-    const education = aValidEducationResponse()
+    const education = aValidEducationDto()
     const prisonerSummary = aValidPrisonerSummary()
     viewContext = { prisonerSummary, tab: 'education-and-training', education }
 
@@ -48,7 +48,7 @@ describe('educationAndTrainingTabContents', () => {
   it('should render the correct content when qualificationsEnabled is false', () => {
     // Given
     njkEnv.addGlobal('featureToggles', { qualificationsEnabled: false })
-    const education = aValidEducationResponse()
+    const education = aValidEducationDto()
     const prisonerSummary = aValidPrisonerSummary()
     viewContext = { prisonerSummary, tab: 'education-and-training', education }
 
