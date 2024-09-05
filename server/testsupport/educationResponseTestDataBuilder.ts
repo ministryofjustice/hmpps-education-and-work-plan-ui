@@ -1,6 +1,6 @@
 import type { AchievedQualificationResponse, EducationResponse } from 'educationAndWorkPlanApiClient'
 import EducationLevelValue from '../enums/educationLevelValue'
-import aValidAchievedQualificationResponse from './ahievedQualificationResponseTestDataBuilder'
+import aValidAchievedQualificationResponse from './achievedQualificationResponseTestDataBuilder'
 
 const aValidEducationResponse = (options?: {
   reference?: string
