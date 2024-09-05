@@ -1,5 +1,6 @@
 declare module 'forms' {
   import GoalTargetCompletionDateOption from '../../enums/goalTargetCompletionDateOption'
+  import EducationLevelValue from '../../enums/educationLevelValue'
 
   export interface UpdateGoalForm {
     reference: string
@@ -52,6 +53,10 @@ declare module 'forms' {
     reference: string
     title: string
   }
+
+  export interface HighestLevelOfEducationForm {
+    educationLevel: EducationLevelValue
+  }
 }
 
 declare module 'inductionForms' {
@@ -65,7 +70,6 @@ declare module 'inductionForms' {
   import AbilityToWorkValue from '../../enums/abilityToWorkValue'
   import WorkInterestTypeValue from '../../enums/workInterestTypeValue'
   import YesNoValue from '../../enums/yesNoValue'
-  import EducationLevelValue from '../../enums/educationLevelValue'
   import QualificationLevelValue from '../../enums/qualificationLevelValue'
   import AdditionalTrainingValue from '../../enums/additionalTrainingValue'
 
@@ -125,10 +129,6 @@ declare module 'inductionForms' {
 
   export interface WantToAddQualificationsForm {
     wantToAddQualifications: YesNoValue
-  }
-
-  export interface HighestLevelOfEducationForm {
-    educationLevel: EducationLevelValue
   }
 
   export interface QualificationLevelForm {

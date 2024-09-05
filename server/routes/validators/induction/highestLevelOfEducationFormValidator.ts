@@ -1,4 +1,4 @@
-import type { HighestLevelOfEducationForm } from 'inductionForms'
+import type { HighestLevelOfEducationForm } from 'forms'
 import type { PrisonerSummary } from 'viewModels'
 import formatErrors from '../../errorFormatter'
 import EducationLevelValue from '../../../enums/educationLevelValue'

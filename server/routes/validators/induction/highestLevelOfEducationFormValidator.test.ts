@@ -1,4 +1,4 @@
-import type { HighestLevelOfEducationForm } from 'inductionForms'
+import type { HighestLevelOfEducationForm } from 'forms'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
 import validateHighestLevelOfEducationForm from './highestLevelOfEducationFormValidator'
 

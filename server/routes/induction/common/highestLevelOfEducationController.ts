@@ -1,6 +1,6 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express'
 import type { InductionDto } from 'inductionDto'
-import type { HighestLevelOfEducationForm } from 'inductionForms'
+import type { HighestLevelOfEducationForm } from 'forms'
 import InductionController from './inductionController'
 import HighestLevelOfEducationView from './highestLevelOfEducationView'
 

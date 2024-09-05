@@ -51,7 +51,6 @@ const pageViewEventMap: Record<string, Page> = {
   '/prisoners/:prisonNumber/create-induction/qualification-level': Page.INDUCTION_CREATE_QUALIFICATION_LEVEL,
   '/prisoners/:prisonNumber/create-induction/additional-training': Page.INDUCTION_CREATE_ADDITIONAL_TRAINING,
   '/prisoners/:prisonNumber/create-induction/qualification-details': Page.INDUCTION_CREATE_QUALIFICATION_DETAILS,
-  '/prisoners/:prisonNumber/create-induction/qualification-training': Page.INDUCTION_CREATE_ADDITIONAL_TRAINING,
   '/prisoners/:prisonNumber/create-induction/has-worked-before': Page.INDUCTION_CREATE_HAS_WORKED_BEFORE,
   '/prisoners/:prisonNumber/create-induction/previous-work-experience':
     Page.INDUCTION_CREATE_PREVIOUS_WORK_EXPERIENCE_TYPE,
@@ -88,6 +87,12 @@ const pageViewEventMap: Record<string, Page> = {
   '/prisoners/:prisonNumber/induction/qualification-details': Page.INDUCTION_UPDATE_QUALIFICATION_DETAILS,
   '/prisoners/:prisonNumber/induction/additional-training': Page.INDUCTION_UPDATE_ADDITIONAL_TRAINING,
   '/prisoners/:prisonNumber/induction/check-your-answers': Page.INDUCTION_UPDATE_CHECK_YOUR_ANSWERS,
+
+  // Create qualifications (before an Induction)
+  '/prisoners/:prisonNumber/highest-level-of-education': Page.CREATE_HIGHEST_LEVEL_OF_EDUCATION,
+  '/prisoners/:prisonNumber/qualification-level': Page.CREATE_QUALIFICATION_LEVEL,
+  '/prisoners/:prisonNumber/qualification-details': Page.CREATE_QUALIFICATION_DETAILS,
+  '/prisoners/:prisonNumber/qualifications': Page.CREATE_QUALIFICATIONS,
 
   // Non audit routes. These routes do not raise an audit event
   '/plan/:prisonNumber/induction-created': null,
