@@ -1,8 +1,8 @@
-import type { EducationDto } from 'inductionDto'
+import type { EducationDto } from 'dto'
 import { Request, Response } from 'express'
 import EducationAndWorkPlanService from '../../services/educationAndWorkPlanService'
 import retrieveEducation from './retrieveEducation'
-import aValidEducationDto from '../../testsupport/aValidEducationDtoTestDataBuilder'
+import aValidEducationDto from '../../testsupport/educationDtoTestDataBuilder'
 
 jest.mock('../../services/educationAndWorkPlanService')
 describe('retrieveEducation', () => {
@@ -65,7 +65,7 @@ describe('retrieveEducation', () => {
 
     const expected = {
       problemRetrievingData: true,
-      createEducationDto: undefined as EducationDto,
+      educationDto: undefined as EducationDto,
     }
 
     // When
@@ -91,7 +91,7 @@ describe('retrieveEducation', () => {
 
     const expected = {
       problemRetrievingData: false,
-      createEducationDto: undefined as EducationDto,
+      educationDto: undefined as EducationDto,
     }
 
     // When

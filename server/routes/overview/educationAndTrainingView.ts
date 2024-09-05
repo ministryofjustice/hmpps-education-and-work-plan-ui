@@ -1,5 +1,6 @@
 import type { FunctionalSkills, InPrisonCourseRecords, PrisonerSummary } from 'viewModels'
-import type { EducationDto, InductionDto } from 'inductionDto'
+import type { EducationDto } from 'dto'
+import type { InductionDto } from 'inductionDto'
 
 export default class EducationAndTrainingView {
   constructor(
