@@ -1,4 +1,4 @@
-import type { AchievedQualificationDto } from 'inductionDto'
+import type { AchievedQualificationDto } from 'dto'
 import achievedQualificationObjectsSortedInScreenOrderFilter from './achievedQualificationObjectsSortedInScreenOrderFilter'
 
 describe('achievedQualificationObjectsSortedInScreenOrderFilter', () => {

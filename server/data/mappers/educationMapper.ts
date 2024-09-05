@@ -1,6 +1,6 @@
 import { parseISO } from 'date-fns'
 import type { AchievedQualificationResponse, EducationResponse } from 'educationAndWorkPlanApiClient'
-import type { EducationDto, QualificationDto } from 'dto'
+import type { EducationDto, AchievedQualificationDto } from 'dto'
 import EducationLevelValue from '../../enums/educationLevelValue'
 import QualificationLevelValue from '../../enums/qualificationLevelValue'
 
@@ -21,7 +21,7 @@ const toEducationDto = (educationResponse: EducationResponse, prisonNumber: stri
   }
 }
 
-const toQualificationDto = (achievedQualificationResponse: AchievedQualificationResponse): QualificationDto => {
+const toQualificationDto = (achievedQualificationResponse: AchievedQualificationResponse): AchievedQualificationDto => {
   return {
     subject: achievedQualificationResponse.subject,
     level: QualificationLevelValue[achievedQualificationResponse.level as keyof typeof QualificationLevelValue],

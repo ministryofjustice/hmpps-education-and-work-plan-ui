@@ -1,8 +1,8 @@
 import { parseISO } from 'date-fns'
-import type { QualificationDto } from 'dto'
+import type { AchievedQualificationDto } from 'dto'
 import QualificationLevelValue from '../enums/qualificationLevelValue'
 
-const aValidQualificationDto = (options?: {
+const aValidAchievedQualificationDto = (options?: {
   reference?: string
   subject?: string
   grade?: string
@@ -11,7 +11,7 @@ const aValidQualificationDto = (options?: {
   createdAt?: Date
   updatedBy?: string
   updatedAt?: Date
-}): QualificationDto => ({
+}): AchievedQualificationDto => ({
   reference: options?.reference || '2bb661f2-bfd6-46fa-a7e0-1aa655e94e70',
   subject: options?.subject || 'GCSE Maths',
   grade: options?.grade || 'A*',
@@ -22,4 +22,4 @@ const aValidQualificationDto = (options?: {
   updatedAt: options?.updatedAt || parseISO('2023-06-19T09:39:44Z'),
 })
 
-export default aValidQualificationDto
+export default aValidAchievedQualificationDto

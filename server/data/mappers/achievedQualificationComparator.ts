@@ -1,4 +1,4 @@
-import type { AchievedQualificationDto } from 'inductionDto'
+import type { AchievedQualificationDto } from 'dto'
 
 /**
  * Comparator function that compares two `AchievedQualificationDto` instances, returning -1, 0 or 1 depending

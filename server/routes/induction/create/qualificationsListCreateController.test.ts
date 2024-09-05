@@ -1,5 +1,6 @@
 import { Request, Response } from 'express'
-import type { AchievedQualificationDto, InductionDto } from 'inductionDto'
+import type { AchievedQualificationDto } from 'dto'
+import type { InductionDto } from 'inductionDto'
 import QualificationsListCreateController from './qualificationsListCreateController'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
 import { aValidInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
