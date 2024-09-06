@@ -6,6 +6,8 @@ import asyncMiddleware from '../../middleware/asyncMiddleware'
 import { checkUserHasEditAuthority } from '../../middleware/roleBasedAccessControl'
 import createEmptyInductionIfNotInSession from '../routerRequestHandlers/createEmptyEducationDtoIfNotInPrisonerContext'
 import HighestLevelOfEducationController from './highestLevelOfEducationController'
+import QualificationLevelController from './qualificationLevelController'
+import checkEducationDtoExistsInPrisonerContext from '../routerRequestHandlers/checkEducationDtoExistsInPrisonerContext'
 
 /**
  * Route definitions for creating a prisoner's qualifications before an Induction
@@ -13,6 +15,7 @@ import HighestLevelOfEducationController from './highestLevelOfEducationControll
  */
 export default (router: Router, services: Services) => {
   const highestLevelOfEducationController = new HighestLevelOfEducationController()
+  const qualificationLevelController = new QualificationLevelController()
 
   router.use('/prisoners/:prisonNumber/highest-level-of-education', [
     checkUserHasEditAuthority(),
@@ -25,8 +28,16 @@ export default (router: Router, services: Services) => {
     asyncMiddleware(highestLevelOfEducationController.submitHighestLevelOfEducationForm),
   ])
 
-  router.get('/prisoners/:prisonNumber/qualification-level', [checkUserHasEditAuthority()])
-  router.post('/prisoners/:prisonNumber/qualification-level', [checkUserHasEditAuthority()])
+  router.use('/prisoners/:prisonNumber/qualification-level', [
+    checkUserHasEditAuthority(),
+    checkEducationDtoExistsInPrisonerContext,
+  ])
+  router.get('/prisoners/:prisonNumber/qualification-level', [
+    asyncMiddleware(qualificationLevelController.getQualificationLevelView),
+  ])
+  router.post('/prisoners/:prisonNumber/qualification-level', [
+    asyncMiddleware(qualificationLevelController.submitQualificationLevelForm),
+  ])
 
   router.get('/prisoners/:prisonNumber/qualification-details', [checkUserHasEditAuthority()])
   router.post('/prisoners/:prisonNumber/qualification-details', [checkUserHasEditAuthority()])
