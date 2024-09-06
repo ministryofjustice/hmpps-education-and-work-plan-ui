@@ -81,7 +81,6 @@ describe('highestLevelOfEducationController', () => {
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/prePrisonEducation/highestLevelOfEducation', expectedView)
-      expect(req.session.highestLevelOfEducationForm).toBeUndefined()
       expect(getPrisonerContext(req.session, prisonNumber).educationDto).toEqual(educationDto)
       expect(getPrisonerContext(req.session, prisonNumber).highestLevelOfEducationForm).toBeUndefined()
     })
