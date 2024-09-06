@@ -35,13 +35,13 @@ describe('qualificationLevelController', () => {
       // Given
       getPrisonerContext(req.session, prisonNumber).qualificationLevelForm = undefined
 
-      const expectedQualificationForm = {
+      const expectedQualificationLevelForm = {
         qualificationLevel: undefined as QualificationLevelValue,
       }
 
       const expectedView = {
         prisonerSummary,
-        form: expectedQualificationForm,
+        form: expectedQualificationLevelForm,
         backLinkUrl: '/prisoners/A1234BC/highest-level-of-education',
         backLinkAriaText: `Back to What's the highest level of education Jimmy Lightfingers completed before entering prison?`,
       }
@@ -56,14 +56,14 @@ describe('qualificationLevelController', () => {
 
     it('should get the Qualification Level view given a Qualification Level form is on the prisoner context', async () => {
       // Given
-      const expectedQualificationForm = {
+      const expectedQualificationLevelForm = {
         qualificationLevel: QualificationLevelValue.LEVEL_2,
       }
-      getPrisonerContext(req.session, prisonNumber).qualificationLevelForm = expectedQualificationForm
+      getPrisonerContext(req.session, prisonNumber).qualificationLevelForm = expectedQualificationLevelForm
 
       const expectedView = {
         prisonerSummary,
-        form: expectedQualificationForm,
+        form: expectedQualificationLevelForm,
         backLinkUrl: '/prisoners/A1234BC/highest-level-of-education',
         backLinkAriaText: `Back to What's the highest level of education Jimmy Lightfingers completed before entering prison?`,
       }
@@ -80,8 +80,8 @@ describe('qualificationLevelController', () => {
   describe('submitQualificationLevelForm', () => {
     it('should redisplay Qualification Level page given form is submitted with validation errors', async () => {
       // Given
-      const invalidQualificationForm = {}
-      req.body = invalidQualificationForm
+      const invalidQualificationLevelForm = {}
+      req.body = invalidQualificationLevelForm
 
       const expectedErrors = [
         { href: '#qualificationLevel', text: 'Select the level of qualification Jimmy Lightfingers wants to add' },
@@ -92,7 +92,9 @@ describe('qualificationLevelController', () => {
 
       // Then
       expect(res.redirectWithErrors).toHaveBeenCalledWith('/prisoners/A1234BC/qualification-level', expectedErrors)
-      expect(getPrisonerContext(req.session, prisonNumber).qualificationLevelForm).toEqual(invalidQualificationForm)
+      expect(getPrisonerContext(req.session, prisonNumber).qualificationLevelForm).toEqual(
+        invalidQualificationLevelForm,
+      )
     })
 
     it('should redirect to Qualification Details page given valid form is submitted', async () => {

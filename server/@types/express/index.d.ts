@@ -3,6 +3,7 @@ import type {
   ArchiveGoalForm,
   CreateGoalsForm,
   HighestLevelOfEducationForm,
+  QualificationDetailsForm,
   QualificationLevelForm,
   UpdateGoalForm,
 } from 'forms'
@@ -15,7 +16,6 @@ import type {
   PersonalInterestsForm,
   PreviousWorkExperienceDetailForm,
   PreviousWorkExperienceTypesForm,
-  QualificationDetailsForm,
   SkillsForm,
   WantToAddQualificationsForm,
   WorkedBeforeForm,
@@ -64,6 +64,7 @@ declare module 'express-session' {
     updateGoalForm?: UpdateGoalForm
     highestLevelOfEducationForm?: HighestLevelOfEducationForm
     qualificationLevelForm?: QualificationLevelForm
+    qualificationDetailsForm?: QualificationDetailsForm
     educationDto?: EducationDto
   }
 
