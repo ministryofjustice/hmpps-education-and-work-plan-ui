@@ -86,7 +86,8 @@ export default class EducationAndTrainingPage extends Page {
   }
 
   clickToViewAllFunctionalSkills(): FunctionalSkillsPage {
-    this.viewAllFunctionalSkillsButton().click()
+    cy.get('[data-qa=view-all-functional-skills-button]').should('be.visible').as('functionalSkillsButton')
+    cy.get('@functionalSkillsButton').first().click()
     return Page.verifyOnPage(FunctionalSkillsPage)
   }
 
