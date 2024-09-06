@@ -42,7 +42,8 @@
     {% include './partials/supportNeedsTab/supportNeedsTabContents.njk' %}
   {% endif %}
   {% if tab === 'education-and-training' %}
-    {% include './partials/educationAndTrainingTab/educationAndTrainingTabContents.njk' %}
+    {% include './partials/educationAndTrainingTab/_educationAndTrainingTabWithInductionContents.njk' %}
+    {% include './partials/educationAndTrainingTab/_educationAndTrainingTabWithoutInductionContents.njk' %}
   {% endif %}
   {% if tab === 'work-and-interests' %}
     {% include './partials/workAndInterestsTab/workAndInterestsTabContents.njk' %}

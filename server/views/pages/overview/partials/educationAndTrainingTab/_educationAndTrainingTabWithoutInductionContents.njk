@@ -10,7 +10,7 @@ Contains 'Functional skills', 'In-prison qualifications and achievements', 'Qual
 {% set showAddEducationMessage = false %}
 {% set showUnavailableMessage = false %}
 
-{% if not education.problemRetrievingData and education.educationDto and(education.educationDto.qualifications | length > 0)and featureToggles.qualificationsEnabled %}
+{% if not education.problemRetrievingData and education.educationDto and(education.educationDto.qualifications | length > 0) and featureToggles.qualificationsEnabled %}
   {% include './_educationAndQualificationsHistoryWithoutInduction.njk' %}
   {% include './_trainingAndEducationInterestsInPrison.njk' %}
 {% else %}

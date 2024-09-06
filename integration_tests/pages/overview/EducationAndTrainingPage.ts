@@ -65,6 +65,21 @@ export default class EducationAndTrainingPage extends Page {
     return this
   }
 
+  hasEducationUnavailableMessageDisplayed(): EducationAndTrainingPage {
+    this.educationUnavailableMessage().should('be.exist')
+    return this
+  }
+
+  hasAddEducationMessageDisplayed(): EducationAndTrainingPage {
+    this.addEducationHistory().should('be.exist')
+    return this
+  }
+
+  hasEducationQualificationsDisplayed(): EducationAndTrainingPage {
+    this.educationTable().should('be.exist')
+    return this
+  }
+
   hasLinkToCreateInductionDisplayed(): EducationAndTrainingPage {
     this.createInductionLink().should('be.visible')
     return this
@@ -143,6 +158,12 @@ export default class EducationAndTrainingPage extends Page {
   viewAllFunctionalSkillsButton = (): PageElement => cy.get('[data-qa=view-all-functional-skills-button]')
 
   inductionUnavailableMessage = (): PageElement => cy.get('[data-qa=induction-unavailable-message]')
+
+  educationUnavailableMessage = (): PageElement => cy.get('[data-qa=data-unavailable-message-header]')
+
+  addEducationHistory = (): PageElement => cy.get('[data-qa=add-education-history]')
+
+  educationTable = (): PageElement => cy.get('[data-qa=education-previous-qualifications-table]')
 
   createInductionLink = (): PageElement => cy.get('[data-qa=link-to-create-induction]')
 

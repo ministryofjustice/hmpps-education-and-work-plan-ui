@@ -73,15 +73,20 @@ describe('educationAndTrainingTabContents', () => {
 
   it('should show data unavailable message if there is a problem retrieving induction data', () => {
     // Given
-    viewContext = { tab: 'education-and-training', induction: { problemRetrievingData: true } }
+    const prisonerSummary = aValidPrisonerSummary()
+    viewContext = {
+      tab: 'education-and-training',
+      induction: {
+        problemRetrievingData: true,
+      },
+      prisonerSummary,
+    }
 
     // When
     const $ = cheerio.load(compiledTemplate.render(viewContext))
 
     // Then
-    expect($('[data-qa=data-unavailable-message-header]').text().trim()).toEqual(
-      'We cannot show these details right now',
-    )
+    expect($('[data-qa=induction-unavailable-message]').text().trim()).toEqual('We cannot show these details right now')
     expect($('[data-qa=data-unavailable-message-body]').text().trim()).toEqual(
       'Reload the page or try again later. Other parts of this service may still be available.',
     )

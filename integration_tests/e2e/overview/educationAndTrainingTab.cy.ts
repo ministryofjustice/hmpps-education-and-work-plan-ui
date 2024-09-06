@@ -255,6 +255,66 @@ context('Prisoner Overview page - Education And Training tab', () => {
     })
   })
 
+  describe('should retrieve and render data from PLP API Education data', () => {
+    it('should display Qualifications And Education data', () => {
+      // Given
+      cy.task('stubGetEducation')
+      cy.signIn()
+      const prisonNumber = 'G6115VJ'
+      cy.visit(`/plan/${prisonNumber}/view/overview`)
+      const overviewPage = Page.verifyOnPage(OverviewPage)
+
+      // When
+      overviewPage.selectTab('Education and training')
+      const educationAndTrainingPage = Page.verifyOnPage(EducationAndTrainingPage)
+
+      // Then
+      educationAndTrainingPage //
+        .activeTabIs('Education and training')
+        .hasEducationQualificationsDisplayed()
+    })
+
+    it('should display add education message given there is no education and no induction', () => {
+      // Given
+      cy.signIn()
+      const prisonNumber = 'G6115VJ'
+      cy.visit(`/plan/${prisonNumber}/view/overview`)
+      const overviewPage = Page.verifyOnPage(OverviewPage)
+      cy.task('stubGetEducation404Error')
+
+      // When
+      overviewPage.selectTab('Education and training')
+      const educationAndTrainingPage = Page.verifyOnPage(EducationAndTrainingPage)
+
+      // Then
+      educationAndTrainingPage //
+        .activeTabIs('Education and training')
+        .hasAddEducationMessageDisplayed()
+    })
+
+    it('should display unavailable message given PLP API is unavailable when retrieving education', () => {
+      // Given
+      cy.signIn()
+      const prisonNumber = 'G6115VJ'
+      cy.visit(`/plan/${prisonNumber}/view/overview`)
+      const overviewPage = Page.verifyOnPage(OverviewPage)
+
+      // Stub a PLP API 500 error *after* rendering the overview page. The scenario here is that the user has signed in and
+      // displayed the Prisoner List and Overview screens, but between displaying the Overview and clicking on
+      // 'Education and training' the PLP API has gone down.
+      cy.task('stubGetEducation500Error')
+
+      // When
+      overviewPage.selectTab('Education and training')
+      const educationAndTrainingPage = Page.verifyOnPage(EducationAndTrainingPage)
+
+      // Then
+      educationAndTrainingPage //
+        .activeTabIs('Education and training')
+        .hasEducationUnavailableMessageDisplayed()
+    })
+  })
+
   describe('should display change links to Induction questions', () => {
     it(`should link to the change in-prison training interests page`, () => {
       // Given
