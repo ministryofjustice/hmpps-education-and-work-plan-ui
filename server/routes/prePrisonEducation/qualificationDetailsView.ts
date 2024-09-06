@@ -1,6 +1,6 @@
 import type { PrisonerSummary } from 'viewModels'
 import type { QualificationDetailsForm } from 'forms'
-import QualificationLevelValue from '../../../enums/qualificationLevelValue'
+import QualificationLevelValue from '../../enums/qualificationLevelValue'
 
 export default class QualificationDetailsView {
   constructor(

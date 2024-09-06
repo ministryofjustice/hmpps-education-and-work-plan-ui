@@ -1,4 +1,4 @@
-import type { QualificationDetailsForm } from 'inductionForms'
+import type { QualificationDetailsForm } from 'forms'
 import type { PrisonerSummary } from 'viewModels'
 import formatErrors from '../../errorFormatter'
 import QualificationLevelValue from '../../../enums/qualificationLevelValue'
