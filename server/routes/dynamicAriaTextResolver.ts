@@ -85,6 +85,9 @@ const getDynamicBackLinkAriaText = (req: Request, backLinkUrl: string): string =
     '/prisoners/{PRISON_NUMBER}/induction/check-your-answers': `Back to Check and save your answers before adding ${prisonerName}'s goals`,
     '/prisoners/{PRISON_NUMBER}/induction/has-worked-before': `Back to Has ${prisonerName} worked before?`,
     '/prisoners/{PRISON_NUMBER}/induction/affect-ability-to-work': `Back to What does ${prisonerName} feel could stop or affect them working when they are out of prison?`,
+
+    '/prisoners/{PRISON_NUMBER}/highest-level-of-education': `Back to What's the highest level of education ${prisonerName} completed before entering prison?`,
+    '/prisoners/{PRISON_NUMBER}/qualification-level': `Back to What level of qualification does ${prisonerName} want to add`,
   }
   const uriKey = backLinkUrl.replace(prisonNumber, '{PRISON_NUMBER}')
   return ariaTextByUri[uriKey] || ''
