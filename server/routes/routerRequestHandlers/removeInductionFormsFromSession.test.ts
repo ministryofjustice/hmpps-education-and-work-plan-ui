@@ -1,10 +1,10 @@
 import { NextFunction, Request, Response } from 'express'
 import type { PageFlow } from 'viewModels'
 import type { InductionDto } from 'inductionDto'
+import type { HighestLevelOfEducationForm } from 'forms'
 import type {
   AdditionalTrainingForm,
   AffectAbilityToWorkForm,
-  HighestLevelOfEducationForm,
   HopingToWorkOnReleaseForm,
   InPrisonTrainingForm,
   InPrisonWorkForm,

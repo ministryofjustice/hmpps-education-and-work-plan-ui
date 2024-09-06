@@ -1,9 +1,8 @@
 import type { PageFlow, PrisonerSummary } from 'viewModels'
-import type { ArchiveGoalForm, CreateGoalsForm, UpdateGoalForm } from 'forms'
+import type { ArchiveGoalForm, CreateGoalsForm, HighestLevelOfEducationForm, UpdateGoalForm } from 'forms'
 import type {
   AdditionalTrainingForm,
   AffectAbilityToWorkForm,
-  HighestLevelOfEducationForm,
   HopingToWorkOnReleaseForm,
   InPrisonTrainingForm,
   InPrisonWorkForm,
@@ -18,6 +17,7 @@ import type {
   WorkInterestRolesForm,
   WorkInterestTypesForm,
 } from 'inductionForms'
+import type { EducationDto } from 'dto'
 import type { InductionDto } from 'inductionDto'
 import type { UserDetails } from '../../services/userService'
 
@@ -57,6 +57,8 @@ declare module 'express-session' {
   }
   export interface PrisonerContext {
     updateGoalForm?: UpdateGoalForm
+    highestLevelOfEducationForm?: HighestLevelOfEducationForm
+    educationDto?: EducationDto
   }
 
   export type PrisonerContexts = Record<string, PrisonerContext>
