@@ -1,0 +1,214 @@
+{#
+'Education and qualifications history' summary card on the 'Education and training' tab
+
+Data supplied to this template:
+    prisonerSummary: PrisonerSummary
+    education: {
+      problemRetrievingData: boolean
+      educationDto?: EducationDto
+    }
+    induction: {
+      problemRetrievingData: boolean
+      inductionDto?: InductionDto
+    }
+
+where the EducationDto contains the prisoner's pre-prison education history, and the InductionDto contains any
+Additional Training entered as part of the prisoner's Induction.
+If the EducationDto is present it will contain BOTH a list of qualifications AND the prisoner's highest level of
+education. It is not possible to have qualifications but no highest level of education, or visa versa.
+
+Logic paths in this template
+  * Prisoner has no Education and no Induction record
+  * Prisoner has Education record (qualifications and highest level of education), but no Induction record (additional training)
+  * Prisoner has both and Education record (qualifications and highest level of education) and an Induction record (additional training)
+  * Retrieving the Education OR Induction from the API calls failed
+
+Because of how the Induction question set works it is not possible to have an InductionDTO but no EducationDTO. This scenario can
+never happen.
+#}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds app-u-print-full-width">
+
+    <div class="govuk-summary-card">
+      <div class="govuk-summary-card__title-wrapper">
+        <h2 class="govuk-summary-card__title">Education and qualifications history</h2>
+      </div>
+
+      {% if not education.problemRetrievingData and not induction.problemRetrievingData%}
+
+        {# Education and qualification related data is rendered first in this summary card #}
+        <div class="govuk-summary-card__content">
+          {% if education.educationDto %}
+            {# The prisoner has education and qualifications related data recorded (IE. an EducationDto) #}
+
+            <div class="app-summary-card__change-link">
+              <h3 class="govuk-heading-s app-summary-card__change-link__heading">Educational qualifications</h3>
+              <a class="govuk-link app-summary-card__change-link__link govuk-!-display-none-print" href="/prisoners/{{ prisonerSummary.prisonNumber }}/induction/qualifications" data-qa="educational-qualifications-change-link">
+                Change<span class="govuk-visually-hidden"> qualifications by adding or removing qualifications</span>
+              </a>
+            </div>
+
+            <table class="govuk-table govuk-!-margin-top-4" data-qa="educational-qualifications-table">
+              <caption class="govuk-table__caption govuk-table__caption--m govuk-visually-hidden">Details of prisoners educational qualifications</caption>
+              <thead class="govuk-table__head">
+                <tr class="govuk-table__row">
+                  <th scope="col" class="govuk-table__header">Subject</th>
+                  <th scope="col" class="govuk-table__header">Level</th>
+                  <th scope="col" class="govuk-table__header">Grade</th>
+                </tr>
+              </thead>
+              <tbody class="govuk-table__body">
+                {% for qualification in education.educationDto.qualifications | achievedQualificationObjectsSortedInScreenOrder %}
+                  <tr class="govuk-table__row">
+                    <td class="govuk-table__cell">{{ qualification.subject }}</td>
+                    <td class="govuk-table__cell">{{ qualification.level | formatQualificationLevel }}</td>
+                    <td class="govuk-table__cell">{{ qualification.grade }}</td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+
+            {# The prisoner has an EducationDto and the above table has rendered out their qualifications from it.
+               How we render the rest of this summary card now depends on whether the prisoner has an InductionDto or not
+            #}
+            {% if induction.inductionDto %}
+              {# The prisoner has an InductionDto so we need to display both the Highest Level of Education from the
+                 EducationDto, and the Additional Training from the InductionDto
+                 The "last udated" fields need to be the latest of those from the EducationDto or InductionDto because
+                 they can be updated independantly of each other.
+              #}
+              <h3 class="govuk-heading-s" data-qa="other-qualifications">Other qualifications and history</h3>
+
+              <dl class="govuk-summary-list">
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">
+                    Highest level of education before prison
+                  </dt>
+                  <dd class="govuk-summary-list__value">
+                    <p class='govuk-body' data-qa="highest-level-of-education">
+                      {{ education.educationDto.educationLevel | formatEducationLevel }}
+                    </p>
+                  </dd>
+                  <dd class="govuk-summary-list__actions govuk-!-display-none-print">
+                    <a class="govuk-link" href="javascript:void(0);" data-qa="highest-level-of-education-change-link">
+                      Change<span class="govuk-visually-hidden"> highest level of education before prison</span>
+                    </a>
+                  </dd>
+                </div>
+
+                <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
+
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">
+                    Other training or qualifications
+                  </dt>
+                  <dd class="govuk-summary-list__value">
+                    <ul class="govuk-list" data-qa="additional-training">
+                      {% for additionalTraining in induction.inductionDto.previousTraining.trainingTypes | sortedAlphabeticallyWithOtherLast %}
+                        {% if additionalTraining === 'OTHER' %}
+                          <li>Other -
+                            {{ induction.inductionDto.previousTraining.trainingTypeOther }}</li>
+                        {% else %}
+                          <li>{{ additionalTraining | formatAdditionalTraining }}</li>
+                        {% endif %}
+                      {% endfor %}
+                    </ul>
+                  </dd>
+                  <dd class="govuk-summary-list__actions govuk-!-display-none-print">
+                    <a class="govuk-link" href="/prisoners/{{ prisonerSummary.prisonNumber }}/induction/additional-training" data-qa="additional-training-change-link">
+                      Change<span class="govuk-visually-hidden"> other training or qualifications</span>
+                    </a>
+                  </dd>
+                </div>
+              </dl>
+
+              {% set updatedAt = education.educationDto.updatedAt if education.educationDto.updatedAt > induction.inductionDto.updatedAt else induction.inductionDto.updatedAt %}
+              {% set updatedBy = education.educationDto.updatedByDisplayName if education.educationDto.updatedAt > induction.inductionDto.updatedAt else induction.inductionDto.updatedByDisplayName %}
+              <p class="govuk-hint govuk-body govuk-!-font-size-16" data-qa="last-updated">
+                Last updated: {{ updatedAt | formatDate('D MMMM YYYY') }}<span class="govuk-!-display-none-print"> by {{ updatedBy }}</span>
+              </p>
+
+            {% else %}
+              {# The prisoner does not have an InductionDto so we need to display the Highest Level of Education from
+                 the EducationDto, and prompt the user to create the Induction
+                 The "last udated" fields therefore come from the EducationDto
+              #}
+              <dl class="govuk-summary-list">
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">
+                    Highest level of education before prison
+                  </dt>
+                  <dd class="govuk-summary-list__value">
+                    <p class='govuk-body' data-qa="highest-level-of-education">
+                      {{ education.educationDto.educationLevel | formatEducationLevel }}
+                    </p>
+                  </dd>
+                  <dd class="govuk-summary-list__actions govuk-!-display-none-print">
+                    <a class="govuk-link" href="javascript:void(0);" data-qa="highest-level-of-education-change-link">
+                      Change<span class="govuk-visually-hidden"> highest level of education before prison</span>
+                    </a>
+                  </dd>
+                </div>
+              </dl>
+
+              <p class="govuk-hint govuk-body govuk-!-font-size-16" data-qa="last-updated">
+                Last updated: {{ education.educationDto.updatedAt | formatDate('D MMMM YYYY') }}<span class="govuk-!-display-none-print"> by {{ education.educationDto.updatedByDisplayName }}</span>
+              </p>
+
+              <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
+
+              <h3 class="govuk-heading-s" data-qa="other-qualifications">Other qualifications and education history</h3>
+              <p class="govuk-body" data-qa="add-education-history">
+                To add education history, including vocational qualifications,
+                <a href="/prisoners/{{ prisonerSummary.prisonNumber }}/create-induction/hoping-to-work-on-release" class="govuk-link" data-qa="link-to-create-induction">
+                  create a learning and work progress plan
+                </a>
+                with {{ prisonerSummary.firstName }} {{ prisonerSummary.lastName }}.
+              </p>
+            {% endif %}
+
+          {% else %}
+            {# The prisoner does not have any education and qualifications related data recorded.
+               Because of how the Induction question set works (see notes at top of template) if the prisoner does not
+               have an EcucationDTO, they also do not have an InductionDTO (it is not possible to have an InductionDTO but
+               no EducationDTO; but it is possible to have an EcucationDTO with no InductionDTO)
+
+               Because we know the prisoner has no EducationDTO and therefore no InductionDTO as well, we can add the content
+               to prompt the user to create both in this block.
+            #}
+            <h3 class="govuk-heading-s" data-qa="educational-qualifications">Educational qualifications</h3>
+            <p class="govuk-body">
+              <a href="javascript:void(0);" class="govuk-link" data-qa="link-to-add-educational-qualifications">Add educational qualifications</a>
+            </p>
+
+            <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
+
+            <h3 class="govuk-heading-s" data-qa="other-qualifications">Other qualifications and education history</h3>
+            <p class="govuk-body">
+              To add education history, including vocational qualifications,
+              <a href="/prisoners/{{ prisonerSummary.prisonNumber }}/create-induction/hoping-to-work-on-release" class="govuk-link" data-qa="link-to-create-induction">
+                create a learning and work progress plan
+              </a>
+              with {{ prisonerSummary.firstName }} {{ prisonerSummary.lastName }}.
+            </p>
+          {% endif %}
+        </div>
+
+      {% else %}
+        {# There was a problem retrieving either the education OR the induction from the API.
+           It only makes sense to display a populated 'Education and qualifications history' summary card if both were
+           successfully retrieved from the API (even if they were a 404). If either API call failed (eg: 500) the simplest
+           thing to do is show a single failure message (rather than trying to work our which one failed, and then how
+           to display the data from the successful API call without the data from the other).
+        #}
+        <div class="govuk-summary-card__content">
+          <h3 class="govuk-heading-s" data-qa="education-or-induction-unavailable-message">We cannot show these details right now</h3>
+          <p class="govuk-body">Reload the page or try again later. Other parts of this service may still be available.</p>
+        </div>
+      {% endif %}
+
+    </div>
+
+  </div>
+</div>

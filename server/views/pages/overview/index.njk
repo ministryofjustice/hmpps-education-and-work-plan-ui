@@ -42,8 +42,13 @@
     {% include './partials/supportNeedsTab/supportNeedsTabContents.njk' %}
   {% endif %}
   {% if tab === 'education-and-training' %}
-    {% include './partials/educationAndTrainingTab/_educationAndTrainingTabWithInductionContents.njk' %}
-    {% include './partials/educationAndTrainingTab/_educationAndTrainingTabWithoutInductionContents.njk' %}
+    {% if not featureToggles.qualificationsEnabled %}
+      {# Original Education and Training tab layout before qualifications could be added independantly of the Induction #}
+      {% include './partials/educationAndTrainingTab/educationAndTrainingTabContents.njk' %}
+    {% else %}
+      {# New Education and Training tab layout now that qualifications can be added independantly of the Induction #}
+      {% include './partials/educationAndTrainingTab/educationAndTrainingTabContentsV2.njk' %}
+    {% endif %}
   {% endif %}
   {% if tab === 'work-and-interests' %}
     {% include './partials/workAndInterestsTab/workAndInterestsTabContents.njk' %}
