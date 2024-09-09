@@ -39,5 +39,8 @@ declare module 'educationAndWorkPlanApiClient' {
   export type GetCiagInductionSummariesRequest = components['schemas']['GetCiagInductionSummariesRequest']
   export type CiagInductionSummaryListResponse = components['schemas']['CiagInductionSummaryListResponse']
   export type CiagInductionSummaryResponse = components['schemas']['CiagInductionSummaryResponse']
+
   export type EducationResponse = components['schemas']['EducationResponse']
+  export type CreateEducationRequest = components['schemas']['CreateEducationRequest']
+  export type CreateAchievedQualificationRequest = components['schemas']['CreateAchievedQualificationRequest']
 }

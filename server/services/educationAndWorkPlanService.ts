@@ -1,4 +1,11 @@
-import type { ArchiveGoalDto, CreateGoalDto, EducationDto, UnarchiveGoalDto, UpdateGoalDto } from 'dto'
+import type {
+  ArchiveGoalDto,
+  CreateGoalDto,
+  CreateOrUpdateEducationDto,
+  EducationDto,
+  UnarchiveGoalDto,
+  UpdateGoalDto,
+} from 'dto'
 import type { CreateGoalsRequest } from 'educationAndWorkPlanApiClient'
 import type { ActionPlan, Goals } from 'viewModels'
 import EducationAndWorkPlanClient from '../data/educationAndWorkPlanClient'
@@ -11,6 +18,7 @@ import toUnarchiveGoalRequest from '../data/mappers/unarchiveGoalMapper'
 import GoalStatusValue from '../enums/goalStatusValue'
 import PrisonService from './prisonService'
 import toEducationDto from '../data/mappers/educationMapper'
+import toCreateEducationRequest from '../data/mappers/createEducationMapper'
 
 export default class EducationAndWorkPlanService {
   constructor(
@@ -66,22 +74,36 @@ export default class EducationAndWorkPlanService {
     return this.educationAndWorkPlanClient.unarchiveGoal(unarchiveGoalDto.prisonNumber, unarchiveGoalRequest, token)
   }
 
+  async getEducation(prisonNumber: string, token: string): Promise<EducationDto> {
+    try {
+      const educationResponse = await this.educationAndWorkPlanClient.getEducation(prisonNumber, token)
+      return toEducationDto(educationResponse, prisonNumber)
+    } catch (error) {
+      logger.error(`Error retrieving Education for Prisoner [${prisonNumber}]: ${error}`)
+      throw error
+    }
+  }
+
+  async createEducation(
+    prisonNumber: string,
+    createEducationDto: CreateOrUpdateEducationDto,
+    token: string,
+  ): Promise<void> {
+    try {
+      const createEducationRequest = toCreateEducationRequest(createEducationDto)
+      return await this.educationAndWorkPlanClient.createEducation(prisonNumber, createEducationRequest, token)
+    } catch (error) {
+      logger.error(`Error creating Education for prisoner [${prisonNumber}] in the Education And Work Plan API `, error)
+      throw error
+    }
+  }
+
   private async getAllPrisonNamesByIdSafely(token: string): Promise<Map<string, string>> {
     try {
       return await this.prisonService.getAllPrisonNamesById(token)
     } catch (error) {
       logger.error(`Error retrieving prison names, defaulting to just IDs: ${error}`)
       return new Map()
-    }
-  }
-
-  async getEducation(prisonNumber: string, token: string): Promise<EducationDto> {
-    try {
-      const educationResponse = await this.educationAndWorkPlanClient.getEducationResponse(prisonNumber, token)
-      return toEducationDto(educationResponse, prisonNumber)
-    } catch (error) {
-      logger.error(`Error retrieving Education for Prisoner [${prisonNumber}]: ${error}`)
-      throw error
     }
   }
 }

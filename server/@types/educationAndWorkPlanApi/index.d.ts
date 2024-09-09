@@ -4,6 +4,54 @@
  */
 
 export interface paths {
+  '/queue-admin/retry-dlq/{dlqName}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put: operations['retryDlq']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/queue-admin/retry-all-dlqs': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put: operations['retryAllDlqs']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/queue-admin/purge-queue/{queueName}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put: operations['purgeQueue']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/inductions/{prisonNumber}': {
     parameters: {
       query?: never
@@ -78,6 +126,22 @@ export interface paths {
     get?: never
     put: operations['archiveGoal']
     post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/person/{prisonNumber}/education': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get: operations['getEduction']
+    put?: never
+    post: operations['createEducation']
     delete?: never
     options?: never
     head?: never
@@ -200,14 +264,14 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/person/{prisonNumber}/education': {
+  '/queue-admin/get-dlq-messages/{dlqName}': {
     parameters: {
       query?: never
       header?: never
       path?: never
       cookie?: never
     }
-    get: operations['getEduction']
+    get: operations['getDlqMessages']
     put?: never
     post?: never
     delete?: never
@@ -220,6 +284,14 @@ export interface paths {
 export type webhooks = Record<string, never>
 export interface components {
   schemas: {
+    RetryDlqResult: {
+      /** Format: int32 */
+      messagesFoundCount: number
+    }
+    PurgeQueueResult: {
+      /** Format: int32 */
+      messagesFoundCount: number
+    }
     /**
      * @description A list of the Prisoner's previous qualifications.   These can either be new qualfications without a reference field, or for any qualifications with a reference field they will be treated as updates.
      * @example null
@@ -760,6 +832,60 @@ export interface components {
        */
       reasonOther?: string
     }
+    /**
+     * @description A list of achieved qualifications that should be created as part of the education record.
+     * @example null
+     */
+    CreateAchievedQualificationRequest: {
+      /**
+       * @description The subject of the qualification.
+       * @example Maths GCSE
+       */
+      subject: string
+      /**
+       * @example null
+       * @enum {string}
+       */
+      level:
+        | 'ENTRY_LEVEL'
+        | 'LEVEL_1'
+        | 'LEVEL_2'
+        | 'LEVEL_3'
+        | 'LEVEL_4'
+        | 'LEVEL_5'
+        | 'LEVEL_6'
+        | 'LEVEL_7'
+        | 'LEVEL_8'
+      /**
+       * @description The grade which was achieved (if known/relevant).   Note: This is a free format value and there is no type or enum. Therefore values can be "A", "B", "C" etc, but also "1", "2", "3", "Pass", "Distinction", "Merit", "First class honours" etc. It is up to the consumer to interpret this data as necessary.
+       * @example Distinction
+       */
+      grade: string
+    }
+    CreateEducationRequest: {
+      /**
+       * @description The Prison identifier.
+       * @example BXI
+       */
+      prisonId: string
+      /**
+       * @example null
+       * @enum {string}
+       */
+      educationLevel:
+        | 'PRIMARY_SCHOOL'
+        | 'SECONDARY_SCHOOL_LEFT_BEFORE_TAKING_EXAMS'
+        | 'SECONDARY_SCHOOL_TOOK_EXAMS'
+        | 'FURTHER_EDUCATION_COLLEGE'
+        | 'UNDERGRADUATE_DEGREE_AT_UNIVERSITY'
+        | 'POSTGRADUATE_DEGREE_AT_UNIVERSITY'
+        | 'NOT_SURE'
+      /**
+       * @description A list of achieved qualifications that should be created as part of the education record.
+       * @example null
+       */
+      qualifications: components['schemas']['CreateAchievedQualificationRequest'][]
+    }
     /** @example null */
     CreateFutureWorkInterestsRequest: {
       /**
@@ -1182,6 +1308,19 @@ export interface components {
       userMessage?: string
       developerMessage?: string
       moreInfo?: string
+    }
+    DlqMessage: {
+      body: {
+        [key: string]: Record<string, never>
+      }
+      messageId: string
+    }
+    GetDlqResult: {
+      /** Format: int32 */
+      messagesFoundCount: number
+      /** Format: int32 */
+      messagesReturnedCount: number
+      messages: components['schemas']['DlqMessage'][]
     }
     /**
      * @description A list of achieved qualifications. Can be empty but not null.
@@ -2066,6 +2205,70 @@ export interface components {
 }
 export type $defs = Record<string, never>
 export interface operations {
+  retryDlq: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        dlqName: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          '*/*': components['schemas']['RetryDlqResult']
+        }
+      }
+    }
+  }
+  retryAllDlqs: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          '*/*': components['schemas']['RetryDlqResult'][]
+        }
+      }
+    }
+  }
+  purgeQueue: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        queueName: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          '*/*': components['schemas']['PurgeQueueResult']
+        }
+      }
+    }
+  }
   getInduction: {
     parameters: {
       query?: never
@@ -2277,6 +2480,52 @@ export interface operations {
     responses: {
       /** @description No Content */
       204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+    }
+  }
+  getEduction: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        prisonNumber: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          '*/*': components['schemas']['EducationResponse']
+        }
+      }
+    }
+  }
+  createEducation: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        prisonNumber: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CreateEducationRequest']
+      }
+    }
+    responses: {
+      /** @description Created */
+      201: {
         headers: {
           [name: string]: unknown
         }
@@ -2571,12 +2820,14 @@ export interface operations {
       }
     }
   }
-  getEduction: {
+  getDlqMessages: {
     parameters: {
-      query?: never
+      query?: {
+        maxMessages?: number
+      }
       header?: never
       path: {
-        prisonNumber: string
+        dlqName: string
       }
       cookie?: never
     }
@@ -2588,7 +2839,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          '*/*': components['schemas']['EducationResponse']
+          '*/*': components['schemas']['GetDlqResult']
         }
       }
     }

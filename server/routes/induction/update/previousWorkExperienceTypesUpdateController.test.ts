@@ -8,7 +8,7 @@ import PreviousWorkExperienceTypesUpdateController from './previousWorkExperienc
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
 import { aValidInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
-import aValidCreateOrUpdateInductionDto from '../../../testsupport/updateInductionDtoTestDataBuilder'
+import aValidUpdateInductionDto from '../../../testsupport/updateInductionDtoTestDataBuilder'
 import HasWorkedBeforeValue from '../../../enums/hasWorkedBeforeValue'
 
 jest.mock('../../../data/mappers/createOrUpdateInductionDtoMapper')
@@ -224,7 +224,7 @@ describe('previousWorkExperienceTypesUpdateController', () => {
       req.body = previousWorkExperienceTypesForm
       req.session.previousWorkExperienceTypesForm = undefined
 
-      const updateInductionDto = aValidCreateOrUpdateInductionDto({ hasWorkedBefore: HasWorkedBeforeValue.YES })
+      const updateInductionDto = aValidUpdateInductionDto({ hasWorkedBefore: HasWorkedBeforeValue.YES })
       mockedCreateOrUpdateInductionDtoMapper.mockReturnValueOnce(updateInductionDto)
 
       const expectedPreviousWorkExperiences: Array<PreviousWorkExperienceDto> = [
@@ -268,7 +268,7 @@ describe('previousWorkExperienceTypesUpdateController', () => {
       req.body = previousWorkExperienceTypesForm
       req.session.previousWorkExperienceTypesForm = undefined
 
-      const updateInductionDto = aValidCreateOrUpdateInductionDto({ hasWorkedBefore: HasWorkedBeforeValue.YES })
+      const updateInductionDto = aValidUpdateInductionDto({ hasWorkedBefore: HasWorkedBeforeValue.YES })
       mockedCreateOrUpdateInductionDtoMapper.mockReturnValueOnce(updateInductionDto)
 
       const expectedPreviousWorkExperiences: Array<PreviousWorkExperienceDto> = [

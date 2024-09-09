@@ -8,7 +8,7 @@ import PreviousWorkExperienceDetailUpdateController from './previousWorkExperien
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
 import { aValidInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
-import aValidCreateOrUpdateInductionDto from '../../../testsupport/updateInductionDtoTestDataBuilder'
+import aValidUpdateInductionDto from '../../../testsupport/updateInductionDtoTestDataBuilder'
 import HasWorkedBeforeValue from '../../../enums/hasWorkedBeforeValue'
 
 jest.mock('../../../data/mappers/createOrUpdateInductionDtoMapper')
@@ -288,7 +288,7 @@ describe('previousWorkExperienceDetailUpdateController', () => {
         req.body = previousWorkExperienceDetailForm
         req.session.previousWorkExperienceDetailForm = undefined
 
-        const updateInductionDto = aValidCreateOrUpdateInductionDto()
+        const updateInductionDto = aValidUpdateInductionDto()
 
         mockedCreateOrUpdateInductionDtoMapper.mockReturnValueOnce(updateInductionDto)
 
@@ -343,7 +343,7 @@ describe('previousWorkExperienceDetailUpdateController', () => {
         req.body = previousWorkExperienceDetailForm
         req.session.previousWorkExperienceDetailForm = undefined
 
-        const updateInductionDto = aValidCreateOrUpdateInductionDto()
+        const updateInductionDto = aValidUpdateInductionDto()
 
         mockedCreateOrUpdateInductionDtoMapper.mockReturnValueOnce(updateInductionDto)
 
@@ -415,7 +415,7 @@ describe('previousWorkExperienceDetailUpdateController', () => {
         req.body = previousWorkExperienceDetailForm
         req.session.previousWorkExperienceDetailForm = undefined
 
-        const updateInductionDto = aValidCreateOrUpdateInductionDto()
+        const updateInductionDto = aValidUpdateInductionDto()
 
         mockedCreateOrUpdateInductionDtoMapper.mockReturnValueOnce(updateInductionDto)
 
@@ -479,7 +479,7 @@ describe('previousWorkExperienceDetailUpdateController', () => {
         req.body = previousWorkExperienceDetailForm
         req.session.previousWorkExperienceDetailForm = undefined
 
-        const updateInductionDto = aValidCreateOrUpdateInductionDto()
+        const updateInductionDto = aValidUpdateInductionDto()
 
         mockedCreateOrUpdateInductionDtoMapper.mockReturnValueOnce(updateInductionDto)
 

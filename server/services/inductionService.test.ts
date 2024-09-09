@@ -6,7 +6,8 @@ import aValidUpdateInductionRequest from '../testsupport/updateInductionRequestT
 import toInductionDto from '../data/mappers/inductionDtoMapper'
 import toCreateInductionRequest from '../data/mappers/createInductionMapper'
 import toUpdateInductionRequest from '../data/mappers/updateInductionMapper'
-import aValidCreateOrUpdateInductionDto from '../testsupport/createInductionDtoTestDataBuilder'
+import aValidCreateInductionDto from '../testsupport/createInductionDtoTestDataBuilder'
+import aValidUpdateInductionDto from '../testsupport/updateInductionDtoTestDataBuilder'
 import aValidCreateInductionRequest from '../testsupport/createInductionRequestTestDataBuilder'
 
 jest.mock('../data/educationAndWorkPlanClient')
@@ -174,7 +175,7 @@ describe('inductionService', () => {
       const prisonNumber = 'A1234BC'
       const userToken = 'a-user-token'
 
-      const updateInductionDto = aValidCreateOrUpdateInductionDto()
+      const updateInductionDto = aValidUpdateInductionDto()
       const updateInductionRequest = aValidUpdateInductionRequest()
       educationAndWorkPlanClient.updateInduction.mockResolvedValue(updateInductionRequest)
       mockedUpdateInductionMapper.mockReturnValue(updateInductionRequest)
@@ -195,7 +196,7 @@ describe('inductionService', () => {
       // Given
       const prisonNumber = 'A1234BC'
       const userToken = 'a-user-token'
-      const updateInductionDto = aValidCreateOrUpdateInductionDto()
+      const updateInductionDto = aValidUpdateInductionDto()
       const updateInductionRequest = aValidUpdateInductionRequest()
       mockedUpdateInductionMapper.mockReturnValue(updateInductionRequest)
 
@@ -233,7 +234,7 @@ describe('inductionService', () => {
       const prisonNumber = 'A1234BC'
       const userToken = 'a-user-token'
 
-      const createInductionDto = aValidCreateOrUpdateInductionDto()
+      const createInductionDto = aValidCreateInductionDto()
       const createInductionRequest = aValidCreateInductionRequest()
       mockedCreateInductionMapper.mockReturnValue(createInductionRequest)
 
@@ -253,7 +254,7 @@ describe('inductionService', () => {
       // Given
       const prisonNumber = 'A1234BC'
       const userToken = 'a-user-token'
-      const createInductionDto = aValidCreateOrUpdateInductionDto()
+      const createInductionDto = aValidCreateInductionDto()
       const createInductionRequest = aValidCreateInductionRequest()
       mockedCreateInductionMapper.mockReturnValue(createInductionRequest)
 

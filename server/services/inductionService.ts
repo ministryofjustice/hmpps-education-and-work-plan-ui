@@ -36,7 +36,7 @@ export default class InductionService {
     prisonNumber: string,
     createInductionDto: CreateOrUpdateInductionDto,
     token: string,
-  ): Promise<never> {
+  ): Promise<void> {
     try {
       const createInductionRequest = toCreateInductionRequest(createInductionDto)
       return await this.educationAndWorkPlanClient.createInduction(prisonNumber, createInductionRequest, token)

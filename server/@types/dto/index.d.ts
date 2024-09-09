@@ -61,6 +61,13 @@ declare module 'dto' {
     updatedBy?: string
     updatedAt?: Date
   }
+
+  export interface CreateOrUpdateEducationDto {
+    reference?: string
+    prisonId: string
+    educationLevel: EducationLevelValue
+    qualifications: Array<AchievedQualificationDto>
+  }
 }
 
 declare module 'inductionDto' {
