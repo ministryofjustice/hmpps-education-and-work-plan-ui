@@ -1,6 +1,6 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express'
 import type { InductionDto } from 'inductionDto'
-import type { QualificationDetailsForm } from 'inductionForms'
+import type { QualificationDetailsForm } from 'forms'
 import InductionController from './inductionController'
 import QualificationDetailsView from './qualificationDetailsView'
 import QualificationLevelValue from '../../../enums/qualificationLevelValue'

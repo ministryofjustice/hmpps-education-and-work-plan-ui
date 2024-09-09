@@ -1,4 +1,4 @@
-import type { QualificationDetailsForm } from 'inductionForms'
+import type { QualificationDetailsForm } from 'forms'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
 import validateQualificationDetailsForm from './qualificationDetailsFormValidator'
 import QualificationLevelValue from '../../../enums/qualificationLevelValue'

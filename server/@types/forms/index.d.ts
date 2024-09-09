@@ -62,6 +62,11 @@ declare module 'forms' {
   export interface QualificationLevelForm {
     qualificationLevel: QualificationLevelValue
   }
+
+  export interface QualificationDetailsForm {
+    qualificationSubject: string
+    qualificationGrade: string
+  }
 }
 
 declare module 'inductionForms' {
@@ -133,11 +138,6 @@ declare module 'inductionForms' {
 
   export interface WantToAddQualificationsForm {
     wantToAddQualifications: YesNoValue
-  }
-
-  export interface QualificationDetailsForm {
-    qualificationSubject: string
-    qualificationGrade: string
   }
 
   export interface AdditionalTrainingForm {

@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express'
 import type { PageFlow } from 'viewModels'
 import type { InductionDto } from 'inductionDto'
-import type { HighestLevelOfEducationForm, QualificationLevelForm } from 'forms'
+import type { HighestLevelOfEducationForm, QualificationDetailsForm, QualificationLevelForm } from 'forms'
 import type {
   AdditionalTrainingForm,
   AffectAbilityToWorkForm,
@@ -11,7 +11,6 @@ import type {
   PersonalInterestsForm,
   PreviousWorkExperienceDetailForm,
   PreviousWorkExperienceTypesForm,
-  QualificationDetailsForm,
   SkillsForm,
   WantToAddQualificationsForm,
   WorkedBeforeForm,

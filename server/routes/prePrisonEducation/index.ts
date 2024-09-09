@@ -7,6 +7,7 @@ import { checkUserHasEditAuthority } from '../../middleware/roleBasedAccessContr
 import createEmptyInductionIfNotInSession from '../routerRequestHandlers/createEmptyEducationDtoIfNotInPrisonerContext'
 import HighestLevelOfEducationController from './highestLevelOfEducationController'
 import QualificationLevelController from './qualificationLevelController'
+import QualificationDetailsController from './qualificationDetailsController'
 import checkEducationDtoExistsInPrisonerContext from '../routerRequestHandlers/checkEducationDtoExistsInPrisonerContext'
 
 /**
@@ -16,6 +17,7 @@ import checkEducationDtoExistsInPrisonerContext from '../routerRequestHandlers/c
 export default (router: Router, services: Services) => {
   const highestLevelOfEducationController = new HighestLevelOfEducationController()
   const qualificationLevelController = new QualificationLevelController()
+  const qualificationDetailsController = new QualificationDetailsController()
 
   router.use('/prisoners/:prisonNumber/highest-level-of-education', [
     checkUserHasEditAuthority(),
@@ -39,8 +41,16 @@ export default (router: Router, services: Services) => {
     asyncMiddleware(qualificationLevelController.submitQualificationLevelForm),
   ])
 
-  router.get('/prisoners/:prisonNumber/qualification-details', [checkUserHasEditAuthority()])
-  router.post('/prisoners/:prisonNumber/qualification-details', [checkUserHasEditAuthority()])
+  router.use('/prisoners/:prisonNumber/qualification-details', [
+    checkUserHasEditAuthority(),
+    checkEducationDtoExistsInPrisonerContext,
+  ])
+  router.get('/prisoners/:prisonNumber/qualification-details', [
+    qualificationDetailsController.getQualificationDetailsView,
+  ])
+  router.post('/prisoners/:prisonNumber/qualification-details', [
+    qualificationDetailsController.submitQualificationDetailsForm,
+  ])
 
   router.get('/prisoners/:prisonNumber/qualifications', [
     checkUserHasEditAuthority(),

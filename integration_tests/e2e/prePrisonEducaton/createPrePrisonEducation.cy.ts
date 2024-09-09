@@ -5,6 +5,7 @@ import EducationLevelValue from '../../../server/enums/educationLevelValue'
 import QualificationLevelPage from '../../pages/prePrisonEducation/QualificationLevelPage'
 import QualificationLevelValue from '../../../server/enums/qualificationLevelValue'
 import OverviewPage from '../../pages/overview/OverviewPage'
+import QualificationDetailsPage from '../../pages/prePrisonEducation/QualificationDetailsPage'
 
 context('Create a prisoners pre-prison education', () => {
   beforeEach(() => {
@@ -32,7 +33,7 @@ context('Create a prisoners pre-prison education', () => {
       .hasBackLinkTo(`/plan/${prisonNumber}/view/education-and-training`)
   })
 
-  it('should redirect Overview page given user navigates directly to Qualification Level page', () => {
+  it('should redirect to Overview page given user navigates directly to Qualification Level page', () => {
     // Given
     const prisonNumber = 'G6115VJ'
     cy.signIn()
@@ -42,6 +43,35 @@ context('Create a prisoners pre-prison education', () => {
 
     // Then
     Page.verifyOnPage(OverviewPage)
+  })
+
+  it('should redirect to Overview page given user navigates directly to Qualification Details page', () => {
+    // Given
+    const prisonNumber = 'G6115VJ'
+    cy.signIn()
+
+    // When
+    cy.visit(`/prisoners/${prisonNumber}/qualification-details`)
+
+    // Then
+    Page.verifyOnPage(OverviewPage)
+  })
+
+  it('should redirect to Qualification Level page given user starts flow but tries to navigate to Qualification Details page without going to Qualification Level first', () => {
+    // Given
+    const prisonNumber = 'G6115VJ'
+    cy.signIn()
+
+    cy.visit(`/prisoners/${prisonNumber}/highest-level-of-education`)
+    Page.verifyOnPage(HighestLevelOfEducationPage) //
+      .selectHighestLevelOfEducation(EducationLevelValue.FURTHER_EDUCATION_COLLEGE)
+
+    // When
+    // User tries to navigate to Qualifications Details page without submitting Highest Level of Education (which would take the user to Qualification Level)
+    cy.visit(`/prisoners/${prisonNumber}/qualification-details`)
+
+    // Then
+    Page.verifyOnPage(QualificationLevelPage)
   })
 
   it('should redirect to auth-error page given user does not have edit authority', () => {
@@ -86,6 +116,18 @@ context('Create a prisoners pre-prison education', () => {
       .hasErrorCount(1)
       .hasFieldInError('qualificationLevel')
       .selectQualificationLevel(QualificationLevelValue.LEVEL_3)
+      .submitPage()
+
+    // Qualification Details is the next page
+    Page.verifyOnPage(QualificationDetailsPage)
+      .hasBackLinkTo(`/prisoners/${prisonNumber}/qualification-level`)
+      .setQualificationGrade('C')
+      .submitPage() // submit the page without answering the Qualification Subject question to trigger a validation error
+    Page.verifyOnPage(QualificationDetailsPage)
+      .hasBackLinkTo(`/prisoners/${prisonNumber}/qualification-level`)
+      .hasErrorCount(1)
+      .hasFieldInError('qualificationSubject')
+      .setQualificationSubject('GCSE Maths')
     // .submitPage() // TODO submit the page when the Qualification Details page is implemented
 
     // Then
