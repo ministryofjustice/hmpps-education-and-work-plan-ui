@@ -141,6 +141,11 @@ export default class EducationAndTrainingPage extends Page {
     return this
   }
 
+  clickToAddEducationalQualifications<T extends Page>(constructor: new () => T): T {
+    this.addEducationHistory().click()
+    return Page.verifyOnPage(constructor)
+  }
+
   activeTab = (): PageElement => cy.get('.moj-sub-navigation__link[aria-current=page]')
 
   functionalSkillsTable = (): PageElement => cy.get('#latest-functional-skills-table')
