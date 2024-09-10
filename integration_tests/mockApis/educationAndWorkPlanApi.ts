@@ -9,6 +9,8 @@ import stubPing from './common'
 import HopingToGetWorkValue from '../../server/enums/hopingToGetWorkValue'
 import HasWorkedBeforeValue from '../../server/enums/hasWorkedBeforeValue'
 import GoalStatusValue from '../../server/enums/goalStatusValue'
+import EducationLevelValue from '../../server/enums/educationLevelValue'
+import QualificationLevelValue from '../../server/enums/qualificationLevelValue'
 
 const createGoals = (): SuperAgentRequest =>
   stubFor({
@@ -849,12 +851,92 @@ const unarchiveGoal = (
     },
   })
 
+const stubGetEducation = (prisonNumber = 'G6115VJ'): SuperAgentRequest =>
+  stubFor({
+    request: {
+      method: 'GET',
+      urlPattern: `/person/${prisonNumber}/education`,
+    },
+    response: {
+      status: 200,
+      headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+      jsonBody: {
+        prisonNumber: `${prisonNumber}`,
+        reference: 'dea24acc-fde5-4ead-a9eb-e1757de2542c',
+        educationLevel: EducationLevelValue.SECONDARY_SCHOOL_TOOK_EXAMS,
+        qualifications: [
+          {
+            reference: '814ade0a-a3b2-46a3-862f-79211ba13f7b',
+            subject: 'Pottery',
+            grade: 'C',
+            level: QualificationLevelValue.LEVEL_4,
+            createdBy: 'asmith_gen',
+            createdAt: new Date('2023-06-19T09:39:44Z'),
+            updatedBy: 'asmith_gen',
+            updatedAt: new Date('2023-06-19T09:39:44Z'),
+          },
+        ],
+        createdBy: 'asmith_gen',
+        createdByDisplayName: 'Alex Smith',
+        createdAt: new Date('2023-06-19T09:39:44Z'),
+        createdAtPrison: 'BXI',
+        updatedBy: 'asmith_gen',
+        updatedByDisplayName: 'Alex Smith',
+        updatedAt: new Date('2023-06-19T09:39:44Z'),
+        updatedAtPrison: 'BXI',
+        problemRetrievingData: false,
+      },
+    },
+  })
+
+const stubGetEducation500Error = (prisonNumber = 'G6115VJ'): SuperAgentRequest =>
+  stubFor({
+    request: {
+      method: 'GET',
+      urlPattern: `/person/${prisonNumber}/education`,
+    },
+    response: {
+      status: 500,
+      headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+      jsonBody: {
+        problemRetrievingData: true,
+        status: 500,
+        errorCode: null,
+        userMessage: 'An unexpected error occurred',
+        developerMessage: 'An unexpected error occurred',
+        moreInfo: null,
+      },
+    },
+  })
+
+const stubGetEducation404Error = (prisonNumber = 'G6115VJ'): SuperAgentRequest =>
+  stubFor({
+    request: {
+      method: 'GET',
+      urlPattern: `/person/${prisonNumber}/education`,
+    },
+    response: {
+      status: 404,
+      headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+      jsonBody: {
+        status: 404,
+        errorCode: null,
+        userMessage: 'No education added yet',
+        developerMessage: 'No education added yet',
+        moreInfo: null,
+      },
+    },
+  })
+
 export default {
   createGoals,
   getActionPlan,
   getGoalsByStatus,
   getGoalsByStatus404,
   getGoalsByStatus500,
+  stubGetEducation,
+  stubGetEducation500Error,
+  stubGetEducation404Error,
   updateGoal,
   updateGoal500Error,
   archiveGoal,
