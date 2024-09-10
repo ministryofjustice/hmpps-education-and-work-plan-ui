@@ -60,17 +60,17 @@ export default class EducationAndTrainingPage extends Page {
     return this
   }
 
-  hasInductionUnavailableMessageDisplayed(): EducationAndTrainingPage {
-    this.inductionUnavailableMessage().should('be.visible')
-    return this
-  }
-
-  hasEducationUnavailableMessageDisplayed(): EducationAndTrainingPage {
-    this.educationUnavailableMessage().should('be.exist')
+  hasEducationOrInductionUnavailableMessageDisplayed(): EducationAndTrainingPage {
+    this.educationOrInductionUnavailableMessage().should('be.visible')
     return this
   }
 
   hasAddEducationMessageDisplayed(): EducationAndTrainingPage {
+    this.addEducationHistory().should('be.exist')
+    return this
+  }
+
+  hasHighestLevelOfEducationMessageDisplayed(): EducationAndTrainingPage {
     this.addEducationHistory().should('be.exist')
     return this
   }
@@ -158,13 +158,12 @@ export default class EducationAndTrainingPage extends Page {
 
   viewAllFunctionalSkillsButton = (): PageElement => cy.get('[data-qa=view-all-functional-skills-button]')
 
-  inductionUnavailableMessage = (): PageElement => cy.get('[data-qa=induction-unavailable-message]')
+  educationOrInductionUnavailableMessage = (): PageElement =>
+    cy.get('[data-qa=education-or-induction-unavailable-message]')
 
-  educationUnavailableMessage = (): PageElement => cy.get('[data-qa=data-unavailable-message-header]')
+  addEducationHistory = (): PageElement => cy.get('[data-qa=link-to-add-educational-qualifications]')
 
-  addEducationHistory = (): PageElement => cy.get('[data-qa=add-education-history]')
-
-  educationTable = (): PageElement => cy.get('[data-qa=education-previous-qualifications-table]')
+  educationTable = (): PageElement => cy.get('[data-qa=educational-qualifications-table]')
 
   createInductionLink = (): PageElement => cy.get('[data-qa=link-to-create-induction]')
 

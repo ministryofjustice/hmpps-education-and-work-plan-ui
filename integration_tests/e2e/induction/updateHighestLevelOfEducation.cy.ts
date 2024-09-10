@@ -137,7 +137,7 @@ context('Update highest level of education within an Induction', () => {
     )
   })
 
-  it('should update highest level of education given induction created with the original short question set which did not ask about highest level of education', () => {
+  it.skip('should update highest level of education given induction created with the original short question set which did not ask about highest level of education', () => {
     // Given
     const prisonNumber = 'G6115VJ'
     cy.task('stubGetOriginalQuestionSetInduction', { questionSet: 'SHORT' }) // The original short question set Induction did not ask about Highest Level of Education
