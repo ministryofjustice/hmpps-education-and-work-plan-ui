@@ -19,6 +19,8 @@ import PrisonService from './prisonService'
 import aValidEducationResponse from '../testsupport/educationResponseTestDataBuilder'
 import toEducationDto from '../data/mappers/educationMapper'
 import aValidEducationDto from '../testsupport/educationDtoTestDataBuilder'
+import aValidCreateEducationDto from '../testsupport/createEducationDtoTestDataBuilder'
+import aValidCreateEducationRequest from '../testsupport/createEducationRequestTestDataBuilder'
 
 jest.mock('../data/mappers/educationMapper')
 jest.mock('../data/educationAndWorkPlanClient')
@@ -305,7 +307,7 @@ describe('educationAndWorkPlanService', () => {
     it('should get prisoner education', async () => {
       // Given
       const educationResponse = aValidEducationResponse()
-      educationAndWorkPlanClient.getEducationResponse.mockResolvedValue(educationResponse)
+      educationAndWorkPlanClient.getEducation.mockResolvedValue(educationResponse)
 
       const expectedEducationDto = aValidEducationDto({ prisonNumber })
       mockedEducationMapper.mockReturnValue(expectedEducationDto)
@@ -315,7 +317,7 @@ describe('educationAndWorkPlanService', () => {
 
       // Then
       expect(actual).toEqual(expectedEducationDto)
-      expect(educationAndWorkPlanClient.getEducationResponse).toHaveBeenCalledWith(prisonNumber, userToken)
+      expect(educationAndWorkPlanClient.getEducation).toHaveBeenCalledWith(prisonNumber, userToken)
       expect(mockedEducationMapper).toHaveBeenCalledWith(educationResponse, prisonNumber)
     })
 
@@ -329,7 +331,7 @@ describe('educationAndWorkPlanService', () => {
           developerMessage: 'An unexpected error occurred',
         },
       }
-      educationAndWorkPlanClient.getEducationResponse.mockRejectedValue(eductionAndWorkPlanApiError)
+      educationAndWorkPlanClient.getEducation.mockRejectedValue(eductionAndWorkPlanApiError)
 
       // When
       const actual = await educationAndWorkPlanService.getEducation(prisonNumber, userToken).catch(error => {
@@ -338,8 +340,55 @@ describe('educationAndWorkPlanService', () => {
 
       // Then
       expect(actual).toEqual(eductionAndWorkPlanApiError)
-      expect(educationAndWorkPlanClient.getEducationResponse).toHaveBeenCalledWith(prisonNumber, userToken)
+      expect(educationAndWorkPlanClient.getEducation).toHaveBeenCalledWith(prisonNumber, userToken)
       expect(mockedEducationMapper).not.toHaveBeenCalled()
+    })
+  })
+
+  describe('createEducation', () => {
+    it('should create Education', async () => {
+      // Given
+      const prisonNumber = 'A1234BC'
+      const userToken = 'a-user-token'
+      const createEducationDto = aValidCreateEducationDto()
+      const createEducationRequest = aValidCreateEducationRequest()
+
+      // When
+      await educationAndWorkPlanService.createEducation(prisonNumber, createEducationDto, userToken)
+
+      // Then
+      expect(educationAndWorkPlanClient.createEducation).toHaveBeenCalledWith(
+        prisonNumber,
+        createEducationRequest,
+        userToken,
+      )
+    })
+
+    it('should not create Education given educationAndWorkPlanClient returns an error', async () => {
+      // Given
+      const prisonNumber = 'A1234BC'
+      const userToken = 'a-user-token'
+      const createEducationDto = aValidCreateEducationDto()
+
+      const eductionAndWorkPlanApiError = {
+        status: 500,
+        data: {
+          status: 500,
+          userMessage: 'An unexpected error occurred',
+          developerMessage: 'An unexpected error occurred',
+        },
+      }
+      educationAndWorkPlanClient.createEducation.mockRejectedValue(eductionAndWorkPlanApiError)
+
+      // When
+      const actual = await educationAndWorkPlanService
+        .createEducation(prisonNumber, createEducationDto, userToken)
+        .catch(error => {
+          return error
+        })
+
+      // Then
+      expect(actual).toEqual(eductionAndWorkPlanApiError)
     })
   })
 })

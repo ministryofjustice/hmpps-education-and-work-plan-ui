@@ -21,6 +21,7 @@ import aValidCreateInductionRequest from '../testsupport/createInductionRequestT
 import ReasonToArchiveGoalValue from '../enums/ReasonToArchiveGoalValue'
 import GoalStatusValue from '../enums/goalStatusValue'
 import aValidEducationResponse from '../testsupport/educationResponseTestDataBuilder'
+import aValidCreateEducationRequest from '../testsupport/createEducationRequestTestDataBuilder'
 
 describe('educationAndWorkPlanClient', () => {
   const educationAndWorkPlanClient = new EducationAndWorkPlanClient()
@@ -611,7 +612,7 @@ describe('educationAndWorkPlanClient', () => {
       educationAndWorkPlanApi.get(`/person/${prisonNumber}/education`).reply(200, expectedEducationResponse)
 
       // When
-      const actual = await educationAndWorkPlanClient.getEducationResponse(prisonNumber, systemToken)
+      const actual = await educationAndWorkPlanClient.getEducation(prisonNumber, systemToken)
 
       // Then
       expect(nock.isDone()).toBe(true)
@@ -632,7 +633,54 @@ describe('educationAndWorkPlanClient', () => {
 
       // When
       try {
-        await educationAndWorkPlanClient.getEducationResponse(prisonNumber, systemToken)
+        await educationAndWorkPlanClient.getEducation(prisonNumber, systemToken)
+      } catch (e) {
+        // Then
+        expect(nock.isDone()).toBe(true)
+        expect(e.status).toEqual(500)
+        expect(e.data).toEqual(expectedResponseBody)
+      }
+    })
+  })
+
+  describe('createEducation', () => {
+    it('should create Education', async () => {
+      // Given
+      const prisonNumber = 'A1234BC'
+      const systemToken = 'a-system-token'
+
+      const createEducationRequest = aValidCreateEducationRequest()
+      const expectedResponseBody = {}
+      educationAndWorkPlanApi
+        .post(`/person/${prisonNumber}/education`, requestBody => isEqual(requestBody, createEducationRequest))
+        .reply(201, expectedResponseBody)
+
+      // When
+      const actual = await educationAndWorkPlanClient.createEducation(prisonNumber, createEducationRequest, systemToken)
+
+      // Then
+      expect(nock.isDone()).toBe(true)
+      expect(actual).toEqual(expectedResponseBody)
+    })
+
+    it('should not get Education given API returns error response', async () => {
+      // Given
+      const prisonNumber = 'A1234BC'
+      const systemToken = 'a-system-token'
+
+      const createEducationRequest = aValidCreateEducationRequest()
+      const expectedResponseBody = {
+        status: 500,
+        userMessage: 'An unexpected error occurred',
+        developerMessage: 'An unexpected error occurred',
+      }
+      educationAndWorkPlanApi
+        .post(`/person/${prisonNumber}/education`, requestBody => isEqual(requestBody, createEducationRequest))
+        .reply(500, expectedResponseBody)
+
+      // When
+      try {
+        await educationAndWorkPlanClient.createEducation(prisonNumber, createEducationRequest, systemToken)
       } catch (e) {
         // Then
         expect(nock.isDone()).toBe(true)

@@ -12,7 +12,7 @@ import InPrisonWorkValue from '../enums/inPrisonWorkValue'
 import InPrisonTrainingValue from '../enums/inPrisonTrainingValue'
 import HasWorkedBeforeValue from '../enums/hasWorkedBeforeValue'
 
-const aValidCreateOrUpdateInductionDto = (
+const aValidUpdateInductionDto = (
   options?: CoreBuilderOptions & {
     hopingToGetWork?: HopingToGetWorkValue
     hasWorkedBefore?: HasWorkedBeforeValue
@@ -144,4 +144,4 @@ const baseUpdateInductionDtoTemplate = (options?: CoreBuilderOptions): CreateOrU
   }
 }
 
-export default aValidCreateOrUpdateInductionDto
+export default aValidUpdateInductionDto

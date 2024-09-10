@@ -9,7 +9,7 @@ import { validFunctionalSkills } from '../../../testsupport/functionalSkillsTest
 import QualificationLevelValue from '../../../enums/qualificationLevelValue'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
 import InductionService from '../../../services/inductionService'
-import aValidCreateOrUpdateInductionDto from '../../../testsupport/updateInductionDtoTestDataBuilder'
+import aValidUpdateInductionDto from '../../../testsupport/updateInductionDtoTestDataBuilder'
 import EducationLevelValue from '../../../enums/educationLevelValue'
 
 jest.mock('../../../data/mappers/createOrUpdateInductionDtoMapper')
@@ -84,7 +84,7 @@ describe('qualificationsListUpdateController', () => {
       const inductionDto = aValidInductionDto()
       req.session.inductionDto = inductionDto
 
-      const updateInductionDto = aValidCreateOrUpdateInductionDto()
+      const updateInductionDto = aValidUpdateInductionDto()
       // UInduction DTO contains highest level of education as SECONDARY_SCHOOL_TOOK_EXAMS
       // with 1 qualification: Level 4 Pottery grade C
       mockedCreateOrUpdateInductionDtoMapper.mockReturnValueOnce(updateInductionDto)
@@ -118,7 +118,7 @@ describe('qualificationsListUpdateController', () => {
       const inductionDto = aValidInductionDto()
       req.session.inductionDto = inductionDto
 
-      const updateInductionDto = aValidCreateOrUpdateInductionDto()
+      const updateInductionDto = aValidUpdateInductionDto()
       // Induction DTO contains highest level of education as SECONDARY_SCHOOL_TOOK_EXAMS
       // with 1 qualification: Level 4 Pottery grade C
       mockedCreateOrUpdateInductionDtoMapper.mockReturnValueOnce(updateInductionDto)

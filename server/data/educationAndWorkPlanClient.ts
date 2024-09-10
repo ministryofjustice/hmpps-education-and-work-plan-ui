@@ -12,6 +12,7 @@ import type {
   UnarchiveGoalRequest,
   TimelineEventResponse,
   GetGoalsResponse,
+  CreateEducationRequest,
   EducationResponse,
 } from 'educationAndWorkPlanApiClient'
 import RestClient from './restClient'
@@ -109,16 +110,27 @@ export default class EducationAndWorkPlanClient {
     prisonNumber: string,
     createInductionRequest: CreateInductionRequest,
     token: string,
-  ): Promise<never> {
+  ): Promise<void> {
     return EducationAndWorkPlanClient.restClient(token).post({
       path: `/inductions/${prisonNumber}`,
       data: createInductionRequest,
     })
   }
 
-  async getEducationResponse(prisonNumber: string, token: string): Promise<EducationResponse> {
+  async getEducation(prisonNumber: string, token: string): Promise<EducationResponse> {
     return EducationAndWorkPlanClient.restClient(token).get<EducationResponse>({
       path: `/person/${prisonNumber}/education`,
+    })
+  }
+
+  async createEducation(
+    prisonNumber: string,
+    createdEducationRequest: CreateEducationRequest,
+    token: string,
+  ): Promise<void> {
+    return EducationAndWorkPlanClient.restClient(token).post({
+      path: `/person/${prisonNumber}/education`,
+      data: createdEducationRequest,
     })
   }
 }
