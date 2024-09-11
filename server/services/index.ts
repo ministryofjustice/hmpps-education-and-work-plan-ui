@@ -42,7 +42,7 @@ export const services = () => {
     educationAndWorkPlanClient,
     ciagInductionClient,
   )
-  const timelineService = new TimelineService(educationAndWorkPlanClient, prisonService)
+  const timelineService = new TimelineService(educationAndWorkPlanClient, prisonService, hmppsAuthClient)
 
   return {
     applicationInfo,

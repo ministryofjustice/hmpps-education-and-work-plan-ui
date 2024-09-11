@@ -5,25 +5,24 @@ import TimelineService from './timelineService'
 import EducationAndWorkPlanClient from '../data/educationAndWorkPlanClient'
 import toTimeline from '../data/mappers/timelineMapper'
 import aValidTimelineResponse from '../testsupport/timelineResponseTestDataBuilder'
+import HmppsAuthClient from '../data/hmppsAuthClient'
 
 jest.mock('../data/mappers/timelineMapper')
 jest.mock('./prisonService')
 jest.mock('../data/educationAndWorkPlanClient')
+jest.mock('../data/hmppsAuthClient')
 
 describe('timelineService', () => {
   const mockedTimelineMapper = toTimeline as jest.MockedFunction<typeof toTimeline>
 
   const educationAndWorkPlanClient = new EducationAndWorkPlanClient() as jest.Mocked<EducationAndWorkPlanClient>
   const prisonService = new PrisonService(null, null, null) as jest.Mocked<PrisonService>
-  const timelineService = new TimelineService(educationAndWorkPlanClient, prisonService)
-
-  beforeEach(() => {
-    jest.resetAllMocks()
-  })
+  const hmppsAuthClient = new HmppsAuthClient(null) as jest.Mocked<HmppsAuthClient>
+  const timelineService = new TimelineService(educationAndWorkPlanClient, prisonService, hmppsAuthClient)
 
   const prisonNumber = 'A1234BC'
   const username = 'a-dps-user'
-  const userToken = 'a-user-token'
+  const systemToken = 'a-system-token'
   const supportedTimelineEvents = [
     'ACTION_PLAN_CREATED',
     'INDUCTION_UPDATED',
@@ -39,6 +38,12 @@ describe('timelineService', () => {
     ['ASI', 'Ashfield (HMP)'],
     ['MDI', 'Moorland (HMP & YOI)'],
   ])
+
+  beforeEach(() => {
+    jest.resetAllMocks()
+    hmppsAuthClient.getSystemClientToken.mockResolvedValue(systemToken)
+  })
+
   describe('getTimeline', () => {
     it('should get timeline given prison name lookups for several different prisons', async () => {
       // Given
@@ -78,7 +83,7 @@ describe('timelineService', () => {
       prisonService.getAllPrisonNamesById.mockResolvedValueOnce(mockedPrisonNamesById)
 
       // When
-      const actual = await timelineService.getTimeline(prisonNumber, userToken, username)
+      const actual = await timelineService.getTimeline(prisonNumber, username)
 
       // Then
       expect(mockedTimelineMapper).toHaveBeenCalledWith(timelineResponse, mockedPrisonNamesById)
@@ -86,9 +91,10 @@ describe('timelineService', () => {
       expect(actual).toEqual(timeline)
       expect(educationAndWorkPlanClient.getTimeline).toHaveBeenCalledWith(
         prisonNumber,
-        userToken,
+        systemToken,
         supportedTimelineEvents,
       )
+      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
     })
 
     it('should get timeline given prison name lookups fail', async () => {
@@ -130,7 +136,7 @@ describe('timelineService', () => {
       prisonService.getAllPrisonNamesById.mockResolvedValue(new Map())
 
       // When
-      const actual = await timelineService.getTimeline(prisonNumber, userToken, username)
+      const actual = await timelineService.getTimeline(prisonNumber, username)
 
       // Then
       expect(mockedTimelineMapper).toHaveBeenCalledWith(timelineResponse, new Map())
@@ -138,9 +144,10 @@ describe('timelineService', () => {
       expect(actual).toEqual(timeline)
       expect(educationAndWorkPlanClient.getTimeline).toHaveBeenCalledWith(
         prisonNumber,
-        userToken,
+        systemToken,
         supportedTimelineEvents,
       )
+      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
     })
   })
 })

@@ -9,7 +9,7 @@ import prepareTimelineForView from './prepareTimelineForView'
 jest.mock('../../services/timelineService')
 
 describe('timelineController', () => {
-  const timelineService = new TimelineService(null, null) as jest.Mocked<TimelineService>
+  const timelineService = new TimelineService(null, null, null) as jest.Mocked<TimelineService>
   const controller = new TimelineController(timelineService)
 
   const prisonNumber = 'A1234GC'
@@ -25,10 +25,7 @@ describe('timelineController', () => {
     jest.resetAllMocks()
     req = {
       session: { prisonerSummary },
-      user: {
-        username: 'a-dps-user',
-        token: 'a-user-token',
-      },
+      user: { username: 'a-dps-user' },
       params: { prisonNumber },
     } as unknown as Request
   })
@@ -54,6 +51,6 @@ describe('timelineController', () => {
 
     // Then
     expect(res.render).toHaveBeenCalledWith('pages/overview/index', expectedView)
-    expect(timelineService.getTimeline).toHaveBeenCalledWith(prisonNumber, 'a-user-token', 'a-dps-user')
+    expect(timelineService.getTimeline).toHaveBeenCalledWith(prisonNumber, 'a-dps-user')
   })
 })
