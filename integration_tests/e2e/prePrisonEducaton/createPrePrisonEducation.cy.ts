@@ -6,6 +6,7 @@ import QualificationLevelPage from '../../pages/prePrisonEducation/Qualification
 import QualificationLevelValue from '../../../server/enums/qualificationLevelValue'
 import OverviewPage from '../../pages/overview/OverviewPage'
 import QualificationDetailsPage from '../../pages/prePrisonEducation/QualificationDetailsPage'
+import EducationAndTrainingPage from '../../pages/overview/EducationAndTrainingPage'
 
 context('Create a prisoners pre-prison education', () => {
   beforeEach(() => {
@@ -91,9 +92,16 @@ context('Create a prisoners pre-prison education', () => {
   it('should create a prisoners education record, triggering validation on every screen', () => {
     // Given
     const prisonNumber = 'G6115VJ'
-    cy.signIn()
+    cy.task('getPrisonerById', prisonNumber)
+    cy.task('stubGetInduction404Error', prisonNumber)
 
-    cy.visit(`/prisoners/${prisonNumber}/highest-level-of-education`)
+    cy.signIn()
+    cy.visit(`/plan/${prisonNumber}/view/overview`)
+
+    const overviewPage = Page.verifyOnPage(OverviewPage)
+    overviewPage.selectTab('Education and training')
+    const educationAndTrainingPage = Page.verifyOnPage(EducationAndTrainingPage)
+    educationAndTrainingPage.clickToAddEducationalQualifications(HighestLevelOfEducationPage)
 
     // When
     // First page is Highest Level of Education
