@@ -17,6 +17,7 @@ describe('qualificationsListController', () => {
   const educationAndWorkPlanService = new EducationAndWorkPlanService(
     null,
     null,
+    null,
   ) as jest.Mocked<EducationAndWorkPlanService>
   const controller = new QualificationsListController(educationAndWorkPlanService)
 
