@@ -851,6 +851,18 @@ const unarchiveGoal = (
     },
   })
 
+const stubCreateEducation = (prisonNumber = 'G6115VJ'): SuperAgentRequest =>
+  stubFor({
+    request: {
+      method: 'POST',
+      urlPattern: `/person/${prisonNumber}/education`,
+    },
+    response: {
+      status: 201,
+      headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+    },
+  })
+
 const stubGetEducation = (prisonNumber = 'G6115VJ'): SuperAgentRequest =>
   stubFor({
     request: {
@@ -934,9 +946,12 @@ export default {
   getGoalsByStatus,
   getGoalsByStatus404,
   getGoalsByStatus500,
+
+  stubCreateEducation,
   stubGetEducation,
   stubGetEducation500Error,
   stubGetEducation404Error,
+
   updateGoal,
   updateGoal500Error,
   archiveGoal,

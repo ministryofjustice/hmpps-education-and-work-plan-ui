@@ -4,24 +4,27 @@ import retrieveCuriousFunctionalSkills from '../routerRequestHandlers/retrieveCu
 import retrieveCuriousInPrisonCourses from '../routerRequestHandlers/retrieveCuriousInPrisonCourses'
 import asyncMiddleware from '../../middleware/asyncMiddleware'
 import { checkUserHasEditAuthority } from '../../middleware/roleBasedAccessControl'
-import createEmptyInductionIfNotInSession from '../routerRequestHandlers/createEmptyEducationDtoIfNotInPrisonerContext'
+import createEmptyEducationDtoIfNotInSession from '../routerRequestHandlers/createEmptyEducationDtoIfNotInPrisonerContext'
 import HighestLevelOfEducationController from './highestLevelOfEducationController'
 import QualificationLevelController from './qualificationLevelController'
 import QualificationDetailsController from './qualificationDetailsController'
 import checkEducationDtoExistsInPrisonerContext from '../routerRequestHandlers/checkEducationDtoExistsInPrisonerContext'
+import QualificationsListController from './qualificationsListController'
 
 /**
  * Route definitions for creating a prisoner's qualifications before an Induction
  *
  */
 export default (router: Router, services: Services) => {
+  const { educationAndWorkPlanService } = services
   const highestLevelOfEducationController = new HighestLevelOfEducationController()
   const qualificationLevelController = new QualificationLevelController()
   const qualificationDetailsController = new QualificationDetailsController()
+  const qualificationsListController = new QualificationsListController(educationAndWorkPlanService)
 
   router.use('/prisoners/:prisonNumber/highest-level-of-education', [
     checkUserHasEditAuthority(),
-    createEmptyInductionIfNotInSession,
+    createEmptyEducationDtoIfNotInSession,
   ])
   router.get('/prisoners/:prisonNumber/highest-level-of-education', [
     asyncMiddleware(highestLevelOfEducationController.getHighestLevelOfEducationView),
@@ -46,16 +49,22 @@ export default (router: Router, services: Services) => {
     checkEducationDtoExistsInPrisonerContext,
   ])
   router.get('/prisoners/:prisonNumber/qualification-details', [
-    qualificationDetailsController.getQualificationDetailsView,
+    asyncMiddleware(qualificationDetailsController.getQualificationDetailsView),
   ])
   router.post('/prisoners/:prisonNumber/qualification-details', [
-    qualificationDetailsController.submitQualificationDetailsForm,
+    asyncMiddleware(qualificationDetailsController.submitQualificationDetailsForm),
   ])
 
   router.get('/prisoners/:prisonNumber/qualifications', [
     checkUserHasEditAuthority(),
+    checkEducationDtoExistsInPrisonerContext,
+  ])
+  router.get('/prisoners/:prisonNumber/qualifications', [
     retrieveCuriousFunctionalSkills(services.curiousService),
     retrieveCuriousInPrisonCourses(services.curiousService),
+    asyncMiddleware(qualificationsListController.getQualificationsListView),
   ])
-  router.post('/prisoners/:prisonNumber/qualifications', [checkUserHasEditAuthority()])
+  router.post('/prisoners/:prisonNumber/qualifications', [
+    asyncMiddleware(qualificationsListController.submitQualificationsListView),
+  ])
 }

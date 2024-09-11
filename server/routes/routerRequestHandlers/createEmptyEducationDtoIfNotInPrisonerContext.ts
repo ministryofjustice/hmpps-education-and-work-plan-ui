@@ -11,7 +11,7 @@ const createEmptyInductionIfNotInSession = async (req: Request, res: Response, n
   const { prisonNumber } = req.params
 
   if (!getPrisonerContext(req.session, prisonNumber).educationDto) {
-    getPrisonerContext(req.session, prisonNumber).educationDto = { prisonNumber } as EducationDto
+    getPrisonerContext(req.session, prisonNumber).educationDto = { prisonNumber, qualifications: [] } as EducationDto
   }
 
   next()

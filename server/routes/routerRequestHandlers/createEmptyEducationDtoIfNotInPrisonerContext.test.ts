@@ -26,7 +26,7 @@ describe('createEmptyEducationDtoIfNotInPrisonerContext', () => {
 
     getPrisonerContext(req.session, prisonNumber).educationDto = undefined
 
-    const expectedEducationDto = { prisonNumber: 'A1234BC' } as EducationDto
+    const expectedEducationDto = { prisonNumber: 'A1234BC', qualifications: [] } as EducationDto
 
     // When
     await createEmptyEducationDtoIfNotInPrisonerContext(req, res, next)
