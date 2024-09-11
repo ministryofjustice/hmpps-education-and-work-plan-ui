@@ -4,8 +4,15 @@ describe('formatQualificationLevelHintFilter', () => {
   describe('should format qualification level hint', () => {
     Array.of(
       { source: 'ENTRY_LEVEL', expected: 'including entry level ESOL certificate (ELC) and Skills for life' },
-      { source: 'LEVEL_1', expected: 'including level 1 essential or functional skills and some GCSE grades' },
-      { source: 'LEVEL_2', expected: 'including some CSE and GCSE grades, level 2 NVQ and some O level grades' },
+      {
+        source: 'LEVEL_1',
+        expected: 'including GCSE grades 1, 2 and 3 or D to G and level 1 essential or functional skills',
+      },
+      {
+        source: 'LEVEL_2',
+        expected:
+          'including GCSE grades 4 to 9 or A*, A, B and C, level 2 NVQ and O level grades A, B or C and CSE grade 1',
+      },
       {
         source: 'LEVEL_3',
         expected: 'including A level, international Baccalaureate diploma, advanced apprenticeship and T level',
