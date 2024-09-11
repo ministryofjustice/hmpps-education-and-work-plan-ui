@@ -59,12 +59,12 @@ export default class QualificationDetailsController {
       return res.redirectWithErrors(`/prisoners/${prisonNumber}/qualification-details`, errors)
     }
 
-    const updatedInduction = this.addQualificationToEducationDto(
+    const updatedEducation = this.addQualificationToEducationDto(
       educationDto,
       qualificationDetailsForm,
       qualificationLevelForm.qualificationLevel,
     )
-    getPrisonerContext(req.session, prisonNumber).educationDto = updatedInduction
+    getPrisonerContext(req.session, prisonNumber).educationDto = updatedEducation
 
     getPrisonerContext(req.session, prisonNumber).qualificationDetailsForm = undefined
     getPrisonerContext(req.session, prisonNumber).qualificationLevelForm = undefined

@@ -6,9 +6,15 @@ import QualificationLevelPage from '../../pages/prePrisonEducation/Qualification
 import QualificationLevelValue from '../../../server/enums/qualificationLevelValue'
 import OverviewPage from '../../pages/overview/OverviewPage'
 import QualificationDetailsPage from '../../pages/prePrisonEducation/QualificationDetailsPage'
+import QualificationsListPage from '../../pages/prePrisonEducation/QualificationsListPage'
 import EducationAndTrainingPage from '../../pages/overview/EducationAndTrainingPage'
+import { postRequestedFor } from '../../mockApis/wiremock/requestPatternBuilder'
+import { urlEqualTo } from '../../mockApis/wiremock/matchers/url'
+import { matchingJsonPath } from '../../mockApis/wiremock/matchers/content'
 
 context('Create a prisoners pre-prison education', () => {
+  const prisonNumber = 'G6115VJ'
+
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubSignInAsUserWithEditAuthority')
@@ -19,11 +25,17 @@ context('Create a prisoners pre-prison education', () => {
     cy.task('stubCiagInductionList')
     cy.task('stubActionPlansList')
     cy.task('getPrisonerById')
+    cy.task('stubGetAllPrisons')
+    cy.task('getActionPlan')
+    cy.task('stubLearnerProfile')
+    cy.task('stubLearnerEducation')
+    cy.task('stubGetInduction404Error')
+    cy.task('stubGetEducation404Error')
+    cy.task('stubCreateEducation')
   })
 
   it('should be able to navigate directly to Highest Level of Education page', () => {
     // Given
-    const prisonNumber = 'G6115VJ'
     cy.signIn()
 
     // When
@@ -36,7 +48,6 @@ context('Create a prisoners pre-prison education', () => {
 
   it('should redirect to Overview page given user navigates directly to Qualification Level page', () => {
     // Given
-    const prisonNumber = 'G6115VJ'
     cy.signIn()
 
     // When
@@ -48,7 +59,6 @@ context('Create a prisoners pre-prison education', () => {
 
   it('should redirect to Overview page given user navigates directly to Qualification Details page', () => {
     // Given
-    const prisonNumber = 'G6115VJ'
     cy.signIn()
 
     // When
@@ -60,7 +70,6 @@ context('Create a prisoners pre-prison education', () => {
 
   it('should redirect to Qualification Level page given user starts flow but tries to navigate to Qualification Details page without going to Qualification Level first', () => {
     // Given
-    const prisonNumber = 'G6115VJ'
     cy.signIn()
 
     cy.visit(`/prisoners/${prisonNumber}/highest-level-of-education`)
@@ -80,8 +89,6 @@ context('Create a prisoners pre-prison education', () => {
     cy.task('stubSignInAsUserWithViewAuthority')
     cy.signIn()
 
-    const prisonNumber = 'G6115VJ'
-
     // When
     cy.visit(`/prisoners/${prisonNumber}/highest-level-of-education`, { failOnStatusCode: false })
 
@@ -91,10 +98,6 @@ context('Create a prisoners pre-prison education', () => {
 
   it('should create a prisoners education record, triggering validation on every screen', () => {
     // Given
-    const prisonNumber = 'G6115VJ'
-    cy.task('getPrisonerById', prisonNumber)
-    cy.task('stubGetInduction404Error', prisonNumber)
-
     cy.signIn()
     cy.visit(`/plan/${prisonNumber}/view/overview`)
 
@@ -123,7 +126,7 @@ context('Create a prisoners pre-prison education', () => {
       .hasBackLinkTo(`/prisoners/${prisonNumber}/highest-level-of-education`)
       .hasErrorCount(1)
       .hasFieldInError('qualificationLevel')
-      .selectQualificationLevel(QualificationLevelValue.LEVEL_3)
+      .selectQualificationLevel(QualificationLevelValue.LEVEL_2)
       .submitPage()
 
     // Qualification Details is the next page
@@ -136,9 +139,59 @@ context('Create a prisoners pre-prison education', () => {
       .hasErrorCount(1)
       .hasFieldInError('qualificationSubject')
       .setQualificationSubject('GCSE Maths')
-    // .submitPage() // TODO submit the page when the Qualification Details page is implemented
+      .submitPage()
+
+    // Qualifications List is the next page
+    Page.verifyOnPage(QualificationsListPage)
+      .hasBackLinkTo(`/prisoners/${prisonNumber}/highest-level-of-education`)
+      .hasEducationalQualifications(['GCSE Maths'])
+      .clickToAddAnotherQualification()
+
+    // Qualification Level is the next page
+    Page.verifyOnPage(QualificationLevelPage).selectQualificationLevel(QualificationLevelValue.LEVEL_3).submitPage()
+    // Qualification Details is the next page
+    Page.verifyOnPage(QualificationDetailsPage)
+      .setQualificationGrade('B')
+      .setQualificationSubject('A Level English')
+      .submitPage()
+
+    // Qualifications List is the next page
+    Page.verifyOnPage(QualificationsListPage).clickToAddAnotherQualification()
+
+    // Qualification Level is the next page
+    Page.verifyOnPage(QualificationLevelPage).selectQualificationLevel(QualificationLevelValue.LEVEL_2).submitPage()
+    // Qualification Details is the next page
+    Page.verifyOnPage(QualificationDetailsPage)
+      .setQualificationGrade('C')
+      .setQualificationSubject('GCSE Pottery')
+      .submitPage()
+
+    // Qualifications List is the next page
+    Page.verifyOnPage(QualificationsListPage)
+      .hasEducationalQualifications(['GCSE Maths', 'A Level English', 'GCSE Pottery'])
+      .removeQualification(1) // remove GCSE Maths
+      .hasEducationalQualifications(['A Level English', 'GCSE Pottery'])
+      .submitPage()
 
     // Then
-    // TODO - verify API was called with the expected data
+    Page.verifyOnPage(EducationAndTrainingPage)
+    cy.wiremockVerify(
+      postRequestedFor(urlEqualTo(`/person/${prisonNumber}/education`)) //
+        .withRequestBody(
+          matchingJsonPath(
+            "$[?(@.prisonId == 'MDI' && " +
+              "@.educationLevel == 'FURTHER_EDUCATION_COLLEGE' && " +
+              '@.qualifications.size() == 2 && ' +
+              '!@.qualifications[0].reference && ' + // assert the qualification has no reference as it is a new qualification that wont have a reference until the API has created it
+              "@.qualifications[0].subject == 'A Level English' && " +
+              "@.qualifications[0].grade == 'B' && " +
+              "@.qualifications[0].level == 'LEVEL_3' && " +
+              '!@.qualifications[1].reference && ' + // assert the qualification has no reference as it is a new qualification that wont have a reference until the API has created it
+              "@.qualifications[1].subject == 'GCSE Pottery' && " +
+              "@.qualifications[1].grade == 'C' && " +
+              "@.qualifications[1].level == 'LEVEL_2')]",
+          ),
+        ),
+    )
   })
 })
