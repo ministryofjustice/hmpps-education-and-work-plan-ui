@@ -32,7 +32,11 @@ export const services = () => {
   const userService = new UserService(manageUsersApiClient)
   const prisonerSearchService = new PrisonerSearchService(hmppsAuthClient, prisonerSearchClient)
   const prisonService = new PrisonService(prisonRegisterStore, prisonRegisterClient, hmppsAuthClient)
-  const educationAndWorkPlanService = new EducationAndWorkPlanService(educationAndWorkPlanClient, prisonService)
+  const educationAndWorkPlanService = new EducationAndWorkPlanService(
+    educationAndWorkPlanClient,
+    prisonService,
+    hmppsAuthClient,
+  )
   const inductionService = new InductionService(educationAndWorkPlanClient)
   const curiousService = new CuriousService(hmppsAuthClient, curiousClient, prisonService)
   const frontendComponentService = new FrontendComponentService(frontendComponentApiClient)

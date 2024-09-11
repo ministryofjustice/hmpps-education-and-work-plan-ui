@@ -19,11 +19,13 @@ import GoalStatusValue from '../enums/goalStatusValue'
 import PrisonService from './prisonService'
 import toEducationDto from '../data/mappers/educationMapper'
 import toCreateEducationRequest from '../data/mappers/createEducationMapper'
+import HmppsAuthClient from '../data/hmppsAuthClient'
 
 export default class EducationAndWorkPlanService {
   constructor(
     private readonly educationAndWorkPlanClient: EducationAndWorkPlanClient,
     private readonly prisonService: PrisonService,
+    private readonly hmppsAuthClient: HmppsAuthClient,
   ) {}
 
   async createGoals(prisonNumber: string, createGoalDtos: CreateGoalDto[], token: string): Promise<unknown> {
@@ -74,9 +76,10 @@ export default class EducationAndWorkPlanService {
     return this.educationAndWorkPlanClient.unarchiveGoal(unarchiveGoalDto.prisonNumber, unarchiveGoalRequest, token)
   }
 
-  async getEducation(prisonNumber: string, token: string): Promise<EducationDto> {
+  async getEducation(prisonNumber: string, username: string): Promise<EducationDto> {
+    const systemToken = await this.hmppsAuthClient.getSystemClientToken(username)
     try {
-      const educationResponse = await this.educationAndWorkPlanClient.getEducation(prisonNumber, token)
+      const educationResponse = await this.educationAndWorkPlanClient.getEducation(prisonNumber, systemToken)
       return toEducationDto(educationResponse, prisonNumber)
     } catch (error) {
       logger.error(`Error retrieving Education for Prisoner [${prisonNumber}]: ${error}`)
