@@ -26,7 +26,7 @@ generic-service:
     ENVIRONMENT_NAME: 'DEV'
 
     ACTIVE_AGENCIES: '***'
-    QUALIFICATIONS_ENABLED: 'false'
+    QUALIFICATIONS_ENABLED: 'true'
 
   allowlist:
     uservision-accessibility-testers: 5.181.59.114/32
