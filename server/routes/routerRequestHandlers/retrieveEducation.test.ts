@@ -44,7 +44,10 @@ describe('retrieveEducation', () => {
     }
 
     const username = 'testUser'
-    req.params = { prisonNumber, username }
+    const token = 'a-user-token'
+    const authSource = 'auth-source'
+    req.params = { prisonNumber }
+    req.user = { username, token, authSource }
 
     // When
     await requestHandler(req, res, next)
@@ -67,7 +70,10 @@ describe('retrieveEducation', () => {
     }
 
     const username = 'testUser'
-    req.params = { prisonNumber, username }
+    const token = 'a-user-token'
+    const authSource = 'auth-source'
+    req.params = { prisonNumber }
+    req.user = { username, token, authSource }
 
     educationAndWorkPlanService.getEducation.mockRejectedValue(educationServiceError)
 
@@ -97,7 +103,10 @@ describe('retrieveEducation', () => {
     }
 
     const username = 'testUser'
-    req.params = { prisonNumber, username }
+    const token = 'a-user-token'
+    const authSource = 'auth-source'
+    req.params = { prisonNumber }
+    req.user = { username, token, authSource }
 
     educationAndWorkPlanService.getEducation.mockRejectedValue(educationServiceError)
 

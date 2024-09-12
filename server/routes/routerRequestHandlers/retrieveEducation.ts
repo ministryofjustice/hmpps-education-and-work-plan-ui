@@ -9,12 +9,11 @@ import asyncMiddleware from '../../middleware/asyncMiddleware'
 const retrieveEducation = (educationAndWorkPlanService: EducationAndWorkPlanService): RequestHandler => {
   return asyncMiddleware(async (req: Request, res: Response, next: NextFunction) => {
     const { prisonNumber } = req.params
-    const { username } = req.params
     try {
       // Retrieve the qualifications and store in res.locals
       res.locals.education = {
         problemRetrievingData: false,
-        educationDto: await educationAndWorkPlanService.getEducation(prisonNumber, username),
+        educationDto: await educationAndWorkPlanService.getEducation(prisonNumber, req.user.username),
       }
     } catch (error) {
       res.locals.education = { ...gracefullyHandleException(error, prisonNumber), educationDto: undefined }
