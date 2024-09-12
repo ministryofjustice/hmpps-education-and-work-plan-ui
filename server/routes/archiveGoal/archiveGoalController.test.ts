@@ -31,6 +31,7 @@ describe('archiveGoalController', () => {
   const controller = new ArchiveGoalController(educationAndWorkPlanService, auditService)
 
   const prisonNumber = 'A1234GC'
+  const username = 'a-dps-user'
   const goalReference = '1a2eae63-8102-4155-97cb-43d8fb739caf'
   const prisonerSummary = aValidPrisonerSummary(prisonNumber, 'BXI')
   const requestId = 'deff305c-2460-4d07-853e-f8762a8a52c6'
@@ -38,7 +39,7 @@ describe('archiveGoalController', () => {
   const req = {
     session: { prisonerSummary },
     body: {},
-    user: { token: 'some-token', username: 'a-dps-user' },
+    user: { token: 'some-token', username },
     params: { prisonNumber, goalReference },
     id: requestId,
   } as unknown as Request
@@ -112,7 +113,7 @@ describe('archiveGoalController', () => {
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/goal/archive/reason', expectedView)
       expect(req.session.archiveGoalForm).toBeUndefined()
-      expect(educationAndWorkPlanService.getActionPlan).toHaveBeenCalledWith(prisonNumber, 'some-token')
+      expect(educationAndWorkPlanService.getActionPlan).toHaveBeenCalledWith(prisonNumber, username)
     })
 
     it('Should use form from session if it is the same goal, e.g., a validation error', async () => {
@@ -261,7 +262,7 @@ describe('archiveGoalController', () => {
         details: { goalReference },
         subjectId: prisonNumber,
         subjectType: 'PRISONER_ID',
-        who: 'a-dps-user',
+        who: username,
       }
 
       // When
