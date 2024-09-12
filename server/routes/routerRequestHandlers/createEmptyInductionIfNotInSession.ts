@@ -1,20 +1,43 @@
-import { NextFunction, Request, Response } from 'express'
+import { NextFunction, Request, RequestHandler, Response } from 'express'
+import type { EducationDto } from 'dto'
 import type { InductionDto } from 'inductionDto'
+import { EducationAndWorkPlanService } from '../../services'
+import asyncMiddleware from '../../middleware/asyncMiddleware'
 
 /**
- * Request handler function to check whether an Induction exists in the session for the prisoner referenced in the
- * request URL.
+ * Middleware function that returns a request handler function to check whether an Induction exists in the session for
+ * the prisoner referenced in the request URL.
  * If one does not exist, or it is for a different prisoner, create a new empty Induction for the prisoner.
+ * If the prisoner already has qualifications, add them to the Induction.
  */
-const createEmptyInductionIfNotInSession = async (req: Request, res: Response, next: NextFunction) => {
-  const { prisonNumber } = req.params
+const createEmptyInductionIfNotInSession = (
+  educationAndWorkPlanService: EducationAndWorkPlanService,
+): RequestHandler => {
+  return asyncMiddleware(async (req: Request, res: Response, next: NextFunction) => {
+    const { prisonNumber } = req.params
 
-  // Either no Induction on the session, or it's for a different prisoner. Create a new one
-  if (req.session.inductionDto?.prisonNumber !== prisonNumber) {
-    req.session.inductionDto = { prisonNumber } as InductionDto
-  }
+    // Either no Induction on the session, or it's for a different prisoner. Create a new one, including the prisoners education if it has been previously recorded.
+    if (req.session.inductionDto?.prisonNumber !== prisonNumber) {
+      let educationDto: EducationDto
+      try {
+        educationDto = await educationAndWorkPlanService.getEducation(prisonNumber, req.user.username)
+      } catch (e) {
+        educationDto = undefined
+      }
 
-  next()
+      req.session.inductionDto = {
+        prisonNumber,
+        previousQualifications: educationDto
+          ? {
+              educationLevel: educationDto.educationLevel,
+              qualifications: educationDto.qualifications,
+            }
+          : undefined,
+      } as InductionDto
+    }
+
+    next()
+  })
 }
 
 export default createEmptyInductionIfNotInSession

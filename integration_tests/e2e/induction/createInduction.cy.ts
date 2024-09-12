@@ -40,7 +40,7 @@ context('Create an Induction', () => {
     cy.signInAsUserWithEditAuthorityToArriveOnPrisonerListPage()
   })
 
-  it('should create an induction with qualifications, triggering validation on every screen', () => {
+  it('should create an induction with qualifications given prisoner has no previously recorded education, triggering validation on every screen', () => {
     // Given
     const prisonNumberForPrisonerWithNoInduction = 'A00001A'
     cy.task('getActionPlan', prisonNumberForPrisonerWithNoInduction)
@@ -48,6 +48,7 @@ context('Create an Induction', () => {
     cy.task('stubLearnerProfile', prisonNumberForPrisonerWithNoInduction)
     cy.task('stubLearnerEducation', prisonNumberForPrisonerWithNoInduction)
     cy.task('stubGetInduction404Error', prisonNumberForPrisonerWithNoInduction)
+    cy.task('stubGetEducation404Error', prisonNumberForPrisonerWithNoInduction)
     cy.task('stubCreateInduction', prisonNumberForPrisonerWithNoInduction)
     cy.visit(`/plan/${prisonNumberForPrisonerWithNoInduction}/view/overview`)
 
@@ -322,7 +323,7 @@ context('Create an Induction', () => {
     )
   })
 
-  it('should create an Induction with no qualifications', () => {
+  it('should create an Induction with no qualifications given prisoner has no previously recorded education', () => {
     // Given
     const prisonNumberForPrisonerWithNoInduction = 'A00001A'
     cy.task('getActionPlan', prisonNumberForPrisonerWithNoInduction)
@@ -330,6 +331,7 @@ context('Create an Induction', () => {
     cy.task('stubLearnerProfile', prisonNumberForPrisonerWithNoInduction)
     cy.task('stubLearnerEducation', prisonNumberForPrisonerWithNoInduction)
     cy.task('stubGetInduction404Error', prisonNumberForPrisonerWithNoInduction)
+    cy.task('stubGetEducation404Error', prisonNumberForPrisonerWithNoInduction)
     cy.task('stubCreateInduction', prisonNumberForPrisonerWithNoInduction)
     cy.visit(`/plan/${prisonNumberForPrisonerWithNoInduction}/view/overview`)
 
@@ -451,6 +453,132 @@ context('Create an Induction', () => {
               '!@.workOnRelease.affectAbilityToWorkOther && ' +
               '@.inPrisonInterests.inPrisonWorkInterests.size() == 1 && ' +
               "@.inPrisonInterests.inPrisonWorkInterests[0].workType == 'KITCHENS_AND_COOKING' && " +
+              '@.inPrisonInterests.inPrisonTrainingInterests.size() == 1 && ' +
+              "@.inPrisonInterests.inPrisonTrainingInterests[0].trainingType == 'FORKLIFT_DRIVING')]",
+          ),
+        ),
+    )
+  })
+
+  it('should create an induction with qualifications given prisoner already has previously recorded education', () => {
+    // Given
+    const prisonNumberForPrisonerWithNoInduction = 'A00001A'
+    cy.task('getActionPlan', prisonNumberForPrisonerWithNoInduction)
+    cy.task('getPrisonerById', prisonNumberForPrisonerWithNoInduction)
+    cy.task('stubLearnerProfile', prisonNumberForPrisonerWithNoInduction)
+    cy.task('stubLearnerEducation', prisonNumberForPrisonerWithNoInduction)
+    cy.task('stubGetInduction404Error', prisonNumberForPrisonerWithNoInduction)
+    cy.task('stubCreateInduction', prisonNumberForPrisonerWithNoInduction)
+
+    // Prisoner already has education recorded, consisting of:
+    //  Highest Level of Education: SECONDARY_SCHOOL_TOOK_EXAMS
+    //  Qualifications:
+    //    Pottery, C, Level 4
+    cy.task('stubGetEducation', prisonNumberForPrisonerWithNoInduction)
+
+    cy.visit(`/plan/${prisonNumberForPrisonerWithNoInduction}/view/overview`)
+
+    const overviewPage = Page.verifyOnPage(OverviewPage)
+
+    // When
+    const hopingToWorkOnReleasePage = overviewPage //
+      .clickMakeProgressPlan()
+    hopingToWorkOnReleasePage //
+      .selectHopingWorkOnRelease(HopingToGetWorkValue.NO)
+      .submitPage()
+
+    // Factors Affecting Ability To Work is the next page
+    Page.verifyOnPage(AffectAbilityToWorkPage) //
+      .selectAffectAbilityToWork(AbilityToWorkValue.NONE)
+      .submitPage()
+
+    // Highest level of education is next
+    Page.verifyOnPage(HighestLevelOfEducationPage)
+      .hasHighestLevelOfEducation(EducationLevelValue.SECONDARY_SCHOOL_TOOK_EXAMS) // expect value to already be set
+      .submitPage() // submit the page without making any change
+
+    // Qualifications List page is displayed next
+    Page.verifyOnPage(QualificationsListPage) //
+      .hasEducationalQualifications(['Pottery']) // expect Pottery qualification to already be set
+      .clickToAddAnotherQualification()
+    Page.verifyOnPage(QualificationLevelPage) //
+      .selectQualificationLevel(QualificationLevelValue.LEVEL_4)
+      .submitPage()
+    Page.verifyOnPage(QualificationDetailsPage)
+      .setQualificationSubject('Physics')
+      .setQualificationGrade('B')
+      .submitPage()
+
+    // Qualifications List page is displayed again. Remove a qualification
+    Page.verifyOnPage(QualificationsListPage) //
+      .hasEducationalQualifications(['Pottery', 'Physics'])
+      .submitPage()
+
+    // Additional Training page is next
+    Page.verifyOnPage(AdditionalTrainingPage) //
+      .selectAdditionalTraining(AdditionalTrainingValue.HGV_LICENCE)
+      .submitPage()
+
+    // Have You Worked Before page is next
+    Page.verifyOnPage(WorkedBeforePage) //
+      .selectWorkedBefore(HasWorkedBeforeValue.NO)
+      .submitPage()
+
+    // Personal Skills page is next
+    Page.verifyOnPage(SkillsPage) //
+      .selectSkill(SkillsValue.POSITIVE_ATTITUDE)
+      .submitPage()
+
+    // Personal Interests page is next
+    Page.verifyOnPage(PersonalInterestsPage) //
+      .selectPersonalInterest(PersonalInterestsValue.DIGITAL)
+      .submitPage()
+
+    // In Prison Work Interests page is next
+    Page.verifyOnPage(InPrisonWorkPage) //
+      .selectWorkType(InPrisonWorkValue.PRISON_LIBRARY)
+      .submitPage()
+
+    // In Prison Training Interests page is next
+    Page.verifyOnPage(InPrisonTrainingPage) //
+      .selectInPrisonTraining(InPrisonTrainingValue.FORKLIFT_DRIVING)
+      .submitPage()
+
+    // Check Your Answers is the final page. Submit the page to create the induction
+    Page.verifyOnPage(CheckYourAnswersPage) //
+      .submitPage()
+
+    // Then
+    Page.verifyOnPage(CreateGoalsPage)
+    cy.wiremockVerify(
+      postRequestedFor(urlEqualTo(`/inductions/${prisonNumberForPrisonerWithNoInduction}`)) //
+        .withRequestBody(
+          matchingJsonPath(
+            "$[?(@.workOnRelease.hopingToWork == 'NO' && " +
+              "@.previousQualifications.educationLevel == 'SECONDARY_SCHOOL_TOOK_EXAMS' && " +
+              '@.previousQualifications.qualifications.size() == 2 && ' +
+              '@.previousQualifications.qualifications[0].reference && ' + // assert the first qualification has a reference as it already exists in the prisoners previously recorded education
+              "@.previousQualifications.qualifications[0].subject == 'Pottery' && " +
+              "@.previousQualifications.qualifications[0].grade == 'C' && " +
+              "@.previousQualifications.qualifications[0].level == 'LEVEL_4' && " +
+              '!@.previousQualifications.qualifications[1].reference && ' + // assert the qualification has no reference as it is a new qualification that wont have a reference until the API has created it
+              "@.previousQualifications.qualifications[1].subject == 'Physics' && " +
+              "@.previousQualifications.qualifications[1].grade == 'B' && " +
+              "@.previousQualifications.qualifications[1].level == 'LEVEL_4' && " +
+              '@.previousTraining.trainingTypes.size() == 1 && ' +
+              "@.previousTraining.trainingTypes[0] == 'HGV_LICENCE' && " +
+              "@.previousWorkExperiences.hasWorkedBefore == 'NO' && " +
+              '@.previousWorkExperiences.experiences.size() == 0 && ' +
+              '@.futureWorkInterests.interests.size() == 0 && ' +
+              '@.personalSkillsAndInterests.skills.size() == 1 && ' +
+              "@.personalSkillsAndInterests.skills[0].skillType == 'POSITIVE_ATTITUDE' && " +
+              '@.personalSkillsAndInterests.interests.size() == 1 && ' +
+              "@.personalSkillsAndInterests.interests[0].interestType == 'DIGITAL' && " +
+              '@.workOnRelease.affectAbilityToWork.size() == 1 && ' +
+              "@.workOnRelease.affectAbilityToWork[0] == 'NONE' && " +
+              '!@.workOnRelease.affectAbilityToWorkOther && ' +
+              '@.inPrisonInterests.inPrisonWorkInterests.size() == 1 && ' +
+              "@.inPrisonInterests.inPrisonWorkInterests[0].workType == 'PRISON_LIBRARY' && " +
               '@.inPrisonInterests.inPrisonTrainingInterests.size() == 1 && ' +
               "@.inPrisonInterests.inPrisonTrainingInterests[0].trainingType == 'FORKLIFT_DRIVING')]",
           ),

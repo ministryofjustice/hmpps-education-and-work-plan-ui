@@ -32,6 +32,8 @@ import retrieveCuriousInPrisonCourses from '../../routerRequestHandlers/retrieve
  * /prisoners/<prison-number>/create-induction/<page-or-section-id>
  */
 export default (router: Router, services: Services) => {
+  const { curiousService, educationAndWorkPlanService, inductionService } = services
+
   const hopingToWorkOnReleaseCreateController = new HopingToWorkOnReleaseCreateController()
   const wantToAddQualificationsCreateController = new WantToAddQualificationsCreateController()
   const qualificationsListCreateController = new QualificationsListCreateController()
@@ -47,18 +49,18 @@ export default (router: Router, services: Services) => {
   const skillsCreateController = new SkillsCreateController()
   const personalInterestsCreateController = new PersonalInterestsCreateController()
   const affectAbilityToWorkCreateController = new AffectAbilityToWorkCreateController()
-  const checkYourAnswersCreateController = new CheckYourAnswersCreateController(services.inductionService)
+  const checkYourAnswersCreateController = new CheckYourAnswersCreateController(inductionService)
   const inPrisonWorkCreateController = new InPrisonWorkCreateController()
   const inPrisonTrainingCreateController = new InPrisonTrainingCreateController()
 
   router.get('/prisoners/:prisonNumber/create-induction/**', [
     checkUserHasEditAuthority(),
-    createEmptyInductionIfNotInSession,
+    createEmptyInductionIfNotInSession(educationAndWorkPlanService),
     setCurrentPageInPageFlowQueue,
   ])
   router.post('/prisoners/:prisonNumber/create-induction/**', [
     checkUserHasEditAuthority(),
-    createEmptyInductionIfNotInSession,
+    createEmptyInductionIfNotInSession(educationAndWorkPlanService),
     setCurrentPageInPageFlowQueue,
   ])
 
@@ -70,8 +72,8 @@ export default (router: Router, services: Services) => {
   ])
 
   router.get('/prisoners/:prisonNumber/create-induction/want-to-add-qualifications', [
-    retrieveCuriousFunctionalSkills(services.curiousService),
-    retrieveCuriousInPrisonCourses(services.curiousService),
+    retrieveCuriousFunctionalSkills(curiousService),
+    retrieveCuriousInPrisonCourses(curiousService),
     asyncMiddleware(wantToAddQualificationsCreateController.getWantToAddQualificationsView),
   ])
   router.post('/prisoners/:prisonNumber/create-induction/want-to-add-qualifications', [
@@ -79,8 +81,8 @@ export default (router: Router, services: Services) => {
   ])
 
   router.get('/prisoners/:prisonNumber/create-induction/qualifications', [
-    retrieveCuriousFunctionalSkills(services.curiousService),
-    retrieveCuriousInPrisonCourses(services.curiousService),
+    retrieveCuriousFunctionalSkills(curiousService),
+    retrieveCuriousInPrisonCourses(curiousService),
     asyncMiddleware(qualificationsListCreateController.getQualificationsListView),
   ])
   router.post('/prisoners/:prisonNumber/create-induction/qualifications', [
