@@ -23,7 +23,7 @@ export default class ArchiveGoalController {
     if (req.session.archiveGoalForm && req.session.archiveGoalForm.reference === goalReference) {
       archiveGoalForm = req.session.archiveGoalForm
     } else {
-      const actionPlan = await this.educationAndWorkPlanService.getActionPlan(prisonNumber, req.user.token)
+      const actionPlan = await this.educationAndWorkPlanService.getActionPlan(prisonNumber, req.user.username)
       if (actionPlan.problemRetrievingData) {
         return next(createError(500, `Error retrieving plan for prisoner ${prisonNumber}`))
       }

@@ -34,6 +34,7 @@ describe('updateGoalController', () => {
   const controller = new UpdateGoalController(educationAndWorkPlanService, auditService)
 
   const prisonNumber = 'A1234GC'
+  const username = 'a-dps-user'
   const goalReference = '1a2eae63-8102-4155-97cb-43d8fb739caf'
   const prisonerSummary = aValidPrisonerSummary(prisonNumber, 'BXI')
   const requestId = 'deff305c-2460-4d07-853e-f8762a8a52c6'
@@ -41,7 +42,7 @@ describe('updateGoalController', () => {
   const req = {
     session: { prisonerSummary },
     body: {},
-    user: { token: 'some-token', username: 'a-dps-user' },
+    user: { token: 'some-token', username },
     params: { prisonNumber, goalReference },
     id: requestId,
   } as unknown as Request
@@ -104,6 +105,7 @@ describe('updateGoalController', () => {
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/goal/update/index', expectedView)
+      expect(educationAndWorkPlanService.getActionPlan).toHaveBeenCalledWith('A1234GC', username)
       expect(getPrisonerContext(req.session, prisonNumber).updateGoalForm).toBeUndefined()
     })
 
@@ -123,6 +125,7 @@ describe('updateGoalController', () => {
 
       // Then
       expect(next).toHaveBeenCalledWith(expectedError)
+      expect(educationAndWorkPlanService.getActionPlan).toHaveBeenCalledWith('A1234GC', username)
       expect(getPrisonerContext(req.session, prisonNumber).updateGoalForm).toBeUndefined()
     })
 
@@ -144,6 +147,7 @@ describe('updateGoalController', () => {
 
       // Then
       expect(next).toHaveBeenCalledWith(expectedError)
+      expect(educationAndWorkPlanService.getActionPlan).toHaveBeenCalledWith('A1234GC', username)
       expect(getPrisonerContext(req.session, prisonNumber).updateGoalForm).toBeUndefined()
     })
   })
@@ -265,7 +269,7 @@ describe('updateGoalController', () => {
         details: { goalReference },
         subjectId: prisonNumber,
         subjectType: 'PRISONER_ID',
-        who: 'a-dps-user',
+        who: username,
       }
 
       // When

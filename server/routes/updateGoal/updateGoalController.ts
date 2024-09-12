@@ -26,7 +26,7 @@ export default class UpdateGoalController {
     if (getPrisonerContext(req.session, prisonNumber).updateGoalForm) {
       updateGoalForm = getPrisonerContext(req.session, prisonNumber).updateGoalForm
     } else {
-      const actionPlan = await this.educationAndWorkPlanService.getActionPlan(prisonNumber, req.user.token)
+      const actionPlan = await this.educationAndWorkPlanService.getActionPlan(prisonNumber, req.user.username)
       if (actionPlan.problemRetrievingData) {
         return next(createError(500, `Error retrieving plan for prisoner ${prisonNumber}`))
       }

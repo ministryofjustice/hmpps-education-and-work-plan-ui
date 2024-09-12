@@ -22,6 +22,7 @@ describe('unarchiveGoalController', () => {
   const controller = new UnarchiveGoalController(educationAndWorkPlanService, auditService)
 
   const prisonNumber = 'A1234BC'
+  const username = 'a-dps-user'
   const prisonerSummary = aValidPrisonerSummary()
   const goalReference = '1a2eae63-8102-4155-97cb-43d8fb739caf'
   const requestId = 'deff305c-2460-4d07-853e-f8762a8a52c6'
@@ -29,7 +30,7 @@ describe('unarchiveGoalController', () => {
   const req = {
     session: { prisonerSummary },
     body: {},
-    user: { token: 'a-user-token', username: 'a-dps-user' },
+    user: { token: 'a-user-token', username },
     params: { prisonNumber, goalReference },
     id: requestId,
   } as unknown as Request
@@ -63,7 +64,7 @@ describe('unarchiveGoalController', () => {
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/goal/unarchive/index', expectedView)
-      expect(educationAndWorkPlanService.getActionPlan).toHaveBeenCalledWith('A1234BC', 'a-user-token')
+      expect(educationAndWorkPlanService.getActionPlan).toHaveBeenCalledWith('A1234BC', username)
     })
 
     it('should not get update goal view given error getting prisoner action plan', async () => {
@@ -78,7 +79,7 @@ describe('unarchiveGoalController', () => {
 
       // Then
       expect(next).toHaveBeenCalledWith(expectedError)
-      expect(educationAndWorkPlanService.getActionPlan).toHaveBeenCalledWith('A1234BC', 'a-user-token')
+      expect(educationAndWorkPlanService.getActionPlan).toHaveBeenCalledWith('A1234BC', username)
     })
 
     it('should not get update goal view given requested goal reference is not part of the prisoners action plan', async () => {
@@ -95,7 +96,7 @@ describe('unarchiveGoalController', () => {
 
       // Then
       expect(next).toHaveBeenCalledWith(expectedError)
-      expect(educationAndWorkPlanService.getActionPlan).toHaveBeenCalledWith('A1234BC', 'a-user-token')
+      expect(educationAndWorkPlanService.getActionPlan).toHaveBeenCalledWith('A1234BC', username)
     })
   })
 
@@ -118,7 +119,7 @@ describe('unarchiveGoalController', () => {
         details: { goalReference },
         subjectId: prisonNumber,
         subjectType: 'PRISONER_ID',
-        who: 'a-dps-user',
+        who: username,
       }
 
       // When

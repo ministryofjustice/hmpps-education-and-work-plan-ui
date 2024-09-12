@@ -35,10 +35,11 @@ export default class EducationAndWorkPlanService {
     return this.educationAndWorkPlanClient.createGoals(prisonNumber, createGoalsRequest, token)
   }
 
-  async getActionPlan(prisonNumber: string, token: string): Promise<ActionPlan> {
+  async getActionPlan(prisonNumber: string, username: string): Promise<ActionPlan> {
+    const systemToken = await this.hmppsAuthClient.getSystemClientToken(username)
     try {
-      const actionPlanResponse = await this.educationAndWorkPlanClient.getActionPlan(prisonNumber, token)
-      const prisonNamesById = await this.getAllPrisonNamesByIdSafely(token)
+      const actionPlanResponse = await this.educationAndWorkPlanClient.getActionPlan(prisonNumber, systemToken)
+      const prisonNamesById = await this.getAllPrisonNamesByIdSafely(systemToken)
       return toActionPlan(actionPlanResponse, false, prisonNamesById)
     } catch (error) {
       logger.error(`Error retrieving Action Plan for Prisoner [${prisonNumber}]: ${error}`)
