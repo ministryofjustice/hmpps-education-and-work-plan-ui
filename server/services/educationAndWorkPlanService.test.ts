@@ -35,6 +35,7 @@ describe('educationAndWorkPlanService', () => {
 
   const mockedEducationMapper = toEducationDto as jest.MockedFunction<typeof toEducationDto>
   const systemToken = 'a-system-token'
+  const username = 'a-dps-user'
 
   beforeEach(() => {
     jest.resetAllMocks()
@@ -93,9 +94,11 @@ describe('educationAndWorkPlanService', () => {
       const expectedActionPlan = aValidActionPlanWithOneGoal()
 
       // When
-      const actual = await educationAndWorkPlanService.getActionPlan(prisonNumber, systemToken)
+      const actual = await educationAndWorkPlanService.getActionPlan(prisonNumber, username)
 
       // Then
+      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
+      expect(prisonService.getAllPrisonNamesById).toHaveBeenCalledWith(systemToken)
       expect(educationAndWorkPlanClient.getActionPlan).toHaveBeenCalledWith(prisonNumber, systemToken)
       expect(actual).toEqual(expectedActionPlan)
     })
@@ -109,9 +112,11 @@ describe('educationAndWorkPlanService', () => {
       const expectedActionPlan = aValidActionPlanWithOneGoal()
 
       // When
-      const actual = await educationAndWorkPlanService.getActionPlan(prisonNumber, systemToken)
+      const actual = await educationAndWorkPlanService.getActionPlan(prisonNumber, username)
 
       // Then
+      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
+      expect(prisonService.getAllPrisonNamesById).toHaveBeenCalledWith(systemToken)
       expect(educationAndWorkPlanClient.getActionPlan).toHaveBeenCalledWith(prisonNumber, systemToken)
       expect(actual).toEqual(expectedActionPlan)
     })
@@ -122,9 +127,10 @@ describe('educationAndWorkPlanService', () => {
       prisonService.getAllPrisonNamesById.mockResolvedValue(new Map())
 
       // When
-      const actual = await educationAndWorkPlanService.getActionPlan(prisonNumber, systemToken)
+      const actual = await educationAndWorkPlanService.getActionPlan(prisonNumber, username)
 
       // Then
+      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
       expect(educationAndWorkPlanClient.getActionPlan).toHaveBeenCalledWith(prisonNumber, systemToken)
       expect(actual.problemRetrievingData).toEqual(true)
     })
