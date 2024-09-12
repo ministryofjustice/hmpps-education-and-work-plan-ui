@@ -21,22 +21,32 @@ import toEducationDto from '../data/mappers/educationMapper'
 import aValidEducationDto from '../testsupport/educationDtoTestDataBuilder'
 import aValidCreateEducationDto from '../testsupport/createEducationDtoTestDataBuilder'
 import aValidCreateEducationRequest from '../testsupport/createEducationRequestTestDataBuilder'
+import HmppsAuthClient from '../data/hmppsAuthClient'
 
 jest.mock('../data/mappers/educationMapper')
 jest.mock('../data/educationAndWorkPlanClient')
 jest.mock('./prisonService')
+jest.mock('../data/hmppsAuthClient')
 
 describe('educationAndWorkPlanService', () => {
   const educationAndWorkPlanClient =
     new EducationAndWorkPlanClient() as unknown as jest.Mocked<EducationAndWorkPlanClient>
   const prisonService = new PrisonService(null, null, null) as unknown as jest.Mocked<PrisonService>
-  const educationAndWorkPlanService = new EducationAndWorkPlanService(educationAndWorkPlanClient, prisonService)
 
   const mockedEducationMapper = toEducationDto as jest.MockedFunction<typeof toEducationDto>
+  const systemToken = 'a-system-token'
 
   beforeEach(() => {
     jest.resetAllMocks()
+    hmppsAuthClient.getSystemClientToken.mockResolvedValue(systemToken)
   })
+
+  const hmppsAuthClient = new HmppsAuthClient(null) as jest.Mocked<HmppsAuthClient>
+  const educationAndWorkPlanService = new EducationAndWorkPlanService(
+    educationAndWorkPlanClient,
+    prisonService,
+    hmppsAuthClient,
+  )
 
   describe('createGoals', () => {
     it('should create Goals', async () => {
@@ -302,7 +312,6 @@ describe('educationAndWorkPlanService', () => {
 
   describe('getEducation', () => {
     const prisonNumber = 'A1234BC'
-    const userToken = 'a-user-token'
 
     it('should get prisoner education', async () => {
       // Given
@@ -313,11 +322,11 @@ describe('educationAndWorkPlanService', () => {
       mockedEducationMapper.mockReturnValue(expectedEducationDto)
 
       // When
-      const actual = await educationAndWorkPlanService.getEducation(prisonNumber, userToken)
+      const actual = await educationAndWorkPlanService.getEducation(prisonNumber, systemToken)
 
       // Then
       expect(actual).toEqual(expectedEducationDto)
-      expect(educationAndWorkPlanClient.getEducation).toHaveBeenCalledWith(prisonNumber, userToken)
+      expect(educationAndWorkPlanClient.getEducation).toHaveBeenCalledWith(prisonNumber, systemToken)
       expect(mockedEducationMapper).toHaveBeenCalledWith(educationResponse, prisonNumber)
     })
 
@@ -334,13 +343,13 @@ describe('educationAndWorkPlanService', () => {
       educationAndWorkPlanClient.getEducation.mockRejectedValue(eductionAndWorkPlanApiError)
 
       // When
-      const actual = await educationAndWorkPlanService.getEducation(prisonNumber, userToken).catch(error => {
+      const actual = await educationAndWorkPlanService.getEducation(prisonNumber, systemToken).catch(error => {
         return error
       })
 
       // Then
       expect(actual).toEqual(eductionAndWorkPlanApiError)
-      expect(educationAndWorkPlanClient.getEducation).toHaveBeenCalledWith(prisonNumber, userToken)
+      expect(educationAndWorkPlanClient.getEducation).toHaveBeenCalledWith(prisonNumber, systemToken)
       expect(mockedEducationMapper).not.toHaveBeenCalled()
     })
   })

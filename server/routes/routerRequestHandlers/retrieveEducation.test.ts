@@ -9,6 +9,7 @@ describe('retrieveEducation', () => {
   const educationAndWorkPlanService = new EducationAndWorkPlanService(
     null,
     null,
+    null,
   ) as jest.Mocked<EducationAndWorkPlanService>
   const requestHandler = retrieveEducation(educationAndWorkPlanService)
 
@@ -42,12 +43,18 @@ describe('retrieveEducation', () => {
       educationDto,
     }
 
+    const username = 'testUser'
+    const token = 'a-user-token'
+    const authSource = 'auth-source'
+    req.params = { prisonNumber }
+    req.user = { username, token, authSource }
+
     // When
     await requestHandler(req, res, next)
 
     // Then
     expect(res.locals.education).toEqual(expected)
-    expect(educationAndWorkPlanService.getEducation).toHaveBeenCalledWith(prisonNumber, userToken)
+    expect(educationAndWorkPlanService.getEducation).toHaveBeenCalledWith(prisonNumber, username)
     expect(next).toHaveBeenCalled()
   })
 
@@ -61,6 +68,13 @@ describe('retrieveEducation', () => {
         developerMessage: 'An unexpected error occurred',
       },
     }
+
+    const username = 'testUser'
+    const token = 'a-user-token'
+    const authSource = 'auth-source'
+    req.params = { prisonNumber }
+    req.user = { username, token, authSource }
+
     educationAndWorkPlanService.getEducation.mockRejectedValue(educationServiceError)
 
     const expected = {
@@ -73,7 +87,7 @@ describe('retrieveEducation', () => {
 
     // Then
     expect(res.locals.education).toEqual(expected)
-    expect(educationAndWorkPlanService.getEducation).toHaveBeenCalledWith(prisonNumber, userToken)
+    expect(educationAndWorkPlanService.getEducation).toHaveBeenCalledWith(prisonNumber, username)
     expect(next).toHaveBeenCalled()
   })
 
@@ -87,6 +101,13 @@ describe('retrieveEducation', () => {
         developerMessage: `Education not found for prisoner [${prisonNumber}]`,
       },
     }
+
+    const username = 'testUser'
+    const token = 'a-user-token'
+    const authSource = 'auth-source'
+    req.params = { prisonNumber }
+    req.user = { username, token, authSource }
+
     educationAndWorkPlanService.getEducation.mockRejectedValue(educationServiceError)
 
     const expected = {
@@ -99,7 +120,7 @@ describe('retrieveEducation', () => {
 
     // Then
     expect(res.locals.education).toEqual(expected)
-    expect(educationAndWorkPlanService.getEducation).toHaveBeenCalledWith(prisonNumber, userToken)
+    expect(educationAndWorkPlanService.getEducation).toHaveBeenCalledWith(prisonNumber, username)
     expect(next).toHaveBeenCalled()
   })
 })

@@ -13,7 +13,7 @@ const retrieveEducation = (educationAndWorkPlanService: EducationAndWorkPlanServ
       // Retrieve the qualifications and store in res.locals
       res.locals.education = {
         problemRetrievingData: false,
-        educationDto: await educationAndWorkPlanService.getEducation(prisonNumber, req.user.token),
+        educationDto: await educationAndWorkPlanService.getEducation(prisonNumber, req.user.username),
       }
     } catch (error) {
       res.locals.education = { ...gracefullyHandleException(error, prisonNumber), educationDto: undefined }
