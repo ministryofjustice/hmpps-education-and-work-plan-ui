@@ -52,26 +52,28 @@ describe('educationAndWorkPlanService', () => {
     it('should create Goals', async () => {
       // Given
       const prisonNumber = 'A1234BC'
+      const userToken = 'a-user-token'
       const createGoalDto = aValidCreateGoalDtoWithOneStep()
       const createGoalsRequest = aValidCreateGoalsRequestWithOneGoal()
 
       // When
-      await educationAndWorkPlanService.createGoals(prisonNumber, [createGoalDto], systemToken)
+      await educationAndWorkPlanService.createGoals(prisonNumber, [createGoalDto], userToken)
 
       // Then
-      expect(educationAndWorkPlanClient.createGoals).toHaveBeenCalledWith(prisonNumber, createGoalsRequest, systemToken)
+      expect(educationAndWorkPlanClient.createGoals).toHaveBeenCalledWith(prisonNumber, createGoalsRequest, userToken)
     })
 
     it('should not create Goal given educationAndWorkPlanClient returns an error', async () => {
       // Given
       const prisonNumber = 'A1234BC'
+      const userToken = 'a-user-token'
       const createGoalDto = aValidCreateGoalDtoWithOneStep()
 
       educationAndWorkPlanClient.createGoals.mockRejectedValue(Error('Service Unavailable'))
 
       // When
       const actual = await educationAndWorkPlanService
-        .createGoals(prisonNumber, [createGoalDto], systemToken)
+        .createGoals(prisonNumber, [createGoalDto], userToken)
         .catch(error => {
           return error
         })
@@ -85,45 +87,48 @@ describe('educationAndWorkPlanService', () => {
     it('should get Action Plan', async () => {
       // Given
       const prisonNumber = 'A1234BC'
+      const userToken = 'a-user-token'
       const actionPlanResponse = aValidActionPlanResponseWithOneGoal()
       educationAndWorkPlanClient.getActionPlan.mockResolvedValue(actionPlanResponse)
       prisonService.getAllPrisonNamesById.mockResolvedValue(new Map())
       const expectedActionPlan = aValidActionPlanWithOneGoal()
 
       // When
-      const actual = await educationAndWorkPlanService.getActionPlan(prisonNumber, systemToken)
+      const actual = await educationAndWorkPlanService.getActionPlan(prisonNumber, userToken)
 
       // Then
-      expect(educationAndWorkPlanClient.getActionPlan).toHaveBeenCalledWith(prisonNumber, systemToken)
+      expect(educationAndWorkPlanClient.getActionPlan).toHaveBeenCalledWith(prisonNumber, userToken)
       expect(actual).toEqual(expectedActionPlan)
     })
 
     it('should get Action Plan anyway given prisonService returns an error getting prison names', async () => {
       // Given
       const prisonNumber = 'A1234BC'
+      const userToken = 'a-user-token'
       const actionPlanResponse = aValidActionPlanResponseWithOneGoal()
       educationAndWorkPlanClient.getActionPlan.mockResolvedValue(actionPlanResponse)
       prisonService.getAllPrisonNamesById.mockRejectedValue(Error('Service Unavailable'))
       const expectedActionPlan = aValidActionPlanWithOneGoal()
 
       // When
-      const actual = await educationAndWorkPlanService.getActionPlan(prisonNumber, systemToken)
+      const actual = await educationAndWorkPlanService.getActionPlan(prisonNumber, userToken)
 
       // Then
-      expect(educationAndWorkPlanClient.getActionPlan).toHaveBeenCalledWith(prisonNumber, systemToken)
+      expect(educationAndWorkPlanClient.getActionPlan).toHaveBeenCalledWith(prisonNumber, userToken)
       expect(actual).toEqual(expectedActionPlan)
     })
     it('should not get Action Plan given educationAndWorkPlanClient returns an error', async () => {
       // Given
       const prisonNumber = 'A1234BC'
+      const userToken = 'a-user-token'
       educationAndWorkPlanClient.getActionPlan.mockRejectedValue(Error('Service Unavailable'))
       prisonService.getAllPrisonNamesById.mockResolvedValue(new Map())
 
       // When
-      const actual = await educationAndWorkPlanService.getActionPlan(prisonNumber, systemToken)
+      const actual = await educationAndWorkPlanService.getActionPlan(prisonNumber, userToken)
 
       // Then
-      expect(educationAndWorkPlanClient.getActionPlan).toHaveBeenCalledWith(prisonNumber, systemToken)
+      expect(educationAndWorkPlanClient.getActionPlan).toHaveBeenCalledWith(prisonNumber, userToken)
       expect(actual.problemRetrievingData).toEqual(true)
     })
   })
@@ -132,15 +137,16 @@ describe('educationAndWorkPlanService', () => {
       // Given
       const prisonNumber = 'A1234BC'
       const status = GoalStatusValue.ACTIVE
+      const userToken = 'a-user-token'
       educationAndWorkPlanClient.getGoalsByStatus.mockResolvedValue({ goals: [aValidGoalResponse()] })
       prisonService.getAllPrisonNamesById.mockResolvedValue(new Map())
       const expectedResponse: Goals = { goals: [aValidGoal()], problemRetrievingData: false }
 
       // When
-      const actual = await educationAndWorkPlanService.getGoalsByStatus(prisonNumber, status, systemToken)
+      const actual = await educationAndWorkPlanService.getGoalsByStatus(prisonNumber, status, userToken)
 
       // Then
-      expect(educationAndWorkPlanClient.getGoalsByStatus).toHaveBeenCalledWith(prisonNumber, status, systemToken)
+      expect(educationAndWorkPlanClient.getGoalsByStatus).toHaveBeenCalledWith(prisonNumber, status, userToken)
       expect(actual).toEqual(expectedResponse)
     })
 
@@ -148,47 +154,50 @@ describe('educationAndWorkPlanService', () => {
       // Given
       const prisonNumber = 'A1234BC'
       const status = GoalStatusValue.ACTIVE
+      const userToken = 'a-user-token'
 
       educationAndWorkPlanClient.getGoalsByStatus.mockRejectedValue(createError(500, 'Service unavailable'))
       prisonService.getAllPrisonNamesById.mockResolvedValue(new Map())
       const expectedResponse: Goals = { goals: undefined, problemRetrievingData: true }
 
       // When
-      const actual = await educationAndWorkPlanService.getGoalsByStatus(prisonNumber, status, systemToken)
+      const actual = await educationAndWorkPlanService.getGoalsByStatus(prisonNumber, status, userToken)
 
       // Then
-      expect(educationAndWorkPlanClient.getGoalsByStatus).toHaveBeenCalledWith(prisonNumber, status, systemToken)
+      expect(educationAndWorkPlanClient.getGoalsByStatus).toHaveBeenCalledWith(prisonNumber, status, userToken)
       expect(actual).toEqual(expectedResponse)
     })
     it('should return goals even if an error is returned loading the prison names', async () => {
       // Given
       const prisonNumber = 'A1234BC'
       const status = GoalStatusValue.ACTIVE
+      const userToken = 'a-user-token'
 
       educationAndWorkPlanClient.getGoalsByStatus.mockResolvedValue({ goals: [aValidGoalResponse()] })
       prisonService.getAllPrisonNamesById.mockRejectedValue(createError(404, 'Not Found'))
       const expectedResponse: Goals = { goals: [aValidGoal()], problemRetrievingData: false }
 
       // When
-      const actual = await educationAndWorkPlanService.getGoalsByStatus(prisonNumber, status, systemToken)
+      const actual = await educationAndWorkPlanService.getGoalsByStatus(prisonNumber, status, userToken)
 
       // Then
-      expect(educationAndWorkPlanClient.getGoalsByStatus).toHaveBeenCalledWith(prisonNumber, status, systemToken)
+      expect(educationAndWorkPlanClient.getGoalsByStatus).toHaveBeenCalledWith(prisonNumber, status, userToken)
       expect(actual).toEqual(expectedResponse)
     })
     it('should return no problem loading the data and undefined goals if the status is 404', async () => {
       // Given
       const prisonNumber = 'A1234BC'
       const status = GoalStatusValue.ACTIVE
+      const userToken = 'a-user-token'
 
       educationAndWorkPlanClient.getGoalsByStatus.mockRejectedValue(createError(404, 'Service unavailable'))
       const expectedResponse: Goals = { goals: undefined, problemRetrievingData: false }
 
       // When
-      const actual = await educationAndWorkPlanService.getGoalsByStatus(prisonNumber, status, systemToken)
+      const actual = await educationAndWorkPlanService.getGoalsByStatus(prisonNumber, status, userToken)
 
       // Then
-      expect(educationAndWorkPlanClient.getGoalsByStatus).toHaveBeenCalledWith(prisonNumber, status, systemToken)
+      expect(educationAndWorkPlanClient.getGoalsByStatus).toHaveBeenCalledWith(prisonNumber, status, userToken)
       expect(actual).toEqual(expectedResponse)
     })
   })
@@ -196,26 +205,28 @@ describe('educationAndWorkPlanService', () => {
     it('should update Goal', async () => {
       // Given
       const prisonNumber = 'A1234BC'
+      const userToken = 'a-user-token'
       const updateGoalDto = aValidUpdateGoalDtoWithOneStep()
       const updateGoalRequest = aValidUpdateGoalRequestWithOneUpdatedStep()
 
       // When
-      await educationAndWorkPlanService.updateGoal(prisonNumber, updateGoalDto, systemToken)
+      await educationAndWorkPlanService.updateGoal(prisonNumber, updateGoalDto, userToken)
 
       // Then
-      expect(educationAndWorkPlanClient.updateGoal).toHaveBeenCalledWith(prisonNumber, updateGoalRequest, systemToken)
+      expect(educationAndWorkPlanClient.updateGoal).toHaveBeenCalledWith(prisonNumber, updateGoalRequest, userToken)
     })
 
     it('should not update Goal given educationAndWorkPlanClient returns an error', async () => {
       // Given
       const prisonNumber = 'A1234BC'
+      const userToken = 'a-user-token'
       const updateGoalDto = aValidUpdateGoalDtoWithOneStep()
 
       educationAndWorkPlanClient.updateGoal.mockRejectedValue(Error('Service Unavailable'))
 
       // When
       const actual = await educationAndWorkPlanService
-        .updateGoal(prisonNumber, updateGoalDto, systemToken)
+        .updateGoal(prisonNumber, updateGoalDto, userToken)
         .catch(error => {
           return error
         })
@@ -227,6 +238,7 @@ describe('educationAndWorkPlanService', () => {
 
   describe('archiveGoal', () => {
     const prisonNumber = 'A1234BC'
+    const userToken = 'a-user-token'
     const goalReference = '95b18362-fe56-4234-9ad2-11ef98b974a3'
     const reason = ReasonToArchiveGoalValue.PRISONER_NO_LONGER_WANTS_TO_WORK_TOWARDS_GOAL
     const archiveGoalDto: ArchiveGoalDto = {
@@ -243,10 +255,10 @@ describe('educationAndWorkPlanService', () => {
       // Given
 
       // When
-      await educationAndWorkPlanService.archiveGoal(archiveGoalDto, systemToken)
+      await educationAndWorkPlanService.archiveGoal(archiveGoalDto, userToken)
 
       // Then
-      expect(educationAndWorkPlanClient.archiveGoal).toHaveBeenCalledWith(prisonNumber, archiveGoalRequest, systemToken)
+      expect(educationAndWorkPlanClient.archiveGoal).toHaveBeenCalledWith(prisonNumber, archiveGoalRequest, userToken)
     })
 
     it('should not archive Goal given educationAndWorkPlanClient returns an error', async () => {
@@ -254,7 +266,7 @@ describe('educationAndWorkPlanService', () => {
       educationAndWorkPlanClient.archiveGoal.mockRejectedValue(Error('Service Unavailable'))
 
       // When
-      const actual = await educationAndWorkPlanService.archiveGoal(archiveGoalDto, systemToken).catch(error => {
+      const actual = await educationAndWorkPlanService.archiveGoal(archiveGoalDto, userToken).catch(error => {
         return error
       })
 
@@ -265,6 +277,7 @@ describe('educationAndWorkPlanService', () => {
 
   describe('unarchiveGoal', () => {
     const prisonNumber = 'A1234BC'
+    const userToken = 'a-user-token'
     const goalReference = '95b18362-fe56-4234-9ad2-11ef98b974a3'
     const unarchiveGoalDto: UnarchiveGoalDto = { prisonNumber, goalReference }
     const unarchiveGoalRequest: UnarchiveGoalRequest = { goalReference }
@@ -273,13 +286,13 @@ describe('educationAndWorkPlanService', () => {
       // Given
 
       // When
-      await educationAndWorkPlanService.unarchiveGoal(unarchiveGoalDto, systemToken)
+      await educationAndWorkPlanService.unarchiveGoal(unarchiveGoalDto, userToken)
 
       // Then
       expect(educationAndWorkPlanClient.unarchiveGoal).toHaveBeenCalledWith(
         prisonNumber,
         unarchiveGoalRequest,
-        systemToken,
+        userToken,
       )
     })
 
@@ -288,7 +301,7 @@ describe('educationAndWorkPlanService', () => {
       educationAndWorkPlanClient.unarchiveGoal.mockRejectedValue(Error('Service Unavailable'))
 
       // When
-      const actual = await educationAndWorkPlanService.unarchiveGoal(unarchiveGoalDto, systemToken).catch(error => {
+      const actual = await educationAndWorkPlanService.unarchiveGoal(unarchiveGoalDto, userToken).catch(error => {
         return error
       })
 
@@ -345,23 +358,25 @@ describe('educationAndWorkPlanService', () => {
     it('should create Education', async () => {
       // Given
       const prisonNumber = 'A1234BC'
+      const userToken = 'a-user-token'
       const createEducationDto = aValidCreateEducationDto()
       const createEducationRequest = aValidCreateEducationRequest()
 
       // When
-      await educationAndWorkPlanService.createEducation(prisonNumber, createEducationDto, systemToken)
+      await educationAndWorkPlanService.createEducation(prisonNumber, createEducationDto, userToken)
 
       // Then
       expect(educationAndWorkPlanClient.createEducation).toHaveBeenCalledWith(
         prisonNumber,
         createEducationRequest,
-        systemToken,
+        userToken,
       )
     })
 
     it('should not create Education given educationAndWorkPlanClient returns an error', async () => {
       // Given
       const prisonNumber = 'A1234BC'
+      const userToken = 'a-user-token'
       const createEducationDto = aValidCreateEducationDto()
 
       const eductionAndWorkPlanApiError = {
@@ -376,7 +391,7 @@ describe('educationAndWorkPlanService', () => {
 
       // When
       const actual = await educationAndWorkPlanService
-        .createEducation(prisonNumber, createEducationDto, systemToken)
+        .createEducation(prisonNumber, createEducationDto, userToken)
         .catch(error => {
           return error
         })

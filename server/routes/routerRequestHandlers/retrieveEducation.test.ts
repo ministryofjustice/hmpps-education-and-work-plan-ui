@@ -43,12 +43,15 @@ describe('retrieveEducation', () => {
       educationDto,
     }
 
+    const username = 'testUser'
+    req.params = { prisonNumber, username }
+
     // When
     await requestHandler(req, res, next)
 
     // Then
     expect(res.locals.education).toEqual(expected)
-    expect(educationAndWorkPlanService.getEducation).toHaveBeenCalledWith(prisonNumber, userToken)
+    expect(educationAndWorkPlanService.getEducation).toHaveBeenCalledWith(prisonNumber, username)
     expect(next).toHaveBeenCalled()
   })
 
@@ -62,6 +65,10 @@ describe('retrieveEducation', () => {
         developerMessage: 'An unexpected error occurred',
       },
     }
+
+    const username = 'testUser'
+    req.params = { prisonNumber, username }
+
     educationAndWorkPlanService.getEducation.mockRejectedValue(educationServiceError)
 
     const expected = {
@@ -74,7 +81,7 @@ describe('retrieveEducation', () => {
 
     // Then
     expect(res.locals.education).toEqual(expected)
-    expect(educationAndWorkPlanService.getEducation).toHaveBeenCalledWith(prisonNumber, userToken)
+    expect(educationAndWorkPlanService.getEducation).toHaveBeenCalledWith(prisonNumber, username)
     expect(next).toHaveBeenCalled()
   })
 
@@ -88,6 +95,10 @@ describe('retrieveEducation', () => {
         developerMessage: `Education not found for prisoner [${prisonNumber}]`,
       },
     }
+
+    const username = 'testUser'
+    req.params = { prisonNumber, username }
+
     educationAndWorkPlanService.getEducation.mockRejectedValue(educationServiceError)
 
     const expected = {
@@ -100,7 +111,7 @@ describe('retrieveEducation', () => {
 
     // Then
     expect(res.locals.education).toEqual(expected)
-    expect(educationAndWorkPlanService.getEducation).toHaveBeenCalledWith(prisonNumber, userToken)
+    expect(educationAndWorkPlanService.getEducation).toHaveBeenCalledWith(prisonNumber, username)
     expect(next).toHaveBeenCalled()
   })
 })
