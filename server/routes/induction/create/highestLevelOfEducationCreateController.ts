@@ -41,9 +41,14 @@ export default class HighestLevelOfEducationCreateController extends HighestLeve
     req.session.inductionDto = updatedInduction
     req.session.highestLevelOfEducationForm = undefined
 
-    const nextPage = this.previousPageWasCheckYourAnswers(req)
-      ? `/prisoners/${prisonNumber}/create-induction/check-your-answers`
-      : `/prisoners/${prisonNumber}/create-induction/want-to-add-qualifications`
+    if (this.previousPageWasCheckYourAnswers(req)) {
+      return res.redirect(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
+    }
+
+    const nextPage =
+      updatedInduction.previousQualifications.qualifications?.length > 0
+        ? `/prisoners/${prisonNumber}/create-induction/qualifications` // if the induction already has qualifications (from being entered prior to the Induction) skip straight to the Qualifications List page
+        : `/prisoners/${prisonNumber}/create-induction/want-to-add-qualifications`
     return res.redirect(nextPage)
   }
 }

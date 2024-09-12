@@ -181,7 +181,7 @@ describe('highestLevelOfEducationCreateController', () => {
       expect(req.session.inductionDto).toEqual(inductionDto)
     })
 
-    it('should redirect to Do You Want To Record Any Qualifications page', async () => {
+    it('should redirect to Do You Want To Record Any Qualifications page given the induction does not already have an qualifications', async () => {
       // Given
       const inductionDto = aValidInductionDto()
       inductionDto.previousQualifications = undefined
@@ -210,6 +210,38 @@ describe('highestLevelOfEducationCreateController', () => {
 
       // Then
       expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-induction/want-to-add-qualifications')
+      expect(req.session.highestLevelOfEducationForm).toBeUndefined()
+      expect(req.session.inductionDto).toEqual(expectedInduction)
+    })
+
+    it('should redirect to Do You Want To Record Any Qualifications page given the induction does not already have an qualifications', async () => {
+      // Given
+      const inductionDto = aValidInductionDto()
+      req.session.inductionDto = inductionDto
+
+      const highestLevelOfEducationForm = {
+        educationLevel: EducationLevelValue.FURTHER_EDUCATION_COLLEGE,
+      }
+      req.body = highestLevelOfEducationForm
+      req.session.highestLevelOfEducationForm = undefined
+
+      const expectedInduction = {
+        ...inductionDto,
+        previousQualifications: {
+          ...inductionDto.previousQualifications,
+          educationLevel: EducationLevelValue.FURTHER_EDUCATION_COLLEGE,
+        },
+      } as InductionDto
+
+      // When
+      await controller.submitHighestLevelOfEducationForm(
+        req as undefined as Request,
+        res as undefined as Response,
+        next as undefined as NextFunction,
+      )
+
+      // Then
+      expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-induction/qualifications')
       expect(req.session.highestLevelOfEducationForm).toBeUndefined()
       expect(req.session.inductionDto).toEqual(expectedInduction)
     })
