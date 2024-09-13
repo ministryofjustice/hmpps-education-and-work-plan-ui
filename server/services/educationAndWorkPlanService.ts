@@ -47,10 +47,11 @@ export default class EducationAndWorkPlanService {
     }
   }
 
-  async getGoalsByStatus(prisonNumber: string, status: GoalStatusValue, token: string): Promise<Goals> {
+  async getGoalsByStatus(prisonNumber: string, status: GoalStatusValue, username: string): Promise<Goals> {
+    const systemToken = await this.hmppsAuthClient.getSystemClientToken(username)
     try {
-      const response = await this.educationAndWorkPlanClient.getGoalsByStatus(prisonNumber, status, token)
-      const prisonNamesById = await this.getAllPrisonNamesByIdSafely(token)
+      const response = await this.educationAndWorkPlanClient.getGoalsByStatus(prisonNumber, status, systemToken)
+      const prisonNamesById = await this.getAllPrisonNamesByIdSafely(systemToken)
       return { goals: toGoals(response, prisonNamesById), problemRetrievingData: false }
     } catch (error) {
       if (error.status === 404) {
