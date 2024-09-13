@@ -17,7 +17,7 @@ describe('affectAbilityToWorkUpdateController', () => {
     typeof toCreateOrUpdateInductionDto
   >
 
-  const inductionService = new InductionService(null) as jest.Mocked<InductionService>
+  const inductionService = new InductionService(null, null) as jest.Mocked<InductionService>
   const controller = new AbilityToWorkUpdateController(inductionService)
 
   const prisonNumber = 'A1234BC'

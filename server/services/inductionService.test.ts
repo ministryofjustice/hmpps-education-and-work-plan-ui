@@ -9,11 +9,13 @@ import toUpdateInductionRequest from '../data/mappers/updateInductionMapper'
 import aValidCreateInductionDto from '../testsupport/createInductionDtoTestDataBuilder'
 import aValidUpdateInductionDto from '../testsupport/updateInductionDtoTestDataBuilder'
 import aValidCreateInductionRequest from '../testsupport/createInductionRequestTestDataBuilder'
+import HmppsAuthClient from '../data/hmppsAuthClient'
 
 jest.mock('../data/educationAndWorkPlanClient')
 jest.mock('../data/mappers/inductionDtoMapper')
 jest.mock('../data/mappers/updateInductionMapper')
 jest.mock('../data/mappers/createInductionMapper')
+jest.mock('../data/hmppsAuthClient')
 
 describe('inductionService', () => {
   const mockedInductionDtoMapper = toInductionDto as jest.MockedFunction<typeof toInductionDto>
@@ -21,35 +23,36 @@ describe('inductionService', () => {
   const mockedCreateInductionMapper = toCreateInductionRequest as jest.MockedFunction<typeof toCreateInductionRequest>
 
   const educationAndWorkPlanClient = new EducationAndWorkPlanClient() as jest.Mocked<EducationAndWorkPlanClient>
-  const inductionService = new InductionService(educationAndWorkPlanClient)
+  const hmppsAuthClient = new HmppsAuthClient(null) as jest.Mocked<HmppsAuthClient>
+  const inductionService = new InductionService(educationAndWorkPlanClient, hmppsAuthClient)
+
+  const prisonNumber = 'A1234BC'
+  const username = 'a-dps-user'
+  const systemToken = 'a-system-token'
 
   beforeEach(() => {
     jest.resetAllMocks()
+    hmppsAuthClient.getSystemClientToken.mockResolvedValue(systemToken)
   })
 
   describe('inductionExists', () => {
     it('should determine if Induction exists given Education and Work Plan API returns an Induction', async () => {
       // Given
-      const prisonNumber = 'A1234BC'
-      const userToken = 'a-user-token'
-
       educationAndWorkPlanClient.getInduction.mockResolvedValue(aValidInductionResponse())
 
       const expected = true
 
       // When
-      const actual = await inductionService.inductionExists(prisonNumber, userToken)
+      const actual = await inductionService.inductionExists(prisonNumber, username)
 
       // Then
       expect(actual).toEqual(expected)
-      expect(educationAndWorkPlanClient.getInduction).toHaveBeenCalledWith(prisonNumber, userToken)
+      expect(educationAndWorkPlanClient.getInduction).toHaveBeenCalledWith(prisonNumber, systemToken)
+      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
     })
 
     it('should determine if Induction exists given Education and Work Plan API returns Not Found', async () => {
       // Given
-      const prisonNumber = 'A1234BC'
-      const userToken = 'a-user-token'
-
       const eductionAndWorkPlanApiError = {
         status: 404,
         data: {
@@ -63,18 +66,16 @@ describe('inductionService', () => {
       const expected = false
 
       // When
-      const actual = await inductionService.inductionExists(prisonNumber, userToken)
+      const actual = await inductionService.inductionExists(prisonNumber, username)
 
       // Then
       expect(actual).toEqual(expected)
-      expect(educationAndWorkPlanClient.getInduction).toHaveBeenCalledWith(prisonNumber, userToken)
+      expect(educationAndWorkPlanClient.getInduction).toHaveBeenCalledWith(prisonNumber, systemToken)
+      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
     })
 
     it('should rethrow error given Education and Work Plan API returns an unexpected error', async () => {
       // Given
-      const prisonNumber = 'A1234BC'
-      const userToken = 'a-user-token'
-
       const eductionAndWorkPlanApiError = {
         status: 500,
         data: {
@@ -86,41 +87,37 @@ describe('inductionService', () => {
       educationAndWorkPlanClient.getInduction.mockRejectedValue(eductionAndWorkPlanApiError)
 
       // When
-      const actual = await inductionService.inductionExists(prisonNumber, userToken).catch(error => {
+      const actual = await inductionService.inductionExists(prisonNumber, username).catch(error => {
         return error
       })
 
       // Then
       expect(actual).toEqual(eductionAndWorkPlanApiError)
-      expect(educationAndWorkPlanClient.getInduction).toHaveBeenCalledWith(prisonNumber, userToken)
+      expect(educationAndWorkPlanClient.getInduction).toHaveBeenCalledWith(prisonNumber, systemToken)
+      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
     })
   })
 
   describe('getInduction', () => {
     it('should get Induction given Education and Work Plan API returns an Induction', async () => {
       // Given
-      const prisonNumber = 'A1234BC'
-      const userToken = 'a-user-token'
-
       const inductionResponse = aValidInductionResponse()
       educationAndWorkPlanClient.getInduction.mockResolvedValue(inductionResponse)
       const expectedInductionDto = aValidInductionDto()
       mockedInductionDtoMapper.mockReturnValue(expectedInductionDto)
 
       // When
-      const actual = await inductionService.getInduction(prisonNumber, userToken)
+      const actual = await inductionService.getInduction(prisonNumber, username)
 
       // Then
       expect(actual).toEqual(expectedInductionDto)
-      expect(educationAndWorkPlanClient.getInduction).toHaveBeenCalledWith(prisonNumber, userToken)
+      expect(educationAndWorkPlanClient.getInduction).toHaveBeenCalledWith(prisonNumber, systemToken)
+      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
       expect(mockedInductionDtoMapper).toHaveBeenCalledWith(inductionResponse)
     })
 
     it('should rethrow error given Education and Work Plan API returns Not Found', async () => {
       // Given
-      const prisonNumber = 'A1234BC'
-      const userToken = 'a-user-token'
-
       const eductionAndWorkPlanApiError = {
         status: 404,
         data: {
@@ -132,21 +129,18 @@ describe('inductionService', () => {
       educationAndWorkPlanClient.getInduction.mockRejectedValue(eductionAndWorkPlanApiError)
 
       // When
-      const actual = await inductionService.getInduction(prisonNumber, userToken).catch(error => {
+      const actual = await inductionService.getInduction(prisonNumber, username).catch(error => {
         return error
       })
 
       // Then
       expect(actual).toEqual(eductionAndWorkPlanApiError)
-      expect(educationAndWorkPlanClient.getInduction).toHaveBeenCalledWith(prisonNumber, userToken)
+      expect(educationAndWorkPlanClient.getInduction).toHaveBeenCalledWith(prisonNumber, systemToken)
       expect(mockedInductionDtoMapper).not.toHaveBeenCalled()
     })
 
     it('should rethrow error given Education and Work Plan API returns an unexpected error', async () => {
       // Given
-      const prisonNumber = 'A1234BC'
-      const userToken = 'a-user-token'
-
       const eductionAndWorkPlanApiError = {
         status: 500,
         data: {
@@ -158,13 +152,14 @@ describe('inductionService', () => {
       educationAndWorkPlanClient.getInduction.mockRejectedValue(eductionAndWorkPlanApiError)
 
       // When
-      const actual = await inductionService.getInduction(prisonNumber, userToken).catch(error => {
+      const actual = await inductionService.getInduction(prisonNumber, username).catch(error => {
         return error
       })
 
       // Then
       expect(actual).toEqual(eductionAndWorkPlanApiError)
-      expect(educationAndWorkPlanClient.getInduction).toHaveBeenCalledWith(prisonNumber, userToken)
+      expect(educationAndWorkPlanClient.getInduction).toHaveBeenCalledWith(prisonNumber, systemToken)
+      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
       expect(mockedInductionDtoMapper).not.toHaveBeenCalled()
     })
   })
@@ -172,7 +167,6 @@ describe('inductionService', () => {
   describe('updateInduction', () => {
     it('should update Induction', async () => {
       // Given
-      const prisonNumber = 'A1234BC'
       const userToken = 'a-user-token'
 
       const updateInductionDto = aValidUpdateInductionDto()
@@ -194,7 +188,6 @@ describe('inductionService', () => {
 
     it('should not update Induction given Education and Work Plan API returns an error', async () => {
       // Given
-      const prisonNumber = 'A1234BC'
       const userToken = 'a-user-token'
       const updateInductionDto = aValidUpdateInductionDto()
       const updateInductionRequest = aValidUpdateInductionRequest()
@@ -231,7 +224,6 @@ describe('inductionService', () => {
   describe('createInduction', () => {
     it('should create Induction', async () => {
       // Given
-      const prisonNumber = 'A1234BC'
       const userToken = 'a-user-token'
 
       const createInductionDto = aValidCreateInductionDto()
@@ -252,7 +244,6 @@ describe('inductionService', () => {
 
     it('should not create Induction given Education and Work Plan API returns an error', async () => {
       // Given
-      const prisonNumber = 'A1234BC'
       const userToken = 'a-user-token'
       const createInductionDto = aValidCreateInductionDto()
       const createInductionRequest = aValidCreateInductionRequest()

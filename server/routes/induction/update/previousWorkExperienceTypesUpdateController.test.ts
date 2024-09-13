@@ -19,7 +19,7 @@ describe('previousWorkExperienceTypesUpdateController', () => {
     typeof toCreateOrUpdateInductionDto
   >
 
-  const inductionService = new InductionService(null) as jest.Mocked<InductionService>
+  const inductionService = new InductionService(null, null) as jest.Mocked<InductionService>
   const controller = new PreviousWorkExperienceTypesUpdateController(inductionService)
 
   const prisonNumber = 'A1234BC'
