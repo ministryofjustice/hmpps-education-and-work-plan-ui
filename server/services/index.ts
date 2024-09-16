@@ -37,7 +37,7 @@ export const services = () => {
     prisonService,
     hmppsAuthClient,
   )
-  const inductionService = new InductionService(educationAndWorkPlanClient)
+  const inductionService = new InductionService(educationAndWorkPlanClient, hmppsAuthClient)
   const curiousService = new CuriousService(hmppsAuthClient, curiousClient, prisonService)
   const frontendComponentService = new FrontendComponentService(frontendComponentApiClient)
   const prisonerListService = new PrisonerListService(

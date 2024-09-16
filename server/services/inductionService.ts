@@ -4,13 +4,18 @@ import EducationAndWorkPlanClient from '../data/educationAndWorkPlanClient'
 import toInductionDto from '../data/mappers/inductionDtoMapper'
 import toUpdateInductionRequest from '../data/mappers/updateInductionMapper'
 import toCreateInductionRequest from '../data/mappers/createInductionMapper'
+import { HmppsAuthClient } from '../data'
 
 export default class InductionService {
-  constructor(private readonly educationAndWorkPlanClient: EducationAndWorkPlanClient) {}
+  constructor(
+    private readonly educationAndWorkPlanClient: EducationAndWorkPlanClient,
+    private readonly hmppsAuthClient: HmppsAuthClient,
+  ) {}
 
-  async getInduction(prisonNumber: string, token: string): Promise<InductionDto> {
+  async getInduction(prisonNumber: string, username: string): Promise<InductionDto> {
+    const systemToken = await this.hmppsAuthClient.getSystemClientToken(username)
     try {
-      const inductionResponse = await this.educationAndWorkPlanClient.getInduction(prisonNumber, token)
+      const inductionResponse = await this.educationAndWorkPlanClient.getInduction(prisonNumber, systemToken)
       return toInductionDto(inductionResponse)
     } catch (error) {
       logger.error(`Error retrieving Induction for prisoner [${prisonNumber}] from Education And Work Plan API `, error)
@@ -46,9 +51,10 @@ export default class InductionService {
     }
   }
 
-  async inductionExists(prisonNumber: string, token: string): Promise<boolean> {
+  async inductionExists(prisonNumber: string, username: string): Promise<boolean> {
+    const systemToken = await this.hmppsAuthClient.getSystemClientToken(username)
     try {
-      await this.educationAndWorkPlanClient.getInduction(prisonNumber, token)
+      await this.educationAndWorkPlanClient.getInduction(prisonNumber, systemToken)
       return true
     } catch (error) {
       if (isNotFoundError(error)) {

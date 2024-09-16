@@ -21,7 +21,7 @@ describe('overviewController', () => {
     null,
     null,
   ) as jest.Mocked<EducationAndWorkPlanService>
-  const inductionService = new InductionService(null) as jest.Mocked<InductionService>
+  const inductionService = new InductionService(null, null) as jest.Mocked<InductionService>
 
   const controller = new OverviewController(curiousService, educationAndWorkPlanService, inductionService)
 
