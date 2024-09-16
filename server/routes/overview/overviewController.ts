@@ -20,18 +20,18 @@ export default class OverviewController {
     const { prisonerSummary } = req.session
 
     try {
-      const ciagInductionExists = await this.inductionService.inductionExists(prisonNumber, req.user.token)
+      const inductionExists = await this.inductionService.inductionExists(prisonNumber, req.user.username)
       const allFunctionalSkills = await this.curiousService.getPrisonerFunctionalSkills(prisonNumber, req.user.username)
       const functionalSkills = mostRecentFunctionalSkills(allFunctionalSkills)
 
       const goals = await this.educationAndWorkPlanService.getGoalsByStatus(
         prisonNumber,
         GoalStatusValue.ACTIVE,
-        req.user.token,
+        req.user.username,
       )
 
       let view: PostInductionOverviewView | PreInductionOverviewView
-      if (ciagInductionExists) {
+      if (inductionExists) {
         view = new PostInductionOverviewView(
           prisonNumber,
           prisonerSummary,

@@ -26,6 +26,7 @@ describe('overviewController', () => {
   const controller = new OverviewController(curiousService, educationAndWorkPlanService, inductionService)
 
   const prisonNumber = 'A1234GC'
+  const username = 'a-dps-user'
   const prisonerSummary = aValidPrisonerSummary(prisonNumber)
 
   const inPrisonCourses: InPrisonCourseRecords = {
@@ -41,7 +42,11 @@ describe('overviewController', () => {
     coursesCompletedInLast12Months: [],
   }
 
-  let req: Request
+  const req = {
+    session: { prisonerSummary },
+    user: { username },
+    params: { prisonNumber },
+  } as unknown as Request
   const res = {
     render: jest.fn(),
     locals: {
@@ -52,14 +57,6 @@ describe('overviewController', () => {
 
   beforeEach(() => {
     jest.resetAllMocks()
-    req = {
-      session: { prisonerSummary },
-      user: {
-        username: 'a-dps-user',
-        token: 'a-user-token',
-      },
-      params: { prisonNumber },
-    } as unknown as Request
   })
 
   it('should get overview view given CIAG Induction and PLP Action Plan both exist', async () => {
@@ -109,9 +106,9 @@ describe('overviewController', () => {
     expect(educationAndWorkPlanService.getGoalsByStatus).toHaveBeenCalledWith(
       prisonNumber,
       GoalStatusValue.ACTIVE,
-      'a-user-token',
+      username,
     )
-    expect(inductionService.inductionExists).toHaveBeenCalledWith(prisonNumber, 'a-user-token')
+    expect(inductionService.inductionExists).toHaveBeenCalledWith(prisonNumber, username)
   })
 
   it('should get overview view given CIAG Induction does not exist', async () => {
@@ -161,9 +158,9 @@ describe('overviewController', () => {
     expect(educationAndWorkPlanService.getGoalsByStatus).toHaveBeenCalledWith(
       prisonNumber,
       GoalStatusValue.ACTIVE,
-      'a-user-token',
+      username,
     )
-    expect(inductionService.inductionExists).toHaveBeenCalledWith(prisonNumber, 'a-user-token')
+    expect(inductionService.inductionExists).toHaveBeenCalledWith(prisonNumber, username)
   })
 
   it('should not get overview view given CIAG Induction throws an error', async () => {
@@ -184,7 +181,7 @@ describe('overviewController', () => {
     // Then
     expect(next).toHaveBeenCalledWith(expectedError)
     expect(res.render).not.toHaveBeenCalled()
-    expect(inductionService.inductionExists).toHaveBeenCalledWith(prisonNumber, 'a-user-token')
+    expect(inductionService.inductionExists).toHaveBeenCalledWith(prisonNumber, username)
     expect(educationAndWorkPlanService.getGoalsByStatus).not.toHaveBeenCalled()
     expect(curiousService.getPrisonerFunctionalSkills).not.toHaveBeenCalled()
   })
