@@ -104,7 +104,7 @@ describe('highestLevelOfEducationController', () => {
 
       // Then
       expect(res.redirectWithErrors).toHaveBeenCalledWith(
-        '/prisoners/A1234BC/highest-level-of-education',
+        '/prisoners/A1234BC/create-education/highest-level-of-education',
         expectedErrors,
       )
       expect(getPrisonerContext(req.session, prisonNumber).educationDto).toEqual(educationDto)
@@ -130,7 +130,7 @@ describe('highestLevelOfEducationController', () => {
       await controller.submitHighestLevelOfEducationForm(req, res, next)
 
       // Then
-      expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/qualification-level')
+      expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-education/qualification-level')
       expect(getPrisonerContext(req.session, prisonNumber).educationDto).toEqual(expectedEducationDto)
       expect(getPrisonerContext(req.session, prisonNumber).highestLevelOfEducationForm).toBeUndefined()
     })

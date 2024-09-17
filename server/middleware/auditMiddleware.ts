@@ -89,10 +89,10 @@ const pageViewEventMap: Record<string, Page> = {
   '/prisoners/:prisonNumber/induction/check-your-answers': Page.INDUCTION_UPDATE_CHECK_YOUR_ANSWERS,
 
   // Create qualifications (before an Induction)
-  '/prisoners/:prisonNumber/highest-level-of-education': Page.CREATE_HIGHEST_LEVEL_OF_EDUCATION,
-  '/prisoners/:prisonNumber/qualification-level': Page.CREATE_QUALIFICATION_LEVEL,
-  '/prisoners/:prisonNumber/qualification-details': Page.CREATE_QUALIFICATION_DETAILS,
-  '/prisoners/:prisonNumber/qualifications': Page.CREATE_QUALIFICATIONS,
+  '/prisoners/:prisonNumber/create-education/highest-level-of-education': Page.CREATE_HIGHEST_LEVEL_OF_EDUCATION,
+  '/prisoners/:prisonNumber/create-education/qualification-level': Page.CREATE_QUALIFICATION_LEVEL,
+  '/prisoners/:prisonNumber/create-education/qualification-details': Page.CREATE_QUALIFICATION_DETAILS,
+  '/prisoners/:prisonNumber/create-education/qualifications': Page.CREATE_QUALIFICATIONS,
 
   // Non audit routes. These routes do not raise an audit event
   '/plan/:prisonNumber/induction-created': null,

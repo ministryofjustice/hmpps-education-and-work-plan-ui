@@ -39,7 +39,7 @@ context('Create a prisoners pre-prison education', () => {
     cy.signIn()
 
     // When
-    cy.visit(`/prisoners/${prisonNumber}/highest-level-of-education`)
+    cy.visit(`/prisoners/${prisonNumber}/create-education/highest-level-of-education`)
 
     // Then
     Page.verifyOnPage(HighestLevelOfEducationPage) //
@@ -51,7 +51,7 @@ context('Create a prisoners pre-prison education', () => {
     cy.signIn()
 
     // When
-    cy.visit(`/prisoners/${prisonNumber}/qualification-level`)
+    cy.visit(`/prisoners/${prisonNumber}/create-education/qualification-level`)
 
     // Then
     Page.verifyOnPage(OverviewPage)
@@ -62,7 +62,7 @@ context('Create a prisoners pre-prison education', () => {
     cy.signIn()
 
     // When
-    cy.visit(`/prisoners/${prisonNumber}/qualification-details`)
+    cy.visit(`/prisoners/${prisonNumber}/create-education/qualification-details`)
 
     // Then
     Page.verifyOnPage(OverviewPage)
@@ -72,13 +72,13 @@ context('Create a prisoners pre-prison education', () => {
     // Given
     cy.signIn()
 
-    cy.visit(`/prisoners/${prisonNumber}/highest-level-of-education`)
+    cy.visit(`/prisoners/${prisonNumber}/create-education/highest-level-of-education`)
     Page.verifyOnPage(HighestLevelOfEducationPage) //
       .selectHighestLevelOfEducation(EducationLevelValue.FURTHER_EDUCATION_COLLEGE)
 
     // When
     // User tries to navigate to Qualifications Details page without submitting Highest Level of Education (which would take the user to Qualification Level)
-    cy.visit(`/prisoners/${prisonNumber}/qualification-details`)
+    cy.visit(`/prisoners/${prisonNumber}/create-education/qualification-details`)
 
     // Then
     Page.verifyOnPage(QualificationLevelPage)
@@ -90,7 +90,7 @@ context('Create a prisoners pre-prison education', () => {
     cy.signIn()
 
     // When
-    cy.visit(`/prisoners/${prisonNumber}/highest-level-of-education`, { failOnStatusCode: false })
+    cy.visit(`/prisoners/${prisonNumber}/create-education/highest-level-of-education`, { failOnStatusCode: false })
 
     // Then
     Page.verifyOnPage(AuthorisationErrorPage)
@@ -120,10 +120,10 @@ context('Create a prisoners pre-prison education', () => {
 
     // Qualification Level is the next page
     Page.verifyOnPage(QualificationLevelPage)
-      .hasBackLinkTo(`/prisoners/${prisonNumber}/highest-level-of-education`)
+      .hasBackLinkTo(`/prisoners/${prisonNumber}/create-education/highest-level-of-education`)
       .submitPage() // submit the page without answering the question to trigger a validation error
     Page.verifyOnPage(QualificationLevelPage)
-      .hasBackLinkTo(`/prisoners/${prisonNumber}/highest-level-of-education`)
+      .hasBackLinkTo(`/prisoners/${prisonNumber}/create-education/highest-level-of-education`)
       .hasErrorCount(1)
       .hasFieldInError('qualificationLevel')
       .selectQualificationLevel(QualificationLevelValue.LEVEL_2)
@@ -131,11 +131,11 @@ context('Create a prisoners pre-prison education', () => {
 
     // Qualification Details is the next page
     Page.verifyOnPage(QualificationDetailsPage)
-      .hasBackLinkTo(`/prisoners/${prisonNumber}/qualification-level`)
+      .hasBackLinkTo(`/prisoners/${prisonNumber}/create-education/qualification-level`)
       .setQualificationGrade('C')
       .submitPage() // submit the page without answering the Qualification Subject question to trigger a validation error
     Page.verifyOnPage(QualificationDetailsPage)
-      .hasBackLinkTo(`/prisoners/${prisonNumber}/qualification-level`)
+      .hasBackLinkTo(`/prisoners/${prisonNumber}/create-education/qualification-level`)
       .hasErrorCount(1)
       .hasFieldInError('qualificationSubject')
       .setQualificationSubject('GCSE Maths')
@@ -143,7 +143,7 @@ context('Create a prisoners pre-prison education', () => {
 
     // Qualifications List is the next page
     Page.verifyOnPage(QualificationsListPage)
-      .hasBackLinkTo(`/prisoners/${prisonNumber}/highest-level-of-education`)
+      .hasBackLinkTo(`/prisoners/${prisonNumber}/create-education/highest-level-of-education`)
       .hasEducationalQualifications(['GCSE Maths'])
       .clickToAddAnotherQualification()
 

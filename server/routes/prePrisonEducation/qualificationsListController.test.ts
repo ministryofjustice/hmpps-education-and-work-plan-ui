@@ -59,7 +59,7 @@ describe('qualificationsListController', () => {
 
       const expectedView = {
         prisonerSummary,
-        backLinkUrl: '/prisoners/A1234BC/highest-level-of-education',
+        backLinkUrl: '/prisoners/A1234BC/create-education/highest-level-of-education',
         backLinkAriaText: `Back to What's the highest level of education Jimmy Lightfingers completed before entering prison?`,
         qualifications,
         functionalSkills,
@@ -84,7 +84,7 @@ describe('qualificationsListController', () => {
       await controller.getQualificationsListView(req, res, next)
 
       // Then
-      expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/highest-level-of-education')
+      expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-education/highest-level-of-education')
       expect(getPrisonerContext(req.session, prisonNumber).educationDto).toEqual(educationDto)
     })
   })
@@ -170,7 +170,7 @@ describe('qualificationsListController', () => {
       await controller.submitQualificationsListView(req, res, next)
 
       // Then
-      expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/qualification-level')
+      expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-education/qualification-level')
       expect(getPrisonerContext(req.session, prisonNumber).educationDto).toEqual(educationDto)
     })
 
@@ -199,7 +199,7 @@ describe('qualificationsListController', () => {
       await controller.submitQualificationsListView(req, res, next)
 
       // Then
-      expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/qualifications')
+      expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-education/qualifications')
       expect(getPrisonerContext(req.session, prisonNumber).educationDto).toEqual(expectedEducationDto)
     })
   })

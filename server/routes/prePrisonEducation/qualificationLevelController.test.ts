@@ -42,7 +42,7 @@ describe('qualificationLevelController', () => {
       const expectedView = {
         prisonerSummary,
         form: expectedQualificationLevelForm,
-        backLinkUrl: '/prisoners/A1234BC/highest-level-of-education',
+        backLinkUrl: '/prisoners/A1234BC/create-education/highest-level-of-education',
         backLinkAriaText: `Back to What's the highest level of education Jimmy Lightfingers completed before entering prison?`,
       }
 
@@ -64,7 +64,7 @@ describe('qualificationLevelController', () => {
       const expectedView = {
         prisonerSummary,
         form: expectedQualificationLevelForm,
-        backLinkUrl: '/prisoners/A1234BC/highest-level-of-education',
+        backLinkUrl: '/prisoners/A1234BC/create-education/highest-level-of-education',
         backLinkAriaText: `Back to What's the highest level of education Jimmy Lightfingers completed before entering prison?`,
       }
 
@@ -91,7 +91,10 @@ describe('qualificationLevelController', () => {
       await controller.submitQualificationLevelForm(req, res, next)
 
       // Then
-      expect(res.redirectWithErrors).toHaveBeenCalledWith('/prisoners/A1234BC/qualification-level', expectedErrors)
+      expect(res.redirectWithErrors).toHaveBeenCalledWith(
+        '/prisoners/A1234BC/create-education/qualification-level',
+        expectedErrors,
+      )
       expect(getPrisonerContext(req.session, prisonNumber).qualificationLevelForm).toEqual(
         invalidQualificationLevelForm,
       )
@@ -106,7 +109,7 @@ describe('qualificationLevelController', () => {
       await controller.submitQualificationLevelForm(req, res, next)
 
       // Then
-      expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/qualification-details')
+      expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-education/qualification-details')
       expect(getPrisonerContext(req.session, prisonNumber).qualificationLevelForm).toEqual(qualificationLevelForm)
     })
   })

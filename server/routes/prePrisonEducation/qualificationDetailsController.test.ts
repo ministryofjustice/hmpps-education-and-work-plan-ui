@@ -51,7 +51,7 @@ describe('qualificationDetailsController', () => {
         prisonerSummary,
         form: expectedQualificationDetailsForm,
         qualificationLevel: QualificationLevelValue.LEVEL_3,
-        backLinkUrl: '/prisoners/A1234BC/qualification-level',
+        backLinkUrl: '/prisoners/A1234BC/create-education/qualification-level',
         backLinkAriaText: 'Back to What level of qualification does Jimmy Lightfingers want to add',
       }
 
@@ -81,7 +81,7 @@ describe('qualificationDetailsController', () => {
         prisonerSummary,
         form: expectedQualificationDetailsForm,
         qualificationLevel: QualificationLevelValue.LEVEL_3,
-        backLinkUrl: '/prisoners/A1234BC/qualification-level',
+        backLinkUrl: '/prisoners/A1234BC/create-education/qualification-level',
         backLinkAriaText: 'Back to What level of qualification does Jimmy Lightfingers want to add',
       }
 
@@ -103,7 +103,7 @@ describe('qualificationDetailsController', () => {
       await controller.getQualificationDetailsView(req, res, next)
 
       // Then
-      expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/qualification-level')
+      expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-education/qualification-level')
       expect(getPrisonerContext(req.session, prisonNumber).qualificationLevelForm).toBeUndefined()
       expect(getPrisonerContext(req.session, prisonNumber).qualificationDetailsForm).toBeUndefined()
     })
@@ -135,7 +135,10 @@ describe('qualificationDetailsController', () => {
       await controller.submitQualificationDetailsForm(req, res, next)
 
       // Then
-      expect(res.redirectWithErrors).toHaveBeenCalledWith('/prisoners/A1234BC/qualification-details', expectedErrors)
+      expect(res.redirectWithErrors).toHaveBeenCalledWith(
+        '/prisoners/A1234BC/create-education/qualification-details',
+        expectedErrors,
+      )
       expect(getPrisonerContext(req.session, prisonNumber).educationDto).toEqual(educationDto)
       expect(getPrisonerContext(req.session, prisonNumber).qualificationLevelForm).toEqual(qualificationLevelForm)
       expect(getPrisonerContext(req.session, prisonNumber).qualificationDetailsForm).toEqual(
@@ -178,7 +181,7 @@ describe('qualificationDetailsController', () => {
       await controller.submitQualificationDetailsForm(req, res, next)
 
       // Then
-      expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/qualifications')
+      expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-education/qualifications')
       expect(getPrisonerContext(req.session, prisonNumber).educationDto).toEqual(expectedEducationDto)
       expect(getPrisonerContext(req.session, prisonNumber).qualificationLevelForm).toBeUndefined()
       expect(getPrisonerContext(req.session, prisonNumber).qualificationDetailsForm).toBeUndefined()

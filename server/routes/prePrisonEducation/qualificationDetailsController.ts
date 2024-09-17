@@ -19,7 +19,7 @@ export default class QualificationDetailsController {
     const { qualificationLevelForm } = getPrisonerContext(req.session, prisonNumber)
     if (!qualificationLevelForm) {
       // Guard against the user using the back button to return to this page, which can cause a NPE creating the QualificationDetailsView below (depending on which pages they've been to)
-      return res.redirect(`/prisoners/${prisonNumber}/qualification-level`)
+      return res.redirect(`/prisoners/${prisonNumber}/create-education/qualification-level`)
     }
 
     const qualificationDetailsForm = getPrisonerContext(req.session, prisonNumber).qualificationDetailsForm || {
@@ -56,7 +56,7 @@ export default class QualificationDetailsController {
       prisonerSummary,
     )
     if (errors.length > 0) {
-      return res.redirectWithErrors(`/prisoners/${prisonNumber}/qualification-details`, errors)
+      return res.redirectWithErrors(`/prisoners/${prisonNumber}/create-education/qualification-details`, errors)
     }
 
     const updatedEducation = this.addQualificationToEducationDto(
@@ -69,12 +69,12 @@ export default class QualificationDetailsController {
     getPrisonerContext(req.session, prisonNumber).qualificationDetailsForm = undefined
     getPrisonerContext(req.session, prisonNumber).qualificationLevelForm = undefined
 
-    return res.redirect(`/prisoners/${prisonNumber}/qualifications`)
+    return res.redirect(`/prisoners/${prisonNumber}/create-education/qualifications`)
   }
 
   private getBackLinkUrl(req: Request): string {
     const { prisonNumber } = req.params
-    return `/prisoners/${prisonNumber}/qualification-level`
+    return `/prisoners/${prisonNumber}/create-education/qualification-level`
   }
 
   private getBackLinkAriaText(req: Request): string {

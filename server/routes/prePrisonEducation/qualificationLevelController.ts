@@ -40,15 +40,15 @@ export default class QualificationLevelController {
 
     const errors = validateQualificationLevelForm(qualificationLevelForm, prisonerSummary)
     if (errors.length > 0) {
-      return res.redirectWithErrors(`/prisoners/${prisonNumber}/qualification-level`, errors)
+      return res.redirectWithErrors(`/prisoners/${prisonNumber}/create-education/qualification-level`, errors)
     }
 
-    return res.redirect(`/prisoners/${prisonNumber}/qualification-details`)
+    return res.redirect(`/prisoners/${prisonNumber}/create-education/qualification-details`)
   }
 
   private getBackLinkUrl(req: Request): string {
     const { prisonNumber } = req.params
-    return `/prisoners/${prisonNumber}/highest-level-of-education`
+    return `/prisoners/${prisonNumber}/create-education/highest-level-of-education`
   }
 
   private getBackLinkAriaText(req: Request): string {
