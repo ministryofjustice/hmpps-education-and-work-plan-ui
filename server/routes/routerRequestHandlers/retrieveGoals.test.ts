@@ -39,78 +39,11 @@ describe('retrieveGoals', () => {
     const goals: Goals = { goals: [aValidGoal()], problemRetrievingData: false }
     educationAndWorkPlanService.getGoalsByStatus.mockResolvedValue(goals)
 
-    const expected = {
-      problemRetrievingData: false,
-      goals,
-    }
-
     // When
     await requestHandler(req, res, next)
 
     // Then
-    expect(res.locals.goals).toEqual(expected)
-    expect(educationAndWorkPlanService.getGoalsByStatus).toHaveBeenCalledWith(
-      prisonNumber,
-      GoalStatusValue.ACTIVE,
-      username,
-    )
-    expect(next).toHaveBeenCalled()
-  })
-
-  it('should handle retrieval of Goals given Education service returns an unexpected error', async () => {
-    // Given
-    const educationServiceError = {
-      status: 500,
-      data: {
-        status: 500,
-        userMessage: 'An unexpected error occurred',
-        developerMessage: 'An unexpected error occurred',
-      },
-    }
-
-    educationAndWorkPlanService.getGoalsByStatus.mockRejectedValue(educationServiceError)
-
-    const expected = {
-      problemRetrievingData: true,
-      goals: undefined as Goals,
-    }
-
-    // When
-    await requestHandler(req, res, next)
-
-    // Then
-    expect(res.locals.goals).toEqual(expected)
-    expect(educationAndWorkPlanService.getGoalsByStatus).toHaveBeenCalledWith(
-      prisonNumber,
-      GoalStatusValue.ACTIVE,
-      username,
-    )
-    expect(next).toHaveBeenCalled()
-  })
-
-  it('should handle retrieval of Goals given Education service returns Not Found', async () => {
-    // Given
-    const educationServiceError = {
-      status: 404,
-      data: {
-        status: 404,
-        userMessage: `Education not found for prisoner [${prisonNumber}]`,
-        developerMessage: `Education not found for prisoner [${prisonNumber}]`,
-      },
-    }
-
-    educationAndWorkPlanService.getGoalsByStatus.mockRejectedValue(educationServiceError)
-
-    const expected = {
-      problemRetrievingData: false,
-      goals: undefined as Goals,
-    }
-
-    // When
-    await requestHandler(req, res, next)
-
-    // Then
-    expect(res.locals.goals).toEqual(expected)
+    expect(res.locals.goals).toEqual(goals)
     expect(educationAndWorkPlanService.getGoalsByStatus).toHaveBeenCalledWith(
       prisonNumber,
       GoalStatusValue.ACTIVE,

@@ -21,7 +21,7 @@ export default class OverviewController {
       const allFunctionalSkills = await this.curiousService.getPrisonerFunctionalSkills(prisonNumber, req.user.username)
       const functionalSkills = mostRecentFunctionalSkills(allFunctionalSkills)
 
-      const { goals } = res.locals.goals || { goals: [], problemRetrievingData: true }
+      const { goals } = res.locals
 
       let view: PostInductionOverviewView | PreInductionOverviewView
       if (inductionExists) {

@@ -9,7 +9,6 @@ import { aValidEnglishInPrisonCourse, aValidMathsInPrisonCourse } from '../../te
 import aValidPrisonerSummary from '../../testsupport/prisonerSummaryTestDataBuilder'
 
 jest.mock('../../services/curiousService')
-jest.mock('../../services/educationAndWorkPlanService')
 jest.mock('../../services/inductionService')
 
 describe('overviewController', () => {
@@ -83,7 +82,7 @@ describe('overviewController', () => {
       prisonerSummary: expectedPrisonerSummary,
       tab: expectedTab,
       prisonNumber,
-      goals: res.locals.goals.goals,
+      goals: res.locals.goals,
       functionalSkills: expectedFunctionalSkills,
       inPrisonCourses,
       isPostInduction: true,
@@ -127,7 +126,7 @@ describe('overviewController', () => {
       prisonerSummary: expectedPrisonerSummary,
       tab: expectedTab,
       prisonNumber,
-      goals: res.locals.goals.goals,
+      goals: res.locals.goals,
       functionalSkills: expectedFunctionalSkills,
       inPrisonCourses,
       isPostInduction: false,
