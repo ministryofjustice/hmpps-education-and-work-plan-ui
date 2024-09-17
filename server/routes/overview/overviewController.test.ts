@@ -1,14 +1,12 @@
 import createError from 'http-errors'
 import { Request, Response } from 'express'
-import type { FunctionalSkills, Goals, InPrisonCourseRecords } from 'viewModels'
+import type { FunctionalSkills, InPrisonCourseRecords } from 'viewModels'
 import OverviewController from './overviewController'
 import CuriousService from '../../services/curiousService'
-import EducationAndWorkPlanService from '../../services/educationAndWorkPlanService'
 import InductionService from '../../services/inductionService'
 import { aValidGoal } from '../../testsupport/actionPlanTestDataBuilder'
 import { aValidEnglishInPrisonCourse, aValidMathsInPrisonCourse } from '../../testsupport/inPrisonCourseTestDataBuilder'
 import aValidPrisonerSummary from '../../testsupport/prisonerSummaryTestDataBuilder'
-import GoalStatusValue from '../../enums/goalStatusValue'
 
 jest.mock('../../services/curiousService')
 jest.mock('../../services/educationAndWorkPlanService')
@@ -16,14 +14,9 @@ jest.mock('../../services/inductionService')
 
 describe('overviewController', () => {
   const curiousService = new CuriousService(null, null, null) as jest.Mocked<CuriousService>
-  const educationAndWorkPlanService = new EducationAndWorkPlanService(
-    null,
-    null,
-    null,
-  ) as jest.Mocked<EducationAndWorkPlanService>
   const inductionService = new InductionService(null, null) as jest.Mocked<InductionService>
 
-  const controller = new OverviewController(curiousService, educationAndWorkPlanService, inductionService)
+  const controller = new OverviewController(curiousService, inductionService)
 
   const prisonNumber = 'A1234GC'
   const username = 'a-dps-user'
@@ -51,6 +44,7 @@ describe('overviewController', () => {
     render: jest.fn(),
     locals: {
       curiousInPrisonCourses: inPrisonCourses,
+      goals: { goals: [aValidGoal()], problemRetrievingData: false },
     },
   } as unknown as Response
   const next = jest.fn()
@@ -66,9 +60,6 @@ describe('overviewController', () => {
 
     inductionService.inductionExists.mockResolvedValue(true)
 
-    const goals: Goals = { goals: [aValidGoal()], problemRetrievingData: false }
-    educationAndWorkPlanService.getGoalsByStatus.mockResolvedValue(goals)
-
     const functionalSkillsFromCurious = {
       problemRetrievingData: false,
       assessments: [],
@@ -92,7 +83,7 @@ describe('overviewController', () => {
       prisonerSummary: expectedPrisonerSummary,
       tab: expectedTab,
       prisonNumber,
-      goals,
+      goals: res.locals.goals.goals,
       functionalSkills: expectedFunctionalSkills,
       inPrisonCourses,
       isPostInduction: true,
@@ -103,11 +94,6 @@ describe('overviewController', () => {
 
     // Then
     expect(res.render).toHaveBeenCalledWith('pages/overview/index', expectedView)
-    expect(educationAndWorkPlanService.getGoalsByStatus).toHaveBeenCalledWith(
-      prisonNumber,
-      GoalStatusValue.ACTIVE,
-      username,
-    )
     expect(inductionService.inductionExists).toHaveBeenCalledWith(prisonNumber, username)
   })
 
@@ -117,9 +103,6 @@ describe('overviewController', () => {
     req.params.tab = expectedTab
 
     inductionService.inductionExists.mockResolvedValue(false)
-
-    const goals: Goals = { goals: undefined, problemRetrievingData: false }
-    educationAndWorkPlanService.getGoalsByStatus.mockResolvedValue(goals)
 
     const functionalSkillsFromCurious = {
       problemRetrievingData: false,
@@ -144,7 +127,7 @@ describe('overviewController', () => {
       prisonerSummary: expectedPrisonerSummary,
       tab: expectedTab,
       prisonNumber,
-      goals,
+      goals: res.locals.goals.goals,
       functionalSkills: expectedFunctionalSkills,
       inPrisonCourses,
       isPostInduction: false,
@@ -155,11 +138,6 @@ describe('overviewController', () => {
 
     // Then
     expect(res.render).toHaveBeenCalledWith('pages/overview/index', expectedView)
-    expect(educationAndWorkPlanService.getGoalsByStatus).toHaveBeenCalledWith(
-      prisonNumber,
-      GoalStatusValue.ACTIVE,
-      username,
-    )
     expect(inductionService.inductionExists).toHaveBeenCalledWith(prisonNumber, username)
   })
 
@@ -182,7 +160,6 @@ describe('overviewController', () => {
     expect(next).toHaveBeenCalledWith(expectedError)
     expect(res.render).not.toHaveBeenCalled()
     expect(inductionService.inductionExists).toHaveBeenCalledWith(prisonNumber, username)
-    expect(educationAndWorkPlanService.getGoalsByStatus).not.toHaveBeenCalled()
     expect(curiousService.getPrisonerFunctionalSkills).not.toHaveBeenCalled()
   })
 })
