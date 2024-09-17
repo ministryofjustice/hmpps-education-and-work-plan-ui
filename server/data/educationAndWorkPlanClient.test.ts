@@ -22,6 +22,7 @@ import ReasonToArchiveGoalValue from '../enums/ReasonToArchiveGoalValue'
 import GoalStatusValue from '../enums/goalStatusValue'
 import aValidEducationResponse from '../testsupport/educationResponseTestDataBuilder'
 import aValidCreateEducationRequest from '../testsupport/createEducationRequestTestDataBuilder'
+import aValidUpdateEducationRequest from '../testsupport/updateEducationRequestTestDataBuilder'
 
 describe('educationAndWorkPlanClient', () => {
   const educationAndWorkPlanClient = new EducationAndWorkPlanClient()
@@ -663,7 +664,7 @@ describe('educationAndWorkPlanClient', () => {
       expect(actual).toEqual(expectedResponseBody)
     })
 
-    it('should not get Education given API returns error response', async () => {
+    it('should not create Education given API returns error response', async () => {
       // Given
       const prisonNumber = 'A1234BC'
       const systemToken = 'a-system-token'
@@ -681,6 +682,53 @@ describe('educationAndWorkPlanClient', () => {
       // When
       try {
         await educationAndWorkPlanClient.createEducation(prisonNumber, createEducationRequest, systemToken)
+      } catch (e) {
+        // Then
+        expect(nock.isDone()).toBe(true)
+        expect(e.status).toEqual(500)
+        expect(e.data).toEqual(expectedResponseBody)
+      }
+    })
+  })
+
+  describe('updateEducation', () => {
+    it('should update Education', async () => {
+      // Given
+      const prisonNumber = 'A1234BC'
+      const systemToken = 'a-system-token'
+
+      const updateEducationRequest = aValidUpdateEducationRequest()
+      const expectedResponseBody = {}
+      educationAndWorkPlanApi
+        .put(`/person/${prisonNumber}/education`, requestBody => isEqual(requestBody, updateEducationRequest))
+        .reply(204, expectedResponseBody)
+
+      // When
+      const actual = await educationAndWorkPlanClient.updateEducation(prisonNumber, updateEducationRequest, systemToken)
+
+      // Then
+      expect(nock.isDone()).toBe(true)
+      expect(actual).toEqual(expectedResponseBody)
+    })
+
+    it('should not update Education given API returns error response', async () => {
+      // Given
+      const prisonNumber = 'A1234BC'
+      const systemToken = 'a-system-token'
+
+      const updateEducationRequest = aValidUpdateEducationRequest()
+      const expectedResponseBody = {
+        status: 500,
+        userMessage: 'An unexpected error occurred',
+        developerMessage: 'An unexpected error occurred',
+      }
+      educationAndWorkPlanApi
+        .put(`/person/${prisonNumber}/education`, requestBody => isEqual(requestBody, updateEducationRequest))
+        .reply(500, expectedResponseBody)
+
+      // When
+      try {
+        await educationAndWorkPlanClient.updateEducation(prisonNumber, updateEducationRequest, systemToken)
       } catch (e) {
         // Then
         expect(nock.isDone()).toBe(true)

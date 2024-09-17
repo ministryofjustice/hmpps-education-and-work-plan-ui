@@ -20,6 +20,7 @@ import PrisonService from './prisonService'
 import toEducationDto from '../data/mappers/educationMapper'
 import toCreateEducationRequest from '../data/mappers/createEducationMapper'
 import HmppsAuthClient from '../data/hmppsAuthClient'
+import toUpdateEducationRequest from '../data/mappers/updateEducationMapper'
 
 export default class EducationAndWorkPlanService {
   constructor(
@@ -99,6 +100,20 @@ export default class EducationAndWorkPlanService {
       return await this.educationAndWorkPlanClient.createEducation(prisonNumber, createEducationRequest, token)
     } catch (error) {
       logger.error(`Error creating Education for prisoner [${prisonNumber}] in the Education And Work Plan API `, error)
+      throw error
+    }
+  }
+
+  async updateEducation(
+    prisonNumber: string,
+    updateEducationDto: CreateOrUpdateEducationDto,
+    token: string,
+  ): Promise<void> {
+    try {
+      const updateEducationRequest = toUpdateEducationRequest(updateEducationDto)
+      return await this.educationAndWorkPlanClient.updateEducation(prisonNumber, updateEducationRequest, token)
+    } catch (error) {
+      logger.error(`Error updating Education for prisoner [${prisonNumber}] in the Education And Work Plan API `, error)
       throw error
     }
   }
