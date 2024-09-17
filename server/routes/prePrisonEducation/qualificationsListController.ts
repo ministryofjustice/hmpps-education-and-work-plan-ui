@@ -24,7 +24,7 @@ export default class QualificationsListController {
     const { educationDto } = getPrisonerContext(req.session, prisonNumber)
 
     if (!educationDto.educationLevel) {
-      return res.redirect(`/prisoners/${prisonNumber}/highest-level-of-education`)
+      return res.redirect(`/prisoners/${prisonNumber}/create-education/highest-level-of-education`)
     }
 
     const { prisonerFunctionalSkills, curiousInPrisonCourses } = res.locals
@@ -53,7 +53,7 @@ export default class QualificationsListController {
     const { prisonId } = req.session.prisonerSummary
 
     if (userClickedOnButton(req, 'addQualification')) {
-      return res.redirect(`/prisoners/${prisonNumber}/qualification-level`)
+      return res.redirect(`/prisoners/${prisonNumber}/create-education/qualification-level`)
     }
 
     const { educationDto } = getPrisonerContext(req.session, prisonNumber)
@@ -62,11 +62,11 @@ export default class QualificationsListController {
       const qualificationIndexToRemove = req.body.removeQualification as number
       const updatedEducation = educationWithRemovedQualification(educationDto, qualificationIndexToRemove)
       getPrisonerContext(req.session, prisonNumber).educationDto = updatedEducation
-      return res.redirect(`/prisoners/${prisonNumber}/qualifications`)
+      return res.redirect(`/prisoners/${prisonNumber}/create-education/qualifications`)
     }
 
     if (!educationHasQualifications(educationDto)) {
-      return res.redirect(`/prisoners/${prisonNumber}/qualification-level`)
+      return res.redirect(`/prisoners/${prisonNumber}/create-education/qualification-level`)
     }
 
     const createdEducationDto = toCreateEducationDto(prisonId, educationDto)
@@ -83,7 +83,7 @@ export default class QualificationsListController {
 
   private getBackLinkUrl(req: Request): string {
     const { prisonNumber } = req.params
-    return `/prisoners/${prisonNumber}/highest-level-of-education`
+    return `/prisoners/${prisonNumber}/create-education/highest-level-of-education`
   }
 
   private getBackLinkAriaText(req: Request): string {

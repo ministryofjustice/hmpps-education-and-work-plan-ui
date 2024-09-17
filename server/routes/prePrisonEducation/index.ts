@@ -22,49 +22,49 @@ export default (router: Router, services: Services) => {
   const qualificationDetailsController = new QualificationDetailsController()
   const qualificationsListController = new QualificationsListController(educationAndWorkPlanService)
 
-  router.use('/prisoners/:prisonNumber/highest-level-of-education', [
+  router.use('/prisoners/:prisonNumber/create-education/highest-level-of-education', [
     checkUserHasEditAuthority(),
     createEmptyEducationDtoIfNotInSession,
   ])
-  router.get('/prisoners/:prisonNumber/highest-level-of-education', [
+  router.get('/prisoners/:prisonNumber/create-education/highest-level-of-education', [
     asyncMiddleware(highestLevelOfEducationController.getHighestLevelOfEducationView),
   ])
-  router.post('/prisoners/:prisonNumber/highest-level-of-education', [
+  router.post('/prisoners/:prisonNumber/create-education/highest-level-of-education', [
     asyncMiddleware(highestLevelOfEducationController.submitHighestLevelOfEducationForm),
   ])
 
-  router.use('/prisoners/:prisonNumber/qualification-level', [
+  router.use('/prisoners/:prisonNumber/create-education/qualification-level', [
     checkUserHasEditAuthority(),
     checkEducationDtoExistsInPrisonerContext,
   ])
-  router.get('/prisoners/:prisonNumber/qualification-level', [
+  router.get('/prisoners/:prisonNumber/create-education/qualification-level', [
     asyncMiddleware(qualificationLevelController.getQualificationLevelView),
   ])
-  router.post('/prisoners/:prisonNumber/qualification-level', [
+  router.post('/prisoners/:prisonNumber/create-education/qualification-level', [
     asyncMiddleware(qualificationLevelController.submitQualificationLevelForm),
   ])
 
-  router.use('/prisoners/:prisonNumber/qualification-details', [
+  router.use('/prisoners/:prisonNumber/create-education/qualification-details', [
     checkUserHasEditAuthority(),
     checkEducationDtoExistsInPrisonerContext,
   ])
-  router.get('/prisoners/:prisonNumber/qualification-details', [
+  router.get('/prisoners/:prisonNumber/create-education/qualification-details', [
     asyncMiddleware(qualificationDetailsController.getQualificationDetailsView),
   ])
-  router.post('/prisoners/:prisonNumber/qualification-details', [
+  router.post('/prisoners/:prisonNumber/create-education/qualification-details', [
     asyncMiddleware(qualificationDetailsController.submitQualificationDetailsForm),
   ])
 
-  router.get('/prisoners/:prisonNumber/qualifications', [
+  router.get('/prisoners/:prisonNumber/create-education/qualifications', [
     checkUserHasEditAuthority(),
     checkEducationDtoExistsInPrisonerContext,
   ])
-  router.get('/prisoners/:prisonNumber/qualifications', [
+  router.get('/prisoners/:prisonNumber/create-education/qualifications', [
     retrieveCuriousFunctionalSkills(services.curiousService),
     retrieveCuriousInPrisonCourses(services.curiousService),
     asyncMiddleware(qualificationsListController.getQualificationsListView),
   ])
-  router.post('/prisoners/:prisonNumber/qualifications', [
+  router.post('/prisoners/:prisonNumber/create-education/qualifications', [
     asyncMiddleware(qualificationsListController.submitQualificationsListView),
   ])
 }

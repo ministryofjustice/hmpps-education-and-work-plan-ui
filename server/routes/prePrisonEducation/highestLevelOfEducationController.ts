@@ -43,7 +43,7 @@ export default class HighestLevelOfEducationController {
     const errors = validateHighestLevelOfEducationForm(highestLevelOfEducationForm, prisonerSummary)
     if (errors.length > 0) {
       getPrisonerContext(req.session, prisonNumber).highestLevelOfEducationForm = highestLevelOfEducationForm
-      return res.redirectWithErrors(`/prisoners/${prisonNumber}/highest-level-of-education`, errors)
+      return res.redirectWithErrors(`/prisoners/${prisonNumber}/create-education/highest-level-of-education`, errors)
     }
 
     const { educationDto } = getPrisonerContext(req.session, prisonNumber)
@@ -53,7 +53,7 @@ export default class HighestLevelOfEducationController {
     )
     getPrisonerContext(req.session, prisonNumber).educationDto = updatedEducationDto
 
-    return res.redirect(`/prisoners/${prisonNumber}/qualification-level`)
+    return res.redirect(`/prisoners/${prisonNumber}/create-education/qualification-level`)
   }
 
   private getBackLinkUrl = (req: Request): string => {
