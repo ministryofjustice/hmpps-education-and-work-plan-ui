@@ -43,4 +43,7 @@ declare module 'educationAndWorkPlanApiClient' {
   export type EducationResponse = components['schemas']['EducationResponse']
   export type CreateEducationRequest = components['schemas']['CreateEducationRequest']
   export type CreateAchievedQualificationRequest = components['schemas']['CreateAchievedQualificationRequest']
+  export type UpdateEducationRequest = components['schemas']['UpdateEducationRequest']
+  export type CreateOrUpdateAchievedQualificationRequest =
+    components['schemas']['CreateOrUpdateAchievedQualificationRequest']
 }

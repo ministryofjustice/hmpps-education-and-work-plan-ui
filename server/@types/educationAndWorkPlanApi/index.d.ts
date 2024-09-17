@@ -52,6 +52,22 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/person/{prisonNumber}/education': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get: operations['getEduction']
+    put: operations['updateEducation']
+    post: operations['createEducation']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/inductions/{prisonNumber}': {
     parameters: {
       query?: never
@@ -126,22 +142,6 @@ export interface paths {
     get?: never
     put: operations['archiveGoal']
     post?: never
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/person/{prisonNumber}/education': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    get: operations['getEduction']
-    put?: never
-    post: operations['createEducation']
     delete?: never
     options?: never
     head?: never
@@ -293,7 +293,7 @@ export interface components {
       messagesFoundCount: number
     }
     /**
-     * @description A list of the Prisoner's previous qualifications.   These can either be new qualfications without a reference field, or for any qualifications with a reference field they will be treated as updates.
+     * @description A list of achieved qualifications that should be updated or created as part of the education record.
      * @example null
      */
     CreateOrUpdateAchievedQualificationRequest: {
@@ -327,6 +327,36 @@ export interface components {
        * @example 814ade0a-a3b2-46a3-862f-79211ba13f7b
        */
       reference?: string
+    }
+    UpdateEducationRequest: {
+      /**
+       * Format: uuid
+       * @description The unique reference of the prisoner's Education record.
+       * @example c88a6c48-97e2-4c04-93b5-98619966447b
+       */
+      reference: string
+      /**
+       * @description The Prison identifier.
+       * @example BXI
+       */
+      prisonId: string
+      /**
+       * @example null
+       * @enum {string}
+       */
+      educationLevel:
+        | 'PRIMARY_SCHOOL'
+        | 'SECONDARY_SCHOOL_LEFT_BEFORE_TAKING_EXAMS'
+        | 'SECONDARY_SCHOOL_TOOK_EXAMS'
+        | 'FURTHER_EDUCATION_COLLEGE'
+        | 'UNDERGRADUATE_DEGREE_AT_UNIVERSITY'
+        | 'POSTGRADUATE_DEGREE_AT_UNIVERSITY'
+        | 'NOT_SURE'
+      /**
+       * @description A list of achieved qualifications that should be updated or created as part of the education record.
+       * @example null
+       */
+      qualifications: components['schemas']['CreateOrUpdateAchievedQualificationRequest'][]
     }
     /**
      * @description One or more future work interests that the Prisoner has.
@@ -809,6 +839,43 @@ export interface components {
        * @example c88a6c48-97e2-4c04-93b5-98619966447b
        */
       goalReference: string
+    }
+    Goal: {
+      /** Format: uuid */
+      reference: string
+      title: string
+      /** Format: date */
+      targetCompletionDate: string
+      /** @enum {string} */
+      status: 'ACTIVE' | 'COMPLETED' | 'ARCHIVED'
+      notes?: string
+      createdBy?: string
+      createdByDisplayName?: string
+      /** Format: date-time */
+      createdAt?: string
+      createdAtPrison: string
+      lastUpdatedBy?: string
+      lastUpdatedByDisplayName?: string
+      /** Format: date-time */
+      lastUpdatedAt?: string
+      lastUpdatedAtPrison: string
+      /** @enum {string} */
+      archiveReason?:
+        | 'PRISONER_NO_LONGER_WANTS_TO_WORK_TOWARDS_GOAL'
+        | 'PRISONER_NO_LONGER_WANTS_TO_WORK_WITH_CIAG'
+        | 'SUITABLE_ACTIVITIES_NOT_AVAILABLE_IN_THIS_PRISON'
+        | 'OTHER'
+      archiveReasonOther?: string
+      steps: components['schemas']['Step'][]
+    }
+    Step: {
+      /** Format: uuid */
+      reference: string
+      title: string
+      /** @enum {string} */
+      status: 'NOT_STARTED' | 'ACTIVE' | 'COMPLETE'
+      /** Format: int32 */
+      sequenceNumber: number
     }
     ArchiveGoalRequest: {
       /**
@@ -1297,10 +1364,6 @@ export interface components {
        */
       events: components['schemas']['TimelineEventResponse'][]
     }
-    HmppsSubjectAccessRequestContent: {
-      /** @description The content of the subject access request response */
-      content: Record<string, never>
-    }
     ErrorResponse: {
       /** Format: int32 */
       status: number
@@ -1308,6 +1371,10 @@ export interface components {
       userMessage?: string
       developerMessage?: string
       moreInfo?: string
+    }
+    HmppsSubjectAccessRequestContent: {
+      /** @description The content of the subject access request response */
+      content: Record<string, never>
     }
     DlqMessage: {
       body: {
@@ -1369,6 +1436,11 @@ export interface components {
        */
       createdAt: string
       /**
+       * @description The identifier of the prison that the prisoner was resident at when this resource was created.
+       * @example BXI
+       */
+      createdAtPrison: string
+      /**
        * @description The DPS username of the person who last updated this resource.
        * @example asmith_gen
        */
@@ -1379,6 +1451,11 @@ export interface components {
        * @example 2023-06-19T09:39:44Z
        */
       updatedAt: string
+      /**
+       * @description The identifier of the prison that the prisoner was resident at when this resource was updated.
+       * @example BXI
+       */
+      updatedAtPrison: string
     }
     EducationResponse: {
       /**
@@ -2269,6 +2346,76 @@ export interface operations {
       }
     }
   }
+  getEduction: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        prisonNumber: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          '*/*': components['schemas']['EducationResponse']
+        }
+      }
+    }
+  }
+  updateEducation: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        prisonNumber: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['UpdateEducationRequest']
+      }
+    }
+    responses: {
+      /** @description No Content */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+    }
+  }
+  createEducation: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        prisonNumber: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CreateEducationRequest']
+      }
+    }
+    responses: {
+      /** @description Created */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+    }
+  }
   getInduction: {
     parameters: {
       query?: never
@@ -2458,7 +2605,9 @@ export interface operations {
         headers: {
           [name: string]: unknown
         }
-        content?: never
+        content: {
+          'application/json': components['schemas']['Goal']
+        }
       }
     }
   }
@@ -2483,53 +2632,9 @@ export interface operations {
         headers: {
           [name: string]: unknown
         }
-        content?: never
-      }
-    }
-  }
-  getEduction: {
-    parameters: {
-      query?: never
-      header?: never
-      path: {
-        prisonNumber: string
-      }
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
         content: {
-          '*/*': components['schemas']['EducationResponse']
+          'application/json': components['schemas']['Goal']
         }
-      }
-    }
-  }
-  createEducation: {
-    parameters: {
-      query?: never
-      header?: never
-      path: {
-        prisonNumber: string
-      }
-      cookie?: never
-    }
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['CreateEducationRequest']
-      }
-    }
-    responses: {
-      /** @description Created */
-      201: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
       }
     }
   }

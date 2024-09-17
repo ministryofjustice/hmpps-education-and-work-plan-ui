@@ -14,6 +14,7 @@ import type {
   GetGoalsResponse,
   CreateEducationRequest,
   EducationResponse,
+  UpdateEducationRequest,
 } from 'educationAndWorkPlanApiClient'
 import RestClient from './restClient'
 import config from '../config'
@@ -125,12 +126,23 @@ export default class EducationAndWorkPlanClient {
 
   async createEducation(
     prisonNumber: string,
-    createdEducationRequest: CreateEducationRequest,
+    createEducationRequest: CreateEducationRequest,
     token: string,
   ): Promise<void> {
     return EducationAndWorkPlanClient.restClient(token).post({
       path: `/person/${prisonNumber}/education`,
-      data: createdEducationRequest,
+      data: createEducationRequest,
+    })
+  }
+
+  async updateEducation(
+    prisonNumber: string,
+    updateEducationRequest: UpdateEducationRequest,
+    token: string,
+  ): Promise<void> {
+    return EducationAndWorkPlanClient.restClient(token).put({
+      path: `/person/${prisonNumber}/education`,
+      data: updateEducationRequest,
     })
   }
 }

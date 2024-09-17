@@ -32,4 +32,16 @@ const aNewAchievedQualificationDto = (options?: {
   level: options?.level || QualificationLevelValue.LEVEL_2,
 })
 
-export { anAchievedQualificationDto, aNewAchievedQualificationDto }
+const anUpdateAchievedQualificationDto = (options?: {
+  reference?: string
+  subject?: string
+  grade?: string
+  level?: QualificationLevelValue
+}): AchievedQualificationDto => ({
+  reference: options?.reference || 'bcabb7ec-893e-4b0b-b999-6ff883fd8c6b',
+  subject: options?.subject || 'GCSE Maths',
+  grade: options?.grade || 'B',
+  level: options?.level || QualificationLevelValue.LEVEL_2,
+})
+
+export { anAchievedQualificationDto, aNewAchievedQualificationDto, anUpdateAchievedQualificationDto }

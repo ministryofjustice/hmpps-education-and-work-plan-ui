@@ -22,6 +22,8 @@ import aValidEducationDto from '../testsupport/educationDtoTestDataBuilder'
 import aValidCreateEducationDto from '../testsupport/createEducationDtoTestDataBuilder'
 import aValidCreateEducationRequest from '../testsupport/createEducationRequestTestDataBuilder'
 import HmppsAuthClient from '../data/hmppsAuthClient'
+import aValidUpdateEducationRequest from '../testsupport/updateEducationRequestTestDataBuilder'
+import aValidUpdateEducationDto from '../testsupport/updateEducationDtoTestDataBuilder'
 
 jest.mock('../data/mappers/educationMapper')
 jest.mock('../data/educationAndWorkPlanClient')
@@ -382,6 +384,51 @@ describe('educationAndWorkPlanService', () => {
       // When
       const actual = await educationAndWorkPlanService
         .createEducation(prisonNumber, createEducationDto, userToken)
+        .catch(error => {
+          return error
+        })
+
+      // Then
+      expect(actual).toEqual(eductionAndWorkPlanApiError)
+    })
+  })
+
+  describe('updateEducation', () => {
+    it('should update Education', async () => {
+      // Given
+      const userToken = 'a-user-token'
+      const updateEducationDto = aValidUpdateEducationDto()
+      const updateEducationRequest = aValidUpdateEducationRequest()
+
+      // When
+      await educationAndWorkPlanService.updateEducation(prisonNumber, updateEducationDto, userToken)
+
+      // Then
+      expect(educationAndWorkPlanClient.updateEducation).toHaveBeenCalledWith(
+        prisonNumber,
+        updateEducationRequest,
+        userToken,
+      )
+    })
+
+    it('should not update Education given educationAndWorkPlanClient returns an error', async () => {
+      // Given
+      const userToken = 'a-user-token'
+      const updateEducationDto = aValidUpdateEducationDto()
+
+      const eductionAndWorkPlanApiError = {
+        status: 500,
+        data: {
+          status: 500,
+          userMessage: 'An unexpected error occurred',
+          developerMessage: 'An unexpected error occurred',
+        },
+      }
+      educationAndWorkPlanClient.updateEducation.mockRejectedValue(eductionAndWorkPlanApiError)
+
+      // When
+      const actual = await educationAndWorkPlanService
+        .updateEducation(prisonNumber, updateEducationDto, userToken)
         .catch(error => {
           return error
         })
