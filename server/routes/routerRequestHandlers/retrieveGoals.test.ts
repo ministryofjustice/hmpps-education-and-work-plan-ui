@@ -12,11 +12,9 @@ describe('retrieveGoals', () => {
     null,
     null,
   ) as jest.Mocked<EducationAndWorkPlanService>
-  const requestHandler = retrieveGoals(educationAndWorkPlanService)
 
   const prisonNumber = 'A1234BC'
   const username = 'a-dps-user'
-  const status = GoalStatusValue.ACTIVE
 
   let req: Request
   let res: Response
@@ -27,28 +25,28 @@ describe('retrieveGoals', () => {
     req = {
       user: { username },
       params: { prisonNumber },
-      query: { status },
     } as unknown as Request
     res = {
       locals: {},
     } as unknown as Response
   })
 
-  it('should retrieve Goals and store on res.locals', async () => {
-    // Given
-    const goals: Goals = { goals: [aValidGoal()], problemRetrievingData: false }
-    educationAndWorkPlanService.getGoalsByStatus.mockResolvedValue(goals)
+  it.each([GoalStatusValue.ACTIVE, GoalStatusValue.COMPLETED, GoalStatusValue.ARCHIVED])(
+    'should retrieve %s Goals and store on res.locals',
+    async goalStatus => {
+      // Given
+      const requestHandler = retrieveGoals(educationAndWorkPlanService, goalStatus)
 
-    // When
-    await requestHandler(req, res, next)
+      const goals: Goals = { goals: [aValidGoal()], problemRetrievingData: false }
+      educationAndWorkPlanService.getGoalsByStatus.mockResolvedValue(goals)
 
-    // Then
-    expect(res.locals.goals).toEqual(goals)
-    expect(educationAndWorkPlanService.getGoalsByStatus).toHaveBeenCalledWith(
-      prisonNumber,
-      GoalStatusValue.ACTIVE,
-      username,
-    )
-    expect(next).toHaveBeenCalled()
-  })
+      // When
+      await requestHandler(req, res, next)
+
+      // Then
+      expect(res.locals.goals).toEqual(goals)
+      expect(educationAndWorkPlanService.getGoalsByStatus).toHaveBeenCalledWith(prisonNumber, goalStatus, username)
+      expect(next).toHaveBeenCalled()
+    },
+  )
 })

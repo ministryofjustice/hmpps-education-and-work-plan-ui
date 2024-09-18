@@ -13,6 +13,7 @@ import retrieveInduction from '../routerRequestHandlers/retrieveInduction'
 import ViewArchivedGoalsController from './viewArchivedGoalsController'
 import retrieveEducation from '../routerRequestHandlers/retrieveEducation'
 import retrieveGoals from '../routerRequestHandlers/retrieveGoals'
+import GoalStatusValue from '../../enums/goalStatusValue'
 
 /**
  * Route definitions for the pages relating to the main Overview page
@@ -30,7 +31,7 @@ export default (router: Router, services: Services) => {
 
   router.get('/plan/:prisonNumber/view/overview', [
     retrieveCuriousInPrisonCourses(services.curiousService),
-    retrieveGoals(services.educationAndWorkPlanService),
+    retrieveGoals(services.educationAndWorkPlanService, GoalStatusValue.ACTIVE),
     asyncMiddleware(overViewController.getOverviewView),
   ])
 
