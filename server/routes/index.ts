@@ -14,7 +14,8 @@ import { checkPageViewAuditted } from '../middleware/auditMiddleware'
 import notesRoutes from './notes'
 import archiveGoal from './archiveGoal'
 import unarchiveGoal from './unarchiveGoal'
-import prePrisonEducation from './prePrisonEducation'
+import createPrePrisonEducation from './prePrisonEducation/create'
+import updatePrePrisonEducation from './prePrisonEducation/update'
 import config from '../config'
 
 export default function routes(services: Services): Router {
@@ -37,7 +38,8 @@ export default function routes(services: Services): Router {
   unarchiveGoal(router, services)
 
   if (config.featureToggles.qualificationsEnabled) {
-    prePrisonEducation(router, services)
+    createPrePrisonEducation(router, services)
+    updatePrePrisonEducation(router, services)
   }
 
   createInduction(router, services)

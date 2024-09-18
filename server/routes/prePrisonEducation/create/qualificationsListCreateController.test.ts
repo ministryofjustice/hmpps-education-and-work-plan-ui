@@ -1,25 +1,25 @@
 import { Request, Response } from 'express'
 import createError from 'http-errors'
-import aValidPrisonerSummary from '../../testsupport/prisonerSummaryTestDataBuilder'
-import getPrisonerContext from '../../data/session/prisonerContexts'
-import QualificationsListController from './qualificationsListController'
-import aValidEducationDto from '../../testsupport/educationDtoTestDataBuilder'
-import { validFunctionalSkills } from '../../testsupport/functionalSkillsTestDataBuilder'
-import validInPrisonCourseRecords from '../../testsupport/inPrisonCourseRecordsTestDataBuilder'
-import { aNewAchievedQualificationDto } from '../../testsupport/achievedQualificationDtoTestDataBuilder'
-import EducationAndWorkPlanService from '../../services/educationAndWorkPlanService'
-import aValidCreateEducationDto from '../../testsupport/createEducationDtoTestDataBuilder'
-import EducationLevelValue from '../../enums/educationLevelValue'
+import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
+import getPrisonerContext from '../../../data/session/prisonerContexts'
+import aValidEducationDto from '../../../testsupport/educationDtoTestDataBuilder'
+import { validFunctionalSkills } from '../../../testsupport/functionalSkillsTestDataBuilder'
+import validInPrisonCourseRecords from '../../../testsupport/inPrisonCourseRecordsTestDataBuilder'
+import { aNewAchievedQualificationDto } from '../../../testsupport/achievedQualificationDtoTestDataBuilder'
+import EducationAndWorkPlanService from '../../../services/educationAndWorkPlanService'
+import aValidCreateEducationDto from '../../../testsupport/createEducationDtoTestDataBuilder'
+import EducationLevelValue from '../../../enums/educationLevelValue'
+import QualificationsListCreateController from './qualificationsListCreateController'
 
-jest.mock('../../services/educationAndWorkPlanService')
+jest.mock('../../../services/educationAndWorkPlanService')
 
-describe('qualificationsListController', () => {
+describe('qualificationsListCreateController', () => {
   const educationAndWorkPlanService = new EducationAndWorkPlanService(
     null,
     null,
     null,
   ) as jest.Mocked<EducationAndWorkPlanService>
-  const controller = new QualificationsListController(educationAndWorkPlanService)
+  const controller = new QualificationsListCreateController(educationAndWorkPlanService)
 
   const prisonNumber = 'A1234BC'
   const prisonId = 'BXI'

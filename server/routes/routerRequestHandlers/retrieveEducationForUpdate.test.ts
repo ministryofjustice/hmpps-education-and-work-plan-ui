@@ -1,17 +1,19 @@
-import type { EducationDto } from 'dto'
 import { Request, Response } from 'express'
+import createHttpError from 'http-errors'
 import EducationAndWorkPlanService from '../../services/educationAndWorkPlanService'
-import retrieveEducation from './retrieveEducation'
+import retrieveEducationForUpdate from './retrieveEducationForUpdate'
 import aValidEducationDto from '../../testsupport/educationDtoTestDataBuilder'
+import getPrisonerContext from '../../data/session/prisonerContexts'
 
 jest.mock('../../services/educationAndWorkPlanService')
-describe('retrieveEducation', () => {
+
+describe('retrieveEducationForUpdate', () => {
   const educationAndWorkPlanService = new EducationAndWorkPlanService(
     null,
     null,
     null,
   ) as jest.Mocked<EducationAndWorkPlanService>
-  const requestHandler = retrieveEducation(educationAndWorkPlanService)
+  const requestHandler = retrieveEducationForUpdate(educationAndWorkPlanService)
 
   const prisonNumber = 'A1234BC'
   const username = 'testUser'
@@ -25,27 +27,23 @@ describe('retrieveEducation', () => {
     req = {
       user: { username },
       params: { prisonNumber },
+      session: {},
     } as unknown as Request
-    res = {
-      locals: {},
-    } as unknown as Response
+    res = {} as unknown as Response
+
+    getPrisonerContext(req.session, prisonNumber).educationDto = undefined
   })
 
-  it('should retrieve Education and store on res.locals', async () => {
+  it('should retrieve education and store in prison context', async () => {
     // Given
-    const educationDto = aValidEducationDto()
+    const educationDto = aValidEducationDto({ prisonNumber })
     educationAndWorkPlanService.getEducation.mockResolvedValue(educationDto)
-
-    const expected = {
-      problemRetrievingData: false,
-      educationDto,
-    }
 
     // When
     await requestHandler(req, res, next)
 
     // Then
-    expect(res.locals.education).toEqual(expected)
+    expect(getPrisonerContext(req.session, prisonNumber).educationDto).toEqual(educationDto)
     expect(educationAndWorkPlanService.getEducation).toHaveBeenCalledWith(prisonNumber, username)
     expect(next).toHaveBeenCalled()
   })
@@ -62,18 +60,15 @@ describe('retrieveEducation', () => {
     }
     educationAndWorkPlanService.getEducation.mockRejectedValue(educationServiceError)
 
-    const expected = {
-      problemRetrievingData: true,
-      educationDto: undefined as EducationDto,
-    }
+    const expectedError = createHttpError(500, 'Education for prisoner A1234BC not returned by the Education Service')
 
     // When
     await requestHandler(req, res, next)
 
     // Then
-    expect(res.locals.education).toEqual(expected)
+    expect(getPrisonerContext(req.session, prisonNumber).educationDto).toBeUndefined()
     expect(educationAndWorkPlanService.getEducation).toHaveBeenCalledWith(prisonNumber, username)
-    expect(next).toHaveBeenCalled()
+    expect(next).toHaveBeenCalledWith(expectedError)
   })
 
   it('should handle retrieval of Education given Education service returns Not Found', async () => {
@@ -86,20 +81,16 @@ describe('retrieveEducation', () => {
         developerMessage: `Education not found for prisoner [${prisonNumber}]`,
       },
     }
-
     educationAndWorkPlanService.getEducation.mockRejectedValue(educationServiceError)
 
-    const expected = {
-      problemRetrievingData: false,
-      educationDto: undefined as EducationDto,
-    }
+    const expectedError = createHttpError(404, 'Education for prisoner A1234BC not returned by the Education Service')
 
     // When
     await requestHandler(req, res, next)
 
     // Then
-    expect(res.locals.education).toEqual(expected)
+    expect(getPrisonerContext(req.session, prisonNumber).educationDto).toBeUndefined()
     expect(educationAndWorkPlanService.getEducation).toHaveBeenCalledWith(prisonNumber, username)
-    expect(next).toHaveBeenCalled()
+    expect(next).toHaveBeenCalledWith(expectedError)
   })
 })
