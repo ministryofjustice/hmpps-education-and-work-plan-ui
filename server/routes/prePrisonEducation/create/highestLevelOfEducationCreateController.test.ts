@@ -1,12 +1,12 @@
 import { Request, Response } from 'express'
 import type { EducationDto } from 'dto'
-import aValidPrisonerSummary from '../../testsupport/prisonerSummaryTestDataBuilder'
-import HighestLevelOfEducationController from './highestLevelOfEducationController'
-import EducationLevelValue from '../../enums/educationLevelValue'
-import getPrisonerContext from '../../data/session/prisonerContexts'
+import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
+import EducationLevelValue from '../../../enums/educationLevelValue'
+import getPrisonerContext from '../../../data/session/prisonerContexts'
+import HighestLevelOfEducationCreateController from './highestLevelOfEducationCreateController'
 
-describe('highestLevelOfEducationController', () => {
-  const controller = new HighestLevelOfEducationController()
+describe('highestLevelOfEducationCreateController', () => {
+  const controller = new HighestLevelOfEducationCreateController()
 
   let req: Request
   const res = {

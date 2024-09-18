@@ -474,7 +474,7 @@ context('Create an Induction', () => {
     //  Highest Level of Education: SECONDARY_SCHOOL_TOOK_EXAMS
     //  Qualifications:
     //    Pottery, C, Level 4
-    cy.task('stubGetEducation', prisonNumberForPrisonerWithNoInduction)
+    cy.task('stubGetEducation', { prisonNumber: prisonNumberForPrisonerWithNoInduction })
 
     cy.visit(`/plan/${prisonNumberForPrisonerWithNoInduction}/view/overview`)
 

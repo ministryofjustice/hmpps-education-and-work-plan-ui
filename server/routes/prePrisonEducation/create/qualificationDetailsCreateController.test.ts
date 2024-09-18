@@ -1,14 +1,14 @@
 import { Request, Response } from 'express'
 import type { EducationDto } from 'dto'
 import type { QualificationDetailsForm, QualificationLevelForm } from 'forms'
-import aValidPrisonerSummary from '../../testsupport/prisonerSummaryTestDataBuilder'
-import getPrisonerContext from '../../data/session/prisonerContexts'
-import QualificationLevelValue from '../../enums/qualificationLevelValue'
-import QualificationDetailsController from './qualificationDetailsController'
-import EducationLevelValue from '../../enums/educationLevelValue'
+import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
+import getPrisonerContext from '../../../data/session/prisonerContexts'
+import QualificationLevelValue from '../../../enums/qualificationLevelValue'
+import EducationLevelValue from '../../../enums/educationLevelValue'
+import QualificationDetailsCreateController from './qualificationDetailsCreateController'
 
 describe('qualificationDetailsController', () => {
-  const controller = new QualificationDetailsController()
+  const controller = new QualificationDetailsCreateController()
 
   let req: Request
   const res = {

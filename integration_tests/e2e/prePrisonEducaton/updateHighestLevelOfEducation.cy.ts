@@ -5,7 +5,7 @@ import { matchingJsonPath } from '../../mockApis/wiremock/matchers/content'
 import EducationLevelValue from '../../../server/enums/educationLevelValue'
 import EducationAndTrainingPage from '../../pages/overview/EducationAndTrainingPage'
 
-context('Update highest level of education within an Induction', () => {
+context('Update highest level of education within a prisoners Education before the Induction has been created', () => {
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubSignInAsUserWithEditAuthority')
@@ -18,7 +18,7 @@ context('Update highest level of education within an Induction', () => {
     cy.task('getPrisonerById')
     cy.task('stubLearnerProfile')
     cy.task('stubLearnerEducation')
-    cy.task('stubGetInduction')
+    cy.task('stubGetInduction404Error')
     cy.task('stubGetEducation')
     cy.task('stubUpdateEducation')
     cy.signIn()

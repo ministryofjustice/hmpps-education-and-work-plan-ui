@@ -1,11 +1,11 @@
 import { Request, Response } from 'express'
-import aValidPrisonerSummary from '../../testsupport/prisonerSummaryTestDataBuilder'
-import QualificationLevelController from './qualificationLevelController'
-import getPrisonerContext from '../../data/session/prisonerContexts'
-import QualificationLevelValue from '../../enums/qualificationLevelValue'
+import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
+import getPrisonerContext from '../../../data/session/prisonerContexts'
+import QualificationLevelValue from '../../../enums/qualificationLevelValue'
+import QualificationLevelCreateController from './qualificationLevelCreateController'
 
-describe('qualificationLevelController', () => {
-  const controller = new QualificationLevelController()
+describe('qualificationLevelCreateController', () => {
+  const controller = new QualificationLevelCreateController()
 
   let req: Request
   const res = {

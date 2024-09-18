@@ -20,6 +20,7 @@ context('Prisoner Overview page - Education And Training tab', () => {
     cy.task('stubLearnerProfile')
     cy.task('stubLearnerEducation')
     cy.task('stubGetInduction')
+    cy.task('stubGetEducation')
     cy.task('stubGetAllPrisons')
   })
 
@@ -195,8 +196,6 @@ context('Prisoner Overview page - Education And Training tab', () => {
   describe('should retrieve and render data from PLP API Induction data', () => {
     it('should display Qualifications And Education data', () => {
       // Given
-      cy.task('stubGetInduction')
-
       cy.signIn()
       const prisonNumber = 'G6115VJ'
       cy.visit(`/plan/${prisonNumber}/view/overview`)
@@ -256,7 +255,6 @@ context('Prisoner Overview page - Education And Training tab', () => {
   describe('should retrieve and render data from PLP API Education data', () => {
     it('should display Qualifications And Education data', () => {
       // Given
-      cy.task('stubGetEducation')
       cy.signIn()
       const prisonNumber = 'G6115VJ'
       cy.visit(`/plan/${prisonNumber}/view/overview`)
@@ -272,7 +270,7 @@ context('Prisoner Overview page - Education And Training tab', () => {
         .hasEducationQualificationsDisplayed()
     })
 
-    it('should display add education message given there is no education and no induction', () => {
+    it('should display add education message given prisoner has no education record yet', () => {
       // Given
       cy.signIn()
       const prisonNumber = 'G6115VJ'
@@ -313,11 +311,9 @@ context('Prisoner Overview page - Education And Training tab', () => {
     })
   })
 
-  describe('should display change links to Induction questions', () => {
+  describe('should display change links to Induction & Education questions', () => {
     it(`should link to the change in-prison training interests page`, () => {
       // Given
-      cy.task('stubGetInduction')
-
       cy.signIn()
       const prisonNumber = 'G6115VJ'
       cy.visit(`/plan/${prisonNumber}/view/education-and-training`)
@@ -332,8 +328,6 @@ context('Prisoner Overview page - Education And Training tab', () => {
 
     it(`should display a link to the change Highest Level of Education page`, () => {
       // Given
-      cy.task('stubGetEducation')
-
       cy.signIn()
       const prisonNumber = 'G6115VJ'
       cy.visit(`/plan/${prisonNumber}/view/education-and-training`)
@@ -349,8 +343,6 @@ context('Prisoner Overview page - Education And Training tab', () => {
 
     it(`should link to the change Additional Training page`, () => {
       // Given
-      cy.task('stubGetEducation')
-
       cy.signIn()
       const prisonNumber = 'G6115VJ'
       cy.visit(`/plan/${prisonNumber}/view/education-and-training`)
@@ -363,10 +355,8 @@ context('Prisoner Overview page - Education And Training tab', () => {
       Page.verifyOnPage(AdditionalTrainingPage)
     })
 
-    it(`should link to the change Educational Qualifications page given induction has qualifications`, () => {
+    it(`should link to the change Educational Qualifications page given Education record has qualifications`, () => {
       // Given
-      cy.task('stubGetEducation')
-
       cy.signIn()
       const prisonNumber = 'G6115VJ'
       cy.visit(`/plan/${prisonNumber}/view/education-and-training`)
@@ -378,23 +368,6 @@ context('Prisoner Overview page - Education And Training tab', () => {
       // Then
       Page.verifyOnPage(QualificationsListPage) // Expect to be on the Qualifications List page because the induction had qualifications to start with
         .hasBackLinkTo(`/plan/${prisonNumber}/view/education-and-training`)
-    })
-
-    it(`should link to add Educational Qualifications page given induction has no qualifications`, () => {
-      // Given
-      cy.task('stubGetEducation', { hasQualifications: false })
-
-      cy.signIn()
-      const prisonNumber = 'G6115VJ'
-      cy.visit(`/plan/${prisonNumber}/view/education-and-training`)
-
-      // When
-      const educationAndTrainingPage = Page.verifyOnPage(EducationAndTrainingPage)
-
-      // Then
-      educationAndTrainingPage //
-        .activeTabIs('Education and training')
-        .hasAddEducationMessageDisplayed()
     })
   })
 })
