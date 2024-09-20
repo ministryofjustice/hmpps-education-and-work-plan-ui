@@ -10,6 +10,8 @@ import EducationController from './educationController'
  * Abstract controller class defining functionality common to both the Create and Update journeys.
  */
 export default abstract class QualificationDetailsController extends EducationController {
+  abstract journeyPathElement: string
+
   getQualificationDetailsView: RequestHandler = async (
     req: Request,
     res: Response,
@@ -21,7 +23,7 @@ export default abstract class QualificationDetailsController extends EducationCo
     const { qualificationLevelForm } = getPrisonerContext(req.session, prisonNumber)
     if (!qualificationLevelForm) {
       // Guard against the user using the back button to return to this page, which can cause a NPE creating the QualificationDetailsView below (depending on which pages they've been to)
-      return res.redirect(`/prisoners/${prisonNumber}/create-education/qualification-level`)
+      return res.redirect(`/prisoners/${prisonNumber}/${this.journeyPathElement}/qualification-level`)
     }
 
     const qualificationDetailsForm = getPrisonerContext(req.session, prisonNumber).qualificationDetailsForm || {

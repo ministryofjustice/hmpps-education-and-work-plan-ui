@@ -4,12 +4,12 @@ import getPrisonerContext from '../../../data/session/prisonerContexts'
 import validateQualificationDetailsForm from '../../validators/induction/qualificationDetailsFormValidator'
 import getDynamicBackLinkAriaText from '../../dynamicAriaTextResolver'
 
-export default class QualificationDetailsCreateController extends QualificationDetailsController {
-  journeyPathElement = 'create-education'
+export default class QualificationDetailsUpdateController extends QualificationDetailsController {
+  journeyPathElement = 'education'
 
   getBackLinkUrl(req: Request): string {
     const { prisonNumber } = req.params
-    return `/prisoners/${prisonNumber}/create-education/qualification-level`
+    return `/prisoners/${prisonNumber}/education/qualification-level`
   }
 
   getBackLinkAriaText(req: Request): string {
@@ -34,7 +34,7 @@ export default class QualificationDetailsCreateController extends QualificationD
       prisonerSummary,
     )
     if (errors.length > 0) {
-      return res.redirectWithErrors(`/prisoners/${prisonNumber}/create-education/qualification-details`, errors)
+      return res.redirectWithErrors(`/prisoners/${prisonNumber}/education/qualification-details`, errors)
     }
 
     const updatedEducation = this.addQualificationToEducationDto(
@@ -47,6 +47,6 @@ export default class QualificationDetailsCreateController extends QualificationD
     getPrisonerContext(req.session, prisonNumber).qualificationDetailsForm = undefined
     getPrisonerContext(req.session, prisonNumber).qualificationLevelForm = undefined
 
-    return res.redirect(`/prisoners/${prisonNumber}/create-education/qualifications`)
+    return res.redirect(`/prisoners/${prisonNumber}/education/qualifications`)
   }
 }

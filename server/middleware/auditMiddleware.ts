@@ -96,6 +96,9 @@ const pageViewEventMap: Record<string, Page> = {
 
   // Update qualifications
   '/prisoners/:prisonNumber/education/highest-level-of-education': Page.UPDATE_HIGHEST_LEVEL_OF_EDUCATION,
+  '/prisoners/:prisonNumber/education/qualifications': Page.UPDATE_QUALIFICATIONS,
+  '/prisoners/:prisonNumber/education/qualification-level': Page.UPDATE_QUALIFICATION_LEVEL,
+  '/prisoners/:prisonNumber/education/qualification-details': Page.UPDATE_QUALIFICATION_DETAILS,
 
   // Non audit routes. These routes do not raise an audit event
   '/plan/:prisonNumber/induction-created': null,

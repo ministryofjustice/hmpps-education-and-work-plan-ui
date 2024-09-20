@@ -34,7 +34,7 @@ describe('retrieveEducationForUpdate', () => {
     getPrisonerContext(req.session, prisonNumber).educationDto = undefined
   })
 
-  it('should retrieve education and store in prison context', async () => {
+  it('should retrieve education and store in prison context given education is not already in the prisoner context', async () => {
     // Given
     const educationDto = aValidEducationDto({ prisonNumber })
     educationAndWorkPlanService.getEducation.mockResolvedValue(educationDto)
@@ -45,6 +45,20 @@ describe('retrieveEducationForUpdate', () => {
     // Then
     expect(getPrisonerContext(req.session, prisonNumber).educationDto).toEqual(educationDto)
     expect(educationAndWorkPlanService.getEducation).toHaveBeenCalledWith(prisonNumber, username)
+    expect(next).toHaveBeenCalled()
+  })
+
+  it('should not retrieve education given education is already in the prisoner context', async () => {
+    // Given
+    const educationDto = aValidEducationDto({ prisonNumber })
+    getPrisonerContext(req.session, prisonNumber).educationDto = educationDto
+
+    // When
+    await requestHandler(req, res, next)
+
+    // Then
+    expect(getPrisonerContext(req.session, prisonNumber).educationDto).toEqual(educationDto)
+    expect(educationAndWorkPlanService.getEducation).not.toHaveBeenCalled()
     expect(next).toHaveBeenCalled()
   })
 

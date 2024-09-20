@@ -363,7 +363,7 @@ context('Prisoner Overview page - Education And Training tab', () => {
       const educationAndTrainingPage = Page.verifyOnPage(EducationAndTrainingPage)
 
       // When
-      educationAndTrainingPage.clickToChangeEducationalQualifications(QualificationsListPage)
+      educationAndTrainingPage.clickToChangeEducationalQualifications()
 
       // Then
       Page.verifyOnPage(QualificationsListPage) // Expect to be on the Qualifications List page because the induction had qualifications to start with

@@ -8,7 +8,7 @@ import QualificationLevelPage from '../../pages/prePrisonEducation/Qualification
 import QualificationLevelValue from '../../../server/enums/qualificationLevelValue'
 import QualificationDetailsPage from '../../pages/prePrisonEducation/QualificationDetailsPage'
 
-context('Update educational qualifications within an Induction', () => {
+context('Update educational qualifications within a prisoners Education before the Induction has been created', () => {
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubSignInAsUserWithEditAuthority')
@@ -21,7 +21,7 @@ context('Update educational qualifications within an Induction', () => {
     cy.task('getPrisonerById')
     cy.task('stubLearnerProfile')
     cy.task('stubLearnerEducation')
-    cy.task('stubGetInduction')
+    cy.task('stubGetInduction404Error')
     cy.task('stubGetEducation')
     cy.task('stubUpdateEducation')
     cy.signIn()
