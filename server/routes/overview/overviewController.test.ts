@@ -1,6 +1,6 @@
 import createError from 'http-errors'
 import { Request, Response } from 'express'
-import type { FunctionalSkills, InPrisonCourseRecords } from 'viewModels'
+import type { FunctionalSkills, Goals, InPrisonCourseRecords } from 'viewModels'
 import OverviewController from './overviewController'
 import CuriousService from '../../services/curiousService'
 import InductionService from '../../services/inductionService'
@@ -59,6 +59,13 @@ describe('overviewController', () => {
 
     inductionService.inductionExists.mockResolvedValue(true)
 
+    const expectedGoals: Goals = { goals: [aValidGoal()], problemRetrievingData: false }
+    res.locals = {
+      goals: expectedGoals.goals,
+      curiousInPrisonCourses: inPrisonCourses,
+    }
+    res.locals.goals = expectedGoals
+
     const functionalSkillsFromCurious = {
       problemRetrievingData: false,
       assessments: [],
@@ -86,6 +93,7 @@ describe('overviewController', () => {
       functionalSkills: expectedFunctionalSkills,
       inPrisonCourses,
       isPostInduction: true,
+      problemRetrievingData: res.locals.problemRetrievingData,
     }
 
     // When
@@ -130,6 +138,7 @@ describe('overviewController', () => {
       functionalSkills: expectedFunctionalSkills,
       inPrisonCourses,
       isPostInduction: false,
+      problemRetrievingData: res.locals.problemRetrievingData,
     }
 
     // When

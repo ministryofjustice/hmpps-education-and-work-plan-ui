@@ -15,6 +15,9 @@ describe('retrieveGoals', () => {
 
   const prisonNumber = 'A1234BC'
   const username = 'a-dps-user'
+  const userToken = 'a-user-token'
+  const inProgressGoal = aValidGoal()
+  const archivedGoal = aValidGoal({ status: GoalStatusValue.ARCHIVED })
 
   let req: Request
   let res: Response
@@ -23,7 +26,7 @@ describe('retrieveGoals', () => {
   beforeEach(() => {
     jest.resetAllMocks()
     req = {
-      user: { username },
+      user: { username, token: userToken },
       params: { prisonNumber },
     } as unknown as Request
     res = {
@@ -31,21 +34,62 @@ describe('retrieveGoals', () => {
     } as unknown as Response
   })
 
-  it.each([GoalStatusValue.ACTIVE, GoalStatusValue.COMPLETED, GoalStatusValue.ARCHIVED])(
+  it.each([GoalStatusValue.ACTIVE, GoalStatusValue.ARCHIVED])(
     'should retrieve %s Goals and store on res.locals',
     async goalStatus => {
       // Given
       const requestHandler = retrieveGoals(educationAndWorkPlanService, goalStatus)
 
-      const goals: Goals = { goals: [aValidGoal()], problemRetrievingData: false }
-      educationAndWorkPlanService.getGoalsByStatus.mockResolvedValue(goals)
+      const activeGoals: Goals = { goals: [inProgressGoal], problemRetrievingData: false }
+      const archivedGoals: Goals = { goals: [archivedGoal], problemRetrievingData: false }
+
+      educationAndWorkPlanService.getAllGoals.mockResolvedValueOnce({
+        goals: [...activeGoals.goals, ...archivedGoals.goals],
+        problemRetrievingData: false,
+      })
 
       // When
       await requestHandler(req, res, next)
 
       // Then
-      expect(res.locals.goals).toEqual(goals)
-      expect(educationAndWorkPlanService.getGoalsByStatus).toHaveBeenCalledWith(prisonNumber, goalStatus, username)
+      if (goalStatus === GoalStatusValue.ACTIVE) {
+        expect(res.locals.goals).toEqual([inProgressGoal])
+      } else if (goalStatus === GoalStatusValue.ARCHIVED) {
+        expect(res.locals.goals).toEqual([archivedGoal])
+      }
+
+      expect(res.locals.inProgressGoalsCount).toBe(activeGoals.goals.length)
+      expect(res.locals.archivedGoalsCount).toBe(archivedGoals.goals.length)
+      expect(next).toHaveBeenCalled()
+    },
+  )
+
+  it.each([GoalStatusValue.ACTIVE, GoalStatusValue.ARCHIVED])(
+    'should retrieve goal counts while %s goals tab is active, and store on res.locals',
+    async goalStatus => {
+      // Given
+      const requestHandler = retrieveGoals(educationAndWorkPlanService, goalStatus)
+
+      const activeGoals: Goals = { goals: [inProgressGoal], problemRetrievingData: false }
+      const archivedGoals: Goals = { goals: [archivedGoal], problemRetrievingData: false }
+
+      educationAndWorkPlanService.getAllGoals.mockResolvedValueOnce({
+        goals: [...activeGoals.goals, ...archivedGoals.goals],
+        problemRetrievingData: false,
+      })
+
+      // When
+      await requestHandler(req, res, next)
+
+      // Then
+      if (goalStatus === GoalStatusValue.ACTIVE) {
+        expect(res.locals.goals).toEqual(activeGoals.goals)
+      } else if (goalStatus === GoalStatusValue.ARCHIVED) {
+        expect(res.locals.goals).toEqual(archivedGoals.goals)
+      }
+
+      expect(res.locals.inProgressGoalsCount).toBe(activeGoals.goals.length)
+      expect(res.locals.archivedGoalsCount).toBe(archivedGoals.goals.length)
       expect(next).toHaveBeenCalled()
     },
   )
