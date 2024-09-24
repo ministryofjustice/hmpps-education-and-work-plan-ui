@@ -56,6 +56,7 @@ generic-service:
     AUDIT_SERVICE_NAME: "hmpps-education-and-work-plan"
     AUDIT_ENABLED: "true"
     QUALIFICATIONS_ENABLED: "false"
+    NEW_OVERVIEW_PAGE_ENABLED: "true"
 
     # Comma delimited list of prison IDs that our service is rolled out into (active agencies)
     # Use spaces to aid readability if necessary; these are trimmed when the environment variable is read and processed.
