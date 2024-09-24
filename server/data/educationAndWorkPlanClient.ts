@@ -47,6 +47,12 @@ export default class EducationAndWorkPlanClient {
     })
   }
 
+  async getAllGoals(prisonNumber: string, token: string): Promise<GetGoalsResponse> {
+    return EducationAndWorkPlanClient.restClient(token).get<GetGoalsResponse>({
+      path: `/action-plans/${prisonNumber}/goals`,
+    })
+  }
+
   async updateGoal(prisonNumber: string, updateGoalRequest: UpdateGoalRequest, token: string): Promise<void> {
     return EducationAndWorkPlanClient.restClient(token).put({
       path: `/action-plans/${prisonNumber}/goals/${updateGoalRequest.goalReference}`,

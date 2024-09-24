@@ -64,6 +64,22 @@ export default class EducationAndWorkPlanService {
     }
   }
 
+  async getAllGoals(prisonNumber: string, username: string): Promise<Goals> {
+    const systemToken = await this.hmppsAuthClient.getSystemClientToken(username)
+    try {
+      const response = await this.educationAndWorkPlanClient.getAllGoals(prisonNumber, systemToken)
+      const prisonNamesById = await this.getAllPrisonNamesByIdSafely(systemToken)
+      return { goals: toGoals(response, prisonNamesById), problemRetrievingData: false }
+    } catch (error) {
+      if (error.status === 404) {
+        logger.debug(`No plan created yet so no goals for Prisoner [${prisonNumber}]`)
+        return { goals: undefined, problemRetrievingData: false }
+      }
+      logger.error(`Error retrieving goals for Prisoner [${prisonNumber}]: ${error}`)
+      return { goals: undefined, problemRetrievingData: true }
+    }
+  }
+
   async updateGoal(prisonNumber: string, updateGoalDto: UpdateGoalDto, token: string): Promise<unknown> {
     const updateGoalRequest = toUpdateGoalRequest(updateGoalDto)
     return this.educationAndWorkPlanClient.updateGoal(prisonNumber, updateGoalRequest, token)
