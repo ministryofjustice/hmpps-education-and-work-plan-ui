@@ -11,6 +11,8 @@ const pageViewEventMap: Record<string, Page> = {
 
   // Overview pages
   '/plan/:prisonNumber/view/overview': Page.OVERVIEW,
+  '/plan/:prisonNumber/view/goals/in-progress': Page.VIEW_IN_PROGRESS_GOALS,
+  '/plan/:prisonNumber/view/goals/archived': Page.VIEW_ARCHIVED_GOALS,
   '/plan/:prisonNumber/view/support-needs': Page.SUPPORT_NEEDS,
   '/plan/:prisonNumber/view/education-and-training': Page.EDUCATION_AND_TRAINING,
   '/plan/:prisonNumber/view/work-and-interests': Page.WORK_AND_INTERESTS,
