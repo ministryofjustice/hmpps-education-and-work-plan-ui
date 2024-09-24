@@ -84,6 +84,65 @@ const getGoalsByStatus404 = (prisonNumber = 'G6115VJ'): SuperAgentRequest =>
     },
   })
 
+const retrieveGoals = (
+  conf: { prisonNumber: string; status?: GoalStatusValue; goals?: [] } = {
+    prisonNumber: 'G6115VJ',
+    status: GoalStatusValue.ACTIVE,
+    goals: undefined,
+  },
+): SuperAgentRequest =>
+  stubFor({
+    request: {
+      method: 'GET',
+      urlPattern: `/action-plans/${conf.prisonNumber || 'G6115VJ'}/goals`,
+    },
+    response: {
+      status: 200,
+      headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+      jsonBody: {
+        goals: conf.goals || actionPlans[conf.prisonNumber].response.jsonBody.goals,
+      },
+    },
+  })
+
+const retrieveGoals404 = (prisonNumber = 'G6115VJ'): SuperAgentRequest =>
+  stubFor({
+    request: {
+      method: 'GET',
+      urlPattern: `/action-plans/${prisonNumber || 'G6115VJ'}/goals`,
+    },
+    response: {
+      status: 404,
+      headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+      jsonBody: {
+        status: 404,
+        errorCode: null,
+        userMessage: 'No goals added yet',
+        developerMessage: 'No goals added yet',
+        moreInfo: null,
+      },
+    },
+  })
+
+const retrieveGoals500 = (prisonNumber = 'G6115VJ'): SuperAgentRequest =>
+  stubFor({
+    request: {
+      method: 'GET',
+      urlPattern: `/action-plans/${prisonNumber || 'G6115VJ'}/goals`,
+    },
+    response: {
+      status: 500,
+      headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+      jsonBody: {
+        status: 500,
+        errorCode: null,
+        userMessage: 'An unexpected error occurred',
+        developerMessage: 'An unexpected error occurred',
+        moreInfo: null,
+      },
+    },
+  })
+
 const updateGoal = (
   prisonNumber = 'G6115VJ',
   goalReference = '10efc562-be8f-4675-9283-9ede0c19dade',
@@ -964,6 +1023,9 @@ export default {
   getGoalsByStatus,
   getGoalsByStatus404,
   getGoalsByStatus500,
+  retrieveGoals,
+  retrieveGoals404,
+  retrieveGoals500,
 
   stubCreateEducation,
   stubUpdateEducation,

@@ -3,13 +3,16 @@ import OverviewPage from '../../pages/overview/OverviewPage'
 import Error500Page from '../../pages/error500'
 import CreateGoalsPage from '../../pages/goal/CreateGoalsPage'
 import HopingToWorkOnReleasePage from '../../pages/induction/HopingToWorkOnReleasePage'
+import GoalStatusValue from '../../../server/enums/goalStatusValue'
+import { aValidGoalResponse } from '../../../server/testsupport/actionPlanResponseTestDataBuilder'
 
 context('Prisoner Overview page - Pre Induction', () => {
   const prisonNumber = 'G6115VJ'
 
   beforeEach(() => {
     cy.signInAsUserWithEditAuthorityToArriveOnPrisonerListPage()
-    cy.task('getGoalsByStatus')
+    cy.task('retrieveGoals')
+    cy.task('retrieveGoals500')
     cy.task('stubGetInduction404Error')
   })
 
@@ -31,6 +34,10 @@ context('Prisoner Overview page - Pre Induction', () => {
 
   it('should render prisoner Overview page listing prisoner goals given prisoner has goals that were created pre-induction', () => {
     // Given
+    cy.task('retrieveGoals', {
+      status: GoalStatusValue.ACTIVE,
+      goals: [aValidGoalResponse()],
+    })
 
     // When
     cy.visit(`/plan/${prisonNumber}/view/overview`)
@@ -46,7 +53,7 @@ context('Prisoner Overview page - Pre Induction', () => {
   it('should render prisoner Overview page listing no prisoner goals given prisoner has no goals created pre-induction', () => {
     // Given
     const prisonNumberForPrisonerWithNoGoals = 'A00001A'
-    cy.task('getGoalsByStatus404', prisonNumberForPrisonerWithNoGoals)
+    cy.task('retrieveGoals404', prisonNumberForPrisonerWithNoGoals)
     cy.task('getPrisonerById', prisonNumberForPrisonerWithNoGoals)
     cy.task('stubLearnerProfile', prisonNumberForPrisonerWithNoGoals)
     cy.task('stubLearnerEducation', prisonNumberForPrisonerWithNoGoals)
@@ -66,6 +73,10 @@ context('Prisoner Overview page - Pre Induction', () => {
 
   it(`should navigate to create Induction page given 'make a progress plan' is clicked`, () => {
     // Given
+    cy.task('retrieveGoals', {
+      status: GoalStatusValue.ACTIVE,
+      goals: [aValidGoalResponse()],
+    })
     cy.visit(`/plan/${prisonNumber}/view/overview`)
 
     const overviewPage = Page.verifyOnPage(OverviewPage)

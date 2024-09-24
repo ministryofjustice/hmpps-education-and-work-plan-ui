@@ -77,7 +77,7 @@ context('Archive a goal', () => {
     cy.task('stubLearnerEducation')
     cy.task('archiveGoal')
     cy.task('stubGetAllPrisons')
-    cy.task('getGoalsByStatus', {
+    cy.task('retrieveGoals', {
       prisonNumber: 'G6115VJ',
       status: GoalStatusValue.ACTIVE,
       goals: [goalToArchive, goalToKeep],

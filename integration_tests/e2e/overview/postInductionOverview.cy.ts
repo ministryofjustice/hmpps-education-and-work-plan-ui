@@ -17,9 +17,10 @@ context('Prisoner Overview page - Post Induction', () => {
     cy.task('stubActionPlansList')
     cy.task('getPrisonerById')
     cy.task('stubGetInduction')
-    cy.task('getGoalsByStatus')
+    cy.task('retrieveGoals')
     cy.task('stubLearnerProfile')
     cy.task('stubLearnerEducation')
+    cy.task('retrieveGoals500')
   })
 
   it('should render prisoner Overview page with Add Goal button given user has edit authority', () => {
@@ -70,12 +71,17 @@ context('Prisoner Overview page - Post Induction', () => {
     cy.signIn()
     const prisonNumber = 'G6115VJ'
 
+    cy.task('retrieveGoals', {
+      status: GoalStatusValue.ACTIVE,
+      goals: [aValidGoalResponse()],
+    })
+
     // When
     cy.visit(`/plan/${prisonNumber}/view/overview`)
 
     // Then
-    const poverviewPage = Page.verifyOnPage(OverviewPage)
-    poverviewPage //
+    const overviewPage = Page.verifyOnPage(OverviewPage)
+    overviewPage //
       .isForPrisoner(prisonNumber)
       .isPostInduction()
       .activeTabIs('Overview')
@@ -108,7 +114,7 @@ context('Prisoner Overview page - Post Induction', () => {
       title: 'I am due sometime between the others',
       targetCompletionDate: '2024-12-29T00:00:00.000Z',
     }
-    cy.task('getGoalsByStatus', {
+    cy.task('retrieveGoals', {
       status: GoalStatusValue.ACTIVE,
       goals: [aGoalThatIsDueLater, aGoalThatIsDueSooner, aGoalThatIsDueSometimeBetween],
     })
@@ -131,7 +137,7 @@ context('Prisoner Overview page - Post Induction', () => {
   it('should display goals section given prisoner has no goals', () => {
     // Given
     cy.task('stubSignInAsUserWithViewAuthority')
-    cy.task('getGoalsByStatus404')
+    cy.task('retrieveGoals404')
 
     cy.signIn()
     const prisonNumber = 'G6115VJ'
@@ -152,13 +158,13 @@ context('Prisoner Overview page - Post Induction', () => {
   it('should display service unavailable message given EWP API returns a 500', () => {
     // Given
     cy.task('stubSignInAsUserWithViewAuthority')
-    cy.task('getGoalsByStatus500')
 
     cy.signIn()
     const prisonNumber = 'G6115VJ'
 
     // When
     cy.visit(`/plan/${prisonNumber}/view/overview`)
+    cy.task('retrieveGoals500')
 
     // Then
     const overviewPage = Page.verifyOnPage(OverviewPage)

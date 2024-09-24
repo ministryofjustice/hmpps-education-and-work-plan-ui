@@ -194,7 +194,7 @@ export default class OverviewPage extends Page {
 
   private goalSummaryCards = (): PageElement => cy.get('[data-qa=goal-summary-card]')
 
-  private errorRetrievingGoalsMessage = (): PageElement => cy.get('#problem-retrieving-goals-message')
+  private errorRetrievingGoalsMessage = (): PageElement => cy.get('[data-qa=problem-retrieving-goals-message]')
 
   private goalUpdateButton = (idx: number): PageElement => cy.get(`[data-qa=goal-${idx}-update-button]`)
 

@@ -8,6 +8,8 @@
 import Page from '../../pages/page'
 import OverviewPage from '../../pages/overview/OverviewPage'
 import CreateGoalsPage from '../../pages/goal/CreateGoalsPage'
+import GoalStatusValue from '../../../server/enums/goalStatusValue'
+import { aValidGoalResponse } from '../../../server/testsupport/actionPlanResponseTestDataBuilder'
 
 context(`Show the relevant screen after an Induction has been created`, () => {
   beforeEach(() => {
@@ -21,6 +23,8 @@ context(`Show the relevant screen after an Induction has been created`, () => {
     cy.task('stubActionPlansList')
     cy.task('stubLearnerProfile')
     cy.task('stubLearnerEducation')
+    cy.task('retrieveGoals')
+    cy.task('retrieveGoals500')
   })
 
   it('should display the Create Goal page given the prisoner does not have an Action Plan with goals', () => {
@@ -42,7 +46,10 @@ context(`Show the relevant screen after an Induction has been created`, () => {
     // Given
     const prisonNumber = 'G6115VJ'
     cy.signIn()
-    cy.task('getGoalsByStatus', { prisonNumber })
+    cy.task('retrieveGoals', {
+      status: GoalStatusValue.ACTIVE,
+      goals: [aValidGoalResponse()],
+    })
     cy.task('getPrisonerById', prisonNumber)
     cy.task('stubGetInduction', { prisonNumber })
 
@@ -61,9 +68,9 @@ context(`Show the relevant screen after an Induction has been created`, () => {
     // Given
     const prisonNumber = 'G6115VJ'
     cy.signIn()
-    cy.task('getGoalsByStatus500', prisonNumber)
     cy.task('getPrisonerById', prisonNumber)
     cy.task('stubGetInduction', { prisonNumber })
+    cy.task('retrieveGoals500', { goals: [], problemRetrievingData: true })
 
     // When
     cy.visit(`/plan/${prisonNumber}/induction-created`)

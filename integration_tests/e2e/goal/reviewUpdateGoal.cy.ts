@@ -18,7 +18,7 @@ context('Review updated goal', () => {
     cy.task('getPrisonerById')
     cy.task('stubGetInduction')
     cy.task('getActionPlan')
-    cy.task('getGoalsByStatus')
+    cy.task('retrieveGoals')
     cy.task('stubLearnerProfile')
     cy.task('stubLearnerEducation')
     cy.task('updateGoal')

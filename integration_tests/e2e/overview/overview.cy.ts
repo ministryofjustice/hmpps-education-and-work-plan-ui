@@ -1,8 +1,8 @@
 import Page from '../../pages/page'
 import OverviewPage from '../../pages/overview/OverviewPage'
 import Error404Page from '../../pages/error404'
-import { getRequestedFor } from '../../mockApis/wiremock/requestPatternBuilder'
-import { urlEqualTo } from '../../mockApis/wiremock/matchers/url'
+import { aValidGoalResponse } from '../../../server/testsupport/actionPlanResponseTestDataBuilder'
+import GoalStatusValue from '../../../server/enums/goalStatusValue'
 
 context('Prisoner Overview page - Common functionality for both pre and post induction', () => {
   beforeEach(() => {
@@ -19,6 +19,7 @@ context('Prisoner Overview page - Common functionality for both pre and post ind
     cy.task('stubLearnerEducation')
     cy.task('stubGetInduction')
     cy.task('stubGetAllPrisons')
+    cy.task('retrieveGoals')
   })
 
   it('should have the DPS breadcrumb which does not include the current page', () => {
@@ -135,10 +136,13 @@ context('Prisoner Overview page - Common functionality for both pre and post ind
     cy.signIn()
 
     // When
+    cy.task('retrieveGoals', { status: GoalStatusValue.ACTIVE, goals: [aValidGoalResponse()] })
     cy.visit(`/plan/${prisonNumber}/view/overview`)
+    const overviewPage = Page.verifyOnPage(OverviewPage)
 
     // Then
     Page.verifyOnPage(OverviewPage)
-    cy.wiremockVerify(getRequestedFor(urlEqualTo(`/action-plans/${prisonNumber}/goals?status=ACTIVE`)))
+    overviewPage //
+      .hasNumberOfGoals(1)
   })
 })
