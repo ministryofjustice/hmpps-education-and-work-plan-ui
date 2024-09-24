@@ -1,0 +1,105 @@
+{% extends "../../partials/layout.njk" %}
+
+{% set pageTitle = "Prisoner's learning and work progress" %}
+{% set pageId = "view-archived-goals-v2" %}
+
+{% block beforeContent %}
+  {% include "../../partials/breadcrumb.njk" %}
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds app-u-print-full-width">
+      <span class="govuk-caption-l">Learning and work progress</span>
+      <h1 class="govuk-heading-l" data-qa="page-heading">{{ prisonerSummary.firstName }} {{ prisonerSummary.lastName }}'s learning and work progress</h1>
+    </div>
+
+    <div class="govuk-grid-column-one-third">
+      {% include "../../partials/printThisPage.njk" %}
+    </div>
+  </div>
+
+  {% include "../../partials/prisonerBanner.njk" %}
+  {% include "./partials/navigationV2.njk" %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds app-u-print-full-width">
+      <div class="govuk-tabs">
+        <ul class="govuk-tabs__list">
+          <li class="govuk-tabs__list-item {% if activeTab == 'in-progress' %}govuk-tabs__list-item--selected{% endif %}" data-qa="in-progress-tab">
+            <a class="govuk-tabs__tab" href="/plan/{{ prisonNumber }}/view/goals/in-progress">
+              In progress ({{ inProgressGoalsCount }} {% if inProgressGoalsCount == 1 %}goal{% else %}goals{% endif %})
+            </a>
+          </li>
+          <li class="govuk-tabs__list-item {% if activeTab == 'archived' %}govuk-tabs__list-item--selected{% endif %}" data-qa="archived-tab">
+            <a class="govuk-tabs__tab" href="/plan/{{ prisonNumber }}/view/goals/archived">
+              Archived ({{ archivedGoalsCount }} {% if archivedGoalsCount == 1 %}goal{% else %}goals{% endif %})
+            </a>
+          </li>
+        </ul>
+        
+        <div class="moj-page-header-actions">
+          <div class="moj-page-header-actions__title">
+            <h2 class="govuk-heading-m govuk-!-margin-top-4">Archived goals</h2>
+          </div>
+        </div>
+
+        <div class="govuk-grid-row">
+          <div class="govuk-grid-column-full app-u-print-full-width">
+            <section data-qa="view-archived-goals-list">
+              {% if not problemRetrievingData %}
+                {% if goals | length > 0 %}
+                  {% for goal in goals | sort(attribute = 'updatedAt', reverse = true) %}
+                    {{ goalSummaryCardV2({
+                      goal: goal,
+                      attributes: {
+                        'data-qa': 'goal-summary-card'
+                      },
+                      classes: 'archived-goal-summary-card',
+                      lastUpdatedLabel: 'Archived on',
+                      actions: [
+                        {
+                          title: 'Reactivate<span class="govuk-visually-hidden"> this goal</span>',
+                          href: '/plan/' + prisonerSummary.prisonNumber + '/goals/' + goal.goalReference + '/unarchive',
+                          attributes: {
+                            'data-qa': 'goal-'+ loop.index + '-unarchive-button'
+                          },
+                          'render-if': hasEditAuthority
+                        }
+                      ]
+                    }) }}
+                  {% endfor %}
+                {% else %}
+                  <p class="govuk-body" data-qa="no-archived-goals-message">{{ prisonerSummary.firstName }} {{ prisonerSummary.lastName }} has no archived goals</p>
+                {% endif %}
+              {% else %}
+                {% include './partials/_unavailableGoals.njk' %}
+              {% endif %}
+            </section>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="govuk-grid-column-one-third app-u-print-full-width">
+      {{ actionsCard({
+        actions: [
+          { 
+            title: '<img src="/assets/images/icon-goal.svg" role="presentation" alt="" width="35px" height="28px" /> Add a new goal' | safe, 
+            href: '/plan/' + prisonNumber + '/goals/create', 
+            id: 'add-goal-button', 
+            'render-if': hasEditAuthority,
+            attributes: {
+              'data-qa': 'add-goal-button'
+            }
+          }
+        ],
+        attributes: {
+          'data-qa': 'actions-card'
+        },
+        classes: 'govuk-!-display-none-print'
+      }) }}
+    </div>
+  </div>
+
+{% endblock %}

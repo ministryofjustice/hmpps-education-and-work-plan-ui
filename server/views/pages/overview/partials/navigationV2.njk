@@ -1,0 +1,62 @@
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-full">
+    <nav class="moj-sub-navigation govuk-!-display-none-print" aria-label="Sub navigation" id="tab-bar-navigation">
+      <ul class="moj-sub-navigation__list">
+        <li class="moj-sub-navigation__item">
+          <a class="moj-sub-navigation__link"
+            data-qa="tab-overview"
+            {% if tab === 'overview' %}aria-current="page"{% endif %}
+            href="/plan/{{ prisonerSummary.prisonNumber }}/view/overview"
+          >
+            Overview
+          </a>
+        </li>
+        <li class="moj-sub-navigation__item">
+          <a class="moj-sub-navigation__link"
+            data-qa="tab-goals"
+            {% if tab === 'goals' %}aria-current="page" class="moj-sub-navigation__link--active"{% endif %}
+            href="/plan/{{ prisonerSummary.prisonNumber }}/view/goals/in-progress"
+          >
+            Goals
+          </a>
+        </li>
+        <li class="moj-sub-navigation__item">
+          <a class="moj-sub-navigation__link"
+            data-qa="tab-support-needs"
+            {% if tab === 'support-needs' %}aria-current="page"{% endif %}
+            href="/plan/{{ prisonerSummary.prisonNumber }}/view/support-needs"
+          >
+            Support needs
+          </a>
+        </li>
+        <li class="moj-sub-navigation__item">
+          <a class="moj-sub-navigation__link"
+            data-qa="tab-education-and-training"
+            {% if tab === 'education-and-training' %}aria-current="page"{% endif %}
+            href="/plan/{{ prisonerSummary.prisonNumber }}/view/education-and-training"
+          >
+            Education and training
+          </a>
+        </li>
+        <li class="moj-sub-navigation__item">
+          <a class="moj-sub-navigation__link"
+            data-qa="tab-work-and-interests"
+            {% if tab === 'work-and-interests' %}aria-current="page"{% endif %}
+            href="/plan/{{ prisonerSummary.prisonNumber }}/view/work-and-interests"
+          >
+            Work and interests
+          </a>
+        </li>
+        <li class="moj-sub-navigation__item">
+          <a class="moj-sub-navigation__link"
+            data-qa="tab-timeline"
+            {% if tab === 'timeline' %}aria-current="page"{% endif %}
+            href="/plan/{{ prisonerSummary.prisonNumber }}/view/timeline"
+          >
+            Timeline
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</div>

@@ -33,7 +33,11 @@
 
   {% include "../../partials/prisonerBanner.njk" %}
 
-  {% include './partials/navigation.njk' %}
+  {% if featureToggles.newOverviewPageEnabled %} 
+      {% include './partials/navigationV2.njk' %}
+    {% else %}
+      {% include './partials/navigation.njk' %}
+  {% endif %}
 
   {% if tab === 'overview' %}
     {% include './partials/overviewTab/overviewTabContents.njk' %}
