@@ -27,6 +27,7 @@ generic-service:
 
     ACTIVE_AGENCIES: '***'
     QUALIFICATIONS_ENABLED: 'true'
+    NEW_OVERVIEW_PAGE_ENABLED: 'true'
 
   allowlist:
     uservision-accessibility-testers: 5.181.59.114/32
