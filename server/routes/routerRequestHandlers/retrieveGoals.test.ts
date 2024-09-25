@@ -2,7 +2,6 @@ import { Request, Response } from 'express'
 import type { Goals } from 'viewModels'
 import EducationAndWorkPlanService from '../../services/educationAndWorkPlanService'
 import { aValidGoal } from '../../testsupport/actionPlanTestDataBuilder'
-import GoalStatusValue from '../../enums/goalStatusValue'
 import retrieveGoals from './retrieveGoals'
 
 jest.mock('../../services/educationAndWorkPlanService')
@@ -31,22 +30,19 @@ describe('retrieveGoals', () => {
     } as unknown as Response
   })
 
-  it.each([GoalStatusValue.ACTIVE, GoalStatusValue.COMPLETED, GoalStatusValue.ARCHIVED])(
-    'should retrieve %s Goals and store on res.locals',
-    async goalStatus => {
-      // Given
-      const requestHandler = retrieveGoals(educationAndWorkPlanService)
+  it('should retrieve all goals and store them on res.locals', async () => {
+    // Given
+    const requestHandler = retrieveGoals(educationAndWorkPlanService)
 
-      const goals: Goals = { goals: [aValidGoal()], problemRetrievingData: false }
-      educationAndWorkPlanService.getGoals.mockResolvedValue(goals)
+    const goals: Goals = { goals: [aValidGoal()], problemRetrievingData: false }
+    educationAndWorkPlanService.getGoals.mockResolvedValue(goals)
 
-      // When
-      await requestHandler(req, res, next)
+    // When
+    await requestHandler(req, res, next)
 
-      // Then
-      expect(res.locals.goals).toEqual(goals)
-      expect(educationAndWorkPlanService.getGoals).toHaveBeenCalledWith(prisonNumber, username)
-      expect(next).toHaveBeenCalled()
-    },
-  )
+    // Then
+    expect(res.locals.goals).toEqual(goals)
+    expect(educationAndWorkPlanService.getGoals).toHaveBeenCalledWith(prisonNumber, username)
+    expect(next).toHaveBeenCalled()
+  })
 })
