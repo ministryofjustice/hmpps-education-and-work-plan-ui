@@ -13,14 +13,17 @@ import retrieveInduction from '../routerRequestHandlers/retrieveInduction'
 import ViewArchivedGoalsController from './viewArchivedGoalsController'
 import retrieveEducation from '../routerRequestHandlers/retrieveEducation'
 import retrieveGoals from '../routerRequestHandlers/retrieveGoals'
-import GoalStatusValue from '../../enums/goalStatusValue'
 import ViewGoalsController from './viewGoalsController'
 
 /**
  * Route definitions for the pages relating to the main Overview page
  */
 export default (router: Router, services: Services) => {
-  const overViewController = new OverviewController(services.curiousService, services.inductionService)
+  const overViewController = new OverviewController(
+    services.curiousService,
+    services.inductionService,
+    services.educationAndWorkPlanService,
+  )
 
   const timelineController = new TimelineController(services.timelineService)
   const supportNeedsController = new SupportNeedsController(services.curiousService, services.prisonService)
@@ -33,7 +36,6 @@ export default (router: Router, services: Services) => {
 
   router.get('/plan/:prisonNumber/view/overview', [
     retrieveCuriousInPrisonCourses(services.curiousService),
-    retrieveGoals(services.educationAndWorkPlanService, GoalStatusValue.ACTIVE),
     asyncMiddleware(overViewController.getOverviewView),
   ])
 
@@ -57,5 +59,8 @@ export default (router: Router, services: Services) => {
     asyncMiddleware(viewArchivedGoalsController.viewArchivedGoals),
   ])
 
-  router.get('/plan/:prisonNumber/view/goals', [asyncMiddleware(viewGoalsController.viewGoals)])
+  router.get('/plan/:prisonNumber/view/goals', [
+    retrieveGoals(services.educationAndWorkPlanService),
+    asyncMiddleware(viewGoalsController.viewGoals),
+  ])
 }

@@ -1,20 +1,17 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express'
 import { EducationAndWorkPlanService } from '../../services'
 import asyncMiddleware from '../../middleware/asyncMiddleware'
-import GoalStatusValue from '../../enums/goalStatusValue'
 
 /**
- *  Middleware function that returns a Request handler function to retrieve the goals by status from EducationAndWorkPlanService and store in res.locals
+ *  Middleware function that returns a Request handler function to retrieve the goals from EducationAndWorkPlanService and store in res.locals
  */
-const retrieveGoals = (
-  educationAndWorkPlanService: EducationAndWorkPlanService,
-  status: GoalStatusValue,
-): RequestHandler => {
+const retrieveGoals = (educationAndWorkPlanService: EducationAndWorkPlanService): RequestHandler => {
   return asyncMiddleware(async (req: Request, res: Response, next: NextFunction) => {
     const { prisonNumber } = req.params
 
-    // Retrieve the goals by status and store in res.locals
-    res.locals.goals = await educationAndWorkPlanService.getGoalsByStatus(prisonNumber, status, req.user.username)
+    // Retrieve the goals and store in res.locals
+    res.locals.goals = await educationAndWorkPlanService.getGoals(prisonNumber, req.user.username)
+
     next()
   })
 }

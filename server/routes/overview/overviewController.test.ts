@@ -4,18 +4,23 @@ import type { FunctionalSkills, InPrisonCourseRecords } from 'viewModels'
 import OverviewController from './overviewController'
 import CuriousService from '../../services/curiousService'
 import InductionService from '../../services/inductionService'
-import { aValidGoal } from '../../testsupport/actionPlanTestDataBuilder'
 import { aValidEnglishInPrisonCourse, aValidMathsInPrisonCourse } from '../../testsupport/inPrisonCourseTestDataBuilder'
 import aValidPrisonerSummary from '../../testsupport/prisonerSummaryTestDataBuilder'
+import EducationAndWorkPlanService from '../../services/educationAndWorkPlanService'
 
 jest.mock('../../services/curiousService')
 jest.mock('../../services/inductionService')
+jest.mock('../../services/educationAndWorkPlanService')
 
 describe('overviewController', () => {
   const curiousService = new CuriousService(null, null, null) as jest.Mocked<CuriousService>
   const inductionService = new InductionService(null, null) as jest.Mocked<InductionService>
-
-  const controller = new OverviewController(curiousService, inductionService)
+  const educationAndWorkPlanService = new EducationAndWorkPlanService(
+    null,
+    null,
+    null,
+  ) as jest.Mocked<EducationAndWorkPlanService>
+  const controller = new OverviewController(curiousService, inductionService, educationAndWorkPlanService)
 
   const prisonNumber = 'A1234GC'
   const username = 'a-dps-user'
@@ -43,7 +48,6 @@ describe('overviewController', () => {
     render: jest.fn(),
     locals: {
       curiousInPrisonCourses: inPrisonCourses,
-      goals: { goals: [aValidGoal()], problemRetrievingData: false },
     },
   } as unknown as Response
   const next = jest.fn()

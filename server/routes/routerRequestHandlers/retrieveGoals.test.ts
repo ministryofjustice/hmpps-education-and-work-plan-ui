@@ -35,17 +35,17 @@ describe('retrieveGoals', () => {
     'should retrieve %s Goals and store on res.locals',
     async goalStatus => {
       // Given
-      const requestHandler = retrieveGoals(educationAndWorkPlanService, goalStatus)
+      const requestHandler = retrieveGoals(educationAndWorkPlanService)
 
       const goals: Goals = { goals: [aValidGoal()], problemRetrievingData: false }
-      educationAndWorkPlanService.getGoalsByStatus.mockResolvedValue(goals)
+      educationAndWorkPlanService.getGoals.mockResolvedValue(goals)
 
       // When
       await requestHandler(req, res, next)
 
       // Then
       expect(res.locals.goals).toEqual(goals)
-      expect(educationAndWorkPlanService.getGoalsByStatus).toHaveBeenCalledWith(prisonNumber, goalStatus, username)
+      expect(educationAndWorkPlanService.getGoals).toHaveBeenCalledWith(prisonNumber, username)
       expect(next).toHaveBeenCalled()
     },
   )

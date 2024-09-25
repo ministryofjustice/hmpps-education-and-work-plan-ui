@@ -116,6 +116,15 @@ declare module 'viewModels' {
   }
 
   /**
+   * All of a prisoner's Goals, grouped by status.
+   */
+  export interface PrisonerGoals {
+    problemRetrievingData: boolean
+    goals: Record<'ACTIVE' | 'ARCHIVED' | 'COMPLETE', Array<Goal>>
+    prisonNumber: string
+  }
+
+  /**
    * An 'In-Prison' course record.
    */
   export interface InPrisonCourse {
