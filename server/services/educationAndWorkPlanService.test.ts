@@ -441,8 +441,10 @@ describe('educationAndWorkPlanService', () => {
   describe('EducationAndWorkPlanService - getAllGoalsForPrisoner', () => {
     it('should retrieve and categorise goals based on status', async () => {
       // Given
+      const actionPlanResponse = aValidActionPlanResponseWithOneGoal()
+      educationAndWorkPlanClient.getActionPlan.mockResolvedValue(actionPlanResponse)
+      prisonService.getAllPrisonNamesById.mockResolvedValue(new Map())
       const actionPlan = aValidActionPlanWithOneGoal()
-      educationAndWorkPlanClient.getActionPlan.mockResolvedValue(actionPlan)
 
       // When
       const result = await educationAndWorkPlanService.getAllGoalsForPrisoner(prisonNumber, systemToken)
@@ -464,24 +466,16 @@ describe('educationAndWorkPlanService', () => {
 
     it('should handle errors and return problemRetrievingData: true', async () => {
       // Given
-      educationAndWorkPlanClient.getActionPlan.mockRejectedValue(new Error('Service Unavailable'))
+      educationAndWorkPlanClient.getActionPlan.mockRejectedValue(Error('Service Unavailable'))
+      prisonService.getAllPrisonNamesById.mockResolvedValue(new Map())
 
       // When
-      const result = await educationAndWorkPlanService.getAllGoalsForPrisoner(prisonNumber, username)
+      const actual = await educationAndWorkPlanService.getActionPlan(prisonNumber, username)
 
       // Then
-      expect(result).toEqual({
-        prisonNumber,
-        goals: {
-          ACTIVE: [],
-          ARCHIVED: [],
-          COMPLETE: [],
-        },
-        problemRetrievingData: true,
-      })
-
       expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
       expect(educationAndWorkPlanClient.getActionPlan).toHaveBeenCalledWith(prisonNumber, systemToken)
+      expect(actual.problemRetrievingData).toEqual(true)
     })
   })
 })

@@ -65,38 +65,15 @@ export default class EducationAndWorkPlanService {
   }
 
   async getAllGoalsForPrisoner(prisonNumber: string, username: string): Promise<PrisonerGoals> {
-    const systemToken = await this.hmppsAuthClient.getSystemClientToken(username)
-
-    try {
-      const actionPlan = await this.educationAndWorkPlanClient.getActionPlan(prisonNumber, systemToken)
-
-      return {
-        prisonNumber,
-        goals: {
-          ACTIVE: actionPlan.goals.filter(
-            (goal: { status: GoalStatusValue }) => goal.status === GoalStatusValue.ACTIVE,
-          ),
-          ARCHIVED: actionPlan.goals.filter(
-            (goal: { status: GoalStatusValue }) => goal.status === GoalStatusValue.ARCHIVED,
-          ),
-          COMPLETE: actionPlan.goals.filter(
-            (goal: { status: GoalStatusValue }) => goal.status === GoalStatusValue.COMPLETED,
-          ),
-        },
-        problemRetrievingData: actionPlan.problemRetrievingData,
-      }
-    } catch (error) {
-      logger.error(`Error retrieving action plan: ${error.message}`)
-
-      return {
-        prisonNumber,
-        goals: {
-          ACTIVE: [],
-          ARCHIVED: [],
-          COMPLETE: [],
-        },
-        problemRetrievingData: true,
-      }
+    const actionPlan = await this.getActionPlan(prisonNumber, username)
+    return {
+      prisonNumber,
+      goals: {
+        ACTIVE: actionPlan.goals.filter(goal => goal.status === GoalStatusValue.ACTIVE),
+        ARCHIVED: actionPlan.goals.filter(goal => goal.status === GoalStatusValue.ARCHIVED),
+        COMPLETE: actionPlan.goals.filter(goal => goal.status === GoalStatusValue.COMPLETED),
+      },
+      problemRetrievingData: actionPlan.problemRetrievingData,
     }
   }
 
