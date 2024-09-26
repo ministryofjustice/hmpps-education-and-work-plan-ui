@@ -1,20 +1,13 @@
 import { Request, Response } from 'express'
-import type { PrisonerGoals } from 'viewModels'
 import aValidPrisonerSummary from '../../testsupport/prisonerSummaryTestDataBuilder'
 import ViewGoalsController from './viewGoalsController'
 import GoalStatusValue from '../../enums/goalStatusValue'
-import EducationAndWorkPlanService from '../../services/educationAndWorkPlanService'
 import { aValidGoalResponse } from '../../testsupport/actionPlanResponseTestDataBuilder'
 
 jest.mock('../../services/educationAndWorkPlanService')
 
 describe('ViewGoalsController', () => {
-  const educationAndWorkPlanService = new EducationAndWorkPlanService(
-    null,
-    null,
-    null,
-  ) as jest.Mocked<EducationAndWorkPlanService>
-  const controller = new ViewGoalsController(educationAndWorkPlanService)
+  const controller = new ViewGoalsController()
 
   const prisonNumber = 'A1234GC'
   const username = 'a-dps-user'
@@ -24,6 +17,16 @@ describe('ViewGoalsController', () => {
   let req: Request
   const res = {
     render: jest.fn(),
+    locals: {
+      allGoalsForPrisoner: {
+        goals: {
+          ACTIVE: [],
+          ARCHIVED: [],
+          COMPLETED: [],
+        },
+        problemRetrievingData: false,
+      },
+    },
   } as unknown as Response
   const next = jest.fn()
 
@@ -45,24 +48,19 @@ describe('ViewGoalsController', () => {
     const archivedGoal = { ...aValidGoalResponse(), status: GoalStatusValue.ARCHIVED }
     const completedGoal = { ...aValidGoalResponse(), status: GoalStatusValue.COMPLETED }
 
-    const prisonerGoals: PrisonerGoals = {
-      prisonNumber,
-      goals: {
-        ACTIVE: [inProgressGoal],
-        ARCHIVED: [archivedGoal],
-        COMPLETE: [completedGoal],
-      },
-      problemRetrievingData: false,
+    res.locals.allGoalsForPrisoner.problemRetrievingData = false
+    res.locals.allGoalsForPrisoner.goals = {
+      ACTIVE: [inProgressGoal],
+      ARCHIVED: [archivedGoal],
+      COMPLETED: [completedGoal],
     }
-
-    educationAndWorkPlanService.getAllGoalsForPrisoner.mockResolvedValue(prisonerGoals)
 
     const expectedView = {
       prisonerSummary,
-      inProgressGoals: prisonerGoals.goals.ACTIVE,
-      archivedGoals: prisonerGoals.goals.ARCHIVED,
-      completedGoals: prisonerGoals.goals.COMPLETE,
-      problemRetrievingData: prisonerGoals.problemRetrievingData,
+      inProgressGoals: [inProgressGoal],
+      archivedGoals: [archivedGoal],
+      completedGoals: [completedGoal],
+      problemRetrievingData: false,
       tab: 'goals',
     }
 
@@ -71,6 +69,5 @@ describe('ViewGoalsController', () => {
 
     // Then
     expect(res.render).toHaveBeenCalledWith('pages/overview/partials/goalsTab/goalsTabContents', expectedView)
-    expect(educationAndWorkPlanService.getAllGoalsForPrisoner).toHaveBeenCalledWith(prisonNumber, username)
   })
 })

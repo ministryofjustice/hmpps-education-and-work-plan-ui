@@ -14,8 +14,8 @@ import ViewArchivedGoalsController from './viewArchivedGoalsController'
 import retrieveEducation from '../routerRequestHandlers/retrieveEducation'
 import retrieveGoals from '../routerRequestHandlers/retrieveGoals'
 import GoalStatusValue from '../../enums/goalStatusValue'
-import ViewGoalsController from './viewGoalsController'
 import retrieveAllGoalsForPrisoner from '../routerRequestHandlers/retrieveAllGoalsForPrisoner'
+import ViewGoalsController from './viewGoalsController'
 
 /**
  * Route definitions for the pages relating to the main Overview page
@@ -28,7 +28,7 @@ export default (router: Router, services: Services) => {
   const workAndInterestsController = new WorkAndInterestsController()
   const educationAndTrainingController = new EducationAndTrainingController(services.curiousService)
   const viewArchivedGoalsController = new ViewArchivedGoalsController(services.educationAndWorkPlanService)
-  const viewGoalsController = new ViewGoalsController(services.educationAndWorkPlanService)
+  const viewGoalsController = new ViewGoalsController()
 
   router.use('/plan/:prisonNumber/view/*', [checkUserHasViewAuthority(), removeInductionFormsFromSession])
 

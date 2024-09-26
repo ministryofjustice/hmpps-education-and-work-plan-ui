@@ -5,7 +5,7 @@ import asyncMiddleware from '../../middleware/asyncMiddleware'
 /**
  *  Middleware function that returns a Request handler function to look up the prisoner's goals and store in res.locals
  */
-const getAllGoalsForPrisoner = (educationAndWorkPlanService: EducationAndWorkPlanService): RequestHandler => {
+const retrieveAllGoalsForPrisoner = (educationAndWorkPlanService: EducationAndWorkPlanService): RequestHandler => {
   return asyncMiddleware(async (req: Request, res: Response, next: NextFunction) => {
     const { prisonNumber } = req.params
 
@@ -18,4 +18,4 @@ const getAllGoalsForPrisoner = (educationAndWorkPlanService: EducationAndWorkPla
     next()
   })
 }
-export default getAllGoalsForPrisoner
+export default retrieveAllGoalsForPrisoner

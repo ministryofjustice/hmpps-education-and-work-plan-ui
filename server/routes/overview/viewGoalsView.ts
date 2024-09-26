@@ -1,22 +1,26 @@
-import type { Goal, PrisonerSummary } from 'viewModels'
+import type { Goal, PrisonerGoals, PrisonerSummary } from 'viewModels'
 
 export default class ViewGoalsView {
   constructor(
     private readonly prisonerSummary: PrisonerSummary,
-    private readonly inProgressGoals: Array<Goal>,
-    private readonly archivedGoals: Array<Goal>,
-    private readonly completedGoals: Array<Goal>,
-    private readonly problemRetrievingData: boolean,
+    private readonly allGoalsForPrisoner: PrisonerGoals,
   ) {}
 
-  get renderArgs() {
+  get renderArgs(): {
+    tab: string
+    prisonerSummary: PrisonerSummary
+    problemRetrievingData: boolean
+    inProgressGoals: Array<Goal>
+    archivedGoals: Array<Goal>
+    completedGoals: Array<Goal>
+  } {
     return {
-      prisonerSummary: this.prisonerSummary,
-      problemRetrievingData: this.problemRetrievingData,
-      inProgressGoals: this.inProgressGoals,
-      archivedGoals: this.archivedGoals,
-      completedGoals: this.completedGoals,
       tab: 'goals',
+      prisonerSummary: this.prisonerSummary,
+      problemRetrievingData: this.allGoalsForPrisoner.problemRetrievingData,
+      inProgressGoals: this.allGoalsForPrisoner.goals.ACTIVE,
+      archivedGoals: this.allGoalsForPrisoner.goals.ARCHIVED,
+      completedGoals: this.allGoalsForPrisoner.goals.COMPLETED,
     }
   }
 }
