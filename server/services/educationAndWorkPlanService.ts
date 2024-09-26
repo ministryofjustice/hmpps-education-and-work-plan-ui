@@ -7,7 +7,7 @@ import type {
   UpdateGoalDto,
 } from 'dto'
 import type { CreateGoalsRequest } from 'educationAndWorkPlanApiClient'
-import type { ActionPlan, Goals } from 'viewModels'
+import type { ActionPlan, Goals, PrisonerGoals } from 'viewModels'
 import EducationAndWorkPlanClient from '../data/educationAndWorkPlanClient'
 import { toCreateGoalRequest } from '../data/mappers/createGoalMapper'
 import { toActionPlan, toGoals } from '../data/mappers/actionPlanMapper'
@@ -61,6 +61,42 @@ export default class EducationAndWorkPlanService {
       }
       logger.error(`Error retrieving goals with status [${status}] for Prisoner [${prisonNumber}]: ${error}`)
       return { goals: undefined, problemRetrievingData: true }
+    }
+  }
+
+  async getAllGoalsForPrisoner(prisonNumber: string, username: string): Promise<PrisonerGoals> {
+    const systemToken = await this.hmppsAuthClient.getSystemClientToken(username)
+
+    try {
+      const actionPlan = await this.educationAndWorkPlanClient.getActionPlan(prisonNumber, systemToken)
+
+      return {
+        prisonNumber,
+        goals: {
+          ACTIVE: actionPlan.goals.filter(
+            (goal: { status: GoalStatusValue }) => goal.status === GoalStatusValue.ACTIVE,
+          ),
+          ARCHIVED: actionPlan.goals.filter(
+            (goal: { status: GoalStatusValue }) => goal.status === GoalStatusValue.ARCHIVED,
+          ),
+          COMPLETE: actionPlan.goals.filter(
+            (goal: { status: GoalStatusValue }) => goal.status === GoalStatusValue.COMPLETED,
+          ),
+        },
+        problemRetrievingData: actionPlan.problemRetrievingData,
+      }
+    } catch (error) {
+      logger.error(`Error retrieving action plan: ${error.message}`)
+
+      return {
+        prisonNumber,
+        goals: {
+          ACTIVE: [],
+          ARCHIVED: [],
+          COMPLETE: [],
+        },
+        problemRetrievingData: true,
+      }
     }
   }
 

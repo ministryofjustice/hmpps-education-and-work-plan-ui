@@ -437,4 +437,51 @@ describe('educationAndWorkPlanService', () => {
       expect(actual).toEqual(eductionAndWorkPlanApiError)
     })
   })
+
+  describe('EducationAndWorkPlanService - getAllGoalsForPrisoner', () => {
+    it('should retrieve and categorise goals based on status', async () => {
+      // Given
+      const actionPlan = aValidActionPlanWithOneGoal()
+      educationAndWorkPlanClient.getActionPlan.mockResolvedValue(actionPlan)
+
+      // When
+      const result = await educationAndWorkPlanService.getAllGoalsForPrisoner(prisonNumber, systemToken)
+
+      // Then
+      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(systemToken)
+      expect(educationAndWorkPlanClient.getActionPlan).toHaveBeenCalledWith(prisonNumber, systemToken)
+
+      expect(result).toEqual({
+        prisonNumber,
+        goals: {
+          ACTIVE: actionPlan.goals.filter(goal => goal.status === GoalStatusValue.ACTIVE),
+          ARCHIVED: actionPlan.goals.filter(goal => goal.status === GoalStatusValue.ARCHIVED),
+          COMPLETE: actionPlan.goals.filter(goal => goal.status === GoalStatusValue.COMPLETED),
+        },
+        problemRetrievingData: actionPlan.problemRetrievingData,
+      })
+    })
+
+    it('should handle errors and return problemRetrievingData: true', async () => {
+      // Given
+      educationAndWorkPlanClient.getActionPlan.mockRejectedValue(new Error('Service Unavailable'))
+
+      // When
+      const result = await educationAndWorkPlanService.getAllGoalsForPrisoner(prisonNumber, username)
+
+      // Then
+      expect(result).toEqual({
+        prisonNumber,
+        goals: {
+          ACTIVE: [],
+          ARCHIVED: [],
+          COMPLETE: [],
+        },
+        problemRetrievingData: true,
+      })
+
+      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
+      expect(educationAndWorkPlanClient.getActionPlan).toHaveBeenCalledWith(prisonNumber, systemToken)
+    })
+  })
 })
