@@ -11,6 +11,17 @@
             Overview
           </a>
         </li>
+        {% if featureToggles.newOverviewPageEnabled %}
+          <li class="moj-sub-navigation__item">
+            <a class="moj-sub-navigation__link"
+              data-qa="tab-goals"
+              {% if tab === 'goals' %}aria-current="page"{% endif %}
+              href="goals"
+            >
+              Goals
+            </a>
+          </li>
+        {% endif %}
         <li class="moj-sub-navigation__item">
           <a class="moj-sub-navigation__link"
             data-qa="tab-support-needs"
