@@ -120,7 +120,7 @@ declare module 'viewModels' {
    */
   export interface PrisonerGoals {
     problemRetrievingData: boolean
-    goals: Record<'ACTIVE' | 'ARCHIVED' | 'COMPLETE', Array<Goal>>
+    goals: Record<'ACTIVE' | 'ARCHIVED' | 'COMPLETED', Array<Goal>>
     prisonNumber: string
   }
 

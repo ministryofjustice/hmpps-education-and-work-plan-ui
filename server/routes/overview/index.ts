@@ -14,6 +14,7 @@ import ViewArchivedGoalsController from './viewArchivedGoalsController'
 import retrieveEducation from '../routerRequestHandlers/retrieveEducation'
 import retrieveGoals from '../routerRequestHandlers/retrieveGoals'
 import GoalStatusValue from '../../enums/goalStatusValue'
+import retrieveAllGoalsForPrisoner from '../routerRequestHandlers/retrieveAllGoalsForPrisoner'
 import ViewGoalsController from './viewGoalsController'
 
 /**
@@ -57,5 +58,8 @@ export default (router: Router, services: Services) => {
     asyncMiddleware(viewArchivedGoalsController.viewArchivedGoals),
   ])
 
-  router.get('/plan/:prisonNumber/view/goals', [asyncMiddleware(viewGoalsController.viewGoals)])
+  router.get('/plan/:prisonNumber/view/goals', [
+    retrieveAllGoalsForPrisoner(services.educationAndWorkPlanService),
+    asyncMiddleware(viewGoalsController.viewGoals),
+  ])
 }

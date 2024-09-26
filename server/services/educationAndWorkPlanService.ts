@@ -71,7 +71,7 @@ export default class EducationAndWorkPlanService {
       goals: {
         ACTIVE: actionPlan.goals.filter(goal => goal.status === GoalStatusValue.ACTIVE),
         ARCHIVED: actionPlan.goals.filter(goal => goal.status === GoalStatusValue.ARCHIVED),
-        COMPLETE: actionPlan.goals.filter(goal => goal.status === GoalStatusValue.COMPLETED),
+        COMPLETED: actionPlan.goals.filter(goal => goal.status === GoalStatusValue.COMPLETED),
       },
       problemRetrievingData: actionPlan.problemRetrievingData,
     }
