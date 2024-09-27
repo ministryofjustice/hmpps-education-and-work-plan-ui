@@ -45,7 +45,7 @@ describe('_trainingAndEducationInterestsInPrisonV2', () => {
     expect($('[data-qa=in-prison-training-interests]').length).toEqual(1)
     expect($('[data-qa=in-prison-training-interests] li').length).toEqual(3)
     expect($('[data-qa=in-prison-training-change-link]').text().trim()).toEqual(
-      'Change training and eduction interests',
+      'Change training and education interests',
     )
     expect($('[data-qa=training-interests-create-induction-message]').length).toEqual(0)
     expect($('[data-qa=training-interests-induction-unavailable-message]').length).toEqual(0)
@@ -68,7 +68,7 @@ describe('_trainingAndEducationInterestsInPrisonV2', () => {
 
     // Then
     expect($('[data-qa=in-prison-training-interests]').length).toEqual(0)
-    expect($('[data-qa=in-prison-training-change-link]').text().trim()).toEqual('Add training and eduction interests')
+    expect($('[data-qa=in-prison-training-change-link]').text().trim()).toEqual('Add training and education interests')
     expect($('[data-qa=training-interests-create-induction-message]').length).toEqual(0)
     expect($('[data-qa=training-interests-induction-unavailable-message]').length).toEqual(0)
   })
