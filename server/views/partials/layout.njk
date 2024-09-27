@@ -41,7 +41,7 @@
 {% block pageTitle %}{{ pageTitle | default(applicationName) }} - {{ applicationName }}{% endblock %}
 
 {% block header %}
-  {% if not feComponents.problemRetrievingData %}
+  {% if not feComponents.problemRetrievingData and feComponents.headerHtml %}
     {{ feComponents.headerHtml | safe }}
   {% else %}
     {% include "./header.njk" %}
@@ -96,7 +96,7 @@
 {% endblock %}
 
 {% block footer %}
-  {% if not feComponents.problemRetrievingData %}
+  {% if not feComponents.problemRetrievingData and feComponents.footerHtml %}
     {{ feComponents.footerHtml | safe }}
   {% else %}
     {% include "./footer.njk" %}

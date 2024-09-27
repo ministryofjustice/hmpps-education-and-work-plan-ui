@@ -2,12 +2,25 @@
 
 {% set pageId = 'auth-error' %}
 
+{% block beforeContent %}
+  <nav class="govuk-breadcrumbs govuk-!-display-none-print" aria-label="Breadcrumb">
+    <ol class="govuk-breadcrumbs__list">
+      <li class="govuk-breadcrumbs__list-item">
+        <a class="govuk-breadcrumbs__link" href="{{ dpsUrl }}">Digital Prison Services</a>
+      </li>
+    </ol>
+  </nav>
+{% endblock %}
+
 {% block content %}
 
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
       <h1 class="govuk-heading-l">You do not have permission to access this page</h1>
-      <p class="govuk-body">If you think you should have access to this service or need any other help, email <a href="mailto:learningandworkprogress@digital.justice.gov.uk">learningandworkprogress@digital.justice.gov.uk</a>.</p>
+      <p class="govuk-body">
+        If you think you should have access to this service contact your local systems administrator, or call the IT
+        helpdesk on 0800 917 5148 or #6598 from inside an establishment.
+      </p>
       <p class="govuk-body"><a href="{{ dpsUrl }}">Go to the Digital Prison Services (DPS) home page</a></p>
     </div>
   </div>
