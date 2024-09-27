@@ -36,7 +36,6 @@
   {% include './partials/navigation.njk' %}
 
   {% if tab === 'overview' %}
-     {% if not featureToggles.newOverviewPageEnabled %}
       {% include './partials/overviewTab/overviewTabContents.njk' %}
   {% endif %}
   {% if tab === 'support-needs' %}
