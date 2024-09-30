@@ -3,6 +3,19 @@
 {% set pageId = 'service-unavailable' %}
 {% set pageTitle =  "Sorry, there is a problem with this service" %}
 
+{% block beforeContent %}
+  <nav class="govuk-breadcrumbs govuk-!-display-none-print" aria-label="Breadcrumb">
+    <ol class="govuk-breadcrumbs__list">
+      <li class="govuk-breadcrumbs__list-item">
+        <a class="govuk-breadcrumbs__link" href="{{ dpsUrl }}">Digital Prison Services</a>
+      </li>
+      <li class="govuk-breadcrumbs__list-item">
+        <a class="govuk-breadcrumbs__link" href="{{ prisonerListUrl }}">Manage learning and work progress</a>
+      </li>
+    </ol>
+  </nav>
+{% endblock %}
+
 {% block content %}
 
   <div class="govuk-grid-row">
@@ -10,8 +23,9 @@
       <h1 class="govuk-heading-l">Sorry, there is a problem with this service</h1>
       <p class="govuk-body">Try again later.</p>
       <p class="govuk-body">Any information you entered has not been saved. When the service is available, you will need to start again.</p>
+      <h2 class="govuk-heading-s">Technical help</h2>
       <p class="govuk-body">
-        If you want to contact us, email: <a href="mailto:learningandworkprogress@digital.justice.gov.uk" class="govuk-link">learningandworkprogress@digital.justice.gov.uk</a>.
+        Call the IT helpdesk on 0800 917 5148 or #6598 from inside an establishment if you need technical help.
       </p>
       <p class="govuk-body"><a href="{{ dpsUrl }}" class="govuk-link">Go to the Digital Prison Services (DPS) home page</a></p>
     </div>
