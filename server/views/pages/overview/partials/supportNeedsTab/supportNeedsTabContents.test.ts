@@ -1,5 +1,6 @@
 import * as fs from 'fs'
-import cheerio, { Cheerio, CheerioAPI } from 'cheerio'
+import * as cheerio from 'cheerio'
+import { Cheerio, CheerioAPI } from 'cheerio'
 import nunjucks, { Template } from 'nunjucks'
 import { registerNunjucks } from '../../../../../utils/nunjucksSetup'
 import aValidPrisonerSupportNeeds from '../../../../../testsupport/supportNeedsTestDataBuilder'
