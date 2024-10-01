@@ -14,10 +14,17 @@ describe('ViewGoalsController', () => {
   const token = 'a-user-token'
   const prisonerSummary = aValidPrisonerSummary(prisonNumber)
 
-  let req: Request
+  const req = {
+    user: {
+      username,
+      token,
+    },
+    params: { prisonNumber },
+  } as unknown as Request
   const res = {
     render: jest.fn(),
     locals: {
+      prisonerSummary,
       allGoalsForPrisoner: {
         goals: {
           ACTIVE: [],
@@ -32,14 +39,6 @@ describe('ViewGoalsController', () => {
 
   beforeEach(() => {
     jest.resetAllMocks()
-    req = {
-      session: { prisonerSummary },
-      user: {
-        username,
-        token,
-      },
-      params: { prisonNumber },
-    } as unknown as Request
   })
 
   it('should get goals page and filter goals correctly by status', async () => {

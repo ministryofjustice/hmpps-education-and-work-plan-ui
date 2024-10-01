@@ -1,5 +1,4 @@
 import createError from 'http-errors'
-import type { SessionData } from 'express-session'
 import { NextFunction, Request, Response } from 'express'
 import InPrisonWorkUpdateController from './inPrisonWorkUpdateController'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
@@ -24,26 +23,24 @@ describe('inPrisonWorkUpdateController', () => {
   const prisonerSummary = aValidPrisonerSummary()
 
   const req = {
-    session: {} as SessionData,
+    session: {},
     body: {},
-    user: {} as Express.User,
-    params: {} as Record<string, string>,
-    path: '',
-  }
+    user: { token: 'some-token' },
+    params: { prisonNumber },
+    path: `/prisoners/${prisonNumber}/induction/in-prison-work`,
+  } as unknown as Request
   const res = {
     redirect: jest.fn(),
     redirectWithErrors: jest.fn(),
     render: jest.fn(),
-  }
+    locals: { prisonerSummary },
+  } as unknown as Response
   const next = jest.fn()
 
   beforeEach(() => {
     jest.resetAllMocks()
-    req.session = { prisonerSummary } as SessionData
+    req.session.pageFlowHistory = undefined
     req.body = {}
-    req.user = { token: 'some-token' } as Express.User
-    req.params = { prisonNumber }
-    req.path = `/prisoners/${prisonNumber}/induction/in-prison-work`
   })
 
   describe('getInPrisonWorkView', () => {

@@ -16,7 +16,8 @@ export default abstract class HopingToWorkOnReleaseController extends InductionC
     res: Response,
     next: NextFunction,
   ): Promise<void> => {
-    const { prisonerSummary, inductionDto } = req.session
+    const { inductionDto } = req.session
+    const { prisonerSummary } = res.locals
 
     if (req.session.pageFlowHistory) {
       this.addCurrentPageToHistory(req)
@@ -28,7 +29,7 @@ export default abstract class HopingToWorkOnReleaseController extends InductionC
     const view = new HopingToWorkOnReleaseView(
       prisonerSummary,
       this.getBackLinkUrl(req),
-      this.getBackLinkAriaText(req),
+      this.getBackLinkAriaText(req, res),
       hopingToWorkOnReleaseForm,
     )
     return res.render('pages/induction/hopingToWorkOnRelease/index', { ...view.renderArgs })

@@ -17,7 +17,8 @@ export default abstract class QualificationsListController extends InductionCont
     res: Response,
     next: NextFunction,
   ): Promise<void> => {
-    const { prisonerSummary, inductionDto } = req.session
+    const { inductionDto } = req.session
+    const { prisonerSummary } = res.locals
 
     const qualifications: Array<AchievedQualificationDto> = inductionDto.previousQualifications?.qualifications
 
@@ -34,7 +35,7 @@ export default abstract class QualificationsListController extends InductionCont
     const view = new QualificationsListView(
       prisonerSummary,
       this.getBackLinkUrl(req),
-      this.getBackLinkAriaText(req),
+      this.getBackLinkAriaText(req, res),
       qualifications,
       functionalSkills,
       curiousInPrisonCourses,

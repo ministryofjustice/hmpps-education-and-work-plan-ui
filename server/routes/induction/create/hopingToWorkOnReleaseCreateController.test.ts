@@ -1,5 +1,4 @@
 import { Request, Response } from 'express'
-import type { SessionData } from 'express-session'
 import type { InductionDto } from 'inductionDto'
 import type { HopingToWorkOnReleaseForm } from 'inductionForms'
 import HopingToWorkOnReleaseCreateController from './hopingToWorkOnReleaseCreateController'
@@ -13,22 +12,24 @@ describe('hopingToWorkOnReleaseCreateController', () => {
   const prisonNumber = 'A1234BC'
   const prisonerSummary = aValidPrisonerSummary()
 
-  let req: Request
+  const req = {
+    session: {},
+    body: {},
+    params: { prisonNumber },
+    path: `/prisoners/${prisonNumber}/create-induction/hoping-to-work-on-release`,
+  } as unknown as Request
   const res = {
     redirect: jest.fn(),
     redirectWithErrors: jest.fn(),
     render: jest.fn(),
+    locals: { prisonerSummary },
   } as unknown as Response
   const next = jest.fn()
 
   beforeEach(() => {
     jest.resetAllMocks()
-    req = {
-      session: { prisonerSummary } as SessionData,
-      body: {},
-      params: { prisonNumber },
-      path: `/prisoners/${prisonNumber}/create-induction/hoping-to-work-on-release`,
-    } as unknown as Request
+    req.session.pageFlowHistory = undefined
+    req.body = {}
   })
 
   describe('getHopingToWorkOnReleaseView', () => {

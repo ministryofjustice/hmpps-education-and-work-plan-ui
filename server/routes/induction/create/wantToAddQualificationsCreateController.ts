@@ -17,13 +17,14 @@ export default class WantToAddQualificationsCreateController extends WantToAddQu
     return `/prisoners/${prisonNumber}/create-induction/highest-level-of-education`
   }
 
-  getBackLinkAriaText(req: Request): string {
-    return getDynamicBackLinkAriaText(req, this.getBackLinkUrl(req))
+  getBackLinkAriaText(req: Request, res: Response): string {
+    return getDynamicBackLinkAriaText(req, res, this.getBackLinkUrl(req))
   }
 
   submitWantToAddQualificationsForm: RequestHandler = async (req: Request, res: Response): Promise<void> => {
     const { prisonNumber } = req.params
-    const { prisonerSummary, inductionDto } = req.session
+    const { inductionDto } = req.session
+    const { prisonerSummary } = res.locals
 
     req.session.wantToAddQualificationsForm = { ...req.body }
     const { wantToAddQualificationsForm } = req.session

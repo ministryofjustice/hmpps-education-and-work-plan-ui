@@ -1,6 +1,5 @@
 import createError from 'http-errors'
 import { Request, Response } from 'express'
-import type { SessionData } from 'express-session'
 import type { AchievedQualificationDto } from 'dto'
 import InductionService from '../../../services/inductionService'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
@@ -25,23 +24,25 @@ describe('highestLevelOfEducationUpdateController', () => {
   const prisonNumber = 'A1234BC'
   const prisonerSummary = aValidPrisonerSummary()
 
-  let req: Request
+  const req = {
+    session: {},
+    body: {},
+    user: { token: 'some-token' },
+    params: { prisonNumber },
+    path: `/prisoners/${prisonNumber}/induction/highest-level-of-education`,
+  } as unknown as Request
   const res = {
     redirect: jest.fn(),
     redirectWithErrors: jest.fn(),
     render: jest.fn(),
+    locals: { prisonerSummary },
   } as unknown as Response
   const next = jest.fn()
 
   beforeEach(() => {
     jest.resetAllMocks()
-    req = {
-      session: { prisonerSummary } as SessionData,
-      body: {},
-      user: { token: 'some-token' } as Express.User,
-      params: { prisonNumber } as Record<string, string>,
-      path: `/prisoners/${prisonNumber}/induction/highest-level-of-education`,
-    } as unknown as Request
+    req.session.pageFlowHistory = undefined
+    req.body = {}
   })
 
   describe('getHighestLevelOfEducationView', () => {

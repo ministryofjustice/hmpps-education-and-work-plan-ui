@@ -17,7 +17,7 @@ export default class CreateGoalsController {
   ) {}
 
   getCreateGoalsView: RequestHandler = async (req, res, next): Promise<void> => {
-    const { prisonerSummary } = req.session
+    const { prisonerSummary } = res.locals
 
     const { createGoalsForm } = req.session
     req.session.createGoalsForm = undefined
@@ -65,7 +65,7 @@ export default class CreateGoalsController {
 
   submitCreateGoalsForm: RequestHandler = async (req, res, next): Promise<void> => {
     const { prisonNumber } = req.params
-    const { prisonerSummary } = req.session
+    const { prisonerSummary } = res.locals
     const { prisonId } = prisonerSummary
 
     const createGoalsForm = { ...req.body } as CreateGoalsForm

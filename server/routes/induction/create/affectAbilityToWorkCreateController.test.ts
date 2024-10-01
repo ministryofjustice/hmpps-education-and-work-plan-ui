@@ -1,5 +1,4 @@
-import { NextFunction, Request, Response } from 'express'
-import type { SessionData } from 'express-session'
+import { Request, Response } from 'express'
 import type { AffectAbilityToWorkForm } from 'inductionForms'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
 import { aValidInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
@@ -13,26 +12,23 @@ describe('affectAbilityToWorkCreateController', () => {
   const prisonerSummary = aValidPrisonerSummary()
 
   const req = {
-    session: {} as SessionData,
+    session: {},
     body: {},
-    user: {} as Express.User,
-    params: {} as Record<string, string>,
-    path: '',
-  }
+    params: { prisonNumber },
+    path: `/prisoners/${prisonNumber}/create-induction/affect-ability-to-work`,
+  } as unknown as Request
   const res = {
     redirect: jest.fn(),
     redirectWithErrors: jest.fn(),
     render: jest.fn(),
-  }
+    locals: { prisonerSummary },
+  } as unknown as Response
   const next = jest.fn()
 
   beforeEach(() => {
     jest.resetAllMocks()
-    req.session = { prisonerSummary } as SessionData
+    req.session.pageFlowHistory = undefined
     req.body = {}
-    req.user = {} as Express.User
-    req.params = { prisonNumber }
-    req.path = `/prisoners/${prisonNumber}/create-induction/affect-ability-to-work`
   })
 
   describe('getAbilityToWorkView', () => {
@@ -57,11 +53,7 @@ describe('affectAbilityToWorkCreateController', () => {
       }
 
       // When
-      await controller.getAffectAbilityToWorkView(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.getAffectAbilityToWorkView(req, res, next)
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/induction/affectAbilityToWork/index', expectedView)
@@ -94,11 +86,7 @@ describe('affectAbilityToWorkCreateController', () => {
       }
 
       // When
-      await controller.getAffectAbilityToWorkView(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.getAffectAbilityToWorkView(req, res, next)
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/induction/affectAbilityToWork/index', expectedView)
@@ -142,11 +130,7 @@ describe('affectAbilityToWorkCreateController', () => {
       }
 
       // When
-      await controller.getAffectAbilityToWorkView(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.getAffectAbilityToWorkView(req, res, next)
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/induction/affectAbilityToWork/index', expectedView)
@@ -179,11 +163,7 @@ describe('affectAbilityToWorkCreateController', () => {
       ]
 
       // When
-      await controller.submitAffectAbilityToWorkForm(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.submitAffectAbilityToWorkForm(req, res, next)
 
       // Then
       expect(res.redirectWithErrors).toHaveBeenCalledWith(
@@ -209,11 +189,7 @@ describe('affectAbilityToWorkCreateController', () => {
       req.session.affectAbilityToWorkForm = undefined
 
       // When
-      await controller.submitAffectAbilityToWorkForm(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.submitAffectAbilityToWorkForm(req, res, next)
 
       // Then
       const updatedInduction = req.session.inductionDto

@@ -17,8 +17,8 @@ export default class QualificationsListUpdateController extends QualificationsLi
     return `/plan/${prisonNumber}/view/education-and-training`
   }
 
-  getBackLinkAriaText = (req: Request): string => {
-    return getDynamicBackLinkAriaText(req, this.getBackLinkUrl(req))
+  getBackLinkAriaText = (req: Request, res: Response): string => {
+    return getDynamicBackLinkAriaText(req, res, this.getBackLinkUrl(req))
   }
 
   submitQualificationsListView: RequestHandler = async (
@@ -27,7 +27,7 @@ export default class QualificationsListUpdateController extends QualificationsLi
     next: NextFunction,
   ): Promise<void> => {
     const { prisonNumber } = req.params
-    const { prisonerSummary } = req.session
+    const { prisonerSummary } = res.locals
     const { prisonId } = prisonerSummary
 
     // Behaviour and subsequent routing of the submission of the Qualifications List page depends on whether the page

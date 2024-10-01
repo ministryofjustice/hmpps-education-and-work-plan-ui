@@ -10,8 +10,8 @@ export default class HighestLevelOfEducationCreateController extends HighestLeve
     return `/plan/${prisonNumber}/view/education-and-training`
   }
 
-  getBackLinkAriaText = (req: Request): string => {
-    return getDynamicBackLinkAriaText(req, this.getBackLinkUrl(req))
+  getBackLinkAriaText = (req: Request, res: Response): string => {
+    return getDynamicBackLinkAriaText(req, res, this.getBackLinkUrl(req))
   }
 
   submitHighestLevelOfEducationForm: RequestHandler = async (
@@ -20,7 +20,7 @@ export default class HighestLevelOfEducationCreateController extends HighestLeve
     next: NextFunction,
   ): Promise<void> => {
     const { prisonNumber } = req.params
-    const { prisonerSummary } = req.session
+    const { prisonerSummary } = res.locals
 
     const highestLevelOfEducationForm = { ...req.body }
 

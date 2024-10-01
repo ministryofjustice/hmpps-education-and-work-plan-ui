@@ -1,5 +1,4 @@
-import { NextFunction, Request, Response } from 'express'
-import type { SessionData } from 'express-session'
+import { Request, Response } from 'express'
 import type { PersonalInterestsForm } from 'inductionForms'
 import type { PersonalInterestDto } from 'inductionDto'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
@@ -14,26 +13,23 @@ describe('personalInterestsCreateController', () => {
   const prisonerSummary = aValidPrisonerSummary()
 
   const req = {
-    session: {} as SessionData,
+    session: {},
     body: {},
-    user: {} as Express.User,
-    params: {} as Record<string, string>,
-    path: '',
-  }
+    params: { prisonNumber },
+    path: `/prisoners/${prisonNumber}/create-induction/personal-interests`,
+  } as unknown as Request
   const res = {
     redirect: jest.fn(),
     redirectWithErrors: jest.fn(),
     render: jest.fn(),
-  }
+    locals: { prisonerSummary },
+  } as unknown as Response
   const next = jest.fn()
 
   beforeEach(() => {
     jest.resetAllMocks()
-    req.session = { prisonerSummary } as SessionData
+    req.session.pageFlowHistory = undefined
     req.body = {}
-    req.user = {} as Express.User
-    req.params = { prisonNumber }
-    req.path = `/prisoners/${prisonNumber}/create-induction/personal-interests`
   })
 
   describe('getPersonalInterestsView', () => {
@@ -57,11 +53,7 @@ describe('personalInterestsCreateController', () => {
       }
 
       // When
-      await controller.getPersonalInterestsView(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.getPersonalInterestsView(req, res, next)
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/induction/personalInterests/index', expectedView)
@@ -89,11 +81,7 @@ describe('personalInterestsCreateController', () => {
       }
 
       // When
-      await controller.getPersonalInterestsView(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.getPersonalInterestsView(req, res, next)
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/induction/personalInterests/index', expectedView)
@@ -133,11 +121,7 @@ describe('personalInterestsCreateController', () => {
       }
 
       // When
-      await controller.getPersonalInterestsView(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.getPersonalInterestsView(req, res, next)
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/induction/personalInterests/index', expectedView)
@@ -164,11 +148,7 @@ describe('personalInterestsCreateController', () => {
       const expectedErrors = [{ href: '#personalInterestsOther', text: `Enter Jimmy Lightfingers's interests` }]
 
       // When
-      await controller.submitPersonalInterestsForm(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.submitPersonalInterestsForm(req, res, next)
 
       // Then
       expect(res.redirectWithErrors).toHaveBeenCalledWith(
@@ -198,11 +178,7 @@ describe('personalInterestsCreateController', () => {
       ]
 
       // When
-      await controller.submitPersonalInterestsForm(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.submitPersonalInterestsForm(req, res, next)
 
       // Then
       const updatedInduction = req.session.inductionDto
@@ -238,11 +214,7 @@ describe('personalInterestsCreateController', () => {
       }
 
       // When
-      await controller.submitPersonalInterestsForm(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.submitPersonalInterestsForm(req, res, next)
 
       // Then
       const updatedInduction = req.session.inductionDto

@@ -13,7 +13,7 @@ describe('reviewNoteController', () => {
   const prisonerSummary = aValidPrisonerSummary(prisonNumber)
 
   const req = {
-    session: { prisonerSummary },
+    session: {},
     body: {},
     params: { prisonNumber },
   } as unknown as Request
@@ -21,6 +21,7 @@ describe('reviewNoteController', () => {
     redirect: jest.fn(),
     redirectWithErrors: jest.fn(),
     render: jest.fn(),
+    locals: { prisonerSummary },
   } as unknown as Response
   const next = jest.fn()
 

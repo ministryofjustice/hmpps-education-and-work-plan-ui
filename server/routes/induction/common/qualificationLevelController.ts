@@ -14,7 +14,7 @@ export default abstract class QualificationLevelController extends InductionCont
     res: Response,
     next: NextFunction,
   ): Promise<void> => {
-    const { prisonerSummary } = req.session
+    const { prisonerSummary } = res.locals
 
     this.addCurrentPageToHistory(req)
 
@@ -24,7 +24,7 @@ export default abstract class QualificationLevelController extends InductionCont
     const view = new QualificationLevelView(
       prisonerSummary,
       this.getBackLinkUrl(req),
-      this.getBackLinkAriaText(req),
+      this.getBackLinkAriaText(req, res),
       qualificationLevelForm,
     )
     return res.render('pages/prePrisonEducation/qualificationLevel', { ...view.renderArgs })

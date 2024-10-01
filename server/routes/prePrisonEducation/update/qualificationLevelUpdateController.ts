@@ -10,8 +10,8 @@ export default class QualificationLevelUpdateController extends QualificationLev
     return `/prisoners/${prisonNumber}/education/qualifications`
   }
 
-  getBackLinkAriaText(req: Request): string {
-    return getDynamicBackLinkAriaText(req, this.getBackLinkUrl(req))
+  getBackLinkAriaText(req: Request, res: Response): string {
+    return getDynamicBackLinkAriaText(req, res, this.getBackLinkUrl(req))
   }
 
   submitQualificationLevelForm: RequestHandler = async (
@@ -20,7 +20,7 @@ export default class QualificationLevelUpdateController extends QualificationLev
     next: NextFunction,
   ): Promise<void> => {
     const { prisonNumber } = req.params
-    const { prisonerSummary } = req.session
+    const { prisonerSummary } = res.locals
 
     const qualificationLevelForm = { ...req.body }
     getPrisonerContext(req.session, prisonNumber).qualificationLevelForm = qualificationLevelForm

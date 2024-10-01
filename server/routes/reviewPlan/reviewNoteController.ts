@@ -7,7 +7,7 @@ import ReviewNoteView from './reviewNoteView'
 export default class ReviewNoteController {
   getReviewNoteView: RequestHandler = async (req, res, next): Promise<void> => {
     const { prisonNumber } = req.params
-    const { prisonerSummary } = req.session
+    const { prisonerSummary } = res.locals
 
     let reviewNoteForm: ReviewNoteForm
     if (getPrisonerContext(req.session, prisonNumber).reviewNoteForm) {

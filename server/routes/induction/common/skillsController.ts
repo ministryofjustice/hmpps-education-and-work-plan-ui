@@ -13,7 +13,8 @@ export default abstract class SkillsController extends InductionController {
    * Returns the Skills view; suitable for use by the Create and Update journeys.
    */
   getSkillsView: RequestHandler = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    const { prisonerSummary, inductionDto } = req.session
+    const { inductionDto } = req.session
+    const { prisonerSummary } = res.locals
 
     const skillsForm = req.session.skillsForm || toSkillsForm(inductionDto)
     req.session.skillsForm = undefined
@@ -24,7 +25,12 @@ export default abstract class SkillsController extends InductionController {
       this.addCurrentPageToHistory(req)
     }
 
-    const view = new SkillsView(prisonerSummary, this.getBackLinkUrl(req), this.getBackLinkAriaText(req), skillsForm)
+    const view = new SkillsView(
+      prisonerSummary,
+      this.getBackLinkUrl(req),
+      this.getBackLinkAriaText(req, res),
+      skillsForm,
+    )
     return res.render('pages/induction/skills/index', { ...view.renderArgs })
   }
 

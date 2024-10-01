@@ -15,8 +15,8 @@ export default class PersonalInterestsCreateController extends PersonalInterests
     return previousPage
   }
 
-  getBackLinkAriaText(req: Request): string {
-    return getDynamicBackLinkAriaText(req, this.getBackLinkUrl(req))
+  getBackLinkAriaText(req: Request, res: Response): string {
+    return getDynamicBackLinkAriaText(req, res, this.getBackLinkUrl(req))
   }
 
   submitPersonalInterestsForm: RequestHandler = async (
@@ -25,7 +25,8 @@ export default class PersonalInterestsCreateController extends PersonalInterests
     next: NextFunction,
   ): Promise<void> => {
     const { prisonNumber } = req.params
-    const { prisonerSummary, inductionDto } = req.session
+    const { inductionDto } = req.session
+    const { prisonerSummary } = res.locals
 
     const personalInterestsForm: PersonalInterestsForm = {
       personalInterests: asArray(req.body.personalInterests),

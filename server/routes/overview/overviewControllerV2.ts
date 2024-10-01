@@ -15,7 +15,7 @@ export default class OverviewControllerV2 {
 
   getOverviewView: RequestHandler = async (req, res, next): Promise<void> => {
     const { prisonNumber } = req.params
-    const { prisonerSummary } = req.session
+    const { prisonerSummary } = res.locals
 
     try {
       const [inductionExists, allFunctionalSkills, prisonerGoals] = await Promise.all([

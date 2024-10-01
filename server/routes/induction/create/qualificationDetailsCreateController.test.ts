@@ -1,5 +1,4 @@
-import { NextFunction, Request, Response } from 'express'
-import type { SessionData } from 'express-session'
+import { Request, Response } from 'express'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
 import QualificationDetailsCreateController from './qualificationDetailsCreateController'
 import { aValidInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
@@ -12,26 +11,25 @@ describe('qualificationDetailsCreateController', () => {
   const prisonerSummary = aValidPrisonerSummary()
 
   const req = {
-    session: {} as SessionData,
+    session: {},
     body: {},
-    user: {} as Express.User,
-    params: {} as Record<string, string>,
-    path: '',
-  }
+    params: { prisonNumber },
+    path: `/prisoners/${prisonNumber}/create-induction/qualification-details`,
+  } as unknown as Request
   const res = {
     redirect: jest.fn(),
     redirectWithErrors: jest.fn(),
     render: jest.fn(),
-  }
+    locals: { prisonerSummary },
+  } as unknown as Response
   const next = jest.fn()
 
   beforeEach(() => {
     jest.resetAllMocks()
-    req.session = { prisonerSummary } as SessionData
+    req.session.pageFlowQueue = undefined
+    req.session.qualificationLevelForm = undefined
+    req.session.qualificationDetailsForm = undefined
     req.body = {}
-    req.user = {} as Express.User
-    req.params = { prisonNumber }
-    req.path = `/prisoners/${prisonNumber}/create-induction/qualification-details`
   })
 
   describe('getQualificationDetailsView', () => {
@@ -73,11 +71,7 @@ describe('qualificationDetailsCreateController', () => {
       }
 
       // When
-      await controller.getQualificationDetailsView(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.getQualificationDetailsView(req, res, next)
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/prePrisonEducation/qualificationDetails', expectedView)
@@ -126,11 +120,7 @@ describe('qualificationDetailsCreateController', () => {
       }
 
       // When
-      await controller.getQualificationDetailsView(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.getQualificationDetailsView(req, res, next)
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/prePrisonEducation/qualificationDetails', expectedView)
@@ -175,11 +165,7 @@ describe('qualificationDetailsCreateController', () => {
       ]
 
       // When
-      await controller.submitQualificationDetailsForm(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.submitQualificationDetailsForm(req, res, next)
 
       // Then
       expect(res.redirectWithErrors).toHaveBeenCalledWith(
@@ -219,11 +205,7 @@ describe('qualificationDetailsCreateController', () => {
       req.session.qualificationDetailsForm = undefined
 
       // When
-      await controller.submitQualificationDetailsForm(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.submitQualificationDetailsForm(req, res, next)
 
       // Then
       const updatedInduction = req.session.inductionDto

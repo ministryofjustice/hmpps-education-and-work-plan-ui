@@ -16,22 +16,22 @@ describe('supportNeedsController', () => {
 
   const prisonNumber = 'A1234GC'
   const prisonerSummary = aValidPrisonerSummary(prisonNumber)
-  let req: Request
+
+  const req = {
+    user: {
+      username: 'a-dps-user',
+      token: 'a-user-token',
+    },
+    params: { prisonNumber },
+  } as unknown as Request
   const res = {
     render: jest.fn(),
+    locals: { prisonerSummary },
   } as unknown as Response
   const next = jest.fn()
 
   beforeEach(() => {
     jest.resetAllMocks()
-    req = {
-      session: { prisonerSummary },
-      user: {
-        username: 'a-dps-user',
-        token: 'a-user-token',
-      },
-      params: { prisonNumber },
-    } as unknown as Request
   })
 
   it('should get support needs view', async () => {

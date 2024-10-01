@@ -23,8 +23,8 @@ export default class HopingToWorkOnReleaseUpdateController extends HopingToWorkO
     return `/plan/${prisonNumber}/view/work-and-interests`
   }
 
-  getBackLinkAriaText(req: Request): string {
-    return getDynamicBackLinkAriaText(req, this.getBackLinkUrl(req))
+  getBackLinkAriaText(req: Request, res: Response): string {
+    return getDynamicBackLinkAriaText(req, res, this.getBackLinkUrl(req))
   }
 
   submitHopingToWorkOnReleaseForm: RequestHandler = async (
@@ -33,7 +33,8 @@ export default class HopingToWorkOnReleaseUpdateController extends HopingToWorkO
     next: NextFunction,
   ): Promise<void> => {
     const { prisonNumber } = req.params
-    const { prisonerSummary, inductionDto } = req.session
+    const { inductionDto } = req.session
+    const { prisonerSummary } = res.locals
     const { prisonId } = prisonerSummary
 
     req.session.hopingToWorkOnReleaseForm = { ...req.body }

@@ -1,5 +1,4 @@
-import { NextFunction, Request, Response } from 'express'
-import type { SessionData } from 'express-session'
+import { Request, Response } from 'express'
 import type { FutureWorkInterestDto } from 'inductionDto'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
 import { aValidInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
@@ -13,26 +12,23 @@ describe('workInterestRolesCreateController', () => {
   const prisonerSummary = aValidPrisonerSummary()
 
   const req = {
-    session: {} as SessionData,
+    session: {},
     body: {},
-    user: {} as Express.User,
-    params: {} as Record<string, string>,
-    path: '',
-  }
+    params: { prisonNumber },
+    path: `/prisoners/${prisonNumber}/create-induction/work-interest-roles`,
+  } as unknown as Request
   const res = {
     redirect: jest.fn(),
     redirectWithErrors: jest.fn(),
     render: jest.fn(),
-  }
+    locals: { prisonerSummary },
+  } as unknown as Response
   const next = jest.fn()
 
   beforeEach(() => {
     jest.resetAllMocks()
-    req.session = { prisonerSummary } as SessionData
+    req.session.pageFlowHistory = undefined
     req.body = {}
-    req.user = {} as Express.User
-    req.params = { prisonNumber }
-    req.path = `/prisoners/${prisonNumber}/create-induction/work-interest-roles`
   })
 
   describe('getWorkInterestRolesView', () => {
@@ -63,11 +59,7 @@ describe('workInterestRolesCreateController', () => {
       }
 
       // When
-      await controller.getWorkInterestRolesView(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.getWorkInterestRolesView(req, res, next)
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/induction/workInterests/workInterestRoles', expectedView)
@@ -114,11 +106,7 @@ describe('workInterestRolesCreateController', () => {
       }
 
       // When
-      await controller.getWorkInterestRolesView(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.getWorkInterestRolesView(req, res, next)
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/induction/workInterests/workInterestRoles', expectedView)
@@ -155,11 +143,7 @@ describe('workInterestRolesCreateController', () => {
       }
 
       // When
-      await controller.submitWorkInterestRolesForm(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.submitWorkInterestRolesForm(req, res, next)
 
       // Then
       expect(res.redirectWithErrors).toHaveBeenCalledWith(
@@ -209,11 +193,7 @@ describe('workInterestRolesCreateController', () => {
       ]
 
       // When
-      await controller.submitWorkInterestRolesForm(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.submitWorkInterestRolesForm(req, res, next)
 
       // Then
       const futureWorkInterestsOnInduction: Array<FutureWorkInterestDto> =
@@ -267,11 +247,7 @@ describe('workInterestRolesCreateController', () => {
       }
 
       // When
-      await controller.submitWorkInterestRolesForm(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.submitWorkInterestRolesForm(req, res, next)
 
       // Then
       const futureWorkInterestsOnInduction: Array<FutureWorkInterestDto> =

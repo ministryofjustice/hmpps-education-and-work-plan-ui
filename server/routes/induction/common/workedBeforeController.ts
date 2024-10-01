@@ -13,7 +13,8 @@ export default abstract class WorkedBeforeController extends InductionController
    * Returns the WorkedBefore view; suitable for use by the Create and Update journeys.
    */
   getWorkedBeforeView: RequestHandler = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    const { prisonerSummary, inductionDto } = req.session
+    const { inductionDto } = req.session
+    const { prisonerSummary } = res.locals
 
     this.addCurrentPageToHistory(req)
 
@@ -23,7 +24,7 @@ export default abstract class WorkedBeforeController extends InductionController
     const view = new WorkedBeforeView(
       prisonerSummary,
       this.getBackLinkUrl(req),
-      this.getBackLinkAriaText(req),
+      this.getBackLinkAriaText(req, res),
       workedBeforeForm,
     )
     return res.render('pages/induction/workedBefore/index', { ...view.renderArgs })

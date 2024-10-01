@@ -13,7 +13,7 @@ export default class ViewArchivedGoalsController {
       GoalStatusValue.ARCHIVED,
       req.user.token,
     )
-    const view = new ViewArchivedGoalsView(req.session.prisonerSummary, goals)
+    const view = new ViewArchivedGoalsView(res.locals.prisonerSummary, goals)
     res.render('pages/overview/viewArchivedGoals', { ...view.renderArgs })
   }
 }

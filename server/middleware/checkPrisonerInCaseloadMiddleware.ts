@@ -11,12 +11,12 @@ export default function checkPrisonerInCaseload({
   activeCaseloadOnly = false,
 } = {}): RequestHandler {
   return async (req, res, next) => {
-    const { prisonerSummary } = req.session
+    const { prisonerSummary } = res.locals
     const userRoles: string[] = res.locals.user.roles || []
 
     // This function requires the prisoner summary - so ensure that's present before continuing
     if (!prisonerSummary) {
-      return next(createError(500, 'CheckPrisonerInCaseloadMiddleware: No PrisonerSummary found in session'))
+      return next(createError(500, 'CheckPrisonerInCaseloadMiddleware: No PrisonerSummary found on res.locals'))
     }
 
     const { restrictedPatient } = prisonerSummary

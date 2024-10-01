@@ -41,29 +41,27 @@ describe('educationAndTrainingController', () => {
 
   const expectedTab = 'education-and-training'
 
-  let req: Request
-  let res: Response
+  const req = {
+    user: {
+      username: 'a-dps-user',
+    },
+    params: {
+      prisonNumber,
+      tab: expectedTab,
+    },
+  } as unknown as Request
+  const res = {
+    render: jest.fn(),
+    locals: {
+      prisonerSummary,
+      curiousInPrisonCourses: inPrisonCourses,
+      induction,
+    },
+  } as unknown as Response
   const next = jest.fn()
 
   beforeEach(() => {
     jest.resetAllMocks()
-    req = {
-      session: { prisonerSummary },
-      user: {
-        username: 'a-dps-user',
-      },
-      params: {
-        prisonNumber,
-        tab: expectedTab,
-      },
-    } as unknown as Request
-    res = {
-      render: jest.fn(),
-      locals: {
-        curiousInPrisonCourses: inPrisonCourses,
-        induction,
-      },
-    } as unknown as Response
   })
 
   it('should get eduction and training view', async () => {

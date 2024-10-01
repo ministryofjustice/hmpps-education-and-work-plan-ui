@@ -1,4 +1,4 @@
-import { Request } from 'express'
+import { Request, Response } from 'express'
 
 /**
  * Abstract controller class defining functionality common to all pre-prison Education/Qualification screens and journeys.
@@ -12,5 +12,5 @@ export default abstract class EducationController {
   /**
    * Concrete classes must provide an implementation of this method to provide the backlink aria text relevant to their use case / journey.
    */
-  abstract getBackLinkAriaText(req: Request): string
+  abstract getBackLinkAriaText(req: Request, res: Response): string
 }

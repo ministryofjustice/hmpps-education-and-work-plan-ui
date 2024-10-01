@@ -23,7 +23,6 @@ describe('workAndInterestsController', () => {
   beforeEach(() => {
     jest.resetAllMocks()
     req = {
-      session: { prisonerSummary },
       params: {
         tab: expectedTab,
       },
@@ -32,6 +31,7 @@ describe('workAndInterestsController', () => {
       render: jest.fn(),
       locals: {
         induction,
+        prisonerSummary,
       },
     } as unknown as Response
   })

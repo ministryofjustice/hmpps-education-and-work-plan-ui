@@ -1,23 +1,17 @@
-import { SessionData } from 'express-session'
-import { Request } from 'express'
+import { Request, Response } from 'express'
 import getDynamicBackLinkAriaText from './dynamicAriaTextResolver'
 import aValidPrisonerSummary from '../testsupport/prisonerSummaryTestDataBuilder'
-
-const req = {
-  session: {} as SessionData,
-  body: {},
-  params: {} as Record<string, string>,
-}
-
-beforeEach(() => {
-  req.session = {} as SessionData
-  req.body = {}
-  req.params = {} as Record<string, string>
-})
 
 describe('getDynamicBackLinkAriaText', () => {
   const prisonNumber = 'A1234BC'
   const prisonerSummary = aValidPrisonerSummary()
+
+  const req = {
+    params: { prisonNumber },
+  } as unknown as Request
+  const res = {
+    locals: { prisonerSummary },
+  } as unknown as Response
 
   describe('happy path - back link aria text is resolved', () => {
     Array.of<Record<string, string>>(
@@ -40,11 +34,9 @@ describe('getDynamicBackLinkAriaText', () => {
     ).forEach(spec => {
       it(`aria text for uri: ${spec.uri}`, () => {
         // Given
-        req.params.prisonNumber = prisonNumber
-        req.session.prisonerSummary = prisonerSummary
 
         // When
-        const actual = getDynamicBackLinkAriaText(req as undefined as Request, spec.uri)
+        const actual = getDynamicBackLinkAriaText(req, res, spec.uri)
 
         // Then
         expect(actual).toEqual(spec.expectedText)
@@ -77,11 +69,9 @@ describe('getDynamicBackLinkAriaText', () => {
     ).forEach(spec => {
       it(`aria text for uri: ${spec.uri}`, () => {
         // Given
-        req.params.prisonNumber = prisonNumber
-        req.session.prisonerSummary = prisonerSummary
 
         // When
-        const actual = getDynamicBackLinkAriaText(req as undefined as Request, spec.uri)
+        const actual = getDynamicBackLinkAriaText(req, res, spec.uri)
 
         // Then
         expect(actual).toEqual(spec.expectedText)

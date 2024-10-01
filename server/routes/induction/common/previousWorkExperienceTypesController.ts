@@ -17,7 +17,8 @@ export default abstract class PreviousWorkExperienceTypesController extends Indu
     res: Response,
     next: NextFunction,
   ): Promise<void> => {
-    const { prisonerSummary, inductionDto } = req.session
+    const { inductionDto } = req.session
+    const { prisonerSummary } = res.locals
 
     this.addCurrentPageToFlowHistoryWhenComingFromCheckYourAnswers(req)
 
@@ -32,7 +33,7 @@ export default abstract class PreviousWorkExperienceTypesController extends Indu
     const view = new PreviousWorkExperienceTypesView(
       prisonerSummary,
       this.getBackLinkUrl(req),
-      this.getBackLinkAriaText(req),
+      this.getBackLinkAriaText(req, res),
       previousWorkExperienceDetailsForm,
     )
     return res.render('pages/induction/previousWorkExperience/workExperienceTypes', { ...view.renderArgs })

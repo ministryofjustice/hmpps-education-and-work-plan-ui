@@ -16,8 +16,8 @@ export default class AdditionalTrainingCreateController extends AdditionalTraini
     return previousPage
   }
 
-  getBackLinkAriaText(req: Request): string {
-    return getDynamicBackLinkAriaText(req, this.getBackLinkUrl(req))
+  getBackLinkAriaText(req: Request, res: Response): string {
+    return getDynamicBackLinkAriaText(req, res, this.getBackLinkUrl(req))
   }
 
   submitAdditionalTrainingForm: RequestHandler = async (
@@ -26,7 +26,8 @@ export default class AdditionalTrainingCreateController extends AdditionalTraini
     next: NextFunction,
   ): Promise<void> => {
     const { prisonNumber } = req.params
-    const { prisonerSummary, inductionDto } = req.session
+    const { inductionDto } = req.session
+    const { prisonerSummary } = res.locals
 
     const additionalTrainingForm: AdditionalTrainingForm = {
       additionalTraining: asArray(req.body.additionalTraining),

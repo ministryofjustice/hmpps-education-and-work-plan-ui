@@ -27,11 +27,16 @@ describe('qualificationsListCreateController', () => {
   const functionalSkills = validFunctionalSkills()
   const inPrisonCourses = validInPrisonCourseRecords()
 
-  let req: Request
+  const req = {
+    params: { prisonNumber },
+    user: { token: 'some-token' },
+    session: {},
+  } as unknown as Request
   const res = {
     redirect: jest.fn(),
     render: jest.fn(),
     locals: {
+      prisonerSummary,
       prisonerFunctionalSkills: functionalSkills,
       curiousInPrisonCourses: inPrisonCourses,
     },
@@ -40,14 +45,7 @@ describe('qualificationsListCreateController', () => {
 
   beforeEach(() => {
     jest.resetAllMocks()
-
-    req = {
-      session: { prisonerSummary },
-      body: {},
-      user: { token: 'some-token' },
-      params: { prisonNumber },
-      query: {},
-    } as unknown as Request
+    req.body = {}
   })
 
   describe('getQualificationListView', () => {

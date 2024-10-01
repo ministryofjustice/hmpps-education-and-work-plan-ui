@@ -17,7 +17,8 @@ export default abstract class AffectAbilityToWorkController extends InductionCon
     res: Response,
     next: NextFunction,
   ): Promise<void> => {
-    const { prisonerSummary, inductionDto } = req.session
+    const { inductionDto } = req.session
+    const { prisonerSummary } = res.locals
 
     const affectAbilityToWorkForm = req.session.affectAbilityToWorkForm || toAffectAbilityToWorkForm(inductionDto)
     req.session.affectAbilityToWorkForm = undefined
@@ -31,7 +32,7 @@ export default abstract class AffectAbilityToWorkController extends InductionCon
     const view = new AffectAbilityToWorkView(
       prisonerSummary,
       this.getBackLinkUrl(req),
-      this.getBackLinkAriaText(req),
+      this.getBackLinkAriaText(req, res),
       affectAbilityToWorkForm,
     )
     return res.render('pages/induction/affectAbilityToWork/index', { ...view.renderArgs })

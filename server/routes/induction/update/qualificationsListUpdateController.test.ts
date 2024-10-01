@@ -26,23 +26,23 @@ describe('qualificationsListUpdateController', () => {
   const prisonNumber = 'A1234BC'
   const prisonerSummary = aValidPrisonerSummary()
 
-  let req: Request
+  const req = {
+    session: {},
+    params: { prisonNumber },
+    path: `/prisoners/${prisonNumber}/induction/qualifications`,
+    user: { token: 'some-token' },
+  } as unknown as Request
   const res = {
     redirect: jest.fn(),
     render: jest.fn(),
-    locals: {} as Record<string, unknown>,
+    locals: { prisonerSummary },
   } as unknown as Response
   const next = jest.fn()
 
   beforeEach(() => {
     jest.resetAllMocks()
-    req = {
-      body: {},
-      session: { prisonerSummary },
-      params: { prisonNumber },
-      path: `/prisoners/${prisonNumber}/induction/qualifications`,
-      user: { token: 'some-token' },
-    } as unknown as Request
+    req.session.pageFlowHistory = undefined
+    req.body = {}
   })
 
   describe('getQualificationsListView', () => {

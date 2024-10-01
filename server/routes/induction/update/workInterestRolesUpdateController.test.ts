@@ -1,7 +1,6 @@
 import createError from 'http-errors'
-import type { SessionData } from 'express-session'
 import type { FutureWorkInterestDto } from 'inductionDto'
-import { NextFunction, Request, Response } from 'express'
+import { Request, Response } from 'express'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
 import { aValidInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
@@ -25,26 +24,24 @@ describe('workInterestRolesUpdateController', () => {
   const prisonerSummary = aValidPrisonerSummary()
 
   const req = {
-    session: {} as SessionData,
+    session: {},
     body: {},
-    user: {} as Express.User,
-    params: {} as Record<string, string>,
-    path: '',
-  }
+    user: { token: 'some-token' },
+    params: { prisonNumber },
+    path: `/prisoners/${prisonNumber}/induction/work-interest-roles`,
+  } as unknown as Request
   const res = {
     redirect: jest.fn(),
     redirectWithErrors: jest.fn(),
     render: jest.fn(),
-  }
+    locals: { prisonerSummary },
+  } as unknown as Response
   const next = jest.fn()
 
   beforeEach(() => {
     jest.resetAllMocks()
-    req.session = { prisonerSummary } as SessionData
+    req.session.pageFlowHistory = undefined
     req.body = {}
-    req.user = { token: 'some-token' } as Express.User
-    req.params = { prisonNumber }
-    req.path = `/prisoners/${prisonNumber}/induction/work-interest-roles`
   })
 
   describe('getWorkInterestRolesView', () => {
@@ -70,11 +67,7 @@ describe('workInterestRolesUpdateController', () => {
       }
 
       // When
-      await controller.getWorkInterestRolesView(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.getWorkInterestRolesView(req, res, next)
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/induction/workInterests/workInterestRoles', expectedView)
@@ -110,11 +103,7 @@ describe('workInterestRolesUpdateController', () => {
       }
 
       // When
-      await controller.submitWorkInterestRolesForm(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.submitWorkInterestRolesForm(req, res, next)
 
       // Then
       expect(res.redirectWithErrors).toHaveBeenCalledWith(
@@ -159,11 +148,7 @@ describe('workInterestRolesUpdateController', () => {
       ]
 
       // When
-      await controller.submitWorkInterestRolesForm(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.submitWorkInterestRolesForm(req, res, next)
 
       // Then
       // Extract the first call to the mock and the second argument (i.e. the updated Induction)
@@ -216,11 +201,7 @@ describe('workInterestRolesUpdateController', () => {
       )
 
       // When
-      await controller.submitWorkInterestRolesForm(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.submitWorkInterestRolesForm(req, res, next)
 
       // Then
       // Extract the first call to the mock and the second argument (i.e. the updated Induction)
