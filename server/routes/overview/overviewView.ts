@@ -2,7 +2,6 @@ import type { FunctionalSkills, InPrisonCourse, InPrisonCourseRecords, PrisonerS
 import dateComparator from '../dateComparator'
 
 type RenderArgs = {
-  prisonNumber: string
   tab: string
   prisonerSummary: PrisonerSummary
   functionalSkills: FunctionalSkills
@@ -13,16 +12,12 @@ type RenderArgs = {
   lastUpdatedAtPrisonName: string | null
   noGoals: boolean
   goalCounts: { activeCount: number; archivedCount: number; completedCount: number }
-  completedCourses: Array<InPrisonCourse>
-  inProgressCourses: Array<InPrisonCourse>
-  withdrawnCourses: Array<InPrisonCourse>
   hasWithdrawnOrInProgressCourses: boolean
   hasCoursesCompletedMoreThan12MonthsAgo: boolean
 }
 
 export default class OverviewView {
   constructor(
-    private readonly prisonNumber: string,
     private readonly prisonerSummary: PrisonerSummary,
     private readonly functionalSkills: FunctionalSkills,
     private readonly inPrisonCourses: InPrisonCourseRecords,
@@ -58,7 +53,6 @@ export default class OverviewView {
     })
 
     return {
-      prisonNumber: this.prisonNumber,
       tab: 'overview',
       prisonerSummary: this.prisonerSummary,
       functionalSkills: this.functionalSkills,
@@ -69,9 +63,6 @@ export default class OverviewView {
       lastUpdatedAtPrisonName: this.goalData.lastUpdatedAtPrisonName,
       noGoals: this.goalData.noGoals,
       goalCounts: this.goalData.goalCounts,
-      completedCourses,
-      inProgressCourses,
-      withdrawnCourses,
       hasWithdrawnOrInProgressCourses: inProgressCourses.length > 0 || withdrawnCourses.length > 0,
       hasCoursesCompletedMoreThan12MonthsAgo,
     }

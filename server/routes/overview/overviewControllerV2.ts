@@ -33,7 +33,6 @@ export default class OverviewControllerV2 {
       const goalCounts = this.calculateGoalCounts(prisonerGoals.goals)
 
       const view = new OverviewView(
-        prisonNumber,
         prisonerSummary,
         functionalSkills,
         res.locals.curiousInPrisonCourses,
