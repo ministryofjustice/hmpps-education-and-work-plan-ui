@@ -1,4 +1,4 @@
-import type { FunctionalSkills, InPrisonCourse, InPrisonCourseRecords, PrisonerSummary } from 'viewModels'
+import type { FunctionalSkills, InPrisonCourseRecords, PrisonerSummary } from 'viewModels'
 import dateComparator from '../dateComparator'
 
 type RenderArgs = {

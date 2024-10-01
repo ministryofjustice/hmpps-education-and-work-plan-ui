@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import type { FunctionalSkills, InPrisonCourseRecords, Goal, PrisonerGoals } from 'viewModels'
+import type { FunctionalSkills, InPrisonCourseRecords, PrisonerGoals } from 'viewModels'
 import CuriousService from '../../services/curiousService'
 import InductionService from '../../services/inductionService'
 import { aValidEnglishInPrisonCourse, aValidMathsInPrisonCourse } from '../../testsupport/inPrisonCourseTestDataBuilder'
