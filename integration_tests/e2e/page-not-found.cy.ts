@@ -1,6 +1,7 @@
 import Page from '../pages/page'
 import Error404Page from '../pages/error404'
 import AuthSignInPage from '../pages/authSignIn'
+import AuthorisationErrorPage from '../pages/authorisationError'
 
 context('404 Page Not Found', () => {
   beforeEach(() => {
@@ -12,6 +13,7 @@ context('404 Page Not Found', () => {
     cy.task('stubPrisonerList')
     cy.task('stubCiagInductionList')
     cy.task('stubActionPlansList')
+    cy.task('getPrisonerById')
   })
 
   it('should redirect to auth sign-in page given unauthenticated user', () => {
@@ -27,7 +29,7 @@ context('404 Page Not Found', () => {
     Page.verifyOnPage(AuthSignInPage)
   })
 
-  it('should redirect to 404 page given user does not have any authorities', () => {
+  it('should redirect to Authorisation Error page given user does not have any authorities', () => {
     // Given
     const userRoles = []
     cy.task('stubSignIn', userRoles)
@@ -39,6 +41,23 @@ context('404 Page Not Found', () => {
     cy.visit(`/plan/${prisonNumber}/view/overview`, { failOnStatusCode: false })
 
     // Then
+    Page.verifyOnPage(AuthorisationErrorPage)
+  })
+
+  it('should redirect to 404 page when user with PLP roles navigates to a non-existent prisoner page', () => {
+    // Given
+    const nonExistentPrisonNumber = 'A9999ZZ'
+    cy.task('stubPrisonerById404Error')
+
+    const userRoles = ['ROLE_EDUCATION_AND_WORK_PLAN_EDITOR']
+    cy.task('stubSignIn', userRoles)
+
+    cy.signIn()
+
+    // When
+    cy.visit(`/plan/${nonExistentPrisonNumber}/view/overview`, { failOnStatusCode: false })
+
+    // Then
     Page.verifyOnPage(Error404Page)
   })
 
@@ -46,12 +65,11 @@ context('404 Page Not Found', () => {
     // Given
     const userRoles = ['ROLE_EDUCATION_AND_WORK_PLAN_EDITOR']
     cy.task('stubSignIn', userRoles)
+
     cy.signIn()
 
-    const prisonNumber = 'G6115VJ'
-
     // When
-    cy.visit(`/plan/${prisonNumber}/view/overview/unknown`, { failOnStatusCode: false })
+    cy.visit(`/some-non-existent-page`, { failOnStatusCode: false })
 
     // Then
     Page.verifyOnPage(Error404Page)
