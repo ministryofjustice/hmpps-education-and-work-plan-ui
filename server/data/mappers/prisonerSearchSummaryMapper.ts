@@ -1,5 +1,5 @@
 import type { PrisonerSearchSummary } from 'viewModels'
-import type { Prisoner } from 'prisonRegisterApiClient'
+import type { Prisoner } from 'prisonerSearchApiClient'
 import toPrisonerSummary from './prisonerSummaryMapper'
 
 export default function toPrisonerSearchSummary(
