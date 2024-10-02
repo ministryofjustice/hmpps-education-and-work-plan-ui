@@ -1,4 +1,4 @@
-import type { Prisoner } from 'prisonRegisterApiClient'
+import type { Prisoner } from 'prisonerSearchApiClient'
 
 export default function aValidPrisoner(options?: {
   prisonNumber?: string

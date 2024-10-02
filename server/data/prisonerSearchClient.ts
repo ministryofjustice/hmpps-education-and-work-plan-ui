@@ -1,4 +1,4 @@
-import type { PagedCollectionOfPrisoners, Prisoner } from 'prisonRegisterApiClient'
+import type { PagedCollectionOfPrisoners, Prisoner } from 'prisonerSearchApiClient'
 import RestClient from './restClient'
 import config from '../config'
 

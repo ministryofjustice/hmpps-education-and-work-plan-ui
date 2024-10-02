@@ -1,5 +1,5 @@
 import type { PrisonerSearchSummary } from 'viewModels'
-import type { Prisoner } from 'prisonRegisterApiClient'
+import type { Prisoner } from 'prisonerSearchApiClient'
 import { HmppsAuthClient, PrisonerSearchClient } from '../data'
 import EducationAndWorkPlanClient from '../data/educationAndWorkPlanClient'
 import CiagInductionClient from '../data/ciagInductionClient'

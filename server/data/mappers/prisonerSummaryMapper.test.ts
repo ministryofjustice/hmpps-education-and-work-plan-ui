@@ -1,5 +1,5 @@
 import { parseISO, startOfDay } from 'date-fns'
-import type { Prisoner } from 'prisonRegisterApiClient'
+import type { Prisoner } from 'prisonerSearchApiClient'
 import type { PrisonerSummary } from 'viewModels'
 import aValidPrisoner from '../../testsupport/prisonerTestDataBuilder'
 import aValidPrisonerSummary from '../../testsupport/prisonerSummaryTestDataBuilder'
