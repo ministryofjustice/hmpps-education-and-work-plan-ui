@@ -30,7 +30,12 @@ export default class OverviewControllerV2 {
       const { lastUpdatedBy, lastUpdatedDate, lastUpdatedAtPrisonName, noGoals } =
         this.getLastUpdatedGoalData(prisonerGoals)
 
-      const goalCounts = this.calculateGoalCounts(prisonerGoals.goals)
+      let goalCounts
+      if (prisonerGoals.problemRetrievingData) {
+        goalCounts = { activeCount: 0, archivedCount: 0, completedCount: 0 }
+      } else {
+        goalCounts = this.calculateGoalCounts(prisonerGoals.goals)
+      }
 
       const view = new OverviewView(
         prisonerSummary,
