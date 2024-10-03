@@ -179,5 +179,6 @@ export default {
     // someToggleEnabled: toBoolean(get('SOME_TOGGLE_ENABLED', false)),
     qualificationsEnabled: toBoolean(get('QUALIFICATIONS_ENABLED', false)),
     newOverviewPageEnabled: toBoolean(get('NEW_OVERVIEW_PAGE_ENABLED', false)),
+    reviewsPrisonsEnabled: get('REVIEWS_PRISONS_ENABLED', ''),
   },
 }
