@@ -1,11 +1,7 @@
-import { v4 as uuidv4 } from 'uuid'
 import Page from '../../pages/page'
-import CreateGoalsPage from '../../pages/goal/CreateGoalsPage'
 import OverviewPage from '../../pages/overview/OverviewPage'
-import { aValidGoalResponse } from '../../../server/testsupport/actionPlanResponseTestDataBuilder'
-import GoalStatusValue from '../../../server/enums/goalStatusValue'
 
-context('Prisoner Overview page - Post Induction', () => {
+context('Prisoner Overview page - Common functionality for both pre and post induction', () => {
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubSignInAsUserWithEditAuthority')
@@ -13,21 +9,15 @@ context('Prisoner Overview page - Post Induction', () => {
     cy.task('stubGetHeaderComponent')
     cy.task('stubGetFooterComponent')
     cy.task('stubPrisonerList')
-    cy.task('stubCiagInductionList')
-    cy.task('stubActionPlansList')
     cy.task('getPrisonerById')
     cy.task('stubGetInduction')
-    cy.task('getGoalsByStatus')
-    cy.task('stubLearnerProfile')
-    cy.task('stubLearnerEducation')
+    cy.task('getActionPlan')
   })
 
-  it('should render prisoner Overview page with Add Goal button given user has edit authority', () => {
+  const prisonNumber = 'G6115VJ'
+
+  it('should render prisoner Overview page without Create Induction panel', () => {
     // Given
-    cy.task('stubSignInAsUserWithEditAuthority')
-
-    const prisonNumber = 'G6115VJ'
-
     cy.signIn()
 
     // When
@@ -38,16 +28,45 @@ context('Prisoner Overview page - Post Induction', () => {
     overviewPage //
       .isForPrisoner(prisonNumber)
       .isPostInduction()
-      .hasAddGoalButtonDisplayed()
-      .activeTabIs('Overview')
-      .printThisPageIsPresent()
   })
 
-  it('should render prisoner Overview page without Add Goal and Update Goal buttons given user does not have edit authority', () => {
+  it('should have the DPS breadcrumb which does not include the current page', () => {
     // Given
-    cy.task('stubSignInAsUserWithViewAuthority')
+    cy.signIn()
 
-    const prisonNumber = 'G6115VJ'
+    // When
+    cy.visit(`/plan/${prisonNumber}/view/overview`)
+    const overviewPage = Page.verifyOnPage(OverviewPage)
+
+    // Check
+    overviewPage.hasBreadcrumb().breadcrumbDoesNotIncludeCurrentPage()
+  })
+
+  it('should have the DPS footer', () => {
+    // Given
+    cy.signIn()
+    cy.visit(`/plan/${prisonNumber}/view/overview`)
+    const overviewPage = Page.verifyOnPage(OverviewPage)
+
+    // Check
+    overviewPage.hasFooter()
+  })
+
+  it('should have the standard footer given the DPS frontend component API errors', () => {
+    cy.task('stubGetFooterComponent500error')
+    // Given
+    cy.signIn()
+
+    // When
+    cy.visit(`/plan/${prisonNumber}/view/overview`)
+    const overviewPage = Page.verifyOnPage(OverviewPage)
+
+    // Check
+    overviewPage.hasFallbackFooter()
+  })
+
+  it('should display correct counts of in progress, archived and completed goals', () => {
+    // Given
     cy.signIn()
 
     // When
@@ -57,84 +76,15 @@ context('Prisoner Overview page - Post Induction', () => {
     const overviewPage = Page.verifyOnPage(OverviewPage)
     overviewPage //
       .isForPrisoner(prisonNumber)
-      .isPostInduction()
-      .doesNotHaveAddGoalButton()
-      .doesNotHaveUpdateGoalButtons()
       .activeTabIs('Overview')
+      .hasNumberOfInProgressGoals(1)
+      .hasNumberOfCompletedGoals(1)
+      .hasNumberOfArchivedGoals(2)
   })
 
-  it('should display prisoner Goals', () => {
+  it('should display correct hint text showing details from the most recently updated goal', () => {
     // Given
-    cy.task('stubSignInAsUserWithViewAuthority')
-
     cy.signIn()
-    const prisonNumber = 'G6115VJ'
-
-    // When
-    cy.visit(`/plan/${prisonNumber}/view/overview`)
-
-    // Then
-    const poverviewPage = Page.verifyOnPage(OverviewPage)
-    poverviewPage //
-      .isForPrisoner(prisonNumber)
-      .isPostInduction()
-      .activeTabIs('Overview')
-      .hasNumberOfGoals(1)
-      .hasGoalNotesExpander()
-  })
-
-  it('should display prisoner Goals in order of target date, soonest first', () => {
-    // Given
-    cy.task('stubSignInAsUserWithViewAuthority')
-
-    cy.signIn()
-    const prisonNumber = 'G6115VJ'
-
-    const aGoalThatIsDueLater = {
-      ...aValidGoalResponse(),
-      goalReference: uuidv4(),
-      title: 'I am due later',
-      targetCompletionDate: '2025-01-01T00:00:00.000Z',
-    }
-    const aGoalThatIsDueSooner = {
-      ...aValidGoalResponse(),
-      goalReference: uuidv4(),
-      title: 'I am due sooner',
-      targetCompletionDate: '2024-12-25T00:00:00.000Z',
-    }
-    const aGoalThatIsDueSometimeBetween = {
-      ...aValidGoalResponse(),
-      goalReference: uuidv4(),
-      title: 'I am due sometime between the others',
-      targetCompletionDate: '2024-12-29T00:00:00.000Z',
-    }
-    cy.task('getGoalsByStatus', {
-      status: GoalStatusValue.ACTIVE,
-      goals: [aGoalThatIsDueLater, aGoalThatIsDueSooner, aGoalThatIsDueSometimeBetween],
-    })
-
-    // When
-    cy.visit(`/plan/${prisonNumber}/view/overview`)
-
-    // Then
-    const poverviewPage = Page.verifyOnPage(OverviewPage)
-    poverviewPage //
-      .isForPrisoner(prisonNumber)
-      .isPostInduction()
-      .activeTabIs('Overview')
-      .hasNumberOfGoals(3)
-      .goalSummaryCardAtPositionContains(1, aGoalThatIsDueSooner.title)
-      .goalSummaryCardAtPositionContains(2, aGoalThatIsDueSometimeBetween.title)
-      .goalSummaryCardAtPositionContains(3, aGoalThatIsDueLater.title)
-  })
-
-  it('should display goals section given prisoner has no goals', () => {
-    // Given
-    cy.task('stubSignInAsUserWithViewAuthority')
-    cy.task('getGoalsByStatus404')
-
-    cy.signIn()
-    const prisonNumber = 'G6115VJ'
 
     // When
     cy.visit(`/plan/${prisonNumber}/view/overview`)
@@ -143,43 +93,109 @@ context('Prisoner Overview page - Post Induction', () => {
     const overviewPage = Page.verifyOnPage(OverviewPage)
     overviewPage //
       .isForPrisoner(prisonNumber)
-      .isPostInduction()
       .activeTabIs('Overview')
-      .hasEmptyGoalsSection()
-      .hasNoServiceUnavailableMessageDisplayed()
+      .hasLastUpdatedHint('Updated on 22 August 2023 by George Costanza, Moorland (HMP & YOI)')
   })
 
-  it('should display service unavailable message given EWP API returns a 500', () => {
+  it('should display courses if completed in the last 12 months', () => {
     // Given
-    cy.task('stubSignInAsUserWithViewAuthority')
-    cy.task('getGoalsByStatus500')
-
     cy.signIn()
-    const prisonNumber = 'G6115VJ'
 
     // When
+    cy.task('stubLearnerEducationWithCompletedCoursesInLast12Months')
     cy.visit(`/plan/${prisonNumber}/view/overview`)
 
     // Then
     const overviewPage = Page.verifyOnPage(OverviewPage)
     overviewPage //
       .isForPrisoner(prisonNumber)
-      .isPostInduction()
       .activeTabIs('Overview')
-      .hasServiceUnavailableMessageDisplayed()
+      .hasCourseCompletedInLast12Months('GCSE Maths')
+      .hasViewAllEducationAndTrainingButtonDisplayed()
   })
 
-  it('should navigate to Create Goal page given Add A Goal button is clicked', () => {
+  it('should display the correct message if there are courses or qualifications but none completed in the last 12 months', () => {
     // Given
-    const prisonNumber = 'G6115VJ'
     cy.signIn()
-    cy.visit(`/plan/${prisonNumber}/view/overview`)
-    const overviewPage = Page.verifyOnPage(OverviewPage)
 
     // When
-    overviewPage.clickAddGoalButton()
+    cy.task('stubLearnerEducationWithCompletedCoursesOlderThanLast12Months')
+    cy.visit(`/plan/${prisonNumber}/view/overview`)
 
     // Then
-    Page.verifyOnPage(CreateGoalsPage)
+    const overviewPage = Page.verifyOnPage(OverviewPage)
+    overviewPage //
+      .isForPrisoner(prisonNumber)
+      .activeTabIs('Overview')
+      .hasNoCoursesTableDisplayed()
+      .hasViewAllEducationAndTrainingButtonDisplayed()
+  })
+
+  it('should display the correct message if there are withdrawn or in progress courses or qualifications but no completed ones', () => {
+    // Given
+    cy.signIn()
+
+    // When
+    cy.task('stubLearnerEducationWithWithdrawnAndInProgressCourses')
+    cy.visit(`/plan/${prisonNumber}/view/overview`)
+
+    // Then
+    const overviewPage = Page.verifyOnPage(OverviewPage)
+    overviewPage //
+      .isForPrisoner(prisonNumber)
+      .activeTabIs('Overview')
+      .hasNoCoursesTableDisplayed()
+      .hasNoCoursesCompletedYetMessageDisplayed()
+  })
+
+  it('should display the correct message if there are no courses or qualifications recorded at all', () => {
+    // Given
+    cy.signIn()
+
+    // When
+    cy.task('stubLearnerEducationWithNoCourses')
+    cy.visit(`/plan/${prisonNumber}/view/overview`)
+
+    // Then
+    const overviewPage = Page.verifyOnPage(OverviewPage)
+    overviewPage //
+      .isForPrisoner(prisonNumber)
+      .activeTabIs('Overview')
+      .hasNoCoursesTableDisplayed()
+      .hasNoCoursesRecordedMessageDisplayed()
+  })
+
+  it('should display Curious unavailable message given Curious errors when getting Functional Skills', () => {
+    // Given
+    cy.signIn()
+
+    // When
+    cy.task('stubLearnerProfile401Error')
+    cy.visit(`/plan/${prisonNumber}/view/overview`)
+
+    // Then
+    const overviewPage = Page.verifyOnPage(OverviewPage)
+    overviewPage //
+      .isForPrisoner(prisonNumber)
+      .activeTabIs('Overview')
+      .hasNoFunctionalSkillsTableDisplayed()
+      .hasCuriousUnavailableMessageDisplayed()
+  })
+
+  it('should display Curious unavailable message given Curious errors when getting Most Recent Qualifications', () => {
+    // Given
+    cy.signIn()
+
+    // When
+    cy.task('stubLearnerEducation401Error')
+    cy.visit(`/plan/${prisonNumber}/view/overview`)
+
+    // Then
+    const overviewPage = Page.verifyOnPage(OverviewPage)
+    overviewPage //
+      .isForPrisoner(prisonNumber)
+      .activeTabIs('Overview')
+      .hasNoCoursesTableDisplayed()
+      .hasCuriousUnavailableMessageDisplayed()
   })
 })

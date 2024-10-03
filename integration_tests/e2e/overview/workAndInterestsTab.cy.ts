@@ -29,6 +29,7 @@ context('Prisoner Overview page - Work and Interests tab', () => {
     cy.task('stubGetInduction')
     cy.task('stubLearnerProfile')
     cy.task('stubLearnerEducation')
+    cy.task('getActionPlan')
   })
 
   it('should display Work and interests data given the person answered that they want to work during Induction', () => {

@@ -16,6 +16,7 @@ context('Prisoner Overview page - Support Needs tab', () => {
     cy.task('stubLearnerProfile')
     cy.task('stubLearnerEducation')
     cy.task('stubGetInduction')
+    cy.task('getActionPlan')
   })
 
   it('should display Support Needs data', () => {
