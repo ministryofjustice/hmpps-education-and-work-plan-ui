@@ -104,6 +104,12 @@ And then, to build the assets and start the app with nodemon:
 ### Client Roles
 To run the app a system client is required (`SYSTEM_CLIENT_ID` and `SYSTEM_CLIENT_SECRET` env vars). The system client requires the following roles:
 
+* `ROLE_EDUCATION_AND_WORK_PLAN__ACTIONPLANS__RW` - to be able to call the Education and Work Plan API, action-plans endpoint
+* `ROLE_EDUCATION_AND_WORK_PLAN__TIMELINE__RO` - to be able to call the Education and Work Plan API, timeline endpoint
+* `ROLE_EDUCATION_AND_WORK_PLAN__EDUCATION__RW` - to be able to call the Education and Work Plan API, education endpoint
+* `ROLE_EDUCATION_AND_WORK_PLAN__GOALS__RW` - to be able to call the Education and Work Plan API, goals endpoint
+* `ROLE_EDUCATION_AND_WORK_PLAN__CONVERSATIONS__RW` - to be able to call the Education and Work Plan API, conversations endpoint
+* `ROLE_EDUCATION_AND_WORK_PLAN__INDUCTIONS__RW` - to be able to call the Education and Work Plan API, inductions endpoint
 * `ROLE_PRISONER_SEARCH` - to be able to call the Prisoner Search API
 * `ROLE_CURIOUS_API` - to be able to call the Curious API
 
@@ -184,8 +190,9 @@ This UI service sends events to HMPP Audit for the following user actions:
 ## Feature Toggles
 Features can be toggled by setting the relevant environment variable.
 
-| Name                     | Default Value | Type    | Description                                                        |
-|--------------------------|---------------|---------|--------------------------------------------------------------------|
-| SOME_TOGGLE_ENABLED      | false         | Boolean | Example feature toggle, for demonstration purposes.                |
-| QUALIFICATIONS_ENABLED   | false         | Boolean | Enable to allow qualifications to be recorded before an Induction. |
-| NEW_OVERVIEW_PAGE_ENABLED| false         | Boolean | Enable new overview and goals page layouts.                        |
+| Name                      | Default Value | Type     | Description                                                                       |
+|---------------------------|---------------|----------|-----------------------------------------------------------------------------------|
+| SOME_TOGGLE_ENABLED       | false         | Boolean  | Example feature toggle, for demonstration purposes.                               |
+| QUALIFICATIONS_ENABLED    | false         | Boolean  | Enable to allow qualifications to be recorded before an Induction.                |
+| NEW_OVERVIEW_PAGE_ENABLED | false         | Boolean  | Enable new overview and goals page layouts.                                       |
+| REVIEWS_PRISONS_ENABLED   |               | String   | Comma delimited list of prison IDs where the PLP Review process has been enabled. | 

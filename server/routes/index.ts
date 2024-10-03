@@ -17,6 +17,7 @@ import unarchiveGoal from './unarchiveGoal'
 import createPrePrisonEducation from './prePrisonEducation/create'
 import updatePrePrisonEducation from './prePrisonEducation/update'
 import config from '../config'
+import reviewPlanRoutes from './reviewPlan'
 
 export default function routes(services: Services): Router {
   const router = Router()
@@ -49,6 +50,8 @@ export default function routes(services: Services): Router {
   router.use('/plan/:prisonNumber/notes', notesRoutes())
 
   prisonerList(router, services)
+
+  router.use('/plan/:prisonNumber/review', reviewPlanRoutes())
 
   return router
 }

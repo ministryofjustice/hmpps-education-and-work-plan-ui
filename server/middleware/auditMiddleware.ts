@@ -18,6 +18,14 @@ const pageViewEventMap: Record<string, Page> = {
   '/plan/:prisonNumber/view/archived-goals': Page.VIEW_ARCHIVED_GOALS,
   '/plan/:prisonNumber/view/goals': Page.VIEW_GOALS,
 
+  // Review journey pages
+  '/plan/:prisonNumber/review': Page.REVIEW_PLAN,
+  '/plan/:prisonNumber/review/notes': Page.REVIEW_PLAN_NOTES,
+  '/plan/:prisonNumber/review/check-your-answers': Page.REVIEW_PLAN_CHECK_YOUR_ANSWERS,
+  '/plan/:prisonNumber/review/complete': Page.REVIEW_PLAN_COMPLETE,
+  '/plan/:prisonNumber/review/exemption': Page.REVIEW_PLAN_EXEMPTION,
+  '/plan/:prisonNumber/review/exemption-recorded': Page.REVIEW_PLAN_EXEMPTION_RECORDED,
+
   // Create goals
   '/plan/:prisonNumber/goals/create': Page.CREATE_GOALS,
 

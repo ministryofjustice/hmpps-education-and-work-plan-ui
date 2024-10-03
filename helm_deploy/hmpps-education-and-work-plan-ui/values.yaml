@@ -57,6 +57,7 @@ generic-service:
     AUDIT_ENABLED: "true"
     QUALIFICATIONS_ENABLED: "true"
     NEW_OVERVIEW_PAGE_ENABLED: "false"
+    REVIEWS_PRISONS_ENABLED: ""
 
     # Comma delimited list of prison IDs that our service is rolled out into (active agencies)
     # Use spaces to aid readability if necessary; these are trimmed when the environment variable is read and processed.
