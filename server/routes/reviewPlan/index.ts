@@ -3,6 +3,7 @@ import createError from 'http-errors'
 import config from '../../config'
 import asyncMiddleware from '../../middleware/asyncMiddleware'
 import { checkUserHasEditAuthority } from '../../middleware/roleBasedAccessControl'
+import WhoCompletedReviewController from './whoCompletedReviewController'
 
 const ENABLED_PRISONS_FOR_REVIEW_JOURNEYS = config.featureToggles.reviewsPrisonsEnabled
   .split(',')
@@ -11,36 +12,34 @@ const ENABLED_PRISONS_FOR_REVIEW_JOURNEYS = config.featureToggles.reviewsPrisons
 /**
  * Route definitions for the review plan journeys
  */
-export default function reviewPlanRoutes(): Router {
-  const router = Router()
+export default function reviewPlanRoutes(router: Router) {
+  const whoCompletedReviewController = new WhoCompletedReviewController()
 
-  router.use([checkPrisonIsEnabled(), checkUserHasEditAuthority()])
+  router.use('/plan/:prisonNumber/review', [checkPrisonIsEnabled(), checkUserHasEditAuthority()])
+  router.use('/plan/:prisonNumber/review/**', [checkPrisonIsEnabled(), checkUserHasEditAuthority()])
 
-  router.get('/', async (_req, res, next) => {
-    // TODO implement controller for First review page
-  })
+  router.get('/plan/:prisonNumber/review', asyncMiddleware(whoCompletedReviewController.getWhoCompletedReviewView))
+  router.post('/plan/:prisonNumber/review', asyncMiddleware(whoCompletedReviewController.submitWhoCompletedReviewForm))
 
-  router.get('/notes', async (_req, res, next) => {
+  router.get('/plan/:prisonNumber/review/notes', async (_req, res, next) => {
     // TODO implement controller for Review notes page
   })
 
-  router.get('/check-your-answers', async (_req, res, next) => {
+  router.get('/plan/:prisonNumber/review/check-your-answers', async (_req, res, next) => {
     // TODO implement controller for Review check your answers page
   })
 
-  router.get('/complete', async (_req, res, next) => {
+  router.get('/plan/:prisonNumber/review/complete', async (_req, res, next) => {
     // TODO implement controller for Review complete page
   })
 
-  router.get('/exemption', async (_req, res, next) => {
+  router.get('/plan/:prisonNumber/review/exemption', async (_req, res, next) => {
     // TODO implement controller for Review exemption page
   })
 
-  router.get('/exemption-recorded', async (_req, res, next) => {
+  router.get('/plan/:prisonNumber/review/exemption-recorded', async (_req, res, next) => {
     // TODO implement controller for Review exemption recorded page
   })
-
-  return router
 }
 
 const checkPrisonIsEnabled = (): RequestHandler => {
