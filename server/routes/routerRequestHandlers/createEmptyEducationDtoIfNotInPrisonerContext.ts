@@ -7,7 +7,7 @@ import getPrisonerContext from '../../data/session/prisonerContexts'
  * in the request URL.
  * If one does not exist create a new empty Education DTO for the prisoner.
  */
-const createEmptyInductionIfNotInSession = async (req: Request, res: Response, next: NextFunction) => {
+const createEmptyEducationDtoIfNotInPrisonerContext = async (req: Request, res: Response, next: NextFunction) => {
   const { prisonNumber } = req.params
 
   if (!getPrisonerContext(req.session, prisonNumber).educationDto) {
@@ -17,4 +17,4 @@ const createEmptyInductionIfNotInSession = async (req: Request, res: Response, n
   next()
 }
 
-export default createEmptyInductionIfNotInSession
+export default createEmptyEducationDtoIfNotInPrisonerContext
