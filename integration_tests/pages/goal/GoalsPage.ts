@@ -78,13 +78,13 @@ export default class GoalsPage extends Page {
   }
 
   checkOnArchivedGoalsTab(): GoalsPage {
-    this.archivedGoalsTab().should('have.attr', 'aria-selected', 'true')
-    return Page.verifyOnPage(GoalsPage)
+    cy.url().should('include', 'archived-goals')
+    return this
   }
 
   checkOnInProgressGoalsTab(): GoalsPage {
-    this.inProgressGoalsTab().should('have.attr', 'aria-selected', 'true')
-    return Page.verifyOnPage(GoalsPage)
+    cy.url().should('include', 'in-progress-goals')
+    return this
   }
 
   clickInProgressGoalsTab = (): GoalsPage => {
