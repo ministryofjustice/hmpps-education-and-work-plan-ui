@@ -1,8 +1,6 @@
 import Page from '../../pages/page'
 import OverviewPage from '../../pages/overview/OverviewPage'
-import Error404Page from '../../pages/error404'
-import { getRequestedFor } from '../../mockApis/wiremock/requestPatternBuilder'
-import { urlEqualTo } from '../../mockApis/wiremock/matchers/url'
+import EducationAndTrainingPage from '../../pages/overview/EducationAndTrainingPage'
 
 context('Prisoner Overview page - Common functionality for both pre and post induction', () => {
   beforeEach(() => {
@@ -12,18 +10,30 @@ context('Prisoner Overview page - Common functionality for both pre and post ind
     cy.task('stubGetHeaderComponent')
     cy.task('stubGetFooterComponent')
     cy.task('stubPrisonerList')
-    cy.task('stubCiagInductionList')
-    cy.task('stubActionPlansList')
     cy.task('getPrisonerById')
-    cy.task('stubLearnerProfile')
-    cy.task('stubLearnerEducation')
     cy.task('stubGetInduction')
-    cy.task('stubGetAllPrisons')
+    cy.task('getActionPlan')
+  })
+
+  const prisonNumber = 'G6115VJ'
+
+  it('should render prisoner Overview page with Create Induction panel if there is no induction', () => {
+    // Given
+    cy.signIn()
+    cy.task('stubGetInduction404Error')
+
+    // When
+    cy.visit(`/plan/${prisonNumber}/view/overview`)
+
+    // Then
+    const overviewPage = Page.verifyOnPage(OverviewPage)
+    overviewPage //
+      .isForPrisoner(prisonNumber)
+      .isPreInduction()
   })
 
   it('should have the DPS breadcrumb which does not include the current page', () => {
     // Given
-    const prisonNumber = 'G6115VJ'
     cy.signIn()
 
     // When
@@ -36,8 +46,6 @@ context('Prisoner Overview page - Common functionality for both pre and post ind
 
   it('should have the DPS footer', () => {
     // Given
-    const prisonNumber = 'G6115VJ'
-
     cy.signIn()
     cy.visit(`/plan/${prisonNumber}/view/overview`)
     const overviewPage = Page.verifyOnPage(OverviewPage)
@@ -49,8 +57,6 @@ context('Prisoner Overview page - Common functionality for both pre and post ind
   it('should have the standard footer given the DPS frontend component API errors', () => {
     cy.task('stubGetFooterComponent500error')
     // Given
-    const prisonNumber = 'G6115VJ'
-
     cy.signIn()
 
     // When
@@ -61,9 +67,8 @@ context('Prisoner Overview page - Common functionality for both pre and post ind
     overviewPage.hasFallbackFooter()
   })
 
-  it('should display functional skills and most recent qualifications in the sidebar', () => {
+  it('should display correct counts of in progress, archived and completed goals', () => {
     // Given
-    const prisonNumber = 'G6115VJ'
     cy.signIn()
 
     // When
@@ -74,18 +79,100 @@ context('Prisoner Overview page - Common functionality for both pre and post ind
     overviewPage //
       .isForPrisoner(prisonNumber)
       .activeTabIs('Overview')
-      .hasFunctionalSkillsSidebar()
-      .hasMostRecentQualificationsSidebar()
+      .hasNumberOfInProgressGoals(1)
+      .hasNumberOfCompletedGoals(1)
+      .hasNumberOfArchivedGoals(2)
   })
 
-  it('should display Curious unavailable message in the functional skills sidebar given Curious errors when getting Functional Skills', () => {
+  it('should display correct hint text showing details from the most recently updated goal', () => {
     // Given
-    const prisonNumber = 'G6115VJ'
     cy.signIn()
 
+    // When
+    cy.visit(`/plan/${prisonNumber}/view/overview`)
+
+    // Then
+    const overviewPage = Page.verifyOnPage(OverviewPage)
+    overviewPage //
+      .isForPrisoner(prisonNumber)
+      .activeTabIs('Overview')
+      .hasLastUpdatedHint('Updated on 22 August 2023 by George Costanza, Moorland (HMP & YOI)')
+  })
+
+  it('should display courses if completed in the last 12 months', () => {
+    // Given
+    cy.signIn()
+
+    // When
+    cy.task('stubLearnerEducationWithCompletedCoursesInLast12Months')
+    cy.visit(`/plan/${prisonNumber}/view/overview`)
+
+    // Then
+    const overviewPage = Page.verifyOnPage(OverviewPage)
+    overviewPage //
+      .isForPrisoner(prisonNumber)
+      .activeTabIs('Overview')
+      .hasCourseCompletedInLast12Months('GCSE Maths')
+      .hasViewAllEducationAndTrainingButtonDisplayed()
+  })
+
+  it('should display the correct message if there are courses or qualifications but none completed in the last 12 months', () => {
+    // Given
+    cy.signIn()
+
+    // When
+    cy.task('stubLearnerEducationWithCompletedCoursesOlderThanLast12Months')
+    cy.visit(`/plan/${prisonNumber}/view/overview`)
+
+    // Then
+    const overviewPage = Page.verifyOnPage(OverviewPage)
+    overviewPage //
+      .isForPrisoner(prisonNumber)
+      .activeTabIs('Overview')
+      .hasNoCoursesTableDisplayed()
+      .hasViewAllEducationAndTrainingButtonDisplayed()
+  })
+
+  it('should display the correct message if there are withdrawn or in progress courses or qualifications but no completed ones', () => {
+    // Given
+    cy.signIn()
+
+    // When
+    cy.task('stubLearnerEducationWithWithdrawnAndInProgressCourses')
+    cy.visit(`/plan/${prisonNumber}/view/overview`)
+
+    // Then
+    const overviewPage = Page.verifyOnPage(OverviewPage)
+    overviewPage //
+      .isForPrisoner(prisonNumber)
+      .activeTabIs('Overview')
+      .hasNoCoursesTableDisplayed()
+      .hasNoCoursesCompletedYetMessageDisplayed()
+  })
+
+  it('should display the correct message if there are no courses or qualifications recorded at all', () => {
+    // Given
+    cy.signIn()
+
+    // When
+    cy.task('stubLearnerEducationWithNoCourses')
+    cy.visit(`/plan/${prisonNumber}/view/overview`)
+
+    // Then
+    const overviewPage = Page.verifyOnPage(OverviewPage)
+    overviewPage //
+      .isForPrisoner(prisonNumber)
+      .activeTabIs('Overview')
+      .hasNoCoursesTableDisplayed()
+      .hasNoCoursesRecordedMessageDisplayed()
+  })
+
+  it('should display Curious unavailable message given Curious errors when getting Functional Skills', () => {
+    // Given
+    cy.signIn()
+
+    // When
     cy.task('stubLearnerProfile401Error')
-
-    // When
     cy.visit(`/plan/${prisonNumber}/view/overview`)
 
     // Then
@@ -93,18 +180,16 @@ context('Prisoner Overview page - Common functionality for both pre and post ind
     overviewPage //
       .isForPrisoner(prisonNumber)
       .activeTabIs('Overview')
-      .hasCuriousUnavailableMessageInFunctionalSkillsSidebar()
-      .hasMostRecentQualificationsSidebar()
+      .hasNoFunctionalSkillsTableDisplayed()
+      .hasCuriousUnavailableMessageDisplayed()
   })
 
-  it('should display Curious unavailable message in the most recent qualifications sidebar given Curious errors when getting Most Recent Qualifications', () => {
+  it('should display Curious unavailable message given Curious errors when getting Most Recent Qualifications', () => {
     // Given
-    const prisonNumber = 'G6115VJ'
     cy.signIn()
 
+    // When
     cy.task('stubLearnerEducation401Error')
-
-    // When
     cy.visit(`/plan/${prisonNumber}/view/overview`)
 
     // Then
@@ -112,33 +197,21 @@ context('Prisoner Overview page - Common functionality for both pre and post ind
     overviewPage //
       .isForPrisoner(prisonNumber)
       .activeTabIs('Overview')
-      .hasFunctionalSkillsSidebar()
-      .hasCuriousUnavailableMessageInMostRecentQualificationsSidebar()
+      .hasNoCoursesTableDisplayed()
+      .hasCuriousUnavailableMessageDisplayed()
   })
 
-  it(`should render 404 page given specified prisoner is not found`, () => {
+  it('should be able to navigate to the Education and Training page from the link on the Overview page', () => {
     // Given
-    const nonExistentPrisonNumber = 'A9999ZZ'
-    cy.signIn()
-    cy.task('stubPrisonerById404Error', nonExistentPrisonNumber)
-
-    // When
-    cy.visit(`/plan/${nonExistentPrisonNumber}/view/overview`, { failOnStatusCode: false })
-
-    // Then
-    Page.verifyOnPage(Error404Page)
-  })
-
-  it('should only show active goals', () => {
-    // Given
-    const prisonNumber = 'G6115VJ'
     cy.signIn()
 
-    // When
     cy.visit(`/plan/${prisonNumber}/view/overview`)
+    const overviewPage = Page.verifyOnPage(OverviewPage)
+
+    // When
+    overviewPage.clickToViewAllEducationAndTraining()
 
     // Then
-    Page.verifyOnPage(OverviewPage)
-    cy.wiremockVerify(getRequestedFor(urlEqualTo(`/action-plans/${prisonNumber}/goals?status=ACTIVE`)))
+    Page.verifyOnPage(EducationAndTrainingPage)
   })
 })
