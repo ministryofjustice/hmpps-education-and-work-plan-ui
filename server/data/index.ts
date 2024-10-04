@@ -24,6 +24,7 @@ import CiagInductionClient from './ciagInductionClient'
 import FrontendComponentApiClient from './frontendComponentApiClient'
 import PrisonRegisterStore from './prisonRegisterStore/prisonRegisterStore'
 import PrisonRegisterClient from './prisonRegisterClient'
+import PrisonerSearchStore from './prisonerSearchStore/prisonerSearchStore'
 
 type RestClientBuilder<T> = (token: string) => T
 
@@ -34,6 +35,7 @@ export const dataAccess = () => ({
   ),
   hmppsAuditClient: new HmppsAuditClient(config.sqs.audit),
   manageUsersApiClient: new ManageUsersApiClient(),
+  prisonerSearchStore: new PrisonerSearchStore(createRedisClient('prisonerSearch:')),
   prisonerSearchClient: new PrisonerSearchClient(),
   educationAndWorkPlanClient: new EducationAndWorkPlanClient(),
   curiousClient: new CuriousClient(),
@@ -50,6 +52,7 @@ export {
   RestClientBuilder,
   HmppsAuditClient,
   ManageUsersApiClient,
+  PrisonerSearchStore,
   PrisonerSearchClient,
   EducationAndWorkPlanClient,
   CuriousClient,
