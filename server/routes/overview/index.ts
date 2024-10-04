@@ -12,17 +12,23 @@ import EducationAndTrainingController from './educationAndTrainingController'
 import retrieveInduction from '../routerRequestHandlers/retrieveInduction'
 import ViewArchivedGoalsController from './viewArchivedGoalsController'
 import retrieveEducation from '../routerRequestHandlers/retrieveEducation'
-import retrieveGoals from '../routerRequestHandlers/retrieveGoals'
-import GoalStatusValue from '../../enums/goalStatusValue'
 import retrieveAllGoalsForPrisoner from '../routerRequestHandlers/retrieveAllGoalsForPrisoner'
 import ViewGoalsController from './viewGoalsController'
+import config from '../../config'
+import GoalStatusValue from '../../enums/goalStatusValue'
+import retrieveGoals from '../routerRequestHandlers/retrieveGoals'
+import OverviewControllerV2 from './overviewControllerV2'
 
 /**
  * Route definitions for the pages relating to the main Overview page
  */
 export default (router: Router, services: Services) => {
   const overViewController = new OverviewController(services.curiousService, services.inductionService)
-
+  const overviewControllerV2 = new OverviewControllerV2(
+    services.curiousService,
+    services.inductionService,
+    services.educationAndWorkPlanService,
+  )
   const timelineController = new TimelineController(services.timelineService)
   const supportNeedsController = new SupportNeedsController(services.curiousService, services.prisonService)
   const workAndInterestsController = new WorkAndInterestsController()
@@ -32,11 +38,18 @@ export default (router: Router, services: Services) => {
 
   router.use('/plan/:prisonNumber/view/*', [checkUserHasViewAuthority(), removeInductionFormsFromSession])
 
-  router.get('/plan/:prisonNumber/view/overview', [
-    retrieveCuriousInPrisonCourses(services.curiousService),
-    retrieveGoals(services.educationAndWorkPlanService, GoalStatusValue.ACTIVE),
-    asyncMiddleware(overViewController.getOverviewView),
-  ])
+  if (config.featureToggles.newOverviewPageEnabled) {
+    router.get('/plan/:prisonNumber/view/overview', [
+      retrieveCuriousInPrisonCourses(services.curiousService),
+      asyncMiddleware(overviewControllerV2.getOverviewView),
+    ])
+  } else {
+    router.get('/plan/:prisonNumber/view/overview', [
+      retrieveCuriousInPrisonCourses(services.curiousService),
+      retrieveGoals(services.educationAndWorkPlanService, GoalStatusValue.ACTIVE),
+      asyncMiddleware(overViewController.getOverviewView),
+    ])
+  }
 
   router.get('/plan/:prisonNumber/view/support-needs', [asyncMiddleware(supportNeedsController.getSupportNeedsView)])
 

@@ -1,8 +1,8 @@
 import Page from '../../pages/page'
 import AuthorisationErrorPage from '../../pages/authorisationError'
 import FunctionalSkillsPage from '../../pages/functionalSkills/FunctionalSkillsPage'
-import OverviewPage from '../../pages/overview/OverviewPage'
 import EducationAndTrainingPage from '../../pages/overview/EducationAndTrainingPage'
+import OverviewPage from '../../pages/overview/OverviewPage'
 
 context(`Display a prisoner's functional skills`, () => {
   beforeEach(() => {
@@ -15,7 +15,7 @@ context(`Display a prisoner's functional skills`, () => {
     cy.task('stubCiagInductionList')
     cy.task('stubActionPlansList')
     cy.task('getPrisonerById')
-    cy.task('getGoalsByStatus')
+    cy.task('getActionPlan')
     cy.task('stubLearnerProfile')
     cy.task('stubLearnerEducation')
     cy.task('stubGetInduction')
@@ -52,7 +52,7 @@ context(`Display a prisoner's functional skills`, () => {
     educationAndTrainingPage.activeTabIs('Education and training')
   })
 
-  it('should be able to navigate to the Functional Skills page from the Functional Skills panel on the Overview page', () => {
+  it('should be able to navigate to the Education and Training page from the link on the Overview page', () => {
     // Given
     const prisonNumber = 'G6115VJ'
     cy.signIn()
@@ -61,33 +61,10 @@ context(`Display a prisoner's functional skills`, () => {
     const overviewPage = Page.verifyOnPage(OverviewPage)
 
     // When
-    const functionalSkillsPage = overviewPage.clickToViewAllFunctionalSkills()
+    overviewPage.clickToViewAllEducationAndTraining()
 
     // Then
-    functionalSkillsPage
-      .isForPrisoner(prisonNumber)
-      .hasMathsFunctionalSkillsDisplayed()
-      .hasDigitalFunctionalSkillsDisplayed()
-  })
-
-  it('should be able to navigate to the Functional Skills page from the Education and Training tab on the Overview page', () => {
-    // Given
-    const prisonNumber = 'G6115VJ'
-    cy.signIn()
-
-    cy.visit(`/plan/${prisonNumber}/view/overview`)
-    const overviewPage = Page.verifyOnPage(OverviewPage)
-    overviewPage.selectTab('Education and training')
-    const educationAndTrainingPage = Page.verifyOnPage(EducationAndTrainingPage)
-
-    // When
-    const functionalSkillsPage = educationAndTrainingPage.clickToViewAllFunctionalSkills()
-
-    // Then
-    functionalSkillsPage
-      .isForPrisoner(prisonNumber)
-      .hasMathsFunctionalSkillsDisplayed()
-      .hasDigitalFunctionalSkillsDisplayed()
+    Page.verifyOnPage(EducationAndTrainingPage)
   })
 
   it('should display curious unavailable message given curious is unavailable for the learner profile', () => {

@@ -22,6 +22,7 @@ context('Prisoner Overview page - Education And Training tab', () => {
     cy.task('stubGetInduction')
     cy.task('stubGetEducation')
     cy.task('stubGetAllPrisons')
+    cy.task('getActionPlan')
   })
 
   describe('should retrieve and render Functional Skills from Curious API data', () => {

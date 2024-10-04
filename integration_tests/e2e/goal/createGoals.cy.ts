@@ -1,9 +1,9 @@
 import Page from '../../pages/page'
 import CreateGoalsPage from '../../pages/goal/CreateGoalsPage'
-import OverviewPage from '../../pages/overview/OverviewPage'
 import { postRequestedFor } from '../../mockApis/wiremock/requestPatternBuilder'
 import { urlEqualTo } from '../../mockApis/wiremock/matchers/url'
 import { matchingJsonPath } from '../../mockApis/wiremock/matchers/content'
+import OverviewPage from '../../pages/overview/OverviewPage'
 
 context('Create goals', () => {
   beforeEach(() => {
@@ -17,11 +17,11 @@ context('Create goals', () => {
     cy.task('stubActionPlansList')
     cy.task('getPrisonerById')
     cy.task('stubGetInduction')
-    cy.task('getGoalsByStatus')
     cy.task('stubLearnerProfile')
     cy.task('stubLearnerEducation')
     cy.task('stubGetAllPrisons')
     cy.task('createGoals')
+    cy.task('getActionPlan')
   })
 
   it('should be able to navigate directly to Create Goal page', () => {

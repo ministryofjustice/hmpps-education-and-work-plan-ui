@@ -8,6 +8,7 @@ import Error500Page from '../../pages/error500'
 import { putRequestedFor } from '../../mockApis/wiremock/requestPatternBuilder'
 import { urlEqualTo } from '../../mockApis/wiremock/matchers/url'
 import { matchingJsonPath } from '../../mockApis/wiremock/matchers/content'
+import GoalsPage from '../../pages/goal/GoalsPage'
 
 context('Update a goal', () => {
   beforeEach(() => {
@@ -22,7 +23,6 @@ context('Update a goal', () => {
     cy.task('getPrisonerById')
     cy.task('stubGetInduction')
     cy.task('getActionPlan')
-    cy.task('getGoalsByStatus')
     cy.task('stubLearnerProfile')
     cy.task('stubLearnerEducation')
     cy.task('updateGoal')
@@ -50,7 +50,12 @@ context('Update a goal', () => {
     cy.visit(`/plan/${prisonNumber}/view/overview`)
     const overviewPage = Page.verifyOnPage(OverviewPage)
 
-    const updateGoalPage = overviewPage.clickUpdateButtonForFirstGoal()
+    overviewPage //
+      .clickViewInProgressGoalsButton()
+
+    const goalsPage = Page.verifyOnPage(GoalsPage)
+    const inProgressGoalsPage = goalsPage.clickInProgressGoalsTab()
+    const updateGoalPage = inProgressGoalsPage.clickUpdateButtonForFirstGoal()
 
     // When
     updateGoalPage //
@@ -73,7 +78,12 @@ context('Update a goal', () => {
     cy.visit(`/plan/${prisonNumber}/view/overview`)
     const overviewPage = Page.verifyOnPage(OverviewPage)
 
-    const updateGoalPage = overviewPage.clickUpdateButtonForFirstGoal()
+    overviewPage //
+      .clickViewInProgressGoalsButton()
+
+    const goalsPage = Page.verifyOnPage(GoalsPage)
+    const inProgressGoalsPage = goalsPage.clickInProgressGoalsTab()
+    const updateGoalPage = inProgressGoalsPage.clickUpdateButtonForFirstGoal()
 
     // When
     updateGoalPage //
@@ -96,7 +106,12 @@ context('Update a goal', () => {
     cy.visit(`/plan/${prisonNumber}/view/overview`)
     const overviewPage = Page.verifyOnPage(OverviewPage)
 
-    const updateGoalPage = overviewPage.clickUpdateButtonForFirstGoal()
+    overviewPage //
+      .clickViewInProgressGoalsButton()
+
+    const goalsPage = Page.verifyOnPage(GoalsPage)
+    const inProgressGoalsPage = goalsPage.clickInProgressGoalsTab()
+    const updateGoalPage = inProgressGoalsPage.clickUpdateButtonForFirstGoal()
 
     // When
     updateGoalPage //
@@ -117,7 +132,12 @@ context('Update a goal', () => {
     cy.visit(`/plan/${prisonNumber}/view/overview`)
     const overviewPage = Page.verifyOnPage(OverviewPage)
 
-    const updateGoalPage = overviewPage.clickUpdateButtonForFirstGoal()
+    overviewPage //
+      .clickViewInProgressGoalsButton()
+
+    const goalsPage = Page.verifyOnPage(GoalsPage)
+    const inProgressGoalsPage = goalsPage.clickInProgressGoalsTab()
+    const updateGoalPage = inProgressGoalsPage.clickUpdateButtonForFirstGoal()
 
     // When
     updateGoalPage //
@@ -151,7 +171,12 @@ context('Update a goal', () => {
     cy.visit(`/plan/${prisonNumber}/view/overview`)
     const overviewPage = Page.verifyOnPage(OverviewPage)
 
-    const updateGoalPage = overviewPage.clickUpdateButtonForFirstGoal()
+    overviewPage //
+      .clickViewInProgressGoalsButton()
+
+    const goalsPage = Page.verifyOnPage(GoalsPage)
+    const inProgressGoalsPage = goalsPage.clickInProgressGoalsTab()
+    const updateGoalPage = inProgressGoalsPage.clickUpdateButtonForFirstGoal()
 
     // When
     updateGoalPage //
