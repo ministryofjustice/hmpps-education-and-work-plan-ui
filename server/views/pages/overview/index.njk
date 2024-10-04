@@ -1,3 +1,4 @@
+
 {% extends "../../partials/layout.njk" %}
 
 {% set pageTitle = "Prisoner's learning and work progress" %}
@@ -36,7 +37,11 @@
   {% include './partials/navigation.njk' %}
 
   {% if tab === 'overview' %}
+     {% if not featureToggles.newOverviewPageEnabled %}
       {% include './partials/overviewTab/overviewTabContents.njk' %}
+     {% else %}
+      {% include './partials/overviewTab/overviewTabContentsV2.njk' %}
+     {% endif %}
   {% endif %}
   {% if tab === 'support-needs' %}
     {% include './partials/supportNeedsTab/supportNeedsTabContents.njk' %}
