@@ -22,6 +22,7 @@ import type {
   WorkInterestRolesForm,
   WorkInterestTypesForm,
 } from 'inductionForms'
+import type { WhoCompletedReviewForm } from 'reviewPlanForms'
 import type { EducationDto } from 'dto'
 import type { InductionDto } from 'inductionDto'
 import type { UserDetails } from '../../services/userService'
@@ -62,10 +63,13 @@ declare module 'express-session' {
   }
   export interface PrisonerContext {
     updateGoalForm?: UpdateGoalForm
+    // Education related forms and DTO
     highestLevelOfEducationForm?: HighestLevelOfEducationForm
     qualificationLevelForm?: QualificationLevelForm
     qualificationDetailsForm?: QualificationDetailsForm
     educationDto?: EducationDto
+    // Review related forms
+    whoCompletedReviewForm?: WhoCompletedReviewForm
   }
 
   export type PrisonerContexts = Record<string, PrisonerContext>

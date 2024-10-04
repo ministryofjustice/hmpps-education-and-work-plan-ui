@@ -21,7 +21,7 @@
   width: 20em;
 }
 
-// Custom column with vertical border
+// Custom grid and border for goals section of overview page
 
 .app-table-column-with-right-border {
   border-right: 1px solid $govuk-border-colour;
@@ -41,6 +41,11 @@
 
 .govuk-grid-item:last-child {
   border-right: none;
+}
+
+.goal-container {
+  display: flex;
+  align-items: center;
 }
 
 // Custom section break widths

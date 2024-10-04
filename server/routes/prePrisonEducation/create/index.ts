@@ -4,7 +4,7 @@ import retrieveCuriousFunctionalSkills from '../../routerRequestHandlers/retriev
 import retrieveCuriousInPrisonCourses from '../../routerRequestHandlers/retrieveCuriousInPrisonCourses'
 import asyncMiddleware from '../../../middleware/asyncMiddleware'
 import { checkUserHasEditAuthority } from '../../../middleware/roleBasedAccessControl'
-import createEmptyEducationDtoIfNotInSession from '../../routerRequestHandlers/createEmptyEducationDtoIfNotInPrisonerContext'
+import createEmptyEducationDtoIfNotInPrisonerContext from '../../routerRequestHandlers/createEmptyEducationDtoIfNotInPrisonerContext'
 import checkEducationDtoExistsInPrisonerContext from '../../routerRequestHandlers/checkEducationDtoExistsInPrisonerContext'
 import QualificationLevelCreateController from './qualificationLevelCreateController'
 import QualificationDetailsCreateController from './qualificationDetailsCreateController'
@@ -24,7 +24,7 @@ export default (router: Router, services: Services) => {
 
   router.use('/prisoners/:prisonNumber/create-education/highest-level-of-education', [
     checkUserHasEditAuthority(),
-    createEmptyEducationDtoIfNotInSession,
+    createEmptyEducationDtoIfNotInPrisonerContext,
   ])
   router.get('/prisoners/:prisonNumber/create-education/highest-level-of-education', [
     asyncMiddleware(highestLevelOfEducationCreateController.getHighestLevelOfEducationView),

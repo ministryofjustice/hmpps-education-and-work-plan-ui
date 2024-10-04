@@ -51,7 +51,7 @@ export default function routes(services: Services): Router {
 
   prisonerList(router, services)
 
-  router.use('/plan/:prisonNumber/review', reviewPlanRoutes())
+  reviewPlanRoutes(router)
 
   return router
 }

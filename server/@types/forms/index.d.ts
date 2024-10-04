@@ -145,3 +145,15 @@ declare module 'inductionForms' {
     additionalTrainingOther?: string
   }
 }
+
+declare module 'reviewPlanForms' {
+  import ReviewPlanCompletedByValue from '../../enums/reviewPlanCompletedByValue'
+
+  export interface WhoCompletedReviewForm {
+    completedBy: ReviewPlanCompletedByValue
+    completedByOther?: string
+    'reviewDate-day': string
+    'reviewDate-month': string
+    'reviewDate-year': string
+  }
+}

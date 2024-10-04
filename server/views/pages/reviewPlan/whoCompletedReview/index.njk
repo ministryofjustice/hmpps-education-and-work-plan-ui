@@ -1,0 +1,118 @@
+{% extends "../../../partials/layout.njk" %}
+
+{% set pageTitle = "Who completed the prisoner's plan review?" %}
+
+{% set pageId = "review-plan-who-completed-review" %}
+
+{% block beforeContent %}
+  {{ govukBackLink({ text: 'Back', href: '/plan/' + prisonerSummary.prisonNumber + '/view/overview' }) }}
+{% endblock %}
+
+{% block content %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      {% set warningTextHtml %}
+        {{ govukWarningText({
+          text: "Update the progress plan before marking the review as complete",
+          iconFallbackText: "Warning"
+        }) }}
+      {% endset %}
+
+      <form class="form" method="post" novalidate="">
+        <div class="govuk-form-group">
+          <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+
+          {% set somebodyElseHtml %}
+            {{ govukInput({
+              id: "completedByOther",
+              name: "completedByOther",
+              value: form.completedByOther,
+              maxlength: 200,
+              label: {
+                text: "Give details",
+                attributes: { "aria-live": "polite" }
+              },
+              attributes: { "aria-label" : "Give details as to who completed the review" },
+              errorMessage: errors | findError('completedByOther')
+            }) }}
+          {% endset -%}
+
+          {{ govukRadios({
+            name: 'completedBy',
+            id: 'completedBy',
+            fieldset: {
+              legend: {
+                html: "<h1 class='govuk-heading-l govuk-!-margin-top-6'>Who completed " + prisonerSummary.firstName + " " + prisonerSummary.lastName + "'s review?</h1>"
+              }
+            },
+            hint: {
+              html: warningTextHtml
+            },
+            items: [
+              {
+                value: 'MYSELF',
+                text: 'I did the review myself',
+                checked: form.completedBy === 'MYSELF'
+              },
+              {
+                value: 'SOMEBODY_ELSE',
+                text: 'Somebody else did the review',
+                checked: form.completedBy === 'SOMEBODY_ELSE',
+                conditional: {
+                  html: somebodyElseHtml
+                }
+              }
+            ],
+            errorMessage: errors | findError('completedBy')
+          }) }}
+
+          {{ govukDateInput({
+            id: "review-date",
+            fieldset: {
+              legend: {
+                text: "Add the review date",
+                classes: "govuk-fieldset__legend--s"
+              }
+            },
+            hint: {
+              text: "For example, 17 5 2024"
+            },
+            items: [
+              {
+                id: 'review-date-day',
+                label: 'Day',
+                name: 'reviewDate-day',
+                classes: 'govuk-input--width-2',
+                value: form['reviewDate-day']
+              },
+              {
+                id: 'review-date-month',
+                label: 'Month',
+                name: 'reviewDate-month',
+                classes: 'govuk-input--width-2',
+                value: form['reviewDate-month']
+              },
+              {
+                id: 'review-date-year',
+                label: 'Year',
+                name: 'reviewDate-year',
+                classes: 'govuk-input--width-4',
+                value: form['reviewDate-year']
+              }
+            ],
+            errorMessage: errors | findError('review-date')
+          }) }}
+        </div>
+
+        {{ govukButton({
+          id: "submit-button",
+          text: "Continue",
+          type: "submit",
+          attributes: {"data-qa": "submit-button"}
+        }) }}
+      </form>
+
+    </div>
+  </div>
+{% endblock %}
