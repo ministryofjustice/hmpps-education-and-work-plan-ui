@@ -1,13 +1,12 @@
-import Page from '../../pages/page'
-import UnarchiveGoalPage from '../../pages/goal/UnarchiveGoalPage'
-import OverviewPage from '../../pages/overview/OverviewPage'
-import GoalStatusValue from '../../../server/enums/goalStatusValue'
-import { aValidGoalResponse } from '../../../server/testsupport/actionPlanResponseTestDataBuilder'
-import { urlEqualTo } from '../../mockApis/wiremock/matchers/url'
-import { putRequestedFor } from '../../mockApis/wiremock/requestPatternBuilder'
-import { matchingJsonPath } from '../../mockApis/wiremock/matchers/content'
-import AuthorisationErrorPage from '../../pages/authorisationError'
-import ViewArchivedGoalsPage from '../../pages/goal/ViewArchivedGoalsPage'
+import Page from '../../../pages/page'
+import UnarchiveGoalPage from '../../../pages/goal/UnarchiveGoalPage'
+import OverviewPage from '../../../pages/overview/OverviewPage'
+import { urlEqualTo } from '../../../mockApis/wiremock/matchers/url'
+import { putRequestedFor } from '../../../mockApis/wiremock/requestPatternBuilder'
+import { matchingJsonPath } from '../../../mockApis/wiremock/matchers/content'
+import AuthorisationErrorPage from '../../../pages/authorisationError'
+import ViewArchivedGoalsPage from '../../../pages/goal/ViewArchivedGoalsPage'
+import GoalsPage from '../../../pages/goal/GoalsPage'
 
 context('Unarchive a goal', () => {
   const prisonNumber = 'G6115VJ'
@@ -25,7 +24,6 @@ context('Unarchive a goal', () => {
     cy.task('getPrisonerById')
     cy.task('stubGetInduction')
     cy.task('getActionPlan')
-    cy.task('getGoalsByStatus')
     cy.task('stubLearnerProfile')
     cy.task('stubLearnerEducation')
     cy.task('unarchiveGoal')
@@ -47,18 +45,16 @@ context('Unarchive a goal', () => {
     // Given
     cy.signIn()
     cy.visit(`/plan/${prisonNumber}/view/overview`)
-    const archivedGoal = { ...aValidGoalResponse(), status: GoalStatusValue.ARCHIVED, goalReference }
-    cy.task('getGoalsByStatus', { status: GoalStatusValue.ARCHIVED, goals: [archivedGoal] })
     const overviewPage = Page.verifyOnPage(OverviewPage)
 
     // When
     overviewPage //
       .clickViewArchivedGoalsButton()
-      .hasNumberOfGoals(1)
-      .clickReactivateButtonForFirstGoal()
 
     // Then
-    const unarchiveGoalPage = Page.verifyOnPage(UnarchiveGoalPage)
+    const goalsPage = Page.verifyOnPage(GoalsPage)
+    const archivedGoalsPage = goalsPage.clickArchivedGoalsTab()
+    const unarchiveGoalPage = archivedGoalsPage.clickReactivateButtonForGoal(goalReference, 1)
     unarchiveGoalPage.isForGoal(goalReference)
   })
 

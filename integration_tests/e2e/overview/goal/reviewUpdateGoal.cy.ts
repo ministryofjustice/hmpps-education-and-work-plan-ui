@@ -1,9 +1,10 @@
-import Page from '../../pages/page'
-import OverviewPage from '../../pages/overview/OverviewPage'
-import ReviewUpdateGoalPage from '../../pages/goal/ReviewUpdateGoalPage'
-import UpdateGoalPage from '../../pages/goal/UpdateGoalPage'
-import AuthorisationErrorPage from '../../pages/authorisationError'
-import Error500Page from '../../pages/error500'
+import Page from '../../../pages/page'
+import OverviewPage from '../../../pages/overview/OverviewPage'
+import ReviewUpdateGoalPage from '../../../pages/goal/ReviewUpdateGoalPage'
+import UpdateGoalPage from '../../../pages/goal/UpdateGoalPage'
+import AuthorisationErrorPage from '../../../pages/authorisationError'
+import Error500Page from '../../../pages/error500'
+import GoalsPage from '../../../pages/goal/GoalsPage'
 
 context('Review updated goal', () => {
   beforeEach(() => {
@@ -18,7 +19,6 @@ context('Review updated goal', () => {
     cy.task('getPrisonerById')
     cy.task('stubGetInduction')
     cy.task('getActionPlan')
-    cy.task('getGoalsByStatus')
     cy.task('stubLearnerProfile')
     cy.task('stubLearnerEducation')
     cy.task('updateGoal')
@@ -44,9 +44,10 @@ context('Review updated goal', () => {
     const goalReference = '10efc562-be8f-4675-9283-9ede0c19dade'
     cy.signIn()
 
-    cy.visit(`/plan/${prisonNumber}/view/overview`)
-    const overviewPage = Page.verifyOnPage(OverviewPage)
-    const updateGoalPage = overviewPage.clickUpdateButtonForFirstGoal()
+    cy.visit(`/plan/${prisonNumber}/view/goals#in-progress`)
+    const goalsPage = Page.verifyOnPage(GoalsPage)
+    const inProgressGoalsPage = goalsPage.clickInProgressGoalsTab()
+    const updateGoalPage = inProgressGoalsPage.clickUpdateButtonForFirstGoal()
     updateGoalPage.isForGoal(goalReference).submitPage()
 
     const reviewUpdateGoalPage = Page.verifyOnPage(ReviewUpdateGoalPage)
@@ -64,10 +65,11 @@ context('Review updated goal', () => {
     const goalReference = '10efc562-be8f-4675-9283-9ede0c19dade'
     cy.signIn()
 
-    cy.visit(`/plan/${prisonNumber}/view/overview`)
-    const overviewPage = Page.verifyOnPage(OverviewPage)
+    cy.visit(`/plan/${prisonNumber}/view/goals#in-progress`)
+    const goalsPage = Page.verifyOnPage(GoalsPage)
+    const inProgressGoalsPage = goalsPage.clickInProgressGoalsTab()
+    const updateGoalPage = inProgressGoalsPage.clickUpdateButtonForFirstGoal()
 
-    const updateGoalPage = overviewPage.clickUpdateButtonForFirstGoal()
     updateGoalPage.isForGoal(goalReference).submitPage()
 
     const reviewUpdateGoalPage = Page.verifyOnPage(ReviewUpdateGoalPage)
@@ -116,10 +118,11 @@ context('Review updated goal', () => {
     cy.signIn()
     cy.task('updateGoal500Error')
 
-    cy.visit(`/plan/${prisonNumber}/view/overview`)
-    const overviewPage = Page.verifyOnPage(OverviewPage)
+    cy.visit(`/plan/${prisonNumber}/view/goals#in-progress`)
+    const goalsPage = Page.verifyOnPage(GoalsPage)
+    const inProgressGoalsPage = goalsPage.clickInProgressGoalsTab()
+    const updateGoalPage = inProgressGoalsPage.clickUpdateButtonForFirstGoal()
 
-    const updateGoalPage = overviewPage.clickUpdateButtonForFirstGoal()
     updateGoalPage.isForGoal(goalReference).submitPage()
 
     const reviewUpdateGoalPage = Page.verifyOnPage(ReviewUpdateGoalPage)

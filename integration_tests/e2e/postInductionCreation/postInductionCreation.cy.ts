@@ -45,6 +45,7 @@ context(`Show the relevant screen after an Induction has been created`, () => {
     cy.task('getGoalsByStatus', { prisonNumber })
     cy.task('getPrisonerById', prisonNumber)
     cy.task('stubGetInduction', { prisonNumber })
+    cy.task('getActionPlan')
 
     // When
     cy.visit(`/plan/${prisonNumber}/induction-created`)
@@ -54,16 +55,15 @@ context(`Show the relevant screen after an Induction has been created`, () => {
     overviewPage //
       .isForPrisoner(prisonNumber)
       .isPostInduction()
-      .hasGoalsDisplayed()
   })
 
   it('should display the Overview page given retrieving the prisoners Action Plan fails', () => {
     // Given
     const prisonNumber = 'G6115VJ'
     cy.signIn()
-    cy.task('getGoalsByStatus500', prisonNumber)
     cy.task('getPrisonerById', prisonNumber)
     cy.task('stubGetInduction', { prisonNumber })
+    cy.task('getActionPlan500Error')
 
     // When
     cy.visit(`/plan/${prisonNumber}/induction-created`)

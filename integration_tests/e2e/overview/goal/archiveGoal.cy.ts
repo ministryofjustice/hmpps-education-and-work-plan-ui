@@ -1,12 +1,12 @@
-import Page from '../../pages/page'
-import ArchiveGoalPage from '../../pages/goal/ArchiveGoalPage'
-import ReasonToArchiveGoalValue from '../../../server/enums/ReasonToArchiveGoalValue'
-import ReviewArchiveGoalPage from '../../pages/goal/ReviewArchiveGoalPage'
-import OverviewPage from '../../pages/overview/OverviewPage'
-import { putRequestedFor } from '../../mockApis/wiremock/requestPatternBuilder'
-import { urlEqualTo } from '../../mockApis/wiremock/matchers/url'
-import { matchingJsonPath } from '../../mockApis/wiremock/matchers/content'
-import GoalStatusValue from '../../../server/enums/goalStatusValue'
+import Page from '../../../pages/page'
+import ArchiveGoalPage from '../../../pages/goal/ArchiveGoalPage'
+import ReasonToArchiveGoalValue from '../../../../server/enums/ReasonToArchiveGoalValue'
+import ReviewArchiveGoalPage from '../../../pages/goal/ReviewArchiveGoalPage'
+import OverviewPage from '../../../pages/overview/OverviewPage'
+import { putRequestedFor } from '../../../mockApis/wiremock/requestPatternBuilder'
+import { urlEqualTo } from '../../../mockApis/wiremock/matchers/url'
+import { matchingJsonPath } from '../../../mockApis/wiremock/matchers/content'
+import GoalsPage from '../../../pages/goal/GoalsPage'
 
 context('Archive a goal', () => {
   const prisonNumber = 'G6115VJ'
@@ -35,31 +35,6 @@ context('Archive a goal', () => {
     targetCompletionDate: '2124-01-29',
     notes: 'Billy will struggle to concentrate for long periods.',
   }
-  const goalToKeep = {
-    goalReference: '09dfc562-be8f-4675-9283-9ede0c19cccc',
-    title: 'Learn Spanish',
-    status: 'ACTIVE',
-    steps: [
-      {
-        stepReference: '167e45eb-c8fe-438b-aa81-1bf9157efa05',
-        title: 'Book Spanish course',
-        status: 'NOT_STARTED',
-        sequenceNumber: 1,
-      },
-      {
-        stepReference: '29992dd1-7dc6-4480-b2fc-61bc36a6a775',
-        title: 'Complete Spanish course',
-        status: 'NOT_STARTED',
-        sequenceNumber: 2,
-      },
-    ],
-    createdBy: 'auser_gen',
-    createdAt: '2023-07-20T09:29:15.386Z',
-    updatedBy: 'auser_gen',
-    updatedAt: '2023-07-20T09:29:15.386Z',
-    targetCompletionDate: '2124-01-29',
-    notes: 'Billy will struggle to concentrate for long periods.',
-  }
 
   beforeEach(() => {
     cy.task('reset')
@@ -77,11 +52,7 @@ context('Archive a goal', () => {
     cy.task('stubLearnerEducation')
     cy.task('archiveGoal')
     cy.task('stubGetAllPrisons')
-    cy.task('getGoalsByStatus', {
-      prisonNumber: 'G6115VJ',
-      status: GoalStatusValue.ACTIVE,
-      goals: [goalToArchive, goalToKeep],
-    })
+    cy.task('getActionPlan')
   })
 
   it('should be able to navigate directly to archive goal page', () => {
@@ -97,7 +68,7 @@ context('Archive a goal', () => {
     archiveGoalPage.isForGoal(goalReference)
   })
 
-  it('should be able to navigate to archive goal page from overview', () => {
+  it('should be able to navigate to archived goals page from overview', () => {
     // Given
     cy.signIn()
 
@@ -105,10 +76,10 @@ context('Archive a goal', () => {
     const overviewPage = Page.verifyOnPage(OverviewPage)
 
     // When
-    overviewPage.clickArchiveButtonForFirstGoal()
+    const goalsPage = overviewPage.clickViewArchivedGoalsButton()
 
     // Then
-    Page.verifyOnPage(ArchiveGoalPage)
+    goalsPage.checkOnArchivedGoalsTab()
   })
 
   it('should not submit the form if there are validation errors on the page', () => {
@@ -200,13 +171,13 @@ context('Archive a goal', () => {
     const { goalReference } = goalToArchive
     cy.task('archiveGoal', { prisonNumber, goalReference })
     cy.signIn()
-    cy.visit(`/plan/${prisonNumber}/view/overview`)
-    const overviewPage = Page.verifyOnPage(OverviewPage)
+    cy.visit(`/plan/${prisonNumber}/view/goals`)
+    const goalsPage = Page.verifyOnPage(GoalsPage)
 
     // When
-    const archiveGoalPage = overviewPage //
-      .hasGoalsDisplayed()
-      .hasNumberOfGoals(2)
+    const archiveGoalPage = goalsPage //
+      .hasArchivedGoalsDisplayed()
+      .hasNumberOfArchivedGoals(2)
       .clickArchiveButtonForFirstGoal()
 
     archiveGoalPage //
@@ -220,7 +191,7 @@ context('Archive a goal', () => {
     // Then
     Page.verifyOnPage(OverviewPage) //
       .hasSuccessMessage('Goal archived')
-      .hasGoalsDisplayed()
+      .hasNumberOfArchivedGoals(2)
 
     cy.wiremockVerify(
       putRequestedFor(urlEqualTo(`/action-plans/${prisonNumber}/goals/${goalReference}/archive`)) //

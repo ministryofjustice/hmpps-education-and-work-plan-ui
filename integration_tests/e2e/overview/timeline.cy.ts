@@ -23,6 +23,7 @@ context('Prisoner Overview page - Timeline tab', () => {
     cy.task('stubLearnerEducation', 'H4115SD')
     cy.task('stubLearnerEducation', 'G5005GD')
     cy.task('stubGetAllPrisons')
+    cy.task('getActionPlan')
   })
 
   it('should display timeline given prisoner where one goal was created as part of their initial action plan', () => {
@@ -55,6 +56,7 @@ context('Prisoner Overview page - Timeline tab', () => {
     // Given
     const prisonNumber = 'H4115SD'
     cy.task('stubGetTimeline', prisonNumber) // Prison number H4115SD has a timeline where several goals were created as part of their initial action plan
+    cy.task('getActionPlan', prisonNumber)
 
     cy.signIn()
     cy.visit(`/plan/${prisonNumber}/view/overview`)
@@ -75,6 +77,7 @@ context('Prisoner Overview page - Timeline tab', () => {
     // Given
     const prisonNumber = 'G5005GD'
     cy.task('stubGetTimeline', prisonNumber) // Prison number G5005GD has a timeline where 4 goals have been achived, and 1 goal un-archived
+    cy.task('getActionPlan', prisonNumber)
 
     cy.signIn()
     cy.visit(`/plan/${prisonNumber}/view/overview`)

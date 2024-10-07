@@ -23,34 +23,39 @@
             <h2 class="govuk-summary-card__title govuk-!-font-size-24">Goals</h2>
           </div>
           <div class="govuk-summary-card__content">
-            <div class="govuk-grid">
-              <div class="govuk-grid-item">
-                <div class="goal-container">
-                  <span class="govuk-body govuk-!-font-size-36 govuk-!-font-weight-bold" data-qa="in-progress-goals-count">{{ goalCounts.activeCount }}</span>
-                  <span class="govuk-tag govuk-tag--green govuk-!-margin-left-2 govuk-!-margin-bottom-4">In progress</span>
+            {% if not problemRetrievingData %}
+              <div class="govuk-grid">
+                <div class="govuk-grid-item">
+                  <div class="goal-container">
+                    <span class="govuk-body govuk-!-font-size-36 govuk-!-font-weight-bold" data-qa="in-progress-goals-count">{{ goalCounts.activeCount }}</span>
+                    <span class="govuk-tag govuk-tag--green govuk-!-margin-left-2 govuk-!-margin-bottom-4">In progress</span>
+                  </div>
+                  <a class="govuk-link govuk-!-font-size-19" href="/plan/{{ prisonerSummary.prisonNumber }}/view/goals#in-progress-goals" data-qa="view-in-progress-goals-button">View in progress goals</a>
                 </div>
-                <a class="govuk-link govuk-!-font-size-19" href="/plan/{{ prisonerSummary.prisonNumber }}/view/goals#in-progress-goals" data-qa="view-in-progress-goals-button">View in progress goals</a>
-              </div>
-              <div class="govuk-grid-item">
-                <div class="goal-container">
-                  <span class="govuk-body govuk-!-font-size-36 govuk-!-font-weight-bold" data-qa="completed-goals-count">{{ goalCounts.completedCount }}</span>
-                  <span class="govuk-tag govuk-tag--blue govuk-!-margin-left-2 govuk-!-margin-bottom-4">Completed</span>
+                <div class="govuk-grid-item">
+                  <div class="goal-container">
+                    <span class="govuk-body govuk-!-font-size-36 govuk-!-font-weight-bold" data-qa="completed-goals-count">{{ goalCounts.completedCount }}</span>
+                    <span class="govuk-tag govuk-tag--blue govuk-!-margin-left-2 govuk-!-margin-bottom-4">Completed</span>
+                  </div>
+                  <a class="govuk-link govuk-!-font-size-19" href="/plan/{{ prisonerSummary.prisonNumber }}/view/overview" data-qa="view-completed-goals-button">View completed goals</a>
                 </div>
-                <a class="govuk-link govuk-!-font-size-19" href="/plan/{{ prisonerSummary.prisonNumber }}/view/overview" data-qa="view-completed-goals-button">View completed goals</a>
-              </div>
-              <div class="govuk-grid-item">
-                <div class="goal-container">
-                  <span class="govuk-body govuk-!-font-size-36 govuk-!-font-weight-bold" data-qa="archived-goals-count">{{ goalCounts.archivedCount }}</span>
-                  <span class="govuk-tag govuk-tag--grey govuk-!-margin-left-2 govuk-!-margin-bottom-4">Archived</span>
+                <div class="govuk-grid-item">
+                  <div class="goal-container">
+                    <span class="govuk-body govuk-!-font-size-36 govuk-!-font-weight-bold" data-qa="archived-goals-count">{{ goalCounts.archivedCount }}</span>
+                    <span class="govuk-tag govuk-tag--grey govuk-!-margin-left-2 govuk-!-margin-bottom-4">Archived</span>
+                  </div>
+                  <a class="govuk-link govuk-!-font-size-19" href="/plan/{{ prisonerSummary.prisonNumber }}/view/goals#archived-goals" data-qa="view-archived-goals-button">View archived goals</a>
                 </div>
-                <a class="govuk-link govuk-!-font-size-19" href="/plan/{{ prisonerSummary.prisonNumber }}/view/goals#archived-goals" data-qa="view-archived-goals-button">View archived goals</a>
               </div>
-            </div>
-              {% if not noGoals %}
-                <p class="govuk-hint govuk-!-font-size-16 govuk-!-margin-top-6" data-qa="goal-last-updated-hint">
-                  Updated on {{ lastUpdatedDate | formatDate('DD MMMM YYYY') }}<span class="govuk-!-display-none-print"> by {{ lastUpdatedBy }}{{ ', ' + lastUpdatedAtPrisonName if lastUpdatedAtPrisonName }}</span>
-                </p>
-              {% endif %}
+                {% if not noGoals %}
+                  <p class="govuk-hint govuk-!-font-size-16 govuk-!-margin-top-6" data-qa="goal-last-updated-hint">
+                    Updated on {{ lastUpdatedDate | formatDate('DD MMMM YYYY') }}<span class="govuk-!-display-none-print"> by {{ lastUpdatedBy }}{{ ', ' + lastUpdatedAtPrisonName if lastUpdatedAtPrisonName }}</span>
+                  </p>
+                {% endif %}
+            {% else %}
+              <h3 class="govuk-heading-s" data-qa="goals-unavailable-message">We cannot show these details right now</h3>
+              <p class="govuk-body">Reload the page or try again later. Other parts of this service may still be available.</p>
+            {% endif %}
           </div>
         </div>
 

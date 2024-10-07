@@ -38,6 +38,7 @@ export default class OverviewControllerV2 {
         res.locals.curiousInPrisonCourses,
         isPostInduction,
         { lastUpdatedBy, lastUpdatedDate, lastUpdatedAtPrisonName, noGoals, goalCounts },
+        prisonerGoals.problemRetrievingData,
       )
 
       res.render('pages/overview/index', { ...view.renderArgs })
