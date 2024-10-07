@@ -1,3 +1,4 @@
+import GoalsPage from '../goal/GoalsPage'
 import Page, { PageElement } from '../page'
 
 /**
@@ -41,6 +42,13 @@ export default class TimelinePage extends Page {
     })
     return this
   }
+
+  clickViewGoalsButton(): GoalsPage {
+    this.viewGoalsButton().first().click()
+    return Page.verifyOnPage(GoalsPage)
+  }
+
+  viewGoalsButton = (): PageElement => cy.get('[data-qa=view-goals-button]')
 
   activeTab = (): PageElement => cy.get('.moj-sub-navigation__link[aria-current=page]')
 

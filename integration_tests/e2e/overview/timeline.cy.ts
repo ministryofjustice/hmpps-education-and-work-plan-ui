@@ -1,6 +1,7 @@
 import Page from '../../pages/page'
 import OverviewPage from '../../pages/overview/OverviewPage'
 import TimelinePage from '../../pages/overview/TimelinePage'
+import GoalsPage from '../../pages/goal/GoalsPage'
 
 context('Prisoner Overview page - Timeline tab', () => {
   beforeEach(() => {
@@ -139,5 +140,26 @@ context('Prisoner Overview page - Timeline tab', () => {
     timelinePage //
       .activeTabIs('Timeline')
       .hasEmptyTimelineMessageDisplayed()
+  })
+
+  it('should navigate to in progress goals tab when view goals button is clicked', () => {
+    // Given
+    const prisonNumber = 'G5005GD'
+    cy.task('stubGetTimeline', prisonNumber)
+    cy.task('getActionPlan', prisonNumber)
+
+    cy.signIn()
+    cy.visit(`/plan/${prisonNumber}/view/overview`)
+    const overviewPage = Page.verifyOnPage(OverviewPage)
+
+    // When
+    overviewPage.selectTab('Timeline')
+    const timelinePage = Page.verifyOnPage(TimelinePage)
+    timelinePage.clickViewGoalsButton()
+
+    // Then
+    const goalsPage = Page.verifyOnPage(GoalsPage)
+    goalsPage //
+      .checkOnInProgressGoalsTab()
   })
 })
