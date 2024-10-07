@@ -14,6 +14,7 @@ type RenderArgs = {
   goalCounts: { activeCount: number; archivedCount: number; completedCount: number }
   hasWithdrawnOrInProgressCourses: boolean
   hasCoursesCompletedMoreThan12MonthsAgo: boolean
+  problemRetrievingData: boolean
 }
 
 export default class OverviewView {
@@ -29,6 +30,7 @@ export default class OverviewView {
       noGoals: boolean
       goalCounts: { activeCount: number; archivedCount: number; completedCount: number }
     },
+    private readonly problemRetrievingData: boolean,
   ) {}
 
   get renderArgs(): RenderArgs {
@@ -65,6 +67,7 @@ export default class OverviewView {
       goalCounts: this.goalData.goalCounts,
       hasWithdrawnOrInProgressCourses: inProgressCourses.length > 0 || withdrawnCourses.length > 0,
       hasCoursesCompletedMoreThan12MonthsAgo,
+      problemRetrievingData: this.problemRetrievingData,
     }
   }
 }

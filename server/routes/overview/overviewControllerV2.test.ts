@@ -117,6 +117,7 @@ describe('overviewController', () => {
       lastUpdatedBy: inProgressGoal.updatedByDisplayName,
       lastUpdatedDate: inProgressGoal.updatedAt,
       lastUpdatedAtPrisonName: inProgressGoal.updatedAtPrisonName,
+      problemRetrievingData: false,
     }
 
     // When
@@ -173,6 +174,64 @@ describe('overviewController', () => {
       lastUpdatedBy: null as string,
       lastUpdatedDate: null as string,
       lastUpdatedAtPrisonName: null as string,
+      problemRetrievingData: false,
+    }
+
+    // When
+    await controller.getOverviewView(req, res, next)
+
+    // Then
+    expect(res.render).toHaveBeenCalledWith('pages/overview/index', expectedView)
+    expect(inductionService.inductionExists).toHaveBeenCalledWith(prisonNumber, username)
+  })
+
+  it('should get overview view when there is an error retrieving the action plan', async () => {
+    // Given
+    res.locals.curiousInPrisonCourses = {
+      problemRetrievingData: false,
+      prisonNumber,
+      totalRecords: 0,
+      coursesByStatus: {
+        COMPLETED: [],
+        IN_PROGRESS: [],
+        WITHDRAWN: [],
+        TEMPORARILY_WITHDRAWN: [],
+      },
+      coursesCompletedInLast12Months: [],
+    } as InPrisonCourseRecords
+
+    educationAndWorkPlanService.getAllGoalsForPrisoner.mockResolvedValue({
+      prisonNumber,
+      goals: {
+        ACTIVE: [],
+        ARCHIVED: [],
+        COMPLETED: [],
+      },
+      problemRetrievingData: true,
+    } as PrisonerGoals)
+
+    inductionService.inductionExists.mockResolvedValue(false)
+
+    curiousService.getPrisonerFunctionalSkills.mockResolvedValue(functionalSkillsFromCurious)
+
+    const expectedView = {
+      tab: 'overview',
+      prisonerSummary,
+      functionalSkills: functionalSkillsFromCurious,
+      inPrisonCourses: res.locals.curiousInPrisonCourses,
+      isPostInduction: false,
+      noGoals: true,
+      goalCounts: {
+        activeCount: 0,
+        archivedCount: 0,
+        completedCount: 0,
+      },
+      hasWithdrawnOrInProgressCourses: false,
+      hasCoursesCompletedMoreThan12MonthsAgo: false,
+      lastUpdatedBy: null as string,
+      lastUpdatedDate: null as string,
+      lastUpdatedAtPrisonName: null as string,
+      problemRetrievingData: true,
     }
 
     // When

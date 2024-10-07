@@ -44,7 +44,7 @@ export default class EducationAndWorkPlanService {
       return toActionPlan(actionPlanResponse, false, prisonNamesById)
     } catch (error) {
       logger.error(`Error retrieving Action Plan for Prisoner [${prisonNumber}]: ${error}`)
-      return { problemRetrievingData: true } as ActionPlan
+      return { problemRetrievingData: true, goals: [] } as ActionPlan
     }
   }
 
@@ -69,9 +69,9 @@ export default class EducationAndWorkPlanService {
     return {
       prisonNumber,
       goals: {
-        ACTIVE: actionPlan.goals.filter(goal => goal.status === GoalStatusValue.ACTIVE),
-        ARCHIVED: actionPlan.goals.filter(goal => goal.status === GoalStatusValue.ARCHIVED),
-        COMPLETED: actionPlan.goals.filter(goal => goal.status === GoalStatusValue.COMPLETED),
+        ACTIVE: actionPlan.goals ? actionPlan.goals.filter(goal => goal.status === GoalStatusValue.ACTIVE) : [],
+        ARCHIVED: actionPlan.goals ? actionPlan.goals.filter(goal => goal.status === GoalStatusValue.ARCHIVED) : [],
+        COMPLETED: actionPlan.goals ? actionPlan.goals.filter(goal => goal.status === GoalStatusValue.COMPLETED) : [],
       },
       problemRetrievingData: actionPlan.problemRetrievingData,
     }
