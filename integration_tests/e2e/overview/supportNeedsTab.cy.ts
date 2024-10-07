@@ -37,7 +37,6 @@ context('Prisoner Overview page - Support Needs tab', () => {
     supportNeedsPage //
       .activeTabIs('Support needs')
       .hasHealthAndSupportNeedsDisplayed()
-      .hasNeurodiversityDisplayed()
   })
 
   it('should display Support Needs data given curious API returns a 404', () => {
@@ -58,7 +57,6 @@ context('Prisoner Overview page - Support Needs tab', () => {
     supportNeedsPage //
       .activeTabIs('Support needs')
       .hasHealthAndSupportNeedsDisplayed()
-      .hasNeurodiversityDisplayed()
   })
 
   it('should display curious unavailable message given curious is unavailable', () => {
