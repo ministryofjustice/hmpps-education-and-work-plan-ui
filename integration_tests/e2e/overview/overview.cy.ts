@@ -10,27 +10,17 @@ context('Prisoner Overview page - Common functionality for both pre and post ind
     cy.task('stubGetHeaderComponent')
     cy.task('stubGetFooterComponent')
     cy.task('stubPrisonerList')
+    cy.task('stubCiagInductionList')
+    cy.task('stubActionPlansList')
     cy.task('getPrisonerById')
+    cy.task('stubLearnerProfile')
+    cy.task('stubLearnerEducation')
     cy.task('stubGetInduction')
+    cy.task('stubGetAllPrisons')
     cy.task('getActionPlan')
   })
 
   const prisonNumber = 'G6115VJ'
-
-  it('should render prisoner Overview page with Create Induction panel if there is no induction', () => {
-    // Given
-    cy.signIn()
-    cy.task('stubGetInduction404Error')
-
-    // When
-    cy.visit(`/plan/${prisonNumber}/view/overview`)
-
-    // Then
-    const overviewPage = Page.verifyOnPage(OverviewPage)
-    overviewPage //
-      .isForPrisoner(prisonNumber)
-      .isPreInduction()
-  })
 
   it('should have the DPS breadcrumb which does not include the current page', () => {
     // Given

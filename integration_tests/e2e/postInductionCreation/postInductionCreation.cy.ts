@@ -56,4 +56,23 @@ context(`Show the relevant screen after an Induction has been created`, () => {
       .isForPrisoner(prisonNumber)
       .isPostInduction()
   })
+
+  it('should display the Overview page given retrieving the prisoners Action Plan fails', () => {
+    // Given
+    const prisonNumber = 'G6115VJ'
+    cy.signIn()
+    cy.task('getPrisonerById', prisonNumber)
+    cy.task('stubGetInduction', { prisonNumber })
+    cy.task('getActionPlan500Error')
+
+    // When
+    cy.visit(`/plan/${prisonNumber}/induction-created`)
+
+    // Then
+    const overviewPage = Page.verifyOnPage(OverviewPage)
+    overviewPage //
+      .isForPrisoner(prisonNumber)
+      .isPostInduction()
+      .hasServiceUnavailableMessageDisplayed() // because retrieving the action plan returned a 500
+  })
 })

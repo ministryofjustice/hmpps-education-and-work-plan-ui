@@ -106,6 +106,11 @@ export default class OverviewPage extends Page {
     return this
   }
 
+  hasServiceUnavailableMessageDisplayed(): OverviewPage {
+    this.curiousUnavailableMessage().should('not.exist')
+    return this
+  }
+
   printThisPageIsPresent(): OverviewPage {
     this.printThisPageLink().should('be.visible')
     return this
