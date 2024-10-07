@@ -1,7 +1,7 @@
 import { Request, Response } from 'express'
 import createError from 'http-errors'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
-import getPrisonerContext from '../../../data/session/prisonerContexts'
+import { getPrisonerContext } from '../../../data/session/prisonerContexts'
 import EducationLevelValue from '../../../enums/educationLevelValue'
 import HighestLevelOfEducationUpdateController from './highestLevelOfEducationUpdateController'
 import EducationAndWorkPlanService from '../../../services/educationAndWorkPlanService'

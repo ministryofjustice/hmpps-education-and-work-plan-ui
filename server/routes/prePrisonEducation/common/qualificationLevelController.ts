@@ -1,6 +1,6 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express'
 import QualificationLevelView from './qualificationLevelView'
-import getPrisonerContext from '../../../data/session/prisonerContexts'
+import { getPrisonerContext } from '../../../data/session/prisonerContexts'
 import EducationController from './educationController'
 
 /**

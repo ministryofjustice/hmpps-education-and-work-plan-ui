@@ -2,7 +2,7 @@ import { Request, Response } from 'express'
 import type { WhoCompletedReviewForm } from 'reviewPlanForms'
 import WhoCompletedReviewController from './whoCompletedReviewController'
 import aValidPrisonerSummary from '../../testsupport/prisonerSummaryTestDataBuilder'
-import getPrisonerContext from '../../data/session/prisonerContexts'
+import { getPrisonerContext } from '../../data/session/prisonerContexts'
 import ReviewPlanCompletedByValue from '../../enums/reviewPlanCompletedByValue'
 
 describe('whoCompletedReviewController', () => {

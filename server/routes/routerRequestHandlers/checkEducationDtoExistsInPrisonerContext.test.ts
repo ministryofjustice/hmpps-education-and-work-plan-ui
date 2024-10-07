@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
 import { Session } from 'express-session'
-import getPrisonerContext from '../../data/session/prisonerContexts'
+import { getPrisonerContext } from '../../data/session/prisonerContexts'
 import checkEducationDtoExistsInPrisonerContext from './checkEducationDtoExistsInPrisonerContext'
 import aValidEducationDto from '../../testsupport/educationDtoTestDataBuilder'
 

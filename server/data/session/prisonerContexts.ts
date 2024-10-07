@@ -1,6 +1,6 @@
 import { PrisonerContext, PrisonerContexts, SessionData } from 'express-session'
 
-export default function getPrisonerContext(session: Partial<SessionData>, prisonNumber: string): PrisonerContext {
+const getPrisonerContext = (session: Partial<SessionData>, prisonNumber: string): PrisonerContext => {
   if (!session.prisonerContexts) {
     // eslint-disable-next-line no-param-reassign
     session.prisonerContexts = {} as PrisonerContexts
@@ -11,3 +11,12 @@ export default function getPrisonerContext(session: Partial<SessionData>, prison
   }
   return contexts[prisonNumber]
 }
+
+const clearPrisonerContext = (session: Partial<SessionData>, prisonNumber: string) => {
+  const contexts = session.prisonerContexts
+  if (contexts) {
+    contexts[prisonNumber] = undefined
+  }
+}
+
+export { clearPrisonerContext, getPrisonerContext }

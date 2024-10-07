@@ -3,7 +3,7 @@ import createError from 'http-errors'
 import QualificationsListController from '../common/qualificationsListController'
 import getDynamicBackLinkAriaText from '../../dynamicAriaTextResolver'
 import logger from '../../../../logger'
-import getPrisonerContext from '../../../data/session/prisonerContexts'
+import { getPrisonerContext } from '../../../data/session/prisonerContexts'
 import toUpdateEducationDto from '../../../data/mappers/updateCreateOrUpdateEducationDtoMapper'
 import { EducationAndWorkPlanService } from '../../../services'
 

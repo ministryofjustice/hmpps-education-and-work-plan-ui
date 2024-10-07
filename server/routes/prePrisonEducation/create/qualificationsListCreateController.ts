@@ -1,7 +1,7 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express'
 import createError from 'http-errors'
 import QualificationsListController from '../common/qualificationsListController'
-import getPrisonerContext from '../../../data/session/prisonerContexts'
+import { getPrisonerContext } from '../../../data/session/prisonerContexts'
 import toCreateEducationDto from '../../../data/mappers/createCreateOrUpdateEducationDtoMapper'
 import logger from '../../../../logger'
 import { EducationAndWorkPlanService } from '../../../services'

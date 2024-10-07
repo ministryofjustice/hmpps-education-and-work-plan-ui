@@ -5,7 +5,7 @@ import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataB
 import QualificationsListUpdateController from './qualificationsListUpdateController'
 import { validFunctionalSkills } from '../../../testsupport/functionalSkillsTestDataBuilder'
 import aValidEducationDto from '../../../testsupport/educationDtoTestDataBuilder'
-import getPrisonerContext from '../../../data/session/prisonerContexts'
+import { getPrisonerContext } from '../../../data/session/prisonerContexts'
 import validInPrisonCourseRecords from '../../../testsupport/inPrisonCourseRecordsTestDataBuilder'
 import { anUpdateAchievedQualificationDto } from '../../../testsupport/achievedQualificationDtoTestDataBuilder'
 import EducationLevelValue from '../../../enums/educationLevelValue'

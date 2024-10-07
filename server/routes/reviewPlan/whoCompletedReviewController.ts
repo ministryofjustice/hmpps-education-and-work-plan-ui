@@ -1,7 +1,7 @@
 import { RequestHandler } from 'express'
 import type { WhoCompletedReviewForm } from 'reviewPlanForms'
 import WhoCompletedReviewView from './whoCompletedReviewView'
-import getPrisonerContext from '../../data/session/prisonerContexts'
+import { getPrisonerContext } from '../../data/session/prisonerContexts'
 import validateWhoCompletedReviewForm from '../validators/reviewPlan/whoCompletedReviewFormValidator'
 
 export default class WhoCompletedReviewController {

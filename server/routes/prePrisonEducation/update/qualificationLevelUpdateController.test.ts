@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
-import getPrisonerContext from '../../../data/session/prisonerContexts'
+import { getPrisonerContext } from '../../../data/session/prisonerContexts'
 import QualificationLevelValue from '../../../enums/qualificationLevelValue'
 import QualificationLevelUpdateController from './qualificationLevelUpdateController'
 

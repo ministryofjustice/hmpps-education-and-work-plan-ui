@@ -3,7 +3,7 @@ import { Services } from '../../services'
 import { checkUserHasViewAuthority } from '../../middleware/roleBasedAccessControl'
 import OverviewController from './overviewController'
 import retrieveCuriousInPrisonCourses from '../routerRequestHandlers/retrieveCuriousInPrisonCourses'
-import removeInductionFormsFromSession from '../routerRequestHandlers/removeInductionFormsFromSession'
+import removeFormDataFromSession from '../routerRequestHandlers/removeFormDataFromSession'
 import asyncMiddleware from '../../middleware/asyncMiddleware'
 import TimelineController from './timelineController'
 import SupportNeedsController from './supportNeedsController'
@@ -36,7 +36,7 @@ export default (router: Router, services: Services) => {
   const viewArchivedGoalsController = new ViewArchivedGoalsController(services.educationAndWorkPlanService)
   const viewGoalsController = new ViewGoalsController()
 
-  router.use('/plan/:prisonNumber/view/*', [checkUserHasViewAuthority(), removeInductionFormsFromSession])
+  router.use('/plan/:prisonNumber/view/*', [checkUserHasViewAuthority(), removeFormDataFromSession])
 
   if (config.featureToggles.newOverviewPageEnabled) {
     router.get('/plan/:prisonNumber/view/overview', [

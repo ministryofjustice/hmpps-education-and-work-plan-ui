@@ -10,7 +10,7 @@ import validateUpdateGoalForm from './updateGoalFormValidator'
 import { toUpdateGoalDto } from './mappers/updateGoalFormToUpdateGoalDtoMapper'
 import { AuditService } from '../../services'
 import { BaseAuditData } from '../../services/auditService'
-import getPrisonerContext from '../../data/session/prisonerContexts'
+import { getPrisonerContext } from '../../data/session/prisonerContexts'
 
 export default class UpdateGoalController {
   constructor(
