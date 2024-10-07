@@ -1,7 +1,7 @@
 import { Request, Response } from 'express'
 import { Session } from 'express-session'
 import type { EducationDto } from 'dto'
-import getPrisonerContext from '../../data/session/prisonerContexts'
+import { getPrisonerContext } from '../../data/session/prisonerContexts'
 import createEmptyEducationDtoIfNotInPrisonerContext from './createEmptyEducationDtoIfNotInPrisonerContext'
 import aValidEducationDto from '../../testsupport/educationDtoTestDataBuilder'
 

@@ -3,7 +3,7 @@ import type { Assessment } from 'viewModels'
 import type { EducationDto } from 'dto'
 import QualificationsListView from './qualificationsListView'
 import dateComparator from '../../dateComparator'
-import getPrisonerContext from '../../../data/session/prisonerContexts'
+import { getPrisonerContext } from '../../../data/session/prisonerContexts'
 import EducationController from './educationController'
 
 /**

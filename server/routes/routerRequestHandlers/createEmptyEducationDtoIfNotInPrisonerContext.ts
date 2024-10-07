@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express'
 import type { EducationDto } from 'dto'
-import getPrisonerContext from '../../data/session/prisonerContexts'
+import { getPrisonerContext } from '../../data/session/prisonerContexts'
 
 /**
  * Request handler function to check whether an Education DTO exists in the prisoner context for the prisoner referenced

@@ -2,7 +2,7 @@ import { NextFunction, Request, RequestHandler, Response } from 'express'
 import createError from 'http-errors'
 import { EducationAndWorkPlanService } from '../../services'
 import asyncMiddleware from '../../middleware/asyncMiddleware'
-import getPrisonerContext from '../../data/session/prisonerContexts'
+import { getPrisonerContext } from '../../data/session/prisonerContexts'
 
 /**
  *  Middleware function that returns a Request handler function to retrieve the prisoner's Education record from

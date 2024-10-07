@@ -14,7 +14,7 @@ import {
 import { toUpdateGoalDto } from './mappers/updateGoalFormToUpdateGoalDtoMapper'
 import aValidPrisonerSummary from '../../testsupport/prisonerSummaryTestDataBuilder'
 import AuditService, { BaseAuditData } from '../../services/auditService'
-import getPrisonerContext from '../../data/session/prisonerContexts'
+import { getPrisonerContext } from '../../data/session/prisonerContexts'
 
 jest.mock('../../services/educationAndWorkPlanService')
 jest.mock('../../services/auditService')

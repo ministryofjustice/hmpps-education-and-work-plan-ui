@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from 'express'
 import type { UpdateGoalForm } from 'forms'
 import { SessionData } from 'express-session'
 import checkUpdateGoalFormExistsInSession from './checkUpdateGoalFormExistsInSession'
-import getPrisonerContext from '../../data/session/prisonerContexts'
+import { getPrisonerContext } from '../../data/session/prisonerContexts'
 
 describe('checkUpdateGoalFormExistsInSession', () => {
   const req = {

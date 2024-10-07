@@ -17,11 +17,16 @@ import type {
   WorkInterestTypesForm,
 } from 'inductionForms'
 import { SessionData } from 'express-session'
-import removeInductionFormsFromSession from './removeInductionFormsFromSession'
+import removeFormDataFromSession from './removeFormDataFromSession'
+import { aValidUpdateGoalForm } from '../../testsupport/updateGoalFormTestDataBuilder'
+import { getPrisonerContext } from '../../data/session/prisonerContexts'
 
-describe('removeInductionFormsFromSession', () => {
+describe('removeFormDataFromSession', () => {
+  const prisonNumber = 'A1234BC'
+
   const req = {
     session: {} as SessionData,
+    params: { prisonNumber },
   }
   const res = {}
   const next = jest.fn()
@@ -31,8 +36,10 @@ describe('removeInductionFormsFromSession', () => {
     req.session = {} as SessionData
   })
 
-  it('should remove induction forms from session', async () => {
+  it('should remove form and DTOs from the prisoner context and session', async () => {
     // Given
+    getPrisonerContext(req.session, prisonNumber).updateGoalForm = aValidUpdateGoalForm()
+
     req.session.pageFlowQueue = {} as PageFlow
     req.session.pageFlowHistory = {} as PageFlow
     req.session.inductionDto = {} as InductionDto
@@ -53,7 +60,7 @@ describe('removeInductionFormsFromSession', () => {
     req.session.additionalTrainingForm = {} as AdditionalTrainingForm
 
     // When
-    await removeInductionFormsFromSession(
+    await removeFormDataFromSession(
       req as undefined as Request,
       res as undefined as Response,
       next as undefined as NextFunction,
@@ -61,6 +68,7 @@ describe('removeInductionFormsFromSession', () => {
 
     // Then
     expect(next).toHaveBeenCalled()
+    expect(getPrisonerContext(req.session, prisonNumber)).toEqual({})
     expect(req.session.pageFlowQueue).toBeUndefined()
     expect(req.session.pageFlowHistory).toBeUndefined()
     expect(req.session.inductionDto).toBeUndefined()

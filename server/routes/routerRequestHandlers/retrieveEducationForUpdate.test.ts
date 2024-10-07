@@ -3,7 +3,7 @@ import createHttpError from 'http-errors'
 import EducationAndWorkPlanService from '../../services/educationAndWorkPlanService'
 import retrieveEducationForUpdate from './retrieveEducationForUpdate'
 import aValidEducationDto from '../../testsupport/educationDtoTestDataBuilder'
-import getPrisonerContext from '../../data/session/prisonerContexts'
+import { getPrisonerContext } from '../../data/session/prisonerContexts'
 
 jest.mock('../../services/educationAndWorkPlanService')
 

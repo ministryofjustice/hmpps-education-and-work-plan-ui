@@ -2,7 +2,7 @@ import { NextFunction, Request, RequestHandler, Response } from 'express'
 import type { EducationDto } from 'dto'
 import type { QualificationDetailsForm } from 'forms'
 import QualificationDetailsView from './qualificationDetailsView'
-import getPrisonerContext from '../../../data/session/prisonerContexts'
+import { getPrisonerContext } from '../../../data/session/prisonerContexts'
 import QualificationLevelValue from '../../../enums/qualificationLevelValue'
 import EducationController from './educationController'
 

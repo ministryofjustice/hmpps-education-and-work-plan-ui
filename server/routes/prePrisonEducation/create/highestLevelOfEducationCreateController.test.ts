@@ -2,7 +2,7 @@ import { Request, Response } from 'express'
 import type { EducationDto } from 'dto'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
 import EducationLevelValue from '../../../enums/educationLevelValue'
-import getPrisonerContext from '../../../data/session/prisonerContexts'
+import { getPrisonerContext } from '../../../data/session/prisonerContexts'
 import HighestLevelOfEducationCreateController from './highestLevelOfEducationCreateController'
 
 describe('highestLevelOfEducationCreateController', () => {

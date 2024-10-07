@@ -2,7 +2,7 @@ import { NextFunction, Request, RequestHandler, Response } from 'express'
 import type { EducationDto } from 'dto'
 import type { HighestLevelOfEducationForm } from 'forms'
 import HighestLevelOfEducationView from './highestLevelOfEducationView'
-import getPrisonerContext from '../../../data/session/prisonerContexts'
+import { getPrisonerContext } from '../../../data/session/prisonerContexts'
 import EducationController from './educationController'
 
 /**

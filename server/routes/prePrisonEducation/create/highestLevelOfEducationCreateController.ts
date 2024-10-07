@@ -1,7 +1,7 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express'
 import HighestLevelOfEducationController from '../common/highestLevelOfEducationController'
 import validateHighestLevelOfEducationForm from '../../validators/induction/highestLevelOfEducationFormValidator'
-import getPrisonerContext from '../../../data/session/prisonerContexts'
+import { getPrisonerContext } from '../../../data/session/prisonerContexts'
 import getDynamicBackLinkAriaText from '../../dynamicAriaTextResolver'
 
 export default class HighestLevelOfEducationCreateController extends HighestLevelOfEducationController {

@@ -1,6 +1,6 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express'
 import QualificationDetailsController from '../common/qualificationDetailsController'
-import getPrisonerContext from '../../../data/session/prisonerContexts'
+import { getPrisonerContext } from '../../../data/session/prisonerContexts'
 import validateQualificationDetailsForm from '../../validators/induction/qualificationDetailsFormValidator'
 import getDynamicBackLinkAriaText from '../../dynamicAriaTextResolver'
 
