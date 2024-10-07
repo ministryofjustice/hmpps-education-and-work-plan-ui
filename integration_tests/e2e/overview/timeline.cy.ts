@@ -142,6 +142,27 @@ context('Prisoner Overview page - Timeline tab', () => {
       .hasEmptyTimelineMessageDisplayed()
   })
 
+  it('should navigate to archived goals tab when view archived goal button is clicked', () => {
+    // Given
+    const prisonNumber = 'G5005GD'
+    cy.task('stubGetTimeline', prisonNumber) // Prison number G5005GD has a timeline where 4 goals have been achived, and 1 goal un-archived
+    cy.task('getActionPlan', prisonNumber)
+
+    cy.signIn()
+    cy.visit(`/plan/${prisonNumber}/view/overview`)
+    const overviewPage = Page.verifyOnPage(OverviewPage)
+
+    // When
+    overviewPage.selectTab('Timeline')
+    const timelinePage = Page.verifyOnPage(TimelinePage)
+    timelinePage.clickViewArchivedGoalsButton()
+
+    // Then
+    const goalsPage = Page.verifyOnPage(GoalsPage)
+    goalsPage //
+      .checkOnArchivedGoalsTab()
+  })
+
   it('should navigate to in progress goals tab when view goals button is clicked', () => {
     // Given
     const prisonNumber = 'G5005GD'
