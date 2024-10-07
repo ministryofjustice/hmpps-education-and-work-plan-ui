@@ -1,5 +1,5 @@
-import Page from '../../pages/page'
-import OverviewPage from '../../pages/overview/OverviewPage'
+import Page from '../../../pages/page'
+import OverviewPage from '../../../pages/overview/OverviewPage'
 
 context('View goals', () => {
   const prisonNumber = 'G6115VJ'

@@ -1,10 +1,10 @@
-import Page from '../../pages/page'
-import OverviewPage from '../../pages/overview/OverviewPage'
-import ReviewUpdateGoalPage from '../../pages/goal/ReviewUpdateGoalPage'
-import UpdateGoalPage from '../../pages/goal/UpdateGoalPage'
-import AuthorisationErrorPage from '../../pages/authorisationError'
-import Error500Page from '../../pages/error500'
-import GoalsPage from '../../pages/goal/GoalsPage'
+import Page from '../../../pages/page'
+import OverviewPage from '../../../pages/overview/OverviewPage'
+import ReviewUpdateGoalPage from '../../../pages/goal/ReviewUpdateGoalPage'
+import UpdateGoalPage from '../../../pages/goal/UpdateGoalPage'
+import AuthorisationErrorPage from '../../../pages/authorisationError'
+import Error500Page from '../../../pages/error500'
+import GoalsPage from '../../../pages/goal/GoalsPage'
 
 context('Review updated goal', () => {
   beforeEach(() => {

@@ -1,6 +1,6 @@
-import Page from '../../pages/page'
-import OverviewPage from '../../pages/overview/OverviewPage'
-import GoalsPage from '../../pages/goal/GoalsPage'
+import Page from '../../../pages/page'
+import OverviewPage from '../../../pages/overview/OverviewPage'
+import GoalsPage from '../../../pages/goal/GoalsPage'
 
 context('Unarchive a goal', () => {
   const prisonNumber = 'G6115VJ'

@@ -1,9 +1,9 @@
-import Page from '../../pages/page'
-import CreateGoalsPage from '../../pages/goal/CreateGoalsPage'
-import { postRequestedFor } from '../../mockApis/wiremock/requestPatternBuilder'
-import { urlEqualTo } from '../../mockApis/wiremock/matchers/url'
-import { matchingJsonPath } from '../../mockApis/wiremock/matchers/content'
-import OverviewPage from '../../pages/overview/OverviewPage'
+import Page from '../../../pages/page'
+import CreateGoalsPage from '../../../pages/goal/CreateGoalsPage'
+import { postRequestedFor } from '../../../mockApis/wiremock/requestPatternBuilder'
+import { urlEqualTo } from '../../../mockApis/wiremock/matchers/url'
+import { matchingJsonPath } from '../../../mockApis/wiremock/matchers/content'
+import OverviewPage from '../../../pages/overview/OverviewPage'
 
 context('Create goals', () => {
   beforeEach(() => {
