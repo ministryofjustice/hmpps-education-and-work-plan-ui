@@ -156,4 +156,8 @@ declare module 'reviewPlanForms' {
     'reviewDate-month': string
     'reviewDate-year': string
   }
+
+  export interface ReviewNoteForm {
+    notes?: string
+  }
 }

@@ -2,6 +2,7 @@ declare module 'dto' {
   import ReasonToArchiveGoalValue from '../../enums/ReasonToArchiveGoalValue'
   import EducationLevelValue from '../../enums/educationLevelValue'
   import QualificationLevelValue from '../../enums/qualificationLevelValue'
+  import ReviewPlanCompletedByValue from '../../enums/reviewPlanCompletedByValue'
 
   export interface CreateGoalDto {
     prisonNumber: string
@@ -67,6 +68,13 @@ declare module 'dto' {
     prisonId: string
     educationLevel: EducationLevelValue
     qualifications: Array<AchievedQualificationDto>
+  }
+
+  export interface ReviewPlanDto {
+    completedBy: ReviewPlanCompletedByValue
+    completedByOther?: string
+    reviewDate: string
+    notes?: string
   }
 }
 

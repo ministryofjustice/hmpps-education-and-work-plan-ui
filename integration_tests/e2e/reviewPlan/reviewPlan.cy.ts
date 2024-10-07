@@ -3,6 +3,8 @@ import Page from '../../pages/page'
 import WhoCompletedReviewPage from '../../pages/reviewPlan/WhoCompletedReviewPage'
 import AuthorisationErrorPage from '../../pages/authorisationError'
 import ReviewPlanCompletedByValue from '../../../server/enums/reviewPlanCompletedByValue'
+import ReviewNotePage from '../../pages/reviewPlan/ReviewNotePage'
+import OverviewPage from '../../pages/overview/OverviewPage'
 
 context(`Review a prisoner's plan`, () => {
   const prisonNumber = 'G6115VJ'
@@ -44,6 +46,17 @@ context(`Review a prisoner's plan`, () => {
       .hasBackLinkTo(`/plan/${prisonNumber}/view/overview`)
   })
 
+  it('should redirect to overview page given user tries to navigate directly to Review Notes screen - ie. navigate out of sequence', () => {
+    // Given
+    cy.signIn()
+
+    // When
+    cy.visit(`/plan/${prisonNumber}/review/notes`)
+
+    // Then
+    Page.verifyOnPage(OverviewPage)
+  })
+
   it(`should complete a prisoner's review, triggering validation on every screen`, () => {
     // Given
     cy.signIn()
@@ -67,9 +80,21 @@ context(`Review a prisoner's plan`, () => {
       .hasErrorCount(1)
       .hasFieldInError('completedByOther')
       .enterReviewersName('A Reviewer')
+      .submitPage()
+
+    // Next page is Review Notes page
+    Page.verifyOnPage(ReviewNotePage)
+      .hasBackLinkTo(`/plan/${prisonNumber}/review`)
+      .setReviewNote(
+        `Daniel's review went well and he has made good progress on his goals.
+Working in the prison kitchen is suiting Daniel well and is allowing him to focus on more productive uses of his time whilst in prison.
+
+We have agreed and set a new goal, and the next review is 1 year from now.   
+`,
+      )
     // .submitPage()
 
     // Then
-    // TODO - assert API was called with correct valyes
+    // TODO - assert API was called with correct values
   })
 })
