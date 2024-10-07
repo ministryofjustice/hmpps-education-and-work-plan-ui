@@ -57,7 +57,7 @@ context('Prisoner Overview page - Common functionality for both pre and post ind
     overviewPage.hasFallbackFooter()
   })
 
-  it('should display correct counts of in progress, archived and completed goals', () => {
+  it('should display correct counts of in progress and archived goals', () => {
     // Given
     cy.signIn()
 
@@ -70,7 +70,6 @@ context('Prisoner Overview page - Common functionality for both pre and post ind
       .isForPrisoner(prisonNumber)
       .activeTabIs('Overview')
       .hasNumberOfInProgressGoals(1)
-      .hasNumberOfCompletedGoals(1)
       .hasNumberOfArchivedGoals(2)
   })
 

@@ -95,7 +95,7 @@ describe('overviewTabContents', () => {
       prisonerSummary,
       isPostInduction: false,
       problemRetrievingData: false,
-      goalCounts: { activeCount: 3, completedCount: 1, archivedCount: 2 },
+      goalCounts: { activeCount: 3, archivedCount: 2 },
     }
 
     // When
@@ -104,13 +104,9 @@ describe('overviewTabContents', () => {
 
     // Then
     expect($('[data-qa="in-progress-goals-count"]').text().trim()).toEqual('3')
-    expect($('[data-qa="completed-goals-count"]').text().trim()).toEqual('1')
     expect($('[data-qa="archived-goals-count"]').text().trim()).toEqual('2')
     expect($('[data-qa="view-in-progress-goals-button"]').attr('href')).toEqual(
       `/plan/${prisonerSummary.prisonNumber}/view/goals#in-progress-goals`,
-    )
-    expect($('[data-qa="view-completed-goals-button"]').attr('href')).toEqual(
-      `/plan/${prisonerSummary.prisonNumber}/view/overview`,
     )
     expect($('[data-qa="view-archived-goals-button"]').attr('href')).toEqual(
       `/plan/${prisonerSummary.prisonNumber}/view/goals#archived-goals`,
