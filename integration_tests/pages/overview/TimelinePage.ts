@@ -1,3 +1,4 @@
+import GoalsPage from '../goal/GoalsPage'
 import Page, { PageElement } from '../page'
 
 /**
@@ -42,6 +43,11 @@ export default class TimelinePage extends Page {
     return this
   }
 
+  clickViewArchivedGoalsButton(): GoalsPage {
+    this.viewArchivedGoalsButton().first().click()
+    return Page.verifyOnPage(GoalsPage)
+  }
+
   activeTab = (): PageElement => cy.get('.moj-sub-navigation__link[aria-current=page]')
 
   emptyTimelineMessage = (): PageElement => cy.get('[data-qa=empty-timeline-message]')
@@ -49,4 +55,6 @@ export default class TimelinePage extends Page {
   timelineUnavailableMessage = (): PageElement => cy.get('[data-qa=timeline-unavailable-message]')
 
   timelineContainer = (): PageElement => cy.get('div.moj-timeline')
+
+  viewArchivedGoalsButton = (): PageElement => cy.get('[data-qa=view-archived-goals-button]')
 }
