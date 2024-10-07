@@ -4,6 +4,9 @@ import config from '../../config'
 import asyncMiddleware from '../../middleware/asyncMiddleware'
 import { checkUserHasEditAuthority } from '../../middleware/roleBasedAccessControl'
 import WhoCompletedReviewController from './whoCompletedReviewController'
+import createEmptyReviewPlanDtoIfNotInPrisonerContext from '../routerRequestHandlers/createEmptyReviewPlanDtoIfNotInPrisonerContext'
+import checkReviewPlanDtoExistsInPrisonerContext from '../routerRequestHandlers/checkReviewPlanDtoExistsInPrisonerContext'
+import ReviewNoteController from './reviewNoteController'
 
 const ENABLED_PRISONS_FOR_REVIEW_JOURNEYS = config.featureToggles.reviewsPrisonsEnabled
   .split(',')
@@ -14,16 +17,25 @@ const ENABLED_PRISONS_FOR_REVIEW_JOURNEYS = config.featureToggles.reviewsPrisons
  */
 export default function reviewPlanRoutes(router: Router) {
   const whoCompletedReviewController = new WhoCompletedReviewController()
+  const reviewNoteController = new ReviewNoteController()
 
-  router.use('/plan/:prisonNumber/review', [checkPrisonIsEnabled(), checkUserHasEditAuthority()])
-  router.use('/plan/:prisonNumber/review/**', [checkPrisonIsEnabled(), checkUserHasEditAuthority()])
+  router.use('/plan/:prisonNumber/review/**', [
+    checkPrisonIsEnabled(),
+    checkUserHasEditAuthority(),
+    checkReviewPlanDtoExistsInPrisonerContext,
+  ])
+
+  router.use('/plan/:prisonNumber/review', [
+    checkPrisonIsEnabled(),
+    checkUserHasEditAuthority(),
+    createEmptyReviewPlanDtoIfNotInPrisonerContext,
+  ])
 
   router.get('/plan/:prisonNumber/review', asyncMiddleware(whoCompletedReviewController.getWhoCompletedReviewView))
   router.post('/plan/:prisonNumber/review', asyncMiddleware(whoCompletedReviewController.submitWhoCompletedReviewForm))
 
-  router.get('/plan/:prisonNumber/review/notes', async (_req, res, next) => {
-    // TODO implement controller for Review notes page
-  })
+  router.get('/plan/:prisonNumber/review/notes', asyncMiddleware(reviewNoteController.getReviewNoteView))
+  router.post('/plan/:prisonNumber/review/notes', asyncMiddleware(reviewNoteController.submitReviewNoteForm))
 
   router.get('/plan/:prisonNumber/review/check-your-answers', async (_req, res, next) => {
     // TODO implement controller for Review check your answers page

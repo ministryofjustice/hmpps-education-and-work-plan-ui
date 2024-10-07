@@ -1,5 +1,6 @@
 import { Request, Response } from 'express'
 import type { WhoCompletedReviewForm } from 'reviewPlanForms'
+import type { ReviewPlanDto } from 'dto'
 import WhoCompletedReviewController from './whoCompletedReviewController'
 import aValidPrisonerSummary from '../../testsupport/prisonerSummaryTestDataBuilder'
 import { getPrisonerContext } from '../../data/session/prisonerContexts'
@@ -26,15 +27,29 @@ describe('whoCompletedReviewController', () => {
   beforeEach(() => {
     jest.resetAllMocks()
     req.body = {}
+    getPrisonerContext(req.session, prisonNumber).reviewPlanDto = undefined
     getPrisonerContext(req.session, prisonNumber).whoCompletedReviewForm = undefined
   })
 
   describe('getWhoCompletedReviewView', () => {
-    it(`should get 'who completed review' view given form is not on the prisoner context`, async () => {
+    it(`should get 'who completed review' view given form is not on the prisoner context, but DTO is on the context`, async () => {
       // Given
       getPrisonerContext(req.session, prisonNumber).whoCompletedReviewForm = undefined
 
-      const expectedForm = {} as WhoCompletedReviewForm
+      const reviewPlanDto: ReviewPlanDto = {
+        completedBy: ReviewPlanCompletedByValue.MYSELF,
+        reviewDate: '2024-03-09',
+      }
+      getPrisonerContext(req.session, prisonNumber).reviewPlanDto = reviewPlanDto
+
+      const expectedForm: WhoCompletedReviewForm = {
+        completedBy: ReviewPlanCompletedByValue.MYSELF,
+        completedByOther: undefined,
+        'reviewDate-day': '09',
+        'reviewDate-month': '03',
+        'reviewDate-year': '2024',
+      }
+
       const expectedView = {
         prisonerSummary,
         form: expectedForm,
@@ -102,18 +117,24 @@ describe('whoCompletedReviewController', () => {
 
       const validForm: WhoCompletedReviewForm = {
         completedBy: ReviewPlanCompletedByValue.MYSELF,
-        'reviewDate-day': '20',
+        'reviewDate-day': '9',
         'reviewDate-month': '3',
         'reviewDate-year': '2024',
       }
       req.body = validForm
+
+      const reviewPlanDto: ReviewPlanDto = {
+        completedBy: ReviewPlanCompletedByValue.MYSELF,
+        reviewDate: '2024-03-09',
+      }
 
       // When
       await controller.submitWhoCompletedReviewForm(req, res, next)
 
       // Then
       expect(res.redirect).toHaveBeenCalledWith('/plan/A1234BC/review/notes')
-      expect(getPrisonerContext(req.session, prisonNumber).whoCompletedReviewForm).toEqual(validForm)
+      expect(getPrisonerContext(req.session, prisonNumber).whoCompletedReviewForm).toBeUndefined()
+      expect(getPrisonerContext(req.session, prisonNumber).reviewPlanDto).toEqual(reviewPlanDto)
     })
   })
 })
