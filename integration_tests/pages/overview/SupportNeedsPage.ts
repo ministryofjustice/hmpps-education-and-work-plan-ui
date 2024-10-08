@@ -19,11 +19,6 @@ export default class SupportNeedsPage extends Page {
     return this
   }
 
-  hasNeurodiversityDisplayed(): SupportNeedsPage {
-    this.neurodiversitySummaryCard().should('be.visible')
-    return this
-  }
-
   hasCuriousUnavailableMessageDisplayed(): SupportNeedsPage {
     this.curiousUnavailableMessage().should('be.exist')
     return this
@@ -32,8 +27,6 @@ export default class SupportNeedsPage extends Page {
   activeTab = (): PageElement => cy.get('.moj-sub-navigation__link[aria-current=page]')
 
   healthAndSupportNeedsSummaryCard = (): PageElement => cy.get('#health-and-support-needs-summary-card')
-
-  neurodiversitySummaryCard = (): PageElement => cy.get('#neurodiversity-summary-card')
 
   curiousUnavailableMessage = (): PageElement => cy.get('[data-qa=curious-unavailable-message]')
 }

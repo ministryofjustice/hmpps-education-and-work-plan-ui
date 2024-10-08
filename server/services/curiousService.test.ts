@@ -1,11 +1,10 @@
 import type { LearnerEductionPagedResponse } from 'curiousApiClient'
-import type { FunctionalSkills, InPrisonCourseRecords, Neurodiversity, PrisonerSupportNeeds } from 'viewModels'
+import type { FunctionalSkills, InPrisonCourseRecords, PrisonerSupportNeeds } from 'viewModels'
 import moment from 'moment'
 import CuriousClient from '../data/curiousClient'
 import HmppsAuthClient from '../data/hmppsAuthClient'
 import CuriousService from './curiousService'
 import aValidLearnerProfile from '../testsupport/learnerProfileTestDataBuilder'
-import aValidLearnerNeurodivergence from '../testsupport/learnerNeurodivergenceTestDataBuilder'
 import {
   learnerEducationPagedResponse,
   learnerEducationPagedResponsePage1Of1,
@@ -40,9 +39,6 @@ describe('curiousService', () => {
       const learnerProfiles = [aValidLearnerProfile()]
       curiousClient.getLearnerProfile.mockResolvedValue(learnerProfiles)
 
-      const learnerNeurodivergences = [aValidLearnerNeurodivergence()]
-      curiousClient.getLearnerNeurodivergence.mockResolvedValue(learnerNeurodivergences)
-
       const expectedSupportNeeds: PrisonerSupportNeeds = {
         problemRetrievingData: false,
         healthAndSupportNeeds: [
@@ -53,18 +49,6 @@ describe('curiousService', () => {
             additionalLddAndHealthNeeds: ['Hearing impairment'],
           },
         ],
-        neurodiversities: [
-          {
-            prisonId: 'MDI',
-            prisonName: 'MOORLAND (HMP & YOI)',
-            supportNeeded: ['Writing support'],
-            supportNeededRecordedDate: moment('2022-02-18').utc().toDate(),
-            selfDeclaredNeurodiversity: ['Dyslexia'],
-            selfDeclaredRecordedDate: moment('2022-02-18').utc().toDate(),
-            assessedNeurodiversity: ['No Identified Neurodiversity Need'],
-            assessmentDate: moment('2022-05-18').utc().toDate(),
-          },
-        ],
       }
 
       // When
@@ -73,7 +57,6 @@ describe('curiousService', () => {
       // Then
       expect(actual).toEqual(expectedSupportNeeds)
       expect(curiousClient.getLearnerProfile).toHaveBeenCalledWith(prisonNumber, systemToken)
-      expect(curiousClient.getLearnerNeurodivergence).toHaveBeenCalledWith(prisonNumber, systemToken)
     })
 
     it('should handle retrieval of prisoner support needs given Curious returns an unexpected error for the learner profile', async () => {
@@ -94,7 +77,6 @@ describe('curiousService', () => {
       const expectedSupportNeeds = {
         problemRetrievingData: true,
         healthAndSupportNeeds: undefined,
-        neurodiversities: undefined,
       } as PrisonerSupportNeeds
 
       // When
@@ -105,42 +87,6 @@ describe('curiousService', () => {
       // Then
       expect(actual).toEqual(expectedSupportNeeds)
       expect(curiousClient.getLearnerProfile).toHaveBeenCalledWith(prisonNumber, systemToken)
-      expect(curiousClient.getLearnerNeurodivergence).not.toHaveBeenCalled()
-    })
-
-    it('should handle retrieval of prisoner support needs given Curious returns an unexpected error for the learner neuro divergences', async () => {
-      // Given
-      const prisonNumber = 'A1234BC'
-      const username = 'a-dps-user'
-
-      const systemToken = 'a-system-token'
-      hmppsAuthClient.getSystemClientToken.mockResolvedValue(systemToken)
-
-      const learnerProfiles = [aValidLearnerProfile()]
-      curiousClient.getLearnerProfile.mockResolvedValue(learnerProfiles)
-
-      const curiousApiError = {
-        message: 'Internal Server Error',
-        status: 500,
-        text: { errorCode: 'VC5000', errorMessage: 'Internal server error', httpStatusCode: 500 },
-      }
-      curiousClient.getLearnerNeurodivergence.mockRejectedValue(curiousApiError)
-
-      const expectedSupportNeeds = {
-        problemRetrievingData: true,
-        healthAndSupportNeeds: undefined,
-        neurodiversities: undefined,
-      } as PrisonerSupportNeeds
-
-      // When
-      const actual = await curiousService.getPrisonerSupportNeeds(prisonNumber, username).catch(error => {
-        return error
-      })
-
-      // Then
-      expect(actual).toEqual(expectedSupportNeeds)
-      expect(curiousClient.getLearnerProfile).toHaveBeenCalledWith(prisonNumber, systemToken)
-      expect(curiousClient.getLearnerNeurodivergence).toHaveBeenCalledWith(prisonNumber, systemToken)
     })
 
     it('should handle retrieval of prisoner support needs given Curious returns not found error for the learner profile', async () => {
@@ -158,24 +104,9 @@ describe('curiousService', () => {
       }
       curiousClient.getLearnerProfile.mockRejectedValue(curiousApi404Error)
 
-      const learnerNeurodivergences = [aValidLearnerNeurodivergence()]
-      curiousClient.getLearnerNeurodivergence.mockResolvedValue(learnerNeurodivergences)
-
       const expectedSupportNeeds = {
         problemRetrievingData: false,
         healthAndSupportNeeds: undefined,
-        neurodiversities: [
-          {
-            prisonId: 'MDI',
-            prisonName: 'MOORLAND (HMP & YOI)',
-            supportNeeded: ['Writing support'],
-            supportNeededRecordedDate: moment('2022-02-18').utc().toDate(),
-            selfDeclaredNeurodiversity: ['Dyslexia'],
-            selfDeclaredRecordedDate: moment('2022-02-18').utc().toDate(),
-            assessedNeurodiversity: ['No Identified Neurodiversity Need'],
-            assessmentDate: moment('2022-05-18').utc().toDate(),
-          } as Neurodiversity,
-        ],
       } as PrisonerSupportNeeds
 
       // When
@@ -186,49 +117,6 @@ describe('curiousService', () => {
       // Then
       expect(actual).toEqual(expectedSupportNeeds)
       expect(curiousClient.getLearnerProfile).toHaveBeenCalledWith(prisonNumber, systemToken)
-      expect(curiousClient.getLearnerNeurodivergence).toHaveBeenCalledWith(prisonNumber, systemToken)
-    })
-
-    it('should handle retrieval of prisoner support needs given Curious returns not found error for the learner neuro divergences', async () => {
-      // Given
-      const prisonNumber = 'A1234BC'
-      const username = 'a-dps-user'
-
-      const systemToken = 'a-system-token'
-      hmppsAuthClient.getSystemClientToken.mockResolvedValue(systemToken)
-
-      const learnerProfiles = [aValidLearnerProfile()]
-      curiousClient.getLearnerProfile.mockResolvedValue(learnerProfiles)
-
-      const curiousApi404Error = {
-        message: 'Not Found',
-        status: 404,
-        text: { errorCode: 'VC4004', errorMessage: 'Resource not found', httpStatusCode: 404 },
-      }
-      curiousClient.getLearnerNeurodivergence.mockRejectedValue(curiousApi404Error)
-
-      const expectedSupportNeeds: PrisonerSupportNeeds = {
-        problemRetrievingData: false,
-        healthAndSupportNeeds: [
-          {
-            prisonId: 'MDI',
-            prisonName: 'MOORLAND (HMP & YOI)',
-            primaryLddAndHealthNeeds: 'Visual impairment',
-            additionalLddAndHealthNeeds: ['Hearing impairment'],
-          },
-        ],
-        neurodiversities: undefined,
-      }
-
-      // When
-      const actual = await curiousService.getPrisonerSupportNeeds(prisonNumber, username).catch(error => {
-        return error
-      })
-
-      // Then
-      expect(actual).toEqual(expectedSupportNeeds)
-      expect(curiousClient.getLearnerProfile).toHaveBeenCalledWith(prisonNumber, systemToken)
-      expect(curiousClient.getLearnerNeurodivergence).toHaveBeenCalledWith(prisonNumber, systemToken)
     })
   })
 

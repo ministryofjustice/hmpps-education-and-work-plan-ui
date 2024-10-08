@@ -44,20 +44,6 @@ describe('Support Needs tab view', () => {
       'Mental health difficulty',
       'Social and emotional difficulties',
     ])
-
-    const neurodiversityCard = $('#neurodiversity-summary-card')
-    // expect there to be only 1 gov-uk-summmary-list representing the data from the 1 prison in aValidPrisonerSupportNeeds()
-    expect(neurodiversityCard.find('.govuk-summary-list').length).toEqual(1)
-    expect(neurodiversityCard.heading()).toContain(
-      `Jimmy Lightfingers's neurodiversity support needs recorded whilst at`,
-    )
-    expect(neurodiversityCard.heading()).toContain('Moorland (HMP & YOI)')
-    expect(neurodiversityCard.neurodiversitySupportNeeds()).toContain('Writing support')
-    expect(neurodiversityCard.neurodiversitySupportNeeds()).toContain('Recorded on 18 February 2022')
-    expect(neurodiversityCard.assessedNeurodiversityDiagnosis()).toContain('No Identified Neurodiversity Need')
-    expect(neurodiversityCard.assessedNeurodiversityDiagnosis()).toContain('Recorded on 18 May 2022')
-    expect(neurodiversityCard.selfDeclaredNeurodiversityDiagnosis()).toContain('Dyslexia')
-    expect(neurodiversityCard.selfDeclaredNeurodiversityDiagnosis()).toContain('Recorded on 18 February 2022')
   })
 
   it('should render content saying curious is unavailable given problem retrieving data is true', () => {
@@ -85,9 +71,6 @@ declare module 'cheerio' {
     inDepthAssessmentDate(this: Cheerio<T>): Cheerio<T>
     primaryLddAndHealthNeeds(this: Cheerio<T>): Cheerio<T>
     additionalLddAndHealthNeeds(this: Cheerio<T>): Cheerio<T>
-    selfDeclaredNeurodiversityDiagnosis(this: Cheerio<T>): Cheerio<T>
-    assessedNeurodiversityDiagnosis(this: Cheerio<T>): Cheerio<T>
-    neurodiversitySupportNeeds(this: Cheerio<T>): Cheerio<T>
   }
 }
 
@@ -115,17 +98,5 @@ const setupCheerioExtensionFunctions = ($: CheerioAPI) => {
       .find('li')
       .toArray()
       .map((el: never) => $(el).text())
-  }
-  // eslint-disable-next-line no-param-reassign
-  $.prototype.selfDeclaredNeurodiversityDiagnosis = function selfDeclaredNeurodiversityDiagnosis(): Cheerio<never> {
-    return this.find(`.govuk-summary-list__key:contains('Self-declared')`).next().text()
-  }
-  // eslint-disable-next-line no-param-reassign
-  $.prototype.assessedNeurodiversityDiagnosis = function assessedNeurodiversityDiagnosis(): Cheerio<never> {
-    return this.find(`.govuk-summary-list__key:contains('From neurodiversity assessment')`).next().text()
-  }
-  // eslint-disable-next-line no-param-reassign
-  $.prototype.neurodiversitySupportNeeds = function neurodiversitySupportNeeds(): Cheerio<never> {
-    return this.find(`.govuk-summary-list__key:contains('Support needed')`).next().text()
   }
 }

@@ -1,15 +1,11 @@
 import { parseISO, startOfDay } from 'date-fns'
-import type { HealthAndSupportNeeds, Neurodiversity, PrisonerSupportNeeds } from 'viewModels'
-import type { LearnerNeurodivergence, LearnerProfile } from 'curiousApiClient'
+import type { HealthAndSupportNeeds, PrisonerSupportNeeds } from 'viewModels'
+import type { LearnerProfile } from 'curiousApiClient'
 
-const toPrisonerSupportNeeds = (
-  learnerProfiles: Array<LearnerProfile>,
-  learnerNeurodivergences: Array<LearnerNeurodivergence>,
-): PrisonerSupportNeeds => {
+const toPrisonerSupportNeeds = (learnerProfiles: Array<LearnerProfile>): PrisonerSupportNeeds => {
   return {
     problemRetrievingData: false,
     healthAndSupportNeeds: learnerProfiles?.map(profile => toHealthAndSupportNeeds(profile)),
-    neurodiversities: learnerNeurodivergences?.map(neurodiversity => toNeurodiversity(neurodiversity)),
   }
 }
 
@@ -27,24 +23,8 @@ const toHealthAndSupportNeeds = (learnerProfile: LearnerProfile): HealthAndSuppo
   return undefined
 }
 
-const toNeurodiversity = (learnerNeurodivergence: LearnerNeurodivergence): Neurodiversity => {
-  if (learnerNeurodivergence) {
-    return {
-      prisonId: learnerNeurodivergence.establishmentId,
-      prisonName: learnerNeurodivergence.establishmentName,
-      supportNeeded: learnerNeurodivergence.neurodivergenceSupport,
-      supportNeededRecordedDate: dateOrNull(learnerNeurodivergence.supportDate),
-      selfDeclaredNeurodiversity: learnerNeurodivergence.neurodivergenceSelfDeclared,
-      selfDeclaredRecordedDate: dateOrNull(learnerNeurodivergence.selfDeclaredDate),
-      assessedNeurodiversity: learnerNeurodivergence.neurodivergenceAssessed,
-      assessmentDate: dateOrNull(learnerNeurodivergence.assessmentDate),
-    }
-  }
-  return undefined
-}
-
 const dateOrNull = (value: string): Date | undefined => {
   return value ? startOfDay(parseISO(value)) : undefined
 }
 
-export { toPrisonerSupportNeeds, toNeurodiversity }
+export default toPrisonerSupportNeeds
