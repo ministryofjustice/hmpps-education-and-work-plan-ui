@@ -98,19 +98,19 @@ const setupCheerioExtensionFunctions = ($: CheerioAPI) => {
   }
   // eslint-disable-next-line no-param-reassign
   $.prototype.rapidAssessmentDate = function rapidAssessmentDate(): Cheerio<never> {
-    return this.find(`.govuk-summary-list__key:contains('Rapid assessment')`).next().text().trim()
+    return this.find(`.govuk-summary-list__key:contains('Rapid screener from induction')`).next().text().trim()
   }
   // eslint-disable-next-line no-param-reassign
   $.prototype.inDepthAssessmentDate = function inDepthAssessmentDate(): Cheerio<never> {
-    return this.find(`.govuk-summary-list__key:contains('In-depth assessment')`).next().text().trim()
+    return this.find(`.govuk-summary-list__key:contains('In-depth assessment by education')`).next().text().trim()
   }
   // eslint-disable-next-line no-param-reassign
   $.prototype.primaryLddAndHealthNeeds = function primaryLddAndHealthNeeds(): Cheerio<never> {
-    return this.find(`.govuk-summary-list__key:contains('Primary LDD and health needs')`).next().text().trim()
+    return this.find(`.govuk-summary-list__key:contains('Primary area of need identified')`).next().text().trim()
   }
   // eslint-disable-next-line no-param-reassign
   $.prototype.additionalLddAndHealthNeeds = function additionalLddAndHealthNeeds(): Cheerio<never> {
-    return this.find(`.govuk-summary-list__key:contains('Additional LDD and health needs')`)
+    return this.find(`.govuk-summary-list__key:contains('Other areas of need identified')`)
       .next()
       .find('li')
       .toArray()
