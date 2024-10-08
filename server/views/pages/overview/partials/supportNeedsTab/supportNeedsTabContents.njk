@@ -5,11 +5,11 @@
 
       <div class="govuk-summary-card" id="health-and-support-needs-summary-card">
         <div class="govuk-summary-card__title-wrapper">
-          <h2 class="govuk-summary-card__title">LDD and health needs</h2>
+          <h2 class="govuk-summary-card__title">Screener and assessment results from Curious</h2>
         </div>
         <div class="govuk-summary-card__content">
           {% if supportNeeds.healthAndSupportNeeds %}
-            <p class="govuk-hint">Information from Curious.</p>
+            <p class="govuk-hint">This is information from the education team entered in Curious and is not a medical diagnosis.</p>
             {% for healthAndSupportNeed in supportNeeds.healthAndSupportNeeds %}
               <h3 class="govuk-heading-m">
                 <span class="govuk-visually-hidden">{{ prisonerSummary.firstName }} {{ prisonerSummary.lastName | capitalize }}'s learning difficulties, disabilities and health needs recorded whilst at</span>
@@ -18,7 +18,7 @@
               <dl class="govuk-summary-list govuk-!-margin-bottom-6">
                 <div class="govuk-summary-list__row">
                   <dt class="govuk-summary-list__key">
-                    Rapid assessment
+                    Rapid screener from induction
                   </dt>
                   <dd class="govuk-summary-list__value">
                     {{ healthAndSupportNeed.rapidAssessmentDate | formatDate('D MMMM YYYY') | fallbackMessage('Not recorded in Curious') }}
@@ -26,7 +26,7 @@
                 </div>
                 <div class="govuk-summary-list__row">
                   <dt class="govuk-summary-list__key">
-                    In-depth assessment
+                    In-depth assessment by education
                   </dt>
                   <dd class="govuk-summary-list__value">
                     {{ healthAndSupportNeed.inDepthAssessmentDate | formatDate('D MMMM YYYY') | fallbackMessage('Not recorded in Curious') }}
@@ -34,7 +34,7 @@
                 </div>
                 <div class="govuk-summary-list__row">
                   <dt class="govuk-summary-list__key">
-                    Primary LDD and health needs
+                    Primary area of need identified
                   </dt>
                   <dd class="govuk-summary-list__value">
                     {{ healthAndSupportNeed.primaryLddAndHealthNeeds | fallbackMessage('Not recorded in Curious') }}
@@ -42,7 +42,7 @@
                 </div>
                 <div class="govuk-summary-list__row">
                   <dt class="govuk-summary-list__key">
-                    Additional LDD and health needs
+                    Other areas of need identified
                   </dt>
                   <dd class="govuk-summary-list__value">
                     {% if healthAndSupportNeed.additionalLddAndHealthNeeds.length > 0 %}
