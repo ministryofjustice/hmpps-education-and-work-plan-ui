@@ -22,7 +22,6 @@ context('Prisoner Overview page - Support Needs tab', () => {
   it('should display Support Needs data', () => {
     // Given
     cy.task('stubLearnerProfile')
-    cy.task('stubNeurodivergenceForPrisonerWithAllCategoriesOfSupportNeed')
 
     cy.signIn()
     const prisonNumber = 'G6115VJ'
@@ -41,8 +40,7 @@ context('Prisoner Overview page - Support Needs tab', () => {
 
   it('should display Support Needs data given curious API returns a 404', () => {
     // Given
-    cy.task('stubLearnerProfile')
-    cy.task('stubNeurodivergence404Error')
+    cy.task('stubLearnerProfile404Error')
 
     cy.signIn()
     const prisonNumber = 'G6115VJ'

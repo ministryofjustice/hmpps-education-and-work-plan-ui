@@ -1,11 +1,6 @@
-import type {
-  LearnerEducation,
-  LearnerEductionPagedResponse,
-  LearnerNeurodivergence,
-  LearnerProfile,
-} from 'curiousApiClient'
+import type { LearnerEducation, LearnerEductionPagedResponse, LearnerProfile } from 'curiousApiClient'
 import type { FunctionalSkills, InPrisonCourse, InPrisonCourseRecords, PrisonerSupportNeeds } from 'viewModels'
-import { toPrisonerSupportNeeds } from '../routes/overview/mappers/prisonerSupportNeedsMapper'
+import toPrisonerSupportNeeds from '../routes/overview/mappers/prisonerSupportNeedsMapper'
 import CuriousClient from '../data/curiousClient'
 import { HmppsAuthClient } from '../data'
 import logger from '../../logger'
@@ -26,9 +21,8 @@ export default class CuriousService {
 
     try {
       const learnerProfiles = await this.getLearnerProfile(prisonNumber, systemToken)
-      const neuroDivergences = await this.getLearnerNeurodivergence(prisonNumber, systemToken)
 
-      return toPrisonerSupportNeeds(learnerProfiles, neuroDivergences)
+      return toPrisonerSupportNeeds(learnerProfiles)
     } catch (error) {
       logger.error(`Error retrieving support needs data from Curious: ${JSON.stringify(error)}`)
       return { problemRetrievingData: true } as PrisonerSupportNeeds
@@ -136,21 +130,6 @@ export default class CuriousService {
     } catch (error) {
       if (error.status === 404) {
         logger.info(`No learner profile data found for prisoner [${prisonNumber}] in Curious`)
-        return undefined
-      }
-      throw error
-    }
-  }
-
-  private getLearnerNeurodivergence = async (
-    prisonNumber: string,
-    token: string,
-  ): Promise<Array<LearnerNeurodivergence>> => {
-    try {
-      return await this.curiousClient.getLearnerNeurodivergence(prisonNumber, token)
-    } catch (error) {
-      if (error.status === 404) {
-        logger.info(`No neurodivergence data found for prisoner [${prisonNumber}] in Curious`)
         return undefined
       }
       throw error

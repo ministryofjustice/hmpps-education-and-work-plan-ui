@@ -71,9 +71,6 @@ declare module 'cheerio' {
     inDepthAssessmentDate(this: Cheerio<T>): Cheerio<T>
     primaryLddAndHealthNeeds(this: Cheerio<T>): Cheerio<T>
     additionalLddAndHealthNeeds(this: Cheerio<T>): Cheerio<T>
-    selfDeclaredNeurodiversityDiagnosis(this: Cheerio<T>): Cheerio<T>
-    assessedNeurodiversityDiagnosis(this: Cheerio<T>): Cheerio<T>
-    neurodiversitySupportNeeds(this: Cheerio<T>): Cheerio<T>
   }
 }
 
@@ -101,17 +98,5 @@ const setupCheerioExtensionFunctions = ($: CheerioAPI) => {
       .find('li')
       .toArray()
       .map((el: never) => $(el).text())
-  }
-  // eslint-disable-next-line no-param-reassign
-  $.prototype.selfDeclaredNeurodiversityDiagnosis = function selfDeclaredNeurodiversityDiagnosis(): Cheerio<never> {
-    return this.find(`.govuk-summary-list__key:contains('Self-declared')`).next().text()
-  }
-  // eslint-disable-next-line no-param-reassign
-  $.prototype.assessedNeurodiversityDiagnosis = function assessedNeurodiversityDiagnosis(): Cheerio<never> {
-    return this.find(`.govuk-summary-list__key:contains('From neurodiversity assessment')`).next().text()
-  }
-  // eslint-disable-next-line no-param-reassign
-  $.prototype.neurodiversitySupportNeeds = function neurodiversitySupportNeeds(): Cheerio<never> {
-    return this.find(`.govuk-summary-list__key:contains('Support needed')`).next().text()
   }
 }
