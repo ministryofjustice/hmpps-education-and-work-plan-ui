@@ -24,9 +24,16 @@ export default class SupportNeedsPage extends Page {
     return this
   }
 
+  hasNoDataMessageDisplayed(): SupportNeedsPage {
+    this.noDataMessage().should('be.exist')
+    return this
+  }
+
   activeTab = (): PageElement => cy.get('.moj-sub-navigation__link[aria-current=page]')
 
-  healthAndSupportNeedsSummaryCard = (): PageElement => cy.get('#health-and-support-needs-summary-card')
+  healthAndSupportNeedsSummaryCard = (): PageElement => cy.get('[data-qa=health-and-support-needs-summary-card]')
 
   curiousUnavailableMessage = (): PageElement => cy.get('[data-qa=curious-unavailable-message]')
+
+  noDataMessage = (): PageElement => cy.get('[data-qa=no-data-message]')
 }
