@@ -17,8 +17,8 @@ export default class QualificationsListCreateController extends QualificationsLi
     return `/prisoners/${prisonNumber}/create-education/highest-level-of-education`
   }
 
-  getBackLinkAriaText(req: Request): string {
-    return getDynamicBackLinkAriaText(req, this.getBackLinkUrl(req))
+  getBackLinkAriaText(req: Request, res: Response): string {
+    return getDynamicBackLinkAriaText(req, res, this.getBackLinkUrl(req))
   }
 
   submitQualificationsListView: RequestHandler = async (
@@ -27,7 +27,7 @@ export default class QualificationsListCreateController extends QualificationsLi
     next: NextFunction,
   ): Promise<void> => {
     const { prisonNumber } = req.params
-    const { prisonId } = req.session.prisonerSummary
+    const { prisonId } = res.locals.prisonerSummary
 
     if (this.userClickedOnButton(req, 'addQualification')) {
       return res.redirect(`/prisoners/${prisonNumber}/create-education/qualification-level`)

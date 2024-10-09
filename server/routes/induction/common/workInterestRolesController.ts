@@ -13,7 +13,8 @@ export default abstract class WorkInterestRolesController extends InductionContr
    * Returns the Future Work Interest Roles view; suitable for use by the Create and Update journeys.
    */
   getWorkInterestRolesView: RequestHandler = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    const { prisonerSummary, inductionDto } = req.session
+    const { inductionDto } = req.session
+    const { prisonerSummary } = res.locals
 
     this.addCurrentPageToHistory(req)
 
@@ -23,7 +24,7 @@ export default abstract class WorkInterestRolesController extends InductionContr
     const view = new WorkInterestRolesView(
       prisonerSummary,
       this.getBackLinkUrl(req),
-      this.getBackLinkAriaText(req),
+      this.getBackLinkAriaText(req, res),
       workInterestRolesForm,
     )
     return res.render('pages/induction/workInterests/workInterestRoles', { ...view.renderArgs })

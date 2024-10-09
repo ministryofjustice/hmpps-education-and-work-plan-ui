@@ -17,7 +17,8 @@ export default abstract class QualificationDetailsController extends InductionCo
     res: Response,
     next: NextFunction,
   ): Promise<void> => {
-    const { pageFlowHistory, prisonerSummary, qualificationLevelForm } = req.session
+    const { pageFlowHistory, qualificationLevelForm } = req.session
+    const { prisonerSummary } = res.locals
     if (!pageFlowHistory) {
       return res.redirect(`/plan/${prisonerSummary.prisonNumber}/view/education-and-training`)
     }
@@ -38,7 +39,7 @@ export default abstract class QualificationDetailsController extends InductionCo
     const view = new QualificationDetailsView(
       prisonerSummary,
       this.getBackLinkUrl(req),
-      this.getBackLinkAriaText(req),
+      this.getBackLinkAriaText(req, res),
       qualificationDetailsForm,
       qualificationLevelForm.qualificationLevel,
     )

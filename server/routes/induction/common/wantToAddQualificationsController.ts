@@ -20,7 +20,8 @@ export default abstract class WantToAddQualificationsController extends Inductio
     res: Response,
     next: NextFunction,
   ): Promise<void> => {
-    const { prisonerSummary, inductionDto } = req.session
+    const { inductionDto } = req.session
+    const { prisonerSummary } = res.locals
 
     // There will always be a page flow history for this page, because you can only get here from the Induction "Reasons Not To Work"
     // or "Check Your Answers" pages; both of which correctly setup the page flow history before coming here.
@@ -39,7 +40,7 @@ export default abstract class WantToAddQualificationsController extends Inductio
     const view = new WantToAddQualificationsView(
       prisonerSummary,
       this.getBackLinkUrl(req),
-      this.getBackLinkAriaText(req),
+      this.getBackLinkAriaText(req, res),
       wantToAddQualificationsForm,
       functionalSkills,
       curiousInPrisonCourses,

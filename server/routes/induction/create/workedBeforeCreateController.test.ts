@@ -1,5 +1,4 @@
-import { NextFunction, Request, Response } from 'express'
-import type { SessionData } from 'express-session'
+import { Request, Response } from 'express'
 import type { WorkedBeforeForm } from 'inductionForms'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
 import { aValidInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
@@ -13,26 +12,23 @@ describe('workedBeforeCreateController', () => {
   const prisonerSummary = aValidPrisonerSummary()
 
   const req = {
-    session: {} as SessionData,
+    session: {},
     body: {},
-    user: {} as Express.User,
-    params: {} as Record<string, string>,
-    path: '',
-  }
+    params: { prisonNumber },
+    path: `/prisoners/${prisonNumber}/create-induction/has-worked-before`,
+  } as unknown as Request
   const res = {
     redirect: jest.fn(),
     redirectWithErrors: jest.fn(),
     render: jest.fn(),
-  }
+    locals: { prisonerSummary },
+  } as unknown as Response
   const next = jest.fn()
 
   beforeEach(() => {
     jest.resetAllMocks()
-    req.session = { prisonerSummary } as SessionData
+    req.session.pageFlowHistory = undefined
     req.body = {}
-    req.user = {} as Express.User
-    req.params = { prisonNumber }
-    req.path = `/prisoners/${prisonNumber}/create-induction/has-worked-before`
   })
 
   describe('getWorkedBeforeView', () => {
@@ -55,11 +51,7 @@ describe('workedBeforeCreateController', () => {
       }
 
       // When
-      await controller.getWorkedBeforeView(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.getWorkedBeforeView(req, res, next)
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/induction/workedBefore/index', expectedView)
@@ -86,11 +78,7 @@ describe('workedBeforeCreateController', () => {
       }
 
       // When
-      await controller.getWorkedBeforeView(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.getWorkedBeforeView(req, res, next)
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/induction/workedBefore/index', expectedView)
@@ -130,11 +118,7 @@ describe('workedBeforeCreateController', () => {
       }
 
       // When
-      await controller.getWorkedBeforeView(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.getWorkedBeforeView(req, res, next)
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/induction/workedBefore/index', expectedView)
@@ -162,11 +146,7 @@ describe('workedBeforeCreateController', () => {
       ]
 
       // When
-      await controller.submitWorkedBeforeForm(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.submitWorkedBeforeForm(req, res, next)
 
       // Then
       expect(res.redirectWithErrors).toHaveBeenCalledWith(
@@ -191,11 +171,7 @@ describe('workedBeforeCreateController', () => {
       req.session.workedBeforeForm = undefined
 
       // When
-      await controller.submitWorkedBeforeForm(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.submitWorkedBeforeForm(req, res, next)
 
       // Then
       expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-induction/previous-work-experience')
@@ -219,11 +195,7 @@ describe('workedBeforeCreateController', () => {
       req.session.workedBeforeForm = undefined
 
       // When
-      await controller.submitWorkedBeforeForm(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.submitWorkedBeforeForm(req, res, next)
 
       // Then
       expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-induction/skills')
@@ -248,11 +220,7 @@ describe('workedBeforeCreateController', () => {
       req.session.workedBeforeForm = undefined
 
       // When
-      await controller.submitWorkedBeforeForm(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.submitWorkedBeforeForm(req, res, next)
 
       // Then
       expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-induction/skills')
@@ -285,11 +253,7 @@ describe('workedBeforeCreateController', () => {
       }
 
       // When
-      await controller.submitWorkedBeforeForm(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.submitWorkedBeforeForm(req, res, next)
 
       // Then
       const updatedInduction = req.session.inductionDto
@@ -321,11 +285,7 @@ describe('workedBeforeCreateController', () => {
       }
 
       // When
-      await controller.submitWorkedBeforeForm(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.submitWorkedBeforeForm(req, res, next)
 
       // Then
       const updatedInduction = req.session.inductionDto
@@ -362,11 +322,7 @@ describe('workedBeforeCreateController', () => {
       }
 
       // When
-      await controller.submitWorkedBeforeForm(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.submitWorkedBeforeForm(req, res, next)
 
       // Then
       const updatedInduction = req.session.inductionDto

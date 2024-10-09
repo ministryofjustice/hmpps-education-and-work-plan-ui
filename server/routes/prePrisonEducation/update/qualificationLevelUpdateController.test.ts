@@ -7,27 +7,23 @@ import QualificationLevelUpdateController from './qualificationLevelUpdateContro
 describe('qualificationLevelUpdateController', () => {
   const controller = new QualificationLevelUpdateController()
 
-  let req: Request
+  const prisonNumber = 'A1234BC'
+  const prisonerSummary = aValidPrisonerSummary(prisonNumber)
+
+  const req = {
+    session: {},
+    params: { prisonNumber },
+  } as unknown as Request
   const res = {
     redirect: jest.fn(),
     redirectWithErrors: jest.fn(),
     render: jest.fn(),
+    locals: { prisonerSummary },
   } as unknown as Response
   const next = jest.fn()
 
-  const prisonNumber = 'A1234BC'
-  const prisonerSummary = aValidPrisonerSummary(prisonNumber)
-
   beforeEach(() => {
     jest.resetAllMocks()
-
-    req = {
-      session: { prisonerSummary },
-      body: {},
-      user: {},
-      params: { prisonNumber },
-      query: {},
-    } as unknown as Request
   })
 
   describe('getQualificationLevelView', () => {

@@ -15,7 +15,7 @@ export default abstract class HighestLevelOfEducationController extends Educatio
     next: NextFunction,
   ): Promise<void> => {
     const { prisonNumber } = req.params
-    const { prisonerSummary } = req.session
+    const { prisonerSummary } = res.locals
 
     const { educationDto } = getPrisonerContext(req.session, prisonNumber)
     const highestLevelOfEducationForm =
@@ -26,7 +26,7 @@ export default abstract class HighestLevelOfEducationController extends Educatio
     const view = new HighestLevelOfEducationView(
       prisonerSummary,
       this.getBackLinkUrl(req),
-      this.getBackLinkAriaText(req),
+      this.getBackLinkAriaText(req, res),
       highestLevelOfEducationForm,
     )
     return res.render('pages/prePrisonEducation/highestLevelOfEducation', { ...view.renderArgs })

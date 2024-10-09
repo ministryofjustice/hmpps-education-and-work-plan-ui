@@ -1,4 +1,4 @@
-import type { PageFlow, PrisonerSummary } from 'viewModels'
+import type { PageFlow } from 'viewModels'
 import type {
   ArchiveGoalForm,
   CreateGoalsForm,
@@ -36,7 +36,6 @@ declare module 'express-session' {
     nowInMinutes: number
     prisonerListSortOptions: string
 
-    prisonerSummary: PrisonerSummary
     createGoalsForm: CreateGoalsForm
     archiveGoalForm: ArchiveGoalForm
     pageFlowHistory: PageFlow

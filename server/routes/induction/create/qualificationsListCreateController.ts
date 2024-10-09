@@ -21,8 +21,8 @@ export default class QualificationsListCreateController extends QualificationsLi
     return previousPage
   }
 
-  getBackLinkAriaText(req: Request): string {
-    return getDynamicBackLinkAriaText(req, this.getBackLinkUrl(req))
+  getBackLinkAriaText(req: Request, res: Response): string {
+    return getDynamicBackLinkAriaText(req, res, this.getBackLinkUrl(req))
   }
 
   submitQualificationsListView: RequestHandler = async (

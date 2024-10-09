@@ -1,6 +1,5 @@
-import { NextFunction, Request, Response } from 'express'
-import { SessionData } from 'express-session'
-import moment from 'moment'
+import { Request, Response } from 'express'
+import { subDays } from 'date-fns'
 import type { Assessment } from 'viewModels'
 import CuriousService from '../../services/curiousService'
 import PrisonService from '../../services/prisonService'
@@ -20,30 +19,29 @@ describe('functionalSkillsController', () => {
   const prisonService = new PrisonService(null, null, null) as jest.Mocked<PrisonService>
   const controller = new FunctionalSkillsController(curiousService, prisonService)
 
+  const prisonNumber = 'A1234GC'
+  const prisonerSummary = aValidPrisonerSummary(prisonNumber)
+
   const req = {
-    session: {} as SessionData,
-    params: {},
-    user: {} as Express.User,
-  }
+    params: { prisonNumber },
+    user: { username: 'AUSER_GEN', token: 'some-token' } as Express.User,
+  } as unknown as Request
   const res = {
     render: jest.fn(),
-  }
+    locals: { prisonerSummary },
+  } as unknown as Response
   const next = jest.fn()
 
   beforeEach(() => {
     jest.resetAllMocks()
-    req.params = {}
-    req.session = {} as SessionData
-    req.user.token = 'some-token'
-    req.user.username = 'AUSER_GEN'
   })
 
-  const NOW = moment()
-  const YESTERDAY = moment(NOW).subtract(1, 'days').toDate()
-  const FIVE_DAYS_AGO = moment(NOW).subtract(5, 'days').toDate()
-  const TEN_DAYS_AGO = moment(NOW).subtract(10, 'days').toDate()
+  const NOW = new Date()
+  const YESTERDAY = subDays(NOW, 1)
+  const FIVE_DAYS_AGO = subDays(NOW, 5)
+  const TEN_DAYS_AGO = subDays(NOW, 10)
 
-  const mockAllPrisonNaneLookup = (): Promise<Map<string, string>> => {
+  const mockAllPrisonNameLookup = (): Promise<Map<string, string>> => {
     const prisonNamesById = new Map([
       ['MDI', 'Moorland (HMP & YOI)'],
       ['LFI', 'Lancaster Farms (HMP)'],
@@ -55,13 +53,7 @@ describe('functionalSkillsController', () => {
   describe('getFunctionalSkillsView', () => {
     it('should get functional skills view given curious service returns functional skills data for the prisoner', async () => {
       // Given
-      const prisonNumber = 'A1234GC'
-      req.params = { prisonNumber }
-
-      const prisonerSummary = aValidPrisonerSummary(prisonNumber)
-      req.session.prisonerSummary = prisonerSummary
-
-      prisonService.getAllPrisonNamesById.mockImplementation(mockAllPrisonNaneLookup)
+      prisonService.getAllPrisonNamesById.mockImplementation(mockAllPrisonNameLookup)
 
       const functionalSkills = validFunctionalSkills({
         prisonNumber,
@@ -186,11 +178,7 @@ describe('functionalSkillsController', () => {
       }
 
       // When
-      await controller.getFunctionalSkillsView(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.getFunctionalSkillsView(req, res, next)
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/functionalSkills/index', expectedView)
@@ -199,12 +187,6 @@ describe('functionalSkillsController', () => {
 
     it('should get functional skills view given curious service returns no functional skills data for the prisoner', async () => {
       // Given
-      const prisonNumber = 'A1234GC'
-      req.params = { prisonNumber }
-
-      const prisonerSummary = aValidPrisonerSummary(prisonNumber)
-      req.session.prisonerSummary = prisonerSummary
-
       const functionalSkills = validFunctionalSkillsWithNoAssessments({ prisonNumber })
       curiousService.getPrisonerFunctionalSkills.mockResolvedValue(functionalSkills)
 
@@ -223,11 +205,7 @@ describe('functionalSkillsController', () => {
       }
 
       // When
-      await controller.getFunctionalSkillsView(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.getFunctionalSkillsView(req, res, next)
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/functionalSkills/index', expectedView)
@@ -237,12 +215,6 @@ describe('functionalSkillsController', () => {
 
     it('should get functional skills view given curious service has problem retrieving data', async () => {
       // Given
-      const prisonNumber = 'A1234GC'
-      req.params = { prisonNumber }
-
-      const prisonerSummary = aValidPrisonerSummary(prisonNumber)
-      req.session.prisonerSummary = prisonerSummary
-
       const functionalSkills = functionalSkillsWithProblemRetrievingData({ prisonNumber })
       curiousService.getPrisonerFunctionalSkills.mockResolvedValue(functionalSkills)
 
@@ -261,11 +233,7 @@ describe('functionalSkillsController', () => {
       }
 
       // When
-      await controller.getFunctionalSkillsView(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.getFunctionalSkillsView(req, res, next)
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/functionalSkills/index', expectedView)

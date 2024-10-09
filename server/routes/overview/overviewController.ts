@@ -14,7 +14,7 @@ export default class OverviewController {
 
   getOverviewView: RequestHandler = async (req, res, next): Promise<void> => {
     const { prisonNumber } = req.params
-    const { prisonerSummary } = req.session
+    const { prisonerSummary } = res.locals
 
     try {
       const inductionExists = await this.inductionService.inductionExists(prisonNumber, req.user.username)

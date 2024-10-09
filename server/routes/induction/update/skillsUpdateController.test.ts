@@ -1,6 +1,5 @@
 import createError from 'http-errors'
-import type { SessionData } from 'express-session'
-import { NextFunction, Request, Response } from 'express'
+import { Request, Response } from 'express'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
 import { aValidInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
@@ -23,26 +22,24 @@ describe('skillsUpdateController', () => {
   const prisonerSummary = aValidPrisonerSummary()
 
   const req = {
-    session: {} as SessionData,
+    session: {},
     body: {},
-    user: {} as Express.User,
-    params: {} as Record<string, string>,
-    path: '',
-  }
+    user: { token: 'some-token' },
+    params: { prisonNumber },
+    path: `/prisoners/${prisonNumber}/induction/skills`,
+  } as unknown as Request
   const res = {
     redirect: jest.fn(),
     redirectWithErrors: jest.fn(),
     render: jest.fn(),
-  }
+    locals: { prisonerSummary },
+  } as unknown as Response
   const next = jest.fn()
 
   beforeEach(() => {
     jest.resetAllMocks()
-    req.session = { prisonerSummary } as SessionData
+    req.session.pageFlowHistory = undefined
     req.body = {}
-    req.user = { token: 'some-token' } as Express.User
-    req.params = { prisonNumber }
-    req.path = `/prisoners/${prisonNumber}/induction/skills`
   })
 
   describe('getSkillsView', () => {
@@ -65,11 +62,7 @@ describe('skillsUpdateController', () => {
       }
 
       // When
-      await controller.getSkillsView(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.getSkillsView(req, res, next)
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/induction/skills/index', expectedView)
@@ -96,11 +89,7 @@ describe('skillsUpdateController', () => {
       }
 
       // When
-      await controller.getSkillsView(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.getSkillsView(req, res, next)
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/induction/skills/index', expectedView)
@@ -125,11 +114,7 @@ describe('skillsUpdateController', () => {
       const expectedErrors = [{ href: '#skillsOther', text: 'Enter the skill that Jimmy Lightfingers feels they have' }]
 
       // When
-      await controller.submitSkillsForm(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.submitSkillsForm(req, res, next)
 
       // Then
       expect(res.redirectWithErrors).toHaveBeenCalledWith('/prisoners/A1234BC/induction/skills', expectedErrors)
@@ -164,11 +149,7 @@ describe('skillsUpdateController', () => {
       ]
 
       // When
-      await controller.submitSkillsForm(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.submitSkillsForm(req, res, next)
 
       // Then
       // Extract the first call to the mock and the second argument (i.e. the updated Induction)
@@ -215,11 +196,7 @@ describe('skillsUpdateController', () => {
       )
 
       // When
-      await controller.submitSkillsForm(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.submitSkillsForm(req, res, next)
 
       // Then
       // Extract the first call to the mock and the second argument (i.e. the updated Induction)

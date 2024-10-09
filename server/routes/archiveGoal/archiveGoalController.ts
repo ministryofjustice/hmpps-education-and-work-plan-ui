@@ -17,7 +17,7 @@ export default class ArchiveGoalController {
 
   getArchiveGoalView: RequestHandler = async (req, res, next): Promise<void> => {
     const { prisonNumber, goalReference } = req.params
-    const { prisonerSummary } = req.session
+    const { prisonerSummary } = res.locals
 
     let archiveGoalForm: ArchiveGoalForm
     if (req.session.archiveGoalForm && req.session.archiveGoalForm.reference === goalReference) {
@@ -60,7 +60,7 @@ export default class ArchiveGoalController {
 
   getReviewArchiveGoalView: RequestHandler = async (req, res, next): Promise<void> => {
     const { prisonNumber, goalReference } = req.params
-    const { prisonerSummary } = req.session
+    const { prisonerSummary } = res.locals
     const { archiveGoalForm } = req.session
     if (!archiveGoalForm) {
       return res.redirect(`/plan/${prisonNumber}/goals/${goalReference}/archive`)

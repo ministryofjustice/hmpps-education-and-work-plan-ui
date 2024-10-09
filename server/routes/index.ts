@@ -9,7 +9,7 @@ import postInductionCreation from './postInductionCreation'
 import createInduction from './induction/create'
 import updateInduction from './induction/update'
 import inPrisonCoursesAndQualifications from './inPrisonCoursesAndQualifications'
-import retrievePrisonerSummaryIfNotInSession from './routerRequestHandlers/retrievePrisonerSummaryIfNotInSession'
+import retrievePrisonerSummary from './routerRequestHandlers/retrievePrisonerSummary'
 import { checkPageViewAuditted } from '../middleware/auditMiddleware'
 import notesRoutes from './notes'
 import archiveGoal from './archiveGoal'
@@ -58,5 +58,5 @@ export default function routes(services: Services): Router {
 
 // Setup prisoner summary session for routes with prisonNumber param
 function prisonerSummarySetup(router: Router, services: Services) {
-  router.param('prisonNumber', retrievePrisonerSummaryIfNotInSession(services.prisonerSearchService))
+  router.param('prisonNumber', retrievePrisonerSummary(services.prisonerSearchService))
 }

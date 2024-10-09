@@ -16,7 +16,8 @@ export default abstract class HighestLevelOfEducationController extends Inductio
     res: Response,
     next: NextFunction,
   ): Promise<void> => {
-    const { prisonerSummary, inductionDto } = req.session
+    const { inductionDto } = req.session
+    const { prisonerSummary } = res.locals
 
     this.addCurrentPageToFlowHistoryWhenComingFromCheckYourAnswers(req)
 
@@ -31,7 +32,7 @@ export default abstract class HighestLevelOfEducationController extends Inductio
     const view = new HighestLevelOfEducationView(
       prisonerSummary,
       this.getBackLinkUrl(req),
-      this.getBackLinkAriaText(req),
+      this.getBackLinkAriaText(req, res),
       highestLevelOfEducationForm,
     )
     return res.render('pages/prePrisonEducation/highestLevelOfEducation', { ...view.renderArgs })

@@ -1,4 +1,4 @@
-import { Request } from 'express'
+import { Request, Response } from 'express'
 
 /**
  * Returns the aria text/hint for a corresponding URI.
@@ -6,12 +6,12 @@ import { Request } from 'express'
  * runtime, depending on the page flow).
  * Returns an empty string '' if the URI cannot be resolved.
  */
-const getDynamicBackLinkAriaText = (req: Request, backLinkUrl: string): string => {
+const getDynamicBackLinkAriaText = (req: Request, res: Response, backLinkUrl: string): string => {
   if (!backLinkUrl) {
     return ''
   }
   const { prisonNumber } = req.params
-  const { prisonerSummary } = req.session
+  const { prisonerSummary } = res.locals
   const prisonerName = `${prisonerSummary.firstName} ${prisonerSummary.lastName}`
 
   const ariaTextByUri: Record<string, string> = {

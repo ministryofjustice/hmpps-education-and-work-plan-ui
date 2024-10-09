@@ -13,7 +13,7 @@ export default class FunctionalSkillsController {
 
   getFunctionalSkillsView: RequestHandler = async (req, res, next): Promise<void> => {
     const { prisonNumber } = req.params
-    const { prisonerSummary } = req.session
+    const { prisonerSummary } = res.locals
 
     const functionalSkillsFromCurious = await this.curiousService.getPrisonerFunctionalSkills(
       prisonNumber,

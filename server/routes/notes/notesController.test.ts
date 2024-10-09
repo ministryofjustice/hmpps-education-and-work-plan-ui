@@ -5,27 +5,22 @@ import NotesController from './notesController'
 describe('notesController', () => {
   const controller = new NotesController()
 
-  let req: Request
-  const res = {
-    redirect: jest.fn(),
-    render: jest.fn(),
-  } as unknown as Response
-  const next = jest.fn()
-
   const prisonNumber = 'A1234BC'
   const expectedPrisonId = 'MDI'
   const prisonerSummary = aValidPrisonerSummary(prisonNumber, expectedPrisonId)
 
+  const req = {
+    params: { prisonNumber },
+  } as unknown as Request
+  const res = {
+    redirect: jest.fn(),
+    render: jest.fn(),
+    locals: { prisonerSummary },
+  } as unknown as Response
+  const next = jest.fn()
+
   beforeEach(() => {
     jest.resetAllMocks()
-
-    req = {
-      session: { prisonerSummary },
-      body: {},
-      user: {},
-      params: { prisonNumber },
-      query: {},
-    } as unknown as Request
   })
 
   it('should get prisoner notes view', async () => {

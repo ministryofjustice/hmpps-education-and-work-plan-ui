@@ -1,6 +1,5 @@
 import createError from 'http-errors'
-import { NextFunction, Request, Response } from 'express'
-import type { SessionData } from 'express-session'
+import { Request, Response } from 'express'
 import type { PreviousWorkExperienceDto } from 'inductionDto'
 import type { PageFlow } from 'viewModels'
 import InductionService from '../../../services/inductionService'
@@ -26,26 +25,23 @@ describe('previousWorkExperienceDetailUpdateController', () => {
   const prisonerSummary = aValidPrisonerSummary()
 
   const req = {
-    session: {} as SessionData,
+    session: {},
     body: {},
-    user: {} as Express.User,
-    params: {} as Record<string, string>,
-    path: '',
-  }
+    user: { token: 'some-token' },
+    params: { prisonNumber },
+  } as unknown as Request
   const res = {
     redirect: jest.fn(),
     redirectWithErrors: jest.fn(),
     render: jest.fn(),
-  }
+    locals: { prisonerSummary },
+  } as unknown as Response
   const next = jest.fn()
 
   beforeEach(() => {
     jest.resetAllMocks()
-    req.session = { prisonerSummary } as SessionData
+    req.session.pageFlowHistory = undefined
     req.body = {}
-    req.user = { token: 'some-token' } as Express.User
-    req.params = { prisonNumber }
-    req.path = ''
   })
 
   describe('getPreviousWorkExperienceDetailView', () => {
@@ -72,11 +68,7 @@ describe('previousWorkExperienceDetailUpdateController', () => {
       }
 
       // When
-      await controller.getPreviousWorkExperienceDetailView(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.getPreviousWorkExperienceDetailView(req, res, next)
 
       // Then
       expect(res.render).toHaveBeenCalledWith(
@@ -110,11 +102,7 @@ describe('previousWorkExperienceDetailUpdateController', () => {
       }
 
       // When
-      await controller.getPreviousWorkExperienceDetailView(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.getPreviousWorkExperienceDetailView(req, res, next)
 
       // Then
       expect(res.render).toHaveBeenCalledWith(
@@ -138,11 +126,7 @@ describe('previousWorkExperienceDetailUpdateController', () => {
       const expectedError = createError(404, `Previous Work Experience type retail not found on Induction`)
 
       // When
-      await controller.getPreviousWorkExperienceDetailView(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.getPreviousWorkExperienceDetailView(req, res, next)
 
       // Then
       expect(res.render).not.toHaveBeenCalled()
@@ -160,11 +144,7 @@ describe('previousWorkExperienceDetailUpdateController', () => {
       )
 
       // When
-      await controller.getPreviousWorkExperienceDetailView(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.getPreviousWorkExperienceDetailView(req, res, next)
 
       // Then
       expect(res.render).not.toHaveBeenCalled()
@@ -194,11 +174,7 @@ describe('previousWorkExperienceDetailUpdateController', () => {
         ]
 
         // When
-        await controller.submitPreviousWorkExperienceDetailForm(
-          req as undefined as Request,
-          res as undefined as Response,
-          next as undefined as NextFunction,
-        )
+        await controller.submitPreviousWorkExperienceDetailForm(req, res, next)
 
         // Then
         expect(res.redirectWithErrors).toHaveBeenCalledWith(
@@ -223,11 +199,7 @@ describe('previousWorkExperienceDetailUpdateController', () => {
         )
 
         // When
-        await controller.submitPreviousWorkExperienceDetailForm(
-          req as undefined as Request,
-          res as undefined as Response,
-          next as undefined as NextFunction,
-        )
+        await controller.submitPreviousWorkExperienceDetailForm(req, res, next)
 
         // Then
         expect(res.redirect).not.toHaveBeenCalled()
@@ -254,11 +226,7 @@ describe('previousWorkExperienceDetailUpdateController', () => {
         req.session.previousWorkExperienceDetailForm = undefined
 
         // When
-        await controller.submitPreviousWorkExperienceDetailForm(
-          req as undefined as Request,
-          res as undefined as Response,
-          next as undefined as NextFunction,
-        )
+        await controller.submitPreviousWorkExperienceDetailForm(req, res, next)
 
         // Then
         expect(res.redirect).not.toHaveBeenCalled()
@@ -308,11 +276,7 @@ describe('previousWorkExperienceDetailUpdateController', () => {
         ]
 
         // When
-        await controller.submitPreviousWorkExperienceDetailForm(
-          req as undefined as Request,
-          res as undefined as Response,
-          next as undefined as NextFunction,
-        )
+        await controller.submitPreviousWorkExperienceDetailForm(req, res, next)
 
         // Then
         // Extract the first call to the mock and the second argument (i.e. the updated Induction)
@@ -369,11 +333,7 @@ describe('previousWorkExperienceDetailUpdateController', () => {
         )
 
         // When
-        await controller.submitPreviousWorkExperienceDetailForm(
-          req as undefined as Request,
-          res as undefined as Response,
-          next as undefined as NextFunction,
-        )
+        await controller.submitPreviousWorkExperienceDetailForm(req, res, next)
 
         // Then
         // Extract the first call to the mock and the second argument (i.e. the updated Induction)
@@ -435,11 +395,7 @@ describe('previousWorkExperienceDetailUpdateController', () => {
         ]
 
         // When
-        await controller.submitPreviousWorkExperienceDetailForm(
-          req as undefined as Request,
-          res as undefined as Response,
-          next as undefined as NextFunction,
-        )
+        await controller.submitPreviousWorkExperienceDetailForm(req, res, next)
 
         // Then
         // Extract the first call to the mock and the second argument (i.e. the updated Induction)
@@ -484,11 +440,7 @@ describe('previousWorkExperienceDetailUpdateController', () => {
         mockedCreateOrUpdateInductionDtoMapper.mockReturnValueOnce(updateInductionDto)
 
         // When
-        await controller.submitPreviousWorkExperienceDetailForm(
-          req as undefined as Request,
-          res as undefined as Response,
-          next as undefined as NextFunction,
-        )
+        await controller.submitPreviousWorkExperienceDetailForm(req, res, next)
 
         // Then
         expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/induction/previous-work-experience/retail')

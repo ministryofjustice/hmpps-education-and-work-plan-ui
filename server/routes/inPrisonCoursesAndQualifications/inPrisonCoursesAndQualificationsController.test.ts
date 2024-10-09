@@ -14,21 +14,17 @@ describe('inPrisonCoursesAndQualificationsController', () => {
   const prisonNumber = 'A1234GC'
   const prisonerSummary = aValidPrisonerSummary(prisonNumber)
 
-  let req: Request
-  let res: Response
+  const req = {
+    params: { prisonNumber },
+  } as unknown as Request
+  const res = {
+    render: jest.fn(),
+    locals: { prisonerSummary },
+  } as unknown as Response
   const next = jest.fn()
 
   beforeEach(() => {
     jest.resetAllMocks()
-    req = {
-      session: { prisonerSummary },
-      params: { prisonNumber },
-    } as unknown as Request
-
-    res = {
-      render: jest.fn(),
-      locals: {} as Record<string, unknown>,
-    } as unknown as Response
   })
 
   describe('getInPrisonCoursesAndQualificationsViewForPlp', () => {

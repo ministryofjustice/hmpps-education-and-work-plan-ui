@@ -8,7 +8,7 @@ export default class EducationAndTrainingController {
 
   getEducationAndTrainingView: RequestHandler = async (req, res, next): Promise<void> => {
     const { prisonNumber } = req.params
-    const { prisonerSummary } = req.session
+    const { prisonerSummary } = res.locals
 
     const allFunctionalSkills = await this.curiousService.getPrisonerFunctionalSkills(prisonNumber, req.user.username)
     const functionalSkills = mostRecentFunctionalSkills(allFunctionalSkills)

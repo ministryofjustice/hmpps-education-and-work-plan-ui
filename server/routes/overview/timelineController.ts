@@ -7,7 +7,7 @@ export default class TimelineController {
 
   getTimelineView: RequestHandler = async (req, res, next): Promise<void> => {
     const { prisonNumber } = req.params
-    const { prisonerSummary } = req.session
+    const { prisonerSummary } = res.locals
 
     const timeline = await this.timelineService.getTimeline(prisonNumber, req.user.username)
     const view = new TimelineView(prisonerSummary, timeline)

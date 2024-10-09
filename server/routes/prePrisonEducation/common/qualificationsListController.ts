@@ -16,7 +16,7 @@ export default abstract class QualificationsListController extends EducationCont
     next: NextFunction,
   ): Promise<void> => {
     const { prisonNumber } = req.params
-    const { prisonerSummary } = req.session
+    const { prisonerSummary } = res.locals
 
     const { educationDto } = getPrisonerContext(req.session, prisonNumber)
 
@@ -33,7 +33,7 @@ export default abstract class QualificationsListController extends EducationCont
     const view = new QualificationsListView(
       prisonerSummary,
       this.getBackLinkUrl(req),
-      this.getBackLinkAriaText(req),
+      this.getBackLinkAriaText(req, res),
       educationDto.qualifications,
       functionalSkills,
       curiousInPrisonCourses,

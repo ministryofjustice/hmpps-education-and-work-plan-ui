@@ -1,5 +1,4 @@
-import { NextFunction, Request, Response } from 'express'
-import type { SessionData } from 'express-session'
+import { Request, Response } from 'express'
 import type { WorkInterestTypesForm } from 'inductionForms'
 import type { FutureWorkInterestDto } from 'inductionDto'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
@@ -14,26 +13,23 @@ describe('workInterestTypesCreateController', () => {
   const prisonerSummary = aValidPrisonerSummary()
 
   const req = {
-    session: {} as SessionData,
+    session: {},
     body: {},
-    user: {} as Express.User,
-    params: {} as Record<string, string>,
-    path: '',
-  }
+    params: { prisonNumber },
+    path: `/prisoners/${prisonNumber}/create-induction/work-interest-types`,
+  } as unknown as Request
   const res = {
     redirect: jest.fn(),
     redirectWithErrors: jest.fn(),
     render: jest.fn(),
-  }
+    locals: { prisonerSummary },
+  } as unknown as Response
   const next = jest.fn()
 
   beforeEach(() => {
     jest.resetAllMocks()
-    req.session = { prisonerSummary } as SessionData
+    req.session.pageFlowHistory = undefined
     req.body = {}
-    req.user = { token: 'some-token' } as Express.User
-    req.params = { prisonNumber }
-    req.path = `/prisoners/${prisonNumber}/create-induction/work-interest-types`
   })
 
   describe('getWorkInterestTypesView', () => {
@@ -57,11 +53,7 @@ describe('workInterestTypesCreateController', () => {
       }
 
       // When
-      await controller.getWorkInterestTypesView(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.getWorkInterestTypesView(req, res, next)
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/induction/workInterests/workInterestTypes', expectedView)
@@ -93,11 +85,7 @@ describe('workInterestTypesCreateController', () => {
       }
 
       // When
-      await controller.getWorkInterestTypesView(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.getWorkInterestTypesView(req, res, next)
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/induction/workInterests/workInterestTypes', expectedView)
@@ -138,11 +126,7 @@ describe('workInterestTypesCreateController', () => {
       }
 
       // When
-      await controller.getWorkInterestTypesView(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.getWorkInterestTypesView(req, res, next)
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/induction/workInterests/workInterestTypes', expectedView)
@@ -174,11 +158,7 @@ describe('workInterestTypesCreateController', () => {
       ]
 
       // When
-      await controller.submitWorkInterestTypesForm(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.submitWorkInterestTypesForm(req, res, next)
 
       // Then
       expect(res.redirectWithErrors).toHaveBeenCalledWith(
@@ -210,11 +190,7 @@ describe('workInterestTypesCreateController', () => {
       ]
 
       // When
-      await controller.submitWorkInterestTypesForm(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.submitWorkInterestTypesForm(req, res, next)
 
       // Then
       const futureWorkInterestsOnInduction: Array<FutureWorkInterestDto> =
@@ -251,11 +227,7 @@ describe('workInterestTypesCreateController', () => {
       }
 
       // When
-      await controller.submitWorkInterestTypesForm(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.submitWorkInterestTypesForm(req, res, next)
 
       // Then
       const futureWorkInterestsOnInduction: Array<FutureWorkInterestDto> =

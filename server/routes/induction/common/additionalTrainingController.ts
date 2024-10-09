@@ -17,7 +17,8 @@ export default abstract class AdditionalTrainingController extends InductionCont
     res: Response,
     next: NextFunction,
   ): Promise<void> => {
-    const { prisonerSummary, inductionDto } = req.session
+    const { inductionDto } = req.session
+    const { prisonerSummary } = res.locals
 
     if (req.session.pageFlowHistory) {
       this.addCurrentPageToHistory(req)
@@ -29,7 +30,7 @@ export default abstract class AdditionalTrainingController extends InductionCont
     const view = new AdditionalTrainingView(
       prisonerSummary,
       this.getBackLinkUrl(req),
-      this.getBackLinkAriaText(req),
+      this.getBackLinkAriaText(req, res),
       additionalTrainingForm,
     )
     return res.render('pages/induction/additionalTraining/index', { ...view.renderArgs })

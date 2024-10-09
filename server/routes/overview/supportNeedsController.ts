@@ -11,7 +11,7 @@ export default class SupportNeedsController {
 
   getSupportNeedsView: RequestHandler = async (req, res, next): Promise<void> => {
     const { prisonNumber } = req.params
-    const { prisonerSummary } = req.session
+    const { prisonerSummary } = res.locals
 
     const supportNeeds = await this.curiousService.getPrisonerSupportNeeds(prisonNumber, req.user.username)
     const prisonNamesById = await this.prisonService.getAllPrisonNamesById(req.user.username)

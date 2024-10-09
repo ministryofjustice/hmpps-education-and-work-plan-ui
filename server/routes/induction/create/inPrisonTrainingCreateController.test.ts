@@ -1,5 +1,4 @@
 import { NextFunction, Request, Response } from 'express'
-import type { SessionData } from 'express-session'
 import type { InPrisonTrainingForm } from 'inductionForms'
 import type { InPrisonTrainingInterestDto } from 'inductionDto'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
@@ -13,24 +12,24 @@ describe('inPrisonTrainingCreateController', () => {
   const prisonNumber = 'A1234BC'
   const prisonerSummary = aValidPrisonerSummary()
 
-  let req: Request
-  let res: Response
+  const req = {
+    session: {},
+    params: { prisonNumber },
+    body: {},
+    path: `/prisoners/${prisonNumber}/create-induction/in-prison-training`,
+  } as unknown as Request
+  const res = {
+    redirect: jest.fn(),
+    redirectWithErrors: jest.fn(),
+    render: jest.fn(),
+    locals: { prisonerSummary },
+  } as unknown as Response
   const next = jest.fn()
 
   beforeEach(() => {
     jest.resetAllMocks()
-    req = {
-      session: { prisonerSummary } as SessionData,
-      body: {},
-      user: {} as Express.User,
-      params: { prisonNumber } as Record<string, string>,
-      path: `/prisoners/${prisonNumber}/create-induction/in-prison-training`,
-    } as unknown as Request
-    res = {
-      redirect: jest.fn(),
-      redirectWithErrors: jest.fn(),
-      render: jest.fn(),
-    } as unknown as Response
+    req.session.pageFlowHistory = undefined
+    req.body = {}
   })
 
   describe('getInPrisonTrainingView', () => {

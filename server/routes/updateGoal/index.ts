@@ -3,7 +3,6 @@ import { Services } from '../../services'
 import UpdateGoalController from './updateGoalController'
 import { checkUserHasEditAuthority } from '../../middleware/roleBasedAccessControl'
 import checkUpdateGoalFormExistsInSession from '../routerRequestHandlers/checkUpdateGoalFormExistsInSession'
-import checkPrisonerSummaryExistsInSession from '../routerRequestHandlers/checkPrisonerSummaryExistsInSession'
 import asyncMiddleware from '../../middleware/asyncMiddleware'
 
 /**
@@ -23,7 +22,6 @@ export default (router: Router, services: Services) => {
 
   router.use('/plan/:prisonNumber/goals/:goalReference/update/review', [
     checkUserHasEditAuthority(),
-    checkPrisonerSummaryExistsInSession,
     checkUpdateGoalFormExistsInSession,
   ])
   router.get('/plan/:prisonNumber/goals/:goalReference/update/review', [

@@ -15,7 +15,7 @@ export default class UnarchiveGoalController {
 
   getUnarchiveGoalView: RequestHandler = async (req, res, next): Promise<void> => {
     const { prisonNumber, goalReference } = req.params
-    const { prisonerSummary } = req.session
+    const { prisonerSummary } = res.locals
 
     const actionPlan = await this.educationAndWorkPlanService.getActionPlan(prisonNumber, req.user.username)
     if (actionPlan.problemRetrievingData) {

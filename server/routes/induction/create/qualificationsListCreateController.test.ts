@@ -18,11 +18,17 @@ describe('qualificationsListCreateController', () => {
   const functionalSkills = validFunctionalSkills()
   const inPrisonCourses = validInPrisonCourseRecords()
 
-  let req: Request
+  const req = {
+    session: {},
+    body: {},
+    params: { prisonNumber },
+    path: `/prisoners/${prisonNumber}/create-induction/qualifications`,
+  } as unknown as Request
   const res = {
     redirect: jest.fn(),
     render: jest.fn(),
     locals: {
+      prisonerSummary,
       prisonerFunctionalSkills: functionalSkills,
       curiousInPrisonCourses: inPrisonCourses,
     },
@@ -31,12 +37,8 @@ describe('qualificationsListCreateController', () => {
 
   beforeEach(() => {
     jest.resetAllMocks()
-    req = {
-      body: {},
-      session: { prisonerSummary },
-      params: { prisonNumber },
-      path: `/prisoners/${prisonNumber}/create-induction/qualifications`,
-    } as unknown as Request
+    req.session.pageFlowHistory = undefined
+    req.body = {}
   })
 
   describe('getQualificationsListView', () => {

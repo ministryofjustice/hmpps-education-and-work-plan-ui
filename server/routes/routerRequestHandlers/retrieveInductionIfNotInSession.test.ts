@@ -144,7 +144,7 @@ describe('retrieveInductionIfNotInSession', () => {
 
     // Then
     expect(inductionService.getInduction).toHaveBeenCalledWith(prisonNumber, username)
-    expect(req.session.prisonerSummary).toBeUndefined()
+    expect(req.session.inductionDto).toBeUndefined()
     expect(next).toHaveBeenCalledWith(expectedError)
   })
 })

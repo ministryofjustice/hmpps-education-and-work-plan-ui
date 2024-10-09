@@ -1,6 +1,5 @@
 import createError from 'http-errors'
 import { Request, Response } from 'express'
-import type { SessionData } from 'express-session'
 import aValidPrisonerSummary from '../testsupport/prisonerSummaryTestDataBuilder'
 import checkPrisonerInCaseload from './checkPrisonerInCaseloadMiddleware'
 
@@ -8,28 +7,24 @@ describe('checkPrisonerInCaseloadMiddleware', () => {
   const prisonNumber = 'A1234BC'
   const prisonersPrisonId = 'BXI'
 
-  let req: Request
-  let res: Response
+  const req = {} as unknown as Request
+  const res = {
+    locals: {},
+  } as unknown as Response
   const next = jest.fn()
 
   beforeEach(() => {
     jest.resetAllMocks()
-    req = {
-      session: { prisonerSummary: aValidPrisonerSummary(prisonNumber, prisonersPrisonId) } as SessionData,
-    } as unknown as Request
-    res = {
-      locals: {
-        user: hmppsUser(),
-      },
-    } as unknown as Response
+    res.locals.user = hmppsUser()
+    res.locals.prisonerSummary = aValidPrisonerSummary(prisonNumber, prisonersPrisonId)
   })
 
-  it('should return an error given no prisoner summary in the session', async () => {
+  it('should return an error given no prisoner summary on res.locals', async () => {
     // Given
     const middleware = checkPrisonerInCaseload()
-    delete req.session.prisonerSummary
+    res.locals.prisonerSummary = undefined
 
-    const expectedError = createError(500, 'CheckPrisonerInCaseloadMiddleware: No PrisonerSummary found in session')
+    const expectedError = createError(500, 'CheckPrisonerInCaseloadMiddleware: No PrisonerSummary found on res.locals')
 
     // When
     await middleware(req, res, next)
@@ -123,7 +118,7 @@ describe('checkPrisonerInCaseloadMiddleware', () => {
       const prisonerSummary = aValidPrisonerSummary(prisonNumber, prisonersPrisonId)
       prisonerSummary.restrictedPatient = true
       prisonerSummary.supportingPrisonId = 'LEI'
-      req.session.prisonerSummary = prisonerSummary
+      res.locals.prisonerSummary = prisonerSummary
     })
 
     it('should call next given prisoner is a restricted patient and the user is a POM user and the prisoners supporting prison id is one of the users caseloads', async () => {
@@ -203,7 +198,7 @@ describe('checkPrisonerInCaseloadMiddleware', () => {
     describe('prisoners with a prisonId of OUT', () => {
       beforeEach(() => {
         const prisonerSummary = aValidPrisonerSummary(prisonNumber, 'OUT')
-        req.session.prisonerSummary = prisonerSummary
+        res.locals.prisonerSummary = prisonerSummary
       })
 
       describe('middleware is configured to allow inactive', () => {
@@ -258,7 +253,7 @@ describe('checkPrisonerInCaseloadMiddleware', () => {
     describe('prisoners with a prisonId of TRN', () => {
       beforeEach(() => {
         const prisonerSummary = aValidPrisonerSummary(prisonNumber, 'TRN')
-        req.session.prisonerSummary = prisonerSummary
+        res.locals.prisonerSummary = prisonerSummary
       })
 
       describe('middleware is configured to allow inactive', () => {

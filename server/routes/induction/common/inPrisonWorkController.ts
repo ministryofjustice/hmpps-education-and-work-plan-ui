@@ -13,7 +13,8 @@ export default abstract class InPrisonWorkController extends InductionController
    * Returns the In Prison Work view; suitable for use by the Create and Update journeys.
    */
   getInPrisonWorkView: RequestHandler = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    const { prisonerSummary, inductionDto } = req.session
+    const { inductionDto } = req.session
+    const { prisonerSummary } = res.locals
 
     this.addCurrentPageToFlowHistoryWhenComingFromCheckYourAnswers(req)
 
@@ -27,7 +28,7 @@ export default abstract class InPrisonWorkController extends InductionController
     const view = new InPrisonWorkView(
       prisonerSummary,
       this.getBackLinkUrl(req),
-      this.getBackLinkAriaText(req),
+      this.getBackLinkAriaText(req, res),
       inPrisonWorkForm,
     )
     return res.render('pages/induction/inPrisonWork/index', { ...view.renderArgs })

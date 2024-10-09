@@ -9,7 +9,7 @@ import validateWhoCompletedReviewForm from '../validators/reviewPlan/whoComplete
 export default class WhoCompletedReviewController {
   getWhoCompletedReviewView: RequestHandler = async (req, res, next): Promise<void> => {
     const { prisonNumber } = req.params
-    const { prisonerSummary } = req.session
+    const { prisonerSummary } = res.locals
 
     let whoCompletedReviewForm: WhoCompletedReviewForm
     if (getPrisonerContext(req.session, prisonNumber).whoCompletedReviewForm) {

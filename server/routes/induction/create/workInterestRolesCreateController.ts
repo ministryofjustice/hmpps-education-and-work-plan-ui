@@ -16,8 +16,8 @@ export default class WorkInterestRolesCreateController extends WorkInterestRoles
     return previousPage
   }
 
-  getBackLinkAriaText(req: Request): string {
-    return getDynamicBackLinkAriaText(req, this.getBackLinkUrl(req))
+  getBackLinkAriaText(req: Request, res: Response): string {
+    return getDynamicBackLinkAriaText(req, res, this.getBackLinkUrl(req))
   }
 
   submitWorkInterestRolesForm: RequestHandler = async (

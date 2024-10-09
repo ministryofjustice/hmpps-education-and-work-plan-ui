@@ -35,13 +35,13 @@ describe('overviewController', () => {
   }
 
   const req = {
-    session: { prisonerSummary },
     user: { username },
     params: { prisonNumber },
   } as unknown as Request
   const res = {
     render: jest.fn(),
     locals: {
+      prisonerSummary,
       curiousInPrisonCourses: inPrisonCourses,
       goals: { goals: [aValidGoal()], problemRetrievingData: false },
     },

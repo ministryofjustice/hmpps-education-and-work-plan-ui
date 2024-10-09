@@ -1,5 +1,4 @@
-import type { SessionData } from 'express-session'
-import { NextFunction, Request, Response } from 'express'
+import { Request, Response } from 'express'
 import type { AdditionalTrainingForm } from 'inductionForms'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
 import { aValidInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
@@ -13,26 +12,24 @@ describe('additionalTrainingCreateController', () => {
   const prisonerSummary = aValidPrisonerSummary()
 
   const req = {
-    session: {} as SessionData,
+    session: {},
     body: {},
-    user: {} as Express.User,
-    params: {} as Record<string, string>,
-    path: '',
-  }
+    user: {},
+    params: { prisonNumber },
+    path: `/prisoners/${prisonNumber}/create-induction/additional-training`,
+  } as unknown as Request
   const res = {
     redirect: jest.fn(),
     redirectWithErrors: jest.fn(),
     render: jest.fn(),
-  }
+    locals: { prisonerSummary },
+  } as unknown as Response
   const next = jest.fn()
 
   beforeEach(() => {
     jest.resetAllMocks()
-    req.session = { prisonerSummary } as SessionData
+    req.session.pageFlowHistory = undefined
     req.body = {}
-    req.user = {} as Express.User
-    req.params = { prisonNumber }
-    req.path = `/prisoners/${prisonNumber}/create-induction/additional-training`
   })
 
   describe('getAdditionalTrainingView', () => {
@@ -55,11 +52,7 @@ describe('additionalTrainingCreateController', () => {
       }
 
       // When
-      await controller.getAdditionalTrainingView(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.getAdditionalTrainingView(req, res, next)
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/induction/additionalTraining/index', expectedView)
@@ -87,11 +80,7 @@ describe('additionalTrainingCreateController', () => {
       }
 
       // When
-      await controller.getAdditionalTrainingView(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.getAdditionalTrainingView(req, res, next)
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/induction/additionalTraining/index', expectedView)
@@ -132,11 +121,7 @@ describe('additionalTrainingCreateController', () => {
       }
 
       // When
-      await controller.getAdditionalTrainingView(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.getAdditionalTrainingView(req, res, next)
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/induction/additionalTraining/index', expectedView)
@@ -168,11 +153,7 @@ describe('additionalTrainingCreateController', () => {
       ]
 
       // When
-      await controller.submitAdditionalTrainingForm(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.submitAdditionalTrainingForm(req, res, next)
 
       // Then
       expect(res.redirectWithErrors).toHaveBeenCalledWith(
@@ -202,11 +183,7 @@ describe('additionalTrainingCreateController', () => {
       const expectedNextPage = '/prisoners/A1234BC/create-induction/has-worked-before'
 
       // When
-      await controller.submitAdditionalTrainingForm(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.submitAdditionalTrainingForm(req, res, next)
 
       // Then
       const updatedInductionDto = req.session.inductionDto
@@ -241,11 +218,7 @@ describe('additionalTrainingCreateController', () => {
       const expectedNextPage = '/prisoners/A1234BC/create-induction/check-your-answers'
 
       // When
-      await controller.submitAdditionalTrainingForm(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.submitAdditionalTrainingForm(req, res, next)
 
       // Then
       const updatedInductionDto = req.session.inductionDto

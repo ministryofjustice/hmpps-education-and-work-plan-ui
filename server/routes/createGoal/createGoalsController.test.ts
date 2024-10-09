@@ -35,7 +35,7 @@ describe('createGoalsController', () => {
   const requestId = 'deff305c-2460-4d07-853e-f8762a8a52c6'
 
   const req = {
-    session: { prisonerSummary },
+    session: {},
     body: {},
     user: { username: 'a-dps-user' },
     params: { prisonNumber },
@@ -47,6 +47,7 @@ describe('createGoalsController', () => {
     redirectWithSuccess: jest.fn(),
     redirectWithErrors: jest.fn(),
     render: jest.fn(),
+    locals: { prisonerSummary },
   } as unknown as Response
   const next = jest.fn()
 

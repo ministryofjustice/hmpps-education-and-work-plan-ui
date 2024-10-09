@@ -21,8 +21,8 @@ export default class PreviousWorkExperienceTypesCreateController extends Previou
     return `/prisoners/${prisonNumber}/create-induction/has-worked-before`
   }
 
-  getBackLinkAriaText(req: Request): string {
-    return getDynamicBackLinkAriaText(req, this.getBackLinkUrl(req))
+  getBackLinkAriaText(req: Request, res: Response): string {
+    return getDynamicBackLinkAriaText(req, res, this.getBackLinkUrl(req))
   }
 
   submitPreviousWorkExperienceTypesForm: RequestHandler = async (
@@ -31,7 +31,8 @@ export default class PreviousWorkExperienceTypesCreateController extends Previou
     next: NextFunction,
   ): Promise<void> => {
     const { prisonNumber } = req.params
-    const { prisonerSummary, inductionDto } = req.session
+    const { inductionDto } = req.session
+    const { prisonerSummary } = res.locals
 
     const previousWorkExperienceTypesForm: PreviousWorkExperienceTypesForm = {
       typeOfWorkExperience: asArray(req.body.typeOfWorkExperience),

@@ -16,8 +16,8 @@ export default class InPrisonTrainingCreateController extends InPrisonTrainingCo
     return `/prisoners/${prisonNumber}/create-induction/in-prison-work`
   }
 
-  getBackLinkAriaText(req: Request): string {
-    return getDynamicBackLinkAriaText(req, this.getBackLinkUrl(req))
+  getBackLinkAriaText(req: Request, res: Response): string {
+    return getDynamicBackLinkAriaText(req, res, this.getBackLinkUrl(req))
   }
 
   submitInPrisonTrainingForm: RequestHandler = async (
@@ -26,7 +26,8 @@ export default class InPrisonTrainingCreateController extends InPrisonTrainingCo
     next: NextFunction,
   ): Promise<void> => {
     const { prisonNumber } = req.params
-    const { prisonerSummary, inductionDto } = req.session
+    const { inductionDto } = req.session
+    const { prisonerSummary } = res.locals
 
     const inPrisonTrainingForm: InPrisonTrainingForm = {
       inPrisonTraining: asArray(req.body.inPrisonTraining),

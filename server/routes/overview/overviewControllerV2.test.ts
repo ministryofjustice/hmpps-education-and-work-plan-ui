@@ -52,13 +52,14 @@ describe('overviewController', () => {
   } as FunctionalSkills
 
   const req = {
-    session: { prisonerSummary },
+    session: {},
     user: { username },
     params: { prisonNumber },
   } as unknown as Request
   const res = {
     render: jest.fn(),
     locals: {
+      prisonerSummary,
       curiousInPrisonCourses: inPrisonCourses,
     },
   } as unknown as Response

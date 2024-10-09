@@ -1,5 +1,4 @@
-import { NextFunction, Request, Response } from 'express'
-import type { SessionData } from 'express-session'
+import { Request, Response } from 'express'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
 import { aValidInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
 import QualificationLevelCreateController from './qualificationLevelCreateController'
@@ -12,26 +11,22 @@ describe('qualificationLevelCreateController', () => {
   const prisonerSummary = aValidPrisonerSummary()
 
   const req = {
-    session: {} as SessionData,
+    session: {},
     body: {},
-    user: {} as Express.User,
-    params: {} as Record<string, string>,
-    path: '',
-  }
+    params: { prisonNumber },
+    path: `/prisoners/${prisonNumber}/create-induction/qualification-level`,
+  } as unknown as Request
   const res = {
     redirect: jest.fn(),
     redirectWithErrors: jest.fn(),
     render: jest.fn(),
-  }
+    locals: { prisonerSummary },
+  } as unknown as Response
   const next = jest.fn()
 
   beforeEach(() => {
     jest.resetAllMocks()
-    req.session = { prisonerSummary } as SessionData
     req.body = {}
-    req.user = {} as Express.User
-    req.params = { prisonNumber }
-    req.path = `/prisoners/${prisonNumber}/create-induction/qualification-level`
   })
 
   describe('getQualificationLevelView', () => {
@@ -64,11 +59,7 @@ describe('qualificationLevelCreateController', () => {
       }
 
       // When
-      await controller.getQualificationLevelView(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.getQualificationLevelView(req, res, next)
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/prePrisonEducation/qualificationLevel', expectedView)
@@ -104,11 +95,7 @@ describe('qualificationLevelCreateController', () => {
       }
 
       // When
-      await controller.getQualificationLevelView(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.getQualificationLevelView(req, res, next)
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/prePrisonEducation/qualificationLevel', expectedView)
@@ -146,11 +133,7 @@ describe('qualificationLevelCreateController', () => {
       ]
 
       // When
-      await controller.submitQualificationLevelForm(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.submitQualificationLevelForm(req, res, next)
 
       // Then
       expect(res.redirectWithErrors).toHaveBeenCalledWith(
@@ -182,11 +165,7 @@ describe('qualificationLevelCreateController', () => {
       req.session.qualificationLevelForm = undefined
 
       // When
-      await controller.submitQualificationLevelForm(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.submitQualificationLevelForm(req, res, next)
 
       // Then
       expect(res.redirect).toHaveBeenCalledWith(`/prisoners/${prisonNumber}/create-induction/qualification-details`)

@@ -20,7 +20,7 @@ export default class UpdateGoalController {
 
   getUpdateGoalView: RequestHandler = async (req, res, next): Promise<void> => {
     const { prisonNumber, goalReference } = req.params
-    const { prisonerSummary } = req.session
+    const { prisonerSummary } = res.locals
 
     let updateGoalForm: UpdateGoalForm
     if (getPrisonerContext(req.session, prisonNumber).updateGoalForm) {
@@ -93,7 +93,7 @@ export default class UpdateGoalController {
 
   getReviewUpdateGoalView: RequestHandler = async (req, res, next): Promise<void> => {
     const { prisonNumber } = req.params
-    const { prisonerSummary } = req.session
+    const { prisonerSummary } = res.locals
     const { updateGoalForm } = getPrisonerContext(req.session, prisonNumber)
     const { prisonId } = prisonerSummary
 
@@ -104,7 +104,7 @@ export default class UpdateGoalController {
 
   submitReviewUpdateGoal: RequestHandler = async (req, res, next): Promise<void> => {
     const { prisonNumber } = req.params
-    const { prisonerSummary } = req.session
+    const { prisonerSummary } = res.locals
     const { updateGoalForm } = getPrisonerContext(req.session, prisonNumber)
 
     getPrisonerContext(req.session, prisonNumber).updateGoalForm = undefined

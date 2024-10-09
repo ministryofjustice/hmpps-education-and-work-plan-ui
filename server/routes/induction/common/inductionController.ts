@@ -1,4 +1,4 @@
-import { Request } from 'express'
+import { Request, Response } from 'express'
 import { getPreviousPage, pageFlowHistoryContains, setCurrentPage } from '../../pageFlowHistory'
 
 /**
@@ -13,7 +13,7 @@ export default abstract class InductionController {
   /**
    * Concrete classes must provide an implementation of this method to provide the backlink aria text relevant to their use case / journey.
    */
-  abstract getBackLinkAriaText(req: Request): string
+  abstract getBackLinkAriaText(req: Request, res: Response): string
 
   addCurrentPageToHistory(req: Request) {
     if (!req.session.pageFlowHistory) {

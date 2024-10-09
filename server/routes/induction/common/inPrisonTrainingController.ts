@@ -13,7 +13,8 @@ export default abstract class InPrisonTrainingController extends InductionContro
    * Returns the In-Prison Training view; suitable for use by the Create and Update journeys.
    */
   getInPrisonTrainingView: RequestHandler = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    const { prisonerSummary, inductionDto } = req.session
+    const { inductionDto } = req.session
+    const { prisonerSummary } = res.locals
 
     this.addCurrentPageToFlowHistoryWhenComingFromCheckYourAnswers(req)
 
@@ -27,7 +28,7 @@ export default abstract class InPrisonTrainingController extends InductionContro
     const view = new InPrisonTrainingView(
       prisonerSummary,
       this.getBackLinkUrl(req),
-      this.getBackLinkAriaText(req),
+      this.getBackLinkAriaText(req, res),
       inPrisonTrainingForm,
     )
     return res.render('pages/induction/inPrisonTraining/index', { ...view.renderArgs })

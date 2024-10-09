@@ -18,30 +18,28 @@ describe('highestLevelOfEducationUpdateController', () => {
   ) as jest.Mocked<EducationAndWorkPlanService>
   const controller = new HighestLevelOfEducationUpdateController(educationAndWorkPlanService)
 
-  let req: Request
-  const res = {
-    redirect: jest.fn(),
-    redirectWithErrors: jest.fn(),
-    render: jest.fn(),
-  } as unknown as Response
-  const next = jest.fn()
-
   const prisonNumber = 'A1234BC'
   const prisonerSummary = aValidPrisonerSummary(prisonNumber)
   const userToken = 'a-user-token'
 
+  const req = {
+    session: {},
+    body: {},
+    user: { token: userToken },
+    params: { prisonNumber },
+  } as unknown as Request
+  const res = {
+    redirect: jest.fn(),
+    redirectWithErrors: jest.fn(),
+    render: jest.fn(),
+    locals: { prisonerSummary },
+  } as unknown as Response
+  const next = jest.fn()
+
   beforeEach(() => {
     jest.resetAllMocks()
-
-    req = {
-      session: { prisonerSummary },
-      body: {},
-      user: {
-        token: userToken,
-      },
-      params: { prisonNumber },
-      query: {},
-    } as unknown as Request
+    req.session.prisonerContexts = undefined
+    req.body = {}
   })
 
   describe('getHighestLevelOfEducationView', () => {

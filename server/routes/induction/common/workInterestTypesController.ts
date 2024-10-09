@@ -13,7 +13,8 @@ export default abstract class WorkInterestTypesController extends InductionContr
    * Returns the Future Work Interest Types view; suitable for use by the Create and Update journeys.
    */
   getWorkInterestTypesView: RequestHandler = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    const { prisonerSummary, inductionDto } = req.session
+    const { inductionDto } = req.session
+    const { prisonerSummary } = res.locals
 
     this.addCurrentPageToHistory(req)
 
@@ -23,7 +24,7 @@ export default abstract class WorkInterestTypesController extends InductionContr
     const view = new WorkInterestTypesView(
       prisonerSummary,
       this.getBackLinkUrl(req),
-      this.getBackLinkAriaText(req),
+      this.getBackLinkAriaText(req, res),
       workInterestTypesForm,
     )
     return res.render('pages/induction/workInterests/workInterestTypes', { ...view.renderArgs })

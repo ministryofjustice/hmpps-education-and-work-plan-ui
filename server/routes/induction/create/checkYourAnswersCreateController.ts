@@ -22,7 +22,8 @@ export default class CheckYourAnswersCreateController extends CheckYourAnswersCo
 
   submitCheckYourAnswers: RequestHandler = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { prisonNumber } = req.params
-    const { prisonerSummary, inductionDto } = req.session
+    const { inductionDto } = req.session
+    const { prisonerSummary } = res.locals
     const { prisonId } = prisonerSummary
 
     const createInductionDto = toCreateOrUpdateInductionDto(prisonId, inductionDto)

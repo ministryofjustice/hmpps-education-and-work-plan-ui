@@ -1,5 +1,4 @@
-import { NextFunction, Request, Response } from 'express'
-import type { SessionData } from 'express-session'
+import { Request, Response } from 'express'
 import type { InductionDto, PreviousWorkExperienceDto } from 'inductionDto'
 import type { PageFlow } from 'viewModels'
 import type { PreviousWorkExperienceTypesForm } from 'inductionForms'
@@ -15,26 +14,24 @@ describe('previousWorkExperienceTypesCreateController', () => {
   const prisonerSummary = aValidPrisonerSummary()
 
   const req = {
-    session: {} as SessionData,
+    session: {},
     body: {},
-    user: {} as Express.User,
-    params: {} as Record<string, string>,
-    path: '',
-  }
+    params: { prisonNumber },
+    path: `/prisoners/${prisonNumber}/create-induction/previous-work-experience`,
+  } as unknown as Request
   const res = {
     redirect: jest.fn(),
     redirectWithErrors: jest.fn(),
     render: jest.fn(),
-  }
+    locals: { prisonerSummary },
+  } as unknown as Response
   const next = jest.fn()
 
   beforeEach(() => {
     jest.resetAllMocks()
-    req.session = { prisonerSummary } as SessionData
+    req.session.pageFlowHistory = undefined
+    req.session.previousWorkExperienceTypesForm = undefined
     req.body = {}
-    req.user = {} as Express.User
-    req.params = { prisonNumber }
-    req.path = `/prisoners/${prisonNumber}/create-induction/previous-work-experience`
   })
 
   describe('getPreviousWorkExperienceTypesView', () => {
@@ -58,11 +55,7 @@ describe('previousWorkExperienceTypesCreateController', () => {
       }
 
       // When
-      await controller.getPreviousWorkExperienceTypesView(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.getPreviousWorkExperienceTypesView(req, res, next)
 
       // Then
       expect(res.render).toHaveBeenCalledWith(
@@ -93,11 +86,7 @@ describe('previousWorkExperienceTypesCreateController', () => {
       }
 
       // When
-      await controller.getPreviousWorkExperienceTypesView(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.getPreviousWorkExperienceTypesView(req, res, next)
 
       // Then
       expect(res.render).toHaveBeenCalledWith(
@@ -140,11 +129,7 @@ describe('previousWorkExperienceTypesCreateController', () => {
       }
 
       // When
-      await controller.getPreviousWorkExperienceTypesView(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.getPreviousWorkExperienceTypesView(req, res, next)
 
       // Then
       expect(res.render).toHaveBeenCalledWith(
@@ -176,11 +161,7 @@ describe('previousWorkExperienceTypesCreateController', () => {
       ]
 
       // When
-      await controller.submitPreviousWorkExperienceTypesForm(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.submitPreviousWorkExperienceTypesForm(req, res, next)
 
       // Then
       expect(res.redirectWithErrors).toHaveBeenCalledWith(
@@ -237,11 +218,7 @@ describe('previousWorkExperienceTypesCreateController', () => {
       }
 
       // When
-      await controller.submitPreviousWorkExperienceTypesForm(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.submitPreviousWorkExperienceTypesForm(req, res, next)
 
       // Then
       expect(res.redirect).toHaveBeenCalledWith(
@@ -309,11 +286,7 @@ describe('previousWorkExperienceTypesCreateController', () => {
       ]
 
       // When
-      await controller.submitPreviousWorkExperienceTypesForm(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.submitPreviousWorkExperienceTypesForm(req, res, next)
 
       // Then
       expect(res.redirect).toHaveBeenCalledWith(

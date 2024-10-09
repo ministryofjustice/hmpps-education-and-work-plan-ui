@@ -19,7 +19,8 @@ export default abstract class PreviousWorkExperienceDetailController extends Ind
     res: Response,
     next: NextFunction,
   ): Promise<void> => {
-    const { prisonerSummary, inductionDto } = req.session
+    const { inductionDto } = req.session
+    const { prisonerSummary } = res.locals
     const { typeOfWorkExperience } = req.params
 
     let previousWorkExperienceType: TypeOfWorkExperienceValue
@@ -48,7 +49,7 @@ export default abstract class PreviousWorkExperienceDetailController extends Ind
     const view = new PreviousWorkExperienceDetailView(
       prisonerSummary,
       this.getBackLinkUrl(req),
-      this.getBackLinkAriaText(req),
+      this.getBackLinkAriaText(req, res),
       previousWorkExperienceDetailsForm,
       previousWorkExperienceType,
     )

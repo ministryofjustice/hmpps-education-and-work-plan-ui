@@ -13,7 +13,8 @@ export default abstract class PersonalInterestsController extends InductionContr
    * Returns the Personal Interests view; suitable for use by the Create and Update journeys.
    */
   getPersonalInterestsView: RequestHandler = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    const { prisonerSummary, inductionDto } = req.session
+    const { inductionDto } = req.session
+    const { prisonerSummary } = res.locals
 
     const personalInterestsForm = req.session.personalInterestsForm || toPersonalInterestsForm(inductionDto)
     req.session.personalInterestsForm = undefined
@@ -27,7 +28,7 @@ export default abstract class PersonalInterestsController extends InductionContr
     const view = new PersonalInterestsView(
       prisonerSummary,
       this.getBackLinkUrl(req),
-      this.getBackLinkAriaText(req),
+      this.getBackLinkAriaText(req, res),
       personalInterestsForm,
     )
     return res.render('pages/induction/personalInterests/index', { ...view.renderArgs })
