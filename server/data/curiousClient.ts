@@ -1,4 +1,4 @@
-import type { LearnerEductionPagedResponse, LearnerNeurodivergence, LearnerProfile } from 'curiousApiClient'
+import type { LearnerEductionPagedResponse, LearnerProfile } from 'curiousApiClient'
 import RestClient from './restClient'
 import config from '../config'
 
@@ -10,12 +10,6 @@ export default class CuriousClient {
   async getLearnerProfile(prisonNumber: string, token: string): Promise<Array<LearnerProfile>> {
     return CuriousClient.restClient(token).get<Array<LearnerProfile>>({
       path: `/learnerProfile/${prisonNumber}`,
-    })
-  }
-
-  async getLearnerNeurodivergence(prisonNumber: string, token: string): Promise<Array<LearnerNeurodivergence>> {
-    return CuriousClient.restClient(token).get<Array<LearnerNeurodivergence>>({
-      path: `/learnerNeurodivergence/${prisonNumber}`,
     })
   }
 

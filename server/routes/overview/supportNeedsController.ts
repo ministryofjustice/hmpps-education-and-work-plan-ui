@@ -28,18 +28,6 @@ export default class SupportNeedsController {
       })
     }
 
-    // Loop through the neurodiversities needs array and update the prison name for each need
-    if (supportNeeds.neurodiversities) {
-      supportNeeds.neurodiversities.map(async supportNeed => {
-        const prison = prisonNamesById.get(supportNeed.prisonId)
-        if (prison) {
-          // TODO refactor to avoid param-reassign eslint rule
-          // eslint-disable-next-line no-param-reassign
-          supportNeed.prisonName = prison
-        }
-      })
-    }
-
     const view = new SupportNeedsView(prisonerSummary, supportNeeds)
     res.render('pages/overview/index', { ...view.renderArgs })
   }

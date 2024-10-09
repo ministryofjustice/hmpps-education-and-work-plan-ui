@@ -1,4 +1,4 @@
-import type { LearnerEductionPagedResponse, LearnerNeurodivergence, LearnerProfile } from 'curiousApiClient'
+import type { LearnerEductionPagedResponse, LearnerProfile } from 'curiousApiClient'
 import nock from 'nock'
 import CuriousClient from './curiousClient'
 import config from '../config'
@@ -77,59 +77,6 @@ describe('curiousClient', () => {
       // When
       try {
         await curiousClient.getLearnerProfile(prisonNumber, systemToken)
-      } catch (e) {
-        // Then
-        expect(nock.isDone()).toBe(true)
-        expect(e.status).toEqual(401)
-        expect(e.data).toEqual(expectedResponseBody)
-      }
-    })
-  })
-
-  describe('getLearnerNeurodivergence', () => {
-    it('should get learner neuro divergence', async () => {
-      // Given
-      const prisonNumber = 'A1234BC'
-      const systemToken = 'a-system-token'
-
-      const learnerNeurodivergence: Array<LearnerNeurodivergence> = [
-        {
-          prn: prisonNumber,
-          establishmentId: 'DNI',
-          establishmentName: 'DONCASTER (HMP)',
-          neurodivergenceSelfDeclared: ['ADHD'],
-          selfDeclaredDate: '2022-05-16',
-          neurodivergenceAssessed: ['No Identified Neurodiversity Need'],
-          assessmentDate: '2022-05-16',
-          neurodivergenceSupport: ['No Identified Support Required'],
-          supportDate: '2022-05-16',
-        },
-      ]
-      curiousApi.get(`/learnerNeurodivergence/${prisonNumber}`).reply(200, learnerNeurodivergence)
-
-      // When
-      const actual = await curiousClient.getLearnerNeurodivergence(prisonNumber, systemToken)
-
-      // Then
-      expect(actual).toEqual(learnerNeurodivergence)
-      expect(nock.isDone()).toBe(true)
-    })
-
-    it('should not get learner neuro divergence given API returns an error response', async () => {
-      // Given
-      const prisonNumber = 'A1234BC'
-      const systemToken = 'a-system-token'
-
-      const expectedResponseBody = {
-        errorCode: 'VC4001',
-        errorMessage: 'Invalid token',
-        httpStatusCode: 401,
-      }
-      curiousApi.get(`/learnerNeurodivergence/${prisonNumber}`).reply(401, expectedResponseBody)
-
-      // When
-      try {
-        await curiousClient.getLearnerNeurodivergence(prisonNumber, systemToken)
       } catch (e) {
         // Then
         expect(nock.isDone()).toBe(true)

@@ -20,7 +20,6 @@ declare module 'viewModels' {
   export interface PrisonerSupportNeeds {
     problemRetrievingData: boolean
     healthAndSupportNeeds: Array<HealthAndSupportNeeds>
-    neurodiversities: Array<Neurodiversity>
   }
 
   export interface HealthAndSupportNeeds {
@@ -30,17 +29,6 @@ declare module 'viewModels' {
     inDepthAssessmentDate?: Date
     primaryLddAndHealthNeeds?: string
     additionalLddAndHealthNeeds: Array<string>
-  }
-
-  export interface Neurodiversity {
-    prisonId: string
-    prisonName: string
-    supportNeeded: Array<string>
-    supportNeededRecordedDate?: Date
-    selfDeclaredNeurodiversity: Array<string>
-    selfDeclaredRecordedDate?: Date
-    assessedNeurodiversity: Array<string>
-    assessmentDate?: Date
   }
 
   /**
