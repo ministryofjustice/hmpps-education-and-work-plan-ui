@@ -15,20 +15,37 @@ export default class SupportNeedsController {
 
     const supportNeeds = await this.curiousService.getPrisonerSupportNeeds(prisonNumber, req.user.username)
     const prisonNamesById = await this.prisonService.getAllPrisonNamesById(req.user.username)
+    let atLeastOnePrisonHasSupportNeeds = false
 
     // Loop through the healthAndSupport needs array and update the prison name for each need
     if (supportNeeds.healthAndSupportNeeds) {
-      supportNeeds.healthAndSupportNeeds.map(async supportNeed => {
+      supportNeeds.healthAndSupportNeeds = supportNeeds.healthAndSupportNeeds.map(supportNeed => {
         const prison = prisonNamesById.get(supportNeed.prisonId)
         if (prison) {
           // TODO refactor to avoid param-reassign eslint rule
           // eslint-disable-next-line no-param-reassign
           supportNeed.prisonName = prison
         }
+
+        const hasSupportNeeds = !!(
+          supportNeed.rapidAssessmentDate ||
+          supportNeed.inDepthAssessmentDate ||
+          supportNeed.primaryLddAndHealthNeeds ||
+          (supportNeed.additionalLddAndHealthNeeds && supportNeed.additionalLddAndHealthNeeds.length > 0)
+        )
+
+        if (hasSupportNeeds) {
+          atLeastOnePrisonHasSupportNeeds = true
+        }
+
+        return {
+          ...supportNeed,
+          prisonName: prison,
+          hasSupportNeeds,
+        }
       })
     }
-
-    const view = new SupportNeedsView(prisonerSummary, supportNeeds)
+    const view = new SupportNeedsView(prisonerSummary, supportNeeds, atLeastOnePrisonHasSupportNeeds)
     res.render('pages/overview/index', { ...view.renderArgs })
   }
 }

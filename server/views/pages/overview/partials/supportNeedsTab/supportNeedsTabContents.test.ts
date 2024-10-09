@@ -1,54 +1,101 @@
-import * as fs from 'fs'
 import * as cheerio from 'cheerio'
-import { Cheerio, CheerioAPI } from 'cheerio'
-import nunjucks, { Template } from 'nunjucks'
-import { registerNunjucks } from '../../../../../utils/nunjucksSetup'
+import nunjucks from 'nunjucks'
 import aValidPrisonerSupportNeeds from '../../../../../testsupport/supportNeedsTestDataBuilder'
 import aValidPrisonerSummary from '../../../../../testsupport/prisonerSummaryTestDataBuilder'
+import fallbackMessageFilter from '../../../../../filters/fallbackMessageFilter'
+import formatDateFilter from '../../../../../filters/formatDateFilter'
+
+const njkEnv = nunjucks.configure([
+  'node_modules/govuk-frontend/govuk/',
+  'node_modules/govuk-frontend/govuk/components/',
+  'node_modules/govuk-frontend/govuk/template/',
+  'node_modules/govuk-frontend/dist/',
+  'node_modules/@ministryofjustice/frontend/',
+  'server/views/',
+  __dirname,
+])
+
+njkEnv.addFilter('fallbackMessage', fallbackMessageFilter)
+njkEnv.addFilter('formatDate', formatDateFilter)
+
+const template = 'supportNeedsTabContents.njk'
+const prisonerSummary = aValidPrisonerSummary()
 
 describe('Support Needs tab view', () => {
-  const template = fs.readFileSync('server/views/pages/overview/partials/supportNeedsTab/supportNeedsTabContents.njk')
-  const prisonerSummary = aValidPrisonerSummary()
-
-  let compiledTemplate: Template
-  let viewContext: Record<string, unknown>
-
-  const njkEnv = registerNunjucks()
-
-  beforeEach(() => {
-    compiledTemplate = nunjucks.compile(template.toString(), njkEnv)
-  })
-
-  it('should render content', () => {
+  it('should render correct content when a prison has support needs data recorded', () => {
     // Given
-    const supportNeeds = aValidPrisonerSupportNeeds()
-    viewContext = { prisonerSummary, tab: 'support-needs', supportNeeds }
+    const supportNeeds = {
+      ...aValidPrisonerSupportNeeds(),
+      healthAndSupportNeeds: aValidPrisonerSupportNeeds().healthAndSupportNeeds.map(supportNeed => ({
+        ...supportNeed,
+        hasSupportNeeds: true,
+      })),
+    }
+    const pageViewModel = {
+      tab: 'support-needs',
+      prisonerSummary,
+      supportNeeds,
+      atLeastOnePrisonHasSupportNeeds: true,
+    }
 
     // When
-    const $ = cheerio.load(compiledTemplate.render(viewContext))
-    setupCheerioExtensionFunctions($)
+    const content = njkEnv.render(template, pageViewModel)
+    const $ = cheerio.load(content)
 
     // Then
-    const healthAndSupportNeedsCard = $('#health-and-support-needs-summary-card')
-    // expect there to be only 1 gov-uk-summmary-list representing the data from the 1 prison in aValidPrisonerSupportNeeds()
-    expect(healthAndSupportNeedsCard.find('.govuk-summary-list').length).toEqual(1)
-    expect(healthAndSupportNeedsCard.heading()).toContain(
-      `Jimmy Lightfingers's learning difficulties, disabilities and health needs recorded whilst at`,
-    )
-    expect(healthAndSupportNeedsCard.heading()).toContain('Moorland (HMP & YOI)')
-    expect(healthAndSupportNeedsCard.rapidAssessmentDate()).toEqual('18 February 2022')
-    expect(healthAndSupportNeedsCard.inDepthAssessmentDate()).toEqual('Not recorded in Curious')
-    expect(healthAndSupportNeedsCard.primaryLddAndHealthNeeds()).toEqual('Visual impairment')
-    expect(healthAndSupportNeedsCard.additionalLddAndHealthNeeds()).toEqual([
+    // expect there to be 2 gov-uk-summmary-list representing the data from the 2 prisons in aValidPrisonerSupportNeeds()
+    expect($('[data-qa=support-needs-list]')).toHaveLength(2)
+    expect($('[data-qa=prison-name]').first().text()).toContain('Moorland (HMP & YOI)')
+    expect($('[data-qa=rapid-assessment-date]').first().text()).toContain('18 February 2022')
+    expect($('[data-qa=in-depth-assessment-date]').first().text()).toContain('Not recorded in Curious')
+    expect($('[data-qa=primary-ldd-needs]').first().text()).toContain('Visual impairment')
+    const additionalNeeds = $('[data-qa=additional-ldd-needs]')
+      .first()
+      .find('li')
+      .map((_, el) => $(el).text().trim())
+      .get()
+    expect(additionalNeeds).toEqual([
       'Hearing impairment',
       'Mental health difficulty',
       'Social and emotional difficulties',
     ])
   })
 
+  it('should render a message when there is more than one prison and none of them have support needs data recorded', () => {
+    // Given
+    const supportNeeds = {
+      ...aValidPrisonerSupportNeeds(),
+      healthAndSupportNeeds: aValidPrisonerSupportNeeds().healthAndSupportNeeds.map(supportNeed => ({
+        ...supportNeed,
+        rapidAssessmentDate: undefined,
+        inDepthAssessmentDate: undefined,
+        primaryLddAndHealthNeeds: null,
+        additionalLddAndHealthNeeds: [],
+        hasSupportNeeds: false,
+      })),
+    }
+    const pageViewModel = {
+      tab: 'support-needs',
+      prisonerSummary,
+      supportNeeds,
+      atLeastOnePrisonHasSupportNeeds: false,
+    }
+
+    // When
+    const content = njkEnv.render(template, pageViewModel)
+    const $ = cheerio.load(content)
+
+    // Then
+    // expect there to be 0 gov-uk-summmary-list, replaced with a message stating no LDD screener data available
+    expect($('[data-qa=support-needs-list]')).toHaveLength(0)
+    expect($('[data-qa=no-data-message]').text()).toContain(
+      'Jimmy Lightfingers has no screener and assessment results recorded in Curious.',
+    )
+  })
+
   it('should render content saying curious is unavailable given problem retrieving data is true', () => {
     // Given
-    viewContext = {
+    const pageViewModel = {
       prisonerSummary,
       tab: 'support-needs',
       supportNeeds: {
@@ -57,46 +104,12 @@ describe('Support Needs tab view', () => {
     }
 
     // When
-    const $ = cheerio.load(compiledTemplate.render(viewContext))
+    const content = njkEnv.render(template, pageViewModel)
+    const $ = cheerio.load(content)
 
     // Then
-    expect($('h2').text()).toEqual('We cannot show these details from Curious right now')
+    expect($('[data-qa=curious-unavailable-message]').text()).toEqual(
+      'We cannot show these details from Curious right now',
+    )
   })
 })
-
-declare module 'cheerio' {
-  interface Cheerio<T> {
-    heading(this: Cheerio<T>): Cheerio<T>
-    rapidAssessmentDate(this: Cheerio<T>): Cheerio<T>
-    inDepthAssessmentDate(this: Cheerio<T>): Cheerio<T>
-    primaryLddAndHealthNeeds(this: Cheerio<T>): Cheerio<T>
-    additionalLddAndHealthNeeds(this: Cheerio<T>): Cheerio<T>
-  }
-}
-
-const setupCheerioExtensionFunctions = ($: CheerioAPI) => {
-  // eslint-disable-next-line no-param-reassign
-  $.prototype.heading = function heading(): Cheerio<never> {
-    return this.find('h3').text()
-  }
-  // eslint-disable-next-line no-param-reassign
-  $.prototype.rapidAssessmentDate = function rapidAssessmentDate(): Cheerio<never> {
-    return this.find(`.govuk-summary-list__key:contains('Rapid screener from induction')`).next().text().trim()
-  }
-  // eslint-disable-next-line no-param-reassign
-  $.prototype.inDepthAssessmentDate = function inDepthAssessmentDate(): Cheerio<never> {
-    return this.find(`.govuk-summary-list__key:contains('In-depth assessment by education')`).next().text().trim()
-  }
-  // eslint-disable-next-line no-param-reassign
-  $.prototype.primaryLddAndHealthNeeds = function primaryLddAndHealthNeeds(): Cheerio<never> {
-    return this.find(`.govuk-summary-list__key:contains('Primary area of need identified')`).next().text().trim()
-  }
-  // eslint-disable-next-line no-param-reassign
-  $.prototype.additionalLddAndHealthNeeds = function additionalLddAndHealthNeeds(): Cheerio<never> {
-    return this.find(`.govuk-summary-list__key:contains('Other areas of need identified')`)
-      .next()
-      .find('li')
-      .toArray()
-      .map((el: never) => $(el).text())
-  }
-}
