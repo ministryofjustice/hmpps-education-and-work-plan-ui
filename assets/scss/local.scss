@@ -23,30 +23,45 @@
 
 // Custom grid and border for goals section of overview page
 
-.app-table-column-with-right-border {
-  border-right: 1px solid $govuk-border-colour;
-  display: inline-block;
-}
-
 .govuk-grid {
-  grid-template-columns: repeat(3, 1fr);
   gap: 20px;
   display: flex;
-  justify-content: center;
 }
 
 .govuk-grid-item {
   padding: 16px;
-  border-right: 1px solid $govuk-border-colour;
+  text-align: center;
+}
+
+.govuk-grid-item:first-child {
+  margin-right: 110px;
 }
 
 .govuk-grid-item:last-child {
-  border-right: none;
+  border-left: 1px solid $govuk-border-colour;
 }
 
 .goal-container {
   display: flex;
   align-items: center;
+}
+
+// Aligning goal icon in actions card on overview page
+
+.goal-action {
+  display: inline-flex;
+  align-items: center;
+}
+
+.goal-icon {
+  margin-right: 8px;
+  vertical-align: middle;
+}
+
+// Removing the border below the last row of the table in education and training summary card on overview page
+
+.last-row-no-border td {
+  border-bottom: none;
 }
 
 // Custom section break widths

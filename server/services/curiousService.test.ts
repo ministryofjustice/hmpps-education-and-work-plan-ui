@@ -148,7 +148,7 @@ describe('curiousService', () => {
             assessmentDate: moment('2012-02-16').utc().toDate(),
             grade: 'Level 1',
             prisonId: 'MDI',
-            prisonName: 'MOORLAND (HMP & YOI)',
+            prisonName: 'Moorland (HMP & YOI)',
             type: 'ENGLISH',
           },
         ],

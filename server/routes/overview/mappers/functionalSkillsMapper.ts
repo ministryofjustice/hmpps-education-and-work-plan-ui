@@ -17,7 +17,7 @@ const toFunctionalSkills = (learnerProfiles: Array<LearnerProfile>, prisonNumber
 const toAssessment = (prisonId: string, prisonName: string, assessment: AssemmentDto): Assessment => {
   return {
     prisonId,
-    prisonName,
+    prisonName: formatPrisonName(prisonName),
     type: toAssessmentTypeOrNull(assessment.qualificationType),
     grade: assessment.qualificationGrade,
     assessmentDate: dateOrNull(assessment.assessmentDate),
@@ -26,6 +26,12 @@ const toAssessment = (prisonId: string, prisonName: string, assessment: Assemmen
 
 const dateOrNull = (value: string): Date | undefined => {
   return value ? startOfDay(parseISO(value)) : undefined
+}
+
+const formatPrisonName = (prisonName: string) => {
+  const [name, abbreviation] = prisonName.split(' (')
+  const formattedName = name.charAt(0).toUpperCase() + name.slice(1).toLowerCase()
+  return `${formattedName} (${abbreviation}`
 }
 
 const toAssessmentTypeOrNull = (qualificationType: string): string | undefined => {

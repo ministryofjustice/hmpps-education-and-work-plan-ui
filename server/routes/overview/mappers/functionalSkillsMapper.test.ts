@@ -11,7 +11,7 @@ describe('functionalSkillsMapper', () => {
       {
         prn: prisonNumber,
         establishmentId: 'MDI',
-        establishmentName: 'MOORLAND (HMP & YOI)',
+        establishmentName: 'Moorland (HMP & YOI)',
         qualifications: [
           {
             qualificationType: 'English',
@@ -28,7 +28,7 @@ describe('functionalSkillsMapper', () => {
       {
         prn: prisonNumber,
         establishmentId: 'DNI',
-        establishmentName: 'DONCASTER (HMP)',
+        establishmentName: 'Doncaster (HMP)',
         qualifications: [
           {
             qualificationType: 'Digital Literacy',
@@ -47,21 +47,21 @@ describe('functionalSkillsMapper', () => {
           assessmentDate: startOfDay(parseISO('2012-02-16')),
           grade: 'Level 1',
           prisonId: 'MDI',
-          prisonName: 'MOORLAND (HMP & YOI)',
+          prisonName: 'Moorland (HMP & YOI)',
           type: 'ENGLISH',
         },
         {
           assessmentDate: startOfDay(parseISO('2012-02-18')),
           grade: 'Level 2',
           prisonId: 'MDI',
-          prisonName: 'MOORLAND (HMP & YOI)',
+          prisonName: 'Moorland (HMP & YOI)',
           type: 'MATHS',
         },
         {
           assessmentDate: startOfDay(parseISO('2022-08-29')),
           grade: 'Level 3',
           prisonId: 'DNI',
-          prisonName: 'DONCASTER (HMP)',
+          prisonName: 'Doncaster (HMP)',
           type: 'DIGITAL_LITERACY',
         },
       ],
