@@ -29,6 +29,7 @@ declare module 'viewModels' {
     inDepthAssessmentDate?: Date
     primaryLddAndHealthNeeds?: string
     additionalLddAndHealthNeeds: Array<string>
+    hasSupportNeeds: boolean
   }
 
   /**

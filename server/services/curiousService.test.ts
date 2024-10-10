@@ -36,7 +36,13 @@ describe('curiousService', () => {
       const systemToken = 'a-system-token'
       hmppsAuthClient.getSystemClientToken.mockResolvedValue(systemToken)
 
-      const learnerProfiles = [aValidLearnerProfile()]
+      const learnerProfiles = [
+        {
+          ...aValidLearnerProfile(),
+          rapidAssessmentDate: '2022-02-18',
+          inDepthAssessmentDate: '2023-04-10',
+        },
+      ]
       curiousClient.getLearnerProfile.mockResolvedValue(learnerProfiles)
 
       const expectedSupportNeeds: PrisonerSupportNeeds = {
@@ -45,8 +51,11 @@ describe('curiousService', () => {
           {
             prisonId: 'MDI',
             prisonName: 'MOORLAND (HMP & YOI)',
+            rapidAssessmentDate: new Date('2022-02-18T00:00:00.000Z'),
+            inDepthAssessmentDate: new Date('2023-04-09T23:00:00.000Z'),
             primaryLddAndHealthNeeds: 'Visual impairment',
             additionalLddAndHealthNeeds: ['Hearing impairment'],
+            hasSupportNeeds: true,
           },
         ],
       }

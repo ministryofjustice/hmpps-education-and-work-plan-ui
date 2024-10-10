@@ -23,13 +23,9 @@ describe('prisonerSupportNeedsMapper', () => {
         establishmentName: 'DONCASTER (HMP)',
         rapidAssessmentDate: undefined,
         inDepthAssessmentDate: undefined,
-        lddHealthProblem: 'Learner considers himself or herself to have a learning difficulty.',
-        primaryLDDAndHealthProblem: 'Visual impairment',
-        additionalLDDAndHealthProblems: [
-          'Hearing impairment',
-          'Social and emotional difficulties',
-          'Mental health difficulty',
-        ],
+        lddHealthProblem: null,
+        primaryLDDAndHealthProblem: null,
+        additionalLDDAndHealthProblems: [],
       },
     ]
 
@@ -43,18 +39,16 @@ describe('prisonerSupportNeedsMapper', () => {
           inDepthAssessmentDate: startOfDay(parseISO('2022-06-01')),
           primaryLddAndHealthNeeds: 'Hearing impairment',
           additionalLddAndHealthNeeds: [],
+          hasSupportNeeds: true,
         },
         {
           prisonId: 'DNI',
           prisonName: 'DONCASTER (HMP)',
           rapidAssessmentDate: undefined,
           inDepthAssessmentDate: undefined,
-          primaryLddAndHealthNeeds: 'Visual impairment',
-          additionalLddAndHealthNeeds: [
-            'Hearing impairment',
-            'Mental health difficulty',
-            'Social and emotional difficulties',
-          ],
+          primaryLddAndHealthNeeds: null,
+          additionalLddAndHealthNeeds: [],
+          hasSupportNeeds: false,
         },
       ],
     }

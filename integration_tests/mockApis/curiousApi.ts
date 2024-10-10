@@ -33,12 +33,8 @@ const stubLearnerProfile = (prisonNumber = 'G6115VJ'): SuperAgentRequest =>
           ],
           languageStatus: null,
           plannedHours: null,
-          prisonId: 'MDI',
-          prisonName: 'Moorland (HMP & YOI)',
-          atLeastOnePrisonHasSupportNeeds: true,
-          hasSupportNeeds: true,
           rapidAssessmentDate: '2022-02-18',
-          inDepthAssessmentDate: undefined,
+          inDepthAssessmentDate: null,
           primaryLDDAndHealthProblem: 'Visual impairment',
           additionalLDDAndHealthProblems: [
             'Hearing impairment',
