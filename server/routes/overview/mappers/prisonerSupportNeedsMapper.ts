@@ -18,11 +18,12 @@ const toHealthAndSupportNeeds = (learnerProfile: LearnerProfile): HealthAndSuppo
       inDepthAssessmentDate: dateOrNull(learnerProfile.inDepthAssessmentDate),
       primaryLddAndHealthNeeds: learnerProfile.primaryLDDAndHealthProblem,
       additionalLddAndHealthNeeds: learnerProfile.additionalLDDAndHealthProblems?.sort() || [],
-      hasSupportNeeds:
-        !!learnerProfile.rapidAssessmentDate ||
+      hasSupportNeeds: !!(
+        learnerProfile.rapidAssessmentDate ||
         learnerProfile.inDepthAssessmentDate ||
         learnerProfile.primaryLddAndHealthNeeds ||
-        (learnerProfile.additionalLddAndHealthNeeds || []).length > 0,
+        (learnerProfile.additionalLddAndHealthNeeds || []).length > 0
+      ),
     }
   }
   return undefined
