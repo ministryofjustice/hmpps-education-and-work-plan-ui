@@ -40,7 +40,7 @@ describe('curiousService', () => {
         {
           ...aValidLearnerProfile(),
           rapidAssessmentDate: '2022-02-18',
-          inDepthAssessmentDate: '2023-04-10',
+          inDepthAssessmentDate: '2022-02-18',
         },
       ]
       curiousClient.getLearnerProfile.mockResolvedValue(learnerProfiles)
@@ -51,8 +51,8 @@ describe('curiousService', () => {
           {
             prisonId: 'MDI',
             prisonName: 'MOORLAND (HMP & YOI)',
-            rapidAssessmentDate: new Date('2022-02-18T00:00:00.000Z'),
-            inDepthAssessmentDate: new Date('2023-04-09T23:00:00.000Z'),
+            rapidAssessmentDate: new Date('2022-02-18'),
+            inDepthAssessmentDate: new Date('2022-02-18'),
             primaryLddAndHealthNeeds: 'Visual impairment',
             additionalLddAndHealthNeeds: ['Hearing impairment'],
             hasSupportNeeds: true,
