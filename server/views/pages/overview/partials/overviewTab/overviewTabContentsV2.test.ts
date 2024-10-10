@@ -219,6 +219,6 @@ describe('overviewTabContents', () => {
     // Then
     expect($('[data-qa="completed-in-prison-courses-in-last-12-months-table"]').length).toEqual(1)
     expect($('[data-qa="completed-course-name"]').text().trim()).toEqual('Basic English')
-    expect($('[data-qa="course-completion-date"]').text().trim()).toEqual('15 June 2023')
+    expect($('[data-qa="course-completion-date"]').text().trim()).toEqual('Completed on 15 June 2023')
   })
 })
