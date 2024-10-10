@@ -141,6 +141,9 @@ describe('curiousService', () => {
       const learnerProfiles = [aValidLearnerProfile()]
       curiousClient.getLearnerProfile.mockResolvedValue(learnerProfiles)
 
+      const prisonNamesById = new Map([['MDI', 'Moorland (HMP & YOI)']])
+      prisonService.getAllPrisonNamesById.mockResolvedValue(prisonNamesById)
+
       const expectedFunctionalSkills = {
         problemRetrievingData: false,
         assessments: [

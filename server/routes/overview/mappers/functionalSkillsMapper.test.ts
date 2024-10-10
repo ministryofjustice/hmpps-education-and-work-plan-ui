@@ -4,6 +4,10 @@ import type { FunctionalSkills } from 'viewModels'
 import toFunctionalSkills from './functionalSkillsMapper'
 
 describe('functionalSkillsMapper', () => {
+  const prisonNamesById = new Map([
+    ['MDI', 'Moorland (HMP & YOI)'],
+    ['DNI', 'Doncaster (HMP)'],
+  ])
   it('should map to functional skills given learner profiles', () => {
     // Given
     const prisonNumber = 'G6123VU'
@@ -68,7 +72,7 @@ describe('functionalSkillsMapper', () => {
     }
 
     // When
-    const actual = toFunctionalSkills(learnerProfiles, prisonNumber)
+    const actual = toFunctionalSkills(learnerProfiles, prisonNumber, prisonNamesById)
 
     // Then
     expect(actual).toEqual(expected)
@@ -87,7 +91,7 @@ describe('functionalSkillsMapper', () => {
     }
 
     // When
-    const actual = toFunctionalSkills(learnerProfiles, prisonNumber)
+    const actual = toFunctionalSkills(learnerProfiles, prisonNumber, prisonNamesById)
 
     // Then
     expect(actual).toEqual(expected)
@@ -106,7 +110,7 @@ describe('functionalSkillsMapper', () => {
     }
 
     // When
-    const actual = toFunctionalSkills(learnerProfiles, prisonNumber)
+    const actual = toFunctionalSkills(learnerProfiles, prisonNumber, prisonNamesById)
 
     // Then
     expect(actual).toEqual(expected)
