@@ -28,7 +28,7 @@
                 <div class="govuk-grid-item">
                   <div class="goal-container">
                     <span class="govuk-body govuk-!-font-size-36 govuk-!-font-weight-bold" data-qa="in-progress-goals-count">{{ goalCounts.activeCount }}</span>
-                    <span class="govuk-tag govuk-tag--green govuk-!-margin-left-2 govuk-!-margin-bottom-4">In progress</span>
+                    <span class="govuk-tag govuk-tag--blue govuk-!-margin-left-2 govuk-!-margin-bottom-4">In progress</span>
                   </div>
                   <a class="govuk-link govuk-!-font-size-19 govuk-!-margin-right-4" href="/plan/{{ prisonerSummary.prisonNumber }}/view/goals#in-progress-goals" data-qa="view-in-progress-goals-button">View in progress goals</a>
                 </div>
@@ -67,21 +67,17 @@
                     <th scope="col" class="govuk-table__header">Assessment level</th>
                   </tr>
                 </thead>
-                <tbody class="govuk-table__body">
+                <tbody class="govuk-table__body" data-qa="functional-skills-table-body">
                   {% for skill in functionalSkills.assessments %}
-                    <tr class="govuk-table__row">
-                      <th scope="row" class="govuk-table__header">
-                        {{ skill.type | formatFunctionalSkillType }}
-                        {% if skill.assessmentDate %}
-                          <br>
-                          <span class="govuk-body-s">Assessed on {{ skill.assessmentDate | formatDate('D MMMM YYYY') }}</span>
-                        {% endif %}
-                      </th>
+                    <tr class="govuk-table__row {% if loop.last %}last-row-no-border{% endif %}">
                       <td class="govuk-table__cell">
-                        {% if skill.grade %}
-                          {{ skill.grade }}
+                        <span class="govuk-body">{{skill.type | formatFunctionalSkillType }} {{ skill.grade }}</span>
+                      </td>
+                      <td class="govuk-table__cell">
+                        {% if skill.assessmentDate %}
+                          <span class="govuk-hint">Assessed on {{ skill.assessmentDate | formatDate('D MMMM YYYY') }}, {{ skill.prisonName }}</span>
                         {% else %}
-                          No functional skill assessment scores recorded in Curious
+                          <span class="govuk-hint">No functional skill assessment scores recorded in Curious</span>
                         {% endif %}
                       </td>
                     </tr>
@@ -93,27 +89,19 @@
               <p class="govuk-body">Reload the page or try again later. Other parts of this service may still be available.</p>
             {% endif %}
             {% if not inPrisonCourses.problemRetrievingData %}
-              <br><p class="govuk-hint">Information from Curious. This only includes educational courses. Contact the local education team to find out more.</p>
-              <h3 class="govuk-heading-s govuk-!-margin-top-4" data-qa="completed-courses-heading">Courses and qualifications completed in the last 12 months</h3>
               {% if inPrisonCourses.coursesCompletedInLast12Months.length > 0 %}
+              <h3 class="govuk-heading-s govuk-!-margin-top-4" data-qa="completed-courses-heading">Courses and qualifications completed in the last 12 months</h3>
+               <p class="govuk-hint">Information from Curious. This only includes educational courses. Contact the local education team to find out more.</p>
                 <table class="govuk-table" data-qa="completed-in-prison-courses-in-last-12-months-table">
-                  <thead class="govuk-table__head">
-                    <tr class="govuk-table__row">
-                      <th scope="col" class="govuk-table__header">Name</th>
-                      <th scope="col" class="govuk-table__header">Type</th>
-                      <th scope="col" class="govuk-table__header">Location</th>
-                      <th scope="col" class="govuk-table__header">Completed on</th>
-                      <th scope="col" class="govuk-table__header">Grade or outcome</th>
-                    </tr>
-                  </thead>
-                  <tbody class="govuk-table__body">
+                  <tbody class="govuk-table__body" data-qa="completed-courses-table-body">
                     {% for completedCourse in inPrisonCourses.coursesCompletedInLast12Months %}
-                      <tr class="govuk-table__row">
-                        <td class="govuk-table__cell" data-qa="completed-course-name">{{ completedCourse.courseName }}</td>
-                        <td class="govuk-table__cell">{{ completedCourse.isAccredited | formatIsAccredited }}</td>
-                        <td class="govuk-table__cell">{{ completedCourse.prisonName if completedCourse.prisonName else completedCourse.prisonId }}</td>
-                        <td class="govuk-table__cell">{{ completedCourse.courseCompletionDate | formatDate('D MMMM YYYY') }}</td>
-                        <td class="govuk-table__cell">{{ completedCourse.grade }}</td>
+                      <tr class="govuk-table__row {% if loop.last %}last-row-no-border{% endif %}">
+                        <td class="govuk-table__cell">
+                          <span class="govuk-body" data-qa="completed-course-name">{{ completedCourse.courseName }}</span>
+                        </td>
+                        <td class="govuk-table__cell">
+                          <span class="govuk-hint" data-qa="course-completion-date">Completed on {{ completedCourse.courseCompletionDate | formatDate('D MMMM YYYY') }}</span>
+                        </td>
                       </tr>
                     {% endfor %}
                   </tbody>
@@ -138,10 +126,10 @@
         </div>
       </div>
       <div class="govuk-grid-column-one-third app-u-print-full-width">
-        {{ actionsCard({
+      {{ actionsCard({
           actions: [
             { 
-              title: '<img src="/assets/images/icon-goal.svg" role="presentation" alt="" width="35px" height="28px" /> Add a new goal' | safe, 
+              title: '<span class="goal-action"><img src="/assets/images/icon-goal.svg" role="presentation" alt="" width="35px" height="28px" class="goal-icon" /> Add a new goal</span>' | safe, 
               href: '/plan/' ~ prisonerSummary.prisonNumber ~ '/goals/create', 
               id: 'add-goal-button', 
               'render-if': hasEditAuthority,

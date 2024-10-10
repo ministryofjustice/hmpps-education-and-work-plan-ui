@@ -2,22 +2,26 @@ import { parseISO, startOfDay } from 'date-fns'
 import type { Assessment as AssemmentDto, LearnerProfile } from 'curiousApiClient'
 import type { Assessment, FunctionalSkills } from 'viewModels'
 
-const toFunctionalSkills = (learnerProfiles: Array<LearnerProfile>, prisonNumber: string): FunctionalSkills => {
+const toFunctionalSkills = (
+  learnerProfiles: Array<LearnerProfile>,
+  prisonNumber: string,
+  prisonNamesById: Map<string, string>,
+): FunctionalSkills => {
   return {
     problemRetrievingData: false,
     assessments: learnerProfiles?.flatMap(learnerProfile =>
       (learnerProfile.qualifications as Array<AssemmentDto>).map(assessment =>
-        toAssessment(learnerProfile.establishmentId, learnerProfile.establishmentName, assessment),
+        toAssessment(learnerProfile.establishmentId, assessment, prisonNamesById),
       ),
     ),
     prisonNumber,
   }
 }
 
-const toAssessment = (prisonId: string, prisonName: string, assessment: AssemmentDto): Assessment => {
+const toAssessment = (prisonId: string, assessment: AssemmentDto, prisonNamesById: Map<string, string>): Assessment => {
   return {
     prisonId,
-    prisonName,
+    prisonName: prisonNamesById.get(prisonId),
     type: toAssessmentTypeOrNull(assessment.qualificationType),
     grade: assessment.qualificationGrade,
     assessmentDate: dateOrNull(assessment.assessmentDate),

@@ -31,10 +31,11 @@ export default class CuriousService {
 
   async getPrisonerFunctionalSkills(prisonNumber: string, username: string): Promise<FunctionalSkills> {
     const systemToken = await this.hmppsAuthClient.getSystemClientToken(username)
+    const prisonNamesById = await this.prisonService.getAllPrisonNamesById(username)
 
     try {
       const learnerProfiles = await this.getLearnerProfile(prisonNumber, systemToken)
-      return toFunctionalSkills(learnerProfiles, prisonNumber)
+      return toFunctionalSkills(learnerProfiles, prisonNumber, prisonNamesById)
     } catch (error) {
       logger.error(`Error retrieving functional skills data from Curious: ${JSON.stringify(error)}`)
       return { problemRetrievingData: true } as FunctionalSkills
