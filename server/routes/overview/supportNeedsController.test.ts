@@ -48,6 +48,7 @@ describe('supportNeedsController', () => {
       prisonerSummary,
       tab: expectedTab,
       supportNeeds: expectedSupportNeeds,
+      atLeastOnePrisonHasSupportNeeds: true,
     }
 
     // When

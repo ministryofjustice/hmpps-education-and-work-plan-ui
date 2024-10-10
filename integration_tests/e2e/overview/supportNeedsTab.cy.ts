@@ -38,7 +38,7 @@ context('Prisoner Overview page - Support Needs tab', () => {
       .hasHealthAndSupportNeedsDisplayed()
   })
 
-  it('should display Support Needs data given curious API returns a 404', () => {
+  it('should display no results message given curious API returns a 404', () => {
     // Given
     cy.task('stubLearnerProfile404Error')
 
@@ -54,7 +54,7 @@ context('Prisoner Overview page - Support Needs tab', () => {
     // Then
     supportNeedsPage //
       .activeTabIs('Support needs')
-      .hasHealthAndSupportNeedsDisplayed()
+      .hasNoDataMessageDisplayed()
   })
 
   it('should display curious unavailable message given curious is unavailable', () => {
