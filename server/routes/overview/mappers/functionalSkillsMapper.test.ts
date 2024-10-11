@@ -15,7 +15,7 @@ describe('functionalSkillsMapper', () => {
       {
         prn: prisonNumber,
         establishmentId: 'MDI',
-        establishmentName: 'Moorland (HMP & YOI)',
+        establishmentName: 'MOORLAND (HMP & YOI)',
         qualifications: [
           {
             qualificationType: 'English',
@@ -32,7 +32,7 @@ describe('functionalSkillsMapper', () => {
       {
         prn: prisonNumber,
         establishmentId: 'DNI',
-        establishmentName: 'Doncaster (HMP)',
+        establishmentName: 'DONCASTER (HMP)',
         qualifications: [
           {
             qualificationType: 'Digital Literacy',
