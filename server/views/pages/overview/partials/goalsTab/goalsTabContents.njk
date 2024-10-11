@@ -19,8 +19,8 @@
     <div class="govuk-grid-column-two-thirds app-u-print-full-width">
       {% if not problemRetrievingData %}
         {% set inProgressGoalsHtml %}
+          <h2 class="govuk-heading-m">Goals in progress</h2>
           {% if inProgressGoals.length > 0 %}
-            <h2 class="govuk-heading-m">Goals in progress</h2>
             {% for goal in inProgressGoals | sort(attribute = 'updatedAt', reverse = true) %}
               {{ goalSummaryCardV2({
                         goal: goal,
@@ -53,8 +53,8 @@
         {% endset %}
 
         {% set archivedGoalsHtml %}
+          <h2 class="govuk-heading-m">Archived goals</h2>
           {% if archivedGoals.length > 0 %}
-            <h2 class="govuk-heading-m">Archived goals</h2>
             {% for goal in archivedGoals %}
               {{ goalSummaryCardV2({
                         goal: goal,
