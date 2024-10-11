@@ -15,7 +15,7 @@
     <div class="govuk-summary-card__title-wrapper govuk-!-padding-bottom-2">
       <h2 class="govuk-summary-card__title govuk-!-font-size-24">Actions</h2>
     </div>
-    <div class="govuk-summary-card__content govuk-!-padding-top-0">
+    <div class="govuk-summary-card__content">
       <ul class="govuk-list govuk-!-margin-0">
         {% for action in params.actions %}
 
@@ -26,7 +26,7 @@
               {% set classNames = classNames + " " + action.classes %}
             {% endif %}
             {%- set actionAttributes %} class="{{ classNames }}" {{- govukAttributes(action.attributes) -}} {% if action.id %} id="{{ action.id }}"{% endif %}{% endset %}
-            <li class="govuk-!-padding-top-3 govuk-!-padding-bottom-4 govuk-!-margin-0">
+            <li class="govuk-!-margin-0">
               <a {{ actionAttributes | safe }} href="{{ action.href }}">{{ action.title }}</a>
             </li>
           {% endif %}

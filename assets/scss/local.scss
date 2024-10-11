@@ -82,6 +82,12 @@ tbody[data-qa="completed-courses-table-body"] .govuk-table__cell:nth-child(2) {
   border-bottom: none;
 }
 
+// Custom margin on completed courses heading in education and training summary card on overview page
+
+h3[data-qa="completed-courses-heading"] {
+  margin-top: 30px !important;
+}
+
 // Custom section break widths
 
 .app-u-section-break-8 {
