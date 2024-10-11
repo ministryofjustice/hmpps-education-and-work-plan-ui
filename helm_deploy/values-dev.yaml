@@ -26,7 +26,6 @@ generic-service:
     ENVIRONMENT_NAME: 'DEV'
 
     ACTIVE_AGENCIES: '***'
-    NEW_OVERVIEW_PAGE_ENABLED: "true"
     REVIEWS_PRISONS_ENABLED: "BXI, WDI"
 
   allowlist:
