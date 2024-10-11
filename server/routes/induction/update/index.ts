@@ -11,18 +11,11 @@ import PreviousWorkExperienceTypesUpdateController from './previousWorkExperienc
 import AffectAbilityToWorkUpdateController from './affectAbilityToWorkUpdateController'
 import WorkInterestTypesUpdateController from './workInterestTypesUpdateController'
 import WorkInterestRolesUpdateController from './workInterestRolesUpdateController'
-import HighestLevelOfEducationUpdateController from './highestLevelOfEducationUpdateController'
 import AdditionalTrainingUpdateController from './additionalTrainingUpdateController'
-import QualificationsListUpdateController from './qualificationsListUpdateController'
-import QualificationLevelUpdateController from './qualificationLevelUpdateController'
-import QualificationDetailsUpdateController from './qualificationDetailsUpdateController'
 import HopingToWorkOnReleaseUpdateController from './hopingToWorkOnReleaseUpdateController'
 import setCurrentPageInPageFlowQueue from '../../routerRequestHandlers/setCurrentPageInPageFlowQueue'
-import retrieveCuriousFunctionalSkills from '../../routerRequestHandlers/retrieveCuriousFunctionalSkills'
 import retrieveInductionIfNotInSession from '../../routerRequestHandlers/retrieveInductionIfNotInSession'
 import asyncMiddleware from '../../../middleware/asyncMiddleware'
-import retrieveCuriousInPrisonCourses from '../../routerRequestHandlers/retrieveCuriousInPrisonCourses'
-import config from '../../../config'
 
 /**
  * Route definitions for updating the various sections of an Induction
@@ -45,11 +38,7 @@ export default (router: Router, services: Services) => {
   const affectAbilityToWorkUpdateController = new AffectAbilityToWorkUpdateController(inductionService)
   const workInterestTypesUpdateController = new WorkInterestTypesUpdateController(inductionService)
   const workInterestRolesUpdateController = new WorkInterestRolesUpdateController(inductionService)
-  const highestLevelOfEducationUpdateController = new HighestLevelOfEducationUpdateController(inductionService)
-  const qualificationLevelUpdateController = new QualificationLevelUpdateController()
-  const qualificationDetailsUpdateController = new QualificationDetailsUpdateController()
   const additionalTrainingUpdateController = new AdditionalTrainingUpdateController(inductionService)
-  const qualificationsListUpdateController = new QualificationsListUpdateController(inductionService)
 
   router.get('/prisoners/:prisonNumber/induction/**', [
     checkUserHasEditAuthority(),
@@ -138,39 +127,6 @@ export default (router: Router, services: Services) => {
   router.post('/prisoners/:prisonNumber/induction/in-prison-work', [
     asyncMiddleware(inPrisonWorkUpdateController.submitInPrisonWorkForm),
   ])
-
-  if (!config.featureToggles.qualificationsEnabled) {
-    // Pre Prison Education
-    router.get('/prisoners/:prisonNumber/induction/qualifications', [
-      retrieveCuriousFunctionalSkills(services.curiousService),
-      retrieveCuriousInPrisonCourses(services.curiousService),
-      asyncMiddleware(qualificationsListUpdateController.getQualificationsListView),
-    ])
-    router.post('/prisoners/:prisonNumber/induction/qualifications', [
-      asyncMiddleware(qualificationsListUpdateController.submitQualificationsListView),
-    ])
-
-    router.get('/prisoners/:prisonNumber/induction/highest-level-of-education', [
-      asyncMiddleware(highestLevelOfEducationUpdateController.getHighestLevelOfEducationView),
-    ])
-    router.post('/prisoners/:prisonNumber/induction/highest-level-of-education', [
-      asyncMiddleware(highestLevelOfEducationUpdateController.submitHighestLevelOfEducationForm),
-    ])
-
-    router.get('/prisoners/:prisonNumber/induction/qualification-level', [
-      asyncMiddleware(qualificationLevelUpdateController.getQualificationLevelView),
-    ])
-    router.post('/prisoners/:prisonNumber/induction/qualification-level', [
-      asyncMiddleware(qualificationLevelUpdateController.submitQualificationLevelForm),
-    ])
-
-    router.get('/prisoners/:prisonNumber/induction/qualification-details', [
-      asyncMiddleware(qualificationDetailsUpdateController.getQualificationDetailsView),
-    ])
-    router.post('/prisoners/:prisonNumber/induction/qualification-details', [
-      asyncMiddleware(qualificationDetailsUpdateController.submitQualificationDetailsForm),
-    ])
-  }
 
   router.get('/prisoners/:prisonNumber/induction/additional-training', [
     asyncMiddleware(additionalTrainingUpdateController.getAdditionalTrainingView),

@@ -16,7 +16,6 @@ import archiveGoal from './archiveGoal'
 import unarchiveGoal from './unarchiveGoal'
 import createPrePrisonEducation from './prePrisonEducation/create'
 import updatePrePrisonEducation from './prePrisonEducation/update'
-import config from '../config'
 import reviewPlanRoutes from './reviewPlan'
 
 export default function routes(services: Services): Router {
@@ -38,10 +37,8 @@ export default function routes(services: Services): Router {
   archiveGoal(router, services)
   unarchiveGoal(router, services)
 
-  if (config.featureToggles.qualificationsEnabled) {
-    createPrePrisonEducation(router, services)
-    updatePrePrisonEducation(router, services)
-  }
+  createPrePrisonEducation(router, services)
+  updatePrePrisonEducation(router, services)
 
   createInduction(router, services)
   updateInduction(router, services)

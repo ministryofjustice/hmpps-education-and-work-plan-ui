@@ -1,54 +1,14 @@
 {#
 'Education and training' tab
-Contains 'Functional skills', 'In-prison qualifications and achievements', 'Qualifications and education history', and
+Contains 'Functional skills', 'In-prison qualifications and achievements', 'Education and qualifications history', and
 'Training and eduction in prison' summary cards.
 #}
 
+{# 'Functional skills' summary card #}
 {% include './_functionalSkills.njk' %}
+{# 'In-prison qualifications and achievements' summary card #}
 {% include './_inPrisonQualificationsCompletedInLast12Months.njk' %}
-
-{% if not induction.problemRetrievingData %}
-
-  {% if induction.inductionDto %}
-
-    {% include './_qualificationsAndEducationHistory.njk' %}
-    {% include './_trainingAndEducationInterestsInPrison.njk' %}
-
-  {% else %}
-    <div class="govuk-grid-row">
-      <div class="govuk-grid-column-two-thirds app-u-print-full-width">
-
-        <div class="govuk-summary-card">
-          <div class="govuk-summary-card__title-wrapper">
-            <h2 class="govuk-summary-card__title">Qualifications and education history</h2>
-          </div>
-
-          <div class="govuk-summary-card__content">
-            <p class="govuk-body">
-              To add education and training information you need to
-              <a href="/prisoners/{{ prisonerSummary.prisonNumber }}/create-induction/hoping-to-work-on-release" class="govuk-link" data-qa="link-to-create-induction">create a learning and work progress plan</a>
-              with {{ prisonerSummary.firstName }} {{ prisonerSummary.lastName }}.
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-  {% endif %}
-
-{% else %}
-  <div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds app-u-print-full-width">
-
-      <div class="govuk-summary-card">
-        <div class="govuk-summary-card__title-wrapper">
-          <h2 class="govuk-summary-card__title">Qualifications and education history</h2>
-        </div>
-
-        <div class="govuk-summary-card__content">
-          <h3 class="govuk-heading-s" data-qa="induction-unavailable-message">We cannot show these details right now</h3>
-          <p class="govuk-body">Reload the page or try again later. Other parts of this service may still be available.</p>
-        </div>
-      </div>
-    </div>
-  </div>
-{% endif %}
+{# 'Education and qualifications history' summary card #}
+{% include './_educationAndQualificationsHistory.njk' %}
+{# 'Training and eduction in prison' summary card #}
+{% include './_trainingAndEducationInterestsInPrison.njk' %}
