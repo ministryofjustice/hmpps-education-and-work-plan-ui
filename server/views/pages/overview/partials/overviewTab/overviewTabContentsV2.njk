@@ -90,7 +90,7 @@
             {% endif %}
             {% if not inPrisonCourses.problemRetrievingData %}
               {% if inPrisonCourses.coursesCompletedInLast12Months.length > 0 %}
-              <h3 class="govuk-heading-s" data-qa="completed-courses-heading">Courses and qualifications completed in the last 12 months</h3>
+              <h3 class="govuk-heading-s govuk-!-padding-top-7" data-qa="completed-courses-heading">Courses and qualifications completed in the last 12 months</h3>
                <p class="govuk-hint">Information from Curious. This only includes educational courses. Contact the local education team to find out more.</p>
                 <table class="govuk-table" data-qa="completed-in-prison-courses-in-last-12-months-table">
                   <tbody class="govuk-table__body" data-qa="completed-courses-table-body">
@@ -107,11 +107,11 @@
                   </tbody>
                 </table>
               {% elif hasCoursesCompletedMoreThan12MonthsAgo %}
-                <p class="govuk-body" data-qa="no-courses-completed-in-last-12-months-message">{{ prisonerSummary.firstName }} {{ prisonerSummary.lastName }} has no courses and qualifications completed in the last 12 months.</p>
+                <p class="govuk-body govuk-!-padding-top-7" data-qa="no-courses-completed-in-last-12-months-message">{{ prisonerSummary.firstName }} {{ prisonerSummary.lastName }} has no courses and qualifications completed in the last 12 months.</p>
               {% elif hasWithdrawnOrInProgressCourses %}
-                <p class="govuk-body" data-qa="no-courses-completed-yet-message">{{ prisonerSummary.firstName }} {{ prisonerSummary.lastName }} has no courses and qualifications completed yet.</p>
+                <p class="govuk-body govuk-!-padding-top-7" data-qa="no-courses-completed-yet-message">{{ prisonerSummary.firstName }} {{ prisonerSummary.lastName }} has no courses and qualifications completed yet.</p>
               {% else %}
-                <p class="govuk-body" data-qa="no-courses-recorded-message">{{ prisonerSummary.firstName }} {{ prisonerSummary.lastName }} has no courses and qualifications recorded in Curious.</p>
+                <p class="govuk-body govuk-!-padding-top-7" data-qa="no-courses-recorded-message">{{ prisonerSummary.firstName }} {{ prisonerSummary.lastName }} has no courses and qualifications recorded in Curious.</p>
               {% endif %}
             {% else %}
               <h3 class="govuk-heading-s" data-qa="curious-unavailable-message">We cannot show these details from Curious right now</h3>
