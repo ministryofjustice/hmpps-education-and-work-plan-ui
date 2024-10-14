@@ -21,6 +21,7 @@ const createEmptyInductionIfNotInSession = (
       let educationDto: EducationDto
       try {
         educationDto = await educationAndWorkPlanService.getEducation(prisonNumber, req.user.username)
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (e) {
         educationDto = undefined
       }

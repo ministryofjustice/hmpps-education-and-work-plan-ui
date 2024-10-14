@@ -113,6 +113,7 @@ export default class UpdateGoalController {
     const updateGoalDto = toUpdateGoalDto(updateGoalForm, prisonId)
     try {
       await this.educationAndWorkPlanService.updateGoal(prisonNumber, updateGoalDto, req.user.token)
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (e) {
       return next(createError(500, `Error updating plan for prisoner ${prisonNumber}`))
     }

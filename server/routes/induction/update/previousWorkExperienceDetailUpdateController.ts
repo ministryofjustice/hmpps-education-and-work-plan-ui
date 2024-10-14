@@ -51,6 +51,7 @@ export default class PreviousWorkExperienceDetailUpdateController extends Previo
         invalidTypeOfWorkExperienceMessage: `Attempt to submit PreviousWorkExperienceDetailForm for invalid work experience type ${typeOfWorkExperience} from ${prisonerSummary.prisonNumber}'s Induction`,
         typeOfWorkExperienceMissingOnInductionMessage: `Attempt to submit PreviousWorkExperienceDetailForm for work experience type ${typeOfWorkExperience} that does not exist on ${prisonerSummary.prisonNumber}'s Induction`,
       })
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       return next(createError(404, `Previous Work Experience type ${typeOfWorkExperience} not found on Induction`))
     }
