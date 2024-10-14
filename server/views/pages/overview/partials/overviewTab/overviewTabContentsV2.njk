@@ -30,14 +30,14 @@
                     <span class="govuk-body govuk-!-font-size-36 govuk-!-font-weight-bold" data-qa="in-progress-goals-count">{{ goalCounts.activeCount }}</span>
                     <span class="govuk-tag govuk-tag--blue govuk-!-margin-left-2 govuk-!-margin-bottom-4">In progress</span>
                   </div>
-                  <a class="govuk-link govuk-!-font-size-19 govuk-!-margin-right-4" href="/plan/{{ prisonerSummary.prisonNumber }}/view/goals#in-progress-goals" data-qa="view-in-progress-goals-button">View in progress goals</a>
+                  <a class="govuk-link govuk-!-font-size-19 govuk-!-margin-right-4" href="/plan/{{ prisonerSummary.prisonNumber }}/view/goals/in-progress-goals" data-qa="view-in-progress-goals-button">View in progress goals</a>
                 </div>
                 <div class="govuk-grid-item">
                   <div class="goal-container">
                     <span class="govuk-body govuk-!-font-size-36 govuk-!-font-weight-bold" data-qa="archived-goals-count">{{ goalCounts.archivedCount }}</span>
                     <span class="govuk-tag govuk-tag--grey govuk-!-margin-left-2 govuk-!-margin-bottom-4">Archived</span>
                   </div>
-                  <a class="govuk-link govuk-!-font-size-19" href="/plan/{{ prisonerSummary.prisonNumber }}/view/goals#archived-goals" data-qa="view-archived-goals-button">View archived goals</a>
+                  <a class="govuk-link govuk-!-font-size-19" href="/plan/{{ prisonerSummary.prisonNumber }}/view/goals/archived-goals" data-qa="view-archived-goals-button">View archived goals</a>
                 </div>
               </div>
                 {% if not noGoals %}

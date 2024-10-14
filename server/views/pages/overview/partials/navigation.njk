@@ -6,7 +6,7 @@
           <a class="moj-sub-navigation__link"
             data-qa="tab-overview"
             {% if tab === 'overview' %}aria-current="page"{% endif %}
-            href="overview"
+            href="/plan/{{ prisonerSummary.prisonNumber }}/view/overview"
           >
             Overview
           </a>
@@ -15,8 +15,8 @@
           <li class="moj-sub-navigation__item">
             <a class="moj-sub-navigation__link"
               data-qa="tab-goals"
-              {% if tab === 'goals' %}aria-current="page"{% endif %}
-              href="goals"
+              {% if tab === 'goals' %}aria-current="page" class="moj-sub-navigation__link--active"{% endif %}
+              href="/plan/{{ prisonerSummary.prisonNumber }}/view/goals/in-progress-goals"
             >
               Goals
             </a>
@@ -26,7 +26,7 @@
           <a class="moj-sub-navigation__link"
             data-qa="tab-support-needs"
             {% if tab === 'support-needs' %}aria-current="page"{% endif %}
-            href="support-needs"
+            href="/plan/{{ prisonerSummary.prisonNumber }}/view/support-needs"
           >
             Support needs
           </a>
@@ -35,7 +35,7 @@
           <a class="moj-sub-navigation__link"
             data-qa="tab-education-and-training"
             {% if tab === 'education-and-training' %}aria-current="page"{% endif %}
-            href="education-and-training"
+            href="/plan/{{ prisonerSummary.prisonNumber }}/view/education-and-training"
           >
             Education and training
           </a>
@@ -44,7 +44,7 @@
           <a class="moj-sub-navigation__link"
             data-qa="tab-work-and-interests"
             {% if tab === 'work-and-interests' %}aria-current="page"{% endif %}
-            href="work-and-interests"
+            href="/plan/{{ prisonerSummary.prisonNumber }}/view/work-and-interests"
           >
             Work and interests
           </a>
@@ -53,7 +53,7 @@
           <a class="moj-sub-navigation__link"
             data-qa="tab-timeline"
             {% if tab === 'timeline' %}aria-current="page"{% endif %}
-            href="timeline"
+            href="/plan/{{ prisonerSummary.prisonNumber }}/view/timeline"
           >
             Timeline
           </a>

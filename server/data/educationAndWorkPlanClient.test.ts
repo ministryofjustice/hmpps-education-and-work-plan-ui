@@ -3,10 +3,7 @@ import isEqual from 'lodash/isEqual'
 import type { ArchiveGoalRequest, UnarchiveGoalRequest } from 'educationAndWorkPlanApiClient'
 import config from '../config'
 import EducationAndWorkPlanClient from './educationAndWorkPlanClient'
-import {
-  aValidActionPlanResponseWithOneGoal,
-  aValidGoalResponse,
-} from '../testsupport/actionPlanResponseTestDataBuilder'
+import { aValidActionPlanResponseWithOneGoal } from '../testsupport/actionPlanResponseTestDataBuilder'
 import { aValidUpdateGoalRequestWithOneUpdatedStep } from '../testsupport/updateGoalRequestTestDataBuilder'
 import {
   aValidCreateGoalsRequestWithOneGoal,
@@ -19,7 +16,6 @@ import aValidInductionResponse from '../testsupport/inductionResponseTestDataBui
 import aValidUpdateInductionRequest from '../testsupport/updateInductionRequestTestDataBuilder'
 import aValidCreateInductionRequest from '../testsupport/createInductionRequestTestDataBuilder'
 import ReasonToArchiveGoalValue from '../enums/ReasonToArchiveGoalValue'
-import GoalStatusValue from '../enums/goalStatusValue'
 import aValidEducationResponse from '../testsupport/educationResponseTestDataBuilder'
 import aValidCreateEducationRequest from '../testsupport/createEducationRequestTestDataBuilder'
 import aValidUpdateEducationRequest from '../testsupport/updateEducationRequestTestDataBuilder'
@@ -127,24 +123,16 @@ describe('educationAndWorkPlanClient', () => {
   })
 
   describe('getGoalsByStatus', () => {
-    it('should get Goals', async () => {
+    it('should get in progress Goals', async () => {
       // Given
       const prisonNumber = 'A1234BC'
       const systemToken = 'a-system-token'
 
-      const expectedResponseBody = {
-        goals: [aValidGoalResponse()],
-      }
-      educationAndWorkPlanApi //
-        .get(`/action-plans/${prisonNumber}/goals?status=ACTIVE`)
-        .reply(200, expectedResponseBody)
+      const expectedResponseBody = aValidActionPlanResponseWithOneGoal()
+      educationAndWorkPlanApi.get(`/action-plans/${prisonNumber}`).reply(200, expectedResponseBody)
 
       // When
-      const actual = await educationAndWorkPlanClient.getGoalsByStatus(
-        prisonNumber,
-        GoalStatusValue.ACTIVE,
-        systemToken,
-      )
+      const actual = await educationAndWorkPlanClient.getActionPlan(prisonNumber, systemToken)
 
       // Then
       expect(nock.isDone()).toBe(true)
@@ -156,18 +144,11 @@ describe('educationAndWorkPlanClient', () => {
       const prisonNumber = 'A1234BC'
       const systemToken = 'a-system-token'
 
-      const expectedResponseBody = {
-        status: 404,
-        userMessage: 'Some error',
-        developerMessage: 'Some error',
-      }
-      educationAndWorkPlanApi //
-        .get(`/action-plans/${prisonNumber}/goals?status=ACTIVE`)
-        .reply(404, expectedResponseBody)
-
+      const expectedResponseBody = aValidActionPlanResponseWithOneGoal()
+      educationAndWorkPlanApi.get(`/action-plans/${prisonNumber}`).reply(404, expectedResponseBody)
       // When
       try {
-        await educationAndWorkPlanClient.getGoalsByStatus(prisonNumber, GoalStatusValue.ACTIVE, systemToken)
+        await educationAndWorkPlanClient.getActionPlan(prisonNumber, systemToken)
       } catch (e) {
         // Then
         expect(nock.isDone()).toBe(true)

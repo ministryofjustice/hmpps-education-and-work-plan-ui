@@ -5,7 +5,6 @@ import { urlEqualTo } from '../../../mockApis/wiremock/matchers/url'
 import { putRequestedFor } from '../../../mockApis/wiremock/requestPatternBuilder'
 import { matchingJsonPath } from '../../../mockApis/wiremock/matchers/content'
 import AuthorisationErrorPage from '../../../pages/authorisationError'
-import ViewArchivedGoalsPage from '../../../pages/goal/ViewArchivedGoalsPage'
 import GoalsPage from '../../../pages/goal/GoalsPage'
 
 context('Unarchive a goal', () => {
@@ -103,7 +102,7 @@ context('Unarchive a goal', () => {
     unarchiveGoalPage.clickNo()
 
     // Then
-    Page.verifyOnPage(ViewArchivedGoalsPage)
+    Page.verifyOnPage(GoalsPage)
     cy.wiremockVerifyNoInteractions(
       putRequestedFor(urlEqualTo(`/action-plans/${prisonNumber}/goals/${goalReference}/unarchive`)),
     )

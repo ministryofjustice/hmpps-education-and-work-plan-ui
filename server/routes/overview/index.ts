@@ -10,7 +10,6 @@ import SupportNeedsController from './supportNeedsController'
 import WorkAndInterestsController from './workAndInterestsController'
 import EducationAndTrainingController from './educationAndTrainingController'
 import retrieveInduction from '../routerRequestHandlers/retrieveInduction'
-import ViewArchivedGoalsController from './viewArchivedGoalsController'
 import retrieveEducation from '../routerRequestHandlers/retrieveEducation'
 import retrieveAllGoalsForPrisoner from '../routerRequestHandlers/retrieveAllGoalsForPrisoner'
 import ViewGoalsController from './viewGoalsController'
@@ -33,7 +32,6 @@ export default (router: Router, services: Services) => {
   const supportNeedsController = new SupportNeedsController(services.curiousService, services.prisonService)
   const workAndInterestsController = new WorkAndInterestsController()
   const educationAndTrainingController = new EducationAndTrainingController(services.curiousService)
-  const viewArchivedGoalsController = new ViewArchivedGoalsController(services.educationAndWorkPlanService)
   const viewGoalsController = new ViewGoalsController()
 
   router.use('/plan/:prisonNumber/view/*', [checkUserHasViewAuthority(), removeFormDataFromSession])
@@ -67,12 +65,13 @@ export default (router: Router, services: Services) => {
 
   router.get('/plan/:prisonNumber/view/timeline', [asyncMiddleware(timelineController.getTimelineView)])
 
-  router.get('/plan/:prisonNumber/view/archived-goals', [
-    asyncMiddleware(viewArchivedGoalsController.viewArchivedGoals),
+  router.get('/plan/:prisonNumber/view/goals/in-progress-goals', [
+    retrieveAllGoalsForPrisoner(services.educationAndWorkPlanService),
+    asyncMiddleware(viewGoalsController.viewInProgressGoals),
   ])
 
-  router.get('/plan/:prisonNumber/view/goals', [
+  router.get('/plan/:prisonNumber/view/goals/archived-goals', [
     retrieveAllGoalsForPrisoner(services.educationAndWorkPlanService),
-    asyncMiddleware(viewGoalsController.viewGoals),
+    asyncMiddleware(viewGoalsController.viewArchivedGoals),
   ])
 }

@@ -13,7 +13,7 @@
       Reason: {{ event.contextualInfo.GOAL_ARCHIVED_REASON | formatReasonToArchiveGoal }}{{ ' - ' +  event.contextualInfo.GOAL_ARCHIVED_REASON_OTHER if event.contextualInfo.GOAL_ARCHIVED_REASON === 'OTHER'}}
     </p>
     <p class="govuk-body govuk-!-margin-bottom-0">
-      <a href="/plan/{{ prisonerSummary.prisonNumber }}/view/goals#archived-goals" data-id="timeline-prisoner-{{ prisonerSummary.prisonNumber }}" data-qa="view-archived-goals-button">
+      <a href="/plan/{{ prisonerSummary.prisonNumber }}/view/goals/archived-goals" data-id="timeline-prisoner-{{ prisonerSummary.prisonNumber }}" data-qa="view-archived-goals-button">
         View <span class="govuk-visually-hidden">{{ prisonerSummary.firstName }} {{ prisonerSummary.lastName | title }}'s </span>archived goals
       </a>
     </p>

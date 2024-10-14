@@ -15,90 +15,105 @@
   </div>
   {% include "../../../../partials/prisonerBanner.njk" %}
   {% include "./../../partials/navigation.njk" %}
+
+  {% set tabs = [
+      { 
+        text: "In progress (" + inProgressGoals.length + " goal" + ("s" if inProgressGoals.length !== 1) + ")", 
+        path: '/view/goals/in-progress-goals', 
+        visible: true, 
+        tabId: 'in-progress-goals' 
+      },
+      { 
+        text: "Archived (" + archivedGoals.length + " goal" + ("s" if archivedGoals.length !== 1) + ")", 
+        path: '/view/goals/archived-goals', 
+        visible: true, 
+        tabId: 'archived-goals'
+      }
+  ]
+  %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds app-u-print-full-width">
+      <div class="govuk-tabs govuk-!-display-none-print">
+        <ul class="govuk-tabs__list">
+            {% for tab in tabs %}
+                {% if tab.visible %}
+                {% set fullTabPath = '/plan/' ~ prisonerSummary.prisonNumber + tab.path %}
+                {% set isSelected = (' govuk-tabs__list-item--selected' if currentUrlPath === fullTabPath) %}
+                    <li class="{{ 'govuk-tabs__list-item' + isSelected }}">
+                        <a class="govuk-tabs__tab" href="{{ fullTabPath }}" data-qa="{{'goals-tabs-' + tab.tabId }}">
+                            {{ tab.text }}
+                        </a>
+                    </li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+      </div>
+    </div>
+  </div>
+
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds app-u-print-full-width">
       {% if not problemRetrievingData %}
-        {% set inProgressGoalsHtml %}
-          <h2 class="govuk-heading-m">Goals in progress</h2>
-          {% if inProgressGoals.length > 0 %}
-            {% for goal in inProgressGoals | sort(attribute = 'updatedAt', reverse = true) %}
-              {{ goalSummaryCardV2({
-                        goal: goal,
-                        attributes: {
-                          'data-qa': 'in-progress-goal-summary-card'
-                        },
-                        actions: [
-                          {
-                            title: 'Update<span class="govuk-visually-hidden"> this goal</span>',
-                            href: '/plan/' ~ prisonerSummary.prisonNumber ~ '/goals/' ~ goal.goalReference ~ '/update',
-                            attributes: {
-                              'data-qa': 'goal-' ~ loop.index ~ '-update-button'
-                            },
-                            'render-if': hasEditAuthority
+        {% if isInProgressGoalsTab %}
+            <h2 class="govuk-heading-m">Goals in progress</h2>
+            {% if inProgressGoals.length > 0 %}
+              {% for goal in inProgressGoals | sort(attribute = 'updatedAt', reverse = true) %}
+                {{ goalSummaryCardV2({
+                          goal: goal,
+                          attributes: {
+                            'data-qa': 'in-progress-goal-summary-card'
                           },
-                          {
-                            title: 'Archive<span class="govuk-visually-hidden"> this goal</span>',
-                            href: '/plan/' ~ prisonerSummary.prisonNumber ~ '/goals/' ~ goal.goalReference ~ '/archive',
-                            attributes: {
-                              'data-qa': 'goal-' ~ loop.index ~ '-archive-button'
+                          actions: [
+                            {
+                              title: 'Update<span class="govuk-visually-hidden"> this goal</span>',
+                              href: '/plan/' ~ prisonerSummary.prisonNumber ~ '/goals/' ~ goal.goalReference ~ '/update',
+                              attributes: {
+                                'data-qa': 'goal-' ~ goal.goalReference ~ '-update-button'
+                              },
+                              'render-if': hasEditAuthority
                             },
-                            'render-if': hasEditAuthority
-                          }
-                        ]
-                      }) }}
-            {% endfor %}
-          {% else %}
-            <p class="govuk-body" data-qa="no-in-progress-goals-message">{{ prisonerSummary.firstName }} {{ prisonerSummary.lastName }} has no goals in progress.</p>
-          {% endif %}
-        {% endset %}
-
-        {% set archivedGoalsHtml %}
-          <h2 class="govuk-heading-m">Archived goals</h2>
-          {% if archivedGoals.length > 0 %}
-            {% for goal in archivedGoals %}
-              {{ goalSummaryCardV2({
-                        goal: goal,
-                        attributes: {
-                          'data-qa': 'archived-goal-summary-card'
-                        },
-                        classes: 'archived-goal-summary-card',
-                        lastUpdatedLabel: 'Archived on',
-                        actions: [
-                          {
-                            title: 'Reactivate<span class="govuk-visually-hidden"> this goal</span>',
-                            href: '/plan/' ~ prisonerSummary.prisonNumber ~ '/goals/' ~ goal.goalReference ~ '/unarchive',
-                            attributes: {
-                              'data-qa': 'goal-' ~ goal.goalReference ~ '-unarchive-button'
-                            },
-                            'render-if': hasEditAuthority
-                          }
-                        ]
-                      }) }}
-            {% endfor %}
-          {% else %}
-            <p class="govuk-body" data-qa="no-archived-goals-message">{{ prisonerSummary.firstName }} {{ prisonerSummary.lastName }} has no archived goals.</p>
-          {% endif %}
-        {% endset %}
-
-        {{ govukTabs({
-          items: [
-            {
-              label: "In progress (" + inProgressGoals.length + " goal" + ("s" if inProgressGoals.length !== 1) + ")",
-              id: "in-progress-goals",
-              panel: {
-                html: inProgressGoalsHtml
-              }
-            },
-            {
-              label: "Archived (" + archivedGoals.length + " goal" + ("s" if archivedGoals.length !== 1) + ")",
-              id: "archived-goals",
-              panel: {
-                html: archivedGoalsHtml
-              }
-            }
-          ]
-        }) }}
-
+                            {
+                              title: 'Archive<span class="govuk-visually-hidden"> this goal</span>',
+                              href: '/plan/' ~ prisonerSummary.prisonNumber ~ '/goals/' ~ goal.goalReference ~ '/archive',
+                              attributes: {
+                                'data-qa': 'goal-' ~ goal.goalReference ~ '-archive-button'
+                              },
+                              'render-if': hasEditAuthority
+                            }
+                          ]
+                        }) }}
+              {% endfor %}
+            {% else %}
+              <p class="govuk-body" data-qa="no-in-progress-goals-message">{{ prisonerSummary.firstName }} {{ prisonerSummary.lastName }} has no goals in progress.</p>
+            {% endif %}
+        {% else %}
+            <h2 class="govuk-heading-m">Archived goals</h2>
+            {% if archivedGoals.length > 0 %}
+              {% for goal in archivedGoals %}
+                {{ goalSummaryCardV2({
+                          goal: goal,
+                          attributes: {
+                            'data-qa': 'archived-goal-summary-card'
+                          },
+                          classes: 'archived-goal-summary-card',
+                          lastUpdatedLabel: 'Archived on',
+                          actions: [
+                            {
+                              title: 'Reactivate<span class="govuk-visually-hidden"> this goal</span>',
+                              href: '/plan/' ~ prisonerSummary.prisonNumber ~ '/goals/' ~ goal.goalReference ~ '/unarchive',
+                              attributes: {
+                                'data-qa': 'goal-' ~ goal.goalReference ~ '-unarchive-button'
+                              },
+                              'render-if': hasEditAuthority
+                            }
+                          ]
+                        }) }}
+              {% endfor %}
+            {% else %}
+              <p class="govuk-body" data-qa="no-archived-goals-message">{{ prisonerSummary.firstName }} {{ prisonerSummary.lastName }} has no archived goals.</p>
+            {% endif %}
+        {% endif %}     
       {% else %}
         {% include './partials/_unavailableGoals.njk' %}
       {% endif %}
@@ -107,7 +122,7 @@
       {{ actionsCard({
         actions: [
           { 
-            title: '<img src="/assets/images/icon-goal.svg" role="presentation" alt="" width="35px" height="28px" /> Add a new goal' | safe, 
+            title: '<span class="goal-action"><img src="/assets/images/icon-goal.svg" role="presentation" alt="" width="35px" height="28px" class="goal-icon" /> Add a new goal</span>' | safe, 
             href: '/plan/' ~ prisonerSummary.prisonNumber ~ '/goals/create', 
             id: 'add-goal-button', 
             'render-if': hasEditAuthority,

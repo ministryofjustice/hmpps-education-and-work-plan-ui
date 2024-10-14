@@ -171,14 +171,14 @@ context('Archive a goal', () => {
     const { goalReference } = goalToArchive
     cy.task('archiveGoal', { prisonNumber, goalReference })
     cy.signIn()
-    cy.visit(`/plan/${prisonNumber}/view/goals`)
+    cy.visit(`/plan/${prisonNumber}/view/goals/in-progress-goals`)
     const goalsPage = Page.verifyOnPage(GoalsPage)
 
     // When
     const archiveGoalPage = goalsPage //
-      .hasArchivedGoalsDisplayed()
-      .hasNumberOfArchivedGoals(2)
-      .clickArchiveButtonForFirstGoal()
+      .hasInProgressGoalsDisplayed()
+      .hasNumberOfArchivedGoalsInTab(2)
+      .clickArchiveButtonForGoal(goalReference)
 
     archiveGoalPage //
       .selectReason(ReasonToArchiveGoalValue.OTHER)

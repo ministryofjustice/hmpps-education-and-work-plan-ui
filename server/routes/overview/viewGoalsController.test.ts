@@ -44,27 +44,23 @@ describe('ViewGoalsController', () => {
   it('should get goals page and filter goals correctly by status', async () => {
     // Given
     const inProgressGoal = { ...aValidGoalResponse(), status: GoalStatusValue.ACTIVE }
-    const archivedGoal = { ...aValidGoalResponse(), status: GoalStatusValue.ARCHIVED }
-    const completedGoal = { ...aValidGoalResponse(), status: GoalStatusValue.COMPLETED }
 
     res.locals.allGoalsForPrisoner.problemRetrievingData = false
     res.locals.allGoalsForPrisoner.goals = {
       ACTIVE: [inProgressGoal],
-      ARCHIVED: [archivedGoal],
-      COMPLETED: [completedGoal],
     }
 
     const expectedView = {
       prisonerSummary,
       inProgressGoals: [inProgressGoal],
-      archivedGoals: [archivedGoal],
-      completedGoals: [completedGoal],
       problemRetrievingData: false,
       tab: 'goals',
+      isInProgressGoalsTab: true,
+      currentUrlPath: req.baseUrl + req.path,
     }
 
     // When
-    await controller.viewGoals(req, res, next)
+    await controller.viewInProgressGoals(req, res, next)
 
     // Then
     expect(res.render).toHaveBeenCalledWith('pages/overview/partials/goalsTab/goalsTabContents', expectedView)

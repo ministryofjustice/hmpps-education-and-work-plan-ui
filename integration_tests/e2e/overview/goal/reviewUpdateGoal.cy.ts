@@ -44,10 +44,10 @@ context('Review updated goal', () => {
     const goalReference = '10efc562-be8f-4675-9283-9ede0c19dade'
     cy.signIn()
 
-    cy.visit(`/plan/${prisonNumber}/view/goals#in-progress`)
+    cy.visit(`/plan/${prisonNumber}/view/goals/in-progress-goals`)
     const goalsPage = Page.verifyOnPage(GoalsPage)
     const inProgressGoalsPage = goalsPage.clickInProgressGoalsTab()
-    const updateGoalPage = inProgressGoalsPage.clickUpdateButtonForFirstGoal()
+    const updateGoalPage = inProgressGoalsPage.clickUpdateButtonForGoal(goalReference)
     updateGoalPage.isForGoal(goalReference).submitPage()
 
     const reviewUpdateGoalPage = Page.verifyOnPage(ReviewUpdateGoalPage)
@@ -65,10 +65,10 @@ context('Review updated goal', () => {
     const goalReference = '10efc562-be8f-4675-9283-9ede0c19dade'
     cy.signIn()
 
-    cy.visit(`/plan/${prisonNumber}/view/goals#in-progress`)
+    cy.visit(`/plan/${prisonNumber}/view/goals/in-progress-goals`)
     const goalsPage = Page.verifyOnPage(GoalsPage)
     const inProgressGoalsPage = goalsPage.clickInProgressGoalsTab()
-    const updateGoalPage = inProgressGoalsPage.clickUpdateButtonForFirstGoal()
+    const updateGoalPage = inProgressGoalsPage.clickUpdateButtonForGoal(goalReference)
 
     updateGoalPage.isForGoal(goalReference).submitPage()
 
@@ -118,10 +118,10 @@ context('Review updated goal', () => {
     cy.signIn()
     cy.task('updateGoal500Error')
 
-    cy.visit(`/plan/${prisonNumber}/view/goals#in-progress`)
+    cy.visit(`/plan/${prisonNumber}/view/goals/in-progress-goals`)
     const goalsPage = Page.verifyOnPage(GoalsPage)
     const inProgressGoalsPage = goalsPage.clickInProgressGoalsTab()
-    const updateGoalPage = inProgressGoalsPage.clickUpdateButtonForFirstGoal()
+    const updateGoalPage = inProgressGoalsPage.clickUpdateButtonForGoal(goalReference)
 
     updateGoalPage.isForGoal(goalReference).submitPage()
 

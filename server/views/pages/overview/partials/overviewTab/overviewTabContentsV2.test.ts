@@ -106,10 +106,10 @@ describe('overviewTabContents', () => {
     expect($('[data-qa="in-progress-goals-count"]').text().trim()).toEqual('3')
     expect($('[data-qa="archived-goals-count"]').text().trim()).toEqual('2')
     expect($('[data-qa="view-in-progress-goals-button"]').attr('href')).toEqual(
-      `/plan/${prisonerSummary.prisonNumber}/view/goals#in-progress-goals`,
+      `/plan/${prisonerSummary.prisonNumber}/view/goals/in-progress-goals`,
     )
     expect($('[data-qa="view-archived-goals-button"]').attr('href')).toEqual(
-      `/plan/${prisonerSummary.prisonNumber}/view/goals#archived-goals`,
+      `/plan/${prisonerSummary.prisonNumber}/view/goals/archived-goals`,
     )
   })
 

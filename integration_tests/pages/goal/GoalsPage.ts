@@ -27,6 +27,16 @@ export default class GoalsPage extends Page {
     return this
   }
 
+  hasNumberOfArchivedGoalsInTab(numberOfGoals: number): GoalsPage {
+    this.archivedGoalsTab().should('contain.text', numberOfGoals)
+    return this
+  }
+
+  hasNumberOfInProgressGoalsInTab(numberOfGoals: number): GoalsPage {
+    this.inProgressGoalsTab().should('contain.text', numberOfGoals)
+    return this
+  }
+
   hasArchivedGoalsDisplayed(): GoalsPage {
     this.archivedGoalSummaryCards().should('exist')
     return this
@@ -72,8 +82,8 @@ export default class GoalsPage extends Page {
     return this
   }
 
-  clickArchiveButtonForFirstGoal(): ArchiveGoalPage {
-    this.goalArchiveButton(1).click()
+  clickArchiveButtonForGoal(goalReference: string): ArchiveGoalPage {
+    this.goalArchiveButton(goalReference).click()
     return Page.verifyOnPage(ArchiveGoalPage)
   }
 
@@ -102,20 +112,21 @@ export default class GoalsPage extends Page {
     return this
   }
 
-  clickUpdateButtonForFirstGoal(): UpdateGoalPage {
-    this.goalUpdateButton(1).click()
+  clickUpdateButtonForGoal(goalReference: string): UpdateGoalPage {
+    this.goalUpdateButton(goalReference).click()
     return Page.verifyOnPage(UpdateGoalPage)
   }
 
-  private goalUpdateButton = (idx: number): PageElement => cy.get(`[data-qa=goal-${idx}-update-button]`)
+  private goalUpdateButton = (goalReference: string): PageElement =>
+    cy.get(`[data-qa=goal-${goalReference}-update-button]`)
 
   private goalReferenceInputValue = (): PageElement => cy.get('[data-qa=goal-reference]')
 
   private activeTab = (): PageElement => cy.get('.moj-sub-navigation__link[aria-current=page]')
 
-  private inProgressGoalsTab = (): PageElement => cy.get('.govuk-tabs__tab[href="#in-progress-goals"]')
+  private inProgressGoalsTab = (): PageElement => cy.get('.govuk-tabs__tab[data-qa="goals-tabs-in-progress-goals"]')
 
-  private archivedGoalsTab = (): PageElement => cy.get('.govuk-tabs__tab[href="#archived-goals"]')
+  private archivedGoalsTab = (): PageElement => cy.get('.govuk-tabs__tab[data-qa="goals-tabs-archived-goals"]')
 
   private archivedGoalSummaryCards = (): PageElement => cy.get('[data-qa=archived-goal-summary-card]')
 
@@ -128,7 +139,8 @@ export default class GoalsPage extends Page {
   private goalReactivateButton = (goalReference: string): PageElement =>
     cy.get(`[data-qa=goal-${goalReference}-unarchive-button]`)
 
-  private goalArchiveButton = (idx: number): PageElement => cy.get(`[data-qa=goal-${idx}-archive-button]`)
+  private goalArchiveButton = (goalReference: string): PageElement =>
+    cy.get(`[data-qa=goal-${goalReference}-archive-button]`)
 
   private noArchivedGoalsMessage = (): PageElement => cy.get('[data-qa=no-archived-goals-message]')
 }
