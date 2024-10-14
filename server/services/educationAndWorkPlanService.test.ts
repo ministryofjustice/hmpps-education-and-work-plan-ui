@@ -39,10 +39,12 @@ describe('educationAndWorkPlanService', () => {
   const systemToken = 'a-system-token'
   const username = 'a-dps-user'
   const prisonNumber = 'A1234BC'
+  const prisonNamesById = new Map([['BXI', 'Brixton (HMP)']])
 
   beforeEach(() => {
     jest.resetAllMocks()
     hmppsAuthClient.getSystemClientToken.mockResolvedValue(systemToken)
+    prisonService.getAllPrisonNamesById.mockResolvedValue(prisonNamesById)
   })
 
   const hmppsAuthClient = new HmppsAuthClient(null) as jest.Mocked<HmppsAuthClient>
@@ -90,7 +92,6 @@ describe('educationAndWorkPlanService', () => {
       // Given
       const actionPlanResponse = aValidActionPlanResponseWithOneGoal()
       educationAndWorkPlanClient.getActionPlan.mockResolvedValue(actionPlanResponse)
-      prisonService.getAllPrisonNamesById.mockResolvedValue(new Map())
       const expectedActionPlan = aValidActionPlanWithOneGoal()
 
       // When
@@ -108,7 +109,9 @@ describe('educationAndWorkPlanService', () => {
       const actionPlanResponse = aValidActionPlanResponseWithOneGoal()
       educationAndWorkPlanClient.getActionPlan.mockResolvedValue(actionPlanResponse)
       prisonService.getAllPrisonNamesById.mockRejectedValue(Error('Service Unavailable'))
-      const expectedActionPlan = aValidActionPlanWithOneGoal()
+      const expectedActionPlan = aValidActionPlanWithOneGoal({
+        goal: aValidGoal({ createdAtPrisonName: 'BXI', updatedAtPrisonName: 'BXI' }),
+      })
 
       // When
       const actual = await educationAndWorkPlanService.getActionPlan(prisonNumber, username)
@@ -119,10 +122,10 @@ describe('educationAndWorkPlanService', () => {
       expect(educationAndWorkPlanClient.getActionPlan).toHaveBeenCalledWith(prisonNumber, systemToken)
       expect(actual).toEqual(expectedActionPlan)
     })
+
     it('should not get Action Plan given educationAndWorkPlanClient returns an error', async () => {
       // Given
       educationAndWorkPlanClient.getActionPlan.mockRejectedValue(Error('Service Unavailable'))
-      prisonService.getAllPrisonNamesById.mockResolvedValue(new Map())
 
       // When
       const actual = await educationAndWorkPlanService.getActionPlan(prisonNumber, username)
@@ -133,12 +136,12 @@ describe('educationAndWorkPlanService', () => {
       expect(actual.problemRetrievingData).toEqual(true)
     })
   })
+
   describe('getGoalsByStatus', () => {
     it('should get goals by status', async () => {
       // Given
       const status = GoalStatusValue.ACTIVE
       educationAndWorkPlanClient.getGoalsByStatus.mockResolvedValue({ goals: [aValidGoalResponse()] })
-      prisonService.getAllPrisonNamesById.mockResolvedValue(new Map())
       const expectedResponse: Goals = { goals: [aValidGoal()], problemRetrievingData: false }
 
       // When
@@ -155,7 +158,6 @@ describe('educationAndWorkPlanService', () => {
       const status = GoalStatusValue.ACTIVE
 
       educationAndWorkPlanClient.getGoalsByStatus.mockRejectedValue(createError(500, 'Service unavailable'))
-      prisonService.getAllPrisonNamesById.mockResolvedValue(new Map())
       const expectedResponse: Goals = { goals: undefined, problemRetrievingData: true }
 
       // When
@@ -173,7 +175,10 @@ describe('educationAndWorkPlanService', () => {
 
       educationAndWorkPlanClient.getGoalsByStatus.mockResolvedValue({ goals: [aValidGoalResponse()] })
       prisonService.getAllPrisonNamesById.mockRejectedValue(createError(404, 'Not Found'))
-      const expectedResponse: Goals = { goals: [aValidGoal()], problemRetrievingData: false }
+      const expectedResponse: Goals = {
+        goals: [aValidGoal({ createdAtPrisonName: 'BXI', updatedAtPrisonName: 'BXI' })],
+        problemRetrievingData: false,
+      }
 
       // When
       const actual = await educationAndWorkPlanService.getGoalsByStatus(prisonNumber, status, username)
@@ -443,7 +448,6 @@ describe('educationAndWorkPlanService', () => {
       // Given
       const actionPlanResponse = aValidActionPlanResponseWithOneGoal()
       educationAndWorkPlanClient.getActionPlan.mockResolvedValue(actionPlanResponse)
-      prisonService.getAllPrisonNamesById.mockResolvedValue(new Map())
       const actionPlan = aValidActionPlanWithOneGoal()
 
       // When
@@ -467,7 +471,6 @@ describe('educationAndWorkPlanService', () => {
     it('should handle errors and return problemRetrievingData: true', async () => {
       // Given
       educationAndWorkPlanClient.getActionPlan.mockRejectedValue(Error('Service Unavailable'))
-      prisonService.getAllPrisonNamesById.mockResolvedValue(new Map())
 
       // When
       const actual = await educationAndWorkPlanService.getActionPlan(prisonNumber, username)

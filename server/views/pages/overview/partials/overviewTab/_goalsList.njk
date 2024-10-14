@@ -1,5 +1,5 @@
 {% for goal in goals.goals | sort(attribute = 'targetCompletionDate') %}
-  {{ goalSummaryCardV2({
+  {{ goalSummaryCard({
     goal: goal,
     attributes: {
       'data-qa': 'goal-summary-card'

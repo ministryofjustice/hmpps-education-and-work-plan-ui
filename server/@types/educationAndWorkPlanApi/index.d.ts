@@ -132,6 +132,22 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/action-plans/{prisonNumber}/goals/{goalReference}/complete': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put: operations['completeGoal']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/action-plans/{prisonNumber}/goals/{goalReference}/archive': {
     parameters: {
       query?: never
@@ -840,42 +856,18 @@ export interface components {
        */
       goalReference: string
     }
-    Goal: {
-      /** Format: uuid */
-      reference: string
-      title: string
-      /** Format: date */
-      targetCompletionDate: string
-      /** @enum {string} */
-      status: 'ACTIVE' | 'COMPLETED' | 'ARCHIVED'
-      notes?: string
-      createdBy?: string
-      createdByDisplayName?: string
-      /** Format: date-time */
-      createdAt?: string
-      createdAtPrison: string
-      lastUpdatedBy?: string
-      lastUpdatedByDisplayName?: string
-      /** Format: date-time */
-      lastUpdatedAt?: string
-      lastUpdatedAtPrison: string
-      /** @enum {string} */
-      archiveReason?:
-        | 'PRISONER_NO_LONGER_WANTS_TO_WORK_TOWARDS_GOAL'
-        | 'PRISONER_NO_LONGER_WANTS_TO_WORK_WITH_CIAG'
-        | 'SUITABLE_ACTIVITIES_NOT_AVAILABLE_IN_THIS_PRISON'
-        | 'OTHER'
-      archiveReasonOther?: string
-      steps: components['schemas']['Step'][]
-    }
-    Step: {
-      /** Format: uuid */
-      reference: string
-      title: string
-      /** @enum {string} */
-      status: 'NOT_STARTED' | 'ACTIVE' | 'COMPLETE'
-      /** Format: int32 */
-      sequenceNumber: number
+    CompleteGoalRequest: {
+      /**
+       * Format: uuid
+       * @description The Goal's unique reference. This is used as an identifier to complete the required Goal.
+       * @example c88a6c48-97e2-4c04-93b5-98619966447b
+       */
+      goalReference: string
+      /**
+       * @description An optional note to accompany the completion
+       * @example null
+       */
+      note?: string
     }
     ArchiveGoalRequest: {
       /**
@@ -898,6 +890,11 @@ export interface components {
        * @example null
        */
       reasonOther?: string
+      /**
+       * @description An optional note to accompany the archive
+       * @example null
+       */
+      note?: string
     }
     /**
      * @description A list of achieved qualifications that should be created as part of the education record.
@@ -2219,7 +2216,12 @@ export interface components {
        */
       updatedAtPrison: string
       /**
-       * @description Some additional notes related to the Goal.
+       * @description A List of at Notes associated with the Goal. Will be an empty array if the goal has no Notes
+       * @example null
+       */
+      goalNotes: components['schemas']['NoteResponse'][]
+      /**
+       * @description Some additional notes related to the Goal. This is deprecated - use the`goalNotes` list instead
        * @example Pay close attention to Peter's behaviour.
        */
       notes?: string
@@ -2237,6 +2239,70 @@ export interface components {
        * @example null
        */
       archiveReasonOther?: string
+    }
+    /**
+     * @description A List of at Notes associated with the Goal. Will be an empty array if the goal has no Notes
+     * @example null
+     */
+    NoteResponse: {
+      /**
+       * Format: uuid
+       * @description The Notes unique reference. This is used as an identifier to archive the required Note.
+       * @example c88a6c48-97e2-4c04-93b5-98619966447b
+       */
+      reference: string
+      /**
+       * @description The content of the note.
+       * @example null
+       */
+      content: string
+      /**
+       * @example null
+       * @enum {string}
+       */
+      type: 'GOAL' | 'GOAL_ARCHIVAL' | 'GOAL_COMPLETION'
+      /**
+       * @description The DPS username of the person who created the Note.
+       * @example asmith_gen
+       */
+      createdBy: string
+      /**
+       * @description The display name of the person who created the Note.
+       * @example Alex Smith
+       */
+      createdByDisplayName: string
+      /**
+       * Format: date-time
+       * @description An ISO-8601 timestamp representing when the Note was created.
+       * @example 2023-06-19T09:39:44Z
+       */
+      createdAt: string
+      /**
+       * @description The identifier of the prison that the prisoner was resident at when the Note was created.
+       * @example BXI
+       */
+      createdAtPrison: string
+      /**
+       * @description The DPS username of the person who last updated the Note.
+       * @example asmith_gen
+       */
+      updatedBy: string
+      /**
+       * @description The display name of the person who last updated the Note.
+       * @example Alex Smith
+       */
+      updatedByDisplayName: string
+      /**
+       * Format: date-time
+       * @description An ISO-8601 timestamp representing when the Note was last updated. This will be the same as the created date if it has not yet been updated.
+       * @example 2023-06-19T09:39:44Z
+       */
+      updatedAt: string
+      /**
+       * @description The identifier of the prison that the prisoner was resident at when the Note was updated.
+       * @example BXI
+       */
+      updatedAtPrison: string
     }
     /**
      * @description A List of at least one Step.
@@ -2605,9 +2671,32 @@ export interface operations {
         headers: {
           [name: string]: unknown
         }
-        content: {
-          'application/json': components['schemas']['Goal']
+        content?: never
+      }
+    }
+  }
+  completeGoal: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        prisonNumber: string
+        goalReference: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CompleteGoalRequest']
+      }
+    }
+    responses: {
+      /** @description No Content */
+      204: {
+        headers: {
+          [name: string]: unknown
         }
+        content?: never
       }
     }
   }
@@ -2632,9 +2721,7 @@ export interface operations {
         headers: {
           [name: string]: unknown
         }
-        content: {
-          'application/json': components['schemas']['Goal']
-        }
+        content?: never
       }
     }
   }

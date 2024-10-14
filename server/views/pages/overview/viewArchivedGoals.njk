@@ -33,7 +33,7 @@
         {% if not goals.problemRetrievingData %}
           {% if goals.goals | length > 0 %}
             {% for goal in goals.goals | sort(attribute = 'updatedAt', reverse = true) %}
-              {{ goalSummaryCardV2({
+              {{ goalSummaryCard({
                 goal: goal,
                 attributes: {
                   'data-qa': 'goal-summary-card'

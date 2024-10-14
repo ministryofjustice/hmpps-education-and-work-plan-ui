@@ -22,7 +22,7 @@
           <h2 class="govuk-heading-m">Goals in progress</h2>
           {% if inProgressGoals.length > 0 %}
             {% for goal in inProgressGoals | sort(attribute = 'updatedAt', reverse = true) %}
-              {{ goalSummaryCardV2({
+              {{ goalSummaryCard({
                         goal: goal,
                         attributes: {
                           'data-qa': 'in-progress-goal-summary-card'
@@ -56,7 +56,7 @@
           <h2 class="govuk-heading-m">Archived goals</h2>
           {% if archivedGoals.length > 0 %}
             {% for goal in archivedGoals %}
-              {{ goalSummaryCardV2({
+              {{ goalSummaryCard({
                         goal: goal,
                         attributes: {
                           'data-qa': 'archived-goal-summary-card'
