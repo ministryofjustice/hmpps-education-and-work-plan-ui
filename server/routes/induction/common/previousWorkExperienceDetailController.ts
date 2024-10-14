@@ -31,6 +31,7 @@ export default abstract class PreviousWorkExperienceDetailController extends Ind
         invalidTypeOfWorkExperienceMessage: `Attempt to get Previous Work Experience Detail view for invalid work experience type ${typeOfWorkExperience} from ${prisonerSummary.prisonNumber}'s Induction`,
         typeOfWorkExperienceMissingOnInductionMessage: `Attempt to get Previous Work Experience Detail view for work experience type ${typeOfWorkExperience} that does not exist on ${prisonerSummary.prisonNumber}'s Induction`,
       })
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       return next(createError(404, `Previous Work Experience type ${typeOfWorkExperience} not found on Induction`))
     }

@@ -49,6 +49,7 @@ export default class PrisonerListController {
       )
 
       return res.render('pages/prisonerList/index', { ...view.renderArgs })
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       return next(createError(500, `Error producing prisoner list for prison ${prisonId}`))
     }
