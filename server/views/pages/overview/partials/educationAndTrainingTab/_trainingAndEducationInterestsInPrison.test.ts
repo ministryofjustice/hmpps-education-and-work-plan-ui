@@ -18,7 +18,7 @@ njkEnv
   .addFilter('formatInPrisonTraining', formatInPrisonTrainingFilter)
   .addFilter('formatDate', formatDateFilter)
 
-describe('_trainingAndEducationInterestsInPrisonV2', () => {
+describe('_trainingAndEducationInterestsInPrison', () => {
   it('should list training interests given an induction with training interests', () => {
     // Given
     const inductionDto: InductionDto = aValidInductionDto()
@@ -38,7 +38,7 @@ describe('_trainingAndEducationInterestsInPrisonV2', () => {
     }
 
     // When
-    const content = nunjucks.render('_trainingAndEducationInterestsInPrisonV2.njk', pageViewModel)
+    const content = nunjucks.render('_trainingAndEducationInterestsInPrison.njk', pageViewModel)
     const $ = cheerio.load(content)
 
     // Then
@@ -63,7 +63,7 @@ describe('_trainingAndEducationInterestsInPrisonV2', () => {
     }
 
     // When
-    const content = nunjucks.render('_trainingAndEducationInterestsInPrisonV2.njk', pageViewModel)
+    const content = nunjucks.render('_trainingAndEducationInterestsInPrison.njk', pageViewModel)
     const $ = cheerio.load(content)
 
     // Then
@@ -84,7 +84,7 @@ describe('_trainingAndEducationInterestsInPrisonV2', () => {
     }
 
     // When
-    const content = nunjucks.render('_trainingAndEducationInterestsInPrisonV2.njk', pageViewModel)
+    const content = nunjucks.render('_trainingAndEducationInterestsInPrison.njk', pageViewModel)
     const $ = cheerio.load(content)
 
     // Then
@@ -103,7 +103,7 @@ describe('_trainingAndEducationInterestsInPrisonV2', () => {
     }
 
     // When
-    const content = nunjucks.render('_trainingAndEducationInterestsInPrisonV2.njk', pageViewModel)
+    const content = nunjucks.render('_trainingAndEducationInterestsInPrison.njk', pageViewModel)
     const $ = cheerio.load(content)
 
     // Then
