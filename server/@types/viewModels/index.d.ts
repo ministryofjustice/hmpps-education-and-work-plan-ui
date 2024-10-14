@@ -77,7 +77,7 @@ declare module 'viewModels' {
     updatedAt: Date
     updatedAtPrisonName?: string
     targetCompletionDate: Date
-    note?: string
+    notesByType: Record<'GOAL' | 'GOAL_ARCHIVAL' | 'GOAL_COMPLETION', Array<Note>>
     archiveReason?:
       | 'PRISONER_NO_LONGER_WANTS_TO_WORK_TOWARDS_GOAL'
       | 'PRISONER_NO_LONGER_WANTS_TO_WORK_WITH_CIAG'
@@ -91,6 +91,20 @@ declare module 'viewModels' {
     title: string
     status: 'NOT_STARTED' | 'ACTIVE' | 'COMPLETE'
     sequenceNumber: number
+  }
+
+  export interface Note {
+    reference: string
+    content: string
+    type: 'GOAL' | 'GOAL_ARCHIVAL' | 'GOAL_COMPLETION'
+    createdBy: string
+    createdByDisplayName: string
+    createdAt: Date
+    createdAtPrisonName: string
+    updatedBy: string
+    updatedByDisplayName: string
+    updatedAt: Date
+    updatedAtPrisonName: string
   }
 
   /**

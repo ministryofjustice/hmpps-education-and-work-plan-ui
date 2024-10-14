@@ -1,6 +1,7 @@
 import nunjucks from 'nunjucks'
 import * as cheerio from 'cheerio'
 import type { Action, GoalSummaryCardParams } from 'viewComponents'
+import type { Goal } from 'viewModels'
 import { aValidGoal } from '../../../testsupport/actionPlanTestDataBuilder'
 import formatDateFilter from '../../../filters/formatDateFilter'
 import formatStepStatusValueFilter from '../../../filters/formatStepStatusValueFilter'
@@ -40,6 +41,7 @@ describe('Tests for goal summary card component', () => {
     const goalCardByDataId = $('#test-goal-card')
     expect(goalCardByDataId.length).toEqual(1)
   })
+
   it('should render the actions with optional attributes', () => {
     const actions: Action[] = [
       { title: 'Do a thing', href: '/thing', attributes: { 'data-qa': 'thing-link' } },
@@ -57,6 +59,7 @@ describe('Tests for goal summary card component', () => {
     expect($('[data-qa=thing-link]').text().trim()).toEqual('Do a thing')
     expect($('[data-qa=another-thing-link]').text().trim()).toEqual('Do another thing')
   })
+
   it('should render the actions with visually hidden section', () => {
     const actions: Action[] = [
       {
@@ -76,6 +79,7 @@ describe('Tests for goal summary card component', () => {
     const $ = cheerio.load(content)
     expect($('[data-qa=thing-link]').text().trim()).toEqual('Do a thing hide me')
   })
+
   it('should render the actions conditionally', () => {
     const actions: Action[] = [
       { title: 'Do a thing', href: '/thing', attributes: { 'data-qa': 'thing-link' }, 'render-if': true },
@@ -98,6 +102,7 @@ describe('Tests for goal summary card component', () => {
     expect($('[data-qa=thing-link]')).toHaveLength(1)
     expect($('[data-qa=another-thing-link]')).toHaveLength(0)
   })
+
   it('Should show default to "Last updated on" for last updated hint', () => {
     const goal = aValidGoal()
     const params: GoalSummaryCardParams = {
@@ -111,8 +116,9 @@ describe('Tests for goal summary card component', () => {
 
     const $ = cheerio.load(content)
     const hint = $('[data-qa=goal-last-updated-hint]').first()
-    expect(hint.text().trim()).toEqual('Last updated on 23 September 2023 by Alex Smith')
+    expect(hint.text().trim()).toEqual('Last updated on 23 September 2023 by Alex Smith, Brixton (HMP)')
   })
+
   it('Should be able to override last updated hint', () => {
     const goal = aValidGoal()
     const params: GoalSummaryCardParams = {
@@ -127,8 +133,9 @@ describe('Tests for goal summary card component', () => {
 
     const $ = cheerio.load(content)
     const hint = $('[data-qa=goal-last-updated-hint]').first()
-    expect(hint.text().trim()).toEqual('Archived on 23 September 2023 by Alex Smith')
+    expect(hint.text().trim()).toEqual('Archived on 23 September 2023 by Alex Smith, Brixton (HMP)')
   })
+
   it('Should show last updated hint with prison name if set', () => {
     const goal = {
       ...aValidGoal(),
@@ -147,6 +154,7 @@ describe('Tests for goal summary card component', () => {
     const hint = $('[data-qa=goal-last-updated-hint]').first()
     expect(hint.text().trim()).toEqual('Last updated on 23 September 2023 by Alex Smith, Brixton (HMP)')
   })
+
   it('Should show last updated hint without prison name if missing', () => {
     const goal = {
       ...aValidGoal(),
@@ -185,6 +193,47 @@ describe('Tests for goal summary card component', () => {
     const hint = $('[data-qa=goal-archive-reason-hint]').first()
     expect(hint.text().trim()).toEqual('Reason: Prisoner no longer wants to work towards this goal')
   })
+
+  it('Should not show goal notes expander given the goal has no notes', () => {
+    const goal: Goal = {
+      ...aValidGoal(),
+      notesByType: {
+        GOAL: [],
+        GOAL_ARCHIVAL: [],
+        GOAL_COMPLETION: [],
+      },
+    }
+    const params: GoalSummaryCardParams = {
+      goal,
+      actions: [],
+      attributes: { 'data-qa': 'goal-summary-card-qa' },
+      id: 'test-goal-card',
+    }
+
+    const content = nunjucks.render('test.njk', { params })
+
+    const $ = cheerio.load(content)
+    expect($('[data-qa=overview-notes-expander]')).toHaveLength(0)
+  })
+
+  it('Should show goal notes expander given the goal has goal notes', () => {
+    const goal: Goal = {
+      ...aValidGoal(),
+    }
+    const params: GoalSummaryCardParams = {
+      goal,
+      actions: [],
+      attributes: { 'data-qa': 'goal-summary-card-qa' },
+      id: 'test-goal-card',
+    }
+
+    const content = nunjucks.render('test.njk', { params })
+
+    const $ = cheerio.load(content)
+    const hint = $('[data-qa=overview-notes-expander] .govuk-details__text').first()
+    expect(hint.text().trim()).toEqual('Prisoner is not good at listening')
+  })
+
   it('Should show archive reason with no other if the goal is archived', () => {
     const goal = {
       ...aValidGoal(),
@@ -205,6 +254,7 @@ describe('Tests for goal summary card component', () => {
     const hint = $('[data-qa=goal-archive-reason-hint]').first()
     expect(hint.text().trim()).toEqual('Reason: Other - Some other reason')
   })
+
   it.each([GoalStatusValue.COMPLETED, GoalStatusValue.ACTIVE])(
     'Should not show archive reason if the goal is not archived',
     (status: GoalStatusValue) => {
