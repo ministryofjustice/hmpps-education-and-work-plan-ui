@@ -82,6 +82,12 @@ tbody[data-qa="completed-courses-table-body"] .govuk-table__cell:nth-child(2) {
   border-bottom: none;
 }
 
+// Removing the border around the tab panel on goals page
+
+.custom-tabs-no-border .govuk-tabs__panel {
+  border: none;
+}
+
 // Custom section break widths
 
 .app-u-section-break-8 {

@@ -178,7 +178,7 @@ context('Archive a goal', () => {
     const archiveGoalPage = goalsPage //
       .hasArchivedGoalsDisplayed()
       .hasNumberOfArchivedGoals(2)
-      .clickArchiveButtonForFirstGoal()
+      .clickArchiveButtonForGoal(goalReference)
 
     archiveGoalPage //
       .selectReason(ReasonToArchiveGoalValue.OTHER)

@@ -32,7 +32,7 @@
                             title: 'Update<span class="govuk-visually-hidden"> this goal</span>',
                             href: '/plan/' ~ prisonerSummary.prisonNumber ~ '/goals/' ~ goal.goalReference ~ '/update',
                             attributes: {
-                              'data-qa': 'goal-' ~ loop.index ~ '-update-button'
+                              'data-qa': 'goal-' ~ goal.goalReference ~ '-update-button'
                             },
                             'render-if': hasEditAuthority
                           },
@@ -40,7 +40,7 @@
                             title: 'Archive<span class="govuk-visually-hidden"> this goal</span>',
                             href: '/plan/' ~ prisonerSummary.prisonNumber ~ '/goals/' ~ goal.goalReference ~ '/archive',
                             attributes: {
-                              'data-qa': 'goal-' ~ loop.index ~ '-archive-button'
+                              'data-qa': 'goal-' ~ goal.goalReference ~ '-archive-button'
                             },
                             'render-if': hasEditAuthority
                           }
@@ -81,6 +81,7 @@
         {% endset %}
 
         {{ govukTabs({
+          classes: 'custom-tabs-no-border',
           items: [
             {
               label: "In progress (" + inProgressGoals.length + " goal" + ("s" if inProgressGoals.length !== 1) + ")",
@@ -107,7 +108,7 @@
       {{ actionsCard({
         actions: [
           { 
-            title: '<img src="/assets/images/icon-goal.svg" role="presentation" alt="" width="35px" height="28px" /> Add a new goal' | safe, 
+            title: '<span class="goal-action"><img src="/assets/images/icon-goal.svg" role="presentation" alt="" width="35px" height="28px" class="goal-icon" /> Add a new goal</span>' | safe, 
             href: '/plan/' ~ prisonerSummary.prisonNumber ~ '/goals/create', 
             id: 'add-goal-button', 
             'render-if': hasEditAuthority,

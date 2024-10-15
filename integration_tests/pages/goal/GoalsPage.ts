@@ -72,8 +72,8 @@ export default class GoalsPage extends Page {
     return this
   }
 
-  clickArchiveButtonForFirstGoal(): ArchiveGoalPage {
-    this.goalArchiveButton(1).click()
+  clickArchiveButtonForGoal(goalReference: string): ArchiveGoalPage {
+    this.goalArchiveButton(goalReference).click()
     return Page.verifyOnPage(ArchiveGoalPage)
   }
 
@@ -102,12 +102,13 @@ export default class GoalsPage extends Page {
     return this
   }
 
-  clickUpdateButtonForFirstGoal(): UpdateGoalPage {
-    this.goalUpdateButton(1).click()
+  clickUpdateButtonForGoal(goalReference: string): UpdateGoalPage {
+    this.goalUpdateButton(goalReference).click()
     return Page.verifyOnPage(UpdateGoalPage)
   }
 
-  private goalUpdateButton = (idx: number): PageElement => cy.get(`[data-qa=goal-${idx}-update-button]`)
+  private goalUpdateButton = (goalReference: string): PageElement =>
+    cy.get(`[data-qa=goal-${goalReference}-update-button]`)
 
   private goalReferenceInputValue = (): PageElement => cy.get('[data-qa=goal-reference]')
 
@@ -128,7 +129,8 @@ export default class GoalsPage extends Page {
   private goalReactivateButton = (goalReference: string): PageElement =>
     cy.get(`[data-qa=goal-${goalReference}-unarchive-button]`)
 
-  private goalArchiveButton = (idx: number): PageElement => cy.get(`[data-qa=goal-${idx}-archive-button]`)
+  private goalArchiveButton = (goalReference: string): PageElement =>
+    cy.get(`[data-qa=goal-${goalReference}-archive-button]`)
 
   private noArchivedGoalsMessage = (): PageElement => cy.get('[data-qa=no-archived-goals-message]')
 }
