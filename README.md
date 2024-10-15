@@ -195,3 +195,4 @@ Features can be toggled by setting the relevant environment variable.
 | SOME_TOGGLE_ENABLED       | false         | Boolean  | Example feature toggle, for demonstration purposes.                               |
 | NEW_OVERVIEW_PAGE_ENABLED | false         | Boolean  | Enable new overview and goals page layouts.                                       |
 | REVIEWS_PRISONS_ENABLED   |               | String   | Comma delimited list of prison IDs where the PLP Review process has been enabled. | 
+| COMPLETED_GOALS_ENABLED   |               | Boolean  | Enable completed goals tab.                                                       | 
