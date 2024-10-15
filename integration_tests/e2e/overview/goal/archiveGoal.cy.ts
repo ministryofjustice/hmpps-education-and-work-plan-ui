@@ -10,31 +10,7 @@ import GoalsPage from '../../../pages/goal/GoalsPage'
 
 context('Archive a goal', () => {
   const prisonNumber = 'G6115VJ'
-  const goalToArchive = {
-    goalReference: '10efc562-be8f-4675-9283-9ede0c19dade',
-    title: 'Learn French',
-    status: 'ACTIVE',
-    steps: [
-      {
-        stepReference: '177e45eb-c8fe-438b-aa81-1bf9157efa05',
-        title: 'Book French course',
-        status: 'NOT_STARTED',
-        sequenceNumber: 1,
-      },
-      {
-        stepReference: '32992dd1-7dc6-4480-b2fc-61bc36a6a775',
-        title: 'Complete French course',
-        status: 'NOT_STARTED',
-        sequenceNumber: 2,
-      },
-    ],
-    createdBy: 'auser_gen',
-    createdAt: '2023-07-20T08:29:15.386Z',
-    updatedBy: 'auser_gen',
-    updatedAt: '2023-07-20T08:29:15.386Z',
-    targetCompletionDate: '2124-01-29',
-    notes: 'Billy will struggle to concentrate for long periods.',
-  }
+  const goalReference = '10efc562-be8f-4675-9283-9ede0c19dade'
 
   beforeEach(() => {
     cy.task('reset')
@@ -52,12 +28,10 @@ context('Archive a goal', () => {
     cy.task('stubLearnerEducation')
     cy.task('archiveGoal')
     cy.task('stubGetAllPrisons')
-    cy.task('getActionPlan')
   })
 
   it('should be able to navigate directly to archive goal page', () => {
     // Given
-    const goalReference = '10efc562-be8f-4675-9283-9ede0c19dade'
     cy.signIn()
 
     // When
@@ -76,15 +50,17 @@ context('Archive a goal', () => {
     const overviewPage = Page.verifyOnPage(OverviewPage)
 
     // When
-    const goalsPage = overviewPage.clickViewArchivedGoalsButton()
+    const goalsPage = overviewPage.clickViewInProgressGoalsButton()
+    goalsPage //
+      .checkOnInProgressGoalsTab()
+      .clickArchiveButtonForGoal(goalReference)
 
     // Then
-    goalsPage.checkOnArchivedGoalsTab()
+    Page.verifyOnPage(ArchiveGoalPage)
   })
 
   it('should not submit the form if there are validation errors on the page', () => {
     // Given
-    const goalReference = '10efc562-be8f-4675-9283-9ede0c19dade'
     cy.signIn()
     cy.visit(`/plan/${prisonNumber}/goals/${goalReference}/archive`)
 
@@ -101,7 +77,6 @@ context('Archive a goal', () => {
 
   it('should not submit the form if other reason not entered', () => {
     // Given
-    const goalReference = '10efc562-be8f-4675-9283-9ede0c19dade'
     cy.signIn()
     cy.visit(`/plan/${prisonNumber}/goals/${goalReference}/archive`)
 
@@ -120,7 +95,6 @@ context('Archive a goal', () => {
 
   it('should show a hint for the number of characters remaining', () => {
     // Given
-    const goalReference = '10efc562-be8f-4675-9283-9ede0c19dade'
     cy.signIn()
     cy.visit(`/plan/${prisonNumber}/goals/${goalReference}/archive`)
 
@@ -146,7 +120,6 @@ context('Archive a goal', () => {
 
   it('should ask for confirmation and return to overview if choosing no', () => {
     // Given
-    const goalReference = '10efc562-be8f-4675-9283-9ede0c19dade'
     cy.signIn()
     cy.visit(`/plan/${prisonNumber}/goals/${goalReference}/archive`)
     const archiveGoalPage = Page.verifyOnPage(ArchiveGoalPage)
@@ -166,9 +139,8 @@ context('Archive a goal', () => {
     )
   })
 
-  it('Should be able to archive a goal successfully', () => {
+  it('Should be able to archive a goal successfully without entering the optional notes', () => {
     // Given
-    const { goalReference } = goalToArchive
     cy.task('archiveGoal', { prisonNumber, goalReference })
     cy.signIn()
     cy.visit(`/plan/${prisonNumber}/view/goals`)
@@ -183,6 +155,7 @@ context('Archive a goal', () => {
     archiveGoalPage //
       .selectReason(ReasonToArchiveGoalValue.OTHER)
       .enterReason('Just because...')
+      .clearNotes()
       .submitPage()
 
     const reviewPage = Page.verifyOnPage(ReviewArchiveGoalPage)
@@ -197,7 +170,50 @@ context('Archive a goal', () => {
       putRequestedFor(urlEqualTo(`/action-plans/${prisonNumber}/goals/${goalReference}/archive`)) //
         .withRequestBody(
           matchingJsonPath(
-            `$[?(@.goalReference == '${goalReference}' && @.reason == 'OTHER' && @.reasonOther == 'Just because...')]`,
+            `$[?(@.goalReference == '${goalReference}' && ` +
+              "@.reason == 'OTHER' && " +
+              "@.note == '' && " +
+              "@.reasonOther == 'Just because...')]",
+          ),
+        ),
+    )
+  })
+
+  it('Should be able to archive a goal successfully including entering some optional notes', () => {
+    // Given
+    cy.task('archiveGoal', { prisonNumber, goalReference })
+    cy.signIn()
+    cy.visit(`/plan/${prisonNumber}/view/goals`)
+    const goalsPage = Page.verifyOnPage(GoalsPage)
+
+    // When
+    const archiveGoalPage = goalsPage //
+      .hasArchivedGoalsDisplayed()
+      .hasNumberOfArchivedGoals(2)
+      .clickArchiveButtonForGoal(goalReference)
+
+    archiveGoalPage //
+      .selectReason(ReasonToArchiveGoalValue.OTHER)
+      .enterReason('Just because...')
+      .enterNotes('Some additional notes explaining why we are archiving this goal')
+      .submitPage()
+
+    const reviewPage = Page.verifyOnPage(ReviewArchiveGoalPage)
+    reviewPage.clickYes()
+
+    // Then
+    Page.verifyOnPage(OverviewPage) //
+      .hasSuccessMessage('Goal archived')
+      .hasNumberOfArchivedGoals(2)
+
+    cy.wiremockVerify(
+      putRequestedFor(urlEqualTo(`/action-plans/${prisonNumber}/goals/${goalReference}/archive`)) //
+        .withRequestBody(
+          matchingJsonPath(
+            `$[?(@.goalReference == '${goalReference}' && ` +
+              "@.reason == 'OTHER' && " +
+              "@.note == 'Some additional notes explaining why we are archiving this goal' && " +
+              "@.reasonOther == 'Just because...')]",
           ),
         ),
     )
