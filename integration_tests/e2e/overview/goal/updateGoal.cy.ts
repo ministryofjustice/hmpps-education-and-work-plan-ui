@@ -28,10 +28,11 @@ context('Update a goal', () => {
     cy.task('updateGoal')
   })
 
+  const goalReference = '10efc562-be8f-4675-9283-9ede0c19dade'
+
   it('should be able to navigate directly to update goal page', () => {
     // Given
     const prisonNumber = 'G6115VJ'
-    const goalReference = '10efc562-be8f-4675-9283-9ede0c19dade'
     cy.signIn()
 
     // When
@@ -55,7 +56,7 @@ context('Update a goal', () => {
 
     const goalsPage = Page.verifyOnPage(GoalsPage)
     const inProgressGoalsPage = goalsPage.clickInProgressGoalsTab()
-    const updateGoalPage = inProgressGoalsPage.clickUpdateButtonForFirstGoal()
+    const updateGoalPage = inProgressGoalsPage.clickUpdateButtonForGoal(goalReference)
 
     // When
     updateGoalPage //
@@ -83,7 +84,7 @@ context('Update a goal', () => {
 
     const goalsPage = Page.verifyOnPage(GoalsPage)
     const inProgressGoalsPage = goalsPage.clickInProgressGoalsTab()
-    const updateGoalPage = inProgressGoalsPage.clickUpdateButtonForFirstGoal()
+    const updateGoalPage = inProgressGoalsPage.clickUpdateButtonForGoal(goalReference)
 
     // When
     updateGoalPage //
@@ -111,7 +112,7 @@ context('Update a goal', () => {
 
     const goalsPage = Page.verifyOnPage(GoalsPage)
     const inProgressGoalsPage = goalsPage.clickInProgressGoalsTab()
-    const updateGoalPage = inProgressGoalsPage.clickUpdateButtonForFirstGoal()
+    const updateGoalPage = inProgressGoalsPage.clickUpdateButtonForGoal(goalReference)
 
     // When
     updateGoalPage //
@@ -137,7 +138,7 @@ context('Update a goal', () => {
 
     const goalsPage = Page.verifyOnPage(GoalsPage)
     const inProgressGoalsPage = goalsPage.clickInProgressGoalsTab()
-    const updateGoalPage = inProgressGoalsPage.clickUpdateButtonForFirstGoal()
+    const updateGoalPage = inProgressGoalsPage.clickUpdateButtonForGoal(goalReference)
 
     // When
     updateGoalPage //
@@ -152,7 +153,6 @@ context('Update a goal', () => {
 
     // Then
     Page.verifyOnPage(OverviewPage)
-    const goalReference = '10efc562-be8f-4675-9283-9ede0c19dade'
     cy.wiremockVerify(
       putRequestedFor(urlEqualTo(`/action-plans/${prisonNumber}/goals/${goalReference}`)) //
         .withRequestBody(
@@ -176,7 +176,7 @@ context('Update a goal', () => {
 
     const goalsPage = Page.verifyOnPage(GoalsPage)
     const inProgressGoalsPage = goalsPage.clickInProgressGoalsTab()
-    const updateGoalPage = inProgressGoalsPage.clickUpdateButtonForFirstGoal()
+    const updateGoalPage = inProgressGoalsPage.clickUpdateButtonForGoal(goalReference)
 
     // When
     updateGoalPage //
@@ -188,7 +188,6 @@ context('Update a goal', () => {
 
     // Then
     Page.verifyOnPage(OverviewPage)
-    const goalReference = '10efc562-be8f-4675-9283-9ede0c19dade'
     cy.wiremockVerify(
       putRequestedFor(urlEqualTo(`/action-plans/${prisonNumber}/goals/${goalReference}`)) //
         .withRequestBody(matchingJsonPath(`$[?(@.goalReference == '${goalReference}' && @.steps.size() == 1)]`)),
@@ -200,7 +199,6 @@ context('Update a goal', () => {
     cy.task('stubSignIn')
 
     const prisonNumber = 'G6115VJ'
-    const goalReference = '10efc562-be8f-4675-9283-9ede0c19dade'
     cy.signIn()
 
     // When
@@ -215,7 +213,6 @@ context('Update a goal', () => {
     cy.task('stubSignInAsUserWithViewAuthority')
 
     const prisonNumber = 'G6115VJ'
-    const goalReference = '10efc562-be8f-4675-9283-9ede0c19dade'
     cy.signIn()
 
     // When
@@ -241,7 +238,6 @@ context('Update a goal', () => {
   it(`should render 500 page given error retrieving prisoner's plan`, () => {
     // Given
     const prisonNumber = 'G6115VJ'
-    const goalReference = '10efc562-be8f-4675-9283-9ede0c19dade'
     cy.signIn()
     cy.task('getActionPlan500Error')
 

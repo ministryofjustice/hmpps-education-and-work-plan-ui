@@ -47,7 +47,7 @@ context('Review updated goal', () => {
     cy.visit(`/plan/${prisonNumber}/view/goals#in-progress`)
     const goalsPage = Page.verifyOnPage(GoalsPage)
     const inProgressGoalsPage = goalsPage.clickInProgressGoalsTab()
-    const updateGoalPage = inProgressGoalsPage.clickUpdateButtonForFirstGoal()
+    const updateGoalPage = inProgressGoalsPage.clickUpdateButtonForGoal(goalReference)
     updateGoalPage.isForGoal(goalReference).submitPage()
 
     const reviewUpdateGoalPage = Page.verifyOnPage(ReviewUpdateGoalPage)
@@ -68,7 +68,7 @@ context('Review updated goal', () => {
     cy.visit(`/plan/${prisonNumber}/view/goals#in-progress`)
     const goalsPage = Page.verifyOnPage(GoalsPage)
     const inProgressGoalsPage = goalsPage.clickInProgressGoalsTab()
-    const updateGoalPage = inProgressGoalsPage.clickUpdateButtonForFirstGoal()
+    const updateGoalPage = inProgressGoalsPage.clickUpdateButtonForGoal(goalReference)
 
     updateGoalPage.isForGoal(goalReference).submitPage()
 
@@ -121,7 +121,7 @@ context('Review updated goal', () => {
     cy.visit(`/plan/${prisonNumber}/view/goals#in-progress`)
     const goalsPage = Page.verifyOnPage(GoalsPage)
     const inProgressGoalsPage = goalsPage.clickInProgressGoalsTab()
-    const updateGoalPage = inProgressGoalsPage.clickUpdateButtonForFirstGoal()
+    const updateGoalPage = inProgressGoalsPage.clickUpdateButtonForGoal(goalReference)
 
     updateGoalPage.isForGoal(goalReference).submitPage()
 
