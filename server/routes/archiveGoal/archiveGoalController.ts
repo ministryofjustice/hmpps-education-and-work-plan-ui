@@ -8,6 +8,7 @@ import ReviewArchiveGoalView from './reviewArchiveGoalView'
 import toArchiveGoalDto from './mappers/archiveGoalFormToDtoMapper'
 import { AuditService } from '../../services'
 import { BaseAuditData } from '../../services/auditService'
+import { getPrisonerContext } from '../../data/session/prisonerContexts'
 
 export default class ArchiveGoalController {
   constructor(
@@ -19,10 +20,8 @@ export default class ArchiveGoalController {
     const { prisonNumber, goalReference } = req.params
     const { prisonerSummary } = res.locals
 
-    let archiveGoalForm: ArchiveGoalForm
-    if (req.session.archiveGoalForm && req.session.archiveGoalForm.reference === goalReference) {
-      archiveGoalForm = req.session.archiveGoalForm
-    } else {
+    let { archiveGoalForm } = getPrisonerContext(req.session, prisonNumber)
+    if (!archiveGoalForm || archiveGoalForm.reference !== goalReference) {
       const actionPlan = await this.educationAndWorkPlanService.getActionPlan(prisonNumber, req.user.username)
       if (actionPlan.problemRetrievingData) {
         return next(createError(500, `Error retrieving plan for prisoner ${prisonNumber}`))
@@ -39,7 +38,7 @@ export default class ArchiveGoalController {
       }
     }
 
-    req.session.archiveGoalForm = undefined
+    getPrisonerContext(req.session, prisonNumber).archiveGoalForm = undefined
 
     const view = new ArchiveGoalView(prisonerSummary, archiveGoalForm)
     return res.render('pages/goal/archive/reason', { ...view.renderArgs })
@@ -48,7 +47,7 @@ export default class ArchiveGoalController {
   submitArchiveGoalForm: RequestHandler = async (req, res, next): Promise<void> => {
     const { prisonNumber, goalReference } = req.params
     const archiveGoalForm: ArchiveGoalForm = { ...req.body }
-    req.session.archiveGoalForm = archiveGoalForm
+    getPrisonerContext(req.session, prisonNumber).archiveGoalForm = archiveGoalForm
 
     const errors = validateArchiveGoalForm(archiveGoalForm)
     if (errors.length > 0) {
@@ -61,7 +60,7 @@ export default class ArchiveGoalController {
   getReviewArchiveGoalView: RequestHandler = async (req, res, next): Promise<void> => {
     const { prisonNumber, goalReference } = req.params
     const { prisonerSummary } = res.locals
-    const { archiveGoalForm } = req.session
+    const { archiveGoalForm } = getPrisonerContext(req.session, prisonNumber)
     if (!archiveGoalForm) {
       return res.redirect(`/plan/${prisonNumber}/goals/${goalReference}/archive`)
     }
@@ -71,8 +70,8 @@ export default class ArchiveGoalController {
 
   submitReviewArchiveGoal: RequestHandler = async (req, res, next): Promise<void> => {
     const { prisonNumber } = req.params
-    const { archiveGoalForm } = req.session
-    req.session.archiveGoalForm = undefined
+    const { archiveGoalForm } = getPrisonerContext(req.session, prisonNumber)
+    getPrisonerContext(req.session, prisonNumber).archiveGoalForm = undefined
 
     const archiveGoalDto = toArchiveGoalDto(prisonNumber, archiveGoalForm)
     try {
@@ -88,7 +87,7 @@ export default class ArchiveGoalController {
 
   cancelArchiveGoal: RequestHandler = async (req, res, next): Promise<void> => {
     const { prisonNumber } = req.params
-    req.session.archiveGoalForm = undefined
+    getPrisonerContext(req.session, prisonNumber).archiveGoalForm = undefined
     return res.redirect(`/plan/${prisonNumber}/view/overview`)
   }
 }
