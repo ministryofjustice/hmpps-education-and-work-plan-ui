@@ -1,0 +1,22 @@
+<h3 class="govuk-summary-card__title">
+  <img src="/assets/images/icon-goal.svg" role="presentation" alt="" width="35px" height="28px" />
+  Achieve goal by {{ params.goal.targetCompletionDate | formatDate('D MMMM YYYY') }}
+</h3>
+{% if params.actions | length %}
+  <ul class="govuk-summary-card__actions goal-summary-card-actions govuk-!-display-none-print">
+    {% for action in params.actions %}
+
+      {% if action['render-if'] == null or action['render-if'] === true %}
+        {#- Set classes for this action #}
+        {%- set classNames = "govuk-link" -%}
+        {%- if action.classes %}
+          {% set classNames = classNames + " " + action.classes %}
+        {% endif %}
+        {%- set actionAttributes %} class="{{ classNames }}" {{- govukAttributes(action.attributes) -}} {% if action.id %} id="{{ action.id }}"{% endif %}{% endset %}
+        <li class="govuk-summary-card__action">
+          <a {{ actionAttributes | safe }} href="{{ action.href }}">{{ action.title | safe }}</a>
+        </li>
+      {% endif %}
+    {% endfor %}
+  </ul>
+{% endif %}
