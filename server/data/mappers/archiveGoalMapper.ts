@@ -6,5 +6,6 @@ export default function toArchiveGoalRequest(dto: ArchiveGoalDto): ArchiveGoalRe
     goalReference: dto.goalReference,
     reason: dto.reason,
     reasonOther: dto.reasonOther,
+    note: dto.notes,
   }
 }

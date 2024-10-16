@@ -7,5 +7,6 @@ export default function toArchiveGoalDto(prisonNumber: string, form: ArchiveGoal
     prisonNumber,
     reason: form.reason,
     reasonOther: form.reasonOther,
+    notes: form.notes,
   }
 }
