@@ -51,7 +51,25 @@
             <p class="govuk-body" data-qa="no-in-progress-goals-message">{{ prisonerSummary.firstName }} {{ prisonerSummary.lastName }} has no goals in progress.</p>
           {% endif %}
         {% endset %}
-
+        {% if featureToggles.completedGoalsEnabled %} 
+          {% set completedGoalsHtml %}
+            <h2 class="govuk-heading-m">Completed goals</h2>
+            {% if completedGoals.length > 0 %}
+              {% for goal in completedGoals | sort(attribute = 'updatedAt', reverse = true) %}
+                {{ goalSummaryCard({
+                          goal: goal,
+                          attributes: {
+                            'data-qa': 'completed-goal-summary-card'
+                          },
+                          classes: 'archived-or-completed-goal-summary-card',
+                          lastUpdatedLabel: 'Goal marked as complete on'
+                        }) }}
+              {% endfor %}
+            {% else %}
+              <p class="govuk-body" data-qa="no-completed-goals-message">{{ prisonerSummary.firstName }} {{ prisonerSummary.lastName }} has no completed goals.</p>
+            {% endif %}
+          {% endset %}
+        {% endif %}
         {% set archivedGoalsHtml %}
           <h2 class="govuk-heading-m">Archived goals</h2>
           {% if archivedGoals.length > 0 %}
@@ -61,7 +79,7 @@
                         attributes: {
                           'data-qa': 'archived-goal-summary-card'
                         },
-                        classes: 'archived-goal-summary-card',
+                        classes: 'archived-or-completed-goal-summary-card',
                         lastUpdatedLabel: 'Archived on',
                         actions: [
                           {
@@ -88,6 +106,13 @@
               id: "in-progress-goals",
               panel: {
                 html: inProgressGoalsHtml
+              }
+            },
+            {
+              label: "Completed (" + completedGoals.length + " goal" + ("s" if completedGoals.length !== 1) + ")",
+              id: "completed-goals",
+              panel: {
+                html: completedGoalsHtml
               }
             },
             {
