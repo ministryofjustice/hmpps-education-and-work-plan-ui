@@ -11,83 +11,12 @@
 
 <div {{ componentAttributes | safe }}>
   <div class="govuk-summary-card__title-wrapper">
-    <h3 class="govuk-summary-card__title">
-      <img src="/assets/images/icon-goal.svg" role="presentation" alt="" width="35px" height="28px" />
-      Achieve goal by {{ params.goal.targetCompletionDate | formatDate('D MMMM YYYY') }}
-    </h3>
-    {% if params.actions | length %}
-    <ul class="govuk-summary-card__actions goal-summary-card-actions govuk-!-display-none-print">
-      {% for action in params.actions %}
-
-        {% if action['render-if'] == null or action['render-if'] === true %}
-          {#- Set classes for this action #}
-          {%- set classNames = "govuk-link" -%}
-          {%- if action.classes %}
-            {% set classNames = classNames + " " + action.classes %}
-          {% endif %}
-          {%- set actionAttributes %} class="{{ classNames }}" {{- govukAttributes(action.attributes) -}} {% if action.id %} id="{{ action.id }}"{% endif %}{% endset %}
-          <li class="govuk-summary-card__action">
-            <a {{ actionAttributes | safe }} href="{{ action.href }}">{{ action.title | safe }}</a>
-          </li>
-        {% endif %}
-      {% endfor %}
-    </ul>
-    {% endif %}
+    {% include './_goalSummaryCardHeadingAndActions.njk' %}
   </div>
   <div class="govuk-summary-card__subtitle-wrapper">
     <p class="govuk-body app-u-multiline-text">{{ params.goal.title }}</p>
   </div>
-  <div class="govuk-summary-card__content">
-    <table class="govuk-table">
-      <caption class="govuk-table__caption govuk-visually-hidden">Steps for this goal</caption>
-      <thead class="govuk-table__head">
-      <tr class="govuk-table__row">
-        <th scope="col" class="govuk-table__header app-u-width-60">Steps</th>
-        <th scope="col" class="govuk-table__header app-u-width-20">Status</th>
-      </tr>
-      </thead>
-      <tbody class="govuk-table__body">
 
-      {% for step in params.goal.steps %}
+  {% include './_goalSummaryCardContent-goalInStatus-' ~ params.goal.status ~ '.njk' %}
 
-        {% if step.status == "COMPLETE" %}
-          {% set tagClass = "govuk-tag--green" %}
-          {% elif step.status == "ACTIVE" %}
-          {% set tagClass = "govuk-tag--blue" %}
-        {% else %}
-          {% set tagClass = "govuk-tag--grey" %}
-        {% endif %}
-
-        <tr class="govuk-table__row">
-          <td class="govuk-table__cell app-u-multiline-text">{{ step.sequenceNumber }}. {{ step.title }}</td>
-          <td class="govuk-table__cell">
-            <strong class="govuk-tag {{ tagClass }}">
-              {{ step.status | formatStepStatusValue }}
-            </strong>
-          </td>
-        </tr>
-      {% endfor %}
-
-      </tbody>
-    </table>
-    {% if params.goal.notesByType.GOAL.length > 0 %}
-      {% set goalNote = params.goal.notesByType.GOAL[0] %}
-      <details class="govuk-details app-notes-expander" data-qa="overview-notes-expander">
-        <summary class="govuk-details__summary">
-            <span class="govuk-details__summary-text">
-              View note<span class="govuk-visually-hidden"> about this goal</span>
-            </span>
-        </summary>
-        <div class="govuk-details__text">
-          <span class="app-u-multiline-text">{{ goalNote.content }}</span>
-        </div>
-      </details>
-    {% endif %}
-    <p class="govuk-hint govuk-!-font-size-16" data-qa="goal-last-updated-hint">
-      {{ params.lastUpdatedLabel | default('Last updated on') }} {{ params.goal.updatedAt | formatDate('DD MMMM YYYY') }}<span class="govuk-!-display-none-print"> by {{ params.goal.updatedByDisplayName }}{{ ', ' + params.goal.updatedAtPrisonName if params.goal.updatedAtPrisonName }}</span>
-    </p>
-    {% if params.goal.status === 'ARCHIVED' %}
-      <p class="govuk-hint govuk-!-font-size-16" data-qa="goal-archive-reason-hint">Reason: {{ params.goal.archiveReason | formatReasonToArchiveGoal }}{{ ' - ' +  params.goal.archiveReasonOther if params.goal.archiveReason === 'OTHER'}}</p>
-    {% endif %}
-  </div>
 </div>
