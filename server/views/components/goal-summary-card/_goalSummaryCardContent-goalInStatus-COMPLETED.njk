@@ -1,27 +1,21 @@
 <div class="govuk-summary-card__content">
   {% include './_goalSteps.njk' %}
 
-  {% if params.goal.status === 'COMPLETED' %}
-      {% if params.goal.notesByType.GOAL_COMPLETION.length > 0 %}
-        {% set goalCompletionNote = params.goal.notesByType.GOAL_COMPLETION[0] %}
-        <p class="govuk-heading-s">Goal completion note</p>
-        <p class="govuk-body">{{ goalCompletionNote.content }}</p>
-      {% endif %}
+    {% if params.goal.notesByType.GOAL_COMPLETION.length > 0 %}
+      {% set goalCompletionNote = params.goal.notesByType.GOAL_COMPLETION[0] %}
+      <h3 class="govuk-heading-s">Goal completion note</h3>
+      <p class="govuk-body" data-qa="goal-completion-note">{{ goalCompletionNote.content }}</p>
     {% endif %}
     {% if params.goal.notesByType.GOAL.length > 0 %}
       {% set goalNote = params.goal.notesByType.GOAL[0] %}
       <details class="govuk-details app-notes-expander" data-qa="overview-notes-expander">
         <summary class="govuk-details__summary">
           <span class="govuk-details__summary-text">
-            {% if params.goal.status === 'COMPLETED' %}
               View previous note<span class="govuk-visually-hidden"> about this goal</span>
-            {% else %}
-              View note<span class="govuk-visually-hidden"> about this goal</span>
-            {% endif %}
           </span>
         </summary>
         <div class="govuk-details__text">
-          <span class="app-u-multiline-text">{{ goalNote.content }}</span>
+          <span class="app-u-multiline-text" data-qa="goal-note">{{ goalNote.content }}</span>
         </div>
       </details>
     {% endif %}

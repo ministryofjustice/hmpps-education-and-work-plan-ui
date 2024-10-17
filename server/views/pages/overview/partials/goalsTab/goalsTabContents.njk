@@ -98,33 +98,54 @@
           {% endif %}
         {% endset %}
 
+        {% if featureToggles.completedGoalsEnabled %} 
+          {{ govukTabs({
+            classes: 'custom-tabs-no-border',
+            items: [
+              {
+                label: "In progress (" + inProgressGoals.length + " goal" + ("s" if inProgressGoals.length !== 1) + ")",
+                id: "in-progress-goals",
+                panel: {
+                  html: inProgressGoalsHtml
+                }
+              },
+              {
+                label: "Completed (" + completedGoals.length + " goal" + ("s" if completedGoals.length !== 1) + ")",
+                id: "completed-goals",
+                panel: {
+                  html: completedGoalsHtml
+                }
+              },
+              {
+                label: "Archived (" + archivedGoals.length + " goal" + ("s" if archivedGoals.length !== 1) + ")",
+                id: "archived-goals",
+                panel: {
+                  html: archivedGoalsHtml
+                }
+              }
+            ]
+          }) }}
+        {% else %}
         {{ govukTabs({
-          classes: 'custom-tabs-no-border',
-          items: [
-            {
-              label: "In progress (" + inProgressGoals.length + " goal" + ("s" if inProgressGoals.length !== 1) + ")",
-              id: "in-progress-goals",
-              panel: {
-                html: inProgressGoalsHtml
+            classes: 'custom-tabs-no-border',
+            items: [
+              {
+                label: "In progress (" + inProgressGoals.length + " goal" + ("s" if inProgressGoals.length !== 1) + ")",
+                id: "in-progress-goals",
+                panel: {
+                  html: inProgressGoalsHtml
+                }
+              },
+              {
+                label: "Archived (" + archivedGoals.length + " goal" + ("s" if archivedGoals.length !== 1) + ")",
+                id: "archived-goals",
+                panel: {
+                  html: archivedGoalsHtml
+                }
               }
-            },
-            {
-              label: "Completed (" + completedGoals.length + " goal" + ("s" if completedGoals.length !== 1) + ")",
-              id: "completed-goals",
-              panel: {
-                html: completedGoalsHtml
-              }
-            },
-            {
-              label: "Archived (" + archivedGoals.length + " goal" + ("s" if archivedGoals.length !== 1) + ")",
-              id: "archived-goals",
-              panel: {
-                html: archivedGoalsHtml
-              }
-            }
-          ]
-        }) }}
-
+            ]
+          }) }}
+        {% endif %}
       {% else %}
         {% include './partials/_unavailableGoals.njk' %}
       {% endif %}
