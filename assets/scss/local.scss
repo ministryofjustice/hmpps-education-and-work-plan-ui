@@ -21,24 +21,26 @@
   width: 20em;
 }
 
-// Custom grid and border for goals section of overview page
+// Custom column with vertical border
+
+.app-table-column-with-right-border {
+  border-right: 1px solid $govuk-border-colour;
+  display: inline-block;
+}
 
 .govuk-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
   gap: 20px;
-  display: flex;
 }
 
 .govuk-grid-item {
   padding: 16px;
-  text-align: center;
-}
-
-.govuk-grid-item:first-child {
-  margin-right: 110px;
+  border-right: 1px solid $govuk-border-colour;
 }
 
 .govuk-grid-item:last-child {
-  border-left: 1px solid $govuk-border-colour;
+  border-right: none;
 }
 
 .goal-container {
