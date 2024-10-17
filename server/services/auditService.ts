@@ -14,6 +14,8 @@ export enum Page {
   UPDATE_GOALS = 'UPDATE_GOALS',
   UPDATE_GOALS_REVIEW = 'UPDATE_GOALS_REVIEW',
   ARCHIVE_GOALS = 'ARCHIVE_GOALS',
+  COMPLETE_OR_ARCHIVE_GOALS = 'COMPLETE_OR_ARCHIVE_GOALS',
+  COMPLETE_GOALS = 'COMPLETE_GOALS',
   ARCHIVE_GOALS_REVIEW = 'ARCHIVE_GOALS_REVIEW',
   ARCHIVE_GOALS_CANCEL = 'ARCHIVE_GOALS_CANCEL',
   UNARCHIVE_GOALS = 'UNARCHIVE_GOALS',
@@ -83,6 +85,7 @@ enum AuditableUserAction {
   UPDATE_PRISONER_GOAL = 'UPDATE_PRISONER_GOAL',
   ARCHIVE_PRISONER_GOAL = 'ARCHIVE_PRISONER_GOAL',
   UNARCHIVE_PRISONER_GOAL = 'UNARCHIVE_PRISONER_GOAL',
+  COMPLETE_PRISONER_GOAL = 'COMPLETE_PRISONER_GOAL',
 }
 
 export interface BaseAuditData {
@@ -130,5 +133,9 @@ export default class AuditService {
 
   async logUnarchiveGoal(baseAuditData: BaseAuditData) {
     return this.logAuditEvent({ ...baseAuditData, what: AuditableUserAction.UNARCHIVE_PRISONER_GOAL })
+  }
+
+  async logCompleteGoal(baseAuditData: BaseAuditData) {
+    return this.logAuditEvent({ ...baseAuditData, what: AuditableUserAction.COMPLETE_PRISONER_GOAL })
   }
 }

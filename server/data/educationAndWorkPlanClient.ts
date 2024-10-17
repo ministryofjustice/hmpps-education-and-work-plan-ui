@@ -8,6 +8,7 @@ import type {
   InductionResponse,
   UpdateInductionRequest,
   CreateInductionRequest,
+  CompleteGoalRequest,
   ArchiveGoalRequest,
   UnarchiveGoalRequest,
   TimelineEventResponse,
@@ -65,6 +66,13 @@ export default class EducationAndWorkPlanClient {
     return EducationAndWorkPlanClient.restClient(token).put({
       path: `/action-plans/${prisonNumber}/goals/${unarchiveGoalRequest.goalReference}/unarchive`,
       data: unarchiveGoalRequest,
+    })
+  }
+
+  async completeGoal(prisonNumber: string, completeGoalRequest: CompleteGoalRequest, token: string): Promise<void> {
+    return EducationAndWorkPlanClient.restClient(token).put({
+      path: `/action-plans/${prisonNumber}/goals/${completeGoalRequest.goalReference}/complete`,
+      data: completeGoalRequest,
     })
   }
 

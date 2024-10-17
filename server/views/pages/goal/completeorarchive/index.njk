@@ -1,0 +1,56 @@
+{% extends "../../../partials/layout.njk" %}
+
+{% set pageId = "complete-or-archive-goal" %}
+{% set pageTitle = "Complete or archive the goal" %}
+
+{% block beforeContent %}
+  {% include "../../../partials/breadcrumb.njk" %}
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <h1 class="govuk-heading-l">Do you want to mark this goal as completed or archive it?</h1>
+      <h2 class="govuk-heading-m">Archived goals can be reactivated.</h2>
+      <section class="complete-goal-summary">
+        <h3 class="govuk-heading-s">Goal</h3>
+        <p class="govuk-body app-u-multiline-text" data-qa="goal-to-be-completed-or-archived-summary">{{ form.title }}</p>
+      </section>
+
+      <form class="form" method="post" novalidate="">
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+        <input type="hidden" name="reference" value="{{ form.reference }}" data-qa="goal-reference" />
+        <input type="hidden" name="title" value="{{ form.title }}" data-qa="goal-title" />
+
+        <div class="govuk-grid-row">
+          <div class="govuk-grid-column-two-thirds">
+            {{ govukRadios({
+              name: "archiveOrComplete",
+              items: [
+                {
+                  value: "COMPLETE",
+                  text: "Mark goal as completed",
+                  checked: true
+                },
+                {
+                  value: "ARCHIVE",
+                  text: "Archive this goal",
+                  checked: false
+                }
+              ]
+            }) }}
+
+            {{ govukButton({
+              id: "submit-button",
+              text: "Continue",
+              type: "submit",
+              attributes: {"data-qa": "submit-button"}
+            }) }}
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+{% endblock %}

@@ -55,6 +55,18 @@ declare module 'forms' {
     title: string
   }
 
+  export interface CompleteGoalForm {
+    reference: string
+    title: string
+    note: string
+  }
+
+  export interface CompleteOrArchiveGoalForm {
+    reference: string
+    title: string
+    archiveOrComplete: string
+  }
+
   export interface HighestLevelOfEducationForm {
     educationLevel: EducationLevelValue
   }

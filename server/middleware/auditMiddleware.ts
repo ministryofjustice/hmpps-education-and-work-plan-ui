@@ -37,6 +37,8 @@ const pageViewEventMap: Record<string, Page> = {
   '/plan/:prisonNumber/goals/:goalReference/archive': Page.ARCHIVE_GOALS,
   '/plan/:prisonNumber/goals/:goalReference/archive/review': Page.ARCHIVE_GOALS_REVIEW,
   '/plan/:prisonNumber/goals/:goalReference/archive/cancel': Page.ARCHIVE_GOALS_CANCEL,
+  '/plan/:prisonNumber/goals/:goalReference/complete': Page.COMPLETE_GOALS,
+  '/plan/:prisonNumber/goals/:goalReference/complete-or-archive': Page.COMPLETE_OR_ARCHIVE_GOALS,
 
   // Un-archive goals
   '/plan/:prisonNumber/goals/:goalReference/unarchive': Page.UNARCHIVE_GOALS,

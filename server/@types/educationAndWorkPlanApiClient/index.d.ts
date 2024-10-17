@@ -10,6 +10,7 @@ declare module 'educationAndWorkPlanApiClient' {
 
   export type ArchiveGoalRequest = components['schemas']['ArchiveGoalRequest']
   export type UnarchiveGoalRequest = components['schemas']['UnarchiveGoalRequest']
+  export type CompleteGoalRequest = components['schemas']['CompleteGoalRequest']
 
   export type ActionPlanResponse = components['schemas']['ActionPlanResponse']
   export type GoalResponse = components['schemas']['GoalResponse']
