@@ -98,7 +98,6 @@
           {% endif %}
         {% endset %}
 
-        {% if featureToggles.completedGoalsEnabled %} 
           {{ govukTabs({
             classes: 'custom-tabs-no-border',
             items: [
@@ -114,7 +113,8 @@
                 id: "completed-goals",
                 panel: {
                   html: completedGoalsHtml
-                }
+                },
+                'render-if': featureToggles.completedGoalsEnabled
               },
               {
                 label: "Archived (" + archivedGoals.length + " goal" + ("s" if archivedGoals.length !== 1) + ")",
@@ -125,27 +125,6 @@
               }
             ]
           }) }}
-        {% else %}
-        {{ govukTabs({
-            classes: 'custom-tabs-no-border',
-            items: [
-              {
-                label: "In progress (" + inProgressGoals.length + " goal" + ("s" if inProgressGoals.length !== 1) + ")",
-                id: "in-progress-goals",
-                panel: {
-                  html: inProgressGoalsHtml
-                }
-              },
-              {
-                label: "Archived (" + archivedGoals.length + " goal" + ("s" if archivedGoals.length !== 1) + ")",
-                id: "archived-goals",
-                panel: {
-                  html: archivedGoalsHtml
-                }
-              }
-            ]
-          }) }}
-        {% endif %}
       {% else %}
         {% include './partials/_unavailableGoals.njk' %}
       {% endif %}
