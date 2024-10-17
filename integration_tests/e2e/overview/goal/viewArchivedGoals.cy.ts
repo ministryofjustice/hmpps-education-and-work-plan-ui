@@ -2,7 +2,7 @@ import Page from '../../../pages/page'
 import OverviewPage from '../../../pages/overview/OverviewPage'
 import GoalsPage from '../../../pages/overview/GoalsPage'
 
-context('Unarchive a goal', () => {
+context('View archived goals', () => {
   const prisonNumber = 'G6115VJ'
 
   beforeEach(() => {
@@ -86,11 +86,11 @@ context('Unarchive a goal', () => {
     // Then
     archivedGoalsPage //
       .hasNumberOfArchivedGoals(2)
-      .archiveReasonHintAtPositionContains(1, 'Reason: Prisoner no longer wants to work towards this goal')
+      .goalArchivedReasonAtPositionContains(1, 'Prisoner no longer wants to work towards this goal')
       .goalArchivedHintTextAtPositionContains(1, 'Archived on 22 August 2023 by George Costanza, Moorland (HMP & YOI)')
-      .archiveReasonHintAtPositionContains(
+      .goalArchivedReasonAtPositionContains(
         2,
-        'Reason: Work or education activity needed to complete goal is not available in this prison',
+        'Work or education activity needed to complete goal is not available in this prison',
       )
       .goalArchivedHintTextAtPositionContains(2, 'Archived on 22 July 2023 by George Costanza, Moorland (HMP & YOI)')
   })
