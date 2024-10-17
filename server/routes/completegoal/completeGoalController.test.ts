@@ -43,15 +43,11 @@ describe('CompleteGoalController - submitCompleteGoalForm', () => {
   } as unknown as Response
   const next = jest.fn()
 
-  let errors: Array<Record<string, string>>
-
   beforeEach(() => {
     jest.resetAllMocks()
     getPrisonerContext(req.session, prisonNumber).archiveGoalForm = undefined
     req.params.prisonNumber = prisonNumber
     req.params.goalReference = goalReference
-
-    errors = []
   })
 
   it('should complete the goal and log the audit successfully', async () => {
