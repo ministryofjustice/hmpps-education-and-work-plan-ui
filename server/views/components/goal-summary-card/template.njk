@@ -14,7 +14,7 @@
     {% include './_goalSummaryCardHeadingAndActions.njk' %}
   </div>
   <div class="govuk-summary-card__subtitle-wrapper">
-    <p class="govuk-body app-u-multiline-text">{{ params.goal.title }}</p>
+    <p class="govuk-body app-u-multiline-text" data-qa="goal-summary-card-goal-title">{{ params.goal.title }}</p>
   </div>
 
   {% include './_goalSummaryCardContent-goalInStatus-' ~ params.goal.status ~ '.njk' %}
