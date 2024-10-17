@@ -36,6 +36,22 @@ context('View goals', () => {
       .archivedGoalSummaryCardAtPositionContains(0, 'Book French course')
   })
 
+  it('should be able to navigate to the view completed goals tab and have it load completed goals only', () => {
+    // Given
+    cy.signIn()
+    cy.task('getActionPlan')
+    cy.visit(`/plan/${prisonNumber}/view/overview`)
+    const overviewPage = Page.verifyOnPage(OverviewPage)
+
+    // When
+    const goalsPage = overviewPage.clickViewCompletedGoalsButton()
+
+    // Then
+    goalsPage //
+      .checkOnCompletedGoalsTab()
+      .completedGoalSummaryCardAtPositionContains(0, 'Learn first aid')
+  })
+
   it('should be able to navigate to the view in progress goals tab and have it load in progress goals only', () => {
     // Given
     cy.signIn()
