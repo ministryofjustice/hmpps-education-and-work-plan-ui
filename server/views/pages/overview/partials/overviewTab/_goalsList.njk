@@ -15,9 +15,9 @@
       },
       {
         title: 'Archive<span class="govuk-visually-hidden"> this goal</span>',
-        href: '/plan/' ~ prisonerSummary.prisonNumber ~ '/goals/' ~ goal.goalReference ~ '/archive',
+        href: '/plan/' + prisonerSummary.prisonNumber + '/goals/' + goal.goalReference + '/archive',
         attributes: {
-        'data-qa': 'goal-' ~ loop.index ~ '-archive-button'
+        'data-qa': 'goal-'+ loop.index + '-archive-button'
       },
         'render-if': hasEditAuthority
       }

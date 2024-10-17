@@ -40,7 +40,7 @@
                             title: 'Archive<span class="govuk-visually-hidden"> this goal</span>',
                             href: '/plan/' ~ prisonerSummary.prisonNumber ~ '/goals/' ~ goal.goalReference ~ '/archive',
                             attributes: {
-                            'data-qa': 'goal-' ~ loop.index ~ '-archive-button'
+                            'data-qa': 'goal-' ~ goal.goalReference ~ '-archive-button'
                           },
                             'render-if': hasEditAuthority and not featureToggles.completedGoalsEnabled
                           },
@@ -48,7 +48,7 @@
                             title: 'Complete or archive<span class="govuk-visually-hidden"> this goal</span>',
                             href: '/plan/' ~ prisonerSummary.prisonNumber ~ '/goals/' ~ goal.goalReference ~ '/complete-or-archive',
                             attributes: {
-                            'data-qa': 'goal-' ~ loop.index ~ '-completearchive-button'
+                            'data-qa': 'goal-' ~ goal.goalReference ~ '-completearchive-button'
                           },
                             'render-if': hasEditAuthority and featureToggles.completedGoalsEnabled
                           }
