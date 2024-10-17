@@ -166,6 +166,11 @@ export default class OverviewPage extends Page {
     return Page.verifyOnPage(GoalsPage)
   }
 
+  clickViewCompletedGoalsButton(): GoalsPage {
+    this.viewCompletedGoalsButton().click()
+    return Page.verifyOnPage(GoalsPage)
+  }
+
   private prisonNumberLabel = (): PageElement => cy.get('[data-qa=prison-number]')
 
   private inProgressGoalsCount = (): PageElement => cy.get('[data-qa=in-progress-goals-count]')
