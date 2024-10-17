@@ -23,6 +23,7 @@ const njkEnv = nunjucks.configure([
 jest.mock('../../../../../config', () => ({
   featureToggles: {
     completedGoalsEnabled: true,
+    archiveGoalNotesEnabled: true,
   },
 }))
 
@@ -136,7 +137,7 @@ const completedGoalWithGoalNoteAndCompletedGoalNote = {
   },
 }
 
-describe('ViewGoalsController', () => {
+describe('goalTabContents', () => {
   beforeEach(() => {
     jest.clearAllMocks()
   })
@@ -194,7 +195,7 @@ describe('ViewGoalsController', () => {
     expect(
       $('[data-qa="in-progress-goal-summary-card"] [data-qa="goal-summary-card-goal-title"]').eq(2).text().trim(),
     ).toEqual('Learn German')
-    // Assert the first goal's hint text - if this one is correctly formatted/laid out, they all will be
+    // Assert the first goal's last updated by/when hint text - if this one is correctly formatted/laid out, they all will be
     const hint = $('[data-qa="in-progress-goal-summary-card"] [data-qa=goal-last-updated-hint]').first()
     expect(hint.text().trim()).toEqual('Last updated on 23 September 2023 by Alex Smith, Brixton (HMP)')
   })
@@ -255,8 +256,8 @@ describe('ViewGoalsController', () => {
     expect(
       $('[data-qa="archived-goal-summary-card"] [data-qa="goal-summary-card-goal-title"]').eq(2).text().trim(),
     ).toEqual('Learn Spanish')
-    // Assert the first goal's hint text - if this one is correctly formatted/laid out, they all will be
-    const hint = $('[data-qa="archived-goal-summary-card"] [data-qa=goal-last-updated-hint]').first()
+    // Assert the first goal's archived by/when hint text - if this one is correctly formatted/laid out, they all will be
+    const hint = $('[data-qa="archived-goal-summary-card"] [data-qa=goal-archived-hint]').first()
     expect(hint.text().trim()).toEqual('Archived on 1 January 2025 by Alex Smith, Brixton (HMP)')
   })
 

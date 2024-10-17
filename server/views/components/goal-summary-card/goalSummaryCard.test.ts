@@ -7,6 +7,7 @@ import formatDateFilter from '../../../filters/formatDateFilter'
 import formatStepStatusValueFilter from '../../../filters/formatStepStatusValueFilter'
 import GoalStatusValue from '../../../enums/goalStatusValue'
 import ReasonToArchiveGoalValue from '../../../enums/ReasonToArchiveGoalValue'
+import config from '../../../config'
 import formatReasonToArchiveGoalFilter from '../../../filters/formatReasonToArchiveGoalFilter'
 
 const njkEnv = nunjucks.configure([
@@ -15,6 +16,14 @@ const njkEnv = nunjucks.configure([
   'server/views/',
   __dirname,
 ])
+
+jest.mock('../../../config', () => ({
+  featureToggles: {
+    archiveGoalNotesEnabled: true,
+  },
+}))
+
+njkEnv.addGlobal('featureToggles', config.featureToggles)
 njkEnv.addFilter('formatDate', formatDateFilter)
 njkEnv.addFilter('formatStepStatusValue', formatStepStatusValueFilter)
 njkEnv.addFilter('formatReasonToArchiveGoal', formatReasonToArchiveGoalFilter)
@@ -190,8 +199,8 @@ describe('Tests for goal summary card component', () => {
     const content = nunjucks.render('test.njk', { params })
 
     const $ = cheerio.load(content)
-    const hint = $('[data-qa=goal-archive-reason-hint]').first()
-    expect(hint.text().trim()).toEqual('Reason: Prisoner no longer wants to work towards this goal')
+    const hint = $('[data-qa=goal-archive-reason]').first()
+    expect(hint.text().trim()).toEqual('Prisoner no longer wants to work towards this goal')
   })
 
   it('Should not show goal notes expander given the goal has no notes', () => {
@@ -234,7 +243,7 @@ describe('Tests for goal summary card component', () => {
     expect(hint.text().trim()).toEqual('Prisoner is not good at listening')
   })
 
-  it('Should show archive reason with no other if the goal is archived', () => {
+  it('Should show archive reason with other if the goal is archived', () => {
     const goal = {
       ...aValidGoal(),
       status: GoalStatusValue.ARCHIVED,
@@ -251,8 +260,8 @@ describe('Tests for goal summary card component', () => {
     const content = nunjucks.render('test.njk', { params })
 
     const $ = cheerio.load(content)
-    const hint = $('[data-qa=goal-archive-reason-hint]').first()
-    expect(hint.text().trim()).toEqual('Reason: Other - Some other reason')
+    const archiveReason = $('[data-qa=goal-archive-reason]').first()
+    expect(archiveReason.text().trim()).toEqual('Other - Some other reason')
   })
 
   it.each([GoalStatusValue.COMPLETED, GoalStatusValue.ACTIVE])(
