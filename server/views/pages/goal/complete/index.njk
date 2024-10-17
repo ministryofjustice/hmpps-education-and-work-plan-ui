@@ -1,7 +1,7 @@
 {% extends "../../../partials/layout.njk" %}
 
-{% set pageId = "review-archive-goal" %}
-{% set pageTitle = "Confirm you want to archive the goal" %}
+{% set pageId = "complete-goal" %}
+{% set pageTitle = "Confirm you want to complete the goal" %}
 
 {% block beforeContent %}
   {% include "../../../partials/breadcrumb.njk" %}
@@ -11,10 +11,10 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
 
-      <h1 class="govuk-heading-l">Are you sure you want to archive this goal?</h1>
-      <section class="archive-goal-summary">
+      <h1 class="govuk-heading-l">Are you sure you want to mark this goal as completed?</h1>
+      <section class="complete-goal-summary">
         <h3 class="govuk-heading-s">Goal</h3>
-        <p class="govuk-body app-u-multiline-text" data-qa="goal-to-be-archived-summary">{{ form.title }}</p>
+        <p class="govuk-body app-u-multiline-text" data-qa="goal-to-be-completed-summary">{{ form.title }}</p>
       </section>
 
       <form class="form" method="post" novalidate="">
@@ -23,31 +23,42 @@
         <input type="hidden" name="title" value="{{ form.title }}" data-qa="goal-title" />
 
         <div class="govuk-form-group">
+
+          <div class="govuk-form-group">
+            <h1 class="govuk-label-wrapper">
+              <label class="govuk-label govuk-label--s">
+                Add a note (optional)
+              </label>
+            </h1>
+            <p class="govuk-hint">
+              Learning and work progress plans, including notes, are shared with prisoners and other staff
+            </p>
+            <textarea class="govuk-textarea" id="completed-note" name="note" rows="5" aria-describedby="warning-text">{{ form.note }}</textarea>
+          </div>
+
           {{ govukButton({
             id: "submit-button",
             name: "action",
             value: "submit-form",
-            text: "Yes, archive goal",
+            text: "Yes, complete goal",
             classes: "moj-button-menu__item",
             attributes: {
-              'data-qa': 'goal-archive-review-submit-button'
+              'data-qa': 'goal-complete-review-submit-button'
             }
           }) }}
 
           {{ govukButton({
             type: "a",
-            href: "/plan/" + prisonerSummary.prisonNumber + "/goals/" + form.reference + "/archive/cancel",
-            id: "back-to-archive-goal-button",
+            href: "/plan/" + prisonerSummary.prisonNumber + "/view/overview",
+            id: "back-to-overview-button",
             text: "No, go back to learning and work progress plan",
             classes: "moj-button-menu__item govuk-button--secondary",
             attributes: {
-              'data-qa': 'goal-archive-review-back-button'
+              'data-qa': 'goal-complete-back-button'
             }
           }) }}
         </div>
-
       </form>
-
     </div>
   </div>
 

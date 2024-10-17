@@ -14,6 +14,8 @@ import { checkPageViewAuditted } from '../middleware/auditMiddleware'
 import notesRoutes from './notes'
 import archiveGoal from './archiveGoal'
 import unarchiveGoal from './unarchiveGoal'
+import completeGoal from './completegoal'
+import completeOrArchiveGoal from './completeOrArchive'
 import createPrePrisonEducation from './prePrisonEducation/create'
 import updatePrePrisonEducation from './prePrisonEducation/update'
 import reviewPlanRoutes from './reviewPlan'
@@ -36,6 +38,8 @@ export default function routes(services: Services): Router {
   updateGoal(router, services)
   archiveGoal(router, services)
   unarchiveGoal(router, services)
+  completeGoal(router, services)
+  completeOrArchiveGoal(router, services)
 
   createPrePrisonEducation(router, services)
   updatePrePrisonEducation(router, services)

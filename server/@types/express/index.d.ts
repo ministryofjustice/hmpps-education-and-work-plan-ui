@@ -2,6 +2,7 @@ import type { PageFlow } from 'viewModels'
 import type {
   ArchiveGoalForm,
   CreateGoalsForm,
+  CompleteGoalForm,
   HighestLevelOfEducationForm,
   QualificationDetailsForm,
   QualificationLevelForm,
@@ -63,6 +64,7 @@ declare module 'express-session' {
     // Goal related forms
     updateGoalForm?: UpdateGoalForm
     archiveGoalForm?: ArchiveGoalForm
+    completeGoalForm?: CompleteGoalForm
     // Education related forms and DTO
     highestLevelOfEducationForm?: HighestLevelOfEducationForm
     qualificationLevelForm?: QualificationLevelForm

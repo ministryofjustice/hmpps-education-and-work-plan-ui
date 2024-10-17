@@ -1,5 +1,6 @@
 import type {
   ArchiveGoalDto,
+  CompleteGoalDto,
   CreateGoalDto,
   CreateOrUpdateEducationDto,
   EducationDto,
@@ -9,6 +10,7 @@ import type {
 import type { CreateGoalsRequest } from 'educationAndWorkPlanApiClient'
 import type { ActionPlan, Goals, PrisonerGoals } from 'viewModels'
 import EducationAndWorkPlanClient from '../data/educationAndWorkPlanClient'
+import toCompleteGoalRequest from '../data/mappers/completeGoalMapper'
 import { toCreateGoalRequest } from '../data/mappers/createGoalMapper'
 import { toActionPlan, toGoals } from '../data/mappers/actionPlanMapper'
 import logger from '../../logger'
@@ -90,6 +92,11 @@ export default class EducationAndWorkPlanService {
   async unarchiveGoal(unarchiveGoalDto: UnarchiveGoalDto, token: string): Promise<unknown> {
     const unarchiveGoalRequest = toUnarchiveGoalRequest(unarchiveGoalDto)
     return this.educationAndWorkPlanClient.unarchiveGoal(unarchiveGoalDto.prisonNumber, unarchiveGoalRequest, token)
+  }
+
+  async completeGoal(completeGoalDto: CompleteGoalDto, token: string): Promise<unknown> {
+    const completeGoalRequest = toCompleteGoalRequest(completeGoalDto)
+    return this.educationAndWorkPlanClient.completeGoal(completeGoalDto.prisonNumber, completeGoalRequest, token)
   }
 
   async getEducation(prisonNumber: string, username: string): Promise<EducationDto> {
