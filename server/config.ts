@@ -180,5 +180,6 @@ export default {
     newOverviewPageEnabled: toBoolean(get('NEW_OVERVIEW_PAGE_ENABLED', false)),
     reviewsPrisonsEnabled: get('REVIEWS_PRISONS_ENABLED', ''),
     completedGoalsEnabled: toBoolean(get('COMPLETED_GOALS_ENABLED', false)),
+    archiveGoalNotesEnabled: toBoolean(get('ARCHIVE_GOAL_NOTES_ENABLED', false)),
   },
 }

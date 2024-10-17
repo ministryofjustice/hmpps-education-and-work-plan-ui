@@ -1,0 +1,32 @@
+<table class="govuk-table">
+  <caption class="govuk-table__caption govuk-visually-hidden">Steps for this goal</caption>
+  <thead class="govuk-table__head">
+  <tr class="govuk-table__row">
+    <th scope="col" class="govuk-table__header app-u-width-60">Steps</th>
+    <th scope="col" class="govuk-table__header app-u-width-20">Status</th>
+  </tr>
+  </thead>
+  <tbody class="govuk-table__body">
+
+  {% for step in params.goal.steps %}
+
+    {% if step.status == "COMPLETE" %}
+      {% set tagClass = "govuk-tag--green" %}
+      {% elif step.status == "ACTIVE" %}
+      {% set tagClass = "govuk-tag--blue" %}
+    {% else %}
+      {% set tagClass = "govuk-tag--grey" %}
+    {% endif %}
+
+    <tr class="govuk-table__row">
+      <td class="govuk-table__cell app-u-multiline-text">{{ step.sequenceNumber }}. {{ step.title }}</td>
+      <td class="govuk-table__cell">
+        <strong class="govuk-tag {{ tagClass }}">
+          {{ step.status | formatStepStatusValue }}
+        </strong>
+      </td>
+    </tr>
+  {% endfor %}
+
+  </tbody>
+</table>

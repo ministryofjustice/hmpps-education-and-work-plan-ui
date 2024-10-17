@@ -39,6 +39,7 @@ declare module 'dto' {
     prisonNumber: string
     reason: ReasonToArchiveGoalValue
     reasonOther?: string
+    notes?: string
   }
 
   export interface UnarchiveGoalDto {

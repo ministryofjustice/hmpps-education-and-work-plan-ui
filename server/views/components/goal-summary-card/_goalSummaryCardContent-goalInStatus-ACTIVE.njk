@@ -1,0 +1,21 @@
+<div class="govuk-summary-card__content">
+  {% include './_goalSteps.njk' %}
+
+  {% if params.goal.notesByType.GOAL.length > 0 %}
+    {% set goalNote = params.goal.notesByType.GOAL[0] %}
+    <details class="govuk-details app-notes-expander" data-qa="overview-notes-expander">
+      <summary class="govuk-details__summary">
+            <span class="govuk-details__summary-text">
+              View note<span class="govuk-visually-hidden"> about this goal</span>
+            </span>
+      </summary>
+      <div class="govuk-details__text">
+        <span class="app-u-multiline-text">{{ goalNote.content }}</span>
+      </div>
+    </details>
+  {% endif %}
+
+  <p class="govuk-hint govuk-!-font-size-16" data-qa="goal-last-updated-hint">
+    {{ params.lastUpdatedLabel | default('Last updated on') }} {{ params.goal.updatedAt | formatDate('D MMMM YYYY') }}<span class="govuk-!-display-none-print"> by {{ params.goal.updatedByDisplayName }}{{ ', ' + params.goal.updatedAtPrisonName if params.goal.updatedAtPrisonName }}</span>
+  </p>
+</div>

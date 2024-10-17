@@ -48,6 +48,7 @@ declare module 'forms' {
       | 'SUITABLE_ACTIVITIES_NOT_AVAILABLE_IN_THIS_PRISON'
       | 'OTHER'
     reasonOther?: string
+    notes?: string
   }
 
   export interface UnarchiveGoalForm {

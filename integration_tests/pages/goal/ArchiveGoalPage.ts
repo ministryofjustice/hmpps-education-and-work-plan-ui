@@ -26,6 +26,16 @@ export default class ArchiveGoalPage extends Page {
     return this
   }
 
+  enterNotes(value: string): ArchiveGoalPage {
+    this.notesField().clear().type(value)
+    return this
+  }
+
+  clearNotes(): ArchiveGoalPage {
+    this.notesField().clear()
+    return this
+  }
+
   private goalReferenceInputValue = (): PageElement => cy.get('[data-qa=goal-reference]')
 
   private radio = (value: ReasonToArchiveGoalValue): PageElement => cy.get(`.govuk-radios__input[value='${value}']`)
@@ -33,4 +43,6 @@ export default class ArchiveGoalPage extends Page {
   private reasonOther = (): PageElement => cy.get('#reasonOther')
 
   private reasonOtherHint = (): PageElement => cy.get('.govuk-character-count__status')
+
+  private notesField = (): PageElement => cy.get('#notes')
 }
