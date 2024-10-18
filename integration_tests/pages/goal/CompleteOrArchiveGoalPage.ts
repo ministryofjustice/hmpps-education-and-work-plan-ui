@@ -1,5 +1,4 @@
 import Page, { PageElement } from '../page'
-import ReasonToArchiveGoalValue from '../../../server/enums/ReasonToArchiveGoalValue'
 import CompleteOrArchiveGoalValue from '../../../server/enums/CompleteOrArchiveGoalValue'
 
 export default class CompleteOrArchiveGoalPage extends Page {
