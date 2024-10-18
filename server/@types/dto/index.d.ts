@@ -47,6 +47,11 @@ declare module 'dto' {
     prisonNumber: string
   }
 
+  export interface CompleteGoalDto {
+    goalReference: string
+    prisonNumber: string
+    note: string
+  }
   export interface EducationDto extends ReferencedAndAuditable {
     prisonNumber: string
     educationLevel: EducationLevelValue
