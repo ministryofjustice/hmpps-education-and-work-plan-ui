@@ -12,151 +12,154 @@
   {% block content %}
     <div class="govuk-grid-column-two-thirds app-u-print-full-width">
       {% if not isPostInduction and not problemRetrievingData %}
-          <section data-qa="pre-induction-overview">
-            {{ govukNotificationBanner({
-              html: createInductionBanner
-            }) }}
-          </section>
+        <section data-qa="pre-induction-overview">
+          {{ govukNotificationBanner({
+            html: createInductionBanner
+          }) }}
+        </section>
       {% endif %}
-        <div class="govuk-summary-card" data-qa="goals-summary-card">
-          <div class="govuk-summary-card__title-wrapper">
-            <h2 class="govuk-summary-card__title govuk-!-font-size-24">Goals</h2>
-          </div>
-          <div class="govuk-summary-card__content">
-            {% if not problemRetrievingData %}
-              <div class="govuk-grid">
-                <div class="govuk-grid-item">
-                  <div class="goal-container">
-                    <span class="govuk-body govuk-!-font-size-36 govuk-!-font-weight-bold" data-qa="in-progress-goals-count">{{ goalCounts.activeCount }}</span>
-                    <span class="govuk-tag govuk-tag--blue govuk-!-margin-left-2 govuk-!-margin-bottom-4">In progress</span>
-                  </div>
-                  {% if featureToggles.completedGoalsEnabled %}
-                    <a class="govuk-link govuk-!-font-size-19" href="/plan/{{ prisonerSummary.prisonNumber }}/view/goals#in-progress-goals" data-qa="view-in-progress-goals-button">View in progress goals</a>
-                  {% else %}
-                    <a class="govuk-link govuk-!-font-size-19 govuk-!-margin-right-4" href="/plan/{{ prisonerSummary.prisonNumber }}/view/goals#in-progress-goals" data-qa="view-in-progress-goals-button">View in progress goals</a>
-                  {% endif %}
-                </div>
-                {% if featureToggles.completedGoalsEnabled %}
-                  <div class="govuk-grid-item">
-                    <div class="goal-container">
-                      <span class="govuk-body govuk-!-font-size-36 govuk-!-font-weight-bold" data-qa="completed-goals-count">{{ goalCounts.completedCount }}</span>
-                      <span class="govuk-tag govuk-tag--green govuk-!-margin-left-2 govuk-!-margin-bottom-4">Completed</span>
-                    </div>
-                    <a class="govuk-link govuk-!-font-size-19" href="/plan/{{ prisonerSummary.prisonNumber }}/view/goals#completed-goals" data-qa="view-completed-goals-button">View completed goals</a>
-                  </div>
-                {% endif %}
-                <div class="govuk-grid-item">
-                  <div class="goal-container">
-                    <span class="govuk-body govuk-!-font-size-36 govuk-!-font-weight-bold" data-qa="archived-goals-count">{{ goalCounts.archivedCount }}</span>
-                    <span class="govuk-tag govuk-tag--grey govuk-!-margin-left-2 govuk-!-margin-bottom-4">Archived</span>
-                  </div>
-                  <a class="govuk-link govuk-!-font-size-19" href="/plan/{{ prisonerSummary.prisonNumber }}/view/goals#archived-goals" data-qa="view-archived-goals-button">View archived goals</a>
-                </div>
-              </div>
-                {% if not noGoals %}
-                  <p class="govuk-hint govuk-!-font-size-16 govuk-!-margin-top-6" data-qa="goal-last-updated-hint">
-                    Updated on {{ lastUpdatedDate | formatDate('DD MMMM YYYY') }}<span class="govuk-!-display-none-print"> by {{ lastUpdatedBy }}{{ ', ' + lastUpdatedAtPrisonName if lastUpdatedAtPrisonName }}</span>
-                  </p>
-                {% endif %}
-            {% else %}
-              <h3 class="govuk-heading-s" data-qa="goals-unavailable-message">We cannot show these details right now</h3>
-              <p class="govuk-body">Reload the page or try again later. Other parts of this service may still be available.</p>
-            {% endif %}
-          </div>
-        </div>
 
-        <div class="govuk-summary-card">
-          <div class="govuk-summary-card__title-wrapper">
-            <h2 class="govuk-summary-card__title govuk-!-font-size-24">Education and training</h2>
-          </div>
-          <div class="govuk-summary-card__content">
-            {% if not functionalSkills.problemRetrievingData %}
-              <table class="govuk-table govuk-!-margin-bottom-0" data-qa="functional-skills-table">
-                <h3 class="govuk-heading-s" data-qa="functional-skills-heading">Functional skills initial assessment scores</h3>
-                <p class="govuk-hint">Information from Curious. These scores are from a person's induction assessment.<br/>For recent functional skills qualifications, go to courses and qualifications.</p>
-                <thead class="govuk-table__head govuk-visually-hidden">
-                  <tr class="govuk-table__row">
-                    <th scope="col" class="govuk-table__header">Skill and assessment date</th>
-                    <th scope="col" class="govuk-table__header">Assessment level</th>
+      <div class="govuk-summary-card" data-qa="goals-summary-card">
+        <div class="govuk-summary-card__title-wrapper">
+          <h2 class="govuk-summary-card__title govuk-!-font-size-24">Goals</h2>
+        </div>
+        <div class="govuk-summary-card__content">
+          {% if not problemRetrievingData %}
+
+            <div class="govuk-grid overview-page-goal-summary-counts">
+              {# Count of in-progress goals #}
+              <div class="govuk-grid-item">
+                <div class="goal-container">
+                  <span class="govuk-body govuk-!-font-size-36 govuk-!-font-weight-bold" data-qa="in-progress-goals-count">{{ goalCounts.activeCount }}</span>
+                  <span class="govuk-tag govuk-tag--blue govuk-!-margin-left-2 govuk-!-margin-bottom-4">In progress</span>
+                </div>
+                <a class="govuk-link govuk-!-font-size-19" href="/plan/{{ prisonerSummary.prisonNumber }}/view/goals#in-progress-goals" data-qa="view-in-progress-goals-button">View in progress goals</a>
+              </div>
+              {% if featureToggles.completedGoalsEnabled %}
+                {# Count of completed goals #}
+                <div class="govuk-grid-item">
+                  <div class="goal-container">
+                    <span class="govuk-body govuk-!-font-size-36 govuk-!-font-weight-bold" data-qa="completed-goals-count">{{ goalCounts.completedCount }}</span>
+                    <span class="govuk-tag govuk-tag--green govuk-!-margin-left-2 govuk-!-margin-bottom-4">Completed</span>
+                  </div>
+                  <a class="govuk-link govuk-!-font-size-19" href="/plan/{{ prisonerSummary.prisonNumber }}/view/goals#completed-goals" data-qa="view-completed-goals-button">View completed goals</a>
+                </div>
+              {% endif %}
+              {# Count of archived goals #}
+              <div class="govuk-grid-item">
+                <div class="goal-container">
+                  <span class="govuk-body govuk-!-font-size-36 govuk-!-font-weight-bold" data-qa="archived-goals-count">{{ goalCounts.archivedCount }}</span>
+                  <span class="govuk-tag govuk-tag--grey govuk-!-margin-left-2 govuk-!-margin-bottom-4">Archived</span>
+                </div>
+                <a class="govuk-link govuk-!-font-size-19" href="/plan/{{ prisonerSummary.prisonNumber }}/view/goals#archived-goals" data-qa="view-archived-goals-button">View archived goals</a>
+              </div>
+            </div>
+
+            {% if not noGoals %}
+              <p class="govuk-hint govuk-!-font-size-16 govuk-!-margin-top-6" data-qa="goal-last-updated-hint">
+                Updated on {{ lastUpdatedDate | formatDate('DD MMMM YYYY') }}<span class="govuk-!-display-none-print"> by {{ lastUpdatedBy }}{{ ', ' + lastUpdatedAtPrisonName if lastUpdatedAtPrisonName }}</span>
+              </p>
+            {% endif %}
+
+          {% else %}
+            <h3 class="govuk-heading-s" data-qa="goals-unavailable-message">We cannot show these details right now</h3>
+            <p class="govuk-body">Reload the page or try again later. Other parts of this service may still be available.</p>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="govuk-summary-card">
+        <div class="govuk-summary-card__title-wrapper">
+          <h2 class="govuk-summary-card__title govuk-!-font-size-24">Education and training</h2>
+        </div>
+        <div class="govuk-summary-card__content">
+          {% if not functionalSkills.problemRetrievingData %}
+            <table class="govuk-table govuk-!-margin-bottom-0" data-qa="functional-skills-table">
+              <h3 class="govuk-heading-s" data-qa="functional-skills-heading">Functional skills initial assessment scores</h3>
+              <p class="govuk-hint">Information from Curious. These scores are from a person's induction assessment.<br/>For recent functional skills qualifications, go to courses and qualifications.</p>
+              <thead class="govuk-table__head govuk-visually-hidden">
+                <tr class="govuk-table__row">
+                  <th scope="col" class="govuk-table__header">Skill and assessment date</th>
+                  <th scope="col" class="govuk-table__header">Assessment level</th>
+                </tr>
+              </thead>
+              <tbody class="govuk-table__body" data-qa="functional-skills-table-body">
+                {% for skill in functionalSkills.assessments %}
+                  <tr class="govuk-table__row {% if loop.last %}last-row-no-border{% endif %}">
+                    <td class="govuk-table__cell">
+                      <span class="govuk-body">{{skill.type | formatFunctionalSkillType }} {{ skill.grade }}</span>
+                    </td>
+                    <td class="govuk-table__cell">
+                      {% if skill.assessmentDate %}
+                        <span class="govuk-hint">Assessed on {{ skill.assessmentDate | formatDate('D MMMM YYYY') }}, {{ skill.prisonName }}</span>
+                      {% else %}
+                        <span class="govuk-hint">No functional skill assessment scores recorded in Curious</span>
+                      {% endif %}
+                    </td>
                   </tr>
-                </thead>
-                <tbody class="govuk-table__body" data-qa="functional-skills-table-body">
-                  {% for skill in functionalSkills.assessments %}
+                {% endfor %}
+              </tbody>
+            </table>
+          {% else %}
+            <h3 class="govuk-heading-s" data-qa="curious-unavailable-message">We cannot show these details from Curious right now</h3>
+            <p class="govuk-body">Reload the page or try again later. Other parts of this service may still be available.</p>
+          {% endif %}
+          {% if not inPrisonCourses.problemRetrievingData %}
+            {% if inPrisonCourses.coursesCompletedInLast12Months.length > 0 %}
+            <h3 class="govuk-heading-s govuk-!-padding-top-7" data-qa="completed-courses-heading">Courses and qualifications completed in the last 12 months</h3>
+             <p class="govuk-hint">Information from Curious. This only includes educational courses. Contact the local education team to find out more.</p>
+              <table class="govuk-table" data-qa="completed-in-prison-courses-in-last-12-months-table">
+                <tbody class="govuk-table__body" data-qa="completed-courses-table-body">
+                  {% for completedCourse in inPrisonCourses.coursesCompletedInLast12Months %}
                     <tr class="govuk-table__row {% if loop.last %}last-row-no-border{% endif %}">
                       <td class="govuk-table__cell">
-                        <span class="govuk-body">{{skill.type | formatFunctionalSkillType }} {{ skill.grade }}</span>
+                        <span class="govuk-body" data-qa="completed-course-name">{{ completedCourse.courseName }}</span>
                       </td>
                       <td class="govuk-table__cell">
-                        {% if skill.assessmentDate %}
-                          <span class="govuk-hint">Assessed on {{ skill.assessmentDate | formatDate('D MMMM YYYY') }}, {{ skill.prisonName }}</span>
-                        {% else %}
-                          <span class="govuk-hint">No functional skill assessment scores recorded in Curious</span>
-                        {% endif %}
+                        <span class="govuk-hint" data-qa="course-completion-date">Completed on {{ completedCourse.courseCompletionDate | formatDate('D MMMM YYYY') }}</span>
                       </td>
                     </tr>
                   {% endfor %}
                 </tbody>
               </table>
+            {% elif hasCoursesCompletedMoreThan12MonthsAgo %}
+              <p class="govuk-body govuk-!-padding-top-7" data-qa="no-courses-completed-in-last-12-months-message">{{ prisonerSummary.firstName }} {{ prisonerSummary.lastName }} has no courses and qualifications completed in the last 12 months.</p>
+            {% elif hasWithdrawnOrInProgressCourses %}
+              <p class="govuk-body govuk-!-padding-top-7" data-qa="no-courses-completed-yet-message">{{ prisonerSummary.firstName }} {{ prisonerSummary.lastName }} has no courses and qualifications completed yet.</p>
             {% else %}
-              <h3 class="govuk-heading-s" data-qa="curious-unavailable-message">We cannot show these details from Curious right now</h3>
-              <p class="govuk-body">Reload the page or try again later. Other parts of this service may still be available.</p>
+              <p class="govuk-body govuk-!-padding-top-7" data-qa="no-courses-recorded-message">{{ prisonerSummary.firstName }} {{ prisonerSummary.lastName }} has no courses and qualifications recorded in Curious.</p>
             {% endif %}
-            {% if not inPrisonCourses.problemRetrievingData %}
-              {% if inPrisonCourses.coursesCompletedInLast12Months.length > 0 %}
-              <h3 class="govuk-heading-s govuk-!-padding-top-7" data-qa="completed-courses-heading">Courses and qualifications completed in the last 12 months</h3>
-               <p class="govuk-hint">Information from Curious. This only includes educational courses. Contact the local education team to find out more.</p>
-                <table class="govuk-table" data-qa="completed-in-prison-courses-in-last-12-months-table">
-                  <tbody class="govuk-table__body" data-qa="completed-courses-table-body">
-                    {% for completedCourse in inPrisonCourses.coursesCompletedInLast12Months %}
-                      <tr class="govuk-table__row {% if loop.last %}last-row-no-border{% endif %}">
-                        <td class="govuk-table__cell">
-                          <span class="govuk-body" data-qa="completed-course-name">{{ completedCourse.courseName }}</span>
-                        </td>
-                        <td class="govuk-table__cell">
-                          <span class="govuk-hint" data-qa="course-completion-date">Completed on {{ completedCourse.courseCompletionDate | formatDate('D MMMM YYYY') }}</span>
-                        </td>
-                      </tr>
-                    {% endfor %}
-                  </tbody>
-                </table>
-              {% elif hasCoursesCompletedMoreThan12MonthsAgo %}
-                <p class="govuk-body govuk-!-padding-top-7" data-qa="no-courses-completed-in-last-12-months-message">{{ prisonerSummary.firstName }} {{ prisonerSummary.lastName }} has no courses and qualifications completed in the last 12 months.</p>
-              {% elif hasWithdrawnOrInProgressCourses %}
-                <p class="govuk-body govuk-!-padding-top-7" data-qa="no-courses-completed-yet-message">{{ prisonerSummary.firstName }} {{ prisonerSummary.lastName }} has no courses and qualifications completed yet.</p>
-              {% else %}
-                <p class="govuk-body govuk-!-padding-top-7" data-qa="no-courses-recorded-message">{{ prisonerSummary.firstName }} {{ prisonerSummary.lastName }} has no courses and qualifications recorded in Curious.</p>
-              {% endif %}
-            {% else %}
-              <h3 class="govuk-heading-s" data-qa="curious-unavailable-message">We cannot show these details from Curious right now</h3>
-              <p class="govuk-body">Reload the page or try again later. Other parts of this service may still be available.</p>
-            {% endif %}
-              <p class="govuk-body govuk-!-margin-top-2 govuk-!-display-none-print">
-                <a class="govuk-link" href="/plan/{{ prisonerSummary.prisonNumber }}/view/education-and-training" data-qa="view-education-and-training-tab-button">
-                  View all education and training<span class="govuk-visually-hidden"> functional skills</span>
-                </a>
-              </p>
-          </div>
+          {% else %}
+            <h3 class="govuk-heading-s" data-qa="curious-unavailable-message">We cannot show these details from Curious right now</h3>
+            <p class="govuk-body">Reload the page or try again later. Other parts of this service may still be available.</p>
+          {% endif %}
+            <p class="govuk-body govuk-!-margin-top-2 govuk-!-display-none-print">
+              <a class="govuk-link" href="/plan/{{ prisonerSummary.prisonNumber }}/view/education-and-training" data-qa="view-education-and-training-tab-button">
+                View all education and training<span class="govuk-visually-hidden"> functional skills</span>
+              </a>
+            </p>
         </div>
       </div>
-      <div class="govuk-grid-column-one-third app-u-print-full-width">
+    </div>
+
+    <div class="govuk-grid-column-one-third app-u-print-full-width">
       {{ actionsCard({
-          actions: [
-            { 
-              title: '<span class="goal-action"><img src="/assets/images/icon-goal.svg" role="presentation" alt="" width="35px" height="28px" class="goal-icon" /> Add a new goal</span>' | safe, 
-              href: '/plan/' ~ prisonerSummary.prisonNumber ~ '/goals/create', 
-              id: 'add-goal-button', 
-              'render-if': hasEditAuthority,
-              attributes: {
-                'data-qa': 'add-goal-button'
-              }
-            }
-          ],
-          attributes: {
-            'data-qa': 'actions-card'
-          },
-          classes: 'govuk-!-display-none-print'
-        }) }}
-      </div>
+        actions: [
+          {
+            title: '<span class="goal-action"><img src="/assets/images/icon-goal.svg" role="presentation" alt="" width="35px" height="28px" class="goal-icon" /> Add a new goal</span>' | safe,
+            href: '/plan/' ~ prisonerSummary.prisonNumber ~ '/goals/create',
+            id: 'add-goal-button',
+            'render-if': hasEditAuthority,
+            attributes: {
+            'data-qa': 'add-goal-button'
+          }
+          }
+        ],
+        attributes: {
+          'data-qa': 'actions-card'
+        },
+        classes: 'govuk-!-display-none-print'
+      }) }}
     </div>
   {% endblock %}
 </div>
