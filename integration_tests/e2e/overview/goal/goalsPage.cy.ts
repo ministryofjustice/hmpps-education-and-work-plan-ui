@@ -33,7 +33,7 @@ context('View goals', () => {
     // Then
     goalsPage //
       .checkOnArchivedGoalsTab()
-      .archivedGoalSummaryCardAtPositionContains(0, 'Book French course')
+      .archivedGoalSummaryCardAtPositionContains(1, 'Book French course')
   })
 
   it('should be able to navigate to the view completed goals tab and have it load completed goals only', () => {
@@ -49,7 +49,7 @@ context('View goals', () => {
     // Then
     goalsPage //
       .checkOnCompletedGoalsTab()
-      .completedGoalSummaryCardAtPositionContains(0, 'Learn first aid')
+      .completedGoalSummaryCardAtPositionContains(1, 'Learn first aid')
   })
 
   it('should be able to navigate to the view in progress goals tab and have it load in progress goals only', () => {
@@ -65,6 +65,6 @@ context('View goals', () => {
     // Then
     goalsPage //
       .checkOnInProgressGoalsTab()
-      .inProgressGoalSummaryCardAtPositionContains(0, 'Book wood work course')
+      .inProgressGoalSummaryCardAtPositionContains(1, 'Book wood work course')
   })
 })
