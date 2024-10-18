@@ -48,6 +48,11 @@ export default class GoalsPage extends Page {
     return this
   }
 
+  completedGoalSummaryCardAtPositionContains(position: number, expectedText: string): GoalsPage {
+    this.completedGoalSummaryCards().eq(this.zeroIndexed(position)).should('contain.text', expectedText)
+    return this
+  }
+
   lastUpdatedHintAtPositionContains(position: number, expectedText: string): GoalsPage {
     this.lastUpdatedHint().eq(this.zeroIndexed(position)).should('contain.text', expectedText)
     return this
@@ -93,6 +98,11 @@ export default class GoalsPage extends Page {
     return this
   }
 
+  checkOnCompletedGoalsTab(): GoalsPage {
+    cy.url().should('include', 'completed-goals')
+    return this
+  }
+
   clickInProgressGoalsTab = (): GoalsPage => {
     this.inProgressGoalsTab().click()
     return this
@@ -127,6 +137,8 @@ export default class GoalsPage extends Page {
   private archivedGoalSummaryCards = (): PageElement => cy.get('[data-qa=archived-goal-summary-card]')
 
   private inProgressGoalSummaryCards = (): PageElement => cy.get('[data-qa=in-progress-goal-summary-card]')
+
+  private completedGoalSummaryCards = (): PageElement => cy.get('[data-qa=completed-goal-summary-card]')
 
   private lastUpdatedHint = (): PageElement => cy.get('[data-qa=goal-last-updated-hint]')
 
