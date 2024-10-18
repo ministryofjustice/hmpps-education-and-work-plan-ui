@@ -48,12 +48,17 @@ export default class GoalsPage extends Page {
   }
 
   lastUpdatedHintAtPositionContains(position: number, expectedText: string): GoalsPage {
-    this.lastUpdatedHint().eq(this.zeroIndexed(position)).should('contain.text', expectedText)
+    this.lastUpdatedHintText().eq(this.zeroIndexed(position)).should('contain.text', expectedText)
     return this
   }
 
-  archiveReasonHintAtPositionContains(position: number, expectedText: string): GoalsPage {
-    this.archiveReasonHint().eq(this.zeroIndexed(position)).should('contain.text', expectedText)
+  archivedHintAtPositionContains(position: number, expectedText: string): GoalsPage {
+    this.archivedHintText().eq(this.zeroIndexed(position)).should('contain.text', expectedText)
+    return this
+  }
+
+  goalAtPositionContainsArchiveReason(position: number, expectedText: string): GoalsPage {
+    this.archiveReason().eq(this.zeroIndexed(position)).should('contain.text', expectedText)
     return this
   }
 
@@ -122,9 +127,13 @@ export default class GoalsPage extends Page {
 
   private inProgressGoalSummaryCards = (): PageElement => cy.get('[data-qa=in-progress-goal-summary-card]')
 
-  private lastUpdatedHint = (): PageElement => cy.get('[data-qa=goal-last-updated-hint]')
+  private lastUpdatedHintText = (): PageElement => cy.get('[data-qa=goal-last-updated-hint]')
 
-  private archiveReasonHint = (): PageElement => cy.get('[data-qa=goal-archive-reason-hint]')
+  private completedHintText = (): PageElement => cy.get('[data-qa=goal-last-updated-hint]')
+
+  private archivedHintText = (): PageElement => cy.get('[data-qa=goal-archived-hint]')
+
+  private archiveReason = (): PageElement => cy.get('[data-qa=goal-archive-reason]')
 
   private goalReactivateButton = (goalReference: string): PageElement =>
     cy.get(`[data-qa=goal-${goalReference}-unarchive-button]`)
