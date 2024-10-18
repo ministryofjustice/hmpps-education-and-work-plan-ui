@@ -7,6 +7,8 @@ import { putRequestedFor } from '../../../mockApis/wiremock/requestPatternBuilde
 import { urlEqualTo } from '../../../mockApis/wiremock/matchers/url'
 import { matchingJsonPath } from '../../../mockApis/wiremock/matchers/content'
 import GoalsPage from '../../../pages/goal/GoalsPage'
+import CompleteOrArchiveGoalPage from '../../../pages/goal/CompleteOrArchiveGoalPage'
+import CompleteOrArchiveGoalValue from '../../../../server/enums/CompleteOrArchiveGoalValue'
 
 context('Archive a goal', () => {
   const prisonNumber = 'G6115VJ'
@@ -51,9 +53,11 @@ context('Archive a goal', () => {
 
     // When
     const goalsPage = overviewPage.clickViewInProgressGoalsButton()
-    goalsPage //
+    const completeOrArchivePage = goalsPage //
       .checkOnInProgressGoalsTab()
-      .clickArchiveButtonForGoal(goalReference)
+      .clickCompleteOrArchiveButtonForGoal(goalReference)
+    Page.verifyOnPage(CompleteOrArchiveGoalPage)
+    completeOrArchivePage.selectOption(CompleteOrArchiveGoalValue.ARCHIVE).submitPage()
 
     // Then
     Page.verifyOnPage(ArchiveGoalPage)
@@ -147,10 +151,18 @@ context('Archive a goal', () => {
     const goalsPage = Page.verifyOnPage(GoalsPage)
 
     // When
-    const archiveGoalPage = goalsPage //
+    const completeOrArchiveGoalPage = goalsPage //
       .hasArchivedGoalsDisplayed()
       .hasNumberOfArchivedGoals(2)
-      .clickArchiveButtonForGoal(goalReference)
+      .clickCompleteOrArchiveButtonForGoal(goalReference)
+
+    Page.verifyOnPage(CompleteOrArchiveGoalPage)
+
+    completeOrArchiveGoalPage //
+      .selectOption(CompleteOrArchiveGoalValue.ARCHIVE)
+      .submitPage()
+
+    const archiveGoalPage = Page.verifyOnPage(ArchiveGoalPage)
 
     archiveGoalPage //
       .selectReason(ReasonToArchiveGoalValue.OTHER)
@@ -187,10 +199,18 @@ context('Archive a goal', () => {
     const goalsPage = Page.verifyOnPage(GoalsPage)
 
     // When
-    const archiveGoalPage = goalsPage //
+    const completeOrArchiveGoalPage = goalsPage //
       .hasArchivedGoalsDisplayed()
       .hasNumberOfArchivedGoals(2)
-      .clickArchiveButtonForGoal(goalReference)
+      .clickCompleteOrArchiveButtonForGoal(goalReference)
+
+    Page.verifyOnPage(CompleteOrArchiveGoalPage)
+
+    completeOrArchiveGoalPage //
+      .selectOption(CompleteOrArchiveGoalValue.ARCHIVE)
+      .submitPage()
+
+    const archiveGoalPage = Page.verifyOnPage(ArchiveGoalPage)
 
     archiveGoalPage //
       .selectReason(ReasonToArchiveGoalValue.OTHER)

@@ -2,6 +2,7 @@ import Page, { PageElement } from '../page'
 import UnarchiveGoalPage from './UnarchiveGoalPage'
 import ArchiveGoalPage from './ArchiveGoalPage'
 import UpdateGoalPage from './UpdateGoalPage'
+import CompleteOrArchiveGoalPage from './CompleteOrArchiveGoalPage'
 
 /**
  * Cypress page class representing the "View Goals" page
@@ -77,6 +78,11 @@ export default class GoalsPage extends Page {
     return Page.verifyOnPage(ArchiveGoalPage)
   }
 
+  clickCompleteOrArchiveButtonForGoal(goalReference: string): CompleteOrArchiveGoalPage {
+    this.goalCompleteOrArchiveButton(goalReference).click()
+    return Page.verifyOnPage(CompleteOrArchiveGoalPage)
+  }
+
   checkOnArchivedGoalsTab(): GoalsPage {
     cy.url().should('include', 'archived-goals')
     return this
@@ -131,6 +137,9 @@ export default class GoalsPage extends Page {
 
   private goalArchiveButton = (goalReference: string): PageElement =>
     cy.get(`[data-qa=goal-${goalReference}-archive-button]`)
+
+  private goalCompleteOrArchiveButton = (goalReference: string): PageElement =>
+    cy.get(`[data-qa=goal-${goalReference}-completearchive-button]`)
 
   private noArchivedGoalsMessage = (): PageElement => cy.get('[data-qa=no-archived-goals-message]')
 }
