@@ -21,30 +21,34 @@
   width: 20em;
 }
 
-// Custom grid and border for goals section of overview page
+// Custom column with vertical border
 
-.govuk-grid {
+.app-table-column-with-right-border {
+  border-right: 1px solid $govuk-border-colour;
+  display: inline-block;
+}
+
+.overview-page-goal-summary-counts {
+  display: grid;
+  grid-auto-columns: minmax(0, 1fr);
+  grid-auto-flow: column;
   gap: 20px;
-  display: flex;
+
+  .govuk-grid-item {
+    padding: 16px;
+    border-right: 1px solid $govuk-border-colour;
+  }
+
+  .govuk-grid-item:last-child {
+    border-right: none;
+  }
+
+  .goal-container {
+    display: flex;
+    align-items: center;
+  }
 }
 
-.govuk-grid-item {
-  padding: 16px;
-  text-align: center;
-}
-
-.govuk-grid-item:first-child {
-  margin-right: 110px;
-}
-
-.govuk-grid-item:last-child {
-  border-left: 1px solid $govuk-border-colour;
-}
-
-.goal-container {
-  display: flex;
-  align-items: center;
-}
 
 // Aligning goal icon in actions card on overview page
 

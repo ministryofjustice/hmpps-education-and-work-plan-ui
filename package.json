@@ -93,7 +93,7 @@
     ]
   },
   "dependencies": {
-    "@aws-sdk/client-sqs": "^3.668.0",
+    "@aws-sdk/client-sqs": "^3.670.0",
     "@date-fns/utc": "^2.1.0",
     "@microsoft/applicationinsights-clickanalytics-js": "^3.3.3",
     "@microsoft/applicationinsights-web": "^3.3.3",
@@ -109,7 +109,7 @@
     "csurf": "^1.11.0",
     "date-fns": "^4.1.0",
     "express": "^4.21.1",
-    "express-prom-bundle": "^7.0.0",
+    "express-prom-bundle": "^7.0.2",
     "express-session": "^1.18.1",
     "govuk-frontend": "^5.7.1",
     "helmet": "^8.0.0",
@@ -161,7 +161,7 @@
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-import-resolver-typescript": "^3.6.3",
-    "eslint-plugin-cypress": "^3.5.0",
+    "eslint-plugin-cypress": "^3.6.0",
     "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-no-only-tests": "^3.3.0",
     "eslint-plugin-prettier": "^5.2.1",
@@ -177,7 +177,7 @@
     "nodemon": "^3.1.7",
     "prettier": "^3.3.3",
     "prettier-plugin-jinja-template": "^2.0.0",
-    "sass": "^1.79.4",
+    "sass": "^1.79.5",
     "supertest": "^7.0.0",
     "ts-jest": "^29.2.5",
     "typescript": "^5.6.3"
