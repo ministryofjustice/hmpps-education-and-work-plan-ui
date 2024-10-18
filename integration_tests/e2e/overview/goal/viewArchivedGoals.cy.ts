@@ -86,9 +86,9 @@ context('Unarchive a goal', () => {
     // Then
     archivedGoalsPage //
       .hasNumberOfArchivedGoals(2)
-      .lastUpdatedHintAtPositionContains(2, 'Archived on 22 August 2023 by George Costanza, Moorland (HMP & YOI)')
+      .lastUpdatedHintAtPositionContains(3, 'Archived on 22 August 2023 by George Costanza, Moorland (HMP & YOI)')
       .archiveReasonHintAtPositionContains(1, 'Reason: Prisoner no longer wants to work towards this goal')
-      .lastUpdatedHintAtPositionContains(3, 'Archived on 22 July 2023 by George Costanza, Moorland (HMP & YOI)')
+      .lastUpdatedHintAtPositionContains(4, 'Archived on 22 July 2023 by George Costanza, Moorland (HMP & YOI)')
       .archiveReasonHintAtPositionContains(
         2,
         'Reason: Work or education activity needed to complete goal is not available in this prison',
