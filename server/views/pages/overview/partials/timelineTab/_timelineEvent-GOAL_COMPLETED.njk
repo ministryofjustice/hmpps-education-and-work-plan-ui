@@ -1,0 +1,18 @@
+<div class="moj-timeline__item" data-qa-event-type="GOAL_COMPLETED">
+  <div class="moj-timeline__header">
+    <h2 class="moj-timeline__title">Goal marked as complete</h2>
+    <p class="moj-timeline__byline govuk-!-display-none-print">by {{ event.actionedByDisplayName }}, {{ event.prisonName }}</p>
+  </div>
+
+  <p class="moj-timeline__date">
+    <time datetime="{{ event.timestamp }}">{{ event.timestamp | formatDate('D MMMM YYYY') }}</time>
+  </p>
+
+  <div class="moj-timeline__description govuk-!-display-none-print">
+    <p class="govuk-body govuk-!-margin-bottom-0">
+      <a href="/plan/{{ prisonerSummary.prisonNumber }}/view/goals#completed-goals"  data-qa="view-completed-goals-button" data-id="timeline-prisoner-{{ prisonerSummary.prisonNumber }}">
+        View <span class="govuk-visually-hidden">{{ prisonerSummary.firstName }} {{ prisonerSummary.lastName | title }}'s </span>completed goals
+      </a>
+    </p>
+  </div>
+</div>

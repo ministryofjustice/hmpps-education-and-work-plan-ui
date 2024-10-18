@@ -30,6 +30,7 @@ describe('timelineService', () => {
     'GOAL_CREATED',
     'GOAL_ARCHIVED',
     'GOAL_UNARCHIVED',
+    'GOAL_COMPLETED',
     'PRISON_ADMISSION',
     'PRISON_RELEASE',
     'PRISON_TRANSFER',
