@@ -3,7 +3,7 @@
 
   {% if params.goal.notesByType.GOAL_COMPLETION.length > 0 %}
     {% set goalCompletionNote = params.goal.notesByType.GOAL_COMPLETION[0] %}
-    <h3 class="govuk-heading-s">Goal completion note</h3>
+    <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Goal completion note</h3>
     <p class="govuk-body" data-qa="goal-completion-note">{{ goalCompletionNote.content }}</p>
   {% endif %}
 
