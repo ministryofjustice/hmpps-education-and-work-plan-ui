@@ -1,3 +1,5 @@
+{% from "govuk/macros/attributes.njk" import govukAttributes %}
+
 <h3 class="govuk-summary-card__title" data-qa="goal-summary-card-heading">
   <img src="/assets/images/icon-goal.svg" role="presentation" alt="" width="35px" height="28px" />
   Achieve goal by {{ params.goal.targetCompletionDate | formatDate('D MMMM YYYY') }}

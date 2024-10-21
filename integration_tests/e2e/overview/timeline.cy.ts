@@ -1,7 +1,7 @@
 import Page from '../../pages/page'
 import OverviewPage from '../../pages/overview/OverviewPage'
 import TimelinePage from '../../pages/overview/TimelinePage'
-import GoalsPage from '../../pages/goal/GoalsPage'
+import GoalsPage from '../../pages/overview/GoalsPage'
 
 context('Prisoner Overview page - Timeline tab', () => {
   beforeEach(() => {

@@ -6,7 +6,7 @@ import { putRequestedFor } from '../../../mockApis/wiremock/requestPatternBuilde
 import { matchingJsonPath } from '../../../mockApis/wiremock/matchers/content'
 import AuthorisationErrorPage from '../../../pages/authorisationError'
 import ViewArchivedGoalsPage from '../../../pages/goal/ViewArchivedGoalsPage'
-import GoalsPage from '../../../pages/goal/GoalsPage'
+import GoalsPage from '../../../pages/overview/GoalsPage'
 
 context('Unarchive a goal', () => {
   const prisonNumber = 'G6115VJ'

@@ -1,9 +1,11 @@
 {% extends "../../../../partials/layout.njk" %}
 {% set pageTitle = "Goals" %}
 {% set pageId = "view-goals" %}
+
 {% block beforeContent %}
   {% include "../../../../partials/breadcrumb.njk" %}
 {% endblock %}
+
 {% block content %}
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds app-u-print-full-width">
@@ -13,8 +15,10 @@
       {% include "../../../../partials/printThisPage.njk" %}
     </div>
   </div>
+
   {% include "../../../../partials/prisonerBanner.njk" %}
   {% include "./../../partials/navigation.njk" %}
+
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds app-u-print-full-width">
       {% if not problemRetrievingData %}
@@ -69,8 +73,7 @@
                           attributes: {
                             'data-qa': 'completed-goal-summary-card'
                           },
-                          classes: 'archived-or-completed-goal-summary-card',
-                          lastUpdatedLabel: 'Goal marked as complete on'
+                          classes: 'archived-or-completed-goal-summary-card'
                         }) }}
               {% endfor %}
             {% else %}
@@ -88,7 +91,6 @@
                           'data-qa': 'archived-goal-summary-card'
                         },
                         classes: 'archived-or-completed-goal-summary-card',
-                        lastUpdatedLabel: 'Archived on',
                         actions: [
                           {
                             title: 'Reactivate<span class="govuk-visually-hidden"> this goal</span>',
@@ -155,9 +157,10 @@
             }) }}
         {% endif %}
       {% else %}
-        {% include './partials/_unavailableGoals.njk' %}
+        {% include '../_unavailableGoals.njk' %}
       {% endif %}
     </div>
+
     <div class="govuk-grid-column-one-third app-u-print-full-width">
       {{ actionsCard({
         actions: [

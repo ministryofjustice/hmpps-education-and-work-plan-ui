@@ -8,7 +8,7 @@ import Error500Page from '../../../pages/error500'
 import { putRequestedFor } from '../../../mockApis/wiremock/requestPatternBuilder'
 import { urlEqualTo } from '../../../mockApis/wiremock/matchers/url'
 import { matchingJsonPath } from '../../../mockApis/wiremock/matchers/content'
-import GoalsPage from '../../../pages/goal/GoalsPage'
+import GoalsPage from '../../../pages/overview/GoalsPage'
 
 context('Update a goal', () => {
   beforeEach(() => {

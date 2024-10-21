@@ -1,4 +1,4 @@
-import GoalsPage from '../goal/GoalsPage'
+import GoalsPage from './GoalsPage'
 import Page, { PageElement } from '../page'
 
 /**
