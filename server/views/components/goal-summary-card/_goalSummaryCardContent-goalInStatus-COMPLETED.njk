@@ -1,28 +1,27 @@
-<div class="govuk-summary-card__content">
+<div class="govuk-summary-card__content" data-qa="completed-goal">
   {% include './_goalSteps.njk' %}
 
-    {% if params.goal.notesByType.GOAL_COMPLETION.length > 0 %}
-      {% set goalCompletionNote = params.goal.notesByType.GOAL_COMPLETION[0] %}
-      <h3 class="govuk-heading-s">Goal completion note</h3>
-      <p class="govuk-body" data-qa="goal-completion-note">{{ goalCompletionNote.content }}</p>
-    {% endif %}
-    {% if params.goal.notesByType.GOAL.length > 0 %}
-      {% set goalNote = params.goal.notesByType.GOAL[0] %}
-      <details class="govuk-details app-notes-expander" data-qa="overview-notes-expander">
-        <summary class="govuk-details__summary">
-          <span class="govuk-details__summary-text">
-              View note<span class="govuk-visually-hidden"> about this goal</span>
-          </span>
-        </summary>
-        <div class="govuk-details__text">
-          <span class="app-u-multiline-text" data-qa="goal-note">{{ goalNote.content }}</span>
-        </div>
-      </details>
-    {% endif %}
-  <p class="govuk-hint govuk-!-font-size-16" data-qa="goal-last-updated-hint">
-    {{ params.lastUpdatedLabel | default('Last updated on') }} {{ params.goal.updatedAt | formatDate('D MMMM YYYY') }}<span class="govuk-!-display-none-print"> by {{ params.goal.updatedByDisplayName }}{{ ', ' + params.goal.updatedAtPrisonName if params.goal.updatedAtPrisonName }}</span>
-  </p>
-  {% if params.goal.status === 'ARCHIVED' %}
-    <p class="govuk-hint govuk-!-font-size-16" data-qa="goal-archive-reason-hint">Reason: {{ params.goal.archiveReason | formatReasonToArchiveGoal }}{{ ' - ' +  params.goal.archiveReasonOther if params.goal.archiveReason === 'OTHER'}}</p>
+  {% if params.goal.notesByType.GOAL_COMPLETION.length > 0 %}
+    {% set goalCompletionNote = params.goal.notesByType.GOAL_COMPLETION[0] %}
+    <h3 class="govuk-heading-s">Goal completion note</h3>
+    <p class="govuk-body" data-qa="goal-completion-note">{{ goalCompletionNote.content }}</p>
   {% endif %}
+
+  {% if params.goal.notesByType.GOAL.length > 0 %}
+    {% set goalNote = params.goal.notesByType.GOAL[0] %}
+    <details class="govuk-details app-notes-expander" data-qa="goal-notes-expander">
+      <summary class="govuk-details__summary">
+        <span class="govuk-details__summary-text">
+            View note<span class="govuk-visually-hidden"> about this goal</span>
+        </span>
+      </summary>
+      <div class="govuk-details__text">
+        <span class="app-u-multiline-text" data-qa="goal-note">{{ goalNote.content }}</span>
+      </div>
+    </details>
+  {% endif %}
+
+  <p class="govuk-hint govuk-!-font-size-16" data-qa="goal-completed-hint">
+    Goal marked as complete on {{ params.goal.updatedAt | formatDate('D MMMM YYYY') }}<span class="govuk-!-display-none-print"> by {{ params.goal.updatedByDisplayName }}, {{ params.goal.updatedAtPrisonName }}</span>
+  </p>
 </div>

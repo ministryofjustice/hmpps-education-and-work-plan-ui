@@ -1,8 +1,7 @@
 import Page, { PageElement } from '../page'
-import UnarchiveGoalPage from './UnarchiveGoalPage'
-import ArchiveGoalPage from './ArchiveGoalPage'
-import UpdateGoalPage from './UpdateGoalPage'
-import CompleteOrArchiveGoalPage from './CompleteOrArchiveGoalPage'
+import UnarchiveGoalPage from '../goal/UnarchiveGoalPage'
+import UpdateGoalPage from '../goal/UpdateGoalPage'
+import CompleteOrArchiveGoalPage from '../goal/CompleteOrArchiveGoalPage'
 
 /**
  * Cypress page class representing the "View Goals" page
@@ -28,6 +27,11 @@ export default class GoalsPage extends Page {
     return this
   }
 
+  hasNumberOfCompletedGoals(numberOfGoals: number): GoalsPage {
+    this.completedGoalSummaryCards().should('have.length', numberOfGoals)
+    return this
+  }
+
   hasArchivedGoalsDisplayed(): GoalsPage {
     this.archivedGoalSummaryCards().should('exist')
     return this
@@ -35,6 +39,11 @@ export default class GoalsPage extends Page {
 
   hasInProgressGoalsDisplayed(): GoalsPage {
     this.inProgressGoalSummaryCards().should('exist')
+    return this
+  }
+
+  hasCompletedGoalsDisplayed(): GoalsPage {
+    this.completedGoalSummaryCards().should('exist')
     return this
   }
 
@@ -53,8 +62,18 @@ export default class GoalsPage extends Page {
     return this
   }
 
-  lastUpdatedHintAtPositionContains(position: number, expectedText: string): GoalsPage {
-    this.lastUpdatedHint().eq(this.zeroIndexed(position)).should('contain.text', expectedText)
+  goalLastUpdatedHintTextAtPositionContains(position: number, expectedText: string): GoalsPage {
+    this.inProgressGoalHintText().eq(this.zeroIndexed(position)).should('contain.text', expectedText)
+    return this
+  }
+
+  goalArchivedHintTextAtPositionContains(position: number, expectedText: string): GoalsPage {
+    this.archivedGoalHintText().eq(this.zeroIndexed(position)).should('contain.text', expectedText)
+    return this
+  }
+
+  goalCompletedHintTextAtPositionContains(position: number, expectedText: string): GoalsPage {
+    this.completedGoalHintText().eq(this.zeroIndexed(position)).should('contain.text', expectedText)
     return this
   }
 
@@ -76,11 +95,6 @@ export default class GoalsPage extends Page {
   noArchivedGoalsMessageShouldBeVisible(): GoalsPage {
     this.noArchivedGoalsMessage().should('exist')
     return this
-  }
-
-  clickArchiveButtonForGoal(goalReference: string): ArchiveGoalPage {
-    this.goalArchiveButton(goalReference).click()
-    return Page.verifyOnPage(ArchiveGoalPage)
   }
 
   clickCompleteOrArchiveButtonForGoal(goalReference: string): CompleteOrArchiveGoalPage {
@@ -113,6 +127,11 @@ export default class GoalsPage extends Page {
     return this
   }
 
+  clickCompletedGoalsTab = (): GoalsPage => {
+    this.completedGoalsTab().click()
+    return this
+  }
+
   isForGoal(expected: string) {
     this.goalReferenceInputValue().should('have.value', expected)
     return this
@@ -134,21 +153,24 @@ export default class GoalsPage extends Page {
 
   private archivedGoalsTab = (): PageElement => cy.get('.govuk-tabs__tab[href="#archived-goals"]')
 
+  private completedGoalsTab = (): PageElement => cy.get('.govuk-tabs__tab[href="#completed-goals"]')
+
   private archivedGoalSummaryCards = (): PageElement => cy.get('[data-qa=archived-goal-summary-card]')
 
   private inProgressGoalSummaryCards = (): PageElement => cy.get('[data-qa=in-progress-goal-summary-card]')
 
   private completedGoalSummaryCards = (): PageElement => cy.get('[data-qa=completed-goal-summary-card]')
 
-  private lastUpdatedHint = (): PageElement => cy.get('[data-qa=goal-last-updated-hint]')
+  private inProgressGoalHintText = (): PageElement => cy.get('[data-qa=goal-last-updated-hint]')
+
+  private completedGoalHintText = (): PageElement => cy.get('[data-qa=goal-completed-hint]')
+
+  private archivedGoalHintText = (): PageElement => cy.get('[data-qa=goal-archived-hint]')
 
   private archiveReasonHint = (): PageElement => cy.get('[data-qa=goal-archive-reason-hint]')
 
   private goalReactivateButton = (goalReference: string): PageElement =>
     cy.get(`[data-qa=goal-${goalReference}-unarchive-button]`)
-
-  private goalArchiveButton = (goalReference: string): PageElement =>
-    cy.get(`[data-qa=goal-${goalReference}-archive-button]`)
 
   private goalCompleteOrArchiveButton = (goalReference: string): PageElement =>
     cy.get(`[data-qa=goal-${goalReference}-completearchive-button]`)

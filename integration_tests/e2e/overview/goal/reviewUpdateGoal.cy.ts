@@ -4,7 +4,7 @@ import ReviewUpdateGoalPage from '../../../pages/goal/ReviewUpdateGoalPage'
 import UpdateGoalPage from '../../../pages/goal/UpdateGoalPage'
 import AuthorisationErrorPage from '../../../pages/authorisationError'
 import Error500Page from '../../../pages/error500'
-import GoalsPage from '../../../pages/goal/GoalsPage'
+import GoalsPage from '../../../pages/overview/GoalsPage'
 
 context('Review updated goal', () => {
   beforeEach(() => {
