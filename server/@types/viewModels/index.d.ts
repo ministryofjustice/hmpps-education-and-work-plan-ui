@@ -71,11 +71,11 @@ declare module 'viewModels' {
     createdBy: string
     createdByDisplayName: string
     createdAt: Date
-    createdAtPrisonName?: string
+    createdAtPrisonName: string
     updatedBy: string
     updatedByDisplayName: string
     updatedAt: Date
-    updatedAtPrisonName?: string
+    updatedAtPrisonName: string
     targetCompletionDate: Date
     notesByType: Record<'GOAL' | 'GOAL_ARCHIVAL' | 'GOAL_COMPLETION', Array<Note>>
     archiveReason?:

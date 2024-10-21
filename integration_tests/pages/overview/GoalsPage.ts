@@ -72,13 +72,13 @@ export default class GoalsPage extends Page {
     return this
   }
 
-  goalCompletedHintTextAtPositionContains(position: number, expectedText: string): GoalsPage {
-    this.completedGoalHintText().eq(this.zeroIndexed(position)).should('contain.text', expectedText)
+  goalArchivedReasonAtPositionContains(position: number, expectedText: string): GoalsPage {
+    this.archiveReason().eq(this.zeroIndexed(position)).should('contain.text', expectedText)
     return this
   }
 
-  archiveReasonHintAtPositionContains(position: number, expectedText: string): GoalsPage {
-    this.archiveReasonHint().eq(this.zeroIndexed(position)).should('contain.text', expectedText)
+  goalCompletedHintTextAtPositionContains(position: number, expectedText: string): GoalsPage {
+    this.completedGoalHintText().eq(this.zeroIndexed(position)).should('contain.text', expectedText)
     return this
   }
 
@@ -167,7 +167,7 @@ export default class GoalsPage extends Page {
 
   private archivedGoalHintText = (): PageElement => cy.get('[data-qa=goal-archived-hint]')
 
-  private archiveReasonHint = (): PageElement => cy.get('[data-qa=goal-archive-reason-hint]')
+  private archiveReason = (): PageElement => cy.get('[data-qa=goal-archive-reason]')
 
   private goalReactivateButton = (goalReference: string): PageElement =>
     cy.get(`[data-qa=goal-${goalReference}-unarchive-button]`)

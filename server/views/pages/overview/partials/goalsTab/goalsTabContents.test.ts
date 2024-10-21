@@ -21,6 +21,7 @@ const njkEnv = nunjucks.configure([
 jest.mock('../../../../../config', () => ({
   featureToggles: {
     completedGoalsEnabled: true,
+    archiveGoalNotesEnabled: true,
   },
 }))
 

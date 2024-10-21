@@ -4,6 +4,7 @@ import type { GoalSummaryCardParams } from 'viewComponents'
 import { aValidGoal } from '../../../testsupport/actionPlanTestDataBuilder'
 import formatDateFilter from '../../../filters/formatDateFilter'
 import formatStepStatusValueFilter from '../../../filters/formatStepStatusValueFilter'
+import config from '../../../config'
 import formatReasonToArchiveGoalFilter from '../../../filters/formatReasonToArchiveGoalFilter'
 
 const njkEnv = nunjucks.configure([
@@ -12,6 +13,14 @@ const njkEnv = nunjucks.configure([
   'server/views/',
   __dirname,
 ])
+
+jest.mock('../../../config', () => ({
+  featureToggles: {
+    archiveGoalNotesEnabled: true,
+  },
+}))
+
+njkEnv.addGlobal('featureToggles', config.featureToggles)
 njkEnv.addFilter('formatDate', formatDateFilter)
 njkEnv.addFilter('formatStepStatusValue', formatStepStatusValueFilter)
 njkEnv.addFilter('formatReasonToArchiveGoal', formatReasonToArchiveGoalFilter)
