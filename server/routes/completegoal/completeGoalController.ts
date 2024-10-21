@@ -30,7 +30,7 @@ export default class CompleteGoalController {
     const completeGoalForm: CompleteGoalForm = {
       reference: goalReference,
       title: goalToComplete.title,
-      note: '',
+      notes: '',
     }
 
     const view = new CompleteGoalView(prisonerSummary, completeGoalForm)

@@ -30,10 +30,17 @@
                 Add a note (optional)
               </label>
             </h1>
-            <p class="govuk-hint">
-              Learning and work progress plans, including notes, are shared with prisoners and other staff
-            </p>
-            <textarea class="govuk-textarea" id="completed-note" name="note" rows="5" aria-describedby="warning-text">{{ form.note }}</textarea>
+            {{ govukTextarea({
+              name: "notes",
+              id: "notes",
+              value: form.notes,
+              label: {
+                html: '<h2 class="govuk-label--m">Add a note (optional)</h2>'
+              },
+              hint: {
+                text: "Learning and work progress plans, including notes, are shared with prisoners and other staff"
+              }
+            }) }}
           </div>
 
           {{ govukButton({
@@ -43,7 +50,7 @@
             text: "Yes, complete goal",
             classes: "moj-button-menu__item",
             attributes: {
-              'data-qa': 'goal-complete-review-submit-button'
+              'data-qa': 'goal-complete-submit-button'
             }
           }) }}
 
