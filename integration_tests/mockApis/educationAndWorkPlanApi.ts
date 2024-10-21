@@ -851,6 +851,26 @@ const unarchiveGoal = (
     },
   })
 
+const completeGoal = (
+  options: {
+    prisonNumber: string
+    goalReference: string
+  } = {
+    prisonNumber: 'G6115VJ',
+    goalReference: '10efc562-be8f-4675-9283-9ede0c19dade',
+  },
+): SuperAgentRequest =>
+  stubFor({
+    request: {
+      method: 'PUT',
+      urlPattern: `/action-plans/${options.prisonNumber}/goals/${options.goalReference}/complete`,
+    },
+    response: {
+      status: 204,
+      headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+    },
+  })
+
 const stubCreateEducation = (prisonNumber = 'G6115VJ'): SuperAgentRequest =>
   stubFor({
     request: {
@@ -974,6 +994,7 @@ export default {
   updateGoal,
   updateGoal500Error,
   archiveGoal,
+  completeGoal,
   unarchiveGoal,
   getActionPlanForPrisonerWithNoGoals,
   getActionPlan500Error,

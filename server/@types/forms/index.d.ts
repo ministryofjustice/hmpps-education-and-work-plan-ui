@@ -59,7 +59,7 @@ declare module 'forms' {
   export interface CompleteGoalForm {
     reference: string
     title: string
-    note: string
+    notes: string
   }
 
   export interface CompleteOrArchiveGoalForm {

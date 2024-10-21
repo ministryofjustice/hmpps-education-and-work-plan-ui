@@ -5,6 +5,6 @@ export default function toCompleteGoalDto(prisonNumber: string, form: CompleteGo
   return {
     goalReference: form.reference,
     prisonNumber,
-    note: form.note,
+    note: form.notes,
   }
 }
