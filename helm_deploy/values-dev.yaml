@@ -27,7 +27,9 @@ generic-service:
 
     ACTIVE_AGENCIES: '***'
     REVIEWS_PRISONS_ENABLED: "BXI, WDI"
-    COMPLETED_GOALS_ENABLED: "false"
+    COMPLETED_GOALS_ENABLED: "true"
+    ARCHIVE_GOAL_NOTES_ENABLED: "true"
+
 
   allowlist:
     uservision-accessibility-testers: 5.181.59.114/32
