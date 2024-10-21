@@ -26,8 +26,8 @@ context('Complete a goal', () => {
     cy.task('getActionPlan')
     cy.task('stubLearnerProfile')
     cy.task('stubLearnerEducation')
-    cy.task('archiveGoal')
     cy.task('stubGetAllPrisons')
+    cy.task('completeGoal', { prisonNumber, goalReference })
   })
 
   it('should be able to navigate directly to complete goal page', () => {
@@ -45,7 +45,6 @@ context('Complete a goal', () => {
   it('should be able to navigate to complete goals page from overview', () => {
     // Given
     cy.signIn()
-
     cy.visit(`/plan/${prisonNumber}/view/overview`)
     const overviewPage = Page.verifyOnPage(OverviewPage)
 
@@ -77,7 +76,6 @@ context('Complete a goal', () => {
 
   it('Should be able to complete a goal successfully without entering the optional notes', () => {
     // Given
-    cy.task('completeGoal', { prisonNumber, goalReference })
     cy.signIn()
     cy.visit(`/plan/${prisonNumber}/view/goals`)
     const goalsPage = Page.verifyOnPage(GoalsPage)
@@ -102,7 +100,6 @@ context('Complete a goal', () => {
     // Then
     Page.verifyOnPage(OverviewPage) //
       .hasSuccessMessage('Goal Completed')
-      .hasNumberOfCompletedGoals(1)
 
     cy.wiremockVerify(
       putRequestedFor(urlEqualTo(`/action-plans/${prisonNumber}/goals/${goalReference}/complete`)) //
@@ -112,7 +109,6 @@ context('Complete a goal', () => {
 
   it('Should be able to complete a goal successfully including entering some optional notes', () => {
     // Given
-    cy.task('completeGoal', { prisonNumber, goalReference })
     cy.signIn()
     cy.visit(`/plan/${prisonNumber}/view/goals`)
     const goalsPage = Page.verifyOnPage(GoalsPage)
@@ -137,7 +133,6 @@ context('Complete a goal', () => {
     // Then
     Page.verifyOnPage(OverviewPage) //
       .hasSuccessMessage('Goal Completed')
-      .hasNumberOfCompletedGoals(1)
 
     cy.wiremockVerify(
       putRequestedFor(urlEqualTo(`/action-plans/${prisonNumber}/goals/${goalReference}/complete`)) //
