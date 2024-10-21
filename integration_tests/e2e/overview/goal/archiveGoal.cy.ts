@@ -6,7 +6,7 @@ import OverviewPage from '../../../pages/overview/OverviewPage'
 import { putRequestedFor } from '../../../mockApis/wiremock/requestPatternBuilder'
 import { urlEqualTo } from '../../../mockApis/wiremock/matchers/url'
 import { matchingJsonPath } from '../../../mockApis/wiremock/matchers/content'
-import GoalsPage from '../../../pages/goal/GoalsPage'
+import GoalsPage from '../../../pages/overview/GoalsPage'
 import CompleteOrArchiveGoalPage from '../../../pages/goal/CompleteOrArchiveGoalPage'
 import CompleteOrArchiveGoalValue from '../../../../server/enums/CompleteOrArchiveGoalValue'
 

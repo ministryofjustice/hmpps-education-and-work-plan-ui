@@ -3,7 +3,7 @@ import CreateGoalsPage from '../goal/CreateGoalsPage'
 // eslint-disable-next-line import/no-cycle
 import HopingToWorkOnReleasePage from '../induction/HopingToWorkOnReleasePage'
 import EducationAndTrainingPage from './EducationAndTrainingPage'
-import GoalsPage from '../goal/GoalsPage'
+import GoalsPage from './GoalsPage'
 
 /**
  * Cypress page class representing the Overview tab of the Overview Page
