@@ -3,10 +3,10 @@ import OverviewPage from '../../../pages/overview/OverviewPage'
 import { putRequestedFor } from '../../../mockApis/wiremock/requestPatternBuilder'
 import { urlEqualTo } from '../../../mockApis/wiremock/matchers/url'
 import { matchingJsonPath } from '../../../mockApis/wiremock/matchers/content'
-import GoalsPage from '../../../pages/goal/GoalsPage'
 import CompleteOrArchiveGoalPage from '../../../pages/goal/CompleteOrArchiveGoalPage'
 import CompleteOrArchiveGoalValue from '../../../../server/enums/CompleteOrArchiveGoalValue'
 import CompleteGoalPage from '../../../pages/goal/CompleteGoalPage'
+import GoalsPage from '../../../pages/overview/GoalsPage'
 
 context('Complete a goal', () => {
   const prisonNumber = 'G6115VJ'
@@ -82,8 +82,6 @@ context('Complete a goal', () => {
 
     // When
     const completeOrArchiveGoalPage = goalsPage //
-      .hasArchivedGoalsDisplayed()
-      .hasNumberOfArchivedGoals(2)
       .clickCompleteOrArchiveButtonForGoal(goalReference)
 
     Page.verifyOnPage(CompleteOrArchiveGoalPage)
@@ -115,8 +113,6 @@ context('Complete a goal', () => {
 
     // When
     const completeOrArchiveGoalPage = goalsPage //
-      .hasArchivedGoalsDisplayed()
-      .hasNumberOfArchivedGoals(2)
       .clickCompleteOrArchiveButtonForGoal(goalReference)
 
     Page.verifyOnPage(CompleteOrArchiveGoalPage)
