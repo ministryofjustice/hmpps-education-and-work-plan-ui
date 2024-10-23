@@ -1,6 +1,7 @@
 import Page from '../../pages/page'
 import OverviewPage from '../../pages/overview/OverviewPage'
 import EducationAndTrainingPage from '../../pages/overview/EducationAndTrainingPage'
+import Error404Page from '../../pages/error404'
 
 context('Prisoner Overview page - Common functionality for both pre and post induction', () => {
   beforeEach(() => {
@@ -202,5 +203,19 @@ context('Prisoner Overview page - Common functionality for both pre and post ind
 
     // Then
     Page.verifyOnPage(EducationAndTrainingPage)
+  })
+
+  it('should not display a prisoners overview if they are in a different prison to the users caseload', () => {
+    // Given
+    cy.signIn()
+    // The signed in and stubbed user is John Smith whose active caseload ID is BXI
+
+    const prisonNumberForPrisonerInDifferentPrison = 'A9404DY' // Prisoner A9404DY is in prison PVI
+
+    // When
+    cy.visit(`/plan/${prisonNumberForPrisonerInDifferentPrison}/view/overview`, { failOnStatusCode: false })
+
+    // Then
+    Page.verifyOnPage(Error404Page)
   })
 })

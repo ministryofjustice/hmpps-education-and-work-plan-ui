@@ -4,7 +4,6 @@ import { checkUserHasViewAuthority } from '../../middleware/roleBasedAccessContr
 import InPrisonCoursesAndQualificationsController from './inPrisonCoursesAndQualificationsController'
 import retrieveCuriousInPrisonCourses from '../routerRequestHandlers/retrieveCuriousInPrisonCourses'
 import asyncMiddleware from '../../middleware/asyncMiddleware'
-import checkPrisonerInCaseload from '../../middleware/checkPrisonerInCaseloadMiddleware'
 
 /**
  * Route definitions for the pages relating to In Prison Courses & Qualifications
@@ -31,12 +30,6 @@ export default (router: Router, services: Services) => {
 
   // Route for use when being linked to from DPS Prisoner Profile within the context of a prisoner's Work and Skills section of their Prisoner Profile
   router.get('/prisoner/:prisonNumber/work-and-skills/in-prison-courses-and-qualifications', [
-    checkPrisonerInCaseload({
-      allowGlobal: true,
-      allowGlobalPom: true,
-      allowInactive: true,
-      activeCaseloadOnly: false,
-    }),
     retrieveCuriousInPrisonCourses(services.curiousService),
     asyncMiddleware(inPrisonCoursesAndQualificationsController.getInPrisonCoursesAndQualificationsViewForDps),
   ])
