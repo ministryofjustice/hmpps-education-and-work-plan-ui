@@ -19,6 +19,7 @@ import completeOrArchiveGoal from './completeOrArchive'
 import createPrePrisonEducation from './prePrisonEducation/create'
 import updatePrePrisonEducation from './prePrisonEducation/update'
 import reviewPlanRoutes from './reviewPlan'
+import checkPrisonerInCaseload from '../middleware/checkPrisonerInCaseloadMiddleware'
 
 export default function routes(services: Services): Router {
   const router = Router()
@@ -57,7 +58,16 @@ export default function routes(services: Services): Router {
   return router
 }
 
-// Setup prisoner summary session for routes with prisonNumber param
+// Setup prisoner summary session for routes with prisonNumber param and check the prisoner is in the users caseloads
 function prisonerSummarySetup(router: Router, services: Services) {
   router.param('prisonNumber', retrievePrisonerSummary(services.prisonerSearchService))
+  router.param(
+    'prisonNumber',
+    checkPrisonerInCaseload({
+      allowGlobal: true,
+      allowGlobalPom: true,
+      allowInactive: true,
+      activeCaseloadOnly: false,
+    }),
+  )
 }

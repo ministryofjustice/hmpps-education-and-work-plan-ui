@@ -31,8 +31,10 @@ const testUserWithEditorRole = {
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InVzZXIxIiwiaWF0IjoxNTE2MjM5MDIyLCJhdXRob3JpdGllcyI6WyJST0xFX0VEVUNBVElPTl9XT1JLX1BMQU5fRURJVE9SIl19.vZ7FwrGzUFIDgxluRAj72It0yBW2hbxu5UQCjKkyOzM',
   username: 'user1',
   displayName: 'First Last',
-  activeCaseLoadId: 'MDI',
-  authSource: 'NOMIS',
+  activeCaseLoadId: 'BXI',
+  caseLoadIds: ['MDI', 'BXI'],
+  authSource: 'nomis',
+  roles: ['ROLE_EDUCATION_WORK_PLAN_EDITOR'],
 }
 
 export const flashProvider = jest.fn()
