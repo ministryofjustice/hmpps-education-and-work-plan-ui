@@ -103,7 +103,7 @@ context('Unarchive a goal', () => {
     unarchiveGoalPage.clickNo()
 
     // Then
-    Page.verifyOnPage(ViewArchivedGoalsPage)
+    Page.verifyOnPage(GoalsPage)
     cy.wiremockVerifyNoInteractions(
       putRequestedFor(urlEqualTo(`/action-plans/${prisonNumber}/goals/${goalReference}/unarchive`)),
     )

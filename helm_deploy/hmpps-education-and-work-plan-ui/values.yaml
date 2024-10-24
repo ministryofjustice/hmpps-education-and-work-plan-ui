@@ -55,7 +55,6 @@ generic-service:
     FEEDBACK_URL: "https://eu.surveymonkey.com/r/H9CYM7B"
     AUDIT_SERVICE_NAME: "hmpps-education-and-work-plan"
     AUDIT_ENABLED: "true"
-    NEW_OVERVIEW_PAGE_ENABLED: "true"
     REVIEWS_PRISONS_ENABLED: ""
     COMPLETED_GOALS_ENABLED: "false"
     ARCHIVE_GOAL_NOTES_ENABLED: "false"
