@@ -164,6 +164,9 @@ describe('overviewTabContents', () => {
     expect($('[data-qa="functional-skills-heading"]').text().trim()).toEqual(
       'Functional skills initial assessment scores',
     )
+    expect($('[data-qa="functional-skills-hint"]').text().trim()).toEqual(
+      "Information from Curious. These scores are from a person's induction assessment.For recent functional skills qualifications, go to courses and qualifications.",
+    )
     expect($('td').first().text().trim()).toContain('Level 1')
   })
 
@@ -217,8 +220,47 @@ describe('overviewTabContents', () => {
     const $ = cheerio.load(content)
 
     // Then
+    expect($('[data-qa="completed-courses-heading"]').text().trim()).toEqual(
+      'Courses and qualifications completed in the last 12 months',
+    )
+    expect($('[data-qa="completed-courses-hint"]').text().trim()).toEqual(
+      'Information from Curious. This only includes educational courses. Contact the local education team to find out more.',
+    )
     expect($('[data-qa="completed-in-prison-courses-in-last-12-months-table"]').length).toEqual(1)
     expect($('[data-qa="completed-course-name"]').text().trim()).toEqual('Basic English')
     expect($('[data-qa="course-completion-date"]').text().trim()).toEqual('Completed on 15 June 2023')
+  })
+
+  it('should render functional skills and courses and qualifications headings if no data is available', () => {
+    // Given
+    const pageViewModel = {
+      prisonerSummary,
+      isPostInduction: false,
+      problemRetrievingData: false,
+      functionalSkills: {
+        problemRetrievingData: false,
+        assessments: [] as { type: string; grade: string; assessmentDate: string }[],
+      },
+      inPrisonCourses: { problemRetrievingData: false },
+      goalCounts: { activeCount: 0, completedCount: 0, archivedCount: 0 },
+    }
+
+    // When
+    const content = njkEnv.render(template, pageViewModel)
+    const $ = cheerio.load(content)
+
+    // Then
+    expect($('[data-qa="functional-skills-heading"]').text().trim()).toEqual(
+      'Functional skills initial assessment scores',
+    )
+    expect($('[data-qa="functional-skills-hint"]').text().trim()).toEqual(
+      "Information from Curious. These scores are from a person's induction assessment.For recent functional skills qualifications, go to courses and qualifications.",
+    )
+    expect($('[data-qa="completed-courses-heading"]').text().trim()).toEqual(
+      'Courses and qualifications completed in the last 12 months',
+    )
+    expect($('[data-qa="completed-courses-hint"]').text().trim()).toEqual(
+      'Information from Curious. This only includes educational courses. Contact the local education team to find out more.',
+    )
   })
 })
