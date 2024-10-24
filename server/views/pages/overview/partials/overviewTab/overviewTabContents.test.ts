@@ -21,7 +21,7 @@ njkEnv.addFilter('formatIsAccredited', formatIsAccreditedFilter)
 njkEnv.addFilter('formatFunctionalSkillType', formatFunctionalSkillTypeFilter)
 
 const prisonerSummary = aValidPrisonerSummary()
-const template = 'overviewTabContentsV2.njk'
+const template = 'overviewTabContents.njk'
 
 describe('overviewTabContents', () => {
   it('should render the complete induction banner when there are goals but no induction', () => {

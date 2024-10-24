@@ -12,13 +12,13 @@ import retrieveInduction from '../routerRequestHandlers/retrieveInduction'
 import retrieveEducation from '../routerRequestHandlers/retrieveEducation'
 import retrieveAllGoalsForPrisoner from '../routerRequestHandlers/retrieveAllGoalsForPrisoner'
 import ViewGoalsController from './viewGoalsController'
-import OverviewControllerV2 from './overviewControllerV2'
+import OverviewController from './overviewController'
 
 /**
  * Route definitions for the pages relating to the main Overview page
  */
 export default (router: Router, services: Services) => {
-  const overviewControllerV2 = new OverviewControllerV2(
+  const overviewController = new OverviewController(
     services.curiousService,
     services.inductionService,
     services.educationAndWorkPlanService,
@@ -33,7 +33,7 @@ export default (router: Router, services: Services) => {
 
   router.get('/plan/:prisonNumber/view/overview', [
     retrieveCuriousInPrisonCourses(services.curiousService),
-    asyncMiddleware(overviewControllerV2.getOverviewView),
+    asyncMiddleware(overviewController.getOverviewView),
   ])
 
   router.get('/plan/:prisonNumber/view/support-needs', [asyncMiddleware(supportNeedsController.getSupportNeedsView)])

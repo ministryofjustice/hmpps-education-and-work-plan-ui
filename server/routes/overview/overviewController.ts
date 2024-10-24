@@ -6,7 +6,7 @@ import { mostRecentFunctionalSkills } from '../functionalSkillsResolver'
 import logger from '../../../logger'
 import OverviewView from './overviewView'
 
-export default class OverviewControllerV2 {
+export default class OverviewController {
   constructor(
     private readonly curiousService: CuriousService,
     private readonly inductionService: InductionService,
