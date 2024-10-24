@@ -5,7 +5,6 @@ import { urlEqualTo } from '../../../mockApis/wiremock/matchers/url'
 import { putRequestedFor } from '../../../mockApis/wiremock/requestPatternBuilder'
 import { matchingJsonPath } from '../../../mockApis/wiremock/matchers/content'
 import AuthorisationErrorPage from '../../../pages/authorisationError'
-import ViewArchivedGoalsPage from '../../../pages/goal/ViewArchivedGoalsPage'
 import GoalsPage from '../../../pages/overview/GoalsPage'
 
 context('Unarchive a goal', () => {
