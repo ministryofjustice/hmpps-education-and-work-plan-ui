@@ -7,7 +7,7 @@ import aValidPrisonerSummary from '../../testsupport/prisonerSummaryTestDataBuil
 import { aValidGoalResponse } from '../../testsupport/actionPlanResponseTestDataBuilder'
 import GoalStatusValue from '../../enums/goalStatusValue'
 import EducationAndWorkPlanService from '../../services/educationAndWorkPlanService'
-import OverviewControllerV2 from './overviewControllerV2'
+import OverviewController from './overviewController'
 
 jest.mock('../../services/curiousService')
 jest.mock('../../services/inductionService')
@@ -22,7 +22,7 @@ describe('overviewController', () => {
     null,
   ) as jest.Mocked<EducationAndWorkPlanService>
 
-  const controller = new OverviewControllerV2(curiousService, inductionService, educationAndWorkPlanService)
+  const controller = new OverviewController(curiousService, inductionService, educationAndWorkPlanService)
 
   const prisonNumber = 'A1234GC'
   const username = 'a-dps-user'
