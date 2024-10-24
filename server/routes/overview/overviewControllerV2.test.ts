@@ -12,11 +12,6 @@ import OverviewControllerV2 from './overviewControllerV2'
 jest.mock('../../services/curiousService')
 jest.mock('../../services/inductionService')
 jest.mock('../../services/educationAndWorkPlanService')
-jest.mock('../../config', () => ({
-  featureToggles: {
-    newOverviewPageEnabled: true,
-  },
-}))
 
 describe('overviewController', () => {
   const curiousService = new CuriousService(null, null, null) as jest.Mocked<CuriousService>

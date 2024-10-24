@@ -34,11 +34,7 @@
   {% include './partials/navigation.njk' %}
 
   {% if tab === 'overview' %}
-     {% if not featureToggles.newOverviewPageEnabled %}
-      {% include './partials/overviewTab/overviewTabContents.njk' %}
-     {% else %}
-      {% include './partials/overviewTab/overviewTabContentsV2.njk' %}
-     {% endif %}
+    {% include './partials/overviewTab/overviewTabContentsV2.njk' %}
   {% endif %}
   {% if tab === 'support-needs' %}
     {% include './partials/supportNeedsTab/supportNeedsTabContents.njk' %}
