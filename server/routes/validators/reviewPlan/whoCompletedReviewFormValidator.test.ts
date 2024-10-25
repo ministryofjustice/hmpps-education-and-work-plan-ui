@@ -31,7 +31,8 @@ describe('whoCompletedReviewFormValidator', () => {
       // Given
       const form: WhoCompletedReviewForm = {
         completedBy: ReviewPlanCompletedByValue.SOMEBODY_ELSE,
-        completedByOther: 'Buck Rogers',
+        completedByOtherFullName: 'Buck Rogers',
+        completedByOtherJobRole: 'CIAG',
         'reviewDate-day': yesterday.getDate().toString(),
         'reviewDate-month': (yesterday.getMonth() + 1).toString(),
         'reviewDate-year': yesterday.getFullYear().toString(),
@@ -68,18 +69,64 @@ describe('whoCompletedReviewFormValidator', () => {
       expect(actual).toEqual(expected)
     })
 
-    it(`missing completedByOther field`, () => {
+    it(`missing completedByOtherFullName field`, () => {
       // Given
       const form: WhoCompletedReviewForm = {
         completedBy: ReviewPlanCompletedByValue.SOMEBODY_ELSE,
-        completedByOther: undefined,
+        completedByOtherFullName: undefined,
+        completedByOtherJobRole: 'CIAG',
         'reviewDate-day': yesterday.getDate().toString(),
         'reviewDate-month': (yesterday.getMonth() + 1).toString(),
         'reviewDate-year': yesterday.getFullYear().toString(),
       }
 
       const expected: Array<Record<string, string>> = [
-        { href: '#completedByOther', text: 'Enter the name of the person who completed the review' },
+        { href: '#completedByOtherFullName', text: 'Enter the full name of the person who completed the review' },
+      ]
+
+      // When
+      const actual = validateWhoCompletedReviewForm(form)
+
+      // Then
+      expect(actual).toEqual(expected)
+    })
+
+    it(`missing completedByOtherJobRole field`, () => {
+      // Given
+      const form: WhoCompletedReviewForm = {
+        completedBy: ReviewPlanCompletedByValue.SOMEBODY_ELSE,
+        completedByOtherFullName: 'Joey Beltram',
+        completedByOtherJobRole: undefined,
+        'reviewDate-day': yesterday.getDate().toString(),
+        'reviewDate-month': (yesterday.getMonth() + 1).toString(),
+        'reviewDate-year': yesterday.getFullYear().toString(),
+      }
+
+      const expected: Array<Record<string, string>> = [
+        { href: '#completedByOtherJobRole', text: 'Enter the job title of the person who completed the review' },
+      ]
+
+      // When
+      const actual = validateWhoCompletedReviewForm(form)
+
+      // Then
+      expect(actual).toEqual(expected)
+    })
+
+    it(`missing completedByOtherFullName and completedByOtherJobRole fields`, () => {
+      // Given
+      const form: WhoCompletedReviewForm = {
+        completedBy: ReviewPlanCompletedByValue.SOMEBODY_ELSE,
+        completedByOtherFullName: undefined,
+        completedByOtherJobRole: undefined,
+        'reviewDate-day': yesterday.getDate().toString(),
+        'reviewDate-month': (yesterday.getMonth() + 1).toString(),
+        'reviewDate-year': yesterday.getFullYear().toString(),
+      }
+
+      const expected: Array<Record<string, string>> = [
+        { href: '#completedByOtherFullName', text: 'Enter the full name of the person who completed the review' },
+        { href: '#completedByOtherJobRole', text: 'Enter the job title of the person who completed the review' },
       ]
 
       // When
@@ -111,9 +158,7 @@ describe('whoCompletedReviewFormValidator', () => {
         'reviewDate-year': spec.year,
       }
 
-      const expected: Array<Record<string, string>> = [
-        { href: '#review-date', text: 'Enter a valid date that the review was completed on' },
-      ]
+      const expected: Array<Record<string, string>> = [{ href: '#review-date', text: 'Enter a valid date' }]
 
       // When
       const actual = validateWhoCompletedReviewForm(form)
@@ -142,18 +187,19 @@ describe('whoCompletedReviewFormValidator', () => {
       expect(actual).toEqual(expected)
     })
 
-    it(`completed by other name too long`, () => {
+    it(`completed by other full name too long`, () => {
       // Given
       const form: WhoCompletedReviewForm = {
         completedBy: ReviewPlanCompletedByValue.SOMEBODY_ELSE,
-        completedByOther: 'a'.repeat(201),
+        completedByOtherFullName: 'a'.repeat(201),
+        completedByOtherJobRole: 'CIAG',
         'reviewDate-day': yesterday.getDate().toString(),
         'reviewDate-month': (yesterday.getMonth() + 1).toString(),
         'reviewDate-year': yesterday.getFullYear().toString(),
       }
 
       const expected: Array<Record<string, string>> = [
-        { href: '#completedByOther', text: 'The person who completed the review must be 200 characters or less' },
+        { href: '#completedByOtherFullName', text: 'Full name must be 200 characters or less' },
       ]
 
       // When
@@ -162,5 +208,27 @@ describe('whoCompletedReviewFormValidator', () => {
       // Then
       expect(actual).toEqual(expected)
     })
+  })
+
+  it(`completed by other job role too long`, () => {
+    // Given
+    const form: WhoCompletedReviewForm = {
+      completedBy: ReviewPlanCompletedByValue.SOMEBODY_ELSE,
+      completedByOtherFullName: 'Joey Beltram',
+      completedByOtherJobRole: 'a'.repeat(201),
+      'reviewDate-day': yesterday.getDate().toString(),
+      'reviewDate-month': (yesterday.getMonth() + 1).toString(),
+      'reviewDate-year': yesterday.getFullYear().toString(),
+    }
+
+    const expected: Array<Record<string, string>> = [
+      { href: '#completedByOtherJobRole', text: 'Job role must be 200 characters or less' },
+    ]
+
+    // When
+    const actual = validateWhoCompletedReviewForm(form)
+
+    // Then
+    expect(actual).toEqual(expected)
   })
 })

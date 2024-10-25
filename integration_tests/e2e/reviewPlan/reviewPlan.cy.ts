@@ -77,9 +77,11 @@ context(`Review a prisoner's plan`, () => {
       .selectWhoCompletedTheReview(ReviewPlanCompletedByValue.SOMEBODY_ELSE)
       .submitPage()
     Page.verifyOnPage(WhoCompletedReviewPage) //
-      .hasErrorCount(1)
-      .hasFieldInError('completedByOther')
-      .enterReviewersName('A Reviewer')
+      .hasErrorCount(2)
+      .hasFieldInError('completedByOtherFullName')
+      .hasFieldInError('completedByOtherJobRole')
+      .enterReviewersFullName('A Reviewer')
+      .enterReviewersJobRole('CIAG')
       .submitPage()
 
     // Next page is Review Notes page
