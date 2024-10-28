@@ -8,7 +8,7 @@ const prisoners = {
       status: 200,
       headers: { 'Content-Type': 'application/json;charset=UTF-8' },
       jsonBody: {
-        prisonId: 'MDI',
+        prisonId: 'BXI',
         prisonerNumber: 'A00001A',
         firstName: 'Paris',
         lastName: 'Jones',
@@ -30,7 +30,7 @@ const prisoners = {
       status: 200,
       headers: { 'Content-Type': 'application/json;charset=UTF-8' },
       jsonBody: {
-        prisonId: 'MDI',
+        prisonId: 'BXI',
         prisonerNumber: 'H4115SD',
         firstName: 'Billy',
         lastName: 'Jean',
@@ -52,7 +52,7 @@ const prisoners = {
       status: 200,
       headers: { 'Content-Type': 'application/json;charset=UTF-8' },
       jsonBody: {
-        prisonId: 'MDI',
+        prisonId: 'BXI',
         prisonerNumber: 'G5005GD',
         firstName: 'John',
         lastName: 'Smith',
@@ -74,7 +74,7 @@ const prisoners = {
       status: 200,
       headers: { 'Content-Type': 'application/json;charset=UTF-8' },
       jsonBody: {
-        prisonId: 'MDI',
+        prisonId: 'BXI',
         prisonerNumber: 'G6115VJ',
         firstName: 'Daniel',
         lastName: 'Craig',

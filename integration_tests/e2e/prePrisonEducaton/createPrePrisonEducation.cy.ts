@@ -179,7 +179,7 @@ context('Create a prisoners pre-prison education', () => {
       postRequestedFor(urlEqualTo(`/person/${prisonNumber}/education`)) //
         .withRequestBody(
           matchingJsonPath(
-            "$[?(@.prisonId == 'MDI' && " +
+            "$[?(@.prisonId == 'BXI' && " +
               "@.educationLevel == 'FURTHER_EDUCATION_COLLEGE' && " +
               '@.qualifications.size() == 2 && ' +
               '!@.qualifications[0].reference && ' + // assert the qualification has no reference as it is a new qualification that wont have a reference until the API has created it
