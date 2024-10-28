@@ -94,7 +94,7 @@ Working in the prison kitchen is suiting Daniel well and is allowing him to focu
 We have agreed and set a new goal, and the next review is 1 year from now.   
 `,
       )
-    // .submitPage()
+      .submitPage()
 
     // Then
     // TODO - assert API was called with correct values

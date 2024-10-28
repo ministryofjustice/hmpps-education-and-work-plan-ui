@@ -15,5 +15,5 @@ export default class ReviewNotePage extends Page {
     return this
   }
 
-  private reviewNotesField = (): PageElement => cy.get('#notes')
+  private reviewNotesField = (): PageElement => cy.get('[data-qa=notes]')
 }
