@@ -164,7 +164,6 @@ declare module 'reviewPlanForms' {
 
   export interface WhoCompletedReviewForm {
     completedBy: ReviewPlanCompletedByValue
-    completedByOther?: string
     completedByOtherFullName?: string
     completedByOtherJobRole?: string
     'reviewDate-day': string

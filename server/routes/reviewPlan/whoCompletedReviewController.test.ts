@@ -45,7 +45,8 @@ describe('whoCompletedReviewController', () => {
 
       const expectedForm: WhoCompletedReviewForm = {
         completedBy: ReviewPlanCompletedByValue.MYSELF,
-        completedByOther: undefined,
+        completedByOtherFullName: undefined,
+        completedByOtherJobRole: undefined,
         'reviewDate-day': '09',
         'reviewDate-month': '03',
         'reviewDate-year': '2024',
