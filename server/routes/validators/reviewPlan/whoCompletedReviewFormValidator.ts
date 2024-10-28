@@ -7,9 +7,10 @@ const validateWhoCompletedReviewForm = (
   whoCompletedReviewForm: WhoCompletedReviewForm,
 ): Array<Record<string, string>> => {
   const errors: Array<Record<string, string>> = []
+  const completedByOtherErrors = validateCompletedByOther(whoCompletedReviewForm)
 
   errors.push(...formatErrors('completedBy', validateCompletedBy(whoCompletedReviewForm)))
-  errors.push(...formatErrors('completedByOther', validateCompletedByOther(whoCompletedReviewForm)))
+  completedByOtherErrors.forEach(error => errors.push(...formatErrors(error.field, [error.message])))
   errors.push(...formatErrors('review-date', validateReviewDate(whoCompletedReviewForm)))
 
   return errors
@@ -23,14 +24,14 @@ const validateReviewDate = (whoCompletedReviewForm: WhoCompletedReviewForm): Arr
   const year = whoCompletedReviewForm['reviewDate-year']
 
   if (!(isOneOrTwoDigits(day) && isOneOrTwoDigits(month) && isFourDigits(year))) {
-    errors.push('Enter a valid date that the review was completed on')
+    errors.push('Enter a valid date')
     return errors
   }
 
   const today = startOfToday()
   const proposedDate = parse(`${year}-${month?.padStart(2, '0')}-${day?.padStart(2, '0')}`, 'yyyy-MM-dd', today)
   if (!isValid(proposedDate)) {
-    errors.push('Enter a valid date that the review was completed on')
+    errors.push('Enter a valid date')
   }
   if (isAfter(proposedDate, today)) {
     errors.push('Enter a valid date. Date cannot be in the future')
@@ -38,15 +39,29 @@ const validateReviewDate = (whoCompletedReviewForm: WhoCompletedReviewForm): Arr
   return errors
 }
 
-const validateCompletedByOther = (whoCompletedReviewForm: WhoCompletedReviewForm): Array<string> => {
-  const errors: Array<string> = []
+const validateCompletedByOther = (
+  whoCompletedReviewForm: WhoCompletedReviewForm,
+): Array<{ field: string; message: string }> => {
+  const errors: Array<{ field: string; message: string }> = []
+  const { completedBy, completedByOtherFullName, completedByOtherJobRole } = whoCompletedReviewForm
 
-  const { completedBy, completedByOther } = whoCompletedReviewForm
   if (completedBy === ReviewPlanCompletedByValue.SOMEBODY_ELSE) {
-    if (!completedByOther) {
-      errors.push(`Enter the name of the person who completed the review`)
-    } else if (completedByOther.length > 200) {
-      errors.push(`The person who completed the review must be 200 characters or less`)
+    if (!completedByOtherFullName) {
+      errors.push({
+        field: 'completedByOtherFullName',
+        message: 'Enter the full name of the person who completed the review',
+      })
+    } else if (completedByOtherFullName.length > 200) {
+      errors.push({ field: 'completedByOtherFullName', message: 'Full name must be 200 characters or less' })
+    }
+
+    if (!completedByOtherJobRole) {
+      errors.push({
+        field: 'completedByOtherJobRole',
+        message: 'Enter the job title of the person who completed the review',
+      })
+    } else if (completedByOtherJobRole.length > 200) {
+      errors.push({ field: 'completedByOtherJobRole', message: 'Job role must be 200 characters or less' })
     }
   }
 

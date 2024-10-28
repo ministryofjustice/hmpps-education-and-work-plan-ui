@@ -45,7 +45,8 @@ describe('whoCompletedReviewController', () => {
 
       const expectedForm: WhoCompletedReviewForm = {
         completedBy: ReviewPlanCompletedByValue.MYSELF,
-        completedByOther: undefined,
+        completedByOtherFullName: undefined,
+        completedByOtherJobRole: undefined,
         'reviewDate-day': '09',
         'reviewDate-month': '03',
         'reviewDate-year': '2024',
@@ -100,15 +101,16 @@ describe('whoCompletedReviewController', () => {
       }
       req.body = invalidForm
 
-      const exoectedErrors = [
-        { href: '#completedByOther', text: 'Enter the name of the person who completed the review' },
+      const expectedErrors = [
+        { href: '#completedByOtherFullName', text: 'Enter the full name of the person who completed the review' },
+        { href: '#completedByOtherJobRole', text: 'Enter the job title of the person who completed the review' },
       ]
 
       // When
       await controller.submitWhoCompletedReviewForm(req, res, next)
 
       // Then
-      expect(res.redirectWithErrors).toHaveBeenCalledWith('/plan/A1234BC/review', exoectedErrors)
+      expect(res.redirectWithErrors).toHaveBeenCalledWith('/plan/A1234BC/review', expectedErrors)
       expect(getPrisonerContext(req.session, prisonNumber).whoCompletedReviewForm).toEqual(invalidForm)
     })
 

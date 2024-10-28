@@ -48,7 +48,8 @@ const toWhoCompletedReviewForm = (dto: ReviewPlanDto): WhoCompletedReviewForm =>
   const reviewDate = dto.reviewDate ? startOfDay(dto.reviewDate) : undefined
   return {
     completedBy: dto.completedBy,
-    completedByOther: dto.completedByOther,
+    completedByOtherFullName: dto.completedByOtherFullName,
+    completedByOtherJobRole: dto.completedByOtherJobRole,
     'reviewDate-day': reviewDate ? `${reviewDate.getDate()}`.padStart(2, '0') : undefined,
     'reviewDate-month': reviewDate ? `${reviewDate.getMonth() + 1}`.padStart(2, '0') : undefined,
     'reviewDate-year': reviewDate ? `${reviewDate.getFullYear()}` : undefined,
@@ -58,7 +59,8 @@ const toWhoCompletedReviewForm = (dto: ReviewPlanDto): WhoCompletedReviewForm =>
 const updateDtoWithFormContents = (dto: ReviewPlanDto, form: WhoCompletedReviewForm): ReviewPlanDto => ({
   ...dto,
   completedBy: form.completedBy,
-  completedByOther: form.completedByOther,
+  completedByOtherFullName: form.completedByOtherFullName,
+  completedByOtherJobRole: form.completedByOtherJobRole,
   reviewDate: format(
     startOfDay(
       `${form['reviewDate-year']}-${form['reviewDate-month'].padStart(2, '0')}-${form['reviewDate-day'].padStart(2, '0')}`,

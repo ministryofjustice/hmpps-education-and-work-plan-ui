@@ -14,8 +14,13 @@ export default class WhoCompletedReviewPage extends Page {
     return this
   }
 
-  enterReviewersName(value: string): WhoCompletedReviewPage {
-    this.otherReviewersNameField().clear().type(value)
+  enterReviewersFullName(value: string): WhoCompletedReviewPage {
+    this.otherReviewersFullNameField().clear().type(value)
+    return this
+  }
+
+  enterReviewersJobRole(value: string): WhoCompletedReviewPage {
+    this.otherReviewersJobRoleField().clear().type(value)
     return this
   }
 
@@ -28,11 +33,13 @@ export default class WhoCompletedReviewPage extends Page {
 
   private radio = (value: ReviewPlanCompletedByValue): PageElement => cy.get(`.govuk-radios__input[value='${value}']`)
 
-  private reviewDateDayField = (): PageElement => cy.get('#review-date-day')
+  private reviewDateDayField = (): PageElement => cy.get('[data-qa=review-date-day]')
 
-  private reviewDateMonthField = (): PageElement => cy.get('#review-date-month')
+  private reviewDateMonthField = (): PageElement => cy.get('[data-qa=review-date-month]')
 
-  private reviewDateYearField = (): PageElement => cy.get('#review-date-year')
+  private reviewDateYearField = (): PageElement => cy.get('[data-qa=review-date-year]')
 
-  private otherReviewersNameField = (): PageElement => cy.get('#completedByOther')
+  private otherReviewersFullNameField = (): PageElement => cy.get('[data-qa=completedByOtherFullName]')
+
+  private otherReviewersJobRoleField = (): PageElement => cy.get('[data-qa=completedByOtherJobRole]')
 }

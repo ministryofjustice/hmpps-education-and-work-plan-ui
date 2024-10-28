@@ -25,16 +25,36 @@
 
           {% set somebodyElseHtml %}
             {{ govukInput({
-              id: "completedByOther",
-              name: "completedByOther",
-              value: form.completedByOther,
+              id: "completedByOtherFullName",
+              name: "completedByOtherFullName",
+              value: form.completedByOtherFullName,
               maxlength: 200,
               label: {
-                text: "Give details",
+                text: "Full name",
+                classes: "govuk-label--s govuk-!-font-weight-bold",
                 attributes: { "aria-live": "polite" }
               },
-              attributes: { "aria-label" : "Give details as to who completed the review" },
-              errorMessage: errors | findError('completedByOther')
+              attributes: { 
+                "aria-label" : "Give details as to who completed the review",
+                "data-qa": "completedByOtherFullName"
+                },
+              errorMessage: errors | findError('completedByOtherFullName')
+            }) }}
+            {{ govukInput({
+              id: "completedByOtherJobRole",
+              name: "completedByOtherJobRole",
+              value: form.completedByOtherJobRole,
+              maxlength: 200,
+              label: {
+                text: "Job role",
+                classes: "govuk-label--s govuk-!-font-weight-bold",
+                attributes: { "aria-live": "polite" }
+              },
+              attributes: { 
+                "aria-label" : "Give details as to who completed the review",
+                "data-qa": "completedByOtherJobRole"
+                },
+              errorMessage: errors | findError('completedByOtherJobRole')
             }) }}
           {% endset -%}
 
@@ -84,21 +104,24 @@
                 label: 'Day',
                 name: 'reviewDate-day',
                 classes: 'govuk-input--width-2',
-                value: form['reviewDate-day']
+                value: form['reviewDate-day'],
+                attributes: {"data-qa": "review-date-day"}
               },
               {
                 id: 'review-date-month',
                 label: 'Month',
                 name: 'reviewDate-month',
                 classes: 'govuk-input--width-2',
-                value: form['reviewDate-month']
+                value: form['reviewDate-month'],
+                attributes: {"data-qa": "review-date-month"}
               },
               {
                 id: 'review-date-year',
                 label: 'Year',
                 name: 'reviewDate-year',
                 classes: 'govuk-input--width-4',
-                value: form['reviewDate-year']
+                value: form['reviewDate-year'],
+                attributes: {"data-qa": "review-date-year"}
               }
             ],
             errorMessage: errors | findError('review-date')
