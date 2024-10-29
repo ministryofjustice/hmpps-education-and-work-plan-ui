@@ -3,6 +3,7 @@ import type { ReviewPlanDto } from 'dto'
 import type { ReviewNoteForm } from 'reviewPlanForms'
 import { getPrisonerContext } from '../../data/session/prisonerContexts'
 import ReviewNoteView from './reviewNoteView'
+import validateReviewNote from '../validators/reviewPlan/reviewNoteValidator'
 
 export default class ReviewNoteController {
   getReviewNoteView: RequestHandler = async (req, res, next): Promise<void> => {
@@ -30,6 +31,11 @@ export default class ReviewNoteController {
     const { reviewPlanDto } = getPrisonerContext(req.session, prisonNumber)
     const updatedReviewPlanDto = updateDtoWithFormContents(reviewPlanDto, reviewNoteForm)
     getPrisonerContext(req.session, prisonNumber).reviewPlanDto = updatedReviewPlanDto
+
+    const errors = validateReviewNote(reviewNoteForm)
+    if (errors.length > 0) {
+      return res.redirectWithErrors(`/plan/${prisonNumber}/review/notes`, errors)
+    }
 
     return res.redirect(`/plan/${prisonNumber}/review/check-your-answers`)
   }

@@ -7,6 +7,7 @@ import WhoCompletedReviewController from './whoCompletedReviewController'
 import createEmptyReviewPlanDtoIfNotInPrisonerContext from '../routerRequestHandlers/createEmptyReviewPlanDtoIfNotInPrisonerContext'
 import checkReviewPlanDtoExistsInPrisonerContext from '../routerRequestHandlers/checkReviewPlanDtoExistsInPrisonerContext'
 import ReviewNoteController from './reviewNoteController'
+import ReviewCheckYourAnswersController from './reviewCheckYourAnswersController'
 
 const ENABLED_PRISONS_FOR_REVIEW_JOURNEYS = config.featureToggles.reviewsPrisonsEnabled
   .split(',')
@@ -18,6 +19,7 @@ const ENABLED_PRISONS_FOR_REVIEW_JOURNEYS = config.featureToggles.reviewsPrisons
 export default function reviewPlanRoutes(router: Router) {
   const whoCompletedReviewController = new WhoCompletedReviewController()
   const reviewNoteController = new ReviewNoteController()
+  const reviewCheckYourAnswersController = new ReviewCheckYourAnswersController()
 
   router.use('/plan/:prisonNumber/review/**', [
     checkPrisonIsEnabled(),
@@ -37,9 +39,11 @@ export default function reviewPlanRoutes(router: Router) {
   router.get('/plan/:prisonNumber/review/notes', asyncMiddleware(reviewNoteController.getReviewNoteView))
   router.post('/plan/:prisonNumber/review/notes', asyncMiddleware(reviewNoteController.submitReviewNoteForm))
 
-  router.get('/plan/:prisonNumber/review/check-your-answers', async (_req, res, next) => {
-    // TODO implement controller for Review check your answers page
-  })
+  router.get(
+    '/plan/:prisonNumber/review/check-your-answers',
+    asyncMiddleware(reviewCheckYourAnswersController.getReviewCheckYourAnswersView),
+  )
+  // TODO fully implement controller for Review check your answers page
 
   router.get('/plan/:prisonNumber/review/complete', async (_req, res, next) => {
     // TODO implement controller for Review complete page

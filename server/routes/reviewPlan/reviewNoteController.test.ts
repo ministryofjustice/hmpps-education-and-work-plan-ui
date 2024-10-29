@@ -112,4 +112,42 @@ describe('reviewNoteController', () => {
       expect(getPrisonerContext(req.session, prisonNumber).reviewPlanDto).toEqual(expectedReviewPlanDto)
     })
   })
+
+  it('should redisplay page given form submitted without a note', async () => {
+    // Given
+    getPrisonerContext(req.session, prisonNumber).reviewNoteForm = undefined
+
+    const invalidForm: ReviewNoteForm = {
+      notes: undefined,
+    }
+    req.body = invalidForm
+
+    const expectedErrors = [{ href: '#notes', text: 'You must add a note to this review' }]
+
+    // When
+    await controller.submitReviewNoteForm(req, res, next)
+
+    // Then
+    expect(res.redirectWithErrors).toHaveBeenCalledWith('/plan/A1234BC/review/notes', expectedErrors)
+    expect(getPrisonerContext(req.session, prisonNumber).reviewNoteForm).toEqual(invalidForm.notes)
+  })
+
+  it('should redisplay page given form submitted with a note that exceeds maximum length', async () => {
+    // Given
+    const invalidForm: ReviewNoteForm = {
+      notes: 'a'.repeat(513),
+    }
+    getPrisonerContext(req.session, prisonNumber).reviewNoteForm = invalidForm
+
+    req.body = invalidForm
+
+    const expectedErrors = [{ href: '#notes', text: 'Review note must be 512 characters or less' }]
+
+    // When
+    await controller.submitReviewNoteForm(req, res, next)
+
+    // Then
+    expect(res.redirectWithErrors).toHaveBeenCalledWith('/plan/A1234BC/review/notes', expectedErrors)
+    expect(getPrisonerContext(req.session, prisonNumber).reviewNoteForm).toEqual(invalidForm)
+  })
 })
