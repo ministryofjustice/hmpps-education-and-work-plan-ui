@@ -85,8 +85,10 @@ context(`Review a prisoner's plan`, () => {
       .submitPage()
 
     // Next page is Review Notes page
+    Page.verifyOnPage(ReviewNotePage).hasBackLinkTo(`/plan/${prisonNumber}/review`).submitPage() // submit the page without answering any questions to trigger a validation error
     Page.verifyOnPage(ReviewNotePage)
-      .hasBackLinkTo(`/plan/${prisonNumber}/review`)
+      .hasErrorCount(1)
+      .hasFieldInError('notes')
       .setReviewNote(
         `Daniel's review went well and he has made good progress on his goals.
 Working in the prison kitchen is suiting Daniel well and is allowing him to focus on more productive uses of his time whilst in prison.

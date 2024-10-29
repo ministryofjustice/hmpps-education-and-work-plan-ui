@@ -17,15 +17,14 @@
           text: "This note will not be sent to case notes",
           iconFallbackText: "Warning"
         }) }}
-        <p class="govuk-body">To help allocations, referrals and personal development include any details of:</p>
-        <ul class="govuk-list govuk-list--bullet">
+        <p class="govuk-body">To help allocations, referrals, and personal development include any details of:</p>
+        <ul class="govuk-list govuk-list--bullet govuk-!-margin-bottom-8">
           <li>reviewing pathways based on skills, aspirations, and the activities available in your prison if the prisoner has transferred</li>
           <li>helping them develop their CV and disclosure letters</li>
           <li>referring and signposting them to other organisations to find employment - specify which ones</li>
           <li>supporting the learning and skills manager and prison employment lead</li>
           <li>any CIAG programme content provided - specify the type and subject, like job fairs, recruitment events, mock interviews, employer presentations (for example on application tips or career and sector awareness)</li>
         </ul>
-        <br>
 
       <form class="form" method="post" novalidate="">
         <div class="govuk-form-group">
@@ -37,8 +36,7 @@
             value: form.notes,
             label: {
               text: "Add a note to this review",
-              classes: "govuk-visually-hidden",
-              isPageHeading: true
+              classes: "govuk-visually-hidden"
             },
             errorMessage: errors | findError('notes'),
             attributes: {"data-qa": "notes"}
