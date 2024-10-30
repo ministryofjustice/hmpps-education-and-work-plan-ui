@@ -113,6 +113,7 @@ const pageViewEventMap: Record<string, Page> = {
 
   // Non audit routes. These routes do not raise an audit event
   '/plan/:prisonNumber/induction-created': null,
+  '/prisoners/:prisonNumber/education/add-qualifications': null,
 }
 
 export default function auditMiddleware({ auditService }: Services) {

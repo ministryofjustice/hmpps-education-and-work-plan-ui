@@ -50,8 +50,8 @@ never happen.
                   {# If the education record has qualifications the change link should be to the qualifications list screen, which allows the user to add/remove qualifications #}
                   /prisoners/{{ prisonerSummary.prisonNumber }}/education/qualifications
                 {%- else -%}
-                  {# If the education record does not have any qualifications the change link should be to the qualification level screen, which allows the user enter the first qualification #}
-                  /prisoners/{{ prisonerSummary.prisonNumber }}/education/qualification-level
+                  {# If the education record does not have any qualifications the change link should be to a route that sets up the DTO in the prisoner context then redirects to the qualification level screen, which allows the user enter the first qualification #}
+                  /prisoners/{{ prisonerSummary.prisonNumber }}/education/add-qualifications
                 {%- endif -%}
               {%- endset -%}
               <a class="govuk-link app-summary-card__change-link__link govuk-!-display-none-print" href="{{ educationalQualificationsChangeLinkUrl }}" data-qa="educational-qualifications-change-link">
