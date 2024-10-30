@@ -6,6 +6,7 @@ import InPrisonTrainingPage from '../induction/InPrisonTrainingPage'
 import HighestLevelOfEducationPage from '../prePrisonEducation/HighestLevelOfEducationPage'
 import AdditionalTrainingPage from '../induction/AdditionalTrainingPage'
 import QualificationsListPage from '../prePrisonEducation/QualificationsListPage'
+import QualificationLevelPage from '../prePrisonEducation/QualificationLevelPage'
 
 /**
  * Cypress page class representing the Education And Training tab of the Overview Page
@@ -81,6 +82,11 @@ export default class EducationAndTrainingPage extends Page {
     return this
   }
 
+  hasNoEducationQualificationsDisplayed(): EducationAndTrainingPage {
+    this.educationTable().should('not.exist')
+    return this
+  }
+
   hasLinkToCreateInductionDisplayed(): EducationAndTrainingPage {
     this.createInductionLink().should('be.visible')
     return this
@@ -132,6 +138,11 @@ export default class EducationAndTrainingPage extends Page {
     return Page.verifyOnPage(QualificationsListPage)
   }
 
+  clickToAddEducationalQualifications(): QualificationLevelPage {
+    this.educationalQualificationsChangeLink().click()
+    return Page.verifyOnPage(QualificationLevelPage)
+  }
+
   doesNotHaveLinkToViewAllCourses(): EducationAndTrainingPage {
     this.viewAllInPrisonCoursesLink().should('not.exist')
     return this
@@ -142,9 +153,9 @@ export default class EducationAndTrainingPage extends Page {
     return this
   }
 
-  clickToAddEducationalQualifications<T extends Page>(constructor: new () => T): T {
+  clickToAddEducationHistory(): HighestLevelOfEducationPage {
     this.addEducationHistory().click()
-    return Page.verifyOnPage(constructor)
+    return Page.verifyOnPage(HighestLevelOfEducationPage)
   }
 
   activeTab = (): PageElement => cy.get('.moj-sub-navigation__link[aria-current=page]')

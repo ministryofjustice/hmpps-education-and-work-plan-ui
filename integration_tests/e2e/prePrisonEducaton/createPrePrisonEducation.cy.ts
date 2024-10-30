@@ -104,7 +104,7 @@ context('Create a prisoners pre-prison education', () => {
     const overviewPage = Page.verifyOnPage(OverviewPage)
     overviewPage.selectTab('Education and training')
     const educationAndTrainingPage = Page.verifyOnPage(EducationAndTrainingPage)
-    educationAndTrainingPage.clickToAddEducationalQualifications(HighestLevelOfEducationPage)
+    educationAndTrainingPage.clickToAddEducationHistory()
 
     // When
     // First page is Highest Level of Education

@@ -1,4 +1,4 @@
-import { Router } from 'express'
+import { NextFunction, Request, Response, Router } from 'express'
 import { Services } from '../../../services'
 import asyncMiddleware from '../../../middleware/asyncMiddleware'
 import { checkUserHasEditAuthority } from '../../../middleware/roleBasedAccessControl'
@@ -23,6 +23,15 @@ export default (router: Router, services: Services) => {
   const qualificationLevelUpdateController = new QualificationLevelUpdateController()
   const qualificationDetailsUpdateController = new QualificationDetailsUpdateController()
   const qualificationsListUpdateController = new QualificationsListUpdateController(educationAndWorkPlanService)
+
+  router.get('/prisoners/:prisonNumber/education/add-qualifications', [
+    checkUserHasEditAuthority(),
+    retrieveEducationForUpdate(educationAndWorkPlanService),
+    asyncMiddleware((req: Request, res: Response, next: NextFunction) => {
+      const { prisonNumber } = req.params
+      res.redirect(`/prisoners/${prisonNumber}/education/qualification-level`)
+    }),
+  ])
 
   router.use('/prisoners/:prisonNumber/education/highest-level-of-education', [
     checkUserHasEditAuthority(),

@@ -225,4 +225,46 @@ context('Update educational qualifications within an Induction', () => {
       .hasFieldInError('qualificationGrade')
       .hasBackLinkTo(`/prisoners/${prisonNumber}/education/qualification-level`)
   })
+
+  it('should successfully add qualifications given a prisoners induction that was created without any qualifications', () => {
+    // Given
+    const prisonNumber = 'G6115VJ'
+    cy.task('stubGetInduction', { hasQualifications: false })
+    cy.task('stubGetEducation', { hasQualifications: false })
+
+    cy.visit(`/plan/${prisonNumber}/view/education-and-training`)
+    const qualificationLevelPage = Page.verifyOnPage(EducationAndTrainingPage) //
+      .hasNoEducationQualificationsDisplayed()
+      .clickToAddEducationalQualifications()
+
+    // When
+    qualificationLevelPage //
+      .selectQualificationLevel(QualificationLevelValue.LEVEL_3)
+      .submitPage()
+    const qualificationDetailsPage = Page.verifyOnPage(QualificationDetailsPage)
+    qualificationDetailsPage //
+      .setQualificationSubject('Spanish')
+      .setQualificationGrade('A')
+      .submitPage()
+    const qualificationsListPage = Page.verifyOnPage(QualificationsListPage)
+    qualificationsListPage //
+      .hasEducationalQualifications(['Spanish'])
+      .submitPage()
+
+    // Then
+    Page.verifyOnPage(EducationAndTrainingPage)
+    cy.wiremockVerify(
+      putRequestedFor(urlEqualTo(`/person/${prisonNumber}/education`)) //
+        .withRequestBody(
+          matchingJsonPath(
+            "$[?(@.educationLevel == 'SECONDARY_SCHOOL_TOOK_EXAMS' && " +
+              '@.qualifications.size() == 1 && ' +
+              '!@.qualifications[0].reference && ' + // assert the qualification has no reference as it is a new qualification that wont have a reference until the API has created it
+              "@.qualifications[0].subject == 'Spanish' && " +
+              "@.qualifications[0].grade == 'A' && " +
+              "@.qualifications[0].level == 'LEVEL_3')]",
+          ),
+        ),
+    )
+  })
 })
