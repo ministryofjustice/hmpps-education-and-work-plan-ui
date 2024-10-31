@@ -55,6 +55,7 @@ describe('whoCompletedReviewController', () => {
       const expectedView = {
         prisonerSummary,
         form: expectedForm,
+        backlinkUrl: `/plan/${prisonNumber}/view/overview`,
       }
 
       // When
@@ -78,6 +79,7 @@ describe('whoCompletedReviewController', () => {
       const expectedView = {
         prisonerSummary,
         form: expectedForm,
+        backlinkUrl: `/plan/${prisonNumber}/view/overview`,
       }
 
       // When
@@ -138,6 +140,35 @@ describe('whoCompletedReviewController', () => {
       expect(res.redirect).toHaveBeenCalledWith('/plan/A1234BC/review/notes')
       expect(getPrisonerContext(req.session, prisonNumber).whoCompletedReviewForm).toBeUndefined()
       expect(getPrisonerContext(req.session, prisonNumber).reviewPlanDto).toEqual(reviewPlanDto)
+    })
+
+    it(`should set backlinkUrl to Check Your Answers view given the previous page was Check Your Answers`, async () => {
+      // Given
+      const expectedForm: WhoCompletedReviewForm = {
+        completedBy: ReviewPlanCompletedByValue.MYSELF,
+        'reviewDate-day': '20',
+        'reviewDate-month': '3',
+        'reviewDate-year': '2024',
+      }
+
+      getPrisonerContext(req.session, prisonNumber).whoCompletedReviewForm = expectedForm
+
+      req.session.pageFlowHistory = {
+        pageUrls: [`/plan/${prisonNumber}/review/check-your-answers`],
+        currentPageIndex: 0,
+      }
+
+      const expectedView = {
+        prisonerSummary,
+        form: expectedForm,
+        backlinkUrl: `/plan/${prisonNumber}/review/check-your-answers`,
+      }
+
+      // When
+      await controller.getWhoCompletedReviewView(req, res, next)
+
+      // Then
+      expect(res.render).toHaveBeenCalledWith('pages/reviewPlan/whoCompletedReview/index', expectedView)
     })
   })
 })

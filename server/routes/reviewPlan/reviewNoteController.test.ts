@@ -51,6 +51,7 @@ describe('reviewNoteController', () => {
       const expectedView = {
         prisonerSummary,
         form: expectedForm,
+        backlinkUrl: `/plan/${prisonNumber}/review`,
       }
 
       // When
@@ -71,6 +72,7 @@ describe('reviewNoteController', () => {
       const expectedView = {
         prisonerSummary,
         form: expectedForm,
+        backlinkUrl: `/plan/${prisonNumber}/review`,
       }
 
       // When
@@ -149,5 +151,38 @@ describe('reviewNoteController', () => {
     // Then
     expect(res.redirectWithErrors).toHaveBeenCalledWith('/plan/A1234BC/review/notes', expectedErrors)
     expect(getPrisonerContext(req.session, prisonNumber).reviewNoteForm).toEqual(invalidForm)
+  })
+
+  it('should set backlinkUrl to Check Your Answers view given the previous page was Check Your Answers', async () => {
+    // Given
+    getPrisonerContext(req.session, prisonNumber).reviewNoteForm = undefined
+
+    const reviewPlanDto: ReviewPlanDto = {
+      completedBy: ReviewPlanCompletedByValue.MYSELF,
+      reviewDate: '2024-03-09',
+      notes: 'Chris has progressed well',
+    }
+    getPrisonerContext(req.session, prisonNumber).reviewPlanDto = reviewPlanDto
+
+    const expectedForm: ReviewNoteForm = {
+      notes: 'Chris has progressed well',
+    }
+
+    req.session.pageFlowHistory = {
+      pageUrls: [`/plan/${prisonNumber}/review/check-your-answers`],
+      currentPageIndex: 0,
+    }
+
+    const expectedView = {
+      prisonerSummary,
+      form: expectedForm,
+      backlinkUrl: `/plan/${prisonNumber}/review/check-your-answers`,
+    }
+
+    // When
+    await controller.getReviewNoteView(req, res, next)
+
+    // Then
+    expect(res.render).toHaveBeenCalledWith('pages/reviewPlan/reviewNote/index', expectedView)
   })
 })

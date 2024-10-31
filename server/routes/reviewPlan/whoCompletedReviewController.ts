@@ -20,7 +20,11 @@ export default class WhoCompletedReviewController {
 
     getPrisonerContext(req.session, prisonNumber).whoCompletedReviewForm = undefined
 
-    const view = new WhoCompletedReviewView(prisonerSummary, whoCompletedReviewForm)
+    const backlinkUrl = req.session.pageFlowHistory
+      ? `/plan/${prisonNumber}/review/check-your-answers`
+      : `/plan/${prisonNumber}/view/overview`
+
+    const view = new WhoCompletedReviewView(prisonerSummary, whoCompletedReviewForm, backlinkUrl)
     return res.render('pages/reviewPlan/whoCompletedReview/index', { ...view.renderArgs })
   }
 
@@ -40,7 +44,11 @@ export default class WhoCompletedReviewController {
     getPrisonerContext(req.session, prisonNumber).reviewPlanDto = updatedReviewPlanDto
     getPrisonerContext(req.session, prisonNumber).whoCompletedReviewForm = undefined
 
-    return res.redirect(`/plan/${prisonNumber}/review/notes`)
+    const redirectUrl = req.session.pageFlowHistory
+      ? `/plan/${prisonNumber}/review/check-your-answers`
+      : `/plan/${prisonNumber}/review/notes`
+
+    return res.redirect(redirectUrl)
   }
 }
 

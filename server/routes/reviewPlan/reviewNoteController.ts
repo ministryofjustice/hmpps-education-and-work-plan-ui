@@ -19,7 +19,11 @@ export default class ReviewNoteController {
 
     getPrisonerContext(req.session, prisonNumber).reviewNoteForm = undefined
 
-    const view = new ReviewNoteView(prisonerSummary, reviewNoteForm)
+    const backlinkUrl = req.session.pageFlowHistory
+      ? `/plan/${prisonNumber}/review/check-your-answers`
+      : `/plan/${prisonNumber}/review`
+
+    const view = new ReviewNoteView(prisonerSummary, reviewNoteForm, backlinkUrl)
     return res.render('pages/reviewPlan/reviewNote/index', { ...view.renderArgs })
   }
 
