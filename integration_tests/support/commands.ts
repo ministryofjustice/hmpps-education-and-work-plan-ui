@@ -1,3 +1,4 @@
+import { startOfToday } from 'date-fns/startOfToday'
 import { RequestPatternBuilder } from '../mockApis/wiremock/requestPatternBuilder'
 import { verify } from '../mockApis/wiremock'
 import Page from '../pages/page'
@@ -33,6 +34,10 @@ import QualificationDetailsPage from '../pages/prePrisonEducation/QualificationD
 import AdditionalTrainingValue from '../../server/enums/additionalTrainingValue'
 import WantToAddQualificationsPage from '../pages/prePrisonEducation/WantToAddQualificationsPage'
 import HasWorkedBeforeValue from '../../server/enums/hasWorkedBeforeValue'
+import WhoCompletedReviewPage from '../pages/reviewPlan/WhoCompletedReviewPage'
+import ReviewPlanCompletedByValue from '../../server/enums/reviewPlanCompletedByValue'
+import ReviewNotePage from '../pages/reviewPlan/ReviewNotePage'
+import ReviewPlanCheckYourAnswersPage from '../pages/reviewPlan/ReviewPlanCheckYourAnswersPage'
 
 Cypress.Commands.add('signIn', (options = { failOnStatusCode: false }) => {
   cy.request('/')
@@ -158,6 +163,35 @@ Cypress.Commands.add(
     Page.verifyOnPage(CheckYourAnswersPage)
   },
 )
+
+Cypress.Commands.add('createReviewToArriveOnCheckYourAnswers', () => {
+  cy.visit(`/plan/G6115VJ/review`)
+
+  const today = startOfToday()
+
+  // When
+  // First page is the Who completed the review page
+  Page.verifyOnPage(WhoCompletedReviewPage) //
+    .hasBackLinkTo(`/plan/G6115VJ/view/overview`)
+    .setReviewDate(`${today.getDate()}`, `${today.getMonth() + 1}`, `${today.getFullYear()}`)
+    .selectWhoCompletedTheReview(ReviewPlanCompletedByValue.SOMEBODY_ELSE)
+    .enterReviewersFullName('A Reviewer')
+    .enterReviewersJobRole('CIAG')
+    .submitPage()
+
+  // Next page is Review Notes page
+  Page.verifyOnPage(ReviewNotePage)
+    .setReviewNote(
+      `Daniel's review went well and he has made good progress on his goals.
+Working in the prison kitchen is suiting Daniel well and is allowing him to focus on more productive uses of his time whilst in prison.
+
+We have agreed and set a new goal, and the next review is 1 year from now.   
+`,
+    )
+    .submitPage()
+  // Arrive on Check Your Answers page
+  Page.verifyOnPage(ReviewPlanCheckYourAnswersPage)
+})
 
 const signInWithAuthority = (authority: 'EDIT' | 'VIEW') => {
   cy.task('reset')
