@@ -19,7 +19,7 @@ export default class ReviewNoteController {
 
     getPrisonerContext(req.session, prisonNumber).reviewNoteForm = undefined
 
-    const backlinkUrl = req.session.pageFlowHistory
+    const backlinkUrl = req.session.previousPageWasReviewCheckYourAnswers
       ? `/plan/${prisonNumber}/review/check-your-answers`
       : `/plan/${prisonNumber}/review`
 

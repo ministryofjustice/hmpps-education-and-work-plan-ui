@@ -168,10 +168,7 @@ describe('reviewNoteController', () => {
       notes: 'Chris has progressed well',
     }
 
-    req.session.pageFlowHistory = {
-      pageUrls: [`/plan/${prisonNumber}/review/check-your-answers`],
-      currentPageIndex: 0,
-    }
+    req.session.previousPageWasReviewCheckYourAnswers = true
 
     const expectedView = {
       prisonerSummary,

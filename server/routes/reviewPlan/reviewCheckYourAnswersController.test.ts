@@ -3,7 +3,6 @@ import ReviewCheckYourAnswersController from './reviewCheckYourAnswersController
 import ReviewCheckYourAnswersView from './reviewCheckYourAnswersView'
 import { getPrisonerContext } from '../../data/session/prisonerContexts'
 import aValidPrisonerSummary from '../../testsupport/prisonerSummaryTestDataBuilder'
-import { addCurrentPageToHistory } from '../pageFlowHistory'
 import ReviewPlanCompletedByValue from '../../enums/reviewPlanCompletedByValue'
 
 jest.mock('../pageFlowHistory', () => ({
@@ -24,7 +23,7 @@ describe('ReviewCheckYourAnswersController', () => {
   beforeEach(() => {
     req = {
       params: { prisonNumber },
-      session: {},
+      session: { previousPageWasReviewCheckYourAnswers: true },
     } as unknown as Request
 
     res = {
@@ -51,7 +50,6 @@ describe('ReviewCheckYourAnswersController', () => {
       await controller.getReviewCheckYourAnswersView(req, res, next)
 
       // Then
-      expect(addCurrentPageToHistory).toHaveBeenCalledWith(req)
       expect(res.render).toHaveBeenCalledWith('pages/reviewPlan/checkYourAnswers', expectedViewData)
     })
   })

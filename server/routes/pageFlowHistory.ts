@@ -18,14 +18,6 @@ const buildNewPageFlowHistory = (req: Request): PageFlow => {
   }
 }
 
-const addCurrentPageToHistory = (req: Request) => {
-  if (!req.session.pageFlowHistory) {
-    req.session.pageFlowHistory = { pageUrls: [], currentPageIndex: 0 }
-  }
-  const updatedPageFlowHistory = setCurrentPage(req.session.pageFlowHistory, req.path)
-  req.session.pageFlowHistory = updatedPageFlowHistory
-}
-
 /**
  * Either adds the provided page url to the last position in the specified [PageFlow], or if the page has been
  * added previously, it sets the current page index to its position. In either case, the current page index is updated.
@@ -109,5 +101,4 @@ export {
   isLastPage,
   isPageInFlow,
   pageFlowHistoryContains,
-  addCurrentPageToHistory,
 }

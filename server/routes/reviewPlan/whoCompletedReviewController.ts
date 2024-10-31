@@ -20,7 +20,7 @@ export default class WhoCompletedReviewController {
 
     getPrisonerContext(req.session, prisonNumber).whoCompletedReviewForm = undefined
 
-    const backlinkUrl = req.session.pageFlowHistory
+    const backlinkUrl = req.session.previousPageWasReviewCheckYourAnswers
       ? `/plan/${prisonNumber}/review/check-your-answers`
       : `/plan/${prisonNumber}/view/overview`
 
@@ -44,7 +44,7 @@ export default class WhoCompletedReviewController {
     getPrisonerContext(req.session, prisonNumber).reviewPlanDto = updatedReviewPlanDto
     getPrisonerContext(req.session, prisonNumber).whoCompletedReviewForm = undefined
 
-    const redirectUrl = req.session.pageFlowHistory
+    const redirectUrl = req.session.previousPageWasReviewCheckYourAnswers
       ? `/plan/${prisonNumber}/review/check-your-answers`
       : `/plan/${prisonNumber}/review/notes`
 
