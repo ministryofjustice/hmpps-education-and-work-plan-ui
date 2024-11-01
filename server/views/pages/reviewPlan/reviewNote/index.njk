@@ -5,7 +5,11 @@
 {% set pageId = "review-plan-review-note" %}
 
 {% block beforeContent %}
-  {{ govukBackLink({ text: 'Back', href: backlinkUrl }) }}
+   {{ govukBackLink({
+    text: "Back",
+    href: "#",
+    classes: "js-back-link"
+  }) }}
 {% endblock %}
 
 {% block content %}
@@ -55,3 +59,4 @@
     </div>
   </div>
 {% endblock %}
+

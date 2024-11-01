@@ -5,18 +5,22 @@
 {% set pageId = "review-plan-check-your-answers" %}
 
 {% block beforeContent %}
-  {{ govukBackLink({ text: 'Back', href: '/plan/' + prisonerSummary.prisonNumber + '/review/notes' }) }}
+    {{ govukBackLink({
+    text: "Back",
+    href: "#",
+    classes: "js-back-link"
+  }) }}
 {% endblock %}
 
 {% block content %}
 
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-      <h1 class="govuk-heading-l" data-qa="page-heading">Check
+      <h1 class="govuk-heading-l govuk-!-margin-top-6" data-qa="page-heading">Check
         {{prisonerSummary.firstName + " " + prisonerSummary.lastName}}'s review information</h1>
 
-      <div class="app-u-heading-with-change-link">
-        <h2 class="govuk-heading-m">
+      <div class="app-summary-card__change-link">
+        <h2 class="govuk-heading-m app-summary-card__change-link__heading govuk-!-margin-bottom-3">
           {% if reviewPlanDto.completedBy === 'MYSELF' %}
             Who completed the review?
           {% else %}
@@ -24,12 +28,10 @@
             {{ prisonerSummary.firstName + " " + prisonerSummary.lastName }}'s review?
           {% endif %}
         </h2>
-        <span class="govuk-body-m">
-          <a class="govuk-link" href="/plan/{{ prisonerSummary.prisonNumber }}/review" data-qa="review-completed-by-change-link" style="white-space: nowrap;">
+          <a class="govuk-link app-summary-card__change-link__link govuk-!-display-none-print" href="/plan/{{ prisonerSummary.prisonNumber }}/review" data-qa="review-completed-by-change-link">
             Change<span class="govuk-visually-hidden">
               who completed the review</span>
           </a>
-        </span>
       </div>
 
       <dl class="govuk-summary-list govuk-!-margin-bottom-8">
@@ -37,7 +39,7 @@
           <dt class="govuk-summary-list__key govuk-!-width-one-quarter">Review completed by</dt>
           <dd class="govuk-summary-list__value" data-qa="review-completed-by">
             {% if reviewPlanDto.completedBy === 'MYSELF' %}
-              {{ userName }}
+              {{ 'I completed the review myself' }}
             {% else %}
               {{ reviewPlanDto.completedByOtherFullName }}
             {% endif %}
@@ -52,14 +54,12 @@
           </div>
         {% endif %}
       </dl>
-      <div class="app-u-heading-with-change-link">
-        <h2 class="govuk-heading-m">Review note</h2>
-        <span class="govuk-body-m">
-          <a class="govuk-link" href="/plan/{{ prisonerSummary.prisonNumber }}/review/notes" data-qa="review-note-change-link" style="white-space: nowrap;">
+      <div class="app-summary-card__change-link">
+        <h2 class="govuk-heading-m app-summary-card__change-link__heading govuk-!-margin-bottom-3">Review note</h2>
+          <a class="govuk-link app-summary-card__change-link__link govuk-!-display-none-print" href="/plan/{{ prisonerSummary.prisonNumber }}/review/notes" data-qa="review-note-change-link">
             Change<span class="govuk-visually-hidden">
               review note</span>
           </a>
-        </span>
       </div>
       <dl class="govuk-summary-list govuk-!-margin-bottom-8">
         <div class="govuk-summary-list__row">

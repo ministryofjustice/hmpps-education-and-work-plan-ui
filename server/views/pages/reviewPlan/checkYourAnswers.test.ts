@@ -22,14 +22,12 @@ describe('ReviewPlanCheckYourAnswersPage', () => {
 
   it('should render the correct content when "I did the review myself" is selected', () => {
     // Given
-    const userName = 'Larry David'
     const model = {
       prisonerSummary,
       reviewPlanDto: {
         completedBy: ReviewPlanCompletedByValue.MYSELF,
         notes: 'Progress noted in review.',
       },
-      userName,
     }
 
     // When
@@ -43,7 +41,7 @@ describe('ReviewPlanCheckYourAnswersPage', () => {
     expect($('[data-qa="review-completed-by-change-link"]').attr('href')).toBe(
       `/plan/${prisonerSummary.prisonNumber}/review`,
     )
-    expect($('[data-qa="review-completed-by"]').text().trim()).toBe(userName)
+    expect($('[data-qa="review-completed-by"]').text().trim()).toBe('I completed the review myself')
     expect($('[data-qa="job-role"]').length).toEqual(0)
     expect($('[data-qa="review-note-change-link"]').attr('href')).toBe(
       `/plan/${prisonerSummary.prisonNumber}/review/notes`,

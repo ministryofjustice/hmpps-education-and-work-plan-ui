@@ -125,3 +125,13 @@ tbody[data-qa="completed-courses-table-body"] .govuk-table__cell:nth-child(2) {
     align-content: center;
   }
 }
+
+// Display the back link when js is enabled
+
+.js-enabled .govuk-back-link { display: inline-block; }
+
+// Hide the back link when js is disabled
+
+body:not(.js-enabled) .govuk-back-link {
+  display: none;
+}
