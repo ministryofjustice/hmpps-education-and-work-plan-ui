@@ -39,7 +39,6 @@ declare module 'express-session' {
 
     createGoalsForm: CreateGoalsForm
     pageFlowHistory: PageFlow
-    previousPageWasReviewCheckYourAnswers: boolean
     pageFlowQueue: PageFlow
     // Induction related objects held on the session
     inductionDto: InductionDto
