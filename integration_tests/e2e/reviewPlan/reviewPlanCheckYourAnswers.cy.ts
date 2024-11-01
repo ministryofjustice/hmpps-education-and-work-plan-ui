@@ -7,8 +7,6 @@ import ReviewPlanCheckYourAnswersPage from '../../pages/reviewPlan/ReviewPlanChe
 import WhoCompletedReviewPage from '../../pages/reviewPlan/WhoCompletedReviewPage'
 
 context(`Change links on the Check Your Answers page when creating a review`, () => {
-  const prisonNumber = 'G6115VJ'
-
   beforeEach(() => {
     cy.task('stubSignInAsUserWithEditAuthority')
     cy.signIn()
@@ -22,7 +20,7 @@ context(`Change links on the Check Your Answers page when creating a review`, ()
     Page.verifyOnPage(ReviewPlanCheckYourAnswersPage).clickReviewCompletedByChangeLink()
 
     // Then
-    Page.verifyOnPage(WhoCompletedReviewPage).hasBackLinkTo(`/plan/${prisonNumber}/review/check-your-answers`)
+    Page.verifyOnPage(WhoCompletedReviewPage).hasCorrectBackLink()
   })
 
   it('Should support the change link to change the note on the Check Your Answers page when creating a review', () => {
@@ -33,6 +31,6 @@ context(`Change links on the Check Your Answers page when creating a review`, ()
     Page.verifyOnPage(ReviewPlanCheckYourAnswersPage).clickReviewNoteChangeLink()
 
     // Then
-    Page.verifyOnPage(ReviewNotePage).hasBackLinkTo(`/plan/${prisonNumber}/review/check-your-answers`)
+    Page.verifyOnPage(ReviewNotePage).hasCorrectBackLink()
   })
 })

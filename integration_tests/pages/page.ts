@@ -145,6 +145,11 @@ export default abstract class Page {
     return this
   }
 
+  hasCorrectBackLink = () => {
+    this.backLink().should('have.attr', 'href', '#')
+    return this
+  }
+
   backLinkHasAriaLabel = (expected: string) => {
     this.backLink().should('have.attr', 'aria-label', expected)
     return this

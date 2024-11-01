@@ -172,7 +172,7 @@ Cypress.Commands.add('createReviewToArriveOnCheckYourAnswers', () => {
   // When
   // First page is the Who completed the review page
   Page.verifyOnPage(WhoCompletedReviewPage) //
-    .hasBackLinkTo(`/plan/G6115VJ/view/overview`)
+    .hasCorrectBackLink()
     .setReviewDate(`${today.getDate()}`, `${today.getMonth() + 1}`, `${today.getFullYear()}`)
     .selectWhoCompletedTheReview(ReviewPlanCompletedByValue.SOMEBODY_ELSE)
     .enterReviewersFullName('A Reviewer')
