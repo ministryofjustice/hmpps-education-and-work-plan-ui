@@ -14,7 +14,6 @@ describe('ReviewCheckYourAnswersController', () => {
 
   const prisonNumber = 'A1234BC'
   const prisonerSummary = aValidPrisonerSummary(prisonNumber)
-  const userName = 'Larry David'
 
   let req: Request
   let res: Response
@@ -23,12 +22,12 @@ describe('ReviewCheckYourAnswersController', () => {
   beforeEach(() => {
     req = {
       params: { prisonNumber },
-      session: { previousPageWasReviewCheckYourAnswers: true },
+      session: {},
     } as unknown as Request
 
     res = {
       render: jest.fn(),
-      locals: { prisonerSummary, user: { name: userName } },
+      locals: { prisonerSummary },
     } as unknown as Response
 
     jest.clearAllMocks()
@@ -44,7 +43,7 @@ describe('ReviewCheckYourAnswersController', () => {
       }
       getPrisonerContext(req.session, prisonNumber).reviewPlanDto = reviewPlanDto
 
-      const expectedViewData = new ReviewCheckYourAnswersView(prisonerSummary, reviewPlanDto, userName).renderArgs
+      const expectedViewData = new ReviewCheckYourAnswersView(prisonerSummary, reviewPlanDto).renderArgs
 
       // When
       await controller.getReviewCheckYourAnswersView(req, res, next)

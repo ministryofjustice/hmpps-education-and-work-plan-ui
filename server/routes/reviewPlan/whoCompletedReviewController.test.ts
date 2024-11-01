@@ -55,7 +55,6 @@ describe('whoCompletedReviewController', () => {
       const expectedView = {
         prisonerSummary,
         form: expectedForm,
-        backlinkUrl: `/plan/${prisonNumber}/view/overview`,
       }
 
       // When
@@ -79,7 +78,6 @@ describe('whoCompletedReviewController', () => {
       const expectedView = {
         prisonerSummary,
         form: expectedForm,
-        backlinkUrl: `/plan/${prisonNumber}/view/overview`,
       }
 
       // When
@@ -153,12 +151,9 @@ describe('whoCompletedReviewController', () => {
 
       getPrisonerContext(req.session, prisonNumber).whoCompletedReviewForm = expectedForm
 
-      req.session.previousPageWasReviewCheckYourAnswers = true
-
       const expectedView = {
         prisonerSummary,
         form: expectedForm,
-        backlinkUrl: `/plan/${prisonNumber}/review/check-your-answers`,
       }
 
       // When
