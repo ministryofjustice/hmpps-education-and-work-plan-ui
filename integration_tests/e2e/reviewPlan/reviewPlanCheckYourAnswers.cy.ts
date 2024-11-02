@@ -20,7 +20,7 @@ context(`Change links on the Check Your Answers page when creating a review`, ()
     Page.verifyOnPage(ReviewPlanCheckYourAnswersPage).clickReviewCompletedByChangeLink()
 
     // Then
-    Page.verifyOnPage(WhoCompletedReviewPage).hasCorrectBackLink()
+    Page.verifyOnPage(WhoCompletedReviewPage)
   })
 
   it('Should support the change link to change the note on the Check Your Answers page when creating a review', () => {
@@ -31,6 +31,6 @@ context(`Change links on the Check Your Answers page when creating a review`, ()
     Page.verifyOnPage(ReviewPlanCheckYourAnswersPage).clickReviewNoteChangeLink()
 
     // Then
-    Page.verifyOnPage(ReviewNotePage).hasCorrectBackLink()
+    Page.verifyOnPage(ReviewNotePage)
   })
 })

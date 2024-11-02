@@ -1,8 +1,8 @@
 import nunjucks from 'nunjucks'
 import * as cheerio from 'cheerio'
-import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
-import ReviewPlanCompletedByValue from '../../../enums/reviewPlanCompletedByValue'
-import { initialiseName } from '../../../utils/utils'
+import aValidPrisonerSummary from '../../../../testsupport/prisonerSummaryTestDataBuilder'
+import ReviewPlanCompletedByValue from '../../../../enums/reviewPlanCompletedByValue'
+import { initialiseName } from '../../../../utils/utils'
 
 describe('ReviewPlanCheckYourAnswersPage', () => {
   const njkEnv = nunjucks.configure([
@@ -31,7 +31,7 @@ describe('ReviewPlanCheckYourAnswersPage', () => {
     }
 
     // When
-    const content = njkEnv.render('checkYourAnswers.njk', model)
+    const content = njkEnv.render('index.njk', model)
     const $ = cheerio.load(content)
 
     // Then
@@ -62,7 +62,7 @@ describe('ReviewPlanCheckYourAnswersPage', () => {
     }
 
     // When
-    const content = njkEnv.render('checkYourAnswers.njk', model)
+    const content = njkEnv.render('index.njk', model)
     const $ = cheerio.load(content)
 
     // Then

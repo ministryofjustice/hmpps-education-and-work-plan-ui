@@ -1,4 +1,4 @@
-{% extends "../../partials/layout.njk" %}
+{% extends "../../../partials/layout.njk" %}
 
 {% set pageTitle = "Review - check your answers" %}
 
@@ -21,12 +21,7 @@
 
       <div class="app-summary-card__change-link">
         <h2 class="govuk-heading-m app-summary-card__change-link__heading govuk-!-margin-bottom-3">
-          {% if reviewPlanDto.completedBy === 'MYSELF' %}
-            Who completed the review?
-          {% else %}
-            Who completed
-            {{ prisonerSummary.firstName + " " + prisonerSummary.lastName }}'s review?
-          {% endif %}
+          Who completed the review?
         </h2>
           <a class="govuk-link app-summary-card__change-link__link govuk-!-display-none-print" href="/plan/{{ prisonerSummary.prisonNumber }}/review" data-qa="review-completed-by-change-link">
             Change<span class="govuk-visually-hidden">
@@ -39,7 +34,7 @@
           <dt class="govuk-summary-list__key govuk-!-width-one-quarter">Review completed by</dt>
           <dd class="govuk-summary-list__value" data-qa="review-completed-by">
             {% if reviewPlanDto.completedBy === 'MYSELF' %}
-              {{ 'I completed the review myself' }}
+              I completed the review myself
             {% else %}
               {{ reviewPlanDto.completedByOtherFullName }}
             {% endif %}
@@ -64,11 +59,7 @@
       <dl class="govuk-summary-list govuk-!-margin-bottom-8">
         <div class="govuk-summary-list__row">
           <dt class="govuk-summary-list__key govuk-!-width-one-quarter">
-            {% if reviewPlanDto.completedBy === 'MYSELF' %}
-              Note added
-            {% else %}
-              Note added to review
-            {% endif %}
+            Note added
           </dt>
           <dd class="govuk-summary-list__value" data-qa="review-note">
             {{ reviewPlanDto.notes }}

@@ -10,6 +10,6 @@ export default class ReviewCheckYourAnswersController {
     const { reviewPlanDto } = getPrisonerContext(req.session, prisonNumber)
 
     const view = new ReviewCheckYourAnswersView(prisonerSummary, reviewPlanDto)
-    return res.render('pages/reviewPlan/checkYourAnswers', { ...view.renderArgs })
+    return res.render('pages/reviewPlan/checkYourAnswers/index', { ...view.renderArgs })
   }
 }

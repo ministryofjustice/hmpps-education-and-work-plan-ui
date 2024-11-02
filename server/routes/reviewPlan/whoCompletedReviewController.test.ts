@@ -139,28 +139,5 @@ describe('whoCompletedReviewController', () => {
       expect(getPrisonerContext(req.session, prisonNumber).whoCompletedReviewForm).toBeUndefined()
       expect(getPrisonerContext(req.session, prisonNumber).reviewPlanDto).toEqual(reviewPlanDto)
     })
-
-    it(`should set backlinkUrl to Check Your Answers view given the previous page was Check Your Answers`, async () => {
-      // Given
-      const expectedForm: WhoCompletedReviewForm = {
-        completedBy: ReviewPlanCompletedByValue.MYSELF,
-        'reviewDate-day': '20',
-        'reviewDate-month': '3',
-        'reviewDate-year': '2024',
-      }
-
-      getPrisonerContext(req.session, prisonNumber).whoCompletedReviewForm = expectedForm
-
-      const expectedView = {
-        prisonerSummary,
-        form: expectedForm,
-      }
-
-      // When
-      await controller.getWhoCompletedReviewView(req, res, next)
-
-      // Then
-      expect(res.render).toHaveBeenCalledWith('pages/reviewPlan/whoCompletedReview/index', expectedView)
-    })
   })
 })

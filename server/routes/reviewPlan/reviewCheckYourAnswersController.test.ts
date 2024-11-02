@@ -49,7 +49,7 @@ describe('ReviewCheckYourAnswersController', () => {
       await controller.getReviewCheckYourAnswersView(req, res, next)
 
       // Then
-      expect(res.render).toHaveBeenCalledWith('pages/reviewPlan/checkYourAnswers', expectedViewData)
+      expect(res.render).toHaveBeenCalledWith('pages/reviewPlan/checkYourAnswers/index', expectedViewData)
     })
   })
 })
