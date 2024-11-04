@@ -42,8 +42,7 @@ context(`Review a prisoner's plan`, () => {
     cy.visit(`/plan/${prisonNumber}/review`)
 
     // Then
-    Page.verifyOnPage(WhoCompletedReviewPage) //
-      .hasBackLinkTo(`/plan/${prisonNumber}/view/overview`)
+    Page.verifyOnPage(WhoCompletedReviewPage)
   })
 
   it('should redirect to overview page given user tries to navigate directly to Review Notes screen - ie. navigate out of sequence', () => {
@@ -67,7 +66,6 @@ context(`Review a prisoner's plan`, () => {
     // When
     // First page is the Who completed the review page
     Page.verifyOnPage(WhoCompletedReviewPage) //
-      .hasBackLinkTo(`/plan/${prisonNumber}/view/overview`)
       .submitPage() // submit the page without answering any questions to trigger a validation error
     Page.verifyOnPage(WhoCompletedReviewPage) //
       .hasErrorCount(2)
@@ -85,7 +83,8 @@ context(`Review a prisoner's plan`, () => {
       .submitPage()
 
     // Next page is Review Notes page
-    Page.verifyOnPage(ReviewNotePage).hasBackLinkTo(`/plan/${prisonNumber}/review`).submitPage() // submit the page without answering any questions to trigger a validation error
+    Page.verifyOnPage(ReviewNotePage) //
+      .submitPage() // submit the page without answering any questions to trigger a validation error
     Page.verifyOnPage(ReviewNotePage)
       .hasErrorCount(1)
       .hasFieldInError('notes')

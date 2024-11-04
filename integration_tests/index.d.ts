@@ -22,5 +22,7 @@ declare namespace Cypress {
       hasWorkedBefore?: HasWorkedBeforeValue
       withQualifications?: boolean
     })
+
+    createReviewToArriveOnCheckYourAnswers()
   }
 }
