@@ -2,6 +2,7 @@
  * Cypress tests that test the Change links on the Check Your Answers page for Review Plan
  */
 import Page from '../../pages/page'
+import ReviewCompletePage from '../../pages/reviewPlan/ReviewCompletePage'
 import ReviewNotePage from '../../pages/reviewPlan/ReviewNotePage'
 import ReviewPlanCheckYourAnswersPage from '../../pages/reviewPlan/ReviewPlanCheckYourAnswersPage'
 import WhoCompletedReviewPage from '../../pages/reviewPlan/WhoCompletedReviewPage'
@@ -32,5 +33,16 @@ context(`Change links on the Check Your Answers page when creating a review`, ()
 
     // Then
     Page.verifyOnPage(ReviewNotePage)
+  })
+
+  it('Should redirect to Review Complete page when continue button is clicked', () => {
+    // Given
+    cy.createReviewToArriveOnCheckYourAnswers()
+
+    // When
+    Page.verifyOnPage(ReviewPlanCheckYourAnswersPage).submitPage()
+
+    // Then
+    Page.verifyOnPage(ReviewCompletePage)
   })
 })
