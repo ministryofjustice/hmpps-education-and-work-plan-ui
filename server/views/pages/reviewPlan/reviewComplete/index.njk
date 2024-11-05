@@ -1,0 +1,30 @@
+{% extends "../../../partials/layout.njk" %}
+
+{% set pageId = "review-complete" %}
+{% set title = "Review complete" %}
+{% set pageTitle = title %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      {{ govukPanel({
+        classes: "govuk-!-margin-top-7",
+        titleText: "Review marked as complete",
+        attributes: { "data-qa": "review-complete-panel" }
+      }) }}
+      <h3 class="govuk-heading-s govuk-!-margin-top-6" data-qa="page-heading">What happens next</h3>
+      {# TODO - implement logic to display the dates and corresponding text #}
+       <p class="govuk-body" data-qa="no-reviews-due">
+        No more reviews due as {{ prisonerSummary.firstName + " " + prisonerSummary.lastName }}'s release date is {{ '[release date]' }}.</p>
+      <p class="govuk-body" data-qa="next-review-due">
+        {{ prisonerSummary.firstName + " " + prisonerSummary.lastName }}'s next review is due between {{ '[earliest due date]' }} and {{ '[latest due date]' }}.</p>
+      <p class="govuk-body govuk-!-margin-bottom-8" data-qa="show-alerts">
+        We'll show alerts in the service when the review is due so you can book it in.</p>
+      {{ govukButton({
+        text: "Go to learning and work progress plan",
+        href: '/plan/' + prisonerSummary.prisonNumber + '/view/overview',
+        attributes: { 'data-qa': 'submit-button' }
+      }) }}
+    </div>
+  </div>
+{% endblock %}
