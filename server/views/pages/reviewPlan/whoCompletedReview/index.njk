@@ -19,7 +19,8 @@
       {% set warningTextHtml %}
         {{ govukWarningText({
           text: "Update the progress plan before marking the review as complete",
-          iconFallbackText: "Warning"
+          iconFallbackText: "Warning",
+          attributes: {"data-qa": "warning-text"}
         }) }}
       {% endset %}
 
@@ -36,7 +37,7 @@
               label: {
                 text: "Full name",
                 classes: "govuk-label--s govuk-!-font-weight-bold",
-                attributes: { "aria-live": "polite" }
+                attributes: { "aria-live": "polite", "data-qa": "completed-by-other-full-name" }
               },
               attributes: { 
                 "aria-label" : "Give details as to who completed the review",
@@ -52,7 +53,7 @@
               label: {
                 text: "Job role",
                 classes: "govuk-label--s govuk-!-font-weight-bold",
-                attributes: { "aria-live": "polite" }
+                attributes: { "aria-live": "polite", "data-qa": "completed-by-other-job-role" }
               },
               attributes: { 
                 "aria-label" : "Give details as to who completed the review",
@@ -67,7 +68,7 @@
             id: 'completedBy',
             fieldset: {
               legend: {
-                html: "<h1 class='govuk-heading-l govuk-!-margin-top-6'>Who completed " + prisonerSummary.firstName + " " + prisonerSummary.lastName + "'s review?</h1>"
+                html: "<h1 class='govuk-heading-l govuk-!-margin-top-6' data-qa='page-heading'>Who completed " + prisonerSummary.firstName + " " + prisonerSummary.lastName + "'s review?</h1>"
               }
             },
             hint: {
@@ -95,8 +96,9 @@
             id: "review-date",
             fieldset: {
               legend: {
-                text: "Add the review date",
-                classes: "govuk-fieldset__legend--s"
+                html: "<span data-qa='add-review-date'>Add the review date</span>",
+                classes: "govuk-fieldset__legend--s",
+                attributes: { "data-qa": "add-review-date" }
               }
             },
             hint: {

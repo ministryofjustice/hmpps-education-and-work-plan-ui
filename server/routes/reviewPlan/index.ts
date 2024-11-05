@@ -8,6 +8,7 @@ import createEmptyReviewPlanDtoIfNotInPrisonerContext from '../routerRequestHand
 import checkReviewPlanDtoExistsInPrisonerContext from '../routerRequestHandlers/checkReviewPlanDtoExistsInPrisonerContext'
 import ReviewNoteController from './reviewNoteController'
 import ReviewCheckYourAnswersController from './reviewCheckYourAnswersController'
+import ReviewCompleteController from './reviewCompleteController'
 
 /**
  * Route definitions for the review plan journeys
@@ -16,6 +17,7 @@ export default function reviewPlanRoutes(router: Router) {
   const whoCompletedReviewController = new WhoCompletedReviewController()
   const reviewNoteController = new ReviewNoteController()
   const reviewCheckYourAnswersController = new ReviewCheckYourAnswersController()
+  const reviewCompleteController = new ReviewCompleteController()
 
   router.use('/plan/:prisonNumber/review/**', [
     checkPrisonIsEnabled(),
@@ -39,11 +41,18 @@ export default function reviewPlanRoutes(router: Router) {
     '/plan/:prisonNumber/review/check-your-answers',
     asyncMiddleware(reviewCheckYourAnswersController.getReviewCheckYourAnswersView),
   )
+  router.post(
+    '/plan/:prisonNumber/review/check-your-answers',
+    asyncMiddleware(reviewCheckYourAnswersController.submitCheckYourAnswers),
+  )
   // TODO fully implement controller for Review check your answers page
 
-  router.get('/plan/:prisonNumber/review/complete', async (_req, res, next) => {
-    // TODO implement controller for Review complete page
-  })
+  router.get('/plan/:prisonNumber/review/complete', asyncMiddleware(reviewCompleteController.getReviewCompleteView))
+  router.post(
+    '/plan/:prisonNumber/review/complete',
+    asyncMiddleware(reviewCompleteController.goToLearningAndWorkProgressPlan),
+  )
+  // TODO fully implement controller for Review complete page
 
   router.get('/plan/:prisonNumber/review/exemption', async (_req, res, next) => {
     // TODO implement controller for Review exemption page

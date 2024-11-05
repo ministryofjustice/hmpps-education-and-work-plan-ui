@@ -16,13 +16,14 @@
 
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        <h1 class="govuk-heading-l">Add a note to this review</h1>
+        <h1 class="govuk-heading-l" data-qa="page-heading">Add a note to this review</h1>
         {{ govukWarningText({
           text: "This note will not be sent to case notes",
-          iconFallbackText: "Warning"
+          iconFallbackText: "Warning",
+          attributes: {"data-qa": "warning-text"}
         }) }}
-        <p class="govuk-body">To help allocations, referrals, and personal development include any details of:</p>
-        <ul class="govuk-list govuk-list--bullet govuk-!-margin-bottom-8">
+        <p class="govuk-body" data-qa="first-paragraph">To help allocations, referrals, and personal development include any details of:</p>
+        <ul class="govuk-list govuk-list--bullet govuk-!-margin-bottom-8" data-qa="unordered-list">
           <li>reviewing pathways based on skills, aspirations, and the activities available in your prison if the prisoner has transferred</li>
           <li>helping them develop their CV and disclosure letters</li>
           <li>referring and signposting them to other organisations to find employment - specify which ones</li>

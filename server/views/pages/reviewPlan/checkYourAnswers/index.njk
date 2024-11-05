@@ -66,12 +66,15 @@
           </dd>
         </div>
       </dl>
+      <form class="form" method="post" novalidate="">
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
       {{ govukButton({
               id: "submit-button",
               text: "Continue",
               type: "submit",
               attributes: {"data-qa": "submit-button"}
             }) }}
+      </form>
     </div>
   </div>
 {% endblock %}
