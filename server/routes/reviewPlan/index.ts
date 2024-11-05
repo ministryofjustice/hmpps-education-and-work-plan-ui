@@ -9,10 +9,6 @@ import checkReviewPlanDtoExistsInPrisonerContext from '../routerRequestHandlers/
 import ReviewNoteController from './reviewNoteController'
 import ReviewCheckYourAnswersController from './reviewCheckYourAnswersController'
 
-const ENABLED_PRISONS_FOR_REVIEW_JOURNEYS = config.featureToggles.reviewsPrisonsEnabled
-  .split(',')
-  .map(prisonId => prisonId.trim())
-
 /**
  * Route definitions for the review plan journeys
  */
@@ -61,7 +57,7 @@ export default function reviewPlanRoutes(router: Router) {
 const checkPrisonIsEnabled = (): RequestHandler => {
   return asyncMiddleware((req, res, next) => {
     const { activeCaseLoadId } = res.locals.user
-    if (ENABLED_PRISONS_FOR_REVIEW_JOURNEYS.includes(activeCaseLoadId)) {
+    if (config.featureToggles.reviewJourneyEnabledForPrison(activeCaseLoadId)) {
       return next()
     }
     return next(createError(404, `Route ${req.originalUrl} not enabled for prison ${activeCaseLoadId}`))
