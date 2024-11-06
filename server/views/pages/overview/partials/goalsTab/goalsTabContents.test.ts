@@ -206,4 +206,23 @@ describe('goalTabContents', () => {
     expect($('[data-qa="archived-goal-summary-card"]').length).toEqual(0)
     expect($('[data-qa="completed-goal-summary-card"]').length).toEqual(0)
   })
+
+  it('should render service onboarding banner given prison is not enabled for service and user does not have editor role', async () => {
+    // Given
+    const pageViewModel = {
+      prisonerSummary,
+      problemRetrievingData: false,
+      tab: 'goals',
+      showServiceOnboardingBanner: true,
+    }
+
+    // When
+    const content = njkEnv.render('goalsTabContents.njk', pageViewModel)
+    const $ = cheerio.load(content)
+
+    // Then
+    expect($('[data-qa="service-onboarding-banner"]').text().replace(/\s+/g, ' ').trim()).toContain(
+      'You have read only access. If you need to add or edit information ask your head of education, skills and work to email learningandworkprogress@digital.justice.gov.uk so we can onboard your prison.',
+    )
+  })
 })

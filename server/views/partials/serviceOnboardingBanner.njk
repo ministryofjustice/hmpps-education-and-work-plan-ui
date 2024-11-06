@@ -1,0 +1,16 @@
+{% from "moj/components/banner/macro.njk" import mojBanner %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-full">
+    <section class="govuk-!-margin-top-4">
+      {{ mojBanner({
+        type: 'information',
+        text: 'You have read only access. If you need to add or edit information ask your head of education, skills and work to email <a href="mailto:learningandworkprogress@digital.justice.gov.uk">learningandworkprogress@digital.justice.gov.uk</a> so we can onboard your prison.' | safe,
+        iconFallbackText: 'information',
+        attributes: {
+            'data-qa': 'service-onboarding-banner'
+          }
+      }) }}
+    </section>
+  </div>
+</div>
