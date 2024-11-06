@@ -4,6 +4,9 @@
 
 {% block beforeContent %}
   {% include "../../../../partials/breadcrumb.njk" %}
+  {% if showServiceOnboardingBanner === true %}
+    {% include "../../../../partials/serviceOnboardingBanner.njk" %}
+  {% endif %}
 {% endblock %}
 
 {% block content %}
