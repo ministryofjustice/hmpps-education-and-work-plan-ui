@@ -5,6 +5,7 @@ export default class InPrisonCoursesAndQualificationsView {
   constructor(
     private readonly prisonerSummary: PrisonerSummary,
     private readonly inPrisonCourses: InPrisonCourseRecords,
+    private readonly showServiceOnboardingBanner: boolean,
   ) {}
 
   get renderArgs(): {
@@ -13,6 +14,7 @@ export default class InPrisonCoursesAndQualificationsView {
     completedCourses: Array<InPrisonCourse>
     inProgressCourses: Array<InPrisonCourse>
     withdrawnCourses: Array<InPrisonCourse>
+    showServiceOnboardingBanner: boolean
   } {
     return {
       prisonerSummary: this.prisonerSummary,
@@ -28,6 +30,7 @@ export default class InPrisonCoursesAndQualificationsView {
           this.inPrisonCourses.coursesByStatus?.TEMPORARILY_WITHDRAWN || [],
         ),
       ].sort((left, right) => dateComparator(left.courseStartDate, right.courseStartDate, 'DESC')),
+      showServiceOnboardingBanner: this.showServiceOnboardingBanner,
     }
   }
 }

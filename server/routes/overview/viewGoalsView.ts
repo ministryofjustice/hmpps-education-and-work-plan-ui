@@ -4,6 +4,7 @@ export default class ViewGoalsView {
   constructor(
     private readonly prisonerSummary: PrisonerSummary,
     private readonly allGoalsForPrisoner: PrisonerGoals,
+    private readonly showServiceOnboardingBanner: boolean,
   ) {}
 
   get renderArgs(): {
@@ -13,6 +14,7 @@ export default class ViewGoalsView {
     inProgressGoals: Array<Goal>
     archivedGoals: Array<Goal>
     completedGoals: Array<Goal>
+    showServiceOnboardingBanner: boolean
   } {
     return {
       tab: 'goals',
@@ -21,6 +23,7 @@ export default class ViewGoalsView {
       inProgressGoals: this.allGoalsForPrisoner.goals.ACTIVE,
       archivedGoals: this.allGoalsForPrisoner.goals.ARCHIVED,
       completedGoals: this.allGoalsForPrisoner.goals.COMPLETED,
+      showServiceOnboardingBanner: this.showServiceOnboardingBanner,
     }
   }
 }
