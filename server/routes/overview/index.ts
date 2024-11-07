@@ -1,6 +1,5 @@
 import { Router } from 'express'
 import { Services } from '../../services'
-import { checkUserHasViewAuthority } from '../../middleware/roleBasedAccessControl'
 import retrieveCuriousInPrisonCourses from '../routerRequestHandlers/retrieveCuriousInPrisonCourses'
 import removeFormDataFromSession from '../routerRequestHandlers/removeFormDataFromSession'
 import asyncMiddleware from '../../middleware/asyncMiddleware'
@@ -29,7 +28,7 @@ export default (router: Router, services: Services) => {
   const educationAndTrainingController = new EducationAndTrainingController(services.curiousService)
   const viewGoalsController = new ViewGoalsController()
 
-  router.use('/plan/:prisonNumber/view/*', [checkUserHasViewAuthority(), removeFormDataFromSession])
+  router.use('/plan/:prisonNumber/view/*', [removeFormDataFromSession])
 
   router.get('/plan/:prisonNumber/view/overview', [
     retrieveCuriousInPrisonCourses(services.curiousService),
