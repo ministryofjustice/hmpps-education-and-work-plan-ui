@@ -4,11 +4,12 @@ import EducationAndTrainingPage from '../../pages/overview/EducationAndTrainingP
 import InPrisonTrainingPage from '../../pages/induction/InPrisonTrainingPage'
 import AdditionalTrainingPage from '../../pages/induction/AdditionalTrainingPage'
 import QualificationsListPage from '../../pages/prePrisonEducation/QualificationsListPage'
+import AuthorisationErrorPage from '../../pages/authorisationError'
 
 context('Prisoner Overview page - Education And Training tab', () => {
   beforeEach(() => {
     cy.task('reset')
-    cy.task('stubSignInAsUserWithEditAuthority')
+    cy.task('stubSignInAsUserWithViewAuthority')
     cy.task('stubAuthUser')
     cy.task('stubGetHeaderComponent')
     cy.task('stubGetFooterComponent')
@@ -312,9 +313,10 @@ context('Prisoner Overview page - Education And Training tab', () => {
     })
   })
 
-  describe('should display change links to Induction & Education questions', () => {
-    it(`should link to the change in-prison training interests page`, () => {
+  describe('change links to Induction & Education questions', () => {
+    it(`should link to the change in-prison training interests page for users with edit authority`, () => {
       // Given
+      cy.task('stubSignInAsUserWithEditAuthority')
       cy.signIn()
       const prisonNumber = 'G6115VJ'
       cy.visit(`/plan/${prisonNumber}/view/education-and-training`)
@@ -327,8 +329,23 @@ context('Prisoner Overview page - Education And Training tab', () => {
       Page.verifyOnPage(InPrisonTrainingPage)
     })
 
+    it(`should link to auth-error page for users with read-only authority`, () => {
+      // Given
+      cy.signIn()
+      const prisonNumber = 'G6115VJ'
+      cy.visit(`/plan/${prisonNumber}/view/education-and-training`)
+      const educationAndTrainingPage = Page.verifyOnPage(EducationAndTrainingPage)
+
+      // When
+      educationAndTrainingPage.clickToChangeInPrisonTrainingReadOnlyUser()
+
+      // Then
+      Page.verifyOnPage(AuthorisationErrorPage)
+    })
+
     it(`should display a link to the change Highest Level of Education page`, () => {
       // Given
+      cy.task('stubSignInAsUserWithEditAuthority')
       cy.signIn()
       const prisonNumber = 'G6115VJ'
       cy.visit(`/plan/${prisonNumber}/view/education-and-training`)
@@ -342,33 +359,67 @@ context('Prisoner Overview page - Education And Training tab', () => {
         .highestLevelOfEducationChangeLinkHasText('Change')
     })
 
-    it(`should link to the change Additional Training page`, () => {
-      // Given
-      cy.signIn()
-      const prisonNumber = 'G6115VJ'
-      cy.visit(`/plan/${prisonNumber}/view/education-and-training`)
-      const educationAndTrainingPage = Page.verifyOnPage(EducationAndTrainingPage)
+    describe('change links to Additional Training questions', () => {
+      it(`should link to the change Additional Training page for users with edit authority`, () => {
+        // Given
+        cy.task('stubSignInAsUserWithEditAuthority')
+        cy.signIn()
+        const prisonNumber = 'G6115VJ'
+        cy.visit(`/plan/${prisonNumber}/view/education-and-training`)
+        const educationAndTrainingPage = Page.verifyOnPage(EducationAndTrainingPage)
 
-      // When
-      educationAndTrainingPage.clickToChangeAdditionalTraining()
+        // When
+        educationAndTrainingPage.clickToChangeAdditionalTraining()
 
-      // Then
-      Page.verifyOnPage(AdditionalTrainingPage)
+        // Then
+        Page.verifyOnPage(AdditionalTrainingPage)
+      })
+
+      it(`should link to auth-error page for users with read-only authority`, () => {
+        // Given
+        cy.signIn()
+        const prisonNumber = 'G6115VJ'
+        cy.visit(`/plan/${prisonNumber}/view/education-and-training`)
+        const educationAndTrainingPage = Page.verifyOnPage(EducationAndTrainingPage)
+
+        // When
+        educationAndTrainingPage.clickToChangeAdditionalTrainingReadOnlyUser()
+
+        // Then
+        Page.verifyOnPage(AuthorisationErrorPage)
+      })
     })
 
-    it(`should link to the change Educational Qualifications page given Education record has qualifications`, () => {
-      // Given
-      cy.signIn()
-      const prisonNumber = 'G6115VJ'
-      cy.visit(`/plan/${prisonNumber}/view/education-and-training`)
-      const educationAndTrainingPage = Page.verifyOnPage(EducationAndTrainingPage)
+    describe('change Educational Qualifications link', () => {
+      it(`should link to the change Educational Qualifications page given Education record has qualifications and user has edit authority`, () => {
+        // Given
+        cy.task('stubSignInAsUserWithEditAuthority')
+        cy.signIn()
+        const prisonNumber = 'G6115VJ'
+        cy.visit(`/plan/${prisonNumber}/view/education-and-training`)
+        const educationAndTrainingPage = Page.verifyOnPage(EducationAndTrainingPage)
 
-      // When
-      educationAndTrainingPage.clickToChangeEducationalQualifications()
+        // When
+        educationAndTrainingPage.clickToChangeEducationalQualifications()
 
-      // Then
-      Page.verifyOnPage(QualificationsListPage) // Expect to be on the Qualifications List page because the induction had qualifications to start with
-        .hasBackLinkTo(`/plan/${prisonNumber}/view/education-and-training`)
+        // Then
+        Page.verifyOnPage(QualificationsListPage) // Expect to be on the Qualifications List page because the induction had qualifications to start with
+          .hasBackLinkTo(`/plan/${prisonNumber}/view/education-and-training`)
+      })
+
+      it(`should link to auth-error page given user has read-only authority`, () => {
+        // Given
+        cy.signIn()
+        const prisonNumber = 'G6115VJ'
+        cy.visit(`/plan/${prisonNumber}/view/education-and-training`)
+        const educationAndTrainingPage = Page.verifyOnPage(EducationAndTrainingPage)
+
+        // When
+        educationAndTrainingPage.clickToChangeEducationalQualificationsReadOnlyUser()
+
+        // Then
+        Page.verifyOnPage(AuthorisationErrorPage)
+      })
     })
   })
 })

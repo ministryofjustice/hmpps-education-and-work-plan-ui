@@ -7,6 +7,7 @@ import HighestLevelOfEducationPage from '../prePrisonEducation/HighestLevelOfEdu
 import AdditionalTrainingPage from '../induction/AdditionalTrainingPage'
 import QualificationsListPage from '../prePrisonEducation/QualificationsListPage'
 import QualificationLevelPage from '../prePrisonEducation/QualificationLevelPage'
+import AuthorisationErrorPage from '../authorisationError'
 
 /**
  * Cypress page class representing the Education And Training tab of the Overview Page
@@ -113,6 +114,11 @@ export default class EducationAndTrainingPage extends Page {
     return Page.verifyOnPage(InPrisonTrainingPage)
   }
 
+  clickToChangeInPrisonTrainingReadOnlyUser(): AuthorisationErrorPage {
+    this.inPrisonTrainingChangeLink().click()
+    return Page.verifyOnPage(AuthorisationErrorPage)
+  }
+
   inPrisonTrainingChangeLinkHasText(expected: string): EducationAndTrainingPage {
     this.inPrisonTrainingChangeLink().should('contain.text', expected)
     return this
@@ -133,9 +139,19 @@ export default class EducationAndTrainingPage extends Page {
     return Page.verifyOnPage(AdditionalTrainingPage)
   }
 
+  clickToChangeAdditionalTrainingReadOnlyUser(): AuthorisationErrorPage {
+    this.additionalTrainingChangeLink().click()
+    return Page.verifyOnPage(AuthorisationErrorPage)
+  }
+
   clickToChangeEducationalQualifications(): QualificationsListPage {
     this.educationalQualificationsChangeLink().click()
     return Page.verifyOnPage(QualificationsListPage)
+  }
+
+  clickToChangeEducationalQualificationsReadOnlyUser(): AuthorisationErrorPage {
+    this.educationalQualificationsChangeLink().click()
+    return Page.verifyOnPage(AuthorisationErrorPage)
   }
 
   clickToAddEducationalQualifications(): QualificationLevelPage {
