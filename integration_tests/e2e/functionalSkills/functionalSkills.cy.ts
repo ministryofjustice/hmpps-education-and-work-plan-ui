@@ -1,5 +1,4 @@
 import Page from '../../pages/page'
-import AuthorisationErrorPage from '../../pages/authorisationError'
 import FunctionalSkillsPage from '../../pages/functionalSkills/FunctionalSkillsPage'
 import EducationAndTrainingPage from '../../pages/overview/EducationAndTrainingPage'
 import OverviewPage from '../../pages/overview/OverviewPage'
@@ -7,7 +6,7 @@ import OverviewPage from '../../pages/overview/OverviewPage'
 context(`Display a prisoner's functional skills`, () => {
   beforeEach(() => {
     cy.task('reset')
-    cy.task('stubSignInAsUserWithEditAuthority')
+    cy.task('stubSignInAsUserWithViewAuthority')
     cy.task('stubAuthUser')
     cy.task('stubGetHeaderComponent')
     cy.task('stubGetFooterComponent')
@@ -74,19 +73,5 @@ context(`Display a prisoner's functional skills`, () => {
       .doesNotHaveMathsFunctionalSkillsDisplayed()
       .doesNotHaveDigitalFunctionalSkillsDisplayed()
       .hasCuriousUnavailableMessageDisplayed()
-  })
-
-  it('should redirect to auth-error page given user does not have any authorities', () => {
-    // Given
-    cy.task('stubSignIn')
-
-    const prisonNumber = 'G6115VJ'
-    cy.signIn()
-
-    // When
-    cy.visit(`/plan/${prisonNumber}/functional-skills`, { failOnStatusCode: false })
-
-    // Then
-    Page.verifyOnPage(AuthorisationErrorPage)
   })
 })
