@@ -35,6 +35,7 @@ describe('_trainingAndEducationInterestsInPrison', () => {
         problemRetrievingData: false,
         inductionDto,
       },
+      hasEditAuthority: true,
     }
 
     // When
@@ -51,6 +52,35 @@ describe('_trainingAndEducationInterestsInPrison', () => {
     expect($('[data-qa=training-interests-induction-unavailable-message]').length).toEqual(0)
   })
 
+  it('should not render the change link or create induction message given user does not have editor role', () => {
+    // Given
+    const inductionDto: InductionDto = aValidInductionDto()
+    inductionDto.inPrisonInterests = {
+      ...inductionDto.inPrisonInterests,
+      inPrisonTrainingInterests: [
+        { trainingType: InPrisonTrainingValue.FORKLIFT_DRIVING, trainingTypeOther: null },
+        { trainingType: InPrisonTrainingValue.CATERING, trainingTypeOther: null },
+        { trainingType: InPrisonTrainingValue.OTHER, trainingTypeOther: 'Advanced origami' },
+      ],
+    }
+    const pageViewModel = {
+      induction: {
+        problemRetrievingData: false,
+        inductionDto,
+      },
+      hasEditAuthority: false,
+    }
+
+    // When
+    const content = nunjucks.render('_trainingAndEducationInterestsInPrison.njk', pageViewModel)
+    const $ = cheerio.load(content)
+
+    // Then
+    expect($('[data-qa=in-prison-training-change-link]').length).toEqual(0)
+    expect($('[data-qa=training-interests-create-induction-message]').length).toEqual(0)
+    expect($('[data-qa=link-to-create-induction]').length).toEqual(0)
+  })
+
   it('should not list training interests given an induction without any training interests', () => {
     // Given
     const inductionDto: InductionDto = aValidInductionDto()
@@ -60,6 +90,7 @@ describe('_trainingAndEducationInterestsInPrison', () => {
         problemRetrievingData: false,
         inductionDto,
       },
+      hasEditAuthority: true,
     }
 
     // When
@@ -81,6 +112,7 @@ describe('_trainingAndEducationInterestsInPrison', () => {
         problemRetrievingData: false,
         inductionDto,
       },
+      hasEditAuthority: true,
     }
 
     // When
@@ -100,6 +132,7 @@ describe('_trainingAndEducationInterestsInPrison', () => {
         problemRetrievingData: true,
         inductionDto,
       },
+      hasEditAuthority: true,
     }
 
     // When

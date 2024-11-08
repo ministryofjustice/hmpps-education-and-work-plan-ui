@@ -32,6 +32,8 @@ njkEnv.addFilter('formatStepStatusValue', formatStepStatusValueFilter)
 njkEnv.addFilter('formatReasonToArchiveGoal', formatReasonToArchiveGoalFilter)
 
 const prisonerSummary = aValidPrisonerSummary()
+const inProgressGoalReference = '10efc562-be8f-4675-9283-9ede0c19dade'
+const archivedGoalReference = '8256647a-65fc-426a-a821-41a8f1f0e2d0'
 
 describe('goalTabContents', () => {
   beforeEach(() => {
@@ -224,5 +226,48 @@ describe('goalTabContents', () => {
     expect($('[data-qa="service-onboarding-banner"]').text().replace(/\s+/g, ' ').trim()).toContain(
       'You have read only access. If you need to add or edit information ask your head of education, skills and work to email learningandworkprogress@digital.justice.gov.uk so we can onboard your prison.',
     )
+  })
+
+  it('should not render the actions card or update, complete or archive buttons on goal summary cards given user does not have editor role', async () => {
+    // Given
+    const inProgressGoal = aValidGoal({
+      targetCompletionDate: startOfDay('2024-12-01'),
+      status: 'ACTIVE',
+      title: 'Learn French',
+      goalReference: inProgressGoalReference,
+    })
+    const completedGoal = aValidGoal({
+      updatedAt: toDate('2024-12-01T09:12:23.123Z'),
+      targetCompletionDate: startOfDay('2024-12-31'),
+      status: 'COMPLETED',
+      title: 'Learn French',
+    })
+    const archivedGoal = aValidGoal({
+      updatedAt: toDate('2024-12-01T09:12:23.123Z'),
+      targetCompletionDate: startOfDay('2024-12-31'),
+      status: 'ARCHIVED',
+      title: 'Learn French',
+      goalReference: archivedGoalReference,
+    })
+
+    const pageViewModel = {
+      prisonerSummary,
+      inProgressGoals: [inProgressGoal],
+      completedGoals: [completedGoal],
+      archivedGoals: [archivedGoal],
+      problemRetrievingData: false,
+      tab: 'goals',
+      hasEditAuthority: false,
+    }
+
+    // When
+    const content = njkEnv.render('goalsTabContents.njk', pageViewModel)
+    const $ = cheerio.load(content)
+
+    // Then
+    expect($('[data-qa="actions-card"]').length).toEqual(0)
+    expect($(`[data-qa="goal-${inProgressGoalReference}-update-button"]`).length).toEqual(0)
+    expect($(`[data-qa="goal-${inProgressGoalReference}-completearchive-button"]`).length).toEqual(0)
+    expect($(`[data-qa="goal-${archivedGoalReference}-unarchive-button"]`).length).toEqual(0)
   })
 })

@@ -31,6 +31,7 @@ describe('overviewTabContents', () => {
       isPostInduction: false,
       problemRetrievingData: false,
       goalCounts: { activeCount: 1, completedCount: 0, archivedCount: 1 },
+      hasEditAuthority: true,
     }
 
     // When
@@ -54,6 +55,7 @@ describe('overviewTabContents', () => {
       isPostInduction: false,
       problemRetrievingData: false,
       goalCounts: { activeCount: 0, completedCount: 0, archivedCount: 0 },
+      hasEditAuthority: true,
     }
 
     // When
@@ -77,6 +79,7 @@ describe('overviewTabContents', () => {
       isPostInduction: true,
       problemRetrievingData: false,
       goalCounts: { activeCount: 2, completedCount: 1, archivedCount: 1 },
+      hasEditAuthority: true,
     }
 
     // When
@@ -262,5 +265,24 @@ describe('overviewTabContents', () => {
     expect($('[data-qa="completed-courses-hint"]').text().trim()).toEqual(
       'Information from Curious. This only includes educational courses. Contact the local education team to find out more.',
     )
+  })
+
+  it('should not render the pre induction overview message or actions card given user does not have editor role', () => {
+    // Given
+    const pageViewModel = {
+      prisonerSummary,
+      isPostInduction: false,
+      problemRetrievingData: false,
+      goalCounts: { activeCount: 1, completedCount: 0, archivedCount: 1 },
+      hasEditAuthority: false,
+    }
+
+    // When
+    const content = njkEnv.render(template, pageViewModel)
+    const $ = cheerio.load(content)
+
+    // Then
+    expect($('[data-qa="pre-induction-overview"]').length).toEqual(0)
+    expect($('[data-qa="actions-card"]').length).toEqual(0)
   })
 })

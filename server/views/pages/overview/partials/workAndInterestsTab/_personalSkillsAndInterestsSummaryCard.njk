@@ -28,11 +28,13 @@
             <p class='govuk-body' data-qa='skills-not-recorded'>Not recorded.</p>
           {% endif %}
         </dd>
-        <dd class="govuk-summary-list__actions govuk-!-display-none-print">
-          <a class="govuk-link" href="/prisoners/{{ prisonerSummary.prisonNumber }}/induction/skills" data-qa="skills-change-link">
-            {{ 'Change' if inductionHasSkillsRecorded else 'Add' }}<span class="govuk-visually-hidden"> skills</span>
-          </a>
-        </dd>
+        {% if hasEditAuthority %}
+          <dd class="govuk-summary-list__actions govuk-!-display-none-print">
+            <a class="govuk-link" href="/prisoners/{{ prisonerSummary.prisonNumber }}/induction/skills" data-qa="skills-change-link">
+              {{ 'Change' if inductionHasSkillsRecorded else 'Add' }}<span class="govuk-visually-hidden"> skills</span>
+            </a>
+          </dd>
+        {% endif %}
       </div>
 
       {# List any personal interests the Prisoner has #}
@@ -55,11 +57,13 @@
             <p class='govuk-body' data-qa='personal-interests-not-recorded'>Not recorded.</p>
           {% endif %}
         </dd>
-        <dd class="govuk-summary-list__actions govuk-!-display-none-print">
-          <a class="govuk-link" href="/prisoners/{{ prisonerSummary.prisonNumber }}/induction/personal-interests" data-qa="personal-interests-change-link">
-            {{ 'Change' if inductionHasInterestsRecorded else 'Add' }}<span class="govuk-visually-hidden"> personal interests</span>
-          </a>
-        </dd>
+        {% if hasEditAuthority %}
+          <dd class="govuk-summary-list__actions govuk-!-display-none-print">
+            <a class="govuk-link" href="/prisoners/{{ prisonerSummary.prisonNumber }}/induction/personal-interests" data-qa="personal-interests-change-link">
+              {{ 'Change' if inductionHasInterestsRecorded else 'Add' }}<span class="govuk-visually-hidden"> personal interests</span>
+            </a>
+          </dd>
+        {% endif %}
       </div>
     </dl>
 

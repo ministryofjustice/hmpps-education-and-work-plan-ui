@@ -11,7 +11,7 @@
 
   {% block content %}
     <div class="govuk-grid-column-two-thirds app-u-print-full-width">
-      {% if not isPostInduction and not problemRetrievingData %}
+      {% if not isPostInduction and not problemRetrievingData and hasEditAuthority %}
         <section data-qa="pre-induction-overview">
           {{ govukNotificationBanner({
             html: createInductionBanner
@@ -142,24 +142,25 @@
       </div>
     </div>
 
-    <div class="govuk-grid-column-one-third app-u-print-full-width">
-      {{ actionsCard({
-        actions: [
-          {
-            title: '<span class="goal-action"><img src="/assets/images/icon-goal.svg" role="presentation" alt="" width="35px" height="28px" class="goal-icon" /> Add a new goal</span>' | safe,
-            href: '/plan/' ~ prisonerSummary.prisonNumber ~ '/goals/create',
-            id: 'add-goal-button',
-            'render-if': hasEditAuthority,
-            attributes: {
-            'data-qa': 'add-goal-button'
-          }
-          }
-        ],
-        attributes: {
-          'data-qa': 'actions-card'
-        },
-        classes: 'govuk-!-display-none-print'
-      }) }}
-    </div>
+    {% if hasEditAuthority %}  
+      <div class="govuk-grid-column-one-third app-u-print-full-width">
+        {{ actionsCard({
+          actions: [
+            {
+              title: '<span class="goal-action"><img src="/assets/images/icon-goal.svg" role="presentation" alt="" width="35px" height="28px" class="goal-icon" /> Add a new goal</span>' | safe,
+              href: '/plan/' ~ prisonerSummary.prisonNumber ~ '/goals/create',
+              id: 'add-goal-button',
+              attributes: {
+              'data-qa': 'add-goal-button'
+            }
+            }
+          ],
+          attributes: {
+            'data-qa': 'actions-card'
+          },
+          classes: 'govuk-!-display-none-print'
+        }) }}
+      </div>
+    {% endif %}
   {% endblock %}
 </div>
