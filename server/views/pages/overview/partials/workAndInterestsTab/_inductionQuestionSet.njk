@@ -51,11 +51,13 @@ questions are different.
                 {% endfor %}
               </ul>
             </dd>
-            <dd class="govuk-summary-list__actions govuk-!-display-none-print">
-              <a class="govuk-link" href="/prisoners/{{ prisonerSummary.prisonNumber }}/induction/previous-work-experience" data-qa="previous-work-experience-change-link">
-                Change<span class="govuk-visually-hidden"> type of work experience</span>
-              </a>
-            </dd>
+            {% if hasEditAuthority %}
+              <dd class="govuk-summary-list__actions govuk-!-display-none-print">
+                <a class="govuk-link" href="/prisoners/{{ prisonerSummary.prisonNumber }}/induction/previous-work-experience" data-qa="previous-work-experience-change-link">
+                  Change<span class="govuk-visually-hidden"> type of work experience</span>
+                </a>
+              </dd>
+            {% endif %}
           </div>
 
           {# List the detail of each previous job #}
@@ -68,14 +70,16 @@ questions are different.
                 <p>Job role:<br> {{ workExperienceDetails.role }}</p>
                 <p>Roles and responsibilities:<br> {{ workExperienceDetails.details }}</p>
               </dd>
-              <dd class="govuk-summary-list__actions govuk-!-display-none-print">
-                {%- set workExperienceDetailChangeLinkUrl -%}
-                  /prisoners/{{ prisonerSummary.prisonNumber }}/induction/previous-work-experience/{{ workExperienceDetails.experienceType | lower }}
-                {%- endset -%}
-                <a class="govuk-link" href="{{ workExperienceDetailChangeLinkUrl }}" data-qa="previous-work-experience-details-{{ workExperienceDetails.experienceType }}-change-link">
-                  Change<span class="govuk-visually-hidden"> {{ workExperienceDetails.experienceType | formatJobType }} experience details</span>
-                </a>
-              </dd>
+              {% if hasEditAuthority %}
+                <dd class="govuk-summary-list__actions govuk-!-display-none-print">
+                  {%- set workExperienceDetailChangeLinkUrl -%}
+                    /prisoners/{{ prisonerSummary.prisonNumber }}/induction/previous-work-experience/{{ workExperienceDetails.experienceType | lower }}
+                  {%- endset -%}
+                  <a class="govuk-link" href="{{ workExperienceDetailChangeLinkUrl }}" data-qa="previous-work-experience-details-{{ workExperienceDetails.experienceType }}-change-link">
+                    Change<span class="govuk-visually-hidden"> {{ workExperienceDetails.experienceType | formatJobType }} experience details</span>
+                  </a>
+                </dd>
+              {% endif %}
             </div>
           {% endfor %}
 
