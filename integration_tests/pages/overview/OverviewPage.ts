@@ -31,12 +31,12 @@ export default class OverviewPage extends Page {
     return this
   }
 
-  isPreInduction(): OverviewPage {
+  isPreInductionAndUserHasEditorRole(): OverviewPage {
     this.preInductionOverviewPanel().should('be.visible')
     return this
   }
 
-  isPostInduction(): OverviewPage {
+  isPostInductionOrUserHasReadOnlyRole(): OverviewPage {
     this.preInductionOverviewPanel().should('not.exist')
     return this
   }

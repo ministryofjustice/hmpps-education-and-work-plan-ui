@@ -59,7 +59,7 @@ context('Unarchive a goal', () => {
 
   it('should not be able to get to the unarchive goal page given user does not have edit authority', () => {
     // Given
-    cy.task('stubSignInAsUserWithViewAuthority')
+    cy.task('stubSignIn')
     cy.signIn()
 
     // When

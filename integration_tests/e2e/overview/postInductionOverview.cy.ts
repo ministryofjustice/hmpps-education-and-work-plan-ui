@@ -4,7 +4,7 @@ import OverviewPage from '../../pages/overview/OverviewPage'
 context('Prisoner Overview page - Post Induction', () => {
   beforeEach(() => {
     cy.task('reset')
-    cy.task('stubSignInAsUserWithViewAuthority')
+    cy.task('stubSignIn')
     cy.task('stubAuthUser')
     cy.task('stubGetHeaderComponent')
     cy.task('stubGetFooterComponent')
@@ -31,6 +31,6 @@ context('Prisoner Overview page - Post Induction', () => {
     const overviewPage = Page.verifyOnPage(OverviewPage)
     overviewPage //
       .isForPrisoner(prisonNumber)
-      .isPostInduction()
+      .isPostInductionOrUserHasReadOnlyRole()
   })
 })

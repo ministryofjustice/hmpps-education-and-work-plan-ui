@@ -6,7 +6,7 @@ import OverviewPage from '../../pages/overview/OverviewPage'
 context(`Display a prisoner's functional skills`, () => {
   beforeEach(() => {
     cy.task('reset')
-    cy.task('stubSignInAsUserWithViewAuthority')
+    cy.task('stubSignIn')
     cy.task('stubAuthUser')
     cy.task('stubGetHeaderComponent')
     cy.task('stubGetFooterComponent')

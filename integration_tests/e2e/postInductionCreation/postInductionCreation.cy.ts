@@ -54,7 +54,7 @@ context(`Show the relevant screen after an Induction has been created`, () => {
     const overviewPage = Page.verifyOnPage(OverviewPage)
     overviewPage //
       .isForPrisoner(prisonNumber)
-      .isPostInduction()
+      .isPostInductionOrUserHasReadOnlyRole()
   })
 
   it('should display the Overview page given retrieving the prisoners Action Plan fails', () => {
@@ -72,7 +72,7 @@ context(`Show the relevant screen after an Induction has been created`, () => {
     const overviewPage = Page.verifyOnPage(OverviewPage)
     overviewPage //
       .isForPrisoner(prisonNumber)
-      .isPostInduction()
+      .isPostInductionOrUserHasReadOnlyRole()
       .hasServiceUnavailableMessageDisplayed() // because retrieving the action plan returned a 500
   })
 })

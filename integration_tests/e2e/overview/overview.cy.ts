@@ -6,7 +6,7 @@ import Error404Page from '../../pages/error404'
 context('Prisoner Overview page - Common functionality for both pre and post induction', () => {
   beforeEach(() => {
     cy.task('reset')
-    cy.task('stubSignInAsUserWithViewAuthority')
+    cy.task('stubSignIn')
     cy.task('stubAuthUser')
     cy.task('stubGetHeaderComponent')
     cy.task('stubGetFooterComponent')

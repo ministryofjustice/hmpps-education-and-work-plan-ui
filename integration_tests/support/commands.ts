@@ -194,7 +194,7 @@ We have agreed and set a new goal, and the next review is 1 year from now.
 
 const signInWithAuthority = (authority: 'EDIT' | 'VIEW') => {
   cy.task('reset')
-  cy.task(authority === 'EDIT' ? 'stubSignInAsUserWithEditAuthority' : 'stubSignInAsUserWithViewAuthority')
+  cy.task(authority === 'EDIT' ? 'stubSignInAsUserWithEditAuthority' : 'stubSignIn')
   cy.task('stubAuthUser')
   cy.task('stubGetHeaderComponent')
   cy.task('stubGetFooterComponent')

@@ -6,7 +6,7 @@ context('404 Page Not Found', () => {
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubAuthUser')
-    cy.task('stubSignInAsUserWithViewAuthority')
+    cy.task('stubSignIn')
     cy.task('stubGetHeaderComponent')
     cy.task('stubGetFooterComponent')
     cy.task('stubPrisonerList')
