@@ -28,11 +28,13 @@ questions are different.
             {% endif %}
           </dd>
 
-          <dd class="govuk-summary-list__actions govuk-!-display-none-print">
-            <a class="govuk-link" href="/prisoners/{{ prisonerSummary.prisonNumber }}/induction/has-worked-before" data-qa="has-worked-before-change-link">
-              {% if induction.inductionDto.previousWorkExperiences %}Change{% else %}Add{% endif %}<span class="govuk-visually-hidden"> worked before</span>
-            </a>
-          </dd>
+          {% if hasEditAuthority %}
+            <dd class="govuk-summary-list__actions govuk-!-display-none-print">
+              <a class="govuk-link" href="/prisoners/{{ prisonerSummary.prisonNumber }}/induction/has-worked-before" data-qa="has-worked-before-change-link">
+                {% if induction.inductionDto.previousWorkExperiences %}Change{% else %}Add{% endif %}<span class="govuk-visually-hidden"> worked before</span>
+              </a>
+            </dd>
+          {% endif %}
         </div>
 
         {% if induction.inductionDto.previousWorkExperiences.hasWorkedBefore === 'YES' %}
@@ -49,11 +51,13 @@ questions are different.
                 {% endfor %}
               </ul>
             </dd>
-            <dd class="govuk-summary-list__actions govuk-!-display-none-print">
-              <a class="govuk-link" href="/prisoners/{{ prisonerSummary.prisonNumber }}/induction/previous-work-experience" data-qa="previous-work-experience-change-link">
-                Change<span class="govuk-visually-hidden"> type of work experience</span>
-              </a>
-            </dd>
+            {% if hasEditAuthority %}
+              <dd class="govuk-summary-list__actions govuk-!-display-none-print">
+                <a class="govuk-link" href="/prisoners/{{ prisonerSummary.prisonNumber }}/induction/previous-work-experience" data-qa="previous-work-experience-change-link">
+                  Change<span class="govuk-visually-hidden"> type of work experience</span>
+                </a>
+              </dd>
+            {% endif %}
           </div>
 
           {# List the detail of each previous job #}
@@ -66,14 +70,16 @@ questions are different.
                 <p>Job role:<br> {{ workExperienceDetails.role }}</p>
                 <p>Roles and responsibilities:<br> {{ workExperienceDetails.details }}</p>
               </dd>
-              <dd class="govuk-summary-list__actions govuk-!-display-none-print">
-                {%- set workExperienceDetailChangeLinkUrl -%}
-                  /prisoners/{{ prisonerSummary.prisonNumber }}/induction/previous-work-experience/{{ workExperienceDetails.experienceType | lower }}
-                {%- endset -%}
-                <a class="govuk-link" href="{{ workExperienceDetailChangeLinkUrl }}" data-qa="previous-work-experience-details-{{ workExperienceDetails.experienceType }}-change-link">
-                  Change<span class="govuk-visually-hidden"> {{ workExperienceDetails.experienceType | formatJobType }} experience details</span>
-                </a>
-              </dd>
+              {% if hasEditAuthority %}
+                <dd class="govuk-summary-list__actions govuk-!-display-none-print">
+                  {%- set workExperienceDetailChangeLinkUrl -%}
+                    /prisoners/{{ prisonerSummary.prisonNumber }}/induction/previous-work-experience/{{ workExperienceDetails.experienceType | lower }}
+                  {%- endset -%}
+                  <a class="govuk-link" href="{{ workExperienceDetailChangeLinkUrl }}" data-qa="previous-work-experience-details-{{ workExperienceDetails.experienceType }}-change-link">
+                    Change<span class="govuk-visually-hidden"> {{ workExperienceDetails.experienceType | formatJobType }} experience details</span>
+                  </a>
+                </dd>
+              {% endif %}
             </div>
           {% endfor %}
 
@@ -103,11 +109,13 @@ questions are different.
           <dd class="govuk-summary-list__value">
             {{ induction.inductionDto.workOnRelease.hopingToWork | formatYesNo }}
           </dd>
-          <dd class="govuk-summary-list__actions govuk-!-display-none-print">
-            <a class="govuk-link" href="/prisoners/{{ prisonerSummary.prisonNumber }}/induction/hoping-to-work-on-release" data-qa="hoping-to-work-on-release-change-link">
-              Change<span class="govuk-visually-hidden"> hoping to work on release</span>
-            </a>
-          </dd>
+          {% if hasEditAuthority %}
+            <dd class="govuk-summary-list__actions govuk-!-display-none-print">
+              <a class="govuk-link" href="/prisoners/{{ prisonerSummary.prisonNumber }}/induction/hoping-to-work-on-release" data-qa="hoping-to-work-on-release-change-link">
+                Change<span class="govuk-visually-hidden"> hoping to work on release</span>
+              </a>
+            </dd>
+          {% endif %}
         </div>
 
         {# List any constraints on ability to work #}
@@ -126,11 +134,13 @@ questions are different.
               {% endfor %}
             </ul>
           </dd>
-          <dd class="govuk-summary-list__actions govuk-!-display-none-print">
-            <a class="govuk-link" href="/prisoners/{{ prisonerSummary.prisonNumber }}/induction/affect-ability-to-work" data-qa="affect-ability-to-work-change-link">
-              Change<span class="govuk-visually-hidden"> potential affect on ability to work</span>
-            </a>
-          </dd>
+          {% if hasEditAuthority %}
+            <dd class="govuk-summary-list__actions govuk-!-display-none-print">
+              <a class="govuk-link" href="/prisoners/{{ prisonerSummary.prisonNumber }}/induction/affect-ability-to-work" data-qa="affect-ability-to-work-change-link">
+                Change<span class="govuk-visually-hidden"> potential affect on ability to work</span>
+              </a>
+            </dd>
+          {% endif %}
         </div>
         {% if induction.inductionDto.workOnRelease.hopingToWork === 'YES' and induction.inductionDto.futureWorkInterests %}
         {# List the types of work the Prisoner is interested in doing post-release #}
@@ -149,11 +159,13 @@ questions are different.
               {% endfor %}
             </ul>
           </dd>
-          <dd class="govuk-summary-list__actions govuk-!-display-none-print">
-            <a class="govuk-link" href="/prisoners/{{ prisonerSummary.prisonNumber }}/induction/work-interest-types" data-qa="work-interest-types-change-link">
-              Change<span class="govuk-visually-hidden"> type of work</span>
-            </a>
-          </dd>
+          {% if hasEditAuthority %}
+            <dd class="govuk-summary-list__actions govuk-!-display-none-print">
+              <a class="govuk-link" href="/prisoners/{{ prisonerSummary.prisonNumber }}/induction/work-interest-types" data-qa="work-interest-types-change-link">
+                Change<span class="govuk-visually-hidden"> type of work</span>
+              </a>
+            </dd>
+          {% endif %}
         </div>
 
         {# List any specific job roles the Prisoner is interested in doing post-release #}
@@ -168,11 +180,13 @@ questions are different.
               {% endfor %}
             </ul>
           </dd>
-          <dd class="govuk-summary-list__actions govuk-!-display-none-print">
-            <a class="govuk-link" href="/prisoners/{{ prisonerSummary.prisonNumber }}/induction/work-interest-roles" data-qa="work-interest-roles-change-link">
-              Change<span class="govuk-visually-hidden"> specific job role of interest</span>
-            </a>
-          </dd>
+          {% if hasEditAuthority %}
+            <dd class="govuk-summary-list__actions govuk-!-display-none-print">
+              <a class="govuk-link" href="/prisoners/{{ prisonerSummary.prisonNumber }}/induction/work-interest-roles" data-qa="work-interest-roles-change-link">
+                Change<span class="govuk-visually-hidden"> specific job role of interest</span>
+              </a>
+            </dd>
+          {% endif %}
         </div>
         {% endif %}
       </dl>

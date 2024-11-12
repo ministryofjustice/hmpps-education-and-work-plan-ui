@@ -26,11 +26,13 @@
             <p class='govuk-body'>Not recorded.</p>
           {% endif %}
         </dd>
-        <dd class="govuk-summary-list__actions govuk-!-display-none-print">
-          <a class="govuk-link" href="/prisoners/{{ prisonerSummary.prisonNumber }}/induction/in-prison-work" data-qa="in-prison-work-change-link">
-            {{ 'Change' if inductionHasInPrisonWorkInterestsRecorded else 'Add' }}<span class="govuk-visually-hidden"> work interests whilst in prison</span>
-          </a>
-        </dd>
+        {% if hasEditAuthority %}
+          <dd class="govuk-summary-list__actions govuk-!-display-none-print">
+            <a class="govuk-link" href="/prisoners/{{ prisonerSummary.prisonNumber }}/induction/in-prison-work" data-qa="in-prison-work-change-link">
+              {{ 'Change' if inductionHasInPrisonWorkInterestsRecorded else 'Add' }}<span class="govuk-visually-hidden"> work interests whilst in prison</span>
+            </a>
+          </dd>
+        {% endif %}
       </div>
     </dl>
 

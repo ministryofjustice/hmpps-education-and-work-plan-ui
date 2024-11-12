@@ -44,6 +44,7 @@ describe('_educationAndQualificationsHistory', () => {
         educationDto,
       },
       prisonerSummary,
+      hasEditAuthority: true,
     }
 
     // When
@@ -60,6 +61,36 @@ describe('_educationAndQualificationsHistory', () => {
     expect($('[data-qa=last-updated]').length).toEqual(1)
   })
 
+  it('should not show add/change links or prompt to create induction given user does not have an induction and does not have edit authority', () => {
+    // Given
+    const educationDto = aValidEducationDto()
+    const inductionDto: InductionDto = undefined
+    const pageViewModel = {
+      induction: {
+        problemRetrievingData: false,
+        inductionDto,
+      },
+      education: {
+        problemRetrievingData: false,
+        educationDto,
+      },
+      prisonerSummary,
+      hasEditAuthority: false,
+    }
+
+    // When
+    const content = nunjucks.render('_educationAndQualificationsHistory.njk', pageViewModel)
+    const $ = cheerio.load(content)
+
+    // Then
+    expect($('[data-qa=educational-qualifications-change-link]').length).toEqual(0)
+    expect($('[data-qa=additional-training-change-link]').length).toEqual(0)
+    expect($('[data-qa=link-to-add-educational-qualifications]').length).toEqual(0)
+    expect($('[data-qa=highest-level-of-education-change-link]').length).toEqual(0)
+    expect($('[data-qa=link-to-create-induction]').length).toEqual(0)
+    expect($('[data-qa=education-or-induction-unavailable-message]').length).toEqual(0)
+  })
+
   it('should show qualifications including highest level of education and additional training given prisoner has education data and an induction', () => {
     // Given
     const educationDto = aValidEducationDto()
@@ -74,6 +105,7 @@ describe('_educationAndQualificationsHistory', () => {
         educationDto,
       },
       prisonerSummary,
+      hasEditAuthority: true,
     }
 
     // When
@@ -111,6 +143,7 @@ describe('_educationAndQualificationsHistory', () => {
         educationDto,
       },
       prisonerSummary,
+      hasEditAuthority: true,
     }
 
     // When
@@ -139,6 +172,7 @@ describe('_educationAndQualificationsHistory', () => {
         educationDto,
       },
       prisonerSummary,
+      hasEditAuthority: true,
     }
 
     // When
@@ -163,6 +197,7 @@ describe('_educationAndQualificationsHistory', () => {
         educationDto,
       },
       prisonerSummary,
+      hasEditAuthority: true,
     }
 
     // When
@@ -196,6 +231,7 @@ describe('_educationAndQualificationsHistory', () => {
         educationDto,
       },
       prisonerSummary,
+      hasEditAuthority: true,
     }
 
     // When
@@ -229,6 +265,7 @@ describe('_educationAndQualificationsHistory', () => {
         educationDto,
       },
       prisonerSummary,
+      hasEditAuthority: true,
     }
 
     // When

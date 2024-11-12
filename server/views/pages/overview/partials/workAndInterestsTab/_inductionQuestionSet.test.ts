@@ -88,9 +88,8 @@ describe('Tests for _inductionQuestionSet.njk partial', () => {
     const anInductionDto = aValidInductionDto({
       hopingToGetWork: HopingToGetWorkValue.NO,
     })
-    const content = nunjucks.render(
-      '_inductionQuestionSet.njk',
-      new WorkAndInterestsView(aValidPrisonerSummary(), {
+    const viewModel = {
+      ...new WorkAndInterestsView(aValidPrisonerSummary(), {
         problemRetrievingData: false,
         inductionDto: {
           ...anInductionDto,
@@ -102,7 +101,11 @@ describe('Tests for _inductionQuestionSet.njk partial', () => {
           },
         },
       }),
-    )
+      hasEditAuthority: true,
+    }
+
+    const content = nunjucks.render('_inductionQuestionSet.njk', viewModel)
+
     const $ = cheerio.load(content)
     const lastUpdated = $('[data-qa=work-experience-last-updated]').first().text().trim()
     expect(lastUpdated).toEqual('Last updated: 10 May 2021 by Some User')
@@ -116,9 +119,9 @@ describe('Tests for _inductionQuestionSet.njk partial', () => {
     const anInductionDto = aValidInductionDto({
       hopingToGetWork: HopingToGetWorkValue.YES,
     })
-    const content = nunjucks.render(
-      '_inductionQuestionSet.njk',
-      new WorkAndInterestsView(aValidPrisonerSummary(), {
+
+    const viewModel = {
+      ...new WorkAndInterestsView(aValidPrisonerSummary(), {
         problemRetrievingData: false,
         inductionDto: {
           ...anInductionDto,
@@ -129,7 +132,11 @@ describe('Tests for _inductionQuestionSet.njk partial', () => {
           },
         },
       }),
-    )
+      hasEditAuthority: true,
+    }
+
+    const content = nunjucks.render('_inductionQuestionSet.njk', viewModel)
+
     const $ = cheerio.load(content)
     const lastUpdated = $('[data-qa=work-experience-last-updated]').first().text().trim()
     expect(lastUpdated).toEqual('Last updated: 20 June 2024 by Worked Before User')

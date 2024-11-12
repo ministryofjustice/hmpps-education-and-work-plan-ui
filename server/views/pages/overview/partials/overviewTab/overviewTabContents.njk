@@ -11,7 +11,7 @@
 
   {% block content %}
     <div class="govuk-grid-column-two-thirds app-u-print-full-width">
-      {% if not isPostInduction and not problemRetrievingData %}
+      {% if not isPostInduction and not problemRetrievingData and hasEditAuthority %}
         <section data-qa="pre-induction-overview">
           {{ govukNotificationBanner({
             html: createInductionBanner

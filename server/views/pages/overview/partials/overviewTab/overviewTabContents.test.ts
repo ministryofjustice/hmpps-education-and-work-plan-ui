@@ -31,6 +31,7 @@ describe('overviewTabContents', () => {
       isPostInduction: false,
       problemRetrievingData: false,
       goalCounts: { activeCount: 1, completedCount: 0, archivedCount: 1 },
+      hasEditAuthority: true,
     }
 
     // When
@@ -54,6 +55,7 @@ describe('overviewTabContents', () => {
       isPostInduction: false,
       problemRetrievingData: false,
       goalCounts: { activeCount: 0, completedCount: 0, archivedCount: 0 },
+      hasEditAuthority: true,
     }
 
     // When
@@ -77,6 +79,7 @@ describe('overviewTabContents', () => {
       isPostInduction: true,
       problemRetrievingData: false,
       goalCounts: { activeCount: 2, completedCount: 1, archivedCount: 1 },
+      hasEditAuthority: true,
     }
 
     // When

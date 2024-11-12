@@ -25,7 +25,10 @@ describe('_personalSkillsAndInterestsSummaryCard', () => {
   it('should display Skills and Interests given induction with personal skills and interests', () => {
     // Given
     const inductionDto = aValidInductionDto()
-    const pageViewModel = workAndInterestsView(inductionDto)
+    const pageViewModel = {
+      ...workAndInterestsView(inductionDto),
+      hasEditAuthority: true,
+    }
 
     // When
     const content = nunjucks.render('_personalSkillsAndInterestsSummaryCard.njk', pageViewModel)
@@ -54,7 +57,10 @@ describe('_personalSkillsAndInterestsSummaryCard', () => {
     // Given
     const inductionDto = aValidInductionDto()
     inductionDto.personalSkillsAndInterests = undefined
-    const pageViewModel = workAndInterestsView(inductionDto)
+    const pageViewModel = {
+      ...workAndInterestsView(inductionDto),
+      hasEditAuthority: true,
+    }
 
     // When
     const content = nunjucks.render('_personalSkillsAndInterestsSummaryCard.njk', pageViewModel)
@@ -71,11 +77,32 @@ describe('_personalSkillsAndInterestsSummaryCard', () => {
     expect($('[data-qa=last-updated]').length).toEqual(0)
   })
 
+  it('should not display change link for Skills and Interests given user does not have editor role', () => {
+    // Given
+    const inductionDto = aValidInductionDto()
+    inductionDto.personalSkillsAndInterests = undefined
+    const pageViewModel = {
+      ...workAndInterestsView(inductionDto),
+      hasEditAuthority: false,
+    }
+
+    // When
+    const content = nunjucks.render('_personalSkillsAndInterestsSummaryCard.njk', pageViewModel)
+    const $ = cheerio.load(content)
+
+    // Then
+    expect($('[data-qa=skills-change-link]').length).toEqual(0)
+    expect($('[data-qa=personal-interests-change-link]').length).toEqual(0)
+  })
+
   it('should display Add link for Skills given empty array of personal skills', () => {
     // Given
     const inductionDto = aValidInductionDto()
     inductionDto.personalSkillsAndInterests.skills = []
-    const pageViewModel = workAndInterestsView(inductionDto)
+    const pageViewModel = {
+      ...workAndInterestsView(inductionDto),
+      hasEditAuthority: true,
+    }
 
     // When
     const content = nunjucks.render('_personalSkillsAndInterestsSummaryCard.njk', pageViewModel)
@@ -91,7 +118,10 @@ describe('_personalSkillsAndInterestsSummaryCard', () => {
     // Given
     const inductionDto = aValidInductionDto()
     inductionDto.personalSkillsAndInterests.interests = []
-    const pageViewModel = workAndInterestsView(inductionDto)
+    const pageViewModel = {
+      ...workAndInterestsView(inductionDto),
+      hasEditAuthority: true,
+    }
 
     // When
     const content = nunjucks.render('_personalSkillsAndInterestsSummaryCard.njk', pageViewModel)
