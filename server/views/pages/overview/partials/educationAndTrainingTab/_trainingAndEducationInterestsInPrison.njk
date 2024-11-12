@@ -64,17 +64,15 @@ where the InductionDto contains any in-prison training interests the prisoner ha
         {% else %}
           {# The API returned no Induction for the prisoner - prompt the user to create the Induction #}
           <div class="govuk-summary-card__content">
-            <p class="govuk-body" data-qa="training-interests-create-induction-message">
-              To add education and training information you need to
-              {% if hasEditAuthority %}
+            {% if hasEditAuthority %}
+              <p class="govuk-body" data-qa="training-interests-create-induction-message">
+                To add education and training information you need to
                 <a href="/prisoners/{{ prisonerSummary.prisonNumber }}/create-induction/hoping-to-work-on-release" class="govuk-link" data-qa="link-to-create-induction">
                   create a learning and work progress plan
                 </a>
-              {% else %}
-                create a learning and work progress plan
-              {% endif %}
-              with {{ prisonerSummary.firstName }} {{ prisonerSummary.lastName }}.
-            </p>
+                with {{ prisonerSummary.firstName }} {{ prisonerSummary.lastName }}.
+              </p>
+            {% endif %}
           </div>
         {% endif %}
 

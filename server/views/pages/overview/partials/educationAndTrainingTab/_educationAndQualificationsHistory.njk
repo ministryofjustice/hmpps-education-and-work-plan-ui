@@ -44,17 +44,17 @@ never happen.
 
             <div class="app-summary-card__change-link">
               <h3 class="govuk-heading-s app-summary-card__change-link__heading">Educational qualifications</h3>
-              {%- set educationalQualificationsChangeLinkUrl -%}
-                {# The target of the change link is different depending on whether the education record has qualifications already recorded on not #}
-                {%- if education.educationDto.qualifications | length -%}
-                  {# If the education record has qualifications the change link should be to the qualifications list screen, which allows the user to add/remove qualifications #}
-                  /prisoners/{{ prisonerSummary.prisonNumber }}/education/qualifications
-                {%- else -%}
-                  {# If the education record does not have any qualifications the change link should be to a route that sets up the DTO in the prisoner context then redirects to the qualification level screen, which allows the user enter the first qualification #}
-                  /prisoners/{{ prisonerSummary.prisonNumber }}/education/add-qualifications
-                {%- endif -%}
-              {%- endset -%}
               {% if hasEditAuthority %}
+                {%- set educationalQualificationsChangeLinkUrl -%}
+                  {# The target of the change link is different depending on whether the education record has qualifications already recorded on not #}
+                  {%- if education.educationDto.qualifications | length -%}
+                    {# If the education record has qualifications the change link should be to the qualifications list screen, which allows the user to add/remove qualifications #}
+                    /prisoners/{{ prisonerSummary.prisonNumber }}/education/qualifications
+                  {%- else -%}
+                    {# If the education record does not have any qualifications the change link should be to a route that sets up the DTO in the prisoner context then redirects to the qualification level screen, which allows the user enter the first qualification #}
+                    /prisoners/{{ prisonerSummary.prisonNumber }}/education/add-qualifications
+                  {%- endif -%}
+                {%- endset -%}
                 <a class="govuk-link app-summary-card__change-link__link govuk-!-display-none-print" href="{{ educationalQualificationsChangeLinkUrl }}" data-qa="educational-qualifications-change-link">
                   Change<span class="govuk-visually-hidden"> qualifications by adding or removing qualifications</span>
                 </a>
@@ -179,17 +179,15 @@ never happen.
               <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
 
               <h3 class="govuk-heading-s" data-qa="other-qualifications">Other qualifications and education history</h3>
-             <p class="govuk-body" data-qa="add-education-history">
-                To add education history, including vocational qualifications,
-                {% if hasEditAuthority %}
+              {% if hasEditAuthority %}
+                <p class="govuk-body" data-qa="add-education-history">
+                  To add education history, including vocational qualifications,
                   <a href="/prisoners/{{ prisonerSummary.prisonNumber }}/create-induction/hoping-to-work-on-release" class="govuk-link" data-qa="link-to-create-induction">
                     create a learning and work progress plan
                   </a>
-                {% else %}
-                  create a learning and work progress plan
-                {% endif %}
-                with {{ prisonerSummary.firstName }} {{ prisonerSummary.lastName }}.
-              </p>
+                  with {{ prisonerSummary.firstName }} {{ prisonerSummary.lastName }}.
+                </p>
+              {% endif %}
 
             {% endif %}
 
@@ -212,17 +210,15 @@ never happen.
             <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
 
             <h3 class="govuk-heading-s" data-qa="other-qualifications">Other qualifications and education history</h3>
+            {% if hasEditAuthority %}
               <p class="govuk-body">
                 To add education history, including vocational qualifications,
-                {% if hasEditAuthority %}
-                  <a href="/prisoners/{{ prisonerSummary.prisonNumber }}/create-induction/hoping-to-work-on-release" class="govuk-link" data-qa="link-to-create-induction">
-                    create a learning and work progress plan
-                  </a>
-                {% else %}
+                <a href="/prisoners/{{ prisonerSummary.prisonNumber }}/create-induction/hoping-to-work-on-release" class="govuk-link" data-qa="link-to-create-induction">
                   create a learning and work progress plan
-                {% endif %}
+                </a>
                 with {{ prisonerSummary.firstName }} {{ prisonerSummary.lastName }}.
               </p>
+            {% endif %}
           {% endif %}
         </div>
 
