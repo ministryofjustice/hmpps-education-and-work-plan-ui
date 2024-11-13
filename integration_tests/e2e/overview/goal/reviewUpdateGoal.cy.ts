@@ -83,7 +83,7 @@ context('Review updated goal', () => {
 
   it('should redirect to auth-error page given user does not have edit authority', () => {
     // Given
-    cy.task('stubSignIn')
+    cy.task('stubSignInAsReadOnlyUser')
 
     const prisonNumber = 'G6115VJ'
     const goalReference = '10efc562-be8f-4675-9283-9ede0c19dade'

@@ -20,7 +20,7 @@ context('Security tests for creating and updating Inductions', () => {
   describe('Creating Inductions', () => {
     it('should redirect to auth-error page given user does not have edit authority', () => {
       // Given
-      cy.task('stubSignIn')
+      cy.task('stubSignInAsReadOnlyUser')
       cy.signIn()
 
       const prisonNumber = 'G6115VJ'
@@ -49,7 +49,7 @@ context('Security tests for creating and updating Inductions', () => {
 
     it('should redirect to auth-error page given user does not have edit authority', () => {
       // Given
-      cy.task('stubSignIn')
+      cy.task('stubSignInAsReadOnlyUser')
       cy.signIn()
 
       const prisonNumber = 'G6115VJ'

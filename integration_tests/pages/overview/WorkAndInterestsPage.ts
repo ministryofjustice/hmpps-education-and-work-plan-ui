@@ -10,7 +10,6 @@ import FutureWorkInterestRolesPage from '../induction/FutureWorkInterestRolesPag
 import PreviousWorkExperienceTypesPage from '../induction/PreviousWorkExperienceTypesPage'
 import InPrisonWorkPage from '../induction/InPrisonWorkPage'
 import HopingToWorkOnReleasePage from '../induction/HopingToWorkOnReleasePage'
-import AuthorisationErrorPage from '../authorisationError'
 
 /**
  * Cypress page class representing the Work And Interests tab of the Overview Page
@@ -71,11 +70,6 @@ export default class WorkAndInterestsPage extends Page {
     return Page.verifyOnPage(PersonalInterestsPage)
   }
 
-  clickPersonalInterestsChangeLinkReadOnlyUser(): AuthorisationErrorPage {
-    this.personalInterestsChangeLink().click()
-    return Page.verifyOnPage(AuthorisationErrorPage)
-  }
-
   personalInterestsChangeLinkHasText(expected: string): WorkAndInterestsPage {
     this.personalInterestsChangeLink().should('contain.text', expected)
     return this
@@ -91,19 +85,9 @@ export default class WorkAndInterestsPage extends Page {
     return Page.verifyOnPage(HopingToWorkOnReleasePage)
   }
 
-  clickHopingToWorkOnReleaseChangeLinkReadOnlyUser(): AuthorisationErrorPage {
-    this.hopingToWorkOnReleaseChangeLink().click()
-    return Page.verifyOnPage(AuthorisationErrorPage)
-  }
-
   clickAffectAbilityToWorkChangeLink(): AffectAbilityToWorkPage {
     this.affectAbilityToWorkChangeLink().click()
     return Page.verifyOnPage(AffectAbilityToWorkPage)
-  }
-
-  clickAffectAbilityToWorkChangeLinkReadOnlyUser(): AuthorisationErrorPage {
-    this.affectAbilityToWorkChangeLink().click()
-    return Page.verifyOnPage(AuthorisationErrorPage)
   }
 
   clickFutureWorkInterestTypesChangeLink(): FutureWorkInterestTypesPage {
@@ -111,19 +95,9 @@ export default class WorkAndInterestsPage extends Page {
     return Page.verifyOnPage(FutureWorkInterestTypesPage)
   }
 
-  clickFutureWorkInterestTypesChangeLinkReadOnlyUser(): AuthorisationErrorPage {
-    this.futureWorkInterestTypesChangeLink().click()
-    return Page.verifyOnPage(AuthorisationErrorPage)
-  }
-
   clickFutureWorkInterestRolesChangeLink(): FutureWorkInterestRolesPage {
     this.futureWorkInterestRolesChangeLink().click()
     return Page.verifyOnPage(FutureWorkInterestRolesPage)
-  }
-
-  clickFutureWorkInterestRolesChangeLinkReadOnlyUser(): AuthorisationErrorPage {
-    this.futureWorkInterestRolesChangeLink().click()
-    return Page.verifyOnPage(AuthorisationErrorPage)
   }
 
   doesNotHaveFutureWorkInterestRolesChangeLink(): WorkAndInterestsPage {
@@ -136,11 +110,6 @@ export default class WorkAndInterestsPage extends Page {
     return Page.verifyOnPage(PreviousWorkExperienceTypesPage)
   }
 
-  clickPreviousWorkExperienceTypesChangeLinkReadOnlyUser(): AuthorisationErrorPage {
-    this.previousWorkExperienceTypesChangeLink().click()
-    return Page.verifyOnPage(AuthorisationErrorPage)
-  }
-
   clickPreviousWorkExperienceDetailChangeLink(
     workExperienceType: TypeOfWorkExperienceValue,
   ): PreviousWorkExperienceDetailPage {
@@ -148,21 +117,9 @@ export default class WorkAndInterestsPage extends Page {
     return Page.verifyOnPage(PreviousWorkExperienceDetailPage)
   }
 
-  clickPreviousWorkExperienceDetailChangeLinkReadOnlyUser(
-    workExperienceType: TypeOfWorkExperienceValue,
-  ): AuthorisationErrorPage {
-    this.previousWorkExperienceDetailChangeLink(workExperienceType).click()
-    return Page.verifyOnPage(AuthorisationErrorPage)
-  }
-
   clickInPrisonWorkChangeLink(): InPrisonWorkPage {
     this.inPrisonWorkChangeLink().click()
     return Page.verifyOnPage(InPrisonWorkPage)
-  }
-
-  clickInPrisonWorkChangeLinkReadOnlyUser(): AuthorisationErrorPage {
-    this.inPrisonWorkChangeLink().click()
-    return Page.verifyOnPage(AuthorisationErrorPage)
   }
 
   inPrisonWorkChangeLinkHasText(expected: string): WorkAndInterestsPage {

@@ -2,7 +2,9 @@ import Page from '../../pages/page'
 import OverviewPage from '../../pages/overview/OverviewPage'
 import WorkAndInterestsPage from '../../pages/overview/WorkAndInterestsPage'
 import SkillsPage from '../../pages/induction/SkillsPage'
+import PersonalInterestsPage from '../../pages/induction/PersonalInterestsPage'
 import WorkedBeforePage from '../../pages/induction/WorkedBeforePage'
+import AffectAbilityToWorkPage from '../../pages/induction/AffectAbilityToWorkPage'
 import PreviousWorkExperienceDetailPage from '../../pages/induction/PreviousWorkExperienceDetailPage'
 import TypeOfWorkExperienceValue from '../../../server/enums/typeOfWorkExperienceValue'
 import FutureWorkInterestTypesPage from '../../pages/induction/FutureWorkInterestTypesPage'
@@ -12,12 +14,11 @@ import InPrisonWorkPage from '../../pages/induction/InPrisonWorkPage'
 import HopingToWorkOnReleasePage from '../../pages/induction/HopingToWorkOnReleasePage'
 import HopingToGetWorkValue from '../../../server/enums/hopingToGetWorkValue'
 import HasWorkedBeforeValue from '../../../server/enums/hasWorkedBeforeValue'
-import AuthorisationErrorPage from '../../pages/authorisationError'
 
 context('Prisoner Overview page - Work and Interests tab', () => {
   beforeEach(() => {
     cy.task('reset')
-    cy.task('stubSignInAsUserWithViewAuthority')
+    cy.task('stubSignInAsReadOnlyUser')
     cy.task('stubAuthUser')
     cy.task('stubGetHeaderComponent')
     cy.task('stubGetFooterComponent')
@@ -98,8 +99,9 @@ context('Prisoner Overview page - Work and Interests tab', () => {
       .hasInductionUnavailableMessageDisplayed()
   })
 
-  it('should display link to create Induction given prisoner does not have an Induction yet', () => {
+  it('should display link to create Induction given prisoner does not have an Induction yet and the user has an appropriate role', () => {
     // Given
+    cy.task('stubSignInAsUserWithEditAuthority')
     cy.task('stubGetInduction404Error')
 
     cy.signIn()
@@ -117,10 +119,13 @@ context('Prisoner Overview page - Work and Interests tab', () => {
       .hasLinkToCreateInductionDisplayed()
   })
 
-  describe(`link to change Induction 'Hoping to work on release' question`, () => {
-    it(`should link to change Induction 'Hoping to work on release' question for users with edit authority`, () => {
-      // Given
+  describe('should display change links to Induction questions given user has an appropriate role', () => {
+    beforeEach(() => {
       cy.task('stubSignInAsUserWithEditAuthority')
+    })
+
+    it(`should link to change Induction 'Hoping to work on release' question`, () => {
+      // Given
       cy.task('stubGetInduction')
 
       cy.signIn()
@@ -135,27 +140,8 @@ context('Prisoner Overview page - Work and Interests tab', () => {
       Page.verifyOnPage(HopingToWorkOnReleasePage)
     })
 
-    it(`should link to auth-error page for users with read-only authority`, () => {
+    it(`should link to change Induction 'Skills' question`, () => {
       // Given
-      cy.task('stubGetInduction')
-
-      cy.signIn()
-      const prisonNumber = 'G6115VJ'
-      cy.visit(`/plan/${prisonNumber}/view/work-and-interests`)
-      const workAndInterestsPage = Page.verifyOnPage(WorkAndInterestsPage)
-
-      // When
-      workAndInterestsPage.clickHopingToWorkOnReleaseChangeLinkReadOnlyUser()
-
-      // Then
-      Page.verifyOnPage(AuthorisationErrorPage)
-    })
-  })
-
-  describe(`link to change Induction 'Skills' question`, () => {
-    it(`should link to change Induction 'Skills' question for users with edit authority`, () => {
-      // Given
-      cy.task('stubSignInAsUserWithEditAuthority')
       cy.task('stubGetInduction')
 
       cy.signIn()
@@ -170,7 +156,7 @@ context('Prisoner Overview page - Work and Interests tab', () => {
       Page.verifyOnPage(SkillsPage)
     })
 
-    it(`should link to auth-error page for users with read-only authority`, () => {
+    it(`should link to change Induction 'Personal Interests' question`, () => {
       // Given
       cy.task('stubGetInduction')
 
@@ -180,17 +166,14 @@ context('Prisoner Overview page - Work and Interests tab', () => {
       const workAndInterestsPage = Page.verifyOnPage(WorkAndInterestsPage)
 
       // When
-      workAndInterestsPage.clickPersonalInterestsChangeLinkReadOnlyUser()
+      workAndInterestsPage.clickPersonalInterestsChangeLink()
 
       // Then
-      Page.verifyOnPage(AuthorisationErrorPage)
+      Page.verifyOnPage(PersonalInterestsPage)
     })
-  })
 
-  describe(`link to change Induction 'Worked Before' question`, () => {
-    it(`should link to change Induction 'Worked Before' question for users with edit authority`, () => {
+    it(`should link to change Induction 'Worked Before' question`, () => {
       // Given
-      cy.task('stubSignInAsUserWithEditAuthority')
       cy.task('stubGetInduction')
 
       cy.signIn()
@@ -205,7 +188,7 @@ context('Prisoner Overview page - Work and Interests tab', () => {
       Page.verifyOnPage(WorkedBeforePage)
     })
 
-    it(`should link to auth-error page for users with read-only authority`, () => {
+    it(`should link to change Induction 'Affect Ability To Work' question`, () => {
       // Given
       cy.task('stubGetInduction')
 
@@ -215,17 +198,14 @@ context('Prisoner Overview page - Work and Interests tab', () => {
       const workAndInterestsPage = Page.verifyOnPage(WorkAndInterestsPage)
 
       // When
-      workAndInterestsPage.clickAffectAbilityToWorkChangeLinkReadOnlyUser()
+      workAndInterestsPage.clickAffectAbilityToWorkChangeLink()
 
       // Then
-      Page.verifyOnPage(AuthorisationErrorPage)
+      Page.verifyOnPage(AffectAbilityToWorkPage)
     })
-  })
 
-  describe(`link to change Induction 'Previous Work Experience Types' question`, () => {
-    it(`should link to change Induction 'Previous Work Experience Types' question given person has worked before and user has edit authority`, () => {
+    it(`should link to change Induction 'Previous Work Experience Types' question given person has worked before`, () => {
       // Given
-      cy.task('stubSignInAsUserWithEditAuthority')
       cy.task('stubGetInduction', { hasWorkedBefore: HasWorkedBeforeValue.YES }) // Induction has previous work experiences of Office and Other
 
       cy.signIn()
@@ -243,27 +223,8 @@ context('Prisoner Overview page - Work and Interests tab', () => {
         .hasOtherPreviousWorkExperienceType('Finance')
     })
 
-    it(`should link to auth-error page given user has read-only authority`, () => {
+    it(`should link to change Induction 'Previous Work Experience Detail' question given person has worked before`, () => {
       // Given
-      cy.task('stubGetInduction', { hasWorkedBefore: HasWorkedBeforeValue.YES }) // Induction has previous work experiences of Office and Other
-
-      cy.signIn()
-      const prisonNumber = 'G6115VJ'
-      cy.visit(`/plan/${prisonNumber}/view/work-and-interests`)
-      const workAndInterestsPage = Page.verifyOnPage(WorkAndInterestsPage)
-
-      // When
-      workAndInterestsPage.clickPreviousWorkExperienceTypesChangeLinkReadOnlyUser()
-
-      // Then
-      Page.verifyOnPage(AuthorisationErrorPage)
-    })
-  })
-
-  describe(`link to change Induction 'Previous Work Experience Detail' question`, () => {
-    it(`should link to change Induction 'Previous Work Experience Detail' question given person has worked before and user has edit authority`, () => {
-      // Given
-      cy.task('stubSignInAsUserWithEditAuthority')
       cy.task('stubGetInduction', { hasWorkedBefore: HasWorkedBeforeValue.YES }) // Induction has previous work experiences of Office and Other
 
       cy.signIn()
@@ -278,27 +239,8 @@ context('Prisoner Overview page - Work and Interests tab', () => {
       Page.verifyOnPage(PreviousWorkExperienceDetailPage)
     })
 
-    it(`should link to auth-error page given user has read-only authority`, () => {
+    it(`should link to change Induction 'Future Work Interest Types' question given person does want to work`, () => {
       // Given
-      cy.task('stubGetInduction', { hasWorkedBefore: HasWorkedBeforeValue.YES }) // Induction has previous work experiences of Office and Other
-
-      cy.signIn()
-      const prisonNumber = 'G6115VJ'
-      cy.visit(`/plan/${prisonNumber}/view/work-and-interests`)
-      const workAndInterestsPage = Page.verifyOnPage(WorkAndInterestsPage)
-
-      // When
-      workAndInterestsPage.clickPreviousWorkExperienceDetailChangeLinkReadOnlyUser(TypeOfWorkExperienceValue.OFFICE)
-
-      // Then
-      Page.verifyOnPage(AuthorisationErrorPage)
-    })
-  })
-
-  describe(`link to change Induction 'Future Work Interest Types' question`, () => {
-    it(`should link to change Induction 'Future Work Interest Types' question given person does want to work and user has edit authority`, () => {
-      // Given
-      cy.task('stubSignInAsUserWithEditAuthority')
       cy.task('stubGetInduction', { hopingToGetWork: HopingToGetWorkValue.YES })
 
       cy.signIn()
@@ -313,27 +255,8 @@ context('Prisoner Overview page - Work and Interests tab', () => {
       Page.verifyOnPage(FutureWorkInterestTypesPage)
     })
 
-    it(`should link to auth-error page given user has read-only authority`, () => {
+    it(`should link to change Induction 'Future Work Interest Roles' question given person does want to work`, () => {
       // Given
-      cy.task('stubGetInduction', { hopingToGetWork: HopingToGetWorkValue.YES })
-
-      cy.signIn()
-      const prisonNumber = 'G6115VJ'
-      cy.visit(`/plan/${prisonNumber}/view/work-and-interests`)
-      const workAndInterestsPage = Page.verifyOnPage(WorkAndInterestsPage)
-
-      // When
-      workAndInterestsPage.clickFutureWorkInterestTypesChangeLinkReadOnlyUser()
-
-      // Then
-      Page.verifyOnPage(AuthorisationErrorPage)
-    })
-  })
-
-  describe(`link to change Induction 'Future Work Interest Roles' question`, () => {
-    it(`should link to change Induction 'Future Work Interest Roles' question given person does want to work and user has edit authority`, () => {
-      // Given
-      cy.task('stubSignInAsUserWithEditAuthority')
       cy.task('stubGetInduction', { hopingToGetWork: HopingToGetWorkValue.YES })
 
       cy.signIn()
@@ -348,54 +271,34 @@ context('Prisoner Overview page - Work and Interests tab', () => {
       Page.verifyOnPage(FutureWorkInterestRolesPage)
     })
 
-    it(`should link to auth-error page given user has read-only authority`, () => {
+    it(`should not link to change Induction 'Future Work Interest Types' question given person does not want to work`, () => {
       // Given
-      cy.task('stubGetInduction', { hopingToGetWork: HopingToGetWorkValue.YES })
+      cy.task('stubGetInduction', { hopingToGetWork: HopingToGetWorkValue.NO })
 
       cy.signIn()
       const prisonNumber = 'G6115VJ'
       cy.visit(`/plan/${prisonNumber}/view/work-and-interests`)
       const workAndInterestsPage = Page.verifyOnPage(WorkAndInterestsPage)
 
-      // When
-      workAndInterestsPage.clickFutureWorkInterestRolesChangeLinkReadOnlyUser()
+      // Then
+      workAndInterestsPage.doesNotHaveFutureWorkInterestRolesChangeLink()
+    })
+
+    it(`should not link to change Induction 'Future Work Interest Roles' question given person does not want to work`, () => {
+      // Given
+      cy.task('stubGetInduction', { hopingToGetWork: HopingToGetWorkValue.NO })
+
+      cy.signIn()
+      const prisonNumber = 'G6115VJ'
+      cy.visit(`/plan/${prisonNumber}/view/work-and-interests`)
+      const workAndInterestsPage = Page.verifyOnPage(WorkAndInterestsPage)
 
       // Then
-      Page.verifyOnPage(AuthorisationErrorPage)
+      workAndInterestsPage.doesNotHaveFutureWorkInterestRolesChangeLink()
     })
-  })
 
-  it(`should not link to change Induction 'Future Work Interest Types' question given person does not want to work and user has edit authority`, () => {
-    // Given
-    cy.task('stubSignInAsUserWithEditAuthority')
-    cy.task('stubGetInduction', { hopingToGetWork: HopingToGetWorkValue.NO })
-
-    cy.signIn()
-    const prisonNumber = 'G6115VJ'
-    cy.visit(`/plan/${prisonNumber}/view/work-and-interests`)
-    const workAndInterestsPage = Page.verifyOnPage(WorkAndInterestsPage)
-
-    // Then
-    workAndInterestsPage.doesNotHaveFutureWorkInterestRolesChangeLink()
-  })
-
-  it(`should not link to change Induction 'Future Work Interest Roles' question given person does not want to work and user has read-only authority`, () => {
-    // Given
-    cy.task('stubGetInduction', { hopingToGetWork: HopingToGetWorkValue.NO })
-
-    cy.signIn()
-    const prisonNumber = 'G6115VJ'
-    cy.visit(`/plan/${prisonNumber}/view/work-and-interests`)
-    const workAndInterestsPage = Page.verifyOnPage(WorkAndInterestsPage)
-
-    // Then
-    workAndInterestsPage.doesNotHaveFutureWorkInterestRolesChangeLink()
-  })
-
-  describe(`link to change Induction 'In Prison Work' question`, () => {
-    it(`should link to change Induction 'In Prison Work' question for users with edit authority`, () => {
+    it(`should link to change Induction 'In Prison Work' question`, () => {
       // Given
-      cy.task('stubSignInAsUserWithEditAuthority')
       cy.task('stubGetInduction')
 
       cy.signIn()
@@ -408,22 +311,6 @@ context('Prisoner Overview page - Work and Interests tab', () => {
 
       // Then
       Page.verifyOnPage(InPrisonWorkPage)
-    })
-
-    it(`should link to auth-error page given user has read-only authority`, () => {
-      // Given
-      cy.task('stubGetInduction')
-
-      cy.signIn()
-      const prisonNumber = 'G6115VJ'
-      cy.visit(`/plan/${prisonNumber}/view/work-and-interests`)
-      const workAndInterestsPage = Page.verifyOnPage(WorkAndInterestsPage)
-
-      // When
-      workAndInterestsPage.clickInPrisonWorkChangeLinkReadOnlyUser()
-
-      // Then
-      Page.verifyOnPage(AuthorisationErrorPage)
     })
   })
 })
