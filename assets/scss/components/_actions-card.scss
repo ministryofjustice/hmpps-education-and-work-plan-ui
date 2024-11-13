@@ -1,4 +1,6 @@
 .actions-card {
+  display: none; // Hide the action card by default
+
   .govuk-summary-card__title-wrapper {
     background: none;
     border-bottom: 2px solid $govuk-border-colour;
@@ -9,4 +11,8 @@
   li:last-of-type {
     border: none;
   }
+}
+
+.actions-card:has(.govuk-summary-card__content .govuk-list li) {
+  display: block; // Show the action card only if the list has at least item within it
 }
