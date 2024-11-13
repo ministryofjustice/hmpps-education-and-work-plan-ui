@@ -70,7 +70,6 @@ export default class PrisonerListController {
       prisonerSearchApiPageZero,
       prisonerSearchApiPageSize,
       user.username,
-      user.token,
     )
     return new PagedPrisonerSearchSummary(prisonerList, prisonerListUiPageSize)
   }

@@ -18,7 +18,6 @@ export default class PrisonerListService {
     page: number,
     pageSize: number,
     username: string,
-    userToken: string,
   ): Promise<PrisonerSearchSummary[]> {
     const systemToken = await this.hmppsAuthClient.getSystemClientToken(username)
 
@@ -29,7 +28,7 @@ export default class PrisonerListService {
     const prisonNumbers: string[] = prisoners.map(prisoner => prisoner.prisonerNumber)
 
     const prisonersWithCiagInduction: string[] = await this.ciagInductionClient
-      .getCiagInductionsForPrisonNumbers(prisonNumbers, userToken)
+      .getCiagInductionsForPrisonNumbers(prisonNumbers, systemToken)
       .then(ciagInductionListResponse =>
         ciagInductionListResponse.ciagProfileList.map(
           (ciagInduction: { offenderId: string }) => ciagInduction.offenderId,
@@ -37,7 +36,7 @@ export default class PrisonerListService {
       )
 
     const prisonersWithActionPlan: string[] = await this.educationAndWorkPlanClient
-      .getActionPlans(prisonNumbers, userToken)
+      .getActionPlans(prisonNumbers, systemToken)
       .then(actionPlanSummaryListResponse =>
         actionPlanSummaryListResponse.actionPlanSummaries.map(
           (actionPlanSummary: { prisonNumber: string }) => actionPlanSummary.prisonNumber,
