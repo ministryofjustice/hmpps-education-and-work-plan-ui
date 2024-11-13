@@ -8,9 +8,6 @@ export default function populateUserAuthorities(): RequestHandler {
       const { authorities: roles = [] } = jwtDecode(res.locals.user.token) as { authorities?: string[] }
 
       res.locals.hasEditAuthority = roles.includes(ApplicationRoles.ROLE_EDUCATION_WORK_PLAN_EDITOR)
-      res.locals.hasViewAuthority =
-        roles.includes(ApplicationRoles.ROLE_EDUCATION_WORK_PLAN_EDITOR) ||
-        roles.includes(ApplicationRoles.ROLE_EDUCATION_WORK_PLAN_VIEWER)
     }
 
     next()

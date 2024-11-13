@@ -18,7 +18,7 @@ import HasWorkedBeforeValue from '../../../server/enums/hasWorkedBeforeValue'
 context('Prisoner Overview page - Work and Interests tab', () => {
   beforeEach(() => {
     cy.task('reset')
-    cy.task('stubSignInAsUserWithEditAuthority')
+    cy.task('stubSignInAsReadOnlyUser')
     cy.task('stubAuthUser')
     cy.task('stubGetHeaderComponent')
     cy.task('stubGetFooterComponent')
@@ -99,8 +99,9 @@ context('Prisoner Overview page - Work and Interests tab', () => {
       .hasInductionUnavailableMessageDisplayed()
   })
 
-  it('should display link to create Induction given prisoner does not have an Induction yet', () => {
+  it('should display link to create Induction given prisoner does not have an Induction yet and the user has an appropriate role', () => {
     // Given
+    cy.task('stubSignInAsUserWithEditAuthority')
     cy.task('stubGetInduction404Error')
 
     cy.signIn()
@@ -118,7 +119,11 @@ context('Prisoner Overview page - Work and Interests tab', () => {
       .hasLinkToCreateInductionDisplayed()
   })
 
-  describe('should display change links to Induction questions', () => {
+  describe('should display change links to Induction questions given user has an appropriate role', () => {
+    beforeEach(() => {
+      cy.task('stubSignInAsUserWithEditAuthority')
+    })
+
     it(`should link to change Induction 'Hoping to work on release' question`, () => {
       // Given
       cy.task('stubGetInduction')

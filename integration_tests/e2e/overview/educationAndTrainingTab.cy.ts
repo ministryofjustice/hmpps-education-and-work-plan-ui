@@ -8,7 +8,7 @@ import QualificationsListPage from '../../pages/prePrisonEducation/Qualification
 context('Prisoner Overview page - Education And Training tab', () => {
   beforeEach(() => {
     cy.task('reset')
-    cy.task('stubSignInAsUserWithEditAuthority')
+    cy.task('stubSignInAsReadOnlyUser')
     cy.task('stubAuthUser')
     cy.task('stubGetHeaderComponent')
     cy.task('stubGetFooterComponent')
@@ -233,10 +233,11 @@ context('Prisoner Overview page - Education And Training tab', () => {
         .hasEducationOrInductionUnavailableMessageDisplayed()
     })
 
-    it('should display link to create Induction given prisoner does not have an Induction yet', () => {
+    it('should display link to create Induction given prisoner does not have an Induction yet and the user has an appropriate role', () => {
       // Given
       cy.task('stubGetInduction404Error')
 
+      cy.task('stubSignInAsUserWithEditAuthority')
       cy.signIn()
       const prisonNumber = 'G6115VJ'
       cy.visit(`/plan/${prisonNumber}/view/overview`)
@@ -271,24 +272,6 @@ context('Prisoner Overview page - Education And Training tab', () => {
         .hasEducationQualificationsDisplayed()
     })
 
-    it('should display add education message given prisoner has no education record yet', () => {
-      // Given
-      cy.signIn()
-      const prisonNumber = 'G6115VJ'
-      cy.visit(`/plan/${prisonNumber}/view/overview`)
-      const overviewPage = Page.verifyOnPage(OverviewPage)
-      cy.task('stubGetEducation404Error')
-
-      // When
-      overviewPage.selectTab('Education and training')
-      const educationAndTrainingPage = Page.verifyOnPage(EducationAndTrainingPage)
-
-      // Then
-      educationAndTrainingPage //
-        .activeTabIs('Education and training')
-        .hasAddEducationMessageDisplayed()
-    })
-
     it('should display unavailable message given PLP API is unavailable when retrieving education', () => {
       // Given
       cy.signIn()
@@ -312,7 +295,29 @@ context('Prisoner Overview page - Education And Training tab', () => {
     })
   })
 
-  describe('should display change links to Induction & Education questions', () => {
+  describe('should display change links to Induction & Education questions given user has an appropriate role', () => {
+    beforeEach(() => {
+      cy.task('stubSignInAsUserWithEditAuthority')
+    })
+
+    it('should display add education message given prisoner has no education record yet', () => {
+      // Given
+      cy.signIn()
+      const prisonNumber = 'G6115VJ'
+      cy.visit(`/plan/${prisonNumber}/view/overview`)
+      const overviewPage = Page.verifyOnPage(OverviewPage)
+      cy.task('stubGetEducation404Error')
+
+      // When
+      overviewPage.selectTab('Education and training')
+      const educationAndTrainingPage = Page.verifyOnPage(EducationAndTrainingPage)
+
+      // Then
+      educationAndTrainingPage //
+        .activeTabIs('Education and training')
+        .hasAddEducationMessageDisplayed()
+    })
+
     it(`should link to the change in-prison training interests page`, () => {
       // Given
       cy.signIn()

@@ -86,7 +86,7 @@ context('Create a prisoners pre-prison education', () => {
 
   it('should redirect to auth-error page given user does not have edit authority', () => {
     // Given
-    cy.task('stubSignInAsUserWithViewAuthority')
+    cy.task('stubSignInAsReadOnlyUser')
     cy.signIn()
 
     // When

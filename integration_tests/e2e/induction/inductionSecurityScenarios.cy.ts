@@ -18,23 +18,9 @@ context('Security tests for creating and updating Inductions', () => {
   })
 
   describe('Creating Inductions', () => {
-    it('should redirect to auth-error page given user does not have any authorities', () => {
-      // Given
-      cy.task('stubSignIn')
-      cy.signIn()
-
-      const prisonNumber = 'G6115VJ'
-
-      // When
-      cy.visit(`/prisoners/${prisonNumber}/create-induction/in-prison-work`, { failOnStatusCode: false })
-
-      // Then
-      Page.verifyOnPage(AuthorisationErrorPage)
-    })
-
     it('should redirect to auth-error page given user does not have edit authority', () => {
       // Given
-      cy.task('stubSignInAsUserWithViewAuthority')
+      cy.task('stubSignInAsReadOnlyUser')
       cy.signIn()
 
       const prisonNumber = 'G6115VJ'
@@ -61,23 +47,9 @@ context('Security tests for creating and updating Inductions', () => {
       Page.verifyOnPage(Error404Page)
     })
 
-    it('should redirect to auth-error page given user does not have any authorities', () => {
-      // Given
-      cy.task('stubSignIn')
-      cy.signIn()
-
-      const prisonNumber = 'G6115VJ'
-
-      // When
-      cy.visit(`/prisoners/${prisonNumber}/induction/in-prison-work`, { failOnStatusCode: false })
-
-      // Then
-      Page.verifyOnPage(AuthorisationErrorPage)
-    })
-
     it('should redirect to auth-error page given user does not have edit authority', () => {
       // Given
-      cy.task('stubSignInAsUserWithViewAuthority')
+      cy.task('stubSignInAsReadOnlyUser')
       cy.signIn()
 
       const prisonNumber = 'G6115VJ'

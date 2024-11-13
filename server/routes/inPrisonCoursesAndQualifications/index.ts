@@ -1,6 +1,5 @@
 import type { Router } from 'express'
 import { Services } from '../../services'
-import { checkUserHasViewAuthority } from '../../middleware/roleBasedAccessControl'
 import InPrisonCoursesAndQualificationsController from './inPrisonCoursesAndQualificationsController'
 import retrieveCuriousInPrisonCourses from '../routerRequestHandlers/retrieveCuriousInPrisonCourses'
 import asyncMiddleware from '../../middleware/asyncMiddleware'
@@ -23,7 +22,6 @@ export default (router: Router, services: Services) => {
 
   // Route for use when being linked to from within PLP within the context of a prisoner's PLP plan
   router.get('/plan/:prisonNumber/in-prison-courses-and-qualifications', [
-    checkUserHasViewAuthority(),
     retrieveCuriousInPrisonCourses(services.curiousService),
     asyncMiddleware(inPrisonCoursesAndQualificationsController.getInPrisonCoursesAndQualificationsViewForPlp),
   ])

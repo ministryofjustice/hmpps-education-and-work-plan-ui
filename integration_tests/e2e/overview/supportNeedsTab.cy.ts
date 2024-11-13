@@ -5,7 +5,7 @@ import SupportNeedsPage from '../../pages/overview/SupportNeedsPage'
 context('Prisoner Overview page - Support Needs tab', () => {
   beforeEach(() => {
     cy.task('reset')
-    cy.task('stubSignInAsUserWithEditAuthority')
+    cy.task('stubSignInAsReadOnlyUser')
     cy.task('stubAuthUser')
     cy.task('stubGetHeaderComponent')
     cy.task('stubGetFooterComponent')

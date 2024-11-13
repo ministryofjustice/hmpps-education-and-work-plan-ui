@@ -34,8 +34,8 @@ export default defineConfig({
         ...auth,
 
         stubSignIn: (roles: []) => auth.stubSignIn(roles),
+        stubSignInAsReadOnlyUser: () => auth.stubSignIn([]),
         stubSignInAsUserWithEditAuthority: () => auth.stubSignIn(['ROLE_EDUCATION_WORK_PLAN_EDITOR']),
-        stubSignInAsUserWithViewAuthority: () => auth.stubSignIn(['ROLE_EDUCATION_WORK_PLAN_VIEWER']),
         log(message) {
           // eslint-disable-next-line no-console
           console.log(message)

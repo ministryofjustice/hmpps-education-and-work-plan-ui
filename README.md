@@ -117,7 +117,6 @@ To run the app a system client is required (`SYSTEM_CLIENT_ID` and `SYSTEM_CLIEN
 One the UI is running users will need to authenticate with `hmpps-auth` using a valid DPS username. The DPS user needs to have the followings roles
 dependent on the access/functionality required:
 
-* `ROLE_EDUCATION_WORK_PLAN_VIEWER` - required to be able to perform read only actions
 * `ROLE_EDUCATION_WORK_PLAN_EDITOR` - required to be able to perform actions that edit/create data
 
 ### Run linter

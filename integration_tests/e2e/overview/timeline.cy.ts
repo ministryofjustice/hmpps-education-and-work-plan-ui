@@ -6,7 +6,7 @@ import GoalsPage from '../../pages/overview/GoalsPage'
 context('Prisoner Overview page - Timeline tab', () => {
   beforeEach(() => {
     cy.task('reset')
-    cy.task('stubSignInAsUserWithEditAuthority')
+    cy.task('stubSignInAsReadOnlyUser')
     cy.task('stubAuthUser')
     cy.task('stubGetHeaderComponent')
     cy.task('stubGetFooterComponent')

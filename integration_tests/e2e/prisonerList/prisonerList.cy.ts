@@ -17,7 +17,7 @@ context(`Display the prisoner list screen`, () => {
 
   beforeEach(() => {
     cy.task('reset')
-    cy.task('stubSignInAsUserWithViewAuthority')
+    cy.task('stubSignInAsReadOnlyUser')
     cy.task('stubAuthUser')
     cy.task('stubGetHeaderComponent')
     cy.task('stubGetFooterComponent')

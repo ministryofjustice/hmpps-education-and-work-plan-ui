@@ -81,24 +81,9 @@ context('Review updated goal', () => {
     Page.verifyOnPage(OverviewPage)
   })
 
-  it('should redirect to auth-error page given user does not have any authorities', () => {
-    // Given
-    cy.task('stubSignIn')
-
-    const prisonNumber = 'G6115VJ'
-    const goalReference = '10efc562-be8f-4675-9283-9ede0c19dade'
-    cy.signIn()
-
-    // When
-    cy.visit(`/plan/${prisonNumber}/goals/${goalReference}/update/review`, { failOnStatusCode: false })
-
-    // Then
-    Page.verifyOnPage(AuthorisationErrorPage)
-  })
-
   it('should redirect to auth-error page given user does not have edit authority', () => {
     // Given
-    cy.task('stubSignInAsUserWithViewAuthority')
+    cy.task('stubSignInAsReadOnlyUser')
 
     const prisonNumber = 'G6115VJ'
     const goalReference = '10efc562-be8f-4675-9283-9ede0c19dade'
