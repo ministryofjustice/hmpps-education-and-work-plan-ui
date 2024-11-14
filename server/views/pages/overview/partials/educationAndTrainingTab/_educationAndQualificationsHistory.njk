@@ -187,6 +187,8 @@ never happen.
                   </a>
                   with {{ prisonerSummary.firstName }} {{ prisonerSummary.lastName }}.
                 </p>
+              {% else %}
+                <p class="govuk-body" data-qa="not-entered">Not entered.</p>
               {% endif %}
 
             {% endif %}
@@ -205,6 +207,8 @@ never happen.
               <p class="govuk-body">
                 <a href="/prisoners/{{ prisonerSummary.prisonNumber }}/create-education/highest-level-of-education" class="govuk-link" data-qa="link-to-add-educational-qualifications">Add educational qualifications</a>
               </p>
+            {% else %}
+              <p class="govuk-body" data-qa="not-entered">Not entered.</p>
             {% endif %}
 
             <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
@@ -218,6 +222,8 @@ never happen.
                 </a>
                 with {{ prisonerSummary.firstName }} {{ prisonerSummary.lastName }}.
               </p>
+            {% else %}
+              <p class="govuk-body" data-qa="not-entered">Not entered.</p>
             {% endif %}
           {% endif %}
         </div>
