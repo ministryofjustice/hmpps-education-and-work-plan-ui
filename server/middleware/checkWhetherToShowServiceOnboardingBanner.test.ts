@@ -23,7 +23,7 @@ describe('checkWhetherToShowServiceOnboardingBanner', () => {
   // The ONLY condition where the flag should be set is when the user does not have our service role AND the active caseload ID is not an enabled prison
   it('should set the flag given the user does not have our role and the users active caseload ID is not of the active prisons', async () => {
     // Given
-    res.locals.user = hmppsUser({ activeCaseLoadId: 'BXI', roles: ['ROLE_SOME_ROLE'] })
+    res.locals.user = hmppsUser({ activeCaseLoadId: 'BXI', roles: ['SOME_ROLE'] })
     process.env.ACTIVE_AGENCIES = 'LFI, HCI'
 
     // When
@@ -36,7 +36,7 @@ describe('checkWhetherToShowServiceOnboardingBanner', () => {
 
   it('should not set the flag given the user has our role and the users active caseload ID is one of the active prisons', async () => {
     // Given
-    res.locals.user = hmppsUser({ activeCaseLoadId: 'BXI', roles: ['ROLE_EDUCATION_WORK_PLAN_EDITOR'] })
+    res.locals.user = hmppsUser({ activeCaseLoadId: 'BXI', roles: ['EDUCATION_WORK_PLAN_EDITOR'] })
     process.env.ACTIVE_AGENCIES = 'LFI, BXI, HCI'
 
     // When
@@ -49,7 +49,7 @@ describe('checkWhetherToShowServiceOnboardingBanner', () => {
 
   it('should not set the flag given the user has our role and the active prisons includes the all prison wildcard', async () => {
     // Given
-    res.locals.user = hmppsUser({ activeCaseLoadId: 'BXI', roles: ['ROLE_EDUCATION_WORK_PLAN_EDITOR'] })
+    res.locals.user = hmppsUser({ activeCaseLoadId: 'BXI', roles: ['EDUCATION_WORK_PLAN_EDITOR'] })
     process.env.ACTIVE_AGENCIES = '***'
 
     // When
@@ -62,7 +62,7 @@ describe('checkWhetherToShowServiceOnboardingBanner', () => {
 
   it('should not set the flag given the user does not have our role and the users active caseload ID is one of the active prisons', async () => {
     // Given
-    res.locals.user = hmppsUser({ activeCaseLoadId: 'BXI', roles: ['ROLE_SOME_OTHER_ROLE'] })
+    res.locals.user = hmppsUser({ activeCaseLoadId: 'BXI', roles: ['SOME_OTHER_ROLE'] })
     process.env.ACTIVE_AGENCIES = 'LFI, BXI, HCI'
 
     // When
@@ -75,7 +75,7 @@ describe('checkWhetherToShowServiceOnboardingBanner', () => {
 
   it('should not set the flag given the user does not have our role and the active prisons includes the all prison wildcard', async () => {
     // Given
-    res.locals.user = hmppsUser({ activeCaseLoadId: 'BXI', roles: ['ROLE_SOME_OTHER_ROLE'] })
+    res.locals.user = hmppsUser({ activeCaseLoadId: 'BXI', roles: ['SOME_OTHER_ROLE'] })
     process.env.ACTIVE_AGENCIES = '***'
 
     // When
@@ -88,7 +88,7 @@ describe('checkWhetherToShowServiceOnboardingBanner', () => {
 
   it('should not set the flag given the user has our role and the users active caseload ID is not of the active prisons', async () => {
     // Given
-    res.locals.user = hmppsUser({ activeCaseLoadId: 'BXI', roles: ['ROLE_EDUCATION_WORK_PLAN_EDITOR'] })
+    res.locals.user = hmppsUser({ activeCaseLoadId: 'BXI', roles: ['EDUCATION_WORK_PLAN_EDITOR'] })
     process.env.ACTIVE_AGENCIES = 'LFI, HCI'
 
     // When
