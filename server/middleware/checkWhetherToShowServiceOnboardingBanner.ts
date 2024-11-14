@@ -10,7 +10,9 @@ import { ApplicationRoles } from './roleBasedAccessControl'
  */
 const checkWhetherToShowServiceOnboardingBanner = async (req: Request, res: Response, next: NextFunction) => {
   const activeCaseloadId = res.locals.user.activeCaseLoadId || ''
-  const userRoles = res.locals.user.roles || []
+  const userRoles = ((res.locals.user.roles || []) as Array<string>).map(role =>
+    role.startsWith('ROLE_') ? role : `ROLE_${role}`,
+  )
 
   res.locals.showServiceOnboardingBanner =
     !userRoles.includes(ApplicationRoles.ROLE_EDUCATION_WORK_PLAN_EDITOR) &&
