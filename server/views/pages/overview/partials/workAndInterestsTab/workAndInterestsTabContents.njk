@@ -22,6 +22,8 @@
             </a>
             with {{ prisonerSummary.firstName }} {{ prisonerSummary.lastName }}.
           </p>
+        {% else %}
+          <p class="govuk-body" data-qa="not-entered">No work and skills information entered.</p>
         {% endif %}
       </div>
     </div>

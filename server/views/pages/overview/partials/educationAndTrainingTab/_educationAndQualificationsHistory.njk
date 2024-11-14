@@ -187,6 +187,8 @@ never happen.
                   </a>
                   with {{ prisonerSummary.firstName }} {{ prisonerSummary.lastName }}.
                 </p>
+              {% else %}
+                <p class="govuk-body" data-qa="not-entered">Not entered</p>
               {% endif %}
 
             {% endif %}
@@ -218,6 +220,8 @@ never happen.
                 </a>
                 with {{ prisonerSummary.firstName }} {{ prisonerSummary.lastName }}.
               </p>
+            {% else %}
+              <p class="govuk-body" data-qa="not-entered">Not entered</p>
             {% endif %}
           {% endif %}
         </div>
