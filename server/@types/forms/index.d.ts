@@ -80,6 +80,11 @@ declare module 'forms' {
     qualificationSubject: string
     qualificationGrade: string
   }
+
+  export interface ExemptionReasonForm {
+    exemptionReason: ExemptionReasonValue
+    exemptionReasonDetails: Record<ExemptionReasonValue, string | undefined>
+  }
 }
 
 declare module 'inductionForms' {
