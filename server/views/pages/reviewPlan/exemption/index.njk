@@ -1,0 +1,207 @@
+{% extends "../../../partials/layout.njk" %}
+
+{% set pageTitle = "Exemption" %}
+{% set pageId = "exemption" %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+    text: "Back",
+    href: "#",
+    classes: "js-back-link"
+  }) }}
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    {% set warningTextHtml %}
+      {{ govukWarningText({
+        text: "You need an email requesting or agreeing to an exemption from a prison official, such as a head of education and skills or learner support manager",
+        iconFallbackText: "Warning",
+        attributes: {"data-qa": "warning-text"}
+      }) }}
+    {% endset %}
+
+    <form class="form" method="post" novalidate="">
+      <div class="govuk-form-group">
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+
+        {% macro exemptionReasonDetailsInput(reason, value) %}
+          {{ govukTextarea({
+            id: reason,
+            name: "exemptionReasonDetails[" + reason + "]",
+            value: value,
+            rows: "3",
+            maxlength: 200,
+            label: {
+              text: "More details (optional)",
+              classes: "govuk-label--s govuk-!-font-weight-bold"
+            },
+            errorMessage: errors | findError(reason)
+          }) }}
+        {% endmacro %}
+
+        {{ govukRadios({
+          name: "exemptionReason",
+          id: "exemptionReason",
+          fieldset: {
+            legend: {
+              html: "<h1 class='govuk-heading-l govuk-!-margin-top-6' data-qa='page-heading'>Select an exemption reason to put " + prisonerSummary.firstName + " " + prisonerSummary.lastName + "'s review on hold</h1>"
+            }
+          },
+          hint: {
+            html: warningTextHtml
+          },
+          items: [
+            {
+              value: "EXEMPT_PRISONER_DRUG_OR_ALCOHOL_DEPENDENCY",
+              text: "EXEMPT_PRISONER_DRUG_OR_ALCOHOL_DEPENDENCY" | formatExemptionReasonValue,
+              checked: form.exemptionReason === "EXEMPT_PRISONER_DRUG_OR_ALCOHOL_DEPENDENCY",
+              conditional: {
+                html: exemptionReasonDetailsInput(
+                  "EXEMPT_PRISONER_DRUG_OR_ALCOHOL_DEPENDENCY",
+                  form.exemptionReasonDetails["EXEMPT_PRISONER_DRUG_OR_ALCOHOL_DEPENDENCY"]
+                )
+              }
+            },
+            {
+              value: "EXEMPT_PRISONER_OTHER_HEALTH_ISSUES",
+              text: "EXEMPT_PRISONER_OTHER_HEALTH_ISSUES" | formatExemptionReasonValue,
+              checked: form.exemptionReason === "EXEMPT_PRISONER_OTHER_HEALTH_ISSUES",
+              conditional: {
+                html: exemptionReasonDetailsInput(
+                  "EXEMPT_PRISONER_OTHER_HEALTH_ISSUES",
+                  form.exemptionReasonDetails["EXEMPT_PRISONER_OTHER_HEALTH_ISSUES"]
+                )
+              }
+            },
+            {
+              value: "EXEMPT_PRISONER_FAILED_TO_ENGAGE",
+              text: "EXEMPT_PRISONER_FAILED_TO_ENGAGE" | formatExemptionReasonValue,
+              checked: form.exemptionReason === "EXEMPT_PRISONER_FAILED_TO_ENGAGE",
+              conditional: {
+                html: exemptionReasonDetailsInput(
+                  "EXEMPT_PRISONER_FAILED_TO_ENGAGE",
+                  form.exemptionReasonDetails["EXEMPT_PRISONER_FAILED_TO_ENGAGE"]
+                )
+              }
+            },
+            {
+              value: "EXEMPT_PRISONER_ESCAPED_OR_ABSCONDED",
+              text: "EXEMPT_PRISONER_ESCAPED_OR_ABSCONDED" | formatExemptionReasonValue,
+              checked: form.exemptionReason === "EXEMPT_PRISONER_ESCAPED_OR_ABSCONDED",
+              conditional: {
+                html: exemptionReasonDetailsInput(
+                  "EXEMPT_PRISONER_ESCAPED_OR_ABSCONDED",
+                  form.exemptionReasonDetails["EXEMPT_PRISONER_ESCAPED_OR_ABSCONDED"]
+                )
+              }
+            },
+            {
+              value: "EXEMPT_PRISON_REGIME_CIRCUMSTANCES",
+              text: "EXEMPT_PRISON_REGIME_CIRCUMSTANCES" | formatExemptionReasonValue,
+              checked: form.exemptionReason === "EXEMPT_PRISON_REGIME_CIRCUMSTANCES",
+              conditional: {
+                html: exemptionReasonDetailsInput(
+                  "EXEMPT_PRISON_REGIME_CIRCUMSTANCES",
+                  form.exemptionReasonDetails["EXEMPT_PRISON_REGIME_CIRCUMSTANCES"]
+                )
+              }
+            },
+            {
+              value: "EXEMPT_PRISONER_SAFETY_ISSUES",
+              text: "EXEMPT_PRISONER_SAFETY_ISSUES" | formatExemptionReasonValue,
+              checked: form.exemptionReason === "EXEMPT_PRISONER_SAFETY_ISSUES",
+              conditional: {
+                html: exemptionReasonDetailsInput(
+                  "EXEMPT_PRISONER_SAFETY_ISSUES",
+                  form.exemptionReasonDetails["EXEMPT_PRISONER_SAFETY_ISSUES"]
+                )
+              },
+              hint: {
+                text: "for example, vulnerable prisoners who you cannot visit in cell and cannot move around prison without threat of violence",
+                attributes: {
+                  "data-qa": "hint-safety-issues"
+                }
+              }
+            },
+            {
+              value: "EXEMPT_PRISON_STAFF_REDEPLOYMENT",
+              text: "EXEMPT_PRISON_STAFF_REDEPLOYMENT" | formatExemptionReasonValue,
+              checked: form.exemptionReason === "EXEMPT_PRISON_STAFF_REDEPLOYMENT",
+              conditional: {
+                html: exemptionReasonDetailsInput(
+                  "EXEMPT_PRISON_STAFF_REDEPLOYMENT",
+                  form.exemptionReasonDetails["EXEMPT_PRISON_STAFF_REDEPLOYMENT"]
+                )
+              },
+              hint: {
+                text: "for example, if the prison cannot facilitate sessions due to staff not being available to escort prisoners",
+                attributes: {
+                  "data-qa": "hint-staff-redeployment"
+                }
+              }
+            },
+            {
+              value: "EXEMPT_PRISON_OPERATION_OR_SECURITY_ISSUE",
+              text: "EXEMPT_PRISON_OPERATION_OR_SECURITY_ISSUE" | formatExemptionReasonValue,
+              checked: form.exemptionReason === "EXEMPT_PRISON_OPERATION_OR_SECURITY_ISSUE",
+              conditional: {
+                html: exemptionReasonDetailsInput(
+                  "EXEMPT_PRISON_OPERATION_OR_SECURITY_ISSUE",
+                  form.exemptionReasonDetails["EXEMPT_PRISON_OPERATION_OR_SECURITY_ISSUE"]
+                )
+              },
+              hint: {
+                text: "where the prisoner is violent and there is a risk to prison or CIAG staff",
+                attributes: {
+                  "data-qa": "hint-operation-issue"
+                }
+              }
+            },
+            {
+              value: "EXEMPT_SECURITY_ISSUE_RISK_TO_STAFF",
+              text: "EXEMPT_SECURITY_ISSUE_RISK_TO_STAFF" | formatExemptionReasonValue,
+              checked: form.exemptionReason === "EXEMPT_SECURITY_ISSUE_RISK_TO_STAFF",
+              conditional: {
+                html: exemptionReasonDetailsInput(
+                  "EXEMPT_SECURITY_ISSUE_RISK_TO_STAFF",
+                  form.exemptionReasonDetails["EXEMPT_SECURITY_ISSUE_RISK_TO_STAFF"]
+                )
+              },
+              hint: {
+              text: "where the prisoner is violent and there is a risk to prison or CIAG staff",
+              attributes: {
+                "data-qa": "hint-security-risk"
+              }
+            }
+            },
+            {
+              value: "EXEMPT_SYSTEM_TECHNICAL_ISSUE",
+              text: "EXEMPT_SYSTEM_TECHNICAL_ISSUE" | formatExemptionReasonValue,
+              checked: form.exemptionReason === "EXEMPT_SYSTEM_TECHNICAL_ISSUE",
+              conditional: {
+                html: exemptionReasonDetailsInput(
+                  "EXEMPT_SYSTEM_TECHNICAL_ISSUE",
+                  form.exemptionReasonDetails["EXEMPT_SYSTEM_TECHNICAL_ISSUE"]
+                )
+              }
+            }
+          ],
+          errorMessage: errors | findError("exemptionReason")
+        }) }}
+      </div>
+
+      {{ govukButton({
+        id: "submit-button",
+        text: "Continue",
+        type: "submit",
+        attributes: {"data-qa": "submit-button"}
+      }) }}
+    </form>
+
+  </div>
+</div>
+
+{% endblock %}
