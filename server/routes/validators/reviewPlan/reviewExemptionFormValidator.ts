@@ -1,10 +1,10 @@
-import type { ExemptionReasonForm } from 'forms'
+import type { ReviewExemptionForm } from 'reviewPlanForms'
 import formatErrors from '../../errorFormatter'
 
 const MAX_EXEMPTION_REASON_LENGTH = 200
 
-export default function validateExemptionReasonForm(
-  exemptionReasonForm: ExemptionReasonForm,
+export default function validateReviewExemptionForm(
+  exemptionReasonForm: ReviewExemptionForm,
 ): Array<Record<string, string>> {
   const errors: Array<Record<string, string>> = []
 
@@ -13,7 +13,7 @@ export default function validateExemptionReasonForm(
   return errors
 }
 
-const validateExemptionReason = (exemptionReasonForm: ExemptionReasonForm): Array<string> => {
+const validateExemptionReason = (exemptionReasonForm: ReviewExemptionForm): Array<string> => {
   const errors: Array<string> = []
 
   const { exemptionReason } = exemptionReasonForm
@@ -24,7 +24,7 @@ const validateExemptionReason = (exemptionReasonForm: ExemptionReasonForm): Arra
   return errors
 }
 
-const validateExemptionReasonDetails = (exemptionReasonForm: ExemptionReasonForm): Array<string> => {
+const validateExemptionReasonDetails = (exemptionReasonForm: ReviewExemptionForm): Array<string> => {
   const errors: Array<string> = []
 
   const { exemptionReason, exemptionReasonDetails } = exemptionReasonForm

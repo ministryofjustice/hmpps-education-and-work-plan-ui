@@ -32,7 +32,7 @@ import objectsSortedAlphabeticallyWithOtherLastByFilter from '../filters/objects
 import previousWorkExperienceObjectsSortedInScreenOrderFilter from '../filters/previousWorkExperienceObjectsSortedInScreenOrderFilter'
 import achievedQualificationObjectsSortedInScreenOrderFilter from '../filters/achievedQualificationObjectsSortedInScreenOrderFilter'
 import formatReasonToArchiveGoalFilter from '../filters/formatReasonToArchiveGoalFilter'
-import formatExemptionReasonValueFilter from '../filters/formatExemptionsFilter'
+import formatExemptionReasonValueFilter from '../filters/formatExemptionReasonValueFilter'
 
 export default function nunjucksSetup(app: express.Express, applicationInfo: ApplicationInfo): void {
   app.set('view engine', 'njk')

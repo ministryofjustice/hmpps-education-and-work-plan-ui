@@ -1,15 +1,15 @@
-import type { ExemptionReasonForm } from 'forms'
+import type { ReviewExemptionForm } from 'reviewPlanForms'
 import type { PrisonerSummary } from 'viewModels'
 
 export default class ExemptionReasonView {
   constructor(
     private readonly prisonerSummary: PrisonerSummary,
-    private readonly exemptionReasonForm: ExemptionReasonForm,
+    private readonly exemptionReasonForm: ReviewExemptionForm,
   ) {}
 
   get renderArgs(): {
     prisonerSummary: PrisonerSummary
-    form: ExemptionReasonForm
+    form: ReviewExemptionForm
   } {
     return {
       prisonerSummary: this.prisonerSummary,

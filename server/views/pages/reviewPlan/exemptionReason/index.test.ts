@@ -2,7 +2,7 @@ import nunjucks from 'nunjucks'
 import * as cheerio from 'cheerio'
 import aValidPrisonerSummary from '../../../../testsupport/prisonerSummaryTestDataBuilder'
 import findErrorFilter from '../../../../filters/findErrorFilter'
-import formatExemptionReasonValueFilter from '../../../../filters/formatExemptionsFilter'
+import formatExemptionReasonValueFilter from '../../../../filters/formatExemptionReasonValueFilter'
 
 describe('ExemptionReasonPage', () => {
   const njkEnv = nunjucks.configure([

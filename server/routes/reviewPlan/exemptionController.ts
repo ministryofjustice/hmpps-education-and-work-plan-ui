@@ -1,8 +1,8 @@
-import type { ExemptionReasonForm } from 'forms'
 import type { RequestHandler } from 'express'
+import type { ReviewExemptionForm } from 'reviewPlanForms'
 import { getPrisonerContext } from '../../data/session/prisonerContexts'
-import ExemptionReasonView from './exemptionView'
-import validateExemptionReasonForm from '../validators/reviewPlan/exemptionValidator'
+import ExemptionReasonView from './exemptionReasonView'
+import validateReviewExemptionForm from '../validators/reviewPlan/reviewExemptionFormValidator'
 
 export default class ExemptionReasonController {
   getExemptionReasonView: RequestHandler = async (req, res, next): Promise<void> => {
@@ -10,9 +10,9 @@ export default class ExemptionReasonController {
     const { prisonerSummary } = res.locals
     const prisonerContext = getPrisonerContext(req.session, prisonNumber)
 
-    const { exemptionReasonForm } = prisonerContext
+    const { reviewExemptionForm } = prisonerContext
 
-    const view = new ExemptionReasonView(prisonerSummary, exemptionReasonForm)
+    const view = new ExemptionReasonView(prisonerSummary, reviewExemptionForm)
     return res.render('pages/reviewPlan/exemption/index', { ...view.renderArgs })
   }
 
@@ -20,7 +20,7 @@ export default class ExemptionReasonController {
     const { prisonNumber } = req.params
     const { exemptionReason, exemptionReasonDetails = {} } = req.body
 
-    const exemptionReasonForm: ExemptionReasonForm = {
+    const reviewExemptionForm: ReviewExemptionForm = {
       exemptionReason,
       exemptionReasonDetails: {
         [exemptionReason]: exemptionReasonDetails[exemptionReason],
@@ -28,9 +28,9 @@ export default class ExemptionReasonController {
     }
 
     const prisonerContext = getPrisonerContext(req.session, prisonNumber)
-    prisonerContext.exemptionReasonForm = exemptionReasonForm
+    prisonerContext.reviewExemptionForm = reviewExemptionForm
 
-    const errors = validateExemptionReasonForm(exemptionReasonForm)
+    const errors = validateReviewExemptionForm(reviewExemptionForm)
     if (errors.length > 0) {
       return res.redirectWithErrors(`/plan/${prisonNumber}/review/exemption`, errors)
     }

@@ -1,9 +1,10 @@
 export default function formatExemptionReasonValueFilter(value: string): string {
-  const exemptionReasonValue = ExemptionReasonValues[value as keyof typeof ExemptionReasonValues]
-  return exemptionReasonValue
+  const reviewPlanExemptionReasonValue =
+    ReviewPlanExemptionReasonValues[value as keyof typeof ReviewPlanExemptionReasonValues]
+  return reviewPlanExemptionReasonValue
 }
 
-enum ExemptionReasonValues {
+enum ReviewPlanExemptionReasonValues {
   EXEMPT_PRISONER_DRUG_OR_ALCOHOL_DEPENDENCY = `Has a drug or alcohol dependency and is in assessment or treatment`,
   EXEMPT_PRISONER_OTHER_HEALTH_ISSUES = `Has a health concern and is in assessment or treatment`,
   EXEMPT_PRISONER_FAILED_TO_ENGAGE = `Has failed to engage or cooperate for a reason outside contractor's control`,

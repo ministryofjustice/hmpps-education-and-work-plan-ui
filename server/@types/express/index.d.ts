@@ -7,7 +7,7 @@ import type {
   QualificationDetailsForm,
   QualificationLevelForm,
   UpdateGoalForm,
-  ExemptionReasonForm,
+  ReviewExemptionForm,
 } from 'forms'
 import type {
   AdditionalTrainingForm,
@@ -76,7 +76,7 @@ declare module 'express-session' {
     reviewNoteForm?: ReviewNoteForm
     reviewPlanDto?: ReviewPlanDto
     // Exemption related forms
-    exemptionReasonForm?: ExemptionReasonForm
+    reviewExemptionForm?: ReviewExemptionForm
   }
 
   export type PrisonerContexts = Record<string, PrisonerContext>

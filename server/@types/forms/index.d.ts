@@ -80,11 +80,6 @@ declare module 'forms' {
     qualificationSubject: string
     qualificationGrade: string
   }
-
-  export interface ExemptionReasonForm {
-    exemptionReason: ExemptionReasonValue
-    exemptionReasonDetails: Record<ExemptionReasonValue, string | undefined>
-  }
 }
 
 declare module 'inductionForms' {
@@ -178,5 +173,10 @@ declare module 'reviewPlanForms' {
 
   export interface ReviewNoteForm {
     notes?: string
+  }
+
+  export interface ReviewExemptionForm {
+    exemptionReason: ReviewPlanExemptionReasonValue
+    exemptionReasonDetails: Record<ReviewPlanExemptionReasonValue, string | undefined>
   }
 }
