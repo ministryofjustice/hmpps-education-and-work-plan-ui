@@ -13,7 +13,7 @@ export default class ExemptionReasonController {
     const { reviewExemptionForm } = prisonerContext
 
     const view = new ExemptionReasonView(prisonerSummary, reviewExemptionForm)
-    return res.render('pages/reviewPlan/exemption/index', { ...view.renderArgs })
+    return res.render('pages/reviewPlan/exemptionReason/index', { ...view.renderArgs })
   }
 
   submitExemptionReasonForm: RequestHandler = async (req, res, next): Promise<void> => {

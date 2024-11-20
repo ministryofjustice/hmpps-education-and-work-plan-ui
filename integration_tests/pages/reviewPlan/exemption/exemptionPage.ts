@@ -6,7 +6,7 @@ import ReviewPlanExemptionReasonValue from '../../../../server/enums/reviewPlanE
  */
 export default class ExemptionReasonPage extends Page {
   constructor() {
-    super('exemption')
+    super('review-plan-exemption-reason')
   }
 
   selectExemptionReason(value: ReviewPlanExemptionReasonValue): ExemptionReasonPage {

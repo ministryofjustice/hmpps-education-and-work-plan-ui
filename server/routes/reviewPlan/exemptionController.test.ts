@@ -47,7 +47,7 @@ describe('exemptionReasonController', () => {
       await controller.getExemptionReasonView(req, res, next)
 
       // Then
-      expect(res.render).toHaveBeenCalledWith('pages/reviewPlan/exemption/index', expectedView)
+      expect(res.render).toHaveBeenCalledWith('pages/reviewPlan/exemptionReason/index', expectedView)
     })
   })
 
