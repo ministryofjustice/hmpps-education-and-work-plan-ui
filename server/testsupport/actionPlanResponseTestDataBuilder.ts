@@ -1,4 +1,5 @@
-import type { ActionPlanResponse, GoalResponse, NoteResponse, StepResponse } from 'educationAndWorkPlanApiClient'
+import type { ActionPlanResponse, GoalResponse, StepResponse } from 'educationAndWorkPlanApiClient'
+import aValidNoteResponse from './noteResponseTestDataBuilder'
 
 const aValidActionPlanResponseWithOneGoal = (): ActionPlanResponse => {
   return {
@@ -48,19 +49,5 @@ const aValidSecondStepResponse = (): StepResponse => {
     sequenceNumber: 2,
   }
 }
-
-const aValidNoteResponse = (): NoteResponse => ({
-  reference: '8092b80e-4d60-418f-983a-da457ff8df40',
-  content: 'Prisoner is not good at listening',
-  type: 'GOAL',
-  createdBy: 'asmith_gen',
-  createdByDisplayName: 'Alex Smith',
-  createdAt: '2023-01-16T09:34:12.453Z',
-  createdAtPrison: 'BXI',
-  updatedBy: 'asmith_gen',
-  updatedByDisplayName: 'Alex Smith',
-  updatedAt: '2023-09-23T13:42:01.401Z',
-  updatedAtPrison: 'BXI',
-})
 
 export { aValidActionPlanResponseWithOneGoal, aValidGoalResponse }

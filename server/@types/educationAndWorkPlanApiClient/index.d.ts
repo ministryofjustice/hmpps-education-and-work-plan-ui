@@ -48,4 +48,12 @@ declare module 'educationAndWorkPlanApiClient' {
   export type UpdateEducationRequest = components['schemas']['UpdateEducationRequest']
   export type CreateOrUpdateAchievedQualificationRequest =
     components['schemas']['CreateOrUpdateAchievedQualificationRequest']
+
+  export type CreateActionPlanReviewRequest = components['schemas']['CreateActionPlanReviewRequest']
+  export type CreateActionPlanReviewResponse = components['schemas']['CreateActionPlanReviewResponse']
+  export type ActionPlanReviewsResponse = components['schemas']['ActionPlanReviewsResponse']
+  export type ScheduledActionPlanReviewResponse = components['schemas']['ScheduledActionPlanReviewResponse']
+  export type CompletedActionPlanReviewResponse = components['schemas']['CompletedActionPlanReviewResponse']
+
+  export type InductionScheduleResponse = components['schemas']['InductionScheduleResponse']
 }

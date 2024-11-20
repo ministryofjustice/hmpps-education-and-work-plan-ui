@@ -4,54 +4,6 @@
  */
 
 export interface paths {
-  '/queue-admin/retry-dlq/{dlqName}': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    get?: never
-    put: operations['retryDlq']
-    post?: never
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/queue-admin/retry-all-dlqs': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    get?: never
-    put: operations['retryAllDlqs']
-    post?: never
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/queue-admin/purge-queue/{queueName}': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    get?: never
-    put: operations['purgeQueue']
-    post?: never
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
   '/person/{prisonNumber}/education': {
     parameters: {
       query?: never
@@ -228,6 +180,22 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/action-plans/{prisonNumber}/reviews': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get: operations['getActionPlanReviews']
+    put?: never
+    post: operations['createActionPlanReview']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/action-plans/{prisonNumber}/goals': {
     parameters: {
       query?: never
@@ -280,14 +248,14 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/queue-admin/get-dlq-messages/{dlqName}': {
+  '/inductions/{prisonNumber}/induction-schedule': {
     parameters: {
       query?: never
       header?: never
       path?: never
       cookie?: never
     }
-    get: operations['getDlqMessages']
+    get: operations['getInductionSchedule']
     put?: never
     post?: never
     delete?: never
@@ -300,14 +268,6 @@ export interface paths {
 export type webhooks = Record<string, never>
 export interface components {
   schemas: {
-    RetryDlqResult: {
-      /** Format: int32 */
-      messagesFoundCount: number
-    }
-    PurgeQueueResult: {
-      /** Format: int32 */
-      messagesFoundCount: number
-    }
     /**
      * @description A list of achieved qualifications that should be updated or created as part of the education record.
      * @example null
@@ -1261,6 +1221,138 @@ export interface components {
        */
       sequenceNumber: number
     }
+    CreateActionPlanReviewRequest: {
+      /**
+       * @description The Prison identifier.
+       * @example BXI
+       */
+      prisonId: string
+      /**
+       * @description The notes taken by the Reviewer when conducting the prisoner's Review.
+       * @example Now he has settled into prison life Peter's attitude has improved and he is making excellent progress towards his goals.
+       */
+      note: string
+      /**
+       * Format: date
+       * @description An ISO-8601 date representing the date that this Review was conducted on.
+       */
+      conductedAt: string
+      /**
+       * @description The name of the person who actually conducted the Review session with the Prisoner.   Only populated if the person who conducted the Review was not the person who keyed it into the system.
+       * @example Albert Mozzarella
+       */
+      conductedBy?: string
+      /**
+       * @description The role of the person who actually conducted the Review session with the Prisoner.  Only populated if the person who conducted the Review was not the person who keyed it into the system.
+       * @example Peer mentor
+       */
+      conductedByRole?: string
+    }
+    CreateActionPlanReviewResponse: {
+      /**
+       * @description Indicates whether the Review just submitted was the prisoner's last review before release.
+       * @example false
+       */
+      wasLastReviewBeforeRelease: boolean
+      latestReviewSchedule: components['schemas']['ScheduledActionPlanReviewResponse']
+    }
+    /** @example null */
+    ScheduledActionPlanReviewResponse: {
+      /**
+       * Format: uuid
+       * @description The unique reference of this Review
+       * @example c88a6c48-97e2-4c04-93b5-98619966447b
+       */
+      reference: string
+      /**
+       * Format: date
+       * @description An ISO-8601 date representing date that the Review window starts.  A prisoner's Review should be conducted within a given timeframe and this field represents the date that the Review window starts from.
+       */
+      reviewDateFrom: string
+      /**
+       * Format: date
+       * @description An ISO-8601 date representing date that the Review window ends. This is the Review deadline date.  A prisoner's Review should be conducted within a given timeframe and this field represents the date that the Review window ends, and that the Review should be completed by.
+       */
+      reviewDateTo: string
+      /**
+       * @example null
+       * @enum {string}
+       */
+      status:
+        | 'SCHEDULED'
+        | 'EXEMPT_PRISONER_DRUG_OR_ALCOHOL_DEPENDENCY'
+        | 'EXEMPT_PRISONER_OTHER_HEALTH_ISSUES'
+        | 'EXEMPT_PRISONER_FAILED_TO_ENGAGE'
+        | 'EXEMPT_PRISONER_ESCAPED_OR_ABSCONDED'
+        | 'EXEMPT_PRISONER_SAFETY_ISSUES'
+        | 'EXEMPT_PRISON_REGIME_CIRCUMSTANCES'
+        | 'EXEMPT_PRISON_STAFF_REDEPLOYMENT'
+        | 'EXEMPT_PRISON_OPERATION_OR_SECURITY_ISSUE'
+        | 'EXEMPT_SECURITY_ISSUE_RISK_TO_STAFF'
+        | 'EXEMPT_SYSTEM_TECHNICAL_ISSUE'
+        | 'EXEMPT_PRISONER_TRANSFER'
+        | 'EXEMPT_PRISONER_RELEASE'
+        | 'EXEMPT_PRISONER_DEATH'
+        | 'COMPLETED'
+      /**
+       * @example null
+       * @enum {string}
+       */
+      calculationRule:
+        | 'PRISONER_READMISSION'
+        | 'PRISONER_TRANSFER'
+        | 'BETWEEN_RELEASE_AND_3_MONTHS_TO_SERVE'
+        | 'BETWEEN_3_MONTHS_AND_3_MONTHS_7_DAYS_TO_SERVE'
+        | 'BETWEEN_3_MONTHS_8_DAYS_AND_6_MONTHS_TO_SERVE'
+        | 'BETWEEN_6_AND_12_MONTHS_TO_SERVE'
+        | 'BETWEEN_12_AND_60_MONTHS_TO_SERVE'
+        | 'MORE_THAN_60_MONTHS_TO_SERVE'
+        | 'INDETERMINATE_SENTENCE'
+        | 'PRISONER_ON_REMAND'
+        | 'PRISONER_UN_SENTENCED'
+      /**
+       * @description The DPS username of the person who created this resource.
+       * @example asmith_gen
+       */
+      createdBy: string
+      /**
+       * @description The display name of the person who created this resource.
+       * @example Alex Smith
+       */
+      createdByDisplayName: string
+      /**
+       * Format: date-time
+       * @description An ISO-8601 timestamp representing when this resource was created.
+       * @example 2023-06-19T09:39:44Z
+       */
+      createdAt: string
+      /**
+       * @description The identifier of the prison that the prisoner was resident at when this resource was created.
+       * @example BXI
+       */
+      createdAtPrison: string
+      /**
+       * @description The DPS username of the person who last updated this resource.
+       * @example asmith_gen
+       */
+      updatedBy: string
+      /**
+       * @description The display name of the person who last updated this resource.
+       * @example Alex Smith
+       */
+      updatedByDisplayName: string
+      /**
+       * Format: date-time
+       * @description An ISO-8601 timestamp representing when this resource was last updated. This will be the same as the created date if it has not yet been updated.
+       * @example 2023-06-19T09:39:44Z
+       */
+      updatedAt: string
+      /**
+       * @description The identifier of the prison that the prisoner was resident at when this resource was updated.
+       * @example BXI
+       */
+      updatedAtPrison: string
+    }
     CreateGoalsRequest: {
       /**
        * @description A List of at least one Goal.
@@ -1372,19 +1464,6 @@ export interface components {
     HmppsSubjectAccessRequestContent: {
       /** @description The content of the subject access request response */
       content: Record<string, never>
-    }
-    DlqMessage: {
-      body: {
-        [key: string]: Record<string, never>
-      }
-      messageId: string
-    }
-    GetDlqResult: {
-      /** Format: int32 */
-      messagesFoundCount: number
-      /** Format: int32 */
-      messagesReturnedCount: number
-      messages: components['schemas']['DlqMessage'][]
     }
     /**
      * @description A list of achieved qualifications. Can be empty but not null.
@@ -2046,6 +2125,98 @@ export interface components {
        */
       affectAbilityToWorkOther?: string
     }
+    InductionScheduleResponse: {
+      /**
+       * Format: uuid
+       * @description A unique reference for this InductionScheduleResponse.
+       * @example 814ade0a-a3b2-46a3-862f-79211ba13f7b
+       */
+      reference: string
+      /**
+       * @description The ID of the prisoner
+       * @example A1234BC
+       */
+      prisonNumber: string
+      /**
+       * Format: date
+       * @description The deadline for the induction to be completed
+       */
+      deadlineDate: string
+      /**
+       * @example null
+       * @enum {string}
+       */
+      scheduleCalculationRule:
+        | 'NEW_PRISON_ADMISSION'
+        | 'EXISTING_PRISONER_LESS_THAN_6_MONTHS_TO_SERVE'
+        | 'EXISTING_PRISONER_BETWEEN_6_AND_12_MONTHS_TO_SERVE'
+        | 'EXISTING_PRISONER_BETWEEN_12_AND_60_MONTHS_TO_SERVE'
+        | 'EXISTING_PRISONER_INDETERMINATE_SENTENCE'
+        | 'EXISTING_PRISONER_ON_REMAND'
+        | 'EXISTING_PRISONER_UN_SENTENCED'
+      /**
+       * @example null
+       * @enum {string}
+       */
+      scheduleStatus:
+        | 'SCHEDULED'
+        | 'COMPLETE'
+        | 'EXEMPT_PRISONER_DRUG_OR_ALCOHOL_DEPENDENCY'
+        | 'EXEMPT_PRISONER_OTHER_HEALTH_ISSUES'
+        | 'EXEMPT_PRISONER_FAILED_TO_ENGAGE'
+        | 'EXEMPT_PRISONER_ESCAPED_OR_ABSCONDED'
+        | 'EXEMPT_PRISONER_SAFETY_ISSUES'
+        | 'EXEMPT_PRISON_REGIME_CIRCUMSTANCES'
+        | 'EXEMPT_PRISON_STAFF_REDEPLOYMENT'
+        | 'EXEMPT_PRISON_OPERATION_OR_SECURITY_ISSUE'
+        | 'EXEMPT_SECURITY_ISSUE_RISK_TO_STAFF'
+        | 'EXEMPT_SYSTEM_TECHNICAL_ISSUE'
+        | 'EXEMPT_PRISONER_TRANSFER'
+        | 'EXEMPT_PRISONER_RELEASE'
+        | 'EXEMPT_PRISONER_DEATH'
+      /**
+       * @description The DPS username of the person who created this resource.
+       * @example asmith_gen
+       */
+      createdBy: string
+      /**
+       * @description The display name of the person who created this resource.
+       * @example Alex Smith
+       */
+      createdByDisplayName: string
+      /**
+       * Format: date-time
+       * @description An ISO-8601 timestamp representing when this resource was created.
+       * @example 2023-06-19T09:39:44Z
+       */
+      createdAt: string
+      /**
+       * @description The DPS username of the person who last updated this resource.
+       * @example asmith_gen
+       */
+      updatedBy: string
+      /**
+       * @description The display name of the person who last updated this resource.
+       * @example Alex Smith
+       */
+      updatedByDisplayName: string
+      /**
+       * Format: date-time
+       * @description An ISO-8601 timestamp representing when this resource was updated.
+       * @example 2023-06-19T09:39:44Z
+       */
+      updatedAt: string
+      /**
+       * @description The name of the person who completed the review.
+       * @example John smith
+       */
+      inductionPerformedBy?: string
+      /**
+       * Format: date
+       * @description the date when this resource was updated.
+       */
+      inductionPerformedAt?: string
+    }
     /** @example null */
     ConversationResponse: {
       /**
@@ -2251,55 +2422,52 @@ export interface components {
        * @example c88a6c48-97e2-4c04-93b5-98619966447b
        */
       reference: string
-      /**
-       * @description The content of the note.
-       * @example null
-       */
+      /** @example Peter would like to work in the library to help with his English levels. */
       content: string
       /**
        * @example null
        * @enum {string}
        */
-      type: 'GOAL' | 'GOAL_ARCHIVAL' | 'GOAL_COMPLETION'
+      type: 'GOAL' | 'GOAL_ARCHIVAL' | 'GOAL_COMPLETION' | 'REVIEW' | 'INDUCTION'
       /**
-       * @description The DPS username of the person who created the Note.
+       * @description The DPS username of the person who created this resource.
        * @example asmith_gen
        */
       createdBy: string
       /**
-       * @description The display name of the person who created the Note.
+       * @description The display name of the person who created this resource.
        * @example Alex Smith
        */
       createdByDisplayName: string
       /**
        * Format: date-time
-       * @description An ISO-8601 timestamp representing when the Note was created.
+       * @description An ISO-8601 timestamp representing when this resource was created.
        * @example 2023-06-19T09:39:44Z
        */
       createdAt: string
       /**
-       * @description The identifier of the prison that the prisoner was resident at when the Note was created.
+       * @description The identifier of the prison that the prisoner was resident at when this resource was created.
        * @example BXI
        */
       createdAtPrison: string
       /**
-       * @description The DPS username of the person who last updated the Note.
+       * @description The DPS username of the person who last updated this resource.
        * @example asmith_gen
        */
       updatedBy: string
       /**
-       * @description The display name of the person who last updated the Note.
+       * @description The display name of the person who last updated this resource.
        * @example Alex Smith
        */
       updatedByDisplayName: string
       /**
        * Format: date-time
-       * @description An ISO-8601 timestamp representing when the Note was last updated. This will be the same as the created date if it has not yet been updated.
+       * @description An ISO-8601 timestamp representing when this resource was last updated. This will be the same as the created date if it has not yet been updated.
        * @example 2023-06-19T09:39:44Z
        */
       updatedAt: string
       /**
-       * @description The identifier of the prison that the prisoner was resident at when the Note was updated.
+       * @description The identifier of the prison that the prisoner was resident at when this resource was updated.
        * @example BXI
        */
       updatedAtPrison: string
@@ -2332,6 +2500,68 @@ export interface components {
        */
       sequenceNumber: number
     }
+    ActionPlanReviewsResponse: {
+      latestReviewSchedule: components['schemas']['ScheduledActionPlanReviewResponse']
+      /**
+       * @description A List containing zero or more CompletedReviews.
+       * @example null
+       */
+      completedReviews: components['schemas']['CompletedActionPlanReviewResponse'][]
+    }
+    /**
+     * @description A List containing zero or more CompletedReviews.
+     * @example null
+     */
+    CompletedActionPlanReviewResponse: {
+      /**
+       * Format: uuid
+       * @description The unique reference of this Review
+       * @example c88a6c48-97e2-4c04-93b5-98619966447b
+       */
+      reference: string
+      /**
+       * Format: date
+       * @description An ISO-8601 date representing the deadline for this Review to have been completed by.
+       */
+      deadlineDate: string
+      /**
+       * Format: date
+       * @description An ISO-8601 date representing the date that this Review was completed on.  Clients can infer whether this Review was completed on time or not by comparing the deadlineDate and completedDate.
+       */
+      completedDate: string
+      note: components['schemas']['NoteResponse']
+      /**
+       * @description The DPS username of the person who entered the Review in the system.
+       * @example asmith_gen
+       */
+      createdBy: string
+      /**
+       * @description The display name of the person who entered the Review in the system.
+       * @example Alex Smith
+       */
+      createdByDisplayName: string
+      /**
+       * Format: date-time
+       * @description An ISO-8601 timestamp representing when the Review was entered in the system.
+       * @example 2023-06-19T09:39:44Z
+       */
+      createdAt: string
+      /**
+       * @description The identifier of the prison that the prisoner was resident at when the Review was ented in the system.
+       * @example BXI
+       */
+      createdAtPrison: string
+      /**
+       * @description The name of the person who actually conducted the Review session with the Prisoner.   Only populated if the person who conducted the Review was not the person who keyed it into the system.
+       * @example Albert Mozzarella
+       */
+      conductedBy?: string
+      /**
+       * @description The role of the person who actually conducted the Review session with the Prisoner.  Only populated if the person who conducted the Review was not the person who keyed it into the system.
+       * @example Peer mentor
+       */
+      conductedByRole?: string
+    }
     GetGoalsResponse: {
       /**
        * @description A List containing zero or more Goals.
@@ -2348,70 +2578,6 @@ export interface components {
 }
 export type $defs = Record<string, never>
 export interface operations {
-  retryDlq: {
-    parameters: {
-      query?: never
-      header?: never
-      path: {
-        dlqName: string
-      }
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          '*/*': components['schemas']['RetryDlqResult']
-        }
-      }
-    }
-  }
-  retryAllDlqs: {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          '*/*': components['schemas']['RetryDlqResult'][]
-        }
-      }
-    }
-  }
-  purgeQueue: {
-    parameters: {
-      query?: never
-      header?: never
-      path: {
-        queueName: string
-      }
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          '*/*': components['schemas']['PurgeQueueResult']
-        }
-      }
-    }
-  }
   getEduction: {
     parameters: {
       query?: never
@@ -2868,6 +3034,54 @@ export interface operations {
       }
     }
   }
+  getActionPlanReviews: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        prisonNumber: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          '*/*': components['schemas']['ActionPlanReviewsResponse']
+        }
+      }
+    }
+  }
+  createActionPlanReview: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        prisonNumber: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CreateActionPlanReviewRequest']
+      }
+    }
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          '*/*': components['schemas']['CreateActionPlanReviewResponse']
+        }
+      }
+    }
+  }
   getGoals: {
     parameters: {
       query?: {
@@ -3012,14 +3226,12 @@ export interface operations {
       }
     }
   }
-  getDlqMessages: {
+  getInductionSchedule: {
     parameters: {
-      query?: {
-        maxMessages?: number
-      }
+      query?: never
       header?: never
       path: {
-        dlqName: string
+        prisonNumber: string
       }
       cookie?: never
     }
@@ -3031,7 +3243,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          '*/*': components['schemas']['GetDlqResult']
+          'application/json': components['schemas']['InductionScheduleResponse']
         }
       }
     }
