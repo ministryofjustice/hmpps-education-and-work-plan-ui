@@ -8,31 +8,6 @@ describe('exemptionReasonController', () => {
   const prisonNumber = 'A1234BC'
   const prisonerSummary = aValidPrisonerSummary(prisonNumber)
 
-  const validForm = {
-    exemptionReason: 'EXEMPT_PRISONER_DRUG_OR_ALCOHOL_DEPENDENCY',
-    exemptionReasonDetails: {
-      EXEMPT_PRISONER_DRUG_OR_ALCOHOL_DEPENDENCY: 'In treatment',
-    },
-  }
-  const validFormMoreThanOneDetailsEntered = {
-    exemptionReason: 'EXEMPT_PRISONER_DRUG_OR_ALCOHOL_DEPENDENCY',
-    exemptionReasonDetails: {
-      EXEMPT_PRISONER_DRUG_OR_ALCOHOL_DEPENDENCY: 'In treatment',
-      EXEMPT_PRISONER_ESCAPED_OR_ABSCONDED: 'Prisoner is at large',
-      EXEMPT_PRISONER_FAILED_TO_ENGAGE: 'Prisoner refuses to engage',
-    },
-  }
-  const invalidFormNoExemptionReason = {
-    exemptionReason: '',
-    exemptionReasonDetails: {},
-  }
-  const invalidFormDetailsTooManyChars = {
-    exemptionReason: 'EXEMPT_PRISONER_DRUG_OR_ALCOHOL_DEPENDENCY',
-    exemptionReasonDetails: {
-      EXEMPT_PRISONER_DRUG_OR_ALCOHOL_DEPENDENCY: 'a'.repeat(201),
-    },
-  }
-
   const req = {
     session: {},
     body: {},
@@ -49,17 +24,23 @@ describe('exemptionReasonController', () => {
   beforeEach(() => {
     jest.resetAllMocks()
     req.body = {}
-    getPrisonerContext(req.session, prisonNumber).exemptionReasonForm = undefined
+    getPrisonerContext(req.session, prisonNumber).reviewExemptionForm = undefined
   })
 
   describe('getExemptionReasonView', () => {
     it(`should get 'exemption reason' view given form is already on the prisoner context`, async () => {
       // Given
-      getPrisonerContext(req.session, prisonNumber).exemptionReasonForm = validForm
+      const expectedExemptionReasonForm = {
+        exemptionReason: 'EXEMPT_PRISONER_DRUG_OR_ALCOHOL_DEPENDENCY',
+        exemptionReasonDetails: {
+          EXEMPT_PRISONER_DRUG_OR_ALCOHOL_DEPENDENCY: 'In treatment',
+        },
+      }
+      getPrisonerContext(req.session, prisonNumber).reviewExemptionForm = expectedExemptionReasonForm
 
       const expectedView = {
         prisonerSummary,
-        form: validForm,
+        form: expectedExemptionReasonForm,
       }
 
       // When
@@ -73,38 +54,59 @@ describe('exemptionReasonController', () => {
   describe('submitExemptionReasonForm', () => {
     it('should redirect to overview page given form submitted successfully', async () => {
       // Given
-      req.body = validForm
+      const expectedExemptionReasonForm = {
+        exemptionReason: 'EXEMPT_PRISONER_DRUG_OR_ALCOHOL_DEPENDENCY',
+        exemptionReasonDetails: {
+          EXEMPT_PRISONER_DRUG_OR_ALCOHOL_DEPENDENCY: 'In treatment',
+        },
+      }
+      req.body = expectedExemptionReasonForm
 
       // When
       await controller.submitExemptionReasonForm(req, res, next)
 
       // Then
       expect(res.redirect).toHaveBeenCalledWith('/plan/A1234BC/view/overview')
-      expect(getPrisonerContext(req.session, prisonNumber).exemptionReasonForm).toEqual(validForm)
+      expect(getPrisonerContext(req.session, prisonNumber).reviewExemptionForm).toEqual(expectedExemptionReasonForm)
     })
 
     it('should successfully submit the form with only the relevant exemption reason details given more than one has been entered', async () => {
       // Given
-      req.body = validFormMoreThanOneDetailsEntered
+      const expectedExemptionReason = 'EXEMPT_PRISONER_DRUG_OR_ALCOHOL_DEPENDENCY'
+      const expectedExemptionReasonDetails = {
+        EXEMPT_PRISONER_DRUG_OR_ALCOHOL_DEPENDENCY: 'In treatment',
+        EXEMPT_PRISONER_ESCAPED_OR_ABSCONDED: 'Prisoner is at large',
+        EXEMPT_PRISONER_FAILED_TO_ENGAGE: 'Prisoner refuses to engage',
+      }
+      const expectedExemptionReasonForm = {
+        exemptionReason: expectedExemptionReason,
+        exemptionReasonDetails: expectedExemptionReasonDetails,
+      }
+      req.body = expectedExemptionReasonForm
 
       // When
       await controller.submitExemptionReasonForm(req, res, next)
 
       // Then
       expect(res.redirect).toHaveBeenCalledWith('/plan/A1234BC/view/overview')
-      expect(getPrisonerContext(req.session, prisonNumber).exemptionReasonForm.exemptionReason).toEqual(
-        validForm.exemptionReason,
+      const { exemptionReason, exemptionReasonDetails } = getPrisonerContext(
+        req.session,
+        prisonNumber,
+      ).reviewExemptionForm
+      expect(exemptionReason).toEqual(expectedExemptionReason)
+      expect(Object.keys(exemptionReasonDetails)).toEqual([expectedExemptionReason])
+      expect(exemptionReasonDetails[expectedExemptionReason]).toEqual(
+        expectedExemptionReasonDetails[expectedExemptionReason],
       )
-      expect(
-        getPrisonerContext(req.session, prisonNumber).exemptionReasonForm.exemptionReasonDetails[
-          validFormMoreThanOneDetailsEntered.exemptionReason
-        ],
-      ).toEqual(validFormMoreThanOneDetailsEntered.exemptionReasonDetails.EXEMPT_PRISONER_DRUG_OR_ALCOHOL_DEPENDENCY)
     })
 
     it('should redisplay page with relevant error message when no radio buttons have been selected', async () => {
       // Given
-      req.body = invalidFormNoExemptionReason
+      const expectedExemptionReasonForm = {
+        exemptionReason: '',
+        exemptionReasonDetails: {},
+      }
+      req.body = expectedExemptionReasonForm
 
       const expectedErrors = [
         { href: '#exemptionReason', text: 'Select an exemption reason to put the review on hold' },
@@ -115,12 +117,18 @@ describe('exemptionReasonController', () => {
 
       // Then
       expect(res.redirectWithErrors).toHaveBeenCalledWith('/plan/A1234BC/review/exemption', expectedErrors)
-      expect(getPrisonerContext(req.session, prisonNumber).exemptionReasonForm).toEqual(invalidFormNoExemptionReason)
+      expect(getPrisonerContext(req.session, prisonNumber).reviewExemptionForm).toEqual(expectedExemptionReasonForm)
     })
 
     it('should redisplay page with relevant error message when user exemption reason details exceeds 200 characters', async () => {
       // Given
-      req.body = invalidFormDetailsTooManyChars
+      const expectedExemptionReasonForm = {
+        exemptionReason: 'EXEMPT_PRISONER_DRUG_OR_ALCOHOL_DEPENDENCY',
+        exemptionReasonDetails: {
+          EXEMPT_PRISONER_DRUG_OR_ALCOHOL_DEPENDENCY: 'a'.repeat(201),
+        },
+      }
+      req.body = expectedExemptionReasonForm
 
       const expectedErrors = [
         {
@@ -134,7 +142,7 @@ describe('exemptionReasonController', () => {
 
       // Then
       expect(res.redirectWithErrors).toHaveBeenCalledWith('/plan/A1234BC/review/exemption', expectedErrors)
-      expect(getPrisonerContext(req.session, prisonNumber).exemptionReasonForm).toEqual(invalidFormDetailsTooManyChars)
+      expect(getPrisonerContext(req.session, prisonNumber).reviewExemptionForm).toEqual(expectedExemptionReasonForm)
     })
   })
 })
