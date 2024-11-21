@@ -174,4 +174,9 @@ declare module 'reviewPlanForms' {
   export interface ReviewNoteForm {
     notes?: string
   }
+
+  export interface ReviewExemptionForm {
+    exemptionReason: ReviewPlanExemptionReasonValue
+    exemptionReasonDetails: Record<ReviewPlanExemptionReasonValue, string | undefined>
+  }
 }
