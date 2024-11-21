@@ -30,18 +30,15 @@ describe('ConfirmExemptionController', () => {
   describe('getConfirmExemptionView', () => {
     it('should render the "Are you sure you want to put review on hold" page', async () => {
       // Given
-      const exemptionReasonForm = {
+      const reviewExemptionDto = {
         exemptionReason: 'EXEMPT_PRISONER_DRUG_OR_ALCOHOL_DEPENDENCY',
         exemptionReasonDetails: {
           EXEMPT_PRISONER_DRUG_OR_ALCOHOL_DEPENDENCY: 'In treatment',
         },
       }
-      getPrisonerContext(req.session, prisonNumber).reviewExemptionForm = exemptionReasonForm
-      const expectedViewData = {
-        ...new ConfirmExemptionView(prisonerSummary).renderArgs,
-        exemptionReason: 'Has a drug or alcohol dependency and is in assessment or treatment',
-        exemptionReasonDetails: 'In treatment',
-      }
+      getPrisonerContext(req.session, prisonNumber).reviewExemptionDto = reviewExemptionDto
+
+      const expectedViewData = new ConfirmExemptionView(prisonerSummary, reviewExemptionDto).renderArgs
 
       // When
       await controller.getConfirmExemptionView(req, res, next)
@@ -54,20 +51,20 @@ describe('ConfirmExemptionController', () => {
   describe('submitConfirmException', () => {
     it('should redirect to overview page given form submitted successfully', async () => {
       // Given
-      const exemptionReasonForm = {
+      const reviewExemptionDto = {
         exemptionReason: 'EXEMPT_PRISONER_DRUG_OR_ALCOHOL_DEPENDENCY',
         exemptionReasonDetails: {
           EXEMPT_PRISONER_DRUG_OR_ALCOHOL_DEPENDENCY: 'In treatment',
         },
       }
-      getPrisonerContext(req.session, prisonNumber).reviewExemptionForm = exemptionReasonForm
+      getPrisonerContext(req.session, prisonNumber).reviewExemptionDto = reviewExemptionDto
 
       // When
       await controller.submitConfirmExemption(req, res, next)
 
       // Then
       expect(res.redirect).toHaveBeenCalledWith('/plan/A1234BC/view/overview')
-      expect(getPrisonerContext(req.session, prisonNumber).reviewExemptionForm).toEqual(exemptionReasonForm)
+      expect(getPrisonerContext(req.session, prisonNumber).reviewExemptionDto).toEqual(reviewExemptionDto)
     })
   })
 })

@@ -1,3 +1,5 @@
+import type { ReviewExemptionDto } from 'dto'
+import type { ReviewExemptionForm } from 'reviewPlanForms'
 import { Request, Response } from 'express'
 import aValidPrisonerSummary from '../../testsupport/prisonerSummaryTestDataBuilder'
 import { getPrisonerContext } from '../../data/session/prisonerContexts'
@@ -28,19 +30,26 @@ describe('exemptionReasonController', () => {
   })
 
   describe('getExemptionReasonView', () => {
-    it(`should get 'exemption reason' view given form is already on the prisoner context`, async () => {
+    it(`should get 'exemption reason' view given dto is already on the prisoner context`, async () => {
       // Given
-      const expectedExemptionReasonForm = {
+      const reviewExemptionDto: ReviewExemptionDto = {
         exemptionReason: 'EXEMPT_PRISONER_DRUG_OR_ALCOHOL_DEPENDENCY',
         exemptionReasonDetails: {
           EXEMPT_PRISONER_DRUG_OR_ALCOHOL_DEPENDENCY: 'In treatment',
         },
       }
-      getPrisonerContext(req.session, prisonNumber).reviewExemptionForm = expectedExemptionReasonForm
+      getPrisonerContext(req.session, prisonNumber).reviewExemptionDto = reviewExemptionDto
+
+      const expectedForm: ReviewExemptionForm = {
+        exemptionReason: 'EXEMPT_PRISONER_DRUG_OR_ALCOHOL_DEPENDENCY',
+        exemptionReasonDetails: {
+          EXEMPT_PRISONER_DRUG_OR_ALCOHOL_DEPENDENCY: 'In treatment',
+        },
+      }
 
       const expectedView = {
         prisonerSummary,
-        form: expectedExemptionReasonForm,
+        form: expectedForm,
       }
 
       // When
@@ -62,12 +71,20 @@ describe('exemptionReasonController', () => {
       }
       req.body = expectedExemptionReasonForm
 
+      const reviewExemptionDto: ReviewExemptionDto = {
+        exemptionReason: 'EXEMPT_PRISONER_DRUG_OR_ALCOHOL_DEPENDENCY',
+        exemptionReasonDetails: {
+          EXEMPT_PRISONER_DRUG_OR_ALCOHOL_DEPENDENCY: 'In treatment',
+        },
+      }
+
       // When
       await controller.submitExemptionReasonForm(req, res, next)
 
       // Then
       expect(res.redirect).toHaveBeenCalledWith('/plan/A1234BC/review/exemption/confirm')
-      expect(getPrisonerContext(req.session, prisonNumber).reviewExemptionForm).toEqual(expectedExemptionReasonForm)
+      expect(getPrisonerContext(req.session, prisonNumber).reviewExemptionForm).toBeUndefined()
+      expect(getPrisonerContext(req.session, prisonNumber).reviewExemptionDto).toEqual(reviewExemptionDto)
     })
 
     it('should successfully submit the form with only the relevant exemption reason details given more than one has been entered', async () => {
@@ -84,20 +101,19 @@ describe('exemptionReasonController', () => {
       }
       req.body = expectedExemptionReasonForm
 
+      const expectedReviewExemptionDto: ReviewExemptionDto = {
+        exemptionReason: 'EXEMPT_PRISONER_DRUG_OR_ALCOHOL_DEPENDENCY',
+        exemptionReasonDetails: {
+          EXEMPT_PRISONER_DRUG_OR_ALCOHOL_DEPENDENCY: 'In treatment',
+        },
+      }
+
       // When
       await controller.submitExemptionReasonForm(req, res, next)
 
       // Then
       expect(res.redirect).toHaveBeenCalledWith('/plan/A1234BC/review/exemption/confirm')
-      const { exemptionReason, exemptionReasonDetails } = getPrisonerContext(
-        req.session,
-        prisonNumber,
-      ).reviewExemptionForm
-      expect(exemptionReason).toEqual(expectedExemptionReason)
-      expect(Object.keys(exemptionReasonDetails)).toEqual([expectedExemptionReason])
-      expect(exemptionReasonDetails[expectedExemptionReason]).toEqual(
-        expectedExemptionReasonDetails[expectedExemptionReason],
-      )
+      expect(getPrisonerContext(req.session, prisonNumber).reviewExemptionDto).toEqual(expectedReviewExemptionDto)
     })
 
     it('should redisplay page with relevant error message when no radio buttons have been selected', async () => {

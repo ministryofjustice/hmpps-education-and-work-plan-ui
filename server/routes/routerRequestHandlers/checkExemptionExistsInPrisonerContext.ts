@@ -4,13 +4,13 @@ import { getPrisonerContext } from '../../data/session/prisonerContexts'
 /**
  * Request handler function to check the exemption data exists in the prisoner context.
  */
-const checkExemptionExistsInPrisonerContext = async (req: Request, res: Response, next: NextFunction) => {
-  if (!getPrisonerContext(req.session, req.params.prisonNumber).reviewExemptionForm) {
+const checkExemptionDtoExistsInPrisonerContext = async (req: Request, res: Response, next: NextFunction) => {
+  if (!getPrisonerContext(req.session, req.params.prisonNumber).reviewExemptionDto) {
     logger.warn(
-      `No exemption data in prisonerContext - user attempting to navigate to path ${req.path} out of sequence. Redirecting to Overview page.`,
+      `No review exemption data in prisonerContext - user attempting to navigate to path ${req.path} out of sequence. Redirecting to Overview page.`,
     )
     return res.redirect(`/plan/${req.params.prisonNumber}/view/overview`)
   }
   return next()
 }
-export default checkExemptionExistsInPrisonerContext
+export default checkExemptionDtoExistsInPrisonerContext

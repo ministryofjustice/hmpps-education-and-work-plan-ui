@@ -11,7 +11,7 @@ import ReviewCheckYourAnswersController from './reviewCheckYourAnswersController
 import ReviewCompleteController from './reviewCompleteController'
 import ExemptionReasonController from './exemptionReasonController'
 import ConfirmExemptionController from './confirmExemptionController'
-import checkExemptionExistsInPrisonerContext from '../routerRequestHandlers/checkExemptionExistsInPrisonerContext'
+import createEmptyReviewExemptionDtoIfNotInPrisonerContext from '../routerRequestHandlers/createEmptyReviewExemptionDtoIfNotInPrisonerContext'
 
 /**
  * Route definitions for the review plan journeys
@@ -24,10 +24,10 @@ export default function reviewPlanRoutes(router: Router) {
   const exemptionReasonController = new ExemptionReasonController()
   const confirmExemptionController = new ConfirmExemptionController()
 
-  router.use('/plan/:prisonNumber/review/exemption/**', [
+  router.use('/plan/:prisonNumber/review/exemption', [
     checkPrisonIsEnabled(),
     checkUserHasEditAuthority(),
-    checkExemptionExistsInPrisonerContext,
+    createEmptyReviewExemptionDtoIfNotInPrisonerContext,
   ])
 
   router.use('/plan/:prisonNumber/review/**', [

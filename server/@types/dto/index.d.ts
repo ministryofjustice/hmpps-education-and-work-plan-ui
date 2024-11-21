@@ -83,6 +83,11 @@ declare module 'dto' {
     reviewDate: string
     notes?: string
   }
+
+  export interface ReviewExemptionDto {
+    exemptionReason: ReviewPlanExemptionReasonValue
+    exemptionReasonDetails: Record<ReviewPlanExemptionReasonValue, string | undefined>
+  }
 }
 
 declare module 'inductionDto' {
