@@ -1,8 +1,8 @@
 import Page from '../../../pages/page'
 import AuthorisationErrorPage from '../../../pages/authorisationError'
-import OverviewPage from '../../../pages/overview/OverviewPage'
 import ReviewPlanExemptionReasonValue from '../../../../server/enums/reviewPlanExemptionReasonValue'
 import ExemptionReasonPage from '../../../pages/reviewPlan/exemption/exemptionPage'
+import ConfirmExemptionPage from '../../../pages/reviewPlan/exemption/confirmExemptionPage'
 
 context(`Review exemption page`, () => {
   const prisonNumber = 'G6115VJ'
@@ -67,8 +67,8 @@ context(`Review exemption page`, () => {
         ReviewPlanExemptionReasonValue.EXEMPT_PRISONER_DRUG_OR_ALCOHOL_DEPENDENCY,
         'In treatment',
       )
-      .submitPage() // submit the page with valid responses to redirect to overview page
-    Page.verifyOnPage(OverviewPage) //
+      .submitPage() // submit the page with valid responses to redirect to confirm exemption page
+    Page.verifyOnPage(ConfirmExemptionPage) //
 
     // Then
     // TODO - assert API was called with correct values
