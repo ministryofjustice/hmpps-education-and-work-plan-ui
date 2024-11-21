@@ -1,7 +1,7 @@
 import { Request, Response } from 'express'
 import aValidPrisonerSummary from '../../testsupport/prisonerSummaryTestDataBuilder'
 import { getPrisonerContext } from '../../data/session/prisonerContexts'
-import ExemptionReasonController from './exemptionController'
+import ExemptionReasonController from './exemptionReasonController'
 
 describe('exemptionReasonController', () => {
   const controller = new ExemptionReasonController()

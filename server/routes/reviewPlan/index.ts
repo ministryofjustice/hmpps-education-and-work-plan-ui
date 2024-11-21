@@ -9,7 +9,7 @@ import checkReviewPlanDtoExistsInPrisonerContext from '../routerRequestHandlers/
 import ReviewNoteController from './reviewNoteController'
 import ReviewCheckYourAnswersController from './reviewCheckYourAnswersController'
 import ReviewCompleteController from './reviewCompleteController'
-import ExemptionReasonController from './exemptionController'
+import ExemptionReasonController from './exemptionReasonController'
 
 /**
  * Route definitions for the review plan journeys
