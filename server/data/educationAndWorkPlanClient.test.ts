@@ -23,6 +23,10 @@ import GoalStatusValue from '../enums/goalStatusValue'
 import aValidEducationResponse from '../testsupport/educationResponseTestDataBuilder'
 import aValidCreateEducationRequest from '../testsupport/createEducationRequestTestDataBuilder'
 import aValidUpdateEducationRequest from '../testsupport/updateEducationRequestTestDataBuilder'
+import aValidInductionScheduleResponse from '../testsupport/inductionScheduleResponseTestDataBuilder'
+import aValidActionPlanReviewsResponse from '../testsupport/actionPlanReviewsResponseTestDataBuilder'
+import aValidCreateActionPlanReviewRequest from '../testsupport/createActionPlanReviewRequestTestDataBuilder'
+import aValidCreateActionPlanReviewResponse from '../testsupport/createActionPlanReviewResponseTestDataBuilder'
 
 describe('educationAndWorkPlanClient', () => {
   const educationAndWorkPlanClient = new EducationAndWorkPlanClient()
@@ -281,6 +285,128 @@ describe('educationAndWorkPlanClient', () => {
     })
   })
 
+  describe('createActionPlanReview', () => {
+    it('should create Action Plan Review', async () => {
+      // Given
+      const prisonNumber = 'A1234BC'
+      const systemToken = 'a-system-token'
+
+      const createActionPlanReviewRequest = aValidCreateActionPlanReviewRequest()
+      const expectedResponseBody = aValidCreateActionPlanReviewResponse()
+      educationAndWorkPlanApi
+        .post(`/action-plans/${prisonNumber}/reviews`, requestBody =>
+          isEqual(requestBody, createActionPlanReviewRequest),
+        )
+        .reply(201, expectedResponseBody)
+
+      // When
+      const actual = await educationAndWorkPlanClient.createActionPlanReview(
+        prisonNumber,
+        createActionPlanReviewRequest,
+        systemToken,
+      )
+
+      // Then
+      expect(nock.isDone()).toBe(true)
+      expect(actual).toEqual(expectedResponseBody)
+    })
+
+    it('should not create Action Plan Review given API returns an error response', async () => {
+      // Given
+      const prisonNumber = 'A1234BC'
+      const systemToken = 'a-system-token'
+
+      const createActionPlanReviewRequest = aValidCreateActionPlanReviewRequest()
+      const expectedResponseBody = {
+        status: 500,
+        userMessage: 'An unexpected error occurred',
+        developerMessage: 'An unexpected error occurred',
+      }
+      educationAndWorkPlanApi
+        .post(`/action-plans/${prisonNumber}/reviews`, requestBody =>
+          isEqual(requestBody, createActionPlanReviewRequest),
+        )
+        .reply(500, expectedResponseBody)
+
+      // When
+      try {
+        await educationAndWorkPlanClient.createActionPlanReview(
+          prisonNumber,
+          createActionPlanReviewRequest,
+          systemToken,
+        )
+      } catch (e) {
+        // Then
+        expect(nock.isDone()).toBe(true)
+        expect(e.status).toEqual(500)
+        expect(e.data).toEqual(expectedResponseBody)
+      }
+    })
+  })
+
+  describe('getActionPlanReviews', () => {
+    it('should get Action Plan Reviews', async () => {
+      // Given
+      const prisonNumber = 'A1234BC'
+      const systemToken = 'a-system-token'
+
+      const expectedActionPlanReviews = aValidActionPlanReviewsResponse()
+      educationAndWorkPlanApi.get(`/action-plans/${prisonNumber}/reviews`).reply(200, expectedActionPlanReviews)
+
+      // When
+      const actual = await educationAndWorkPlanClient.getActionPlanReviews(prisonNumber, systemToken)
+
+      // Then
+      expect(nock.isDone()).toBe(true)
+      expect(actual).toEqual(expectedActionPlanReviews)
+    })
+
+    it('should not get Action Plan Reviews given API returns error response', async () => {
+      // Given
+      const prisonNumber = 'A1234BC'
+      const systemToken = 'a-system-token'
+
+      const expectedResponseBody = {
+        status: 500,
+        userMessage: 'An unexpected error occurred',
+        developerMessage: 'An unexpected error occurred',
+      }
+      educationAndWorkPlanApi.get(`/action-plans/${prisonNumber}/reviews`).thrice().reply(500, expectedResponseBody)
+
+      // When
+      try {
+        await educationAndWorkPlanClient.getActionPlanReviews(prisonNumber, systemToken)
+      } catch (e) {
+        // Then
+        expect(nock.isDone()).toBe(true)
+        expect(e.status).toEqual(500)
+        expect(e.data).toEqual(expectedResponseBody)
+      }
+    })
+
+    it('should not get Action Plan Reviews given specified prisoner does not have a review schedule', async () => {
+      // Given
+      const prisonNumber = 'A1234BC'
+      const systemToken = 'a-system-token'
+
+      const expectedResponseBody = {
+        status: 404,
+        userMessage: `Review Schedule not found for prisoner [${prisonNumber}]`,
+      }
+      educationAndWorkPlanApi.get(`/action-plans/${prisonNumber}/reviews`).reply(404, expectedResponseBody)
+
+      // When
+      try {
+        await educationAndWorkPlanClient.getActionPlanReviews(prisonNumber, systemToken)
+      } catch (e) {
+        // Then
+        expect(nock.isDone()).toBe(true)
+        expect(e.status).toEqual(404)
+        expect(e.data).toEqual(expectedResponseBody)
+      }
+    })
+  })
+
   describe('getTimeline', () => {
     it('should get Timeline given no filtering by event type', async () => {
       // Given
@@ -506,6 +632,74 @@ describe('educationAndWorkPlanClient', () => {
         // Then
         expect(nock.isDone()).toBe(true)
         expect(e.status).toEqual(500)
+        expect(e.data).toEqual(expectedResponseBody)
+      }
+    })
+  })
+
+  describe('getInductionSchedule', () => {
+    it('should get Induction Schedule', async () => {
+      // Given
+      const prisonNumber = 'A1234BC'
+      const systemToken = 'a-system-token'
+
+      const expectedInductionSchedule = aValidInductionScheduleResponse()
+      educationAndWorkPlanApi
+        .get(`/inductions/${prisonNumber}/induction-schedule`)
+        .reply(200, expectedInductionSchedule)
+
+      // When
+      const actual = await educationAndWorkPlanClient.getInductionSchedule(prisonNumber, systemToken)
+
+      // Then
+      expect(nock.isDone()).toBe(true)
+      expect(actual).toEqual(expectedInductionSchedule)
+    })
+
+    it('should not get Induction Schedule given API returns error response', async () => {
+      // Given
+      const prisonNumber = 'A1234BC'
+      const systemToken = 'a-system-token'
+
+      const expectedResponseBody = {
+        status: 500,
+        userMessage: 'An unexpected error occurred',
+        developerMessage: 'An unexpected error occurred',
+      }
+      educationAndWorkPlanApi
+        .get(`/inductions/${prisonNumber}/induction-schedule`)
+        .thrice()
+        .reply(500, expectedResponseBody)
+
+      // When
+      try {
+        await educationAndWorkPlanClient.getInductionSchedule(prisonNumber, systemToken)
+      } catch (e) {
+        // Then
+        expect(nock.isDone()).toBe(true)
+        expect(e.status).toEqual(500)
+        expect(e.data).toEqual(expectedResponseBody)
+      }
+    })
+
+    it('should not get Induction Schedule given specified prisoner does not have an induction schedule', async () => {
+      // Given
+      const prisonNumber = 'A1234BC'
+      const systemToken = 'a-system-token'
+
+      const expectedResponseBody = {
+        status: 404,
+        userMessage: `Induction schedule not found for prisoner [${prisonNumber}]`,
+      }
+      educationAndWorkPlanApi.get(`/inductions/${prisonNumber}/induction-schedule`).reply(404, expectedResponseBody)
+
+      // When
+      try {
+        await educationAndWorkPlanClient.getInductionSchedule(prisonNumber, systemToken)
+      } catch (e) {
+        // Then
+        expect(nock.isDone()).toBe(true)
+        expect(e.status).toEqual(404)
         expect(e.data).toEqual(expectedResponseBody)
       }
     })

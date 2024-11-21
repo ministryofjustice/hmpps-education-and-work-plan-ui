@@ -16,6 +16,10 @@ import type {
   CreateEducationRequest,
   EducationResponse,
   UpdateEducationRequest,
+  CreateActionPlanReviewRequest,
+  CreateActionPlanReviewResponse,
+  ActionPlanReviewsResponse,
+  InductionScheduleResponse,
 } from 'educationAndWorkPlanApiClient'
 import RestClient from './restClient'
 import config from '../config'
@@ -84,6 +88,23 @@ export default class EducationAndWorkPlanClient {
     })
   }
 
+  async createActionPlanReview(
+    prisonNumber: string,
+    createActionPlanReviewRequest: CreateActionPlanReviewRequest,
+    token: string,
+  ): Promise<CreateActionPlanReviewResponse> {
+    return EducationAndWorkPlanClient.restClient(token).post({
+      path: `/action-plans/${prisonNumber}/reviews`,
+      data: createActionPlanReviewRequest,
+    })
+  }
+
+  async getActionPlanReviews(prisonNumber: string, token: string): Promise<ActionPlanReviewsResponse> {
+    return EducationAndWorkPlanClient.restClient(token).get({
+      path: `/action-plans/${prisonNumber}/reviews`,
+    })
+  }
+
   async getTimeline(prisonNumber: string, token: string, eventTypes?: Array<string>): Promise<TimelineResponse> {
     const timeline = await EducationAndWorkPlanClient.restClient(token).get<TimelineResponse>({
       path: `/timelines/${prisonNumber}`,
@@ -123,6 +144,12 @@ export default class EducationAndWorkPlanClient {
     return EducationAndWorkPlanClient.restClient(token).post({
       path: `/inductions/${prisonNumber}`,
       data: createInductionRequest,
+    })
+  }
+
+  async getInductionSchedule(prisonNumber: string, token: string): Promise<InductionScheduleResponse> {
+    return EducationAndWorkPlanClient.restClient(token).get({
+      path: `/inductions/${prisonNumber}/induction-schedule`,
     })
   }
 
