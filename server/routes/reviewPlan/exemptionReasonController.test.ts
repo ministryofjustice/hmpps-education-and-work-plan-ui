@@ -52,7 +52,7 @@ describe('exemptionReasonController', () => {
   })
 
   describe('submitExemptionReasonForm', () => {
-    it('should redirect to overview page given form submitted successfully', async () => {
+    it('should redirect to confirm exemption page given form submitted successfully', async () => {
       // Given
       const expectedExemptionReasonForm = {
         exemptionReason: 'EXEMPT_PRISONER_DRUG_OR_ALCOHOL_DEPENDENCY',
@@ -66,7 +66,7 @@ describe('exemptionReasonController', () => {
       await controller.submitExemptionReasonForm(req, res, next)
 
       // Then
-      expect(res.redirect).toHaveBeenCalledWith('/plan/A1234BC/view/overview')
+      expect(res.redirect).toHaveBeenCalledWith('/plan/A1234BC/review/exemption/confirm')
       expect(getPrisonerContext(req.session, prisonNumber).reviewExemptionForm).toEqual(expectedExemptionReasonForm)
     })
 
@@ -88,7 +88,7 @@ describe('exemptionReasonController', () => {
       await controller.submitExemptionReasonForm(req, res, next)
 
       // Then
-      expect(res.redirect).toHaveBeenCalledWith('/plan/A1234BC/view/overview')
+      expect(res.redirect).toHaveBeenCalledWith('/plan/A1234BC/review/exemption/confirm')
       const { exemptionReason, exemptionReasonDetails } = getPrisonerContext(
         req.session,
         prisonNumber,
