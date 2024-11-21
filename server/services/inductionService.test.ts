@@ -4,21 +4,26 @@ import aValidInductionResponse from '../testsupport/inductionResponseTestDataBui
 import { aValidInductionDto } from '../testsupport/inductionDtoTestDataBuilder'
 import aValidUpdateInductionRequest from '../testsupport/updateInductionRequestTestDataBuilder'
 import toInductionDto from '../data/mappers/inductionDtoMapper'
+import toInductionSchedule from '../data/mappers/inductionScheduleMapper'
 import toCreateInductionRequest from '../data/mappers/createInductionMapper'
 import toUpdateInductionRequest from '../data/mappers/updateInductionMapper'
 import aValidCreateInductionDto from '../testsupport/createInductionDtoTestDataBuilder'
 import aValidUpdateInductionDto from '../testsupport/updateInductionDtoTestDataBuilder'
 import aValidCreateInductionRequest from '../testsupport/createInductionRequestTestDataBuilder'
 import HmppsAuthClient from '../data/hmppsAuthClient'
+import aValidInductionScheduleResponse from '../testsupport/inductionScheduleResponseTestDataBuilder'
+import aValidInductionSchedule from '../testsupport/inductionScheduleTestDataBuilder'
 
 jest.mock('../data/educationAndWorkPlanClient')
 jest.mock('../data/mappers/inductionDtoMapper')
+jest.mock('../data/mappers/inductionScheduleMapper')
 jest.mock('../data/mappers/updateInductionMapper')
 jest.mock('../data/mappers/createInductionMapper')
 jest.mock('../data/hmppsAuthClient')
 
 describe('inductionService', () => {
   const mockedInductionDtoMapper = toInductionDto as jest.MockedFunction<typeof toInductionDto>
+  const mockedInductionScheduleMapper = toInductionSchedule as jest.MockedFunction<typeof toInductionSchedule>
   const mockedUpdateInductionMapper = toUpdateInductionRequest as jest.MockedFunction<typeof toUpdateInductionRequest>
   const mockedCreateInductionMapper = toCreateInductionRequest as jest.MockedFunction<typeof toCreateInductionRequest>
 
@@ -274,6 +279,72 @@ describe('inductionService', () => {
         userToken,
       )
       expect(mockedCreateInductionMapper).toHaveBeenCalledWith(createInductionDto)
+    })
+  })
+
+  describe('getInductionSchedule', () => {
+    it('should get Induction Schedule given Education and Work Plan API returns an Induction Schedule', async () => {
+      // Given
+      const inductionScheduleResponse = aValidInductionScheduleResponse()
+      educationAndWorkPlanClient.getInductionSchedule.mockResolvedValue(inductionScheduleResponse)
+      const expectedInductionScheduleDto = aValidInductionSchedule()
+      mockedInductionScheduleMapper.mockReturnValue(expectedInductionScheduleDto)
+
+      // When
+      const actual = await inductionService.getInductionSchedule(prisonNumber, username)
+
+      // Then
+      expect(actual).toEqual(expectedInductionScheduleDto)
+      expect(educationAndWorkPlanClient.getInductionSchedule).toHaveBeenCalledWith(prisonNumber, systemToken)
+      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
+      expect(mockedInductionScheduleMapper).toHaveBeenCalledWith(inductionScheduleResponse)
+    })
+
+    it('should rethrow error given Education and Work Plan API returns Not Found', async () => {
+      // Given
+      const eductionAndWorkPlanApiError = {
+        status: 404,
+        data: {
+          status: 404,
+          userMessage: `Induction Schedule not found for prisoner [${prisonNumber}]`,
+          developerMessage: `Induction Schedule not found for prisoner [${prisonNumber}]`,
+        },
+      }
+      educationAndWorkPlanClient.getInductionSchedule.mockRejectedValue(eductionAndWorkPlanApiError)
+
+      const expected = { problemRetrievingData: true }
+
+      // When
+      const actual = await inductionService.getInductionSchedule(prisonNumber, username)
+
+      // Then
+      expect(actual).toEqual(expected)
+      expect(educationAndWorkPlanClient.getInductionSchedule).toHaveBeenCalledWith(prisonNumber, systemToken)
+      expect(mockedInductionScheduleMapper).not.toHaveBeenCalled()
+    })
+
+    it('should return problemRetrievingData given Education and Work Plan API returns an unexpected error', async () => {
+      // Given
+      const eductionAndWorkPlanApiError = {
+        status: 500,
+        data: {
+          status: 500,
+          userMessage: 'An unexpected error occurred',
+          developerMessage: 'An unexpected error occurred',
+        },
+      }
+      educationAndWorkPlanClient.getInductionSchedule.mockRejectedValue(eductionAndWorkPlanApiError)
+
+      const expected = { problemRetrievingData: true }
+
+      // When
+      const actual = await inductionService.getInductionSchedule(prisonNumber, username)
+
+      // Then
+      expect(actual).toEqual(expected)
+      expect(educationAndWorkPlanClient.getInductionSchedule).toHaveBeenCalledWith(prisonNumber, systemToken)
+      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
+      expect(mockedInductionScheduleMapper).not.toHaveBeenCalled()
     })
   })
 })

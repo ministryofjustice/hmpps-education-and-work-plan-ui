@@ -1,10 +1,12 @@
 import type { CreateOrUpdateInductionDto, InductionDto } from 'inductionDto'
+import type { InductionSchedule } from 'viewModels'
 import logger from '../../logger'
 import EducationAndWorkPlanClient from '../data/educationAndWorkPlanClient'
 import toInductionDto from '../data/mappers/inductionDtoMapper'
 import toUpdateInductionRequest from '../data/mappers/updateInductionMapper'
 import toCreateInductionRequest from '../data/mappers/createInductionMapper'
 import { HmppsAuthClient } from '../data'
+import toInductionSchedule from '../data/mappers/inductionScheduleMapper'
 
 export default class InductionService {
   constructor(
@@ -64,6 +66,23 @@ export default class InductionService {
 
       logger.error(`Error retrieving Induction data from Education And Work Plan: ${JSON.stringify(error)}`)
       throw error
+    }
+  }
+
+  async getInductionSchedule(prisonNumber: string, username: string): Promise<InductionSchedule> {
+    const systemToken = await this.hmppsAuthClient.getSystemClientToken(username)
+    try {
+      const inductionScheduleResponse = await this.educationAndWorkPlanClient.getInductionSchedule(
+        prisonNumber,
+        systemToken,
+      )
+      return toInductionSchedule(inductionScheduleResponse)
+    } catch (error) {
+      logger.error(
+        `Error retrieving Induction Schedule for prisoner [${prisonNumber}] from Education And Work Plan API `,
+        error,
+      )
+      return { problemRetrievingData: true } as InductionSchedule
     }
   }
 }

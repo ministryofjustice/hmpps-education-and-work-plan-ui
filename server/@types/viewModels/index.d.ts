@@ -1,4 +1,10 @@
 declare module 'viewModels' {
+  import InductionScheduleCalculationRuleValue from '../../enums/inductionScheduleCalculationRuleValue'
+  import InductionScheduleStatusValue from '../../enums/inductionScheduleStatusValue'
+  import ActionPlanReviewStatusValue from '../../enums/actionPlanReviewStatusValue'
+  import ActionPlanReviewCalculationRuleValue from '../../enums/actionPlanReviewCalculationRuleValue'
+  import NoteTypeValue from '../../enums/noteTypeValue'
+
   export interface PrisonerSummary {
     prisonNumber: string
     prisonId: string
@@ -96,7 +102,7 @@ declare module 'viewModels' {
   export interface Note {
     reference: string
     content: string
-    type: 'GOAL' | 'GOAL_ARCHIVAL' | 'GOAL_COMPLETION'
+    type: NoteTypeValue
     createdBy: string
     createdByDisplayName: string
     createdAt: Date
@@ -105,6 +111,70 @@ declare module 'viewModels' {
     updatedByDisplayName: string
     updatedAt: Date
     updatedAtPrisonName: string
+  }
+
+  /**
+   * A prisoner's Induction Schedule
+   */
+  export interface InductionSchedule {
+    reference: string
+    prisonNumber: string
+    deadlineDate: Date
+    scheduleCalculationRule: InductionScheduleCalculationRuleValue
+    scheduleStatus: InductionScheduleStatusValue
+    inductionPerformedBy?: string
+    inductionPerformedAt?: Date
+    createdBy: string
+    createdByDisplayName: string
+    createdAt: Date
+    updatedBy: string
+    updatedByDisplayName: string
+    updatedAt: Date
+    problemRetrievingData: boolean
+  }
+
+  /**
+   * All completed reviews and the latest review schedule for a prisoner
+   */
+  export interface ActionPlanReviews {
+    latestReviewSchedule: ScheduledActionPlanReview
+    completedReviews: Array<CompletedActionPlanReview>
+    problemRetrievingData: boolean
+  }
+
+  /**
+   * A scheduled review for a prisoner's Action Plan
+   */
+  export interface ScheduledActionPlanReview {
+    reference: string
+    reviewDateFrom: Date
+    reviewDateTo: Date
+    status: ActionPlanReviewStatusValue
+    calculationRule: ActionPlanReviewCalculationRuleValue
+    createdBy: string
+    createdByDisplayName: string
+    createdAt: Date
+    createdAtPrison: string
+    updatedBy: string
+    updatedByDisplayName: string
+    updatedAt: Date
+    updatedAtPrison: string
+  }
+
+  /**
+   * A prisoner's completed review for their Action Plan
+   */
+  export interface CompletedActionPlanReview {
+    reference: string
+    deadlineDate: Date
+    completedDate: Date
+    note: Note
+    conductedBy?: string
+    conductedByRole?: string
+    createdBy: string
+    createdByDisplayName: string
+    createdAt: Date
+    createdAtPrison: string
   }
 
   /**
