@@ -35,6 +35,6 @@ export default class ExemptionReasonController {
       return res.redirectWithErrors(`/plan/${prisonNumber}/review/exemption`, errors)
     }
 
-    return res.redirect(`/plan/${prisonNumber}/view/overview`)
+    return res.redirect(`/plan/${prisonNumber}/review/exemption/confirm`)
   }
 }

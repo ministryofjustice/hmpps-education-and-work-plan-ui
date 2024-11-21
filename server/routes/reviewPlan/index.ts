@@ -10,6 +10,8 @@ import ReviewNoteController from './reviewNoteController'
 import ReviewCheckYourAnswersController from './reviewCheckYourAnswersController'
 import ReviewCompleteController from './reviewCompleteController'
 import ExemptionReasonController from './exemptionReasonController'
+import ConfirmExemptionController from './confirmExemptionController'
+import checkExemptionExistsInPrisonerContext from '../routerRequestHandlers/checkExemptionExistsInPrisonerContext'
 
 /**
  * Route definitions for the review plan journeys
@@ -20,6 +22,13 @@ export default function reviewPlanRoutes(router: Router) {
   const reviewCheckYourAnswersController = new ReviewCheckYourAnswersController()
   const reviewCompleteController = new ReviewCompleteController()
   const exemptionReasonController = new ExemptionReasonController()
+  const confirmExemptionController = new ConfirmExemptionController()
+
+  router.use('/plan/:prisonNumber/review/exemption/**', [
+    checkPrisonIsEnabled(),
+    checkUserHasEditAuthority(),
+    checkExemptionExistsInPrisonerContext,
+  ])
 
   router.use('/plan/:prisonNumber/review/**', [
     checkPrisonIsEnabled(),
@@ -60,6 +69,15 @@ export default function reviewPlanRoutes(router: Router) {
   router.post(
     '/plan/:prisonNumber/review/exemption',
     asyncMiddleware(exemptionReasonController.submitExemptionReasonForm),
+  )
+
+  router.get(
+    '/plan/:prisonNumber/review/exemption/confirm',
+    asyncMiddleware(confirmExemptionController.getConfirmExemptionView),
+  )
+  router.post(
+    '/plan/:prisonNumber/review/exemption/confirm',
+    asyncMiddleware(confirmExemptionController.submitConfirmExemption),
   )
 
   router.get('/plan/:prisonNumber/review/exemption-recorded', async (_req, res, next) => {
