@@ -1,5 +1,5 @@
 import { RequestHandler } from 'express'
-import { format, startOfDay } from 'date-fns'
+import { startOfDay } from 'date-fns'
 import type { WhoCompletedReviewForm } from 'reviewPlanForms'
 import type { ReviewPlanDto } from 'dto'
 import WhoCompletedReviewView from './whoCompletedReviewView'
@@ -26,6 +26,7 @@ export default class WhoCompletedReviewController {
 
   submitWhoCompletedReviewForm: RequestHandler = async (req, res, next): Promise<void> => {
     const { prisonNumber } = req.params
+    const { prisonId } = res.locals.prisonerSummary
 
     const whoCompletedReviewForm: WhoCompletedReviewForm = { ...req.body }
     getPrisonerContext(req.session, prisonNumber).whoCompletedReviewForm = whoCompletedReviewForm
@@ -36,7 +37,12 @@ export default class WhoCompletedReviewController {
     }
 
     const { reviewPlanDto } = getPrisonerContext(req.session, prisonNumber)
-    const updatedReviewPlanDto = updateDtoWithFormContents(reviewPlanDto, whoCompletedReviewForm)
+    const updatedReviewPlanDto = updateDtoWithFormContents(
+      reviewPlanDto,
+      whoCompletedReviewForm,
+      prisonNumber,
+      prisonId,
+    )
     getPrisonerContext(req.session, prisonNumber).reviewPlanDto = updatedReviewPlanDto
     getPrisonerContext(req.session, prisonNumber).whoCompletedReviewForm = undefined
 
@@ -45,26 +51,29 @@ export default class WhoCompletedReviewController {
 }
 
 const toWhoCompletedReviewForm = (dto: ReviewPlanDto): WhoCompletedReviewForm => {
-  const reviewDate = dto.reviewDate ? startOfDay(dto.reviewDate) : undefined
   return {
     completedBy: dto.completedBy,
     completedByOtherFullName: dto.completedByOtherFullName,
     completedByOtherJobRole: dto.completedByOtherJobRole,
-    'reviewDate-day': reviewDate ? `${reviewDate.getDate()}`.padStart(2, '0') : undefined,
-    'reviewDate-month': reviewDate ? `${reviewDate.getMonth() + 1}`.padStart(2, '0') : undefined,
-    'reviewDate-year': reviewDate ? `${reviewDate.getFullYear()}` : undefined,
+    'reviewDate-day': dto.reviewDate ? `${dto.reviewDate.getDate()}`.padStart(2, '0') : undefined,
+    'reviewDate-month': dto.reviewDate ? `${dto.reviewDate.getMonth() + 1}`.padStart(2, '0') : undefined,
+    'reviewDate-year': dto.reviewDate ? `${dto.reviewDate.getFullYear()}` : undefined,
   }
 }
 
-const updateDtoWithFormContents = (dto: ReviewPlanDto, form: WhoCompletedReviewForm): ReviewPlanDto => ({
+const updateDtoWithFormContents = (
+  dto: ReviewPlanDto,
+  form: WhoCompletedReviewForm,
+  prisonNumber: string,
+  prisonId: string,
+): ReviewPlanDto => ({
   ...dto,
+  prisonNumber,
+  prisonId,
   completedBy: form.completedBy,
   completedByOtherFullName: form.completedByOtherFullName,
   completedByOtherJobRole: form.completedByOtherJobRole,
-  reviewDate: format(
-    startOfDay(
-      `${form['reviewDate-year']}-${form['reviewDate-month'].padStart(2, '0')}-${form['reviewDate-day'].padStart(2, '0')}`,
-    ),
-    'yyyy-MM-dd',
+  reviewDate: startOfDay(
+    `${form['reviewDate-year']}-${form['reviewDate-month'].padStart(2, '0')}-${form['reviewDate-day'].padStart(2, '0')}`,
   ),
 })

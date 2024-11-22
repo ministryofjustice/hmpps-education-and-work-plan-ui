@@ -77,10 +77,12 @@ declare module 'dto' {
   }
 
   export interface ReviewPlanDto {
+    prisonNumber: string
+    prisonId: string
     completedBy: ReviewPlanCompletedByValue
     completedByOtherFullName?: string
     completedByOtherJobRole?: string
-    reviewDate: string
+    reviewDate: Date
     notes?: string
   }
 

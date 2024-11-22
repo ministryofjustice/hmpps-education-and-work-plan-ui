@@ -1,5 +1,5 @@
 import { parseISO, startOfDay } from 'date-fns'
-import type { ActionPlanReviews } from 'viewModels'
+import type { ActionPlanReviews, CreatedActionPlan } from 'viewModels'
 import EducationAndWorkPlanClient from '../data/educationAndWorkPlanClient'
 import PrisonService from './prisonService'
 import HmppsAuthClient from '../data/hmppsAuthClient'
@@ -8,6 +8,9 @@ import aValidActionPlanReviewsResponse from '../testsupport/actionPlanReviewsRes
 import ActionPlanReviewCalculationRuleValue from '../enums/actionPlanReviewCalculationRuleValue'
 import ActionPlanReviewStatusValue from '../enums/actionPlanReviewStatusValue'
 import NoteTypeValue from '../enums/noteTypeValue'
+import aValidReviewPlanDto from '../testsupport/reviewPlanDtoTestDataBuilder'
+import aValidCreateActionPlanReviewRequest from '../testsupport/createActionPlanReviewRequestTestDataBuilder'
+import aValidCreateActionPlanReviewResponse from '../testsupport/createActionPlanReviewResponseTestDataBuilder'
 
 jest.mock('../data/educationAndWorkPlanClient')
 jest.mock('./prisonService')
@@ -168,6 +171,85 @@ describe('reviewService', () => {
       expect(actual.problemRetrievingData).toEqual(true)
       expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
       expect(educationAndWorkPlanClient.getActionPlanReviews).toHaveBeenCalledWith(prisonNumber, systemToken)
+    })
+  })
+
+  describe('createActionPlanReview', () => {
+    it('should create Action Plan Review', async () => {
+      // Given
+      const reviewPlanDto = aValidReviewPlanDto()
+
+      const expectedCreateActionPlanReviewRequest = aValidCreateActionPlanReviewRequest({
+        conductedBy: undefined,
+        conductedByRole: undefined,
+        note: 'Chris is making good progress on his goals',
+      })
+      const createActionPlanReviewResponse = aValidCreateActionPlanReviewResponse()
+      educationAndWorkPlanClient.createActionPlanReview.mockResolvedValue(createActionPlanReviewResponse)
+
+      const expectedCreatedActionPlan: CreatedActionPlan = {
+        wasLastReviewBeforeRelease: true,
+        latestReviewSchedule: {
+          reference: '814ade0a-a3b2-46a3-862f-79211ba13f7b',
+          reviewDateFrom: startOfDay('2024-09-15'),
+          reviewDateTo: startOfDay('2024-10-15'),
+          calculationRule: ActionPlanReviewCalculationRuleValue.BETWEEN_6_AND_12_MONTHS_TO_SERVE,
+          status: ActionPlanReviewStatusValue.SCHEDULED,
+          createdAt: parseISO('2023-06-19T09:39:44.000Z'),
+          createdAtPrison: 'Moorland (HMP & YOI)',
+          createdBy: 'asmith_gen',
+          createdByDisplayName: 'Alex Smith',
+          updatedAt: parseISO('2023-06-19T09:39:44.000Z'),
+          updatedAtPrison: 'Moorland (HMP & YOI)',
+          updatedBy: 'asmith_gen',
+          updatedByDisplayName: 'Alex Smith',
+        },
+      }
+
+      // When
+      const actual = await reviewService.createActionPlanReview(reviewPlanDto, username)
+
+      // Then
+      expect(actual).toEqual(expectedCreatedActionPlan)
+      expect(educationAndWorkPlanClient.createActionPlanReview).toHaveBeenCalledWith(
+        prisonNumber,
+        expectedCreateActionPlanReviewRequest,
+        systemToken,
+      )
+    })
+
+    it('should not create Action Plan Review given Education and Work Plan API returns an error', async () => {
+      // Given
+      const reviewPlanDto = aValidReviewPlanDto()
+
+      const expectedCreateActionPlanReviewRequest = aValidCreateActionPlanReviewRequest({
+        conductedBy: undefined,
+        conductedByRole: undefined,
+        note: 'Chris is making good progress on his goals',
+      })
+
+      const eductionAndWorkPlanApiError = {
+        status: 500,
+        data: {
+          status: 500,
+          userMessage: `Error creating Action Plan Review for prisoner [${prisonNumber}]`,
+          developerMessage: `Error creating Action Plan Review for prisoner [${prisonNumber}]`,
+        },
+      }
+      educationAndWorkPlanClient.createActionPlanReview.mockRejectedValue(eductionAndWorkPlanApiError)
+
+      // When
+      const actual = await reviewService.createActionPlanReview(reviewPlanDto, username).catch(error => {
+        return error
+      })
+
+      // Then
+      expect(actual).toEqual(eductionAndWorkPlanApiError)
+      expect(educationAndWorkPlanClient.createActionPlanReview).toHaveBeenCalledWith(
+        prisonNumber,
+        expectedCreateActionPlanReviewRequest,
+        systemToken,
+      )
     })
   })
 })

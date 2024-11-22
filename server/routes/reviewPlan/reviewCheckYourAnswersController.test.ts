@@ -1,4 +1,5 @@
 import { Request, Response } from 'express'
+import { startOfDay } from 'date-fns'
 import type { ReviewPlanDto } from 'dto'
 import ReviewCheckYourAnswersController from './reviewCheckYourAnswersController'
 import ReviewCheckYourAnswersView from './reviewCheckYourAnswersView'
@@ -39,8 +40,10 @@ describe('ReviewCheckYourAnswersController', () => {
     it('should render the "Check Your Answers" page', async () => {
       // Given
       const reviewPlanDto = {
+        prisonNumber,
+        prisonId: 'BXI',
         completedBy: ReviewPlanCompletedByValue.MYSELF,
-        reviewDate: '2024-03-09',
+        reviewDate: startOfDay('2024-03-09'),
         notes: 'Progress noted in review.',
       }
       getPrisonerContext(req.session, prisonNumber).reviewPlanDto = reviewPlanDto
@@ -61,8 +64,10 @@ describe('ReviewCheckYourAnswersController', () => {
       getPrisonerContext(req.session, prisonNumber).reviewPlanDto = undefined
 
       const reviewPlanDto: ReviewPlanDto = {
+        prisonNumber,
+        prisonId: 'BXI',
         completedBy: ReviewPlanCompletedByValue.MYSELF,
-        reviewDate: '2024-03-09',
+        reviewDate: startOfDay('2024-03-09'),
         notes: 'Chris has progressed well',
       }
       getPrisonerContext(req.session, prisonNumber).reviewPlanDto = reviewPlanDto

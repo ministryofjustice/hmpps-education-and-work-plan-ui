@@ -1,4 +1,5 @@
 import { Request, Response } from 'express'
+import { startOfDay } from 'date-fns'
 import type { WhoCompletedReviewForm } from 'reviewPlanForms'
 import type { ReviewPlanDto } from 'dto'
 import WhoCompletedReviewController from './whoCompletedReviewController'
@@ -38,8 +39,10 @@ describe('whoCompletedReviewController', () => {
       getPrisonerContext(req.session, prisonNumber).whoCompletedReviewForm = undefined
 
       const reviewPlanDto: ReviewPlanDto = {
+        prisonNumber,
+        prisonId: 'BXI',
         completedBy: ReviewPlanCompletedByValue.MYSELF,
-        reviewDate: '2024-03-09',
+        reviewDate: startOfDay('2024-03-09'),
       }
       getPrisonerContext(req.session, prisonNumber).reviewPlanDto = reviewPlanDto
 
@@ -127,8 +130,10 @@ describe('whoCompletedReviewController', () => {
       req.body = validForm
 
       const reviewPlanDto: ReviewPlanDto = {
+        prisonNumber,
+        prisonId: 'BXI',
         completedBy: ReviewPlanCompletedByValue.MYSELF,
-        reviewDate: '2024-03-09',
+        reviewDate: startOfDay('2024-03-09'),
       }
 
       // When
