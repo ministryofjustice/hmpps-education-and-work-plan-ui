@@ -34,9 +34,7 @@ describe('exemptionReasonController', () => {
       // Given
       const reviewExemptionDto: ReviewExemptionDto = {
         exemptionReason: 'EXEMPT_PRISONER_DRUG_OR_ALCOHOL_DEPENDENCY',
-        exemptionReasonDetails: {
-          EXEMPT_PRISONER_DRUG_OR_ALCOHOL_DEPENDENCY: 'In treatment',
-        },
+        exemptionReasonDetails: 'In treatment',
       }
       getPrisonerContext(req.session, prisonNumber).reviewExemptionDto = reviewExemptionDto
 
@@ -73,9 +71,7 @@ describe('exemptionReasonController', () => {
 
       const reviewExemptionDto: ReviewExemptionDto = {
         exemptionReason: 'EXEMPT_PRISONER_DRUG_OR_ALCOHOL_DEPENDENCY',
-        exemptionReasonDetails: {
-          EXEMPT_PRISONER_DRUG_OR_ALCOHOL_DEPENDENCY: 'In treatment',
-        },
+        exemptionReasonDetails: 'In treatment',
       }
 
       // When
@@ -103,9 +99,7 @@ describe('exemptionReasonController', () => {
 
       const expectedReviewExemptionDto: ReviewExemptionDto = {
         exemptionReason: 'EXEMPT_PRISONER_DRUG_OR_ALCOHOL_DEPENDENCY',
-        exemptionReasonDetails: {
-          EXEMPT_PRISONER_DRUG_OR_ALCOHOL_DEPENDENCY: 'In treatment',
-        },
+        exemptionReasonDetails: 'In treatment',
       }
 
       // When

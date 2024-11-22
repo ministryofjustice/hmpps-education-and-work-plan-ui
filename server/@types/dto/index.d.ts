@@ -86,7 +86,7 @@ declare module 'dto' {
 
   export interface ReviewExemptionDto {
     exemptionReason: ReviewPlanExemptionReasonValue
-    exemptionReasonDetails: Record<ReviewPlanExemptionReasonValue, string | undefined>
+    exemptionReasonDetails: string
   }
 }
 

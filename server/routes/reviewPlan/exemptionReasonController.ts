@@ -14,7 +14,7 @@ export default class ExemptionReasonController {
     if (getPrisonerContext(req.session, prisonNumber).reviewExemptionForm) {
       reviewExemptionForm = getPrisonerContext(req.session, prisonNumber).reviewExemptionForm
     } else {
-      reviewExemptionForm = getPrisonerContext(req.session, prisonNumber).reviewExemptionDto
+      reviewExemptionForm = toReviewExemptionForm(getPrisonerContext(req.session, prisonNumber).reviewExemptionDto)
     }
 
     getPrisonerContext(req.session, prisonNumber).reviewExemptionForm = undefined
@@ -50,8 +50,17 @@ export default class ExemptionReasonController {
   }
 }
 
+const toReviewExemptionForm = (dto: ReviewExemptionDto): ReviewExemptionForm => {
+  return {
+    exemptionReason: dto.exemptionReason,
+    exemptionReasonDetails: {
+      [dto.exemptionReason]: dto.exemptionReasonDetails,
+    },
+  }
+}
+
 const updateDtoWithFormContents = (dto: ReviewExemptionDto, form: ReviewExemptionForm): ReviewExemptionDto => ({
   ...dto,
   exemptionReason: form.exemptionReason,
-  exemptionReasonDetails: form.exemptionReasonDetails,
+  exemptionReasonDetails: form.exemptionReasonDetails[form.exemptionReason] || '',
 })

@@ -23,9 +23,7 @@ describe('ConfirmExemptionPage', () => {
       prisonerSummary,
       reviewExemptionDto: {
         exemptionReason: 'EXEMPT_PRISONER_DRUG_OR_ALCOHOL_DEPENDENCY',
-        exemptionReasonDetails: {
-          EXEMPT_PRISONER_DRUG_OR_ALCOHOL_DEPENDENCY: 'In treatment',
-        },
+        exemptionReasonDetails: 'In treatment',
       },
     }
     // When

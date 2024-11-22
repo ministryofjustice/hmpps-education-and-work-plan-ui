@@ -4,7 +4,7 @@ import { getPrisonerContext } from '../../data/session/prisonerContexts'
 /**
  * Request handler function to check the exemption data exists in the prisoner context.
  */
-const checkExemptionDtoExistsInPrisonerContext = async (req: Request, res: Response, next: NextFunction) => {
+const checkReviewExemptionDtoExistsInPrisonerContext = async (req: Request, res: Response, next: NextFunction) => {
   if (!getPrisonerContext(req.session, req.params.prisonNumber).reviewExemptionDto) {
     logger.warn(
       `No review exemption data in prisonerContext - user attempting to navigate to path ${req.path} out of sequence. Redirecting to Overview page.`,
@@ -13,4 +13,4 @@ const checkExemptionDtoExistsInPrisonerContext = async (req: Request, res: Respo
   }
   return next()
 }
-export default checkExemptionDtoExistsInPrisonerContext
+export default checkReviewExemptionDtoExistsInPrisonerContext
