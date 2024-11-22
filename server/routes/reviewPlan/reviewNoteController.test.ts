@@ -1,4 +1,5 @@
 import { Request, Response } from 'express'
+import { startOfDay } from 'date-fns'
 import type { ReviewPlanDto } from 'dto'
 import type { ReviewNoteForm } from 'reviewPlanForms'
 import ReviewNoteController from './reviewNoteController'
@@ -38,8 +39,10 @@ describe('reviewNoteController', () => {
       getPrisonerContext(req.session, prisonNumber).reviewNoteForm = undefined
 
       const reviewPlanDto: ReviewPlanDto = {
+        prisonNumber,
+        prisonId: 'BXI',
         completedBy: ReviewPlanCompletedByValue.MYSELF,
-        reviewDate: '2024-03-09',
+        reviewDate: startOfDay('2024-03-09'),
         notes: 'Chris has progressed well',
       }
       getPrisonerContext(req.session, prisonNumber).reviewPlanDto = reviewPlanDto
@@ -87,8 +90,10 @@ describe('reviewNoteController', () => {
       getPrisonerContext(req.session, prisonNumber).reviewNoteForm = undefined
 
       const reviewPlanDto: ReviewPlanDto = {
+        prisonNumber,
+        prisonId: 'BXI',
         completedBy: ReviewPlanCompletedByValue.MYSELF,
-        reviewDate: '2024-03-09',
+        reviewDate: startOfDay('2024-03-09'),
         notes: undefined,
       }
       getPrisonerContext(req.session, prisonNumber).reviewPlanDto = reviewPlanDto

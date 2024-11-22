@@ -133,6 +133,11 @@ declare module 'viewModels' {
     problemRetrievingData: boolean
   }
 
+  export interface CreatedActionPlan {
+    wasLastReviewBeforeRelease: boolean
+    latestReviewSchedule: ScheduledActionPlanReview
+  }
+
   /**
    * All completed reviews and the latest review schedule for a prisoner
    */
