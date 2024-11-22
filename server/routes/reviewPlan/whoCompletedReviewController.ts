@@ -51,13 +51,14 @@ export default class WhoCompletedReviewController {
 }
 
 const toWhoCompletedReviewForm = (dto: ReviewPlanDto): WhoCompletedReviewForm => {
+  const reviewDate = dto.reviewDate ? startOfDay(dto.reviewDate) : undefined
   return {
     completedBy: dto.completedBy,
     completedByOtherFullName: dto.completedByOtherFullName,
     completedByOtherJobRole: dto.completedByOtherJobRole,
-    'reviewDate-day': dto.reviewDate ? `${dto.reviewDate.getDate()}`.padStart(2, '0') : undefined,
-    'reviewDate-month': dto.reviewDate ? `${dto.reviewDate.getMonth() + 1}`.padStart(2, '0') : undefined,
-    'reviewDate-year': dto.reviewDate ? `${dto.reviewDate.getFullYear()}` : undefined,
+    'reviewDate-day': reviewDate ? `${reviewDate.getDate()}`.padStart(2, '0') : undefined,
+    'reviewDate-month': reviewDate ? `${reviewDate.getMonth() + 1}`.padStart(2, '0') : undefined,
+    'reviewDate-year': reviewDate ? `${reviewDate.getFullYear()}` : undefined,
   }
 }
 
