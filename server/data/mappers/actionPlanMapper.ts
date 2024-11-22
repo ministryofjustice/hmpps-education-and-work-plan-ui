@@ -5,7 +5,8 @@ import type {
   NoteResponse,
   StepResponse,
 } from 'educationAndWorkPlanApiClient'
-import type { ActionPlan, Goal, Note, Step } from 'viewModels'
+import type { ActionPlan, Goal, Step } from 'viewModels'
+import toNote from './noteMapper'
 
 const toActionPlan = (
   actionPlanResponse: ActionPlanResponse,
@@ -63,20 +64,6 @@ const toStep = (stepResponse: StepResponse): Step => {
     sequenceNumber: stepResponse.sequenceNumber,
   }
 }
-
-const toNote = (noteResponse: NoteResponse, prisonNamesById: Map<string, string>): Note => ({
-  reference: noteResponse.reference,
-  content: noteResponse.content,
-  type: noteResponse.type,
-  createdBy: noteResponse.createdBy,
-  createdByDisplayName: noteResponse.createdByDisplayName,
-  createdAt: toDate(noteResponse.createdAt),
-  createdAtPrisonName: prisonNamesById.get(noteResponse.createdAtPrison) || noteResponse.createdAtPrison,
-  updatedBy: noteResponse.updatedBy,
-  updatedByDisplayName: noteResponse.updatedByDisplayName,
-  updatedAt: toDate(noteResponse.updatedAt),
-  updatedAtPrisonName: prisonNamesById.get(noteResponse.updatedAtPrison) || noteResponse.updatedAtPrison,
-})
 
 const toDate = (dateString: string): Date => {
   return dateString ? new Date(dateString) : null
