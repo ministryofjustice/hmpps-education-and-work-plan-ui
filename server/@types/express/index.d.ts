@@ -24,8 +24,8 @@ import type {
   WorkInterestRolesForm,
   WorkInterestTypesForm,
 } from 'inductionForms'
-import type { ReviewNoteForm, WhoCompletedReviewForm } from 'reviewPlanForms'
-import type { EducationDto, ReviewPlanDto } from 'dto'
+import type { ReviewNoteForm, WhoCompletedReviewForm, ReviewExemptionForm } from 'reviewPlanForms'
+import type { EducationDto, ReviewPlanDto, ReviewExemptionDto } from 'dto'
 import type { InductionDto } from 'inductionDto'
 import type { UserDetails } from '../../services/userService'
 
@@ -77,6 +77,7 @@ declare module 'express-session' {
     reviewPlanDto?: ReviewPlanDto
     // Exemption related forms
     reviewExemptionForm?: ReviewExemptionForm
+    reviewExemptionDto?: ReviewExemptionDto
   }
 
   export type PrisonerContexts = Record<string, PrisonerContext>

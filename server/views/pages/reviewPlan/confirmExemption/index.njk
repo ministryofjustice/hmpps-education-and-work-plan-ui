@@ -15,9 +15,9 @@
       <h1 class="govuk-heading-l" data-qa="page-heading">Are you sure you want to put {{ prisonerSummary.firstName }} {{ prisonerSummary.lastName }}'s review on hold?</h1>
       <section class="exemption-summary">
         <h3 class="govuk-heading-s govuk-!-margin-bottom-1" data-qa="exemption-reason-heading">Exemption reason</h3>
-        <p class="govuk-body app-u-multiline-text govuk-!-margin-bottom-1" data-qa="exemption-reason">{{ exemptionReason }}</p>
+        <p class="govuk-body app-u-multiline-text govuk-!-margin-bottom-1" data-qa="exemption-reason">{{ reviewExemptionDto.exemptionReason | formatExemptionReasonValue }}</p>
         <h3 class="govuk-heading-s govuk-!-margin-bottom-0 govuk-!-display-inline" data-qa="exemption-reason-details-heading">More details:</h3>
-        <span class="govuk-body app-u-multiline-text govuk-!-margin-bottom-0" data-qa="exemption-reason-details">{{ exemptionReasonDetails }}</span>
+        <span class="govuk-body app-u-multiline-text govuk-!-margin-bottom-0" data-qa="exemption-reason-details">{{ reviewExemptionDto.exemptionReasonDetails }}</span>
       </section>
       <form class="form" method="post" novalidate="">
         <input type="hidden" name="_csrf" value="{{ csrfToken }}" />

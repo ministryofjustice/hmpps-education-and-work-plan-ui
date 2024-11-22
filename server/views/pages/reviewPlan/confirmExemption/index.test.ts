@@ -21,8 +21,10 @@ describe('ConfirmExemptionPage', () => {
     // Given
     const model = {
       prisonerSummary,
-      exemptionReason: formatExemptionReasonValueFilter('EXEMPT_PRISONER_DRUG_OR_ALCOHOL_DEPENDENCY'),
-      exemptionReasonDetails: 'In treatment',
+      reviewExemptionDto: {
+        exemptionReason: 'EXEMPT_PRISONER_DRUG_OR_ALCOHOL_DEPENDENCY',
+        exemptionReasonDetails: 'In treatment',
+      },
     }
     // When
     const content = njkEnv.render('index.njk', model)
