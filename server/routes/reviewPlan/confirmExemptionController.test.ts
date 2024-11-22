@@ -47,7 +47,7 @@ describe('ConfirmExemptionController', () => {
   })
 
   describe('submitConfirmException', () => {
-    it('should redirect to overview page given form submitted successfully', async () => {
+    it(`should redirect to 'Exemption recorded' page given form submitted successfully`, async () => {
       // Given
       const reviewExemptionDto = {
         exemptionReason: 'EXEMPT_PRISONER_DRUG_OR_ALCOHOL_DEPENDENCY',
@@ -59,7 +59,7 @@ describe('ConfirmExemptionController', () => {
       await controller.submitConfirmExemption(req, res, next)
 
       // Then
-      expect(res.redirect).toHaveBeenCalledWith('/plan/A1234BC/view/overview')
+      expect(res.redirect).toHaveBeenCalledWith('/plan/A1234BC/review/exemption/recorded')
       expect(getPrisonerContext(req.session, prisonNumber).reviewExemptionDto).toEqual(reviewExemptionDto)
     })
   })

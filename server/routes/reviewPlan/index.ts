@@ -12,6 +12,7 @@ import ReviewCompleteController from './reviewCompleteController'
 import ExemptionReasonController from './exemptionReasonController'
 import ConfirmExemptionController from './confirmExemptionController'
 import createEmptyReviewExemptionDtoIfNotInPrisonerContext from '../routerRequestHandlers/createEmptyReviewExemptionDtoIfNotInPrisonerContext'
+import ExemptionRecordedController from './exemptionRecordedController'
 
 /**
  * Route definitions for the review plan journeys
@@ -23,6 +24,7 @@ export default function reviewPlanRoutes(router: Router) {
   const reviewCompleteController = new ReviewCompleteController()
   const exemptionReasonController = new ExemptionReasonController()
   const confirmExemptionController = new ConfirmExemptionController()
+  const exemptionRecordedController = new ExemptionRecordedController()
 
   router.use('/plan/:prisonNumber/review/exemption', [
     checkPrisonIsEnabled(),
@@ -80,9 +82,15 @@ export default function reviewPlanRoutes(router: Router) {
     asyncMiddleware(confirmExemptionController.submitConfirmExemption),
   )
 
-  router.get('/plan/:prisonNumber/review/exemption-recorded', async (_req, res, next) => {
-    // TODO implement controller for Review exemption recorded page
-  })
+  router.get(
+    '/plan/:prisonNumber/review/exemption/recorded',
+    asyncMiddleware(exemptionRecordedController.getExemptionRecordedView),
+  )
+
+  router.post(
+    '/plan/:prisonNumber/review/exemption/recorded',
+    asyncMiddleware(exemptionRecordedController.goToLearningAndWorkProgressPlan),
+  )
 }
 
 const checkPrisonIsEnabled = (): RequestHandler => {

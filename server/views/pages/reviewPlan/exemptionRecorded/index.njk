@@ -1,0 +1,52 @@
+{% extends "../../../partials/layout.njk" %}
+
+{% set pageId = "exemption-recorded" %}
+{% set title = "Exemption recorded" %}
+{% set pageTitle = title %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      {{ govukPanel({
+        classes: "govuk-!-margin-top-7",
+        titleText: title,
+        attributes: { "data-qa": "exemption-recorded-panel" }
+      }) }}
+
+      {% if exemptionDueToTechnicalIssue %}
+        {{ govukWarningText({
+          text: "You must remove this exemption when the reason no longer applies.",
+          iconFallbackText: "Warning",
+          classes: "govuk-!-margin-top-6",
+          attributes: { "data-qa": "warning-text" }
+        }) }}
+      {% endif %}
+
+      <h3 class="govuk-heading-m govuk-!-margin-top-6" data-qa="page-heading">What happens next</h3>
+
+      {% if exemptionDueToTechnicalIssue %}
+        <p class="govuk-body govuk-!-margin-bottom-7" data-qa="session-on-hold">
+          {{ prisonerSummary.firstName + " " + prisonerSummary.lastName }} is now exempt from reviews and the session is on hold.
+        </p>
+      {% else %}
+        <p class="govuk-body govuk-!-margin-bottom-7" data-qa="review-due">
+          You must now review this learning and work progress plan with {{ prisonerSummary.firstName + " " + prisonerSummary.lastName }} by {{ '[review due date]' }}.
+        </p>
+      {% endif %}
+
+      <form class="form" method="post" novalidate="">
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+          <div class="govuk-form-group">
+            {{ govukButton({
+              text: "Continue",
+              id: "submit-button",
+              name: "action",
+              value: "submit-form",
+              attributes: { "data-qa": "submit-button" }
+            }) }}
+          </div>
+      </form>
+     
+    </div>
+  </div>
+{% endblock %}
