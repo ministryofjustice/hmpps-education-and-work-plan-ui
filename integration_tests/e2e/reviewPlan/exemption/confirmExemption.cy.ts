@@ -32,7 +32,8 @@ context(`Confirm review exemption page`, () => {
 
     // Then
     confirmExemptionPage.goBackToLearningAndWorkProgressPlan()
-    Page.verifyOnPage(OverviewPage)
+    Page.verifyOnPage(OverviewPage) //
+      .doesNotHaveSuccessMessage()
   })
 
   it(`Should navigate to the 'Exemption recorded' page when 'Yes, continue to add exemption' button on Confirm review exemption page is clicked`, () => {

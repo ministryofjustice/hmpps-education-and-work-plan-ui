@@ -30,6 +30,7 @@ context(`Review exemption recorded page`, () => {
 
     // Then
     Page.verifyOnPage(ExemptionRecordedPage).submitPage()
-    Page.verifyOnPage(OverviewPage)
+    Page.verifyOnPage(OverviewPage) //
+      .hasSuccessMessage('Exemption recorded')
   })
 })
