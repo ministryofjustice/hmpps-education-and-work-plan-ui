@@ -58,6 +58,7 @@ generic-service:
     REVIEWS_PRISONS_ENABLED: ""
     COMPLETED_GOALS_ENABLED: "true"
     ARCHIVE_GOAL_NOTES_ENABLED: "true"
+    SESSIONS_HISTORY_ENABLED: "false"
 
     # Comma delimited list of prison IDs that our service is rolled out into (active agencies)
     # Use spaces to aid readability if necessary; these are trimmed when the environment variable is read and processed.
