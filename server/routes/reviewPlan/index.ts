@@ -15,6 +15,7 @@ import createEmptyReviewExemptionDtoIfNotInPrisonerContext from '../routerReques
 import ExemptionRecordedController from './exemptionRecordedController'
 import { Services } from '../../services'
 import retrieveActionPlanReviews from '../routerRequestHandlers/retrieveActionPlanReviews'
+import checkReviewExemptionDtoExistsInPrisonerContext from '../routerRequestHandlers/checkReviewExemptionDtoExistsInPrisonerContext'
 
 /**
  * Route definitions for the review plan journeys
