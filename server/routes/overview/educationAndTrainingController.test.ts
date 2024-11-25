@@ -7,16 +7,12 @@ import {
   aValidEnglishInPrisonCourseCompletedWithinLast12Months,
   aValidMathsInPrisonCourse,
 } from '../../testsupport/inPrisonCourseTestDataBuilder'
-import CuriousService from '../../services/curiousService'
 import EducationAndTrainingController from './educationAndTrainingController'
 import { aValidInductionDto } from '../../testsupport/inductionDtoTestDataBuilder'
-
-jest.mock('../../services/curiousService')
+import aValidEducationDto from '../../testsupport/educationDtoTestDataBuilder'
 
 describe('educationAndTrainingController', () => {
-  const curiousService = new CuriousService(null, null, null) as jest.Mocked<CuriousService>
-
-  const controller = new EducationAndTrainingController(curiousService)
+  const controller = new EducationAndTrainingController()
 
   const prisonNumber = 'A1234GC'
   const prisonerSummary = aValidPrisonerSummary(prisonNumber)
@@ -38,6 +34,20 @@ describe('educationAndTrainingController', () => {
     },
     coursesCompletedInLast12Months: [aValidEnglishInPrisonCourseCompletedWithinLast12Months()],
   }
+  const functionalSkillsFromCurious: FunctionalSkills = {
+    prisonNumber,
+    problemRetrievingData: false,
+    assessments: [
+      {
+        assessmentDate: startOfDay(parse('2012-02-16', 'yyyy-MM-dd', new Date())),
+        grade: 'Level 1',
+        prisonId: 'MDI',
+        prisonName: 'MOORLAND (HMP & YOI)',
+        type: 'ENGLISH',
+      },
+    ],
+  }
+  const educationDto = aValidEducationDto()
 
   const expectedTab = 'education-and-training'
 
@@ -55,6 +65,8 @@ describe('educationAndTrainingController', () => {
     locals: {
       prisonerSummary,
       curiousInPrisonCourses: inPrisonCourses,
+      prisonerFunctionalSkills: functionalSkillsFromCurious,
+      education: educationDto,
       induction,
     },
   } as unknown as Response
@@ -66,21 +78,8 @@ describe('educationAndTrainingController', () => {
 
   it('should get eduction and training view', async () => {
     // Given
-    const functionalSkillsFromCurious = {
-      problemRetrievingData: false,
-      assessments: [
-        {
-          assessmentDate: startOfDay(parse('2012-02-16', 'yyyy-MM-dd', new Date())),
-          grade: 'Level 1',
-          prisonId: 'MDI',
-          prisonName: 'MOORLAND (HMP & YOI)',
-          type: 'ENGLISH',
-        },
-      ],
-    } as FunctionalSkills
-    curiousService.getPrisonerFunctionalSkills.mockResolvedValue(functionalSkillsFromCurious)
-
-    const expectedFunctionalSkills = {
+    const expectedFunctionalSkills: FunctionalSkills = {
+      prisonNumber,
       problemRetrievingData: false,
       assessments: [
         {
@@ -92,9 +91,13 @@ describe('educationAndTrainingController', () => {
         },
         {
           type: 'MATHS',
+          assessmentDate: undefined,
+          grade: undefined,
+          prisonId: undefined,
+          prisonName: undefined,
         },
       ],
-    } as FunctionalSkills
+    }
 
     const expectedView = {
       prisonerSummary,
@@ -102,6 +105,7 @@ describe('educationAndTrainingController', () => {
       functionalSkills: expectedFunctionalSkills,
       inPrisonCourses,
       induction,
+      education: educationDto,
     }
 
     // When
@@ -109,6 +113,5 @@ describe('educationAndTrainingController', () => {
 
     // Then
     expect(res.render).toHaveBeenCalledWith('pages/overview/index', expectedView)
-    expect(curiousService.getPrisonerFunctionalSkills).toHaveBeenCalledWith(prisonNumber, 'a-dps-user')
   })
 })

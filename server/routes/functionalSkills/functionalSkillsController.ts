@@ -1,24 +1,16 @@
 import type { Assessment, FunctionalSkills } from 'viewModels'
 import { Request, RequestHandler } from 'express'
-import { CuriousService } from '../../services'
 import FunctionalSkillsView from './functionalSkillsView'
 import PrisonService from '../../services/prisonService'
 import { functionalSkillsByType } from '../functionalSkillsResolver'
 
 export default class FunctionalSkillsController {
-  constructor(
-    private readonly curiousService: CuriousService,
-    private readonly prisonService: PrisonService,
-  ) {}
+  constructor(private readonly prisonService: PrisonService) {}
 
   getFunctionalSkillsView: RequestHandler = async (req, res, next): Promise<void> => {
-    const { prisonNumber } = req.params
     const { prisonerSummary, showServiceOnboardingBanner } = res.locals
 
-    const functionalSkillsFromCurious = await this.curiousService.getPrisonerFunctionalSkills(
-      prisonNumber,
-      req.user.username,
-    )
+    const functionalSkillsFromCurious = res.locals.prisonerFunctionalSkills
     const allAssessments = this.hasSomeAssessments(functionalSkillsFromCurious)
       ? await this.setPrisonNamesOnAssessments(functionalSkillsFromCurious.assessments, req)
       : []

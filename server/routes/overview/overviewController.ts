@@ -1,14 +1,13 @@
 import createError from 'http-errors'
 import { RequestHandler } from 'express'
 import type { Goal, PrisonerGoals } from 'viewModels'
-import { CuriousService, EducationAndWorkPlanService, InductionService } from '../../services'
+import { EducationAndWorkPlanService, InductionService } from '../../services'
 import { mostRecentFunctionalSkills } from '../functionalSkillsResolver'
 import logger from '../../../logger'
 import OverviewView from './overviewView'
 
 export default class OverviewController {
   constructor(
-    private readonly curiousService: CuriousService,
     private readonly inductionService: InductionService,
     private readonly educationAndWorkPlanService: EducationAndWorkPlanService,
   ) {}
@@ -18,14 +17,13 @@ export default class OverviewController {
     const { prisonerSummary, showServiceOnboardingBanner } = res.locals
 
     try {
-      const [inductionExists, allFunctionalSkills, prisonerGoals] = await Promise.all([
+      const [inductionExists, prisonerGoals] = await Promise.all([
         this.inductionService.inductionExists(prisonNumber, req.user.username),
-        this.curiousService.getPrisonerFunctionalSkills(prisonNumber, req.user.username),
         this.educationAndWorkPlanService.getAllGoalsForPrisoner(prisonNumber, req.user.username),
       ])
 
       const isPostInduction = Boolean(inductionExists)
-      const functionalSkills = mostRecentFunctionalSkills(allFunctionalSkills)
+      const functionalSkills = mostRecentFunctionalSkills(res.locals.prisonerFunctionalSkills)
 
       const { lastUpdatedBy, lastUpdatedDate, lastUpdatedAtPrisonName, noGoals } =
         this.getLastUpdatedGoalData(prisonerGoals)
