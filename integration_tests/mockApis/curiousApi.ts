@@ -80,6 +80,19 @@ const stubLearnerProfile404Error = (prisonNumber = 'G6115VJ'): SuperAgentRequest
     },
   })
 
+const stubLearnerProfileConnectionTimeoutError = (prisonNumber = 'G6115VJ'): SuperAgentRequest =>
+  stubFor({
+    request: {
+      method: 'GET',
+      urlPattern: `/learnerProfile/${prisonNumber}`,
+    },
+    response: {
+      status: 503,
+      fixedDelayMilliseconds: 6000, // response will take 6 seconds, which is longer than the configured timeout for the API in `config.ts`
+      headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+    },
+  })
+
 const stubLearnerEducation = (prisonNumber = 'G6115VJ', page = 0): SuperAgentRequest =>
   stubFor({
     request: {
@@ -705,11 +718,25 @@ const stubLearnerEducation404Error = (prisonNumber = 'G6115VJ', page = 0): Super
     },
   })
 
+const stubLearnerEducationConnectionTimeoutError = (prisonNumber = 'G6115VJ'): SuperAgentRequest =>
+  stubFor({
+    request: {
+      method: 'GET',
+      urlPathPattern: `/learnerEducation/${prisonNumber}`,
+    },
+    response: {
+      status: 503,
+      fixedDelayMilliseconds: 6000, // response will take 6 seconds, which is longer than the 5 second timeout for the API config in `config.ts`
+      headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+    },
+  })
+
 export default {
   // Stubs for Learner Profile API
   stubLearnerProfile,
   stubLearnerProfile401Error,
   stubLearnerProfile404Error,
+  stubLearnerProfileConnectionTimeoutError,
 
   // Stubs for Learner Education API
   stubLearnerEducation,
@@ -720,4 +747,5 @@ export default {
   stubLearnerEducationWithNoCourses,
   stubLearnerEducation401Error,
   stubLearnerEducation404Error,
+  stubLearnerEducationConnectionTimeoutError,
 }

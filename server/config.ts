@@ -77,10 +77,10 @@ export default {
       url: get('HMPPS_AUTH_URL', 'http://localhost:9090/auth', requiredInProduction),
       externalUrl: get('HMPPS_AUTH_EXTERNAL_URL', get('HMPPS_AUTH_URL', 'http://localhost:9090/auth')),
       timeout: {
-        response: Number(get('HMPPS_AUTH_TIMEOUT_RESPONSE', 10000)),
-        deadline: Number(get('HMPPS_AUTH_TIMEOUT_DEADLINE', 10000)),
+        response: Number(get('HMPPS_AUTH_TIMEOUT_RESPONSE', 5000)),
+        deadline: Number(get('HMPPS_AUTH_TIMEOUT_DEADLINE', 5000)),
       },
-      agent: new AgentConfig(Number(get('HMPPS_AUTH_TIMEOUT_RESPONSE', 10000))),
+      agent: new AgentConfig(Number(get('HMPPS_AUTH_TIMEOUT_RESPONSE', 5000))),
       apiClientId: get('API_CLIENT_ID', 'clientid', requiredInProduction),
       apiClientSecret: get('API_CLIENT_SECRET', 'clientsecret', requiredInProduction),
       systemClientId: get('SYSTEM_CLIENT_ID', 'clientid', requiredInProduction),
@@ -90,10 +90,10 @@ export default {
     manageUsersApi: {
       url: get('MANAGE_USERS_API_URL', 'http://localhost:9091', requiredInProduction),
       timeout: {
-        response: Number(get('MANAGE_USERS_API_TIMEOUT_RESPONSE', 10000)),
-        deadline: Number(get('MANAGE_USERS_API_TIMEOUT_DEADLINE', 10000)),
+        response: Number(get('MANAGE_USERS_API_TIMEOUT_RESPONSE', 5000)),
+        deadline: Number(get('MANAGE_USERS_API_TIMEOUT_DEADLINE', 5000)),
       },
-      agent: new AgentConfig(Number(get('MANAGE_USERS_API_TIMEOUT_RESPONSE', 10000))),
+      agent: new AgentConfig(Number(get('MANAGE_USERS_API_TIMEOUT_RESPONSE', 5000))),
       includeInHealthCheck: true,
     },
     tokenVerification: {
@@ -109,38 +109,38 @@ export default {
     educationAndWorkPlan: {
       url: get('EDUCATION_AND_WORK_PLAN_API_URL', 'http://localhost:8083', requiredInProduction),
       timeout: {
-        response: Number(get('EDUCATION_AND_WORK_PLAN_API_TIMEOUT_RESPONSE', 10000)),
-        deadline: Number(get('EDUCATION_AND_WORK_PLAN_API_TIMEOUT_DEADLINE', 10000)),
+        response: Number(get('EDUCATION_AND_WORK_PLAN_API_TIMEOUT_RESPONSE', 5000)),
+        deadline: Number(get('EDUCATION_AND_WORK_PLAN_API_TIMEOUT_DEADLINE', 5000)),
       },
-      agent: new AgentConfig(Number(get('EDUCATION_AND_WORK_PLAN_API_TIMEOUT_RESPONSE', 10000))),
+      agent: new AgentConfig(Number(get('EDUCATION_AND_WORK_PLAN_API_TIMEOUT_RESPONSE', 5000))),
       includeInHealthCheck: true,
     },
     prisonerSearch: {
       url: get('PRISONER_SEARCH_API_URL', 'http://localhost:8083', requiredInProduction),
       timeout: {
-        response: Number(get('PRISONER_SEARCH_API_TIMEOUT_RESPONSE', 10000)),
-        deadline: Number(get('PRISONER_SEARCH_API_TIMEOUT_DEADLINE', 10000)),
+        response: Number(get('PRISONER_SEARCH_API_TIMEOUT_RESPONSE', 5000)),
+        deadline: Number(get('PRISONER_SEARCH_API_TIMEOUT_DEADLINE', 5000)),
       },
-      agent: new AgentConfig(Number(get('PRISONER_SEARCH_API_TIMEOUT_RESPONSE', 10000))),
+      agent: new AgentConfig(Number(get('PRISONER_SEARCH_API_TIMEOUT_RESPONSE', 5000))),
       defaultPageSize: Number(get('PRISONER_SEARCH_API_DEFAULT_PAGE_SIZE', 9999, requiredInProduction)),
       includeInHealthCheck: true,
     },
     prisonRegister: {
       url: get('PRISON_REGISTER_API_URL', 'http://localhost:8083', requiredInProduction),
       timeout: {
-        response: Number(get('PRISON_REGISTER_API_TIMEOUT_RESPONSE', 10000)),
-        deadline: Number(get('PRISON_REGISTER_API_TIMEOUT_DEADLINE', 10000)),
+        response: Number(get('PRISON_REGISTER_API_TIMEOUT_RESPONSE', 5000)),
+        deadline: Number(get('PRISON_REGISTER_API_TIMEOUT_DEADLINE', 5000)),
       },
-      agent: new AgentConfig(Number(get('PRISON_REGISTER_API_TIMEOUT_RESPONSE', 10000))),
+      agent: new AgentConfig(Number(get('PRISON_REGISTER_API_TIMEOUT_RESPONSE', 5000))),
       includeInHealthCheck: true,
     },
     curious: {
       url: get('CURIOUS_API_URL', 'http://localhost:8083', requiredInProduction),
       timeout: {
-        response: Number(get('CURIOUS_API_TIMEOUT_RESPONSE', 10000)),
-        deadline: Number(get('CURIOUS_API_TIMEOUT_DEADLINE', 10000)),
+        response: Number(get('CURIOUS_API_TIMEOUT_RESPONSE', 3000)),
+        deadline: Number(get('CURIOUS_API_TIMEOUT_DEADLINE', 3000)),
       },
-      agent: new AgentConfig(Number(get('CURIOUS_API_TIMEOUT_RESPONSE', 10000))),
+      agent: new AgentConfig(Number(get('CURIOUS_API_TIMEOUT_RESPONSE', 3000))),
       includeInHealthCheck: false,
     },
     frontendComponents: {
@@ -155,10 +155,10 @@ export default {
     activities: {
       url: get('ACTIVITIES_API_URL', 'http://localhost:8083', requiredInProduction),
       timeout: {
-        response: Number(get('ACTIVITIES_AND_WORK_PLAN_API_TIMEOUT_RESPONSE', 10000)),
-        deadline: Number(get('ACTIVITIES_AND_WORK_PLAN_API_TIMEOUT_DEADLINE', 10000)),
+        response: Number(get('ACTIVITIES_AND_WORK_PLAN_API_TIMEOUT_RESPONSE', 5000)),
+        deadline: Number(get('ACTIVITIES_AND_WORK_PLAN_API_TIMEOUT_DEADLINE', 5000)),
       },
-      agent: new AgentConfig(Number(get('ACTIVITIES_AND_WORK_PLAN_API_TIMEOUT_RESPONSE', 10000))),
+      agent: new AgentConfig(Number(get('ACTIVITIES_AND_WORK_PLAN_API_TIMEOUT_RESPONSE', 5000))),
       includeInHealthCheck: false,
     },
   },
