@@ -1,7 +1,6 @@
 import { Request, Response } from 'express'
 import { subDays } from 'date-fns'
 import type { Assessment } from 'viewModels'
-import CuriousService from '../../services/curiousService'
 import PrisonService from '../../services/prisonService'
 import FunctionalSkillsController from './functionalSkillsController'
 import aValidPrisonerSummary from '../../testsupport/prisonerSummaryTestDataBuilder'
@@ -11,13 +10,11 @@ import {
   validFunctionalSkillsWithNoAssessments,
 } from '../../testsupport/functionalSkillsTestDataBuilder'
 
-jest.mock('../../services/curiousService')
 jest.mock('../../services/prisonService')
 
 describe('functionalSkillsController', () => {
-  const curiousService = new CuriousService(null, null, null) as jest.Mocked<CuriousService>
   const prisonService = new PrisonService(null, null, null) as jest.Mocked<PrisonService>
-  const controller = new FunctionalSkillsController(curiousService, prisonService)
+  const controller = new FunctionalSkillsController(prisonService)
 
   const prisonNumber = 'A1234GC'
   const prisonerSummary = aValidPrisonerSummary(prisonNumber)
@@ -109,7 +106,7 @@ describe('functionalSkillsController', () => {
           },
         ],
       })
-      curiousService.getPrisonerFunctionalSkills.mockResolvedValue(functionalSkills)
+      res.locals.prisonerFunctionalSkills = functionalSkills
 
       const expectedDigitalSkills: Array<Assessment> = [
         {
@@ -182,13 +179,12 @@ describe('functionalSkillsController', () => {
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/functionalSkills/index', expectedView)
-      expect(curiousService.getPrisonerFunctionalSkills).toHaveBeenCalledWith(prisonNumber, 'AUSER_GEN')
     })
 
     it('should get functional skills view given curious service returns no functional skills data for the prisoner', async () => {
       // Given
       const functionalSkills = validFunctionalSkillsWithNoAssessments({ prisonNumber })
-      curiousService.getPrisonerFunctionalSkills.mockResolvedValue(functionalSkills)
+      res.locals.prisonerFunctionalSkills = functionalSkills
 
       const expectedDigitalSkills = [] as Array<Assessment>
 
@@ -209,14 +205,13 @@ describe('functionalSkillsController', () => {
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/functionalSkills/index', expectedView)
-      expect(curiousService.getPrisonerFunctionalSkills).toHaveBeenCalledWith(prisonNumber, 'AUSER_GEN')
       expect(prisonService.getAllPrisonNamesById).not.toHaveBeenCalled()
     })
 
     it('should get functional skills view given curious service has problem retrieving data', async () => {
       // Given
       const functionalSkills = functionalSkillsWithProblemRetrievingData({ prisonNumber })
-      curiousService.getPrisonerFunctionalSkills.mockResolvedValue(functionalSkills)
+      res.locals.prisonerFunctionalSkills = functionalSkills
 
       const expectedDigitalSkills = [] as Array<Assessment>
 
@@ -237,7 +232,6 @@ describe('functionalSkillsController', () => {
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/functionalSkills/index', expectedView)
-      expect(curiousService.getPrisonerFunctionalSkills).toHaveBeenCalledWith(prisonNumber, 'AUSER_GEN')
       expect(prisonService.getAllPrisonNamesById).not.toHaveBeenCalled()
     })
   })

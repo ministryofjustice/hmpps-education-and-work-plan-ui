@@ -1,7 +1,6 @@
 import { Request, Response } from 'express'
 import aValidPrisonerSummary from '../../testsupport/prisonerSummaryTestDataBuilder'
 import aValidPrisonerSupportNeeds from '../../testsupport/supportNeedsTestDataBuilder'
-import CuriousService from '../../services/curiousService'
 import PrisonService from '../../services/prisonService'
 import SupportNeedsController from './supportNeedsController'
 
@@ -9,13 +8,13 @@ jest.mock('../../services/curiousService')
 jest.mock('../../services/prisonService')
 
 describe('supportNeedsController', () => {
-  const curiousService = new CuriousService(null, null, null) as jest.Mocked<CuriousService>
   const prisonService = new PrisonService(null, null, null) as jest.Mocked<PrisonService>
 
-  const controller = new SupportNeedsController(curiousService, prisonService)
+  const controller = new SupportNeedsController(prisonService)
 
   const prisonNumber = 'A1234GC'
   const prisonerSummary = aValidPrisonerSummary(prisonNumber)
+  const prisonerSupportNeeds = aValidPrisonerSupportNeeds()
 
   const req = {
     user: {
@@ -26,7 +25,10 @@ describe('supportNeedsController', () => {
   } as unknown as Request
   const res = {
     render: jest.fn(),
-    locals: { prisonerSummary },
+    locals: {
+      prisonerSummary,
+      prisonerSupportNeeds,
+    },
   } as unknown as Response
   const next = jest.fn()
 
@@ -41,13 +43,12 @@ describe('supportNeedsController', () => {
 
     const prisonId = 'MDI'
 
-    const expectedSupportNeeds = aValidPrisonerSupportNeeds()
-    curiousService.getPrisonerSupportNeeds.mockResolvedValue(expectedSupportNeeds)
     prisonService.getAllPrisonNamesById.mockResolvedValue(new Map([[prisonId, 'Moorland (HMP & YOI)']]))
+
     const expectedView = {
       prisonerSummary,
       tab: expectedTab,
-      supportNeeds: expectedSupportNeeds,
+      supportNeeds: prisonerSupportNeeds,
       atLeastOnePrisonHasSupportNeeds: true,
     }
 

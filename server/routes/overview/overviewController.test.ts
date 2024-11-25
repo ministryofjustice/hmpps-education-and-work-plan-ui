@@ -1,6 +1,5 @@
 import { Request, Response } from 'express'
 import type { FunctionalSkills, InPrisonCourseRecords, PrisonerGoals } from 'viewModels'
-import CuriousService from '../../services/curiousService'
 import InductionService from '../../services/inductionService'
 import { aValidEnglishInPrisonCourse, aValidMathsInPrisonCourse } from '../../testsupport/inPrisonCourseTestDataBuilder'
 import aValidPrisonerSummary from '../../testsupport/prisonerSummaryTestDataBuilder'
@@ -9,12 +8,10 @@ import GoalStatusValue from '../../enums/goalStatusValue'
 import EducationAndWorkPlanService from '../../services/educationAndWorkPlanService'
 import OverviewController from './overviewController'
 
-jest.mock('../../services/curiousService')
 jest.mock('../../services/inductionService')
 jest.mock('../../services/educationAndWorkPlanService')
 
 describe('overviewController', () => {
-  const curiousService = new CuriousService(null, null, null) as jest.Mocked<CuriousService>
   const inductionService = new InductionService(null, null) as jest.Mocked<InductionService>
   const educationAndWorkPlanService = new EducationAndWorkPlanService(
     null,
@@ -22,7 +19,7 @@ describe('overviewController', () => {
     null,
   ) as jest.Mocked<EducationAndWorkPlanService>
 
-  const controller = new OverviewController(curiousService, inductionService, educationAndWorkPlanService)
+  const controller = new OverviewController(inductionService, educationAndWorkPlanService)
 
   const prisonNumber = 'A1234GC'
   const username = 'a-dps-user'
@@ -56,6 +53,7 @@ describe('overviewController', () => {
     locals: {
       prisonerSummary,
       curiousInPrisonCourses: inPrisonCourses,
+      prisonerFunctionalSkills: functionalSkillsFromCurious,
     },
   } as unknown as Response
   const next = jest.fn()
@@ -93,8 +91,6 @@ describe('overviewController', () => {
     } as PrisonerGoals)
 
     inductionService.inductionExists.mockResolvedValue(true)
-
-    curiousService.getPrisonerFunctionalSkills.mockResolvedValue(functionalSkillsFromCurious)
 
     const expectedView = {
       tab: 'overview',
@@ -151,8 +147,6 @@ describe('overviewController', () => {
 
     inductionService.inductionExists.mockResolvedValue(false)
 
-    curiousService.getPrisonerFunctionalSkills.mockResolvedValue(functionalSkillsFromCurious)
-
     const expectedView = {
       tab: 'overview',
       prisonerSummary,
@@ -207,8 +201,6 @@ describe('overviewController', () => {
     } as PrisonerGoals)
 
     inductionService.inductionExists.mockResolvedValue(false)
-
-    curiousService.getPrisonerFunctionalSkills.mockResolvedValue(functionalSkillsFromCurious)
 
     const expectedView = {
       tab: 'overview',

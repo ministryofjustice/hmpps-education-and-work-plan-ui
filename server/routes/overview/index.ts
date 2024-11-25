@@ -12,32 +12,35 @@ import retrieveEducation from '../routerRequestHandlers/retrieveEducation'
 import retrieveAllGoalsForPrisoner from '../routerRequestHandlers/retrieveAllGoalsForPrisoner'
 import ViewGoalsController from './viewGoalsController'
 import OverviewController from './overviewController'
+import retrieveCuriousFunctionalSkills from '../routerRequestHandlers/retrieveCuriousFunctionalSkills'
+import retrieveCuriousSupportNeeds from '../routerRequestHandlers/retrieveCuriousSupportNeeds'
 
 /**
  * Route definitions for the pages relating to the main Overview page
  */
 export default (router: Router, services: Services) => {
-  const overviewController = new OverviewController(
-    services.curiousService,
-    services.inductionService,
-    services.educationAndWorkPlanService,
-  )
+  const overviewController = new OverviewController(services.inductionService, services.educationAndWorkPlanService)
   const timelineController = new TimelineController(services.timelineService)
-  const supportNeedsController = new SupportNeedsController(services.curiousService, services.prisonService)
+  const supportNeedsController = new SupportNeedsController(services.prisonService)
   const workAndInterestsController = new WorkAndInterestsController()
-  const educationAndTrainingController = new EducationAndTrainingController(services.curiousService)
+  const educationAndTrainingController = new EducationAndTrainingController()
   const viewGoalsController = new ViewGoalsController()
 
   router.use('/plan/:prisonNumber/view/*', [removeFormDataFromSession])
 
   router.get('/plan/:prisonNumber/view/overview', [
+    retrieveCuriousFunctionalSkills(services.curiousService),
     retrieveCuriousInPrisonCourses(services.curiousService),
     asyncMiddleware(overviewController.getOverviewView),
   ])
 
-  router.get('/plan/:prisonNumber/view/support-needs', [asyncMiddleware(supportNeedsController.getSupportNeedsView)])
+  router.get('/plan/:prisonNumber/view/support-needs', [
+    retrieveCuriousSupportNeeds(services.curiousService),
+    asyncMiddleware(supportNeedsController.getSupportNeedsView),
+  ])
 
   router.get('/plan/:prisonNumber/view/education-and-training', [
+    retrieveCuriousFunctionalSkills(services.curiousService),
     retrieveCuriousInPrisonCourses(services.curiousService),
     retrieveInduction(services.inductionService),
     retrieveEducation(services.educationAndWorkPlanService),

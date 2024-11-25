@@ -1,19 +1,15 @@
 import { RequestHandler } from 'express'
+import type { PrisonerSupportNeeds } from 'viewModels'
 import SupportNeedsView from './supportNeedsView'
-import { CuriousService } from '../../services'
 import PrisonService from '../../services/prisonService'
 
 export default class SupportNeedsController {
-  constructor(
-    private readonly curiousService: CuriousService,
-    private readonly prisonService: PrisonService,
-  ) {}
+  constructor(private readonly prisonService: PrisonService) {}
 
   getSupportNeedsView: RequestHandler = async (req, res, next): Promise<void> => {
-    const { prisonNumber } = req.params
     const { prisonerSummary } = res.locals
 
-    const supportNeeds = await this.curiousService.getPrisonerSupportNeeds(prisonNumber, req.user.username)
+    const supportNeeds: PrisonerSupportNeeds = res.locals.prisonerSupportNeeds
     const prisonNamesById = await this.prisonService.getAllPrisonNamesById(req.user.username)
     let atLeastOnePrisonHasSupportNeeds = false
 
