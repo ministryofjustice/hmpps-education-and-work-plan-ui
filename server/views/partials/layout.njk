@@ -70,7 +70,7 @@
     <main class="govuk-main-wrapper govuk-!-padding-top-0 {{ mainClasses }}" id="main-content" role="main"{% if mainLang %} lang="{{ mainLang }}"{% endif %}>
       {% if successMessage %}
         {{ mojBanner({
-          text: successMessage.message,
+          html: successMessage.message | safe,
           type: 'success',
           iconFallbackText: 'Success',
           attributes: {
