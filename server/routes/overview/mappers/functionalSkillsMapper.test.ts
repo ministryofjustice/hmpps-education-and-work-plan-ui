@@ -96,23 +96,4 @@ describe('functionalSkillsMapper', () => {
     // Then
     expect(actual).toEqual(expected)
   })
-
-  it('should map to functional skills given undefined learner profiles', () => {
-    // Given
-    const prisonNumber = 'G6123VU'
-
-    const learnerProfiles: Array<LearnerProfile> = undefined
-
-    const expected: FunctionalSkills = {
-      problemRetrievingData: false,
-      prisonNumber,
-      assessments: undefined,
-    }
-
-    // When
-    const actual = toFunctionalSkills(learnerProfiles, prisonNumber, prisonNamesById)
-
-    // Then
-    expect(actual).toEqual(expected)
-  })
 })

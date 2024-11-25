@@ -18,14 +18,14 @@ export default class CuriousService {
 
   async getPrisonerSupportNeeds(prisonNumber: string, username: string): Promise<PrisonerSupportNeeds> {
     const systemToken = await this.hmppsAuthClient.getSystemClientToken(username)
+    const prisonNamesById = await this.prisonService.getAllPrisonNamesById(username)
 
     try {
       const learnerProfiles = await this.getLearnerProfile(prisonNumber, systemToken)
-
-      return toPrisonerSupportNeeds(learnerProfiles)
+      return toPrisonerSupportNeeds(learnerProfiles, prisonNamesById)
     } catch (error) {
       logger.error(`Error retrieving support needs data from Curious: ${JSON.stringify(error)}`)
-      return { problemRetrievingData: true } as PrisonerSupportNeeds
+      return { problemRetrievingData: true, healthAndSupportNeeds: [] }
     }
   }
 
@@ -131,7 +131,7 @@ export default class CuriousService {
     } catch (error) {
       if (error.status === 404) {
         logger.info(`No learner profile data found for prisoner [${prisonNumber}] in Curious`)
-        return undefined
+        return []
       }
       throw error
     }

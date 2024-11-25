@@ -4,6 +4,11 @@ import type { LearnerProfile } from 'curiousApiClient'
 import toPrisonerSupportNeeds from './prisonerSupportNeedsMapper'
 
 describe('prisonerSupportNeedsMapper', () => {
+  const examplePrisonNamesById = new Map([
+    ['DNI', 'Doncaster (HMP)'],
+    ['MDI', 'Moorland (HMP & YOI)'],
+  ])
+
   it('should map to SupportNeeds', () => {
     // Given
     const learnerProfile: Array<LearnerProfile> = [
@@ -34,7 +39,7 @@ describe('prisonerSupportNeedsMapper', () => {
       healthAndSupportNeeds: [
         {
           prisonId: 'MDI',
-          prisonName: 'MOORLAND (HMP & YOI)',
+          prisonName: 'Moorland (HMP & YOI)',
           rapidAssessmentDate: startOfDay(parseISO('2022-05-18')),
           inDepthAssessmentDate: startOfDay(parseISO('2022-06-01')),
           primaryLddAndHealthNeeds: 'Hearing impairment',
@@ -43,7 +48,7 @@ describe('prisonerSupportNeedsMapper', () => {
         },
         {
           prisonId: 'DNI',
-          prisonName: 'DONCASTER (HMP)',
+          prisonName: 'Doncaster (HMP)',
           rapidAssessmentDate: undefined,
           inDepthAssessmentDate: undefined,
           primaryLddAndHealthNeeds: null,
@@ -54,7 +59,7 @@ describe('prisonerSupportNeedsMapper', () => {
     }
 
     // When
-    const supportNeeds = toPrisonerSupportNeeds(learnerProfile)
+    const supportNeeds = toPrisonerSupportNeeds(learnerProfile, examplePrisonNamesById)
 
     // Then
     expect(supportNeeds).toEqual(expectedSupportNeeds)

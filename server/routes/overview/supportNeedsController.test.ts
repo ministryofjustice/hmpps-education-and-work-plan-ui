@@ -1,16 +1,13 @@
 import { Request, Response } from 'express'
 import aValidPrisonerSummary from '../../testsupport/prisonerSummaryTestDataBuilder'
 import aValidPrisonerSupportNeeds from '../../testsupport/supportNeedsTestDataBuilder'
-import PrisonService from '../../services/prisonService'
 import SupportNeedsController from './supportNeedsController'
 
 jest.mock('../../services/curiousService')
 jest.mock('../../services/prisonService')
 
 describe('supportNeedsController', () => {
-  const prisonService = new PrisonService(null, null, null) as jest.Mocked<PrisonService>
-
-  const controller = new SupportNeedsController(prisonService)
+  const controller = new SupportNeedsController()
 
   const prisonNumber = 'A1234GC'
   const prisonerSummary = aValidPrisonerSummary(prisonNumber)
@@ -41,10 +38,6 @@ describe('supportNeedsController', () => {
     const expectedTab = 'support-needs'
     req.params.tab = expectedTab
 
-    const prisonId = 'MDI'
-
-    prisonService.getAllPrisonNamesById.mockResolvedValue(new Map([[prisonId, 'Moorland (HMP & YOI)']]))
-
     const expectedView = {
       prisonerSummary,
       tab: expectedTab,
@@ -57,6 +50,5 @@ describe('supportNeedsController', () => {
 
     // Then
     expect(res.render).toHaveBeenCalledWith('pages/overview/index', expectedView)
-    expect(prisonService.getAllPrisonNamesById).toHaveBeenCalledWith('a-dps-user')
   })
 })

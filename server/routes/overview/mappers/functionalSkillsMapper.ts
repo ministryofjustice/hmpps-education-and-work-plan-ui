@@ -6,33 +6,33 @@ const toFunctionalSkills = (
   learnerProfiles: Array<LearnerProfile>,
   prisonNumber: string,
   prisonNamesById: Map<string, string>,
-): FunctionalSkills => {
-  return {
-    problemRetrievingData: false,
-    assessments: learnerProfiles?.flatMap(learnerProfile =>
-      (learnerProfile.qualifications as Array<AssemmentDto>).map(assessment =>
-        toAssessment(learnerProfile.establishmentId, assessment, prisonNamesById),
-      ),
+): FunctionalSkills => ({
+  problemRetrievingData: false,
+  assessments: learnerProfiles.flatMap(learnerProfile =>
+    (learnerProfile.qualifications as Array<AssemmentDto>).map(assessment =>
+      toAssessment(learnerProfile.establishmentId, assessment, prisonNamesById),
     ),
-    prisonNumber,
-  }
-}
+  ),
+  prisonNumber,
+})
 
-const toAssessment = (prisonId: string, assessment: AssemmentDto, prisonNamesById: Map<string, string>): Assessment => {
-  return {
-    prisonId,
-    prisonName: prisonNamesById.get(prisonId),
-    type: toAssessmentTypeOrNull(assessment.qualificationType),
-    grade: assessment.qualificationGrade,
-    assessmentDate: dateOrNull(assessment.assessmentDate),
-  } as Assessment
-}
+const toAssessment = (
+  prisonId: string,
+  assessment: AssemmentDto,
+  prisonNamesById: Map<string, string>,
+): Assessment => ({
+  prisonId,
+  prisonName: prisonNamesById.get(prisonId),
+  type: toAssessmentType(assessment.qualificationType),
+  grade: assessment.qualificationGrade,
+  assessmentDate: dateOrNull(assessment.assessmentDate),
+})
 
 const dateOrNull = (value: string): Date | undefined => {
   return value ? startOfDay(parseISO(value)) : undefined
 }
 
-const toAssessmentTypeOrNull = (qualificationType: string): string | undefined => {
+const toAssessmentType = (qualificationType: string): 'ENGLISH' | 'MATHS' | 'DIGITAL_LITERACY' => {
   switch (qualificationType) {
     case 'English': {
       return 'ENGLISH'

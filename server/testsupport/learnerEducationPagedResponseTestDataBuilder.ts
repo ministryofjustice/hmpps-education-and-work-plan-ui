@@ -1,5 +1,5 @@
+import { format, startOfToday, sub } from 'date-fns'
 import type { LearnerEductionPagedResponse } from 'curiousApiClient'
-import moment from 'moment'
 import {
   aValidEnglishLearnerEducation,
   aValidMathsLearnerEducation,
@@ -14,10 +14,7 @@ const learnerEducationPagedResponse = (prisonNumber = 'A1234BC'): LearnerEductio
   const completedWoodworkCourseInLast12Months = aValidWoodWorkingLearnerEducation(prisonNumber)
   completedWoodworkCourseInLast12Months.completionStatus =
     'The learner has completed the learning activities leading to the learning aim'
-  completedWoodworkCourseInLast12Months.learningActualEndDate = moment()
-    .subtract(3, 'months')
-    .utc()
-    .format('YYYY-MM-DD')
+  completedWoodworkCourseInLast12Months.learningActualEndDate = format(sub(startOfToday(), { months: 3 }), 'yyyy-MM-dd')
   const inProgressEnglishCourse = aValidEnglishLearnerEducation(prisonNumber)
   const withdrawnMathsCourse = aValidMathsLearnerEducation(prisonNumber)
   const temporarilyWithdrawnMathsCourse = aValidMathsLearnerEducation(prisonNumber)
