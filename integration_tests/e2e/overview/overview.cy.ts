@@ -218,4 +218,25 @@ context('Prisoner Overview page - Common functionality for both pre and post ind
     // Then
     Page.verifyOnPage(Error404Page)
   })
+
+  describe('API timeout tests - these are slow tests!', () => {
+    it('should display Curious unavailable message given Curious has timeout errors when getting Functional Skills and In Prison Courses', () => {
+      // Given
+      cy.signIn()
+      cy.task('stubLearnerProfileConnectionTimeoutError')
+      cy.task('stubLearnerEducationConnectionTimeoutError')
+
+      // When
+      cy.visit(`/plan/${prisonNumber}/view/overview`)
+
+      // Then
+      const overviewPage = Page.verifyOnPage(OverviewPage)
+      overviewPage //
+        .isForPrisoner(prisonNumber)
+        .activeTabIs('Overview')
+        .hasNoFunctionalSkillsTableDisplayed()
+        .hasNoCoursesTableDisplayed()
+        .hasCuriousUnavailableMessageDisplayed()
+    })
+  })
 })
