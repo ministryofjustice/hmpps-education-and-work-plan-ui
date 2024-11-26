@@ -31,7 +31,6 @@ generic-service:
     ACTIVE_AGENCIES: 'BLI, BXI, BZI, RSI, MDI, WDI, WSI, ONI, SKI, SWI, WTI'
 
     REVIEWS_PRISONS_ENABLED: "BXI, WDI"
-    SESSIONS_HISTORY_ENABLED: "false"
 
   allowlist:
     uservision-accessibility-testers: 5.181.59.114/32
