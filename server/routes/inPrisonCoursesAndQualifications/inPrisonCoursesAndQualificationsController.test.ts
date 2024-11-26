@@ -98,7 +98,6 @@ describe('inPrisonCoursesAndQualificationsController', () => {
         completedCourses: [completedCourse],
         inProgressCourses: [inProgressCourse],
         withdrawnCourses: [withdrawnCourse, temporarilyWithdrawnCourse],
-        showServiceOnboardingBanner: false,
       }
 
       // When

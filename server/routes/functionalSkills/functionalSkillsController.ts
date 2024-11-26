@@ -8,7 +8,7 @@ export default class FunctionalSkillsController {
   constructor(private readonly prisonService: PrisonService) {}
 
   getFunctionalSkillsView: RequestHandler = async (req, res, next): Promise<void> => {
-    const { prisonerSummary, showServiceOnboardingBanner } = res.locals
+    const { prisonerSummary } = res.locals
 
     const functionalSkillsFromCurious = res.locals.prisonerFunctionalSkills
     const allAssessments = this.hasSomeAssessments(functionalSkillsFromCurious)
@@ -26,7 +26,6 @@ export default class FunctionalSkillsController {
       englishSkills,
       mathsSkills,
       digitalSkills,
-      showServiceOnboardingBanner,
     )
     res.render('pages/functionalSkills/index', { ...view.renderArgs })
   }

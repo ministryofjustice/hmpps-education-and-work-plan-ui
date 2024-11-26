@@ -7,7 +7,6 @@ export default class FunctionalSkillsView {
     private readonly englishSkills: Array<Assessment>,
     private readonly mathsSkills: Array<Assessment>,
     private readonly digitalSkills: Array<Assessment>,
-    private readonly showServiceOnboardingBanner: boolean,
   ) {}
 
   get renderArgs(): {
@@ -16,7 +15,6 @@ export default class FunctionalSkillsView {
     englishSkills: Array<Assessment>
     mathsSkills: Array<Assessment>
     digitalSkills: Array<Assessment>
-    showServiceOnboardingBanner: boolean
   } {
     return {
       prisonerSummary: this.prisonerSummary,
@@ -24,7 +22,6 @@ export default class FunctionalSkillsView {
       englishSkills: this.englishSkills,
       mathsSkills: this.mathsSkills,
       digitalSkills: this.digitalSkills,
-      showServiceOnboardingBanner: this.showServiceOnboardingBanner,
     }
   }
 }
