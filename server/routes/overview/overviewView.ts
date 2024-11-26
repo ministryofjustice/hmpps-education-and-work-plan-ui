@@ -1,4 +1,4 @@
-import type { FunctionalSkills, InPrisonCourseRecords, PrisonerSummary } from 'viewModels'
+import type { ActionPlanReviews, FunctionalSkills, InPrisonCourseRecords, PrisonerSummary } from 'viewModels'
 import dateComparator from '../dateComparator'
 
 type RenderArgs = {
@@ -6,6 +6,7 @@ type RenderArgs = {
   prisonerSummary: PrisonerSummary
   functionalSkills: FunctionalSkills
   inPrisonCourses: InPrisonCourseRecords
+  actionPlanReviews: ActionPlanReviews
   isPostInduction: boolean
   lastUpdatedBy: string | null
   lastUpdatedDate: Date | null
@@ -23,6 +24,7 @@ export default class OverviewView {
     private readonly prisonerSummary: PrisonerSummary,
     private readonly functionalSkills: FunctionalSkills,
     private readonly inPrisonCourses: InPrisonCourseRecords,
+    private readonly actionPlanReviews: ActionPlanReviews,
     private readonly isPostInduction: boolean,
     private readonly goalData: {
       lastUpdatedBy: string | null
@@ -61,6 +63,7 @@ export default class OverviewView {
       prisonerSummary: this.prisonerSummary,
       functionalSkills: this.functionalSkills,
       inPrisonCourses: this.inPrisonCourses,
+      actionPlanReviews: this.actionPlanReviews,
       isPostInduction: this.isPostInduction,
       lastUpdatedBy: this.goalData.lastUpdatedBy,
       lastUpdatedDate: this.goalData.lastUpdatedDate,

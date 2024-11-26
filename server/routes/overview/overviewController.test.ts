@@ -7,6 +7,7 @@ import { aValidGoalResponse } from '../../testsupport/actionPlanResponseTestData
 import GoalStatusValue from '../../enums/goalStatusValue'
 import EducationAndWorkPlanService from '../../services/educationAndWorkPlanService'
 import OverviewController from './overviewController'
+import aValidActionPlanReviews from '../../testsupport/actionPlanReviewsTestDataBuilder'
 
 jest.mock('../../services/inductionService')
 jest.mock('../../services/educationAndWorkPlanService')
@@ -43,6 +44,8 @@ describe('overviewController', () => {
     assessments: [{ type: 'ENGLISH' }, { type: 'MATHS' }],
   } as FunctionalSkills
 
+  const actionPlanReviews = aValidActionPlanReviews()
+
   const req = {
     session: {},
     user: { username },
@@ -54,6 +57,7 @@ describe('overviewController', () => {
       prisonerSummary,
       curiousInPrisonCourses: inPrisonCourses,
       prisonerFunctionalSkills: functionalSkillsFromCurious,
+      actionPlanReviews,
     },
   } as unknown as Response
   const next = jest.fn()
@@ -97,6 +101,7 @@ describe('overviewController', () => {
       prisonerSummary,
       functionalSkills: functionalSkillsFromCurious,
       inPrisonCourses,
+      actionPlanReviews,
       isPostInduction: true,
       noGoals: false,
       goalCounts: {
@@ -152,6 +157,7 @@ describe('overviewController', () => {
       prisonerSummary,
       functionalSkills: functionalSkillsFromCurious,
       inPrisonCourses: res.locals.curiousInPrisonCourses,
+      actionPlanReviews,
       isPostInduction: false,
       noGoals: true,
       goalCounts: {
@@ -207,6 +213,7 @@ describe('overviewController', () => {
       prisonerSummary,
       functionalSkills: functionalSkillsFromCurious,
       inPrisonCourses: res.locals.curiousInPrisonCourses,
+      actionPlanReviews,
       isPostInduction: false,
       noGoals: true,
       goalCounts: {

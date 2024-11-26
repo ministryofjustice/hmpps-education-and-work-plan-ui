@@ -8,7 +8,7 @@ import { aValidGoal } from '../../testsupport/actionPlanTestDataBuilder'
 
 jest.mock('../../services/educationAndWorkPlanService')
 
-describe('ViewGoalsController', () => {
+describe('retrieveAllGoalsForPrisoner', () => {
   const educationAndWorkPlanService = new EducationAndWorkPlanService(
     null,
     null,
@@ -20,19 +20,7 @@ describe('ViewGoalsController', () => {
   const prisonerSummary = aValidPrisonerSummary(prisonNumber)
 
   let req: Request
-  const res = {
-    render: jest.fn(),
-    locals: {
-      allGoalsForPrisoner: {
-        goals: {
-          ACTIVE: [],
-          ARCHIVED: [],
-          COMPLETED: [],
-        },
-        problemRetrievingData: false,
-      },
-    },
-  } as unknown as Response
+  let res: Response
   const next = jest.fn()
 
   beforeEach(() => {
@@ -41,13 +29,18 @@ describe('ViewGoalsController', () => {
       user: { username },
       params: { prisonNumber },
     } as unknown as Request
+    res = {
+      render: jest.fn(),
+      locals: {},
+    } as unknown as Response
+    jest.resetAllMocks()
   })
 
   it('should retrieve all prisoner goals and store on res.locals', async () => {
     // Given
     const requestHandler = retrieveAllGoalsForPrisoner(educationAndWorkPlanService)
 
-    const goals: PrisonerGoals = {
+    const expectedGoals: PrisonerGoals = {
       prisonNumber,
       goals: {
         ACTIVE: [aValidGoal()],
@@ -56,14 +49,13 @@ describe('ViewGoalsController', () => {
       },
       problemRetrievingData: false,
     }
-    educationAndWorkPlanService.getAllGoalsForPrisoner.mockResolvedValue(goals)
+    educationAndWorkPlanService.getAllGoalsForPrisoner.mockResolvedValue(expectedGoals)
 
     // When
     await requestHandler(req, res, next)
 
     // Then
-    expect(res.locals.allGoalsForPrisoner).toEqual(goals)
-    expect(res.locals.allGoalsForPrisoner.problemRetrievingData).toEqual(false)
+    expect(res.locals.allGoalsForPrisoner).toEqual(expectedGoals)
     expect(educationAndWorkPlanService.getAllGoalsForPrisoner).toHaveBeenCalledWith(prisonNumber, username)
     expect(next).toHaveBeenCalled()
   })

@@ -14,6 +14,7 @@ import ViewGoalsController from './viewGoalsController'
 import OverviewController from './overviewController'
 import retrieveCuriousFunctionalSkills from '../routerRequestHandlers/retrieveCuriousFunctionalSkills'
 import retrieveCuriousSupportNeeds from '../routerRequestHandlers/retrieveCuriousSupportNeeds'
+import retrieveActionPlanReviews from '../routerRequestHandlers/retrieveActionPlanReviews'
 
 /**
  * Route definitions for the pages relating to the main Overview page
@@ -29,6 +30,7 @@ export default (router: Router, services: Services) => {
   router.use('/plan/:prisonNumber/view/*', [removeFormDataFromSession])
 
   router.get('/plan/:prisonNumber/view/overview', [
+    retrieveActionPlanReviews(services.reviewService),
     retrieveCuriousFunctionalSkills(services.curiousService),
     retrieveCuriousInPrisonCourses(services.curiousService),
     asyncMiddleware(overviewController.getOverviewView),
