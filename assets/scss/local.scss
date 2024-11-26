@@ -49,6 +49,17 @@
   }
 }
 
+// Custom tag and container for the sessions data
+
+.govuk-tag.govuk-tag--custom-width {
+   white-space: nowrap; 
+   padding-right: 17px;
+}
+
+.sessions-container {
+  display: flex;
+  align-items: center;
+}
 
 // Aligning goal icon in actions card on overview page
 

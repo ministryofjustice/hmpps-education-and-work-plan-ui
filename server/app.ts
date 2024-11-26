@@ -50,6 +50,13 @@ export default function createApp(services: Services): express.Application {
   app.use(successMessageMiddleware)
   app.use(errorMessageMiddleware)
 
+  app.get('*', async (req, res, next) => {
+    const { user } = res.locals
+    const { activeCaseLoadId } = user.activeCaseLoadId
+    res.locals.reviewJourneyEnabledForPrison = config.featureToggles.reviewJourneyEnabledForPrison(activeCaseLoadId)
+    next()
+  })
+
   app.get('*', getFrontendComponents(services))
 
   app.get('/accessibility-statement', async (req, res, next) => {
