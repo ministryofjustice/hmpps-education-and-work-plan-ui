@@ -3,23 +3,14 @@ import InPrisonCoursesAndQualificationsView from './inPrisonCoursesAndQualificat
 
 export default class InPrisonCoursesAndQualificationsController {
   getInPrisonCoursesAndQualificationsViewForPlp: RequestHandler = async (req, res): Promise<void> => {
-    const { prisonerSummary, curiousInPrisonCourses, showServiceOnboardingBanner } = res.locals
-    const view = new InPrisonCoursesAndQualificationsView(
-      prisonerSummary,
-      curiousInPrisonCourses,
-      showServiceOnboardingBanner,
-    )
+    const { prisonerSummary, curiousInPrisonCourses } = res.locals
+    const view = new InPrisonCoursesAndQualificationsView(prisonerSummary, curiousInPrisonCourses)
     res.render('pages/inPrisonCoursesAndQualifications/plpTemplate', { ...view.renderArgs })
   }
 
   getInPrisonCoursesAndQualificationsViewForDps: RequestHandler = async (req, res): Promise<void> => {
     const { prisonerSummary, curiousInPrisonCourses } = res.locals
-    const showServiceOnboardingBanner = false
-    const view = new InPrisonCoursesAndQualificationsView(
-      prisonerSummary,
-      curiousInPrisonCourses,
-      showServiceOnboardingBanner,
-    )
+    const view = new InPrisonCoursesAndQualificationsView(prisonerSummary, curiousInPrisonCourses)
     res.render('pages/inPrisonCoursesAndQualifications/dpsTemplate', { ...view.renderArgs })
   }
 }

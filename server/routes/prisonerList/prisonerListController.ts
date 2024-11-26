@@ -13,7 +13,6 @@ export default class PrisonerListController {
 
   getPrisonerListView: RequestHandler = async (req, res, next): Promise<void> => {
     const prisonId = res.locals.user.activeCaseLoadId
-    const { showServiceOnboardingBanner } = res.locals
 
     try {
       const pagedPrisonerSearchSummary = await this.getPagedPrisonerSearchSummaryForAllPrisoners(prisonId, req.user)
@@ -47,7 +46,6 @@ export default class PrisonerListController {
         statusFilter || '',
         sortOptions.sortBy.toString(),
         sortOptions.sortOrder.toString(),
-        showServiceOnboardingBanner,
       )
 
       return res.render('pages/prisonerList/index', { ...view.renderArgs })

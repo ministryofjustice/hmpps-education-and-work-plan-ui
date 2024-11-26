@@ -8,7 +8,6 @@ export default class PrisonerListView {
     private readonly statusFilter: string,
     private readonly sortBy: string,
     private readonly sortOrder: string,
-    private readonly showServiceOnboardingBanner: boolean,
   ) {}
 
   get renderArgs(): {
@@ -21,7 +20,6 @@ export default class PrisonerListView {
     results: Results
     previousPage: Paging
     nextPage: Paging
-    showServiceOnboardingBanner: boolean
   } {
     return {
       currentPageOfRecords: this.pagedPrisonerSearchSummary.getCurrentPage(),
@@ -51,7 +49,6 @@ export default class PrisonerListView {
         sortBy: this.sortBy,
         sortOrder: this.sortOrder,
       }),
-      showServiceOnboardingBanner: this.showServiceOnboardingBanner,
     }
   }
 }
