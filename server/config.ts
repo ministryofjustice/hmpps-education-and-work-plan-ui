@@ -191,6 +191,5 @@ export default {
         .map(id => id.trim())
       return enabledPrisons.includes(prisonId) || enabledPrisons.includes('***')
     },
-    sessionsHistoryEnabled: toBoolean(get('SESSIONS_HISTORY_ENABLED', false)),
   },
 }
