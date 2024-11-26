@@ -24,5 +24,7 @@ declare namespace Cypress {
     })
 
     createReviewToArriveOnCheckYourAnswers()
+
+    createExemption()
   }
 }

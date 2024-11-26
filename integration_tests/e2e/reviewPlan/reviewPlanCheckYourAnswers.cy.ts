@@ -1,6 +1,7 @@
 /**
  * Cypress tests that test the Change links on the Check Your Answers page for Review Plan
  */
+import OverviewPage from '../../pages/overview/OverviewPage'
 import Page from '../../pages/page'
 import ReviewCompletePage from '../../pages/reviewPlan/ReviewCompletePage'
 import ReviewNotePage from '../../pages/reviewPlan/ReviewNotePage'
@@ -8,6 +9,7 @@ import ReviewPlanCheckYourAnswersPage from '../../pages/reviewPlan/ReviewPlanChe
 import WhoCompletedReviewPage from '../../pages/reviewPlan/WhoCompletedReviewPage'
 
 context(`Change links on the Check Your Answers page when creating a review`, () => {
+  const prisonNumber = 'G6115VJ'
   beforeEach(() => {
     cy.task('stubSignInAsUserWithEditAuthority')
     cy.signIn()
@@ -44,5 +46,16 @@ context(`Change links on the Check Your Answers page when creating a review`, ()
 
     // Then
     Page.verifyOnPage(ReviewCompletePage)
+  })
+
+  it('should redirect to overview page given user tries to navigate directly to Review Notes screen - ie. navigate out of sequence', () => {
+    // Given
+    cy.signIn()
+
+    // When
+    cy.visit(`/plan/${prisonNumber}/review/notes`)
+
+    // Then
+    Page.verifyOnPage(OverviewPage)
   })
 })

@@ -7,6 +7,7 @@ import ReviewCompletePage from '../../pages/reviewPlan/ReviewCompletePage'
 import ReviewPlanCheckYourAnswersPage from '../../pages/reviewPlan/ReviewPlanCheckYourAnswersPage'
 
 context(`Go to learning and work progress plan from review complete page`, () => {
+  const prisonNumber = 'G6115VJ'
   beforeEach(() => {
     cy.task('stubSignInAsUserWithEditAuthority')
     cy.signIn()
@@ -21,6 +22,17 @@ context(`Go to learning and work progress plan from review complete page`, () =>
 
     // Then
     Page.verifyOnPage(ReviewCompletePage).submitPage()
+    Page.verifyOnPage(OverviewPage)
+  })
+
+  it(`should redirect to the 'Overview' page given user tries to navigate directly to 'Review Complete' page - ie. navigate out of sequence`, () => {
+    // Given
+    cy.signIn()
+
+    // When
+    cy.visit(`/plan/${prisonNumber}/review/complete`)
+
+    // Then
     Page.verifyOnPage(OverviewPage)
   })
 })
