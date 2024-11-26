@@ -1,0 +1,92 @@
+{# Nunjucks template to display a summary card of the prisoner's eduction and training
+
+Data supplied to this template:
+  * prisonerSummary - object with firstName and lastName
+  * functionalSkills: {
+  *   problemRetrievingData: boolean
+  *   mostRecentAssessments: Array<Assessment>
+  * }
+  * inPrisonCourses: {
+  *   problemRetrievingData: boolean
+  *   coursesCompletedInLast12Months: Array<InPrisonCourse>
+  *   hasWithdrawnOrInProgressCourses: boolean
+  *   hasCoursesCompletedMoreThan12MonthsAgo: boolean
+  * }
+
+#}
+
+<div class="govuk-summary-card">
+  <div class="govuk-summary-card__title-wrapper">
+    <h2 class="govuk-summary-card__title govuk-!-font-size-24">Education and training</h2>
+  </div>
+  <div class="govuk-summary-card__content">
+    {% if not functionalSkills.problemRetrievingData %}
+      <h3 class="govuk-heading-s" data-qa="functional-skills-heading">Functional skills initial assessment scores</h3>
+      <p class="govuk-hint" data-qa="functional-skills-hint">Information from Curious. These scores are from a person's induction assessment.<br/>For recent functional skills qualifications, go to courses and qualifications.</p>
+
+      <table class="govuk-table govuk-!-margin-bottom-0" data-qa="functional-skills-table">
+        <thead class="govuk-table__head govuk-visually-hidden">
+          <tr class="govuk-table__row">
+            <th scope="col" class="govuk-table__header">Skill and assessment date</th>
+            <th scope="col" class="govuk-table__header">Assessment level</th>
+          </tr>
+        </thead>
+        <tbody class="govuk-table__body" data-qa="functional-skills-table-body">
+        {% for skill in functionalSkills.mostRecentAssessments %}
+          <tr class="govuk-table__row {% if loop.last %}last-row-no-border{% endif %}">
+            <td class="govuk-table__cell">
+              <span class="govuk-body">{{skill.type | formatFunctionalSkillType }} {{ skill.grade }}</span>
+            </td>
+            <td class="govuk-table__cell">
+              {% if skill.assessmentDate %}
+                <span class="govuk-hint">Assessed on {{ skill.assessmentDate | formatDate('D MMMM YYYY') }}, {{ skill.prisonName }}</span>
+              {% else %}
+                <span class="govuk-hint">No functional skill assessment scores recorded in Curious</span>
+              {% endif %}
+            </td>
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <h3 class="govuk-heading-s" data-qa="curious-unavailable-message">We cannot show these details from Curious right now</h3>
+      <p class="govuk-body">Reload the page or try again later. Other parts of this service may still be available.</p>
+    {% endif %}
+
+    <h3 class="govuk-heading-s govuk-!-padding-top-7" data-qa="completed-courses-heading">Courses and qualifications completed in the last 12 months</h3>
+    <p class="govuk-hint" data-qa="completed-courses-hint">Information from Curious. This only includes educational courses. Contact the local education team to find out more.</p>
+    {% if not inPrisonCourses.problemRetrievingData %}
+      {% if inPrisonCourses.coursesCompletedInLast12Months.length > 0 %}
+        <table class="govuk-table" data-qa="completed-in-prison-courses-in-last-12-months-table">
+          <tbody class="govuk-table__body" data-qa="completed-courses-table-body">
+          {% for completedCourse in inPrisonCourses.coursesCompletedInLast12Months %}
+            <tr class="govuk-table__row {% if loop.last %}last-row-no-border{% endif %}">
+              <td class="govuk-table__cell">
+                <span class="govuk-body" data-qa="completed-course-name">{{ completedCourse.courseName }}</span>
+              </td>
+              <td class="govuk-table__cell">
+                <span class="govuk-hint" data-qa="course-completion-date">Completed on {{ completedCourse.courseCompletionDate | formatDate('D MMMM YYYY') }}</span>
+              </td>
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      {% elif inPrisonCourses.hasCoursesCompletedMoreThan12MonthsAgo %}
+        <p class="govuk-body govuk-!-margin-top-5" data-qa="no-courses-completed-in-last-12-months-message">{{ prisonerSummary.firstName }} {{ prisonerSummary.lastName }} has no courses and qualifications completed in the last 12 months.</p>
+      {% elif inPrisonCourses.hasWithdrawnOrInProgressCourses %}
+        <p class="govuk-body govuk-!-margin-top-5" data-qa="no-courses-completed-yet-message">{{ prisonerSummary.firstName }} {{ prisonerSummary.lastName }} has no courses and qualifications completed yet.</p>
+      {% else %}
+        <p class="govuk-body govuk-!-margin-top-5" data-qa="no-courses-recorded-message">{{ prisonerSummary.firstName }} {{ prisonerSummary.lastName }} has no courses and qualifications recorded in Curious.</p>
+      {% endif %}
+    {% else %}
+      <h3 class="govuk-heading-s" data-qa="curious-unavailable-message">We cannot show these details from Curious right now</h3>
+      <p class="govuk-body">Reload the page or try again later. Other parts of this service may still be available.</p>
+    {% endif %}
+
+    <p class="govuk-body govuk-!-margin-top-2 govuk-!-display-none-print">
+      <a class="govuk-link" href="/plan/{{ prisonerSummary.prisonNumber }}/view/education-and-training" data-qa="view-education-and-training-tab-button">
+        View all education and training<span class="govuk-visually-hidden"> functional skills</span>
+      </a>
+    </p>
+  </div>
+</div>

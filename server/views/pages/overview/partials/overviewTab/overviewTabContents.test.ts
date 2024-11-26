@@ -1,10 +1,9 @@
 import nunjucks from 'nunjucks'
 import * as cheerio from 'cheerio'
+import { parseISO } from 'date-fns'
 import aValidPrisonerSummary from '../../../../../testsupport/prisonerSummaryTestDataBuilder'
 import formatDate from '../../../../../filters/formatDateFilter'
-import formatIsAccreditedFilter from '../../../../../filters/formatIsAccreditedFilter'
 import formatFunctionalSkillTypeFilter from '../../../../../filters/formatFunctionalSkillTypeFilter'
-import { aValidGoalWithUpdatedAtData } from '../../../../../testsupport/actionPlanTestDataBuilder'
 
 const njkEnv = nunjucks.configure([
   'node_modules/govuk-frontend/govuk/',
@@ -17,20 +16,81 @@ const njkEnv = nunjucks.configure([
 ])
 
 njkEnv.addFilter('formatDate', formatDate)
-njkEnv.addFilter('formatIsAccredited', formatIsAccreditedFilter)
 njkEnv.addFilter('formatFunctionalSkillType', formatFunctionalSkillTypeFilter)
 
 const prisonerSummary = aValidPrisonerSummary()
 const template = 'overviewTabContents.njk'
 
+const modelDataForIncludedTemplates = {
+  prisonerSummary,
+  prisonerGoals: {
+    problemRetrievingData: false,
+    counts: {
+      totalGoals: 6,
+      activeGoals: 3,
+      archivedGoals: 2,
+      completedGoals: 1,
+    },
+    lastUpdatedBy: 'Elaine Benes',
+    lastUpdatedDate: new Date('2024-01-21T13:42:01.401Z'),
+    lastUpdatedAtPrisonName: 'Brixton (HMP)',
+  },
+  functionalSkills: {
+    problemRetrievingData: false,
+    mostRecentAssessments: [
+      {
+        prisonId: 'BXI',
+        prisonName: 'Brixton (HMP)',
+        type: 'MATHS',
+        grade: 'Level 1',
+        assessmentDate: parseISO('2023-01-15T00:00:00Z'),
+      },
+      {
+        type: 'ENGLISH',
+      },
+    ],
+  },
+  inPrisonCourses: {
+    problemRetrievingData: false,
+    coursesCompletedInLast12Months: [
+      {
+        prisonId: 'BXI',
+        prisonName: 'Brixton (HMP)',
+        courseName: 'Basic English',
+        courseCode: 'ENG_01',
+        isAccredited: true,
+        courseStartDate: parseISO('2022-12-01T00:00:00Z'),
+        courseCompletionDate: parseISO('2023-06-15T00:00:00Z'),
+        courseStatus: 'COMPLETED',
+        grade: 'Pass',
+        source: 'CURIOUS',
+      },
+    ],
+    hasWithdrawnOrInProgressCourses: false,
+    hasCoursesCompletedMoreThan12MonthsAgo: false,
+  },
+  sessionHistory: {
+    problemRetrievingData: false,
+    counts: {
+      totalSessions: 1,
+      reviewSessions: 0,
+      inductionSessions: 1,
+    },
+    lastSessionConductedBy: 'Elaine Benes',
+    lastSessionConductedAt: new Date('2024-01-21T13:42:01.401Z'),
+    lastSessionConductedAtPrison: 'Brixton (HMP)',
+  },
+}
+
 describe('overviewTabContents', () => {
-  it('should render the complete induction banner when there are goals but no induction', () => {
+  it('should render the complete induction banner when the prisoner has not had an induction and the user has editor authority', () => {
     // Given
     const pageViewModel = {
-      prisonerSummary,
-      isPostInduction: false,
-      problemRetrievingData: false,
-      goalCounts: { activeCount: 1, completedCount: 0, archivedCount: 1 },
+      ...modelDataForIncludedTemplates,
+      induction: {
+        problemRetrievingData: false,
+        isPostInduction: false,
+      },
       hasEditAuthority: true,
     }
 
@@ -40,22 +100,20 @@ describe('overviewTabContents', () => {
 
     // Then
     expect($('[data-qa="pre-induction-overview"]').length).toEqual(1)
-    expect($('[data-qa="notification-banner-heading"]').text().replace(/\s+/g, ' ').trim()).toContain(
-      'Create goals and add education, work, skills, and interests to make a progress plan now.',
-    )
     expect($('.govuk-notification-banner__link').attr('href')).toEqual(
       `/prisoners/${prisonerSummary.prisonNumber}/create-induction/hoping-to-work-on-release`,
     )
   })
 
-  it('should render the complete induction banner when there are no goals and no induction', () => {
+  it('should not render the complete induction banner when the prisoner has not had an induction but the user does not have editor authority', () => {
     // Given
     const pageViewModel = {
-      prisonerSummary,
-      isPostInduction: false,
-      problemRetrievingData: false,
-      goalCounts: { activeCount: 0, completedCount: 0, archivedCount: 0 },
-      hasEditAuthority: true,
+      ...modelDataForIncludedTemplates,
+      induction: {
+        problemRetrievingData: false,
+        isPostInduction: false,
+      },
+      hasEditAuthority: false,
     }
 
     // When
@@ -63,22 +121,17 @@ describe('overviewTabContents', () => {
     const $ = cheerio.load(content)
 
     // Then
-    expect($('[data-qa="pre-induction-overview"]').length).toEqual(1)
-    expect($('[data-qa="notification-banner-heading"]').text().replace(/\s+/g, ' ').trim()).toContain(
-      'Create goals and add education, work, skills, and interests to make a progress plan now.',
-    )
-    expect($('[data-qa="notification-banner-link"]').attr('href')).toEqual(
-      `/prisoners/${prisonerSummary.prisonNumber}/create-induction/hoping-to-work-on-release`,
-    )
+    expect($('[data-qa="pre-induction-overview"]').length).toEqual(0)
   })
 
-  it('should not render the complete induction banner when there is an induction', () => {
+  it('should not render the complete induction banner when the prisoner has had an induction', () => {
     // Given
     const pageViewModel = {
-      prisonerSummary,
-      isPostInduction: true,
-      problemRetrievingData: false,
-      goalCounts: { activeCount: 2, completedCount: 1, archivedCount: 1 },
+      ...modelDataForIncludedTemplates,
+      induction: {
+        problemRetrievingData: false,
+        isPostInduction: true,
+      },
       hasEditAuthority: true,
     }
 
@@ -88,102 +141,17 @@ describe('overviewTabContents', () => {
 
     // Then
     expect($('[data-qa="pre-induction-overview"]').length).toEqual(0)
-    expect($('[data-qa="notification-banner-heading"]').length).toEqual(0)
-    expect($('[data-qa="notification-banner-link"]').length).toEqual(0)
   })
 
-  it('should render goals summary card correctly', () => {
+  it('should not render the complete induction banner given there was a problem retrieving the induction', () => {
     // Given
     const pageViewModel = {
-      prisonerSummary,
-      isPostInduction: false,
-      problemRetrievingData: false,
-      goalCounts: { activeCount: 3, archivedCount: 2 },
-    }
-
-    // When
-    const content = njkEnv.render(template, pageViewModel)
-    const $ = cheerio.load(content)
-
-    // Then
-    expect($('[data-qa="in-progress-goals-count"]').text().trim()).toEqual('3')
-    expect($('[data-qa="archived-goals-count"]').text().trim()).toEqual('2')
-    expect($('[data-qa="view-in-progress-goals-button"]').attr('href')).toEqual(
-      `/plan/${prisonerSummary.prisonNumber}/view/goals#in-progress-goals`,
-    )
-    expect($('[data-qa="view-archived-goals-button"]').attr('href')).toEqual(
-      `/plan/${prisonerSummary.prisonNumber}/view/goals#archived-goals`,
-    )
-  })
-
-  it('should render last updated by hint text correctly, showing the data for the last updated goal', () => {
-    // Given
-    const goal = {
-      ...aValidGoalWithUpdatedAtData(),
-      updatedByDisplayName: 'Elaine Benes',
-      updatedAt: new Date('2024-01-21T13:42:01.401Z'),
-      updatedAtPrisonName: 'Brixton (HMP)',
-    }
-    const pageViewModel = {
-      prisonerSummary,
-      isPostInduction: false,
-      problemRetrievingData: false,
-      goals: [goal],
-      lastUpdatedBy: goal.updatedByDisplayName,
-      lastUpdatedDate: goal.updatedAt,
-      lastUpdatedAtPrisonName: goal.updatedAtPrisonName,
-    }
-
-    // When
-    const content = njkEnv.render(template, pageViewModel)
-    const $ = cheerio.load(content)
-
-    // Then
-    expect($('[data-qa="goal-last-updated-hint"]').text().trim()).toEqual(
-      'Updated on 21 January 2024 by Elaine Benes, Brixton (HMP)',
-    )
-  })
-
-  it('should render functional skills section if data is available', () => {
-    // Given
-    const pageViewModel = {
-      prisonerSummary,
-      isPostInduction: false,
-      problemRetrievingData: false,
-      functionalSkills: {
-        problemRetrievingData: false,
-        assessments: [{ type: 'Maths', grade: 'Level 1', assessmentDate: '2023-01-15T00:00:00Z' }],
-      },
-      inPrisonCourses: { problemRetrievingData: false },
-      goalCounts: { activeCount: 0, completedCount: 0, archivedCount: 0 },
-    }
-
-    // When
-    const content = njkEnv.render(template, pageViewModel)
-    const $ = cheerio.load(content)
-
-    // Then
-    expect($('[data-qa="functional-skills-table"]').length).toEqual(1)
-    expect($('[data-qa="functional-skills-heading"]').text().trim()).toEqual(
-      'Functional skills initial assessment scores',
-    )
-    expect($('[data-qa="functional-skills-hint"]').text().trim()).toEqual(
-      "Information from Curious. These scores are from a person's induction assessment.For recent functional skills qualifications, go to courses and qualifications.",
-    )
-    expect($('td').first().text().trim()).toContain('Level 1')
-  })
-
-  it('should show "curious unavailable" message when functional skills data cannot be retrieved', () => {
-    // Given
-    const pageViewModel = {
-      prisonerSummary,
-      isPostInduction: false,
-      problemRetrievingData: false,
-      functionalSkills: {
+      ...modelDataForIncludedTemplates,
+      induction: {
         problemRetrievingData: true,
+        isPostInduction: false,
       },
-      inPrisonCourses: { problemRetrievingData: false },
-      goalCounts: { activeCount: 0, completedCount: 0, archivedCount: 0 },
+      hasEditAuthority: true,
     }
 
     // When
@@ -191,79 +159,6 @@ describe('overviewTabContents', () => {
     const $ = cheerio.load(content)
 
     // Then
-    expect($('[data-qa="curious-unavailable-message"]').length).toEqual(1)
-    expect($('[data-qa="curious-unavailable-message"]').text().trim()).toContain(
-      'We cannot show these details from Curious right now',
-    )
-  })
-
-  it('should render completed in-prison courses correctly if data is available', () => {
-    // Given
-    const pageViewModel = {
-      prisonerSummary,
-      isPostInduction: false,
-      problemRetrievingData: false,
-      inPrisonCourses: {
-        problemRetrievingData: false,
-        coursesCompletedInLast12Months: [
-          {
-            courseName: 'Basic English',
-            isAccredited: true,
-            prisonName: 'HMP Brixton',
-            courseCompletionDate: '2023-06-15T00:00:00Z',
-            grade: 'Pass',
-          },
-        ],
-      },
-      goalCounts: { activeCount: 0, completedCount: 0, archivedCount: 0 },
-    }
-
-    // When
-    const content = njkEnv.render(template, pageViewModel)
-    const $ = cheerio.load(content)
-
-    // Then
-    expect($('[data-qa="completed-courses-heading"]').text().trim()).toEqual(
-      'Courses and qualifications completed in the last 12 months',
-    )
-    expect($('[data-qa="completed-courses-hint"]').text().trim()).toEqual(
-      'Information from Curious. This only includes educational courses. Contact the local education team to find out more.',
-    )
-    expect($('[data-qa="completed-in-prison-courses-in-last-12-months-table"]').length).toEqual(1)
-    expect($('[data-qa="completed-course-name"]').text().trim()).toEqual('Basic English')
-    expect($('[data-qa="course-completion-date"]').text().trim()).toEqual('Completed on 15 June 2023')
-  })
-
-  it('should render functional skills and courses and qualifications headings if no data is available', () => {
-    // Given
-    const pageViewModel = {
-      prisonerSummary,
-      isPostInduction: false,
-      problemRetrievingData: false,
-      functionalSkills: {
-        problemRetrievingData: false,
-        assessments: [] as { type: string; grade: string; assessmentDate: string }[],
-      },
-      inPrisonCourses: { problemRetrievingData: false },
-      goalCounts: { activeCount: 0, completedCount: 0, archivedCount: 0 },
-    }
-
-    // When
-    const content = njkEnv.render(template, pageViewModel)
-    const $ = cheerio.load(content)
-
-    // Then
-    expect($('[data-qa="functional-skills-heading"]').text().trim()).toEqual(
-      'Functional skills initial assessment scores',
-    )
-    expect($('[data-qa="functional-skills-hint"]').text().trim()).toEqual(
-      "Information from Curious. These scores are from a person's induction assessment.For recent functional skills qualifications, go to courses and qualifications.",
-    )
-    expect($('[data-qa="completed-courses-heading"]').text().trim()).toEqual(
-      'Courses and qualifications completed in the last 12 months',
-    )
-    expect($('[data-qa="completed-courses-hint"]').text().trim()).toEqual(
-      'Information from Curious. This only includes educational courses. Contact the local education team to find out more.',
-    )
+    expect($('[data-qa="pre-induction-overview"]').length).toEqual(0)
   })
 })
