@@ -160,15 +160,46 @@ describe('reviewService', () => {
       expect(educationAndWorkPlanClient.getActionPlanReviews).toHaveBeenCalledWith(prisonNumber, systemToken)
     })
 
-    it('should not get Action Plan Reviews given educationAndWorkPlanClient returns an error', async () => {
+    it('should get Action Plan Reviews given educationAndWorkPlanClient returns not found error for the Action Plan Reviews', async () => {
       // Given
-      educationAndWorkPlanClient.getActionPlanReviews.mockRejectedValue(Error('Service Unavailable'))
+
+      const educationAndWorkPlanApi404Error = {
+        message: 'Not Found',
+        status: 404,
+        text: { userMessage: `Review Schedule not found for prisoner [${prisonNumber}]` },
+      }
+      educationAndWorkPlanClient.getActionPlanReviews.mockRejectedValue(educationAndWorkPlanApi404Error)
+
+      const expectedActionPlanReviews: ActionPlanReviews = {
+        completedReviews: [],
+        latestReviewSchedule: undefined,
+        problemRetrievingData: false,
+      }
 
       // When
       const actual = await reviewService.getActionPlanReviews(prisonNumber, username)
 
       // Then
-      expect(actual.problemRetrievingData).toEqual(true)
+      expect(actual).toEqual(expectedActionPlanReviews)
+      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
+      expect(educationAndWorkPlanClient.getActionPlanReviews).toHaveBeenCalledWith(prisonNumber, systemToken)
+    })
+
+    it('should not get Action Plan Reviews given educationAndWorkPlanClient returns an error', async () => {
+      // Given
+      educationAndWorkPlanClient.getActionPlanReviews.mockRejectedValue(Error('Service Unavailable'))
+
+      const expectedActionPlanReviews: ActionPlanReviews = {
+        completedReviews: undefined,
+        latestReviewSchedule: undefined,
+        problemRetrievingData: true,
+      }
+
+      // When
+      const actual = await reviewService.getActionPlanReviews(prisonNumber, username)
+
+      // Then
+      expect(actual).toEqual(expectedActionPlanReviews)
       expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
       expect(educationAndWorkPlanClient.getActionPlanReviews).toHaveBeenCalledWith(prisonNumber, systemToken)
     })
