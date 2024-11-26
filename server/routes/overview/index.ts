@@ -21,7 +21,7 @@ import retrieveCuriousSupportNeeds from '../routerRequestHandlers/retrieveCuriou
 export default (router: Router, services: Services) => {
   const overviewController = new OverviewController(services.inductionService, services.educationAndWorkPlanService)
   const timelineController = new TimelineController(services.timelineService)
-  const supportNeedsController = new SupportNeedsController(services.prisonService)
+  const supportNeedsController = new SupportNeedsController()
   const workAndInterestsController = new WorkAndInterestsController()
   const educationAndTrainingController = new EducationAndTrainingController()
   const viewGoalsController = new ViewGoalsController()

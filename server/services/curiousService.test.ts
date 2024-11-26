@@ -1,6 +1,6 @@
+import { startOfDay, startOfToday, sub } from 'date-fns'
 import type { LearnerEductionPagedResponse } from 'curiousApiClient'
 import type { FunctionalSkills, InPrisonCourseRecords, PrisonerSupportNeeds } from 'viewModels'
-import moment from 'moment'
 import CuriousClient from '../data/curiousClient'
 import HmppsAuthClient from '../data/hmppsAuthClient'
 import CuriousService from './curiousService'
@@ -36,6 +36,9 @@ describe('curiousService', () => {
       const systemToken = 'a-system-token'
       hmppsAuthClient.getSystemClientToken.mockResolvedValue(systemToken)
 
+      const prisonNamesById = new Map([['MDI', 'Moorland (HMP & YOI)']])
+      prisonService.getAllPrisonNamesById.mockResolvedValue(prisonNamesById)
+
       const learnerProfiles = [
         {
           ...aValidLearnerProfile(),
@@ -50,7 +53,7 @@ describe('curiousService', () => {
         healthAndSupportNeeds: [
           {
             prisonId: 'MDI',
-            prisonName: 'MOORLAND (HMP & YOI)',
+            prisonName: 'Moorland (HMP & YOI)',
             rapidAssessmentDate: new Date('2022-02-18'),
             inDepthAssessmentDate: new Date('2022-02-18'),
             primaryLddAndHealthNeeds: 'Visual impairment',
@@ -83,10 +86,10 @@ describe('curiousService', () => {
       }
       curiousClient.getLearnerProfile.mockRejectedValue(curiousApiError)
 
-      const expectedSupportNeeds = {
+      const expectedSupportNeeds: PrisonerSupportNeeds = {
         problemRetrievingData: true,
-        healthAndSupportNeeds: undefined,
-      } as PrisonerSupportNeeds
+        healthAndSupportNeeds: [],
+      }
 
       // When
       const actual = await curiousService.getPrisonerSupportNeeds(prisonNumber, username).catch(error => {
@@ -113,10 +116,10 @@ describe('curiousService', () => {
       }
       curiousClient.getLearnerProfile.mockRejectedValue(curiousApi404Error)
 
-      const expectedSupportNeeds = {
+      const expectedSupportNeeds: PrisonerSupportNeeds = {
         problemRetrievingData: false,
-        healthAndSupportNeeds: undefined,
-      } as PrisonerSupportNeeds
+        healthAndSupportNeeds: [],
+      }
 
       // When
       const actual = await curiousService.getPrisonerSupportNeeds(prisonNumber, username).catch(error => {
@@ -144,11 +147,11 @@ describe('curiousService', () => {
       const prisonNamesById = new Map([['MDI', 'Moorland (HMP & YOI)']])
       prisonService.getAllPrisonNamesById.mockResolvedValue(prisonNamesById)
 
-      const expectedFunctionalSkills = {
+      const expectedFunctionalSkills: FunctionalSkills = {
         problemRetrievingData: false,
         assessments: [
           {
-            assessmentDate: moment('2012-02-16').utc().toDate(),
+            assessmentDate: startOfDay('2012-02-16'),
             grade: 'Level 1',
             prisonId: 'MDI',
             prisonName: 'Moorland (HMP & YOI)',
@@ -156,7 +159,7 @@ describe('curiousService', () => {
           },
         ],
         prisonNumber,
-      } as FunctionalSkills
+      }
 
       // When
       const actual = await curiousService.getPrisonerFunctionalSkills(prisonNumber, username)
@@ -181,11 +184,11 @@ describe('curiousService', () => {
       }
       curiousClient.getLearnerProfile.mockRejectedValue(curiousApi404Error)
 
-      const expectedFunctionalSkills = {
+      const expectedFunctionalSkills: FunctionalSkills = {
         problemRetrievingData: false,
-        assessments: undefined,
+        assessments: [],
         prisonNumber,
-      } as FunctionalSkills
+      }
 
       // When
       const actual = await curiousService.getPrisonerFunctionalSkills(prisonNumber, username)
@@ -225,7 +228,7 @@ describe('curiousService', () => {
   })
 
   describe('getPrisonerInPrisonCourses', () => {
-    const mockAllPrisonNaneLookup = (): Promise<Map<string, string>> => {
+    const mockAllPrisonNameLookup = (): Promise<Map<string, string>> => {
       const prisonNamesById = new Map([
         ['MDI', 'Moorland (HMP & YOI)'],
         ['WDI', 'Wakefield (HMP)'],
@@ -241,7 +244,7 @@ describe('curiousService', () => {
       const systemToken = 'a-system-token'
       hmppsAuthClient.getSystemClientToken.mockResolvedValue(systemToken)
 
-      prisonService.getAllPrisonNamesById.mockImplementation(mockAllPrisonNaneLookup)
+      prisonService.getAllPrisonNamesById.mockImplementation(mockAllPrisonNameLookup)
 
       const learnerEducationPage1Of1: LearnerEductionPagedResponse = learnerEducationPagedResponse(prisonNumber)
       curiousClient.getLearnerEducationPage.mockResolvedValue(learnerEducationPage1Of1)
@@ -254,10 +257,10 @@ describe('curiousService', () => {
           COMPLETED: [
             {
               courseCode: '008WOOD06',
-              courseCompletionDate: moment().startOf('day').subtract(3, 'months').utc().toDate(),
+              courseCompletionDate: sub(startOfToday(), { months: 3 }),
               courseName: 'City & Guilds Wood Working',
-              courseStartDate: moment('2021-06-01').utc().toDate(),
-              coursePlannedEndDate: moment('2021-08-06').utc().toDate(),
+              courseStartDate: startOfDay('2021-06-01'),
+              coursePlannedEndDate: startOfDay('2021-08-06'),
               courseStatus: 'COMPLETED',
               grade: null,
               isAccredited: false,
@@ -268,11 +271,11 @@ describe('curiousService', () => {
             },
             {
               courseCode: '008ENGL06',
-              courseCompletionDate: moment('2021-12-13').utc().toDate(),
+              courseCompletionDate: startOfDay('2021-12-13'),
               courseName: 'GCSE English',
-              courseStartDate: moment('2021-06-01').utc().toDate(),
+              courseStartDate: startOfDay('2021-06-01'),
               courseStatus: 'COMPLETED',
-              coursePlannedEndDate: moment('2021-08-06').utc().toDate(),
+              coursePlannedEndDate: startOfDay('2021-08-06'),
               grade: null,
               isAccredited: false,
               prisonId: 'MDI',
@@ -285,8 +288,8 @@ describe('curiousService', () => {
             {
               courseCode: '008ENGL06',
               courseName: 'GCSE English',
-              courseStartDate: moment('2021-06-01').utc().toDate(),
-              coursePlannedEndDate: moment('2021-08-06').utc().toDate(),
+              courseStartDate: startOfDay('2021-06-01'),
+              coursePlannedEndDate: startOfDay('2021-08-06'),
               prisonId: 'MDI',
               prisonName: 'Moorland (HMP & YOI)',
               courseStatus: 'IN_PROGRESS',
@@ -301,12 +304,12 @@ describe('curiousService', () => {
             {
               courseCode: '246674',
               courseName: 'GCSE Maths',
-              courseStartDate: moment('2016-05-18').utc().toDate(),
+              courseStartDate: startOfDay('2016-05-18'),
               prisonId: 'WDI',
               prisonName: 'Wakefield (HMP)',
               courseStatus: 'WITHDRAWN',
-              courseCompletionDate: moment('2016-07-15').utc().toDate(),
-              coursePlannedEndDate: moment('2016-12-23').utc().toDate(),
+              courseCompletionDate: startOfDay('2016-07-15'),
+              coursePlannedEndDate: startOfDay('2016-12-23'),
               isAccredited: true,
               grade: 'No achievement',
               withdrawalReason: 'Significant ill health causing them to be unable to attend education',
@@ -316,10 +319,10 @@ describe('curiousService', () => {
           TEMPORARILY_WITHDRAWN: [
             {
               courseCode: '246674',
-              courseCompletionDate: moment('2016-07-15').utc().toDate(),
+              courseCompletionDate: startOfDay('2016-07-15'),
               courseName: 'GCSE Maths',
-              courseStartDate: moment('2016-05-18').utc().toDate(),
-              coursePlannedEndDate: moment('2016-12-23').utc().toDate(),
+              courseStartDate: startOfDay('2016-05-18'),
+              coursePlannedEndDate: startOfDay('2016-12-23'),
               courseStatus: 'TEMPORARILY_WITHDRAWN',
               grade: 'No achievement',
               isAccredited: true,
@@ -333,10 +336,10 @@ describe('curiousService', () => {
         coursesCompletedInLast12Months: [
           {
             courseCode: '008WOOD06',
-            courseCompletionDate: moment().startOf('day').subtract(3, 'months').utc().toDate(),
+            courseCompletionDate: sub(startOfToday(), { months: 3 }),
             courseName: 'City & Guilds Wood Working',
-            courseStartDate: moment('2021-06-01').utc().toDate(),
-            coursePlannedEndDate: moment('2021-08-06').utc().toDate(),
+            courseStartDate: startOfDay('2021-06-01'),
+            coursePlannedEndDate: startOfDay('2021-08-06'),
             courseStatus: 'COMPLETED',
             grade: null,
             isAccredited: false,
@@ -365,7 +368,7 @@ describe('curiousService', () => {
       const systemToken = 'a-system-token'
       hmppsAuthClient.getSystemClientToken.mockResolvedValue(systemToken)
 
-      prisonService.getAllPrisonNamesById.mockImplementation(mockAllPrisonNaneLookup)
+      prisonService.getAllPrisonNamesById.mockImplementation(mockAllPrisonNameLookup)
 
       const learnerEducationPage1Of1: LearnerEductionPagedResponse = learnerEducationPagedResponsePage1Of1(prisonNumber)
       curiousClient.getLearnerEducationPage.mockResolvedValue(learnerEducationPage1Of1)
@@ -380,8 +383,8 @@ describe('curiousService', () => {
             {
               courseCode: '008ENGL06',
               courseName: 'GCSE English',
-              courseStartDate: moment('2021-06-01').utc().toDate(),
-              coursePlannedEndDate: moment('2021-08-06').utc().toDate(),
+              courseStartDate: startOfDay('2021-06-01'),
+              coursePlannedEndDate: startOfDay('2021-08-06'),
               prisonId: 'MDI',
               prisonName: 'Moorland (HMP & YOI)',
               courseStatus: 'IN_PROGRESS',
@@ -396,12 +399,12 @@ describe('curiousService', () => {
             {
               courseCode: '246674',
               courseName: 'GCSE Maths',
-              courseStartDate: moment('2016-05-18').utc().toDate(),
+              courseStartDate: startOfDay('2016-05-18'),
               prisonId: 'WDI',
               prisonName: 'Wakefield (HMP)',
               courseStatus: 'WITHDRAWN',
-              courseCompletionDate: moment('2016-07-15').utc().toDate(),
-              coursePlannedEndDate: moment('2016-12-23').utc().toDate(),
+              courseCompletionDate: startOfDay('2016-07-15'),
+              coursePlannedEndDate: startOfDay('2016-12-23'),
               isAccredited: true,
               grade: 'No achievement',
               withdrawalReason: 'Significant ill health causing them to be unable to attend education',
@@ -429,7 +432,7 @@ describe('curiousService', () => {
       const systemToken = 'a-system-token'
       hmppsAuthClient.getSystemClientToken.mockResolvedValue(systemToken)
 
-      prisonService.getAllPrisonNamesById.mockImplementation(mockAllPrisonNaneLookup)
+      prisonService.getAllPrisonNamesById.mockImplementation(mockAllPrisonNameLookup)
 
       const learnerEducationPage1Of2: LearnerEductionPagedResponse = learnerEducationPagedResponsePage1Of2(prisonNumber)
       curiousClient.getLearnerEducationPage.mockResolvedValueOnce(learnerEducationPage1Of2)
@@ -446,12 +449,12 @@ describe('curiousService', () => {
             {
               courseCode: '008ENGL06',
               courseName: 'GCSE English',
-              courseStartDate: moment('2021-06-01').utc().toDate(),
+              courseStartDate: startOfDay('2021-06-01'),
               prisonId: 'MDI',
               prisonName: 'Moorland (HMP & YOI)',
               courseStatus: 'IN_PROGRESS',
               courseCompletionDate: null,
-              coursePlannedEndDate: moment('2021-08-06').utc().toDate(),
+              coursePlannedEndDate: startOfDay('2021-08-06'),
               isAccredited: false,
               grade: null,
               withdrawalReason: null,
@@ -460,8 +463,8 @@ describe('curiousService', () => {
             {
               courseCode: '008WOOD06',
               courseName: 'City & Guilds Wood Working',
-              courseStartDate: moment('2021-06-01').utc().toDate(),
-              coursePlannedEndDate: moment('2021-08-06').utc().toDate(),
+              courseStartDate: startOfDay('2021-06-01'),
+              coursePlannedEndDate: startOfDay('2021-08-06'),
               prisonId: 'MDI',
               prisonName: 'Moorland (HMP & YOI)',
               courseStatus: 'IN_PROGRESS',
@@ -476,12 +479,12 @@ describe('curiousService', () => {
             {
               courseCode: '246674',
               courseName: 'GCSE Maths',
-              courseStartDate: moment('2016-05-18').utc().toDate(),
+              courseStartDate: startOfDay('2016-05-18'),
               prisonId: 'WDI',
               prisonName: 'Wakefield (HMP)',
               courseStatus: 'WITHDRAWN',
-              courseCompletionDate: moment('2016-07-15').utc().toDate(),
-              coursePlannedEndDate: moment('2016-12-23').utc().toDate(),
+              courseCompletionDate: startOfDay('2016-07-15'),
+              coursePlannedEndDate: startOfDay('2016-12-23'),
               isAccredited: true,
               grade: 'No achievement',
               withdrawalReason: 'Significant ill health causing them to be unable to attend education',
