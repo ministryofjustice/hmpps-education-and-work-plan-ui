@@ -75,6 +75,38 @@ context('Prisoner Overview page - Common functionality for both pre and post ind
       .hasNumberOfArchivedGoals(2)
   })
 
+  it('should display correct action plan review count', () => {
+    // Given
+    cy.signIn()
+
+    // When
+    cy.visit(`/plan/${prisonNumber}/view/overview`)
+
+    // Then
+    const overviewPage = Page.verifyOnPage(OverviewPage)
+    overviewPage //
+      .isForPrisoner(prisonNumber)
+      .activeTabIs('Overview')
+      // If there is a session count it will always be at least 1 as the induction is included in the total
+      .hasNumberOfActionPlanReviews(2)
+  })
+
+  it('should display count of 1 action plan reviews given there is an induction but there are no action plan reviews', () => {
+    // Given
+    cy.signIn()
+
+    // When
+    cy.task('stubGetActionPlanReviews404Error')
+    cy.visit(`/plan/${prisonNumber}/view/overview`)
+
+    // Then
+    const overviewPage = Page.verifyOnPage(OverviewPage)
+    overviewPage //
+      .isForPrisoner(prisonNumber)
+      .activeTabIs('Overview')
+      .hasNumberOfActionPlanReviews(1)
+  })
+
   it('should display correct hint text showing details from the most recently updated goal', () => {
     // Given
     cy.signIn()

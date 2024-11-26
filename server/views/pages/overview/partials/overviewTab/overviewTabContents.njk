@@ -69,24 +69,24 @@
       </div>
 
       {% if reviewJourneyEnabledForPrison %}
-        <div class="govuk-summary-card" data-qa="sessions-summary-card">
+        <div class="govuk-summary-card" data-qa="action-plan-reviews-summary-card">
           <div class="govuk-summary-card__title-wrapper">
             <h2 class="govuk-summary-card__title govuk-!-font-size-24">Sessions history</h2>
           </div>
           <div class="govuk-summary-card__content">
             {% if not problemRetrievingData %}
-              <div class="sessions-container govuk-!-margin-top-3">
-                <span class="govuk-body govuk-!-font-size-36 govuk-!-font-weight-bold" data-qa="induction-and-review-count">{{ "1" }}</span>
+              <div class="action-plan-reviews-container govuk-!-margin-top-3" data-qa="action-plan-reviews-container">
+                <span class="govuk-body govuk-!-font-size-36 govuk-!-font-weight-bold" data-qa="action-plan-reviews-count">{{ actionPlanReviewsCount }}</span>
                 <span class="govuk-tag govuk-tag--light-blue govuk-tag--custom-width govuk-!-margin-left-2 govuk-!-margin-bottom-4">Induction and review</span>
               </div>
               <a class="govuk-link govuk-!-font-size-19" href="/plan/{{ prisonerSummary.prisonNumber }}/view/timeline" data-qa="view-timeline-button">View induction and review sessions history</a>
-              {% if not noInductionsOrReviews %}
+              {% if not isPostInduction %}
                 <p class="govuk-hint govuk-!-font-size-16 govuk-!-margin-top-6" data-qa="induction-or-review-last-updated-hint">
                   Updated on 25 November 2024 by Lynnette Orr, Wakefield (HMP)
                 </p>
               {% endif %}
             {% else %}
-              <h3 class="govuk-heading-s" data-qa="session-data-unavailable-message">We cannot show these details right now</h3>
+              <h3 class="govuk-heading-s" data-qa="action-plan-reviews-data-unavailable-message">We cannot show these details right now</h3>
               <p class="govuk-body">Reload the page or try again later. Other parts of this service may still be available.</p>
             {% endif %}
           </div>

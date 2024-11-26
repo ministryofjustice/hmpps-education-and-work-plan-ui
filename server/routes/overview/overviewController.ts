@@ -14,7 +14,13 @@ export default class OverviewController {
 
   getOverviewView: RequestHandler = async (req, res, next): Promise<void> => {
     const { prisonNumber } = req.params
-    const { prisonerSummary, curiousInPrisonCourses, actionPlanReviews, prisonerFunctionalSkills } = res.locals
+    const {
+      prisonerSummary,
+      showServiceOnboardingBanner,
+      curiousInPrisonCourses,
+      actionPlanReviews,
+      prisonerFunctionalSkills,
+    } = res.locals
 
     try {
       const [inductionExists, prisonerGoals] = await Promise.all([
@@ -24,6 +30,7 @@ export default class OverviewController {
 
       const isPostInduction = Boolean(inductionExists)
       const functionalSkills = mostRecentFunctionalSkills(prisonerFunctionalSkills)
+      const actionPlanReviewsCount = isPostInduction ? actionPlanReviews.completedReviews.length + 1 : 0
 
       const { lastUpdatedBy, lastUpdatedDate, lastUpdatedAtPrisonName, noGoals } =
         this.getLastUpdatedGoalData(prisonerGoals)
@@ -38,6 +45,8 @@ export default class OverviewController {
         isPostInduction,
         { lastUpdatedBy, lastUpdatedDate, lastUpdatedAtPrisonName, noGoals, goalCounts },
         prisonerGoals.problemRetrievingData,
+        showServiceOnboardingBanner,
+        actionPlanReviewsCount,
       )
 
       res.render('pages/overview/index', { ...view.renderArgs })

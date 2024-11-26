@@ -51,8 +51,9 @@ export default function createApp(services: Services): express.Application {
   app.use(errorMessageMiddleware)
 
   app.get('*', async (req, res, next) => {
-    const { user } = res.locals
-    const { activeCaseLoadId } = user.activeCaseLoadId
+    const {
+      user: { activeCaseLoadId },
+    } = res.locals
     res.locals.reviewJourneyEnabledForPrison = config.featureToggles.reviewJourneyEnabledForPrison(activeCaseLoadId)
     next()
   })
