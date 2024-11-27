@@ -94,13 +94,13 @@ export default class OverviewView {
 
     const prisonerHasHadInduction = !this.induction.problemRetrievingData && this.induction.inductionDto != null
     const mostRecentReviewSession =
-      this.actionPlanReviews.completedReviews.length > 0
+      this.actionPlanReviews?.completedReviews.length > 0
         ? this.actionPlanReviews.completedReviews.reduce((latestReview, currentReview) =>
             !latestReview || currentReview.completedDate > latestReview.completedDate ? currentReview : latestReview,
           )
         : undefined
     const prisonerHasOnlyHadInduction =
-      prisonerHasHadInduction && !this.actionPlanReviews.problemRetrievingData && mostRecentReviewSession == null
+      prisonerHasHadInduction && !this.actionPlanReviews?.problemRetrievingData && mostRecentReviewSession == null
     const prisonerHasHadInductionAndAtLeastOneReview = prisonerHasHadInduction && mostRecentReviewSession != null
 
     let lastSessionConductedBy: string
@@ -132,10 +132,12 @@ export default class OverviewView {
         hasCoursesCompletedMoreThan12MonthsAgo,
       },
       sessionHistory: {
-        problemRetrievingData: this.induction.problemRetrievingData || this.actionPlanReviews.problemRetrievingData,
+        problemRetrievingData: !this.actionPlanReviews
+          ? this.induction.problemRetrievingData
+          : this.induction.problemRetrievingData || this.actionPlanReviews.problemRetrievingData,
         counts: {
-          totalSessions: (prisonerHasHadInduction ? 1 : 0) + this.actionPlanReviews.completedReviews.length,
-          reviewSessions: this.actionPlanReviews.completedReviews.length,
+          totalSessions: (prisonerHasHadInduction ? 1 : 0) + (this.actionPlanReviews?.completedReviews.length || 0),
+          reviewSessions: this.actionPlanReviews ? this.actionPlanReviews.completedReviews.length : undefined,
           inductionSessions: prisonerHasHadInduction ? 1 : 0,
         },
         lastSessionConductedBy,

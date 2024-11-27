@@ -146,6 +146,90 @@ describe('overviewController', () => {
     expect(res.render).toHaveBeenCalledWith('pages/overview/index', expectedView)
   })
 
+  it('should get overview view given Induction and Goals exist, but an Action Plan Reviews was not retrieved at all', async () => {
+    // Given
+    const inProgressGoal = {
+      ...aValidGoalResponse(),
+      status: GoalStatusValue.ACTIVE,
+      updatedAt: new Date('2023-09-23T13:42:01.401Z'),
+    }
+    const archivedGoal = {
+      ...aValidGoalResponse(),
+      status: GoalStatusValue.ARCHIVED,
+      updatedAt: new Date('2023-08-23T13:42:01.401Z'),
+    }
+    const completedGoal = {
+      ...aValidGoalResponse(),
+      status: GoalStatusValue.COMPLETED,
+      updatedAt: new Date('2023-07-23T13:42:01.401Z'),
+    }
+
+    educationAndWorkPlanService.getAllGoalsForPrisoner.mockResolvedValue({
+      prisonNumber,
+      goals: {
+        ACTIVE: [inProgressGoal],
+        ARCHIVED: [archivedGoal],
+        COMPLETED: [completedGoal],
+      },
+      problemRetrievingData: false,
+    } as PrisonerGoals)
+
+    res.locals.induction = {
+      problemRetrievingData: false,
+      inductionDto: aValidInductionDto(),
+    }
+
+    res.locals.actionPlanReviews = undefined
+
+    const expectedView = {
+      tab: 'overview',
+      prisonerSummary,
+      functionalSkills: {
+        problemRetrievingData: false,
+        mostRecentAssessments: [{ type: 'ENGLISH' }, { type: 'MATHS' }],
+      },
+      inPrisonCourses: {
+        problemRetrievingData: false,
+        coursesCompletedInLast12Months: inPrisonCourses.coursesCompletedInLast12Months,
+        hasCoursesCompletedMoreThan12MonthsAgo: true,
+        hasWithdrawnOrInProgressCourses: true,
+      },
+      induction: {
+        problemRetrievingData: false,
+        isPostInduction: true,
+      },
+      prisonerGoals: {
+        problemRetrievingData: false,
+        counts: {
+          totalGoals: 3,
+          activeGoals: 1,
+          archivedGoals: 1,
+          completedGoals: 1,
+        },
+        lastUpdatedBy: inProgressGoal.updatedByDisplayName,
+        lastUpdatedDate: inProgressGoal.updatedAt,
+        lastUpdatedAtPrisonName: inProgressGoal.updatedAtPrisonName,
+      },
+      sessionHistory: {
+        counts: {
+          inductionSessions: 1,
+          reviewSessions: undefined as number,
+          totalSessions: 1,
+        },
+        lastSessionConductedAt: parseISO('2023-06-19T09:39:44.000Z'),
+        lastSessionConductedAtPrison: 'MDI',
+        lastSessionConductedBy: 'Alex Smith',
+        problemRetrievingData: false,
+      },
+    }
+
+    // When
+    await controller.getOverviewView(req, res, next)
+
+    // Then
+    expect(res.render).toHaveBeenCalledWith('pages/overview/index', expectedView)
+  })
+
   it('should get overview view for pre induction with no reviews, goals and no courses', async () => {
     // Given
     res.locals.curiousInPrisonCourses = {
