@@ -53,22 +53,6 @@ export default class InductionService {
     }
   }
 
-  async inductionExists(prisonNumber: string, username: string): Promise<boolean> {
-    const systemToken = await this.hmppsAuthClient.getSystemClientToken(username)
-    try {
-      await this.educationAndWorkPlanClient.getInduction(prisonNumber, systemToken)
-      return true
-    } catch (error) {
-      if (isNotFoundError(error)) {
-        logger.info(`No Induction found for prisoner [${prisonNumber}] in Education And Work Plan API`)
-        return false
-      }
-
-      logger.error(`Error retrieving Induction data from Education And Work Plan: ${JSON.stringify(error)}`)
-      throw error
-    }
-  }
-
   async getInductionSchedule(prisonNumber: string, username: string): Promise<InductionSchedule> {
     const systemToken = await this.hmppsAuthClient.getSystemClientToken(username)
     try {
@@ -86,5 +70,3 @@ export default class InductionService {
     }
   }
 }
-
-const isNotFoundError = (error: { status: number }): boolean => error.status === 404

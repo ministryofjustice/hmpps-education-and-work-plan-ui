@@ -1,5 +1,6 @@
 import type { LearnerEducation, LearnerEductionPagedResponse, LearnerProfile } from 'curiousApiClient'
 import type { FunctionalSkills, InPrisonCourse, InPrisonCourseRecords, PrisonerSupportNeeds } from 'viewModels'
+import { startOfToday, sub } from 'date-fns'
 import toPrisonerSupportNeeds from '../routes/overview/mappers/prisonerSupportNeedsMapper'
 import CuriousClient from '../data/curiousClient'
 import { HmppsAuthClient } from '../data'
@@ -72,24 +73,23 @@ export default class CuriousService {
         )
       const allCoursesWithPrisonNamePopulated = await this.setPrisonNamesOnInPrisonCourses(allCourses, username)
 
-      const completedCourses = allCoursesWithPrisonNamePopulated.filter(
+      const completedCourses = [...allCoursesWithPrisonNamePopulated].filter(
         inPrisonCourse => inPrisonCourse.courseStatus === 'COMPLETED',
       )
-      const inProgressCourses = allCoursesWithPrisonNamePopulated.filter(
+      const inProgressCourses = [...allCoursesWithPrisonNamePopulated].filter(
         inPrisonCourse => inPrisonCourse.courseStatus === 'IN_PROGRESS',
       )
-      const withdrawnCourses = allCoursesWithPrisonNamePopulated.filter(
+      const withdrawnCourses = [...allCoursesWithPrisonNamePopulated].filter(
         inPrisonCourse => inPrisonCourse.courseStatus === 'WITHDRAWN',
       )
-      const temporarilyWithdrawnCourses = allCoursesWithPrisonNamePopulated.filter(
+      const temporarilyWithdrawnCourses = [...allCoursesWithPrisonNamePopulated].filter(
         inPrisonCourse => inPrisonCourse.courseStatus === 'TEMPORARILY_WITHDRAWN',
       )
 
-      const coursesCompletedInLast12Months = [...completedCourses].filter(inPrisonCourse => {
-        const twelveMonthsAgo = new Date()
-        twelveMonthsAgo.setMonth(twelveMonthsAgo.getMonth() - 12)
-        return inPrisonCourse.courseCompletionDate >= twelveMonthsAgo
-      })
+      const twelveMonthsAgo = sub(startOfToday(), { months: 12 })
+      const coursesCompletedInLast12Months = [...completedCourses].filter(
+        inPrisonCourse => inPrisonCourse.courseCompletionDate >= twelveMonthsAgo,
+      )
 
       return {
         problemRetrievingData: false,
