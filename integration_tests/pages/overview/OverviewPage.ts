@@ -86,6 +86,11 @@ export default class OverviewPage extends Page {
     return this
   }
 
+  hasNumberOfActionPlanReviews(numberOfActionPlanReviews: number): OverviewPage {
+    this.actionPlanReviewsCount().contains(numberOfActionPlanReviews)
+    return this
+  }
+
   hasLastUpdatedHint(expected: string): OverviewPage {
     this.goalLastUpdatedHint().should('contain.text', expected)
     return this
@@ -179,6 +184,8 @@ export default class OverviewPage extends Page {
 
   private archivedGoalsCount = (): PageElement => cy.get('[data-qa=archived-goals-count]')
 
+  private actionPlanReviewsCount = (): PageElement => cy.get('[data-qa=action-plan-reviews-count]')
+
   private viewInProgressGoalsButton = (): PageElement => cy.get('[data-qa=view-in-progress-goals-button]')
 
   private viewCompletedGoalsButton = (): PageElement => cy.get('[data-qa=view-completed-goals-button]')
@@ -200,6 +207,9 @@ export default class OverviewPage extends Page {
   private noCoursesRecordedMessage = (): PageElement => cy.get('[data-qa=no-courses-recorded-message]')
 
   private curiousUnavailableMessage = (): PageElement => cy.get('[data-qa=curious-unavailable-message]')
+
+  private actionPlanReviewsDataUnavailableMessage = (): PageElement =>
+    cy.get('[data-qa=action-plan-reviews-data-unavailable-message]')
 
   private activeTab = (): PageElement => cy.get('.moj-sub-navigation__link[aria-current=page]')
 

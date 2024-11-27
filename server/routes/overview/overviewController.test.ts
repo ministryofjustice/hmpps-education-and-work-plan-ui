@@ -115,6 +115,7 @@ describe('overviewController', () => {
       lastUpdatedDate: inProgressGoal.updatedAt,
       lastUpdatedAtPrisonName: inProgressGoal.updatedAtPrisonName,
       problemRetrievingData: false,
+      actionPlanReviewsCount: 2,
     }
 
     // When
@@ -171,6 +172,7 @@ describe('overviewController', () => {
       lastUpdatedDate: null as string,
       lastUpdatedAtPrisonName: null as string,
       problemRetrievingData: false,
+      actionPlanReviewsCount: 0,
     }
 
     // When
@@ -227,6 +229,7 @@ describe('overviewController', () => {
       lastUpdatedDate: null as string,
       lastUpdatedAtPrisonName: null as string,
       problemRetrievingData: true,
+      actionPlanReviewsCount: 0,
     }
 
     // When
