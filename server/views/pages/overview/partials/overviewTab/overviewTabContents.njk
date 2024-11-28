@@ -44,9 +44,90 @@ Data supplied to this template:
       {% include './_educationAndTrainingSummaryCard.njk' %}
     </div>
 
+    {% set dueOrOnTimeTagContent = 'Review due by ' ~ reviewDateTo | formatDate('D MMM YYYY') %}
+    {% set dueOrOnTimeTagTitle = '<span>' ~ dueOrOnTimeTagContent ~ '</span>' %}
+    {% set overdueTagContent = 'Review was due by ' ~ reviewDateTo | formatDate('D MMM YYYY') %}
+    {% set overdueTagTitle = '<span>' ~ overdueTagContent ~ '</span>' %}
+    {% set releaseDateContent = 'Release on ' ~ releaseDate | formatDate('D MMMM YYYY') %}
+    {% set releaseDateTitle = '<span>' ~ releaseDateContent ~ '<span>' %}
+
     <div class="govuk-grid-column-one-third app-u-print-full-width">
       {{ actionsCard({
         actions: [
+          {
+            title: '<h2 class="govuk-heading-s govuk-!-margin-bottom-0">Reviews</h2>' | safe,
+            'render-if': induction.isPostInduction,
+            notAUrl: true
+          },
+           {
+            title: dueOrOnTimeTagTitle | safe,
+            'render-if': induction.isPostInduction and reviewStatus === 'onTime',
+            notAUrl: true,
+            border: true,
+            classes: 'actions-card-reviews-tag-grey',
+            attributes: {
+              'data-qa': 'review-on-time'
+            }
+          },
+           {
+            title: dueOrOnTimeTagTitle | safe,
+            'render-if': induction.isPostInduction and reviewStatus === 'due',
+            notAUrl: true,
+            border: true,
+            classes: 'actions-card-reviews-tag-yellow',
+            attributes: {
+              'data-qa': 'review-due'
+            }
+          },
+          {
+            title: overdueTagTitle | safe,
+            'render-if': induction.isPostInduction and reviewStatus === 'overdue',
+            notAUrl: true,
+            border: true,
+            classes: 'actions-card-reviews-tag-red',
+            attributes: {
+              'data-qa': 'review-overdue'
+            }
+          },
+           {
+            title: 'No reviews due',
+            'render-if': induction.isPostInduction and reviewStatus === 'noReviewsDue',
+            notAUrl: true,
+            classes: 'govuk-tag govuk-tag--grey',
+            attributes: {
+              'data-qa': 'no-reviews-due'
+            }
+          },
+           {
+            title: releaseDateTitle | safe,
+            'render-if': induction.isPostInduction and reviewStatus === 'noReviewsDue',
+            notAUrl: true,
+            heavyBorder: true
+          },
+          {
+            title: '<span class="goal-action"><img src="/assets/images/icon-mark-review-complete.svg" role="presentation" alt="" width="30px" height="24px" class="goal-icon" />Mark review as complete</span>' | safe,
+            href: '/plan/' ~ prisonerSummary.prisonNumber ~ '/review',
+            id: 'mark-review-complete-button',
+            'render-if': induction.isPostInduction and reviewStatus !== 'noReviewsDue',
+            attributes: {
+              'data-qa': 'mark-review-complete-button'
+            }
+          },
+           {
+            title: '<span class="goal-action"><img src="/assets/images/icon-record-exemption.svg" role="presentation" alt="" width="30px" height="24px" class="goal-icon" />Record exemption for this prisoner</span>' | safe,
+            href: '/plan/' ~ prisonerSummary.prisonNumber ~ '/review/exemption',
+            heavyBorder: true,
+            id: 'record-exemption-button',
+            'render-if': induction.isPostInduction and reviewStatus !== 'noReviewsDue',
+            attributes: {
+              'data-qa': 'record-exemption-button'
+            }
+          },
+           {
+            title: '<h2 class="govuk-heading-s govuk-!-margin-bottom-0" data-qa="goals-heading">Goals</h2>' | safe,
+            'render-if': hasEditAuthority,
+            notAUrl: true
+          },
           {
             title: '<span class="goal-action"><img src="/assets/images/icon-goal.svg" role="presentation" alt="" width="35px" height="28px" class="goal-icon" /> Add a new goal</span>' | safe,
             href: '/plan/' ~ prisonerSummary.prisonNumber ~ '/goals/create',

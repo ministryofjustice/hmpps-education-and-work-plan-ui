@@ -137,6 +137,9 @@ describe('overviewController', () => {
         lastSessionConductedBy: 'Alex Smith',
         problemRetrievingData: false,
       },
+      releaseDate: parseISO('2025-12-31T00:00:00.000Z'),
+      reviewDateTo: parseISO('2024-10-14T23:00:00.000Z'),
+      reviewStatus: 'overdue',
     }
 
     // When
@@ -221,6 +224,9 @@ describe('overviewController', () => {
         lastSessionConductedBy: 'Alex Smith',
         problemRetrievingData: false,
       },
+      releaseDate: parseISO('2025-12-31T00:00:00.000Z'),
+      reviewDateTo: null as Date,
+      reviewStatus: 'overdue',
     }
 
     // When
@@ -306,6 +312,9 @@ describe('overviewController', () => {
         lastSessionConductedAtPrison: undefined as string,
         lastSessionConductedBy: undefined as string,
       },
+      releaseDate: parseISO('2025-12-31T00:00:00.000Z'),
+      reviewDateTo: null as Date,
+      reviewStatus: 'overdue',
     }
 
     // When
@@ -387,6 +396,9 @@ describe('overviewController', () => {
         lastSessionConductedBy: 'Alex Smith',
         problemRetrievingData: false,
       },
+      releaseDate: parseISO('2025-12-31T00:00:00.000Z'),
+      reviewDateTo: parseISO('2024-10-14T23:00:00.000Z'),
+      reviewStatus: 'overdue',
     }
 
     // When
@@ -471,6 +483,9 @@ describe('overviewController', () => {
         lastSessionConductedBy: undefined as string,
         problemRetrievingData: true,
       },
+      releaseDate: parseISO('2025-12-31T00:00:00.000Z'),
+      reviewDateTo: parseISO('2024-10-14T23:00:00.000Z'),
+      reviewStatus: 'overdue',
     }
 
     // When
@@ -559,6 +574,9 @@ describe('overviewController', () => {
         lastSessionConductedBy: undefined as string,
         problemRetrievingData: true,
       },
+      releaseDate: parseISO('2025-12-31T00:00:00.000Z'),
+      reviewDateTo: null as Date,
+      reviewStatus: 'overdue',
     }
 
     // When
@@ -645,6 +663,9 @@ describe('overviewController', () => {
         lastSessionConductedBy: 'Alex Smith',
         problemRetrievingData: false,
       },
+      releaseDate: parseISO('2025-12-31T00:00:00.000Z'),
+      reviewDateTo: parseISO('2024-10-14T23:00:00.000Z'),
+      reviewStatus: 'overdue',
     }
 
     // When
@@ -733,6 +754,9 @@ describe('overviewController', () => {
         lastSessionConductedBy: 'Alex Smith',
         problemRetrievingData: false,
       },
+      releaseDate: parseISO('2025-12-31T00:00:00.000Z'),
+      reviewDateTo: parseISO('2024-10-14T23:00:00.000Z'),
+      reviewStatus: 'overdue',
     }
 
     // When

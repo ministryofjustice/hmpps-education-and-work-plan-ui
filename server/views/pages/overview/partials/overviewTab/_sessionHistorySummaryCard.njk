@@ -24,7 +24,7 @@ Data supplied to this template:
     {% if not sessionHistory.problemRetrievingData %}
       <div class="action-plan-reviews-container govuk-!-margin-top-3" data-qa="action-plan-reviews-container">
         <span class="govuk-body govuk-!-font-size-36 govuk-!-font-weight-bold" data-qa="action-plan-reviews-count">{{ sessionHistory.counts.totalSessions }}</span>
-        <span class="govuk-tag govuk-tag--light-blue govuk-tag--custom-width govuk-!-margin-left-2 govuk-!-margin-bottom-4">Induction and review</span>
+        <span class="govuk-tag govuk-tag--light-blue govuk-tag--sessions-tag govuk-!-margin-left-2 govuk-!-margin-bottom-4">Induction and review</span>
       </div>
       <a class="govuk-link govuk-!-font-size-19" href="/plan/{{ prisonerSummary.prisonNumber }}/view/timeline" data-qa="view-timeline-button">View induction and review sessions history</a>
 

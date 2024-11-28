@@ -49,11 +49,34 @@
   }
 }
 
-// Custom tag and container for the sessions data
+// Custom tags for the sessions history tag and reviews tag in actions card
 
-.govuk-tag.govuk-tag--custom-width {
-   white-space: nowrap; 
-   padding-right: 17px;
+.govuk-tag {
+  &--sessions-tag {
+    white-space: nowrap;
+    padding-right: 1.5ch;
+  }
+}
+
+.actions-card-reviews-tag-yellow {
+  white-space: nowrap;
+  align-items: center;
+  background-color: #fff7bf;
+  padding: 4px 8px;
+}
+
+.actions-card-reviews-tag-red {
+  white-space: nowrap;
+  align-items: center;
+  background-color: #f4cdc6;
+  padding: 4px 8px;
+}
+
+.actions-card-reviews-tag-grey {
+  white-space: nowrap;
+  align-items: center;
+  background-color: #e5e6e7;
+  padding: 4px 8px;
 }
 
 .action-plan-reviews-container {

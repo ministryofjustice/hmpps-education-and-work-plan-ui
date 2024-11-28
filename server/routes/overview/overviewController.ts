@@ -7,7 +7,7 @@ export default class OverviewController {
 
   getOverviewView: RequestHandler = async (req, res, next): Promise<void> => {
     const { prisonNumber } = req.params
-    const { prisonerSummary, curiousInPrisonCourses, actionPlanReviews, prisonerFunctionalSkills, induction } =
+    const { prisonerSummary, curiousInPrisonCourses, prisonerFunctionalSkills, induction, actionPlanReviews } =
       res.locals
 
     const prisonerGoals = await this.educationAndWorkPlanService.getAllGoalsForPrisoner(prisonNumber, req.user.username)

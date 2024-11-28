@@ -10,6 +10,7 @@ import type {
 import { startOfToday, sub } from 'date-fns'
 import type { InductionDto } from 'inductionDto'
 import dateComparator from '../dateComparator'
+import ActionPlanReviewStatusValue from '../../enums/actionPlanReviewStatusValue'
 
 type RenderArgs = {
   tab: string
@@ -51,6 +52,9 @@ type RenderArgs = {
     problemRetrievingData: boolean
     isPostInduction: boolean
   }
+  reviewStatus: string
+  reviewDateTo: Date | null
+  releaseDate: Date
 }
 
 export default class OverviewView {
@@ -102,6 +106,24 @@ export default class OverviewView {
     const prisonerHasOnlyHadInduction =
       prisonerHasHadInduction && !this.actionPlanReviews?.problemRetrievingData && mostRecentReviewSession == null
     const prisonerHasHadInductionAndAtLeastOneReview = prisonerHasHadInduction && mostRecentReviewSession != null
+
+    const reviewDateFrom = this.actionPlanReviews?.latestReviewSchedule?.reviewDateFrom || null
+    const reviewDateTo = this.actionPlanReviews?.latestReviewSchedule?.reviewDateTo || null
+    const noReviewsDue = this.actionPlanReviews?.latestReviewSchedule?.status === ActionPlanReviewStatusValue.COMPLETED
+    const releaseDate = this.prisonerSummary.releaseDate || null
+
+    const currentDate = new Date()
+    let reviewStatus: string
+
+    if (noReviewsDue) {
+      reviewStatus = 'noReviewsDue'
+    } else if (reviewDateTo < currentDate) {
+      reviewStatus = 'overdue'
+    } else if (reviewDateFrom <= currentDate && reviewDateTo >= currentDate) {
+      reviewStatus = 'due'
+    } else if (reviewDateFrom > currentDate) {
+      reviewStatus = 'onTime'
+    }
 
     let lastSessionConductedBy: string
     let lastSessionConductedAt: Date
@@ -160,6 +182,9 @@ export default class OverviewView {
         lastUpdatedDate: mostRecentlyUpdatedGoal?.updatedAt,
         lastUpdatedAtPrisonName: mostRecentlyUpdatedGoal?.updatedAtPrisonName,
       },
+      reviewStatus,
+      reviewDateTo,
+      releaseDate,
     }
   }
 }

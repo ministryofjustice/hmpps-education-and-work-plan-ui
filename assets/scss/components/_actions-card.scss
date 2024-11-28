@@ -5,11 +5,37 @@
     background: none;
     border-bottom: 2px solid $govuk-border-colour;
   }
+
   li {
     border-bottom: 1px solid $govuk-border-colour;
   }
+
+  // Remove bottom border for the headings and no reviews due tag
+  li.no-border {
+    border-bottom: none;
+  }
+
+  // Add bottom border for the review due and review overdue tags
+  li.border {
+    border-bottom: 1px solid $govuk-border-colour;
+    padding-bottom: 20px;
+  }
+
+  // Add heavier bottom border for release date and record exemption for prisoner
+  li.heavy-border {
+    border-bottom: 3px solid $govuk-border-colour;
+    padding-bottom: 15px;
+  }
+
   li:last-of-type {
     border: none;
+  }
+
+  // Underline actions card hyperlinks
+  a.govuk-link {
+    text-decoration: underline;
+    display: inline-flex;
+    align-items: center;
   }
 }
 

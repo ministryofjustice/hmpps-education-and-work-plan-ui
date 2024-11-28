@@ -20,15 +20,32 @@
         {% for action in params.actions %}
 
           {% if action['render-if'] == null or action['render-if'] === true %}
-            {#- Set classes for this action #}
-            {%- set classNames = "govuk-link" -%}
-            {%- if action.classes %}
-              {% set classNames = classNames + " " + action.classes %}
+            {%- if action.notAUrl %}
+              {# Render all tags except review due with bottom border, render headings without border #}
+              <li class="govuk-!-margin-0 govuk-!-padding-top-3 
+                {% if action.heavyBorder %}
+                  heavy-border
+                {% elseif action.border %}
+                  border
+                {% else %}
+                  no-border
+                {% endif %}
+              ">
+                <span class="{{ action.classes or '' }}" {{ govukAttributes(action.attributes) | safe }}>
+                  {{ action.title | safe }}
+                </span>
+              </li>
+            {%- else %}
+              {# Render the actions with hyperlinks #}
+              {%- set classNames = "govuk-link" -%}
+              {%- if action.classes %}
+                {% set classNames = classNames + " " + action.classes %}
+              {% endif %}
+              {%- set actionAttributes %} class="{{ classNames }}" {{- govukAttributes(action.attributes) -}} {% if action.id %} id="{{ action.id }}"{% endif %}{% endset %}
+              <li class="govuk-!-margin-0 govuk-!-padding-bottom-3 govuk-!-padding-top-3  {% if action.heavyBorder %}heavy-border{% endif %}">
+                <a {{ actionAttributes | safe }} href="{{ action.href }}">{{ action.title }}</a>
+              </li>
             {% endif %}
-            {%- set actionAttributes %} class="{{ classNames }}" {{- govukAttributes(action.attributes) -}} {% if action.id %} id="{{ action.id }}"{% endif %}{% endset %}
-            <li class="govuk-!-margin-0 govuk-!-padding-bottom-3 govuk-!-padding-top-3">
-              <a {{ actionAttributes | safe }} href="{{ action.href }}">{{ action.title }}</a>
-            </li>
           {% endif %}
         {% endfor %}
       </ul>
