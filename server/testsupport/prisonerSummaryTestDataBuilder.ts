@@ -1,15 +1,15 @@
-import moment from 'moment'
+import { startOfDay } from 'date-fns'
 import type { PrisonerSummary } from 'viewModels'
 
 export default function aValidPrisonerSummary(prisonNumber = 'A1234BC', prisonId = 'BXI'): PrisonerSummary {
   return {
     prisonNumber,
     prisonId,
-    releaseDate: moment('2025-12-31').toDate(),
+    releaseDate: startOfDay('2025-12-31'),
     firstName: 'Jimmy',
     lastName: 'Lightfingers',
-    receptionDate: moment('1999-08-29').toDate(),
-    dateOfBirth: moment('1969-02-12').toDate(),
+    receptionDate: startOfDay('1999-08-29'),
+    dateOfBirth: startOfDay('1969-02-12'),
     location: 'A-1-102',
     restrictedPatient: false,
     supportingPrisonId: undefined,

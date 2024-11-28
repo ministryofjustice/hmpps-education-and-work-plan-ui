@@ -87,6 +87,7 @@ enum AuditableUserAction {
   ARCHIVE_PRISONER_GOAL = 'ARCHIVE_PRISONER_GOAL',
   UNARCHIVE_PRISONER_GOAL = 'UNARCHIVE_PRISONER_GOAL',
   COMPLETE_PRISONER_GOAL = 'COMPLETE_PRISONER_GOAL',
+  CREATE_PRISONER_ACTION_PLAN_REVIEW = 'CREATE_PRISONER_ACTION_PLAN_REVIEW',
 }
 
 export interface BaseAuditData {
@@ -138,5 +139,9 @@ export default class AuditService {
 
   async logCompleteGoal(baseAuditData: BaseAuditData) {
     return this.logAuditEvent({ ...baseAuditData, what: AuditableUserAction.COMPLETE_PRISONER_GOAL })
+  }
+
+  async logCreateActionPlanReview(baseAuditData: BaseAuditData) {
+    return this.logAuditEvent({ ...baseAuditData, what: AuditableUserAction.CREATE_PRISONER_ACTION_PLAN_REVIEW })
   }
 }

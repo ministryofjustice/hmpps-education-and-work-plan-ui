@@ -1070,6 +1070,36 @@ const stubGetActionPlanReviews500Error = (prisonNumber = 'G6115VJ'): SuperAgentR
     },
   })
 
+const stubCreateActionPlanReview = (): SuperAgentRequest =>
+  stubFor({
+    request: {
+      method: 'POST',
+      urlPattern: '/action-plans/.*/reviews',
+    },
+    response: {
+      status: 201,
+      headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+      jsonBody: {
+        wasLastReviewBeforeRelease: false,
+        latestReviewSchedule: {
+          reference: '449b3d22-9a54-44f8-8883-1dfc0a5f35cb',
+          reviewDateFrom: '2025-03-14',
+          reviewDateTo: '2025-04-14',
+          status: 'SCHEDULED',
+          calculationRule: 'BETWEEN_6_AND_12_MONTHS_TO_SERVE',
+          createdBy: 'A_USER_GEN',
+          createdByDisplayName: 'Alex Smith',
+          createdAt: '2023-08-29T11:29:22.8793',
+          createdAtPrison: 'MDI',
+          updatedBy: 'A_USER_GEN',
+          updatedByDisplayName: 'Alex Smith',
+          updatedAt: '2023-08-29T10:29:22.457',
+          updatedAtPrison: 'MDI',
+        },
+      },
+    },
+  })
+
 export default {
   createGoals,
   getActionPlan,
@@ -1111,6 +1141,7 @@ export default {
   stubGetActionPlanReviews,
   stubGetActionPlanReviews404Error,
   stubGetActionPlanReviews500Error,
+  stubCreateActionPlanReview,
 
   stubEducationAndWorkPlanApiPing: stubPing(),
 }

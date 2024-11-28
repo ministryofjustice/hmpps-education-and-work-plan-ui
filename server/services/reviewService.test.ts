@@ -1,5 +1,5 @@
 import { parseISO, startOfDay } from 'date-fns'
-import type { ActionPlanReviews, CreatedActionPlan } from 'viewModels'
+import type { ActionPlanReviews } from 'viewModels'
 import EducationAndWorkPlanClient from '../data/educationAndWorkPlanClient'
 import PrisonService from './prisonService'
 import HmppsAuthClient from '../data/hmppsAuthClient'
@@ -11,6 +11,7 @@ import NoteTypeValue from '../enums/noteTypeValue'
 import aValidReviewPlanDto from '../testsupport/reviewPlanDtoTestDataBuilder'
 import aValidCreateActionPlanReviewRequest from '../testsupport/createActionPlanReviewRequestTestDataBuilder'
 import aValidCreateActionPlanReviewResponse from '../testsupport/createActionPlanReviewResponseTestDataBuilder'
+import aValidCreatedActionPlanReview from '../testsupport/createdActionPlanReviewTestDataBuilder'
 
 jest.mock('../data/educationAndWorkPlanClient')
 jest.mock('./prisonService')
@@ -218,24 +219,7 @@ describe('reviewService', () => {
       const createActionPlanReviewResponse = aValidCreateActionPlanReviewResponse()
       educationAndWorkPlanClient.createActionPlanReview.mockResolvedValue(createActionPlanReviewResponse)
 
-      const expectedCreatedActionPlan: CreatedActionPlan = {
-        wasLastReviewBeforeRelease: true,
-        latestReviewSchedule: {
-          reference: '814ade0a-a3b2-46a3-862f-79211ba13f7b',
-          reviewDateFrom: startOfDay('2024-09-15'),
-          reviewDateTo: startOfDay('2024-10-15'),
-          calculationRule: ActionPlanReviewCalculationRuleValue.BETWEEN_6_AND_12_MONTHS_TO_SERVE,
-          status: ActionPlanReviewStatusValue.SCHEDULED,
-          createdAt: parseISO('2023-06-19T09:39:44.000Z'),
-          createdAtPrison: 'Moorland (HMP & YOI)',
-          createdBy: 'asmith_gen',
-          createdByDisplayName: 'Alex Smith',
-          updatedAt: parseISO('2023-06-19T09:39:44.000Z'),
-          updatedAtPrison: 'Moorland (HMP & YOI)',
-          updatedBy: 'asmith_gen',
-          updatedByDisplayName: 'Alex Smith',
-        },
-      }
+      const expectedCreatedActionPlan = aValidCreatedActionPlanReview()
 
       // When
       const actual = await reviewService.createActionPlanReview(reviewPlanDto, username)

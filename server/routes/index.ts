@@ -53,7 +53,7 @@ export default function routes(services: Services): Router {
 
   prisonerList(router, services)
 
-  reviewPlanRoutes(router)
+  reviewPlanRoutes(router, services)
 
   return router
 }

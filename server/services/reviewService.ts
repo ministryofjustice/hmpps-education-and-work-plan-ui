@@ -1,4 +1,4 @@
-import type { ActionPlanReviews, CreatedActionPlan } from 'viewModels'
+import type { ActionPlanReviews, CreatedActionPlanReview } from 'viewModels'
 import type { ReviewPlanDto } from 'dto'
 import EducationAndWorkPlanClient from '../data/educationAndWorkPlanClient'
 import { HmppsAuthClient } from '../data'
@@ -6,7 +6,7 @@ import logger from '../../logger'
 import PrisonService from './prisonService'
 import toActionPlanReviews from '../data/mappers/actionPlanReviewsMapper'
 import toCreateActionPlanReviewRequest from '../data/mappers/createActionPlanReviewRequestMapper'
-import toCreatedActionPlan from '../data/mappers/createdActionPlanMapper'
+import toCreatedActionPlan from '../data/mappers/createdActionPlanReviewMapper'
 
 export default class ReviewService {
   constructor(
@@ -46,7 +46,7 @@ export default class ReviewService {
     }
   }
 
-  async createActionPlanReview(reviewPlanDto: ReviewPlanDto, username: string): Promise<CreatedActionPlan> {
+  async createActionPlanReview(reviewPlanDto: ReviewPlanDto, username: string): Promise<CreatedActionPlanReview> {
     const systemToken = await this.hmppsAuthClient.getSystemClientToken(username)
 
     try {

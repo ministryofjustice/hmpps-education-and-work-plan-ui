@@ -1,11 +1,11 @@
-import type { CreatedActionPlan } from 'viewModels'
+import type { CreatedActionPlanReview } from 'viewModels'
 import type { CreateActionPlanReviewResponse } from 'educationAndWorkPlanApiClient'
 import toScheduledActionPlanReview from './scheduledActionPlanReviewMapper'
 
 const toCreatedActionPlan = (
   createActionPlanReviewResponse: CreateActionPlanReviewResponse,
   prisonNamesById: Map<string, string>,
-): CreatedActionPlan => ({
+): CreatedActionPlanReview => ({
   wasLastReviewBeforeRelease: createActionPlanReviewResponse.wasLastReviewBeforeRelease,
   latestReviewSchedule: toScheduledActionPlanReview(
     createActionPlanReviewResponse.latestReviewSchedule,
