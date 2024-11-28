@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
 import type { Assessment, FunctionalSkills, InPrisonCourse, InPrisonCourseRecords, PrisonerGoals } from 'viewModels'
-import { parseISO } from 'date-fns'
+import { parseISO, startOfDay } from 'date-fns'
 import { aValidEnglishInPrisonCourse, aValidMathsInPrisonCourse } from '../../testsupport/inPrisonCourseTestDataBuilder'
 import aValidPrisonerSummary from '../../testsupport/prisonerSummaryTestDataBuilder'
 import { aValidGoalResponse } from '../../testsupport/actionPlanResponseTestDataBuilder'
@@ -95,11 +95,7 @@ describe('overviewController', () => {
       inductionDto: aValidInductionDto(),
     }
 
-    const reviewDateTo = parseISO('2024-10-14T23:00:00.000Z').toISOString()
-    res.locals.actionPlanReviews = {
-      ...aValidActionPlanReviews(),
-      reviewDateTo,
-    }
+    res.locals.actionPlanReviews = aValidActionPlanReviews()
 
     const expectedView = {
       tab: 'overview',
@@ -142,7 +138,7 @@ describe('overviewController', () => {
         problemRetrievingData: false,
       },
       releaseDate: parseISO('2025-12-31T00:00:00.000Z'),
-      reviewDateTo: new Date(reviewDateTo),
+      reviewDateTo: startOfDay('2024-10-15'),
       reviewStatus: 'overdue',
     }
 
@@ -358,11 +354,7 @@ describe('overviewController', () => {
       inductionDto: aValidInductionDto(),
     }
 
-    const reviewDateTo = parseISO('2024-10-14T23:00:00.000Z').toISOString()
-    res.locals.actionPlanReviews = {
-      ...aValidActionPlanReviews(),
-      reviewDateTo,
-    }
+    res.locals.actionPlanReviews = aValidActionPlanReviews()
 
     const expectedView = {
       tab: 'overview',
@@ -405,7 +397,7 @@ describe('overviewController', () => {
         problemRetrievingData: false,
       },
       releaseDate: parseISO('2025-12-31T00:00:00.000Z'),
-      reviewDateTo: new Date(reviewDateTo),
+      reviewDateTo: startOfDay('2024-10-15'),
       reviewStatus: 'overdue',
     }
 
@@ -449,11 +441,7 @@ describe('overviewController', () => {
       inductionDto: undefined,
     }
 
-    const reviewDateTo = parseISO('2024-10-14T23:00:00.000Z').toISOString()
-    res.locals.actionPlanReviews = {
-      ...aValidActionPlanReviews(),
-      reviewDateTo,
-    }
+    res.locals.actionPlanReviews = aValidActionPlanReviews()
 
     const expectedView = {
       tab: 'overview',
@@ -496,7 +484,7 @@ describe('overviewController', () => {
         problemRetrievingData: true,
       },
       releaseDate: parseISO('2025-12-31T00:00:00.000Z'),
-      reviewDateTo: new Date(reviewDateTo),
+      reviewDateTo: startOfDay('2024-10-15'),
       reviewStatus: 'overdue',
     }
 
@@ -631,11 +619,7 @@ describe('overviewController', () => {
       inductionDto: aValidInductionDto(),
     }
 
-    const reviewDateTo = parseISO('2024-10-14T23:00:00.000Z').toISOString()
-    res.locals.actionPlanReviews = {
-      ...aValidActionPlanReviews(),
-      reviewDateTo,
-    }
+    res.locals.actionPlanReviews = aValidActionPlanReviews()
 
     res.locals.curiousInPrisonCourses = { problemRetrievingData: true }
 
@@ -680,7 +664,7 @@ describe('overviewController', () => {
         problemRetrievingData: false,
       },
       releaseDate: parseISO('2025-12-31T00:00:00.000Z'),
-      reviewDateTo: new Date(reviewDateTo),
+      reviewDateTo: startOfDay('2024-10-15'),
       reviewStatus: 'overdue',
     }
 
@@ -724,11 +708,7 @@ describe('overviewController', () => {
       inductionDto: aValidInductionDto(),
     }
 
-    const reviewDateTo = parseISO('2024-10-14T23:00:00.000Z').toISOString()
-    res.locals.actionPlanReviews = {
-      ...aValidActionPlanReviews(),
-      reviewDateTo,
-    }
+    res.locals.actionPlanReviews = aValidActionPlanReviews()
 
     res.locals.prisonerFunctionalSkills = {
       problemRetrievingData: true,
@@ -775,7 +755,7 @@ describe('overviewController', () => {
         problemRetrievingData: false,
       },
       releaseDate: parseISO('2025-12-31T00:00:00.000Z'),
-      reviewDateTo: new Date(reviewDateTo),
+      reviewDateTo: startOfDay('2024-10-15'),
       reviewStatus: 'overdue',
     }
 
