@@ -1,12 +1,12 @@
 import { parseISO, startOfDay } from 'date-fns'
-import type { CreatedActionPlan } from 'viewModels'
-import toCreatedActionPlan from './createdActionPlanMapper'
+import type { CreatedActionPlanReview } from 'viewModels'
+import toCreatedActionPlan from './createdActionPlanReviewMapper'
 import aValidCreateActionPlanReviewResponse from '../../testsupport/createActionPlanReviewResponseTestDataBuilder'
 import aValidScheduledActionPlanReviewResponse from '../../testsupport/scheduledActionPlanReviewResponseTestDataBuilder'
 import ActionPlanReviewCalculationRuleValue from '../../enums/actionPlanReviewCalculationRuleValue'
 import ActionPlanReviewStatusValue from '../../enums/actionPlanReviewStatusValue'
 
-describe('createdActionPlanMapper', () => {
+describe('createdActionPlanReviewMapper', () => {
   const examplePrisonNamesById = new Map([
     ['BXI', 'Brixton (HMP)'],
     ['MDI', 'Moorland (HMP & YOI)'],
@@ -19,7 +19,7 @@ describe('createdActionPlanMapper', () => {
       latestReviewSchedule: aValidScheduledActionPlanReviewResponse(),
     })
 
-    const expected: CreatedActionPlan = {
+    const expected: CreatedActionPlanReview = {
       wasLastReviewBeforeRelease: true,
       latestReviewSchedule: {
         reference: '814ade0a-a3b2-46a3-862f-79211ba13f7b',

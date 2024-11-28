@@ -84,6 +84,9 @@ declare module 'dto' {
     completedByOtherJobRole?: string
     reviewDate: Date
     notes?: string
+    wasLastReviewBeforeRelease?: boolean
+    nextReviewDateFrom?: Date
+    nextReviewDateTo?: Date
   }
 
   export interface ReviewExemptionDto {

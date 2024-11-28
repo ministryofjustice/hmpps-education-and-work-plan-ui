@@ -1,10 +1,15 @@
-import { startOfToday } from 'date-fns'
+import { startOfToday, sub } from 'date-fns'
 import Page from '../../pages/page'
 import WhoCompletedReviewPage from '../../pages/reviewPlan/WhoCompletedReviewPage'
 import AuthorisationErrorPage from '../../pages/authorisationError'
 import ReviewPlanCompletedByValue from '../../../server/enums/reviewPlanCompletedByValue'
 import ReviewNotePage from '../../pages/reviewPlan/ReviewNotePage'
 import OverviewPage from '../../pages/overview/OverviewPage'
+import ReviewPlanCheckYourAnswersPage from '../../pages/reviewPlan/ReviewPlanCheckYourAnswersPage'
+import ReviewCompletePage from '../../pages/reviewPlan/ReviewCompletePage'
+import { postRequestedFor } from '../../mockApis/wiremock/requestPatternBuilder'
+import { urlEqualTo } from '../../mockApis/wiremock/matchers/url'
+import { matchingJsonPath } from '../../mockApis/wiremock/matchers/content'
 
 context(`Review a prisoner's plan`, () => {
   const prisonNumber = 'G6115VJ'
@@ -20,6 +25,12 @@ context(`Review a prisoner's plan`, () => {
     cy.task('stubActionPlansList')
     cy.task('getPrisonerById')
     cy.task('stubGetAllPrisons')
+    cy.task('stubLearnerProfile')
+    cy.task('stubLearnerEducation')
+    cy.task('stubGetInduction')
+    cy.task('getActionPlan')
+    cy.task('stubGetActionPlanReviews')
+    cy.task('stubCreateActionPlanReview')
   })
 
   it('should redirect to auth-error page given user does not have edit authority', () => {
@@ -61,7 +72,10 @@ context(`Review a prisoner's plan`, () => {
     cy.signIn()
     cy.visit(`/plan/${prisonNumber}/review`)
 
-    const today = startOfToday()
+    const reviewConductedAt = sub(startOfToday(), { weeks: 1 })
+    const reviewConductedAtDay = `${reviewConductedAt.getDate()}`
+    const reviewConductedAtMonth = `${reviewConductedAt.getMonth() + 1}`
+    const reviewConductedAtYear = `${reviewConductedAt.getFullYear()}`
 
     // When
     // First page is the Who completed the review page
@@ -71,7 +85,7 @@ context(`Review a prisoner's plan`, () => {
       .hasErrorCount(2)
       .hasFieldInError('completedBy')
       .hasFieldInError('review-date')
-      .setReviewDate(`${today.getDate()}`, `${today.getMonth() + 1}`, `${today.getFullYear()}`)
+      .setReviewDate(reviewConductedAtDay, reviewConductedAtMonth, reviewConductedAtYear)
       .selectWhoCompletedTheReview(ReviewPlanCompletedByValue.SOMEBODY_ELSE)
       .submitPage()
     Page.verifyOnPage(WhoCompletedReviewPage) //
@@ -85,19 +99,50 @@ context(`Review a prisoner's plan`, () => {
     // Next page is Review Notes page
     Page.verifyOnPage(ReviewNotePage) //
       .submitPage() // submit the page without answering any questions to trigger a validation error
-    Page.verifyOnPage(ReviewNotePage)
+    Page.verifyOnPage(ReviewNotePage) //
       .hasErrorCount(1)
       .hasFieldInError('notes')
       .setReviewNote(
         `Daniel's review went well and he has made good progress on his goals.
 Working in the prison kitchen is suiting Daniel well and is allowing him to focus on more productive uses of his time whilst in prison.
 
-We have agreed and set a new goal, and the next review is 1 year from now.   
+We have agreed and set a new goal, and the next review is 1 year from now.
 `,
       )
       .submitPage()
 
+    // Next page is Review Check Your Answers page
+    Page.verifyOnPage(ReviewPlanCheckYourAnswersPage) //
+      .reviewWasCompletedBySomebodyElse('A Reviewer')
+      .reviewWasCompletedBySomebodyElseWithJobRole('CIAG')
+      .hasNotes(
+        `Daniel's review went well and he has made good progress on his goals.
+Working in the prison kitchen is suiting Daniel well and is allowing him to focus on more productive uses of his time whilst in prison.
+
+We have agreed and set a new goal, and the next review is 1 year from now.
+`,
+      )
+      .submitPage()
+
+    // Next page is Review Completed page
+    Page.verifyOnPage(ReviewCompletePage) //
+      .hasNextReviewDueMessage(`Daniel Craig's next review is due between 14 March 2025 and 14 April 2025.`) // Date values come from the stub `stubCreateActionPlanReview`
+      .submitPage()
+
     // Then
-    // TODO - assert API was called with correct values
+    Page.verifyOnPage(OverviewPage) //
+      .hasSuccessMessage('Review completed.')
+    cy.wiremockVerify(
+      postRequestedFor(urlEqualTo(`/action-plans/${prisonNumber}/reviews`)) //
+        .withRequestBody(
+          matchingJsonPath(
+            "$[?(@.prisonId == 'BXI' && " +
+              `@.note == "Daniel's review went well and he has made good progress on his goals.\r\nWorking in the prison kitchen is suiting Daniel well and is allowing him to focus on more productive uses of his time whilst in prison.\r\n\r\nWe have agreed and set a new goal, and the next review is 1 year from now.\r\n" && ` +
+              `@.conductedAt == '${reviewConductedAtYear}-${reviewConductedAtMonth}-${reviewConductedAtDay}' && ` +
+              "@.conductedBy == 'A Reviewer' && " +
+              "@.conductedByRole == 'CIAG')]",
+          ),
+        ),
+    )
   })
 })

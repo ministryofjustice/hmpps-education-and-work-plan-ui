@@ -202,4 +202,66 @@ describe('Audit service', () => {
       )
     })
   })
+
+  describe('logCompleteGoal', () => {
+    it('should send goal completed event audit message', async () => {
+      // Given
+
+      const baseArchiveAuditData: BaseAuditData = {
+        correlationId: '49380145-d73d-4ad2-8460-f26b039249cc',
+        details: { goalReference: 'a4c91b69-a075-4095-8a12-eccadf7c3d7b' },
+        subjectId: 'A1234BC',
+        subjectType: 'PRISONER_ID',
+        who: 'a-dps-user',
+      }
+
+      // When
+      const actual = await auditService.logCompleteGoal(baseArchiveAuditData)
+
+      // Then
+      expect(actual).toEqual(expectedSqsMessageResponse)
+      expect(hmppsAuditClient.sendMessage).toHaveBeenCalledWith(
+        {
+          what: 'COMPLETE_PRISONER_GOAL',
+          correlationId: '49380145-d73d-4ad2-8460-f26b039249cc',
+          details: { goalReference: 'a4c91b69-a075-4095-8a12-eccadf7c3d7b' },
+          subjectId: 'A1234BC',
+          subjectType: 'PRISONER_ID',
+          who: 'a-dps-user',
+        },
+        expectedHmppsAuditClientToThrowOnError,
+      )
+    })
+  })
+
+  describe('logCreateActionPlanReview', () => {
+    it('should send action plan review created event audit message', async () => {
+      // Given
+
+      const baseArchiveAuditData: BaseAuditData = {
+        correlationId: '49380145-d73d-4ad2-8460-f26b039249cc',
+        details: {},
+        subjectId: 'A1234BC',
+        subjectType: 'PRISONER_ID',
+        who: 'a-dps-user',
+      }
+
+      // When
+      const actual = await auditService.logCreateActionPlanReview(baseArchiveAuditData)
+
+      // Then
+      expect(actual).toEqual(expectedSqsMessageResponse)
+      expect(hmppsAuditClient.sendMessage).toHaveBeenCalledWith(
+        {
+          what: 'CREATE_PRISONER_ACTION_PLAN_REVIEW',
+          correlationId: '49380145-d73d-4ad2-8460-f26b039249cc',
+          details: {},
+          subjectId: 'A1234BC',
+          subjectType: 'PRISONER_ID',
+          who: 'a-dps-user',
+        },
+        expectedHmppsAuditClientToThrowOnError,
+      )
+    })
+  })
 })

@@ -117,8 +117,9 @@ describe('whoCompletedReviewController', () => {
       expect(getPrisonerContext(req.session, prisonNumber).whoCompletedReviewForm).toEqual(invalidForm)
     })
 
-    it('should redirect to review notes page given form submitted successfully', async () => {
+    it('should redirect to review notes page given form submitted successfully and previous page was not check-your-answers', async () => {
       // Given
+      req.session.pageFlowHistory = undefined
       getPrisonerContext(req.session, prisonNumber).whoCompletedReviewForm = undefined
 
       const validForm: WhoCompletedReviewForm = {
@@ -141,6 +142,38 @@ describe('whoCompletedReviewController', () => {
 
       // Then
       expect(res.redirect).toHaveBeenCalledWith('/plan/A1234BC/review/notes')
+      expect(getPrisonerContext(req.session, prisonNumber).whoCompletedReviewForm).toBeUndefined()
+      expect(getPrisonerContext(req.session, prisonNumber).reviewPlanDto).toEqual(reviewPlanDto)
+    })
+
+    it('should redirect to review check-your-answers page given form submitted successfully and previous page was check-your-answers', async () => {
+      // Given
+      req.session.pageFlowHistory = {
+        currentPageIndex: 0,
+        pageUrls: [`/plan/${prisonNumber}/review/check-your-answers`],
+      }
+      getPrisonerContext(req.session, prisonNumber).whoCompletedReviewForm = undefined
+
+      const validForm: WhoCompletedReviewForm = {
+        completedBy: ReviewPlanCompletedByValue.MYSELF,
+        'reviewDate-day': '9',
+        'reviewDate-month': '3',
+        'reviewDate-year': '2024',
+      }
+      req.body = validForm
+
+      const reviewPlanDto: ReviewPlanDto = {
+        prisonNumber,
+        prisonId: 'BXI',
+        completedBy: ReviewPlanCompletedByValue.MYSELF,
+        reviewDate: startOfDay('2024-03-09'),
+      }
+
+      // When
+      await controller.submitWhoCompletedReviewForm(req, res, next)
+
+      // Then
+      expect(res.redirect).toHaveBeenCalledWith('/plan/A1234BC/review/check-your-answers')
       expect(getPrisonerContext(req.session, prisonNumber).whoCompletedReviewForm).toBeUndefined()
       expect(getPrisonerContext(req.session, prisonNumber).reviewPlanDto).toEqual(reviewPlanDto)
     })
