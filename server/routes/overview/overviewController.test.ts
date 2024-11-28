@@ -95,7 +95,11 @@ describe('overviewController', () => {
       inductionDto: aValidInductionDto(),
     }
 
-    res.locals.actionPlanReviews = aValidActionPlanReviews()
+    const reviewDateTo = parseISO('2024-10-14T23:00:00.000Z').toISOString()
+    res.locals.actionPlanReviews = {
+      ...aValidActionPlanReviews(),
+      reviewDateTo,
+    }
 
     const expectedView = {
       tab: 'overview',
@@ -138,7 +142,7 @@ describe('overviewController', () => {
         problemRetrievingData: false,
       },
       releaseDate: parseISO('2025-12-31T00:00:00.000Z'),
-      reviewDateTo: parseISO('2024-10-14T23:00:00.000Z'),
+      reviewDateTo: new Date(reviewDateTo),
       reviewStatus: 'overdue',
     }
 
@@ -354,7 +358,11 @@ describe('overviewController', () => {
       inductionDto: aValidInductionDto(),
     }
 
-    res.locals.actionPlanReviews = aValidActionPlanReviews()
+    const reviewDateTo = parseISO('2024-10-14T23:00:00.000Z').toISOString()
+    res.locals.actionPlanReviews = {
+      ...aValidActionPlanReviews(),
+      reviewDateTo,
+    }
 
     const expectedView = {
       tab: 'overview',
@@ -397,7 +405,7 @@ describe('overviewController', () => {
         problemRetrievingData: false,
       },
       releaseDate: parseISO('2025-12-31T00:00:00.000Z'),
-      reviewDateTo: parseISO('2024-10-14T23:00:00.000Z'),
+      reviewDateTo: new Date(reviewDateTo),
       reviewStatus: 'overdue',
     }
 
@@ -441,7 +449,11 @@ describe('overviewController', () => {
       inductionDto: undefined,
     }
 
-    res.locals.actionPlanReviews = aValidActionPlanReviews()
+    const reviewDateTo = parseISO('2024-10-14T23:00:00.000Z').toISOString()
+    res.locals.actionPlanReviews = {
+      ...aValidActionPlanReviews(),
+      reviewDateTo,
+    }
 
     const expectedView = {
       tab: 'overview',
@@ -484,7 +496,7 @@ describe('overviewController', () => {
         problemRetrievingData: true,
       },
       releaseDate: parseISO('2025-12-31T00:00:00.000Z'),
-      reviewDateTo: parseISO('2024-10-14T23:00:00.000Z'),
+      reviewDateTo: new Date(reviewDateTo),
       reviewStatus: 'overdue',
     }
 
@@ -619,7 +631,11 @@ describe('overviewController', () => {
       inductionDto: aValidInductionDto(),
     }
 
-    res.locals.actionPlanReviews = aValidActionPlanReviews()
+    const reviewDateTo = parseISO('2024-10-14T23:00:00.000Z').toISOString()
+    res.locals.actionPlanReviews = {
+      ...aValidActionPlanReviews(),
+      reviewDateTo,
+    }
 
     res.locals.curiousInPrisonCourses = { problemRetrievingData: true }
 
@@ -664,7 +680,7 @@ describe('overviewController', () => {
         problemRetrievingData: false,
       },
       releaseDate: parseISO('2025-12-31T00:00:00.000Z'),
-      reviewDateTo: parseISO('2024-10-14T23:00:00.000Z'),
+      reviewDateTo: new Date(reviewDateTo),
       reviewStatus: 'overdue',
     }
 
@@ -708,7 +724,11 @@ describe('overviewController', () => {
       inductionDto: aValidInductionDto(),
     }
 
-    res.locals.actionPlanReviews = aValidActionPlanReviews()
+    const reviewDateTo = parseISO('2024-10-14T23:00:00.000Z').toISOString()
+    res.locals.actionPlanReviews = {
+      ...aValidActionPlanReviews(),
+      reviewDateTo,
+    }
 
     res.locals.prisonerFunctionalSkills = {
       problemRetrievingData: true,
@@ -755,7 +775,7 @@ describe('overviewController', () => {
         problemRetrievingData: false,
       },
       releaseDate: parseISO('2025-12-31T00:00:00.000Z'),
-      reviewDateTo: parseISO('2024-10-14T23:00:00.000Z'),
+      reviewDateTo: new Date(reviewDateTo),
       reviewStatus: 'overdue',
     }
 
