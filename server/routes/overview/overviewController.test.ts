@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
 import type { Assessment, FunctionalSkills, InPrisonCourse, InPrisonCourseRecords, PrisonerGoals } from 'viewModels'
-import { parseISO } from 'date-fns'
+import { parseISO, startOfDay } from 'date-fns'
 import { aValidEnglishInPrisonCourse, aValidMathsInPrisonCourse } from '../../testsupport/inPrisonCourseTestDataBuilder'
 import aValidPrisonerSummary from '../../testsupport/prisonerSummaryTestDataBuilder'
 import { aValidGoalResponse } from '../../testsupport/actionPlanResponseTestDataBuilder'
@@ -137,6 +137,11 @@ describe('overviewController', () => {
         lastSessionConductedBy: 'Alex Smith',
         problemRetrievingData: false,
       },
+      actionPlanReview: {
+        problemRetrievingData: false,
+        reviewStatus: 'OVERDUE',
+        reviewDueDate: startOfDay('2024-10-15'),
+      },
     }
 
     // When
@@ -220,6 +225,11 @@ describe('overviewController', () => {
         lastSessionConductedAtPrison: 'MDI',
         lastSessionConductedBy: 'Alex Smith',
         problemRetrievingData: false,
+      },
+      actionPlanReview: {
+        problemRetrievingData: false,
+        reviewStatus: 'OVERDUE',
+        reviewDueDate: null as Date,
       },
     }
 
@@ -306,6 +316,11 @@ describe('overviewController', () => {
         lastSessionConductedAtPrison: undefined as string,
         lastSessionConductedBy: undefined as string,
       },
+      actionPlanReview: {
+        problemRetrievingData: false,
+        reviewStatus: 'OVERDUE',
+        reviewDueDate: null as Date,
+      },
     }
 
     // When
@@ -386,6 +401,11 @@ describe('overviewController', () => {
         lastSessionConductedAtPrison: 'Moorland (HMP & YOI)',
         lastSessionConductedBy: 'Alex Smith',
         problemRetrievingData: false,
+      },
+      actionPlanReview: {
+        problemRetrievingData: false,
+        reviewStatus: 'OVERDUE',
+        reviewDueDate: startOfDay('2024-10-15'),
       },
     }
 
@@ -470,6 +490,11 @@ describe('overviewController', () => {
         lastSessionConductedAtPrison: undefined as string,
         lastSessionConductedBy: undefined as string,
         problemRetrievingData: true,
+      },
+      actionPlanReview: {
+        problemRetrievingData: false,
+        reviewStatus: 'OVERDUE',
+        reviewDueDate: startOfDay('2024-10-15'),
       },
     }
 
@@ -559,6 +584,11 @@ describe('overviewController', () => {
         lastSessionConductedBy: undefined as string,
         problemRetrievingData: true,
       },
+      actionPlanReview: {
+        problemRetrievingData: true,
+        reviewStatus: 'OVERDUE',
+        reviewDueDate: null as Date,
+      },
     }
 
     // When
@@ -644,6 +674,11 @@ describe('overviewController', () => {
         lastSessionConductedAtPrison: 'Moorland (HMP & YOI)',
         lastSessionConductedBy: 'Alex Smith',
         problemRetrievingData: false,
+      },
+      actionPlanReview: {
+        problemRetrievingData: false,
+        reviewStatus: 'OVERDUE',
+        reviewDueDate: startOfDay('2024-10-15'),
       },
     }
 
@@ -732,6 +767,11 @@ describe('overviewController', () => {
         lastSessionConductedAtPrison: 'Moorland (HMP & YOI)',
         lastSessionConductedBy: 'Alex Smith',
         problemRetrievingData: false,
+      },
+      actionPlanReview: {
+        problemRetrievingData: false,
+        reviewStatus: 'OVERDUE',
+        reviewDueDate: startOfDay('2024-10-15'),
       },
     }
 
