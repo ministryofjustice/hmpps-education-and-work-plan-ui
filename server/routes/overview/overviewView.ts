@@ -10,6 +10,7 @@ import type {
 import { startOfToday, sub } from 'date-fns'
 import type { InductionDto } from 'inductionDto'
 import dateComparator from '../dateComparator'
+import ActionPlanReviewStatusValue from '../../enums/actionPlanReviewStatusValue'
 
 type RenderArgs = {
   tab: string
@@ -50,6 +51,11 @@ type RenderArgs = {
   induction: {
     problemRetrievingData: boolean
     isPostInduction: boolean
+  }
+  actionPlanReview: {
+    problemRetrievingData: boolean
+    reviewStatus: 'ON_TIME' | 'DUE' | 'OVERDUE' | 'NO_SCHEDULED_REVIEW'
+    reviewDueDate: Date | null
   }
 }
 
@@ -102,6 +108,23 @@ export default class OverviewView {
     const prisonerHasOnlyHadInduction =
       prisonerHasHadInduction && !this.actionPlanReviews?.problemRetrievingData && mostRecentReviewSession == null
     const prisonerHasHadInductionAndAtLeastOneReview = prisonerHasHadInduction && mostRecentReviewSession != null
+
+    const reviewDateFrom = this.actionPlanReviews?.latestReviewSchedule?.reviewDateFrom || null
+    const reviewDueDate = this.actionPlanReviews?.latestReviewSchedule?.reviewDateTo || null
+    const noReviewsDue = this.actionPlanReviews?.latestReviewSchedule?.status === ActionPlanReviewStatusValue.COMPLETED
+
+    const today = startOfToday()
+    let reviewStatus: 'ON_TIME' | 'DUE' | 'OVERDUE' | 'NO_SCHEDULED_REVIEW'
+
+    if (noReviewsDue) {
+      reviewStatus = 'NO_SCHEDULED_REVIEW'
+    } else if (reviewDueDate < today) {
+      reviewStatus = 'OVERDUE'
+    } else if (reviewDateFrom <= today && reviewDueDate >= today) {
+      reviewStatus = 'DUE'
+    } else if (reviewDateFrom > today) {
+      reviewStatus = 'ON_TIME'
+    }
 
     let lastSessionConductedBy: string
     let lastSessionConductedAt: Date
@@ -159,6 +182,11 @@ export default class OverviewView {
         lastUpdatedBy: mostRecentlyUpdatedGoal?.updatedByDisplayName,
         lastUpdatedDate: mostRecentlyUpdatedGoal?.updatedAt,
         lastUpdatedAtPrisonName: mostRecentlyUpdatedGoal?.updatedAtPrisonName,
+      },
+      actionPlanReview: {
+        problemRetrievingData: this.actionPlanReviews?.problemRetrievingData || false,
+        reviewStatus,
+        reviewDueDate,
       },
     }
   }
