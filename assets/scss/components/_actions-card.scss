@@ -1,5 +1,12 @@
 .actions-card {
-  display: none; // Hide the action card by default
+  display: none; // Hide the entire action card by default
+
+  .govuk-summary-card__content {
+    display: none; // Hide the action card content section by default
+  }
+  .govuk-summary-card__content:has(.govuk-list li) {
+    display: block; // Show the action card content section only if the list has at least one item within it
+  }
 
   .govuk-summary-card__title-wrapper {
     background: none;
@@ -11,8 +18,29 @@
   li:last-of-type {
     border: none;
   }
+
+  .govuk-summary-card__content ul {
+    border-bottom: 3px solid $govuk-border-colour;
+  }
+  .govuk-summary-card__content:last-of-type ul {
+    border: none;
+  }
+  .govuk-summary-card__content:only-of-type ul {
+    border: none;
+  }
+
+  .govuk-tag {
+    max-width: fit-content;
+  }
+
+  .action-icon {
+    margin-right: 8px;
+    vertical-align: middle;
+    width: 35px;
+    height: 28px;
+  }
 }
 
 .actions-card:has(.govuk-summary-card__content .govuk-list li) {
-  display: block; // Show the action card only if the list has at least item within it
+  display: block; // Show the entire action card only if the list has at least one item within it
 }

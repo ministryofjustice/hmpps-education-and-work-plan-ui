@@ -1,0 +1,37 @@
+
+<div class="govuk-summary-card actions-card govuk-!-display-none-print" data-qa="actions-card">
+  <div class="govuk-summary-card__title-wrapper govuk-!-padding-bottom-2">
+    <h2 class="govuk-summary-card__title govuk-!-font-size-24">Actions</h2>
+  </div>
+
+  {# Review based actions #}
+  {% set showReviewActions = not induction.problemRetrievingData and induction.isPostInduction and not actionPlanReview.problemRetrievingData and reviewJourneyEnabledForPrison%}
+  {% if showReviewActions %}
+    <div class="govuk-summary-card__content govuk-!-padding-bottom-0 govuk-!-padding-top-2">
+      <h3 class="govuk-heading-s govuk-!-margin-bottom-0">Reviews</h3>
+      <span class="govuk-tag govuk-!-margin-top-2 govuk-!-margin-bottom-2 govuk-tag--grey">Review due by 29 Sep 2024</span>
+      <ul class="govuk-list govuk-!-margin-0">
+      </ul>
+    </div>
+  {% endif %}
+
+
+  {# Goals based actions #}
+  <div class="govuk-summary-card__content govuk-!-padding-bottom-0 govuk-!-padding-top-2">
+    {% if reviewJourneyEnabledForPrison %}
+      <h3 class="govuk-heading-s govuk-!-margin-bottom-0">Goals</h3>
+    {% endif %}
+    <ul class="govuk-list govuk-!-margin-0">
+      {% if hasEditAuthority %}
+        <li class="govuk-!-margin-0 govuk-!-padding-bottom-3 govuk-!-padding-top-3">
+          <a class="govuk-link" data-qa="add-goal-button" href="/plan/A5502DZ/goals/create">
+            <span>
+              <img src="/assets/images/icon-goal.svg" role="presentation" alt="" class="action-icon">
+              Add a new goal
+            </span>
+          </a>
+        </li>
+      {% endif %}
+    </ul>
+  </div>
+</div>

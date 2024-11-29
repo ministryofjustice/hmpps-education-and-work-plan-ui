@@ -61,18 +61,6 @@
   align-items: center;
 }
 
-// Aligning goal icon in actions card on overview page
-
-.goal-action {
-  display: inline-flex;
-  align-items: center;
-}
-
-.goal-icon {
-  margin-right: 8px;
-  vertical-align: middle;
-}
-
 // Match the widths of the columns of functional skills and courses on overview page
 
 tbody[data-qa="functional-skills-table-body"] .govuk-table__cell:first-child {

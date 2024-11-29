@@ -15,7 +15,6 @@ Data supplied to this template:
 #}
 
 {% from "govuk/components/notification-banner/macro.njk" import govukNotificationBanner %}
-{% from "../../../../components/actions-card/macro.njk" import actionsCard %}
 
 <div class="govuk-grid-row">
   {% set createInductionBanner %}
@@ -45,23 +44,7 @@ Data supplied to this template:
     </div>
 
     <div class="govuk-grid-column-one-third app-u-print-full-width">
-      {{ actionsCard({
-        actions: [
-          {
-            title: '<span class="goal-action"><img src="/assets/images/icon-goal.svg" role="presentation" alt="" width="35px" height="28px" class="goal-icon" /> Add a new goal</span>' | safe,
-            href: '/plan/' ~ prisonerSummary.prisonNumber ~ '/goals/create',
-            id: 'add-goal-button',
-            'render-if': hasEditAuthority,
-            attributes: {
-            'data-qa': 'add-goal-button'
-          }
-          }
-        ],
-        attributes: {
-          'data-qa': 'actions-card'
-        },
-        classes: 'govuk-!-display-none-print'
-      }) }}
+      {% include '../_actionsCard.njk' %}
     </div>
   {% endblock %}
 </div>
