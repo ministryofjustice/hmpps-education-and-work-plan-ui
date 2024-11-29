@@ -45,23 +45,50 @@ Data supplied to this template:
     </div>
 
     <div class="govuk-grid-column-one-third app-u-print-full-width">
-      {{ actionsCard({
-        actions: [
-          {
-            title: '<span class="goal-action"><img src="/assets/images/icon-goal.svg" role="presentation" alt="" width="35px" height="28px" class="goal-icon" /> Add a new goal</span>' | safe,
-            href: '/plan/' ~ prisonerSummary.prisonNumber ~ '/goals/create',
-            id: 'add-goal-button',
-            'render-if': hasEditAuthority,
-            attributes: {
-            'data-qa': 'add-goal-button'
-          }
-          }
-        ],
-        attributes: {
-          'data-qa': 'actions-card'
-        },
-        classes: 'govuk-!-display-none-print'
-      }) }}
+
+      <div class="govuk-summary-card actions-card govuk-!-display-none-print" data-qa="actions-card">
+        <div class="govuk-summary-card__title-wrapper govuk-!-padding-bottom-2">
+          <h2 class="govuk-summary-card__title govuk-!-font-size-24">Actions</h2>
+        </div>
+
+        <div class="govuk-summary-card__content govuk-!-padding-bottom-0 govuk-!-padding-top-2">
+          <h3 class="govuk-heading-s govuk-!-margin-bottom-0">Reviews</h3>
+          <span class="govuk-tag govuk-!-margin-top-2 govuk-!-margin-bottom-2 govuk-tag--grey">Review due by 29 Sep 2024</span>
+          <ul class="govuk-list govuk-!-margin-0">
+            <li class="govuk-!-margin-0 govuk-!-padding-bottom-3 govuk-!-padding-top-3">
+              <a class="govuk-link" data-qa="add-goal-button" id="add-goal-button" href="/plan/A5502DZ/goals/create">
+                <span class="goal-action">
+                  <img src="/assets/images/icon-goal.svg" role="presentation" alt="" width="35px" height="28px" class="goal-icon">
+                  Mark review as complete
+                </span>
+              </a>
+            </li>
+            <li class="govuk-!-margin-0 govuk-!-padding-bottom-3 govuk-!-padding-top-3">
+              <a class="govuk-link" data-qa="add-goal-button" id="add-goal-button" href="/plan/A5502DZ/goals/create">
+                <span class="goal-action">
+                  <img src="/assets/images/icon-goal.svg" role="presentation" alt="" width="35px" height="28px" class="goal-icon">
+                  Record exemption for this prisoner
+                </span>
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <div class="govuk-summary-card__content govuk-!-padding-bottom-0 govuk-!-padding-top-2">
+          <h3 class="govuk-heading-s govuk-!-margin-bottom-0">Goals</h3>
+          <ul class="govuk-list govuk-!-margin-0">
+            <li class="govuk-!-margin-0 govuk-!-padding-bottom-3 govuk-!-padding-top-3">
+              <a class="govuk-link" data-qa="add-goal-button" id="add-goal-button" href="/plan/A5502DZ/goals/create">
+                <span class="goal-action">
+                  <img src="/assets/images/icon-goal.svg" role="presentation" alt="" width="35px" height="28px" class="goal-icon">
+                  Add a new goal
+                </span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+
     </div>
   {% endblock %}
 </div>
