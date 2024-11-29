@@ -5,16 +5,59 @@
   </div>
 
   {# Review based actions #}
-  {% set showReviewActions = not induction.problemRetrievingData and induction.isPostInduction and not actionPlanReview.problemRetrievingData and reviewJourneyEnabledForPrison%}
+  {% set showReviewActions = not induction.problemRetrievingData and induction.isPostInduction and not actionPlanReviews.problemRetrievingData and reviewJourneyEnabledForPrison %}
   {% if showReviewActions %}
     <div class="govuk-summary-card__content govuk-!-padding-bottom-0 govuk-!-padding-top-2">
       <h3 class="govuk-heading-s govuk-!-margin-bottom-0">Reviews</h3>
-      <span class="govuk-tag govuk-!-margin-top-2 govuk-!-margin-bottom-2 govuk-tag--grey">Review due by 29 Sep 2024</span>
+      <ul class="govuk-list govuk-!-margin-0">
+        {% if actionPlanReview.reviewStatus == 'ON_TIME' %}
+          <li>
+            <span class="govuk-tag govuk-tag--grey govuk-!-margin-top-2 govuk-!-margin-bottom-3" data-qa="review-on-time">
+              Review due by {{ actionPlanReview.reviewDueDate | formatDate('D MMM YYYY') }}
+            </span>
+          </li>
+        {% elseif actionPlanReview.reviewStatus == 'DUE' %}
+          <li>
+            <span class="govuk-tag govuk-tag--yellow govuk-!-margin-top-2 govuk-!-margin-bottom-3" data-qa="review-due">
+              Review due by {{ actionPlanReview.reviewDueDate | formatDate('D MMM YYYY') }}
+            </span>
+          </li>
+        {% elseif actionPlanReview.reviewStatus == 'OVERDUE' %}
+          <li>
+            <span class="govuk-tag govuk-tag--red govuk-!-margin-top-2 govuk-!-margin-bottom-3" data-qa="review-overdue">
+              Review was due by {{ actionPlanReview.reviewDueDate | formatDate('D MMM YYYY') }}
+            </span>
+          </li>
+        {% elseif actionPlanReview.reviewStatus == 'NO_SCHEDULED_REVIEW' %}
+          <li>
+            <span class="govuk-tag govuk-tag--grey govuk-!-margin-top-2 govuk-!-margin-bottom-3" data-qa="no-reviews-due">
+              No reviews due
+            </span>
+            <p class="govuk-body" data-qa="release-on">
+              release on {{ prisonerSummary.releaseDate | formatDate('D MMM YYYY') }}
+            </p>
+          </li>
+        {% endif %}
+        
+        {% if actionPlanReview.reviewStatus != 'NO_SCHEDULED_REVIEW' %}
+          <li class="govuk-!-padding-top-2 govuk-!-padding-bottom-3">
+            <a class="govuk-link" href="/plan/{{ prisonerSummary.prisonNumber }}/review" data-qa="mark-review-complete-button">
+              <img src="/assets/images/icon-mark-review-complete.svg" alt="" role="presentation" class="action-icon">
+              Mark review as complete
+            </a>
+          </li>
+          <li class="govuk-!-padding-top-2 govuk-!-padding-bottom-3">
+            <a class="govuk-link" href="/plan/{{ prisonerSummary.prisonNumber }}/review/exemption" data-qa="record-exemption-button">
+              <img src="/assets/images/icon-record-exemption.svg" alt="" role="presentation" class="action-icon">
+              Record exemption for this prisoner
+            </a>
+          </li>
+        {% endif %}
+      </ul>
       <ul class="govuk-list govuk-!-margin-0">
       </ul>
     </div>
   {% endif %}
-
 
   {# Goals based actions #}
   <div class="govuk-summary-card__content govuk-!-padding-bottom-0 govuk-!-padding-top-2">
@@ -24,7 +67,7 @@
     <ul class="govuk-list govuk-!-margin-0">
       {% if hasEditAuthority %}
         <li class="govuk-!-margin-0 govuk-!-padding-bottom-3 govuk-!-padding-top-3">
-          <a class="govuk-link" data-qa="add-goal-button" href="/plan/{{ prisonerSummary.prisonNumber }}/goals/create">
+          <a class="govuk-link" data-qa="add-goal-button" href="/plan/A5502DZ/goals/create">
             <span>
               <img src="/assets/images/icon-goal.svg" role="presentation" alt="" class="action-icon">
               Add a new goal
