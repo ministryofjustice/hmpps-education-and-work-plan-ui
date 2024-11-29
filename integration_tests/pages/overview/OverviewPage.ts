@@ -213,7 +213,7 @@ export default class OverviewPage extends Page {
 
   private activeTab = (): PageElement => cy.get('.moj-sub-navigation__link[aria-current=page]')
 
-  private addGoalButton = (): PageElement => cy.get('[data-qa=add-goal-button')
+  private addGoalButton = (): PageElement => cy.get('[data-qa=add-goal-button]')
 
   private viewAllEducationAndTrainingButton = (): PageElement =>
     cy.get('[data-qa=view-education-and-training-tab-button]')
