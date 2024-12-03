@@ -9,8 +9,8 @@
   {% if showReviewActions %}
     <div class="govuk-summary-card__content govuk-!-padding-bottom-0 govuk-!-padding-top-2">
       <h3 class="govuk-heading-s govuk-!-margin-bottom-0">Reviews</h3>
-      {% if actionPlanReview.reviewStatus == 'ON_TIME' %}
-        <span class="govuk-tag govuk-tag--grey govuk-!-margin-top-2 govuk-!-margin-bottom-2" data-qa="review-on-time">
+      {% if actionPlanReview.reviewStatus == 'NOT_DUE' %}
+        <span class="govuk-tag govuk-tag--grey govuk-!-margin-top-2 govuk-!-margin-bottom-2" data-qa="review-not-time">
           Review due by {{ actionPlanReview.reviewDueDate | formatDate('D MMM YYYY') }}
         </span>
       {% elseif actionPlanReview.reviewStatus == 'DUE' %}
@@ -30,7 +30,7 @@
         </p>
       {% endif %}
 
-      <ul class="govuk-list govuk-!-margin-0">
+      <ul class="govuk-list govuk-!-margin-0" data-qa="reviews-action-items">
         {% if actionPlanReview.reviewStatus != 'NO_SCHEDULED_REVIEW' %}
           {% if hasEditAuthority %}
             <li class="govuk-!-padding-top-2 govuk-!-padding-bottom-3">
@@ -58,7 +58,7 @@
     {% if reviewJourneyEnabledForPrison %}
       <h3 class="govuk-heading-s govuk-!-margin-bottom-0">Goals</h3>
     {% endif %}
-    <ul class="govuk-list govuk-!-margin-0">
+    <ul class="govuk-list govuk-!-margin-0" data-qa="goals-action-items">
       {% if hasEditAuthority %}
         <li class="govuk-!-margin-0 govuk-!-padding-bottom-3 govuk-!-padding-top-3">
           <a class="govuk-link" data-qa="add-goal-button" href="/plan/{{ prisonerSummary.prisonNumber }}/goals/create">

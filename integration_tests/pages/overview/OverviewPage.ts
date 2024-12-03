@@ -176,6 +176,34 @@ export default class OverviewPage extends Page {
     return Page.verifyOnPage(GoalsPage)
   }
 
+  actionsCardIsNotPresent(): OverviewPage {
+    // Technically the action card as a HTML element is always present. If it contains no `li` elements then we use CSS to hide it
+    // but because the runtime on CircleCI does not process/render the css we cannot use `.should('not.be.visible')`
+    // Instead we will ensure there are zero `li` elements within it, and trust that the css hides the element in this case.
+    this.actionsCard().should('exist')
+    this.goalsActionItems().should('not.exist')
+    this.reviewsActionItems().should('not.exist')
+    return this
+  }
+
+  actionsCardContainsGoalsActions(): OverviewPage {
+    this.actionsCard().should('exist')
+    this.goalsActionItems().should('exist')
+    return this
+  }
+
+  actionsCardContainsReviewsActions(): OverviewPage {
+    this.actionsCard().should('exist')
+    this.reviewsActionItems().should('exist')
+    return this
+  }
+
+  actionsCardDoesNotContainReviewsActions(): OverviewPage {
+    this.actionsCard().should('exist')
+    this.reviewsActionItems().should('not.exist')
+    return this
+  }
+
   private prisonNumberLabel = (): PageElement => cy.get('[data-qa=prison-number]')
 
   private inProgressGoalsCount = (): PageElement => cy.get('[data-qa=in-progress-goals-count]')
@@ -229,4 +257,10 @@ export default class OverviewPage extends Page {
     this.completedCoursesinLast12MonthsTable().find(`[data-qa=completed-course-name]:contains(${expectedCourseName})`)
 
   private successMessage = (): PageElement => cy.get('[data-qa=overview-success-message]')
+
+  private actionsCard = (): PageElement => cy.get('[data-qa=actions-card]')
+
+  private goalsActionItems = (): PageElement => cy.get('[data-qa=goals-action-items] li')
+
+  private reviewsActionItems = (): PageElement => cy.get('[data-qa=reviews-action-items] li')
 }
