@@ -1,5 +1,6 @@
 import * as cheerio from 'cheerio'
 import nunjucks from 'nunjucks'
+import type { HealthAndSupportNeeds } from 'viewModels'
 import aValidPrisonerSupportNeeds from '../../../../../testsupport/supportNeedsTestDataBuilder'
 import aValidPrisonerSummary from '../../../../../testsupport/prisonerSummaryTestDataBuilder'
 import fallbackMessageFilter from '../../../../../filters/fallbackMessageFilter'
@@ -65,14 +66,17 @@ describe('Support Needs tab view', () => {
     // Given
     const supportNeeds = {
       ...aValidPrisonerSupportNeeds(),
-      healthAndSupportNeeds: aValidPrisonerSupportNeeds().healthAndSupportNeeds.map(supportNeed => ({
-        ...supportNeed,
-        rapidAssessmentDate: undefined,
-        inDepthAssessmentDate: undefined,
-        primaryLddAndHealthNeeds: null,
-        additionalLddAndHealthNeeds: [],
-        hasSupportNeeds: false,
-      })),
+      healthAndSupportNeeds: aValidPrisonerSupportNeeds().healthAndSupportNeeds.map(
+        supportNeed =>
+          ({
+            ...supportNeed,
+            rapidAssessmentDate: undefined,
+            inDepthAssessmentDate: undefined,
+            primaryLddAndHealthNeeds: null,
+            additionalLddAndHealthNeeds: [],
+            hasSupportNeeds: false,
+          }) as HealthAndSupportNeeds,
+      ),
     }
     const pageViewModel = {
       tab: 'support-needs',
