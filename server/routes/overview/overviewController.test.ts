@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
 import type { Assessment, FunctionalSkills, InPrisonCourse, InPrisonCourseRecords, PrisonerGoals } from 'viewModels'
-import { parseISO, startOfDay } from 'date-fns'
+import { add, parseISO, startOfDay, startOfToday, sub } from 'date-fns'
 import { aValidEnglishInPrisonCourse, aValidMathsInPrisonCourse } from '../../testsupport/inPrisonCourseTestDataBuilder'
 import aValidPrisonerSummary from '../../testsupport/prisonerSummaryTestDataBuilder'
 import { aValidGoalResponse } from '../../testsupport/actionPlanResponseTestDataBuilder'
@@ -9,6 +9,8 @@ import EducationAndWorkPlanService from '../../services/educationAndWorkPlanServ
 import OverviewController from './overviewController'
 import aValidActionPlanReviews from '../../testsupport/actionPlanReviewsTestDataBuilder'
 import { aValidInductionDto } from '../../testsupport/inductionDtoTestDataBuilder'
+import aValidScheduledActionPlanReview from '../../testsupport/scheduledActionPlanReviewTestDataBuilder'
+import ActionPlanReviewStatusValue from '../../enums/actionPlanReviewStatusValue'
 
 jest.mock('../../services/educationAndWorkPlanService')
 
@@ -23,6 +25,7 @@ describe('overviewController', () => {
   const prisonNumber = 'A1234GC'
   const username = 'a-dps-user'
   const prisonerSummary = aValidPrisonerSummary(prisonNumber)
+  const today = startOfToday()
 
   const inPrisonCourses: InPrisonCourseRecords = {
     problemRetrievingData: false,
@@ -47,8 +50,9 @@ describe('overviewController', () => {
     user: { username },
     params: { prisonNumber },
   } as unknown as Request
+  const render = jest.fn()
   const res = {
-    render: jest.fn(),
+    render,
     locals: {},
   } as unknown as Response
   const next = jest.fn()
@@ -67,17 +71,17 @@ describe('overviewController', () => {
     const inProgressGoal = {
       ...aValidGoalResponse(),
       status: GoalStatusValue.ACTIVE,
-      updatedAt: new Date('2023-09-23T13:42:01.401Z'),
+      updatedAt: parseISO('2023-09-23T13:42:01.401Z'),
     }
     const archivedGoal = {
       ...aValidGoalResponse(),
       status: GoalStatusValue.ARCHIVED,
-      updatedAt: new Date('2023-08-23T13:42:01.401Z'),
+      updatedAt: parseISO('2023-08-23T13:42:01.401Z'),
     }
     const completedGoal = {
       ...aValidGoalResponse(),
       status: GoalStatusValue.COMPLETED,
-      updatedAt: new Date('2023-07-23T13:42:01.401Z'),
+      updatedAt: parseISO('2023-07-23T13:42:01.401Z'),
     }
 
     educationAndWorkPlanService.getAllGoalsForPrisoner.mockResolvedValue({
@@ -151,22 +155,212 @@ describe('overviewController', () => {
     expect(res.render).toHaveBeenCalledWith('pages/overview/index', expectedView)
   })
 
+  it('should get overview view given prisoner has no latest review schedule', async () => {
+    // Given
+    educationAndWorkPlanService.getAllGoalsForPrisoner.mockResolvedValue({
+      prisonNumber,
+      goals: {
+        ACTIVE: [],
+        ARCHIVED: [],
+        COMPLETED: [],
+      },
+      problemRetrievingData: false,
+    } as PrisonerGoals)
+
+    res.locals.induction = {
+      problemRetrievingData: false,
+      inductionDto: aValidInductionDto(),
+    }
+
+    res.locals.actionPlanReviews = {
+      ...aValidActionPlanReviews(),
+      latestReviewSchedule: undefined,
+    }
+
+    const expected = {
+      problemRetrievingData: false,
+      reviewStatus: 'NO_SCHEDULED_REVIEW',
+      reviewDueDate: undefined as Date,
+    }
+
+    // When
+    await controller.getOverviewView(req, res, next)
+
+    // Then
+    const renderedView = render.mock.calls[0][1]
+    expect(renderedView.actionPlanReview).toEqual(expected)
+  })
+
+  it('should get overview view given latest review schedule was Completed', async () => {
+    // Given
+    educationAndWorkPlanService.getAllGoalsForPrisoner.mockResolvedValue({
+      prisonNumber,
+      goals: {
+        ACTIVE: [],
+        ARCHIVED: [],
+        COMPLETED: [],
+      },
+      problemRetrievingData: false,
+    } as PrisonerGoals)
+
+    res.locals.induction = {
+      problemRetrievingData: false,
+      inductionDto: aValidInductionDto(),
+    }
+
+    res.locals.actionPlanReviews = aValidActionPlanReviews({
+      latestReviewSchedule: aValidScheduledActionPlanReview({
+        status: ActionPlanReviewStatusValue.COMPLETED,
+      }),
+    })
+
+    const expected = {
+      problemRetrievingData: false,
+      reviewStatus: 'NO_SCHEDULED_REVIEW',
+      reviewDueDate: undefined as Date,
+    }
+
+    // When
+    await controller.getOverviewView(req, res, next)
+
+    // Then
+    const renderedView = render.mock.calls[0][1]
+    expect(renderedView.actionPlanReview).toEqual(expected)
+  })
+
+  it('should get overview view given latest review schedule is scheduled but is not due', async () => {
+    // Given
+    educationAndWorkPlanService.getAllGoalsForPrisoner.mockResolvedValue({
+      prisonNumber,
+      goals: {
+        ACTIVE: [],
+        ARCHIVED: [],
+        COMPLETED: [],
+      },
+      problemRetrievingData: false,
+    } as PrisonerGoals)
+
+    res.locals.induction = {
+      problemRetrievingData: false,
+      inductionDto: aValidInductionDto(),
+    }
+
+    res.locals.actionPlanReviews = aValidActionPlanReviews({
+      latestReviewSchedule: aValidScheduledActionPlanReview({
+        status: ActionPlanReviewStatusValue.SCHEDULED,
+        reviewDateFrom: add(today, { months: 1 }),
+        reviewDateTo: add(today, { months: 3 }),
+      }),
+    })
+
+    const expected = {
+      problemRetrievingData: false,
+      reviewStatus: 'NOT_DUE',
+      reviewDueDate: add(today, { months: 3 }),
+    }
+
+    // When
+    await controller.getOverviewView(req, res, next)
+
+    // Then
+    const renderedView = render.mock.calls[0][1]
+    expect(renderedView.actionPlanReview).toEqual(expected)
+  })
+
+  it('should get overview view given latest review schedule is scheduled but is due', async () => {
+    // Given
+    educationAndWorkPlanService.getAllGoalsForPrisoner.mockResolvedValue({
+      prisonNumber,
+      goals: {
+        ACTIVE: [],
+        ARCHIVED: [],
+        COMPLETED: [],
+      },
+      problemRetrievingData: false,
+    } as PrisonerGoals)
+
+    res.locals.induction = {
+      problemRetrievingData: false,
+      inductionDto: aValidInductionDto(),
+    }
+
+    res.locals.actionPlanReviews = aValidActionPlanReviews({
+      latestReviewSchedule: aValidScheduledActionPlanReview({
+        status: ActionPlanReviewStatusValue.SCHEDULED,
+        reviewDateFrom: sub(today, { months: 1 }),
+        reviewDateTo: add(today, { months: 1 }),
+      }),
+    })
+
+    const expected = {
+      problemRetrievingData: false,
+      reviewStatus: 'DUE',
+      reviewDueDate: add(today, { months: 1 }),
+    }
+
+    // When
+    await controller.getOverviewView(req, res, next)
+
+    // Then
+    const renderedView = render.mock.calls[0][1]
+    expect(renderedView.actionPlanReview).toEqual(expected)
+  })
+
+  it('should get overview view given latest review schedule is scheduled but is overdue', async () => {
+    // Given
+    educationAndWorkPlanService.getAllGoalsForPrisoner.mockResolvedValue({
+      prisonNumber,
+      goals: {
+        ACTIVE: [],
+        ARCHIVED: [],
+        COMPLETED: [],
+      },
+      problemRetrievingData: false,
+    } as PrisonerGoals)
+
+    res.locals.induction = {
+      problemRetrievingData: false,
+      inductionDto: aValidInductionDto(),
+    }
+
+    res.locals.actionPlanReviews = aValidActionPlanReviews({
+      latestReviewSchedule: aValidScheduledActionPlanReview({
+        status: ActionPlanReviewStatusValue.SCHEDULED,
+        reviewDateFrom: sub(today, { months: 1 }),
+        reviewDateTo: sub(today, { days: 1 }),
+      }),
+    })
+
+    const expected = {
+      problemRetrievingData: false,
+      reviewStatus: 'OVERDUE',
+      reviewDueDate: sub(today, { days: 1 }),
+    }
+
+    // When
+    await controller.getOverviewView(req, res, next)
+
+    // Then
+    const renderedView = render.mock.calls[0][1]
+    expect(renderedView.actionPlanReview).toEqual(expected)
+  })
+
   it('should get overview view given Induction and Goals exist, but an Action Plan Reviews was not retrieved at all', async () => {
     // Given
     const inProgressGoal = {
       ...aValidGoalResponse(),
       status: GoalStatusValue.ACTIVE,
-      updatedAt: new Date('2023-09-23T13:42:01.401Z'),
+      updatedAt: parseISO('2023-09-23T13:42:01.401Z'),
     }
     const archivedGoal = {
       ...aValidGoalResponse(),
       status: GoalStatusValue.ARCHIVED,
-      updatedAt: new Date('2023-08-23T13:42:01.401Z'),
+      updatedAt: parseISO('2023-08-23T13:42:01.401Z'),
     }
     const completedGoal = {
       ...aValidGoalResponse(),
       status: GoalStatusValue.COMPLETED,
-      updatedAt: new Date('2023-07-23T13:42:01.401Z'),
+      updatedAt: parseISO('2023-07-23T13:42:01.401Z'),
     }
 
     educationAndWorkPlanService.getAllGoalsForPrisoner.mockResolvedValue({
@@ -228,8 +422,8 @@ describe('overviewController', () => {
       },
       actionPlanReview: {
         problemRetrievingData: false,
-        reviewStatus: 'OVERDUE',
-        reviewDueDate: null as Date,
+        reviewStatus: 'NO_SCHEDULED_REVIEW',
+        reviewDueDate: undefined as Date,
       },
     }
 
@@ -318,8 +512,8 @@ describe('overviewController', () => {
       },
       actionPlanReview: {
         problemRetrievingData: false,
-        reviewStatus: 'OVERDUE',
-        reviewDueDate: null as Date,
+        reviewStatus: 'NO_SCHEDULED_REVIEW',
+        reviewDueDate: undefined as Date,
       },
     }
 
@@ -421,17 +615,17 @@ describe('overviewController', () => {
     const inProgressGoal = {
       ...aValidGoalResponse(),
       status: GoalStatusValue.ACTIVE,
-      updatedAt: new Date('2023-09-23T13:42:01.401Z'),
+      updatedAt: parseISO('2023-09-23T13:42:01.401Z'),
     }
     const archivedGoal = {
       ...aValidGoalResponse(),
       status: GoalStatusValue.ARCHIVED,
-      updatedAt: new Date('2023-08-23T13:42:01.401Z'),
+      updatedAt: parseISO('2023-08-23T13:42:01.401Z'),
     }
     const completedGoal = {
       ...aValidGoalResponse(),
       status: GoalStatusValue.COMPLETED,
-      updatedAt: new Date('2023-07-23T13:42:01.401Z'),
+      updatedAt: parseISO('2023-07-23T13:42:01.401Z'),
     }
 
     educationAndWorkPlanService.getAllGoalsForPrisoner.mockResolvedValue({
@@ -510,17 +704,17 @@ describe('overviewController', () => {
     const inProgressGoal = {
       ...aValidGoalResponse(),
       status: GoalStatusValue.ACTIVE,
-      updatedAt: new Date('2023-09-23T13:42:01.401Z'),
+      updatedAt: parseISO('2023-09-23T13:42:01.401Z'),
     }
     const archivedGoal = {
       ...aValidGoalResponse(),
       status: GoalStatusValue.ARCHIVED,
-      updatedAt: new Date('2023-08-23T13:42:01.401Z'),
+      updatedAt: parseISO('2023-08-23T13:42:01.401Z'),
     }
     const completedGoal = {
       ...aValidGoalResponse(),
       status: GoalStatusValue.COMPLETED,
-      updatedAt: new Date('2023-07-23T13:42:01.401Z'),
+      updatedAt: parseISO('2023-07-23T13:42:01.401Z'),
     }
 
     educationAndWorkPlanService.getAllGoalsForPrisoner.mockResolvedValue({
@@ -586,8 +780,8 @@ describe('overviewController', () => {
       },
       actionPlanReview: {
         problemRetrievingData: true,
-        reviewStatus: 'OVERDUE',
-        reviewDueDate: null as Date,
+        reviewStatus: 'NO_SCHEDULED_REVIEW',
+        reviewDueDate: undefined as Date,
       },
     }
 
@@ -603,17 +797,17 @@ describe('overviewController', () => {
     const inProgressGoal = {
       ...aValidGoalResponse(),
       status: GoalStatusValue.ACTIVE,
-      updatedAt: new Date('2023-09-23T13:42:01.401Z'),
+      updatedAt: parseISO('2023-09-23T13:42:01.401Z'),
     }
     const archivedGoal = {
       ...aValidGoalResponse(),
       status: GoalStatusValue.ARCHIVED,
-      updatedAt: new Date('2023-08-23T13:42:01.401Z'),
+      updatedAt: parseISO('2023-08-23T13:42:01.401Z'),
     }
     const completedGoal = {
       ...aValidGoalResponse(),
       status: GoalStatusValue.COMPLETED,
-      updatedAt: new Date('2023-07-23T13:42:01.401Z'),
+      updatedAt: parseISO('2023-07-23T13:42:01.401Z'),
     }
 
     educationAndWorkPlanService.getAllGoalsForPrisoner.mockResolvedValue({
@@ -694,17 +888,17 @@ describe('overviewController', () => {
     const inProgressGoal = {
       ...aValidGoalResponse(),
       status: GoalStatusValue.ACTIVE,
-      updatedAt: new Date('2023-09-23T13:42:01.401Z'),
+      updatedAt: parseISO('2023-09-23T13:42:01.401Z'),
     }
     const archivedGoal = {
       ...aValidGoalResponse(),
       status: GoalStatusValue.ARCHIVED,
-      updatedAt: new Date('2023-08-23T13:42:01.401Z'),
+      updatedAt: parseISO('2023-08-23T13:42:01.401Z'),
     }
     const completedGoal = {
       ...aValidGoalResponse(),
       status: GoalStatusValue.COMPLETED,
-      updatedAt: new Date('2023-07-23T13:42:01.401Z'),
+      updatedAt: parseISO('2023-07-23T13:42:01.401Z'),
     }
 
     educationAndWorkPlanService.getAllGoalsForPrisoner.mockResolvedValue({

@@ -7,7 +7,7 @@ import type {
   PrisonerGoals,
   PrisonerSummary,
 } from 'viewModels'
-import { startOfToday, sub } from 'date-fns'
+import { isAfter, isWithinInterval, startOfToday, sub } from 'date-fns'
 import type { InductionDto } from 'inductionDto'
 import dateComparator from '../dateComparator'
 import ActionPlanReviewStatusValue from '../../enums/actionPlanReviewStatusValue'
@@ -54,7 +54,7 @@ type RenderArgs = {
   }
   actionPlanReview: {
     problemRetrievingData: boolean
-    reviewStatus: 'ON_TIME' | 'DUE' | 'OVERDUE' | 'NO_SCHEDULED_REVIEW'
+    reviewStatus: 'NOT_DUE' | 'DUE' | 'OVERDUE' | 'NO_SCHEDULED_REVIEW'
     reviewDueDate: Date | null
   }
 }
@@ -109,21 +109,23 @@ export default class OverviewView {
       prisonerHasHadInduction && !this.actionPlanReviews?.problemRetrievingData && mostRecentReviewSession == null
     const prisonerHasHadInductionAndAtLeastOneReview = prisonerHasHadInduction && mostRecentReviewSession != null
 
-    const reviewDateFrom = this.actionPlanReviews?.latestReviewSchedule?.reviewDateFrom || null
-    const reviewDueDate = this.actionPlanReviews?.latestReviewSchedule?.reviewDateTo || null
-    const noReviewsDue = this.actionPlanReviews?.latestReviewSchedule?.status === ActionPlanReviewStatusValue.COMPLETED
+    const noScheduledReview =
+      this.actionPlanReviews?.latestReviewSchedule == null ||
+      this.actionPlanReviews?.latestReviewSchedule.status === ActionPlanReviewStatusValue.COMPLETED
+    const reviewDateFrom = this.actionPlanReviews?.latestReviewSchedule?.reviewDateFrom
+    const reviewDueDate = noScheduledReview ? undefined : this.actionPlanReviews?.latestReviewSchedule?.reviewDateTo
 
     const today = startOfToday()
-    let reviewStatus: 'ON_TIME' | 'DUE' | 'OVERDUE' | 'NO_SCHEDULED_REVIEW'
+    let reviewStatus: 'NOT_DUE' | 'DUE' | 'OVERDUE' | 'NO_SCHEDULED_REVIEW'
 
-    if (noReviewsDue) {
+    if (noScheduledReview) {
       reviewStatus = 'NO_SCHEDULED_REVIEW'
-    } else if (reviewDueDate < today) {
+    } else if (isAfter(today, reviewDueDate)) {
       reviewStatus = 'OVERDUE'
-    } else if (reviewDateFrom <= today && reviewDueDate >= today) {
+    } else if (isWithinInterval(today, { start: reviewDateFrom, end: reviewDueDate })) {
       reviewStatus = 'DUE'
-    } else if (reviewDateFrom > today) {
-      reviewStatus = 'ON_TIME'
+    } else {
+      reviewStatus = 'NOT_DUE'
     }
 
     let lastSessionConductedBy: string
@@ -184,7 +186,7 @@ export default class OverviewView {
         lastUpdatedAtPrisonName: mostRecentlyUpdatedGoal?.updatedAtPrisonName,
       },
       actionPlanReview: {
-        problemRetrievingData: this.actionPlanReviews?.problemRetrievingData || false,
+        problemRetrievingData: this.actionPlanReviews == null ? false : this.actionPlanReviews.problemRetrievingData,
         reviewStatus,
         reviewDueDate,
       },

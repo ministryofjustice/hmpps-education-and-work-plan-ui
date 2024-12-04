@@ -252,6 +252,56 @@ context('Prisoner Overview page - Common functionality for both pre and post ind
     Page.verifyOnPage(Error404Page)
   })
 
+  describe('Actions Card', () => {
+    it('should not display Actions Card given user is a read only user', () => {
+      // Given
+      cy.task('stubSignInAsReadOnlyUser')
+      cy.signIn()
+
+      // When
+      cy.visit(`/plan/${prisonNumber}/view/overview`)
+
+      // Then
+      Page.verifyOnPage(OverviewPage) //
+        .activeTabIs('Overview')
+        .actionsCardIsNotPresent()
+    })
+
+    describe('Reviews', () => {
+      it('should display Actions Card containing Reviews based actions given user has editor access and prisoner has a Review Schedule', () => {
+        // Given
+        cy.task('stubSignInAsUserWithEditAuthority')
+        cy.task('stubGetActionPlanReviews')
+        cy.signIn()
+
+        // When
+        cy.visit(`/plan/${prisonNumber}/view/overview`)
+
+        // Then
+        Page.verifyOnPage(OverviewPage) //
+          .activeTabIs('Overview')
+          .actionsCardContainsGoalsActions()
+          .actionsCardContainsReviewsActions()
+      })
+
+      it('should display Actions Card without Reviews based actions given user has editor access and prisoner has no Review Schedule', () => {
+        // Given
+        cy.task('stubSignInAsUserWithEditAuthority')
+        cy.task('stubGetActionPlanReviews404Error')
+        cy.signIn()
+
+        // When
+        cy.visit(`/plan/${prisonNumber}/view/overview`)
+
+        // Then
+        Page.verifyOnPage(OverviewPage) //
+          .activeTabIs('Overview')
+          .actionsCardContainsGoalsActions()
+          .actionsCardDoesNotContainReviewsActions()
+      })
+    })
+  })
+
   describe('API timeout tests - these are slow tests!', () => {
     it('should display Curious unavailable message given Curious has timeout errors when getting Functional Skills and In Prison Courses', () => {
       // Given
