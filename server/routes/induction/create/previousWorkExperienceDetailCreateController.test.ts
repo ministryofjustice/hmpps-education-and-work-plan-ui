@@ -1,4 +1,5 @@
 import { Request, Response } from 'express'
+import { SessionData } from 'express-session'
 import createError from 'http-errors'
 import type { InductionDto } from 'inductionDto'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
@@ -14,10 +15,11 @@ describe('previousWorkExperienceDetailCreateController', () => {
   const prisonerSummary = aValidPrisonerSummary()
 
   const req = {
-    session: {},
+    session: {} as SessionData,
     body: {},
-    params: { prisonNumber },
-  } as unknown as Request
+    params: { prisonNumber } as Record<string, string>,
+    path: '',
+  }
   const res = {
     redirect: jest.fn(),
     redirectWithErrors: jest.fn(),
@@ -64,7 +66,7 @@ describe('previousWorkExperienceDetailCreateController', () => {
       }
 
       // When
-      await controller.getPreviousWorkExperienceDetailView(req, res, next)
+      await controller.getPreviousWorkExperienceDetailView(req as unknown as Request, res, next)
 
       // Then
       expect(res.render).toHaveBeenCalledWith(
@@ -106,7 +108,7 @@ describe('previousWorkExperienceDetailCreateController', () => {
       }
 
       // When
-      await controller.getPreviousWorkExperienceDetailView(req, res, next)
+      await controller.getPreviousWorkExperienceDetailView(req as unknown as Request, res, next)
 
       // Then
       expect(res.render).toHaveBeenCalledWith(
@@ -130,7 +132,7 @@ describe('previousWorkExperienceDetailCreateController', () => {
       const expectedError = createError(404, `Previous Work Experience type retail not found on Induction`)
 
       // When
-      await controller.getPreviousWorkExperienceDetailView(req, res, next)
+      await controller.getPreviousWorkExperienceDetailView(req as unknown as Request, res, next)
 
       // Then
       expect(res.render).not.toHaveBeenCalled()
@@ -151,7 +153,7 @@ describe('previousWorkExperienceDetailCreateController', () => {
       )
 
       // When
-      await controller.getPreviousWorkExperienceDetailView(req, res, next)
+      await controller.getPreviousWorkExperienceDetailView(req as unknown as Request, res, next)
 
       // Then
       expect(res.render).not.toHaveBeenCalled()
@@ -194,7 +196,7 @@ describe('previousWorkExperienceDetailCreateController', () => {
       }
 
       // When
-      await controller.getPreviousWorkExperienceDetailView(req, res, next)
+      await controller.getPreviousWorkExperienceDetailView(req as unknown as Request, res, next)
 
       // Then
       expect(res.render).toHaveBeenCalledWith(
@@ -229,7 +231,7 @@ describe('previousWorkExperienceDetailCreateController', () => {
         ]
 
         // When
-        await controller.submitPreviousWorkExperienceDetailForm(req, res, next)
+        await controller.submitPreviousWorkExperienceDetailForm(req as unknown as Request, res, next)
 
         // Then
         expect(res.redirectWithErrors).toHaveBeenCalledWith(
@@ -254,7 +256,7 @@ describe('previousWorkExperienceDetailCreateController', () => {
         )
 
         // When
-        await controller.submitPreviousWorkExperienceDetailForm(req, res, next)
+        await controller.submitPreviousWorkExperienceDetailForm(req as unknown as Request, res, next)
 
         // Then
         expect(res.redirect).not.toHaveBeenCalled()
@@ -281,7 +283,7 @@ describe('previousWorkExperienceDetailCreateController', () => {
         req.session.previousWorkExperienceDetailForm = undefined
 
         // When
-        await controller.submitPreviousWorkExperienceDetailForm(req, res, next)
+        await controller.submitPreviousWorkExperienceDetailForm(req as unknown as Request, res, next)
 
         // Then
         expect(res.redirect).not.toHaveBeenCalled()
@@ -341,7 +343,7 @@ describe('previousWorkExperienceDetailCreateController', () => {
       ]
 
       // When
-      await controller.submitPreviousWorkExperienceDetailForm(req, res, next)
+      await controller.submitPreviousWorkExperienceDetailForm(req as unknown as Request, res, next)
 
       // Then
       expect(res.redirect).toHaveBeenCalledWith(expectedNextPage)
@@ -417,7 +419,7 @@ describe('previousWorkExperienceDetailCreateController', () => {
       ]
 
       // When
-      await controller.submitPreviousWorkExperienceDetailForm(req, res, next)
+      await controller.submitPreviousWorkExperienceDetailForm(req as unknown as Request, res, next)
 
       // Then
       expect(res.redirect).toHaveBeenCalledWith(expectedNextPage)
@@ -466,7 +468,7 @@ describe('previousWorkExperienceDetailCreateController', () => {
       }
 
       // When
-      await controller.submitPreviousWorkExperienceDetailForm(req, res, next)
+      await controller.submitPreviousWorkExperienceDetailForm(req as unknown as Request, res, next)
 
       // Then
       const updatedInduction = req.session.inductionDto
@@ -540,7 +542,7 @@ describe('previousWorkExperienceDetailCreateController', () => {
       ]
 
       // When
-      await controller.submitPreviousWorkExperienceDetailForm(req, res, next)
+      await controller.submitPreviousWorkExperienceDetailForm(req as unknown as Request, res, next)
 
       // Then
       const updatedInduction = req.session.inductionDto
