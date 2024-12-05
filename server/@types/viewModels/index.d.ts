@@ -287,6 +287,7 @@ declare module 'viewModels' {
       | 'STEP_NOT_STARTED'
       | 'STEP_STARTED'
       | 'STEP_COMPLETED'
+      | 'ACTION_PLAN_REVIEW_COMPLETED'
       | 'CONVERSATION_CREATED'
       | 'CONVERSATION_UPDATED'
       | 'PRISON_ADMISSION'

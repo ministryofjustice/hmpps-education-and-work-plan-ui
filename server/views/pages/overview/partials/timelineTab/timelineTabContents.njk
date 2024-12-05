@@ -5,7 +5,7 @@
       {% if timeline.events | length %}
 
         <div class="moj-timeline">
-          {% set supportedTimelineEventTypes = ['ACTION_PLAN_CREATED', 'INDUCTION_UPDATED', 'GOAL_UPDATED', 'GOAL_CREATED', 'MULTIPLE_GOALS_CREATED', 'GOAL_ARCHIVED', 'GOAL_UNARCHIVED', 'GOAL_COMPLETED', 'PRISON_ADMISSION', 'PRISON_RELEASE', 'PRISON_TRANSFER'] %}
+          {% set supportedTimelineEventTypes = ['ACTION_PLAN_CREATED', 'INDUCTION_UPDATED', 'GOAL_UPDATED', 'GOAL_CREATED', 'MULTIPLE_GOALS_CREATED', 'GOAL_ARCHIVED', 'GOAL_UNARCHIVED', 'GOAL_COMPLETED', 'ACTION_PLAN_REVIEW_COMPLETED', 'PRISON_ADMISSION', 'PRISON_RELEASE', 'PRISON_TRANSFER'] %}
 
           {% for event in timeline.events %}
             {% if event.eventType in supportedTimelineEventTypes %}

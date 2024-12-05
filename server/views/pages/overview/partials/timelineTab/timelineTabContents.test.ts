@@ -29,6 +29,7 @@ describe('timelineTabContents', () => {
         aTimelineEvent({ eventType: 'GOAL_ARCHIVED' }),
         aTimelineEvent({ eventType: 'GOAL_UNARCHIVED' }),
         aTimelineEvent({ eventType: 'GOAL_COMPLETED' }),
+        aTimelineEvent({ eventType: 'ACTION_PLAN_REVIEW_COMPLETED' }),
         aTimelineEvent({ eventType: 'INDUCTION_UPDATED' }),
         aTimelineEvent({ eventType: 'MULTIPLE_GOALS_CREATED' }),
         aTimelineEvent({ eventType: 'PRISON_ADMISSION' }),
@@ -52,13 +53,14 @@ describe('timelineTabContents', () => {
     const $ = cheerio.load(content)
 
     // Then
-    expect($('[data-qa-event-type]').length).toEqual(11)
+    expect($('[data-qa-event-type]').length).toEqual(12)
     expect($('[data-qa-event-type=ACTION_PLAN_CREATED]').length).toEqual(1)
     expect($('[data-qa-event-type=GOAL_CREATED]').length).toEqual(1)
     expect($('[data-qa-event-type=GOAL_UPDATED]').length).toEqual(1)
     expect($('[data-qa-event-type=GOAL_ARCHIVED]').length).toEqual(1)
     expect($('[data-qa-event-type=GOAL_UNARCHIVED]').length).toEqual(1)
     expect($('[data-qa-event-type=GOAL_COMPLETED]').length).toEqual(1)
+    expect($('[data-qa-event-type=ACTION_PLAN_REVIEW_COMPLETED]').length).toEqual(1)
     expect($('[data-qa-event-type=MULTIPLE_GOALS_CREATED]').length).toEqual(1)
     expect($('[data-qa-event-type=PRISON_ADMISSION]').length).toEqual(1)
     expect($('[data-qa-event-type=PRISON_TRANSFER]').length).toEqual(1)
