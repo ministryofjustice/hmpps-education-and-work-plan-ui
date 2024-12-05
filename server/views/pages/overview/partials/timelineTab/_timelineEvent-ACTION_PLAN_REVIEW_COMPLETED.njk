@@ -1,0 +1,34 @@
+<div class="moj-timeline__item" data-qa-event-type="ACTION_PLAN_REVIEW_COMPLETED">
+  <div class="moj-timeline__header">
+    <h2 class="moj-timeline__title">Review marked as completed</h2>
+    <p class="moj-timeline__byline govuk-!-display-none-print">by {{ event.actionedByDisplayName }}, {{ event.prisonName }}</p>
+  </div>
+
+  <p class="moj-timeline__date">
+    <time datetime="{{ event.timestamp }}">{{ event.timestamp | formatDate('D MMMM YYYY') }}</time>
+  </p>
+
+  <div class="moj-timeline__description">
+    <p class="govuk-body" data-qa="review-conducted-by">
+      {%- set reviewConductedBy -%}
+        {%- if not event.contextualInfo['COMPLETED_REVIEW_CONDUCTED_IN_PERSON_BY'] -%}
+          {{ event.contextualInfo['COMPLETED_REVIEW_ENTERED_ONLINE_BY'] }}
+        {%- else -%}
+          {{ event.contextualInfo['COMPLETED_REVIEW_CONDUCTED_IN_PERSON_BY'] }}, {{ event.contextualInfo['COMPLETED_REVIEW_CONDUCTED_IN_PERSON_BY_ROLE']}},
+        {%- endif -%}
+      {%- endset -%}
+      Review conducted by {{ reviewConductedBy }} on {{ event.contextualInfo['COMPLETED_REVIEW_CONDUCTED_IN_PERSON_DATE'] | formatDate('D MMMM YYYY') }}
+    </p>
+
+    <details class="govuk-details app-notes-expander" data-qa="review-notes-expander">
+      <summary class="govuk-details__summary">
+        <span class="govuk-details__summary-text">
+          Review details
+        </span>
+      </summary>
+      <div class="govuk-details__text" data-qa="review-notes">
+        <span class="app-u-multiline-text">{{ event.contextualInfo['COMPLETED_REVIEW_NOTES'] }}</span>
+      </div>
+    </details>
+  </div>
+</div>

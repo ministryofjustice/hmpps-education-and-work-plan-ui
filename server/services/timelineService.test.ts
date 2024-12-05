@@ -31,6 +31,7 @@ describe('timelineService', () => {
     'GOAL_ARCHIVED',
     'GOAL_UNARCHIVED',
     'GOAL_COMPLETED',
+    'ACTION_PLAN_REVIEW_COMPLETED',
     'PRISON_ADMISSION',
     'PRISON_RELEASE',
     'PRISON_TRANSFER',
