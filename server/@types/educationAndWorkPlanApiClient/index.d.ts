@@ -1,6 +1,8 @@
 declare module 'educationAndWorkPlanApiClient' {
   import { components } from '../educationAndWorkPlanApi'
 
+  export type CreateActionPlanRequest = components['schemas']['CreateActionPlanRequest']
+
   export type CreateGoalRequest = components['schemas']['CreateGoalRequest']
   export type CreateGoalsRequest = components['schemas']['CreateGoalsRequest']
   export type CreateStepRequest = components['schemas']['CreateStepRequest']

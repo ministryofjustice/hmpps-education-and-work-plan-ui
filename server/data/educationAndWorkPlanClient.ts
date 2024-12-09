@@ -20,6 +20,7 @@ import type {
   CreateActionPlanReviewResponse,
   ActionPlanReviewsResponse,
   InductionScheduleResponse,
+  CreateActionPlanRequest,
 } from 'educationAndWorkPlanApiClient'
 import RestClient from './restClient'
 import config from '../config'
@@ -30,16 +31,27 @@ export default class EducationAndWorkPlanClient {
     return new RestClient('Education and Work Plan API Client', config.apis.educationAndWorkPlan, token)
   }
 
+  async getActionPlan(prisonNumber: string, token: string): Promise<ActionPlanResponse> {
+    return EducationAndWorkPlanClient.restClient(token).get<ActionPlanResponse>({
+      path: `/action-plans/${prisonNumber}`,
+    })
+  }
+
+  async createActionPlan(
+    prisonNumber: string,
+    createActionPlanRequest: CreateActionPlanRequest,
+    token: string,
+  ): Promise<void> {
+    return EducationAndWorkPlanClient.restClient(token).post({
+      path: `/action-plans/${prisonNumber}`,
+      data: createActionPlanRequest,
+    })
+  }
+
   async createGoals(prisonNumber: string, createGoalsRequest: CreateGoalsRequest, token: string): Promise<void> {
     return EducationAndWorkPlanClient.restClient(token).post({
       path: `/action-plans/${prisonNumber}/goals`,
       data: createGoalsRequest,
-    })
-  }
-
-  async getActionPlan(prisonNumber: string, token: string): Promise<ActionPlanResponse> {
-    return EducationAndWorkPlanClient.restClient(token).get<ActionPlanResponse>({
-      path: `/action-plans/${prisonNumber}`,
     })
   }
 

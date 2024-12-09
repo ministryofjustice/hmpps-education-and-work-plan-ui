@@ -4,6 +4,54 @@
  */
 
 export interface paths {
+  '/queue-admin/retry-dlq/{dlqName}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put: operations['retryDlq']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/queue-admin/retry-all-dlqs': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put: operations['retryAllDlqs']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/queue-admin/purge-queue/{queueName}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put: operations['purgeQueue']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/person/{prisonNumber}/education': {
     parameters: {
       query?: never
@@ -248,6 +296,22 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/queue-admin/get-dlq-messages/{dlqName}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get: operations['getDlqMessages']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/inductions/{prisonNumber}/induction-schedule': {
     parameters: {
       query?: never
@@ -268,6 +332,14 @@ export interface paths {
 export type webhooks = Record<string, never>
 export interface components {
   schemas: {
+    RetryDlqResult: {
+      /** Format: int32 */
+      messagesFoundCount: number
+    }
+    PurgeQueueResult: {
+      /** Format: int32 */
+      messagesFoundCount: number
+    }
     /**
      * @description A list of achieved qualifications that should be updated or created as part of the education record.
      * @example null
@@ -1155,11 +1227,6 @@ export interface components {
        * @example A1234BC
        */
       prisonNumber: string
-      /**
-       * Format: date
-       * @description An optional ISO-8601 date representing when the Action Plan is up for review.
-       */
-      reviewDate?: string
     }
     CreateActionPlanRequest: {
       /**
@@ -1167,11 +1234,6 @@ export interface components {
        * @example null
        */
       goals: components['schemas']['CreateGoalRequest'][]
-      /**
-       * Format: date
-       * @description An optional ISO-8601 date representing when the Action Plan is up for review.
-       */
-      reviewDate?: string
     }
     /**
      * @description A List of at least one Goal.
@@ -1383,6 +1445,8 @@ export interface components {
       eventType:
         | 'INDUCTION_CREATED'
         | 'INDUCTION_UPDATED'
+        | 'INDUCTION_SCHEDULE_CREATED'
+        | 'INDUCTION_SCHEDULE_UPDATED'
         | 'ACTION_PLAN_CREATED'
         | 'GOAL_CREATED'
         | 'GOAL_UPDATED'
@@ -1393,6 +1457,7 @@ export interface components {
         | 'STEP_NOT_STARTED'
         | 'STEP_STARTED'
         | 'STEP_COMPLETED'
+        | 'ACTION_PLAN_REVIEW_COMPLETED'
         | 'CONVERSATION_CREATED'
         | 'CONVERSATION_UPDATED'
         | 'PRISON_ADMISSION'
@@ -1453,6 +1518,10 @@ export interface components {
        */
       events: components['schemas']['TimelineEventResponse'][]
     }
+    HmppsSubjectAccessRequestContent: {
+      /** @description The content of the subject access request response */
+      content: Record<string, never>
+    }
     ErrorResponse: {
       /** Format: int32 */
       status: number
@@ -1461,9 +1530,18 @@ export interface components {
       developerMessage?: string
       moreInfo?: string
     }
-    HmppsSubjectAccessRequestContent: {
-      /** @description The content of the subject access request response */
-      content: Record<string, never>
+    DlqMessage: {
+      body: {
+        [key: string]: Record<string, never>
+      }
+      messageId: string
+    }
+    GetDlqResult: {
+      /** Format: int32 */
+      messagesFoundCount: number
+      /** Format: int32 */
+      messagesReturnedCount: number
+      messages: components['schemas']['DlqMessage'][]
     }
     /**
      * @description A list of achieved qualifications. Can be empty but not null.
@@ -2307,11 +2385,6 @@ export interface components {
        * @example null
        */
       goals: components['schemas']['GoalResponse'][]
-      /**
-       * Format: date
-       * @description An optional ISO-8601 date representing when the Action Plan is up for review.
-       */
-      reviewDate?: string
     }
     /**
      * @description A List of at least one or more Goals.
@@ -2578,6 +2651,70 @@ export interface components {
 }
 export type $defs = Record<string, never>
 export interface operations {
+  retryDlq: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        dlqName: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          '*/*': components['schemas']['RetryDlqResult']
+        }
+      }
+    }
+  }
+  retryAllDlqs: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          '*/*': components['schemas']['RetryDlqResult'][]
+        }
+      }
+    }
+  }
+  purgeQueue: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        queueName: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          '*/*': components['schemas']['PurgeQueueResult']
+        }
+      }
+    }
+  }
   getEduction: {
     parameters: {
       query?: never
@@ -3071,8 +3208,8 @@ export interface operations {
       }
     }
     responses: {
-      /** @description OK */
-      200: {
+      /** @description Created */
+      201: {
         headers: {
           [name: string]: unknown
         }
@@ -3222,6 +3359,30 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  getDlqMessages: {
+    parameters: {
+      query?: {
+        maxMessages?: number
+      }
+      header?: never
+      path: {
+        dlqName: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          '*/*': components['schemas']['GetDlqResult']
         }
       }
     }
