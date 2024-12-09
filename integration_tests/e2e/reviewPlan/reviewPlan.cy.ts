@@ -73,8 +73,8 @@ context(`Review a prisoner's plan`, () => {
     cy.visit(`/plan/${prisonNumber}/review`)
 
     const reviewConductedAt = sub(startOfToday(), { weeks: 1 })
-    const reviewConductedAtDay = `${reviewConductedAt.getDate()}`
-    const reviewConductedAtMonth = `${reviewConductedAt.getMonth() + 1}`
+    const reviewConductedAtDay = `${reviewConductedAt.getDate()}`.padStart(2, '0')
+    const reviewConductedAtMonth = `${reviewConductedAt.getMonth() + 1}`.padStart(2, '0')
     const reviewConductedAtYear = `${reviewConductedAt.getFullYear()}`
 
     // When
