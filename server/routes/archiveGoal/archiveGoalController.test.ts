@@ -1,5 +1,4 @@
 import { Request, Response } from 'express'
-import type { ActionPlan } from 'viewModels'
 import type { ArchiveGoalForm } from 'forms'
 import createError from 'http-errors'
 import type { ArchiveGoalDto } from 'dto'
@@ -7,7 +6,7 @@ import EducationAndWorkPlanService from '../../services/educationAndWorkPlanServ
 import AuditService, { BaseAuditData } from '../../services/auditService'
 import aValidPrisonerSummary from '../../testsupport/prisonerSummaryTestDataBuilder'
 import ArchiveGoalController from './archiveGoalController'
-import { aValidActionPlanWithOneGoal, aValidGoal, aValidStep } from '../../testsupport/actionPlanTestDataBuilder'
+import { aValidGoal, aValidStep } from '../../testsupport/actionPlanTestDataBuilder'
 import validateArchiveGoalForm from './archiveGoalFormValidator'
 import aValidArchiveGoalForm from '../../testsupport/archiveGoalFormTestDataBuilder'
 import ReasonToArchiveGoalValue from '../../enums/ReasonToArchiveGoalValue'
@@ -61,6 +60,7 @@ describe('archiveGoalController', () => {
     getPrisonerContext(req.session, prisonNumber).archiveGoalForm = undefined
     req.params.prisonNumber = prisonNumber
     req.params.goalReference = goalReference
+    res.locals = { prisonerSummary }
 
     errors = []
   })
@@ -70,8 +70,13 @@ describe('archiveGoalController', () => {
       // Given
       const step = aValidStep()
       const goal = aValidGoal({ goalReference, steps: [step] })
-      const actionPlan = aValidActionPlanWithOneGoal({ prisonNumber, goal })
-      educationAndWorkPlanService.getActionPlan.mockResolvedValue(actionPlan)
+      res.locals.allGoalsForPrisoner = {
+        problemRetrievingData: false,
+        goals: {
+          ACTIVE: [goal],
+        },
+      }
+
       const expectedForm: ArchiveGoalForm = {
         reference: goalReference,
         title: goal.title,
@@ -94,12 +99,16 @@ describe('archiveGoalController', () => {
       const alternativeReference = 'some other goal reference'
       const step = aValidStep()
       const goal = aValidGoal({ goalReference: alternativeReference, steps: [step] })
-      const actionPlan = aValidActionPlanWithOneGoal({ prisonNumber, goal })
+      res.locals.allGoalsForPrisoner = {
+        problemRetrievingData: false,
+        goals: {
+          ACTIVE: [goal],
+        },
+      }
 
       req.params.goalReference = alternativeReference
       getPrisonerContext(req.session, prisonNumber).archiveGoalForm = aValidArchiveGoalForm(goalReference)
 
-      educationAndWorkPlanService.getActionPlan.mockResolvedValue(actionPlan)
       const expectedForm: ArchiveGoalForm = {
         reference: alternativeReference,
         title: goal.title,
@@ -115,7 +124,6 @@ describe('archiveGoalController', () => {
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/goal/archive/reason', expectedView)
       expect(getPrisonerContext(req.session, prisonNumber).archiveGoalForm).toBeUndefined()
-      expect(educationAndWorkPlanService.getActionPlan).toHaveBeenCalledWith(prisonNumber, username)
     })
 
     it('Should use form from session if it is the same goal, e.g., a validation error', async () => {
@@ -134,13 +142,13 @@ describe('archiveGoalController', () => {
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/goal/archive/reason', expectedView)
       expect(getPrisonerContext(req.session, prisonNumber).archiveGoalForm).toBeUndefined()
-      expect(educationAndWorkPlanService.getActionPlan).not.toHaveBeenCalled()
     })
 
-    it('should not get archive goal view given error getting prisoner action plan', async () => {
+    it('should not get archive goal view given problem retrieving prisoner goals', async () => {
       // Given
-      const actionPlan = { problemRetrievingData: true } as ActionPlan
-      educationAndWorkPlanService.getActionPlan.mockResolvedValue(actionPlan)
+      res.locals.allGoalsForPrisoner = {
+        problemRetrievingData: true,
+      }
 
       const expectedError = createError(500, `Error retrieving plan for prisoner ${prisonNumber}`)
 
@@ -156,10 +164,14 @@ describe('archiveGoalController', () => {
       // Given
       const someOtherGoalReference = 'd31d22bc-b9be-4d13-9e47-d633d6815454'
       const goal = aValidGoal({ goalReference: someOtherGoalReference })
-      const actionPlan = aValidActionPlanWithOneGoal({ prisonNumber, goal })
-      educationAndWorkPlanService.getActionPlan.mockResolvedValue(actionPlan)
+      res.locals.allGoalsForPrisoner = {
+        problemRetrievingData: false,
+        goals: {
+          ACTIVE: [goal],
+        },
+      }
 
-      const expectedError = createError(404, `Goal ${goalReference} does not exist in the prisoner's plan`)
+      const expectedError = createError(404, `Active goal ${goalReference} does not exist in the prisoner's plan`)
 
       // When
       await controller.getArchiveGoalView(req, res, next)

@@ -1,6 +1,7 @@
 import type { Request, RequestHandler } from 'express'
 import createError from 'http-errors'
 import type { UnarchiveGoalForm } from 'forms'
+import type { Goal } from 'viewModels'
 import UnarchiveGoalView from './unarchiveGoalView'
 import EducationAndWorkPlanService from '../../services/educationAndWorkPlanService'
 import toUnarchiveGoalDto from './mappers/unarchiveGoalFormToDtoMapper'
@@ -15,16 +16,17 @@ export default class UnarchiveGoalController {
 
   getUnarchiveGoalView: RequestHandler = async (req, res, next): Promise<void> => {
     const { prisonNumber, goalReference } = req.params
-    const { prisonerSummary } = res.locals
+    const { prisonerSummary, allGoalsForPrisoner } = res.locals
 
-    const actionPlan = await this.educationAndWorkPlanService.getActionPlan(prisonNumber, req.user.username)
-    if (actionPlan.problemRetrievingData) {
+    if (allGoalsForPrisoner.problemRetrievingData) {
       return next(createError(500, `Error retrieving plan for prisoner ${prisonNumber}`))
     }
 
-    const goalToUnarchive = actionPlan.goals.find(goal => goal.goalReference === goalReference)
+    const goalToUnarchive = (allGoalsForPrisoner.goals.ARCHIVED as Array<Goal>).find(
+      goal => goal.goalReference === goalReference,
+    )
     if (!goalToUnarchive) {
-      return next(createError(404, `Goal ${goalReference} does not exist in the prisoner's plan`))
+      return next(createError(404, `Archived goal ${goalReference} does not exist in the prisoner's plan`))
     }
 
     const unarchiveGoalForm: UnarchiveGoalForm = {

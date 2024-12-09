@@ -1,5 +1,6 @@
 import type { RequestHandler, Request } from 'express'
 import type { ArchiveGoalForm } from 'forms'
+import type { Goal } from 'viewModels'
 import createError from 'http-errors'
 import EducationAndWorkPlanService from '../../services/educationAndWorkPlanService'
 import ArchiveGoalView from './archiveGoalView'
@@ -18,18 +19,19 @@ export default class ArchiveGoalController {
 
   getArchiveGoalView: RequestHandler = async (req, res, next): Promise<void> => {
     const { prisonNumber, goalReference } = req.params
-    const { prisonerSummary } = res.locals
+    const { prisonerSummary, allGoalsForPrisoner } = res.locals
 
     let { archiveGoalForm } = getPrisonerContext(req.session, prisonNumber)
     if (!archiveGoalForm || archiveGoalForm.reference !== goalReference) {
-      const actionPlan = await this.educationAndWorkPlanService.getActionPlan(prisonNumber, req.user.username)
-      if (actionPlan.problemRetrievingData) {
+      if (allGoalsForPrisoner.problemRetrievingData) {
         return next(createError(500, `Error retrieving plan for prisoner ${prisonNumber}`))
       }
 
-      const goalToArchive = actionPlan.goals.find(goal => goal.goalReference === goalReference)
+      const goalToArchive = (allGoalsForPrisoner.goals.ACTIVE as Array<Goal>).find(
+        goal => goal.goalReference === goalReference,
+      )
       if (!goalToArchive) {
-        return next(createError(404, `Goal ${goalReference} does not exist in the prisoner's plan`))
+        return next(createError(404, `Active goal ${goalReference} does not exist in the prisoner's plan`))
       }
 
       archiveGoalForm = {
