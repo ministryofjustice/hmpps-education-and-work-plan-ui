@@ -1,10 +1,9 @@
 import createError from 'http-errors'
 import { NextFunction, Request, Response } from 'express'
-import type { ActionPlan } from 'viewModels'
 import type { UpdateGoalForm } from 'forms'
 import EducationAndWorkPlanService from '../../services/educationAndWorkPlanService'
 import UpdateGoalController from './updateGoalController'
-import { aValidActionPlanWithOneGoal, aValidGoal, aValidStep } from '../../testsupport/actionPlanTestDataBuilder'
+import { aValidGoal, aValidStep } from '../../testsupport/actionPlanTestDataBuilder'
 import validateUpdateGoalForm from './updateGoalFormValidator'
 import { aValidUpdateGoalForm } from '../../testsupport/updateGoalFormTestDataBuilder'
 import {
@@ -58,6 +57,8 @@ describe('updateGoalController', () => {
 
   beforeEach(() => {
     jest.resetAllMocks()
+    res.locals = { prisonerSummary }
+
     errors = []
   })
 
@@ -66,8 +67,12 @@ describe('updateGoalController', () => {
       // Given
       const step = aValidStep()
       const goal = aValidGoal({ goalReference, steps: [step] })
-      const actionPlan = aValidActionPlanWithOneGoal({ prisonNumber, goal })
-      educationAndWorkPlanService.getActionPlan.mockResolvedValue(actionPlan)
+      res.locals.allGoalsForPrisoner = {
+        problemRetrievingData: false,
+        goals: {
+          ACTIVE: [goal],
+        },
+      }
 
       const updateGoalForm = {
         reference: goal.goalReference,
@@ -106,14 +111,14 @@ describe('updateGoalController', () => {
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/goal/update/index', expectedView)
-      expect(educationAndWorkPlanService.getActionPlan).toHaveBeenCalledWith('A1234GC', username)
       expect(getPrisonerContext(req.session, prisonNumber).updateGoalForm).toBeUndefined()
     })
 
-    it('should not get update goal view given error getting prisoner action plan', async () => {
+    it('should not get update goal view given problem retrieving prisoner goals', async () => {
       // Given
-      const actionPlan = { problemRetrievingData: true } as ActionPlan
-      educationAndWorkPlanService.getActionPlan.mockResolvedValue(actionPlan)
+      res.locals.allGoalsForPrisoner = {
+        problemRetrievingData: true,
+      }
 
       const expectedError = createError(500, `Error retrieving plan for prisoner ${prisonNumber}`)
 
@@ -126,7 +131,6 @@ describe('updateGoalController', () => {
 
       // Then
       expect(next).toHaveBeenCalledWith(expectedError)
-      expect(educationAndWorkPlanService.getActionPlan).toHaveBeenCalledWith('A1234GC', username)
       expect(getPrisonerContext(req.session, prisonNumber).updateGoalForm).toBeUndefined()
     })
 
@@ -134,10 +138,14 @@ describe('updateGoalController', () => {
       // Given
       const someOtherGoalReference = 'd31d22bc-b9be-4d13-9e47-d633d6815454'
       const goal = aValidGoal({ goalReference: someOtherGoalReference })
-      const actionPlan = aValidActionPlanWithOneGoal({ prisonNumber, goal })
-      educationAndWorkPlanService.getActionPlan.mockResolvedValue(actionPlan)
+      res.locals.allGoalsForPrisoner = {
+        problemRetrievingData: false,
+        goals: {
+          ACTIVE: [goal],
+        },
+      }
 
-      const expectedError = createError(404, `Goal ${goalReference} does not exist in the prisoner's plan`)
+      const expectedError = createError(404, `Active goal ${goalReference} does not exist in the prisoner's plan`)
 
       // When
       await controller.getUpdateGoalView(
@@ -148,7 +156,6 @@ describe('updateGoalController', () => {
 
       // Then
       expect(next).toHaveBeenCalledWith(expectedError)
-      expect(educationAndWorkPlanService.getActionPlan).toHaveBeenCalledWith('A1234GC', username)
       expect(getPrisonerContext(req.session, prisonNumber).updateGoalForm).toBeUndefined()
     })
   })

@@ -1,6 +1,7 @@
 import type { RequestHandler } from 'express'
 import createError from 'http-errors'
 import type { CompleteOrArchiveGoalForm } from 'forms'
+import type { Goal } from 'viewModels'
 import CompleteOrArchiveGoalView from './completeOrArchiveGoalView'
 import EducationAndWorkPlanService from '../../services/educationAndWorkPlanService'
 
@@ -9,21 +10,22 @@ export default class CompleteOrArchiveGoalController {
 
   getCompleteOrArchiveGoalView: RequestHandler = async (req, res, next): Promise<void> => {
     const { prisonNumber, goalReference } = req.params
-    const { prisonerSummary } = res.locals
+    const { prisonerSummary, allGoalsForPrisoner } = res.locals
 
-    const actionPlan = await this.educationAndWorkPlanService.getActionPlan(prisonNumber, req.user.username)
-    if (actionPlan.problemRetrievingData) {
+    if (allGoalsForPrisoner.problemRetrievingData) {
       return next(createError(500, `Error retrieving plan for prisoner ${prisonNumber}`))
     }
 
-    const goalToComplete = actionPlan.goals.find(goal => goal.goalReference === goalReference)
-    if (!goalToComplete) {
-      return next(createError(404, `Goal ${goalReference} does not exist in the prisoner's plan`))
+    const goalToCompleteOrArchive = (allGoalsForPrisoner.goals.ACTIVE as Array<Goal>).find(
+      goal => goal.goalReference === goalReference,
+    )
+    if (!goalToCompleteOrArchive) {
+      return next(createError(404, `Active goal ${goalReference} does not exist in the prisoner's plan`))
     }
 
     const completeOrArchiveGoalForm: CompleteOrArchiveGoalForm = {
       reference: goalReference,
-      title: goalToComplete.title,
+      title: goalToCompleteOrArchive.title,
       archiveOrComplete: '',
     }
     const view = new CompleteOrArchiveGoalView(prisonerSummary, completeOrArchiveGoalForm)

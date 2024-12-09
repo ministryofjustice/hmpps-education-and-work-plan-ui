@@ -1,9 +1,10 @@
 import { Router } from 'express'
-import { EducationAndWorkPlanService, Services } from '../../services'
+import { Services } from '../../services'
 import asyncMiddleware from '../../middleware/asyncMiddleware'
+import retrieveAllGoalsForPrisoner from '../routerRequestHandlers/retrieveAllGoalsForPrisoner'
 
 /**
- * Definitions for the route immediately following the CIAG UI Induction creation.
+ * Definitions for the route immediately following the Induction creation.
  */
 export default (router: Router, services: Services) => {
   /**
@@ -12,25 +13,22 @@ export default (router: Router, services: Services) => {
    */
   router.get(
     '/plan/:prisonNumber/induction-created',
+    retrieveAllGoalsForPrisoner(services.educationAndWorkPlanService),
     asyncMiddleware(async (req, res, next) => {
-      const userToken = req.user.token
       const { prisonNumber } = req.params
+      const { allGoalsForPrisoner } = res.locals
 
-      return (await prisonerHasActionPlan(prisonNumber, userToken, services.educationAndWorkPlanService))
+      if (allGoalsForPrisoner.problemRetrievingData) {
+        return res.redirect(`/plan/${prisonNumber}/view/overview`) // Problem retrieving prisoner goals. Redirect to the Overview page
+      }
+
+      const prisonerHasActionPlan = // Prisoner is considered to have an Action Plan if they have an Induction (implied through this route being called) and have at least 1 goal in any state
+        allGoalsForPrisoner.goals.ACTIVE.length > 0 ||
+        allGoalsForPrisoner.goals.ARCHIVED.length > 0 ||
+        allGoalsForPrisoner.goals.COMPLETED.length > 0
+      return prisonerHasActionPlan
         ? res.redirect(`/plan/${prisonNumber}/view/overview`) // Action Plan with goal(s) exists already. Redirect to the Overview page
         : res.redirect(`/plan/${prisonNumber}/goals/create`) // Action Plan goals do not exist yet. Redirect to the Create Goals flow routes.
     }),
   )
-}
-
-const prisonerHasActionPlan = async (
-  prisonNumber: string,
-  userToken: string,
-  educationAndWorkPlanService: EducationAndWorkPlanService,
-): Promise<boolean> => {
-  const actionPlan = await educationAndWorkPlanService.getActionPlan(prisonNumber, userToken)
-  if (actionPlan.problemRetrievingData) {
-    return true // If we cannot get the action plan return true, resulting in the user being redirected to the overview page
-  }
-  return actionPlan.goals.length > 0
 }

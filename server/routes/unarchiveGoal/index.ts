@@ -3,6 +3,7 @@ import { Services } from '../../services'
 import UnarchiveGoalController from './unarchiveGoalController'
 import { checkUserHasEditAuthority } from '../../middleware/roleBasedAccessControl'
 import asyncMiddleware from '../../middleware/asyncMiddleware'
+import retrieveAllGoalsForPrisoner from '../routerRequestHandlers/retrieveAllGoalsForPrisoner'
 
 /**
  * Route definitions for the pages relating to Unarchiving A Goal
@@ -13,6 +14,7 @@ export default (router: Router, services: Services) => {
 
   router.use('/plan/:prisonNumber/goals/:goalReference/unarchive', [checkUserHasEditAuthority()])
   router.get('/plan/:prisonNumber/goals/:goalReference/unarchive', [
+    retrieveAllGoalsForPrisoner(services.educationAndWorkPlanService),
     asyncMiddleware(unarchiveGoalController.getUnarchiveGoalView),
   ])
   router.post('/plan/:prisonNumber/goals/:goalReference/unarchive', [
