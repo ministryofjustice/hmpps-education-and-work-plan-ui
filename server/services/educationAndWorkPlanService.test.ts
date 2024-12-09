@@ -24,6 +24,8 @@ import aValidCreateEducationRequest from '../testsupport/createEducationRequestT
 import HmppsAuthClient from '../data/hmppsAuthClient'
 import aValidUpdateEducationRequest from '../testsupport/updateEducationRequestTestDataBuilder'
 import aValidUpdateEducationDto from '../testsupport/updateEducationDtoTestDataBuilder'
+import aValidCreateActionPlanDto from '../testsupport/createActionPlanDtoTestDataBuilder'
+import aValidCreateActionPlanRequest from '../testsupport/createActionPlanRequestTestDataBuilder'
 
 jest.mock('../data/mappers/educationMapper')
 jest.mock('../data/educationAndWorkPlanClient')
@@ -479,6 +481,40 @@ describe('educationAndWorkPlanService', () => {
       expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
       expect(educationAndWorkPlanClient.getActionPlan).toHaveBeenCalledWith(prisonNumber, systemToken)
       expect(actual.problemRetrievingData).toEqual(true)
+    })
+  })
+
+  describe('createActionPlan', () => {
+    it('should create Action Plan', async () => {
+      // Given
+      const createActionPlanDto = aValidCreateActionPlanDto({ prisonNumber })
+      const createActionPlanRequest = aValidCreateActionPlanRequest()
+
+      // When
+      await educationAndWorkPlanService.createActionPlan(createActionPlanDto, username)
+
+      // Then
+      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
+      expect(educationAndWorkPlanClient.createActionPlan).toHaveBeenCalledWith(
+        prisonNumber,
+        createActionPlanRequest,
+        systemToken,
+      )
+    })
+
+    it('should not create Action Plan given educationAndWorkPlanClient returns an error', async () => {
+      // Given
+      const createActionPlanDto = aValidCreateActionPlanDto({ prisonNumber })
+
+      educationAndWorkPlanClient.createActionPlan.mockRejectedValue(Error('Service Unavailable'))
+
+      // When
+      const actual = await educationAndWorkPlanService.createActionPlan(createActionPlanDto, username).catch(error => {
+        return error
+      })
+
+      // Then
+      expect(actual).toEqual(Error('Service Unavailable'))
     })
   })
 })

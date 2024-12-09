@@ -4,6 +4,11 @@ declare module 'dto' {
   import QualificationLevelValue from '../../enums/qualificationLevelValue'
   import ReviewPlanCompletedByValue from '../../enums/reviewPlanCompletedByValue'
 
+  export interface CreateActionPlanDto {
+    prisonNumber: string
+    goals: Array<CreateGoalDto>
+  }
+
   export interface CreateGoalDto {
     prisonNumber: string
     title: string

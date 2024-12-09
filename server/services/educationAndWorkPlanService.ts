@@ -1,6 +1,7 @@
 import type {
   ArchiveGoalDto,
   CompleteGoalDto,
+  CreateActionPlanDto,
   CreateGoalDto,
   CreateOrUpdateEducationDto,
   EducationDto,
@@ -23,6 +24,7 @@ import toEducationDto from '../data/mappers/educationMapper'
 import toCreateEducationRequest from '../data/mappers/createEducationMapper'
 import HmppsAuthClient from '../data/hmppsAuthClient'
 import toUpdateEducationRequest from '../data/mappers/updateEducationMapper'
+import toCreateActionPlanRequest from '../data/mappers/createActionPlanMapper'
 
 export default class EducationAndWorkPlanService {
   constructor(
@@ -30,13 +32,6 @@ export default class EducationAndWorkPlanService {
     private readonly prisonService: PrisonService,
     private readonly hmppsAuthClient: HmppsAuthClient,
   ) {}
-
-  async createGoals(prisonNumber: string, createGoalDtos: CreateGoalDto[], token: string): Promise<unknown> {
-    const createGoalsRequest: CreateGoalsRequest = {
-      goals: createGoalDtos.map(createGoalDto => toCreateGoalRequest(createGoalDto)),
-    }
-    return this.educationAndWorkPlanClient.createGoals(prisonNumber, createGoalsRequest, token)
-  }
 
   async getActionPlan(prisonNumber: string, username: string): Promise<ActionPlan> {
     const systemToken = await this.hmppsAuthClient.getSystemClientToken(username)
@@ -48,6 +43,23 @@ export default class EducationAndWorkPlanService {
       logger.error(`Error retrieving Action Plan for Prisoner [${prisonNumber}]: ${error}`)
       return { problemRetrievingData: true, goals: [] } as ActionPlan
     }
+  }
+
+  async createActionPlan(createActionPlanDto: CreateActionPlanDto, username: string): Promise<unknown> {
+    const systemToken = await this.hmppsAuthClient.getSystemClientToken(username)
+    const createActionPlanRequest = toCreateActionPlanRequest(createActionPlanDto)
+    return this.educationAndWorkPlanClient.createActionPlan(
+      createActionPlanDto.prisonNumber,
+      createActionPlanRequest,
+      systemToken,
+    )
+  }
+
+  async createGoals(prisonNumber: string, createGoalDtos: CreateGoalDto[], token: string): Promise<unknown> {
+    const createGoalsRequest: CreateGoalsRequest = {
+      goals: createGoalDtos.map(createGoalDto => toCreateGoalRequest(createGoalDto)),
+    }
+    return this.educationAndWorkPlanClient.createGoals(prisonNumber, createGoalsRequest, token)
   }
 
   async getGoalsByStatus(prisonNumber: string, status: GoalStatusValue, username: string): Promise<Goals> {

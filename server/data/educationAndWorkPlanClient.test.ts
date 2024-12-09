@@ -27,6 +27,7 @@ import aValidInductionScheduleResponse from '../testsupport/inductionScheduleRes
 import aValidActionPlanReviewsResponse from '../testsupport/actionPlanReviewsResponseTestDataBuilder'
 import aValidCreateActionPlanReviewRequest from '../testsupport/createActionPlanReviewRequestTestDataBuilder'
 import aValidCreateActionPlanReviewResponse from '../testsupport/createActionPlanReviewResponseTestDataBuilder'
+import aValidCreateActionPlanRequest from '../testsupport/createActionPlanRequestTestDataBuilder'
 
 describe('educationAndWorkPlanClient', () => {
   const educationAndWorkPlanClient = new EducationAndWorkPlanClient()
@@ -923,6 +924,57 @@ describe('educationAndWorkPlanClient', () => {
       // When
       try {
         await educationAndWorkPlanClient.updateEducation(prisonNumber, updateEducationRequest, systemToken)
+      } catch (e) {
+        // Then
+        expect(nock.isDone()).toBe(true)
+        expect(e.status).toEqual(500)
+        expect(e.data).toEqual(expectedResponseBody)
+      }
+    })
+  })
+
+  describe('createActionPlan', () => {
+    it('should create action plan', async () => {
+      // Given
+      const prisonNumber = 'A1234BC'
+      const systemToken = 'a-system-token'
+
+      const createActionPlanRequest = aValidCreateActionPlanRequest()
+      const expectedResponseBody = {}
+      educationAndWorkPlanApi
+        .post(`/action-plans/${prisonNumber}`, requestBody => isEqual(requestBody, createActionPlanRequest))
+        .reply(201, expectedResponseBody)
+
+      // When
+      const actual = await educationAndWorkPlanClient.createActionPlan(
+        prisonNumber,
+        createActionPlanRequest,
+        systemToken,
+      )
+
+      // Then
+      expect(nock.isDone()).toBe(true)
+      expect(actual).toEqual(expectedResponseBody)
+    })
+
+    it('should not create action plan given API returns an error response', async () => {
+      // Given
+      const prisonNumber = 'A1234BC'
+      const systemToken = 'a-system-token'
+
+      const createActionPlanRequest = aValidCreateActionPlanRequest()
+      const expectedResponseBody = {
+        status: 500,
+        userMessage: 'An unexpected error occurred',
+        developerMessage: 'An unexpected error occurred',
+      }
+      educationAndWorkPlanApi
+        .post(`/action-plans/${prisonNumber}`, requestBody => isEqual(requestBody, createActionPlanRequest))
+        .reply(500, expectedResponseBody)
+
+      // When
+      try {
+        await educationAndWorkPlanClient.createActionPlan(prisonNumber, createActionPlanRequest, systemToken)
       } catch (e) {
         // Then
         expect(nock.isDone()).toBe(true)
