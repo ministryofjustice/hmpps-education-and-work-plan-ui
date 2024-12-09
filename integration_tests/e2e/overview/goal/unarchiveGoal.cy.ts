@@ -6,6 +6,7 @@ import { putRequestedFor } from '../../../mockApis/wiremock/requestPatternBuilde
 import { matchingJsonPath } from '../../../mockApis/wiremock/matchers/content'
 import AuthorisationErrorPage from '../../../pages/authorisationError'
 import GoalsPage from '../../../pages/overview/GoalsPage'
+import GoalStatusValue from '../../../../server/enums/goalStatusValue'
 
 context('Unarchive a goal', () => {
   const prisonNumber = 'G6115VJ'
@@ -23,6 +24,7 @@ context('Unarchive a goal', () => {
     cy.task('getPrisonerById')
     cy.task('stubGetInduction')
     cy.task('getActionPlan')
+    cy.task('getGoalsByStatus', { prisonNumber, status: GoalStatusValue.ARCHIVED })
     cy.task('stubLearnerProfile')
     cy.task('stubLearnerEducation')
     cy.task('unarchiveGoal')

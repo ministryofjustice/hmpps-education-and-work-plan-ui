@@ -20,7 +20,7 @@ import retrieveActionPlanReviews from '../routerRequestHandlers/retrieveActionPl
  * Route definitions for the pages relating to the main Overview page
  */
 export default (router: Router, services: Services) => {
-  const overviewController = new OverviewController(services.educationAndWorkPlanService)
+  const overviewController = new OverviewController()
   const timelineController = new TimelineController(services.timelineService)
   const supportNeedsController = new SupportNeedsController()
   const workAndInterestsController = new WorkAndInterestsController()
@@ -30,6 +30,7 @@ export default (router: Router, services: Services) => {
   router.use('/plan/:prisonNumber/view/*', [removeFormDataFromSession])
 
   router.get('/plan/:prisonNumber/view/overview', [
+    retrieveAllGoalsForPrisoner(services.educationAndWorkPlanService),
     retrieveActionPlanReviews(services.reviewService),
     retrieveInduction(services.inductionService),
     retrieveCuriousFunctionalSkills(services.curiousService),

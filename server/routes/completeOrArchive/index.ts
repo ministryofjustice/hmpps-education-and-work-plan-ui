@@ -4,7 +4,8 @@ import CompleteOrArchiveGoalController from './completeOrArchiveGoalController'
 import { checkUserHasEditAuthority } from '../../middleware/roleBasedAccessControl'
 import asyncMiddleware from '../../middleware/asyncMiddleware'
 import config from '../../config'
-import retrieveAllGoalsForPrisoner from '../routerRequestHandlers/retrieveAllGoalsForPrisoner'
+import retrieveGoals from '../routerRequestHandlers/retrieveGoals'
+import GoalStatusValue from '../../enums/goalStatusValue'
 
 /**
  * Route definitions for the pages relating to Completing A Goal
@@ -16,7 +17,7 @@ export default (router: Router, services: Services) => {
   if (config.featureToggles.completedGoalsEnabled) {
     router.use('/plan/:prisonNumber/goals/:goalReference/complete-or-archive', [checkUserHasEditAuthority()])
     router.get('/plan/:prisonNumber/goals/:goalReference/complete-or-archive', [
-      retrieveAllGoalsForPrisoner(services.educationAndWorkPlanService),
+      retrieveGoals(services.educationAndWorkPlanService, GoalStatusValue.ACTIVE),
       asyncMiddleware(completeOrArchiveGoalController.getCompleteOrArchiveGoalView),
     ])
     router.post('/plan/:prisonNumber/goals/:goalReference/complete-or-archive', [

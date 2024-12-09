@@ -1,23 +1,23 @@
 import { RequestHandler } from 'express'
-import { EducationAndWorkPlanService } from '../../services'
 import OverviewView from './overviewView'
 
 export default class OverviewController {
-  constructor(private readonly educationAndWorkPlanService: EducationAndWorkPlanService) {}
-
   getOverviewView: RequestHandler = async (req, res, next): Promise<void> => {
-    const { prisonNumber } = req.params
-    const { prisonerSummary, curiousInPrisonCourses, actionPlanReviews, prisonerFunctionalSkills, induction } =
-      res.locals
-
-    const prisonerGoals = await this.educationAndWorkPlanService.getAllGoalsForPrisoner(prisonNumber, req.user.username)
+    const {
+      prisonerSummary,
+      allGoalsForPrisoner,
+      curiousInPrisonCourses,
+      actionPlanReviews,
+      prisonerFunctionalSkills,
+      induction,
+    } = res.locals
 
     const view = new OverviewView(
       prisonerSummary,
       prisonerFunctionalSkills,
       curiousInPrisonCourses,
       actionPlanReviews,
-      prisonerGoals,
+      allGoalsForPrisoner,
       induction,
     )
 

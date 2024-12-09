@@ -21,19 +21,17 @@ export default class UpdateGoalController {
 
   getUpdateGoalView: RequestHandler = async (req, res, next): Promise<void> => {
     const { prisonNumber, goalReference } = req.params
-    const { prisonerSummary, allGoalsForPrisoner } = res.locals
+    const { prisonerSummary, goals } = res.locals
 
     let updateGoalForm: UpdateGoalForm
     if (getPrisonerContext(req.session, prisonNumber).updateGoalForm) {
       updateGoalForm = getPrisonerContext(req.session, prisonNumber).updateGoalForm
     } else {
-      if (allGoalsForPrisoner.problemRetrievingData) {
+      if (goals.problemRetrievingData) {
         return next(createError(500, `Error retrieving plan for prisoner ${prisonNumber}`))
       }
 
-      const goalToUpdate = (allGoalsForPrisoner.goals.ACTIVE as Array<Goal>).find(
-        goal => goal.goalReference === goalReference,
-      )
+      const goalToUpdate = (goals.goals as Array<Goal>).find(goal => goal.goalReference === goalReference)
       if (!goalToUpdate) {
         return next(createError(404, `Active goal ${goalReference} does not exist in the prisoner's plan`))
       }

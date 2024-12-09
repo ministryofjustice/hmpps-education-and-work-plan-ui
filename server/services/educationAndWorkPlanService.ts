@@ -71,10 +71,10 @@ export default class EducationAndWorkPlanService {
     } catch (error) {
       if (error.status === 404) {
         logger.debug(`No plan created yet so no goals with [${status}] for Prisoner [${prisonNumber}]`)
-        return { goals: undefined, problemRetrievingData: false }
+        return { goals: [], problemRetrievingData: false }
       }
       logger.error(`Error retrieving goals with status [${status}] for Prisoner [${prisonNumber}]: ${error}`)
-      return { goals: undefined, problemRetrievingData: true }
+      return { goals: [], problemRetrievingData: true }
     }
   }
 

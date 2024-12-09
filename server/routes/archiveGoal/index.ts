@@ -3,7 +3,8 @@ import { Services } from '../../services'
 import ArchiveGoalController from './archiveGoalController'
 import { checkUserHasEditAuthority } from '../../middleware/roleBasedAccessControl'
 import asyncMiddleware from '../../middleware/asyncMiddleware'
-import retrieveAllGoalsForPrisoner from '../routerRequestHandlers/retrieveAllGoalsForPrisoner'
+import retrieveGoals from '../routerRequestHandlers/retrieveGoals'
+import GoalStatusValue from '../../enums/goalStatusValue'
 
 /**
  * Route definitions for the pages relating to Archiving A Goal
@@ -14,7 +15,7 @@ export default (router: Router, services: Services) => {
 
   router.use('/plan/:prisonNumber/goals/:goalReference/archive', [checkUserHasEditAuthority()])
   router.get('/plan/:prisonNumber/goals/:goalReference/archive', [
-    retrieveAllGoalsForPrisoner(services.educationAndWorkPlanService),
+    retrieveGoals(services.educationAndWorkPlanService, GoalStatusValue.ACTIVE),
     asyncMiddleware(archiveGoalController.getArchiveGoalView),
   ])
   router.post('/plan/:prisonNumber/goals/:goalReference/archive', [

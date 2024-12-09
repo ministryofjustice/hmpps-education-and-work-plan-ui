@@ -9,6 +9,7 @@ import { matchingJsonPath } from '../../../mockApis/wiremock/matchers/content'
 import GoalsPage from '../../../pages/overview/GoalsPage'
 import CompleteOrArchiveGoalPage from '../../../pages/goal/CompleteOrArchiveGoalPage'
 import CompleteOrArchiveGoalValue from '../../../../server/enums/CompleteOrArchiveGoalValue'
+import GoalStatusValue from '../../../../server/enums/goalStatusValue'
 
 context('Archive a goal', () => {
   const prisonNumber = 'G6115VJ'
@@ -26,6 +27,7 @@ context('Archive a goal', () => {
     cy.task('getPrisonerById')
     cy.task('stubGetInduction')
     cy.task('getActionPlan')
+    cy.task('getGoalsByStatus', { prisonNumber, status: GoalStatusValue.ACTIVE })
     cy.task('stubLearnerProfile')
     cy.task('stubLearnerEducation')
     cy.task('archiveGoal')

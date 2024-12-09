@@ -5,8 +5,12 @@ import UpdateGoalPage from '../../../pages/goal/UpdateGoalPage'
 import AuthorisationErrorPage from '../../../pages/authorisationError'
 import Error500Page from '../../../pages/error500'
 import GoalsPage from '../../../pages/overview/GoalsPage'
+import GoalStatusValue from '../../../../server/enums/goalStatusValue'
 
 context('Review updated goal', () => {
+  const prisonNumber = 'G6115VJ'
+  const goalReference = '10efc562-be8f-4675-9283-9ede0c19dade'
+
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubSignInAsUserWithEditAuthority')
@@ -19,6 +23,7 @@ context('Review updated goal', () => {
     cy.task('getPrisonerById')
     cy.task('stubGetInduction')
     cy.task('getActionPlan')
+    cy.task('getGoalsByStatus', { prisonNumber, status: GoalStatusValue.ACTIVE })
     cy.task('stubLearnerProfile')
     cy.task('stubLearnerEducation')
     cy.task('updateGoal')
@@ -26,8 +31,6 @@ context('Review updated goal', () => {
 
   it('should not be able to navigate directly to Review Goal given previous forms have not been submitted', () => {
     // Given
-    const prisonNumber = 'G6115VJ'
-    const goalReference = '10efc562-be8f-4675-9283-9ede0c19dade'
     cy.signIn()
 
     // When
@@ -40,8 +43,6 @@ context('Review updated goal', () => {
 
   it(`should navigate back to the update goal form when the 'go back to edit goal' button is clicked`, () => {
     // Given
-    const prisonNumber = 'G6115VJ'
-    const goalReference = '10efc562-be8f-4675-9283-9ede0c19dade'
     cy.signIn()
 
     cy.visit(`/plan/${prisonNumber}/view/goals#in-progress`)
@@ -61,8 +62,6 @@ context('Review updated goal', () => {
 
   it('should be able to submit the form if no validation errors', () => {
     // Given
-    const prisonNumber = 'G6115VJ'
-    const goalReference = '10efc562-be8f-4675-9283-9ede0c19dade'
     cy.signIn()
 
     cy.visit(`/plan/${prisonNumber}/view/goals#in-progress`)
@@ -85,8 +84,6 @@ context('Review updated goal', () => {
     // Given
     cy.task('stubSignInAsReadOnlyUser')
 
-    const prisonNumber = 'G6115VJ'
-    const goalReference = '10efc562-be8f-4675-9283-9ede0c19dade'
     cy.signIn()
 
     // When
@@ -98,8 +95,6 @@ context('Review updated goal', () => {
 
   it(`should render 500 page given error updating prisoner's plan`, () => {
     // Given
-    const prisonNumber = 'G6115VJ'
-    const goalReference = '10efc562-be8f-4675-9283-9ede0c19dade'
     cy.signIn()
     cy.task('updateGoal500Error')
 

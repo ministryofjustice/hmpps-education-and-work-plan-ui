@@ -1,26 +1,18 @@
 import { Request, Response } from 'express'
-import type { Assessment, FunctionalSkills, InPrisonCourse, InPrisonCourseRecords, PrisonerGoals } from 'viewModels'
+import type { Assessment, FunctionalSkills, InPrisonCourse, InPrisonCourseRecords } from 'viewModels'
 import { add, parseISO, startOfDay, startOfToday, sub } from 'date-fns'
 import { aValidEnglishInPrisonCourse, aValidMathsInPrisonCourse } from '../../testsupport/inPrisonCourseTestDataBuilder'
 import aValidPrisonerSummary from '../../testsupport/prisonerSummaryTestDataBuilder'
 import { aValidGoalResponse } from '../../testsupport/actionPlanResponseTestDataBuilder'
 import GoalStatusValue from '../../enums/goalStatusValue'
-import EducationAndWorkPlanService from '../../services/educationAndWorkPlanService'
 import OverviewController from './overviewController'
 import aValidActionPlanReviews from '../../testsupport/actionPlanReviewsTestDataBuilder'
 import { aValidInductionDto } from '../../testsupport/inductionDtoTestDataBuilder'
 import aValidScheduledActionPlanReview from '../../testsupport/scheduledActionPlanReviewTestDataBuilder'
 import ActionPlanReviewStatusValue from '../../enums/actionPlanReviewStatusValue'
 
-jest.mock('../../services/educationAndWorkPlanService')
-
 describe('overviewController', () => {
-  const educationAndWorkPlanService = new EducationAndWorkPlanService(
-    null,
-    null,
-    null,
-  ) as jest.Mocked<EducationAndWorkPlanService>
-  const controller = new OverviewController(educationAndWorkPlanService)
+  const controller = new OverviewController()
 
   const prisonNumber = 'A1234GC'
   const username = 'a-dps-user'
@@ -45,6 +37,22 @@ describe('overviewController', () => {
     assessments: [{ type: 'ENGLISH' }, { type: 'MATHS' }],
   } as FunctionalSkills
 
+  const inProgressGoal = {
+    ...aValidGoalResponse(),
+    status: GoalStatusValue.ACTIVE,
+    updatedAt: parseISO('2023-09-23T13:42:01.401Z'),
+  }
+  const archivedGoal = {
+    ...aValidGoalResponse(),
+    status: GoalStatusValue.ARCHIVED,
+    updatedAt: parseISO('2023-08-23T13:42:01.401Z'),
+  }
+  const completedGoal = {
+    ...aValidGoalResponse(),
+    status: GoalStatusValue.COMPLETED,
+    updatedAt: parseISO('2023-07-23T13:42:01.401Z'),
+  }
+
   const req = {
     session: {},
     user: { username },
@@ -62,38 +70,21 @@ describe('overviewController', () => {
       prisonerSummary,
       curiousInPrisonCourses: inPrisonCourses,
       prisonerFunctionalSkills: functionalSkillsFromCurious,
+      allGoalsForPrisoner: {
+        prisonNumber,
+        goals: {
+          ACTIVE: [inProgressGoal],
+          ARCHIVED: [archivedGoal],
+          COMPLETED: [completedGoal],
+        },
+        problemRetrievingData: false,
+      },
     }
     jest.resetAllMocks()
   })
 
   it('should get overview view given Induction, Goals, and Action Plan Reviews all exist', async () => {
     // Given
-    const inProgressGoal = {
-      ...aValidGoalResponse(),
-      status: GoalStatusValue.ACTIVE,
-      updatedAt: parseISO('2023-09-23T13:42:01.401Z'),
-    }
-    const archivedGoal = {
-      ...aValidGoalResponse(),
-      status: GoalStatusValue.ARCHIVED,
-      updatedAt: parseISO('2023-08-23T13:42:01.401Z'),
-    }
-    const completedGoal = {
-      ...aValidGoalResponse(),
-      status: GoalStatusValue.COMPLETED,
-      updatedAt: parseISO('2023-07-23T13:42:01.401Z'),
-    }
-
-    educationAndWorkPlanService.getAllGoalsForPrisoner.mockResolvedValue({
-      prisonNumber,
-      goals: {
-        ACTIVE: [inProgressGoal],
-        ARCHIVED: [archivedGoal],
-        COMPLETED: [completedGoal],
-      },
-      problemRetrievingData: false,
-    } as PrisonerGoals)
-
     res.locals.induction = {
       problemRetrievingData: false,
       inductionDto: aValidInductionDto(),
@@ -157,16 +148,6 @@ describe('overviewController', () => {
 
   it('should get overview view given prisoner has no latest review schedule', async () => {
     // Given
-    educationAndWorkPlanService.getAllGoalsForPrisoner.mockResolvedValue({
-      prisonNumber,
-      goals: {
-        ACTIVE: [],
-        ARCHIVED: [],
-        COMPLETED: [],
-      },
-      problemRetrievingData: false,
-    } as PrisonerGoals)
-
     res.locals.induction = {
       problemRetrievingData: false,
       inductionDto: aValidInductionDto(),
@@ -193,16 +174,6 @@ describe('overviewController', () => {
 
   it('should get overview view given latest review schedule was Completed', async () => {
     // Given
-    educationAndWorkPlanService.getAllGoalsForPrisoner.mockResolvedValue({
-      prisonNumber,
-      goals: {
-        ACTIVE: [],
-        ARCHIVED: [],
-        COMPLETED: [],
-      },
-      problemRetrievingData: false,
-    } as PrisonerGoals)
-
     res.locals.induction = {
       problemRetrievingData: false,
       inductionDto: aValidInductionDto(),
@@ -230,16 +201,6 @@ describe('overviewController', () => {
 
   it('should get overview view given latest review schedule is scheduled but is not due', async () => {
     // Given
-    educationAndWorkPlanService.getAllGoalsForPrisoner.mockResolvedValue({
-      prisonNumber,
-      goals: {
-        ACTIVE: [],
-        ARCHIVED: [],
-        COMPLETED: [],
-      },
-      problemRetrievingData: false,
-    } as PrisonerGoals)
-
     res.locals.induction = {
       problemRetrievingData: false,
       inductionDto: aValidInductionDto(),
@@ -269,16 +230,6 @@ describe('overviewController', () => {
 
   it('should get overview view given latest review schedule is scheduled but is due', async () => {
     // Given
-    educationAndWorkPlanService.getAllGoalsForPrisoner.mockResolvedValue({
-      prisonNumber,
-      goals: {
-        ACTIVE: [],
-        ARCHIVED: [],
-        COMPLETED: [],
-      },
-      problemRetrievingData: false,
-    } as PrisonerGoals)
-
     res.locals.induction = {
       problemRetrievingData: false,
       inductionDto: aValidInductionDto(),
@@ -308,16 +259,6 @@ describe('overviewController', () => {
 
   it('should get overview view given latest review schedule is scheduled but is overdue', async () => {
     // Given
-    educationAndWorkPlanService.getAllGoalsForPrisoner.mockResolvedValue({
-      prisonNumber,
-      goals: {
-        ACTIVE: [],
-        ARCHIVED: [],
-        COMPLETED: [],
-      },
-      problemRetrievingData: false,
-    } as PrisonerGoals)
-
     res.locals.induction = {
       problemRetrievingData: false,
       inductionDto: aValidInductionDto(),
@@ -347,32 +288,6 @@ describe('overviewController', () => {
 
   it('should get overview view given Induction and Goals exist, but an Action Plan Reviews was not retrieved at all', async () => {
     // Given
-    const inProgressGoal = {
-      ...aValidGoalResponse(),
-      status: GoalStatusValue.ACTIVE,
-      updatedAt: parseISO('2023-09-23T13:42:01.401Z'),
-    }
-    const archivedGoal = {
-      ...aValidGoalResponse(),
-      status: GoalStatusValue.ARCHIVED,
-      updatedAt: parseISO('2023-08-23T13:42:01.401Z'),
-    }
-    const completedGoal = {
-      ...aValidGoalResponse(),
-      status: GoalStatusValue.COMPLETED,
-      updatedAt: parseISO('2023-07-23T13:42:01.401Z'),
-    }
-
-    educationAndWorkPlanService.getAllGoalsForPrisoner.mockResolvedValue({
-      prisonNumber,
-      goals: {
-        ACTIVE: [inProgressGoal],
-        ARCHIVED: [archivedGoal],
-        COMPLETED: [completedGoal],
-      },
-      problemRetrievingData: false,
-    } as PrisonerGoals)
-
     res.locals.induction = {
       problemRetrievingData: false,
       inductionDto: aValidInductionDto(),
@@ -449,7 +364,7 @@ describe('overviewController', () => {
       coursesCompletedInLast12Months: [],
     } as InPrisonCourseRecords
 
-    educationAndWorkPlanService.getAllGoalsForPrisoner.mockResolvedValue({
+    res.locals.allGoalsForPrisoner = {
       prisonNumber,
       goals: {
         ACTIVE: [],
@@ -457,7 +372,7 @@ describe('overviewController', () => {
         COMPLETED: [],
       },
       problemRetrievingData: false,
-    } as PrisonerGoals)
+    }
 
     res.locals.induction = {
       problemRetrievingData: false,
@@ -539,7 +454,7 @@ describe('overviewController', () => {
       coursesCompletedInLast12Months: [],
     } as InPrisonCourseRecords
 
-    educationAndWorkPlanService.getAllGoalsForPrisoner.mockResolvedValue({
+    res.locals.allGoalsForPrisoner = {
       prisonNumber,
       goals: {
         ACTIVE: [],
@@ -547,7 +462,7 @@ describe('overviewController', () => {
         COMPLETED: [],
       },
       problemRetrievingData: true,
-    } as PrisonerGoals)
+    }
 
     res.locals.induction = {
       problemRetrievingData: false,
@@ -612,32 +527,6 @@ describe('overviewController', () => {
 
   it('should get overview when there is an error retrieving the induction', async () => {
     // Given
-    const inProgressGoal = {
-      ...aValidGoalResponse(),
-      status: GoalStatusValue.ACTIVE,
-      updatedAt: parseISO('2023-09-23T13:42:01.401Z'),
-    }
-    const archivedGoal = {
-      ...aValidGoalResponse(),
-      status: GoalStatusValue.ARCHIVED,
-      updatedAt: parseISO('2023-08-23T13:42:01.401Z'),
-    }
-    const completedGoal = {
-      ...aValidGoalResponse(),
-      status: GoalStatusValue.COMPLETED,
-      updatedAt: parseISO('2023-07-23T13:42:01.401Z'),
-    }
-
-    educationAndWorkPlanService.getAllGoalsForPrisoner.mockResolvedValue({
-      prisonNumber,
-      goals: {
-        ACTIVE: [inProgressGoal],
-        ARCHIVED: [archivedGoal],
-        COMPLETED: [completedGoal],
-      },
-      problemRetrievingData: false,
-    } as PrisonerGoals)
-
     res.locals.induction = {
       problemRetrievingData: true,
       inductionDto: undefined,
@@ -701,32 +590,6 @@ describe('overviewController', () => {
 
   it('should get overview when there is an error retrieving the action plan reviews', async () => {
     // Given
-    const inProgressGoal = {
-      ...aValidGoalResponse(),
-      status: GoalStatusValue.ACTIVE,
-      updatedAt: parseISO('2023-09-23T13:42:01.401Z'),
-    }
-    const archivedGoal = {
-      ...aValidGoalResponse(),
-      status: GoalStatusValue.ARCHIVED,
-      updatedAt: parseISO('2023-08-23T13:42:01.401Z'),
-    }
-    const completedGoal = {
-      ...aValidGoalResponse(),
-      status: GoalStatusValue.COMPLETED,
-      updatedAt: parseISO('2023-07-23T13:42:01.401Z'),
-    }
-
-    educationAndWorkPlanService.getAllGoalsForPrisoner.mockResolvedValue({
-      prisonNumber,
-      goals: {
-        ACTIVE: [inProgressGoal],
-        ARCHIVED: [archivedGoal],
-        COMPLETED: [completedGoal],
-      },
-      problemRetrievingData: false,
-    } as PrisonerGoals)
-
     res.locals.induction = {
       problemRetrievingData: false,
       inductionDto: aValidInductionDto(),
@@ -794,32 +657,6 @@ describe('overviewController', () => {
 
   it('should get overview view when there is an error retrieving the curious in-prison courses', async () => {
     // Given
-    const inProgressGoal = {
-      ...aValidGoalResponse(),
-      status: GoalStatusValue.ACTIVE,
-      updatedAt: parseISO('2023-09-23T13:42:01.401Z'),
-    }
-    const archivedGoal = {
-      ...aValidGoalResponse(),
-      status: GoalStatusValue.ARCHIVED,
-      updatedAt: parseISO('2023-08-23T13:42:01.401Z'),
-    }
-    const completedGoal = {
-      ...aValidGoalResponse(),
-      status: GoalStatusValue.COMPLETED,
-      updatedAt: parseISO('2023-07-23T13:42:01.401Z'),
-    }
-
-    educationAndWorkPlanService.getAllGoalsForPrisoner.mockResolvedValue({
-      prisonNumber,
-      goals: {
-        ACTIVE: [inProgressGoal],
-        ARCHIVED: [archivedGoal],
-        COMPLETED: [completedGoal],
-      },
-      problemRetrievingData: false,
-    } as PrisonerGoals)
-
     res.locals.induction = {
       problemRetrievingData: false,
       inductionDto: aValidInductionDto(),
@@ -885,32 +722,6 @@ describe('overviewController', () => {
 
   it('should get overview view when there is an error retrieving the curious functional skills', async () => {
     // Given
-    const inProgressGoal = {
-      ...aValidGoalResponse(),
-      status: GoalStatusValue.ACTIVE,
-      updatedAt: parseISO('2023-09-23T13:42:01.401Z'),
-    }
-    const archivedGoal = {
-      ...aValidGoalResponse(),
-      status: GoalStatusValue.ARCHIVED,
-      updatedAt: parseISO('2023-08-23T13:42:01.401Z'),
-    }
-    const completedGoal = {
-      ...aValidGoalResponse(),
-      status: GoalStatusValue.COMPLETED,
-      updatedAt: parseISO('2023-07-23T13:42:01.401Z'),
-    }
-
-    educationAndWorkPlanService.getAllGoalsForPrisoner.mockResolvedValue({
-      prisonNumber,
-      goals: {
-        ACTIVE: [inProgressGoal],
-        ARCHIVED: [archivedGoal],
-        COMPLETED: [completedGoal],
-      },
-      problemRetrievingData: false,
-    } as PrisonerGoals)
-
     res.locals.induction = {
       problemRetrievingData: false,
       inductionDto: aValidInductionDto(),

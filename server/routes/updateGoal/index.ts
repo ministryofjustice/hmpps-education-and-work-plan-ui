@@ -4,7 +4,8 @@ import UpdateGoalController from './updateGoalController'
 import { checkUserHasEditAuthority } from '../../middleware/roleBasedAccessControl'
 import checkUpdateGoalFormExistsInSession from '../routerRequestHandlers/checkUpdateGoalFormExistsInSession'
 import asyncMiddleware from '../../middleware/asyncMiddleware'
-import retrieveAllGoalsForPrisoner from '../routerRequestHandlers/retrieveAllGoalsForPrisoner'
+import retrieveGoals from '../routerRequestHandlers/retrieveGoals'
+import GoalStatusValue from '../../enums/goalStatusValue'
 
 /**
  * Route definitions for the pages relating to Updating A Goal
@@ -15,7 +16,7 @@ export default (router: Router, services: Services) => {
 
   router.use('/plan/:prisonNumber/goals/:goalReference/update', [checkUserHasEditAuthority()])
   router.get('/plan/:prisonNumber/goals/:goalReference/update', [
-    retrieveAllGoalsForPrisoner(services.educationAndWorkPlanService),
+    retrieveGoals(services.educationAndWorkPlanService, GoalStatusValue.ACTIVE),
     asyncMiddleware(updateGoalController.getUpdateGoalView),
   ])
   router.post('/plan/:prisonNumber/goals/:goalReference/update', [

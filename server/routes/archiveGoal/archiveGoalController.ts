@@ -19,17 +19,15 @@ export default class ArchiveGoalController {
 
   getArchiveGoalView: RequestHandler = async (req, res, next): Promise<void> => {
     const { prisonNumber, goalReference } = req.params
-    const { prisonerSummary, allGoalsForPrisoner } = res.locals
+    const { prisonerSummary, goals } = res.locals
 
     let { archiveGoalForm } = getPrisonerContext(req.session, prisonNumber)
     if (!archiveGoalForm || archiveGoalForm.reference !== goalReference) {
-      if (allGoalsForPrisoner.problemRetrievingData) {
+      if (goals.problemRetrievingData) {
         return next(createError(500, `Error retrieving plan for prisoner ${prisonNumber}`))
       }
 
-      const goalToArchive = (allGoalsForPrisoner.goals.ACTIVE as Array<Goal>).find(
-        goal => goal.goalReference === goalReference,
-      )
+      const goalToArchive = (goals.goals as Array<Goal>).find(goal => goal.goalReference === goalReference)
       if (!goalToArchive) {
         return next(createError(404, `Active goal ${goalReference} does not exist in the prisoner's plan`))
       }

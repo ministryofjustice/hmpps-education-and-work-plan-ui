@@ -7,6 +7,7 @@ import CompleteOrArchiveGoalPage from '../../../pages/goal/CompleteOrArchiveGoal
 import CompleteOrArchiveGoalValue from '../../../../server/enums/CompleteOrArchiveGoalValue'
 import CompleteGoalPage from '../../../pages/goal/CompleteGoalPage'
 import GoalsPage from '../../../pages/overview/GoalsPage'
+import GoalStatusValue from '../../../../server/enums/goalStatusValue'
 
 context('Complete a goal', () => {
   const prisonNumber = 'G6115VJ'
@@ -24,6 +25,7 @@ context('Complete a goal', () => {
     cy.task('getPrisonerById')
     cy.task('stubGetInduction')
     cy.task('getActionPlan')
+    cy.task('getGoalsByStatus', { prisonNumber, status: GoalStatusValue.ACTIVE })
     cy.task('stubLearnerProfile')
     cy.task('stubLearnerEducation')
     cy.task('stubGetAllPrisons')

@@ -65,7 +65,7 @@ declare module 'viewModels' {
   }
 
   export interface Goals {
-    goals?: Array<Goal>
+    goals: Array<Goal>
     problemRetrievingData: boolean
   }
 
