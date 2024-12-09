@@ -9,8 +9,11 @@ import { putRequestedFor } from '../../../mockApis/wiremock/requestPatternBuilde
 import { urlEqualTo } from '../../../mockApis/wiremock/matchers/url'
 import { matchingJsonPath } from '../../../mockApis/wiremock/matchers/content'
 import GoalsPage from '../../../pages/overview/GoalsPage'
+import GoalStatusValue from '../../../../server/enums/goalStatusValue'
 
 context('Update a goal', () => {
+  const prisonNumber = 'G6115VJ'
+
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubSignInAsUserWithEditAuthority')
@@ -23,6 +26,7 @@ context('Update a goal', () => {
     cy.task('getPrisonerById')
     cy.task('stubGetInduction')
     cy.task('getActionPlan')
+    cy.task('getGoalsByStatus', { prisonNumber, status: GoalStatusValue.ACTIVE })
     cy.task('stubLearnerProfile')
     cy.task('stubLearnerEducation')
     cy.task('updateGoal')
@@ -32,7 +36,6 @@ context('Update a goal', () => {
 
   it('should be able to navigate directly to update goal page', () => {
     // Given
-    const prisonNumber = 'G6115VJ'
     cy.signIn()
 
     // When
@@ -45,7 +48,6 @@ context('Update a goal', () => {
 
   it('should not submit the form if there are validation errors on the page', () => {
     // Given
-    const prisonNumber = 'G6115VJ'
     cy.signIn()
 
     cy.visit(`/plan/${prisonNumber}/view/overview`)
@@ -73,7 +75,6 @@ context('Update a goal', () => {
 
   it('should not submit the form and highlight field in error if there are validation errors on target completion date field', () => {
     // Given
-    const prisonNumber = 'G6115VJ'
     cy.signIn()
 
     cy.visit(`/plan/${prisonNumber}/view/overview`)
@@ -101,7 +102,6 @@ context('Update a goal', () => {
 
   it('should be able to submit the form if no validation errors', () => {
     // Given
-    const prisonNumber = 'G6115VJ'
     cy.signIn()
 
     cy.visit(`/plan/${prisonNumber}/view/overview`)
@@ -127,7 +127,6 @@ context('Update a goal', () => {
 
   it('should be able to add a new step as part of updating a goal', () => {
     // Given
-    const prisonNumber = 'G6115VJ'
     cy.signIn()
 
     cy.visit(`/plan/${prisonNumber}/view/overview`)
@@ -165,7 +164,6 @@ context('Update a goal', () => {
 
   it('should be able to remove a step as part of updating a goal', () => {
     // Given
-    const prisonNumber = 'G6115VJ'
     cy.signIn()
 
     cy.visit(`/plan/${prisonNumber}/view/overview`)
@@ -198,7 +196,6 @@ context('Update a goal', () => {
     // Given
     cy.task('stubSignInAsReadOnlyUser')
 
-    const prisonNumber = 'G6115VJ'
     cy.signIn()
 
     // When
@@ -210,7 +207,6 @@ context('Update a goal', () => {
 
   it(`should render 404 page given specified goal is not found in the prisoner's plan`, () => {
     // Given
-    const prisonNumber = 'G6115VJ'
     const nonExistentGoalReference = 'c17ffa15-cf3e-409b-827d-e1e458dbd5e8'
     cy.signIn()
 
@@ -221,11 +217,10 @@ context('Update a goal', () => {
     Page.verifyOnPage(Error404Page)
   })
 
-  it(`should render 500 page given error retrieving prisoner's plan`, () => {
+  it(`should render 500 page given error retrieving prisoner's goals`, () => {
     // Given
-    const prisonNumber = 'G6115VJ'
+    cy.task('getGoalsByStatus500', { prisonNumber, status: GoalStatusValue.ACTIVE })
     cy.signIn()
-    cy.task('getActionPlan500Error')
 
     // When
     cy.visit(`/plan/${prisonNumber}/goals/${goalReference}/update`, { failOnStatusCode: false })

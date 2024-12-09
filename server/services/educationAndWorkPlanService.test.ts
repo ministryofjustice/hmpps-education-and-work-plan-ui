@@ -160,7 +160,7 @@ describe('educationAndWorkPlanService', () => {
       const status = GoalStatusValue.ACTIVE
 
       educationAndWorkPlanClient.getGoalsByStatus.mockRejectedValue(createError(500, 'Service unavailable'))
-      const expectedResponse: Goals = { goals: undefined, problemRetrievingData: true }
+      const expectedResponse: Goals = { goals: [], problemRetrievingData: true }
 
       // When
       const actual = await educationAndWorkPlanService.getGoalsByStatus(prisonNumber, status, username)
@@ -196,7 +196,7 @@ describe('educationAndWorkPlanService', () => {
       const status = GoalStatusValue.ACTIVE
 
       educationAndWorkPlanClient.getGoalsByStatus.mockRejectedValue(createError(404, 'Service unavailable'))
-      const expectedResponse: Goals = { goals: undefined, problemRetrievingData: false }
+      const expectedResponse: Goals = { goals: [], problemRetrievingData: false }
 
       // When
       const actual = await educationAndWorkPlanService.getGoalsByStatus(prisonNumber, status, username)

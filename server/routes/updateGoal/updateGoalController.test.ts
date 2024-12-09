@@ -67,11 +67,9 @@ describe('updateGoalController', () => {
       // Given
       const step = aValidStep()
       const goal = aValidGoal({ goalReference, steps: [step] })
-      res.locals.allGoalsForPrisoner = {
+      res.locals.goals = {
         problemRetrievingData: false,
-        goals: {
-          ACTIVE: [goal],
-        },
+        goals: [goal],
       }
 
       const updateGoalForm = {
@@ -116,7 +114,7 @@ describe('updateGoalController', () => {
 
     it('should not get update goal view given problem retrieving prisoner goals', async () => {
       // Given
-      res.locals.allGoalsForPrisoner = {
+      res.locals.goals = {
         problemRetrievingData: true,
       }
 
@@ -138,11 +136,9 @@ describe('updateGoalController', () => {
       // Given
       const someOtherGoalReference = 'd31d22bc-b9be-4d13-9e47-d633d6815454'
       const goal = aValidGoal({ goalReference: someOtherGoalReference })
-      res.locals.allGoalsForPrisoner = {
+      res.locals.goals = {
         problemRetrievingData: false,
-        goals: {
-          ACTIVE: [goal],
-        },
+        goals: [goal],
       }
 
       const expectedError = createError(404, `Active goal ${goalReference} does not exist in the prisoner's plan`)

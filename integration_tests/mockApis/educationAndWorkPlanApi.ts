@@ -35,7 +35,7 @@ const getGoalsByStatus = (
   stubFor({
     request: {
       method: 'GET',
-      urlPattern: `/action-plans/${conf.prisonNumber || 'G6115VJ'}/goals\\?status=${conf.status || GoalStatusValue.ACTIVE}`,
+      urlPattern: `/action-plans/${conf.prisonNumber}/goals\\?status=${conf.status}`,
     },
     response: {
       status: 200,
@@ -46,11 +46,16 @@ const getGoalsByStatus = (
     },
   })
 
-const getGoalsByStatus500 = (prisonNumber = 'G6115VJ'): SuperAgentRequest =>
+const getGoalsByStatus500 = (
+  conf: { prisonNumber: string; status?: GoalStatusValue } = {
+    prisonNumber: 'G6115VJ',
+    status: GoalStatusValue.ACTIVE,
+  },
+): SuperAgentRequest =>
   stubFor({
     request: {
       method: 'GET',
-      urlPattern: `/action-plans/${prisonNumber}/goals\\?status=ACTIVE`,
+      urlPattern: `/action-plans/${conf.prisonNumber}/goals\\?status=${conf.status}`,
     },
     response: {
       status: 500,
@@ -65,11 +70,16 @@ const getGoalsByStatus500 = (prisonNumber = 'G6115VJ'): SuperAgentRequest =>
     },
   })
 
-const getGoalsByStatus404 = (prisonNumber = 'G6115VJ'): SuperAgentRequest =>
+const getGoalsByStatus404 = (
+  conf: { prisonNumber: string; status?: GoalStatusValue } = {
+    prisonNumber: 'G6115VJ',
+    status: GoalStatusValue.ACTIVE,
+  },
+): SuperAgentRequest =>
   stubFor({
     request: {
       method: 'GET',
-      urlPattern: `/action-plans/${prisonNumber}/goals\\?status=ACTIVE`,
+      urlPattern: `/action-plans/${conf.prisonNumber}/goals\\?status=${conf.status}`,
     },
     response: {
       status: 404,

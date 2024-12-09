@@ -49,11 +49,9 @@ describe('unarchiveGoalController', () => {
     it('should get the unarchived goal view', async () => {
       // Given
       const goal = aValidGoal({ goalReference, title: 'Learn Spanish', status: 'ARCHIVED' })
-      res.locals.allGoalsForPrisoner = {
+      res.locals.goals = {
         problemRetrievingData: false,
-        goals: {
-          ARCHIVED: [goal],
-        },
+        goals: [goal],
       }
 
       const expectedView = {
@@ -73,7 +71,7 @@ describe('unarchiveGoalController', () => {
 
     it('should not get update goal view given problem retrieving prisoner goals', async () => {
       // Given
-      res.locals.allGoalsForPrisoner = {
+      res.locals.goals = {
         problemRetrievingData: true,
       }
 
@@ -90,11 +88,9 @@ describe('unarchiveGoalController', () => {
       // Given
       const someOtherGoalReference = 'd31d22bc-b9be-4d13-9e47-d633d6815454'
       const goal = aValidGoal({ goalReference: someOtherGoalReference })
-      res.locals.allGoalsForPrisoner = {
+      res.locals.goals = {
         problemRetrievingData: false,
-        goals: {
-          ARCHIVED: [goal],
-        },
+        goals: [goal],
       }
 
       const expectedError = createError(404, `Archived goal ${goalReference} does not exist in the prisoner's plan`)
