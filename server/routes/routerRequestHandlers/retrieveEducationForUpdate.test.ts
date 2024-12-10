@@ -85,17 +85,9 @@ describe('retrieveEducationForUpdate', () => {
     expect(next).toHaveBeenCalledWith(expectedError)
   })
 
-  it('should handle retrieval of Education given Education service returns Not Found', async () => {
+  it('should handle retrieval of Education given Education service returns undefined, indicating the prisoner does not have an education record', async () => {
     // Given
-    const educationServiceError = {
-      status: 404,
-      data: {
-        status: 404,
-        userMessage: `Education not found for prisoner [${prisonNumber}]`,
-        developerMessage: `Education not found for prisoner [${prisonNumber}]`,
-      },
-    }
-    educationAndWorkPlanService.getEducation.mockRejectedValue(educationServiceError)
+    educationAndWorkPlanService.getEducation.mockResolvedValue(undefined)
 
     const expectedError = createHttpError(404, 'Education for prisoner A1234BC not returned by the Education Service')
 

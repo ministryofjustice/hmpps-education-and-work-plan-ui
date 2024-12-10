@@ -12,17 +12,24 @@ import { getPrisonerContext } from '../../data/session/prisonerContexts'
 const retrieveEducationForUpdate = (educationAndWorkPlanService: EducationAndWorkPlanService): RequestHandler => {
   return asyncMiddleware(async (req: Request, res: Response, next: NextFunction) => {
     const { prisonNumber } = req.params
+
+    if (getPrisonerContext(req.session, prisonNumber).educationDto) {
+      return next()
+    }
+
     try {
-      if (!getPrisonerContext(req.session, prisonNumber).educationDto) {
-        // Retrieve the qualifications and store in the prisoner context
-        getPrisonerContext(req.session, prisonNumber).educationDto = await educationAndWorkPlanService.getEducation(
-          prisonNumber,
-          req.user.username,
-        )
+      // Retrieve the qualifications and store in the prisoner context
+      const eduction = await educationAndWorkPlanService.getEducation(prisonNumber, req.user.username)
+      if (!eduction) {
+        return next(createError(404, `Education for prisoner ${prisonNumber} not returned by the Education Service`))
       }
-      next()
+
+      getPrisonerContext(req.session, prisonNumber).educationDto = eduction
+      return next()
     } catch (error) {
-      next(createError(error.status, `Education for prisoner ${prisonNumber} not returned by the Education Service`))
+      return next(
+        createError(error.status, `Education for prisoner ${prisonNumber} not returned by the Education Service`),
+      )
     }
   })
 }

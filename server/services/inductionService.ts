@@ -20,6 +20,11 @@ export default class InductionService {
       const inductionResponse = await this.educationAndWorkPlanClient.getInduction(prisonNumber, systemToken)
       return toInductionDto(inductionResponse)
     } catch (error) {
+      if (error.status === 404) {
+        logger.debug(`No Induction for prisoner [${prisonNumber}] in Education And Work Plan API`)
+        return undefined
+      }
+
       logger.error(`Error retrieving Induction for prisoner [${prisonNumber}] from Education And Work Plan API `, error)
       throw error
     }

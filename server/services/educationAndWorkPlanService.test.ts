@@ -350,7 +350,28 @@ describe('educationAndWorkPlanService', () => {
       expect(mockedEducationMapper).toHaveBeenCalledWith(educationResponse, prisonNumber)
     })
 
-    it('should not get prisoner education given educationAndWorkPlanClient returns an error', async () => {
+    it('should not get prisoner education given educationAndWorkPlanClient returns a 404 error', async () => {
+      // Given
+      const eductionAndWorkPlanApiError = {
+        status: 404,
+        data: {
+          status: 404,
+          userMessage: `Education not found for prisoner [${prisonNumber}]`,
+          developerMessage: `Education not found for prisoner [${prisonNumber}]`,
+        },
+      }
+      educationAndWorkPlanClient.getEducation.mockRejectedValue(eductionAndWorkPlanApiError)
+
+      // When
+      const actual = await educationAndWorkPlanService.getEducation(prisonNumber, systemToken)
+
+      // Then
+      expect(actual).toBeUndefined()
+      expect(educationAndWorkPlanClient.getEducation).toHaveBeenCalledWith(prisonNumber, systemToken)
+      expect(mockedEducationMapper).not.toHaveBeenCalled()
+    })
+
+    it('should not get prisoner education given educationAndWorkPlanClient returns a non 404 error', async () => {
       // Given
       const eductionAndWorkPlanApiError = {
         status: 500,

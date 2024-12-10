@@ -9,15 +9,25 @@ const retrieveInductionIfNotInSession = (inductionService: InductionService): Re
   return async (req: Request, res: Response, next: NextFunction) => {
     const { prisonNumber } = req.params
 
+    if (req.session.inductionDto?.prisonNumber === prisonNumber) {
+      return next()
+    }
+
     try {
-      // Retrieve the Induction and store in the session if its either not there, or is for a different prisoner
-      if (!req.session.inductionDto || req.session.inductionDto.prisonNumber !== prisonNumber) {
-        req.session.inductionDto = await inductionService.getInduction(prisonNumber, req.user.username)
+      // Retrieve the Induction and store in the session
+      const induction = await inductionService.getInduction(prisonNumber, req.user.username)
+      if (!induction) {
+        return next(createError(404, `Induction for prisoner ${prisonNumber} not returned by the Induction Service`))
       }
-      next()
+
+      req.session.inductionDto = induction
+      return next()
     } catch (error) {
-      next(createError(error.status, `Induction for prisoner ${prisonNumber} not returned by the Induction Service`))
+      return next(
+        createError(error.status, `Induction for prisoner ${prisonNumber} not returned by the Induction Service`),
+      )
     }
   }
 }
+
 export default retrieveInductionIfNotInSession

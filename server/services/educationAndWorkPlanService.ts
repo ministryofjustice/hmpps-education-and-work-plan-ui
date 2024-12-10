@@ -121,6 +121,11 @@ export default class EducationAndWorkPlanService {
       const educationResponse = await this.educationAndWorkPlanClient.getEducation(prisonNumber, systemToken)
       return toEducationDto(educationResponse, prisonNumber)
     } catch (error) {
+      if (error.status === 404) {
+        logger.debug(`No Education found for prisoner [${prisonNumber}] in Education And Work Plan API`)
+        return undefined
+      }
+
       logger.error(`Error retrieving Education for Prisoner [${prisonNumber}]: ${error}`)
       throw error
     }
