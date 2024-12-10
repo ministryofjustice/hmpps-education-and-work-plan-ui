@@ -1,6 +1,7 @@
 import createError from 'http-errors'
 import type { Request, RequestHandler } from 'express'
 import type { CreateGoalsForm } from 'forms'
+import type { CreateActionPlanDto } from 'dto'
 import logger from '../../../logger'
 import CreateGoalsView from './createGoalsView'
 import validateCreateGoalsForm from './createGoalsFormValidator'
@@ -65,7 +66,7 @@ export default class CreateGoalsController {
 
   submitCreateGoalsForm: RequestHandler = async (req, res, next): Promise<void> => {
     const { prisonNumber } = req.params
-    const { prisonerSummary } = res.locals
+    const { prisonerSummary, actionPlan } = res.locals
     const { prisonId } = prisonerSummary
 
     const createGoalsForm = { ...req.body } as CreateGoalsForm
@@ -80,7 +81,15 @@ export default class CreateGoalsController {
     const createGoalDtos = toCreateGoalDtos(createGoalsForm, prisonId)
 
     try {
-      await this.educationAndWorkPlanService.createGoals(prisonNumber, createGoalDtos, req.user.token)
+      if (actionPlan.goals.length > 0) {
+        await this.educationAndWorkPlanService.createGoals(prisonNumber, createGoalDtos, req.user.token)
+      } else {
+        const createActionPlanDto: CreateActionPlanDto = {
+          prisonNumber,
+          goals: createGoalDtos,
+        }
+        await this.educationAndWorkPlanService.createActionPlan(createActionPlanDto, req.user.username)
+      }
     } catch (e) {
       logger.error(`Error creating goal(s) for prisoner ${prisonNumber}`, e)
       return next(createError(500, `Error creating goal(s) for prisoner ${prisonNumber}. Error: ${e}`))

@@ -6,6 +6,8 @@ import { matchingJsonPath } from '../../../mockApis/wiremock/matchers/content'
 import OverviewPage from '../../../pages/overview/OverviewPage'
 
 context('Create goals', () => {
+  const prisonNumber = 'G6115VJ'
+
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubSignInAsUserWithEditAuthority')
@@ -20,13 +22,11 @@ context('Create goals', () => {
     cy.task('stubLearnerProfile')
     cy.task('stubLearnerEducation')
     cy.task('stubGetAllPrisons')
-    cy.task('createGoals')
     cy.task('getActionPlan')
   })
 
   it('should be able to navigate directly to Create Goal page', () => {
     // Given
-    const prisonNumber = 'G6115VJ'
     cy.signIn()
 
     // When
@@ -38,7 +38,6 @@ context('Create goals', () => {
 
   it('should not be able to submit Create Goal page given validation errors', () => {
     // Given
-    const prisonNumber = 'G6115VJ'
     cy.signIn()
 
     cy.visit(`/plan/${prisonNumber}/view/overview`)
@@ -63,7 +62,6 @@ context('Create goals', () => {
 
   it('should be able to add an empty step, and validation only performed on final form submission', () => {
     // Given
-    const prisonNumber = 'G6115VJ'
     cy.signIn()
 
     cy.visit(`/plan/${prisonNumber}/goals/create`)
@@ -92,7 +90,6 @@ context('Create goals', () => {
 
   it('should be able to add an empty step to a goal', () => {
     // Given
-    const prisonNumber = 'G6115VJ'
     cy.signIn()
 
     cy.visit(`/plan/${prisonNumber}/goals/create`)
@@ -118,7 +115,6 @@ context('Create goals', () => {
 
   it('should be able to remove a step from a goal', () => {
     // Given
-    const prisonNumber = 'G6115VJ'
     cy.signIn()
 
     cy.visit(`/plan/${prisonNumber}/goals/create`)
@@ -151,7 +147,6 @@ context('Create goals', () => {
 
   it('should be able to add an empty goal', () => {
     // Given
-    const prisonNumber = 'G6115VJ'
     cy.signIn()
 
     cy.visit(`/plan/${prisonNumber}/goals/create`)
@@ -176,7 +171,6 @@ context('Create goals', () => {
 
   it('should be able to remove a goal', () => {
     // Given
-    const prisonNumber = 'G6115VJ'
     cy.signIn()
 
     cy.visit(`/plan/${prisonNumber}/goals/create`)
@@ -205,9 +199,10 @@ context('Create goals', () => {
       .goalTitleIs('Become a carpenter', 1)
   })
 
-  it('should create goals given valid form submission', () => {
+  it('should create goals given valid form submission and prisoner already has goals', () => {
     // Given
-    const prisonNumber = 'G6115VJ'
+    cy.task('getActionPlan')
+    cy.task('createGoals')
     cy.signIn()
 
     cy.visit(`/plan/${prisonNumber}/goals/create`)
@@ -231,7 +226,11 @@ context('Create goals', () => {
     createGoalPage.submitPage()
 
     // Then
-    Page.verifyOnPage(OverviewPage)
+    Page.verifyOnPage(OverviewPage) //
+      .hasSuccessMessage('Goals added')
+      .refreshPage()
+      .doesNotHaveSuccessMessage()
+
     cy.wiremockVerify(
       postRequestedFor(urlEqualTo(`/action-plans/${prisonNumber}/goals`)) //
         .withRequestBody(
@@ -256,30 +255,41 @@ context('Create goals', () => {
     )
   })
 
-  it(`should display 'goals created successfully' message`, () => {
+  it('should create action plan given valid form submission and prisoner does not have any goals yet', () => {
     // Given
-    const prisonNumber = 'G6115VJ'
+    cy.task('getActionPlan404Error')
+    cy.task('createActionPlan')
     cy.signIn()
 
-    cy.visit(`/plan/${prisonNumber}/view/overview`)
-    let overviewPage = Page.verifyOnPage(OverviewPage)
-    overviewPage.doesNotHaveSuccessMessage()
-
-    const createGoalPage = overviewPage.clickAddGoalButton()
+    cy.visit(`/plan/${prisonNumber}/goals/create`)
+    const createGoalPage = Page.verifyOnPage(CreateGoalsPage)
 
     createGoalPage //
       .setGoalTitle('Learn French', 1)
       .setTargetCompletionDate6to12Months(1)
-      .setStepTitle('Book course', 1, 1)
+      .setStepTitle('Attend course', 1, 1)
 
     // When
     createGoalPage.submitPage()
 
     // Then
-    overviewPage = Page.verifyOnPage(OverviewPage)
-    overviewPage //
+    Page.verifyOnPage(OverviewPage) //
       .hasSuccessMessage('Goals added')
       .refreshPage()
       .doesNotHaveSuccessMessage()
+
+    cy.wiremockVerify(
+      postRequestedFor(urlEqualTo(`/action-plans/${prisonNumber}`)) //
+        .withRequestBody(
+          matchingJsonPath(
+            '$[?(@.goals.size() == 1 && ' +
+              "@.goals[0].prisonId == 'BXI' && " +
+              '@.goals[0].targetCompletionDate && ' + // assert the targetCompletionDate field exists in the request, but not it's value as the value is based on x months from today
+              "@.goals[0].title == 'Learn French' && " +
+              '@.goals[0].steps.size() == 1 && ' +
+              "@.goals[0].steps[0].title == 'Attend course' && @.goals[0].steps[0].sequenceNumber == '1')]",
+          ),
+        ),
+    )
   })
 })
