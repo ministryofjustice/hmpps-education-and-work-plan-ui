@@ -23,8 +23,6 @@ const createGoals = (): SuperAgentRequest =>
     },
   })
 
-const getActionPlan = (id = 'G6115VJ'): SuperAgentRequest => stubFor(actionPlans[id])
-
 const getGoalsByStatus = (
   conf: { prisonNumber: string; status?: GoalStatusValue; goals?: [] } = {
     prisonNumber: 'G6115VJ',
@@ -131,18 +129,34 @@ const updateGoal500Error = (
     },
   })
 
-const getActionPlanForPrisonerWithNoGoals = (prisonNumber = 'G6115VJ'): SuperAgentRequest =>
+const createActionPlan = (): SuperAgentRequest =>
+  stubFor({
+    request: {
+      method: 'POST',
+      urlPattern: '/action-plans/.*',
+    },
+    response: {
+      status: 201,
+    },
+  })
+
+const getActionPlan = (prisonNumber = 'G6115VJ'): SuperAgentRequest => stubFor(actionPlans[prisonNumber])
+
+const getActionPlan404Error = (prisonNumber = 'G6115VJ'): SuperAgentRequest =>
   stubFor({
     request: {
       method: 'GET',
       urlPattern: `/action-plans/${prisonNumber}`,
     },
     response: {
-      status: 200,
+      status: 404,
       headers: { 'Content-Type': 'application/json;charset=UTF-8' },
       jsonBody: {
-        prisonerNumber: `${prisonNumber}`,
-        goals: [],
+        status: 404,
+        errorCode: null,
+        userMessage: `Unable to find ActionPlan for prisoner [${prisonNumber}]`,
+        developerMessage: `Unable to find ActionPlan for prisoner [${prisonNumber}]`,
+        moreInfo: null,
       },
     },
   })
@@ -1112,7 +1126,7 @@ const stubCreateActionPlanReview = (): SuperAgentRequest =>
 
 export default {
   createGoals,
-  getActionPlan,
+
   getGoalsByStatus,
   getGoalsByStatus404,
   getGoalsByStatus500,
@@ -1128,8 +1142,12 @@ export default {
   archiveGoal,
   completeGoal,
   unarchiveGoal,
-  getActionPlanForPrisonerWithNoGoals,
+
+  createActionPlan,
+  getActionPlan,
+  getActionPlan404Error,
   getActionPlan500Error,
+
   stubActionPlansList,
   stubActionPlansListFromPrisonerSearchSummaries,
   stubActionPlansList500error,

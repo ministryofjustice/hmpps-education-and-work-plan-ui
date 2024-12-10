@@ -8,6 +8,7 @@ import EducationAndWorkPlanService from '../../services/educationAndWorkPlanServ
 import AuditService, { BaseAuditData } from '../../services/auditService'
 import toCreateGoalDtos from '../../data/mappers/createGoalDtoMapper'
 import GoalTargetCompletionDateOption from '../../enums/goalTargetCompletionDateOption'
+import { aValidGoal } from '../../testsupport/actionPlanTestDataBuilder'
 
 jest.mock('../../services/educationAndWorkPlanService')
 jest.mock('../../services/auditService')
@@ -37,7 +38,7 @@ describe('createGoalsController', () => {
   const req = {
     session: {},
     body: {},
-    user: { username: 'a-dps-user' },
+    user: { username: 'a-dps-user', token: 'some-token' },
     params: { prisonNumber },
     query: {},
     id: requestId,
@@ -55,6 +56,7 @@ describe('createGoalsController', () => {
 
   beforeEach(() => {
     jest.resetAllMocks()
+    res.locals = { prisonerSummary }
     errors = []
   })
 
@@ -108,9 +110,14 @@ describe('createGoalsController', () => {
   })
 
   describe('submitCreateGoalsForm', () => {
-    it('should call API to create goals and redirect to overview given value CreateGoalsForm', async () => {
+    it('should call API to create goals and redirect to overview given value CreateGoalsForm given prisoners Action Plan already exists', async () => {
       // Given
-      req.user.token = 'some-token'
+      res.locals.actionPlan = {
+        prisonNumber,
+        goals: [aValidGoal()],
+        problemRetrievingData: false,
+      }
+
       const submittedCreateGoalsForm: CreateGoalsForm = {
         prisonNumber,
         goals: [
@@ -181,6 +188,68 @@ describe('createGoalsController', () => {
       expect(auditService.logCreateGoal).toHaveBeenCalledTimes(2)
       expect(auditService.logCreateGoal).toHaveBeenCalledWith(expectedBaseAuditDataForFirstGoal)
       expect(auditService.logCreateGoal).toHaveBeenCalledWith(expectedBaseAuditDataForSecondGoal)
+    })
+
+    it('should call API to create action plan and redirect to overview given value CreateGoalsForm given prisoners Action Plan does not already exist', async () => {
+      // Given
+      res.locals.actionPlan = {
+        prisonNumber,
+        goals: [],
+        problemRetrievingData: false,
+      }
+
+      const submittedCreateGoalsForm: CreateGoalsForm = {
+        prisonNumber,
+        goals: [
+          {
+            title: 'Learn French',
+            targetCompletionDate: '2024-12-31',
+            steps: [{ title: 'Book Course' }],
+          },
+        ],
+      }
+      req.body = submittedCreateGoalsForm
+
+      req.session.createGoalsForm = undefined
+
+      mockedCreateGoalsFormValidator.mockReturnValue(errors)
+
+      const expectedCreateGoalDtos: Array<CreateGoalDto> = [
+        {
+          prisonNumber,
+          prisonId: expectedPrisonId,
+          title: 'Learn French',
+          steps: [{ title: 'Book Course', sequenceNumber: 1 }],
+          targetCompletionDate: new Date('2024-12-31T00:00:00.000Z'),
+        },
+      ]
+      mockedCreateGoalDtosMapper.mockReturnValue(expectedCreateGoalDtos)
+
+      const expectedBaseAuditDataForFirstGoal: BaseAuditData = {
+        correlationId: requestId,
+        details: { goalNumber: 1, ofGoalsCreatedInThisRequest: 1 },
+        subjectId: prisonNumber,
+        subjectType: 'PRISONER_ID',
+        who: 'a-dps-user',
+      }
+
+      // When
+      await controller.submitCreateGoalsForm(req, res, next)
+
+      // Then
+      expect(res.redirectWithSuccess).toHaveBeenCalledWith('/plan/A1234BC/view/overview', 'Goals added')
+      expect(mockedCreateGoalsFormValidator).toHaveBeenCalledWith(submittedCreateGoalsForm)
+      expect(mockedCreateGoalDtosMapper).toHaveBeenCalledWith(submittedCreateGoalsForm, expectedPrisonId)
+      expect(educationAndWorkPlanService.createActionPlan).toHaveBeenCalledWith(
+        {
+          prisonNumber,
+          goals: expectedCreateGoalDtos,
+        },
+        'a-dps-user',
+      )
+      expect(req.session.createGoalsForm).toBeUndefined()
+      expect(auditService.logCreateGoal).toHaveBeenCalledTimes(1)
+      expect(auditService.logCreateGoal).toHaveBeenCalledWith(expectedBaseAuditDataForFirstGoal)
     })
 
     it('should redirect to create goals form given form validation fails', async () => {

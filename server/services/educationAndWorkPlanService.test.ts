@@ -1,6 +1,6 @@
 import type { ArchiveGoalDto, UnarchiveGoalDto } from 'dto'
 import type { ArchiveGoalRequest, UnarchiveGoalRequest } from 'educationAndWorkPlanApiClient'
-import type { Goals } from 'viewModels'
+import type { ActionPlan, Goals } from 'viewModels'
 import createError from 'http-errors'
 import EducationAndWorkPlanClient from '../data/educationAndWorkPlanClient'
 import EducationAndWorkPlanService from './educationAndWorkPlanService'
@@ -125,9 +125,28 @@ describe('educationAndWorkPlanService', () => {
       expect(actual).toEqual(expectedActionPlan)
     })
 
-    it('should not get Action Plan given educationAndWorkPlanClient returns an error', async () => {
+    it('should return Action Plan with no goals given educationAndWorkPlanClient returns response with 404 status', async () => {
       // Given
-      educationAndWorkPlanClient.getActionPlan.mockRejectedValue(Error('Service Unavailable'))
+      educationAndWorkPlanClient.getActionPlan.mockRejectedValue(createError(404, 'Not Found'))
+
+      const expectedResponse: ActionPlan = {
+        prisonNumber,
+        goals: [],
+        problemRetrievingData: false,
+      }
+
+      // When
+      const actual = await educationAndWorkPlanService.getActionPlan(prisonNumber, username)
+
+      // Then
+      expect(actual).toEqual(expectedResponse)
+      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
+      expect(educationAndWorkPlanClient.getActionPlan).toHaveBeenCalledWith(prisonNumber, systemToken)
+    })
+
+    it('should not get Action Plan given educationAndWorkPlanClient returns response with a non-404 error response', async () => {
+      // Given
+      educationAndWorkPlanClient.getActionPlan.mockRejectedValue(createError(500, 'Service unavailable'))
 
       // When
       const actual = await educationAndWorkPlanService.getActionPlan(prisonNumber, username)

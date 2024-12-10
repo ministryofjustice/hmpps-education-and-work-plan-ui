@@ -10,6 +10,8 @@ import OverviewPage from '../../pages/overview/OverviewPage'
 import CreateGoalsPage from '../../pages/goal/CreateGoalsPage'
 
 context(`Show the relevant screen after an Induction has been created`, () => {
+  const prisonNumber = 'G6115VJ'
+
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubSignInAsUserWithEditAuthority')
@@ -25,9 +27,8 @@ context(`Show the relevant screen after an Induction has been created`, () => {
 
   it('should display the Create Goal page given the prisoner does not have an Action Plan with goals', () => {
     // Given
-    const prisonNumber = 'A00001A'
     cy.signIn()
-    cy.task('getActionPlan', prisonNumber) // The Action Plan returned from the API for prisoner A00001A has no goals
+    cy.task('getActionPlan404Error')
     cy.task('getPrisonerById', prisonNumber)
     cy.task('stubGetInduction', { prisonNumber })
 
@@ -40,7 +41,6 @@ context(`Show the relevant screen after an Induction has been created`, () => {
 
   it('should display the Overview page given the prisoner already has an Action Plan with goals', () => {
     // Given
-    const prisonNumber = 'G6115VJ'
     cy.signIn()
     cy.task('getGoalsByStatus', { prisonNumber })
     cy.task('getPrisonerById', prisonNumber)
@@ -59,7 +59,6 @@ context(`Show the relevant screen after an Induction has been created`, () => {
 
   it('should display the Overview page given retrieving the prisoners Action Plan fails', () => {
     // Given
-    const prisonNumber = 'G6115VJ'
     cy.signIn()
     cy.task('getPrisonerById', prisonNumber)
     cy.task('stubGetInduction', { prisonNumber })

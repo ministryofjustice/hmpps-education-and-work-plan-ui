@@ -40,8 +40,12 @@ export default class EducationAndWorkPlanService {
       const prisonNamesById = await this.getAllPrisonNamesByIdSafely(systemToken)
       return toActionPlan(actionPlanResponse, false, prisonNamesById)
     } catch (error) {
+      if (error.status === 404) {
+        logger.debug(`No Action Plan exists yet for Prisoner [${prisonNumber}]`)
+        return { prisonNumber, goals: [], problemRetrievingData: false }
+      }
       logger.error(`Error retrieving Action Plan for Prisoner [${prisonNumber}]: ${error}`)
-      return { problemRetrievingData: true, goals: [] } as ActionPlan
+      return { prisonNumber, goals: [], problemRetrievingData: true }
     }
   }
 
