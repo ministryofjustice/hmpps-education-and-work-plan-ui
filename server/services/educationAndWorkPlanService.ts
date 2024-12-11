@@ -117,13 +117,8 @@ export default class EducationAndWorkPlanService {
 
   async getEducation(prisonNumber: string, username: string): Promise<EducationDto> {
     const systemToken = await this.hmppsAuthClient.getSystemClientToken(username)
-    try {
-      const educationResponse = await this.educationAndWorkPlanClient.getEducation(prisonNumber, systemToken)
-      return toEducationDto(educationResponse, prisonNumber)
-    } catch (error) {
-      logger.error(`Error retrieving Education for Prisoner [${prisonNumber}]: ${error}`)
-      throw error
-    }
+    const educationResponse = await this.educationAndWorkPlanClient.getEducation(prisonNumber, systemToken)
+    return toEducationDto(educationResponse, prisonNumber)
   }
 
   async createEducation(

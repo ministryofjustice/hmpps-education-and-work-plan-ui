@@ -16,13 +16,8 @@ export default class InductionService {
 
   async getInduction(prisonNumber: string, username: string): Promise<InductionDto> {
     const systemToken = await this.hmppsAuthClient.getSystemClientToken(username)
-    try {
-      const inductionResponse = await this.educationAndWorkPlanClient.getInduction(prisonNumber, systemToken)
-      return toInductionDto(inductionResponse)
-    } catch (error) {
-      logger.error(`Error retrieving Induction for prisoner [${prisonNumber}] from Education And Work Plan API `, error)
-      throw error
-    }
+    const inductionResponse = await this.educationAndWorkPlanClient.getInduction(prisonNumber, systemToken)
+    return toInductionDto(inductionResponse)
   }
 
   async updateInduction(
