@@ -1,6 +1,6 @@
 import Page from '../../../pages/page'
 import AuthorisationErrorPage from '../../../pages/authorisationError'
-import ReviewPlanExemptionReasonValue from '../../../../server/enums/reviewPlanExemptionReasonValue'
+import ReviewScheduleStatusValue from '../../../../server/enums/reviewScheduleStatusValue'
 import ExemptionReasonPage from '../../../pages/reviewPlan/exemption/exemptionPage'
 import ConfirmExemptionPage from '../../../pages/reviewPlan/exemption/confirmExemptionPage'
 
@@ -54,19 +54,16 @@ context(`Review exemption page`, () => {
     Page.verifyOnPage(ExemptionReasonPage) //
       .hasErrorCount(1)
       .hasFieldInError('exemptionReason')
-      .selectExemptionReason(ReviewPlanExemptionReasonValue.EXEMPT_PRISONER_DRUG_OR_ALCOHOL_DEPENDENCY)
+      .selectExemptionReason(ReviewScheduleStatusValue.EXEMPT_PRISONER_DRUG_OR_ALCOHOL_DEPENDENCY)
       .enterExemptionReasonDetails(
-        ReviewPlanExemptionReasonValue.EXEMPT_PRISONER_DRUG_OR_ALCOHOL_DEPENDENCY,
+        ReviewScheduleStatusValue.EXEMPT_PRISONER_DRUG_OR_ALCOHOL_DEPENDENCY,
         'a'.repeat(201),
       )
       .submitPage() // submit the page with too many characters in the exemption reason to trigger an exemption reason details validation error
     Page.verifyOnPage(ExemptionReasonPage) //
       .hasErrorCount(1)
       .hasFieldInError('EXEMPT_PRISONER_DRUG_OR_ALCOHOL_DEPENDENCY')
-      .enterExemptionReasonDetails(
-        ReviewPlanExemptionReasonValue.EXEMPT_PRISONER_DRUG_OR_ALCOHOL_DEPENDENCY,
-        'In treatment',
-      )
+      .enterExemptionReasonDetails(ReviewScheduleStatusValue.EXEMPT_PRISONER_DRUG_OR_ALCOHOL_DEPENDENCY, 'In treatment')
       .submitPage() // submit the page with valid responses to redirect to confirm exemption page
     Page.verifyOnPage(ConfirmExemptionPage) //
 

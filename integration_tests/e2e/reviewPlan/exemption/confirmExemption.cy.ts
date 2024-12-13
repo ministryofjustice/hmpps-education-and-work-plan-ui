@@ -2,7 +2,7 @@
  * Cypress tests that test the Confirm Review Exemption page
  */
 
-import ReviewPlanExemptionReasonValue from '../../../../server/enums/reviewPlanExemptionReasonValue'
+import ReviewScheduleStatusValue from '../../../../server/enums/reviewScheduleStatusValue'
 import OverviewPage from '../../../pages/overview/OverviewPage'
 import Page from '../../../pages/page'
 import ConfirmExemptionPage from '../../../pages/reviewPlan/exemption/confirmExemptionPage'
@@ -20,11 +20,8 @@ context(`Confirm review exemption page`, () => {
   it(`Should navigate to the 'Overview' page when 'No, go back to learning and work progress plan' button on Confirm review exemption page is clicked`, () => {
     // Given
     Page.verifyOnPage(ExemptionReasonPage) //
-      .selectExemptionReason(ReviewPlanExemptionReasonValue.EXEMPT_PRISONER_DRUG_OR_ALCOHOL_DEPENDENCY)
-      .enterExemptionReasonDetails(
-        ReviewPlanExemptionReasonValue.EXEMPT_PRISONER_DRUG_OR_ALCOHOL_DEPENDENCY,
-        'In treatment',
-      )
+      .selectExemptionReason(ReviewScheduleStatusValue.EXEMPT_PRISONER_DRUG_OR_ALCOHOL_DEPENDENCY)
+      .enterExemptionReasonDetails(ReviewScheduleStatusValue.EXEMPT_PRISONER_DRUG_OR_ALCOHOL_DEPENDENCY, 'In treatment')
       .submitPage()
 
     // When
@@ -39,11 +36,8 @@ context(`Confirm review exemption page`, () => {
   it(`Should navigate to the 'Exemption recorded' page when 'Yes, continue to add exemption' button on Confirm review exemption page is clicked`, () => {
     // Given
     Page.verifyOnPage(ExemptionReasonPage) //
-      .selectExemptionReason(ReviewPlanExemptionReasonValue.EXEMPT_PRISONER_DRUG_OR_ALCOHOL_DEPENDENCY)
-      .enterExemptionReasonDetails(
-        ReviewPlanExemptionReasonValue.EXEMPT_PRISONER_DRUG_OR_ALCOHOL_DEPENDENCY,
-        'In treatment',
-      )
+      .selectExemptionReason(ReviewScheduleStatusValue.EXEMPT_PRISONER_DRUG_OR_ALCOHOL_DEPENDENCY)
+      .enterExemptionReasonDetails(ReviewScheduleStatusValue.EXEMPT_PRISONER_DRUG_OR_ALCOHOL_DEPENDENCY, 'In treatment')
       .submitPage()
 
     // When

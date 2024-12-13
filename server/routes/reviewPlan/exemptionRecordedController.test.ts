@@ -2,9 +2,9 @@ import { Request, Response } from 'express'
 import aValidPrisonerSummary from '../../testsupport/prisonerSummaryTestDataBuilder'
 import ExemptionRecordedController from './exemptionRecordedController'
 import ExemptionRecordedView from './exemptionRecordedView'
-import * as prisonerContexts from '../../data/session/prisonerContexts'
-
-jest.mock('../../data/session/prisonerContexts')
+import { getPrisonerContext } from '../../data/session/prisonerContexts'
+import aValidReviewExemptionDto from '../../testsupport/reviewExemptionDtoTestDataBuilder'
+import ReviewScheduleStatusValue from '../../enums/reviewScheduleStatusValue'
 
 describe('ExemptionRecordedController', () => {
   const controller = new ExemptionRecordedController()
@@ -35,18 +35,31 @@ describe('ExemptionRecordedController', () => {
   })
 
   describe('getExemptionRecordedView', () => {
-    it('should render the "Exemption Recorded" page', async () => {
+    it('should render the "Exemption Recorded" page given the exemption reason is not system technical issue', async () => {
       // Given
-      const reviewExemptionDto = {
-        exemptionReason: 'EXEMPT_PRISONER_DRUG_OR_ALCOHOL_DEPENDENCY',
-        exemptionReasonDetails: 'In treatment',
-      }
+      const reviewExemptionDto = aValidReviewExemptionDto({
+        exemptionReason: ReviewScheduleStatusValue.EXEMPT_PRISONER_DRUG_OR_ALCOHOL_DEPENDENCY,
+      })
+      getPrisonerContext(req.session, prisonNumber).reviewExemptionDto = reviewExemptionDto
 
       const exemptionDueToTechnicalIssue = false
-      jest.spyOn(prisonerContexts, 'getPrisonerContext').mockReturnValue({
-        reviewExemptionDto,
-      })
+      const expectedViewData = new ExemptionRecordedView(prisonerSummary, exemptionDueToTechnicalIssue).renderArgs
 
+      // When
+      await controller.getExemptionRecordedView(req, res, next)
+
+      // Then
+      expect(res.render).toHaveBeenCalledWith('pages/reviewPlan/exemptionRecorded/index', expectedViewData)
+    })
+
+    it('should render the "Exemption Recorded" page given the exemption reason is system technical issue', async () => {
+      // Given
+      const reviewExemptionDto = aValidReviewExemptionDto({
+        exemptionReason: ReviewScheduleStatusValue.EXEMPT_SYSTEM_TECHNICAL_ISSUE,
+      })
+      getPrisonerContext(req.session, prisonNumber).reviewExemptionDto = reviewExemptionDto
+
+      const exemptionDueToTechnicalIssue = true
       const expectedViewData = new ExemptionRecordedView(prisonerSummary, exemptionDueToTechnicalIssue).renderArgs
 
       // When
@@ -57,7 +70,7 @@ describe('ExemptionRecordedController', () => {
     })
   })
 
-  describe('Continue', () => {
+  describe('goToLearningAndWorkProgressPlan', () => {
     it('should redirect to the overview page with a success message when the Continue button is clicked', async () => {
       await controller.goToLearningAndWorkProgressPlan(req, res, next)
 

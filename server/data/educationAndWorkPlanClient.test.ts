@@ -1,5 +1,5 @@
 import nock from 'nock'
-import isEqual from 'lodash/isEqual'
+import { isEqual, isMatch } from 'lodash'
 import type { ArchiveGoalRequest, UnarchiveGoalRequest } from 'educationAndWorkPlanApiClient'
 import config from '../config'
 import EducationAndWorkPlanClient from './educationAndWorkPlanClient'
@@ -28,6 +28,7 @@ import aValidActionPlanReviewsResponse from '../testsupport/actionPlanReviewsRes
 import aValidCreateActionPlanReviewRequest from '../testsupport/createActionPlanReviewRequestTestDataBuilder'
 import aValidCreateActionPlanReviewResponse from '../testsupport/createActionPlanReviewResponseTestDataBuilder'
 import aValidCreateActionPlanRequest from '../testsupport/createActionPlanRequestTestDataBuilder'
+import aValidUpdateReviewScheduleStatusRequest from '../testsupport/updateReviewScheduleStatusRequestTestDataBuilder'
 
 describe('educationAndWorkPlanClient', () => {
   const educationAndWorkPlanClient = new EducationAndWorkPlanClient()
@@ -403,6 +404,67 @@ describe('educationAndWorkPlanClient', () => {
         // Then
         expect(nock.isDone()).toBe(true)
         expect(e.status).toEqual(404)
+        expect(e.data).toEqual(expectedResponseBody)
+      }
+    })
+  })
+
+  describe('updateActionPlanReviewScheduleStatus', () => {
+    it('should update Action Plan Review Schedule Status', async () => {
+      // Given
+      const prisonNumber = 'A1234BC'
+      const systemToken = 'a-system-token'
+
+      const updateReviewScheduleStatusRequest = aValidUpdateReviewScheduleStatusRequest()
+
+      const expectedResponseBody = {}
+      educationAndWorkPlanApi
+        .put(`/action-plans/${prisonNumber}/reviews/schedule-status`, requestBody =>
+          isMatch(updateReviewScheduleStatusRequest, requestBody),
+        )
+        .reply(204, expectedResponseBody)
+
+      // When
+      const actual = await educationAndWorkPlanClient.updateActionPlanReviewScheduleStatus(
+        prisonNumber,
+        updateReviewScheduleStatusRequest,
+        systemToken,
+      )
+
+      // Then
+      expect(nock.isDone()).toBe(true)
+      expect(actual).toEqual(expectedResponseBody)
+    })
+
+    it('should not update Action Plan Review Schedule Status given API returns error response', async () => {
+      // Given
+      const prisonNumber = 'A1234BC'
+      const systemToken = 'a-system-token'
+
+      const updateReviewScheduleStatusRequest = aValidUpdateReviewScheduleStatusRequest()
+
+      const expectedResponseBody = {
+        status: 500,
+        userMessage: 'An unexpected error occurred',
+        developerMessage: 'An unexpected error occurred',
+      }
+      educationAndWorkPlanApi
+        .put(`/action-plans/${prisonNumber}/reviews/schedule-status`, requestBody =>
+          isMatch(updateReviewScheduleStatusRequest, requestBody),
+        )
+        .reply(500, expectedResponseBody)
+
+      // When
+      try {
+        await educationAndWorkPlanClient.updateActionPlanReviewScheduleStatus(
+          prisonNumber,
+          updateReviewScheduleStatusRequest,
+          systemToken,
+        )
+      } catch (e) {
+        // Then
+        expect(nock.isDone()).toBe(true)
+        expect(e.status).toEqual(500)
         expect(e.data).toEqual(expectedResponseBody)
       }
     })

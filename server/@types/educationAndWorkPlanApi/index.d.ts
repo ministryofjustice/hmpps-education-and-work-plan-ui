@@ -100,6 +100,22 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/action-plans/{prisonNumber}/reviews/schedule-status': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put: operations['updateLatestReviewScheduleStatus']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/action-plans/{prisonNumber}/goals/{goalReference}': {
     parameters: {
       query?: never
@@ -320,6 +336,22 @@ export interface paths {
       cookie?: never
     }
     get: operations['getInductionSchedule']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/action-plans/{prisonNumber}/reviews/review-schedules': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get: operations['getActionPlanReviewSchedules']
     put?: never
     post?: never
     delete?: never
@@ -818,6 +850,38 @@ export interface components {
       /** Format: date-time */
       lastUpdatedAt?: string
       lastUpdatedAtPrison: string
+    }
+    UpdateReviewScheduleStatusRequest: {
+      /**
+       * @description The Prison identifier.
+       * @example BXI
+       */
+      prisonId: string
+      /**
+       * @example null
+       * @enum {string}
+       */
+      status:
+        | 'SCHEDULED'
+        | 'EXEMPT_PRISONER_DRUG_OR_ALCOHOL_DEPENDENCY'
+        | 'EXEMPT_PRISONER_OTHER_HEALTH_ISSUES'
+        | 'EXEMPT_PRISONER_FAILED_TO_ENGAGE'
+        | 'EXEMPT_PRISONER_ESCAPED_OR_ABSCONDED'
+        | 'EXEMPT_PRISONER_SAFETY_ISSUES'
+        | 'EXEMPT_PRISON_REGIME_CIRCUMSTANCES'
+        | 'EXEMPT_PRISON_STAFF_REDEPLOYMENT'
+        | 'EXEMPT_PRISON_OPERATION_OR_SECURITY_ISSUE'
+        | 'EXEMPT_SECURITY_ISSUE_RISK_TO_STAFF'
+        | 'EXEMPT_SYSTEM_TECHNICAL_ISSUE'
+        | 'EXEMPT_PRISONER_TRANSFER'
+        | 'EXEMPT_PRISONER_RELEASE'
+        | 'EXEMPT_PRISONER_DEATH'
+        | 'COMPLETED'
+      /**
+       * @description An optional reason as to why the Review Schedule is exempted.  Only relevant and processed when the `status` field is one of the `EXEMPTION_` statuses.   This field is not mandatory, even when the `status` field is one of the `EXEMPTION_` statuses.
+       * @example null
+       */
+      exemptionReason?: string
     }
     UpdateGoalRequest: {
       /**
@@ -1414,6 +1478,16 @@ export interface components {
        * @example BXI
        */
       updatedAtPrison: string
+      /**
+       * @description An optional reason as to why the Review Schedule is exempted.  Only present when the `status` field is one of the `EXEMPTION_` statuses and the user entered an exemption  reason when marking the Review as Exempted.
+       * @example null
+       */
+      exemptionReason?: string
+      /**
+       * Format: int32
+       * @description the version number of this schedule (the highest number is the most recent version of this review schedule)
+       */
+      version?: number
     }
     CreateGoalsRequest: {
       /**
@@ -1458,6 +1532,7 @@ export interface components {
         | 'STEP_STARTED'
         | 'STEP_COMPLETED'
         | 'ACTION_PLAN_REVIEW_COMPLETED'
+        | 'ACTION_PLAN_REVIEW_SCHEDULE_STATUS_UPDATED'
         | 'CONVERSATION_CREATED'
         | 'CONVERSATION_UPDATED'
         | 'PRISON_ADMISSION'
@@ -2635,6 +2710,13 @@ export interface components {
        */
       conductedByRole?: string
     }
+    ActionPlanReviewSchedulesResponse: {
+      /**
+       * @description A List containing zero or more ReviewSchedules.
+       * @example null
+       */
+      reviewSchedules: components['schemas']['ScheduledActionPlanReviewResponse'][]
+    }
     GetGoalsResponse: {
       /**
        * @description A List containing zero or more Goals.
@@ -2902,6 +2984,30 @@ export interface operations {
         content: {
           'application/json': components['schemas']['Conversation']
         }
+      }
+    }
+  }
+  updateLatestReviewScheduleStatus: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        prisonNumber: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['UpdateReviewScheduleStatusRequest']
+      }
+    }
+    responses: {
+      /** @description No Content */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
       }
     }
   }
@@ -3405,6 +3511,28 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['InductionScheduleResponse']
+        }
+      }
+    }
+  }
+  getActionPlanReviewSchedules: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        prisonNumber: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          '*/*': components['schemas']['ActionPlanReviewSchedulesResponse']
         }
       }
     }

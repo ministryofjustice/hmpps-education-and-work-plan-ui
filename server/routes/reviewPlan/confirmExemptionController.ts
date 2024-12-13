@@ -16,7 +16,6 @@ export default class ConfirmExemptionController {
 
   submitConfirmExemption: RequestHandler = async (req, res, next): Promise<void> => {
     const { prisonNumber } = req.params
-    getPrisonerContext(req.session, prisonNumber)
     return res.redirect(`/plan/${prisonNumber}/review/exemption/recorded`)
   }
 }

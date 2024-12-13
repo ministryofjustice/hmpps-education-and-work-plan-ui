@@ -25,6 +25,7 @@ export default class ExemptionReasonController {
 
   submitExemptionReasonForm: RequestHandler = async (req, res, next): Promise<void> => {
     const { prisonNumber } = req.params
+    const { prisonId } = res.locals.prisonerSummary
     const { exemptionReason, exemptionReasonDetails } = req.body
     const selectedExemptionReasonDetails = { [exemptionReason]: exemptionReasonDetails[exemptionReason] }
 
@@ -41,7 +42,12 @@ export default class ExemptionReasonController {
     }
 
     const { reviewExemptionDto } = getPrisonerContext(req.session, prisonNumber)
-    const updatedExemptionDto = updateDtoWithFormContents(reviewExemptionDto, reviewExemptionForm)
+    const updatedExemptionDto = updateDtoWithFormContents(
+      reviewExemptionDto,
+      prisonNumber,
+      prisonId,
+      reviewExemptionForm,
+    )
 
     getPrisonerContext(req.session, prisonNumber).reviewExemptionDto = updatedExemptionDto
     getPrisonerContext(req.session, prisonNumber).reviewExemptionForm = undefined
@@ -59,8 +65,15 @@ const toReviewExemptionForm = (dto: ReviewExemptionDto): ReviewExemptionForm => 
   }
 }
 
-const updateDtoWithFormContents = (dto: ReviewExemptionDto, form: ReviewExemptionForm): ReviewExemptionDto => ({
+const updateDtoWithFormContents = (
+  dto: ReviewExemptionDto,
+  prisonNumber: string,
+  prisonId: string,
+  form: ReviewExemptionForm,
+): ReviewExemptionDto => ({
   ...dto,
+  prisonNumber,
+  prisonId,
   exemptionReason: form.exemptionReason,
   exemptionReasonDetails: form.exemptionReasonDetails[form.exemptionReason] || '',
 })

@@ -56,6 +56,7 @@ declare module 'educationAndWorkPlanApiClient' {
   export type ActionPlanReviewsResponse = components['schemas']['ActionPlanReviewsResponse']
   export type ScheduledActionPlanReviewResponse = components['schemas']['ScheduledActionPlanReviewResponse']
   export type CompletedActionPlanReviewResponse = components['schemas']['CompletedActionPlanReviewResponse']
+  export type UpdateReviewScheduleStatusRequest = components['schemas']['UpdateReviewScheduleStatusRequest']
 
   export type InductionScheduleResponse = components['schemas']['InductionScheduleResponse']
 }
