@@ -1,5 +1,6 @@
 import { parseISO, startOfDay } from 'date-fns'
 import type { ActionPlanReviews } from 'viewModels'
+import type { UpdateReviewScheduleStatusRequest } from 'educationAndWorkPlanApiClient'
 import EducationAndWorkPlanClient from '../data/educationAndWorkPlanClient'
 import PrisonService from './prisonService'
 import HmppsAuthClient from '../data/hmppsAuthClient'
@@ -12,6 +13,8 @@ import aValidReviewPlanDto from '../testsupport/reviewPlanDtoTestDataBuilder'
 import aValidCreateActionPlanReviewRequest from '../testsupport/createActionPlanReviewRequestTestDataBuilder'
 import aValidCreateActionPlanReviewResponse from '../testsupport/createActionPlanReviewResponseTestDataBuilder'
 import aValidCreatedActionPlanReview from '../testsupport/createdActionPlanReviewTestDataBuilder'
+import aValidReviewExemptionDto from '../testsupport/reviewExemptionDtoTestDataBuilder'
+import ReviewScheduleStatusValue from '../enums/reviewScheduleStatusValue'
 
 jest.mock('../data/educationAndWorkPlanClient')
 jest.mock('./prisonService')
@@ -263,6 +266,75 @@ describe('reviewService', () => {
       expect(educationAndWorkPlanClient.createActionPlanReview).toHaveBeenCalledWith(
         prisonNumber,
         expectedCreateActionPlanReviewRequest,
+        systemToken,
+      )
+    })
+  })
+
+  describe('updateActionPlanReviewScheduleStatus', () => {
+    it('should update Action Plan Review Schedule status', async () => {
+      // Given
+      const reviewExemptionDto = aValidReviewExemptionDto({
+        prisonId: 'WDI',
+        exemptionReason: ReviewScheduleStatusValue.EXEMPT_PRISON_OPERATION_OR_SECURITY_ISSUE,
+        exemptionReasonDetails: undefined,
+      })
+
+      const expectedUpdateReviewScheduleStatusRequest: UpdateReviewScheduleStatusRequest = {
+        prisonId: 'WDI',
+        status: 'EXEMPT_PRISON_OPERATION_OR_SECURITY_ISSUE',
+        exemptionReason: undefined,
+      }
+      educationAndWorkPlanClient.updateEducation.mockResolvedValue(undefined)
+
+      // When
+      const actual = await reviewService.updateActionPlanReviewScheduleStatus(reviewExemptionDto, username)
+
+      // Then
+      expect(actual).toBeUndefined()
+      expect(educationAndWorkPlanClient.updateActionPlanReviewScheduleStatus).toHaveBeenCalledWith(
+        prisonNumber,
+        expectedUpdateReviewScheduleStatusRequest,
+        systemToken,
+      )
+    })
+
+    it('should not update Action Plan Review Schedule status given Education and Work Plan API returns an error', async () => {
+      // Given
+      const reviewExemptionDto = aValidReviewExemptionDto({
+        prisonId: 'WDI',
+        exemptionReason: ReviewScheduleStatusValue.EXEMPT_PRISON_OPERATION_OR_SECURITY_ISSUE,
+        exemptionReasonDetails: undefined,
+      })
+
+      const expectedUpdateReviewScheduleStatusRequest: UpdateReviewScheduleStatusRequest = {
+        prisonId: 'WDI',
+        status: 'EXEMPT_PRISON_OPERATION_OR_SECURITY_ISSUE',
+        exemptionReason: undefined,
+      }
+
+      const eductionAndWorkPlanApiError = {
+        status: 500,
+        data: {
+          status: 500,
+          userMessage: `Error updating Action Plan Review Schedule Status for prisoner [${prisonNumber}]`,
+          developerMessage: `Error updating Action Plan Review Schedule Status for prisoner [${prisonNumber}]`,
+        },
+      }
+      educationAndWorkPlanClient.updateActionPlanReviewScheduleStatus.mockRejectedValue(eductionAndWorkPlanApiError)
+
+      // When
+      const actual = await reviewService
+        .updateActionPlanReviewScheduleStatus(reviewExemptionDto, username)
+        .catch(error => {
+          return error
+        })
+
+      // Then
+      expect(actual).toEqual(eductionAndWorkPlanApiError)
+      expect(educationAndWorkPlanClient.updateActionPlanReviewScheduleStatus).toHaveBeenCalledWith(
+        prisonNumber,
+        expectedUpdateReviewScheduleStatusRequest,
         systemToken,
       )
     })

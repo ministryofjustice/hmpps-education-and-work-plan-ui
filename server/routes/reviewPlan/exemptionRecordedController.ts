@@ -1,7 +1,7 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express'
 import ExemptionRecordedView from './exemptionRecordedView'
 import { getPrisonerContext } from '../../data/session/prisonerContexts'
-import ReviewPlanExemptionReasonValue from '../../enums/reviewPlanExemptionReasonValue'
+import ReviewScheduleStatusValue from '../../enums/reviewScheduleStatusValue'
 
 export default class ExemptionRecordedController {
   getExemptionRecordedView: RequestHandler = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
@@ -9,8 +9,7 @@ export default class ExemptionRecordedController {
     const { prisonerSummary } = res.locals
     const prisonerContext = getPrisonerContext(req.session, prisonNumber)
     const exemptionDueToTechnicalIssue =
-      prisonerContext.reviewExemptionDto.exemptionReason ===
-      ReviewPlanExemptionReasonValue.EXEMPT_SYSTEM_TECHNICAL_ISSUE
+      prisonerContext.reviewExemptionDto.exemptionReason === ReviewScheduleStatusValue.EXEMPT_SYSTEM_TECHNICAL_ISSUE
 
     const view = new ExemptionRecordedView(prisonerSummary, exemptionDueToTechnicalIssue)
     return res.render('pages/reviewPlan/exemptionRecorded/index', { ...view.renderArgs })

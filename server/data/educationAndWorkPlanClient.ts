@@ -21,6 +21,7 @@ import type {
   ActionPlanReviewsResponse,
   InductionScheduleResponse,
   CreateActionPlanRequest,
+  UpdateReviewScheduleStatusRequest,
 } from 'educationAndWorkPlanApiClient'
 import RestClient from './restClient'
 import config from '../config'
@@ -114,6 +115,17 @@ export default class EducationAndWorkPlanClient {
   async getActionPlanReviews(prisonNumber: string, token: string): Promise<ActionPlanReviewsResponse> {
     return EducationAndWorkPlanClient.restClient(token).get({
       path: `/action-plans/${prisonNumber}/reviews`,
+    })
+  }
+
+  async updateActionPlanReviewScheduleStatus(
+    prisonNumber: string,
+    updateReviewScheduleStatusRequest: UpdateReviewScheduleStatusRequest,
+    token: string,
+  ): Promise<void> {
+    return EducationAndWorkPlanClient.restClient(token).put({
+      path: `/action-plans/${prisonNumber}/reviews/schedule-status`,
+      data: updateReviewScheduleStatusRequest,
     })
   }
 

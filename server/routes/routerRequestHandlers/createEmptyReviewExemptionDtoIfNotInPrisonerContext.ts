@@ -11,7 +11,7 @@ const createEmptyReviewExemptionDtoIfNotInPrisonerContext = async (req: Request,
   const { prisonNumber } = req.params
 
   if (!getPrisonerContext(req.session, prisonNumber).reviewExemptionDto) {
-    getPrisonerContext(req.session, prisonNumber).reviewExemptionDto = {} as ReviewExemptionDto
+    getPrisonerContext(req.session, prisonNumber).reviewExemptionDto = { prisonNumber } as ReviewExemptionDto
   }
 
   next()

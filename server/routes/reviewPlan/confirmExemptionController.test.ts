@@ -3,6 +3,7 @@ import { getPrisonerContext } from '../../data/session/prisonerContexts'
 import aValidPrisonerSummary from '../../testsupport/prisonerSummaryTestDataBuilder'
 import ConfirmExemptionController from './confirmExemptionController'
 import ConfirmExemptionView from './confirmExemptionView'
+import aValidReviewExemptionDto from '../../testsupport/reviewExemptionDtoTestDataBuilder'
 
 jest.mock('../pageFlowHistory', () => ({
   addCurrentPageToHistory: jest.fn(),
@@ -30,10 +31,7 @@ describe('ConfirmExemptionController', () => {
   describe('getConfirmExemptionView', () => {
     it('should render the "Are you sure you want to put review on hold" page', async () => {
       // Given
-      const reviewExemptionDto = {
-        exemptionReason: 'EXEMPT_PRISONER_DRUG_OR_ALCOHOL_DEPENDENCY',
-        exemptionReasonDetails: 'In treatment',
-      }
+      const reviewExemptionDto = aValidReviewExemptionDto()
       getPrisonerContext(req.session, prisonNumber).reviewExemptionDto = reviewExemptionDto
 
       const expectedViewData = new ConfirmExemptionView(prisonerSummary, reviewExemptionDto).renderArgs
@@ -49,10 +47,7 @@ describe('ConfirmExemptionController', () => {
   describe('submitConfirmException', () => {
     it(`should redirect to 'Exemption recorded' page given form submitted successfully`, async () => {
       // Given
-      const reviewExemptionDto = {
-        exemptionReason: 'EXEMPT_PRISONER_DRUG_OR_ALCOHOL_DEPENDENCY',
-        exemptionReasonDetails: 'In treatment',
-      }
+      const reviewExemptionDto = aValidReviewExemptionDto()
       getPrisonerContext(req.session, prisonNumber).reviewExemptionDto = reviewExemptionDto
 
       // When

@@ -1,5 +1,5 @@
 import type { ActionPlanReviews, CreatedActionPlanReview } from 'viewModels'
-import type { ReviewPlanDto } from 'dto'
+import type { ReviewExemptionDto, ReviewPlanDto } from 'dto'
 import EducationAndWorkPlanClient from '../data/educationAndWorkPlanClient'
 import { HmppsAuthClient } from '../data'
 import logger from '../../logger'
@@ -7,6 +7,7 @@ import PrisonService from './prisonService'
 import toActionPlanReviews from '../data/mappers/actionPlanReviewsMapper'
 import toCreateActionPlanReviewRequest from '../data/mappers/createActionPlanReviewRequestMapper'
 import toCreatedActionPlan from '../data/mappers/createdActionPlanReviewMapper'
+import toUpdateReviewScheduleStatusRequest from '../data/mappers/updateReviewScheduleStatusRequestMapper'
 
 export default class ReviewService {
   constructor(
@@ -61,6 +62,25 @@ export default class ReviewService {
     } catch (error) {
       logger.error(
         `Error creating Action Plan Review for prisoner [${reviewPlanDto.prisonNumber}] in the Education And Work Plan API `,
+        error,
+      )
+      throw error
+    }
+  }
+
+  async updateActionPlanReviewScheduleStatus(reviewPlanDto: ReviewExemptionDto, username: string): Promise<void> {
+    const systemToken = await this.hmppsAuthClient.getSystemClientToken(username)
+
+    try {
+      const updateReviewScheduleStatusRequest = toUpdateReviewScheduleStatusRequest(reviewPlanDto)
+      await this.educationAndWorkPlanClient.updateActionPlanReviewScheduleStatus(
+        reviewPlanDto.prisonNumber,
+        updateReviewScheduleStatusRequest,
+        systemToken,
+      )
+    } catch (error) {
+      logger.error(
+        `Error updating Action Plan Review Schedule Status for prisoner [${reviewPlanDto.prisonNumber}] in the Education And Work Plan API `,
         error,
       )
       throw error

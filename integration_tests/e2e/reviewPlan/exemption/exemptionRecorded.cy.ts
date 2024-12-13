@@ -2,7 +2,7 @@
  * Cypress tests that test the 'Exemption recorded' page
  */
 
-import ReviewPlanExemptionReasonValue from '../../../../server/enums/reviewPlanExemptionReasonValue'
+import ReviewScheduleStatusValue from '../../../../server/enums/reviewScheduleStatusValue'
 import OverviewPage from '../../../pages/overview/OverviewPage'
 import Page from '../../../pages/page'
 import ConfirmExemptionPage from '../../../pages/reviewPlan/exemption/confirmExemptionPage'
@@ -20,11 +20,8 @@ context(`Review exemption recorded page`, () => {
 
     // When
     Page.verifyOnPage(ExemptionReasonPage) //
-      .selectExemptionReason(ReviewPlanExemptionReasonValue.EXEMPT_PRISONER_DRUG_OR_ALCOHOL_DEPENDENCY)
-      .enterExemptionReasonDetails(
-        ReviewPlanExemptionReasonValue.EXEMPT_PRISONER_DRUG_OR_ALCOHOL_DEPENDENCY,
-        'In treatment',
-      )
+      .selectExemptionReason(ReviewScheduleStatusValue.EXEMPT_PRISONER_DRUG_OR_ALCOHOL_DEPENDENCY)
+      .enterExemptionReasonDetails(ReviewScheduleStatusValue.EXEMPT_PRISONER_DRUG_OR_ALCOHOL_DEPENDENCY, 'In treatment')
       .submitPage()
     Page.verifyOnPage(ConfirmExemptionPage).submitPage()
 

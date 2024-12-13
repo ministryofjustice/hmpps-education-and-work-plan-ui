@@ -3,6 +3,7 @@ declare module 'dto' {
   import EducationLevelValue from '../../enums/educationLevelValue'
   import QualificationLevelValue from '../../enums/qualificationLevelValue'
   import ReviewPlanCompletedByValue from '../../enums/reviewPlanCompletedByValue'
+  import ReviewPlanExemptionReasonValue from '../../enums/reviewPlanExemptionReasonValue'
 
   export interface CreateActionPlanDto {
     prisonNumber: string
@@ -95,8 +96,10 @@ declare module 'dto' {
   }
 
   export interface ReviewExemptionDto {
+    prisonNumber: string
+    prisonId: string
     exemptionReason: ReviewPlanExemptionReasonValue
-    exemptionReasonDetails: string
+    exemptionReasonDetails?: string
   }
 }
 

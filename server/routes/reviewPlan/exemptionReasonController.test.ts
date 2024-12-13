@@ -1,14 +1,16 @@
-import type { ReviewExemptionDto } from 'dto'
 import type { ReviewExemptionForm } from 'reviewPlanForms'
 import { Request, Response } from 'express'
 import aValidPrisonerSummary from '../../testsupport/prisonerSummaryTestDataBuilder'
 import { getPrisonerContext } from '../../data/session/prisonerContexts'
 import ExemptionReasonController from './exemptionReasonController'
+import aValidReviewExemptionDto from '../../testsupport/reviewExemptionDtoTestDataBuilder'
+import ReviewScheduleStatusValue from '../../enums/reviewScheduleStatusValue'
 
 describe('exemptionReasonController', () => {
   const controller = new ExemptionReasonController()
   const prisonNumber = 'A1234BC'
-  const prisonerSummary = aValidPrisonerSummary(prisonNumber)
+  const prisonId = 'MDI'
+  const prisonerSummary = aValidPrisonerSummary(prisonNumber, prisonId)
 
   const req = {
     session: {},
@@ -32,10 +34,10 @@ describe('exemptionReasonController', () => {
   describe('getExemptionReasonView', () => {
     it(`should get 'exemption reason' view given dto is already on the prisoner context`, async () => {
       // Given
-      const reviewExemptionDto: ReviewExemptionDto = {
-        exemptionReason: 'EXEMPT_PRISONER_DRUG_OR_ALCOHOL_DEPENDENCY',
+      const reviewExemptionDto = aValidReviewExemptionDto({
+        exemptionReason: ReviewScheduleStatusValue.EXEMPT_PRISONER_DRUG_OR_ALCOHOL_DEPENDENCY,
         exemptionReasonDetails: 'In treatment',
-      }
+      })
       getPrisonerContext(req.session, prisonNumber).reviewExemptionDto = reviewExemptionDto
 
       const expectedForm: ReviewExemptionForm = {
@@ -69,10 +71,12 @@ describe('exemptionReasonController', () => {
       }
       req.body = expectedExemptionReasonForm
 
-      const reviewExemptionDto: ReviewExemptionDto = {
-        exemptionReason: 'EXEMPT_PRISONER_DRUG_OR_ALCOHOL_DEPENDENCY',
+      const reviewExemptionDto = aValidReviewExemptionDto({
+        prisonNumber,
+        prisonId,
+        exemptionReason: ReviewScheduleStatusValue.EXEMPT_PRISONER_DRUG_OR_ALCOHOL_DEPENDENCY,
         exemptionReasonDetails: 'In treatment',
-      }
+      })
 
       // When
       await controller.submitExemptionReasonForm(req, res, next)
@@ -97,10 +101,12 @@ describe('exemptionReasonController', () => {
       }
       req.body = expectedExemptionReasonForm
 
-      const expectedReviewExemptionDto: ReviewExemptionDto = {
-        exemptionReason: 'EXEMPT_PRISONER_DRUG_OR_ALCOHOL_DEPENDENCY',
+      const expectedReviewExemptionDto = aValidReviewExemptionDto({
+        prisonNumber,
+        prisonId,
+        exemptionReason: ReviewScheduleStatusValue.EXEMPT_PRISONER_DRUG_OR_ALCOHOL_DEPENDENCY,
         exemptionReasonDetails: 'In treatment',
-      }
+      })
 
       // When
       await controller.submitExemptionReasonForm(req, res, next)
