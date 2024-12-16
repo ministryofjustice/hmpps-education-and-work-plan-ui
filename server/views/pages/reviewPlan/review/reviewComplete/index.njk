@@ -1,0 +1,49 @@
+{# Nunjucks template to display the Review Complete confirmation screen (when submitting an Action Plan Review for a prisoner)
+
+Data supplied to this template:
+  * prisonerSummary - object with firstName and lastName
+  * reviewPlanDto - DTO containing the details of the review, including whether it was the prisoner's last review and next review dates if applicaable
+
+#}
+
+{% extends "../../../../partials/layout.njk" %}
+
+{% set pageId = "review-complete" %}
+{% set title = "Review complete" %}
+{% set pageTitle = title %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      {{ govukPanel({
+        classes: "govuk-!-margin-top-7",
+        titleText: "Review marked as complete"
+      }) }}
+
+      <h3 class="govuk-heading-s govuk-!-margin-top-6">What happens next</h3>
+
+      {% if reviewPlanDto.wasLastReviewBeforeRelease %}
+        <p class="govuk-body" data-qa="no-reviews-due">
+          No more reviews due as {{ prisonerSummary.firstName + " " + prisonerSummary.lastName }}'s release date is {{ prisonerSummary.releaseDate | formatDate('D MMMM YYYY') }}.
+        </p>
+      {% else %}
+        <p class="govuk-body" data-qa="next-review-due">
+          {{ prisonerSummary.firstName + " " + prisonerSummary.lastName }}'s next review is due between {{ reviewPlanDto.nextReviewDateFrom | formatDate('D MMMM YYYY') }} and {{ reviewPlanDto.nextReviewDateTo | formatDate('D MMMM YYYY') }}.
+        </p>
+        <p class="govuk-body">
+          We'll show alerts in the service when the review is due so you can book it in.
+        </p>
+      {% endif %}
+
+      <form class="form" class="govuk-!-margin-top-8" method="post" novalidate="">
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+        {{ govukButton({
+          text: "Go to learning and work progress plan",
+          type: "submit",
+          attributes: { 'data-qa': 'submit-button' }
+        }) }}
+      </form>
+
+    </div>
+  </div>
+{% endblock %}

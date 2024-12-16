@@ -38,9 +38,6 @@ import WhoCompletedReviewPage from '../pages/reviewPlan/WhoCompletedReviewPage'
 import ReviewPlanCompletedByValue from '../../server/enums/reviewPlanCompletedByValue'
 import ReviewNotePage from '../pages/reviewPlan/ReviewNotePage'
 import ReviewPlanCheckYourAnswersPage from '../pages/reviewPlan/ReviewPlanCheckYourAnswersPage'
-import ExemptionReasonPage from '../pages/reviewPlan/exemption/exemptionPage'
-import ReviewPlanExemptionReasonValue from '../../server/enums/reviewPlanExemptionReasonValue'
-import ConfirmExemptionPage from '../pages/reviewPlan/exemption/confirmExemptionPage'
 
 Cypress.Commands.add('signIn', (options = { failOnStatusCode: false }) => {
   cy.request('/')
@@ -193,20 +190,6 @@ We have agreed and set a new goal, and the next review is 1 year from now.
     .submitPage()
   // Arrive on Check Your Answers page
   Page.verifyOnPage(ReviewPlanCheckYourAnswersPage)
-})
-
-Cypress.Commands.add('createExemption', () => {
-  cy.visit(`/plan/G6115VJ/review/exemption`)
-
-  Page.verifyOnPage(ExemptionReasonPage) //
-    .selectExemptionReason(ReviewPlanExemptionReasonValue.EXEMPT_PRISONER_DRUG_OR_ALCOHOL_DEPENDENCY)
-    .enterExemptionReasonDetails(
-      ReviewPlanExemptionReasonValue.EXEMPT_PRISONER_DRUG_OR_ALCOHOL_DEPENDENCY,
-      'In treatment',
-    )
-    .submitPage()
-
-  Page.verifyOnPage(ConfirmExemptionPage)
 })
 
 const signInWithAuthority = (authority: 'EDIT' | 'VIEW') => {
