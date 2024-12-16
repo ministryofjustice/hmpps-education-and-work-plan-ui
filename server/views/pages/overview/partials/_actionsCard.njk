@@ -21,6 +21,13 @@
         <span class="govuk-tag govuk-tag--red govuk-!-margin-top-2 govuk-!-margin-bottom-2" data-qa="review-overdue">
           Review was due by {{ actionPlanReview.reviewDueDate | formatDate('D MMM YYYY') }}
         </span>
+      {% elseif actionPlanReview.reviewStatus == 'ON_HOLD' %}
+        <span class="govuk-tag govuk-tag--grey govuk-!-margin-top-2 govuk-!-margin-bottom-2" data-qa="review-on-hold">
+          Review on hold
+        </span>
+        <p class="govuk-body" data-qa="reason-on-hold">
+          Reason: {{ actionPlanReview.exemptionReason | formatExemptionReasonValue }}
+        </p>
       {% elseif actionPlanReview.reviewStatus == 'NO_SCHEDULED_REVIEW' and hasEditAuthority %}
         <span class="govuk-tag govuk-tag--grey govuk-!-margin-top-2 govuk-!-margin-bottom-2" data-qa="no-reviews-due">
           No reviews due
@@ -31,7 +38,17 @@
       {% endif %}
 
       <ul class="govuk-list govuk-!-margin-0" data-qa="reviews-action-items">
-        {% if actionPlanReview.reviewStatus != 'NO_SCHEDULED_REVIEW' %}
+        {% if actionPlanReview.reviewStatus == 'ON_HOLD' %}
+          {% if hasEditAuthority %}
+            <li class="govuk-!-padding-top-2 govuk-!-padding-bottom-3">
+              <a class="govuk-link" href="/plan/{{ prisonerSummary.prisonNumber }}/review/exemption/remove" data-qa="remove-exemption-button">
+                <img src="/assets/images/icon-remove-exemption.svg" alt="" role="presentation" class="action-icon">
+                Remove exemption from reviews
+              </a>
+            </li>
+          {% endif %}
+
+        {% elseif actionPlanReview.reviewStatus != 'NO_SCHEDULED_REVIEW' %}
           {% if hasEditAuthority %}
             <li class="govuk-!-padding-top-2 govuk-!-padding-bottom-3">
               <a class="govuk-link" href="/plan/{{ prisonerSummary.prisonNumber }}/review" data-qa="mark-review-complete-button">

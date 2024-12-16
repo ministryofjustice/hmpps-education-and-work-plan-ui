@@ -10,6 +10,8 @@ export default class ExemptionReasonController {
     const { prisonNumber } = req.params
     const { prisonerSummary } = res.locals
 
+    // TODO - add validation that the review is in a state by which it can be exempted
+
     let reviewExemptionForm: ReviewExemptionForm
     if (getPrisonerContext(req.session, prisonNumber).reviewExemptionForm) {
       reviewExemptionForm = getPrisonerContext(req.session, prisonNumber).reviewExemptionForm

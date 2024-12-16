@@ -136,6 +136,7 @@ describe('overviewController', () => {
         problemRetrievingData: false,
         reviewStatus: 'OVERDUE',
         reviewDueDate: startOfDay('2024-10-15'),
+        exemptionReason: undefined as string,
       },
     }
 
@@ -162,6 +163,7 @@ describe('overviewController', () => {
       problemRetrievingData: false,
       reviewStatus: 'NO_SCHEDULED_REVIEW',
       reviewDueDate: undefined as Date,
+      exemptionReason: undefined as string,
     }
 
     // When
@@ -189,6 +191,7 @@ describe('overviewController', () => {
       problemRetrievingData: false,
       reviewStatus: 'NO_SCHEDULED_REVIEW',
       reviewDueDate: undefined as Date,
+      exemptionReason: undefined as string,
     }
 
     // When
@@ -218,6 +221,7 @@ describe('overviewController', () => {
       problemRetrievingData: false,
       reviewStatus: 'NOT_DUE',
       reviewDueDate: add(today, { months: 3 }),
+      exemptionReason: undefined as string,
     }
 
     // When
@@ -247,6 +251,7 @@ describe('overviewController', () => {
       problemRetrievingData: false,
       reviewStatus: 'DUE',
       reviewDueDate: add(today, { months: 1 }),
+      exemptionReason: undefined as string,
     }
 
     // When
@@ -276,6 +281,49 @@ describe('overviewController', () => {
       problemRetrievingData: false,
       reviewStatus: 'OVERDUE',
       reviewDueDate: sub(today, { days: 1 }),
+      exemptionReason: undefined as string,
+    }
+
+    // When
+    await controller.getOverviewView(req, res, next)
+
+    // Then
+    const renderedView = render.mock.calls[0][1]
+    expect(renderedView.actionPlanReview).toEqual(expected)
+  })
+
+  it.each([
+    ActionPlanReviewStatusValue.EXEMPT_PRISONER_DRUG_OR_ALCOHOL_DEPENDENCY,
+    ActionPlanReviewStatusValue.EXEMPT_PRISONER_OTHER_HEALTH_ISSUES,
+    ActionPlanReviewStatusValue.EXEMPT_PRISONER_FAILED_TO_ENGAGE,
+    ActionPlanReviewStatusValue.EXEMPT_PRISONER_ESCAPED_OR_ABSCONDED,
+    ActionPlanReviewStatusValue.EXEMPT_PRISONER_SAFETY_ISSUES,
+    ActionPlanReviewStatusValue.EXEMPT_PRISON_REGIME_CIRCUMSTANCES,
+    ActionPlanReviewStatusValue.EXEMPT_PRISON_STAFF_REDEPLOYMENT,
+    ActionPlanReviewStatusValue.EXEMPT_PRISON_OPERATION_OR_SECURITY_ISSUE,
+    ActionPlanReviewStatusValue.EXEMPT_SECURITY_ISSUE_RISK_TO_STAFF,
+    ActionPlanReviewStatusValue.EXEMPT_SYSTEM_TECHNICAL_ISSUE,
+    ActionPlanReviewStatusValue.EXEMPT_PRISONER_TRANSFER,
+    ActionPlanReviewStatusValue.EXEMPT_PRISONER_RELEASE,
+    ActionPlanReviewStatusValue.EXEMPT_PRISONER_DEATH,
+  ])('should get overview view given latest review schedule is exempt - %s', async reviewStatus => {
+    // Given
+    res.locals.induction = {
+      problemRetrievingData: false,
+      inductionDto: aValidInductionDto(),
+    }
+
+    res.locals.actionPlanReviews = aValidActionPlanReviews({
+      latestReviewSchedule: aValidScheduledActionPlanReview({
+        status: reviewStatus,
+      }),
+    })
+
+    const expected = {
+      problemRetrievingData: false,
+      reviewStatus: 'ON_HOLD',
+      reviewDueDate: startOfDay('2024-10-15'),
+      exemptionReason: reviewStatus,
     }
 
     // When
@@ -339,6 +387,7 @@ describe('overviewController', () => {
         problemRetrievingData: false,
         reviewStatus: 'NO_SCHEDULED_REVIEW',
         reviewDueDate: undefined as Date,
+        exemptionReason: undefined as string,
       },
     }
 
@@ -429,6 +478,7 @@ describe('overviewController', () => {
         problemRetrievingData: false,
         reviewStatus: 'NO_SCHEDULED_REVIEW',
         reviewDueDate: undefined as Date,
+        exemptionReason: undefined as string,
       },
     }
 
@@ -515,6 +565,7 @@ describe('overviewController', () => {
         problemRetrievingData: false,
         reviewStatus: 'OVERDUE',
         reviewDueDate: startOfDay('2024-10-15'),
+        exemptionReason: undefined as string,
       },
     }
 
@@ -578,6 +629,7 @@ describe('overviewController', () => {
         problemRetrievingData: false,
         reviewStatus: 'OVERDUE',
         reviewDueDate: startOfDay('2024-10-15'),
+        exemptionReason: undefined as string,
       },
     }
 
@@ -645,6 +697,7 @@ describe('overviewController', () => {
         problemRetrievingData: true,
         reviewStatus: 'NO_SCHEDULED_REVIEW',
         reviewDueDate: undefined as Date,
+        exemptionReason: undefined as string,
       },
     }
 
@@ -710,6 +763,7 @@ describe('overviewController', () => {
         problemRetrievingData: false,
         reviewStatus: 'OVERDUE',
         reviewDueDate: startOfDay('2024-10-15'),
+        exemptionReason: undefined as string,
       },
     }
 
@@ -777,6 +831,7 @@ describe('overviewController', () => {
         problemRetrievingData: false,
         reviewStatus: 'OVERDUE',
         reviewDueDate: startOfDay('2024-10-15'),
+        exemptionReason: undefined as string,
       },
     }
 

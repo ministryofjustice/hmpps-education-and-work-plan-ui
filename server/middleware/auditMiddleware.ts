@@ -26,6 +26,8 @@ const pageViewEventMap: Record<string, Page> = {
   '/plan/:prisonNumber/review/exemption': Page.REVIEW_PLAN_EXEMPTION,
   '/plan/:prisonNumber/review/exemption/confirm': Page.REVIEW_PLAN_EXEMPTION_CONFIRM,
   '/plan/:prisonNumber/review/exemption/recorded': Page.REVIEW_PLAN_EXEMPTION_RECORDED,
+  '/plan/:prisonNumber/review/exemption/remove': Page.REVIEW_PLAN_EXEMPTION_REMOVAL_CONFIRM,
+  '/plan/:prisonNumber/review/exemption/removed': Page.REVIEW_PLAN_EXEMPTION_REMOVED,
 
   // Create goals
   '/plan/:prisonNumber/goals/create': Page.CREATE_GOALS,

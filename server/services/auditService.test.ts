@@ -295,4 +295,35 @@ describe('Audit service', () => {
       )
     })
   })
+
+  describe('logRemoveExemptionActionPlanReview', () => {
+    it('should send action plan review exemption removal event audit message', async () => {
+      // Given
+
+      const baseArchiveAuditData: BaseAuditData = {
+        correlationId: '49380145-d73d-4ad2-8460-f26b039249cc',
+        details: {},
+        subjectId: 'A1234BC',
+        subjectType: 'PRISONER_ID',
+        who: 'a-dps-user',
+      }
+
+      // When
+      const actual = await auditService.logRemoveExemptionActionPlanReview(baseArchiveAuditData)
+
+      // Then
+      expect(actual).toEqual(expectedSqsMessageResponse)
+      expect(hmppsAuditClient.sendMessage).toHaveBeenCalledWith(
+        {
+          what: 'REMOVE_PRISONER_ACTION_PLAN_REVIEW_EXEMPTION',
+          correlationId: '49380145-d73d-4ad2-8460-f26b039249cc',
+          details: {},
+          subjectId: 'A1234BC',
+          subjectType: 'PRISONER_ID',
+          who: 'a-dps-user',
+        },
+        expectedHmppsAuditClientToThrowOnError,
+      )
+    })
+  })
 })
