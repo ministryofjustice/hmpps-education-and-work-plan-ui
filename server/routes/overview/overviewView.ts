@@ -40,7 +40,7 @@ type RenderArgs = {
   sessionHistory: {
     problemRetrievingData: boolean
     counts: {
-      totalSessions: number
+      totalCompletedSessions: number
       reviewSessions: number
       inductionSessions: number
     }
@@ -98,7 +98,8 @@ export default class OverviewView {
           )
         : undefined
 
-    const prisonerHasHadInduction = !this.induction.problemRetrievingData && this.induction.inductionDto != null
+    const prisonerHasHadInduction = // Prisoner is considered to have had their Induction if they have an Induction record AND they have at least 1 goal
+      !this.induction.problemRetrievingData && this.induction.inductionDto != null && allPrisonerGoals.length > 0
     const mostRecentReviewSession =
       this.actionPlanReviews?.completedReviews.length > 0
         ? this.actionPlanReviews.completedReviews.reduce((latestReview, currentReview) =>
@@ -161,7 +162,9 @@ export default class OverviewView {
           ? this.induction.problemRetrievingData
           : this.induction.problemRetrievingData || this.actionPlanReviews.problemRetrievingData,
         counts: {
-          totalSessions: (prisonerHasHadInduction ? 1 : 0) + (this.actionPlanReviews?.completedReviews.length || 0),
+          totalCompletedSessions: prisonerHasHadInduction
+            ? 1 + (this.actionPlanReviews?.completedReviews.length || 0) // 1 (for the Induction), plus the number of completed Reviews
+            : 0, // If the prisoner has not had their Induction, by definition they cannot have had any Reviews, so the total complete sessions is 0
           reviewSessions: this.actionPlanReviews ? this.actionPlanReviews.completedReviews.length : undefined,
           inductionSessions: prisonerHasHadInduction ? 1 : 0,
         },

@@ -26,7 +26,7 @@ describe('_sessionHistorySummaryCard', () => {
       sessionHistory: {
         problemRetrievingData: false,
         counts: {
-          totalSessions: 3,
+          totalCompletedSessions: 3,
           reviewSessions: 2,
           inductionSessions: 1,
         },
@@ -58,7 +58,7 @@ describe('_sessionHistorySummaryCard', () => {
       sessionHistory: {
         problemRetrievingData: false,
         counts: {
-          totalSessions: 0,
+          totalCompletedSessions: 0,
           reviewSessions: 0,
           inductionSessions: 0,
         },
@@ -88,7 +88,7 @@ describe('_sessionHistorySummaryCard', () => {
       sessionHistory: {
         problemRetrievingData: true,
         counts: {
-          totalSessions: 0,
+          totalCompletedSessions: 0,
           reviewSessions: 0,
           inductionSessions: 0,
         },

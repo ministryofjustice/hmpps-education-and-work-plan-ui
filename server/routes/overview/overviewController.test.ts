@@ -125,7 +125,7 @@ describe('overviewController', () => {
         counts: {
           inductionSessions: 1,
           reviewSessions: 1,
-          totalSessions: 2,
+          totalCompletedSessions: 2,
         },
         lastSessionConductedAt: parseISO('2023-06-19T09:39:44.000Z'),
         lastSessionConductedAtPrison: 'Moorland (HMP & YOI)',
@@ -328,7 +328,7 @@ describe('overviewController', () => {
         counts: {
           inductionSessions: 1,
           reviewSessions: undefined as number,
-          totalSessions: 1,
+          totalCompletedSessions: 1,
         },
         lastSessionConductedAt: parseISO('2023-06-19T09:39:44.000Z'),
         lastSessionConductedAtPrison: 'MDI',
@@ -417,7 +417,7 @@ describe('overviewController', () => {
       sessionHistory: {
         problemRetrievingData: false,
         counts: {
-          totalSessions: 0,
+          totalCompletedSessions: 0,
           reviewSessions: 0,
           inductionSessions: 0,
         },
@@ -502,13 +502,13 @@ describe('overviewController', () => {
       },
       sessionHistory: {
         counts: {
-          inductionSessions: 1,
+          inductionSessions: 0,
           reviewSessions: 1,
-          totalSessions: 2,
+          totalCompletedSessions: 0,
         },
-        lastSessionConductedAt: parseISO('2023-06-19T09:39:44.000Z'),
-        lastSessionConductedAtPrison: 'Moorland (HMP & YOI)',
-        lastSessionConductedBy: 'Alex Smith',
+        lastSessionConductedAt: undefined as Date,
+        lastSessionConductedAtPrison: undefined as string,
+        lastSessionConductedBy: undefined as string,
         problemRetrievingData: false,
       },
       actionPlanReview: {
@@ -567,7 +567,7 @@ describe('overviewController', () => {
         counts: {
           inductionSessions: 0,
           reviewSessions: 1,
-          totalSessions: 1,
+          totalCompletedSessions: 0,
         },
         lastSessionConductedAt: undefined as string,
         lastSessionConductedAtPrison: undefined as string,
@@ -634,7 +634,7 @@ describe('overviewController', () => {
         counts: {
           inductionSessions: 1,
           reviewSessions: 0,
-          totalSessions: 1,
+          totalCompletedSessions: 1,
         },
         lastSessionConductedAt: undefined as string,
         lastSessionConductedAtPrison: undefined as string,
@@ -699,7 +699,7 @@ describe('overviewController', () => {
         counts: {
           inductionSessions: 1,
           reviewSessions: 1,
-          totalSessions: 2,
+          totalCompletedSessions: 2,
         },
         lastSessionConductedAt: parseISO('2023-06-19T09:39:44.000Z'),
         lastSessionConductedAtPrison: 'Moorland (HMP & YOI)',
@@ -766,7 +766,7 @@ describe('overviewController', () => {
         counts: {
           inductionSessions: 1,
           reviewSessions: 1,
-          totalSessions: 2,
+          totalCompletedSessions: 2,
         },
         lastSessionConductedAt: parseISO('2023-06-19T09:39:44.000Z'),
         lastSessionConductedAtPrison: 'Moorland (HMP & YOI)',
