@@ -21,7 +21,7 @@
         <span class="govuk-tag govuk-tag--red govuk-!-margin-top-2 govuk-!-margin-bottom-2" data-qa="review-overdue">
           Review was due by {{ actionPlanReview.reviewDueDate | formatDate('D MMM YYYY') }}
         </span>
-      {% elseif actionPlanReview.reviewStatus == 'NO_SCHEDULED_REVIEW' %}
+      {% elseif actionPlanReview.reviewStatus == 'NO_SCHEDULED_REVIEW' and hasEditAuthority %}
         <span class="govuk-tag govuk-tag--grey govuk-!-margin-top-2 govuk-!-margin-bottom-2" data-qa="no-reviews-due">
           No reviews due
         </span>
@@ -47,7 +47,7 @@
                 Record exemption for this prisoner
               </a>
             </li>
-            {% endif %}
+          {% endif %}
         {% endif %}
       </ul>
     </div>
