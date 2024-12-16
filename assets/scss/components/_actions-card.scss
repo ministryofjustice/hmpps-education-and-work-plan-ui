@@ -4,8 +4,11 @@
   .govuk-summary-card__content {
     display: none; // Hide the action card content section by default
   }
-  .govuk-summary-card__content:has(.govuk-list li) {
-    display: block; // Show the action card content section only if the list has at least one item within it
+  .govuk-summary-card__content:has(.govuk-list li),
+  .govuk-summary-card__content:has(.govuk-tag[data-qa="no-reviews-due"])
+  {
+    // Show the action card content section only if the list has at least one item within it, or it has the No Reviews Due tag (which has no list items associated with it)
+    display: block;
   }
 
   .govuk-summary-card__title-wrapper {
@@ -41,6 +44,9 @@
   }
 }
 
-.actions-card:has(.govuk-summary-card__content .govuk-list li) {
-  display: block; // Show the entire action card only if the list has at least one item within it
+.actions-card:has(.govuk-summary-card__content .govuk-list li),
+.actions-card:has(.govuk-summary-card__content .govuk-tag[data-qa="no-reviews-due"]),
+{
+  // Show the entire action card only if any summary card has has at least one list item within it, or it has the No Reviews Due tag (which has no list items associated with it)
+  display: block;
 }
