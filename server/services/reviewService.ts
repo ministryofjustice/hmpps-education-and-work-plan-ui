@@ -68,19 +68,19 @@ export default class ReviewService {
     }
   }
 
-  async updateActionPlanReviewScheduleStatus(reviewPlanDto: ReviewExemptionDto, username: string): Promise<void> {
+  async updateActionPlanReviewScheduleStatus(reviewExemptionDto: ReviewExemptionDto, username: string): Promise<void> {
     const systemToken = await this.hmppsAuthClient.getSystemClientToken(username)
 
     try {
-      const updateReviewScheduleStatusRequest = toUpdateReviewScheduleStatusRequest(reviewPlanDto)
+      const updateReviewScheduleStatusRequest = toUpdateReviewScheduleStatusRequest(reviewExemptionDto)
       await this.educationAndWorkPlanClient.updateActionPlanReviewScheduleStatus(
-        reviewPlanDto.prisonNumber,
+        reviewExemptionDto.prisonNumber,
         updateReviewScheduleStatusRequest,
         systemToken,
       )
     } catch (error) {
       logger.error(
-        `Error updating Action Plan Review Schedule Status for prisoner [${reviewPlanDto.prisonNumber}] in the Education And Work Plan API `,
+        `Error updating Action Plan Review Schedule Status for prisoner [${reviewExemptionDto.prisonNumber}] in the Education And Work Plan API `,
         error,
       )
       throw error

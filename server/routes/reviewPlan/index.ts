@@ -14,20 +14,20 @@ import ConfirmExemptionController from './confirmExemptionController'
 import createEmptyReviewExemptionDtoIfNotInPrisonerContext from '../routerRequestHandlers/createEmptyReviewExemptionDtoIfNotInPrisonerContext'
 import ExemptionRecordedController from './exemptionRecordedController'
 import { Services } from '../../services'
+import retrieveActionPlanReviews from '../routerRequestHandlers/retrieveActionPlanReviews'
 
 /**
  * Route definitions for the review plan journeys
  */
 export default function reviewPlanRoutes(router: Router, services: Services) {
+  const { auditService, reviewService } = services
+
   const whoCompletedReviewController = new WhoCompletedReviewController()
   const reviewNoteController = new ReviewNoteController()
-  const reviewCheckYourAnswersController = new ReviewCheckYourAnswersController(
-    services.reviewService,
-    services.auditService,
-  )
+  const reviewCheckYourAnswersController = new ReviewCheckYourAnswersController(reviewService, auditService)
   const reviewCompleteController = new ReviewCompleteController()
   const exemptionReasonController = new ExemptionReasonController()
-  const confirmExemptionController = new ConfirmExemptionController()
+  const confirmExemptionController = new ConfirmExemptionController(reviewService, auditService)
   const exemptionRecordedController = new ExemptionRecordedController()
 
   router.use('/plan/:prisonNumber/review/exemption', [
@@ -86,6 +86,7 @@ export default function reviewPlanRoutes(router: Router, services: Services) {
 
   router.get(
     '/plan/:prisonNumber/review/exemption/recorded',
+    [retrieveActionPlanReviews(services.reviewService)],
     asyncMiddleware(exemptionRecordedController.getExemptionRecordedView),
   )
 

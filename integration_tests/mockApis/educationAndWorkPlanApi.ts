@@ -1124,6 +1124,36 @@ const stubCreateActionPlanReview = (): SuperAgentRequest =>
     },
   })
 
+const stubUpdateActionPlanReviewScheduleStatus = (): SuperAgentRequest =>
+  stubFor({
+    request: {
+      method: 'PUT',
+      urlPattern: '/action-plans/.*/reviews/schedule-status',
+    },
+    response: {
+      status: 204,
+    },
+  })
+
+const stubUpdateActionPlanReviewScheduleStatus500Error = (): SuperAgentRequest =>
+  stubFor({
+    request: {
+      method: 'PUT',
+      urlPattern: '/action-plans/.*/reviews/schedule-status',
+    },
+    response: {
+      status: 500,
+      headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+      jsonBody: {
+        status: 500,
+        errorCode: null,
+        userMessage: 'An unexpected error occurred',
+        developerMessage: 'An unexpected error occurred',
+        moreInfo: null,
+      },
+    },
+  })
+
 export default {
   createGoals,
 
@@ -1170,6 +1200,9 @@ export default {
   stubGetActionPlanReviews404Error,
   stubGetActionPlanReviews500Error,
   stubCreateActionPlanReview,
+
+  stubUpdateActionPlanReviewScheduleStatus,
+  stubUpdateActionPlanReviewScheduleStatus500Error,
 
   stubEducationAndWorkPlanApiPing: stubPing(),
 }

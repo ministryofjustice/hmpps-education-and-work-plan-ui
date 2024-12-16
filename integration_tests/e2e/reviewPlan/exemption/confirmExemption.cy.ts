@@ -2,6 +2,7 @@
  * Cypress tests that test the Confirm Review Exemption page
  */
 
+import { startOfDay } from 'date-fns'
 import ReviewScheduleStatusValue from '../../../../server/enums/reviewScheduleStatusValue'
 import OverviewPage from '../../../pages/overview/OverviewPage'
 import Page from '../../../pages/page'
@@ -11,7 +12,10 @@ import ExemptionRecordedPage from '../../../pages/reviewPlan/exemption/exemption
 
 context(`Confirm review exemption page`, () => {
   const prisonNumber = 'G6115VJ'
+
   beforeEach(() => {
+    cy.task('stubUpdateActionPlanReviewScheduleStatus')
+    cy.task('stubGetActionPlanReviews')
     cy.task('stubSignInAsUserWithEditAuthority')
     cy.signIn()
     cy.visit(`/plan/${prisonNumber}/review/exemption`)
@@ -33,7 +37,7 @@ context(`Confirm review exemption page`, () => {
       .doesNotHaveSuccessMessage()
   })
 
-  it(`Should navigate to the 'Exemption recorded' page when 'Yes, continue to add exemption' button on Confirm review exemption page is clicked`, () => {
+  it(`Should navigate to the 'Exemption recorded' page when 'Yes' button on Confirm review exemption page is clicked, and the exception reason was not system technical issue`, () => {
     // Given
     Page.verifyOnPage(ExemptionReasonPage) //
       .selectExemptionReason(ReviewScheduleStatusValue.EXEMPT_PRISONER_DRUG_OR_ALCOHOL_DEPENDENCY)
@@ -45,6 +49,26 @@ context(`Confirm review exemption page`, () => {
 
     // Then
     confirmExemptionPage.submitPage()
-    Page.verifyOnPage(ExemptionRecordedPage)
+    Page.verifyOnPage(ExemptionRecordedPage) //
+      .reviewIsOnHold()
+  })
+
+  it(`Should navigate to the 'Exemption recorded' page when 'Yes' button on Confirm review exemption page is clicked, and the exception reason was system technical issue`, () => {
+    // Given
+    Page.verifyOnPage(ExemptionReasonPage) //
+      .selectExemptionReason(ReviewScheduleStatusValue.EXEMPT_SYSTEM_TECHNICAL_ISSUE)
+      .enterExemptionReasonDetails(
+        ReviewScheduleStatusValue.EXEMPT_SYSTEM_TECHNICAL_ISSUE,
+        'Power outage on site, lost all internet access',
+      )
+      .submitPage()
+
+    // When
+    const confirmExemptionPage = Page.verifyOnPage(ConfirmExemptionPage)
+
+    // Then
+    confirmExemptionPage.submitPage()
+    Page.verifyOnPage(ExemptionRecordedPage) //
+      .reviewHasNewDeadlineDateOf(startOfDay('2024-10-15'))
   })
 })
