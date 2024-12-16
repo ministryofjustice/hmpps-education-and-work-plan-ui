@@ -13,7 +13,7 @@
         attributes: { "data-qa": "exemption-recorded-panel" }
       }) }}
 
-      {% if exemptionDueToTechnicalIssue %}
+      {% if not exemptionDueToTechnicalIssue %}
         {{ govukWarningText({
           text: "You must remove this exemption when the reason no longer applies.",
           iconFallbackText: "Warning",
@@ -24,13 +24,13 @@
 
       <h3 class="govuk-heading-m govuk-!-margin-top-6" data-qa="page-heading">What happens next</h3>
 
-      {% if exemptionDueToTechnicalIssue %}
+      {% if not exemptionDueToTechnicalIssue %}
         <p class="govuk-body govuk-!-margin-bottom-7" data-qa="session-on-hold">
           {{ prisonerSummary.firstName + " " + prisonerSummary.lastName }} is now exempt from reviews and the session is on hold.
         </p>
       {% else %}
         <p class="govuk-body govuk-!-margin-bottom-7" data-qa="review-due">
-          You must now review this learning and work progress plan with {{ prisonerSummary.firstName + " " + prisonerSummary.lastName }} by {{ '[review due date]' }}.
+          You must now review this learning and work progress plan with {{ prisonerSummary.firstName + " " + prisonerSummary.lastName }} by {{ nextReviewDate | formatDate('D MMMM YYYY') }}.
         </p>
       {% endif %}
 

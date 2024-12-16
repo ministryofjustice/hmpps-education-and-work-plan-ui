@@ -138,7 +138,7 @@ describe('ReviewCheckYourAnswersController', () => {
       expect(auditService.logCreateActionPlanReview).toHaveBeenCalled()
     })
 
-    it('should redirect to review complete page given form submitted successfully', async () => {
+    it('should not redirect to review complete page given service throws an error', async () => {
       // Given
       const reviewPlanDto: ReviewPlanDto = {
         prisonNumber,

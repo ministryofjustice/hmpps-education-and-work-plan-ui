@@ -1,16 +1,21 @@
 import { Request, Response } from 'express'
+import { startOfDay } from 'date-fns'
 import aValidPrisonerSummary from '../../testsupport/prisonerSummaryTestDataBuilder'
 import ExemptionRecordedController from './exemptionRecordedController'
-import ExemptionRecordedView from './exemptionRecordedView'
 import { getPrisonerContext } from '../../data/session/prisonerContexts'
 import aValidReviewExemptionDto from '../../testsupport/reviewExemptionDtoTestDataBuilder'
 import ReviewScheduleStatusValue from '../../enums/reviewScheduleStatusValue'
+import aValidActionPlanReviews from '../../testsupport/actionPlanReviewsTestDataBuilder'
+import aValidScheduledActionPlanReview from '../../testsupport/scheduledActionPlanReviewTestDataBuilder'
 
 describe('ExemptionRecordedController', () => {
   const controller = new ExemptionRecordedController()
 
   const prisonNumber = 'A1234BC'
   const prisonerSummary = aValidPrisonerSummary(prisonNumber)
+  const actionPlanReviews = aValidActionPlanReviews({
+    latestReviewSchedule: aValidScheduledActionPlanReview({ reviewDateTo: startOfDay('2024-12-03') }),
+  })
 
   let req: Request
   let res: Response
@@ -26,7 +31,7 @@ describe('ExemptionRecordedController', () => {
       render: jest.fn(),
       redirect: jest.fn(),
       redirectWithSuccess: jest.fn(),
-      locals: { prisonerSummary },
+      locals: { prisonerSummary, actionPlanReviews },
     } as unknown as Response
 
     next = jest.fn()
@@ -42,8 +47,11 @@ describe('ExemptionRecordedController', () => {
       })
       getPrisonerContext(req.session, prisonNumber).reviewExemptionDto = reviewExemptionDto
 
-      const exemptionDueToTechnicalIssue = false
-      const expectedViewData = new ExemptionRecordedView(prisonerSummary, exemptionDueToTechnicalIssue).renderArgs
+      const expectedViewData = {
+        prisonerSummary,
+        nextReviewDate: startOfDay('2024-12-03'),
+        exemptionDueToTechnicalIssue: false,
+      }
 
       // When
       await controller.getExemptionRecordedView(req, res, next)
@@ -59,8 +67,11 @@ describe('ExemptionRecordedController', () => {
       })
       getPrisonerContext(req.session, prisonNumber).reviewExemptionDto = reviewExemptionDto
 
-      const exemptionDueToTechnicalIssue = true
-      const expectedViewData = new ExemptionRecordedView(prisonerSummary, exemptionDueToTechnicalIssue).renderArgs
+      const expectedViewData = {
+        prisonerSummary,
+        nextReviewDate: startOfDay('2024-12-03'),
+        exemptionDueToTechnicalIssue: true,
+      }
 
       // When
       await controller.getExemptionRecordedView(req, res, next)

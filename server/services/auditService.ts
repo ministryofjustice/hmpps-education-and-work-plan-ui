@@ -88,6 +88,7 @@ enum AuditableUserAction {
   UNARCHIVE_PRISONER_GOAL = 'UNARCHIVE_PRISONER_GOAL',
   COMPLETE_PRISONER_GOAL = 'COMPLETE_PRISONER_GOAL',
   CREATE_PRISONER_ACTION_PLAN_REVIEW = 'CREATE_PRISONER_ACTION_PLAN_REVIEW',
+  MARK_PRISONER_ACTION_PLAN_REVIEW_AS_EXEMPT = 'MARK_PRISONER_ACTION_PLAN_REVIEW_AS_EXEMPT',
 }
 
 export interface BaseAuditData {
@@ -143,5 +144,12 @@ export default class AuditService {
 
   async logCreateActionPlanReview(baseAuditData: BaseAuditData) {
     return this.logAuditEvent({ ...baseAuditData, what: AuditableUserAction.CREATE_PRISONER_ACTION_PLAN_REVIEW })
+  }
+
+  async logExemptActionPlanReview(baseAuditData: BaseAuditData) {
+    return this.logAuditEvent({
+      ...baseAuditData,
+      what: AuditableUserAction.MARK_PRISONER_ACTION_PLAN_REVIEW_AS_EXEMPT,
+    })
   }
 }
