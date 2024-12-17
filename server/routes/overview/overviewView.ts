@@ -54,8 +54,9 @@ type RenderArgs = {
   }
   actionPlanReview: {
     problemRetrievingData: boolean
-    reviewStatus: 'NOT_DUE' | 'DUE' | 'OVERDUE' | 'NO_SCHEDULED_REVIEW'
+    reviewStatus: 'NOT_DUE' | 'DUE' | 'OVERDUE' | 'NO_SCHEDULED_REVIEW' | 'ON_HOLD'
     reviewDueDate: Date | null
+    exemptionReason: ActionPlanReviewStatusValue
   }
 }
 
@@ -113,14 +114,20 @@ export default class OverviewView {
     const noScheduledReview =
       this.actionPlanReviews?.latestReviewSchedule == null ||
       this.actionPlanReviews?.latestReviewSchedule.status === ActionPlanReviewStatusValue.COMPLETED
+    const reviewOnHold =
+      this.actionPlanReviews?.latestReviewSchedule != null &&
+      this.actionPlanReviews.latestReviewSchedule.status !== ActionPlanReviewStatusValue.SCHEDULED &&
+      this.actionPlanReviews.latestReviewSchedule.status !== ActionPlanReviewStatusValue.COMPLETED
     const reviewDateFrom = this.actionPlanReviews?.latestReviewSchedule?.reviewDateFrom
     const reviewDueDate = noScheduledReview ? undefined : this.actionPlanReviews?.latestReviewSchedule?.reviewDateTo
 
     const today = startOfToday()
-    let reviewStatus: 'NOT_DUE' | 'DUE' | 'OVERDUE' | 'NO_SCHEDULED_REVIEW'
+    let reviewStatus: 'NOT_DUE' | 'DUE' | 'OVERDUE' | 'NO_SCHEDULED_REVIEW' | 'ON_HOLD'
 
     if (noScheduledReview) {
       reviewStatus = 'NO_SCHEDULED_REVIEW'
+    } else if (reviewOnHold) {
+      reviewStatus = 'ON_HOLD'
     } else if (isAfter(today, reviewDueDate)) {
       reviewStatus = 'OVERDUE'
     } else if (isWithinInterval(today, { start: reviewDateFrom, end: reviewDueDate })) {
@@ -192,6 +199,7 @@ export default class OverviewView {
         problemRetrievingData: this.actionPlanReviews == null ? false : this.actionPlanReviews.problemRetrievingData,
         reviewStatus,
         reviewDueDate,
+        exemptionReason: reviewStatus === 'ON_HOLD' ? this.actionPlanReviews.latestReviewSchedule.status : undefined,
       },
     }
   }

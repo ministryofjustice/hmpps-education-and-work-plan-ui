@@ -3,7 +3,6 @@ import { Request, Response } from 'express'
 import { getPrisonerContext } from '../../../data/session/prisonerContexts'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
 import ConfirmExemptionController from './confirmExemptionController'
-import ConfirmExemptionView from './confirmExemptionView'
 import aValidReviewExemptionDto from '../../../testsupport/reviewExemptionDtoTestDataBuilder'
 import ReviewService from '../../../services/reviewService'
 import AuditService from '../../../services/auditService'
@@ -46,7 +45,7 @@ describe('ConfirmExemptionController', () => {
       const reviewExemptionDto = aValidReviewExemptionDto()
       getPrisonerContext(req.session, prisonNumber).reviewExemptionDto = reviewExemptionDto
 
-      const expectedViewData = new ConfirmExemptionView(prisonerSummary, reviewExemptionDto).renderArgs
+      const expectedViewData = { prisonerSummary, reviewExemptionDto }
 
       // When
       await controller.getConfirmExemptionView(req, res, next)

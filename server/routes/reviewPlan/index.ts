@@ -6,6 +6,7 @@ import exemptActionPlanReviewRoutes from './exemption'
 import asyncMiddleware from '../../middleware/asyncMiddleware'
 import config from '../../config'
 import { checkUserHasEditAuthority } from '../../middleware/roleBasedAccessControl'
+import exemptionRemovalActionPlanReviewRoutes from './removeExemption'
 
 /**
  * Route definitions for the review plan journeys
@@ -16,6 +17,7 @@ export default function reviewPlanRoutes(router: Router, services: Services) {
 
   completeActionPlanReviewRoutes(router, services)
   exemptActionPlanReviewRoutes(router, services)
+  exemptionRemovalActionPlanReviewRoutes(router, services)
 }
 
 const checkPrisonIsEnabled = (): RequestHandler => {

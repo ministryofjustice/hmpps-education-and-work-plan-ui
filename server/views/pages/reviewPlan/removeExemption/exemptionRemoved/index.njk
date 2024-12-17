@@ -1,0 +1,37 @@
+{% extends "../../../../partials/layout.njk" %}
+
+{% set pageId = "exemption-removed" %}
+{% set title = "Exemption removed" %}
+{% set pageTitle = title %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      {{ govukPanel({
+        classes: "govuk-!-margin-top-7",
+        titleText: title,
+        attributes: { "data-qa": "exemption-removed-panel" }
+      }) }}
+
+      <h3 class="govuk-heading-m govuk-!-margin-top-6" data-qa="page-heading">What happens next</h3>
+
+      <p class="govuk-body govuk-!-margin-bottom-7" data-qa="review-due">
+        You must now review this learning and work progress plan with {{ prisonerSummary.firstName + " " + prisonerSummary.lastName }} by {{ nextReviewDate | formatDate('D MMMM YYYY') }}.
+      </p>
+
+      <form class="form" method="post" novalidate="">
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+        <div class="govuk-form-group">
+          {{ govukButton({
+            text: "Go to learning and work progress plan",
+            id: "submit-button",
+            name: "action",
+            value: "submit-form",
+            attributes: { "data-qa": "submit-button" }
+          }) }}
+        </div>
+      </form>
+     
+    </div>
+  </div>
+{% endblock %}

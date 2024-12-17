@@ -38,7 +38,7 @@ export default function exemptActionPlanReviewRoutes(router: Router, services: S
 
   router.get('/plan/:prisonNumber/review/exemption/recorded', [
     checkReviewExemptionDtoExistsInPrisonerContext,
-    retrieveActionPlanReviews(services.reviewService),
+    retrieveActionPlanReviews(reviewService),
     asyncMiddleware(exemptionRecordedController.getExemptionRecordedView),
   ])
   router.post('/plan/:prisonNumber/review/exemption/recorded', [
