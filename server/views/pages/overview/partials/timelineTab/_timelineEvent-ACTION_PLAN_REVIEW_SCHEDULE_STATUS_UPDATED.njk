@@ -1,0 +1,34 @@
+<div class="moj-timeline__item" data-qa-event-type="ACTION_PLAN_REVIEW_SCHEDULE_STATUS_UPDATED">
+ {# If the new value for the schedule status is SCHEDULED then this event was the removal/clearing of the exemption #}
+  {% set isReviewExemptionRemovalEvent = event.contextualInfo['REVIEW_SCHEDULE_STATUS_NEW'] == 'SCHEDULED' %}
+
+  <div class="moj-timeline__header">
+    <h2 class="moj-timeline__title">{{ 'Exemption removed' if isReviewExemptionRemovalEvent else 'Exemption recorded' }}</h2>
+    <p class="moj-timeline__byline govuk-!-display-none-print">by {{ event.actionedByDisplayName }}, {{ event.prisonName }}</p>
+  </div>
+
+  <p class="moj-timeline__date">
+    <time datetime="{{ event.timestamp }}">{{ event.timestamp | formatDate('D MMMM YYYY') }}</time>
+  </p>
+
+  {% if not isReviewExemptionRemovalEvent %}
+    <div class="moj-timeline__description">
+      <p class="govuk-body" data-qa="review-exempted-reason">
+        Reason: {{ event.contextualInfo['REVIEW_SCHEDULE_STATUS_NEW'] | formatExemptionReasonValue }}
+      </p>
+
+      {% if event.contextualInfo['REVIEW_SCHEDULE_EXEMPTION_REASON'] %}
+        <details class="govuk-details app-notes-expander" data-qa="review-exemption-notes-expander">
+          <summary class="govuk-details__summary">
+            <span class="govuk-details__summary-text">
+              Exemption details
+            </span>
+          </summary>
+          <div class="govuk-details__text" data-qa="review-exemption-notes">
+            <span class="app-u-multiline-text">{{ event.contextualInfo['REVIEW_SCHEDULE_EXEMPTION_REASON'] }}</span>
+          </div>
+        </details>
+      {% endif %}
+    </div>
+  {% endif %}
+</div>
