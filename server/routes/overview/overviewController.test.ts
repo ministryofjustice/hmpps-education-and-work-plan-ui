@@ -189,8 +189,8 @@ describe('overviewController', () => {
 
     const expected = {
       problemRetrievingData: false,
-      reviewStatus: 'NO_SCHEDULED_REVIEW',
-      reviewDueDate: undefined as Date,
+      reviewStatus: 'HAS_HAD_LAST_REVIEW',
+      reviewDueDate: startOfDay('2024-10-15'),
       exemptionReason: undefined as string,
     }
 
