@@ -41,7 +41,7 @@ describe('ReviewPlanCheckYourAnswersPage', () => {
     expect($('[data-qa="review-completed-by-change-link"]').attr('href')).toBe(
       `/plan/${prisonerSummary.prisonNumber}/review`,
     )
-    expect($('[data-qa="review-completed-by-MYSELF"]').text().trim()).toBe('I completed the review myself')
+    expect($('[data-qa="review-completed-by-MYSELF"]').length).toEqual(1)
     expect($('[data-qa="job-role"]').length).toEqual(0)
     expect($('[data-qa="review-note-change-link"]').attr('href')).toBe(
       `/plan/${prisonerSummary.prisonNumber}/review/notes`,

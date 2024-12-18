@@ -34,7 +34,7 @@
           <dt class="govuk-summary-list__key govuk-!-width-one-quarter">Review completed by</dt>
           <dd class="govuk-summary-list__value" data-qa="review-completed-by-{{ reviewPlanDto.completedBy }}">
             {% if reviewPlanDto.completedBy === 'MYSELF' %}
-              I completed the review myself
+              I did the review myself
             {% else %}
               {{ reviewPlanDto.completedByOtherFullName }}
             {% endif %}

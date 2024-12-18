@@ -81,15 +81,37 @@ describe('ExemptionRecordedController', () => {
     })
   })
 
-  describe('goToLearningAndWorkProgressPlan', () => {
-    it('should redirect to the overview page with a success message when the Continue button is clicked', async () => {
-      await controller.goToLearningAndWorkProgressPlan(req, res, next)
+  describe('submitExemptionRecorded', () => {
+    it('should redirect to the overview page with a success message given the exemption reason was not system issue', async () => {
+      // Given
+      const reviewExemptionDto = aValidReviewExemptionDto({
+        exemptionReason: ReviewScheduleStatusValue.EXEMPT_PRISON_OPERATION_OR_SECURITY_ISSUE,
+      })
+      getPrisonerContext(req.session, prisonNumber).reviewExemptionDto = reviewExemptionDto
+
+      // When
+      await controller.submitExemptionRecorded(req, res, next)
 
       // Then
       expect(res.redirectWithSuccess).toHaveBeenCalledWith(
         `/plan/${prisonNumber}/view/overview`,
         'Exemption recorded. <b>You must remove this exemption when the reason no longer applies.</b>',
       )
+      expect(res.redirect).not.toHaveBeenCalled()
+    })
+
+    it('should redirect to the overview page with a success message given the exemption reason was system issue', async () => {
+      // Given
+      const reviewExemptionDto = aValidReviewExemptionDto({
+        exemptionReason: ReviewScheduleStatusValue.EXEMPT_SYSTEM_TECHNICAL_ISSUE,
+      })
+      getPrisonerContext(req.session, prisonNumber).reviewExemptionDto = reviewExemptionDto
+
+      // When
+      await controller.submitExemptionRecorded(req, res, next)
+
+      // Then
+      expect(res.redirectWithSuccess).toHaveBeenCalledWith(`/plan/${prisonNumber}/view/overview`, 'Exemption recorded.')
       expect(res.redirect).not.toHaveBeenCalled()
     })
   })
