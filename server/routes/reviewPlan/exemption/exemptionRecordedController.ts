@@ -16,11 +16,16 @@ export default class ExemptionRecordedController {
     return res.render('pages/reviewPlan/exemption/exemptionRecorded/index', { ...view.renderArgs })
   }
 
-  goToLearningAndWorkProgressPlan: RequestHandler = async (req, res): Promise<void> => {
+  submitExemptionRecorded: RequestHandler = async (req, res): Promise<void> => {
     const { prisonNumber } = req.params
-    return res.redirectWithSuccess(
-      `/plan/${prisonNumber}/view/overview`,
-      'Exemption recorded. <b>You must remove this exemption when the reason no longer applies.</b>',
-    )
+    const { reviewExemptionDto } = getPrisonerContext(req.session, prisonNumber)
+
+    const exemptionDueToTechnicalIssue =
+      reviewExemptionDto.exemptionReason === ReviewScheduleStatusValue.EXEMPT_SYSTEM_TECHNICAL_ISSUE
+    const successMessage = exemptionDueToTechnicalIssue
+      ? 'Exemption recorded.'
+      : 'Exemption recorded. <b>You must remove this exemption when the reason no longer applies.</b>'
+
+    return res.redirectWithSuccess(`/plan/${prisonNumber}/view/overview`, successMessage)
   }
 }
