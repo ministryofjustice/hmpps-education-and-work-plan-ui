@@ -111,23 +111,19 @@ export default class OverviewView {
       prisonerHasHadInduction && !this.actionPlanReviews?.problemRetrievingData && mostRecentReviewSession == null
     const prisonerHasHadInductionAndAtLeastOneReview = prisonerHasHadInduction && mostRecentReviewSession != null
 
-    const scheduledReviewExists = this.actionPlanReviews?.latestReviewSchedule != null
-    const hasHadLastReview =
-      scheduledReviewExists &&
-      this.actionPlanReviews.latestReviewSchedule.status === ActionPlanReviewStatusValue.COMPLETED
+    const reviewScheduleDoesNotExist = this.actionPlanReviews?.latestReviewSchedule == null
+    const latestReviewScheduleStatus = this.actionPlanReviews?.latestReviewSchedule?.status
+    const hasHadLastReview = latestReviewScheduleStatus === ActionPlanReviewStatusValue.COMPLETED
     const reviewOnHold =
-      scheduledReviewExists &&
-      this.actionPlanReviews.latestReviewSchedule.status !== ActionPlanReviewStatusValue.SCHEDULED &&
-      this.actionPlanReviews.latestReviewSchedule.status !== ActionPlanReviewStatusValue.COMPLETED
-    const reviewDateFrom = scheduledReviewExists
-      ? this.actionPlanReviews.latestReviewSchedule.reviewDateFrom
-      : undefined
-    const reviewDueDate = scheduledReviewExists ? this.actionPlanReviews.latestReviewSchedule.reviewDateTo : undefined
+      latestReviewScheduleStatus !== ActionPlanReviewStatusValue.SCHEDULED &&
+      latestReviewScheduleStatus !== ActionPlanReviewStatusValue.COMPLETED
+    const reviewDateFrom = this.actionPlanReviews?.latestReviewSchedule?.reviewDateFrom
+    const reviewDueDate = this.actionPlanReviews?.latestReviewSchedule?.reviewDateTo
 
     const today = startOfToday()
     let reviewStatus: 'NOT_DUE' | 'DUE' | 'OVERDUE' | 'NO_SCHEDULED_REVIEW' | 'ON_HOLD' | 'HAS_HAD_LAST_REVIEW'
 
-    if (!scheduledReviewExists) {
+    if (reviewScheduleDoesNotExist) {
       reviewStatus = 'NO_SCHEDULED_REVIEW'
     } else if (hasHadLastReview) {
       reviewStatus = 'HAS_HAD_LAST_REVIEW'
