@@ -54,7 +54,7 @@ type RenderArgs = {
   }
   actionPlanReview: {
     problemRetrievingData: boolean
-    reviewStatus: 'NOT_DUE' | 'DUE' | 'OVERDUE' | 'NO_SCHEDULED_REVIEW' | 'ON_HOLD'
+    reviewStatus: 'NOT_DUE' | 'DUE' | 'OVERDUE' | 'NO_SCHEDULED_REVIEW' | 'ON_HOLD' | 'HAS_HAD_LAST_REVIEW'
     reviewDueDate: Date | null
     exemptionReason: ActionPlanReviewStatusValue
   }
@@ -111,21 +111,22 @@ export default class OverviewView {
       prisonerHasHadInduction && !this.actionPlanReviews?.problemRetrievingData && mostRecentReviewSession == null
     const prisonerHasHadInductionAndAtLeastOneReview = prisonerHasHadInduction && mostRecentReviewSession != null
 
-    const noScheduledReview =
-      this.actionPlanReviews?.latestReviewSchedule == null ||
-      this.actionPlanReviews?.latestReviewSchedule.status === ActionPlanReviewStatusValue.COMPLETED
+    const reviewScheduleDoesNotExist = this.actionPlanReviews?.latestReviewSchedule == null
+    const latestReviewScheduleStatus = this.actionPlanReviews?.latestReviewSchedule?.status
+    const hasHadLastReview = latestReviewScheduleStatus === ActionPlanReviewStatusValue.COMPLETED
     const reviewOnHold =
-      this.actionPlanReviews?.latestReviewSchedule != null &&
-      this.actionPlanReviews.latestReviewSchedule.status !== ActionPlanReviewStatusValue.SCHEDULED &&
-      this.actionPlanReviews.latestReviewSchedule.status !== ActionPlanReviewStatusValue.COMPLETED
+      latestReviewScheduleStatus !== ActionPlanReviewStatusValue.SCHEDULED &&
+      latestReviewScheduleStatus !== ActionPlanReviewStatusValue.COMPLETED
     const reviewDateFrom = this.actionPlanReviews?.latestReviewSchedule?.reviewDateFrom
-    const reviewDueDate = noScheduledReview ? undefined : this.actionPlanReviews?.latestReviewSchedule?.reviewDateTo
+    const reviewDueDate = this.actionPlanReviews?.latestReviewSchedule?.reviewDateTo
 
     const today = startOfToday()
-    let reviewStatus: 'NOT_DUE' | 'DUE' | 'OVERDUE' | 'NO_SCHEDULED_REVIEW' | 'ON_HOLD'
+    let reviewStatus: 'NOT_DUE' | 'DUE' | 'OVERDUE' | 'NO_SCHEDULED_REVIEW' | 'ON_HOLD' | 'HAS_HAD_LAST_REVIEW'
 
-    if (noScheduledReview) {
+    if (reviewScheduleDoesNotExist) {
       reviewStatus = 'NO_SCHEDULED_REVIEW'
+    } else if (hasHadLastReview) {
+      reviewStatus = 'HAS_HAD_LAST_REVIEW'
     } else if (reviewOnHold) {
       reviewStatus = 'ON_HOLD'
     } else if (isAfter(today, reviewDueDate)) {

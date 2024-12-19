@@ -28,7 +28,7 @@
         <p class="govuk-body" data-qa="reason-on-hold">
           Reason: {{ actionPlanReview.exemptionReason | formatExemptionReasonValue }}
         </p>
-      {% elseif actionPlanReview.reviewStatus == 'NO_SCHEDULED_REVIEW' and hasEditAuthority %}
+      {% elseif actionPlanReview.reviewStatus == 'HAS_HAD_LAST_REVIEW' and hasEditAuthority %}
         <span class="govuk-tag govuk-tag--grey govuk-!-margin-top-2 govuk-!-margin-bottom-2" data-qa="no-reviews-due">
           No reviews due
         </span>
