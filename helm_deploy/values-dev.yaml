@@ -28,9 +28,9 @@ generic-service:
     # Comma delimited list of prison IDs that our service is enabled for in `dev`
     # The list represents the cumulative list of caseloads (prisons) that have been assigned to the `dev` DPS users
     # of the PLP team.
-    ACTIVE_AGENCIES: 'BLI, BXI, BZI, RSI, MDI, WDI, WSI, ONI, SKI, SWI, WTI'
+    ACTIVE_AGENCIES: 'BLI, BXI, BZI, RSI, MDI, WDI, WSI, ONI, SKI, SWI, WTI, DGI, KMI, NLI, GHI, DNI'
 
-    REVIEWS_PRISONS_ENABLED: "BXI, WDI, BLI"
+    REVIEWS_PRISONS_ENABLED: "BXI, WDI, BLI, DGI, KMI, NLI, GHI, DNI"
 
   allowlist:
     uservision-accessibility-testers: 5.181.59.114/32
