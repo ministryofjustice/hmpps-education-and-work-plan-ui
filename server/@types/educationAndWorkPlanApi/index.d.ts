@@ -84,6 +84,22 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/inductions/{prisonNumber}/induction-schedule': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get: operations['getInductionSchedule']
+    put: operations['updateInductionScheduleStatus']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/conversations/{prisonNumber}/{conversationReference}': {
     parameters: {
       query?: never
@@ -328,14 +344,14 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/inductions/{prisonNumber}/induction-schedule': {
+  '/inductions/{prisonNumber}/induction-schedule/history': {
     parameters: {
       query?: never
       header?: never
       path?: never
       cookie?: never
     }
-    get: operations['getInductionSchedule']
+    get: operations['getActionPlanReviewSchedules']
     put?: never
     post?: never
     delete?: never
@@ -351,7 +367,7 @@ export interface paths {
       path?: never
       cookie?: never
     }
-    get: operations['getActionPlanReviewSchedules']
+    get: operations['getActionPlanReviewSchedules_1']
     put?: never
     post?: never
     delete?: never
@@ -815,6 +831,40 @@ export interface components {
        * @example null
        */
       affectAbilityToWorkOther?: string
+    }
+    UpdateInductionScheduleStatusRequest: {
+      /**
+       * @description The Prison identifier.
+       * @example BXI
+       */
+      prisonId: string
+      /**
+       * @example null
+       * @enum {string}
+       */
+      status:
+        | 'SCHEDULED'
+        | 'COMPLETED'
+        | 'EXEMPT_PRISONER_DRUG_OR_ALCOHOL_DEPENDENCY'
+        | 'EXEMPT_PRISONER_OTHER_HEALTH_ISSUES'
+        | 'EXEMPT_PRISONER_FAILED_TO_ENGAGE'
+        | 'EXEMPT_PRISONER_ESCAPED_OR_ABSCONDED'
+        | 'EXEMPT_PRISONER_SAFETY_ISSUES'
+        | 'EXEMPT_PRISON_REGIME_CIRCUMSTANCES'
+        | 'EXEMPT_PRISON_STAFF_REDEPLOYMENT'
+        | 'EXEMPT_PRISON_OPERATION_OR_SECURITY_ISSUE'
+        | 'EXEMPT_SECURITY_ISSUE_RISK_TO_STAFF'
+        | 'EXEMPT_SYSTEM_TECHNICAL_ISSUE'
+        | 'EXEMPT_PRISONER_TRANSFER'
+        | 'EXEMPT_PRISONER_RELEASE'
+        | 'EXEMPT_PRISONER_DEATH'
+        | 'EXEMPT_SCREENING_AND_ASSESSMENT_IN_PROGRESS'
+        | 'EXEMPT_SCREENING_AND_ASSESSMENT_INCOMPLETE'
+      /**
+       * @description An optional reason as to why the Induction Schedule is exempted.  Only relevant and processed when the `status` field is one of the `EXEMPTION_` statuses.   This field is not mandatory, even when the `status` field is one of the `EXEMPTION_` statuses.
+       * @example null
+       */
+      exemptionReason?: string
     }
     UpdateConversationRequest: {
       /**
@@ -1521,6 +1571,7 @@ export interface components {
         | 'INDUCTION_UPDATED'
         | 'INDUCTION_SCHEDULE_CREATED'
         | 'INDUCTION_SCHEDULE_UPDATED'
+        | 'INDUCTION_SCHEDULE_STATUS_UPDATED'
         | 'ACTION_PLAN_CREATED'
         | 'GOAL_CREATED'
         | 'GOAL_UPDATED'
@@ -1532,6 +1583,7 @@ export interface components {
         | 'STEP_STARTED'
         | 'STEP_COMPLETED'
         | 'ACTION_PLAN_REVIEW_COMPLETED'
+        | 'ACTION_PLAN_REVIEW_SCHEDULE_CREATED'
         | 'ACTION_PLAN_REVIEW_SCHEDULE_STATUS_UPDATED'
         | 'CONVERSATION_CREATED'
         | 'CONVERSATION_UPDATED'
@@ -2313,7 +2365,7 @@ export interface components {
        */
       scheduleStatus:
         | 'SCHEDULED'
-        | 'COMPLETE'
+        | 'COMPLETED'
         | 'EXEMPT_PRISONER_DRUG_OR_ALCOHOL_DEPENDENCY'
         | 'EXEMPT_PRISONER_OTHER_HEALTH_ISSUES'
         | 'EXEMPT_PRISONER_FAILED_TO_ENGAGE'
@@ -2327,6 +2379,8 @@ export interface components {
         | 'EXEMPT_PRISONER_TRANSFER'
         | 'EXEMPT_PRISONER_RELEASE'
         | 'EXEMPT_PRISONER_DEATH'
+        | 'EXEMPT_SCREENING_AND_ASSESSMENT_IN_PROGRESS'
+        | 'EXEMPT_SCREENING_AND_ASSESSMENT_INCOMPLETE'
       /**
        * @description The DPS username of the person who created this resource.
        * @example asmith_gen
@@ -2369,6 +2423,23 @@ export interface components {
        * @description the date when this resource was updated.
        */
       inductionPerformedAt?: string
+      /**
+       * @description An optional reason as to why the induction Schedule is exempted.  Only relevant and processed when the `status` field is one of the `EXEMPTION_` statuses.   This field is not mandatory, even when the `status` field is one of the `EXEMPTION_` statuses.
+       * @example null
+       */
+      exemptionReason?: string
+      /**
+       * Format: int32
+       * @description the version number of this schedule (the highest number is the most recent version of this induction schedule)
+       */
+      version?: number
+    }
+    InductionSchedulesResponse: {
+      /**
+       * @description A List containing zero or more InductionSchedules.
+       * @example null
+       */
+      inductionSchedules: components['schemas']['InductionScheduleResponse'][]
     }
     /** @example null */
     ConversationResponse: {
@@ -2695,10 +2766,37 @@ export interface components {
        */
       createdAt: string
       /**
-       * @description The identifier of the prison that the prisoner was resident at when the Review was ented in the system.
+       * @description The identifier of the prison that the prisoner was resident at when the Review was entered in the system.
        * @example BXI
        */
       createdAtPrison: string
+      /**
+       * Format: uuid
+       * @description The unique reference of the review schedule that corresponds to this Review
+       * @example c88a6c48-97e2-4c04-93b5-98619966447b
+       */
+      reviewScheduleReference?: string
+      /**
+       * @description The DPS username of the person who updated the Review in the system.
+       * @example asmith_gen
+       */
+      updatedBy?: string
+      /**
+       * @description The display name of the person who updated the Review in the system.
+       * @example Alex Smith
+       */
+      updatedByDisplayName?: string
+      /**
+       * Format: date-time
+       * @description An ISO-8601 timestamp representing when the Review was updated in the system.
+       * @example 2023-06-19T09:39:44Z
+       */
+      updatedAt?: string
+      /**
+       * @description The identifier of the prison that the prisoner was resident at when the Review was updated in the system.
+       * @example BXI
+       */
+      updatedAtPrison?: string
       /**
        * @description The name of the person who actually conducted the Review session with the Prisoner.   Only populated if the person who conducted the Review was not the person who keyed it into the system.
        * @example Albert Mozzarella
@@ -2930,6 +3028,52 @@ export interface operations {
     responses: {
       /** @description Created */
       201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+    }
+  }
+  getInductionSchedule: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        prisonNumber: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['InductionScheduleResponse']
+        }
+      }
+    }
+  }
+  updateInductionScheduleStatus: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        prisonNumber: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['UpdateInductionScheduleStatusRequest']
+      }
+    }
+    responses: {
+      /** @description No Content */
+      204: {
         headers: {
           [name: string]: unknown
         }
@@ -3493,7 +3637,7 @@ export interface operations {
       }
     }
   }
-  getInductionSchedule: {
+  getActionPlanReviewSchedules: {
     parameters: {
       query?: never
       header?: never
@@ -3510,12 +3654,12 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['InductionScheduleResponse']
+          'application/json': components['schemas']['InductionSchedulesResponse']
         }
       }
     }
   }
-  getActionPlanReviewSchedules: {
+  getActionPlanReviewSchedules_1: {
     parameters: {
       query?: never
       header?: never
