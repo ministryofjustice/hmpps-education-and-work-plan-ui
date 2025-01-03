@@ -4,6 +4,7 @@ declare module 'viewModels' {
   import ActionPlanReviewStatusValue from '../../enums/actionPlanReviewStatusValue'
   import ActionPlanReviewCalculationRuleValue from '../../enums/actionPlanReviewCalculationRuleValue'
   import NoteTypeValue from '../../enums/noteTypeValue'
+  import TimelineEventTypeValue from '../../enums/timelineEventTypeValue'
 
   export interface PrisonerSummary {
     prisonNumber: string
@@ -273,27 +274,7 @@ declare module 'viewModels' {
   export interface TimelineEvent {
     reference: string
     sourceReference: string
-    eventType:
-      | 'INDUCTION_CREATED'
-      | 'INDUCTION_UPDATED'
-      | 'ACTION_PLAN_CREATED'
-      | 'GOAL_CREATED'
-      | 'MULTIPLE_GOALS_CREATED'
-      | 'GOAL_UPDATED'
-      | 'GOAL_COMPLETED'
-      | 'GOAL_ARCHIVED'
-      | 'GOAL_UNARCHIVED'
-      | 'STEP_UPDATED'
-      | 'STEP_NOT_STARTED'
-      | 'STEP_STARTED'
-      | 'STEP_COMPLETED'
-      | 'ACTION_PLAN_REVIEW_COMPLETED'
-      | 'ACTION_PLAN_REVIEW_SCHEDULE_STATUS_UPDATED'
-      | 'CONVERSATION_CREATED'
-      | 'CONVERSATION_UPDATED'
-      | 'PRISON_ADMISSION'
-      | 'PRISON_RELEASE'
-      | 'PRISON_TRANSFER'
+    eventType: TimelineEventTypeValue & 'MULTIPLE_GOALS_CREATED'
     prisonName: string
     timestamp: Date
     correlationId: string
