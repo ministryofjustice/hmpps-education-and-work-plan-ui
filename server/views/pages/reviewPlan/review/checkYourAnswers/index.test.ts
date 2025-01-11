@@ -1,7 +1,7 @@
 import nunjucks from 'nunjucks'
 import * as cheerio from 'cheerio'
 import aValidPrisonerSummary from '../../../../../testsupport/prisonerSummaryTestDataBuilder'
-import ReviewPlanCompletedByValue from '../../../../../enums/reviewPlanCompletedByValue'
+import SessionCompletedByValue from '../../../../../enums/sessionCompletedByValue'
 import { initialiseName } from '../../../../../utils/utils'
 
 describe('ReviewPlanCheckYourAnswersPage', () => {
@@ -25,7 +25,7 @@ describe('ReviewPlanCheckYourAnswersPage', () => {
     const model = {
       prisonerSummary,
       reviewPlanDto: {
-        completedBy: ReviewPlanCompletedByValue.MYSELF,
+        completedBy: SessionCompletedByValue.MYSELF,
         notes: 'Progress noted in review.',
       },
     }
@@ -54,7 +54,7 @@ describe('ReviewPlanCheckYourAnswersPage', () => {
     const model = {
       prisonerSummary,
       reviewPlanDto: {
-        completedBy: ReviewPlanCompletedByValue.SOMEBODY_ELSE,
+        completedBy: SessionCompletedByValue.SOMEBODY_ELSE,
         completedByOtherFullName: 'Larry David',
         completedByOtherJobRole: 'CIAG',
         notes: 'Progress noted in review.',

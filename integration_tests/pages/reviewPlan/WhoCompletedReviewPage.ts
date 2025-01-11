@@ -1,5 +1,5 @@
 import Page, { PageElement } from '../page'
-import ReviewPlanCompletedByValue from '../../../server/enums/reviewPlanCompletedByValue'
+import SessionCompletedByValue from '../../../server/enums/sessionCompletedByValue'
 
 /**
  * Cypress page class representing the "Who completed the review" page of the Review Plan journey
@@ -9,7 +9,7 @@ export default class WhoCompletedReviewPage extends Page {
     super('review-plan-who-completed-review')
   }
 
-  selectWhoCompletedTheReview(value: ReviewPlanCompletedByValue): WhoCompletedReviewPage {
+  selectWhoCompletedTheReview(value: SessionCompletedByValue): WhoCompletedReviewPage {
     this.radio(value).click()
     return this
   }
@@ -31,7 +31,7 @@ export default class WhoCompletedReviewPage extends Page {
     return this
   }
 
-  private radio = (value: ReviewPlanCompletedByValue): PageElement => cy.get(`.govuk-radios__input[value='${value}']`)
+  private radio = (value: SessionCompletedByValue): PageElement => cy.get(`.govuk-radios__input[value='${value}']`)
 
   private reviewDateDayField = (): PageElement => cy.get('[data-qa=review-date-day]')
 

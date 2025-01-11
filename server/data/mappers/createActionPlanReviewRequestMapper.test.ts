@@ -2,7 +2,7 @@ import { parseISO } from 'date-fns'
 import type { CreateActionPlanReviewRequest } from 'educationAndWorkPlanApiClient'
 import aValidReviewPlanDto from '../../testsupport/reviewPlanDtoTestDataBuilder'
 import toCreateActionPlanReviewRequest from './createActionPlanReviewRequestMapper'
-import ReviewPlanCompletedByValue from '../../enums/reviewPlanCompletedByValue'
+import SessionCompletedByValue from '../../enums/sessionCompletedByValue'
 
 describe('createActionPlanReviewRequestMapper', () => {
   it('should map a ReviewPlanDto to a CreateActionPlanReviewRequest', () => {
@@ -11,7 +11,7 @@ describe('createActionPlanReviewRequestMapper', () => {
       prisonId: 'BXI',
       reviewDate: parseISO('2024-10-15'),
       notes: 'Chris is making good progress on his goals',
-      completedBy: ReviewPlanCompletedByValue.SOMEBODY_ELSE,
+      completedBy: SessionCompletedByValue.SOMEBODY_ELSE,
       completedByOtherFullName: 'Bobby Button',
       completedByOtherJobRole: 'Peer mentor',
     })

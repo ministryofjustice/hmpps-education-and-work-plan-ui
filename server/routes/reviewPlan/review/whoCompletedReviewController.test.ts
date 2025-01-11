@@ -5,7 +5,7 @@ import type { ReviewPlanDto } from 'dto'
 import WhoCompletedReviewController from './whoCompletedReviewController'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
 import { getPrisonerContext } from '../../../data/session/prisonerContexts'
-import ReviewPlanCompletedByValue from '../../../enums/reviewPlanCompletedByValue'
+import SessionCompletedByValue from '../../../enums/sessionCompletedByValue'
 
 describe('whoCompletedReviewController', () => {
   const controller = new WhoCompletedReviewController()
@@ -41,13 +41,13 @@ describe('whoCompletedReviewController', () => {
       const reviewPlanDto: ReviewPlanDto = {
         prisonNumber,
         prisonId: 'BXI',
-        completedBy: ReviewPlanCompletedByValue.MYSELF,
+        completedBy: SessionCompletedByValue.MYSELF,
         reviewDate: startOfDay('2024-03-09'),
       }
       getPrisonerContext(req.session, prisonNumber).reviewPlanDto = reviewPlanDto
 
       const expectedForm: WhoCompletedReviewForm = {
-        completedBy: ReviewPlanCompletedByValue.MYSELF,
+        completedBy: SessionCompletedByValue.MYSELF,
         completedByOtherFullName: undefined,
         completedByOtherJobRole: undefined,
         'reviewDate-day': '09',
@@ -70,7 +70,7 @@ describe('whoCompletedReviewController', () => {
     it(`should get 'who completed review' view given form is already on the prisoner context`, async () => {
       // Given
       const expectedForm: WhoCompletedReviewForm = {
-        completedBy: ReviewPlanCompletedByValue.MYSELF,
+        completedBy: SessionCompletedByValue.MYSELF,
         'reviewDate-day': '20',
         'reviewDate-month': '3',
         'reviewDate-year': '2024',
@@ -97,7 +97,7 @@ describe('whoCompletedReviewController', () => {
       getPrisonerContext(req.session, prisonNumber).whoCompletedReviewForm = undefined
 
       const invalidForm: WhoCompletedReviewForm = {
-        completedBy: ReviewPlanCompletedByValue.SOMEBODY_ELSE,
+        completedBy: SessionCompletedByValue.SOMEBODY_ELSE,
         'reviewDate-day': '20',
         'reviewDate-month': '3',
         'reviewDate-year': '2024',
@@ -123,7 +123,7 @@ describe('whoCompletedReviewController', () => {
       getPrisonerContext(req.session, prisonNumber).whoCompletedReviewForm = undefined
 
       const validForm: WhoCompletedReviewForm = {
-        completedBy: ReviewPlanCompletedByValue.MYSELF,
+        completedBy: SessionCompletedByValue.MYSELF,
         'reviewDate-day': '9',
         'reviewDate-month': '3',
         'reviewDate-year': '2024',
@@ -133,7 +133,7 @@ describe('whoCompletedReviewController', () => {
       const reviewPlanDto: ReviewPlanDto = {
         prisonNumber,
         prisonId: 'BXI',
-        completedBy: ReviewPlanCompletedByValue.MYSELF,
+        completedBy: SessionCompletedByValue.MYSELF,
         reviewDate: startOfDay('2024-03-09'),
       }
 
@@ -155,7 +155,7 @@ describe('whoCompletedReviewController', () => {
       getPrisonerContext(req.session, prisonNumber).whoCompletedReviewForm = undefined
 
       const validForm: WhoCompletedReviewForm = {
-        completedBy: ReviewPlanCompletedByValue.MYSELF,
+        completedBy: SessionCompletedByValue.MYSELF,
         'reviewDate-day': '9',
         'reviewDate-month': '3',
         'reviewDate-year': '2024',
@@ -165,7 +165,7 @@ describe('whoCompletedReviewController', () => {
       const reviewPlanDto: ReviewPlanDto = {
         prisonNumber,
         prisonId: 'BXI',
-        completedBy: ReviewPlanCompletedByValue.MYSELF,
+        completedBy: SessionCompletedByValue.MYSELF,
         reviewDate: startOfDay('2024-03-09'),
       }
 

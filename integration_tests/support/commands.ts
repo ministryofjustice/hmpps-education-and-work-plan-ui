@@ -35,7 +35,7 @@ import AdditionalTrainingValue from '../../server/enums/additionalTrainingValue'
 import WantToAddQualificationsPage from '../pages/prePrisonEducation/WantToAddQualificationsPage'
 import HasWorkedBeforeValue from '../../server/enums/hasWorkedBeforeValue'
 import WhoCompletedReviewPage from '../pages/reviewPlan/WhoCompletedReviewPage'
-import ReviewPlanCompletedByValue from '../../server/enums/reviewPlanCompletedByValue'
+import SessionCompletedByValue from '../../server/enums/sessionCompletedByValue'
 import ReviewNotePage from '../pages/reviewPlan/ReviewNotePage'
 import ReviewPlanCheckYourAnswersPage from '../pages/reviewPlan/ReviewPlanCheckYourAnswersPage'
 
@@ -173,7 +173,7 @@ Cypress.Commands.add('createReviewToArriveOnCheckYourAnswers', () => {
   // First page is the Who completed the review page
   Page.verifyOnPage(WhoCompletedReviewPage) //
     .setReviewDate(`${today.getDate()}`, `${today.getMonth() + 1}`, `${today.getFullYear()}`)
-    .selectWhoCompletedTheReview(ReviewPlanCompletedByValue.SOMEBODY_ELSE)
+    .selectWhoCompletedTheReview(SessionCompletedByValue.SOMEBODY_ELSE)
     .enterReviewersFullName('A Reviewer')
     .enterReviewersJobRole('CIAG')
     .submitPage()

@@ -1,7 +1,7 @@
 import { addDays, startOfToday, subDays } from 'date-fns'
 import type { WhoCompletedReviewForm } from 'reviewPlanForms'
 import validateWhoCompletedReviewForm from './whoCompletedReviewFormValidator'
-import ReviewPlanCompletedByValue from '../../../enums/reviewPlanCompletedByValue'
+import SessionCompletedByValue from '../../../enums/sessionCompletedByValue'
 
 describe('whoCompletedReviewFormValidator', () => {
   const today = startOfToday()
@@ -12,7 +12,7 @@ describe('whoCompletedReviewFormValidator', () => {
     it(`review performed by myself with a valid date`, () => {
       // Given
       const form: WhoCompletedReviewForm = {
-        completedBy: ReviewPlanCompletedByValue.MYSELF,
+        completedBy: SessionCompletedByValue.MYSELF,
         'reviewDate-day': yesterday.getDate().toString(),
         'reviewDate-month': (yesterday.getMonth() + 1).toString(),
         'reviewDate-year': yesterday.getFullYear().toString(),
@@ -30,7 +30,7 @@ describe('whoCompletedReviewFormValidator', () => {
     it(`review performed by somebody else with a valid date`, () => {
       // Given
       const form: WhoCompletedReviewForm = {
-        completedBy: ReviewPlanCompletedByValue.SOMEBODY_ELSE,
+        completedBy: SessionCompletedByValue.SOMEBODY_ELSE,
         completedByOtherFullName: 'Buck Rogers',
         completedByOtherJobRole: 'CIAG',
         'reviewDate-day': yesterday.getDate().toString(),
@@ -72,7 +72,7 @@ describe('whoCompletedReviewFormValidator', () => {
     it(`missing completedByOtherFullName field`, () => {
       // Given
       const form: WhoCompletedReviewForm = {
-        completedBy: ReviewPlanCompletedByValue.SOMEBODY_ELSE,
+        completedBy: SessionCompletedByValue.SOMEBODY_ELSE,
         completedByOtherFullName: undefined,
         completedByOtherJobRole: 'CIAG',
         'reviewDate-day': yesterday.getDate().toString(),
@@ -94,7 +94,7 @@ describe('whoCompletedReviewFormValidator', () => {
     it(`missing completedByOtherJobRole field`, () => {
       // Given
       const form: WhoCompletedReviewForm = {
-        completedBy: ReviewPlanCompletedByValue.SOMEBODY_ELSE,
+        completedBy: SessionCompletedByValue.SOMEBODY_ELSE,
         completedByOtherFullName: 'Joey Beltram',
         completedByOtherJobRole: undefined,
         'reviewDate-day': yesterday.getDate().toString(),
@@ -116,7 +116,7 @@ describe('whoCompletedReviewFormValidator', () => {
     it(`missing completedByOtherFullName and completedByOtherJobRole fields`, () => {
       // Given
       const form: WhoCompletedReviewForm = {
-        completedBy: ReviewPlanCompletedByValue.SOMEBODY_ELSE,
+        completedBy: SessionCompletedByValue.SOMEBODY_ELSE,
         completedByOtherFullName: undefined,
         completedByOtherJobRole: undefined,
         'reviewDate-day': yesterday.getDate().toString(),
@@ -152,7 +152,7 @@ describe('whoCompletedReviewFormValidator', () => {
     ])('invalid review date fields: %s', spec => {
       // Given
       const form: WhoCompletedReviewForm = {
-        completedBy: ReviewPlanCompletedByValue.MYSELF,
+        completedBy: SessionCompletedByValue.MYSELF,
         'reviewDate-day': spec.day,
         'reviewDate-month': spec.month,
         'reviewDate-year': spec.year,
@@ -170,7 +170,7 @@ describe('whoCompletedReviewFormValidator', () => {
     it(`review date in the future`, () => {
       // Given
       const form: WhoCompletedReviewForm = {
-        completedBy: ReviewPlanCompletedByValue.MYSELF,
+        completedBy: SessionCompletedByValue.MYSELF,
         'reviewDate-day': tomorrow.getDate().toString(),
         'reviewDate-month': (tomorrow.getMonth() + 1).toString(),
         'reviewDate-year': tomorrow.getFullYear().toString(),
@@ -190,7 +190,7 @@ describe('whoCompletedReviewFormValidator', () => {
     it(`completed by other full name too long`, () => {
       // Given
       const form: WhoCompletedReviewForm = {
-        completedBy: ReviewPlanCompletedByValue.SOMEBODY_ELSE,
+        completedBy: SessionCompletedByValue.SOMEBODY_ELSE,
         completedByOtherFullName: 'a'.repeat(201),
         completedByOtherJobRole: 'CIAG',
         'reviewDate-day': yesterday.getDate().toString(),
@@ -213,7 +213,7 @@ describe('whoCompletedReviewFormValidator', () => {
   it(`completed by other job role too long`, () => {
     // Given
     const form: WhoCompletedReviewForm = {
-      completedBy: ReviewPlanCompletedByValue.SOMEBODY_ELSE,
+      completedBy: SessionCompletedByValue.SOMEBODY_ELSE,
       completedByOtherFullName: 'Joey Beltram',
       completedByOtherJobRole: 'a'.repeat(201),
       'reviewDate-day': yesterday.getDate().toString(),

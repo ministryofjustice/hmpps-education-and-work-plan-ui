@@ -5,7 +5,7 @@ import type { ReviewNoteForm } from 'reviewPlanForms'
 import ReviewNoteController from './reviewNoteController'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
 import { getPrisonerContext } from '../../../data/session/prisonerContexts'
-import ReviewPlanCompletedByValue from '../../../enums/reviewPlanCompletedByValue'
+import SessionCompletedByValue from '../../../enums/sessionCompletedByValue'
 
 describe('reviewNoteController', () => {
   const controller = new ReviewNoteController()
@@ -41,7 +41,7 @@ describe('reviewNoteController', () => {
       const reviewPlanDto: ReviewPlanDto = {
         prisonNumber,
         prisonId: 'BXI',
-        completedBy: ReviewPlanCompletedByValue.MYSELF,
+        completedBy: SessionCompletedByValue.MYSELF,
         reviewDate: startOfDay('2024-03-09'),
         notes: 'Chris has progressed well',
       }
@@ -92,7 +92,7 @@ describe('reviewNoteController', () => {
       const reviewPlanDto: ReviewPlanDto = {
         prisonNumber,
         prisonId: 'BXI',
-        completedBy: ReviewPlanCompletedByValue.MYSELF,
+        completedBy: SessionCompletedByValue.MYSELF,
         reviewDate: startOfDay('2024-03-09'),
         notes: undefined,
       }

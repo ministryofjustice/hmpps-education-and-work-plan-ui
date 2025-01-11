@@ -2,7 +2,7 @@ import { startOfToday, sub } from 'date-fns'
 import Page from '../../../pages/page'
 import WhoCompletedReviewPage from '../../../pages/reviewPlan/WhoCompletedReviewPage'
 import AuthorisationErrorPage from '../../../pages/authorisationError'
-import ReviewPlanCompletedByValue from '../../../../server/enums/reviewPlanCompletedByValue'
+import SessionCompletedByValue from '../../../../server/enums/sessionCompletedByValue'
 import ReviewNotePage from '../../../pages/reviewPlan/ReviewNotePage'
 import OverviewPage from '../../../pages/overview/OverviewPage'
 import ReviewPlanCheckYourAnswersPage from '../../../pages/reviewPlan/ReviewPlanCheckYourAnswersPage'
@@ -86,7 +86,7 @@ context(`Review a prisoner's plan`, () => {
       .hasFieldInError('completedBy')
       .hasFieldInError('review-date')
       .setReviewDate(reviewConductedAtDay, reviewConductedAtMonth, reviewConductedAtYear)
-      .selectWhoCompletedTheReview(ReviewPlanCompletedByValue.SOMEBODY_ELSE)
+      .selectWhoCompletedTheReview(SessionCompletedByValue.SOMEBODY_ELSE)
       .submitPage()
     Page.verifyOnPage(WhoCompletedReviewPage) //
       .hasErrorCount(2)

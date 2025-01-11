@@ -5,7 +5,7 @@ import type { ReviewPlanDto } from 'dto'
 import ReviewCheckYourAnswersController from './reviewCheckYourAnswersController'
 import { getPrisonerContext } from '../../../data/session/prisonerContexts'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
-import ReviewPlanCompletedByValue from '../../../enums/reviewPlanCompletedByValue'
+import SessionCompletedByValue from '../../../enums/sessionCompletedByValue'
 import AuditService from '../../../services/auditService'
 import ReviewService from '../../../services/reviewService'
 import aValidCreatedActionPlanReview from '../../../testsupport/createdActionPlanReviewTestDataBuilder'
@@ -51,7 +51,7 @@ describe('ReviewCheckYourAnswersController', () => {
       const reviewPlanDto = {
         prisonNumber,
         prisonId: 'BXI',
-        completedBy: ReviewPlanCompletedByValue.MYSELF,
+        completedBy: SessionCompletedByValue.MYSELF,
         reviewDate: startOfDay('2024-03-09'),
         notes: 'Progress noted in review.',
       }
@@ -81,7 +81,7 @@ describe('ReviewCheckYourAnswersController', () => {
       const reviewPlanDto: ReviewPlanDto = {
         prisonNumber,
         prisonId: 'BXI',
-        completedBy: ReviewPlanCompletedByValue.MYSELF,
+        completedBy: SessionCompletedByValue.MYSELF,
         reviewDate: startOfDay('2024-03-09'),
         notes: 'Chris has progressed well',
       }
@@ -112,7 +112,7 @@ describe('ReviewCheckYourAnswersController', () => {
       const reviewPlanDto: ReviewPlanDto = {
         prisonNumber,
         prisonId: 'BXI',
-        completedBy: ReviewPlanCompletedByValue.MYSELF,
+        completedBy: SessionCompletedByValue.MYSELF,
         reviewDate: startOfDay('2024-03-09'),
         notes: 'Chris has progressed well',
       }
@@ -143,7 +143,7 @@ describe('ReviewCheckYourAnswersController', () => {
       const reviewPlanDto: ReviewPlanDto = {
         prisonNumber,
         prisonId: 'BXI',
-        completedBy: ReviewPlanCompletedByValue.MYSELF,
+        completedBy: SessionCompletedByValue.MYSELF,
         reviewDate: startOfDay('2024-03-09'),
         notes: 'Chris has progressed well',
       }
