@@ -78,6 +78,8 @@ const pageViewEventMap: Record<string, Page> = {
   '/prisoners/:prisonNumber/create-induction/reasons-not-to-get-work': Page.INDUCTION_CREATE_REASONS_NOT_TO_GET_WORK,
   '/prisoners/:prisonNumber/create-induction/in-prison-work': Page.INDUCTION_CREATE_IN_PRISON_WORK,
   '/prisoners/:prisonNumber/create-induction/in-prison-training': Page.INDUCTION_CREATE_IN_PRISON_TRAINING,
+  '/prisoners/:prisonNumber/create-induction/who-completed-induction': Page.INDUCTION_CREATE_WHO_COMPLETED_INDUCTION,
+  '/prisoners/:prisonNumber/create-induction/notes': Page.INDUCTION_CREATE_NOTES,
   '/prisoners/:prisonNumber/create-induction/check-your-answers': Page.INDUCTION_CREATE_CHECK_YOUR_ANSWERS,
 
   // Update induction

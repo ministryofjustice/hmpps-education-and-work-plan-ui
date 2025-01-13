@@ -1,4 +1,5 @@
-import { Router } from 'express'
+import { RequestHandler, Router } from 'express'
+import createError from 'http-errors'
 import { Services } from '../../../services'
 import asyncMiddleware from '../../../middleware/asyncMiddleware'
 import { checkUserHasEditAuthority } from '../../../middleware/roleBasedAccessControl'
@@ -24,6 +25,9 @@ import CheckYourAnswersCreateController from './checkYourAnswersCreateController
 import InPrisonWorkCreateController from './inPrisonWorkCreateController'
 import InPrisonTrainingCreateController from './inPrisonTrainingCreateController'
 import retrieveCuriousInPrisonCourses from '../../routerRequestHandlers/retrieveCuriousInPrisonCourses'
+import WhoCompletedInductionCreateController from './whoCompletedInductionCreateController'
+import InductionNoteCreateController from './inductionNoteCreateController'
+import config from '../../../config'
 
 /**
  * Route definitions for creating an Induction
@@ -52,6 +56,8 @@ export default (router: Router, services: Services) => {
   const checkYourAnswersCreateController = new CheckYourAnswersCreateController(inductionService)
   const inPrisonWorkCreateController = new InPrisonWorkCreateController()
   const inPrisonTrainingCreateController = new InPrisonTrainingCreateController()
+  const whoCompletedInductionController = new WhoCompletedInductionCreateController()
+  const inductionNoteController = new InductionNoteCreateController()
 
   router.get('/prisoners/:prisonNumber/create-induction/**', [
     checkUserHasEditAuthority(),
@@ -187,10 +193,38 @@ export default (router: Router, services: Services) => {
     asyncMiddleware(inPrisonTrainingCreateController.submitInPrisonTrainingForm),
   ])
 
+  router.get('/prisoners/:prisonNumber/create-induction/who-completed-induction', [
+    checkPrisonIsEnabled(),
+    asyncMiddleware(whoCompletedInductionController.getWhoCompletedInductionView),
+  ])
+  router.post('/prisoners/:prisonNumber/create-induction/who-completed-induction', [
+    checkPrisonIsEnabled(),
+    asyncMiddleware(whoCompletedInductionController.submitWhoCompletedInductionForm),
+  ])
+
+  router.get('/prisoners/:prisonNumber/create-induction/notes', [
+    checkPrisonIsEnabled(),
+    asyncMiddleware(inductionNoteController.getInductionNoteView),
+  ])
+  router.post('/prisoners/:prisonNumber/create-induction/notes', [
+    checkPrisonIsEnabled(),
+    asyncMiddleware(inductionNoteController.submitInductionNoteForm),
+  ])
+
   router.get('/prisoners/:prisonNumber/create-induction/check-your-answers', [
     asyncMiddleware(checkYourAnswersCreateController.getCheckYourAnswersView),
   ])
   router.post('/prisoners/:prisonNumber/create-induction/check-your-answers', [
     asyncMiddleware(checkYourAnswersCreateController.submitCheckYourAnswers),
   ])
+}
+
+const checkPrisonIsEnabled = (): RequestHandler => {
+  return asyncMiddleware((req, res, next) => {
+    const { activeCaseLoadId } = res.locals.user
+    if (config.featureToggles.reviewJourneyEnabledForPrison(activeCaseLoadId)) {
+      return next()
+    }
+    return next(createError(404, `Route ${req.originalUrl} not enabled for prison ${activeCaseLoadId}`))
+  })
 }
