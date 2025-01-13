@@ -6,7 +6,7 @@ import Page from '../../../pages/page'
 import ReviewNotePage from '../../../pages/reviewPlan/ReviewNotePage'
 import ReviewPlanCheckYourAnswersPage from '../../../pages/reviewPlan/ReviewPlanCheckYourAnswersPage'
 import WhoCompletedReviewPage from '../../../pages/reviewPlan/WhoCompletedReviewPage'
-import ReviewPlanCompletedByValue from '../../../../server/enums/reviewPlanCompletedByValue'
+import SessionCompletedByValue from '../../../../server/enums/sessionCompletedByValue'
 
 context(`Change links on the Check Your Answers page when creating a review`, () => {
   const prisonNumber = 'G6115VJ'
@@ -31,7 +31,7 @@ context(`Change links on the Check Your Answers page when creating a review`, ()
 
     // When
     Page.verifyOnPage(WhoCompletedReviewPage) //
-      .selectWhoCompletedTheReview(ReviewPlanCompletedByValue.MYSELF)
+      .selectWhoCompletedTheReview(SessionCompletedByValue.MYSELF)
       .submitPage()
 
     // Then

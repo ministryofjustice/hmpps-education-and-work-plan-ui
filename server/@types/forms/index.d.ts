@@ -160,10 +160,10 @@ declare module 'inductionForms' {
 }
 
 declare module 'reviewPlanForms' {
-  import ReviewPlanCompletedByValue from '../../enums/reviewPlanCompletedByValue'
+  import SessionCompletedByValue from '../../enums/sessionCompletedByValue'
 
   export interface WhoCompletedReviewForm {
-    completedBy: ReviewPlanCompletedByValue
+    completedBy: SessionCompletedByValue
     completedByOtherFullName?: string
     completedByOtherJobRole?: string
     'reviewDate-day': string

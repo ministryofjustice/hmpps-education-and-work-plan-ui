@@ -1,7 +1,7 @@
 import nunjucks from 'nunjucks'
 import * as cheerio from 'cheerio'
 import aValidPrisonerSummary from '../../../../../testsupport/prisonerSummaryTestDataBuilder'
-import ReviewPlanCompletedByValue from '../../../../../enums/reviewPlanCompletedByValue'
+import SessionCompletedByValue from '../../../../../enums/sessionCompletedByValue'
 import findErrorFilter from '../../../../../filters/findErrorFilter'
 
 describe('ReviewNotePage', () => {
@@ -25,7 +25,7 @@ describe('ReviewNotePage', () => {
     const model = {
       prisonerSummary,
       reviewPlanDto: {
-        completedBy: ReviewPlanCompletedByValue.MYSELF,
+        completedBy: SessionCompletedByValue.MYSELF,
       },
     }
 

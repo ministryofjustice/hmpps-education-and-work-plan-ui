@@ -1,7 +1,7 @@
 import { isAfter, isValid, parse, startOfToday } from 'date-fns'
 import type { WhoCompletedReviewForm } from 'reviewPlanForms'
 import formatErrors from '../../errorFormatter'
-import ReviewPlanCompletedByValue from '../../../enums/reviewPlanCompletedByValue'
+import SessionCompletedByValue from '../../../enums/sessionCompletedByValue'
 
 const validateWhoCompletedReviewForm = (
   whoCompletedReviewForm: WhoCompletedReviewForm,
@@ -45,7 +45,7 @@ const validateCompletedByOther = (
   const errors: Array<{ field: string; message: string }> = []
   const { completedBy, completedByOtherFullName, completedByOtherJobRole } = whoCompletedReviewForm
 
-  if (completedBy === ReviewPlanCompletedByValue.SOMEBODY_ELSE) {
+  if (completedBy === SessionCompletedByValue.SOMEBODY_ELSE) {
     if (!completedByOtherFullName) {
       errors.push({
         field: 'completedByOtherFullName',
@@ -82,8 +82,8 @@ const validateCompletedBy = (whoCompletedReviewForm: WhoCompletedReviewForm): Ar
 /**
  * Return true if the specified value is not in the full set of `ReviewPlanCompletedByValue` enum values.
  */
-const isInvalidOption = (completedBy: ReviewPlanCompletedByValue): boolean => {
-  const allValidValues = Object.values(ReviewPlanCompletedByValue)
+const isInvalidOption = (completedBy: SessionCompletedByValue): boolean => {
+  const allValidValues = Object.values(SessionCompletedByValue)
   return !allValidValues.includes(completedBy)
 }
 
