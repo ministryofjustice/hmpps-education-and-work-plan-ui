@@ -93,7 +93,7 @@
     ]
   },
   "dependencies": {
-    "@aws-sdk/client-sqs": "^3.721.0",
+    "@aws-sdk/client-sqs": "^3.723.0",
     "@date-fns/utc": "^2.1.0",
     "@microsoft/applicationinsights-clickanalytics-js": "^3.3.4",
     "@microsoft/applicationinsights-web": "^3.3.4",
@@ -111,7 +111,7 @@
     "express": "^4.21.2",
     "express-prom-bundle": "^8.0.0",
     "express-session": "^1.18.1",
-    "govuk-frontend": "^5.7.1",
+    "govuk-frontend": "^5.8.0",
     "helmet": "^8.0.0",
     "http-errors": "^2.0.0",
     "jquery": "^3.7.1",
@@ -125,7 +125,7 @@
     "redis": "^4.7.0",
     "superagent": "^10.1.1",
     "url-value-parser": "^2.2.0",
-    "uuid": "^11.0.3"
+    "uuid": "^11.0.4"
   },
   "devDependencies": {
     "@types/bunyan": "^1.8.11",
@@ -138,16 +138,16 @@
     "@types/http-errors": "^2.0.4",
     "@types/jest": "^29.5.14",
     "@types/jsonwebtoken": "^9.0.7",
-    "@types/lodash": "^4.17.13",
-    "@types/node": "^20.17.11",
+    "@types/lodash": "^4.17.14",
+    "@types/node": "^20.17.12",
     "@types/nunjucks": "^3.2.6",
     "@types/passport": "^1.0.17",
     "@types/passport-oauth2": "^1.4.17",
     "@types/superagent": "^8.1.9",
     "@types/supertest": "^6.0.2",
     "@types/uuid": "^10.0.0",
-    "@typescript-eslint/eslint-plugin": "^8.19.0",
-    "@typescript-eslint/parser": "^8.19.0",
+    "@typescript-eslint/eslint-plugin": "^8.19.1",
+    "@typescript-eslint/parser": "^8.19.1",
     "audit-ci": "^7.1.0",
     "aws-sdk-client-mock": "^4.1.0",
     "cheerio": "^1.0.0",
@@ -177,10 +177,10 @@
     "nodemon": "^3.1.9",
     "prettier": "^3.4.2",
     "prettier-plugin-jinja-template": "^2.0.0",
-    "sass": "^1.83.0",
+    "sass": "^1.83.1",
     "supertest": "^7.0.0",
     "ts-jest": "^29.2.5",
-    "typescript": "^5.7.2"
+    "typescript": "^5.7.3"
   },
   "overrides": {
     "tough-cookie": "5.0.0"
