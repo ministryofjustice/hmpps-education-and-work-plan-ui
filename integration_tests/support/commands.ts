@@ -1,4 +1,5 @@
 import { startOfToday } from 'date-fns/startOfToday'
+import { sub } from 'date-fns'
 import { RequestPatternBuilder } from '../mockApis/wiremock/requestPatternBuilder'
 import { verify } from '../mockApis/wiremock'
 import Page from '../pages/page'
@@ -38,6 +39,8 @@ import WhoCompletedReviewPage from '../pages/reviewPlan/WhoCompletedReviewPage'
 import SessionCompletedByValue from '../../server/enums/sessionCompletedByValue'
 import ReviewNotePage from '../pages/reviewPlan/ReviewNotePage'
 import ReviewPlanCheckYourAnswersPage from '../pages/reviewPlan/ReviewPlanCheckYourAnswersPage'
+import InductionNotePage from '../pages/induction/InductionNotePage'
+import WhoCompletedInductionPage from '../pages/induction/WhoCompletedInductionPage'
 
 Cypress.Commands.add('signIn', (options = { failOnStatusCode: false }) => {
   cy.request('/')
@@ -158,6 +161,19 @@ Cypress.Commands.add(
     // In Prison Training Interests page is next
     Page.verifyOnPage(InPrisonTrainingPage) //
       .selectInPrisonTraining(InPrisonTrainingValue.FORKLIFT_DRIVING)
+      .submitPage()
+    // Who Completed Induction page is next
+    const inductionConductedAt = sub(startOfToday(), { weeks: 1 })
+    const inductionConductedAtDay = `${inductionConductedAt.getDate()}`.padStart(2, '0')
+    const inductionConductedAtMonth = `${inductionConductedAt.getMonth() + 1}`.padStart(2, '0')
+    const inductionConductedAtYear = `${inductionConductedAt.getFullYear()}`
+    Page.verifyOnPage(WhoCompletedInductionPage) //
+      .selectWhoCompletedTheReview(SessionCompletedByValue.MYSELF)
+      .setInductionDate(inductionConductedAtDay, inductionConductedAtMonth, inductionConductedAtYear)
+      .submitPage()
+    // Induction Notes page is next
+    Page.verifyOnPage(InductionNotePage) //
+      .setInductionNote('Induction went well')
       .submitPage()
     // Arrive on Check Your Answers page
     Page.verifyOnPage(CheckYourAnswersPage)

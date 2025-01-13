@@ -5,6 +5,7 @@ import getDynamicBackLinkAriaText from '../../dynamicAriaTextResolver'
 import validateInPrisonTrainingForm from '../../validators/induction/inPrisonTrainingFormValidator'
 import { asArray } from '../../../utils/utils'
 import { getPreviousPage } from '../../pageFlowHistory'
+import config from '../../../config'
 
 export default class InPrisonTrainingCreateController extends InPrisonTrainingController {
   getBackLinkUrl(req: Request): string {
@@ -43,6 +44,14 @@ export default class InPrisonTrainingCreateController extends InPrisonTrainingCo
     const updatedInduction = this.updatedInductionDtoWithInPrisonTraining(inductionDto, inPrisonTrainingForm)
     req.session.inductionDto = updatedInduction
     req.session.inPrisonTrainingForm = undefined
-    return res.redirect(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
+
+    if (this.previousPageWasCheckYourAnswers(req)) {
+      return res.redirect(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
+    }
+
+    const { activeCaseLoadId } = res.locals.user
+    return config.featureToggles.reviewJourneyEnabledForPrison(activeCaseLoadId)
+      ? res.redirect(`/prisoners/${prisonNumber}/create-induction/who-completed-induction`)
+      : res.redirect(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
   }
 }

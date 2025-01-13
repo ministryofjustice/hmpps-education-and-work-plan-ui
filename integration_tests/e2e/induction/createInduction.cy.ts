@@ -1,3 +1,4 @@
+import { startOfToday, sub } from 'date-fns'
 import OverviewPage from '../../pages/overview/OverviewPage'
 import Page from '../../pages/page'
 import HopingToGetWorkValue from '../../../server/enums/hopingToGetWorkValue'
@@ -34,11 +35,19 @@ import InPrisonTrainingValue from '../../../server/enums/inPrisonTrainingValue'
 import WantToAddQualificationsPage from '../../pages/prePrisonEducation/WantToAddQualificationsPage'
 import HasWorkedBeforeValue from '../../../server/enums/hasWorkedBeforeValue'
 import YesNoValue from '../../../server/enums/yesNoValue'
+import WhoCompletedInductionPage from '../../pages/induction/WhoCompletedInductionPage'
+import SessionCompletedByValue from '../../../server/enums/sessionCompletedByValue'
+import InductionNotePage from '../../pages/induction/InductionNotePage'
 
 context('Create an Induction', () => {
   beforeEach(() => {
     cy.signInAsUserWithEditAuthorityToArriveOnPrisonerListPage()
   })
+
+  const inductionConductedAt = sub(startOfToday(), { weeks: 1 })
+  const inductionConductedAtDay = `${inductionConductedAt.getDate()}`.padStart(2, '0')
+  const inductionConductedAtMonth = `${inductionConductedAt.getMonth() + 1}`.padStart(2, '0')
+  const inductionConductedAtYear = `${inductionConductedAt.getFullYear()}`
 
   it('should create an induction with qualifications given prisoner has no previously recorded education, triggering validation on every screen', () => {
     // Given
@@ -253,6 +262,8 @@ context('Create an Induction', () => {
       .submitPage() // submit the page without answering the question to trigger a validation error
     Page.verifyOnPage(InPrisonWorkPage) //
       .hasBackLinkTo('/prisoners/A00001A/create-induction/personal-interests')
+      .hasErrorCount(1)
+      .hasFieldInError('inPrisonWork')
       .selectWorkType(InPrisonWorkValue.KITCHENS_AND_COOKING)
       .selectWorkType(InPrisonWorkValue.PRISON_LIBRARY)
       .submitPage()
@@ -263,7 +274,33 @@ context('Create an Induction', () => {
       .submitPage() // submit the page without answering the question to trigger a validation error
     Page.verifyOnPage(InPrisonTrainingPage) //
       .hasBackLinkTo('/prisoners/A00001A/create-induction/in-prison-work')
+      .hasErrorCount(1)
+      .hasFieldInError('inPrisonTraining')
       .selectInPrisonTraining(InPrisonTrainingValue.FORKLIFT_DRIVING)
+      .submitPage()
+
+    // Who Completed Induction page is next
+    Page.verifyOnPage(WhoCompletedInductionPage) //
+      .submitPage()
+    Page.verifyOnPage(WhoCompletedInductionPage) //
+      .hasErrorCount(2)
+      .hasFieldInError('completedBy')
+      .hasFieldInError('induction-date')
+      .selectWhoCompletedTheReview(SessionCompletedByValue.SOMEBODY_ELSE)
+      .enterFullName('Joe Bloggs')
+      .enterJobRole('Peer Mentor')
+      .setInductionDate(inductionConductedAtDay, inductionConductedAtMonth, inductionConductedAtYear)
+      .submitPage()
+
+    // Induction Notes page is next
+    Page.verifyOnPage(InductionNotePage) //
+      .setInductionNote('a'.repeat(513))
+      .submitPage()
+    Page.verifyOnPage(InductionNotePage) //
+      .hasErrorCount(1)
+      .hasFieldInError('notes')
+      .clearInductionNote()
+      .setInductionNote('Induction went well')
       .submitPage()
 
     // Check Your Answers is the final page. Submit the page to create the induction
@@ -318,6 +355,7 @@ context('Create an Induction', () => {
               "@.inPrisonInterests.inPrisonWorkInterests[1].workType == 'PRISON_LIBRARY' && " +
               '@.inPrisonInterests.inPrisonTrainingInterests.size() == 1 && ' +
               "@.inPrisonInterests.inPrisonTrainingInterests[0].trainingType == 'FORKLIFT_DRIVING')]",
+            // TODO RR-1041/RR-1177 - add assertions that the conductedBy/role/date/notes fields are sent to the API
           ),
         ),
     )
@@ -421,6 +459,17 @@ context('Create an Induction', () => {
       .selectInPrisonTraining(InPrisonTrainingValue.FORKLIFT_DRIVING)
       .submitPage()
 
+    // Who Completed Induction page is next
+    Page.verifyOnPage(WhoCompletedInductionPage) //
+      .selectWhoCompletedTheReview(SessionCompletedByValue.MYSELF)
+      .setInductionDate(inductionConductedAtDay, inductionConductedAtMonth, inductionConductedAtYear)
+      .submitPage()
+
+    // Induction Notes page is next
+    Page.verifyOnPage(InductionNotePage) //
+      .setInductionNote('Induction went well')
+      .submitPage()
+
     // Check Your Answers is the final page. Submit the page to create the induction
     Page.verifyOnPage(CheckYourAnswersPage) //
       .submitPage()
@@ -455,6 +504,7 @@ context('Create an Induction', () => {
               "@.inPrisonInterests.inPrisonWorkInterests[0].workType == 'KITCHENS_AND_COOKING' && " +
               '@.inPrisonInterests.inPrisonTrainingInterests.size() == 1 && ' +
               "@.inPrisonInterests.inPrisonTrainingInterests[0].trainingType == 'FORKLIFT_DRIVING')]",
+            // TODO RR-1041/RR-1177 - add assertions that the conductedBy/role/date/notes fields are sent to the API
           ),
         ),
     )
@@ -544,6 +594,17 @@ context('Create an Induction', () => {
       .selectInPrisonTraining(InPrisonTrainingValue.FORKLIFT_DRIVING)
       .submitPage()
 
+    // Who Completed Induction page is next
+    Page.verifyOnPage(WhoCompletedInductionPage) //
+      .selectWhoCompletedTheReview(SessionCompletedByValue.MYSELF)
+      .setInductionDate(inductionConductedAtDay, inductionConductedAtMonth, inductionConductedAtYear)
+      .submitPage()
+
+    // Induction Notes page is next
+    Page.verifyOnPage(InductionNotePage) //
+      .setInductionNote('Induction went well')
+      .submitPage()
+
     // Check Your Answers is the final page. Submit the page to create the induction
     Page.verifyOnPage(CheckYourAnswersPage) //
       .submitPage()
@@ -581,6 +642,7 @@ context('Create an Induction', () => {
               "@.inPrisonInterests.inPrisonWorkInterests[0].workType == 'PRISON_LIBRARY' && " +
               '@.inPrisonInterests.inPrisonTrainingInterests.size() == 1 && ' +
               "@.inPrisonInterests.inPrisonTrainingInterests[0].trainingType == 'FORKLIFT_DRIVING')]",
+            // TODO RR-1041/RR-1177 - add assertions that the conductedBy/role/date/notes fields are sent to the API
           ),
         ),
     )

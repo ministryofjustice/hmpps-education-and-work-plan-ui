@@ -5,12 +5,25 @@ import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataB
 import { aValidInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
 import InPrisonTrainingCreateController from './inPrisonTrainingCreateController'
 import InPrisonTrainingValue from '../../../enums/inPrisonTrainingValue'
+import { User } from '../../../data/manageUsersApiClient'
+
+const reviewJourneyEnabledForPrison = jest.fn()
+jest.mock('../../../config', () => ({
+  featureToggles: {
+    reviewJourneyEnabledForPrison: (prisonId: string) => reviewJourneyEnabledForPrison(prisonId),
+  },
+}))
 
 describe('inPrisonTrainingCreateController', () => {
   const controller = new InPrisonTrainingCreateController()
 
   const prisonNumber = 'A1234BC'
   const prisonerSummary = aValidPrisonerSummary()
+  const user: User = {
+    username: 'a-dps-user',
+    activeCaseLoadId: 'BXI',
+    caseLoadIds: ['BXI'],
+  }
 
   const req = {
     session: {},
@@ -22,7 +35,7 @@ describe('inPrisonTrainingCreateController', () => {
     redirect: jest.fn(),
     redirectWithErrors: jest.fn(),
     render: jest.fn(),
-    locals: { prisonerSummary },
+    locals: { prisonerSummary, user },
   } as unknown as Response
   const next = jest.fn()
 
@@ -30,6 +43,7 @@ describe('inPrisonTrainingCreateController', () => {
     jest.resetAllMocks()
     req.session.pageFlowHistory = undefined
     req.body = {}
+    reviewJourneyEnabledForPrison.mockReturnValue(false)
   })
 
   describe('getInPrisonTrainingView', () => {
@@ -168,8 +182,10 @@ describe('inPrisonTrainingCreateController', () => {
       expect(req.session.inductionDto).toEqual(inductionDto)
     })
 
-    it('should update inductionDto and redirect to Check Your Answers page', async () => {
+    it('should update inductionDto and redirect to Check Your Answers page given users active caseloadID is not enabled for new induction journey', async () => {
       // Given
+      reviewJourneyEnabledForPrison.mockReturnValue(false)
+
       const inductionDto = aValidInductionDto()
       inductionDto.inPrisonInterests.inPrisonTrainingInterests = undefined
       req.session.inductionDto = inductionDto
@@ -194,6 +210,75 @@ describe('inPrisonTrainingCreateController', () => {
       expect(updatedInduction.inPrisonInterests.inPrisonTrainingInterests).toEqual(expectedInPrisonTrainingInterests)
       expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-induction/check-your-answers')
       expect(req.session.inPrisonTrainingForm).toBeUndefined()
+      expect(reviewJourneyEnabledForPrison).toHaveBeenCalledWith(user.activeCaseLoadId)
+    })
+
+    it('should update inductionDto and redirect to Who Completed Induction page given users active caseloadID is enabled for new induction journey', async () => {
+      // Given
+      reviewJourneyEnabledForPrison.mockReturnValue(true)
+
+      const inductionDto = aValidInductionDto()
+      inductionDto.inPrisonInterests.inPrisonTrainingInterests = undefined
+      req.session.inductionDto = inductionDto
+
+      const inPrisonTrainingForm: InPrisonTrainingForm = {
+        inPrisonTraining: [InPrisonTrainingValue.CATERING, InPrisonTrainingValue.OTHER],
+        inPrisonTrainingOther: 'Fence building for beginners',
+      }
+      req.body = inPrisonTrainingForm
+      req.session.inPrisonTrainingForm = undefined
+
+      const expectedInPrisonTrainingInterests: Array<InPrisonTrainingInterestDto> = [
+        { trainingType: InPrisonTrainingValue.CATERING, trainingTypeOther: undefined },
+        { trainingType: InPrisonTrainingValue.OTHER, trainingTypeOther: 'Fence building for beginners' },
+      ]
+
+      // When
+      await controller.submitInPrisonTrainingForm(req, res, next)
+
+      // Then
+      const updatedInduction = req.session.inductionDto
+      expect(updatedInduction.inPrisonInterests.inPrisonTrainingInterests).toEqual(expectedInPrisonTrainingInterests)
+      expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-induction/who-completed-induction')
+      expect(req.session.inPrisonTrainingForm).toBeUndefined()
+      expect(reviewJourneyEnabledForPrison).toHaveBeenCalledWith(user.activeCaseLoadId)
+    })
+
+    it('should update inductionDto and redirect to Check Your Answers page given previous page was Check Your Answers', async () => {
+      // Given
+      const inductionDto = aValidInductionDto()
+      inductionDto.inPrisonInterests.inPrisonTrainingInterests = undefined
+      req.session.inductionDto = inductionDto
+
+      const inPrisonTrainingForm: InPrisonTrainingForm = {
+        inPrisonTraining: [InPrisonTrainingValue.CATERING, InPrisonTrainingValue.OTHER],
+        inPrisonTrainingOther: 'Fence building for beginners',
+      }
+      req.body = inPrisonTrainingForm
+      req.session.inPrisonTrainingForm = undefined
+
+      const expectedInPrisonTrainingInterests: Array<InPrisonTrainingInterestDto> = [
+        { trainingType: InPrisonTrainingValue.CATERING, trainingTypeOther: undefined },
+        { trainingType: InPrisonTrainingValue.OTHER, trainingTypeOther: 'Fence building for beginners' },
+      ]
+
+      req.session.pageFlowHistory = {
+        pageUrls: [
+          '/prisoners/A1234BC/create-induction/check-your-answers',
+          '/prisoners/A1234BC/create-induction/in-prison-training',
+        ],
+        currentPageIndex: 1,
+      }
+
+      // When
+      await controller.submitInPrisonTrainingForm(req, res, next)
+
+      // Then
+      const updatedInduction = req.session.inductionDto
+      expect(updatedInduction.inPrisonInterests.inPrisonTrainingInterests).toEqual(expectedInPrisonTrainingInterests)
+      expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-induction/check-your-answers')
+      expect(req.session.inPrisonTrainingForm).toBeUndefined()
+      expect(reviewJourneyEnabledForPrison).not.toHaveBeenCalled()
     })
   })
 })
