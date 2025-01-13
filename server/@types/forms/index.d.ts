@@ -94,6 +94,7 @@ declare module 'inductionForms' {
   import WorkInterestTypeValue from '../../enums/workInterestTypeValue'
   import YesNoValue from '../../enums/yesNoValue'
   import AdditionalTrainingValue from '../../enums/additionalTrainingValue'
+  import SessionCompletedByValue from '../../enums/sessionCompletedByValue'
 
   export interface HopingToWorkOnReleaseForm {
     hopingToGetWork: HopingToGetWorkValue
@@ -156,6 +157,19 @@ declare module 'inductionForms' {
   export interface AdditionalTrainingForm {
     additionalTraining: Array<AdditionalTrainingValue>
     additionalTrainingOther?: string
+  }
+
+  export interface WhoCompletedInductionForm {
+    completedBy: SessionCompletedByValue
+    completedByOtherFullName?: string
+    completedByOtherJobRole?: string
+    'inductionDate-day': string
+    'inductionDate-month': string
+    'inductionDate-year': string
+  }
+
+  export interface InductionNoteForm {
+    notes?: string
   }
 }
 

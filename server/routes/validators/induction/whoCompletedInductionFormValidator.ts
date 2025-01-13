@@ -1,27 +1,27 @@
 import { isAfter, isValid, parse, startOfToday } from 'date-fns'
-import type { WhoCompletedReviewForm } from 'reviewPlanForms'
+import type { WhoCompletedInductionForm } from 'inductionForms'
 import formatErrors from '../../errorFormatter'
 import SessionCompletedByValue from '../../../enums/sessionCompletedByValue'
 
-const validateWhoCompletedReviewForm = (
-  whoCompletedReviewForm: WhoCompletedReviewForm,
+const validateWhoCompletedInductionForm = (
+  whoCompletedInductionForm: WhoCompletedInductionForm,
 ): Array<Record<string, string>> => {
   const errors: Array<Record<string, string>> = []
-  const completedByOtherErrors = validateCompletedByOther(whoCompletedReviewForm)
+  const completedByOtherErrors = validateCompletedByOther(whoCompletedInductionForm)
 
-  errors.push(...formatErrors('completedBy', validateCompletedBy(whoCompletedReviewForm)))
+  errors.push(...formatErrors('completedBy', validateCompletedBy(whoCompletedInductionForm)))
   completedByOtherErrors.forEach(error => errors.push(...formatErrors(error.field, [error.message])))
-  errors.push(...formatErrors('review-date', validateReviewDate(whoCompletedReviewForm)))
+  errors.push(...formatErrors('induction-date', validateInductionDate(whoCompletedInductionForm)))
 
   return errors
 }
 
-const validateReviewDate = (whoCompletedReviewForm: WhoCompletedReviewForm): Array<string> => {
+const validateInductionDate = (whoCompletedInductionForm: WhoCompletedInductionForm): Array<string> => {
   const errors: Array<string> = []
 
-  const day = whoCompletedReviewForm['reviewDate-day']
-  const month = whoCompletedReviewForm['reviewDate-month']
-  const year = whoCompletedReviewForm['reviewDate-year']
+  const day = whoCompletedInductionForm['inductionDate-day']
+  const month = whoCompletedInductionForm['inductionDate-month']
+  const year = whoCompletedInductionForm['inductionDate-year']
 
   if (!(isOneOrTwoDigits(day) && isOneOrTwoDigits(month) && isFourDigits(year))) {
     errors.push('Enter a valid date')
@@ -40,16 +40,16 @@ const validateReviewDate = (whoCompletedReviewForm: WhoCompletedReviewForm): Arr
 }
 
 const validateCompletedByOther = (
-  whoCompletedReviewForm: WhoCompletedReviewForm,
+  whoCompletedInductionForm: WhoCompletedInductionForm,
 ): Array<{ field: string; message: string }> => {
   const errors: Array<{ field: string; message: string }> = []
-  const { completedBy, completedByOtherFullName, completedByOtherJobRole } = whoCompletedReviewForm
+  const { completedBy, completedByOtherFullName, completedByOtherJobRole } = whoCompletedInductionForm
 
   if (completedBy === SessionCompletedByValue.SOMEBODY_ELSE) {
     if (!completedByOtherFullName) {
       errors.push({
         field: 'completedByOtherFullName',
-        message: 'Enter the full name of the person who completed the review',
+        message: 'Enter the full name of the person who completed the induction',
       })
     } else if (completedByOtherFullName.length > 200) {
       errors.push({ field: 'completedByOtherFullName', message: 'Full name must be 200 characters or less' })
@@ -58,7 +58,7 @@ const validateCompletedByOther = (
     if (!completedByOtherJobRole) {
       errors.push({
         field: 'completedByOtherJobRole',
-        message: 'Enter the job title of the person who completed the review',
+        message: 'Enter the job title of the person who completed the induction',
       })
     } else if (completedByOtherJobRole.length > 200) {
       errors.push({ field: 'completedByOtherJobRole', message: 'Job role must be 200 characters or less' })
@@ -68,12 +68,12 @@ const validateCompletedByOther = (
   return errors
 }
 
-const validateCompletedBy = (whoCompletedReviewForm: WhoCompletedReviewForm): Array<string> => {
+const validateCompletedBy = (whoCompletedInductionForm: WhoCompletedInductionForm): Array<string> => {
   const errors: Array<string> = []
 
-  const { completedBy } = whoCompletedReviewForm
+  const { completedBy } = whoCompletedInductionForm
   if (!completedBy || isInvalidOption(completedBy)) {
-    errors.push(`Select who completed the review`)
+    errors.push(`Select who completed the induction`)
   }
 
   return errors
@@ -95,4 +95,4 @@ const isFourDigits = (value: string): boolean => {
   return !Number.isNaN(Number(value)) && value?.length === 4
 }
 
-export default validateWhoCompletedReviewForm
+export default validateWhoCompletedInductionForm

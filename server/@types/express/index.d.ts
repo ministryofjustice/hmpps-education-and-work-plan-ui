@@ -7,12 +7,12 @@ import type {
   QualificationDetailsForm,
   QualificationLevelForm,
   UpdateGoalForm,
-  ReviewExemptionForm,
 } from 'forms'
 import type {
   AdditionalTrainingForm,
   AffectAbilityToWorkForm,
   HopingToWorkOnReleaseForm,
+  InductionNoteForm,
   InPrisonTrainingForm,
   InPrisonWorkForm,
   PersonalInterestsForm,
@@ -20,6 +20,7 @@ import type {
   PreviousWorkExperienceTypesForm,
   SkillsForm,
   WantToAddQualificationsForm,
+  WhoCompletedInductionForm,
   WorkedBeforeForm,
   WorkInterestRolesForm,
   WorkInterestTypesForm,
@@ -75,9 +76,12 @@ declare module 'express-session' {
     whoCompletedReviewForm?: WhoCompletedReviewForm
     reviewNoteForm?: ReviewNoteForm
     reviewPlanDto?: ReviewPlanDto
-    // Exemption related forms
+    // Review exemption related forms
     reviewExemptionForm?: ReviewExemptionForm
     reviewExemptionDto?: ReviewExemptionDto
+    // Induction related forms
+    whoCompletedInductionForm?: WhoCompletedInductionForm
+    inductionNoteForm?: InductionNoteForm
   }
 
   export type PrisonerContexts = Record<string, PrisonerContext>
