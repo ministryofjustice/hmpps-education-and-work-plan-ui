@@ -1,3 +1,4 @@
+import { format } from 'date-fns'
 import Page, { PageElement } from '../page'
 import TypeOfWorkExperienceValue from '../../../server/enums/typeOfWorkExperienceValue'
 import InPrisonTrainingPage from './InPrisonTrainingPage'
@@ -26,6 +27,8 @@ import SkillsValue from '../../../server/enums/skillsValue'
 import PersonalInterestsValue from '../../../server/enums/personalInterestsValue'
 import AbilityToWorkValue from '../../../server/enums/abilityToWorkValue'
 import HasWorkedBeforeValue from '../../../server/enums/hasWorkedBeforeValue'
+import InductionNotePage from './InductionNotePage'
+import WhoCompletedInductionPage from './WhoCompletedInductionPage'
 
 export default class CheckYourAnswersPage extends Page {
   constructor() {
@@ -243,6 +246,49 @@ export default class CheckYourAnswersPage extends Page {
     return Page.verifyOnPage(AffectAbilityToWorkPage)
   }
 
+  hasInductionCompletedByMyself(): CheckYourAnswersPage {
+    this.inductionCompletedByValue().should('be.visible')
+    this.inductionCompletedByValue().should('contain.text', 'I did the induction myself')
+    this.inductionCompletedByJobRoleValue().should('not.exist')
+    return this
+  }
+
+  hasInductionCompletedBy(expectedName: string, expectedJobRole: string): CheckYourAnswersPage {
+    this.inductionCompletedByValue().should('be.visible')
+    this.inductionCompletedByJobRoleValue().should('be.visible')
+    this.inductionCompletedByValue().should('contain.text', expectedName)
+    this.inductionCompletedByJobRoleValue().should('contain.text', expectedJobRole)
+    return this
+  }
+
+  hasInductionCompletedOn(expected: Date): CheckYourAnswersPage {
+    this.inductionCompletedOnValue().should('be.visible')
+    this.inductionCompletedOnValue().should('contain.text', format(expected, 'd MMMM yyyy'))
+    return this
+  }
+
+  clickInductionCompletedByChangeLink(): WhoCompletedInductionPage {
+    this.inductionCompletedByChangeLink().click()
+    return Page.verifyOnPage(WhoCompletedInductionPage)
+  }
+
+  hasNoInductionNotes(): CheckYourAnswersPage {
+    this.inductionNotesValue().should('be.visible')
+    this.inductionNotesValue().should('contain.text', 'Not entered')
+    return this
+  }
+
+  hasInductionNotes(expected: string): CheckYourAnswersPage {
+    this.inductionNotesValue().should('be.visible')
+    this.inductionNotesValue().should('contain.text', expected)
+    return this
+  }
+
+  clickInductionNotesChangeLink(): InductionNotePage {
+    this.inductionNotesChangeLink().click()
+    return Page.verifyOnPage(InductionNotePage)
+  }
+
   private factorsAffectingAbilityToWork = (): PageElement => cy.get(`[data-qa^=affectingAbilityToWork-]`)
 
   private factorsAffectingAbilityToWorkChangeLink = (): PageElement => cy.get('[data-qa=affectAbilityToWorkLink]')
@@ -314,4 +360,16 @@ export default class CheckYourAnswersPage extends Page {
     cy.get(`[data-qa=hopingToGetWork-${expected}`)
 
   private hopingToWorkOnReleaseChangeLink = (): PageElement => cy.get('[data-qa=hopingToGetWorkLink]')
+
+  private inductionCompletedByValue = (): PageElement => cy.get('[data-qa=inductionCompletedBy]')
+
+  private inductionCompletedByJobRoleValue = (): PageElement => cy.get('[data-qa=inductionCompletedByJobRole]')
+
+  private inductionCompletedOnValue = (): PageElement => cy.get('[data-qa=inductionCompletedOn]')
+
+  private inductionCompletedByChangeLink = (): PageElement => cy.get('[data-qa=inductionCompletedByLink]')
+
+  private inductionNotesValue = (): PageElement => cy.get('[data-qa=inductionNotes]')
+
+  private inductionNotesChangeLink = (): PageElement => cy.get('[data-qa=inductionNotesLink]')
 }
