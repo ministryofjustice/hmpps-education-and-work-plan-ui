@@ -1,0 +1,16 @@
+{% if reviewJourneyEnabledForPrison %}
+  <div class="app-u-heading-with-change-link">
+    <h2 class="govuk-heading-m">Induction note</h2>
+    <span class="govuk-body-m">
+      <a class="govuk-link" href="notes" data-qa="inductionNotesLink">Change<span class="govuk-visually-hidden"> the induction notes</span></a>
+    </span>
+  </div>
+
+  <div class="govuk-summary-list govuk-!-margin-bottom-8">
+    <div class="govuk-summary-list__row">
+      <p class="govuk-body" data-qa="inductionNotes">
+        {{ inductionDto.notes if inductionDto.notes else 'Not entered' }}
+      </p>
+    </div>
+  </div>
+{% endif %}

@@ -1,6 +1,8 @@
 /**
  * Cypress tests that test the Change links on the Check Your Answers page when creating an Induction
  */
+import { sub } from 'date-fns'
+import { startOfToday } from 'date-fns/startOfToday'
 import Page from '../../pages/page'
 import CheckYourAnswersPage from '../../pages/induction/CheckYourAnswersPage'
 import AbilityToWorkValue from '../../../server/enums/abilityToWorkValue'
@@ -23,6 +25,7 @@ import InPrisonWorkValue from '../../../server/enums/inPrisonWorkValue'
 import HasWorkedBeforeValue from '../../../server/enums/hasWorkedBeforeValue'
 import FutureWorkInterestRolesPage from '../../pages/induction/FutureWorkInterestRolesPage'
 import FutureWorkInterestTypesPage from '../../pages/induction/FutureWorkInterestTypesPage'
+import SessionCompletedByValue from '../../../server/enums/sessionCompletedByValue'
 
 context(`Change links on the Check Your Answers page when creating an Induction`, () => {
   const prisonNumber = 'G6115VJ'
@@ -205,6 +208,25 @@ context(`Change links on the Check Your Answers page when creating an Induction`
       .removeQualification(1)
       .submitPage()
 
+    // Change Induction Completed By
+    const inductionConductedAt = sub(startOfToday(), { days: 2 })
+    const inductionConductedAtDay = `${inductionConductedAt.getDate()}`.padStart(2, '0')
+    const inductionConductedAtMonth = `${inductionConductedAt.getMonth() + 1}`.padStart(2, '0')
+    const inductionConductedAtYear = `${inductionConductedAt.getFullYear()}`
+    Page.verifyOnPage(CheckYourAnswersPage) //
+      .clickInductionCompletedByChangeLink()
+      .selectWhoCompletedTheReview(SessionCompletedByValue.SOMEBODY_ELSE)
+      .enterFullName('Michelangelo di Lodovico Buonarroti Simoni')
+      .enterJobRole('Italian sculptor, painter, architect, and poet')
+      .setInductionDate(inductionConductedAtDay, inductionConductedAtMonth, inductionConductedAtYear)
+      .submitPage()
+
+    // Change Induction Notes
+    Page.verifyOnPage(CheckYourAnswersPage) //
+      .clickInductionNotesChangeLink()
+      .setInductionNote('Induction went well and prisoner is looking forward to learning about Renaissance art')
+      .submitPage()
+
     // Then
     Page.verifyOnPage(CheckYourAnswersPage) //
       .hasHopingToWorkOnRelease(HopingToGetWorkValue.YES)
@@ -233,6 +255,12 @@ context(`Change links on the Check Your Answers page when creating an Induction`
         InPrisonTrainingValue.BARBERING_AND_HAIRDRESSING,
         InPrisonTrainingValue.RUNNING_A_BUSINESS,
       ])
+      .hasInductionCompletedBy(
+        'Michelangelo di Lodovico Buonarroti Simoni',
+        'Italian sculptor, painter, architect, and poet',
+      )
+      .hasInductionCompletedOn(inductionConductedAt)
+      .hasInductionNotes('Induction went well and prisoner is looking forward to learning about Renaissance art')
   })
 
   it('should support changing Hoping To Work from No to Yes', () => {
