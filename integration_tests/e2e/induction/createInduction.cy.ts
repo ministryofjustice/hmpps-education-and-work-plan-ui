@@ -354,8 +354,12 @@ context('Create an Induction', () => {
               "@.inPrisonInterests.inPrisonWorkInterests[0].workType == 'KITCHENS_AND_COOKING' && " +
               "@.inPrisonInterests.inPrisonWorkInterests[1].workType == 'PRISON_LIBRARY' && " +
               '@.inPrisonInterests.inPrisonTrainingInterests.size() == 1 && ' +
-              "@.inPrisonInterests.inPrisonTrainingInterests[0].trainingType == 'FORKLIFT_DRIVING')]",
-            // TODO RR-1041/RR-1177 - add assertions that the conductedBy/role/date/notes fields are sent to the API
+              "@.inPrisonInterests.inPrisonTrainingInterests[0].trainingType == 'FORKLIFT_DRIVING' && " +
+              "@.note == 'Induction went well' && " +
+              `@.conductedAt == '${inductionConductedAtYear}-${inductionConductedAtMonth}-${inductionConductedAtDay}' && ` +
+              "@.conductedBy == 'Joe Bloggs' && " +
+              "@.conductedByRole == 'Peer Mentor'" +
+              ')]',
           ),
         ),
     )
@@ -503,8 +507,12 @@ context('Create an Induction', () => {
               '@.inPrisonInterests.inPrisonWorkInterests.size() == 1 && ' +
               "@.inPrisonInterests.inPrisonWorkInterests[0].workType == 'KITCHENS_AND_COOKING' && " +
               '@.inPrisonInterests.inPrisonTrainingInterests.size() == 1 && ' +
-              "@.inPrisonInterests.inPrisonTrainingInterests[0].trainingType == 'FORKLIFT_DRIVING')]",
-            // TODO RR-1041/RR-1177 - add assertions that the conductedBy/role/date/notes fields are sent to the API
+              "@.inPrisonInterests.inPrisonTrainingInterests[0].trainingType == 'FORKLIFT_DRIVING' && " +
+              "@.note == 'Induction went well' && " +
+              `@.conductedAt == '${inductionConductedAtYear}-${inductionConductedAtMonth}-${inductionConductedAtDay}' && ` +
+              '!@.conductedBy && ' +
+              '!@.conductedByRole' +
+              ')]',
           ),
         ),
     )
@@ -641,8 +649,12 @@ context('Create an Induction', () => {
               '@.inPrisonInterests.inPrisonWorkInterests.size() == 1 && ' +
               "@.inPrisonInterests.inPrisonWorkInterests[0].workType == 'PRISON_LIBRARY' && " +
               '@.inPrisonInterests.inPrisonTrainingInterests.size() == 1 && ' +
-              "@.inPrisonInterests.inPrisonTrainingInterests[0].trainingType == 'FORKLIFT_DRIVING')]",
-            // TODO RR-1041/RR-1177 - add assertions that the conductedBy/role/date/notes fields are sent to the API
+              "@.inPrisonInterests.inPrisonTrainingInterests[0].trainingType == 'FORKLIFT_DRIVING' && " +
+              "@.note == 'Induction went well' && " +
+              `@.conductedAt == '${inductionConductedAtYear}-${inductionConductedAtMonth}-${inductionConductedAtDay}' && ` +
+              '!@.conductedBy && ' +
+              '!@.conductedByRole' +
+              ')]',
           ),
         ),
     )

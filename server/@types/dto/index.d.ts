@@ -170,6 +170,10 @@ declare module 'inductionDto' {
     inPrisonInterests?: CreateOrUpdateInPrisonInterestsDto
     personalSkillsAndInterests?: CreateOrUpdatePersonalSkillsAndInterestsDto
     futureWorkInterests?: CreateOrUpdateFutureWorkInterestsDto
+    conductedAt?: string
+    conductedBy?: string
+    conductedByRole?: string
+    note?: string
   }
 
   export interface CreateOrUpdateWorkOnReleaseDto {

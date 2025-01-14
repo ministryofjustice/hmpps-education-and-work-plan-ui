@@ -663,7 +663,7 @@ describe('educationAndWorkPlanClient', () => {
       const createInductionRequest = aValidCreateInductionRequest()
 
       educationAndWorkPlanApi //
-        .post(`/inductions/${prisonNumber}`, requestBody => isEqual(requestBody, createInductionRequest))
+        .post(`/inductions/${prisonNumber}`, requestBody => isMatch(createInductionRequest, requestBody))
         .reply(201)
 
       // When
@@ -685,7 +685,7 @@ describe('educationAndWorkPlanClient', () => {
         developerMessage: 'An unexpected error occurred',
       }
       educationAndWorkPlanApi
-        .post(`/inductions/${prisonNumber}`, requestBody => isEqual(requestBody, createInductionRequest))
+        .post(`/inductions/${prisonNumber}`, requestBody => isMatch(createInductionRequest, requestBody))
         .reply(500, expectedResponseBody)
 
       // When

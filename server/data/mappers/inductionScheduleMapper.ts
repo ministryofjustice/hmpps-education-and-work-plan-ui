@@ -15,9 +15,11 @@ const toInductionSchedule = (inductionScheduleResponse: InductionScheduleRespons
   createdBy: inductionScheduleResponse.createdBy,
   createdByDisplayName: inductionScheduleResponse.createdByDisplayName,
   createdAt: parseISO(inductionScheduleResponse.createdAt),
+  createdAtPrison: inductionScheduleResponse.createdAtPrison,
   updatedBy: inductionScheduleResponse.updatedBy,
   updatedByDisplayName: inductionScheduleResponse.updatedByDisplayName,
   updatedAt: parseISO(inductionScheduleResponse.updatedAt),
+  updatedAtPrison: inductionScheduleResponse.updatedAtPrison,
   problemRetrievingData: false,
 })
 

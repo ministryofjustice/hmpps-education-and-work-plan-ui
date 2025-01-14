@@ -128,9 +128,11 @@ declare module 'viewModels' {
     createdBy: string
     createdByDisplayName: string
     createdAt: Date
+    createdAtPrison: string
     updatedBy: string
     updatedByDisplayName: string
     updatedAt: Date
+    updatedAtPrison: string
     problemRetrievingData: boolean
   }
 
