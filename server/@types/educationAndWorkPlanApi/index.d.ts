@@ -843,8 +843,8 @@ export interface components {
        * @enum {string}
        */
       status:
+        | 'PENDING_INITIAL_SCREENING_AND_ASSESSMENTS_FROM_CURIOUS'
         | 'SCHEDULED'
-        | 'COMPLETED'
         | 'EXEMPT_PRISONER_DRUG_OR_ALCOHOL_DEPENDENCY'
         | 'EXEMPT_PRISONER_OTHER_HEALTH_ISSUES'
         | 'EXEMPT_PRISONER_FAILED_TO_ENGAGE'
@@ -860,6 +860,7 @@ export interface components {
         | 'EXEMPT_PRISONER_DEATH'
         | 'EXEMPT_SCREENING_AND_ASSESSMENT_IN_PROGRESS'
         | 'EXEMPT_SCREENING_AND_ASSESSMENT_INCOMPLETE'
+        | 'COMPLETED'
       /**
        * @description An optional reason as to why the Induction Schedule is exempted.  Only relevant and processed when the `status` field is one of the `EXEMPTION_` statuses.   This field is not mandatory, even when the `status` field is one of the `EXEMPTION_` statuses.
        * @example null
@@ -926,6 +927,7 @@ export interface components {
         | 'EXEMPT_PRISONER_TRANSFER'
         | 'EXEMPT_PRISONER_RELEASE'
         | 'EXEMPT_PRISONER_DEATH'
+        | 'EXEMPT_UNKNOWN'
         | 'COMPLETED'
       /**
        * @description An optional reason as to why the Review Schedule is exempted.  Only relevant and processed when the `status` field is one of the `EXEMPTION_` statuses.   This field is not mandatory, even when the `status` field is one of the `EXEMPTION_` statuses.
@@ -1130,6 +1132,26 @@ export interface components {
       inPrisonInterests?: components['schemas']['CreateInPrisonInterestsRequest']
       personalSkillsAndInterests?: components['schemas']['CreatePersonalSkillsAndInterestsRequest']
       futureWorkInterests?: components['schemas']['CreateFutureWorkInterestsRequest']
+      /**
+       * @description The notes taken when conducting the prisoner's Induction.
+       * @example Peter is excited to be part of the programme.
+       */
+      note?: string
+      /**
+       * Format: date
+       * @description An ISO-8601 date representing the date that this Induction was conducted on.
+       */
+      conductedAt?: string
+      /**
+       * @description The name of the person who actually conducted the Induction session with the Prisoner.   Only populated if the person who conducted the Induction was not the person who keyed it into the system.
+       * @example Albert Mozzarella
+       */
+      conductedBy?: string
+      /**
+       * @description The role of the person who actually conducted the Induction session with the Prisoner.  Only populated if the person who conducted the Induction was not the person who keyed it into the system.
+       * @example Peer mentor
+       */
+      conductedByRole?: string
     }
     /** @example null */
     CreatePersonalSkillsAndInterestsRequest: {
@@ -1469,6 +1491,7 @@ export interface components {
         | 'EXEMPT_PRISONER_TRANSFER'
         | 'EXEMPT_PRISONER_RELEASE'
         | 'EXEMPT_PRISONER_DEATH'
+        | 'EXEMPT_UNKNOWN'
         | 'COMPLETED'
       /**
        * @example null
@@ -1645,10 +1668,6 @@ export interface components {
        */
       events: components['schemas']['TimelineEventResponse'][]
     }
-    HmppsSubjectAccessRequestContent: {
-      /** @description The content of the subject access request response */
-      content: Record<string, never>
-    }
     ErrorResponse: {
       /** Format: int32 */
       status: number
@@ -1656,6 +1675,10 @@ export interface components {
       userMessage?: string
       developerMessage?: string
       moreInfo?: string
+    }
+    HmppsSubjectAccessRequestContent: {
+      /** @description The content of the subject access request response */
+      content: Record<string, never>
     }
     DlqMessage: {
       body: {
@@ -2364,8 +2387,8 @@ export interface components {
        * @enum {string}
        */
       scheduleStatus:
+        | 'PENDING_INITIAL_SCREENING_AND_ASSESSMENTS_FROM_CURIOUS'
         | 'SCHEDULED'
-        | 'COMPLETED'
         | 'EXEMPT_PRISONER_DRUG_OR_ALCOHOL_DEPENDENCY'
         | 'EXEMPT_PRISONER_OTHER_HEALTH_ISSUES'
         | 'EXEMPT_PRISONER_FAILED_TO_ENGAGE'
@@ -2381,6 +2404,7 @@ export interface components {
         | 'EXEMPT_PRISONER_DEATH'
         | 'EXEMPT_SCREENING_AND_ASSESSMENT_IN_PROGRESS'
         | 'EXEMPT_SCREENING_AND_ASSESSMENT_INCOMPLETE'
+        | 'COMPLETED'
       /**
        * @description The DPS username of the person who created this resource.
        * @example asmith_gen
@@ -2398,6 +2422,11 @@ export interface components {
        */
       createdAt: string
       /**
+       * @description The identifier of the prison that the prisoner was resident at when this resource was created.
+       * @example BXI
+       */
+      createdAtPrison: string
+      /**
        * @description The DPS username of the person who last updated this resource.
        * @example asmith_gen
        */
@@ -2409,10 +2438,15 @@ export interface components {
       updatedByDisplayName: string
       /**
        * Format: date-time
-       * @description An ISO-8601 timestamp representing when this resource was updated.
+       * @description An ISO-8601 timestamp representing when this resource was last updated. This will be the same as the created date if it has not yet been updated.
        * @example 2023-06-19T09:39:44Z
        */
       updatedAt: string
+      /**
+       * @description The identifier of the prison that the prisoner was resident at when this resource was updated.
+       * @example BXI
+       */
+      updatedAtPrison: string
       /**
        * @description The name of the person who completed the review.
        * @example John smith
@@ -2770,6 +2804,11 @@ export interface components {
        * @example BXI
        */
       createdAtPrison: string
+      /**
+       * @description This was the last review before the prisoner was due to be released.
+       * @example false
+       */
+      preRelease: boolean
       /**
        * Format: uuid
        * @description The unique reference of the review schedule that corresponds to this Review

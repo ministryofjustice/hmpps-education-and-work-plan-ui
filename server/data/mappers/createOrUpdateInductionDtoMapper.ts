@@ -1,3 +1,4 @@
+import { format } from 'date-fns'
 import type {
   CreateOrUpdateFutureWorkInterestsDto,
   CreateOrUpdateInductionDto,
@@ -16,6 +17,7 @@ import type {
   PreviousWorkExperiencesDto,
   WorkOnReleaseDto,
 } from 'inductionDto'
+import SessionCompletedByValue from '../../enums/sessionCompletedByValue'
 
 const toCreateOrUpdateInductionDto = (prisonId: string, inductionDto: InductionDto): CreateOrUpdateInductionDto => {
   return {
@@ -28,6 +30,16 @@ const toCreateOrUpdateInductionDto = (prisonId: string, inductionDto: InductionD
     inPrisonInterests: toCreateOrUpdateInPrisonInterestsDto(inductionDto.inPrisonInterests),
     personalSkillsAndInterests: toCreateOrUpdatePersonalSkillsAndInterestsDto(inductionDto.personalSkillsAndInterests),
     futureWorkInterests: toCreateOrUpdateFutureWorkInterestsDto(inductionDto.futureWorkInterests),
+    conductedAt: inductionDto.inductionDate ? format(inductionDto.inductionDate, 'yyyy-MM-dd') : undefined,
+    conductedBy:
+      inductionDto.completedBy === SessionCompletedByValue.SOMEBODY_ELSE
+        ? inductionDto.completedByOtherFullName
+        : undefined,
+    conductedByRole:
+      inductionDto.completedBy === SessionCompletedByValue.SOMEBODY_ELSE
+        ? inductionDto.completedByOtherJobRole
+        : undefined,
+    note: inductionDto.notes,
   }
 }
 

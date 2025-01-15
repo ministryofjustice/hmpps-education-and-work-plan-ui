@@ -27,9 +27,11 @@ type CoreBuilderOptions = {
   createdBy?: string
   createdByDisplayName?: string
   createdAt?: Date
+  createdAtPrison?: string
   updatedBy?: string
   updatedByDisplayName?: string
   updatedAt?: Date
+  updatedAtPrison?: string
 }
 
 const baseInductionScheduleTemplate = (options?: CoreBuilderOptions): InductionSchedule => ({
@@ -50,16 +52,20 @@ const auditFields = (
   createdBy: string
   createdByDisplayName: string
   createdAt: Date
+  createdAtPrison: string
   updatedBy: string
   updatedByDisplayName: string
   updatedAt: Date
+  updatedAtPrison: string
 } => ({
   createdBy: options?.createdBy || 'asmith_gen',
   createdByDisplayName: options?.createdByDisplayName || 'Alex Smith',
   createdAt: options?.createdAt || parseISO('2023-06-19T09:39:44Z'),
+  createdAtPrison: options?.createdAtPrison || 'BXI',
   updatedBy: options?.updatedBy || 'asmith_gen',
   updatedByDisplayName: options?.updatedByDisplayName || 'Alex Smith',
   updatedAt: options?.updatedAt || parseISO('2023-06-19T09:39:44Z'),
+  updatedAtPrison: options?.updatedAtPrison || 'BXI',
 })
 
 export default aValidInductionSchedule

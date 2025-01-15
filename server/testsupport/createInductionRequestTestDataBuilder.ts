@@ -1,3 +1,4 @@
+import { format } from 'date-fns'
 import type { CreateInductionRequest } from 'educationAndWorkPlanApiClient'
 import HopingToGetWorkValue from '../enums/hopingToGetWorkValue'
 import AbilityToWorkValue from '../enums/abilityToWorkValue'
@@ -17,6 +18,10 @@ const aValidCreateInductionRequest = (
     hopingToGetWork?: HopingToGetWorkValue
     hasWorkedBefore?: HasWorkedBeforeValue
     hasQualifications?: boolean
+    conductedAt?: Date
+    conductedBy?: string
+    conductedByRole?: string
+    note?: string
   },
 ): CreateInductionRequest => {
   return {
@@ -116,6 +121,10 @@ const aValidCreateInductionRequest = (
       ],
       trainingTypeOther: 'Advanced origami',
     },
+    conductedAt: options?.conductedAt ? format(options?.conductedAt, 'yyyy-MM-dd') : undefined,
+    conductedBy: options?.conductedBy,
+    conductedByRole: options?.conductedByRole,
+    note: options?.note,
   }
 }
 

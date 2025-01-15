@@ -10,6 +10,7 @@ const aValidCompletedActionPlanReviewResponse = (
     note?: NoteResponse
     conductedBy?: string
     conductedByRole?: string
+    preRelease?: boolean
   },
 ): CompletedActionPlanReviewResponse => ({
   ...baseCompletedActionPlanReviewResponseTemplate(options),
@@ -23,6 +24,7 @@ const aValidCompletedActionPlanReviewResponse = (
     }),
   conductedBy: options?.conductedBy,
   conductedByRole: options?.conductedByRole,
+  preRelease: !options || options.preRelease == null ? false : options.preRelease,
 })
 
 type CoreBuilderOptions = {
