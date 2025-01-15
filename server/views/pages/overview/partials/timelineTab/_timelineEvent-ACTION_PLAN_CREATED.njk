@@ -8,11 +8,43 @@
     <time datetime="{{ event.timestamp }}">{{ event.timestamp | formatDate('D MMMM YYYY') }}</time>
   </p>
 
-  <div class="moj-timeline__description govuk-!-display-none-print">
-    <p class="govuk-body govuk-!-margin-bottom-0">
-      <a href="/plan/{{ prisonerSummary.prisonNumber }}/view/overview" data-id="timeline-prisoner-{{ prisonerSummary.prisonNumber }}">
-        View {{ prisonerSummary.firstName }} {{ prisonerSummary.lastName | title }}'s learning and work progress
-      </a>
-    </p>
-  </div>
+  {% if event.contextualInfo['COMPLETED_INDUCTION_ENTERED_ONLINE_BY'] %}
+    {# Timeline event was created as part of the new Induction journey, where who conduction the Induction, the date, and any notes, are asked #}
+    <div class="moj-timeline__description">
+      <p class="govuk-body" data-qa="induction-conducted-by">
+        {%- set inductionConductedBy -%}
+          {%- if not event.contextualInfo['COMPLETED_INDUCTION_CONDUCTED_IN_PERSON_BY'] -%}
+            {{ event.contextualInfo['COMPLETED_INDUCTION_ENTERED_ONLINE_BY'] }}
+          {%- else -%}
+            {{ event.contextualInfo['COMPLETED_INDUCTION_CONDUCTED_IN_PERSON_BY'] }}, {{ event.contextualInfo['COMPLETED_INDUCTION_CONDUCTED_IN_PERSON_BY_ROLE']}}
+          {%- endif -%}
+        {%- endset -%}
+        Induction conducted by {{ inductionConductedBy }}, on {{ event.contextualInfo['COMPLETED_INDUCTION_CONDUCTED_IN_PERSON_DATE'] | formatDate('D MMMM YYYY') }}
+      </p>
+
+      {% if event.contextualInfo['COMPLETED_INDUCTION_NOTES'] %}
+        <details class="govuk-details app-notes-expander" data-qa="induction-notes-expander">
+          <summary class="govuk-details__summary">
+            <span class="govuk-details__summary-text">
+              Induction details
+            </span>
+          </summary>
+          <div class="govuk-details__text" data-qa="induction-notes">
+            <span class="app-u-multiline-text">{{ event.contextualInfo['COMPLETED_INDUCTION_NOTES'] }}</span>
+          </div>
+        </details>
+      {% endif %}
+    </div>
+
+  {% else %}
+    {# Timeline event was created as part of the original Induction journey, where who conduction the Induction, the date, and any notes, were NOT asked #}
+    {# The Timeline events for the original Induction journey still need to be supported because those Timeline events exist in the database and do not have the additional contextualInfo fields #}
+    <div class="moj-timeline__description govuk-!-display-none-print">
+      <p class="govuk-body govuk-!-margin-bottom-0">
+        <a href="/plan/{{ prisonerSummary.prisonNumber }}/view/overview" data-id="timeline-prisoner-{{ prisonerSummary.prisonNumber }}">
+          View {{ prisonerSummary.firstName }} {{ prisonerSummary.lastName | title }}'s learning and work progress
+        </a>
+      </p>
+    </div>
+  {% endif %}
 </div>
