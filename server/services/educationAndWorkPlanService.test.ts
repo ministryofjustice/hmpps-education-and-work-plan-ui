@@ -1,5 +1,5 @@
-import type { ArchiveGoalDto, UnarchiveGoalDto } from 'dto'
-import type { ArchiveGoalRequest, UnarchiveGoalRequest } from 'educationAndWorkPlanApiClient'
+import type { ArchiveGoalDto, CompleteGoalDto, UnarchiveGoalDto } from 'dto'
+import type { ArchiveGoalRequest, CompleteGoalRequest, UnarchiveGoalRequest } from 'educationAndWorkPlanApiClient'
 import type { ActionPlan, Goals } from 'viewModels'
 import createError from 'http-errors'
 import EducationAndWorkPlanClient from '../data/educationAndWorkPlanClient'
@@ -261,7 +261,6 @@ describe('educationAndWorkPlanService', () => {
   })
 
   describe('archiveGoal', () => {
-    const userToken = 'a-user-token'
     const goalReference = '95b18362-fe56-4234-9ad2-11ef98b974a3'
     const reason = ReasonToArchiveGoalValue.PRISONER_NO_LONGER_WANTS_TO_WORK_TOWARDS_GOAL
     const archiveGoalDto: ArchiveGoalDto = {
@@ -278,10 +277,11 @@ describe('educationAndWorkPlanService', () => {
       // Given
 
       // When
-      await educationAndWorkPlanService.archiveGoal(archiveGoalDto, userToken)
+      await educationAndWorkPlanService.archiveGoal(archiveGoalDto, username)
 
       // Then
-      expect(educationAndWorkPlanClient.archiveGoal).toHaveBeenCalledWith(prisonNumber, archiveGoalRequest, userToken)
+      expect(educationAndWorkPlanClient.archiveGoal).toHaveBeenCalledWith(prisonNumber, archiveGoalRequest, systemToken)
+      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
     })
 
     it('should not archive Goal given educationAndWorkPlanClient returns an error', async () => {
@@ -289,17 +289,17 @@ describe('educationAndWorkPlanService', () => {
       educationAndWorkPlanClient.archiveGoal.mockRejectedValue(Error('Service Unavailable'))
 
       // When
-      const actual = await educationAndWorkPlanService.archiveGoal(archiveGoalDto, userToken).catch(error => {
+      const actual = await educationAndWorkPlanService.archiveGoal(archiveGoalDto, username).catch(error => {
         return error
       })
 
       // Then
       expect(actual).toEqual(Error('Service Unavailable'))
+      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
     })
   })
 
   describe('unarchiveGoal', () => {
-    const userToken = 'a-user-token'
     const goalReference = '95b18362-fe56-4234-9ad2-11ef98b974a3'
     const unarchiveGoalDto: UnarchiveGoalDto = { prisonNumber, goalReference }
     const unarchiveGoalRequest: UnarchiveGoalRequest = { goalReference }
@@ -308,14 +308,15 @@ describe('educationAndWorkPlanService', () => {
       // Given
 
       // When
-      await educationAndWorkPlanService.unarchiveGoal(unarchiveGoalDto, userToken)
+      await educationAndWorkPlanService.unarchiveGoal(unarchiveGoalDto, username)
 
       // Then
       expect(educationAndWorkPlanClient.unarchiveGoal).toHaveBeenCalledWith(
         prisonNumber,
         unarchiveGoalRequest,
-        userToken,
+        systemToken,
       )
+      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
     })
 
     it('should not unarchive Goal given educationAndWorkPlanClient returns an error', async () => {
@@ -323,12 +324,49 @@ describe('educationAndWorkPlanService', () => {
       educationAndWorkPlanClient.unarchiveGoal.mockRejectedValue(Error('Service Unavailable'))
 
       // When
-      const actual = await educationAndWorkPlanService.unarchiveGoal(unarchiveGoalDto, userToken).catch(error => {
+      const actual = await educationAndWorkPlanService.unarchiveGoal(unarchiveGoalDto, username).catch(error => {
         return error
       })
 
       // Then
       expect(actual).toEqual(Error('Service Unavailable'))
+      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
+    })
+  })
+
+  describe('completedGoal', () => {
+    const goalReference = '95b18362-fe56-4234-9ad2-11ef98b974a3'
+    const note = 'Goal completed on time'
+    const completedGoalDto: CompleteGoalDto = { prisonNumber, goalReference, note }
+    const completeGoalRequest: CompleteGoalRequest = { goalReference, note }
+
+    it('should complete Goal', async () => {
+      // Given
+
+      // When
+      await educationAndWorkPlanService.completeGoal(completedGoalDto, username)
+
+      // Then
+      expect(educationAndWorkPlanClient.completeGoal).toHaveBeenCalledWith(
+        prisonNumber,
+        completeGoalRequest,
+        systemToken,
+      )
+      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
+    })
+
+    it('should not complete Goal given educationAndWorkPlanClient returns an error', async () => {
+      // Given
+      educationAndWorkPlanClient.completeGoal.mockRejectedValue(Error('Service Unavailable'))
+
+      // When
+      const actual = await educationAndWorkPlanService.completeGoal(completedGoalDto, username).catch(error => {
+        return error
+      })
+
+      // Then
+      expect(actual).toEqual(Error('Service Unavailable'))
+      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
     })
   })
 
@@ -342,12 +380,13 @@ describe('educationAndWorkPlanService', () => {
       mockedEducationMapper.mockReturnValue(expectedEducationDto)
 
       // When
-      const actual = await educationAndWorkPlanService.getEducation(prisonNumber, systemToken)
+      const actual = await educationAndWorkPlanService.getEducation(prisonNumber, username)
 
       // Then
       expect(actual).toEqual(expectedEducationDto)
       expect(educationAndWorkPlanClient.getEducation).toHaveBeenCalledWith(prisonNumber, systemToken)
       expect(mockedEducationMapper).toHaveBeenCalledWith(educationResponse, prisonNumber)
+      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
     })
 
     it('should not get prisoner education given educationAndWorkPlanClient returns an error', async () => {
@@ -363,7 +402,7 @@ describe('educationAndWorkPlanService', () => {
       educationAndWorkPlanClient.getEducation.mockRejectedValue(eductionAndWorkPlanApiError)
 
       // When
-      const actual = await educationAndWorkPlanService.getEducation(prisonNumber, systemToken).catch(error => {
+      const actual = await educationAndWorkPlanService.getEducation(prisonNumber, username).catch(error => {
         return error
       })
 
@@ -371,6 +410,7 @@ describe('educationAndWorkPlanService', () => {
       expect(actual).toEqual(eductionAndWorkPlanApiError)
       expect(educationAndWorkPlanClient.getEducation).toHaveBeenCalledWith(prisonNumber, systemToken)
       expect(mockedEducationMapper).not.toHaveBeenCalled()
+      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
     })
   })
 

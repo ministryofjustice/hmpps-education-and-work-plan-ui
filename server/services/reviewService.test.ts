@@ -285,7 +285,7 @@ describe('reviewService', () => {
         status: 'EXEMPT_PRISON_OPERATION_OR_SECURITY_ISSUE',
         exemptionReason: undefined,
       }
-      educationAndWorkPlanClient.updateEducation.mockResolvedValue(undefined)
+      educationAndWorkPlanClient.updateActionPlanReviewScheduleStatus.mockResolvedValue(undefined)
 
       // When
       const actual = await reviewService.updateActionPlanReviewScheduleStatus(reviewExemptionDto, username)

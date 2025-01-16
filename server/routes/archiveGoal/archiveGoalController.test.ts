@@ -193,6 +193,7 @@ describe('archiveGoalController', () => {
       expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/goals/${goalReference}/archive/review`)
       expect(mockedValidateArchiveGoalForm).toHaveBeenCalledWith(archiveGoalForm)
       expect(getPrisonerContext(req.session, prisonNumber).archiveGoalForm).toStrictEqual(archiveGoalForm)
+      expect(educationAndWorkPlanService.archiveGoal).not.toHaveBeenCalled()
     })
 
     it('should redirect to archive goal form given validation fails', async () => {
@@ -214,6 +215,7 @@ describe('archiveGoalController', () => {
         errors,
       )
       expect(getPrisonerContext(req.session, prisonNumber).archiveGoalForm).toEqual(expectedArchiveGoalForm)
+      expect(educationAndWorkPlanService.archiveGoal).not.toHaveBeenCalled()
     })
   })
 
@@ -277,7 +279,7 @@ describe('archiveGoalController', () => {
       await controller.submitReviewArchiveGoal(req, res, next)
 
       // Then
-      expect(educationAndWorkPlanService.archiveGoal).toHaveBeenCalledWith(expectedArchiveGoalDto, 'some-token')
+      expect(educationAndWorkPlanService.archiveGoal).toHaveBeenCalledWith(expectedArchiveGoalDto, username)
       expect(res.redirectWithSuccess).toHaveBeenCalledWith(`/plan/${prisonNumber}/view/overview`, 'Goal archived')
       expect(getPrisonerContext(req.session, prisonNumber).archiveGoalForm).toBeUndefined()
       expect(auditService.logArchiveGoal).toHaveBeenCalledWith(expectedBaseAuditData)
@@ -303,7 +305,7 @@ describe('archiveGoalController', () => {
       await controller.submitReviewArchiveGoal(req, res, next)
 
       // Then
-      expect(educationAndWorkPlanService.archiveGoal).toHaveBeenCalledWith(expectedArchiveGoalDto, 'some-token')
+      expect(educationAndWorkPlanService.archiveGoal).toHaveBeenCalledWith(expectedArchiveGoalDto, username)
       expect(next).toHaveBeenCalledWith(expectedError)
       expect(getPrisonerContext(req.session, prisonNumber).archiveGoalForm).toBeUndefined()
       expect(auditService.logArchiveGoal).not.toHaveBeenCalled()
@@ -326,6 +328,7 @@ describe('archiveGoalController', () => {
       expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/view/overview`)
       expect(getPrisonerContext(req.session, prisonNumber).archiveGoalForm).toBeUndefined()
       expect(auditService.logArchiveGoal).not.toHaveBeenCalled()
+      expect(educationAndWorkPlanService.archiveGoal).not.toHaveBeenCalled()
     })
   })
 })

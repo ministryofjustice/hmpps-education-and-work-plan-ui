@@ -100,19 +100,26 @@ export default class EducationAndWorkPlanService {
     return this.educationAndWorkPlanClient.updateGoal(prisonNumber, updateGoalRequest, token)
   }
 
-  async archiveGoal(archiveGoalDto: ArchiveGoalDto, token: string): Promise<unknown> {
+  async archiveGoal(archiveGoalDto: ArchiveGoalDto, username: string): Promise<unknown> {
+    const systemToken = await this.hmppsAuthClient.getSystemClientToken(username)
     const archiveGoalRequest = toArchiveGoalRequest(archiveGoalDto)
-    return this.educationAndWorkPlanClient.archiveGoal(archiveGoalDto.prisonNumber, archiveGoalRequest, token)
+    return this.educationAndWorkPlanClient.archiveGoal(archiveGoalDto.prisonNumber, archiveGoalRequest, systemToken)
   }
 
-  async unarchiveGoal(unarchiveGoalDto: UnarchiveGoalDto, token: string): Promise<unknown> {
+  async unarchiveGoal(unarchiveGoalDto: UnarchiveGoalDto, username: string): Promise<unknown> {
+    const systemToken = await this.hmppsAuthClient.getSystemClientToken(username)
     const unarchiveGoalRequest = toUnarchiveGoalRequest(unarchiveGoalDto)
-    return this.educationAndWorkPlanClient.unarchiveGoal(unarchiveGoalDto.prisonNumber, unarchiveGoalRequest, token)
+    return this.educationAndWorkPlanClient.unarchiveGoal(
+      unarchiveGoalDto.prisonNumber,
+      unarchiveGoalRequest,
+      systemToken,
+    )
   }
 
-  async completeGoal(completeGoalDto: CompleteGoalDto, token: string): Promise<unknown> {
+  async completeGoal(completeGoalDto: CompleteGoalDto, username: string): Promise<unknown> {
+    const systemToken = await this.hmppsAuthClient.getSystemClientToken(username)
     const completeGoalRequest = toCompleteGoalRequest(completeGoalDto)
-    return this.educationAndWorkPlanClient.completeGoal(completeGoalDto.prisonNumber, completeGoalRequest, token)
+    return this.educationAndWorkPlanClient.completeGoal(completeGoalDto.prisonNumber, completeGoalRequest, systemToken)
   }
 
   async getEducation(prisonNumber: string, username: string): Promise<EducationDto> {

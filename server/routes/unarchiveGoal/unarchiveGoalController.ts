@@ -42,7 +42,7 @@ export default class UnarchiveGoalController {
 
     const unarchiveGoalDto = toUnarchiveGoalDto(prisonNumber, unarchiveGoalForm)
     try {
-      await this.educationAndWorkPlanService.unarchiveGoal(unarchiveGoalDto, req.user.token)
+      await this.educationAndWorkPlanService.unarchiveGoal(unarchiveGoalDto, req.user.username)
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (e) {
       return next(createError(500, `Error unarchiving goal for prisoner ${prisonNumber}`))

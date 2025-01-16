@@ -75,7 +75,7 @@ export default class ArchiveGoalController {
 
     const archiveGoalDto = toArchiveGoalDto(prisonNumber, archiveGoalForm)
     try {
-      await this.educationAndWorkPlanService.archiveGoal(archiveGoalDto, req.user.token)
+      await this.educationAndWorkPlanService.archiveGoal(archiveGoalDto, req.user.username)
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (e) {
       return next(createError(500, `Error archiving goal for prisoner ${prisonNumber}`))
