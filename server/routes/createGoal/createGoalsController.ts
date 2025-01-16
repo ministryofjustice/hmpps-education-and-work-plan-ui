@@ -82,7 +82,7 @@ export default class CreateGoalsController {
 
     try {
       if (actionPlan.goals.length > 0) {
-        await this.educationAndWorkPlanService.createGoals(prisonNumber, createGoalDtos, req.user.token)
+        await this.educationAndWorkPlanService.createGoals(prisonNumber, createGoalDtos, req.user.username)
       } else {
         const createActionPlanDto: CreateActionPlanDto = {
           prisonNumber,

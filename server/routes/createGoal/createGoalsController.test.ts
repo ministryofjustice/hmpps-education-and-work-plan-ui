@@ -31,6 +31,7 @@ describe('createGoalsController', () => {
   const controller = new CreateGoalsController(educationAndWorkPlanService, auditService)
 
   const prisonNumber = 'A1234BC'
+  const username = 'a-dps-user'
   const expectedPrisonId = 'MDI'
   const prisonerSummary = aValidPrisonerSummary(prisonNumber, expectedPrisonId)
   const requestId = 'deff305c-2460-4d07-853e-f8762a8a52c6'
@@ -38,7 +39,7 @@ describe('createGoalsController', () => {
   const req = {
     session: {},
     body: {},
-    user: { username: 'a-dps-user', token: 'some-token' },
+    user: { username },
     params: { prisonNumber },
     query: {},
     id: requestId,
@@ -182,7 +183,7 @@ describe('createGoalsController', () => {
       expect(educationAndWorkPlanService.createGoals).toHaveBeenCalledWith(
         prisonNumber,
         expectedCreateGoalDtos,
-        'some-token',
+        username,
       )
       expect(req.session.createGoalsForm).toBeUndefined()
       expect(auditService.logCreateGoal).toHaveBeenCalledTimes(2)

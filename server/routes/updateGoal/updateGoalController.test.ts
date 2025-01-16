@@ -41,7 +41,7 @@ describe('updateGoalController', () => {
   const req = {
     session: {},
     body: {},
-    user: { token: 'some-token', username },
+    user: { username },
     params: { prisonNumber, goalReference },
     id: requestId,
   } as unknown as Request
@@ -284,11 +284,7 @@ describe('updateGoalController', () => {
       )
 
       // Then
-      expect(educationAndWorkPlanService.updateGoal).toHaveBeenCalledWith(
-        'A1234GC',
-        expectedUpdateGoalDto,
-        'some-token',
-      )
+      expect(educationAndWorkPlanService.updateGoal).toHaveBeenCalledWith('A1234GC', expectedUpdateGoalDto, username)
       expect(mockedUpdateGoalFormToUpdateGoalDtoMapper).toHaveBeenCalledWith(updateGoalForm, prisonerSummary.prisonId)
       expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/view/overview`)
       expect(getPrisonerContext(req.session, prisonNumber).updateGoalForm).toBeUndefined()
@@ -314,11 +310,7 @@ describe('updateGoalController', () => {
       )
 
       // Then
-      expect(educationAndWorkPlanService.updateGoal).toHaveBeenCalledWith(
-        'A1234GC',
-        expectedUpdateGoalDto,
-        'some-token',
-      )
+      expect(educationAndWorkPlanService.updateGoal).toHaveBeenCalledWith('A1234GC', expectedUpdateGoalDto, username)
       expect(mockedUpdateGoalFormToUpdateGoalDtoMapper).toHaveBeenCalledWith(updateGoalForm, prisonerSummary.prisonId)
       expect(next).toHaveBeenCalledWith(expectedError)
       expect(getPrisonerContext(req.session, prisonNumber).updateGoalForm).toBeUndefined()
