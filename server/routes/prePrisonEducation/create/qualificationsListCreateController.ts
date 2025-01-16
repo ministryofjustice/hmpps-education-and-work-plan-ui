@@ -49,7 +49,7 @@ export default class QualificationsListCreateController extends QualificationsLi
     const createdEducationDto = toCreateEducationDto(prisonId, educationDto)
 
     try {
-      await this.educationAndWorkPlanService.createEducation(prisonNumber, createdEducationDto, req.user.token)
+      await this.educationAndWorkPlanService.createEducation(prisonNumber, createdEducationDto, req.user.username)
       getPrisonerContext(req.session, prisonNumber).educationDto = undefined
       return res.redirect(`/plan/${prisonNumber}/view/education-and-training`)
     } catch (e) {

@@ -417,24 +417,23 @@ describe('educationAndWorkPlanService', () => {
   describe('createEducation', () => {
     it('should create Education', async () => {
       // Given
-      const userToken = 'a-user-token'
       const createEducationDto = aValidCreateEducationDto()
       const createEducationRequest = aValidCreateEducationRequest()
 
       // When
-      await educationAndWorkPlanService.createEducation(prisonNumber, createEducationDto, userToken)
+      await educationAndWorkPlanService.createEducation(prisonNumber, createEducationDto, username)
 
       // Then
       expect(educationAndWorkPlanClient.createEducation).toHaveBeenCalledWith(
         prisonNumber,
         createEducationRequest,
-        userToken,
+        systemToken,
       )
+      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
     })
 
     it('should not create Education given educationAndWorkPlanClient returns an error', async () => {
       // Given
-      const userToken = 'a-user-token'
       const createEducationDto = aValidCreateEducationDto()
 
       const eductionAndWorkPlanApiError = {
@@ -449,37 +448,37 @@ describe('educationAndWorkPlanService', () => {
 
       // When
       const actual = await educationAndWorkPlanService
-        .createEducation(prisonNumber, createEducationDto, userToken)
+        .createEducation(prisonNumber, createEducationDto, username)
         .catch(error => {
           return error
         })
 
       // Then
       expect(actual).toEqual(eductionAndWorkPlanApiError)
+      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
     })
   })
 
   describe('updateEducation', () => {
     it('should update Education', async () => {
       // Given
-      const userToken = 'a-user-token'
       const updateEducationDto = aValidUpdateEducationDto()
       const updateEducationRequest = aValidUpdateEducationRequest()
 
       // When
-      await educationAndWorkPlanService.updateEducation(prisonNumber, updateEducationDto, userToken)
+      await educationAndWorkPlanService.updateEducation(prisonNumber, updateEducationDto, username)
 
       // Then
       expect(educationAndWorkPlanClient.updateEducation).toHaveBeenCalledWith(
         prisonNumber,
         updateEducationRequest,
-        userToken,
+        systemToken,
       )
+      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
     })
 
     it('should not update Education given educationAndWorkPlanClient returns an error', async () => {
       // Given
-      const userToken = 'a-user-token'
       const updateEducationDto = aValidUpdateEducationDto()
 
       const eductionAndWorkPlanApiError = {
@@ -494,13 +493,14 @@ describe('educationAndWorkPlanService', () => {
 
       // When
       const actual = await educationAndWorkPlanService
-        .updateEducation(prisonNumber, updateEducationDto, userToken)
+        .updateEducation(prisonNumber, updateEducationDto, username)
         .catch(error => {
           return error
         })
 
       // Then
       expect(actual).toEqual(eductionAndWorkPlanApiError)
+      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
     })
   })
 

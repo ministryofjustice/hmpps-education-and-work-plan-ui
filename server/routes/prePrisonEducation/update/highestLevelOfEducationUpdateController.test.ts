@@ -20,12 +20,12 @@ describe('highestLevelOfEducationUpdateController', () => {
 
   const prisonNumber = 'A1234BC'
   const prisonerSummary = aValidPrisonerSummary(prisonNumber)
-  const userToken = 'a-user-token'
+  const username = 'a-dps-user'
 
   const req = {
     session: {},
     body: {},
-    user: { token: userToken },
+    user: { username },
     params: { prisonNumber },
   } as unknown as Request
   const res = {
@@ -135,7 +135,7 @@ describe('highestLevelOfEducationUpdateController', () => {
       expect(educationAndWorkPlanService.updateEducation).toHaveBeenCalledWith(
         prisonNumber,
         expectedUpdateEducationDto,
-        userToken,
+        username,
       )
     })
 
@@ -183,7 +183,7 @@ describe('highestLevelOfEducationUpdateController', () => {
       expect(educationAndWorkPlanService.updateEducation).toHaveBeenCalledWith(
         prisonNumber,
         expectedUpdateEducationDto,
-        userToken,
+        username,
       )
     })
   })
