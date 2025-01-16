@@ -20,6 +20,10 @@ describe('CompleteGoalController - submitCompleteGoalForm', () => {
   const auditService = new AuditService(null) as jest.Mocked<AuditService>
   const controller = new CompleteGoalController(educationAndWorkPlanService, auditService)
 
+  const mockedCompleteGoalFormToCompleteGoalDtoMapper = toCompleteGoalDto as jest.MockedFunction<
+    typeof toCompleteGoalDto
+  >
+
   const prisonNumber = 'A1234GC'
   const username = 'a-dps-user'
   const goalReference = '1a2eae63-8102-4155-97cb-43d8fb739caf'
@@ -52,10 +56,9 @@ describe('CompleteGoalController - submitCompleteGoalForm', () => {
 
   it('should complete the goal and log the audit successfully', async () => {
     // Given
-    const completeGoalDto = { prisonNumber, note: 'Great progress made' }
-    ;(toCompleteGoalDto as jest.Mock).mockReturnValue(completeGoalDto)
-    // When
-    await controller.submitCompleteGoalForm(req as Request, res as Response, next)
+    const completeGoalDto = { goalReference, prisonNumber, note: 'Great progress made' }
+    mockedCompleteGoalFormToCompleteGoalDtoMapper.mockReturnValue(completeGoalDto)
+
     const expectedBaseAuditData: BaseAuditData = {
       correlationId: requestId,
       details: { goalReference },
@@ -63,8 +66,13 @@ describe('CompleteGoalController - submitCompleteGoalForm', () => {
       subjectType: 'PRISONER_ID',
       who: username,
     }
+
+    // When
+    await controller.submitCompleteGoalForm(req as Request, res as Response, next)
+
     // Then
     expect(toCompleteGoalDto).toHaveBeenCalledWith(prisonNumber, { note: 'Great progress made' })
+    expect(educationAndWorkPlanService.completeGoal).toHaveBeenCalledWith(completeGoalDto, username)
     expect(auditService.logCompleteGoal).toHaveBeenCalledWith(expectedBaseAuditData)
     expect(res.redirectWithSuccess).toHaveBeenCalledWith('/plan/A1234GC/view/overview', 'Goal Completed')
     expect(next).not.toHaveBeenCalled()
@@ -72,13 +80,17 @@ describe('CompleteGoalController - submitCompleteGoalForm', () => {
 
   it('should call next with a 500 error when goal completion fails', async () => {
     // Given
-    const completeGoalDto = { prisonNumber, note: 'Great progress made' }
-    ;(toCompleteGoalDto as jest.Mock).mockReturnValue(completeGoalDto)
-    // When
+    const completeGoalDto = { goalReference, prisonNumber, note: 'Great progress made' }
+    mockedCompleteGoalFormToCompleteGoalDtoMapper.mockReturnValue(completeGoalDto)
+
     educationAndWorkPlanService.completeGoal.mockRejectedValue(new Error('Service failure'))
+
+    // When
     await controller.submitCompleteGoalForm(req as Request, res as Response, next)
+
     // Then
     expect(next).toHaveBeenCalledWith(createError(500, 'Error completing goal for prisoner A1234GC'))
+    expect(educationAndWorkPlanService.completeGoal).toHaveBeenCalledWith(completeGoalDto, username)
     expect(res.redirectWithSuccess).not.toHaveBeenCalled()
     expect(auditService.logCompleteGoal).not.toHaveBeenCalled()
   })

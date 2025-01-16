@@ -43,7 +43,7 @@ export default class CompleteGoalController {
 
     const completeGoalDto = toCompleteGoalDto(prisonNumber, completeGoalForm)
     try {
-      await this.educationAndWorkPlanService.completeGoal(completeGoalDto, req.user.token)
+      await this.educationAndWorkPlanService.completeGoal(completeGoalDto, req.user.username)
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (e) {
       return next(createError(500, `Error completing goal for prisoner ${prisonNumber}`))

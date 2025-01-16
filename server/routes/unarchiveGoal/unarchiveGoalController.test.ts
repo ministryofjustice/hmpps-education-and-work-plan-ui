@@ -129,7 +129,7 @@ describe('unarchiveGoalController', () => {
       await controller.submitUnarchiveGoalForm(req, res, next)
 
       // Then
-      expect(educationAndWorkPlanService.unarchiveGoal).toHaveBeenCalledWith(expectedUnarchiveGoalDto, 'a-user-token')
+      expect(educationAndWorkPlanService.unarchiveGoal).toHaveBeenCalledWith(expectedUnarchiveGoalDto, username)
       expect(res.redirectWithSuccess).toHaveBeenCalledWith(`/plan/${prisonNumber}/view/overview`, 'Goal reactivated')
       expect(auditService.logUnarchiveGoal).toHaveBeenCalledWith(expectedBaseAuditData)
     })
@@ -154,7 +154,7 @@ describe('unarchiveGoalController', () => {
       await controller.submitUnarchiveGoalForm(req, res, next)
 
       // Then
-      expect(educationAndWorkPlanService.unarchiveGoal).toHaveBeenCalledWith(expectedUnarchiveGoalDto, 'a-user-token')
+      expect(educationAndWorkPlanService.unarchiveGoal).toHaveBeenCalledWith(expectedUnarchiveGoalDto, username)
       expect(next).toHaveBeenCalledWith(expectedError)
       expect(auditService.logUnarchiveGoal).not.toHaveBeenCalled()
     })
