@@ -23,14 +23,14 @@ describe('qualificationsListUpdateController', () => {
 
   const prisonNumber = 'A1234BC'
   const prisonId = 'BXI'
+  const username = 'a-dps-user'
   const prisonerSummary = aValidPrisonerSummary(prisonNumber, prisonId)
-  const userToken = 'a-user-token'
   const functionalSkills = validFunctionalSkills()
   const inPrisonCourses = validInPrisonCourseRecords()
 
   const req = {
     session: {},
-    user: { token: userToken },
+    user: { username },
     body: {},
     params: { prisonNumber },
   } as unknown as Request
@@ -103,7 +103,7 @@ describe('qualificationsListUpdateController', () => {
       expect(educationAndWorkPlanService.updateEducation).toHaveBeenCalledWith(
         prisonNumber,
         expectedUpdateEducationDto,
-        'a-user-token',
+        username,
       )
       expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/view/education-and-training`)
       expect(getPrisonerContext(req.session, prisonNumber).educationDto).toBeUndefined()
@@ -141,7 +141,7 @@ describe('qualificationsListUpdateController', () => {
       expect(educationAndWorkPlanService.updateEducation).toHaveBeenCalledWith(
         prisonNumber,
         expectedUpdateEducationDto,
-        'a-user-token',
+        username,
       )
       expect(next).toHaveBeenCalledWith(expectedError)
       expect(getPrisonerContext(req.session, prisonNumber).educationDto).toEqual(educationDto)

@@ -50,7 +50,7 @@ export default class QualificationsListUpdateController extends QualificationsLi
     // Update the Education record and return to Education and Training
     try {
       const updateEducationDto = toUpdateEducationDto(prisonId, educationDto)
-      await this.educationAndWorkPlanService.updateEducation(prisonNumber, updateEducationDto, req.user.token)
+      await this.educationAndWorkPlanService.updateEducation(prisonNumber, updateEducationDto, req.user.username)
       getPrisonerContext(req.session, prisonNumber).educationDto = undefined
       return res.redirect(`/plan/${prisonNumber}/view/education-and-training`)
     } catch (e) {

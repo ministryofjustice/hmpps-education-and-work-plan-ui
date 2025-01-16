@@ -33,7 +33,7 @@ describe('CompleteGoalController - submitCompleteGoalForm', () => {
   const req = {
     session: {},
     body: { note: 'Great progress made' },
-    user: { token: 'some-token', username },
+    user: { username },
     params: { prisonNumber, goalReference },
     id: requestId,
   } as unknown as Request

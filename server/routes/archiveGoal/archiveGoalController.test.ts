@@ -39,7 +39,7 @@ describe('archiveGoalController', () => {
   const req = {
     session: {},
     body: {},
-    user: { token: 'some-token', username },
+    user: { username },
     params: { prisonNumber, goalReference },
     id: requestId,
   } as unknown as Request

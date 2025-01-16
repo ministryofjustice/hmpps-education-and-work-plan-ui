@@ -131,11 +131,12 @@ export default class EducationAndWorkPlanService {
   async createEducation(
     prisonNumber: string,
     createEducationDto: CreateOrUpdateEducationDto,
-    token: string,
+    username: string,
   ): Promise<void> {
+    const systemToken = await this.hmppsAuthClient.getSystemClientToken(username)
     try {
       const createEducationRequest = toCreateEducationRequest(createEducationDto)
-      return await this.educationAndWorkPlanClient.createEducation(prisonNumber, createEducationRequest, token)
+      return await this.educationAndWorkPlanClient.createEducation(prisonNumber, createEducationRequest, systemToken)
     } catch (error) {
       logger.error(`Error creating Education for prisoner [${prisonNumber}] in the Education And Work Plan API `, error)
       throw error
@@ -145,11 +146,12 @@ export default class EducationAndWorkPlanService {
   async updateEducation(
     prisonNumber: string,
     updateEducationDto: CreateOrUpdateEducationDto,
-    token: string,
+    username: string,
   ): Promise<void> {
+    const systemToken = await this.hmppsAuthClient.getSystemClientToken(username)
     try {
       const updateEducationRequest = toUpdateEducationRequest(updateEducationDto)
-      return await this.educationAndWorkPlanClient.updateEducation(prisonNumber, updateEducationRequest, token)
+      return await this.educationAndWorkPlanClient.updateEducation(prisonNumber, updateEducationRequest, systemToken)
     } catch (error) {
       logger.error(`Error updating Education for prisoner [${prisonNumber}] in the Education And Work Plan API `, error)
       throw error

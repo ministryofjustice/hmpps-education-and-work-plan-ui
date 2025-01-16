@@ -29,7 +29,7 @@ describe('unarchiveGoalController', () => {
   const req = {
     session: {},
     body: {},
-    user: { token: 'a-user-token', username },
+    user: { username },
     params: { prisonNumber, goalReference },
     id: requestId,
   } as unknown as Request
