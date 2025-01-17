@@ -59,33 +59,33 @@ describe('educationAndWorkPlanService', () => {
   describe('createGoals', () => {
     it('should create Goals', async () => {
       // Given
-      const userToken = 'a-user-token'
       const createGoalDto = aValidCreateGoalDtoWithOneStep()
       const createGoalsRequest = aValidCreateGoalsRequestWithOneGoal()
 
       // When
-      await educationAndWorkPlanService.createGoals(prisonNumber, [createGoalDto], userToken)
+      await educationAndWorkPlanService.createGoals(prisonNumber, [createGoalDto], username)
 
       // Then
-      expect(educationAndWorkPlanClient.createGoals).toHaveBeenCalledWith(prisonNumber, createGoalsRequest, userToken)
+      expect(educationAndWorkPlanClient.createGoals).toHaveBeenCalledWith(prisonNumber, createGoalsRequest, systemToken)
+      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
     })
 
     it('should not create Goal given educationAndWorkPlanClient returns an error', async () => {
       // Given
-      const userToken = 'a-user-token'
       const createGoalDto = aValidCreateGoalDtoWithOneStep()
 
       educationAndWorkPlanClient.createGoals.mockRejectedValue(Error('Service Unavailable'))
 
       // When
       const actual = await educationAndWorkPlanService
-        .createGoals(prisonNumber, [createGoalDto], userToken)
+        .createGoals(prisonNumber, [createGoalDto], username)
         .catch(error => {
           return error
         })
 
       // Then
       expect(actual).toEqual(Error('Service Unavailable'))
+      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
     })
   })
 
@@ -230,33 +230,33 @@ describe('educationAndWorkPlanService', () => {
   describe('updateGoal', () => {
     it('should update Goal', async () => {
       // Given
-      const userToken = 'a-user-token'
       const updateGoalDto = aValidUpdateGoalDtoWithOneStep()
       const updateGoalRequest = aValidUpdateGoalRequestWithOneUpdatedStep()
 
       // When
-      await educationAndWorkPlanService.updateGoal(prisonNumber, updateGoalDto, userToken)
+      await educationAndWorkPlanService.updateGoal(prisonNumber, updateGoalDto, username)
 
       // Then
-      expect(educationAndWorkPlanClient.updateGoal).toHaveBeenCalledWith(prisonNumber, updateGoalRequest, userToken)
+      expect(educationAndWorkPlanClient.updateGoal).toHaveBeenCalledWith(prisonNumber, updateGoalRequest, systemToken)
+      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
     })
 
     it('should not update Goal given educationAndWorkPlanClient returns an error', async () => {
       // Given
-      const userToken = 'a-user-token'
       const updateGoalDto = aValidUpdateGoalDtoWithOneStep()
 
       educationAndWorkPlanClient.updateGoal.mockRejectedValue(Error('Service Unavailable'))
 
       // When
       const actual = await educationAndWorkPlanService
-        .updateGoal(prisonNumber, updateGoalDto, userToken)
+        .updateGoal(prisonNumber, updateGoalDto, username)
         .catch(error => {
           return error
         })
 
       // Then
       expect(actual).toEqual(Error('Service Unavailable'))
+      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
     })
   })
 
