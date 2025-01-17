@@ -21,12 +21,13 @@ describe('workedBeforeUpdateController', () => {
   const controller = new WorkedBeforeUpdateController(inductionService)
 
   const prisonNumber = 'A1234BC'
+  const username = 'a-dps-user'
   const prisonerSummary = aValidPrisonerSummary()
 
   const req = {
     session: {},
     body: {},
-    user: { token: 'some-token' },
+    user: { username },
     params: { prisonNumber },
     path: `/prisoners/${prisonNumber}/induction/has-worked-before`,
   } as unknown as Request
@@ -178,7 +179,7 @@ describe('workedBeforeUpdateController', () => {
       expect(mockedCreateOrUpdateInductionDtoMapper).toHaveBeenCalledWith(prisonerSummary.prisonId, updatedInduction)
       expect(updatedInduction.previousWorkExperiences.hasWorkedBefore).toEqual('NO')
 
-      expect(inductionService.updateInduction).toHaveBeenCalledWith(prisonNumber, updateInductionDto, 'some-token')
+      expect(inductionService.updateInduction).toHaveBeenCalledWith(prisonNumber, updateInductionDto, username)
       expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/view/work-and-interests`)
       expect(req.session.workedBeforeForm).toBeUndefined()
       expect(req.session.inductionDto).toBeUndefined()
@@ -209,7 +210,7 @@ describe('workedBeforeUpdateController', () => {
       expect(updatedInduction.previousWorkExperiences.hasWorkedBefore).toEqual('NOT_RELEVANT')
       expect(updatedInduction.previousWorkExperiences.hasWorkedBeforeNotRelevantReason).toEqual('Some reason')
 
-      expect(inductionService.updateInduction).toHaveBeenCalledWith(prisonNumber, updateInductionDto, 'some-token')
+      expect(inductionService.updateInduction).toHaveBeenCalledWith(prisonNumber, updateInductionDto, username)
       expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/view/work-and-interests`)
       expect(req.session.workedBeforeForm).toBeUndefined()
       expect(req.session.inductionDto).toBeUndefined()
@@ -244,7 +245,7 @@ describe('workedBeforeUpdateController', () => {
       expect(mockedCreateOrUpdateInductionDtoMapper).toHaveBeenCalledWith(prisonerSummary.prisonId, updatedInduction)
       expect(updatedInduction.previousWorkExperiences.hasWorkedBefore).toEqual('NO')
 
-      expect(inductionService.updateInduction).toHaveBeenCalledWith(prisonNumber, updateInductionDto, 'some-token')
+      expect(inductionService.updateInduction).toHaveBeenCalledWith(prisonNumber, updateInductionDto, username)
       expect(next).toHaveBeenCalledWith(expectedError)
       expect(req.session.workedBeforeForm).toEqual(workedBeforeForm)
       expect(req.session.inductionDto).toEqual(inductionDto)

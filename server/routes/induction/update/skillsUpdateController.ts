@@ -51,7 +51,7 @@ export default class SkillsUpdateController extends SkillsController {
 
     try {
       const updateInductionDto = toCreateOrUpdateInductionDto(prisonId, updatedInduction)
-      await this.inductionService.updateInduction(prisonNumber, updateInductionDto, req.user.token)
+      await this.inductionService.updateInduction(prisonNumber, updateInductionDto, req.user.username)
 
       req.session.skillsForm = undefined
       req.session.inductionDto = undefined

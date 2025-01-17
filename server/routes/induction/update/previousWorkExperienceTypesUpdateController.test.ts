@@ -22,12 +22,13 @@ describe('previousWorkExperienceTypesUpdateController', () => {
   const controller = new PreviousWorkExperienceTypesUpdateController(inductionService)
 
   const prisonNumber = 'A1234BC'
+  const username = 'a-dps-user'
   const prisonerSummary = aValidPrisonerSummary()
 
   const req = {
     session: {},
     body: {},
-    user: { token: 'some-token' },
+    user: { username },
     params: { prisonNumber },
     path: `/prisoners/${prisonNumber}/induction/previous-work-experience`,
   } as unknown as Request
@@ -227,7 +228,7 @@ describe('previousWorkExperienceTypesUpdateController', () => {
       expect(mockedCreateOrUpdateInductionDtoMapper).toHaveBeenCalledWith(prisonerSummary.prisonId, updatedInduction)
       expect(updatedInduction.previousWorkExperiences.experiences).toEqual(expectedPreviousWorkExperiences)
 
-      expect(inductionService.updateInduction).toHaveBeenCalledWith(prisonNumber, updateInductionDto, 'some-token')
+      expect(inductionService.updateInduction).toHaveBeenCalledWith(prisonNumber, updateInductionDto, username)
       expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/view/work-and-interests`)
       expect(req.session.previousWorkExperienceTypesForm).toBeUndefined()
       expect(req.session.inductionDto).toBeUndefined()
@@ -273,7 +274,7 @@ describe('previousWorkExperienceTypesUpdateController', () => {
       expect(mockedCreateOrUpdateInductionDtoMapper).toHaveBeenCalledWith(prisonerSummary.prisonId, updatedInduction)
       expect(updatedInduction.previousWorkExperiences.experiences).toEqual(expectedPreviousWorkExperiences)
 
-      expect(inductionService.updateInduction).toHaveBeenCalledWith(prisonNumber, updateInductionDto, 'some-token')
+      expect(inductionService.updateInduction).toHaveBeenCalledWith(prisonNumber, updateInductionDto, username)
       expect(next).toHaveBeenCalledWith(expectedError)
       expect(req.session.previousWorkExperienceTypesForm).toEqual(previousWorkExperienceTypesForm)
       expect(req.session.inductionDto).toEqual(inductionDto)

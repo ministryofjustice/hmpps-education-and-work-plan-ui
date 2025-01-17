@@ -23,11 +23,12 @@ export default class InductionService {
   async updateInduction(
     prisonNumber: string,
     updateInductionDto: CreateOrUpdateInductionDto,
-    token: string,
+    username: string,
   ): Promise<never> {
+    const systemToken = await this.hmppsAuthClient.getSystemClientToken(username)
     try {
       const updateInductionRequest = toUpdateInductionRequest(updateInductionDto)
-      return await this.educationAndWorkPlanClient.updateInduction(prisonNumber, updateInductionRequest, token)
+      return await this.educationAndWorkPlanClient.updateInduction(prisonNumber, updateInductionRequest, systemToken)
     } catch (error) {
       logger.error(`Error updating Induction for prisoner [${prisonNumber}] in the Education And Work Plan API `, error)
       throw error
@@ -37,11 +38,12 @@ export default class InductionService {
   async createInduction(
     prisonNumber: string,
     createInductionDto: CreateOrUpdateInductionDto,
-    token: string,
+    username: string,
   ): Promise<void> {
+    const systemToken = await this.hmppsAuthClient.getSystemClientToken(username)
     try {
       const createInductionRequest = toCreateInductionRequest(createInductionDto)
-      return await this.educationAndWorkPlanClient.createInduction(prisonNumber, createInductionRequest, token)
+      return await this.educationAndWorkPlanClient.createInduction(prisonNumber, createInductionRequest, systemToken)
     } catch (error) {
       logger.error(`Error creating Induction for prisoner [${prisonNumber}] in the Education And Work Plan API `, error)
       throw error

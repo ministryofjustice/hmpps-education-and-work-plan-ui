@@ -11,14 +11,10 @@ describe('ViewGoalsController', () => {
 
   const prisonNumber = 'A1234GC'
   const username = 'a-dps-user'
-  const token = 'a-user-token'
   const prisonerSummary = aValidPrisonerSummary(prisonNumber)
 
   const req = {
-    user: {
-      username,
-      token,
-    },
+    user: { username },
     params: { prisonNumber },
   } as unknown as Request
   const res = {

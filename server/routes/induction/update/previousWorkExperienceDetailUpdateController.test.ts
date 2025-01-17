@@ -23,12 +23,13 @@ describe('previousWorkExperienceDetailUpdateController', () => {
   const controller = new PreviousWorkExperienceDetailUpdateController(inductionService)
 
   const prisonNumber = 'A1234BC'
+  const username = 'a-dps-user'
   const prisonerSummary = aValidPrisonerSummary()
 
   const req = {
     session: {} as SessionData,
     body: {},
-    user: { token: 'some-token' },
+    user: { username },
     params: { prisonNumber } as Record<string, string>,
     path: '',
   }
@@ -288,7 +289,7 @@ describe('previousWorkExperienceDetailUpdateController', () => {
           expectedUpdatedPreviousWorkExperienceDetail,
         )
 
-        expect(inductionService.updateInduction).toHaveBeenCalledWith(prisonNumber, updateInductionDto, 'some-token')
+        expect(inductionService.updateInduction).toHaveBeenCalledWith(prisonNumber, updateInductionDto, username)
         expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/view/work-and-interests`)
         expect(req.session.previousWorkExperienceDetailForm).toBeUndefined()
         expect(req.session.inductionDto).toBeUndefined()
@@ -345,7 +346,7 @@ describe('previousWorkExperienceDetailUpdateController', () => {
           expectedUpdatedPreviousWorkExperienceDetail,
         )
 
-        expect(inductionService.updateInduction).toHaveBeenCalledWith(prisonNumber, updateInductionDto, 'some-token')
+        expect(inductionService.updateInduction).toHaveBeenCalledWith(prisonNumber, updateInductionDto, username)
         expect(next).toHaveBeenCalledWith(expectedError)
         expect(req.session.previousWorkExperienceDetailForm).toEqual(previousWorkExperienceDetailForm)
         expect(req.session.inductionDto).toEqual(inductionDto)
@@ -407,7 +408,7 @@ describe('previousWorkExperienceDetailUpdateController', () => {
           expectedUpdatedPreviousWorkExperienceDetail,
         )
 
-        expect(inductionService.updateInduction).toHaveBeenCalledWith(prisonNumber, updateInductionDto, 'some-token')
+        expect(inductionService.updateInduction).toHaveBeenCalledWith(prisonNumber, updateInductionDto, username)
         expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/view/work-and-interests`)
         expect(req.session.previousWorkExperienceDetailForm).toBeUndefined()
         expect(req.session.inductionDto).toBeUndefined()

@@ -22,12 +22,13 @@ describe('workInterestTypesUpdateController', () => {
   const controller = new WorkInterestTypesUpdateController(inductionService)
 
   const prisonNumber = 'A1234BC'
+  const username = 'a-dps-user'
   const prisonerSummary = aValidPrisonerSummary()
 
   const req = {
     session: {},
     body: {},
-    user: { token: 'some-token' },
+    user: { username },
     params: { prisonNumber },
     path: `/prisoners/${prisonNumber}/induction/work-interest-types`,
   } as unknown as Request
@@ -179,7 +180,7 @@ describe('workInterestTypesUpdateController', () => {
       expect(mockedCreateOrUpdateInductionDtoMapper).toHaveBeenCalledWith(prisonerSummary.prisonId, updatedInduction)
       expect(updatedInduction.futureWorkInterests.interests).toEqual(expectedUpdatedWorkInterests)
 
-      expect(inductionService.updateInduction).toHaveBeenCalledWith(prisonNumber, updateInductionDto, 'some-token')
+      expect(inductionService.updateInduction).toHaveBeenCalledWith(prisonNumber, updateInductionDto, username)
       expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/view/work-and-interests`)
       expect(req.session.workInterestTypesForm).toBeUndefined()
       expect(req.session.inductionDto).toBeUndefined()
@@ -229,7 +230,7 @@ describe('workInterestTypesUpdateController', () => {
       expect(mockedCreateOrUpdateInductionDtoMapper).toHaveBeenCalledWith(prisonerSummary.prisonId, updatedInduction)
       expect(updatedInduction.futureWorkInterests.interests).toEqual(expectedUpdatedWorkInterests)
 
-      expect(inductionService.updateInduction).toHaveBeenCalledWith(prisonNumber, updateInductionDto, 'some-token')
+      expect(inductionService.updateInduction).toHaveBeenCalledWith(prisonNumber, updateInductionDto, username)
       expect(next).toHaveBeenCalledWith(expectedError)
       expect(req.session.workInterestTypesForm).toEqual(workInterestTypesForm)
       expect(req.session.inductionDto).toEqual(inductionDto)
