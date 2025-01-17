@@ -56,7 +56,7 @@ export default class InPrisonTrainingUpdateController extends InPrisonTrainingCo
 
     try {
       const updateInductionDto = toCreateOrUpdateInductionDto(prisonId, updatedInduction)
-      await this.inductionService.updateInduction(prisonNumber, updateInductionDto, req.user.token)
+      await this.inductionService.updateInduction(prisonNumber, updateInductionDto, req.user.username)
 
       req.session.inPrisonTrainingForm = undefined
       req.session.inductionDto = undefined

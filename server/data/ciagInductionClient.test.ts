@@ -10,6 +10,9 @@ describe('ciagInductionClient', () => {
   config.apis.educationAndWorkPlan.url = 'http://localhost:8200'
   let ciagApi: nock.Scope
 
+  const prisonNumbers = ['A1234BC', 'B5544GD']
+  const systemToken = 'a-system-token'
+
   beforeEach(() => {
     ciagApi = nock(config.apis.educationAndWorkPlan.url)
   })
@@ -21,9 +24,6 @@ describe('ciagInductionClient', () => {
   describe('getCiagInductionsForPrisonNumbers', () => {
     it('should get CIAG Inductions', async () => {
       // Given
-      const prisonNumbers = ['A1234BC', 'B5544GD']
-      const token = 'a-user-token'
-
       const expectedCiagInductionListResponse = aValidCiagInductionSummaryListResponse({
         ciagProfileList: [
           aValidCiagInductionSummaryResponse({ prisonNumber: 'A1234BC' }),
@@ -33,7 +33,7 @@ describe('ciagInductionClient', () => {
       ciagApi.post('/ciag/induction/list', { offenderIds: prisonNumbers }).reply(200, expectedCiagInductionListResponse)
 
       // When
-      const actual = await ciagInductionClient.getCiagInductionsForPrisonNumbers(prisonNumbers, token)
+      const actual = await ciagInductionClient.getCiagInductionsForPrisonNumbers(prisonNumbers, systemToken)
 
       // Then
       expect(nock.isDone()).toBe(true)
@@ -42,16 +42,13 @@ describe('ciagInductionClient', () => {
 
     it('should get zero CIAG Inductions given none of the specified prisoners have CIAG Inductions', async () => {
       // Given
-      const prisonNumbers = ['A1234BC', 'B5544GD']
-      const token = 'a-user-token'
-
       const expectedCiagInductionListResponse = aValidCiagInductionSummaryListResponse({
         ciagProfileList: [],
       })
       ciagApi.post('/ciag/induction/list', { offenderIds: prisonNumbers }).reply(200, expectedCiagInductionListResponse)
 
       // When
-      const actual = await ciagInductionClient.getCiagInductionsForPrisonNumbers(prisonNumbers, token)
+      const actual = await ciagInductionClient.getCiagInductionsForPrisonNumbers(prisonNumbers, systemToken)
 
       // Then
       expect(nock.isDone()).toBe(true)
@@ -60,9 +57,6 @@ describe('ciagInductionClient', () => {
 
     it('should not get CIAG Inductions given API returns an error response', async () => {
       // Given
-      const prisonNumbers = ['A1234BC', 'B5544GD']
-      const token = 'a-user-token'
-
       const expectedResponseBody = {
         status: 500,
         userMessage: 'An unexpected error occurred',
@@ -72,7 +66,7 @@ describe('ciagInductionClient', () => {
 
       // When
       try {
-        await ciagInductionClient.getCiagInductionsForPrisonNumbers(prisonNumbers, token)
+        await ciagInductionClient.getCiagInductionsForPrisonNumbers(prisonNumbers, systemToken)
       } catch (e) {
         // Then
         expect(nock.isDone()).toBe(true)

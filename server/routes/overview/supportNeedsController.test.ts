@@ -16,7 +16,6 @@ describe('supportNeedsController', () => {
   const req = {
     user: {
       username: 'a-dps-user',
-      token: 'a-user-token',
     },
     params: { prisonNumber },
   } as unknown as Request

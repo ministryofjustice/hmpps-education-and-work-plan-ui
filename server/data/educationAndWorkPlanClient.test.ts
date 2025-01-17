@@ -36,6 +36,9 @@ describe('educationAndWorkPlanClient', () => {
   config.apis.educationAndWorkPlan.url = 'http://localhost:8200'
   let educationAndWorkPlanApi: nock.Scope
 
+  const prisonNumber = 'A1234BC'
+  const systemToken = 'a-system-token'
+
   beforeEach(() => {
     educationAndWorkPlanApi = nock(config.apis.educationAndWorkPlan.url)
   })
@@ -47,9 +50,6 @@ describe('educationAndWorkPlanClient', () => {
   describe('createGoals', () => {
     it('should create Goals', async () => {
       // Given
-      const prisonNumber = 'A1234BC'
-      const systemToken = 'a-system-token'
-
       const createGoalsRequest = aValidCreateGoalsRequestWitMultipleGoals()
       const expectedResponseBody = {}
       educationAndWorkPlanApi
@@ -66,9 +66,6 @@ describe('educationAndWorkPlanClient', () => {
 
     it('should not create Goals given API returns an error response', async () => {
       // Given
-      const prisonNumber = 'A1234BC'
-      const systemToken = 'a-system-token'
-
       const createGoalsRequest = aValidCreateGoalsRequestWithOneGoal()
       const expectedResponseBody = {
         status: 500,
@@ -94,9 +91,6 @@ describe('educationAndWorkPlanClient', () => {
   describe('getActionPlan', () => {
     it('should get Action Plan', async () => {
       // Given
-      const prisonNumber = 'A1234BC'
-      const systemToken = 'a-system-token'
-
       const expectedActionPlanResponse = aValidActionPlanResponseWithOneGoal()
       educationAndWorkPlanApi.get(`/action-plans/${prisonNumber}`).reply(200, expectedActionPlanResponse)
 
@@ -110,9 +104,6 @@ describe('educationAndWorkPlanClient', () => {
 
     it('should not get Action Plan given API returns error response', async () => {
       // Given
-      const prisonNumber = 'A1234BC'
-      const systemToken = 'a-system-token'
-
       const expectedResponseBody = {
         status: 500,
         userMessage: 'An unexpected error occurred',
@@ -135,9 +126,6 @@ describe('educationAndWorkPlanClient', () => {
   describe('getGoalsByStatus', () => {
     it('should get Goals', async () => {
       // Given
-      const prisonNumber = 'A1234BC'
-      const systemToken = 'a-system-token'
-
       const expectedResponseBody = {
         goals: [aValidGoalResponse()],
       }
@@ -159,9 +147,6 @@ describe('educationAndWorkPlanClient', () => {
 
     it('should return status code with errors as 404 means no plan has been created', async () => {
       // Given
-      const prisonNumber = 'A1234BC'
-      const systemToken = 'a-system-token'
-
       const expectedResponseBody = {
         status: 404,
         userMessage: 'Some error',
@@ -186,8 +171,6 @@ describe('educationAndWorkPlanClient', () => {
   describe('updateGoal', () => {
     it('should update Goal', async () => {
       // Given
-      const prisonNumber = 'A1234BC'
-      const systemToken = 'a-system-token'
       const goalReference = 'c77cd2fb-40e0-4354-982a-5c8017e92b26'
 
       const updateGoalRequest = aValidUpdateGoalRequestWithOneUpdatedStep(goalReference)
@@ -208,8 +191,6 @@ describe('educationAndWorkPlanClient', () => {
 
     it('should not update Goal given API returns an error response', async () => {
       // Given
-      const prisonNumber = 'A1234BC'
-      const systemToken = 'a-system-token'
       const goalReference = 'c77cd2fb-40e0-4354-982a-5c8017e92b26'
 
       const updateGoalRequest = aValidUpdateGoalRequestWithOneUpdatedStep(goalReference)
@@ -240,7 +221,6 @@ describe('educationAndWorkPlanClient', () => {
     it('should get Action Plans', async () => {
       // Given
       const prisonNumbers = ['A1234BC', 'B5544GD']
-      const systemToken = 'a-system-token'
 
       const expectedActionPlanSummaryListResponse = aValidActionPlanSummaryListResponse({
         actionPlanSummaries: [
@@ -269,7 +249,6 @@ describe('educationAndWorkPlanClient', () => {
     it('should get zero Action Plans given none of the specified prisoners have Action Plans', async () => {
       // Given
       const prisonNumbers = ['A1234BC', 'B5544GD']
-      const systemToken = 'a-system-token'
 
       const expectedActionPlanSummaryListResponse = aValidActionPlanSummaryListResponse({
         actionPlanSummaries: [],
@@ -290,9 +269,6 @@ describe('educationAndWorkPlanClient', () => {
   describe('createActionPlanReview', () => {
     it('should create Action Plan Review', async () => {
       // Given
-      const prisonNumber = 'A1234BC'
-      const systemToken = 'a-system-token'
-
       const createActionPlanReviewRequest = aValidCreateActionPlanReviewRequest()
       const expectedResponseBody = aValidCreateActionPlanReviewResponse()
       educationAndWorkPlanApi
@@ -315,9 +291,6 @@ describe('educationAndWorkPlanClient', () => {
 
     it('should not create Action Plan Review given API returns an error response', async () => {
       // Given
-      const prisonNumber = 'A1234BC'
-      const systemToken = 'a-system-token'
-
       const createActionPlanReviewRequest = aValidCreateActionPlanReviewRequest()
       const expectedResponseBody = {
         status: 500,
@@ -349,9 +322,6 @@ describe('educationAndWorkPlanClient', () => {
   describe('getActionPlanReviews', () => {
     it('should get Action Plan Reviews', async () => {
       // Given
-      const prisonNumber = 'A1234BC'
-      const systemToken = 'a-system-token'
-
       const expectedActionPlanReviews = aValidActionPlanReviewsResponse()
       educationAndWorkPlanApi.get(`/action-plans/${prisonNumber}/reviews`).reply(200, expectedActionPlanReviews)
 
@@ -365,9 +335,6 @@ describe('educationAndWorkPlanClient', () => {
 
     it('should not get Action Plan Reviews given API returns error response', async () => {
       // Given
-      const prisonNumber = 'A1234BC'
-      const systemToken = 'a-system-token'
-
       const expectedResponseBody = {
         status: 500,
         userMessage: 'An unexpected error occurred',
@@ -388,9 +355,6 @@ describe('educationAndWorkPlanClient', () => {
 
     it('should not get Action Plan Reviews given specified prisoner does not have a review schedule', async () => {
       // Given
-      const prisonNumber = 'A1234BC'
-      const systemToken = 'a-system-token'
-
       const expectedResponseBody = {
         status: 404,
         userMessage: `Review Schedule not found for prisoner [${prisonNumber}]`,
@@ -412,9 +376,6 @@ describe('educationAndWorkPlanClient', () => {
   describe('updateActionPlanReviewScheduleStatus', () => {
     it('should update Action Plan Review Schedule Status', async () => {
       // Given
-      const prisonNumber = 'A1234BC'
-      const systemToken = 'a-system-token'
-
       const updateReviewScheduleStatusRequest = aValidUpdateReviewScheduleStatusRequest()
 
       const expectedResponseBody = {}
@@ -438,9 +399,6 @@ describe('educationAndWorkPlanClient', () => {
 
     it('should not update Action Plan Review Schedule Status given API returns error response', async () => {
       // Given
-      const prisonNumber = 'A1234BC'
-      const systemToken = 'a-system-token'
-
       const updateReviewScheduleStatusRequest = aValidUpdateReviewScheduleStatusRequest()
 
       const expectedResponseBody = {
@@ -473,9 +431,6 @@ describe('educationAndWorkPlanClient', () => {
   describe('getTimeline', () => {
     it('should get Timeline given no filtering by event type', async () => {
       // Given
-      const prisonNumber = 'A1234BC'
-      const systemToken = 'a-system-token'
-
       const expectedTimelineResponse = aValidTimelineResponse()
 
       educationAndWorkPlanApi.get(`/timelines/${prisonNumber}`).reply(200, expectedTimelineResponse)
@@ -490,9 +445,6 @@ describe('educationAndWorkPlanClient', () => {
 
     it('should get Timeline filtered by event type', async () => {
       // Given
-      const prisonNumber = 'A1234BC'
-      const systemToken = 'a-system-token'
-
       const timelineResponseFromApi = aValidTimelineResponse()
       educationAndWorkPlanApi.get(`/timelines/${prisonNumber}`).reply(200, timelineResponseFromApi)
 
@@ -525,9 +477,6 @@ describe('educationAndWorkPlanClient', () => {
 
     it('should not get Timeline given API returns error response', async () => {
       // Given
-      const prisonNumber = 'A1234BC'
-      const systemToken = 'a-system-token'
-
       const expectedResponseBody = {
         status: 500,
         userMessage: 'An unexpected error occurred',
@@ -550,9 +499,6 @@ describe('educationAndWorkPlanClient', () => {
   describe('getInduction', () => {
     it('should get Induction', async () => {
       // Given
-      const prisonNumber = 'A1234BC'
-      const systemToken = 'a-system-token'
-
       const expectedInduction = aValidInductionResponse()
       educationAndWorkPlanApi.get(`/inductions/${prisonNumber}`).reply(200, expectedInduction)
 
@@ -566,9 +512,6 @@ describe('educationAndWorkPlanClient', () => {
 
     it('should not get Induction given API returns error response', async () => {
       // Given
-      const prisonNumber = 'A1234BC'
-      const systemToken = 'a-system-token'
-
       const expectedResponseBody = {
         status: 500,
         userMessage: 'An unexpected error occurred',
@@ -589,9 +532,6 @@ describe('educationAndWorkPlanClient', () => {
 
     it('should not get Induction given specified prisoner does not have an induction', async () => {
       // Given
-      const prisonNumber = 'A1234BC'
-      const systemToken = 'a-system-token'
-
       const expectedResponseBody = {
         status: 404,
         userMessage: `Induction not found for prisoner [${prisonNumber}]`,
@@ -613,8 +553,6 @@ describe('educationAndWorkPlanClient', () => {
   describe('updateInduction', () => {
     it('should update Induction', async () => {
       // Given
-      const prisonNumber = 'A1234BC'
-      const systemToken = 'a-system-token'
       const updateInductionRequest = aValidUpdateInductionRequest()
 
       educationAndWorkPlanApi //
@@ -630,8 +568,6 @@ describe('educationAndWorkPlanClient', () => {
 
     it('should not update Induction given API returns error response', async () => {
       // Given
-      const prisonNumber = 'A1234BC'
-      const systemToken = 'a-system-token'
       const updateInductionRequest = aValidUpdateInductionRequest()
 
       const expectedResponseBody = {
@@ -658,8 +594,6 @@ describe('educationAndWorkPlanClient', () => {
   describe('createInduction', () => {
     it('should create Induction', async () => {
       // Given
-      const prisonNumber = 'A1234BC'
-      const systemToken = 'a-system-token'
       const createInductionRequest = aValidCreateInductionRequest()
 
       educationAndWorkPlanApi //
@@ -675,8 +609,6 @@ describe('educationAndWorkPlanClient', () => {
 
     it('should not create Induction given API returns error response', async () => {
       // Given
-      const prisonNumber = 'A1234BC'
-      const systemToken = 'a-system-token'
       const createInductionRequest = aValidCreateInductionRequest()
 
       const expectedResponseBody = {
@@ -703,9 +635,6 @@ describe('educationAndWorkPlanClient', () => {
   describe('getInductionSchedule', () => {
     it('should get Induction Schedule', async () => {
       // Given
-      const prisonNumber = 'A1234BC'
-      const systemToken = 'a-system-token'
-
       const expectedInductionSchedule = aValidInductionScheduleResponse()
       educationAndWorkPlanApi
         .get(`/inductions/${prisonNumber}/induction-schedule`)
@@ -721,9 +650,6 @@ describe('educationAndWorkPlanClient', () => {
 
     it('should not get Induction Schedule given API returns error response', async () => {
       // Given
-      const prisonNumber = 'A1234BC'
-      const systemToken = 'a-system-token'
-
       const expectedResponseBody = {
         status: 500,
         userMessage: 'An unexpected error occurred',
@@ -747,9 +673,6 @@ describe('educationAndWorkPlanClient', () => {
 
     it('should not get Induction Schedule given specified prisoner does not have an induction schedule', async () => {
       // Given
-      const prisonNumber = 'A1234BC'
-      const systemToken = 'a-system-token'
-
       const expectedResponseBody = {
         status: 404,
         userMessage: `Induction schedule not found for prisoner [${prisonNumber}]`,
@@ -769,8 +692,6 @@ describe('educationAndWorkPlanClient', () => {
   })
 
   describe('archiveGoal', () => {
-    const prisonNumber = 'A1234BC'
-    const systemToken = 'a-system-token'
     const goalReference = 'c77cd2fb-40e0-4354-982a-5c8017e92b26'
     const reason = ReasonToArchiveGoalValue.PRISONER_NO_LONGER_WANTS_TO_WORK_TOWARDS_GOAL
     const archiveGoalRequest: ArchiveGoalRequest = {
@@ -817,8 +738,6 @@ describe('educationAndWorkPlanClient', () => {
   })
 
   describe('unarchiveGoal', () => {
-    const prisonNumber = 'A1234BC'
-    const systemToken = 'a-system-token'
     const goalReference = 'c77cd2fb-40e0-4354-982a-5c8017e92b26'
     const unarchiveGoalRequest: UnarchiveGoalRequest = { goalReference }
 
@@ -863,9 +782,6 @@ describe('educationAndWorkPlanClient', () => {
   describe('getEducation', () => {
     it('should get Education', async () => {
       // Given
-      const prisonNumber = 'A1234BC'
-      const systemToken = 'a-system-token'
-
       const expectedEducationResponse = aValidEducationResponse()
       educationAndWorkPlanApi.get(`/person/${prisonNumber}/education`).reply(200, expectedEducationResponse)
 
@@ -879,9 +795,6 @@ describe('educationAndWorkPlanClient', () => {
 
     it('should not get Education given API returns error response', async () => {
       // Given
-      const prisonNumber = 'A1234BC'
-      const systemToken = 'a-system-token'
-
       const expectedResponseBody = {
         status: 500,
         userMessage: 'An unexpected error occurred',
@@ -904,9 +817,6 @@ describe('educationAndWorkPlanClient', () => {
   describe('createEducation', () => {
     it('should create Education', async () => {
       // Given
-      const prisonNumber = 'A1234BC'
-      const systemToken = 'a-system-token'
-
       const createEducationRequest = aValidCreateEducationRequest()
       const expectedResponseBody = {}
       educationAndWorkPlanApi
@@ -923,9 +833,6 @@ describe('educationAndWorkPlanClient', () => {
 
     it('should not create Education given API returns error response', async () => {
       // Given
-      const prisonNumber = 'A1234BC'
-      const systemToken = 'a-system-token'
-
       const createEducationRequest = aValidCreateEducationRequest()
       const expectedResponseBody = {
         status: 500,
@@ -951,9 +858,6 @@ describe('educationAndWorkPlanClient', () => {
   describe('updateEducation', () => {
     it('should update Education', async () => {
       // Given
-      const prisonNumber = 'A1234BC'
-      const systemToken = 'a-system-token'
-
       const updateEducationRequest = aValidUpdateEducationRequest()
       const expectedResponseBody = {}
       educationAndWorkPlanApi
@@ -970,9 +874,6 @@ describe('educationAndWorkPlanClient', () => {
 
     it('should not update Education given API returns error response', async () => {
       // Given
-      const prisonNumber = 'A1234BC'
-      const systemToken = 'a-system-token'
-
       const updateEducationRequest = aValidUpdateEducationRequest()
       const expectedResponseBody = {
         status: 500,
@@ -998,9 +899,6 @@ describe('educationAndWorkPlanClient', () => {
   describe('createActionPlan', () => {
     it('should create action plan', async () => {
       // Given
-      const prisonNumber = 'A1234BC'
-      const systemToken = 'a-system-token'
-
       const createActionPlanRequest = aValidCreateActionPlanRequest()
       const expectedResponseBody = {}
       educationAndWorkPlanApi
@@ -1021,9 +919,6 @@ describe('educationAndWorkPlanClient', () => {
 
     it('should not create action plan given API returns an error response', async () => {
       // Given
-      const prisonNumber = 'A1234BC'
-      const systemToken = 'a-system-token'
-
       const createActionPlanRequest = aValidCreateActionPlanRequest()
       const expectedResponseBody = {
         status: 500,

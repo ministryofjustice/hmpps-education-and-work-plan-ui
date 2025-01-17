@@ -26,12 +26,13 @@ describe('hopingToWorkOnReleaseUpdateController', () => {
   const controller = new HopingToWorkOnReleaseUpdateController(inductionService)
 
   const prisonNumber = 'A1234BC'
+  const username = 'a-dps-user'
   const prisonerSummary = aValidPrisonerSummary(prisonNumber)
 
   const req = {
     session: {} as SessionData,
     body: {},
-    user: { token: 'some-token' },
+    user: { username },
     params: { prisonNumber },
     path: `/prisoners/${prisonNumber}/induction/hoping-to-work-on-release`,
   } as unknown as Request
@@ -164,7 +165,7 @@ describe('hopingToWorkOnReleaseUpdateController', () => {
         expect(updatedInduction.workOnRelease.hopingToWork).toEqual(hopingToGetWorkValue)
         expect(updatedInduction.futureWorkInterests.interests).toEqual([])
 
-        expect(inductionService.updateInduction).toHaveBeenCalledWith(prisonNumber, updateInductionDto, 'some-token')
+        expect(inductionService.updateInduction).toHaveBeenCalledWith(prisonNumber, updateInductionDto, username)
         expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/view/work-and-interests`)
         expect(req.session.hopingToWorkOnReleaseForm).toBeUndefined()
         expect(req.session.inductionDto).toBeUndefined()
@@ -227,7 +228,7 @@ describe('hopingToWorkOnReleaseUpdateController', () => {
       expect(mockedCreateOrUpdateInductionDtoMapper).toHaveBeenCalledWith(prisonerSummary.prisonId, updatedInduction)
       expect(updatedInduction.workOnRelease.hopingToWork).toEqual(HopingToGetWorkValue.NOT_SURE)
 
-      expect(inductionService.updateInduction).toHaveBeenCalledWith(prisonNumber, updateInductionDto, 'some-token')
+      expect(inductionService.updateInduction).toHaveBeenCalledWith(prisonNumber, updateInductionDto, username)
       expect(next).toHaveBeenCalledWith(expectedError)
       expect(req.session.hopingToWorkOnReleaseForm).toEqual(hopingToWorkOnReleaseForm)
       const updatedInductionDto = req.session.inductionDto

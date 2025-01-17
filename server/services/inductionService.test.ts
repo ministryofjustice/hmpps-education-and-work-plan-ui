@@ -109,28 +109,26 @@ describe('inductionService', () => {
   describe('updateInduction', () => {
     it('should update Induction', async () => {
       // Given
-      const userToken = 'a-user-token'
-
       const updateInductionDto = aValidUpdateInductionDto()
       const updateInductionRequest = aValidUpdateInductionRequest()
       educationAndWorkPlanClient.updateInduction.mockResolvedValue(updateInductionRequest)
       mockedUpdateInductionMapper.mockReturnValue(updateInductionRequest)
 
       // When
-      await inductionService.updateInduction(prisonNumber, updateInductionDto, userToken)
+      await inductionService.updateInduction(prisonNumber, updateInductionDto, username)
 
       // Then
       expect(educationAndWorkPlanClient.updateInduction).toHaveBeenCalledWith(
         prisonNumber,
         updateInductionRequest,
-        userToken,
+        systemToken,
       )
       expect(mockedUpdateInductionMapper).toHaveBeenCalledWith(updateInductionDto)
+      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
     })
 
     it('should not update Induction given Education and Work Plan API returns an error', async () => {
       // Given
-      const userToken = 'a-user-token'
       const updateInductionDto = aValidUpdateInductionDto()
       const updateInductionRequest = aValidUpdateInductionRequest()
       mockedUpdateInductionMapper.mockReturnValue(updateInductionRequest)
@@ -147,46 +145,43 @@ describe('inductionService', () => {
 
       // When
       const actual = await inductionService
-        .updateInduction(prisonNumber, updateInductionDto, userToken)
-        .catch(error => {
-          return error
-        })
+        .updateInduction(prisonNumber, updateInductionDto, username)
+        .catch(error => error)
 
       // Then
       expect(actual).toEqual(eductionAndWorkPlanApiError)
       expect(educationAndWorkPlanClient.updateInduction).toHaveBeenCalledWith(
         prisonNumber,
         updateInductionRequest,
-        userToken,
+        systemToken,
       )
       expect(mockedUpdateInductionMapper).toHaveBeenCalledWith(updateInductionDto)
+      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
     })
   })
 
   describe('createInduction', () => {
     it('should create Induction', async () => {
       // Given
-      const userToken = 'a-user-token'
-
       const createInductionDto = aValidCreateInductionDto()
       const createInductionRequest = aValidCreateInductionRequest()
       mockedCreateInductionMapper.mockReturnValue(createInductionRequest)
 
       // When
-      await inductionService.createInduction(prisonNumber, createInductionDto, userToken)
+      await inductionService.createInduction(prisonNumber, createInductionDto, username)
 
       // Then
       expect(educationAndWorkPlanClient.createInduction).toHaveBeenCalledWith(
         prisonNumber,
         createInductionRequest,
-        userToken,
+        systemToken,
       )
       expect(mockedCreateInductionMapper).toHaveBeenCalledWith(createInductionDto)
+      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
     })
 
     it('should not create Induction given Education and Work Plan API returns an error', async () => {
       // Given
-      const userToken = 'a-user-token'
       const createInductionDto = aValidCreateInductionDto()
       const createInductionRequest = aValidCreateInductionRequest()
       mockedCreateInductionMapper.mockReturnValue(createInductionRequest)
@@ -203,19 +198,18 @@ describe('inductionService', () => {
 
       // When
       const actual = await inductionService
-        .createInduction(prisonNumber, createInductionDto, userToken)
-        .catch(error => {
-          return error
-        })
+        .createInduction(prisonNumber, createInductionDto, username)
+        .catch(error => error)
 
       // Then
       expect(actual).toEqual(eductionAndWorkPlanApiError)
       expect(educationAndWorkPlanClient.createInduction).toHaveBeenCalledWith(
         prisonNumber,
         createInductionRequest,
-        userToken,
+        systemToken,
       )
       expect(mockedCreateInductionMapper).toHaveBeenCalledWith(createInductionDto)
+      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
     })
   })
 

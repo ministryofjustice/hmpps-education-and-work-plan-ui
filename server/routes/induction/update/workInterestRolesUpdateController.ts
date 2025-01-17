@@ -57,7 +57,7 @@ export default class WorkInterestRolesUpdateController extends WorkInterestRoles
 
     try {
       const updateInductionDto = toCreateOrUpdateInductionDto(prisonId, updatedInduction)
-      await this.inductionService.updateInduction(prisonNumber, updateInductionDto, req.user.token)
+      await this.inductionService.updateInduction(prisonNumber, updateInductionDto, req.user.username)
 
       req.session.workInterestRolesForm = undefined
       req.session.inductionDto = undefined
