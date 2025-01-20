@@ -243,14 +243,15 @@ describe('inductionService', () => {
       }
       educationAndWorkPlanClient.getInductionSchedule.mockRejectedValue(eductionAndWorkPlanApiError)
 
-      const expected = { problemRetrievingData: true }
-
       // When
-      const actual = await inductionService.getInductionSchedule(prisonNumber, username)
+      const actual = await inductionService.getInductionSchedule(prisonNumber, username).catch(error => {
+        return error
+      })
 
       // Then
-      expect(actual).toEqual(expected)
+      expect(actual).toEqual(eductionAndWorkPlanApiError)
       expect(educationAndWorkPlanClient.getInductionSchedule).toHaveBeenCalledWith(prisonNumber, systemToken)
+      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
       expect(mockedInductionScheduleMapper).not.toHaveBeenCalled()
     })
 
@@ -266,13 +267,13 @@ describe('inductionService', () => {
       }
       educationAndWorkPlanClient.getInductionSchedule.mockRejectedValue(eductionAndWorkPlanApiError)
 
-      const expected = { problemRetrievingData: true }
-
       // When
-      const actual = await inductionService.getInductionSchedule(prisonNumber, username)
+      const actual = await inductionService.getInductionSchedule(prisonNumber, username).catch(error => {
+        return error
+      })
 
       // Then
-      expect(actual).toEqual(expected)
+      expect(actual).toEqual(eductionAndWorkPlanApiError)
       expect(educationAndWorkPlanClient.getInductionSchedule).toHaveBeenCalledWith(prisonNumber, systemToken)
       expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
       expect(mockedInductionScheduleMapper).not.toHaveBeenCalled()

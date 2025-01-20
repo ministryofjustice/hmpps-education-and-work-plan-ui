@@ -34,7 +34,7 @@ const gracefullyHandleException = (
   prisonNumber: string,
 ): { problemRetrievingData: boolean } => {
   if (isNotFoundError(error)) {
-    logger.info(`No Induction found for prisoner [${prisonNumber}] in Education And Work Plan API`)
+    logger.debug(`No Induction found for prisoner [${prisonNumber}] in Education And Work Plan API`)
     return { problemRetrievingData: false }
   }
 
