@@ -20,6 +20,7 @@ context('Prisoner Overview page - Common functionality for both pre and post ind
     cy.task('stubGetAllPrisons')
     cy.task('getActionPlan')
     cy.task('stubGetActionPlanReviews')
+    cy.task('stubGetInductionSchedule')
   })
 
   const prisonNumber = 'G6115VJ'

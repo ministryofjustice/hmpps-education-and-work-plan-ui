@@ -1051,7 +1051,6 @@ const stubGetActionPlanReviews = (prisonNumber = 'G6115VJ'): SuperAgentRequest =
           updatedBy: 'asmith_gen',
           updatedByDisplayName: 'Alex Smith',
         },
-        problemRetrievingData: false,
       },
     },
   })
@@ -1154,6 +1153,73 @@ const stubUpdateActionPlanReviewScheduleStatus500Error = (): SuperAgentRequest =
     },
   })
 
+const stubGetInductionSchedule = (prisonNumber = 'G6115VJ'): SuperAgentRequest =>
+  stubFor({
+    request: {
+      method: 'GET',
+      urlPattern: `/inductions/${prisonNumber}/induction-schedule`,
+    },
+    response: {
+      status: 200,
+      headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+      jsonBody: {
+        reference: '814ade0a-a3b2-46a3-862f-79211ba13f7b',
+        prisonNumber,
+        deadlineDate: '2025-02-20',
+        scheduleCalculationRule: 'NEW_PRISON_ADMISSION',
+        scheduleStatus: 'SCHEDULED',
+        inductionPerformedBy: undefined,
+        inductionPerformedAt: undefined,
+        createdAt: '2023-06-19T09:39:44.000Z',
+        createdAtPrison: 'Moorland (HMP & YOI)',
+        createdBy: 'asmith_gen',
+        createdByDisplayName: 'Alex Smith',
+        updatedAt: '2023-06-19T09:39:44.000Z',
+        updatedAtPrison: 'Moorland (HMP & YOI)',
+        updatedBy: 'asmith_gen',
+        updatedByDisplayName: 'Alex Smith',
+      },
+    },
+  })
+
+const stubGetInductionSchedule404Error = (prisonNumber = 'G6115VJ'): SuperAgentRequest =>
+  stubFor({
+    request: {
+      method: 'GET',
+      urlPattern: `/inductions/${prisonNumber}/induction-schedule`,
+    },
+    response: {
+      status: 404,
+      headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+      jsonBody: {
+        status: 404,
+        errorCode: null,
+        userMessage: `Induction Schedule not found for prisoner ${prisonNumber}`,
+        developerMessage: `Induction Schedule not found for prisoner ${prisonNumber}`,
+        moreInfo: null,
+      },
+    },
+  })
+
+const stubGetInductionSchedule500Error = (prisonNumber = 'G6115VJ'): SuperAgentRequest =>
+  stubFor({
+    request: {
+      method: 'GET',
+      urlPattern: `/inductions/${prisonNumber}/induction-schedule`,
+    },
+    response: {
+      status: 500,
+      headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+      jsonBody: {
+        status: 500,
+        errorCode: null,
+        userMessage: 'An unexpected error occurred',
+        developerMessage: 'An unexpected error occurred',
+        moreInfo: null,
+      },
+    },
+  })
+
 export default {
   createGoals,
 
@@ -1203,6 +1269,10 @@ export default {
 
   stubUpdateActionPlanReviewScheduleStatus,
   stubUpdateActionPlanReviewScheduleStatus500Error,
+
+  stubGetInductionSchedule,
+  stubGetInductionSchedule404Error,
+  stubGetInductionSchedule500Error,
 
   stubEducationAndWorkPlanApiPing: stubPing(),
 }

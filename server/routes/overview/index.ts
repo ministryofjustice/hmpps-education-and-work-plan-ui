@@ -15,13 +15,16 @@ import OverviewController from './overviewController'
 import retrieveCuriousFunctionalSkills from '../routerRequestHandlers/retrieveCuriousFunctionalSkills'
 import retrieveCuriousSupportNeeds from '../routerRequestHandlers/retrieveCuriousSupportNeeds'
 import retrieveActionPlanReviews from '../routerRequestHandlers/retrieveActionPlanReviews'
+import retrieveInductionSchedule from '../routerRequestHandlers/retrieveInductionSchedule'
 
 /**
  * Route definitions for the pages relating to the main Overview page
  */
 export default (router: Router, services: Services) => {
+  const { curiousService, educationAndWorkPlanService, inductionService, reviewService, timelineService } = services
+
   const overviewController = new OverviewController()
-  const timelineController = new TimelineController(services.timelineService)
+  const timelineController = new TimelineController(timelineService)
   const supportNeedsController = new SupportNeedsController()
   const workAndInterestsController = new WorkAndInterestsController()
   const educationAndTrainingController = new EducationAndTrainingController()
@@ -30,36 +33,37 @@ export default (router: Router, services: Services) => {
   router.use('/plan/:prisonNumber/view/*', [removeFormDataFromSession])
 
   router.get('/plan/:prisonNumber/view/overview', [
-    retrieveAllGoalsForPrisoner(services.educationAndWorkPlanService),
-    retrieveActionPlanReviews(services.reviewService),
-    retrieveInduction(services.inductionService),
-    retrieveCuriousFunctionalSkills(services.curiousService),
-    retrieveCuriousInPrisonCourses(services.curiousService),
+    retrieveAllGoalsForPrisoner(educationAndWorkPlanService),
+    retrieveInductionSchedule(inductionService),
+    retrieveActionPlanReviews(reviewService),
+    retrieveInduction(inductionService),
+    retrieveCuriousFunctionalSkills(curiousService),
+    retrieveCuriousInPrisonCourses(curiousService),
     asyncMiddleware(overviewController.getOverviewView),
   ])
 
   router.get('/plan/:prisonNumber/view/support-needs', [
-    retrieveCuriousSupportNeeds(services.curiousService),
+    retrieveCuriousSupportNeeds(curiousService),
     asyncMiddleware(supportNeedsController.getSupportNeedsView),
   ])
 
   router.get('/plan/:prisonNumber/view/education-and-training', [
-    retrieveCuriousFunctionalSkills(services.curiousService),
-    retrieveCuriousInPrisonCourses(services.curiousService),
-    retrieveInduction(services.inductionService),
-    retrieveEducation(services.educationAndWorkPlanService),
+    retrieveCuriousFunctionalSkills(curiousService),
+    retrieveCuriousInPrisonCourses(curiousService),
+    retrieveInduction(inductionService),
+    retrieveEducation(educationAndWorkPlanService),
     asyncMiddleware(educationAndTrainingController.getEducationAndTrainingView),
   ])
 
   router.get('/plan/:prisonNumber/view/work-and-interests', [
-    retrieveInduction(services.inductionService),
+    retrieveInduction(inductionService),
     asyncMiddleware(workAndInterestsController.getWorkAndInterestsView),
   ])
 
   router.get('/plan/:prisonNumber/view/timeline', [asyncMiddleware(timelineController.getTimelineView)])
 
   router.get('/plan/:prisonNumber/view/goals', [
-    retrieveAllGoalsForPrisoner(services.educationAndWorkPlanService),
+    retrieveAllGoalsForPrisoner(educationAndWorkPlanService),
     asyncMiddleware(viewGoalsController.viewGoals),
   ])
 }

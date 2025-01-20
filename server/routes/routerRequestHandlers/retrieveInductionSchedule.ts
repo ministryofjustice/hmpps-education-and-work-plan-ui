@@ -1,22 +1,23 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express'
-import { EducationAndWorkPlanService } from '../../services'
+import { InductionService } from '../../services'
 import logger from '../../../logger'
 import asyncMiddleware from '../../middleware/asyncMiddleware'
 
 /**
- *  Middleware function that returns a Request handler function to retrieve the qualifications from EducationAndWorkPlanService and store in res.locals
+ *  Middleware function that returns a Request handler function to retrieve the Induction Schedule from InductionService and store in res.locals
  */
-const retrieveEducation = (educationAndWorkPlanService: EducationAndWorkPlanService): RequestHandler => {
+const retrieveInductionSchedule = (inductionService: InductionService): RequestHandler => {
   return asyncMiddleware(async (req: Request, res: Response, next: NextFunction) => {
     const { prisonNumber } = req.params
+
     try {
-      // Retrieve the qualifications and store in res.locals
-      res.locals.education = {
+      // Retrieve the Induction Schedule and store in res.locals
+      res.locals.inductionSchedule = {
         problemRetrievingData: false,
-        educationDto: await educationAndWorkPlanService.getEducation(prisonNumber, req.user.username),
+        inductionSchedule: await inductionService.getInductionSchedule(prisonNumber, req.user.username),
       }
     } catch (error) {
-      res.locals.education = { ...gracefullyHandleException(error, prisonNumber), educationDto: undefined }
+      res.locals.inductionSchedule = { ...gracefullyHandleException(error, prisonNumber), inductionSchedule: undefined }
     }
 
     next()
@@ -33,14 +34,14 @@ const gracefullyHandleException = (
   prisonNumber: string,
 ): { problemRetrievingData: boolean } => {
   if (isNotFoundError(error)) {
-    logger.debug(`No Education found for prisoner [${prisonNumber}] in Education And Work Plan API`)
+    logger.debug(`No Induction Schedule found for prisoner [${prisonNumber}] in Education And Work Plan API`)
     return { problemRetrievingData: false }
   }
 
-  logger.error('Error retrieving Education data', error)
+  logger.error('Error retrieving Induction Schedule data from Induction Service', error)
   return { problemRetrievingData: true }
 }
 
 const isNotFoundError = (error: { status: number }): boolean => error.status === 404
 
-export default retrieveEducation
+export default retrieveInductionSchedule
