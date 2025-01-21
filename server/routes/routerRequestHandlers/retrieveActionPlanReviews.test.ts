@@ -10,6 +10,13 @@ import ActionPlanReviewStatusValue from '../../enums/actionPlanReviewStatusValue
 
 jest.mock('../../services/reviewService')
 
+const reviewJourneyEnabledForPrison = jest.fn()
+jest.mock('../../config', () => ({
+  featureToggles: {
+    reviewJourneyEnabledForPrison: (prisonId: string) => reviewJourneyEnabledForPrison(prisonId),
+  },
+}))
+
 describe('retrieveActionPlanReviews', () => {
   const reviewService = new ReviewService(null, null, null) as jest.Mocked<ReviewService>
   const requestHandler = retrieveActionPlanReviews(reviewService)
@@ -37,17 +44,9 @@ describe('retrieveActionPlanReviews', () => {
     jest.resetAllMocks()
   })
 
-  let savedReviewsPrisonsEnabled: string
-  beforeAll(() => {
-    savedReviewsPrisonsEnabled = process.env.REVIEWS_PRISONS_ENABLED
-  })
-  afterAll(() => {
-    process.env.REVIEWS_PRISONS_ENABLED = savedReviewsPrisonsEnabled
-  })
-
   it('should retrieve action plan reviews and store on res.locals given prison is enabled for reviews', async () => {
     // Given
-    process.env.REVIEWS_PRISONS_ENABLED = 'BXI'
+    reviewJourneyEnabledForPrison.mockReturnValue(true)
 
     const expectedActionPlanReviews: ActionPlanReviews = {
       completedReviews: [
@@ -102,11 +101,12 @@ describe('retrieveActionPlanReviews', () => {
     expect(res.locals.actionPlanReviews).toEqual(expectedActionPlanReviews)
     expect(reviewService.getActionPlanReviews).toHaveBeenCalledWith(prisonNumber, username)
     expect(next).toHaveBeenCalled()
+    expect(reviewJourneyEnabledForPrison).toHaveBeenCalledWith('BXI')
   })
 
   it('should not retrieve action plan reviews given prison is not enabled for reviews', async () => {
     // Given
-    process.env.REVIEWS_PRISONS_ENABLED = 'MDI'
+    reviewJourneyEnabledForPrison.mockReturnValue(false)
 
     // When
     await requestHandler(req, res, next)
@@ -115,5 +115,6 @@ describe('retrieveActionPlanReviews', () => {
     expect(res.locals.actionPlanReviews).toEqual(undefined)
     expect(reviewService.getActionPlanReviews).not.toHaveBeenCalled()
     expect(next).toHaveBeenCalled()
+    expect(reviewJourneyEnabledForPrison).toHaveBeenCalledWith('BXI')
   })
 })

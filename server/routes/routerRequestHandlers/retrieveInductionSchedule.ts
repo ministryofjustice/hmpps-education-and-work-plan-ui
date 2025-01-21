@@ -2,6 +2,7 @@ import { NextFunction, Request, RequestHandler, Response } from 'express'
 import { InductionService } from '../../services'
 import logger from '../../../logger'
 import asyncMiddleware from '../../middleware/asyncMiddleware'
+import config from '../../config'
 
 /**
  *  Middleware function that returns a Request handler function to retrieve the Induction Schedule from InductionService and store in res.locals
@@ -10,14 +11,20 @@ const retrieveInductionSchedule = (inductionService: InductionService): RequestH
   return asyncMiddleware(async (req: Request, res: Response, next: NextFunction) => {
     const { prisonNumber } = req.params
 
-    try {
-      // Retrieve the Induction Schedule and store in res.locals
-      res.locals.inductionSchedule = {
-        problemRetrievingData: false,
-        inductionSchedule: await inductionService.getInductionSchedule(prisonNumber, req.user.username),
+    const { activeCaseLoadId } = res.locals.user
+    if (config.featureToggles.reviewJourneyEnabledForPrison(activeCaseLoadId)) {
+      try {
+        // Retrieve the Induction Schedule and store in res.locals
+        res.locals.inductionSchedule = {
+          problemRetrievingData: false,
+          inductionSchedule: await inductionService.getInductionSchedule(prisonNumber, req.user.username),
+        }
+      } catch (error) {
+        res.locals.inductionSchedule = {
+          ...gracefullyHandleException(error, prisonNumber),
+          inductionSchedule: undefined,
+        }
       }
-    } catch (error) {
-      res.locals.inductionSchedule = { ...gracefullyHandleException(error, prisonNumber), inductionSchedule: undefined }
     }
 
     next()

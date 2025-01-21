@@ -2,69 +2,23 @@ import type {
   ActionPlanReviews,
   Assessment,
   FunctionalSkills,
-  InPrisonCourse,
+  InductionSchedule,
   InPrisonCourseRecords,
   PrisonerGoals,
   PrisonerSummary,
 } from 'viewModels'
-import { isAfter, isWithinInterval, startOfToday, sub } from 'date-fns'
+import { startOfToday, sub } from 'date-fns'
 import type { InductionDto } from 'inductionDto'
+import type { OverviewViewRenderArgs } from './overviewViewTypes'
 import dateComparator from '../dateComparator'
-import ActionPlanReviewStatusValue from '../../enums/actionPlanReviewStatusValue'
-
-type RenderArgs = {
-  tab: string
-  prisonerSummary: PrisonerSummary
-  functionalSkills: {
-    problemRetrievingData: boolean
-    mostRecentAssessments: Array<Assessment>
-  }
-  inPrisonCourses: {
-    problemRetrievingData: boolean
-    coursesCompletedInLast12Months: Array<InPrisonCourse>
-    hasWithdrawnOrInProgressCourses: boolean
-    hasCoursesCompletedMoreThan12MonthsAgo: boolean
-  }
-  prisonerGoals: {
-    problemRetrievingData: boolean
-    counts: {
-      totalGoals: number
-      activeGoals: number
-      archivedGoals: number
-      completedGoals: number
-    }
-    lastUpdatedBy: string | null
-    lastUpdatedDate: Date | null
-    lastUpdatedAtPrisonName: string | null
-  }
-  sessionHistory: {
-    problemRetrievingData: boolean
-    counts: {
-      totalCompletedSessions: number
-      reviewSessions: number
-      inductionSessions: number
-    }
-    lastSessionConductedBy: string | null
-    lastSessionConductedAt: Date | null
-    lastSessionConductedAtPrison: string | null
-  }
-  induction: {
-    problemRetrievingData: boolean
-    isPostInduction: boolean
-  }
-  actionPlanReview: {
-    problemRetrievingData: boolean
-    reviewStatus: 'NOT_DUE' | 'DUE' | 'OVERDUE' | 'NO_SCHEDULED_REVIEW' | 'ON_HOLD' | 'HAS_HAD_LAST_REVIEW'
-    reviewDueDate: Date | null
-    exemptionReason: ActionPlanReviewStatusValue
-  }
-}
+import { toActionPlanReviewScheduleView, toInductionScheduleView } from './overviewViewFunctions'
 
 export default class OverviewView {
   constructor(
     private readonly prisonerSummary: PrisonerSummary,
     private readonly functionalSkills: FunctionalSkills,
     private readonly inPrisonCourses: InPrisonCourseRecords,
+    private readonly inductionSchedule: InductionSchedule,
     private readonly actionPlanReviews: ActionPlanReviews,
     private readonly prisonerGoals: PrisonerGoals,
     private readonly induction: {
@@ -73,8 +27,9 @@ export default class OverviewView {
     },
   ) {}
 
-  get renderArgs(): RenderArgs {
-    const twelveMonthsAgo = sub(startOfToday(), { months: 12 })
+  get renderArgs(): OverviewViewRenderArgs {
+    const today = startOfToday()
+    const twelveMonthsAgo = sub(today, { months: 12 })
     const hasCoursesCompletedMoreThan12MonthsAgo = !this.inPrisonCourses.problemRetrievingData
       ? this.inPrisonCourses.coursesByStatus.COMPLETED.some(
           inPrisonCourse => inPrisonCourse.courseCompletionDate < twelveMonthsAgo,
@@ -110,32 +65,6 @@ export default class OverviewView {
     const prisonerHasOnlyHadInduction =
       prisonerHasHadInduction && !this.actionPlanReviews?.problemRetrievingData && mostRecentReviewSession == null
     const prisonerHasHadInductionAndAtLeastOneReview = prisonerHasHadInduction && mostRecentReviewSession != null
-
-    const reviewScheduleDoesNotExist = this.actionPlanReviews?.latestReviewSchedule == null
-    const latestReviewScheduleStatus = this.actionPlanReviews?.latestReviewSchedule?.status
-    const hasHadLastReview = latestReviewScheduleStatus === ActionPlanReviewStatusValue.COMPLETED
-    const reviewOnHold =
-      latestReviewScheduleStatus !== ActionPlanReviewStatusValue.SCHEDULED &&
-      latestReviewScheduleStatus !== ActionPlanReviewStatusValue.COMPLETED
-    const reviewDateFrom = this.actionPlanReviews?.latestReviewSchedule?.reviewDateFrom
-    const reviewDueDate = this.actionPlanReviews?.latestReviewSchedule?.reviewDateTo
-
-    const today = startOfToday()
-    let reviewStatus: 'NOT_DUE' | 'DUE' | 'OVERDUE' | 'NO_SCHEDULED_REVIEW' | 'ON_HOLD' | 'HAS_HAD_LAST_REVIEW'
-
-    if (reviewScheduleDoesNotExist) {
-      reviewStatus = 'NO_SCHEDULED_REVIEW'
-    } else if (hasHadLastReview) {
-      reviewStatus = 'HAS_HAD_LAST_REVIEW'
-    } else if (reviewOnHold) {
-      reviewStatus = 'ON_HOLD'
-    } else if (isAfter(today, reviewDueDate)) {
-      reviewStatus = 'OVERDUE'
-    } else if (isWithinInterval(today, { start: reviewDateFrom, end: reviewDueDate })) {
-      reviewStatus = 'DUE'
-    } else {
-      reviewStatus = 'NOT_DUE'
-    }
 
     let lastSessionConductedBy: string
     let lastSessionConductedAt: Date
@@ -196,12 +125,8 @@ export default class OverviewView {
         lastUpdatedDate: mostRecentlyUpdatedGoal?.updatedAt,
         lastUpdatedAtPrisonName: mostRecentlyUpdatedGoal?.updatedAtPrisonName,
       },
-      actionPlanReview: {
-        problemRetrievingData: this.actionPlanReviews == null ? false : this.actionPlanReviews.problemRetrievingData,
-        reviewStatus,
-        reviewDueDate,
-        exemptionReason: reviewStatus === 'ON_HOLD' ? this.actionPlanReviews.latestReviewSchedule.status : undefined,
-      },
+      inductionSchedule: toInductionScheduleView(this.inductionSchedule, this.induction.inductionDto),
+      actionPlanReview: toActionPlanReviewScheduleView(this.actionPlanReviews),
     }
   }
 }

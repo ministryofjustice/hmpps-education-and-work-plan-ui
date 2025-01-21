@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
 import type { Assessment, FunctionalSkills, InPrisonCourse, InPrisonCourseRecords } from 'viewModels'
-import { add, parseISO, startOfDay, startOfToday, sub } from 'date-fns'
+import { parseISO, startOfDay } from 'date-fns'
 import { aValidEnglishInPrisonCourse, aValidMathsInPrisonCourse } from '../../testsupport/inPrisonCourseTestDataBuilder'
 import aValidPrisonerSummary from '../../testsupport/prisonerSummaryTestDataBuilder'
 import { aValidGoalResponse } from '../../testsupport/actionPlanResponseTestDataBuilder'
@@ -8,8 +8,7 @@ import GoalStatusValue from '../../enums/goalStatusValue'
 import OverviewController from './overviewController'
 import aValidActionPlanReviews from '../../testsupport/actionPlanReviewsTestDataBuilder'
 import { aValidInductionDto } from '../../testsupport/inductionDtoTestDataBuilder'
-import aValidScheduledActionPlanReview from '../../testsupport/scheduledActionPlanReviewTestDataBuilder'
-import ActionPlanReviewStatusValue from '../../enums/actionPlanReviewStatusValue'
+import aValidInductionSchedule from '../../testsupport/inductionScheduleTestDataBuilder'
 
 describe('overviewController', () => {
   const controller = new OverviewController()
@@ -17,7 +16,6 @@ describe('overviewController', () => {
   const prisonNumber = 'A1234GC'
   const username = 'a-dps-user'
   const prisonerSummary = aValidPrisonerSummary(prisonNumber)
-  const today = startOfToday()
 
   const inPrisonCourses: InPrisonCourseRecords = {
     problemRetrievingData: false,
@@ -53,6 +51,8 @@ describe('overviewController', () => {
     updatedAt: parseISO('2023-07-23T13:42:01.401Z'),
   }
 
+  const inductionSchedule = aValidInductionSchedule()
+
   const req = {
     session: {},
     user: { username },
@@ -79,11 +79,12 @@ describe('overviewController', () => {
         },
         problemRetrievingData: false,
       },
+      inductionSchedule,
     }
     jest.resetAllMocks()
   })
 
-  it('should get overview view given Induction, Goals, and Action Plan Reviews all exist', async () => {
+  it('should get overview view given Induction, Goals, Induction Schedule and Action Plan Reviews all exist', async () => {
     // Given
     res.locals.induction = {
       problemRetrievingData: false,
@@ -138,256 +139,10 @@ describe('overviewController', () => {
         reviewDueDate: startOfDay('2024-10-15'),
         exemptionReason: undefined as string,
       },
-    }
-
-    // When
-    await controller.getOverviewView(req, res, next)
-
-    // Then
-    expect(res.render).toHaveBeenCalledWith('pages/overview/index', expectedView)
-  })
-
-  it('should get overview view given prisoner has no latest review schedule', async () => {
-    // Given
-    res.locals.induction = {
-      problemRetrievingData: false,
-      inductionDto: aValidInductionDto(),
-    }
-
-    res.locals.actionPlanReviews = {
-      ...aValidActionPlanReviews(),
-      latestReviewSchedule: undefined,
-    }
-
-    const expected = {
-      problemRetrievingData: false,
-      reviewStatus: 'NO_SCHEDULED_REVIEW',
-      reviewDueDate: undefined as Date,
-      exemptionReason: undefined as string,
-    }
-
-    // When
-    await controller.getOverviewView(req, res, next)
-
-    // Then
-    const renderedView = render.mock.calls[0][1]
-    expect(renderedView.actionPlanReview).toEqual(expected)
-  })
-
-  it('should get overview view given latest review schedule was Completed', async () => {
-    // Given
-    res.locals.induction = {
-      problemRetrievingData: false,
-      inductionDto: aValidInductionDto(),
-    }
-
-    res.locals.actionPlanReviews = aValidActionPlanReviews({
-      latestReviewSchedule: aValidScheduledActionPlanReview({
-        status: ActionPlanReviewStatusValue.COMPLETED,
-      }),
-    })
-
-    const expected = {
-      problemRetrievingData: false,
-      reviewStatus: 'HAS_HAD_LAST_REVIEW',
-      reviewDueDate: startOfDay('2024-10-15'),
-      exemptionReason: undefined as string,
-    }
-
-    // When
-    await controller.getOverviewView(req, res, next)
-
-    // Then
-    const renderedView = render.mock.calls[0][1]
-    expect(renderedView.actionPlanReview).toEqual(expected)
-  })
-
-  it('should get overview view given latest review schedule is scheduled but is not due', async () => {
-    // Given
-    res.locals.induction = {
-      problemRetrievingData: false,
-      inductionDto: aValidInductionDto(),
-    }
-
-    res.locals.actionPlanReviews = aValidActionPlanReviews({
-      latestReviewSchedule: aValidScheduledActionPlanReview({
-        status: ActionPlanReviewStatusValue.SCHEDULED,
-        reviewDateFrom: add(today, { months: 1 }),
-        reviewDateTo: add(today, { months: 3 }),
-      }),
-    })
-
-    const expected = {
-      problemRetrievingData: false,
-      reviewStatus: 'NOT_DUE',
-      reviewDueDate: add(today, { months: 3 }),
-      exemptionReason: undefined as string,
-    }
-
-    // When
-    await controller.getOverviewView(req, res, next)
-
-    // Then
-    const renderedView = render.mock.calls[0][1]
-    expect(renderedView.actionPlanReview).toEqual(expected)
-  })
-
-  it('should get overview view given latest review schedule is scheduled but is due', async () => {
-    // Given
-    res.locals.induction = {
-      problemRetrievingData: false,
-      inductionDto: aValidInductionDto(),
-    }
-
-    res.locals.actionPlanReviews = aValidActionPlanReviews({
-      latestReviewSchedule: aValidScheduledActionPlanReview({
-        status: ActionPlanReviewStatusValue.SCHEDULED,
-        reviewDateFrom: sub(today, { months: 1 }),
-        reviewDateTo: add(today, { months: 1 }),
-      }),
-    })
-
-    const expected = {
-      problemRetrievingData: false,
-      reviewStatus: 'DUE',
-      reviewDueDate: add(today, { months: 1 }),
-      exemptionReason: undefined as string,
-    }
-
-    // When
-    await controller.getOverviewView(req, res, next)
-
-    // Then
-    const renderedView = render.mock.calls[0][1]
-    expect(renderedView.actionPlanReview).toEqual(expected)
-  })
-
-  it('should get overview view given latest review schedule is scheduled but is overdue', async () => {
-    // Given
-    res.locals.induction = {
-      problemRetrievingData: false,
-      inductionDto: aValidInductionDto(),
-    }
-
-    res.locals.actionPlanReviews = aValidActionPlanReviews({
-      latestReviewSchedule: aValidScheduledActionPlanReview({
-        status: ActionPlanReviewStatusValue.SCHEDULED,
-        reviewDateFrom: sub(today, { months: 1 }),
-        reviewDateTo: sub(today, { days: 1 }),
-      }),
-    })
-
-    const expected = {
-      problemRetrievingData: false,
-      reviewStatus: 'OVERDUE',
-      reviewDueDate: sub(today, { days: 1 }),
-      exemptionReason: undefined as string,
-    }
-
-    // When
-    await controller.getOverviewView(req, res, next)
-
-    // Then
-    const renderedView = render.mock.calls[0][1]
-    expect(renderedView.actionPlanReview).toEqual(expected)
-  })
-
-  it.each([
-    ActionPlanReviewStatusValue.EXEMPT_PRISONER_DRUG_OR_ALCOHOL_DEPENDENCY,
-    ActionPlanReviewStatusValue.EXEMPT_PRISONER_OTHER_HEALTH_ISSUES,
-    ActionPlanReviewStatusValue.EXEMPT_PRISONER_FAILED_TO_ENGAGE,
-    ActionPlanReviewStatusValue.EXEMPT_PRISONER_ESCAPED_OR_ABSCONDED,
-    ActionPlanReviewStatusValue.EXEMPT_PRISONER_SAFETY_ISSUES,
-    ActionPlanReviewStatusValue.EXEMPT_PRISON_REGIME_CIRCUMSTANCES,
-    ActionPlanReviewStatusValue.EXEMPT_PRISON_STAFF_REDEPLOYMENT,
-    ActionPlanReviewStatusValue.EXEMPT_PRISON_OPERATION_OR_SECURITY_ISSUE,
-    ActionPlanReviewStatusValue.EXEMPT_SECURITY_ISSUE_RISK_TO_STAFF,
-    ActionPlanReviewStatusValue.EXEMPT_SYSTEM_TECHNICAL_ISSUE,
-    ActionPlanReviewStatusValue.EXEMPT_PRISONER_TRANSFER,
-    ActionPlanReviewStatusValue.EXEMPT_PRISONER_RELEASE,
-    ActionPlanReviewStatusValue.EXEMPT_PRISONER_DEATH,
-  ])('should get overview view given latest review schedule is exempt - %s', async reviewStatus => {
-    // Given
-    res.locals.induction = {
-      problemRetrievingData: false,
-      inductionDto: aValidInductionDto(),
-    }
-
-    res.locals.actionPlanReviews = aValidActionPlanReviews({
-      latestReviewSchedule: aValidScheduledActionPlanReview({
-        status: reviewStatus,
-      }),
-    })
-
-    const expected = {
-      problemRetrievingData: false,
-      reviewStatus: 'ON_HOLD',
-      reviewDueDate: startOfDay('2024-10-15'),
-      exemptionReason: reviewStatus,
-    }
-
-    // When
-    await controller.getOverviewView(req, res, next)
-
-    // Then
-    const renderedView = render.mock.calls[0][1]
-    expect(renderedView.actionPlanReview).toEqual(expected)
-  })
-
-  it('should get overview view given Induction and Goals exist, but an Action Plan Reviews was not retrieved at all', async () => {
-    // Given
-    res.locals.induction = {
-      problemRetrievingData: false,
-      inductionDto: aValidInductionDto(),
-    }
-
-    res.locals.actionPlanReviews = undefined
-
-    const expectedView = {
-      tab: 'overview',
-      prisonerSummary,
-      functionalSkills: {
+      inductionSchedule: {
         problemRetrievingData: false,
-        mostRecentAssessments: [{ type: 'ENGLISH' }, { type: 'MATHS' }],
-      },
-      inPrisonCourses: {
-        problemRetrievingData: false,
-        coursesCompletedInLast12Months: inPrisonCourses.coursesCompletedInLast12Months,
-        hasCoursesCompletedMoreThan12MonthsAgo: true,
-        hasWithdrawnOrInProgressCourses: true,
-      },
-      induction: {
-        problemRetrievingData: false,
-        isPostInduction: true,
-      },
-      prisonerGoals: {
-        problemRetrievingData: false,
-        counts: {
-          totalGoals: 3,
-          activeGoals: 1,
-          archivedGoals: 1,
-          completedGoals: 1,
-        },
-        lastUpdatedBy: inProgressGoal.updatedByDisplayName,
-        lastUpdatedDate: inProgressGoal.updatedAt,
-        lastUpdatedAtPrisonName: inProgressGoal.updatedAtPrisonName,
-      },
-      sessionHistory: {
-        counts: {
-          inductionSessions: 1,
-          reviewSessions: undefined as number,
-          totalCompletedSessions: 1,
-        },
-        lastSessionConductedAt: parseISO('2023-06-19T09:39:44.000Z'),
-        lastSessionConductedAtPrison: 'MDI',
-        lastSessionConductedBy: 'Alex Smith',
-        problemRetrievingData: false,
-      },
-      actionPlanReview: {
-        problemRetrievingData: false,
-        reviewStatus: 'NO_SCHEDULED_REVIEW',
-        reviewDueDate: undefined as Date,
-        exemptionReason: undefined as string,
+        inductionDueDate: startOfDay('2024-12-10'),
+        inductionStatus: 'GOALS_OVERDUE',
       },
     }
 
@@ -480,6 +235,11 @@ describe('overviewController', () => {
         reviewDueDate: undefined as Date,
         exemptionReason: undefined as string,
       },
+      inductionSchedule: {
+        problemRetrievingData: false,
+        inductionDueDate: startOfDay('2024-12-10'),
+        inductionStatus: 'INDUCTION_OVERDUE',
+      },
     }
 
     // When
@@ -567,6 +327,11 @@ describe('overviewController', () => {
         reviewDueDate: startOfDay('2024-10-15'),
         exemptionReason: undefined as string,
       },
+      inductionSchedule: {
+        problemRetrievingData: false,
+        inductionDueDate: startOfDay('2024-12-10'),
+        inductionStatus: 'GOALS_OVERDUE',
+      },
     }
 
     // When
@@ -631,73 +396,10 @@ describe('overviewController', () => {
         reviewDueDate: startOfDay('2024-10-15'),
         exemptionReason: undefined as string,
       },
-    }
-
-    // When
-    await controller.getOverviewView(req, res, next)
-
-    // Then
-    expect(res.render).toHaveBeenCalledWith('pages/overview/index', expectedView)
-  })
-
-  it('should get overview when there is an error retrieving the action plan reviews', async () => {
-    // Given
-    res.locals.induction = {
-      problemRetrievingData: false,
-      inductionDto: aValidInductionDto(),
-    }
-
-    res.locals.actionPlanReviews = {
-      problemRetrievingData: true,
-      completedReviews: [],
-      latestReviewSchedule: undefined,
-    }
-
-    const expectedView = {
-      tab: 'overview',
-      prisonerSummary,
-      functionalSkills: {
+      inductionSchedule: {
         problemRetrievingData: false,
-        mostRecentAssessments: [{ type: 'ENGLISH' }, { type: 'MATHS' }],
-      },
-      inPrisonCourses: {
-        problemRetrievingData: false,
-        coursesCompletedInLast12Months: inPrisonCourses.coursesCompletedInLast12Months,
-        hasCoursesCompletedMoreThan12MonthsAgo: true,
-        hasWithdrawnOrInProgressCourses: true,
-      },
-      induction: {
-        problemRetrievingData: false,
-        isPostInduction: true,
-      },
-      prisonerGoals: {
-        problemRetrievingData: false,
-        counts: {
-          totalGoals: 3,
-          activeGoals: 1,
-          archivedGoals: 1,
-          completedGoals: 1,
-        },
-        lastUpdatedBy: inProgressGoal.updatedByDisplayName,
-        lastUpdatedDate: inProgressGoal.updatedAt,
-        lastUpdatedAtPrisonName: inProgressGoal.updatedAtPrisonName,
-      },
-      sessionHistory: {
-        counts: {
-          inductionSessions: 1,
-          reviewSessions: 0,
-          totalCompletedSessions: 1,
-        },
-        lastSessionConductedAt: undefined as string,
-        lastSessionConductedAtPrison: undefined as string,
-        lastSessionConductedBy: undefined as string,
-        problemRetrievingData: true,
-      },
-      actionPlanReview: {
-        problemRetrievingData: true,
-        reviewStatus: 'NO_SCHEDULED_REVIEW',
-        reviewDueDate: undefined as Date,
-        exemptionReason: undefined as string,
+        inductionDueDate: startOfDay('2024-12-10'),
+        inductionStatus: 'INDUCTION_OVERDUE',
       },
     }
 
@@ -764,6 +466,11 @@ describe('overviewController', () => {
         reviewStatus: 'OVERDUE',
         reviewDueDate: startOfDay('2024-10-15'),
         exemptionReason: undefined as string,
+      },
+      inductionSchedule: {
+        problemRetrievingData: false,
+        inductionDueDate: startOfDay('2024-12-10'),
+        inductionStatus: 'GOALS_OVERDUE',
       },
     }
 
@@ -832,6 +539,11 @@ describe('overviewController', () => {
         reviewStatus: 'OVERDUE',
         reviewDueDate: startOfDay('2024-10-15'),
         exemptionReason: undefined as string,
+      },
+      inductionSchedule: {
+        problemRetrievingData: false,
+        inductionDueDate: startOfDay('2024-12-10'),
+        inductionStatus: 'GOALS_OVERDUE',
       },
     }
 
