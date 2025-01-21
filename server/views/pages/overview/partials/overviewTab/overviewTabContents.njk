@@ -15,6 +15,7 @@ Data supplied to this template:
 #}
 
 {% from "govuk/components/notification-banner/macro.njk" import govukNotificationBanner %}
+{% from "../../../../components/actions-card/macro.njk" import actionsCard %}
 
 <div class="govuk-grid-row">
   {% set createInductionBanner %}
@@ -44,7 +45,13 @@ Data supplied to this template:
     </div>
 
     <div class="govuk-grid-column-one-third app-u-print-full-width">
-      {% include '../_actionsCard.njk' %}
+      {{ actionsCard({
+        prisonerSummary: prisonerSummary,
+        induction: induction,
+        actionPlanReview: actionPlanReview,
+        hasEditAuthority: hasEditAuthority,
+        reviewJourneyEnabledForPrison: reviewJourneyEnabledForPrison
+      }) }}
     </div>
   {% endblock %}
 </div>

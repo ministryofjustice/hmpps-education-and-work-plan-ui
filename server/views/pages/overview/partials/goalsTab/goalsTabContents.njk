@@ -1,3 +1,5 @@
+{% from "../../../../components/actions-card/macro.njk" import actionsCard %}
+
 {% extends "../../../../partials/layout.njk" %}
 {% set pageTitle = "Goals" %}
 {% set pageId = "view-goals" %}
@@ -165,7 +167,10 @@
     </div>
 
     <div class="govuk-grid-column-one-third app-u-print-full-width">
-      {% include '../_actionsCard.njk' %}
+      {{ actionsCard({
+        prisonerSummary: prisonerSummary,
+        hasEditAuthority: hasEditAuthority
+      }) }}
     </div>
   </div>
 {% endblock %}
