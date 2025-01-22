@@ -93,7 +93,7 @@
     ]
   },
   "dependencies": {
-    "@aws-sdk/client-sqs": "^3.730.0",
+    "@aws-sdk/client-sqs": "^3.731.0",
     "@date-fns/utc": "^2.1.0",
     "@microsoft/applicationinsights-clickanalytics-js": "^3.3.4",
     "@microsoft/applicationinsights-web": "^3.3.4",
