@@ -3,7 +3,7 @@
  */
 declare module 'viewComponents' {
   import type { Goal, PrisonerSummary } from 'viewModels'
-  import type { ActionPlanReviewScheduleView } from '../../routes/overview/overviewViewTypes'
+  import type { ActionPlanReviewScheduleView, InductionScheduleView } from '../../routes/overview/overviewViewTypes'
 
   export interface Action {
     title: string
@@ -27,6 +27,7 @@ declare module 'viewComponents' {
       problemRetrievingData: boolean
       isPostInduction: boolean
     }
+    inductionSchedule: InductionScheduleView
     actionPlanReview: ActionPlanReviewScheduleView
     hasEditAuthority: boolean
     reviewJourneyEnabledForPrison: boolean

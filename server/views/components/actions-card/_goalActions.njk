@@ -1,18 +1,21 @@
 {# Goals based actions #}
-<div class="govuk-summary-card__content govuk-!-padding-bottom-0 govuk-!-padding-top-2" data-qa="goal-actions">
-  {% if params.reviewJourneyEnabledForPrison %}
-    <h3 class="govuk-heading-s govuk-!-margin-bottom-0">Goals</h3>
-  {% endif %}
-  <ul class="govuk-list govuk-!-margin-0" data-qa="goals-action-items">
-    {% if params.hasEditAuthority %}
-      <li class="govuk-!-margin-0 govuk-!-padding-bottom-3 govuk-!-padding-top-3">
-        <a class="govuk-link" data-qa="add-goal-button" href="/plan/{{ params.prisonerSummary.prisonNumber }}/goals/create">
-            <span>
-              <img src="/assets/images/icon-goal.svg" role="presentation" alt="" class="action-icon">
-              Add a new goal
-            </span>
-        </a>
-      </li>
+{% set showGoalActions = params.inductionSchedule.inductionStatus != 'GOALS_NOT_DUE' and params.inductionSchedule.inductionStatus != 'GOALS_DUE' and params.inductionSchedule.inductionStatus != 'GOALS_OVERDUE' %}
+{% if showGoalActions %}
+  <div class="govuk-summary-card__content govuk-!-padding-bottom-0 govuk-!-padding-top-2" data-qa="goal-actions">
+    {% if params.reviewJourneyEnabledForPrison %}
+      <h3 class="govuk-heading-s govuk-!-margin-bottom-0">Goals</h3>
     {% endif %}
-  </ul>
-</div>
+    <ul class="govuk-list govuk-!-margin-0" data-qa="goals-action-items">
+      {% if params.hasEditAuthority %}
+        <li class="govuk-!-margin-0 govuk-!-padding-bottom-3 govuk-!-padding-top-3">
+          <a class="govuk-link" data-qa="add-goal-button" href="/plan/{{ params.prisonerSummary.prisonNumber }}/goals/create">
+              <span>
+                <img src="/assets/images/icon-goal.svg" role="presentation" alt="" class="action-icon" />
+                Add a new goal
+              </span>
+          </a>
+        </li>
+      {% endif %}
+    </ul>
+  </div>
+{% endif %}

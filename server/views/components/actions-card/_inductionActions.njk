@@ -1,0 +1,93 @@
+{# Induction based actions #}
+{% set showInductionActions = not params.induction.problemRetrievingData and not params.induction.isPostInduction and not params.inductionSchedule.problemRetrievingData and params.inductionSchedule.inductionStatus != 'NO_SCHEDULED_INDUCTION' and params.reviewJourneyEnabledForPrison %}
+{% if showInductionActions %}
+  <div class="govuk-summary-card__content govuk-!-padding-bottom-0 govuk-!-padding-top-2" data-qa="induction-actions">
+    <h3 class="govuk-heading-s govuk-!-margin-bottom-0">Induction</h3>
+
+    {% if params.inductionSchedule.inductionStatus == 'INDUCTION_NOT_DUE' %}
+      <span class="govuk-tag govuk-tag--grey govuk-!-margin-top-2 govuk-!-margin-bottom-2" data-qa="induction-not-due">
+        Induction due by {{ params.inductionSchedule.inductionDueDate | formatDate('D MMM YYYY') }}
+      </span>
+    {% elseif params.inductionSchedule.inductionStatus == 'GOALS_NOT_DUE' %}
+      <span class="govuk-tag govuk-tag--grey govuk-!-margin-top-2 govuk-!-margin-bottom-2" data-qa="goals-not-due">
+        Add goals by {{ params.inductionSchedule.inductionDueDate | formatDate('D MMM YYYY') }}
+      </span>
+    {% elseif params.inductionSchedule.inductionStatus == 'INDUCTION_DUE' %}
+      <span class="govuk-tag govuk-tag--yellow govuk-!-margin-top-2 govuk-!-margin-bottom-2" data-qa="induction-due">
+        Induction due by {{ params.inductionSchedule.inductionDueDate | formatDate('D MMM YYYY') }}
+      </span>
+    {% elseif params.inductionSchedule.inductionStatus == 'GOALS_DUE' %}
+      <span class="govuk-tag govuk-tag--yellow govuk-!-margin-top-2 govuk-!-margin-bottom-2" data-qa="goals-due">
+        Add goals by {{ params.inductionSchedule.inductionDueDate | formatDate('D MMM YYYY') }}
+      </span>
+    {% elseif params.inductionSchedule.inductionStatus == 'INDUCTION_OVERDUE' %}
+      <span class="govuk-tag govuk-tag--red govuk-!-margin-top-2 govuk-!-margin-bottom-2" data-qa="induction-overdue">
+        Induction due by {{ params.inductionSchedule.inductionDueDate | formatDate('D MMM YYYY') }}
+      </span>
+    {% elseif params.inductionSchedule.inductionStatus == 'GOALS_OVERDUE' %}
+      <span class="govuk-tag govuk-tag--red govuk-!-margin-top-2 govuk-!-margin-bottom-2" data-qa="goals-overdue">
+        Add goals by {{ params.inductionSchedule.inductionDueDate | formatDate('D MMM YYYY') }}
+      </span>
+    {% elseif params.inductionSchedule.inductionStatus == 'ON_HOLD' %}
+      <span class="govuk-tag govuk-tag--grey govuk-!-margin-top-2 govuk-!-margin-bottom-2" data-qa="induction-on-hold">
+        Induction on hold
+      </span>
+      <p class="govuk-body" data-qa="reason-on-hold">
+        Reason: {{ params.inductionSchedule.exemptionReason | formatInductionExemptionReason }}
+      </p>
+    {% endif %}
+
+    <ul class="govuk-list govuk-!-margin-0" data-qa="induction-action-items">
+      {% if params.inductionSchedule.inductionStatus == 'ON_HOLD' %}
+
+        {% if params.hasEditAuthority %}
+          <li class="govuk-!-padding-top-2 govuk-!-padding-bottom-3">
+            <a class="govuk-link" href="/prisoners/{{ params.prisonerSummary.prisonNumber }}/induction/exemption/remove" data-qa="remove-exemption-button">
+              <img src="/assets/images/icon-remove-exemption.svg" alt="" role="presentation" class="action-icon" />
+              Remove exemption
+            </a>
+          </li>
+        {% endif %}
+
+      {% elseif params.inductionSchedule.inductionStatus == 'INDUCTION_NOT_DUE' or params.inductionSchedule.inductionStatus == 'INDUCTION_DUE' or params.inductionSchedule.inductionStatus == 'INDUCTION_OVERDUE' %}
+
+        {% if params.hasEditAuthority %}
+          <li class="govuk-!-padding-top-2 govuk-!-padding-bottom-3">
+            <a class="govuk-link" href="/prisoners/{{ params.prisonerSummary.prisonNumber }}/create-induction/hoping-to-work-on-release" data-qa="make-progress-plan-button">
+              <img src="/assets/images/icon-do-induction.svg" alt="" role="presentation" class="action-icon" />
+              Make a progress plan
+            </a>
+          </li>
+        {% endif %}
+        {% if params.hasEditAuthority %}
+          <li class="govuk-!-padding-top-2 govuk-!-padding-bottom-3">
+            <a class="govuk-link" href="/prisoners/{{ params.prisonerSummary.prisonNumber }}/induction/exemption" data-qa="record-exemption-button">
+              <img src="/assets/images/icon-record-exemption.svg" alt="" role="presentation" class="action-icon" />
+              Record exemption for this prisoner
+            </a>
+          </li>
+        {% endif %}
+
+      {% elseif params.inductionSchedule.inductionStatus == 'GOALS_NOT_DUE' or params.inductionSchedule.inductionStatus == 'GOALS_DUE' or params.inductionSchedule.inductionStatus == 'GOALS_OVERDUE' %}
+
+        {% if params.hasEditAuthority %}
+          <li class="govuk-!-padding-top-2 govuk-!-padding-bottom-3">
+            <a class="govuk-link" href="/plan/{{ params.prisonerSummary.prisonNumber }}/goals/create" data-qa="add-goals-button">
+              <img src="/assets/images/icon-goal.svg" role="presentation" alt="" class="action-icon" />
+              Add goals to complete progress plan
+            </a>
+          </li>
+        {% endif %}
+        {% if params.hasEditAuthority %}
+          <li class="govuk-!-padding-top-2 govuk-!-padding-bottom-3">
+            <a class="govuk-link" href="/prisoners/{{ params.prisonerSummary.prisonNumber }}/induction/exemption" data-qa="record-exemption-button">
+              <img src="/assets/images/icon-record-exemption.svg" alt="" role="presentation" class="action-icon" />
+              Record exemption for this prisoner
+            </a>
+          </li>
+        {% endif %}
+
+      {% endif %}
+    </ul>
+  </div>
+{% endif %}

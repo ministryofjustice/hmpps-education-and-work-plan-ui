@@ -49,13 +49,13 @@ type OverviewViewRenderArgs = {
 type ActionPlanReviewScheduleView = {
   problemRetrievingData: boolean
   reviewStatus: 'NOT_DUE' | 'DUE' | 'OVERDUE' | 'NO_SCHEDULED_REVIEW' | 'ON_HOLD' | 'HAS_HAD_LAST_REVIEW'
-  reviewDueDate: Date | null
-  exemptionReason: ActionPlanReviewStatusValue
+  reviewDueDate?: Date
+  exemptionReason?: ActionPlanReviewStatusValue
 }
 
 type InductionScheduleView = {
   problemRetrievingData: boolean
-  inductionDueDate: Date | null
+  inductionDueDate?: Date
   inductionStatus:
     | 'NO_SCHEDULED_INDUCTION'
     | 'INDUCTION_NOT_DUE'
@@ -66,7 +66,7 @@ type InductionScheduleView = {
     | 'GOALS_OVERDUE'
     | 'ON_HOLD'
     | 'COMPLETE'
-  exemptionReason: InductionScheduleStatusValue
+  exemptionReason?: InductionScheduleStatusValue
 }
 
 export { OverviewViewRenderArgs, ActionPlanReviewScheduleView, InductionScheduleView }

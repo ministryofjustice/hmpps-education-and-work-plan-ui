@@ -1,6 +1,7 @@
 import nunjucks from 'nunjucks'
-import type { ActionsCardParams } from 'viewComponents'
 import * as cheerio from 'cheerio'
+import { startOfDay } from 'date-fns'
+import type { ActionsCardParams } from 'viewComponents'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
 
 nunjucks.configure([
@@ -10,14 +11,29 @@ nunjucks.configure([
   __dirname,
 ])
 
+const templateParams: ActionsCardParams = {
+  inductionSchedule: {
+    problemRetrievingData: false,
+    inductionStatus: 'INDUCTION_DUE',
+    inductionDueDate: startOfDay('2025-02-15'),
+  },
+  actionPlanReview: {
+    problemRetrievingData: false,
+    reviewStatus: 'NO_SCHEDULED_REVIEW',
+  },
+  induction: {
+    problemRetrievingData: false,
+    isPostInduction: false,
+  },
+  reviewJourneyEnabledForPrison: true,
+  prisonerSummary: aValidPrisonerSummary(),
+  hasEditAuthority: true,
+}
+
 describe('_goalActions', () => {
   it('should render heading and add goal link', () => {
     // Given
-    const params: ActionsCardParams = {
-      prisonerSummary: aValidPrisonerSummary(),
-      hasEditAuthority: true,
-      reviewJourneyEnabledForPrison: true,
-    } as ActionsCardParams
+    const params = { ...templateParams }
 
     // When
     const content = nunjucks.render('_goalActions.njk', { params })
@@ -32,11 +48,10 @@ describe('_goalActions', () => {
 
   it('should not render heading given feature toggle not enabled', () => {
     // Given
-    const params: ActionsCardParams = {
-      prisonerSummary: aValidPrisonerSummary(),
-      hasEditAuthority: true,
+    const params = {
+      ...templateParams,
       reviewJourneyEnabledForPrison: false,
-    } as ActionsCardParams
+    }
 
     // When
     const content = nunjucks.render('_goalActions.njk', { params })
@@ -45,16 +60,14 @@ describe('_goalActions', () => {
     // Then
     expect($('[data-qa=goal-actions]').length).toEqual(1)
     expect($('[data-qa=goal-actions] h3').length).toEqual(0)
-    expect($('[data-qa=goals-action-items] li').length).toEqual(1)
   })
 
   it('should not render add goal link given does not have edit authority', () => {
     // Given
-    const params: ActionsCardParams = {
-      prisonerSummary: aValidPrisonerSummary(),
+    const params = {
+      ...templateParams,
       hasEditAuthority: false,
-      reviewJourneyEnabledForPrison: false,
-    } as ActionsCardParams
+    }
 
     // When
     const content = nunjucks.render('_goalActions.njk', { params })
@@ -62,7 +75,80 @@ describe('_goalActions', () => {
 
     // Then
     expect($('[data-qa=goal-actions]').length).toEqual(1)
-    expect($('[data-qa=goal-actions] h3').length).toEqual(0)
     expect($('[data-qa=goals-action-items] li').length).toEqual(0)
+  })
+
+  it('should not render goal actions given induction schedule goals are due', () => {
+    // Given
+    const params = {
+      ...templateParams,
+      inductionSchedule: {
+        problemRetrievingData: false,
+        inductionStatus: 'GOALS_DUE',
+        inductionDueDate: startOfDay('2025-02-15'),
+      },
+    }
+
+    // When
+    const content = nunjucks.render('_goalActions.njk', { params })
+    const $ = cheerio.load(content)
+
+    // Then
+    expect($('[data-qa=goal-actions]').length).toEqual(0)
+  })
+
+  it('should not render goal actions given induction schedule goals are not due', () => {
+    // Given
+    const params = {
+      ...templateParams,
+      inductionSchedule: {
+        problemRetrievingData: false,
+        inductionStatus: 'GOALS_NOT_DUE',
+        inductionDueDate: startOfDay('2025-02-15'),
+      },
+    }
+
+    // When
+    const content = nunjucks.render('_goalActions.njk', { params })
+    const $ = cheerio.load(content)
+
+    // Then
+    expect($('[data-qa=goal-actions]').length).toEqual(0)
+  })
+
+  it('should not render goal actions given induction schedule goals are overdue', () => {
+    // Given
+    const params = {
+      ...templateParams,
+      inductionSchedule: {
+        problemRetrievingData: false,
+        inductionStatus: 'GOALS_OVERDUE',
+        inductionDueDate: startOfDay('2025-02-15'),
+      },
+    }
+
+    // When
+    const content = nunjucks.render('_goalActions.njk', { params })
+    const $ = cheerio.load(content)
+
+    // Then
+    expect($('[data-qa=goal-actions]').length).toEqual(0)
+  })
+
+  it('should render goal actions given problem retrieving induction schedule data', () => {
+    // Given
+    const params = {
+      ...templateParams,
+      inductionSchedule: {
+        problemRetrievingData: true,
+      },
+    }
+
+    // When
+    const content = nunjucks.render('_goalActions.njk', { params })
+    const $ = cheerio.load(content)
+
+    // Then
+    expect($('[data-qa=goal-actions]').length).toEqual(1)
   })
 })
