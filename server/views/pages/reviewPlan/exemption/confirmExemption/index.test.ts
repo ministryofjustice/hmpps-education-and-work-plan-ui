@@ -1,7 +1,7 @@
 import nunjucks from 'nunjucks'
 import * as cheerio from 'cheerio'
 import aValidPrisonerSummary from '../../../../../testsupport/prisonerSummaryTestDataBuilder'
-import formatExemptionReasonValueFilter from '../../../../../filters/formatExemptionReasonValueFilter'
+import formatReviewExemptionReasonFilter from '../../../../../filters/formatReviewExemptionReasonFilter'
 
 describe('ConfirmExemptionPage', () => {
   const njkEnv = nunjucks.configure([
@@ -14,7 +14,7 @@ describe('ConfirmExemptionPage', () => {
     __dirname,
   ])
   njkEnv //
-    .addFilter('formatExemptionReasonValue', formatExemptionReasonValueFilter)
+    .addFilter('formatReviewExemptionReason', formatReviewExemptionReasonFilter)
   const prisonerSummary = aValidPrisonerSummary()
 
   it('should render the correct content when an exemption reason has been selected and exemption reason details have been entered', () => {

@@ -1,6 +1,6 @@
-import formatExemptionReasonValueFilter from './formatExemptionReasonValueFilter'
+import formatReviewExemptionReasonFilter from './formatReviewExemptionReasonFilter'
 
-describe('formatExemptionsFilter', () => {
+describe('formatExemptionReasonFilter', () => {
   describe('should format view model values', () => {
     Array.of(
       {
@@ -33,7 +33,7 @@ describe('formatExemptionsFilter', () => {
       },
     ).forEach(spec => {
       it(`source: ${spec.source}, expected: ${spec.expected}`, () => {
-        expect(formatExemptionReasonValueFilter(spec.source)).toEqual(spec.expected)
+        expect(formatReviewExemptionReasonFilter(spec.source)).toEqual(spec.expected)
       })
     })
   })

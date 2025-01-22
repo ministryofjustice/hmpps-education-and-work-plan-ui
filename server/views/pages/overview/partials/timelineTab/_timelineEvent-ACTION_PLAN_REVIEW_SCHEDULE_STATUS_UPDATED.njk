@@ -14,7 +14,7 @@
   {% if not isReviewExemptionRemovalEvent %}
     <div class="moj-timeline__description">
       <p class="govuk-body" data-qa="review-exempted-reason">
-        Reason: {{ event.contextualInfo['REVIEW_SCHEDULE_STATUS_NEW'] | formatExemptionReasonValue }}
+        Reason: {{ event.contextualInfo['REVIEW_SCHEDULE_STATUS_NEW'] | formatReviewExemptionReason }}
       </p>
 
       {% if event.contextualInfo['REVIEW_SCHEDULE_EXEMPTION_REASON'] %}

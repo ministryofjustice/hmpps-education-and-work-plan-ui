@@ -4,7 +4,7 @@ import { parseISO } from 'date-fns'
 import aTimelineEvent from '../../../../../testsupport/timelineEventTestDataBuilder'
 import aValidPrisonerSummary from '../../../../../testsupport/prisonerSummaryTestDataBuilder'
 import formatDateFilter from '../../../../../filters/formatDateFilter'
-import formatExemptionReasonValueFilter from '../../../../../filters/formatExemptionReasonValueFilter'
+import formatReviewExemptionReasonFilter from '../../../../../filters/formatReviewExemptionReasonFilter'
 
 const njkEnv = nunjucks.configure([
   'node_modules/govuk-frontend/dist/',
@@ -14,7 +14,7 @@ const njkEnv = nunjucks.configure([
 ])
 njkEnv //
   .addFilter('formatDate', formatDateFilter)
-  .addFilter('formatExemptionReasonValue', formatExemptionReasonValueFilter)
+  .addFilter('formatReviewExemptionReason', formatReviewExemptionReasonFilter)
 
 describe('_timelineEvent-ACTION_PLAN_REVIEW_SCHEDULE_STATUS_UPDATED', () => {
   it('should display ACTION_PLAN_REVIEW_SCHEDULE_STATUS_UPDATED timeline event given the review has been exempted with a user entered note', () => {

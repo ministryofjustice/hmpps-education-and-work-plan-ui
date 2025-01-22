@@ -5,7 +5,7 @@ import formatReasonToArchiveGoalFilter from '../../../../../filters/formatReason
 import aValidPrisonerSummary from '../../../../../testsupport/prisonerSummaryTestDataBuilder'
 import aValidTimeline from '../../../../../testsupport/timelineTestDataBuilder'
 import aTimelineEvent from '../../../../../testsupport/timelineEventTestDataBuilder'
-import formatExemptionReasonValueFilter from '../../../../../filters/formatExemptionReasonValueFilter'
+import formatReviewExemptionReasonFilter from '../../../../../filters/formatReviewExemptionReasonFilter'
 
 describe('timelineTabContents', () => {
   const njkEnv = nunjucks.configure([
@@ -17,7 +17,7 @@ describe('timelineTabContents', () => {
   njkEnv //
     .addFilter('formatDate', formatDateFilter)
     .addFilter('formatReasonToArchiveGoal', formatReasonToArchiveGoalFilter)
-    .addFilter('formatExemptionReasonValue', formatExemptionReasonValueFilter)
+    .addFilter('formatReviewExemptionReason', formatReviewExemptionReasonFilter)
 
   it('should render a timeline event for each supported timeline event type', () => {
     // Given

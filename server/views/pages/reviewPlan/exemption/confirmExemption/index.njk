@@ -15,7 +15,7 @@
       <h1 class="govuk-heading-l govuk-!-margin-top-3" data-qa="page-heading">Are you sure you want to put {{ prisonerSummary.firstName }} {{ prisonerSummary.lastName }}'s review on hold?</h1>
       <section class="exemption-summary">
         <h3 class="govuk-heading-s govuk-!-margin-bottom-1" data-qa="exemption-reason-heading">Exemption reason</h3>
-        <p class="govuk-body app-u-multiline-text govuk-!-margin-bottom-1" data-qa="exemption-reason">{{ reviewExemptionDto.exemptionReason | formatExemptionReasonValue }}</p>
+        <p class="govuk-body app-u-multiline-text govuk-!-margin-bottom-1" data-qa="exemption-reason">{{ reviewExemptionDto.exemptionReason | formatReviewExemptionReason }}</p>
         {% if reviewExemptionDto.exemptionReasonDetails.length > 0 %}
           <h3 class="govuk-heading-s govuk-!-margin-bottom-0 govuk-!-display-inline" data-qa="exemption-reason-details-heading">More details:</h3>
           <span class="govuk-body app-u-multiline-text govuk-!-margin-bottom-0" data-qa="exemption-reason-details">{{ reviewExemptionDto.exemptionReasonDetails }}</span>

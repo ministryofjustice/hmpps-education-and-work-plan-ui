@@ -1,0 +1,9 @@
+{% from "./macro.njk" import actionsCard %}
+
+{{ actionsCard({
+  prisonerSummary: prisonerSummary,
+  induction: induction,
+  actionPlanReviews: actionPlanReviews,
+  hasEditAuthority: hasEditAuthority,
+  reviewJourneyEnabledForPrison: reviewJourneyEnabledForPrison
+}) }}

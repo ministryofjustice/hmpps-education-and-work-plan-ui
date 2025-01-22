@@ -2,13 +2,8 @@
  * Module declaring types that are used by the nunjucks view components
  */
 declare module 'viewComponents' {
-  import type { Goal } from 'viewModels'
-
-  export interface ActionCardParams {
-    id?: string
-    attributes?: Record<string, string>
-    actions: Array<Action>
-  }
+  import type { Goal, PrisonerSummary } from 'viewModels'
+  import type { ActionPlanReviewScheduleView } from '../../routes/overview/overviewViewTypes'
 
   export interface Action {
     title: string
@@ -24,5 +19,16 @@ declare module 'viewComponents' {
     goal: Goal
     actions: Array<Action>
     lastUpdatedLabel?: string
+  }
+
+  export interface ActionsCardParams {
+    prisonerSummary: PrisonerSummary
+    induction: {
+      problemRetrievingData: boolean
+      isPostInduction: boolean
+    }
+    actionPlanReview: ActionPlanReviewScheduleView
+    hasEditAuthority: boolean
+    reviewJourneyEnabledForPrison: boolean
   }
 }
