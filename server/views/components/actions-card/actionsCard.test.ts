@@ -22,13 +22,15 @@ describe('Tests for actions card component', () => {
       prisonerSummary: aValidPrisonerSummary(),
       induction: {
         problemRetrievingData: false,
-        isPostInduction: true,
+        isPostInduction: true, // This determines whether the Induction or Review actions are rendered. We dont expect both. post-induction will get Review actions; not post-induction (pre-induction) will get Induction actions
+      },
+      inductionSchedule: {
+        problemRetrievingData: false,
+        inductionStatus: 'NO_SCHEDULED_INDUCTION',
       },
       actionPlanReview: {
         problemRetrievingData: false,
         reviewStatus: 'NO_SCHEDULED_REVIEW',
-        reviewDueDate: undefined,
-        exemptionReason: undefined,
       },
       hasEditAuthority: true,
       reviewJourneyEnabledForPrison: true,
@@ -39,6 +41,7 @@ describe('Tests for actions card component', () => {
     const $ = cheerio.load(content)
 
     // Then
+    expect($('[data-qa=induction-actions]').length).toEqual(0) // We don't expect BOTH induction & Review actions; logic contains check on whether it is post-induction or not
     expect($('[data-qa=review-actions]').length).toEqual(1)
     expect($('[data-qa=goal-actions]').length).toEqual(1)
   })

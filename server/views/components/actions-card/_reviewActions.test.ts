@@ -18,11 +18,14 @@ njkEnv.addFilter('formatDate', formatDateFilter)
 njkEnv.addFilter('formatReviewExemptionReason', formatReviewExemptionReasonFilter)
 
 const templateParams: ActionsCardParams = {
+  inductionSchedule: {
+    problemRetrievingData: false,
+    inductionStatus: 'NO_SCHEDULED_INDUCTION',
+  },
   actionPlanReview: {
     problemRetrievingData: false,
     reviewStatus: 'NOT_DUE',
     reviewDueDate: startOfDay('2025-02-15'),
-    exemptionReason: undefined,
   },
   induction: {
     problemRetrievingData: false,

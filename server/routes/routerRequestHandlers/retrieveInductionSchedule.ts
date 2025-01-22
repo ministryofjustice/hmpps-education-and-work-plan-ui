@@ -15,14 +15,10 @@ const retrieveInductionSchedule = (inductionService: InductionService): RequestH
     if (config.featureToggles.reviewJourneyEnabledForPrison(activeCaseLoadId)) {
       try {
         // Retrieve the Induction Schedule and store in res.locals
-        res.locals.inductionSchedule = {
-          problemRetrievingData: false,
-          inductionSchedule: await inductionService.getInductionSchedule(prisonNumber, req.user.username),
-        }
+        res.locals.inductionSchedule = await inductionService.getInductionSchedule(prisonNumber, req.user.username)
       } catch (error) {
         res.locals.inductionSchedule = {
           ...gracefullyHandleException(error, prisonNumber),
-          inductionSchedule: undefined,
         }
       }
     }

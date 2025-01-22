@@ -1,5 +1,4 @@
 import { Request, Response } from 'express'
-import type { InductionSchedule } from 'viewModels'
 import InductionService from '../../services/inductionService'
 import retrieveInductionSchedule from './retrieveInductionSchedule'
 import aValidInductionSchedule from '../../testsupport/inductionScheduleTestDataBuilder'
@@ -44,16 +43,11 @@ describe('retrieveInductionSchedule', () => {
     const inductionSchedule = aValidInductionSchedule()
     inductionService.getInductionSchedule.mockResolvedValue(inductionSchedule)
 
-    const expected = {
-      problemRetrievingData: false,
-      inductionSchedule,
-    }
-
     // When
     await requestHandler(req, res, next)
 
     // Then
-    expect(res.locals.inductionSchedule).toEqual(expected)
+    expect(res.locals.inductionSchedule).toEqual(inductionSchedule)
     expect(inductionService.getInductionSchedule).toHaveBeenCalledWith(prisonNumber, username)
     expect(next).toHaveBeenCalled()
     expect(reviewJourneyEnabledForPrison).toHaveBeenCalledWith('BXI')
@@ -73,10 +67,7 @@ describe('retrieveInductionSchedule', () => {
     }
     inductionService.getInductionSchedule.mockRejectedValue(inductionServiceError)
 
-    const expected = {
-      problemRetrievingData: true,
-      inductionSchedule: undefined as InductionSchedule,
-    }
+    const expected = { problemRetrievingData: true }
 
     // When
     await requestHandler(req, res, next)
@@ -102,10 +93,7 @@ describe('retrieveInductionSchedule', () => {
     }
     inductionService.getInductionSchedule.mockRejectedValue(inductionServiceError)
 
-    const expected = {
-      problemRetrievingData: false,
-      inductionSchedule: undefined as InductionSchedule,
-    }
+    const expected = { problemRetrievingData: false }
 
     // When
     await requestHandler(req, res, next)

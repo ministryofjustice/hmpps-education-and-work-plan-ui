@@ -1167,7 +1167,7 @@ const stubGetInductionSchedule = (prisonNumber = 'G6115VJ'): SuperAgentRequest =
         prisonNumber,
         deadlineDate: '2025-02-20',
         scheduleCalculationRule: 'NEW_PRISON_ADMISSION',
-        scheduleStatus: 'SCHEDULED',
+        scheduleStatus: 'COMPLETED',
         inductionPerformedBy: undefined,
         inductionPerformedAt: undefined,
         createdAt: '2023-06-19T09:39:44.000Z',
