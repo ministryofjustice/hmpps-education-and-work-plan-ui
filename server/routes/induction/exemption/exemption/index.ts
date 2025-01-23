@@ -5,6 +5,8 @@ import createEmptyInductionExemptionDtoIfNotInPrisonerContext from '../../../rou
 import ExemptionReasonController from './exemptionReasonController'
 import ConfirmExemptionController from './confirmExemptionController'
 import checkInductionExemptionDtoExistsInPrisonerContext from '../../../routerRequestHandlers/checkInductionExemptionDtoExistsInPrisonerContext'
+import retrieveInductionSchedule from '../../../routerRequestHandlers/retrieveInductionSchedule'
+import ExemptionRecordedController from './exemptionRecordedController'
 
 /**
  * Route definitions for exempting a prisoner's Induction
@@ -14,6 +16,7 @@ export default (router: Router, services: Services) => {
 
   const exemptionReasonController = new ExemptionReasonController()
   const confirmExemptionController = new ConfirmExemptionController(inductionService, auditService)
+  const exemptionRecordedController = new ExemptionRecordedController()
 
   router.get('/prisoners/:prisonNumber/induction/exemption', [
     createEmptyInductionExemptionDtoIfNotInPrisonerContext,
@@ -31,5 +34,15 @@ export default (router: Router, services: Services) => {
   router.post('/prisoners/:prisonNumber/induction/exemption/confirm', [
     checkInductionExemptionDtoExistsInPrisonerContext,
     asyncMiddleware(confirmExemptionController.submitConfirmExemption),
+  ])
+
+  router.get('/prisoners/:prisonNumber/induction/exemption/recorded', [
+    checkInductionExemptionDtoExistsInPrisonerContext,
+    retrieveInductionSchedule(inductionService),
+    asyncMiddleware(exemptionRecordedController.getExemptionRecordedView),
+  ])
+  router.post('/prisoners/:prisonNumber/induction/exemption/recorded', [
+    checkInductionExemptionDtoExistsInPrisonerContext,
+    asyncMiddleware(exemptionRecordedController.submitExemptionRecorded),
   ])
 }
