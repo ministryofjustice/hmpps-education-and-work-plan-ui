@@ -1,3 +1,4 @@
+import type { UpdateInductionScheduleStatusRequest } from 'educationAndWorkPlanApiClient'
 import EducationAndWorkPlanClient from '../data/educationAndWorkPlanClient'
 import InductionService from './inductionService'
 import aValidInductionResponse from '../testsupport/inductionResponseTestDataBuilder'
@@ -13,6 +14,8 @@ import aValidCreateInductionRequest from '../testsupport/createInductionRequestT
 import HmppsAuthClient from '../data/hmppsAuthClient'
 import aValidInductionScheduleResponse from '../testsupport/inductionScheduleResponseTestDataBuilder'
 import aValidInductionSchedule from '../testsupport/inductionScheduleTestDataBuilder'
+import aValidInductionExemptionDto from '../testsupport/inductionExemptionDtoTestDataBuilder'
+import InductionScheduleStatusValue from '../enums/inductionScheduleStatusValue'
 
 jest.mock('../data/educationAndWorkPlanClient')
 jest.mock('../data/mappers/inductionDtoMapper')
@@ -277,6 +280,75 @@ describe('inductionService', () => {
       expect(educationAndWorkPlanClient.getInductionSchedule).toHaveBeenCalledWith(prisonNumber, systemToken)
       expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
       expect(mockedInductionScheduleMapper).not.toHaveBeenCalled()
+    })
+  })
+
+  describe('updateInductionScheduleStatus', () => {
+    it('should update Induction Schedule status', async () => {
+      // Given
+      const inductionExemptionDto = aValidInductionExemptionDto({
+        prisonId: 'WDI',
+        exemptionReason: InductionScheduleStatusValue.EXEMPT_PRISON_OPERATION_OR_SECURITY_ISSUE,
+        exemptionReasonDetails: undefined,
+      })
+
+      const expectedUpdateInductionScheduleStatusRequest: UpdateInductionScheduleStatusRequest = {
+        prisonId: 'WDI',
+        status: 'EXEMPT_PRISON_OPERATION_OR_SECURITY_ISSUE',
+        exemptionReason: undefined,
+      }
+      educationAndWorkPlanClient.updateInductionScheduleStatus.mockResolvedValue(undefined)
+
+      // When
+      const actual = await inductionService.updateInductionScheduleStatus(inductionExemptionDto, username)
+
+      // Then
+      expect(actual).toBeUndefined()
+      expect(educationAndWorkPlanClient.updateInductionScheduleStatus).toHaveBeenCalledWith(
+        prisonNumber,
+        expectedUpdateInductionScheduleStatusRequest,
+        systemToken,
+      )
+    })
+
+    it('should not update Induction Schedule status given Education and Work Plan API returns an error', async () => {
+      // Given
+      const inductionExemptionDto = aValidInductionExemptionDto({
+        prisonId: 'WDI',
+        exemptionReason: InductionScheduleStatusValue.EXEMPT_PRISON_OPERATION_OR_SECURITY_ISSUE,
+        exemptionReasonDetails: undefined,
+      })
+
+      const expectedUpdateInductionScheduleStatusRequest: UpdateInductionScheduleStatusRequest = {
+        prisonId: 'WDI',
+        status: 'EXEMPT_PRISON_OPERATION_OR_SECURITY_ISSUE',
+        exemptionReason: undefined,
+      }
+
+      const eductionAndWorkPlanApiError = {
+        status: 500,
+        data: {
+          status: 500,
+          userMessage: `Error updating Induction Schedule Status for prisoner [${prisonNumber}]`,
+          developerMessage: `Error updating Induction Schedule Status for prisoner [${prisonNumber}]`,
+        },
+      }
+      educationAndWorkPlanClient.updateInductionScheduleStatus.mockRejectedValue(eductionAndWorkPlanApiError)
+
+      // When
+      const actual = await inductionService
+        .updateInductionScheduleStatus(inductionExemptionDto, username)
+        .catch(error => {
+          return error
+        })
+
+      // Then
+      expect(actual).toEqual(eductionAndWorkPlanApiError)
+      expect(educationAndWorkPlanClient.updateInductionScheduleStatus).toHaveBeenCalledWith(
+        prisonNumber,
+        expectedUpdateInductionScheduleStatusRequest,
+        systemToken,
+      )
     })
   })
 })
