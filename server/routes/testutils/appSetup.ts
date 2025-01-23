@@ -1,8 +1,7 @@
 import express, { Express } from 'express'
-import cookieSession from 'cookie-session'
 import { NotFound } from 'http-errors'
-import { v4 as uuidv4 } from 'uuid'
 
+import { randomUUID } from 'crypto'
 import routes from '../index'
 import nunjucksSetup from '../../utils/nunjucksSetup'
 import errorHandler from '../../errorHandler'
@@ -10,6 +9,7 @@ import * as auth from '../../authentication/auth'
 import type { Services } from '../../services'
 import type { ApplicationInfo } from '../../applicationInfo'
 import AuditService from '../../services/auditService'
+import setUpWebSession from '../../middleware/setUpWebSession'
 import auditMiddleware from '../../middleware/auditMiddleware'
 
 jest.mock('../../services/auditService')
@@ -45,13 +45,17 @@ function appSetup(services: Services, production: boolean, userSupplier: () => E
   app.set('view engine', 'njk')
 
   nunjucksSetup(app, testAppInfo)
-  app.use(cookieSession({ keys: [''] }))
+  app.use(setUpWebSession())
   app.use((req, res, next) => {
-    req.id = uuidv4()
     req.user = userSupplier()
     req.flash = flashProvider
-    res.locals = {}
-    res.locals.user = { ...req.user }
+    res.locals = {
+      user: { ...req.user },
+    }
+    next()
+  })
+  app.use((req, res, next) => {
+    req.id = randomUUID()
     next()
   })
   app.use(express.json())
