@@ -6,6 +6,7 @@ import overview from './overview'
 import functionalSkills from './functionalSkills'
 import prisonerList from './prisonerList'
 import postInductionCreation from './postInductionCreation'
+import exemptInduction from './induction/exemption'
 import createInduction from './induction/create'
 import updateInduction from './induction/update'
 import inPrisonCoursesAndQualifications from './inPrisonCoursesAndQualifications'
@@ -45,6 +46,10 @@ export default function routes(services: Services): Router {
   createPrePrisonEducation(router, services)
   updatePrePrisonEducation(router, services)
 
+  // Setup of Induction exemption routes MUST happen before setup of Update Induction routes.
+  // The routes share a common path pattern (/prisoners/:prisonNumber/induction), but Update Induction defines a middleware on /prisoners/:prisonNumber/induction/** to ensure the Induction exists - you cannot update an Induction that does not exist!
+  // Conversely, exempting an Induction requires that there is NOT an induction, as you cannot exempt an Induction you have already completed.
+  exemptInduction(router, services)
   createInduction(router, services)
   updateInduction(router, services)
   postInductionCreation(router, services)

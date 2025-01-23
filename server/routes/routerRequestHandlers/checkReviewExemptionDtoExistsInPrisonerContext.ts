@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from 'express'
 import logger from '../../../logger'
 import { getPrisonerContext } from '../../data/session/prisonerContexts'
 /**
- * Request handler function to check the exemption data exists in the prisoner context.
+ * Request handler function to check the Review Exemption DTO exists in the prisoner context.
  */
 const checkReviewExemptionDtoExistsInPrisonerContext = async (req: Request, res: Response, next: NextFunction) => {
   if (!getPrisonerContext(req.session, req.params.prisonNumber).reviewExemptionDto) {
