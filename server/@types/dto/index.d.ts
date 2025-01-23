@@ -107,6 +107,7 @@ declare module 'inductionDto' {
   import type { AchievedQualificationDto } from 'dto'
   import HasWorkedBeforeValue from '../../enums/hasWorkedBeforeValue'
   import SessionCompletedByValue from '../../enums/sessionCompletedByValue'
+  import InductionExemptionReasonValue from '../../enums/inductionExemptionReasonValue'
 
   export interface InductionDto extends ReferencedAndAuditable {
     prisonNumber: string
@@ -250,6 +251,13 @@ declare module 'inductionDto' {
     workType: WorkInterestTypeValue
     workTypeOther?: string
     role?: string
+  }
+
+  export interface InductionExemptionDto {
+    prisonNumber: string
+    prisonId: string
+    exemptionReason: InductionExemptionReasonValue
+    exemptionReasonDetails?: string
   }
 }
 

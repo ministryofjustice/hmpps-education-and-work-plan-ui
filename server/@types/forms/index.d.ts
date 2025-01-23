@@ -95,6 +95,7 @@ declare module 'inductionForms' {
   import YesNoValue from '../../enums/yesNoValue'
   import AdditionalTrainingValue from '../../enums/additionalTrainingValue'
   import SessionCompletedByValue from '../../enums/sessionCompletedByValue'
+  import InductionExemptionReasonValue from '../../enums/inductionExemptionReasonValue'
 
   export interface HopingToWorkOnReleaseForm {
     hopingToGetWork: HopingToGetWorkValue
@@ -171,10 +172,16 @@ declare module 'inductionForms' {
   export interface InductionNoteForm {
     notes?: string
   }
+
+  export interface InductionExemptionForm {
+    exemptionReason: InductionExemptionReasonValue
+    exemptionReasonDetails: Record<InductionExemptionReasonValue, string | undefined>
+  }
 }
 
 declare module 'reviewPlanForms' {
   import SessionCompletedByValue from '../../enums/sessionCompletedByValue'
+  import ReviewPlanExemptionReasonValue from '../../enums/reviewPlanExemptionReasonValue'
 
   export interface WhoCompletedReviewForm {
     completedBy: SessionCompletedByValue

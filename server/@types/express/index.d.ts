@@ -12,6 +12,7 @@ import type {
   AdditionalTrainingForm,
   AffectAbilityToWorkForm,
   HopingToWorkOnReleaseForm,
+  InductionExemptionForm,
   InductionNoteForm,
   InPrisonTrainingForm,
   InPrisonWorkForm,
@@ -27,7 +28,7 @@ import type {
 } from 'inductionForms'
 import type { ReviewNoteForm, WhoCompletedReviewForm, ReviewExemptionForm } from 'reviewPlanForms'
 import type { EducationDto, ReviewPlanDto, ReviewExemptionDto } from 'dto'
-import type { InductionDto } from 'inductionDto'
+import type { InductionDto, InductionExemptionDto } from 'inductionDto'
 import type { UserDetails } from '../../services/userService'
 
 export default {}
@@ -72,16 +73,19 @@ declare module 'express-session' {
     qualificationLevelForm?: QualificationLevelForm
     qualificationDetailsForm?: QualificationDetailsForm
     educationDto?: EducationDto
-    // Review related forms
+    // Review related forms and DTO
     whoCompletedReviewForm?: WhoCompletedReviewForm
     reviewNoteForm?: ReviewNoteForm
     reviewPlanDto?: ReviewPlanDto
-    // Review exemption related forms
+    // Review exemption related forms and DTO
     reviewExemptionForm?: ReviewExemptionForm
     reviewExemptionDto?: ReviewExemptionDto
     // Induction related forms
     whoCompletedInductionForm?: WhoCompletedInductionForm
     inductionNoteForm?: InductionNoteForm
+    // Induction exemption related forms and DTO
+    inductionExemptionForm?: InductionExemptionForm
+    inductionExemptionDto?: InductionExemptionDto
   }
 
   export type PrisonerContexts = Record<string, PrisonerContext>

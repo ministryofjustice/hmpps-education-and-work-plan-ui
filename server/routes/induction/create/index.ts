@@ -28,6 +28,7 @@ import retrieveCuriousInPrisonCourses from '../../routerRequestHandlers/retrieve
 import WhoCompletedInductionCreateController from './whoCompletedInductionCreateController'
 import InductionNoteCreateController from './inductionNoteCreateController'
 import config from '../../../config'
+import checkInductionDoesNotExist from '../../routerRequestHandlers/checkInductionDoesNotExist'
 
 /**
  * Route definitions for creating an Induction
@@ -71,6 +72,7 @@ export default (router: Router, services: Services) => {
   ])
 
   router.get('/prisoners/:prisonNumber/create-induction/hoping-to-work-on-release', [
+    checkInductionDoesNotExist(inductionService),
     asyncMiddleware(hopingToWorkOnReleaseCreateController.getHopingToWorkOnReleaseView),
   ])
   router.post('/prisoners/:prisonNumber/create-induction/hoping-to-work-on-release', [
