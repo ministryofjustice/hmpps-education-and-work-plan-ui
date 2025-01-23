@@ -99,6 +99,8 @@ enum AuditableUserAction {
   CREATE_PRISONER_ACTION_PLAN_REVIEW = 'CREATE_PRISONER_ACTION_PLAN_REVIEW',
   MARK_PRISONER_ACTION_PLAN_REVIEW_AS_EXEMPT = 'MARK_PRISONER_ACTION_PLAN_REVIEW_AS_EXEMPT',
   REMOVE_PRISONER_ACTION_PLAN_REVIEW_EXEMPTION = 'REMOVE_PRISONER_ACTION_PLAN_REVIEW_EXEMPTION',
+  MARK_PRISONER_INDUCTION_AS_EXEMPT = 'MARK_PRISONER_INDUCTION_AS_EXEMPT',
+  REMOVE_PRISONER_INDUCTION_EXEMPTION = 'REMOVE_PRISONER_INDUCTION_EXEMPTION',
 }
 
 export interface BaseAuditData {
@@ -167,6 +169,20 @@ export default class AuditService {
     return this.logAuditEvent({
       ...baseAuditData,
       what: AuditableUserAction.REMOVE_PRISONER_ACTION_PLAN_REVIEW_EXEMPTION,
+    })
+  }
+
+  async logExemptInduction(baseAuditData: BaseAuditData) {
+    return this.logAuditEvent({
+      ...baseAuditData,
+      what: AuditableUserAction.MARK_PRISONER_INDUCTION_AS_EXEMPT,
+    })
+  }
+
+  async logRemoveExemptionInduction(baseAuditData: BaseAuditData) {
+    return this.logAuditEvent({
+      ...baseAuditData,
+      what: AuditableUserAction.REMOVE_PRISONER_INDUCTION_EXEMPTION,
     })
   }
 }

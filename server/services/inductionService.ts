@@ -1,4 +1,4 @@
-import type { CreateOrUpdateInductionDto, InductionDto } from 'inductionDto'
+import type { CreateOrUpdateInductionDto, InductionDto, InductionExemptionDto } from 'inductionDto'
 import type { InductionSchedule } from 'viewModels'
 import logger from '../../logger'
 import EducationAndWorkPlanClient from '../data/educationAndWorkPlanClient'
@@ -7,6 +7,7 @@ import toUpdateInductionRequest from '../data/mappers/updateInductionMapper'
 import toCreateInductionRequest from '../data/mappers/createInductionMapper'
 import { HmppsAuthClient } from '../data'
 import toInductionSchedule from '../data/mappers/inductionScheduleMapper'
+import toUpdateInductionScheduleStatusRequest from '../data/mappers/updateInductionScheduleStatusRequestMapper'
 
 export default class InductionService {
   constructor(
@@ -57,5 +58,24 @@ export default class InductionService {
       systemToken,
     )
     return toInductionSchedule(inductionScheduleResponse)
+  }
+
+  async updateInductionScheduleStatus(inductionExemptionDto: InductionExemptionDto, username: string): Promise<void> {
+    const systemToken = await this.hmppsAuthClient.getSystemClientToken(username)
+
+    try {
+      const updateInductionScheduleStatusRequest = toUpdateInductionScheduleStatusRequest(inductionExemptionDto)
+      await this.educationAndWorkPlanClient.updateInductionScheduleStatus(
+        inductionExemptionDto.prisonNumber,
+        updateInductionScheduleStatusRequest,
+        systemToken,
+      )
+    } catch (error) {
+      logger.error(
+        `Error updating Induction Schedule Status for prisoner [${inductionExemptionDto.prisonNumber}] in the Education And Work Plan API `,
+        error,
+      )
+      throw error
+    }
   }
 }

@@ -29,6 +29,7 @@ import aValidCreateActionPlanReviewRequest from '../testsupport/createActionPlan
 import aValidCreateActionPlanReviewResponse from '../testsupport/createActionPlanReviewResponseTestDataBuilder'
 import aValidCreateActionPlanRequest from '../testsupport/createActionPlanRequestTestDataBuilder'
 import aValidUpdateReviewScheduleStatusRequest from '../testsupport/updateReviewScheduleStatusRequestTestDataBuilder'
+import aValidUpdateInductionScheduleStatusRequest from '../testsupport/updateInductionScheduleStatusRequestTestDataBuilder'
 
 describe('educationAndWorkPlanClient', () => {
   const educationAndWorkPlanClient = new EducationAndWorkPlanClient()
@@ -686,6 +687,61 @@ describe('educationAndWorkPlanClient', () => {
         // Then
         expect(nock.isDone()).toBe(true)
         expect(e.status).toEqual(404)
+        expect(e.data).toEqual(expectedResponseBody)
+      }
+    })
+  })
+
+  describe('updateInductionScheduleStatus', () => {
+    it('should update Induction Schedule Status', async () => {
+      // Given
+      const updateInductionScheduleStatusRequest = aValidUpdateInductionScheduleStatusRequest()
+
+      const expectedResponseBody = {}
+      educationAndWorkPlanApi
+        .put(`/inductions/${prisonNumber}/induction-schedule`, requestBody =>
+          isMatch(updateInductionScheduleStatusRequest, requestBody),
+        )
+        .reply(204, expectedResponseBody)
+
+      // When
+      const actual = await educationAndWorkPlanClient.updateInductionScheduleStatus(
+        prisonNumber,
+        updateInductionScheduleStatusRequest,
+        systemToken,
+      )
+
+      // Then
+      expect(nock.isDone()).toBe(true)
+      expect(actual).toEqual(expectedResponseBody)
+    })
+
+    it('should not get Induction Schedule Status given API returns error response', async () => {
+      // Given
+      const updateInductionScheduleStatusRequest = aValidUpdateInductionScheduleStatusRequest()
+
+      const expectedResponseBody = {
+        status: 500,
+        userMessage: 'An unexpected error occurred',
+        developerMessage: 'An unexpected error occurred',
+      }
+      educationAndWorkPlanApi
+        .put(`/inductions/${prisonNumber}/induction-schedule`, requestBody =>
+          isMatch(updateInductionScheduleStatusRequest, requestBody),
+        )
+        .reply(500, expectedResponseBody)
+
+      // When
+      try {
+        await educationAndWorkPlanClient.updateInductionScheduleStatus(
+          prisonNumber,
+          updateInductionScheduleStatusRequest,
+          systemToken,
+        )
+      } catch (e) {
+        // Then
+        expect(nock.isDone()).toBe(true)
+        expect(e.status).toEqual(500)
         expect(e.data).toEqual(expectedResponseBody)
       }
     })
