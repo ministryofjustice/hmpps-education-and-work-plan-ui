@@ -6,6 +6,7 @@ import config from '../../../config'
 import { checkUserHasEditAuthority } from '../../../middleware/roleBasedAccessControl'
 import checkInductionDoesNotExist from '../../routerRequestHandlers/checkInductionDoesNotExist'
 import exemptInductionRoutes from './exemption'
+import removeInductionExemptionRoutes from './removeExemption'
 
 /**
  * Route definitions for exempting, and removing the exemption of a prisoner's Induction
@@ -19,6 +20,7 @@ export default (router: Router, services: Services) => {
   router.get('/prisoners/:prisonNumber/induction/exemption/**', [checkPrisonIsEnabled(), checkUserHasEditAuthority()])
 
   exemptInductionRoutes(router, services)
+  removeInductionExemptionRoutes(router, services)
 }
 
 const checkPrisonIsEnabled = (): RequestHandler => {

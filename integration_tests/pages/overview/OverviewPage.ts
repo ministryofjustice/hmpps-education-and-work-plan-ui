@@ -5,6 +5,7 @@ import HopingToWorkOnReleasePage from '../induction/HopingToWorkOnReleasePage'
 import EducationAndTrainingPage from './EducationAndTrainingPage'
 import GoalsPage from './GoalsPage'
 import ExemptionReasonPage from '../induction/ExemptionPage'
+import ConfirmExemptionRemovalPage from '../induction/ConfirmExemptionRemovalPage'
 
 /**
  * Cypress page class representing the Overview tab of the Overview Page
@@ -208,6 +209,11 @@ export default class OverviewPage extends Page {
   clickRecordInductionExemptionButton(): ExemptionReasonPage {
     this.inductionExemptionButton().click()
     return Page.verifyOnPage(ExemptionReasonPage)
+  }
+
+  clickRemoveInductionExemptionButton(): ConfirmExemptionRemovalPage {
+    this.removeInductionExemptionButton().click()
+    return Page.verifyOnPage(ConfirmExemptionRemovalPage)
   }
 
   inductionIsDue(): OverviewPage {
