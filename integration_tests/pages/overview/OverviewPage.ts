@@ -4,6 +4,7 @@ import CreateGoalsPage from '../goal/CreateGoalsPage'
 import HopingToWorkOnReleasePage from '../induction/HopingToWorkOnReleasePage'
 import EducationAndTrainingPage from './EducationAndTrainingPage'
 import GoalsPage from './GoalsPage'
+import ExemptionReasonPage from '../induction/ExemptionPage'
 
 /**
  * Cypress page class representing the Overview tab of the Overview Page
@@ -204,6 +205,25 @@ export default class OverviewPage extends Page {
     return this
   }
 
+  clickRecordInductionExemptionButton(): ExemptionReasonPage {
+    this.inductionExemptionButton().click()
+    return Page.verifyOnPage(ExemptionReasonPage)
+  }
+
+  inductionIsDue(): OverviewPage {
+    this.inductionDueTag().should('exist')
+    this.inductionExemptionButton().should('exist')
+    this.removeInductionExemptionButton().should('not.exist')
+    return this
+  }
+
+  inductionIsOnHold(): OverviewPage {
+    this.inductionOnHoldTag().should('exist')
+    this.inductionExemptionButton().should('not.exist')
+    this.removeInductionExemptionButton().should('exist')
+    return this
+  }
+
   private prisonNumberLabel = (): PageElement => cy.get('[data-qa=prison-number]')
 
   private inProgressGoalsCount = (): PageElement => cy.get('[data-qa=in-progress-goals-count]')
@@ -263,4 +283,26 @@ export default class OverviewPage extends Page {
   private goalsActionItems = (): PageElement => cy.get('[data-qa=goals-action-items] li')
 
   private reviewsActionItems = (): PageElement => cy.get('[data-qa=reviews-action-items] li')
+
+  private inductionActionItems = (): PageElement => cy.get('[data-qa=induction-action-items] li')
+
+  private inductionExemptionButton = (): PageElement =>
+    this.inductionActionItems().find('[data-qa=record-exemption-button]')
+
+  private removeInductionExemptionButton = (): PageElement =>
+    this.inductionActionItems().find('[data-qa=remove-exemption-button]')
+
+  private inductionOnHoldTag = (): PageElement => cy.get('[data-qa=induction-on-hold]')
+
+  private inductionNotDueTag = (): PageElement => cy.get('[data-qa=induction-not-due]')
+
+  private goalsNotDueTag = (): PageElement => cy.get('[data-qa=goals-not-due]')
+
+  private inductionDueTag = (): PageElement => cy.get('[data-qa=induction-due]')
+
+  private goalsDueTag = (): PageElement => cy.get('[data-qa=goals-due]')
+
+  private inductionOverdueTag = (): PageElement => cy.get('[data-qa=induction-overdue]')
+
+  private goalsOverdueTag = (): PageElement => cy.get('[data-qa=goals-overdue]')
 }
