@@ -11,6 +11,7 @@ import HasWorkedBeforeValue from '../../server/enums/hasWorkedBeforeValue'
 import GoalStatusValue from '../../server/enums/goalStatusValue'
 import EducationLevelValue from '../../server/enums/educationLevelValue'
 import QualificationLevelValue from '../../server/enums/qualificationLevelValue'
+import InductionScheduleStatusValue from '../../server/enums/inductionScheduleStatusValue'
 
 const createGoals = (): SuperAgentRequest =>
   stubFor({
@@ -1153,21 +1154,25 @@ const stubUpdateActionPlanReviewScheduleStatus500Error = (): SuperAgentRequest =
     },
   })
 
-const stubGetInductionSchedule = (prisonNumber = 'G6115VJ'): SuperAgentRequest =>
+const stubGetInductionSchedule = (options?: {
+  prisonNumber?: string
+  deadlineDate?: Date
+  scheduleStatus?: InductionScheduleStatusValue
+}): SuperAgentRequest =>
   stubFor({
     request: {
       method: 'GET',
-      urlPattern: `/inductions/${prisonNumber}/induction-schedule`,
+      urlPattern: `/inductions/${options?.prisonNumber || 'G6115VJ'}/induction-schedule`,
     },
     response: {
       status: 200,
       headers: { 'Content-Type': 'application/json;charset=UTF-8' },
       jsonBody: {
         reference: '814ade0a-a3b2-46a3-862f-79211ba13f7b',
-        prisonNumber,
-        deadlineDate: '2025-02-20',
+        prisonNumber: options?.prisonNumber || 'G6115VJ',
+        deadlineDate: options?.deadlineDate ? format(options.deadlineDate, 'yyyy-MM-dd') : '2025-02-20',
         scheduleCalculationRule: 'NEW_PRISON_ADMISSION',
-        scheduleStatus: 'COMPLETED',
+        scheduleStatus: options?.scheduleStatus || 'COMPLETED',
         inductionPerformedBy: undefined,
         inductionPerformedAt: undefined,
         createdAt: '2023-06-19T09:39:44.000Z',
@@ -1206,6 +1211,36 @@ const stubGetInductionSchedule500Error = (prisonNumber = 'G6115VJ'): SuperAgentR
     request: {
       method: 'GET',
       urlPattern: `/inductions/${prisonNumber}/induction-schedule`,
+    },
+    response: {
+      status: 500,
+      headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+      jsonBody: {
+        status: 500,
+        errorCode: null,
+        userMessage: 'An unexpected error occurred',
+        developerMessage: 'An unexpected error occurred',
+        moreInfo: null,
+      },
+    },
+  })
+
+const stubUpdateInductionScheduleStatus = (): SuperAgentRequest =>
+  stubFor({
+    request: {
+      method: 'PUT',
+      urlPattern: '/inductions/.*/induction-schedule',
+    },
+    response: {
+      status: 204,
+    },
+  })
+
+const stubUpdateInductionScheduleStatus500Error = (): SuperAgentRequest =>
+  stubFor({
+    request: {
+      method: 'PUT',
+      urlPattern: '/inductions/.*/induction-schedule',
     },
     response: {
       status: 500,
@@ -1273,6 +1308,8 @@ export default {
   stubGetInductionSchedule,
   stubGetInductionSchedule404Error,
   stubGetInductionSchedule500Error,
+  stubUpdateInductionScheduleStatus,
+  stubUpdateInductionScheduleStatus500Error,
 
   stubEducationAndWorkPlanApiPing: stubPing(),
 }
