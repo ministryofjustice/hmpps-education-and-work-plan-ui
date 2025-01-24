@@ -19,7 +19,9 @@
         <h3 class="govuk-heading-s govuk-!-margin-bottom-1" data-qa="exemption-reason-heading">Exemption reason</h3>
         <p class="govuk-body app-u-multiline-text govuk-!-margin-bottom-1" data-qa="exemption-reason">{{ exemptionReason | formatReviewExemptionReason }}</p>
       </section>
+    </div>
 
+    <div class="govuk-grid-column-full">
       <form class="form" method="post" novalidate="">
         <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
         <div class="govuk-form-group">
@@ -36,11 +38,11 @@
           {{ govukButton({
             type: "a",
             href: "/plan/" + prisonerSummary.prisonNumber + "/view/overview",
-            id: "back-to-exemption-button",
+            id: "cancel-button",
             text: "No, go back to learning and work progress plan",
             classes: "moj-button-menu__item govuk-button--secondary",
             attributes: {
-              'data-qa': 'confirm-remove-exemption-back-button'
+              'data-qa': 'confirm-remove-exemption-cancel-button'
             }
           }) }}
         </div>

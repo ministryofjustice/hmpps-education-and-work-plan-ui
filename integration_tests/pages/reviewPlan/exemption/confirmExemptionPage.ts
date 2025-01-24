@@ -8,9 +8,9 @@ export default class ConfirmExemptionPage extends Page {
   }
 
   goBackToLearningAndWorkProgressPlan() {
-    this.backButton().click()
+    this.cancelButton().click()
     return this
   }
 
-  private backButton = (): PageElement => cy.get('[data-qa=confirm-exemption-back-button]')
+  private cancelButton = (): PageElement => cy.get('[data-qa=confirm-exemption-cancel-button]')
 }

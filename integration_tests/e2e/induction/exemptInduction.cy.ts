@@ -120,4 +120,34 @@ context('Exempt an Induction', () => {
         ),
     )
   })
+
+  it('should not mark the scheduled induction as exempt given cancel button is pressed', () => {
+    // Given
+    cy.signIn()
+
+    cy.visit(`/plan/${prisonNumberForPrisonerWithNoInduction}/view/overview`)
+    Page.verifyOnPage(OverviewPage) //
+      .inductionIsDue()
+      .clickRecordInductionExemptionButton()
+
+    // When
+    Page.verifyOnPage(ExemptionReasonPage) //
+      .selectExemptionReason(InductionScheduleStatusValue.EXEMPT_PRISONER_DRUG_OR_ALCOHOL_DEPENDENCY)
+      .enterExemptionReasonDetails(
+        InductionScheduleStatusValue.EXEMPT_PRISONER_DRUG_OR_ALCOHOL_DEPENDENCY,
+        'In treatment',
+      )
+      .submitPage() // submit the page with valid responses to redirect to confirm exemption page
+    Page.verifyOnPage(ConfirmExemptionPage) //
+      .goBackToLearningAndWorkProgressPlan()
+
+    // Then
+    Page.verifyOnPage(OverviewPage) //
+      .doesNotHaveSuccessMessage()
+      .inductionIsDue()
+
+    cy.wiremockVerifyNoInteractions(
+      putRequestedFor(urlEqualTo(`/inductions/${prisonNumberForPrisonerWithNoInduction}/induction-schedule`)),
+    )
+  })
 })

@@ -58,7 +58,7 @@ describe('ExemptionReasonPage', () => {
     )
     expect($(radioLabels[7]).text().trim()).toBe(`Prison operational or security reason`)
     expect($('[data-qa="hint-operation-issue"]').text().trim()).toBe(
-      'where the prisoner is violent and there is a risk to prison or CIAG staff',
+      'for example, prison staff retraining or an incident lasting several days',
     )
     expect($(radioLabels[8]).text().trim()).toBe(`Security issue that poses risk to staff`)
     expect($('[data-qa="hint-security-risk"]').text().trim()).toBe(
