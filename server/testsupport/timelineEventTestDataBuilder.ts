@@ -13,6 +13,7 @@ type CoreBuilderOptions = {
   eventType?:
     | 'INDUCTION_CREATED'
     | 'INDUCTION_UPDATED'
+    | 'INDUCTION_SCHEDULE_STATUS_UPDATED'
     | 'ACTION_PLAN_CREATED'
     | 'GOAL_CREATED'
     | 'MULTIPLE_GOALS_CREATED'
