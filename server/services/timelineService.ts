@@ -7,6 +7,7 @@ import { HmppsAuthClient } from '../data'
 
 const PLP_TIMELINE_EVENTS = [
   'ACTION_PLAN_CREATED',
+  'INDUCTION_SCHEDULE_STATUS_UPDATED',
   'INDUCTION_UPDATED',
   'GOAL_UPDATED',
   'GOAL_CREATED',
