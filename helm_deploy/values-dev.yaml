@@ -42,6 +42,7 @@ generic-service:
       - internal
       - prisons
       - private_prisons
+      - prisons-education
 
 generic-prometheus-alerts:
   alertSeverity: digital-prison-service-dev
