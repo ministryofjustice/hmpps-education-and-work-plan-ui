@@ -92,6 +92,7 @@ generic-service:
       - internal
       - prisons
       - private_prisons
+      - prisons-education
 
 generic-prometheus-alerts:
   targetApplication: hmpps-education-and-work-plan-ui
