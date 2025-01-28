@@ -19,8 +19,6 @@ context(`Display the prisoner list screen`, () => {
     cy.task('reset')
     cy.task('stubSignInAsReadOnlyUser')
     cy.task('stubAuthUser')
-    cy.task('stubGetHeaderComponent')
-    cy.task('stubGetFooterComponent')
 
     // Generate 725 Prisoner Search Summaries that will be displayed on the Prisoner List page by virtue of using them in the prisoner-search, CIAG, and Action Plan stubs
     // 725 is a very specific number and is used because it will mean we have 15 pages (14 pages of 50, plus 1 of 25)

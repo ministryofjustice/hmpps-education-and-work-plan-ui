@@ -16,8 +16,6 @@ context(`Show the relevant screen after an Induction has been created`, () => {
     cy.task('reset')
     cy.task('stubSignInAsUserWithEditAuthority')
     cy.task('stubAuthUser')
-    cy.task('stubGetHeaderComponent')
-    cy.task('stubGetFooterComponent')
     cy.task('stubPrisonerList')
     cy.task('stubCiagInductionList')
     cy.task('stubActionPlansList')

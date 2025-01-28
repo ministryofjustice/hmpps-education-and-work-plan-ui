@@ -8,8 +8,6 @@ context('Prisoner Overview page - Common functionality for both pre and post ind
     cy.task('reset')
     cy.task('stubSignInAsReadOnlyUser')
     cy.task('stubAuthUser')
-    cy.task('stubGetHeaderComponent')
-    cy.task('stubGetFooterComponent')
     cy.task('stubPrisonerList')
     cy.task('stubCiagInductionList')
     cy.task('stubActionPlansList')
@@ -35,29 +33,6 @@ context('Prisoner Overview page - Common functionality for both pre and post ind
 
     // Check
     overviewPage.hasBreadcrumb().breadcrumbDoesNotIncludeCurrentPage()
-  })
-
-  it('should have the DPS footer', () => {
-    // Given
-    cy.signIn()
-    cy.visit(`/plan/${prisonNumber}/view/overview`)
-    const overviewPage = Page.verifyOnPage(OverviewPage)
-
-    // Check
-    overviewPage.hasFooter()
-  })
-
-  it('should have the standard footer given the DPS frontend component API errors', () => {
-    cy.task('stubGetFooterComponent500error')
-    // Given
-    cy.signIn()
-
-    // When
-    cy.visit(`/plan/${prisonNumber}/view/overview`)
-    const overviewPage = Page.verifyOnPage(OverviewPage)
-
-    // Check
-    overviewPage.hasFallbackFooter()
   })
 
   it('should display correct counts of in progress and archived goals', () => {

@@ -143,15 +143,6 @@ export default {
       agent: new AgentConfig(Number(get('CURIOUS_API_TIMEOUT_RESPONSE', 3000))),
       includeInHealthCheck: false,
     },
-    frontendComponents: {
-      url: get('FRONTEND_COMPONENT_API_URL', 'http://localhost:8083', requiredInProduction),
-      timeout: {
-        response: Number(get('FRONTEND_COMPONENT_API_TIMEOUT_RESPONSE', 5000)),
-        deadline: Number(get('FRONTEND_COMPONENT_API_TIMEOUT_DEADLINE', 5000)),
-      },
-      agent: new AgentConfig(Number(get('FRONTEND_COMPONENT_API_TIMEOUT_RESPONSE', 5000))),
-      includeInHealthCheck: false,
-    },
     activities: {
       url: get('ACTIVITIES_API_URL', 'http://localhost:8083', requiredInProduction),
       timeout: {
@@ -168,6 +159,7 @@ export default {
   domain: get('INGRESS_URL', 'http://localhost:3000', requiredInProduction),
   environmentName: get('ENVIRONMENT_NAME', ''),
   dpsHomeUrl: get('DPS_URL', 'http://localhost:3000/', requiredInProduction),
+  newDpsUrl: get('NEW_DPS_URL', 'http://localhost:3000/', requiredInProduction),
   applicationInsights: {
     connectionString: get('APPLICATIONINSIGHTS_CONNECTION_STRING', null),
   },

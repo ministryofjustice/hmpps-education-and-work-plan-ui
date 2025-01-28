@@ -92,8 +92,6 @@ context('In Prison Courses and Qualifications', () => {
       cy.task('reset')
       cy.task('stubSignIn', ['ROLE_SOME_NON_PLP_ROLE'])
       cy.task('stubAuthUser')
-      cy.task('stubGetHeaderComponent')
-      cy.task('stubGetFooterComponent')
       cy.signIn()
     })
 
@@ -207,8 +205,6 @@ context('In Prison Courses and Qualifications', () => {
         cy.task('stubAuthUser')
         cy.task('stubLearnerProfile')
         cy.task('stubLearnerEducation')
-        cy.task('stubGetHeaderComponent')
-        cy.task('stubGetFooterComponent')
         cy.signIn()
       })
 

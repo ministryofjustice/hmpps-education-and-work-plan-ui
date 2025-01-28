@@ -212,8 +212,6 @@ const signInWithAuthority = (authority: 'EDIT' | 'VIEW') => {
   cy.task('reset')
   cy.task(authority === 'EDIT' ? 'stubSignInAsUserWithEditAuthority' : 'stubSignInAsReadOnlyUser')
   cy.task('stubAuthUser')
-  cy.task('stubGetHeaderComponent')
-  cy.task('stubGetFooterComponent')
   cy.task('stubPrisonerList')
   cy.task('stubCiagInductionList')
   cy.task('stubActionPlansList')

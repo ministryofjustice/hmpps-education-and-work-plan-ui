@@ -10,8 +10,6 @@ context('Accessibility statement', () => {
     // Given
     cy.task('stubSignIn')
     cy.task('stubAuthUser')
-    cy.task('stubGetHeaderComponent')
-    cy.task('stubGetFooterComponent')
 
     cy.signIn()
 
