@@ -1,4 +1,4 @@
-import moment from 'moment'
+import { startOfDay } from 'date-fns'
 import type { UpdateStepDto, UpdateGoalDto } from 'dto'
 import type { UpdateGoalForm, UpdateStepForm } from 'forms'
 
@@ -10,6 +10,7 @@ const toUpdateGoalDto = (updateGoalForm: UpdateGoalForm, prisonId: string): Upda
     targetCompletionDate: toTargetCompletionDate(updateGoalForm),
     notes: updateGoalForm.note,
     prisonId,
+    status: updateGoalForm.status,
   }
 }
 
@@ -27,9 +28,9 @@ const toTargetCompletionDate = (updateGoalForm: UpdateGoalForm): Date => {
     const day = updateGoalForm['targetCompletionDate-day'].padStart(2, '0')
     const month = updateGoalForm['targetCompletionDate-month'].padStart(2, '0')
     const year = updateGoalForm['targetCompletionDate-year']
-    return moment.utc(`${year}-${month}-${day}`).toDate()
+    return startOfDay(`${year}-${month}-${day}`)
   }
-  return moment.utc(updateGoalForm.targetCompletionDate).toDate()
+  return startOfDay(updateGoalForm.targetCompletionDate)
 }
 
 export { toUpdateGoalDto, toUpdateStepDto }
