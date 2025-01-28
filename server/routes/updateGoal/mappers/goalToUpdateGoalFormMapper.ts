@@ -1,6 +1,8 @@
 import type { UpdateGoalForm, UpdateStepForm } from 'forms'
 import type { Goal, Step } from 'viewModels'
-import moment from 'moment'
+import { format } from 'date-fns'
+import GoalStatusValue from '../../../enums/goalStatusValue'
+import StepStatusValue from '../../../enums/stepStatusValue'
 
 const toUpdateGoalForm = (goal: Goal): UpdateGoalForm => {
   return {
@@ -14,6 +16,7 @@ const toUpdateGoalForm = (goal: Goal): UpdateGoalForm => {
     note: goal.notesByType.GOAL.at(0)?.content,
     steps: goal.steps.map(step => toUpdateStepForm(step)),
     originalTargetCompletionDate: toDateString(goal.targetCompletionDate),
+    status: GoalStatusValue[goal.status as keyof typeof GoalStatusValue],
   }
 }
 
@@ -22,12 +25,12 @@ const toUpdateStepForm = (step: Step): UpdateStepForm => {
     reference: step.stepReference,
     title: step.title,
     stepNumber: step.sequenceNumber,
-    status: step.status,
+    status: StepStatusValue[step.status as keyof typeof StepStatusValue],
   }
 }
 
 const toDateString = (date: Date): string => {
-  return moment(date).format('YYYY-MM-DD')
+  return format(date, 'yyyy-MM-dd')
 }
 
 export { toUpdateGoalForm, toUpdateStepForm }

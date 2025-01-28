@@ -1,4 +1,4 @@
-import moment from 'moment'
+import { startOfDay } from 'date-fns'
 import type { UpdateStepDto, UpdateGoalDto } from 'dto'
 import {
   aValidUpdateGoalForm,
@@ -29,9 +29,10 @@ describe('updateGoalFormToUpdateGoalDtoMapper', () => {
       goalReference: updateGoalForm.reference,
       title: updateGoalForm.title,
       steps: [expectedUpdateStepDto1, expectedUpdateStepDto2],
-      targetCompletionDate: moment.utc('2024-02-29').toDate(),
+      targetCompletionDate: startOfDay('2024-02-29'),
       notes: updateGoalForm.note,
       prisonId,
+      status: updateGoalForm.status,
     }
 
     // When
@@ -56,9 +57,10 @@ describe('updateGoalFormToUpdateGoalDtoMapper', () => {
       goalReference: updateGoalForm.reference,
       title: updateGoalForm.title,
       steps: [expectedUpdateStepDto],
-      targetCompletionDate: moment.utc('2024-02-29').toDate(),
+      targetCompletionDate: startOfDay('2024-02-29'),
       notes: updateGoalForm.note,
       prisonId,
+      status: updateGoalForm.status,
     }
 
     // When
@@ -83,9 +85,10 @@ describe('updateGoalFormToUpdateGoalDtoMapper', () => {
       goalReference: updateGoalForm.reference,
       title: updateGoalForm.title,
       steps: [expectedUpdateStepDto],
-      targetCompletionDate: moment.utc('2024-06-29').toDate(),
+      targetCompletionDate: startOfDay('2024-06-29'),
       notes: updateGoalForm.note,
       prisonId,
+      status: updateGoalForm.status,
     }
 
     // When

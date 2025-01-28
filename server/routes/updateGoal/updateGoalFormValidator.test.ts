@@ -1,6 +1,8 @@
 import type { UpdateGoalForm } from 'forms'
 import validateUpdateGoalForm from './updateGoalFormValidator'
 import { aValidUpdateGoalForm } from '../../testsupport/updateGoalFormTestDataBuilder'
+import GoalStatusValue from '../../enums/goalStatusValue'
+import StepStatusValue from '../../enums/stepStatusValue'
 
 describe('updateGoalFormValidator', () => {
   it('should validate given no errors', () => {
@@ -29,10 +31,11 @@ describe('updateGoalFormValidator', () => {
           reference: 'c77cd2fb-40e0-4354-982a-5c8017e92b26',
           title: 'Book course',
           stepNumber: 1,
-          status: 'ACTIVE',
+          status: StepStatusValue.ACTIVE,
         },
       ],
       originalTargetCompletionDate: '2024-02-29',
+      status: GoalStatusValue.ACTIVE,
     }
 
     // When
@@ -57,10 +60,11 @@ describe('updateGoalFormValidator', () => {
           reference: 'c77cd2fb-40e0-4354-982a-5c8017e92b26',
           title: 'Book course',
           stepNumber: 1,
-          status: 'ACTIVE',
+          status: StepStatusValue.ACTIVE,
         },
       ],
       originalTargetCompletionDate: '2024-02-29',
+      status: GoalStatusValue.ACTIVE,
     }
 
     // When
@@ -85,10 +89,11 @@ describe('updateGoalFormValidator', () => {
           reference: 'c77cd2fb-40e0-4354-982a-5c8017e92b26',
           title: undefined,
           stepNumber: 1,
-          status: 'ACTIVE',
+          status: StepStatusValue.ACTIVE,
         },
       ],
       originalTargetCompletionDate: '2024-02-29',
+      status: GoalStatusValue.ACTIVE,
     }
 
     // When
@@ -117,6 +122,7 @@ describe('updateGoalFormValidator', () => {
         },
       ],
       originalTargetCompletionDate: '2024-02-29',
+      status: GoalStatusValue.ACTIVE,
     }
 
     // When

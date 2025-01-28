@@ -5,6 +5,8 @@ declare module 'viewModels' {
   import ActionPlanReviewCalculationRuleValue from '../../enums/actionPlanReviewCalculationRuleValue'
   import NoteTypeValue from '../../enums/noteTypeValue'
   import TimelineEventTypeValue from '../../enums/timelineEventTypeValue'
+  import GoalStatusValue from '../../enums/goalStatusValue'
+  import StepStatusValue from '../../enums/stepStatusValue'
 
   export interface PrisonerSummary {
     prisonNumber: string
@@ -73,7 +75,7 @@ declare module 'viewModels' {
   export interface Goal {
     goalReference: string
     title: string
-    status: 'ACTIVE' | 'COMPLETED' | 'ARCHIVED'
+    status: GoalStatusValue
     steps: Array<Step>
     createdBy: string
     createdByDisplayName: string
@@ -96,7 +98,7 @@ declare module 'viewModels' {
   export interface Step {
     stepReference: string
     title: string
-    status: 'NOT_STARTED' | 'ACTIVE' | 'COMPLETE'
+    status: StepStatusValue
     sequenceNumber: number
   }
 

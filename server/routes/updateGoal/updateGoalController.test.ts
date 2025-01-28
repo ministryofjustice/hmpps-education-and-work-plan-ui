@@ -90,6 +90,7 @@ describe('updateGoalController', () => {
           },
         ],
         originalTargetCompletionDate: '2024-02-29',
+        status: goal.status,
       } as UpdateGoalForm
       const expectedView = {
         prisonerSummary,
