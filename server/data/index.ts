@@ -21,7 +21,6 @@ import PrisonerSearchClient from './prisonerSearchClient'
 import EducationAndWorkPlanClient from './educationAndWorkPlanClient'
 import CuriousClient from './curiousClient'
 import CiagInductionClient from './ciagInductionClient'
-import FrontendComponentApiClient from './frontendComponentApiClient'
 import PrisonRegisterStore from './prisonRegisterStore/prisonRegisterStore'
 import PrisonRegisterClient from './prisonRegisterClient'
 import PrisonerSearchStore from './prisonerSearchStore/prisonerSearchStore'
@@ -40,7 +39,6 @@ export const dataAccess = () => ({
   educationAndWorkPlanClient: new EducationAndWorkPlanClient(),
   curiousClient: new CuriousClient(),
   ciagInductionClient: new CiagInductionClient(),
-  frontendComponentApiClient: new FrontendComponentApiClient(),
   prisonRegisterStore: new PrisonRegisterStore(createRedisClient('prisonRegister:')),
   prisonRegisterClient: new PrisonRegisterClient(),
 })
@@ -57,7 +55,6 @@ export {
   EducationAndWorkPlanClient,
   CuriousClient,
   CiagInductionClient,
-  FrontendComponentApiClient,
   PrisonRegisterStore,
   PrisonRegisterClient,
 }

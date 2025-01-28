@@ -8,7 +8,6 @@ import prisonerSearchApi from './integration_tests/mockApis/prisonerSearchApi'
 import educationAndWorkPlanApi from './integration_tests/mockApis/educationAndWorkPlanApi'
 import curiousApi from './integration_tests/mockApis/curiousApi'
 import ciagInducationApi from './integration_tests/mockApis/ciagInducationApi'
-import frontendComponentApi from './integration_tests/mockApis/frontendComponentApi'
 import prisonerListApi from './integration_tests/mockApis/prisonerListApi'
 import prisonRegisterApi from './integration_tests/mockApis/prisonRegisterApi'
 import prisonerSearchSummaryMockDataGenerator from './integration_tests/mockData/prisonerSearchSummaryMockDataGenerator'
@@ -52,7 +51,6 @@ export default defineConfig({
         ...educationAndWorkPlanApi,
         ...curiousApi,
         ...ciagInducationApi,
-        ...frontendComponentApi,
         ...prisonerListApi,
         ...prisonRegisterApi,
         ...prisonerSearchSummaryMockDataGenerator,

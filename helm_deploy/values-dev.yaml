@@ -21,7 +21,8 @@ generic-service:
     PRISON_REGISTER_API_URL: 'https://prison-register-dev.hmpps.service.justice.gov.uk'
     CURIOUS_API_URL: 'https://testservices.sequation.net/sequation-virtual-campus2-api'
     DPS_URL: 'https://digital-dev.prison.service.justice.gov.uk'
-    FRONTEND_COMPONENT_API_URL: 'https://frontend-components-dev.hmpps.service.justice.gov.uk'
+    NEW_DPS_URL: 'https://dps-dev.prison.service.justice.gov.uk'
+    COMPONENT_API_URL: 'https://frontend-components-dev.hmpps.service.justice.gov.uk'
     ACTIVITIES_API_URL: 'https://activities-api-dev.prison.service.justice.gov.uk'
     ENVIRONMENT_NAME: 'DEV'
 

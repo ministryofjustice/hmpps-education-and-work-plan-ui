@@ -30,11 +30,9 @@
 {% block head %}
   <link href="/assets/stylesheets/application.css?{{ version }}" rel="stylesheet"/>
 
-  {% if not feComponents.problemRetrievingData %}
-    {% for css in feComponents.cssIncludes %}
-      <link href="{{ css }}" nonce="{{ cspNonce }}" rel="stylesheet" />
-    {% endfor %}
-  {% endif %}
+  {% for css in feComponents.cssIncludes %}
+    <link href="{{ css }}" nonce="{{ cspNonce }}" rel="stylesheet" />
+  {% endfor %}
 
   <link href="/assets/stylesheets/print.css?{{ version }}" media="print" rel="stylesheet" />
 {% endblock %}
@@ -42,11 +40,7 @@
 {% block pageTitle %}{{ pageTitle | default(applicationName) }} - {{ applicationName }}{% endblock %}
 
 {% block header %}
-  {% if not feComponents.problemRetrievingData and feComponents.headerHtml %}
-    {{ feComponents.headerHtml | safe }}
-  {% else %}
-    {% include "./header.njk" %}
-  {% endif %}
+  {{ feComponents.header | safe }}
 {% endblock %}
 
 {% block bodyStart %}
@@ -97,11 +91,7 @@
 {% endblock %}
 
 {% block footer %}
-  {% if not feComponents.problemRetrievingData and feComponents.footerHtml %}
-    {{ feComponents.footerHtml | safe }}
-  {% else %}
-    {% include "./footer.njk" %}
-  {% endif %}
+  {{ feComponents.footer | safe }}
 {% endblock %}
 
 {% block bodyEnd %}
@@ -120,9 +110,7 @@
     window.applicationInsights.init('{{ applicationInsightsConnectionString }}', '{{ applicationInsightsRoleName }}', '{{ user.username }}');
   </script>
 
-  {% if not feComponents.problemRetrievingData %}
-    {% for js in feComponents.jsIncludes %}
-      <script src="{{ js }}" nonce="{{ cspNonce }}"></script>
-    {% endfor %}
-  {% endif %}
+  {% for js in feComponents.jsIncludes %}
+    <script src="{{ js }}" nonce="{{ cspNonce }}"></script>
+  {% endfor %}
 {% endblock %}

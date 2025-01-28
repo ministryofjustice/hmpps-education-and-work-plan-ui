@@ -12,8 +12,6 @@ context('Create goals', () => {
     cy.task('reset')
     cy.task('stubSignInAsUserWithEditAuthority')
     cy.task('stubAuthUser')
-    cy.task('stubGetHeaderComponent')
-    cy.task('stubGetFooterComponent')
     cy.task('stubPrisonerList')
     cy.task('stubCiagInductionList')
     cy.task('stubActionPlansList')

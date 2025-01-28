@@ -1,15 +1,12 @@
 import PrisonerListPage from '../pages/prisonerList/PrisonerListPage'
 import AuthSignInPage from '../pages/authSignIn'
 import Page from '../pages/page'
-import AuthManageDetailsPage from '../pages/authManageDetails'
 
 context('SignIn', () => {
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubSignInAsReadOnlyUser')
     cy.task('stubAuthUser')
-    cy.task('stubGetHeaderComponent')
-    cy.task('stubGetFooterComponent')
     cy.task('stubPrisonerList')
     cy.task('stubCiagInductionList')
     cy.task('stubActionPlansList')
@@ -38,15 +35,6 @@ context('SignIn', () => {
     Page.verifyOnPage(AuthSignInPage)
   })
 
-  it('User can manage their details', () => {
-    cy.signIn()
-    const indexPage = Page.verifyOnPage(PrisonerListPage)
-
-    indexPage.manageDetails().get('a').invoke('removeAttr', 'target')
-    indexPage.manageDetails().click()
-    Page.verifyOnPage(AuthManageDetailsPage)
-  })
-
   it('Token verification failure takes user to sign in page', () => {
     cy.signIn()
     Page.verifyOnPage(PrisonerListPage)
@@ -57,7 +45,6 @@ context('SignIn', () => {
   })
 
   it('Token verification failure clears user session', () => {
-    cy.task('stubGetHeaderComponent', 'B. Brown')
     cy.signIn()
     const indexPage = Page.verifyOnPage(PrisonerListPage)
     cy.task('stubVerifyToken', false)

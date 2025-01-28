@@ -7,8 +7,6 @@ context('404 Page Not Found', () => {
     cy.task('reset')
     cy.task('stubAuthUser')
     cy.task('stubSignInAsReadOnlyUser')
-    cy.task('stubGetHeaderComponent')
-    cy.task('stubGetFooterComponent')
     cy.task('stubPrisonerList')
     cy.task('stubCiagInductionList')
     cy.task('stubActionPlansList')

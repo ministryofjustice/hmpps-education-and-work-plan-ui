@@ -286,17 +286,6 @@ declare module 'viewModels' {
     actionedByDisplayName?: string
   }
 
-  /**
-   * DPS frontend components
-   */
-  export interface FrontendComponentsPageAdditions {
-    headerHtml: string
-    footerHtml: string
-    cssIncludes: Array<string>
-    jsIncludes: Array<string>
-    problemRetrievingData: boolean
-  }
-
   export interface Prison {
     prisonId: string
     prisonName?: string

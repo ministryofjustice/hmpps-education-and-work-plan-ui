@@ -1,6 +1,7 @@
 import express from 'express'
 
 import createError from 'http-errors'
+import dpsComponents from '@ministryofjustice/hmpps-connect-dps-components'
 
 import nunjucksSetup from './utils/nunjucksSetup'
 import errorHandler from './errorHandler'
@@ -16,9 +17,9 @@ import setUpStaticResources from './middleware/setUpStaticResources'
 import setUpWebRequestParsing from './middleware/setupRequestParsing'
 import setUpWebSecurity from './middleware/setUpWebSecurity'
 import setUpWebSession from './middleware/setUpWebSession'
-import getFrontendComponents from './middleware/fetchFrontendComponentMiddleware'
 
 import config from './config'
+import logger from '../logger'
 import routes from './routes'
 import type { Services } from './services'
 import auditMiddleware from './middleware/auditMiddleware'
@@ -58,7 +59,7 @@ export default function createApp(services: Services): express.Application {
     next()
   })
 
-  app.get('*', getFrontendComponents(services))
+  app.get('*', dpsComponents.getPageComponents({ dpsUrl: config.newDpsUrl, logger }))
 
   app.get('/accessibility-statement', async (req, res, next) => {
     res.render('pages/accessibilityStatement/index')

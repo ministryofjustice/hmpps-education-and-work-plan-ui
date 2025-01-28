@@ -73,21 +73,6 @@ const signOut = () =>
     },
   })
 
-const manageDetails = () =>
-  stubFor({
-    request: {
-      method: 'GET',
-      urlPattern: '/auth/account-details.*',
-    },
-    response: {
-      status: 200,
-      headers: {
-        'Content-Type': 'text/html',
-      },
-      body: '<html lang="en"><title>Mock Account Details page</title><body><h1>Your account details</h1><span class="govuk-visually-hidden" id="pageId" data-qa="account-details"></span></body></html>',
-    },
-  })
-
 const token = (roles: string[] = []) =>
   stubFor({
     request: {
@@ -151,8 +136,8 @@ const stubUserRoles = () =>
 export default {
   getSignInUrl,
   stubAuthPing: stubPing('auth'),
-  stubSignIn: (roles = []): Promise<[Response, Response, Response, Response, Response, Response]> =>
-    Promise.all([favicon(), redirect(), signOut(), manageDetails(), token(roles), tokenVerification.stubVerifyToken()]),
+  stubSignIn: (roles = []): Promise<[Response, Response, Response, Response, Response]> =>
+    Promise.all([favicon(), redirect(), signOut(), token(roles), tokenVerification.stubVerifyToken()]),
   stubAuthUser: (name = 'john smith'): Promise<[Response, Response, Response]> =>
     Promise.all([stubUser(name), stubUserRoles(), manageUsersApi.stubGetUserCaseloads()]),
 }
