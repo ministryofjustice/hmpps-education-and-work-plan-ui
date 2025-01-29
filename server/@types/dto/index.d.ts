@@ -4,6 +4,8 @@ declare module 'dto' {
   import QualificationLevelValue from '../../enums/qualificationLevelValue'
   import SessionCompletedByValue from '../../enums/sessionCompletedByValue'
   import ReviewPlanExemptionReasonValue from '../../enums/reviewPlanExemptionReasonValue'
+  import GoalStatusValue from '../../enums/goalStatusValue'
+  import StepStatusValue from '../../enums/stepStatusValue'
 
   export interface CreateActionPlanDto {
     prisonNumber: string
@@ -28,6 +30,7 @@ declare module 'dto' {
     goalReference: string
     title: string
     steps: Array<UpdateStepDto>
+    status: GoalStatusValue
     targetCompletionDate: Date
     notes?: string
     prisonId: string
@@ -35,7 +38,7 @@ declare module 'dto' {
 
   export interface UpdateStepDto {
     stepReference: string
-    status: string
+    status: StepStatusValue
     title: string
     sequenceNumber: number
   }

@@ -2,6 +2,8 @@ declare module 'forms' {
   import GoalTargetCompletionDateOption from '../../enums/goalTargetCompletionDateOption'
   import EducationLevelValue from '../../enums/educationLevelValue'
   import QualificationLevelValue from '../../enums/qualificationLevelValue'
+  import GoalStatusValue from '../../enums/goalStatusValue'
+  import StepStatusValue from '../../enums/stepStatusValue'
 
   export interface UpdateGoalForm {
     reference: string
@@ -15,13 +17,14 @@ declare module 'forms' {
     steps: Array<UpdateStepForm>
     action?: 'add-another-step' | 'submit-form' | 'delete-step-[0]'
     originalTargetCompletionDate: string
+    status: GoalStatusValue
   }
 
   export interface UpdateStepForm {
     reference?: string
     title?: string
     stepNumber: number
-    status: 'NOT_STARTED' | 'ACTIVE' | 'COMPLETE'
+    status: StepStatusValue
   }
 
   export interface CreateGoalsForm {

@@ -1,6 +1,8 @@
 import type { UpdateGoalForm } from 'forms'
 import { anotherValidStep, aValidGoal, aValidStep } from '../../../testsupport/actionPlanTestDataBuilder'
 import { toUpdateGoalForm } from './goalToUpdateGoalFormMapper'
+import StepStatusValue from '../../../enums/stepStatusValue'
+import GoalStatusValue from '../../../enums/goalStatusValue'
 
 describe('goalToUpdateGoalFormMapper', () => {
   describe('toUpdateGoalForm', () => {
@@ -24,17 +26,18 @@ describe('goalToUpdateGoalFormMapper', () => {
           {
             reference: 'c88a6c48-97e2-4c04-93b5-98619966447b',
             title: 'Book Spanish course',
-            status: 'ACTIVE',
+            status: StepStatusValue.ACTIVE,
             stepNumber: 1,
           },
           {
             reference: 'dc817ce8-2b2e-4282-96b2-b9a1d831fc56',
             title: 'Complete Spanish course',
-            status: 'NOT_STARTED',
+            status: StepStatusValue.NOT_STARTED,
             stepNumber: 2,
           },
         ],
         originalTargetCompletionDate: '2024-02-29',
+        status: GoalStatusValue.ACTIVE,
       }
 
       // When
