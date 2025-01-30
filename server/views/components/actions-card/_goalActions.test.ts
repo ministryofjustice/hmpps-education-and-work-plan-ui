@@ -97,6 +97,25 @@ describe('_goalActions', () => {
     expect($('[data-qa=goal-actions]').length).toEqual(0)
   })
 
+  it('should not render goal actions given induction schedule is on hold', () => {
+    // Given
+    const params = {
+      ...templateParams,
+      inductionSchedule: {
+        problemRetrievingData: false,
+        inductionStatus: 'ON_HOLD',
+        inductionDueDate: startOfDay('2025-02-15'),
+      },
+    }
+
+    // When
+    const content = nunjucks.render('_goalActions.njk', { params })
+    const $ = cheerio.load(content)
+
+    // Then
+    expect($('[data-qa=goal-actions]').length).toEqual(0)
+  })
+
   it('should not render goal actions given induction schedule goals are not due', () => {
     // Given
     const params = {
@@ -135,7 +154,7 @@ describe('_goalActions', () => {
     expect($('[data-qa=goal-actions]').length).toEqual(0)
   })
 
-  it('should render goal actions given problem retrieving induction schedule data', () => {
+  it('should not render goal actions given problem retrieving induction schedule data', () => {
     // Given
     const params = {
       ...templateParams,
@@ -149,6 +168,6 @@ describe('_goalActions', () => {
     const $ = cheerio.load(content)
 
     // Then
-    expect($('[data-qa=goal-actions]').length).toEqual(1)
+    expect($('[data-qa=goal-actions]').length).toEqual(0)
   })
 })
