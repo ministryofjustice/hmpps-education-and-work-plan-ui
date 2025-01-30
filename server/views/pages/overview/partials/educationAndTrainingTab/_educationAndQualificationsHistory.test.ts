@@ -1,6 +1,6 @@
 import nunjucks from 'nunjucks'
 import * as cheerio from 'cheerio'
-import { parseISO } from 'date-fns'
+import { parseISO, startOfDay } from 'date-fns'
 import type { EducationDto } from 'dto'
 import type { InductionDto } from 'inductionDto'
 import formatDateFilter from '../../../../../filters/formatDateFilter'
@@ -27,220 +27,340 @@ njkEnv
   .addFilter('formatDate', formatDateFilter)
   .addFilter('formatAdditionalTraining', formatAdditionalTrainingFilter)
 
-const prisonerSummary = aValidPrisonerSummary()
+const templateParams = {
+  prisonerSummary: aValidPrisonerSummary(),
+  hasEditAuthority: true,
+  induction: {
+    problemRetrievingData: false,
+    inductionDto: aValidInductionDto(),
+  },
+  education: {
+    problemRetrievingData: false,
+    educationDto: aValidEducationDto(),
+  },
+  inductionSchedule: {
+    problemRetrievingData: false,
+    inductionStatus: 'COMPLETE',
+    inductionDueDate: startOfDay('2025-02-15'),
+  },
+}
 
 describe('_educationAndQualificationsHistory', () => {
-  it('should show qualifications including highest level of education and prompt to create induction given prisoner has education data but no induction', () => {
-    // Given
-    const educationDto = aValidEducationDto()
-    const inductionDto: InductionDto = undefined
-    const pageViewModel = {
-      induction: {
-        problemRetrievingData: false,
-        inductionDto,
-      },
-      education: {
-        problemRetrievingData: false,
-        educationDto,
-      },
-      prisonerSummary,
-      hasEditAuthority: true,
-    }
+  describe('Prisoner has an eduction record', () => {
+    it('should show qualifications including highest level of education and prompt to create induction given prisoner has education data but no induction', () => {
+      // Given
+      const params = {
+        ...templateParams,
+        induction: {
+          problemRetrievingData: false,
+        },
+      }
 
-    // When
-    const content = nunjucks.render('_educationAndQualificationsHistory.njk', pageViewModel)
-    const $ = cheerio.load(content)
+      // When
+      const content = nunjucks.render('_educationAndQualificationsHistory.njk', params)
+      const $ = cheerio.load(content)
 
-    // Then
-    expect($('[data-qa=educational-qualifications-table]').length).toEqual(1)
-    expect($('[data-qa=educational-qualifications-change-link]').length).toEqual(1)
-    expect($('[data-qa=highest-level-of-education]').length).toEqual(1)
-    expect($('[data-qa=highest-level-of-education-change-link]').length).toEqual(1)
-    expect($('[data-qa=link-to-create-induction]').length).toEqual(1)
-    expect($('[data-qa=education-or-induction-unavailable-message]').length).toEqual(0)
-    expect($('[data-qa=last-updated]').length).toEqual(1)
+      // Then
+      expect($('[data-qa=educational-qualifications-table]').length).toEqual(1)
+      expect($('[data-qa=educational-qualifications-change-link]').length).toEqual(1)
+      expect($('[data-qa=highest-level-of-education]').length).toEqual(1)
+      expect($('[data-qa=highest-level-of-education-change-link]').length).toEqual(1)
+      expect($('[data-qa=induction-not-created-yet]').length).toEqual(1)
+      expect($('[data-qa=link-to-create-induction]').length).toEqual(1)
+      expect($('[data-qa=education-or-induction-unavailable-message]').length).toEqual(0)
+      expect($('[data-qa=last-updated]').length).toEqual(1)
+    })
+
+    it('should not show add/change links or prompt to create induction given user does not have an induction and does not have edit authority', () => {
+      // Given
+      const params = {
+        ...templateParams,
+        induction: {
+          problemRetrievingData: false,
+        },
+        hasEditAuthority: false,
+      }
+
+      // When
+      const content = nunjucks.render('_educationAndQualificationsHistory.njk', params)
+      const $ = cheerio.load(content)
+
+      // Then
+      expect($('[data-qa=educational-qualifications-change-link]').length).toEqual(0)
+      expect($('[data-qa=additional-training-change-link]').length).toEqual(0)
+      expect($('[data-qa=link-to-add-educational-qualifications]').length).toEqual(0)
+      expect($('[data-qa=highest-level-of-education-change-link]').length).toEqual(0)
+      expect($('[data-qa=induction-not-created-yet]').length).toEqual(1)
+      expect($('[data-qa=link-to-create-induction]').length).toEqual(0)
+      expect($('[data-qa=education-or-induction-unavailable-message]').length).toEqual(0)
+    })
+
+    it('should show qualifications including highest level of education and additional training given prisoner has education data and an induction', () => {
+      // Given
+      const params = {
+        ...templateParams,
+      }
+
+      // When
+      const content = nunjucks.render('_educationAndQualificationsHistory.njk', params)
+      const $ = cheerio.load(content)
+
+      // Then
+      expect($('[data-qa=educational-qualifications-table]').length).toEqual(1)
+      expect($('[data-qa=educational-qualifications-change-link]').length).toEqual(1)
+      expect($('[data-qa=highest-level-of-education]').length).toEqual(1)
+      expect($('[data-qa=highest-level-of-education-change-link]').length).toEqual(1)
+      expect($('[data-qa=additional-training]').length).toEqual(1)
+      expect($('[data-qa=additional-training-change-link]').length).toEqual(1)
+      expect($('[data-qa=link-to-add-educational-qualifications]').length).toEqual(0)
+      expect($('[data-qa=induction-not-created-yet]').length).toEqual(0)
+      expect($('[data-qa=link-to-create-induction]').length).toEqual(0)
+      expect($('[data-qa=education-or-induction-unavailable-message]').length).toEqual(0)
+      expect($('[data-qa=last-updated]').length).toEqual(1)
+    })
+
+    it('should show the last updated fields from the education given that the education was updated more recently than the induction', () => {
+      // Given
+      const educationDto = aValidEducationDto()
+      educationDto.updatedByDisplayName = 'Albert Smith'
+      educationDto.updatedAt = parseISO('2023-06-19T09:39:44.123Z')
+      const inductionDto = aValidInductionDto()
+      inductionDto.updatedByDisplayName = 'Barry Jones'
+      inductionDto.updatedAt = parseISO('2023-05-03T12:02:35.012Z')
+
+      const params = {
+        ...templateParams,
+        induction: {
+          problemRetrievingData: false,
+          inductionDto,
+        },
+        education: {
+          problemRetrievingData: false,
+          educationDto,
+        },
+      }
+
+      // When
+      const content = nunjucks.render('_educationAndQualificationsHistory.njk', params)
+      const $ = cheerio.load(content)
+
+      // Then
+      expect($('[data-qa=last-updated]').text().trim()).toEqual('Last updated: 19 June 2023 by Albert Smith')
+    })
+
+    it('should show the last updated fields from the induction given that the induction was updated more recently than the education', () => {
+      // Given
+      const educationDto = aValidEducationDto()
+      educationDto.updatedByDisplayName = 'Albert Smith'
+      educationDto.updatedAt = parseISO('2023-06-19T09:39:44.123Z')
+      const inductionDto = aValidInductionDto()
+      inductionDto.updatedByDisplayName = 'Barry Jones'
+      inductionDto.updatedAt = parseISO('2023-06-23T10:23:21.591Z')
+
+      const params = {
+        ...templateParams,
+        induction: {
+          problemRetrievingData: false,
+          inductionDto,
+        },
+        education: {
+          problemRetrievingData: false,
+          educationDto,
+        },
+      }
+
+      // When
+      const content = nunjucks.render('_educationAndQualificationsHistory.njk', params)
+      const $ = cheerio.load(content)
+
+      // Then
+      expect($('[data-qa=last-updated]').text().trim()).toEqual('Last updated: 23 June 2023 by Barry Jones')
+    })
+
+    it('should not show prompts to create induction given induction schedule is on hold', () => {
+      // Given
+      const params = {
+        ...templateParams,
+        induction: {
+          problemRetrievingData: false,
+          inductionDto: undefined as InductionDto,
+        },
+        inductionSchedule: {
+          problemRetrievingData: false,
+          inductionStatus: 'ON_HOLD',
+          inductionDueDate: startOfDay('2025-02-15'),
+        },
+      }
+
+      // When
+      const content = nunjucks.render('_educationAndQualificationsHistory.njk', params)
+      const $ = cheerio.load(content)
+
+      // Then
+      expect($('[data-qa=induction-not-created-yet]').length).toEqual(1)
+      expect($('[data-qa=link-to-create-induction]').length).toEqual(0)
+    })
+
+    it('should not show prompts to create induction given problem retrieving induction schedule', () => {
+      // Given
+      const params = {
+        ...templateParams,
+        induction: {
+          problemRetrievingData: false,
+          inductionDto: undefined as InductionDto,
+        },
+        inductionSchedule: {
+          problemRetrievingData: true,
+        },
+      }
+
+      // When
+      const content = nunjucks.render('_educationAndQualificationsHistory.njk', params)
+      const $ = cheerio.load(content)
+
+      // Then
+      expect($('[data-qa=induction-not-created-yet]').length).toEqual(1)
+      expect($('[data-qa=link-to-create-induction]').length).toEqual(0)
+    })
   })
 
-  it('should not show add/change links or prompt to create induction given user does not have an induction and does not have edit authority', () => {
-    // Given
-    const educationDto = aValidEducationDto()
-    const inductionDto: InductionDto = undefined
-    const pageViewModel = {
-      induction: {
-        problemRetrievingData: false,
-        inductionDto,
-      },
-      education: {
-        problemRetrievingData: false,
-        educationDto,
-      },
-      prisonerSummary,
-      hasEditAuthority: false,
-    }
+  describe('Prisoner does not have an education record', () => {
+    it('should show prompts to create education and create induction given prisoner has no education data', () => {
+      // Given
+      // a prisoner with no EductionDto will also have no InductionDto. It is not possible to have an Induction but with no Education
+      const params = {
+        ...templateParams,
+        induction: {
+          problemRetrievingData: false,
+          inductionDto: undefined as InductionDto,
+        },
+        education: {
+          problemRetrievingData: false,
+          educationDto: undefined as EducationDto,
+        },
+      }
 
-    // When
-    const content = nunjucks.render('_educationAndQualificationsHistory.njk', pageViewModel)
-    const $ = cheerio.load(content)
+      // When
+      const content = nunjucks.render('_educationAndQualificationsHistory.njk', params)
+      const $ = cheerio.load(content)
 
-    // Then
-    expect($('[data-qa=educational-qualifications-change-link]').length).toEqual(0)
-    expect($('[data-qa=additional-training-change-link]').length).toEqual(0)
-    expect($('[data-qa=link-to-add-educational-qualifications]').length).toEqual(0)
-    expect($('[data-qa=highest-level-of-education-change-link]').length).toEqual(0)
-    expect($('[data-qa=link-to-create-induction]').length).toEqual(0)
-    expect($('[data-qa=education-or-induction-unavailable-message]').length).toEqual(0)
-  })
+      // Then
+      expect($('[data-qa=link-to-add-educational-qualifications]').length).toEqual(1)
+      expect($('[data-qa=induction-not-created-yet]').length).toEqual(1)
+      expect($('[data-qa=link-to-create-induction]').length).toEqual(1)
 
-  it('should show qualifications including highest level of education and additional training given prisoner has education data and an induction', () => {
-    // Given
-    const educationDto = aValidEducationDto()
-    const inductionDto = aValidInductionDto()
-    const pageViewModel = {
-      induction: {
-        problemRetrievingData: false,
-        inductionDto,
-      },
-      education: {
-        problemRetrievingData: false,
-        educationDto,
-      },
-      prisonerSummary,
-      hasEditAuthority: true,
-    }
+      expect($('[data-qa=educational-qualifications-table]').length).toEqual(0)
+      expect($('[data-qa=educational-qualifications-change-link]').length).toEqual(0)
+      expect($('[data-qa=highest-level-of-education]').length).toEqual(0)
+      expect($('[data-qa=highest-level-of-education-change-link]').length).toEqual(0)
+      expect($('[data-qa=additional-training]').length).toEqual(0)
+      expect($('[data-qa=additional-training-change-link]').length).toEqual(0)
+      expect($('[data-qa=education-or-induction-unavailable-message]').length).toEqual(0)
+      expect($('[data-qa=last-updated]').length).toEqual(0)
+    })
 
-    // When
-    const content = nunjucks.render('_educationAndQualificationsHistory.njk', pageViewModel)
-    const $ = cheerio.load(content)
+    it('should not show prompts to create education and create induction given prisoner has no education data and user does not have editor role', () => {
+      // Given
+      // a prisoner with no EductionDto will also have no InductionDto. It is not possible to have an Induction but with no Education
+      const params = {
+        ...templateParams,
+        induction: {
+          problemRetrievingData: false,
+          inductionDto: undefined as InductionDto,
+        },
+        education: {
+          problemRetrievingData: false,
+          educationDto: undefined as EducationDto,
+        },
+        hasEditAuthority: false,
+      }
 
-    // Then
-    expect($('[data-qa=educational-qualifications-table]').length).toEqual(1)
-    expect($('[data-qa=educational-qualifications-change-link]').length).toEqual(1)
-    expect($('[data-qa=highest-level-of-education]').length).toEqual(1)
-    expect($('[data-qa=highest-level-of-education-change-link]').length).toEqual(1)
-    expect($('[data-qa=additional-training]').length).toEqual(1)
-    expect($('[data-qa=additional-training-change-link]').length).toEqual(1)
-    expect($('[data-qa=link-to-add-educational-qualifications]').length).toEqual(0)
-    expect($('[data-qa=link-to-create-induction]').length).toEqual(0)
-    expect($('[data-qa=education-or-induction-unavailable-message]').length).toEqual(0)
-    expect($('[data-qa=last-updated]').length).toEqual(1)
-  })
+      // When
+      const content = nunjucks.render('_educationAndQualificationsHistory.njk', params)
+      const $ = cheerio.load(content)
 
-  it('should show the last updated fields from the education given that the education was updated more recently than the induction', () => {
-    // Given
-    const educationDto = aValidEducationDto()
-    educationDto.updatedByDisplayName = 'Albert Smith'
-    educationDto.updatedAt = parseISO('2023-06-19T09:39:44.123Z')
-    const inductionDto = aValidInductionDto()
-    inductionDto.updatedByDisplayName = 'Barry Jones'
-    inductionDto.updatedAt = parseISO('2023-05-03T12:02:35.012Z')
-    const pageViewModel = {
-      induction: {
-        problemRetrievingData: false,
-        inductionDto,
-      },
-      education: {
-        problemRetrievingData: false,
-        educationDto,
-      },
-      prisonerSummary,
-      hasEditAuthority: true,
-    }
+      // Then
+      expect($('[data-qa=link-to-add-educational-qualifications]').length).toEqual(0)
+      expect($('[data-qa=induction-not-created-yet]').length).toEqual(1)
+      expect($('[data-qa=link-to-create-induction]').length).toEqual(0)
+    })
 
-    // When
-    const content = nunjucks.render('_educationAndQualificationsHistory.njk', pageViewModel)
-    const $ = cheerio.load(content)
+    it('should show prompts to create education but not create induction given prisoner has no education data and induction schedule is on hold', () => {
+      // Given
+      // a prisoner with no EductionDto will also have no InductionDto. It is not possible to have an Induction but with no Education
+      const params = {
+        ...templateParams,
+        induction: {
+          problemRetrievingData: false,
+          inductionDto: undefined as InductionDto,
+        },
+        education: {
+          problemRetrievingData: false,
+          educationDto: undefined as EducationDto,
+        },
+        inductionSchedule: {
+          problemRetrievingData: false,
+          inductionStatus: 'ON_HOLD',
+          inductionDueDate: startOfDay('2025-02-15'),
+        },
+      }
 
-    // Then
-    expect($('[data-qa=last-updated]').text().trim()).toEqual('Last updated: 19 June 2023 by Albert Smith')
-  })
+      // When
+      const content = nunjucks.render('_educationAndQualificationsHistory.njk', params)
+      const $ = cheerio.load(content)
 
-  it('should show the last updated fields from the induction given that the induction was updated more recently than the education', () => {
-    // Given
-    const educationDto = aValidEducationDto()
-    educationDto.updatedByDisplayName = 'Albert Smith'
-    educationDto.updatedAt = parseISO('2023-06-19T09:39:44.123Z')
-    const inductionDto = aValidInductionDto()
-    inductionDto.updatedByDisplayName = 'Barry Jones'
-    inductionDto.updatedAt = parseISO('2023-06-23T10:23:21.591Z')
-    const pageViewModel = {
-      induction: {
-        problemRetrievingData: false,
-        inductionDto,
-      },
-      education: {
-        problemRetrievingData: false,
-        educationDto,
-      },
-      prisonerSummary,
-      hasEditAuthority: true,
-    }
+      // Then
+      expect($('[data-qa=link-to-add-educational-qualifications]').length).toEqual(1)
+      expect($('[data-qa=induction-not-created-yet]').length).toEqual(1)
+      expect($('[data-qa=link-to-create-induction]').length).toEqual(0)
+    })
 
-    // When
-    const content = nunjucks.render('_educationAndQualificationsHistory.njk', pageViewModel)
-    const $ = cheerio.load(content)
+    it('should show prompts to create education but not create induction given prisoner has no education data and problem retrieving induction schedule', () => {
+      // Given
+      // a prisoner with no EductionDto will also have no InductionDto. It is not possible to have an Induction but with no Education
+      const params = {
+        ...templateParams,
+        induction: {
+          problemRetrievingData: false,
+          inductionDto: undefined as InductionDto,
+        },
+        education: {
+          problemRetrievingData: false,
+          educationDto: undefined as EducationDto,
+        },
+        inductionSchedule: {
+          problemRetrievingData: true,
+        },
+      }
 
-    // Then
-    expect($('[data-qa=last-updated]').text().trim()).toEqual('Last updated: 23 June 2023 by Barry Jones')
-  })
+      // When
+      const content = nunjucks.render('_educationAndQualificationsHistory.njk', params)
+      const $ = cheerio.load(content)
 
-  it('should show prompts to create education and create induction given prisoner has no education data', () => {
-    // Given
-    const educationDto: EducationDto = undefined
-    const inductionDto: InductionDto = undefined // a prisoner with no EductionDto will also have no InductionDto. It is not possible to have an Induction but with no Education
-    const pageViewModel = {
-      induction: {
-        problemRetrievingData: false,
-        inductionDto,
-      },
-      education: {
-        problemRetrievingData: false,
-        educationDto,
-      },
-      prisonerSummary,
-      hasEditAuthority: true,
-    }
-
-    // When
-    const content = nunjucks.render('_educationAndQualificationsHistory.njk', pageViewModel)
-    const $ = cheerio.load(content)
-
-    // Then
-    expect($('[data-qa=link-to-add-educational-qualifications]').length).toEqual(1)
-    expect($('[data-qa=link-to-create-induction]').length).toEqual(1)
-    expect($('[data-qa=educational-qualifications-table]').length).toEqual(0)
-    expect($('[data-qa=educational-qualifications-change-link]').length).toEqual(0)
-    expect($('[data-qa=highest-level-of-education]').length).toEqual(0)
-    expect($('[data-qa=highest-level-of-education-change-link]').length).toEqual(0)
-    expect($('[data-qa=additional-training]').length).toEqual(0)
-    expect($('[data-qa=additional-training-change-link]').length).toEqual(0)
-    expect($('[data-qa=education-or-induction-unavailable-message]').length).toEqual(0)
-    expect($('[data-qa=last-updated]').length).toEqual(0)
+      // Then
+      expect($('[data-qa=link-to-add-educational-qualifications]').length).toEqual(1)
+      expect($('[data-qa=induction-not-created-yet]').length).toEqual(1)
+      expect($('[data-qa=link-to-create-induction]').length).toEqual(0)
+    })
   })
 
   it('should show unavailable message given problem retrieving induction data', () => {
     // Given
-    const inductionDto: InductionDto = undefined
-    const educationDto = aValidEducationDto()
-    const pageViewModel = {
+    const params = {
+      ...templateParams,
       induction: {
         problemRetrievingData: true,
-        inductionDto,
       },
-      education: {
-        problemRetrievingData: false,
-        educationDto,
-      },
-      prisonerSummary,
-      hasEditAuthority: true,
     }
 
     // When
-    const content = nunjucks.render('_educationAndQualificationsHistory.njk', pageViewModel)
+    const content = nunjucks.render('_educationAndQualificationsHistory.njk', params)
     const $ = cheerio.load(content)
 
     // Then
     expect($('[data-qa=education-or-induction-unavailable-message]').length).toEqual(1)
     expect($('[data-qa=link-to-add-educational-qualifications]').length).toEqual(0)
+    expect($('[data-qa=induction-not-created-yet]').length).toEqual(0)
     expect($('[data-qa=link-to-create-induction]').length).toEqual(0)
     expect($('[data-qa=educational-qualifications-table]').length).toEqual(0)
     expect($('[data-qa=educational-qualifications-change-link]').length).toEqual(0)
@@ -253,28 +373,22 @@ describe('_educationAndQualificationsHistory', () => {
 
   it('should show unavailable message given problem retrieving education data', () => {
     // Given
-    const inductionDto = aValidInductionDto()
-    const educationDto: EducationDto = undefined
-    const pageViewModel = {
-      induction: {
-        problemRetrievingData: false,
-        inductionDto,
-      },
+    const params = {
+      ...templateParams,
       education: {
         problemRetrievingData: true,
-        educationDto,
       },
-      prisonerSummary,
-      hasEditAuthority: true,
     }
 
     // When
-    const content = nunjucks.render('_educationAndQualificationsHistory.njk', pageViewModel)
+    const content = nunjucks.render('_educationAndQualificationsHistory.njk', params)
+
     const $ = cheerio.load(content)
 
     // Then
     expect($('[data-qa=education-or-induction-unavailable-message]').length).toEqual(1)
     expect($('[data-qa=link-to-add-educational-qualifications]').length).toEqual(0)
+    expect($('[data-qa=induction-not-created-yet]').length).toEqual(0)
     expect($('[data-qa=link-to-create-induction]').length).toEqual(0)
     expect($('[data-qa=educational-qualifications-table]').length).toEqual(0)
     expect($('[data-qa=educational-qualifications-change-link]').length).toEqual(0)

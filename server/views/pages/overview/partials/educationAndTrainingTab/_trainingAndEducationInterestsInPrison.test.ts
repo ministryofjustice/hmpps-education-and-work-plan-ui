@@ -1,11 +1,13 @@
 import nunjucks from 'nunjucks'
 import * as cheerio from 'cheerio'
+import { startOfDay } from 'date-fns'
 import type { InductionDto } from 'inductionDto'
 import objectsSortedAlphabeticallyWithOtherLastBy from '../../../../../filters/objectsSortedAlphabeticallyWithOtherLastByFilter'
 import formatDateFilter from '../../../../../filters/formatDateFilter'
 import { aValidInductionDto } from '../../../../../testsupport/inductionDtoTestDataBuilder'
 import InPrisonTrainingValue from '../../../../../enums/inPrisonTrainingValue'
 import formatInPrisonTrainingFilter from '../../../../../filters/formatInPrisonTrainingFilter'
+import aValidPrisonerSummary from '../../../../../testsupport/prisonerSummaryTestDataBuilder'
 
 const njkEnv = nunjucks.configure([
   'node_modules/govuk-frontend/dist/',
@@ -17,6 +19,20 @@ njkEnv
   .addFilter('objectsSortedAlphabeticallyWithOtherLastBy', objectsSortedAlphabeticallyWithOtherLastBy)
   .addFilter('formatInPrisonTraining', formatInPrisonTrainingFilter)
   .addFilter('formatDate', formatDateFilter)
+
+const templateParams = {
+  prisonerSummary: aValidPrisonerSummary(),
+  hasEditAuthority: true,
+  induction: {
+    problemRetrievingData: false,
+    inductionDto: aValidInductionDto(),
+  },
+  inductionSchedule: {
+    problemRetrievingData: false,
+    inductionStatus: 'COMPLETE',
+    inductionDueDate: startOfDay('2025-02-15'),
+  },
+}
 
 describe('_trainingAndEducationInterestsInPrison', () => {
   it('should list training interests given an induction with training interests', () => {
@@ -30,16 +46,16 @@ describe('_trainingAndEducationInterestsInPrison', () => {
         { trainingType: InPrisonTrainingValue.OTHER, trainingTypeOther: 'Advanced origami' },
       ],
     }
-    const pageViewModel = {
+    const params = {
+      ...templateParams,
       induction: {
         problemRetrievingData: false,
         inductionDto,
       },
-      hasEditAuthority: true,
     }
 
     // When
-    const content = nunjucks.render('_trainingAndEducationInterestsInPrison.njk', pageViewModel)
+    const content = nunjucks.render('_trainingAndEducationInterestsInPrison.njk', params)
     const $ = cheerio.load(content)
 
     // Then
@@ -63,7 +79,8 @@ describe('_trainingAndEducationInterestsInPrison', () => {
         { trainingType: InPrisonTrainingValue.OTHER, trainingTypeOther: 'Advanced origami' },
       ],
     }
-    const pageViewModel = {
+    const params = {
+      ...templateParams,
       induction: {
         problemRetrievingData: false,
         inductionDto,
@@ -72,7 +89,8 @@ describe('_trainingAndEducationInterestsInPrison', () => {
     }
 
     // When
-    const content = nunjucks.render('_trainingAndEducationInterestsInPrison.njk', pageViewModel)
+    const content = nunjucks.render('_trainingAndEducationInterestsInPrison.njk', params)
+
     const $ = cheerio.load(content)
 
     // Then
@@ -85,16 +103,16 @@ describe('_trainingAndEducationInterestsInPrison', () => {
     // Given
     const inductionDto: InductionDto = aValidInductionDto()
     inductionDto.inPrisonInterests = undefined
-    const pageViewModel = {
+    const params = {
+      ...templateParams,
       induction: {
         problemRetrievingData: false,
         inductionDto,
       },
-      hasEditAuthority: true,
     }
 
     // When
-    const content = nunjucks.render('_trainingAndEducationInterestsInPrison.njk', pageViewModel)
+    const content = nunjucks.render('_trainingAndEducationInterestsInPrison.njk', params)
     const $ = cheerio.load(content)
 
     // Then
@@ -104,39 +122,113 @@ describe('_trainingAndEducationInterestsInPrison', () => {
     expect($('[data-qa=training-interests-induction-unavailable-message]').length).toEqual(0)
   })
 
-  it('should show message to create the induction given no induction', () => {
+  it('should not render link to create induction given prisoner has no induction and user does not have edit permissions', () => {
     // Given
-    const inductionDto: InductionDto = undefined
-    const pageViewModel = {
+    const params = {
+      ...templateParams,
       induction: {
         problemRetrievingData: false,
-        inductionDto,
+        inductionDto: undefined as InductionDto,
       },
-      hasEditAuthority: true,
+      hasEditAuthority: false,
     }
 
     // When
-    const content = nunjucks.render('_trainingAndEducationInterestsInPrison.njk', pageViewModel)
+    const content = nunjucks.render('_trainingAndEducationInterestsInPrison.njk', params)
     const $ = cheerio.load(content)
 
     // Then
-    expect($('[data-qa=training-interests-create-induction-message]').length).toEqual(1)
-    expect($('[data-qa=training-interests-induction-unavailable-message]').length).toEqual(0)
+    expect($('[data-qa=induction-not-created-yet]').length).toEqual(1)
+    expect($('[data-qa=link-to-create-induction]').length).toEqual(0)
+
+    expect($('[data-qa=induction-unavailable-message]').length).toEqual(0)
   })
 
-  it('should show induction unavailable message given problem retrieving data', () => {
+  it('should render link to create induction given prisoner has no induction and user does have edit permissions', () => {
     // Given
-    const inductionDto: InductionDto = undefined
-    const pageViewModel = {
+    const params = {
+      ...templateParams,
       induction: {
-        problemRetrievingData: true,
-        inductionDto,
+        problemRetrievingData: false,
+        inductionDto: undefined as InductionDto,
       },
       hasEditAuthority: true,
     }
 
     // When
-    const content = nunjucks.render('_trainingAndEducationInterestsInPrison.njk', pageViewModel)
+    const content = nunjucks.render('_trainingAndEducationInterestsInPrison.njk', params)
+    const $ = cheerio.load(content)
+
+    // Then
+    expect($('[data-qa=induction-not-created-yet]').length).toEqual(1)
+    expect($('[data-qa=link-to-create-induction]').length).toEqual(1)
+
+    expect($('[data-qa=induction-unavailable-message]').length).toEqual(0)
+  })
+
+  it('should not render link to create induction given prisoner has no induction and user does have edit permissions but inductions schedule is on hold', () => {
+    // Given
+    const params = {
+      ...templateParams,
+      induction: {
+        problemRetrievingData: false,
+        inductionDto: undefined as InductionDto,
+      },
+      hasEditAuthority: true,
+      inductionSchedule: {
+        problemRetrievingData: false,
+        inductionStatus: 'ON_HOLD',
+        inductionDueDate: startOfDay('2025-02-15'),
+      },
+    }
+
+    // When
+    const content = nunjucks.render('_trainingAndEducationInterestsInPrison.njk', params)
+    const $ = cheerio.load(content)
+
+    // Then
+    expect($('[data-qa=induction-not-created-yet]').length).toEqual(1)
+    expect($('[data-qa=link-to-create-induction]').length).toEqual(0)
+
+    expect($('[data-qa=induction-unavailable-message]').length).toEqual(0)
+  })
+
+  it('should not render link to create induction given prisoner has no induction and user does have edit permissions but there was a problem retrieving the inductions schedule', () => {
+    // Given
+    const params = {
+      ...templateParams,
+      induction: {
+        problemRetrievingData: false,
+        inductionDto: undefined as InductionDto,
+      },
+      hasEditAuthority: true,
+      inductionSchedule: {
+        problemRetrievingData: true,
+      },
+    }
+
+    // When
+    const content = nunjucks.render('_trainingAndEducationInterestsInPrison.njk', params)
+    const $ = cheerio.load(content)
+
+    // Then
+    expect($('[data-qa=induction-not-created-yet]').length).toEqual(1)
+    expect($('[data-qa=link-to-create-induction]').length).toEqual(0)
+
+    expect($('[data-qa=induction-unavailable-message]').length).toEqual(0)
+  })
+
+  it('should show induction unavailable message given problem retrieving induction data', () => {
+    // Given
+    const params = {
+      ...templateParams,
+      induction: {
+        problemRetrievingData: true,
+      },
+    }
+
+    // When
+    const content = nunjucks.render('_trainingAndEducationInterestsInPrison.njk', params)
     const $ = cheerio.load(content)
 
     // Then

@@ -1,6 +1,6 @@
 import nunjucks from 'nunjucks'
 import * as cheerio from 'cheerio'
-import { parseISO } from 'date-fns'
+import { parseISO, startOfDay } from 'date-fns'
 import aValidPrisonerSummary from '../../../../../testsupport/prisonerSummaryTestDataBuilder'
 import formatDate from '../../../../../filters/formatDateFilter'
 import formatFunctionalSkillTypeFilter from '../../../../../filters/formatFunctionalSkillTypeFilter'
@@ -21,7 +21,7 @@ njkEnv.addFilter('formatFunctionalSkillType', formatFunctionalSkillTypeFilter)
 const prisonerSummary = aValidPrisonerSummary()
 const template = 'overviewTabContents.njk'
 
-const modelDataForIncludedTemplates = {
+const templateParams = {
   prisonerSummary,
   prisonerGoals: {
     problemRetrievingData: false,
@@ -80,18 +80,27 @@ const modelDataForIncludedTemplates = {
     lastSessionConductedAt: new Date('2024-01-21T13:42:01.401Z'),
     lastSessionConductedAtPrison: 'Brixton (HMP)',
   },
+  induction: {
+    problemRetrievingData: false,
+    isPostInduction: false,
+  },
+  hasEditAuthority: true,
+  inductionSchedule: {
+    problemRetrievingData: false,
+    inductionStatus: 'INDUCTION_DUE',
+    inductionDueDate: startOfDay('2025-02-15'),
+  },
+  actionPlanReview: {
+    problemRetrievingData: false,
+    reviewStatus: 'NO_SCHEDULED_REVIEW',
+  },
 }
 
 describe('overviewTabContents', () => {
-  it('should render the complete induction banner when the prisoner has not had an induction and the user has editor authority', () => {
+  it('should render the complete induction banner when the prisoner has not had an induction and the induction schedule is not on hold and the user has editor authority', () => {
     // Given
     const pageViewModel = {
-      ...modelDataForIncludedTemplates,
-      induction: {
-        problemRetrievingData: false,
-        isPostInduction: false,
-      },
-      hasEditAuthority: true,
+      ...templateParams,
     }
 
     // When
@@ -105,14 +114,10 @@ describe('overviewTabContents', () => {
     )
   })
 
-  it('should not render the complete induction banner when the prisoner has not had an induction but the user does not have editor authority', () => {
+  it('should not render the complete induction banner when the the user does not have editor authority', () => {
     // Given
     const pageViewModel = {
-      ...modelDataForIncludedTemplates,
-      induction: {
-        problemRetrievingData: false,
-        isPostInduction: false,
-      },
+      ...templateParams,
       hasEditAuthority: false,
     }
 
@@ -127,12 +132,11 @@ describe('overviewTabContents', () => {
   it('should not render the complete induction banner when the prisoner has had an induction', () => {
     // Given
     const pageViewModel = {
-      ...modelDataForIncludedTemplates,
+      ...templateParams,
       induction: {
         problemRetrievingData: false,
         isPostInduction: true,
       },
-      hasEditAuthority: true,
     }
 
     // When
@@ -146,12 +150,47 @@ describe('overviewTabContents', () => {
   it('should not render the complete induction banner given there was a problem retrieving the induction', () => {
     // Given
     const pageViewModel = {
-      ...modelDataForIncludedTemplates,
+      ...templateParams,
       induction: {
         problemRetrievingData: true,
         isPostInduction: false,
       },
-      hasEditAuthority: true,
+    }
+
+    // When
+    const content = njkEnv.render(template, pageViewModel)
+    const $ = cheerio.load(content)
+
+    // Then
+    expect($('[data-qa="pre-induction-overview"]').length).toEqual(0)
+  })
+
+  it('should not render the complete induction banner given there was a problem retrieving the induction schedule', () => {
+    // Given
+    const pageViewModel = {
+      ...templateParams,
+      inductionSchedule: {
+        problemRetrievingData: true,
+      },
+    }
+
+    // When
+    const content = njkEnv.render(template, pageViewModel)
+    const $ = cheerio.load(content)
+
+    // Then
+    expect($('[data-qa="pre-induction-overview"]').length).toEqual(0)
+  })
+
+  it('should not render the complete induction banner given the induction schedule is exempt (on hold)', () => {
+    // Given
+    const pageViewModel = {
+      ...templateParams,
+      inductionSchedule: {
+        problemRetrievingData: false,
+        inductionStatus: 'ON_HOLD',
+        inductionDueDate: startOfDay('2025-02-15'),
+      },
     }
 
     // When

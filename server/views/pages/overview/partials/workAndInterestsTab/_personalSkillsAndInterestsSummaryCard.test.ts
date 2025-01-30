@@ -1,12 +1,11 @@
 import nunjucks from 'nunjucks'
 import * as cheerio from 'cheerio'
-import type { InductionDto } from 'inductionDto'
+import { startOfDay } from 'date-fns'
 import { aValidInductionDto } from '../../../../../testsupport/inductionDtoTestDataBuilder'
 import objectsSortedAlphabeticallyWithOtherLastByFilter from '../../../../../filters/objectsSortedAlphabeticallyWithOtherLastByFilter'
 import formatSkillFilter from '../../../../../filters/formatSkillFilter'
 import formatPersonalInterestFilter from '../../../../../filters/formatPersonalInterestFilter'
 import formatDateFilter from '../../../../../filters/formatDateFilter'
-import WorkAndInterestsView from '../../../../../routes/overview/workAndInterestsView'
 import aValidPrisonerSummary from '../../../../../testsupport/prisonerSummaryTestDataBuilder'
 
 const njkEnv = nunjucks.configure([
@@ -21,17 +20,34 @@ njkEnv
   .addFilter('formatSkill', formatSkillFilter)
   .addFilter('formatPersonalInterest', formatPersonalInterestFilter)
 
+const templateParams = {
+  prisonerSummary: aValidPrisonerSummary(),
+  hasEditAuthority: true,
+  induction: {
+    problemRetrievingData: false,
+    inductionDto: aValidInductionDto(),
+  },
+  inductionSchedule: {
+    problemRetrievingData: false,
+    inductionStatus: 'COMPLETE',
+    inductionDueDate: startOfDay('2025-02-15'),
+  },
+}
+
 describe('_personalSkillsAndInterestsSummaryCard', () => {
   it('should display Skills and Interests given induction with personal skills and interests', () => {
     // Given
     const inductionDto = aValidInductionDto()
-    const pageViewModel = {
-      ...workAndInterestsView(inductionDto),
-      hasEditAuthority: true,
+    const params = {
+      ...templateParams,
+      induction: {
+        problemRetrievingData: false,
+        inductionDto,
+      },
     }
 
     // When
-    const content = nunjucks.render('_personalSkillsAndInterestsSummaryCard.njk', pageViewModel)
+    const content = nunjucks.render('_personalSkillsAndInterestsSummaryCard.njk', params)
     const $ = cheerio.load(content)
 
     // Then
@@ -57,13 +73,16 @@ describe('_personalSkillsAndInterestsSummaryCard', () => {
     // Given
     const inductionDto = aValidInductionDto()
     inductionDto.personalSkillsAndInterests = undefined
-    const pageViewModel = {
-      ...workAndInterestsView(inductionDto),
-      hasEditAuthority: true,
+    const params = {
+      ...templateParams,
+      induction: {
+        problemRetrievingData: false,
+        inductionDto,
+      },
     }
 
     // When
-    const content = nunjucks.render('_personalSkillsAndInterestsSummaryCard.njk', pageViewModel)
+    const content = nunjucks.render('_personalSkillsAndInterestsSummaryCard.njk', params)
     const $ = cheerio.load(content)
 
     // Then
@@ -81,13 +100,17 @@ describe('_personalSkillsAndInterestsSummaryCard', () => {
     // Given
     const inductionDto = aValidInductionDto()
     inductionDto.personalSkillsAndInterests = undefined
-    const pageViewModel = {
-      ...workAndInterestsView(inductionDto),
+    const params = {
+      ...templateParams,
+      induction: {
+        problemRetrievingData: false,
+        inductionDto,
+      },
       hasEditAuthority: false,
     }
 
     // When
-    const content = nunjucks.render('_personalSkillsAndInterestsSummaryCard.njk', pageViewModel)
+    const content = nunjucks.render('_personalSkillsAndInterestsSummaryCard.njk', params)
     const $ = cheerio.load(content)
 
     // Then
@@ -99,13 +122,16 @@ describe('_personalSkillsAndInterestsSummaryCard', () => {
     // Given
     const inductionDto = aValidInductionDto()
     inductionDto.personalSkillsAndInterests.skills = []
-    const pageViewModel = {
-      ...workAndInterestsView(inductionDto),
-      hasEditAuthority: true,
+    const params = {
+      ...templateParams,
+      induction: {
+        problemRetrievingData: false,
+        inductionDto,
+      },
     }
 
     // When
-    const content = nunjucks.render('_personalSkillsAndInterestsSummaryCard.njk', pageViewModel)
+    const content = nunjucks.render('_personalSkillsAndInterestsSummaryCard.njk', params)
     const $ = cheerio.load(content)
 
     // Then
@@ -118,13 +144,16 @@ describe('_personalSkillsAndInterestsSummaryCard', () => {
     // Given
     const inductionDto = aValidInductionDto()
     inductionDto.personalSkillsAndInterests.interests = []
-    const pageViewModel = {
-      ...workAndInterestsView(inductionDto),
-      hasEditAuthority: true,
+    const params = {
+      ...templateParams,
+      induction: {
+        problemRetrievingData: false,
+        inductionDto,
+      },
     }
 
     // When
-    const content = nunjucks.render('_personalSkillsAndInterestsSummaryCard.njk', pageViewModel)
+    const content = nunjucks.render('_personalSkillsAndInterestsSummaryCard.njk', params)
     const $ = cheerio.load(content)
 
     // Then
@@ -133,6 +162,3 @@ describe('_personalSkillsAndInterestsSummaryCard', () => {
     expect($('[data-qa=personal-interests-change-link]').text().trim()).toEqual('Add personal interests')
   })
 })
-
-const workAndInterestsView = (inductionDto: InductionDto): WorkAndInterestsView =>
-  new WorkAndInterestsView(aValidPrisonerSummary(), { problemRetrievingData: false, inductionDto })

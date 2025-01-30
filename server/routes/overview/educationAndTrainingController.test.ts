@@ -10,6 +10,8 @@ import {
 import EducationAndTrainingController from './educationAndTrainingController'
 import { aValidInductionDto } from '../../testsupport/inductionDtoTestDataBuilder'
 import aValidEducationDto from '../../testsupport/educationDtoTestDataBuilder'
+import aValidInductionSchedule from '../../testsupport/inductionScheduleTestDataBuilder'
+import InductionScheduleStatusValue from '../../enums/inductionScheduleStatusValue'
 
 describe('educationAndTrainingController', () => {
   const controller = new EducationAndTrainingController()
@@ -48,6 +50,7 @@ describe('educationAndTrainingController', () => {
     ],
   }
   const educationDto = aValidEducationDto()
+  const inductionSchedule = aValidInductionSchedule({ scheduleStatus: InductionScheduleStatusValue.COMPLETED })
 
   const expectedTab = 'education-and-training'
 
@@ -68,6 +71,7 @@ describe('educationAndTrainingController', () => {
       prisonerFunctionalSkills: functionalSkillsFromCurious,
       education: educationDto,
       induction,
+      inductionSchedule,
     },
   } as unknown as Response
   const next = jest.fn()
@@ -106,6 +110,11 @@ describe('educationAndTrainingController', () => {
       inPrisonCourses,
       induction,
       education: educationDto,
+      inductionSchedule: {
+        problemRetrievingData: false,
+        inductionStatus: 'COMPLETE',
+        inductionDueDate: startOfDay('2024-12-10'),
+      },
     }
 
     // When

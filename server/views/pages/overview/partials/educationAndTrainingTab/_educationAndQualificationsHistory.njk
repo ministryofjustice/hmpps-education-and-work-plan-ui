@@ -1,7 +1,7 @@
 {#
 'Education and qualifications history' summary card on the 'Education and training' tab
 
-Data supplied to this template:
+Data supplied to this template:prisonerSummary: PrisonerSummary
     prisonerSummary: PrisonerSummary
     education: {
       problemRetrievingData: boolean
@@ -11,6 +11,7 @@ Data supplied to this template:
       problemRetrievingData: boolean
       inductionDto?: InductionDto
     }
+    inductionSchedule - object containing details about the prisoner's Induction schedule
 
 where the EducationDto contains the prisoner's pre-prison education history, and the InductionDto contains any
 Additional Training entered as part of the prisoner's Induction.
@@ -179,25 +180,28 @@ never happen.
               <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
 
               <h3 class="govuk-heading-s" data-qa="other-qualifications">Other qualifications and education history</h3>
-              {% if hasEditAuthority %}
-                <p class="govuk-body" data-qa="add-education-history">
+              <p class="govuk-body" data-qa="induction-not-created-yet">
+                {% if hasEditAuthority %}
                   To add education history, including vocational qualifications,
-                  <a href="/prisoners/{{ prisonerSummary.prisonNumber }}/create-induction/hoping-to-work-on-release" class="govuk-link" data-qa="link-to-create-induction">
+                  {% if not inductionSchedule.problemRetrievingData and inductionSchedule.inductionStatus != 'ON_HOLD' %}
+                    <a href="/prisoners/{{ prisonerSummary.prisonNumber }}/create-induction/hoping-to-work-on-release" class="govuk-link" data-qa="link-to-create-induction">
+                      create a learning and work progress plan
+                    </a>
+                  {% else %}
                     create a learning and work progress plan
-                  </a>
+                  {% endif %}
                   with {{ prisonerSummary.firstName }} {{ prisonerSummary.lastName }}.
-                </p>
-              {% else %}
-                <p class="govuk-body" data-qa="not-entered">Not entered.</p>
-              {% endif %}
-
+                {% else %}
+                  Not entered.
+                {% endif %}
+              </p>
             {% endif %}
 
           {% else %}
             {# The prisoner does not have any education and qualifications related data recorded.
                Because of how the Induction question set works (see notes at top of template) if the prisoner does not
-               have an EcucationDTO, they also do not have an InductionDTO (it is not possible to have an InductionDTO but
-               no EducationDTO; but it is possible to have an EcucationDTO with no InductionDTO)
+               have an EducationDTO, they also do not have an InductionDTO (it is not possible to have an InductionDTO but
+               no EducationDTO; but it is possible to have an EducationDTO with no InductionDTO)
 
                Because we know the prisoner has no EducationDTO and therefore no InductionDTO as well, we can add the content
                to prompt the user to create both in this block.
@@ -214,17 +218,21 @@ never happen.
             <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
 
             <h3 class="govuk-heading-s" data-qa="other-qualifications">Other qualifications and education history</h3>
-            {% if hasEditAuthority %}
-              <p class="govuk-body">
+            <p class="govuk-body" data-qa="induction-not-created-yet">
+              {% if hasEditAuthority %}
                 To add education history, including vocational qualifications,
-                <a href="/prisoners/{{ prisonerSummary.prisonNumber }}/create-induction/hoping-to-work-on-release" class="govuk-link" data-qa="link-to-create-induction">
+                {% if not inductionSchedule.problemRetrievingData and inductionSchedule.inductionStatus != 'ON_HOLD' %}
+                  <a href="/prisoners/{{ prisonerSummary.prisonNumber }}/create-induction/hoping-to-work-on-release" class="govuk-link" data-qa="link-to-create-induction">
+                    create a learning and work progress plan
+                  </a>
+                {% else %}
                   create a learning and work progress plan
-                </a>
+                {% endif %}
                 with {{ prisonerSummary.firstName }} {{ prisonerSummary.lastName }}.
-              </p>
-            {% else %}
-              <p class="govuk-body" data-qa="not-entered">Not entered.</p>
-            {% endif %}
+              {% else %}
+                Not entered.
+              {% endif %}
+            </p>
           {% endif %}
         </div>
 

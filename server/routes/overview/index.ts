@@ -50,12 +50,14 @@ export default (router: Router, services: Services) => {
   router.get('/plan/:prisonNumber/view/education-and-training', [
     retrieveCuriousFunctionalSkills(curiousService),
     retrieveCuriousInPrisonCourses(curiousService),
+    retrieveInductionSchedule(inductionService),
     retrieveInduction(inductionService),
     retrieveEducation(educationAndWorkPlanService),
     asyncMiddleware(educationAndTrainingController.getEducationAndTrainingView),
   ])
 
   router.get('/plan/:prisonNumber/view/work-and-interests', [
+    retrieveInductionSchedule(inductionService),
     retrieveInduction(inductionService),
     asyncMiddleware(workAndInterestsController.getWorkAndInterestsView),
   ])
