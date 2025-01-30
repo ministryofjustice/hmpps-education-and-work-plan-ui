@@ -1,7 +1,10 @@
 import { Request, Response } from 'express'
+import { startOfDay } from 'date-fns'
 import aValidPrisonerSummary from '../../testsupport/prisonerSummaryTestDataBuilder'
 import WorkAndInterestsController from './workAndInterestsController'
 import { aValidInductionDto } from '../../testsupport/inductionDtoTestDataBuilder'
+import aValidInductionSchedule from '../../testsupport/inductionScheduleTestDataBuilder'
+import InductionScheduleStatusValue from '../../enums/inductionScheduleStatusValue'
 
 describe('workAndInterestsController', () => {
   const controller = new WorkAndInterestsController()
@@ -15,6 +18,7 @@ describe('workAndInterestsController', () => {
     problemRetrievingData: false,
     inductionDto: aValidInductionDto(),
   }
+  const inductionSchedule = aValidInductionSchedule({ scheduleStatus: InductionScheduleStatusValue.COMPLETED })
 
   let req: Request
   let res: Response
@@ -32,6 +36,7 @@ describe('workAndInterestsController', () => {
       locals: {
         induction,
         prisonerSummary,
+        inductionSchedule,
       },
     } as unknown as Response
   })
@@ -42,6 +47,11 @@ describe('workAndInterestsController', () => {
       prisonerSummary,
       tab: expectedTab,
       induction,
+      inductionSchedule: {
+        problemRetrievingData: false,
+        inductionStatus: 'COMPLETE',
+        inductionDueDate: startOfDay('2024-12-10'),
+      },
     }
 
     // When

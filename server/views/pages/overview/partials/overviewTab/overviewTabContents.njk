@@ -11,6 +11,8 @@ Data supplied to this template:
   *   problemRetrievingData: boolean
   *   isPostInduction - boolean indicating whether this is pre- or post-induction. IE. whether the prisoner has a completed Induction or not
   * }
+  * inductionSchedule - object containing details about the prisoner's Induction schedule
+  * acionPlanReview - object containing details about the prisoner's Review schedule
 
 #}
 
@@ -27,7 +29,7 @@ Data supplied to this template:
 
   {% block content %}
     <div class="govuk-grid-column-two-thirds app-u-print-full-width">
-      {% if not induction.problemRetrievingData and not induction.isPostInduction and hasEditAuthority %}
+      {% if not induction.problemRetrievingData and not induction.isPostInduction and not inductionSchedule.problemRetrievingData and inductionSchedule.inductionStatus != 'ON_HOLD' and hasEditAuthority %}
         <section data-qa="pre-induction-overview">
           {{ govukNotificationBanner({
             html: createInductionBanner

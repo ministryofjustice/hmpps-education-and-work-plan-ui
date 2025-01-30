@@ -1,6 +1,8 @@
-import type { FunctionalSkills, InPrisonCourseRecords, PrisonerSummary } from 'viewModels'
+import type { FunctionalSkills, InductionSchedule, InPrisonCourseRecords, PrisonerSummary } from 'viewModels'
 import type { EducationDto } from 'dto'
 import type { InductionDto } from 'inductionDto'
+import { InductionScheduleView } from './overviewViewTypes'
+import { toInductionScheduleView } from './overviewViewFunctions'
 
 export default class EducationAndTrainingView {
   constructor(
@@ -15,6 +17,7 @@ export default class EducationAndTrainingView {
       problemRetrievingData: boolean
       educationDto?: EducationDto
     },
+    private readonly inductionSchedule: InductionSchedule,
   ) {}
 
   get renderArgs(): {
@@ -30,6 +33,7 @@ export default class EducationAndTrainingView {
       problemRetrievingData: boolean
       educationDto?: EducationDto
     }
+    inductionSchedule: InductionScheduleView
   } {
     return {
       tab: 'education-and-training',
@@ -38,6 +42,7 @@ export default class EducationAndTrainingView {
       inPrisonCourses: this.inPrisonCourses,
       induction: this.induction,
       education: this.education,
+      inductionSchedule: toInductionScheduleView(this.inductionSchedule, this.induction.inductionDto),
     }
   }
 }

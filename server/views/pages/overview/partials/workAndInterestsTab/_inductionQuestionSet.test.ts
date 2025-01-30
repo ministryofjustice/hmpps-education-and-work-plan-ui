@@ -1,5 +1,7 @@
 import nunjucks from 'nunjucks'
 import * as cheerio from 'cheerio'
+import { startOfDay } from 'date-fns'
+import type { FutureWorkInterestsDto, PreviousWorkExperiencesDto } from 'inductionDto'
 import { aValidInductionDto } from '../../../../../testsupport/inductionDtoTestDataBuilder'
 import aValidPrisonerSummary from '../../../../../testsupport/prisonerSummaryTestDataBuilder'
 import formatDateFilter from '../../../../../filters/formatDateFilter'
@@ -11,7 +13,6 @@ import config from '../../../../../config'
 import HopingToGetWorkValue from '../../../../../enums/hopingToGetWorkValue'
 import HasWorkedBeforeValue from '../../../../../enums/hasWorkedBeforeValue'
 import formatAbilityToWorkConstraintFilter from '../../../../../filters/formatAbilityToWorkConstraintFilter'
-import WorkAndInterestsView from '../../../../../routes/overview/workAndInterestsView'
 import formatJobTypeFilter from '../../../../../filters/formatJobTypeFilter'
 import previousWorkExperienceObjectsSortedInScreenOrderFilter from '../../../../../filters/previousWorkExperienceObjectsSortedInScreenOrderFilter'
 
@@ -34,41 +35,63 @@ njkEnv.addFilter(
   previousWorkExperienceObjectsSortedInScreenOrderFilter,
 )
 
+const templateParams = {
+  prisonerSummary: aValidPrisonerSummary(),
+  hasEditAuthority: true,
+  induction: {
+    problemRetrievingData: false,
+    inductionDto: aValidInductionDto(),
+  },
+  inductionSchedule: {
+    problemRetrievingData: false,
+    inductionStatus: 'COMPLETE',
+    inductionDueDate: startOfDay('2025-02-15'),
+  },
+}
+
 describe('Tests for _inductionQuestionSet.njk partial', () => {
   it('Should display last updated using work response if they are not interested in working', () => {
+    // When
     const anInductionDto = aValidInductionDto({
       hopingToGetWork: HopingToGetWorkValue.NO,
       hasWorkedBefore: HasWorkedBeforeValue.NO,
     })
-    const content = nunjucks.render(
-      '_inductionQuestionSet.njk',
-      new WorkAndInterestsView(aValidPrisonerSummary(), {
+
+    const params = {
+      ...templateParams,
+      induction: {
         problemRetrievingData: false,
         inductionDto: {
           ...anInductionDto,
-          futureWorkInterests: undefined,
+          futureWorkInterests: undefined as FutureWorkInterestsDto,
           workOnRelease: {
             ...anInductionDto.workOnRelease,
             updatedAt: new Date('2021-05-10T10:00:00Z'),
             updatedByDisplayName: 'Some User',
           },
         },
-      }),
-    )
+      },
+    }
+
+    // When
+    const content = nunjucks.render('_inductionQuestionSet.njk', params)
     const $ = cheerio.load(content)
+
+    // Then
     const lastUpdated = $('[data-qa=work-interests-last-updated]').first().text().trim()
     expect(lastUpdated).toEqual('Last updated: 10 May 2021 by Some User')
   })
 
   it('Should display last updated using future work response if they are interested in working', () => {
+    // Given
     const anInductionDto = aValidInductionDto({
-      hopingToGetWork: HopingToGetWorkValue.NO,
+      hopingToGetWork: HopingToGetWorkValue.YES,
       hasWorkedBefore: HasWorkedBeforeValue.NO,
     })
-    const content = nunjucks.render(
-      '_inductionQuestionSet.njk',
-      new WorkAndInterestsView(aValidPrisonerSummary(), {
-        problemRetrievingData: false,
+
+    const params = {
+      ...templateParams,
+      induction: {
         inductionDto: {
           ...anInductionDto,
           futureWorkInterests: {
@@ -77,36 +100,44 @@ describe('Tests for _inductionQuestionSet.njk partial', () => {
             updatedAt: new Date('2024-06-20T10:00:00Z'),
           },
         },
-      }),
-    )
+      },
+    }
+
+    // When
+    const content = nunjucks.render('_inductionQuestionSet.njk', params)
     const $ = cheerio.load(content)
+
+    // Then
     const lastUpdated = $('[data-qa=work-interests-last-updated]').first().text().trim()
     expect(lastUpdated).toEqual('Last updated: 20 June 2024 by Future User')
   })
 
   it('Should handle has worked before and work experience if previously answered no to wanting to work (back compat)', () => {
+    // Given
     const anInductionDto = aValidInductionDto({
       hopingToGetWork: HopingToGetWorkValue.NO,
     })
-    const viewModel = {
-      ...new WorkAndInterestsView(aValidPrisonerSummary(), {
-        problemRetrievingData: false,
+
+    const params = {
+      ...templateParams,
+      induction: {
         inductionDto: {
           ...anInductionDto,
-          previousWorkExperiences: undefined,
+          previousWorkExperiences: undefined as PreviousWorkExperiencesDto,
           workOnRelease: {
             ...anInductionDto.workOnRelease,
             updatedAt: new Date('2021-05-10T10:00:00Z'),
             updatedByDisplayName: 'Some User',
           },
         },
-      }),
-      hasEditAuthority: true,
+      },
     }
 
-    const content = nunjucks.render('_inductionQuestionSet.njk', viewModel)
-
+    // When
+    const content = nunjucks.render('_inductionQuestionSet.njk', params)
     const $ = cheerio.load(content)
+
+    // Then
     const lastUpdated = $('[data-qa=work-experience-last-updated]').first().text().trim()
     expect(lastUpdated).toEqual('Last updated: 10 May 2021 by Some User')
     const hasWorkedBeforeAnswer = $('[data-qa=has-worked-before-answer]').first().text().trim()
@@ -116,13 +147,14 @@ describe('Tests for _inductionQuestionSet.njk partial', () => {
   })
 
   it('Should handle has worked before and work experience if wanting to work', () => {
+    // Given
     const anInductionDto = aValidInductionDto({
       hopingToGetWork: HopingToGetWorkValue.YES,
     })
 
-    const viewModel = {
-      ...new WorkAndInterestsView(aValidPrisonerSummary(), {
-        problemRetrievingData: false,
+    const params = {
+      ...templateParams,
+      induction: {
         inductionDto: {
           ...anInductionDto,
           previousWorkExperiences: {
@@ -131,13 +163,14 @@ describe('Tests for _inductionQuestionSet.njk partial', () => {
             updatedAt: new Date('2024-06-20T10:00:00Z'),
           },
         },
-      }),
-      hasEditAuthority: true,
+      },
     }
 
-    const content = nunjucks.render('_inductionQuestionSet.njk', viewModel)
-
+    // When
+    const content = nunjucks.render('_inductionQuestionSet.njk', params)
     const $ = cheerio.load(content)
+
+    // Then
     const lastUpdated = $('[data-qa=work-experience-last-updated]').first().text().trim()
     expect(lastUpdated).toEqual('Last updated: 20 June 2024 by Worked Before User')
     const hasWorkedBeforeAnswer = $('[data-qa=has-worked-before-answer]').first().text().trim()
