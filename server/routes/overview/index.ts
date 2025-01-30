@@ -65,6 +65,8 @@ export default (router: Router, services: Services) => {
   router.get('/plan/:prisonNumber/view/timeline', [asyncMiddleware(timelineController.getTimelineView)])
 
   router.get('/plan/:prisonNumber/view/goals', [
+    retrieveInductionSchedule(inductionService),
+    retrieveInduction(inductionService),
     retrieveAllGoalsForPrisoner(educationAndWorkPlanService),
     asyncMiddleware(viewGoalsController.viewGoals),
   ])

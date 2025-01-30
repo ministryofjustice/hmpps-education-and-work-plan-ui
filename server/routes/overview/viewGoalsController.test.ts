@@ -1,8 +1,13 @@
 import { Request, Response } from 'express'
+import { startOfDay } from 'date-fns'
+import type { PrisonerGoals } from 'viewModels'
 import aValidPrisonerSummary from '../../testsupport/prisonerSummaryTestDataBuilder'
 import ViewGoalsController from './viewGoalsController'
 import GoalStatusValue from '../../enums/goalStatusValue'
 import { aValidGoalResponse } from '../../testsupport/actionPlanResponseTestDataBuilder'
+import { aValidInductionDto } from '../../testsupport/inductionDtoTestDataBuilder'
+import aValidInductionSchedule from '../../testsupport/inductionScheduleTestDataBuilder'
+import InductionScheduleStatusValue from '../../enums/inductionScheduleStatusValue'
 
 jest.mock('../../services/educationAndWorkPlanService')
 
@@ -13,6 +18,22 @@ describe('ViewGoalsController', () => {
   const username = 'a-dps-user'
   const prisonerSummary = aValidPrisonerSummary(prisonNumber)
 
+  const induction = {
+    problemRetrievingData: false,
+    inductionDto: aValidInductionDto(),
+  }
+  const inductionSchedule = aValidInductionSchedule({ scheduleStatus: InductionScheduleStatusValue.COMPLETED })
+
+  const allGoalsForPrisoner: PrisonerGoals = {
+    prisonNumber,
+    goals: {
+      ACTIVE: [],
+      ARCHIVED: [],
+      COMPLETED: [],
+    },
+    problemRetrievingData: false,
+  }
+
   const req = {
     user: { username },
     params: { prisonNumber },
@@ -21,14 +42,9 @@ describe('ViewGoalsController', () => {
     render: jest.fn(),
     locals: {
       prisonerSummary,
-      allGoalsForPrisoner: {
-        goals: {
-          ACTIVE: [],
-          ARCHIVED: [],
-          COMPLETED: [],
-        },
-        problemRetrievingData: false,
-      },
+      allGoalsForPrisoner,
+      induction,
+      inductionSchedule,
     },
   } as unknown as Response
   const next = jest.fn()
@@ -57,6 +73,11 @@ describe('ViewGoalsController', () => {
       completedGoals: [completedGoal],
       problemRetrievingData: false,
       tab: 'goals',
+      inductionSchedule: {
+        problemRetrievingData: false,
+        inductionStatus: 'COMPLETE',
+        inductionDueDate: startOfDay('2024-12-10'),
+      },
     }
 
     // When

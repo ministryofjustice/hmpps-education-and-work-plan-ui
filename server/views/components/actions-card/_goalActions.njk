@@ -1,5 +1,5 @@
 {# Goals based actions #}
-{% set showGoalActions = params.inductionSchedule.inductionStatus != 'GOALS_NOT_DUE' and params.inductionSchedule.inductionStatus != 'GOALS_DUE' and params.inductionSchedule.inductionStatus != 'GOALS_OVERDUE' %}
+{% set showGoalActions = not params.inductionSchedule.problemRetrievingData and params.inductionSchedule.inductionStatus != 'ON_HOLD' and params.inductionSchedule.inductionStatus != 'GOALS_NOT_DUE' and params.inductionSchedule.inductionStatus != 'GOALS_DUE' and params.inductionSchedule.inductionStatus != 'GOALS_OVERDUE' %}
 {% if showGoalActions %}
   <div class="govuk-summary-card__content govuk-!-padding-bottom-0 govuk-!-padding-top-2" data-qa="goal-actions">
     {% if params.reviewJourneyEnabledForPrison %}
