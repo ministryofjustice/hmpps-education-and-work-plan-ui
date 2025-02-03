@@ -4,7 +4,6 @@ import { Services } from '../../../services'
 import asyncMiddleware from '../../../middleware/asyncMiddleware'
 import config from '../../../config'
 import { checkUserHasEditAuthority } from '../../../middleware/roleBasedAccessControl'
-import checkInductionDoesNotExist from '../../routerRequestHandlers/checkInductionDoesNotExist'
 import exemptInductionRoutes from './exemption'
 import removeInductionExemptionRoutes from './removeExemption'
 
@@ -12,11 +11,7 @@ import removeInductionExemptionRoutes from './removeExemption'
  * Route definitions for exempting, and removing the exemption of a prisoner's Induction
  */
 export default (router: Router, services: Services) => {
-  router.get('/prisoners/:prisonNumber/induction/exemption', [
-    checkPrisonIsEnabled(),
-    checkUserHasEditAuthority(),
-    checkInductionDoesNotExist(services.inductionService),
-  ])
+  router.get('/prisoners/:prisonNumber/induction/exemption', [checkPrisonIsEnabled(), checkUserHasEditAuthority()])
   router.get('/prisoners/:prisonNumber/induction/exemption/**', [checkPrisonIsEnabled(), checkUserHasEditAuthority()])
 
   exemptInductionRoutes(router, services)

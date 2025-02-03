@@ -27,10 +27,6 @@ const templateParams: ActionsCardParams = {
     reviewStatus: 'NOT_DUE',
     reviewDueDate: startOfDay('2025-02-15'),
   },
-  induction: {
-    problemRetrievingData: false,
-    isPostInduction: true,
-  },
   reviewJourneyEnabledForPrison: true,
   prisonerSummary: aValidPrisonerSummary(),
   hasEditAuthority: true,
@@ -188,7 +184,7 @@ describe('_reviewActions', () => {
     expect($('[data-qa=record-exemption-button]').length).toEqual(1)
   })
 
-  it('should not render review actions given prisoner has no scheduled review', () => {
+  it('should render empty review actions given prisoner has no scheduled review', () => {
     // Given
     const params = {
       ...templateParams,
@@ -203,61 +199,12 @@ describe('_reviewActions', () => {
     const $ = cheerio.load(content)
 
     // Then
-    expect($('[data-qa=review-actions]').length).toEqual(0)
+    expect($('[data-qa=review-actions]').length).toEqual(1)
+    expect($('[data-qa=review-actions] span').length).toEqual(0)
+    expect($('[data-qa=reviews-action-items] li').length).toEqual(0)
   })
 
-  it('should not render review actions given the review journey feature toggle is not enabled', () => {
-    // Given
-    const params = {
-      ...templateParams,
-      reviewJourneyEnabledForPrison: false,
-    }
-
-    // When
-    const content = nunjucks.render('_reviewActions.njk', { params })
-    const $ = cheerio.load(content)
-
-    // Then
-    expect($('[data-qa=review-actions]').length).toEqual(0)
-  })
-
-  it('should not render review actions given the induction has not been completed and it is not considered post-induction', () => {
-    // Given
-    const params = {
-      ...templateParams,
-      induction: {
-        problemRetrievingData: false,
-        isPostInduction: false,
-      },
-    }
-
-    // When
-    const content = nunjucks.render('_reviewActions.njk', { params })
-    const $ = cheerio.load(content)
-
-    // Then
-    expect($('[data-qa=review-actions]').length).toEqual(0)
-  })
-
-  it('should not render review actions given there was a problem retrieving the induction data', () => {
-    // Given
-    const params = {
-      ...templateParams,
-      induction: {
-        problemRetrievingData: true,
-        isPostInduction: undefined as boolean,
-      },
-    }
-
-    // When
-    const content = nunjucks.render('_reviewActions.njk', { params })
-    const $ = cheerio.load(content)
-
-    // Then
-    expect($('[data-qa=review-actions]').length).toEqual(0)
-  })
-
-  it('should not render review actions given there was a problem retrieving the action plan reviews data', () => {
+  it('should render empty review actions given there was a problem retrieving the action plan reviews data', () => {
     // Given
     const params = {
       ...templateParams,
@@ -271,6 +218,8 @@ describe('_reviewActions', () => {
     const $ = cheerio.load(content)
 
     // Then
-    expect($('[data-qa=review-actions]').length).toEqual(0)
+    expect($('[data-qa=review-actions]').length).toEqual(1)
+    expect($('[data-qa=review-actions] span').length).toEqual(0)
+    expect($('[data-qa=reviews-action-items] li').length).toEqual(0)
   })
 })

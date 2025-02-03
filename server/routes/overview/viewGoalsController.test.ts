@@ -78,6 +78,12 @@ describe('ViewGoalsController', () => {
         inductionStatus: 'COMPLETE',
         inductionDueDate: startOfDay('2024-12-10'),
       },
+      actionPlanReview: {
+        problemRetrievingData: false,
+        reviewStatus: 'NO_SCHEDULED_REVIEW',
+        reviewDueDate: undefined as Date,
+        exemptionReason: undefined as string,
+      },
     }
 
     // When

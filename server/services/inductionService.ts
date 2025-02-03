@@ -57,7 +57,9 @@ export default class InductionService {
       prisonNumber,
       systemToken,
     )
-    return toInductionSchedule(inductionScheduleResponse)
+    return inductionScheduleResponse
+      ? toInductionSchedule(inductionScheduleResponse)
+      : ({ problemRetrievingData: false } as InductionSchedule)
   }
 
   async updateInductionScheduleStatus(inductionExemptionDto: InductionExemptionDto, username: string): Promise<void> {

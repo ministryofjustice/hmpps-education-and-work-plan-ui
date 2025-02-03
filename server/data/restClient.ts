@@ -15,6 +15,7 @@ interface Request {
   headers?: Record<string, string>
   responseType?: string
   raw?: boolean
+  ignore404?: boolean
 }
 
 interface RequestWithBody extends Request {
@@ -53,6 +54,7 @@ export default class RestClient {
     headers = {},
     responseType = '',
     raw = false,
+    ignore404 = false,
   }: Request): Promise<Response> {
     logger.info(`${this.name} GET: ${path}`)
     try {
@@ -72,6 +74,10 @@ export default class RestClient {
 
       return raw ? result : result.body
     } catch (error) {
+      if (ignore404 && error.response?.status === 404) {
+        logger.info(`Returned null for 404 not found when calling ${this.name}: ${path}`)
+        return null
+      }
       const sanitisedError = sanitiseError(error)
       logger.warn({ ...sanitisedError }, `Error calling ${this.name}, path: '${path}', verb: 'GET'`)
       throw sanitisedError

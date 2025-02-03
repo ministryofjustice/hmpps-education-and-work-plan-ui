@@ -1,8 +1,8 @@
 {# Induction based actions #}
-{% set showInductionActions = not params.induction.problemRetrievingData and not params.induction.isPostInduction and not params.inductionSchedule.problemRetrievingData and params.inductionSchedule.inductionStatus != 'NO_SCHEDULED_INDUCTION' and params.reviewJourneyEnabledForPrison %}
-{% if showInductionActions %}
-  <div class="govuk-summary-card__content govuk-!-padding-bottom-0 govuk-!-padding-top-2" data-qa="induction-actions">
-    <h3 class="govuk-heading-s govuk-!-margin-bottom-0">Induction</h3>
+<div class="govuk-summary-card__content govuk-!-padding-bottom-0 govuk-!-padding-top-2" data-qa="induction-actions">
+  <h3 class="govuk-heading-s govuk-!-margin-bottom-0">Induction</h3>
+
+  {% if params.inductionSchedule.inductionStatus and params.inductionSchedule.inductionStatus != 'NO_SCHEDULED_REVIEW' %}
 
     {% if params.inductionSchedule.inductionStatus == 'INDUCTION_NOT_DUE' %}
       <span class="govuk-tag govuk-tag--grey govuk-!-margin-top-2 govuk-!-margin-bottom-2" data-qa="induction-not-due">
@@ -89,5 +89,6 @@
 
       {% endif %}
     </ul>
-  </div>
-{% endif %}
+
+  {% endif %}
+</div>

@@ -23,10 +23,6 @@ declare module 'viewComponents' {
 
   export interface ActionsCardParams {
     prisonerSummary: PrisonerSummary
-    induction: {
-      problemRetrievingData: boolean
-      isPostInduction: boolean
-    }
     inductionSchedule: InductionScheduleView
     actionPlanReview: ActionPlanReviewScheduleView
     hasEditAuthority: boolean

@@ -1,11 +1,17 @@
 {# Goals based actions #}
-{% set showGoalActions = not params.inductionSchedule.problemRetrievingData and params.inductionSchedule.inductionStatus != 'ON_HOLD' and params.inductionSchedule.inductionStatus != 'GOALS_NOT_DUE' and params.inductionSchedule.inductionStatus != 'GOALS_DUE' and params.inductionSchedule.inductionStatus != 'GOALS_OVERDUE' %}
-{% if showGoalActions %}
-  <div class="govuk-summary-card__content govuk-!-padding-bottom-0 govuk-!-padding-top-2" data-qa="goal-actions">
-    {% if params.reviewJourneyEnabledForPrison %}
-      <h3 class="govuk-heading-s govuk-!-margin-bottom-0">Goals</h3>
-    {% endif %}
-    <ul class="govuk-list govuk-!-margin-0" data-qa="goals-action-items">
+<div class="govuk-summary-card__content govuk-!-padding-bottom-0 govuk-!-padding-top-2" data-qa="goal-actions">
+  {% if params.reviewJourneyEnabledForPrison %}
+    <h3 class="govuk-heading-s govuk-!-margin-bottom-0">Goals</h3>
+  {% endif %}
+  <ul class="govuk-list govuk-!-margin-0" data-qa="goals-action-items">
+
+    {% if params.inductionSchedule.inductionStatus
+      and params.inductionSchedule.inductionStatus != 'ON_HOLD'
+      and params.inductionSchedule.inductionStatus != 'GOALS_NOT_DUE'
+      and params.inductionSchedule.inductionStatus != 'GOALS_DUE'
+      and params.inductionSchedule.inductionStatus != 'GOALS_OVERDUE'
+    %}
+
       {% if params.hasEditAuthority %}
         <li class="govuk-!-margin-0 govuk-!-padding-bottom-3 govuk-!-padding-top-3">
           <a class="govuk-link" data-qa="add-goal-button" href="/plan/{{ params.prisonerSummary.prisonNumber }}/goals/create">
@@ -16,6 +22,7 @@
           </a>
         </li>
       {% endif %}
-    </ul>
-  </div>
-{% endif %}
+
+    {% endif %}
+  </ul>
+</div>

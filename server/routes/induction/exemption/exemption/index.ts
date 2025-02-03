@@ -7,6 +7,7 @@ import ConfirmExemptionController from './confirmExemptionController'
 import checkInductionExemptionDtoExistsInPrisonerContext from '../../../routerRequestHandlers/checkInductionExemptionDtoExistsInPrisonerContext'
 import retrieveInductionSchedule from '../../../routerRequestHandlers/retrieveInductionSchedule'
 import ExemptionRecordedController from './exemptionRecordedController'
+import checkInductionIsScheduled from '../../../routerRequestHandlers/checkInductionIsScheduled'
 
 /**
  * Route definitions for exempting a prisoner's Induction
@@ -19,6 +20,7 @@ export default (router: Router, services: Services) => {
   const exemptionRecordedController = new ExemptionRecordedController()
 
   router.get('/prisoners/:prisonNumber/induction/exemption', [
+    checkInductionIsScheduled(inductionService), // Induction Schedule must be SCHEDULED in order to exempt it
     createEmptyInductionExemptionDtoIfNotInPrisonerContext,
     asyncMiddleware(exemptionReasonController.getExemptionReasonView),
   ])

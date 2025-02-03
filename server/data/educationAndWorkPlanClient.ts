@@ -175,6 +175,7 @@ export default class EducationAndWorkPlanClient {
   async getInductionSchedule(prisonNumber: string, token: string): Promise<InductionScheduleResponse> {
     return EducationAndWorkPlanClient.restClient(token).get({
       path: `/inductions/${prisonNumber}/induction-schedule`,
+      ignore404: true,
     })
   }
 

@@ -17,34 +17,13 @@ const retrieveInductionSchedule = (inductionService: InductionService): RequestH
         // Retrieve the Induction Schedule and store in res.locals
         res.locals.inductionSchedule = await inductionService.getInductionSchedule(prisonNumber, req.user.username)
       } catch (error) {
-        res.locals.inductionSchedule = {
-          ...gracefullyHandleException(error, prisonNumber),
-        }
+        logger.error('Error retrieving Induction Schedule data from Induction Service', error)
+        res.locals.inductionSchedule = { problemRetrievingData: true }
       }
     }
 
     next()
   })
 }
-
-/**
- * Gracefully handle an exception thrown from the educationAndWorkPlanClient by returning an object of
- *   * { problemRetrievingData: false } if it was a 404 error (there was no problem retrieving data; it's just the data didn't exist)
- *   * { problemRetrievingData: true } if it was any other status code, indicating a more serious error and problem retrieving the data from the API
- */
-const gracefullyHandleException = (
-  error: { status: number },
-  prisonNumber: string,
-): { problemRetrievingData: boolean } => {
-  if (isNotFoundError(error)) {
-    logger.debug(`No Induction Schedule found for prisoner [${prisonNumber}] in Education And Work Plan API`)
-    return { problemRetrievingData: false }
-  }
-
-  logger.error('Error retrieving Induction Schedule data from Induction Service', error)
-  return { problemRetrievingData: true }
-}
-
-const isNotFoundError = (error: { status: number }): boolean => error.status === 404
 
 export default retrieveInductionSchedule
