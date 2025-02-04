@@ -221,38 +221,30 @@ describe('inductionService', () => {
       // Given
       const inductionScheduleResponse = aValidInductionScheduleResponse()
       educationAndWorkPlanClient.getInductionSchedule.mockResolvedValue(inductionScheduleResponse)
-      const expectedInductionScheduleDto = aValidInductionSchedule()
-      mockedInductionScheduleMapper.mockReturnValue(expectedInductionScheduleDto)
+      const expectedInductionSchedule = aValidInductionSchedule()
+      mockedInductionScheduleMapper.mockReturnValue(expectedInductionSchedule)
 
       // When
       const actual = await inductionService.getInductionSchedule(prisonNumber, username)
 
       // Then
-      expect(actual).toEqual(expectedInductionScheduleDto)
+      expect(actual).toEqual(expectedInductionSchedule)
       expect(educationAndWorkPlanClient.getInductionSchedule).toHaveBeenCalledWith(prisonNumber, systemToken)
       expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
       expect(mockedInductionScheduleMapper).toHaveBeenCalledWith(inductionScheduleResponse)
     })
 
-    it('should rethrow error given Education and Work Plan API returns Not Found', async () => {
+    it('should return empty Induction Schedule given Education and Work Plan API returns null indicating Not Found', async () => {
       // Given
-      const eductionAndWorkPlanApiError = {
-        status: 404,
-        data: {
-          status: 404,
-          userMessage: `Induction Schedule not found for prisoner [${prisonNumber}]`,
-          developerMessage: `Induction Schedule not found for prisoner [${prisonNumber}]`,
-        },
-      }
-      educationAndWorkPlanClient.getInductionSchedule.mockRejectedValue(eductionAndWorkPlanApiError)
+      educationAndWorkPlanClient.getInductionSchedule.mockResolvedValue(null)
+
+      const expectedInductionSchedule = { problemRetrievingData: false }
 
       // When
-      const actual = await inductionService.getInductionSchedule(prisonNumber, username).catch(error => {
-        return error
-      })
+      const actual = await inductionService.getInductionSchedule(prisonNumber, username)
 
       // Then
-      expect(actual).toEqual(eductionAndWorkPlanApiError)
+      expect(actual).toEqual(expectedInductionSchedule)
       expect(educationAndWorkPlanClient.getInductionSchedule).toHaveBeenCalledWith(prisonNumber, systemToken)
       expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
       expect(mockedInductionScheduleMapper).not.toHaveBeenCalled()

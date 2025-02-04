@@ -1,7 +1,7 @@
-import type { Goal, InductionSchedule, PrisonerGoals, PrisonerSummary } from 'viewModels'
+import type { ActionPlanReviews, Goal, InductionSchedule, PrisonerGoals, PrisonerSummary } from 'viewModels'
 import type { InductionDto } from 'inductionDto'
-import { InductionScheduleView } from './overviewViewTypes'
-import { toInductionScheduleView } from './overviewViewFunctions'
+import { ActionPlanReviewScheduleView, InductionScheduleView } from './overviewViewTypes'
+import { toActionPlanReviewScheduleView, toInductionScheduleView } from './overviewViewFunctions'
 
 export default class ViewGoalsView {
   constructor(
@@ -11,6 +11,7 @@ export default class ViewGoalsView {
       problemRetrievingData: boolean
       inductionDto?: InductionDto
     },
+    private readonly actionPlanReviews: ActionPlanReviews,
     private readonly inductionSchedule: InductionSchedule,
   ) {}
 
@@ -22,6 +23,7 @@ export default class ViewGoalsView {
     archivedGoals: Array<Goal>
     completedGoals: Array<Goal>
     inductionSchedule: InductionScheduleView
+    actionPlanReview: ActionPlanReviewScheduleView
   } {
     return {
       tab: 'goals',
@@ -31,6 +33,7 @@ export default class ViewGoalsView {
       archivedGoals: this.allGoalsForPrisoner.goals.ARCHIVED,
       completedGoals: this.allGoalsForPrisoner.goals.COMPLETED,
       inductionSchedule: toInductionScheduleView(this.inductionSchedule, this.induction.inductionDto),
+      actionPlanReview: toActionPlanReviewScheduleView(this.actionPlanReviews),
     }
   }
 }

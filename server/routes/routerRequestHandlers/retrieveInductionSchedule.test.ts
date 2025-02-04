@@ -1,4 +1,5 @@
 import { Request, Response } from 'express'
+import type { InductionSchedule } from 'viewModels'
 import InductionService from '../../services/inductionService'
 import retrieveInductionSchedule from './retrieveInductionSchedule'
 import aValidInductionSchedule from '../../testsupport/inductionScheduleTestDataBuilder'
@@ -53,7 +54,7 @@ describe('retrieveInductionSchedule', () => {
     expect(reviewJourneyEnabledForPrison).toHaveBeenCalledWith('BXI')
   })
 
-  it('should handle retrieval of Induction given Induction service returns an unexpected error', async () => {
+  it('should handle retrieval of Induction Schedule given Induction service returns an unexpected error', async () => {
     // Given
     reviewJourneyEnabledForPrison.mockReturnValue(true)
 
@@ -79,19 +80,12 @@ describe('retrieveInductionSchedule', () => {
     expect(reviewJourneyEnabledForPrison).toHaveBeenCalledWith('BXI')
   })
 
-  it('should handle retrieval of Induction given Induction service returns Not Found for the Induction', async () => {
+  it('should handle retrieval of Induction Schedule given Induction service returns empty Induction Schedule indicating Not Found', async () => {
     // Given
     reviewJourneyEnabledForPrison.mockReturnValue(true)
 
-    const inductionServiceError = {
-      status: 404,
-      data: {
-        status: 404,
-        userMessage: `Induction not found for prisoner [${prisonNumber}]`,
-        developerMessage: `Induction not found for prisoner [${prisonNumber}]`,
-      },
-    }
-    inductionService.getInductionSchedule.mockRejectedValue(inductionServiceError)
+    const inductionSchedule = { problemRetrievingData: false } as InductionSchedule
+    inductionService.getInductionSchedule.mockResolvedValue(inductionSchedule)
 
     const expected = { problemRetrievingData: false }
 

@@ -48,7 +48,7 @@ const workOutInductionStatus = (
 
   const inductionScheduleDoesNotExist = inductionSchedule?.reference == null
   const inductionScheduleStatus = inductionSchedule?.scheduleStatus
-  const inductionComplete = inductionScheduleStatus === ActionPlanReviewStatusValue.COMPLETED
+  const inductionComplete = inductionScheduleStatus === InductionScheduleStatusValue.COMPLETED
   const pendingCuriousScreeningAndAssessments =
     inductionScheduleStatus === InductionScheduleStatusValue.PENDING_INITIAL_SCREENING_AND_ASSESSMENTS_FROM_CURIOUS
   const inductionOnHold =

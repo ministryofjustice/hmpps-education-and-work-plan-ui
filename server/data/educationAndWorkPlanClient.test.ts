@@ -672,7 +672,7 @@ describe('educationAndWorkPlanClient', () => {
       }
     })
 
-    it('should not get Induction Schedule given specified prisoner does not have an induction schedule', async () => {
+    it('should return null Induction Schedule given specified prisoner does not have an induction schedule', async () => {
       // Given
       const expectedResponseBody = {
         status: 404,
@@ -681,14 +681,10 @@ describe('educationAndWorkPlanClient', () => {
       educationAndWorkPlanApi.get(`/inductions/${prisonNumber}/induction-schedule`).reply(404, expectedResponseBody)
 
       // When
-      try {
-        await educationAndWorkPlanClient.getInductionSchedule(prisonNumber, systemToken)
-      } catch (e) {
-        // Then
-        expect(nock.isDone()).toBe(true)
-        expect(e.status).toEqual(404)
-        expect(e.data).toEqual(expectedResponseBody)
-      }
+      const actual = await educationAndWorkPlanClient.getInductionSchedule(prisonNumber, systemToken)
+
+      // Then
+      expect(actual).toBeNull()
     })
   })
 

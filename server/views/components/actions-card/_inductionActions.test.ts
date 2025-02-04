@@ -27,10 +27,6 @@ const templateParams: ActionsCardParams = {
     problemRetrievingData: false,
     reviewStatus: 'NO_SCHEDULED_REVIEW',
   },
-  induction: {
-    problemRetrievingData: false,
-    isPostInduction: false,
-  },
   reviewJourneyEnabledForPrison: true,
   prisonerSummary: aValidPrisonerSummary(),
   hasEditAuthority: true,
@@ -256,7 +252,7 @@ describe('_inductionActions', () => {
     expect($('[data-qa=remove-exemption-button]').length).toEqual(1)
   })
 
-  it('should not render induction actions given prisoner has no scheduled induction', () => {
+  it('should render empty induction actions given prisoner has no scheduled induction', () => {
     // Given
     const params = {
       ...templateParams,
@@ -271,61 +267,12 @@ describe('_inductionActions', () => {
     const $ = cheerio.load(content)
 
     // Then
-    expect($('[data-qa=induction-actions]').length).toEqual(0)
+    expect($('[data-qa=induction-actions]').length).toEqual(1)
+    expect($('[data-qa=induction-actions] span').length).toEqual(0)
+    expect($('[data-qa=induction-action-items] li').length).toEqual(0)
   })
 
-  it('should not render induction actions given the review journey feature toggle is not enabled', () => {
-    // Given
-    const params = {
-      ...templateParams,
-      reviewJourneyEnabledForPrison: false,
-    }
-
-    // When
-    const content = nunjucks.render('_inductionActions.njk', { params })
-    const $ = cheerio.load(content)
-
-    // Then
-    expect($('[data-qa=induction-actions]').length).toEqual(0)
-  })
-
-  it('should not render induction actions given the induction has been completed and it is considered post-induction', () => {
-    // Given
-    const params = {
-      ...templateParams,
-      induction: {
-        problemRetrievingData: false,
-        isPostInduction: true,
-      },
-    }
-
-    // When
-    const content = nunjucks.render('_inductionActions.njk', { params })
-    const $ = cheerio.load(content)
-
-    // Then
-    expect($('[data-qa=induction-actions]').length).toEqual(0)
-  })
-
-  it('should not render induction actions given there was a problem retrieving the induction data', () => {
-    // Given
-    const params = {
-      ...templateParams,
-      induction: {
-        problemRetrievingData: true,
-        isPostInduction: undefined as boolean,
-      },
-    }
-
-    // When
-    const content = nunjucks.render('_inductionActions.njk', { params })
-    const $ = cheerio.load(content)
-
-    // Then
-    expect($('[data-qa=induction-actions]').length).toEqual(0)
-  })
-
-  it('should not render induction actions given there was a problem retrieving the induction schedule data', () => {
+  it('should render empty induction actions given there was a problem retrieving the induction schedule data', () => {
     // Given
     const params = {
       ...templateParams,
@@ -339,6 +286,8 @@ describe('_inductionActions', () => {
     const $ = cheerio.load(content)
 
     // Then
-    expect($('[data-qa=induction-actions]').length).toEqual(0)
+    expect($('[data-qa=induction-actions]').length).toEqual(1)
+    expect($('[data-qa=induction-actions] span').length).toEqual(0)
+    expect($('[data-qa=induction-action-items] li').length).toEqual(0)
   })
 })

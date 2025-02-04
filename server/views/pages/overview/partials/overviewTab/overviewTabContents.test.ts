@@ -4,6 +4,7 @@ import { parseISO, startOfDay } from 'date-fns'
 import aValidPrisonerSummary from '../../../../../testsupport/prisonerSummaryTestDataBuilder'
 import formatDate from '../../../../../filters/formatDateFilter'
 import formatFunctionalSkillTypeFilter from '../../../../../filters/formatFunctionalSkillTypeFilter'
+import formatInductionExemptionReasonFilter from '../../../../../filters/formatInductionExemptionReasonFilter'
 
 const njkEnv = nunjucks.configure([
   'node_modules/govuk-frontend/govuk/',
@@ -17,6 +18,7 @@ const njkEnv = nunjucks.configure([
 
 njkEnv.addFilter('formatDate', formatDate)
 njkEnv.addFilter('formatFunctionalSkillType', formatFunctionalSkillTypeFilter)
+njkEnv.addFilter('formatInductionExemptionReason', formatInductionExemptionReasonFilter)
 
 const prisonerSummary = aValidPrisonerSummary()
 const template = 'overviewTabContents.njk'
