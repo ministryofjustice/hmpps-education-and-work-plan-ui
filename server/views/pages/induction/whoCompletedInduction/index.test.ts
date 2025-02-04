@@ -2,6 +2,7 @@ import nunjucks from 'nunjucks'
 import * as cheerio from 'cheerio'
 import aValidPrisonerSummary from '../../../../testsupport/prisonerSummaryTestDataBuilder'
 import findErrorFilter from '../../../../filters/findErrorFilter'
+import assetMapFilter from '../../../../filters/assetMapFilter'
 
 describe('WhoCompletedInductionPage', () => {
   const njkEnv = nunjucks.configure([
@@ -16,6 +17,7 @@ describe('WhoCompletedInductionPage', () => {
 
   njkEnv //
     .addFilter('findError', findErrorFilter)
+    .addFilter('assetMap', assetMapFilter)
 
   const prisonerSummary = aValidPrisonerSummary()
 

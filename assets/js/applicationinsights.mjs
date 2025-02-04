@@ -1,11 +1,13 @@
-/* global Microsoft */
-window.applicationInsights = (() => {
+import { ApplicationInsights } from '@microsoft/applicationinsights-web'
+import { ClickAnalyticsPlugin } from '@microsoft/applicationinsights-clickanalytics-js'
+
+const applicationInsights = (() => {
   let appInsights
 
   return {
     init: (connectionString, applicationInsightsRoleName, authenticatedUser) => {
       if (!appInsights && connectionString) {
-        const clickPluginInstance = new Microsoft.ApplicationInsights.ClickAnalyticsPlugin()
+        const clickPluginInstance = new ClickAnalyticsPlugin()
         const clickPluginConfig = {
           autoCapture: true,
           callback: {
@@ -19,7 +21,7 @@ window.applicationInsights = (() => {
           },
         }
 
-        appInsights = new Microsoft.ApplicationInsights.ApplicationInsights({
+        appInsights = new ApplicationInsights({
           config: {
             connectionString,
             autoTrackPageVisitTime: true,
@@ -40,3 +42,5 @@ window.applicationInsights = (() => {
     },
   }
 })()
+
+export default applicationInsights

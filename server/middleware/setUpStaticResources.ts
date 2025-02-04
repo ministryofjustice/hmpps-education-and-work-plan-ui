@@ -11,28 +11,27 @@ export default function setUpStaticResources(): Router {
   router.use(compression())
 
   //  Static Resources Configuration
-  const cacheControl = { maxAge: config.staticResourceCacheDuration }
+  const staticResourcesConfig = { maxAge: config.staticResourceCacheDuration, redirect: false }
 
   Array.of(
-    '/assets',
-    '/assets/stylesheets',
-    '/assets/js',
+    '/dist/assets',
     '/node_modules/govuk-frontend/dist/govuk/assets',
     '/node_modules/govuk-frontend/dist',
     '/node_modules/@ministryofjustice/frontend/moj/assets',
     '/node_modules/@ministryofjustice/frontend',
     '/node_modules/jquery/dist',
-    '/node_modules/@microsoft/applicationinsights-web/dist/es5',
-    '/node_modules/@microsoft/applicationinsights-clickanalytics-js/dist/es5',
   ).forEach(dir => {
-    router.use('/assets', express.static(path.join(process.cwd(), dir), cacheControl))
+    router.use('/assets', express.static(path.join(process.cwd(), dir), staticResourcesConfig))
   })
 
   Array.of('/node_modules/jquery/dist/jquery.min.js').forEach(dir => {
-    router.use('/assets/js/jquery.min.js', express.static(path.join(process.cwd(), dir), cacheControl))
+    router.use('/assets/js/jquery.min.js', express.static(path.join(process.cwd(), dir), staticResourcesConfig))
   })
 
-  router.use('/favicon.ico', express.static(path.join(process.cwd(), '/assets/images/favicon.ico'), cacheControl))
+  router.use(
+    '/favicon.ico',
+    express.static(path.join(process.cwd(), '/assets/images/favicon.ico'), staticResourcesConfig),
+  )
 
   // Don't cache dynamic resources
   router.use(noCache())

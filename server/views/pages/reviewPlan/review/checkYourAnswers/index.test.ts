@@ -3,6 +3,7 @@ import * as cheerio from 'cheerio'
 import aValidPrisonerSummary from '../../../../../testsupport/prisonerSummaryTestDataBuilder'
 import SessionCompletedByValue from '../../../../../enums/sessionCompletedByValue'
 import { initialiseName } from '../../../../../utils/utils'
+import assetMapFilter from '../../../../../filters/assetMapFilter'
 
 describe('ReviewPlanCheckYourAnswersPage', () => {
   const njkEnv = nunjucks.configure([
@@ -17,6 +18,7 @@ describe('ReviewPlanCheckYourAnswersPage', () => {
 
   njkEnv //
     .addFilter('initialiseName', initialiseName)
+    .addFilter('assetMap', assetMapFilter)
 
   const prisonerSummary = aValidPrisonerSummary()
 
