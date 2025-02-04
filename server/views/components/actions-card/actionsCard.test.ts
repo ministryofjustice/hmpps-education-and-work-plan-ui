@@ -2,6 +2,7 @@ import nunjucks from 'nunjucks'
 import * as cheerio from 'cheerio'
 import { startOfDay } from 'date-fns'
 import type { ActionsCardParams } from 'viewComponents'
+import type { ActionPlanReviewScheduleView, InductionScheduleView } from '../../../routes/overview/overviewViewTypes'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
 import formatDateFilter from '../../../filters/formatDateFilter'
 import formatReviewExemptionReasonFilter from '../../../filters/formatReviewExemptionReasonFilter'
@@ -16,11 +17,27 @@ const njkEnv = nunjucks.configure([
 njkEnv.addFilter('formatDate', formatDateFilter)
 njkEnv.addFilter('formatReviewExemptionReason', formatReviewExemptionReasonFilter)
 
+const templateParams: ActionsCardParams = {
+  inductionSchedule: {
+    problemRetrievingData: false,
+    inductionStatus: 'NO_SCHEDULED_INDUCTION',
+  },
+  actionPlanReview: {
+    problemRetrievingData: false,
+    reviewStatus: 'NOT_DUE',
+    reviewDueDate: startOfDay('2025-02-15'),
+  },
+  reviewJourneyEnabledForPrison: true,
+  prisonerSummary: aValidPrisonerSummary(),
+  hasEditAuthority: true,
+  userHasPermissionTo: () => true,
+}
+
 describe('Tests for actions card component', () => {
   it('should render the actions card component given no schedule for either Induction or Reviews', () => {
     // Given
-    const params: ActionsCardParams = {
-      prisonerSummary: aValidPrisonerSummary(),
+    const params = {
+      ...process,
       inductionSchedule: {
         problemRetrievingData: false,
         inductionStatus: 'NO_SCHEDULED_INDUCTION',
@@ -29,8 +46,6 @@ describe('Tests for actions card component', () => {
         problemRetrievingData: false,
         reviewStatus: 'NO_SCHEDULED_REVIEW',
       },
-      hasEditAuthority: true,
-      reviewJourneyEnabledForPrison: true,
     }
 
     // When
@@ -51,16 +66,14 @@ describe('Tests for actions card component', () => {
 
   it('should render the actions card component problem retrieving data for both Induction and Review schedules', () => {
     // Given
-    const params: ActionsCardParams = {
-      prisonerSummary: aValidPrisonerSummary(),
+    const params = {
+      ...templateParams,
       inductionSchedule: {
         problemRetrievingData: true,
       },
       actionPlanReview: {
         problemRetrievingData: true,
       },
-      hasEditAuthority: true,
-      reviewJourneyEnabledForPrison: true,
     }
 
     // When
@@ -81,12 +94,10 @@ describe('Tests for actions card component', () => {
 
   it('should render the actions card component problem neither Induction nor Review schedules data present at all', () => {
     // Given
-    const params: ActionsCardParams = {
-      prisonerSummary: aValidPrisonerSummary(),
-      inductionSchedule: undefined,
-      actionPlanReview: undefined,
-      hasEditAuthority: true,
-      reviewJourneyEnabledForPrison: true,
+    const params = {
+      ...templateParams,
+      inductionSchedule: undefined as InductionScheduleView,
+      actionPlanReview: undefined as ActionPlanReviewScheduleView,
     }
 
     // When
@@ -107,8 +118,8 @@ describe('Tests for actions card component', () => {
 
   it('should render the actions card component given schedule for Reviews but not for Induction', () => {
     // Given
-    const params: ActionsCardParams = {
-      prisonerSummary: aValidPrisonerSummary(),
+    const params = {
+      ...templateParams,
       inductionSchedule: {
         problemRetrievingData: false,
         inductionStatus: 'NO_SCHEDULED_INDUCTION',
@@ -118,8 +129,6 @@ describe('Tests for actions card component', () => {
         reviewStatus: 'DUE',
         reviewDueDate: startOfDay('2025-02-15'),
       },
-      hasEditAuthority: true,
-      reviewJourneyEnabledForPrison: true,
     }
 
     // When
@@ -140,8 +149,8 @@ describe('Tests for actions card component', () => {
 
   it('should render the actions card component given scheduled for Induction but not for Reviews', () => {
     // Given
-    const params: ActionsCardParams = {
-      prisonerSummary: aValidPrisonerSummary(),
+    const params = {
+      ...templateParams,
       inductionSchedule: {
         problemRetrievingData: false,
         inductionStatus: 'INDUCTION_DUE',
@@ -151,8 +160,6 @@ describe('Tests for actions card component', () => {
         problemRetrievingData: false,
         reviewStatus: 'NO_SCHEDULED_REVIEW',
       },
-      hasEditAuthority: true,
-      reviewJourneyEnabledForPrison: true,
     }
 
     // When

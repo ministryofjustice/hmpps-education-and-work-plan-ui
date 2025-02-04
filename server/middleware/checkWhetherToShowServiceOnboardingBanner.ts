@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express'
 import config from '../config'
-import { ApplicationRoles } from './roleBasedAccessControl'
+import ApplicationRole from '../enums/applicationRole'
 
 /**
  * Middleware that sets res.locals.showServiceOnboardingBanner to true if
@@ -15,7 +15,7 @@ const checkWhetherToShowServiceOnboardingBanner = async (req: Request, res: Resp
   )
 
   res.locals.showServiceOnboardingBanner =
-    !userRoles.includes(ApplicationRoles.ROLE_EDUCATION_WORK_PLAN_EDITOR) &&
+    !userRoles.includes(ApplicationRole.ROLE_EDUCATION_WORK_PLAN_EDITOR) &&
     !config.featureToggles.prisonIsEnabledForService(activeCaseloadId)
 
   next()

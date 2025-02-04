@@ -26,6 +26,7 @@ declare module 'viewComponents' {
     inductionSchedule: InductionScheduleView
     actionPlanReview: ActionPlanReviewScheduleView
     hasEditAuthority: boolean
+    userHasPermissionTo: () => boolean
     reviewJourneyEnabledForPrison: boolean
   }
 }

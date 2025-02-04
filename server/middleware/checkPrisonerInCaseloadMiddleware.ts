@@ -1,6 +1,6 @@
 import createError from 'http-errors'
 import { RequestHandler } from 'express'
-import { DpsRoles } from './roleBasedAccessControl'
+import DpsRole from '../enums/dpsRole'
 import { userHasRoles } from '../utils/userRoles'
 import { isActiveCaseLoad, isInUsersCaseLoad } from '../utils/userCaseLoads'
 
@@ -21,9 +21,9 @@ export default function checkPrisonerInCaseload({
 
     const { restrictedPatient } = prisonerSummary
     const inactiveBooking = ['OUT', 'TRN'].some(prisonId => prisonId === prisonerSummary.prisonId)
-    const globalSearchUser = userHasRoles([DpsRoles.ROLE_GLOBAL_SEARCH], userRoles)
-    const inactiveBookingsUser = userHasRoles([DpsRoles.ROLE_INACTIVE_BOOKINGS], userRoles)
-    const pomUser = userHasRoles([DpsRoles.ROLE_POM], userRoles)
+    const globalSearchUser = userHasRoles([DpsRole.ROLE_GLOBAL_SEARCH], userRoles)
+    const inactiveBookingsUser = userHasRoles([DpsRole.ROLE_INACTIVE_BOOKINGS], userRoles)
+    const pomUser = userHasRoles([DpsRole.ROLE_POM], userRoles)
 
     /*
      * Restricted patients can be accessed by:
