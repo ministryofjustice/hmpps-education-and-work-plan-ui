@@ -59,7 +59,7 @@ export default function createApp(services: Services): express.Application {
     next()
   })
 
-  app.get('*', dpsComponents.getPageComponents({ dpsUrl: config.newDpsUrl, logger }))
+  app.get('*', dpsComponents.getPageComponents({ useFallbacksByDefault: true, dpsUrl: config.newDpsUrl, logger }))
 
   app.get('/accessibility-statement', async (req, res, next) => {
     res.render('pages/accessibilityStatement/index')
