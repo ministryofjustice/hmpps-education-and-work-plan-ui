@@ -28,7 +28,7 @@
             <p class='govuk-body' data-qa='skills-not-recorded'>Not recorded.</p>
           {% endif %}
         </dd>
-        {% if hasEditAuthority %}
+        {% if userHasPermissionTo('UPDATE_INDUCTION') %}
           <dd class="govuk-summary-list__actions govuk-!-display-none-print">
             <a class="govuk-link" href="/prisoners/{{ prisonerSummary.prisonNumber }}/induction/skills" data-qa="skills-change-link">
               {{ 'Change' if inductionHasSkillsRecorded else 'Add' }}<span class="govuk-visually-hidden"> skills</span>
@@ -57,7 +57,7 @@
             <p class='govuk-body' data-qa='personal-interests-not-recorded'>Not recorded.</p>
           {% endif %}
         </dd>
-        {% if hasEditAuthority %}
+        {% if userHasPermissionTo('UPDATE_INDUCTION') %}
           <dd class="govuk-summary-list__actions govuk-!-display-none-print">
             <a class="govuk-link" href="/prisoners/{{ prisonerSummary.prisonNumber }}/induction/personal-interests" data-qa="personal-interests-change-link">
               {{ 'Change' if inductionHasInterestsRecorded else 'Add' }}<span class="govuk-visually-hidden"> personal interests</span>

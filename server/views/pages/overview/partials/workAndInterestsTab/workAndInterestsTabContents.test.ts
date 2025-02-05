@@ -85,7 +85,10 @@ describe('workAndInterestsTabContents', () => {
 
     expect($('[data-qa=induction-unavailable-message]').length).toEqual(0)
 
-    expect(userHasPermissionTo).not.toHaveBeenCalled()
+    // Expect 11 checks to see if the user has permission to update the induction, one for each "change" link
+    for (let n = 1; n <= 11; n += 1) {
+      expect(userHasPermissionTo).toHaveBeenNthCalledWith(n, 'UPDATE_INDUCTION')
+    }
   })
 
   it('should render unavailable message given problem retrieving induction', () => {

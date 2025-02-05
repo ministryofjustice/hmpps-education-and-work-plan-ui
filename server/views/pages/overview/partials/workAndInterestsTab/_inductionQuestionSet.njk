@@ -28,7 +28,7 @@ questions are different.
             {% endif %}
           </dd>
 
-          {% if hasEditAuthority %}
+          {% if userHasPermissionTo('UPDATE_INDUCTION') %}
             <dd class="govuk-summary-list__actions govuk-!-display-none-print">
               <a class="govuk-link" href="/prisoners/{{ prisonerSummary.prisonNumber }}/induction/has-worked-before" data-qa="has-worked-before-change-link">
                 {% if induction.inductionDto.previousWorkExperiences %}Change{% else %}Add{% endif %}<span class="govuk-visually-hidden"> worked before</span>
@@ -51,7 +51,7 @@ questions are different.
                 {% endfor %}
               </ul>
             </dd>
-            {% if hasEditAuthority %}
+            {% if userHasPermissionTo('UPDATE_INDUCTION') %}
               <dd class="govuk-summary-list__actions govuk-!-display-none-print">
                 <a class="govuk-link" href="/prisoners/{{ prisonerSummary.prisonNumber }}/induction/previous-work-experience" data-qa="previous-work-experience-change-link">
                   Change<span class="govuk-visually-hidden"> type of work experience</span>
@@ -70,7 +70,7 @@ questions are different.
                 <p>Job role:<br> {{ workExperienceDetails.role }}</p>
                 <p>Roles and responsibilities:<br> {{ workExperienceDetails.details }}</p>
               </dd>
-              {% if hasEditAuthority %}
+              {% if userHasPermissionTo('UPDATE_INDUCTION') %}
                 <dd class="govuk-summary-list__actions govuk-!-display-none-print">
                   {%- set workExperienceDetailChangeLinkUrl -%}
                     /prisoners/{{ prisonerSummary.prisonNumber }}/induction/previous-work-experience/{{ workExperienceDetails.experienceType | lower }}
@@ -109,7 +109,7 @@ questions are different.
           <dd class="govuk-summary-list__value">
             {{ induction.inductionDto.workOnRelease.hopingToWork | formatYesNo }}
           </dd>
-          {% if hasEditAuthority %}
+          {% if userHasPermissionTo('UPDATE_INDUCTION') %}
             <dd class="govuk-summary-list__actions govuk-!-display-none-print">
               <a class="govuk-link" href="/prisoners/{{ prisonerSummary.prisonNumber }}/induction/hoping-to-work-on-release" data-qa="hoping-to-work-on-release-change-link">
                 Change<span class="govuk-visually-hidden"> hoping to work on release</span>
@@ -134,7 +134,7 @@ questions are different.
               {% endfor %}
             </ul>
           </dd>
-          {% if hasEditAuthority %}
+          {% if userHasPermissionTo('UPDATE_INDUCTION') %}
             <dd class="govuk-summary-list__actions govuk-!-display-none-print">
               <a class="govuk-link" href="/prisoners/{{ prisonerSummary.prisonNumber }}/induction/affect-ability-to-work" data-qa="affect-ability-to-work-change-link">
                 Change<span class="govuk-visually-hidden"> potential affect on ability to work</span>
@@ -159,7 +159,7 @@ questions are different.
               {% endfor %}
             </ul>
           </dd>
-          {% if hasEditAuthority %}
+          {% if userHasPermissionTo('UPDATE_INDUCTION') %}
             <dd class="govuk-summary-list__actions govuk-!-display-none-print">
               <a class="govuk-link" href="/prisoners/{{ prisonerSummary.prisonNumber }}/induction/work-interest-types" data-qa="work-interest-types-change-link">
                 Change<span class="govuk-visually-hidden"> type of work</span>
@@ -180,7 +180,7 @@ questions are different.
               {% endfor %}
             </ul>
           </dd>
-          {% if hasEditAuthority %}
+          {% if userHasPermissionTo('UPDATE_INDUCTION') %}
             <dd class="govuk-summary-list__actions govuk-!-display-none-print">
               <a class="govuk-link" href="/prisoners/{{ prisonerSummary.prisonNumber }}/induction/work-interest-roles" data-qa="work-interest-roles-change-link">
                 Change<span class="govuk-visually-hidden"> specific job role of interest</span>
