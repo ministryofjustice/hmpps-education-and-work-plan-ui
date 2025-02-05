@@ -1,6 +1,6 @@
 import { Router } from 'express'
 import { Services } from '../../../services'
-import { checkUserHasEditAuthority } from '../../../middleware/roleBasedAccessControl'
+import { checkUserHasPermissionTo } from '../../../middleware/roleBasedAccessControl'
 import InPrisonWorkUpdateController from './inPrisonWorkUpdateController'
 import InPrisonTrainingUpdateController from './inPrisonTrainingUpdateController'
 import SkillsUpdateController from './skillsUpdateController'
@@ -16,6 +16,7 @@ import HopingToWorkOnReleaseUpdateController from './hopingToWorkOnReleaseUpdate
 import setCurrentPageInPageFlowQueue from '../../routerRequestHandlers/setCurrentPageInPageFlowQueue'
 import retrieveInductionIfNotInSession from '../../routerRequestHandlers/retrieveInductionIfNotInSession'
 import asyncMiddleware from '../../../middleware/asyncMiddleware'
+import ApplicationAction from '../../../enums/applicationAction'
 
 /**
  * Route definitions for updating the various sections of an Induction
@@ -41,12 +42,12 @@ export default (router: Router, services: Services) => {
   const additionalTrainingUpdateController = new AdditionalTrainingUpdateController(inductionService)
 
   router.get('/prisoners/:prisonNumber/induction/**', [
-    checkUserHasEditAuthority(),
+    checkUserHasPermissionTo(ApplicationAction.UPDATE_INDUCTION),
     retrieveInductionIfNotInSession(services.inductionService),
     setCurrentPageInPageFlowQueue,
   ])
   router.post('/prisoners/:prisonNumber/induction/**', [
-    checkUserHasEditAuthority(),
+    checkUserHasPermissionTo(ApplicationAction.UPDATE_INDUCTION),
     retrieveInductionIfNotInSession(services.inductionService),
     setCurrentPageInPageFlowQueue,
   ])

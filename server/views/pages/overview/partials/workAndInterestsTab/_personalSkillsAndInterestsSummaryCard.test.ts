@@ -20,9 +20,10 @@ njkEnv
   .addFilter('formatSkill', formatSkillFilter)
   .addFilter('formatPersonalInterest', formatPersonalInterestFilter)
 
+const userHasPermissionTo = jest.fn()
 const templateParams = {
   prisonerSummary: aValidPrisonerSummary(),
-  hasEditAuthority: true,
+  userHasPermissionTo,
   induction: {
     problemRetrievingData: false,
     inductionDto: aValidInductionDto(),
@@ -35,6 +36,11 @@ const templateParams = {
 }
 
 describe('_personalSkillsAndInterestsSummaryCard', () => {
+  beforeEach(() => {
+    jest.resetAllMocks()
+    userHasPermissionTo.mockReturnValue(true)
+  })
+
   it('should display Skills and Interests given induction with personal skills and interests', () => {
     // Given
     const inductionDto = aValidInductionDto()
@@ -67,6 +73,7 @@ describe('_personalSkillsAndInterestsSummaryCard', () => {
     expect($('[data-qa=personal-interests-not-recorded]').length).toEqual(0)
     expect($('[data-qa=personal-interests-change-link]').text().trim()).toEqual('Change personal interests')
     expect($('[data-qa=last-updated]').text().trim()).toEqual('Last updated: 19 June 2023 by Alex Smith')
+    expect(userHasPermissionTo).toHaveBeenCalledWith('UPDATE_INDUCTION')
   })
 
   it('should display Add link for Skills and Interests given personal skills and interests are undefined', () => {
@@ -96,8 +103,9 @@ describe('_personalSkillsAndInterestsSummaryCard', () => {
     expect($('[data-qa=last-updated]').length).toEqual(0)
   })
 
-  it('should not display change link for Skills and Interests given user does not have editor role', () => {
+  it('should not display change link for Skills and Interests given user does not have permission to update inductions', () => {
     // Given
+    userHasPermissionTo.mockReturnValue(false)
     const inductionDto = aValidInductionDto()
     inductionDto.personalSkillsAndInterests = undefined
     const params = {
@@ -116,6 +124,7 @@ describe('_personalSkillsAndInterestsSummaryCard', () => {
     // Then
     expect($('[data-qa=skills-change-link]').length).toEqual(0)
     expect($('[data-qa=personal-interests-change-link]').length).toEqual(0)
+    expect(userHasPermissionTo).toHaveBeenCalledWith('UPDATE_INDUCTION')
   })
 
   it('should display Add link for Skills given empty array of personal skills', () => {
@@ -138,6 +147,7 @@ describe('_personalSkillsAndInterestsSummaryCard', () => {
     expect($('[data-qa=skills]').length).toEqual(0)
     expect($('[data-qa=skills-not-recorded]')).not.toBeNull()
     expect($('[data-qa=skills-change-link]').text().trim()).toEqual('Add skills')
+    expect(userHasPermissionTo).toHaveBeenCalledWith('UPDATE_INDUCTION')
   })
 
   it('should display Add link for Interests given empty array of personal interests', () => {
@@ -160,5 +170,6 @@ describe('_personalSkillsAndInterestsSummaryCard', () => {
     expect($('[data-qa=personal-interests]').length).toEqual(0)
     expect($('[data-qa=personal-interests-not-recorded]')).not.toBeNull()
     expect($('[data-qa=personal-interests-change-link]').text().trim()).toEqual('Add personal interests')
+    expect(userHasPermissionTo).toHaveBeenCalledWith('UPDATE_INDUCTION')
   })
 })

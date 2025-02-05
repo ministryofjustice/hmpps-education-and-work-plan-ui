@@ -24,7 +24,6 @@ const userHasPermissionTo = jest.fn()
 const templateParams = {
   prisonerSummary: aValidPrisonerSummary(),
   userHasPermissionTo,
-  hasEditAuthority: true,
   induction: {
     problemRetrievingData: false,
     inductionDto: aValidInductionDto(),
@@ -75,8 +74,9 @@ describe('_trainingAndEducationInterestsInPrison', () => {
     expect($('[data-qa=training-interests-induction-unavailable-message]').length).toEqual(0)
   })
 
-  it('should not render the change link or create induction message given user does not have editor role', () => {
+  it('should not render the change link given user does not have permission to update inductions', () => {
     // Given
+    userHasPermissionTo.mockReturnValue(false)
     const inductionDto: InductionDto = aValidInductionDto()
     inductionDto.inPrisonInterests = {
       ...inductionDto.inPrisonInterests,
@@ -92,7 +92,6 @@ describe('_trainingAndEducationInterestsInPrison', () => {
         problemRetrievingData: false,
         inductionDto,
       },
-      hasEditAuthority: false,
     }
 
     // When
@@ -103,7 +102,7 @@ describe('_trainingAndEducationInterestsInPrison', () => {
     // Then
     expect($('[data-qa=in-prison-training-change-link]').length).toEqual(0)
     expect($('[data-qa=training-interests-create-induction-message]').length).toEqual(0)
-    expect($('[data-qa=link-to-create-induction]').length).toEqual(0)
+    expect(userHasPermissionTo).toHaveBeenCalledWith('UPDATE_INDUCTION')
   })
 
   it('should not list training interests given an induction without any training interests', () => {

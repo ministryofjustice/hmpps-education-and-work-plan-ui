@@ -35,9 +35,10 @@ njkEnv.addFilter(
   previousWorkExperienceObjectsSortedInScreenOrderFilter,
 )
 
+const userHasPermissionTo = jest.fn()
 const templateParams = {
   prisonerSummary: aValidPrisonerSummary(),
-  hasEditAuthority: true,
+  userHasPermissionTo,
   induction: {
     problemRetrievingData: false,
     inductionDto: aValidInductionDto(),
@@ -50,6 +51,11 @@ const templateParams = {
 }
 
 describe('Tests for _inductionQuestionSet.njk partial', () => {
+  beforeEach(() => {
+    jest.resetAllMocks()
+    userHasPermissionTo.mockReturnValue(true)
+  })
+
   it('Should display last updated using work response if they are not interested in working', () => {
     // When
     const anInductionDto = aValidInductionDto({
@@ -80,6 +86,7 @@ describe('Tests for _inductionQuestionSet.njk partial', () => {
     // Then
     const lastUpdated = $('[data-qa=work-interests-last-updated]').first().text().trim()
     expect(lastUpdated).toEqual('Last updated: 10 May 2021 by Some User')
+    expect(userHasPermissionTo).toHaveBeenCalledWith('UPDATE_INDUCTION')
   })
 
   it('Should display last updated using future work response if they are interested in working', () => {
@@ -110,6 +117,7 @@ describe('Tests for _inductionQuestionSet.njk partial', () => {
     // Then
     const lastUpdated = $('[data-qa=work-interests-last-updated]').first().text().trim()
     expect(lastUpdated).toEqual('Last updated: 20 June 2024 by Future User')
+    expect(userHasPermissionTo).toHaveBeenCalledWith('UPDATE_INDUCTION')
   })
 
   it('Should handle has worked before and work experience if previously answered no to wanting to work (back compat)', () => {
@@ -144,6 +152,7 @@ describe('Tests for _inductionQuestionSet.njk partial', () => {
     expect(hasWorkedBeforeAnswer).toEqual('Not entered.')
     const hasWorkedBeforeLink = $('[data-qa=has-worked-before-change-link]').first().text().trim()
     expect(hasWorkedBeforeLink).toEqual('Add worked before')
+    expect(userHasPermissionTo).toHaveBeenCalledWith('UPDATE_INDUCTION')
   })
 
   it('Should handle has worked before and work experience if wanting to work', () => {
@@ -177,5 +186,6 @@ describe('Tests for _inductionQuestionSet.njk partial', () => {
     expect(hasWorkedBeforeAnswer).toEqual('Yes')
     const hasWorkedBeforeLink = $('[data-qa=has-worked-before-change-link]').first().text().trim()
     expect(hasWorkedBeforeLink).toEqual('Change worked before')
+    expect(userHasPermissionTo).toHaveBeenCalledWith('UPDATE_INDUCTION')
   })
 })
