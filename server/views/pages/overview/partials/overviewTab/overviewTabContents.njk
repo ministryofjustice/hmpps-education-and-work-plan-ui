@@ -29,7 +29,10 @@ Data supplied to this template:
 
   {% block content %}
     <div class="govuk-grid-column-two-thirds app-u-print-full-width">
-      {% if not induction.problemRetrievingData and not induction.isPostInduction and not inductionSchedule.problemRetrievingData and inductionSchedule.inductionStatus != 'ON_HOLD' and hasEditAuthority %}
+      {% if not induction.problemRetrievingData and not induction.isPostInduction
+            and not inductionSchedule.problemRetrievingData and inductionSchedule.inductionStatus != 'ON_HOLD'
+            and userHasPermissionTo('RECORD_INDUCTION')
+      %}
         <section data-qa="pre-induction-overview">
           {{ govukNotificationBanner({
             html: createInductionBanner

@@ -27,8 +27,10 @@ njkEnv
   .addFilter('formatDate', formatDateFilter)
   .addFilter('formatAdditionalTraining', formatAdditionalTrainingFilter)
 
+const userHasPermissionTo = jest.fn()
 const templateParams = {
   prisonerSummary: aValidPrisonerSummary(),
+  userHasPermissionTo,
   hasEditAuthority: true,
   induction: {
     problemRetrievingData: false,
@@ -46,6 +48,11 @@ const templateParams = {
 }
 
 describe('_educationAndQualificationsHistory', () => {
+  beforeEach(() => {
+    jest.resetAllMocks()
+    userHasPermissionTo.mockReturnValue(true)
+  })
+
   describe('Prisoner has an eduction record', () => {
     it('should show qualifications including highest level of education and prompt to create induction given prisoner has education data but no induction', () => {
       // Given
@@ -71,8 +78,9 @@ describe('_educationAndQualificationsHistory', () => {
       expect($('[data-qa=last-updated]').length).toEqual(1)
     })
 
-    it('should not show add/change links or prompt to create induction given user does not have an induction and does not have edit authority', () => {
+    it('should not show add/change links or prompt to create induction given user does not have an induction and does not have permission to created inductions', () => {
       // Given
+      userHasPermissionTo.mockReturnValue(false)
       const params = {
         ...templateParams,
         induction: {
@@ -93,6 +101,8 @@ describe('_educationAndQualificationsHistory', () => {
       expect($('[data-qa=induction-not-created-yet]').length).toEqual(1)
       expect($('[data-qa=link-to-create-induction]').length).toEqual(0)
       expect($('[data-qa=education-or-induction-unavailable-message]').length).toEqual(0)
+
+      expect(userHasPermissionTo).toHaveBeenCalledWith('RECORD_INDUCTION')
     })
 
     it('should show qualifications including highest level of education and additional training given prisoner has education data and an induction', () => {
@@ -259,8 +269,9 @@ describe('_educationAndQualificationsHistory', () => {
       expect($('[data-qa=last-updated]').length).toEqual(0)
     })
 
-    it('should not show prompts to create education and create induction given prisoner has no education data and user does not have editor role', () => {
+    it('should not show prompts to create education and create induction given prisoner has no education data and user does not have permission to create inductions', () => {
       // Given
+      userHasPermissionTo.mockReturnValue(false)
       // a prisoner with no EductionDto will also have no InductionDto. It is not possible to have an Induction but with no Education
       const params = {
         ...templateParams,
@@ -272,7 +283,6 @@ describe('_educationAndQualificationsHistory', () => {
           problemRetrievingData: false,
           educationDto: undefined as EducationDto,
         },
-        hasEditAuthority: false,
       }
 
       // When
@@ -283,6 +293,8 @@ describe('_educationAndQualificationsHistory', () => {
       expect($('[data-qa=link-to-add-educational-qualifications]').length).toEqual(0)
       expect($('[data-qa=induction-not-created-yet]').length).toEqual(1)
       expect($('[data-qa=link-to-create-induction]').length).toEqual(0)
+
+      expect(userHasPermissionTo).toHaveBeenCalledWith('RECORD_INDUCTION')
     })
 
     it('should show prompts to create education but not create induction given prisoner has no education data and induction schedule is on hold', () => {

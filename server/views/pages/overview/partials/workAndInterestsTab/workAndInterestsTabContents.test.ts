@@ -44,9 +44,10 @@ njkEnv.addFilter('formatPersonalInterest', formatPersonalInterestFilter)
 const prisonerSummary = aValidPrisonerSummary()
 const template = 'workAndInterestsTabContents.njk'
 
+const userHasPermissionTo = jest.fn()
 const templateParams = {
   prisonerSummary,
-  hasEditAuthority: true,
+  userHasPermissionTo,
   induction: {
     problemRetrievingData: false,
     inductionDto: aValidInductionDto(),
@@ -59,6 +60,11 @@ const templateParams = {
 }
 
 describe('workAndInterestsTabContents', () => {
+  beforeEach(() => {
+    jest.resetAllMocks()
+    userHasPermissionTo.mockReturnValue(true)
+  })
+
   it('should render details of the induction given the prisoner has had an induction', () => {
     // Given
     const params = {
@@ -78,6 +84,8 @@ describe('workAndInterestsTabContents', () => {
     expect($('[data-qa=link-to-create-induction]').length).toEqual(0)
 
     expect($('[data-qa=induction-unavailable-message]').length).toEqual(0)
+
+    expect(userHasPermissionTo).not.toHaveBeenCalled()
   })
 
   it('should render unavailable message given problem retrieving induction', () => {
@@ -102,17 +110,19 @@ describe('workAndInterestsTabContents', () => {
     expect($('[data-qa=link-to-create-induction]').length).toEqual(0)
 
     expect($('[data-qa=induction-unavailable-message]').length).toEqual(1)
+
+    expect(userHasPermissionTo).not.toHaveBeenCalled()
   })
 
-  it('should not render link to create induction given prisoner has no induction and user does not have edit permissions', () => {
+  it('should not render link to create induction given prisoner has no induction and user does not have permission to create inductions', () => {
     // Given
+    userHasPermissionTo.mockReturnValue(false)
     const params = {
       ...templateParams,
       induction: {
         problemRetrievingData: false,
         inductionDto: undefined as InductionDto,
       },
-      hasEditAuthority: false,
     }
 
     // When
@@ -128,17 +138,19 @@ describe('workAndInterestsTabContents', () => {
     expect($('[data-qa=link-to-create-induction]').length).toEqual(0)
 
     expect($('[data-qa=induction-unavailable-message]').length).toEqual(0)
+
+    expect(userHasPermissionTo).toHaveBeenCalledWith('RECORD_INDUCTION')
   })
 
-  it('should render link to create induction given prisoner has no induction and user does have edit permissions', () => {
+  it('should render link to create induction given prisoner has no induction and user does have permission to create inductions', () => {
     // Given
+    userHasPermissionTo.mockReturnValue(true)
     const params = {
       ...templateParams,
       induction: {
         problemRetrievingData: false,
         inductionDto: undefined as InductionDto,
       },
-      hasEditAuthority: true,
     }
 
     // When
@@ -154,17 +166,19 @@ describe('workAndInterestsTabContents', () => {
     expect($('[data-qa=link-to-create-induction]').length).toEqual(1)
 
     expect($('[data-qa=induction-unavailable-message]').length).toEqual(0)
+
+    expect(userHasPermissionTo).toHaveBeenCalledWith('RECORD_INDUCTION')
   })
 
-  it('should not render link to create induction given prisoner has no induction and user does have edit permissions but inductions schedule is on hold', () => {
+  it('should not render link to create induction given prisoner has no induction and user does have permission to create inductions but inductions schedule is on hold', () => {
     // Given
+    userHasPermissionTo.mockReturnValue(true)
     const params = {
       ...templateParams,
       induction: {
         problemRetrievingData: false,
         inductionDto: undefined as InductionDto,
       },
-      hasEditAuthority: true,
       inductionSchedule: {
         problemRetrievingData: false,
         inductionStatus: 'ON_HOLD',
@@ -185,17 +199,19 @@ describe('workAndInterestsTabContents', () => {
     expect($('[data-qa=link-to-create-induction]').length).toEqual(0)
 
     expect($('[data-qa=induction-unavailable-message]').length).toEqual(0)
+
+    expect(userHasPermissionTo).toHaveBeenCalledWith('RECORD_INDUCTION')
   })
 
-  it('should not render link to create induction given prisoner has no induction and user does have edit permissions but there was a problem retrieving the inductions schedule', () => {
+  it('should not render link to create induction given prisoner has no induction and user does have permission to create inductions but there was a problem retrieving the inductions schedule', () => {
     // Given
+    userHasPermissionTo.mockReturnValue(true)
     const params = {
       ...templateParams,
       induction: {
         problemRetrievingData: false,
         inductionDto: undefined as InductionDto,
       },
-      hasEditAuthority: true,
       inductionSchedule: {
         problemRetrievingData: true,
       },
@@ -214,5 +230,7 @@ describe('workAndInterestsTabContents', () => {
     expect($('[data-qa=link-to-create-induction]').length).toEqual(0)
 
     expect($('[data-qa=induction-unavailable-message]').length).toEqual(0)
+
+    expect(userHasPermissionTo).toHaveBeenCalledWith('RECORD_INDUCTION')
   })
 })

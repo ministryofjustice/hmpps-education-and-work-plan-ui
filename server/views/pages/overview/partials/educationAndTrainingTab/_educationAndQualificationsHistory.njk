@@ -181,7 +181,7 @@ never happen.
 
               <h3 class="govuk-heading-s" data-qa="other-qualifications">Other qualifications and education history</h3>
               <p class="govuk-body" data-qa="induction-not-created-yet">
-                {% if hasEditAuthority %}
+                {% if userHasPermissionTo('RECORD_INDUCTION') %}
                   To add education history, including vocational qualifications,
                   {% if not inductionSchedule.problemRetrievingData and inductionSchedule.inductionStatus != 'ON_HOLD' %}
                     <a href="/prisoners/{{ prisonerSummary.prisonNumber }}/create-induction/hoping-to-work-on-release" class="govuk-link" data-qa="link-to-create-induction">
@@ -207,7 +207,7 @@ never happen.
                to prompt the user to create both in this block.
             #}
             <h3 class="govuk-heading-s" data-qa="educational-qualifications">Educational qualifications</h3>
-            {% if hasEditAuthority %}
+            {% if userHasPermissionTo('RECORD_INDUCTION') %}
               <p class="govuk-body">
                 <a href="/prisoners/{{ prisonerSummary.prisonNumber }}/create-education/highest-level-of-education" class="govuk-link" data-qa="link-to-add-educational-qualifications">Add educational qualifications</a>
               </p>
@@ -219,7 +219,7 @@ never happen.
 
             <h3 class="govuk-heading-s" data-qa="other-qualifications">Other qualifications and education history</h3>
             <p class="govuk-body" data-qa="induction-not-created-yet">
-              {% if hasEditAuthority %}
+              {% if userHasPermissionTo('RECORD_INDUCTION') %}
                 To add education history, including vocational qualifications,
                 {% if not inductionSchedule.problemRetrievingData and inductionSchedule.inductionStatus != 'ON_HOLD' %}
                   <a href="/prisoners/{{ prisonerSummary.prisonNumber }}/create-induction/hoping-to-work-on-release" class="govuk-link" data-qa="link-to-create-induction">

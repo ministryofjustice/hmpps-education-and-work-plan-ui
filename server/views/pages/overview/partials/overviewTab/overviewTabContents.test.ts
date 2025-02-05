@@ -24,8 +24,10 @@ njkEnv.addGlobal('userHasPermissionTo', () => true)
 const prisonerSummary = aValidPrisonerSummary()
 const template = 'overviewTabContents.njk'
 
+const userHasPermissionTo = jest.fn()
 const templateParams = {
   prisonerSummary,
+  userHasPermissionTo,
   prisonerGoals: {
     problemRetrievingData: false,
     counts: {
@@ -87,7 +89,6 @@ const templateParams = {
     problemRetrievingData: false,
     isPostInduction: false,
   },
-  hasEditAuthority: true,
   inductionSchedule: {
     problemRetrievingData: false,
     inductionStatus: 'INDUCTION_DUE',
@@ -100,8 +101,14 @@ const templateParams = {
 }
 
 describe('overviewTabContents', () => {
-  it('should render the complete induction banner when the prisoner has not had an induction and the induction schedule is not on hold and the user has editor authority', () => {
+  beforeEach(() => {
+    jest.resetAllMocks()
+    userHasPermissionTo.mockReturnValue(true)
+  })
+
+  it('should render the complete induction banner when the prisoner has not had an induction and the induction schedule is not on hold and the user has permission to create inductions', () => {
     // Given
+    userHasPermissionTo.mockReturnValue(true)
     const pageViewModel = {
       ...templateParams,
     }
@@ -115,13 +122,15 @@ describe('overviewTabContents', () => {
     expect($('.govuk-notification-banner__link').attr('href')).toEqual(
       `/prisoners/${prisonerSummary.prisonNumber}/create-induction/hoping-to-work-on-release`,
     )
+
+    expect(userHasPermissionTo).toBeCalledWith('RECORD_INDUCTION')
   })
 
-  it('should not render the complete induction banner when the the user does not have editor authority', () => {
+  it('should not render the complete induction banner when the the user does not have permission to create inductions', () => {
     // Given
+    userHasPermissionTo.mockReturnValue(false)
     const pageViewModel = {
       ...templateParams,
-      hasEditAuthority: false,
     }
 
     // When
@@ -130,6 +139,8 @@ describe('overviewTabContents', () => {
 
     // Then
     expect($('[data-qa="pre-induction-overview"]').length).toEqual(0)
+
+    expect(userHasPermissionTo).toBeCalledWith('RECORD_INDUCTION')
   })
 
   it('should not render the complete induction banner when the prisoner has had an induction', () => {
