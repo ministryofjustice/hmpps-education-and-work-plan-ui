@@ -108,4 +108,28 @@ describe('_timelineEvent-INDUCTION_SCHEDULE_STATUS_UPDATED', () => {
     expect($('[data-qa=induction-exempted-reason]').length).toEqual(0)
     expect($('[data-qa=induction-exemption-notes]').length).toEqual(0)
   })
+
+  it('should not display INDUCTION_SCHEDULE_STATUS_UPDATED timeline event given the induction schedule has been completed', () => {
+    // Given
+    const prisonerSummary = aValidPrisonerSummary()
+    const event = aTimelineEvent({
+      eventType: 'INDUCTION_SCHEDULE_STATUS_UPDATED',
+      actionedByDisplayName: 'Fred Bloggs',
+      prisonName: 'Moorland (HMP & YOI)',
+      timestamp: parseISO('2023-08-01T10:46:38.565Z'),
+      contextualInfo: {
+        INDUCTION_SCHEDULE_STATUS_NEW: 'COMPLETED',
+        INDUCTION_SCHEDULE_STATUS_OLD: 'SCHEDULED',
+      },
+    })
+
+    const model = { event, prisonerSummary }
+
+    // When
+    const content = nunjucks.render('_timelineEvent-INDUCTION_SCHEDULE_STATUS_UPDATED.njk', model)
+    const $ = cheerio.load(content)
+
+    // Then
+    expect($('[data-qa-event-type=INDUCTION_SCHEDULE_STATUS_UPDATED]').length).toEqual(0)
+  })
 })
