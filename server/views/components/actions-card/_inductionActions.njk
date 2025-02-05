@@ -40,7 +40,7 @@
     <ul class="govuk-list govuk-!-margin-0" data-qa="induction-action-items">
       {% if params.inductionSchedule.inductionStatus == 'ON_HOLD' %}
 
-        {% if params.hasEditAuthority %}
+        {% if params.userHasPermissionTo('REMOVE_INDUCTION_EXEMPTION') %}
           <li class="govuk-!-padding-top-2 govuk-!-padding-bottom-3">
             <a class="govuk-link" href="/prisoners/{{ params.prisonerSummary.prisonNumber }}/induction/exemption/remove" data-qa="remove-exemption-button">
               <img src="/assets/images/icon-remove-exemption.svg" alt="" role="presentation" class="action-icon" />
@@ -51,7 +51,7 @@
 
       {% elseif params.inductionSchedule.inductionStatus == 'INDUCTION_NOT_DUE' or params.inductionSchedule.inductionStatus == 'INDUCTION_DUE' or params.inductionSchedule.inductionStatus == 'INDUCTION_OVERDUE' %}
 
-        {% if params.hasEditAuthority %}
+        {% if params.userHasPermissionTo('RECORD_INDUCTION') %}
           <li class="govuk-!-padding-top-2 govuk-!-padding-bottom-3">
             <a class="govuk-link" href="/prisoners/{{ params.prisonerSummary.prisonNumber }}/create-induction/hoping-to-work-on-release" data-qa="make-progress-plan-button">
               <img src="/assets/images/icon-do-induction.svg" alt="" role="presentation" class="action-icon" />
@@ -59,7 +59,7 @@
             </a>
           </li>
         {% endif %}
-        {% if params.hasEditAuthority %}
+        {% if params.userHasPermissionTo('EXEMPT_INDUCTION') %}
           <li class="govuk-!-padding-top-2 govuk-!-padding-bottom-3">
             <a class="govuk-link" href="/prisoners/{{ params.prisonerSummary.prisonNumber }}/induction/exemption" data-qa="record-exemption-button">
               <img src="/assets/images/icon-record-exemption.svg" alt="" role="presentation" class="action-icon" />
@@ -70,7 +70,7 @@
 
       {% elseif params.inductionSchedule.inductionStatus == 'GOALS_NOT_DUE' or params.inductionSchedule.inductionStatus == 'GOALS_DUE' or params.inductionSchedule.inductionStatus == 'GOALS_OVERDUE' %}
 
-        {% if params.hasEditAuthority %}
+        {% if params.userHasPermissionTo('CREATE_GOALS') %}
           <li class="govuk-!-padding-top-2 govuk-!-padding-bottom-3">
             <a class="govuk-link" href="/plan/{{ params.prisonerSummary.prisonNumber }}/goals/create" data-qa="add-goals-button">
               <img src="/assets/images/icon-goal.svg" role="presentation" alt="" class="action-icon" />
@@ -78,7 +78,7 @@
             </a>
           </li>
         {% endif %}
-        {% if params.hasEditAuthority %}
+        {% if params.userHasPermissionTo('EXEMPT_INDUCTION') %}
           <li class="govuk-!-padding-top-2 govuk-!-padding-bottom-3">
             <a class="govuk-link" href="/prisoners/{{ params.prisonerSummary.prisonNumber }}/induction/exemption" data-qa="record-exemption-button">
               <img src="/assets/images/icon-record-exemption.svg" alt="" role="presentation" class="action-icon" />

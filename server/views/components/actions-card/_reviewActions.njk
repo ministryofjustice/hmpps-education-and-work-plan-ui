@@ -23,7 +23,7 @@
       <p class="govuk-body" data-qa="reason-on-hold">
         Reason: {{ params.actionPlanReview.exemptionReason | formatReviewExemptionReason }}
       </p>
-    {% elseif params.actionPlanReview.reviewStatus == 'HAS_HAD_LAST_REVIEW' and params.hasEditAuthority %}
+    {% elseif params.actionPlanReview.reviewStatus == 'HAS_HAD_LAST_REVIEW' %}
       <span class="govuk-tag govuk-tag--grey govuk-!-margin-top-2 govuk-!-margin-bottom-2" data-qa="no-reviews-due">
         No reviews due
       </span>
@@ -35,7 +35,7 @@
     <ul class="govuk-list govuk-!-margin-0" data-qa="reviews-action-items">
       {% if params.actionPlanReview.reviewStatus == 'ON_HOLD' %}
 
-        {% if params.hasEditAuthority %}
+        {% if params.userHasPermissionTo('REMOVE_REVIEW_EXEMPTION') %}
           <li class="govuk-!-padding-top-2 govuk-!-padding-bottom-3">
             <a class="govuk-link" href="/plan/{{ params.prisonerSummary.prisonNumber }}/review/exemption/remove" data-qa="remove-exemption-button">
               <img src="/assets/images/icon-remove-exemption.svg" alt="" role="presentation" class="action-icon" />
@@ -46,7 +46,7 @@
 
       {% else %}
 
-        {% if params.hasEditAuthority %}
+        {% if params.userHasPermissionTo('RECORD_REVIEW') %}
           <li class="govuk-!-padding-top-2 govuk-!-padding-bottom-3">
             <a class="govuk-link" href="/plan/{{ params.prisonerSummary.prisonNumber }}/review" data-qa="mark-review-complete-button">
               <img src="/assets/images/icon-mark-review-complete.svg" alt="" role="presentation" class="action-icon" />
@@ -54,7 +54,7 @@
             </a>
           </li>
         {% endif %}
-        {% if params.hasEditAuthority %}
+        {% if params.userHasPermissionTo('EXEMPT_REVIEW') %}
           <li class="govuk-!-padding-top-2 govuk-!-padding-bottom-3">
             <a class="govuk-link" href="/plan/{{ params.prisonerSummary.prisonNumber }}/review/exemption" data-qa="record-exemption-button">
               <img src="/assets/images/icon-record-exemption.svg" alt="" role="presentation" class="action-icon" />

@@ -19,6 +19,7 @@ const njkEnv = nunjucks.configure([
 njkEnv.addFilter('formatDate', formatDate)
 njkEnv.addFilter('formatFunctionalSkillType', formatFunctionalSkillTypeFilter)
 njkEnv.addFilter('formatInductionExemptionReason', formatInductionExemptionReasonFilter)
+njkEnv.addGlobal('userHasPermissionTo', () => true)
 
 const prisonerSummary = aValidPrisonerSummary()
 const template = 'overviewTabContents.njk'

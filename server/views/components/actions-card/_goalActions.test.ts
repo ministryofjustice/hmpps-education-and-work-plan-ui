@@ -24,6 +24,7 @@ const templateParams: ActionsCardParams = {
   reviewJourneyEnabledForPrison: true,
   prisonerSummary: aValidPrisonerSummary(),
   hasEditAuthority: true,
+  userHasPermissionTo: () => true,
 }
 
 describe('_goalActions', () => {
