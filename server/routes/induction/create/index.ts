@@ -2,7 +2,7 @@ import { RequestHandler, Router } from 'express'
 import createError from 'http-errors'
 import { Services } from '../../../services'
 import asyncMiddleware from '../../../middleware/asyncMiddleware'
-import { checkUserHasEditAuthority } from '../../../middleware/roleBasedAccessControl'
+import { checkUserHasPermissionTo } from '../../../middleware/roleBasedAccessControl'
 import HopingToWorkOnReleaseCreateController from './hopingToWorkOnReleaseCreateController'
 import WantToAddQualificationsCreateController from './wantToAddQualificationsCreateController'
 import createEmptyInductionIfNotInSession from '../../routerRequestHandlers/createEmptyInductionIfNotInSession'
@@ -29,6 +29,7 @@ import WhoCompletedInductionCreateController from './whoCompletedInductionCreate
 import InductionNoteCreateController from './inductionNoteCreateController'
 import config from '../../../config'
 import checkInductionDoesNotExist from '../../routerRequestHandlers/checkInductionDoesNotExist'
+import ApplicationAction from '../../../enums/applicationAction'
 
 /**
  * Route definitions for creating an Induction
@@ -61,12 +62,12 @@ export default (router: Router, services: Services) => {
   const inductionNoteController = new InductionNoteCreateController()
 
   router.get('/prisoners/:prisonNumber/create-induction/**', [
-    checkUserHasEditAuthority(),
+    checkUserHasPermissionTo(ApplicationAction.RECORD_INDUCTION),
     createEmptyInductionIfNotInSession(educationAndWorkPlanService),
     setCurrentPageInPageFlowQueue,
   ])
   router.post('/prisoners/:prisonNumber/create-induction/**', [
-    checkUserHasEditAuthority(),
+    checkUserHasPermissionTo(ApplicationAction.RECORD_INDUCTION),
     createEmptyInductionIfNotInSession(educationAndWorkPlanService),
     setCurrentPageInPageFlowQueue,
   ])

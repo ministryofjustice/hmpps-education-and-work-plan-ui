@@ -67,7 +67,7 @@ where the InductionDto contains any in-prison training interests the prisoner ha
           {# The API returned no Induction for the prisoner - prompt the user to create the Induction #}
           <div class="govuk-summary-card__content">
             <p class="govuk-body" data-qa="induction-not-created-yet">
-              {% if hasEditAuthority %}
+              {% if userHasPermissionTo('RECORD_INDUCTION') %}
                 To add education and training information you need to
                 {% if not inductionSchedule.problemRetrievingData and inductionSchedule.inductionStatus != 'ON_HOLD' %}
                   <a href="/prisoners/{{ prisonerSummary.prisonNumber }}/create-induction/hoping-to-work-on-release" class="govuk-link" data-qa="link-to-create-induction">

@@ -26,7 +26,7 @@ Data supplied to this template:
     <div class="govuk-grid-row">
       <div class="govuk-grid-column-two-thirds">
         <p class="govuk-body" data-qa="induction-not-created-yet">
-          {% if hasEditAuthority %}
+          {% if userHasPermissionTo('RECORD_INDUCTION') %}
             To add work experience and interests information you need to
             {% if not inductionSchedule.problemRetrievingData and inductionSchedule.inductionStatus != 'ON_HOLD' %}
               <a href="/prisoners/{{ prisonerSummary.prisonNumber }}/create-induction/hoping-to-work-on-release" class="govuk-link" data-qa="link-to-create-induction">
