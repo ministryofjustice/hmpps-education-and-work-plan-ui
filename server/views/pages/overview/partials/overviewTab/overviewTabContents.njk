@@ -6,7 +6,6 @@ Data supplied to this template:
   * inPrisonCourses - object containing in-prison course summary data - see template _educationAndTrainingSummaryCard.njk
   * functionalSkills - object containing summary data of prisoner's most receent functional skills - see template _educationAndTrainingSummaryCard.njk
   * sessionHistory - object containing summary data of CIAG sessions with the prisoner - see template _sessionHistorySummaryCard.njk
-  * hasEditAuthority - boolean indicating whether the user has edit authority in the PLP system
   * induction: {
   *   problemRetrievingData: boolean
   *   isPostInduction - boolean indicating whether this is pre- or post-induction. IE. whether the prisoner has a completed Induction or not
@@ -54,7 +53,6 @@ Data supplied to this template:
         prisonerSummary: prisonerSummary,
         inductionSchedule: inductionSchedule,
         actionPlanReview: actionPlanReview,
-        hasEditAuthority: hasEditAuthority,
         userHasPermissionTo: userHasPermissionTo,
         reviewJourneyEnabledForPrison: reviewJourneyEnabledForPrison
       }) }}

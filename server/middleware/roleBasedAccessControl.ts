@@ -58,6 +58,11 @@ const rolesForAction = {
     ApplicationRole.ROLE_LEARNING_AND_WORK_PROGRESS_CONTRIBUTOR,
     ApplicationRole.ROLE_EDUCATION_WORK_PLAN_EDITOR,
   ],
+  [ApplicationAction.COMPLETE_AND_ARCHIVE_GOALS]: [
+    ApplicationRole.ROLE_LEARNING_AND_WORK_PROGRESS_MANAGER,
+    ApplicationRole.ROLE_LEARNING_AND_WORK_PROGRESS_CONTRIBUTOR,
+    ApplicationRole.ROLE_EDUCATION_WORK_PLAN_EDITOR,
+  ],
 }
 
 /**
@@ -73,4 +78,12 @@ const userHasPermissionTo = (action: ApplicationAction, userRoles: string[]): bo
   return userRoles.some(role => (rolesForAction[action] || []).includes(role as ApplicationRole))
 }
 
-export { checkUserHasEditAuthority, checkUserHasPermissionTo, userHasPermissionTo }
+/**
+ * Helper method to return an array of [ApplicationAction] for a given [ApplicationRole] that a user might have.
+ */
+const userWithRoleCan = (role: ApplicationRole): Array<ApplicationAction> =>
+  Object.keys(ApplicationAction)
+    .filter(action => rolesForAction[action as ApplicationAction].includes(role))
+    .map(action => action as ApplicationAction)
+
+export { checkUserHasEditAuthority, checkUserHasPermissionTo, userHasPermissionTo, userWithRoleCan }
