@@ -11,6 +11,7 @@ nunjucks.configure([
   __dirname,
 ])
 
+const userHasPermissionTo = jest.fn()
 const templateParams: ActionsCardParams = {
   inductionSchedule: {
     problemRetrievingData: false,
@@ -23,11 +24,15 @@ const templateParams: ActionsCardParams = {
   },
   reviewJourneyEnabledForPrison: true,
   prisonerSummary: aValidPrisonerSummary(),
-  hasEditAuthority: true,
-  userHasPermissionTo: () => true,
+  userHasPermissionTo,
 }
 
 describe('_goalActions', () => {
+  beforeEach(() => {
+    jest.resetAllMocks()
+    userHasPermissionTo.mockReturnValue(true)
+  })
+
   it('should render heading and add goal link', () => {
     // Given
     const params = { ...templateParams }
@@ -41,6 +46,7 @@ describe('_goalActions', () => {
     expect($('[data-qa=goal-actions] h3').length).toEqual(1)
     expect($('[data-qa=goals-action-items] li').length).toEqual(1)
     expect($('[data-qa=add-goal-button]').attr('href')).toEqual('/plan/A1234BC/goals/create')
+    expect(userHasPermissionTo).toHaveBeenCalledWith('CREATE_GOALS')
   })
 
   it('should not render heading given feature toggle not enabled', () => {
@@ -59,11 +65,11 @@ describe('_goalActions', () => {
     expect($('[data-qa=goal-actions] h3').length).toEqual(0)
   })
 
-  it('should not render add goal link given does not have edit authority', () => {
+  it('should not render add goal link given does not have permission to create goals', () => {
     // Given
+    userHasPermissionTo.mockReturnValue(false)
     const params = {
       ...templateParams,
-      hasEditAuthority: false,
     }
 
     // When
@@ -73,6 +79,7 @@ describe('_goalActions', () => {
     // Then
     expect($('[data-qa=goal-actions]').length).toEqual(1)
     expect($('[data-qa=goals-action-items] li').length).toEqual(0)
+    expect(userHasPermissionTo).toHaveBeenCalledWith('CREATE_GOALS')
   })
 
   describe('do not render add goal link because it would be displayed in the Induction Actions panel in all these scenarios', () => {
@@ -94,6 +101,7 @@ describe('_goalActions', () => {
       // Then
       expect($('[data-qa=goal-actions]').length).toEqual(1)
       expect($('[data-qa=goals-action-items] li').length).toEqual(0)
+      expect(userHasPermissionTo).not.toHaveBeenCalled()
     })
 
     it('should not render add goal link given induction schedule is on hold', () => {
@@ -114,6 +122,7 @@ describe('_goalActions', () => {
       // Then
       expect($('[data-qa=goal-actions]').length).toEqual(1)
       expect($('[data-qa=goals-action-items] li').length).toEqual(0)
+      expect(userHasPermissionTo).not.toHaveBeenCalled()
     })
 
     it('should not render add goal link given induction schedule goals are not due', () => {
@@ -134,6 +143,7 @@ describe('_goalActions', () => {
       // Then
       expect($('[data-qa=goal-actions]').length).toEqual(1)
       expect($('[data-qa=goals-action-items] li').length).toEqual(0)
+      expect(userHasPermissionTo).not.toHaveBeenCalled()
     })
 
     it('should not render add goal link given induction schedule goals are overdue', () => {
@@ -154,6 +164,7 @@ describe('_goalActions', () => {
       // Then
       expect($('[data-qa=goal-actions]').length).toEqual(1)
       expect($('[data-qa=goals-action-items] li').length).toEqual(0)
+      expect(userHasPermissionTo).not.toHaveBeenCalled()
     })
   })
 
@@ -173,5 +184,6 @@ describe('_goalActions', () => {
     // Then
     expect($('[data-qa=goal-actions]').length).toEqual(1)
     expect($('[data-qa=goals-action-items] li').length).toEqual(0)
+    expect(userHasPermissionTo).not.toHaveBeenCalled()
   })
 })
