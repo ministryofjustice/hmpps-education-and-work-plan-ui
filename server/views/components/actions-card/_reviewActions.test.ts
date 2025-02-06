@@ -17,6 +17,7 @@ const njkEnv = nunjucks.configure([
 njkEnv.addFilter('formatDate', formatDateFilter)
 njkEnv.addFilter('formatReviewExemptionReason', formatReviewExemptionReasonFilter)
 
+const userHasPermissionTo = jest.fn()
 const templateParams: ActionsCardParams = {
   inductionSchedule: {
     problemRetrievingData: false,
@@ -29,11 +30,15 @@ const templateParams: ActionsCardParams = {
   },
   reviewJourneyEnabledForPrison: true,
   prisonerSummary: aValidPrisonerSummary(),
-  hasEditAuthority: true,
-  userHasPermissionTo: () => true,
+  userHasPermissionTo,
 }
 
 describe('_reviewActions', () => {
+  beforeEach(() => {
+    jest.resetAllMocks()
+    userHasPermissionTo.mockReturnValue(true)
+  })
+
   it('should render review actions given review not due', () => {
     // Given
     const params = {
