@@ -43,7 +43,7 @@
                             attributes: {
                               'data-qa': 'goal-' ~ goal.goalReference ~ '-update-button'
                             },
-                            'render-if': hasEditAuthority
+                            'render-if': userHasPermissionTo('UPDATE_GOALS')
                           },
                           {
                             title: 'Archive<span class="govuk-visually-hidden"> this goal</span>',
@@ -51,7 +51,7 @@
                             attributes: {
                             'data-qa': 'goal-' ~ goal.goalReference ~ '-archive-button'
                           },
-                            'render-if': hasEditAuthority and not featureToggles.completedGoalsEnabled
+                            'render-if': userHasPermissionTo('COMPLETE_AND_ARCHIVE_GOALS') and not featureToggles.completedGoalsEnabled
                           },
                           {
                             title: 'Complete or archive<span class="govuk-visually-hidden"> this goal</span>',
@@ -59,7 +59,7 @@
                             attributes: {
                             'data-qa': 'goal-' ~ goal.goalReference ~ '-completearchive-button'
                           },
-                            'render-if': hasEditAuthority and featureToggles.completedGoalsEnabled
+                            'render-if': userHasPermissionTo('COMPLETE_AND_ARCHIVE_GOALS') and featureToggles.completedGoalsEnabled
                           }
                         ]
                       }) }}
@@ -103,7 +103,7 @@
                             attributes: {
                               'data-qa': 'goal-' ~ goal.goalReference ~ '-unarchive-button'
                             },
-                            'render-if': hasEditAuthority
+                            'render-if': userHasPermissionTo('COMPLETE_AND_ARCHIVE_GOALS')
                           }
                         ]
                       }) }}
@@ -171,7 +171,6 @@
         prisonerSummary: prisonerSummary,
         inductionSchedule: inductionSchedule,
         actionPlanReview: actionPlanReview,
-        hasEditAuthority: hasEditAuthority,
         userHasPermissionTo: userHasPermissionTo,
         reviewJourneyEnabledForPrison: reviewJourneyEnabledForPrison
       }) }}

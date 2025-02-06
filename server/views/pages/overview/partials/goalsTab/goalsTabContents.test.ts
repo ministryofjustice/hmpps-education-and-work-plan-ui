@@ -33,9 +33,22 @@ njkEnv.addFilter('formatReasonToArchiveGoal', formatReasonToArchiveGoalFilter)
 
 const prisonerSummary = aValidPrisonerSummary()
 
+const userHasPermissionTo = jest.fn()
+const templateParams = {
+  prisonerSummary,
+  userHasPermissionTo,
+  inProgressGoals: [aValidGoal()],
+  archivedGoals: [aValidGoal()],
+  completedGoals: [aValidGoal()],
+  problemRetrievingData: false,
+  showServiceOnboardingBanner: false,
+  tab: 'goals',
+}
+
 describe('goalTabContents', () => {
   beforeEach(() => {
     jest.clearAllMocks()
+    userHasPermissionTo.mockReturnValue(true)
   })
 
   it('should render in-progress goals correctly, in order of target completion date, soonest first', async () => {
@@ -56,15 +69,13 @@ describe('goalTabContents', () => {
       title: 'Learn German',
     })
 
-    const pageViewModel = {
-      prisonerSummary,
+    const params = {
+      ...templateParams,
       inProgressGoals: [inProgressGoal1, inProgressGoal2, inProgressGoal3],
-      problemRetrievingData: false,
-      tab: 'goals',
     }
 
     // When
-    const content = njkEnv.render('goalsTabContents.njk', pageViewModel)
+    const content = njkEnv.render('goalsTabContents.njk', params)
     const $ = cheerio.load(content)
 
     // Then
@@ -107,15 +118,13 @@ describe('goalTabContents', () => {
       title: 'Learn German',
     })
 
-    const pageViewModel = {
-      prisonerSummary,
+    const params = {
+      ...templateParams,
       archivedGoals: [archivedGoal1, archivedGoal2, archivedGoal3],
-      problemRetrievingData: false,
-      tab: 'goals',
     }
 
     // When
-    const content = njkEnv.render('goalsTabContents.njk', pageViewModel)
+    const content = njkEnv.render('goalsTabContents.njk', params)
     const $ = cheerio.load(content)
 
     // Then
@@ -158,15 +167,13 @@ describe('goalTabContents', () => {
       title: 'Learn German',
     })
 
-    const pageViewModel = {
-      prisonerSummary,
+    const params = {
+      ...templateParams,
       completedGoals: [completedGoal1, completedGoal2, completedGoal3],
-      problemRetrievingData: false,
-      tab: 'goals',
     }
 
     // When
-    const content = njkEnv.render('goalsTabContents.njk', pageViewModel)
+    const content = njkEnv.render('goalsTabContents.njk', params)
     const $ = cheerio.load(content)
 
     // Then
@@ -190,14 +197,13 @@ describe('goalTabContents', () => {
 
   it('should not render any goals given problem retrieving data is true', async () => {
     // Given
-    const pageViewModel = {
-      prisonerSummary,
+    const params = {
+      ...templateParams,
       problemRetrievingData: true,
-      tab: 'goals',
     }
 
     // When
-    const content = njkEnv.render('goalsTabContents.njk', pageViewModel)
+    const content = njkEnv.render('goalsTabContents.njk', params)
     const $ = cheerio.load(content)
 
     // Then
@@ -207,17 +213,15 @@ describe('goalTabContents', () => {
     expect($('[data-qa="completed-goal-summary-card"]').length).toEqual(0)
   })
 
-  it('should render service onboarding banner given prison is not enabled for service and user does not have editor role', async () => {
+  it('should render service onboarding banner given showServiceOnboardingBanner is true', async () => {
     // Given
-    const pageViewModel = {
-      prisonerSummary,
-      problemRetrievingData: false,
-      tab: 'goals',
+    const params = {
+      ...templateParams,
       showServiceOnboardingBanner: true,
     }
 
     // When
-    const content = njkEnv.render('goalsTabContents.njk', pageViewModel)
+    const content = njkEnv.render('goalsTabContents.njk', params)
     const $ = cheerio.load(content)
 
     // Then
