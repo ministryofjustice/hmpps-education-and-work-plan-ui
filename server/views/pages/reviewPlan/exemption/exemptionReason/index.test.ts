@@ -3,6 +3,7 @@ import * as cheerio from 'cheerio'
 import aValidPrisonerSummary from '../../../../../testsupport/prisonerSummaryTestDataBuilder'
 import findErrorFilter from '../../../../../filters/findErrorFilter'
 import formatReviewExemptionReasonFilter from '../../../../../filters/formatReviewExemptionReasonFilter'
+import assetMapFilter from '../../../../../filters/assetMapFilter'
 
 describe('ExemptionReasonPage', () => {
   const njkEnv = nunjucks.configure([
@@ -18,6 +19,7 @@ describe('ExemptionReasonPage', () => {
   njkEnv //
     .addFilter('findError', findErrorFilter)
     .addFilter('formatReviewExemptionReason', formatReviewExemptionReasonFilter)
+    .addFilter('assetMap', assetMapFilter)
 
   const prisonerSummary = aValidPrisonerSummary()
 

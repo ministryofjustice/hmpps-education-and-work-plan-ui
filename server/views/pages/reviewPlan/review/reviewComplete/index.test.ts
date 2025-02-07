@@ -4,6 +4,7 @@ import { startOfDay } from 'date-fns'
 import aValidPrisonerSummary from '../../../../../testsupport/prisonerSummaryTestDataBuilder'
 import aValidReviewPlanDto from '../../../../../testsupport/reviewPlanDtoTestDataBuilder'
 import formatDate from '../../../../../filters/formatDateFilter'
+import assetMapFilter from '../../../../../filters/assetMapFilter'
 
 const njkEnv = nunjucks.configure([
   'node_modules/govuk-frontend/govuk/',
@@ -15,7 +16,9 @@ const njkEnv = nunjucks.configure([
   __dirname,
 ])
 
-njkEnv.addFilter('formatDate', formatDate)
+njkEnv //
+  .addFilter('formatDate', formatDate)
+  .addFilter('assetMap', assetMapFilter)
 
 const prisonerSummary = aValidPrisonerSummary()
 

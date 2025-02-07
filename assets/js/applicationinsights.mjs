@@ -1,21 +1,19 @@
-/* global Microsoft */
-window.applicationInsights = (function () {
+import { ApplicationInsights } from '@microsoft/applicationinsights-web'
+import { ClickAnalyticsPlugin } from '@microsoft/applicationinsights-clickanalytics-js'
+
+const applicationInsights = (() => {
   let appInsights
 
   return {
     init: (connectionString, applicationInsightsRoleName, authenticatedUser) => {
       if (!appInsights && connectionString) {
-        const clickPluginInstance = new Microsoft.ApplicationInsights.ClickAnalyticsPlugin()
+        const clickPluginInstance = new ClickAnalyticsPlugin()
         const clickPluginConfig = {
           autoCapture: true,
           callback: {
-            contentName: function (element) {
-              // If there is a id, use this as the content name
-              if (element.dataset.id) return element.dataset.id
-
-              // If this element is in the header or footer it could contain
-              // personal data so we use a default value instead
-              if (!element.closest('main')) return 'Unknown'
+            contentName: element => {
+              // If there is an id, use this as the content name, else return 'Unknown'
+              return element.dataset.id ? element.dataset.id : 'Unknown'
             },
           },
           dataTags: {
@@ -23,7 +21,7 @@ window.applicationInsights = (function () {
           },
         }
 
-        appInsights = new Microsoft.ApplicationInsights.ApplicationInsights({
+        appInsights = new ApplicationInsights({
           config: {
             connectionString,
             autoTrackPageVisitTime: true,
@@ -34,6 +32,7 @@ window.applicationInsights = (function () {
           },
         })
         appInsights.addTelemetryInitializer(envelope => {
+          // eslint-disable-next-line no-param-reassign
           envelope.tags['ai.cloud.role'] = applicationInsightsRoleName
         })
         appInsights.setAuthenticatedUserContext(authenticatedUser)
@@ -43,3 +42,5 @@ window.applicationInsights = (function () {
     },
   }
 })()
+
+export default applicationInsights

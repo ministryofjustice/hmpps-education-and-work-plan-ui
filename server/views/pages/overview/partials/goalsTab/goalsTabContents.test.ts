@@ -7,6 +7,7 @@ import formatStepStatusValueFilter from '../../../../../filters/formatStepStatus
 import formatReasonToArchiveGoalFilter from '../../../../../filters/formatReasonToArchiveGoalFilter'
 import { aValidGoal } from '../../../../../testsupport/actionPlanTestDataBuilder'
 import config from '../../../../../config'
+import assetMapFilter from '../../../../../filters/assetMapFilter'
 
 const njkEnv = nunjucks.configure([
   'node_modules/govuk-frontend/govuk/',
@@ -27,9 +28,11 @@ jest.mock('../../../../../config', () => ({
 
 njkEnv.addGlobal('featureToggles', config.featureToggles)
 
-njkEnv.addFilter('formatDate', formatDateFilter)
-njkEnv.addFilter('formatStepStatusValue', formatStepStatusValueFilter)
-njkEnv.addFilter('formatReasonToArchiveGoal', formatReasonToArchiveGoalFilter)
+njkEnv //
+  .addFilter('formatDate', formatDateFilter)
+  .addFilter('formatStepStatusValue', formatStepStatusValueFilter)
+  .addFilter('formatReasonToArchiveGoal', formatReasonToArchiveGoalFilter)
+  .addFilter('assetMap', assetMapFilter)
 
 const prisonerSummary = aValidPrisonerSummary()
 

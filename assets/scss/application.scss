@@ -4,8 +4,8 @@ $path: "/assets/images/";
 $moj-page-width: 1170px;
 $govuk-page-width: $moj-page-width;
 
-@import 'govuk/all';
-@import 'moj/all';
+@import "govuk-frontend/dist/govuk/index";
+@import "@ministryofjustice/frontend/moj/all";
 
 @import 'node_modules/@ministryofjustice/hmpps-connect-dps-components/dist/assets/footer';
 @import 'node_modules/@ministryofjustice/hmpps-connect-dps-components/dist/assets/header-bar';
@@ -21,3 +21,4 @@ $govuk-page-width: $moj-page-width;
 @import './components/update-goal';
 @import './components/confirm-exemption';
 @import 'assets/scss/local';
+@import 'assets/scss/print';

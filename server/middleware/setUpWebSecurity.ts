@@ -25,7 +25,7 @@ export default function setUpWebSecurity(): Router {
   const styleSrc = ["'self'", (_req: Request, res: Response) => `'nonce-${res.locals.cspNonce}'`]
   const imgSrc = ["'self'", 'data:']
   const fontSrc = ["'self'"]
-  const connectSrc = ["'self'", '*.applicationinsights.azure.com']
+  const connectSrc = ["'self'", '*.applicationinsights.azure.com', '*.monitor.azure.com']
 
   router.use(
     helmet({

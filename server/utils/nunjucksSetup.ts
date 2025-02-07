@@ -34,6 +34,7 @@ import achievedQualificationObjectsSortedInScreenOrderFilter from '../filters/ac
 import formatReasonToArchiveGoalFilter from '../filters/formatReasonToArchiveGoalFilter'
 import formatReviewExemptionReasonValueFilter from '../filters/formatReviewExemptionReasonFilter'
 import formatInductionExemptionReasonFilter from '../filters/formatInductionExemptionReasonFilter'
+import assetMapFilter from '../filters/assetMapFilter'
 
 export default function nunjucksSetup(app: express.Express, applicationInfo: ApplicationInfo): void {
   app.set('view engine', 'njk')
@@ -85,6 +86,8 @@ export function registerNunjucks(app?: express.Express): Environment {
   )
 
   njkEnv.addFilter('initialiseName', initialiseName)
+  njkEnv.addFilter('assetMap', assetMapFilter)
+
   njkEnv.addFilter('findError', findErrorFilter)
   njkEnv.addFilter('formatDate', formatDateFilter)
   njkEnv.addFilter('formatFunctionalSkillType', formatFunctionalSkillTypeFilter)
