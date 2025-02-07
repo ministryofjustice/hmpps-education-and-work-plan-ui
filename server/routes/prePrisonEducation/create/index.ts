@@ -3,13 +3,14 @@ import { Services } from '../../../services'
 import retrieveCuriousFunctionalSkills from '../../routerRequestHandlers/retrieveCuriousFunctionalSkills'
 import retrieveCuriousInPrisonCourses from '../../routerRequestHandlers/retrieveCuriousInPrisonCourses'
 import asyncMiddleware from '../../../middleware/asyncMiddleware'
-import { checkUserHasEditAuthority } from '../../../middleware/roleBasedAccessControl'
+import { checkUserHasPermissionTo } from '../../../middleware/roleBasedAccessControl'
 import createEmptyEducationDtoIfNotInPrisonerContext from '../../routerRequestHandlers/createEmptyEducationDtoIfNotInPrisonerContext'
 import checkEducationDtoExistsInPrisonerContext from '../../routerRequestHandlers/checkEducationDtoExistsInPrisonerContext'
 import QualificationLevelCreateController from './qualificationLevelCreateController'
 import QualificationDetailsCreateController from './qualificationDetailsCreateController'
 import HighestLevelOfEducationCreateController from './highestLevelOfEducationCreateController'
 import QualificationsListCreateController from './qualificationsListCreateController'
+import ApplicationAction from '../../../enums/applicationAction'
 
 /**
  * Route definitions for creating a prisoner's qualifications before an Induction
@@ -22,8 +23,11 @@ export default (router: Router, services: Services) => {
   const qualificationDetailsCreateController = new QualificationDetailsCreateController()
   const qualificationsListCreateController = new QualificationsListCreateController(educationAndWorkPlanService)
 
+  router.use('/prisoners/:prisonNumber/create-education/*', [
+    checkUserHasPermissionTo(ApplicationAction.RECORD_EDUCATION),
+  ])
+
   router.use('/prisoners/:prisonNumber/create-education/highest-level-of-education', [
-    checkUserHasEditAuthority(),
     createEmptyEducationDtoIfNotInPrisonerContext,
   ])
   router.get('/prisoners/:prisonNumber/create-education/highest-level-of-education', [
@@ -34,7 +38,6 @@ export default (router: Router, services: Services) => {
   ])
 
   router.use('/prisoners/:prisonNumber/create-education/qualification-level', [
-    checkUserHasEditAuthority(),
     checkEducationDtoExistsInPrisonerContext,
   ])
   router.get('/prisoners/:prisonNumber/create-education/qualification-level', [
@@ -45,7 +48,6 @@ export default (router: Router, services: Services) => {
   ])
 
   router.use('/prisoners/:prisonNumber/create-education/qualification-details', [
-    checkUserHasEditAuthority(),
     checkEducationDtoExistsInPrisonerContext,
   ])
   router.get('/prisoners/:prisonNumber/create-education/qualification-details', [
@@ -55,10 +57,7 @@ export default (router: Router, services: Services) => {
     asyncMiddleware(qualificationDetailsCreateController.submitQualificationDetailsForm),
   ])
 
-  router.get('/prisoners/:prisonNumber/create-education/qualifications', [
-    checkUserHasEditAuthority(),
-    checkEducationDtoExistsInPrisonerContext,
-  ])
+  router.get('/prisoners/:prisonNumber/create-education/qualifications', [checkEducationDtoExistsInPrisonerContext])
   router.get('/prisoners/:prisonNumber/create-education/qualifications', [
     retrieveCuriousFunctionalSkills(services.curiousService),
     retrieveCuriousInPrisonCourses(services.curiousService),

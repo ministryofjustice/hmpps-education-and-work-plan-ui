@@ -114,7 +114,6 @@ describe('_personalSkillsAndInterestsSummaryCard', () => {
         problemRetrievingData: false,
         inductionDto,
       },
-      hasEditAuthority: false,
     }
 
     // When

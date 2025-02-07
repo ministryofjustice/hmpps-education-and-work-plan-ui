@@ -3,62 +3,79 @@ import ApplicationRole from '../enums/applicationRole'
 import ApplicationAction from '../enums/applicationAction'
 
 /**
- * Deprecated - use `checkUserHasPermissionTo` instead
- */
-const checkUserHasEditAuthority = () => authorisationMiddleware([ApplicationRole.ROLE_EDUCATION_WORK_PLAN_EDITOR])
-
-/**
  * A map of [ApplicationAction] to [ApplicationRole]s, to determine which role is required for any given action.
  * The list of [ApplicationRole]s should be considered an "or" list. Users require any one of the listed roles for each
  * action.
  */
 const rolesForAction = {
   [ApplicationAction.RECORD_INDUCTION]: [
+    // TODO - to complete RBAC work this should be just ROLE_LEARNING_AND_WORK_PROGRESS_MANAGER
     ApplicationRole.ROLE_LEARNING_AND_WORK_PROGRESS_MANAGER,
     ApplicationRole.ROLE_LEARNING_AND_WORK_PROGRESS_CONTRIBUTOR,
     ApplicationRole.ROLE_EDUCATION_WORK_PLAN_EDITOR,
   ],
   [ApplicationAction.EXEMPT_INDUCTION]: [
+    // TODO - to complete RBAC work this should be just ROLE_LEARNING_AND_WORK_PROGRESS_MANAGER
     ApplicationRole.ROLE_LEARNING_AND_WORK_PROGRESS_MANAGER,
     ApplicationRole.ROLE_LEARNING_AND_WORK_PROGRESS_CONTRIBUTOR,
     ApplicationRole.ROLE_EDUCATION_WORK_PLAN_EDITOR,
   ],
   [ApplicationAction.REMOVE_INDUCTION_EXEMPTION]: [
+    // TODO - to complete RBAC work this should be just ROLE_LEARNING_AND_WORK_PROGRESS_MANAGER
     ApplicationRole.ROLE_LEARNING_AND_WORK_PROGRESS_MANAGER,
     ApplicationRole.ROLE_LEARNING_AND_WORK_PROGRESS_CONTRIBUTOR,
     ApplicationRole.ROLE_EDUCATION_WORK_PLAN_EDITOR,
   ],
   [ApplicationAction.UPDATE_INDUCTION]: [
+    // TODO - to complete RBAC work this should be ROLE_LEARNING_AND_WORK_PROGRESS_MANAGER and ROLE_LEARNING_AND_WORK_PROGRESS_CONTRIBUTOR
+    ApplicationRole.ROLE_LEARNING_AND_WORK_PROGRESS_MANAGER,
+    ApplicationRole.ROLE_LEARNING_AND_WORK_PROGRESS_CONTRIBUTOR,
+    ApplicationRole.ROLE_EDUCATION_WORK_PLAN_EDITOR,
+  ],
+  [ApplicationAction.RECORD_EDUCATION]: [
+    // TODO - to complete RBAC work this should be ROLE_LEARNING_AND_WORK_PROGRESS_MANAGER and ROLE_LEARNING_AND_WORK_PROGRESS_CONTRIBUTOR
+    ApplicationRole.ROLE_LEARNING_AND_WORK_PROGRESS_MANAGER,
+    ApplicationRole.ROLE_LEARNING_AND_WORK_PROGRESS_CONTRIBUTOR,
+    ApplicationRole.ROLE_EDUCATION_WORK_PLAN_EDITOR,
+  ],
+  [ApplicationAction.UPDATE_EDUCATION]: [
+    // TODO - to complete RBAC work this should be ROLE_LEARNING_AND_WORK_PROGRESS_MANAGER and ROLE_LEARNING_AND_WORK_PROGRESS_CONTRIBUTOR
     ApplicationRole.ROLE_LEARNING_AND_WORK_PROGRESS_MANAGER,
     ApplicationRole.ROLE_LEARNING_AND_WORK_PROGRESS_CONTRIBUTOR,
     ApplicationRole.ROLE_EDUCATION_WORK_PLAN_EDITOR,
   ],
   [ApplicationAction.RECORD_REVIEW]: [
+    // TODO - to complete RBAC work this should be just ROLE_LEARNING_AND_WORK_PROGRESS_MANAGER
     ApplicationRole.ROLE_LEARNING_AND_WORK_PROGRESS_MANAGER,
     ApplicationRole.ROLE_LEARNING_AND_WORK_PROGRESS_CONTRIBUTOR,
     ApplicationRole.ROLE_EDUCATION_WORK_PLAN_EDITOR,
   ],
   [ApplicationAction.EXEMPT_REVIEW]: [
+    // TODO - to complete RBAC work this should be just ROLE_LEARNING_AND_WORK_PROGRESS_MANAGER
     ApplicationRole.ROLE_LEARNING_AND_WORK_PROGRESS_MANAGER,
     ApplicationRole.ROLE_LEARNING_AND_WORK_PROGRESS_CONTRIBUTOR,
     ApplicationRole.ROLE_EDUCATION_WORK_PLAN_EDITOR,
   ],
   [ApplicationAction.REMOVE_REVIEW_EXEMPTION]: [
+    // TODO - to complete RBAC work this should be just ROLE_LEARNING_AND_WORK_PROGRESS_MANAGER
     ApplicationRole.ROLE_LEARNING_AND_WORK_PROGRESS_MANAGER,
     ApplicationRole.ROLE_LEARNING_AND_WORK_PROGRESS_CONTRIBUTOR,
     ApplicationRole.ROLE_EDUCATION_WORK_PLAN_EDITOR,
   ],
   [ApplicationAction.CREATE_GOALS]: [
+    // TODO - to complete RBAC work this should be just ROLE_LEARNING_AND_WORK_PROGRESS_MANAGER
     ApplicationRole.ROLE_LEARNING_AND_WORK_PROGRESS_MANAGER,
     ApplicationRole.ROLE_LEARNING_AND_WORK_PROGRESS_CONTRIBUTOR,
     ApplicationRole.ROLE_EDUCATION_WORK_PLAN_EDITOR,
   ],
   [ApplicationAction.UPDATE_GOALS]: [
+    // TODO - to complete RBAC work this should be just ROLE_LEARNING_AND_WORK_PROGRESS_MANAGER
     ApplicationRole.ROLE_LEARNING_AND_WORK_PROGRESS_MANAGER,
     ApplicationRole.ROLE_LEARNING_AND_WORK_PROGRESS_CONTRIBUTOR,
     ApplicationRole.ROLE_EDUCATION_WORK_PLAN_EDITOR,
   ],
   [ApplicationAction.COMPLETE_AND_ARCHIVE_GOALS]: [
+    // TODO - to complete RBAC work this should be just ROLE_LEARNING_AND_WORK_PROGRESS_MANAGER
     ApplicationRole.ROLE_LEARNING_AND_WORK_PROGRESS_MANAGER,
     ApplicationRole.ROLE_LEARNING_AND_WORK_PROGRESS_CONTRIBUTOR,
     ApplicationRole.ROLE_EDUCATION_WORK_PLAN_EDITOR,
@@ -86,4 +103,4 @@ const userWithRoleCan = (role: ApplicationRole): Array<ApplicationAction> =>
     .filter(action => rolesForAction[action as ApplicationAction].includes(role))
     .map(action => action as ApplicationAction)
 
-export { checkUserHasEditAuthority, checkUserHasPermissionTo, userHasPermissionTo, userWithRoleCan }
+export { checkUserHasPermissionTo, userHasPermissionTo, userWithRoleCan }
