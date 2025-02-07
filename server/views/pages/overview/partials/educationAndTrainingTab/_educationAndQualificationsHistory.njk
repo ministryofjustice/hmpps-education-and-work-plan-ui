@@ -45,7 +45,7 @@ never happen.
 
             <div class="app-summary-card__change-link">
               <h3 class="govuk-heading-s app-summary-card__change-link__heading">Educational qualifications</h3>
-              {% if hasEditAuthority %}
+              {% if userHasPermissionTo('UPDATE_EDUCATION') %}
                 {%- set educationalQualificationsChangeLinkUrl -%}
                   {# The target of the change link is different depending on whether the education record has qualifications already recorded on not #}
                   {%- if education.educationDto.qualifications | length -%}
@@ -107,7 +107,7 @@ never happen.
                       {{ education.educationDto.educationLevel | formatEducationLevel }}
                     </p>
                   </dd>
-                  {% if hasEditAuthority %}
+                  {% if userHasPermissionTo('UPDATE_EDUCATION') %}
                     <dd class="govuk-summary-list__actions govuk-!-display-none-print">
                       <a class="govuk-link" href="/prisoners/{{ prisonerSummary.prisonNumber }}/education/highest-level-of-education" data-qa="highest-level-of-education-change-link">
                         Change<span class="govuk-visually-hidden"> highest level of education before prison</span>
@@ -132,7 +132,7 @@ never happen.
                       {% endfor %}
                     </ul>
                   </dd>
-                  {% if hasEditAuthority %}
+                  {% if userHasPermissionTo('UPDATE_INDUCTION') %}
                     <dd class="govuk-summary-list__actions govuk-!-display-none-print">
                       <a class="govuk-link" href="/prisoners/{{ prisonerSummary.prisonNumber }}/induction/additional-training" data-qa="additional-training-change-link">
                         Change<span class="govuk-visually-hidden"> other training or qualifications</span>
@@ -163,7 +163,7 @@ never happen.
                       {{ education.educationDto.educationLevel | formatEducationLevel }}
                     </p>
                   </dd>
-                  {% if hasEditAuthority %}
+                  {% if userHasPermissionTo('UPDATE_EDUCATION') %}
                     <dd class="govuk-summary-list__actions govuk-!-display-none-print">
                       <a class="govuk-link" href="/prisoners/{{ prisonerSummary.prisonNumber }}/education/highest-level-of-education" data-qa="highest-level-of-education-change-link">
                         Change<span class="govuk-visually-hidden"> highest level of education before prison</span>
@@ -207,7 +207,7 @@ never happen.
                to prompt the user to create both in this block.
             #}
             <h3 class="govuk-heading-s" data-qa="educational-qualifications">Educational qualifications</h3>
-            {% if userHasPermissionTo('RECORD_INDUCTION') %}
+            {% if userHasPermissionTo('RECORD_EDUCATION') %}
               <p class="govuk-body">
                 <a href="/prisoners/{{ prisonerSummary.prisonNumber }}/create-education/highest-level-of-education" class="govuk-link" data-qa="link-to-add-educational-qualifications">Add educational qualifications</a>
               </p>

@@ -31,7 +31,6 @@ const userHasPermissionTo = jest.fn()
 const templateParams = {
   prisonerSummary: aValidPrisonerSummary(),
   userHasPermissionTo,
-  hasEditAuthority: true,
   induction: {
     problemRetrievingData: false,
     inductionDto: aValidInductionDto(),
@@ -76,6 +75,10 @@ describe('_educationAndQualificationsHistory', () => {
       expect($('[data-qa=link-to-create-induction]').length).toEqual(1)
       expect($('[data-qa=education-or-induction-unavailable-message]').length).toEqual(0)
       expect($('[data-qa=last-updated]').length).toEqual(1)
+
+      expect(userHasPermissionTo).toHaveBeenNthCalledWith(1, 'UPDATE_EDUCATION')
+      expect(userHasPermissionTo).toHaveBeenNthCalledWith(2, 'UPDATE_EDUCATION')
+      expect(userHasPermissionTo).toHaveBeenNthCalledWith(3, 'RECORD_INDUCTION')
     })
 
     it('should not show add/change links or prompt to create induction given user does not have an induction and does not have permission to created inductions', () => {
@@ -86,7 +89,6 @@ describe('_educationAndQualificationsHistory', () => {
         induction: {
           problemRetrievingData: false,
         },
-        hasEditAuthority: false,
       }
 
       // When
@@ -102,7 +104,9 @@ describe('_educationAndQualificationsHistory', () => {
       expect($('[data-qa=link-to-create-induction]').length).toEqual(0)
       expect($('[data-qa=education-or-induction-unavailable-message]').length).toEqual(0)
 
-      expect(userHasPermissionTo).toHaveBeenCalledWith('RECORD_INDUCTION')
+      expect(userHasPermissionTo).toHaveBeenNthCalledWith(1, 'UPDATE_EDUCATION')
+      expect(userHasPermissionTo).toHaveBeenNthCalledWith(2, 'UPDATE_EDUCATION')
+      expect(userHasPermissionTo).toHaveBeenNthCalledWith(3, 'RECORD_INDUCTION')
     })
 
     it('should show qualifications including highest level of education and additional training given prisoner has education data and an induction', () => {
@@ -127,6 +131,10 @@ describe('_educationAndQualificationsHistory', () => {
       expect($('[data-qa=link-to-create-induction]').length).toEqual(0)
       expect($('[data-qa=education-or-induction-unavailable-message]').length).toEqual(0)
       expect($('[data-qa=last-updated]').length).toEqual(1)
+
+      expect(userHasPermissionTo).toHaveBeenNthCalledWith(1, 'UPDATE_EDUCATION')
+      expect(userHasPermissionTo).toHaveBeenNthCalledWith(2, 'UPDATE_EDUCATION')
+      expect(userHasPermissionTo).toHaveBeenNthCalledWith(3, 'UPDATE_INDUCTION')
     })
 
     it('should show the last updated fields from the education given that the education was updated more recently than the induction', () => {
@@ -267,6 +275,9 @@ describe('_educationAndQualificationsHistory', () => {
       expect($('[data-qa=additional-training-change-link]').length).toEqual(0)
       expect($('[data-qa=education-or-induction-unavailable-message]').length).toEqual(0)
       expect($('[data-qa=last-updated]').length).toEqual(0)
+
+      expect(userHasPermissionTo).toHaveBeenNthCalledWith(1, 'RECORD_EDUCATION')
+      expect(userHasPermissionTo).toHaveBeenNthCalledWith(2, 'RECORD_INDUCTION')
     })
 
     it('should not show prompts to create education and create induction given prisoner has no education data and user does not have permission to create inductions', () => {
@@ -294,7 +305,8 @@ describe('_educationAndQualificationsHistory', () => {
       expect($('[data-qa=induction-not-created-yet]').length).toEqual(1)
       expect($('[data-qa=link-to-create-induction]').length).toEqual(0)
 
-      expect(userHasPermissionTo).toHaveBeenCalledWith('RECORD_INDUCTION')
+      expect(userHasPermissionTo).toHaveBeenNthCalledWith(1, 'RECORD_EDUCATION')
+      expect(userHasPermissionTo).toHaveBeenNthCalledWith(2, 'RECORD_INDUCTION')
     })
 
     it('should show prompts to create education but not create induction given prisoner has no education data and induction schedule is on hold', () => {
