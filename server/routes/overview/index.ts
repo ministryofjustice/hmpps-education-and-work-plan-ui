@@ -16,12 +16,20 @@ import retrieveCuriousFunctionalSkills from '../routerRequestHandlers/retrieveCu
 import retrieveCuriousSupportNeeds from '../routerRequestHandlers/retrieveCuriousSupportNeeds'
 import retrieveActionPlanReviews from '../routerRequestHandlers/retrieveActionPlanReviews'
 import retrieveInductionSchedule from '../routerRequestHandlers/retrieveInductionSchedule'
+import retrievePrisonNamesById from '../routerRequestHandlers/retrievePrisonNamesById'
 
 /**
  * Route definitions for the pages relating to the main Overview page
  */
 export default (router: Router, services: Services) => {
-  const { curiousService, educationAndWorkPlanService, inductionService, reviewService, timelineService } = services
+  const {
+    curiousService,
+    educationAndWorkPlanService,
+    inductionService,
+    prisonService,
+    reviewService,
+    timelineService,
+  } = services
 
   const overviewController = new OverviewController()
   const timelineController = new TimelineController(timelineService)
@@ -39,6 +47,7 @@ export default (router: Router, services: Services) => {
     retrieveInduction(inductionService),
     retrieveCuriousFunctionalSkills(curiousService),
     retrieveCuriousInPrisonCourses(curiousService),
+    retrievePrisonNamesById(prisonService),
     asyncMiddleware(overviewController.getOverviewView),
   ])
 

@@ -11,6 +11,7 @@ export default class OverviewController {
       actionPlanReviews,
       prisonerFunctionalSkills,
       induction,
+      prisonNamesById,
     } = res.locals
 
     const view = new OverviewView(
@@ -21,6 +22,7 @@ export default class OverviewController {
       actionPlanReviews,
       allGoalsForPrisoner,
       induction,
+      prisonNamesById,
     )
 
     res.render('pages/overview/index', { ...view.renderArgs })
