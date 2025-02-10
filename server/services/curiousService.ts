@@ -137,18 +137,26 @@ export default class CuriousService {
     }
   }
 
-  private async setPrisonNamesOnInPrisonCourses(
+  private setPrisonNamesOnInPrisonCourses = async (
     inPrisonCourses: Array<InPrisonCourse>,
     username: string,
-  ): Promise<Array<InPrisonCourse>> {
-    return this.prisonService.getAllPrisonNamesById(username).then(prisonNamesById => {
-      return inPrisonCourses.map(inPrisonCourse => {
-        const prison = prisonNamesById.get(inPrisonCourse.prisonId)
-        return {
-          ...inPrisonCourse,
-          prisonName: prison,
-        }
-      })
+  ): Promise<Array<InPrisonCourse>> => {
+    const allPrisonNamesById = await this.getAllPrisonNamesByIdSafely(username)
+    return inPrisonCourses.map(inPrisonCourse => {
+      const prison = allPrisonNamesById.get(inPrisonCourse.prisonId)
+      return {
+        ...inPrisonCourse,
+        prisonName: prison,
+      }
     })
+  }
+
+  private getAllPrisonNamesByIdSafely = async (username: string): Promise<Map<string, string>> => {
+    try {
+      return await this.prisonService.getAllPrisonNamesById(username)
+    } catch (error) {
+      logger.error(`Error retrieving prison names, defaulting to just IDs: ${error}`)
+      return new Map()
+    }
   }
 }

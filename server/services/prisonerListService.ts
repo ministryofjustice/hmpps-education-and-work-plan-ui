@@ -21,27 +21,19 @@ export default class PrisonerListService {
   ): Promise<PrisonerSearchSummary[]> {
     const systemToken = await this.hmppsAuthClient.getSystemClientToken(username)
 
-    const prisoners: Prisoner[] = await this.prisonerSearchClient
-      .getPrisonersByPrisonId(prisonId, page, pageSize, systemToken)
-      .then(pagedCollectionOfPrisoners => pagedCollectionOfPrisoners.content)
+    const prisoners: Prisoner[] = (
+      await this.prisonerSearchClient.getPrisonersByPrisonId(prisonId, page, pageSize, systemToken)
+    ).content
 
     const prisonNumbers: string[] = prisoners.map(prisoner => prisoner.prisonerNumber)
 
-    const prisonersWithCiagInduction: string[] = await this.ciagInductionClient
-      .getCiagInductionsForPrisonNumbers(prisonNumbers, systemToken)
-      .then(ciagInductionListResponse =>
-        ciagInductionListResponse.ciagProfileList.map(
-          (ciagInduction: { offenderId: string }) => ciagInduction.offenderId,
-        ),
-      )
+    const prisonersWithCiagInduction: string[] = (
+      await this.ciagInductionClient.getCiagInductionsForPrisonNumbers(prisonNumbers, systemToken)
+    ).ciagProfileList.map((ciagInduction: { offenderId: string }) => ciagInduction.offenderId)
 
-    const prisonersWithActionPlan: string[] = await this.educationAndWorkPlanClient
-      .getActionPlans(prisonNumbers, systemToken)
-      .then(actionPlanSummaryListResponse =>
-        actionPlanSummaryListResponse.actionPlanSummaries.map(
-          (actionPlanSummary: { prisonNumber: string }) => actionPlanSummary.prisonNumber,
-        ),
-      )
+    const prisonersWithActionPlan: string[] = (
+      await this.educationAndWorkPlanClient.getActionPlans(prisonNumbers, systemToken)
+    ).actionPlanSummaries.map((actionPlanSummary: { prisonNumber: string }) => actionPlanSummary.prisonNumber)
 
     return prisoners.map(prisoner => {
       const prisonNumber: string = prisoner.prisonerNumber

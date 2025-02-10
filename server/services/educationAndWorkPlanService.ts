@@ -37,7 +37,7 @@ export default class EducationAndWorkPlanService {
     const systemToken = await this.hmppsAuthClient.getSystemClientToken(username)
     try {
       const actionPlanResponse = await this.educationAndWorkPlanClient.getActionPlan(prisonNumber, systemToken)
-      const prisonNamesById = await this.getAllPrisonNamesByIdSafely(systemToken)
+      const prisonNamesById = await this.getAllPrisonNamesByIdSafely(username)
       return toActionPlan(actionPlanResponse, false, prisonNamesById)
     } catch (error) {
       if (error.status === 404) {
@@ -71,7 +71,7 @@ export default class EducationAndWorkPlanService {
     const systemToken = await this.hmppsAuthClient.getSystemClientToken(username)
     try {
       const response = await this.educationAndWorkPlanClient.getGoalsByStatus(prisonNumber, status, systemToken)
-      const prisonNamesById = await this.getAllPrisonNamesByIdSafely(systemToken)
+      const prisonNamesById = await this.getAllPrisonNamesByIdSafely(username)
       return { goals: toGoals(response, prisonNamesById), problemRetrievingData: false }
     } catch (error) {
       if (error.status === 404) {
@@ -160,9 +160,9 @@ export default class EducationAndWorkPlanService {
     }
   }
 
-  private async getAllPrisonNamesByIdSafely(token: string): Promise<Map<string, string>> {
+  private async getAllPrisonNamesByIdSafely(username: string): Promise<Map<string, string>> {
     try {
-      return await this.prisonService.getAllPrisonNamesById(token)
+      return await this.prisonService.getAllPrisonNamesById(username)
     } catch (error) {
       logger.error(`Error retrieving prison names, defaulting to just IDs: ${error}`)
       return new Map()

@@ -1,8 +1,9 @@
 import type { Assessment, FunctionalSkills } from 'viewModels'
-import { Request, RequestHandler } from 'express'
+import { RequestHandler } from 'express'
 import FunctionalSkillsView from './functionalSkillsView'
 import PrisonService from '../../services/prisonService'
 import { functionalSkillsByType } from '../functionalSkillsResolver'
+import logger from '../../../logger'
 
 export default class FunctionalSkillsController {
   constructor(private readonly prisonService: PrisonService) {}
@@ -12,7 +13,7 @@ export default class FunctionalSkillsController {
 
     const functionalSkillsFromCurious = res.locals.prisonerFunctionalSkills
     const allAssessments = this.hasSomeAssessments(functionalSkillsFromCurious)
-      ? await this.setPrisonNamesOnAssessments(functionalSkillsFromCurious.assessments, req)
+      ? await this.setPrisonNamesOnAssessments(functionalSkillsFromCurious.assessments, req.user.username)
       : []
 
     const { problemRetrievingData } = functionalSkillsFromCurious
@@ -34,14 +35,25 @@ export default class FunctionalSkillsController {
     return functionalSkillsFromCurious.assessments && functionalSkillsFromCurious.assessments.length > 0
   }
 
-  setPrisonNamesOnAssessments = async (assessments: Array<Assessment>, req: Request): Promise<Array<Assessment>> => {
-    return this.prisonService.getAllPrisonNamesById(req.user.username).then(allPrisonNamesById => {
-      return assessments.map(assessment => {
-        return {
-          ...assessment,
-          prisonName: allPrisonNamesById.get(assessment.prisonId),
-        }
-      })
+  private setPrisonNamesOnAssessments = async (
+    assessments: Array<Assessment>,
+    username: string,
+  ): Promise<Array<Assessment>> => {
+    const allPrisonNamesById = await this.getAllPrisonNamesByIdSafely(username)
+    return assessments.map(assessment => {
+      return {
+        ...assessment,
+        prisonName: allPrisonNamesById.get(assessment.prisonId),
+      }
     })
+  }
+
+  private getAllPrisonNamesByIdSafely = async (username: string): Promise<Map<string, string>> => {
+    try {
+      return await this.prisonService.getAllPrisonNamesById(username)
+    } catch (error) {
+      logger.error(`Error retrieving prison names, defaulting to just IDs: ${error}`)
+      return new Map()
+    }
   }
 }

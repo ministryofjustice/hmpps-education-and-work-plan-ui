@@ -23,7 +23,7 @@ export default class ReviewService {
         prisonNumber,
         systemToken,
       )
-      const prisonNamesById = await this.getAllPrisonNamesByIdSafely(systemToken)
+      const prisonNamesById = await this.getAllPrisonNamesByIdSafely(username)
       return toActionPlanReviews(actionPlanReviewsResponse, prisonNamesById)
     } catch (error) {
       if (error.status === 404) {
@@ -57,7 +57,7 @@ export default class ReviewService {
         createActionPlanReviewRequest,
         systemToken,
       )
-      const prisonNamesById = await this.getAllPrisonNamesByIdSafely(systemToken)
+      const prisonNamesById = await this.getAllPrisonNamesByIdSafely(username)
       return toCreatedActionPlan(createActionPlanReviewResponse, prisonNamesById)
     } catch (error) {
       logger.error(
@@ -87,9 +87,9 @@ export default class ReviewService {
     }
   }
 
-  private async getAllPrisonNamesByIdSafely(token: string): Promise<Map<string, string>> {
+  private async getAllPrisonNamesByIdSafely(username: string): Promise<Map<string, string>> {
     try {
-      return await this.prisonService.getAllPrisonNamesById(token)
+      return await this.prisonService.getAllPrisonNamesById(username)
     } catch (error) {
       logger.error(`Error retrieving prison names, defaulting to just IDs: ${error}`)
       return new Map()
