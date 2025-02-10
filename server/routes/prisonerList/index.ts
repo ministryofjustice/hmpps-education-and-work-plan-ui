@@ -10,8 +10,8 @@ import asyncMiddleware from '../../middleware/asyncMiddleware'
  * landing / home page of the application for all users. The term "prisoner list" was never user facing in either the
  * route or resultant page markup.
  *
- * With the advent of the role ROLE_LEARNING_AND_WORK_PROGRESS_MANAGER and their need to perform Induction and Review sessions,
- * there is now a need for a different landing/home page for ROLE_LEARNING_AND_WORK_PROGRESS_MANAGER users. But also
+ * With the advent of the role ROLE_LWP_MANAGER and their need to perform Induction and Review sessions,
+ * there is now a need for a different landing/home page for ROLE_LWP_MANAGER users. But also
  * that this "prisoner list" page is available to them via a different URL (ie. not "/" because that is their landing
  * page)
  *

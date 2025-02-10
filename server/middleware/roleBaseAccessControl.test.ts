@@ -28,7 +28,7 @@ describe('roleBasedAccessControl', () => {
       expect(actual).toEqual(expected)
     })
 
-    it('should return the actions a user with ROLE_LEARNING_AND_WORK_PROGRESS_MANAGER can perform', () => {
+    it('should return the actions a user with ROLE_LWP_MANAGER can perform', () => {
       // Given
       const expected = [
         ApplicationAction.RECORD_INDUCTION,
@@ -47,13 +47,13 @@ describe('roleBasedAccessControl', () => {
       ]
 
       // When
-      const actual = userWithRoleCan(ApplicationRole.ROLE_LEARNING_AND_WORK_PROGRESS_MANAGER)
+      const actual = userWithRoleCan(ApplicationRole.ROLE_LWP_MANAGER)
 
       // Then
       expect(actual).toEqual(expected)
     })
 
-    it('should return the actions a user with ROLE_LEARNING_AND_WORK_PROGRESS_CONTRIBUTOR can perform', () => {
+    it('should return the actions a user with ROLE_LWP_CONTRIBUTOR can perform', () => {
       // Given
       const expected = [
         ApplicationAction.RECORD_INDUCTION,
@@ -71,7 +71,7 @@ describe('roleBasedAccessControl', () => {
       ]
 
       // When
-      const actual = userWithRoleCan(ApplicationRole.ROLE_LEARNING_AND_WORK_PROGRESS_CONTRIBUTOR)
+      const actual = userWithRoleCan(ApplicationRole.ROLE_LWP_CONTRIBUTOR)
 
       // Then
       expect(actual).toEqual(expected)
