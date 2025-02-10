@@ -99,7 +99,7 @@ describe('reviewService', () => {
       // Then
       expect(actual).toEqual(expectedActionPlanReviews)
       expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
-      expect(prisonService.getAllPrisonNamesById).toHaveBeenCalledWith(systemToken)
+      expect(prisonService.getAllPrisonNamesById).toHaveBeenCalledWith(username)
       expect(educationAndWorkPlanClient.getActionPlanReviews).toHaveBeenCalledWith(prisonNumber, systemToken)
     })
 
@@ -160,7 +160,7 @@ describe('reviewService', () => {
       // Then
       expect(actual).toEqual(expectedActionPlanReviews)
       expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
-      expect(prisonService.getAllPrisonNamesById).toHaveBeenCalledWith(systemToken)
+      expect(prisonService.getAllPrisonNamesById).toHaveBeenCalledWith(username)
       expect(educationAndWorkPlanClient.getActionPlanReviews).toHaveBeenCalledWith(prisonNumber, systemToken)
     })
 

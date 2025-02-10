@@ -101,7 +101,7 @@ describe('educationAndWorkPlanService', () => {
 
       // Then
       expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
-      expect(prisonService.getAllPrisonNamesById).toHaveBeenCalledWith(systemToken)
+      expect(prisonService.getAllPrisonNamesById).toHaveBeenCalledWith(username)
       expect(educationAndWorkPlanClient.getActionPlan).toHaveBeenCalledWith(prisonNumber, systemToken)
       expect(actual).toEqual(expectedActionPlan)
     })
@@ -120,7 +120,7 @@ describe('educationAndWorkPlanService', () => {
 
       // Then
       expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
-      expect(prisonService.getAllPrisonNamesById).toHaveBeenCalledWith(systemToken)
+      expect(prisonService.getAllPrisonNamesById).toHaveBeenCalledWith(username)
       expect(educationAndWorkPlanClient.getActionPlan).toHaveBeenCalledWith(prisonNumber, systemToken)
       expect(actual).toEqual(expectedActionPlan)
     })
