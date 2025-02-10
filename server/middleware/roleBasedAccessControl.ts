@@ -80,6 +80,7 @@ const rolesForAction = {
     ApplicationRole.ROLE_LEARNING_AND_WORK_PROGRESS_CONTRIBUTOR,
     ApplicationRole.ROLE_EDUCATION_WORK_PLAN_EDITOR,
   ],
+  [ApplicationAction.VIEW_SESSION_SUMMARIES]: [ApplicationRole.ROLE_LEARNING_AND_WORK_PROGRESS_MANAGER],
 }
 
 /**
