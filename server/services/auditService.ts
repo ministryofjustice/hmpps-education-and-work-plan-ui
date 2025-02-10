@@ -3,6 +3,7 @@ import HmppsAuditClient, { AuditEvent } from '../data/hmppsAuditClient'
 export enum Page {
   NOT_FOUND = 'NOT_FOUND',
   ERROR = 'ERROR',
+  SESSION_SUMMARIES = 'SESSION_SUMMARIES',
   PRISONER_LIST = 'PRISONER_LIST',
   OVERVIEW = 'OVERVIEW',
   SUPPORT_NEEDS = 'SUPPORT_NEEDS',

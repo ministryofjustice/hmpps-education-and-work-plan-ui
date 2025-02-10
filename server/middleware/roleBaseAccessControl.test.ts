@@ -43,6 +43,7 @@ describe('roleBasedAccessControl', () => {
         ApplicationAction.CREATE_GOALS,
         ApplicationAction.UPDATE_GOALS,
         ApplicationAction.COMPLETE_AND_ARCHIVE_GOALS,
+        ApplicationAction.VIEW_SESSION_SUMMARIES,
       ]
 
       // When

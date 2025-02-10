@@ -4,7 +4,7 @@ import createGoal from './createGoal'
 import updateGoal from './updateGoal'
 import overview from './overview'
 import functionalSkills from './functionalSkills'
-import prisonerList from './prisonerList'
+import prisonerListRoutes from './prisonerList'
 import postInductionCreation from './postInductionCreation'
 import exemptInduction from './induction/exemption'
 import createInduction from './induction/create'
@@ -21,6 +21,8 @@ import createPrePrisonEducation from './prePrisonEducation/create'
 import updatePrePrisonEducation from './prePrisonEducation/update'
 import reviewPlanRoutes from './reviewPlan'
 import checkPrisonerInCaseload from '../middleware/checkPrisonerInCaseloadMiddleware'
+import landingPageRoutes from './landingPage'
+import sessionSummaryRoutes from './sessionSummary'
 
 export default function routes(services: Services): Router {
   const router = Router()
@@ -56,9 +58,12 @@ export default function routes(services: Services): Router {
 
   router.use('/plan/:prisonNumber/notes', notesRoutes())
 
-  prisonerList(router, services)
-
   reviewPlanRoutes(router, services)
+
+  // Landing page route MUST be defined before session summary and prisoner list(search) routes due to the nature of the "forward" within the landing page route
+  landingPageRoutes(router)
+  sessionSummaryRoutes(router, services)
+  prisonerListRoutes(router, services)
 
   return router
 }

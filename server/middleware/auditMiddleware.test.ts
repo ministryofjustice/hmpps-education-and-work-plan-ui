@@ -33,7 +33,7 @@ describe('auditMiddleware', () => {
     prisonerListService.getPrisonerSearchSummariesForPrisonId.mockResolvedValue([])
 
     // When
-    const response = await request(app).get('/')
+    const response = await request(app).get('/search')
 
     // Then
     expect(response.statusCode).toBe(200)
@@ -60,7 +60,7 @@ describe('auditMiddleware', () => {
     prisonerListService.getPrisonerSearchSummariesForPrisonId.mockRejectedValue(null)
 
     // When
-    const response = await request(app).get('/')
+    const response = await request(app).get('/search')
 
     // Then
     expect(response.statusCode).toBe(500)
@@ -87,7 +87,7 @@ describe('auditMiddleware', () => {
     prisonerListService.getPrisonerSearchSummariesForPrisonId.mockRejectedValue(null)
 
     // When
-    const response = await request(app).get('/')
+    const response = await request(app).get('/search')
 
     // Then
     expect(response.statusCode).toBe(500)
@@ -125,7 +125,7 @@ describe('auditMiddleware', () => {
     prisonerListService.getPrisonerSearchSummariesForPrisonId.mockResolvedValue([])
 
     // When
-    const response = await request(app).get('/').query({ searchTerm: 'search term', statusFilter: 'NEEDS_PLAN' })
+    const response = await request(app).get('/search').query({ searchTerm: 'search term', statusFilter: 'NEEDS_PLAN' })
 
     // Then
     expect(response.statusCode).toBe(200)

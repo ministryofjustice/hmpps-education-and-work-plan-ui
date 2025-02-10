@@ -3,9 +3,11 @@ import { Services } from '../services'
 import { Page, BaseAuditData } from '../services/auditService'
 import asyncMiddleware from './asyncMiddleware'
 import logger from '../../logger'
+import ApplicationAction from '../enums/applicationAction'
 
 const pageViewEventMap: Record<string, Page> = {
-  '/': Page.PRISONER_LIST,
+  '/sessions': Page.SESSION_SUMMARIES,
+  '/search': Page.PRISONER_LIST,
   '/prisoner/:prisonNumber/work-and-skills/in-prison-courses-and-qualifications':
     Page.IN_PRISON_COURSES_AND_QUALIFICATIONS,
 
@@ -124,13 +126,25 @@ const pageViewEventMap: Record<string, Page> = {
   '/prisoners/:prisonNumber/education/qualification-details': Page.UPDATE_QUALIFICATION_DETAILS,
 
   // Non audit routes. These routes do not raise an audit event
+  '/': null,
   '/plan/:prisonNumber/induction-created': null,
   '/prisoners/:prisonNumber/education/add-qualifications': null,
 }
 
 export default function auditMiddleware({ auditService }: Services) {
-  const auditPageView = (page: Page) =>
+  const auditPageView = (route: string) =>
     asyncMiddleware(async (req: Request, res: Response, next: NextFunction) => {
+      let page: Page
+      if (route === '/') {
+        // If the route is for '/' we need to work out which page would have been served based on the user's role
+        page = res.locals.userHasPermissionTo(ApplicationAction.VIEW_SESSION_SUMMARIES)
+          ? Page.SESSION_SUMMARIES
+          : Page.PRISONER_LIST
+      } else {
+        // else use the PageViewEvent from the configured event map
+        ;[, page] = Object.entries(pageViewEventMap).find(([url, _pageViewEvent]) => url === route)
+      }
+
       res.locals.auditPageViewEvent = page
 
       if (!page) return next()
@@ -162,7 +176,7 @@ export default function auditMiddleware({ auditService }: Services) {
 
   const router = Router()
 
-  Object.entries(pageViewEventMap).forEach(([route, pageViewEvent]) => router.get(route, auditPageView(pageViewEvent)))
+  Object.keys(pageViewEventMap).forEach(route => router.get(route, auditPageView(route)))
 
   return router
 }
