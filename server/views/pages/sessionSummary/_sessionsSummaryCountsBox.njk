@@ -1,0 +1,35 @@
+<section class="govuk-!-margin-bottom-8">
+
+  <h2 class="govuk-heading-m">Sessions summary</h2>
+
+  <div class="govuk-grid summary-counts-grid">
+    {# Count of sessions that are overdue #}
+    <div class="govuk-grid-item">
+      <p class="govuk-hint">Overdue inductions and reviews</p>
+      <div class="summary-count-container">
+        <span class="govuk-body govuk-!-font-size-36 govuk-!-font-weight-bold" data-qa="overdue-sessions-count">10</span>
+        <span class="govuk-tag govuk-tag--red govuk-!-margin-left-2 govuk-!-margin-bottom-4">Overdue</span>
+      </div>
+      <a class="govuk-link govuk-!-font-size-19" href="/sessions/overdue" data-qa="view-overdue-sessions-button">View overdue sessions</a>
+    </div>
+    {# Count of sessions that are due #}
+    <div class="govuk-grid-item">
+      <p class="govuk-hint">Due inductions and reviews</p>
+      <div class="summary-count-container">
+        <span class="govuk-body govuk-!-font-size-36 govuk-!-font-weight-bold" data-qa="due-sessions-count">200</span>
+        <span class="govuk-tag govuk-tag--yellow govuk-!-margin-left-2 govuk-!-margin-bottom-4">Due</span>
+      </div>
+      <a class="govuk-link govuk-!-font-size-19" href="/sessions/due" data-qa="view-due-sessions-button">View due sessions</a>
+    </div>
+    {# Count of sessions that are on hold #}
+    <div class="govuk-grid-item">
+      <p class="govuk-hint">Exempt prisoners with sessions on hold</p>
+      <div class="summary-count-container">
+        <span class="govuk-body govuk-!-font-size-36 govuk-!-font-weight-bold" data-qa="on-hold-sessions-count">3000</span>
+        <span class="govuk-tag govuk-tag--grey govuk-!-margin-left-2 govuk-!-margin-bottom-4">On hold</span>
+      </div>
+      <a class="govuk-link govuk-!-font-size-19" href="/sessions/on-hold" data-qa="view-on-hold-sessions-button">View sessions on hold</a>
+    </div>
+  </div>
+
+</section>
