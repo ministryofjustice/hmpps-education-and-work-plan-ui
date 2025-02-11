@@ -43,6 +43,26 @@ context(`Display the prisoner list screen`, () => {
     const prisonerListPage = Page.verifyOnPage(PrisonerListPage)
     prisonerListPage.hasResultsDisplayed(expectedResultCount)
   })
+  ;['VIEW', 'EDIT', 'CONTRIBUTOR'].forEach(authority => {
+    it(`users with authority ${authority} should get the prisoner list page as their landing page straight after login`, () => {
+      // Given
+      if (authority === 'VIEW') {
+        cy.task('stubSignInAsReadOnlyUser')
+      } else if (authority === 'EDIT') {
+        cy.task('stubSignInAsUserWithEditAuthority')
+      } else if (authority === 'CONTRIBUTOR') {
+        cy.task('stubSignInAsUserWithContributorRole')
+      }
+      const expectedResultCount = prisonerSearchSummaries.length
+
+      // When
+      cy.signIn()
+
+      // Then
+      const prisonerListPage = Page.verifyOnPage(PrisonerListPage)
+      prisonerListPage.hasResultsDisplayed(expectedResultCount)
+    })
+  })
 
   it('should display service unavailable message given prisoner-search API returns a 500', () => {
     // Given

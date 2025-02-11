@@ -12,6 +12,10 @@ declare namespace Cypress {
 
     wiremockVerifyNoInteractions(requestPatternBuilder: RequestPatternBuilder): Chainable<*>
 
+    signInAsUserWithManagerAuthorityToArriveOnSessionSummaryPage()
+
+    signInAsUserWithContributorAuthorityToArriveOnSessionSummaryPage()
+
     signInAsUserWithViewAuthorityToArriveOnPrisonerListPage()
 
     signInAsUserWithEditAuthorityToArriveOnPrisonerListPage()

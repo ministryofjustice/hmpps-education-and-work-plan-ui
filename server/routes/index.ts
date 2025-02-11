@@ -23,6 +23,7 @@ import reviewPlanRoutes from './reviewPlan'
 import checkPrisonerInCaseload from '../middleware/checkPrisonerInCaseloadMiddleware'
 import landingPageRoutes from './landingPage'
 import sessionSummaryRoutes from './sessionSummary'
+import populateActiveCaseloadPrisonName from './routerRequestHandlers/populateActiveCaseloadPrisonName'
 
 export default function routes(services: Services): Router {
   const router = Router()
@@ -32,6 +33,8 @@ export default function routes(services: Services): Router {
 
   // Route middleware
   prisonerSummarySetup(router, services)
+
+  router.get('*', [populateActiveCaseloadPrisonName(services.prisonService)])
 
   // Application routes
   inPrisonCoursesAndQualifications(router, services)
