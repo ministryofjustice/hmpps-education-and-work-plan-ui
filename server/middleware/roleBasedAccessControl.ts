@@ -9,78 +9,78 @@ import ApplicationAction from '../enums/applicationAction'
  */
 const rolesForAction = {
   [ApplicationAction.RECORD_INDUCTION]: [
-    // TODO - to complete RBAC work this should be just ROLE_LEARNING_AND_WORK_PROGRESS_MANAGER
-    ApplicationRole.ROLE_LEARNING_AND_WORK_PROGRESS_MANAGER,
-    ApplicationRole.ROLE_LEARNING_AND_WORK_PROGRESS_CONTRIBUTOR,
+    // TODO - to complete RBAC work this should be just ROLE_LWP_MANAGER
+    ApplicationRole.ROLE_LWP_MANAGER,
+    ApplicationRole.ROLE_LWP_CONTRIBUTOR,
     ApplicationRole.ROLE_EDUCATION_WORK_PLAN_EDITOR,
   ],
   [ApplicationAction.EXEMPT_INDUCTION]: [
-    // TODO - to complete RBAC work this should be just ROLE_LEARNING_AND_WORK_PROGRESS_MANAGER
-    ApplicationRole.ROLE_LEARNING_AND_WORK_PROGRESS_MANAGER,
-    ApplicationRole.ROLE_LEARNING_AND_WORK_PROGRESS_CONTRIBUTOR,
+    // TODO - to complete RBAC work this should be just ROLE_LWP_MANAGER
+    ApplicationRole.ROLE_LWP_MANAGER,
+    ApplicationRole.ROLE_LWP_CONTRIBUTOR,
     ApplicationRole.ROLE_EDUCATION_WORK_PLAN_EDITOR,
   ],
   [ApplicationAction.REMOVE_INDUCTION_EXEMPTION]: [
-    // TODO - to complete RBAC work this should be just ROLE_LEARNING_AND_WORK_PROGRESS_MANAGER
-    ApplicationRole.ROLE_LEARNING_AND_WORK_PROGRESS_MANAGER,
-    ApplicationRole.ROLE_LEARNING_AND_WORK_PROGRESS_CONTRIBUTOR,
+    // TODO - to complete RBAC work this should be just ROLE_LWP_MANAGER
+    ApplicationRole.ROLE_LWP_MANAGER,
+    ApplicationRole.ROLE_LWP_CONTRIBUTOR,
     ApplicationRole.ROLE_EDUCATION_WORK_PLAN_EDITOR,
   ],
   [ApplicationAction.UPDATE_INDUCTION]: [
-    // TODO - to complete RBAC work this should be ROLE_LEARNING_AND_WORK_PROGRESS_MANAGER and ROLE_LEARNING_AND_WORK_PROGRESS_CONTRIBUTOR
-    ApplicationRole.ROLE_LEARNING_AND_WORK_PROGRESS_MANAGER,
-    ApplicationRole.ROLE_LEARNING_AND_WORK_PROGRESS_CONTRIBUTOR,
+    // TODO - to complete RBAC work this should be ROLE_LWP_MANAGER and ROLE_LWP_CONTRIBUTOR
+    ApplicationRole.ROLE_LWP_MANAGER,
+    ApplicationRole.ROLE_LWP_CONTRIBUTOR,
     ApplicationRole.ROLE_EDUCATION_WORK_PLAN_EDITOR,
   ],
   [ApplicationAction.RECORD_EDUCATION]: [
-    // TODO - to complete RBAC work this should be ROLE_LEARNING_AND_WORK_PROGRESS_MANAGER and ROLE_LEARNING_AND_WORK_PROGRESS_CONTRIBUTOR
-    ApplicationRole.ROLE_LEARNING_AND_WORK_PROGRESS_MANAGER,
-    ApplicationRole.ROLE_LEARNING_AND_WORK_PROGRESS_CONTRIBUTOR,
+    // TODO - to complete RBAC work this should be ROLE_LWP_MANAGER and ROLE_LWP_CONTRIBUTOR
+    ApplicationRole.ROLE_LWP_MANAGER,
+    ApplicationRole.ROLE_LWP_CONTRIBUTOR,
     ApplicationRole.ROLE_EDUCATION_WORK_PLAN_EDITOR,
   ],
   [ApplicationAction.UPDATE_EDUCATION]: [
-    // TODO - to complete RBAC work this should be ROLE_LEARNING_AND_WORK_PROGRESS_MANAGER and ROLE_LEARNING_AND_WORK_PROGRESS_CONTRIBUTOR
-    ApplicationRole.ROLE_LEARNING_AND_WORK_PROGRESS_MANAGER,
-    ApplicationRole.ROLE_LEARNING_AND_WORK_PROGRESS_CONTRIBUTOR,
+    // TODO - to complete RBAC work this should be ROLE_LWP_MANAGER and ROLE_LWP_CONTRIBUTOR
+    ApplicationRole.ROLE_LWP_MANAGER,
+    ApplicationRole.ROLE_LWP_CONTRIBUTOR,
     ApplicationRole.ROLE_EDUCATION_WORK_PLAN_EDITOR,
   ],
   [ApplicationAction.RECORD_REVIEW]: [
-    // TODO - to complete RBAC work this should be just ROLE_LEARNING_AND_WORK_PROGRESS_MANAGER
-    ApplicationRole.ROLE_LEARNING_AND_WORK_PROGRESS_MANAGER,
-    ApplicationRole.ROLE_LEARNING_AND_WORK_PROGRESS_CONTRIBUTOR,
+    // TODO - to complete RBAC work this should be just ROLE_LWP_MANAGER
+    ApplicationRole.ROLE_LWP_MANAGER,
+    ApplicationRole.ROLE_LWP_CONTRIBUTOR,
     ApplicationRole.ROLE_EDUCATION_WORK_PLAN_EDITOR,
   ],
   [ApplicationAction.EXEMPT_REVIEW]: [
-    // TODO - to complete RBAC work this should be just ROLE_LEARNING_AND_WORK_PROGRESS_MANAGER
-    ApplicationRole.ROLE_LEARNING_AND_WORK_PROGRESS_MANAGER,
-    ApplicationRole.ROLE_LEARNING_AND_WORK_PROGRESS_CONTRIBUTOR,
+    // TODO - to complete RBAC work this should be just ROLE_LWP_MANAGER
+    ApplicationRole.ROLE_LWP_MANAGER,
+    ApplicationRole.ROLE_LWP_CONTRIBUTOR,
     ApplicationRole.ROLE_EDUCATION_WORK_PLAN_EDITOR,
   ],
   [ApplicationAction.REMOVE_REVIEW_EXEMPTION]: [
-    // TODO - to complete RBAC work this should be just ROLE_LEARNING_AND_WORK_PROGRESS_MANAGER
-    ApplicationRole.ROLE_LEARNING_AND_WORK_PROGRESS_MANAGER,
-    ApplicationRole.ROLE_LEARNING_AND_WORK_PROGRESS_CONTRIBUTOR,
+    // TODO - to complete RBAC work this should be just ROLE_LWP_MANAGER
+    ApplicationRole.ROLE_LWP_MANAGER,
+    ApplicationRole.ROLE_LWP_CONTRIBUTOR,
     ApplicationRole.ROLE_EDUCATION_WORK_PLAN_EDITOR,
   ],
   [ApplicationAction.CREATE_GOALS]: [
-    // TODO - to complete RBAC work this should be just ROLE_LEARNING_AND_WORK_PROGRESS_MANAGER
-    ApplicationRole.ROLE_LEARNING_AND_WORK_PROGRESS_MANAGER,
-    ApplicationRole.ROLE_LEARNING_AND_WORK_PROGRESS_CONTRIBUTOR,
+    // TODO - to complete RBAC work this should be just ROLE_LWP_MANAGER
+    ApplicationRole.ROLE_LWP_MANAGER,
+    ApplicationRole.ROLE_LWP_CONTRIBUTOR,
     ApplicationRole.ROLE_EDUCATION_WORK_PLAN_EDITOR,
   ],
   [ApplicationAction.UPDATE_GOALS]: [
-    // TODO - to complete RBAC work this should be just ROLE_LEARNING_AND_WORK_PROGRESS_MANAGER
-    ApplicationRole.ROLE_LEARNING_AND_WORK_PROGRESS_MANAGER,
-    ApplicationRole.ROLE_LEARNING_AND_WORK_PROGRESS_CONTRIBUTOR,
+    // TODO - to complete RBAC work this should be just ROLE_LWP_MANAGER
+    ApplicationRole.ROLE_LWP_MANAGER,
+    ApplicationRole.ROLE_LWP_CONTRIBUTOR,
     ApplicationRole.ROLE_EDUCATION_WORK_PLAN_EDITOR,
   ],
   [ApplicationAction.COMPLETE_AND_ARCHIVE_GOALS]: [
-    // TODO - to complete RBAC work this should be just ROLE_LEARNING_AND_WORK_PROGRESS_MANAGER
-    ApplicationRole.ROLE_LEARNING_AND_WORK_PROGRESS_MANAGER,
-    ApplicationRole.ROLE_LEARNING_AND_WORK_PROGRESS_CONTRIBUTOR,
+    // TODO - to complete RBAC work this should be just ROLE_LWP_MANAGER
+    ApplicationRole.ROLE_LWP_MANAGER,
+    ApplicationRole.ROLE_LWP_CONTRIBUTOR,
     ApplicationRole.ROLE_EDUCATION_WORK_PLAN_EDITOR,
   ],
-  [ApplicationAction.VIEW_SESSION_SUMMARIES]: [ApplicationRole.ROLE_LEARNING_AND_WORK_PROGRESS_MANAGER],
+  [ApplicationAction.VIEW_SESSION_SUMMARIES]: [ApplicationRole.ROLE_LWP_MANAGER],
 }
 
 /**
