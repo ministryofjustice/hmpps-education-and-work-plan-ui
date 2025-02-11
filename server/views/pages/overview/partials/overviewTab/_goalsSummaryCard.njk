@@ -24,10 +24,10 @@ Data supplied to this template:
   <div class="govuk-summary-card__content">
     {% if not prisonerGoals.problemRetrievingData %}
 
-      <div class="govuk-grid overview-page-goal-summary-counts">
+      <div class="govuk-grid summary-counts-grid">
         {# Count of in-progress goals #}
         <div class="govuk-grid-item">
-          <div class="goal-container">
+          <div class="summary-count-container">
             <span class="govuk-body govuk-!-font-size-36 govuk-!-font-weight-bold" data-qa="in-progress-goals-count">{{ prisonerGoals.counts.activeGoals }}</span>
             <span class="govuk-tag govuk-tag--blue govuk-!-margin-left-2 govuk-!-margin-bottom-4">In progress</span>
           </div>
@@ -36,7 +36,7 @@ Data supplied to this template:
         {% if featureToggles.completedGoalsEnabled %}
           {# Count of completed goals #}
           <div class="govuk-grid-item">
-            <div class="goal-container">
+            <div class="summary-count-container">
               <span class="govuk-body govuk-!-font-size-36 govuk-!-font-weight-bold" data-qa="completed-goals-count">{{ prisonerGoals.counts.completedGoals }}</span>
               <span class="govuk-tag govuk-tag--green govuk-!-margin-left-2 govuk-!-margin-bottom-4">Completed</span>
             </div>
@@ -45,7 +45,7 @@ Data supplied to this template:
         {% endif %}
         {# Count of archived goals #}
         <div class="govuk-grid-item">
-          <div class="goal-container">
+          <div class="summary-count-container">
             <span class="govuk-body govuk-!-font-size-36 govuk-!-font-weight-bold" data-qa="archived-goals-count">{{ prisonerGoals.counts.archivedGoals }}</span>
             <span class="govuk-tag govuk-tag--grey govuk-!-margin-left-2 govuk-!-margin-bottom-4">Archived</span>
           </div>

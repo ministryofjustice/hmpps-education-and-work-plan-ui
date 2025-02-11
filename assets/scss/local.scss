@@ -28,7 +28,7 @@
   display: inline-block;
 }
 
-.overview-page-goal-summary-counts {
+.summary-counts-grid {
   display: grid;
   grid-auto-columns: minmax(0, 1fr);
   grid-auto-flow: column;
@@ -43,7 +43,7 @@
     border-right: none;
   }
 
-  .goal-container {
+  .summary-count-container {
     display: flex;
     align-items: center;
   }
