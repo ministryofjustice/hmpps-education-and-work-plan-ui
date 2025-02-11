@@ -4,16 +4,19 @@ import { appWithAllRoutes } from '../routes/testutils/appSetup'
 import AuditService, { Page } from '../services/auditService'
 import PrisonerListService from '../services/prisonerListService'
 import PrisonerSearchService from '../services/prisonerSearchService'
+import PrisonService from '../services/prisonService'
 import aValidPrisoner from '../testsupport/prisonerTestDataBuilder'
 
 jest.mock('../services/auditService')
 jest.mock('../services/prisonerSearchService')
 jest.mock('../services/prisonerListService')
+jest.mock('../services/prisonService')
 
 let app: Express
 const auditService = new AuditService(null) as jest.Mocked<AuditService>
 const prisonerSearchService = new PrisonerSearchService(null, null, null) as jest.Mocked<PrisonerSearchService>
 const prisonerListService = new PrisonerListService(null, null, null, null) as jest.Mocked<PrisonerListService>
+const prisonService = new PrisonService(null, null, null) as jest.Mocked<PrisonService>
 
 beforeEach(() => {
   app = appWithAllRoutes({
@@ -21,10 +24,13 @@ beforeEach(() => {
       auditService,
       prisonerSearchService,
       prisonerListService,
+      prisonService,
     },
   })
 
   jest.resetAllMocks()
+
+  prisonService.getAllPrisonNamesById.mockResolvedValue(new Map([['BXI', 'Brixton (HMP)']]))
 })
 
 describe('auditMiddleware', () => {

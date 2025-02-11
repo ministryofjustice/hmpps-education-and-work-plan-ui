@@ -59,12 +59,24 @@ Cypress.Commands.add('wiremockVerifyNoInteractions', (requestPatternBuilder: Req
   return cy.wrap(verify(0, requestPatternBuilder)).should('be.true')
 })
 
+Cypress.Commands.add('signInAsUserWithManagerAuthorityToArriveOnSessionSummaryPage', () => {
+  signInWithAuthority('MANAGER')
+  Page.verifyOnPage(PrisonerListPage)
+})
+
+Cypress.Commands.add('signInAsUserWithContributorAuthorityToArriveOnSessionSummaryPage', () => {
+  signInWithAuthority('CONTRIBUTOR')
+  Page.verifyOnPage(PrisonerListPage)
+})
+
 Cypress.Commands.add('signInAsUserWithViewAuthorityToArriveOnPrisonerListPage', () => {
   signInWithAuthority('VIEW')
+  Page.verifyOnPage(PrisonerListPage)
 })
 
 Cypress.Commands.add('signInAsUserWithEditAuthorityToArriveOnPrisonerListPage', () => {
   signInWithAuthority('EDIT')
+  Page.verifyOnPage(PrisonerListPage)
 })
 
 Cypress.Commands.add(
@@ -208,9 +220,25 @@ We have agreed and set a new goal, and the next review is 1 year from now.
   Page.verifyOnPage(ReviewPlanCheckYourAnswersPage)
 })
 
-const signInWithAuthority = (authority: 'EDIT' | 'VIEW') => {
+const signInWithAuthority = (authority: 'MANAGER' | 'CONTRIBUTOR' | 'ALL' | 'EDIT' | 'VIEW' = 'VIEW') => {
   cy.task('reset')
-  cy.task(authority === 'EDIT' ? 'stubSignInAsUserWithEditAuthority' : 'stubSignInAsReadOnlyUser')
+  switch (authority) {
+    case 'MANAGER':
+      cy.task('stubSignInAsUserWithManagerRole')
+      break
+    case 'CONTRIBUTOR':
+      cy.task('stubSignInAsUserWithContributorRole')
+      break
+    case 'ALL':
+      cy.task('stubSignInAsUserWithAllRoles')
+      break
+    case 'EDIT':
+      cy.task('stubSignInAsUserWithEditAuthority')
+      break
+    default:
+      cy.task('stubSignInAsReadOnlyUser')
+      break
+  }
   cy.task('stubAuthUser')
   cy.task('stubPrisonerList')
   cy.task('stubCiagInductionList')
@@ -218,5 +246,4 @@ const signInWithAuthority = (authority: 'EDIT' | 'VIEW') => {
   cy.task('getPrisonerById')
   cy.task('stubLearnerProfile')
   cy.signIn()
-  Page.verifyOnPage(PrisonerListPage)
 }

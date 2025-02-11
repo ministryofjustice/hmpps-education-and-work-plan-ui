@@ -1,0 +1,33 @@
+<section class="dps-homepage-search">
+
+  <form class="form" method="get" action='/search'>
+    <fieldset class="govuk-fieldset">
+      <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Search for a prisoner</legend>
+      <div class="govuk-form-group govuk-form-group--inline govuk-!-margin-bottom-3">
+        <div class="govuk-form-group govuk-form-group__item">
+          <label class="govuk-label" for="searchTerm">
+            Prisoner's name or prison number
+          </label>
+          <input class="govuk-input hmpps-width-20"
+            id="searchTerm"
+            name="searchTerm"
+            type="search"
+            value="{{ searchTerm }}"
+            maxlength="200" />
+        </div>
+        <div class="govuk-form-group__button">
+          <button type="submit" class="govuk-button" data-module="govuk-button" data-qa="submit-button">
+            Search
+          </button>
+        </div>
+      </div>
+    </fieldset>
+
+    <p class="govuk-body">
+      <a class="govuk-link" href="/search" data-qa="link-to-search-page">
+        View all prisoners in {{ activeCaseloadPrisonName }}
+      </a>
+    </p>
+  </form>
+
+</section>

@@ -23,6 +23,11 @@ export default class PrisonerListPage extends Page {
     return this
   }
 
+  hasSearchTerm(expected: string): PrisonerListPage {
+    this.searchTermField().should('have.value', expected)
+    return this
+  }
+
   hasNoStatusFilter(): PrisonerListPage {
     this.statusFilterDropdown().find('option:selected').should('have.value', '')
     return this
