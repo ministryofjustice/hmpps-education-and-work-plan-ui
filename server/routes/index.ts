@@ -24,6 +24,7 @@ import checkPrisonerInCaseload from '../middleware/checkPrisonerInCaseloadMiddle
 import landingPageRoutes from './landingPage'
 import sessionSummaryRoutes from './sessionSummary'
 import populateActiveCaseloadPrisonName from './routerRequestHandlers/populateActiveCaseloadPrisonName'
+import sessionListRoutes from './sessionList'
 
 export default function routes(services: Services): Router {
   const router = Router()
@@ -62,6 +63,8 @@ export default function routes(services: Services): Router {
   router.use('/plan/:prisonNumber/notes', notesRoutes())
 
   reviewPlanRoutes(router, services)
+
+  sessionListRoutes(router, services)
 
   // Landing page route MUST be defined before session summary and prisoner list(search) routes due to the nature of the "forward" within the landing page route
   landingPageRoutes(router)

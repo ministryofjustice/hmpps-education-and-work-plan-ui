@@ -1,0 +1,49 @@
+<section class="dps-homepage-search">
+
+  <form class="form" method="get">
+    <fieldset class="govuk-fieldset">
+      <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Filter by session type</legend>
+      <div class="govuk-form-group govuk-form-group--inline govuk-!-margin-bottom-3">
+
+        <div class="govuk-form-group govuk-form-group__item">
+          <fieldset class="govuk-fieldset">
+            <legend class="govuk-fieldset__legend govuk-!-margin-bottom-1">Session type</legend>
+            <div class="govuk-radios govuk-form-group--inline">
+              <div class="govuk-radios__item govuk-!-margin-bottom-0">
+                <input class="govuk-radios__input" id="sessionType" name="sessionType" type="radio" value="ALL">
+                <label class="govuk-label govuk-radios__label" for="sessionType">All</label>
+              </div>
+              <div class="govuk-radios__item govuk-!-margin-bottom-0">
+                <input class="govuk-radios__input" id="sessionType-2" name="sessionType" type="radio" value="INDUCTION">
+                <label class="govuk-label govuk-radios__label" for="sessionType-2">Induction</label>
+              </div>
+              <div class="govuk-radios__item govuk-!-margin-bottom-0">
+                <input class="govuk-radios__input" id="sessionType-3" name="sessionType" type="radio" value="REVIEWS">
+                <label class="govuk-label govuk-radios__label" for="sessionType-3">Reviews</label>
+              </div>
+            </div>
+          </fieldset>
+        </div>
+
+        <div class="govuk-form-group govuk-form-group__item">
+          <label class="govuk-label" for="searchTerm">
+            Prisoner's name or prison number
+          </label>
+          <input class="govuk-input hmpps-width-20"
+            id="searchTerm"
+            name="searchTerm"
+            type="search"
+            value="{{ searchTerm }}"
+            maxlength="200" />
+        </div>
+
+        <div class="govuk-form-group__button">
+          <button type="submit" class="govuk-button" data-module="govuk-button" data-qa="submit-button">
+            Apply filters
+          </button>
+        </div>
+      </div>
+    </fieldset>
+  </form>
+
+</section>
