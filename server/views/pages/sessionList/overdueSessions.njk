@@ -1,0 +1,38 @@
+{% extends "../../partials/layout.njk" %}
+{% from "./macros/nonJavascriptTabBar.njk" import nonJavascriptTabBar %}
+
+{% set pageId = 'overdue-sessions-list-page' %}
+{% set pageTitle = "Overdue sessions" %}
+
+{% block beforeContent %}
+  <nav class="govuk-breadcrumbs govuk-!-display-none-print" aria-label="Breadcrumb">
+    <ol class="govuk-breadcrumbs__list">
+      <li class="govuk-breadcrumbs__list-item">
+        <a class="govuk-breadcrumbs__link" href="{{ dpsUrl }}">Digital Prison Services</a>
+      </li>
+      <li class="govuk-breadcrumbs__list-item">
+        <a class="govuk-breadcrumbs__link" href="{{ prisonerListUrl }}">Manage learning and work progress</a>
+      </li>
+    </ol>
+  </nav>
+{% endblock %}
+
+{% block content %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+      <h1 class="govuk-heading-l">Overdue sessions</h1>
+
+      {% set tabContent %}
+        {% include './_searchBox.njk' %}
+      {% endset %}
+
+      {{ nonJavascriptTabBar({
+        activeTab: 'OVERDUE_SESSIONS',
+        content: tabContent
+      }) }}
+
+    </div>
+  </div>
+
+{% endblock %}

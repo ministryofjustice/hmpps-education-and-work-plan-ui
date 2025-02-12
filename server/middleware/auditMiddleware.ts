@@ -7,6 +7,9 @@ import ApplicationAction from '../enums/applicationAction'
 
 const pageViewEventMap: Record<string, Page> = {
   '/sessions': Page.SESSION_SUMMARIES,
+  '/sessions/due': Page.DUE_SESSIONS_LIST,
+  '/sessions/overdue': Page.OVERDUE_SESSIONS_LIST,
+  '/sessions/on-hold': Page.ONHOLD_SESSIONS_LIST,
   '/search': Page.PRISONER_LIST,
   '/prisoner/:prisonNumber/work-and-skills/in-prison-courses-and-qualifications':
     Page.IN_PRISON_COURSES_AND_QUALIFICATIONS,

@@ -1,0 +1,47 @@
+{#  -------------------------------------------------------------
+    Non-javascript version of govuk tabs component, specifically for the Session List pages
+
+    This was a conscious decision not to use the govuk tabs nunjucks compoenent and to write it long hand,
+    specifically NOT using the data-module="govuk-tabs" attribute. This is to allow a page/route for each tab,
+    and to link via a regular href between them
+
+    `config` argument is an object with the following properties:
+      * activeTab - OVERDUE_SESSIONS | DUE_SESSIONS | ON_HOLD_SESSIONS
+      * content - the content of the tab
+    ------------------------------------------------------------- #}
+{% macro nonJavascriptTabBar(config) %}
+
+  <div class="govuk-tabs custom-tabs-no-border">
+    <ul class="govuk-tabs__list" role="tablist">
+      <li class="govuk-tabs__list-item {{ 'govuk-tabs__list-item--selected' if config.activeTab == 'OVERDUE_SESSIONS' }}" role="presentation">
+        <a class="govuk-tabs__tab" href="/sessions/overdue" id="tab_overdue-sessions" role="tab" aria-selected="{{ 'true' if config.activeTab == 'OVERDUE_SESSIONS' else 'false' }}" tabindex="{{ '0' if config.activeTab == 'OVERDUE_SESSIONS' else '-1' }}">
+          Overdue sessions
+        </a>
+      </li>
+      <li class="govuk-tabs__list-item {{ 'govuk-tabs__list-item--selected' if config.activeTab == 'DUE_SESSIONS' }}" role="presentation">
+        <a class="govuk-tabs__tab" href="/sessions/due" id="tab_due-sessions" role="tab" aria-selected="{{ 'true' if config.activeTab == 'DUE_SESSIONS' else 'false' }}" tabindex="{{ '0' if config.activeTab == 'DUE_SESSIONS' else '-1' }}">
+          Due sessions
+        </a>
+      </li>
+      <li class="govuk-tabs__list-item {{ 'govuk-tabs__list-item--selected' if config.activeTab == 'ON_HOLD_SESSIONS' }}" role="presentation">
+        <a class="govuk-tabs__tab" href="/sessions/on-hold" id="tab_on-hold-sessions" role="tab" aria-selected="{{ 'true' if config.activeTab == 'ON_HOLD_SESSIONS' else 'false' }}" tabindex="{{ '0' if config.activeTab == 'ON_HOLD_SESSIONS' else '-1' }}">
+          On hold sessions
+        </a>
+      </li>
+    </ul>
+
+    {%- set activeTabId -%}
+      {%- if config.activeTab == 'OVERDUE_SESSIONS' -%}
+        tab_overdue-sessions
+      {%- elseif config.activeTab == 'DUE_SESSIONS' -%}
+        tab_due-sessions
+      {%- elseif config.activeTab == 'ON_HOLD_SESSIONS' -%}
+        tab_on-hold-sessions
+      {%- endif -%}
+    {%- endset -%}
+    <div class="govuk-tabs__panel govuk-!-padding-left-0 govuk-!-padding-right-0 govuk-!-padding-top-4 govuk-!-padding-bottom-4" role="tabpanel" aria-labelledby="{{ activeTabId }}">
+      {{ config.content | safe }}
+    </div>
+  </div>
+
+{% endmacro %}
