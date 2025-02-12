@@ -182,7 +182,7 @@ describe('educationAndWorkPlanClient', () => {
         .put(`/action-plans/${prisonNumber}/goals/${goalReference}`, requestBody =>
           isEqual(requestBody, updateGoalRequest),
         )
-        .reply(204, expectedResponseBody)
+        .reply(204)
 
       // When
       const actual = await educationAndWorkPlanClient.updateGoal(prisonNumber, updateGoalRequest, systemToken)
@@ -386,7 +386,7 @@ describe('educationAndWorkPlanClient', () => {
         .put(`/action-plans/${prisonNumber}/reviews/schedule-status`, requestBody =>
           isMatch(updateReviewScheduleStatusRequest, requestBody),
         )
-        .reply(204, expectedResponseBody)
+        .reply(204)
 
       // When
       const actual = await educationAndWorkPlanClient.updateActionPlanReviewScheduleStatus(
@@ -700,7 +700,7 @@ describe('educationAndWorkPlanClient', () => {
         .put(`/inductions/${prisonNumber}/induction-schedule`, requestBody =>
           isMatch(updateInductionScheduleStatusRequest, requestBody),
         )
-        .reply(204, expectedResponseBody)
+        .reply(204)
 
       // When
       const actual = await educationAndWorkPlanClient.updateInductionScheduleStatus(
@@ -758,7 +758,7 @@ describe('educationAndWorkPlanClient', () => {
       const expectedResponseBody = {}
       educationAndWorkPlanApi
         .put(`/action-plans/${prisonNumber}/goals/${goalReference}/archive`, archiveGoalRequest)
-        .reply(204, expectedResponseBody)
+        .reply(204)
 
       // When
       const actual = await educationAndWorkPlanClient.archiveGoal(prisonNumber, archiveGoalRequest, systemToken)
@@ -800,7 +800,7 @@ describe('educationAndWorkPlanClient', () => {
       const expectedResponseBody = {}
       educationAndWorkPlanApi
         .put(`/action-plans/${prisonNumber}/goals/${goalReference}/unarchive`, unarchiveGoalRequest)
-        .reply(204, expectedResponseBody)
+        .reply(204)
 
       // When
       const actual = await educationAndWorkPlanClient.unarchiveGoal(prisonNumber, unarchiveGoalRequest, systemToken)
@@ -916,7 +916,7 @@ describe('educationAndWorkPlanClient', () => {
       const expectedResponseBody = {}
       educationAndWorkPlanApi
         .put(`/person/${prisonNumber}/education`, requestBody => isEqual(requestBody, updateEducationRequest))
-        .reply(204, expectedResponseBody)
+        .reply(204)
 
       // When
       const actual = await educationAndWorkPlanClient.updateEducation(prisonNumber, updateEducationRequest, systemToken)
