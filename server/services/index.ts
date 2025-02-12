@@ -9,6 +9,7 @@ import TimelineService from './timelineService'
 import PrisonService from './prisonService'
 import InductionService from './inductionService'
 import ReviewService from './reviewService'
+import SessionService from './sessionService'
 
 /**
  * Function that instantiates and exposes all services required by the application.
@@ -47,6 +48,7 @@ export const services = () => {
     ciagInductionClient,
   )
   const timelineService = new TimelineService(educationAndWorkPlanClient, prisonService, hmppsAuthClient)
+  const sessionService = new SessionService(educationAndWorkPlanClient, hmppsAuthClient)
 
   return {
     applicationInfo,
@@ -60,6 +62,7 @@ export const services = () => {
     prisonerListService,
     timelineService,
     prisonService,
+    sessionService,
   }
 }
 
@@ -76,4 +79,5 @@ export {
   PrisonerListService,
   TimelineService,
   PrisonService,
+  SessionService,
 }

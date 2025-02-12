@@ -1,7 +1,13 @@
-export default class SessionSummaryView {
-  constructor() {}
+import type { SessionsSummary } from 'viewModels'
 
-  get renderArgs(): object {
-    return {}
+export default class SessionSummaryView {
+  constructor(private readonly sessionsSummary: SessionsSummary) {}
+
+  get renderArgs(): {
+    sessionsSummary: SessionsSummary
+  } {
+    return {
+      sessionsSummary: this.sessionsSummary,
+    }
   }
 }

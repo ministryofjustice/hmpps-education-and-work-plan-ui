@@ -8,6 +8,13 @@ declare module 'viewModels' {
   import GoalStatusValue from '../../enums/goalStatusValue'
   import StepStatusValue from '../../enums/stepStatusValue'
 
+  export interface SessionsSummary {
+    overdueSessionCount: number
+    dueSessionCount: number
+    onHoldSessionCount: number
+    problemRetrievingData: boolean
+  }
+
   export interface PrisonerSummary {
     prisonNumber: string
     prisonId: string

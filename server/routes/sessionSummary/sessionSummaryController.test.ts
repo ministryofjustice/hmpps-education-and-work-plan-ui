@@ -1,5 +1,6 @@
 import { Request, Response } from 'express'
 import SessionSummaryController from './sessionSummaryController'
+import aValidSessionsSummary from '../../testsupport/sessionsSummaryTestDataBuilder'
 
 describe('sessionSummaryController', () => {
   const controller = new SessionSummaryController()
@@ -27,7 +28,15 @@ describe('sessionSummaryController', () => {
 
   it('should get session summary view', async () => {
     // Given
-    const expectedView = {}
+    res.locals.sessionsSummary = aValidSessionsSummary()
+    const expectedView = {
+      sessionsSummary: {
+        onHoldSessionCount: 6,
+        dueSessionCount: 107,
+        overdueSessionCount: 19,
+        problemRetrievingData: false,
+      },
+    }
 
     // When
     await controller.getSessionSummaryView(req, res, next)

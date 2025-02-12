@@ -1255,6 +1255,64 @@ const stubUpdateInductionScheduleStatus500Error = (): SuperAgentRequest =>
     },
   })
 
+const stubGetSessionSummary = (): SuperAgentRequest =>
+  stubFor({
+    request: {
+      method: 'GET',
+      urlPattern: `/session/[A-Z]{3}/summary`,
+    },
+    response: {
+      status: 200,
+      headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+      jsonBody: {
+        overdueReviews: 1,
+        overdueInductions: 2,
+        dueReviews: 3,
+        dueInductions: 4,
+        exemptReviews: 5,
+        exemptInductions: 6,
+      },
+    },
+  })
+
+const stubGetSessionSummary404Error = (): SuperAgentRequest =>
+  stubFor({
+    request: {
+      method: 'GET',
+      urlPattern: `/session/[A-Z]{3}/summary`,
+    },
+    response: {
+      status: 404,
+      headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+      jsonBody: {
+        status: 404,
+        errorCode: null,
+        userMessage: 'Session Summary not found for prison',
+        developerMessage: 'Session Summary not found for prison',
+        moreInfo: null,
+      },
+    },
+  })
+
+const stubGetSessionSummary500Error = (): SuperAgentRequest =>
+  stubFor({
+    request: {
+      method: 'GET',
+      urlPattern: `/session/[A-Z]{3}/summary`,
+    },
+    response: {
+      status: 500,
+      headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+      jsonBody: {
+        status: 500,
+        errorCode: null,
+        userMessage: 'An unexpected error occurred',
+        developerMessage: 'An unexpected error occurred',
+        moreInfo: null,
+      },
+    },
+  })
+
 export default {
   createGoals,
 
@@ -1310,6 +1368,10 @@ export default {
   stubGetInductionSchedule500Error,
   stubUpdateInductionScheduleStatus,
   stubUpdateInductionScheduleStatus500Error,
+
+  stubGetSessionSummary,
+  stubGetSessionSummary404Error,
+  stubGetSessionSummary500Error,
 
   stubEducationAndWorkPlanApiPing: stubPing(),
 }
