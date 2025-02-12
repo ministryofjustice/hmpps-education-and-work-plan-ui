@@ -1,28 +1,29 @@
 import type {
   ActionPlanResponse,
+  ActionPlanReviewsResponse,
   ActionPlanSummaryListResponse,
-  CreateGoalsRequest,
-  GetActionPlanSummariesRequest,
-  UpdateGoalRequest,
-  TimelineResponse,
-  InductionResponse,
-  UpdateInductionRequest,
-  CreateInductionRequest,
-  CompleteGoalRequest,
   ArchiveGoalRequest,
-  UnarchiveGoalRequest,
-  TimelineEventResponse,
-  GetGoalsResponse,
-  CreateEducationRequest,
-  EducationResponse,
-  UpdateEducationRequest,
+  CompleteGoalRequest,
+  CreateActionPlanRequest,
   CreateActionPlanReviewRequest,
   CreateActionPlanReviewResponse,
-  ActionPlanReviewsResponse,
+  CreateEducationRequest,
+  CreateGoalsRequest,
+  CreateInductionRequest,
+  EducationResponse,
+  GetActionPlanSummariesRequest,
+  GetGoalsResponse,
+  InductionResponse,
   InductionScheduleResponse,
-  CreateActionPlanRequest,
-  UpdateReviewScheduleStatusRequest,
+  SessionSummaryResponse,
+  TimelineEventResponse,
+  TimelineResponse,
+  UnarchiveGoalRequest,
+  UpdateEducationRequest,
+  UpdateGoalRequest,
+  UpdateInductionRequest,
   UpdateInductionScheduleStatusRequest,
+  UpdateReviewScheduleStatusRequest,
 } from 'educationAndWorkPlanApiClient'
 import RestClient from './restClient'
 import config from '../config'
@@ -215,6 +216,13 @@ export default class EducationAndWorkPlanClient {
     return EducationAndWorkPlanClient.restClient(token).put({
       path: `/person/${prisonNumber}/education`,
       data: updateEducationRequest,
+    })
+  }
+
+  async getSessionSummary(prisonId: string, token: string): Promise<SessionSummaryResponse> {
+    return EducationAndWorkPlanClient.restClient(token).get<SessionSummaryResponse>({
+      path: `/session/${prisonId}/summary`,
+      ignore404: true,
     })
   }
 }

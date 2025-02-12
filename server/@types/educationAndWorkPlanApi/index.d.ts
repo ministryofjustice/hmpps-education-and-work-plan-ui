@@ -328,6 +328,22 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/session/{prisonId}/summary': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get: operations['getSessionSummary']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/queue-admin/get-dlq-messages/{dlqName}': {
     parameters: {
       query?: never
@@ -858,6 +874,7 @@ export interface components {
         | 'EXEMPT_PRISONER_TRANSFER'
         | 'EXEMPT_PRISONER_RELEASE'
         | 'EXEMPT_PRISONER_DEATH'
+        | 'EXEMPT_PRISONER_MERGE'
         | 'EXEMPT_SCREENING_AND_ASSESSMENT_IN_PROGRESS'
         | 'EXEMPT_SCREENING_AND_ASSESSMENT_INCOMPLETE'
         | 'COMPLETED'
@@ -891,15 +908,13 @@ export interface components {
       /** Format: uuid */
       reference: string
       content: string
-      createdBy?: string
-      createdByDisplayName?: string
+      createdBy: string
       /** Format: date-time */
-      createdAt?: string
+      createdAt: string
       createdAtPrison: string
-      lastUpdatedBy?: string
-      lastUpdatedByDisplayName?: string
+      lastUpdatedBy: string
       /** Format: date-time */
-      lastUpdatedAt?: string
+      lastUpdatedAt: string
       lastUpdatedAtPrison: string
     }
     UpdateReviewScheduleStatusRequest: {
@@ -927,6 +942,7 @@ export interface components {
         | 'EXEMPT_PRISONER_TRANSFER'
         | 'EXEMPT_PRISONER_RELEASE'
         | 'EXEMPT_PRISONER_DEATH'
+        | 'EXEMPT_PRISONER_MERGE'
         | 'EXEMPT_UNKNOWN'
         | 'COMPLETED'
       /**
@@ -1491,6 +1507,7 @@ export interface components {
         | 'EXEMPT_PRISONER_TRANSFER'
         | 'EXEMPT_PRISONER_RELEASE'
         | 'EXEMPT_PRISONER_DEATH'
+        | 'EXEMPT_PRISONER_MERGE'
         | 'EXEMPT_UNKNOWN'
         | 'COMPLETED'
       /**
@@ -1679,6 +1696,44 @@ export interface components {
     HmppsSubjectAccessRequestContent: {
       /** @description The content of the subject access request response */
       content: Record<string, never>
+    }
+    SessionSummaryResponse: {
+      /**
+       * Format: int32
+       * @description Number of overdue reviews
+       * @example 0
+       */
+      overdueReviews?: number
+      /**
+       * Format: int32
+       * @description Number of overdue inductions
+       * @example 0
+       */
+      overdueInductions?: number
+      /**
+       * Format: int32
+       * @description Number of due reviews
+       * @example 1
+       */
+      dueReviews?: number
+      /**
+       * Format: int32
+       * @description Number of due inductions
+       * @example 0
+       */
+      dueInductions?: number
+      /**
+       * Format: int32
+       * @description Number of exempt reviews
+       * @example 0
+       */
+      exemptReviews?: number
+      /**
+       * Format: int32
+       * @description Number of exempt inductions
+       * @example 0
+       */
+      exemptInductions?: number
     }
     DlqMessage: {
       body: {
@@ -2374,14 +2429,7 @@ export interface components {
        * @example null
        * @enum {string}
        */
-      scheduleCalculationRule:
-        | 'NEW_PRISON_ADMISSION'
-        | 'EXISTING_PRISONER_LESS_THAN_6_MONTHS_TO_SERVE'
-        | 'EXISTING_PRISONER_BETWEEN_6_AND_12_MONTHS_TO_SERVE'
-        | 'EXISTING_PRISONER_BETWEEN_12_AND_60_MONTHS_TO_SERVE'
-        | 'EXISTING_PRISONER_INDETERMINATE_SENTENCE'
-        | 'EXISTING_PRISONER_ON_REMAND'
-        | 'EXISTING_PRISONER_UN_SENTENCED'
+      scheduleCalculationRule: 'NEW_PRISON_ADMISSION' | 'EXISTING_PRISONER'
       /**
        * @example null
        * @enum {string}
@@ -2402,6 +2450,7 @@ export interface components {
         | 'EXEMPT_PRISONER_TRANSFER'
         | 'EXEMPT_PRISONER_RELEASE'
         | 'EXEMPT_PRISONER_DEATH'
+        | 'EXEMPT_PRISONER_MERGE'
         | 'EXEMPT_SCREENING_AND_ASSESSMENT_IN_PROGRESS'
         | 'EXEMPT_SCREENING_AND_ASSESSMENT_INCOMPLETE'
         | 'COMPLETED'
@@ -2453,10 +2502,20 @@ export interface components {
        */
       inductionPerformedBy?: string
       /**
+       * @description The role of the person who completed the review.
+       * @example Peer Mentor
+       */
+      inductionPerformedByRole?: string
+      /**
        * Format: date
        * @description the date when this resource was updated.
        */
       inductionPerformedAt?: string
+      /**
+       * @description The prison that the induction was performed at.
+       * @example BCI
+       */
+      inductionPerformedAtPrison?: string
       /**
        * @description An optional reason as to why the induction Schedule is exempted.  Only relevant and processed when the `status` field is one of the `EXEMPTION_` statuses.   This field is not mandatory, even when the `status` field is one of the `EXEMPTION_` statuses.
        * @example null
@@ -3648,6 +3707,28 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  getSessionSummary: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        prisonId: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          '*/*': components['schemas']['SessionSummaryResponse']
         }
       }
     }
