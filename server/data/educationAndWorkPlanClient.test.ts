@@ -30,6 +30,7 @@ import aValidCreateActionPlanReviewResponse from '../testsupport/createActionPla
 import aValidCreateActionPlanRequest from '../testsupport/createActionPlanRequestTestDataBuilder'
 import aValidUpdateReviewScheduleStatusRequest from '../testsupport/updateReviewScheduleStatusRequestTestDataBuilder'
 import aValidUpdateInductionScheduleStatusRequest from '../testsupport/updateInductionScheduleStatusRequestTestDataBuilder'
+import aValidSessionSummaryResponse from '../testsupport/sessionSummaryResponseTestDataBuilder'
 
 describe('educationAndWorkPlanClient', () => {
   const educationAndWorkPlanClient = new EducationAndWorkPlanClient()
@@ -37,6 +38,7 @@ describe('educationAndWorkPlanClient', () => {
   config.apis.educationAndWorkPlan.url = 'http://localhost:8200'
   let educationAndWorkPlanApi: nock.Scope
 
+  const prisonId = 'BXI'
   const prisonNumber = 'A1234BC'
   const systemToken = 'a-system-token'
 
@@ -990,6 +992,58 @@ describe('educationAndWorkPlanClient', () => {
         expect(e.status).toEqual(500)
         expect(e.data).toEqual(expectedResponseBody)
       }
+    })
+  })
+
+  describe('getSessionSummary', () => {
+    it('should get Session Summary', async () => {
+      // Given
+      const expectedSessionSummaryResponse = aValidSessionSummaryResponse()
+      educationAndWorkPlanApi.get(`/session/${prisonId}/summary`).reply(200, expectedSessionSummaryResponse)
+
+      // When
+      const actual = await educationAndWorkPlanClient.getSessionSummary(prisonId, systemToken)
+
+      // Then
+      expect(nock.isDone()).toBe(true)
+      expect(actual).toEqual(expectedSessionSummaryResponse)
+    })
+
+    it('should not get Session Summary given API returns error response', async () => {
+      // Given
+      const expectedResponseBody = {
+        status: 500,
+        userMessage: 'An unexpected error occurred',
+        developerMessage: 'An unexpected error occurred',
+      }
+      educationAndWorkPlanApi.get(`/session/${prisonId}/summary`).thrice().reply(500, expectedResponseBody)
+
+      // When
+      try {
+        await educationAndWorkPlanClient.getSessionSummary(prisonId, systemToken)
+      } catch (e) {
+        // Then
+        expect(nock.isDone()).toBe(true)
+        expect(e.status).toEqual(500)
+        expect(e.data).toEqual(expectedResponseBody)
+      }
+    })
+
+    it('should not get Session Summary given API returns 404 response', async () => {
+      // Given
+      const apiErrorResponseBody = {
+        status: 404,
+        userMessage: 'Some error',
+        developerMessage: 'Some error',
+      }
+      educationAndWorkPlanApi.get(`/session/${prisonId}/summary`).reply(404, apiErrorResponseBody)
+
+      // When
+      const actual = await educationAndWorkPlanClient.getSessionSummary(prisonId, systemToken)
+
+      // Then
+      expect(nock.isDone()).toBe(true)
+      expect(actual).toBeNull()
     })
   })
 })
