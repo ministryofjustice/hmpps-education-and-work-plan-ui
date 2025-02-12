@@ -5,12 +5,14 @@ import type { PrisonerSearchSummary } from 'viewModels'
 import Page from '../../pages/page'
 import SessionsSummaryPage from '../../pages/sessionSummary/SessionsSummaryPage'
 import PrisonerListPage from '../../pages/prisonerList/PrisonerListPage'
+import Error500Page from '../../pages/error500'
 
 context(`Display the Sessions Summary screen`, () => {
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubSignInAsUserWithManagerRole')
     cy.task('stubAuthUser')
+    cy.task('stubGetSessionSummary')
   })
 
   it(`users with authority MANAGER should get the sessions summary page as their landing page straight after login`, () => {
@@ -21,7 +23,10 @@ context(`Display the Sessions Summary screen`, () => {
     cy.signIn()
 
     // Then
-    Page.verifyOnPage(SessionsSummaryPage)
+    Page.verifyOnPage(SessionsSummaryPage) //
+      .hasNumberOfSessionsDue(7)
+      .hasNumberOfSessionsOverdue(3)
+      .hasNumberOfSessionsOnHold(11)
   })
 
   it('should be able to navigate directly to the session summary page', () => {
@@ -33,6 +38,28 @@ context(`Display the Sessions Summary screen`, () => {
 
     // Then
     Page.verifyOnPage(SessionsSummaryPage)
+  })
+
+  it('should display error page given API returns 404 for session summary call', () => {
+    // Given
+    cy.task('stubGetSessionSummary404Error')
+
+    // When
+    cy.signIn()
+
+    // Then
+    Page.verifyOnPage(Error500Page)
+  })
+
+  it('should display error page given API returns 500 for session summary call', () => {
+    // Given
+    cy.task('stubGetSessionSummary500Error')
+
+    // When
+    cy.signIn()
+
+    // Then
+    Page.verifyOnPage(Error500Page)
   })
 
   describe('scenarios that arrive on the prisoner list page', () => {
