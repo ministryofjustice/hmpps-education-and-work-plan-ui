@@ -5,6 +5,7 @@ import aValidPrisonerSummary from '../../../../testsupport/prisonerSummaryTestDa
 import formatReasonToArchiveGoalFilter from '../../../../filters/formatReasonToArchiveGoalFilter'
 import ReasonToArchiveGoalValue from '../../../../enums/ReasonToArchiveGoalValue'
 import findErrorFilter from '../../../../filters/findErrorFilter'
+import assetMapFilter from '../../../../filters/assetMapFilter'
 
 const njkEnv = nunjucks.configure([
   'node_modules/govuk-frontend/dist/',
@@ -12,8 +13,11 @@ const njkEnv = nunjucks.configure([
   'server/views/',
   __dirname,
 ])
-njkEnv.addFilter('formatReasonToArchiveGoal', formatReasonToArchiveGoalFilter)
-njkEnv.addFilter('findError', findErrorFilter)
+
+njkEnv //
+  .addFilter('formatReasonToArchiveGoal', formatReasonToArchiveGoalFilter)
+  .addFilter('findError', findErrorFilter)
+  .addFilter('assetMap', assetMapFilter)
 
 describe('archive reason template', () => {
   it('should keep key fields in the form', () => {

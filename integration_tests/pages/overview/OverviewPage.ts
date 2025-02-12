@@ -1,6 +1,5 @@
 import Page, { PageElement } from '../page'
 import CreateGoalsPage from '../goal/CreateGoalsPage'
-// eslint-disable-next-line import/no-cycle
 import HopingToWorkOnReleasePage from '../induction/HopingToWorkOnReleasePage'
 import EducationAndTrainingPage from './EducationAndTrainingPage'
 import GoalsPage from './GoalsPage'

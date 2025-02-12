@@ -28,13 +28,11 @@
 {% from "../components/actions-card/macro.njk" import actionsCard %}
 
 {% block head %}
-  <link href="/assets/stylesheets/application.css?{{ version }}" rel="stylesheet"/>
+  <link href="{{ '/assets/css/app.css' | assetMap }}" rel="stylesheet" />
 
   {% for css in feComponents.cssIncludes %}
     <link href="{{ css }}" nonce="{{ cspNonce }}" rel="stylesheet" />
   {% endfor %}
-
-  <link href="/assets/stylesheets/print.css?{{ version }}" media="print" rel="stylesheet" />
 {% endblock %}
 
 {% block pageTitle %}{{ pageTitle | default(applicationName) }} - {{ applicationName }}{% endblock %}
@@ -97,17 +95,13 @@
 {% block bodyEnd %}
   {# Run JavaScript at end of the
   <body>, to avoid blocking the initial render. #}
-  <script src="/assets/js/jquery.min.js"></script> 
-  <script type="module" src="/assets/govukFrontendInit.js"></script>
-  <script src="/assets/moj/all.js"></script>
-  <script src="/assets/mojFrontendInit.js"></script>
-  <script src="/assets/print.js"></script>
-  <script src="/assets/applicationinsights-web.min.js"></script>
-  <script src="/assets/applicationinsights-clickanalytics-js.min.js"></script>
-  <script src="/assets/applicationinsights.js"></script>
-  <script src="/assets/backLink.js"></script>
+  <script src="/assets/js/jquery.min.js"></script>
+
+  <script type="module" src="{{ '/assets/js/app.js' | assetMap }}"></script>
   <script nonce="{{ cspNonce }}">
-    window.applicationInsights.init('{{ applicationInsightsConnectionString }}', '{{ applicationInsightsRoleName }}', '{{ user.username }}');
+    document.addEventListener('DOMContentLoaded', () => {
+      window.initApplicationInsights('{{ applicationInsightsConnectionString }}', '{{ applicationInsightsRoleName }}', '{{ user.username }}')
+    })
   </script>
 
   {% for js in feComponents.jsIncludes %}
