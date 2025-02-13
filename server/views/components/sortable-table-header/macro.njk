@@ -1,0 +1,11 @@
+{#  -------------------------------------------------------------
+    Sortable column header for use on search results pages
+    `config` argument is an object with the following properties:
+      * sortBy - the fieldName that the Prisoner List is currently sorted by ( name | location | release-date | reception-date | status)
+      * sortOrder - the sort order that the Prisoner List is currently sorted on ( ascending | descending )
+      * fieldName - field name of this column ( name | location | release-date | reception-date | status)
+      * headerText - Display text for table header of this column
+    ------------------------------------------------------------- #}
+{% macro sortableTableHeader(config) %}
+  {%- include "./template.njk" -%}
+{% endmacro %}

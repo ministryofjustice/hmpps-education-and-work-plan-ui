@@ -1,4 +1,4 @@
-{% from "../macros/sortableTableHeader.njk" import sortableTableHeader %}
+{% from "../../../components/sortable-table-header/macro.njk" import sortableTableHeader %}
 
 {# TODO: Logic for the problemRetrievingData #}
 {% if not ciagPrisonerList.problemRetrievingData %}
@@ -19,40 +19,30 @@
         <thead class="govuk-table__head">
           <tr class="govuk-table__row" data-qa="sortable-table-headers">
             {{ sortableTableHeader({
-              searchTerm: searchTerm,
-              statusFilter: statusFilter,
               sortBy: sortBy,
               sortOrder: sortOrder,
               fieldName: 'name',
               headerText: 'Prisoner'
             }) }}
             {{ sortableTableHeader({
-              searchTerm: searchTerm,
-              statusFilter: statusFilter,
               sortBy: sortBy,
               sortOrder: sortOrder,
               fieldName: 'location',
               headerText: 'Location'
             }) }}
             {{ sortableTableHeader({
-              searchTerm: searchTerm,
-              statusFilter: statusFilter,
               sortBy: sortBy,
               sortOrder: sortOrder,
               fieldName: 'release-date',
               headerText: 'Release date'
             }) }}
             {{ sortableTableHeader({
-              searchTerm: searchTerm,
-              statusFilter: statusFilter,
               sortBy: sortBy,
               sortOrder: sortOrder,
               fieldName: 'reception-date',
               headerText: 'Entered prison on'
             }) }}
             {{ sortableTableHeader({
-              searchTerm: searchTerm,
-              statusFilter: statusFilter,
               sortBy: sortBy,
               sortOrder: sortOrder,
               fieldName: 'status',

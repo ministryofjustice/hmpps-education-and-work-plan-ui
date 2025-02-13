@@ -1,5 +1,7 @@
 {% extends "../../partials/layout.njk" %}
+{% from "../../components/sortable-table-header/macro.njk" import sortableTableHeader %}
 {% from "./macros/nonJavascriptTabBar.njk" import nonJavascriptTabBar %}
+{% from "./macros/searchResultsTable.njk" import searchResultsTable %}
 
 {% set pageId = 'overdue-sessions-list-page' %}
 {% set pageTitle = "Overdue sessions" %}
@@ -23,8 +25,49 @@
     <div class="govuk-grid-column-full">
       <h1 class="govuk-heading-l">Overdue sessions</h1>
 
+      {% set columnHeadings %}
+        {{ sortableTableHeader({
+          sortBy: sortBy,
+          sortOrder: sortOrder,
+          fieldName: 'name',
+          headerText: 'Prisoner'
+        }) }}
+        {{ sortableTableHeader({
+          sortBy: sortBy,
+          sortOrder: sortOrder,
+          fieldName: 'location',
+          headerText: 'Location'
+        }) }}
+        {{ sortableTableHeader({
+          sortBy: sortBy,
+          sortOrder: sortOrder,
+          fieldName: 'release-date',
+          headerText: 'Release date'
+        }) }}
+        {{ sortableTableHeader({
+          sortBy: sortBy,
+          sortOrder: sortOrder,
+          fieldName: 'session-type',
+          headerText: 'Session type'
+        }) }}
+        {{ sortableTableHeader({
+          sortBy: sortBy,
+          sortOrder: sortOrder,
+          fieldName: 'due-by',
+          headerText: 'Was due by'
+        }) }}
+      {% endset %}
+
       {% set tabContent %}
         {% include './_searchBox.njk' %}
+
+        {{ searchResultsTable({
+          heading: 'xx overdue inductions and reviews',
+          columnHeadings: columnHeadings,
+          searchTerm: searchTerm,
+          sessionType: sessionType,
+          page: page
+        }) }}
       {% endset %}
 
       {{ nonJavascriptTabBar({
