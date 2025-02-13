@@ -18,17 +18,17 @@
     <ul class="govuk-tabs__list" role="tablist">
       <li class="govuk-tabs__list-item {{ 'govuk-tabs__list-item--selected' if config.activeTab == 'OVERDUE_SESSIONS' }}" role="presentation">
         <a class="govuk-tabs__tab" href="/sessions/overdue" id="tab_overdue-sessions" role="tab" aria-selected="{{ 'true' if config.activeTab == 'OVERDUE_SESSIONS' else 'false' }}" tabindex="{{ '0' if config.activeTab == 'OVERDUE_SESSIONS' else '-1' }}">
-          Overdue ({{ config.overdueSessionCount }} session{{ 's' if config.overdueSessionCount > 1 }})
+          Overdue ({{ config.overdueSessionCount }} session{{ 's' if config.overdueSessionCount !== 1 }})
         </a>
       </li>
       <li class="govuk-tabs__list-item {{ 'govuk-tabs__list-item--selected' if config.activeTab == 'DUE_SESSIONS' }}" role="presentation">
         <a class="govuk-tabs__tab" href="/sessions/due" id="tab_due-sessions" role="tab" aria-selected="{{ 'true' if config.activeTab == 'DUE_SESSIONS' else 'false' }}" tabindex="{{ '0' if config.activeTab == 'DUE_SESSIONS' else '-1' }}">
-          Due ({{ config.dueSessionCount }} session{{ 's' if config.dueSessionCount > 1 }})
+          Due ({{ config.dueSessionCount }} session{{ 's' if config.dueSessionCount !== 1 }})
         </a>
       </li>
       <li class="govuk-tabs__list-item {{ 'govuk-tabs__list-item--selected' if config.activeTab == 'ON_HOLD_SESSIONS' }}" role="presentation">
         <a class="govuk-tabs__tab" href="/sessions/on-hold" id="tab_on-hold-sessions" role="tab" aria-selected="{{ 'true' if config.activeTab == 'ON_HOLD_SESSIONS' else 'false' }}" tabindex="{{ '0' if config.activeTab == 'ON_HOLD_SESSIONS' else '-1' }}">
-          On hold ({{ config.onHoldSessionCount }} session{{ 's' if config.onHoldSessionCount > 1 }})
+          On hold ({{ config.onHoldSessionCount }} session{{ 's' if config.onHoldSessionCount !== 1 }})
         </a>
       </li>
     </ul>
