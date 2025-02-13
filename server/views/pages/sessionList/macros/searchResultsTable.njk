@@ -1,0 +1,70 @@
+{#  -------------------------------------------------------------
+    Search Results, specifically for the Session List pages
+
+    `config` argument is an object with the following properties:
+      * heading
+      * columnHeadings
+      * items
+      * searchTerm
+      * sessionType
+      * page
+    ------------------------------------------------------------- #}
+{% macro searchResultsTable(config) %}
+  {% from "moj/components/pagination/macro.njk" import mojPagination %}
+
+  <h2 class="govuk-heading-m">{{ config.heading }}</h2>
+
+  {# Wrap the Session List table in a form that contains hidden fields for the current search term, sessionType filter and page.
+   This ensures that when then Session List page is sorted via the buttons in the table header the current
+   search term, sessionType filter and page are maintained.
+  #}
+  <form class="form" method="get">
+    <input type="hidden" name="searchTerm" value="{{ config.searchTerm }}" />
+    <input type="hidden" name="sessionType" value="{{ config.sessionType }}" />
+    <input type="hidden" name="page" value="{{ config.page }}" />
+
+    <table class="govuk-table" data-qa="session-list-results-table">
+      <caption><span class="govuk-visually-hidden">column headers with buttons are sortable.</span></caption>
+      <thead class="govuk-table__head">
+        <tr class="govuk-table__row" data-qa="sortable-table-headers">
+          {{ config.columnHeadings | safe }}
+        </tr>
+      </thead>
+
+      <tbody class="govuk-table__body">
+        {{ config.items | safe }}
+        {#
+        {% for prisoner in currentPageOfRecords %}
+          <tr class="govuk-table__row">
+            <td class="govuk-table__cell">
+              <a href="/plan/{{ prisoner.prisonNumber }}/view/overview" data-id="prisoner-list-prisoner-{{ prisoner.prisonNumber }}" rel="noopener noreferrer" class="govuk-link govuk-link--no-visited-state">
+                {{ prisoner.lastName }}, {{ prisoner.firstName }}
+              </a>
+              <br>
+              <span class='govuk-hint govuk-!-margin-bottom-0'>{{ prisoner.prisonNumber }}</span>
+            </td>
+            <td class="govuk-table__cell">{{ prisoner.location }}</td>
+            <td class="govuk-table__cell">{{ prisoner.releaseDate | formatDate('D MMMM YYYY') or 'N/A' }}</td>
+            <td class="govuk-table__cell">{{ prisoner.receptionDate | formatDate('D MMMM YYYY') or 'N/A' }}</td>
+            <td class="govuk-table__cell">
+              {% if not (prisoner.hasCiagInduction === true and prisoner.hasActionPlan === true) %}
+                <strong class="govuk-tag govuk-tag--red">Needs plan</strong>
+              {% endif %}
+            </td>
+          </tr>
+        {% endfor %}
+        #}
+      </tbody>
+    </table>
+  </form>
+
+  <section data-qa="session-list-pagination">
+    {{ mojPagination({
+      items: items,
+      results: results,
+      previous: previousPage if previousPage.href,
+      next: nextPage if nextPage.href
+    }) }}
+  </section>
+
+{% endmacro %}

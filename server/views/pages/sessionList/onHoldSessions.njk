@@ -1,5 +1,7 @@
 {% extends "../../partials/layout.njk" %}
+{% from "../../components/sortable-table-header/macro.njk" import sortableTableHeader %}
 {% from "./macros/nonJavascriptTabBar.njk" import nonJavascriptTabBar %}
+{% from "./macros/searchResultsTable.njk" import searchResultsTable %}
 
 {% set pageId = 'on-hold-sessions-list-page' %}
 {% set pageTitle = "Sessions on hold" %}
@@ -23,8 +25,50 @@
     <div class="govuk-grid-column-full">
       <h1 class="govuk-heading-l">Sessions on hold</h1>
 
+      {% set columnHeadings %}
+        {{ sortableTableHeader({
+          sortBy: sortBy,
+          sortOrder: sortOrder,
+          fieldName: 'name',
+          headerText: 'Prisoner'
+        }) }}
+        {{ sortableTableHeader({
+          sortBy: sortBy,
+          sortOrder: sortOrder,
+          fieldName: 'location',
+          headerText: 'Location'
+        }) }}
+        {{ sortableTableHeader({
+          sortBy: sortBy,
+          sortOrder: sortOrder,
+          fieldName: 'session-type',
+          headerText: 'Session type'
+        }) }}
+        {{ sortableTableHeader({
+          sortBy: sortBy,
+          sortOrder: sortOrder,
+          fieldName: 'exemption-entered-on',
+          headerText: 'Exemption entered on'
+        }) }}
+        {{ sortableTableHeader({
+          sortBy: sortBy,
+          sortOrder: sortOrder,
+          fieldName: 'exemption-reason',
+          headerText: 'Exemption reason'
+        }) }}
+        <th scope="col" class="govuk-table__header" aria-sort="none"></th>
+      {% endset %}
+
       {% set tabContent %}
         {% include './_searchBox.njk' %}
+
+        {{ searchResultsTable({
+          heading: 'xx sessions on hold',
+          columnHeadings: columnHeadings,
+          searchTerm: searchTerm,
+          sessionType: sessionType,
+          page: page
+        }) }}
       {% endset %}
 
       {{ nonJavascriptTabBar({

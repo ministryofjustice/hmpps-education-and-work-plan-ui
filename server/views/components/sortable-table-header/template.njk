@@ -1,0 +1,25 @@
+<th scope="col" class="govuk-table__header"
+    aria-sort="{{ config.sortOrder if config.sortBy === config.fieldName else 'none' }}" {# If this column header is the current sortBy field then use the current sort order value, else `none`#}
+    data-qa="{{ config.fieldName }}-column-header">
+
+  {# Set a variable defining the new sort order that will be used if this header is clicked.
+     If this column header is the current sortBy field then use the opposite of the current sort order.
+     If this column header is not the current sortBy field then use `ascending`
+  #}
+  {%- set newSortOrder -%}
+    {%- if config.sortBy !== config.fieldName -%}
+      ascending
+    {%- else -%}
+      {{- 'ascending' if config.sortOrder === 'descending' else 'descending' -}}
+    {%- endif -%}
+  {%- endset -%}
+
+  <button
+    {# Button submits the form with the field `sort` set to a comma delimited value of the field name and the new sort order #}
+    name="sort"
+    value="{{ config.fieldName }},{{ newSortOrder }}"
+    type="submit"
+    class="sortable-table-header__button">
+    {{ config.headerText }}
+  </button>
+</th>
