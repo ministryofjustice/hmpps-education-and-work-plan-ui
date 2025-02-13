@@ -4,11 +4,16 @@ import { checkUserHasPermissionTo } from '../../middleware/roleBasedAccessContro
 import ApplicationAction from '../../enums/applicationAction'
 import asyncMiddleware from '../../middleware/asyncMiddleware'
 import SessionListController from './sessionListController'
+import retrieveSessionsSummary from '../routerRequestHandlers/retrieveSessionsSummary'
 
-const sessionListRoutes = (router: Router, _services: Services) => {
+const sessionListRoutes = (router: Router, services: Services) => {
+  const { sessionService } = services
   const sessionListController = new SessionListController()
 
-  router.use('/sessions/*', [checkUserHasPermissionTo(ApplicationAction.VIEW_SESSION_SUMMARIES)])
+  router.use('/sessions/*', [
+    checkUserHasPermissionTo(ApplicationAction.VIEW_SESSION_SUMMARIES),
+    retrieveSessionsSummary(sessionService),
+  ])
 
   router.get('/sessions/due', [asyncMiddleware(sessionListController.getDueSessionsView)])
 

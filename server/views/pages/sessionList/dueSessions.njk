@@ -62,7 +62,6 @@
         {% include './_searchBox.njk' %}
 
         {{ searchResultsTable({
-          heading: 'xx inductions and reviews due',
           columnHeadings: columnHeadings,
           searchTerm: searchTerm,
           sessionType: sessionType,
@@ -72,6 +71,9 @@
 
       {{ nonJavascriptTabBar({
         activeTab: 'DUE_SESSIONS',
+        overdueSessionCount: sessionsSummary.overdueSessionCount,
+        dueSessionCount: sessionsSummary.dueSessionCount,
+        onHoldSessionCount: sessionsSummary.onHoldSessionCount,
         content: tabContent
       }) }}
 

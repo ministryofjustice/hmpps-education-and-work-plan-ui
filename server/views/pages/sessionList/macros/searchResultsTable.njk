@@ -2,7 +2,6 @@
     Search Results, specifically for the Session List pages
 
     `config` argument is an object with the following properties:
-      * heading
       * columnHeadings
       * items
       * searchTerm
@@ -11,8 +10,6 @@
     ------------------------------------------------------------- #}
 {% macro searchResultsTable(config) %}
   {% from "moj/components/pagination/macro.njk" import mojPagination %}
-
-  <h2 class="govuk-heading-m">{{ config.heading }}</h2>
 
   {# Wrap the Session List table in a form that contains hidden fields for the current search term, sessionType filter and page.
    This ensures that when then Session List page is sorted via the buttons in the table header the current

@@ -63,7 +63,6 @@
         {% include './_searchBox.njk' %}
 
         {{ searchResultsTable({
-          heading: 'xx sessions on hold',
           columnHeadings: columnHeadings,
           searchTerm: searchTerm,
           sessionType: sessionType,
@@ -73,6 +72,9 @@
 
       {{ nonJavascriptTabBar({
         activeTab: 'ON_HOLD_SESSIONS',
+        overdueSessionCount: sessionsSummary.overdueSessionCount,
+        dueSessionCount: sessionsSummary.dueSessionCount,
+        onHoldSessionCount: sessionsSummary.onHoldSessionCount,
         content: tabContent
       }) }}
 
