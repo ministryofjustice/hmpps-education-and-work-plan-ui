@@ -33,7 +33,7 @@ describe('createGoalsController', () => {
   const prisonNumber = 'A1234BC'
   const username = 'a-dps-user'
   const expectedPrisonId = 'MDI'
-  const prisonerSummary = aValidPrisonerSummary(prisonNumber, expectedPrisonId)
+  const prisonerSummary = aValidPrisonerSummary({ prisonNumber, prisonId: expectedPrisonId })
   const requestId = 'deff305c-2460-4d07-853e-f8762a8a52c6'
 
   const req = {

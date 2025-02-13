@@ -10,7 +10,7 @@ describe('supportNeedsController', () => {
   const controller = new SupportNeedsController()
 
   const prisonNumber = 'A1234GC'
-  const prisonerSummary = aValidPrisonerSummary(prisonNumber)
+  const prisonerSummary = aValidPrisonerSummary({ prisonNumber })
   const prisonerSupportNeeds = aValidPrisonerSupportNeeds()
 
   const req = {

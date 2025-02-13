@@ -1,17 +1,28 @@
 import { startOfDay } from 'date-fns'
 import type { PrisonerSummary } from 'viewModels'
 
-export default function aValidPrisonerSummary(prisonNumber = 'A1234BC', prisonId = 'BXI'): PrisonerSummary {
+export default function aValidPrisonerSummary(options?: {
+  prisonNumber?: string
+  prisonId?: string
+  releaseDate?: Date
+  firstName?: string
+  lastName?: string
+  receptionDate?: Date
+  dateOfBirth?: Date
+  location?: string
+  restrictedPatient?: boolean
+  supportingPrisonId?: string
+}): PrisonerSummary {
   return {
-    prisonNumber,
-    prisonId,
-    releaseDate: startOfDay('2025-12-31'),
-    firstName: 'Jimmy',
-    lastName: 'Lightfingers',
-    receptionDate: startOfDay('1999-08-29'),
-    dateOfBirth: startOfDay('1969-02-12'),
-    location: 'A-1-102',
-    restrictedPatient: false,
-    supportingPrisonId: undefined,
+    prisonNumber: options?.prisonNumber || 'A1234BC',
+    prisonId: options?.prisonId || 'BXI',
+    releaseDate: options?.releaseDate || startOfDay('2025-12-31'),
+    firstName: options?.firstName || 'Jimmy',
+    lastName: options?.lastName || 'Lightfingers',
+    receptionDate: options?.receptionDate || startOfDay('1999-08-29'),
+    dateOfBirth: options?.dateOfBirth || startOfDay('1969-02-12'),
+    location: options?.location || 'A-1-102',
+    restrictedPatient: !options || options.restrictedPatient == null ? false : options.restrictedPatient,
+    supportingPrisonId: options?.supportingPrisonId,
   }
 }

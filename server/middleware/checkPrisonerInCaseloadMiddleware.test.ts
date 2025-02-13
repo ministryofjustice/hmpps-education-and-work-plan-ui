@@ -16,7 +16,7 @@ describe('checkPrisonerInCaseloadMiddleware', () => {
   beforeEach(() => {
     jest.resetAllMocks()
     res.locals.user = hmppsUser()
-    res.locals.prisonerSummary = aValidPrisonerSummary(prisonNumber, prisonersPrisonId)
+    res.locals.prisonerSummary = aValidPrisonerSummary({ prisonNumber, prisonId: prisonersPrisonId })
   })
 
   it('should return an error given no prisoner summary on res.locals', async () => {
@@ -115,7 +115,7 @@ describe('checkPrisonerInCaseloadMiddleware', () => {
     const middleware = checkPrisonerInCaseload()
 
     beforeEach(() => {
-      const prisonerSummary = aValidPrisonerSummary(prisonNumber, prisonersPrisonId)
+      const prisonerSummary = aValidPrisonerSummary({ prisonNumber, prisonId: prisonersPrisonId })
       prisonerSummary.restrictedPatient = true
       prisonerSummary.supportingPrisonId = 'LEI'
       res.locals.prisonerSummary = prisonerSummary
@@ -197,7 +197,7 @@ describe('checkPrisonerInCaseloadMiddleware', () => {
   describe('prisoners with inactive bookings', () => {
     describe('prisoners with a prisonId of OUT', () => {
       beforeEach(() => {
-        const prisonerSummary = aValidPrisonerSummary(prisonNumber, 'OUT')
+        const prisonerSummary = aValidPrisonerSummary({ prisonNumber, prisonId: 'OUT' })
         res.locals.prisonerSummary = prisonerSummary
       })
 
@@ -252,7 +252,7 @@ describe('checkPrisonerInCaseloadMiddleware', () => {
 
     describe('prisoners with a prisonId of TRN', () => {
       beforeEach(() => {
-        const prisonerSummary = aValidPrisonerSummary(prisonNumber, 'TRN')
+        const prisonerSummary = aValidPrisonerSummary({ prisonNumber, prisonId: 'TRN' })
         res.locals.prisonerSummary = prisonerSummary
       })
 

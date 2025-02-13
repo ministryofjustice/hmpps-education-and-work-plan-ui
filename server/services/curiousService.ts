@@ -61,9 +61,16 @@ export default class CuriousService {
       // loop until the API response's `last` field is `true`
       while (apiPagedResponse.last === false) {
         // eslint-disable-next-line no-await-in-loop
-        apiPagedResponse = await this.curiousClient.getLearnerEducationPage(prisonNumber, systemToken, page)
+        apiPagedResponse = (await this.curiousClient.getLearnerEducationPage(prisonNumber, systemToken, page)) || {
+          last: true,
+          content: [],
+        }
         apiLearnerEducation.push(...apiPagedResponse.content)
         page += 1
+      }
+
+      if (apiLearnerEducation.length === 0) {
+        logger.info(`No learner education data found for prisoner [${prisonNumber}] in Curious`)
       }
 
       const allCourses = apiLearnerEducation
@@ -104,22 +111,6 @@ export default class CuriousService {
         prisonNumber,
       }
     } catch (error) {
-      if (error.status === 404) {
-        logger.info(`No learner education data found for prisoner [${prisonNumber}] in Curious`)
-        return {
-          problemRetrievingData: false,
-          totalRecords: 0,
-          coursesByStatus: {
-            COMPLETED: [],
-            IN_PROGRESS: [],
-            WITHDRAWN: [],
-            TEMPORARILY_WITHDRAWN: [],
-          },
-          coursesCompletedInLast12Months: [],
-          prisonNumber,
-        }
-      }
-
       logger.error('Error retrieving learner education data from Curious', error)
       return { problemRetrievingData: true } as InPrisonCourseRecords
     }

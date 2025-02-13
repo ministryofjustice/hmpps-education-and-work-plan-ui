@@ -1,31 +1,23 @@
 import type { PrisonerSearchSummary } from 'viewModels'
-import type { Prisoner } from 'prisonerSearchApiClient'
-import { HmppsAuthClient, PrisonerSearchClient } from '../data'
+import { HmppsAuthClient } from '../data'
 import EducationAndWorkPlanClient from '../data/educationAndWorkPlanClient'
 import CiagInductionClient from '../data/ciagInductionClient'
-import toPrisonerSearchSummary from '../data/mappers/prisonerSearchSummaryMapper'
+import PrisonerSearchService from './prisonerSearchService'
 
 export default class PrisonerListService {
   constructor(
     private readonly hmppsAuthClient: HmppsAuthClient,
-    private readonly prisonerSearchClient: PrisonerSearchClient,
+    private readonly prisonerSearchService: PrisonerSearchService,
     private readonly educationAndWorkPlanClient: EducationAndWorkPlanClient,
     private readonly ciagInductionClient: CiagInductionClient,
   ) {}
 
-  async getPrisonerSearchSummariesForPrisonId(
-    prisonId: string,
-    page: number,
-    pageSize: number,
-    username: string,
-  ): Promise<PrisonerSearchSummary[]> {
+  async getPrisonerSearchSummariesForPrisonId(prisonId: string, username: string): Promise<PrisonerSearchSummary[]> {
     const systemToken = await this.hmppsAuthClient.getSystemClientToken(username)
 
-    const prisoners: Prisoner[] = (
-      await this.prisonerSearchClient.getPrisonersByPrisonId(prisonId, page, pageSize, systemToken)
-    ).content
+    const prisonerSummaries = (await this.prisonerSearchService.getPrisonersByPrisonId(prisonId, username)).prisoners
 
-    const prisonNumbers: string[] = prisoners.map(prisoner => prisoner.prisonerNumber)
+    const prisonNumbers: string[] = prisonerSummaries.map(prisoner => prisoner.prisonNumber)
 
     const prisonersWithCiagInduction: string[] = (
       await this.ciagInductionClient.getCiagInductionsForPrisonNumbers(prisonNumbers, systemToken)
@@ -35,11 +27,10 @@ export default class PrisonerListService {
       await this.educationAndWorkPlanClient.getActionPlans(prisonNumbers, systemToken)
     ).actionPlanSummaries.map((actionPlanSummary: { prisonNumber: string }) => actionPlanSummary.prisonNumber)
 
-    return prisoners.map(prisoner => {
-      const prisonNumber: string = prisoner.prisonerNumber
-      const prisonerHasCiagInduction = prisonersWithCiagInduction.includes(prisonNumber)
-      const prisonerHasActionPlan = prisonersWithActionPlan.includes(prisonNumber)
-      return toPrisonerSearchSummary(prisoner, prisonerHasCiagInduction, prisonerHasActionPlan)
-    })
+    return prisonerSummaries.map(prisoner => ({
+      ...prisoner,
+      hasCiagInduction: prisonersWithCiagInduction.includes(prisoner.prisonNumber),
+      hasActionPlan: prisonersWithActionPlan.includes(prisoner.prisonNumber),
+    }))
   }
 }

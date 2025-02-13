@@ -27,7 +27,7 @@ describe('hopingToWorkOnReleaseUpdateController', () => {
 
   const prisonNumber = 'A1234BC'
   const username = 'a-dps-user'
-  const prisonerSummary = aValidPrisonerSummary(prisonNumber)
+  const prisonerSummary = aValidPrisonerSummary({ prisonNumber })
 
   const req = {
     session: {} as SessionData,

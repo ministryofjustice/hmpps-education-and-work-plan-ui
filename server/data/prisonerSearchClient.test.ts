@@ -104,5 +104,30 @@ describe('prisonerSearchClient', () => {
       expect(actual).toEqual(pagedCollectionOfPrisoners)
       expect(nock.isDone()).toBe(true)
     })
+
+    it('should get zero prisoners by prison id given API returns a 404', async () => {
+      // Given
+      const prisonId = 'some-unknown-prison-id'
+      const systemToken = 'a-system-token'
+
+      const page = 0
+      const pageSize = 100
+
+      const apiErrorResponse = {
+        status: 404,
+        userMessage: 'Not found',
+        developerMessage: 'Not found',
+      }
+      prisonerSearchApi
+        .get(`/prisoner-search/prison/${prisonId}?page=${page}&size=${pageSize}`)
+        .reply(404, apiErrorResponse)
+
+      // When
+      const actual = await prisonerSearchClient.getPrisonersByPrisonId(prisonId, page, pageSize, systemToken)
+
+      // Then
+      expect(actual).toBeNull()
+      expect(nock.isDone()).toBe(true)
+    })
   })
 })

@@ -97,12 +97,7 @@ describe('prisonerListController', () => {
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/prisonerList/index', expectedView)
-      expect(prisonerListService.getPrisonerSearchSummariesForPrisonId).toHaveBeenCalledWith(
-        'BXI',
-        0,
-        9999,
-        'AUSER_GEN',
-      )
+      expect(prisonerListService.getPrisonerSearchSummariesForPrisonId).toHaveBeenCalledWith('BXI', 'AUSER_GEN')
     })
 
     it('should not get prisoner list view given error calling service to get prisoner list summaries', async () => {
@@ -122,12 +117,7 @@ describe('prisonerListController', () => {
       )
 
       // Then
-      expect(prisonerListService.getPrisonerSearchSummariesForPrisonId).toHaveBeenCalledWith(
-        'BXI',
-        0,
-        9999,
-        'AUSER_GEN',
-      )
+      expect(prisonerListService.getPrisonerSearchSummariesForPrisonId).toHaveBeenCalledWith('BXI', 'AUSER_GEN')
       expect(res.render).not.toHaveBeenCalled()
       expect(next).toHaveBeenCalledWith(expectedError)
     })
@@ -170,12 +160,7 @@ describe('prisonerListController', () => {
 
         // Then
         expect(res.render).toHaveBeenCalledWith('pages/prisonerList/index', expectedView)
-        expect(prisonerListService.getPrisonerSearchSummariesForPrisonId).toHaveBeenCalledWith(
-          'BXI',
-          0,
-          9999,
-          'AUSER_GEN',
-        )
+        expect(prisonerListService.getPrisonerSearchSummariesForPrisonId).toHaveBeenCalledWith('BXI', 'AUSER_GEN')
       })
 
       it('should get prisoner list view given status filtering', async () => {
@@ -215,12 +200,7 @@ describe('prisonerListController', () => {
 
         // Then
         expect(res.render).toHaveBeenCalledWith('pages/prisonerList/index', expectedView)
-        expect(prisonerListService.getPrisonerSearchSummariesForPrisonId).toHaveBeenCalledWith(
-          'BXI',
-          0,
-          9999,
-          'AUSER_GEN',
-        )
+        expect(prisonerListService.getPrisonerSearchSummariesForPrisonId).toHaveBeenCalledWith('BXI', 'AUSER_GEN')
       })
 
       it('should get prisoner list view given name and status filtering', async () => {
@@ -261,12 +241,7 @@ describe('prisonerListController', () => {
 
         // Then
         expect(res.render).toHaveBeenCalledWith('pages/prisonerList/index', expectedView)
-        expect(prisonerListService.getPrisonerSearchSummariesForPrisonId).toHaveBeenCalledWith(
-          'BXI',
-          0,
-          9999,
-          'AUSER_GEN',
-        )
+        expect(prisonerListService.getPrisonerSearchSummariesForPrisonId).toHaveBeenCalledWith('BXI', 'AUSER_GEN')
       })
     })
 
@@ -308,12 +283,7 @@ describe('prisonerListController', () => {
 
         // Then
         expect(res.render).toHaveBeenCalledWith('pages/prisonerList/index', expectedView)
-        expect(prisonerListService.getPrisonerSearchSummariesForPrisonId).toHaveBeenCalledWith(
-          'BXI',
-          0,
-          9999,
-          'AUSER_GEN',
-        )
+        expect(prisonerListService.getPrisonerSearchSummariesForPrisonId).toHaveBeenCalledWith('BXI', 'AUSER_GEN')
         expect(req.session.prisonerListSortOptions).toEqual('name,ascending') // expect current sort options saved in session
       })
 
@@ -354,12 +324,7 @@ describe('prisonerListController', () => {
 
         // Then
         expect(res.render).toHaveBeenCalledWith('pages/prisonerList/index', expectedView)
-        expect(prisonerListService.getPrisonerSearchSummariesForPrisonId).toHaveBeenCalledWith(
-          'BXI',
-          0,
-          9999,
-          'AUSER_GEN',
-        )
+        expect(prisonerListService.getPrisonerSearchSummariesForPrisonId).toHaveBeenCalledWith('BXI', 'AUSER_GEN')
         expect(req.session.prisonerListSortOptions).toEqual('reception-date,descending') // expect default sort options saved in session
       })
 
@@ -399,12 +364,7 @@ describe('prisonerListController', () => {
 
         // Then
         expect(res.render).toHaveBeenCalledWith('pages/prisonerList/index', expectedView)
-        expect(prisonerListService.getPrisonerSearchSummariesForPrisonId).toHaveBeenCalledWith(
-          'BXI',
-          0,
-          9999,
-          'AUSER_GEN',
-        )
+        expect(prisonerListService.getPrisonerSearchSummariesForPrisonId).toHaveBeenCalledWith('BXI', 'AUSER_GEN')
         expect(req.session.prisonerListSortOptions).toEqual('name,ascending') // expect current sort options saved in session
       })
     })

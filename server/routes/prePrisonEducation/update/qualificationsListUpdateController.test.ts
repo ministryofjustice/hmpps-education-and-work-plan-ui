@@ -24,7 +24,7 @@ describe('qualificationsListUpdateController', () => {
   const prisonNumber = 'A1234BC'
   const prisonId = 'BXI'
   const username = 'a-dps-user'
-  const prisonerSummary = aValidPrisonerSummary(prisonNumber, prisonId)
+  const prisonerSummary = aValidPrisonerSummary({ prisonNumber, prisonId })
   const functionalSkills = validFunctionalSkills()
   const inPrisonCourses = validInPrisonCourseRecords()
 

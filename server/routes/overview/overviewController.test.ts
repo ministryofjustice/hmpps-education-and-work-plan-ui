@@ -15,7 +15,7 @@ describe('overviewController', () => {
 
   const prisonNumber = 'A1234GC'
   const username = 'a-dps-user'
-  const prisonerSummary = aValidPrisonerSummary(prisonNumber)
+  const prisonerSummary = aValidPrisonerSummary({ prisonNumber })
 
   const inPrisonCourses: InPrisonCourseRecords = {
     problemRetrievingData: false,

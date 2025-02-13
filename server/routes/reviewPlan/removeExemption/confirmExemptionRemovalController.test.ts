@@ -18,7 +18,7 @@ describe('confirmExemptionRemovalController', () => {
   const controller = new ConfirmExemptionRemovalController(reviewService, auditService)
 
   const prisonNumber = 'A1234BC'
-  const prisonerSummary = aValidPrisonerSummary(prisonNumber)
+  const prisonerSummary = aValidPrisonerSummary({ prisonNumber })
   const actionPlanReviews = aValidActionPlanReviews({
     latestReviewSchedule: aValidScheduledActionPlanReview({
       status: ActionPlanReviewStatusValue.EXEMPT_PRISON_STAFF_REDEPLOYMENT,

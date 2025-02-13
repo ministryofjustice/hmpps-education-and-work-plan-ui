@@ -565,7 +565,7 @@ describe('curiousService', () => {
       expect(prisonService.getAllPrisonNamesById).not.toHaveBeenCalled()
     })
 
-    it('should handle retrieval of In Prison Courses given Curious returns not found error for the learner education', async () => {
+    it('should handle retrieval of In Prison Courses given Curious API client returns null indicating not found error for the learner education', async () => {
       // Given
       const prisonNumber = 'A1234BC'
       const username = 'a-dps-user'
@@ -573,12 +573,7 @@ describe('curiousService', () => {
       const systemToken = 'a-system-token'
       hmppsAuthClient.getSystemClientToken.mockResolvedValue(systemToken)
 
-      const curiousApi404Error = {
-        message: 'Not Found',
-        status: 404,
-        text: { errorCode: 'VC4004', errorMessage: 'Resource not found', httpStatusCode: 404 },
-      }
-      curiousClient.getLearnerEducationPage.mockRejectedValue(curiousApi404Error)
+      curiousClient.getLearnerEducationPage.mockResolvedValue(null)
 
       const expected: InPrisonCourseRecords = {
         problemRetrievingData: false,
@@ -599,7 +594,6 @@ describe('curiousService', () => {
       // Then
       expect(actual).toEqual(expected)
       expect(curiousClient.getLearnerEducationPage).toHaveBeenCalledWith(prisonNumber, systemToken, 0)
-      expect(prisonService.getAllPrisonNamesById).not.toHaveBeenCalled()
     })
   })
 })
