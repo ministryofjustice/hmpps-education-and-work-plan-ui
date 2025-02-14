@@ -8,7 +8,7 @@ const aValidSessionResponses = (options?: { sessions?: Array<SessionResponse> })
 const aValidSessionResponse = (options?: {
   reference?: string
   prisonNumber?: string
-  sessionType?: SessionTypeValue
+  sessionType?: string
   deadlineDate?: string
   exemptionReason?: string
   exemptionDate?: string

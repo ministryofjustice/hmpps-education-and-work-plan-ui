@@ -1,8 +1,10 @@
-import type { SessionsSummary } from 'viewModels'
+import type { Sessions, SessionsSummary } from 'viewModels'
 import EducationAndWorkPlanClient from '../data/educationAndWorkPlanClient'
 import { HmppsAuthClient } from '../data'
 import toSessionsSummary from '../data/mappers/sessionsSummaryMapper'
 import logger from '../../logger'
+import SessionStatusValue from '../enums/sessionStatusValue'
+import toPrisonerSessions from '../data/mappers/prisonerSessionMapper'
 
 export default class SessionService {
   constructor(
@@ -21,6 +23,23 @@ export default class SessionService {
       return {
         problemRetrievingData: true,
       } as SessionsSummary
+    }
+  }
+
+  async getSessionsInStatusForPrisoners(
+    prisonNumbers: string[],
+    status: SessionStatusValue,
+    username: string,
+  ): Promise<Sessions> {
+    try {
+      const systemToken = await this.hmppsAuthClient.getSystemClientToken(username)
+      const sessionsResponse = await this.educationAndWorkPlanClient.getSessions(prisonNumbers, systemToken, status)
+      return toPrisonerSessions(sessionsResponse)
+    } catch (error) {
+      logger.error(`Error retrieving prisoner Sessions from Education And Work Plan API`, error)
+      return {
+        problemRetrievingData: true,
+      } as Sessions
     }
   }
 }

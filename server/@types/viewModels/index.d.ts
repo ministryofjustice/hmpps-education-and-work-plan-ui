@@ -7,6 +7,9 @@ declare module 'viewModels' {
   import TimelineEventTypeValue from '../../enums/timelineEventTypeValue'
   import GoalStatusValue from '../../enums/goalStatusValue'
   import StepStatusValue from '../../enums/stepStatusValue'
+  import SessionTypeValue from '../../enums/sessionTypeValue'
+  import InductionExemptionReasonValue from '../../enums/inductionExemptionReasonValue'
+  import ReviewPlanExemptionReasonValue from '../../enums/reviewPlanExemptionReasonValue'
 
   export interface SessionsSummary {
     overdueSessionCount: number
@@ -18,6 +21,22 @@ declare module 'viewModels' {
   export interface PrisonerSummaries {
     problemRetrievingData: boolean
     prisoners: Array<PrisonerSummary>
+  }
+
+  export interface Sessions {
+    sessions: PrisonerSession[]
+    problemRetrievingData: boolean
+  }
+
+  export interface PrisonerSession {
+    prisonNumber: string
+    reference: string
+    sessionType: SessionTypeValue
+    deadlineDate: Date
+    exemption?: {
+      exemptionReason: InductionExemptionReasonValue | ReviewPlanExemptionReasonValue
+      exemptionDate: Date
+    }
   }
 
   export interface PrisonerSummary {
