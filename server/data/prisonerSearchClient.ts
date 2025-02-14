@@ -28,6 +28,7 @@ export default class PrisonerSearchClient {
         page,
         size: pageSize,
       },
+      ignore404: true,
     })
   }
 }

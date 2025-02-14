@@ -59,16 +59,9 @@ export default class PrisonerListController {
     prisonId: string,
     user: Express.User,
   ): Promise<PagedPrisonerSearchSummary> => {
-    const prisonerSearchApiPageZero = 0
-    const prisonerSearchApiPageSize = config.apis.prisonerSearch.defaultPageSize
     const prisonerListUiPageSize = config.prisonerListUiDefaultPaginationPageSize
 
-    const prisonerList = await this.prisonerListService.getPrisonerSearchSummariesForPrisonId(
-      prisonId,
-      prisonerSearchApiPageZero,
-      prisonerSearchApiPageSize,
-      user.username,
-    )
+    const prisonerList = await this.prisonerListService.getPrisonerSearchSummariesForPrisonId(prisonId, user.username)
     return new PagedPrisonerSearchSummary(prisonerList, prisonerListUiPageSize)
   }
 }

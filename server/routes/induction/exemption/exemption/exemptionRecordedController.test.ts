@@ -11,7 +11,7 @@ describe('ExemptionRecordedController', () => {
   const controller = new ExemptionRecordedController()
 
   const prisonNumber = 'A1234BC'
-  const prisonerSummary = aValidPrisonerSummary(prisonNumber)
+  const prisonerSummary = aValidPrisonerSummary({ prisonNumber })
   const inductionSchedule = aValidInductionSchedule({
     deadlineDate: startOfDay('2024-12-03'),
   })

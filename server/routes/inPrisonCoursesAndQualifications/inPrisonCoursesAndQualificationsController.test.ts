@@ -12,7 +12,7 @@ describe('inPrisonCoursesAndQualificationsController', () => {
   const controller = new InPrisonCoursesAndQualificationsController()
 
   const prisonNumber = 'A1234GC'
-  const prisonerSummary = aValidPrisonerSummary(prisonNumber)
+  const prisonerSummary = aValidPrisonerSummary({ prisonNumber })
 
   const req = {
     params: { prisonNumber },

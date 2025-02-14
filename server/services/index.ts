@@ -43,7 +43,7 @@ export const services = () => {
   const curiousService = new CuriousService(hmppsAuthClient, curiousClient, prisonService)
   const prisonerListService = new PrisonerListService(
     hmppsAuthClient,
-    prisonerSearchClient,
+    prisonerSearchService,
     educationAndWorkPlanClient,
     ciagInductionClient,
   )

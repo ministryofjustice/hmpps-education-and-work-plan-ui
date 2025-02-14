@@ -8,7 +8,7 @@ describe('ReviewCompleteController', () => {
   const controller = new ReviewCompleteController()
 
   const prisonNumber = 'A1234BC'
-  const prisonerSummary = aValidPrisonerSummary(prisonNumber)
+  const prisonerSummary = aValidPrisonerSummary({ prisonNumber })
   const reviewPlanDto = aValidReviewPlanDto()
 
   const req = {

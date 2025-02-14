@@ -9,7 +9,7 @@ describe('exemptionRemovedController', () => {
   const controller = new ExemptionRemovedController()
 
   const prisonNumber = 'A1234BC'
-  const prisonerSummary = aValidPrisonerSummary(prisonNumber)
+  const prisonerSummary = aValidPrisonerSummary({ prisonNumber })
   const actionPlanReviews = aValidActionPlanReviews({
     latestReviewSchedule: aValidScheduledActionPlanReview({ reviewDateTo: startOfDay('2024-12-03') }),
   })

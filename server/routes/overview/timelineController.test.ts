@@ -13,7 +13,7 @@ describe('timelineController', () => {
   const controller = new TimelineController(timelineService)
 
   const prisonNumber = 'A1234GC'
-  const prisonerSummary = aValidPrisonerSummary(prisonNumber)
+  const prisonerSummary = aValidPrisonerSummary({ prisonNumber })
 
   const req = {
     user: { username: 'a-dps-user' },

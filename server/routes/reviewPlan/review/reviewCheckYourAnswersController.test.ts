@@ -19,7 +19,7 @@ describe('ReviewCheckYourAnswersController', () => {
   const controller = new ReviewCheckYourAnswersController(reviewService, auditService)
 
   const prisonNumber = 'A1234BC'
-  const prisonerSummary = aValidPrisonerSummary(prisonNumber)
+  const prisonerSummary = aValidPrisonerSummary({ prisonNumber })
 
   let req: Request
   let res: Response

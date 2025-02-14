@@ -17,7 +17,7 @@ describe('functionalSkillsController', () => {
   const controller = new FunctionalSkillsController(prisonService)
 
   const prisonNumber = 'A1234GC'
-  const prisonerSummary = aValidPrisonerSummary(prisonNumber)
+  const prisonerSummary = aValidPrisonerSummary({ prisonNumber })
 
   const req = {
     params: { prisonNumber },

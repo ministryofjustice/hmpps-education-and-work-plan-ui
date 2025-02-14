@@ -1,36 +1,30 @@
-import { EducationAndWorkPlanClient, HmppsAuthClient, PrisonerSearchClient } from '../data'
+import EducationAndWorkPlanClient from '../data/educationAndWorkPlanClient'
+import HmppsAuthClient from '../data/hmppsAuthClient'
+import PrisonerSearchService from './prisonerSearchService'
 import PrisonerListService from './prisonerListService'
 import CiagInductionClient from '../data/ciagInductionClient'
-import aValidPagedCollectionOfPrisoners from '../testsupport/pagedCollectionOfPrisonersTestDataBuilder'
-import aValidPrisoner from '../testsupport/prisonerTestDataBuilder'
 import aValidCiagInductionSummaryListResponse from '../testsupport/ciagInductionSummaryListResponseTestDataBuilder'
 import aValidActionPlanSummaryResponse from '../testsupport/actionPlanSummaryResponseTestDataBuilder'
 import aValidActionPlanSummaryListResponse from '../testsupport/actionPlanSummaryListResponseTestDataBuilder'
-import toPrisonerSummary from '../data/mappers/prisonerSummaryMapper'
 import aValidCiagInductionSummaryResponse from '../testsupport/ciagInductionSummaryReponseTestDataBuilder'
+import aValidPrisonerSummary from '../testsupport/prisonerSummaryTestDataBuilder'
+
+jest.mock('../data/educationAndWorkPlanClient')
+jest.mock('../data/hmppsAuthClient')
+jest.mock('./prisonerSearchService')
+jest.mock('../data/ciagInductionClient')
 
 describe('prisonerListService', () => {
-  const hmppsAuthClient = {
-    getSystemClientToken: jest.fn(),
-  }
-
-  const prisonerSearchClient = {
-    getPrisonersByPrisonId: jest.fn(),
-  }
-
-  const educationAndWorkPlanClient = {
-    getActionPlans: jest.fn(),
-  }
-
-  const ciagInductionClient = {
-    getCiagInductionsForPrisonNumbers: jest.fn(),
-  }
+  const hmppsAuthClient = new HmppsAuthClient(null) as jest.Mocked<HmppsAuthClient>
+  const prisonerSearchService = new PrisonerSearchService(null, null, null) as jest.Mocked<PrisonerSearchService>
+  const educationAndWorkPlanClient = new EducationAndWorkPlanClient() as jest.Mocked<EducationAndWorkPlanClient>
+  const ciagInductionClient = new CiagInductionClient() as jest.Mocked<CiagInductionClient>
 
   const prisonerListService = new PrisonerListService(
-    hmppsAuthClient as unknown as HmppsAuthClient,
-    prisonerSearchClient as unknown as PrisonerSearchClient,
-    educationAndWorkPlanClient as unknown as EducationAndWorkPlanClient,
-    ciagInductionClient as unknown as CiagInductionClient,
+    hmppsAuthClient,
+    prisonerSearchService,
+    educationAndWorkPlanClient,
+    ciagInductionClient,
   )
 
   beforeEach(() => {
@@ -40,8 +34,6 @@ describe('prisonerListService', () => {
   it('should get prisoner search summaries for a given prison id', async () => {
     // Given
     const prisonId = 'BXI'
-    const page = 0
-    const pageSize = 9999
 
     const username = 'a-dps-user'
     const systemToken = 'a-system-token'
@@ -49,26 +41,27 @@ describe('prisonerListService', () => {
 
     const expectedPrisonNumbers: string[] = ['A1234BC', 'F4329JC', 'T4381KA', 'P4381IA']
 
-    const fred = aValidPrisoner({
+    const fred = aValidPrisonerSummary({
       prisonNumber: 'A1234BC',
       firstName: 'Fred',
     })
-    const jim = aValidPrisoner({
+    const jim = aValidPrisonerSummary({
       prisonNumber: 'F4329JC',
       firstName: 'Jim',
     })
-    const bill = aValidPrisoner({
+    const bill = aValidPrisonerSummary({
       prisonNumber: 'T4381KA',
       firstName: 'Bill',
     })
-    const albert = aValidPrisoner({
+    const albert = aValidPrisonerSummary({
       prisonNumber: 'P4381IA',
       firstName: 'Albert',
     })
-    const pagedCollectionOfPrisoners = aValidPagedCollectionOfPrisoners({
-      content: [fred, jim, bill, albert],
-    })
-    prisonerSearchClient.getPrisonersByPrisonId.mockResolvedValue(pagedCollectionOfPrisoners)
+    const prisonerSummaries = {
+      problemRetrievingData: false,
+      prisoners: [fred, jim, bill, albert],
+    }
+    prisonerSearchService.getPrisonersByPrisonId.mockResolvedValue(prisonerSummaries)
 
     const fredsCiagInduction = aValidCiagInductionSummaryResponse({ prisonNumber: 'A1234BC' })
     const jimsCiagInduction = aValidCiagInductionSummaryResponse({ prisonNumber: 'F4329JC' })
@@ -88,10 +81,10 @@ describe('prisonerListService', () => {
     })
     educationAndWorkPlanClient.getActionPlans.mockResolvedValue(actionPlanSummaries)
 
-    const fredsPrisonerSearchSummary = { ...toPrisonerSummary(fred), hasCiagInduction: true, hasActionPlan: true }
-    const jimsPrisonerSearchSummary = { ...toPrisonerSummary(jim), hasCiagInduction: true, hasActionPlan: false }
-    const billsPrisonerSearchSummary = { ...toPrisonerSummary(bill), hasCiagInduction: false, hasActionPlan: true }
-    const albertsPrisonerSearchSummary = { ...toPrisonerSummary(albert), hasCiagInduction: false, hasActionPlan: false }
+    const fredsPrisonerSearchSummary = { ...fred, hasCiagInduction: true, hasActionPlan: true }
+    const jimsPrisonerSearchSummary = { ...jim, hasCiagInduction: true, hasActionPlan: false }
+    const billsPrisonerSearchSummary = { ...bill, hasCiagInduction: false, hasActionPlan: true }
+    const albertsPrisonerSearchSummary = { ...albert, hasCiagInduction: false, hasActionPlan: false }
     const expectedPrisonerSearchSummaries = [
       fredsPrisonerSearchSummary,
       jimsPrisonerSearchSummary,
@@ -100,12 +93,12 @@ describe('prisonerListService', () => {
     ]
 
     // When
-    const actual = await prisonerListService.getPrisonerSearchSummariesForPrisonId(prisonId, page, pageSize, username)
+    const actual = await prisonerListService.getPrisonerSearchSummariesForPrisonId(prisonId, username)
 
     // Then
     expect(actual).toEqual(expectedPrisonerSearchSummaries)
     expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
-    expect(prisonerSearchClient.getPrisonersByPrisonId).toHaveBeenCalledWith(prisonId, page, pageSize, systemToken)
+    expect(prisonerSearchService.getPrisonersByPrisonId).toHaveBeenCalledWith(prisonId, username)
     expect(ciagInductionClient.getCiagInductionsForPrisonNumbers).toHaveBeenCalledWith(
       expectedPrisonNumbers,
       systemToken,

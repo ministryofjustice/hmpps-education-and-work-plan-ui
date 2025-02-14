@@ -19,7 +19,7 @@ describe('highestLevelOfEducationUpdateController', () => {
   const controller = new HighestLevelOfEducationUpdateController(educationAndWorkPlanService)
 
   const prisonNumber = 'A1234BC'
-  const prisonerSummary = aValidPrisonerSummary(prisonNumber)
+  const prisonerSummary = aValidPrisonerSummary({ prisonNumber })
   const username = 'a-dps-user'
 
   const req = {

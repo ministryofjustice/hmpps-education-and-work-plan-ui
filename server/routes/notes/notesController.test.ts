@@ -7,7 +7,7 @@ describe('notesController', () => {
 
   const prisonNumber = 'A1234BC'
   const expectedPrisonId = 'MDI'
-  const prisonerSummary = aValidPrisonerSummary(prisonNumber, expectedPrisonId)
+  const prisonerSummary = aValidPrisonerSummary({ prisonNumber, prisonId: expectedPrisonId })
 
   const req = {
     params: { prisonNumber },

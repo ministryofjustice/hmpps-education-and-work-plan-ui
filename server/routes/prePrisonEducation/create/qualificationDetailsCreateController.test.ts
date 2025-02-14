@@ -11,7 +11,7 @@ describe('qualificationDetailsController', () => {
   const controller = new QualificationDetailsCreateController()
 
   const prisonNumber = 'A1234BC'
-  const prisonerSummary = aValidPrisonerSummary(prisonNumber)
+  const prisonerSummary = aValidPrisonerSummary({ prisonNumber })
 
   const req = {
     session: {},

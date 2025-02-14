@@ -32,7 +32,7 @@ describe('retrievePrisonerSummary', () => {
   it('should retrieve prisoner and store on res.locals', async () => {
     // Given
     const prisonId = 'MDI'
-    const expectedPrisonerSummary = aValidPrisonerSummary(prisonNumber, prisonId)
+    const expectedPrisonerSummary = aValidPrisonerSummary({ prisonNumber, prisonId })
     prisonerSearchService.getPrisonerByPrisonNumber.mockResolvedValue(expectedPrisonerSummary)
 
     // When

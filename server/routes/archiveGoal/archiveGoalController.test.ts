@@ -33,7 +33,7 @@ describe('archiveGoalController', () => {
   const prisonNumber = 'A1234GC'
   const username = 'a-dps-user'
   const goalReference = '1a2eae63-8102-4155-97cb-43d8fb739caf'
-  const prisonerSummary = aValidPrisonerSummary(prisonNumber, 'BXI')
+  const prisonerSummary = aValidPrisonerSummary({ prisonNumber, prisonId: 'BXI' })
   const requestId = 'deff305c-2460-4d07-853e-f8762a8a52c6'
 
   const req = {

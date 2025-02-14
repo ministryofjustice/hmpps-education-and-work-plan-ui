@@ -16,7 +16,7 @@ describe('ViewGoalsController', () => {
 
   const prisonNumber = 'A1234GC'
   const username = 'a-dps-user'
-  const prisonerSummary = aValidPrisonerSummary(prisonNumber)
+  const prisonerSummary = aValidPrisonerSummary({ prisonNumber })
 
   const induction = {
     problemRetrievingData: false,

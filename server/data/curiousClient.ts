@@ -19,6 +19,7 @@ export default class CuriousClient {
       query: {
         page,
       },
+      ignore404: true,
     })
   }
 }

@@ -15,6 +15,11 @@ declare module 'viewModels' {
     problemRetrievingData: boolean
   }
 
+  export interface PrisonerSummaries {
+    problemRetrievingData: boolean
+    prisoners: Array<PrisonerSummary>
+  }
+
   export interface PrisonerSummary {
     prisonNumber: string
     prisonId: string

@@ -16,7 +16,7 @@ describe('ConfirmExemptionController', () => {
   const controller = new ConfirmExemptionController(reviewService, auditService)
 
   const prisonNumber = 'A1234BC'
-  const prisonerSummary = aValidPrisonerSummary(prisonNumber)
+  const prisonerSummary = aValidPrisonerSummary({ prisonNumber })
 
   let req: Request
   let res: Response

@@ -16,7 +16,7 @@ describe('confirmExemptionRemovalController', () => {
   const controller = new ConfirmExemptionRemovalController(inductionService, auditService)
 
   const prisonNumber = 'A1234BC'
-  const prisonerSummary = aValidPrisonerSummary(prisonNumber)
+  const prisonerSummary = aValidPrisonerSummary({ prisonNumber })
   const inductionSchedule = aValidInductionSchedule({
     scheduleStatus: InductionScheduleStatusValue.EXEMPT_PRISON_STAFF_REDEPLOYMENT,
   })

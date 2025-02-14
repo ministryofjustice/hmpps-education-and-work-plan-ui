@@ -10,7 +10,7 @@ describe('exemptionReasonController', () => {
   const controller = new ExemptionReasonController()
   const prisonNumber = 'A1234BC'
   const prisonId = 'MDI'
-  const prisonerSummary = aValidPrisonerSummary(prisonNumber, prisonId)
+  const prisonerSummary = aValidPrisonerSummary({ prisonNumber, prisonId })
 
   const req = {
     session: {},
