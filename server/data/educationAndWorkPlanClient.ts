@@ -15,6 +15,8 @@ import type {
   GetGoalsResponse,
   InductionResponse,
   InductionScheduleResponse,
+  PrisonerIdsRequest,
+  SessionResponses,
   SessionSummaryResponse,
   TimelineEventResponse,
   TimelineResponse,
@@ -28,6 +30,7 @@ import type {
 import RestClient from './restClient'
 import config from '../config'
 import GoalStatusValue from '../enums/goalStatusValue'
+import SessionStatusValue from '../enums/sessionStatusValue'
 
 export default class EducationAndWorkPlanClient {
   private static restClient(token: string): RestClient {
@@ -223,6 +226,17 @@ export default class EducationAndWorkPlanClient {
     return EducationAndWorkPlanClient.restClient(token).get<SessionSummaryResponse>({
       path: `/session/${prisonId}/summary`,
       ignore404: true,
+    })
+  }
+
+  async getSessions(prisonNumbers: string[], token: string, status: SessionStatusValue): Promise<SessionResponses> {
+    const requestBody: PrisonerIdsRequest = { prisonNumbers }
+    return EducationAndWorkPlanClient.restClient(token).post<SessionResponses>({
+      path: '/session/summary',
+      data: requestBody,
+      query: {
+        status,
+      },
     })
   }
 }

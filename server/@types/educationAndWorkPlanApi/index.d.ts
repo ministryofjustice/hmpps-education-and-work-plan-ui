@@ -196,6 +196,22 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/session/summary': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    post: operations['getSessionSummaries']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/conversations/{prisonNumber}': {
     parameters: {
       query?: never
@@ -1059,6 +1075,57 @@ export interface components {
        * @example null
        */
       note?: string
+    }
+    PrisonerIdsRequest: {
+      /**
+       * @description A List of prison numbers.
+       * @example null
+       */
+      prisonNumbers: string[]
+    }
+    /**
+     * @description A List containing zero or more SessionResponse.
+     * @example null
+     */
+    SessionResponse: {
+      /**
+       * @example null
+       * @enum {string}
+       */
+      sessionType: 'REVIEW' | 'INDUCTION'
+      /**
+       * @description The ID of the prisoner
+       * @example A1234BC
+       */
+      prisonNumber: string
+      /**
+       * Format: date
+       * @description The deadline for the induction to be completed
+       */
+      deadlineDate: string
+      /**
+       * Format: uuid
+       * @description The unique reference of this session
+       * @example c88a6c48-97e2-4c04-93b5-98619966447b
+       */
+      reference: string
+      /**
+       * @description if applicable this will be the reason for the exemption
+       * @example could not attend due to illness
+       */
+      exemptionReason?: string
+      /**
+       * Format: date
+       * @description if applicable this will be the date of the exemption
+       */
+      exemptionDate?: string
+    }
+    SessionResponses: {
+      /**
+       * @description A List containing zero or more SessionResponse.
+       * @example null
+       */
+      sessions: components['schemas']['SessionResponse'][]
     }
     /**
      * @description A list of achieved qualifications that should be created as part of the education record.
@@ -3373,6 +3440,32 @@ export interface operations {
           [name: string]: unknown
         }
         content?: never
+      }
+    }
+  }
+  getSessionSummaries: {
+    parameters: {
+      query: {
+        status: 'ON_HOLD' | 'DUE' | 'OVERDUE'
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['PrisonerIdsRequest']
+      }
+    }
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          '*/*': components['schemas']['SessionResponses']
+        }
       }
     }
   }

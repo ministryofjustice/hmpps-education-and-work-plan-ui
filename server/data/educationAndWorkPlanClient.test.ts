@@ -31,6 +31,8 @@ import aValidCreateActionPlanRequest from '../testsupport/createActionPlanReques
 import aValidUpdateReviewScheduleStatusRequest from '../testsupport/updateReviewScheduleStatusRequestTestDataBuilder'
 import aValidUpdateInductionScheduleStatusRequest from '../testsupport/updateInductionScheduleStatusRequestTestDataBuilder'
 import aValidSessionSummaryResponse from '../testsupport/sessionSummaryResponseTestDataBuilder'
+import { aValidSessionResponse, aValidSessionResponses } from '../testsupport/sessionResponseTestDataBuilder'
+import SessionStatusValue from '../enums/sessionStatusValue'
 
 describe('educationAndWorkPlanClient', () => {
   const educationAndWorkPlanClient = new EducationAndWorkPlanClient()
@@ -1044,6 +1046,75 @@ describe('educationAndWorkPlanClient', () => {
       // Then
       expect(nock.isDone()).toBe(true)
       expect(actual).toBeNull()
+    })
+  })
+
+  describe('getSessions', () => {
+    it.each([SessionStatusValue.DUE, SessionStatusValue.OVERDUE, SessionStatusValue.ON_HOLD])(
+      'should get Sessions given session status filtering',
+      async status => {
+        // Given
+        const prisonNumbers = ['A1234BC', 'B5544GD']
+
+        const expectedSessionResponses = aValidSessionResponses({
+          sessions: [
+            aValidSessionResponse({ prisonNumber: 'A1234BC' }),
+            aValidSessionResponse({ prisonNumber: 'B5544GD' }),
+          ],
+        })
+        educationAndWorkPlanApi
+          .post(`/session/summary?status=${status}`, requestBody => isEqual(requestBody, { prisonNumbers }))
+          .reply(200, expectedSessionResponses)
+
+        // When
+        const actual = await educationAndWorkPlanClient.getSessions(prisonNumbers, systemToken, status)
+
+        // Then
+        expect(nock.isDone()).toBe(true)
+        expect(actual).toEqual(expectedSessionResponses)
+      },
+    )
+
+    it('should get zero Sessions given none of the specified prisoners have Sessions', async () => {
+      // Given
+      const prisonNumbers = ['A1234BC', 'B5544GD']
+
+      const expectedSessionResponses = aValidSessionResponses({
+        sessions: [],
+      })
+      educationAndWorkPlanApi
+        .post('/session/summary?status=DUE', requestBody => isEqual(requestBody, { prisonNumbers }))
+        .reply(200, expectedSessionResponses)
+
+      // When
+      const actual = await educationAndWorkPlanClient.getSessions(prisonNumbers, systemToken, SessionStatusValue.DUE)
+
+      // Then
+      expect(nock.isDone()).toBe(true)
+      expect(actual).toEqual(expectedSessionResponses)
+    })
+
+    it('should not get Sessions given API returns an error response', async () => {
+      // Given
+      const prisonNumbers = ['A1234BC', 'B5544GD']
+
+      const expectedResponseBody = {
+        status: 500,
+        userMessage: 'An unexpected error occurred',
+        developerMessage: 'An unexpected error occurred',
+      }
+      educationAndWorkPlanApi
+        .post('/session/summary?status=DUE', requestBody => isEqual(requestBody, { prisonNumbers }))
+        .reply(500, expectedResponseBody)
+
+      try {
+        await educationAndWorkPlanClient.getSessions(prisonNumbers, systemToken, SessionStatusValue.DUE)
+      } catch (e) {
+        // Then
+        expect(nock.isDone()).toBe(true)
+        expect(e.status).toEqual(500)
+        expect(e.data).toEqual(expectedResponseBody)
+      }
     })
   })
 })
