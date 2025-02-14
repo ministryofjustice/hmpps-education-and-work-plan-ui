@@ -62,4 +62,7 @@ declare module 'educationAndWorkPlanApiClient' {
   export type UpdateInductionScheduleStatusRequest = components['schemas']['UpdateInductionScheduleStatusRequest']
 
   export type SessionSummaryResponse = components['schemas']['SessionSummaryResponse']
+  export type PrisonerIdsRequest = components['schemas']['PrisonerIdsRequest']
+  export type SessionResponses = components['schemas']['SessionResponses']
+  export type SessionResponse = components['schemas']['SessionResponse']
 }
