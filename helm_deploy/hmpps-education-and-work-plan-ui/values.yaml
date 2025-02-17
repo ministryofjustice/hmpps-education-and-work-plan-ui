@@ -54,6 +54,7 @@ generic-service:
     APPLICATIONINSIGHTS_CONNECTION_STRING: "InstrumentationKey=$(APPINSIGHTS_INSTRUMENTATIONKEY);IngestionEndpoint=https://northeurope-0.in.applicationinsights.azure.com/;LiveEndpoint=https://northeurope.livediagnostics.monitor.azure.com/"
     PRISONER_SEARCH_API_DEFAULT_PAGE_SIZE: "9999"
     PRISONER_LIST_UI_DEFAULT_PAGINATION_PAGE_SIZE: "50"
+    SESSION_LIST_UI_DEFAULT_PAGINATION_PAGE_SIZE: "50"
     FEEDBACK_URL: "https://eu.surveymonkey.com/r/H9CYM7B"
     AUDIT_SERVICE_NAME: "hmpps-education-and-work-plan"
     AUDIT_ENABLED: "true"

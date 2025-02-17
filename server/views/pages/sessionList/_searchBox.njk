@@ -10,15 +10,15 @@
             <legend class="govuk-fieldset__legend govuk-!-margin-bottom-1">Session type</legend>
             <div class="govuk-radios govuk-form-group--inline">
               <div class="govuk-radios__item govuk-!-margin-bottom-0">
-                <input class="govuk-radios__input" id="sessionType" name="sessionType" type="radio" value="ALL">
+                <input class="govuk-radios__input" id="sessionType" name="sessionType" type="radio" value="" {{ 'checked' if not sessionType }}>
                 <label class="govuk-label govuk-radios__label" for="sessionType">All</label>
               </div>
               <div class="govuk-radios__item govuk-!-margin-bottom-0">
-                <input class="govuk-radios__input" id="sessionType-2" name="sessionType" type="radio" value="INDUCTION">
+                <input class="govuk-radios__input" id="sessionType-2" name="sessionType" type="radio" value="INDUCTION" {{ 'checked' if sessionType === 'INDUCTION' }}>
                 <label class="govuk-label govuk-radios__label" for="sessionType-2">Induction</label>
               </div>
               <div class="govuk-radios__item govuk-!-margin-bottom-0">
-                <input class="govuk-radios__input" id="sessionType-3" name="sessionType" type="radio" value="REVIEWS">
+                <input class="govuk-radios__input" id="sessionType-3" name="sessionType" type="radio" value="REVIEW" {{ 'checked' if sessionType === 'REVIEW' }}>
                 <label class="govuk-label govuk-radios__label" for="sessionType-3">Reviews</label>
               </div>
             </div>

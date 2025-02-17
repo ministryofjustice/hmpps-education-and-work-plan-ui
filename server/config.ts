@@ -167,6 +167,9 @@ export default {
   prisonerListUiDefaultPaginationPageSize: Number(
     get('PRISONER_LIST_UI_DEFAULT_PAGINATION_PAGE_SIZE', 50, requiredInProduction),
   ),
+  sessionListUiDefaultPaginationPageSize: Number(
+    get('SESSION_LIST_UI_DEFAULT_PAGINATION_PAGE_SIZE', 50, requiredInProduction),
+  ),
   featureToggles: {
     // someToggleEnabled: toBoolean(get('SOME_TOGGLE_ENABLED', false)),
     completedGoalsEnabled: toBoolean(get('COMPLETED_GOALS_ENABLED', false)),

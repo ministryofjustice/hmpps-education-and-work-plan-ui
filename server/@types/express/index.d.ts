@@ -39,6 +39,7 @@ declare module 'express-session' {
     returnTo: string
     nowInMinutes: number
     prisonerListSortOptions: string
+    sessionListSortOptions: string
 
     createGoalsForm: CreateGoalsForm
     pageFlowHistory: PageFlow
