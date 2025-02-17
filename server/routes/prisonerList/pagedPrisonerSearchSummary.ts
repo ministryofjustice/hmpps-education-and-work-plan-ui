@@ -141,55 +141,35 @@ export default class PagedPrisonerSearchSummary {
     (left: PrisonerSearchSummary, right: PrisonerSearchSummary): number => {
       switch (sortBy) {
         case SortBy.NAME: {
-          if (sortableName(left) === sortableName(right)) {
-            return 0
-          }
-          if (sortableName(left) > sortableName(right)) {
-            return sortOrder === SortOrder.ASCENDING ? 1 : -1
-          }
-          return sortOrder === SortOrder.ASCENDING ? -1 : 1
+          return compare(sortableName(left), sortableName(right), sortOrder)
         }
         case SortBy.LOCATION: {
-          if (left.location === right.location) {
-            return 0
-          }
-          if (left.location > right.location) {
-            return sortOrder === SortOrder.ASCENDING ? 1 : -1
-          }
-          return sortOrder === SortOrder.ASCENDING ? -1 : 1
+          return compare(left.location, right.location, sortOrder)
         }
         case SortBy.RELEASE_DATE: {
-          if (sortableDate(left.releaseDate) === sortableDate(right.releaseDate)) {
-            return 0
-          }
-          if (sortableDate(left.releaseDate) > sortableDate(right.releaseDate)) {
-            return sortOrder === SortOrder.ASCENDING ? 1 : -1
-          }
-          return sortOrder === SortOrder.ASCENDING ? -1 : 1
+          return compare(sortableDate(left.releaseDate), sortableDate(right.releaseDate), sortOrder)
         }
         case SortBy.RECEPTION_DATE: {
-          if (sortableDate(left.receptionDate) === sortableDate(right.receptionDate)) {
-            return 0
-          }
-          if (sortableDate(left.receptionDate) > sortableDate(right.receptionDate)) {
-            return sortOrder === SortOrder.ASCENDING ? 1 : -1
-          }
-          return sortOrder === SortOrder.ASCENDING ? -1 : 1
+          return compare(sortableDate(left.receptionDate), sortableDate(right.receptionDate), sortOrder)
         }
         case SortBy.STATUS: {
-          if (sortableFilterableStatus(left) === sortableFilterableStatus(right)) {
-            return 0
-          }
-          if (sortableFilterableStatus(left) > sortableFilterableStatus(right)) {
-            return sortOrder === SortOrder.ASCENDING ? 1 : -1
-          }
-          return sortOrder === SortOrder.ASCENDING ? -1 : 1
+          return compare(sortableFilterableStatus(left), sortableFilterableStatus(right), sortOrder)
         }
         default: {
           return 0
         }
       }
     }
+}
+
+const compare = (left: string | Date, right: string | Date, sortOrder: SortOrder) => {
+  if (left === right) {
+    return 0
+  }
+  if (left > right) {
+    return sortOrder === SortOrder.ASCENDING ? 1 : -1
+  }
+  return sortOrder === SortOrder.ASCENDING ? -1 : 1
 }
 
 /**

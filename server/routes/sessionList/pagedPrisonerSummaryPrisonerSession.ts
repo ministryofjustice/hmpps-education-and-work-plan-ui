@@ -144,73 +144,45 @@ export default class PagedPrisonerSummaryPrisonerSession {
     (left: PrisonerSummaryPrisonerSession, right: PrisonerSummaryPrisonerSession): number => {
       switch (sortBy) {
         case SortBy.NAME: {
-          if (sortableName(left) === sortableName(right)) {
-            return 0
-          }
-          if (sortableName(left) > sortableName(right)) {
-            return sortOrder === SortOrder.ASCENDING ? 1 : -1
-          }
-          return sortOrder === SortOrder.ASCENDING ? -1 : 1
+          return compare(sortableName(left), sortableName(right), sortOrder)
         }
         case SortBy.LOCATION: {
-          if (left.location === right.location) {
-            return 0
-          }
-          if (left.location > right.location) {
-            return sortOrder === SortOrder.ASCENDING ? 1 : -1
-          }
-          return sortOrder === SortOrder.ASCENDING ? -1 : 1
+          return compare(left.location, right.location, sortOrder)
         }
         case SortBy.RELEASE_DATE: {
-          if (sortableDate(left.releaseDate) === sortableDate(right.releaseDate)) {
-            return 0
-          }
-          if (sortableDate(left.releaseDate) > sortableDate(right.releaseDate)) {
-            return sortOrder === SortOrder.ASCENDING ? 1 : -1
-          }
-          return sortOrder === SortOrder.ASCENDING ? -1 : 1
+          return compare(sortableDate(left.releaseDate), sortableDate(right.releaseDate), sortOrder)
         }
         case SortBy.SESSION_TYPE: {
-          if (left.sessionType === right.sessionType) {
-            return 0
-          }
-          if (left.sessionType > right.sessionType) {
-            return sortOrder === SortOrder.ASCENDING ? 1 : -1
-          }
-          return sortOrder === SortOrder.ASCENDING ? -1 : 1
+          return compare(left.sessionType, right.sessionType, sortOrder)
         }
         case SortBy.DUE_BY: {
-          if (sortableDate(left.deadlineDate) === sortableDate(right.deadlineDate)) {
-            return 0
-          }
-          if (sortableDate(left.deadlineDate) > sortableDate(right.deadlineDate)) {
-            return sortOrder === SortOrder.ASCENDING ? 1 : -1
-          }
-          return sortOrder === SortOrder.ASCENDING ? -1 : 1
+          return compare(sortableDate(left.deadlineDate), sortableDate(right.deadlineDate), sortOrder)
         }
         case SortBy.EXEMPTION_DATE: {
-          if (sortableDate(left.exemption?.exemptionDate) === sortableDate(right.exemption?.exemptionDate)) {
-            return 0
-          }
-          if (sortableDate(left.exemption?.exemptionDate) > sortableDate(right.exemption?.exemptionDate)) {
-            return sortOrder === SortOrder.ASCENDING ? 1 : -1
-          }
-          return sortOrder === SortOrder.ASCENDING ? -1 : 1
+          return compare(
+            sortableDate(left.exemption?.exemptionDate),
+            sortableDate(right.exemption?.exemptionDate),
+            sortOrder,
+          )
         }
         case SortBy.EXEMPTION_REASON: {
-          if (sortableExemptionReason(left) === sortableExemptionReason(right)) {
-            return 0
-          }
-          if (sortableExemptionReason(left) > sortableExemptionReason(right)) {
-            return sortOrder === SortOrder.ASCENDING ? 1 : -1
-          }
-          return sortOrder === SortOrder.ASCENDING ? -1 : 1
+          return compare(sortableExemptionReason(left), sortableExemptionReason(right), sortOrder)
         }
         default: {
           return 0
         }
       }
     }
+}
+
+const compare = (left: string | Date, right: string | Date, sortOrder: SortOrder) => {
+  if (left === right) {
+    return 0
+  }
+  if (left > right) {
+    return sortOrder === SortOrder.ASCENDING ? 1 : -1
+  }
+  return sortOrder === SortOrder.ASCENDING ? -1 : 1
 }
 
 /**
