@@ -57,7 +57,11 @@
                 {% elseif columnName === 'exemption-entered-on' %}
                   {{ prisoner.exemption.exemptionDate | formatDate('D MMMM YYYY') }}
                 {% elseif columnName === 'exemption-reason' %}
-                  {{ prisoner.exemption.exemptionReason }}
+                  {% if prisoner.sessionType === 'REVIEW' %}
+                    {{ prisoner.exemption.exemptionReason | formatReviewExemptionReason }}
+                  {% else %}
+                    {{ prisoner.exemption.exemptionReason | formatInductionExemptionReason }}
+                  {% endif %}
                 {% endif %}
               </td>
             {% endfor %}
