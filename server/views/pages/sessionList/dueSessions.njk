@@ -25,47 +25,25 @@
     <div class="govuk-grid-column-full">
       <h1 class="govuk-heading-l">Due sessions</h1>
 
-      {% set columnHeadings %}
-        {{ sortableTableHeader({
-          sortBy: sortBy,
-          sortOrder: sortOrder,
-          fieldName: 'name',
-          headerText: 'Prisoner'
-        }) }}
-        {{ sortableTableHeader({
-          sortBy: sortBy,
-          sortOrder: sortOrder,
-          fieldName: 'location',
-          headerText: 'Location'
-        }) }}
-        {{ sortableTableHeader({
-          sortBy: sortBy,
-          sortOrder: sortOrder,
-          fieldName: 'release-date',
-          headerText: 'Release date'
-        }) }}
-        {{ sortableTableHeader({
-          sortBy: sortBy,
-          sortOrder: sortOrder,
-          fieldName: 'session-type',
-          headerText: 'Session type'
-        }) }}
-        {{ sortableTableHeader({
-          sortBy: sortBy,
-          sortOrder: sortOrder,
-          fieldName: 'due-by',
-          headerText: 'Due by'
-        }) }}
-      {% endset %}
+      {%set nameHeader %}{{ sortableTableHeader({ sortBy: sortBy, sortOrder: sortOrder, fieldName: 'name', headerText: 'Prisoner' }) }}{% endset %}
+      {%set locationHeader %}{{ sortableTableHeader({ sortBy: sortBy, sortOrder: sortOrder, fieldName: 'location', headerText: 'Location' }) }}{% endset %}
+      {%set releaseDateHeader %}{{ sortableTableHeader({ sortBy: sortBy, sortOrder: sortOrder, fieldName: 'release-date', headerText: 'Release date' }) }}{% endset %}
+      {%set sessionTypeHeader %}{{ sortableTableHeader({ sortBy: sortBy, sortOrder: sortOrder, fieldName: 'session-type', headerText: 'Session type' }) }}{% endset %}
+      {%set dueByHeader %}{{ sortableTableHeader({ sortBy: sortBy, sortOrder: sortOrder, fieldName: 'due-by', headerText: 'Due by' }) }}{% endset %}
 
       {% set tabContent %}
         {% include './_searchBox.njk' %}
 
         {{ searchResultsTable({
-          columnHeadings: columnHeadings,
+          columnHeadings: [nameHeader, locationHeader, releaseDateHeader, sessionTypeHeader, dueByHeader],
+          currentPageOfRecords: currentPageOfRecords,
           searchTerm: searchTerm,
           sessionType: sessionType,
-          page: page
+          page: page,
+          items: items,
+          results: results,
+          previousPage: previousPage,
+          nextPage: nextPage
         }) }}
       {% endset %}
 

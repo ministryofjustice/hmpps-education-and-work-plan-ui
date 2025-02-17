@@ -25,48 +25,25 @@
     <div class="govuk-grid-column-full">
       <h1 class="govuk-heading-l">Sessions on hold</h1>
 
-      {% set columnHeadings %}
-        {{ sortableTableHeader({
-          sortBy: sortBy,
-          sortOrder: sortOrder,
-          fieldName: 'name',
-          headerText: 'Prisoner'
-        }) }}
-        {{ sortableTableHeader({
-          sortBy: sortBy,
-          sortOrder: sortOrder,
-          fieldName: 'location',
-          headerText: 'Location'
-        }) }}
-        {{ sortableTableHeader({
-          sortBy: sortBy,
-          sortOrder: sortOrder,
-          fieldName: 'session-type',
-          headerText: 'Session type'
-        }) }}
-        {{ sortableTableHeader({
-          sortBy: sortBy,
-          sortOrder: sortOrder,
-          fieldName: 'exemption-entered-on',
-          headerText: 'Exemption entered on'
-        }) }}
-        {{ sortableTableHeader({
-          sortBy: sortBy,
-          sortOrder: sortOrder,
-          fieldName: 'exemption-reason',
-          headerText: 'Exemption reason'
-        }) }}
-        <th scope="col" class="govuk-table__header" aria-sort="none"></th>
-      {% endset %}
+      {%set nameHeader %}{{ sortableTableHeader({ sortBy: sortBy, sortOrder: sortOrder, fieldName: 'name', headerText: 'Prisoner' }) }}{% endset %}
+      {%set locationHeader %}{{ sortableTableHeader({ sortBy: sortBy, sortOrder: sortOrder, fieldName: 'location', headerText: 'Location' }) }}{% endset %}
+      {%set sessionTypeHeader %}{{ sortableTableHeader({ sortBy: sortBy, sortOrder: sortOrder, fieldName: 'session-type', headerText: 'Session type' }) }}{% endset %}
+      {%set exemptionEnteredOnHeader %}{{ sortableTableHeader({ sortBy: sortBy, sortOrder: sortOrder, fieldName: 'exemption-entered-on', headerText: 'Exemption entered on' }) }}{% endset %}
+      {%set exemptionReasonHeader %}{{ sortableTableHeader({ sortBy: sortBy, sortOrder: sortOrder, fieldName: 'exemption-reason', headerText: 'Exemption reason' }) }}{% endset %}
 
       {% set tabContent %}
         {% include './_searchBox.njk' %}
 
         {{ searchResultsTable({
-          columnHeadings: columnHeadings,
+          columnHeadings: [nameHeader, locationHeader, sessionTypeHeader, exemptionEnteredOnHeader, exemptionReasonHeader],
+          currentPageOfRecords: currentPageOfRecords,
           searchTerm: searchTerm,
           sessionType: sessionType,
-          page: page
+          page: page,
+          items: items,
+          results: results,
+          previousPage: previousPage,
+          nextPage: nextPage
         }) }}
       {% endset %}
 

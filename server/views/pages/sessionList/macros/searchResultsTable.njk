@@ -2,11 +2,15 @@
     Search Results, specifically for the Session List pages
 
     `config` argument is an object with the following properties:
-      * columnHeadings
-      * items
+      * columnHeadings - an array of <th> table column headings
+      * currentPageOfRecords
       * searchTerm
       * sessionType
       * page
+      * items
+      * results
+      * previousPage
+      * nextPage
     ------------------------------------------------------------- #}
 {% macro searchResultsTable(config) %}
   {% from "moj/components/pagination/macro.njk" import mojPagination %}
@@ -24,43 +28,55 @@
       <caption><span class="govuk-visually-hidden">column headers with buttons are sortable.</span></caption>
       <thead class="govuk-table__head">
         <tr class="govuk-table__row" data-qa="sortable-table-headers">
-          {{ config.columnHeadings | safe }}
+          {% for columnHeading in config.columnHeadings %}
+            {{ columnHeading | safe }}
+          {% endfor %}
         </tr>
       </thead>
 
       <tbody class="govuk-table__body">
-        {{ config.items | safe }}
-        {#
-        {% for prisoner in currentPageOfRecords %}
+        {% for prisoner in config.currentPageOfRecords %}
           <tr class="govuk-table__row">
-            <td class="govuk-table__cell">
-              <a href="/plan/{{ prisoner.prisonNumber }}/view/overview" data-id="prisoner-list-prisoner-{{ prisoner.prisonNumber }}" rel="noopener noreferrer" class="govuk-link govuk-link--no-visited-state">
-                {{ prisoner.lastName }}, {{ prisoner.firstName }}
-              </a>
-              <br>
-              <span class='govuk-hint govuk-!-margin-bottom-0'>{{ prisoner.prisonNumber }}</span>
-            </td>
-            <td class="govuk-table__cell">{{ prisoner.location }}</td>
-            <td class="govuk-table__cell">{{ prisoner.releaseDate | formatDate('D MMMM YYYY') or 'N/A' }}</td>
-            <td class="govuk-table__cell">{{ prisoner.receptionDate | formatDate('D MMMM YYYY') or 'N/A' }}</td>
-            <td class="govuk-table__cell">
-              {% if not (prisoner.hasCiagInduction === true and prisoner.hasActionPlan === true) %}
-                <strong class="govuk-tag govuk-tag--red">Needs plan</strong>
-              {% endif %}
-            </td>
+            {% for columnHeading in config.columnHeadings %}
+              <td class="govuk-table__cell">
+                {% set columnName = columnHeading.match('data-qa="(.+)-column-header"')[1] %} {# extract the column name from the data-qa attribute of the <th> element using a regex #}
+                {% if columnName === 'name' %}
+                  <a href="/plan/{{ prisoner.prisonNumber }}/view/overview" data-id="prisoner-list-prisoner-{{ prisoner.prisonNumber }}" rel="noopener noreferrer" class="govuk-link govuk-link--no-visited-state">
+                    {{ prisoner.lastName }}, {{ prisoner.firstName }}
+                  </a>
+                  <br>
+                  <span class='govuk-hint govuk-!-margin-bottom-0'>{{ prisoner.prisonNumber }}</span>
+                {% elseif columnName === 'location' %}
+                  {{ prisoner.location }}
+                {% elseif columnName === 'session-type' %}
+                  {{ 'Review' if prisoner.sessionType === 'REVIEW' else 'Induction'}}
+                {% elseif columnName === 'release-date' %}
+                  {{ prisoner.releaseDate | formatDate('D MMMM YYYY') or 'N/A' }}
+                {% elseif columnName === 'due-by' %}
+                  {{ prisoner.deadlineDate | formatDate('D MMMM YYYY') }}
+                {% elseif columnName === 'exemption-entered-on' %}
+                  {{ prisoner.exemption.exemptionDate | formatDate('D MMMM YYYY') }}
+                {% elseif columnName === 'exemption-reason' %}
+                  {% if prisoner.sessionType === 'REVIEW' %}
+                    {{ prisoner.exemption.exemptionReason | formatReviewExemptionReason }}
+                  {% else %}
+                    {{ prisoner.exemption.exemptionReason | formatInductionExemptionReason }}
+                  {% endif %}
+                {% endif %}
+              </td>
+            {% endfor %}
           </tr>
         {% endfor %}
-        #}
       </tbody>
     </table>
   </form>
 
   <section data-qa="session-list-pagination">
     {{ mojPagination({
-      items: items,
-      results: results,
-      previous: previousPage if previousPage.href,
-      next: nextPage if nextPage.href
+      items: config.items,
+      results: config.results,
+      previous: config.previousPage if config.previousPage.href,
+      next: config.nextPage if config.nextPage.href
     }) }}
   </section>
 
