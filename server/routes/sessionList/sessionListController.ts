@@ -106,8 +106,8 @@ export default class SessionListController {
 
 const extractQueryStringParams = (req: Request): SessionListQueryStringParams => {
   const page = req.query.page as string
-  const searchTerm = req.query.searchTerm as string
-  const sessionType = req.query.sessionType as string
+  const searchTerm = (req.query.searchTerm as string) || ''
+  const sessionType = (req.query.sessionType as string) || ''
 
   const sortQueryStringValue = // sort options should be from query string, session, or defaults; in that order of preference
     (req.query.sort as string) ||

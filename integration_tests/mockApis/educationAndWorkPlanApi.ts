@@ -1,4 +1,5 @@
 import type { PrisonerSearchSummary } from 'viewModels'
+import type { SessionResponse } from 'educationAndWorkPlanApiClient'
 import { addDays, format, startOfToday } from 'date-fns'
 import { randomUUID } from 'crypto'
 import { SuperAgentRequest } from 'superagent'
@@ -12,6 +13,7 @@ import GoalStatusValue from '../../server/enums/goalStatusValue'
 import EducationLevelValue from '../../server/enums/educationLevelValue'
 import QualificationLevelValue from '../../server/enums/qualificationLevelValue'
 import InductionScheduleStatusValue from '../../server/enums/inductionScheduleStatusValue'
+import SessionStatusValue from '../../server/enums/sessionStatusValue'
 
 const createGoals = (): SuperAgentRequest =>
   stubFor({
@@ -1313,6 +1315,49 @@ const stubGetSessionSummary500Error = (): SuperAgentRequest =>
     },
   })
 
+const stubGetSessionsForPrisoners = (options: {
+  prisonerSessions: Array<SessionResponse>
+  status: SessionStatusValue
+}): SuperAgentRequest =>
+  stubFor({
+    request: {
+      method: 'POST',
+      urlPathPattern: `/session/summary`,
+      queryParameters: {
+        status: { equalTo: options.status },
+      },
+    },
+    response: {
+      status: 200,
+      headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+      jsonBody: {
+        sessions: options.prisonerSessions,
+      },
+    },
+  })
+
+const stubGetSessionsForPrisoners500Error = (status: SessionStatusValue): SuperAgentRequest =>
+  stubFor({
+    request: {
+      method: 'POST',
+      urlPathPattern: `/session/summary`,
+      queryParameters: {
+        status: { equalTo: status },
+      },
+    },
+    response: {
+      status: 500,
+      headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+      jsonBody: {
+        status: 500,
+        errorCode: null,
+        userMessage: 'An unexpected error occurred',
+        developerMessage: 'An unexpected error occurred',
+        moreInfo: null,
+      },
+    },
+  })
+
 export default {
   createGoals,
 
@@ -1372,6 +1417,9 @@ export default {
   stubGetSessionSummary,
   stubGetSessionSummary404Error,
   stubGetSessionSummary500Error,
+
+  stubGetSessionsForPrisoners,
+  stubGetSessionsForPrisoners500Error,
 
   stubEducationAndWorkPlanApiPing: stubPing(),
 }
