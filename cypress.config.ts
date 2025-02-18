@@ -11,6 +11,7 @@ import ciagInducationApi from './integration_tests/mockApis/ciagInducationApi'
 import prisonerListApi from './integration_tests/mockApis/prisonerListApi'
 import prisonRegisterApi from './integration_tests/mockApis/prisonRegisterApi'
 import prisonerSearchSummaryMockDataGenerator from './integration_tests/mockData/prisonerSearchSummaryMockDataGenerator'
+import sessionResponseMockDataGenerator from './integration_tests/mockData/sessionResponseMockDataGenerator'
 import ciagInductionUi from './integration_tests/mockApis/ciagInductionUi'
 
 export default defineConfig({
@@ -57,6 +58,7 @@ export default defineConfig({
         ...prisonerListApi,
         ...prisonRegisterApi,
         ...prisonerSearchSummaryMockDataGenerator,
+        ...sessionResponseMockDataGenerator,
         ...ciagInductionUi,
       })
       on('after:spec', (spec: Cypress.Spec, results: CypressCommandLine.RunResult) => {
