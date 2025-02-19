@@ -174,12 +174,7 @@ export default {
     // someToggleEnabled: toBoolean(get('SOME_TOGGLE_ENABLED', false)),
     completedGoalsEnabled: toBoolean(get('COMPLETED_GOALS_ENABLED', false)),
     archiveGoalNotesEnabled: toBoolean(get('ARCHIVE_GOAL_NOTES_ENABLED', false)),
-    reviewJourneyEnabledForPrison: (prisonId: string): boolean => {
-      const reviewsPrisonsEnabled = get('REVIEWS_PRISONS_ENABLED', '')
-        .split(',')
-        .map(id => id.trim())
-      return reviewsPrisonsEnabled.includes(prisonId) || reviewsPrisonsEnabled.includes('***')
-    },
+    reviewsEnabled: toBoolean(get('REVIEWS_ENABLED', false)),
     prisonIsEnabledForService: (prisonId: string): boolean => {
       const enabledPrisons = get('ACTIVE_AGENCIES', '', requiredInProduction)
         .split(',')

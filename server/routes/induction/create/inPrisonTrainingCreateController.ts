@@ -49,8 +49,7 @@ export default class InPrisonTrainingCreateController extends InPrisonTrainingCo
       return res.redirect(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
     }
 
-    const { activeCaseLoadId } = res.locals.user
-    return config.featureToggles.reviewJourneyEnabledForPrison(activeCaseLoadId)
+    return config.featureToggles.reviewsEnabled
       ? res.redirect(`/prisoners/${prisonNumber}/create-induction/who-completed-induction`)
       : res.redirect(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
   }

@@ -7,15 +7,10 @@ import retrieveActionPlanReviews from './retrieveActionPlanReviews'
 import NoteTypeValue from '../../enums/noteTypeValue'
 import ActionPlanReviewCalculationRuleValue from '../../enums/actionPlanReviewCalculationRuleValue'
 import ActionPlanReviewStatusValue from '../../enums/actionPlanReviewStatusValue'
+import config from '../../config'
 
 jest.mock('../../services/reviewService')
-
-const reviewJourneyEnabledForPrison = jest.fn()
-jest.mock('../../config', () => ({
-  featureToggles: {
-    reviewJourneyEnabledForPrison: (prisonId: string) => reviewJourneyEnabledForPrison(prisonId),
-  },
-}))
+jest.mock('../../config')
 
 describe('retrieveActionPlanReviews', () => {
   const reviewService = new ReviewService(null, null, null) as jest.Mocked<ReviewService>
@@ -44,9 +39,9 @@ describe('retrieveActionPlanReviews', () => {
     jest.resetAllMocks()
   })
 
-  it('should retrieve action plan reviews and store on res.locals given prison is enabled for reviews', async () => {
+  it('should retrieve action plan reviews and store on res.locals given review journey is enabled', async () => {
     // Given
-    reviewJourneyEnabledForPrison.mockReturnValue(true)
+    config.featureToggles.reviewsEnabled = true
 
     const expectedActionPlanReviews: ActionPlanReviews = {
       completedReviews: [
@@ -101,12 +96,11 @@ describe('retrieveActionPlanReviews', () => {
     expect(res.locals.actionPlanReviews).toEqual(expectedActionPlanReviews)
     expect(reviewService.getActionPlanReviews).toHaveBeenCalledWith(prisonNumber, username)
     expect(next).toHaveBeenCalled()
-    expect(reviewJourneyEnabledForPrison).toHaveBeenCalledWith('BXI')
   })
 
-  it('should not retrieve action plan reviews given prison is not enabled for reviews', async () => {
+  it('should not retrieve action plan reviews given review journey is not enabled', async () => {
     // Given
-    reviewJourneyEnabledForPrison.mockReturnValue(false)
+    config.featureToggles.reviewsEnabled = false
 
     // When
     await requestHandler(req, res, next)
@@ -115,6 +109,5 @@ describe('retrieveActionPlanReviews', () => {
     expect(res.locals.actionPlanReviews).toEqual(undefined)
     expect(reviewService.getActionPlanReviews).not.toHaveBeenCalled()
     expect(next).toHaveBeenCalled()
-    expect(reviewJourneyEnabledForPrison).toHaveBeenCalledWith('BXI')
   })
 })

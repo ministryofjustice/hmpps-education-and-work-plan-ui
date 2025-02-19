@@ -27,7 +27,7 @@ Induction, and 1 or more Goals.
 To ensure notifications are routed to the correct slack channels, update the `alerts-slack-channel` and `releases-slack-channel` parameters in `.circle/config.yml` to an appropriate channel.
 
 ## Imported Types
-Some types are imported from the Open API docs for hmpps-education-and-work-plan-api, prisoner-search-api, curious-api and ciag-induction-api.  
+Some types are imported from the Open API docs for hmpps-education-and-work-plan-api, prisoner-search-api, curious-api and ciag-induction-api.
 You will need to install the node module `openapi-typescript` globally with the following command:
 
 `npm install -g openapi-typescript`
@@ -46,13 +46,13 @@ To update the types from the Open API docs run the following commands:
 
 Note that you will need to run prettier over the generated files and possibly handle other errors before compiling.
 
-The types are inherited for use in `server/@types/educationAndWorkPlanApi/index.d.ts`, `server/@types/prisonerSearchApi/index.d.ts`, 
+The types are inherited for use in `server/@types/educationAndWorkPlanApi/index.d.ts`, `server/@types/prisonerSearchApi/index.d.ts`,
 `server/@types/prisonRegisterApi/index.d.ts` and `server/@types/curiousApi/index.d.ts` which may also need tweaking for use.
 
 Do not re-import the specs lightly! Reformatting the generated code with prettier is no small task, especially with large specs such as Prisoner Search.
 
 ## Running the app
-The easiest way to run the app is to use docker compose to create the service and all dependencies. 
+The easiest way to run the app is to use docker compose to create the service and all dependencies.
 
 `docker-compose pull`
 
@@ -63,13 +63,13 @@ Note that this will require running up the API first. See the [API Readme](https
 See `http://localhost:3000/health` to check the app is running.
 
 ### Dependencies
-The app requires: 
+The app requires:
 * hmpps-auth - for authentication
 * redis - session store and token caching
 
 ### Running the app for development
 
-To start the main services excluding the example typescript template app: 
+To start the main services excluding the example typescript template app:
 
 `docker-compose up --scale=app=0`
 
@@ -140,7 +140,7 @@ Then run the server in test mode by:
 And then either, run tests in headless mode with:
 
 `npm run int-test`
- 
+
 Or run tests with the cypress UI:
 
 `npm run int-test-ui`
@@ -192,6 +192,6 @@ Features can be toggled by setting the relevant environment variable.
 | Name                       | Default Value | Type     | Description                                                                       |
 |----------------------------|---------------|----------|-----------------------------------------------------------------------------------|
 | SOME_TOGGLE_ENABLED        | false         | Boolean  | Example feature toggle, for demonstration purposes.                               |
-| REVIEWS_PRISONS_ENABLED    |               | String   | Comma delimited list of prison IDs where the PLP Review process has been enabled. | 
-| COMPLETED_GOALS_ENABLED    |               | Boolean  | Enable completed goals tab.                                                       |
+| REVIEWS_ENABLED            | false         | Boolean  | Enable the PLP Review process.                                                    |
+| COMPLETED_GOALS_ENABLED    | false         | Boolean  | Enable completed goals tab.                                                       |
 | ARCHIVE_GOAL_NOTES_ENABLED | false         | Boolean  | Enable adding an archive note when archiving a goal.                              |

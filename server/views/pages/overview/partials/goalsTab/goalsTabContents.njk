@@ -68,7 +68,7 @@
             <p class="govuk-body" data-qa="no-in-progress-goals-message">{{ prisonerSummary.firstName }} {{ prisonerSummary.lastName }} has no goals in progress.</p>
           {% endif %}
         {% endset %}
-        {% if featureToggles.completedGoalsEnabled %} 
+        {% if featureToggles.completedGoalsEnabled %}
           {% set completedGoalsHtml %}
             <h2 class="govuk-heading-m">Completed goals</h2>
             {% if completedGoals.length > 0 %}
@@ -172,7 +172,7 @@
         inductionSchedule: inductionSchedule,
         actionPlanReview: actionPlanReview,
         userHasPermissionTo: userHasPermissionTo,
-        reviewJourneyEnabledForPrison: reviewJourneyEnabledForPrison
+        reviewsFeatureEnabled: reviewsFeatureEnabled
       }) }}
     </div>
   </div>

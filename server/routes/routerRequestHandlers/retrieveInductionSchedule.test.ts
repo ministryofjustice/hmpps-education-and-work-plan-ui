@@ -3,15 +3,10 @@ import type { InductionSchedule } from 'viewModels'
 import InductionService from '../../services/inductionService'
 import retrieveInductionSchedule from './retrieveInductionSchedule'
 import aValidInductionSchedule from '../../testsupport/inductionScheduleTestDataBuilder'
+import config from '../../config'
 
 jest.mock('../../services/inductionService')
-
-const reviewJourneyEnabledForPrison = jest.fn()
-jest.mock('../../config', () => ({
-  featureToggles: {
-    reviewJourneyEnabledForPrison: (prisonId: string) => reviewJourneyEnabledForPrison(prisonId),
-  },
-}))
+jest.mock('../../config')
 
 describe('retrieveInductionSchedule', () => {
   const inductionService = new InductionService(null, null) as jest.Mocked<InductionService>
@@ -32,14 +27,14 @@ describe('retrieveInductionSchedule', () => {
     } as unknown as Request
     res = {
       locals: {
-        user: { username, activeCaseLoadId: 'BXI' },
+        user: { username },
       },
     } as unknown as Response
   })
 
-  it('should retrieve Induction Schedule and store on res.locals given prison is enabled for reviews', async () => {
+  it('should retrieve Induction Schedule and store on res.locals given review journey is enabled', async () => {
     // Given
-    reviewJourneyEnabledForPrison.mockReturnValue(true)
+    config.featureToggles.reviewsEnabled = true
 
     const inductionSchedule = aValidInductionSchedule()
     inductionService.getInductionSchedule.mockResolvedValue(inductionSchedule)
@@ -51,12 +46,11 @@ describe('retrieveInductionSchedule', () => {
     expect(res.locals.inductionSchedule).toEqual(inductionSchedule)
     expect(inductionService.getInductionSchedule).toHaveBeenCalledWith(prisonNumber, username)
     expect(next).toHaveBeenCalled()
-    expect(reviewJourneyEnabledForPrison).toHaveBeenCalledWith('BXI')
   })
 
   it('should handle retrieval of Induction Schedule given Induction service returns an unexpected error', async () => {
     // Given
-    reviewJourneyEnabledForPrison.mockReturnValue(true)
+    config.featureToggles.reviewsEnabled = true
 
     const inductionServiceError = {
       status: 500,
@@ -77,12 +71,11 @@ describe('retrieveInductionSchedule', () => {
     expect(res.locals.inductionSchedule).toEqual(expected)
     expect(inductionService.getInductionSchedule).toHaveBeenCalledWith(prisonNumber, username)
     expect(next).toHaveBeenCalled()
-    expect(reviewJourneyEnabledForPrison).toHaveBeenCalledWith('BXI')
   })
 
   it('should handle retrieval of Induction Schedule given Induction service returns empty Induction Schedule indicating Not Found', async () => {
     // Given
-    reviewJourneyEnabledForPrison.mockReturnValue(true)
+    config.featureToggles.reviewsEnabled = true
 
     const inductionSchedule = { problemRetrievingData: false } as InductionSchedule
     inductionService.getInductionSchedule.mockResolvedValue(inductionSchedule)
@@ -96,12 +89,11 @@ describe('retrieveInductionSchedule', () => {
     expect(res.locals.inductionSchedule).toEqual(expected)
     expect(inductionService.getInductionSchedule).toHaveBeenCalledWith(prisonNumber, username)
     expect(next).toHaveBeenCalled()
-    expect(reviewJourneyEnabledForPrison).toHaveBeenCalledWith('BXI')
   })
 
-  it('should not retrieve Induction Schedule given prison is not enabled for reviews', async () => {
+  it('should not retrieve Induction Schedule given reviews journey is not enabled', async () => {
     // Given
-    reviewJourneyEnabledForPrison.mockReturnValue(false)
+    config.featureToggles.reviewsEnabled = false
 
     // When
     await requestHandler(req, res, next)
@@ -110,6 +102,5 @@ describe('retrieveInductionSchedule', () => {
     expect(res.locals.actionPlanReviews).toEqual(undefined)
     expect(inductionService.getInductionSchedule).not.toHaveBeenCalled()
     expect(next).toHaveBeenCalled()
-    expect(reviewJourneyEnabledForPrison).toHaveBeenCalledWith('BXI')
   })
 })

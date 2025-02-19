@@ -367,14 +367,11 @@ describe('educationAndWorkPlanClient', () => {
       educationAndWorkPlanApi.get(`/action-plans/${prisonNumber}/reviews`).reply(404, expectedResponseBody)
 
       // When
-      try {
-        await educationAndWorkPlanClient.getActionPlanReviews(prisonNumber, systemToken)
-      } catch (e) {
-        // Then
-        expect(nock.isDone()).toBe(true)
-        expect(e.status).toEqual(404)
-        expect(e.data).toEqual(expectedResponseBody)
-      }
+      const actual = await educationAndWorkPlanClient.getActionPlanReviews(prisonNumber, systemToken)
+
+      // Then
+      expect(actual).toBeNull()
+      expect(nock.isDone()).toBe(true)
     })
   })
 
