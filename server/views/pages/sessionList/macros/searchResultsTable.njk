@@ -62,6 +62,12 @@
                   {% else %}
                     {{ prisoner.exemption.exemptionReason | formatInductionExemptionReason }}
                   {% endif %}
+                {% elseif columnName === 'remove-exemption' %}
+                  {% if prisoner.sessionType === 'REVIEW' %}
+                    <a href="/plan/{{ prisoner.prisonNumber }}/review/exemption/remove" class="govuk-link">Remove exemption</a>
+                  {% else %}
+                    <a href="/prisoners/{{ prisoner.prisonNumber }}/induction/exemption/remove" class="govuk-link">Remove exemption</a>
+                  {% endif %}
                 {% endif %}
               </td>
             {% endfor %}
