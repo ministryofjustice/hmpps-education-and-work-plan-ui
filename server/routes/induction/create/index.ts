@@ -197,20 +197,20 @@ export default (router: Router, services: Services) => {
   ])
 
   router.get('/prisoners/:prisonNumber/create-induction/who-completed-induction', [
-    checkPrisonIsEnabled(),
+    checkInductionReviewsFeatureIsEnabled(),
     asyncMiddleware(whoCompletedInductionController.getWhoCompletedInductionView),
   ])
   router.post('/prisoners/:prisonNumber/create-induction/who-completed-induction', [
-    checkPrisonIsEnabled(),
+    checkInductionReviewsFeatureIsEnabled(),
     asyncMiddleware(whoCompletedInductionController.submitWhoCompletedInductionForm),
   ])
 
   router.get('/prisoners/:prisonNumber/create-induction/notes', [
-    checkPrisonIsEnabled(),
+    checkInductionReviewsFeatureIsEnabled(),
     asyncMiddleware(inductionNoteController.getInductionNoteView),
   ])
   router.post('/prisoners/:prisonNumber/create-induction/notes', [
-    checkPrisonIsEnabled(),
+    checkInductionReviewsFeatureIsEnabled(),
     asyncMiddleware(inductionNoteController.submitInductionNoteForm),
   ])
 
@@ -222,12 +222,11 @@ export default (router: Router, services: Services) => {
   ])
 }
 
-const checkPrisonIsEnabled = (): RequestHandler => {
+const checkInductionReviewsFeatureIsEnabled = (): RequestHandler => {
   return asyncMiddleware((req, res, next) => {
-    const { activeCaseLoadId } = res.locals.user
-    if (config.featureToggles.reviewJourneyEnabledForPrison(activeCaseLoadId)) {
+    if (config.featureToggles.reviewsEnabled) {
       return next()
     }
-    return next(createError(404, `Route ${req.originalUrl} not enabled for prison ${activeCaseLoadId}`))
+    return next(createError(404, `Route ${req.originalUrl} not enabled`))
   })
 }

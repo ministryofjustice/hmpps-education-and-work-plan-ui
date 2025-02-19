@@ -22,7 +22,7 @@ const templateParams: ActionsCardParams = {
     problemRetrievingData: false,
     reviewStatus: 'NO_SCHEDULED_REVIEW',
   },
-  reviewJourneyEnabledForPrison: true,
+  reviewsFeatureEnabled: true,
   prisonerSummary: aValidPrisonerSummary(),
   userHasPermissionTo,
 }
@@ -53,7 +53,7 @@ describe('_goalActions', () => {
     // Given
     const params = {
       ...templateParams,
-      reviewJourneyEnabledForPrison: false,
+      reviewsFeatureEnabled: false,
     }
 
     // When

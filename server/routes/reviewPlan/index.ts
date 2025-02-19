@@ -11,20 +11,19 @@ import exemptionRemovalActionPlanReviewRoutes from './removeExemption'
  * Route definitions for the review plan journeys
  */
 export default function reviewPlanRoutes(router: Router, services: Services) {
-  router.get('/plan/:prisonNumber/review', [checkPrisonIsEnabled()])
-  router.get('/plan/:prisonNumber/review/**', [checkPrisonIsEnabled()])
+  router.get('/plan/:prisonNumber/review', [checkReviewsFeatureIsEnabled()])
+  router.get('/plan/:prisonNumber/review/**', [checkReviewsFeatureIsEnabled()])
 
   completeActionPlanReviewRoutes(router, services)
   exemptActionPlanReviewRoutes(router, services)
   exemptionRemovalActionPlanReviewRoutes(router, services)
 }
 
-const checkPrisonIsEnabled = (): RequestHandler => {
+const checkReviewsFeatureIsEnabled = (): RequestHandler => {
   return asyncMiddleware((req, res, next) => {
-    const { activeCaseLoadId } = res.locals.user
-    if (config.featureToggles.reviewJourneyEnabledForPrison(activeCaseLoadId)) {
+    if (config.featureToggles.reviewsEnabled) {
       return next()
     }
-    return next(createError(404, `Route ${req.originalUrl} not enabled for prison ${activeCaseLoadId}`))
+    return next(createError(404, `Route ${req.originalUrl} not enabled`))
   })
 }

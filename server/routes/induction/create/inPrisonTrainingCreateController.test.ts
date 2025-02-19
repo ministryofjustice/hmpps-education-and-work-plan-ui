@@ -6,13 +6,9 @@ import { aValidInductionDto } from '../../../testsupport/inductionDtoTestDataBui
 import InPrisonTrainingCreateController from './inPrisonTrainingCreateController'
 import InPrisonTrainingValue from '../../../enums/inPrisonTrainingValue'
 import { User } from '../../../data/manageUsersApiClient'
+import config from '../../../config'
 
-const reviewJourneyEnabledForPrison = jest.fn()
-jest.mock('../../../config', () => ({
-  featureToggles: {
-    reviewJourneyEnabledForPrison: (prisonId: string) => reviewJourneyEnabledForPrison(prisonId),
-  },
-}))
+jest.mock('../../../config')
 
 describe('inPrisonTrainingCreateController', () => {
   const controller = new InPrisonTrainingCreateController()
@@ -21,7 +17,6 @@ describe('inPrisonTrainingCreateController', () => {
   const prisonerSummary = aValidPrisonerSummary()
   const user: User = {
     username: 'a-dps-user',
-    activeCaseLoadId: 'BXI',
     caseLoadIds: ['BXI'],
   }
 
@@ -43,7 +38,7 @@ describe('inPrisonTrainingCreateController', () => {
     jest.resetAllMocks()
     req.session.pageFlowHistory = undefined
     req.body = {}
-    reviewJourneyEnabledForPrison.mockReturnValue(false)
+    config.featureToggles.reviewsEnabled = false
   })
 
   describe('getInPrisonTrainingView', () => {
@@ -182,9 +177,9 @@ describe('inPrisonTrainingCreateController', () => {
       expect(req.session.inductionDto).toEqual(inductionDto)
     })
 
-    it('should update inductionDto and redirect to Check Your Answers page given users active caseloadID is not enabled for new induction journey', async () => {
+    it('should update inductionDto and redirect to Check Your Answers page given new induction review journey is not enabled', async () => {
       // Given
-      reviewJourneyEnabledForPrison.mockReturnValue(false)
+      config.featureToggles.reviewsEnabled = false
 
       const inductionDto = aValidInductionDto()
       inductionDto.inPrisonInterests.inPrisonTrainingInterests = undefined
@@ -210,12 +205,11 @@ describe('inPrisonTrainingCreateController', () => {
       expect(updatedInduction.inPrisonInterests.inPrisonTrainingInterests).toEqual(expectedInPrisonTrainingInterests)
       expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-induction/check-your-answers')
       expect(req.session.inPrisonTrainingForm).toBeUndefined()
-      expect(reviewJourneyEnabledForPrison).toHaveBeenCalledWith(user.activeCaseLoadId)
     })
 
-    it('should update inductionDto and redirect to Who Completed Induction page given users active caseloadID is enabled for new induction journey', async () => {
+    it('should update inductionDto and redirect to Who Completed Induction page given new induction review journey is enabled', async () => {
       // Given
-      reviewJourneyEnabledForPrison.mockReturnValue(true)
+      config.featureToggles.reviewsEnabled = true
 
       const inductionDto = aValidInductionDto()
       inductionDto.inPrisonInterests.inPrisonTrainingInterests = undefined
@@ -241,7 +235,6 @@ describe('inPrisonTrainingCreateController', () => {
       expect(updatedInduction.inPrisonInterests.inPrisonTrainingInterests).toEqual(expectedInPrisonTrainingInterests)
       expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-induction/who-completed-induction')
       expect(req.session.inPrisonTrainingForm).toBeUndefined()
-      expect(reviewJourneyEnabledForPrison).toHaveBeenCalledWith(user.activeCaseLoadId)
     })
 
     it('should update inductionDto and redirect to Check Your Answers page given previous page was Check Your Answers', async () => {
@@ -278,7 +271,6 @@ describe('inPrisonTrainingCreateController', () => {
       expect(updatedInduction.inPrisonInterests.inPrisonTrainingInterests).toEqual(expectedInPrisonTrainingInterests)
       expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-induction/check-your-answers')
       expect(req.session.inPrisonTrainingForm).toBeUndefined()
-      expect(reviewJourneyEnabledForPrison).not.toHaveBeenCalled()
     })
   })
 })

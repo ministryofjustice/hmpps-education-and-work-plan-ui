@@ -10,19 +10,18 @@ import removeInductionExemptionRoutes from './removeExemption'
  * Route definitions for exempting, and removing the exemption of a prisoner's Induction
  */
 export default (router: Router, services: Services) => {
-  router.get('/prisoners/:prisonNumber/induction/exemption', [checkPrisonIsEnabled()])
-  router.get('/prisoners/:prisonNumber/induction/exemption/**', [checkPrisonIsEnabled()])
+  router.get('/prisoners/:prisonNumber/induction/exemption', [checkInductionReviewsFeatureIsEnabled()])
+  router.get('/prisoners/:prisonNumber/induction/exemption/**', [checkInductionReviewsFeatureIsEnabled()])
 
   exemptInductionRoutes(router, services)
   removeInductionExemptionRoutes(router, services)
 }
 
-const checkPrisonIsEnabled = (): RequestHandler => {
+const checkInductionReviewsFeatureIsEnabled = (): RequestHandler => {
   return asyncMiddleware((req, res, next) => {
-    const { activeCaseLoadId } = res.locals.user
-    if (config.featureToggles.reviewJourneyEnabledForPrison(activeCaseLoadId)) {
+    if (config.featureToggles.reviewsEnabled) {
       return next()
     }
-    return next(createError(404, `Route ${req.originalUrl} not enabled for prison ${activeCaseLoadId}`))
+    return next(createError(404, `Route ${req.originalUrl} not enabled`))
   })
 }

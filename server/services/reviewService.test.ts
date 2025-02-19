@@ -164,15 +164,9 @@ describe('reviewService', () => {
       expect(educationAndWorkPlanClient.getActionPlanReviews).toHaveBeenCalledWith(prisonNumber, systemToken)
     })
 
-    it('should get Action Plan Reviews given educationAndWorkPlanClient returns not found error for the Action Plan Reviews', async () => {
+    it('should get Action Plan Reviews given educationAndWorkPlanClient returns null indicating not found error for the Action Plan Reviews', async () => {
       // Given
-
-      const educationAndWorkPlanApi404Error = {
-        message: 'Not Found',
-        status: 404,
-        text: { userMessage: `Review Schedule not found for prisoner [${prisonNumber}]` },
-      }
-      educationAndWorkPlanClient.getActionPlanReviews.mockRejectedValue(educationAndWorkPlanApi404Error)
+      educationAndWorkPlanClient.getActionPlanReviews.mockResolvedValue(null)
 
       const expectedActionPlanReviews: ActionPlanReviews = {
         completedReviews: [],

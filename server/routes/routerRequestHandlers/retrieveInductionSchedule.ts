@@ -11,8 +11,7 @@ const retrieveInductionSchedule = (inductionService: InductionService): RequestH
   return asyncMiddleware(async (req: Request, res: Response, next: NextFunction) => {
     const { prisonNumber } = req.params
 
-    const { activeCaseLoadId } = res.locals.user
-    if (config.featureToggles.reviewJourneyEnabledForPrison(activeCaseLoadId)) {
+    if (config.featureToggles.reviewsEnabled) {
       try {
         // Retrieve the Induction Schedule and store in res.locals
         res.locals.inductionSchedule = await inductionService.getInductionSchedule(prisonNumber, req.user.username)

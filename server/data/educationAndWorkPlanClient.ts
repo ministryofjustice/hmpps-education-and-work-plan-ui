@@ -120,6 +120,7 @@ export default class EducationAndWorkPlanClient {
   async getActionPlanReviews(prisonNumber: string, token: string): Promise<ActionPlanReviewsResponse> {
     return EducationAndWorkPlanClient.restClient(token).get({
       path: `/action-plans/${prisonNumber}/reviews`,
+      ignore404: true,
     })
   }
 

@@ -41,7 +41,7 @@ Data supplied to this template:
 
       {% include './_goalsSummaryCard.njk' %}
 
-      {% if reviewJourneyEnabledForPrison %}
+      {% if reviewsFeatureEnabled %}
         {% include './_sessionHistorySummaryCard.njk' %}
       {% endif %}
 
@@ -54,7 +54,7 @@ Data supplied to this template:
         inductionSchedule: inductionSchedule,
         actionPlanReview: actionPlanReview,
         userHasPermissionTo: userHasPermissionTo,
-        reviewJourneyEnabledForPrison: reviewJourneyEnabledForPrison
+        reviewsFeatureEnabled: reviewsFeatureEnabled
       }) }}
     </div>
   {% endblock %}

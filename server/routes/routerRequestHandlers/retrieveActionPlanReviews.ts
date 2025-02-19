@@ -10,8 +10,7 @@ const retrieveActionPlanReviews = (reviewService: ReviewService): RequestHandler
   return asyncMiddleware(async (req: Request, res: Response, next: NextFunction) => {
     const { prisonNumber } = req.params
 
-    const { activeCaseLoadId } = res.locals.user
-    if (config.featureToggles.reviewJourneyEnabledForPrison(activeCaseLoadId)) {
+    if (config.featureToggles.reviewsEnabled) {
       // Retrieve the Action Plan Reviews and store in res.locals
       res.locals.actionPlanReviews = await reviewService.getActionPlanReviews(prisonNumber, req.user.username)
     }
