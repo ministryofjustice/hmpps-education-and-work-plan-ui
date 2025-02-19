@@ -32,7 +32,7 @@ generic-service:
     # of the PLP team.
     ACTIVE_AGENCIES: 'BLI, BXI, BZI, RSI, MDI, WDI, WSI, ONI, SKI, SWI, WTI, DGI, KMI, NLI, GHI, DNI'
 
-    REVIEWS_ENABLED: "false"
+    REVIEWS_ENABLED: "true"
 
   allowlist:
     uservision-accessibility-testers: 5.181.59.114/32
