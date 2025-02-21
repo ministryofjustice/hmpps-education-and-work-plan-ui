@@ -85,6 +85,8 @@ export default {
       apiClientSecret: get('API_CLIENT_SECRET', 'clientsecret', requiredInProduction),
       systemClientId: get('SYSTEM_CLIENT_ID', 'clientid', requiredInProduction),
       systemClientSecret: get('SYSTEM_CLIENT_SECRET', 'clientsecret', requiredInProduction),
+      curiousClientId: get('CURIOUS_CLIENT_ID', 'clientid', requiredInProduction),
+      curiousClientSecret: get('CURIOUS_CLIENT_SECRET', 'clientsecret', requiredInProduction),
       includeInHealthCheck: true,
     },
     manageUsersApi: {
