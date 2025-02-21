@@ -23,19 +23,18 @@ describe('curiousService', () => {
   const prisonService = new PrisonService(null, null, null) as jest.Mocked<PrisonService>
   const curiousService = new CuriousService(hmppsAuthClient, curiousClient, prisonService)
 
+  const prisonNumber = 'A1234BC'
+  const username = 'a-dps-user'
+  const curiousClientToken = 'curious-client-token'
+
   beforeEach(() => {
     jest.resetAllMocks()
+    hmppsAuthClient.getCuriousClientToken.mockResolvedValue(curiousClientToken)
   })
 
   describe('getPrisonerSupportNeeds', () => {
     it('should get prisoner support needs given a known prison number', async () => {
       // Given
-      const prisonNumber = 'A1234BC'
-      const username = 'a-dps-user'
-
-      const systemToken = 'a-system-token'
-      hmppsAuthClient.getSystemClientToken.mockResolvedValue(systemToken)
-
       const prisonNamesById = new Map([['MDI', 'Moorland (HMP & YOI)']])
       prisonService.getAllPrisonNamesById.mockResolvedValue(prisonNamesById)
 
@@ -68,17 +67,12 @@ describe('curiousService', () => {
 
       // Then
       expect(actual).toEqual(expectedSupportNeeds)
-      expect(curiousClient.getLearnerProfile).toHaveBeenCalledWith(prisonNumber, systemToken)
+      expect(curiousClient.getLearnerProfile).toHaveBeenCalledWith(prisonNumber, curiousClientToken)
+      expect(hmppsAuthClient.getCuriousClientToken).toHaveBeenCalled()
     })
 
     it('should handle retrieval of prisoner support needs given Curious returns an unexpected error for the learner profile', async () => {
       // Given
-      const prisonNumber = 'A1234BC'
-      const username = 'a-dps-user'
-
-      const systemToken = 'a-system-token'
-      hmppsAuthClient.getSystemClientToken.mockResolvedValue(systemToken)
-
       const curiousApiError = {
         message: 'Internal Server Error',
         status: 500,
@@ -98,17 +92,12 @@ describe('curiousService', () => {
 
       // Then
       expect(actual).toEqual(expectedSupportNeeds)
-      expect(curiousClient.getLearnerProfile).toHaveBeenCalledWith(prisonNumber, systemToken)
+      expect(curiousClient.getLearnerProfile).toHaveBeenCalledWith(prisonNumber, curiousClientToken)
+      expect(hmppsAuthClient.getCuriousClientToken).toHaveBeenCalled()
     })
 
     it('should handle retrieval of prisoner support needs given Curious returns not found error for the learner profile', async () => {
       // Given
-      const prisonNumber = 'A1234BC'
-      const username = 'a-dps-user'
-
-      const systemToken = 'a-system-token'
-      hmppsAuthClient.getSystemClientToken.mockResolvedValue(systemToken)
-
       const curiousApi404Error = {
         message: 'Not Found',
         status: 404,
@@ -128,19 +117,14 @@ describe('curiousService', () => {
 
       // Then
       expect(actual).toEqual(expectedSupportNeeds)
-      expect(curiousClient.getLearnerProfile).toHaveBeenCalledWith(prisonNumber, systemToken)
+      expect(curiousClient.getLearnerProfile).toHaveBeenCalledWith(prisonNumber, curiousClientToken)
+      expect(hmppsAuthClient.getCuriousClientToken).toHaveBeenCalled()
     })
   })
 
   describe('getPrisonerFunctionalSkills', () => {
     it('should get prisoner functional skills given a known prison number', async () => {
       // Given
-      const prisonNumber = 'A1234BC'
-      const username = 'a-dps-user'
-
-      const systemToken = 'a-system-token'
-      hmppsAuthClient.getSystemClientToken.mockResolvedValue(systemToken)
-
       const learnerProfiles = [aValidLearnerProfile()]
       curiousClient.getLearnerProfile.mockResolvedValue(learnerProfiles)
 
@@ -166,17 +150,12 @@ describe('curiousService', () => {
 
       // Then
       expect(actual).toEqual(expectedFunctionalSkills)
-      expect(curiousClient.getLearnerProfile).toHaveBeenCalledWith(prisonNumber, systemToken)
+      expect(curiousClient.getLearnerProfile).toHaveBeenCalledWith(prisonNumber, curiousClientToken)
+      expect(hmppsAuthClient.getCuriousClientToken).toHaveBeenCalled()
     })
 
     it('should handle retrieval of prisoner functional skills given Curious returns not found error for the learner profile', async () => {
       // Given
-      const prisonNumber = 'A1234BC'
-      const username = 'a-dps-user'
-
-      const systemToken = 'a-system-token'
-      hmppsAuthClient.getSystemClientToken.mockResolvedValue(systemToken)
-
       const curiousApi404Error = {
         message: 'Not Found',
         status: 404,
@@ -195,17 +174,12 @@ describe('curiousService', () => {
 
       // Then
       expect(actual).toEqual(expectedFunctionalSkills)
-      expect(curiousClient.getLearnerProfile).toHaveBeenCalledWith(prisonNumber, systemToken)
+      expect(curiousClient.getLearnerProfile).toHaveBeenCalledWith(prisonNumber, curiousClientToken)
+      expect(hmppsAuthClient.getCuriousClientToken).toHaveBeenCalled()
     })
 
     it('should handle retrieval of prisoner Functional Skills given Curious returns an unexpected error for the learner profile', async () => {
       // Given
-      const prisonNumber = 'A1234BC'
-      const username = 'a-dps-user'
-
-      const systemToken = 'a-system-token'
-      hmppsAuthClient.getSystemClientToken.mockResolvedValue(systemToken)
-
       const curiousApiError = {
         message: 'Internal Server Error',
         status: 500,
@@ -223,7 +197,8 @@ describe('curiousService', () => {
 
       // Then
       expect(actual).toEqual(expectedFunctionalSkills)
-      expect(curiousClient.getLearnerProfile).toHaveBeenCalledWith(prisonNumber, systemToken)
+      expect(curiousClient.getLearnerProfile).toHaveBeenCalledWith(prisonNumber, curiousClientToken)
+      expect(hmppsAuthClient.getCuriousClientToken).toHaveBeenCalled()
     })
   })
 
@@ -238,12 +213,6 @@ describe('curiousService', () => {
 
     it('should get In Prison Courses', async () => {
       // Given
-      const prisonNumber = 'A1234BC'
-      const username = 'a-dps-user'
-
-      const systemToken = 'a-system-token'
-      hmppsAuthClient.getSystemClientToken.mockResolvedValue(systemToken)
-
       prisonService.getAllPrisonNamesById.mockImplementation(mockAllPrisonNameLookup)
 
       const learnerEducationPage1Of1: LearnerEductionPagedResponse = learnerEducationPagedResponse(prisonNumber)
@@ -356,18 +325,13 @@ describe('curiousService', () => {
 
       // Then
       expect(actual).toEqual(expected)
-      expect(curiousClient.getLearnerEducationPage).toHaveBeenCalledWith(prisonNumber, systemToken, 0)
+      expect(curiousClient.getLearnerEducationPage).toHaveBeenCalledWith(prisonNumber, curiousClientToken, 0)
       expect(prisonService.getAllPrisonNamesById).toHaveBeenCalledWith(username)
+      expect(hmppsAuthClient.getCuriousClientToken).toHaveBeenCalled()
     })
 
     it('should get In Prison Courses given there is only 1 page of data in Curious for the prisoner', async () => {
       // Given
-      const prisonNumber = 'A1234BC'
-      const username = 'a-dps-user'
-
-      const systemToken = 'a-system-token'
-      hmppsAuthClient.getSystemClientToken.mockResolvedValue(systemToken)
-
       prisonService.getAllPrisonNamesById.mockImplementation(mockAllPrisonNameLookup)
 
       const learnerEducationPage1Of1: LearnerEductionPagedResponse = learnerEducationPagedResponsePage1Of1(prisonNumber)
@@ -421,17 +385,12 @@ describe('curiousService', () => {
 
       // Then
       expect(actual).toEqual(expected)
-      expect(curiousClient.getLearnerEducationPage).toHaveBeenCalledWith(prisonNumber, systemToken, 0)
+      expect(curiousClient.getLearnerEducationPage).toHaveBeenCalledWith(prisonNumber, curiousClientToken, 0)
+      expect(hmppsAuthClient.getCuriousClientToken).toHaveBeenCalled()
     })
 
     it('should get In Prison Courses given there are 2 pages of data in Curious for the prisoner', async () => {
       // Given
-      const prisonNumber = 'A1234BC'
-      const username = 'a-dps-user'
-
-      const systemToken = 'a-system-token'
-      hmppsAuthClient.getSystemClientToken.mockResolvedValue(systemToken)
-
       prisonService.getAllPrisonNamesById.mockImplementation(mockAllPrisonNameLookup)
 
       const learnerEducationPage1Of2: LearnerEductionPagedResponse = learnerEducationPagedResponsePage1Of2(prisonNumber)
@@ -501,18 +460,13 @@ describe('curiousService', () => {
 
       // Then
       expect(actual).toEqual(expected)
-      expect(curiousClient.getLearnerEducationPage).toHaveBeenCalledWith(prisonNumber, systemToken, 0)
-      expect(curiousClient.getLearnerEducationPage).toHaveBeenCalledWith(prisonNumber, systemToken, 1)
+      expect(curiousClient.getLearnerEducationPage).toHaveBeenCalledWith(prisonNumber, curiousClientToken, 0)
+      expect(curiousClient.getLearnerEducationPage).toHaveBeenCalledWith(prisonNumber, curiousClientToken, 1)
+      expect(hmppsAuthClient.getCuriousClientToken).toHaveBeenCalled()
     })
 
     it('should not get In Prison Courses given the curious API request for page 1 returns an error response', async () => {
       // Given
-      const prisonNumber = 'A1234BC'
-      const username = 'a-dps-user'
-
-      const systemToken = 'a-system-token'
-      hmppsAuthClient.getSystemClientToken.mockResolvedValue(systemToken)
-
       const curiousApiError = {
         message: 'Internal Server Error',
         status: 500,
@@ -529,18 +483,13 @@ describe('curiousService', () => {
 
       // Then
       expect(actual).toEqual(expected)
-      expect(curiousClient.getLearnerEducationPage).toHaveBeenCalledWith(prisonNumber, systemToken, 0)
+      expect(curiousClient.getLearnerEducationPage).toHaveBeenCalledWith(prisonNumber, curiousClientToken, 0)
       expect(prisonService.getAllPrisonNamesById).not.toHaveBeenCalled()
+      expect(hmppsAuthClient.getCuriousClientToken).toHaveBeenCalled()
     })
 
     it('should not get In Prison Courses given the Curious API request for page 2 returns an error response', async () => {
       // Given
-      const prisonNumber = 'A1234BC'
-      const username = 'a-dps-user'
-
-      const systemToken = 'a-system-token'
-      hmppsAuthClient.getSystemClientToken.mockResolvedValue(systemToken)
-
       const learnerEducationPage1Of2: LearnerEductionPagedResponse = learnerEducationPagedResponsePage1Of2(prisonNumber)
       curiousClient.getLearnerEducationPage.mockResolvedValueOnce(learnerEducationPage1Of2)
 
@@ -560,19 +509,14 @@ describe('curiousService', () => {
 
       // Then
       expect(actual).toEqual(expected)
-      expect(curiousClient.getLearnerEducationPage).toHaveBeenCalledWith(prisonNumber, systemToken, 0)
-      expect(curiousClient.getLearnerEducationPage).toHaveBeenCalledWith(prisonNumber, systemToken, 1)
+      expect(curiousClient.getLearnerEducationPage).toHaveBeenCalledWith(prisonNumber, curiousClientToken, 0)
+      expect(curiousClient.getLearnerEducationPage).toHaveBeenCalledWith(prisonNumber, curiousClientToken, 1)
       expect(prisonService.getAllPrisonNamesById).not.toHaveBeenCalled()
+      expect(hmppsAuthClient.getCuriousClientToken).toHaveBeenCalled()
     })
 
     it('should handle retrieval of In Prison Courses given Curious API client returns null indicating not found error for the learner education', async () => {
       // Given
-      const prisonNumber = 'A1234BC'
-      const username = 'a-dps-user'
-
-      const systemToken = 'a-system-token'
-      hmppsAuthClient.getSystemClientToken.mockResolvedValue(systemToken)
-
       curiousClient.getLearnerEducationPage.mockResolvedValue(null)
 
       const expected: InPrisonCourseRecords = {
@@ -593,7 +537,8 @@ describe('curiousService', () => {
 
       // Then
       expect(actual).toEqual(expected)
-      expect(curiousClient.getLearnerEducationPage).toHaveBeenCalledWith(prisonNumber, systemToken, 0)
+      expect(curiousClient.getLearnerEducationPage).toHaveBeenCalledWith(prisonNumber, curiousClientToken, 0)
+      expect(hmppsAuthClient.getCuriousClientToken).toHaveBeenCalled()
     })
   })
 })

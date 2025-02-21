@@ -34,6 +34,12 @@ generic-service:
 
     REVIEWS_ENABLED: "true"
 
+  # TODO - move to parent `values.yaml` when we've requested and the HAAR team have created the client in preprod and prod
+  namespace_secrets:
+    hmpps-education-and-work-plan-ui:
+      CURIOUS_CLIENT_ID: "CURIOUS_CLIENT_ID"
+      CURIOUS_CLIENT_SECRET: "CURIOUS_CLIENT_SECRET"
+
   allowlist:
     uservision-accessibility-testers: 5.181.59.114/32
     cymulate-1: 54.217.50.18/32

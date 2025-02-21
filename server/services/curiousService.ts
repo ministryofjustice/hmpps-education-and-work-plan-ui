@@ -18,11 +18,11 @@ export default class CuriousService {
   ) {}
 
   async getPrisonerSupportNeeds(prisonNumber: string, username: string): Promise<PrisonerSupportNeeds> {
-    const systemToken = await this.hmppsAuthClient.getSystemClientToken(username)
     const prisonNamesById = await this.prisonService.getAllPrisonNamesById(username)
+    const curiousClientToken = await this.hmppsAuthClient.getCuriousClientToken()
 
     try {
-      const learnerProfiles = await this.getLearnerProfile(prisonNumber, systemToken)
+      const learnerProfiles = await this.getLearnerProfile(prisonNumber, curiousClientToken)
       return toPrisonerSupportNeeds(learnerProfiles, prisonNamesById)
     } catch (error) {
       logger.error(`Error retrieving support needs data from Curious: ${JSON.stringify(error)}`)
@@ -31,11 +31,11 @@ export default class CuriousService {
   }
 
   async getPrisonerFunctionalSkills(prisonNumber: string, username: string): Promise<FunctionalSkills> {
-    const systemToken = await this.hmppsAuthClient.getSystemClientToken(username)
     const prisonNamesById = await this.prisonService.getAllPrisonNamesById(username)
+    const curiousClientToken = await this.hmppsAuthClient.getCuriousClientToken()
 
     try {
-      const learnerProfiles = await this.getLearnerProfile(prisonNumber, systemToken)
+      const learnerProfiles = await this.getLearnerProfile(prisonNumber, curiousClientToken)
       return toFunctionalSkills(learnerProfiles, prisonNumber, prisonNamesById)
     } catch (error) {
       logger.error(`Error retrieving functional skills data from Curious: ${JSON.stringify(error)}`)
@@ -51,7 +51,7 @@ export default class CuriousService {
    * grouped into arrays of `InPrisonCourse` within the returned `InPrisonCourseRecords` object.
    */
   async getPrisonerInPrisonCourses(prisonNumber: string, username: string): Promise<InPrisonCourseRecords> {
-    const systemToken = await this.hmppsAuthClient.getSystemClientToken(username)
+    const curiousClientToken = await this.hmppsAuthClient.getCuriousClientToken()
 
     try {
       let page = 0
@@ -61,7 +61,11 @@ export default class CuriousService {
       // loop until the API response's `last` field is `true`
       while (apiPagedResponse.last === false) {
         // eslint-disable-next-line no-await-in-loop
-        apiPagedResponse = (await this.curiousClient.getLearnerEducationPage(prisonNumber, systemToken, page)) || {
+        apiPagedResponse = (await this.curiousClient.getLearnerEducationPage(
+          prisonNumber,
+          curiousClientToken,
+          page,
+        )) || {
           last: true,
           content: [],
         }
