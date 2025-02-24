@@ -10,7 +10,7 @@
         <span class="govuk-body govuk-!-font-size-36 govuk-!-font-weight-bold" data-qa="overdue-sessions-count">{{ sessionsSummary.overdueSessionCount }}</span>
         <span class="govuk-tag govuk-tag--red govuk-!-margin-left-2 govuk-!-margin-bottom-4">Overdue</span>
       </div>
-      <a class="govuk-link govuk-!-font-size-19" href="/sessions/overdue" data-qa="view-overdue-sessions-button">View overdue sessions</a>
+      <a class="govuk-link govuk-!-font-size-19 govuk-!-display-none-print" href="/sessions/overdue" data-qa="view-overdue-sessions-button">View overdue sessions</a>
     </div>
     {# Count of sessions that are due #}
     <div class="govuk-grid-item">
@@ -19,7 +19,7 @@
         <span class="govuk-body govuk-!-font-size-36 govuk-!-font-weight-bold" data-qa="due-sessions-count">{{ sessionsSummary.dueSessionCount }}</span>
         <span class="govuk-tag govuk-tag--yellow govuk-!-margin-left-2 govuk-!-margin-bottom-4">Due</span>
       </div>
-      <a class="govuk-link govuk-!-font-size-19" href="/sessions/due" data-qa="view-due-sessions-button">View due sessions</a>
+      <a class="govuk-link govuk-!-font-size-19 govuk-!-display-none-print" href="/sessions/due" data-qa="view-due-sessions-button">View due sessions</a>
     </div>
     {# Count of sessions that are on hold #}
     <div class="govuk-grid-item">
@@ -28,7 +28,7 @@
         <span class="govuk-body govuk-!-font-size-36 govuk-!-font-weight-bold" data-qa="on-hold-sessions-count">{{ sessionsSummary.onHoldSessionCount }}</span>
         <span class="govuk-tag govuk-tag--grey govuk-!-margin-left-2 govuk-!-margin-bottom-4">On hold</span>
       </div>
-      <a class="govuk-link govuk-!-font-size-19" href="/sessions/on-hold" data-qa="view-on-hold-sessions-button">View sessions on hold</a>
+      <a class="govuk-link govuk-!-font-size-19 govuk-!-display-none-print" href="/sessions/on-hold" data-qa="view-on-hold-sessions-button">View sessions on hold</a>
     </div>
   </div>
 

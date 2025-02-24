@@ -1,8 +1,16 @@
+.app-print-only {
+  display: none;
+}
+
 @media print {
 
   @page {
     size: auto;
     margin: 8mm;
+  }
+
+  .app-print-only {
+    display: inline;
   }
 
   .govuk-hint,
