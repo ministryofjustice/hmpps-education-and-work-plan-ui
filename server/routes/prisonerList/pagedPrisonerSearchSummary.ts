@@ -185,10 +185,10 @@ const sortableName = (prisonerSearchSummary: PrisonerSearchSummary): string =>
 const sortableDate = (date?: Date): Date => date || new Date(maxTime)
 
 /**
- * Returns the status for the purpose of sorting and filtering. Currently, we only support one status (NEEDS_PLAN)
+ * Returns the status for the purpose of sorting and filtering.
  */
 const sortableFilterableStatus = (prisonerSearchSummary: PrisonerSearchSummary): string =>
-  prisonerSearchSummary.hasCiagInduction && prisonerSearchSummary.hasActionPlan ? '' : 'NEEDS_PLAN'
+  prisonerSearchSummary.hasCiagInduction && prisonerSearchSummary.hasActionPlan ? 'PLAN_CREATED' : 'NEEDS_PLAN'
 
 export enum SortBy {
   NAME = 'name',

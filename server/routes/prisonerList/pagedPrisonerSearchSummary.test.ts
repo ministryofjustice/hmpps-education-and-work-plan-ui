@@ -368,7 +368,7 @@ describe('pagedPrisonerSearchSummary', () => {
       it('should sort on status ascending', () => {
         // Given
         const prisonerSearchSummaries = [
-          terrySmith, // hasCiagInduction: true, hasActionPlan: true; status = ''
+          terrySmith, // hasCiagInduction: true, hasActionPlan: true; status = 'PLAN_CREATED'
           jimAardvark, // hasCiagInduction: true, hasActionPlan: false; status = 'NEEDS_PLAN'
         ]
         const pagedPrisonerSearchSummaries = new PagedPrisonerSearchSummary(prisonerSearchSummaries, 10)
@@ -378,15 +378,15 @@ describe('pagedPrisonerSearchSummary', () => {
 
         // Then
         expect(pagedPrisonerSearchSummaries.getCurrentPage()).toEqual([
-          terrySmith, // hasCiagInduction: true, hasActionPlan: true; status = ''
           jimAardvark, // hasCiagInduction: true, hasActionPlan: false; status = 'NEEDS_PLAN'
+          terrySmith, // hasCiagInduction: true, hasActionPlan: true; status = 'PLAN_CREATED'
         ])
       })
 
       it('should sort on status descending', () => {
         // Given
         const prisonerSearchSummaries = [
-          terrySmith, // hasCiagInduction: true, hasActionPlan: true; status = ''
+          terrySmith, // hasCiagInduction: true, hasActionPlan: true; status = 'PLAN_CREATED'
           jimAardvark, // hasCiagInduction: true, hasActionPlan: false; status = 'NEEDS_PLAN'
         ]
         const pagedPrisonerSearchSummaries = new PagedPrisonerSearchSummary(prisonerSearchSummaries, 10)
@@ -396,8 +396,8 @@ describe('pagedPrisonerSearchSummary', () => {
 
         // Then
         expect(pagedPrisonerSearchSummaries.getCurrentPage()).toEqual([
+          terrySmith, // hasCiagInduction: true, hasActionPlan: true; status = 'PLAN_CREATED'
           jimAardvark, // hasCiagInduction: true, hasActionPlan: false; status = 'NEEDS_PLAN'
-          terrySmith, // hasCiagInduction: true, hasActionPlan: true; status = ''
         ])
       })
     })
@@ -525,8 +525,8 @@ describe('pagedPrisonerSearchSummary', () => {
       it('should filter given value that filters out all records', () => {
         // Given
         const prisonerSearchSummaries = [
-          terrySmith, // hasCiagInduction: true, hasActionPlan: true; status = ''
-          bobSmith, // hasCiagInduction: true, hasActionPlan: true; status = ''
+          terrySmith, // hasCiagInduction: true, hasActionPlan: true; status = 'PLAN_CREATED'
+          bobSmith, // hasCiagInduction: true, hasActionPlan: true; status = 'PLAN_CREATED'
         ]
         const pagedPrisonerSearchSummaries = new PagedPrisonerSearchSummary(prisonerSearchSummaries, 10)
 
@@ -542,12 +542,12 @@ describe('pagedPrisonerSearchSummary', () => {
         expect(pagedPrisonerSearchSummaries.getCurrentPage()).toEqual([])
       })
 
-      it('should filter given value that filters out some records', () => {
+      it('should filter given only those with status NEEDS_PLAN', () => {
         // Given
         const prisonerSearchSummaries = [
-          terrySmith, // hasCiagInduction: true, hasActionPlan: true; status = ''
+          terrySmith, // hasCiagInduction: true, hasActionPlan: true; status = 'PLAN_CREATED'
           jimAardvark, // hasCiagInduction: true, hasActionPlan: false; status = 'NEEDS_PLAN'
-          bobSmith, // hasCiagInduction: true, hasActionPlan: true; status = ''
+          bobSmith, // hasCiagInduction: true, hasActionPlan: true; status = 'PLAN_CREATED'
           fredSmith, // hasCiagInduction: false, hasActionPlan: false; status = 'NEEDS_PLAN'
           billHumphries, // hasCiagInduction: false, hasActionPlan: false; status = 'NEEDS_PLAN'
         ]
@@ -568,6 +568,32 @@ describe('pagedPrisonerSearchSummary', () => {
           billHumphries, // hasCiagInduction: false, hasActionPlan: false; status = 'NEEDS_PLAN'
         ])
       })
+
+      it('should filter given only those with status PLAN_CREATED', () => {
+        // Given
+        const prisonerSearchSummaries = [
+          terrySmith, // hasCiagInduction: true, hasActionPlan: true; status = 'PLAN_CREATED'
+          jimAardvark, // hasCiagInduction: true, hasActionPlan: false; status = 'NEEDS_PLAN'
+          bobSmith, // hasCiagInduction: true, hasActionPlan: true; status = 'PLAN_CREATED'
+          fredSmith, // hasCiagInduction: false, hasActionPlan: false; status = 'NEEDS_PLAN'
+          billHumphries, // hasCiagInduction: false, hasActionPlan: false; status = 'NEEDS_PLAN'
+        ]
+        const pagedPrisonerSearchSummaries = new PagedPrisonerSearchSummary(prisonerSearchSummaries, 10)
+
+        const value = 'PLAN_CREATED'
+
+        // When
+        pagedPrisonerSearchSummaries.filter(FilterBy.STATUS, value)
+
+        // Then
+        expect(pagedPrisonerSearchSummaries.currentPageNumber).toEqual(1)
+        expect(pagedPrisonerSearchSummaries.resultIndexFrom).toEqual(1)
+        expect(pagedPrisonerSearchSummaries.resultIndexTo).toEqual(2)
+        expect(pagedPrisonerSearchSummaries.getCurrentPage()).toEqual([
+          terrySmith, // hasCiagInduction: true, hasActionPlan: true; status = 'PLAN_CREATED'
+          bobSmith, // hasCiagInduction: true, hasActionPlan: true; status = 'PLAN_CREATED'
+        ])
+      })
     })
   })
 
@@ -575,9 +601,9 @@ describe('pagedPrisonerSearchSummary', () => {
     it('should combine operations', () => {
       // Given
       const prisonerSearchSummaries = [
-        terrySmith, // hasCiagInduction: true, hasActionPlan: true; status = ''
+        terrySmith, // hasCiagInduction: true, hasActionPlan: true; status = 'PLAN_CREATED'
         jimAardvark, // hasCiagInduction: true, hasActionPlan: false; status = 'NEEDS_PLAN'
-        bobSmith, // hasCiagInduction: true, hasActionPlan: true; status = ''
+        bobSmith, // hasCiagInduction: true, hasActionPlan: true; status = 'PLAN_CREATED'
         fredSmith, // hasCiagInduction: false, hasActionPlan: false; status = 'NEEDS_PLAN', receptionDate: 2024-10-13
         billHumphries, // hasCiagInduction: false, hasActionPlan: false; status = 'NEEDS_PLAN', receptionDate: 2024-10-01
       ]
