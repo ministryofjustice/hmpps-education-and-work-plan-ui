@@ -20,16 +20,16 @@ describe('prisonerSearchStore', () => {
 
   it('should set prisoner', async () => {
     // Given
-    const durationDays = 2
+    const durationHours = 2
 
     // When
-    await prisonerSearchStore.setPrisoner(prisonNumber, prisoner, durationDays)
+    await prisonerSearchStore.setPrisoner(prisonNumber, prisoner, durationHours)
 
     // Then
     expect(redisClient.set).toHaveBeenCalledWith(
       'prisoner-A1234BC',
       JSON.stringify(prisoner),
-      { EX: 172800 }, // 2 days in seconds
+      { EX: 7200 }, // 2 hours in seconds
     )
   })
 
