@@ -32,7 +32,7 @@ Data supplied to this template:
             and not inductionSchedule.problemRetrievingData and inductionSchedule.inductionStatus != 'ON_HOLD'
             and userHasPermissionTo('RECORD_INDUCTION')
       %}
-        <section data-qa="pre-induction-overview">
+        <section class="govuk-!-display-none-print" data-qa="pre-induction-overview">
           {{ govukNotificationBanner({
             html: createInductionBanner
           }) }}
