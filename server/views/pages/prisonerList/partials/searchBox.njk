@@ -24,6 +24,7 @@
             </label>
             <select class="govuk-select" id="statusFilter" name="statusFilter">
               <option value="" {{ 'selected' if statusFilter === ''}}>All statuses</option>
+              <option value="PLAN_CREATED" {{ 'selected' if statusFilter === 'PLAN_CREATED'}}>Plan created</option>
               <option value="NEEDS_PLAN" {{ 'selected' if statusFilter === 'NEEDS_PLAN'}}>Needs plan</option>
             </select>
           </div>
