@@ -82,6 +82,8 @@ generic-service:
       SYSTEM_CLIENT_ID: "SYSTEM_CLIENT_ID"
       SYSTEM_CLIENT_SECRET: "SYSTEM_CLIENT_SECRET"
       SESSION_SECRET: "SESSION_SECRET"
+      CURIOUS_CLIENT_ID: "CURIOUS_CLIENT_ID"
+      CURIOUS_CLIENT_SECRET: "CURIOUS_CLIENT_SECRET"
     education-work-plan-ui-elasticache-redis:
       REDIS_HOST: "primary_endpoint_address"
       REDIS_AUTH_TOKEN: "auth_token"
