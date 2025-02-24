@@ -6,7 +6,7 @@ import logger from '../../logger'
 import PrisonerSearchStore from '../data/prisonerSearchStore/prisonerSearchStore'
 import config from '../config'
 
-const PRISONER_CACHE_TTL_DAYS = 1
+const PRISONER_CACHE_TTL_HOURS = 1
 
 export default class PrisonerSearchService {
   constructor(
@@ -99,7 +99,7 @@ export default class PrisonerSearchService {
     }
 
     try {
-      await this.prisonerSearchStore.setPrisoner(prisonNumber, prisoner, PRISONER_CACHE_TTL_DAYS)
+      await this.prisonerSearchStore.setPrisoner(prisonNumber, prisoner, PRISONER_CACHE_TTL_HOURS)
     } catch (ex) {
       // Caching prisoner retrieved from the API failed. Log a warning but return the prisoner anyway. Next time the service is called the caching will be retried.
       logger.warn('Error caching prisoner', ex)

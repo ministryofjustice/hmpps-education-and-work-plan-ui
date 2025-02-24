@@ -17,9 +17,9 @@ export default class PrisonerSearchStore {
     }
   }
 
-  async setPrisoner(prisonNumber: string, prisoner: Prisoner, durationDays = 1): Promise<string> {
+  async setPrisoner(prisonNumber: string, prisoner: Prisoner, durationHours = 24): Promise<string> {
     await this.ensureConnected()
-    return this.client.set(`${PRISONER}-${prisonNumber}`, JSON.stringify(prisoner), { EX: durationDays * 24 * 60 * 60 })
+    return this.client.set(`${PRISONER}-${prisonNumber}`, JSON.stringify(prisoner), { EX: durationHours * 60 * 60 })
   }
 
   async getPrisoner(prisonNumber: string): Promise<Prisoner> {
