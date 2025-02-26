@@ -15,7 +15,7 @@ const checkWhetherToShowServiceOnboardingBanner = async (req: Request, res: Resp
   )
 
   res.locals.showServiceOnboardingBanner =
-    !userRoles.includes(ApplicationRole.ROLE_EDUCATION_WORK_PLAN_EDITOR) &&
+    !userRoles.some(role => Object.keys(ApplicationRole).includes(role)) &&
     !config.featureToggles.prisonIsEnabledForService(activeCaseloadId)
 
   next()
