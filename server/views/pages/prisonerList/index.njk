@@ -9,6 +9,11 @@
       <li class="govuk-breadcrumbs__list-item">
         <a class="govuk-breadcrumbs__link" href="{{ dpsUrl }}">Digital Prison Services</a>
       </li>
+      {% if userHasPermissionTo('VIEW_SESSION_SUMMARIES') %}
+        <li class="govuk-breadcrumbs__list-item">
+          <a class="govuk-breadcrumbs__link" href="{{ prisonerListUrl }}">Manage learning and work progress</a>
+        </li>
+      {% endif %}
     </ol>
   </nav>
   {% if showServiceOnboardingBanner === true %}

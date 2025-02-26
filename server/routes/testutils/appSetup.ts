@@ -11,6 +11,7 @@ import type { ApplicationInfo } from '../../applicationInfo'
 import AuditService from '../../services/auditService'
 import setUpWebSession from '../../middleware/setUpWebSession'
 import auditMiddleware from '../../middleware/auditMiddleware'
+import populateUserAuthorities from '../../middleware/populateUserAuthorities'
 
 jest.mock('../../services/auditService')
 
@@ -23,7 +24,7 @@ const testAppInfo: ApplicationInfo = {
   activeAgencies: ['***'],
 }
 
-const testUserWithEditorRole = {
+const testUserWithManagerRole = {
   firstName: 'first',
   lastName: 'last',
   userId: 'id',
@@ -34,7 +35,7 @@ const testUserWithEditorRole = {
   activeCaseLoadId: 'BXI',
   caseLoadIds: ['MDI', 'BXI'],
   authSource: 'nomis',
-  roles: ['ROLE_EDUCATION_WORK_PLAN_EDITOR'],
+  roles: ['ROLE_LWP_MANAGER'],
 }
 
 export const flashProvider = jest.fn()
@@ -58,6 +59,7 @@ function appSetup(services: Services, production: boolean, userSupplier: () => E
     req.id = randomUUID()
     next()
   })
+  app.use(populateUserAuthorities())
   app.use(express.json())
   app.use(express.urlencoded({ extended: true }))
   app.use(auditMiddleware(services))
@@ -73,7 +75,7 @@ export function appWithAllRoutes({
   services = {
     auditService: new AuditService(null) as jest.Mocked<AuditService>,
   },
-  userSupplier = () => testUserWithEditorRole,
+  userSupplier = () => testUserWithManagerRole,
 }: {
   production?: boolean
   services?: Partial<Services>
