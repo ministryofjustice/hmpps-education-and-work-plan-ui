@@ -1,5 +1,5 @@
+import { parseISO } from 'date-fns'
 import type { Timeline } from 'viewModels'
-import moment from 'moment'
 import PrisonService from './prisonService'
 import TimelineService from './timelineService'
 import EducationAndWorkPlanClient from '../data/educationAndWorkPlanClient'
@@ -64,7 +64,7 @@ describe('timelineService', () => {
             sourceReference: '32',
             eventType: 'ACTION_PLAN_CREATED',
             prisonName: 'ASI',
-            timestamp: moment('2023-09-01T10:46:38.565Z').toDate(),
+            timestamp: parseISO('2023-09-01T10:46:38.565Z'),
             correlationId: '847aa5ad-2068-40e1-aec0-66b19007c494',
             contextualInfo: {},
             actionedByDisplayName: 'Ralph Gen',
@@ -74,7 +74,7 @@ describe('timelineService', () => {
             sourceReference: '33bc1045-7368-47c4-a261-4d616b7b51b9',
             eventType: 'GOAL_CREATED',
             prisonName: 'MDI',
-            timestamp: moment('2023-09-01T10:47:38.565Z').toDate(),
+            timestamp: parseISO('2023-09-01T10:47:38.565Z'),
             correlationId: '246aa049-c5df-459d-8231-bdeab3936d0f',
             contextualInfo: {
               GOAL_TITLE: 'Learn French',
@@ -116,7 +116,7 @@ describe('timelineService', () => {
             sourceReference: '32',
             eventType: 'ACTION_PLAN_CREATED',
             prisonName: 'ASI',
-            timestamp: moment('2023-09-01T10:46:38.565Z').toDate(),
+            timestamp: parseISO('2023-09-01T10:46:38.565Z'),
             correlationId: '847aa5ad-2068-40e1-aec0-66b19007c494',
             contextualInfo: {},
             actionedByDisplayName: 'Ralph Gen',
@@ -126,7 +126,7 @@ describe('timelineService', () => {
             sourceReference: '33bc1045-7368-47c4-a261-4d616b7b51b9',
             eventType: 'GOAL_CREATED',
             prisonName: 'MDI',
-            timestamp: moment('2023-09-01T10:47:38.565Z').toDate(),
+            timestamp: parseISO('2023-09-01T10:47:38.565Z'),
             correlationId: '246aa049-c5df-459d-8231-bdeab3936d0f',
             contextualInfo: {
               GOAL_TITLE: 'Learn French',

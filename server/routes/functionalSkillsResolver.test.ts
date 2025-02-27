@@ -1,12 +1,12 @@
-import moment from 'moment/moment'
+import { subDays } from 'date-fns'
 import type { FunctionalSkills, Assessment } from 'viewModels'
 import { allFunctionalSkills, mostRecentFunctionalSkills, functionalSkillsByType } from './functionalSkillsResolver'
 
 describe('functionalSkillsResolver', () => {
-  const NOW = moment()
-  const YESTERDAY = moment(NOW).subtract(1, 'days').toDate()
-  const FIVE_DAYS_AGO = moment(NOW).subtract(5, 'days').toDate()
-  const TEN_DAYS_AGO = moment(NOW).subtract(10, 'days').toDate()
+  const NOW = new Date()
+  const YESTERDAY = subDays(NOW, 1)
+  const FIVE_DAYS_AGO = subDays(NOW, 5)
+  const TEN_DAYS_AGO = subDays(NOW, 10)
 
   describe('mostRecentFunctionalSkills', () => {
     it('should return most recent Functional Skills given Functional Skills', () => {
