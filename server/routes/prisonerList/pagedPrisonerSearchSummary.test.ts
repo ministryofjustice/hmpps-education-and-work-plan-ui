@@ -1,3 +1,4 @@
+import { startOfDay } from 'date-fns'
 import aValidPrisonerSearchSummary from '../../testsupport/prisonerSearchSummaryTestDataBuilder'
 import PagedPrisonerSearchSummary, { FilterBy, SortBy, SortOrder } from './pagedPrisonerSearchSummary'
 
@@ -7,8 +8,8 @@ describe('pagedPrisonerSearchSummary', () => {
     firstName: 'Terry',
     lastName: 'Smith',
     location: 'C-1-1024',
-    releaseDate: '2030-12-31',
-    receptionDate: '',
+    releaseDate: startOfDay('2030-12-31'),
+    receptionDate: null,
     hasCiagInduction: true,
     hasActionPlan: true,
   })
@@ -17,8 +18,8 @@ describe('pagedPrisonerSearchSummary', () => {
     firstName: 'Jim',
     lastName: 'Aardvark',
     location: 'A-8-1098',
-    releaseDate: '2024-01-01',
-    receptionDate: '1999-01-01',
+    releaseDate: startOfDay('2024-01-01'),
+    receptionDate: startOfDay('1999-01-01'),
     hasCiagInduction: true,
     hasActionPlan: false,
   })
@@ -27,8 +28,8 @@ describe('pagedPrisonerSearchSummary', () => {
     firstName: 'Bob',
     lastName: 'Smith',
     location: 'A-8-42',
-    releaseDate: '2030-12-30',
-    receptionDate: '1980-06-12',
+    releaseDate: startOfDay('2030-12-30'),
+    receptionDate: startOfDay('1980-06-12'),
     hasCiagInduction: true,
     hasActionPlan: true,
   })
@@ -37,8 +38,8 @@ describe('pagedPrisonerSearchSummary', () => {
     firstName: 'Fred',
     lastName: 'Smith',
     location: 'RECP',
-    releaseDate: '',
-    receptionDate: '2024-10-13',
+    releaseDate: null,
+    receptionDate: startOfDay('2024-10-13'),
     hasCiagInduction: false,
     hasActionPlan: false,
   })
@@ -47,8 +48,8 @@ describe('pagedPrisonerSearchSummary', () => {
     firstName: 'Bill',
     lastName: 'Humphries',
     location: 'COURT',
-    releaseDate: '',
-    receptionDate: '2024-10-01',
+    releaseDate: null,
+    receptionDate: startOfDay('2024-10-01'),
     hasCiagInduction: false,
     hasActionPlan: false,
   })

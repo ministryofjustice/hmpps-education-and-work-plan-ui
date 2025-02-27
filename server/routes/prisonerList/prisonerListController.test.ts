@@ -1,5 +1,6 @@
 import createError from 'http-errors'
 import { SessionData } from 'express-session'
+import { startOfDay } from 'date-fns'
 import type { PrisonerSearchSummary } from 'viewModels'
 import type { Locals } from 'express-serve-static-core'
 import { NextFunction, Request, Response } from 'express'
@@ -11,21 +12,21 @@ describe('prisonerListController', () => {
   const jimmyLightFingers = aValidPrisonerSearchSummary({
     firstName: 'Jimmy',
     lastName: 'Lightfingers',
-    receptionDate: '2023-10-01',
+    receptionDate: startOfDay('2023-10-01'),
     hasCiagInduction: true,
     hasActionPlan: true,
   })
   const jimmyMcShifty = aValidPrisonerSearchSummary({
     firstName: 'Jimmy',
     lastName: 'McShifty',
-    receptionDate: '2000-07-23',
+    receptionDate: startOfDay('2000-07-23'),
     hasCiagInduction: false,
     hasActionPlan: false,
   })
   const donVitoCorleone = aValidPrisonerSearchSummary({
     firstName: 'Vito',
     lastName: 'Corleone',
-    receptionDate: '2020-09-10',
+    receptionDate: startOfDay('2020-09-10'),
     hasCiagInduction: false,
     hasActionPlan: false,
   })
