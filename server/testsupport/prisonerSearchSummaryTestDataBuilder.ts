@@ -1,14 +1,14 @@
-import moment from 'moment'
 import type { PrisonerSearchSummary } from 'viewModels'
+import { startOfDay } from 'date-fns'
 
 export default function aValidPrisonerSearchSummary(options?: {
   prisonNumber?: string
   prisonId?: string
-  releaseDate?: string
+  releaseDate?: Date
   firstName?: string
   lastName?: string
-  receptionDate?: string
-  dateOfBirth?: string
+  receptionDate?: Date
+  dateOfBirth?: Date
   location?: string
   restrictedPatient?: boolean
   supportingPrisonId?: string
@@ -18,11 +18,11 @@ export default function aValidPrisonerSearchSummary(options?: {
   return {
     prisonNumber: options?.prisonNumber || 'A1234BC',
     prisonId: options?.prisonId || 'BXI',
-    releaseDate: options?.releaseDate === '' ? null : moment(options?.releaseDate || '2025-12-31').toDate(),
+    releaseDate: options?.releaseDate === null ? null : options?.releaseDate || startOfDay('2025-12-31'),
     firstName: options?.firstName || 'Jimmy',
     lastName: options?.lastName || 'Lightfingers',
-    receptionDate: options?.receptionDate === '' ? null : moment(options?.receptionDate || '1999-08-29').toDate(),
-    dateOfBirth: options?.dateOfBirth === '' ? null : moment(options?.dateOfBirth || '1969-02-12').toDate(),
+    receptionDate: options?.receptionDate === null ? null : options?.receptionDate || startOfDay('1999-08-29'),
+    dateOfBirth: options?.dateOfBirth === null ? null : options?.dateOfBirth || startOfDay('1969-02-12'),
     location: options?.location || 'A-1-102',
     restrictedPatient:
       !options || options.restrictedPatient === null || options.restrictedPatient === undefined
