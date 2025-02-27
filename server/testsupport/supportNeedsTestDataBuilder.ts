@@ -1,5 +1,5 @@
 import type { PrisonerSupportNeeds } from 'viewModels'
-import moment from 'moment/moment'
+import { startOfDay } from 'date-fns'
 
 export default function aValidPrisonerSupportNeeds(): PrisonerSupportNeeds {
   return {
@@ -7,7 +7,7 @@ export default function aValidPrisonerSupportNeeds(): PrisonerSupportNeeds {
       {
         prisonId: 'MDI',
         prisonName: 'Moorland (HMP & YOI)',
-        rapidAssessmentDate: moment('2022-02-18').toDate(),
+        rapidAssessmentDate: startOfDay('2022-02-18'),
         inDepthAssessmentDate: undefined,
         primaryLddAndHealthNeeds: 'Visual impairment',
         additionalLddAndHealthNeeds: [

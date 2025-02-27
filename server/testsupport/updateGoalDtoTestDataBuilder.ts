@@ -1,5 +1,5 @@
 import type { UpdateGoalDto, UpdateStepDto } from 'dto'
-import moment from 'moment'
+import { startOfDay } from 'date-fns'
 import GoalStatusValue from '../enums/goalStatusValue'
 import StepStatusValue from '../enums/stepStatusValue'
 
@@ -12,7 +12,7 @@ const aValidUpdateGoalDtoWithOneStep = (): UpdateGoalDto => {
   }
   return {
     goalReference: '95b18362-fe56-4234-9ad2-11ef98b974a3',
-    targetCompletionDate: moment('2024-02-29').toDate(),
+    targetCompletionDate: startOfDay('2024-02-29'),
     status: GoalStatusValue.ACTIVE,
     title: 'Learn Spanish',
     steps: [updateStepDto],
@@ -36,7 +36,7 @@ const aValidUpdateGoalDtoWithMultipleSteps = (): UpdateGoalDto => {
   }
   return {
     goalReference: '95b18362-fe56-4234-9ad2-11ef98b974a3',
-    targetCompletionDate: moment('2024-02-29').toDate(),
+    targetCompletionDate: startOfDay('2024-02-29'),
     status: GoalStatusValue.ACTIVE,
     title: 'Learn Spanish',
     steps: [updateStepDto1, updateStepDto2],

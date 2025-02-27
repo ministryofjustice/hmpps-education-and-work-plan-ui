@@ -1,6 +1,6 @@
 import * as fs from 'fs'
 import * as cheerio from 'cheerio'
-import moment from 'moment'
+import { startOfDay } from 'date-fns'
 import nunjucks, { Template } from 'nunjucks'
 import { registerNunjucks } from '../../../../../utils/nunjucksSetup'
 import aValidPrisonerSummary from '../../../../../testsupport/prisonerSummaryTestDataBuilder'
@@ -27,7 +27,7 @@ describe('Education and Training tab view - Functional Skills', () => {
         problemRetrievingData: false,
         assessments: [
           {
-            assessmentDate: moment('2012-02-16').toDate(),
+            assessmentDate: startOfDay('2012-02-16'),
             grade: 'Level 1',
             prisonId: 'MDI',
             prisonName: 'MOORLAND (HMP & YOI)',
@@ -72,7 +72,7 @@ describe('Education and Training tab view - Functional Skills', () => {
         problemRetrievingData: false,
         assessments: [
           {
-            assessmentDate: moment('2012-02-16').toDate(),
+            assessmentDate: startOfDay('2012-02-16'),
             grade: 'Level 1',
             prisonId: 'MDI',
             prisonName: 'MOORLAND (HMP & YOI)',
