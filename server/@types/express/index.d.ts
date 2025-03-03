@@ -41,7 +41,6 @@ declare module 'express-session' {
     prisonerListSortOptions: string
     sessionListSortOptions: string
 
-    createGoalsForm: CreateGoalsForm
     pageFlowHistory: PageFlow
     pageFlowQueue: PageFlow
     // Induction related objects held on the session
@@ -66,6 +65,7 @@ declare module 'express-session' {
   }
   export interface PrisonerContext {
     // Goal related forms
+    createGoalsForm?: CreateGoalsForm
     updateGoalForm?: UpdateGoalForm
     archiveGoalForm?: ArchiveGoalForm
     completeGoalForm?: CompleteGoalForm
