@@ -35,7 +35,6 @@ export default defineConfig({
 
         stubSignIn: (roles: []) => auth.stubSignIn(roles),
         stubSignInAsReadOnlyUser: () => auth.stubSignIn([]),
-        stubSignInAsUserWithEditAuthority: () => auth.stubSignIn(['ROLE_EDUCATION_WORK_PLAN_EDITOR']),
         stubSignInAsUserWithManagerRole: () => auth.stubSignIn(['ROLE_LWP_MANAGER']),
         stubSignInAsUserWithContributorRole: () => auth.stubSignIn(['ROLE_LWP_CONTRIBUTOR']),
         stubSignInAsUserWithAllRoles: () => auth.stubSignIn(['ROLE_LWP_MANAGER', 'ROLE_LWP_CONTRIBUTOR']),

@@ -41,6 +41,7 @@ import ReviewNotePage from '../pages/reviewPlan/ReviewNotePage'
 import ReviewPlanCheckYourAnswersPage from '../pages/reviewPlan/ReviewPlanCheckYourAnswersPage'
 import InductionNotePage from '../pages/induction/InductionNotePage'
 import WhoCompletedInductionPage from '../pages/induction/WhoCompletedInductionPage'
+import SessionsSummaryPage from '../pages/sessionSummary/SessionsSummaryPage'
 
 Cypress.Commands.add('signIn', (options = { failOnStatusCode: false }) => {
   cy.request('/')
@@ -61,21 +62,16 @@ Cypress.Commands.add('wiremockVerifyNoInteractions', (requestPatternBuilder: Req
 
 Cypress.Commands.add('signInAsUserWithManagerAuthorityToArriveOnSessionSummaryPage', () => {
   signInWithAuthority('MANAGER')
-  Page.verifyOnPage(PrisonerListPage)
+  Page.verifyOnPage(SessionsSummaryPage)
 })
 
-Cypress.Commands.add('signInAsUserWithContributorAuthorityToArriveOnSessionSummaryPage', () => {
+Cypress.Commands.add('signInAsUserWithContributorAuthorityToArriveOnPrisonerListPage', () => {
   signInWithAuthority('CONTRIBUTOR')
   Page.verifyOnPage(PrisonerListPage)
 })
 
 Cypress.Commands.add('signInAsUserWithViewAuthorityToArriveOnPrisonerListPage', () => {
   signInWithAuthority('VIEW')
-  Page.verifyOnPage(PrisonerListPage)
-})
-
-Cypress.Commands.add('signInAsUserWithEditAuthorityToArriveOnPrisonerListPage', () => {
-  signInWithAuthority('EDIT')
   Page.verifyOnPage(PrisonerListPage)
 })
 
@@ -212,7 +208,7 @@ Cypress.Commands.add('createReviewToArriveOnCheckYourAnswers', () => {
       `Daniel's review went well and he has made good progress on his goals.
 Working in the prison kitchen is suiting Daniel well and is allowing him to focus on more productive uses of his time whilst in prison.
 
-We have agreed and set a new goal, and the next review is 1 year from now.   
+We have agreed and set a new goal, and the next review is 1 year from now.
 `,
     )
     .submitPage()
@@ -220,10 +216,11 @@ We have agreed and set a new goal, and the next review is 1 year from now.
   Page.verifyOnPage(ReviewPlanCheckYourAnswersPage)
 })
 
-const signInWithAuthority = (authority: 'MANAGER' | 'CONTRIBUTOR' | 'ALL' | 'EDIT' | 'VIEW' = 'VIEW') => {
+const signInWithAuthority = (authority: 'MANAGER' | 'CONTRIBUTOR' | 'ALL' | 'VIEW' = 'VIEW') => {
   cy.task('reset')
   switch (authority) {
     case 'MANAGER':
+      cy.task('stubGetSessionSummary')
       cy.task('stubSignInAsUserWithManagerRole')
       break
     case 'CONTRIBUTOR':
@@ -231,9 +228,6 @@ const signInWithAuthority = (authority: 'MANAGER' | 'CONTRIBUTOR' | 'ALL' | 'EDI
       break
     case 'ALL':
       cy.task('stubSignInAsUserWithAllRoles')
-      break
-    case 'EDIT':
-      cy.task('stubSignInAsUserWithEditAuthority')
       break
     default:
       cy.task('stubSignInAsReadOnlyUser')

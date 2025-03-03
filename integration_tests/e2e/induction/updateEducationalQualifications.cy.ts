@@ -11,7 +11,7 @@ import QualificationDetailsPage from '../../pages/prePrisonEducation/Qualificati
 context('Update educational qualifications within an Induction', () => {
   beforeEach(() => {
     cy.task('reset')
-    cy.task('stubSignInAsUserWithEditAuthority')
+    cy.task('stubSignInAsUserWithManagerRole')
     cy.task('stubAuthUser')
     cy.task('stubPrisonerList')
     cy.task('stubCiagInductionList')

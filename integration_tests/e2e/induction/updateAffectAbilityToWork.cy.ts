@@ -9,7 +9,7 @@ import { matchingJsonPath } from '../../mockApis/wiremock/matchers/content'
 context('Update factors affecting the ability to work within an Induction', () => {
   beforeEach(() => {
     cy.task('reset')
-    cy.task('stubSignInAsUserWithEditAuthority')
+    cy.task('stubSignInAsUserWithManagerRole')
     cy.task('stubAuthUser')
     cy.task('stubPrisonerList')
     cy.task('stubCiagInductionList')

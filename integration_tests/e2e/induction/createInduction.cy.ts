@@ -41,7 +41,7 @@ import InductionNotePage from '../../pages/induction/InductionNotePage'
 
 context('Create an Induction', () => {
   beforeEach(() => {
-    cy.signInAsUserWithEditAuthorityToArriveOnPrisonerListPage()
+    cy.signInAsUserWithManagerAuthorityToArriveOnSessionSummaryPage()
   })
 
   const inductionConductedAt = sub(startOfToday(), { weeks: 1 })

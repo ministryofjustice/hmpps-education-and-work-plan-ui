@@ -31,9 +31,7 @@ context('404 Page Not Found', () => {
     const nonExistentPrisonNumber = 'A9999ZZ'
     cy.task('stubPrisonerById404Error')
 
-    const userRoles = ['ROLE_EDUCATION_AND_WORK_PLAN_EDITOR']
-    cy.task('stubSignIn', userRoles)
-
+    cy.task('stubSignInAsUserWithContributorRole')
     cy.signIn()
 
     // When
@@ -45,9 +43,7 @@ context('404 Page Not Found', () => {
 
   it('should redirect to 404 page when user with PLP roles navigates to a non-existent page', () => {
     // Given
-    const userRoles = ['ROLE_EDUCATION_AND_WORK_PLAN_EDITOR']
-    cy.task('stubSignIn', userRoles)
-
+    cy.task('stubSignInAsUserWithContributorRole')
     cy.signIn()
 
     // When

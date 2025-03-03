@@ -246,7 +246,7 @@ context('Prisoner Overview page - Common functionality for both pre and post ind
     describe('Reviews', () => {
       it('should display Actions Card containing Reviews based actions given user has editor access and prisoner has a Review Schedule', () => {
         // Given
-        cy.task('stubSignInAsUserWithEditAuthority')
+        cy.task('stubSignInAsUserWithManagerRole')
         cy.task('stubGetActionPlanReviews')
         cy.signIn()
 
@@ -262,7 +262,7 @@ context('Prisoner Overview page - Common functionality for both pre and post ind
 
       it('should display Actions Card without Reviews based actions given user has editor access and prisoner has no Review Schedule', () => {
         // Given
-        cy.task('stubSignInAsUserWithEditAuthority')
+        cy.task('stubSignInAsUserWithManagerRole')
         cy.task('stubGetActionPlanReviews404Error')
         cy.signIn()
 

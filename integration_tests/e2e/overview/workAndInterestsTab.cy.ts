@@ -99,7 +99,7 @@ context('Prisoner Overview page - Work and Interests tab', () => {
 
   it('should display link to create Induction given prisoner does not have an Induction yet and the user has an appropriate role', () => {
     // Given
-    cy.task('stubSignInAsUserWithEditAuthority')
+    cy.task('stubSignInAsUserWithManagerRole')
     cy.task('stubGetInduction404Error')
 
     cy.signIn()
@@ -119,7 +119,7 @@ context('Prisoner Overview page - Work and Interests tab', () => {
 
   describe('should display change links to Induction questions given user has an appropriate role', () => {
     beforeEach(() => {
-      cy.task('stubSignInAsUserWithEditAuthority')
+      cy.task('stubSignInAsUserWithManagerRole')
     })
 
     it(`should link to change Induction 'Hoping to work on release' question`, () => {
