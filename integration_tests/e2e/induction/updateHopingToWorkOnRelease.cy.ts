@@ -12,7 +12,7 @@ import FutureWorkInterestRolesPage from '../../pages/induction/FutureWorkInteres
 context('Update Hoping to work on release within an Induction', () => {
   beforeEach(() => {
     cy.task('reset')
-    cy.task('stubSignInAsUserWithEditAuthority')
+    cy.task('stubSignInAsUserWithManagerRole')
     cy.task('stubAuthUser')
     cy.task('stubPrisonerList')
     cy.task('stubCiagInductionList')

@@ -16,7 +16,7 @@ context(`Review a prisoner's plan`, () => {
 
   beforeEach(() => {
     cy.task('reset')
-    cy.task('stubSignInAsUserWithEditAuthority')
+    cy.task('stubSignInAsUserWithManagerRole')
     cy.task('stubAuthUser')
     cy.task('stubPrisonerList')
     cy.task('stubCiagInductionList')

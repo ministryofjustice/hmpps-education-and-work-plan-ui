@@ -43,13 +43,13 @@ context(`Display the prisoner list screen`, () => {
     const prisonerListPage = Page.verifyOnPage(PrisonerListPage)
     prisonerListPage.hasResultsDisplayed(expectedResultCount)
   })
-  ;['VIEW', 'EDIT', 'CONTRIBUTOR'].forEach(authority => {
+  ;['VIEW', 'CONTRIBUTOR'].forEach(authority => {
     it(`users with authority ${authority} should get the prisoner list page as their landing page straight after login`, () => {
       // Given
       if (authority === 'VIEW') {
         cy.task('stubSignInAsReadOnlyUser')
       } else if (authority === 'EDIT') {
-        cy.task('stubSignInAsUserWithEditAuthority')
+        cy.task('stubSignInAsUserWithManagerRole')
       } else if (authority === 'CONTRIBUTOR') {
         cy.task('stubSignInAsUserWithContributorRole')
       }

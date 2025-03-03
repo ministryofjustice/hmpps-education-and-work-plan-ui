@@ -16,7 +16,7 @@ context(`Confirm review exemption page`, () => {
   beforeEach(() => {
     cy.task('stubUpdateActionPlanReviewScheduleStatus')
     cy.task('stubGetActionPlanReviews')
-    cy.task('stubSignInAsUserWithEditAuthority')
+    cy.task('stubSignInAsUserWithManagerRole')
     cy.signIn()
     cy.visit(`/plan/${prisonNumber}/review/exemption`)
   })

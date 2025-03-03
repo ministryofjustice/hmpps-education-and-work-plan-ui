@@ -14,11 +14,9 @@ declare namespace Cypress {
 
     signInAsUserWithManagerAuthorityToArriveOnSessionSummaryPage()
 
-    signInAsUserWithContributorAuthorityToArriveOnSessionSummaryPage()
+    signInAsUserWithContributorAuthorityToArriveOnPrisonerListPage()
 
     signInAsUserWithViewAuthorityToArriveOnPrisonerListPage()
-
-    signInAsUserWithEditAuthorityToArriveOnPrisonerListPage()
 
     createInductionToArriveOnCheckYourAnswers(options?: {
       prisonNumber?: string

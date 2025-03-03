@@ -31,7 +31,7 @@ context(`Change links on the Check Your Answers page when creating an Induction`
   const prisonNumber = 'G6115VJ'
 
   beforeEach(() => {
-    cy.signInAsUserWithEditAuthorityToArriveOnPrisonerListPage()
+    cy.signInAsUserWithManagerAuthorityToArriveOnSessionSummaryPage()
   })
 
   it('should support all Change links on the Check Your Answers page when creating an Induction with all options', () => {

@@ -8,7 +8,7 @@ import EducationAndTrainingPage from '../../pages/overview/EducationAndTrainingP
 context('Update highest level of education within an Induction', () => {
   beforeEach(() => {
     cy.task('reset')
-    cy.task('stubSignInAsUserWithEditAuthority')
+    cy.task('stubSignInAsUserWithManagerRole')
     cy.task('stubAuthUser')
     cy.task('stubPrisonerList')
     cy.task('stubCiagInductionList')

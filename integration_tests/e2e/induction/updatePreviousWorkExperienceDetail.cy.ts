@@ -9,7 +9,7 @@ import Error404Page from '../../pages/error404'
 context('Update previous work experience details in the Induction', () => {
   beforeEach(() => {
     cy.task('reset')
-    cy.task('stubSignInAsUserWithEditAuthority')
+    cy.task('stubSignInAsUserWithManagerRole')
     cy.task('stubAuthUser')
     cy.task('stubPrisonerList')
     cy.task('stubCiagInductionList')

@@ -11,7 +11,8 @@ import SessionCompletedByValue from '../../../../server/enums/sessionCompletedBy
 context(`Change links on the Check Your Answers page when creating a review`, () => {
   const prisonNumber = 'G6115VJ'
   beforeEach(() => {
-    cy.task('stubSignInAsUserWithEditAuthority')
+    cy.task('stubSignInAsUserWithManagerRole')
+    cy.task('stubGetSessionSummary')
     cy.task('stubLearnerProfile')
     cy.task('stubLearnerEducation')
     cy.task('stubGetInduction')

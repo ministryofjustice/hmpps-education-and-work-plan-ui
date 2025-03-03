@@ -7,7 +7,7 @@ context('In Prison Courses and Qualifications', () => {
     const prisonNumber = 'G6115VJ'
 
     beforeEach(() => {
-      cy.signInAsUserWithViewAuthorityToArriveOnPrisonerListPage()
+      cy.signInAsUserWithContributorAuthorityToArriveOnPrisonerListPage()
     })
 
     it('should display completed In Prison courses', () => {

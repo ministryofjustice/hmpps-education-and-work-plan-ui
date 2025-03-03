@@ -235,7 +235,7 @@ context('Prisoner Overview page - Education And Training tab', () => {
       // Given
       cy.task('stubGetInduction404Error')
 
-      cy.task('stubSignInAsUserWithEditAuthority')
+      cy.task('stubSignInAsUserWithManagerRole')
       cy.signIn()
       const prisonNumber = 'G6115VJ'
       cy.visit(`/plan/${prisonNumber}/view/overview`)
@@ -295,7 +295,7 @@ context('Prisoner Overview page - Education And Training tab', () => {
 
   describe('should display change links to Induction & Education questions given user has an appropriate role', () => {
     beforeEach(() => {
-      cy.task('stubSignInAsUserWithEditAuthority')
+      cy.task('stubSignInAsUserWithManagerRole')
     })
 
     it('should display add education message given prisoner has no education record yet', () => {
