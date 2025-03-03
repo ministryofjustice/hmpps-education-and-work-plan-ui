@@ -1,8 +1,7 @@
 {% extends "../../partials/layout.njk" %}
 
 {% set pageId = "highest-level-of-education" %}
-{% set title = "What's the highest level of education " + prisonerSummary.firstName + " " + prisonerSummary.lastName + " completed before entering prison?" %}
-{% set pageTitle = title %}
+{% set pageTitle = "What was the highest level of education they completed before entering prison?" %}
 
 {#
 Data supplied to this template:
@@ -25,12 +24,12 @@ Data supplied to this template:
       <form class="form" method="post" novalidate="">
         <div class="govuk-form-group">
           <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
-        
+
           {{ govukRadios({
             name: "educationLevel",
             fieldset: {
               legend: {
-                text: title,
+                text: "What's the highest level of education " + prisonerSummary.firstName + " " + prisonerSummary.lastName + " completed before entering prison?",
                 isPageHeading: true,
                 classes: "govuk-fieldset__legend--l"
               }

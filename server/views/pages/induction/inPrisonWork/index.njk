@@ -1,8 +1,7 @@
 {% extends "../../../partials/layout.njk" %}
 
 {% set pageId = "induction-in-prison-work" %}
-{% set title = "What type of work would " + prisonerSummary.firstName + " " + prisonerSummary.lastName + " like to do in prison?" %}
-{% set pageTitle = title %}
+{% set pageTitle = "What type of work would they like to do in prison?" %}
 
 {#
   Data supplied to this template:
@@ -47,7 +46,7 @@
             name: "inPrisonWork",
             fieldset: {
               legend: {
-                  text: title,
+                  text: "What type of work would " + prisonerSummary.firstName + " " + prisonerSummary.lastName + " like to do in prison?",
                   isPageHeading: true,
                   classes: "govuk-fieldset__legend--l"
                 }

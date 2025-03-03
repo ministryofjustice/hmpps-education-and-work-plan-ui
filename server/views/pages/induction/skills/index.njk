@@ -1,8 +1,7 @@
 {% extends "../../../partials/layout.njk" %}
 
 {% set pageId = "induction-skills" %}
-{% set title = "What skills does " + prisonerSummary.firstName + " " + prisonerSummary.lastName + " feel they have?" %}
-{% set pageTitle = title %}
+{% set pageTitle = "What skills do they feel they have?" %}
 
 {#
   Data supplied to this template:
@@ -47,7 +46,7 @@
             name: "skills",
             fieldset: {
               legend: {
-                  text: title,
+                  text: "What skills does " + prisonerSummary.firstName + " " + prisonerSummary.lastName + " feel they have?",
                   isPageHeading: true,
                   classes: "govuk-fieldset__legend--l"
                 }

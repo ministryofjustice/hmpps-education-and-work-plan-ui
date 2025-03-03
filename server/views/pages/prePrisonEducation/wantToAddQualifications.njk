@@ -1,8 +1,7 @@
 {% extends "../../partials/layout.njk" %}
 
 {% set pageId = "want-to-add-educational-qualifications" %}
-{% set title = prisonerSummary.firstName + " " + prisonerSummary.lastName + "'s qualifications" %}
-{% set pageTitle = title %}
+{% set pageTitle = "Qualification summary" %}
 
 {#
 Data supplied to this template:
@@ -23,7 +22,7 @@ Data supplied to this template:
 {% block content %}
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-      <h1 class="govuk-heading-l">{{ title }}</h1>
+      <h1 class="govuk-heading-l">{{ prisonerSummary.firstName }} {{ prisonerSummary.lastName }}'s qualifications</h1>
 
       <form class="form" method="post" novalidate="">
         <input type="hidden" name="_csrf" value="{{ csrfToken }}" />

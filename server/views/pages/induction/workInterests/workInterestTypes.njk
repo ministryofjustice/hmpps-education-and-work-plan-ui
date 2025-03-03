@@ -1,8 +1,7 @@
 {% extends "../../../partials/layout.njk" %}
 
 {% set pageId = "induction-future-work-interest-types" %}
-{% set title = "What type of work is " + prisonerSummary.firstName + " " + prisonerSummary.lastName + " interested in?" %}
-{% set pageTitle = title %}
+{% set pageTitle = "What type of work are they interested in?" %}
 
 {#
   Data supplied to this template:
@@ -47,7 +46,7 @@
             name: "workInterestTypes",
             fieldset: {
               legend: {
-                  text: title,
+                  text: "What type of work is " + prisonerSummary.firstName + " " + prisonerSummary.lastName + " interested in?",
                   isPageHeading: true,
                   classes: "govuk-fieldset__legend--l"
                 }
@@ -72,7 +71,7 @@
                   text: "things like biohazard cleaning, janitor and window cleaner"
                 }
               },
-              { 
+              {
                 value: "CONSTRUCTION",
                 checked: form.workInterestTypes.includes("CONSTRUCTION"),
                 text: "CONSTRUCTION" | formatJobType,
@@ -80,7 +79,7 @@
                   text: "things like bricklayer, plumber and site management"
                 }
               },
-              { 
+              {
                 value: "DRIVING",
                 checked: form.workInterestTypes.includes("DRIVING"),
                 text: "DRIVING" | formatJobType,
@@ -88,7 +87,7 @@
                   text: "things like bus driver and rail or road maintenance"
                 }
               },
-              { 
+              {
                 value: "BEAUTY",
                 checked: form.workInterestTypes.includes("BEAUTY"),
                 text: "BEAUTY" | formatJobType,
@@ -96,7 +95,7 @@
                   text: "things like nail technician and barber"
                 }
               },
-              { 
+              {
                 value: "HOSPITALITY",
                 checked: form.workInterestTypes.includes("HOSPITALITY"),
                 text: "HOSPITALITY" | formatJobType,
@@ -104,7 +103,7 @@
                   text: "things like chef, mobile catering and hotel porter"
                 }
               },
-              { 
+              {
                 value: "TECHNICAL",
                 checked: form.workInterestTypes.includes("TECHNICAL"),
                 text: "TECHNICAL" | formatJobType,
@@ -112,7 +111,7 @@
                   text: "things like coding, web developer and IT support"
                 }
               },
-              { 
+              {
                 value: "MANUFACTURING",
                 checked: form.workInterestTypes.includes("MANUFACTURING"),
                 text: "MANUFACTURING" | formatJobType,
@@ -120,7 +119,7 @@
                   text: "things like assembly line work, welding and maintenance"
                 }
               },
-              { 
+              {
                 value: "OFFICE",
                 checked: form.workInterestTypes.includes("OFFICE"),
                 text: "OFFICE" | formatJobType,
@@ -128,7 +127,7 @@
                   text: "things like administration, marketing assistant and office manager"
                 }
               },
-              { 
+              {
                 value: "RETAIL",
                 checked: form.workInterestTypes.includes("RETAIL"),
                 text: "RETAIL" | formatJobType,
@@ -136,7 +135,7 @@
                   text: "things like sales assistant, customer service and store manager"
                 }
               },
-              { 
+              {
                 value: "SPORTS",
                 checked: form.workInterestTypes.includes("SPORTS"),
                 text: "SPORTS" | formatJobType,
@@ -144,7 +143,7 @@
                   text: "things like personal trainer and gym attendant"
                 }
               },
-              { 
+              {
                 value: "EDUCATION_TRAINING",
                 checked: form.workInterestTypes.includes("EDUCATION_TRAINING"),
                 text: "EDUCATION_TRAINING" | formatJobType,
@@ -152,7 +151,7 @@
                   text: "things like welding trainer and welfare rights support"
                 }
               },
-              { 
+              {
                 value: "WAREHOUSING",
                 checked: form.workInterestTypes.includes("WAREHOUSING"),
                 text: "WAREHOUSING" | formatJobType,
@@ -160,7 +159,7 @@
                   text: "things like removals and forklift driver"
                 }
               },
-              { 
+              {
                 value: "WASTE_MANAGEMENT",
                 checked: form.workInterestTypes.includes("WASTE_MANAGEMENT"),
                 text: "WASTE_MANAGEMENT" | formatJobType,

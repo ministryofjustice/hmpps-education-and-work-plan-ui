@@ -1,15 +1,14 @@
 {% extends "../../../../partials/layout.njk" %}
 
 {% set pageId = "exemption-removed" %}
-{% set title = "Exemption removed" %}
-{% set pageTitle = title %}
+{% set pageTitle = "Exemption removed" %}
 
 {% block content %}
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
       {{ govukPanel({
         classes: "govuk-!-margin-top-7",
-        titleText: title,
+        titleText: "Exemption removed",
         attributes: { "data-qa": "exemption-removed-panel" }
       }) }}
 
@@ -31,7 +30,7 @@
           }) }}
         </div>
       </form>
-     
+
     </div>
   </div>
 {% endblock %}

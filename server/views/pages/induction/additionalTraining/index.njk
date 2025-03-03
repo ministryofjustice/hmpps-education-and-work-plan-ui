@@ -1,8 +1,7 @@
 {% extends "../../../partials/layout.njk" %}
 
 {% set pageId = "induction-additional-training" %}
-{% set title = "Does " + prisonerSummary.firstName + " " + prisonerSummary.lastName + " have any other training or vocational qualifications?" %}
-{% set pageTitle = title %}
+{% set pageTitle = "Do they have any other training or vocational qualifications?" %}
 
 {#
 Data supplied to this template:
@@ -47,7 +46,7 @@ Data supplied to this template:
             name: "additionalTraining",
             fieldset: {
               legend: {
-                text: title,
+                text: "Does " + prisonerSummary.firstName + " " + prisonerSummary.lastName + " have any other training or vocational qualifications?",
                 isPageHeading: true,
                 classes: "govuk-fieldset__legend--l"
               }

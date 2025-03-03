@@ -1,7 +1,7 @@
 {% extends "../../../partials/layout.njk" %}
 
 {% set pageId = "induction-check-your-answers" %}
-{% set title = "Check and save your answers before adding " + prisonerSummary.firstName + " " + prisonerSummary.lastName + "'s goals" %}
+{% set pageTitle = "Check and save your answers before adding goals" %}
 
 {#
 Induction "Check your answers" page template.
@@ -30,7 +30,7 @@ Data supplied to this template:
 
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-      <h1 class="govuk-heading-l">{{ title }}</h1>
+      <h1 class="govuk-heading-l">Check and save your answers before adding {{ prisonerSummary.firstName }} {{ prisonerSummary.lastName }}'s goals</h1>
 
       <form class="form" method="post" novalidate="">
         <input type="hidden" name="_csrf" value="{{ csrfToken }}" />

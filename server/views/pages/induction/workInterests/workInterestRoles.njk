@@ -1,8 +1,7 @@
 {% extends "../../../partials/layout.njk" %}
 
 {% set pageId = "induction-future-work-interest-roles" %}
-{% set title = "Is " + prisonerSummary.firstName + " " + prisonerSummary.lastName + " interested in any particular jobs?" %}
-{% set pageTitle = title %}
+{% set pageTitle = "Are they interested in any particular jobs?" %}
 
 {#
 Data supplied to this template:
@@ -24,7 +23,7 @@ Data supplied to this template:
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
 
-      <h1 class="govuk-heading-l">{{ title }}</h1>
+      <h1 class="govuk-heading-l">Is {{ prisonerSummary.firstName }} {{ prisonerSummary.lastName }} interested in any particular jobs?</h1>
 
       <form class="form" method="post" novalidate="">
         <div class="govuk-form-group">
@@ -51,7 +50,7 @@ Data supplied to this template:
               {% if role[0] === 'OTHER' %}
                 <input type="hidden" name="workInterestTypesOther" value="{{ form.workInterestTypesOther }}" />
               {% endif %}
-            {% endfor %}   
+            {% endfor %}
         </div>
 
         {{ govukButton({
