@@ -389,6 +389,20 @@ describe('educationAndWorkPlanService', () => {
       expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
     })
 
+    it('should handle retrieval of prisoner education given educationAndWorkPlanClient returns null indicating not found error for the prisoners education record', async () => {
+      // Given
+      educationAndWorkPlanClient.getEducation.mockResolvedValue(null)
+
+      // When
+      const actual = await educationAndWorkPlanService.getEducation(prisonNumber, username)
+
+      // Then
+      expect(actual).toEqual(null)
+      expect(educationAndWorkPlanClient.getEducation).toHaveBeenCalledWith(prisonNumber, systemToken)
+      expect(mockedEducationMapper).not.toHaveBeenCalled()
+      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
+    })
+
     it('should not get prisoner education given educationAndWorkPlanClient returns an error', async () => {
       // Given
       const eductionAndWorkPlanApiError = {

@@ -62,6 +62,25 @@ describe('curiousClient', () => {
       expect(nock.isDone()).toBe(true)
     })
 
+    it('should not get learner profile given the API returns a 404', async () => {
+      // Given
+      const prisonNumber = 'A1234BC'
+      const systemToken = 'a-system-token'
+
+      const expectedResponseBody = {
+        errorCode: 'VC4004',
+        errorMessage: 'Not found',
+        httpStatusCode: 404,
+      }
+      curiousApi.get(`/learnerProfile/${prisonNumber}`).reply(404, expectedResponseBody)
+
+      // When
+      const actual = await curiousClient.getLearnerProfile(prisonNumber, systemToken)
+      // Then
+      expect(nock.isDone()).toBe(true)
+      expect(actual).toBeNull()
+    })
+
     it('should not get learner profile given API returns an error response', async () => {
       // Given
       const prisonNumber = 'A1234BC'

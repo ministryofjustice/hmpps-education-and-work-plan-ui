@@ -198,6 +198,7 @@ export default class EducationAndWorkPlanClient {
   async getEducation(prisonNumber: string, token: string): Promise<EducationResponse> {
     return EducationAndWorkPlanClient.restClient(token).get<EducationResponse>({
       path: `/person/${prisonNumber}/education`,
+      ignore404: true,
     })
   }
 

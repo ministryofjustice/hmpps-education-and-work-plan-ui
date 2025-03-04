@@ -120,17 +120,8 @@ export default class CuriousService {
     }
   }
 
-  private getLearnerProfile = async (prisonNumber: string, token: string): Promise<Array<LearnerProfile>> => {
-    try {
-      return await this.curiousClient.getLearnerProfile(prisonNumber, token)
-    } catch (error) {
-      if (error.status === 404) {
-        logger.info(`No learner profile data found for prisoner [${prisonNumber}] in Curious`)
-        return []
-      }
-      throw error
-    }
-  }
+  private getLearnerProfile = async (prisonNumber: string, token: string): Promise<Array<LearnerProfile>> =>
+    (await this.curiousClient.getLearnerProfile(prisonNumber, token)) || []
 
   private setPrisonNamesOnInPrisonCourses = async (
     inPrisonCourses: Array<InPrisonCourse>,

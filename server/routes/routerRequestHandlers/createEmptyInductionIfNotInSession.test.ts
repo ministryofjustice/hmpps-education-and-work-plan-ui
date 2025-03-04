@@ -36,15 +36,7 @@ describe('createEmptyInductionIfNotInSession', () => {
     // Given
     req.session.inductionDto = undefined
 
-    const educationServiceError = {
-      status: 404,
-      data: {
-        status: 404,
-        userMessage: `Education not found for prisoner [${prisonNumber}]`,
-        developerMessage: `Education not found for prisoner [${prisonNumber}]`,
-      },
-    }
-    educationAndWorkPlanService.getEducation.mockRejectedValue(educationServiceError)
+    educationAndWorkPlanService.getEducation.mockResolvedValue(null)
 
     const expectedInduction = { prisonNumber }
 
@@ -91,15 +83,7 @@ describe('createEmptyInductionIfNotInSession', () => {
     // Given
     req.session.inductionDto = { prisonNumber: 'Z1234ZZ' } as InductionDto
 
-    const educationServiceError = {
-      status: 404,
-      data: {
-        status: 404,
-        userMessage: `Education not found for prisoner [${prisonNumber}]`,
-        developerMessage: `Education not found for prisoner [${prisonNumber}]`,
-      },
-    }
-    educationAndWorkPlanService.getEducation.mockRejectedValue(educationServiceError)
+    educationAndWorkPlanService.getEducation.mockResolvedValue(null)
 
     const expectedInduction = { prisonNumber }
 

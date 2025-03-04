@@ -846,6 +846,23 @@ describe('educationAndWorkPlanClient', () => {
       expect(actual).toEqual(expectedEducationResponse)
     })
 
+    it('should not get Education given API returns a 404', async () => {
+      // Given
+      const expectedResponseBody = {
+        errorCode: 'VC4004',
+        errorMessage: 'Not found',
+        httpStatusCode: 404,
+      }
+      educationAndWorkPlanApi.get(`/person/${prisonNumber}/education`).reply(404, expectedResponseBody)
+
+      // When
+      const actual = await educationAndWorkPlanClient.getEducation(prisonNumber, systemToken)
+
+      // Then
+      expect(nock.isDone()).toBe(true)
+      expect(actual).toBeNull()
+    })
+
     it('should not get Education given API returns error response', async () => {
       // Given
       const expectedResponseBody = {

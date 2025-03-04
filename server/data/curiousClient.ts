@@ -10,6 +10,7 @@ export default class CuriousClient {
   async getLearnerProfile(prisonNumber: string, token: string): Promise<Array<LearnerProfile>> {
     return CuriousClient.restClient(token).get<Array<LearnerProfile>>({
       path: `/learnerProfile/${prisonNumber}`,
+      ignore404: true,
     })
   }
 
