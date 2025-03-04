@@ -96,14 +96,9 @@ describe('curiousService', () => {
       expect(hmppsAuthClient.getCuriousClientToken).toHaveBeenCalled()
     })
 
-    it('should handle retrieval of prisoner support needs given Curious returns not found error for the learner profile', async () => {
+    it('should handle retrieval of prisoner support needs given Curious API client returns null indicating not found error for the learner profile', async () => {
       // Given
-      const curiousApi404Error = {
-        message: 'Not Found',
-        status: 404,
-        text: { errorCode: 'VC4004', errorMessage: 'Resource not found', httpStatusCode: 404 },
-      }
-      curiousClient.getLearnerProfile.mockRejectedValue(curiousApi404Error)
+      curiousClient.getLearnerProfile.mockResolvedValue(null)
 
       const expectedSupportNeeds: PrisonerSupportNeeds = {
         problemRetrievingData: false,
@@ -111,9 +106,7 @@ describe('curiousService', () => {
       }
 
       // When
-      const actual = await curiousService.getPrisonerSupportNeeds(prisonNumber, username).catch(error => {
-        return error
-      })
+      const actual = await curiousService.getPrisonerSupportNeeds(prisonNumber, username)
 
       // Then
       expect(actual).toEqual(expectedSupportNeeds)
@@ -154,14 +147,9 @@ describe('curiousService', () => {
       expect(hmppsAuthClient.getCuriousClientToken).toHaveBeenCalled()
     })
 
-    it('should handle retrieval of prisoner functional skills given Curious returns not found error for the learner profile', async () => {
+    it('should handle retrieval of prisoner functional skills given Curious client returns null indicating not found error for the learner profile', async () => {
       // Given
-      const curiousApi404Error = {
-        message: 'Not Found',
-        status: 404,
-        text: { errorCode: 'VC4004', errorMessage: 'Resource not found', httpStatusCode: 404 },
-      }
-      curiousClient.getLearnerProfile.mockRejectedValue(curiousApi404Error)
+      curiousClient.getLearnerProfile.mockResolvedValue(null)
 
       const expectedFunctionalSkills: FunctionalSkills = {
         problemRetrievingData: false,
