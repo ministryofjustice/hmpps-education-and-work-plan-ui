@@ -72,21 +72,13 @@ describe('retrieveInduction', () => {
     expect(next).toHaveBeenCalled()
   })
 
-  it('should handle retrieval of Induction given Induction service returns Not Found for the Induction', async () => {
+  it('should handle retrieval of Induction given Induction service returns null indicating Not Found for the Induction', async () => {
     // Given
-    const inductionServiceError = {
-      status: 404,
-      data: {
-        status: 404,
-        userMessage: `Induction not found for prisoner [${prisonNumber}]`,
-        developerMessage: `Induction not found for prisoner [${prisonNumber}]`,
-      },
-    }
-    inductionService.getInduction.mockRejectedValue(inductionServiceError)
+    inductionService.getInduction.mockResolvedValue(null)
 
     const expected = {
       problemRetrievingData: false,
-      inductionDto: undefined as InductionDto,
+      inductionDto: null as InductionDto,
     }
 
     // When

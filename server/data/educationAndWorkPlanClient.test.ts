@@ -150,16 +150,42 @@ describe('educationAndWorkPlanClient', () => {
       expect(actual).toEqual(expectedResponseBody)
     })
 
-    it('should return status code with errors as 404 means no plan has been created', async () => {
+    it('should not get Goals given the API returns a 404', async () => {
       // Given
       const expectedResponseBody = {
         status: 404,
-        userMessage: 'Some error',
-        developerMessage: 'Some error',
+        errorCode: null as string,
+        userMessage: `No goals have been created for prisoner [${prisonNumber}] yet`,
+        developerMessage: null as string,
+        moreInfo: null as string,
       }
       educationAndWorkPlanApi //
         .get(`/action-plans/${prisonNumber}/goals?status=ACTIVE`)
         .reply(404, expectedResponseBody)
+
+      // When
+      const actual = await educationAndWorkPlanClient.getGoalsByStatus(
+        prisonNumber,
+        GoalStatusValue.ACTIVE,
+        systemToken,
+      )
+
+      // Then
+      expect(nock.isDone()).toBe(true)
+      expect(actual).toBeNull()
+    })
+
+    it('should not get Goals given API returns an error response', async () => {
+      // Given
+      const expectedResponseBody = {
+        status: 500,
+        userMessage: 'An unexpected error occurred',
+        developerMessage: 'An unexpected error occurred',
+      }
+      educationAndWorkPlanApi
+        .get(`/action-plans/${prisonNumber}/goals?status=ACTIVE`)
+        .thrice()
+        .reply(500, expectedResponseBody)
 
       // When
       try {
@@ -167,7 +193,7 @@ describe('educationAndWorkPlanClient', () => {
       } catch (e) {
         // Then
         expect(nock.isDone()).toBe(true)
-        expect(e.status).toEqual(404)
+        expect(e.status).toEqual(500)
         expect(e.data).toEqual(expectedResponseBody)
       }
     })
@@ -541,14 +567,11 @@ describe('educationAndWorkPlanClient', () => {
       educationAndWorkPlanApi.get(`/inductions/${prisonNumber}`).reply(404, expectedResponseBody)
 
       // When
-      try {
-        await educationAndWorkPlanClient.getInduction(prisonNumber, systemToken)
-      } catch (e) {
-        // Then
-        expect(nock.isDone()).toBe(true)
-        expect(e.status).toEqual(404)
-        expect(e.data).toEqual(expectedResponseBody)
-      }
+      const actual = await educationAndWorkPlanClient.getInduction(prisonNumber, systemToken)
+
+      // Then
+      expect(nock.isDone()).toBe(true)
+      expect(actual).toBeNull()
     })
   })
 

@@ -98,7 +98,7 @@ describe('retrieveInductionIfNotInSession', () => {
     expect(next).toHaveBeenCalled()
   })
 
-  it('should call next function with error given retrieving induction fails with a 404', async () => {
+  it('should call next function with error given retrieving induction returns null indicating the prisoner does not have an induction', async () => {
     // Given
     const username = 'a-dps-user'
     req.user.username = username
@@ -108,7 +108,7 @@ describe('retrieveInductionIfNotInSession', () => {
     const prisonNumber = 'A1234GC'
     req.params.prisonNumber = prisonNumber
 
-    inductionService.getInduction.mockRejectedValue(createError(404, 'Not Found'))
+    inductionService.getInduction.mockResolvedValue(null)
     const expectedError = createError(
       404,
       `Induction for prisoner ${prisonNumber} not returned by the Induction Service`,

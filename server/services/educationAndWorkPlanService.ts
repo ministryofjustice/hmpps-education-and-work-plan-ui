@@ -70,14 +70,12 @@ export default class EducationAndWorkPlanService {
   async getGoalsByStatus(prisonNumber: string, status: GoalStatusValue, username: string): Promise<Goals> {
     const systemToken = await this.hmppsAuthClient.getSystemClientToken(username)
     try {
-      const response = await this.educationAndWorkPlanClient.getGoalsByStatus(prisonNumber, status, systemToken)
+      const response = (await this.educationAndWorkPlanClient.getGoalsByStatus(prisonNumber, status, systemToken)) || {
+        goals: [],
+      }
       const prisonNamesById = await this.getAllPrisonNamesByIdSafely(username)
       return { goals: toGoals(response, prisonNamesById), problemRetrievingData: false }
     } catch (error) {
-      if (error.status === 404) {
-        logger.debug(`No plan created yet so no goals with [${status}] for Prisoner [${prisonNumber}]`)
-        return { goals: [], problemRetrievingData: false }
-      }
       logger.error(`Error retrieving goals with status [${status}] for Prisoner [${prisonNumber}]: ${error}`)
       return { goals: [], problemRetrievingData: true }
     }

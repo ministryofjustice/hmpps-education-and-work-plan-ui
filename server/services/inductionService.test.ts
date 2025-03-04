@@ -61,25 +61,15 @@ describe('inductionService', () => {
       expect(mockedInductionDtoMapper).toHaveBeenCalledWith(inductionResponse)
     })
 
-    it('should rethrow error given Education and Work Plan API returns Not Found', async () => {
+    it('should not get Induction given Education and Work Plan API returns null indicating induction Not Found', async () => {
       // Given
-      const eductionAndWorkPlanApiError = {
-        status: 404,
-        data: {
-          status: 404,
-          userMessage: `Induction not found for prisoner [${prisonNumber}]`,
-          developerMessage: `Induction not found for prisoner [${prisonNumber}]`,
-        },
-      }
-      educationAndWorkPlanClient.getInduction.mockRejectedValue(eductionAndWorkPlanApiError)
+      educationAndWorkPlanClient.getInduction.mockResolvedValue(null)
 
       // When
-      const actual = await inductionService.getInduction(prisonNumber, username).catch(error => {
-        return error
-      })
+      const actual = await inductionService.getInduction(prisonNumber, username)
 
       // Then
-      expect(actual).toEqual(eductionAndWorkPlanApiError)
+      expect(actual).toBeNull()
       expect(educationAndWorkPlanClient.getInduction).toHaveBeenCalledWith(prisonNumber, systemToken)
       expect(mockedInductionDtoMapper).not.toHaveBeenCalled()
     })
