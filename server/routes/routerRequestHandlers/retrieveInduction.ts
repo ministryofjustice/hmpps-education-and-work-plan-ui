@@ -17,31 +17,12 @@ const retrieveInduction = (inductionService: InductionService): RequestHandler =
         inductionDto: await inductionService.getInduction(prisonNumber, req.user.username),
       }
     } catch (error) {
-      res.locals.induction = { ...gracefullyHandleException(error, prisonNumber), inductionDto: undefined }
+      logger.error('Error retrieving Induction data from Induction Service', error)
+      res.locals.induction = { problemRetrievingData: true }
     }
 
     next()
   })
 }
-
-/**
- * Gracefully handle an exception thrown from the educationAndWorkPlanClient by returning an object of
- *   * { problemRetrievingData: false } if it was a 404 error (there was no problem retrieving data; it's just the data didn't exist)
- *   * { problemRetrievingData: true } if it was any other status code, indicating a more serious error and problem retrieving the data from the API
- */
-const gracefullyHandleException = (
-  error: { status: number },
-  prisonNumber: string,
-): { problemRetrievingData: boolean } => {
-  if (isNotFoundError(error)) {
-    logger.debug(`No Induction found for prisoner [${prisonNumber}] in Education And Work Plan API`)
-    return { problemRetrievingData: false }
-  }
-
-  logger.error('Error retrieving Induction data from Induction Service', error)
-  return { problemRetrievingData: true }
-}
-
-const isNotFoundError = (error: { status: number }): boolean => error.status === 404
 
 export default retrieveInduction

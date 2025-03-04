@@ -174,7 +174,7 @@ describe('educationAndWorkPlanService', () => {
       expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
     })
 
-    it('should return a problem loading the data if the status is not 404', async () => {
+    it('should return a problem loading the data if the API returns an error', async () => {
       // Given
       const status = GoalStatusValue.ACTIVE
 
@@ -210,11 +210,11 @@ describe('educationAndWorkPlanService', () => {
       expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
     })
 
-    it('should return no problem loading the data and undefined goals if the status is 404', async () => {
+    it('should return no problem loading the data and undefined goals given the service returns null indicating the prisoner has no goals', async () => {
       // Given
       const status = GoalStatusValue.ACTIVE
 
-      educationAndWorkPlanClient.getGoalsByStatus.mockRejectedValue(createError(404, 'Service unavailable'))
+      educationAndWorkPlanClient.getGoalsByStatus.mockResolvedValue(null)
       const expectedResponse: Goals = { goals: [], problemRetrievingData: false }
 
       // When

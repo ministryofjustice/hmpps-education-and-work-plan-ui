@@ -18,7 +18,7 @@ export default class InductionService {
   async getInduction(prisonNumber: string, username: string): Promise<InductionDto> {
     const systemToken = await this.hmppsAuthClient.getSystemClientToken(username)
     const inductionResponse = await this.educationAndWorkPlanClient.getInduction(prisonNumber, systemToken)
-    return toInductionDto(inductionResponse)
+    return inductionResponse ? toInductionDto(inductionResponse) : null
   }
 
   async updateInduction(

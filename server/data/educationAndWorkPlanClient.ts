@@ -67,6 +67,7 @@ export default class EducationAndWorkPlanClient {
       query: {
         status,
       },
+      ignore404: true,
     })
   }
 
@@ -152,6 +153,7 @@ export default class EducationAndWorkPlanClient {
   async getInduction(prisonNumber: string, token: string): Promise<InductionResponse> {
     return EducationAndWorkPlanClient.restClient(token).get<InductionResponse>({
       path: `/inductions/${prisonNumber}`,
+      ignore404: true,
     })
   }
 

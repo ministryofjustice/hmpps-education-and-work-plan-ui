@@ -30,15 +30,7 @@ describe('checkInductionDoesNotExist', () => {
 
   it('should call next with no arguments given prisoner does not have an Induction', async () => {
     // Given
-    const inductionServiceResponse = {
-      status: 404,
-      data: {
-        status: 404,
-        userMessage: `Induction not found for prisoner [${prisonNumber}]`,
-        developerMessage: `Induction not found for prisoner [${prisonNumber}]`,
-      },
-    }
-    inductionService.getInduction.mockRejectedValue(inductionServiceResponse)
+    inductionService.getInduction.mockResolvedValue(null)
 
     // When
     await requestHandler(req, res, next)
