@@ -37,14 +37,16 @@ export default class EducationAndWorkPlanService {
     const systemToken = await this.hmppsAuthClient.getSystemClientToken(username)
     try {
       const actionPlanResponse = await this.educationAndWorkPlanClient.getActionPlan(prisonNumber, systemToken)
-      const prisonNamesById = await this.getAllPrisonNamesByIdSafely(username)
-      return toActionPlan(actionPlanResponse, false, prisonNamesById)
-    } catch (error) {
-      if (error.status === 404) {
+
+      if (!actionPlanResponse) {
         logger.debug(`No Action Plan exists yet for Prisoner [${prisonNumber}]`)
         return { prisonNumber, goals: [], problemRetrievingData: false }
       }
-      logger.error(`Error retrieving Action Plan for Prisoner [${prisonNumber}]: ${error}`)
+
+      const prisonNamesById = await this.getAllPrisonNamesByIdSafely(username)
+      return toActionPlan(actionPlanResponse, false, prisonNamesById)
+    } catch (error) {
+      logger.error(`Error retrieving Action Plan for Prisoner [${prisonNumber}]`, error)
       return { prisonNumber, goals: [], problemRetrievingData: true }
     }
   }

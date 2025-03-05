@@ -153,5 +153,55 @@ describe('timelineService', () => {
       )
       expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
     })
+
+    it('should not get the timeline given Education and Work Plan API returns null indicating timeline Not Found', async () => {
+      // Given
+      educationAndWorkPlanClient.getTimeline.mockResolvedValue(null)
+
+      // When
+      const actual = await timelineService.getTimeline(prisonNumber, username)
+
+      // Then
+      expect(actual).toBeNull()
+      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
+      expect(educationAndWorkPlanClient.getTimeline).toHaveBeenCalledWith(
+        prisonNumber,
+        systemToken,
+        supportedTimelineEvents,
+      )
+      expect(mockedTimelineMapper).not.toHaveBeenCalled()
+    })
+
+    it('should not get Timeline given Education and Work Plan API returns an unexpected error', async () => {
+      // Given
+      const eductionAndWorkPlanApiError = {
+        status: 500,
+        data: {
+          status: 500,
+          userMessage: 'An unexpected error occurred',
+          developerMessage: 'An unexpected error occurred',
+        },
+      }
+      educationAndWorkPlanClient.getTimeline.mockRejectedValue(eductionAndWorkPlanApiError)
+
+      const expected = {
+        problemRetrievingData: true,
+      }
+
+      // When
+      const actual = await timelineService.getTimeline(prisonNumber, username).catch(error => {
+        return error
+      })
+
+      // Then
+      expect(actual).toEqual(expected)
+      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
+      expect(educationAndWorkPlanClient.getTimeline).toHaveBeenCalledWith(
+        prisonNumber,
+        systemToken,
+        supportedTimelineEvents,
+      )
+      expect(mockedTimelineMapper).not.toHaveBeenCalled()
+    })
   })
 })
