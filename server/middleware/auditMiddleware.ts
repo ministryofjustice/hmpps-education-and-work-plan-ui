@@ -57,9 +57,6 @@ const pageViewEventMap: Record<string, Page> = {
   // In prison course and qualifications
   '/plan/:prisonNumber/in-prison-courses-and-qualifications': Page.IN_PRISON_COURSES_AND_QUALIFICATIONS,
 
-  // Notes
-  '/plan/:prisonNumber/notes': Page.NOTES_LIST,
-
   // Create induction
   '/prisoners/:prisonNumber/create-induction/hoping-to-work-on-release':
     Page.INDUCTION_CREATE_HOPING_TO_WORK_ON_RELEASE,

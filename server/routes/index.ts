@@ -12,7 +12,6 @@ import updateInduction from './induction/update'
 import inPrisonCoursesAndQualifications from './inPrisonCoursesAndQualifications'
 import retrievePrisonerSummary from './routerRequestHandlers/retrievePrisonerSummary'
 import { checkPageViewAuditted } from '../middleware/auditMiddleware'
-import notesRoutes from './notes'
 import archiveGoal from './archiveGoal'
 import unarchiveGoal from './unarchiveGoal'
 import completeGoal from './completegoal'
@@ -59,8 +58,6 @@ export default function routes(services: Services): Router {
   createInduction(router, services)
   updateInduction(router, services)
   postInductionCreation(router, services)
-
-  router.use('/plan/:prisonNumber/notes', notesRoutes())
 
   reviewPlanRoutes(router, services)
 
