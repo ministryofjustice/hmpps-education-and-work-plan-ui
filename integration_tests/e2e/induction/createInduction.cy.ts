@@ -258,10 +258,8 @@ context('Create an Induction', () => {
 
     // In Prison Work Interests page is next
     Page.verifyOnPage(InPrisonWorkPage) //
-      .hasBackLinkTo('/prisoners/A00001A/create-induction/personal-interests')
       .submitPage() // submit the page without answering the question to trigger a validation error
     Page.verifyOnPage(InPrisonWorkPage) //
-      .hasBackLinkTo('/prisoners/A00001A/create-induction/personal-interests')
       .hasErrorCount(1)
       .hasFieldInError('inPrisonWork')
       .selectWorkType(InPrisonWorkValue.KITCHENS_AND_COOKING)
@@ -270,10 +268,8 @@ context('Create an Induction', () => {
 
     // In Prison Training Interests page is next
     Page.verifyOnPage(InPrisonTrainingPage) //
-      .hasBackLinkTo('/prisoners/A00001A/create-induction/in-prison-work')
       .submitPage() // submit the page without answering the question to trigger a validation error
     Page.verifyOnPage(InPrisonTrainingPage) //
-      .hasBackLinkTo('/prisoners/A00001A/create-induction/in-prison-work')
       .hasErrorCount(1)
       .hasFieldInError('inPrisonTraining')
       .selectInPrisonTraining(InPrisonTrainingValue.FORKLIFT_DRIVING)
@@ -453,13 +449,11 @@ context('Create an Induction', () => {
 
     // In Prison Work Interests page is next
     Page.verifyOnPage(InPrisonWorkPage) //
-      .hasBackLinkTo('/prisoners/A00001A/create-induction/personal-interests')
       .selectWorkType(InPrisonWorkValue.KITCHENS_AND_COOKING)
       .submitPage()
 
     // In Prison Training Interests page is next
     Page.verifyOnPage(InPrisonTrainingPage) //
-      .hasBackLinkTo('/prisoners/A00001A/create-induction/in-prison-work')
       .selectInPrisonTraining(InPrisonTrainingValue.FORKLIFT_DRIVING)
       .submitPage()
 

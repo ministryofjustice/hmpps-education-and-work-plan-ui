@@ -5,8 +5,6 @@ import validateInPrisonWorkForm from '../../validators/induction/inPrisonWorkFor
 import { InductionService } from '../../../services'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
 import logger from '../../../../logger'
-import { getPreviousPage } from '../../pageFlowHistory'
-import getDynamicBackLinkAriaText from '../../dynamicAriaTextResolver'
 
 /**
  * Controller for the Update of the In Prison Work screen of the Induction.
@@ -14,19 +12,6 @@ import getDynamicBackLinkAriaText from '../../dynamicAriaTextResolver'
 export default class InPrisonWorkUpdateController extends InPrisonWorkController {
   constructor(private readonly inductionService: InductionService) {
     super()
-  }
-
-  getBackLinkUrl(req: Request): string {
-    const { prisonNumber } = req.params
-    const { pageFlowHistory } = req.session
-    if (pageFlowHistory) {
-      return getPreviousPage(pageFlowHistory)
-    }
-    return `/plan/${prisonNumber}/view/work-and-interests`
-  }
-
-  getBackLinkAriaText(req: Request, res: Response): string {
-    return getDynamicBackLinkAriaText(req, res, this.getBackLinkUrl(req))
   }
 
   submitInPrisonWorkForm: RequestHandler = async (req: Request, res: Response, next: NextFunction): Promise<void> => {

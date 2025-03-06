@@ -1,25 +1,10 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express'
 import type { InPrisonWorkForm } from 'inductionForms'
 import InPrisonWorkController from '../common/inPrisonWorkController'
-import getDynamicBackLinkAriaText from '../../dynamicAriaTextResolver'
 import validateInPrisonWorkForm from '../../validators/induction/inPrisonWorkFormValidator'
 import { asArray } from '../../../utils/utils'
-import { getPreviousPage } from '../../pageFlowHistory'
 
 export default class InPrisonWorkCreateController extends InPrisonWorkController {
-  getBackLinkUrl(req: Request): string {
-    const { prisonNumber } = req.params
-    const { pageFlowHistory } = req.session
-    const previousPage =
-      (pageFlowHistory && getPreviousPage(pageFlowHistory)) ||
-      `/prisoners/${prisonNumber}/create-induction/personal-interests`
-    return previousPage
-  }
-
-  getBackLinkAriaText(req: Request, res: Response): string {
-    return getDynamicBackLinkAriaText(req, res, this.getBackLinkUrl(req))
-  }
-
   submitInPrisonWorkForm: RequestHandler = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { prisonNumber } = req.params
     const { inductionDto } = req.session

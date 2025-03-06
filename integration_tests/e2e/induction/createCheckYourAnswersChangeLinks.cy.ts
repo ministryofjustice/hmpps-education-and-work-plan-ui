@@ -48,7 +48,6 @@ context(`Change links on the Check Your Answers page when creating an Induction`
     // Change in-prison training interests
     Page.verifyOnPage(CheckYourAnswersPage)
       .clickInPrisonTrainingInterestsChangeLink()
-      .hasBackLinkTo(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
       .deSelectInPrisonTraining(InPrisonTrainingValue.FORKLIFT_DRIVING)
       .selectInPrisonTraining(InPrisonTrainingValue.BARBERING_AND_HAIRDRESSING)
       .selectInPrisonTraining(InPrisonTrainingValue.RUNNING_A_BUSINESS)
@@ -57,7 +56,6 @@ context(`Change links on the Check Your Answers page when creating an Induction`
     // Change in-prison work interests
     Page.verifyOnPage(CheckYourAnswersPage)
       .clickInPrisonWorkInterestsChangeLink()
-      .hasBackLinkTo(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
       .deSelectWorkType(InPrisonWorkValue.PRISON_LIBRARY)
       .selectWorkType(InPrisonWorkValue.MAINTENANCE)
       .selectWorkType(InPrisonWorkValue.TEXTILES_AND_SEWING)
