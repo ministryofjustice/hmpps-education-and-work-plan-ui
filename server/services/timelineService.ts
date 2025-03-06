@@ -35,14 +35,16 @@ export default class TimelineService {
         systemToken,
         SUPPORTED_TIMELINE_EVENTS,
       )
+
+      if (!timelineResponse) {
+        logger.debug(`No Timeline for prisoner [${prisonNumber}]`)
+        return null
+      }
+
       const prisonNamesById = await this.prisonService.getAllPrisonNamesById(username)
       return toTimeline(timelineResponse, prisonNamesById)
     } catch (error) {
-      if (error.status === 404) {
-        logger.info(`No Timeline for prisoner [${prisonNumber}]: ${error}`)
-        return undefined
-      }
-      logger.error(`Error retrieving Timeline for Prisoner [${prisonNumber}]: ${error}`)
+      logger.error(`Error retrieving Timeline for Prisoner [${prisonNumber}]`, error)
       return { problemRetrievingData: true } as Timeline
     }
   }

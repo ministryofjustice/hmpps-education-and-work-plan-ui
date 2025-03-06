@@ -125,9 +125,9 @@ describe('educationAndWorkPlanService', () => {
       expect(actual).toEqual(expectedActionPlan)
     })
 
-    it('should return Action Plan with no goals given educationAndWorkPlanClient returns response with 404 status', async () => {
+    it('should return Action Plan with no goals given the service returns null indicating the prisoner has no action plan', async () => {
       // Given
-      educationAndWorkPlanClient.getActionPlan.mockRejectedValue(createError(404, 'Not Found'))
+      educationAndWorkPlanClient.getActionPlan.mockResolvedValue(null)
 
       const expectedResponse: ActionPlan = {
         prisonNumber,

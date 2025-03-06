@@ -40,6 +40,7 @@ export default class EducationAndWorkPlanClient {
   async getActionPlan(prisonNumber: string, token: string): Promise<ActionPlanResponse> {
     return EducationAndWorkPlanClient.restClient(token).get<ActionPlanResponse>({
       path: `/action-plans/${prisonNumber}`,
+      ignore404: true,
     })
   }
 
@@ -139,7 +140,11 @@ export default class EducationAndWorkPlanClient {
   async getTimeline(prisonNumber: string, token: string, eventTypes?: Array<string>): Promise<TimelineResponse> {
     const timeline = await EducationAndWorkPlanClient.restClient(token).get<TimelineResponse>({
       path: `/timelines/${prisonNumber}`,
+      ignore404: true,
     })
+    if (!timeline) {
+      return null
+    }
     // TODO - remove this filtering of the response and replace with a query string param whe the API supports filtering via query string
     if (!eventTypes) {
       return timeline

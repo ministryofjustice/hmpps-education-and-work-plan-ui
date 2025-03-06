@@ -107,6 +107,22 @@ describe('educationAndWorkPlanClient', () => {
       expect(actual).toEqual(expectedActionPlanResponse)
     })
 
+    it('should not get Action Plan given no Action Plan returned for specified prisoner', async () => {
+      // Given
+      const expectedResponseBody = {
+        status: 404,
+        userMessage: `Action Plan not found for prisoner [${prisonNumber}]`,
+      }
+      educationAndWorkPlanApi.get(`/action-plans/${prisonNumber}`).reply(404, expectedResponseBody)
+
+      // When
+      const actual = await educationAndWorkPlanClient.getActionPlan(prisonNumber, systemToken)
+
+      // Then
+      expect(nock.isDone()).toBe(true)
+      expect(actual).toBeNull()
+    })
+
     it('should not get Action Plan given API returns error response', async () => {
       // Given
       const expectedResponseBody = {
@@ -501,6 +517,22 @@ describe('educationAndWorkPlanClient', () => {
       // Then
       expect(nock.isDone()).toBe(true)
       expect(actual).toEqual(expectedTimelineResponse)
+    })
+
+    it('should not get Timeline given no timeline returned for specified prisoner', async () => {
+      // Given
+      const expectedResponseBody = {
+        status: 404,
+        userMessage: `Timeline not found for prisoner [${prisonNumber}]`,
+      }
+      educationAndWorkPlanApi.get(`/timelines/${prisonNumber}`).reply(404, expectedResponseBody)
+
+      // When
+      const actual = await educationAndWorkPlanClient.getTimeline(prisonNumber, systemToken)
+
+      // Then
+      expect(nock.isDone()).toBe(true)
+      expect(actual).toBeNull()
     })
 
     it('should not get Timeline given API returns error response', async () => {
