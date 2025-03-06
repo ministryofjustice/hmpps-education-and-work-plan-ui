@@ -6,8 +6,6 @@ import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateIn
 import logger from '../../../../logger'
 import { InductionService } from '../../../services'
 import validateInPrisonTrainingForm from '../../validators/induction/inPrisonTrainingFormValidator'
-import { getPreviousPage } from '../../pageFlowHistory'
-import getDynamicBackLinkAriaText from '../../dynamicAriaTextResolver'
 import { asArray } from '../../../utils/utils'
 
 /**
@@ -18,17 +16,14 @@ export default class InPrisonTrainingUpdateController extends InPrisonTrainingCo
     super()
   }
 
-  getBackLinkUrl(req: Request): string {
-    const { prisonNumber } = req.params
-    const { pageFlowHistory } = req.session
-    if (pageFlowHistory) {
-      return getPreviousPage(pageFlowHistory)
-    }
-    return `/plan/${prisonNumber}/view/education-and-training`
+  getBackLinkUrl(_req: Request): string {
+    // Default implementation - the js back link is used on the In Prison Training page
+    return undefined
   }
 
-  getBackLinkAriaText(req: Request, res: Response): string {
-    return getDynamicBackLinkAriaText(req, res, this.getBackLinkUrl(req))
+  getBackLinkAriaText(_req: Request): string {
+    // Default implementation - the js back link is used on the In Prison Training page
+    return undefined
   }
 
   submitInPrisonTrainingForm: RequestHandler = async (

@@ -18,19 +18,10 @@ export default abstract class InPrisonWorkController extends InductionController
 
     this.addCurrentPageToFlowHistoryWhenComingFromCheckYourAnswers(req)
 
-    if (req.session.pageFlowHistory) {
-      this.addCurrentPageToHistory(req)
-    }
-
     const inPrisonWorkForm = req.session.inPrisonWorkForm || toInPrisonWorkForm(inductionDto)
     req.session.inPrisonWorkForm = undefined
 
-    const view = new InPrisonWorkView(
-      prisonerSummary,
-      this.getBackLinkUrl(req),
-      this.getBackLinkAriaText(req, res),
-      inPrisonWorkForm,
-    )
+    const view = new InPrisonWorkView(prisonerSummary, inPrisonWorkForm)
     return res.render('pages/induction/inPrisonWork/index', { ...view.renderArgs })
   }
 

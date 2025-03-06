@@ -1,24 +1,19 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express'
 import type { InPrisonTrainingForm } from 'inductionForms'
 import InPrisonTrainingController from '../common/inPrisonTrainingController'
-import getDynamicBackLinkAriaText from '../../dynamicAriaTextResolver'
 import validateInPrisonTrainingForm from '../../validators/induction/inPrisonTrainingFormValidator'
 import { asArray } from '../../../utils/utils'
-import { getPreviousPage } from '../../pageFlowHistory'
 import config from '../../../config'
 
 export default class InPrisonTrainingCreateController extends InPrisonTrainingController {
-  getBackLinkUrl(req: Request): string {
-    const { prisonNumber } = req.params
-    const { pageFlowHistory } = req.session
-    if (pageFlowHistory) {
-      return getPreviousPage(pageFlowHistory)
-    }
-    return `/prisoners/${prisonNumber}/create-induction/in-prison-work`
+  getBackLinkUrl(_req: Request): string {
+    // Default implementation - the js back link is used on the In Prison Training page
+    return undefined
   }
 
-  getBackLinkAriaText(req: Request, res: Response): string {
-    return getDynamicBackLinkAriaText(req, res, this.getBackLinkUrl(req))
+  getBackLinkAriaText(_req: Request): string {
+    // Default implementation - the js back link is used on the In Prison Training page
+    return undefined
   }
 
   submitInPrisonTrainingForm: RequestHandler = async (
