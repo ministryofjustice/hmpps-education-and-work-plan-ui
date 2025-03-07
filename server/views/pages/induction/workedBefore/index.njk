@@ -1,8 +1,7 @@
 {% extends "../../../partials/layout.njk" %}
 
 {% set pageId = "induction-has-worked-before" %}
-{% set title = "Has " + prisonerSummary.firstName + " " + prisonerSummary.lastName + " worked before?" %}
-{% set pageTitle = title %}
+{% set pageTitle = "Have they worked before?" %}
 
 {#
   Data supplied to this template:
@@ -47,7 +46,7 @@
             name: 'hasWorkedBefore',
             fieldset: {
               legend: {
-                text: title,
+                text: "Has " + prisonerSummary.firstName + " " + prisonerSummary.lastName + " worked before?",
                 isPageHeading: true,
                 classes: 'govuk-fieldset__legend--l'
               }

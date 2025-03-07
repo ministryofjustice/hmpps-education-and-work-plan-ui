@@ -1,8 +1,7 @@
 {% extends "../../../partials/layout.njk" %}
 
 {% set pageId = "induction-hoping-to-work-on-release" %}
-{% set title = "Hoping to get work" %}
-{% set pageTitle = title %}
+{% set pageTitle = "Are they hoping to get work when they're released?" %}
 
 {#
 Data supplied to this template:
@@ -25,7 +24,7 @@ Data supplied to this template:
         <form class="form" method="post" novalidate="">
           <div class="govuk-form-group">
             <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
-          
+
             {{ govukRadios({
               name: "hopingToGetWork",
               fieldset: {

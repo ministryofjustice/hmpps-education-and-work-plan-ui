@@ -1,8 +1,7 @@
 {% extends "../../partials/layout.njk" %}
 
 {% set pageId = "qualification-level" %}
-{% set title = "What level of qualification does " + prisonerSummary.firstName + " " + prisonerSummary.lastName + " want to add?" %}
-{% set pageTitle = title %}
+{% set pageTitle = "Qualification level" %}
 
 {#
 Data supplied to this template:
@@ -25,7 +24,7 @@ Data supplied to this template:
     <div class="govuk-grid-row govuk-!-margin-bottom-6">
       <div class="govuk-grid-column-two-thirds">
         <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-          <h1 class="govuk-fieldset__heading">{{ title }}</h1>
+          <h1 class="govuk-fieldset__heading">What level of qualification does {{ prisonerSummary.firstName }} {{ prisonerSummary.lastName }} want to add?</h1>
         </legend>
       </div>
     </div>

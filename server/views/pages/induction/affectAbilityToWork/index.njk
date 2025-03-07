@@ -1,8 +1,7 @@
 {% extends "../../../partials/layout.njk" %}
 
 {% set pageId = "induction-affect-ability-to-work" %}
-{% set title = "What does " + prisonerSummary.firstName + " " + prisonerSummary.lastName + " feel could stop or affect them working when they are out of prison?" %}
-{% set pageTitle = title %}
+{% set pageTitle = "Are there any factors that could stop or affect them working when they are out of prison?" %}
 
 {#
 Data supplied to this template:
@@ -47,7 +46,7 @@ Data supplied to this template:
             name: "affectAbilityToWork",
             fieldset: {
               legend: {
-                  text: title,
+                  text: "What does " + prisonerSummary.firstName + " " + prisonerSummary.lastName + " feel could stop or affect them working when they are out of prison?",
                   isPageHeading: true,
                   classes: "govuk-fieldset__legend--l"
                 }
