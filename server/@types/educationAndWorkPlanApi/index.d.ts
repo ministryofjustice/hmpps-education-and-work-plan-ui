@@ -100,22 +100,6 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/conversations/{prisonNumber}/{conversationReference}': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    get: operations['getConversation']
-    put: operations['updateConversation']
-    post?: never
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
   '/action-plans/{prisonNumber}/reviews/schedule-status': {
     parameters: {
       query?: never
@@ -206,22 +190,6 @@ export interface paths {
     get?: never
     put?: never
     post: operations['getSessionSummaries']
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/conversations/{prisonNumber}': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    get: operations['getConversations']
-    put?: never
-    post: operations['createConversation']
     delete?: never
     options?: never
     head?: never
@@ -360,6 +328,22 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/search/prisons/{prisonId}/people': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get: operations['getPrisoners']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/queue-admin/get-dlq-messages/{dlqName}': {
     parameters: {
       query?: never
@@ -420,10 +404,6 @@ export interface components {
       /** Format: int32 */
       messagesFoundCount: number
     }
-    /**
-     * @description A list of achieved qualifications that should be updated or created as part of the education record.
-     * @example null
-     */
     CreateOrUpdateAchievedQualificationRequest: {
       /**
        * @description The subject of the qualification.
@@ -486,10 +466,6 @@ export interface components {
        */
       qualifications: components['schemas']['CreateOrUpdateAchievedQualificationRequest'][]
     }
-    /**
-     * @description One or more future work interests that the Prisoner has.
-     * @example null
-     */
     FutureWorkInterest: {
       /**
        * @example null
@@ -522,10 +498,6 @@ export interface components {
        */
       role?: string
     }
-    /**
-     * @description A list of in-prison training that the Prisoner is interested in.
-     * @example null
-     */
     InPrisonTrainingInterest: {
       /**
        * @example null
@@ -551,10 +523,6 @@ export interface components {
        */
       trainingTypeOther?: string
     }
-    /**
-     * @description A list of in-prison work that the Prisoner is interested in.
-     * @example null
-     */
     InPrisonWorkInterest: {
       /**
        * @example null
@@ -578,10 +546,6 @@ export interface components {
        */
       workTypeOther?: string
     }
-    /**
-     * @description One or more interests that the Prisoner feels they have.
-     * @example null
-     */
     PersonalInterest: {
       /**
        * @example null
@@ -609,10 +573,6 @@ export interface components {
        */
       interestTypeOther?: string
     }
-    /**
-     * @description One or more skills that the Prisoner feels they have.
-     * @example null
-     */
     PersonalSkill: {
       /**
        * @example null
@@ -634,10 +594,6 @@ export interface components {
        */
       skillTypeOther?: string
     }
-    /**
-     * @description A list of the Prisoner's previous work experiences.
-     * @example null
-     */
     PreviousWorkExperience: {
       /**
        * @example null
@@ -675,7 +631,6 @@ export interface components {
        */
       details?: string
     }
-    /** @example null */
     UpdateFutureWorkInterestsRequest: {
       /**
        * @description One or more future work interests that the Prisoner has.
@@ -689,7 +644,6 @@ export interface components {
        */
       reference?: string
     }
-    /** @example null */
     UpdateInPrisonInterestsRequest: {
       /**
        * @description A list of in-prison work that the Prisoner is interested in.
@@ -720,15 +674,21 @@ export interface components {
        * @example BXI
        */
       prisonId: string
+      /** @example null */
       workOnRelease?: components['schemas']['UpdateWorkOnReleaseRequest']
+      /** @example null */
       previousQualifications?: components['schemas']['UpdatePreviousQualificationsRequest']
+      /** @example null */
       previousTraining?: components['schemas']['UpdatePreviousTrainingRequest']
+      /** @example null */
       previousWorkExperiences?: components['schemas']['UpdatePreviousWorkExperiencesRequest']
+      /** @example null */
       inPrisonInterests?: components['schemas']['UpdateInPrisonInterestsRequest']
+      /** @example null */
       personalSkillsAndInterests?: components['schemas']['UpdatePersonalSkillsAndInterestsRequest']
+      /** @example null */
       futureWorkInterests?: components['schemas']['UpdateFutureWorkInterestsRequest']
     }
-    /** @example null */
     UpdatePersonalSkillsAndInterestsRequest: {
       /**
        * @description One or more skills that the Prisoner feels they have.
@@ -747,7 +707,6 @@ export interface components {
        */
       reference?: string
     }
-    /** @example null */
     UpdatePreviousQualificationsRequest: {
       /**
        * Format: uuid
@@ -773,7 +732,6 @@ export interface components {
        */
       qualifications?: components['schemas']['CreateOrUpdateAchievedQualificationRequest'][]
     }
-    /** @example null */
     UpdatePreviousTrainingRequest: {
       /**
        * @description Any additional training that the Prisoner has completed in the past. Must not be empty ('NONE' is an option).
@@ -804,7 +762,6 @@ export interface components {
        */
       trainingTypeOther?: string
     }
-    /** @example null */
     UpdatePreviousWorkExperiencesRequest: {
       /**
        * @example null
@@ -828,7 +785,6 @@ export interface components {
        */
       experiences?: components['schemas']['PreviousWorkExperience'][]
     }
-    /** @example null */
     UpdateWorkOnReleaseRequest: {
       /**
        * Format: uuid
@@ -900,39 +856,6 @@ export interface components {
        */
       exemptionReason?: string
     }
-    UpdateConversationRequest: {
-      /**
-       * @description The Prison identifier.
-       * @example BXI
-       */
-      prisonId: string
-      /**
-       * @description A note for this conversation
-       * @example Pay close attention to Peter's behaviour.
-       */
-      note: string
-    }
-    Conversation: {
-      /** Format: uuid */
-      reference: string
-      prisonNumber: string
-      /** @enum {string} */
-      type: 'INDUCTION' | 'GENERAL' | 'REVIEW'
-      note: components['schemas']['ConversationNote']
-    }
-    ConversationNote: {
-      /** Format: uuid */
-      reference: string
-      content: string
-      createdBy: string
-      /** Format: date-time */
-      createdAt: string
-      createdAtPrison: string
-      lastUpdatedBy: string
-      /** Format: date-time */
-      lastUpdatedAt: string
-      lastUpdatedAtPrison: string
-    }
     UpdateReviewScheduleStatusRequest: {
       /**
        * @description The Prison identifier.
@@ -982,6 +905,7 @@ export interface components {
       /**
        * Format: date
        * @description An optional ISO-8601 date representing the target completion date of the Goal.
+       * @example Tue Dec 19 00:00:00 UTC 2023
        */
       targetCompletionDate: string
       /**
@@ -1000,10 +924,6 @@ export interface components {
        */
       notes?: string
     }
-    /**
-     * @description A List of at least one Step.
-     * @example null
-     */
     UpdateStepRequest: {
       /**
        * @example null
@@ -1083,10 +1003,6 @@ export interface components {
        */
       prisonNumbers: string[]
     }
-    /**
-     * @description A List containing zero or more SessionResponse.
-     * @example null
-     */
     SessionResponse: {
       /**
        * @example null
@@ -1101,6 +1017,7 @@ export interface components {
       /**
        * Format: date
        * @description The deadline for the induction to be completed
+       * @example Mon Jun 19 00:00:00 UTC 2023
        */
       deadlineDate: string
       /**
@@ -1117,6 +1034,7 @@ export interface components {
       /**
        * Format: date
        * @description if applicable this will be the date of the exemption
+       * @example Mon Jun 19 00:00:00 UTC 2023
        */
       exemptionDate?: string
     }
@@ -1127,10 +1045,6 @@ export interface components {
        */
       sessions: components['schemas']['SessionResponse'][]
     }
-    /**
-     * @description A list of achieved qualifications that should be created as part of the education record.
-     * @example null
-     */
     CreateAchievedQualificationRequest: {
       /**
        * @description The subject of the qualification.
@@ -1181,7 +1095,6 @@ export interface components {
        */
       qualifications: components['schemas']['CreateAchievedQualificationRequest'][]
     }
-    /** @example null */
     CreateFutureWorkInterestsRequest: {
       /**
        * @description One or more future work interests that the Prisoner has.
@@ -1189,7 +1102,6 @@ export interface components {
        */
       interests: components['schemas']['FutureWorkInterest'][]
     }
-    /** @example null */
     CreateInPrisonInterestsRequest: {
       /**
        * @description A list of in-prison work that the Prisoner is interested in.
@@ -1208,12 +1120,19 @@ export interface components {
        * @example BXI
        */
       prisonId: string
+      /** @example null */
       workOnRelease: components['schemas']['CreateWorkOnReleaseRequest']
+      /** @example null */
       previousQualifications?: components['schemas']['CreatePreviousQualificationsRequest']
+      /** @example null */
       previousTraining?: components['schemas']['CreatePreviousTrainingRequest']
+      /** @example null */
       previousWorkExperiences?: components['schemas']['CreatePreviousWorkExperiencesRequest']
+      /** @example null */
       inPrisonInterests?: components['schemas']['CreateInPrisonInterestsRequest']
+      /** @example null */
       personalSkillsAndInterests?: components['schemas']['CreatePersonalSkillsAndInterestsRequest']
+      /** @example null */
       futureWorkInterests?: components['schemas']['CreateFutureWorkInterestsRequest']
       /**
        * @description The notes taken when conducting the prisoner's Induction.
@@ -1223,6 +1142,7 @@ export interface components {
       /**
        * Format: date
        * @description An ISO-8601 date representing the date that this Induction was conducted on.
+       * @example Tue Dec 19 00:00:00 UTC 2023
        */
       conductedAt?: string
       /**
@@ -1236,7 +1156,6 @@ export interface components {
        */
       conductedByRole?: string
     }
-    /** @example null */
     CreatePersonalSkillsAndInterestsRequest: {
       /**
        * @description One or more skills that the Prisoner feels they have.
@@ -1249,7 +1168,6 @@ export interface components {
        */
       interests: components['schemas']['PersonalInterest'][]
     }
-    /** @example null */
     CreatePreviousQualificationsRequest: {
       /**
        * @example null
@@ -1269,7 +1187,6 @@ export interface components {
        */
       qualifications?: components['schemas']['CreateOrUpdateAchievedQualificationRequest'][]
     }
-    /** @example null */
     CreatePreviousTrainingRequest: {
       /**
        * @description Any additional training that the Prisoner has completed in the past. Must not be empty ('NONE' is an option).
@@ -1294,7 +1211,6 @@ export interface components {
        */
       trainingTypeOther?: string
     }
-    /** @example null */
     CreatePreviousWorkExperiencesRequest: {
       /**
        * @example null
@@ -1312,7 +1228,6 @@ export interface components {
        */
       experiences?: components['schemas']['PreviousWorkExperience'][]
     }
-    /** @example null */
     CreateWorkOnReleaseRequest: {
       /**
        * @example null
@@ -1342,23 +1257,6 @@ export interface components {
        */
       affectAbilityToWorkOther?: string
     }
-    CreateConversationRequest: {
-      /**
-       * @description The Prison identifier.
-       * @example BXI
-       */
-      prisonId: string
-      /**
-       * @example null
-       * @enum {string}
-       */
-      type: 'INDUCTION' | 'GENERAL' | 'REVIEW'
-      /**
-       * @description A note for this conversation
-       * @example Pay close attention to Peter's behaviour.
-       */
-      note: string
-    }
     GetCiagInductionSummariesRequest: {
       /**
        * @description A List of prison numbers whose CIAG Inductions should be retrieved.
@@ -1373,10 +1271,6 @@ export interface components {
        */
       ciagProfileList: components['schemas']['CiagInductionSummaryResponse'][]
     }
-    /**
-     * @description A List of prisoners' CIAG Induction summaries. Can be empty but not null.
-     * @example null
-     */
     CiagInductionSummaryResponse: {
       /**
        * @description The ID of the Prisoner. AKA the prison number.
@@ -1385,7 +1279,7 @@ export interface components {
       offenderId: string
       /**
        * @description Whether the Prisoner wishes to work or not.
-       * @example false
+       * @example null
        */
       desireToWork: boolean
       /**
@@ -1430,10 +1324,6 @@ export interface components {
        */
       actionPlanSummaries: components['schemas']['ActionPlanSummaryResponse'][]
     }
-    /**
-     * @description A List of prisoners' Action Plan summaries. Can be empty but not null.
-     * @example null
-     */
     ActionPlanSummaryResponse: {
       /**
        * Format: uuid
@@ -1454,10 +1344,6 @@ export interface components {
        */
       goals: components['schemas']['CreateGoalRequest'][]
     }
-    /**
-     * @description A List of at least one Goal.
-     * @example null
-     */
     CreateGoalRequest: {
       /**
        * @description A title explaining the aim of the goal.
@@ -1467,6 +1353,7 @@ export interface components {
       /**
        * Format: date
        * @description An optional ISO-8601 date representing the target completion date of the Goal.
+       * @example Tue Dec 19 00:00:00 UTC 2023
        */
       targetCompletionDate: string
       /**
@@ -1485,10 +1372,6 @@ export interface components {
        */
       notes?: string
     }
-    /**
-     * @description A List of at least one Step.
-     * @example null
-     */
     CreateStepRequest: {
       /**
        * @description A title describing the step
@@ -1516,6 +1399,7 @@ export interface components {
       /**
        * Format: date
        * @description An ISO-8601 date representing the date that this Review was conducted on.
+       * @example Tue Dec 19 00:00:00 UTC 2023
        */
       conductedAt: string
       /**
@@ -1535,9 +1419,9 @@ export interface components {
        * @example false
        */
       wasLastReviewBeforeRelease: boolean
+      /** @example null */
       latestReviewSchedule: components['schemas']['ScheduledActionPlanReviewResponse']
     }
-    /** @example null */
     ScheduledActionPlanReviewResponse: {
       /**
        * Format: uuid
@@ -1548,11 +1432,13 @@ export interface components {
       /**
        * Format: date
        * @description An ISO-8601 date representing date that the Review window starts.  A prisoner's Review should be conducted within a given timeframe and this field represents the date that the Review window starts from.
+       * @example Sun Nov 19 00:00:00 UTC 2023
        */
       reviewDateFrom: string
       /**
        * Format: date
        * @description An ISO-8601 date representing date that the Review window ends. This is the Review deadline date.  A prisoner's Review should be conducted within a given timeframe and this field represents the date that the Review window ends, and that the Review should be completed by.
+       * @example Tue Dec 19 00:00:00 UTC 2023
        */
       reviewDateTo: string
       /**
@@ -1643,6 +1529,7 @@ export interface components {
       /**
        * Format: int32
        * @description the version number of this schedule (the highest number is the most recent version of this review schedule)
+       * @example null
        */
       version?: number
     }
@@ -1653,10 +1540,6 @@ export interface components {
        */
       goals: components['schemas']['CreateGoalRequest'][]
     }
-    /**
-     * @description A List of at least one TimelineEventResponse.
-     * @example null
-     */
     TimelineEventResponse: {
       /**
        * Format: uuid
@@ -1692,8 +1575,6 @@ export interface components {
         | 'ACTION_PLAN_REVIEW_COMPLETED'
         | 'ACTION_PLAN_REVIEW_SCHEDULE_CREATED'
         | 'ACTION_PLAN_REVIEW_SCHEDULE_STATUS_UPDATED'
-        | 'CONVERSATION_CREATED'
-        | 'CONVERSATION_UPDATED'
         | 'PRISON_ADMISSION'
         | 'PRISON_RELEASE'
         | 'PRISON_TRANSFER'
@@ -1752,6 +1633,10 @@ export interface components {
        */
       events: components['schemas']['TimelineEventResponse'][]
     }
+    HmppsSubjectAccessRequestContent: {
+      /** @description The content of the subject access request response */
+      content: Record<string, never>
+    }
     ErrorResponse: {
       /** Format: int32 */
       status: number
@@ -1759,10 +1644,6 @@ export interface components {
       userMessage?: string
       developerMessage?: string
       moreInfo?: string
-    }
-    HmppsSubjectAccessRequestContent: {
-      /** @description The content of the subject access request response */
-      content: Record<string, never>
     }
     SessionSummaryResponse: {
       /**
@@ -1802,6 +1683,84 @@ export interface components {
        */
       exemptInductions?: number
     }
+    Pagination: {
+      /**
+       * Format: int32
+       * @description Total number of elements matching the criteria
+       * @example null
+       */
+      totalElements: number
+      /**
+       * Format: int32
+       * @description Total number of pages
+       * @example null
+       */
+      totalPages: number
+      /**
+       * Format: int32
+       * @description Current page number
+       * @example null
+       */
+      page: number
+      /**
+       * @description Indicates this is the last page
+       * @example null
+       */
+      last: boolean
+      /**
+       * @description Indicates this is the first page
+       * @example null
+       */
+      first: boolean
+      /**
+       * Format: int32
+       * @description Number of items per page
+       * @example null
+       */
+      pageSize: number
+    }
+    PersonResponse: {
+      /** @example Smith, Bob */
+      name: string
+      /** @example A1234BC */
+      prisonNumber: string
+      /**
+       * Format: date
+       * @example null
+       */
+      dateOfBirth: string
+      /** @example null */
+      hasPlan: boolean
+      /** @example B-3-047 */
+      cellLocation?: string
+      /**
+       * Format: date
+       * @example null
+       */
+      releaseDate?: string
+      /** @example null */
+      releaseType?: string
+      /**
+       * Format: date
+       * @example null
+       */
+      nextActionDate?: string
+      /**
+       * Format: date
+       * @description An ISO-8601 timestamp representing when this resource was last updated. This will be the same as the created date if it has not yet been updated.
+       * @example null
+       */
+      planLastUpdated?: string
+    }
+    PersonSearchResult: {
+      /** @example null */
+      pagination: components['schemas']['Pagination']
+      /**
+       * @description A List containing zero or more PersonResponse.
+       * @example null
+       */
+      people: components['schemas']['PersonResponse'][]
+    }
     DlqMessage: {
       body: {
         [key: string]: Record<string, never>
@@ -1815,10 +1774,6 @@ export interface components {
       messagesReturnedCount: number
       messages: components['schemas']['DlqMessage'][]
     }
-    /**
-     * @description A list of achieved qualifications. Can be empty but not null.
-     * @example null
-     */
     AchievedQualificationResponse: {
       /**
        * Format: uuid
@@ -1950,7 +1905,6 @@ export interface components {
        */
       updatedAtPrison: string
     }
-    /** @example null */
     FutureWorkInterestsResponse: {
       /**
        * Format: uuid
@@ -2006,7 +1960,6 @@ export interface components {
        */
       updatedAtPrison: string
     }
-    /** @example null */
     InPrisonInterestsResponse: {
       /**
        * Format: uuid
@@ -2079,6 +2032,7 @@ export interface components {
        * @example A1234BC
        */
       prisonNumber: string
+      /** @example null */
       workOnRelease: components['schemas']['WorkOnReleaseResponse']
       /**
        * @description The DPS username of the person who created the Induction.
@@ -2122,14 +2076,19 @@ export interface components {
        * @example BXI
        */
       updatedAtPrison: string
+      /** @example null */
       previousQualifications?: components['schemas']['PreviousQualificationsResponse']
+      /** @example null */
       previousTraining?: components['schemas']['PreviousTrainingResponse']
+      /** @example null */
       previousWorkExperiences?: components['schemas']['PreviousWorkExperiencesResponse']
+      /** @example null */
       inPrisonInterests?: components['schemas']['InPrisonInterestsResponse']
+      /** @example null */
       personalSkillsAndInterests?: components['schemas']['PersonalSkillsAndInterestsResponse']
+      /** @example null */
       futureWorkInterests?: components['schemas']['FutureWorkInterestsResponse']
     }
-    /** @example null */
     PersonalSkillsAndInterestsResponse: {
       /**
        * Format: uuid
@@ -2190,7 +2149,6 @@ export interface components {
        */
       updatedAtPrison: string
     }
-    /** @example null */
     PreviousQualificationsResponse: {
       /**
        * Format: uuid
@@ -2258,7 +2216,6 @@ export interface components {
        */
       updatedAtPrison: string
     }
-    /** @example null */
     PreviousTrainingResponse: {
       /**
        * Format: uuid
@@ -2331,7 +2288,6 @@ export interface components {
        */
       trainingTypeOther?: string
     }
-    /** @example null */
     PreviousWorkExperiencesResponse: {
       /**
        * Format: uuid
@@ -2397,7 +2353,6 @@ export interface components {
        */
       hasWorkedBeforeNotRelevantReason?: string
     }
-    /** @example null */
     WorkOnReleaseResponse: {
       /**
        * Format: uuid
@@ -2490,6 +2445,7 @@ export interface components {
       /**
        * Format: date
        * @description The deadline for the induction to be completed
+       * @example Mon Jun 19 00:00:00 UTC 2023
        */
       deadlineDate: string
       /**
@@ -2576,6 +2532,7 @@ export interface components {
       /**
        * Format: date
        * @description the date when this resource was updated.
+       * @example Mon Jun 19 00:00:00 UTC 2023
        */
       inductionPerformedAt?: string
       /**
@@ -2591,6 +2548,7 @@ export interface components {
       /**
        * Format: int32
        * @description the version number of this schedule (the highest number is the most recent version of this induction schedule)
+       * @example null
        */
       version?: number
     }
@@ -2600,79 +2558,6 @@ export interface components {
        * @example null
        */
       inductionSchedules: components['schemas']['InductionScheduleResponse'][]
-    }
-    /** @example null */
-    ConversationResponse: {
-      /**
-       * Format: uuid
-       * @description A unique reference for this ConversationResponse.
-       * @example 814ade0a-a3b2-46a3-862f-79211ba13f7b
-       */
-      reference: string
-      /**
-       * @description The ID of the prisoner
-       * @example A1234BC
-       */
-      prisonNumber: string
-      /**
-       * @description A note for this conversation
-       * @example Pay close attention to Peter's behaviour.
-       */
-      note: string
-      /**
-       * @description The DPS username of the person who created this resource.
-       * @example asmith_gen
-       */
-      createdBy: string
-      /**
-       * @description The display name of the person who created this resource.
-       * @example Alex Smith
-       */
-      createdByDisplayName: string
-      /**
-       * Format: date-time
-       * @description An ISO-8601 timestamp representing when this resource was created.
-       * @example 2023-06-19T09:39:44Z
-       */
-      createdAt: string
-      /**
-       * @description The identifier of the prison that the prisoner was resident at when this resource was created.
-       * @example BXI
-       */
-      createdAtPrison: string
-      /**
-       * @description The DPS username of the person who last updated this resource.
-       * @example asmith_gen
-       */
-      updatedBy: string
-      /**
-       * @description The display name of the person who last updated this resource.
-       * @example Alex Smith
-       */
-      updatedByDisplayName: string
-      /**
-       * Format: date-time
-       * @description An ISO-8601 timestamp representing when this resource was last updated. This will be the same as the created date if it has not yet been updated.
-       * @example 2023-06-19T09:39:44Z
-       */
-      updatedAt: string
-      /**
-       * @description The identifier of the prison that the prisoner was resident at when this resource was updated.
-       * @example BXI
-       */
-      updatedAtPrison: string
-    }
-    ConversationsResponse: {
-      /** Format: int32 */
-      totalElements: number
-      /** Format: int32 */
-      totalPages: number
-      /** Format: int32 */
-      pageNumber: number
-      /** Format: int32 */
-      pageSize: number
-      /** @example null */
-      content: components['schemas']['ConversationResponse'][]
     }
     ActionPlanResponse: {
       /**
@@ -2692,10 +2577,6 @@ export interface components {
        */
       goals: components['schemas']['GoalResponse'][]
     }
-    /**
-     * @description A List of at least one or more Goals.
-     * @example null
-     */
     GoalResponse: {
       /**
        * Format: uuid
@@ -2711,6 +2592,7 @@ export interface components {
       /**
        * Format: date
        * @description An optional ISO-8601 date representing the target completion date of the Goal.
+       * @example Tue Dec 19 00:00:00 UTC 2023
        */
       targetCompletionDate: string
       /**
@@ -2771,6 +2653,7 @@ export interface components {
        */
       goalNotes: components['schemas']['NoteResponse'][]
       /**
+       * @deprecated
        * @description Some additional notes related to the Goal. This is deprecated - use the`goalNotes` list instead
        * @example Pay close attention to Peter's behaviour.
        */
@@ -2790,10 +2673,6 @@ export interface components {
        */
       archiveReasonOther?: string
     }
-    /**
-     * @description A List of at Notes associated with the Goal. Will be an empty array if the goal has no Notes
-     * @example null
-     */
     NoteResponse: {
       /**
        * Format: uuid
@@ -2851,10 +2730,6 @@ export interface components {
        */
       updatedAtPrison: string
     }
-    /**
-     * @description A List of at least one Step.
-     * @example null
-     */
     StepResponse: {
       /**
        * Format: uuid
@@ -2880,6 +2755,7 @@ export interface components {
       sequenceNumber: number
     }
     ActionPlanReviewsResponse: {
+      /** @example null */
       latestReviewSchedule: components['schemas']['ScheduledActionPlanReviewResponse']
       /**
        * @description A List containing zero or more CompletedReviews.
@@ -2887,10 +2763,6 @@ export interface components {
        */
       completedReviews: components['schemas']['CompletedActionPlanReviewResponse'][]
     }
-    /**
-     * @description A List containing zero or more CompletedReviews.
-     * @example null
-     */
     CompletedActionPlanReviewResponse: {
       /**
        * Format: uuid
@@ -2901,13 +2773,16 @@ export interface components {
       /**
        * Format: date
        * @description An ISO-8601 date representing the deadline for this Review to have been completed by.
+       * @example Tue Dec 19 00:00:00 UTC 2023
        */
       deadlineDate: string
       /**
        * Format: date
        * @description An ISO-8601 date representing the date that this Review was completed on.  Clients can infer whether this Review was completed on time or not by comparing the deadlineDate and completedDate.
+       * @example Mon Dec 04 00:00:00 UTC 2023
        */
       completedDate: string
+      /** @example null */
       note: components['schemas']['NoteResponse']
       /**
        * @description The DPS username of the person who entered the Review in the system.
@@ -2932,7 +2807,7 @@ export interface components {
       createdAtPrison: string
       /**
        * @description This was the last review before the prisoner was due to be released.
-       * @example false
+       * @example null
        */
       preRelease: boolean
       /**
@@ -3246,56 +3121,6 @@ export interface operations {
       }
     }
   }
-  getConversation: {
-    parameters: {
-      query?: never
-      header?: never
-      path: {
-        prisonNumber: string
-        conversationReference: string
-      }
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['ConversationResponse']
-        }
-      }
-    }
-  }
-  updateConversation: {
-    parameters: {
-      query?: never
-      header?: never
-      path: {
-        prisonNumber: string
-        conversationReference: string
-      }
-      cookie?: never
-    }
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['UpdateConversationRequest']
-      }
-    }
-    responses: {
-      /** @description No Content */
-      204: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['Conversation']
-        }
-      }
-    }
-  }
   updateLatestReviewScheduleStatus: {
     parameters: {
       query?: never
@@ -3466,55 +3291,6 @@ export interface operations {
         content: {
           '*/*': components['schemas']['SessionResponses']
         }
-      }
-    }
-  }
-  getConversations: {
-    parameters: {
-      query?: {
-        page?: number
-        pageSize?: number
-      }
-      header?: never
-      path: {
-        prisonNumber: string
-      }
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['ConversationsResponse']
-        }
-      }
-    }
-  }
-  createConversation: {
-    parameters: {
-      query?: never
-      header?: never
-      path: {
-        prisonNumber: string
-      }
-      cookie?: never
-    }
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['CreateConversationRequest']
-      }
-    }
-    responses: {
-      /** @description Created */
-      201: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
       }
     }
   }
@@ -3822,6 +3598,41 @@ export interface operations {
         }
         content: {
           '*/*': components['schemas']['SessionSummaryResponse']
+        }
+      }
+    }
+  }
+  getPrisoners: {
+    parameters: {
+      query?: {
+        prisonerNameOrNumber?: string
+        hasActionPlan?: boolean
+        releaseDateBefore?: string
+        releaseDateAfter?: string
+        actionPlanLastUpdatedBefore?: string
+        actionPlanLastUpdatedAfter?: string
+        nextActionDateBefore?: string
+        nextActionDateAfter?: string
+        sortBy?: string
+        sortDirection?: string
+        page?: number
+        pageSize?: number
+      }
+      header?: never
+      path: {
+        prisonId: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          '*/*': components['schemas']['PersonSearchResult']
         }
       }
     }
