@@ -235,10 +235,8 @@ context('Create an Induction', () => {
 
     // Personal Skills page is next
     Page.verifyOnPage(SkillsPage) //
-      .hasBackLinkTo('/prisoners/A00001A/create-induction/has-worked-before')
       .submitPage() // submit the page without answering the question to trigger a validation error
     Page.verifyOnPage(SkillsPage) //
-      .hasBackLinkTo('/prisoners/A00001A/create-induction/has-worked-before')
       .hasErrorCount(1)
       .hasFieldInError('skills')
       .selectSkill(SkillsValue.POSITIVE_ATTITUDE)
@@ -246,10 +244,8 @@ context('Create an Induction', () => {
 
     // Personal Interests page is next
     Page.verifyOnPage(PersonalInterestsPage) //
-      .hasBackLinkTo('/prisoners/A00001A/create-induction/skills')
       .submitPage() // submit the page without answering the question to trigger a validation error
     Page.verifyOnPage(PersonalInterestsPage) //
-      .hasBackLinkTo('/prisoners/A00001A/create-induction/skills')
       .hasErrorCount(1)
       .hasFieldInError('personalInterests')
       .selectPersonalInterest(PersonalInterestsValue.COMMUNITY)
@@ -437,13 +433,11 @@ context('Create an Induction', () => {
 
     // Personal Skills page is next
     Page.verifyOnPage(SkillsPage) //
-      .hasBackLinkTo('/prisoners/A00001A/create-induction/has-worked-before')
       .selectSkill(SkillsValue.POSITIVE_ATTITUDE)
       .submitPage()
 
     // Personal Interests page is next
     Page.verifyOnPage(PersonalInterestsPage) //
-      .hasBackLinkTo('/prisoners/A00001A/create-induction/skills')
       .selectPersonalInterest(PersonalInterestsValue.COMMUNITY)
       .submitPage()
 

@@ -1,24 +1,10 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express'
 import type { PersonalInterestsForm } from 'inductionForms'
 import PersonalInterestsController from '../common/personalInterestsController'
-import getDynamicBackLinkAriaText from '../../dynamicAriaTextResolver'
 import { asArray } from '../../../utils/utils'
 import validatePersonalInterestsForm from '../../validators/induction/personalInterestsFormValidator'
-import { getPreviousPage } from '../../pageFlowHistory'
 
 export default class PersonalInterestsCreateController extends PersonalInterestsController {
-  getBackLinkUrl(req: Request): string {
-    const { prisonNumber } = req.params
-    const { pageFlowHistory } = req.session
-    const previousPage =
-      (pageFlowHistory && getPreviousPage(pageFlowHistory)) || `/prisoners/${prisonNumber}/create-induction/skills`
-    return previousPage
-  }
-
-  getBackLinkAriaText(req: Request, res: Response): string {
-    return getDynamicBackLinkAriaText(req, res, this.getBackLinkUrl(req))
-  }
-
   submitPersonalInterestsForm: RequestHandler = async (
     req: Request,
     res: Response,
