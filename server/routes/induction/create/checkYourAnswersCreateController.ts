@@ -10,16 +10,6 @@ export default class CheckYourAnswersCreateController extends CheckYourAnswersCo
     super()
   }
 
-  getBackLinkUrl(_req: Request): string {
-    // Default implementation - the back link is not displayed on the Check Your Answers page
-    return undefined
-  }
-
-  getBackLinkAriaText(_req: Request): string {
-    // Default implementation - the back link is not displayed on the Check Your Answers page
-    return undefined
-  }
-
   submitCheckYourAnswers: RequestHandler = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { prisonNumber } = req.params
     const { inductionDto } = req.session

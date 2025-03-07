@@ -7,6 +7,16 @@ import { buildNewPageFlowHistory } from '../../pageFlowHistory'
  * Abstract controller class defining functionality common to both the Create and Update Induction journeys.
  */
 export default abstract class CheckYourAnswersController extends InductionController {
+  getBackLinkUrl(_req: Request): string {
+    // Default implementation - the back link is not displayed on the Check Your Answers page
+    return undefined
+  }
+
+  getBackLinkAriaText(_req: Request): string {
+    // Default implementation - the back link is not displayed on the Check Your Answers page
+    return undefined
+  }
+
   /**
    * Returns the Check Your Answers view; suitable for use by the Create and Update journeys.
    */

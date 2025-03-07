@@ -14,16 +14,6 @@ export default class InPrisonWorkUpdateController extends InPrisonWorkController
     super()
   }
 
-  getBackLinkUrl(_req: Request): string {
-    // Default implementation - the js back link is used on the In Prison Work page
-    return undefined
-  }
-
-  getBackLinkAriaText(_req: Request): string {
-    // Default implementation - the js back link is used on the In Prison Work page
-    return undefined
-  }
-
   submitInPrisonWorkForm: RequestHandler = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { prisonNumber } = req.params
     const { inductionDto } = req.session

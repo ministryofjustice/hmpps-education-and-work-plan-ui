@@ -5,16 +5,6 @@ import validateInPrisonWorkForm from '../../validators/induction/inPrisonWorkFor
 import { asArray } from '../../../utils/utils'
 
 export default class InPrisonWorkCreateController extends InPrisonWorkController {
-  getBackLinkUrl(_req: Request): string {
-    // Default implementation - the js back link is used on the In Prison Work page
-    return undefined
-  }
-
-  getBackLinkAriaText(_req: Request): string {
-    // Default implementation - the js back link is used on the In Prison Work page
-    return undefined
-  }
-
   submitInPrisonWorkForm: RequestHandler = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { prisonNumber } = req.params
     const { inductionDto } = req.session

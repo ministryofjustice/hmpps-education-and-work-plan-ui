@@ -9,6 +9,16 @@ import SkillsValue from '../../../enums/skillsValue'
  * Abstract controller class defining functionality common to both the Create and Update Induction journeys.
  */
 export default abstract class SkillsController extends InductionController {
+  override getBackLinkUrl(_req: Request): string {
+    // Default implementation - the js back link is used on the Skills page
+    return undefined
+  }
+
+  override getBackLinkAriaText(_req: Request): string {
+    // Default implementation - the js back link is used on the Skills page
+    return undefined
+  }
+
   /**
    * Returns the Skills view; suitable for use by the Create and Update journeys.
    */
@@ -21,16 +31,7 @@ export default abstract class SkillsController extends InductionController {
 
     this.addCurrentPageToFlowHistoryWhenComingFromCheckYourAnswers(req)
 
-    if (req.session.pageFlowHistory) {
-      this.addCurrentPageToHistory(req)
-    }
-
-    const view = new SkillsView(
-      prisonerSummary,
-      this.getBackLinkUrl(req),
-      this.getBackLinkAriaText(req, res),
-      skillsForm,
-    )
+    const view = new SkillsView(prisonerSummary, skillsForm)
     return res.render('pages/induction/skills/index', { ...view.renderArgs })
   }
 

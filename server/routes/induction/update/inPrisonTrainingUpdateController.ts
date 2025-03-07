@@ -16,16 +16,6 @@ export default class InPrisonTrainingUpdateController extends InPrisonTrainingCo
     super()
   }
 
-  getBackLinkUrl(_req: Request): string {
-    // Default implementation - the js back link is used on the In Prison Training page
-    return undefined
-  }
-
-  getBackLinkAriaText(_req: Request): string {
-    // Default implementation - the js back link is used on the In Prison Training page
-    return undefined
-  }
-
   submitInPrisonTrainingForm: RequestHandler = async (
     req: Request,
     res: Response,

@@ -6,16 +6,6 @@ import { asArray } from '../../../utils/utils'
 import config from '../../../config'
 
 export default class InPrisonTrainingCreateController extends InPrisonTrainingController {
-  getBackLinkUrl(_req: Request): string {
-    // Default implementation - the js back link is used on the In Prison Training page
-    return undefined
-  }
-
-  getBackLinkAriaText(_req: Request): string {
-    // Default implementation - the js back link is used on the In Prison Training page
-    return undefined
-  }
-
   submitInPrisonTrainingForm: RequestHandler = async (
     req: Request,
     res: Response,

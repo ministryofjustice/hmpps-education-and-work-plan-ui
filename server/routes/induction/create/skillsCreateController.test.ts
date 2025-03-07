@@ -48,8 +48,6 @@ describe('skillsCreateController', () => {
       const expectedView = {
         prisonerSummary,
         form: expectedSkillsForm,
-        backLinkUrl: '/prisoners/A1234BC/create-induction/has-worked-before',
-        backLinkAriaText: 'Back to Has Jimmy Lightfingers worked before?',
       }
 
       // When
@@ -76,8 +74,6 @@ describe('skillsCreateController', () => {
       const expectedView = {
         prisonerSummary,
         form: expectedSkillsForm,
-        backLinkUrl: '/prisoners/A1234BC/create-induction/has-worked-before',
-        backLinkAriaText: 'Back to Has Jimmy Lightfingers worked before?',
       }
 
       // When
@@ -116,8 +112,6 @@ describe('skillsCreateController', () => {
       const expectedView = {
         prisonerSummary,
         form: expectedSkillsForm,
-        backLinkUrl: '/prisoners/A1234BC/create-induction/check-your-answers',
-        backLinkAriaText: `Back to Check and save your answers before adding Jimmy Lightfingers's goals`,
       }
 
       // When

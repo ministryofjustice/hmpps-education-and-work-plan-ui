@@ -48,8 +48,6 @@ describe('personalInterestsCreateController', () => {
       const expectedView = {
         prisonerSummary,
         form: expectedPersonalInterestsForm,
-        backLinkUrl: '/prisoners/A1234BC/create-induction/skills',
-        backLinkAriaText: 'Back to What skills does Jimmy Lightfingers feel they have?',
       }
 
       // When
@@ -76,8 +74,6 @@ describe('personalInterestsCreateController', () => {
       const expectedView = {
         prisonerSummary,
         form: expectedPersonalInterestsForm,
-        backLinkUrl: '/prisoners/A1234BC/create-induction/skills',
-        backLinkAriaText: 'Back to What skills does Jimmy Lightfingers feel they have?',
       }
 
       // When
@@ -116,8 +112,6 @@ describe('personalInterestsCreateController', () => {
       const expectedView = {
         prisonerSummary,
         form: expectedPersonalInterestsForm,
-        backLinkUrl: '/prisoners/A1234BC/create-induction/check-your-answers',
-        backLinkAriaText: `Back to Check and save your answers before adding Jimmy Lightfingers's goals`,
       }
 
       // When

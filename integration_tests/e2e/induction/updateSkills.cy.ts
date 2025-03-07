@@ -27,8 +27,6 @@ context('Update Skills in the Induction', () => {
     const prisonNumber = 'G6115VJ'
     cy.visit(`/prisoners/${prisonNumber}/induction/skills`)
     const skillsPage = Page.verifyOnPage(SkillsPage)
-      .hasBackLinkTo(`/plan/${prisonNumber}/view/work-and-interests`)
-      .backLinkHasAriaLabel(`Back to Daniel Craig's learning and work progress`)
 
     // Induction has skills of Communication, Positive Attitude, Thinking & Problem Solving, and Other (Logical Thinking)
 

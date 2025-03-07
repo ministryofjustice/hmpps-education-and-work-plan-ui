@@ -1,25 +1,10 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express'
 import type { SkillsForm } from 'inductionForms'
 import SkillsController from '../common/skillsController'
-import getDynamicBackLinkAriaText from '../../dynamicAriaTextResolver'
 import validateSkillsForm from '../../validators/induction/skillsFormValidator'
 import { asArray } from '../../../utils/utils'
-import { getPreviousPage } from '../../pageFlowHistory'
 
 export default class SkillsCreateController extends SkillsController {
-  getBackLinkUrl(req: Request): string {
-    const { prisonNumber } = req.params
-    const { pageFlowHistory } = req.session
-    const previousPage =
-      (pageFlowHistory && getPreviousPage(pageFlowHistory)) ||
-      `/prisoners/${prisonNumber}/create-induction/has-worked-before`
-    return previousPage
-  }
-
-  getBackLinkAriaText(req: Request, res: Response): string {
-    return getDynamicBackLinkAriaText(req, res, this.getBackLinkUrl(req))
-  }
-
   submitSkillsForm: RequestHandler = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { prisonNumber } = req.params
     const { inductionDto } = req.session

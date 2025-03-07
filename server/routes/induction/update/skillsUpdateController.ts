@@ -6,8 +6,6 @@ import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateIn
 import logger from '../../../../logger'
 import { InductionService } from '../../../services'
 import validateSkillsForm from '../../validators/induction/skillsFormValidator'
-import { getPreviousPage } from '../../pageFlowHistory'
-import getDynamicBackLinkAriaText from '../../dynamicAriaTextResolver'
 import { asArray } from '../../../utils/utils'
 
 /**
@@ -16,18 +14,6 @@ import { asArray } from '../../../utils/utils'
 export default class SkillsUpdateController extends SkillsController {
   constructor(private readonly inductionService: InductionService) {
     super()
-  }
-
-  getBackLinkUrl(req: Request): string {
-    const { prisonNumber } = req.params
-    const { pageFlowHistory } = req.session
-    const previousPage =
-      (pageFlowHistory && getPreviousPage(pageFlowHistory)) || `/plan/${prisonNumber}/view/work-and-interests`
-    return previousPage
-  }
-
-  getBackLinkAriaText(req: Request, res: Response): string {
-    return getDynamicBackLinkAriaText(req, res, this.getBackLinkUrl(req))
   }
 
   submitSkillsForm: RequestHandler = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
