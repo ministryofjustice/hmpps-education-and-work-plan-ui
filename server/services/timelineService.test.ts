@@ -26,6 +26,7 @@ describe('timelineService', () => {
   const supportedTimelineEvents = [
     'ACTION_PLAN_CREATED',
     'INDUCTION_SCHEDULE_STATUS_UPDATED',
+    'INDUCTION_CREATED',
     'INDUCTION_UPDATED',
     'GOAL_UPDATED',
     'GOAL_CREATED',
