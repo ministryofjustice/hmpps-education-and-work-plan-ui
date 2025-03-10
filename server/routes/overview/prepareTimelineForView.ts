@@ -1,6 +1,9 @@
 import type { Timeline, TimelineEvent } from 'viewModels'
 import { subSeconds } from 'date-fns'
 import dateComparator from '../dateComparator'
+import TimelineEventTypeValue from '../../enums/timelineEventTypeValue'
+
+const SYSTEM_USER = 'system'
 
 /**
  * Prepares a [Timeline] for rendering in the view.
@@ -8,6 +11,10 @@ import dateComparator from '../dateComparator'
  *   * grouping GOAL_CREATED events with the same correlationId into single MULTIPLE_GOALS_CREATED events
  *   * sorting events chronologically
  *   * ensuring that the ACTION_PLAN_CREATED event appears before any related GOAL_CREATED events
+ *   * removing any INDUCTION_SCHEDULE_STATUS_UPDATED events that were created by 'system'
+ *      eg: prisoner transfer/death/re-admission events
+ *   * removing any ACTION_PLAN_REVIEW_SCHEDULE_STATUS_UPDATED events that were created by 'system'
+ *      eg: prisoner transfer/death/re-admission events
  */
 const prepareTimelineForView = (timeline: Timeline): Timeline => {
   // If there is no Timeline data or there was a problem retrieving data, return the timeline as-is
@@ -21,7 +28,26 @@ const prepareTimelineForView = (timeline: Timeline): Timeline => {
 
   return {
     ...timeline,
-    events: sortTimelineEvents(timelineEvents), // sorted by date desc, but with ACTION_PLAN_CREATED always as the last event
+    events: sortTimelineEvents(
+      // sorted by date desc, but with ACTION_PLAN_CREATED always as the last event
+      timelineEvents
+        .filter(
+          // filter out INDUCTION_SCHEDULE_STATUS_UPDATED events that were created by 'system
+          timelineEvent =>
+            !(
+              timelineEvent.eventType === TimelineEventTypeValue.INDUCTION_SCHEDULE_STATUS_UPDATED &&
+              timelineEvent.actionedByDisplayName === SYSTEM_USER
+            ),
+        )
+        .filter(
+          // filter out ACTION_PLAN_REVIEW_SCHEDULE_STATUS_UPDATED events that were created by 'system'
+          timelineEvent =>
+            !(
+              timelineEvent.eventType === TimelineEventTypeValue.ACTION_PLAN_REVIEW_SCHEDULE_STATUS_UPDATED &&
+              timelineEvent.actionedByDisplayName === SYSTEM_USER
+            ),
+        ),
+    ),
   }
 }
 
@@ -47,8 +73,12 @@ const eventsWithMergedCreateGoalEvents = (
 ): Array<TimelineEvent> => {
   return Object.values(eventsGroupedByCorrelationId)
     .flatMap(timelineEvents => {
-      const nonGoalCreatedEvents = timelineEvents.filter(timelineEvent => timelineEvent.eventType !== 'GOAL_CREATED')
-      const goalCreatedEvents = timelineEvents.filter(timelineEvent => timelineEvent.eventType === 'GOAL_CREATED')
+      const nonGoalCreatedEvents = timelineEvents.filter(
+        timelineEvent => timelineEvent.eventType !== TimelineEventTypeValue.GOAL_CREATED,
+      )
+      const goalCreatedEvents = timelineEvents.filter(
+        timelineEvent => timelineEvent.eventType === TimelineEventTypeValue.GOAL_CREATED,
+      )
       return Array.of(
         ...nonGoalCreatedEvents,
         goalCreatedEvents.length > 1
@@ -88,7 +118,9 @@ const sortTimelineEvents = (timelineEvents: Array<TimelineEvent>): Array<Timelin
 // Whilst modifying such data is usually best avoided, the milliseconds are of no interest to the UI and the alternative of
 // manipulating the array would be far more complicated.
 const modifyActionPlanCreatedTimestamp = (timelineEvents: Array<TimelineEvent>): Array<TimelineEvent> => {
-  const actionPlanCreatedEvent = timelineEvents.find(timelineEvent => timelineEvent.eventType === 'ACTION_PLAN_CREATED')
+  const actionPlanCreatedEvent = timelineEvents.find(
+    timelineEvent => timelineEvent.eventType === TimelineEventTypeValue.ACTION_PLAN_CREATED,
+  )
   // If the TimelineEvents do not include a ACTION_PLAN_CREATED event then simply return the array of TimelineEvents
   if (!actionPlanCreatedEvent) {
     return timelineEvents

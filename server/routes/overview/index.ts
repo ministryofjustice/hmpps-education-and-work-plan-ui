@@ -17,6 +17,7 @@ import retrieveCuriousSupportNeeds from '../routerRequestHandlers/retrieveCuriou
 import retrieveActionPlanReviews from '../routerRequestHandlers/retrieveActionPlanReviews'
 import retrieveInductionSchedule from '../routerRequestHandlers/retrieveInductionSchedule'
 import retrievePrisonNamesById from '../routerRequestHandlers/retrievePrisonNamesById'
+import retrieveTimeline from '../routerRequestHandlers/retrieveTimeline'
 
 /**
  * Route definitions for the pages relating to the main Overview page
@@ -32,7 +33,7 @@ export default (router: Router, services: Services) => {
   } = services
 
   const overviewController = new OverviewController()
-  const timelineController = new TimelineController(timelineService)
+  const timelineController = new TimelineController()
   const supportNeedsController = new SupportNeedsController()
   const workAndInterestsController = new WorkAndInterestsController()
   const educationAndTrainingController = new EducationAndTrainingController()
@@ -71,7 +72,10 @@ export default (router: Router, services: Services) => {
     asyncMiddleware(workAndInterestsController.getWorkAndInterestsView),
   ])
 
-  router.get('/plan/:prisonNumber/view/timeline', [asyncMiddleware(timelineController.getTimelineView)])
+  router.get('/plan/:prisonNumber/view/timeline', [
+    retrieveTimeline(timelineService),
+    asyncMiddleware(timelineController.getTimelineView),
+  ])
 
   router.get('/plan/:prisonNumber/view/goals', [
     retrieveInductionSchedule(inductionService),
