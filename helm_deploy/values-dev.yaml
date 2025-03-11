@@ -25,7 +25,6 @@ generic-service:
     COMPONENT_API_URL: 'https://frontend-components-dev.hmpps.service.justice.gov.uk'
     ACTIVITIES_API_URL: 'https://activities-api-dev.prison.service.justice.gov.uk'
     ENVIRONMENT_NAME: 'DEV'
-    SESSION_LIST_UI_DEFAULT_PAGINATION_PAGE_SIZE: "4"
 
     # Comma delimited list of prison IDs that our service is enabled for in `dev`
     # The list represents the cumulative list of caseloads (prisons) that have been assigned to the `dev` DPS users
