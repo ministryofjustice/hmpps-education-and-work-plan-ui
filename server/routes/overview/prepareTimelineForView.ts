@@ -24,7 +24,8 @@ const prepareTimelineForView = (timeline: Timeline): Timeline => {
 
   // Merge multiple GOAL_CREATED events with the same correlationId into single MULTIPLE_GOALS_CREATED events
   const eventsGroupedByCorrelationId = groupByCorrelationId(timeline.events)
-  const timelineEvents = eventsWithMergedCreateGoalEvents(eventsGroupedByCorrelationId)
+  let timelineEvents = eventsWithMergedCreateGoalEvents(eventsGroupedByCorrelationId)
+  timelineEvents = updateActionPlanCreatedEventWithLatestOfActionPlanCreatedOrInductionCreatedEvents(timelineEvents)
 
   return {
     ...timeline,
@@ -132,6 +133,70 @@ const modifyActionPlanCreatedTimestamp = (timelineEvents: Array<TimelineEvent>):
   const index = timelineEvents.indexOf(actionPlanCreatedEvent)
   timelineEvents.splice(index, 1, mutatedActionPlanEvent)
   return timelineEvents
+}
+
+// The prisoner's timeline data (as returned from the API) will contain 2 events that should be rendered as one event on
+// screen - the INDUCTION_CREATED event and the ACTION_PLAN_CREATED event:
+//   * The INDUCTION_CREATED event is created when the Induction is created on screen (aka. Question Set is completed)
+//   * The ACTION_PLAN_CREATED is created when the first goal is created, even if there is no Induction yet.
+//
+// For the most part the INDUCTION_CREATED event will occur first, and once any goals have subsequently been created
+// there will be an ACTION_PLAN_CREATED event.
+// However, due to the way the screens work it is possible that goals could have been created before (in many cases, a long
+// time before) the Induction is created. Whilst the ACTION_PLAN_CREATED event would have been created it would be misleading
+// to render it as an event on screen because the business consider the action plan as being created as when both the
+// Induction (question set) and 1st goal are created.
+//
+// This function corrects these events:
+//   * If BOTH the INDUCTION_CREATED and ACTION_PLAN_CREATED events exist:
+//     * If the INDUCTION_CREATED event is after the ACTION_PLAN_CREATED event, use the induction created event (but with an
+//       event type of ACTION_PLAN_CREATED)
+//     * If the ACTION_PLAN_CREATED event is after or the same time as the INDUCTION_CREATED, use the ACTION_PLAN_CREATED
+//       event but with the contextual info from the INDUCTION_CREATED event
+//  * If both events are not present, return the timeline with those event types removed
+//    IE. in case there was one but not the other, remove them so there are neither and the timeline is unabiguous in this
+//    regard.
+const updateActionPlanCreatedEventWithLatestOfActionPlanCreatedOrInductionCreatedEvents = (
+  timelineEvents: Array<TimelineEvent>,
+): Array<TimelineEvent> => {
+  const actionPlanCreatedEvent = timelineEvents.find(
+    timelineEvent => timelineEvent.eventType === TimelineEventTypeValue.ACTION_PLAN_CREATED,
+  )
+  const inductionCreatedEvent = timelineEvents.find(
+    timelineEvent => timelineEvent.eventType === TimelineEventTypeValue.INDUCTION_CREATED,
+  )
+
+  if (actionPlanCreatedEvent && inductionCreatedEvent) {
+    if (inductionCreatedEvent.timestamp > actionPlanCreatedEvent.timestamp) {
+      // If the Induction Created Event is after the Action Plan Created event
+      // use the induction create event as the basis for the Action Plan Created event
+      return [
+        ...timelineEvents
+          .filter(timelineEvent => timelineEvent.eventType !== TimelineEventTypeValue.ACTION_PLAN_CREATED)
+          .filter(timelineEvent => timelineEvent.eventType !== TimelineEventTypeValue.INDUCTION_CREATED),
+        {
+          ...inductionCreatedEvent,
+          eventType: TimelineEventTypeValue.ACTION_PLAN_CREATED,
+        },
+      ]
+    }
+
+    // The Action Plan Created Event is after or equal to the Induction Created event
+    // use the Action Plan Created event but with the contextual info from the Induction Created event
+    return [
+      ...timelineEvents
+        .filter(timelineEvent => timelineEvent.eventType !== TimelineEventTypeValue.ACTION_PLAN_CREATED)
+        .filter(timelineEvent => timelineEvent.eventType !== TimelineEventTypeValue.INDUCTION_CREATED),
+      {
+        ...actionPlanCreatedEvent,
+        contextualInfo: inductionCreatedEvent.contextualInfo,
+      },
+    ]
+  }
+
+  return timelineEvents
+    .filter(timelineEvent => timelineEvent.eventType !== TimelineEventTypeValue.ACTION_PLAN_CREATED)
+    .filter(timelineEvent => timelineEvent.eventType !== TimelineEventTypeValue.INDUCTION_CREATED)
 }
 
 export default prepareTimelineForView

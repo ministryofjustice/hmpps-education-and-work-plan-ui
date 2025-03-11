@@ -15,6 +15,16 @@ describe('prepareTimelineForView', () => {
       contextualInfo: {},
       actionedByDisplayName: undefined,
     }
+    const inductionCreatedEvent: TimelineEvent = {
+      correlationId: 'b84b29ab-3090-4900-a985-dfd714bd43a1',
+      reference: '49da03d3-11fe-4d34-ba8c-10a5af9e82d8',
+      sourceReference: '4d2558d3-dbd5-43cb-a14c-c95dacec09a1',
+      eventType: 'INDUCTION_CREATED',
+      prisonName: 'MDI',
+      timestamp: parseISO('2023-09-01T09:18:21.072Z'),
+      contextualInfo: {},
+      actionedByDisplayName: 'Ralph Gen',
+    }
     const correlationIdForActionPlanAndGoalCreateEvents = '246aa049-c5df-459d-8231-bdeab3936d0f'
     const actionPlanCreatedEvent: TimelineEvent = {
       correlationId: correlationIdForActionPlanAndGoalCreateEvents,
@@ -88,7 +98,12 @@ describe('prepareTimelineForView', () => {
       actionedByDisplayName: 'Ralph Gen',
     }
 
-    const otherEvents: Array<TimelineEvent> = [singleGoalCreateEvent, inductionUpdateEvent, goalUpdateEvent]
+    const otherEvents: Array<TimelineEvent> = [
+      inductionCreatedEvent,
+      singleGoalCreateEvent,
+      inductionUpdateEvent,
+      goalUpdateEvent,
+    ]
 
     const timeline: Timeline = {
       prisonNumber: 'A1234AA',
@@ -247,6 +262,250 @@ describe('prepareTimelineForView', () => {
       prisonNumber: 'A1234AA',
       problemRetrievingData: false,
       events: [goalUpdateEvent, singleGoalCreateEvent, prisonAdmissionEvent],
+    }
+
+    // When
+    const actual = prepareTimelineForView(timeline)
+
+    // Then
+    expect(actual).toEqual(expected)
+  })
+
+  it('should return a Timeline where the Induction was created before the first goal and before the Action Plan Created event', () => {
+    // Given
+    const inductionCreatedEvent: TimelineEvent = {
+      correlationId: 'b84b29ab-3090-4900-a985-dfd714bd43a1',
+      reference: '49da03d3-11fe-4d34-ba8c-10a5af9e82d8',
+      sourceReference: '4d2558d3-dbd5-43cb-a14c-c95dacec09a1',
+      eventType: 'INDUCTION_CREATED',
+      prisonName: 'MDI',
+      timestamp: parseISO('2023-09-01T09:18:21.072Z'),
+      contextualInfo: {
+        COMPLETED_INDUCTION_CONDUCTED_IN_PERSON_BY: 'Fred Bloggs',
+        COMPLETED_INDUCTION_NOTES: 'Induction was created before any goals were created',
+        COMPLETED_INDUCTION_CONDUCTED_IN_PERSON_DATE: '2023-09-01',
+        COMPLETED_INDUCTION_ENTERED_ONLINE_BY: 'Fred Bloggs',
+        COMPLETED_INDUCTION_ENTERED_ONLINE_AT: '2023-09-01T09:18:20.261834Z',
+        COMPLETED_INDUCTION_CONDUCTED_IN_PERSON_BY_ROLE: 'CIAG',
+      },
+      actionedByDisplayName: 'Ralph Gen',
+    }
+    const correlationIdForActionPlanAndGoalCreateEvents = '246aa049-c5df-459d-8231-bdeab3936d0f'
+    const actionPlanCreatedEvent: TimelineEvent = {
+      correlationId: correlationIdForActionPlanAndGoalCreateEvents,
+      reference: 'd03646e7-d145-41cc-862b-c5802e53b541',
+      sourceReference: '4d2558d3-dbd5-43cb-a14c-c95dacec09a1',
+      eventType: 'ACTION_PLAN_CREATED',
+      prisonName: 'MDI',
+      timestamp: parseISO('2023-09-01T10:47:38.560Z'),
+      contextualInfo: {},
+      actionedByDisplayName: 'Ralph Gen',
+    }
+    const goalCreatedEvent: TimelineEvent = {
+      correlationId: correlationIdForActionPlanAndGoalCreateEvents,
+      reference: 'd5b57b83-92f8-4de9-b97c-e421e0468069',
+      sourceReference: '33bc1045-7368-47c4-a261-4d616b7b51b9',
+      eventType: 'GOAL_CREATED',
+      prisonName: 'MDI',
+      timestamp: parseISO('2023-09-01T10:47:38.560Z'),
+      contextualInfo: {
+        GOAL_TITLE: 'Learn French',
+      },
+      actionedByDisplayName: 'Ralph Gen',
+    }
+
+    const timeline: Timeline = {
+      prisonNumber: 'A1234AA',
+      problemRetrievingData: false,
+      events: [inductionCreatedEvent, goalCreatedEvent, actionPlanCreatedEvent],
+    }
+
+    const expected: Timeline = {
+      prisonNumber: 'A1234AA',
+      problemRetrievingData: false,
+      events: [
+        goalCreatedEvent,
+        {
+          ...actionPlanCreatedEvent,
+          contextualInfo: {
+            COMPLETED_INDUCTION_CONDUCTED_IN_PERSON_BY: 'Fred Bloggs',
+            COMPLETED_INDUCTION_NOTES: 'Induction was created before any goals were created',
+            COMPLETED_INDUCTION_CONDUCTED_IN_PERSON_DATE: '2023-09-01',
+            COMPLETED_INDUCTION_ENTERED_ONLINE_BY: 'Fred Bloggs',
+            COMPLETED_INDUCTION_ENTERED_ONLINE_AT: '2023-09-01T09:18:20.261834Z',
+            COMPLETED_INDUCTION_CONDUCTED_IN_PERSON_BY_ROLE: 'CIAG',
+          },
+          timestamp: parseISO('2023-09-01T10:47:37.560Z'),
+        },
+      ],
+    }
+
+    // When
+    const actual = prepareTimelineForView(timeline)
+
+    // Then
+    expect(actual).toEqual(expected)
+  })
+
+  it('should return a Timeline where the Induction was created after the first goal and after the Action Plan Created event', () => {
+    // Given
+    const correlationIdForActionPlanAndGoalCreateEvents = '246aa049-c5df-459d-8231-bdeab3936d0f'
+    const actionPlanCreatedEvent: TimelineEvent = {
+      correlationId: correlationIdForActionPlanAndGoalCreateEvents,
+      reference: 'd03646e7-d145-41cc-862b-c5802e53b541',
+      sourceReference: '4d2558d3-dbd5-43cb-a14c-c95dacec09a1',
+      eventType: 'ACTION_PLAN_CREATED',
+      prisonName: 'MDI',
+      timestamp: parseISO('2023-09-01T10:47:38.560Z'),
+      contextualInfo: {},
+      actionedByDisplayName: 'Ralph Gen',
+    }
+    const goalCreatedEvent: TimelineEvent = {
+      correlationId: correlationIdForActionPlanAndGoalCreateEvents,
+      reference: 'd5b57b83-92f8-4de9-b97c-e421e0468069',
+      sourceReference: '33bc1045-7368-47c4-a261-4d616b7b51b9',
+      eventType: 'GOAL_CREATED',
+      prisonName: 'MDI',
+      timestamp: parseISO('2023-09-01T10:47:38.560Z'),
+      contextualInfo: {
+        GOAL_TITLE: 'Learn French',
+      },
+      actionedByDisplayName: 'Ralph Gen',
+    }
+    const inductionCreatedEvent: TimelineEvent = {
+      correlationId: 'b84b29ab-3090-4900-a985-dfd714bd43a1',
+      reference: '49da03d3-11fe-4d34-ba8c-10a5af9e82d8',
+      sourceReference: '4d2558d3-dbd5-43cb-a14c-c95dacec09a1',
+      eventType: 'INDUCTION_CREATED',
+      prisonName: 'MDI',
+      timestamp: parseISO('2023-09-02T12:09:12.431Z'),
+      contextualInfo: {
+        COMPLETED_INDUCTION_CONDUCTED_IN_PERSON_BY: 'Fred Bloggs',
+        COMPLETED_INDUCTION_NOTES: 'Induction was created after the first goals were created',
+        COMPLETED_INDUCTION_CONDUCTED_IN_PERSON_DATE: '2023-09-02',
+        COMPLETED_INDUCTION_ENTERED_ONLINE_BY: 'Fred Bloggs',
+        COMPLETED_INDUCTION_ENTERED_ONLINE_AT: '2023-09-02T12:09:12.261834Z',
+        COMPLETED_INDUCTION_CONDUCTED_IN_PERSON_BY_ROLE: 'CIAG',
+      },
+      actionedByDisplayName: 'Ralph Gen',
+    }
+
+    const timeline: Timeline = {
+      prisonNumber: 'A1234AA',
+      problemRetrievingData: false,
+      events: [inductionCreatedEvent, goalCreatedEvent, actionPlanCreatedEvent],
+    }
+
+    const expected: Timeline = {
+      prisonNumber: 'A1234AA',
+      problemRetrievingData: false,
+      events: [
+        {
+          correlationId: 'b84b29ab-3090-4900-a985-dfd714bd43a1',
+          reference: '49da03d3-11fe-4d34-ba8c-10a5af9e82d8',
+          sourceReference: '4d2558d3-dbd5-43cb-a14c-c95dacec09a1',
+          eventType: 'ACTION_PLAN_CREATED',
+          prisonName: 'MDI',
+          timestamp: parseISO('2023-09-02T12:09:11.431Z'),
+          contextualInfo: {
+            COMPLETED_INDUCTION_CONDUCTED_IN_PERSON_BY: 'Fred Bloggs',
+            COMPLETED_INDUCTION_NOTES: 'Induction was created after the first goals were created',
+            COMPLETED_INDUCTION_CONDUCTED_IN_PERSON_DATE: '2023-09-02',
+            COMPLETED_INDUCTION_ENTERED_ONLINE_BY: 'Fred Bloggs',
+            COMPLETED_INDUCTION_ENTERED_ONLINE_AT: '2023-09-02T12:09:12.261834Z',
+            COMPLETED_INDUCTION_CONDUCTED_IN_PERSON_BY_ROLE: 'CIAG',
+          },
+          actionedByDisplayName: 'Ralph Gen',
+        },
+        goalCreatedEvent,
+      ],
+    }
+
+    // When
+    const actual = prepareTimelineForView(timeline)
+
+    // Then
+    expect(actual).toEqual(expected)
+  })
+
+  it('should return a Timeline event given there is no Induction created event', () => {
+    // Given
+    const correlationIdForActionPlanAndGoalCreateEvents = '246aa049-c5df-459d-8231-bdeab3936d0f'
+    const actionPlanCreatedEvent: TimelineEvent = {
+      correlationId: correlationIdForActionPlanAndGoalCreateEvents,
+      reference: 'd03646e7-d145-41cc-862b-c5802e53b541',
+      sourceReference: '4d2558d3-dbd5-43cb-a14c-c95dacec09a1',
+      eventType: 'ACTION_PLAN_CREATED',
+      prisonName: 'MDI',
+      timestamp: parseISO('2023-09-01T10:47:38.560Z'),
+      contextualInfo: {},
+      actionedByDisplayName: 'Ralph Gen',
+    }
+    const goalCreatedEvent: TimelineEvent = {
+      correlationId: correlationIdForActionPlanAndGoalCreateEvents,
+      reference: 'd5b57b83-92f8-4de9-b97c-e421e0468069',
+      sourceReference: '33bc1045-7368-47c4-a261-4d616b7b51b9',
+      eventType: 'GOAL_CREATED',
+      prisonName: 'MDI',
+      timestamp: parseISO('2023-09-01T10:47:38.560Z'),
+      contextualInfo: {
+        GOAL_TITLE: 'Learn French',
+      },
+      actionedByDisplayName: 'Ralph Gen',
+    }
+
+    const timeline: Timeline = {
+      prisonNumber: 'A1234AA',
+      problemRetrievingData: false,
+      events: [goalCreatedEvent, actionPlanCreatedEvent],
+    }
+
+    const expected: Timeline = {
+      prisonNumber: 'A1234AA',
+      problemRetrievingData: false,
+      events: [goalCreatedEvent],
+    }
+
+    // When
+    const actual = prepareTimelineForView(timeline)
+
+    // Then
+    expect(actual).toEqual(expected)
+  })
+
+  it('should return a Timeline given there is an Induction created event but no Action Plan Created event', () => {
+    // Given
+    const prisonAdmissionEvent: TimelineEvent = {
+      correlationId: '734dc310-64d3-4772-a5f7-35e7e6d696d7',
+      reference: '9d86c486-2bf7-4780-8786-f4f068de1223',
+      sourceReference: '12345',
+      eventType: 'PRISON_ADMISSION',
+      prisonName: 'MDI',
+      timestamp: parseISO('2023-08-01T10:47:38.560Z'),
+      contextualInfo: {},
+      actionedByDisplayName: undefined,
+    }
+    const inductionCreatedEvent: TimelineEvent = {
+      correlationId: 'b84b29ab-3090-4900-a985-dfd714bd43a1',
+      reference: '49da03d3-11fe-4d34-ba8c-10a5af9e82d8',
+      sourceReference: '4d2558d3-dbd5-43cb-a14c-c95dacec09a1',
+      eventType: 'INDUCTION_CREATED',
+      prisonName: 'MDI',
+      timestamp: parseISO('2023-09-01T09:18:21.072Z'),
+      contextualInfo: {},
+      actionedByDisplayName: 'Ralph Gen',
+    }
+
+    const timeline: Timeline = {
+      prisonNumber: 'A1234AA',
+      problemRetrievingData: false,
+      events: [prisonAdmissionEvent, inductionCreatedEvent],
+    }
+
+    const expected: Timeline = {
+      prisonNumber: 'A1234AA',
+      problemRetrievingData: false,
+      events: [prisonAdmissionEvent],
     }
 
     // When
