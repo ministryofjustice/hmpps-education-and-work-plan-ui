@@ -40,7 +40,6 @@ describe('inPrisonTrainingUpdateController', () => {
 
   beforeEach(() => {
     jest.resetAllMocks()
-    req.session.pageFlowHistory = undefined
     req.body = {}
   })
 
@@ -63,8 +62,6 @@ describe('inPrisonTrainingUpdateController', () => {
       const expectedView = {
         prisonerSummary,
         form: expectedInPrisonTrainingForm,
-        backLinkUrl: '/plan/A1234BC/view/education-and-training',
-        backLinkAriaText: `Back to Jimmy Lightfingers's learning and work progress`,
       }
 
       // When
@@ -90,8 +87,6 @@ describe('inPrisonTrainingUpdateController', () => {
       const expectedView = {
         prisonerSummary,
         form: expectedInPrisonTrainingForm,
-        backLinkUrl: '/plan/A1234BC/view/education-and-training',
-        backLinkAriaText: `Back to Jimmy Lightfingers's learning and work progress`,
       }
 
       // When

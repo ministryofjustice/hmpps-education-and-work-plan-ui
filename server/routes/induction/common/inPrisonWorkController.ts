@@ -9,6 +9,16 @@ import InPrisonWorkValue from '../../../enums/inPrisonWorkValue'
  * Abstract controller class defining functionality common to both the Create and Update Induction journeys.
  */
 export default abstract class InPrisonWorkController extends InductionController {
+  override getBackLinkUrl(_req: Request): string {
+    // Default implementation - the js back link is used on the In Prison Work page
+    return undefined
+  }
+
+  override getBackLinkAriaText(_req: Request): string {
+    // Default implementation - the js back link is used on the In Prison Work page
+    return undefined
+  }
+
   /**
    * Returns the In Prison Work view; suitable for use by the Create and Update journeys.
    */
@@ -18,19 +28,10 @@ export default abstract class InPrisonWorkController extends InductionController
 
     this.addCurrentPageToFlowHistoryWhenComingFromCheckYourAnswers(req)
 
-    if (req.session.pageFlowHistory) {
-      this.addCurrentPageToHistory(req)
-    }
-
     const inPrisonWorkForm = req.session.inPrisonWorkForm || toInPrisonWorkForm(inductionDto)
     req.session.inPrisonWorkForm = undefined
 
-    const view = new InPrisonWorkView(
-      prisonerSummary,
-      this.getBackLinkUrl(req),
-      this.getBackLinkAriaText(req, res),
-      inPrisonWorkForm,
-    )
+    const view = new InPrisonWorkView(prisonerSummary, inPrisonWorkForm)
     return res.render('pages/induction/inPrisonWork/index', { ...view.renderArgs })
   }
 
