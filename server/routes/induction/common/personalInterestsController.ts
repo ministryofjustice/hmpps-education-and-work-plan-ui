@@ -9,6 +9,16 @@ import PersonalInterestsValue from '../../../enums/personalInterestsValue'
  * Abstract controller class defining functionality common to both the Create and Update Induction journeys.
  */
 export default abstract class PersonalInterestsController extends InductionController {
+  override getBackLinkUrl(_req: Request): string {
+    // Default implementation - the js back link is used on the Personal Interests page
+    return undefined
+  }
+
+  override getBackLinkAriaText(_req: Request): string {
+    // Default implementation - the js back link is used on the Personal Interests page
+    return undefined
+  }
+
   /**
    * Returns the Personal Interests view; suitable for use by the Create and Update journeys.
    */
@@ -21,16 +31,7 @@ export default abstract class PersonalInterestsController extends InductionContr
 
     this.addCurrentPageToFlowHistoryWhenComingFromCheckYourAnswers(req)
 
-    if (req.session.pageFlowHistory) {
-      this.addCurrentPageToHistory(req)
-    }
-
-    const view = new PersonalInterestsView(
-      prisonerSummary,
-      this.getBackLinkUrl(req),
-      this.getBackLinkAriaText(req, res),
-      personalInterestsForm,
-    )
+    const view = new PersonalInterestsView(prisonerSummary, personalInterestsForm)
     return res.render('pages/induction/personalInterests/index', { ...view.renderArgs })
   }
 

@@ -58,8 +58,6 @@ describe('skillsUpdateController', () => {
       const expectedView = {
         prisonerSummary,
         form: expectedSkillsForm,
-        backLinkUrl: '/plan/A1234BC/view/work-and-interests',
-        backLinkAriaText: `Back to Jimmy Lightfingers's learning and work progress`,
       }
 
       // When
@@ -85,8 +83,6 @@ describe('skillsUpdateController', () => {
       const expectedView = {
         prisonerSummary,
         form: expectedSkillsForm,
-        backLinkUrl: '/plan/A1234BC/view/work-and-interests',
-        backLinkAriaText: `Back to Jimmy Lightfingers's learning and work progress`,
       }
 
       // When

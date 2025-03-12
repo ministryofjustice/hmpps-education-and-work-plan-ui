@@ -73,7 +73,6 @@ context(`Change links on the Check Your Answers page when creating an Induction`
     // Change personal interests
     Page.verifyOnPage(CheckYourAnswersPage)
       .clickPersonalInterestsChangeLink()
-      .hasBackLinkTo(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
       .deSelectPersonalInterest(PersonalInterestsValue.COMMUNITY)
       .selectPersonalInterest(PersonalInterestsValue.CRAFTS)
       .selectPersonalInterest(PersonalInterestsValue.DIGITAL)
@@ -82,7 +81,6 @@ context(`Change links on the Check Your Answers page when creating an Induction`
     // Change skills
     Page.verifyOnPage(CheckYourAnswersPage)
       .clickPersonalSkillsChangeLink()
-      .hasBackLinkTo(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
       .deSelectSkill(SkillsValue.POSITIVE_ATTITUDE)
       .selectSkill(SkillsValue.TEAMWORK)
       .selectSkill(SkillsValue.RESILIENCE)
