@@ -2,22 +2,11 @@ import createError from 'http-errors'
 import { NextFunction, Request, RequestHandler, Response } from 'express'
 import type { InductionDto } from 'inductionDto'
 import PreviousWorkExperienceDetailController from '../common/previousWorkExperienceDetailController'
-import { getPreviousPage } from '../../pageFlowHistory'
-import getDynamicBackLinkAriaText from '../../dynamicAriaTextResolver'
 import TypeOfWorkExperienceValue from '../../../enums/typeOfWorkExperienceValue'
 import validatePreviousWorkExperienceDetailForm from '../../validators/induction/previousWorkExperienceDetailFormValidator'
 import { getNextPage, isLastPage } from '../../pageFlowQueue'
 
 export default class PreviousWorkExperienceDetailCreateController extends PreviousWorkExperienceDetailController {
-  getBackLinkUrl(req: Request): string {
-    const { pageFlowHistory } = req.session
-    return getPreviousPage(pageFlowHistory)
-  }
-
-  getBackLinkAriaText(req: Request, res: Response): string {
-    return getDynamicBackLinkAriaText(req, res, this.getBackLinkUrl(req))
-  }
-
   submitPreviousWorkExperienceDetailForm: RequestHandler = async (
     req: Request,
     res: Response,

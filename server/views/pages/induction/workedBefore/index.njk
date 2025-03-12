@@ -6,8 +6,6 @@
 {#
   Data supplied to this template:
     * prisonerSummary - object with firstName and lastName
-    * backLinkUrl - url of the back link
-    * backLinkAriaText - the aria label for the back link
     * form - form object containing the following fields:
       * hasWorkedBefore - value for the "has worked before" question
       * hasWorkedBeforeNotRelevantReason - value for the reason when "has worked before" is answered as "Not relevant"
@@ -15,7 +13,11 @@
 #}
 
 {% block beforeContent %}
-  {{ govukBackLink({ text: "Back", href: backLinkUrl, attributes: { "aria-label" : backLinkAriaText } }) }}
+  {{ govukBackLink({
+    text: "Back",
+    href: "#",
+    classes: "js-back-link"
+  }) }}
 {% endblock %}
 
 {% block content %}

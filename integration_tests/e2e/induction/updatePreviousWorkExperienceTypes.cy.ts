@@ -30,8 +30,6 @@ context('Update previous work experience types in the Induction', () => {
     // Induction has previous work experiences of Office and Other
     cy.visit(`/prisoners/${prisonNumber}/induction/previous-work-experience`)
     let previousWorkExperienceTypesPage = Page.verifyOnPage(PreviousWorkExperienceTypesPage)
-      .hasBackLinkTo(`/plan/${prisonNumber}/view/work-and-interests`)
-      .backLinkHasAriaLabel(`Back to Daniel Craig's learning and work progress`)
 
     // When
     previousWorkExperienceTypesPage //

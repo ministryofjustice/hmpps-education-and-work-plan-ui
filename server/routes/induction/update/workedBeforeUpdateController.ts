@@ -6,8 +6,6 @@ import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateIn
 import logger from '../../../../logger'
 import { InductionService } from '../../../services'
 import validateWorkedBeforeForm from '../../validators/induction/workedBeforeFormValidator'
-import getDynamicBackLinkAriaText from '../../dynamicAriaTextResolver'
-import { getPreviousPage } from '../../pageFlowHistory'
 import HasWorkedBeforeValue from '../../../enums/hasWorkedBeforeValue'
 
 /**
@@ -16,18 +14,6 @@ import HasWorkedBeforeValue from '../../../enums/hasWorkedBeforeValue'
 export default class WorkedBeforeUpdateController extends WorkedBeforeController {
   constructor(private readonly inductionService: InductionService) {
     super()
-  }
-
-  getBackLinkUrl(req: Request): string {
-    const { prisonNumber } = req.params
-    const { pageFlowHistory } = req.session
-    const previousPage =
-      (pageFlowHistory && getPreviousPage(pageFlowHistory)) || `/plan/${prisonNumber}/view/work-and-interests`
-    return previousPage
-  }
-
-  getBackLinkAriaText(req: Request, res: Response): string {
-    return getDynamicBackLinkAriaText(req, res, this.getBackLinkUrl(req))
   }
 
   submitWorkedBeforeForm: RequestHandler = async (req: Request, res: Response, next: NextFunction): Promise<void> => {

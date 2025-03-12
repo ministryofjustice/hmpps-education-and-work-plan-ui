@@ -49,19 +49,9 @@ describe('previousWorkExperienceDetailCreateController', () => {
         jobDetails: '',
       }
 
-      req.session.pageFlowHistory = {
-        pageUrls: [
-          `/prisoners/${prisonNumber}/create-induction/has-worked-before`,
-          `/prisoners/${prisonNumber}/create-induction/previous-work-experience`,
-        ],
-        currentPageIndex: 1,
-      }
-
       const expectedView = {
         prisonerSummary,
         form: expectedPreviousWorkExperienceDetailForm,
-        backLinkUrl: '/prisoners/A1234BC/create-induction/previous-work-experience',
-        backLinkAriaText: 'Back to What type of work has Jimmy Lightfingers done before?',
         typeOfWorkExperience: 'CONSTRUCTION',
       }
 
@@ -91,19 +81,9 @@ describe('previousWorkExperienceDetailCreateController', () => {
       }
       req.session.previousWorkExperienceDetailForm = expectedPreviousWorkExperienceDetailForm
 
-      req.session.pageFlowHistory = {
-        pageUrls: [
-          `/prisoners/${prisonNumber}/create-induction/has-worked-before`,
-          `/prisoners/${prisonNumber}/create-induction/previous-work-experience`,
-        ],
-        currentPageIndex: 1,
-      }
-
       const expectedView = {
         prisonerSummary,
         form: expectedPreviousWorkExperienceDetailForm,
-        backLinkUrl: '/prisoners/A1234BC/create-induction/previous-work-experience',
-        backLinkAriaText: 'Back to What type of work has Jimmy Lightfingers done before?',
         typeOfWorkExperience: 'CONSTRUCTION',
       }
 
@@ -158,54 +138,6 @@ describe('previousWorkExperienceDetailCreateController', () => {
       // Then
       expect(res.render).not.toHaveBeenCalled()
       expect(next).toHaveBeenCalledWith(expectedError)
-    })
-
-    it('should get the Previous Work Experience Detail view given the previous page was Check Your Answers', async () => {
-      // Given
-      req.params.typeOfWorkExperience = 'construction'
-      req.path = `/prisoners/${prisonNumber}/create-induction/previous-work-experience/construction`
-
-      const inductionDto = inductionDtoWithWorkExperienceTypes()
-      req.session.inductionDto = inductionDto
-      req.session.previousWorkExperienceDetailForm = undefined
-
-      req.session.pageFlowHistory = {
-        pageUrls: ['/prisoners/A1234BC/create-induction/check-your-answers'],
-        currentPageIndex: 0,
-      }
-
-      const expectedPageFlowHistory = {
-        pageUrls: [
-          '/prisoners/A1234BC/create-induction/check-your-answers',
-          '/prisoners/A1234BC/create-induction/previous-work-experience/construction',
-        ],
-        currentPageIndex: 1,
-      }
-
-      const expectedPreviousWorkExperienceDetailForm = {
-        jobRole: '',
-        jobDetails: '',
-      }
-
-      const expectedView = {
-        prisonerSummary,
-        form: expectedPreviousWorkExperienceDetailForm,
-        backLinkUrl: '/prisoners/A1234BC/create-induction/check-your-answers',
-        backLinkAriaText: `Back to Check and save your answers before adding Jimmy Lightfingers's goals`,
-        typeOfWorkExperience: 'CONSTRUCTION',
-      }
-
-      // When
-      await controller.getPreviousWorkExperienceDetailView(req as unknown as Request, res, next)
-
-      // Then
-      expect(res.render).toHaveBeenCalledWith(
-        'pages/induction/previousWorkExperience/workExperienceDetail',
-        expectedView,
-      )
-      expect(req.session.previousWorkExperienceDetailForm).toBeUndefined()
-      expect(req.session.inductionDto).toEqual(inductionDto)
-      expect(req.session.pageFlowHistory).toEqual(expectedPageFlowHistory)
     })
   })
 

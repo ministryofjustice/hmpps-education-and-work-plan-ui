@@ -59,19 +59,9 @@ describe('previousWorkExperienceTypesUpdateController', () => {
         typeOfWorkExperienceOther: 'Retail delivery',
       }
 
-      req.session.pageFlowHistory = {
-        pageUrls: [
-          `/prisoners/${prisonNumber}/induction/qualifications`,
-          `/prisoners/${prisonNumber}/induction/has-worked-before`,
-        ],
-        currentPageIndex: 1,
-      }
-
       const expectedView = {
         prisonerSummary,
         form: expectedPreviousWorkExperienceTypesForm,
-        backLinkUrl: '/prisoners/A1234BC/induction/has-worked-before',
-        backLinkAriaText: 'Back to Has Jimmy Lightfingers worked before?',
       }
 
       // When
@@ -84,14 +74,6 @@ describe('previousWorkExperienceTypesUpdateController', () => {
       )
       expect(req.session.previousWorkExperienceTypesForm).toBeUndefined()
       expect(req.session.inductionDto).toEqual(inductionDto)
-      expect(req.session.pageFlowHistory).toEqual({
-        pageUrls: [
-          '/prisoners/A1234BC/induction/qualifications',
-          '/prisoners/A1234BC/induction/has-worked-before',
-          '/prisoners/A1234BC/induction/previous-work-experience',
-        ],
-        currentPageIndex: 2,
-      })
     })
 
     it('should get the Previous Work Experience Types view given there is an PreviousWorkExperienceTypesForm already on the session', async () => {
@@ -105,19 +87,9 @@ describe('previousWorkExperienceTypesUpdateController', () => {
       }
       req.session.previousWorkExperienceTypesForm = expectedPreviousWorkExperienceTypesForm
 
-      req.session.pageFlowHistory = {
-        pageUrls: [
-          `/prisoners/${prisonNumber}/induction/qualifications`,
-          `/prisoners/${prisonNumber}/induction/has-worked-before`,
-        ],
-        currentPageIndex: 1,
-      }
-
       const expectedView = {
         prisonerSummary,
         form: expectedPreviousWorkExperienceTypesForm,
-        backLinkUrl: '/prisoners/A1234BC/induction/has-worked-before',
-        backLinkAriaText: 'Back to Has Jimmy Lightfingers worked before?',
       }
 
       // When
@@ -130,14 +102,6 @@ describe('previousWorkExperienceTypesUpdateController', () => {
       )
       expect(req.session.previousWorkExperienceDetailForm).toBeUndefined()
       expect(req.session.inductionDto).toEqual(inductionDto)
-      expect(req.session.pageFlowHistory).toEqual({
-        pageUrls: [
-          '/prisoners/A1234BC/induction/qualifications',
-          '/prisoners/A1234BC/induction/has-worked-before',
-          '/prisoners/A1234BC/induction/previous-work-experience',
-        ],
-        currentPageIndex: 2,
-      })
     })
   })
 

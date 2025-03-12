@@ -59,8 +59,6 @@ describe('workedBeforeUpdateController', () => {
       const expectedView = {
         prisonerSummary,
         form: expectedWorkedBeforeForm,
-        backLinkUrl: '/plan/A1234BC/view/work-and-interests',
-        backLinkAriaText: `Back to Jimmy Lightfingers's learning and work progress`,
       }
 
       // When
@@ -85,8 +83,6 @@ describe('workedBeforeUpdateController', () => {
       const expectedView = {
         prisonerSummary,
         form: expectedWorkedBeforeForm,
-        backLinkUrl: '/plan/A1234BC/view/work-and-interests',
-        backLinkAriaText: `Back to Jimmy Lightfingers's learning and work progress`,
       }
 
       // When
