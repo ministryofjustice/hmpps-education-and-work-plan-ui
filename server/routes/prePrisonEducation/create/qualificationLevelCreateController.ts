@@ -2,18 +2,8 @@ import { NextFunction, Request, RequestHandler, Response } from 'express'
 import QualificationLevelController from '../common/qualificationLevelController'
 import { getPrisonerContext } from '../../../data/session/prisonerContexts'
 import validateQualificationLevelForm from '../../validators/induction/qualificationLevelFormValidator'
-import getDynamicBackLinkAriaText from '../../dynamicAriaTextResolver'
 
 export default class QualificationLevelCreateController extends QualificationLevelController {
-  getBackLinkUrl(req: Request): string {
-    const { prisonNumber } = req.params
-    return `/prisoners/${prisonNumber}/create-education/highest-level-of-education`
-  }
-
-  getBackLinkAriaText(req: Request, res: Response): string {
-    return getDynamicBackLinkAriaText(req, res, this.getBackLinkUrl(req))
-  }
-
   submitQualificationLevelForm: RequestHandler = async (
     req: Request,
     res: Response,

@@ -26,7 +26,6 @@ describe('qualificationDetailsCreateController', () => {
 
   beforeEach(() => {
     jest.resetAllMocks()
-    req.session.pageFlowQueue = undefined
     req.session.qualificationLevelForm = undefined
     req.session.qualificationDetailsForm = undefined
     req.body = {}
@@ -40,13 +39,6 @@ describe('qualificationDetailsCreateController', () => {
       req.session.inductionDto = inductionDto
       const qualificationLevelForm = { qualificationLevel: QualificationLevelValue.LEVEL_3 }
       req.session.qualificationLevelForm = qualificationLevelForm
-      req.session.pageFlowHistory = {
-        pageUrls: [
-          `/prisoners/${prisonNumber}/create-induction/qualifications`,
-          `/prisoners/${prisonNumber}/create-induction/qualification-level`,
-        ],
-        currentPageIndex: 1,
-      }
 
       req.session.qualificationDetailsForm = undefined
       const expectedQualificationDetailsForm = {
@@ -58,16 +50,6 @@ describe('qualificationDetailsCreateController', () => {
         prisonerSummary,
         form: expectedQualificationDetailsForm,
         qualificationLevel: QualificationLevelValue.LEVEL_3,
-        backLinkUrl: '/prisoners/A1234BC/create-induction/qualification-level',
-        backLinkAriaText: 'Back to What level of qualification does Jimmy Lightfingers want to add',
-      }
-      const expectedPageFlowHistory = {
-        pageUrls: [
-          `/prisoners/${prisonNumber}/create-induction/qualifications`,
-          `/prisoners/${prisonNumber}/create-induction/qualification-level`,
-          `/prisoners/${prisonNumber}/create-induction/qualification-details`,
-        ],
-        currentPageIndex: 2,
       }
 
       // When
@@ -77,7 +59,6 @@ describe('qualificationDetailsCreateController', () => {
       expect(res.render).toHaveBeenCalledWith('pages/prePrisonEducation/qualificationDetails', expectedView)
       expect(req.session.qualificationDetailsForm).toBeUndefined()
       expect(req.session.inductionDto).toEqual(inductionDto)
-      expect(req.session.pageFlowHistory).toEqual(expectedPageFlowHistory)
     })
 
     it('should get the Qualification Details view given there is a QualificationDetailsForm already on the session', async () => {
@@ -89,13 +70,6 @@ describe('qualificationDetailsCreateController', () => {
         qualificationLevel: QualificationLevelValue.LEVEL_3,
       }
       req.session.qualificationLevelForm = qualificationLevelForm
-      req.session.pageFlowHistory = {
-        pageUrls: [
-          `/prisoners/${prisonNumber}/create-induction/qualifications`,
-          `/prisoners/${prisonNumber}/create-induction/qualification-level`,
-        ],
-        currentPageIndex: 1,
-      }
 
       const expectedQualificationDetailsForm = {
         qualificationSubject: '',
@@ -107,16 +81,6 @@ describe('qualificationDetailsCreateController', () => {
         prisonerSummary,
         form: expectedQualificationDetailsForm,
         qualificationLevel: QualificationLevelValue.LEVEL_3,
-        backLinkUrl: '/prisoners/A1234BC/create-induction/qualification-level',
-        backLinkAriaText: 'Back to What level of qualification does Jimmy Lightfingers want to add',
-      }
-      const expectedPageFlowHistory = {
-        pageUrls: [
-          `/prisoners/${prisonNumber}/create-induction/qualifications`,
-          `/prisoners/${prisonNumber}/create-induction/qualification-level`,
-          `/prisoners/${prisonNumber}/create-induction/qualification-details`,
-        ],
-        currentPageIndex: 2,
       }
 
       // When
@@ -126,7 +90,6 @@ describe('qualificationDetailsCreateController', () => {
       expect(res.render).toHaveBeenCalledWith('pages/prePrisonEducation/qualificationDetails', expectedView)
       expect(req.session.qualificationDetailsForm).toBeUndefined()
       expect(req.session.inductionDto).toEqual(inductionDto)
-      expect(req.session.pageFlowHistory).toEqual(expectedPageFlowHistory)
     })
   })
 
@@ -140,15 +103,6 @@ describe('qualificationDetailsCreateController', () => {
         qualificationLevel: QualificationLevelValue.LEVEL_3,
       }
       req.session.qualificationLevelForm = qualificationLevelForm
-      const pageFlowHistory = {
-        pageUrls: [
-          `/prisoners/${prisonNumber}/create-induction/qualifications`,
-          `/prisoners/${prisonNumber}/create-induction/qualification-level`,
-          `/prisoners/${prisonNumber}/create-induction/qualification-details`,
-        ],
-        currentPageIndex: 2,
-      }
-      req.session.pageFlowHistory = pageFlowHistory
 
       const invalidQualificationDetailsForm = {
         qualificationSubject: '',
@@ -175,7 +129,6 @@ describe('qualificationDetailsCreateController', () => {
       expect(req.session.qualificationDetailsForm).toEqual(invalidQualificationDetailsForm)
       expect(req.session.qualificationLevelForm).toEqual(qualificationLevelForm)
       expect(req.session.inductionDto).toEqual(inductionDto)
-      expect(req.session.pageFlowHistory).toEqual(pageFlowHistory)
     })
 
     it('should proceed to qualifications page', async () => {
@@ -183,15 +136,7 @@ describe('qualificationDetailsCreateController', () => {
       const inductionDto = aValidInductionDto()
       inductionDto.previousQualifications.qualifications = undefined
       req.session.inductionDto = inductionDto
-      const pageFlowHistory = {
-        pageUrls: [
-          `/prisoners/${prisonNumber}/create-induction/qualifications`,
-          `/prisoners/${prisonNumber}/create-induction/qualification-level`,
-          `/prisoners/${prisonNumber}/create-induction/qualification-details`,
-        ],
-        currentPageIndex: 2,
-      }
-      req.session.pageFlowHistory = pageFlowHistory
+
       const qualificationLevelForm = {
         qualificationLevel: QualificationLevelValue.LEVEL_3,
       }
@@ -215,7 +160,6 @@ describe('qualificationDetailsCreateController', () => {
       expect(res.redirect).toHaveBeenCalledWith(`/prisoners/${prisonNumber}/create-induction/qualifications`)
       expect(req.session.qualificationDetailsForm).toBeUndefined()
       expect(req.session.qualificationLevelForm).toBeUndefined()
-      expect(req.session.pageFlowHistory).toBeUndefined()
     })
   })
 })

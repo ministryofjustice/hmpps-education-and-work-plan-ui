@@ -38,8 +38,6 @@ describe('qualificationLevelCreateController', () => {
       const expectedView = {
         prisonerSummary,
         form: expectedQualificationLevelForm,
-        backLinkUrl: '/prisoners/A1234BC/create-education/highest-level-of-education',
-        backLinkAriaText: `Back to What's the highest level of education Jimmy Lightfingers completed before entering prison?`,
       }
 
       // When
@@ -60,8 +58,6 @@ describe('qualificationLevelCreateController', () => {
       const expectedView = {
         prisonerSummary,
         form: expectedQualificationLevelForm,
-        backLinkUrl: '/prisoners/A1234BC/create-education/highest-level-of-education',
-        backLinkAriaText: `Back to What's the highest level of education Jimmy Lightfingers completed before entering prison?`,
       }
 
       // When

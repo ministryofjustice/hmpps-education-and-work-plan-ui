@@ -33,9 +33,6 @@ context('Update highest level of education within an Induction', () => {
     cy.visit(`/plan/${prisonNumber}/view/education-and-training`)
     const highestLevelOfEducationPage =
       Page.verifyOnPage(EducationAndTrainingPage).clickToChangeHighestLevelOfEducation()
-    highestLevelOfEducationPage //
-      .hasBackLinkTo(`/plan/G6115VJ/view/education-and-training`)
-      .backLinkHasAriaLabel(`Back to Daniel Craig's learning and work progress`)
 
     // When
     highestLevelOfEducationPage //
@@ -69,9 +66,6 @@ context('Update highest level of education within an Induction', () => {
     cy.visit(`/plan/${prisonNumber}/view/education-and-training`)
     const highestLevelOfEducationPage =
       Page.verifyOnPage(EducationAndTrainingPage).clickToChangeHighestLevelOfEducation()
-    highestLevelOfEducationPage //
-      .hasBackLinkTo(`/plan/G6115VJ/view/education-and-training`)
-      .backLinkHasAriaLabel(`Back to Daniel Craig's learning and work progress`)
 
     // When
     highestLevelOfEducationPage //

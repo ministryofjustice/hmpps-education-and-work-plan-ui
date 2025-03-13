@@ -55,10 +55,7 @@ context('Update educational qualifications within a prisoners Education before t
     cy.visit(`/plan/${prisonNumber}/view/education-and-training`)
     Page.verifyOnPage(EducationAndTrainingPage) //
       .clickToChangeEducationalQualifications()
-    const qualificationsListPage = Page.verifyOnPage(QualificationsListPage) //
-      .hasBackLinkTo(`/plan/G6115VJ/view/education-and-training`)
-      .backLinkHasAriaLabel(`Back to Daniel Craig's learning and work progress`)
-
+    const qualificationsListPage = Page.verifyOnPage(QualificationsListPage)
     /* Education has highest level of education of SECONDARY_SCHOOL_TOOK_EXAMS with the following qualifications:
          Pottery, grade C, LEVEL_4, 814ade0a-a3b2-46a3-862f-79211ba13f7b
     */
@@ -137,13 +134,11 @@ context('Update educational qualifications within a prisoners Education before t
 
     const qualificationLevelPage = Page.verifyOnPage(QualificationLevelPage)
     qualificationLevelPage //
-      .hasBackLinkTo(`/prisoners/${prisonNumber}/education/qualifications`)
       .selectQualificationLevel(QualificationLevelValue.LEVEL_3)
       .submitPage()
 
     const qualificationDetailsPage = Page.verifyOnPage(QualificationDetailsPage)
     qualificationDetailsPage //
-      .hasBackLinkTo(`/prisoners/${prisonNumber}/education/qualification-level`)
       .setQualificationSubject('Spanish')
       .setQualificationGrade('B')
       .submitPage()
@@ -193,7 +188,6 @@ context('Update educational qualifications within a prisoners Education before t
     Page.verifyOnPage(QualificationLevelPage)
     qualificationLevelPage //
       .hasFieldInError('qualificationLevel')
-      .hasBackLinkTo(`/prisoners/${prisonNumber}/education/qualifications`)
   })
 
   it('should not add qualification given validation errors on qualification details page', () => {
@@ -221,6 +215,5 @@ context('Update educational qualifications within a prisoners Education before t
     Page.verifyOnPage(QualificationDetailsPage)
     qualificationDetailsPage //
       .hasFieldInError('qualificationGrade')
-      .hasBackLinkTo(`/prisoners/${prisonNumber}/education/qualification-level`)
   })
 })

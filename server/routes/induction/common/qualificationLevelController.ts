@@ -6,6 +6,16 @@ import QualificationLevelView from './qualificationLevelView'
  * Abstract controller class defining functionality common to both the Create and Update Induction journeys.
  */
 export default abstract class QualificationLevelController extends InductionController {
+  override getBackLinkUrl(_req: Request): string {
+    // Default implementation - the js back link is used on the Qualification Level page
+    return undefined
+  }
+
+  override getBackLinkAriaText(_req: Request): string {
+    // Default implementation - the js back link is used on the Qualification Level page
+    return undefined
+  }
+
   /**
    * Returns the Qualification Level view; suitable for use by the Create and Update journeys.
    */
@@ -16,17 +26,12 @@ export default abstract class QualificationLevelController extends InductionCont
   ): Promise<void> => {
     const { prisonerSummary } = res.locals
 
-    this.addCurrentPageToHistory(req)
+    this.addCurrentPageToFlowHistoryWhenComingFromCheckYourAnswers(req)
 
     const qualificationLevelForm = req.session.qualificationLevelForm || { qualificationLevel: '' }
     req.session.qualificationLevelForm = undefined
 
-    const view = new QualificationLevelView(
-      prisonerSummary,
-      this.getBackLinkUrl(req),
-      this.getBackLinkAriaText(req, res),
-      qualificationLevelForm,
-    )
+    const view = new QualificationLevelView(prisonerSummary, qualificationLevelForm)
     return res.render('pages/prePrisonEducation/qualificationLevel', { ...view.renderArgs })
   }
 }

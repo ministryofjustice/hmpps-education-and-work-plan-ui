@@ -6,8 +6,6 @@
 {#
 Data supplied to this template:
   * prisonerSummary - object with firstName and lastName
-  * backLinkUrl - url of the back link
-  * backLinkAriaText - the aria label for the back link
   * functionalSkills - The most recent Functional Skills assessments from Curious
   * inPrisonCourses - All in-prison courses and qualifications from Curious
   * form - form object containing the following fields:
@@ -16,7 +14,11 @@ Data supplied to this template:
 #}
 
 {% block beforeContent %}
-  {{ govukBackLink({ text: "Back", href: backLinkUrl, attributes: { "aria-label" : backLinkAriaText } }) }}
+  {{ govukBackLink({
+    text: "Back",
+    href: "#",
+    classes: "js-back-link"
+  }) }}
 {% endblock %}
 
 {% block content %}

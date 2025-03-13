@@ -38,8 +38,6 @@ describe('qualificationLevelUpdateController', () => {
       const expectedView = {
         prisonerSummary,
         form: expectedQualificationLevelForm,
-        backLinkUrl: '/prisoners/A1234BC/education/qualifications',
-        backLinkAriaText: `Back to Jimmy Lightfingers's qualifications`,
       }
 
       // When
@@ -60,8 +58,6 @@ describe('qualificationLevelUpdateController', () => {
       const expectedView = {
         prisonerSummary,
         form: expectedQualificationLevelForm,
-        backLinkUrl: '/prisoners/A1234BC/education/qualifications',
-        backLinkAriaText: `Back to Jimmy Lightfingers's qualifications`,
       }
 
       // When

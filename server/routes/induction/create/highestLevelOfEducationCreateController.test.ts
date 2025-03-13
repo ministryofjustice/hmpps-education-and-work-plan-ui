@@ -46,9 +46,6 @@ describe('highestLevelOfEducationCreateController', () => {
       const expectedView = {
         prisonerSummary,
         form: expectedHighestLevelOfEducationForm,
-        backLinkUrl: '/prisoners/A1234BC/create-induction/affect-ability-to-work',
-        backLinkAriaText:
-          'Back to What does Jimmy Lightfingers feel could stop or affect them working when they are out of prison?',
       }
 
       // When
@@ -78,9 +75,6 @@ describe('highestLevelOfEducationCreateController', () => {
       const expectedView = {
         prisonerSummary,
         form: expectedHighestLevelOfEducationForm,
-        backLinkUrl: '/prisoners/A1234BC/create-induction/affect-ability-to-work',
-        backLinkAriaText:
-          'Back to What does Jimmy Lightfingers feel could stop or affect them working when they are out of prison?',
       }
 
       // When
@@ -94,50 +88,6 @@ describe('highestLevelOfEducationCreateController', () => {
       expect(res.render).toHaveBeenCalledWith('pages/prePrisonEducation/highestLevelOfEducation', expectedView)
       expect(req.session.highestLevelOfEducationForm).toBeUndefined()
       expect(req.session.inductionDto).toEqual(inductionDto)
-    })
-
-    it('should get the Highest Level of Education view given the previous page was Check Your Answers', async () => {
-      // Given
-      const inductionDto = aValidInductionDto()
-      inductionDto.personalSkillsAndInterests.skills = undefined
-      req.session.inductionDto = inductionDto
-
-      req.session.pageFlowHistory = {
-        pageUrls: ['/prisoners/A1234BC/create-induction/check-your-answers'],
-        currentPageIndex: 0,
-      }
-
-      const expectedPageFlowHistory = {
-        pageUrls: [
-          '/prisoners/A1234BC/create-induction/check-your-answers',
-          '/prisoners/A1234BC/create-induction/highest-level-of-education',
-        ],
-        currentPageIndex: 1,
-      }
-
-      const expectedHighestLevelOfEducationForm = {
-        educationLevel: EducationLevelValue.SECONDARY_SCHOOL_TOOK_EXAMS,
-      }
-
-      const expectedView = {
-        prisonerSummary,
-        form: expectedHighestLevelOfEducationForm,
-        backLinkUrl: '/prisoners/A1234BC/create-induction/check-your-answers',
-        backLinkAriaText: `Back to Check and save your answers before adding Jimmy Lightfingers's goals`,
-      }
-
-      // When
-      await controller.getHighestLevelOfEducationView(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
-
-      // Then
-      expect(res.render).toHaveBeenCalledWith('pages/prePrisonEducation/highestLevelOfEducation', expectedView)
-      expect(req.session.highestLevelOfEducationForm).toBeUndefined()
-      expect(req.session.inductionDto).toEqual(inductionDto)
-      expect(req.session.pageFlowHistory).toEqual(expectedPageFlowHistory)
     })
   })
 

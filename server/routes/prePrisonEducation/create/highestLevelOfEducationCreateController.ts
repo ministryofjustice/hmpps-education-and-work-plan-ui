@@ -2,18 +2,8 @@ import { NextFunction, Request, RequestHandler, Response } from 'express'
 import HighestLevelOfEducationController from '../common/highestLevelOfEducationController'
 import validateHighestLevelOfEducationForm from '../../validators/induction/highestLevelOfEducationFormValidator'
 import { getPrisonerContext } from '../../../data/session/prisonerContexts'
-import getDynamicBackLinkAriaText from '../../dynamicAriaTextResolver'
 
 export default class HighestLevelOfEducationCreateController extends HighestLevelOfEducationController {
-  getBackLinkUrl = (req: Request): string => {
-    const { prisonNumber } = req.params
-    return `/plan/${prisonNumber}/view/education-and-training`
-  }
-
-  getBackLinkAriaText = (req: Request, res: Response): string => {
-    return getDynamicBackLinkAriaText(req, res, this.getBackLinkUrl(req))
-  }
-
   submitHighestLevelOfEducationForm: RequestHandler = async (
     req: Request,
     res: Response,

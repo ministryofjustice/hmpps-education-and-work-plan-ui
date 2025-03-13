@@ -5,7 +5,6 @@ import QualificationsListCreateController from './qualificationsListCreateContro
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
 import { aValidInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
 import { validFunctionalSkills } from '../../../testsupport/functionalSkillsTestDataBuilder'
-import QualificationLevelValue from '../../../enums/qualificationLevelValue'
 import EducationLevelValue from '../../../enums/educationLevelValue'
 import validInPrisonCourseRecords from '../../../testsupport/inPrisonCourseRecordsTestDataBuilder'
 import HopingToGetWorkValue from '../../../enums/hopingToGetWorkValue'
@@ -52,8 +51,6 @@ describe('qualificationsListCreateController', () => {
 
       const expectedView = {
         prisonerSummary,
-        backLinkUrl: '/prisoners/A1234BC/create-induction/work-interest-roles',
-        backLinkAriaText: 'Back to Is Jimmy Lightfingers interested in any particular jobs?',
         qualifications: expectedQualifications,
         functionalSkills,
         inPrisonCourses,
@@ -77,9 +74,6 @@ describe('qualificationsListCreateController', () => {
 
       const expectedView = {
         prisonerSummary,
-        backLinkUrl: '/prisoners/A1234BC/create-induction/want-to-add-qualifications',
-        backLinkAriaText:
-          'Back to Does Jimmy Lightfingers have any other educational qualifications they want to be recorded?',
         qualifications: expectedQualifications,
         functionalSkills,
         inPrisonCourses,
@@ -91,46 +85,6 @@ describe('qualificationsListCreateController', () => {
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/prePrisonEducation/qualificationsList', expectedView)
       expect(req.session.inductionDto).toEqual(inductionDto)
-    })
-
-    it('should get the Qualifications List view given the previous page was Check Your Answers', async () => {
-      // Given
-      const inductionDto = aValidInductionDto()
-      req.session.inductionDto = inductionDto
-
-      req.session.pageFlowHistory = {
-        pageUrls: ['/prisoners/A1234BC/create-induction/check-your-answers'],
-        currentPageIndex: 0,
-      }
-
-      const expectedPageFlowHistory = {
-        pageUrls: [
-          '/prisoners/A1234BC/create-induction/check-your-answers',
-          '/prisoners/A1234BC/create-induction/qualifications',
-        ],
-        currentPageIndex: 1,
-      }
-
-      const expectedQualifications: Array<AchievedQualificationDto> = [
-        { subject: 'Pottery', grade: 'C', level: QualificationLevelValue.LEVEL_4 },
-      ]
-
-      const expectedView = {
-        prisonerSummary,
-        backLinkUrl: '/prisoners/A1234BC/create-induction/check-your-answers',
-        backLinkAriaText: `Back to Check and save your answers before adding Jimmy Lightfingers's goals`,
-        qualifications: expectedQualifications,
-        functionalSkills,
-        inPrisonCourses,
-      }
-
-      // When
-      await controller.getQualificationsListView(req, res, next)
-
-      // Then
-      expect(res.render).toHaveBeenCalledWith('pages/prePrisonEducation/qualificationsList', expectedView)
-      expect(req.session.inductionDto).toEqual(inductionDto)
-      expect(req.session.pageFlowHistory).toEqual(expectedPageFlowHistory)
     })
   })
 
@@ -165,16 +119,10 @@ describe('qualificationsListCreateController', () => {
 
       req.body = { addQualification: '' }
 
-      const expectedPageFlowHistory = {
-        pageUrls: [`/prisoners/${prisonNumber}/create-induction/qualifications`],
-        currentPageIndex: 0,
-      }
-
       // When
       await controller.submitQualificationsListView(req, res, next)
 
       // Then
-      expect(req.session.pageFlowHistory).toEqual(expectedPageFlowHistory)
       expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-induction/qualification-level')
     })
 
@@ -184,16 +132,10 @@ describe('qualificationsListCreateController', () => {
       inductionDto.previousQualifications = undefined // No qualifications on the Induction
       req.session.inductionDto = inductionDto
 
-      const expectedPageFlowHistory = {
-        pageUrls: [`/prisoners/${prisonNumber}/create-induction/qualifications`],
-        currentPageIndex: 0,
-      }
-
       // When
       await controller.submitQualificationsListView(req, res, next)
 
       // Then
-      expect(req.session.pageFlowHistory).toEqual(expectedPageFlowHistory)
       expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-induction/highest-level-of-education')
     })
 
@@ -205,17 +147,11 @@ describe('qualificationsListCreateController', () => {
            - Level 4 Pottery, Grade C
        */
 
-      req.session.pageFlowHistory = {
-        pageUrls: [`/prisoners/${prisonNumber}/create-induction/qualifications`],
-        currentPageIndex: 0,
-      }
-
       // When
       await controller.submitQualificationsListView(req, res, next)
 
       // Then
       expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-induction/additional-training')
-      expect(req.session.pageFlowHistory).toBeUndefined()
     })
 
     it('should redirect to Check Your Answers given user has come from Check Your Answers and page submitted with qualifications on the Induction', async () => {

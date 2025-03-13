@@ -2,25 +2,10 @@ import { Request, RequestHandler, Response } from 'express'
 import type { InductionDto } from 'inductionDto'
 import WantToAddQualificationsController from '../common/wantToAddQualificationsController'
 import YesNoValue from '../../../enums/yesNoValue'
-import getDynamicBackLinkAriaText from '../../dynamicAriaTextResolver'
 import validateWantToAddQualificationsForm from '../../validators/induction/wantToAddQualificationsFormValidator'
 import EducationLevelValue from '../../../enums/educationLevelValue'
-import { getPreviousPage } from '../../pageFlowHistory'
 
 export default class WantToAddQualificationsCreateController extends WantToAddQualificationsController {
-  getBackLinkUrl(req: Request): string {
-    const { prisonNumber } = req.params
-    const { pageFlowHistory } = req.session
-    if (pageFlowHistory && pageFlowHistory.pageUrls.length > 1) {
-      return getPreviousPage(pageFlowHistory)
-    }
-    return `/prisoners/${prisonNumber}/create-induction/highest-level-of-education`
-  }
-
-  getBackLinkAriaText(req: Request, res: Response): string {
-    return getDynamicBackLinkAriaText(req, res, this.getBackLinkUrl(req))
-  }
-
   submitWantToAddQualificationsForm: RequestHandler = async (req: Request, res: Response): Promise<void> => {
     const { prisonNumber } = req.params
     const { inductionDto } = req.session

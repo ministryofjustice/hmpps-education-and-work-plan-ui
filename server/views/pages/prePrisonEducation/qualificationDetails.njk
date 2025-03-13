@@ -12,7 +12,6 @@
 
 {#
   Data supplied to this template:
-    * backLocation - url of the back link
     * prisoner - object with firsName and lastName
     * form - form object containing the following fields:
       * qualificationSubject - the subject of the qualification being added
@@ -22,7 +21,11 @@
 #}
 
 {% block beforeContent %}
-  {{ govukBackLink({ text: "Back", href: backLinkUrl, attributes: { "aria-label" : backLinkAriaText } }) }}
+  {{ govukBackLink({
+    text: "Back",
+    href: "#",
+    classes: "js-back-link"
+  }) }}
 {% endblock %}
 
 {% block content %}
@@ -67,7 +70,7 @@
               classes: 'govuk-input--width-10',
               errorMessage: errors | findError('qualificationGrade')
             }) }}
-        
+
         </div>
 
         {{ govukButton({

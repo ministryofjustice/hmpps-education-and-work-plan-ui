@@ -3,12 +3,11 @@ import type { EducationDto } from 'dto'
 import type { HighestLevelOfEducationForm } from 'forms'
 import HighestLevelOfEducationView from './highestLevelOfEducationView'
 import { getPrisonerContext } from '../../../data/session/prisonerContexts'
-import EducationController from './educationController'
 
 /**
  * Abstract controller class defining functionality common to both the Create and Update journeys.
  */
-export default abstract class HighestLevelOfEducationController extends EducationController {
+export default abstract class HighestLevelOfEducationController {
   getHighestLevelOfEducationView: RequestHandler = async (
     req: Request,
     res: Response,
@@ -23,12 +22,7 @@ export default abstract class HighestLevelOfEducationController extends Educatio
       this.toHighestLevelOfEducationForm(educationDto)
     getPrisonerContext(req.session, prisonNumber).highestLevelOfEducationForm = undefined
 
-    const view = new HighestLevelOfEducationView(
-      prisonerSummary,
-      this.getBackLinkUrl(req),
-      this.getBackLinkAriaText(req, res),
-      highestLevelOfEducationForm,
-    )
+    const view = new HighestLevelOfEducationView(prisonerSummary, highestLevelOfEducationForm)
     return res.render('pages/prePrisonEducation/highestLevelOfEducation', { ...view.renderArgs })
   }
 

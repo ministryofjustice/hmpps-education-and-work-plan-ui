@@ -47,8 +47,6 @@ describe('qualificationDetailsController', () => {
         prisonerSummary,
         form: expectedQualificationDetailsForm,
         qualificationLevel: QualificationLevelValue.LEVEL_3,
-        backLinkUrl: '/prisoners/A1234BC/education/qualification-level',
-        backLinkAriaText: 'Back to What level of qualification does Jimmy Lightfingers want to add',
       }
 
       // When
@@ -77,8 +75,6 @@ describe('qualificationDetailsController', () => {
         prisonerSummary,
         form: expectedQualificationDetailsForm,
         qualificationLevel: QualificationLevelValue.LEVEL_3,
-        backLinkUrl: '/prisoners/A1234BC/education/qualification-level',
-        backLinkAriaText: 'Back to What level of qualification does Jimmy Lightfingers want to add',
       }
 
       // When

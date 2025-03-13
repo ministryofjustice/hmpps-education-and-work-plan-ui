@@ -4,12 +4,11 @@ import type { EducationDto } from 'dto'
 import QualificationsListView from './qualificationsListView'
 import dateComparator from '../../dateComparator'
 import { getPrisonerContext } from '../../../data/session/prisonerContexts'
-import EducationController from './educationController'
 
 /**
  * Abstract controller class defining functionality common to both the Create and Update journeys.
  */
-export default abstract class QualificationsListController extends EducationController {
+export default abstract class QualificationsListController {
   getQualificationsListView: RequestHandler = async (
     req: Request,
     res: Response,
@@ -32,8 +31,6 @@ export default abstract class QualificationsListController extends EducationCont
 
     const view = new QualificationsListView(
       prisonerSummary,
-      this.getBackLinkUrl(req),
-      this.getBackLinkAriaText(req, res),
       educationDto.qualifications,
       functionalSkills,
       curiousInPrisonCourses,

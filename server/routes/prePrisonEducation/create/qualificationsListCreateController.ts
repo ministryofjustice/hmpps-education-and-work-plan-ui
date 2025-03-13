@@ -5,20 +5,10 @@ import { getPrisonerContext } from '../../../data/session/prisonerContexts'
 import toCreateEducationDto from '../../../data/mappers/createCreateOrUpdateEducationDtoMapper'
 import logger from '../../../../logger'
 import { EducationAndWorkPlanService } from '../../../services'
-import getDynamicBackLinkAriaText from '../../dynamicAriaTextResolver'
 
 export default class QualificationsListCreateController extends QualificationsListController {
   constructor(private readonly educationAndWorkPlanService: EducationAndWorkPlanService) {
     super()
-  }
-
-  getBackLinkUrl(req: Request): string {
-    const { prisonNumber } = req.params
-    return `/prisoners/${prisonNumber}/create-education/highest-level-of-education`
-  }
-
-  getBackLinkAriaText(req: Request, res: Response): string {
-    return getDynamicBackLinkAriaText(req, res, this.getBackLinkUrl(req))
   }
 
   submitQualificationsListView: RequestHandler = async (

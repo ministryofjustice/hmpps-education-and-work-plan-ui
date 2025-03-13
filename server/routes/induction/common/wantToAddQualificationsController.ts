@@ -12,6 +12,16 @@ import EducationLevelValue from '../../../enums/educationLevelValue'
  * Abstract controller class defining functionality common to both the Create and Update Induction journeys.
  */
 export default abstract class WantToAddQualificationsController extends InductionController {
+  override getBackLinkUrl(_req: Request): string {
+    // Default implementation - the js back link is used on the Do You Want To Add Qualifications page
+    return undefined
+  }
+
+  override getBackLinkAriaText(_req: Request): string {
+    // Default implementation - the js back link is used on the Do You Want To Add Qualifications page
+    return undefined
+  }
+
   /**
    * Returns the Want to Add Qualifications view; suitable for use by the Create and Update journeys.
    */
@@ -23,9 +33,7 @@ export default abstract class WantToAddQualificationsController extends Inductio
     const { inductionDto } = req.session
     const { prisonerSummary } = res.locals
 
-    // There will always be a page flow history for this page, because you can only get here from the Induction "Reasons Not To Work"
-    // or "Check Your Answers" pages; both of which correctly setup the page flow history before coming here.
-    this.addCurrentPageToHistory(req)
+    this.addCurrentPageToFlowHistoryWhenComingFromCheckYourAnswers(req)
 
     const { prisonerFunctionalSkills, curiousInPrisonCourses } = res.locals
     const functionalSkills = {
@@ -39,8 +47,6 @@ export default abstract class WantToAddQualificationsController extends Inductio
 
     const view = new WantToAddQualificationsView(
       prisonerSummary,
-      this.getBackLinkUrl(req),
-      this.getBackLinkAriaText(req, res),
       wantToAddQualificationsForm,
       functionalSkills,
       curiousInPrisonCourses,

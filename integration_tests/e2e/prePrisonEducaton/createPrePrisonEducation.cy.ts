@@ -40,8 +40,7 @@ context('Create a prisoners pre-prison education', () => {
     cy.visit(`/prisoners/${prisonNumber}/create-education/highest-level-of-education`)
 
     // Then
-    Page.verifyOnPage(HighestLevelOfEducationPage) //
-      .hasBackLinkTo(`/plan/${prisonNumber}/view/education-and-training`)
+    Page.verifyOnPage(HighestLevelOfEducationPage)
   })
 
   it('should redirect to Overview page given user navigates directly to Qualification Level page', () => {
@@ -106,34 +105,28 @@ context('Create a prisoners pre-prison education', () => {
 
     // When
     // First page is Highest Level of Education
-    Page.verifyOnPage(HighestLevelOfEducationPage)
-      .hasBackLinkTo(`/plan/${prisonNumber}/view/education-and-training`)
+    Page.verifyOnPage(HighestLevelOfEducationPage) //
       .submitPage() // submit the page without answering the question to trigger a validation error
     Page.verifyOnPage(HighestLevelOfEducationPage) //
-      .hasBackLinkTo(`/plan/${prisonNumber}/view/education-and-training`)
       .hasErrorCount(1)
       .hasFieldInError('educationLevel')
       .selectHighestLevelOfEducation(EducationLevelValue.FURTHER_EDUCATION_COLLEGE)
       .submitPage()
 
     // Qualification Level is the next page
-    Page.verifyOnPage(QualificationLevelPage)
-      .hasBackLinkTo(`/prisoners/${prisonNumber}/create-education/highest-level-of-education`)
+    Page.verifyOnPage(QualificationLevelPage) //
       .submitPage() // submit the page without answering the question to trigger a validation error
     Page.verifyOnPage(QualificationLevelPage)
-      .hasBackLinkTo(`/prisoners/${prisonNumber}/create-education/highest-level-of-education`)
       .hasErrorCount(1)
       .hasFieldInError('qualificationLevel')
       .selectQualificationLevel(QualificationLevelValue.LEVEL_2)
       .submitPage()
 
     // Qualification Details is the next page
-    Page.verifyOnPage(QualificationDetailsPage)
-      .hasBackLinkTo(`/prisoners/${prisonNumber}/create-education/qualification-level`)
+    Page.verifyOnPage(QualificationDetailsPage) //
       .setQualificationGrade('C')
       .submitPage() // submit the page without answering the Qualification Subject question to trigger a validation error
     Page.verifyOnPage(QualificationDetailsPage)
-      .hasBackLinkTo(`/prisoners/${prisonNumber}/create-education/qualification-level`)
       .hasErrorCount(1)
       .hasFieldInError('qualificationSubject')
       .setQualificationSubject('GCSE Maths')
@@ -141,7 +134,6 @@ context('Create a prisoners pre-prison education', () => {
 
     // Qualifications List is the next page
     Page.verifyOnPage(QualificationsListPage)
-      .hasBackLinkTo(`/prisoners/${prisonNumber}/create-education/highest-level-of-education`)
       .hasEducationalQualifications(['GCSE Maths'])
       .clickToAddAnotherQualification()
 

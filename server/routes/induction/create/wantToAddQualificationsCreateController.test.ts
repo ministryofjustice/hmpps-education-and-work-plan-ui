@@ -62,40 +62,6 @@ describe('wantToAddQualificationsCreateController', () => {
 
       const expectedView = {
         prisonerSummary,
-        backLinkUrl: '/prisoners/A1234BC/create-induction/highest-level-of-education',
-        backLinkAriaText: `Back to What's the highest level of education Jimmy Lightfingers completed before entering prison?`,
-        form: expectedWantToAddQualificationsForm,
-        functionalSkills,
-        inPrisonCourses,
-      }
-
-      // When
-      await controller.getWantToAddQualificationsView(req, res, next)
-
-      // Then
-      expect(res.render).toHaveBeenCalledWith('pages/prePrisonEducation/wantToAddQualifications', expectedView)
-      expect(req.session.wantToAddQualificationsForm).toBeUndefined()
-    })
-
-    it('should get the Want To Add Qualifications view given previous page was Check Your Answers', async () => {
-      // Given
-      req.session.inductionDto = partialInductionDto()
-
-      req.session.pageFlowHistory = {
-        pageUrls: ['/prisoners/A1234BC/create-induction/check-your-answers'],
-        currentPageIndex: 0,
-      }
-
-      req.session.wantToAddQualificationsForm = undefined
-
-      const expectedWantToAddQualificationsForm: WantToAddQualificationsForm = {
-        wantToAddQualifications: undefined,
-      }
-
-      const expectedView = {
-        prisonerSummary,
-        backLinkUrl: '/prisoners/A1234BC/create-induction/check-your-answers',
-        backLinkAriaText: `Back to Check and save your answers before adding Jimmy Lightfingers's goals`,
         form: expectedWantToAddQualificationsForm,
         functionalSkills,
         inPrisonCourses,

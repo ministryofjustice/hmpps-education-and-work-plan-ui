@@ -35,10 +35,6 @@ describe('qualificationLevelCreateController', () => {
       const inductionDto = aValidInductionDto()
       req.session.inductionDto = inductionDto
       req.session.qualificationLevelForm = undefined
-      req.session.pageFlowHistory = {
-        pageUrls: [`/prisoners/${prisonNumber}/create-induction/qualifications`],
-        currentPageIndex: 0,
-      }
 
       const expectedQualificationLevelForm = {
         qualificationLevel: '',
@@ -47,15 +43,6 @@ describe('qualificationLevelCreateController', () => {
       const expectedView = {
         prisonerSummary,
         form: expectedQualificationLevelForm,
-        backLinkUrl: `/prisoners/${prisonNumber}/create-induction/qualifications`,
-        backLinkAriaText: "Back to Jimmy Lightfingers's qualifications",
-      }
-      const expectedPageFlowHistory = {
-        pageUrls: [
-          `/prisoners/${prisonNumber}/create-induction/qualifications`,
-          `/prisoners/${prisonNumber}/create-induction/qualification-level`,
-        ],
-        currentPageIndex: 1,
       }
 
       // When
@@ -65,17 +52,12 @@ describe('qualificationLevelCreateController', () => {
       expect(res.render).toHaveBeenCalledWith('pages/prePrisonEducation/qualificationLevel', expectedView)
       expect(req.session.qualificationLevelForm).toBeUndefined()
       expect(req.session.inductionDto).toEqual(inductionDto)
-      expect(req.session.pageFlowHistory).toEqual(expectedPageFlowHistory)
     })
 
     it('should get the QualificationLevel view given there is an QualificationLevelForm already on the session', async () => {
       // Given
       const inductionDto = aValidInductionDto()
       req.session.inductionDto = inductionDto
-      req.session.pageFlowHistory = {
-        pageUrls: [`/prisoners/${prisonNumber}/create-induction/qualifications`],
-        currentPageIndex: 0,
-      }
 
       const expectedQualificationLevelForm = { qualificationLevel: '' }
       req.session.qualificationLevelForm = expectedQualificationLevelForm
@@ -83,15 +65,6 @@ describe('qualificationLevelCreateController', () => {
       const expectedView = {
         prisonerSummary,
         form: expectedQualificationLevelForm,
-        backLinkUrl: '/prisoners/A1234BC/create-induction/qualifications',
-        backLinkAriaText: "Back to Jimmy Lightfingers's qualifications",
-      }
-      const expectedPageFlowHistory = {
-        pageUrls: [
-          `/prisoners/${prisonNumber}/create-induction/qualifications`,
-          `/prisoners/${prisonNumber}/create-induction/qualification-level`,
-        ],
-        currentPageIndex: 1,
       }
 
       // When
@@ -101,7 +74,6 @@ describe('qualificationLevelCreateController', () => {
       expect(res.render).toHaveBeenCalledWith('pages/prePrisonEducation/qualificationLevel', expectedView)
       expect(req.session.qualificationLevelForm).toBeUndefined()
       expect(req.session.inductionDto).toEqual(inductionDto)
-      expect(req.session.pageFlowHistory).toEqual(expectedPageFlowHistory)
     })
   })
 
@@ -110,14 +82,6 @@ describe('qualificationLevelCreateController', () => {
       // Given
       const inductionDto = aValidInductionDto()
       req.session.inductionDto = inductionDto
-      const pageFlowHistory = {
-        pageUrls: [
-          `/prisoners/${prisonNumber}/create-induction/qualifications`,
-          `/prisoners/${prisonNumber}/create-induction/qualification-level`,
-        ],
-        currentPageIndex: 1,
-      }
-      req.session.pageFlowHistory = pageFlowHistory
 
       const invalidQualificationLevelForm = {
         qualificationLevel: '',
@@ -142,21 +106,12 @@ describe('qualificationLevelCreateController', () => {
       )
       expect(req.session.qualificationLevelForm).toEqual(invalidQualificationLevelForm)
       expect(req.session.inductionDto).toEqual(inductionDto)
-      expect(req.session.pageFlowHistory).toEqual(pageFlowHistory)
     })
 
     it('should proceed to qualification detail page', async () => {
       // Given
       const inductionDto = aValidInductionDto()
       req.session.inductionDto = inductionDto
-      const pageFlowHistory = {
-        pageUrls: [
-          `/prisoners/${prisonNumber}/create-induction/qualifications`,
-          `/prisoners/${prisonNumber}/create-induction/qualification-level`,
-        ],
-        currentPageIndex: 1,
-      }
-      req.session.pageFlowHistory = pageFlowHistory
 
       const qualificationLevelForm = {
         qualificationLevel: QualificationLevelValue.LEVEL_5,
@@ -171,7 +126,6 @@ describe('qualificationLevelCreateController', () => {
       expect(res.redirect).toHaveBeenCalledWith(`/prisoners/${prisonNumber}/create-induction/qualification-details`)
       expect(req.session.qualificationLevelForm).toEqual(qualificationLevelForm)
       expect(req.session.inductionDto).toEqual(inductionDto)
-      expect(req.session.pageFlowHistory).toEqual(pageFlowHistory)
     })
   })
 })
