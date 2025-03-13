@@ -193,21 +193,17 @@ context('Create an Induction', () => {
 
     // Have You Worked Before page is next
     Page.verifyOnPage(WorkedBeforePage) //
-      .hasBackLinkTo('/prisoners/A00001A/create-induction/additional-training')
       .submitPage() // submit the page without answering the question to trigger a validation error
     Page.verifyOnPage(WorkedBeforePage) //
-      .hasBackLinkTo('/prisoners/A00001A/create-induction/additional-training')
       .hasErrorCount(1)
       .hasFieldInError('hasWorkedBefore')
       .selectWorkedBefore(HasWorkedBeforeValue.YES)
       .submitPage()
 
     // Previous Work Experience Types is the next page
-    Page.verifyOnPage(PreviousWorkExperienceTypesPage)
-      .hasBackLinkTo('/prisoners/A00001A/create-induction/has-worked-before')
+    Page.verifyOnPage(PreviousWorkExperienceTypesPage) //
       .submitPage() // submit the page without answering the question to trigger a validation error
     Page.verifyOnPage(PreviousWorkExperienceTypesPage)
-      .hasBackLinkTo('/prisoners/A00001A/create-induction/has-worked-before')
       .hasErrorCount(1)
       .hasFieldInError('typeOfWorkExperience')
       .selectPreviousWorkExperience(TypeOfWorkExperienceValue.CONSTRUCTION)
@@ -217,10 +213,8 @@ context('Create an Induction', () => {
 
     // Previous Work Experience Details page is next - once for each work industry type submitted on the previous page
     Page.verifyOnPage(PreviousWorkExperienceDetailPage) //
-      .hasBackLinkTo('/prisoners/A00001A/create-induction/previous-work-experience')
       .submitPage() // submit the page without answering the question to trigger a validation error
     Page.verifyOnPage(PreviousWorkExperienceDetailPage) //
-      .hasBackLinkTo('/prisoners/A00001A/create-induction/previous-work-experience')
       .hasErrorCount(2)
       .hasFieldInError('jobRole')
       .hasFieldInError('jobDetails')
@@ -228,7 +222,6 @@ context('Create an Induction', () => {
       .setJobDetails('Basic ground works and building')
       .submitPage()
     Page.verifyOnPage(PreviousWorkExperienceDetailPage) //
-      .hasBackLinkTo('/prisoners/A00001A/create-induction/previous-work-experience/construction')
       .setJobRole('Nightclub DJ')
       .setJobDetails('Self employed DJ operating in bars and clubs')
       .submitPage()
@@ -414,19 +407,16 @@ context('Create an Induction', () => {
 
     // Have You Worked Before page is next
     Page.verifyOnPage(WorkedBeforePage) //
-      .hasBackLinkTo('/prisoners/A00001A/create-induction/additional-training')
       .selectWorkedBefore(HasWorkedBeforeValue.YES)
       .submitPage()
 
     // Previous Work Experience Types is the next page
     Page.verifyOnPage(PreviousWorkExperienceTypesPage)
-      .hasBackLinkTo('/prisoners/A00001A/create-induction/has-worked-before')
       .selectPreviousWorkExperience(TypeOfWorkExperienceValue.CONSTRUCTION)
       .submitPage()
 
     // Previous Work Experience Details page is next - once for each work industry type submitted on the previous page
     Page.verifyOnPage(PreviousWorkExperienceDetailPage) //
-      .hasBackLinkTo('/prisoners/A00001A/create-induction/previous-work-experience')
       .setJobRole('General labourer')
       .setJobDetails('Basic ground works and building')
       .submitPage()

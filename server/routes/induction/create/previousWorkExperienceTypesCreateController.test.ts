@@ -29,7 +29,6 @@ describe('previousWorkExperienceTypesCreateController', () => {
 
   beforeEach(() => {
     jest.resetAllMocks()
-    req.session.pageFlowHistory = undefined
     req.session.previousWorkExperienceTypesForm = undefined
     req.body = {}
   })
@@ -50,8 +49,6 @@ describe('previousWorkExperienceTypesCreateController', () => {
       const expectedView = {
         prisonerSummary,
         form: expectedPreviousWorkExperienceTypesForm,
-        backLinkUrl: '/prisoners/A1234BC/create-induction/has-worked-before',
-        backLinkAriaText: 'Back to Has Jimmy Lightfingers worked before?',
       }
 
       // When
@@ -81,8 +78,6 @@ describe('previousWorkExperienceTypesCreateController', () => {
       const expectedView = {
         prisonerSummary,
         form: expectedPreviousWorkExperienceTypesForm,
-        backLinkUrl: '/prisoners/A1234BC/create-induction/has-worked-before',
-        backLinkAriaText: 'Back to Has Jimmy Lightfingers worked before?',
       }
 
       // When
@@ -95,50 +90,6 @@ describe('previousWorkExperienceTypesCreateController', () => {
       )
       expect(req.session.previousWorkExperienceDetailForm).toBeUndefined()
       expect(req.session.inductionDto).toEqual(inductionDto)
-    })
-
-    it('should get the Previous Work Experience Types view given the previous page was Check Your Answers', async () => {
-      // Given
-      const inductionDto = aValidInductionDto({ hasWorkedBefore: HasWorkedBeforeValue.YES })
-      inductionDto.previousWorkExperiences.experiences = undefined
-      req.session.inductionDto = inductionDto
-
-      req.session.pageFlowHistory = {
-        pageUrls: ['/prisoners/A1234BC/create-induction/check-your-answers'],
-        currentPageIndex: 0,
-      }
-
-      const expectedPageFlowHistory = {
-        pageUrls: [
-          '/prisoners/A1234BC/create-induction/check-your-answers',
-          '/prisoners/A1234BC/create-induction/previous-work-experience',
-        ],
-        currentPageIndex: 1,
-      }
-
-      const expectedPreviousWorkExperienceTypesForm: PreviousWorkExperienceTypesForm = {
-        typeOfWorkExperience: [],
-        typeOfWorkExperienceOther: undefined,
-      }
-
-      const expectedView = {
-        prisonerSummary,
-        form: expectedPreviousWorkExperienceTypesForm,
-        backLinkUrl: '/prisoners/A1234BC/create-induction/check-your-answers',
-        backLinkAriaText: `Back to Check and save your answers before adding Jimmy Lightfingers's goals`,
-      }
-
-      // When
-      await controller.getPreviousWorkExperienceTypesView(req, res, next)
-
-      // Then
-      expect(res.render).toHaveBeenCalledWith(
-        'pages/induction/previousWorkExperience/workExperienceTypes',
-        expectedView,
-      )
-      expect(req.session.previousWorkExperienceDetailForm).toBeUndefined()
-      expect(req.session.inductionDto).toEqual(inductionDto)
-      expect(req.session.pageFlowHistory).toEqual(expectedPageFlowHistory)
     })
   })
 
@@ -186,7 +137,6 @@ describe('previousWorkExperienceTypesCreateController', () => {
       req.session.previousWorkExperienceTypesForm = undefined
 
       req.session.pageFlowQueue = undefined
-      req.session.pageFlowHistory = undefined
 
       const expectedPreviousWorkExperiences: Array<PreviousWorkExperienceDto> = [
         {
@@ -212,11 +162,6 @@ describe('previousWorkExperienceTypesCreateController', () => {
         currentPageIndex: 0,
       }
 
-      const expectedPageFlowHistory: PageFlow = {
-        pageUrls: ['/prisoners/A1234BC/create-induction/previous-work-experience'],
-        currentPageIndex: 0,
-      }
-
       // When
       await controller.submitPreviousWorkExperienceTypesForm(req, res, next)
 
@@ -225,7 +170,6 @@ describe('previousWorkExperienceTypesCreateController', () => {
         `/prisoners/${prisonNumber}/create-induction/previous-work-experience/outdoor`,
       )
       expect(req.session.pageFlowQueue).toEqual(expectedPageFlowQueue)
-      expect(req.session.pageFlowHistory).toEqual(expectedPageFlowHistory)
       expect(req.session.previousWorkExperienceTypesForm).toBeUndefined()
       const updatedInductionDto: InductionDto = req.session.inductionDto
       expect(updatedInductionDto.previousWorkExperiences.experiences).toEqual(expectedPreviousWorkExperiences)
@@ -245,14 +189,6 @@ describe('previousWorkExperienceTypesCreateController', () => {
       req.session.previousWorkExperienceTypesForm = undefined
 
       req.session.pageFlowQueue = undefined
-
-      req.session.pageFlowHistory = {
-        pageUrls: [
-          '/prisoners/A1234BC/create-induction/check-your-answers',
-          '/prisoners/A1234BC/create-induction/previous-work-experience',
-        ],
-        currentPageIndex: 1,
-      }
 
       const expectedPageFlowQueue: PageFlow = {
         pageUrls: [

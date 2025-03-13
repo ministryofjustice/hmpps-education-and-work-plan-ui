@@ -9,6 +9,16 @@ import HasWorkedBeforeValue from '../../../enums/hasWorkedBeforeValue'
  * Abstract controller class defining functionality common to both the Create and Update Induction journeys.
  */
 export default abstract class WorkedBeforeController extends InductionController {
+  override getBackLinkUrl(_req: Request): string {
+    // Default implementation - the js back link is used on the Have You Worked Before page
+    return undefined
+  }
+
+  override getBackLinkAriaText(_req: Request): string {
+    // Default implementation - the js back link is used on the Have You Worked Before page
+    return undefined
+  }
+
   /**
    * Returns the WorkedBefore view; suitable for use by the Create and Update journeys.
    */
@@ -21,12 +31,7 @@ export default abstract class WorkedBeforeController extends InductionController
     const workedBeforeForm = req.session.workedBeforeForm || toWorkedBeforeForm(inductionDto)
     req.session.workedBeforeForm = undefined
 
-    const view = new WorkedBeforeView(
-      prisonerSummary,
-      this.getBackLinkUrl(req),
-      this.getBackLinkAriaText(req, res),
-      workedBeforeForm,
-    )
+    const view = new WorkedBeforeView(prisonerSummary, workedBeforeForm)
     return res.render('pages/induction/workedBefore/index', { ...view.renderArgs })
   }
 

@@ -2,25 +2,10 @@ import { NextFunction, Request, RequestHandler, Response } from 'express'
 import type { WorkedBeforeForm } from 'inductionForms'
 import type { InductionDto } from 'inductionDto'
 import WorkedBeforeController from '../common/workedBeforeController'
-import getDynamicBackLinkAriaText from '../../dynamicAriaTextResolver'
 import validateWorkedBeforeForm from '../../validators/induction/workedBeforeFormValidator'
-import { getPreviousPage } from '../../pageFlowHistory'
 import HasWorkedBeforeValue from '../../../enums/hasWorkedBeforeValue'
 
 export default class WorkedBeforeCreateController extends WorkedBeforeController {
-  getBackLinkUrl(req: Request): string {
-    const { prisonNumber } = req.params
-    const { pageFlowHistory } = req.session
-    const previousPage =
-      (pageFlowHistory && getPreviousPage(pageFlowHistory)) ||
-      `/prisoners/${prisonNumber}/create-induction/additional-training`
-    return previousPage
-  }
-
-  getBackLinkAriaText(req: Request, res: Response): string {
-    return getDynamicBackLinkAriaText(req, res, this.getBackLinkUrl(req))
-  }
-
   submitWorkedBeforeForm: RequestHandler = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { prisonNumber } = req.params
     const { inductionDto } = req.session

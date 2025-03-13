@@ -65,8 +65,6 @@ describe('previousWorkExperienceDetailUpdateController', () => {
       const expectedView = {
         prisonerSummary,
         form: expectedPreviousWorkExperienceDetailForm,
-        backLinkUrl: '/plan/A1234BC/view/work-and-interests',
-        backLinkAriaText: `Back to Jimmy Lightfingers's learning and work progress`,
         typeOfWorkExperience: 'CONSTRUCTION',
       }
 
@@ -99,8 +97,6 @@ describe('previousWorkExperienceDetailUpdateController', () => {
       const expectedView = {
         prisonerSummary,
         form: expectedPreviousWorkExperienceDetailForm,
-        backLinkUrl: '/plan/A1234BC/view/work-and-interests',
-        backLinkAriaText: `Back to Jimmy Lightfingers's learning and work progress`,
         typeOfWorkExperience: 'CONSTRUCTION',
       }
 

@@ -29,8 +29,6 @@ context('Update previous work experience details in the Induction', () => {
     // Induction has previous work experiences of Office and Other
     cy.visit(`/prisoners/${prisonNumber}/induction/previous-work-experience/office`)
     const previousWorkExperienceDetailPage = Page.verifyOnPage(PreviousWorkExperienceDetailPage)
-      .hasBackLinkTo(`/plan/${prisonNumber}/view/work-and-interests`)
-      .backLinkHasAriaLabel(`Back to Daniel Craig's learning and work progress`)
 
     // When
     previousWorkExperienceDetailPage //

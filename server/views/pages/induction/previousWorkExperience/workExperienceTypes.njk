@@ -6,8 +6,6 @@
 {#
 Data supplied to this template:
   * prisonerSummary - object with firstName and lastName
-  * backLinkUrl - url of the back link
-  * backLinkAriaText - the aria label for the back link
   * form - form object containing the following fields:
     * typeOfWorkExperience - Array of selected in-prison work options
     * typeOfWorkExperienceOther? - value for when Other is selected
@@ -15,7 +13,11 @@ Data supplied to this template:
 #}
 
 {% block beforeContent %}
-  {{ govukBackLink({ text: "Back", href: backLinkUrl, attributes: { "aria-label" : backLinkAriaText } }) }}
+  {{ govukBackLink({
+    text: "Back",
+    href: "#",
+    classes: "js-back-link"
+  }) }}
 {% endblock %}
 
 {% block content %}

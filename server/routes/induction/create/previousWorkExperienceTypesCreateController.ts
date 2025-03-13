@@ -3,8 +3,6 @@ import type { PageFlow } from 'viewModels'
 import type { InductionDto } from 'inductionDto'
 import type { PreviousWorkExperienceTypesForm } from 'inductionForms'
 import PreviousWorkExperienceTypesController from '../common/previousWorkExperienceTypesController'
-import { buildNewPageFlowHistory, getPreviousPage } from '../../pageFlowHistory'
-import getDynamicBackLinkAriaText from '../../dynamicAriaTextResolver'
 import validatePreviousWorkExperienceTypesForm from '../../validators/induction/previousWorkExperienceTypesFormValidator'
 import previousWorkExperienceTypeScreenOrderComparator from '../previousWorkExperienceTypeScreenOrderComparator'
 import logger from '../../../../logger'
@@ -12,19 +10,6 @@ import { getNextPage } from '../../pageFlowQueue'
 import { asArray } from '../../../utils/utils'
 
 export default class PreviousWorkExperienceTypesCreateController extends PreviousWorkExperienceTypesController {
-  getBackLinkUrl(req: Request): string {
-    const { prisonNumber } = req.params
-    const { pageFlowHistory } = req.session
-    if (pageFlowHistory) {
-      return getPreviousPage(pageFlowHistory)
-    }
-    return `/prisoners/${prisonNumber}/create-induction/has-worked-before`
-  }
-
-  getBackLinkAriaText(req: Request, res: Response): string {
-    return getDynamicBackLinkAriaText(req, res, this.getBackLinkUrl(req))
-  }
-
   submitPreviousWorkExperienceTypesForm: RequestHandler = async (
     req: Request,
     res: Response,
@@ -56,12 +41,6 @@ export default class PreviousWorkExperienceTypesCreateController extends Previou
     const pageFlowQueue = buildPageFlowQueue(updatedInduction, prisonNumber)
     req.session.pageFlowQueue = pageFlowQueue
 
-    const userHasComeFromCheckYourAnswers = this.checkYourAnswersIsTheFirstPageInThePageHistory(req)
-    if (!userHasComeFromCheckYourAnswers) {
-      // For the normal Create journey we also need the page flow history so subsequent pages know where we have been and can display the correct back link
-      // If we have come from Check Your Answers there will already be a correctly setup Page Flow History
-      req.session.pageFlowHistory = buildNewPageFlowHistory(req)
-    }
     req.session.previousWorkExperienceTypesForm = undefined
 
     return res.redirect(getNextPage(pageFlowQueue))
