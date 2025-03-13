@@ -180,10 +180,8 @@ context('Create an Induction', () => {
 
     // Additional Training page is next
     Page.verifyOnPage(AdditionalTrainingPage) //
-      .hasBackLinkTo('/prisoners/A00001A/create-induction/qualifications')
       .submitPage() // submit the page without answering the question to trigger a validation error
     Page.verifyOnPage(AdditionalTrainingPage) //
-      .hasBackLinkTo('/prisoners/A00001A/create-induction/qualifications')
       .hasErrorCount(1)
       .hasFieldInError('additionalTraining')
       .selectAdditionalTraining(AdditionalTrainingValue.HGV_LICENCE)
@@ -401,7 +399,6 @@ context('Create an Induction', () => {
 
     // Additional Training page is next
     Page.verifyOnPage(AdditionalTrainingPage) //
-      .hasBackLinkTo('/prisoners/A00001A/create-induction/want-to-add-qualifications')
       .selectAdditionalTraining(AdditionalTrainingValue.HGV_LICENCE)
       .submitPage()
 

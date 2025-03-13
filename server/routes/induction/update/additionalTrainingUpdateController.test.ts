@@ -40,7 +40,6 @@ describe('additionalTrainingUpdateController', () => {
 
   beforeEach(() => {
     jest.resetAllMocks()
-    req.session.pageFlowHistory = undefined
     req.body = {}
   })
 
@@ -62,8 +61,6 @@ describe('additionalTrainingUpdateController', () => {
       const expectedView = {
         prisonerSummary,
         form: expectedAdditionalTrainingForm,
-        backLinkUrl: '/plan/A1234BC/view/education-and-training',
-        backLinkAriaText: `Back to Jimmy Lightfingers's learning and work progress`,
       }
 
       // When
@@ -89,8 +86,6 @@ describe('additionalTrainingUpdateController', () => {
       const expectedView = {
         prisonerSummary,
         form: expectedAdditionalTrainingForm,
-        backLinkUrl: '/plan/A1234BC/view/education-and-training',
-        backLinkAriaText: `Back to Jimmy Lightfingers's learning and work progress`,
       }
 
       // When
@@ -167,7 +162,6 @@ describe('additionalTrainingUpdateController', () => {
       expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/view/education-and-training`)
       expect(req.session.additionalTrainingForm).toBeUndefined()
       expect(req.session.inductionDto).toBeUndefined()
-      expect(req.session.pageFlowHistory).toBeUndefined()
     })
 
     it('should not update Induction given error calling service', async () => {

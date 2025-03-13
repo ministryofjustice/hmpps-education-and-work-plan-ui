@@ -1,25 +1,10 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express'
 import type { AdditionalTrainingForm } from 'inductionForms'
 import AdditionalTrainingController from '../common/additionalTrainingController'
-import getDynamicBackLinkAriaText from '../../dynamicAriaTextResolver'
 import validateAdditionalTrainingForm from '../../validators/induction/additionalTrainingFormValidator'
-import { buildNewPageFlowHistory, getPreviousPage } from '../../pageFlowHistory'
 import { asArray } from '../../../utils/utils'
 
 export default class AdditionalTrainingCreateController extends AdditionalTrainingController {
-  getBackLinkUrl(req: Request): string {
-    const { prisonNumber } = req.params
-    const { pageFlowHistory } = req.session
-    const previousPage =
-      (pageFlowHistory && getPreviousPage(pageFlowHistory)) ||
-      `/prisoners/${prisonNumber}/create-induction/qualifications`
-    return previousPage
-  }
-
-  getBackLinkAriaText(req: Request, res: Response): string {
-    return getDynamicBackLinkAriaText(req, res, this.getBackLinkUrl(req))
-  }
-
   submitAdditionalTrainingForm: RequestHandler = async (
     req: Request,
     res: Response,
@@ -48,9 +33,6 @@ export default class AdditionalTrainingCreateController extends AdditionalTraini
     if (this.previousPageWasCheckYourAnswers(req)) {
       return res.redirect(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
     }
-
-    // For the Create journey we need the page flow history so subsequent pages know where we have been and can display the correct back link
-    req.session.pageFlowHistory = buildNewPageFlowHistory(req)
 
     return res.redirect(`/prisoners/${prisonNumber}/create-induction/has-worked-before`)
   }
