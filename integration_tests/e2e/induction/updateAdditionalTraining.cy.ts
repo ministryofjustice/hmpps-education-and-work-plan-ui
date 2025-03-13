@@ -27,8 +27,6 @@ context('Update additional training within an Induction', () => {
     const prisonNumber = 'G6115VJ'
     cy.visit(`/prisoners/${prisonNumber}/induction/additional-training`)
     const additionalTrainingPage = Page.verifyOnPage(AdditionalTrainingPage)
-      .hasBackLinkTo(`/plan/${prisonNumber}/view/education-and-training`)
-      .backLinkHasAriaLabel(`Back to Daniel Craig's learning and work progress`)
 
     // When
     additionalTrainingPage //

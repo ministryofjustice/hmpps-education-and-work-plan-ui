@@ -5,8 +5,6 @@ import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateIn
 import logger from '../../../../logger'
 import { InductionService } from '../../../services'
 import validateAdditionalTrainingForm from '../../validators/induction/additionalTrainingFormValidator'
-import { getPreviousPage } from '../../pageFlowHistory'
-import getDynamicBackLinkAriaText from '../../dynamicAriaTextResolver'
 
 /**
  * Controller for Updating a Prisoner's Additional Training or Vocational Qualifications screen of the Induction.
@@ -14,19 +12,6 @@ import getDynamicBackLinkAriaText from '../../dynamicAriaTextResolver'
 export default class AdditionalTrainingUpdateController extends AdditionalTrainingController {
   constructor(private readonly inductionService: InductionService) {
     super()
-  }
-
-  getBackLinkUrl(req: Request): string {
-    const { prisonNumber } = req.params
-    const { pageFlowHistory } = req.session
-    if (pageFlowHistory) {
-      return getPreviousPage(pageFlowHistory)
-    }
-    return `/plan/${prisonNumber}/view/education-and-training`
-  }
-
-  getBackLinkAriaText(req: Request, res: Response): string {
-    return getDynamicBackLinkAriaText(req, res, this.getBackLinkUrl(req))
   }
 
   submitAdditionalTrainingForm: RequestHandler = async (

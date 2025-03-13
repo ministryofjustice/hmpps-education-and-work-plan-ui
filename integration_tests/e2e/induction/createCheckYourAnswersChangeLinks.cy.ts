@@ -89,7 +89,6 @@ context(`Change links on the Check Your Answers page when creating an Induction`
     // Change Other Training
     Page.verifyOnPage(CheckYourAnswersPage)
       .clickAdditionalTrainingChangeLink()
-      .hasBackLinkTo(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
       .deSelectAdditionalTraining(AdditionalTrainingValue.HGV_LICENCE)
       .selectAdditionalTraining(AdditionalTrainingValue.MANUAL_HANDLING)
       .selectAdditionalTraining(AdditionalTrainingValue.CSCS_CARD)

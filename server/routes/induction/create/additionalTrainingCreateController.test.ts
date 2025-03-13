@@ -47,8 +47,6 @@ describe('additionalTrainingCreateController', () => {
       const expectedView = {
         prisonerSummary,
         form: expectedAdditionalTrainingForm,
-        backLinkUrl: '/prisoners/A1234BC/create-induction/qualifications',
-        backLinkAriaText: `Back to Jimmy Lightfingers's qualifications`,
       }
 
       // When
@@ -75,8 +73,6 @@ describe('additionalTrainingCreateController', () => {
       const expectedView = {
         prisonerSummary,
         form: expectedAdditionalTrainingForm,
-        backLinkUrl: '/prisoners/A1234BC/create-induction/qualifications',
-        backLinkAriaText: `Back to Jimmy Lightfingers's qualifications`,
       }
 
       // When
@@ -86,48 +82,6 @@ describe('additionalTrainingCreateController', () => {
       expect(res.render).toHaveBeenCalledWith('pages/induction/additionalTraining/index', expectedView)
       expect(req.session.additionalTrainingForm).toBeUndefined()
       expect(req.session.inductionDto).toEqual(inductionDto)
-    })
-
-    it('should get the Ability To Work view given the previous page was Check Your Answers', async () => {
-      // Given
-      const inductionDto = aValidInductionDto()
-      inductionDto.previousTraining = undefined
-      req.session.inductionDto = inductionDto
-      req.session.additionalTrainingForm = undefined
-
-      req.session.pageFlowHistory = {
-        pageUrls: ['/prisoners/A1234BC/create-induction/check-your-answers'],
-        currentPageIndex: 0,
-      }
-
-      const expectedPageFlowHistory = {
-        pageUrls: [
-          '/prisoners/A1234BC/create-induction/check-your-answers',
-          '/prisoners/A1234BC/create-induction/additional-training',
-        ],
-        currentPageIndex: 1,
-      }
-
-      const expectedAdditionalTrainingForm: AdditionalTrainingForm = {
-        additionalTraining: [],
-        additionalTrainingOther: undefined,
-      }
-
-      const expectedView = {
-        prisonerSummary,
-        form: expectedAdditionalTrainingForm,
-        backLinkUrl: '/prisoners/A1234BC/create-induction/check-your-answers',
-        backLinkAriaText: `Back to Check and save your answers before adding Jimmy Lightfingers's goals`,
-      }
-
-      // When
-      await controller.getAdditionalTrainingView(req, res, next)
-
-      // Then
-      expect(res.render).toHaveBeenCalledWith('pages/induction/additionalTraining/index', expectedView)
-      expect(req.session.additionalTrainingForm).toBeUndefined()
-      expect(req.session.inductionDto).toEqual(inductionDto)
-      expect(req.session.pageFlowHistory).toEqual(expectedPageFlowHistory)
     })
   })
 

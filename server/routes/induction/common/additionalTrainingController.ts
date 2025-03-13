@@ -9,6 +9,16 @@ import AdditionalTrainingValue from '../../../enums/additionalTrainingValue'
  * Abstract controller class defining functionality common to both the Create and Update Induction journeys.
  */
 export default abstract class AdditionalTrainingController extends InductionController {
+  override getBackLinkUrl(_req: Request): string {
+    // Default implementation - the js back link is used on the Additional Training page
+    return undefined
+  }
+
+  override getBackLinkAriaText(_req: Request): string {
+    // Default implementation - the js back link is used on the Additional Training page
+    return undefined
+  }
+
   /**
    * Returns the Additional Training view; suitable for use by the Create and Update journeys.
    */
@@ -20,19 +30,12 @@ export default abstract class AdditionalTrainingController extends InductionCont
     const { inductionDto } = req.session
     const { prisonerSummary } = res.locals
 
-    if (req.session.pageFlowHistory) {
-      this.addCurrentPageToHistory(req)
-    }
+    this.addCurrentPageToFlowHistoryWhenComingFromCheckYourAnswers(req)
 
     const additionalTrainingForm = req.session.additionalTrainingForm || toAdditionalTrainingForm(inductionDto)
     req.session.additionalTrainingForm = undefined
 
-    const view = new AdditionalTrainingView(
-      prisonerSummary,
-      this.getBackLinkUrl(req),
-      this.getBackLinkAriaText(req, res),
-      additionalTrainingForm,
-    )
+    const view = new AdditionalTrainingView(prisonerSummary, additionalTrainingForm)
     return res.render('pages/induction/additionalTraining/index', { ...view.renderArgs })
   }
 
