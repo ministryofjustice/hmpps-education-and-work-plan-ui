@@ -5,8 +5,6 @@ import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateIn
 import logger from '../../../../logger'
 import { InductionService } from '../../../services'
 import validateWorkInterestTypesForm from '../../validators/induction/workInterestTypesFormValidator'
-import { getPreviousPage } from '../../pageFlowHistory'
-import getDynamicBackLinkAriaText from '../../dynamicAriaTextResolver'
 
 /**
  * Controller for updating a Prisoner's Future Work Interest Types part of an Induction.
@@ -14,18 +12,6 @@ import getDynamicBackLinkAriaText from '../../dynamicAriaTextResolver'
 export default class WorkInterestTypesUpdateController extends WorkInterestTypesController {
   constructor(private readonly inductionService: InductionService) {
     super()
-  }
-
-  getBackLinkUrl(req: Request): string {
-    const { prisonNumber } = req.params
-    const { pageFlowHistory } = req.session
-    const previousPage =
-      (pageFlowHistory && getPreviousPage(pageFlowHistory)) || `/plan/${prisonNumber}/view/work-and-interests`
-    return previousPage
-  }
-
-  getBackLinkAriaText(req: Request, res: Response): string {
-    return getDynamicBackLinkAriaText(req, res, this.getBackLinkUrl(req))
   }
 
   submitWorkInterestTypesForm: RequestHandler = async (

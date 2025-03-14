@@ -1,22 +1,9 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express'
 import HopingToWorkOnReleaseController from '../common/hopingToWorkOnReleaseController'
-import getDynamicBackLinkAriaText from '../../dynamicAriaTextResolver'
 import validateHopingToWorkOnReleaseForm from '../../validators/induction/hopingToWorkOnReleaseFormValidator'
 import YesNoValue from '../../../enums/yesNoValue'
-import { getPreviousPage } from '../../pageFlowHistory'
 
 export default class HopingToWorkOnReleaseCreateController extends HopingToWorkOnReleaseController {
-  getBackLinkUrl(req: Request): string {
-    const { prisonNumber } = req.params
-    const { pageFlowHistory } = req.session
-    const previousPage = (pageFlowHistory && getPreviousPage(pageFlowHistory)) || `/plan/${prisonNumber}/view/overview`
-    return previousPage
-  }
-
-  getBackLinkAriaText(req: Request, res: Response): string {
-    return getDynamicBackLinkAriaText(req, res, this.getBackLinkUrl(req))
-  }
-
   submitHopingToWorkOnReleaseForm: RequestHandler = async (
     req: Request,
     res: Response,

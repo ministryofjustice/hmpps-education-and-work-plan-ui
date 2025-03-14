@@ -54,8 +54,6 @@ describe('workInterestRolesCreateController', () => {
       const expectedView = {
         prisonerSummary,
         form: expectedWorkInterestRolesForm,
-        backLinkUrl: '/prisoners/A1234BC/create-induction/work-interest-types',
-        backLinkAriaText: 'Back to What type of work is Jimmy Lightfingers interested in?',
       }
 
       // When
@@ -64,54 +62,6 @@ describe('workInterestRolesCreateController', () => {
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/induction/workInterests/workInterestRoles', expectedView)
       expect(req.session.inductionDto).toEqual(inductionDto)
-    })
-
-    it('should get the Work Interest Types view given the previous page was Check Your Answers', async () => {
-      // Given
-      const inductionDto = aValidInductionDto()
-      inductionDto.futureWorkInterests.interests = [
-        { workType: WorkInterestTypeValue.RETAIL, workTypeOther: undefined, role: undefined },
-        { workType: WorkInterestTypeValue.CONSTRUCTION, workTypeOther: undefined, role: undefined },
-        { workType: WorkInterestTypeValue.OTHER, workTypeOther: 'Film, TV and media', role: undefined },
-      ]
-      req.session.inductionDto = inductionDto
-
-      req.session.pageFlowHistory = {
-        pageUrls: ['/prisoners/A1234BC/create-induction/check-your-answers'],
-        currentPageIndex: 0,
-      }
-
-      const expectedPageFlowHistory = {
-        pageUrls: [
-          '/prisoners/A1234BC/create-induction/check-your-answers',
-          '/prisoners/A1234BC/create-induction/work-interest-roles',
-        ],
-        currentPageIndex: 1,
-      }
-
-      const expectedWorkInterestRolesForm = {
-        workInterestRoles: [
-          [WorkInterestTypeValue.RETAIL, undefined],
-          [WorkInterestTypeValue.CONSTRUCTION, undefined],
-          [WorkInterestTypeValue.OTHER, undefined],
-        ],
-        workInterestTypesOther: 'Film, TV and media',
-      }
-
-      const expectedView = {
-        prisonerSummary,
-        form: expectedWorkInterestRolesForm,
-        backLinkUrl: '/prisoners/A1234BC/create-induction/check-your-answers',
-        backLinkAriaText: `Back to Check and save your answers before adding Jimmy Lightfingers's goals`,
-      }
-
-      // When
-      await controller.getWorkInterestRolesView(req, res, next)
-
-      // Then
-      expect(res.render).toHaveBeenCalledWith('pages/induction/workInterests/workInterestRoles', expectedView)
-      expect(req.session.inductionDto).toEqual(inductionDto)
-      expect(req.session.pageFlowHistory).toEqual(expectedPageFlowHistory)
     })
   })
 

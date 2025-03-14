@@ -1,25 +1,10 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express'
 import type { WorkInterestRolesForm } from 'inductionForms'
 import WorkInterestRolesController from '../common/workInterestRolesController'
-import getDynamicBackLinkAriaText from '../../dynamicAriaTextResolver'
-import { getPreviousPage } from '../../pageFlowHistory'
 import validateWorkInterestRolesForm from '../../validators/induction/workInterestRolesFormValidator'
 import WorkInterestTypeValue from '../../../enums/workInterestTypeValue'
 
 export default class WorkInterestRolesCreateController extends WorkInterestRolesController {
-  getBackLinkUrl(req: Request): string {
-    const { prisonNumber } = req.params
-    const { pageFlowHistory } = req.session
-    const previousPage =
-      (pageFlowHistory && getPreviousPage(pageFlowHistory)) ||
-      `/prisoners/${prisonNumber}/create-induction/work-interest-types`
-    return previousPage
-  }
-
-  getBackLinkAriaText(req: Request, res: Response): string {
-    return getDynamicBackLinkAriaText(req, res, this.getBackLinkUrl(req))
-  }
-
   submitWorkInterestRolesForm: RequestHandler = async (
     req: Request,
     res: Response,

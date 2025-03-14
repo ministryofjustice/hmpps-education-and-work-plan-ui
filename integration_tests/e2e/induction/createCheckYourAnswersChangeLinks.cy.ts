@@ -96,7 +96,6 @@ context(`Change links on the Check Your Answers page when creating an Induction`
     // Change work interests
     Page.verifyOnPage(CheckYourAnswersPage)
       .clickWorkInterestsChangeLink()
-      .hasBackLinkTo(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
       .deSelectWorkInterestType(WorkInterestTypeValue.DRIVING)
       .selectWorkInterestType(WorkInterestTypeValue.MANUFACTURING)
       .selectWorkInterestType(WorkInterestTypeValue.OUTDOOR)
@@ -105,7 +104,6 @@ context(`Change links on the Check Your Answers page when creating an Induction`
     // Change work interest roles
     Page.verifyOnPage(CheckYourAnswersPage)
       .clickParticularJobInterestsChangeLink()
-      .hasBackLinkTo(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
       .setWorkInterestRole(WorkInterestTypeValue.MANUFACTURING, 'Welder')
       .setWorkInterestRole(WorkInterestTypeValue.OUTDOOR, 'Gardener')
       .submitPage()
@@ -251,18 +249,15 @@ context(`Change links on the Check Your Answers page when creating an Induction`
     Page.verifyOnPage(CheckYourAnswersPage)
       .hasHopingToWorkOnRelease(HopingToGetWorkValue.NO)
       .clickHopingToWorkOnReleaseChangeLink()
-      .hasBackLinkTo(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
       .selectHopingWorkOnRelease(HopingToGetWorkValue.YES)
       .submitPage()
 
     Page.verifyOnPage(FutureWorkInterestTypesPage)
-      .hasBackLinkTo(`/prisoners/${prisonNumber}/create-induction/hoping-to-work-on-release`)
       .selectWorkInterestType(WorkInterestTypeValue.MANUFACTURING)
       .selectWorkInterestType(WorkInterestTypeValue.OUTDOOR)
       .submitPage()
 
     Page.verifyOnPage(FutureWorkInterestRolesPage)
-      .hasBackLinkTo(`/prisoners/${prisonNumber}/create-induction/work-interest-types`)
       .setWorkInterestRole(WorkInterestTypeValue.MANUFACTURING, 'Welder')
       .setWorkInterestRole(WorkInterestTypeValue.OUTDOOR, 'Gardener')
       .submitPage()
@@ -283,7 +278,6 @@ context(`Change links on the Check Your Answers page when creating an Induction`
     Page.verifyOnPage(CheckYourAnswersPage)
       .hasHopingToWorkOnRelease(HopingToGetWorkValue.YES)
       .clickHopingToWorkOnReleaseChangeLink()
-      .hasBackLinkTo(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
       .selectHopingWorkOnRelease(HopingToGetWorkValue.NO)
       .submitPage()
 

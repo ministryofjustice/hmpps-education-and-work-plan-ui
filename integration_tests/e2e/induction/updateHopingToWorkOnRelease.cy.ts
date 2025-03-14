@@ -34,7 +34,6 @@ context('Update Hoping to work on release within an Induction', () => {
 
     // When
     hopingToWorkOnReleasePage //
-      .hasBackLinkTo(`/plan/${prisonNumber}/view/work-and-interests`)
       .selectHopingWorkOnRelease(HopingToGetWorkValue.NO)
       .submitPage()
 
@@ -58,17 +57,14 @@ context('Update Hoping to work on release within an Induction', () => {
 
     // When
     hopingToWorkOnReleasePage //
-      .hasBackLinkTo(`/plan/${prisonNumber}/view/work-and-interests`)
       .selectHopingWorkOnRelease(HopingToGetWorkValue.YES)
       .submitPage()
     Page.verifyOnPage(FutureWorkInterestTypesPage)
-      .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/hoping-to-work-on-release`)
       .selectWorkInterestType(WorkInterestTypeValue.CONSTRUCTION)
       .selectWorkInterestType(WorkInterestTypeValue.OTHER)
       .setWorkInterestTypesOther('Renewable energy')
       .submitPage()
     Page.verifyOnPage(FutureWorkInterestRolesPage)
-      .hasBackLinkTo(`/prisoners/${prisonNumber}/induction/work-interest-types`)
       .setWorkInterestRole(WorkInterestTypeValue.CONSTRUCTION, 'Bricklayer')
       .setWorkInterestRole(WorkInterestTypeValue.OTHER, 'Solar panel installer')
       .submitPage()

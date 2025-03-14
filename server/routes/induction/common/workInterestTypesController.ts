@@ -9,6 +9,16 @@ import WorkInterestTypeValue from '../../../enums/workInterestTypeValue'
  * Abstract controller class defining functionality common to both the Create and Update Induction journeys.
  */
 export default abstract class WorkInterestTypesController extends InductionController {
+  override getBackLinkUrl(_req: Request): string {
+    // Default implementation - the js back link is used on the Work Interest Types page
+    return undefined
+  }
+
+  override getBackLinkAriaText(_req: Request): string {
+    // Default implementation - the js back link is used on the Work Interest Types page
+    return undefined
+  }
+
   /**
    * Returns the Future Work Interest Types view; suitable for use by the Create and Update journeys.
    */
@@ -16,17 +26,12 @@ export default abstract class WorkInterestTypesController extends InductionContr
     const { inductionDto } = req.session
     const { prisonerSummary } = res.locals
 
-    this.addCurrentPageToHistory(req)
+    this.addCurrentPageToFlowHistoryWhenComingFromCheckYourAnswers(req)
 
     const workInterestTypesForm = req.session.workInterestTypesForm || toWorkInterestTypesForm(inductionDto)
     req.session.workInterestTypesForm = undefined
 
-    const view = new WorkInterestTypesView(
-      prisonerSummary,
-      this.getBackLinkUrl(req),
-      this.getBackLinkAriaText(req, res),
-      workInterestTypesForm,
-    )
+    const view = new WorkInterestTypesView(prisonerSummary, workInterestTypesForm)
     return res.render('pages/induction/workInterests/workInterestTypes', { ...view.renderArgs })
   }
 
