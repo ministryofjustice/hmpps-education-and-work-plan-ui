@@ -9,16 +9,6 @@ import dateComparator from '../../dateComparator'
  * Abstract controller class defining functionality common to both the Create and Update Induction journeys.
  */
 export default abstract class QualificationsListController extends InductionController {
-  override getBackLinkUrl(_req: Request): string {
-    // Default implementation - the js back link is used on the Qualifications list page
-    return undefined
-  }
-
-  override getBackLinkAriaText(_req: Request): string {
-    // Default implementation - the js back link is used on the Qualifications list page
-    return undefined
-  }
-
   /**
    * Returns the Qualifications List view; suitable for use by the Create and Update journeys.
    */
@@ -36,10 +26,6 @@ export default abstract class QualificationsListController extends InductionCont
     const functionalSkills = {
       ...prisonerFunctionalSkills,
       assessments: mostRecentAssessments(prisonerFunctionalSkills.assessments || []),
-    }
-
-    if (this.checkYourAnswersIsInThePageHistory(req)) {
-      this.addCurrentPageToHistory(req)
     }
 
     const view = new QualificationsListView(prisonerSummary, qualifications, functionalSkills, curiousInPrisonCourses)

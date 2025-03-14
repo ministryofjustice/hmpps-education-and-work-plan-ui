@@ -9,16 +9,6 @@ import AdditionalTrainingValue from '../../../enums/additionalTrainingValue'
  * Abstract controller class defining functionality common to both the Create and Update Induction journeys.
  */
 export default abstract class AdditionalTrainingController extends InductionController {
-  override getBackLinkUrl(_req: Request): string {
-    // Default implementation - the js back link is used on the Additional Training page
-    return undefined
-  }
-
-  override getBackLinkAriaText(_req: Request): string {
-    // Default implementation - the js back link is used on the Additional Training page
-    return undefined
-  }
-
   /**
    * Returns the Additional Training view; suitable for use by the Create and Update journeys.
    */

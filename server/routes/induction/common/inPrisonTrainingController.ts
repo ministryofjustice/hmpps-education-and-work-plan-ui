@@ -9,16 +9,6 @@ import InPrisonTrainingValue from '../../../enums/inPrisonTrainingValue'
  * Abstract controller class defining functionality common to both the Create and Update Induction journeys.
  */
 export default abstract class InPrisonTrainingController extends InductionController {
-  override getBackLinkUrl(_req: Request): string {
-    // Default implementation - the js back link is used on the In Prison Training page
-    return undefined
-  }
-
-  override getBackLinkAriaText(_req: Request): string {
-    // Default implementation - the js back link is used on the In Prison Training page
-    return undefined
-  }
-
   /**
    * Returns the In-Prison Training view; suitable for use by the Create and Update journeys.
    */
