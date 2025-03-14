@@ -51,19 +51,6 @@ const getPreviousPage = (pageFlowHistory: PageFlow): string => {
 const isFirstPage = (pageFlowHistory: PageFlow): boolean => pageFlowHistory.currentPageIndex === 0
 
 /**
- * Returns true if the current page in the specified [PageFlow] is the last page.
- */
-const isLastPage = (pageFlowHistory: PageFlow): boolean =>
-  pageFlowHistory.currentPageIndex === pageFlowHistory.pageUrls.length - 1
-
-/**
- * Returns true if the provided page url in the specified [PageFlow] is the last page.
- */
-const isPageInFlow = (pageFlowHistory: PageFlow, pageUrl: string): boolean => {
-  return pageFlowHistory.pageUrls.findIndex(page => page === pageUrl) >= 0
-}
-
-/**
  * Sets the current page index to the position of the provided page.
  * Any pages after this index are removed, so that the current page is always is the last page. This is to maintain a
  * clean history of previous pages (i.e. for the back links).
@@ -86,19 +73,4 @@ const setCurrentPageIndex = (pageFlowHistory: PageFlow, currentPagePath: string)
   return pageFlowHistory
 }
 
-/**
- * Return `true` if the specified page flow history contains a page URL that matches the expected page URL
- */
-const pageFlowHistoryContains = (pageFlowHistory: PageFlow, expectedPageUrl: RegExp): boolean => {
-  return pageFlowHistory && pageFlowHistory.pageUrls.find(pageUrl => expectedPageUrl.test(pageUrl)) != null
-}
-
-export {
-  buildNewPageFlowHistory,
-  setCurrentPage,
-  getPreviousPage,
-  isFirstPage,
-  isLastPage,
-  isPageInFlow,
-  pageFlowHistoryContains,
-}
+export { buildNewPageFlowHistory, setCurrentPage, getPreviousPage, isFirstPage }

@@ -1,14 +1,6 @@
 import { Request } from 'express'
 import type { PageFlow } from 'viewModels'
-import {
-  buildNewPageFlowHistory,
-  setCurrentPage,
-  getPreviousPage,
-  isFirstPage,
-  isLastPage,
-  isPageInFlow,
-  pageFlowHistoryContains,
-} from './pageFlowHistory'
+import { buildNewPageFlowHistory, setCurrentPage, getPreviousPage, isFirstPage } from './pageFlowHistory'
 
 describe('pageFlowHistory', () => {
   const PAGE_FLOW_HISTORY: PageFlow = {
@@ -88,43 +80,6 @@ describe('pageFlowHistory', () => {
     })
   })
 
-  describe('isLastPage', () => {
-    it('should determine if isLastPage given the pageFlowHistory is on the last page', () => {
-      // Given
-      const pageFlowHistory = PAGE_FLOW_HISTORY
-
-      // When
-      const actual = isLastPage(pageFlowHistory)
-
-      // Then
-      expect(actual).toBeTruthy()
-    })
-  })
-
-  describe('isPageInFlow', () => {
-    it('should determine if isPageInFlow given the page is in the pageFlowHistory', () => {
-      // Given
-      const pageFlowHistory = PAGE_FLOW_HISTORY
-
-      // When
-      const actual = isPageInFlow(pageFlowHistory, '/third-page')
-
-      // Then
-      expect(actual).toBeTruthy()
-    })
-
-    it('should determine if isPageInFlow given the page is not in the pageFlowHistory', () => {
-      // Given
-      const pageFlowHistory = PAGE_FLOW_HISTORY
-
-      // When
-      const actual = isPageInFlow(pageFlowHistory, '/random-page')
-
-      // Then
-      expect(actual).toBeFalsy()
-    })
-  })
-
   describe('addCurrentPage', () => {
     it('should add page and increment page index', () => {
       // Given
@@ -154,51 +109,6 @@ describe('pageFlowHistory', () => {
 
       // Then
       expect(actual).toEqual(expected)
-    })
-  })
-
-  describe('pageFlowHistoryContains', () => {
-    const pageFlowHistory: PageFlow = {
-      pageUrls: ['/prisoners/A1234BC/induction/check-your-answers', '/prisoners/A1234BC/induction/qualifications'],
-      currentPageIndex: 1,
-    }
-
-    Array.of<RegExp>(
-      / /,
-      /checkYourAnswers/,
-      /check-Your-Answers/,
-      /check-your-answers\//,
-      /\/checkYourAnswers/,
-      /\/check-Your-Answers/,
-      /\/check-your-answers\//,
-      /Qualifications/,
-    ).forEach(expected => {
-      it(`should return false given ${expected}`, () => {
-        // Given
-
-        // When
-        const actual = pageFlowHistoryContains(pageFlowHistory, expected)
-
-        // Then
-        expect(actual).toEqual(false)
-      })
-    })
-
-    Array.of<RegExp>(
-      /check-your-answers/,
-      /\/check-your-answers/,
-      /^\/prisoners\/.*\/induction\/check.*$/,
-      /qualifications/,
-    ).forEach(expected => {
-      it(`should return true given ${expected}`, () => {
-        // Given
-
-        // When
-        const actual = pageFlowHistoryContains(pageFlowHistory, expected)
-
-        // Then
-        expect(actual).toEqual(true)
-      })
     })
   })
 })

@@ -1,20 +1,10 @@
-import { Request, RequestHandler } from 'express'
+import { RequestHandler } from 'express'
 import type { InductionDto } from 'inductionDto'
 import type { InductionNoteForm } from 'inductionForms'
 import validateInductionNoteForm from '../../validators/induction/inductionNoteFormValidator'
 import InductionNoteController from '../common/inductionNoteController'
 
 export default class InductionNoteCreateController extends InductionNoteController {
-  getBackLinkUrl(_req: Request): string {
-    // Default implementation - a JS back link is used on the Who Completed The Induction page
-    return undefined
-  }
-
-  getBackLinkAriaText(_req: Request): string {
-    // Default implementation - a JS back link is used on the Who Completed The Induction page
-    return undefined
-  }
-
   submitInductionNoteForm: RequestHandler = async (req, res, next): Promise<void> => {
     const { inductionDto } = req.session
     const { prisonNumber } = req.params

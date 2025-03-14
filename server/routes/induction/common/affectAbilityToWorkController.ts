@@ -9,16 +9,6 @@ import AbilityToWorkValue from '../../../enums/abilityToWorkValue'
  * Abstract controller class defining functionality common to both the Create and Update Induction journeys.
  */
 export default abstract class AffectAbilityToWorkController extends InductionController {
-  override getBackLinkUrl(_req: Request): string {
-    // Default implementation - the js back link is used on the Factors Affecting Ability To Work page
-    return undefined
-  }
-
-  override getBackLinkAriaText(_req: Request): string {
-    // Default implementation - the js back link is used on the Factors Affecting Ability To Work page
-    return undefined
-  }
-
   /**
    * Returns the Affects on Ability To Work view; suitable for use by the Create and Update journeys.
    */

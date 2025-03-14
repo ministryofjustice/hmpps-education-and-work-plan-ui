@@ -9,16 +9,6 @@ import TypeOfWorkExperienceValue from '../../../enums/typeOfWorkExperienceValue'
  * Abstract controller class defining functionality common to both the Create and Update Induction journeys.
  */
 export default abstract class PreviousWorkExperienceTypesController extends InductionController {
-  override getBackLinkUrl(_req: Request): string {
-    // Default implementation - the js back link is used on the Previous Work Experience Types page
-    return undefined
-  }
-
-  override getBackLinkAriaText(_req: Request): string {
-    // Default implementation - the js back link is used on the Previous Work Experience Types page
-    return undefined
-  }
-
   /**
    * Returns the Previous Work Experience Types view; suitable for use by the Create and Update journeys.
    */
@@ -31,10 +21,6 @@ export default abstract class PreviousWorkExperienceTypesController extends Indu
     const { prisonerSummary } = res.locals
 
     this.addCurrentPageToFlowHistoryWhenComingFromCheckYourAnswers(req)
-
-    if (req.session.pageFlowHistory) {
-      this.addCurrentPageToHistory(req)
-    }
 
     const previousWorkExperienceDetailsForm =
       req.session.previousWorkExperienceTypesForm || toPreviousWorkExperienceTypesForm(inductionDto)
