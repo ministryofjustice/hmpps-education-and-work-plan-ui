@@ -60,8 +60,6 @@ describe('qualificationsListUpdateController', () => {
 
       const expectedView = {
         prisonerSummary,
-        backLinkUrl: '/plan/A1234BC/view/education-and-training',
-        backLinkAriaText: `Back to Jimmy Lightfingers's learning and work progress`,
         qualifications: expectedQualifications,
         functionalSkills,
         inPrisonCourses,

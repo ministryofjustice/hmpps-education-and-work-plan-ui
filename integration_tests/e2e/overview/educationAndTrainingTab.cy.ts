@@ -371,7 +371,6 @@ context('Prisoner Overview page - Education And Training tab', () => {
 
       // Then
       Page.verifyOnPage(QualificationsListPage) // Expect to be on the Qualifications List page because the induction had qualifications to start with
-        .hasBackLinkTo(`/plan/${prisonNumber}/view/education-and-training`)
     })
   })
 })

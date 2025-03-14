@@ -1,30 +1,9 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express'
 import type { InductionDto } from 'inductionDto'
 import QualificationsListController from '../common/qualificationsListController'
-import { buildNewPageFlowHistory, getPreviousPage } from '../../pageFlowHistory'
-import getDynamicBackLinkAriaText from '../../dynamicAriaTextResolver'
-import HopingToGetWorkValue from '../../../enums/hopingToGetWorkValue'
+import { buildNewPageFlowHistory } from '../../pageFlowHistory'
 
 export default class QualificationsListCreateController extends QualificationsListController {
-  getBackLinkUrl(req: Request): string {
-    const { prisonNumber } = req.params
-    const { pageFlowHistory, inductionDto } = req.session
-    let previousPage = pageFlowHistory && getPreviousPage(pageFlowHistory)
-    if (!previousPage) {
-      // No previous page from the Page Flow History
-      // The previous page in this case is based on whether the prisoner is hoping to work on release
-      previousPage =
-        inductionDto.workOnRelease.hopingToWork === HopingToGetWorkValue.YES
-          ? `/prisoners/${prisonNumber}/create-induction/work-interest-roles`
-          : `/prisoners/${prisonNumber}/create-induction/want-to-add-qualifications`
-    }
-    return previousPage
-  }
-
-  getBackLinkAriaText(req: Request, res: Response): string {
-    return getDynamicBackLinkAriaText(req, res, this.getBackLinkUrl(req))
-  }
-
   submitQualificationsListView: RequestHandler = async (
     req: Request,
     res: Response,
@@ -47,7 +26,7 @@ export default class QualificationsListCreateController extends QualificationsLi
       return res.redirect(`/prisoners/${prisonNumber}/create-induction/qualifications`)
     }
 
-    if (this.previousPageWasCheckYourAnswers(req)) {
+    if (this.checkYourAnswersIsTheFirstPageInThePageHistory(req)) {
       req.session.pageFlowHistory = undefined
       return res.redirect(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
     }

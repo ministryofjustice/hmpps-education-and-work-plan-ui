@@ -3,7 +3,6 @@ import createError from 'http-errors'
 import HighestLevelOfEducationController from '../common/highestLevelOfEducationController'
 import validateHighestLevelOfEducationForm from '../../validators/induction/highestLevelOfEducationFormValidator'
 import { getPrisonerContext } from '../../../data/session/prisonerContexts'
-import getDynamicBackLinkAriaText from '../../dynamicAriaTextResolver'
 import { EducationAndWorkPlanService } from '../../../services'
 import logger from '../../../../logger'
 import toUpdateEducationDto from '../../../data/mappers/updateCreateOrUpdateEducationDtoMapper'
@@ -11,15 +10,6 @@ import toUpdateEducationDto from '../../../data/mappers/updateCreateOrUpdateEduc
 export default class HighestLevelOfEducationUpdateController extends HighestLevelOfEducationController {
   constructor(private readonly educationAndWorkPlanService: EducationAndWorkPlanService) {
     super()
-  }
-
-  getBackLinkUrl = (req: Request): string => {
-    const { prisonNumber } = req.params
-    return `/plan/${prisonNumber}/view/education-and-training`
-  }
-
-  getBackLinkAriaText = (req: Request, res: Response): string => {
-    return getDynamicBackLinkAriaText(req, res, this.getBackLinkUrl(req))
   }
 
   submitHighestLevelOfEducationForm: RequestHandler = async (

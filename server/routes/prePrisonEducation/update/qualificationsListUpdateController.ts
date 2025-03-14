@@ -1,7 +1,6 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express'
 import createError from 'http-errors'
 import QualificationsListController from '../common/qualificationsListController'
-import getDynamicBackLinkAriaText from '../../dynamicAriaTextResolver'
 import logger from '../../../../logger'
 import { getPrisonerContext } from '../../../data/session/prisonerContexts'
 import toUpdateEducationDto from '../../../data/mappers/updateCreateOrUpdateEducationDtoMapper'
@@ -10,15 +9,6 @@ import { EducationAndWorkPlanService } from '../../../services'
 export default class QualificationsListUpdateController extends QualificationsListController {
   constructor(private readonly educationAndWorkPlanService: EducationAndWorkPlanService) {
     super()
-  }
-
-  getBackLinkUrl = (req: Request): string => {
-    const { prisonNumber } = req.params
-    return `/plan/${prisonNumber}/view/education-and-training`
-  }
-
-  getBackLinkAriaText = (req: Request, res: Response): string => {
-    return getDynamicBackLinkAriaText(req, res, this.getBackLinkUrl(req))
   }
 
   submitQualificationsListView: RequestHandler = async (

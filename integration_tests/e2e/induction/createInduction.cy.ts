@@ -110,44 +110,36 @@ context('Create an Induction', () => {
       .submitPage()
 
     // Highest level of education is next
-    Page.verifyOnPage(HighestLevelOfEducationPage)
-      .hasBackLinkTo('/prisoners/A00001A/create-induction/affect-ability-to-work')
+    Page.verifyOnPage(HighestLevelOfEducationPage) //
       .submitPage() // submit the page without answering the question to trigger a validation error
     Page.verifyOnPage(HighestLevelOfEducationPage)
-      .hasBackLinkTo('/prisoners/A00001A/create-induction/affect-ability-to-work')
       .hasErrorCount(1)
       .hasFieldInError('educationLevel')
       .selectHighestLevelOfEducation(EducationLevelValue.FURTHER_EDUCATION_COLLEGE)
       .submitPage()
 
     // Want To Add Qualifications page is next
-    Page.verifyOnPage(WantToAddQualificationsPage)
-      .hasBackLinkTo('/prisoners/A00001A/create-induction/highest-level-of-education')
+    Page.verifyOnPage(WantToAddQualificationsPage) //
       .submitPage() // submit the page without answering the question to trigger a validation error
     Page.verifyOnPage(WantToAddQualificationsPage)
-      .hasBackLinkTo('/prisoners/A00001A/create-induction/highest-level-of-education')
       .hasErrorCount(1)
       .hasFieldInError('wantToAddQualifications')
       .selectWantToAddQualifications(YesNoValue.YES)
       .submitPage()
 
     // Qualification Level page is next
-    Page.verifyOnPage(QualificationLevelPage)
-      .hasBackLinkTo('/prisoners/A00001A/create-induction/want-to-add-qualifications')
+    Page.verifyOnPage(QualificationLevelPage) //
       .submitPage() // submit the page without answering the question to trigger a validation error
     Page.verifyOnPage(QualificationLevelPage)
-      .hasBackLinkTo('/prisoners/A00001A/create-induction/want-to-add-qualifications')
       .hasErrorCount(1)
       .hasFieldInError('qualificationLevel')
       .selectQualificationLevel(QualificationLevelValue.LEVEL_4)
       .submitPage()
 
     // Qualification Detail page is next
-    Page.verifyOnPage(QualificationDetailsPage)
-      .hasBackLinkTo('/prisoners/A00001A/create-induction/qualification-level')
+    Page.verifyOnPage(QualificationDetailsPage) //
       .submitPage() // submit the page without answering the question to trigger a validation error
     Page.verifyOnPage(QualificationDetailsPage)
-      .hasBackLinkTo('/prisoners/A00001A/create-induction/qualification-level')
       .hasErrorCount(2)
       .hasFieldInError('qualificationSubject')
       .hasFieldInError('qualificationGrade')
@@ -157,22 +149,18 @@ context('Create an Induction', () => {
 
     // Qualifications List page is displayed again. Add another qualification
     Page.verifyOnPage(QualificationsListPage) //
-      .hasBackLinkTo('/prisoners/A00001A/create-induction/work-interest-roles')
       .hasEducationalQualifications(['Computer science'])
       .clickToAddAnotherQualification()
-    Page.verifyOnPage(QualificationLevelPage)
-      .hasBackLinkTo('/prisoners/A00001A/create-induction/qualifications')
+    Page.verifyOnPage(QualificationLevelPage) //
       .selectQualificationLevel(QualificationLevelValue.LEVEL_4)
       .submitPage()
-    Page.verifyOnPage(QualificationDetailsPage)
-      .hasBackLinkTo('/prisoners/A00001A/create-induction/qualification-level')
+    Page.verifyOnPage(QualificationDetailsPage) //
       .setQualificationSubject('Physics')
       .setQualificationGrade('B')
       .submitPage()
 
     // Qualifications List page is displayed again. Remove a qualification
     Page.verifyOnPage(QualificationsListPage) //
-      .hasBackLinkTo('/prisoners/A00001A/create-induction/work-interest-roles')
       .hasEducationalQualifications(['Computer science', 'Physics'])
       .removeQualification(1) // remove Computer science
       .hasEducationalQualifications(['Physics'])
@@ -386,14 +374,12 @@ context('Create an Induction', () => {
       .submitPage()
 
     // Highest level of education is next
-    Page.verifyOnPage(HighestLevelOfEducationPage)
-      .hasBackLinkTo('/prisoners/A00001A/create-induction/affect-ability-to-work')
+    Page.verifyOnPage(HighestLevelOfEducationPage) //
       .selectHighestLevelOfEducation(EducationLevelValue.FURTHER_EDUCATION_COLLEGE)
       .submitPage()
 
     // Want To Add Qualifications page is next
-    Page.verifyOnPage(WantToAddQualificationsPage)
-      .hasBackLinkTo('/prisoners/A00001A/create-induction/highest-level-of-education')
+    Page.verifyOnPage(WantToAddQualificationsPage) //
       .selectWantToAddQualifications(YesNoValue.NO)
       .submitPage()
 

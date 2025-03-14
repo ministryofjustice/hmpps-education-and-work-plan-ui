@@ -2,19 +2,9 @@ import { NextFunction, Request, RequestHandler, Response } from 'express'
 import QualificationDetailsController from '../common/qualificationDetailsController'
 import { getPrisonerContext } from '../../../data/session/prisonerContexts'
 import validateQualificationDetailsForm from '../../validators/induction/qualificationDetailsFormValidator'
-import getDynamicBackLinkAriaText from '../../dynamicAriaTextResolver'
 
 export default class QualificationDetailsCreateController extends QualificationDetailsController {
   journeyPathElement = 'create-education'
-
-  getBackLinkUrl(req: Request): string {
-    const { prisonNumber } = req.params
-    return `/prisoners/${prisonNumber}/create-education/qualification-level`
-  }
-
-  getBackLinkAriaText(req: Request, res: Response): string {
-    return getDynamicBackLinkAriaText(req, res, this.getBackLinkUrl(req))
-  }
 
   submitQualificationDetailsForm: RequestHandler = async (
     req: Request,

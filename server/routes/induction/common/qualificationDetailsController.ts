@@ -9,6 +9,16 @@ import QualificationLevelValue from '../../../enums/qualificationLevelValue'
  * Abstract controller class defining functionality common to both the Create and Update Induction journeys.
  */
 export default abstract class QualificationDetailsController extends InductionController {
+  override getBackLinkUrl(_req: Request): string {
+    // Default implementation - the js back link is used on the Qualification Detail page
+    return undefined
+  }
+
+  override getBackLinkAriaText(_req: Request): string {
+    // Default implementation - the js back link is used on the Qualification Detail page
+    return undefined
+  }
+
   /**
    * Returns the Qualification Details view; suitable for use by the Create and Update journeys.
    */
@@ -17,18 +27,16 @@ export default abstract class QualificationDetailsController extends InductionCo
     res: Response,
     next: NextFunction,
   ): Promise<void> => {
-    const { pageFlowHistory, qualificationLevelForm } = req.session
+    const { qualificationLevelForm } = req.session
     const { prisonerSummary } = res.locals
-    if (!pageFlowHistory) {
-      return res.redirect(`/plan/${prisonerSummary.prisonNumber}/view/education-and-training`)
-    }
 
     const { prisonNumber } = req.params
     if (!qualificationLevelForm) {
-      // Guard against the user using the back button to return to this page, which can cause a NPE on line 40 (depending on which pages they've been to)
+      // Guard against the user using the back button to return to this page, which can cause a NPE (depending on which pages they've been to)
       return res.redirect(`/prisoners/${prisonNumber}/induction/qualification-level`)
     }
-    this.addCurrentPageToHistory(req)
+
+    this.addCurrentPageToFlowHistoryWhenComingFromCheckYourAnswers(req)
 
     const qualificationDetailsForm = req.session.qualificationDetailsForm || {
       qualificationSubject: '',
@@ -38,8 +46,6 @@ export default abstract class QualificationDetailsController extends InductionCo
 
     const view = new QualificationDetailsView(
       prisonerSummary,
-      this.getBackLinkUrl(req),
-      this.getBackLinkAriaText(req, res),
       qualificationDetailsForm,
       qualificationLevelForm.qualificationLevel,
     )

@@ -4,12 +4,11 @@ import type { QualificationDetailsForm } from 'forms'
 import QualificationDetailsView from './qualificationDetailsView'
 import { getPrisonerContext } from '../../../data/session/prisonerContexts'
 import QualificationLevelValue from '../../../enums/qualificationLevelValue'
-import EducationController from './educationController'
 
 /**
  * Abstract controller class defining functionality common to both the Create and Update journeys.
  */
-export default abstract class QualificationDetailsController extends EducationController {
+export default abstract class QualificationDetailsController {
   abstract journeyPathElement: string
 
   getQualificationDetailsView: RequestHandler = async (
@@ -34,8 +33,6 @@ export default abstract class QualificationDetailsController extends EducationCo
 
     const view = new QualificationDetailsView(
       prisonerSummary,
-      this.getBackLinkUrl(req),
-      this.getBackLinkAriaText(req, res),
       qualificationDetailsForm,
       qualificationLevelForm.qualificationLevel,
     )

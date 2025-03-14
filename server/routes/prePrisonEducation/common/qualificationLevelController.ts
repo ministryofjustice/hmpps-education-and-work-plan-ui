@@ -1,12 +1,11 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express'
 import QualificationLevelView from './qualificationLevelView'
 import { getPrisonerContext } from '../../../data/session/prisonerContexts'
-import EducationController from './educationController'
 
 /**
  * Abstract controller class defining functionality common to both the Create and Update journeys.
  */
-export default abstract class QualificationLevelController extends EducationController {
+export default abstract class QualificationLevelController {
   getQualificationLevelView: RequestHandler = async (
     req: Request,
     res: Response,
@@ -20,12 +19,7 @@ export default abstract class QualificationLevelController extends EducationCont
     }
     getPrisonerContext(req.session, prisonNumber).qualificationLevelForm = undefined
 
-    const view = new QualificationLevelView(
-      prisonerSummary,
-      this.getBackLinkUrl(req),
-      this.getBackLinkAriaText(req, res),
-      qualificationLevelForm,
-    )
+    const view = new QualificationLevelView(prisonerSummary, qualificationLevelForm)
     return res.render('pages/prePrisonEducation/qualificationLevel', { ...view.renderArgs })
   }
 }

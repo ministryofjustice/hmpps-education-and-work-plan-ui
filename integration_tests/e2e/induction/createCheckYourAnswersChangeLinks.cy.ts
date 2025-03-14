@@ -164,32 +164,26 @@ context(`Change links on the Check Your Answers page when creating an Induction`
     // Change Highest Level of Education
     Page.verifyOnPage(CheckYourAnswersPage)
       .clickHighestLevelOfEducationLink()
-      .hasBackLinkTo(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
       .selectHighestLevelOfEducation(EducationLevelValue.UNDERGRADUATE_DEGREE_AT_UNIVERSITY)
       .submitPage()
 
     // Change Educational Qualifications - add 1 qualification
-    Page.verifyOnPage(CheckYourAnswersPage)
+    Page.verifyOnPage(CheckYourAnswersPage) //
       .clickQualificationsChangeLink()
-      .hasBackLinkTo(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
       .clickToAddAnotherQualification()
     Page.verifyOnPage(QualificationLevelPage) //
-      .hasBackLinkTo(`/prisoners/${prisonNumber}/create-induction/qualifications`)
       .selectQualificationLevel(QualificationLevelValue.LEVEL_1)
       .submitPage()
     Page.verifyOnPage(QualificationDetailsPage) //
-      .hasBackLinkTo(`/prisoners/${prisonNumber}/create-induction/qualification-level`)
       .setQualificationSubject('Chemistry')
       .setQualificationGrade('Merit')
       .submitPage()
     Page.verifyOnPage(QualificationsListPage) //
-      .hasBackLinkTo(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
       .submitPage()
 
     // Change Educational Qualifications - remove all remaining qualifications
     Page.verifyOnPage(CheckYourAnswersPage)
       .clickQualificationsChangeLink()
-      .hasBackLinkTo(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
       .removeQualification(2) // The induction now has 2 qualifications on it. Remove them all
       .removeQualification(1)
       .submitPage()
@@ -380,7 +374,6 @@ context(`Change links on the Check Your Answers page when creating an Induction`
     // When
     Page.verifyOnPage(CheckYourAnswersPage) //
       .clickQualificationsChangeLink()
-      .hasBackLinkTo(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
       .removeQualification(1)
       .submitPage()
 
@@ -400,21 +393,17 @@ context(`Change links on the Check Your Answers page when creating an Induction`
     // When
     Page.verifyOnPage(CheckYourAnswersPage) //
       .clickWantsToAddQualificationsChangeLink()
-      .hasBackLinkTo(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
       .selectWantToAddQualifications(YesNoValue.YES)
       .submitPage()
 
     Page.verifyOnPage(QualificationLevelPage) //
-      .hasBackLinkTo(`/prisoners/${prisonNumber}/create-induction/want-to-add-qualifications`)
       .selectQualificationLevel(QualificationLevelValue.LEVEL_1)
       .submitPage()
     Page.verifyOnPage(QualificationDetailsPage) //
-      .hasBackLinkTo(`/prisoners/${prisonNumber}/create-induction/qualification-level`)
       .setQualificationSubject('Chemistry')
       .setQualificationGrade('Merit')
       .submitPage()
     Page.verifyOnPage(QualificationsListPage) //
-      .hasBackLinkTo(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
       .submitPage()
 
     // Then
