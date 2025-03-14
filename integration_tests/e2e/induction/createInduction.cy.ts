@@ -100,10 +100,8 @@ context('Create an Induction', () => {
 
     // Factors Affecting Ability To Work is the next page
     Page.verifyOnPage(AffectAbilityToWorkPage) //
-      .hasBackLinkTo('/prisoners/A00001A/create-induction/work-interest-roles')
       .submitPage() // submit the page without answering the question to trigger a validation error
     Page.verifyOnPage(AffectAbilityToWorkPage) //
-      .hasBackLinkTo('/prisoners/A00001A/create-induction/work-interest-roles')
       .hasErrorCount(1)
       .hasFieldInError('affectAbilityToWork')
       .selectAffectAbilityToWork(AbilityToWorkValue.NONE)
@@ -369,7 +367,6 @@ context('Create an Induction', () => {
 
     // Factors Affecting Ability To Work is the next page
     Page.verifyOnPage(AffectAbilityToWorkPage) //
-      .hasBackLinkTo('/prisoners/A00001A/create-induction/work-interest-roles')
       .selectAffectAbilityToWork(AbilityToWorkValue.NONE)
       .submitPage()
 

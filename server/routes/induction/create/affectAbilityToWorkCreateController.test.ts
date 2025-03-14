@@ -27,7 +27,6 @@ describe('affectAbilityToWorkCreateController', () => {
 
   beforeEach(() => {
     jest.resetAllMocks()
-    req.session.pageFlowHistory = undefined
     req.body = {}
   })
 
@@ -48,8 +47,6 @@ describe('affectAbilityToWorkCreateController', () => {
       const expectedView = {
         prisonerSummary,
         form: expectedAbilityToWorkForm,
-        backLinkUrl: '/prisoners/A1234BC/create-induction/work-interest-roles',
-        backLinkAriaText: 'Back to Is Jimmy Lightfingers interested in any particular jobs?',
       }
 
       // When
@@ -81,8 +78,6 @@ describe('affectAbilityToWorkCreateController', () => {
       const expectedView = {
         prisonerSummary,
         form: expectedAbilityToWorkForm,
-        backLinkUrl: '/prisoners/A1234BC/create-induction/work-interest-roles',
-        backLinkAriaText: 'Back to Is Jimmy Lightfingers interested in any particular jobs?',
       }
 
       // When
@@ -92,51 +87,6 @@ describe('affectAbilityToWorkCreateController', () => {
       expect(res.render).toHaveBeenCalledWith('pages/induction/affectAbilityToWork/index', expectedView)
       expect(req.session.affectAbilityToWorkForm).toBeUndefined()
       expect(req.session.inductionDto).toEqual(inductionDto)
-    })
-
-    it('should get the Ability To Work view given the previous page was Check Your Answers', async () => {
-      // Given
-      const inductionDto = aValidInductionDto()
-      req.session.inductionDto = inductionDto
-      req.session.affectAbilityToWorkForm = undefined
-
-      req.session.pageFlowHistory = {
-        pageUrls: ['/prisoners/A1234BC/create-induction/check-your-answers'],
-        currentPageIndex: 0,
-      }
-
-      const expectedPageFlowHistory = {
-        pageUrls: [
-          '/prisoners/A1234BC/create-induction/check-your-answers',
-          '/prisoners/A1234BC/create-induction/affect-ability-to-work',
-        ],
-        currentPageIndex: 1,
-      }
-
-      const expectedAbilityToWorkForm: AffectAbilityToWorkForm = {
-        affectAbilityToWork: [
-          AbilityToWorkValue.CARING_RESPONSIBILITIES,
-          AbilityToWorkValue.NEEDS_WORK_ADJUSTMENTS_DUE_TO_HEALTH,
-          AbilityToWorkValue.OTHER,
-        ],
-        affectAbilityToWorkOther: 'Variable mental health',
-      }
-
-      const expectedView = {
-        prisonerSummary,
-        form: expectedAbilityToWorkForm,
-        backLinkUrl: '/prisoners/A1234BC/create-induction/check-your-answers',
-        backLinkAriaText: `Back to Check and save your answers before adding Jimmy Lightfingers's goals`,
-      }
-
-      // When
-      await controller.getAffectAbilityToWorkView(req, res, next)
-
-      // Then
-      expect(res.render).toHaveBeenCalledWith('pages/induction/affectAbilityToWork/index', expectedView)
-      expect(req.session.affectAbilityToWorkForm).toBeUndefined()
-      expect(req.session.inductionDto).toEqual(inductionDto)
-      expect(req.session.pageFlowHistory).toEqual(expectedPageFlowHistory)
     })
   })
 

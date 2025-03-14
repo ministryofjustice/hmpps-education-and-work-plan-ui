@@ -64,7 +64,6 @@ context(`Change links on the Check Your Answers page when creating an Induction`
     // Change affecting ability to work
     Page.verifyOnPage(CheckYourAnswersPage)
       .clickFactorsAffectingAbilityToWorkChangeLink()
-      .hasBackLinkTo(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
       .deSelectAffectAbilityToWork(AbilityToWorkValue.NONE)
       .selectAffectAbilityToWork(AbilityToWorkValue.LIMITED_BY_OFFENCE)
       .selectAffectAbilityToWork(AbilityToWorkValue.NO_RIGHT_TO_WORK)

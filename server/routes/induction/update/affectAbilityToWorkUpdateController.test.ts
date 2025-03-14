@@ -40,7 +40,6 @@ describe('affectAbilityToWorkUpdateController', () => {
 
   beforeEach(() => {
     jest.resetAllMocks()
-    req.session.pageFlowHistory = undefined
   })
 
   describe('getAbilityToWorkView', () => {
@@ -62,8 +61,6 @@ describe('affectAbilityToWorkUpdateController', () => {
       const expectedView = {
         prisonerSummary,
         form: expectedAbilityToWorkForm,
-        backLinkUrl: '/plan/A1234BC/view/work-and-interests',
-        backLinkAriaText: `Back to Jimmy Lightfingers's learning and work progress`,
       }
 
       // When
@@ -93,8 +90,6 @@ describe('affectAbilityToWorkUpdateController', () => {
       const expectedView = {
         prisonerSummary,
         form: expectedAbilityToWorkForm,
-        backLinkUrl: '/plan/A1234BC/view/work-and-interests',
-        backLinkAriaText: `Back to Jimmy Lightfingers's learning and work progress`,
       }
 
       // When
