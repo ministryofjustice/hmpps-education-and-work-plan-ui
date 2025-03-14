@@ -9,6 +9,16 @@ import AbilityToWorkValue from '../../../enums/abilityToWorkValue'
  * Abstract controller class defining functionality common to both the Create and Update Induction journeys.
  */
 export default abstract class AffectAbilityToWorkController extends InductionController {
+  override getBackLinkUrl(_req: Request): string {
+    // Default implementation - the js back link is used on the Factors Affecting Ability To Work page
+    return undefined
+  }
+
+  override getBackLinkAriaText(_req: Request): string {
+    // Default implementation - the js back link is used on the Factors Affecting Ability To Work page
+    return undefined
+  }
+
   /**
    * Returns the Affects on Ability To Work view; suitable for use by the Create and Update journeys.
    */
@@ -25,16 +35,7 @@ export default abstract class AffectAbilityToWorkController extends InductionCon
 
     this.addCurrentPageToFlowHistoryWhenComingFromCheckYourAnswers(req)
 
-    if (req.session.pageFlowHistory) {
-      this.addCurrentPageToHistory(req)
-    }
-
-    const view = new AffectAbilityToWorkView(
-      prisonerSummary,
-      this.getBackLinkUrl(req),
-      this.getBackLinkAriaText(req, res),
-      affectAbilityToWorkForm,
-    )
+    const view = new AffectAbilityToWorkView(prisonerSummary, affectAbilityToWorkForm)
     return res.render('pages/induction/affectAbilityToWork/index', { ...view.renderArgs })
   }
 
