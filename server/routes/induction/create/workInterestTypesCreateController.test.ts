@@ -48,8 +48,6 @@ describe('workInterestTypesCreateController', () => {
       const expectedView = {
         prisonerSummary,
         form: expectedWorkInterestTypesForm,
-        backLinkUrl: '/prisoners/A1234BC/create-induction/hoping-to-work-on-release',
-        backLinkAriaText: `Back to Is Jimmy Lightfingers hoping to get work when they're released?`,
       }
 
       // When
@@ -80,8 +78,6 @@ describe('workInterestTypesCreateController', () => {
       const expectedView = {
         prisonerSummary,
         form: expectedWorkInterestTypesForm,
-        backLinkUrl: '/prisoners/A1234BC/create-induction/hoping-to-work-on-release',
-        backLinkAriaText: `Back to Is Jimmy Lightfingers hoping to get work when they're released?`,
       }
 
       // When
@@ -91,48 +87,6 @@ describe('workInterestTypesCreateController', () => {
       expect(res.render).toHaveBeenCalledWith('pages/induction/workInterests/workInterestTypes', expectedView)
       expect(req.session.workInterestTypesForm).toBeUndefined()
       expect(req.session.inductionDto).toEqual(inductionDto)
-    })
-
-    it('should get the Work Interest Types view given the previous page was Check Your Answers', async () => {
-      // Given
-      const inductionDto = aValidInductionDto()
-      inductionDto.futureWorkInterests = undefined
-      req.session.inductionDto = inductionDto
-      req.session.workInterestTypesForm = undefined
-
-      req.session.pageFlowHistory = {
-        pageUrls: ['/prisoners/A1234BC/create-induction/check-your-answers'],
-        currentPageIndex: 0,
-      }
-
-      const expectedPageFlowHistory = {
-        pageUrls: [
-          '/prisoners/A1234BC/create-induction/check-your-answers',
-          '/prisoners/A1234BC/create-induction/work-interest-types',
-        ],
-        currentPageIndex: 1,
-      }
-
-      const expectedWorkInterestTypesForm: WorkInterestTypesForm = {
-        workInterestTypes: [],
-        workInterestTypesOther: undefined,
-      }
-
-      const expectedView = {
-        prisonerSummary,
-        form: expectedWorkInterestTypesForm,
-        backLinkUrl: '/prisoners/A1234BC/create-induction/check-your-answers',
-        backLinkAriaText: `Back to Check and save your answers before adding Jimmy Lightfingers's goals`,
-      }
-
-      // When
-      await controller.getWorkInterestTypesView(req, res, next)
-
-      // Then
-      expect(res.render).toHaveBeenCalledWith('pages/induction/workInterests/workInterestTypes', expectedView)
-      expect(req.session.workInterestTypesForm).toBeUndefined()
-      expect(req.session.inductionDto).toEqual(inductionDto)
-      expect(req.session.pageFlowHistory).toEqual(expectedPageFlowHistory)
     })
   })
 

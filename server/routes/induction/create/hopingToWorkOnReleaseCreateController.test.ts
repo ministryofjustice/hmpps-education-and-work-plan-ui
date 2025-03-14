@@ -47,8 +47,6 @@ describe('hopingToWorkOnReleaseCreateController', () => {
       const expectedView = {
         prisonerSummary,
         form: expectedHopingToWorkOnReleaseForm,
-        backLinkUrl: '/plan/A1234BC/view/overview',
-        backLinkAriaText: `Back to Jimmy Lightfingers's learning and work progress`,
       }
 
       // When
@@ -73,8 +71,6 @@ describe('hopingToWorkOnReleaseCreateController', () => {
       const expectedView = {
         prisonerSummary,
         form: expectedHopingToWorkOnReleaseForm,
-        backLinkUrl: '/plan/A1234BC/view/overview',
-        backLinkAriaText: `Back to Jimmy Lightfingers's learning and work progress`,
       }
 
       // When
@@ -84,46 +80,6 @@ describe('hopingToWorkOnReleaseCreateController', () => {
       expect(res.render).toHaveBeenCalledWith('pages/induction/hopingToWorkOnRelease/index', expectedView)
       expect(req.session.hopingToWorkOnReleaseForm).toBeUndefined()
       expect(req.session.inductionDto).toEqual(inductionDto)
-    })
-
-    it('should get the Hoping To Work On Release view given the previous page was Check Your Answers', async () => {
-      // Given
-      const inductionDto = aValidInductionDto({ hopingToGetWork: HopingToGetWorkValue.YES })
-      inductionDto.personalSkillsAndInterests.skills = undefined
-      req.session.inductionDto = inductionDto
-
-      req.session.pageFlowHistory = {
-        pageUrls: ['/prisoners/A1234BC/create-induction/check-your-answers'],
-        currentPageIndex: 0,
-      }
-
-      const expectedPageFlowHistory = {
-        pageUrls: [
-          '/prisoners/A1234BC/create-induction/check-your-answers',
-          '/prisoners/A1234BC/create-induction/hoping-to-work-on-release',
-        ],
-        currentPageIndex: 1,
-      }
-
-      const expectedHopingToWorkOnReleaseForm = {
-        hopingToGetWork: HopingToGetWorkValue.YES,
-      }
-
-      const expectedView = {
-        prisonerSummary,
-        form: expectedHopingToWorkOnReleaseForm,
-        backLinkUrl: '/prisoners/A1234BC/create-induction/check-your-answers',
-        backLinkAriaText: `Back to Check and save your answers before adding Jimmy Lightfingers's goals`,
-      }
-
-      // When
-      await controller.getHopingToWorkOnReleaseView(req, res, next)
-
-      // Then
-      expect(res.render).toHaveBeenCalledWith('pages/induction/hopingToWorkOnRelease/index', expectedView)
-      expect(req.session.hopingToWorkOnReleaseForm).toBeUndefined()
-      expect(req.session.inductionDto).toEqual(inductionDto)
-      expect(req.session.pageFlowHistory).toEqual(expectedPageFlowHistory)
     })
   })
 

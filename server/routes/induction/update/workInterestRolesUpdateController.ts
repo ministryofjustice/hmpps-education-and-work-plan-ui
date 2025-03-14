@@ -5,8 +5,6 @@ import WorkInterestRolesController from '../common/workInterestRolesController'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
 import logger from '../../../../logger'
 import { InductionService } from '../../../services'
-import { getPreviousPage } from '../../pageFlowHistory'
-import getDynamicBackLinkAriaText from '../../dynamicAriaTextResolver'
 import validateWorkInterestRolesForm from '../../validators/induction/workInterestRolesFormValidator'
 import WorkInterestTypeValue from '../../../enums/workInterestTypeValue'
 
@@ -16,18 +14,6 @@ import WorkInterestTypeValue from '../../../enums/workInterestTypeValue'
 export default class WorkInterestRolesUpdateController extends WorkInterestRolesController {
   constructor(private readonly inductionService: InductionService) {
     super()
-  }
-
-  getBackLinkUrl(req: Request): string {
-    const { prisonNumber } = req.params
-    const { pageFlowHistory } = req.session
-    const previousPage =
-      (pageFlowHistory && getPreviousPage(pageFlowHistory)) || `/plan/${prisonNumber}/view/work-and-interests`
-    return previousPage
-  }
-
-  getBackLinkAriaText(req: Request, res: Response): string {
-    return getDynamicBackLinkAriaText(req, res, this.getBackLinkUrl(req))
   }
 
   submitWorkInterestRolesForm: RequestHandler = async (

@@ -41,7 +41,6 @@ describe('workInterestRolesUpdateController', () => {
 
   beforeEach(() => {
     jest.resetAllMocks()
-    req.session.pageFlowHistory = undefined
     req.body = {}
   })
 
@@ -63,8 +62,6 @@ describe('workInterestRolesUpdateController', () => {
       const expectedView = {
         prisonerSummary,
         form: expectedWorkInterestRolesForm,
-        backLinkUrl: '/plan/A1234BC/view/work-and-interests',
-        backLinkAriaText: `Back to Jimmy Lightfingers's learning and work progress`,
       }
 
       // When

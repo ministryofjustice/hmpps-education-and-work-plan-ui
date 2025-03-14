@@ -66,8 +66,6 @@ describe('hopingToWorkOnReleaseUpdateController', () => {
       const expectedView = {
         prisonerSummary,
         form: expectedHopingToWorkOnReleaseForm,
-        backLinkUrl: '/plan/A1234BC/view/work-and-interests',
-        backLinkAriaText: `Back to Jimmy Lightfingers's learning and work progress`,
       }
 
       // When
@@ -92,8 +90,6 @@ describe('hopingToWorkOnReleaseUpdateController', () => {
       const expectedView = {
         prisonerSummary,
         form: expectedHopingToWorkOnReleaseForm,
-        backLinkUrl: '/plan/A1234BC/view/work-and-interests',
-        backLinkAriaText: `Back to Jimmy Lightfingers's learning and work progress`,
       }
 
       // When

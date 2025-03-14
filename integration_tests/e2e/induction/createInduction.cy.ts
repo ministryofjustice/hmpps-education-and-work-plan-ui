@@ -66,11 +66,9 @@ context('Create an Induction', () => {
     // When
     const hopingToWorkOnReleasePage = overviewPage //
       .clickMakeProgressPlan()
-      .hasBackLinkTo('/plan/A00001A/view/overview')
     // submit the page without answering the question to trigger a validation error
     hopingToWorkOnReleasePage.submitPage()
     hopingToWorkOnReleasePage //
-      .hasBackLinkTo('/plan/A00001A/view/overview')
       .hasErrorCount(1)
       .hasFieldInError('hopingToGetWork')
       .selectHopingWorkOnRelease(HopingToGetWorkValue.YES) // Answer the question and submit the page
@@ -78,10 +76,8 @@ context('Create an Induction', () => {
 
     // Future Work Interest Types page is next
     Page.verifyOnPage(FutureWorkInterestTypesPage) //
-      .hasBackLinkTo('/prisoners/A00001A/create-induction/hoping-to-work-on-release')
       .submitPage() // submit the page without answering the question to trigger a validation error
     Page.verifyOnPage(FutureWorkInterestTypesPage) //
-      .hasBackLinkTo('/prisoners/A00001A/create-induction/hoping-to-work-on-release')
       .hasErrorCount(1)
       .hasFieldInError('workInterestTypes')
       .selectWorkInterestType(WorkInterestTypeValue.OUTDOOR)
@@ -92,7 +88,6 @@ context('Create an Induction', () => {
 
     // Future Work Interest Roles page is next, with a field for each work interest type
     Page.verifyOnPage(FutureWorkInterestRolesPage) //
-      .hasBackLinkTo('/prisoners/A00001A/create-induction/work-interest-types')
       .setWorkInterestRole(WorkInterestTypeValue.OUTDOOR, 'Farm hand')
       .setWorkInterestRole(WorkInterestTypeValue.DRIVING, 'Delivery driver')
       .setWorkInterestRole(WorkInterestTypeValue.OTHER, 'Botanist')
@@ -349,19 +344,16 @@ context('Create an Induction', () => {
     // When
     Page.verifyOnPage(OverviewPage) //
       .clickMakeProgressPlan()
-      .hasBackLinkTo('/plan/A00001A/view/overview')
       .selectHopingWorkOnRelease(HopingToGetWorkValue.YES) // Answer the question and submit the page
       .submitPage()
 
     // Future Work Interest Types page is next
     Page.verifyOnPage(FutureWorkInterestTypesPage) //
-      .hasBackLinkTo('/prisoners/A00001A/create-induction/hoping-to-work-on-release')
       .selectWorkInterestType(WorkInterestTypeValue.OUTDOOR)
       .submitPage()
 
     // Future Work Interest Roles page is next, with a field for each work interest type
     Page.verifyOnPage(FutureWorkInterestRolesPage) //
-      .hasBackLinkTo('/prisoners/A00001A/create-induction/work-interest-types')
       .setWorkInterestRole(WorkInterestTypeValue.OUTDOOR, 'Farm hand')
       .submitPage()
 
