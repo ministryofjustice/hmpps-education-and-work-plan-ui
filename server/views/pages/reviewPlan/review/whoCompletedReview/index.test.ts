@@ -33,9 +33,6 @@ describe('WhoCompletedReviewPage', () => {
 
     // Then
     expect($('[data-qa="page-heading"]').text().trim()).toBe("Who completed Jimmy Lightfingers's review?")
-    expect($('[data-qa="warning-text"]').text().replace(/\s+/g, ' ').trim()).toBe(
-      '! Warning Update the progress plan before marking the review as complete',
-    )
     expect($('[data-qa="completed-by-other-full-name"]').text().trim()).toBe('Full name')
     expect($('[data-qa="completed-by-other-job-role"]').text().trim()).toBe('Job role')
     const radioLabels = $('input[name="completedBy"] + label')

@@ -16,7 +16,7 @@ enum InductionExemptionReasonValues {
   EXEMPT_PRISON_STAFF_REDEPLOYMENT = `Prison staff redeployed`,
   EXEMPT_PRISON_OPERATION_OR_SECURITY_ISSUE = `Prison operational or security reason`,
   EXEMPT_SECURITY_ISSUE_RISK_TO_STAFF = `Security issue that poses risk to staff`,
-  EXEMPT_SYSTEM_TECHNICAL_ISSUE = `Review logged late due to technical issue with learning and work progress service`,
+  EXEMPT_SYSTEM_TECHNICAL_ISSUE = `Review logged late due to technical issue with learning and work plan service`,
   EXEMPT_SCREENING_AND_ASSESSMENT_IN_PROGRESS = 'Screening and assessment in progress for an identified learning need, neurodivergence or health concern',
   EXEMPT_SCREENING_AND_ASSESSMENT_INCOMPLETE = 'Cannot complete session to a reasonable quality without information from the screening and assessment',
 }

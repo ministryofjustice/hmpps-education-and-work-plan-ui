@@ -18,7 +18,7 @@
     <div class="govuk-grid-column-two-thirds">
       {% set warningTextHtml %}
         {{ govukWarningText({
-          text: "Update the progress plan before marking the review as complete",
+          text: "Update the learning and work plan before marking the review as complete",
           iconFallbackText: "Warning",
           attributes: {"data-qa": "warning-text"}
         }) }}
@@ -39,7 +39,7 @@
                 classes: "govuk-label--s govuk-!-font-weight-bold",
                 attributes: { "aria-live": "polite", "data-qa": "completed-by-other-full-name" }
               },
-              attributes: { 
+              attributes: {
                 "aria-label" : "Give details as to who completed the review",
                 "data-qa": "completedByOtherFullName"
                 },
@@ -55,7 +55,7 @@
                 classes: "govuk-label--s govuk-!-font-weight-bold",
                 attributes: { "aria-live": "polite", "data-qa": "completed-by-other-job-role" }
               },
-              attributes: { 
+              attributes: {
                 "aria-label" : "Give details as to who completed the review",
                 "data-qa": "completedByOtherJobRole"
                 },
