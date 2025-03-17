@@ -9,16 +9,6 @@ import SkillsValue from '../../../enums/skillsValue'
  * Abstract controller class defining functionality common to both the Create and Update Induction journeys.
  */
 export default abstract class SkillsController extends InductionController {
-  override getBackLinkUrl(_req: Request): string {
-    // Default implementation - the js back link is used on the Skills page
-    return undefined
-  }
-
-  override getBackLinkAriaText(_req: Request): string {
-    // Default implementation - the js back link is used on the Skills page
-    return undefined
-  }
-
   /**
    * Returns the Skills view; suitable for use by the Create and Update journeys.
    */

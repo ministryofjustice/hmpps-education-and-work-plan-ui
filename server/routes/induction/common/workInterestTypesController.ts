@@ -9,16 +9,6 @@ import WorkInterestTypeValue from '../../../enums/workInterestTypeValue'
  * Abstract controller class defining functionality common to both the Create and Update Induction journeys.
  */
 export default abstract class WorkInterestTypesController extends InductionController {
-  override getBackLinkUrl(_req: Request): string {
-    // Default implementation - the js back link is used on the Work Interest Types page
-    return undefined
-  }
-
-  override getBackLinkAriaText(_req: Request): string {
-    // Default implementation - the js back link is used on the Work Interest Types page
-    return undefined
-  }
-
   /**
    * Returns the Future Work Interest Types view; suitable for use by the Create and Update journeys.
    */

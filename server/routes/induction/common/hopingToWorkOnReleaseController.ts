@@ -8,16 +8,6 @@ import HopingToWorkOnReleaseView from './hopingToWorkOnReleaseView'
  * Abstract controller class defining functionality common to both the Create and Update Induction journeys.
  */
 export default abstract class HopingToWorkOnReleaseController extends InductionController {
-  override getBackLinkUrl(_req: Request): string {
-    // Default implementation - the js back link is used on the Hoping To Work On Release page
-    return undefined
-  }
-
-  override getBackLinkAriaText(_req: Request): string {
-    // Default implementation - the js back link is used on the Hoping To Work On Release page
-    return undefined
-  }
-
   /**
    * Returns the Hoping To Work On Release view; suitable for use by the Create and Update journeys.
    */

@@ -8,16 +8,6 @@ import HighestLevelOfEducationView from './highestLevelOfEducationView'
  * Abstract controller class defining functionality common to both the Create and Update Induction journeys.
  */
 export default abstract class HighestLevelOfEducationController extends InductionController {
-  override getBackLinkUrl(_req: Request): string {
-    // Default implementation - the js back link is used on the Highest Level of Education page
-    return undefined
-  }
-
-  override getBackLinkAriaText(_req: Request): string {
-    // Default implementation - the js back link is used on the Highest Level of Education page
-    return undefined
-  }
-
   /**
    * Returns the Highest Level of Education view; suitable for use by the Create and Update journeys.
    */

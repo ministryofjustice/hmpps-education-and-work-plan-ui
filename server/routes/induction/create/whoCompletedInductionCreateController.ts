@@ -1,4 +1,4 @@
-import { Request, RequestHandler } from 'express'
+import { RequestHandler } from 'express'
 import { startOfDay } from 'date-fns'
 import type { WhoCompletedInductionForm } from 'inductionForms'
 import type { InductionDto } from 'inductionDto'
@@ -7,16 +7,6 @@ import validateWhoCompletedInductionForm from '../../validators/induction/whoCom
 import WhoCompletedInductionController from '../common/whoCompletedInductionController'
 
 export default class WhoCompletedInductionCreateController extends WhoCompletedInductionController {
-  getBackLinkUrl(_req: Request): string {
-    // Default implementation - a JS back link is used on the Who Completed The Induction page
-    return undefined
-  }
-
-  getBackLinkAriaText(_req: Request): string {
-    // Default implementation - a JS back link is used on the Who Completed The Induction page
-    return undefined
-  }
-
   submitWhoCompletedInductionForm: RequestHandler = async (req, res, next): Promise<void> => {
     const { inductionDto } = req.session
     const { prisonNumber } = req.params
