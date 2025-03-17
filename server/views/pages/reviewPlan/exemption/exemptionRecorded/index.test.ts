@@ -38,7 +38,7 @@ describe('ExemptionRecordedPage', () => {
     expect($('[data-qa="warning-text"]').length).toEqual(0)
     expect($('[data-qa="review-due"]').length).toEqual(1)
     expect($('[data-qa="review-due"]').text().trim()).toBe(
-      'You must now review this learning and work progress plan with Jimmy Lightfingers by 9 November 2024.',
+      'You must now review this learning and work plan with Jimmy Lightfingers by 9 November 2024.',
     )
   })
 

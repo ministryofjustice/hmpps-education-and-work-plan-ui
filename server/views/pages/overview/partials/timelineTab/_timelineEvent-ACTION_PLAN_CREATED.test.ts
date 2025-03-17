@@ -38,7 +38,7 @@ describe('_timelineEvent-ACTION_PLAN_CREATED', () => {
       expect($('.moj-timeline__byline').text().trim()).toEqual('by Fred Bloggs, Moorland (HMP & YOI)')
       expect($('.moj-timeline__date').text().trim()).toEqual('1 August 2023')
       expect($('.moj-timeline__description a').text().trim()).toEqual(
-        `View Jimmy Lightfingers's learning and work progress`,
+        `View Jimmy Lightfingers's learning and work plan`,
       )
       expect($('[data-qa=induction-conducted-by]').length).toEqual(0)
       expect($('[data-qa=induction-notes]').length).toEqual(0)

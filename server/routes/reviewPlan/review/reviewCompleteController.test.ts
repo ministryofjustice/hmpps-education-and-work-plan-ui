@@ -45,7 +45,7 @@ describe('ReviewCompleteController', () => {
   })
 
   describe('goToLearningAndWorkProgressPlan', () => {
-    it('should redirect to the overview page when the Go to learning and work progress plan button is clicked', async () => {
+    it('should redirect to the overview page when the Go to learning and work plan button is clicked', async () => {
       // When
       await controller.goToLearningAndWorkProgressPlan(req, res, next)
 
