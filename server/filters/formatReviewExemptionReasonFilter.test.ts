@@ -37,7 +37,7 @@ describe('formatReviewExemptionReasonFilter', () => {
       },
       {
         source: ReviewScheduleStatusValue.EXEMPT_SYSTEM_TECHNICAL_ISSUE,
-        expected: `Review logged late due to technical issue with learning and work plan service`,
+        expected: `Review logged late due to technical issue with learning and work progress service`,
       },
     ).forEach(spec => {
       it(`source: ${spec.source}, expected: ${spec.expected}`, () => {

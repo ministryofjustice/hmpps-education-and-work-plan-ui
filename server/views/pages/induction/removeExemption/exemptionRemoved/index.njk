@@ -15,14 +15,14 @@
       <h3 class="govuk-heading-m govuk-!-margin-top-6" data-qa="page-heading">What happens next</h3>
 
       <p class="govuk-body govuk-!-margin-bottom-7" data-qa="induction-due">
-        You must now create this learning and work progress plan with {{ prisonerSummary.firstName + " " + prisonerSummary.lastName }} by {{ inductionDueDate | formatDate('D MMMM YYYY') }}.
+        You must now create this learning and work plan with {{ prisonerSummary.firstName + " " + prisonerSummary.lastName }} by {{ inductionDueDate | formatDate('D MMMM YYYY') }}.
       </p>
 
       <form class="form" method="post" novalidate="">
         <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
         <div class="govuk-form-group">
           {{ govukButton({
-            text: "Go to learning and work progress plan",
+            text: "Go to learning and work plan",
             id: "submit-button",
             name: "action",
             value: "submit-form",

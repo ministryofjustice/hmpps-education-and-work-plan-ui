@@ -67,7 +67,7 @@ describe('ExemptionReasonPage', () => {
       'where the prisoner is violent and there is a risk to prison or CIAG staff',
     )
     expect($(radioLabels[9]).text().trim()).toBe(
-      `Review logged late due to technical issue with learning and work plan service`,
+      `Review logged late due to technical issue with learning and work progress service`,
     )
   })
 })
