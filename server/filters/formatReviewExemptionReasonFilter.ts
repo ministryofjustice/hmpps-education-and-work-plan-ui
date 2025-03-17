@@ -15,5 +15,5 @@ enum ReviewExemptionReasonValues {
   EXEMPT_PRISON_STAFF_REDEPLOYMENT = `Prison staff redeployed`,
   EXEMPT_PRISON_OPERATION_OR_SECURITY_ISSUE = `Prison operational or security reason`,
   EXEMPT_SECURITY_ISSUE_RISK_TO_STAFF = `Security issue that poses risk to staff`,
-  EXEMPT_SYSTEM_TECHNICAL_ISSUE = `Review logged late due to technical issue with learning and work progress service`,
+  EXEMPT_SYSTEM_TECHNICAL_ISSUE = `Review logged late due to technical issue with learning and work plan service`,
 }

@@ -37,7 +37,7 @@ describe('formatInductionExemptionReasonFilter', () => {
       },
       {
         source: InductionScheduleStatusValue.EXEMPT_SYSTEM_TECHNICAL_ISSUE,
-        expected: `Review logged late due to technical issue with learning and work progress service`,
+        expected: `Review logged late due to technical issue with learning and work plan service`,
       },
       {
         source: InductionScheduleStatusValue.EXEMPT_SCREENING_AND_ASSESSMENT_IN_PROGRESS,

@@ -71,10 +71,10 @@ where the InductionDto contains any in-prison training interests the prisoner ha
                 To add education and training information you need to
                 {% if not inductionSchedule.problemRetrievingData and inductionSchedule.inductionStatus != 'ON_HOLD' %}
                   <a href="/prisoners/{{ prisonerSummary.prisonNumber }}/create-induction/hoping-to-work-on-release" class="govuk-link" data-qa="link-to-create-induction">
-                    create a learning and work progress plan
+                    create a learning and work plan
                   </a>
                 {% else %}
-                  create a learning and work progress plan
+                  create a learning and work plan
                 {% endif %}
                 with {{ prisonerSummary.firstName }} {{ prisonerSummary.lastName }}.
               {% else %}
