@@ -30,7 +30,9 @@ export default class CheckYourAnswersCreateController extends CheckYourAnswersCo
     const createInductionDto = toCreateOrUpdateInductionDto(prisonId, inductionDto)
 
     try {
+      logger.debug(`Calling API to create ${prisonNumber}'s induction`)
       await this.inductionService.createInduction(prisonNumber, createInductionDto, req.user.username)
+      logger.debug(`${prisonNumber}'s induction created`)
 
       req.session.pageFlowHistory = undefined
       req.session.inductionDto = undefined
