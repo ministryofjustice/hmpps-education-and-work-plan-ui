@@ -3,6 +3,7 @@ import type { EducationDto } from 'dto'
 import type { InductionDto } from 'inductionDto'
 import { EducationAndWorkPlanService } from '../../services'
 import asyncMiddleware from '../../middleware/asyncMiddleware'
+import logger from '../../../logger'
 
 /**
  * Middleware function that returns a request handler function to check whether an Induction exists in the session for
@@ -18,6 +19,8 @@ const createEmptyInductionIfNotInSession = (
 
     // Either no Induction on the session, or it's for a different prisoner. Create a new one, including the prisoners education if it has been previously recorded.
     if (req.session.inductionDto?.prisonNumber !== prisonNumber) {
+      logger.debug(`Setting up new InductionDto on the session for ${prisonNumber}`)
+
       let educationDto: EducationDto
       try {
         educationDto = await educationAndWorkPlanService.getEducation(prisonNumber, req.user.username)

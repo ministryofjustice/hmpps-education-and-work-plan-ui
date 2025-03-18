@@ -16,6 +16,17 @@ export default class CheckYourAnswersCreateController extends CheckYourAnswersCo
     const { prisonerSummary } = res.locals
     const { prisonId } = prisonerSummary
 
+    if (!inductionDto) {
+      logger.debug(`InductionDto for ${prisonNumber} was not retrieved from the session`)
+    } else {
+      logger.debug(`InductionDto for ${prisonNumber} retrieved from the session successfully`)
+      if (!inductionDto.workOnRelease) {
+        logger.debug(
+          `Retrieved InductionDto is missing at least the workOnRelease property: ${JSON.stringify(inductionDto)}`,
+        )
+      }
+    }
+
     const createInductionDto = toCreateOrUpdateInductionDto(prisonId, inductionDto)
 
     try {
