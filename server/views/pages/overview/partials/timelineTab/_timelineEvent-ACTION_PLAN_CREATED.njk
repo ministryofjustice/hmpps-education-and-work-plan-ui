@@ -8,8 +8,8 @@
     <time datetime="{{ event.timestamp }}">{{ event.timestamp | formatDate('D MMMM YYYY') }}</time>
   </p>
 
-  {% if event.contextualInfo['COMPLETED_INDUCTION_ENTERED_ONLINE_BY'] %}
-    {# Timeline event was created as part of the new Induction journey, where who conduction the Induction, the date, and any notes, are asked #}
+  {% if event.contextualInfo['COMPLETED_INDUCTION_CONDUCTED_IN_PERSON_DATE'] %}
+    {# Timeline event was created as part of the new Induction journey; where who conducted the Induction, the date, and any notes are asked #}
     <div class="moj-timeline__description">
       <p class="govuk-body" data-qa="induction-conducted-by">
         {%- set inductionConductedBy -%}
