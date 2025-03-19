@@ -3,7 +3,7 @@ import { Services } from '../../services'
 import retrieveCuriousInPrisonCourses from '../routerRequestHandlers/retrieveCuriousInPrisonCourses'
 import removeFormDataFromSession from '../routerRequestHandlers/removeFormDataFromSession'
 import asyncMiddleware from '../../middleware/asyncMiddleware'
-import TimelineController from './timelineController'
+import HistoryController from './historyController'
 import SupportNeedsController from './supportNeedsController'
 import WorkAndInterestsController from './workAndInterestsController'
 import EducationAndTrainingController from './educationAndTrainingController'
@@ -33,7 +33,7 @@ export default (router: Router, services: Services) => {
   } = services
 
   const overviewController = new OverviewController()
-  const timelineController = new TimelineController()
+  const timelineController = new HistoryController()
   const supportNeedsController = new SupportNeedsController()
   const workAndInterestsController = new WorkAndInterestsController()
   const educationAndTrainingController = new EducationAndTrainingController()
@@ -72,9 +72,9 @@ export default (router: Router, services: Services) => {
     asyncMiddleware(workAndInterestsController.getWorkAndInterestsView),
   ])
 
-  router.get('/plan/:prisonNumber/view/timeline', [
+  router.get('/plan/:prisonNumber/view/history', [
     retrieveTimeline(timelineService),
-    asyncMiddleware(timelineController.getTimelineView),
+    asyncMiddleware(timelineController.getHistoryView),
   ])
 
   router.get('/plan/:prisonNumber/view/goals', [

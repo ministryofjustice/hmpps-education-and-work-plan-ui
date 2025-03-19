@@ -1,11 +1,11 @@
 import { Request, Response } from 'express'
 import aValidPrisonerSummary from '../../testsupport/prisonerSummaryTestDataBuilder'
 import aValidTimeline from '../../testsupport/timelineTestDataBuilder'
-import TimelineController from './timelineController'
+import HistoryController from './historyController'
 import prepareTimelineForView from './prepareTimelineForView'
 
-describe('timelineController', () => {
-  const controller = new TimelineController()
+describe('historyController', () => {
+  const controller = new HistoryController()
 
   const prisonNumber = 'A1234GC'
   const prisonerSummary = aValidPrisonerSummary({ prisonNumber })
@@ -25,9 +25,9 @@ describe('timelineController', () => {
     jest.resetAllMocks()
   })
 
-  it('should get timeline view', async () => {
+  it('should get history view', async () => {
     // Given
-    const expectedTab = 'timeline'
+    const expectedTab = 'history'
     req.params.tab = expectedTab
 
     const expectedTimeline = prepareTimelineForView(timeline)
@@ -39,7 +39,7 @@ describe('timelineController', () => {
     }
 
     // When
-    await controller.getTimelineView(req, res, next)
+    await controller.getHistoryView(req, res, next)
 
     // Then
     expect(res.render).toHaveBeenCalledWith('pages/overview/index', expectedView)

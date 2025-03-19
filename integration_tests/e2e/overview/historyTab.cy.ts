@@ -1,9 +1,9 @@
 import Page from '../../pages/page'
 import OverviewPage from '../../pages/overview/OverviewPage'
-import TimelinePage from '../../pages/overview/TimelinePage'
+import HistoryPage from '../../pages/overview/HistoryPage'
 import GoalsPage from '../../pages/overview/GoalsPage'
 
-context('Prisoner Overview page - Timeline tab', () => {
+context('Prisoner Overview page - History tab', () => {
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubSignInAsReadOnlyUser')
@@ -25,7 +25,7 @@ context('Prisoner Overview page - Timeline tab', () => {
     cy.task('getActionPlan')
   })
 
-  it('should display timeline given prisoner where one goal was created as part of their initial action plan', () => {
+  it('should display history tab containing timeline given prisoner where one goal was created as part of their initial action plan', () => {
     // Given
     const prisonNumber = 'G6115VJ'
     cy.task('stubGetTimeline', prisonNumber) // Prison number G6115VJ has a timeline where 1 goal was created as part of their initial action plan
@@ -35,12 +35,12 @@ context('Prisoner Overview page - Timeline tab', () => {
     const overviewPage = Page.verifyOnPage(OverviewPage)
 
     // When
-    overviewPage.selectTab('Timeline')
-    const timelinePage = Page.verifyOnPage(TimelinePage)
+    overviewPage.selectTab('History')
+    const historyPage = Page.verifyOnPage(HistoryPage)
 
     // Then
-    timelinePage //
-      .activeTabIs('Timeline')
+    historyPage //
+      .activeTabIs('History')
       .hasTimelineDisplayed()
       .hasTimelineEventsInOrder([
         'PRISON_RELEASE',
@@ -51,7 +51,7 @@ context('Prisoner Overview page - Timeline tab', () => {
       ])
   })
 
-  it('should display timeline given prisoner where multiple goals were created as part of their initial action plan', () => {
+  it('should display history tab containing timeline given prisoner where multiple goals were created as part of their initial action plan', () => {
     // Given
     const prisonNumber = 'H4115SD'
     cy.task('stubGetTimeline', prisonNumber) // Prison number H4115SD has a timeline where several goals were created as part of their initial action plan
@@ -62,17 +62,17 @@ context('Prisoner Overview page - Timeline tab', () => {
     const overviewPage = Page.verifyOnPage(OverviewPage)
 
     // When
-    overviewPage.selectTab('Timeline')
-    const timelinePage = Page.verifyOnPage(TimelinePage)
+    overviewPage.selectTab('History')
+    const historyPage = Page.verifyOnPage(HistoryPage)
 
     // Then
-    timelinePage //
-      .activeTabIs('Timeline')
+    historyPage //
+      .activeTabIs('History')
       .hasTimelineDisplayed()
       .hasTimelineEventsInOrder(['MULTIPLE_GOALS_CREATED', 'ACTION_PLAN_CREATED', 'PRISON_ADMISSION'])
   })
 
-  it('should display timeline given prisoner where goals have been archived and un-archived', () => {
+  it('should display history tab containing timeline given prisoner where goals have been archived and un-archived', () => {
     // Given
     const prisonNumber = 'G5005GD'
     cy.task('stubGetTimeline', prisonNumber) // Prison number G5005GD has a timeline where 4 goals have been achived, and 1 goal un-archived
@@ -83,12 +83,12 @@ context('Prisoner Overview page - Timeline tab', () => {
     const overviewPage = Page.verifyOnPage(OverviewPage)
 
     // When
-    overviewPage.selectTab('Timeline')
-    const timelinePage = Page.verifyOnPage(TimelinePage)
+    overviewPage.selectTab('History')
+    const historyPage = Page.verifyOnPage(HistoryPage)
 
     // Then
-    timelinePage //
-      .activeTabIs('Timeline')
+    historyPage //
+      .activeTabIs('History')
       .hasTimelineDisplayed()
       .hasTimelineEventsInOrder([
         'GOAL_UNARCHIVED',
@@ -102,7 +102,7 @@ context('Prisoner Overview page - Timeline tab', () => {
       ])
   })
 
-  it('should display timeline data unavailable message given timeline API is unavailable', () => {
+  it('should display history tab containing timeline data unavailable message given timeline API is unavailable', () => {
     // Given
     cy.task('stubGetTimeline500Error')
 
@@ -112,16 +112,16 @@ context('Prisoner Overview page - Timeline tab', () => {
     const overviewPage = Page.verifyOnPage(OverviewPage)
 
     // When
-    overviewPage.selectTab('Timeline')
-    const timelinePage = Page.verifyOnPage(TimelinePage)
+    overviewPage.selectTab('History')
+    const historyPage = Page.verifyOnPage(HistoryPage)
 
     // Then
-    timelinePage //
-      .activeTabIs('Timeline')
+    historyPage //
+      .activeTabIs('History')
       .hasTimelineUnavailableMessageDisplayed()
   })
 
-  it('should display empty timeline message given prisoner has no timeline data', () => {
+  it('should display history tab containing empty timeline message given prisoner has no timeline data', () => {
     // Given
     cy.task('stubGetTimeline404Error')
 
@@ -131,12 +131,12 @@ context('Prisoner Overview page - Timeline tab', () => {
     const overviewPage = Page.verifyOnPage(OverviewPage)
 
     // When
-    overviewPage.selectTab('Timeline')
-    const timelinePage = Page.verifyOnPage(TimelinePage)
+    overviewPage.selectTab('History')
+    const historyPage = Page.verifyOnPage(HistoryPage)
 
     // Then
-    timelinePage //
-      .activeTabIs('Timeline')
+    historyPage //
+      .activeTabIs('History')
       .hasEmptyTimelineMessageDisplayed()
   })
 
@@ -151,9 +151,9 @@ context('Prisoner Overview page - Timeline tab', () => {
     const overviewPage = Page.verifyOnPage(OverviewPage)
 
     // When
-    overviewPage.selectTab('Timeline')
-    const timelinePage = Page.verifyOnPage(TimelinePage)
-    timelinePage.clickViewArchivedGoalsButton()
+    overviewPage.selectTab('History')
+    const historyPage = Page.verifyOnPage(HistoryPage)
+    historyPage.clickViewArchivedGoalsButton()
 
     // Then
     const goalsPage = Page.verifyOnPage(GoalsPage)
@@ -172,9 +172,9 @@ context('Prisoner Overview page - Timeline tab', () => {
     const overviewPage = Page.verifyOnPage(OverviewPage)
 
     // When
-    overviewPage.selectTab('Timeline')
-    const timelinePage = Page.verifyOnPage(TimelinePage)
-    timelinePage.clickViewGoalsButton()
+    overviewPage.selectTab('History')
+    const historyPage = Page.verifyOnPage(HistoryPage)
+    historyPage.clickViewGoalsButton()
 
     // Then
     const goalsPage = Page.verifyOnPage(GoalsPage)
