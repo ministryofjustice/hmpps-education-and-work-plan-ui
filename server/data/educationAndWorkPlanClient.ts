@@ -31,6 +31,7 @@ import RestClient from './restClient'
 import config from '../config'
 import GoalStatusValue from '../enums/goalStatusValue'
 import SessionStatusValue from '../enums/sessionStatusValue'
+import TimelineApiFilterOptions from './timelineApiFilterOptions'
 
 export default class EducationAndWorkPlanClient {
   private static restClient(token: string): RestClient {
@@ -137,9 +138,15 @@ export default class EducationAndWorkPlanClient {
     })
   }
 
-  async getTimeline(prisonNumber: string, token: string, eventTypes?: Array<string>): Promise<TimelineResponse> {
+  async getTimeline(
+    prisonNumber: string,
+    apiFilterOptions: TimelineApiFilterOptions,
+    token: string,
+    eventTypes?: Array<string>,
+  ): Promise<TimelineResponse> {
     const timeline = await EducationAndWorkPlanClient.restClient(token).get<TimelineResponse>({
       path: `/timelines/${prisonNumber}`,
+      query: apiFilterOptions.queryParams,
       ignore404: true,
     })
     if (!timeline) {

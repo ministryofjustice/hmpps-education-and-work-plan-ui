@@ -33,6 +33,7 @@ import aValidUpdateInductionScheduleStatusRequest from '../testsupport/updateInd
 import aValidSessionSummaryResponse from '../testsupport/sessionSummaryResponseTestDataBuilder'
 import { aValidSessionResponse, aValidSessionResponses } from '../testsupport/sessionResponseTestDataBuilder'
 import SessionStatusValue from '../enums/sessionStatusValue'
+import TimelineApiFilterOptions from './timelineApiFilterOptions'
 
 describe('educationAndWorkPlanClient', () => {
   const educationAndWorkPlanClient = new EducationAndWorkPlanClient()
@@ -477,10 +478,14 @@ describe('educationAndWorkPlanClient', () => {
       // Given
       const expectedTimelineResponse = aValidTimelineResponse()
 
-      educationAndWorkPlanApi.get(`/timelines/${prisonNumber}`).reply(200, expectedTimelineResponse)
+      educationAndWorkPlanApi
+        .get(`/timelines/${prisonNumber}?inductions=false&reviews=false&goals=false&prisonEvents=false`)
+        .reply(200, expectedTimelineResponse)
+
+      const timelineApiFilterOptions = new TimelineApiFilterOptions()
 
       // When
-      const actual = await educationAndWorkPlanClient.getTimeline(prisonNumber, systemToken)
+      const actual = await educationAndWorkPlanClient.getTimeline(prisonNumber, timelineApiFilterOptions, systemToken)
 
       // Then
       expect(nock.isDone()).toBe(true)
@@ -490,7 +495,9 @@ describe('educationAndWorkPlanClient', () => {
     it('should get Timeline filtered by event type', async () => {
       // Given
       const timelineResponseFromApi = aValidTimelineResponse()
-      educationAndWorkPlanApi.get(`/timelines/${prisonNumber}`).reply(200, timelineResponseFromApi)
+      educationAndWorkPlanApi
+        .get(`/timelines/${prisonNumber}?inductions=false&reviews=false&goals=false&prisonEvents=false`)
+        .reply(200, timelineResponseFromApi)
 
       const expectedTimelineResponse = {
         ...timelineResponseFromApi,
@@ -511,8 +518,12 @@ describe('educationAndWorkPlanClient', () => {
         ],
       }
 
+      const timelineApiFilterOptions = new TimelineApiFilterOptions()
+
       // When
-      const actual = await educationAndWorkPlanClient.getTimeline(prisonNumber, systemToken, ['GOAL_CREATED'])
+      const actual = await educationAndWorkPlanClient.getTimeline(prisonNumber, timelineApiFilterOptions, systemToken, [
+        'GOAL_CREATED',
+      ])
 
       // Then
       expect(nock.isDone()).toBe(true)
@@ -525,10 +536,14 @@ describe('educationAndWorkPlanClient', () => {
         status: 404,
         userMessage: `Timeline not found for prisoner [${prisonNumber}]`,
       }
-      educationAndWorkPlanApi.get(`/timelines/${prisonNumber}`).reply(404, expectedResponseBody)
+      educationAndWorkPlanApi
+        .get(`/timelines/${prisonNumber}?inductions=false&reviews=false&goals=false&prisonEvents=false`)
+        .reply(404, expectedResponseBody)
+
+      const timelineApiFilterOptions = new TimelineApiFilterOptions()
 
       // When
-      const actual = await educationAndWorkPlanClient.getTimeline(prisonNumber, systemToken)
+      const actual = await educationAndWorkPlanClient.getTimeline(prisonNumber, timelineApiFilterOptions, systemToken)
 
       // Then
       expect(nock.isDone()).toBe(true)
@@ -542,11 +557,16 @@ describe('educationAndWorkPlanClient', () => {
         userMessage: 'An unexpected error occurred',
         developerMessage: 'An unexpected error occurred',
       }
-      educationAndWorkPlanApi.get(`/timelines/${prisonNumber}`).thrice().reply(500, expectedResponseBody)
+      educationAndWorkPlanApi
+        .get(`/timelines/${prisonNumber}?inductions=false&reviews=false&goals=false&prisonEvents=false`)
+        .thrice()
+        .reply(500, expectedResponseBody)
+
+      const timelineApiFilterOptions = new TimelineApiFilterOptions()
 
       // When
       try {
-        await educationAndWorkPlanClient.getTimeline(prisonNumber, systemToken)
+        await educationAndWorkPlanClient.getTimeline(prisonNumber, timelineApiFilterOptions, systemToken)
       } catch (e) {
         // Then
         expect(nock.isDone()).toBe(true)
