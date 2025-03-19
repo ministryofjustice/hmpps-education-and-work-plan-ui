@@ -18,7 +18,6 @@ import type {
   PrisonerIdsRequest,
   SessionResponses,
   SessionSummaryResponse,
-  TimelineEventResponse,
   TimelineResponse,
   UnarchiveGoalRequest,
   UpdateEducationRequest,
@@ -142,24 +141,12 @@ export default class EducationAndWorkPlanClient {
     prisonNumber: string,
     apiFilterOptions: TimelineApiFilterOptions,
     token: string,
-    eventTypes?: Array<string>,
   ): Promise<TimelineResponse> {
-    const timeline = await EducationAndWorkPlanClient.restClient(token).get<TimelineResponse>({
+    return EducationAndWorkPlanClient.restClient(token).get<TimelineResponse>({
       path: `/timelines/${prisonNumber}`,
       query: apiFilterOptions.queryParams,
       ignore404: true,
     })
-    if (!timeline) {
-      return null
-    }
-    // TODO - remove this filtering of the response and replace with a query string param whe the API supports filtering via query string
-    if (!eventTypes) {
-      return timeline
-    }
-    return {
-      ...timeline,
-      events: (timeline.events as Array<TimelineEventResponse>).filter(event => eventTypes.includes(event.eventType)),
-    }
   }
 
   async getInduction(prisonNumber: string, token: string): Promise<InductionResponse> {

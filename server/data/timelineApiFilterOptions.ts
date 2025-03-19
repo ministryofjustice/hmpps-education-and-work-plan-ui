@@ -1,3 +1,5 @@
+import { format } from 'date-fns'
+
 export default class TimelineApiFilterOptions {
   public queryParams: {
     inductions: boolean
@@ -5,7 +7,7 @@ export default class TimelineApiFilterOptions {
     goals: boolean
     prisonEvents: boolean
     prisonId?: string
-    eventsSince?: Date
+    eventsSince?: string
   }
 
   constructor(options?: {
@@ -24,7 +26,7 @@ export default class TimelineApiFilterOptions {
       goals: constructorArg.goals == null ? false : constructorArg.goals,
       prisonEvents: constructorArg.prisonEvents == null ? false : constructorArg.prisonEvents,
       prisonId: constructorArg.prisonId,
-      eventsSince: constructorArg.eventsSince,
+      eventsSince: constructorArg.eventsSince ? format(constructorArg.eventsSince, 'yyyy-MM-dd') : undefined,
     }
   }
 }
