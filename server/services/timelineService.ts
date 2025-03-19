@@ -4,6 +4,7 @@ import toTimeline from '../data/mappers/timelineMapper'
 import logger from '../../logger'
 import PrisonService from './prisonService'
 import { HmppsAuthClient } from '../data'
+import TimelineApiFilterOptions from '../data/timelineApiFilterOptions'
 
 const PLP_TIMELINE_EVENTS = [
   'ACTION_PLAN_CREATED',
@@ -33,6 +34,7 @@ export default class TimelineService {
     try {
       const timelineResponse = await this.educationAndWorkPlanClient.getTimeline(
         prisonNumber,
+        new TimelineApiFilterOptions(),
         systemToken,
         SUPPORTED_TIMELINE_EVENTS,
       )

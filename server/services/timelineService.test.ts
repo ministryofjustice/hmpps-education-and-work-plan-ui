@@ -6,6 +6,7 @@ import EducationAndWorkPlanClient from '../data/educationAndWorkPlanClient'
 import toTimeline from '../data/mappers/timelineMapper'
 import aValidTimelineResponse from '../testsupport/timelineResponseTestDataBuilder'
 import HmppsAuthClient from '../data/hmppsAuthClient'
+import TimelineApiFilterOptions from '../data/timelineApiFilterOptions'
 
 jest.mock('../data/mappers/timelineMapper')
 jest.mock('./prisonService')
@@ -87,6 +88,8 @@ describe('timelineService', () => {
       mockedTimelineMapper.mockReturnValue(timeline)
       prisonService.getAllPrisonNamesById.mockResolvedValueOnce(mockedPrisonNamesById)
 
+      const expectedApiFilterOptions = new TimelineApiFilterOptions()
+
       // When
       const actual = await timelineService.getTimeline(prisonNumber, username)
 
@@ -96,6 +99,7 @@ describe('timelineService', () => {
       expect(actual).toEqual(timeline)
       expect(educationAndWorkPlanClient.getTimeline).toHaveBeenCalledWith(
         prisonNumber,
+        expectedApiFilterOptions,
         systemToken,
         supportedTimelineEvents,
       )
@@ -140,6 +144,8 @@ describe('timelineService', () => {
 
       prisonService.getAllPrisonNamesById.mockResolvedValue(new Map())
 
+      const expectedApiFilterOptions = new TimelineApiFilterOptions()
+
       // When
       const actual = await timelineService.getTimeline(prisonNumber, username)
 
@@ -149,6 +155,7 @@ describe('timelineService', () => {
       expect(actual).toEqual(timeline)
       expect(educationAndWorkPlanClient.getTimeline).toHaveBeenCalledWith(
         prisonNumber,
+        expectedApiFilterOptions,
         systemToken,
         supportedTimelineEvents,
       )
@@ -159,6 +166,8 @@ describe('timelineService', () => {
       // Given
       educationAndWorkPlanClient.getTimeline.mockResolvedValue(null)
 
+      const expectedApiFilterOptions = new TimelineApiFilterOptions()
+
       // When
       const actual = await timelineService.getTimeline(prisonNumber, username)
 
@@ -167,6 +176,7 @@ describe('timelineService', () => {
       expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
       expect(educationAndWorkPlanClient.getTimeline).toHaveBeenCalledWith(
         prisonNumber,
+        expectedApiFilterOptions,
         systemToken,
         supportedTimelineEvents,
       )
@@ -189,6 +199,8 @@ describe('timelineService', () => {
         problemRetrievingData: true,
       }
 
+      const expectedApiFilterOptions = new TimelineApiFilterOptions()
+
       // When
       const actual = await timelineService.getTimeline(prisonNumber, username).catch(error => {
         return error
@@ -199,6 +211,7 @@ describe('timelineService', () => {
       expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
       expect(educationAndWorkPlanClient.getTimeline).toHaveBeenCalledWith(
         prisonNumber,
+        expectedApiFilterOptions,
         systemToken,
         supportedTimelineEvents,
       )

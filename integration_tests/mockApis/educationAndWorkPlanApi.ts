@@ -245,7 +245,7 @@ const stubGetTimeline = (prisonNumber = 'G6115VJ'): SuperAgentRequest =>
   stubFor({
     request: {
       method: 'GET',
-      urlPattern: `/timelines/${prisonNumber}`,
+      urlPathPattern: `/timelines/${prisonNumber}`,
     },
     response: {
       status: 200,
@@ -258,7 +258,7 @@ const stubGetTimeline404Error = (prisonNumber = 'G6115VJ'): SuperAgentRequest =>
   stubFor({
     request: {
       method: 'GET',
-      urlPattern: `/timelines/${prisonNumber}`,
+      urlPathPattern: `/timelines/${prisonNumber}`,
     },
     response: {
       status: 404,
@@ -277,7 +277,7 @@ const stubGetTimeline500Error = (prisonNumber = 'G6115VJ'): SuperAgentRequest =>
   stubFor({
     request: {
       method: 'GET',
-      urlPattern: `/timelines/${prisonNumber}`,
+      urlPathPattern: `/timelines/${prisonNumber}`,
     },
     response: {
       status: 500,
