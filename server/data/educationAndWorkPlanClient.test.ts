@@ -1,6 +1,7 @@
 import nock from 'nock'
 import { isEqual, isMatch } from 'lodash'
 import type { ArchiveGoalRequest, UnarchiveGoalRequest } from 'educationAndWorkPlanApiClient'
+import { startOfDay } from 'date-fns'
 import config from '../config'
 import EducationAndWorkPlanClient from './educationAndWorkPlanClient'
 import {
@@ -492,42 +493,153 @@ describe('educationAndWorkPlanClient', () => {
       expect(actual).toEqual(expectedTimelineResponse)
     })
 
-    it('should get Timeline filtered by event type', async () => {
+    it('should get Timeline filtered by induction events', async () => {
       // Given
       const timelineResponseFromApi = aValidTimelineResponse()
+
       educationAndWorkPlanApi
-        .get(`/timelines/${prisonNumber}?inductions=false&reviews=false&goals=false&prisonEvents=false`)
+        .get(`/timelines/${prisonNumber}?inductions=true&reviews=false&goals=false&prisonEvents=false`)
         .reply(200, timelineResponseFromApi)
 
-      const expectedTimelineResponse = {
-        ...timelineResponseFromApi,
-        events: [
-          {
-            reference: '3f0423e5-200b-48c9-8414-f04e336897ff',
-            sourceReference: 'f190e844-3aa1-4f04-81d5-6be2bf9721cc',
-            eventType: 'GOAL_CREATED',
-            prisonId: 'MDI',
-            actionedBy: 'RALPH_GEN',
-            timestamp: '2023-09-23T15:47:38.565Z',
-            correlationId: '0838330d-606f-480a-b55f-3228e1be122d',
-            contextualInfo: {
-              GOAL_TITLE: 'Learn French',
-            },
-            actionedByDisplayName: 'Ralph Gen',
-          },
-        ],
-      }
-
-      const timelineApiFilterOptions = new TimelineApiFilterOptions()
+      const timelineApiFilterOptions = new TimelineApiFilterOptions({
+        inductions: true,
+      })
 
       // When
-      const actual = await educationAndWorkPlanClient.getTimeline(prisonNumber, timelineApiFilterOptions, systemToken, [
-        'GOAL_CREATED',
-      ])
+      const actual = await educationAndWorkPlanClient.getTimeline(prisonNumber, timelineApiFilterOptions, systemToken)
 
       // Then
       expect(nock.isDone()).toBe(true)
-      expect(actual).toEqual(expectedTimelineResponse)
+      expect(actual).toEqual(timelineResponseFromApi)
+    })
+
+    it('should get Timeline filtered by review events', async () => {
+      // Given
+      const timelineResponseFromApi = aValidTimelineResponse()
+
+      educationAndWorkPlanApi
+        .get(`/timelines/${prisonNumber}?inductions=false&reviews=true&goals=false&prisonEvents=false`)
+        .reply(200, timelineResponseFromApi)
+
+      const timelineApiFilterOptions = new TimelineApiFilterOptions({
+        reviews: true,
+      })
+
+      // When
+      const actual = await educationAndWorkPlanClient.getTimeline(prisonNumber, timelineApiFilterOptions, systemToken)
+
+      // Then
+      expect(nock.isDone()).toBe(true)
+      expect(actual).toEqual(timelineResponseFromApi)
+    })
+
+    it('should get Timeline filtered by goal events', async () => {
+      // Given
+      const timelineResponseFromApi = aValidTimelineResponse()
+
+      educationAndWorkPlanApi
+        .get(`/timelines/${prisonNumber}?inductions=false&reviews=false&goals=true&prisonEvents=false`)
+        .reply(200, timelineResponseFromApi)
+
+      const timelineApiFilterOptions = new TimelineApiFilterOptions({
+        goals: true,
+      })
+
+      // When
+      const actual = await educationAndWorkPlanClient.getTimeline(prisonNumber, timelineApiFilterOptions, systemToken)
+
+      // Then
+      expect(nock.isDone()).toBe(true)
+      expect(actual).toEqual(timelineResponseFromApi)
+    })
+
+    it('should get Timeline filtered by prison events', async () => {
+      // Given
+      const timelineResponseFromApi = aValidTimelineResponse()
+
+      educationAndWorkPlanApi
+        .get(`/timelines/${prisonNumber}?inductions=false&reviews=false&goals=false&prisonEvents=true`)
+        .reply(200, timelineResponseFromApi)
+
+      const timelineApiFilterOptions = new TimelineApiFilterOptions({
+        prisonEvents: true,
+      })
+
+      // When
+      const actual = await educationAndWorkPlanClient.getTimeline(prisonNumber, timelineApiFilterOptions, systemToken)
+
+      // Then
+      expect(nock.isDone()).toBe(true)
+      expect(actual).toEqual(timelineResponseFromApi)
+    })
+
+    it('should get Timeline filtered by prison id', async () => {
+      // Given
+      const timelineResponseFromApi = aValidTimelineResponse()
+
+      educationAndWorkPlanApi
+        .get(`/timelines/${prisonNumber}?inductions=false&reviews=false&goals=false&prisonEvents=false&prisonId=BXI`)
+        .reply(200, timelineResponseFromApi)
+
+      const timelineApiFilterOptions = new TimelineApiFilterOptions({
+        prisonId: 'BXI',
+      })
+
+      // When
+      const actual = await educationAndWorkPlanClient.getTimeline(prisonNumber, timelineApiFilterOptions, systemToken)
+
+      // Then
+      expect(nock.isDone()).toBe(true)
+      expect(actual).toEqual(timelineResponseFromApi)
+    })
+
+    it('should get Timeline filtered by events since', async () => {
+      // Given
+      const timelineResponseFromApi = aValidTimelineResponse()
+
+      educationAndWorkPlanApi
+        .get(
+          `/timelines/${prisonNumber}?inductions=false&reviews=false&goals=false&prisonEvents=false&eventsSince=2025-02-20`,
+        )
+        .reply(200, timelineResponseFromApi)
+
+      const timelineApiFilterOptions = new TimelineApiFilterOptions({
+        eventsSince: startOfDay('2025-02-20'),
+      })
+
+      // When
+      const actual = await educationAndWorkPlanClient.getTimeline(prisonNumber, timelineApiFilterOptions, systemToken)
+
+      // Then
+      expect(nock.isDone()).toBe(true)
+      expect(actual).toEqual(timelineResponseFromApi)
+    })
+
+    it('should get Timeline filtered by all options', async () => {
+      // Given
+      const timelineResponseFromApi = aValidTimelineResponse()
+
+      educationAndWorkPlanApi
+        .get(
+          `/timelines/${prisonNumber}?inductions=true&reviews=true&goals=true&prisonEvents=true&prisonId=BXI&eventsSince=2025-02-20`,
+        )
+        .reply(200, timelineResponseFromApi)
+
+      const timelineApiFilterOptions = new TimelineApiFilterOptions({
+        inductions: true,
+        reviews: true,
+        goals: true,
+        prisonEvents: true,
+        prisonId: 'BXI',
+        eventsSince: startOfDay('2025-02-20'),
+      })
+
+      // When
+      const actual = await educationAndWorkPlanClient.getTimeline(prisonNumber, timelineApiFilterOptions, systemToken)
+
+      // Then
+      expect(nock.isDone()).toBe(true)
+      expect(actual).toEqual(timelineResponseFromApi)
     })
 
     it('should not get Timeline given no timeline returned for specified prisoner', async () => {

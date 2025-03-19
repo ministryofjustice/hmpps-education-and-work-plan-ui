@@ -6,22 +6,6 @@ import PrisonService from './prisonService'
 import { HmppsAuthClient } from '../data'
 import TimelineApiFilterOptions from '../data/timelineApiFilterOptions'
 
-const PLP_TIMELINE_EVENTS = [
-  'ACTION_PLAN_CREATED',
-  'INDUCTION_SCHEDULE_STATUS_UPDATED',
-  'INDUCTION_CREATED',
-  'INDUCTION_UPDATED',
-  'GOAL_UPDATED',
-  'GOAL_CREATED',
-  'GOAL_ARCHIVED',
-  'GOAL_UNARCHIVED',
-  'GOAL_COMPLETED',
-  'ACTION_PLAN_REVIEW_COMPLETED',
-  'ACTION_PLAN_REVIEW_SCHEDULE_STATUS_UPDATED',
-]
-const PRISON_TIMELINE_EVENTS = ['PRISON_ADMISSION', 'PRISON_RELEASE', 'PRISON_TRANSFER']
-const SUPPORTED_TIMELINE_EVENTS = [...PLP_TIMELINE_EVENTS, ...PRISON_TIMELINE_EVENTS]
-
 export default class TimelineService {
   constructor(
     private readonly educationAndWorkPlanClient: EducationAndWorkPlanClient,
@@ -32,11 +16,17 @@ export default class TimelineService {
   async getTimeline(prisonNumber: string, username: string): Promise<Timeline> {
     const systemToken = await this.hmppsAuthClient.getSystemClientToken(username)
     try {
+      const timelineApiFilterOptions = new TimelineApiFilterOptions({
+        inductions: true,
+        goals: true,
+        reviews: true,
+        prisonEvents: true,
+      })
+
       const timelineResponse = await this.educationAndWorkPlanClient.getTimeline(
         prisonNumber,
-        new TimelineApiFilterOptions(),
+        timelineApiFilterOptions,
         systemToken,
-        SUPPORTED_TIMELINE_EVENTS,
       )
 
       if (!timelineResponse) {

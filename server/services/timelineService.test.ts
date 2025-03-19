@@ -24,22 +24,6 @@ describe('timelineService', () => {
   const prisonNumber = 'A1234BC'
   const username = 'a-dps-user'
   const systemToken = 'a-system-token'
-  const supportedTimelineEvents = [
-    'ACTION_PLAN_CREATED',
-    'INDUCTION_SCHEDULE_STATUS_UPDATED',
-    'INDUCTION_CREATED',
-    'INDUCTION_UPDATED',
-    'GOAL_UPDATED',
-    'GOAL_CREATED',
-    'GOAL_ARCHIVED',
-    'GOAL_UNARCHIVED',
-    'GOAL_COMPLETED',
-    'ACTION_PLAN_REVIEW_COMPLETED',
-    'ACTION_PLAN_REVIEW_SCHEDULE_STATUS_UPDATED',
-    'PRISON_ADMISSION',
-    'PRISON_RELEASE',
-    'PRISON_TRANSFER',
-  ]
   const mockedPrisonNamesById = new Map([
     ['ASI', 'Ashfield (HMP)'],
     ['MDI', 'Moorland (HMP & YOI)'],
@@ -88,7 +72,12 @@ describe('timelineService', () => {
       mockedTimelineMapper.mockReturnValue(timeline)
       prisonService.getAllPrisonNamesById.mockResolvedValueOnce(mockedPrisonNamesById)
 
-      const expectedApiFilterOptions = new TimelineApiFilterOptions()
+      const expectedApiFilterOptions = new TimelineApiFilterOptions({
+        inductions: true,
+        goals: true,
+        reviews: true,
+        prisonEvents: true,
+      })
 
       // When
       const actual = await timelineService.getTimeline(prisonNumber, username)
@@ -101,7 +90,6 @@ describe('timelineService', () => {
         prisonNumber,
         expectedApiFilterOptions,
         systemToken,
-        supportedTimelineEvents,
       )
       expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
     })
@@ -144,7 +132,12 @@ describe('timelineService', () => {
 
       prisonService.getAllPrisonNamesById.mockResolvedValue(new Map())
 
-      const expectedApiFilterOptions = new TimelineApiFilterOptions()
+      const expectedApiFilterOptions = new TimelineApiFilterOptions({
+        inductions: true,
+        goals: true,
+        reviews: true,
+        prisonEvents: true,
+      })
 
       // When
       const actual = await timelineService.getTimeline(prisonNumber, username)
@@ -157,7 +150,6 @@ describe('timelineService', () => {
         prisonNumber,
         expectedApiFilterOptions,
         systemToken,
-        supportedTimelineEvents,
       )
       expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
     })
@@ -166,7 +158,12 @@ describe('timelineService', () => {
       // Given
       educationAndWorkPlanClient.getTimeline.mockResolvedValue(null)
 
-      const expectedApiFilterOptions = new TimelineApiFilterOptions()
+      const expectedApiFilterOptions = new TimelineApiFilterOptions({
+        inductions: true,
+        goals: true,
+        reviews: true,
+        prisonEvents: true,
+      })
 
       // When
       const actual = await timelineService.getTimeline(prisonNumber, username)
@@ -178,7 +175,6 @@ describe('timelineService', () => {
         prisonNumber,
         expectedApiFilterOptions,
         systemToken,
-        supportedTimelineEvents,
       )
       expect(mockedTimelineMapper).not.toHaveBeenCalled()
     })
@@ -199,7 +195,12 @@ describe('timelineService', () => {
         problemRetrievingData: true,
       }
 
-      const expectedApiFilterOptions = new TimelineApiFilterOptions()
+      const expectedApiFilterOptions = new TimelineApiFilterOptions({
+        inductions: true,
+        goals: true,
+        reviews: true,
+        prisonEvents: true,
+      })
 
       // When
       const actual = await timelineService.getTimeline(prisonNumber, username).catch(error => {
@@ -213,7 +214,6 @@ describe('timelineService', () => {
         prisonNumber,
         expectedApiFilterOptions,
         systemToken,
-        supportedTimelineEvents,
       )
       expect(mockedTimelineMapper).not.toHaveBeenCalled()
     })
