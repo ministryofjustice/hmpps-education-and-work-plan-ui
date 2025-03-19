@@ -8,7 +8,7 @@ import aTimelineEvent from '../../../../../testsupport/timelineEventTestDataBuil
 import formatReviewExemptionReasonFilter from '../../../../../filters/formatReviewExemptionReasonFilter'
 import formatInductionExemptionReasonFilter from '../../../../../filters/formatInductionExemptionReasonFilter'
 
-describe('timelineTabContents', () => {
+describe('historyTabContents', () => {
   const njkEnv = nunjucks.configure([
     'node_modules/govuk-frontend/dist/',
     'node_modules/@ministryofjustice/frontend/',
@@ -55,7 +55,7 @@ describe('timelineTabContents', () => {
     const model = { prisonerSummary, timeline }
 
     // When
-    const content = nunjucks.render('timelineTabContents.njk', model)
+    const content = nunjucks.render('historyTabContents.njk', model)
     const $ = cheerio.load(content)
 
     // Then
@@ -84,7 +84,7 @@ describe('timelineTabContents', () => {
     const model = { prisonerSummary, timeline }
 
     // When
-    const content = nunjucks.render('timelineTabContents.njk', model)
+    const content = nunjucks.render('historyTabContents.njk', model)
     const $ = cheerio.load(content)
 
     // Then
@@ -100,7 +100,7 @@ describe('timelineTabContents', () => {
     const model = { prisonerSummary, timeline }
 
     // When
-    const content = nunjucks.render('timelineTabContents.njk', model)
+    const content = nunjucks.render('historyTabContents.njk', model)
     const $ = cheerio.load(content)
 
     // Then

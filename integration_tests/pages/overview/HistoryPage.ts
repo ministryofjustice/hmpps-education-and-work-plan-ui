@@ -2,41 +2,41 @@ import GoalsPage from './GoalsPage'
 import Page, { PageElement } from '../page'
 
 /**
- * Cypress page class representing the Timeline tab of the Overview Page
+ * Cypress page class representing the History tab of the Overview Page (previously known as the Timeline tab)
  */
-export default class TimelinePage extends Page {
+export default class HistoryPage extends Page {
   constructor() {
     super('overview')
-    this.activeTabIs('Timeline')
+    this.activeTabIs('History')
   }
 
-  activeTabIs(expected: string): TimelinePage {
+  activeTabIs(expected: string): HistoryPage {
     this.activeTab().should('contain.text', expected)
     return this
   }
 
-  hasTimelineUnavailableMessageDisplayed(): TimelinePage {
+  hasTimelineUnavailableMessageDisplayed(): HistoryPage {
     this.timelineContainer().should('not.exist')
     this.timelineUnavailableMessage().should('be.visible')
     this.emptyTimelineMessage().should('not.exist')
     return this
   }
 
-  hasEmptyTimelineMessageDisplayed(): TimelinePage {
+  hasEmptyTimelineMessageDisplayed(): HistoryPage {
     this.timelineContainer().should('not.exist')
     this.timelineUnavailableMessage().should('not.exist')
     this.emptyTimelineMessage().should('be.visible')
     return this
   }
 
-  hasTimelineDisplayed(): TimelinePage {
+  hasTimelineDisplayed(): HistoryPage {
     this.timelineContainer().should('be.visible')
     this.timelineUnavailableMessage().should('not.exist')
     this.emptyTimelineMessage().should('not.exist')
     return this
   }
 
-  hasTimelineEventsInOrder = (events: string[]): TimelinePage => {
+  hasTimelineEventsInOrder = (events: string[]): HistoryPage => {
     cy.get('div.moj-timeline div.moj-timeline__item').each((el, idx) => {
       cy.wrap(el.attr('data-qa-event-type')).should('eq', events[idx])
     })

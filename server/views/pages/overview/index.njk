@@ -38,6 +38,9 @@
   {% if tab === 'overview' %}
     {% include './partials/overviewTab/overviewTabContents.njk' %}
   {% endif %}
+  {% if tab === 'history' %}
+    {% include './partials/historyTab/historyTabContents.njk' %}
+  {% endif %}
   {% if tab === 'support-needs' %}
     {% include './partials/supportNeedsTab/supportNeedsTabContents.njk' %}
   {% endif %}
@@ -46,9 +49,6 @@
   {% endif %}
   {% if tab === 'work-and-interests' %}
     {% include './partials/workAndInterestsTab/workAndInterestsTabContents.njk' %}
-  {% endif %}
-  {% if tab === 'timeline' %}
-    {% include './partials/timelineTab/timelineTabContents.njk' %}
   {% endif %}
 
 {% endblock %}

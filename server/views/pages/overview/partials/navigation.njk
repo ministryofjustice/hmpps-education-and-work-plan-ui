@@ -11,15 +11,24 @@
             Overview
           </a>
         </li>
-          <li class="moj-sub-navigation__item">
-            <a class="moj-sub-navigation__link"
-              data-qa="tab-goals"
-              {% if tab === 'goals' %}aria-current="page"{% endif %}
-              href="goals"
-            >
-              Goals
-            </a>
-          </li>
+        <li class="moj-sub-navigation__item">
+          <a class="moj-sub-navigation__link"
+             data-qa="tab-history"
+             {% if tab === 'history' %}aria-current="page"{% endif %}
+             href="history"
+          >
+            History
+          </a>
+        </li>
+        <li class="moj-sub-navigation__item">
+          <a class="moj-sub-navigation__link"
+            data-qa="tab-goals"
+            {% if tab === 'goals' %}aria-current="page"{% endif %}
+            href="goals"
+          >
+            Goals
+          </a>
+        </li>
         <li class="moj-sub-navigation__item">
           <a class="moj-sub-navigation__link"
             data-qa="tab-support-needs"
@@ -45,15 +54,6 @@
             href="work-and-interests"
           >
             Work and interests
-          </a>
-        </li>
-        <li class="moj-sub-navigation__item">
-          <a class="moj-sub-navigation__link"
-            data-qa="tab-timeline"
-            {% if tab === 'timeline' %}aria-current="page"{% endif %}
-            href="timeline"
-          >
-            Timeline
           </a>
         </li>
       </ul>
