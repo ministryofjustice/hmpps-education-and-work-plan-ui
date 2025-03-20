@@ -2,8 +2,11 @@ import { parseISO } from 'date-fns'
 import type { TimelineResponse } from 'educationAndWorkPlanApiClient'
 import type { Timeline } from 'viewModels'
 import toTimeline from './timelineMapper'
+import TimelineFilterTypeValue from '../../enums/timelineFilterTypeValue'
 
 describe('timelineMapper', () => {
+  const filterOptions = [TimelineFilterTypeValue.REVIEWS, TimelineFilterTypeValue.GOALS]
+
   it('should map to Timeline if prison is not in map of prison names', () => {
     // Given
     const timeline: TimelineResponse = {
@@ -40,10 +43,11 @@ describe('timelineMapper', () => {
           actionedByDisplayName: 'Ralph Gen',
         },
       ],
+      filteredBy: filterOptions,
     }
 
     // When
-    const actual = toTimeline(timeline, new Map())
+    const actual = toTimeline(timeline, new Map(), filterOptions)
 
     // Then
     expect(actual).toEqual(expectedTimeline)
@@ -84,14 +88,16 @@ describe('timelineMapper', () => {
           actionedByDisplayName: 'Ralph Gen',
         },
       ],
+      filteredBy: filterOptions,
     }
 
     // When
-    const actual = toTimeline(timeline, new Map([['MDI', 'Moorland (HMP & YOI)']]))
+    const actual = toTimeline(timeline, new Map([['MDI', 'Moorland (HMP & YOI)']]), filterOptions)
 
     // Then
     expect(actual).toEqual(expectedTimeline)
   })
+
   it('should map prison transfer event if prison is in map of prison names', () => {
     // Given
     const timeline: TimelineResponse = {
@@ -134,6 +140,7 @@ describe('timelineMapper', () => {
           actionedByDisplayName: 'Ralph Gen',
         },
       ],
+      filteredBy: filterOptions,
     }
 
     // When
@@ -143,11 +150,13 @@ describe('timelineMapper', () => {
         ['MDI', 'Moorland (HMP & YOI)'],
         ['ASI', 'Ashfield (HMP)'],
       ]),
+      filterOptions,
     )
 
     // Then
     expect(actual).toEqual(expectedTimeline)
   })
+
   it('should map prison transfer event even if prison is not in map of prison names', () => {
     // Given
     const timeline: TimelineResponse = {
@@ -190,10 +199,11 @@ describe('timelineMapper', () => {
           actionedByDisplayName: 'Ralph Gen',
         },
       ],
+      filteredBy: filterOptions,
     }
 
     // When
-    const actual = toTimeline(timeline, new Map([['MDI', 'Moorland (HMP & YOI)']]))
+    const actual = toTimeline(timeline, new Map([['MDI', 'Moorland (HMP & YOI)']]), filterOptions)
 
     // Then
     expect(actual).toEqual(expectedTimeline)

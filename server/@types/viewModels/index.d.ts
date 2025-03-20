@@ -10,6 +10,7 @@ declare module 'viewModels' {
   import SessionTypeValue from '../../enums/sessionTypeValue'
   import InductionExemptionReasonValue from '../../enums/inductionExemptionReasonValue'
   import ReviewPlanExemptionReasonValue from '../../enums/reviewPlanExemptionReasonValue'
+  import TimelineFilterTypeValue from '../../enums/timelineFilterTypeValue'
 
   export interface SessionsSummary {
     overdueSessionCount: number
@@ -306,6 +307,7 @@ declare module 'viewModels' {
     reference?: string
     prisonNumber: string
     events?: Array<TimelineEvent>
+    filteredBy: Array<TimelineFilterTypeValue>
   }
 
   export interface TimelineEvent {

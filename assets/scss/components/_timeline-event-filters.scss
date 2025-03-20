@@ -1,0 +1,11 @@
+.timeline-event-filters {
+  .govuk-checkboxes {
+    gap: unset;
+  }
+  .govuk-checkboxes__item {
+    flex-grow: 1;
+  }
+  .govuk-checkboxes__label {
+    max-width: unset;
+  }
+}

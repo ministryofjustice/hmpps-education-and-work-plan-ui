@@ -1,8 +1,11 @@
 import { parseISO } from 'date-fns'
 import type { Timeline, TimelineEvent } from 'viewModels'
 import prepareTimelineForView from './prepareTimelineForView'
+import TimelineFilterTypeValue from '../../enums/timelineFilterTypeValue'
 
 describe('prepareTimelineForView', () => {
+  const filterOptions = [TimelineFilterTypeValue.ALL]
+
   it('should return a Timeline with multiple goal events with the same correlationId value grouped and events sorted by timestamp', () => {
     // Given
     const prisonAdmissionEvent: TimelineEvent = {
@@ -109,6 +112,7 @@ describe('prepareTimelineForView', () => {
       prisonNumber: 'A1234AA',
       problemRetrievingData: false,
       events: [prisonAdmissionEvent, ...actionPlanGoalCreateEvents, actionPlanCreatedEvent, ...otherEvents],
+      filteredBy: filterOptions,
     }
 
     const expected: Timeline = {
@@ -137,6 +141,7 @@ describe('prepareTimelineForView', () => {
         },
         prisonAdmissionEvent,
       ],
+      filteredBy: filterOptions,
     }
 
     // When
@@ -256,12 +261,14 @@ describe('prepareTimelineForView', () => {
         systemGeneratedActionPlanStatusUpdatedEvent2,
         goalUpdateEvent,
       ],
+      filteredBy: filterOptions,
     }
 
     const expected: Timeline = {
       prisonNumber: 'A1234AA',
       problemRetrievingData: false,
       events: [goalUpdateEvent, singleGoalCreateEvent, prisonAdmissionEvent],
+      filteredBy: filterOptions,
     }
 
     // When
@@ -318,6 +325,7 @@ describe('prepareTimelineForView', () => {
       prisonNumber: 'A1234AA',
       problemRetrievingData: false,
       events: [inductionCreatedEvent, goalCreatedEvent, actionPlanCreatedEvent],
+      filteredBy: filterOptions,
     }
 
     const expected: Timeline = {
@@ -338,6 +346,7 @@ describe('prepareTimelineForView', () => {
           timestamp: parseISO('2023-09-01T10:47:37.560Z'),
         },
       ],
+      filteredBy: filterOptions,
     }
 
     // When
@@ -394,6 +403,7 @@ describe('prepareTimelineForView', () => {
       prisonNumber: 'A1234AA',
       problemRetrievingData: false,
       events: [inductionCreatedEvent, goalCreatedEvent, actionPlanCreatedEvent],
+      filteredBy: filterOptions,
     }
 
     const expected: Timeline = {
@@ -419,6 +429,7 @@ describe('prepareTimelineForView', () => {
         },
         goalCreatedEvent,
       ],
+      filteredBy: filterOptions,
     }
 
     // When
@@ -458,12 +469,14 @@ describe('prepareTimelineForView', () => {
       prisonNumber: 'A1234AA',
       problemRetrievingData: false,
       events: [goalCreatedEvent, actionPlanCreatedEvent],
+      filteredBy: filterOptions,
     }
 
     const expected: Timeline = {
       prisonNumber: 'A1234AA',
       problemRetrievingData: false,
       events: [goalCreatedEvent],
+      filteredBy: filterOptions,
     }
 
     // When
@@ -500,12 +513,14 @@ describe('prepareTimelineForView', () => {
       prisonNumber: 'A1234AA',
       problemRetrievingData: false,
       events: [prisonAdmissionEvent, inductionCreatedEvent],
+      filteredBy: filterOptions,
     }
 
     const expected: Timeline = {
       prisonNumber: 'A1234AA',
       problemRetrievingData: false,
       events: [prisonAdmissionEvent],
+      filteredBy: filterOptions,
     }
 
     // When
@@ -521,12 +536,14 @@ describe('prepareTimelineForView', () => {
       prisonNumber: 'A1234AA',
       problemRetrievingData: false,
       events: [],
+      filteredBy: filterOptions,
     }
 
     const expected: Timeline = {
       prisonNumber: 'A1234AA',
       problemRetrievingData: false,
       events: [],
+      filteredBy: filterOptions,
     }
 
     // When
@@ -542,12 +559,14 @@ describe('prepareTimelineForView', () => {
       prisonNumber: 'A1234AA',
       problemRetrievingData: true,
       events: [],
+      filteredBy: filterOptions,
     }
 
     const expected: Timeline = {
       prisonNumber: 'A1234AA',
       problemRetrievingData: true,
       events: [],
+      filteredBy: filterOptions,
     }
 
     // When

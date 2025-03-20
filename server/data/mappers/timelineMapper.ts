@@ -1,6 +1,7 @@
 import { parseISO } from 'date-fns'
 import type { TimelineResponse, TimelineEventResponse } from 'educationAndWorkPlanApiClient'
 import type { Timeline, TimelineEvent } from 'viewModels'
+import TimelineFilterTypeValue from '../../enums/timelineFilterTypeValue'
 
 /**
  * Maps an API [TimelineResponse] into a view model [Timeline]
@@ -8,12 +9,17 @@ import type { Timeline, TimelineEvent } from 'viewModels'
  * As part of this mapping the timeline events are filtered to just those that are supported by the PLP UI
  * (The [TimelineResponse] API data includes event types that are not supported/required by the PLP UI)
  */
-const toTimeline = (timelineResponse: TimelineResponse, prisonNamesById: Map<string, string>): Timeline => {
+const toTimeline = (
+  timelineResponse: TimelineResponse,
+  prisonNamesById: Map<string, string>,
+  filterOptions: Array<TimelineFilterTypeValue>,
+): Timeline => {
   return {
     problemRetrievingData: false,
     reference: timelineResponse.reference,
     prisonNumber: timelineResponse.prisonNumber,
     events: timelineResponse.events.map((event: TimelineEventResponse) => toTimelineEvent(event, prisonNamesById)),
+    filteredBy: filterOptions,
   }
 }
 
