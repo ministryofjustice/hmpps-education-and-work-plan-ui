@@ -1,4 +1,4 @@
-import { parseISO } from 'date-fns'
+import { parseISO, startOfDay } from 'date-fns'
 import type { Timeline } from 'viewModels'
 import PrisonService from './prisonService'
 import TimelineService from './timelineService'
@@ -42,7 +42,18 @@ describe('timelineService', () => {
       const timelineResponse = aValidTimelineResponse()
       educationAndWorkPlanClient.getTimeline.mockResolvedValue(timelineResponse)
 
-      const filterOptions = [TimelineFilterTypeValue.ALL]
+      const filterOptions = {
+        prisonNumber,
+        username,
+        filterOptions: {
+          goals: false,
+          inductions: false,
+          prisonEvents: false,
+          reviews: false,
+          prisonId: undefined as string,
+          eventsSince: undefined as Date,
+        },
+      }
 
       const timeline: Timeline = {
         problemRetrievingData: false,
@@ -72,7 +83,7 @@ describe('timelineService', () => {
             actionedByDisplayName: 'Ralph Gen',
           },
         ],
-        filteredBy: filterOptions,
+        filteredBy: [TimelineFilterTypeValue.ALL],
       }
       mockedTimelineMapper.mockReturnValue(timeline)
       prisonService.getAllPrisonNamesById.mockResolvedValueOnce(mockedPrisonNamesById)
@@ -80,10 +91,12 @@ describe('timelineService', () => {
       const expectedApiFilterOptions = new TimelineApiFilterOptions()
 
       // When
-      const actual = await timelineService.getTimeline(prisonNumber, filterOptions, username)
+      const actual = await timelineService.getTimeline(filterOptions)
 
       // Then
-      expect(mockedTimelineMapper).toHaveBeenCalledWith(timelineResponse, mockedPrisonNamesById, filterOptions)
+      expect(mockedTimelineMapper).toHaveBeenCalledWith(timelineResponse, mockedPrisonNamesById, [
+        TimelineFilterTypeValue.ALL,
+      ])
       expect(prisonService.getAllPrisonNamesById).toHaveBeenCalledWith(username)
       expect(actual).toEqual(timeline)
       expect(educationAndWorkPlanClient.getTimeline).toHaveBeenCalledWith(
@@ -99,7 +112,18 @@ describe('timelineService', () => {
       const timelineResponse = aValidTimelineResponse()
       educationAndWorkPlanClient.getTimeline.mockResolvedValue(timelineResponse)
 
-      const filterOptions = [TimelineFilterTypeValue.ALL]
+      const filterOptions = {
+        prisonNumber,
+        username,
+        filterOptions: {
+          goals: false,
+          inductions: false,
+          prisonEvents: false,
+          reviews: false,
+          prisonId: undefined as string,
+          eventsSince: undefined as Date,
+        },
+      }
 
       const timeline: Timeline = {
         problemRetrievingData: false,
@@ -129,7 +153,7 @@ describe('timelineService', () => {
             actionedByDisplayName: 'Ralph Gen',
           },
         ],
-        filteredBy: filterOptions,
+        filteredBy: [TimelineFilterTypeValue.ALL],
       }
       mockedTimelineMapper.mockReturnValue(timeline)
 
@@ -138,10 +162,10 @@ describe('timelineService', () => {
       const expectedApiFilterOptions = new TimelineApiFilterOptions()
 
       // When
-      const actual = await timelineService.getTimeline(prisonNumber, filterOptions, username)
+      const actual = await timelineService.getTimeline(filterOptions)
 
       // Then
-      expect(mockedTimelineMapper).toHaveBeenCalledWith(timelineResponse, new Map(), filterOptions)
+      expect(mockedTimelineMapper).toHaveBeenCalledWith(timelineResponse, new Map(), [TimelineFilterTypeValue.ALL])
       expect(prisonService.getAllPrisonNamesById).toHaveBeenCalledWith(username)
       expect(actual).toEqual(timeline)
       expect(educationAndWorkPlanClient.getTimeline).toHaveBeenCalledWith(
@@ -157,7 +181,18 @@ describe('timelineService', () => {
       const timelineResponse = aValidTimelineResponse()
       educationAndWorkPlanClient.getTimeline.mockResolvedValue(timelineResponse)
 
-      const filterOptions = [TimelineFilterTypeValue.ALL]
+      const filterOptions = {
+        prisonNumber,
+        username,
+        filterOptions: {
+          goals: false,
+          inductions: false,
+          prisonEvents: false,
+          reviews: false,
+          prisonId: undefined as string,
+          eventsSince: undefined as Date,
+        },
+      }
 
       const timeline: Timeline = {
         problemRetrievingData: false,
@@ -187,7 +222,7 @@ describe('timelineService', () => {
             actionedByDisplayName: 'Ralph Gen',
           },
         ],
-        filteredBy: filterOptions,
+        filteredBy: [TimelineFilterTypeValue.ALL],
       }
       mockedTimelineMapper.mockReturnValue(timeline)
       prisonService.getAllPrisonNamesById.mockResolvedValueOnce(mockedPrisonNamesById)
@@ -195,10 +230,12 @@ describe('timelineService', () => {
       const expectedApiFilterOptions = new TimelineApiFilterOptions()
 
       // When
-      const actual = await timelineService.getTimeline(prisonNumber, filterOptions, username)
+      const actual = await timelineService.getTimeline(filterOptions)
 
       // Then
-      expect(mockedTimelineMapper).toHaveBeenCalledWith(timelineResponse, mockedPrisonNamesById, filterOptions)
+      expect(mockedTimelineMapper).toHaveBeenCalledWith(timelineResponse, mockedPrisonNamesById, [
+        TimelineFilterTypeValue.ALL,
+      ])
       expect(prisonService.getAllPrisonNamesById).toHaveBeenCalledWith(username)
       expect(actual).toEqual(timeline)
       expect(educationAndWorkPlanClient.getTimeline).toHaveBeenCalledWith(
@@ -214,24 +251,37 @@ describe('timelineService', () => {
       const timelineResponse = aValidTimelineResponse()
       educationAndWorkPlanClient.getTimeline.mockResolvedValue(timelineResponse)
 
-      const filterOptions = [TimelineFilterTypeValue.ALL]
+      const filterOptions = {
+        prisonNumber,
+        username,
+        filterOptions: {
+          goals: true,
+          inductions: true,
+          prisonEvents: true,
+          reviews: true,
+          prisonId: 'BXI',
+          eventsSince: startOfDay(parseISO('2025-03-20')),
+        },
+      }
 
-      const timeline = aValidTimeline()
+      const timeline = aValidTimeline({
+        filteredBy: [TimelineFilterTypeValue.ALL],
+      })
       mockedTimelineMapper.mockReturnValue(timeline)
 
       prisonService.getAllPrisonNamesById.mockResolvedValue(new Map())
 
       const expectedApiFilterOptions = new TimelineApiFilterOptions({
-        inductions: false,
-        goals: false,
-        reviews: false,
-        prisonEvents: false,
-        eventsSince: undefined,
-        prisonId: undefined,
+        inductions: true,
+        goals: true,
+        reviews: true,
+        prisonEvents: true,
+        eventsSince: startOfDay(parseISO('2025-03-20')),
+        prisonId: 'BXI',
       })
 
       // When
-      const actual = await timelineService.getTimeline(prisonNumber, filterOptions, username)
+      const actual = await timelineService.getTimeline(filterOptions)
 
       // Then
       expect(actual).toEqual(timeline)
@@ -247,9 +297,22 @@ describe('timelineService', () => {
       const timelineResponse = aValidTimelineResponse()
       educationAndWorkPlanClient.getTimeline.mockResolvedValue(timelineResponse)
 
-      const filterOptions: Array<TimelineFilterTypeValue> = []
+      const filterOptions = {
+        prisonNumber,
+        username,
+        filterOptions: {
+          goals: false,
+          inductions: false,
+          prisonEvents: false,
+          reviews: false,
+          prisonId: undefined as string,
+          eventsSince: undefined as Date,
+        },
+      }
 
-      const timeline = aValidTimeline()
+      const timeline = aValidTimeline({
+        filteredBy: [TimelineFilterTypeValue.ALL],
+      })
       mockedTimelineMapper.mockReturnValue(timeline)
 
       prisonService.getAllPrisonNamesById.mockResolvedValue(new Map())
@@ -264,7 +327,7 @@ describe('timelineService', () => {
       })
 
       // When
-      const actual = await timelineService.getTimeline(prisonNumber, filterOptions, username)
+      const actual = await timelineService.getTimeline(filterOptions)
 
       // Then
       expect(actual).toEqual(timeline)
@@ -280,29 +343,41 @@ describe('timelineService', () => {
       const timelineResponse = aValidTimelineResponse()
       educationAndWorkPlanClient.getTimeline.mockResolvedValue(timelineResponse)
 
-      const filterOptions = [
-        TimelineFilterTypeValue.PRISON_MOVEMENTS,
-        TimelineFilterTypeValue.REVIEWS,
-        TimelineFilterTypeValue.GOALS,
-        TimelineFilterTypeValue.INDUCTION,
-      ]
+      const filterOptions = {
+        prisonNumber,
+        username,
+        filterOptions: {
+          goals: true,
+          inductions: false,
+          prisonEvents: true,
+          reviews: false,
+          prisonId: 'BXI',
+          eventsSince: undefined as Date,
+        },
+      }
 
-      const timeline = aValidTimeline()
+      const timeline = aValidTimeline({
+        filteredBy: [
+          TimelineFilterTypeValue.GOALS,
+          TimelineFilterTypeValue.CURRENT_PRISON,
+          TimelineFilterTypeValue.PRISON_MOVEMENTS,
+        ],
+      })
       mockedTimelineMapper.mockReturnValue(timeline)
 
       prisonService.getAllPrisonNamesById.mockResolvedValue(new Map())
 
       const expectedApiFilterOptions = new TimelineApiFilterOptions({
-        inductions: true,
+        inductions: false,
         goals: true,
-        reviews: true,
+        reviews: false,
         prisonEvents: true,
         eventsSince: undefined,
-        prisonId: undefined,
+        prisonId: 'BXI',
       })
 
       // When
-      const actual = await timelineService.getTimeline(prisonNumber, filterOptions, username)
+      const actual = await timelineService.getTimeline(filterOptions)
 
       // Then
       expect(actual).toEqual(timeline)
@@ -317,18 +392,30 @@ describe('timelineService', () => {
       // Given
       educationAndWorkPlanClient.getTimeline.mockResolvedValue(null)
 
-      const filterOptions = [TimelineFilterTypeValue.ALL]
+      const filterOptions = {
+        prisonNumber,
+        username,
+        filterOptions: {
+          goals: false,
+          inductions: false,
+          prisonEvents: false,
+          reviews: false,
+          prisonId: undefined as string,
+          eventsSince: undefined as Date,
+        },
+      }
+
       const expectedApiFilterOptions = new TimelineApiFilterOptions()
 
       const expected = {
         problemRetrievingData: false,
         events: [] as Array<TimelineFilterTypeValue>,
         prisonNumber,
-        filteredBy: filterOptions,
+        filteredBy: [TimelineFilterTypeValue.ALL],
       }
 
       // When
-      const actual = await timelineService.getTimeline(prisonNumber, filterOptions, username)
+      const actual = await timelineService.getTimeline(filterOptions)
 
       // Then
       expect(actual).toEqual(expected)
@@ -357,11 +444,23 @@ describe('timelineService', () => {
         problemRetrievingData: true,
       }
 
-      const filterOptions = [TimelineFilterTypeValue.ALL]
+      const filterOptions = {
+        prisonNumber,
+        username,
+        filterOptions: {
+          goals: false,
+          inductions: false,
+          prisonEvents: false,
+          reviews: false,
+          prisonId: undefined as string,
+          eventsSince: undefined as Date,
+        },
+      }
+
       const expectedApiFilterOptions = new TimelineApiFilterOptions()
 
       // When
-      const actual = await timelineService.getTimeline(prisonNumber, filterOptions, username).catch(error => {
+      const actual = await timelineService.getTimeline(filterOptions).catch(error => {
         return error
       })
 

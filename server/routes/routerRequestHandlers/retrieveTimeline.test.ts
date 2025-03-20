@@ -12,6 +12,7 @@ describe('retrieveTimeline', () => {
 
   const prisonNumber = 'A1234BC'
   const username = 'testUser'
+  const activeCaseLoadId = 'BXI'
 
   let req: Request
   let res: Response
@@ -20,12 +21,13 @@ describe('retrieveTimeline', () => {
   beforeEach(() => {
     jest.resetAllMocks()
     req = {
-      user: { username },
       params: { prisonNumber },
       query: {},
     } as unknown as Request
     res = {
-      locals: {},
+      locals: {
+        user: { username, activeCaseLoadId },
+      },
     } as unknown as Response
   })
 
@@ -33,9 +35,20 @@ describe('retrieveTimeline', () => {
     // Given
     req.query = {}
 
-    const expectedFilterOptions = [TimelineFilterTypeValue.ALL]
+    const expectedFilterOptions = {
+      prisonNumber,
+      username,
+      filterOptions: {
+        goals: false,
+        inductions: false,
+        prisonEvents: false,
+        reviews: false,
+        prisonId: undefined as string,
+        eventsSince: undefined as Date,
+      },
+    }
 
-    const timeline = aValidTimeline({ filteredBy: expectedFilterOptions })
+    const timeline = aValidTimeline({ filteredBy: [TimelineFilterTypeValue.ALL] })
     timelineService.getTimeline.mockResolvedValue(timeline)
 
     // When
@@ -43,7 +56,7 @@ describe('retrieveTimeline', () => {
 
     // Then
     expect(res.locals.timeline).toEqual(timeline)
-    expect(timelineService.getTimeline).toHaveBeenCalledWith(prisonNumber, expectedFilterOptions, username)
+    expect(timelineService.getTimeline).toHaveBeenCalledWith(expectedFilterOptions)
     expect(next).toHaveBeenCalled()
   })
 
@@ -53,9 +66,20 @@ describe('retrieveTimeline', () => {
       filterOptions: [TimelineFilterTypeValue.GOALS, TimelineFilterTypeValue.REVIEWS],
     }
 
-    const expectedFilterOptions = [TimelineFilterTypeValue.GOALS, TimelineFilterTypeValue.REVIEWS]
+    const expectedFilterOptions = {
+      prisonNumber,
+      username,
+      filterOptions: {
+        goals: true,
+        inductions: false,
+        prisonEvents: false,
+        reviews: true,
+        prisonId: undefined as string,
+        eventsSince: undefined as Date,
+      },
+    }
 
-    const timeline = aValidTimeline({ filteredBy: expectedFilterOptions })
+    const timeline = aValidTimeline({ filteredBy: [TimelineFilterTypeValue.GOALS, TimelineFilterTypeValue.REVIEWS] })
     timelineService.getTimeline.mockResolvedValue(timeline)
 
     // When
@@ -63,7 +87,7 @@ describe('retrieveTimeline', () => {
 
     // Then
     expect(res.locals.timeline).toEqual(timeline)
-    expect(timelineService.getTimeline).toHaveBeenCalledWith(prisonNumber, expectedFilterOptions, username)
+    expect(timelineService.getTimeline).toHaveBeenCalledWith(expectedFilterOptions)
     expect(next).toHaveBeenCalled()
   })
 })
