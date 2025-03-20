@@ -1,4 +1,9 @@
 {% if not timeline.problemRetrievingData %}
+
+  {% if featureToggles.reviewsEnabled %}
+    {% include './_filterControls.njk' %}
+  {% endif %}
+
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds app-u-print-full-width">
 

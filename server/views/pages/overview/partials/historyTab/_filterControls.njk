@@ -1,0 +1,68 @@
+{% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
+
+<section class="dps-homepage-search timeline-event-filters govuk-!-display-none-print">
+
+  <form class="form" method="get">
+    <fieldset class="govuk-fieldset">
+      <div class="govuk-form-group govuk-!-margin-bottom-3">
+
+        {{ govukCheckboxes({
+          name: "filterOptions",
+          fieldset: {
+            legend: {
+              text: "Show events related to",
+              isPageHeading: false,
+              classes: "govuk-fieldset__legend--m"
+            }
+          },
+          items: [
+            {
+              value: "ALL",
+              checked: timeline.filteredBy.includes('ALL'),
+              text: "All",
+              behaviour: "exclusive"
+            },
+            {
+              value: "INDUCTION",
+              checked: timeline.filteredBy.includes('INDUCTION'),
+              text: "Induction"
+            },
+            {
+              value: "GOALS",
+              checked: timeline.filteredBy.includes('GOALS'),
+              text: "Goals"
+            },
+            {
+              value: "REVIEWS",
+              checked: timeline.filteredBy.includes('REVIEWS'),
+              text: "Reviews"
+            },
+            {
+              value: "CURRENT_PRISON",
+              checked: timeline.filteredBy.includes('CURRENT_PRISON'),
+              text: "Current prison"
+            },
+            {
+              value: "LAST_6_MONTHS",
+              checked: timeline.filteredBy.includes('LAST_6_MONTHS'),
+              text: "Last 6 months"
+            },
+            {
+              value: "PRISON_MOVEMENTS",
+              checked: timeline.filteredBy.includes('PRISON_MOVEMENTS'),
+              text: "Prisoner movements"
+            }
+          ],
+          classes: 'govuk-checkboxes--small govuk-!-margin-bottom-3 govuk-form-group--inline'
+        }) }}
+
+        <div class="govuk-form-group__button">
+          <button type="submit" class="govuk-button" data-module="govuk-button" data-qa="apply-filters">
+            Apply filters
+          </button>
+        </div>
+      </div>
+    </fieldset>
+  </form>
+
+</section>

@@ -5,6 +5,7 @@ import logger from '../../logger'
 import PrisonService from './prisonService'
 import { HmppsAuthClient } from '../data'
 import TimelineApiFilterOptions from '../data/timelineApiFilterOptions'
+import TimelineFilterTypeValue from '../enums/timelineFilterTypeValue'
 
 export default class TimelineService {
   constructor(
@@ -13,15 +14,34 @@ export default class TimelineService {
     private readonly hmppsAuthClient: HmppsAuthClient,
   ) {}
 
-  async getTimeline(prisonNumber: string, username: string): Promise<Timeline> {
-    const systemToken = await this.hmppsAuthClient.getSystemClientToken(username)
+  async getTimeline(
+    prisonNumber: string,
+    filterOptions: Array<TimelineFilterTypeValue>,
+    username: string,
+  ): Promise<Timeline> {
     try {
-      const timelineApiFilterOptions = new TimelineApiFilterOptions({
-        inductions: true,
-        goals: true,
-        reviews: true,
-        prisonEvents: true,
-      })
+      const systemToken = await this.hmppsAuthClient.getSystemClientToken(username)
+
+      const timelineApiFilterOptions = new TimelineApiFilterOptions(
+        filterOptions.length === 0 ||
+        (filterOptions.length === 1 && filterOptions.includes(TimelineFilterTypeValue.ALL))
+          ? {
+              inductions: false,
+              goals: false,
+              reviews: false,
+              prisonEvents: false,
+              eventsSince: undefined,
+              prisonId: undefined,
+            }
+          : {
+              inductions: filterOptions.includes(TimelineFilterTypeValue.INDUCTION),
+              goals: filterOptions.includes(TimelineFilterTypeValue.GOALS),
+              reviews: filterOptions.includes(TimelineFilterTypeValue.REVIEWS),
+              prisonEvents: filterOptions.includes(TimelineFilterTypeValue.PRISON_MOVEMENTS),
+              eventsSince: undefined,
+              prisonId: undefined,
+            },
+      )
 
       const timelineResponse = await this.educationAndWorkPlanClient.getTimeline(
         prisonNumber,
@@ -31,11 +51,16 @@ export default class TimelineService {
 
       if (!timelineResponse) {
         logger.debug(`No Timeline for prisoner [${prisonNumber}]`)
-        return null
+        return {
+          problemRetrievingData: false,
+          events: [],
+          prisonNumber,
+          filteredBy: filterOptions,
+        }
       }
 
       const prisonNamesById = await this.prisonService.getAllPrisonNamesById(username)
-      return toTimeline(timelineResponse, prisonNamesById)
+      return toTimeline(timelineResponse, prisonNamesById, filterOptions)
     } catch (error) {
       logger.error(`Error retrieving Timeline for Prisoner [${prisonNumber}]`, error)
       return { problemRetrievingData: true } as Timeline

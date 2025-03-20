@@ -1,11 +1,13 @@
 import { parseISO } from 'date-fns'
 import type { Timeline, TimelineEvent } from 'viewModels'
+import TimelineFilterTypeValue from '../enums/timelineFilterTypeValue'
 
 export default function aValidTimeline(options?: {
   reference?: string
   prisonNumber?: string
   events?: Array<TimelineEvent>
   problemRetrievingData?: boolean
+  filteredBy?: Array<TimelineFilterTypeValue>
 }): Timeline {
   return {
     problemRetrievingData:
@@ -104,5 +106,6 @@ export default function aValidTimeline(options?: {
         actionedByDisplayName: undefined,
       },
     ],
+    filteredBy: options?.filteredBy || [TimelineFilterTypeValue.ALL],
   }
 }
