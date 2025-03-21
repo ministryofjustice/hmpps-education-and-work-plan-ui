@@ -4,7 +4,6 @@ import ApplicationAction from '../enums/applicationAction'
 import config from '../config'
 
 const featureToggles = {
-  completedGoalsEnabled: false,
   archiveGoalNotesEnabled: false,
   reviewsEnabled: false,
   prisonIsEnabledForService: () => false,

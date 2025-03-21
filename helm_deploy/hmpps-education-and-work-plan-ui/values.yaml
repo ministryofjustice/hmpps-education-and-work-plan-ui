@@ -59,7 +59,6 @@ generic-service:
     AUDIT_SERVICE_NAME: "hmpps-education-and-work-plan"
     AUDIT_ENABLED: "true"
     REVIEWS_ENABLED: "false"
-    COMPLETED_GOALS_ENABLED: "true"
     ARCHIVE_GOAL_NOTES_ENABLED: "true"
 
     # Comma delimited list of prison IDs that our service is rolled out into (active agencies)

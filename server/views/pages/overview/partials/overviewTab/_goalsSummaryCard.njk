@@ -33,16 +33,16 @@ Data supplied to this template:
           </div>
           <a class="govuk-link govuk-!-font-size-19 govuk-!-display-none-print" href="/plan/{{ prisonerSummary.prisonNumber }}/view/goals#in-progress-goals" data-qa="view-in-progress-goals-button">View in progress goals</a>
         </div>
-        {% if featureToggles.completedGoalsEnabled %}
-          {# Count of completed goals #}
-          <div class="govuk-grid-item">
-            <div class="summary-count-container">
-              <span class="govuk-body govuk-!-font-size-36 govuk-!-font-weight-bold" data-qa="completed-goals-count">{{ prisonerGoals.counts.completedGoals }}</span>
-              <span class="govuk-tag govuk-tag--green govuk-!-margin-left-2 govuk-!-margin-bottom-4">Completed</span>
-            </div>
-            <a class="govuk-link govuk-!-font-size-19 govuk-!-display-none-print" href="/plan/{{ prisonerSummary.prisonNumber }}/view/goals#completed-goals" data-qa="view-completed-goals-button">View completed goals</a>
+
+        {# Count of completed goals #}
+        <div class="govuk-grid-item">
+          <div class="summary-count-container">
+            <span class="govuk-body govuk-!-font-size-36 govuk-!-font-weight-bold" data-qa="completed-goals-count">{{ prisonerGoals.counts.completedGoals }}</span>
+            <span class="govuk-tag govuk-tag--green govuk-!-margin-left-2 govuk-!-margin-bottom-4">Completed</span>
           </div>
-        {% endif %}
+          <a class="govuk-link govuk-!-font-size-19 govuk-!-display-none-print" href="/plan/{{ prisonerSummary.prisonNumber }}/view/goals#completed-goals" data-qa="view-completed-goals-button">View completed goals</a>
+        </div>
+
         {# Count of archived goals #}
         <div class="govuk-grid-item">
           <div class="summary-count-container">
