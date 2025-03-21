@@ -35,9 +35,6 @@ describe('_goalsSummaryCard', () => {
         lastUpdatedDate: new Date('2024-01-21T13:42:01.401Z'),
         lastUpdatedAtPrisonName: 'Brixton (HMP)',
       },
-      featureToggles: {
-        completedGoalsEnabled: true,
-      },
     }
 
     // When
@@ -79,9 +76,6 @@ describe('_goalsSummaryCard', () => {
         lastUpdatedDate: undefined as string,
         lastUpdatedAtPrisonName: undefined as string,
       },
-      featureToggles: {
-        completedGoalsEnabled: true,
-      },
     }
 
     // When
@@ -120,9 +114,6 @@ describe('_goalsSummaryCard', () => {
         lastUpdatedBy: undefined as string,
         lastUpdatedDate: undefined as string,
         lastUpdatedAtPrisonName: undefined as string,
-      },
-      featureToggles: {
-        completedGoalsEnabled: true,
       },
     }
 
