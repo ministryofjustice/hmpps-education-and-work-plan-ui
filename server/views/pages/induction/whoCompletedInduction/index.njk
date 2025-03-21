@@ -32,7 +32,7 @@
                 classes: "govuk-label--s govuk-!-font-weight-bold",
                 attributes: { "aria-live": "polite", "data-qa": "completed-by-other-full-name" }
               },
-              attributes: { 
+              attributes: {
                 "aria-label" : "Give details as to who completed the induction",
                 "data-qa": "completedByOtherFullName"
                 },
@@ -48,7 +48,7 @@
                 classes: "govuk-label--s govuk-!-font-weight-bold",
                 attributes: { "aria-live": "polite", "data-qa": "completed-by-other-job-role" }
               },
-              attributes: { 
+              attributes: {
                 "aria-label" : "Give details as to who completed the induction",
                 "data-qa": "completedByOtherJobRole"
                 },
@@ -128,7 +128,8 @@
           id: "submit-button",
           text: "Continue",
           type: "submit",
-          attributes: {"data-qa": "submit-button"}
+          attributes: {"data-qa": "submit-button"},
+          preventDoubleClick: true
         }) }}
       </form>
 

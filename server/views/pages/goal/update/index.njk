@@ -175,12 +175,13 @@
                   name: "action",
                   value: 'delete-step-[' + (loop.index-1) + ']',
                   text: "Remove",
-                  classes: "govuk-button--secondary moj-add-another__remove-button"
+                  classes: "govuk-button--secondary moj-add-another__remove-button",
+                  preventDoubleClick: true
                 }) }}
               {% endif %}
 
               {% endcall %}
-        
+
               <hr class="govuk-section-break govuk-section-break--visible govuk-section-break--m">
             {% endfor %}
 
@@ -193,7 +194,8 @@
                 name: "action",
                 value: "add-another-step",
                 text: "Add another step",
-                classes: "govuk-button--secondary govuk-!-margin-bottom-4"
+                classes: "govuk-button--secondary govuk-!-margin-bottom-4",
+                preventDoubleClick: true
               }) }}
             </div>
 
@@ -205,7 +207,8 @@
                 },
                 name: "action",
                 value: "submit-form",
-                text: "Continue"
+                text: "Continue",
+                preventDoubleClick: true
               }) }}
             </div>
         </form>

@@ -53,7 +53,14 @@ Data supplied to this template:
                 <td class="govuk-table__cell" data-qa="educational-qualification-subject">{{ item.subject }}</td>
                 <td class="govuk-table__cell" data-qa="educational-qualification-grade">{{ item.grade }}</td>
                 <td class="govuk-table__cell">
-                  <button type="submit" class="app-u-button-as-link" value="{{ loop.index0 }}" name="removeQualification">Remove <span class="govuk-visually-hidden"> {{ item.level | formatQualificationLevel }}, {{ item.subject }}, {{ item.grade }}</span></button>
+                  <button type="submit"
+                          class="app-u-button-as-link"
+                          value="{{ loop.index0 }}"
+                          name="removeQualification"
+                          data-prevent-double-click="true"
+                          data-module="govuk-button">
+                    Remove <span class="govuk-visually-hidden"> {{ item.level | formatQualificationLevel }}, {{ item.subject }}, {{ item.grade }}</span>
+                  </button>
                 </td>
               </tr>
             {% endfor %}
@@ -64,7 +71,8 @@ Data supplied to this template:
               text: "Add another qualification",
               name: "addQualification",
               classes: "govuk-button--secondary",
-              id: "addQualification"
+              id: "addQualification",
+              preventDoubleClick: true
             }) }}
           </div>
         {% endif %}
@@ -74,7 +82,8 @@ Data supplied to this template:
             id: "submit-button",
             text: "Continue",
             type: "submit",
-            attributes: {"data-qa": "submit-button"}
+            attributes: {"data-qa": "submit-button"},
+            preventDoubleClick: true
           }) }}
         </div>
       </form>
