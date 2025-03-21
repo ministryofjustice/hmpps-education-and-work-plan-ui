@@ -39,7 +39,8 @@ Data supplied to this template:
         {{ govukButton({
           text: "Go to learning and work plan",
           type: "submit",
-          attributes: { 'data-qa': 'submit-button' }
+          attributes: { 'data-qa': 'submit-button' },
+          preventDoubleClick: true
         }) }}
       </form>
 

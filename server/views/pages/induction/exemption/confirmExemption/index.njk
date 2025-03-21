@@ -32,7 +32,8 @@
             classes: "moj-button-menu__item",
             attributes: {
               'data-qa': 'confirm-exemption-button'
-            }
+            },
+            preventDoubleClick: true
           }) }}
           {{ govukButton({
             type: "a",
@@ -42,7 +43,8 @@
             classes: "moj-button-menu__item govuk-button--secondary",
             attributes: {
               'data-qa': 'confirm-exemption-cancel-button'
-            }
+            },
+            preventDoubleClick: true
           }) }}
         </div>
       </form>

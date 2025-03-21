@@ -40,7 +40,8 @@
                     attributes: {
                       'data-qa': 'remove-goal-button',
                       formaction: 'create/REMOVE_GOAL?goalNumber=' + goalLoop.index0
-                    }
+                    },
+                    preventDoubleClick: true
                   }) }}
                 {% endif %}
               </li>
@@ -177,7 +178,8 @@
                     attributes: {
                       'data-qa': 'remove-step-button',
                       formaction: 'create/REMOVE_STEP?goalNumber=' + goalLoop.index0 + "&stepNumber=" + stepLoop.index0
-                    }
+                    },
+                    preventDoubleClick: true
                   }) }}
                 {% endif %}
               {% endcall %}
@@ -190,7 +192,8 @@
                 classes: "govuk-button--secondary",
                 attributes: {
                   formaction: 'create/ADD_STEP?goalNumber=' + goalLoop.index0
-                }
+                },
+                preventDoubleClick: true
               }) }}
             </div>
 
@@ -225,7 +228,8 @@
             classes: "govuk-button--secondary",
             attributes: {
               formaction: 'create/ADD_GOAL'
-            }
+            },
+            preventDoubleClick: true
           }) }}
         </div>
 
@@ -233,7 +237,8 @@
           id: "submit-button",
           name: "action",
           value: "submit-form",
-          text: "Save to learning and work plan"
+          text: "Save to learning and work plan",
+          preventDoubleClick: true
         }) }}
 
       </form>
