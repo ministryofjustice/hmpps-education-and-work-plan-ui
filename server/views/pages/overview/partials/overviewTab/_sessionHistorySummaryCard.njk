@@ -26,7 +26,7 @@ Data supplied to this template:
         <span class="govuk-body govuk-!-font-size-36 govuk-!-font-weight-bold" data-qa="action-plan-reviews-count">{{ sessionHistory.counts.totalCompletedSessions }}</span>
         <span class="govuk-tag govuk-tag--light-blue govuk-tag--custom-width govuk-!-margin-left-2 govuk-!-margin-bottom-4">Induction and review</span>
       </div>
-      <a class="govuk-link govuk-!-font-size-19 govuk-!-display-none-print" href="/plan/{{ prisonerSummary.prisonNumber }}/view/timeline" data-qa="view-timeline-button">View induction and review sessions history</a>
+      <a class="govuk-link govuk-!-font-size-19 govuk-!-display-none-print" href="/plan/{{ prisonerSummary.prisonNumber }}/view/history?filterOptions=INDUCTION&filterOptions=REVIEWS" data-qa="view-timeline-button">View induction and review sessions history</a>
 
       {% if sessionHistory.counts.totalCompletedSessions > 0 %}
         <p class="govuk-hint govuk-!-font-size-16 govuk-!-margin-top-6" data-qa="induction-or-review-last-updated-hint">

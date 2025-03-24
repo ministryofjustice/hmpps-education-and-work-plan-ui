@@ -46,7 +46,7 @@ describe('_sessionHistorySummaryCard', () => {
       'Updated on 21 January 2024 by Elaine Benes, Brixton (HMP)',
     )
     expect($('[data-qa="view-timeline-button"]').attr('href')).toEqual(
-      `/plan/${prisonerSummary.prisonNumber}/view/timeline`,
+      `/plan/${prisonerSummary.prisonNumber}/view/history?filterOptions=INDUCTION&filterOptions=REVIEWS`,
     )
     expect($('[data-qa="action-plan-reviews-data-unavailable-message"]').length).toEqual(0)
   })
@@ -76,7 +76,7 @@ describe('_sessionHistorySummaryCard', () => {
     expect($('[data-qa="action-plan-reviews-count"]').text().trim()).toEqual('0')
     expect($('[data-qa="induction-or-review-last-updated-hint"]').length).toEqual(0)
     expect($('[data-qa="view-timeline-button"]').attr('href')).toEqual(
-      `/plan/${prisonerSummary.prisonNumber}/view/timeline`,
+      `/plan/${prisonerSummary.prisonNumber}/view/history?filterOptions=INDUCTION&filterOptions=REVIEWS`,
     )
     expect($('[data-qa="action-plan-reviews-data-unavailable-message"]').length).toEqual(0)
   })
