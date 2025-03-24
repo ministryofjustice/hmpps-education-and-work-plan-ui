@@ -1,10 +1,12 @@
 import createError from 'http-errors'
 import { NextFunction, Request, RequestHandler, Response } from 'express'
 import type { InductionDto } from 'inductionDto'
+import type { PreviousWorkExperienceDetailForm } from 'inductionForms'
 import PreviousWorkExperienceDetailController from '../common/previousWorkExperienceDetailController'
 import TypeOfWorkExperienceValue from '../../../enums/typeOfWorkExperienceValue'
 import validatePreviousWorkExperienceDetailForm from '../../validators/induction/previousWorkExperienceDetailFormValidator'
 import { getNextPage, isLastPage } from '../../pageFlowQueue'
+import { getPrisonerContext } from '../../../data/session/prisonerContexts'
 
 export default class PreviousWorkExperienceDetailCreateController extends PreviousWorkExperienceDetailController {
   submitPreviousWorkExperienceDetailForm: RequestHandler = async (
@@ -13,9 +15,9 @@ export default class PreviousWorkExperienceDetailCreateController extends Previo
     next: NextFunction,
   ): Promise<void> => {
     const { prisonNumber } = req.params
-    const { inductionDto } = req.session
     const { prisonerSummary } = res.locals
     const { typeOfWorkExperience } = req.params
+    const { inductionDto } = getPrisonerContext(req.session, prisonNumber)
 
     let previousWorkExperienceType: TypeOfWorkExperienceValue
     try {
@@ -30,8 +32,8 @@ export default class PreviousWorkExperienceDetailCreateController extends Previo
       return next(createError(404, `Previous Work Experience type ${typeOfWorkExperience} not found on Induction`))
     }
 
-    req.session.previousWorkExperienceDetailForm = { ...req.body }
-    const { previousWorkExperienceDetailForm } = req.session
+    const previousWorkExperienceDetailForm: PreviousWorkExperienceDetailForm = { ...req.body }
+    getPrisonerContext(req.session, prisonNumber).previousWorkExperienceDetailForm = previousWorkExperienceDetailForm
 
     const errors = validatePreviousWorkExperienceDetailForm(previousWorkExperienceDetailForm, prisonerSummary)
     if (errors.length > 0) {
@@ -46,8 +48,8 @@ export default class PreviousWorkExperienceDetailCreateController extends Previo
       previousWorkExperienceDetailForm,
       previousWorkExperienceType,
     )
-    req.session.inductionDto = updatedInduction
-    req.session.previousWorkExperienceDetailForm = undefined
+    getPrisonerContext(req.session, prisonNumber).inductionDto = updatedInduction
+    getPrisonerContext(req.session, prisonNumber).previousWorkExperienceDetailForm = undefined
 
     if (this.previousPageWasCheckYourAnswers(req)) {
       return res.redirect(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)

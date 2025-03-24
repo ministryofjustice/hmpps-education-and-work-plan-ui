@@ -1,5 +1,6 @@
 import createError from 'http-errors'
 import { NextFunction, Request, RequestHandler, Response } from 'express'
+import type { PreviousWorkExperienceDetailForm } from 'inductionForms'
 import type { InductionDto } from 'inductionDto'
 import { InductionService } from '../../../services'
 import PreviousWorkExperienceDetailController from '../common/previousWorkExperienceDetailController'
@@ -8,6 +9,7 @@ import logger from '../../../../logger'
 import validatePreviousWorkExperienceDetailForm from '../../validators/induction/previousWorkExperienceDetailFormValidator'
 import TypeOfWorkExperienceValue from '../../../enums/typeOfWorkExperienceValue'
 import { getNextPage, isLastPage } from '../../pageFlowQueue'
+import { getPrisonerContext } from '../../../data/session/prisonerContexts'
 
 /**
  * Controller for the Update of the Previous Work Experience Detail screen of the Induction.
@@ -24,10 +26,10 @@ export default class PreviousWorkExperienceDetailUpdateController extends Previo
     next: NextFunction,
   ): Promise<void> => {
     const { prisonNumber } = req.params
-    const { inductionDto } = req.session
     const { prisonerSummary } = res.locals
     const { prisonId } = prisonerSummary
     const { typeOfWorkExperience } = req.params
+    const { inductionDto } = getPrisonerContext(req.session, prisonNumber)
 
     let previousWorkExperienceType: TypeOfWorkExperienceValue
     try {
@@ -42,8 +44,8 @@ export default class PreviousWorkExperienceDetailUpdateController extends Previo
       return next(createError(404, `Previous Work Experience type ${typeOfWorkExperience} not found on Induction`))
     }
 
-    req.session.previousWorkExperienceDetailForm = { ...req.body }
-    const { previousWorkExperienceDetailForm } = req.session
+    const previousWorkExperienceDetailForm: PreviousWorkExperienceDetailForm = { ...req.body }
+    getPrisonerContext(req.session, prisonNumber).previousWorkExperienceDetailForm = previousWorkExperienceDetailForm
 
     const errors = validatePreviousWorkExperienceDetailForm(previousWorkExperienceDetailForm, prisonerSummary)
     if (errors.length > 0) {
@@ -63,8 +65,8 @@ export default class PreviousWorkExperienceDetailUpdateController extends Previo
     if (pageFlowQueue && !isLastPage(pageFlowQueue)) {
       // There is a page flow queue, and we are not on the last page of the queue yet
       // Put the updated InductionDto on the session and redirect to the next page in the queue
-      req.session.inductionDto = updatedInduction
-      req.session.previousWorkExperienceDetailForm = undefined
+      getPrisonerContext(req.session, prisonNumber).inductionDto = updatedInduction
+      getPrisonerContext(req.session, prisonNumber).previousWorkExperienceDetailForm = undefined
       return res.redirect(getNextPage(pageFlowQueue))
     }
 
@@ -72,8 +74,8 @@ export default class PreviousWorkExperienceDetailUpdateController extends Previo
       const updateInductionDto = toCreateOrUpdateInductionDto(prisonId, updatedInduction)
       await this.inductionService.updateInduction(prisonNumber, updateInductionDto, req.user.username)
 
-      req.session.previousWorkExperienceDetailForm = undefined
-      req.session.inductionDto = undefined
+      getPrisonerContext(req.session, prisonNumber).previousWorkExperienceDetailForm = undefined
+      getPrisonerContext(req.session, prisonNumber).inductionDto = undefined
       return res.redirect(`/plan/${prisonNumber}/view/work-and-interests`)
     } catch (e) {
       logger.error(`Error updating Induction for prisoner ${prisonNumber}`, e)

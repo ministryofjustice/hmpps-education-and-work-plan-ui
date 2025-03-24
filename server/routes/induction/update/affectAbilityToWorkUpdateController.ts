@@ -7,6 +7,7 @@ import logger from '../../../../logger'
 import { InductionService } from '../../../services'
 import validateAffectAbilityToWorkForm from '../../validators/induction/affectAbilityToWorkFormValidator'
 import { asArray } from '../../../utils/utils'
+import { getPrisonerContext } from '../../../data/session/prisonerContexts'
 
 /**
  * Controller for the Update of the Factors Affecting a Prisoner's Ability To Work screen of the Induction.
@@ -22,15 +23,15 @@ export default class AffectAbilityToWorkUpdateController extends AffectAbilityTo
     next: NextFunction,
   ): Promise<void> => {
     const { prisonNumber } = req.params
-    const { inductionDto } = req.session
     const { prisonerSummary } = res.locals
     const { prisonId } = prisonerSummary
+    const { inductionDto } = getPrisonerContext(req.session, prisonNumber)
 
     const affectAbilityToWorkForm: AffectAbilityToWorkForm = {
       affectAbilityToWork: asArray(req.body.affectAbilityToWork),
       affectAbilityToWorkOther: req.body.affectAbilityToWorkOther,
     }
-    req.session.affectAbilityToWorkForm = affectAbilityToWorkForm
+    getPrisonerContext(req.session, prisonNumber).affectAbilityToWorkForm = affectAbilityToWorkForm
 
     const errors = validateAffectAbilityToWorkForm(affectAbilityToWorkForm, prisonerSummary)
     if (errors.length > 0) {
@@ -43,8 +44,8 @@ export default class AffectAbilityToWorkUpdateController extends AffectAbilityTo
       const updateInductionDto = toCreateOrUpdateInductionDto(prisonId, updatedInduction)
       await this.inductionService.updateInduction(prisonNumber, updateInductionDto, req.user.username)
 
-      req.session.affectAbilityToWorkForm = undefined
-      req.session.inductionDto = undefined
+      getPrisonerContext(req.session, prisonNumber).affectAbilityToWorkForm = undefined
+      getPrisonerContext(req.session, prisonNumber).inductionDto = undefined
       return res.redirect(`/plan/${prisonNumber}/view/work-and-interests`)
     } catch (e) {
       logger.error(`Error updating Induction for prisoner ${prisonNumber}`, e)

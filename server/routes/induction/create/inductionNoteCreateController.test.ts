@@ -38,7 +38,7 @@ describe('inductionNoteController', () => {
         ...aValidInductionDto(),
         notes: 'Induction session went well and Chris is feeling quite positive about his future',
       }
-      req.session.inductionDto = inductionDto
+      getPrisonerContext(req.session, prisonNumber).inductionDto = inductionDto
       getPrisonerContext(req.session, prisonNumber).inductionNoteForm = undefined
 
       const expectedForm: InductionNoteForm = {
@@ -85,7 +85,7 @@ describe('inductionNoteController', () => {
         ...aValidInductionDto(),
         notes: undefined as string,
       }
-      req.session.inductionDto = inductionDto
+      getPrisonerContext(req.session, prisonNumber).inductionDto = inductionDto
       getPrisonerContext(req.session, prisonNumber).inductionNoteForm = undefined
 
       const validForm: InductionNoteForm = {
@@ -94,7 +94,7 @@ describe('inductionNoteController', () => {
       req.body = validForm
 
       const expectedInductionDto = {
-        ...req.session.inductionDto,
+        ...getPrisonerContext(req.session, prisonNumber).inductionDto,
         notes: 'Induction session went well and Chris is feeling quite positive about his future',
       }
 
@@ -104,7 +104,7 @@ describe('inductionNoteController', () => {
       // Then
       expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-induction/check-your-answers')
       expect(getPrisonerContext(req.session, prisonNumber).inductionNoteForm).toBeUndefined()
-      expect(req.session.inductionDto).toEqual(expectedInductionDto)
+      expect(getPrisonerContext(req.session, prisonNumber).inductionDto).toEqual(expectedInductionDto)
     })
   })
 

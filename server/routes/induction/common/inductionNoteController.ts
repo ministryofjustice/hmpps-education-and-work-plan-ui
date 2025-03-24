@@ -7,17 +7,12 @@ import InductionController from './inductionController'
 
 export default abstract class InductionNoteController extends InductionController {
   getInductionNoteView: RequestHandler = async (req, res, next): Promise<void> => {
-    const { inductionDto } = req.session
     const { prisonNumber } = req.params
     const { prisonerSummary } = res.locals
+    const { inductionDto } = getPrisonerContext(req.session, prisonNumber)
 
-    let inductionNoteForm: InductionNoteForm
-    if (getPrisonerContext(req.session, prisonNumber).inductionNoteForm) {
-      inductionNoteForm = getPrisonerContext(req.session, prisonNumber).inductionNoteForm
-    } else {
-      inductionNoteForm = toInductionNoteForm(inductionDto)
-    }
-
+    const inductionNoteForm: InductionNoteForm =
+      getPrisonerContext(req.session, prisonNumber).inductionNoteForm || toInductionNoteForm(inductionDto)
     getPrisonerContext(req.session, prisonNumber).inductionNoteForm = undefined
 
     const view = new InductionNoteView(prisonerSummary, inductionNoteForm)

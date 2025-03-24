@@ -43,7 +43,7 @@ describe('whoCompletedInductionController', () => {
         completedByOtherJobRole: undefined as string,
         inductionDate: startOfDay('2024-03-09'),
       }
-      req.session.inductionDto = inductionDto
+      getPrisonerContext(req.session, prisonNumber).inductionDto = inductionDto
       getPrisonerContext(req.session, prisonNumber).whoCompletedInductionForm = undefined
 
       const expectedForm: WhoCompletedInductionForm = {
@@ -129,7 +129,7 @@ describe('whoCompletedInductionController', () => {
         completedByOtherJobRole: undefined as string,
         inductionDate: undefined as Date,
       }
-      req.session.inductionDto = inductionDto
+      getPrisonerContext(req.session, prisonNumber).inductionDto = inductionDto
 
       req.session.pageFlowHistory = undefined
       getPrisonerContext(req.session, prisonNumber).whoCompletedInductionForm = undefined
@@ -145,7 +145,7 @@ describe('whoCompletedInductionController', () => {
       req.body = validForm
 
       const expectedInductionDto = {
-        ...req.session.inductionDto,
+        ...getPrisonerContext(req.session, prisonNumber).inductionDto,
         completedBy: SessionCompletedByValue.SOMEBODY_ELSE,
         completedByOtherFullName: 'Joe Bloggs',
         completedByOtherJobRole: 'Peer mentor',
@@ -158,7 +158,7 @@ describe('whoCompletedInductionController', () => {
       // Then
       expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-induction/notes')
       expect(getPrisonerContext(req.session, prisonNumber).whoCompletedInductionForm).toBeUndefined()
-      expect(req.session.inductionDto).toEqual(expectedInductionDto)
+      expect(getPrisonerContext(req.session, prisonNumber).inductionDto).toEqual(expectedInductionDto)
     })
 
     it('should redirect to induction check-your-answers page given form submitted successfully and previous page was check-your-answers', async () => {
@@ -179,7 +179,7 @@ describe('whoCompletedInductionController', () => {
         completedByOtherJobRole: undefined as string,
         inductionDate: startOfDay('2024-03-07'),
       }
-      req.session.inductionDto = inductionDto
+      getPrisonerContext(req.session, prisonNumber).inductionDto = inductionDto
 
       const validForm: WhoCompletedInductionForm = {
         completedBy: SessionCompletedByValue.SOMEBODY_ELSE,
@@ -192,7 +192,7 @@ describe('whoCompletedInductionController', () => {
       req.body = validForm
 
       const expectedInductionDto = {
-        ...req.session.inductionDto,
+        ...getPrisonerContext(req.session, prisonNumber).inductionDto,
         completedBy: SessionCompletedByValue.SOMEBODY_ELSE,
         completedByOtherFullName: 'Joe Bloggs',
         completedByOtherJobRole: 'Peer mentor',
@@ -205,7 +205,7 @@ describe('whoCompletedInductionController', () => {
       // Then
       expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-induction/check-your-answers')
       expect(getPrisonerContext(req.session, prisonNumber).whoCompletedInductionForm).toBeUndefined()
-      expect(req.session.inductionDto).toEqual(expectedInductionDto)
+      expect(getPrisonerContext(req.session, prisonNumber).inductionDto).toEqual(expectedInductionDto)
     })
   })
 })

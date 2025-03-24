@@ -41,27 +41,10 @@ declare module 'express-session' {
     prisonerListSortOptions: string
     sessionListSortOptions: string
 
+    prisonerContexts: PrisonerContexts
+
     pageFlowHistory: PageFlow
     pageFlowQueue: PageFlow
-    // Induction related objects held on the session
-    inductionDto: InductionDto
-    hopingToWorkOnReleaseForm: HopingToWorkOnReleaseForm
-    inPrisonWorkForm: InPrisonWorkForm
-    inPrisonTrainingForm: InPrisonTrainingForm
-    skillsForm: SkillsForm
-    personalInterestsForm: PersonalInterestsForm
-    workedBeforeForm: WorkedBeforeForm
-    previousWorkExperienceTypesForm: PreviousWorkExperienceTypesForm
-    previousWorkExperienceDetailForm: PreviousWorkExperienceDetailForm
-    affectAbilityToWorkForm: AffectAbilityToWorkForm
-    workInterestRolesForm: WorkInterestRolesForm
-    workInterestTypesForm: WorkInterestTypesForm
-    wantToAddQualificationsForm: WantToAddQualificationsForm
-    highestLevelOfEducationForm: HighestLevelOfEducationForm
-    qualificationLevelForm: QualificationLevelForm
-    qualificationDetailsForm: QualificationDetailsForm
-    additionalTrainingForm: AdditionalTrainingForm
-    prisonerContexts: PrisonerContexts
   }
   export interface PrisonerContext {
     // Goal related forms
@@ -81,9 +64,23 @@ declare module 'express-session' {
     // Review exemption related forms and DTO
     reviewExemptionForm?: ReviewExemptionForm
     reviewExemptionDto?: ReviewExemptionDto
-    // Induction related forms
+    // Induction related forms and DTO
+    hopingToWorkOnReleaseForm?: HopingToWorkOnReleaseForm
+    workInterestTypesForm?: WorkInterestTypesForm
+    workInterestRolesForm?: WorkInterestRolesForm
+    affectAbilityToWorkForm?: AffectAbilityToWorkForm
+    wantToAddQualificationsForm?: WantToAddQualificationsForm
+    additionalTrainingForm?: AdditionalTrainingForm
+    workedBeforeForm?: WorkedBeforeForm
+    previousWorkExperienceTypesForm?: PreviousWorkExperienceTypesForm
+    previousWorkExperienceDetailForm?: PreviousWorkExperienceDetailForm
+    skillsForm?: SkillsForm
+    personalInterestsForm?: PersonalInterestsForm
+    inPrisonWorkForm?: InPrisonWorkForm
+    inPrisonTrainingForm?: InPrisonTrainingForm
     whoCompletedInductionForm?: WhoCompletedInductionForm
     inductionNoteForm?: InductionNoteForm
+    inductionDto?: InductionDto
     // Induction exemption related forms and DTO
     inductionExemptionForm?: InductionExemptionForm
     inductionExemptionDto?: InductionExemptionDto

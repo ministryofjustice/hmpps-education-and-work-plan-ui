@@ -5,7 +5,7 @@ import asyncMiddleware from '../../../middleware/asyncMiddleware'
 import { checkUserHasPermissionTo } from '../../../middleware/roleBasedAccessControl'
 import HopingToWorkOnReleaseCreateController from './hopingToWorkOnReleaseCreateController'
 import WantToAddQualificationsCreateController from './wantToAddQualificationsCreateController'
-import createEmptyInductionIfNotInSession from '../../routerRequestHandlers/createEmptyInductionIfNotInSession'
+import createEmptyInductionIfNotInPrisonerContext from '../../routerRequestHandlers/createEmptyInductionIfNotInPrisonerContext'
 import QualificationsListCreateController from './qualificationsListCreateController'
 import retrieveCuriousFunctionalSkills from '../../routerRequestHandlers/retrieveCuriousFunctionalSkills'
 import HighestLevelOfEducationCreateController from './highestLevelOfEducationCreateController'
@@ -63,12 +63,12 @@ export default (router: Router, services: Services) => {
 
   router.get('/prisoners/:prisonNumber/create-induction/**', [
     checkUserHasPermissionTo(ApplicationAction.RECORD_INDUCTION),
-    createEmptyInductionIfNotInSession(educationAndWorkPlanService),
+    createEmptyInductionIfNotInPrisonerContext(educationAndWorkPlanService),
     setCurrentPageInPageFlowQueue,
   ])
   router.post('/prisoners/:prisonNumber/create-induction/**', [
     checkUserHasPermissionTo(ApplicationAction.RECORD_INDUCTION),
-    createEmptyInductionIfNotInSession(educationAndWorkPlanService),
+    createEmptyInductionIfNotInPrisonerContext(educationAndWorkPlanService),
     setCurrentPageInPageFlowQueue,
   ])
 

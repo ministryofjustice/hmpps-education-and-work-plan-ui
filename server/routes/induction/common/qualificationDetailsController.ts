@@ -4,6 +4,7 @@ import type { QualificationDetailsForm } from 'forms'
 import InductionController from './inductionController'
 import QualificationDetailsView from './qualificationDetailsView'
 import QualificationLevelValue from '../../../enums/qualificationLevelValue'
+import { getPrisonerContext } from '../../../data/session/prisonerContexts'
 
 /**
  * Abstract controller class defining functionality common to both the Create and Update Induction journeys.
@@ -17,10 +18,10 @@ export default abstract class QualificationDetailsController extends InductionCo
     res: Response,
     next: NextFunction,
   ): Promise<void> => {
-    const { qualificationLevelForm } = req.session
     const { prisonerSummary } = res.locals
-
     const { prisonNumber } = req.params
+    const { qualificationLevelForm } = getPrisonerContext(req.session, prisonNumber)
+
     if (!qualificationLevelForm) {
       // Guard against the user using the back button to return to this page, which can cause a NPE (depending on which pages they've been to)
       return res.redirect(`/prisoners/${prisonNumber}/induction/qualification-level`)
@@ -28,11 +29,9 @@ export default abstract class QualificationDetailsController extends InductionCo
 
     this.addCurrentPageToFlowHistoryWhenComingFromCheckYourAnswers(req)
 
-    const qualificationDetailsForm = req.session.qualificationDetailsForm || {
-      qualificationSubject: '',
-      qualificationGrade: '',
-    }
-    req.session.qualificationDetailsForm = undefined
+    const qualificationDetailsForm: QualificationDetailsForm = getPrisonerContext(req.session, prisonNumber)
+      .qualificationDetailsForm || { qualificationSubject: '', qualificationGrade: '' }
+    getPrisonerContext(req.session, prisonNumber).qualificationDetailsForm = undefined
 
     const view = new QualificationDetailsView(
       prisonerSummary,

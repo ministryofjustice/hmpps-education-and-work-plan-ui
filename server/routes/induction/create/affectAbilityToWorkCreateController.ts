@@ -3,6 +3,7 @@ import type { AffectAbilityToWorkForm } from 'inductionForms'
 import AffectAbilityToWorkController from '../common/affectAbilityToWorkController'
 import validateAffectAbilityToWorkForm from '../../validators/induction/affectAbilityToWorkFormValidator'
 import { asArray } from '../../../utils/utils'
+import { getPrisonerContext } from '../../../data/session/prisonerContexts'
 
 export default class AffectAbilityToWorkCreateController extends AffectAbilityToWorkController {
   submitAffectAbilityToWorkForm: RequestHandler = async (
@@ -11,14 +12,14 @@ export default class AffectAbilityToWorkCreateController extends AffectAbilityTo
     next: NextFunction,
   ): Promise<void> => {
     const { prisonNumber } = req.params
-    const { inductionDto } = req.session
     const { prisonerSummary } = res.locals
+    const { inductionDto } = getPrisonerContext(req.session, prisonNumber)
 
     const affectAbilityToWorkForm: AffectAbilityToWorkForm = {
       affectAbilityToWork: asArray(req.body.affectAbilityToWork),
       affectAbilityToWorkOther: req.body.affectAbilityToWorkOther,
     }
-    req.session.affectAbilityToWorkForm = affectAbilityToWorkForm
+    getPrisonerContext(req.session, prisonNumber).affectAbilityToWorkForm = affectAbilityToWorkForm
 
     const errors = validateAffectAbilityToWorkForm(affectAbilityToWorkForm, prisonerSummary)
     if (errors.length > 0) {
@@ -26,8 +27,8 @@ export default class AffectAbilityToWorkCreateController extends AffectAbilityTo
     }
 
     const updatedInduction = this.updatedInductionDtoWithAffectAbilityToWork(inductionDto, affectAbilityToWorkForm)
-    req.session.inductionDto = updatedInduction
-    req.session.affectAbilityToWorkForm = undefined
+    getPrisonerContext(req.session, prisonNumber).inductionDto = updatedInduction
+    getPrisonerContext(req.session, prisonNumber).affectAbilityToWorkForm = undefined
 
     const nextPage = this.previousPageWasCheckYourAnswers(req)
       ? `/prisoners/${prisonNumber}/create-induction/check-your-answers`

@@ -4,6 +4,7 @@ import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataB
 import { aValidInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
 import AbilityToWorkValue from '../../../enums/abilityToWorkValue'
 import AffectAbilityToWorkCreateController from './affectAbilityToWorkCreateController'
+import { getPrisonerContext } from '../../../data/session/prisonerContexts'
 
 describe('affectAbilityToWorkCreateController', () => {
   const controller = new AffectAbilityToWorkCreateController()
@@ -36,8 +37,8 @@ describe('affectAbilityToWorkCreateController', () => {
       const inductionDto = aValidInductionDto()
       inductionDto.workOnRelease.affectAbilityToWork = undefined
       inductionDto.workOnRelease.affectAbilityToWorkOther = undefined
-      req.session.inductionDto = inductionDto
-      req.session.affectAbilityToWorkForm = undefined
+      getPrisonerContext(req.session, prisonNumber).inductionDto = inductionDto
+      getPrisonerContext(req.session, prisonNumber).affectAbilityToWorkForm = undefined
 
       const expectedAbilityToWorkForm: AffectAbilityToWorkForm = {
         affectAbilityToWork: [],
@@ -54,8 +55,8 @@ describe('affectAbilityToWorkCreateController', () => {
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/induction/affectAbilityToWork/index', expectedView)
-      expect(req.session.affectAbilityToWorkForm).toBeUndefined()
-      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(getPrisonerContext(req.session, prisonNumber).affectAbilityToWorkForm).toBeUndefined()
+      expect(getPrisonerContext(req.session, prisonNumber).inductionDto).toEqual(inductionDto)
     })
 
     it('should get the Ability To Work view given there is an AbilityToWorkForm already on the session', async () => {
@@ -63,7 +64,7 @@ describe('affectAbilityToWorkCreateController', () => {
       const inductionDto = aValidInductionDto()
       inductionDto.workOnRelease.affectAbilityToWork = undefined
       inductionDto.workOnRelease.affectAbilityToWorkOther = undefined
-      req.session.inductionDto = inductionDto
+      getPrisonerContext(req.session, prisonNumber).inductionDto = inductionDto
 
       const expectedAbilityToWorkForm: AffectAbilityToWorkForm = {
         affectAbilityToWork: [
@@ -73,7 +74,7 @@ describe('affectAbilityToWorkCreateController', () => {
         ],
         affectAbilityToWorkOther: 'Variable mental health',
       }
-      req.session.affectAbilityToWorkForm = expectedAbilityToWorkForm
+      getPrisonerContext(req.session, prisonNumber).affectAbilityToWorkForm = expectedAbilityToWorkForm
 
       const expectedView = {
         prisonerSummary,
@@ -85,8 +86,8 @@ describe('affectAbilityToWorkCreateController', () => {
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/induction/affectAbilityToWork/index', expectedView)
-      expect(req.session.affectAbilityToWorkForm).toBeUndefined()
-      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(getPrisonerContext(req.session, prisonNumber).affectAbilityToWorkForm).toBeUndefined()
+      expect(getPrisonerContext(req.session, prisonNumber).inductionDto).toEqual(inductionDto)
     })
   })
 
@@ -96,14 +97,14 @@ describe('affectAbilityToWorkCreateController', () => {
       const inductionDto = aValidInductionDto()
       inductionDto.workOnRelease.affectAbilityToWork = undefined
       inductionDto.workOnRelease.affectAbilityToWorkOther = undefined
-      req.session.inductionDto = inductionDto
+      getPrisonerContext(req.session, prisonNumber).inductionDto = inductionDto
 
       const invalidAbilityToWorkForm: AffectAbilityToWorkForm = {
         affectAbilityToWork: [AbilityToWorkValue.OTHER],
         affectAbilityToWorkOther: '',
       }
       req.body = invalidAbilityToWorkForm
-      req.session.affectAbilityToWorkForm = undefined
+      getPrisonerContext(req.session, prisonNumber).affectAbilityToWorkForm = undefined
 
       const expectedErrors = [
         {
@@ -120,8 +121,8 @@ describe('affectAbilityToWorkCreateController', () => {
         '/prisoners/A1234BC/create-induction/affect-ability-to-work',
         expectedErrors,
       )
-      expect(req.session.affectAbilityToWorkForm).toEqual(invalidAbilityToWorkForm)
-      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(getPrisonerContext(req.session, prisonNumber).affectAbilityToWorkForm).toEqual(invalidAbilityToWorkForm)
+      expect(getPrisonerContext(req.session, prisonNumber).inductionDto).toEqual(inductionDto)
     })
 
     it('should update inductionDto and redirect to Highest Level of Education page', async () => {
@@ -129,27 +130,27 @@ describe('affectAbilityToWorkCreateController', () => {
       const inductionDto = aValidInductionDto()
       inductionDto.workOnRelease.affectAbilityToWork = undefined
       inductionDto.workOnRelease.affectAbilityToWorkOther = undefined
-      req.session.inductionDto = inductionDto
+      getPrisonerContext(req.session, prisonNumber).inductionDto = inductionDto
 
       const affectAbilityToWorkForm = {
         affectAbilityToWork: [AbilityToWorkValue.CARING_RESPONSIBILITIES, AbilityToWorkValue.OTHER],
         affectAbilityToWorkOther: 'Variable mental health',
       }
       req.body = affectAbilityToWorkForm
-      req.session.affectAbilityToWorkForm = undefined
+      getPrisonerContext(req.session, prisonNumber).affectAbilityToWorkForm = undefined
 
       // When
       await controller.submitAffectAbilityToWorkForm(req, res, next)
 
       // Then
-      const updatedInduction = req.session.inductionDto
+      const updatedInduction = getPrisonerContext(req.session, prisonNumber).inductionDto
       expect(updatedInduction.workOnRelease.affectAbilityToWork).toEqual([
         AbilityToWorkValue.CARING_RESPONSIBILITIES,
         AbilityToWorkValue.OTHER,
       ])
       expect(updatedInduction.workOnRelease.affectAbilityToWorkOther).toEqual('Variable mental health')
       expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-induction/highest-level-of-education')
-      expect(req.session.affectAbilityToWorkForm).toBeUndefined()
+      expect(getPrisonerContext(req.session, prisonNumber).affectAbilityToWorkForm).toBeUndefined()
     })
   })
 })

@@ -4,6 +4,7 @@ import HighestLevelOfEducationCreateController from './highestLevelOfEducationCr
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
 import { aValidInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
 import EducationLevelValue from '../../../enums/educationLevelValue'
+import { getPrisonerContext } from '../../../data/session/prisonerContexts'
 
 describe('highestLevelOfEducationCreateController', () => {
   const controller = new HighestLevelOfEducationCreateController()
@@ -36,8 +37,8 @@ describe('highestLevelOfEducationCreateController', () => {
       // Given
       const inductionDto = aValidInductionDto()
       inductionDto.previousQualifications = undefined
-      req.session.inductionDto = inductionDto
-      req.session.highestLevelOfEducationForm = undefined
+      getPrisonerContext(req.session, prisonNumber).inductionDto = inductionDto
+      getPrisonerContext(req.session, prisonNumber).highestLevelOfEducationForm = undefined
 
       const expectedHighestLevelOfEducationForm = {
         educationLevel: undefined as EducationLevelValue,
@@ -57,20 +58,20 @@ describe('highestLevelOfEducationCreateController', () => {
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/prePrisonEducation/highestLevelOfEducation', expectedView)
-      expect(req.session.highestLevelOfEducationForm).toBeUndefined()
-      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(getPrisonerContext(req.session, prisonNumber).highestLevelOfEducationForm).toBeUndefined()
+      expect(getPrisonerContext(req.session, prisonNumber).inductionDto).toEqual(inductionDto)
     })
 
     it('should get the Highest Level of Education view a Highest Level of Education form is on the session', async () => {
       // Given
       const inductionDto = aValidInductionDto()
       inductionDto.previousQualifications = undefined
-      req.session.inductionDto = inductionDto
+      getPrisonerContext(req.session, prisonNumber).inductionDto = inductionDto
 
       const expectedHighestLevelOfEducationForm = {
         educationLevel: EducationLevelValue.FURTHER_EDUCATION_COLLEGE,
       }
-      req.session.highestLevelOfEducationForm = expectedHighestLevelOfEducationForm
+      getPrisonerContext(req.session, prisonNumber).highestLevelOfEducationForm = expectedHighestLevelOfEducationForm
 
       const expectedView = {
         prisonerSummary,
@@ -86,8 +87,8 @@ describe('highestLevelOfEducationCreateController', () => {
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/prePrisonEducation/highestLevelOfEducation', expectedView)
-      expect(req.session.highestLevelOfEducationForm).toBeUndefined()
-      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(getPrisonerContext(req.session, prisonNumber).highestLevelOfEducationForm).toBeUndefined()
+      expect(getPrisonerContext(req.session, prisonNumber).inductionDto).toEqual(inductionDto)
     })
   })
 
@@ -96,13 +97,13 @@ describe('highestLevelOfEducationCreateController', () => {
       // Given
       const inductionDto = aValidInductionDto()
       inductionDto.previousQualifications = undefined
-      req.session.inductionDto = inductionDto
+      getPrisonerContext(req.session, prisonNumber).inductionDto = inductionDto
 
       const invalidHighestLevelOfEducationForm = {
         educationLevel: '',
       }
       req.body = invalidHighestLevelOfEducationForm
-      req.session.highestLevelOfEducationForm = undefined
+      getPrisonerContext(req.session, prisonNumber).highestLevelOfEducationForm = undefined
 
       const expectedErrors = [
         {
@@ -123,21 +124,23 @@ describe('highestLevelOfEducationCreateController', () => {
         '/prisoners/A1234BC/create-induction/highest-level-of-education',
         expectedErrors,
       )
-      expect(req.session.highestLevelOfEducationForm).toEqual(invalidHighestLevelOfEducationForm)
-      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(getPrisonerContext(req.session, prisonNumber).highestLevelOfEducationForm).toEqual(
+        invalidHighestLevelOfEducationForm,
+      )
+      expect(getPrisonerContext(req.session, prisonNumber).inductionDto).toEqual(inductionDto)
     })
 
     it('should redirect to Do You Want To Record Any Qualifications page given the induction does not already have an qualifications', async () => {
       // Given
       const inductionDto = aValidInductionDto()
       inductionDto.previousQualifications = undefined
-      req.session.inductionDto = inductionDto
+      getPrisonerContext(req.session, prisonNumber).inductionDto = inductionDto
 
       const highestLevelOfEducationForm = {
         educationLevel: EducationLevelValue.FURTHER_EDUCATION_COLLEGE,
       }
       req.body = highestLevelOfEducationForm
-      req.session.highestLevelOfEducationForm = undefined
+      getPrisonerContext(req.session, prisonNumber).highestLevelOfEducationForm = undefined
 
       const expectedInduction = {
         ...inductionDto,
@@ -156,20 +159,20 @@ describe('highestLevelOfEducationCreateController', () => {
 
       // Then
       expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-induction/want-to-add-qualifications')
-      expect(req.session.highestLevelOfEducationForm).toBeUndefined()
-      expect(req.session.inductionDto).toEqual(expectedInduction)
+      expect(getPrisonerContext(req.session, prisonNumber).highestLevelOfEducationForm).toBeUndefined()
+      expect(getPrisonerContext(req.session, prisonNumber).inductionDto).toEqual(expectedInduction)
     })
 
     it('should redirect to Do You Want To Record Any Qualifications page given the induction does not already have an qualifications', async () => {
       // Given
       const inductionDto = aValidInductionDto()
-      req.session.inductionDto = inductionDto
+      getPrisonerContext(req.session, prisonNumber).inductionDto = inductionDto
 
       const highestLevelOfEducationForm = {
         educationLevel: EducationLevelValue.FURTHER_EDUCATION_COLLEGE,
       }
       req.body = highestLevelOfEducationForm
-      req.session.highestLevelOfEducationForm = undefined
+      getPrisonerContext(req.session, prisonNumber).highestLevelOfEducationForm = undefined
 
       const expectedInduction = {
         ...inductionDto,
@@ -188,21 +191,21 @@ describe('highestLevelOfEducationCreateController', () => {
 
       // Then
       expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-induction/qualifications')
-      expect(req.session.highestLevelOfEducationForm).toBeUndefined()
-      expect(req.session.inductionDto).toEqual(expectedInduction)
+      expect(getPrisonerContext(req.session, prisonNumber).highestLevelOfEducationForm).toBeUndefined()
+      expect(getPrisonerContext(req.session, prisonNumber).inductionDto).toEqual(expectedInduction)
     })
 
     it('should update inductionDto and redirect to Check Your Answers given previous page was Check Your Answers', async () => {
       // Given
       const inductionDto = aValidInductionDto()
       inductionDto.previousQualifications = undefined
-      req.session.inductionDto = inductionDto
+      getPrisonerContext(req.session, prisonNumber).inductionDto = inductionDto
 
       const highestLevelOfEducationForm = {
         educationLevel: EducationLevelValue.FURTHER_EDUCATION_COLLEGE,
       }
       req.body = highestLevelOfEducationForm
-      req.session.highestLevelOfEducationForm = undefined
+      getPrisonerContext(req.session, prisonNumber).highestLevelOfEducationForm = undefined
 
       const expectedInduction = {
         ...inductionDto,
@@ -228,9 +231,9 @@ describe('highestLevelOfEducationCreateController', () => {
       )
 
       // Then
-      expect(req.session.inductionDto).toEqual(expectedInduction)
+      expect(getPrisonerContext(req.session, prisonNumber).inductionDto).toEqual(expectedInduction)
       expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-induction/check-your-answers')
-      expect(req.session.highestLevelOfEducationForm).toBeUndefined()
+      expect(getPrisonerContext(req.session, prisonNumber).highestLevelOfEducationForm).toBeUndefined()
     })
   })
 })

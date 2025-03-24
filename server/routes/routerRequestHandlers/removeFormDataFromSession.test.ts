@@ -1,21 +1,5 @@
 import { NextFunction, Request, Response } from 'express'
 import type { PageFlow } from 'viewModels'
-import type { InductionDto } from 'inductionDto'
-import type { HighestLevelOfEducationForm, QualificationDetailsForm, QualificationLevelForm } from 'forms'
-import type {
-  AdditionalTrainingForm,
-  AffectAbilityToWorkForm,
-  HopingToWorkOnReleaseForm,
-  InPrisonTrainingForm,
-  InPrisonWorkForm,
-  PersonalInterestsForm,
-  PreviousWorkExperienceDetailForm,
-  PreviousWorkExperienceTypesForm,
-  SkillsForm,
-  WantToAddQualificationsForm,
-  WorkedBeforeForm,
-  WorkInterestTypesForm,
-} from 'inductionForms'
 import { SessionData } from 'express-session'
 import removeFormDataFromSession from './removeFormDataFromSession'
 import { aValidUpdateGoalForm } from '../../testsupport/updateGoalFormTestDataBuilder'
@@ -42,22 +26,6 @@ describe('removeFormDataFromSession', () => {
 
     req.session.pageFlowQueue = {} as PageFlow
     req.session.pageFlowHistory = {} as PageFlow
-    req.session.inductionDto = {} as InductionDto
-    req.session.hopingToWorkOnReleaseForm = {} as HopingToWorkOnReleaseForm
-    req.session.inPrisonWorkForm = {} as InPrisonWorkForm
-    req.session.skillsForm = {} as SkillsForm
-    req.session.personalInterestsForm = {} as PersonalInterestsForm
-    req.session.workedBeforeForm = {} as WorkedBeforeForm
-    req.session.previousWorkExperienceTypesForm = {} as PreviousWorkExperienceTypesForm
-    req.session.previousWorkExperienceDetailForm = {} as PreviousWorkExperienceDetailForm
-    req.session.affectAbilityToWorkForm = {} as AffectAbilityToWorkForm
-    req.session.workInterestTypesForm = {} as WorkInterestTypesForm
-    req.session.inPrisonTrainingForm = {} as InPrisonTrainingForm
-    req.session.wantToAddQualificationsForm = {} as WantToAddQualificationsForm
-    req.session.highestLevelOfEducationForm = {} as HighestLevelOfEducationForm
-    req.session.qualificationLevelForm = {} as QualificationLevelForm
-    req.session.qualificationDetailsForm = {} as QualificationDetailsForm
-    req.session.additionalTrainingForm = {} as AdditionalTrainingForm
 
     // When
     await removeFormDataFromSession(
@@ -71,21 +39,5 @@ describe('removeFormDataFromSession', () => {
     expect(getPrisonerContext(req.session, prisonNumber)).toEqual({})
     expect(req.session.pageFlowQueue).toBeUndefined()
     expect(req.session.pageFlowHistory).toBeUndefined()
-    expect(req.session.inductionDto).toBeUndefined()
-    expect(req.session.hopingToWorkOnReleaseForm).toBeUndefined()
-    expect(req.session.inPrisonWorkForm).toBeUndefined()
-    expect(req.session.skillsForm).toBeUndefined()
-    expect(req.session.personalInterestsForm).toBeUndefined()
-    expect(req.session.workedBeforeForm).toBeUndefined()
-    expect(req.session.previousWorkExperienceTypesForm).toBeUndefined()
-    expect(req.session.previousWorkExperienceDetailForm).toBeUndefined()
-    expect(req.session.affectAbilityToWorkForm).toBeUndefined()
-    expect(req.session.workInterestTypesForm).toBeUndefined()
-    expect(req.session.inPrisonTrainingForm).toBeUndefined()
-    expect(req.session.wantToAddQualificationsForm).toBeUndefined()
-    expect(req.session.highestLevelOfEducationForm).toBeUndefined()
-    expect(req.session.qualificationLevelForm).toBeUndefined()
-    expect(req.session.qualificationDetailsForm).toBeUndefined()
-    expect(req.session.additionalTrainingForm).toBeUndefined()
   })
 })
