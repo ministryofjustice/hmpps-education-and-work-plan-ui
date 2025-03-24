@@ -4,6 +4,7 @@ import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataB
 import { aValidInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
 import AdditionalTrainingValue from '../../../enums/additionalTrainingValue'
 import AdditionalTrainingCreateController from './additionalTrainingCreateController'
+import { getPrisonerContext } from '../../../data/session/prisonerContexts'
 
 describe('additionalTrainingCreateController', () => {
   const controller = new AdditionalTrainingCreateController()
@@ -37,8 +38,8 @@ describe('additionalTrainingCreateController', () => {
       // Given
       const inductionDto = aValidInductionDto()
       inductionDto.previousTraining = undefined
-      req.session.inductionDto = inductionDto
-      req.session.additionalTrainingForm = undefined
+      getPrisonerContext(req.session, prisonNumber).inductionDto = inductionDto
+      getPrisonerContext(req.session, prisonNumber).additionalTrainingForm = undefined
       const expectedAdditionalTrainingForm: AdditionalTrainingForm = {
         additionalTraining: [],
         additionalTrainingOther: undefined,
@@ -54,21 +55,21 @@ describe('additionalTrainingCreateController', () => {
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/induction/additionalTraining/index', expectedView)
-      expect(req.session.additionalTrainingForm).toBeUndefined()
-      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(getPrisonerContext(req.session, prisonNumber).additionalTrainingForm).toBeUndefined()
+      expect(getPrisonerContext(req.session, prisonNumber).inductionDto).toEqual(inductionDto)
     })
 
     it('should get the Additional Training view given there is an AdditionalTrainingForm already on the session', async () => {
       // Given
       const inductionDto = aValidInductionDto()
       inductionDto.previousTraining = undefined
-      req.session.inductionDto = inductionDto
+      getPrisonerContext(req.session, prisonNumber).inductionDto = inductionDto
 
       const expectedAdditionalTrainingForm: AdditionalTrainingForm = {
         additionalTraining: [AdditionalTrainingValue.FULL_UK_DRIVING_LICENCE, AdditionalTrainingValue.OTHER],
         additionalTrainingOther: 'Beginners cookery for IT professionals',
       }
-      req.session.additionalTrainingForm = expectedAdditionalTrainingForm
+      getPrisonerContext(req.session, prisonNumber).additionalTrainingForm = expectedAdditionalTrainingForm
 
       const expectedView = {
         prisonerSummary,
@@ -80,8 +81,8 @@ describe('additionalTrainingCreateController', () => {
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/induction/additionalTraining/index', expectedView)
-      expect(req.session.additionalTrainingForm).toBeUndefined()
-      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(getPrisonerContext(req.session, prisonNumber).additionalTrainingForm).toBeUndefined()
+      expect(getPrisonerContext(req.session, prisonNumber).inductionDto).toEqual(inductionDto)
     })
   })
 
@@ -90,14 +91,14 @@ describe('additionalTrainingCreateController', () => {
       // Given
       const inductionDto = aValidInductionDto()
       inductionDto.previousTraining = undefined
-      req.session.inductionDto = inductionDto
+      getPrisonerContext(req.session, prisonNumber).inductionDto = inductionDto
 
       const invalidAdditionalTrainingForm = {
         additionalTraining: [AdditionalTrainingValue.OTHER],
         additionalTrainingOther: '',
       }
       req.body = invalidAdditionalTrainingForm
-      req.session.additionalTrainingForm = undefined
+      getPrisonerContext(req.session, prisonNumber).additionalTrainingForm = undefined
 
       const expectedErrors = [
         {
@@ -114,22 +115,24 @@ describe('additionalTrainingCreateController', () => {
         '/prisoners/A1234BC/create-induction/additional-training',
         expectedErrors,
       )
-      expect(req.session.additionalTrainingForm).toEqual(invalidAdditionalTrainingForm)
-      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(getPrisonerContext(req.session, prisonNumber).additionalTrainingForm).toEqual(
+        invalidAdditionalTrainingForm,
+      )
+      expect(getPrisonerContext(req.session, prisonNumber).inductionDto).toEqual(inductionDto)
     })
 
     it('should update InductionDto and redirect to Has Worked Before', async () => {
       // Given
       const inductionDto = aValidInductionDto()
       inductionDto.previousTraining = undefined
-      req.session.inductionDto = inductionDto
+      getPrisonerContext(req.session, prisonNumber).inductionDto = inductionDto
 
       const additionalTrainingForm = {
         additionalTraining: [AdditionalTrainingValue.HGV_LICENCE, AdditionalTrainingValue.OTHER],
         additionalTrainingOther: 'Italian cookery for IT professionals',
       }
       req.body = additionalTrainingForm
-      req.session.additionalTrainingForm = undefined
+      getPrisonerContext(req.session, prisonNumber).additionalTrainingForm = undefined
 
       const expectedUpdatedAdditionalTraining = ['HGV_LICENCE', 'OTHER']
       const expectedUpdatedAdditionalTrainingOther = 'Italian cookery for IT professionals'
@@ -140,24 +143,24 @@ describe('additionalTrainingCreateController', () => {
       await controller.submitAdditionalTrainingForm(req, res, next)
 
       // Then
-      const updatedInductionDto = req.session.inductionDto
+      const updatedInductionDto = getPrisonerContext(req.session, prisonNumber).inductionDto
       expect(updatedInductionDto.previousTraining.trainingTypes).toEqual(expectedUpdatedAdditionalTraining)
       expect(updatedInductionDto.previousTraining.trainingTypeOther).toEqual(expectedUpdatedAdditionalTrainingOther)
       expect(res.redirect).toHaveBeenCalledWith(expectedNextPage)
-      expect(req.session.additionalTrainingForm).toBeUndefined()
+      expect(getPrisonerContext(req.session, prisonNumber).additionalTrainingForm).toBeUndefined()
     })
 
     it('should update InductionDto and redirect to Check Your Answers given previous page was Check Your Answers', async () => {
       // Given
       const inductionDto = aValidInductionDto()
-      req.session.inductionDto = inductionDto
+      getPrisonerContext(req.session, prisonNumber).inductionDto = inductionDto
 
       const additionalTrainingForm = {
         additionalTraining: [AdditionalTrainingValue.HGV_LICENCE, AdditionalTrainingValue.OTHER],
         additionalTrainingOther: 'Italian cookery for IT professionals',
       }
       req.body = additionalTrainingForm
-      req.session.additionalTrainingForm = undefined
+      getPrisonerContext(req.session, prisonNumber).additionalTrainingForm = undefined
 
       const expectedUpdatedAdditionalTraining = ['HGV_LICENCE', 'OTHER']
       const expectedUpdatedAdditionalTrainingOther = 'Italian cookery for IT professionals'
@@ -175,11 +178,11 @@ describe('additionalTrainingCreateController', () => {
       await controller.submitAdditionalTrainingForm(req, res, next)
 
       // Then
-      const updatedInductionDto = req.session.inductionDto
+      const updatedInductionDto = getPrisonerContext(req.session, prisonNumber).inductionDto
       expect(updatedInductionDto.previousTraining.trainingTypes).toEqual(expectedUpdatedAdditionalTraining)
       expect(updatedInductionDto.previousTraining.trainingTypeOther).toEqual(expectedUpdatedAdditionalTrainingOther)
       expect(res.redirect).toHaveBeenCalledWith(expectedNextPage)
-      expect(req.session.additionalTrainingForm).toBeUndefined()
+      expect(getPrisonerContext(req.session, prisonNumber).additionalTrainingForm).toBeUndefined()
     })
   })
 })

@@ -1,6 +1,7 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express'
 import QualificationLevelController from '../common/qualificationLevelController'
 import validateQualificationLevelForm from '../../validators/induction/qualificationLevelFormValidator'
+import { getPrisonerContext } from '../../../data/session/prisonerContexts'
 
 export default class QualificationLevelCreateController extends QualificationLevelController {
   submitQualificationLevelForm: RequestHandler = async (
@@ -11,8 +12,8 @@ export default class QualificationLevelCreateController extends QualificationLev
     const { prisonNumber } = req.params
     const { prisonerSummary } = res.locals
 
-    req.session.qualificationLevelForm = { ...req.body }
-    const { qualificationLevelForm } = req.session
+    const qualificationLevelForm = { ...req.body }
+    getPrisonerContext(req.session, prisonNumber).qualificationLevelForm = qualificationLevelForm
 
     const errors = validateQualificationLevelForm(qualificationLevelForm, prisonerSummary)
     if (errors.length > 0) {

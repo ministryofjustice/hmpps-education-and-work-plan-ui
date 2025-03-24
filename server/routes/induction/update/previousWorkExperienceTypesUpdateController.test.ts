@@ -9,6 +9,7 @@ import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataB
 import { aValidInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
 import aValidUpdateInductionDto from '../../../testsupport/updateInductionDtoTestDataBuilder'
 import HasWorkedBeforeValue from '../../../enums/hasWorkedBeforeValue'
+import { getPrisonerContext } from '../../../data/session/prisonerContexts'
 
 jest.mock('../../../data/mappers/createOrUpdateInductionDtoMapper')
 jest.mock('../../../services/inductionService')
@@ -51,8 +52,8 @@ describe('previousWorkExperienceTypesUpdateController', () => {
     it('should get the Previous Work Experience Types view given there is no PreviousWorkExperienceTypesForm on the session', async () => {
       // Given
       const inductionDto = aValidInductionDto({ hasWorkedBefore: HasWorkedBeforeValue.YES })
-      req.session.inductionDto = inductionDto
-      req.session.previousWorkExperienceTypesForm = undefined
+      getPrisonerContext(req.session, prisonNumber).inductionDto = inductionDto
+      getPrisonerContext(req.session, prisonNumber).previousWorkExperienceTypesForm = undefined
 
       const expectedPreviousWorkExperienceTypesForm = {
         typeOfWorkExperience: ['CONSTRUCTION', 'OTHER'],
@@ -72,20 +73,21 @@ describe('previousWorkExperienceTypesUpdateController', () => {
         'pages/induction/previousWorkExperience/workExperienceTypes',
         expectedView,
       )
-      expect(req.session.previousWorkExperienceTypesForm).toBeUndefined()
-      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(getPrisonerContext(req.session, prisonNumber).previousWorkExperienceTypesForm).toBeUndefined()
+      expect(getPrisonerContext(req.session, prisonNumber).inductionDto).toEqual(inductionDto)
     })
 
     it('should get the Previous Work Experience Types view given there is an PreviousWorkExperienceTypesForm already on the session', async () => {
       // Given
       const inductionDto = aValidInductionDto({ hasWorkedBefore: HasWorkedBeforeValue.YES })
-      req.session.inductionDto = inductionDto
+      getPrisonerContext(req.session, prisonNumber).inductionDto = inductionDto
 
       const expectedPreviousWorkExperienceTypesForm = {
         typeOfWorkExperience: ['OUTDOOR', 'DRIVING', 'OTHER'],
         typeOfWorkExperienceOther: 'Entertainment industry',
       }
-      req.session.previousWorkExperienceTypesForm = expectedPreviousWorkExperienceTypesForm
+      getPrisonerContext(req.session, prisonNumber).previousWorkExperienceTypesForm =
+        expectedPreviousWorkExperienceTypesForm
 
       const expectedView = {
         prisonerSummary,
@@ -100,8 +102,8 @@ describe('previousWorkExperienceTypesUpdateController', () => {
         'pages/induction/previousWorkExperience/workExperienceTypes',
         expectedView,
       )
-      expect(req.session.previousWorkExperienceDetailForm).toBeUndefined()
-      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(getPrisonerContext(req.session, prisonNumber).previousWorkExperienceTypesForm).toBeUndefined()
+      expect(getPrisonerContext(req.session, prisonNumber).inductionDto).toEqual(inductionDto)
     })
   })
 
@@ -109,14 +111,14 @@ describe('previousWorkExperienceTypesUpdateController', () => {
     it('should not update Induction given form is submitted with validation errors', async () => {
       // Given
       const inductionDto = aValidInductionDto({ hasWorkedBefore: HasWorkedBeforeValue.YES })
-      req.session.inductionDto = inductionDto
+      getPrisonerContext(req.session, prisonNumber).inductionDto = inductionDto
 
       const invalidPreviousWorkExperienceTypesForm = {
         typeOfWorkExperience: ['OTHER'],
         typeOfWorkExperienceOther: '',
       }
       req.body = invalidPreviousWorkExperienceTypesForm
-      req.session.previousWorkExperienceTypesForm = undefined
+      getPrisonerContext(req.session, prisonNumber).previousWorkExperienceTypesForm = undefined
 
       const expectedErrors = [
         { href: '#typeOfWorkExperienceOther', text: 'Enter the type of work Jimmy Lightfingers has done before' },
@@ -130,22 +132,24 @@ describe('previousWorkExperienceTypesUpdateController', () => {
         '/prisoners/A1234BC/induction/previous-work-experience',
         expectedErrors,
       )
-      expect(req.session.previousWorkExperienceTypesForm).toEqual(invalidPreviousWorkExperienceTypesForm)
-      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(getPrisonerContext(req.session, prisonNumber).previousWorkExperienceTypesForm).toEqual(
+        invalidPreviousWorkExperienceTypesForm,
+      )
+      expect(getPrisonerContext(req.session, prisonNumber).inductionDto).toEqual(inductionDto)
     })
 
     it('should not update Induction given form is submitted with no changes to the original Induction', async () => {
       // Given
       const inductionDto = aValidInductionDto({ hasWorkedBefore: HasWorkedBeforeValue.YES })
       // The induction has work experience of CONSTRUCTION and OTHER (Retail delivery)
-      req.session.inductionDto = inductionDto
+      getPrisonerContext(req.session, prisonNumber).inductionDto = inductionDto
 
       const previousWorkExperienceTypesForm = {
         typeOfWorkExperience: ['CONSTRUCTION', 'OTHER'],
         typeOfWorkExperienceOther: 'Retail delivery',
       }
       req.body = previousWorkExperienceTypesForm
-      req.session.previousWorkExperienceTypesForm = undefined
+      getPrisonerContext(req.session, prisonNumber).previousWorkExperienceTypesForm = undefined
 
       // When
       await controller.submitPreviousWorkExperienceTypesForm(req, res, next)
@@ -154,22 +158,22 @@ describe('previousWorkExperienceTypesUpdateController', () => {
       expect(res.redirect).toHaveBeenCalledWith('/plan/A1234BC/view/work-and-interests')
       expect(mockedCreateOrUpdateInductionDtoMapper).not.toHaveBeenCalled()
       expect(inductionService.updateInduction).not.toHaveBeenCalled()
-      expect(req.session.previousWorkExperienceTypesForm).toBeUndefined()
-      expect(req.session.inductionDto).toBeUndefined()
+      expect(getPrisonerContext(req.session, prisonNumber).previousWorkExperienceTypesForm).toBeUndefined()
+      expect(getPrisonerContext(req.session, prisonNumber).inductionDto).toBeUndefined()
     })
 
     it('should update Induction given form is submitted where the only change is a removal of a work type', async () => {
       // Given
       const inductionDto = aValidInductionDto({ hasWorkedBefore: HasWorkedBeforeValue.YES })
       // The induction has work experience of CONSTRUCTION and OTHER (Retail delivery)
-      req.session.inductionDto = inductionDto
+      getPrisonerContext(req.session, prisonNumber).inductionDto = inductionDto
 
       const previousWorkExperienceTypesForm = {
         typeOfWorkExperience: ['OTHER'],
         typeOfWorkExperienceOther: 'Retail delivery',
       }
       req.body = previousWorkExperienceTypesForm
-      req.session.previousWorkExperienceTypesForm = undefined
+      getPrisonerContext(req.session, prisonNumber).previousWorkExperienceTypesForm = undefined
 
       const updateInductionDto = aValidUpdateInductionDto({ hasWorkedBefore: HasWorkedBeforeValue.YES })
       mockedCreateOrUpdateInductionDtoMapper.mockReturnValueOnce(updateInductionDto)
@@ -194,22 +198,22 @@ describe('previousWorkExperienceTypesUpdateController', () => {
 
       expect(inductionService.updateInduction).toHaveBeenCalledWith(prisonNumber, updateInductionDto, username)
       expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/view/work-and-interests`)
-      expect(req.session.previousWorkExperienceTypesForm).toBeUndefined()
-      expect(req.session.inductionDto).toBeUndefined()
+      expect(getPrisonerContext(req.session, prisonNumber).previousWorkExperienceTypesForm).toBeUndefined()
+      expect(getPrisonerContext(req.session, prisonNumber).inductionDto).toBeUndefined()
     })
 
     it('should not update Induction given error calling service', async () => {
       // Given
       const inductionDto = aValidInductionDto({ hasWorkedBefore: HasWorkedBeforeValue.YES })
       // The induction has work experience of CONSTRUCTION and OTHER (Retail delivery)
-      req.session.inductionDto = inductionDto
+      getPrisonerContext(req.session, prisonNumber).inductionDto = inductionDto
 
       const previousWorkExperienceTypesForm = {
         typeOfWorkExperience: ['OTHER'],
         typeOfWorkExperienceOther: 'Retail delivery',
       }
       req.body = previousWorkExperienceTypesForm
-      req.session.previousWorkExperienceTypesForm = undefined
+      getPrisonerContext(req.session, prisonNumber).previousWorkExperienceTypesForm = undefined
 
       const updateInductionDto = aValidUpdateInductionDto({ hasWorkedBefore: HasWorkedBeforeValue.YES })
       mockedCreateOrUpdateInductionDtoMapper.mockReturnValueOnce(updateInductionDto)
@@ -240,22 +244,24 @@ describe('previousWorkExperienceTypesUpdateController', () => {
 
       expect(inductionService.updateInduction).toHaveBeenCalledWith(prisonNumber, updateInductionDto, username)
       expect(next).toHaveBeenCalledWith(expectedError)
-      expect(req.session.previousWorkExperienceTypesForm).toEqual(previousWorkExperienceTypesForm)
-      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(getPrisonerContext(req.session, prisonNumber).previousWorkExperienceTypesForm).toEqual(
+        previousWorkExperienceTypesForm,
+      )
+      expect(getPrisonerContext(req.session, prisonNumber).inductionDto).toEqual(inductionDto)
     })
 
     it('should build a page flow queue and redirect to the next page given new Previous Work Experience Types are submitted', async () => {
       // Given
       const inductionDto = aValidInductionDto({ hasWorkedBefore: HasWorkedBeforeValue.YES })
       // The induction has work experience of CONSTRUCTION and OTHER (Retail delivery)
-      req.session.inductionDto = inductionDto
+      getPrisonerContext(req.session, prisonNumber).inductionDto = inductionDto
 
       const previousWorkExperienceTypesForm = {
         typeOfWorkExperience: ['OUTDOOR', 'CONSTRUCTION', 'EDUCATION_TRAINING', 'OTHER'],
         typeOfWorkExperienceOther: 'Retail delivery',
       }
       req.body = previousWorkExperienceTypesForm
-      req.session.previousWorkExperienceTypesForm = undefined
+      getPrisonerContext(req.session, prisonNumber).previousWorkExperienceTypesForm = undefined
 
       const expectedPreviousWorkExperiences: Array<PreviousWorkExperienceDto> = [
         {
@@ -299,8 +305,8 @@ describe('previousWorkExperienceTypesUpdateController', () => {
       expect(res.redirect).toHaveBeenCalledWith(`/prisoners/${prisonNumber}/induction/previous-work-experience/outdoor`)
       expect(inductionService.updateInduction).not.toHaveBeenCalled()
       expect(req.session.pageFlowQueue).toEqual(expectedPageFlowQueue)
-      expect(req.session.previousWorkExperienceTypesForm).toBeUndefined()
-      const updatedInductionDto: InductionDto = req.session.inductionDto
+      expect(getPrisonerContext(req.session, prisonNumber).previousWorkExperienceTypesForm).toBeUndefined()
+      const updatedInductionDto: InductionDto = getPrisonerContext(req.session, prisonNumber).inductionDto
       expect(updatedInductionDto.previousWorkExperiences.experiences).toEqual(expectedPreviousWorkExperiences)
     })
 
@@ -308,14 +314,14 @@ describe('previousWorkExperienceTypesUpdateController', () => {
       // Given
       const inductionDto = aValidInductionDto({ hasWorkedBefore: HasWorkedBeforeValue.YES })
       // The induction has work experience of CONSTRUCTION and OTHER (Retail delivery)
-      req.session.inductionDto = inductionDto
+      getPrisonerContext(req.session, prisonNumber).inductionDto = inductionDto
 
       const previousWorkExperienceTypesForm = {
         typeOfWorkExperience: ['CONSTRUCTION', 'OTHER'],
         typeOfWorkExperienceOther: 'Entertainment industry',
       }
       req.body = previousWorkExperienceTypesForm
-      req.session.previousWorkExperienceTypesForm = undefined
+      getPrisonerContext(req.session, prisonNumber).previousWorkExperienceTypesForm = undefined
 
       const expectedPreviousWorkExperiences: Array<PreviousWorkExperienceDto> = [
         {
@@ -346,8 +352,8 @@ describe('previousWorkExperienceTypesUpdateController', () => {
       expect(res.redirect).toHaveBeenCalledWith(`/prisoners/${prisonNumber}/induction/previous-work-experience/other`)
       expect(inductionService.updateInduction).not.toHaveBeenCalled()
       expect(req.session.pageFlowQueue).toEqual(expectedPageFlowQueue)
-      expect(req.session.previousWorkExperienceTypesForm).toBeUndefined()
-      const updatedInductionDto: InductionDto = req.session.inductionDto
+      expect(getPrisonerContext(req.session, prisonNumber).previousWorkExperienceTypesForm).toBeUndefined()
+      const updatedInductionDto: InductionDto = getPrisonerContext(req.session, prisonNumber).inductionDto
       expect(updatedInductionDto.previousWorkExperiences.experiences).toEqual(expectedPreviousWorkExperiences)
     })
   })

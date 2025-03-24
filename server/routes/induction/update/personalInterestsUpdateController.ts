@@ -7,6 +7,7 @@ import logger from '../../../../logger'
 import { InductionService } from '../../../services'
 import validatePersonalInterestsForm from '../../validators/induction/personalInterestsFormValidator'
 import { asArray } from '../../../utils/utils'
+import { getPrisonerContext } from '../../../data/session/prisonerContexts'
 
 /**
  * Controller for the Update of the Personal Interests screen of the Induction.
@@ -22,15 +23,15 @@ export default class PersonalInterestsUpdateController extends PersonalInterests
     next: NextFunction,
   ): Promise<void> => {
     const { prisonNumber } = req.params
-    const { inductionDto } = req.session
     const { prisonerSummary } = res.locals
     const { prisonId } = prisonerSummary
+    const { inductionDto } = getPrisonerContext(req.session, prisonNumber)
 
     const personalInterestsForm: PersonalInterestsForm = {
       personalInterests: asArray(req.body.personalInterests),
       personalInterestsOther: req.body.personalInterestsOther,
     }
-    req.session.personalInterestsForm = personalInterestsForm
+    getPrisonerContext(req.session, prisonNumber).personalInterestsForm = personalInterestsForm
 
     const errors = validatePersonalInterestsForm(personalInterestsForm, prisonerSummary)
     if (errors.length > 0) {
@@ -43,8 +44,8 @@ export default class PersonalInterestsUpdateController extends PersonalInterests
       const updateInductionDto = toCreateOrUpdateInductionDto(prisonId, updatedInduction)
       await this.inductionService.updateInduction(prisonNumber, updateInductionDto, req.user.username)
 
-      req.session.personalInterestsForm = undefined
-      req.session.inductionDto = undefined
+      getPrisonerContext(req.session, prisonNumber).personalInterestsForm = undefined
+      getPrisonerContext(req.session, prisonNumber).inductionDto = undefined
       return res.redirect(`/plan/${prisonNumber}/view/work-and-interests`)
     } catch (e) {
       logger.error(`Error updating Induction for prisoner ${prisonNumber}`, e)

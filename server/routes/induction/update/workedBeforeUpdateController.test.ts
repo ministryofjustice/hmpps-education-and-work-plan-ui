@@ -8,6 +8,7 @@ import InductionService from '../../../services/inductionService'
 import aValidUpdateInductionRequest from '../../../testsupport/updateInductionRequestTestDataBuilder'
 import WorkedBeforeUpdateController from './workedBeforeUpdateController'
 import HasWorkedBeforeValue from '../../../enums/hasWorkedBeforeValue'
+import { getPrisonerContext } from '../../../data/session/prisonerContexts'
 
 jest.mock('../../../data/mappers/createOrUpdateInductionDtoMapper')
 jest.mock('../../../services/inductionService')
@@ -49,8 +50,8 @@ describe('workedBeforeUpdateController', () => {
     it('should get the WorkedBefore view given there is no WorkedBeforeForm on the session', async () => {
       // Given
       const inductionDto = aValidInductionDto()
-      req.session.inductionDto = inductionDto
-      req.session.workedBeforeForm = undefined
+      getPrisonerContext(req.session, prisonNumber).inductionDto = inductionDto
+      getPrisonerContext(req.session, prisonNumber).workedBeforeForm = undefined
 
       const expectedWorkedBeforeForm = {
         hasWorkedBefore: HasWorkedBeforeValue.YES,
@@ -66,19 +67,19 @@ describe('workedBeforeUpdateController', () => {
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/induction/workedBefore/index', expectedView)
-      expect(req.session.workedBeforeForm).toBeUndefined()
-      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(getPrisonerContext(req.session, prisonNumber).workedBeforeForm).toBeUndefined()
+      expect(getPrisonerContext(req.session, prisonNumber).inductionDto).toEqual(inductionDto)
     })
 
     it('should get the WorkedBefore view given there is an WorkedBeforeForm already on the session', async () => {
       // Given
       const inductionDto = aValidInductionDto()
-      req.session.inductionDto = inductionDto
+      getPrisonerContext(req.session, prisonNumber).inductionDto = inductionDto
 
       const expectedWorkedBeforeForm = {
         hasWorkedBefore: HasWorkedBeforeValue.NO,
       }
-      req.session.workedBeforeForm = expectedWorkedBeforeForm
+      getPrisonerContext(req.session, prisonNumber).workedBeforeForm = expectedWorkedBeforeForm
 
       const expectedView = {
         prisonerSummary,
@@ -90,8 +91,8 @@ describe('workedBeforeUpdateController', () => {
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/induction/workedBefore/index', expectedView)
-      expect(req.session.workedBeforeForm).toBeUndefined()
-      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(getPrisonerContext(req.session, prisonNumber).workedBeforeForm).toBeUndefined()
+      expect(getPrisonerContext(req.session, prisonNumber).inductionDto).toEqual(inductionDto)
     })
   })
 
@@ -99,13 +100,13 @@ describe('workedBeforeUpdateController', () => {
     it('should not update Induction given form is submitted with validation errors', async () => {
       // Given
       const inductionDto = aValidInductionDto()
-      req.session.inductionDto = inductionDto
+      getPrisonerContext(req.session, prisonNumber).inductionDto = inductionDto
 
       const invalidWorkedBeforeForm: WorkedBeforeForm = {
         hasWorkedBefore: undefined,
       }
       req.body = invalidWorkedBeforeForm
-      req.session.workedBeforeForm = undefined
+      getPrisonerContext(req.session, prisonNumber).workedBeforeForm = undefined
 
       const expectedErrors = [
         { href: '#hasWorkedBefore', text: 'Select whether Jimmy Lightfingers has worked before or not' },
@@ -119,20 +120,20 @@ describe('workedBeforeUpdateController', () => {
         '/prisoners/A1234BC/induction/has-worked-before',
         expectedErrors,
       )
-      expect(req.session.workedBeforeForm).toEqual(invalidWorkedBeforeForm)
-      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(getPrisonerContext(req.session, prisonNumber).workedBeforeForm).toEqual(invalidWorkedBeforeForm)
+      expect(getPrisonerContext(req.session, prisonNumber).inductionDto).toEqual(inductionDto)
     })
 
     it('should update Induction in session and redirect to previous work experience page if answering YES', async () => {
       // Given
       const inductionDto = aValidInductionDto({ hasWorkedBefore: HasWorkedBeforeValue.NO })
-      req.session.inductionDto = inductionDto
+      getPrisonerContext(req.session, prisonNumber).inductionDto = inductionDto
 
       const workedBeforeForm = {
         hasWorkedBefore: HasWorkedBeforeValue.YES,
       }
       req.body = workedBeforeForm
-      req.session.workedBeforeForm = undefined
+      getPrisonerContext(req.session, prisonNumber).workedBeforeForm = undefined
       const updateInductionDto = aValidUpdateInductionRequest()
 
       mockedCreateOrUpdateInductionDtoMapper.mockReturnValueOnce(updateInductionDto)
@@ -142,8 +143,8 @@ describe('workedBeforeUpdateController', () => {
 
       // Then
       expect(res.redirect).toHaveBeenCalledWith(`/prisoners/${prisonNumber}/induction/previous-work-experience`)
-      expect(req.session.workedBeforeForm).toBeUndefined()
-      expect(req.session.inductionDto).toStrictEqual({
+      expect(getPrisonerContext(req.session, prisonNumber).workedBeforeForm).toBeUndefined()
+      expect(getPrisonerContext(req.session, prisonNumber).inductionDto).toStrictEqual({
         ...inductionDto,
         previousWorkExperiences: {
           ...inductionDto.previousWorkExperiences,
@@ -155,13 +156,13 @@ describe('workedBeforeUpdateController', () => {
     it('should update Induction and call API and redirect to work and interests page if answering NO', async () => {
       // Given
       const inductionDto = aValidInductionDto()
-      req.session.inductionDto = inductionDto
+      getPrisonerContext(req.session, prisonNumber).inductionDto = inductionDto
 
       const workedBeforeForm = {
         hasWorkedBefore: HasWorkedBeforeValue.NO,
       }
       req.body = workedBeforeForm
-      req.session.workedBeforeForm = undefined
+      getPrisonerContext(req.session, prisonNumber).workedBeforeForm = undefined
       const updateInductionDto = aValidUpdateInductionRequest()
 
       mockedCreateOrUpdateInductionDtoMapper.mockReturnValueOnce(updateInductionDto)
@@ -177,21 +178,21 @@ describe('workedBeforeUpdateController', () => {
 
       expect(inductionService.updateInduction).toHaveBeenCalledWith(prisonNumber, updateInductionDto, username)
       expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/view/work-and-interests`)
-      expect(req.session.workedBeforeForm).toBeUndefined()
-      expect(req.session.inductionDto).toBeUndefined()
+      expect(getPrisonerContext(req.session, prisonNumber).workedBeforeForm).toBeUndefined()
+      expect(getPrisonerContext(req.session, prisonNumber).inductionDto).toBeUndefined()
     })
 
     it('should update Induction and call API and redirect to work and interests page if answering NOT_RELEVANT', async () => {
       // Given
       const inductionDto = aValidInductionDto()
-      req.session.inductionDto = inductionDto
+      getPrisonerContext(req.session, prisonNumber).inductionDto = inductionDto
 
       const workedBeforeForm = {
         hasWorkedBefore: HasWorkedBeforeValue.NOT_RELEVANT,
         hasWorkedBeforeNotRelevantReason: 'Some reason',
       }
       req.body = workedBeforeForm
-      req.session.workedBeforeForm = undefined
+      getPrisonerContext(req.session, prisonNumber).workedBeforeForm = undefined
       const updateInductionDto = aValidUpdateInductionRequest()
 
       mockedCreateOrUpdateInductionDtoMapper.mockReturnValueOnce(updateInductionDto)
@@ -208,20 +209,20 @@ describe('workedBeforeUpdateController', () => {
 
       expect(inductionService.updateInduction).toHaveBeenCalledWith(prisonNumber, updateInductionDto, username)
       expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/view/work-and-interests`)
-      expect(req.session.workedBeforeForm).toBeUndefined()
-      expect(req.session.inductionDto).toBeUndefined()
+      expect(getPrisonerContext(req.session, prisonNumber).workedBeforeForm).toBeUndefined()
+      expect(getPrisonerContext(req.session, prisonNumber).inductionDto).toBeUndefined()
     })
 
     it('should not update Induction given error calling service', async () => {
       // Given
       const inductionDto = aValidInductionDto()
-      req.session.inductionDto = inductionDto
+      getPrisonerContext(req.session, prisonNumber).inductionDto = inductionDto
 
       const workedBeforeForm = {
         hasWorkedBefore: HasWorkedBeforeValue.NO,
       }
       req.body = workedBeforeForm
-      req.session.workedBeforeForm = undefined
+      getPrisonerContext(req.session, prisonNumber).workedBeforeForm = undefined
       const updateInductionDto = aValidUpdateInductionRequest()
 
       mockedCreateOrUpdateInductionDtoMapper.mockReturnValueOnce(updateInductionDto)
@@ -243,8 +244,8 @@ describe('workedBeforeUpdateController', () => {
 
       expect(inductionService.updateInduction).toHaveBeenCalledWith(prisonNumber, updateInductionDto, username)
       expect(next).toHaveBeenCalledWith(expectedError)
-      expect(req.session.workedBeforeForm).toEqual(workedBeforeForm)
-      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(getPrisonerContext(req.session, prisonNumber).workedBeforeForm).toEqual(workedBeforeForm)
+      expect(getPrisonerContext(req.session, prisonNumber).inductionDto).toEqual(inductionDto)
     })
   })
 })

@@ -4,6 +4,7 @@ import type { InductionDto, PreviousWorkExperienceDto } from 'inductionDto'
 import InductionController from './inductionController'
 import PreviousWorkExperienceTypesView from './previousWorkExperienceTypesView'
 import TypeOfWorkExperienceValue from '../../../enums/typeOfWorkExperienceValue'
+import { getPrisonerContext } from '../../../data/session/prisonerContexts'
 
 /**
  * Abstract controller class defining functionality common to both the Create and Update Induction journeys.
@@ -17,14 +18,16 @@ export default abstract class PreviousWorkExperienceTypesController extends Indu
     res: Response,
     next: NextFunction,
   ): Promise<void> => {
-    const { inductionDto } = req.session
+    const { prisonNumber } = req.params
     const { prisonerSummary } = res.locals
+    const { inductionDto } = getPrisonerContext(req.session, prisonNumber)
 
     this.addCurrentPageToFlowHistoryWhenComingFromCheckYourAnswers(req)
 
-    const previousWorkExperienceDetailsForm =
-      req.session.previousWorkExperienceTypesForm || toPreviousWorkExperienceTypesForm(inductionDto)
-    req.session.previousWorkExperienceDetailForm = undefined
+    const previousWorkExperienceDetailsForm: PreviousWorkExperienceTypesForm =
+      getPrisonerContext(req.session, prisonNumber).previousWorkExperienceTypesForm ||
+      toPreviousWorkExperienceTypesForm(inductionDto)
+    getPrisonerContext(req.session, prisonNumber).previousWorkExperienceTypesForm = undefined
 
     const view = new PreviousWorkExperienceTypesView(prisonerSummary, previousWorkExperienceDetailsForm)
     return res.render('pages/induction/previousWorkExperience/workExperienceTypes', { ...view.renderArgs })

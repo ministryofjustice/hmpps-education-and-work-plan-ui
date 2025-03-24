@@ -7,6 +7,7 @@ import WantToAddQualificationsView from './wantToAddQualificationsView'
 import dateComparator from '../../dateComparator'
 import YesNoValue from '../../../enums/yesNoValue'
 import EducationLevelValue from '../../../enums/educationLevelValue'
+import { getPrisonerContext } from '../../../data/session/prisonerContexts'
 
 /**
  * Abstract controller class defining functionality common to both the Create and Update Induction journeys.
@@ -20,8 +21,9 @@ export default abstract class WantToAddQualificationsController extends Inductio
     res: Response,
     next: NextFunction,
   ): Promise<void> => {
-    const { inductionDto } = req.session
+    const { prisonNumber } = req.params
     const { prisonerSummary } = res.locals
+    const { inductionDto } = getPrisonerContext(req.session, prisonNumber)
 
     this.addCurrentPageToFlowHistoryWhenComingFromCheckYourAnswers(req)
 
@@ -31,9 +33,10 @@ export default abstract class WantToAddQualificationsController extends Inductio
       assessments: mostRecentAssessments(prisonerFunctionalSkills.assessments || []),
     }
 
-    const wantToAddQualificationsForm =
-      req.session.wantToAddQualificationsForm || createWantToAddQualificationsForm(inductionDto)
-    req.session.wantToAddQualificationsForm = undefined
+    const wantToAddQualificationsForm: WantToAddQualificationsForm =
+      getPrisonerContext(req.session, prisonNumber).wantToAddQualificationsForm ||
+      createWantToAddQualificationsForm(inductionDto)
+    getPrisonerContext(req.session, prisonNumber).wantToAddQualificationsForm = undefined
 
     const view = new WantToAddQualificationsView(
       prisonerSummary,

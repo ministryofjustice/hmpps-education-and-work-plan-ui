@@ -14,7 +14,7 @@ import WorkInterestRolesUpdateController from './workInterestRolesUpdateControll
 import AdditionalTrainingUpdateController from './additionalTrainingUpdateController'
 import HopingToWorkOnReleaseUpdateController from './hopingToWorkOnReleaseUpdateController'
 import setCurrentPageInPageFlowQueue from '../../routerRequestHandlers/setCurrentPageInPageFlowQueue'
-import retrieveInductionIfNotInSession from '../../routerRequestHandlers/retrieveInductionIfNotInSession'
+import retrieveInductionIfNotInPrisonerContext from '../../routerRequestHandlers/retrieveInductionIfNotInPrisonerContext'
 import asyncMiddleware from '../../../middleware/asyncMiddleware'
 import ApplicationAction from '../../../enums/applicationAction'
 
@@ -43,12 +43,12 @@ export default (router: Router, services: Services) => {
 
   router.get('/prisoners/:prisonNumber/induction/**', [
     checkUserHasPermissionTo(ApplicationAction.UPDATE_INDUCTION),
-    retrieveInductionIfNotInSession(services.inductionService),
+    retrieveInductionIfNotInPrisonerContext(services.inductionService),
     setCurrentPageInPageFlowQueue,
   ])
   router.post('/prisoners/:prisonNumber/induction/**', [
     checkUserHasPermissionTo(ApplicationAction.UPDATE_INDUCTION),
-    retrieveInductionIfNotInSession(services.inductionService),
+    retrieveInductionIfNotInPrisonerContext(services.inductionService),
     setCurrentPageInPageFlowQueue,
   ])
 

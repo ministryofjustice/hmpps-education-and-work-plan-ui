@@ -3,6 +3,7 @@ import type { WorkInterestRolesForm } from 'inductionForms'
 import WorkInterestRolesController from '../common/workInterestRolesController'
 import validateWorkInterestRolesForm from '../../validators/induction/workInterestRolesFormValidator'
 import WorkInterestTypeValue from '../../../enums/workInterestTypeValue'
+import { getPrisonerContext } from '../../../data/session/prisonerContexts'
 
 export default class WorkInterestRolesCreateController extends WorkInterestRolesController {
   submitWorkInterestRolesForm: RequestHandler = async (
@@ -11,22 +12,24 @@ export default class WorkInterestRolesCreateController extends WorkInterestRoles
     next: NextFunction,
   ): Promise<void> => {
     const { prisonNumber } = req.params
-    const { inductionDto } = req.session
+    const { inductionDto } = getPrisonerContext(req.session, prisonNumber)
 
-    const workInterestRoles = Object.entries<string>({ ...req.body.workInterestRoles }) as [
-      WorkInterestTypeValue,
-      string,
-    ][]
-    const workInterestRolesForm: WorkInterestRolesForm = { ...req.body, workInterestRoles }
-    req.session.workInterestRolesForm = workInterestRolesForm
+    const workInterestRolesForm: WorkInterestRolesForm = {
+      workInterestRoles: Object.entries<string>({ ...req.body.workInterestRoles }) as [WorkInterestTypeValue, string][],
+      workInterestTypesOther: req.body.workInterestTypesOther,
+    }
+    getPrisonerContext(req.session, prisonNumber).workInterestRolesForm = workInterestRolesForm
 
     const errors = validateWorkInterestRolesForm(workInterestRolesForm)
     if (errors.length > 0) {
       return res.redirectWithErrors(`/prisoners/${prisonNumber}/create-induction/work-interest-roles`, errors)
     }
 
-    req.session.inductionDto = this.updatedInductionDtoWithWorkInterestRoles(inductionDto, workInterestRolesForm)
-    req.session.workInterestRolesForm = undefined
+    getPrisonerContext(req.session, prisonNumber).inductionDto = this.updatedInductionDtoWithWorkInterestRoles(
+      inductionDto,
+      workInterestRolesForm,
+    )
+    getPrisonerContext(req.session, prisonNumber).workInterestRolesForm = undefined
 
     const nextPage = this.checkYourAnswersIsTheFirstPageInThePageHistory(req)
       ? `/prisoners/${prisonNumber}/create-induction/check-your-answers`

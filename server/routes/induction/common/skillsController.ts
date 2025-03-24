@@ -4,6 +4,7 @@ import type { SkillsForm } from 'inductionForms'
 import InductionController from './inductionController'
 import SkillsView from './skillsView'
 import SkillsValue from '../../../enums/skillsValue'
+import { getPrisonerContext } from '../../../data/session/prisonerContexts'
 
 /**
  * Abstract controller class defining functionality common to both the Create and Update Induction journeys.
@@ -13,11 +14,13 @@ export default abstract class SkillsController extends InductionController {
    * Returns the Skills view; suitable for use by the Create and Update journeys.
    */
   getSkillsView: RequestHandler = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    const { inductionDto } = req.session
+    const { prisonNumber } = req.params
     const { prisonerSummary } = res.locals
+    const { inductionDto } = getPrisonerContext(req.session, prisonNumber)
 
-    const skillsForm = req.session.skillsForm || toSkillsForm(inductionDto)
-    req.session.skillsForm = undefined
+    const skillsForm: SkillsForm =
+      getPrisonerContext(req.session, prisonNumber).skillsForm || toSkillsForm(inductionDto)
+    getPrisonerContext(req.session, prisonNumber).skillsForm = undefined
 
     this.addCurrentPageToFlowHistoryWhenComingFromCheckYourAnswers(req)
 

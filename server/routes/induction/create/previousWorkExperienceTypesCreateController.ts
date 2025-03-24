@@ -8,6 +8,7 @@ import previousWorkExperienceTypeScreenOrderComparator from '../previousWorkExpe
 import logger from '../../../../logger'
 import { getNextPage } from '../../pageFlowQueue'
 import { asArray } from '../../../utils/utils'
+import { getPrisonerContext } from '../../../data/session/prisonerContexts'
 
 export default class PreviousWorkExperienceTypesCreateController extends PreviousWorkExperienceTypesController {
   submitPreviousWorkExperienceTypesForm: RequestHandler = async (
@@ -16,14 +17,14 @@ export default class PreviousWorkExperienceTypesCreateController extends Previou
     next: NextFunction,
   ): Promise<void> => {
     const { prisonNumber } = req.params
-    const { inductionDto } = req.session
     const { prisonerSummary } = res.locals
+    const { inductionDto } = getPrisonerContext(req.session, prisonNumber)
 
     const previousWorkExperienceTypesForm: PreviousWorkExperienceTypesForm = {
       typeOfWorkExperience: asArray(req.body.typeOfWorkExperience),
       typeOfWorkExperienceOther: req.body.typeOfWorkExperienceOther,
     }
-    req.session.previousWorkExperienceTypesForm = previousWorkExperienceTypesForm
+    getPrisonerContext(req.session, prisonNumber).previousWorkExperienceTypesForm = previousWorkExperienceTypesForm
 
     const errors = validatePreviousWorkExperienceTypesForm(previousWorkExperienceTypesForm, prisonerSummary)
 
@@ -35,13 +36,13 @@ export default class PreviousWorkExperienceTypesCreateController extends Previou
       inductionDto,
       previousWorkExperienceTypesForm,
     )
-    req.session.inductionDto = updatedInduction
+    getPrisonerContext(req.session, prisonNumber).inductionDto = updatedInduction
 
     // We need to show the Details page for each work experience type.
     const pageFlowQueue = buildPageFlowQueue(updatedInduction, prisonNumber)
     req.session.pageFlowQueue = pageFlowQueue
 
-    req.session.previousWorkExperienceTypesForm = undefined
+    getPrisonerContext(req.session, prisonNumber).previousWorkExperienceTypesForm = undefined
 
     return res.redirect(getNextPage(pageFlowQueue))
   }

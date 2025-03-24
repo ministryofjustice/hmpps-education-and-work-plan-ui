@@ -6,6 +6,7 @@ import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateIn
 import InductionService from '../../../services/inductionService'
 import aValidUpdateInductionRequest from '../../../testsupport/updateInductionRequestTestDataBuilder'
 import PersonalInterestsUpdateController from './personalInterestsUpdateController'
+import { getPrisonerContext } from '../../../data/session/prisonerContexts'
 
 jest.mock('../../../data/mappers/createOrUpdateInductionDtoMapper')
 jest.mock('../../../services/inductionService')
@@ -46,8 +47,8 @@ describe('personalInterestsUpdateController', () => {
     it('should get the Personal interests view given there is no PersonalInterestsForm on the session', async () => {
       // Given
       const inductionDto = aValidInductionDto()
-      req.session.inductionDto = inductionDto
-      req.session.personalInterestsForm = undefined
+      getPrisonerContext(req.session, prisonNumber).inductionDto = inductionDto
+      getPrisonerContext(req.session, prisonNumber).personalInterestsForm = undefined
 
       const expectedPersonalInterestsForm = {
         personalInterests: ['CREATIVE', 'DIGITAL', 'OTHER'],
@@ -64,20 +65,20 @@ describe('personalInterestsUpdateController', () => {
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/induction/personalInterests/index', expectedView)
-      expect(req.session.personalInterestsForm).toBeUndefined()
-      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(getPrisonerContext(req.session, prisonNumber).personalInterestsForm).toBeUndefined()
+      expect(getPrisonerContext(req.session, prisonNumber).inductionDto).toEqual(inductionDto)
     })
 
     it('should get the Personal interests view given there is an PersonalInterestsForm already on the session', async () => {
       // Given
       const inductionDto = aValidInductionDto()
-      req.session.inductionDto = inductionDto
+      getPrisonerContext(req.session, prisonNumber).inductionDto = inductionDto
 
       const expectedPersonalInterestsForm = {
         personalInterests: ['COMMUNITY', 'CREATIVE', 'MUSICAL'],
         personalInterestsOther: '',
       }
-      req.session.personalInterestsForm = expectedPersonalInterestsForm
+      getPrisonerContext(req.session, prisonNumber).personalInterestsForm = expectedPersonalInterestsForm
 
       const expectedView = {
         prisonerSummary,
@@ -89,8 +90,8 @@ describe('personalInterestsUpdateController', () => {
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/induction/personalInterests/index', expectedView)
-      expect(req.session.personalInterestsForm).toBeUndefined()
-      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(getPrisonerContext(req.session, prisonNumber).personalInterestsForm).toBeUndefined()
+      expect(getPrisonerContext(req.session, prisonNumber).inductionDto).toEqual(inductionDto)
     })
   })
 
@@ -98,14 +99,14 @@ describe('personalInterestsUpdateController', () => {
     it('should not update Induction given form is submitted with validation errors', async () => {
       // Given
       const inductionDto = aValidInductionDto()
-      req.session.inductionDto = inductionDto
+      getPrisonerContext(req.session, prisonNumber).inductionDto = inductionDto
 
       const invalidPersonalInterestsForm = {
         personalInterests: ['OTHER'],
         personalInterestsOther: '',
       }
       req.body = invalidPersonalInterestsForm
-      req.session.personalInterestsForm = undefined
+      getPrisonerContext(req.session, prisonNumber).personalInterestsForm = undefined
 
       const expectedErrors = [{ href: '#personalInterestsOther', text: `Enter Jimmy Lightfingers's interests` }]
 
@@ -117,21 +118,21 @@ describe('personalInterestsUpdateController', () => {
         '/prisoners/A1234BC/induction/personal-interests',
         expectedErrors,
       )
-      expect(req.session.personalInterestsForm).toEqual(invalidPersonalInterestsForm)
-      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(getPrisonerContext(req.session, prisonNumber).personalInterestsForm).toEqual(invalidPersonalInterestsForm)
+      expect(getPrisonerContext(req.session, prisonNumber).inductionDto).toEqual(inductionDto)
     })
 
     it('should update Induction and call API and redirect to work and interests page', async () => {
       // Given
       const inductionDto = aValidInductionDto()
-      req.session.inductionDto = inductionDto
+      getPrisonerContext(req.session, prisonNumber).inductionDto = inductionDto
 
       const personalInterestsForm = {
         personalInterests: ['CREATIVE', 'OTHER'],
         personalInterestsOther: 'Renewable energy',
       }
       req.body = personalInterestsForm
-      req.session.personalInterestsForm = undefined
+      getPrisonerContext(req.session, prisonNumber).personalInterestsForm = undefined
       const updateInductionDto = aValidUpdateInductionRequest()
 
       mockedCreateOrUpdateInductionDtoMapper.mockReturnValueOnce(updateInductionDto)
@@ -158,21 +159,21 @@ describe('personalInterestsUpdateController', () => {
 
       expect(inductionService.updateInduction).toHaveBeenCalledWith(prisonNumber, updateInductionDto, username)
       expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/view/work-and-interests`)
-      expect(req.session.personalInterestsForm).toBeUndefined()
-      expect(req.session.inductionDto).toBeUndefined()
+      expect(getPrisonerContext(req.session, prisonNumber).personalInterestsForm).toBeUndefined()
+      expect(getPrisonerContext(req.session, prisonNumber).inductionDto).toBeUndefined()
     })
 
     it('should not update Induction given error calling service', async () => {
       // Given
       const inductionDto = aValidInductionDto()
-      req.session.inductionDto = inductionDto
+      getPrisonerContext(req.session, prisonNumber).inductionDto = inductionDto
 
       const personalInterestsForm = {
         personalInterests: ['KNOWLEDGE_BASED', 'OTHER'],
         personalInterestsOther: 'Writing poetry and short stories',
       }
       req.body = personalInterestsForm
-      req.session.personalInterestsForm = undefined
+      getPrisonerContext(req.session, prisonNumber).personalInterestsForm = undefined
       const updateInductionDto = aValidUpdateInductionRequest()
 
       mockedCreateOrUpdateInductionDtoMapper.mockReturnValueOnce(updateInductionDto)
@@ -205,8 +206,8 @@ describe('personalInterestsUpdateController', () => {
 
       expect(inductionService.updateInduction).toHaveBeenCalledWith(prisonNumber, updateInductionDto, username)
       expect(next).toHaveBeenCalledWith(expectedError)
-      expect(req.session.personalInterestsForm).toEqual(personalInterestsForm)
-      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(getPrisonerContext(req.session, prisonNumber).personalInterestsForm).toEqual(personalInterestsForm)
+      expect(getPrisonerContext(req.session, prisonNumber).inductionDto).toEqual(inductionDto)
     })
   })
 })

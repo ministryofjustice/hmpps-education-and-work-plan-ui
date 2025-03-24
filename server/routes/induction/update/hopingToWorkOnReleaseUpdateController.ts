@@ -1,5 +1,6 @@
 import createError from 'http-errors'
 import { NextFunction, Request, RequestHandler, Response } from 'express'
+import type { HopingToWorkOnReleaseForm } from 'inductionForms'
 import HopingToWorkOnReleaseController from '../common/hopingToWorkOnReleaseController'
 import validateHopingToWorkOnReleaseForm from '../../validators/induction/hopingToWorkOnReleaseFormValidator'
 import { InductionService } from '../../../services'
@@ -7,6 +8,7 @@ import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateIn
 import logger from '../../../../logger'
 import { buildNewPageFlowHistory } from '../../pageFlowHistory'
 import HopingToGetWorkValue from '../../../enums/hopingToGetWorkValue'
+import { getPrisonerContext } from '../../../data/session/prisonerContexts'
 
 export default class HopingToWorkOnReleaseUpdateController extends HopingToWorkOnReleaseController {
   constructor(private readonly inductionService: InductionService) {
@@ -19,12 +21,12 @@ export default class HopingToWorkOnReleaseUpdateController extends HopingToWorkO
     next: NextFunction,
   ): Promise<void> => {
     const { prisonNumber } = req.params
-    const { inductionDto } = req.session
     const { prisonerSummary } = res.locals
     const { prisonId } = prisonerSummary
+    const { inductionDto } = getPrisonerContext(req.session, prisonNumber)
 
-    req.session.hopingToWorkOnReleaseForm = { ...req.body }
-    const { hopingToWorkOnReleaseForm } = req.session
+    const hopingToWorkOnReleaseForm: HopingToWorkOnReleaseForm = { ...req.body }
+    getPrisonerContext(req.session, prisonNumber).hopingToWorkOnReleaseForm = hopingToWorkOnReleaseForm
 
     const errors = validateHopingToWorkOnReleaseForm(hopingToWorkOnReleaseForm, prisonerSummary)
     if (errors.length > 0) {
@@ -33,13 +35,13 @@ export default class HopingToWorkOnReleaseUpdateController extends HopingToWorkO
 
     // If the user has not changed the answer, go back to Work & Interests
     if (this.answerHasNotBeenChanged(inductionDto, hopingToWorkOnReleaseForm)) {
-      req.session.hopingToWorkOnReleaseForm = undefined
-      req.session.inductionDto = undefined
+      getPrisonerContext(req.session, prisonNumber).hopingToWorkOnReleaseForm = undefined
+      getPrisonerContext(req.session, prisonNumber).inductionDto = undefined
       return res.redirect(`/plan/${prisonNumber}/view/work-and-interests`)
     }
 
     const updatedInduction = this.updatedInductionDtoWithHopingToWorkOnRelease(inductionDto, hopingToWorkOnReleaseForm)
-    req.session.inductionDto = updatedInduction
+    getPrisonerContext(req.session, prisonNumber).inductionDto = updatedInduction
 
     // If the new answer for Hoping To Work On Release is YES then we need to go to Work Interest Types in order to capture the prisoners future work interests.
     if (hopingToWorkOnReleaseForm.hopingToGetWork === HopingToGetWorkValue.YES) {
@@ -56,8 +58,8 @@ export default class HopingToWorkOnReleaseUpdateController extends HopingToWorkO
       return next(createError(500, `Error updating Induction for prisoner ${prisonNumber}. Error: ${e}`))
     }
 
-    req.session.hopingToWorkOnReleaseForm = undefined
-    req.session.inductionDto = undefined
+    getPrisonerContext(req.session, prisonNumber).hopingToWorkOnReleaseForm = undefined
+    getPrisonerContext(req.session, prisonNumber).inductionDto = undefined
     return res.redirect(`/plan/${prisonNumber}/view/work-and-interests`)
   }
 }

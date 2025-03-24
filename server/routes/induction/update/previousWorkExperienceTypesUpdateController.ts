@@ -11,6 +11,8 @@ import TypeOfWorkExperienceValue from '../../../enums/typeOfWorkExperienceValue'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
 import previousWorkExperienceTypeScreenOrderComparator from '../previousWorkExperienceTypeScreenOrderComparator'
 import { appendPagesFromCurrentPage, getNextPage } from '../../pageFlowQueue'
+import { asArray } from '../../../utils/utils'
+import { getPrisonerContext } from '../../../data/session/prisonerContexts'
 
 export default class PreviousWorkExperienceTypesUpdateController extends PreviousWorkExperienceTypesController {
   constructor(private readonly inductionService: InductionService) {
@@ -23,19 +25,14 @@ export default class PreviousWorkExperienceTypesUpdateController extends Previou
     next: NextFunction,
   ): Promise<void> => {
     const { prisonNumber } = req.params
-    const { inductionDto } = req.session
+    const { inductionDto } = getPrisonerContext(req.session, prisonNumber)
     const { prisonerSummary } = res.locals
 
-    req.session.previousWorkExperienceTypesForm = { ...req.body }
-    if (!req.session.previousWorkExperienceTypesForm.typeOfWorkExperience) {
-      req.session.previousWorkExperienceTypesForm.typeOfWorkExperience = []
+    const previousWorkExperienceTypesForm: PreviousWorkExperienceTypesForm = {
+      typeOfWorkExperience: asArray(req.body.typeOfWorkExperience),
+      typeOfWorkExperienceOther: req.body.typeOfWorkExperienceOther,
     }
-    if (!Array.isArray(req.session.previousWorkExperienceTypesForm.typeOfWorkExperience)) {
-      req.session.previousWorkExperienceTypesForm.typeOfWorkExperience = [
-        req.session.previousWorkExperienceTypesForm.typeOfWorkExperience,
-      ]
-    }
-    const { previousWorkExperienceTypesForm } = req.session
+    getPrisonerContext(req.session, prisonNumber).previousWorkExperienceTypesForm = previousWorkExperienceTypesForm
 
     const errors = validatePreviousWorkExperienceTypesForm(previousWorkExperienceTypesForm, prisonerSummary)
     if (errors.length > 0) {
@@ -64,8 +61,8 @@ export default class PreviousWorkExperienceTypesUpdateController extends Previou
             updateInductionDto,
             req.user.username,
           )
-          req.session.previousWorkExperienceTypesForm = undefined
-          req.session.inductionDto = undefined
+          getPrisonerContext(req.session, prisonNumber).previousWorkExperienceTypesForm = undefined
+          getPrisonerContext(req.session, prisonNumber).inductionDto = undefined
         } catch (e) {
           logger.error(`Error updating Induction for prisoner ${prisonNumber}`, e)
           return next(createError(500, `Error updating Induction for prisoner ${prisonNumber}. Error: ${e}`))
@@ -74,14 +71,14 @@ export default class PreviousWorkExperienceTypesUpdateController extends Previou
         logger.debug('No changes to Previous Work Experiences were submitted')
       }
 
-      req.session.previousWorkExperienceTypesForm = undefined
-      req.session.inductionDto = undefined
+      getPrisonerContext(req.session, prisonNumber).previousWorkExperienceTypesForm = undefined
+      getPrisonerContext(req.session, prisonNumber).inductionDto = undefined
       return res.redirect(`/plan/${prisonNumber}/view/work-and-interests`)
     }
 
     // Update the InductionDTO in the session with changes to Previous Work Experiences, but do not persist to the API
     // The user will be redirected to each Previous Work Experience Detail page in turn
-    req.session.inductionDto = updatedInduction
+    getPrisonerContext(req.session, prisonNumber).inductionDto = updatedInduction
 
     /* We need to show the Details page for each of:
          - any additional job types that have been added by the form submission
@@ -94,7 +91,7 @@ export default class PreviousWorkExperienceTypesUpdateController extends Previou
       `Previous Work Experiences changes resulting in going to the Detail pages for ${workExperienceTypesToShowDetailsFormFor}`,
     )
 
-    req.session.previousWorkExperienceTypesForm = undefined
+    getPrisonerContext(req.session, prisonNumber).previousWorkExperienceTypesForm = undefined
 
     const pageFlowQueue = this.buildPageFlowQueue(
       workExperienceTypesToShowDetailsFormFor,

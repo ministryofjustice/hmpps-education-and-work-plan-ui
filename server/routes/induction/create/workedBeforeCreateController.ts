@@ -4,15 +4,16 @@ import type { InductionDto } from 'inductionDto'
 import WorkedBeforeController from '../common/workedBeforeController'
 import validateWorkedBeforeForm from '../../validators/induction/workedBeforeFormValidator'
 import HasWorkedBeforeValue from '../../../enums/hasWorkedBeforeValue'
+import { getPrisonerContext } from '../../../data/session/prisonerContexts'
 
 export default class WorkedBeforeCreateController extends WorkedBeforeController {
   submitWorkedBeforeForm: RequestHandler = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { prisonNumber } = req.params
-    const { inductionDto } = req.session
     const { prisonerSummary } = res.locals
+    const { inductionDto } = getPrisonerContext(req.session, prisonNumber)
 
     const workedBeforeForm: WorkedBeforeForm = { ...req.body }
-    req.session.workedBeforeForm = workedBeforeForm
+    getPrisonerContext(req.session, prisonNumber).workedBeforeForm = workedBeforeForm
 
     const errors = validateWorkedBeforeForm(workedBeforeForm, prisonerSummary)
     if (errors.length > 0) {
@@ -22,8 +23,8 @@ export default class WorkedBeforeCreateController extends WorkedBeforeController
     const updatedInduction = this.updatedInductionDtoWithHasWorkedBefore(inductionDto, workedBeforeForm)
     const prisonerHasWorkedBefore =
       updatedInduction.previousWorkExperiences.hasWorkedBefore === HasWorkedBeforeValue.YES
-    req.session.inductionDto = updatedInduction
-    req.session.workedBeforeForm = undefined
+    getPrisonerContext(req.session, prisonNumber).inductionDto = updatedInduction
+    getPrisonerContext(req.session, prisonNumber).workedBeforeForm = undefined
 
     if (!this.previousPageWasCheckYourAnswers(req)) {
       if (prisonerHasWorkedBefore) {

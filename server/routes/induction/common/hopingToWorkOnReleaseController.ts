@@ -3,6 +3,7 @@ import type { InductionDto } from 'inductionDto'
 import type { HopingToWorkOnReleaseForm } from 'inductionForms'
 import InductionController from './inductionController'
 import HopingToWorkOnReleaseView from './hopingToWorkOnReleaseView'
+import { getPrisonerContext } from '../../../data/session/prisonerContexts'
 
 /**
  * Abstract controller class defining functionality common to both the Create and Update Induction journeys.
@@ -16,13 +17,16 @@ export default abstract class HopingToWorkOnReleaseController extends InductionC
     res: Response,
     next: NextFunction,
   ): Promise<void> => {
-    const { inductionDto } = req.session
+    const { prisonNumber } = req.params
     const { prisonerSummary } = res.locals
+    const { inductionDto } = getPrisonerContext(req.session, prisonNumber)
 
     this.addCurrentPageToFlowHistoryWhenComingFromCheckYourAnswers(req)
 
-    const hopingToWorkOnReleaseForm = req.session.hopingToWorkOnReleaseForm || toHopingToWorkOnReleaseForm(inductionDto)
-    req.session.hopingToWorkOnReleaseForm = undefined
+    const hopingToWorkOnReleaseForm: HopingToWorkOnReleaseForm =
+      getPrisonerContext(req.session, prisonNumber).hopingToWorkOnReleaseForm ||
+      toHopingToWorkOnReleaseForm(inductionDto)
+    getPrisonerContext(req.session, prisonNumber).hopingToWorkOnReleaseForm = undefined
 
     const view = new HopingToWorkOnReleaseView(prisonerSummary, hopingToWorkOnReleaseForm)
     return res.render('pages/induction/hopingToWorkOnRelease/index', { ...view.renderArgs })

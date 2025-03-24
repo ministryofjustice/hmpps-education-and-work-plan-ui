@@ -1,10 +1,13 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express'
 import createError from 'http-errors'
+import type { InPrisonWorkForm } from 'inductionForms'
 import InPrisonWorkController from '../common/inPrisonWorkController'
 import validateInPrisonWorkForm from '../../validators/induction/inPrisonWorkFormValidator'
 import { InductionService } from '../../../services'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
 import logger from '../../../../logger'
+import { getPrisonerContext } from '../../../data/session/prisonerContexts'
+import { asArray } from '../../../utils/utils'
 
 /**
  * Controller for the Update of the In Prison Work screen of the Induction.
@@ -16,18 +19,15 @@ export default class InPrisonWorkUpdateController extends InPrisonWorkController
 
   submitInPrisonWorkForm: RequestHandler = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { prisonNumber } = req.params
-    const { inductionDto } = req.session
     const { prisonerSummary } = res.locals
     const { prisonId } = prisonerSummary
+    const { inductionDto } = getPrisonerContext(req.session, prisonNumber)
 
-    req.session.inPrisonWorkForm = { ...req.body }
-    if (!req.session.inPrisonWorkForm.inPrisonWork) {
-      req.session.inPrisonWorkForm.inPrisonWork = []
+    const inPrisonWorkForm: InPrisonWorkForm = {
+      inPrisonWork: asArray(req.body.inPrisonWork),
+      inPrisonWorkOther: req.body.inPrisonWorkOther,
     }
-    if (!Array.isArray(req.session.inPrisonWorkForm.inPrisonWork)) {
-      req.session.inPrisonWorkForm.inPrisonWork = [req.session.inPrisonWorkForm.inPrisonWork]
-    }
-    const { inPrisonWorkForm } = req.session
+    getPrisonerContext(req.session, prisonNumber).inPrisonWorkForm = inPrisonWorkForm
 
     const errors = validateInPrisonWorkForm(inPrisonWorkForm, prisonerSummary)
     if (errors.length > 0) {
@@ -35,14 +35,14 @@ export default class InPrisonWorkUpdateController extends InPrisonWorkController
     }
 
     const updatedInduction = this.updatedInductionDtoWithInPrisonWork(inductionDto, inPrisonWorkForm)
-    req.session.inductionDto = updatedInduction
+    getPrisonerContext(req.session, prisonNumber).inductionDto = updatedInduction
 
     try {
       const updateInductionDto = toCreateOrUpdateInductionDto(prisonId, updatedInduction)
       await this.inductionService.updateInduction(prisonNumber, updateInductionDto, req.user.username)
 
-      req.session.inPrisonWorkForm = undefined
-      req.session.inductionDto = undefined
+      getPrisonerContext(req.session, prisonNumber).inPrisonWorkForm = undefined
+      getPrisonerContext(req.session, prisonNumber).inductionDto = undefined
       return res.redirect(`/plan/${prisonNumber}/view/work-and-interests`)
     } catch (e) {
       logger.error(`Error updating Induction for prisoner ${prisonNumber}`, e)

@@ -6,6 +6,7 @@ import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataB
 import { aValidInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
 import PreviousWorkExperienceTypesCreateController from './previousWorkExperienceTypesCreateController'
 import HasWorkedBeforeValue from '../../../enums/hasWorkedBeforeValue'
+import { getPrisonerContext } from '../../../data/session/prisonerContexts'
 
 describe('previousWorkExperienceTypesCreateController', () => {
   const controller = new PreviousWorkExperienceTypesCreateController()
@@ -29,7 +30,7 @@ describe('previousWorkExperienceTypesCreateController', () => {
 
   beforeEach(() => {
     jest.resetAllMocks()
-    req.session.previousWorkExperienceTypesForm = undefined
+    getPrisonerContext(req.session, prisonNumber).previousWorkExperienceTypesForm = undefined
     req.body = {}
   })
 
@@ -38,8 +39,8 @@ describe('previousWorkExperienceTypesCreateController', () => {
       // Given
       const inductionDto = aValidInductionDto({ hasWorkedBefore: HasWorkedBeforeValue.YES })
       inductionDto.previousWorkExperiences.experiences = undefined
-      req.session.inductionDto = inductionDto
-      req.session.previousWorkExperienceTypesForm = undefined
+      getPrisonerContext(req.session, prisonNumber).inductionDto = inductionDto
+      getPrisonerContext(req.session, prisonNumber).previousWorkExperienceTypesForm = undefined
 
       const expectedPreviousWorkExperienceTypesForm: PreviousWorkExperienceTypesForm = {
         typeOfWorkExperience: [],
@@ -59,21 +60,22 @@ describe('previousWorkExperienceTypesCreateController', () => {
         'pages/induction/previousWorkExperience/workExperienceTypes',
         expectedView,
       )
-      expect(req.session.previousWorkExperienceTypesForm).toBeUndefined()
-      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(getPrisonerContext(req.session, prisonNumber).previousWorkExperienceTypesForm).toBeUndefined()
+      expect(getPrisonerContext(req.session, prisonNumber).inductionDto).toEqual(inductionDto)
     })
 
     it('should get the Previous Work Experience Types view given there is an PreviousWorkExperienceTypesForm already on the session', async () => {
       // Given
       const inductionDto = aValidInductionDto({ hasWorkedBefore: HasWorkedBeforeValue.YES })
       inductionDto.previousWorkExperiences.experiences = undefined
-      req.session.inductionDto = inductionDto
+      getPrisonerContext(req.session, prisonNumber).inductionDto = inductionDto
 
       const expectedPreviousWorkExperienceTypesForm = {
         typeOfWorkExperience: ['OUTDOOR', 'DRIVING', 'OTHER'],
         typeOfWorkExperienceOther: 'Entertainment industry',
       }
-      req.session.previousWorkExperienceTypesForm = expectedPreviousWorkExperienceTypesForm
+      getPrisonerContext(req.session, prisonNumber).previousWorkExperienceTypesForm =
+        expectedPreviousWorkExperienceTypesForm
 
       const expectedView = {
         prisonerSummary,
@@ -88,8 +90,8 @@ describe('previousWorkExperienceTypesCreateController', () => {
         'pages/induction/previousWorkExperience/workExperienceTypes',
         expectedView,
       )
-      expect(req.session.previousWorkExperienceDetailForm).toBeUndefined()
-      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(getPrisonerContext(req.session, prisonNumber).previousWorkExperienceTypesForm).toBeUndefined()
+      expect(getPrisonerContext(req.session, prisonNumber).inductionDto).toEqual(inductionDto)
     })
   })
 
@@ -98,14 +100,14 @@ describe('previousWorkExperienceTypesCreateController', () => {
       // Given
       const inductionDto = aValidInductionDto({ hasWorkedBefore: HasWorkedBeforeValue.YES })
       inductionDto.previousWorkExperiences.experiences = undefined
-      req.session.inductionDto = inductionDto
+      getPrisonerContext(req.session, prisonNumber).inductionDto = inductionDto
 
       const invalidPreviousWorkExperienceTypesForm = {
         typeOfWorkExperience: ['OTHER'],
         typeOfWorkExperienceOther: '',
       }
       req.body = invalidPreviousWorkExperienceTypesForm
-      req.session.previousWorkExperienceTypesForm = undefined
+      getPrisonerContext(req.session, prisonNumber).previousWorkExperienceTypesForm = undefined
 
       const expectedErrors = [
         { href: '#typeOfWorkExperienceOther', text: 'Enter the type of work Jimmy Lightfingers has done before' },
@@ -119,22 +121,24 @@ describe('previousWorkExperienceTypesCreateController', () => {
         '/prisoners/A1234BC/create-induction/previous-work-experience',
         expectedErrors,
       )
-      expect(req.session.previousWorkExperienceTypesForm).toEqual(invalidPreviousWorkExperienceTypesForm)
-      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(getPrisonerContext(req.session, prisonNumber).previousWorkExperienceTypesForm).toEqual(
+        invalidPreviousWorkExperienceTypesForm,
+      )
+      expect(getPrisonerContext(req.session, prisonNumber).inductionDto).toEqual(inductionDto)
     })
 
     it('should build a page flow queue and redirect to the next page given Previous Work Experience Types are submitted', async () => {
       // Given
       const inductionDto = aValidInductionDto({ hasWorkedBefore: HasWorkedBeforeValue.YES })
       inductionDto.previousWorkExperiences.experiences = undefined
-      req.session.inductionDto = inductionDto
+      getPrisonerContext(req.session, prisonNumber).inductionDto = inductionDto
 
       const previousWorkExperienceTypesForm = {
         typeOfWorkExperience: ['OUTDOOR', 'OTHER'],
         typeOfWorkExperienceOther: 'Retail delivery',
       }
       req.body = previousWorkExperienceTypesForm
-      req.session.previousWorkExperienceTypesForm = undefined
+      getPrisonerContext(req.session, prisonNumber).previousWorkExperienceTypesForm = undefined
 
       req.session.pageFlowQueue = undefined
 
@@ -170,8 +174,8 @@ describe('previousWorkExperienceTypesCreateController', () => {
         `/prisoners/${prisonNumber}/create-induction/previous-work-experience/outdoor`,
       )
       expect(req.session.pageFlowQueue).toEqual(expectedPageFlowQueue)
-      expect(req.session.previousWorkExperienceTypesForm).toBeUndefined()
-      const updatedInductionDto: InductionDto = req.session.inductionDto
+      expect(getPrisonerContext(req.session, prisonNumber).previousWorkExperienceTypesForm).toBeUndefined()
+      const updatedInductionDto: InductionDto = getPrisonerContext(req.session, prisonNumber).inductionDto
       expect(updatedInductionDto.previousWorkExperiences.experiences).toEqual(expectedPreviousWorkExperiences)
     })
 
@@ -179,14 +183,14 @@ describe('previousWorkExperienceTypesCreateController', () => {
       // Given
       const inductionDto = aValidInductionDto({ hasWorkedBefore: HasWorkedBeforeValue.YES })
       // Induction already has populated work experiences of CONSTRUCTION and OTHER
-      req.session.inductionDto = inductionDto
+      getPrisonerContext(req.session, prisonNumber).inductionDto = inductionDto
 
       const previousWorkExperienceTypesForm: PreviousWorkExperienceTypesForm = {
         typeOfWorkExperience: ['CONSTRUCTION', 'OUTDOOR', 'RETAIL'], // Keep construction, remove other, add outdoor and retail
         typeOfWorkExperienceOther: undefined,
       }
       req.body = previousWorkExperienceTypesForm
-      req.session.previousWorkExperienceTypesForm = undefined
+      getPrisonerContext(req.session, prisonNumber).previousWorkExperienceTypesForm = undefined
 
       req.session.pageFlowQueue = undefined
 
@@ -229,8 +233,8 @@ describe('previousWorkExperienceTypesCreateController', () => {
         `/prisoners/${prisonNumber}/create-induction/previous-work-experience/outdoor`,
       )
       expect(req.session.pageFlowQueue).toEqual(expectedPageFlowQueue)
-      expect(req.session.previousWorkExperienceTypesForm).toBeUndefined()
-      const updatedInductionDto: InductionDto = req.session.inductionDto
+      expect(getPrisonerContext(req.session, prisonNumber).previousWorkExperienceTypesForm).toBeUndefined()
+      const updatedInductionDto: InductionDto = getPrisonerContext(req.session, prisonNumber).inductionDto
       expect(updatedInductionDto.previousWorkExperiences.experiences).toEqual(expectedPreviousWorkExperiences)
     })
   })

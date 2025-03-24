@@ -3,6 +3,7 @@ import type { WorkInterestTypesForm } from 'inductionForms'
 import WorkInterestTypesController from '../common/workInterestTypesController'
 import validateWorkInterestTypesForm from '../../validators/induction/workInterestTypesFormValidator'
 import { asArray } from '../../../utils/utils'
+import { getPrisonerContext } from '../../../data/session/prisonerContexts'
 
 export default class WorkInterestTypesCreateController extends WorkInterestTypesController {
   submitWorkInterestTypesForm: RequestHandler = async (
@@ -11,14 +12,14 @@ export default class WorkInterestTypesCreateController extends WorkInterestTypes
     next: NextFunction,
   ): Promise<void> => {
     const { prisonNumber } = req.params
-    const { inductionDto } = req.session
     const { prisonerSummary } = res.locals
+    const { inductionDto } = getPrisonerContext(req.session, prisonNumber)
 
     const workInterestTypesForm: WorkInterestTypesForm = {
       workInterestTypes: asArray(req.body.workInterestTypes),
       workInterestTypesOther: req.body.workInterestTypesOther,
     }
-    req.session.workInterestTypesForm = workInterestTypesForm
+    getPrisonerContext(req.session, prisonNumber).workInterestTypesForm = workInterestTypesForm
 
     const errors = validateWorkInterestTypesForm(workInterestTypesForm, prisonerSummary)
     if (errors.length > 0) {
@@ -26,8 +27,8 @@ export default class WorkInterestTypesCreateController extends WorkInterestTypes
     }
 
     const updatedInduction = this.updatedInductionDtoWithWorkInterestTypes(inductionDto, workInterestTypesForm)
-    req.session.inductionDto = updatedInduction
-    req.session.workInterestTypesForm = undefined
+    getPrisonerContext(req.session, prisonNumber).inductionDto = updatedInduction
+    getPrisonerContext(req.session, prisonNumber).workInterestTypesForm = undefined
 
     return this.previousPageWasCheckYourAnswers(req)
       ? res.redirect(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)

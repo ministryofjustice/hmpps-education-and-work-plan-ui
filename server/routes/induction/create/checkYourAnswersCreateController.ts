@@ -4,6 +4,7 @@ import CheckYourAnswersController from '../common/checkYourAnswersController'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
 import logger from '../../../../logger'
 import { InductionService } from '../../../services'
+import { getPrisonerContext } from '../../../data/session/prisonerContexts'
 
 export default class CheckYourAnswersCreateController extends CheckYourAnswersController {
   constructor(private readonly inductionService: InductionService) {
@@ -12,9 +13,9 @@ export default class CheckYourAnswersCreateController extends CheckYourAnswersCo
 
   submitCheckYourAnswers: RequestHandler = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { prisonNumber } = req.params
-    const { inductionDto } = req.session
     const { prisonerSummary } = res.locals
     const { prisonId } = prisonerSummary
+    const { inductionDto } = getPrisonerContext(req.session, prisonNumber)
 
     if (!inductionDto) {
       logger.debug(`RR-1300 - InductionDto for ${prisonNumber} was not retrieved from the session`)
@@ -35,7 +36,7 @@ export default class CheckYourAnswersCreateController extends CheckYourAnswersCo
       logger.debug(`RR-1300 - ${prisonNumber}'s induction created`)
 
       req.session.pageFlowHistory = undefined
-      req.session.inductionDto = undefined
+      getPrisonerContext(req.session, prisonNumber).inductionDto = undefined
       return res.redirect(`/plan/${prisonNumber}/induction-created`)
     } catch (e) {
       logger.error(`Error creating Induction for prisoner ${prisonNumber}`, e)

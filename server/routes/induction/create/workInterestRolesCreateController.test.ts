@@ -4,6 +4,7 @@ import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataB
 import { aValidInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
 import WorkInterestTypeValue from '../../../enums/workInterestTypeValue'
 import WorkInterestRolesCreateController from './workInterestRolesCreateController'
+import { getPrisonerContext } from '../../../data/session/prisonerContexts'
 
 describe('workInterestRolesCreateController', () => {
   const controller = new WorkInterestRolesCreateController()
@@ -40,7 +41,7 @@ describe('workInterestRolesCreateController', () => {
         { workType: WorkInterestTypeValue.CONSTRUCTION, workTypeOther: undefined, role: undefined },
         { workType: WorkInterestTypeValue.OTHER, workTypeOther: 'Film, TV and media', role: undefined },
       ]
-      req.session.inductionDto = inductionDto
+      getPrisonerContext(req.session, prisonNumber).inductionDto = inductionDto
 
       const expectedWorkInterestRolesForm = {
         workInterestRoles: [
@@ -61,7 +62,7 @@ describe('workInterestRolesCreateController', () => {
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/induction/workInterests/workInterestRoles', expectedView)
-      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(getPrisonerContext(req.session, prisonNumber).inductionDto).toEqual(inductionDto)
     })
   })
 
@@ -72,7 +73,7 @@ describe('workInterestRolesCreateController', () => {
       inductionDto.futureWorkInterests.interests = [
         { workType: WorkInterestTypeValue.RETAIL, workTypeOther: undefined, role: undefined },
       ]
-      req.session.inductionDto = inductionDto
+      getPrisonerContext(req.session, prisonNumber).inductionDto = inductionDto
 
       const invalidWorkInterestRolesForm = {
         workInterestRoles: {
@@ -82,7 +83,7 @@ describe('workInterestRolesCreateController', () => {
       }
       req.body = invalidWorkInterestRolesForm
 
-      req.session.workInterestRolesForm = undefined
+      getPrisonerContext(req.session, prisonNumber).workInterestRolesForm = undefined
 
       const expectedErrors = [{ href: '#RETAIL', text: 'The Retail and sales job role must be 512 characters or less' }]
       const expectedWorkInterestRolesForm = {
@@ -100,8 +101,8 @@ describe('workInterestRolesCreateController', () => {
         '/prisoners/A1234BC/create-induction/work-interest-roles',
         expectedErrors,
       )
-      expect(req.session.workInterestRolesForm).toEqual(expectedWorkInterestRolesForm)
-      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(getPrisonerContext(req.session, prisonNumber).workInterestRolesForm).toEqual(expectedWorkInterestRolesForm)
+      expect(getPrisonerContext(req.session, prisonNumber).inductionDto).toEqual(inductionDto)
     })
 
     it('should update InductionDto and redirect to Affect Ability To Work', async () => {
@@ -112,7 +113,7 @@ describe('workInterestRolesCreateController', () => {
         { workType: WorkInterestTypeValue.CONSTRUCTION, workTypeOther: undefined, role: undefined },
         { workType: WorkInterestTypeValue.OTHER, workTypeOther: 'Film, TV and media', role: undefined },
       ]
-      req.session.inductionDto = inductionDto
+      getPrisonerContext(req.session, prisonNumber).inductionDto = inductionDto
 
       req.body = {
         workInterestRoles: {
@@ -146,8 +147,8 @@ describe('workInterestRolesCreateController', () => {
       await controller.submitWorkInterestRolesForm(req, res, next)
 
       // Then
-      const futureWorkInterestsOnInduction: Array<FutureWorkInterestDto> =
-        req.session.inductionDto.futureWorkInterests.interests
+      const futureWorkInterestsOnInduction: Array<FutureWorkInterestDto> = getPrisonerContext(req.session, prisonNumber)
+        .inductionDto.futureWorkInterests.interests
       expect(futureWorkInterestsOnInduction).toEqual(expectedUpdatedWorkInterests)
       expect(res.redirect).toHaveBeenCalledWith(expectedNextPage)
     })
@@ -160,7 +161,7 @@ describe('workInterestRolesCreateController', () => {
         { workType: WorkInterestTypeValue.CONSTRUCTION, workTypeOther: undefined, role: undefined },
         { workType: WorkInterestTypeValue.OTHER, workTypeOther: 'Film, TV and media', role: undefined },
       ]
-      req.session.inductionDto = inductionDto
+      getPrisonerContext(req.session, prisonNumber).inductionDto = inductionDto
 
       req.body = {
         workInterestRoles: {
@@ -200,8 +201,8 @@ describe('workInterestRolesCreateController', () => {
       await controller.submitWorkInterestRolesForm(req, res, next)
 
       // Then
-      const futureWorkInterestsOnInduction: Array<FutureWorkInterestDto> =
-        req.session.inductionDto.futureWorkInterests.interests
+      const futureWorkInterestsOnInduction: Array<FutureWorkInterestDto> = getPrisonerContext(req.session, prisonNumber)
+        .inductionDto.futureWorkInterests.interests
       expect(futureWorkInterestsOnInduction).toEqual(expectedUpdatedWorkInterests)
       expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-induction/check-your-answers')
     })

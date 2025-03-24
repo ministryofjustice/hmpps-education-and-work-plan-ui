@@ -7,6 +7,7 @@ import logger from '../../../../logger'
 import { InductionService } from '../../../services'
 import validateWorkedBeforeForm from '../../validators/induction/workedBeforeFormValidator'
 import HasWorkedBeforeValue from '../../../enums/hasWorkedBeforeValue'
+import { getPrisonerContext } from '../../../data/session/prisonerContexts'
 
 /**
  * Controller for the Update of the Worked Before screen of the Induction.
@@ -18,12 +19,12 @@ export default class WorkedBeforeUpdateController extends WorkedBeforeController
 
   submitWorkedBeforeForm: RequestHandler = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { prisonNumber } = req.params
-    const { inductionDto } = req.session
     const { prisonerSummary } = res.locals
     const { prisonId } = prisonerSummary
+    const { inductionDto } = getPrisonerContext(req.session, prisonNumber)
 
     const workedBeforeForm: WorkedBeforeForm = { ...req.body }
-    req.session.workedBeforeForm = workedBeforeForm
+    getPrisonerContext(req.session, prisonNumber).workedBeforeForm = workedBeforeForm
 
     const errors = validateWorkedBeforeForm(workedBeforeForm, prisonerSummary)
     if (errors.length > 0) {
@@ -35,16 +36,16 @@ export default class WorkedBeforeUpdateController extends WorkedBeforeController
       updatedInduction.previousWorkExperiences.hasWorkedBefore === HasWorkedBeforeValue.YES
 
     if (prisonerHasWorkedBefore) {
-      req.session.inductionDto = updatedInduction
-      req.session.workedBeforeForm = undefined
+      getPrisonerContext(req.session, prisonNumber).inductionDto = updatedInduction
+      getPrisonerContext(req.session, prisonNumber).workedBeforeForm = undefined
       return res.redirect(`/prisoners/${prisonNumber}/induction/previous-work-experience`)
     }
     try {
       const updateInductionDto = toCreateOrUpdateInductionDto(prisonId, updatedInduction)
       await this.inductionService.updateInduction(prisonNumber, updateInductionDto, req.user.username)
 
-      req.session.inductionDto = undefined
-      req.session.workedBeforeForm = undefined
+      getPrisonerContext(req.session, prisonNumber).inductionDto = undefined
+      getPrisonerContext(req.session, prisonNumber).workedBeforeForm = undefined
       return res.redirect(`/plan/${prisonNumber}/view/work-and-interests`)
     } catch (e) {
       logger.error(`Error updating Induction for prisoner ${prisonNumber}`, e)
