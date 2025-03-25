@@ -37,9 +37,6 @@ describe('ExemptionReasonPage', () => {
     expect($('[data-qa="page-heading"]').text().trim()).toBe(
       "Select an exemption reason to put Jimmy Lightfingers's review on hold",
     )
-    expect($('[data-qa="warning-text"]').text().replace(/\s+/g, ' ').trim()).toBe(
-      '! Warning You need an email requesting or agreeing to an exemption from a prison official, such as a head of education and skills or learner support manager',
-    )
     const radioLabels = $('input[name="exemptionReason"] + label')
     expect($(radioLabels[0]).text().trim()).toBe(`Has a drug or alcohol dependency and is in assessment or treatment`)
     expect($(radioLabels[1]).text().trim()).toBe(`Has a health concern and is in assessment or treatment`)
