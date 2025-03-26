@@ -193,4 +193,3 @@ Features can be toggled by setting the relevant environment variable.
 |----------------------------|---------------|----------|-----------------------------------------------------------------------------------|
 | SOME_TOGGLE_ENABLED        | false         | Boolean  | Example feature toggle, for demonstration purposes.                               |
 | REVIEWS_ENABLED            | false         | Boolean  | Enable the PLP Review process.                                                    |
-| ARCHIVE_GOAL_NOTES_ENABLED | false         | Boolean  | Enable adding an archive note when archiving a goal.                              |

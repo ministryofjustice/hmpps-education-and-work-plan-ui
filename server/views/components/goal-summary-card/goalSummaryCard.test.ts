@@ -14,12 +14,6 @@ const njkEnv = nunjucks.configure([
   __dirname,
 ])
 
-jest.mock('../../../config', () => ({
-  featureToggles: {
-    archiveGoalNotesEnabled: true,
-  },
-}))
-
 njkEnv.addGlobal('featureToggles', config.featureToggles)
 njkEnv.addFilter('formatDate', formatDateFilter)
 njkEnv.addFilter('formatStepStatusValue', formatStepStatusValueFilter)
