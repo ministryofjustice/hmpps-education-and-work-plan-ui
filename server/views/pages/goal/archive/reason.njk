@@ -77,19 +77,17 @@
               errorMessage: errors | findError('reason')
             }) }}
 
-            {% if featureToggles.archiveGoalNotesEnabled %}
-              {{ govukTextarea({
-                name: "notes",
-                id: "notes",
-                value: form.notes,
-                label: {
-                  html: '<h2 class="govuk-label--m">Add a note (optional)</h2>'
-                },
-                hint: {
-                  text: "Learning and work plans, including notes, are shared with prisoners and other staff"
-                }
-              }) }}
-            {% endif %}
+            {{ govukTextarea({
+              name: "notes",
+              id: "notes",
+              value: form.notes,
+              label: {
+                html: '<h2 class="govuk-label--m">Add a note (optional)</h2>'
+              },
+              hint: {
+                text: "Learning and work plans, including notes, are shared with prisoners and other staff"
+              }
+            }) }}
           </div>
 
           {{ govukButton({
