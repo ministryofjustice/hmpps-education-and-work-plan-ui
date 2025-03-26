@@ -19,7 +19,9 @@ const createEmptyInductionIfNotInSession = (
 
     // Either no Induction on the session, or it's for a different prisoner. Create a new one, including the prisoners education if it has been previously recorded.
     if (req.session.inductionDto?.prisonNumber !== prisonNumber) {
-      logger.debug(`Setting up new InductionDto on the session for ${prisonNumber}`)
+      logger.debug(
+        `RR-1300 - Setting up new InductionDto on the session for ${prisonNumber} because ${!req.session.inductionDto ? 'InductionDto is not on the session' : 'InductionDto on the session is for a different prisoner'}`,
+      )
 
       let educationDto: EducationDto
       try {

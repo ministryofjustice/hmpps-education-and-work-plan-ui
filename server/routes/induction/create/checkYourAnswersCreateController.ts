@@ -17,12 +17,12 @@ export default class CheckYourAnswersCreateController extends CheckYourAnswersCo
     const { prisonId } = prisonerSummary
 
     if (!inductionDto) {
-      logger.debug(`InductionDto for ${prisonNumber} was not retrieved from the session`)
+      logger.debug(`RR-1300 - InductionDto for ${prisonNumber} was not retrieved from the session`)
     } else {
-      logger.debug(`InductionDto for ${prisonNumber} retrieved from the session successfully`)
+      logger.debug(`RR-1300 - InductionDto for ${prisonNumber} retrieved from the session successfully`)
       if (!inductionDto.workOnRelease) {
         logger.debug(
-          `Retrieved InductionDto is missing at least the workOnRelease property: ${JSON.stringify(inductionDto)}`,
+          `RR-1300 - Retrieved InductionDto is missing at least the workOnRelease property: ${JSON.stringify(inductionDto)}`,
         )
       }
     }
@@ -30,9 +30,9 @@ export default class CheckYourAnswersCreateController extends CheckYourAnswersCo
     const createInductionDto = toCreateOrUpdateInductionDto(prisonId, inductionDto)
 
     try {
-      logger.debug(`Calling API to create ${prisonNumber}'s induction`)
+      logger.debug(`RR-1300 - Calling API to create ${prisonNumber}'s induction`)
       await this.inductionService.createInduction(prisonNumber, createInductionDto, req.user.username)
-      logger.debug(`${prisonNumber}'s induction created`)
+      logger.debug(`RR-1300 - ${prisonNumber}'s induction created`)
 
       req.session.pageFlowHistory = undefined
       req.session.inductionDto = undefined
