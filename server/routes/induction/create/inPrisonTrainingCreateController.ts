@@ -4,6 +4,7 @@ import InPrisonTrainingController from '../common/inPrisonTrainingController'
 import validateInPrisonTrainingForm from '../../validators/induction/inPrisonTrainingFormValidator'
 import { asArray } from '../../../utils/utils'
 import config from '../../../config'
+import { getPrisonerContext } from '../../../data/session/prisonerContexts'
 
 export default class InPrisonTrainingCreateController extends InPrisonTrainingController {
   submitInPrisonTrainingForm: RequestHandler = async (
@@ -12,14 +13,14 @@ export default class InPrisonTrainingCreateController extends InPrisonTrainingCo
     next: NextFunction,
   ): Promise<void> => {
     const { prisonNumber } = req.params
-    const { inductionDto } = req.session
     const { prisonerSummary } = res.locals
+    const { inductionDto } = getPrisonerContext(req.session, prisonNumber)
 
     const inPrisonTrainingForm: InPrisonTrainingForm = {
       inPrisonTraining: asArray(req.body.inPrisonTraining),
       inPrisonTrainingOther: req.body.inPrisonTrainingOther,
     }
-    req.session.inPrisonTrainingForm = inPrisonTrainingForm
+    getPrisonerContext(req.session, prisonNumber).inPrisonTrainingForm = inPrisonTrainingForm
 
     const errors = validateInPrisonTrainingForm(inPrisonTrainingForm, prisonerSummary)
     if (errors.length > 0) {
@@ -27,8 +28,8 @@ export default class InPrisonTrainingCreateController extends InPrisonTrainingCo
     }
 
     const updatedInduction = this.updatedInductionDtoWithInPrisonTraining(inductionDto, inPrisonTrainingForm)
-    req.session.inductionDto = updatedInduction
-    req.session.inPrisonTrainingForm = undefined
+    getPrisonerContext(req.session, prisonNumber).inductionDto = updatedInduction
+    getPrisonerContext(req.session, prisonNumber).inPrisonTrainingForm = undefined
 
     if (this.previousPageWasCheckYourAnswers(req)) {
       return res.redirect(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)

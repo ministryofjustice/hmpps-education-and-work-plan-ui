@@ -5,6 +5,7 @@ import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataB
 import { aValidInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
 import InPrisonWorkCreateController from './inPrisonWorkCreateController'
 import InPrisonWorkValue from '../../../enums/inPrisonWorkValue'
+import { getPrisonerContext } from '../../../data/session/prisonerContexts'
 
 describe('inPrisonWorkCreateController', () => {
   const controller = new InPrisonWorkCreateController()
@@ -37,8 +38,8 @@ describe('inPrisonWorkCreateController', () => {
       // Given
       const inductionDto = aValidInductionDto()
       inductionDto.inPrisonInterests.inPrisonWorkInterests = undefined
-      req.session.inductionDto = inductionDto
-      req.session.inPrisonWorkForm = undefined
+      getPrisonerContext(req.session, prisonNumber).inductionDto = inductionDto
+      getPrisonerContext(req.session, prisonNumber).inPrisonWorkForm = undefined
 
       const expectedInPrisonWorkForm: InPrisonWorkForm = {
         inPrisonWork: [],
@@ -55,21 +56,21 @@ describe('inPrisonWorkCreateController', () => {
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/induction/inPrisonWork/index', expectedView)
-      expect(req.session.inPrisonWorkForm).toBeUndefined()
-      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(getPrisonerContext(req.session, prisonNumber).inPrisonWorkForm).toBeUndefined()
+      expect(getPrisonerContext(req.session, prisonNumber).inductionDto).toEqual(inductionDto)
     })
 
     it('should get the In Prison Work view given there is an InPrisonWork already on the session', async () => {
       // Given
       const inductionDto = aValidInductionDto()
       inductionDto.inPrisonInterests.inPrisonWorkInterests = undefined
-      req.session.inductionDto = inductionDto
+      getPrisonerContext(req.session, prisonNumber).inductionDto = inductionDto
 
       const expectedInPrisonWorkForm: InPrisonWorkForm = {
         inPrisonWork: ['PRISON_LIBRARY', 'WELDING_AND_METALWORK'],
         inPrisonWorkOther: '',
       }
-      req.session.inPrisonWorkForm = expectedInPrisonWorkForm
+      getPrisonerContext(req.session, prisonNumber).inPrisonWorkForm = expectedInPrisonWorkForm
 
       const expectedView = {
         prisonerSummary,
@@ -81,8 +82,8 @@ describe('inPrisonWorkCreateController', () => {
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/induction/inPrisonWork/index', expectedView)
-      expect(req.session.inPrisonWorkForm).toBeUndefined()
-      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(getPrisonerContext(req.session, prisonNumber).inPrisonWorkForm).toBeUndefined()
+      expect(getPrisonerContext(req.session, prisonNumber).inductionDto).toEqual(inductionDto)
     })
   })
 
@@ -91,14 +92,14 @@ describe('inPrisonWorkCreateController', () => {
       // Given
       const inductionDto = aValidInductionDto()
       inductionDto.inPrisonInterests.inPrisonWorkInterests = undefined
-      req.session.inductionDto = inductionDto
+      getPrisonerContext(req.session, prisonNumber).inductionDto = inductionDto
 
       const invalidInPrisonWorkForm: InPrisonWorkForm = {
         inPrisonWork: ['OTHER'],
         inPrisonWorkOther: '',
       }
       req.body = invalidInPrisonWorkForm
-      req.session.inPrisonWorkForm = undefined
+      getPrisonerContext(req.session, prisonNumber).inPrisonWorkForm = undefined
 
       const expectedErrors = [
         { href: '#inPrisonWorkOther', text: 'Enter the type of work Jimmy Lightfingers would like to do in prison' },
@@ -116,22 +117,22 @@ describe('inPrisonWorkCreateController', () => {
         '/prisoners/A1234BC/create-induction/in-prison-work',
         expectedErrors,
       )
-      expect(req.session.inPrisonWorkForm).toEqual(invalidInPrisonWorkForm)
-      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(getPrisonerContext(req.session, prisonNumber).inPrisonWorkForm).toEqual(invalidInPrisonWorkForm)
+      expect(getPrisonerContext(req.session, prisonNumber).inductionDto).toEqual(inductionDto)
     })
 
     it('should update inductionDto and redirect to in-prison training interests page', async () => {
       // Given
       const inductionDto = aValidInductionDto()
       inductionDto.inPrisonInterests.inPrisonWorkInterests = undefined
-      req.session.inductionDto = inductionDto
+      getPrisonerContext(req.session, prisonNumber).inductionDto = inductionDto
 
       const inPrisonWorkForm: InPrisonWorkForm = {
         inPrisonWork: ['KITCHENS_AND_COOKING', 'OTHER'],
         inPrisonWorkOther: 'Any odd-jobs I can pick up to pass the time',
       }
       req.body = inPrisonWorkForm
-      req.session.inPrisonWorkForm = undefined
+      getPrisonerContext(req.session, prisonNumber).inPrisonWorkForm = undefined
 
       const expectedInPrisonWorkInterests: Array<InPrisonWorkInterestDto> = [
         { workType: InPrisonWorkValue.KITCHENS_AND_COOKING, workTypeOther: undefined },
@@ -142,23 +143,23 @@ describe('inPrisonWorkCreateController', () => {
       await controller.submitInPrisonWorkForm(req, res, next)
 
       // Then
-      const updatedInduction = req.session.inductionDto
+      const updatedInduction = getPrisonerContext(req.session, prisonNumber).inductionDto
       expect(updatedInduction.inPrisonInterests.inPrisonWorkInterests).toEqual(expectedInPrisonWorkInterests)
       expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-induction/in-prison-training')
-      expect(req.session.inPrisonWorkForm).toBeUndefined()
+      expect(getPrisonerContext(req.session, prisonNumber).inPrisonWorkForm).toBeUndefined()
     })
 
     it('should update inductionDto and redirect to Check Your Answers given previous page was Check Your Answers', async () => {
       // Given
       const inductionDto = aValidInductionDto()
-      req.session.inductionDto = inductionDto
+      getPrisonerContext(req.session, prisonNumber).inductionDto = inductionDto
 
       const inPrisonWorkForm: InPrisonWorkForm = {
         inPrisonWork: ['KITCHENS_AND_COOKING', 'OTHER'],
         inPrisonWorkOther: 'Any odd-jobs I can pick up to pass the time',
       }
       req.body = inPrisonWorkForm
-      req.session.inPrisonWorkForm = undefined
+      getPrisonerContext(req.session, prisonNumber).inPrisonWorkForm = undefined
 
       const expectedInPrisonWorkInterests: Array<InPrisonWorkInterestDto> = [
         { workType: InPrisonWorkValue.KITCHENS_AND_COOKING, workTypeOther: undefined },
@@ -177,10 +178,10 @@ describe('inPrisonWorkCreateController', () => {
       await controller.submitInPrisonWorkForm(req, res, next)
 
       // Then
-      const updatedInduction = req.session.inductionDto
+      const updatedInduction = getPrisonerContext(req.session, prisonNumber).inductionDto
       expect(updatedInduction.inPrisonInterests.inPrisonWorkInterests).toEqual(expectedInPrisonWorkInterests)
       expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-induction/check-your-answers')
-      expect(req.session.skillsForm).toBeUndefined()
+      expect(getPrisonerContext(req.session, prisonNumber).inPrisonWorkForm).toBeUndefined()
     })
   })
 })

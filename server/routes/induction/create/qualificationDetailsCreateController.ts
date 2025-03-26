@@ -1,6 +1,8 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express'
+import type { QualificationDetailsForm } from 'forms'
 import QualificationDetailsController from '../common/qualificationDetailsController'
 import validateQualificationDetailsForm from '../../validators/induction/qualificationDetailsFormValidator'
+import { getPrisonerContext } from '../../../data/session/prisonerContexts'
 
 export default class QualificationDetailsCreateController extends QualificationDetailsController {
   submitQualificationDetailsForm: RequestHandler = async (
@@ -9,11 +11,11 @@ export default class QualificationDetailsCreateController extends QualificationD
     next: NextFunction,
   ): Promise<void> => {
     const { prisonNumber } = req.params
-    const { inductionDto, qualificationLevelForm } = req.session
     const { prisonerSummary } = res.locals
+    const { inductionDto, qualificationLevelForm } = getPrisonerContext(req.session, prisonNumber)
 
-    req.session.qualificationDetailsForm = { ...req.body }
-    const { qualificationDetailsForm } = req.session
+    const qualificationDetailsForm: QualificationDetailsForm = { ...req.body }
+    getPrisonerContext(req.session, prisonNumber).qualificationDetailsForm = qualificationDetailsForm
 
     const errors = validateQualificationDetailsForm(
       qualificationDetailsForm,
@@ -29,10 +31,10 @@ export default class QualificationDetailsCreateController extends QualificationD
       qualificationDetailsForm,
       qualificationLevelForm.qualificationLevel,
     )
-    req.session.inductionDto = updatedInduction
+    getPrisonerContext(req.session, prisonNumber).inductionDto = updatedInduction
 
-    req.session.qualificationDetailsForm = undefined
-    req.session.qualificationLevelForm = undefined
+    getPrisonerContext(req.session, prisonNumber).qualificationDetailsForm = undefined
+    getPrisonerContext(req.session, prisonNumber).qualificationLevelForm = undefined
 
     return res.redirect(`/prisoners/${prisonNumber}/create-induction/qualifications`)
   }

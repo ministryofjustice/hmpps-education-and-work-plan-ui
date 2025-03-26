@@ -6,6 +6,7 @@ import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateIn
 import InductionService from '../../../services/inductionService'
 import aValidUpdateInductionRequest from '../../../testsupport/updateInductionRequestTestDataBuilder'
 import SkillsUpdateController from './skillsUpdateController'
+import { getPrisonerContext } from '../../../data/session/prisonerContexts'
 
 jest.mock('../../../data/mappers/createOrUpdateInductionDtoMapper')
 jest.mock('../../../services/inductionService')
@@ -46,8 +47,8 @@ describe('skillsUpdateController', () => {
     it('should get the Skills view given there is no SkillsForm on the session', async () => {
       // Given
       const inductionDto = aValidInductionDto()
-      req.session.inductionDto = inductionDto
-      req.session.skillsForm = undefined
+      getPrisonerContext(req.session, prisonNumber).inductionDto = inductionDto
+      getPrisonerContext(req.session, prisonNumber).skillsForm = undefined
 
       const expectedSkillsForm = {
         skills: ['TEAMWORK', 'WILLINGNESS_TO_LEARN', 'OTHER'],
@@ -64,20 +65,20 @@ describe('skillsUpdateController', () => {
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/induction/skills/index', expectedView)
-      expect(req.session.skillsForm).toBeUndefined()
-      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(getPrisonerContext(req.session, prisonNumber).skillsForm).toBeUndefined()
+      expect(getPrisonerContext(req.session, prisonNumber).inductionDto).toEqual(inductionDto)
     })
 
     it('should get the Skills view given there is an SkillsForm already on the session', async () => {
       // Given
       const inductionDto = aValidInductionDto()
-      req.session.inductionDto = inductionDto
+      getPrisonerContext(req.session, prisonNumber).inductionDto = inductionDto
 
       const expectedSkillsForm = {
         skills: ['SELF_MANAGEMENT', 'TEAMWORK', 'THINKING_AND_PROBLEM_SOLVING'],
         skillsOther: '',
       }
-      req.session.skillsForm = expectedSkillsForm
+      getPrisonerContext(req.session, prisonNumber).skillsForm = expectedSkillsForm
 
       const expectedView = {
         prisonerSummary,
@@ -89,8 +90,8 @@ describe('skillsUpdateController', () => {
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/induction/skills/index', expectedView)
-      expect(req.session.skillsForm).toBeUndefined()
-      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(getPrisonerContext(req.session, prisonNumber).skillsForm).toBeUndefined()
+      expect(getPrisonerContext(req.session, prisonNumber).inductionDto).toEqual(inductionDto)
     })
   })
 
@@ -98,14 +99,14 @@ describe('skillsUpdateController', () => {
     it('should not update Induction given form is submitted with validation errors', async () => {
       // Given
       const inductionDto = aValidInductionDto()
-      req.session.inductionDto = inductionDto
+      getPrisonerContext(req.session, prisonNumber).inductionDto = inductionDto
 
       const invalidSkillsForm = {
         skills: ['OTHER'],
         skillsOther: '',
       }
       req.body = invalidSkillsForm
-      req.session.skillsForm = undefined
+      getPrisonerContext(req.session, prisonNumber).skillsForm = undefined
 
       const expectedErrors = [{ href: '#skillsOther', text: 'Enter the skill that Jimmy Lightfingers feels they have' }]
 
@@ -114,21 +115,21 @@ describe('skillsUpdateController', () => {
 
       // Then
       expect(res.redirectWithErrors).toHaveBeenCalledWith('/prisoners/A1234BC/induction/skills', expectedErrors)
-      expect(req.session.skillsForm).toEqual(invalidSkillsForm)
-      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(getPrisonerContext(req.session, prisonNumber).skillsForm).toEqual(invalidSkillsForm)
+      expect(getPrisonerContext(req.session, prisonNumber).inductionDto).toEqual(inductionDto)
     })
 
     it('should update Induction and call API and redirect to work and interests page', async () => {
       // Given
       const inductionDto = aValidInductionDto()
-      req.session.inductionDto = inductionDto
+      getPrisonerContext(req.session, prisonNumber).inductionDto = inductionDto
 
       const skillsForm = {
         skills: ['TEAMWORK', 'OTHER'],
         skillsOther: 'Circus skills',
       }
       req.body = skillsForm
-      req.session.skillsForm = undefined
+      getPrisonerContext(req.session, prisonNumber).skillsForm = undefined
       const updateInductionDto = aValidUpdateInductionRequest()
 
       mockedCreateOrUpdateInductionDtoMapper.mockReturnValueOnce(updateInductionDto)
@@ -155,21 +156,21 @@ describe('skillsUpdateController', () => {
 
       expect(inductionService.updateInduction).toHaveBeenCalledWith(prisonNumber, updateInductionDto, username)
       expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/view/work-and-interests`)
-      expect(req.session.skillsForm).toBeUndefined()
-      expect(req.session.inductionDto).toBeUndefined()
+      expect(getPrisonerContext(req.session, prisonNumber).skillsForm).toBeUndefined()
+      expect(getPrisonerContext(req.session, prisonNumber).inductionDto).toBeUndefined()
     })
 
     it('should not update Induction given error calling service', async () => {
       // Given
       const inductionDto = aValidInductionDto()
-      req.session.inductionDto = inductionDto
+      getPrisonerContext(req.session, prisonNumber).inductionDto = inductionDto
 
       const skillsForm = {
         skills: ['TEAMWORK', 'OTHER'],
         skillsOther: 'Circus skills',
       }
       req.body = skillsForm
-      req.session.skillsForm = undefined
+      getPrisonerContext(req.session, prisonNumber).skillsForm = undefined
       const updateInductionDto = aValidUpdateInductionRequest()
 
       mockedCreateOrUpdateInductionDtoMapper.mockReturnValueOnce(updateInductionDto)
@@ -202,8 +203,8 @@ describe('skillsUpdateController', () => {
 
       expect(inductionService.updateInduction).toHaveBeenCalledWith(prisonNumber, updateInductionDto, username)
       expect(next).toHaveBeenCalledWith(expectedError)
-      expect(req.session.skillsForm).toEqual(skillsForm)
-      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(getPrisonerContext(req.session, prisonNumber).skillsForm).toEqual(skillsForm)
+      expect(getPrisonerContext(req.session, prisonNumber).inductionDto).toEqual(inductionDto)
     })
   })
 })

@@ -3,9 +3,13 @@ import { NextFunction, Request, Response } from 'express'
 import { SessionData } from 'express-session'
 import { InductionService } from '../../services'
 import { aValidInductionDto } from '../../testsupport/inductionDtoTestDataBuilder'
-import retrieveInductionIfNotInSession from './retrieveInductionIfNotInSession'
+import retrieveInductionIfNotInPrisonerContext from './retrieveInductionIfNotInPrisonerContext'
+import { getPrisonerContext } from '../../data/session/prisonerContexts'
 
-describe('retrieveInductionIfNotInSession', () => {
+describe('retrieveInductionIfNotInPrisonerContext', () => {
+  const prisonNumber = 'A1234GC'
+  const username = 'a-dps-user'
+
   const req = {
     user: {} as Express.User,
     session: {} as SessionData,
@@ -21,9 +25,9 @@ describe('retrieveInductionIfNotInSession', () => {
 
   beforeEach(() => {
     jest.resetAllMocks()
-    req.user = {} as Express.User
+    req.user = { username } as Express.User
     req.session = {} as SessionData
-    req.params = {} as Record<string, string>
+    req.params = { prisonNumber } as Record<string, string>
     req.query = {} as Record<string, string>
     req.path = ''
     res.locals = {} as Record<string, unknown>
@@ -33,17 +37,12 @@ describe('retrieveInductionIfNotInSession', () => {
     getInduction: jest.fn(),
   }
 
-  const requestHandler = retrieveInductionIfNotInSession(inductionService as unknown as InductionService)
+  const requestHandler = retrieveInductionIfNotInPrisonerContext(inductionService as unknown as InductionService)
 
-  it('should retrieve induction and store in session given induction not in session', async () => {
+  it('should retrieve induction and store in session given induction not in prisoner context', async () => {
     // Given
-    const username = 'a-dps-user'
-    req.user.username = username
+    getPrisonerContext(req.session, prisonNumber).inductionDto = undefined
 
-    req.session.inductionDto = undefined
-
-    const prisonNumber = 'A1234GC'
-    req.params.prisonNumber = prisonNumber
     const expectedInductionDto = aValidInductionDto({ prisonNumber })
     inductionService.getInduction.mockResolvedValue(expectedInductionDto)
 
@@ -52,19 +51,14 @@ describe('retrieveInductionIfNotInSession', () => {
 
     // Then
     expect(inductionService.getInduction).toHaveBeenCalledWith(prisonNumber, username)
-    expect(req.session.inductionDto).toEqual(expectedInductionDto)
+    expect(getPrisonerContext(req.session, prisonNumber).inductionDto).toEqual(expectedInductionDto)
     expect(next).toHaveBeenCalled()
   })
 
-  it(`should retrieve induction and store in session given different prisoner's induction already in session`, async () => {
+  it(`should retrieve induction and store in session given different prisoner's induction already in prisoner context`, async () => {
     // Given
-    const username = 'a-dps-user'
-    req.user.username = username
+    getPrisonerContext(req.session, prisonNumber).inductionDto = aValidInductionDto({ prisonNumber: 'Z1234XY' })
 
-    req.session.inductionDto = aValidInductionDto({ prisonNumber: 'Z1234XY' })
-
-    const prisonNumber = 'A1234GC'
-    req.params.prisonNumber = prisonNumber
     const expectedInductionDto = aValidInductionDto({ prisonNumber })
     inductionService.getInduction.mockResolvedValue(expectedInductionDto)
 
@@ -73,20 +67,14 @@ describe('retrieveInductionIfNotInSession', () => {
 
     // Then
     expect(inductionService.getInduction).toHaveBeenCalledWith(prisonNumber, username)
-    expect(req.session.inductionDto).toEqual(expectedInductionDto)
+    expect(getPrisonerContext(req.session, prisonNumber).inductionDto).toEqual(expectedInductionDto)
     expect(next).toHaveBeenCalled()
   })
 
-  it(`should not retrieve induction given prisoner's induction already in session`, async () => {
+  it(`should not retrieve induction given prisoner's induction already in prisoner context`, async () => {
     // Given
-    const username = 'a-dps-user'
-    req.user.username = username
+    getPrisonerContext(req.session, prisonNumber).inductionDto = aValidInductionDto({ prisonNumber })
 
-    const prisonNumber = 'A1234GC'
-
-    req.session.inductionDto = aValidInductionDto({ prisonNumber })
-
-    req.params.prisonNumber = prisonNumber
     const expectedInductionDto = aValidInductionDto({ prisonNumber })
 
     // When
@@ -94,19 +82,13 @@ describe('retrieveInductionIfNotInSession', () => {
 
     // Then
     expect(inductionService.getInduction).not.toHaveBeenCalled()
-    expect(req.session.inductionDto).toEqual(expectedInductionDto)
+    expect(getPrisonerContext(req.session, prisonNumber).inductionDto).toEqual(expectedInductionDto)
     expect(next).toHaveBeenCalled()
   })
 
   it('should call next function with error given retrieving induction returns null indicating the prisoner does not have an induction', async () => {
     // Given
-    const username = 'a-dps-user'
-    req.user.username = username
-
-    req.session.inductionDto = undefined
-
-    const prisonNumber = 'A1234GC'
-    req.params.prisonNumber = prisonNumber
+    getPrisonerContext(req.session, prisonNumber).inductionDto = undefined
 
     inductionService.getInduction.mockResolvedValue(null)
     const expectedError = createError(
@@ -119,19 +101,13 @@ describe('retrieveInductionIfNotInSession', () => {
 
     // Then
     expect(inductionService.getInduction).toHaveBeenCalledWith(prisonNumber, username)
-    expect(req.session.inductionDto).toBeUndefined()
+    expect(getPrisonerContext(req.session, prisonNumber).inductionDto).toBeUndefined()
     expect(next).toHaveBeenCalledWith(expectedError)
   })
 
   it('should call next function with error given retrieving induction fails with a 500', async () => {
     // Given
-    const username = 'a-dps-user'
-    req.user.username = username
-
-    req.session.inductionDto = undefined
-
-    const prisonNumber = 'A1234GC'
-    req.params.prisonNumber = prisonNumber
+    getPrisonerContext(req.session, prisonNumber).inductionDto = undefined
 
     inductionService.getInduction.mockRejectedValue(createError(500, 'Service unavailable'))
     const expectedError = createError(
@@ -144,7 +120,7 @@ describe('retrieveInductionIfNotInSession', () => {
 
     // Then
     expect(inductionService.getInduction).toHaveBeenCalledWith(prisonNumber, username)
-    expect(req.session.inductionDto).toBeUndefined()
+    expect(getPrisonerContext(req.session, prisonNumber).inductionDto).toBeUndefined()
     expect(next).toHaveBeenCalledWith(expectedError)
   })
 })

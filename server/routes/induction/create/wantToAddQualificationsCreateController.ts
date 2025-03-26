@@ -4,28 +4,29 @@ import WantToAddQualificationsController from '../common/wantToAddQualifications
 import YesNoValue from '../../../enums/yesNoValue'
 import validateWantToAddQualificationsForm from '../../validators/induction/wantToAddQualificationsFormValidator'
 import EducationLevelValue from '../../../enums/educationLevelValue'
+import { getPrisonerContext } from '../../../data/session/prisonerContexts'
 
 export default class WantToAddQualificationsCreateController extends WantToAddQualificationsController {
   submitWantToAddQualificationsForm: RequestHandler = async (req: Request, res: Response): Promise<void> => {
     const { prisonNumber } = req.params
-    const { inductionDto } = req.session
     const { prisonerSummary } = res.locals
+    const { inductionDto } = getPrisonerContext(req.session, prisonNumber)
 
-    req.session.wantToAddQualificationsForm = { ...req.body }
-    const { wantToAddQualificationsForm } = req.session
+    const wantToAddQualificationsForm = { ...req.body }
+    getPrisonerContext(req.session, prisonNumber).wantToAddQualificationsForm = wantToAddQualificationsForm
 
     const errors = validateWantToAddQualificationsForm(wantToAddQualificationsForm, prisonerSummary)
     if (errors.length > 0) {
       return res.redirectWithErrors(`/prisoners/${prisonNumber}/create-induction/want-to-add-qualifications`, errors)
     }
 
-    req.session.wantToAddQualificationsForm = undefined
+    getPrisonerContext(req.session, prisonNumber).wantToAddQualificationsForm = undefined
 
     const updatedInduction = updatedInductionDtoWithDefaultQualificationData(
       inductionDto,
       wantToAddQualificationsForm.wantToAddQualifications === YesNoValue.YES,
     )
-    req.session.inductionDto = updatedInduction
+    getPrisonerContext(req.session, prisonNumber).inductionDto = updatedInduction
 
     // If the previous page was Check Your Answers
     if (this.previousPageWasCheckYourAnswers(req)) {
@@ -37,7 +38,8 @@ export default class WantToAddQualificationsCreateController extends WantToAddQu
       if (this.formSubmittedIndicatingQualificationsShouldNotBeRecorded(wantToAddQualificationsForm)) {
         // User has come from the Check Your Answers page and has said they do not want to record any qualifications
         // We need to remove any qualifications that may have been set on the Induction
-        req.session.inductionDto = this.inductionWithRemovedQualifications(inductionDto)
+        getPrisonerContext(req.session, prisonNumber).inductionDto =
+          this.inductionWithRemovedQualifications(inductionDto)
         return res.redirect(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
       }
 

@@ -7,6 +7,7 @@ import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateIn
 import InductionService from '../../../services/inductionService'
 import aValidUpdateInductionRequest from '../../../testsupport/updateInductionRequestTestDataBuilder'
 import InPrisonWorkValue from '../../../enums/inPrisonWorkValue'
+import { getPrisonerContext } from '../../../data/session/prisonerContexts'
 
 jest.mock('../../../data/mappers/createOrUpdateInductionDtoMapper')
 jest.mock('../../../services/inductionService')
@@ -47,8 +48,8 @@ describe('inPrisonWorkUpdateController', () => {
     it('should get the In Prison Work view given there is no InPrisonWorkForm on the session', async () => {
       // Given
       const inductionDto = aValidInductionDto()
-      req.session.inductionDto = inductionDto
-      req.session.inPrisonWorkForm = undefined
+      getPrisonerContext(req.session, prisonNumber).inductionDto = inductionDto
+      getPrisonerContext(req.session, prisonNumber).inPrisonWorkForm = undefined
 
       const expectedInPrisonWorkForm = {
         inPrisonWork: ['CLEANING_AND_HYGIENE', 'OTHER'],
@@ -69,20 +70,20 @@ describe('inPrisonWorkUpdateController', () => {
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/induction/inPrisonWork/index', expectedView)
-      expect(req.session.inPrisonWorkForm).toBeUndefined()
-      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(getPrisonerContext(req.session, prisonNumber).inPrisonWorkForm).toBeUndefined()
+      expect(getPrisonerContext(req.session, prisonNumber).inductionDto).toEqual(inductionDto)
     })
 
     it('should get the In Prison Work view given there is an InPrisonWorkForm already on the session', async () => {
       // Given
       const inductionDto = aValidInductionDto()
-      req.session.inductionDto = inductionDto
+      getPrisonerContext(req.session, prisonNumber).inductionDto = inductionDto
 
       const expectedInPrisonWorkForm = {
         inPrisonWork: ['TEXTILES_AND_SEWING', 'WELDING_AND_METALWORK', 'WOODWORK_AND_JOINERY'],
         inPrisonWorkOther: '',
       }
-      req.session.inPrisonWorkForm = expectedInPrisonWorkForm
+      getPrisonerContext(req.session, prisonNumber).inPrisonWorkForm = expectedInPrisonWorkForm
 
       const expectedView = {
         prisonerSummary,
@@ -98,8 +99,8 @@ describe('inPrisonWorkUpdateController', () => {
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/induction/inPrisonWork/index', expectedView)
-      expect(req.session.inPrisonWorkForm).toBeUndefined()
-      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(getPrisonerContext(req.session, prisonNumber).inPrisonWorkForm).toBeUndefined()
+      expect(getPrisonerContext(req.session, prisonNumber).inductionDto).toEqual(inductionDto)
     })
   })
 
@@ -107,14 +108,14 @@ describe('inPrisonWorkUpdateController', () => {
     it('should not update Induction given form is submitted with validation errors', async () => {
       // Given
       const inductionDto = aValidInductionDto()
-      req.session.inductionDto = inductionDto
+      getPrisonerContext(req.session, prisonNumber).inductionDto = inductionDto
 
       const invalidInPrisonWorkForm = {
         inPrisonWork: ['OTHER'],
         inPrisonWorkOther: '',
       }
       req.body = invalidInPrisonWorkForm
-      req.session.inPrisonWorkForm = undefined
+      getPrisonerContext(req.session, prisonNumber).inPrisonWorkForm = undefined
 
       const expectedErrors = [
         { href: '#inPrisonWorkOther', text: 'Enter the type of work Jimmy Lightfingers would like to do in prison' },
@@ -129,21 +130,21 @@ describe('inPrisonWorkUpdateController', () => {
 
       // Then
       expect(res.redirectWithErrors).toHaveBeenCalledWith('/prisoners/A1234BC/induction/in-prison-work', expectedErrors)
-      expect(req.session.inPrisonWorkForm).toEqual(invalidInPrisonWorkForm)
-      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(getPrisonerContext(req.session, prisonNumber).inPrisonWorkForm).toEqual(invalidInPrisonWorkForm)
+      expect(getPrisonerContext(req.session, prisonNumber).inductionDto).toEqual(inductionDto)
     })
 
     it('should update Induction and call API and redirect to work and interests page', async () => {
       // Given
       const inductionDto = aValidInductionDto()
-      req.session.inductionDto = inductionDto
+      getPrisonerContext(req.session, prisonNumber).inductionDto = inductionDto
 
       const inPrisonWorkForm = {
         inPrisonWork: ['COMPUTERS_OR_DESK_BASED', 'OTHER'],
         inPrisonWorkOther: 'Gambling',
       }
       req.body = inPrisonWorkForm
-      req.session.inPrisonWorkForm = undefined
+      getPrisonerContext(req.session, prisonNumber).inPrisonWorkForm = undefined
       const updateInductionDto = aValidUpdateInductionRequest()
 
       mockedCreateOrUpdateInductionDtoMapper.mockReturnValueOnce(updateInductionDto)
@@ -174,21 +175,21 @@ describe('inPrisonWorkUpdateController', () => {
 
       expect(inductionService.updateInduction).toHaveBeenCalledWith(prisonNumber, updateInductionDto, username)
       expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/view/work-and-interests`)
-      expect(req.session.inPrisonWorkForm).toBeUndefined()
-      expect(req.session.inductionDto).toBeUndefined()
+      expect(getPrisonerContext(req.session, prisonNumber).inPrisonWorkForm).toBeUndefined()
+      expect(getPrisonerContext(req.session, prisonNumber).inductionDto).toBeUndefined()
     })
 
     it('should not update Induction given error calling service', async () => {
       // Given
       const inductionDto = aValidInductionDto()
-      req.session.inductionDto = inductionDto
+      getPrisonerContext(req.session, prisonNumber).inductionDto = inductionDto
 
       const inPrisonWorkForm = {
         inPrisonWork: ['COMPUTERS_OR_DESK_BASED', 'OTHER'],
         inPrisonWorkOther: 'Gambling',
       }
       req.body = inPrisonWorkForm
-      req.session.inPrisonWorkForm = undefined
+      getPrisonerContext(req.session, prisonNumber).inPrisonWorkForm = undefined
       const updateInductionDto = aValidUpdateInductionRequest()
 
       mockedCreateOrUpdateInductionDtoMapper.mockReturnValueOnce(updateInductionDto)
@@ -225,8 +226,8 @@ describe('inPrisonWorkUpdateController', () => {
 
       expect(inductionService.updateInduction).toHaveBeenCalledWith(prisonNumber, updateInductionDto, username)
       expect(next).toHaveBeenCalledWith(expectedError)
-      expect(req.session.inPrisonWorkForm).toEqual(inPrisonWorkForm)
-      const updatedInductionDto = req.session.inductionDto
+      expect(getPrisonerContext(req.session, prisonNumber).inPrisonWorkForm).toEqual(inPrisonWorkForm)
+      const updatedInductionDto = getPrisonerContext(req.session, prisonNumber).inductionDto
       expect(updatedInductionDto.inPrisonInterests.inPrisonWorkInterests).toEqual([
         { workType: InPrisonWorkValue.COMPUTERS_OR_DESK_BASED, workTypeOther: undefined },
         { workType: InPrisonWorkValue.OTHER, workTypeOther: 'Gambling' },

@@ -8,6 +8,7 @@ import InductionService from '../../../services/inductionService'
 import aValidUpdateInductionRequest from '../../../testsupport/updateInductionRequestTestDataBuilder'
 import WorkInterestRolesUpdateController from './workInterestRolesUpdateController'
 import WorkInterestTypeValue from '../../../enums/workInterestTypeValue'
+import { getPrisonerContext } from '../../../data/session/prisonerContexts'
 
 jest.mock('../../../data/mappers/createOrUpdateInductionDtoMapper')
 jest.mock('../../../services/inductionService')
@@ -48,7 +49,7 @@ describe('workInterestRolesUpdateController', () => {
     it('should get the Work Interest Roles view', async () => {
       // Given
       const inductionDto = aValidInductionDto()
-      req.session.inductionDto = inductionDto
+      getPrisonerContext(req.session, prisonNumber).inductionDto = inductionDto
 
       const expectedWorkInterestRolesForm = {
         workInterestRoles: [
@@ -69,7 +70,7 @@ describe('workInterestRolesUpdateController', () => {
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/induction/workInterests/workInterestRoles', expectedView)
-      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(getPrisonerContext(req.session, prisonNumber).inductionDto).toEqual(inductionDto)
     })
   })
 
@@ -80,7 +81,7 @@ describe('workInterestRolesUpdateController', () => {
       inductionDto.futureWorkInterests.interests = [
         { workType: WorkInterestTypeValue.RETAIL, workTypeOther: undefined, role: undefined },
       ]
-      req.session.inductionDto = inductionDto
+      getPrisonerContext(req.session, prisonNumber).inductionDto = inductionDto
 
       const invalidWorkInterestRolesForm = {
         workInterestRoles: {
@@ -90,7 +91,7 @@ describe('workInterestRolesUpdateController', () => {
       }
       req.body = invalidWorkInterestRolesForm
 
-      req.session.workInterestRolesForm = undefined
+      getPrisonerContext(req.session, prisonNumber).workInterestRolesForm = undefined
 
       const expectedErrors = [{ href: '#RETAIL', text: 'The Retail and sales job role must be 512 characters or less' }]
       const expectedWorkInterestRolesForm = {
@@ -108,14 +109,14 @@ describe('workInterestRolesUpdateController', () => {
         '/prisoners/A1234BC/induction/work-interest-roles',
         expectedErrors,
       )
-      expect(req.session.workInterestRolesForm).toEqual(expectedWorkInterestRolesForm)
-      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(getPrisonerContext(req.session, prisonNumber).workInterestRolesForm).toEqual(expectedWorkInterestRolesForm)
+      expect(getPrisonerContext(req.session, prisonNumber).inductionDto).toEqual(inductionDto)
     })
 
     it('should update Induction and call API and redirect to work and interests page', async () => {
       // Given
       const inductionDto = aValidInductionDto()
-      req.session.inductionDto = inductionDto
+      getPrisonerContext(req.session, prisonNumber).inductionDto = inductionDto
 
       req.body = {
         workInterestRoles: {
@@ -156,13 +157,13 @@ describe('workInterestRolesUpdateController', () => {
 
       expect(inductionService.updateInduction).toHaveBeenCalledWith(prisonNumber, updateInductionDto, username)
       expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/view/work-and-interests`)
-      expect(req.session.inductionDto).toBeUndefined()
+      expect(getPrisonerContext(req.session, prisonNumber).inductionDto).toBeUndefined()
     })
 
     it('should not update Induction given error calling service', async () => {
       // Given
       const inductionDto = aValidInductionDto()
-      req.session.inductionDto = inductionDto
+      getPrisonerContext(req.session, prisonNumber).inductionDto = inductionDto
 
       req.body = {
         workInterestRoles: {
@@ -209,7 +210,7 @@ describe('workInterestRolesUpdateController', () => {
 
       expect(inductionService.updateInduction).toHaveBeenCalledWith(prisonNumber, updateInductionDto, username)
       expect(next).toHaveBeenCalledWith(expectedError)
-      expect(req.session.inductionDto).toBeDefined()
+      expect(getPrisonerContext(req.session, prisonNumber).inductionDto).toBeDefined()
     })
   })
 })

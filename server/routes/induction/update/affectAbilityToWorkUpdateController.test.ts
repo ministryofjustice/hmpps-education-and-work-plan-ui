@@ -7,6 +7,7 @@ import InductionService from '../../../services/inductionService'
 import aValidUpdateInductionRequest from '../../../testsupport/updateInductionRequestTestDataBuilder'
 import AbilityToWorkUpdateController from './affectAbilityToWorkUpdateController'
 import AbilityToWorkValue from '../../../enums/abilityToWorkValue'
+import { getPrisonerContext } from '../../../data/session/prisonerContexts'
 
 jest.mock('../../../data/mappers/createOrUpdateInductionDtoMapper')
 jest.mock('../../../services/inductionService')
@@ -46,8 +47,8 @@ describe('affectAbilityToWorkUpdateController', () => {
     it('should get the Ability To Work view given there is no AbilityToWorkForm on the session', async () => {
       // Given
       const inductionDto = aValidInductionDto()
-      req.session.inductionDto = inductionDto
-      req.session.affectAbilityToWorkForm = undefined
+      getPrisonerContext(req.session, prisonNumber).inductionDto = inductionDto
+      getPrisonerContext(req.session, prisonNumber).affectAbilityToWorkForm = undefined
 
       const expectedAbilityToWorkForm = {
         affectAbilityToWork: [
@@ -68,14 +69,14 @@ describe('affectAbilityToWorkUpdateController', () => {
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/induction/affectAbilityToWork/index', expectedView)
-      expect(req.session.affectAbilityToWorkForm).toBeUndefined()
-      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(getPrisonerContext(req.session, prisonNumber).affectAbilityToWorkForm).toBeUndefined()
+      expect(getPrisonerContext(req.session, prisonNumber).inductionDto).toEqual(inductionDto)
     })
 
     it('should get the Ability To Work view given there is an AbilityToWorkForm already on the session', async () => {
       // Given
       const inductionDto = aValidInductionDto()
-      req.session.inductionDto = inductionDto
+      getPrisonerContext(req.session, prisonNumber).inductionDto = inductionDto
 
       const expectedAbilityToWorkForm = {
         affectAbilityToWork: [
@@ -85,7 +86,7 @@ describe('affectAbilityToWorkUpdateController', () => {
         ],
         affectAbilityToWorkOther: 'Variable mental health',
       }
-      req.session.affectAbilityToWorkForm = expectedAbilityToWorkForm
+      getPrisonerContext(req.session, prisonNumber).affectAbilityToWorkForm = expectedAbilityToWorkForm
 
       const expectedView = {
         prisonerSummary,
@@ -97,8 +98,8 @@ describe('affectAbilityToWorkUpdateController', () => {
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/induction/affectAbilityToWork/index', expectedView)
-      expect(req.session.affectAbilityToWorkForm).toBeUndefined()
-      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(getPrisonerContext(req.session, prisonNumber).affectAbilityToWorkForm).toBeUndefined()
+      expect(getPrisonerContext(req.session, prisonNumber).inductionDto).toEqual(inductionDto)
     })
   })
 
@@ -106,14 +107,14 @@ describe('affectAbilityToWorkUpdateController', () => {
     it('should not update Induction given form is submitted with validation errors', async () => {
       // Given
       const inductionDto = aValidInductionDto()
-      req.session.inductionDto = inductionDto
+      getPrisonerContext(req.session, prisonNumber).inductionDto = inductionDto
 
       const invalidAbilityToWorkForm = {
         affectAbilityToWork: [AbilityToWorkValue.OTHER],
         affectAbilityToWorkOther: '',
       }
       req.body = invalidAbilityToWorkForm
-      req.session.affectAbilityToWorkForm = undefined
+      getPrisonerContext(req.session, prisonNumber).affectAbilityToWorkForm = undefined
 
       const expectedErrors = [
         {
@@ -130,21 +131,21 @@ describe('affectAbilityToWorkUpdateController', () => {
         '/prisoners/A1234BC/induction/affect-ability-to-work',
         expectedErrors,
       )
-      expect(req.session.affectAbilityToWorkForm).toEqual(invalidAbilityToWorkForm)
-      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(getPrisonerContext(req.session, prisonNumber).affectAbilityToWorkForm).toEqual(invalidAbilityToWorkForm)
+      expect(getPrisonerContext(req.session, prisonNumber).inductionDto).toEqual(inductionDto)
     })
 
     it('should update Induction and call API and redirect to work and interests page', async () => {
       // Given
       const inductionDto = aValidInductionDto()
-      req.session.inductionDto = inductionDto
+      getPrisonerContext(req.session, prisonNumber).inductionDto = inductionDto
 
       const affectAbilityToWorkForm = {
         affectAbilityToWork: [AbilityToWorkValue.CARING_RESPONSIBILITIES, AbilityToWorkValue.OTHER],
         affectAbilityToWorkOther: 'Variable mental health',
       }
       req.body = affectAbilityToWorkForm
-      req.session.affectAbilityToWorkForm = undefined
+      getPrisonerContext(req.session, prisonNumber).affectAbilityToWorkForm = undefined
       const updateInductionDto = aValidUpdateInductionRequest()
 
       mockedCreateOrUpdateInductionDtoMapper.mockReturnValueOnce(updateInductionDto)
@@ -164,21 +165,21 @@ describe('affectAbilityToWorkUpdateController', () => {
 
       expect(inductionService.updateInduction).toHaveBeenCalledWith(prisonNumber, updateInductionDto, username)
       expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/view/work-and-interests`)
-      expect(req.session.affectAbilityToWorkForm).toBeUndefined()
-      expect(req.session.inductionDto).toBeUndefined()
+      expect(getPrisonerContext(req.session, prisonNumber).affectAbilityToWorkForm).toBeUndefined()
+      expect(getPrisonerContext(req.session, prisonNumber).inductionDto).toBeUndefined()
     })
 
     it('should not update Induction given error calling service', async () => {
       // Given
       const inductionDto = aValidInductionDto()
-      req.session.inductionDto = inductionDto
+      getPrisonerContext(req.session, prisonNumber).inductionDto = inductionDto
 
       const affectAbilityToWorkForm = {
         affectAbilityToWork: [AbilityToWorkValue.CARING_RESPONSIBILITIES, AbilityToWorkValue.OTHER],
         affectAbilityToWorkOther: 'Variable mental health',
       }
       req.body = affectAbilityToWorkForm
-      req.session.affectAbilityToWorkForm = undefined
+      getPrisonerContext(req.session, prisonNumber).affectAbilityToWorkForm = undefined
       const updateInductionDto = aValidUpdateInductionRequest()
 
       mockedCreateOrUpdateInductionDtoMapper.mockReturnValueOnce(updateInductionDto)
@@ -204,8 +205,8 @@ describe('affectAbilityToWorkUpdateController', () => {
 
       expect(inductionService.updateInduction).toHaveBeenCalledWith(prisonNumber, updateInductionDto, username)
       expect(next).toHaveBeenCalledWith(expectedError)
-      expect(req.session.affectAbilityToWorkForm).toEqual(affectAbilityToWorkForm)
-      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(getPrisonerContext(req.session, prisonNumber).affectAbilityToWorkForm).toEqual(affectAbilityToWorkForm)
+      expect(getPrisonerContext(req.session, prisonNumber).inductionDto).toEqual(inductionDto)
     })
   })
 })

@@ -11,17 +11,13 @@ import InductionController from './inductionController'
  */
 export default abstract class WhoCompletedInductionController extends InductionController {
   getWhoCompletedInductionView: RequestHandler = async (req, res, next): Promise<void> => {
-    const { inductionDto } = req.session
     const { prisonNumber } = req.params
     const { prisonerSummary } = res.locals
+    const { inductionDto } = getPrisonerContext(req.session, prisonNumber)
 
-    let whoCompletedInductionForm: WhoCompletedInductionForm
-    if (getPrisonerContext(req.session, prisonNumber).whoCompletedInductionForm) {
-      whoCompletedInductionForm = getPrisonerContext(req.session, prisonNumber).whoCompletedInductionForm
-    } else {
-      whoCompletedInductionForm = toWhoCompletedInductionForm(inductionDto)
-    }
-
+    const whoCompletedInductionForm: WhoCompletedInductionForm =
+      getPrisonerContext(req.session, prisonNumber).whoCompletedInductionForm ||
+      toWhoCompletedInductionForm(inductionDto)
     getPrisonerContext(req.session, prisonNumber).whoCompletedInductionForm = undefined
 
     const view = new WhoCompletedInductionView(prisonerSummary, whoCompletedInductionForm)

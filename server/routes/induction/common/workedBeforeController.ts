@@ -4,6 +4,7 @@ import type { WorkedBeforeForm } from 'inductionForms'
 import InductionController from './inductionController'
 import WorkedBeforeView from './workedBeforeView'
 import HasWorkedBeforeValue from '../../../enums/hasWorkedBeforeValue'
+import { getPrisonerContext } from '../../../data/session/prisonerContexts'
 
 /**
  * Abstract controller class defining functionality common to both the Create and Update Induction journeys.
@@ -13,13 +14,15 @@ export default abstract class WorkedBeforeController extends InductionController
    * Returns the WorkedBefore view; suitable for use by the Create and Update journeys.
    */
   getWorkedBeforeView: RequestHandler = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    const { inductionDto } = req.session
+    const { prisonNumber } = req.params
     const { prisonerSummary } = res.locals
+    const { inductionDto } = getPrisonerContext(req.session, prisonNumber)
 
     this.addCurrentPageToFlowHistoryWhenComingFromCheckYourAnswers(req)
 
-    const workedBeforeForm = req.session.workedBeforeForm || toWorkedBeforeForm(inductionDto)
-    req.session.workedBeforeForm = undefined
+    const workedBeforeForm: WorkedBeforeForm =
+      getPrisonerContext(req.session, prisonNumber).workedBeforeForm || toWorkedBeforeForm(inductionDto)
+    getPrisonerContext(req.session, prisonNumber).workedBeforeForm = undefined
 
     const view = new WorkedBeforeView(prisonerSummary, workedBeforeForm)
     return res.render('pages/induction/workedBefore/index', { ...view.renderArgs })

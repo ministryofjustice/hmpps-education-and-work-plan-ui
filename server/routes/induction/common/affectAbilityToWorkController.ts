@@ -4,6 +4,7 @@ import type { AffectAbilityToWorkForm } from 'inductionForms'
 import InductionController from './inductionController'
 import AffectAbilityToWorkView from './affectAbilityToWorkView'
 import AbilityToWorkValue from '../../../enums/abilityToWorkValue'
+import { getPrisonerContext } from '../../../data/session/prisonerContexts'
 
 /**
  * Abstract controller class defining functionality common to both the Create and Update Induction journeys.
@@ -17,13 +18,15 @@ export default abstract class AffectAbilityToWorkController extends InductionCon
     res: Response,
     next: NextFunction,
   ): Promise<void> => {
-    const { inductionDto } = req.session
+    const { prisonNumber } = req.params
     const { prisonerSummary } = res.locals
-
-    const affectAbilityToWorkForm = req.session.affectAbilityToWorkForm || toAffectAbilityToWorkForm(inductionDto)
-    req.session.affectAbilityToWorkForm = undefined
+    const { inductionDto } = getPrisonerContext(req.session, prisonNumber)
 
     this.addCurrentPageToFlowHistoryWhenComingFromCheckYourAnswers(req)
+
+    const affectAbilityToWorkForm: AffectAbilityToWorkForm =
+      getPrisonerContext(req.session, prisonNumber).affectAbilityToWorkForm || toAffectAbilityToWorkForm(inductionDto)
+    getPrisonerContext(req.session, prisonNumber).affectAbilityToWorkForm = undefined
 
     const view = new AffectAbilityToWorkView(prisonerSummary, affectAbilityToWorkForm)
     return res.render('pages/induction/affectAbilityToWork/index', { ...view.renderArgs })

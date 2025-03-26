@@ -2,6 +2,7 @@ import { NextFunction, Request, RequestHandler, Response } from 'express'
 import type { InductionDto } from 'inductionDto'
 import QualificationsListController from '../common/qualificationsListController'
 import { buildNewPageFlowHistory } from '../../pageFlowHistory'
+import { getPrisonerContext } from '../../../data/session/prisonerContexts'
 
 export default class QualificationsListCreateController extends QualificationsListController {
   submitQualificationsListView: RequestHandler = async (
@@ -10,7 +11,7 @@ export default class QualificationsListCreateController extends QualificationsLi
     next: NextFunction,
   ): Promise<void> => {
     const { prisonNumber } = req.params
-    const { inductionDto } = req.session
+    const { inductionDto } = getPrisonerContext(req.session, prisonNumber)
 
     if (!req.session.pageFlowHistory) {
       req.session.pageFlowHistory = buildNewPageFlowHistory(req)
@@ -22,7 +23,10 @@ export default class QualificationsListCreateController extends QualificationsLi
 
     if (userClickedOnButton(req, 'removeQualification')) {
       const qualificationIndexToRemove = req.body.removeQualification as number
-      req.session.inductionDto = inductionWithRemovedQualification(inductionDto, qualificationIndexToRemove)
+      getPrisonerContext(req.session, prisonNumber).inductionDto = inductionWithRemovedQualification(
+        inductionDto,
+        qualificationIndexToRemove,
+      )
       return res.redirect(`/prisoners/${prisonNumber}/create-induction/qualifications`)
     }
 
