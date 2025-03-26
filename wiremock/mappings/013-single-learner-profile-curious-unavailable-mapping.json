@@ -1,0 +1,17 @@
+{
+  "request": {
+    "method": "GET",
+    "urlPattern": "/learnerProfile/A2257DZ"
+  },
+  "response": {
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "status": 500,
+    "jsonBody": {
+      "errorCode": "VC5000",
+      "errorMessage": "Unexpected error",
+      "httpStatusCode": 500
+    }
+  }
+}
