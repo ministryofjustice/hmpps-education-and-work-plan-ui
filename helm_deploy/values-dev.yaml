@@ -26,11 +26,6 @@ generic-service:
     ACTIVITIES_API_URL: 'https://activities-api-dev.prison.service.justice.gov.uk'
     ENVIRONMENT_NAME: 'DEV'
 
-    # Comma delimited list of prison IDs that our service is enabled for in `dev`
-    # The list represents the cumulative list of caseloads (prisons) that have been assigned to the `dev` DPS users
-    # of the PLP team.
-    ACTIVE_AGENCIES: 'BLI, BXI, BZI, RSI, MDI, WDI, WSI, ONI, SKI, SWI, WTI, DGI, KMI, NLI, GHI, DNI'
-
     REVIEWS_ENABLED: "true"
 
   allowlist:

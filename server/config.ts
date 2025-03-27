@@ -175,11 +175,5 @@ export default {
   featureToggles: {
     // someToggleEnabled: toBoolean(get('SOME_TOGGLE_ENABLED', false)),
     reviewsEnabled: toBoolean(get('REVIEWS_ENABLED', false)),
-    prisonIsEnabledForService: (prisonId: string): boolean => {
-      const enabledPrisons = get('ACTIVE_AGENCIES', '', requiredInProduction)
-        .split(',')
-        .map(id => id.trim())
-      return enabledPrisons.includes(prisonId) || enabledPrisons.includes('***')
-    },
   },
 }
