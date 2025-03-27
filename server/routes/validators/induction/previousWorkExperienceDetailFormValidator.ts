@@ -1,6 +1,7 @@
 import type { PreviousWorkExperienceDetailForm } from 'inductionForms'
 import type { PrisonerSummary } from 'viewModels'
 import formatErrors from '../../errorFormatter'
+import textValueExceedsLength from '../../../validators/textValueValidator'
 
 const MAX_JOB_ROLE_LENGTH = 256
 const MAX_JOB_DETAILS_LENGTH = 512
@@ -25,7 +26,7 @@ const validateJobRole = (
   const { jobRole } = previousWorkExperienceDetailForm
   if (!jobRole) {
     errors.push(`Enter the job role ${prisonerSummary.firstName} ${prisonerSummary.lastName} wants to add`)
-  } else if (jobRole.length > MAX_JOB_ROLE_LENGTH) {
+  } else if (textValueExceedsLength(jobRole, MAX_JOB_ROLE_LENGTH)) {
     errors.push(`Job role must be ${MAX_JOB_ROLE_LENGTH} characters or less`)
   }
 
@@ -41,7 +42,7 @@ const validateJobDetails = (
   const { jobDetails } = previousWorkExperienceDetailForm
   if (!jobDetails) {
     errors.push(`Enter details of what ${prisonerSummary.firstName} ${prisonerSummary.lastName} did in their job`)
-  } else if (jobDetails.length > MAX_JOB_DETAILS_LENGTH) {
+  } else if (textValueExceedsLength(jobDetails, MAX_JOB_DETAILS_LENGTH)) {
     errors.push(`Main tasks and responsibilities must be ${MAX_JOB_DETAILS_LENGTH} characters or less`)
   }
 

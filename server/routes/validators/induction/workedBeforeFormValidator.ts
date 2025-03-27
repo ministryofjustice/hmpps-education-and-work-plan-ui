@@ -2,6 +2,7 @@ import type { WorkedBeforeForm } from 'inductionForms'
 import type { PrisonerSummary } from 'viewModels'
 import formatErrors from '../../errorFormatter'
 import HasWorkedBeforeValue from '../../../enums/hasWorkedBeforeValue'
+import textValueExceedsLength from '../../../validators/textValueValidator'
 
 const MAX_NOT_RELEVANT_LENGTH = 512
 
@@ -37,7 +38,7 @@ const validateWorkedBeforeNotRelevantReason = (workedBeforeForm: WorkedBeforeFor
   if (hasWorkedBefore === HasWorkedBeforeValue.NOT_RELEVANT) {
     if (!hasWorkedBeforeNotRelevantReason) {
       errors.push('Enter the reason why not relevant')
-    } else if (hasWorkedBeforeNotRelevantReason.length > MAX_NOT_RELEVANT_LENGTH) {
+    } else if (textValueExceedsLength(hasWorkedBeforeNotRelevantReason, MAX_NOT_RELEVANT_LENGTH)) {
       errors.push(`The reason must be ${MAX_NOT_RELEVANT_LENGTH} characters or less`)
     }
   }

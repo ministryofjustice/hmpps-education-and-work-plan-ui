@@ -2,6 +2,7 @@ import type { PreviousWorkExperienceTypesForm } from 'inductionForms'
 import type { PrisonerSummary } from 'viewModels'
 import formatErrors from '../../errorFormatter'
 import TypeOfWorkExperienceValue from '../../../enums/typeOfWorkExperienceValue'
+import textValueExceedsLength from '../../../validators/textValueValidator'
 
 const MAX_OTHER_LENGTH = 256
 
@@ -59,7 +60,7 @@ const validateTypeOfWorkExperienceOther = (
   if (typeOfWorkExperience && typeOfWorkExperience.includes(TypeOfWorkExperienceValue.OTHER)) {
     if (!typeOfWorkExperienceOther) {
       errors.push(`Enter the type of work ${prisonerSummary.firstName} ${prisonerSummary.lastName} has done before`)
-    } else if (typeOfWorkExperienceOther.length > MAX_OTHER_LENGTH) {
+    } else if (textValueExceedsLength(typeOfWorkExperienceOther, MAX_OTHER_LENGTH)) {
       errors.push(`The type of work must be ${MAX_OTHER_LENGTH} characters or less`)
     }
   }

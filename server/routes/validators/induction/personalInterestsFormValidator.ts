@@ -2,6 +2,7 @@ import type { PersonalInterestsForm } from 'inductionForms'
 import type { PrisonerSummary } from 'viewModels'
 import formatErrors from '../../errorFormatter'
 import PersonalInterestsValue from '../../../enums/personalInterestsValue'
+import textValueExceedsLength from '../../../validators/textValueValidator'
 
 const MAX_OTHER_LENGTH = 255
 
@@ -56,7 +57,7 @@ const validatePersonalInterestsOther = (
   if (personalInterests && personalInterests.includes(PersonalInterestsValue.OTHER)) {
     if (!personalInterestsOther) {
       errors.push(`Enter ${prisonerSummary.firstName} ${prisonerSummary.lastName}'s interests`)
-    } else if (personalInterestsOther.length > MAX_OTHER_LENGTH) {
+    } else if (textValueExceedsLength(personalInterestsOther, MAX_OTHER_LENGTH)) {
       errors.push(`The interests must be ${MAX_OTHER_LENGTH} characters or less`)
     }
   }
