@@ -2,6 +2,7 @@ import type { SkillsForm } from 'inductionForms'
 import type { PrisonerSummary } from 'viewModels'
 import formatErrors from '../../errorFormatter'
 import SkillsValue from '../../../enums/skillsValue'
+import textValueExceedsLength from '../../../validators/textValueValidator'
 
 const MAX_OTHER_LENGTH = 255
 
@@ -50,7 +51,7 @@ const validateSkillsOther = (skillsForm: SkillsForm, prisonerSummary: PrisonerSu
   if (skills && skills.includes(SkillsValue.OTHER)) {
     if (!skillsOther) {
       errors.push(`Enter the skill that ${prisonerSummary.firstName} ${prisonerSummary.lastName} feels they have`)
-    } else if (skillsOther.length > MAX_OTHER_LENGTH) {
+    } else if (textValueExceedsLength(skillsOther, MAX_OTHER_LENGTH)) {
       errors.push(`The skill must be ${MAX_OTHER_LENGTH} characters or less`)
     }
   }

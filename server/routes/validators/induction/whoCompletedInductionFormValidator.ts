@@ -2,6 +2,7 @@ import { isAfter, isValid, parse, startOfToday } from 'date-fns'
 import type { WhoCompletedInductionForm } from 'inductionForms'
 import formatErrors from '../../errorFormatter'
 import SessionCompletedByValue from '../../../enums/sessionCompletedByValue'
+import textValueExceedsLength from '../../../validators/textValueValidator'
 
 const validateWhoCompletedInductionForm = (
   whoCompletedInductionForm: WhoCompletedInductionForm,
@@ -51,7 +52,7 @@ const validateCompletedByOther = (
         field: 'completedByOtherFullName',
         message: 'Enter the full name of the person who completed the induction',
       })
-    } else if (completedByOtherFullName.length > 200) {
+    } else if (textValueExceedsLength(completedByOtherFullName, 200)) {
       errors.push({ field: 'completedByOtherFullName', message: 'Full name must be 200 characters or less' })
     }
 
@@ -60,7 +61,7 @@ const validateCompletedByOther = (
         field: 'completedByOtherJobRole',
         message: 'Enter the job title of the person who completed the induction',
       })
-    } else if (completedByOtherJobRole.length > 200) {
+    } else if (textValueExceedsLength(completedByOtherJobRole, 200)) {
       errors.push({ field: 'completedByOtherJobRole', message: 'Job role must be 200 characters or less' })
     }
   }

@@ -2,6 +2,7 @@ import { isAfter, isValid, parse, startOfToday } from 'date-fns'
 import type { WhoCompletedReviewForm } from 'reviewPlanForms'
 import formatErrors from '../../errorFormatter'
 import SessionCompletedByValue from '../../../enums/sessionCompletedByValue'
+import textValueExceedsLength from '../../../validators/textValueValidator'
 
 const validateWhoCompletedReviewForm = (
   whoCompletedReviewForm: WhoCompletedReviewForm,
@@ -51,7 +52,7 @@ const validateCompletedByOther = (
         field: 'completedByOtherFullName',
         message: 'Enter the full name of the person who completed the review',
       })
-    } else if (completedByOtherFullName.length > 200) {
+    } else if (textValueExceedsLength(completedByOtherFullName, 200)) {
       errors.push({ field: 'completedByOtherFullName', message: 'Full name must be 200 characters or less' })
     }
 
@@ -60,7 +61,7 @@ const validateCompletedByOther = (
         field: 'completedByOtherJobRole',
         message: 'Enter the job title of the person who completed the review',
       })
-    } else if (completedByOtherJobRole.length > 200) {
+    } else if (textValueExceedsLength(completedByOtherJobRole, 200)) {
       errors.push({ field: 'completedByOtherJobRole', message: 'Job role must be 200 characters or less' })
     }
   }

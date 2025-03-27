@@ -1,5 +1,6 @@
 import type { ReviewExemptionForm } from 'reviewPlanForms'
 import formatErrors from '../../errorFormatter'
+import textValueExceedsLength from '../../../validators/textValueValidator'
 
 const MAX_EXEMPTION_REASON_LENGTH = 200
 
@@ -29,7 +30,10 @@ const validateExemptionReasonDetails = (exemptionReasonForm: ReviewExemptionForm
 
   const { exemptionReason, exemptionReasonDetails } = exemptionReasonForm
 
-  if (exemptionReasonDetails[exemptionReason]?.length > MAX_EXEMPTION_REASON_LENGTH) {
+  if (
+    exemptionReasonDetails[exemptionReason] &&
+    textValueExceedsLength(exemptionReasonDetails[exemptionReason], MAX_EXEMPTION_REASON_LENGTH)
+  ) {
     errors.push(`Exemption details must be ${MAX_EXEMPTION_REASON_LENGTH} characters or less`)
   }
 

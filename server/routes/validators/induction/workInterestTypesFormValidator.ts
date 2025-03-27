@@ -2,6 +2,7 @@ import type { WorkInterestTypesForm } from 'inductionForms'
 import type { PrisonerSummary } from 'viewModels'
 import formatErrors from '../../errorFormatter'
 import WorkInterestTypeValue from '../../../enums/workInterestTypeValue'
+import textValueExceedsLength from '../../../validators/textValueValidator'
 
 const MAX_OTHER_LENGTH = 255
 
@@ -51,7 +52,7 @@ const validateWorkInterestTypesOther = (
   if (workInterestTypes && workInterestTypes.includes(WorkInterestTypeValue.OTHER)) {
     if (!workInterestTypesOther) {
       errors.push(`Enter the type of work ${prisonerSummary.firstName} ${prisonerSummary.lastName} is interested in`)
-    } else if (workInterestTypesOther.length > MAX_OTHER_LENGTH) {
+    } else if (textValueExceedsLength(workInterestTypesOther, MAX_OTHER_LENGTH)) {
       errors.push(`The type of work must be ${MAX_OTHER_LENGTH} characters or less`)
     }
   }

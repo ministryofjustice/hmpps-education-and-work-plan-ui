@@ -2,6 +2,7 @@ import type { WorkInterestRolesForm } from 'inductionForms'
 import formatErrors from '../../errorFormatter'
 import WorkInterestTypeValue from '../../../enums/workInterestTypeValue'
 import formatJobTypeFilter from '../../../filters/formatJobTypeFilter'
+import textValueExceedsLength from '../../../validators/textValueValidator'
 
 const MAX_JOB_ROLE_LENGTH = 512
 
@@ -29,7 +30,7 @@ export default function validateWorkInterestRolesForm(
 const validateValue = (keyValuePair: [WorkInterestTypeValue, string]): Array<string> => {
   const errors: Array<string> = []
 
-  if (keyValuePair[1]?.length > MAX_JOB_ROLE_LENGTH) {
+  if (keyValuePair[1] && textValueExceedsLength(keyValuePair[1], MAX_JOB_ROLE_LENGTH)) {
     errors.push(
       `The ${formatJobTypeFilter(keyValuePair[0])} job role must be ${MAX_JOB_ROLE_LENGTH} characters or less`,
     )
@@ -44,7 +45,7 @@ const validateOtherValue = (
 ): Array<string> => {
   const errors: Array<string> = []
 
-  if (keyValuePair[1]?.length > MAX_JOB_ROLE_LENGTH) {
+  if (keyValuePair[1] && textValueExceedsLength(keyValuePair[1], MAX_JOB_ROLE_LENGTH)) {
     errors.push(`The ${otherWorkInterestType} job role must be ${MAX_JOB_ROLE_LENGTH} characters or less`)
   }
 

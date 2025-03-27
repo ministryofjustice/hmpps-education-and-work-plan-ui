@@ -2,6 +2,7 @@ import type { AffectAbilityToWorkForm } from 'inductionForms'
 import type { PrisonerSummary } from 'viewModels'
 import formatErrors from '../../errorFormatter'
 import AbilityToWorkValue from '../../../enums/abilityToWorkValue'
+import textValueExceedsLength from '../../../validators/textValueValidator'
 
 const MAX_OTHER_LENGTH = 512
 
@@ -63,7 +64,7 @@ const validateAffectAbilityToWorkOther = (
   if (affectAbilityToWork && affectAbilityToWork.includes(AbilityToWorkValue.OTHER)) {
     if (!affectAbilityToWorkOther) {
       errors.push(`Enter factors affecting ${prisonerSummary.firstName} ${prisonerSummary.lastName}'s ability to work`)
-    } else if (affectAbilityToWorkOther.length > MAX_OTHER_LENGTH) {
+    } else if (textValueExceedsLength(affectAbilityToWorkOther, MAX_OTHER_LENGTH)) {
       errors.push(`The factors affecting ability to work must be ${MAX_OTHER_LENGTH} characters or less`)
     }
   }

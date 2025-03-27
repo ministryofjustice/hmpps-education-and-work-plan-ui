@@ -2,6 +2,7 @@ import type { InPrisonTrainingForm } from 'inductionForms'
 import type { PrisonerSummary } from 'viewModels'
 import formatErrors from '../../errorFormatter'
 import InPrisonTrainingValue from '../../../enums/inPrisonTrainingValue'
+import textValueExceedsLength from '../../../validators/textValueValidator'
 
 const MAX_OTHER_LENGTH = 255
 
@@ -55,7 +56,7 @@ const validateInPrisonTrainingOther = (
       errors.push(
         `Enter the type of type of training ${prisonerSummary.firstName} ${prisonerSummary.lastName} would like to do in prison`,
       )
-    } else if (inPrisonTrainingOther.length > MAX_OTHER_LENGTH) {
+    } else if (textValueExceedsLength(inPrisonTrainingOther, MAX_OTHER_LENGTH)) {
       errors.push(`The type of training must be ${MAX_OTHER_LENGTH} characters or less`)
     }
   }

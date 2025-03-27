@@ -3,6 +3,7 @@ import type { PrisonerSummary } from 'viewModels'
 import formatErrors from '../../errorFormatter'
 import QualificationLevelValue from '../../../enums/qualificationLevelValue'
 import formatQualificationLevelFilter from '../../../filters/formatQualificationLevelFilter'
+import textValueExceedsLength from '../../../validators/textValueValidator'
 
 const MAX_QUALIFICATION_SUBJECT_LENGTH = 100
 const MAX_QUALIFICATION_GRADE_LENGTH = 50
@@ -42,7 +43,7 @@ const validateQualificationSubject = (
     errors.push(
       `Enter the subject of ${prisonerSummary.firstName} ${prisonerSummary.lastName}'s ${formattedLevel} qualification`,
     )
-  } else if (qualificationSubject.length > MAX_QUALIFICATION_SUBJECT_LENGTH) {
+  } else if (textValueExceedsLength(qualificationSubject, MAX_QUALIFICATION_SUBJECT_LENGTH)) {
     errors.push(`Subject must be ${MAX_QUALIFICATION_SUBJECT_LENGTH} characters or less`)
   }
 
@@ -62,7 +63,7 @@ const validateQualificationGrade = (
     errors.push(
       `Enter the grade of ${prisonerSummary.firstName} ${prisonerSummary.lastName}'s ${formattedLevel} qualification`,
     )
-  } else if (qualificationGrade.length > MAX_QUALIFICATION_GRADE_LENGTH) {
+  } else if (textValueExceedsLength(qualificationGrade, MAX_QUALIFICATION_GRADE_LENGTH)) {
     errors.push(`Grade must be ${MAX_QUALIFICATION_GRADE_LENGTH} characters or less`)
   }
 
