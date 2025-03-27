@@ -37,7 +37,6 @@ const templateParams = {
   archivedGoals: [aValidGoal()],
   completedGoals: [aValidGoal()],
   problemRetrievingData: false,
-  showServiceOnboardingBanner: false,
   tab: 'goals',
 }
 
@@ -207,22 +206,5 @@ describe('goalTabContents', () => {
     expect($('[data-qa="in-progress-goal-summary-card"]').length).toEqual(0)
     expect($('[data-qa="archived-goal-summary-card"]').length).toEqual(0)
     expect($('[data-qa="completed-goal-summary-card"]').length).toEqual(0)
-  })
-
-  it('should render service onboarding banner given showServiceOnboardingBanner is true', async () => {
-    // Given
-    const params = {
-      ...templateParams,
-      showServiceOnboardingBanner: true,
-    }
-
-    // When
-    const content = njkEnv.render('goalsTabContents.njk', params)
-    const $ = cheerio.load(content)
-
-    // Then
-    expect($('[data-qa="service-onboarding-banner"]').text().replace(/\s+/g, ' ').trim()).toContain(
-      'You have read only access. If you need to add or edit information ask your head of education, skills and work to email learningandworkprogress@digital.justice.gov.uk so we can onboard your prison.',
-    )
   })
 })
