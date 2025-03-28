@@ -26,8 +26,6 @@ generic-service:
     ACTIVITIES_API_URL: 'https://activities-api-dev.prison.service.justice.gov.uk'
     ENVIRONMENT_NAME: 'DEV'
 
-    REVIEWS_ENABLED: "true"
-
   allowlist:
     uservision-accessibility-testers: 5.181.59.114/32
     cymulate-1: 54.217.50.18/32
