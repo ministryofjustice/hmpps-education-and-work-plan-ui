@@ -4,23 +4,24 @@ import type { InductionDto } from 'inductionDto'
 import { EducationAndWorkPlanService } from '../../services'
 import asyncMiddleware from '../../middleware/asyncMiddleware'
 import logger from '../../../logger'
+import { getPrisonerContext } from '../../data/session/prisonerContexts'
 
 /**
- * Middleware function that returns a request handler function to check whether an Induction exists in the session for
- * the prisoner referenced in the request URL.
+ * Middleware function that returns a request handler function to check whether an Induction exists in the
+ * Prisoner Context for the prisoner referenced in the request URL.
  * If one does not exist, or it is for a different prisoner, create a new empty Induction for the prisoner.
  * If the prisoner already has qualifications, add them to the Induction.
  */
-const createEmptyInductionIfNotInSession = (
+const createEmptyInductionIfNotInPrisonerContext = (
   educationAndWorkPlanService: EducationAndWorkPlanService,
 ): RequestHandler => {
   return asyncMiddleware(async (req: Request, res: Response, next: NextFunction) => {
     const { prisonNumber } = req.params
 
-    // Either no Induction on the session, or it's for a different prisoner. Create a new one, including the prisoners education if it has been previously recorded.
-    if (req.session.inductionDto?.prisonNumber !== prisonNumber) {
+    // Either no Induction in the Prisoner Context, or it's for a different prisoner. Create a new one, including the prisoners education if it has been previously recorded.
+    if (getPrisonerContext(req.session, prisonNumber).inductionDto?.prisonNumber !== prisonNumber) {
       logger.debug(
-        `RR-1300 - Setting up new InductionDto on the session for ${prisonNumber} because ${!req.session.inductionDto ? 'InductionDto is not on the session' : 'InductionDto on the session is for a different prisoner'}`,
+        `RR-1300 - Setting up new InductionDto in the Prisoner Context for ${prisonNumber} because ${!getPrisonerContext(req.session, prisonNumber).inductionDto ? 'InductionDto is not in the Prisoner Context' : 'InductionDto in the Prisoner Context is for a different prisoner'}`,
       )
 
       let educationDto: EducationDto
@@ -31,7 +32,7 @@ const createEmptyInductionIfNotInSession = (
         educationDto = undefined
       }
 
-      req.session.inductionDto = {
+      getPrisonerContext(req.session, prisonNumber).inductionDto = {
         prisonNumber,
         previousQualifications: educationDto
           ? {
@@ -46,4 +47,4 @@ const createEmptyInductionIfNotInSession = (
   })
 }
 
-export default createEmptyInductionIfNotInSession
+export default createEmptyInductionIfNotInPrisonerContext

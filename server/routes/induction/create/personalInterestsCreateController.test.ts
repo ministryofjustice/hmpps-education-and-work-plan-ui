@@ -5,6 +5,7 @@ import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataB
 import { aValidInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
 import PersonalInterestsCreateController from './personalInterestsCreateController'
 import PersonalInterestsValue from '../../../enums/personalInterestsValue'
+import { getPrisonerContext } from '../../../data/session/prisonerContexts'
 
 describe('personalInterestsCreateController', () => {
   const controller = new PersonalInterestsCreateController()
@@ -37,8 +38,8 @@ describe('personalInterestsCreateController', () => {
       // Given
       const inductionDto = aValidInductionDto()
       inductionDto.personalSkillsAndInterests.interests = undefined
-      req.session.inductionDto = inductionDto
-      req.session.personalInterestsForm = undefined
+      getPrisonerContext(req.session, prisonNumber).inductionDto = inductionDto
+      getPrisonerContext(req.session, prisonNumber).personalInterestsForm = undefined
 
       const expectedPersonalInterestsForm: PersonalInterestsForm = {
         personalInterests: [],
@@ -55,21 +56,21 @@ describe('personalInterestsCreateController', () => {
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/induction/personalInterests/index', expectedView)
-      expect(req.session.personalInterestsForm).toBeUndefined()
-      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(getPrisonerContext(req.session, prisonNumber).personalInterestsForm).toBeUndefined()
+      expect(getPrisonerContext(req.session, prisonNumber).inductionDto).toEqual(inductionDto)
     })
 
     it('should get the Personal interests view given there is an PersonalInterestsForm already on the session', async () => {
       // Given
       const inductionDto = aValidInductionDto()
       inductionDto.personalSkillsAndInterests.interests = undefined
-      req.session.inductionDto = inductionDto
+      getPrisonerContext(req.session, prisonNumber).inductionDto = inductionDto
 
       const expectedPersonalInterestsForm: PersonalInterestsForm = {
         personalInterests: ['COMMUNITY', 'CREATIVE', 'MUSICAL'],
         personalInterestsOther: '',
       }
-      req.session.personalInterestsForm = expectedPersonalInterestsForm
+      getPrisonerContext(req.session, prisonNumber).personalInterestsForm = expectedPersonalInterestsForm
 
       const expectedView = {
         prisonerSummary,
@@ -81,15 +82,15 @@ describe('personalInterestsCreateController', () => {
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/induction/personalInterests/index', expectedView)
-      expect(req.session.personalInterestsForm).toBeUndefined()
-      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(getPrisonerContext(req.session, prisonNumber).personalInterestsForm).toBeUndefined()
+      expect(getPrisonerContext(req.session, prisonNumber).inductionDto).toEqual(inductionDto)
     })
 
     it('should get the Ability To Work view given the previous page was Check Your Answers', async () => {
       // Given
       const inductionDto = aValidInductionDto()
       inductionDto.personalSkillsAndInterests.interests = undefined
-      req.session.inductionDto = inductionDto
+      getPrisonerContext(req.session, prisonNumber).inductionDto = inductionDto
 
       req.session.pageFlowHistory = {
         pageUrls: ['/prisoners/A1234BC/create-induction/check-your-answers'],
@@ -119,8 +120,8 @@ describe('personalInterestsCreateController', () => {
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/induction/personalInterests/index', expectedView)
-      expect(req.session.personalInterestsForm).toBeUndefined()
-      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(getPrisonerContext(req.session, prisonNumber).personalInterestsForm).toBeUndefined()
+      expect(getPrisonerContext(req.session, prisonNumber).inductionDto).toEqual(inductionDto)
       expect(req.session.pageFlowHistory).toEqual(expectedPageFlowHistory)
     })
   })
@@ -130,14 +131,14 @@ describe('personalInterestsCreateController', () => {
       // Given
       const inductionDto = aValidInductionDto()
       inductionDto.personalSkillsAndInterests.interests = undefined
-      req.session.inductionDto = inductionDto
+      getPrisonerContext(req.session, prisonNumber).inductionDto = inductionDto
 
       const invalidPersonalInterestsForm = {
         personalInterests: ['OTHER'],
         personalInterestsOther: '',
       }
       req.body = invalidPersonalInterestsForm
-      req.session.personalInterestsForm = undefined
+      getPrisonerContext(req.session, prisonNumber).personalInterestsForm = undefined
 
       const expectedErrors = [{ href: '#personalInterestsOther', text: `Enter Jimmy Lightfingers's interests` }]
 
@@ -149,22 +150,22 @@ describe('personalInterestsCreateController', () => {
         '/prisoners/A1234BC/create-induction/personal-interests',
         expectedErrors,
       )
-      expect(req.session.personalInterestsForm).toEqual(invalidPersonalInterestsForm)
-      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(getPrisonerContext(req.session, prisonNumber).personalInterestsForm).toEqual(invalidPersonalInterestsForm)
+      expect(getPrisonerContext(req.session, prisonNumber).inductionDto).toEqual(inductionDto)
     })
 
     it('should update inductionDto and redirect to in-prison-work page', async () => {
       // Given
       const inductionDto = aValidInductionDto()
       inductionDto.personalSkillsAndInterests.interests = undefined
-      req.session.inductionDto = inductionDto
+      getPrisonerContext(req.session, prisonNumber).inductionDto = inductionDto
 
       const personalInterestsForm = {
         personalInterests: ['CREATIVE', 'OTHER'],
         personalInterestsOther: 'Renewable energy',
       }
       req.body = personalInterestsForm
-      req.session.personalInterestsForm = undefined
+      getPrisonerContext(req.session, prisonNumber).personalInterestsForm = undefined
 
       const expectedInterests: Array<PersonalInterestDto> = [
         { interestType: PersonalInterestsValue.CREATIVE, interestTypeOther: undefined },
@@ -175,24 +176,24 @@ describe('personalInterestsCreateController', () => {
       await controller.submitPersonalInterestsForm(req, res, next)
 
       // Then
-      const updatedInduction = req.session.inductionDto
+      const updatedInduction = getPrisonerContext(req.session, prisonNumber).inductionDto
       expect(updatedInduction.personalSkillsAndInterests.interests).toEqual(expectedInterests)
       expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-induction/in-prison-work')
-      expect(req.session.skillsForm).toBeUndefined()
+      expect(getPrisonerContext(req.session, prisonNumber).personalInterestsForm).toBeUndefined()
     })
 
     it('should update inductionDto and redirect to Check Your Answers given previous page was Check Your Answers', async () => {
       // Given
       const inductionDto = aValidInductionDto()
       inductionDto.personalSkillsAndInterests.interests = undefined
-      req.session.inductionDto = inductionDto
+      getPrisonerContext(req.session, prisonNumber).inductionDto = inductionDto
 
       const personalInterestsForm = {
         personalInterests: ['CREATIVE', 'OTHER'],
         personalInterestsOther: 'Renewable energy',
       }
       req.body = personalInterestsForm
-      req.session.personalInterestsForm = undefined
+      getPrisonerContext(req.session, prisonNumber).personalInterestsForm = undefined
 
       const expectedInterests: Array<PersonalInterestDto> = [
         { interestType: PersonalInterestsValue.CREATIVE, interestTypeOther: undefined },
@@ -211,10 +212,10 @@ describe('personalInterestsCreateController', () => {
       await controller.submitPersonalInterestsForm(req, res, next)
 
       // Then
-      const updatedInduction = req.session.inductionDto
+      const updatedInduction = getPrisonerContext(req.session, prisonNumber).inductionDto
       expect(updatedInduction.personalSkillsAndInterests.interests).toEqual(expectedInterests)
       expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-induction/check-your-answers')
-      expect(req.session.skillsForm).toBeUndefined()
+      expect(getPrisonerContext(req.session, prisonNumber).personalInterestsForm).toBeUndefined()
     })
   })
 })

@@ -4,6 +4,7 @@ import type { Assessment } from 'viewModels'
 import InductionController from './inductionController'
 import QualificationsListView from './qualificationsListView'
 import dateComparator from '../../dateComparator'
+import { getPrisonerContext } from '../../../data/session/prisonerContexts'
 
 /**
  * Abstract controller class defining functionality common to both the Create and Update Induction journeys.
@@ -17,8 +18,9 @@ export default abstract class QualificationsListController extends InductionCont
     res: Response,
     next: NextFunction,
   ): Promise<void> => {
-    const { inductionDto } = req.session
     const { prisonerSummary } = res.locals
+    const { prisonNumber } = req.params
+    const { inductionDto } = getPrisonerContext(req.session, prisonNumber)
 
     const qualifications: Array<AchievedQualificationDto> = inductionDto.previousQualifications?.qualifications
 

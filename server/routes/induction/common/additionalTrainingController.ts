@@ -4,6 +4,7 @@ import type { AdditionalTrainingForm } from 'inductionForms'
 import InductionController from './inductionController'
 import AdditionalTrainingView from './additionalTrainingView'
 import AdditionalTrainingValue from '../../../enums/additionalTrainingValue'
+import { getPrisonerContext } from '../../../data/session/prisonerContexts'
 
 /**
  * Abstract controller class defining functionality common to both the Create and Update Induction journeys.
@@ -17,13 +18,15 @@ export default abstract class AdditionalTrainingController extends InductionCont
     res: Response,
     next: NextFunction,
   ): Promise<void> => {
-    const { inductionDto } = req.session
+    const { prisonNumber } = req.params
     const { prisonerSummary } = res.locals
+    const { inductionDto } = getPrisonerContext(req.session, prisonNumber)
 
     this.addCurrentPageToFlowHistoryWhenComingFromCheckYourAnswers(req)
 
-    const additionalTrainingForm = req.session.additionalTrainingForm || toAdditionalTrainingForm(inductionDto)
-    req.session.additionalTrainingForm = undefined
+    const additionalTrainingForm: AdditionalTrainingForm =
+      getPrisonerContext(req.session, prisonNumber).additionalTrainingForm || toAdditionalTrainingForm(inductionDto)
+    getPrisonerContext(req.session, prisonNumber).additionalTrainingForm = undefined
 
     const view = new AdditionalTrainingView(prisonerSummary, additionalTrainingForm)
     return res.render('pages/induction/additionalTraining/index', { ...view.renderArgs })

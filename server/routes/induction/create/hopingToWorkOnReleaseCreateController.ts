@@ -1,7 +1,9 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express'
+import type { HopingToWorkOnReleaseForm } from 'inductionForms'
 import HopingToWorkOnReleaseController from '../common/hopingToWorkOnReleaseController'
 import validateHopingToWorkOnReleaseForm from '../../validators/induction/hopingToWorkOnReleaseFormValidator'
 import YesNoValue from '../../../enums/yesNoValue'
+import { getPrisonerContext } from '../../../data/session/prisonerContexts'
 
 export default class HopingToWorkOnReleaseCreateController extends HopingToWorkOnReleaseController {
   submitHopingToWorkOnReleaseForm: RequestHandler = async (
@@ -10,11 +12,11 @@ export default class HopingToWorkOnReleaseCreateController extends HopingToWorkO
     next: NextFunction,
   ): Promise<void> => {
     const { prisonNumber } = req.params
-    const { inductionDto } = req.session
     const { prisonerSummary } = res.locals
+    const { inductionDto } = getPrisonerContext(req.session, prisonNumber)
 
-    req.session.hopingToWorkOnReleaseForm = { ...req.body }
-    const { hopingToWorkOnReleaseForm } = req.session
+    const hopingToWorkOnReleaseForm: HopingToWorkOnReleaseForm = { ...req.body }
+    getPrisonerContext(req.session, prisonNumber).hopingToWorkOnReleaseForm = hopingToWorkOnReleaseForm
 
     const errors = validateHopingToWorkOnReleaseForm(hopingToWorkOnReleaseForm, prisonerSummary)
     if (errors.length > 0) {
@@ -30,8 +32,8 @@ export default class HopingToWorkOnReleaseCreateController extends HopingToWorkO
     }
 
     const updatedInduction = this.updatedInductionDtoWithHopingToWorkOnRelease(inductionDto, hopingToWorkOnReleaseForm)
-    req.session.inductionDto = updatedInduction
-    req.session.hopingToWorkOnReleaseForm = undefined
+    getPrisonerContext(req.session, prisonNumber).inductionDto = updatedInduction
+    getPrisonerContext(req.session, prisonNumber).hopingToWorkOnReleaseForm = undefined
 
     let nextPage: string
     if (this.previousPageWasCheckYourAnswers(req)) {

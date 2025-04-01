@@ -6,6 +6,7 @@ import CheckYourAnswersCreateController from './checkYourAnswersCreateController
 import aValidCreateOrUpdateInductionDto from '../../../testsupport/createInductionDtoTestDataBuilder'
 import InductionService from '../../../services/inductionService'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
+import { getPrisonerContext } from '../../../data/session/prisonerContexts'
 
 jest.mock('../../../services/inductionService')
 jest.mock('../../../data/mappers/createOrUpdateInductionDtoMapper')
@@ -38,7 +39,7 @@ describe('checkYourAnswersCreateController', () => {
 
   beforeEach(() => {
     jest.resetAllMocks()
-    req.session.inductionDto = inductionDto
+    getPrisonerContext(req.session, prisonNumber).inductionDto = inductionDto
   })
 
   describe('getCheckYourAnswersView', () => {
@@ -53,7 +54,7 @@ describe('checkYourAnswersCreateController', () => {
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/induction/checkYourAnswers/index', expectedView)
-      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(getPrisonerContext(req.session, prisonNumber).inductionDto).toEqual(inductionDto)
     })
   })
 
@@ -70,7 +71,7 @@ describe('checkYourAnswersCreateController', () => {
       expect(mockedCreateOrUpdateInductionDtoMapper).toHaveBeenCalledWith(prisonerSummary.prisonId, inductionDto)
       expect(inductionService.createInduction).toHaveBeenCalledWith(prisonNumber, createInductionDto, username)
       expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/induction-created`)
-      expect(req.session.inductionDto).toBeUndefined()
+      expect(getPrisonerContext(req.session, prisonNumber).inductionDto).toBeUndefined()
       expect(req.session.pageFlowHistory).toBeUndefined()
     })
 
@@ -92,7 +93,7 @@ describe('checkYourAnswersCreateController', () => {
       expect(mockedCreateOrUpdateInductionDtoMapper).toHaveBeenCalledWith(prisonerSummary.prisonId, inductionDto)
       expect(inductionService.createInduction).toHaveBeenCalledWith(prisonNumber, createInductionDto, username)
       expect(next).toHaveBeenCalledWith(expectedError)
-      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(getPrisonerContext(req.session, prisonNumber).inductionDto).toEqual(inductionDto)
     })
   })
 })

@@ -3,6 +3,7 @@ import type { InductionDto } from 'inductionDto'
 import type { HighestLevelOfEducationForm } from 'forms'
 import InductionController from './inductionController'
 import HighestLevelOfEducationView from './highestLevelOfEducationView'
+import { getPrisonerContext } from '../../../data/session/prisonerContexts'
 
 /**
  * Abstract controller class defining functionality common to both the Create and Update Induction journeys.
@@ -16,14 +17,16 @@ export default abstract class HighestLevelOfEducationController extends Inductio
     res: Response,
     next: NextFunction,
   ): Promise<void> => {
-    const { inductionDto } = req.session
+    const { prisonNumber } = req.params
     const { prisonerSummary } = res.locals
+    const { inductionDto } = getPrisonerContext(req.session, prisonNumber)
 
     this.addCurrentPageToFlowHistoryWhenComingFromCheckYourAnswers(req)
 
-    const highestLevelOfEducationForm =
-      req.session.highestLevelOfEducationForm || toHighestLevelOfEducationForm(inductionDto)
-    req.session.highestLevelOfEducationForm = undefined
+    const highestLevelOfEducationForm: HighestLevelOfEducationForm =
+      getPrisonerContext(req.session, prisonNumber).highestLevelOfEducationForm ||
+      toHighestLevelOfEducationForm(inductionDto)
+    getPrisonerContext(req.session, prisonNumber).highestLevelOfEducationForm = undefined
 
     const view = new HighestLevelOfEducationView(prisonerSummary, highestLevelOfEducationForm)
     return res.render('pages/prePrisonEducation/highestLevelOfEducation', { ...view.renderArgs })

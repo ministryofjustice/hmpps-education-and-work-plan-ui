@@ -8,6 +8,7 @@ import { validFunctionalSkills } from '../../../testsupport/functionalSkillsTest
 import EducationLevelValue from '../../../enums/educationLevelValue'
 import validInPrisonCourseRecords from '../../../testsupport/inPrisonCourseRecordsTestDataBuilder'
 import HopingToGetWorkValue from '../../../enums/hopingToGetWorkValue'
+import { getPrisonerContext } from '../../../data/session/prisonerContexts'
 
 describe('qualificationsListCreateController', () => {
   const controller = new QualificationsListCreateController()
@@ -45,7 +46,7 @@ describe('qualificationsListCreateController', () => {
       // Given
       const inductionDto = aValidInductionDto({ hopingToGetWork: HopingToGetWorkValue.YES })
       inductionDto.previousQualifications.qualifications = []
-      req.session.inductionDto = inductionDto
+      getPrisonerContext(req.session, prisonNumber).inductionDto = inductionDto
 
       const expectedQualifications: Array<AchievedQualificationDto> = []
 
@@ -61,14 +62,14 @@ describe('qualificationsListCreateController', () => {
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/prePrisonEducation/qualificationsList', expectedView)
-      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(getPrisonerContext(req.session, prisonNumber).inductionDto).toEqual(inductionDto)
     })
 
     it('should get the Qualifications List view given the Induction has Hoping To Get Work as No', async () => {
       // Given
       const inductionDto = aValidInductionDto({ hopingToGetWork: HopingToGetWorkValue.NO })
       inductionDto.previousQualifications.qualifications = []
-      req.session.inductionDto = inductionDto
+      getPrisonerContext(req.session, prisonNumber).inductionDto = inductionDto
 
       const expectedQualifications: Array<AchievedQualificationDto> = []
 
@@ -84,7 +85,7 @@ describe('qualificationsListCreateController', () => {
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/prePrisonEducation/qualificationsList', expectedView)
-      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(getPrisonerContext(req.session, prisonNumber).inductionDto).toEqual(inductionDto)
     })
   })
 
@@ -92,7 +93,7 @@ describe('qualificationsListCreateController', () => {
     it('should update Induction and redisplay Qualification List Page given page submitted with removeQualification', async () => {
       // Given
       const inductionDto = aValidInductionDto()
-      req.session.inductionDto = inductionDto
+      getPrisonerContext(req.session, prisonNumber).inductionDto = inductionDto
       /* The Induction has Secondary School with Exams as the highest level of education, and the following qualification:
            - Level 4 Pottery, Grade C
        */
@@ -106,7 +107,7 @@ describe('qualificationsListCreateController', () => {
       await controller.submitQualificationsListView(req, res, next)
 
       // Then
-      const updatedInduction: InductionDto = req.session.inductionDto
+      const updatedInduction: InductionDto = getPrisonerContext(req.session, prisonNumber).inductionDto
       expect(updatedInduction.previousQualifications.educationLevel).toEqual(expectedHighestLevelOfEducation)
       expect(updatedInduction.previousQualifications.qualifications).toEqual(expectedQualifications)
       expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-induction/qualifications')
@@ -115,7 +116,7 @@ describe('qualificationsListCreateController', () => {
     it('should redirect to Qualification Level Page given page submitted with addQualification', async () => {
       // Given
       const inductionDto = aValidInductionDto()
-      req.session.inductionDto = inductionDto
+      getPrisonerContext(req.session, prisonNumber).inductionDto = inductionDto
 
       req.body = { addQualification: '' }
 
@@ -130,7 +131,7 @@ describe('qualificationsListCreateController', () => {
       // Given
       const inductionDto = aValidInductionDto()
       inductionDto.previousQualifications = undefined // No qualifications on the Induction
-      req.session.inductionDto = inductionDto
+      getPrisonerContext(req.session, prisonNumber).inductionDto = inductionDto
 
       // When
       await controller.submitQualificationsListView(req, res, next)
@@ -142,7 +143,7 @@ describe('qualificationsListCreateController', () => {
     it('should redirect to Additional Training Page given user has not come from Check Your Answers and page submitted with qualifications on the Induction', async () => {
       // Given
       const inductionDto = aValidInductionDto()
-      req.session.inductionDto = inductionDto
+      getPrisonerContext(req.session, prisonNumber).inductionDto = inductionDto
       /* The Induction has Secondary School with Exams as the highest level of education, and the following qualification:
            - Level 4 Pottery, Grade C
        */
@@ -157,7 +158,7 @@ describe('qualificationsListCreateController', () => {
     it('should redirect to Check Your Answers given user has come from Check Your Answers and page submitted with qualifications on the Induction', async () => {
       // Given
       const inductionDto = aValidInductionDto()
-      req.session.inductionDto = inductionDto
+      getPrisonerContext(req.session, prisonNumber).inductionDto = inductionDto
       /* The Induction has Secondary School with Exams as the highest level of education, and the following qualification:
            - Level 4 Pottery, Grade C
        */

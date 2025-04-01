@@ -7,6 +7,7 @@ import logger from '../../../../logger'
 import { InductionService } from '../../../services'
 import validateWorkInterestRolesForm from '../../validators/induction/workInterestRolesFormValidator'
 import WorkInterestTypeValue from '../../../enums/workInterestTypeValue'
+import { getPrisonerContext } from '../../../data/session/prisonerContexts'
 
 /**
  * Controller for updating a Prisoner's Future Work Interest Roles part of an Induction.
@@ -22,16 +23,15 @@ export default class WorkInterestRolesUpdateController extends WorkInterestRoles
     next: NextFunction,
   ): Promise<void> => {
     const { prisonNumber } = req.params
-    const { inductionDto } = req.session
     const { prisonerSummary } = res.locals
     const { prisonId } = prisonerSummary
+    const { inductionDto } = getPrisonerContext(req.session, prisonNumber)
 
-    const workInterestRoles = Object.entries<string>({ ...req.body.workInterestRoles }) as [
-      WorkInterestTypeValue,
-      string,
-    ][]
-    const workInterestRolesForm: WorkInterestRolesForm = { ...req.body, workInterestRoles }
-    req.session.workInterestRolesForm = workInterestRolesForm
+    const workInterestRolesForm: WorkInterestRolesForm = {
+      workInterestRoles: Object.entries<string>({ ...req.body.workInterestRoles }) as [WorkInterestTypeValue, string][],
+      workInterestTypesOther: req.body.workInterestTypesOther,
+    }
+    getPrisonerContext(req.session, prisonNumber).workInterestRolesForm = workInterestRolesForm
 
     const errors = validateWorkInterestRolesForm(workInterestRolesForm)
     if (errors.length > 0) {
@@ -39,14 +39,14 @@ export default class WorkInterestRolesUpdateController extends WorkInterestRoles
     }
 
     const updatedInduction = this.updatedInductionDtoWithWorkInterestRoles(inductionDto, workInterestRolesForm)
-    req.session.inductionDto = updatedInduction
+    getPrisonerContext(req.session, prisonNumber).inductionDto = updatedInduction
 
     try {
       const updateInductionDto = toCreateOrUpdateInductionDto(prisonId, updatedInduction)
       await this.inductionService.updateInduction(prisonNumber, updateInductionDto, req.user.username)
 
-      req.session.workInterestRolesForm = undefined
-      req.session.inductionDto = undefined
+      getPrisonerContext(req.session, prisonNumber).workInterestRolesForm = undefined
+      getPrisonerContext(req.session, prisonNumber).inductionDto = undefined
       return res.redirect(`/plan/${prisonNumber}/view/work-and-interests`)
     } catch (e) {
       logger.error(`Error updating Induction for prisoner ${prisonNumber}`, e)

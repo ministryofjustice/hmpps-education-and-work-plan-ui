@@ -7,6 +7,7 @@ import InPrisonTrainingCreateController from './inPrisonTrainingCreateController
 import InPrisonTrainingValue from '../../../enums/inPrisonTrainingValue'
 import { User } from '../../../data/manageUsersApiClient'
 import config from '../../../config'
+import { getPrisonerContext } from '../../../data/session/prisonerContexts'
 
 jest.mock('../../../config')
 
@@ -46,8 +47,8 @@ describe('inPrisonTrainingCreateController', () => {
       // Given
       const inductionDto = aValidInductionDto()
       inductionDto.inPrisonInterests.inPrisonTrainingInterests = undefined
-      req.session.inductionDto = inductionDto
-      req.session.inPrisonTrainingForm = undefined
+      getPrisonerContext(req.session, prisonNumber).inductionDto = inductionDto
+      getPrisonerContext(req.session, prisonNumber).inPrisonTrainingForm = undefined
 
       const expectedInPrisonTrainingForm: InPrisonTrainingForm = {
         inPrisonTraining: [],
@@ -64,21 +65,21 @@ describe('inPrisonTrainingCreateController', () => {
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/induction/inPrisonTraining/index', expectedView)
-      expect(req.session.inPrisonTrainingForm).toBeUndefined()
-      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(getPrisonerContext(req.session, prisonNumber).inPrisonTrainingForm).toBeUndefined()
+      expect(getPrisonerContext(req.session, prisonNumber).inductionDto).toEqual(inductionDto)
     })
 
     it('should get the In Prison Training view given there is an InPrisonTraining already on the session', async () => {
       // Given
       const inductionDto = aValidInductionDto()
       inductionDto.inPrisonInterests.inPrisonTrainingInterests = undefined
-      req.session.inductionDto = inductionDto
+      getPrisonerContext(req.session, prisonNumber).inductionDto = inductionDto
 
       const expectedInPrisonTrainingForm: InPrisonTrainingForm = {
         inPrisonTraining: ['CATERING', 'FORKLIFT_DRIVING'],
         inPrisonTrainingOther: '',
       }
-      req.session.inPrisonTrainingForm = expectedInPrisonTrainingForm
+      getPrisonerContext(req.session, prisonNumber).inPrisonTrainingForm = expectedInPrisonTrainingForm
 
       const expectedView = {
         prisonerSummary,
@@ -90,8 +91,8 @@ describe('inPrisonTrainingCreateController', () => {
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/induction/inPrisonTraining/index', expectedView)
-      expect(req.session.inPrisonTrainingForm).toBeUndefined()
-      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(getPrisonerContext(req.session, prisonNumber).inPrisonTrainingForm).toBeUndefined()
+      expect(getPrisonerContext(req.session, prisonNumber).inductionDto).toEqual(inductionDto)
     })
   })
 
@@ -100,14 +101,14 @@ describe('inPrisonTrainingCreateController', () => {
       // Given
       const inductionDto = aValidInductionDto()
       inductionDto.inPrisonInterests.inPrisonTrainingInterests = undefined
-      req.session.inductionDto = inductionDto
+      getPrisonerContext(req.session, prisonNumber).inductionDto = inductionDto
 
       const invalidInPrisonTrainingForm: InPrisonTrainingForm = {
         inPrisonTraining: [InPrisonTrainingValue.OTHER],
         inPrisonTrainingOther: '',
       }
       req.body = invalidInPrisonTrainingForm
-      req.session.inPrisonTrainingForm = undefined
+      getPrisonerContext(req.session, prisonNumber).inPrisonTrainingForm = undefined
 
       const expectedErrors = [
         {
@@ -128,8 +129,8 @@ describe('inPrisonTrainingCreateController', () => {
         '/prisoners/A1234BC/create-induction/in-prison-training',
         expectedErrors,
       )
-      expect(req.session.inPrisonTrainingForm).toEqual(invalidInPrisonTrainingForm)
-      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(getPrisonerContext(req.session, prisonNumber).inPrisonTrainingForm).toEqual(invalidInPrisonTrainingForm)
+      expect(getPrisonerContext(req.session, prisonNumber).inductionDto).toEqual(inductionDto)
     })
 
     it('should update inductionDto and redirect to Check Your Answers page given new induction review journey is not enabled', async () => {
@@ -138,14 +139,14 @@ describe('inPrisonTrainingCreateController', () => {
 
       const inductionDto = aValidInductionDto()
       inductionDto.inPrisonInterests.inPrisonTrainingInterests = undefined
-      req.session.inductionDto = inductionDto
+      getPrisonerContext(req.session, prisonNumber).inductionDto = inductionDto
 
       const inPrisonTrainingForm: InPrisonTrainingForm = {
         inPrisonTraining: [InPrisonTrainingValue.CATERING, InPrisonTrainingValue.OTHER],
         inPrisonTrainingOther: 'Fence building for beginners',
       }
       req.body = inPrisonTrainingForm
-      req.session.inPrisonTrainingForm = undefined
+      getPrisonerContext(req.session, prisonNumber).inPrisonTrainingForm = undefined
 
       const expectedInPrisonTrainingInterests: Array<InPrisonTrainingInterestDto> = [
         { trainingType: InPrisonTrainingValue.CATERING, trainingTypeOther: undefined },
@@ -156,10 +157,10 @@ describe('inPrisonTrainingCreateController', () => {
       await controller.submitInPrisonTrainingForm(req, res, next)
 
       // Then
-      const updatedInduction = req.session.inductionDto
+      const updatedInduction = getPrisonerContext(req.session, prisonNumber).inductionDto
       expect(updatedInduction.inPrisonInterests.inPrisonTrainingInterests).toEqual(expectedInPrisonTrainingInterests)
       expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-induction/check-your-answers')
-      expect(req.session.inPrisonTrainingForm).toBeUndefined()
+      expect(getPrisonerContext(req.session, prisonNumber).inPrisonTrainingForm).toBeUndefined()
     })
 
     it('should update inductionDto and redirect to Who Completed Induction page given new induction review journey is enabled', async () => {
@@ -168,14 +169,14 @@ describe('inPrisonTrainingCreateController', () => {
 
       const inductionDto = aValidInductionDto()
       inductionDto.inPrisonInterests.inPrisonTrainingInterests = undefined
-      req.session.inductionDto = inductionDto
+      getPrisonerContext(req.session, prisonNumber).inductionDto = inductionDto
 
       const inPrisonTrainingForm: InPrisonTrainingForm = {
         inPrisonTraining: [InPrisonTrainingValue.CATERING, InPrisonTrainingValue.OTHER],
         inPrisonTrainingOther: 'Fence building for beginners',
       }
       req.body = inPrisonTrainingForm
-      req.session.inPrisonTrainingForm = undefined
+      getPrisonerContext(req.session, prisonNumber).inPrisonTrainingForm = undefined
 
       const expectedInPrisonTrainingInterests: Array<InPrisonTrainingInterestDto> = [
         { trainingType: InPrisonTrainingValue.CATERING, trainingTypeOther: undefined },
@@ -186,24 +187,24 @@ describe('inPrisonTrainingCreateController', () => {
       await controller.submitInPrisonTrainingForm(req, res, next)
 
       // Then
-      const updatedInduction = req.session.inductionDto
+      const updatedInduction = getPrisonerContext(req.session, prisonNumber).inductionDto
       expect(updatedInduction.inPrisonInterests.inPrisonTrainingInterests).toEqual(expectedInPrisonTrainingInterests)
       expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-induction/who-completed-induction')
-      expect(req.session.inPrisonTrainingForm).toBeUndefined()
+      expect(getPrisonerContext(req.session, prisonNumber).inPrisonTrainingForm).toBeUndefined()
     })
 
     it('should update inductionDto and redirect to Check Your Answers page given previous page was Check Your Answers', async () => {
       // Given
       const inductionDto = aValidInductionDto()
       inductionDto.inPrisonInterests.inPrisonTrainingInterests = undefined
-      req.session.inductionDto = inductionDto
+      getPrisonerContext(req.session, prisonNumber).inductionDto = inductionDto
 
       const inPrisonTrainingForm: InPrisonTrainingForm = {
         inPrisonTraining: [InPrisonTrainingValue.CATERING, InPrisonTrainingValue.OTHER],
         inPrisonTrainingOther: 'Fence building for beginners',
       }
       req.body = inPrisonTrainingForm
-      req.session.inPrisonTrainingForm = undefined
+      getPrisonerContext(req.session, prisonNumber).inPrisonTrainingForm = undefined
 
       const expectedInPrisonTrainingInterests: Array<InPrisonTrainingInterestDto> = [
         { trainingType: InPrisonTrainingValue.CATERING, trainingTypeOther: undefined },
@@ -222,10 +223,10 @@ describe('inPrisonTrainingCreateController', () => {
       await controller.submitInPrisonTrainingForm(req, res, next)
 
       // Then
-      const updatedInduction = req.session.inductionDto
+      const updatedInduction = getPrisonerContext(req.session, prisonNumber).inductionDto
       expect(updatedInduction.inPrisonInterests.inPrisonTrainingInterests).toEqual(expectedInPrisonTrainingInterests)
       expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-induction/check-your-answers')
-      expect(req.session.inPrisonTrainingForm).toBeUndefined()
+      expect(getPrisonerContext(req.session, prisonNumber).inPrisonTrainingForm).toBeUndefined()
     })
   })
 })

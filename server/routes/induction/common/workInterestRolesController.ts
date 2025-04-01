@@ -4,6 +4,7 @@ import type { WorkInterestRolesForm } from 'inductionForms'
 import InductionController from './inductionController'
 import WorkInterestRolesView from './workInterestRolesView'
 import WorkInterestTypeValue from '../../../enums/workInterestTypeValue'
+import { getPrisonerContext } from '../../../data/session/prisonerContexts'
 
 /**
  * Abstract controller class defining functionality common to both the Create and Update Induction journeys.
@@ -13,13 +14,15 @@ export default abstract class WorkInterestRolesController extends InductionContr
    * Returns the Future Work Interest Roles view; suitable for use by the Create and Update journeys.
    */
   getWorkInterestRolesView: RequestHandler = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    const { inductionDto } = req.session
+    const { prisonNumber } = req.params
     const { prisonerSummary } = res.locals
+    const { inductionDto } = getPrisonerContext(req.session, prisonNumber)
 
     this.addCurrentPageToFlowHistoryWhenComingFromCheckYourAnswers(req)
 
-    const workInterestRolesForm = req.session.workInterestRolesForm || toWorkInterestRolesForm(inductionDto)
-    req.session.workInterestRolesForm = undefined
+    const workInterestRolesForm: WorkInterestRolesForm =
+      getPrisonerContext(req.session, prisonNumber).workInterestRolesForm || toWorkInterestRolesForm(inductionDto)
+    getPrisonerContext(req.session, prisonNumber).workInterestRolesForm = undefined
 
     const view = new WorkInterestRolesView(prisonerSummary, workInterestRolesForm)
     return res.render('pages/induction/workInterests/workInterestRoles', { ...view.renderArgs })

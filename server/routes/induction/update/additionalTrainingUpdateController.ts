@@ -1,10 +1,13 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express'
 import createError from 'http-errors'
+import type { AdditionalTrainingForm } from 'inductionForms'
 import AdditionalTrainingController from '../common/additionalTrainingController'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
 import logger from '../../../../logger'
 import { InductionService } from '../../../services'
 import validateAdditionalTrainingForm from '../../validators/induction/additionalTrainingFormValidator'
+import { getPrisonerContext } from '../../../data/session/prisonerContexts'
+import { asArray } from '../../../utils/utils'
 
 /**
  * Controller for Updating a Prisoner's Additional Training or Vocational Qualifications screen of the Induction.
@@ -20,18 +23,15 @@ export default class AdditionalTrainingUpdateController extends AdditionalTraini
     next: NextFunction,
   ): Promise<void> => {
     const { prisonNumber } = req.params
-    const { inductionDto } = req.session
     const { prisonerSummary } = res.locals
     const { prisonId } = prisonerSummary
+    const { inductionDto } = getPrisonerContext(req.session, prisonNumber)
 
-    req.session.additionalTrainingForm = { ...req.body }
-    if (!req.session.additionalTrainingForm.additionalTraining) {
-      req.session.additionalTrainingForm.additionalTraining = []
+    const additionalTrainingForm: AdditionalTrainingForm = {
+      additionalTraining: asArray(req.body.additionalTraining),
+      additionalTrainingOther: req.body.additionalTrainingOther,
     }
-    if (!Array.isArray(req.session.additionalTrainingForm.additionalTraining)) {
-      req.session.additionalTrainingForm.additionalTraining = [req.session.additionalTrainingForm.additionalTraining]
-    }
-    const { additionalTrainingForm } = req.session
+    getPrisonerContext(req.session, prisonNumber).additionalTrainingForm = additionalTrainingForm
 
     const errors = validateAdditionalTrainingForm(additionalTrainingForm, prisonerSummary)
     if (errors.length > 0) {
@@ -39,14 +39,14 @@ export default class AdditionalTrainingUpdateController extends AdditionalTraini
     }
 
     const updatedInduction = this.updatedInductionDtoWithAdditionalTraining(inductionDto, additionalTrainingForm)
-    req.session.inductionDto = updatedInduction
+    getPrisonerContext(req.session, prisonNumber).inductionDto = updatedInduction
 
     try {
       const updateInductionDto = toCreateOrUpdateInductionDto(prisonId, updatedInduction)
       await this.inductionService.updateInduction(prisonNumber, updateInductionDto, req.user.username)
 
-      req.session.additionalTrainingForm = undefined
-      req.session.inductionDto = undefined
+      getPrisonerContext(req.session, prisonNumber).additionalTrainingForm = undefined
+      getPrisonerContext(req.session, prisonNumber).inductionDto = undefined
       return res.redirect(`/plan/${prisonNumber}/view/education-and-training`)
     } catch (e) {
       logger.error(`Error updating Induction for prisoner ${prisonNumber}`, e)

@@ -3,6 +3,7 @@ import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataB
 import QualificationDetailsCreateController from './qualificationDetailsCreateController'
 import { aValidInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
 import QualificationLevelValue from '../../../enums/qualificationLevelValue'
+import { getPrisonerContext } from '../../../data/session/prisonerContexts'
 
 describe('qualificationDetailsCreateController', () => {
   const controller = new QualificationDetailsCreateController()
@@ -26,8 +27,8 @@ describe('qualificationDetailsCreateController', () => {
 
   beforeEach(() => {
     jest.resetAllMocks()
-    req.session.qualificationLevelForm = undefined
-    req.session.qualificationDetailsForm = undefined
+    getPrisonerContext(req.session, prisonNumber).qualificationLevelForm = undefined
+    getPrisonerContext(req.session, prisonNumber).qualificationDetailsForm = undefined
     req.body = {}
   })
 
@@ -36,11 +37,11 @@ describe('qualificationDetailsCreateController', () => {
       // Given
       const inductionDto = aValidInductionDto()
       inductionDto.previousQualifications.qualifications = undefined
-      req.session.inductionDto = inductionDto
+      getPrisonerContext(req.session, prisonNumber).inductionDto = inductionDto
       const qualificationLevelForm = { qualificationLevel: QualificationLevelValue.LEVEL_3 }
-      req.session.qualificationLevelForm = qualificationLevelForm
+      getPrisonerContext(req.session, prisonNumber).qualificationLevelForm = qualificationLevelForm
 
-      req.session.qualificationDetailsForm = undefined
+      getPrisonerContext(req.session, prisonNumber).qualificationDetailsForm = undefined
       const expectedQualificationDetailsForm = {
         qualificationSubject: '',
         qualificationGrade: '',
@@ -57,25 +58,25 @@ describe('qualificationDetailsCreateController', () => {
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/prePrisonEducation/qualificationDetails', expectedView)
-      expect(req.session.qualificationDetailsForm).toBeUndefined()
-      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(getPrisonerContext(req.session, prisonNumber).qualificationDetailsForm).toBeUndefined()
+      expect(getPrisonerContext(req.session, prisonNumber).inductionDto).toEqual(inductionDto)
     })
 
     it('should get the Qualification Details view given there is a QualificationDetailsForm already on the session', async () => {
       // Given
       const inductionDto = aValidInductionDto()
       inductionDto.previousQualifications.qualifications = undefined
-      req.session.inductionDto = inductionDto
+      getPrisonerContext(req.session, prisonNumber).inductionDto = inductionDto
       const qualificationLevelForm = {
         qualificationLevel: QualificationLevelValue.LEVEL_3,
       }
-      req.session.qualificationLevelForm = qualificationLevelForm
+      getPrisonerContext(req.session, prisonNumber).qualificationLevelForm = qualificationLevelForm
 
       const expectedQualificationDetailsForm = {
         qualificationSubject: '',
         qualificationGrade: '',
       }
-      req.session.qualificationDetailsForm = expectedQualificationDetailsForm
+      getPrisonerContext(req.session, prisonNumber).qualificationDetailsForm = expectedQualificationDetailsForm
 
       const expectedView = {
         prisonerSummary,
@@ -88,8 +89,8 @@ describe('qualificationDetailsCreateController', () => {
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/prePrisonEducation/qualificationDetails', expectedView)
-      expect(req.session.qualificationDetailsForm).toBeUndefined()
-      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(getPrisonerContext(req.session, prisonNumber).qualificationDetailsForm).toBeUndefined()
+      expect(getPrisonerContext(req.session, prisonNumber).inductionDto).toEqual(inductionDto)
     })
   })
 
@@ -98,18 +99,18 @@ describe('qualificationDetailsCreateController', () => {
       // Given
       const inductionDto = aValidInductionDto()
       inductionDto.previousQualifications.qualifications = undefined
-      req.session.inductionDto = inductionDto
+      getPrisonerContext(req.session, prisonNumber).inductionDto = inductionDto
       const qualificationLevelForm = {
         qualificationLevel: QualificationLevelValue.LEVEL_3,
       }
-      req.session.qualificationLevelForm = qualificationLevelForm
+      getPrisonerContext(req.session, prisonNumber).qualificationLevelForm = qualificationLevelForm
 
       const invalidQualificationDetailsForm = {
         qualificationSubject: '',
         qualificationGrade: 'A',
       }
       req.body = invalidQualificationDetailsForm
-      req.session.qualificationDetailsForm = undefined
+      getPrisonerContext(req.session, prisonNumber).qualificationDetailsForm = undefined
 
       const expectedErrors = [
         {
@@ -126,40 +127,42 @@ describe('qualificationDetailsCreateController', () => {
         `/prisoners/${prisonNumber}/create-induction/qualification-details`,
         expectedErrors,
       )
-      expect(req.session.qualificationDetailsForm).toEqual(invalidQualificationDetailsForm)
-      expect(req.session.qualificationLevelForm).toEqual(qualificationLevelForm)
-      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(getPrisonerContext(req.session, prisonNumber).qualificationDetailsForm).toEqual(
+        invalidQualificationDetailsForm,
+      )
+      expect(getPrisonerContext(req.session, prisonNumber).qualificationLevelForm).toEqual(qualificationLevelForm)
+      expect(getPrisonerContext(req.session, prisonNumber).inductionDto).toEqual(inductionDto)
     })
 
     it('should proceed to qualifications page', async () => {
       // Given
       const inductionDto = aValidInductionDto()
       inductionDto.previousQualifications.qualifications = undefined
-      req.session.inductionDto = inductionDto
+      getPrisonerContext(req.session, prisonNumber).inductionDto = inductionDto
 
       const qualificationLevelForm = {
         qualificationLevel: QualificationLevelValue.LEVEL_3,
       }
-      req.session.qualificationLevelForm = qualificationLevelForm
+      getPrisonerContext(req.session, prisonNumber).qualificationLevelForm = qualificationLevelForm
 
       const qualificationDetailsForm = {
         qualificationSubject: 'Maths',
         qualificationGrade: 'A',
       }
       req.body = qualificationDetailsForm
-      req.session.qualificationDetailsForm = undefined
+      getPrisonerContext(req.session, prisonNumber).qualificationDetailsForm = undefined
 
       // When
       await controller.submitQualificationDetailsForm(req, res, next)
 
       // Then
-      const updatedInduction = req.session.inductionDto
+      const updatedInduction = getPrisonerContext(req.session, prisonNumber).inductionDto
       expect(updatedInduction.previousQualifications.qualifications).toEqual([
         { subject: 'Maths', grade: 'A', level: QualificationLevelValue.LEVEL_3 },
       ])
       expect(res.redirect).toHaveBeenCalledWith(`/prisoners/${prisonNumber}/create-induction/qualifications`)
-      expect(req.session.qualificationDetailsForm).toBeUndefined()
-      expect(req.session.qualificationLevelForm).toBeUndefined()
+      expect(getPrisonerContext(req.session, prisonNumber).qualificationDetailsForm).toBeUndefined()
+      expect(getPrisonerContext(req.session, prisonNumber).qualificationLevelForm).toBeUndefined()
     })
   })
 })

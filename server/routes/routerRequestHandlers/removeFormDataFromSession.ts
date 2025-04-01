@@ -17,22 +17,6 @@ const removeFormDataFromSession = async (req: Request, res: Response, next: Next
 
   session.pageFlowQueue = undefined
   session.pageFlowHistory = undefined
-  session.inductionDto = undefined
-  session.hopingToWorkOnReleaseForm = undefined
-  session.inPrisonWorkForm = undefined
-  session.skillsForm = undefined
-  session.personalInterestsForm = undefined
-  session.workedBeforeForm = undefined
-  session.previousWorkExperienceTypesForm = undefined
-  session.previousWorkExperienceDetailForm = undefined
-  session.affectAbilityToWorkForm = undefined
-  session.workInterestTypesForm = undefined
-  session.inPrisonTrainingForm = undefined
-  session.wantToAddQualificationsForm = undefined
-  session.highestLevelOfEducationForm = undefined
-  session.qualificationLevelForm = undefined
-  session.qualificationDetailsForm = undefined
-  session.additionalTrainingForm = undefined
 
   next()
 }

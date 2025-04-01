@@ -4,6 +4,7 @@ import { NextFunction, Request, RequestHandler, Response } from 'express'
 import InPrisonWorkView from './inPrisonWorkView'
 import InductionController from './inductionController'
 import InPrisonWorkValue from '../../../enums/inPrisonWorkValue'
+import { getPrisonerContext } from '../../../data/session/prisonerContexts'
 
 /**
  * Abstract controller class defining functionality common to both the Create and Update Induction journeys.
@@ -13,13 +14,15 @@ export default abstract class InPrisonWorkController extends InductionController
    * Returns the In Prison Work view; suitable for use by the Create and Update journeys.
    */
   getInPrisonWorkView: RequestHandler = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    const { inductionDto } = req.session
+    const { prisonNumber } = req.params
     const { prisonerSummary } = res.locals
+    const { inductionDto } = getPrisonerContext(req.session, prisonNumber)
 
     this.addCurrentPageToFlowHistoryWhenComingFromCheckYourAnswers(req)
 
-    const inPrisonWorkForm = req.session.inPrisonWorkForm || toInPrisonWorkForm(inductionDto)
-    req.session.inPrisonWorkForm = undefined
+    const inPrisonWorkForm: InPrisonWorkForm =
+      getPrisonerContext(req.session, prisonNumber).inPrisonWorkForm || toInPrisonWorkForm(inductionDto)
+    getPrisonerContext(req.session, prisonNumber).inPrisonWorkForm = undefined
 
     const view = new InPrisonWorkView(prisonerSummary, inPrisonWorkForm)
     return res.render('pages/induction/inPrisonWork/index', { ...view.renderArgs })

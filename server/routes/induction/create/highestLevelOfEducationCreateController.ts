@@ -1,6 +1,8 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express'
+import type { HighestLevelOfEducationForm } from 'forms'
 import HighestLevelOfEducationController from '../common/highestLevelOfEducationController'
 import validateHighestLevelOfEducationForm from '../../validators/induction/highestLevelOfEducationFormValidator'
+import { getPrisonerContext } from '../../../data/session/prisonerContexts'
 
 export default class HighestLevelOfEducationCreateController extends HighestLevelOfEducationController {
   submitHighestLevelOfEducationForm: RequestHandler = async (
@@ -9,11 +11,11 @@ export default class HighestLevelOfEducationCreateController extends HighestLeve
     next: NextFunction,
   ): Promise<void> => {
     const { prisonNumber } = req.params
-    const { inductionDto } = req.session
     const { prisonerSummary } = res.locals
+    const { inductionDto } = getPrisonerContext(req.session, prisonNumber)
 
-    req.session.highestLevelOfEducationForm = { ...req.body }
-    const { highestLevelOfEducationForm } = req.session
+    const highestLevelOfEducationForm: HighestLevelOfEducationForm = { ...req.body }
+    getPrisonerContext(req.session, prisonNumber).highestLevelOfEducationForm = highestLevelOfEducationForm
 
     const errors = validateHighestLevelOfEducationForm(highestLevelOfEducationForm, prisonerSummary)
     if (errors.length > 0) {
@@ -24,8 +26,8 @@ export default class HighestLevelOfEducationCreateController extends HighestLeve
       inductionDto,
       highestLevelOfEducationForm,
     )
-    req.session.inductionDto = updatedInduction
-    req.session.highestLevelOfEducationForm = undefined
+    getPrisonerContext(req.session, prisonNumber).inductionDto = updatedInduction
+    getPrisonerContext(req.session, prisonNumber).highestLevelOfEducationForm = undefined
 
     if (this.previousPageWasCheckYourAnswers(req)) {
       return res.redirect(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
