@@ -1,4 +1,4 @@
-import textValueExceedsLength from './textValueValidator'
+import { isEmpty, textValueExceedsLength } from './textValueValidator'
 
 describe('textValueValidator', () => {
   it.each([
@@ -22,6 +22,53 @@ describe('textValueValidator', () => {
 
     // When
     const actual = textValueExceedsLength(spec.value, spec.maxLength)
+
+    // Then
+    expect(actual).toEqual(spec.expected)
+  })
+
+  it.each([
+    { value: null, expected: true },
+    { value: undefined, expected: true },
+    { value: '', expected: true },
+    { value: '   ', expected: true },
+    { value: ' . ', expected: false },
+    {
+      value: `
+`,
+      expected: true,
+    },
+    {
+      value: `
+`,
+      expected: true,
+    },
+    {
+      value: `
+
+
+`,
+      expected: true,
+    },
+    {
+      value: `
+
+
+`,
+      expected: true,
+    },
+    {
+      value: `
+some text
+
+`,
+      expected: false,
+    },
+  ])('should validate whether text value is empty', spec => {
+    // Given
+
+    // When
+    const actual = isEmpty(spec.value)
 
     // Then
     expect(actual).toEqual(spec.expected)

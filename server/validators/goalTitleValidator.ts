@@ -1,4 +1,4 @@
-import textValueExceedsLength from './textValueValidator'
+import { textValueExceedsLength } from './textValueValidator'
 
 const MAX_GOAL_TITLE_LENGTH = 512
 

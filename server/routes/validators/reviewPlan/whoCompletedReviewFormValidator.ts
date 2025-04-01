@@ -2,7 +2,7 @@ import { isAfter, isValid, parse, startOfToday } from 'date-fns'
 import type { WhoCompletedReviewForm } from 'reviewPlanForms'
 import formatErrors from '../../errorFormatter'
 import SessionCompletedByValue from '../../../enums/sessionCompletedByValue'
-import textValueExceedsLength from '../../../validators/textValueValidator'
+import { textValueExceedsLength } from '../../../validators/textValueValidator'
 
 const validateWhoCompletedReviewForm = (
   whoCompletedReviewForm: WhoCompletedReviewForm,

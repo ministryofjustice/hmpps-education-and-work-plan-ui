@@ -1,6 +1,6 @@
 import type { InductionNoteForm } from 'inductionForms'
 import formatErrors from '../../errorFormatter'
-import textValueExceedsLength from '../../../validators/textValueValidator'
+import { textValueExceedsLength } from '../../../validators/textValueValidator'
 
 const MAX_INDUCTION_NOTE_LENGTH = 512
 

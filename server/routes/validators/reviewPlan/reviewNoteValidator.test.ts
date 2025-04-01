@@ -13,9 +13,24 @@ describe('reviewNoteValidator', () => {
     expect(errors).toStrictEqual([])
   })
 
-  it('should validate given a missing review note', () => {
+  it.each([
+    null,
+    undefined,
+    '',
+    '     ',
+    `
+`,
+    `
+
+
+`,
+    `
+
+
+`,
+  ])('should validate given a missing review note', value => {
     // Given
-    const reviewNote: ReviewNoteForm = { notes: undefined }
+    const reviewNote: ReviewNoteForm = { notes: value }
 
     // When
     const errors = validateReviewNote(reviewNote)

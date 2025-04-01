@@ -1,7 +1,7 @@
 import type { PreviousWorkExperienceDetailForm } from 'inductionForms'
 import type { PrisonerSummary } from 'viewModels'
 import formatErrors from '../../errorFormatter'
-import textValueExceedsLength from '../../../validators/textValueValidator'
+import { textValueExceedsLength } from '../../../validators/textValueValidator'
 
 const MAX_JOB_ROLE_LENGTH = 256
 const MAX_JOB_DETAILS_LENGTH = 512

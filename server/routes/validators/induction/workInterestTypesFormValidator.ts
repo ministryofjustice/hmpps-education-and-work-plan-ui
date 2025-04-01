@@ -2,7 +2,7 @@ import type { WorkInterestTypesForm } from 'inductionForms'
 import type { PrisonerSummary } from 'viewModels'
 import formatErrors from '../../errorFormatter'
 import WorkInterestTypeValue from '../../../enums/workInterestTypeValue'
-import textValueExceedsLength from '../../../validators/textValueValidator'
+import { textValueExceedsLength } from '../../../validators/textValueValidator'
 
 const MAX_OTHER_LENGTH = 255
 
