@@ -1,6 +1,6 @@
 import type { InductionExemptionForm } from 'inductionForms'
 import formatErrors from '../../errorFormatter'
-import textValueExceedsLength from '../../../validators/textValueValidator'
+import { textValueExceedsLength } from '../../../validators/textValueValidator'
 
 const MAX_EXEMPTION_REASON_LENGTH = 200
 

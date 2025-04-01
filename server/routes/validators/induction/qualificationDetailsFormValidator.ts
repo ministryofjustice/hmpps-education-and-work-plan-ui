@@ -3,7 +3,7 @@ import type { PrisonerSummary } from 'viewModels'
 import formatErrors from '../../errorFormatter'
 import QualificationLevelValue from '../../../enums/qualificationLevelValue'
 import formatQualificationLevelFilter from '../../../filters/formatQualificationLevelFilter'
-import textValueExceedsLength from '../../../validators/textValueValidator'
+import { textValueExceedsLength } from '../../../validators/textValueValidator'
 
 const MAX_QUALIFICATION_SUBJECT_LENGTH = 100
 const MAX_QUALIFICATION_GRADE_LENGTH = 50

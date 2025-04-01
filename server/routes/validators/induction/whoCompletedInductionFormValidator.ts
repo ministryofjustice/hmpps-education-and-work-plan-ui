@@ -2,7 +2,7 @@ import { isAfter, isValid, parse, startOfToday } from 'date-fns'
 import type { WhoCompletedInductionForm } from 'inductionForms'
 import formatErrors from '../../errorFormatter'
 import SessionCompletedByValue from '../../../enums/sessionCompletedByValue'
-import textValueExceedsLength from '../../../validators/textValueValidator'
+import { textValueExceedsLength } from '../../../validators/textValueValidator'
 
 const validateWhoCompletedInductionForm = (
   whoCompletedInductionForm: WhoCompletedInductionForm,

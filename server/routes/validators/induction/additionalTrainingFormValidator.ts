@@ -2,7 +2,7 @@ import type { AdditionalTrainingForm } from 'inductionForms'
 import type { PrisonerSummary } from 'viewModels'
 import formatErrors from '../../errorFormatter'
 import AdditionalTrainingValue from '../../../enums/additionalTrainingValue'
-import textValueExceedsLength from '../../../validators/textValueValidator'
+import { textValueExceedsLength } from '../../../validators/textValueValidator'
 
 const MAX_OTHER_LENGTH = 512
 

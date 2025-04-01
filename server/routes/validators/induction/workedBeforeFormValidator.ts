@@ -2,7 +2,7 @@ import type { WorkedBeforeForm } from 'inductionForms'
 import type { PrisonerSummary } from 'viewModels'
 import formatErrors from '../../errorFormatter'
 import HasWorkedBeforeValue from '../../../enums/hasWorkedBeforeValue'
-import textValueExceedsLength from '../../../validators/textValueValidator'
+import { textValueExceedsLength } from '../../../validators/textValueValidator'
 
 const MAX_NOT_RELEVANT_LENGTH = 512
 

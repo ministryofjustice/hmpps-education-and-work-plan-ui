@@ -2,7 +2,7 @@ import type { AffectAbilityToWorkForm } from 'inductionForms'
 import type { PrisonerSummary } from 'viewModels'
 import formatErrors from '../../errorFormatter'
 import AbilityToWorkValue from '../../../enums/abilityToWorkValue'
-import textValueExceedsLength from '../../../validators/textValueValidator'
+import { textValueExceedsLength } from '../../../validators/textValueValidator'
 
 const MAX_OTHER_LENGTH = 512
 

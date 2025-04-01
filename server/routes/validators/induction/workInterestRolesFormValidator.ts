@@ -2,7 +2,7 @@ import type { WorkInterestRolesForm } from 'inductionForms'
 import formatErrors from '../../errorFormatter'
 import WorkInterestTypeValue from '../../../enums/workInterestTypeValue'
 import formatJobTypeFilter from '../../../filters/formatJobTypeFilter'
-import textValueExceedsLength from '../../../validators/textValueValidator'
+import { textValueExceedsLength } from '../../../validators/textValueValidator'
 
 const MAX_JOB_ROLE_LENGTH = 512
 
