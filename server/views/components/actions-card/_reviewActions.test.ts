@@ -190,13 +190,47 @@ describe('_reviewActions', () => {
     expect($('[data-qa=record-exemption-button]').length).toEqual(1)
   })
 
-  it('should render empty review actions given prisoner has no scheduled review', () => {
+  it('should render review actions given prisoner has no scheduled review', () => {
     // Given
     const params = {
       ...templateParams,
       actionPlanReview: {
         problemRetrievingData: false,
         reviewStatus: 'NO_SCHEDULED_REVIEW',
+      },
+    }
+
+    // When
+    const content = nunjucks.render('_reviewActions.njk', { params })
+    const $ = cheerio.load(content)
+
+    // Then
+    expect($('[data-qa=review-actions]').length).toEqual(1)
+    expect($('[data-qa=review-not-due]').length).toEqual(0)
+    expect($('[data-qa=review-due]').length).toEqual(0)
+    expect($('[data-qa=review-overdue]').length).toEqual(0)
+    expect($('[data-qa=review-on-hold]').length).toEqual(0)
+    expect($('[data-qa=reason-on-hold]').length).toEqual(0)
+    expect($('[data-qa=no-reviews-due]').text().trim()).toEqual('No reviews due')
+    expect($('[data-qa=release-on]').text().trim()).toEqual('release on 31 Dec 2025')
+
+    expect($('[data-qa=reviews-action-items] li').length).toEqual(2)
+    expect($('[data-qa=mark-review-complete-button]').length).toEqual(1)
+    expect($('[data-qa=record-exemption-button]').length).toEqual(1)
+  })
+
+  it('should render empty review actions given prisoner has their induction scheduled', () => {
+    // Given
+    const params = {
+      ...templateParams,
+      actionPlanReview: {
+        problemRetrievingData: false,
+        reviewStatus: 'NO_SCHEDULED_REVIEW',
+      },
+      inductionSchedule: {
+        problemRetrievingData: false,
+        inductionStatus: 'INDUCTION_DUE',
+        inductionDueDate: startOfDay('2025-02-15'),
       },
     }
 

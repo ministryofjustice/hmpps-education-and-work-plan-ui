@@ -2,7 +2,7 @@
 <div class="govuk-summary-card__content govuk-!-padding-bottom-0 govuk-!-padding-top-2" data-qa="review-actions">
   <h3 class="govuk-heading-s govuk-!-margin-bottom-0">Reviews</h3>
 
-  {% if params.actionPlanReview.reviewStatus and params.actionPlanReview.reviewStatus != 'NO_SCHEDULED_REVIEW' %}
+  {% if params.actionPlanReview.reviewStatus and (params.inductionSchedule.inductionStatus == 'COMPLETE' or params.inductionSchedule.inductionStatus == 'NO_SCHEDULED_INDUCTION') %}
 
     {% if params.actionPlanReview.reviewStatus == 'NOT_DUE' %}
       <span class="govuk-tag govuk-tag--grey govuk-!-margin-top-2 govuk-!-margin-bottom-2" data-qa="review-not-due">
@@ -23,13 +23,15 @@
       <p class="govuk-body" data-qa="reason-on-hold">
         Reason: {{ params.actionPlanReview.exemptionReason | formatReviewExemptionReason }}
       </p>
-    {% elseif params.actionPlanReview.reviewStatus == 'HAS_HAD_LAST_REVIEW' %}
+    {% elseif params.actionPlanReview.reviewStatus == 'HAS_HAD_LAST_REVIEW' or params.actionPlanReview.reviewStatus == 'NO_SCHEDULED_REVIEW' %}
       <span class="govuk-tag govuk-tag--grey govuk-!-margin-top-2 govuk-!-margin-bottom-2" data-qa="no-reviews-due">
         No reviews due
       </span>
-      <p class="govuk-body" data-qa="release-on">
-        release on {{ params.prisonerSummary.releaseDate | formatDate('D MMM YYYY') }}
-      </p>
+      {% if params.prisonerSummary.releaseDate %}
+        <p class="govuk-body" data-qa="release-on">
+          release on {{ params.prisonerSummary.releaseDate | formatDate('D MMM YYYY') }}
+        </p>
+      {% endif %}
     {% endif %}
 
     <ul class="govuk-list govuk-!-margin-0" data-qa="reviews-action-items">
