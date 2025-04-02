@@ -260,7 +260,7 @@ context('Prisoner Overview page - Common functionality for both pre and post ind
           .actionsCardContainsReviewsActions()
       })
 
-      it('should display Actions Card without Reviews based actions given user has editor access and prisoner has no Review Schedule', () => {
+      it('should display Actions Card containing Reviews based actions given user has editor access and prisoner has no Review Schedule', () => {
         // Given
         cy.task('stubSignInAsUserWithManagerRole')
         cy.task('stubGetActionPlanReviews404Error')
@@ -273,7 +273,7 @@ context('Prisoner Overview page - Common functionality for both pre and post ind
         Page.verifyOnPage(OverviewPage) //
           .activeTabIs('Overview')
           .actionsCardContainsGoalsActions()
-          .actionsCardDoesNotContainReviewsActions()
+          .actionsCardContainsReviewsActions()
       })
     })
   })
