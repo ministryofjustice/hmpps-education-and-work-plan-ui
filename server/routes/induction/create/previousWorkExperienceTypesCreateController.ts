@@ -15,7 +15,7 @@ export default class PreviousWorkExperienceTypesCreateController extends Previou
     res: Response,
     next: NextFunction,
   ): Promise<void> => {
-    const { prisonNumber } = req.params
+    const { prisonNumber, journeyId } = req.params
     const { inductionDto } = req.session
     const { prisonerSummary } = res.locals
 
@@ -28,7 +28,10 @@ export default class PreviousWorkExperienceTypesCreateController extends Previou
     const errors = validatePreviousWorkExperienceTypesForm(previousWorkExperienceTypesForm, prisonerSummary)
 
     if (errors.length > 0) {
-      return res.redirectWithErrors(`/prisoners/${prisonNumber}/create-induction/previous-work-experience`, errors)
+      return res.redirectWithErrors(
+        `/prisoners/${prisonNumber}/create-induction/${journeyId}/previous-work-experience`,
+        errors,
+      )
     }
 
     const updatedInduction = this.updatedInductionDtoWithPreviousWorkExperiences(
@@ -38,7 +41,7 @@ export default class PreviousWorkExperienceTypesCreateController extends Previou
     req.session.inductionDto = updatedInduction
 
     // We need to show the Details page for each work experience type.
-    const pageFlowQueue = buildPageFlowQueue(updatedInduction, prisonNumber)
+    const pageFlowQueue = buildPageFlowQueue(updatedInduction, prisonNumber, journeyId)
     req.session.pageFlowQueue = pageFlowQueue
 
     req.session.previousWorkExperienceTypesForm = undefined
@@ -51,7 +54,7 @@ export default class PreviousWorkExperienceTypesCreateController extends Previou
  * Builds and returns a Page Flow Queue to show the Details page for each work experience type. The list of pages to be
  * added to the queue is the list of work types on the updated induction.
  */
-const buildPageFlowQueue = (updatedInduction: InductionDto, prisonNumber: string): PageFlow => {
+const buildPageFlowQueue = (updatedInduction: InductionDto, prisonNumber: string, journeyId: string): PageFlow => {
   const workExperienceTypesOnUpdatedInduction = (updatedInduction.previousWorkExperiences.experiences || []).map(
     experience => experience.experienceType,
   )
@@ -64,9 +67,10 @@ const buildPageFlowQueue = (updatedInduction: InductionDto, prisonNumber: string
   )
 
   const nextPages = workExperienceTypesToShowDetailsFormFor.map(
-    workType => `/prisoners/${prisonNumber}/create-induction/previous-work-experience/${workType.toLowerCase()}`,
+    workType =>
+      `/prisoners/${prisonNumber}/create-induction/${journeyId}/previous-work-experience/${workType.toLowerCase()}`,
   )
-  const pageUrls = [`/prisoners/${prisonNumber}/create-induction/previous-work-experience`, ...nextPages]
+  const pageUrls = [`/prisoners/${prisonNumber}/create-induction/${journeyId}/previous-work-experience`, ...nextPages]
   return {
     pageUrls,
     currentPageIndex: 0,

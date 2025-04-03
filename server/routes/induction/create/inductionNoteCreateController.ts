@@ -7,7 +7,7 @@ import InductionNoteController from '../common/inductionNoteController'
 export default class InductionNoteCreateController extends InductionNoteController {
   submitInductionNoteForm: RequestHandler = async (req, res, next): Promise<void> => {
     const { inductionDto } = req.session
-    const { prisonNumber } = req.params
+    const { prisonNumber, journeyId } = req.params
 
     const inductionNoteForm: InductionNoteForm = { ...req.body }
 
@@ -16,10 +16,10 @@ export default class InductionNoteCreateController extends InductionNoteControll
 
     const errors = validateInductionNoteForm(inductionNoteForm)
     if (errors.length > 0) {
-      return res.redirectWithErrors(`/prisoners/${prisonNumber}/create-induction/notes`, errors)
+      return res.redirectWithErrors(`/prisoners/${prisonNumber}/create-induction/${journeyId}/notes`, errors)
     }
 
-    return res.redirect(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
+    return res.redirect(`/prisoners/${prisonNumber}/create-induction/${journeyId}/check-your-answers`)
   }
 }
 

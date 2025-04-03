@@ -8,7 +8,7 @@ export default class HighestLevelOfEducationCreateController extends HighestLeve
     res: Response,
     next: NextFunction,
   ): Promise<void> => {
-    const { prisonNumber } = req.params
+    const { prisonNumber, journeyId } = req.params
     const { inductionDto } = req.session
     const { prisonerSummary } = res.locals
 
@@ -17,7 +17,10 @@ export default class HighestLevelOfEducationCreateController extends HighestLeve
 
     const errors = validateHighestLevelOfEducationForm(highestLevelOfEducationForm, prisonerSummary)
     if (errors.length > 0) {
-      return res.redirectWithErrors(`/prisoners/${prisonNumber}/create-induction/highest-level-of-education`, errors)
+      return res.redirectWithErrors(
+        `/prisoners/${prisonNumber}/create-induction/${journeyId}/highest-level-of-education`,
+        errors,
+      )
     }
 
     const updatedInduction = this.updatedInductionDtoWithHighestLevelOfEducation(
@@ -28,13 +31,13 @@ export default class HighestLevelOfEducationCreateController extends HighestLeve
     req.session.highestLevelOfEducationForm = undefined
 
     if (this.previousPageWasCheckYourAnswers(req)) {
-      return res.redirect(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
+      return res.redirect(`/prisoners/${prisonNumber}/create-induction/${journeyId}/check-your-answers`)
     }
 
     const nextPage =
       updatedInduction.previousQualifications.qualifications?.length > 0
-        ? `/prisoners/${prisonNumber}/create-induction/qualifications` // if the induction already has qualifications (from being entered prior to the Induction) skip straight to the Qualifications List page
-        : `/prisoners/${prisonNumber}/create-induction/want-to-add-qualifications`
+        ? `/prisoners/${prisonNumber}/create-induction/${journeyId}/qualifications` // if the induction already has qualifications (from being entered prior to the Induction) skip straight to the Qualifications List page
+        : `/prisoners/${prisonNumber}/create-induction/${journeyId}/want-to-add-qualifications`
     return res.redirect(nextPage)
   }
 }

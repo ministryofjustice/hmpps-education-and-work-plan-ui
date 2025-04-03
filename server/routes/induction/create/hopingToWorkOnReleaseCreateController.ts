@@ -9,7 +9,7 @@ export default class HopingToWorkOnReleaseCreateController extends HopingToWorkO
     res: Response,
     next: NextFunction,
   ): Promise<void> => {
-    const { prisonNumber } = req.params
+    const { prisonNumber, journeyId } = req.params
     const { inductionDto } = req.session
     const { prisonerSummary } = res.locals
 
@@ -18,7 +18,10 @@ export default class HopingToWorkOnReleaseCreateController extends HopingToWorkO
 
     const errors = validateHopingToWorkOnReleaseForm(hopingToWorkOnReleaseForm, prisonerSummary)
     if (errors.length > 0) {
-      return res.redirectWithErrors(`/prisoners/${prisonNumber}/create-induction/hoping-to-work-on-release`, errors)
+      return res.redirectWithErrors(
+        `/prisoners/${prisonNumber}/create-induction/${journeyId}/hoping-to-work-on-release`,
+        errors,
+      )
     }
 
     // If the previous page was Check Your Answers and the user has not changed the answer, go back to Check Your Answers
@@ -26,7 +29,7 @@ export default class HopingToWorkOnReleaseCreateController extends HopingToWorkO
       this.previousPageWasCheckYourAnswers(req) &&
       this.answerHasNotBeenChanged(inductionDto, hopingToWorkOnReleaseForm)
     ) {
-      res.redirect(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
+      res.redirect(`/prisoners/${prisonNumber}/create-induction/${journeyId}/check-your-answers`)
     }
 
     const updatedInduction = this.updatedInductionDtoWithHopingToWorkOnRelease(inductionDto, hopingToWorkOnReleaseForm)
@@ -39,15 +42,15 @@ export default class HopingToWorkOnReleaseCreateController extends HopingToWorkO
       // or go to Work Interest Types in order to capture the prisoners future work interests.
       nextPage =
         updatedInduction.workOnRelease.hopingToWork !== YesNoValue.YES
-          ? `/prisoners/${prisonNumber}/create-induction/check-your-answers`
-          : `/prisoners/${prisonNumber}/create-induction/work-interest-types`
+          ? `/prisoners/${prisonNumber}/create-induction/${journeyId}/check-your-answers`
+          : `/prisoners/${prisonNumber}/create-induction/${journeyId}/work-interest-types`
     } else {
       // The previous page was not Check Your Answers so we are part of the regular Create journey. Depending on whether
       // the prisoner wants to work or not the next page is either Work Interest Types or Affect Ability To Work.
       nextPage =
         updatedInduction.workOnRelease.hopingToWork === YesNoValue.YES
-          ? `/prisoners/${prisonNumber}/create-induction/work-interest-types`
-          : `/prisoners/${prisonNumber}/create-induction/affect-ability-to-work`
+          ? `/prisoners/${prisonNumber}/create-induction/${journeyId}/work-interest-types`
+          : `/prisoners/${prisonNumber}/create-induction/${journeyId}/affect-ability-to-work`
     }
     return res.redirect(nextPage)
   }

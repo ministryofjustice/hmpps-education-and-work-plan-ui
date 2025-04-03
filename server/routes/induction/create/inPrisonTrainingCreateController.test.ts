@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from 'express'
+import { v4 as uuidV4 } from 'uuid'
 import type { InPrisonTrainingForm } from 'inductionForms'
 import type { InPrisonTrainingInterestDto } from 'inductionDto'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
@@ -13,6 +14,7 @@ jest.mock('../../../config')
 describe('inPrisonTrainingCreateController', () => {
   const controller = new InPrisonTrainingCreateController()
 
+  const journeyId = uuidV4()
   const prisonNumber = 'A1234BC'
   const prisonerSummary = aValidPrisonerSummary()
   const user: User = {
@@ -22,9 +24,9 @@ describe('inPrisonTrainingCreateController', () => {
 
   const req = {
     session: {},
-    params: { prisonNumber },
+    params: { prisonNumber, journeyId },
     body: {},
-    path: `/prisoners/${prisonNumber}/create-induction/in-prison-training`,
+    originalUrl: `/prisoners/${prisonNumber}/create-induction/${journeyId}/in-prison-training`,
   } as unknown as Request
   const res = {
     redirect: jest.fn(),
@@ -125,7 +127,7 @@ describe('inPrisonTrainingCreateController', () => {
 
       // Then
       expect(res.redirectWithErrors).toHaveBeenCalledWith(
-        '/prisoners/A1234BC/create-induction/in-prison-training',
+        `/prisoners/A1234BC/create-induction/${journeyId}/in-prison-training`,
         expectedErrors,
       )
       expect(req.session.inPrisonTrainingForm).toEqual(invalidInPrisonTrainingForm)
@@ -158,7 +160,7 @@ describe('inPrisonTrainingCreateController', () => {
       // Then
       const updatedInduction = req.session.inductionDto
       expect(updatedInduction.inPrisonInterests.inPrisonTrainingInterests).toEqual(expectedInPrisonTrainingInterests)
-      expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-induction/check-your-answers')
+      expect(res.redirect).toHaveBeenCalledWith(`/prisoners/A1234BC/create-induction/${journeyId}/check-your-answers`)
       expect(req.session.inPrisonTrainingForm).toBeUndefined()
     })
 
@@ -188,7 +190,9 @@ describe('inPrisonTrainingCreateController', () => {
       // Then
       const updatedInduction = req.session.inductionDto
       expect(updatedInduction.inPrisonInterests.inPrisonTrainingInterests).toEqual(expectedInPrisonTrainingInterests)
-      expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-induction/who-completed-induction')
+      expect(res.redirect).toHaveBeenCalledWith(
+        `/prisoners/A1234BC/create-induction/${journeyId}/who-completed-induction`,
+      )
       expect(req.session.inPrisonTrainingForm).toBeUndefined()
     })
 
@@ -212,8 +216,8 @@ describe('inPrisonTrainingCreateController', () => {
 
       req.session.pageFlowHistory = {
         pageUrls: [
-          '/prisoners/A1234BC/create-induction/check-your-answers',
-          '/prisoners/A1234BC/create-induction/in-prison-training',
+          `/prisoners/A1234BC/create-induction/${journeyId}/check-your-answers`,
+          `/prisoners/A1234BC/create-induction/${journeyId}/in-prison-training`,
         ],
         currentPageIndex: 1,
       }
@@ -224,7 +228,7 @@ describe('inPrisonTrainingCreateController', () => {
       // Then
       const updatedInduction = req.session.inductionDto
       expect(updatedInduction.inPrisonInterests.inPrisonTrainingInterests).toEqual(expectedInPrisonTrainingInterests)
-      expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-induction/check-your-answers')
+      expect(res.redirect).toHaveBeenCalledWith(`/prisoners/A1234BC/create-induction/${journeyId}/check-your-answers`)
       expect(req.session.inPrisonTrainingForm).toBeUndefined()
     })
   })

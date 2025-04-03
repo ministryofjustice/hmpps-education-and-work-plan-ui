@@ -6,7 +6,7 @@ import { asArray } from '../../../utils/utils'
 
 export default class SkillsCreateController extends SkillsController {
   submitSkillsForm: RequestHandler = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    const { prisonNumber } = req.params
+    const { prisonNumber, journeyId } = req.params
     const { inductionDto } = req.session
     const { prisonerSummary } = res.locals
 
@@ -18,7 +18,7 @@ export default class SkillsCreateController extends SkillsController {
 
     const errors = validateSkillsForm(skillsForm, prisonerSummary)
     if (errors.length > 0) {
-      return res.redirectWithErrors(`/prisoners/${prisonNumber}/create-induction/skills`, errors)
+      return res.redirectWithErrors(`/prisoners/${prisonNumber}/create-induction/${journeyId}/skills`, errors)
     }
 
     const updatedInduction = this.updatedInductionDtoWithSkills(inductionDto, skillsForm)
@@ -26,7 +26,7 @@ export default class SkillsCreateController extends SkillsController {
     req.session.skillsForm = undefined
 
     return this.previousPageWasCheckYourAnswers(req)
-      ? res.redirect(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
-      : res.redirect(`/prisoners/${prisonNumber}/create-induction/personal-interests`)
+      ? res.redirect(`/prisoners/${prisonNumber}/create-induction/${journeyId}/check-your-answers`)
+      : res.redirect(`/prisoners/${prisonNumber}/create-induction/${journeyId}/personal-interests`)
   }
 }

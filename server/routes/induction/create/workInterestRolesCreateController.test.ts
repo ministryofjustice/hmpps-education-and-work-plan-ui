@@ -1,4 +1,5 @@
 import { Request, Response } from 'express'
+import { v4 as uuidV4 } from 'uuid'
 import type { FutureWorkInterestDto } from 'inductionDto'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
 import { aValidInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
@@ -8,14 +9,15 @@ import WorkInterestRolesCreateController from './workInterestRolesCreateControll
 describe('workInterestRolesCreateController', () => {
   const controller = new WorkInterestRolesCreateController()
 
+  const journeyId = uuidV4()
   const prisonNumber = 'A1234BC'
   const prisonerSummary = aValidPrisonerSummary()
 
   const req = {
     session: {},
     body: {},
-    params: { prisonNumber },
-    path: `/prisoners/${prisonNumber}/create-induction/work-interest-roles`,
+    params: { prisonNumber, journeyId },
+    originalUrl: `/prisoners/${prisonNumber}/create-induction/${journeyId}/work-interest-roles`,
   } as unknown as Request
   const res = {
     redirect: jest.fn(),
@@ -97,7 +99,7 @@ describe('workInterestRolesCreateController', () => {
 
       // Then
       expect(res.redirectWithErrors).toHaveBeenCalledWith(
-        '/prisoners/A1234BC/create-induction/work-interest-roles',
+        `/prisoners/A1234BC/create-induction/${journeyId}/work-interest-roles`,
         expectedErrors,
       )
       expect(req.session.workInterestRolesForm).toEqual(expectedWorkInterestRolesForm)
@@ -122,7 +124,7 @@ describe('workInterestRolesCreateController', () => {
         },
       }
 
-      const expectedNextPage = '/prisoners/A1234BC/create-induction/affect-ability-to-work'
+      const expectedNextPage = `/prisoners/A1234BC/create-induction/${journeyId}/affect-ability-to-work`
 
       const expectedUpdatedWorkInterests: Array<FutureWorkInterestDto> = [
         {
@@ -203,7 +205,7 @@ describe('workInterestRolesCreateController', () => {
       const futureWorkInterestsOnInduction: Array<FutureWorkInterestDto> =
         req.session.inductionDto.futureWorkInterests.interests
       expect(futureWorkInterestsOnInduction).toEqual(expectedUpdatedWorkInterests)
-      expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-induction/check-your-answers')
+      expect(res.redirect).toHaveBeenCalledWith(`/prisoners/A1234BC/create-induction/${journeyId}/check-your-answers`)
     })
   })
 })

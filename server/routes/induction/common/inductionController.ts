@@ -9,7 +9,7 @@ export default abstract class InductionController {
     if (!req.session.pageFlowHistory) {
       req.session.pageFlowHistory = { pageUrls: [], currentPageIndex: 0 }
     }
-    const updatedPageFlowHistory = setCurrentPage(req.session.pageFlowHistory, req.path)
+    const updatedPageFlowHistory = setCurrentPage(req.session.pageFlowHistory, req.originalUrl)
     req.session.pageFlowHistory = updatedPageFlowHistory
   }
 

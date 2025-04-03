@@ -1,4 +1,5 @@
 import { Request, Response } from 'express'
+import { v4 as uuidV4 } from 'uuid'
 import type { SkillsForm } from 'inductionForms'
 import type { PersonalSkillDto } from 'inductionDto'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
@@ -9,14 +10,15 @@ import SkillsValue from '../../../enums/skillsValue'
 describe('skillsCreateController', () => {
   const controller = new SkillsCreateController()
 
+  const journeyId = uuidV4()
   const prisonNumber = 'A1234BC'
   const prisonerSummary = aValidPrisonerSummary()
 
   const req = {
     session: {},
     body: {},
-    params: { prisonNumber },
-    path: `/prisoners/${prisonNumber}/create-induction/skills`,
+    params: { prisonNumber, journeyId },
+    originalUrl: `/prisoners/${prisonNumber}/create-induction/${journeyId}/skills`,
   } as unknown as Request
   const res = {
     redirect: jest.fn(),
@@ -92,14 +94,14 @@ describe('skillsCreateController', () => {
       req.session.inductionDto = inductionDto
 
       req.session.pageFlowHistory = {
-        pageUrls: ['/prisoners/A1234BC/create-induction/check-your-answers'],
+        pageUrls: [`/prisoners/A1234BC/create-induction/${journeyId}/check-your-answers`],
         currentPageIndex: 0,
       }
 
       const expectedPageFlowHistory = {
         pageUrls: [
-          '/prisoners/A1234BC/create-induction/check-your-answers',
-          '/prisoners/A1234BC/create-induction/skills',
+          `/prisoners/A1234BC/create-induction/${journeyId}/check-your-answers`,
+          `/prisoners/A1234BC/create-induction/${journeyId}/skills`,
         ],
         currentPageIndex: 1,
       }
@@ -145,7 +147,10 @@ describe('skillsCreateController', () => {
       await controller.submitSkillsForm(req, res, next)
 
       // Then
-      expect(res.redirectWithErrors).toHaveBeenCalledWith('/prisoners/A1234BC/create-induction/skills', expectedErrors)
+      expect(res.redirectWithErrors).toHaveBeenCalledWith(
+        `/prisoners/A1234BC/create-induction/${journeyId}/skills`,
+        expectedErrors,
+      )
       expect(req.session.skillsForm).toEqual(invalidSkillsForm)
       expect(req.session.inductionDto).toEqual(inductionDto)
     })
@@ -174,7 +179,7 @@ describe('skillsCreateController', () => {
       // Then
       const updatedInduction = req.session.inductionDto
       expect(updatedInduction.personalSkillsAndInterests.skills).toEqual(expectedSkills)
-      expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-induction/personal-interests')
+      expect(res.redirect).toHaveBeenCalledWith(`/prisoners/A1234BC/create-induction/${journeyId}/personal-interests`)
       expect(req.session.skillsForm).toBeUndefined()
     })
 
@@ -198,8 +203,8 @@ describe('skillsCreateController', () => {
 
       req.session.pageFlowHistory = {
         pageUrls: [
-          '/prisoners/A1234BC/create-induction/check-your-answers',
-          '/prisoners/A1234BC/create-induction/skills',
+          `/prisoners/A1234BC/create-induction/${journeyId}/check-your-answers`,
+          `/prisoners/A1234BC/create-induction/${journeyId}/skills`,
         ],
         currentPageIndex: 1,
       }
@@ -210,7 +215,7 @@ describe('skillsCreateController', () => {
       // Then
       const updatedInduction = req.session.inductionDto
       expect(updatedInduction.personalSkillsAndInterests.skills).toEqual(expectedSkills)
-      expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-induction/check-your-answers')
+      expect(res.redirect).toHaveBeenCalledWith(`/prisoners/A1234BC/create-induction/${journeyId}/check-your-answers`)
       expect(req.session.skillsForm).toBeUndefined()
     })
   })

@@ -8,7 +8,7 @@ export default class QualificationDetailsCreateController extends QualificationD
     res: Response,
     next: NextFunction,
   ): Promise<void> => {
-    const { prisonNumber } = req.params
+    const { prisonNumber, journeyId } = req.params
     const { inductionDto, qualificationLevelForm } = req.session
     const { prisonerSummary } = res.locals
 
@@ -21,7 +21,10 @@ export default class QualificationDetailsCreateController extends QualificationD
       prisonerSummary,
     )
     if (errors.length > 0) {
-      return res.redirectWithErrors(`/prisoners/${prisonNumber}/create-induction/qualification-details`, errors)
+      return res.redirectWithErrors(
+        `/prisoners/${prisonNumber}/create-induction/${journeyId}/qualification-details`,
+        errors,
+      )
     }
 
     const updatedInduction = this.addQualificationToInductionDto(
@@ -34,6 +37,6 @@ export default class QualificationDetailsCreateController extends QualificationD
     req.session.qualificationDetailsForm = undefined
     req.session.qualificationLevelForm = undefined
 
-    return res.redirect(`/prisoners/${prisonNumber}/create-induction/qualifications`)
+    return res.redirect(`/prisoners/${prisonNumber}/create-induction/${journeyId}/qualifications`)
   }
 }

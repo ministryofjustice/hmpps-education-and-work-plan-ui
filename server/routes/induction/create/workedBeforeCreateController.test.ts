@@ -1,4 +1,5 @@
 import { Request, Response } from 'express'
+import { v4 as uuidV4 } from 'uuid'
 import type { WorkedBeforeForm } from 'inductionForms'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
 import { aValidInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
@@ -8,14 +9,15 @@ import HasWorkedBeforeValue from '../../../enums/hasWorkedBeforeValue'
 describe('workedBeforeCreateController', () => {
   const controller = new WorkedBeforeCreateController()
 
+  const journeyId = uuidV4()
   const prisonNumber = 'A1234BC'
   const prisonerSummary = aValidPrisonerSummary()
 
   const req = {
     session: {},
     body: {},
-    params: { prisonNumber },
-    path: `/prisoners/${prisonNumber}/create-induction/has-worked-before`,
+    params: { prisonNumber, journeyId },
+    originalUrl: `/prisoners/${prisonNumber}/create-induction/${journeyId}/has-worked-before`,
   } as unknown as Request
   const res = {
     redirect: jest.fn(),
@@ -105,7 +107,7 @@ describe('workedBeforeCreateController', () => {
 
       // Then
       expect(res.redirectWithErrors).toHaveBeenCalledWith(
-        '/prisoners/A1234BC/create-induction/has-worked-before',
+        `/prisoners/A1234BC/create-induction/${journeyId}/has-worked-before`,
         expectedErrors,
       )
       expect(req.session.workedBeforeForm).toEqual(invalidWorkedBeforeForm)
@@ -129,7 +131,9 @@ describe('workedBeforeCreateController', () => {
       await controller.submitWorkedBeforeForm(req, res, next)
 
       // Then
-      expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-induction/previous-work-experience')
+      expect(res.redirect).toHaveBeenCalledWith(
+        `/prisoners/A1234BC/create-induction/${journeyId}/previous-work-experience`,
+      )
       expect(req.session.workedBeforeForm).toBeUndefined()
       const updatedInduction = req.session.inductionDto
       expect(updatedInduction.previousWorkExperiences.hasWorkedBefore).toEqual('YES')
@@ -153,7 +157,7 @@ describe('workedBeforeCreateController', () => {
       await controller.submitWorkedBeforeForm(req, res, next)
 
       // Then
-      expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-induction/skills')
+      expect(res.redirect).toHaveBeenCalledWith(`/prisoners/A1234BC/create-induction/${journeyId}/skills`)
       expect(req.session.workedBeforeForm).toBeUndefined()
       const updatedInduction = req.session.inductionDto
       expect(updatedInduction.previousWorkExperiences.hasWorkedBefore).toEqual('NO')
@@ -178,7 +182,7 @@ describe('workedBeforeCreateController', () => {
       await controller.submitWorkedBeforeForm(req, res, next)
 
       // Then
-      expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-induction/skills')
+      expect(res.redirect).toHaveBeenCalledWith(`/prisoners/A1234BC/create-induction/${journeyId}/skills`)
       expect(req.session.workedBeforeForm).toBeUndefined()
       const updatedInduction = req.session.inductionDto
       expect(updatedInduction.previousWorkExperiences.hasWorkedBefore).toEqual('NOT_RELEVANT')
@@ -201,8 +205,8 @@ describe('workedBeforeCreateController', () => {
 
       req.session.pageFlowHistory = {
         pageUrls: [
-          '/prisoners/A1234BC/create-induction/check-your-answers',
-          '/prisoners/A1234BC/create-induction/has-worked-before',
+          `/prisoners/A1234BC/create-induction/${journeyId}/check-your-answers`,
+          `/prisoners/A1234BC/create-induction/${journeyId}/has-worked-before`,
         ],
         currentPageIndex: 1,
       }
@@ -214,7 +218,7 @@ describe('workedBeforeCreateController', () => {
       const updatedInduction = req.session.inductionDto
       expect(updatedInduction.previousWorkExperiences.hasWorkedBefore).toEqual('NO')
       expect(updatedInduction.previousWorkExperiences.hasWorkedBeforeNotRelevantReason).toBeUndefined()
-      expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-induction/check-your-answers')
+      expect(res.redirect).toHaveBeenCalledWith(`/prisoners/A1234BC/create-induction/${journeyId}/check-your-answers`)
       expect(req.session.workedBeforeForm).toBeUndefined()
     })
 
@@ -233,8 +237,8 @@ describe('workedBeforeCreateController', () => {
 
       req.session.pageFlowHistory = {
         pageUrls: [
-          '/prisoners/A1234BC/create-induction/check-your-answers',
-          '/prisoners/A1234BC/create-induction/has-worked-before',
+          `/prisoners/A1234BC/create-induction/${journeyId}/check-your-answers`,
+          `/prisoners/A1234BC/create-induction/${journeyId}/has-worked-before`,
         ],
         currentPageIndex: 1,
       }
@@ -248,7 +252,7 @@ describe('workedBeforeCreateController', () => {
       expect(updatedInduction.previousWorkExperiences.hasWorkedBeforeNotRelevantReason).toEqual(
         'Chris feels his previous work experience is not relevant as he is not planning on working upon release.',
       )
-      expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-induction/check-your-answers')
+      expect(res.redirect).toHaveBeenCalledWith(`/prisoners/A1234BC/create-induction/${journeyId}/check-your-answers`)
       expect(req.session.workedBeforeForm).toBeUndefined()
     })
 
@@ -270,8 +274,8 @@ describe('workedBeforeCreateController', () => {
 
       req.session.pageFlowHistory = {
         pageUrls: [
-          '/prisoners/A1234BC/create-induction/check-your-answers',
-          '/prisoners/A1234BC/create-induction/has-worked-before',
+          `/prisoners/A1234BC/create-induction/${journeyId}/check-your-answers`,
+          `/prisoners/A1234BC/create-induction/${journeyId}/has-worked-before`,
         ],
         currentPageIndex: 1,
       }
@@ -284,7 +288,9 @@ describe('workedBeforeCreateController', () => {
       expect(updatedInduction.previousWorkExperiences.hasWorkedBefore).toEqual('YES')
       expect(updatedInduction.previousWorkExperiences.hasWorkedBeforeNotRelevantReason).toBeUndefined()
       expect(updatedInduction.previousWorkExperiences.experiences).toEqual([])
-      expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-induction/previous-work-experience')
+      expect(res.redirect).toHaveBeenCalledWith(
+        `/prisoners/A1234BC/create-induction/${journeyId}/previous-work-experience`,
+      )
       expect(req.session.workedBeforeForm).toBeUndefined()
     })
   })

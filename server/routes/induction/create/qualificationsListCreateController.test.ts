@@ -1,4 +1,5 @@
 import { Request, Response } from 'express'
+import { v4 as uuidV4 } from 'uuid'
 import type { AchievedQualificationDto } from 'dto'
 import type { InductionDto } from 'inductionDto'
 import QualificationsListCreateController from './qualificationsListCreateController'
@@ -12,6 +13,7 @@ import HopingToGetWorkValue from '../../../enums/hopingToGetWorkValue'
 describe('qualificationsListCreateController', () => {
   const controller = new QualificationsListCreateController()
 
+  const journeyId = uuidV4()
   const prisonNumber = 'A1234BC'
   const prisonerSummary = aValidPrisonerSummary()
   const functionalSkills = validFunctionalSkills()
@@ -20,8 +22,8 @@ describe('qualificationsListCreateController', () => {
   const req = {
     session: {},
     body: {},
-    params: { prisonNumber },
-    path: `/prisoners/${prisonNumber}/create-induction/qualifications`,
+    params: { prisonNumber, journeyId },
+    originalUrl: `/prisoners/${prisonNumber}/create-induction/${journeyId}/qualifications`,
   } as unknown as Request
   const res = {
     redirect: jest.fn(),
@@ -109,7 +111,7 @@ describe('qualificationsListCreateController', () => {
       const updatedInduction: InductionDto = req.session.inductionDto
       expect(updatedInduction.previousQualifications.educationLevel).toEqual(expectedHighestLevelOfEducation)
       expect(updatedInduction.previousQualifications.qualifications).toEqual(expectedQualifications)
-      expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-induction/qualifications')
+      expect(res.redirect).toHaveBeenCalledWith(`/prisoners/A1234BC/create-induction/${journeyId}/qualifications`)
     })
 
     it('should redirect to Qualification Level Page given page submitted with addQualification', async () => {
@@ -123,7 +125,7 @@ describe('qualificationsListCreateController', () => {
       await controller.submitQualificationsListView(req, res, next)
 
       // Then
-      expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-induction/qualification-level')
+      expect(res.redirect).toHaveBeenCalledWith(`/prisoners/A1234BC/create-induction/${journeyId}/qualification-level`)
     })
 
     it('should redirect to Highest Level of Education Page given page submitted with no qualifications on the Induction', async () => {
@@ -136,7 +138,9 @@ describe('qualificationsListCreateController', () => {
       await controller.submitQualificationsListView(req, res, next)
 
       // Then
-      expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-induction/highest-level-of-education')
+      expect(res.redirect).toHaveBeenCalledWith(
+        `/prisoners/A1234BC/create-induction/${journeyId}/highest-level-of-education`,
+      )
     })
 
     it('should redirect to Additional Training Page given user has not come from Check Your Answers and page submitted with qualifications on the Induction', async () => {
@@ -151,7 +155,7 @@ describe('qualificationsListCreateController', () => {
       await controller.submitQualificationsListView(req, res, next)
 
       // Then
-      expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-induction/additional-training')
+      expect(res.redirect).toHaveBeenCalledWith(`/prisoners/A1234BC/create-induction/${journeyId}/additional-training`)
     })
 
     it('should redirect to Check Your Answers given user has come from Check Your Answers and page submitted with qualifications on the Induction', async () => {
@@ -163,7 +167,7 @@ describe('qualificationsListCreateController', () => {
        */
 
       req.session.pageFlowHistory = {
-        pageUrls: [`/prisoners/${prisonNumber}/create-induction/check-your-answers`],
+        pageUrls: [`/prisoners/${prisonNumber}/create-induction/${journeyId}/check-your-answers`],
         currentPageIndex: 0,
       }
 
@@ -171,7 +175,7 @@ describe('qualificationsListCreateController', () => {
       await controller.submitQualificationsListView(req, res, next)
 
       // Then
-      expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-induction/check-your-answers')
+      expect(res.redirect).toHaveBeenCalledWith(`/prisoners/A1234BC/create-induction/${journeyId}/check-your-answers`)
       expect(req.session.pageFlowHistory).toBeUndefined()
     })
   })

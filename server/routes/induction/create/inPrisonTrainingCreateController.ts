@@ -11,7 +11,7 @@ export default class InPrisonTrainingCreateController extends InPrisonTrainingCo
     res: Response,
     next: NextFunction,
   ): Promise<void> => {
-    const { prisonNumber } = req.params
+    const { prisonNumber, journeyId } = req.params
     const { inductionDto } = req.session
     const { prisonerSummary } = res.locals
 
@@ -23,7 +23,10 @@ export default class InPrisonTrainingCreateController extends InPrisonTrainingCo
 
     const errors = validateInPrisonTrainingForm(inPrisonTrainingForm, prisonerSummary)
     if (errors.length > 0) {
-      return res.redirectWithErrors(`/prisoners/${prisonNumber}/create-induction/in-prison-training`, errors)
+      return res.redirectWithErrors(
+        `/prisoners/${prisonNumber}/create-induction/${journeyId}/in-prison-training`,
+        errors,
+      )
     }
 
     const updatedInduction = this.updatedInductionDtoWithInPrisonTraining(inductionDto, inPrisonTrainingForm)
@@ -31,11 +34,11 @@ export default class InPrisonTrainingCreateController extends InPrisonTrainingCo
     req.session.inPrisonTrainingForm = undefined
 
     if (this.previousPageWasCheckYourAnswers(req)) {
-      return res.redirect(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
+      return res.redirect(`/prisoners/${prisonNumber}/create-induction/${journeyId}/check-your-answers`)
     }
 
     return config.featureToggles.reviewsEnabled
-      ? res.redirect(`/prisoners/${prisonNumber}/create-induction/who-completed-induction`)
-      : res.redirect(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
+      ? res.redirect(`/prisoners/${prisonNumber}/create-induction/${journeyId}/who-completed-induction`)
+      : res.redirect(`/prisoners/${prisonNumber}/create-induction/${journeyId}/check-your-answers`)
   }
 }
