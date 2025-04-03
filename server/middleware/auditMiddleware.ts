@@ -228,7 +228,7 @@ export default function auditMiddleware({ auditService }: Services) {
 
 // Checks page view has been auditted, if no audit event has been raised router will be skipped
 export function checkPageViewAuditted(router: Router) {
-  router.get('*', (req: Request, res: Response, next: NextFunction) => {
+  router.get(/(.*)/, (req: Request, res: Response, next: NextFunction) => {
     if (res.locals.auditPageViewEvent || res.locals.auditPageViewEvent === null) return next()
     logger.error(`No audit event found for route, "${req.path}". Skipping router.`)
     return next('router')

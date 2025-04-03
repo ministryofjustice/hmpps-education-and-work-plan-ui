@@ -14,7 +14,10 @@ const landingPageRoutes = (router: Router) => {
   router.get(
     '/',
     asyncMiddleware(async (req, res, next) => {
-      req.url = res.locals.userHasPermissionTo(ApplicationAction.VIEW_SESSION_SUMMARIES) ? '/sessions' : '/search'
+      req.url = req.url.replace(
+        /^\//,
+        res.locals.userHasPermissionTo(ApplicationAction.VIEW_SESSION_SUMMARIES) ? '/sessions' : '/search',
+      )
       next('route')
     }),
   )

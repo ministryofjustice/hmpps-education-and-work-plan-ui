@@ -34,7 +34,7 @@ export default function routes(services: Services): Router {
   // Route middleware
   prisonerSummarySetup(router, services)
 
-  router.get('*', [populateActiveCaseloadPrisonName(services.prisonService)])
+  router.get(/(.*)/, [populateActiveCaseloadPrisonName(services.prisonService)])
 
   // Application routes
   inPrisonCoursesAndQualifications(router, services)

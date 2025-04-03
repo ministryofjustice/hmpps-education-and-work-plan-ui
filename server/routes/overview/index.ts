@@ -39,7 +39,7 @@ export default (router: Router, services: Services) => {
   const educationAndTrainingController = new EducationAndTrainingController()
   const viewGoalsController = new ViewGoalsController()
 
-  router.use('/plan/:prisonNumber/view/*', [removeFormDataFromSession])
+  router.use('/plan/:prisonNumber/view', [removeFormDataFromSession])
 
   router.get('/plan/:prisonNumber/view/overview', [
     retrieveAllGoalsForPrisoner(educationAndWorkPlanService),
