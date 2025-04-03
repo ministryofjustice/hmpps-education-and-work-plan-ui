@@ -30,7 +30,7 @@ describe('ReviewCheckYourAnswersController', () => {
       params: { prisonNumber },
       session: {},
       user: { username: 'a-dps-user' },
-      path: `/plan/${prisonNumber}/review/check-your-answers`,
+      originalUrl: `/plan/${prisonNumber}/review/check-your-answers`,
     } as unknown as Request
 
     res = {

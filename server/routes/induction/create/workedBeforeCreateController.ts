@@ -7,7 +7,7 @@ import HasWorkedBeforeValue from '../../../enums/hasWorkedBeforeValue'
 
 export default class WorkedBeforeCreateController extends WorkedBeforeController {
   submitWorkedBeforeForm: RequestHandler = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    const { prisonNumber } = req.params
+    const { prisonNumber, journeyId } = req.params
     const { inductionDto } = req.session
     const { prisonerSummary } = res.locals
 
@@ -16,7 +16,10 @@ export default class WorkedBeforeCreateController extends WorkedBeforeController
 
     const errors = validateWorkedBeforeForm(workedBeforeForm, prisonerSummary)
     if (errors.length > 0) {
-      return res.redirectWithErrors(`/prisoners/${prisonNumber}/create-induction/has-worked-before`, errors)
+      return res.redirectWithErrors(
+        `/prisoners/${prisonNumber}/create-induction/${journeyId}/has-worked-before`,
+        errors,
+      )
     }
 
     const updatedInduction = this.updatedInductionDtoWithHasWorkedBefore(inductionDto, workedBeforeForm)
@@ -27,20 +30,20 @@ export default class WorkedBeforeCreateController extends WorkedBeforeController
 
     if (!this.previousPageWasCheckYourAnswers(req)) {
       if (prisonerHasWorkedBefore) {
-        return res.redirect(`/prisoners/${prisonNumber}/create-induction/previous-work-experience`)
+        return res.redirect(`/prisoners/${prisonNumber}/create-induction/${journeyId}/previous-work-experience`)
       }
 
       // Prisoner has not worked before; skip straight to Personal Skills
-      return res.redirect(`/prisoners/${prisonNumber}/create-induction/skills`)
+      return res.redirect(`/prisoners/${prisonNumber}/create-induction/${journeyId}/skills`)
     }
 
     if (!prisonerHasWorkedBefore) {
       // Previous page was Check Your Answers and prisoner has not worked before
-      return res.redirect(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
+      return res.redirect(`/prisoners/${prisonNumber}/create-induction/${journeyId}/check-your-answers`)
     }
 
     // Previous page was Check Your Answers and prisoner has worked before - we need to ask about previous work experience
-    return res.redirect(`/prisoners/${prisonNumber}/create-induction/previous-work-experience`)
+    return res.redirect(`/prisoners/${prisonNumber}/create-induction/${journeyId}/previous-work-experience`)
   }
 
   updatedInductionDtoWithHasWorkedBefore(inductionDto: InductionDto, workedBeforeForm: WorkedBeforeForm): InductionDto {

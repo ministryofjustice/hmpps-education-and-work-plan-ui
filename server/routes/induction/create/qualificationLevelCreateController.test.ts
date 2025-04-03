@@ -1,4 +1,5 @@
 import { Request, Response } from 'express'
+import { v4 as uuidV4 } from 'uuid'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
 import { aValidInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
 import QualificationLevelCreateController from './qualificationLevelCreateController'
@@ -7,14 +8,15 @@ import QualificationLevelValue from '../../../enums/qualificationLevelValue'
 describe('qualificationLevelCreateController', () => {
   const controller = new QualificationLevelCreateController()
 
+  const journeyId = uuidV4()
   const prisonNumber = 'A1234BC'
   const prisonerSummary = aValidPrisonerSummary()
 
   const req = {
     session: {},
     body: {},
-    params: { prisonNumber },
-    path: `/prisoners/${prisonNumber}/create-induction/qualification-level`,
+    params: { prisonNumber, journeyId },
+    originalUrl: `/prisoners/${prisonNumber}/create-induction/${journeyId}/qualification-level`,
   } as unknown as Request
   const res = {
     redirect: jest.fn(),
@@ -101,7 +103,7 @@ describe('qualificationLevelCreateController', () => {
 
       // Then
       expect(res.redirectWithErrors).toHaveBeenCalledWith(
-        `/prisoners/${prisonNumber}/create-induction/qualification-level`,
+        `/prisoners/${prisonNumber}/create-induction/${journeyId}/qualification-level`,
         expectedErrors,
       )
       expect(req.session.qualificationLevelForm).toEqual(invalidQualificationLevelForm)
@@ -123,7 +125,9 @@ describe('qualificationLevelCreateController', () => {
       await controller.submitQualificationLevelForm(req, res, next)
 
       // Then
-      expect(res.redirect).toHaveBeenCalledWith(`/prisoners/${prisonNumber}/create-induction/qualification-details`)
+      expect(res.redirect).toHaveBeenCalledWith(
+        `/prisoners/${prisonNumber}/create-induction/${journeyId}/qualification-details`,
+      )
       expect(req.session.qualificationLevelForm).toEqual(qualificationLevelForm)
       expect(req.session.inductionDto).toEqual(inductionDto)
     })

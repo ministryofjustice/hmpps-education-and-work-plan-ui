@@ -10,7 +10,7 @@ export default class AffectAbilityToWorkCreateController extends AffectAbilityTo
     res: Response,
     next: NextFunction,
   ): Promise<void> => {
-    const { prisonNumber } = req.params
+    const { prisonNumber, journeyId } = req.params
     const { inductionDto } = req.session
     const { prisonerSummary } = res.locals
 
@@ -22,7 +22,10 @@ export default class AffectAbilityToWorkCreateController extends AffectAbilityTo
 
     const errors = validateAffectAbilityToWorkForm(affectAbilityToWorkForm, prisonerSummary)
     if (errors.length > 0) {
-      return res.redirectWithErrors(`/prisoners/${prisonNumber}/create-induction/affect-ability-to-work`, errors)
+      return res.redirectWithErrors(
+        `/prisoners/${prisonNumber}/create-induction/${journeyId}/affect-ability-to-work`,
+        errors,
+      )
     }
 
     const updatedInduction = this.updatedInductionDtoWithAffectAbilityToWork(inductionDto, affectAbilityToWorkForm)
@@ -30,8 +33,8 @@ export default class AffectAbilityToWorkCreateController extends AffectAbilityTo
     req.session.affectAbilityToWorkForm = undefined
 
     const nextPage = this.previousPageWasCheckYourAnswers(req)
-      ? `/prisoners/${prisonNumber}/create-induction/check-your-answers`
-      : `/prisoners/${prisonNumber}/create-induction/highest-level-of-education`
+      ? `/prisoners/${prisonNumber}/create-induction/${journeyId}/check-your-answers`
+      : `/prisoners/${prisonNumber}/create-induction/${journeyId}/highest-level-of-education`
     return res.redirect(nextPage)
   }
 }

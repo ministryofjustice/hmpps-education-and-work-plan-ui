@@ -1,4 +1,5 @@
 import { Request, Response } from 'express'
+import { v4 as uuidV4 } from 'uuid'
 import type { InductionDto } from 'inductionDto'
 import type { HopingToWorkOnReleaseForm } from 'inductionForms'
 import HopingToWorkOnReleaseCreateController from './hopingToWorkOnReleaseCreateController'
@@ -9,14 +10,15 @@ import { aValidInductionDto } from '../../../testsupport/inductionDtoTestDataBui
 describe('hopingToWorkOnReleaseCreateController', () => {
   const controller = new HopingToWorkOnReleaseCreateController()
 
+  const journeyId = uuidV4()
   const prisonNumber = 'A1234BC'
   const prisonerSummary = aValidPrisonerSummary()
 
   const req = {
     session: {},
     body: {},
-    params: { prisonNumber },
-    path: `/prisoners/${prisonNumber}/create-induction/hoping-to-work-on-release`,
+    params: { prisonNumber, journeyId },
+    originalUrl: `/prisoners/${prisonNumber}/create-induction/${journeyId}/hoping-to-work-on-release`,
   } as unknown as Request
   const res = {
     redirect: jest.fn(),
@@ -107,7 +109,7 @@ describe('hopingToWorkOnReleaseCreateController', () => {
 
       // Then
       expect(res.redirectWithErrors).toHaveBeenCalledWith(
-        '/prisoners/A1234BC/create-induction/hoping-to-work-on-release',
+        `/prisoners/A1234BC/create-induction/${journeyId}/hoping-to-work-on-release`,
         expectedErrors,
       )
       expect(req.session.hopingToWorkOnReleaseForm).toEqual(invalidHopingToWorkOnReleaseForm)
@@ -139,7 +141,7 @@ describe('hopingToWorkOnReleaseCreateController', () => {
       await controller.submitHopingToWorkOnReleaseForm(req, res, next)
 
       // Then
-      expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-induction/work-interest-types')
+      expect(res.redirect).toHaveBeenCalledWith(`/prisoners/A1234BC/create-induction/${journeyId}/work-interest-types`)
       expect(req.session.hopingToWorkOnReleaseForm).toBeUndefined()
       expect(req.session.inductionDto).toEqual(expectedInduction)
     })
@@ -171,7 +173,9 @@ describe('hopingToWorkOnReleaseCreateController', () => {
           await controller.submitHopingToWorkOnReleaseForm(req, res, next)
 
           // Then
-          expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-induction/affect-ability-to-work')
+          expect(res.redirect).toHaveBeenCalledWith(
+            `/prisoners/A1234BC/create-induction/${journeyId}/affect-ability-to-work`,
+          )
           expect(req.session.hopingToWorkOnReleaseForm).toBeUndefined()
           expect(req.session.inductionDto).toEqual(expectedInduction)
         })
@@ -193,8 +197,8 @@ describe('hopingToWorkOnReleaseCreateController', () => {
 
         req.session.pageFlowHistory = {
           pageUrls: [
-            '/prisoners/A1234BC/create-induction/check-your-answers',
-            '/prisoners/A1234BC/create-induction/hoping-to-work-on-release',
+            `/prisoners/A1234BC/create-induction/${journeyId}/check-your-answers`,
+            `/prisoners/A1234BC/create-induction/${journeyId}/hoping-to-work-on-release`,
           ],
           currentPageIndex: 1,
         }
@@ -203,7 +207,7 @@ describe('hopingToWorkOnReleaseCreateController', () => {
         await controller.submitHopingToWorkOnReleaseForm(req, res, next)
 
         // Then
-        expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-induction/check-your-answers')
+        expect(res.redirect).toHaveBeenCalledWith(`/prisoners/A1234BC/create-induction/${journeyId}/check-your-answers`)
         expect(req.session.hopingToWorkOnReleaseForm).toBeUndefined()
       },
     )
@@ -223,8 +227,8 @@ describe('hopingToWorkOnReleaseCreateController', () => {
 
         req.session.pageFlowHistory = {
           pageUrls: [
-            '/prisoners/A1234BC/create-induction/check-your-answers',
-            '/prisoners/A1234BC/create-induction/hoping-to-work-on-release',
+            `/prisoners/A1234BC/create-induction/${journeyId}/check-your-answers`,
+            `/prisoners/A1234BC/create-induction/${journeyId}/hoping-to-work-on-release`,
           ],
           currentPageIndex: 1,
         }
@@ -236,7 +240,7 @@ describe('hopingToWorkOnReleaseCreateController', () => {
         const updatedInduction = req.session.inductionDto
         expect(updatedInduction.workOnRelease.hopingToWork).toEqual(hopingToGetWorkValue)
         expect(updatedInduction.futureWorkInterests.interests).toEqual([])
-        expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-induction/check-your-answers')
+        expect(res.redirect).toHaveBeenCalledWith(`/prisoners/A1234BC/create-induction/${journeyId}/check-your-answers`)
         expect(req.session.hopingToWorkOnReleaseForm).toBeUndefined()
       },
     )
@@ -256,8 +260,8 @@ describe('hopingToWorkOnReleaseCreateController', () => {
 
         req.session.pageFlowHistory = {
           pageUrls: [
-            '/prisoners/A1234BC/create-induction/check-your-answers',
-            '/prisoners/A1234BC/create-induction/hoping-to-work-on-release',
+            `/prisoners/A1234BC/create-induction/${journeyId}/check-your-answers`,
+            `/prisoners/A1234BC/create-induction/${journeyId}/hoping-to-work-on-release`,
           ],
           currentPageIndex: 1,
         }
@@ -269,7 +273,9 @@ describe('hopingToWorkOnReleaseCreateController', () => {
         const updatedInduction = req.session.inductionDto
         expect(updatedInduction.workOnRelease.hopingToWork).toEqual(HopingToGetWorkValue.YES)
         expect(updatedInduction.futureWorkInterests.interests).toEqual([])
-        expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-induction/work-interest-types')
+        expect(res.redirect).toHaveBeenCalledWith(
+          `/prisoners/A1234BC/create-induction/${journeyId}/work-interest-types`,
+        )
         expect(req.session.hopingToWorkOnReleaseForm).toBeUndefined()
       },
     )

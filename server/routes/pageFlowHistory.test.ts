@@ -11,7 +11,7 @@ describe('pageFlowHistory', () => {
   describe('buildNewPageFlowHistory', () => {
     it('should builds new page flow history', () => {
       // Given
-      const req = { path: '/prisoners/A1234BC/induction/check-your-answers' } as Request
+      const req = { originalUrl: '/prisoners/A1234BC/induction/check-your-answers' } as Request
 
       const expected: PageFlow = {
         pageUrls: ['/prisoners/A1234BC/induction/check-your-answers'],

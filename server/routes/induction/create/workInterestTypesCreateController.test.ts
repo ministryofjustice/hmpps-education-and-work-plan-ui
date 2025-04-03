@@ -1,4 +1,5 @@
 import { Request, Response } from 'express'
+import { v4 as uuidV4 } from 'uuid'
 import type { WorkInterestTypesForm } from 'inductionForms'
 import type { FutureWorkInterestDto } from 'inductionDto'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
@@ -9,14 +10,15 @@ import WorkInterestTypesCreateController from './workInterestTypesCreateControll
 describe('workInterestTypesCreateController', () => {
   const controller = new WorkInterestTypesCreateController()
 
+  const journeyId = uuidV4()
   const prisonNumber = 'A1234BC'
   const prisonerSummary = aValidPrisonerSummary()
 
   const req = {
     session: {},
     body: {},
-    params: { prisonNumber },
-    path: `/prisoners/${prisonNumber}/create-induction/work-interest-types`,
+    params: { prisonNumber, journeyId },
+    originalUrl: `/prisoners/${prisonNumber}/create-induction/${journeyId}/work-interest-types`,
   } as unknown as Request
   const res = {
     redirect: jest.fn(),
@@ -116,7 +118,7 @@ describe('workInterestTypesCreateController', () => {
 
       // Then
       expect(res.redirectWithErrors).toHaveBeenCalledWith(
-        '/prisoners/A1234BC/create-induction/work-interest-types',
+        `/prisoners/A1234BC/create-induction/${journeyId}/work-interest-types`,
         expectedErrors,
       )
       expect(req.session.workInterestTypesForm).toEqual(invalidWorkInterestTypesForm)
@@ -136,7 +138,7 @@ describe('workInterestTypesCreateController', () => {
       req.body = workInterestTypesForm
       req.session.workInterestTypesForm = undefined
 
-      const expectedNextPage = '/prisoners/A1234BC/create-induction/work-interest-roles'
+      const expectedNextPage = `/prisoners/A1234BC/create-induction/${journeyId}/work-interest-roles`
 
       const expectedFutureWorkInterests: Array<FutureWorkInterestDto> = [
         { workType: WorkInterestTypeValue.DRIVING, workTypeOther: undefined, role: undefined },
@@ -174,8 +176,8 @@ describe('workInterestTypesCreateController', () => {
 
       req.session.pageFlowHistory = {
         pageUrls: [
-          '/prisoners/A1234BC/create-induction/check-your-answers',
-          '/prisoners/A1234BC/create-induction/work-interest-types',
+          `/prisoners/A1234BC/create-induction/${journeyId}/check-your-answers`,
+          `/prisoners/A1234BC/create-induction/${journeyId}/work-interest-types`,
         ],
         currentPageIndex: 1,
       }
@@ -187,7 +189,7 @@ describe('workInterestTypesCreateController', () => {
       const futureWorkInterestsOnInduction: Array<FutureWorkInterestDto> =
         req.session.inductionDto.futureWorkInterests.interests
       expect(futureWorkInterestsOnInduction).toEqual(expectedFutureWorkInterests)
-      expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-induction/check-your-answers')
+      expect(res.redirect).toHaveBeenCalledWith(`/prisoners/A1234BC/create-induction/${journeyId}/check-your-answers`)
       expect(req.session.workInterestTypesForm).toBeUndefined()
     })
   })

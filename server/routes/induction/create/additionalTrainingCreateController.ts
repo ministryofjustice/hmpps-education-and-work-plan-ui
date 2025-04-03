@@ -10,7 +10,7 @@ export default class AdditionalTrainingCreateController extends AdditionalTraini
     res: Response,
     next: NextFunction,
   ): Promise<void> => {
-    const { prisonNumber } = req.params
+    const { prisonNumber, journeyId } = req.params
     const { inductionDto } = req.session
     const { prisonerSummary } = res.locals
 
@@ -22,7 +22,10 @@ export default class AdditionalTrainingCreateController extends AdditionalTraini
 
     const errors = validateAdditionalTrainingForm(additionalTrainingForm, prisonerSummary)
     if (errors.length > 0) {
-      return res.redirectWithErrors(`/prisoners/${prisonNumber}/create-induction/additional-training`, errors)
+      return res.redirectWithErrors(
+        `/prisoners/${prisonNumber}/create-induction/${journeyId}/additional-training`,
+        errors,
+      )
     }
 
     const updatedInduction = this.updatedInductionDtoWithAdditionalTraining(inductionDto, additionalTrainingForm)
@@ -31,9 +34,9 @@ export default class AdditionalTrainingCreateController extends AdditionalTraini
 
     // If the previous page was Check Your Answers, forward to Check Your Answers again
     if (this.previousPageWasCheckYourAnswers(req)) {
-      return res.redirect(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
+      return res.redirect(`/prisoners/${prisonNumber}/create-induction/${journeyId}/check-your-answers`)
     }
 
-    return res.redirect(`/prisoners/${prisonNumber}/create-induction/has-worked-before`)
+    return res.redirect(`/prisoners/${prisonNumber}/create-induction/${journeyId}/has-worked-before`)
   }
 }

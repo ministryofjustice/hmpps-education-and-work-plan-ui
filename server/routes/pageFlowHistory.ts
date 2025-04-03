@@ -11,7 +11,7 @@ import type { PageFlow } from 'viewModels'
  * initial page in the history.
  */
 const buildNewPageFlowHistory = (req: Request): PageFlow => {
-  const pageUrls = [req.path]
+  const pageUrls = [req.originalUrl]
   return {
     pageUrls,
     currentPageIndex: 0,

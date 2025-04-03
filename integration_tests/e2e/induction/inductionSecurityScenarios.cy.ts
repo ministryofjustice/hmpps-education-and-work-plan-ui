@@ -24,7 +24,7 @@ context('Security tests for creating and updating Inductions', () => {
       const prisonNumber = 'G6115VJ'
 
       // When
-      cy.visit(`/prisoners/${prisonNumber}/create-induction/in-prison-work`, { failOnStatusCode: false })
+      cy.visit(`/prisoners/${prisonNumber}/create-induction/hoping-to-work-on-release`, { failOnStatusCode: false })
 
       // Then
       Page.verifyOnPage(AuthorisationErrorPage)

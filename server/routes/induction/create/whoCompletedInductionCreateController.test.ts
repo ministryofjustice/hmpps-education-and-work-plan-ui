@@ -1,4 +1,5 @@
 import { Request, Response } from 'express'
+import { v4 as uuidV4 } from 'uuid'
 import { startOfDay } from 'date-fns'
 import type { WhoCompletedInductionForm } from 'inductionForms'
 import WhoCompletedInductionCreateController from './whoCompletedInductionCreateController'
@@ -10,14 +11,15 @@ import { aValidInductionDto } from '../../../testsupport/inductionDtoTestDataBui
 describe('whoCompletedInductionController', () => {
   const controller = new WhoCompletedInductionCreateController()
 
+  const journeyId = uuidV4()
   const prisonNumber = 'A1234BC'
   const prisonerSummary = aValidPrisonerSummary({ prisonNumber })
 
   const req = {
     session: {},
     body: {},
-    params: { prisonNumber },
-    path: `/prisoners/${prisonNumber}/create-induction/who-completed-induction`,
+    params: { prisonNumber, journeyId },
+    originalUrl: `/prisoners/${prisonNumber}/create-induction/${journeyId}/who-completed-induction`,
   } as unknown as Request
   const res = {
     redirect: jest.fn(),
@@ -114,7 +116,7 @@ describe('whoCompletedInductionController', () => {
 
       // Then
       expect(res.redirectWithErrors).toHaveBeenCalledWith(
-        '/prisoners/A1234BC/create-induction/who-completed-induction',
+        `/prisoners/A1234BC/create-induction/${journeyId}/who-completed-induction`,
         expectedErrors,
       )
       expect(getPrisonerContext(req.session, prisonNumber).whoCompletedInductionForm).toEqual(invalidForm)
@@ -156,7 +158,7 @@ describe('whoCompletedInductionController', () => {
       await controller.submitWhoCompletedInductionForm(req, res, next)
 
       // Then
-      expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-induction/notes')
+      expect(res.redirect).toHaveBeenCalledWith(`/prisoners/A1234BC/create-induction/${journeyId}/notes`)
       expect(getPrisonerContext(req.session, prisonNumber).whoCompletedInductionForm).toBeUndefined()
       expect(req.session.inductionDto).toEqual(expectedInductionDto)
     })
@@ -165,8 +167,8 @@ describe('whoCompletedInductionController', () => {
       // Given
       req.session.pageFlowHistory = {
         pageUrls: [
-          '/prisoners/A1234BC/create-induction/check-your-answers',
-          '/prisoners/A1234BC/create-induction/who-completed-induction',
+          `/prisoners/A1234BC/create-induction/${journeyId}/check-your-answers`,
+          `/prisoners/A1234BC/create-induction/${journeyId}/who-completed-induction`,
         ],
         currentPageIndex: 1,
       }
@@ -203,7 +205,7 @@ describe('whoCompletedInductionController', () => {
       await controller.submitWhoCompletedInductionForm(req, res, next)
 
       // Then
-      expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-induction/check-your-answers')
+      expect(res.redirect).toHaveBeenCalledWith(`/prisoners/A1234BC/create-induction/${journeyId}/check-your-answers`)
       expect(getPrisonerContext(req.session, prisonNumber).whoCompletedInductionForm).toBeUndefined()
       expect(req.session.inductionDto).toEqual(expectedInductionDto)
     })

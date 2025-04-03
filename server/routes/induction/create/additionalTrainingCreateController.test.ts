@@ -1,4 +1,5 @@
 import { Request, Response } from 'express'
+import { v4 as uuidV4 } from 'uuid'
 import type { AdditionalTrainingForm } from 'inductionForms'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
 import { aValidInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
@@ -8,6 +9,7 @@ import AdditionalTrainingCreateController from './additionalTrainingCreateContro
 describe('additionalTrainingCreateController', () => {
   const controller = new AdditionalTrainingCreateController()
 
+  const journeyId = uuidV4()
   const prisonNumber = 'A1234BC'
   const prisonerSummary = aValidPrisonerSummary()
 
@@ -15,8 +17,8 @@ describe('additionalTrainingCreateController', () => {
     session: {},
     body: {},
     user: {},
-    params: { prisonNumber },
-    path: `/prisoners/${prisonNumber}/create-induction/additional-training`,
+    params: { prisonNumber, journeyId },
+    originalUrl: `/prisoners/${prisonNumber}/create-induction/${journeyId}/additional-training`,
   } as unknown as Request
   const res = {
     redirect: jest.fn(),
@@ -111,7 +113,7 @@ describe('additionalTrainingCreateController', () => {
 
       // Then
       expect(res.redirectWithErrors).toHaveBeenCalledWith(
-        '/prisoners/A1234BC/create-induction/additional-training',
+        `/prisoners/A1234BC/create-induction/${journeyId}/additional-training`,
         expectedErrors,
       )
       expect(req.session.additionalTrainingForm).toEqual(invalidAdditionalTrainingForm)
@@ -134,7 +136,7 @@ describe('additionalTrainingCreateController', () => {
       const expectedUpdatedAdditionalTraining = ['HGV_LICENCE', 'OTHER']
       const expectedUpdatedAdditionalTrainingOther = 'Italian cookery for IT professionals'
 
-      const expectedNextPage = '/prisoners/A1234BC/create-induction/has-worked-before'
+      const expectedNextPage = `/prisoners/A1234BC/create-induction/${journeyId}/has-worked-before`
 
       // When
       await controller.submitAdditionalTrainingForm(req, res, next)
@@ -164,12 +166,12 @@ describe('additionalTrainingCreateController', () => {
 
       req.session.pageFlowHistory = {
         pageUrls: [
-          '/prisoners/A1234BC/create-induction/check-your-answers',
-          '/prisoners/A1234BC/create-induction/additional-training',
+          `/prisoners/A1234BC/create-induction/${journeyId}/check-your-answers`,
+          `/prisoners/A1234BC/create-induction/${journeyId}/additional-training`,
         ],
         currentPageIndex: 1,
       }
-      const expectedNextPage = '/prisoners/A1234BC/create-induction/check-your-answers'
+      const expectedNextPage = `/prisoners/A1234BC/create-induction/${journeyId}/check-your-answers`
 
       // When
       await controller.submitAdditionalTrainingForm(req, res, next)

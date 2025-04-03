@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from 'express'
+import { v4 as uuidV4 } from 'uuid'
 import type { InductionDto } from 'inductionDto'
 import HighestLevelOfEducationCreateController from './highestLevelOfEducationCreateController'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
@@ -8,14 +9,15 @@ import EducationLevelValue from '../../../enums/educationLevelValue'
 describe('highestLevelOfEducationCreateController', () => {
   const controller = new HighestLevelOfEducationCreateController()
 
+  const journeyId = uuidV4()
   const prisonNumber = 'A1234BC'
   const prisonerSummary = aValidPrisonerSummary()
 
   const req = {
     session: {},
     body: {},
-    params: { prisonNumber },
-    path: `/prisoners/${prisonNumber}/create-induction/highest-level-of-education`,
+    params: { prisonNumber, journeyId },
+    originalUrl: `/prisoners/${prisonNumber}/create-induction/${journeyId}/highest-level-of-education`,
   } as unknown as Request
   const res = {
     redirect: jest.fn(),
@@ -120,7 +122,7 @@ describe('highestLevelOfEducationCreateController', () => {
 
       // Then
       expect(res.redirectWithErrors).toHaveBeenCalledWith(
-        '/prisoners/A1234BC/create-induction/highest-level-of-education',
+        `/prisoners/A1234BC/create-induction/${journeyId}/highest-level-of-education`,
         expectedErrors,
       )
       expect(req.session.highestLevelOfEducationForm).toEqual(invalidHighestLevelOfEducationForm)
@@ -155,7 +157,9 @@ describe('highestLevelOfEducationCreateController', () => {
       )
 
       // Then
-      expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-induction/want-to-add-qualifications')
+      expect(res.redirect).toHaveBeenCalledWith(
+        `/prisoners/A1234BC/create-induction/${journeyId}/want-to-add-qualifications`,
+      )
       expect(req.session.highestLevelOfEducationForm).toBeUndefined()
       expect(req.session.inductionDto).toEqual(expectedInduction)
     })
@@ -187,7 +191,7 @@ describe('highestLevelOfEducationCreateController', () => {
       )
 
       // Then
-      expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-induction/qualifications')
+      expect(res.redirect).toHaveBeenCalledWith(`/prisoners/A1234BC/create-induction/${journeyId}/qualifications`)
       expect(req.session.highestLevelOfEducationForm).toBeUndefined()
       expect(req.session.inductionDto).toEqual(expectedInduction)
     })
@@ -214,8 +218,8 @@ describe('highestLevelOfEducationCreateController', () => {
 
       req.session.pageFlowHistory = {
         pageUrls: [
-          '/prisoners/A1234BC/create-induction/check-your-answers',
-          '/prisoners/A1234BC/create-induction/highest-level-of-education',
+          `/prisoners/A1234BC/create-induction/${journeyId}/check-your-answers`,
+          `/prisoners/A1234BC/create-induction/${journeyId}/highest-level-of-education`,
         ],
         currentPageIndex: 1,
       }
@@ -229,7 +233,7 @@ describe('highestLevelOfEducationCreateController', () => {
 
       // Then
       expect(req.session.inductionDto).toEqual(expectedInduction)
-      expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-induction/check-your-answers')
+      expect(res.redirect).toHaveBeenCalledWith(`/prisoners/A1234BC/create-induction/${journeyId}/check-your-answers`)
       expect(req.session.highestLevelOfEducationForm).toBeUndefined()
     })
   })

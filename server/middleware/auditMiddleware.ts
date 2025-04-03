@@ -58,31 +58,37 @@ const pageViewEventMap: Record<string, Page> = {
   '/plan/:prisonNumber/in-prison-courses-and-qualifications': Page.IN_PRISON_COURSES_AND_QUALIFICATIONS,
 
   // Create induction
-  '/prisoners/:prisonNumber/create-induction/hoping-to-work-on-release':
+  '/prisoners/:prisonNumber/create-induction/hoping-to-work-on-release': null, // route without the journeyId does not raise an audit event because it redirects to the route with a journeyId
+  '/prisoners/:prisonNumber/create-induction/:journeyId/hoping-to-work-on-release':
     Page.INDUCTION_CREATE_HOPING_TO_WORK_ON_RELEASE,
-  '/prisoners/:prisonNumber/create-induction/want-to-add-qualifications': Page.INDUCTION_CREATE_ADD_QUALIFICATION,
-  '/prisoners/:prisonNumber/create-induction/qualifications': Page.INDUCTION_CREATE_QUALIFICATIONS,
-  '/prisoners/:prisonNumber/create-induction/highest-level-of-education':
+  '/prisoners/:prisonNumber/create-induction/:journeyId/want-to-add-qualifications':
+    Page.INDUCTION_CREATE_ADD_QUALIFICATION,
+  '/prisoners/:prisonNumber/create-induction/:journeyId/qualifications': Page.INDUCTION_CREATE_QUALIFICATIONS,
+  '/prisoners/:prisonNumber/create-induction/:journeyId/highest-level-of-education':
     Page.INDUCTION_CREATE_HIGHEST_LEVEL_OF_EDUCATION,
-  '/prisoners/:prisonNumber/create-induction/qualification-level': Page.INDUCTION_CREATE_QUALIFICATION_LEVEL,
-  '/prisoners/:prisonNumber/create-induction/additional-training': Page.INDUCTION_CREATE_ADDITIONAL_TRAINING,
-  '/prisoners/:prisonNumber/create-induction/qualification-details': Page.INDUCTION_CREATE_QUALIFICATION_DETAILS,
-  '/prisoners/:prisonNumber/create-induction/has-worked-before': Page.INDUCTION_CREATE_HAS_WORKED_BEFORE,
-  '/prisoners/:prisonNumber/create-induction/previous-work-experience':
+  '/prisoners/:prisonNumber/create-induction/:journeyId/qualification-level': Page.INDUCTION_CREATE_QUALIFICATION_LEVEL,
+  '/prisoners/:prisonNumber/create-induction/:journeyId/additional-training': Page.INDUCTION_CREATE_ADDITIONAL_TRAINING,
+  '/prisoners/:prisonNumber/create-induction/:journeyId/qualification-details':
+    Page.INDUCTION_CREATE_QUALIFICATION_DETAILS,
+  '/prisoners/:prisonNumber/create-induction/:journeyId/has-worked-before': Page.INDUCTION_CREATE_HAS_WORKED_BEFORE,
+  '/prisoners/:prisonNumber/create-induction/:journeyId/previous-work-experience':
     Page.INDUCTION_CREATE_PREVIOUS_WORK_EXPERIENCE_TYPE,
-  '/prisoners/:prisonNumber/create-induction/previous-work-experience/:typeOfWorkExperience':
+  '/prisoners/:prisonNumber/create-induction/:journeyId/previous-work-experience/:typeOfWorkExperience':
     Page.INDUCTION_CREATE_PREVIOUS_WORK_EXPERIENCE_DETAILS,
-  '/prisoners/:prisonNumber/create-induction/work-interest-types': Page.INDUCTION_CREATE_WORK_INTEREST_TYPES,
-  '/prisoners/:prisonNumber/create-induction/work-interest-roles': Page.INDUCTION_CREATE_WORK_INTEREST_ROLES,
-  '/prisoners/:prisonNumber/create-induction/skills': Page.INDUCTION_CREATE_SKILLS,
-  '/prisoners/:prisonNumber/create-induction/personal-interests': Page.INDUCTION_CREATE_PERSONAL_INTERESTS,
-  '/prisoners/:prisonNumber/create-induction/affect-ability-to-work': Page.INDUCTION_CREATE_AFFECT_ABILITY_TO_WORK,
-  '/prisoners/:prisonNumber/create-induction/reasons-not-to-get-work': Page.INDUCTION_CREATE_REASONS_NOT_TO_GET_WORK,
-  '/prisoners/:prisonNumber/create-induction/in-prison-work': Page.INDUCTION_CREATE_IN_PRISON_WORK,
-  '/prisoners/:prisonNumber/create-induction/in-prison-training': Page.INDUCTION_CREATE_IN_PRISON_TRAINING,
-  '/prisoners/:prisonNumber/create-induction/who-completed-induction': Page.INDUCTION_CREATE_WHO_COMPLETED_INDUCTION,
-  '/prisoners/:prisonNumber/create-induction/notes': Page.INDUCTION_CREATE_NOTES,
-  '/prisoners/:prisonNumber/create-induction/check-your-answers': Page.INDUCTION_CREATE_CHECK_YOUR_ANSWERS,
+  '/prisoners/:prisonNumber/create-induction/:journeyId/work-interest-types': Page.INDUCTION_CREATE_WORK_INTEREST_TYPES,
+  '/prisoners/:prisonNumber/create-induction/:journeyId/work-interest-roles': Page.INDUCTION_CREATE_WORK_INTEREST_ROLES,
+  '/prisoners/:prisonNumber/create-induction/:journeyId/skills': Page.INDUCTION_CREATE_SKILLS,
+  '/prisoners/:prisonNumber/create-induction/:journeyId/personal-interests': Page.INDUCTION_CREATE_PERSONAL_INTERESTS,
+  '/prisoners/:prisonNumber/create-induction/:journeyId/affect-ability-to-work':
+    Page.INDUCTION_CREATE_AFFECT_ABILITY_TO_WORK,
+  '/prisoners/:prisonNumber/create-induction/:journeyId/reasons-not-to-get-work':
+    Page.INDUCTION_CREATE_REASONS_NOT_TO_GET_WORK,
+  '/prisoners/:prisonNumber/create-induction/:journeyId/in-prison-work': Page.INDUCTION_CREATE_IN_PRISON_WORK,
+  '/prisoners/:prisonNumber/create-induction/:journeyId/in-prison-training': Page.INDUCTION_CREATE_IN_PRISON_TRAINING,
+  '/prisoners/:prisonNumber/create-induction/:journeyId/who-completed-induction':
+    Page.INDUCTION_CREATE_WHO_COMPLETED_INDUCTION,
+  '/prisoners/:prisonNumber/create-induction/:journeyId/notes': Page.INDUCTION_CREATE_NOTES,
+  '/prisoners/:prisonNumber/create-induction/:journeyId/check-your-answers': Page.INDUCTION_CREATE_CHECK_YOUR_ANSWERS,
 
   // Update induction
   '/prisoners/:prisonNumber/induction/in-prison-training': Page.INDUCTION_UPDATE_IN_PRISON_TRAINING,

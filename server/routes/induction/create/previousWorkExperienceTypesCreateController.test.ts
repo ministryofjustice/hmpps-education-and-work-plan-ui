@@ -1,4 +1,5 @@
 import { Request, Response } from 'express'
+import { v4 as uuidV4 } from 'uuid'
 import type { InductionDto, PreviousWorkExperienceDto } from 'inductionDto'
 import type { PageFlow } from 'viewModels'
 import type { PreviousWorkExperienceTypesForm } from 'inductionForms'
@@ -10,14 +11,15 @@ import HasWorkedBeforeValue from '../../../enums/hasWorkedBeforeValue'
 describe('previousWorkExperienceTypesCreateController', () => {
   const controller = new PreviousWorkExperienceTypesCreateController()
 
+  const journeyId = uuidV4()
   const prisonNumber = 'A1234BC'
   const prisonerSummary = aValidPrisonerSummary()
 
   const req = {
     session: {},
     body: {},
-    params: { prisonNumber },
-    path: `/prisoners/${prisonNumber}/create-induction/previous-work-experience`,
+    params: { prisonNumber, journeyId },
+    originalUrl: `/prisoners/${prisonNumber}/create-induction/${journeyId}/previous-work-experience`,
   } as unknown as Request
   const res = {
     redirect: jest.fn(),
@@ -116,7 +118,7 @@ describe('previousWorkExperienceTypesCreateController', () => {
 
       // Then
       expect(res.redirectWithErrors).toHaveBeenCalledWith(
-        '/prisoners/A1234BC/create-induction/previous-work-experience',
+        `/prisoners/A1234BC/create-induction/${journeyId}/previous-work-experience`,
         expectedErrors,
       )
       expect(req.session.previousWorkExperienceTypesForm).toEqual(invalidPreviousWorkExperienceTypesForm)
@@ -155,9 +157,9 @@ describe('previousWorkExperienceTypesCreateController', () => {
 
       const expectedPageFlowQueue: PageFlow = {
         pageUrls: [
-          '/prisoners/A1234BC/create-induction/previous-work-experience',
-          '/prisoners/A1234BC/create-induction/previous-work-experience/outdoor',
-          '/prisoners/A1234BC/create-induction/previous-work-experience/other',
+          `/prisoners/A1234BC/create-induction/${journeyId}/previous-work-experience`,
+          `/prisoners/A1234BC/create-induction/${journeyId}/previous-work-experience/outdoor`,
+          `/prisoners/A1234BC/create-induction/${journeyId}/previous-work-experience/other`,
         ],
         currentPageIndex: 0,
       }
@@ -167,7 +169,7 @@ describe('previousWorkExperienceTypesCreateController', () => {
 
       // Then
       expect(res.redirect).toHaveBeenCalledWith(
-        `/prisoners/${prisonNumber}/create-induction/previous-work-experience/outdoor`,
+        `/prisoners/${prisonNumber}/create-induction/${journeyId}/previous-work-experience/outdoor`,
       )
       expect(req.session.pageFlowQueue).toEqual(expectedPageFlowQueue)
       expect(req.session.previousWorkExperienceTypesForm).toBeUndefined()
@@ -192,10 +194,10 @@ describe('previousWorkExperienceTypesCreateController', () => {
 
       const expectedPageFlowQueue: PageFlow = {
         pageUrls: [
-          '/prisoners/A1234BC/create-induction/previous-work-experience',
-          '/prisoners/A1234BC/create-induction/previous-work-experience/outdoor',
-          '/prisoners/A1234BC/create-induction/previous-work-experience/construction',
-          '/prisoners/A1234BC/create-induction/previous-work-experience/retail',
+          `/prisoners/A1234BC/create-induction/${journeyId}/previous-work-experience`,
+          `/prisoners/A1234BC/create-induction/${journeyId}/previous-work-experience/outdoor`,
+          `/prisoners/A1234BC/create-induction/${journeyId}/previous-work-experience/construction`,
+          `/prisoners/A1234BC/create-induction/${journeyId}/previous-work-experience/retail`,
         ],
         currentPageIndex: 0,
       }
@@ -226,7 +228,7 @@ describe('previousWorkExperienceTypesCreateController', () => {
 
       // Then
       expect(res.redirect).toHaveBeenCalledWith(
-        `/prisoners/${prisonNumber}/create-induction/previous-work-experience/outdoor`,
+        `/prisoners/${prisonNumber}/create-induction/${journeyId}/previous-work-experience/outdoor`,
       )
       expect(req.session.pageFlowQueue).toEqual(expectedPageFlowQueue)
       expect(req.session.previousWorkExperienceTypesForm).toBeUndefined()

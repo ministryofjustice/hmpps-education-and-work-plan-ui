@@ -10,7 +10,7 @@ export default class PersonalInterestsCreateController extends PersonalInterests
     res: Response,
     next: NextFunction,
   ): Promise<void> => {
-    const { prisonNumber } = req.params
+    const { prisonNumber, journeyId } = req.params
     const { inductionDto } = req.session
     const { prisonerSummary } = res.locals
 
@@ -22,7 +22,10 @@ export default class PersonalInterestsCreateController extends PersonalInterests
 
     const errors = validatePersonalInterestsForm(personalInterestsForm, prisonerSummary)
     if (errors.length > 0) {
-      return res.redirectWithErrors(`/prisoners/${prisonNumber}/create-induction/personal-interests`, errors)
+      return res.redirectWithErrors(
+        `/prisoners/${prisonNumber}/create-induction/${journeyId}/personal-interests`,
+        errors,
+      )
     }
 
     const updatedInduction = this.updatedInductionDtoWithPersonalInterests(inductionDto, personalInterestsForm)
@@ -30,8 +33,8 @@ export default class PersonalInterestsCreateController extends PersonalInterests
     req.session.personalInterestsForm = undefined
 
     const nextPage = this.previousPageWasCheckYourAnswers(req)
-      ? `/prisoners/${prisonNumber}/create-induction/check-your-answers`
-      : `/prisoners/${prisonNumber}/create-induction/in-prison-work`
+      ? `/prisoners/${prisonNumber}/create-induction/${journeyId}/check-your-answers`
+      : `/prisoners/${prisonNumber}/create-induction/${journeyId}/in-prison-work`
     return res.redirect(nextPage)
   }
 }

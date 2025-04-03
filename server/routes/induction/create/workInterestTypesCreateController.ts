@@ -10,7 +10,7 @@ export default class WorkInterestTypesCreateController extends WorkInterestTypes
     res: Response,
     next: NextFunction,
   ): Promise<void> => {
-    const { prisonNumber } = req.params
+    const { prisonNumber, journeyId } = req.params
     const { inductionDto } = req.session
     const { prisonerSummary } = res.locals
 
@@ -22,7 +22,10 @@ export default class WorkInterestTypesCreateController extends WorkInterestTypes
 
     const errors = validateWorkInterestTypesForm(workInterestTypesForm, prisonerSummary)
     if (errors.length > 0) {
-      return res.redirectWithErrors(`/prisoners/${prisonNumber}/create-induction/work-interest-types`, errors)
+      return res.redirectWithErrors(
+        `/prisoners/${prisonNumber}/create-induction/${journeyId}/work-interest-types`,
+        errors,
+      )
     }
 
     const updatedInduction = this.updatedInductionDtoWithWorkInterestTypes(inductionDto, workInterestTypesForm)
@@ -30,7 +33,7 @@ export default class WorkInterestTypesCreateController extends WorkInterestTypes
     req.session.workInterestTypesForm = undefined
 
     return this.previousPageWasCheckYourAnswers(req)
-      ? res.redirect(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
-      : res.redirect(`/prisoners/${prisonNumber}/create-induction/work-interest-roles`)
+      ? res.redirect(`/prisoners/${prisonNumber}/create-induction/${journeyId}/check-your-answers`)
+      : res.redirect(`/prisoners/${prisonNumber}/create-induction/${journeyId}/work-interest-roles`)
   }
 }

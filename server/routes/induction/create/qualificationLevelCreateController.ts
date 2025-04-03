@@ -8,7 +8,7 @@ export default class QualificationLevelCreateController extends QualificationLev
     res: Response,
     next: NextFunction,
   ): Promise<void> => {
-    const { prisonNumber } = req.params
+    const { prisonNumber, journeyId } = req.params
     const { prisonerSummary } = res.locals
 
     req.session.qualificationLevelForm = { ...req.body }
@@ -16,9 +16,12 @@ export default class QualificationLevelCreateController extends QualificationLev
 
     const errors = validateQualificationLevelForm(qualificationLevelForm, prisonerSummary)
     if (errors.length > 0) {
-      return res.redirectWithErrors(`/prisoners/${prisonNumber}/create-induction/qualification-level`, errors)
+      return res.redirectWithErrors(
+        `/prisoners/${prisonNumber}/create-induction/${journeyId}/qualification-level`,
+        errors,
+      )
     }
 
-    return res.redirect(`/prisoners/${prisonNumber}/create-induction/qualification-details`)
+    return res.redirect(`/prisoners/${prisonNumber}/create-induction/${journeyId}/qualification-details`)
   }
 }

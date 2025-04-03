@@ -8,7 +8,7 @@ import { setCurrentPageIndex } from '../pageFlowQueue'
 const setCurrentPageInPageFlowQueue = async (req: Request, res: Response, next: NextFunction) => {
   const { pageFlowQueue } = req.session
   if (pageFlowQueue) {
-    req.session.pageFlowQueue = setCurrentPageIndex(pageFlowQueue, req.path)
+    req.session.pageFlowQueue = setCurrentPageIndex(pageFlowQueue, req.originalUrl)
   }
   next()
 }
