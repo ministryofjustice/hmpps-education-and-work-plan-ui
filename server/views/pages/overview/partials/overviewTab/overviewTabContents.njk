@@ -41,9 +41,7 @@ Data supplied to this template:
 
       {% include './_goalsSummaryCard.njk' %}
 
-      {% if reviewsFeatureEnabled %}
-        {% include './_sessionHistorySummaryCard.njk' %}
-      {% endif %}
+      {% include './_sessionHistorySummaryCard.njk' %}
 
       {% include './_educationAndTrainingSummaryCard.njk' %}
     </div>
@@ -53,8 +51,7 @@ Data supplied to this template:
         prisonerSummary: prisonerSummary,
         inductionSchedule: inductionSchedule,
         actionPlanReview: actionPlanReview,
-        userHasPermissionTo: userHasPermissionTo,
-        reviewsFeatureEnabled: reviewsFeatureEnabled
+        userHasPermissionTo: userHasPermissionTo
       }) }}
     </div>
   {% endblock %}

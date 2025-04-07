@@ -28,7 +28,6 @@ const templateParams: ActionsCardParams = {
     reviewStatus: 'NOT_DUE',
     reviewDueDate: startOfDay('2025-02-15'),
   },
-  reviewsFeatureEnabled: true,
   prisonerSummary: aValidPrisonerSummary(),
   userHasPermissionTo,
 }
