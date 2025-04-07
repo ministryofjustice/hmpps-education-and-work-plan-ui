@@ -1,21 +1,19 @@
-{% if reviewsFeatureEnabled %}
-  <div class="app-u-heading-with-change-link">
-    <h2 class="govuk-heading-m">Induction completed by</h2>
-    <span class="govuk-body-m">
-      <a class="govuk-link" href="who-completed-induction" data-qa="inductionCompletedByLink">Change<span class="govuk-visually-hidden"> who completed the induction</span></a>
-    </span>
-  </div>
+<div class="app-u-heading-with-change-link">
+  <h2 class="govuk-heading-m">Induction completed by</h2>
+  <span class="govuk-body-m">
+    <a class="govuk-link" href="who-completed-induction" data-qa="inductionCompletedByLink">Change<span class="govuk-visually-hidden"> who completed the induction</span></a>
+  </span>
+</div>
 
-  <div class="govuk-summary-list govuk-!-margin-bottom-8">
-    <div class="govuk-summary-list__row">
-      <p class="govuk-body">
-        {% if inductionDto.completedBy == 'MYSELF' %}
-          <span data-qa="inductionCompletedBy">I did the induction myself</span>
-        {% else %}
-          <span data-qa="inductionCompletedBy">{{ inductionDto.completedByOtherFullName }}</span>, <span data-qa="inductionCompletedByJobRole">{{ inductionDto.completedByOtherJobRole }}</span>,
-        {% endif %}
-        on <span data-qa="inductionCompletedOn">{{ inductionDto.inductionDate | formatDate('D MMMM YYYY') }}</span>
-      </p>
-    </div>
+<div class="govuk-summary-list govuk-!-margin-bottom-8">
+  <div class="govuk-summary-list__row">
+    <p class="govuk-body">
+      {% if inductionDto.completedBy == 'MYSELF' %}
+        <span data-qa="inductionCompletedBy">I did the induction myself</span>
+      {% else %}
+        <span data-qa="inductionCompletedBy">{{ inductionDto.completedByOtherFullName }}</span>, <span data-qa="inductionCompletedByJobRole">{{ inductionDto.completedByOtherJobRole }}</span>,
+      {% endif %}
+      on <span data-qa="inductionCompletedOn">{{ inductionDto.inductionDate | formatDate('D MMMM YYYY') }}</span>
+    </p>
   </div>
-{% endif %}
+</div>
