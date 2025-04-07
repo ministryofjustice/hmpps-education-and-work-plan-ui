@@ -7,9 +7,6 @@ import { aValidInductionDto } from '../../../testsupport/inductionDtoTestDataBui
 import InPrisonTrainingCreateController from './inPrisonTrainingCreateController'
 import InPrisonTrainingValue from '../../../enums/inPrisonTrainingValue'
 import { User } from '../../../data/manageUsersApiClient'
-import config from '../../../config'
-
-jest.mock('../../../config')
 
 describe('inPrisonTrainingCreateController', () => {
   const controller = new InPrisonTrainingCreateController()
@@ -40,7 +37,6 @@ describe('inPrisonTrainingCreateController', () => {
     jest.resetAllMocks()
     req.session.pageFlowHistory = undefined
     req.body = {}
-    config.featureToggles.reviewsEnabled = false
   })
 
   describe('getInPrisonTrainingView', () => {
@@ -134,40 +130,8 @@ describe('inPrisonTrainingCreateController', () => {
       expect(req.session.inductionDto).toEqual(inductionDto)
     })
 
-    it('should update inductionDto and redirect to Check Your Answers page given new induction review journey is not enabled', async () => {
+    it('should update inductionDto and redirect to Who Completed Induction page', async () => {
       // Given
-      config.featureToggles.reviewsEnabled = false
-
-      const inductionDto = aValidInductionDto()
-      inductionDto.inPrisonInterests.inPrisonTrainingInterests = undefined
-      req.session.inductionDto = inductionDto
-
-      const inPrisonTrainingForm: InPrisonTrainingForm = {
-        inPrisonTraining: [InPrisonTrainingValue.CATERING, InPrisonTrainingValue.OTHER],
-        inPrisonTrainingOther: 'Fence building for beginners',
-      }
-      req.body = inPrisonTrainingForm
-      req.session.inPrisonTrainingForm = undefined
-
-      const expectedInPrisonTrainingInterests: Array<InPrisonTrainingInterestDto> = [
-        { trainingType: InPrisonTrainingValue.CATERING, trainingTypeOther: undefined },
-        { trainingType: InPrisonTrainingValue.OTHER, trainingTypeOther: 'Fence building for beginners' },
-      ]
-
-      // When
-      await controller.submitInPrisonTrainingForm(req, res, next)
-
-      // Then
-      const updatedInduction = req.session.inductionDto
-      expect(updatedInduction.inPrisonInterests.inPrisonTrainingInterests).toEqual(expectedInPrisonTrainingInterests)
-      expect(res.redirect).toHaveBeenCalledWith(`/prisoners/A1234BC/create-induction/${journeyId}/check-your-answers`)
-      expect(req.session.inPrisonTrainingForm).toBeUndefined()
-    })
-
-    it('should update inductionDto and redirect to Who Completed Induction page given new induction review journey is enabled', async () => {
-      // Given
-      config.featureToggles.reviewsEnabled = true
-
       const inductionDto = aValidInductionDto()
       inductionDto.inPrisonInterests.inPrisonTrainingInterests = undefined
       req.session.inductionDto = inductionDto

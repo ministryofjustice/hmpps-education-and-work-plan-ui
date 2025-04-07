@@ -1,5 +1,4 @@
-import { RequestHandler, Router } from 'express'
-import createError from 'http-errors'
+import { Router } from 'express'
 import { Services } from '../../../services'
 import asyncMiddleware from '../../../middleware/asyncMiddleware'
 import { checkUserHasPermissionTo } from '../../../middleware/roleBasedAccessControl'
@@ -27,7 +26,6 @@ import InPrisonTrainingCreateController from './inPrisonTrainingCreateController
 import retrieveCuriousInPrisonCourses from '../../routerRequestHandlers/retrieveCuriousInPrisonCourses'
 import WhoCompletedInductionCreateController from './whoCompletedInductionCreateController'
 import InductionNoteCreateController from './inductionNoteCreateController'
-import config from '../../../config'
 import checkInductionDoesNotExist from '../../routerRequestHandlers/checkInductionDoesNotExist'
 import ApplicationAction from '../../../enums/applicationAction'
 import insertJourneyIdentifier from '../../routerRequestHandlers/insertJourneyIdentifier'
@@ -194,20 +192,16 @@ export default (router: Router, services: Services) => {
   ])
 
   router.get('/prisoners/:prisonNumber/create-induction/:journeyId/who-completed-induction', [
-    checkInductionReviewsFeatureIsEnabled(),
     asyncMiddleware(whoCompletedInductionController.getWhoCompletedInductionView),
   ])
   router.post('/prisoners/:prisonNumber/create-induction/:journeyId/who-completed-induction', [
-    checkInductionReviewsFeatureIsEnabled(),
     asyncMiddleware(whoCompletedInductionController.submitWhoCompletedInductionForm),
   ])
 
   router.get('/prisoners/:prisonNumber/create-induction/:journeyId/notes', [
-    checkInductionReviewsFeatureIsEnabled(),
     asyncMiddleware(inductionNoteController.getInductionNoteView),
   ])
   router.post('/prisoners/:prisonNumber/create-induction/:journeyId/notes', [
-    checkInductionReviewsFeatureIsEnabled(),
     asyncMiddleware(inductionNoteController.submitInductionNoteForm),
   ])
 
@@ -217,13 +211,4 @@ export default (router: Router, services: Services) => {
   router.post('/prisoners/:prisonNumber/create-induction/:journeyId/check-your-answers', [
     asyncMiddleware(checkYourAnswersCreateController.submitCheckYourAnswers),
   ])
-}
-
-const checkInductionReviewsFeatureIsEnabled = (): RequestHandler => {
-  return asyncMiddleware((req, res, next) => {
-    if (config.featureToggles.reviewsEnabled) {
-      return next()
-    }
-    return next(createError(404, `Route ${req.originalUrl} not enabled`))
-  })
 }
