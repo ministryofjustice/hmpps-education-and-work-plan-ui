@@ -29,7 +29,7 @@ const testUserWithManagerRole = {
   lastName: 'last',
   userId: 'id',
   token:
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InVzZXIxIiwiaWF0IjoxNTE2MjM5MDIyLCJhdXRob3JpdGllcyI6WyJST0xFX0VEVUNBVElPTl9XT1JLX1BMQU5fRURJVE9SIl19.vZ7FwrGzUFIDgxluRAj72It0yBW2hbxu5UQCjKkyOzM',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InVzZXIxIiwiaWF0IjoxNTE2MjM5MDIyLCJhdXRob3JpdGllcyI6WyJST0xFX0xXUF9NQU5BR0VSIl19.y-vHsiBtvTSwd0KINx953dX-pk6nsZ5s1MvdYfRmcf0',
   username: 'user1',
   displayName: 'First Last',
   activeCaseLoadId: 'BXI',

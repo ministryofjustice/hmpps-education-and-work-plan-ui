@@ -1,7 +1,6 @@
 import authorisationMiddleware from './authorisationMiddleware'
 import ApplicationRole from '../enums/applicationRole'
 import ApplicationAction from '../enums/applicationAction'
-import config from '../config'
 
 /**
  * A map of [ApplicationAction] to [ApplicationRole]s, to determine which role is required for any given action.
@@ -9,102 +8,18 @@ import config from '../config'
  * action.
  */
 const rolesForAction = () => ({
-  [ApplicationAction.RECORD_INDUCTION]: config.featureToggles.reviewsEnabled
-    ? [ApplicationRole.ROLE_LWP_MANAGER]
-    : [
-        // TODO - remove as part of removing the feature toggle - RR-1294
-        ApplicationRole.ROLE_LWP_MANAGER,
-        ApplicationRole.ROLE_LWP_CONTRIBUTOR,
-        ApplicationRole.ROLE_EDUCATION_WORK_PLAN_EDITOR,
-      ],
-  [ApplicationAction.EXEMPT_INDUCTION]: config.featureToggles.reviewsEnabled
-    ? [ApplicationRole.ROLE_LWP_MANAGER]
-    : [
-        // TODO - remove as part of removing the feature toggle - RR-1294
-        ApplicationRole.ROLE_LWP_MANAGER,
-        ApplicationRole.ROLE_LWP_CONTRIBUTOR,
-        ApplicationRole.ROLE_EDUCATION_WORK_PLAN_EDITOR,
-      ],
-  [ApplicationAction.REMOVE_INDUCTION_EXEMPTION]: config.featureToggles.reviewsEnabled
-    ? [ApplicationRole.ROLE_LWP_MANAGER]
-    : [
-        // TODO - remove as part of removing the feature toggle - RR-1294
-        ApplicationRole.ROLE_LWP_MANAGER,
-        ApplicationRole.ROLE_LWP_CONTRIBUTOR,
-        ApplicationRole.ROLE_EDUCATION_WORK_PLAN_EDITOR,
-      ],
-  [ApplicationAction.UPDATE_INDUCTION]: config.featureToggles.reviewsEnabled
-    ? [ApplicationRole.ROLE_LWP_MANAGER, ApplicationRole.ROLE_LWP_CONTRIBUTOR]
-    : [
-        // TODO - remove as part of removing the feature toggle - RR-1294
-        ApplicationRole.ROLE_LWP_MANAGER,
-        ApplicationRole.ROLE_LWP_CONTRIBUTOR,
-        ApplicationRole.ROLE_EDUCATION_WORK_PLAN_EDITOR,
-      ],
-  [ApplicationAction.RECORD_EDUCATION]: config.featureToggles.reviewsEnabled
-    ? [ApplicationRole.ROLE_LWP_MANAGER, ApplicationRole.ROLE_LWP_CONTRIBUTOR]
-    : [
-        // TODO - remove as part of removing the feature toggle - RR-1294
-        ApplicationRole.ROLE_LWP_MANAGER,
-        ApplicationRole.ROLE_LWP_CONTRIBUTOR,
-        ApplicationRole.ROLE_EDUCATION_WORK_PLAN_EDITOR,
-      ],
-  [ApplicationAction.UPDATE_EDUCATION]: config.featureToggles.reviewsEnabled
-    ? [ApplicationRole.ROLE_LWP_MANAGER, ApplicationRole.ROLE_LWP_CONTRIBUTOR]
-    : [
-        // TODO - remove as part of removing the feature toggle - RR-1294
-        ApplicationRole.ROLE_LWP_MANAGER,
-        ApplicationRole.ROLE_LWP_CONTRIBUTOR,
-        ApplicationRole.ROLE_EDUCATION_WORK_PLAN_EDITOR,
-      ],
-  [ApplicationAction.RECORD_REVIEW]: config.featureToggles.reviewsEnabled
-    ? [ApplicationRole.ROLE_LWP_MANAGER]
-    : [
-        // TODO - remove as part of removing the feature toggle - RR-1294
-        ApplicationRole.ROLE_LWP_MANAGER,
-        ApplicationRole.ROLE_LWP_CONTRIBUTOR,
-        ApplicationRole.ROLE_EDUCATION_WORK_PLAN_EDITOR,
-      ],
-  [ApplicationAction.EXEMPT_REVIEW]: config.featureToggles.reviewsEnabled
-    ? [ApplicationRole.ROLE_LWP_MANAGER]
-    : [
-        // TODO - remove as part of removing the feature toggle - RR-1294
-        ApplicationRole.ROLE_LWP_MANAGER,
-        ApplicationRole.ROLE_LWP_CONTRIBUTOR,
-        ApplicationRole.ROLE_EDUCATION_WORK_PLAN_EDITOR,
-      ],
-  [ApplicationAction.REMOVE_REVIEW_EXEMPTION]: config.featureToggles.reviewsEnabled
-    ? [ApplicationRole.ROLE_LWP_MANAGER]
-    : [
-        // TODO - remove as part of removing the feature toggle - RR-1294
-        ApplicationRole.ROLE_LWP_MANAGER,
-        ApplicationRole.ROLE_LWP_CONTRIBUTOR,
-        ApplicationRole.ROLE_EDUCATION_WORK_PLAN_EDITOR,
-      ],
-  [ApplicationAction.CREATE_GOALS]: config.featureToggles.reviewsEnabled
-    ? [ApplicationRole.ROLE_LWP_MANAGER]
-    : [
-        // TODO - remove as part of removing the feature toggle - RR-1294
-        ApplicationRole.ROLE_LWP_MANAGER,
-        ApplicationRole.ROLE_LWP_CONTRIBUTOR,
-        ApplicationRole.ROLE_EDUCATION_WORK_PLAN_EDITOR,
-      ],
-  [ApplicationAction.UPDATE_GOALS]: config.featureToggles.reviewsEnabled
-    ? [ApplicationRole.ROLE_LWP_MANAGER]
-    : [
-        // TODO - remove as part of removing the feature toggle - RR-1294
-        ApplicationRole.ROLE_LWP_MANAGER,
-        ApplicationRole.ROLE_LWP_CONTRIBUTOR,
-        ApplicationRole.ROLE_EDUCATION_WORK_PLAN_EDITOR,
-      ],
-  [ApplicationAction.COMPLETE_AND_ARCHIVE_GOALS]: config.featureToggles.reviewsEnabled
-    ? [ApplicationRole.ROLE_LWP_MANAGER]
-    : [
-        // TODO - remove as part of removing the feature toggle - RR-1294
-        ApplicationRole.ROLE_LWP_MANAGER,
-        ApplicationRole.ROLE_LWP_CONTRIBUTOR,
-        ApplicationRole.ROLE_EDUCATION_WORK_PLAN_EDITOR,
-      ],
+  [ApplicationAction.RECORD_INDUCTION]: [ApplicationRole.ROLE_LWP_MANAGER],
+  [ApplicationAction.EXEMPT_INDUCTION]: [ApplicationRole.ROLE_LWP_MANAGER],
+  [ApplicationAction.REMOVE_INDUCTION_EXEMPTION]: [ApplicationRole.ROLE_LWP_MANAGER],
+  [ApplicationAction.UPDATE_INDUCTION]: [ApplicationRole.ROLE_LWP_MANAGER, ApplicationRole.ROLE_LWP_CONTRIBUTOR],
+  [ApplicationAction.RECORD_EDUCATION]: [ApplicationRole.ROLE_LWP_MANAGER, ApplicationRole.ROLE_LWP_CONTRIBUTOR],
+  [ApplicationAction.UPDATE_EDUCATION]: [ApplicationRole.ROLE_LWP_MANAGER, ApplicationRole.ROLE_LWP_CONTRIBUTOR],
+  [ApplicationAction.RECORD_REVIEW]: [ApplicationRole.ROLE_LWP_MANAGER],
+  [ApplicationAction.EXEMPT_REVIEW]: [ApplicationRole.ROLE_LWP_MANAGER],
+  [ApplicationAction.REMOVE_REVIEW_EXEMPTION]: [ApplicationRole.ROLE_LWP_MANAGER],
+  [ApplicationAction.CREATE_GOALS]: [ApplicationRole.ROLE_LWP_MANAGER],
+  [ApplicationAction.UPDATE_GOALS]: [ApplicationRole.ROLE_LWP_MANAGER],
+  [ApplicationAction.COMPLETE_AND_ARCHIVE_GOALS]: [ApplicationRole.ROLE_LWP_MANAGER],
   [ApplicationAction.VIEW_SESSION_SUMMARIES]: [ApplicationRole.ROLE_LWP_MANAGER],
 })
 
