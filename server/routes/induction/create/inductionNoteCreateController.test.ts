@@ -1,4 +1,5 @@
 import { Request, Response } from 'express'
+import { v4 as uuidV4 } from 'uuid'
 import type { InductionNoteForm } from 'inductionForms'
 import InductionNoteCreateController from './inductionNoteCreateController'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
@@ -8,14 +9,15 @@ import { aValidInductionDto } from '../../../testsupport/inductionDtoTestDataBui
 describe('inductionNoteController', () => {
   const controller = new InductionNoteCreateController()
 
+  const journeyId = uuidV4()
   const prisonNumber = 'A1234BC'
   const prisonerSummary = aValidPrisonerSummary({ prisonNumber })
 
   const req = {
     session: {},
     body: {},
-    params: { prisonNumber },
-    path: `/prisoners/${prisonNumber}/create-induction/notes`,
+    params: { prisonNumber, journeyId },
+    originalUrl: `/prisoners/${prisonNumber}/create-induction/${journeyId}/notes`,
   } as unknown as Request
   const res = {
     redirect: jest.fn(),
@@ -102,7 +104,7 @@ describe('inductionNoteController', () => {
       await controller.submitInductionNoteForm(req, res, next)
 
       // Then
-      expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-induction/check-your-answers')
+      expect(res.redirect).toHaveBeenCalledWith(`/prisoners/A1234BC/create-induction/${journeyId}/check-your-answers`)
       expect(getPrisonerContext(req.session, prisonNumber).inductionNoteForm).toBeUndefined()
       expect(req.session.inductionDto).toEqual(expectedInductionDto)
     })
@@ -123,7 +125,10 @@ describe('inductionNoteController', () => {
     await controller.submitInductionNoteForm(req, res, next)
 
     // Then
-    expect(res.redirectWithErrors).toHaveBeenCalledWith('/prisoners/A1234BC/create-induction/notes', expectedErrors)
+    expect(res.redirectWithErrors).toHaveBeenCalledWith(
+      `/prisoners/A1234BC/create-induction/${journeyId}/notes`,
+      expectedErrors,
+    )
     expect(getPrisonerContext(req.session, prisonNumber).inductionNoteForm).toEqual(invalidForm)
   })
 })

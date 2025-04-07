@@ -9,14 +9,17 @@ import WhoCompletedInductionController from '../common/whoCompletedInductionCont
 export default class WhoCompletedInductionCreateController extends WhoCompletedInductionController {
   submitWhoCompletedInductionForm: RequestHandler = async (req, res, next): Promise<void> => {
     const { inductionDto } = req.session
-    const { prisonNumber } = req.params
+    const { prisonNumber, journeyId } = req.params
 
     const whoCompletedInductionForm: WhoCompletedInductionForm = { ...req.body }
     getPrisonerContext(req.session, prisonNumber).whoCompletedInductionForm = whoCompletedInductionForm
 
     const errors = validateWhoCompletedInductionForm(whoCompletedInductionForm)
     if (errors.length > 0) {
-      return res.redirectWithErrors(`/prisoners/${prisonNumber}/create-induction/who-completed-induction`, errors)
+      return res.redirectWithErrors(
+        `/prisoners/${prisonNumber}/create-induction/${journeyId}/who-completed-induction`,
+        errors,
+      )
     }
 
     const updatedInductionDto = updateDtoWithFormContents(inductionDto, whoCompletedInductionForm)
@@ -24,8 +27,8 @@ export default class WhoCompletedInductionCreateController extends WhoCompletedI
     getPrisonerContext(req.session, prisonNumber).whoCompletedInductionForm = undefined
 
     return this.previousPageWasCheckYourAnswers(req)
-      ? res.redirect(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
-      : res.redirect(`/prisoners/${prisonNumber}/create-induction/notes`)
+      ? res.redirect(`/prisoners/${prisonNumber}/create-induction/${journeyId}/check-your-answers`)
+      : res.redirect(`/prisoners/${prisonNumber}/create-induction/${journeyId}/notes`)
   }
 }
 

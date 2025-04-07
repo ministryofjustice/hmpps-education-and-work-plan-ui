@@ -14,7 +14,7 @@ describe('setCurrentPageInPageFlowQueue', () => {
     session: {} as SessionData,
     params: {} as Record<string, string>,
     query: {} as Record<string, string>,
-    path: '',
+    originalUrl: '',
   }
   const res = {
     redirect: jest.fn(),
@@ -28,7 +28,7 @@ describe('setCurrentPageInPageFlowQueue', () => {
     req.session = {} as SessionData
     req.params = {} as Record<string, string>
     req.query = {} as Record<string, string>
-    req.path = ''
+    req.originalUrl = ''
     res.locals = {} as Record<string, unknown>
   })
 
@@ -39,7 +39,7 @@ describe('setCurrentPageInPageFlowQueue', () => {
       currentPageIndex: 0,
     }
     req.session.pageFlowQueue = initialPageFlowQueue
-    req.path = '/second-page'
+    req.originalUrl = '/second-page'
 
     const expectedPageFlowQueue: PageFlow = {
       pageUrls: ['/first-page', '/second-page', '/third-page'],

@@ -1,4 +1,5 @@
 import { Request, Response } from 'express'
+import { v4 as uuidV4 } from 'uuid'
 import type { AffectAbilityToWorkForm } from 'inductionForms'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
 import { aValidInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
@@ -8,14 +9,15 @@ import AffectAbilityToWorkCreateController from './affectAbilityToWorkCreateCont
 describe('affectAbilityToWorkCreateController', () => {
   const controller = new AffectAbilityToWorkCreateController()
 
+  const journeyId = uuidV4()
   const prisonNumber = 'A1234BC'
   const prisonerSummary = aValidPrisonerSummary()
 
   const req = {
     session: {},
     body: {},
-    params: { prisonNumber },
-    path: `/prisoners/${prisonNumber}/create-induction/affect-ability-to-work`,
+    params: { prisonNumber, journeyId },
+    originalUrl: `/prisoners/${prisonNumber}/create-induction/${journeyId}/affect-ability-to-work`,
   } as unknown as Request
   const res = {
     redirect: jest.fn(),
@@ -117,7 +119,7 @@ describe('affectAbilityToWorkCreateController', () => {
 
       // Then
       expect(res.redirectWithErrors).toHaveBeenCalledWith(
-        '/prisoners/A1234BC/create-induction/affect-ability-to-work',
+        `/prisoners/A1234BC/create-induction/${journeyId}/affect-ability-to-work`,
         expectedErrors,
       )
       expect(req.session.affectAbilityToWorkForm).toEqual(invalidAbilityToWorkForm)
@@ -148,7 +150,9 @@ describe('affectAbilityToWorkCreateController', () => {
         AbilityToWorkValue.OTHER,
       ])
       expect(updatedInduction.workOnRelease.affectAbilityToWorkOther).toEqual('Variable mental health')
-      expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-induction/highest-level-of-education')
+      expect(res.redirect).toHaveBeenCalledWith(
+        `/prisoners/A1234BC/create-induction/${journeyId}/highest-level-of-education`,
+      )
       expect(req.session.affectAbilityToWorkForm).toBeUndefined()
     })
   })

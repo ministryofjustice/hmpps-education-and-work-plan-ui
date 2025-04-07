@@ -1,4 +1,5 @@
 import { Request, Response } from 'express'
+import { v4 as uuidV4 } from 'uuid'
 import type { WantToAddQualificationsForm } from 'inductionForms'
 import type { AchievedQualificationDto } from 'dto'
 import type { PreviousQualificationsDto } from 'inductionDto'
@@ -14,6 +15,7 @@ import validInPrisonCourseRecords from '../../../testsupport/inPrisonCourseRecor
 describe('wantToAddQualificationsCreateController', () => {
   const controller = new WantToAddQualificationsCreateController()
 
+  const journeyId = uuidV4()
   const prisonNumber = 'A1234BC'
   const prisonerSummary = aValidPrisonerSummary()
   const functionalSkills = validFunctionalSkills()
@@ -29,8 +31,8 @@ describe('wantToAddQualificationsCreateController', () => {
   const req = {
     session: {},
     body: {},
-    params: { prisonNumber },
-    path: `/prisoners/${prisonNumber}/create-induction/want-to-add-qualifications`,
+    params: { prisonNumber, journeyId },
+    originalUrl: `/prisoners/${prisonNumber}/create-induction/${journeyId}/want-to-add-qualifications`,
   } as unknown as Request
   const res = {
     redirect: jest.fn(),
@@ -99,7 +101,7 @@ describe('wantToAddQualificationsCreateController', () => {
 
       // Then
       expect(res.redirectWithErrors).toHaveBeenCalledWith(
-        '/prisoners/A1234BC/create-induction/want-to-add-qualifications',
+        `/prisoners/A1234BC/create-induction/${journeyId}/want-to-add-qualifications`,
         expectedErrors,
       )
       expect(req.session.wantToAddQualificationsForm).toEqual(invalidWantToAddQualificationsForm)
@@ -117,7 +119,9 @@ describe('wantToAddQualificationsCreateController', () => {
       await controller.submitWantToAddQualificationsForm(req, res, next)
 
       // Then
-      expect(res.redirect).toHaveBeenCalledWith(`/prisoners/${prisonNumber}/create-induction/qualification-level`)
+      expect(res.redirect).toHaveBeenCalledWith(
+        `/prisoners/${prisonNumber}/create-induction/${journeyId}/qualification-level`,
+      )
       expect(req.session.wantToAddQualificationsForm).toBeUndefined()
       expect(req.session.inductionDto.previousQualifications.qualifications).toEqual([])
       expect(req.session.inductionDto.previousQualifications.educationLevel).toEqual(EducationLevelValue.NOT_SURE)
@@ -134,7 +138,9 @@ describe('wantToAddQualificationsCreateController', () => {
       await controller.submitWantToAddQualificationsForm(req, res, next)
 
       // Then
-      expect(res.redirect).toHaveBeenCalledWith(`/prisoners/${prisonNumber}/create-induction/additional-training`)
+      expect(res.redirect).toHaveBeenCalledWith(
+        `/prisoners/${prisonNumber}/create-induction/${journeyId}/additional-training`,
+      )
       expect(req.session.wantToAddQualificationsForm).toBeUndefined()
       expect(req.session.inductionDto.previousQualifications.qualifications).toEqual([])
       expect(req.session.inductionDto.previousQualifications.educationLevel).toEqual(EducationLevelValue.NOT_SURE)
@@ -149,8 +155,8 @@ describe('wantToAddQualificationsCreateController', () => {
 
       req.session.pageFlowHistory = {
         pageUrls: [
-          '/prisoners/A1234BC/create-induction/check-your-answers',
-          '/prisoners/A1234BC/create-induction/want-to-add-qualifications',
+          `/prisoners/A1234BC/create-induction/${journeyId}/check-your-answers`,
+          `/prisoners/A1234BC/create-induction/${journeyId}/want-to-add-qualifications`,
         ],
         currentPageIndex: 1,
       }
@@ -162,7 +168,9 @@ describe('wantToAddQualificationsCreateController', () => {
       await controller.submitWantToAddQualificationsForm(req, res, next)
 
       // Then
-      expect(res.redirect).toHaveBeenCalledWith(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
+      expect(res.redirect).toHaveBeenCalledWith(
+        `/prisoners/${prisonNumber}/create-induction/${journeyId}/check-your-answers`,
+      )
       expect(req.session.wantToAddQualificationsForm).toBeUndefined()
       expect(req.session.inductionDto.previousQualifications.qualifications).toEqual(existingQualifications)
     })
@@ -178,8 +186,8 @@ describe('wantToAddQualificationsCreateController', () => {
 
       req.session.pageFlowHistory = {
         pageUrls: [
-          '/prisoners/A1234BC/create-induction/check-your-answers',
-          '/prisoners/A1234BC/create-induction/want-to-add-qualifications',
+          `/prisoners/A1234BC/create-induction/${journeyId}/check-your-answers`,
+          `/prisoners/A1234BC/create-induction/${journeyId}/want-to-add-qualifications`,
         ],
         currentPageIndex: 1,
       }
@@ -191,7 +199,9 @@ describe('wantToAddQualificationsCreateController', () => {
       await controller.submitWantToAddQualificationsForm(req, res, next)
 
       // Then
-      expect(res.redirect).toHaveBeenCalledWith(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
+      expect(res.redirect).toHaveBeenCalledWith(
+        `/prisoners/${prisonNumber}/create-induction/${journeyId}/check-your-answers`,
+      )
       expect(req.session.wantToAddQualificationsForm).toBeUndefined()
       expect(req.session.inductionDto.previousQualifications.qualifications).toEqual(existingQualifications)
     })
@@ -207,8 +217,8 @@ describe('wantToAddQualificationsCreateController', () => {
 
       req.session.pageFlowHistory = {
         pageUrls: [
-          '/prisoners/A1234BC/create-induction/check-your-answers',
-          '/prisoners/A1234BC/create-induction/want-to-add-qualifications',
+          `/prisoners/A1234BC/create-induction/${journeyId}/check-your-answers`,
+          `/prisoners/A1234BC/create-induction/${journeyId}/want-to-add-qualifications`,
         ],
         currentPageIndex: 1,
       }
@@ -220,7 +230,9 @@ describe('wantToAddQualificationsCreateController', () => {
       await controller.submitWantToAddQualificationsForm(req, res, next)
 
       // Then
-      expect(res.redirect).toHaveBeenCalledWith(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
+      expect(res.redirect).toHaveBeenCalledWith(
+        `/prisoners/${prisonNumber}/create-induction/${journeyId}/check-your-answers`,
+      )
       expect(req.session.wantToAddQualificationsForm).toBeUndefined()
       expect(req.session.inductionDto.previousQualifications.qualifications).toEqual([]) // expect qualifications to have been removed from the Induction
       expect(req.session.inductionDto.previousQualifications.educationLevel).toEqual(EducationLevelValue.NOT_SURE)
@@ -235,8 +247,8 @@ describe('wantToAddQualificationsCreateController', () => {
 
       req.session.pageFlowHistory = {
         pageUrls: [
-          '/prisoners/A1234BC/create-induction/check-your-answers',
-          '/prisoners/A1234BC/create-induction/want-to-add-qualifications',
+          `/prisoners/A1234BC/create-induction/${journeyId}/check-your-answers`,
+          `/prisoners/A1234BC/create-induction/${journeyId}/want-to-add-qualifications`,
         ],
         currentPageIndex: 1,
       }
@@ -248,7 +260,9 @@ describe('wantToAddQualificationsCreateController', () => {
       await controller.submitWantToAddQualificationsForm(req, res, next)
 
       // Then
-      expect(res.redirect).toHaveBeenCalledWith(`/prisoners/${prisonNumber}/create-induction/qualification-level`)
+      expect(res.redirect).toHaveBeenCalledWith(
+        `/prisoners/${prisonNumber}/create-induction/${journeyId}/qualification-level`,
+      )
       expect(req.session.wantToAddQualificationsForm).toBeUndefined()
       expect(req.session.inductionDto.previousQualifications.qualifications).toEqual(existingQualifications) // expect qualifications to still be empty
       expect(req.session.inductionDto.previousQualifications.educationLevel).toEqual(EducationLevelValue.NOT_SURE)

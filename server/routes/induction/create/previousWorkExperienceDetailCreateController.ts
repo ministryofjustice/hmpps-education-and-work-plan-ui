@@ -12,7 +12,7 @@ export default class PreviousWorkExperienceDetailCreateController extends Previo
     res: Response,
     next: NextFunction,
   ): Promise<void> => {
-    const { prisonNumber } = req.params
+    const { prisonNumber, journeyId } = req.params
     const { inductionDto } = req.session
     const { prisonerSummary } = res.locals
     const { typeOfWorkExperience } = req.params
@@ -36,7 +36,7 @@ export default class PreviousWorkExperienceDetailCreateController extends Previo
     const errors = validatePreviousWorkExperienceDetailForm(previousWorkExperienceDetailForm, prisonerSummary)
     if (errors.length > 0) {
       return res.redirectWithErrors(
-        `/prisoners/${prisonNumber}/create-induction/previous-work-experience/${typeOfWorkExperience}`,
+        `/prisoners/${prisonNumber}/create-induction/${journeyId}/previous-work-experience/${typeOfWorkExperience}`,
         errors,
       )
     }
@@ -50,7 +50,7 @@ export default class PreviousWorkExperienceDetailCreateController extends Previo
     req.session.previousWorkExperienceDetailForm = undefined
 
     if (this.previousPageWasCheckYourAnswers(req)) {
-      return res.redirect(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
+      return res.redirect(`/prisoners/${prisonNumber}/create-induction/${journeyId}/check-your-answers`)
     }
 
     const { pageFlowQueue } = req.session
@@ -63,8 +63,8 @@ export default class PreviousWorkExperienceDetailCreateController extends Previo
     req.session.pageFlowQueue = undefined
 
     const nextPage = this.checkYourAnswersIsTheFirstPageInThePageHistory(req)
-      ? `/prisoners/${prisonNumber}/create-induction/check-your-answers`
-      : `/prisoners/${prisonNumber}/create-induction/skills`
+      ? `/prisoners/${prisonNumber}/create-induction/${journeyId}/check-your-answers`
+      : `/prisoners/${prisonNumber}/create-induction/${journeyId}/skills`
 
     req.session.pageFlowHistory = undefined
     return res.redirect(nextPage)

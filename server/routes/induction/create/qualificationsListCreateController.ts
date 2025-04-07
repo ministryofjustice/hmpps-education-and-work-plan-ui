@@ -9,7 +9,7 @@ export default class QualificationsListCreateController extends QualificationsLi
     res: Response,
     next: NextFunction,
   ): Promise<void> => {
-    const { prisonNumber } = req.params
+    const { prisonNumber, journeyId } = req.params
     const { inductionDto } = req.session
 
     if (!req.session.pageFlowHistory) {
@@ -17,27 +17,27 @@ export default class QualificationsListCreateController extends QualificationsLi
     }
 
     if (userClickedOnButton(req, 'addQualification')) {
-      return res.redirect(`/prisoners/${prisonNumber}/create-induction/qualification-level`)
+      return res.redirect(`/prisoners/${prisonNumber}/create-induction/${journeyId}/qualification-level`)
     }
 
     if (userClickedOnButton(req, 'removeQualification')) {
       const qualificationIndexToRemove = req.body.removeQualification as number
       req.session.inductionDto = inductionWithRemovedQualification(inductionDto, qualificationIndexToRemove)
-      return res.redirect(`/prisoners/${prisonNumber}/create-induction/qualifications`)
+      return res.redirect(`/prisoners/${prisonNumber}/create-induction/${journeyId}/qualifications`)
     }
 
     if (this.checkYourAnswersIsTheFirstPageInThePageHistory(req)) {
       req.session.pageFlowHistory = undefined
-      return res.redirect(`/prisoners/${prisonNumber}/create-induction/check-your-answers`)
+      return res.redirect(`/prisoners/${prisonNumber}/create-induction/${journeyId}/check-your-answers`)
     }
 
     if (inductionHasQualifications(inductionDto)) {
       // Remove the page flow history as it was only needed here to track the journey through qualifications
       req.session.pageFlowHistory = undefined
-      return res.redirect(`/prisoners/${prisonNumber}/create-induction/additional-training`)
+      return res.redirect(`/prisoners/${prisonNumber}/create-induction/${journeyId}/additional-training`)
     }
 
-    return res.redirect(`/prisoners/${prisonNumber}/create-induction/highest-level-of-education`)
+    return res.redirect(`/prisoners/${prisonNumber}/create-induction/${journeyId}/highest-level-of-education`)
   }
 }
 

@@ -1,4 +1,5 @@
 import { Request, Response } from 'express'
+import { v4 as uuidV4 } from 'uuid'
 import type { PersonalInterestsForm } from 'inductionForms'
 import type { PersonalInterestDto } from 'inductionDto'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
@@ -9,14 +10,15 @@ import PersonalInterestsValue from '../../../enums/personalInterestsValue'
 describe('personalInterestsCreateController', () => {
   const controller = new PersonalInterestsCreateController()
 
+  const journeyId = uuidV4()
   const prisonNumber = 'A1234BC'
   const prisonerSummary = aValidPrisonerSummary()
 
   const req = {
     session: {},
     body: {},
-    params: { prisonNumber },
-    path: `/prisoners/${prisonNumber}/create-induction/personal-interests`,
+    params: { prisonNumber, journeyId },
+    originalUrl: `/prisoners/${prisonNumber}/create-induction/${journeyId}/personal-interests`,
   } as unknown as Request
   const res = {
     redirect: jest.fn(),
@@ -85,21 +87,21 @@ describe('personalInterestsCreateController', () => {
       expect(req.session.inductionDto).toEqual(inductionDto)
     })
 
-    it('should get the Ability To Work view given the previous page was Check Your Answers', async () => {
+    it('should get the Personal Interests view given the previous page was Check Your Answers', async () => {
       // Given
       const inductionDto = aValidInductionDto()
       inductionDto.personalSkillsAndInterests.interests = undefined
       req.session.inductionDto = inductionDto
 
       req.session.pageFlowHistory = {
-        pageUrls: ['/prisoners/A1234BC/create-induction/check-your-answers'],
+        pageUrls: [`/prisoners/A1234BC/create-induction/${journeyId}/check-your-answers`],
         currentPageIndex: 0,
       }
 
       const expectedPageFlowHistory = {
         pageUrls: [
-          '/prisoners/A1234BC/create-induction/check-your-answers',
-          '/prisoners/A1234BC/create-induction/personal-interests',
+          `/prisoners/A1234BC/create-induction/${journeyId}/check-your-answers`,
+          `/prisoners/A1234BC/create-induction/${journeyId}/personal-interests`,
         ],
         currentPageIndex: 1,
       }
@@ -146,7 +148,7 @@ describe('personalInterestsCreateController', () => {
 
       // Then
       expect(res.redirectWithErrors).toHaveBeenCalledWith(
-        '/prisoners/A1234BC/create-induction/personal-interests',
+        `/prisoners/A1234BC/create-induction/${journeyId}/personal-interests`,
         expectedErrors,
       )
       expect(req.session.personalInterestsForm).toEqual(invalidPersonalInterestsForm)
@@ -177,7 +179,7 @@ describe('personalInterestsCreateController', () => {
       // Then
       const updatedInduction = req.session.inductionDto
       expect(updatedInduction.personalSkillsAndInterests.interests).toEqual(expectedInterests)
-      expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-induction/in-prison-work')
+      expect(res.redirect).toHaveBeenCalledWith(`/prisoners/A1234BC/create-induction/${journeyId}/in-prison-work`)
       expect(req.session.skillsForm).toBeUndefined()
     })
 
@@ -201,8 +203,8 @@ describe('personalInterestsCreateController', () => {
 
       req.session.pageFlowHistory = {
         pageUrls: [
-          '/prisoners/A1234BC/create-induction/check-your-answers',
-          '/prisoners/A1234BC/create-induction/personal-interests',
+          `/prisoners/A1234BC/create-induction/${journeyId}/check-your-answers`,
+          `/prisoners/A1234BC/create-induction/${journeyId}/personal-interests`,
         ],
         currentPageIndex: 1,
       }
@@ -213,7 +215,7 @@ describe('personalInterestsCreateController', () => {
       // Then
       const updatedInduction = req.session.inductionDto
       expect(updatedInduction.personalSkillsAndInterests.interests).toEqual(expectedInterests)
-      expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-induction/check-your-answers')
+      expect(res.redirect).toHaveBeenCalledWith(`/prisoners/A1234BC/create-induction/${journeyId}/check-your-answers`)
       expect(req.session.skillsForm).toBeUndefined()
     })
   })
