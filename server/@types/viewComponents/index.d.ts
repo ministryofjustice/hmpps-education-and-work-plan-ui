@@ -26,6 +26,5 @@ declare module 'viewComponents' {
     inductionSchedule: InductionScheduleView
     actionPlanReview: ActionPlanReviewScheduleView
     userHasPermissionTo: () => boolean
-    reviewsFeatureEnabled: boolean
   }
 }

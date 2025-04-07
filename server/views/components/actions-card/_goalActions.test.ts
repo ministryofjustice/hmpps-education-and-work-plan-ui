@@ -22,7 +22,6 @@ const templateParams: ActionsCardParams = {
     problemRetrievingData: false,
     reviewStatus: 'NO_SCHEDULED_REVIEW',
   },
-  reviewsFeatureEnabled: true,
   prisonerSummary: aValidPrisonerSummary(),
   userHasPermissionTo,
 }
@@ -47,22 +46,6 @@ describe('_goalActions', () => {
     expect($('[data-qa=goals-action-items] li').length).toEqual(1)
     expect($('[data-qa=add-goal-button]').attr('href')).toEqual('/plan/A1234BC/goals/create')
     expect(userHasPermissionTo).toHaveBeenCalledWith('CREATE_GOALS')
-  })
-
-  it('should not render heading given feature toggle not enabled', () => {
-    // Given
-    const params = {
-      ...templateParams,
-      reviewsFeatureEnabled: false,
-    }
-
-    // When
-    const content = nunjucks.render('_goalActions.njk', { params })
-    const $ = cheerio.load(content)
-
-    // Then
-    expect($('[data-qa=goal-actions]').length).toEqual(1)
-    expect($('[data-qa=goal-actions] h3').length).toEqual(0)
   })
 
   it('should not render add goal link given does not have permission to create goals', () => {

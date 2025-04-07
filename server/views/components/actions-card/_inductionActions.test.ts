@@ -28,7 +28,6 @@ const templateParams: ActionsCardParams = {
     problemRetrievingData: false,
     reviewStatus: 'NO_SCHEDULED_REVIEW',
   },
-  reviewsFeatureEnabled: true,
   prisonerSummary: aValidPrisonerSummary(),
   userHasPermissionTo,
 }
