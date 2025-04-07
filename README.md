@@ -114,10 +114,11 @@ To run the app a system client is required (`SYSTEM_CLIENT_ID` and `SYSTEM_CLIEN
 * `ROLE_CURIOUS_API` - to be able to call the Curious API
 
 ### User Roles
-One the UI is running users will need to authenticate with `hmpps-auth` using a valid DPS username. The DPS user needs to have the followings roles
-dependent on the access/functionality required:
+Once the UI is running users will need to authenticate with `hmpps-auth` using a valid DPS user. The DPS roles that the user
+has determines the functionality they will be able to access:
 
-* `ROLE_EDUCATION_WORK_PLAN_EDITOR` - required to be able to perform actions that edit/create data
+* `ROLE_LWP_CONTRIBUTOR` - Prisoner List landing page. Can view all data. Can update Inductions; but cannot create Inductions, create or update Goals, or record or exempt Reviews.
+* `ROLE_LWP_MANAGER` - Session Summary landing page. Can view all data, and can perform all functions (create and update Inductions, create and update Goals, record and exempt Reviews)
 
 ### Run linter
 
