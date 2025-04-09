@@ -61,9 +61,9 @@ describe('Tests for actions card component', () => {
     expect($('[data-qa=induction-actions] span').length).toEqual(0)
     expect($('[data-qa=induction-actions] ul li').length).toEqual(0)
 
-    expect($('[data-qa=review-actions]').length).toEqual(1) // containing div exists, with a span and li items within it
-    expect($('[data-qa=review-actions] span').length).toEqual(1)
-    expect($('[data-qa=review-actions] ul li').length).toEqual(2)
+    expect($('[data-qa=review-actions]').length).toEqual(1) // containing div exists ...
+    expect($('[data-qa=review-actions] span').length).toEqual(1) // ... containing the status tag ...
+    expect($('[data-qa=review-actions] ul li').length).toEqual(0) // ... but no action links
 
     expect($('[data-qa=goal-actions]').length).toEqual(1)
   })
