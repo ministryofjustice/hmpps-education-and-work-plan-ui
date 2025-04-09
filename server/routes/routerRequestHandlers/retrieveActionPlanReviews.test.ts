@@ -7,10 +7,8 @@ import retrieveActionPlanReviews from './retrieveActionPlanReviews'
 import NoteTypeValue from '../../enums/noteTypeValue'
 import ActionPlanReviewCalculationRuleValue from '../../enums/actionPlanReviewCalculationRuleValue'
 import ActionPlanReviewStatusValue from '../../enums/actionPlanReviewStatusValue'
-import config from '../../config'
 
 jest.mock('../../services/reviewService')
-jest.mock('../../config')
 
 describe('retrieveActionPlanReviews', () => {
   const reviewService = new ReviewService(null, null, null) as jest.Mocked<ReviewService>
@@ -39,10 +37,8 @@ describe('retrieveActionPlanReviews', () => {
     jest.resetAllMocks()
   })
 
-  it('should retrieve action plan reviews and store on res.locals given review journey is enabled', async () => {
+  it('should retrieve action plan reviews and store on res.locals', async () => {
     // Given
-    config.featureToggles.reviewsEnabled = true
-
     const expectedActionPlanReviews: ActionPlanReviews = {
       completedReviews: [
         {
@@ -95,19 +91,6 @@ describe('retrieveActionPlanReviews', () => {
     // Then
     expect(res.locals.actionPlanReviews).toEqual(expectedActionPlanReviews)
     expect(reviewService.getActionPlanReviews).toHaveBeenCalledWith(prisonNumber, username)
-    expect(next).toHaveBeenCalled()
-  })
-
-  it('should not retrieve action plan reviews given review journey is not enabled', async () => {
-    // Given
-    config.featureToggles.reviewsEnabled = false
-
-    // When
-    await requestHandler(req, res, next)
-
-    // Then
-    expect(res.locals.actionPlanReviews).toEqual(undefined)
-    expect(reviewService.getActionPlanReviews).not.toHaveBeenCalled()
     expect(next).toHaveBeenCalled()
   })
 })

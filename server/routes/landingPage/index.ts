@@ -1,7 +1,6 @@
 import { Router } from 'express'
 import ApplicationAction from '../../enums/applicationAction'
 import asyncMiddleware from '../../middleware/asyncMiddleware'
-import config from '../../config'
 
 const landingPageRoutes = (router: Router) => {
   // The user's landing page (ie: what they see for page route "/") is dependent on the user's permissions.
@@ -15,10 +14,7 @@ const landingPageRoutes = (router: Router) => {
   router.get(
     '/',
     asyncMiddleware(async (req, res, next) => {
-      req.url =
-        config.featureToggles.reviewsEnabled && res.locals.userHasPermissionTo(ApplicationAction.VIEW_SESSION_SUMMARIES)
-          ? '/sessions'
-          : '/search'
+      req.url = res.locals.userHasPermissionTo(ApplicationAction.VIEW_SESSION_SUMMARIES) ? '/sessions' : '/search'
       next('route')
     }),
   )

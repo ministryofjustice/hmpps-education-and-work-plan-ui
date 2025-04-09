@@ -193,4 +193,3 @@ Features can be toggled by setting the relevant environment variable.
 | Name                       | Default Value | Type     | Description                                                                       |
 |----------------------------|---------------|----------|-----------------------------------------------------------------------------------|
 | SOME_TOGGLE_ENABLED        | false         | Boolean  | Example feature toggle, for demonstration purposes.                               |
-| REVIEWS_ENABLED            | false         | Boolean  | Enable the PLP Review process.                                                    |
