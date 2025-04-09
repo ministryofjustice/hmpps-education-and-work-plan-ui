@@ -174,6 +174,5 @@ export default {
   ),
   featureToggles: {
     // someToggleEnabled: toBoolean(get('SOME_TOGGLE_ENABLED', false)),
-    reviewsEnabled: toBoolean(get('REVIEWS_ENABLED', false)),
   },
 }
