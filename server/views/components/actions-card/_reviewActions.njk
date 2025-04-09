@@ -35,7 +35,7 @@
     {% endif %}
 
     <ul class="govuk-list govuk-!-margin-0" data-qa="reviews-action-items">
-      {% if params.actionPlanReview.reviewStatus != 'NO_SCHEDULED_REVIEW' %}
+      {% if params.actionPlanReview.reviewStatus != 'NO_SCHEDULED_REVIEW' and params.actionPlanReview.reviewStatus != 'HAS_HAD_LAST_REVIEW' %}
         {% if params.actionPlanReview.reviewStatus == 'ON_HOLD' %}
 
           {% if params.userHasPermissionTo('REMOVE_REVIEW_EXEMPTION') %}

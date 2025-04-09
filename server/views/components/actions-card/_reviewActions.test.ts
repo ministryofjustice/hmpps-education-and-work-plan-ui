@@ -184,9 +184,8 @@ describe('_reviewActions', () => {
     expect($('[data-qa=no-reviews-due]').text().trim()).toEqual('No reviews due')
     expect($('[data-qa=release-on]').text().trim()).toEqual('release on 31 Dec 2025')
 
-    expect($('[data-qa=reviews-action-items] li').length).toEqual(2)
-    expect($('[data-qa=mark-review-complete-button]').length).toEqual(1)
-    expect($('[data-qa=record-exemption-button]').length).toEqual(1)
+    // If the prisoner has had their last review then we do not support completing or exempting the review, and therefore we expect no action links
+    expect($('[data-qa=reviews-action-items] li').length).toEqual(0)
   })
 
   it('should render review actions given prisoner has no scheduled review', () => {
