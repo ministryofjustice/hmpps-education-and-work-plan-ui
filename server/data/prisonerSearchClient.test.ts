@@ -70,7 +70,9 @@ describe('prisonerSearchClient', () => {
         ],
       })
       prisonerSearchApi
-        .get(`/prisoner-search/prison/${prisonId}?page=${page}&size=${pageSize}`)
+        .get(
+          `/prisoner-search/prison/${prisonId}?page=${page}&size=${pageSize}&responseFields=prisonerNumber&responseFields=prisonId&responseFields=releaseDate&responseFields=firstName&responseFields=lastName&responseFields=receptionDate&responseFields=dateOfBirth&responseFields=cellLocation&responseFields=restrictedPatient&responseFields=supportingPrisonId`,
+        )
         .reply(200, pagedCollectionOfPrisoners)
 
       // When
@@ -94,7 +96,9 @@ describe('prisonerSearchClient', () => {
         content: [],
       })
       prisonerSearchApi
-        .get(`/prisoner-search/prison/${prisonId}?page=${page}&size=${pageSize}`)
+        .get(
+          `/prisoner-search/prison/${prisonId}?page=${page}&size=${pageSize}&responseFields=prisonerNumber&responseFields=prisonId&responseFields=releaseDate&responseFields=firstName&responseFields=lastName&responseFields=receptionDate&responseFields=dateOfBirth&responseFields=cellLocation&responseFields=restrictedPatient&responseFields=supportingPrisonId`,
+        )
         .reply(200, pagedCollectionOfPrisoners)
 
       // When
@@ -119,7 +123,9 @@ describe('prisonerSearchClient', () => {
         developerMessage: 'Not found',
       }
       prisonerSearchApi
-        .get(`/prisoner-search/prison/${prisonId}?page=${page}&size=${pageSize}`)
+        .get(
+          `/prisoner-search/prison/${prisonId}?page=${page}&size=${pageSize}&responseFields=prisonerNumber&responseFields=prisonId&responseFields=releaseDate&responseFields=firstName&responseFields=lastName&responseFields=receptionDate&responseFields=dateOfBirth&responseFields=cellLocation&responseFields=restrictedPatient&responseFields=supportingPrisonId`,
+        )
         .reply(404, apiErrorResponse)
 
       // When

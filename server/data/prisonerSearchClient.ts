@@ -27,6 +27,18 @@ export default class PrisonerSearchClient {
       query: {
         page,
         size: pageSize,
+        responseFields: [
+          'prisonerNumber',
+          'prisonId',
+          'releaseDate',
+          'firstName',
+          'lastName',
+          'receptionDate',
+          'dateOfBirth',
+          'cellLocation',
+          'restrictedPatient',
+          'supportingPrisonId',
+        ],
       },
       ignore404: true,
     })
