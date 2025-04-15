@@ -49,17 +49,20 @@ declare module 'dto' {
     reason: ReasonToArchiveGoalValue
     reasonOther?: string
     notes?: string
+    prisonId: string
   }
 
   export interface UnarchiveGoalDto {
     goalReference: string
     prisonNumber: string
+    prisonId: string
   }
 
   export interface CompleteGoalDto {
     goalReference: string
     prisonNumber: string
     note: string
+    prisonId: string
   }
   export interface EducationDto extends ReferencedAndAuditable {
     prisonNumber: string

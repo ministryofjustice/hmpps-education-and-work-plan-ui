@@ -4,5 +4,6 @@ import type { UnarchiveGoalRequest } from 'educationAndWorkPlanApiClient'
 export default function toUnarchiveGoalRequest(dto: UnarchiveGoalDto): UnarchiveGoalRequest {
   return {
     goalReference: dto.goalReference,
+    prisonId: dto.prisonId,
   }
 }

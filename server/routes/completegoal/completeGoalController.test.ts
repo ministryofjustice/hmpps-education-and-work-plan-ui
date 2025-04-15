@@ -25,9 +25,10 @@ describe('CompleteGoalController - submitCompleteGoalForm', () => {
   >
 
   const prisonNumber = 'A1234GC'
+  const prisonId = 'BXI'
   const username = 'a-dps-user'
   const goalReference = '1a2eae63-8102-4155-97cb-43d8fb739caf'
-  const prisonerSummary = aValidPrisonerSummary({ prisonNumber, prisonId: 'BXI' })
+  const prisonerSummary = aValidPrisonerSummary({ prisonNumber, prisonId })
   const requestId = 'deff305c-2460-4d07-853e-f8762a8a52c6'
 
   const req = {
@@ -56,7 +57,7 @@ describe('CompleteGoalController - submitCompleteGoalForm', () => {
 
   it('should complete the goal and log the audit successfully', async () => {
     // Given
-    const completeGoalDto = { goalReference, prisonNumber, note: 'Great progress made' }
+    const completeGoalDto = { goalReference, prisonNumber, note: 'Great progress made', prisonId }
     mockedCompleteGoalFormToCompleteGoalDtoMapper.mockReturnValue(completeGoalDto)
 
     const expectedBaseAuditData: BaseAuditData = {
@@ -71,7 +72,7 @@ describe('CompleteGoalController - submitCompleteGoalForm', () => {
     await controller.submitCompleteGoalForm(req as Request, res as Response, next)
 
     // Then
-    expect(toCompleteGoalDto).toHaveBeenCalledWith(prisonNumber, { note: 'Great progress made' })
+    expect(toCompleteGoalDto).toHaveBeenCalledWith(prisonNumber, prisonId, { note: 'Great progress made' })
     expect(educationAndWorkPlanService.completeGoal).toHaveBeenCalledWith(completeGoalDto, username)
     expect(auditService.logCompleteGoal).toHaveBeenCalledWith(expectedBaseAuditData)
     expect(res.redirectWithSuccess).toHaveBeenCalledWith('/plan/A1234GC/view/overview', 'Goal Completed')
@@ -80,7 +81,7 @@ describe('CompleteGoalController - submitCompleteGoalForm', () => {
 
   it('should call next with a 500 error when goal completion fails', async () => {
     // Given
-    const completeGoalDto = { goalReference, prisonNumber, note: 'Great progress made' }
+    const completeGoalDto = { goalReference, prisonNumber, note: 'Great progress made', prisonId }
     mockedCompleteGoalFormToCompleteGoalDtoMapper.mockReturnValue(completeGoalDto)
 
     educationAndWorkPlanService.completeGoal.mockRejectedValue(new Error('Service failure'))

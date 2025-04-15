@@ -955,6 +955,11 @@ export interface components {
        * @example c88a6c48-97e2-4c04-93b5-98619966447b
        */
       goalReference: string
+      /**
+       * @description The Prison identifier.
+       * @example BXI
+       */
+      prisonId: string
     }
     CompleteGoalRequest: {
       /**
@@ -963,6 +968,11 @@ export interface components {
        * @example c88a6c48-97e2-4c04-93b5-98619966447b
        */
       goalReference: string
+      /**
+       * @description The Prison identifier.
+       * @example BXI
+       */
+      prisonId: string
       /**
        * @description An optional note to accompany the completion
        * @example null
@@ -985,6 +995,11 @@ export interface components {
         | 'PRISONER_NO_LONGER_WANTS_TO_WORK_WITH_CIAG'
         | 'SUITABLE_ACTIVITIES_NOT_AVAILABLE_IN_THIS_PRISON'
         | 'OTHER'
+      /**
+       * @description The Prison identifier.
+       * @example BXI
+       */
+      prisonId: string
       /**
        * @description Describes the reason for archiving if 'OTHER' is selected, it is mandatory in this scenario.
        * @example null
@@ -3486,7 +3501,14 @@ export interface operations {
   }
   getTimeline: {
     parameters: {
-      query?: never
+      query?: {
+        inductions?: boolean
+        goals?: boolean
+        reviews?: boolean
+        prisonEvents?: boolean
+        prisonId?: string
+        eventsSince?: string
+      }
       header?: never
       path: {
         prisonNumber: string

@@ -39,9 +39,11 @@ export default class CompleteGoalController {
 
   submitCompleteGoalForm: RequestHandler = async (req, res, next): Promise<void> => {
     const { prisonNumber } = req.params
+    const { prisonerSummary } = res.locals
     const completeGoalForm: CompleteGoalForm = { ...req.body }
 
-    const completeGoalDto = toCompleteGoalDto(prisonNumber, completeGoalForm)
+    const { prisonId } = prisonerSummary
+    const completeGoalDto = toCompleteGoalDto(prisonNumber, prisonId, completeGoalForm)
     try {
       await this.educationAndWorkPlanService.completeGoal(completeGoalDto, req.user.username)
       // eslint-disable-next-line @typescript-eslint/no-unused-vars

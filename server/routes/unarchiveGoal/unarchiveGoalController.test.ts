@@ -21,8 +21,9 @@ describe('unarchiveGoalController', () => {
   const controller = new UnarchiveGoalController(educationAndWorkPlanService, auditService)
 
   const prisonNumber = 'A1234BC'
+  const prisonId = 'BXI'
   const username = 'a-dps-user'
-  const prisonerSummary = aValidPrisonerSummary()
+  const prisonerSummary = aValidPrisonerSummary({ prisonNumber, prisonId })
   const goalReference = '1a2eae63-8102-4155-97cb-43d8fb739caf'
   const requestId = 'deff305c-2460-4d07-853e-f8762a8a52c6'
 
@@ -115,6 +116,7 @@ describe('unarchiveGoalController', () => {
       const expectedUnarchiveGoalDto: UnarchiveGoalDto = {
         goalReference,
         prisonNumber,
+        prisonId,
       }
 
       const expectedBaseAuditData: BaseAuditData = {
@@ -148,6 +150,7 @@ describe('unarchiveGoalController', () => {
       const expectedUnarchiveGoalDto: UnarchiveGoalDto = {
         goalReference,
         prisonNumber,
+        prisonId,
       }
 
       // When

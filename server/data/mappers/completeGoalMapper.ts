@@ -5,5 +5,6 @@ export default function toCompleteGoalRequest(dto: CompleteGoalDto): CompleteGoa
   return {
     goalReference: dto.goalReference,
     note: dto.note,
+    prisonId: dto.prisonId,
   }
 }

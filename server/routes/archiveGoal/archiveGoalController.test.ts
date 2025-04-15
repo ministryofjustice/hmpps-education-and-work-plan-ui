@@ -31,9 +31,10 @@ describe('archiveGoalController', () => {
   const controller = new ArchiveGoalController(educationAndWorkPlanService, auditService)
 
   const prisonNumber = 'A1234GC'
+  const prisonId = 'BXI'
   const username = 'a-dps-user'
   const goalReference = '1a2eae63-8102-4155-97cb-43d8fb739caf'
-  const prisonerSummary = aValidPrisonerSummary({ prisonNumber, prisonId: 'BXI' })
+  const prisonerSummary = aValidPrisonerSummary({ prisonNumber, prisonId })
   const requestId = 'deff305c-2460-4d07-853e-f8762a8a52c6'
 
   const req = {
@@ -264,6 +265,7 @@ describe('archiveGoalController', () => {
         prisonNumber,
         goalReference,
         reason: ReasonToArchiveGoalValue.PRISONER_NO_LONGER_WANTS_TO_WORK_TOWARDS_GOAL,
+        prisonId,
       }
       mockedArchiveGoalFormToArchiveGoalDtoMapper.mockReturnValue(expectedArchiveGoalDto)
 
@@ -296,6 +298,7 @@ describe('archiveGoalController', () => {
         prisonNumber,
         goalReference,
         reason: ReasonToArchiveGoalValue.PRISONER_NO_LONGER_WANTS_TO_WORK_TOWARDS_GOAL,
+        prisonId,
       }
       mockedArchiveGoalFormToArchiveGoalDtoMapper.mockReturnValue(expectedArchiveGoalDto)
       educationAndWorkPlanService.archiveGoal.mockRejectedValue(createError(500, 'Service unavailable'))
