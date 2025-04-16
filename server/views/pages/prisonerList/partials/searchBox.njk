@@ -39,8 +39,11 @@
           {# Reset the Prisoner List page filters using an anchor link with blank searchTerm and statusFilter field values.
               The link also contains the current sort order to ensure the current sort field and order are maintained after
               reseting the filter.
+              The link url is "/search" which works for all user types. A link url of "/" only works for readonly and users
+              with the Contributor role because their default landing page ("/") is this prisoner-list page. Users with
+              the Manager role have a different landing page ("/"), so using "/search" will work for all user types.
           #}
-          <a class="govuk-link govuk-link--no-visited-state" href="/?searchTerm=&statusFilter=&sort={{ sortBy }},{{ sortOrder }}" data-qa="clear-filters">
+          <a class="govuk-link govuk-link--no-visited-state" href="/search?searchTerm=&statusFilter=&sort={{ sortBy }},{{ sortOrder }}" data-qa="clear-filters">
             Clear<span class="govuk-visually-hidden"> filter options</span>
           </a>
         </p>
