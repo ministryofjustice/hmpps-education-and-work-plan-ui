@@ -38,9 +38,11 @@ export default class UnarchiveGoalController {
 
   submitUnarchiveGoalForm: RequestHandler = async (req, res, next): Promise<void> => {
     const { prisonNumber } = req.params
+    const { prisonerSummary } = res.locals
     const unarchiveGoalForm: UnarchiveGoalForm = { ...req.body }
 
-    const unarchiveGoalDto = toUnarchiveGoalDto(prisonNumber, unarchiveGoalForm)
+    const { prisonId } = prisonerSummary
+    const unarchiveGoalDto = toUnarchiveGoalDto(prisonNumber, prisonId, unarchiveGoalForm)
     try {
       await this.educationAndWorkPlanService.unarchiveGoal(unarchiveGoalDto, req.user.username)
       // eslint-disable-next-line @typescript-eslint/no-unused-vars

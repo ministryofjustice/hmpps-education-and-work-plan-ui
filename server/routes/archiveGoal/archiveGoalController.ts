@@ -70,10 +70,12 @@ export default class ArchiveGoalController {
 
   submitReviewArchiveGoal: RequestHandler = async (req, res, next): Promise<void> => {
     const { prisonNumber } = req.params
+    const { prisonerSummary } = res.locals
     const { archiveGoalForm } = getPrisonerContext(req.session, prisonNumber)
     getPrisonerContext(req.session, prisonNumber).archiveGoalForm = undefined
 
-    const archiveGoalDto = toArchiveGoalDto(prisonNumber, archiveGoalForm)
+    const { prisonId } = prisonerSummary
+    const archiveGoalDto = toArchiveGoalDto(prisonNumber, prisonId, archiveGoalForm)
     try {
       await this.educationAndWorkPlanService.archiveGoal(archiveGoalDto, req.user.username)
       // eslint-disable-next-line @typescript-eslint/no-unused-vars

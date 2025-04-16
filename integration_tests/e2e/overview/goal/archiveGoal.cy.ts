@@ -183,6 +183,7 @@ context('Archive a goal', () => {
         .withRequestBody(
           matchingJsonPath(
             `$[?(@.goalReference == '${goalReference}' && ` +
+              "@.prisonId == 'BXI' && " +
               "@.reason == 'OTHER' && " +
               "@.note == '' && " +
               "@.reasonOther == 'Just because...')]",
@@ -231,6 +232,7 @@ context('Archive a goal', () => {
         .withRequestBody(
           matchingJsonPath(
             `$[?(@.goalReference == '${goalReference}' && ` +
+              "@.prisonId == 'BXI' && " +
               "@.reason == 'OTHER' && " +
               "@.note == 'Some additional notes explaining why we are archiving this goal' && " +
               "@.reasonOther == 'Just because...')]",

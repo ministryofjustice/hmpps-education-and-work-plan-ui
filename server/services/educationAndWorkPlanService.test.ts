@@ -41,6 +41,7 @@ describe('educationAndWorkPlanService', () => {
   const systemToken = 'a-system-token'
   const username = 'a-dps-user'
   const prisonNumber = 'A1234BC'
+  const prisonId = 'BXI'
   const prisonNamesById = new Map([['BXI', 'Brixton (HMP)']])
 
   beforeEach(() => {
@@ -267,10 +268,12 @@ describe('educationAndWorkPlanService', () => {
       prisonNumber,
       goalReference,
       reason,
+      prisonId,
     }
     const archiveGoalRequest: ArchiveGoalRequest = {
       goalReference,
       reason,
+      prisonId,
     }
 
     it('should archive Goal', async () => {
@@ -301,8 +304,8 @@ describe('educationAndWorkPlanService', () => {
 
   describe('unarchiveGoal', () => {
     const goalReference = '95b18362-fe56-4234-9ad2-11ef98b974a3'
-    const unarchiveGoalDto: UnarchiveGoalDto = { prisonNumber, goalReference }
-    const unarchiveGoalRequest: UnarchiveGoalRequest = { goalReference }
+    const unarchiveGoalDto: UnarchiveGoalDto = { prisonNumber, goalReference, prisonId }
+    const unarchiveGoalRequest: UnarchiveGoalRequest = { goalReference, prisonId }
 
     it('should unarchive Goal', async () => {
       // Given
@@ -337,8 +340,8 @@ describe('educationAndWorkPlanService', () => {
   describe('completedGoal', () => {
     const goalReference = '95b18362-fe56-4234-9ad2-11ef98b974a3'
     const note = 'Goal completed on time'
-    const completedGoalDto: CompleteGoalDto = { prisonNumber, goalReference, note }
-    const completeGoalRequest: CompleteGoalRequest = { goalReference, note }
+    const completedGoalDto: CompleteGoalDto = { prisonNumber, goalReference, note, prisonId }
+    const completeGoalRequest: CompleteGoalRequest = { goalReference, note, prisonId }
 
     it('should complete Goal', async () => {
       // Given

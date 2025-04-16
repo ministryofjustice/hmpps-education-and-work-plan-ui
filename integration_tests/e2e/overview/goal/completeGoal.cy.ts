@@ -101,7 +101,9 @@ context('Complete a goal', () => {
 
     cy.wiremockVerify(
       putRequestedFor(urlEqualTo(`/action-plans/${prisonNumber}/goals/${goalReference}/complete`)) //
-        .withRequestBody(matchingJsonPath(`$[?(@.goalReference == '${goalReference}' && @.note == '')]`)),
+        .withRequestBody(
+          matchingJsonPath(`$[?(@.goalReference == '${goalReference}' && @.prisonId == 'BXI' && @.note == '')]`),
+        ),
     )
   })
 
@@ -135,6 +137,7 @@ context('Complete a goal', () => {
         .withRequestBody(
           matchingJsonPath(
             `$[?(@.goalReference == '${goalReference}' && ` +
+              "@.prisonId == 'BXI' && " +
               "@.note == 'Some additional notes explaining why we are completing this goal')]",
           ),
         ),

@@ -87,7 +87,7 @@ context('Unarchive a goal', () => {
       .doesNotHaveSuccessMessage()
     cy.wiremockVerify(
       putRequestedFor(urlEqualTo(`/action-plans/${prisonNumber}/goals/${goalReference}/unarchive`)) //
-        .withRequestBody(matchingJsonPath(`$[?(@.goalReference == '${goalReference}')]`)),
+        .withRequestBody(matchingJsonPath(`$[?(@.goalReference == '${goalReference}' && @.prisonId == 'BXI')]`)),
     )
   })
 
