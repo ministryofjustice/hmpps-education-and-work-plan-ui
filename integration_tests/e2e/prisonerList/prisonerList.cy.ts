@@ -48,8 +48,6 @@ context(`Display the prisoner list screen`, () => {
       // Given
       if (authority === 'VIEW') {
         cy.task('stubSignInAsReadOnlyUser')
-      } else if (authority === 'EDIT') {
-        cy.task('stubSignInAsUserWithManagerRole')
       } else if (authority === 'CONTRIBUTOR') {
         cy.task('stubSignInAsUserWithContributorRole')
       }
@@ -136,28 +134,38 @@ context(`Display the prisoner list screen`, () => {
       prisonerListPage //
         .hasResultsDisplayed(numberOfPrisonersNamedJohn)
     })
+    ;['VIEW', 'CONTRIBUTOR', 'MANAGER'].forEach(authority => {
+      it(`users with authority ${authority} should be able to clear filters to reset the search and be left on the prisoner list page with no active filters set`, () => {
+        // Given
+        if (authority === 'VIEW') {
+          cy.task('stubSignInAsReadOnlyUser')
+        } else if (authority === 'MANAGER') {
+          cy.task('stubSignInAsUserWithManagerRole')
+        } else if (authority === 'CONTRIBUTOR') {
+          cy.task('stubSignInAsUserWithContributorRole')
+        }
+        cy.signIn()
+        cy.visit(authority === 'MANAGER' ? '/search' : '/') // prisoner-list route is '/' for read only or contributors; but is '/search' for managers
 
-    it('should clear filters to reset the search', () => {
-      // Given
-      cy.signIn()
-      cy.visit('/')
-      const prisonerListPage = Page.verifyOnPage(PrisonerListPage)
-      prisonerListPage //
-        .setNameFilter('some non existent search term')
-        .setStatusFilter('NEEDS_PLAN')
-        .applyFilters()
-        .hasNoResultsDisplayed()
+        const prisonerListPage = Page.verifyOnPage(PrisonerListPage)
+        prisonerListPage //
+          .setNameFilter('some non existent search term')
+          .setStatusFilter('NEEDS_PLAN')
+          .applyFilters()
+          .hasNoResultsDisplayed()
 
-      const expectedResultCount = prisonerSearchSummaries.length
+        const expectedResultCount = prisonerSearchSummaries.length
 
-      // When
-      prisonerListPage.clearFilters()
+        // When
+        prisonerListPage.clearFilters()
 
-      // Then
-      prisonerListPage //
-        .hasResultsDisplayed(expectedResultCount)
-        .hasNoSearchTerm()
-        .hasNoStatusFilter()
+        // Then
+        Page.verifyOnPage(PrisonerListPage)
+        prisonerListPage //
+          .hasResultsDisplayed(expectedResultCount)
+          .hasNoSearchTerm()
+          .hasNoStatusFilter()
+      })
     })
   })
 
