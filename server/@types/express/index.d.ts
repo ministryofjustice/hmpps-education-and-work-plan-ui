@@ -100,6 +100,10 @@ export declare global {
       authSource: string
     }
 
+    interface JourneyData {
+      inductionDto?: InductionDto
+    }
+
     interface Response {
       redirectWithSuccess?(path: string, message: string): void
 
@@ -109,6 +113,7 @@ export declare global {
     interface Request {
       verified?: boolean
       id: string
+      journeyData: JourneyData
 
       logout(done: (err: unknown) => void): void
 

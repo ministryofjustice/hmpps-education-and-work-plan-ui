@@ -24,6 +24,7 @@ import CiagInductionClient from './ciagInductionClient'
 import PrisonRegisterStore from './prisonRegisterStore/prisonRegisterStore'
 import PrisonRegisterClient from './prisonRegisterClient'
 import PrisonerSearchStore from './prisonerSearchStore/prisonerSearchStore'
+import JourneyDataStore from './journeyDataStore/journeyDataStore'
 
 type RestClientBuilder<T> = (token: string) => T
 
@@ -41,6 +42,7 @@ export const dataAccess = () => ({
   ciagInductionClient: new CiagInductionClient(),
   prisonRegisterStore: new PrisonRegisterStore(createRedisClient('prisonRegister:')),
   prisonRegisterClient: new PrisonRegisterClient(),
+  journeyDataStore: new JourneyDataStore(createRedisClient('journeyData:')),
 })
 
 export type DataAccess = ReturnType<typeof dataAccess>
@@ -57,4 +59,5 @@ export {
   CiagInductionClient,
   PrisonRegisterStore,
   PrisonRegisterClient,
+  JourneyDataStore,
 }
