@@ -11,7 +11,6 @@ import type {
 import type {
   AdditionalTrainingForm,
   AffectAbilityToWorkForm,
-  HopingToWorkOnReleaseForm,
   InductionExemptionForm,
   InductionNoteForm,
   InPrisonTrainingForm,
@@ -19,7 +18,6 @@ import type {
   PersonalInterestsForm,
   PreviousWorkExperienceDetailForm,
   PreviousWorkExperienceTypesForm,
-  SkillsForm,
   WantToAddQualificationsForm,
   WhoCompletedInductionForm,
   WorkedBeforeForm,
@@ -45,10 +43,8 @@ declare module 'express-session' {
     pageFlowQueue: PageFlow
 
     // Induction related forms held on the session
-    hopingToWorkOnReleaseForm: HopingToWorkOnReleaseForm
     inPrisonWorkForm: InPrisonWorkForm
     inPrisonTrainingForm: InPrisonTrainingForm
-    skillsForm: SkillsForm
     personalInterestsForm: PersonalInterestsForm
     workedBeforeForm: WorkedBeforeForm
     previousWorkExperienceTypesForm: PreviousWorkExperienceTypesForm

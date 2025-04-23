@@ -4,6 +4,7 @@ import type { SkillsForm } from 'inductionForms'
 import InductionController from './inductionController'
 import SkillsView from './skillsView'
 import SkillsValue from '../../../enums/skillsValue'
+import { asArray } from '../../../utils/utils'
 
 /**
  * Abstract controller class defining functionality common to both the Create and Update Induction journeys.
@@ -14,10 +15,14 @@ export default abstract class SkillsController extends InductionController {
    */
   getSkillsView: RequestHandler = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { inductionDto } = req.journeyData
-    const { prisonerSummary } = res.locals
+    const { prisonerSummary, invalidForm } = res.locals
 
-    const skillsForm = req.session.skillsForm || toSkillsForm(inductionDto)
-    req.session.skillsForm = undefined
+    const skillsForm = invalidForm
+      ? {
+          skills: asArray(invalidForm.skills),
+          skillsOther: invalidForm.skillsOther,
+        }
+      : toSkillsForm(inductionDto)
 
     this.addCurrentPageToFlowHistoryWhenComingFromCheckYourAnswers(req)
 

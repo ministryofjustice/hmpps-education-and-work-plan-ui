@@ -34,15 +34,16 @@ describe('skillsCreateController', () => {
     req.session.pageFlowHistory = undefined
     req.body = {}
     req.journeyData = {}
+    res.locals.invalidForm = undefined
   })
 
   describe('getSkillsView', () => {
-    it('should get the Skills view given there is no SkillsForm on the session', async () => {
+    it('should get the Skills view given there is no SkillsForm on res.locals.invalidForm', async () => {
       // Given
       const inductionDto = aValidInductionDto()
       inductionDto.personalSkillsAndInterests.skills = undefined
       req.journeyData.inductionDto = inductionDto
-      req.session.skillsForm = undefined
+      res.locals.invalidForm = undefined
 
       const expectedSkillsForm: SkillsForm = {
         skills: [],
@@ -59,11 +60,10 @@ describe('skillsCreateController', () => {
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/induction/skills/index', expectedView)
-      expect(req.session.skillsForm).toBeUndefined()
       expect(req.journeyData.inductionDto).toEqual(inductionDto)
     })
 
-    it('should get the Skills view given there is an SkillsForm already on the session', async () => {
+    it('should get the Skills view given there is an SkillsForm already on res.locals.invalidForm', async () => {
       // Given
       const inductionDto = aValidInductionDto()
       inductionDto.personalSkillsAndInterests.skills = undefined
@@ -73,7 +73,7 @@ describe('skillsCreateController', () => {
         skills: ['SELF_MANAGEMENT', 'TEAMWORK', 'THINKING_AND_PROBLEM_SOLVING'],
         skillsOther: '',
       }
-      req.session.skillsForm = expectedSkillsForm
+      res.locals.invalidForm = expectedSkillsForm
 
       const expectedView = {
         prisonerSummary,
@@ -85,7 +85,6 @@ describe('skillsCreateController', () => {
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/induction/skills/index', expectedView)
-      expect(req.session.skillsForm).toBeUndefined()
       expect(req.journeyData.inductionDto).toEqual(inductionDto)
     })
 
@@ -130,33 +129,6 @@ describe('skillsCreateController', () => {
   })
 
   describe('submitSkillsForm', () => {
-    it('should not update Induction given form is submitted with validation errors', async () => {
-      // Given
-      const inductionDto = aValidInductionDto()
-      inductionDto.personalSkillsAndInterests.skills = undefined
-      req.journeyData.inductionDto = inductionDto
-
-      const invalidSkillsForm = {
-        skills: ['OTHER'],
-        skillsOther: '',
-      }
-      req.body = invalidSkillsForm
-      req.session.skillsForm = undefined
-
-      const expectedErrors = [{ href: '#skillsOther', text: 'Enter the skill that Jimmy Lightfingers feels they have' }]
-
-      // When
-      await controller.submitSkillsForm(req, res, next)
-
-      // Then
-      expect(res.redirectWithErrors).toHaveBeenCalledWith(
-        `/prisoners/A1234BC/create-induction/${journeyId}/skills`,
-        expectedErrors,
-      )
-      expect(req.session.skillsForm).toEqual(invalidSkillsForm)
-      expect(req.journeyData.inductionDto).toEqual(inductionDto)
-    })
-
     it('should update inductionDto and redirect to personal interests page', async () => {
       // Given
       const inductionDto = aValidInductionDto()
@@ -168,7 +140,6 @@ describe('skillsCreateController', () => {
         skillsOther: 'Circus skills',
       }
       req.body = skillsForm
-      req.session.skillsForm = undefined
 
       const expectedSkills: Array<PersonalSkillDto> = [
         { skillType: SkillsValue.TEAMWORK, skillTypeOther: undefined },
@@ -182,7 +153,6 @@ describe('skillsCreateController', () => {
       const updatedInduction = req.journeyData.inductionDto
       expect(updatedInduction.personalSkillsAndInterests.skills).toEqual(expectedSkills)
       expect(res.redirect).toHaveBeenCalledWith(`/prisoners/A1234BC/create-induction/${journeyId}/personal-interests`)
-      expect(req.session.skillsForm).toBeUndefined()
     })
 
     it('should update inductionDto and redirect to Check Your Answers given previous page was Check Your Answers', async () => {
@@ -196,7 +166,6 @@ describe('skillsCreateController', () => {
         skillsOther: 'Circus skills',
       }
       req.body = skillsForm
-      req.session.skillsForm = undefined
 
       const expectedSkills: Array<PersonalSkillDto> = [
         { skillType: SkillsValue.TEAMWORK, skillTypeOther: undefined },
@@ -218,7 +187,6 @@ describe('skillsCreateController', () => {
       const updatedInduction = req.journeyData.inductionDto
       expect(updatedInduction.personalSkillsAndInterests.skills).toEqual(expectedSkills)
       expect(res.redirect).toHaveBeenCalledWith(`/prisoners/A1234BC/create-induction/${journeyId}/check-your-answers`)
-      expect(req.session.skillsForm).toBeUndefined()
     })
   })
 })

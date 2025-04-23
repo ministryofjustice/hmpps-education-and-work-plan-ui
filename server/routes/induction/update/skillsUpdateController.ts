@@ -5,7 +5,6 @@ import SkillsController from '../common/skillsController'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
 import logger from '../../../../logger'
 import { InductionService } from '../../../services'
-import validateSkillsForm from '../../validators/induction/skillsFormValidator'
 import { asArray } from '../../../utils/utils'
 
 /**
@@ -17,7 +16,7 @@ export default class SkillsUpdateController extends SkillsController {
   }
 
   submitSkillsForm: RequestHandler = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    const { prisonNumber, journeyId } = req.params
+    const { prisonNumber } = req.params
     const { inductionDto } = req.journeyData
     const { prisonerSummary } = res.locals
     const { prisonId } = prisonerSummary
@@ -26,12 +25,6 @@ export default class SkillsUpdateController extends SkillsController {
       skills: asArray(req.body.skills),
       skillsOther: req.body.skillsOther,
     }
-    req.session.skillsForm = skillsForm
-
-    const errors = validateSkillsForm(skillsForm, prisonerSummary)
-    if (errors.length > 0) {
-      return res.redirectWithErrors(`/prisoners/${prisonNumber}/induction/${journeyId}/skills`, errors)
-    }
 
     const updatedInduction = this.updatedInductionDtoWithSkills(inductionDto, skillsForm)
 
@@ -39,7 +32,6 @@ export default class SkillsUpdateController extends SkillsController {
       const updateInductionDto = toCreateOrUpdateInductionDto(prisonId, updatedInduction)
       await this.inductionService.updateInduction(prisonNumber, updateInductionDto, req.user.username)
 
-      req.session.skillsForm = undefined
       req.journeyData.inductionDto = undefined
       return res.redirect(`/plan/${prisonNumber}/view/work-and-interests`)
     } catch (e) {

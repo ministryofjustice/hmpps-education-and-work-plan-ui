@@ -1,4 +1,4 @@
-type Error = {
+export type Error = {
   href?: string
   text?: string
 }

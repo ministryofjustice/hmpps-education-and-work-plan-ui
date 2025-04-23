@@ -182,7 +182,6 @@ describe('personalInterestsCreateController', () => {
       const updatedInduction = req.journeyData.inductionDto
       expect(updatedInduction.personalSkillsAndInterests.interests).toEqual(expectedInterests)
       expect(res.redirect).toHaveBeenCalledWith(`/prisoners/A1234BC/create-induction/${journeyId}/in-prison-work`)
-      expect(req.session.skillsForm).toBeUndefined()
     })
 
     it('should update inductionDto and redirect to Check Your Answers given previous page was Check Your Answers', async () => {
@@ -218,7 +217,6 @@ describe('personalInterestsCreateController', () => {
       const updatedInduction = req.journeyData.inductionDto
       expect(updatedInduction.personalSkillsAndInterests.interests).toEqual(expectedInterests)
       expect(res.redirect).toHaveBeenCalledWith(`/prisoners/A1234BC/create-induction/${journeyId}/check-your-answers`)
-      expect(req.session.skillsForm).toBeUndefined()
     })
   })
 })

@@ -19,6 +19,8 @@ import asyncMiddleware from '../../../middleware/asyncMiddleware'
 import ApplicationAction from '../../../enums/applicationAction'
 import insertJourneyIdentifier from '../../routerRequestHandlers/insertJourneyIdentifier'
 import setupJourneyData from '../../routerRequestHandlers/setupJourneyData'
+import { validate } from '../../routerRequestHandlers/validationMiddleware'
+import { hopingToWorkOnReleaseSchema, skillsSchema } from '../validationSchemas'
 
 /**
  * Route definitions for updating the various sections of an Induction
@@ -73,6 +75,7 @@ export default (router: Router, services: Services) => {
     asyncMiddleware(skillsUpdateController.getSkillsView),
   ])
   router.post('/prisoners/:prisonNumber/induction/:journeyId/skills', [
+    validate(skillsSchema),
     asyncMiddleware(skillsUpdateController.submitSkillsForm),
   ])
 
@@ -103,6 +106,7 @@ export default (router: Router, services: Services) => {
     asyncMiddleware(hopingToWorkOnReleaseController.getHopingToWorkOnReleaseView),
   ])
   router.post('/prisoners/:prisonNumber/induction/:journeyId/hoping-to-work-on-release', [
+    validate(hopingToWorkOnReleaseSchema),
     asyncMiddleware(hopingToWorkOnReleaseController.submitHopingToWorkOnReleaseForm),
   ])
 

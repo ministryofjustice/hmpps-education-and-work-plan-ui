@@ -109,7 +109,8 @@
     "redis": "^4.7.0",
     "superagent": "^10.2.0",
     "url-value-parser": "^2.2.0",
-    "uuid": "^11.1.0"
+    "uuid": "^11.1.0",
+    "zod": "^3.24.3"
   },
   "devDependencies": {
     "@jgoz/esbuild-plugin-typecheck": "^4.0.3",

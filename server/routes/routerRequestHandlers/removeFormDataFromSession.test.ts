@@ -4,13 +4,11 @@ import type { HighestLevelOfEducationForm, QualificationDetailsForm, Qualificati
 import type {
   AdditionalTrainingForm,
   AffectAbilityToWorkForm,
-  HopingToWorkOnReleaseForm,
   InPrisonTrainingForm,
   InPrisonWorkForm,
   PersonalInterestsForm,
   PreviousWorkExperienceDetailForm,
   PreviousWorkExperienceTypesForm,
-  SkillsForm,
   WantToAddQualificationsForm,
   WorkedBeforeForm,
   WorkInterestTypesForm,
@@ -41,9 +39,7 @@ describe('removeFormDataFromSession', () => {
 
     req.session.pageFlowQueue = {} as PageFlow
     req.session.pageFlowHistory = {} as PageFlow
-    req.session.hopingToWorkOnReleaseForm = {} as HopingToWorkOnReleaseForm
     req.session.inPrisonWorkForm = {} as InPrisonWorkForm
-    req.session.skillsForm = {} as SkillsForm
     req.session.personalInterestsForm = {} as PersonalInterestsForm
     req.session.workedBeforeForm = {} as WorkedBeforeForm
     req.session.previousWorkExperienceTypesForm = {} as PreviousWorkExperienceTypesForm
@@ -69,9 +65,7 @@ describe('removeFormDataFromSession', () => {
     expect(getPrisonerContext(req.session, prisonNumber)).toEqual({})
     expect(req.session.pageFlowQueue).toBeUndefined()
     expect(req.session.pageFlowHistory).toBeUndefined()
-    expect(req.session.hopingToWorkOnReleaseForm).toBeUndefined()
     expect(req.session.inPrisonWorkForm).toBeUndefined()
-    expect(req.session.skillsForm).toBeUndefined()
     expect(req.session.personalInterestsForm).toBeUndefined()
     expect(req.session.workedBeforeForm).toBeUndefined()
     expect(req.session.previousWorkExperienceTypesForm).toBeUndefined()
