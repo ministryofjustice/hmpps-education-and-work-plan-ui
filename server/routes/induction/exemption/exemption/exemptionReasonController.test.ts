@@ -1,5 +1,6 @@
 import type { InductionExemptionForm } from 'inductionForms'
 import { Request, Response } from 'express'
+import { v4 as uuidV4 } from 'uuid'
 import aValidPrisonerSummary from '../../../../testsupport/prisonerSummaryTestDataBuilder'
 import { getPrisonerContext } from '../../../../data/session/prisonerContexts'
 import ExemptionReasonController from './exemptionReasonController'
@@ -8,6 +9,8 @@ import InductionScheduleStatusValue from '../../../../enums/inductionScheduleSta
 
 describe('exemptionReasonController', () => {
   const controller = new ExemptionReasonController()
+
+  const journeyId = uuidV4()
   const prisonNumber = 'A1234BC'
   const prisonId = 'MDI'
   const prisonerSummary = aValidPrisonerSummary({ prisonNumber, prisonId })
@@ -15,7 +18,7 @@ describe('exemptionReasonController', () => {
   const req = {
     session: {},
     body: {},
-    params: { prisonNumber },
+    params: { prisonNumber, journeyId },
   } as unknown as Request
   const res = {
     redirect: jest.fn(),
@@ -82,7 +85,7 @@ describe('exemptionReasonController', () => {
       await controller.submitExemptionReasonForm(req, res, next)
 
       // Then
-      expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/induction/exemption/confirm')
+      expect(res.redirect).toHaveBeenCalledWith(`/prisoners/A1234BC/induction/${journeyId}/exemption/confirm`)
       expect(getPrisonerContext(req.session, prisonNumber).inductionExemptionForm).toBeUndefined()
       expect(getPrisonerContext(req.session, prisonNumber).inductionExemptionDto).toEqual(inductionExemptionDto)
     })
@@ -112,7 +115,7 @@ describe('exemptionReasonController', () => {
       await controller.submitExemptionReasonForm(req, res, next)
 
       // Then
-      expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/induction/exemption/confirm')
+      expect(res.redirect).toHaveBeenCalledWith(`/prisoners/A1234BC/induction/${journeyId}/exemption/confirm`)
       expect(getPrisonerContext(req.session, prisonNumber).inductionExemptionDto).toEqual(expectedInductionExemptionDto)
     })
 
@@ -132,7 +135,10 @@ describe('exemptionReasonController', () => {
       await controller.submitExemptionReasonForm(req, res, next)
 
       // Then
-      expect(res.redirectWithErrors).toHaveBeenCalledWith('/prisoners/A1234BC/induction/exemption', expectedErrors)
+      expect(res.redirectWithErrors).toHaveBeenCalledWith(
+        `/prisoners/A1234BC/induction/${journeyId}/exemption`,
+        expectedErrors,
+      )
       expect(getPrisonerContext(req.session, prisonNumber).inductionExemptionForm).toEqual(expectedExemptionReasonForm)
     })
 
@@ -157,7 +163,10 @@ describe('exemptionReasonController', () => {
       await controller.submitExemptionReasonForm(req, res, next)
 
       // Then
-      expect(res.redirectWithErrors).toHaveBeenCalledWith('/prisoners/A1234BC/induction/exemption', expectedErrors)
+      expect(res.redirectWithErrors).toHaveBeenCalledWith(
+        `/prisoners/A1234BC/induction/${journeyId}/exemption`,
+        expectedErrors,
+      )
       expect(getPrisonerContext(req.session, prisonNumber).inductionExemptionForm).toEqual(expectedExemptionReasonForm)
     })
   })

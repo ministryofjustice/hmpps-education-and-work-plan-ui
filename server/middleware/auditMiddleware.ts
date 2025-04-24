@@ -113,11 +113,13 @@ const pageViewEventMap: Record<string, Page> = {
   '/prisoners/:prisonNumber/induction/check-your-answers': Page.INDUCTION_UPDATE_CHECK_YOUR_ANSWERS,
 
   // Exempt induction
-  '/prisoners/:prisonNumber/induction/exemption': Page.INDUCTION_EXEMPTION,
-  '/prisoners/:prisonNumber/induction/exemption/confirm': Page.INDUCTION_EXEMPTION_CONFIRM,
-  '/prisoners/:prisonNumber/induction/exemption/recorded': Page.INDUCTION_EXEMPTION_RECORDED,
-  '/prisoners/:prisonNumber/induction/exemption/remove': Page.INDUCTION_EXEMPTION_REMOVAL_CONFIRM,
-  '/prisoners/:prisonNumber/induction/exemption/removed': Page.INDUCTION_EXEMPTION_REMOVED,
+  '/prisoners/:prisonNumber/induction/exemption': null, // route without the journeyId does not raise an audit event because it redirects to the route with a journeyId
+  '/prisoners/:prisonNumber/induction/:journeyId/exemption': Page.INDUCTION_EXEMPTION,
+  '/prisoners/:prisonNumber/induction/:journeyId/exemption/confirm': Page.INDUCTION_EXEMPTION_CONFIRM,
+  '/prisoners/:prisonNumber/induction/:journeyId/exemption/recorded': Page.INDUCTION_EXEMPTION_RECORDED,
+  '/prisoners/:prisonNumber/induction/exemption/remove': null, // route without the journeyId does not raise an audit event because it redirects to the route with a journeyId
+  '/prisoners/:prisonNumber/induction/:journeyId/exemption/remove': Page.INDUCTION_EXEMPTION_REMOVAL_CONFIRM,
+  '/prisoners/:prisonNumber/induction/:journeyId/exemption/removed': Page.INDUCTION_EXEMPTION_REMOVED,
 
   // Create qualifications (before an Induction)
   '/prisoners/:prisonNumber/create-education/highest-level-of-education': Page.CREATE_HIGHEST_LEVEL_OF_EDUCATION,

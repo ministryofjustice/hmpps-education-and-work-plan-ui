@@ -14,45 +14,45 @@ import ApplicationAction from '../../../../enums/applicationAction'
 /**
  * Route definitions for exempting a prisoner's Induction
  */
-export default (router: Router, services: Services) => {
+export default (services: Services) => {
   const { auditService, inductionService } = services
 
   const exemptionReasonController = new ExemptionReasonController()
   const confirmExemptionController = new ConfirmExemptionController(inductionService, auditService)
   const exemptionRecordedController = new ExemptionRecordedController()
 
-  router.get('/prisoners/:prisonNumber/induction/exemption', [
-    checkUserHasPermissionTo(ApplicationAction.EXEMPT_INDUCTION),
+  const router = Router({ mergeParams: true })
+
+  router.use([checkUserHasPermissionTo(ApplicationAction.EXEMPT_INDUCTION)])
+
+  router.get('/', [
     checkInductionIsScheduled(inductionService), // Induction Schedule must be SCHEDULED in order to exempt it
     createEmptyInductionExemptionDtoIfNotInPrisonerContext,
     asyncMiddleware(exemptionReasonController.getExemptionReasonView),
   ])
-  router.post('/prisoners/:prisonNumber/induction/exemption', [
-    checkUserHasPermissionTo(ApplicationAction.EXEMPT_INDUCTION),
+  router.post('/', [
     createEmptyInductionExemptionDtoIfNotInPrisonerContext,
     asyncMiddleware(exemptionReasonController.submitExemptionReasonForm),
   ])
 
-  router.get('/prisoners/:prisonNumber/induction/exemption/confirm', [
-    checkUserHasPermissionTo(ApplicationAction.EXEMPT_INDUCTION),
+  router.get('/confirm', [
     checkInductionExemptionDtoExistsInPrisonerContext,
     asyncMiddleware(confirmExemptionController.getConfirmExemptionView),
   ])
-  router.post('/prisoners/:prisonNumber/induction/exemption/confirm', [
-    checkUserHasPermissionTo(ApplicationAction.EXEMPT_INDUCTION),
+  router.post('/confirm', [
     checkInductionExemptionDtoExistsInPrisonerContext,
     asyncMiddleware(confirmExemptionController.submitConfirmExemption),
   ])
 
-  router.get('/prisoners/:prisonNumber/induction/exemption/recorded', [
-    checkUserHasPermissionTo(ApplicationAction.EXEMPT_INDUCTION),
+  router.get('/recorded', [
     checkInductionExemptionDtoExistsInPrisonerContext,
     retrieveInductionSchedule(inductionService),
     asyncMiddleware(exemptionRecordedController.getExemptionRecordedView),
   ])
-  router.post('/prisoners/:prisonNumber/induction/exemption/recorded', [
-    checkUserHasPermissionTo(ApplicationAction.EXEMPT_INDUCTION),
+  router.post('/recorded', [
     checkInductionExemptionDtoExistsInPrisonerContext,
     asyncMiddleware(exemptionRecordedController.submitExemptionRecorded),
   ])
+
+  return router
 }

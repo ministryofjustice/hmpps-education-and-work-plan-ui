@@ -26,7 +26,7 @@ export default class ExemptionReasonController {
   }
 
   submitExemptionReasonForm: RequestHandler = async (req, res, next): Promise<void> => {
-    const { prisonNumber } = req.params
+    const { prisonNumber, journeyId } = req.params
     const { prisonId } = res.locals.prisonerSummary
     const { exemptionReason, exemptionReasonDetails } = req.body
     const selectedExemptionReasonDetails = { [exemptionReason]: exemptionReasonDetails[exemptionReason] }
@@ -40,7 +40,7 @@ export default class ExemptionReasonController {
 
     const errors = validateInductionExemptionForm(inductionExemptionForm)
     if (errors.length > 0) {
-      return res.redirectWithErrors(`/prisoners/${prisonNumber}/induction/exemption`, errors)
+      return res.redirectWithErrors(`/prisoners/${prisonNumber}/induction/${journeyId}/exemption`, errors)
     }
 
     const { inductionExemptionDto } = getPrisonerContext(req.session, prisonNumber)
@@ -54,7 +54,7 @@ export default class ExemptionReasonController {
     getPrisonerContext(req.session, prisonNumber).inductionExemptionDto = updatedExemptionDto
     getPrisonerContext(req.session, prisonNumber).inductionExemptionForm = undefined
 
-    return res.redirect(`/prisoners/${prisonNumber}/induction/exemption/confirm`)
+    return res.redirect(`/prisoners/${prisonNumber}/induction/${journeyId}/exemption/confirm`)
   }
 }
 

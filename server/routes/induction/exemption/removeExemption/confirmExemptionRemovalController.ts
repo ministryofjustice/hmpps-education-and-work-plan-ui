@@ -22,7 +22,7 @@ export default class ConfirmExemptionRemovalController {
   }
 
   submitConfirmExemptionRemoval: RequestHandler = async (req, res, next): Promise<void> => {
-    const { prisonNumber } = req.params
+    const { prisonNumber, journeyId } = req.params
     const { prisonId } = res.locals.prisonerSummary
 
     try {
@@ -32,7 +32,7 @@ export default class ConfirmExemptionRemovalController {
       )
 
       this.auditService.logRemoveExemptionInduction(removeInductionExemptionAuditData(req)) // no need to wait for response
-      return res.redirect(`/prisoners/${prisonNumber}/induction/exemption/removed`)
+      return res.redirect(`/prisoners/${prisonNumber}/induction/${journeyId}/exemption/removed`)
 
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (e) {
