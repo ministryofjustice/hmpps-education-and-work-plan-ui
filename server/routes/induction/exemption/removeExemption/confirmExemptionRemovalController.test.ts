@@ -1,4 +1,5 @@
 import { Request, Response } from 'express'
+import { v4 as uuidV4 } from 'uuid'
 import createError from 'http-errors'
 import InductionService from '../../../../services/inductionService'
 import AuditService from '../../../../services/auditService'
@@ -15,6 +16,7 @@ describe('confirmExemptionRemovalController', () => {
   const auditService = new AuditService(null) as jest.Mocked<AuditService>
   const controller = new ConfirmExemptionRemovalController(inductionService, auditService)
 
+  const journeyId = uuidV4()
   const prisonNumber = 'A1234BC'
   const prisonerSummary = aValidPrisonerSummary({ prisonNumber })
   const inductionSchedule = aValidInductionSchedule({
@@ -28,7 +30,7 @@ describe('confirmExemptionRemovalController', () => {
   beforeEach(() => {
     req = {
       user: { username: 'a-dps-user' },
-      params: { prisonNumber },
+      params: { prisonNumber, journeyId },
       session: {},
     } as unknown as Request
     res = {
@@ -72,7 +74,7 @@ describe('confirmExemptionRemovalController', () => {
       await controller.submitConfirmExemptionRemoval(req, res, next)
 
       // Then
-      expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/induction/exemption/removed')
+      expect(res.redirect).toHaveBeenCalledWith(`/prisoners/A1234BC/induction/${journeyId}/exemption/removed`)
       expect(inductionService.updateInductionScheduleStatus).toHaveBeenCalledWith(expectedDto, 'a-dps-user')
       expect(auditService.logRemoveExemptionInduction).toHaveBeenCalled()
     })

@@ -23,14 +23,14 @@ export default class ConfirmExemptionController {
   }
 
   submitConfirmExemption: RequestHandler = async (req, res, next): Promise<void> => {
-    const { prisonNumber } = req.params
+    const { prisonNumber, journeyId } = req.params
 
     try {
       const { inductionExemptionDto } = getPrisonerContext(req.session, prisonNumber)
       await this.inductionService.updateInductionScheduleStatus(inductionExemptionDto, req.user.username)
 
       this.auditService.logExemptInduction(exemptInductionAuditData(req)) // no need to wait for response
-      return res.redirect(`/prisoners/${prisonNumber}/induction/exemption/recorded`)
+      return res.redirect(`/prisoners/${prisonNumber}/induction/${journeyId}/exemption/recorded`)
 
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (e) {

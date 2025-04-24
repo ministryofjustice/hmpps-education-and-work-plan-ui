@@ -1,5 +1,6 @@
 import createError from 'http-errors'
 import { Request, Response } from 'express'
+import { v4 as uuidV4 } from 'uuid'
 import { getPrisonerContext } from '../../../../data/session/prisonerContexts'
 import aValidPrisonerSummary from '../../../../testsupport/prisonerSummaryTestDataBuilder'
 import ConfirmExemptionController from './confirmExemptionController'
@@ -15,6 +16,7 @@ describe('ConfirmExemptionController', () => {
   const auditService = new AuditService(null) as jest.Mocked<AuditService>
   const controller = new ConfirmExemptionController(inductionService, auditService)
 
+  const journeyId = uuidV4()
   const prisonNumber = 'A1234BC'
   const prisonerSummary = aValidPrisonerSummary({ prisonNumber })
 
@@ -25,7 +27,7 @@ describe('ConfirmExemptionController', () => {
   beforeEach(() => {
     req = {
       user: { username: 'a-dps-user' },
-      params: { prisonNumber },
+      params: { prisonNumber, journeyId },
       session: {},
     } as unknown as Request
     res = {
@@ -67,7 +69,7 @@ describe('ConfirmExemptionController', () => {
       await controller.submitConfirmExemption(req, res, next)
 
       // Then
-      expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/induction/exemption/recorded')
+      expect(res.redirect).toHaveBeenCalledWith(`/prisoners/A1234BC/induction/${journeyId}/exemption/recorded`)
       expect(inductionService.updateInductionScheduleStatus).toHaveBeenCalledWith(inductionExemptionDto, 'a-dps-user')
       expect(getPrisonerContext(req.session, prisonNumber).inductionExemptionDto).toEqual(inductionExemptionDto)
       expect(auditService.logExemptInduction).toHaveBeenCalled()

@@ -11,30 +11,28 @@ import ApplicationAction from '../../../../enums/applicationAction'
 /**
  * Route definitions to remove the exemption on a prisoner's Induction
  */
-export default (router: Router, services: Services) => {
+export default (services: Services) => {
   const { auditService, inductionService } = services
 
   const confirmExemptionRemovalController = new ConfirmExemptionRemovalController(inductionService, auditService)
   const exemptionRemovedController = new ExemptionRemovedController()
 
-  router.get('/prisoners/:prisonNumber/induction/exemption/remove', [
-    checkUserHasPermissionTo(ApplicationAction.REMOVE_INDUCTION_EXEMPTION),
+  const router = Router({ mergeParams: true })
+
+  router.use([checkUserHasPermissionTo(ApplicationAction.REMOVE_INDUCTION_EXEMPTION)])
+
+  router.get('/remove', [
     checkInductionIsExempt(inductionService), // Induction Schedule must already be exempt in order to remove the exemption
     retrieveInductionSchedule(inductionService),
     asyncMiddleware(confirmExemptionRemovalController.getConfirmExemptionRemovalView),
   ])
-  router.post('/prisoners/:prisonNumber/induction/exemption/remove', [
-    checkUserHasPermissionTo(ApplicationAction.REMOVE_INDUCTION_EXEMPTION),
-    asyncMiddleware(confirmExemptionRemovalController.submitConfirmExemptionRemoval),
-  ])
+  router.post('/remove', [asyncMiddleware(confirmExemptionRemovalController.submitConfirmExemptionRemoval)])
 
-  router.get('/prisoners/:prisonNumber/induction/exemption/removed', [
-    checkUserHasPermissionTo(ApplicationAction.REMOVE_INDUCTION_EXEMPTION),
+  router.get('/removed', [
     retrieveInductionSchedule(inductionService),
     asyncMiddleware(exemptionRemovedController.getExemptionRemovedView),
   ])
-  router.post('/prisoners/:prisonNumber/induction/exemption/removed', [
-    checkUserHasPermissionTo(ApplicationAction.REMOVE_INDUCTION_EXEMPTION),
-    asyncMiddleware(exemptionRemovedController.submitExemptionRemoved),
-  ])
+  router.post('/removed', [asyncMiddleware(exemptionRemovedController.submitExemptionRemoved)])
+
+  return router
 }
