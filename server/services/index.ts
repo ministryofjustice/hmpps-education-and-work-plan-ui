@@ -10,6 +10,7 @@ import PrisonService from './prisonService'
 import InductionService from './inductionService'
 import ReviewService from './reviewService'
 import SessionService from './sessionService'
+import JourneyDataService from './journeyDataService'
 
 /**
  * Function that instantiates and exposes all services required by the application.
@@ -27,6 +28,7 @@ export const services = () => {
     ciagInductionClient,
     prisonRegisterStore,
     prisonRegisterClient,
+    journeyDataStore,
   } = dataAccess()
 
   const auditService = new AuditService(hmppsAuditClient)
@@ -49,6 +51,7 @@ export const services = () => {
   )
   const timelineService = new TimelineService(educationAndWorkPlanClient, prisonService, hmppsAuthClient)
   const sessionService = new SessionService(educationAndWorkPlanClient, hmppsAuthClient)
+  const journeyDataService = new JourneyDataService(journeyDataStore)
 
   return {
     applicationInfo,
@@ -63,6 +66,7 @@ export const services = () => {
     timelineService,
     prisonService,
     sessionService,
+    journeyDataService,
   }
 }
 
@@ -80,4 +84,5 @@ export {
   TimelineService,
   PrisonService,
   SessionService,
+  JourneyDataService,
 }
