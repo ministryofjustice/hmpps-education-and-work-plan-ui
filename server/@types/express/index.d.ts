@@ -86,7 +86,6 @@ declare module 'express-session' {
     inductionNoteForm?: InductionNoteForm
     // Induction exemption related forms and DTO
     inductionExemptionForm?: InductionExemptionForm
-    inductionExemptionDto?: InductionExemptionDto
   }
 
   export type PrisonerContexts = Record<string, PrisonerContext>
@@ -102,6 +101,7 @@ export declare global {
 
     interface JourneyData {
       inductionDto?: InductionDto
+      inductionExemptionDto?: InductionExemptionDto
     }
 
     interface Response {

@@ -2,7 +2,6 @@ import { Request, Response } from 'express'
 import { startOfDay } from 'date-fns'
 import aValidPrisonerSummary from '../../../../testsupport/prisonerSummaryTestDataBuilder'
 import ExemptionRecordedController from './exemptionRecordedController'
-import { getPrisonerContext } from '../../../../data/session/prisonerContexts'
 import aValidInductionExemptionDto from '../../../../testsupport/inductionExemptionDtoTestDataBuilder'
 import InductionScheduleStatusValue from '../../../../enums/inductionScheduleStatusValue'
 import aValidInductionSchedule from '../../../../testsupport/inductionScheduleTestDataBuilder'
@@ -23,7 +22,7 @@ describe('ExemptionRecordedController', () => {
   beforeEach(() => {
     req = {
       params: { prisonNumber },
-      session: {},
+      journeyData: {},
     } as unknown as Request
 
     res = {
@@ -36,6 +35,8 @@ describe('ExemptionRecordedController', () => {
     next = jest.fn()
 
     jest.clearAllMocks()
+
+    req.journeyData.inductionExemptionDto = undefined
   })
 
   describe('getExemptionRecordedView', () => {
@@ -44,7 +45,7 @@ describe('ExemptionRecordedController', () => {
       const inductionExemptionDto = aValidInductionExemptionDto({
         exemptionReason: InductionScheduleStatusValue.EXEMPT_PRISONER_DRUG_OR_ALCOHOL_DEPENDENCY,
       })
-      getPrisonerContext(req.session, prisonNumber).inductionExemptionDto = inductionExemptionDto
+      req.journeyData.inductionExemptionDto = inductionExemptionDto
 
       const expectedViewData = {
         prisonerSummary,
@@ -64,7 +65,7 @@ describe('ExemptionRecordedController', () => {
       const inductionExemptionDto = aValidInductionExemptionDto({
         exemptionReason: InductionScheduleStatusValue.EXEMPT_SYSTEM_TECHNICAL_ISSUE,
       })
-      getPrisonerContext(req.session, prisonNumber).inductionExemptionDto = inductionExemptionDto
+      req.journeyData.inductionExemptionDto = inductionExemptionDto
 
       const expectedViewData = {
         prisonerSummary,
@@ -86,7 +87,7 @@ describe('ExemptionRecordedController', () => {
       const inductionExemptionDto = aValidInductionExemptionDto({
         exemptionReason: InductionScheduleStatusValue.EXEMPT_PRISON_OPERATION_OR_SECURITY_ISSUE,
       })
-      getPrisonerContext(req.session, prisonNumber).inductionExemptionDto = inductionExemptionDto
+      req.journeyData.inductionExemptionDto = inductionExemptionDto
 
       // When
       await controller.submitExemptionRecorded(req, res, next)
@@ -104,7 +105,7 @@ describe('ExemptionRecordedController', () => {
       const inductionExemptionDto = aValidInductionExemptionDto({
         exemptionReason: InductionScheduleStatusValue.EXEMPT_SYSTEM_TECHNICAL_ISSUE,
       })
-      getPrisonerContext(req.session, prisonNumber).inductionExemptionDto = inductionExemptionDto
+      req.journeyData.inductionExemptionDto = inductionExemptionDto
 
       // When
       await controller.submitExemptionRecorded(req, res, next)

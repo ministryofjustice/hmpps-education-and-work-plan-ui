@@ -1,14 +1,12 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express'
 import ExemptionRecordedView from './exemptionRecordedView'
-import { getPrisonerContext } from '../../../../data/session/prisonerContexts'
 import InductionScheduleStatusValue from '../../../../enums/inductionScheduleStatusValue'
 
 export default class ExemptionRecordedController {
   getExemptionRecordedView: RequestHandler = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    const { prisonNumber } = req.params
     const { prisonerSummary, inductionSchedule } = res.locals
 
-    const { inductionExemptionDto } = getPrisonerContext(req.session, prisonNumber)
+    const { inductionExemptionDto } = req.journeyData
     const exemptionDueToTechnicalIssue =
       inductionExemptionDto.exemptionReason === InductionScheduleStatusValue.EXEMPT_SYSTEM_TECHNICAL_ISSUE
 
@@ -18,7 +16,7 @@ export default class ExemptionRecordedController {
 
   submitExemptionRecorded: RequestHandler = async (req, res): Promise<void> => {
     const { prisonNumber } = req.params
-    const { inductionExemptionDto } = getPrisonerContext(req.session, prisonNumber)
+    const { inductionExemptionDto } = req.journeyData
 
     const exemptionDueToTechnicalIssue =
       inductionExemptionDto.exemptionReason === InductionScheduleStatusValue.EXEMPT_SYSTEM_TECHNICAL_ISSUE

@@ -1,21 +1,22 @@
 import { Router } from 'express'
 import { Services } from '../../../../services'
 import asyncMiddleware from '../../../../middleware/asyncMiddleware'
-import createEmptyInductionExemptionDtoIfNotInPrisonerContext from '../../../routerRequestHandlers/createEmptyInductionExemptionDtoIfNotInPrisonerContext'
+import createEmptyInductionExemptionDtoIfNotInJourneyData from '../../../routerRequestHandlers/createEmptyInductionExemptionDtoIfNotInJourneyData'
 import ExemptionReasonController from './exemptionReasonController'
 import ConfirmExemptionController from './confirmExemptionController'
-import checkInductionExemptionDtoExistsInPrisonerContext from '../../../routerRequestHandlers/checkInductionExemptionDtoExistsInPrisonerContext'
+import checkInductionExemptionDtoExistsInJourneyData from '../../../routerRequestHandlers/checkInductionExemptionDtoExistsInJourneyData'
 import retrieveInductionSchedule from '../../../routerRequestHandlers/retrieveInductionSchedule'
 import ExemptionRecordedController from './exemptionRecordedController'
 import checkInductionIsScheduled from '../../../routerRequestHandlers/checkInductionIsScheduled'
 import { checkUserHasPermissionTo } from '../../../../middleware/roleBasedAccessControl'
 import ApplicationAction from '../../../../enums/applicationAction'
+import setupJourneyData from '../../../routerRequestHandlers/setupJourneyData'
 
 /**
  * Route definitions for exempting a prisoner's Induction
  */
 export default (services: Services) => {
-  const { auditService, inductionService } = services
+  const { auditService, inductionService, journeyDataService } = services
 
   const exemptionReasonController = new ExemptionReasonController()
   const confirmExemptionController = new ConfirmExemptionController(inductionService, auditService)
@@ -23,34 +24,38 @@ export default (services: Services) => {
 
   const router = Router({ mergeParams: true })
 
-  router.use([checkUserHasPermissionTo(ApplicationAction.EXEMPT_INDUCTION)])
+  router.use([
+    //
+    checkUserHasPermissionTo(ApplicationAction.EXEMPT_INDUCTION),
+    setupJourneyData(journeyDataService),
+  ])
 
   router.get('/', [
     checkInductionIsScheduled(inductionService), // Induction Schedule must be SCHEDULED in order to exempt it
-    createEmptyInductionExemptionDtoIfNotInPrisonerContext,
+    createEmptyInductionExemptionDtoIfNotInJourneyData,
     asyncMiddleware(exemptionReasonController.getExemptionReasonView),
   ])
   router.post('/', [
-    createEmptyInductionExemptionDtoIfNotInPrisonerContext,
+    checkInductionExemptionDtoExistsInJourneyData,
     asyncMiddleware(exemptionReasonController.submitExemptionReasonForm),
   ])
 
   router.get('/confirm', [
-    checkInductionExemptionDtoExistsInPrisonerContext,
+    checkInductionExemptionDtoExistsInJourneyData,
     asyncMiddleware(confirmExemptionController.getConfirmExemptionView),
   ])
   router.post('/confirm', [
-    checkInductionExemptionDtoExistsInPrisonerContext,
+    checkInductionExemptionDtoExistsInJourneyData,
     asyncMiddleware(confirmExemptionController.submitConfirmExemption),
   ])
 
   router.get('/recorded', [
-    checkInductionExemptionDtoExistsInPrisonerContext,
+    checkInductionExemptionDtoExistsInJourneyData,
     retrieveInductionSchedule(inductionService),
     asyncMiddleware(exemptionRecordedController.getExemptionRecordedView),
   ])
   router.post('/recorded', [
-    checkInductionExemptionDtoExistsInPrisonerContext,
+    checkInductionExemptionDtoExistsInJourneyData,
     asyncMiddleware(exemptionRecordedController.submitExemptionRecorded),
   ])
 

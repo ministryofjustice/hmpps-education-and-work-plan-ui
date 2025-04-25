@@ -1,7 +1,6 @@
 import createError from 'http-errors'
 import { Request, Response } from 'express'
 import { v4 as uuidV4 } from 'uuid'
-import { getPrisonerContext } from '../../../../data/session/prisonerContexts'
 import aValidPrisonerSummary from '../../../../testsupport/prisonerSummaryTestDataBuilder'
 import ConfirmExemptionController from './confirmExemptionController'
 import aValidInductionExemptionDto from '../../../../testsupport/inductionExemptionDtoTestDataBuilder'
@@ -28,7 +27,7 @@ describe('ConfirmExemptionController', () => {
     req = {
       user: { username: 'a-dps-user' },
       params: { prisonNumber, journeyId },
-      session: {},
+      journeyData: {},
     } as unknown as Request
     res = {
       render: jest.fn(),
@@ -36,7 +35,7 @@ describe('ConfirmExemptionController', () => {
       locals: { prisonerSummary },
     } as unknown as Response
 
-    getPrisonerContext(req.session, prisonNumber).inductionExemptionDto = undefined
+    req.journeyData.inductionExemptionDto = undefined
 
     jest.clearAllMocks()
   })
@@ -45,7 +44,7 @@ describe('ConfirmExemptionController', () => {
     it('should render the "Are you sure you want to put induction on hold" page', async () => {
       // Given
       const inductionExemptionDto = aValidInductionExemptionDto()
-      getPrisonerContext(req.session, prisonNumber).inductionExemptionDto = inductionExemptionDto
+      req.journeyData.inductionExemptionDto = inductionExemptionDto
 
       const expectedViewData = { prisonerSummary, inductionExemptionDto }
 
@@ -61,7 +60,7 @@ describe('ConfirmExemptionController', () => {
     it(`should redirect to 'Exemption recorded' page given successful service call`, async () => {
       // Given
       const inductionExemptionDto = aValidInductionExemptionDto()
-      getPrisonerContext(req.session, prisonNumber).inductionExemptionDto = inductionExemptionDto
+      req.journeyData.inductionExemptionDto = inductionExemptionDto
 
       inductionService.updateInductionScheduleStatus.mockResolvedValue(undefined)
 
@@ -71,14 +70,14 @@ describe('ConfirmExemptionController', () => {
       // Then
       expect(res.redirect).toHaveBeenCalledWith(`/prisoners/A1234BC/induction/${journeyId}/exemption/recorded`)
       expect(inductionService.updateInductionScheduleStatus).toHaveBeenCalledWith(inductionExemptionDto, 'a-dps-user')
-      expect(getPrisonerContext(req.session, prisonNumber).inductionExemptionDto).toEqual(inductionExemptionDto)
+      expect(req.journeyData.inductionExemptionDto).toEqual(inductionExemptionDto)
       expect(auditService.logExemptInduction).toHaveBeenCalled()
     })
 
     it('should not redirect to induction complete page given service throws an error', async () => {
       // Given
       const inductionExemptionDto = aValidInductionExemptionDto()
-      getPrisonerContext(req.session, prisonNumber).inductionExemptionDto = inductionExemptionDto
+      req.journeyData.inductionExemptionDto = inductionExemptionDto
 
       inductionService.updateInductionScheduleStatus.mockRejectedValue(new Error('Service failure'))
 
@@ -88,7 +87,7 @@ describe('ConfirmExemptionController', () => {
       // Then
       expect(next).toHaveBeenCalledWith(createError(500, 'Error exempting Induction for prisoner A1234BC'))
       expect(inductionService.updateInductionScheduleStatus).toHaveBeenCalledWith(inductionExemptionDto, 'a-dps-user')
-      expect(getPrisonerContext(req.session, prisonNumber).inductionExemptionDto).toEqual(inductionExemptionDto)
+      expect(req.journeyData.inductionExemptionDto).toEqual(inductionExemptionDto)
       expect(auditService.logExemptInduction).not.toHaveBeenCalled()
     })
   })

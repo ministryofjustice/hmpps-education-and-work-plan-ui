@@ -1,6 +1,5 @@
 import createError from 'http-errors'
 import type { Request, RequestHandler } from 'express'
-import { getPrisonerContext } from '../../../../data/session/prisonerContexts'
 import ConfirmExemptionView from './confirmExemptionView'
 import { AuditService, InductionService } from '../../../../services'
 import { BaseAuditData } from '../../../../services/auditService'
@@ -12,9 +11,8 @@ export default class ConfirmExemptionController {
   ) {}
 
   getConfirmExemptionView: RequestHandler = async (req, res, next): Promise<void> => {
-    const { prisonNumber } = req.params
     const { prisonerSummary } = res.locals
-    const { inductionExemptionDto } = getPrisonerContext(req.session, prisonNumber)
+    const { inductionExemptionDto } = req.journeyData
 
     const view = new ConfirmExemptionView(prisonerSummary, inductionExemptionDto)
     return res.render('pages/induction/exemption/confirmExemption/index', {
@@ -26,7 +24,7 @@ export default class ConfirmExemptionController {
     const { prisonNumber, journeyId } = req.params
 
     try {
-      const { inductionExemptionDto } = getPrisonerContext(req.session, prisonNumber)
+      const { inductionExemptionDto } = req.journeyData
       await this.inductionService.updateInductionScheduleStatus(inductionExemptionDto, req.user.username)
 
       this.auditService.logExemptInduction(exemptInductionAuditData(req)) // no need to wait for response
