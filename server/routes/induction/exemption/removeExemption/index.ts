@@ -7,19 +7,23 @@ import retrieveInductionSchedule from '../../../routerRequestHandlers/retrieveIn
 import checkInductionIsExempt from '../../../routerRequestHandlers/checkInductionIsExempt'
 import { checkUserHasPermissionTo } from '../../../../middleware/roleBasedAccessControl'
 import ApplicationAction from '../../../../enums/applicationAction'
+import setupJourneyData from '../../../routerRequestHandlers/setupJourneyData'
 
 /**
  * Route definitions to remove the exemption on a prisoner's Induction
  */
 export default (services: Services) => {
-  const { auditService, inductionService } = services
+  const { auditService, inductionService, journeyDataService } = services
 
   const confirmExemptionRemovalController = new ConfirmExemptionRemovalController(inductionService, auditService)
   const exemptionRemovedController = new ExemptionRemovedController()
 
   const router = Router({ mergeParams: true })
 
-  router.use([checkUserHasPermissionTo(ApplicationAction.REMOVE_INDUCTION_EXEMPTION)])
+  router.use([
+    checkUserHasPermissionTo(ApplicationAction.REMOVE_INDUCTION_EXEMPTION),
+    setupJourneyData(journeyDataService),
+  ])
 
   router.get('/remove', [
     checkInductionIsExempt(inductionService), // Induction Schedule must already be exempt in order to remove the exemption

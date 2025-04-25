@@ -9,15 +9,11 @@ export default class ExemptionReasonController {
   getExemptionReasonView: RequestHandler = async (req, res, next): Promise<void> => {
     const { prisonNumber } = req.params
     const { prisonerSummary } = res.locals
+    const { inductionExemptionDto } = req.journeyData
 
-    let inductionExemptionForm: InductionExemptionForm
-    if (getPrisonerContext(req.session, prisonNumber).inductionExemptionForm) {
-      inductionExemptionForm = getPrisonerContext(req.session, prisonNumber).inductionExemptionForm
-    } else {
-      inductionExemptionForm = toInductionExemptionForm(
-        getPrisonerContext(req.session, prisonNumber).inductionExemptionDto,
-      )
-    }
+    const inductionExemptionForm: InductionExemptionForm =
+      getPrisonerContext(req.session, prisonNumber).inductionExemptionForm ??
+      toInductionExemptionForm(inductionExemptionDto)
 
     getPrisonerContext(req.session, prisonNumber).inductionExemptionForm = undefined
 
@@ -37,13 +33,12 @@ export default class ExemptionReasonController {
     }
 
     getPrisonerContext(req.session, prisonNumber).inductionExemptionForm = inductionExemptionForm
-
     const errors = validateInductionExemptionForm(inductionExemptionForm)
     if (errors.length > 0) {
       return res.redirectWithErrors(`/prisoners/${prisonNumber}/induction/${journeyId}/exemption`, errors)
     }
 
-    const { inductionExemptionDto } = getPrisonerContext(req.session, prisonNumber)
+    const { inductionExemptionDto } = req.journeyData
     const updatedExemptionDto = updateDtoWithFormContents(
       inductionExemptionDto,
       prisonNumber,
@@ -51,7 +46,7 @@ export default class ExemptionReasonController {
       inductionExemptionForm,
     )
 
-    getPrisonerContext(req.session, prisonNumber).inductionExemptionDto = updatedExemptionDto
+    req.journeyData.inductionExemptionDto = updatedExemptionDto
     getPrisonerContext(req.session, prisonNumber).inductionExemptionForm = undefined
 
     return res.redirect(`/prisoners/${prisonNumber}/induction/${journeyId}/exemption/confirm`)

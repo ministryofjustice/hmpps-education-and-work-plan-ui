@@ -1,5 +1,4 @@
 import { NextFunction, Request, Response } from 'express'
-import asyncMiddleware from '../../middleware/asyncMiddleware'
 import { JourneyDataService } from '../../services'
 
 const JOURNEY_DATA_CACHE_TTL_HOURS = 1
@@ -30,11 +29,11 @@ const setupJourneyData = (service: JourneyDataService) => {
     })
   }
 
-  return asyncMiddleware(async (req: Request, res: Response, next: NextFunction) => {
-    populateJourneyDataInRequestBeforeControllerHandlerExecutes(req)
+  return async (req: Request, res: Response, next: NextFunction) => {
+    await populateJourneyDataInRequestBeforeControllerHandlerExecutes(req)
     setupListenerToSaveOrRemoveJourneyDataAfterControllerHandlerExecutes(req, res)
     next()
-  })
+  }
 }
 
 export default setupJourneyData

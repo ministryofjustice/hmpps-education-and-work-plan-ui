@@ -17,6 +17,7 @@ describe('exemptionReasonController', () => {
 
   const req = {
     session: {},
+    journeyData: {},
     body: {},
     params: { prisonNumber, journeyId },
   } as unknown as Request
@@ -41,7 +42,7 @@ describe('exemptionReasonController', () => {
         exemptionReason: InductionScheduleStatusValue.EXEMPT_PRISONER_DRUG_OR_ALCOHOL_DEPENDENCY,
         exemptionReasonDetails: 'In treatment',
       })
-      getPrisonerContext(req.session, prisonNumber).inductionExemptionDto = inductionExemptionDto
+      req.journeyData.inductionExemptionDto = inductionExemptionDto
 
       const expectedForm: InductionExemptionForm = {
         exemptionReason: 'EXEMPT_PRISONER_DRUG_OR_ALCOHOL_DEPENDENCY',
@@ -87,7 +88,7 @@ describe('exemptionReasonController', () => {
       // Then
       expect(res.redirect).toHaveBeenCalledWith(`/prisoners/A1234BC/induction/${journeyId}/exemption/confirm`)
       expect(getPrisonerContext(req.session, prisonNumber).inductionExemptionForm).toBeUndefined()
-      expect(getPrisonerContext(req.session, prisonNumber).inductionExemptionDto).toEqual(inductionExemptionDto)
+      expect(req.journeyData.inductionExemptionDto).toEqual(inductionExemptionDto)
     })
 
     it('should successfully submit the form with only the relevant exemption reason details given more than one has been entered', async () => {
@@ -116,7 +117,7 @@ describe('exemptionReasonController', () => {
 
       // Then
       expect(res.redirect).toHaveBeenCalledWith(`/prisoners/A1234BC/induction/${journeyId}/exemption/confirm`)
-      expect(getPrisonerContext(req.session, prisonNumber).inductionExemptionDto).toEqual(expectedInductionExemptionDto)
+      expect(req.journeyData.inductionExemptionDto).toEqual(expectedInductionExemptionDto)
     })
 
     it('should redisplay page with relevant error message when no radio buttons have been selected', async () => {
