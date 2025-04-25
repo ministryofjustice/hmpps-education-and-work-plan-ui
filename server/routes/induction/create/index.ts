@@ -60,11 +60,11 @@ export default (router: Router, services: Services) => {
   const whoCompletedInductionController = new WhoCompletedInductionCreateController()
   const inductionNoteController = new InductionNoteCreateController()
 
-  router.use('/prisoners/:prisonNumber/create-induction/**', [
+  router.use('/prisoners/:prisonNumber/create-induction', [
+    insertJourneyIdentifier({ insertIdAfterElement: 3 }), // insert journey ID immediately after '/prisoners/:prisonNumber/create-induction' - eg: '/prisoners/A1234BC/create-induction/473e9ee4-37d6-4afb-92a2-5729b10cc60f/hoping-to-work-on-release'
     checkUserHasPermissionTo(ApplicationAction.RECORD_INDUCTION),
     createEmptyInductionIfNotInSession(educationAndWorkPlanService),
     setCurrentPageInPageFlowQueue,
-    insertJourneyIdentifier({ insertIdAfterElement: 3 }), // insert journey ID immediately after '/prisoners/:prisonNumber/create-induction' - eg: '/prisoners/A1234BC/create-induction/473e9ee4-37d6-4afb-92a2-5729b10cc60f/hoping-to-work-on-release'
   ])
 
   router.get('/prisoners/:prisonNumber/create-induction/:journeyId/hoping-to-work-on-release', [

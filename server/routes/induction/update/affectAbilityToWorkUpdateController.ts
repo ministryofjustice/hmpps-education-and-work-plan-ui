@@ -21,7 +21,7 @@ export default class AffectAbilityToWorkUpdateController extends AffectAbilityTo
     res: Response,
     next: NextFunction,
   ): Promise<void> => {
-    const { prisonNumber } = req.params
+    const { prisonNumber, journeyId } = req.params
     const { inductionDto } = req.session
     const { prisonerSummary } = res.locals
     const { prisonId } = prisonerSummary
@@ -34,7 +34,7 @@ export default class AffectAbilityToWorkUpdateController extends AffectAbilityTo
 
     const errors = validateAffectAbilityToWorkForm(affectAbilityToWorkForm, prisonerSummary)
     if (errors.length > 0) {
-      return res.redirectWithErrors(`/prisoners/${prisonNumber}/induction/affect-ability-to-work`, errors)
+      return res.redirectWithErrors(`/prisoners/${prisonNumber}/induction/${journeyId}/affect-ability-to-work`, errors)
     }
 
     const updatedInduction = this.updatedInductionDtoWithAffectAbilityToWork(inductionDto, affectAbilityToWorkForm)

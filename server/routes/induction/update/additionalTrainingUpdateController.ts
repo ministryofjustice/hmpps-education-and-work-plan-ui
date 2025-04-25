@@ -19,7 +19,7 @@ export default class AdditionalTrainingUpdateController extends AdditionalTraini
     res: Response,
     next: NextFunction,
   ): Promise<void> => {
-    const { prisonNumber } = req.params
+    const { prisonNumber, journeyId } = req.params
     const { inductionDto } = req.session
     const { prisonerSummary } = res.locals
     const { prisonId } = prisonerSummary
@@ -35,7 +35,7 @@ export default class AdditionalTrainingUpdateController extends AdditionalTraini
 
     const errors = validateAdditionalTrainingForm(additionalTrainingForm, prisonerSummary)
     if (errors.length > 0) {
-      return res.redirectWithErrors(`/prisoners/${prisonNumber}/induction/additional-training`, errors)
+      return res.redirectWithErrors(`/prisoners/${prisonNumber}/induction/${journeyId}/additional-training`, errors)
     }
 
     const updatedInduction = this.updatedInductionDtoWithAdditionalTraining(inductionDto, additionalTrainingForm)

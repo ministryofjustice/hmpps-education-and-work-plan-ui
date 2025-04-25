@@ -1,5 +1,6 @@
 import createError from 'http-errors'
 import { Request, Response } from 'express'
+import { v4 as uuidV4 } from 'uuid'
 import type { InductionDto, PreviousWorkExperienceDto } from 'inductionDto'
 import type { PageFlow } from 'viewModels'
 import InductionService from '../../../services/inductionService'
@@ -21,6 +22,7 @@ describe('previousWorkExperienceTypesUpdateController', () => {
   const inductionService = new InductionService(null, null) as jest.Mocked<InductionService>
   const controller = new PreviousWorkExperienceTypesUpdateController(inductionService)
 
+  const journeyId = uuidV4()
   const prisonNumber = 'A1234BC'
   const username = 'a-dps-user'
   const prisonerSummary = aValidPrisonerSummary()
@@ -29,8 +31,8 @@ describe('previousWorkExperienceTypesUpdateController', () => {
     session: {},
     body: {},
     user: { username },
-    params: { prisonNumber },
-    path: `/prisoners/${prisonNumber}/induction/previous-work-experience`,
+    params: { prisonNumber, journeyId },
+    path: `/prisoners/${prisonNumber}/induction/${journeyId}/previous-work-experience`,
   } as unknown as Request
   const res = {
     redirect: jest.fn(),
@@ -127,7 +129,7 @@ describe('previousWorkExperienceTypesUpdateController', () => {
 
       // Then
       expect(res.redirectWithErrors).toHaveBeenCalledWith(
-        '/prisoners/A1234BC/induction/previous-work-experience',
+        `/prisoners/A1234BC/induction/${journeyId}/previous-work-experience`,
         expectedErrors,
       )
       expect(req.session.previousWorkExperienceTypesForm).toEqual(invalidPreviousWorkExperienceTypesForm)
@@ -286,9 +288,9 @@ describe('previousWorkExperienceTypesUpdateController', () => {
 
       const expectedPageFlowQueue: PageFlow = {
         pageUrls: [
-          '/prisoners/A1234BC/induction/previous-work-experience',
-          '/prisoners/A1234BC/induction/previous-work-experience/outdoor',
-          '/prisoners/A1234BC/induction/previous-work-experience/education_training',
+          `/prisoners/A1234BC/induction/${journeyId}/previous-work-experience`,
+          `/prisoners/A1234BC/induction/${journeyId}/previous-work-experience/outdoor`,
+          `/prisoners/A1234BC/induction/${journeyId}/previous-work-experience/education_training`,
         ],
         currentPageIndex: 0,
       }
@@ -296,7 +298,9 @@ describe('previousWorkExperienceTypesUpdateController', () => {
       await controller.submitPreviousWorkExperienceTypesForm(req, res, next)
 
       // Then
-      expect(res.redirect).toHaveBeenCalledWith(`/prisoners/${prisonNumber}/induction/previous-work-experience/outdoor`)
+      expect(res.redirect).toHaveBeenCalledWith(
+        `/prisoners/${prisonNumber}/induction/${journeyId}/previous-work-experience/outdoor`,
+      )
       expect(inductionService.updateInduction).not.toHaveBeenCalled()
       expect(req.session.pageFlowQueue).toEqual(expectedPageFlowQueue)
       expect(req.session.previousWorkExperienceTypesForm).toBeUndefined()
@@ -334,8 +338,8 @@ describe('previousWorkExperienceTypesUpdateController', () => {
 
       const expectedPageFlowQueue: PageFlow = {
         pageUrls: [
-          '/prisoners/A1234BC/induction/previous-work-experience',
-          '/prisoners/A1234BC/induction/previous-work-experience/other',
+          `/prisoners/A1234BC/induction/${journeyId}/previous-work-experience`,
+          `/prisoners/A1234BC/induction/${journeyId}/previous-work-experience/other`,
         ],
         currentPageIndex: 0,
       }
@@ -343,7 +347,9 @@ describe('previousWorkExperienceTypesUpdateController', () => {
       await controller.submitPreviousWorkExperienceTypesForm(req, res, next)
 
       // Then
-      expect(res.redirect).toHaveBeenCalledWith(`/prisoners/${prisonNumber}/induction/previous-work-experience/other`)
+      expect(res.redirect).toHaveBeenCalledWith(
+        `/prisoners/${prisonNumber}/induction/${journeyId}/previous-work-experience/other`,
+      )
       expect(inductionService.updateInduction).not.toHaveBeenCalled()
       expect(req.session.pageFlowQueue).toEqual(expectedPageFlowQueue)
       expect(req.session.previousWorkExperienceTypesForm).toBeUndefined()

@@ -1,5 +1,6 @@
 import createError from 'http-errors'
 import { Request, Response } from 'express'
+import { v4 as uuidV4 } from 'uuid'
 import type { SessionData } from 'express-session'
 import HopingToWorkOnReleaseUpdateController from './hopingToWorkOnReleaseUpdateController'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
@@ -25,6 +26,7 @@ describe('hopingToWorkOnReleaseUpdateController', () => {
   const inductionService = new InductionService(null, null) as jest.Mocked<InductionService>
   const controller = new HopingToWorkOnReleaseUpdateController(inductionService)
 
+  const journeyId = uuidV4()
   const prisonNumber = 'A1234BC'
   const username = 'a-dps-user'
   const prisonerSummary = aValidPrisonerSummary({ prisonNumber })
@@ -33,8 +35,8 @@ describe('hopingToWorkOnReleaseUpdateController', () => {
     session: {} as SessionData,
     body: {},
     user: { username },
-    params: { prisonNumber },
-    path: `/prisoners/${prisonNumber}/induction/hoping-to-work-on-release`,
+    params: { prisonNumber, journeyId },
+    path: `/prisoners/${prisonNumber}/induction/${journeyId}/hoping-to-work-on-release`,
   } as unknown as Request
   const res = {
     redirect: jest.fn(),
@@ -127,7 +129,7 @@ describe('hopingToWorkOnReleaseUpdateController', () => {
 
       // Then
       expect(res.redirectWithErrors).toHaveBeenCalledWith(
-        '/prisoners/A1234BC/induction/hoping-to-work-on-release',
+        `/prisoners/A1234BC/induction/${journeyId}/hoping-to-work-on-release`,
         errors,
       )
       expect(req.session.hopingToWorkOnReleaseForm).toEqual(invalidHopingToWorkOnReleaseForm)
@@ -185,7 +187,7 @@ describe('hopingToWorkOnReleaseUpdateController', () => {
         await controller.submitHopingToWorkOnReleaseForm(req, res, next)
 
         // Then
-        expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/induction/work-interest-types')
+        expect(res.redirect).toHaveBeenCalledWith(`/prisoners/A1234BC/induction/${journeyId}/work-interest-types`)
         expect(req.session.hopingToWorkOnReleaseForm).toEqual(hopingToWorkOnReleaseForm)
         const updatedInduction = req.session.inductionDto
         expect(updatedInduction.workOnRelease.hopingToWork).toEqual(HopingToGetWorkValue.YES)

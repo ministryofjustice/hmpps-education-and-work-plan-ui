@@ -21,7 +21,7 @@ export default class WorkInterestRolesUpdateController extends WorkInterestRoles
     res: Response,
     next: NextFunction,
   ): Promise<void> => {
-    const { prisonNumber } = req.params
+    const { prisonNumber, journeyId } = req.params
     const { inductionDto } = req.session
     const { prisonerSummary } = res.locals
     const { prisonId } = prisonerSummary
@@ -35,7 +35,7 @@ export default class WorkInterestRolesUpdateController extends WorkInterestRoles
 
     const errors = validateWorkInterestRolesForm(workInterestRolesForm)
     if (errors.length > 0) {
-      return res.redirectWithErrors(`/prisoners/${prisonNumber}/induction/work-interest-roles`, errors)
+      return res.redirectWithErrors(`/prisoners/${prisonNumber}/induction/${journeyId}/work-interest-roles`, errors)
     }
 
     const updatedInduction = this.updatedInductionDtoWithWorkInterestRoles(inductionDto, workInterestRolesForm)

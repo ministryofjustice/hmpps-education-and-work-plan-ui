@@ -19,7 +19,7 @@ export default class WorkInterestTypesUpdateController extends WorkInterestTypes
     res: Response,
     next: NextFunction,
   ): Promise<void> => {
-    const { prisonNumber } = req.params
+    const { prisonNumber, journeyId } = req.params
     const { inductionDto } = req.session
     const { prisonerSummary } = res.locals
     const { prisonId } = prisonerSummary
@@ -35,7 +35,7 @@ export default class WorkInterestTypesUpdateController extends WorkInterestTypes
 
     const errors = validateWorkInterestTypesForm(workInterestTypesForm, prisonerSummary)
     if (errors.length > 0) {
-      return res.redirectWithErrors(`/prisoners/${prisonNumber}/induction/work-interest-types`, errors)
+      return res.redirectWithErrors(`/prisoners/${prisonNumber}/induction/${journeyId}/work-interest-types`, errors)
     }
 
     const updatedInduction = this.updatedInductionDtoWithWorkInterestTypes(inductionDto, workInterestTypesForm)
@@ -44,7 +44,7 @@ export default class WorkInterestTypesUpdateController extends WorkInterestTypes
     // In this case we need to go to Work Interest Roles in order to complete the capture the prisoners future work interests.
     if (req.session.hopingToWorkOnReleaseForm) {
       req.session.inductionDto = updatedInduction
-      return res.redirect(`/prisoners/${prisonNumber}/induction/work-interest-roles`)
+      return res.redirect(`/prisoners/${prisonNumber}/induction/${journeyId}/work-interest-roles`)
     }
 
     // Else we can simply call the API to update the Induction and return to Work & Interests tab

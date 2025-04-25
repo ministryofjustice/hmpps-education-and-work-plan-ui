@@ -91,26 +91,49 @@ const pageViewEventMap: Record<string, Page> = {
   '/prisoners/:prisonNumber/create-induction/:journeyId/check-your-answers': Page.INDUCTION_CREATE_CHECK_YOUR_ANSWERS,
 
   // Update induction
-  '/prisoners/:prisonNumber/induction/in-prison-training': Page.INDUCTION_UPDATE_IN_PRISON_TRAINING,
-  '/prisoners/:prisonNumber/induction/personal-interests': Page.INDUCTION_UPDATE_PERSONAL_INTERESTS,
-  '/prisoners/:prisonNumber/induction/skills': Page.INDUCTION_UPDATE_SKILLS,
-  '/prisoners/:prisonNumber/induction/has-worked-before': Page.INDUCTION_UPDATE_HAS_WORKED_BEFORE,
-  '/prisoners/:prisonNumber/induction/previous-work-experience': Page.INDUCTION_UPDATE_PREVIOUS_WORK_EXPERIENCE_TYPE,
-  '/prisoners/:prisonNumber/induction/previous-work-experience/:typeOfWorkExperience':
+  '/prisoners/:prisonNumber/induction/in-prison-training': null, // route without the journeyId does not raise an audit event because it redirects to the route with a journeyId
+  '/prisoners/:prisonNumber/induction/:journeyId/in-prison-training': Page.INDUCTION_UPDATE_IN_PRISON_TRAINING,
+  '/prisoners/:prisonNumber/induction/personal-interests': null, // route without the journeyId does not raise an audit event because it redirects to the route with a journeyId
+  '/prisoners/:prisonNumber/induction/:journeyId/personal-interests': Page.INDUCTION_UPDATE_PERSONAL_INTERESTS,
+  '/prisoners/:prisonNumber/induction/skills': null, // route without the journeyId does not raise an audit event because it redirects to the route with a journeyId
+  '/prisoners/:prisonNumber/induction/:journeyId/skills': Page.INDUCTION_UPDATE_SKILLS,
+  '/prisoners/:prisonNumber/induction/has-worked-before': null, // route without the journeyId does not raise an audit event because it redirects to the route with a journeyId
+  '/prisoners/:prisonNumber/induction/:journeyId/has-worked-before': Page.INDUCTION_UPDATE_HAS_WORKED_BEFORE,
+  '/prisoners/:prisonNumber/induction/previous-work-experience': null, // route without the journeyId does not raise an audit event because it redirects to the route with a journeyId
+  '/prisoners/:prisonNumber/induction/:journeyId/previous-work-experience':
+    Page.INDUCTION_UPDATE_PREVIOUS_WORK_EXPERIENCE_TYPE,
+  '/prisoners/:prisonNumber/induction/previous-work-experience/:typeOfWorkExperience': null, // route without the journeyId does not raise an audit event because it redirects to the route with a journeyId
+  '/prisoners/:prisonNumber/induction/:journeyId/previous-work-experience/:typeOfWorkExperience':
     Page.INDUCTION_UPDATE_PREVIOUS_WORK_EXPERIENCE_DETAILS,
-  '/prisoners/:prisonNumber/induction/hoping-to-work-on-release': Page.INDUCTION_UPDATE_HOPING_TO_WORK_ON_RELEASE,
-  '/prisoners/:prisonNumber/induction/affect-ability-to-work': Page.INDUCTION_UPDATE_AFFECT_ABILITY_TO_WORK,
-  '/prisoners/:prisonNumber/induction/reasons-not-to-get-work': Page.INDUCTION_UPDATE_REASONS_NOT_TO_GET_WORK,
-  '/prisoners/:prisonNumber/induction/work-interest-types': Page.INDUCTION_UPDATE_WORK_INTEREST_TYPES,
-  '/prisoners/:prisonNumber/induction/work-interest-roles': Page.INDUCTION_UPDATE_WORK_INTEREST_ROLES,
-  '/prisoners/:prisonNumber/induction/in-prison-work': Page.INDUCTION_UPDATE_IN_PRISON_WORK,
-  '/prisoners/:prisonNumber/induction/qualifications': Page.INDUCTION_UPDATE_QUALIFICATIONS,
-  '/prisoners/:prisonNumber/induction/want-to-add-qualifications': Page.INDUCTION_UPDATE_ADD_QUALIFICATION,
-  '/prisoners/:prisonNumber/induction/highest-level-of-education': Page.INDUCTION_UPDATE_HIGHEST_LEVEL_OF_EDUCATION,
-  '/prisoners/:prisonNumber/induction/qualification-level': Page.INDUCTION_UPDATE_QUALIFICATION_LEVEL,
-  '/prisoners/:prisonNumber/induction/qualification-details': Page.INDUCTION_UPDATE_QUALIFICATION_DETAILS,
-  '/prisoners/:prisonNumber/induction/additional-training': Page.INDUCTION_UPDATE_ADDITIONAL_TRAINING,
-  '/prisoners/:prisonNumber/induction/check-your-answers': Page.INDUCTION_UPDATE_CHECK_YOUR_ANSWERS,
+  '/prisoners/:prisonNumber/induction/hoping-to-work-on-release': null, // route without the journeyId does not raise an audit event because it redirects to the route with a journeyId
+  '/prisoners/:prisonNumber/induction/:journeyId/hoping-to-work-on-release':
+    Page.INDUCTION_UPDATE_HOPING_TO_WORK_ON_RELEASE,
+  '/prisoners/:prisonNumber/induction/affect-ability-to-work': null, // route without the journeyId does not raise an audit event because it redirects to the route with a journeyId
+  '/prisoners/:prisonNumber/induction/:journeyId/affect-ability-to-work': Page.INDUCTION_UPDATE_AFFECT_ABILITY_TO_WORK,
+  '/prisoners/:prisonNumber/induction/reasons-not-to-get-work': null, // route without the journeyId does not raise an audit event because it redirects to the route with a journeyId
+  '/prisoners/:prisonNumber/induction/:journeyId/reasons-not-to-get-work':
+    Page.INDUCTION_UPDATE_REASONS_NOT_TO_GET_WORK,
+  '/prisoners/:prisonNumber/induction/work-interest-types': null, // route without the journeyId does not raise an audit event because it redirects to the route with a journeyId
+  '/prisoners/:prisonNumber/induction/:journeyId/work-interest-types': Page.INDUCTION_UPDATE_WORK_INTEREST_TYPES,
+  '/prisoners/:prisonNumber/induction/work-interest-roles': null, // route without the journeyId does not raise an audit event because it redirects to the route with a journeyId
+  '/prisoners/:prisonNumber/induction/:journeyId/work-interest-roles': Page.INDUCTION_UPDATE_WORK_INTEREST_ROLES,
+  '/prisoners/:prisonNumber/induction/in-prison-work': null, // route without the journeyId does not raise an audit event because it redirects to the route with a journeyId
+  '/prisoners/:prisonNumber/induction/:journeyId/in-prison-work': Page.INDUCTION_UPDATE_IN_PRISON_WORK,
+  '/prisoners/:prisonNumber/induction/qualifications': null, // route without the journeyId does not raise an audit event because it redirects to the route with a journeyId
+  '/prisoners/:prisonNumber/induction/:journeyId/qualifications': Page.INDUCTION_UPDATE_QUALIFICATIONS,
+  '/prisoners/:prisonNumber/induction/want-to-add-qualifications': null, // route without the journeyId does not raise an audit event because it redirects to the route with a journeyId
+  '/prisoners/:prisonNumber/induction/:journeyId/want-to-add-qualifications': Page.INDUCTION_UPDATE_ADD_QUALIFICATION,
+  '/prisoners/:prisonNumber/induction/highest-level-of-education': null, // route without the journeyId does not raise an audit event because it redirects to the route with a journeyId
+  '/prisoners/:prisonNumber/induction/:journeyId/highest-level-of-education':
+    Page.INDUCTION_UPDATE_HIGHEST_LEVEL_OF_EDUCATION,
+  '/prisoners/:prisonNumber/induction/qualification-level': null, // route without the journeyId does not raise an audit event because it redirects to the route with a journeyId
+  '/prisoners/:prisonNumber/induction/:journeyId/qualification-level': Page.INDUCTION_UPDATE_QUALIFICATION_LEVEL,
+  '/prisoners/:prisonNumber/induction/qualification-details': null, // route without the journeyId does not raise an audit event because it redirects to the route with a journeyId
+  '/prisoners/:prisonNumber/induction/:journeyId/qualification-details': Page.INDUCTION_UPDATE_QUALIFICATION_DETAILS,
+  '/prisoners/:prisonNumber/induction/additional-training': null, // route without the journeyId does not raise an audit event because it redirects to the route with a journeyId
+  '/prisoners/:prisonNumber/induction/:journeyId/additional-training': Page.INDUCTION_UPDATE_ADDITIONAL_TRAINING,
+  '/prisoners/:prisonNumber/induction/check-your-answers': null, // route without the journeyId does not raise an audit event because it redirects to the route with a journeyId
+  '/prisoners/:prisonNumber/induction/:journeyId/check-your-answers': Page.INDUCTION_UPDATE_CHECK_YOUR_ANSWERS,
 
   // Exempt induction
   '/prisoners/:prisonNumber/induction/exemption': null, // route without the journeyId does not raise an audit event because it redirects to the route with a journeyId

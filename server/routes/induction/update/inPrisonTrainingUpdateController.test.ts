@@ -1,5 +1,6 @@
 import createError from 'http-errors'
 import { Request, Response } from 'express'
+import { v4 as uuidV4 } from 'uuid'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
 import { aValidInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
@@ -19,6 +20,7 @@ describe('inPrisonTrainingUpdateController', () => {
   const inductionService = new InductionService(null, null) as jest.Mocked<InductionService>
   const controller = new InPrisonTrainingUpdateController(inductionService)
 
+  const journeyId = uuidV4()
   const prisonNumber = 'A1234BC'
   const username = 'a-dps-user'
   const prisonerSummary = aValidPrisonerSummary()
@@ -27,8 +29,8 @@ describe('inPrisonTrainingUpdateController', () => {
     session: {},
     body: {},
     user: { username },
-    params: { prisonNumber },
-    path: `/prisoners/${prisonNumber}/induction/in-prison-training`,
+    params: { prisonNumber, journeyId },
+    path: `/prisoners/${prisonNumber}/induction/${journeyId}/in-prison-training`,
   } as unknown as Request
   const res = {
     redirect: jest.fn(),
@@ -124,7 +126,7 @@ describe('inPrisonTrainingUpdateController', () => {
 
       // Then
       expect(res.redirectWithErrors).toHaveBeenCalledWith(
-        '/prisoners/A1234BC/induction/in-prison-training',
+        `/prisoners/A1234BC/induction/${journeyId}/in-prison-training`,
         expectedErrors,
       )
       expect(req.session.inPrisonTrainingForm).toEqual(invalidInPrisonTrainingForm)
