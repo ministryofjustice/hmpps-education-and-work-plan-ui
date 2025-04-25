@@ -1,5 +1,6 @@
 import createError from 'http-errors'
 import { Request, Response } from 'express'
+import { v4 as uuidV4 } from 'uuid'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
 import { aValidInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
@@ -18,6 +19,7 @@ describe('personalInterestsUpdateController', () => {
   const inductionService = new InductionService(null, null) as jest.Mocked<InductionService>
   const controller = new PersonalInterestsUpdateController(inductionService)
 
+  const journeyId = uuidV4()
   const prisonNumber = 'A1234BC'
   const username = 'a-dps-user'
   const prisonerSummary = aValidPrisonerSummary()
@@ -26,8 +28,8 @@ describe('personalInterestsUpdateController', () => {
     session: {},
     body: {},
     user: { username },
-    params: { prisonNumber },
-    path: `/prisoners/${prisonNumber}/induction/personal-interests`,
+    params: { prisonNumber, journeyId },
+    path: `/prisoners/${prisonNumber}/induction/${journeyId}/personal-interests`,
   } as unknown as Request
   const res = {
     redirect: jest.fn(),
@@ -114,7 +116,7 @@ describe('personalInterestsUpdateController', () => {
 
       // Then
       expect(res.redirectWithErrors).toHaveBeenCalledWith(
-        '/prisoners/A1234BC/induction/personal-interests',
+        `/prisoners/A1234BC/induction/${journeyId}/personal-interests`,
         expectedErrors,
       )
       expect(req.session.personalInterestsForm).toEqual(invalidPersonalInterestsForm)

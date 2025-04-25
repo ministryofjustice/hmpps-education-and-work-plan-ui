@@ -1,6 +1,7 @@
 import createError from 'http-errors'
-import type { FutureWorkInterestDto } from 'inductionDto'
 import { Request, Response } from 'express'
+import { v4 as uuidV4 } from 'uuid'
+import type { FutureWorkInterestDto } from 'inductionDto'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
 import { aValidInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
@@ -20,6 +21,7 @@ describe('workInterestRolesUpdateController', () => {
   const inductionService = new InductionService(null, null) as jest.Mocked<InductionService>
   const controller = new WorkInterestRolesUpdateController(inductionService)
 
+  const journeyId = uuidV4()
   const prisonNumber = 'A1234BC'
   const username = 'a-dps-user'
   const prisonerSummary = aValidPrisonerSummary()
@@ -28,8 +30,8 @@ describe('workInterestRolesUpdateController', () => {
     session: {},
     body: {},
     user: { username },
-    params: { prisonNumber },
-    path: `/prisoners/${prisonNumber}/induction/work-interest-roles`,
+    params: { prisonNumber, journeyId },
+    path: `/prisoners/${prisonNumber}/induction/${journeyId}/work-interest-roles`,
   } as unknown as Request
   const res = {
     redirect: jest.fn(),
@@ -105,7 +107,7 @@ describe('workInterestRolesUpdateController', () => {
 
       // Then
       expect(res.redirectWithErrors).toHaveBeenCalledWith(
-        '/prisoners/A1234BC/induction/work-interest-roles',
+        `/prisoners/A1234BC/induction/${journeyId}/work-interest-roles`,
         expectedErrors,
       )
       expect(req.session.workInterestRolesForm).toEqual(expectedWorkInterestRolesForm)

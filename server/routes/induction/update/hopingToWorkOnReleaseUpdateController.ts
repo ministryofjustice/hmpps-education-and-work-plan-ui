@@ -18,7 +18,7 @@ export default class HopingToWorkOnReleaseUpdateController extends HopingToWorkO
     res: Response,
     next: NextFunction,
   ): Promise<void> => {
-    const { prisonNumber } = req.params
+    const { prisonNumber, journeyId } = req.params
     const { inductionDto } = req.session
     const { prisonerSummary } = res.locals
     const { prisonId } = prisonerSummary
@@ -28,7 +28,10 @@ export default class HopingToWorkOnReleaseUpdateController extends HopingToWorkO
 
     const errors = validateHopingToWorkOnReleaseForm(hopingToWorkOnReleaseForm, prisonerSummary)
     if (errors.length > 0) {
-      return res.redirectWithErrors(`/prisoners/${prisonNumber}/induction/hoping-to-work-on-release`, errors)
+      return res.redirectWithErrors(
+        `/prisoners/${prisonNumber}/induction/${journeyId}/hoping-to-work-on-release`,
+        errors,
+      )
     }
 
     // If the user has not changed the answer, go back to Work & Interests
@@ -44,7 +47,7 @@ export default class HopingToWorkOnReleaseUpdateController extends HopingToWorkO
     // If the new answer for Hoping To Work On Release is YES then we need to go to Work Interest Types in order to capture the prisoners future work interests.
     if (hopingToWorkOnReleaseForm.hopingToGetWork === HopingToGetWorkValue.YES) {
       req.session.pageFlowHistory = buildNewPageFlowHistory(req)
-      return res.redirect(`/prisoners/${prisonNumber}/induction/work-interest-types`)
+      return res.redirect(`/prisoners/${prisonNumber}/induction/${journeyId}/work-interest-types`)
     }
 
     // Else we can simply call the API to update the Induction and return to Work & Interests tab

@@ -1,6 +1,7 @@
 import createError from 'http-errors'
 import { Request, Response } from 'express'
 import { SessionData } from 'express-session'
+import { v4 as uuidV4 } from 'uuid'
 import type { PreviousWorkExperienceDto } from 'inductionDto'
 import type { PageFlow } from 'viewModels'
 import InductionService from '../../../services/inductionService'
@@ -22,6 +23,7 @@ describe('previousWorkExperienceDetailUpdateController', () => {
   const inductionService = new InductionService(null, null) as jest.Mocked<InductionService>
   const controller = new PreviousWorkExperienceDetailUpdateController(inductionService)
 
+  const journeyId = uuidV4()
   const prisonNumber = 'A1234BC'
   const username = 'a-dps-user'
   const prisonerSummary = aValidPrisonerSummary()
@@ -30,7 +32,7 @@ describe('previousWorkExperienceDetailUpdateController', () => {
     session: {} as SessionData,
     body: {},
     user: { username },
-    params: { prisonNumber } as Record<string, string>,
+    params: { prisonNumber, journeyId } as Record<string, string>,
     path: '',
   }
   const res = {
@@ -51,7 +53,7 @@ describe('previousWorkExperienceDetailUpdateController', () => {
     it('should get the Previous Work Experience Detail view given there is no PreviousWorkExperienceDetailForm on the session', async () => {
       // Given
       req.params.typeOfWorkExperience = 'construction'
-      req.path = `/prisoners/${prisonNumber}/induction/previous-work-experience/construction`
+      req.path = `/prisoners/${prisonNumber}/induction/${journeyId}/previous-work-experience/construction`
 
       const inductionDto = aValidInductionDto({ hasWorkedBefore: HasWorkedBeforeValue.YES })
       req.session.inductionDto = inductionDto
@@ -83,7 +85,7 @@ describe('previousWorkExperienceDetailUpdateController', () => {
     it('should get the Previous Work Experience Detail view given there is an PreviousWorkExperienceDetailForm already on the session', async () => {
       // Given
       req.params.typeOfWorkExperience = 'construction'
-      req.path = `/prisoners/${prisonNumber}/induction/previous-work-experience/construction`
+      req.path = `/prisoners/${prisonNumber}/induction/${journeyId}/previous-work-experience/construction`
 
       const inductionDto = aValidInductionDto({ hasWorkedBefore: HasWorkedBeforeValue.YES })
       req.session.inductionDto = inductionDto
@@ -115,7 +117,7 @@ describe('previousWorkExperienceDetailUpdateController', () => {
     it(`should not get the Previous Work Experience Detail view given the request path contains a valid work experience type that is not on the prisoner's induction`, async () => {
       // Given
       req.params.typeOfWorkExperience = 'retail'
-      req.path = `/prisoners/${prisonNumber}/induction/previous-work-experience/retail`
+      req.path = `/prisoners/${prisonNumber}/induction/${journeyId}/previous-work-experience/retail`
 
       const inductionDto = aValidInductionDto({ hasWorkedBefore: HasWorkedBeforeValue.YES })
       // The induction has work experience of construction and other, but not retail
@@ -135,7 +137,7 @@ describe('previousWorkExperienceDetailUpdateController', () => {
     it('should not get the Previous Work Experience Detail view given the request path contains an invalid work experience type', async () => {
       // Given
       req.params.typeOfWorkExperience = 'some-non-valid-work-experience-type'
-      req.path = `/prisoners/${prisonNumber}/induction/previous-work-experience/some-non-valid-work-experience-type`
+      req.path = `/prisoners/${prisonNumber}/induction/${journeyId}/previous-work-experience/some-non-valid-work-experience-type`
 
       const expectedError = createError(
         404,
@@ -156,7 +158,7 @@ describe('previousWorkExperienceDetailUpdateController', () => {
       it('should not update Induction given form is submitted with validation errors', async () => {
         // Given
         req.params.typeOfWorkExperience = 'construction'
-        req.path = `/prisoners/${prisonNumber}/induction/previous-work-experience/construction`
+        req.path = `/prisoners/${prisonNumber}/induction/${journeyId}/previous-work-experience/construction`
 
         const inductionDto = aValidInductionDto({ hasWorkedBefore: HasWorkedBeforeValue.YES })
         req.session.inductionDto = inductionDto
@@ -177,7 +179,7 @@ describe('previousWorkExperienceDetailUpdateController', () => {
 
         // Then
         expect(res.redirectWithErrors).toHaveBeenCalledWith(
-          '/prisoners/A1234BC/induction/previous-work-experience/construction',
+          `/prisoners/A1234BC/induction/${journeyId}/previous-work-experience/construction`,
           expectedErrors,
         )
         expect(req.session.previousWorkExperienceDetailForm).toEqual(invalidPreviousWorkExperienceDetailForm)
@@ -187,7 +189,7 @@ describe('previousWorkExperienceDetailUpdateController', () => {
       it('should not update Induction given form is submitted with the request path containing an invalid work experience type', async () => {
         // Given
         req.params.typeOfWorkExperience = 'some-non-valid-work-experience-type'
-        req.path = `/prisoners/${prisonNumber}/induction/previous-work-experience/some-non-valid-work-experience-type`
+        req.path = `/prisoners/${prisonNumber}/induction/${journeyId}/previous-work-experience/some-non-valid-work-experience-type`
 
         const inductionDto = aValidInductionDto({ hasWorkedBefore: HasWorkedBeforeValue.YES })
         req.session.inductionDto = inductionDto
@@ -208,7 +210,7 @@ describe('previousWorkExperienceDetailUpdateController', () => {
       it(`should not update Induction given form is submitted with the request path contains a valid work experience type that is not on the prisoner's induction`, async () => {
         // Given
         req.params.typeOfWorkExperience = 'retail'
-        req.path = `/prisoners/${prisonNumber}/induction/previous-work-experience/retail`
+        req.path = `/prisoners/${prisonNumber}/induction/${journeyId}/previous-work-experience/retail`
 
         const inductionDto = aValidInductionDto({ hasWorkedBefore: HasWorkedBeforeValue.YES })
         // The induction has work experience of construction and other, but not retail
@@ -243,7 +245,7 @@ describe('previousWorkExperienceDetailUpdateController', () => {
       it('should update Induction and call API and redirect to work and interests page', async () => {
         // Given
         req.params.typeOfWorkExperience = 'construction'
-        req.path = `/prisoners/${prisonNumber}/induction/previous-work-experience/construction`
+        req.path = `/prisoners/${prisonNumber}/induction/${journeyId}/previous-work-experience/construction`
 
         const inductionDto = aValidInductionDto({ hasWorkedBefore: HasWorkedBeforeValue.YES })
         req.session.inductionDto = inductionDto
@@ -294,7 +296,7 @@ describe('previousWorkExperienceDetailUpdateController', () => {
       it('should not update Induction given error calling service', async () => {
         // Given
         req.params.typeOfWorkExperience = 'construction'
-        req.path = `/prisoners/${prisonNumber}/induction/previous-work-experience/construction`
+        req.path = `/prisoners/${prisonNumber}/induction/${journeyId}/previous-work-experience/construction`
 
         const inductionDto = aValidInductionDto({ hasWorkedBefore: HasWorkedBeforeValue.YES })
         req.session.inductionDto = inductionDto
@@ -356,10 +358,10 @@ describe('previousWorkExperienceDetailUpdateController', () => {
       it('should update Induction and call API and redirect to work and interests page given a PageFlowQueue that is on the last page', async () => {
         // Given
         req.params.typeOfWorkExperience = 'construction'
-        req.path = `/prisoners/${prisonNumber}/induction/previous-work-experience/construction`
+        req.path = `/prisoners/${prisonNumber}/induction/${journeyId}/previous-work-experience/construction`
 
         const pageFlowQueue: PageFlow = {
-          pageUrls: [`/prisoners/${prisonNumber}/induction/previous-work-experience/construction`],
+          pageUrls: [`/prisoners/${prisonNumber}/induction/${journeyId}/previous-work-experience/construction`],
           currentPageIndex: 0,
         }
         req.session.pageFlowQueue = pageFlowQueue
@@ -413,12 +415,12 @@ describe('previousWorkExperienceDetailUpdateController', () => {
       it('should update induction in session but not call API given a PageFlowQueue that is not on the last page', async () => {
         // Given
         req.params.typeOfWorkExperience = 'construction'
-        req.path = `/prisoners/${prisonNumber}/induction/previous-work-experience/construction`
+        req.path = `/prisoners/${prisonNumber}/induction/${journeyId}/previous-work-experience/construction`
 
         const pageFlowQueue: PageFlow = {
           pageUrls: [
-            `/prisoners/${prisonNumber}/induction/previous-work-experience/construction`,
-            `/prisoners/${prisonNumber}/induction/previous-work-experience/retail`,
+            `/prisoners/${prisonNumber}/induction/${journeyId}/previous-work-experience/construction`,
+            `/prisoners/${prisonNumber}/induction/${journeyId}/previous-work-experience/retail`,
           ],
           currentPageIndex: 0,
         }
@@ -442,7 +444,9 @@ describe('previousWorkExperienceDetailUpdateController', () => {
         await controller.submitPreviousWorkExperienceDetailForm(req as unknown as Request, res, next)
 
         // Then
-        expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/induction/previous-work-experience/retail')
+        expect(res.redirect).toHaveBeenCalledWith(
+          `/prisoners/A1234BC/induction/${journeyId}/previous-work-experience/retail`,
+        )
         expect(inductionService.updateInduction).not.toHaveBeenCalled()
       })
     })

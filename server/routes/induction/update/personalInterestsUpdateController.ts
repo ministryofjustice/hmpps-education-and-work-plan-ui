@@ -21,7 +21,7 @@ export default class PersonalInterestsUpdateController extends PersonalInterests
     res: Response,
     next: NextFunction,
   ): Promise<void> => {
-    const { prisonNumber } = req.params
+    const { prisonNumber, journeyId } = req.params
     const { inductionDto } = req.session
     const { prisonerSummary } = res.locals
     const { prisonId } = prisonerSummary
@@ -34,7 +34,7 @@ export default class PersonalInterestsUpdateController extends PersonalInterests
 
     const errors = validatePersonalInterestsForm(personalInterestsForm, prisonerSummary)
     if (errors.length > 0) {
-      return res.redirectWithErrors(`/prisoners/${prisonNumber}/induction/personal-interests`, errors)
+      return res.redirectWithErrors(`/prisoners/${prisonNumber}/induction/${journeyId}/personal-interests`, errors)
     }
 
     const updatedInduction = this.updatedInductionDtoWithPersonalInterests(inductionDto, personalInterestsForm)

@@ -23,7 +23,7 @@ export default class PreviousWorkExperienceDetailUpdateController extends Previo
     res: Response,
     next: NextFunction,
   ): Promise<void> => {
-    const { prisonNumber } = req.params
+    const { prisonNumber, journeyId } = req.params
     const { inductionDto } = req.session
     const { prisonerSummary } = res.locals
     const { prisonId } = prisonerSummary
@@ -48,7 +48,7 @@ export default class PreviousWorkExperienceDetailUpdateController extends Previo
     const errors = validatePreviousWorkExperienceDetailForm(previousWorkExperienceDetailForm, prisonerSummary)
     if (errors.length > 0) {
       return res.redirectWithErrors(
-        `/prisoners/${prisonNumber}/induction/previous-work-experience/${typeOfWorkExperience}`,
+        `/prisoners/${prisonNumber}/induction/${journeyId}/previous-work-experience/${typeOfWorkExperience}`,
         errors,
       )
     }

@@ -1,6 +1,7 @@
 import createError from 'http-errors'
-import type { WorkedBeforeForm } from 'inductionForms'
 import { Request, Response } from 'express'
+import { v4 as uuidV4 } from 'uuid'
+import type { WorkedBeforeForm } from 'inductionForms'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
 import { aValidInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
@@ -20,6 +21,7 @@ describe('workedBeforeUpdateController', () => {
   const inductionService = new InductionService(null, null) as jest.Mocked<InductionService>
   const controller = new WorkedBeforeUpdateController(inductionService)
 
+  const journeyId = uuidV4()
   const prisonNumber = 'A1234BC'
   const username = 'a-dps-user'
   const prisonerSummary = aValidPrisonerSummary()
@@ -28,8 +30,8 @@ describe('workedBeforeUpdateController', () => {
     session: {},
     body: {},
     user: { username },
-    params: { prisonNumber },
-    path: `/prisoners/${prisonNumber}/induction/has-worked-before`,
+    params: { prisonNumber, journeyId },
+    path: `/prisoners/${prisonNumber}/induction/${journeyId}/has-worked-before`,
   } as unknown as Request
   const res = {
     redirect: jest.fn(),
@@ -116,7 +118,7 @@ describe('workedBeforeUpdateController', () => {
 
       // Then
       expect(res.redirectWithErrors).toHaveBeenCalledWith(
-        '/prisoners/A1234BC/induction/has-worked-before',
+        `/prisoners/A1234BC/induction/${journeyId}/has-worked-before`,
         expectedErrors,
       )
       expect(req.session.workedBeforeForm).toEqual(invalidWorkedBeforeForm)
@@ -141,7 +143,9 @@ describe('workedBeforeUpdateController', () => {
       await controller.submitWorkedBeforeForm(req, res, next)
 
       // Then
-      expect(res.redirect).toHaveBeenCalledWith(`/prisoners/${prisonNumber}/induction/previous-work-experience`)
+      expect(res.redirect).toHaveBeenCalledWith(
+        `/prisoners/${prisonNumber}/induction/${journeyId}/previous-work-experience`,
+      )
       expect(req.session.workedBeforeForm).toBeUndefined()
       expect(req.session.inductionDto).toStrictEqual({
         ...inductionDto,

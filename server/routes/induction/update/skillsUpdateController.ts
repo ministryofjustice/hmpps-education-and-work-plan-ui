@@ -17,7 +17,7 @@ export default class SkillsUpdateController extends SkillsController {
   }
 
   submitSkillsForm: RequestHandler = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    const { prisonNumber } = req.params
+    const { prisonNumber, journeyId } = req.params
     const { inductionDto } = req.session
     const { prisonerSummary } = res.locals
     const { prisonId } = prisonerSummary
@@ -30,7 +30,7 @@ export default class SkillsUpdateController extends SkillsController {
 
     const errors = validateSkillsForm(skillsForm, prisonerSummary)
     if (errors.length > 0) {
-      return res.redirectWithErrors(`/prisoners/${prisonNumber}/induction/skills`, errors)
+      return res.redirectWithErrors(`/prisoners/${prisonNumber}/induction/${journeyId}/skills`, errors)
     }
 
     const updatedInduction = this.updatedInductionDtoWithSkills(inductionDto, skillsForm)

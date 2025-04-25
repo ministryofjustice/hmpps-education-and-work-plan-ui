@@ -1,5 +1,6 @@
 import createError from 'http-errors'
 import { Request, Response } from 'express'
+import { v4 as uuidV4 } from 'uuid'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
 import { aValidInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
@@ -19,6 +20,7 @@ describe('affectAbilityToWorkUpdateController', () => {
   const inductionService = new InductionService(null, null) as jest.Mocked<InductionService>
   const controller = new AbilityToWorkUpdateController(inductionService)
 
+  const journeyId = uuidV4()
   const prisonNumber = 'A1234BC'
   const username = 'a-dps-user'
   const prisonerSummary = aValidPrisonerSummary()
@@ -27,7 +29,7 @@ describe('affectAbilityToWorkUpdateController', () => {
     session: {},
     body: {},
     user: { username },
-    params: { prisonNumber },
+    params: { prisonNumber, journeyId },
     path: '',
   } as undefined as Request
   const res = {
@@ -127,7 +129,7 @@ describe('affectAbilityToWorkUpdateController', () => {
 
       // Then
       expect(res.redirectWithErrors).toHaveBeenCalledWith(
-        '/prisoners/A1234BC/induction/affect-ability-to-work',
+        `/prisoners/A1234BC/induction/${journeyId}/affect-ability-to-work`,
         expectedErrors,
       )
       expect(req.session.affectAbilityToWorkForm).toEqual(invalidAbilityToWorkForm)

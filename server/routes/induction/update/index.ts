@@ -17,6 +17,7 @@ import setCurrentPageInPageFlowQueue from '../../routerRequestHandlers/setCurren
 import retrieveInductionIfNotInSession from '../../routerRequestHandlers/retrieveInductionIfNotInSession'
 import asyncMiddleware from '../../../middleware/asyncMiddleware'
 import ApplicationAction from '../../../enums/applicationAction'
+import insertJourneyIdentifier from '../../routerRequestHandlers/insertJourneyIdentifier'
 
 /**
  * Route definitions for updating the various sections of an Induction
@@ -41,98 +42,98 @@ export default (router: Router, services: Services) => {
   const workInterestRolesUpdateController = new WorkInterestRolesUpdateController(inductionService)
   const additionalTrainingUpdateController = new AdditionalTrainingUpdateController(inductionService)
 
-  router.get('/prisoners/:prisonNumber/induction/**', [
-    checkUserHasPermissionTo(ApplicationAction.UPDATE_INDUCTION),
-    retrieveInductionIfNotInSession(services.inductionService),
-    setCurrentPageInPageFlowQueue,
-  ])
-  router.post('/prisoners/:prisonNumber/induction/**', [
+  router.use('/prisoners/:prisonNumber/induction', [
+    insertJourneyIdentifier({ insertIdAfterElement: 3 }), // insert journey ID immediately after '/prisoners/:prisonNumber/induction' - eg: '/prisoners/A1234BC/induction/473e9ee4-37d6-4afb-92a2-5729b10cc60f/hoping-to-work-on-release'
     checkUserHasPermissionTo(ApplicationAction.UPDATE_INDUCTION),
     retrieveInductionIfNotInSession(services.inductionService),
     setCurrentPageInPageFlowQueue,
   ])
 
   // In Prison Training
-  router.get('/prisoners/:prisonNumber/induction/in-prison-training', [
+  router.get('/prisoners/:prisonNumber/induction/:journeyId/in-prison-training', [
     asyncMiddleware(inPrisonTrainingUpdateController.getInPrisonTrainingView),
   ])
-  router.post('/prisoners/:prisonNumber/induction/in-prison-training', [
+  router.post('/prisoners/:prisonNumber/induction/:journeyId/in-prison-training', [
     asyncMiddleware(inPrisonTrainingUpdateController.submitInPrisonTrainingForm),
   ])
 
   // Personal Skills and Interests
-  router.get('/prisoners/:prisonNumber/induction/personal-interests', [
+  router.get('/prisoners/:prisonNumber/induction/:journeyId/personal-interests', [
     asyncMiddleware(personalInterestsUpdateController.getPersonalInterestsView),
   ])
-  router.post('/prisoners/:prisonNumber/induction/personal-interests', [
+  router.post('/prisoners/:prisonNumber/induction/:journeyId/personal-interests', [
     asyncMiddleware(personalInterestsUpdateController.submitPersonalInterestsForm),
   ])
 
-  router.get('/prisoners/:prisonNumber/induction/skills', [asyncMiddleware(skillsUpdateController.getSkillsView)])
-  router.post('/prisoners/:prisonNumber/induction/skills', [asyncMiddleware(skillsUpdateController.submitSkillsForm)])
+  router.get('/prisoners/:prisonNumber/induction/:journeyId/skills', [
+    asyncMiddleware(skillsUpdateController.getSkillsView),
+  ])
+  router.post('/prisoners/:prisonNumber/induction/:journeyId/skills', [
+    asyncMiddleware(skillsUpdateController.submitSkillsForm),
+  ])
 
   // Previous Work Experience
-  router.get('/prisoners/:prisonNumber/induction/has-worked-before', [
+  router.get('/prisoners/:prisonNumber/induction/:journeyId/has-worked-before', [
     asyncMiddleware(workedBeforeUpdateController.getWorkedBeforeView),
   ])
-  router.post('/prisoners/:prisonNumber/induction/has-worked-before', [
+  router.post('/prisoners/:prisonNumber/induction/:journeyId/has-worked-before', [
     asyncMiddleware(workedBeforeUpdateController.submitWorkedBeforeForm),
   ])
 
-  router.get('/prisoners/:prisonNumber/induction/previous-work-experience', [
+  router.get('/prisoners/:prisonNumber/induction/:journeyId/previous-work-experience', [
     asyncMiddleware(previousWorkExperienceTypesUpdateController.getPreviousWorkExperienceTypesView),
   ])
-  router.post('/prisoners/:prisonNumber/induction/previous-work-experience', [
+  router.post('/prisoners/:prisonNumber/induction/:journeyId/previous-work-experience', [
     asyncMiddleware(previousWorkExperienceTypesUpdateController.submitPreviousWorkExperienceTypesForm),
   ])
 
-  router.get('/prisoners/:prisonNumber/induction/previous-work-experience/:typeOfWorkExperience', [
+  router.get('/prisoners/:prisonNumber/induction/:journeyId/previous-work-experience/:typeOfWorkExperience', [
     asyncMiddleware(previousWorkExperienceDetailUpdateController.getPreviousWorkExperienceDetailView),
   ])
-  router.post('/prisoners/:prisonNumber/induction/previous-work-experience/:typeOfWorkExperience', [
+  router.post('/prisoners/:prisonNumber/induction/:journeyId/previous-work-experience/:typeOfWorkExperience', [
     asyncMiddleware(previousWorkExperienceDetailUpdateController.submitPreviousWorkExperienceDetailForm),
   ])
 
   // Work Interests
-  router.get('/prisoners/:prisonNumber/induction/hoping-to-work-on-release', [
+  router.get('/prisoners/:prisonNumber/induction/:journeyId/hoping-to-work-on-release', [
     asyncMiddleware(hopingToWorkOnReleaseController.getHopingToWorkOnReleaseView),
   ])
-  router.post('/prisoners/:prisonNumber/induction/hoping-to-work-on-release', [
+  router.post('/prisoners/:prisonNumber/induction/:journeyId/hoping-to-work-on-release', [
     asyncMiddleware(hopingToWorkOnReleaseController.submitHopingToWorkOnReleaseForm),
   ])
 
-  router.get('/prisoners/:prisonNumber/induction/affect-ability-to-work', [
+  router.get('/prisoners/:prisonNumber/induction/:journeyId/affect-ability-to-work', [
     asyncMiddleware(affectAbilityToWorkUpdateController.getAffectAbilityToWorkView),
   ])
-  router.post('/prisoners/:prisonNumber/induction/affect-ability-to-work', [
+  router.post('/prisoners/:prisonNumber/induction/:journeyId/affect-ability-to-work', [
     asyncMiddleware(affectAbilityToWorkUpdateController.submitAffectAbilityToWorkForm),
   ])
 
-  router.get('/prisoners/:prisonNumber/induction/work-interest-types', [
+  router.get('/prisoners/:prisonNumber/induction/:journeyId/work-interest-types', [
     asyncMiddleware(workInterestTypesUpdateController.getWorkInterestTypesView),
   ])
-  router.post('/prisoners/:prisonNumber/induction/work-interest-types', [
+  router.post('/prisoners/:prisonNumber/induction/:journeyId/work-interest-types', [
     asyncMiddleware(workInterestTypesUpdateController.submitWorkInterestTypesForm),
   ])
 
-  router.get('/prisoners/:prisonNumber/induction/work-interest-roles', [
+  router.get('/prisoners/:prisonNumber/induction/:journeyId/work-interest-roles', [
     asyncMiddleware(workInterestRolesUpdateController.getWorkInterestRolesView),
   ])
-  router.post('/prisoners/:prisonNumber/induction/work-interest-roles', [
+  router.post('/prisoners/:prisonNumber/induction/:journeyId/work-interest-roles', [
     asyncMiddleware(workInterestRolesUpdateController.submitWorkInterestRolesForm),
   ])
 
-  router.get('/prisoners/:prisonNumber/induction/in-prison-work', [
+  router.get('/prisoners/:prisonNumber/induction/:journeyId/in-prison-work', [
     asyncMiddleware(inPrisonWorkUpdateController.getInPrisonWorkView),
   ])
-  router.post('/prisoners/:prisonNumber/induction/in-prison-work', [
+  router.post('/prisoners/:prisonNumber/induction/:journeyId/in-prison-work', [
     asyncMiddleware(inPrisonWorkUpdateController.submitInPrisonWorkForm),
   ])
 
-  router.get('/prisoners/:prisonNumber/induction/additional-training', [
+  router.get('/prisoners/:prisonNumber/induction/:journeyId/additional-training', [
     asyncMiddleware(additionalTrainingUpdateController.getAdditionalTrainingView),
   ])
-  router.post('/prisoners/:prisonNumber/induction/additional-training', [
+  router.post('/prisoners/:prisonNumber/induction/:journeyId/additional-training', [
     asyncMiddleware(additionalTrainingUpdateController.submitAdditionalTrainingForm),
   ])
 }

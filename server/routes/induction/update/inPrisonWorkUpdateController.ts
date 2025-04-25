@@ -15,7 +15,7 @@ export default class InPrisonWorkUpdateController extends InPrisonWorkController
   }
 
   submitInPrisonWorkForm: RequestHandler = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    const { prisonNumber } = req.params
+    const { prisonNumber, journeyId } = req.params
     const { inductionDto } = req.session
     const { prisonerSummary } = res.locals
     const { prisonId } = prisonerSummary
@@ -31,7 +31,7 @@ export default class InPrisonWorkUpdateController extends InPrisonWorkController
 
     const errors = validateInPrisonWorkForm(inPrisonWorkForm, prisonerSummary)
     if (errors.length > 0) {
-      return res.redirectWithErrors(`/prisoners/${prisonNumber}/induction/in-prison-work`, errors)
+      return res.redirectWithErrors(`/prisoners/${prisonNumber}/induction/${journeyId}/in-prison-work`, errors)
     }
 
     const updatedInduction = this.updatedInductionDtoWithInPrisonWork(inductionDto, inPrisonWorkForm)

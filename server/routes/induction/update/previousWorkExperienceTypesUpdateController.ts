@@ -22,7 +22,7 @@ export default class PreviousWorkExperienceTypesUpdateController extends Previou
     res: Response,
     next: NextFunction,
   ): Promise<void> => {
-    const { prisonNumber } = req.params
+    const { prisonNumber, journeyId } = req.params
     const { inductionDto } = req.session
     const { prisonerSummary } = res.locals
 
@@ -39,7 +39,10 @@ export default class PreviousWorkExperienceTypesUpdateController extends Previou
 
     const errors = validatePreviousWorkExperienceTypesForm(previousWorkExperienceTypesForm, prisonerSummary)
     if (errors.length > 0) {
-      return res.redirectWithErrors(`/prisoners/${prisonNumber}/induction/previous-work-experience`, errors)
+      return res.redirectWithErrors(
+        `/prisoners/${prisonNumber}/induction/${journeyId}/previous-work-experience`,
+        errors,
+      )
     }
 
     // create an updated InductionDto with any changes to Previous Work Experiences
@@ -99,6 +102,7 @@ export default class PreviousWorkExperienceTypesUpdateController extends Previou
     const pageFlowQueue = this.buildPageFlowQueue(
       workExperienceTypesToShowDetailsFormFor,
       prisonNumber,
+      journeyId,
       req.session.pageFlowQueue,
     )
 
@@ -109,16 +113,18 @@ export default class PreviousWorkExperienceTypesUpdateController extends Previou
   buildPageFlowQueue = (
     previousWorkExperienceTypes: Array<TypeOfWorkExperienceValue>,
     prisonNumber: string,
+    journeyId: string,
     currentPageFlow?: PageFlow,
   ): PageFlow => {
     const nextPages = previousWorkExperienceTypes.map(
-      workType => `/prisoners/${prisonNumber}/induction/previous-work-experience/${workType.toLowerCase()}`,
+      workType =>
+        `/prisoners/${prisonNumber}/induction/${journeyId}/previous-work-experience/${workType.toLowerCase()}`,
     )
 
     if (currentPageFlow) {
       return appendPagesFromCurrentPage(currentPageFlow, nextPages)
     }
-    const pageUrls = [`/prisoners/${prisonNumber}/induction/previous-work-experience`, ...nextPages]
+    const pageUrls = [`/prisoners/${prisonNumber}/induction/${journeyId}/previous-work-experience`, ...nextPages]
     return {
       pageUrls,
       currentPageIndex: 0,

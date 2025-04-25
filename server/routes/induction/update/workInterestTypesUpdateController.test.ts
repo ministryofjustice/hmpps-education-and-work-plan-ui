@@ -1,6 +1,7 @@
 import createError from 'http-errors'
-import type { FutureWorkInterestDto, FutureWorkInterestsDto } from 'inductionDto'
 import { Request, Response } from 'express'
+import { v4 as uuidV4 } from 'uuid'
+import type { FutureWorkInterestDto, FutureWorkInterestsDto } from 'inductionDto'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
 import { aValidInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
@@ -21,6 +22,7 @@ describe('workInterestTypesUpdateController', () => {
   const inductionService = new InductionService(null, null) as jest.Mocked<InductionService>
   const controller = new WorkInterestTypesUpdateController(inductionService)
 
+  const journeyId = uuidV4()
   const prisonNumber = 'A1234BC'
   const username = 'a-dps-user'
   const prisonerSummary = aValidPrisonerSummary()
@@ -29,8 +31,8 @@ describe('workInterestTypesUpdateController', () => {
     session: {},
     body: {},
     user: { username },
-    params: { prisonNumber },
-    path: `/prisoners/${prisonNumber}/induction/work-interest-types`,
+    params: { prisonNumber, journeyId },
+    path: `/prisoners/${prisonNumber}/induction/${journeyId}/work-interest-types`,
   } as unknown as Request
   const res = {
     redirect: jest.fn(),
@@ -130,7 +132,7 @@ describe('workInterestTypesUpdateController', () => {
 
       // Then
       expect(res.redirectWithErrors).toHaveBeenCalledWith(
-        '/prisoners/A1234BC/induction/work-interest-types',
+        `/prisoners/A1234BC/induction/${journeyId}/work-interest-types`,
         expectedErrors,
       )
       expect(req.session.workInterestTypesForm).toEqual(invalidWorkInterestTypesForm)
@@ -252,7 +254,7 @@ describe('workInterestTypesUpdateController', () => {
       await controller.submitWorkInterestTypesForm(req, res, next)
 
       // Then
-      expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/induction/work-interest-roles')
+      expect(res.redirect).toHaveBeenCalledWith(`/prisoners/A1234BC/induction/${journeyId}/work-interest-roles`)
       expect(req.session.workInterestTypesForm).toEqual(workInterestTypesForm)
       const updatedInduction = req.session.inductionDto
       expect(updatedInduction.futureWorkInterests).toEqual(expectedFutureWorkInterests)
