@@ -30,6 +30,7 @@ describe('previousWorkExperienceDetailUpdateController', () => {
 
   const req = {
     session: {} as SessionData,
+    journeyData: {} as Express.JourneyData,
     body: {},
     user: { username },
     params: { prisonNumber, journeyId } as Record<string, string>,
@@ -47,6 +48,7 @@ describe('previousWorkExperienceDetailUpdateController', () => {
     jest.resetAllMocks()
     req.session.pageFlowHistory = undefined
     req.body = {}
+    req.journeyData = {}
   })
 
   describe('getPreviousWorkExperienceDetailView', () => {
@@ -56,7 +58,7 @@ describe('previousWorkExperienceDetailUpdateController', () => {
       req.path = `/prisoners/${prisonNumber}/induction/${journeyId}/previous-work-experience/construction`
 
       const inductionDto = aValidInductionDto({ hasWorkedBefore: HasWorkedBeforeValue.YES })
-      req.session.inductionDto = inductionDto
+      req.journeyData.inductionDto = inductionDto
       req.session.previousWorkExperienceDetailForm = undefined
 
       const expectedPreviousWorkExperienceDetailForm = {
@@ -79,7 +81,7 @@ describe('previousWorkExperienceDetailUpdateController', () => {
         expectedView,
       )
       expect(req.session.previousWorkExperienceDetailForm).toBeUndefined()
-      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(req.journeyData.inductionDto).toEqual(inductionDto)
     })
 
     it('should get the Previous Work Experience Detail view given there is an PreviousWorkExperienceDetailForm already on the session', async () => {
@@ -88,7 +90,7 @@ describe('previousWorkExperienceDetailUpdateController', () => {
       req.path = `/prisoners/${prisonNumber}/induction/${journeyId}/previous-work-experience/construction`
 
       const inductionDto = aValidInductionDto({ hasWorkedBefore: HasWorkedBeforeValue.YES })
-      req.session.inductionDto = inductionDto
+      req.journeyData.inductionDto = inductionDto
 
       const expectedPreviousWorkExperienceDetailForm = {
         jobRole: 'General labourer',
@@ -111,7 +113,7 @@ describe('previousWorkExperienceDetailUpdateController', () => {
         expectedView,
       )
       expect(req.session.previousWorkExperienceDetailForm).toBeUndefined()
-      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(req.journeyData.inductionDto).toEqual(inductionDto)
     })
 
     it(`should not get the Previous Work Experience Detail view given the request path contains a valid work experience type that is not on the prisoner's induction`, async () => {
@@ -121,7 +123,7 @@ describe('previousWorkExperienceDetailUpdateController', () => {
 
       const inductionDto = aValidInductionDto({ hasWorkedBefore: HasWorkedBeforeValue.YES })
       // The induction has work experience of construction and other, but not retail
-      req.session.inductionDto = inductionDto
+      req.journeyData.inductionDto = inductionDto
       req.session.previousWorkExperienceDetailForm = undefined
 
       const expectedError = createError(404, `Previous Work Experience type retail not found on Induction`)
@@ -161,7 +163,7 @@ describe('previousWorkExperienceDetailUpdateController', () => {
         req.path = `/prisoners/${prisonNumber}/induction/${journeyId}/previous-work-experience/construction`
 
         const inductionDto = aValidInductionDto({ hasWorkedBefore: HasWorkedBeforeValue.YES })
-        req.session.inductionDto = inductionDto
+        req.journeyData.inductionDto = inductionDto
 
         const invalidPreviousWorkExperienceDetailForm = {
           jobRole: 'General labourer',
@@ -183,7 +185,7 @@ describe('previousWorkExperienceDetailUpdateController', () => {
           expectedErrors,
         )
         expect(req.session.previousWorkExperienceDetailForm).toEqual(invalidPreviousWorkExperienceDetailForm)
-        expect(req.session.inductionDto).toEqual(inductionDto)
+        expect(req.journeyData.inductionDto).toEqual(inductionDto)
       })
 
       it('should not update Induction given form is submitted with the request path containing an invalid work experience type', async () => {
@@ -192,7 +194,7 @@ describe('previousWorkExperienceDetailUpdateController', () => {
         req.path = `/prisoners/${prisonNumber}/induction/${journeyId}/previous-work-experience/some-non-valid-work-experience-type`
 
         const inductionDto = aValidInductionDto({ hasWorkedBefore: HasWorkedBeforeValue.YES })
-        req.session.inductionDto = inductionDto
+        req.journeyData.inductionDto = inductionDto
 
         const expectedError = createError(
           404,
@@ -214,7 +216,7 @@ describe('previousWorkExperienceDetailUpdateController', () => {
 
         const inductionDto = aValidInductionDto({ hasWorkedBefore: HasWorkedBeforeValue.YES })
         // The induction has work experience of construction and other, but not retail
-        req.session.inductionDto = inductionDto
+        req.journeyData.inductionDto = inductionDto
         req.session.previousWorkExperienceDetailForm = undefined
 
         const expectedError = createError(404, `Previous Work Experience type retail not found on Induction`)
@@ -248,7 +250,7 @@ describe('previousWorkExperienceDetailUpdateController', () => {
         req.path = `/prisoners/${prisonNumber}/induction/${journeyId}/previous-work-experience/construction`
 
         const inductionDto = aValidInductionDto({ hasWorkedBefore: HasWorkedBeforeValue.YES })
-        req.session.inductionDto = inductionDto
+        req.journeyData.inductionDto = inductionDto
 
         const previousWorkExperienceDetailForm = {
           jobRole: 'General labourer',
@@ -290,7 +292,7 @@ describe('previousWorkExperienceDetailUpdateController', () => {
         expect(inductionService.updateInduction).toHaveBeenCalledWith(prisonNumber, updateInductionDto, username)
         expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/view/work-and-interests`)
         expect(req.session.previousWorkExperienceDetailForm).toBeUndefined()
-        expect(req.session.inductionDto).toBeUndefined()
+        expect(req.journeyData.inductionDto).toBeUndefined()
       })
 
       it('should not update Induction given error calling service', async () => {
@@ -299,7 +301,7 @@ describe('previousWorkExperienceDetailUpdateController', () => {
         req.path = `/prisoners/${prisonNumber}/induction/${journeyId}/previous-work-experience/construction`
 
         const inductionDto = aValidInductionDto({ hasWorkedBefore: HasWorkedBeforeValue.YES })
-        req.session.inductionDto = inductionDto
+        req.journeyData.inductionDto = inductionDto
 
         const previousWorkExperienceDetailForm = {
           jobRole: 'General labourer',
@@ -347,7 +349,7 @@ describe('previousWorkExperienceDetailUpdateController', () => {
         expect(inductionService.updateInduction).toHaveBeenCalledWith(prisonNumber, updateInductionDto, username)
         expect(next).toHaveBeenCalledWith(expectedError)
         expect(req.session.previousWorkExperienceDetailForm).toEqual(previousWorkExperienceDetailForm)
-        expect(req.session.inductionDto).toEqual(inductionDto)
+        expect(req.journeyData.inductionDto).toEqual(inductionDto)
       })
     })
 
@@ -367,7 +369,7 @@ describe('previousWorkExperienceDetailUpdateController', () => {
         req.session.pageFlowQueue = pageFlowQueue
 
         const inductionDto = aValidInductionDto({ hasWorkedBefore: HasWorkedBeforeValue.YES })
-        req.session.inductionDto = inductionDto
+        req.journeyData.inductionDto = inductionDto
 
         const previousWorkExperienceDetailForm = {
           jobRole: 'General labourer',
@@ -409,7 +411,7 @@ describe('previousWorkExperienceDetailUpdateController', () => {
         expect(inductionService.updateInduction).toHaveBeenCalledWith(prisonNumber, updateInductionDto, username)
         expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/view/work-and-interests`)
         expect(req.session.previousWorkExperienceDetailForm).toBeUndefined()
-        expect(req.session.inductionDto).toBeUndefined()
+        expect(req.journeyData.inductionDto).toBeUndefined()
       })
 
       it('should update induction in session but not call API given a PageFlowQueue that is not on the last page', async () => {
@@ -427,7 +429,7 @@ describe('previousWorkExperienceDetailUpdateController', () => {
         req.session.pageFlowQueue = pageFlowQueue
 
         const inductionDto = aValidInductionDto({ hasWorkedBefore: HasWorkedBeforeValue.YES })
-        req.session.inductionDto = inductionDto
+        req.journeyData.inductionDto = inductionDto
 
         const previousWorkExperienceDetailForm = {
           jobRole: 'General labourer',

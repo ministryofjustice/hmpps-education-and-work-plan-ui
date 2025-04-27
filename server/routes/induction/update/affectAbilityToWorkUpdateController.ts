@@ -22,7 +22,7 @@ export default class AffectAbilityToWorkUpdateController extends AffectAbilityTo
     next: NextFunction,
   ): Promise<void> => {
     const { prisonNumber, journeyId } = req.params
-    const { inductionDto } = req.session
+    const { inductionDto } = req.journeyData
     const { prisonerSummary } = res.locals
     const { prisonId } = prisonerSummary
 
@@ -44,7 +44,7 @@ export default class AffectAbilityToWorkUpdateController extends AffectAbilityTo
       await this.inductionService.updateInduction(prisonNumber, updateInductionDto, req.user.username)
 
       req.session.affectAbilityToWorkForm = undefined
-      req.session.inductionDto = undefined
+      req.journeyData.inductionDto = undefined
       return res.redirect(`/plan/${prisonNumber}/view/work-and-interests`)
     } catch (e) {
       logger.error(`Error updating Induction for prisoner ${prisonNumber}`, e)

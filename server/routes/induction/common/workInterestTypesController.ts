@@ -13,7 +13,7 @@ export default abstract class WorkInterestTypesController extends InductionContr
    * Returns the Future Work Interest Types view; suitable for use by the Create and Update journeys.
    */
   getWorkInterestTypesView: RequestHandler = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    const { inductionDto } = req.session
+    const inductionDto = req.session.inductionDto ?? req.journeyData?.inductionDto
     const { prisonerSummary } = res.locals
 
     this.addCurrentPageToFlowHistoryWhenComingFromCheckYourAnswers(req)

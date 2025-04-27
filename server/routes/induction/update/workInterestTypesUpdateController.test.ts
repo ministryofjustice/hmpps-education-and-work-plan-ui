@@ -29,6 +29,7 @@ describe('workInterestTypesUpdateController', () => {
 
   const req = {
     session: {},
+    journeyData: {},
     body: {},
     user: { username },
     params: { prisonNumber, journeyId },
@@ -45,13 +46,14 @@ describe('workInterestTypesUpdateController', () => {
   beforeEach(() => {
     jest.resetAllMocks()
     req.body = {}
+    req.journeyData = {}
   })
 
   describe('getWorkInterestTypesView', () => {
     it('should get the Work Interest Types view given there is no WorkInterestTypesForm on the session', async () => {
       // Given
       const inductionDto = aValidInductionDto()
-      req.session.inductionDto = inductionDto
+      req.journeyData.inductionDto = inductionDto
       req.session.workInterestTypesForm = undefined
 
       const expectedWorkInterestTypesForm = {
@@ -74,13 +76,13 @@ describe('workInterestTypesUpdateController', () => {
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/induction/workInterests/workInterestTypes', expectedView)
       expect(req.session.workInterestTypesForm).toBeUndefined()
-      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(req.journeyData.inductionDto).toEqual(inductionDto)
     })
 
     it('should get the Work Interest Types view given there is an WorkInterestTypesForm already on the session', async () => {
       // Given
       const inductionDto = aValidInductionDto()
-      req.session.inductionDto = inductionDto
+      req.journeyData.inductionDto = inductionDto
 
       const expectedWorkInterestTypesForm = {
         workInterestTypes: [
@@ -103,7 +105,7 @@ describe('workInterestTypesUpdateController', () => {
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/induction/workInterests/workInterestTypes', expectedView)
       expect(req.session.workInterestTypesForm).toBeUndefined()
-      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(req.journeyData.inductionDto).toEqual(inductionDto)
     })
   })
 
@@ -111,7 +113,7 @@ describe('workInterestTypesUpdateController', () => {
     it('should not update Induction given form is submitted with validation errors', async () => {
       // Given
       const inductionDto = aValidInductionDto()
-      req.session.inductionDto = inductionDto
+      req.journeyData.inductionDto = inductionDto
 
       const invalidWorkInterestTypesForm = {
         workInterestTypes: [WorkInterestTypeValue.OTHER],
@@ -136,13 +138,13 @@ describe('workInterestTypesUpdateController', () => {
         expectedErrors,
       )
       expect(req.session.workInterestTypesForm).toEqual(invalidWorkInterestTypesForm)
-      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(req.journeyData.inductionDto).toEqual(inductionDto)
     })
 
     it('should update Induction and call API and redirect to work and interests page', async () => {
       // Given
       const inductionDto = aValidInductionDto()
-      req.session.inductionDto = inductionDto
+      req.journeyData.inductionDto = inductionDto
 
       const workInterestTypesForm = {
         workInterestTypes: [WorkInterestTypeValue.CONSTRUCTION, WorkInterestTypeValue.OTHER],
@@ -180,13 +182,13 @@ describe('workInterestTypesUpdateController', () => {
       expect(inductionService.updateInduction).toHaveBeenCalledWith(prisonNumber, updateInductionDto, username)
       expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/view/work-and-interests`)
       expect(req.session.workInterestTypesForm).toBeUndefined()
-      expect(req.session.inductionDto).toBeUndefined()
+      expect(req.journeyData.inductionDto).toBeUndefined()
     })
 
     it('should not update Induction given error calling service', async () => {
       // Given
       const inductionDto = aValidInductionDto()
-      req.session.inductionDto = inductionDto
+      req.journeyData.inductionDto = inductionDto
 
       const workInterestTypesForm = {
         workInterestTypes: [WorkInterestTypeValue.CONSTRUCTION, WorkInterestTypeValue.OTHER],
@@ -230,14 +232,14 @@ describe('workInterestTypesUpdateController', () => {
       expect(inductionService.updateInduction).toHaveBeenCalledWith(prisonNumber, updateInductionDto, username)
       expect(next).toHaveBeenCalledWith(expectedError)
       expect(req.session.workInterestTypesForm).toEqual(workInterestTypesForm)
-      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(req.journeyData.inductionDto).toEqual(inductionDto)
     })
 
     it('should redirect to Work Interest Roles and not call the API to update Induction given form is submitted and there is a hopingToWork on the session', async () => {
       // Given
       const inductionDto = aValidInductionDto({ hopingToGetWork: HopingToGetWorkValue.YES })
       inductionDto.futureWorkInterests = {} as FutureWorkInterestsDto
-      req.session.inductionDto = inductionDto
+      req.journeyData.inductionDto = inductionDto
       req.session.hopingToWorkOnReleaseForm = { hopingToGetWork: HopingToGetWorkValue.YES }
 
       const workInterestTypesForm = {
@@ -256,7 +258,7 @@ describe('workInterestTypesUpdateController', () => {
       // Then
       expect(res.redirect).toHaveBeenCalledWith(`/prisoners/A1234BC/induction/${journeyId}/work-interest-roles`)
       expect(req.session.workInterestTypesForm).toEqual(workInterestTypesForm)
-      const updatedInduction = req.session.inductionDto
+      const updatedInduction = req.journeyData.inductionDto
       expect(updatedInduction.futureWorkInterests).toEqual(expectedFutureWorkInterests)
     })
   })

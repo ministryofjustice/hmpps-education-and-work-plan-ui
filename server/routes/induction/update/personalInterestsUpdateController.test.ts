@@ -26,6 +26,7 @@ describe('personalInterestsUpdateController', () => {
 
   const req = {
     session: {},
+    journeyData: {},
     body: {},
     user: { username },
     params: { prisonNumber, journeyId },
@@ -42,13 +43,14 @@ describe('personalInterestsUpdateController', () => {
   beforeEach(() => {
     jest.resetAllMocks()
     req.body = {}
+    req.journeyData = {}
   })
 
   describe('getPersonalInterestsView', () => {
     it('should get the Personal interests view given there is no PersonalInterestsForm on the session', async () => {
       // Given
       const inductionDto = aValidInductionDto()
-      req.session.inductionDto = inductionDto
+      req.journeyData.inductionDto = inductionDto
       req.session.personalInterestsForm = undefined
 
       const expectedPersonalInterestsForm = {
@@ -67,13 +69,13 @@ describe('personalInterestsUpdateController', () => {
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/induction/personalInterests/index', expectedView)
       expect(req.session.personalInterestsForm).toBeUndefined()
-      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(req.journeyData.inductionDto).toEqual(inductionDto)
     })
 
     it('should get the Personal interests view given there is an PersonalInterestsForm already on the session', async () => {
       // Given
       const inductionDto = aValidInductionDto()
-      req.session.inductionDto = inductionDto
+      req.journeyData.inductionDto = inductionDto
 
       const expectedPersonalInterestsForm = {
         personalInterests: ['COMMUNITY', 'CREATIVE', 'MUSICAL'],
@@ -92,7 +94,7 @@ describe('personalInterestsUpdateController', () => {
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/induction/personalInterests/index', expectedView)
       expect(req.session.personalInterestsForm).toBeUndefined()
-      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(req.journeyData.inductionDto).toEqual(inductionDto)
     })
   })
 
@@ -100,7 +102,7 @@ describe('personalInterestsUpdateController', () => {
     it('should not update Induction given form is submitted with validation errors', async () => {
       // Given
       const inductionDto = aValidInductionDto()
-      req.session.inductionDto = inductionDto
+      req.journeyData.inductionDto = inductionDto
 
       const invalidPersonalInterestsForm = {
         personalInterests: ['OTHER'],
@@ -120,13 +122,13 @@ describe('personalInterestsUpdateController', () => {
         expectedErrors,
       )
       expect(req.session.personalInterestsForm).toEqual(invalidPersonalInterestsForm)
-      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(req.journeyData.inductionDto).toEqual(inductionDto)
     })
 
     it('should update Induction and call API and redirect to work and interests page', async () => {
       // Given
       const inductionDto = aValidInductionDto()
-      req.session.inductionDto = inductionDto
+      req.journeyData.inductionDto = inductionDto
 
       const personalInterestsForm = {
         personalInterests: ['CREATIVE', 'OTHER'],
@@ -161,13 +163,13 @@ describe('personalInterestsUpdateController', () => {
       expect(inductionService.updateInduction).toHaveBeenCalledWith(prisonNumber, updateInductionDto, username)
       expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/view/work-and-interests`)
       expect(req.session.personalInterestsForm).toBeUndefined()
-      expect(req.session.inductionDto).toBeUndefined()
+      expect(req.journeyData.inductionDto).toBeUndefined()
     })
 
     it('should not update Induction given error calling service', async () => {
       // Given
       const inductionDto = aValidInductionDto()
-      req.session.inductionDto = inductionDto
+      req.journeyData.inductionDto = inductionDto
 
       const personalInterestsForm = {
         personalInterests: ['KNOWLEDGE_BASED', 'OTHER'],
@@ -208,7 +210,7 @@ describe('personalInterestsUpdateController', () => {
       expect(inductionService.updateInduction).toHaveBeenCalledWith(prisonNumber, updateInductionDto, username)
       expect(next).toHaveBeenCalledWith(expectedError)
       expect(req.session.personalInterestsForm).toEqual(personalInterestsForm)
-      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(req.journeyData.inductionDto).toEqual(inductionDto)
     })
   })
 })

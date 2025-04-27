@@ -20,7 +20,7 @@ export default class WorkInterestTypesUpdateController extends WorkInterestTypes
     next: NextFunction,
   ): Promise<void> => {
     const { prisonNumber, journeyId } = req.params
-    const { inductionDto } = req.session
+    const { inductionDto } = req.journeyData
     const { prisonerSummary } = res.locals
     const { prisonId } = prisonerSummary
 
@@ -43,7 +43,7 @@ export default class WorkInterestTypesUpdateController extends WorkInterestTypes
     // If there is a hopingToWorkOnReleaseForm on the session it means the user is updating a prisoners induction by changing whether they want to work on release.
     // In this case we need to go to Work Interest Roles in order to complete the capture the prisoners future work interests.
     if (req.session.hopingToWorkOnReleaseForm) {
-      req.session.inductionDto = updatedInduction
+      req.journeyData.inductionDto = updatedInduction
       return res.redirect(`/prisoners/${prisonNumber}/induction/${journeyId}/work-interest-roles`)
     }
 
@@ -53,7 +53,7 @@ export default class WorkInterestTypesUpdateController extends WorkInterestTypes
       await this.inductionService.updateInduction(prisonNumber, updateInductionDto, req.user.username)
 
       req.session.workInterestTypesForm = undefined
-      req.session.inductionDto = undefined
+      req.journeyData.inductionDto = undefined
       return res.redirect(`/plan/${prisonNumber}/view/work-and-interests`)
     } catch (e) {
       logger.error(`Error updating Induction for prisoner ${prisonNumber}`, e)

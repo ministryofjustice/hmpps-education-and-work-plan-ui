@@ -18,7 +18,7 @@ export default class WorkedBeforeUpdateController extends WorkedBeforeController
 
   submitWorkedBeforeForm: RequestHandler = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { prisonNumber, journeyId } = req.params
-    const { inductionDto } = req.session
+    const { inductionDto } = req.journeyData
     const { prisonerSummary } = res.locals
     const { prisonId } = prisonerSummary
 
@@ -35,7 +35,7 @@ export default class WorkedBeforeUpdateController extends WorkedBeforeController
       updatedInduction.previousWorkExperiences.hasWorkedBefore === HasWorkedBeforeValue.YES
 
     if (prisonerHasWorkedBefore) {
-      req.session.inductionDto = updatedInduction
+      req.journeyData.inductionDto = updatedInduction
       req.session.workedBeforeForm = undefined
       return res.redirect(`/prisoners/${prisonNumber}/induction/${journeyId}/previous-work-experience`)
     }
@@ -43,7 +43,7 @@ export default class WorkedBeforeUpdateController extends WorkedBeforeController
       const updateInductionDto = toCreateOrUpdateInductionDto(prisonId, updatedInduction)
       await this.inductionService.updateInduction(prisonNumber, updateInductionDto, req.user.username)
 
-      req.session.inductionDto = undefined
+      req.journeyData.inductionDto = undefined
       req.session.workedBeforeForm = undefined
       return res.redirect(`/plan/${prisonNumber}/view/work-and-interests`)
     } catch (e) {

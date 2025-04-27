@@ -7,7 +7,7 @@ import InductionController from './inductionController'
 
 export default abstract class InductionNoteController extends InductionController {
   getInductionNoteView: RequestHandler = async (req, res, next): Promise<void> => {
-    const { inductionDto } = req.session
+    const inductionDto = req.session.inductionDto ?? req.journeyData?.inductionDto
     const { prisonNumber } = req.params
     const { prisonerSummary } = res.locals
 

@@ -24,7 +24,7 @@ export default class PreviousWorkExperienceDetailUpdateController extends Previo
     next: NextFunction,
   ): Promise<void> => {
     const { prisonNumber, journeyId } = req.params
-    const { inductionDto } = req.session
+    const { inductionDto } = req.journeyData
     const { prisonerSummary } = res.locals
     const { prisonId } = prisonerSummary
     const { typeOfWorkExperience } = req.params
@@ -63,7 +63,7 @@ export default class PreviousWorkExperienceDetailUpdateController extends Previo
     if (pageFlowQueue && !isLastPage(pageFlowQueue)) {
       // There is a page flow queue, and we are not on the last page of the queue yet
       // Put the updated InductionDto on the session and redirect to the next page in the queue
-      req.session.inductionDto = updatedInduction
+      req.journeyData.inductionDto = updatedInduction
       req.session.previousWorkExperienceDetailForm = undefined
       return res.redirect(getNextPage(pageFlowQueue))
     }
@@ -73,7 +73,7 @@ export default class PreviousWorkExperienceDetailUpdateController extends Previo
       await this.inductionService.updateInduction(prisonNumber, updateInductionDto, req.user.username)
 
       req.session.previousWorkExperienceDetailForm = undefined
-      req.session.inductionDto = undefined
+      req.journeyData.inductionDto = undefined
       return res.redirect(`/plan/${prisonNumber}/view/work-and-interests`)
     } catch (e) {
       logger.error(`Error updating Induction for prisoner ${prisonNumber}`, e)

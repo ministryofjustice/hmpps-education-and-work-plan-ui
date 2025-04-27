@@ -20,7 +20,7 @@ export default class AdditionalTrainingUpdateController extends AdditionalTraini
     next: NextFunction,
   ): Promise<void> => {
     const { prisonNumber, journeyId } = req.params
-    const { inductionDto } = req.session
+    const { inductionDto } = req.journeyData
     const { prisonerSummary } = res.locals
     const { prisonId } = prisonerSummary
 
@@ -39,14 +39,14 @@ export default class AdditionalTrainingUpdateController extends AdditionalTraini
     }
 
     const updatedInduction = this.updatedInductionDtoWithAdditionalTraining(inductionDto, additionalTrainingForm)
-    req.session.inductionDto = updatedInduction
+    req.journeyData.inductionDto = updatedInduction
 
     try {
       const updateInductionDto = toCreateOrUpdateInductionDto(prisonId, updatedInduction)
       await this.inductionService.updateInduction(prisonNumber, updateInductionDto, req.user.username)
 
       req.session.additionalTrainingForm = undefined
-      req.session.inductionDto = undefined
+      req.journeyData.inductionDto = undefined
       return res.redirect(`/plan/${prisonNumber}/view/education-and-training`)
     } catch (e) {
       logger.error(`Error updating Induction for prisoner ${prisonNumber}`, e)

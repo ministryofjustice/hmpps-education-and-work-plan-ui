@@ -13,7 +13,7 @@ export default abstract class WorkInterestRolesController extends InductionContr
    * Returns the Future Work Interest Roles view; suitable for use by the Create and Update journeys.
    */
   getWorkInterestRolesView: RequestHandler = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    const { inductionDto } = req.session
+    const inductionDto = req.session.inductionDto ?? req.journeyData?.inductionDto
     const { prisonerSummary } = res.locals
 
     this.addCurrentPageToFlowHistoryWhenComingFromCheckYourAnswers(req)

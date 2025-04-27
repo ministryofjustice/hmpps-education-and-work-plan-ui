@@ -27,6 +27,7 @@ describe('additionalTrainingUpdateController', () => {
 
   const req = {
     session: {},
+    journeyData: {},
     body: {},
     user: { username },
     params: { prisonNumber, journeyId },
@@ -43,13 +44,14 @@ describe('additionalTrainingUpdateController', () => {
   beforeEach(() => {
     jest.resetAllMocks()
     req.body = {}
+    req.journeyData = {}
   })
 
   describe('getAdditionalTrainingView', () => {
     it('should get Additional Training view given there is no AdditionalTrainingForm on the session', async () => {
       // Given
       const inductionDto = aValidInductionDto()
-      req.session.inductionDto = inductionDto
+      req.journeyData.inductionDto = inductionDto
       req.session.additionalTrainingForm = undefined
       const expectedAdditionalTrainingForm = {
         additionalTraining: [
@@ -71,13 +73,13 @@ describe('additionalTrainingUpdateController', () => {
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/induction/additionalTraining/index', expectedView)
       expect(req.session.additionalTrainingForm).toBeUndefined()
-      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(req.journeyData.inductionDto).toEqual(inductionDto)
     })
 
     it('should get the Additional Training view given there is an AdditionalTrainingForm already on the session', async () => {
       // Given
       const inductionDto = aValidInductionDto()
-      req.session.inductionDto = inductionDto
+      req.journeyData.inductionDto = inductionDto
 
       const expectedAdditionalTrainingForm = {
         additionalTraining: [AdditionalTrainingValue.FULL_UK_DRIVING_LICENCE, AdditionalTrainingValue.OTHER],
@@ -96,7 +98,7 @@ describe('additionalTrainingUpdateController', () => {
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/induction/additionalTraining/index', expectedView)
       expect(req.session.additionalTrainingForm).toBeUndefined()
-      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(req.journeyData.inductionDto).toEqual(inductionDto)
     })
   })
 
@@ -104,7 +106,7 @@ describe('additionalTrainingUpdateController', () => {
     it('should not update Induction given form is submitted with validation errors', async () => {
       // Given
       const inductionDto = aValidInductionDto()
-      req.session.inductionDto = inductionDto
+      req.journeyData.inductionDto = inductionDto
 
       const invalidAdditionalTrainingForm = {
         additionalTraining: [AdditionalTrainingValue.OTHER],
@@ -129,13 +131,13 @@ describe('additionalTrainingUpdateController', () => {
         expectedErrors,
       )
       expect(req.session.additionalTrainingForm).toEqual(invalidAdditionalTrainingForm)
-      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(req.journeyData.inductionDto).toEqual(inductionDto)
     })
 
     it('should update Induction and call API and redirect to education and training page', async () => {
       // Given
       const inductionDto = aValidInductionDto()
-      req.session.inductionDto = inductionDto
+      req.journeyData.inductionDto = inductionDto
 
       const additionalTrainingForm = {
         additionalTraining: [AdditionalTrainingValue.HGV_LICENCE, AdditionalTrainingValue.OTHER],
@@ -163,13 +165,13 @@ describe('additionalTrainingUpdateController', () => {
       expect(inductionService.updateInduction).toHaveBeenCalledWith(prisonNumber, updateInductionDto, username)
       expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/view/education-and-training`)
       expect(req.session.additionalTrainingForm).toBeUndefined()
-      expect(req.session.inductionDto).toBeUndefined()
+      expect(req.journeyData.inductionDto).toBeUndefined()
     })
 
     it('should not update Induction given error calling service', async () => {
       // Given
       const inductionDto = aValidInductionDto()
-      req.session.inductionDto = inductionDto
+      req.journeyData.inductionDto = inductionDto
 
       const additionalTrainingForm = {
         additionalTraining: [AdditionalTrainingValue.HGV_LICENCE, AdditionalTrainingValue.OTHER],
@@ -203,7 +205,7 @@ describe('additionalTrainingUpdateController', () => {
       expect(inductionService.updateInduction).toHaveBeenCalledWith(prisonNumber, updateInductionDto, username)
       expect(next).toHaveBeenCalledWith(expectedError)
       expect(req.session.additionalTrainingForm).toEqual(additionalTrainingForm)
-      const updatedInductionDto = req.session.inductionDto
+      const updatedInductionDto = req.journeyData.inductionDto
       expect(updatedInductionDto.previousTraining.trainingTypes).toEqual([
         AdditionalTrainingValue.HGV_LICENCE,
         AdditionalTrainingValue.OTHER,
