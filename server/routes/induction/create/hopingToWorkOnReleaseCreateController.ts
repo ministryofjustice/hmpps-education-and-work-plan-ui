@@ -10,7 +10,7 @@ export default class HopingToWorkOnReleaseCreateController extends HopingToWorkO
     next: NextFunction,
   ): Promise<void> => {
     const { prisonNumber, journeyId } = req.params
-    const { inductionDto } = req.session
+    const { inductionDto } = req.journeyData
     const { prisonerSummary } = res.locals
 
     req.session.hopingToWorkOnReleaseForm = { ...req.body }
@@ -33,7 +33,7 @@ export default class HopingToWorkOnReleaseCreateController extends HopingToWorkO
     }
 
     const updatedInduction = this.updatedInductionDtoWithHopingToWorkOnRelease(inductionDto, hopingToWorkOnReleaseForm)
-    req.session.inductionDto = updatedInduction
+    req.journeyData.inductionDto = updatedInduction
     req.session.hopingToWorkOnReleaseForm = undefined
 
     let nextPage: string

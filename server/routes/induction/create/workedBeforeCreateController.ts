@@ -8,7 +8,7 @@ import HasWorkedBeforeValue from '../../../enums/hasWorkedBeforeValue'
 export default class WorkedBeforeCreateController extends WorkedBeforeController {
   submitWorkedBeforeForm: RequestHandler = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { prisonNumber, journeyId } = req.params
-    const { inductionDto } = req.session
+    const { inductionDto } = req.journeyData
     const { prisonerSummary } = res.locals
 
     const workedBeforeForm: WorkedBeforeForm = { ...req.body }
@@ -25,7 +25,7 @@ export default class WorkedBeforeCreateController extends WorkedBeforeController
     const updatedInduction = this.updatedInductionDtoWithHasWorkedBefore(inductionDto, workedBeforeForm)
     const prisonerHasWorkedBefore =
       updatedInduction.previousWorkExperiences.hasWorkedBefore === HasWorkedBeforeValue.YES
-    req.session.inductionDto = updatedInduction
+    req.journeyData.inductionDto = updatedInduction
     req.session.workedBeforeForm = undefined
 
     if (!this.previousPageWasCheckYourAnswers(req)) {

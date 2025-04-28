@@ -9,7 +9,8 @@ export default class QualificationDetailsCreateController extends QualificationD
     next: NextFunction,
   ): Promise<void> => {
     const { prisonNumber, journeyId } = req.params
-    const { inductionDto, qualificationLevelForm } = req.session
+    const { inductionDto } = req.journeyData
+    const { qualificationLevelForm } = req.session
     const { prisonerSummary } = res.locals
 
     req.session.qualificationDetailsForm = { ...req.body }
@@ -32,7 +33,7 @@ export default class QualificationDetailsCreateController extends QualificationD
       qualificationDetailsForm,
       qualificationLevelForm.qualificationLevel,
     )
-    req.session.inductionDto = updatedInduction
+    req.journeyData.inductionDto = updatedInduction
 
     req.session.qualificationDetailsForm = undefined
     req.session.qualificationLevelForm = undefined

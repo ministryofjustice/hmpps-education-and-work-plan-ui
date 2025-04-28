@@ -15,6 +15,7 @@ describe('affectAbilityToWorkCreateController', () => {
 
   const req = {
     session: {},
+    journeyData: {},
     body: {},
     params: { prisonNumber, journeyId },
     originalUrl: `/prisoners/${prisonNumber}/create-induction/${journeyId}/affect-ability-to-work`,
@@ -30,6 +31,7 @@ describe('affectAbilityToWorkCreateController', () => {
   beforeEach(() => {
     jest.resetAllMocks()
     req.body = {}
+    req.journeyData = {}
   })
 
   describe('getAbilityToWorkView', () => {
@@ -38,7 +40,7 @@ describe('affectAbilityToWorkCreateController', () => {
       const inductionDto = aValidInductionDto()
       inductionDto.workOnRelease.affectAbilityToWork = undefined
       inductionDto.workOnRelease.affectAbilityToWorkOther = undefined
-      req.session.inductionDto = inductionDto
+      req.journeyData.inductionDto = inductionDto
       req.session.affectAbilityToWorkForm = undefined
 
       const expectedAbilityToWorkForm: AffectAbilityToWorkForm = {
@@ -57,7 +59,7 @@ describe('affectAbilityToWorkCreateController', () => {
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/induction/affectAbilityToWork/index', expectedView)
       expect(req.session.affectAbilityToWorkForm).toBeUndefined()
-      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(req.journeyData.inductionDto).toEqual(inductionDto)
     })
 
     it('should get the Ability To Work view given there is an AbilityToWorkForm already on the session', async () => {
@@ -65,7 +67,7 @@ describe('affectAbilityToWorkCreateController', () => {
       const inductionDto = aValidInductionDto()
       inductionDto.workOnRelease.affectAbilityToWork = undefined
       inductionDto.workOnRelease.affectAbilityToWorkOther = undefined
-      req.session.inductionDto = inductionDto
+      req.journeyData.inductionDto = inductionDto
 
       const expectedAbilityToWorkForm: AffectAbilityToWorkForm = {
         affectAbilityToWork: [
@@ -88,7 +90,7 @@ describe('affectAbilityToWorkCreateController', () => {
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/induction/affectAbilityToWork/index', expectedView)
       expect(req.session.affectAbilityToWorkForm).toBeUndefined()
-      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(req.journeyData.inductionDto).toEqual(inductionDto)
     })
   })
 
@@ -98,7 +100,7 @@ describe('affectAbilityToWorkCreateController', () => {
       const inductionDto = aValidInductionDto()
       inductionDto.workOnRelease.affectAbilityToWork = undefined
       inductionDto.workOnRelease.affectAbilityToWorkOther = undefined
-      req.session.inductionDto = inductionDto
+      req.journeyData.inductionDto = inductionDto
 
       const invalidAbilityToWorkForm: AffectAbilityToWorkForm = {
         affectAbilityToWork: [AbilityToWorkValue.OTHER],
@@ -123,7 +125,7 @@ describe('affectAbilityToWorkCreateController', () => {
         expectedErrors,
       )
       expect(req.session.affectAbilityToWorkForm).toEqual(invalidAbilityToWorkForm)
-      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(req.journeyData.inductionDto).toEqual(inductionDto)
     })
 
     it('should update inductionDto and redirect to Highest Level of Education page', async () => {
@@ -131,7 +133,7 @@ describe('affectAbilityToWorkCreateController', () => {
       const inductionDto = aValidInductionDto()
       inductionDto.workOnRelease.affectAbilityToWork = undefined
       inductionDto.workOnRelease.affectAbilityToWorkOther = undefined
-      req.session.inductionDto = inductionDto
+      req.journeyData.inductionDto = inductionDto
 
       const affectAbilityToWorkForm = {
         affectAbilityToWork: [AbilityToWorkValue.CARING_RESPONSIBILITIES, AbilityToWorkValue.OTHER],
@@ -144,7 +146,7 @@ describe('affectAbilityToWorkCreateController', () => {
       await controller.submitAffectAbilityToWorkForm(req, res, next)
 
       // Then
-      const updatedInduction = req.session.inductionDto
+      const updatedInduction = req.journeyData.inductionDto
       expect(updatedInduction.workOnRelease.affectAbilityToWork).toEqual([
         AbilityToWorkValue.CARING_RESPONSIBILITIES,
         AbilityToWorkValue.OTHER,

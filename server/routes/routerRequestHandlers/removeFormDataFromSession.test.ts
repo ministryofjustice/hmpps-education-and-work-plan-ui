@@ -1,6 +1,5 @@
 import { NextFunction, Request, Response } from 'express'
 import type { PageFlow } from 'viewModels'
-import type { InductionDto } from 'inductionDto'
 import type { HighestLevelOfEducationForm, QualificationDetailsForm, QualificationLevelForm } from 'forms'
 import type {
   AdditionalTrainingForm,
@@ -42,7 +41,6 @@ describe('removeFormDataFromSession', () => {
 
     req.session.pageFlowQueue = {} as PageFlow
     req.session.pageFlowHistory = {} as PageFlow
-    req.session.inductionDto = {} as InductionDto
     req.session.hopingToWorkOnReleaseForm = {} as HopingToWorkOnReleaseForm
     req.session.inPrisonWorkForm = {} as InPrisonWorkForm
     req.session.skillsForm = {} as SkillsForm
@@ -71,7 +69,6 @@ describe('removeFormDataFromSession', () => {
     expect(getPrisonerContext(req.session, prisonNumber)).toEqual({})
     expect(req.session.pageFlowQueue).toBeUndefined()
     expect(req.session.pageFlowHistory).toBeUndefined()
-    expect(req.session.inductionDto).toBeUndefined()
     expect(req.session.hopingToWorkOnReleaseForm).toBeUndefined()
     expect(req.session.inPrisonWorkForm).toBeUndefined()
     expect(req.session.skillsForm).toBeUndefined()

@@ -7,7 +7,7 @@ import { asArray } from '../../../utils/utils'
 export default class SkillsCreateController extends SkillsController {
   submitSkillsForm: RequestHandler = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { prisonNumber, journeyId } = req.params
-    const { inductionDto } = req.session
+    const { inductionDto } = req.journeyData
     const { prisonerSummary } = res.locals
 
     const skillsForm: SkillsForm = {
@@ -22,7 +22,7 @@ export default class SkillsCreateController extends SkillsController {
     }
 
     const updatedInduction = this.updatedInductionDtoWithSkills(inductionDto, skillsForm)
-    req.session.inductionDto = updatedInduction
+    req.journeyData.inductionDto = updatedInduction
     req.session.skillsForm = undefined
 
     return this.previousPageWasCheckYourAnswers(req)

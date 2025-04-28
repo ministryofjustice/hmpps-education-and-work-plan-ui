@@ -25,6 +25,7 @@ describe('checkYourAnswersCreateController', () => {
 
   const req = {
     session: {},
+    journeyData: {},
     params: { prisonNumber },
     user: { username },
   } as unknown as Request
@@ -38,7 +39,7 @@ describe('checkYourAnswersCreateController', () => {
 
   beforeEach(() => {
     jest.resetAllMocks()
-    req.session.inductionDto = inductionDto
+    req.journeyData.inductionDto = inductionDto
   })
 
   describe('getCheckYourAnswersView', () => {
@@ -53,7 +54,7 @@ describe('checkYourAnswersCreateController', () => {
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/induction/checkYourAnswers/index', expectedView)
-      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(req.journeyData.inductionDto).toEqual(inductionDto)
     })
   })
 
@@ -70,7 +71,7 @@ describe('checkYourAnswersCreateController', () => {
       expect(mockedCreateOrUpdateInductionDtoMapper).toHaveBeenCalledWith(prisonerSummary.prisonId, inductionDto)
       expect(inductionService.createInduction).toHaveBeenCalledWith(prisonNumber, createInductionDto, username)
       expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/induction-created`)
-      expect(req.session.inductionDto).toBeUndefined()
+      expect(req.journeyData.inductionDto).toBeUndefined()
       expect(req.session.pageFlowHistory).toBeUndefined()
     })
 
@@ -92,7 +93,7 @@ describe('checkYourAnswersCreateController', () => {
       expect(mockedCreateOrUpdateInductionDtoMapper).toHaveBeenCalledWith(prisonerSummary.prisonId, inductionDto)
       expect(inductionService.createInduction).toHaveBeenCalledWith(prisonNumber, createInductionDto, username)
       expect(next).toHaveBeenCalledWith(expectedError)
-      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(req.journeyData.inductionDto).toEqual(inductionDto)
     })
   })
 })

@@ -17,7 +17,7 @@ export default abstract class PreviousWorkExperienceTypesController extends Indu
     res: Response,
     next: NextFunction,
   ): Promise<void> => {
-    const inductionDto = req.session.inductionDto ?? req.journeyData?.inductionDto
+    const { inductionDto } = req.journeyData
     const { prisonerSummary } = res.locals
 
     this.addCurrentPageToFlowHistoryWhenComingFromCheckYourAnswers(req)

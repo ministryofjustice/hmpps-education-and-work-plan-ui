@@ -11,7 +11,7 @@ export default class WorkInterestRolesCreateController extends WorkInterestRoles
     next: NextFunction,
   ): Promise<void> => {
     const { prisonNumber, journeyId } = req.params
-    const { inductionDto } = req.session
+    const { inductionDto } = req.journeyData
 
     const workInterestRoles = Object.entries<string>({ ...req.body.workInterestRoles }) as [
       WorkInterestTypeValue,
@@ -28,7 +28,7 @@ export default class WorkInterestRolesCreateController extends WorkInterestRoles
       )
     }
 
-    req.session.inductionDto = this.updatedInductionDtoWithWorkInterestRoles(inductionDto, workInterestRolesForm)
+    req.journeyData.inductionDto = this.updatedInductionDtoWithWorkInterestRoles(inductionDto, workInterestRolesForm)
     req.session.workInterestRolesForm = undefined
 
     const nextPage = this.checkYourAnswersIsTheFirstPageInThePageHistory(req)

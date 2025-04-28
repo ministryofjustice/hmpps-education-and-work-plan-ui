@@ -6,21 +6,21 @@ import asyncMiddleware from '../../middleware/asyncMiddleware'
 import logger from '../../../logger'
 
 /**
- * Middleware function that returns a request handler function to check whether an Induction exists in the session for
+ * Middleware function that returns a request handler function to check whether an Induction exists in the journeyData for
  * the prisoner referenced in the request URL.
  * If one does not exist, or it is for a different prisoner, create a new empty Induction for the prisoner.
  * If the prisoner already has qualifications, add them to the Induction.
  */
-const createEmptyInductionIfNotInSession = (
+const createEmptyInductionIfNotInJourneyData = (
   educationAndWorkPlanService: EducationAndWorkPlanService,
 ): RequestHandler => {
   return asyncMiddleware(async (req: Request, res: Response, next: NextFunction) => {
     const { prisonNumber } = req.params
 
-    // Either no Induction on the session, or it's for a different prisoner. Create a new one, including the prisoners education if it has been previously recorded.
-    if (req.session.inductionDto?.prisonNumber !== prisonNumber) {
+    // Either no Induction in the journeyData, or it's for a different prisoner. Create a new one, including the prisoners education if it has been previously recorded.
+    if (req.journeyData?.inductionDto?.prisonNumber !== prisonNumber) {
       logger.debug(
-        `RR-1300 - Setting up new InductionDto on the session for ${prisonNumber} because ${!req.session.inductionDto ? 'InductionDto is not on the session' : 'InductionDto on the session is for a different prisoner'}`,
+        `RR-1300 - Setting up new InductionDto in the journeyData for ${prisonNumber} because ${!req.journeyData?.inductionDto ? 'InductionDto is not in the journeyData' : 'InductionDto in the journeyData is for a different prisoner'}`,
       )
 
       let educationDto: EducationDto
@@ -31,19 +31,21 @@ const createEmptyInductionIfNotInSession = (
         educationDto = undefined
       }
 
-      req.session.inductionDto = {
-        prisonNumber,
-        previousQualifications: educationDto
-          ? {
-              educationLevel: educationDto.educationLevel,
-              qualifications: educationDto.qualifications,
-            }
-          : undefined,
-      } as InductionDto
+      req.journeyData = {
+        inductionDto: {
+          prisonNumber,
+          previousQualifications: educationDto
+            ? {
+                educationLevel: educationDto.educationLevel,
+                qualifications: educationDto.qualifications,
+              }
+            : undefined,
+        } as InductionDto,
+      }
     }
 
     next()
   })
 }
 
-export default createEmptyInductionIfNotInSession
+export default createEmptyInductionIfNotInJourneyData

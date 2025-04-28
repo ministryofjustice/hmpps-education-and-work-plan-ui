@@ -43,8 +43,8 @@ declare module 'express-session' {
 
     pageFlowHistory: PageFlow
     pageFlowQueue: PageFlow
-    // Induction related objects held on the session
-    inductionDto: InductionDto
+
+    // Induction related forms held on the session
     hopingToWorkOnReleaseForm: HopingToWorkOnReleaseForm
     inPrisonWorkForm: InPrisonWorkForm
     inPrisonTrainingForm: InPrisonTrainingForm

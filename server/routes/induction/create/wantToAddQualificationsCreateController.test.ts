@@ -30,6 +30,7 @@ describe('wantToAddQualificationsCreateController', () => {
 
   const req = {
     session: {},
+    journeyData: {},
     body: {},
     params: { prisonNumber, journeyId },
     originalUrl: `/prisoners/${prisonNumber}/create-induction/${journeyId}/want-to-add-qualifications`,
@@ -50,12 +51,13 @@ describe('wantToAddQualificationsCreateController', () => {
     jest.resetAllMocks()
     req.session.pageFlowHistory = undefined
     req.body = {}
+    req.journeyData = {}
   })
 
   describe('getWantToAddQualificationsView', () => {
     it('should get the Want To Add Qualifications view', async () => {
       // Given
-      req.session.inductionDto = partialInductionDto()
+      req.journeyData.inductionDto = partialInductionDto()
       req.session.wantToAddQualificationsForm = undefined
 
       const expectedWantToAddQualificationsForm: WantToAddQualificationsForm = {
@@ -81,7 +83,7 @@ describe('wantToAddQualificationsCreateController', () => {
   describe('submitWantToAddQualificationsForm', () => {
     it('should not proceed to next page given form is submitted with validation errors', async () => {
       // Given
-      req.session.inductionDto = partialInductionDto()
+      req.journeyData.inductionDto = partialInductionDto()
 
       const invalidWantToAddQualificationsForm = {
         wantToAddQualifications: '',
@@ -105,12 +107,12 @@ describe('wantToAddQualificationsCreateController', () => {
         expectedErrors,
       )
       expect(req.session.wantToAddQualificationsForm).toEqual(invalidWantToAddQualificationsForm)
-      expect(req.session.inductionDto.previousQualifications).toBeUndefined()
+      expect(req.journeyData.inductionDto.previousQualifications).toBeUndefined()
     })
 
     it(`should proceed to qualification level page given user wants to add qualifications`, async () => {
       // Given
-      req.session.inductionDto = partialInductionDto()
+      req.journeyData.inductionDto = partialInductionDto()
 
       req.body = { wantToAddQualifications: YesNoValue.YES }
       req.session.wantToAddQualificationsForm = undefined
@@ -123,13 +125,13 @@ describe('wantToAddQualificationsCreateController', () => {
         `/prisoners/${prisonNumber}/create-induction/${journeyId}/qualification-level`,
       )
       expect(req.session.wantToAddQualificationsForm).toBeUndefined()
-      expect(req.session.inductionDto.previousQualifications.qualifications).toEqual([])
-      expect(req.session.inductionDto.previousQualifications.educationLevel).toEqual(EducationLevelValue.NOT_SURE)
+      expect(req.journeyData.inductionDto.previousQualifications.qualifications).toEqual([])
+      expect(req.journeyData.inductionDto.previousQualifications.educationLevel).toEqual(EducationLevelValue.NOT_SURE)
     })
 
     it(`should proceed to additional training page given user does not want to add qualifications`, async () => {
       // Given
-      req.session.inductionDto = partialInductionDto()
+      req.journeyData.inductionDto = partialInductionDto()
 
       req.body = { wantToAddQualifications: YesNoValue.NO }
       req.session.wantToAddQualificationsForm = undefined
@@ -142,8 +144,8 @@ describe('wantToAddQualificationsCreateController', () => {
         `/prisoners/${prisonNumber}/create-induction/${journeyId}/additional-training`,
       )
       expect(req.session.wantToAddQualificationsForm).toBeUndefined()
-      expect(req.session.inductionDto.previousQualifications.qualifications).toEqual([])
-      expect(req.session.inductionDto.previousQualifications.educationLevel).toEqual(EducationLevelValue.NOT_SURE)
+      expect(req.journeyData.inductionDto.previousQualifications.qualifications).toEqual([])
+      expect(req.journeyData.inductionDto.previousQualifications.educationLevel).toEqual(EducationLevelValue.NOT_SURE)
     })
 
     it('should redirect to check your answers given previous page was check your answers and induction form with no qualifications was submitted with no change', async () => {
@@ -151,7 +153,7 @@ describe('wantToAddQualificationsCreateController', () => {
       const inductionDto = partialInductionDto()
       const existingQualifications: Array<AchievedQualificationDto> = [] // Empty array of qualifications meaning the user has previously said No to Do The Want To Record Qualifications
       inductionDto.previousQualifications = { qualifications: existingQualifications } as PreviousQualificationsDto
-      req.session.inductionDto = inductionDto
+      req.journeyData.inductionDto = inductionDto
 
       req.session.pageFlowHistory = {
         pageUrls: [
@@ -172,7 +174,7 @@ describe('wantToAddQualificationsCreateController', () => {
         `/prisoners/${prisonNumber}/create-induction/${journeyId}/check-your-answers`,
       )
       expect(req.session.wantToAddQualificationsForm).toBeUndefined()
-      expect(req.session.inductionDto.previousQualifications.qualifications).toEqual(existingQualifications)
+      expect(req.journeyData.inductionDto.previousQualifications.qualifications).toEqual(existingQualifications)
     })
 
     it('should redirect to check your answers given previous page was check your answers and induction form with some qualifications was submitted with no change', async () => {
@@ -182,7 +184,7 @@ describe('wantToAddQualificationsCreateController', () => {
         { subject: 'Maths', grade: 'C', level: QualificationLevelValue.LEVEL_1 },
       ] // Array of qualifications meaning the user has previously said Yes to Do The Want To Record Qualifications
       inductionDto.previousQualifications = { qualifications: existingQualifications } as PreviousQualificationsDto
-      req.session.inductionDto = inductionDto
+      req.journeyData.inductionDto = inductionDto
 
       req.session.pageFlowHistory = {
         pageUrls: [
@@ -203,7 +205,7 @@ describe('wantToAddQualificationsCreateController', () => {
         `/prisoners/${prisonNumber}/create-induction/${journeyId}/check-your-answers`,
       )
       expect(req.session.wantToAddQualificationsForm).toBeUndefined()
-      expect(req.session.inductionDto.previousQualifications.qualifications).toEqual(existingQualifications)
+      expect(req.journeyData.inductionDto.previousQualifications.qualifications).toEqual(existingQualifications)
     })
 
     it('should redirect to check your answers given previous page was check your answers and induction form with some qualifications was submitted changing the answer to No', async () => {
@@ -213,7 +215,7 @@ describe('wantToAddQualificationsCreateController', () => {
         { subject: 'Maths', grade: 'C', level: QualificationLevelValue.LEVEL_1 },
       ] // Array of qualifications meaning the user has previously said Yes to Do The Want To Record Qualifications
       inductionDto.previousQualifications = { qualifications: existingQualifications } as PreviousQualificationsDto
-      req.session.inductionDto = inductionDto
+      req.journeyData.inductionDto = inductionDto
 
       req.session.pageFlowHistory = {
         pageUrls: [
@@ -234,8 +236,8 @@ describe('wantToAddQualificationsCreateController', () => {
         `/prisoners/${prisonNumber}/create-induction/${journeyId}/check-your-answers`,
       )
       expect(req.session.wantToAddQualificationsForm).toBeUndefined()
-      expect(req.session.inductionDto.previousQualifications.qualifications).toEqual([]) // expect qualifications to have been removed from the Induction
-      expect(req.session.inductionDto.previousQualifications.educationLevel).toEqual(EducationLevelValue.NOT_SURE)
+      expect(req.journeyData.inductionDto.previousQualifications.qualifications).toEqual([]) // expect qualifications to have been removed from the Induction
+      expect(req.journeyData.inductionDto.previousQualifications.educationLevel).toEqual(EducationLevelValue.NOT_SURE)
     })
 
     it('should redirect to qualification level given previous page was check your answers and induction form with no qualifications was submitted changing the answer to Yes', async () => {
@@ -243,7 +245,7 @@ describe('wantToAddQualificationsCreateController', () => {
       const inductionDto = partialInductionDto()
       const existingQualifications: Array<AchievedQualificationDto> = [] // Empty array of qualifications meaning the user has previously said No to Do The Want To Record Qualifications
       inductionDto.previousQualifications = { qualifications: existingQualifications } as PreviousQualificationsDto
-      req.session.inductionDto = inductionDto
+      req.journeyData.inductionDto = inductionDto
 
       req.session.pageFlowHistory = {
         pageUrls: [
@@ -264,8 +266,8 @@ describe('wantToAddQualificationsCreateController', () => {
         `/prisoners/${prisonNumber}/create-induction/${journeyId}/qualification-level`,
       )
       expect(req.session.wantToAddQualificationsForm).toBeUndefined()
-      expect(req.session.inductionDto.previousQualifications.qualifications).toEqual(existingQualifications) // expect qualifications to still be empty
-      expect(req.session.inductionDto.previousQualifications.educationLevel).toEqual(EducationLevelValue.NOT_SURE)
+      expect(req.journeyData.inductionDto.previousQualifications.qualifications).toEqual(existingQualifications) // expect qualifications to still be empty
+      expect(req.journeyData.inductionDto.previousQualifications.educationLevel).toEqual(EducationLevelValue.NOT_SURE)
     })
   })
 })

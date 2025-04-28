@@ -16,6 +16,7 @@ describe('skillsCreateController', () => {
 
   const req = {
     session: {},
+    journeyData: {},
     body: {},
     params: { prisonNumber, journeyId },
     originalUrl: `/prisoners/${prisonNumber}/create-induction/${journeyId}/skills`,
@@ -32,6 +33,7 @@ describe('skillsCreateController', () => {
     jest.resetAllMocks()
     req.session.pageFlowHistory = undefined
     req.body = {}
+    req.journeyData = {}
   })
 
   describe('getSkillsView', () => {
@@ -39,7 +41,7 @@ describe('skillsCreateController', () => {
       // Given
       const inductionDto = aValidInductionDto()
       inductionDto.personalSkillsAndInterests.skills = undefined
-      req.session.inductionDto = inductionDto
+      req.journeyData.inductionDto = inductionDto
       req.session.skillsForm = undefined
 
       const expectedSkillsForm: SkillsForm = {
@@ -58,14 +60,14 @@ describe('skillsCreateController', () => {
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/induction/skills/index', expectedView)
       expect(req.session.skillsForm).toBeUndefined()
-      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(req.journeyData.inductionDto).toEqual(inductionDto)
     })
 
     it('should get the Skills view given there is an SkillsForm already on the session', async () => {
       // Given
       const inductionDto = aValidInductionDto()
       inductionDto.personalSkillsAndInterests.skills = undefined
-      req.session.inductionDto = inductionDto
+      req.journeyData.inductionDto = inductionDto
 
       const expectedSkillsForm = {
         skills: ['SELF_MANAGEMENT', 'TEAMWORK', 'THINKING_AND_PROBLEM_SOLVING'],
@@ -84,14 +86,14 @@ describe('skillsCreateController', () => {
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/induction/skills/index', expectedView)
       expect(req.session.skillsForm).toBeUndefined()
-      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(req.journeyData.inductionDto).toEqual(inductionDto)
     })
 
     it('should get the Skills view given the previous page was Check Your Answers', async () => {
       // Given
       const inductionDto = aValidInductionDto()
       inductionDto.personalSkillsAndInterests.skills = undefined
-      req.session.inductionDto = inductionDto
+      req.journeyData.inductionDto = inductionDto
 
       req.session.pageFlowHistory = {
         pageUrls: [`/prisoners/A1234BC/create-induction/${journeyId}/check-your-answers`],
@@ -122,7 +124,7 @@ describe('skillsCreateController', () => {
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/induction/skills/index', expectedView)
       expect(req.session.personalInterestsForm).toBeUndefined()
-      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(req.journeyData.inductionDto).toEqual(inductionDto)
       expect(req.session.pageFlowHistory).toEqual(expectedPageFlowHistory)
     })
   })
@@ -132,7 +134,7 @@ describe('skillsCreateController', () => {
       // Given
       const inductionDto = aValidInductionDto()
       inductionDto.personalSkillsAndInterests.skills = undefined
-      req.session.inductionDto = inductionDto
+      req.journeyData.inductionDto = inductionDto
 
       const invalidSkillsForm = {
         skills: ['OTHER'],
@@ -152,14 +154,14 @@ describe('skillsCreateController', () => {
         expectedErrors,
       )
       expect(req.session.skillsForm).toEqual(invalidSkillsForm)
-      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(req.journeyData.inductionDto).toEqual(inductionDto)
     })
 
     it('should update inductionDto and redirect to personal interests page', async () => {
       // Given
       const inductionDto = aValidInductionDto()
       inductionDto.personalSkillsAndInterests.skills = undefined
-      req.session.inductionDto = inductionDto
+      req.journeyData.inductionDto = inductionDto
 
       const skillsForm = {
         skills: ['TEAMWORK', 'OTHER'],
@@ -177,7 +179,7 @@ describe('skillsCreateController', () => {
       await controller.submitSkillsForm(req, res, next)
 
       // Then
-      const updatedInduction = req.session.inductionDto
+      const updatedInduction = req.journeyData.inductionDto
       expect(updatedInduction.personalSkillsAndInterests.skills).toEqual(expectedSkills)
       expect(res.redirect).toHaveBeenCalledWith(`/prisoners/A1234BC/create-induction/${journeyId}/personal-interests`)
       expect(req.session.skillsForm).toBeUndefined()
@@ -187,7 +189,7 @@ describe('skillsCreateController', () => {
       // Given
       const inductionDto = aValidInductionDto()
       inductionDto.personalSkillsAndInterests.skills = undefined
-      req.session.inductionDto = inductionDto
+      req.journeyData.inductionDto = inductionDto
 
       const skillsForm = {
         skills: ['TEAMWORK', 'OTHER'],
@@ -213,7 +215,7 @@ describe('skillsCreateController', () => {
       await controller.submitSkillsForm(req, res, next)
 
       // Then
-      const updatedInduction = req.session.inductionDto
+      const updatedInduction = req.journeyData.inductionDto
       expect(updatedInduction.personalSkillsAndInterests.skills).toEqual(expectedSkills)
       expect(res.redirect).toHaveBeenCalledWith(`/prisoners/A1234BC/create-induction/${journeyId}/check-your-answers`)
       expect(req.session.skillsForm).toBeUndefined()

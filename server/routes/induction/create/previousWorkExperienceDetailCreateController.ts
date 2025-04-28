@@ -13,7 +13,7 @@ export default class PreviousWorkExperienceDetailCreateController extends Previo
     next: NextFunction,
   ): Promise<void> => {
     const { prisonNumber, journeyId } = req.params
-    const { inductionDto } = req.session
+    const { inductionDto } = req.journeyData
     const { prisonerSummary } = res.locals
     const { typeOfWorkExperience } = req.params
 
@@ -46,7 +46,7 @@ export default class PreviousWorkExperienceDetailCreateController extends Previo
       previousWorkExperienceDetailForm,
       previousWorkExperienceType,
     )
-    req.session.inductionDto = updatedInduction
+    req.journeyData.inductionDto = updatedInduction
     req.session.previousWorkExperienceDetailForm = undefined
 
     if (this.previousPageWasCheckYourAnswers(req)) {

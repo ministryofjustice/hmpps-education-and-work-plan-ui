@@ -17,6 +17,7 @@ describe('previousWorkExperienceTypesCreateController', () => {
 
   const req = {
     session: {},
+    journeyData: {},
     body: {},
     params: { prisonNumber, journeyId },
     originalUrl: `/prisoners/${prisonNumber}/create-induction/${journeyId}/previous-work-experience`,
@@ -33,6 +34,7 @@ describe('previousWorkExperienceTypesCreateController', () => {
     jest.resetAllMocks()
     req.session.previousWorkExperienceTypesForm = undefined
     req.body = {}
+    req.journeyData = {}
   })
 
   describe('getPreviousWorkExperienceTypesView', () => {
@@ -40,7 +42,7 @@ describe('previousWorkExperienceTypesCreateController', () => {
       // Given
       const inductionDto = aValidInductionDto({ hasWorkedBefore: HasWorkedBeforeValue.YES })
       inductionDto.previousWorkExperiences.experiences = undefined
-      req.session.inductionDto = inductionDto
+      req.journeyData.inductionDto = inductionDto
       req.session.previousWorkExperienceTypesForm = undefined
 
       const expectedPreviousWorkExperienceTypesForm: PreviousWorkExperienceTypesForm = {
@@ -62,14 +64,14 @@ describe('previousWorkExperienceTypesCreateController', () => {
         expectedView,
       )
       expect(req.session.previousWorkExperienceTypesForm).toBeUndefined()
-      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(req.journeyData.inductionDto).toEqual(inductionDto)
     })
 
     it('should get the Previous Work Experience Types view given there is an PreviousWorkExperienceTypesForm already on the session', async () => {
       // Given
       const inductionDto = aValidInductionDto({ hasWorkedBefore: HasWorkedBeforeValue.YES })
       inductionDto.previousWorkExperiences.experiences = undefined
-      req.session.inductionDto = inductionDto
+      req.journeyData.inductionDto = inductionDto
 
       const expectedPreviousWorkExperienceTypesForm = {
         typeOfWorkExperience: ['OUTDOOR', 'DRIVING', 'OTHER'],
@@ -91,7 +93,7 @@ describe('previousWorkExperienceTypesCreateController', () => {
         expectedView,
       )
       expect(req.session.previousWorkExperienceDetailForm).toBeUndefined()
-      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(req.journeyData.inductionDto).toEqual(inductionDto)
     })
   })
 
@@ -100,7 +102,7 @@ describe('previousWorkExperienceTypesCreateController', () => {
       // Given
       const inductionDto = aValidInductionDto({ hasWorkedBefore: HasWorkedBeforeValue.YES })
       inductionDto.previousWorkExperiences.experiences = undefined
-      req.session.inductionDto = inductionDto
+      req.journeyData.inductionDto = inductionDto
 
       const invalidPreviousWorkExperienceTypesForm = {
         typeOfWorkExperience: ['OTHER'],
@@ -122,14 +124,14 @@ describe('previousWorkExperienceTypesCreateController', () => {
         expectedErrors,
       )
       expect(req.session.previousWorkExperienceTypesForm).toEqual(invalidPreviousWorkExperienceTypesForm)
-      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(req.journeyData.inductionDto).toEqual(inductionDto)
     })
 
     it('should build a page flow queue and redirect to the next page given Previous Work Experience Types are submitted', async () => {
       // Given
       const inductionDto = aValidInductionDto({ hasWorkedBefore: HasWorkedBeforeValue.YES })
       inductionDto.previousWorkExperiences.experiences = undefined
-      req.session.inductionDto = inductionDto
+      req.journeyData.inductionDto = inductionDto
 
       const previousWorkExperienceTypesForm = {
         typeOfWorkExperience: ['OUTDOOR', 'OTHER'],
@@ -173,7 +175,7 @@ describe('previousWorkExperienceTypesCreateController', () => {
       )
       expect(req.session.pageFlowQueue).toEqual(expectedPageFlowQueue)
       expect(req.session.previousWorkExperienceTypesForm).toBeUndefined()
-      const updatedInductionDto: InductionDto = req.session.inductionDto
+      const updatedInductionDto: InductionDto = req.journeyData.inductionDto
       expect(updatedInductionDto.previousWorkExperiences.experiences).toEqual(expectedPreviousWorkExperiences)
     })
 
@@ -181,7 +183,7 @@ describe('previousWorkExperienceTypesCreateController', () => {
       // Given
       const inductionDto = aValidInductionDto({ hasWorkedBefore: HasWorkedBeforeValue.YES })
       // Induction already has populated work experiences of CONSTRUCTION and OTHER
-      req.session.inductionDto = inductionDto
+      req.journeyData.inductionDto = inductionDto
 
       const previousWorkExperienceTypesForm: PreviousWorkExperienceTypesForm = {
         typeOfWorkExperience: ['CONSTRUCTION', 'OUTDOOR', 'RETAIL'], // Keep construction, remove other, add outdoor and retail
@@ -232,7 +234,7 @@ describe('previousWorkExperienceTypesCreateController', () => {
       )
       expect(req.session.pageFlowQueue).toEqual(expectedPageFlowQueue)
       expect(req.session.previousWorkExperienceTypesForm).toBeUndefined()
-      const updatedInductionDto: InductionDto = req.session.inductionDto
+      const updatedInductionDto: InductionDto = req.journeyData.inductionDto
       expect(updatedInductionDto.previousWorkExperiences.experiences).toEqual(expectedPreviousWorkExperiences)
     })
   })

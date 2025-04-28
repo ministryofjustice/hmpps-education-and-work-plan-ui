@@ -16,6 +16,7 @@ describe('hopingToWorkOnReleaseCreateController', () => {
 
   const req = {
     session: {},
+    journeyData: {},
     body: {},
     params: { prisonNumber, journeyId },
     originalUrl: `/prisoners/${prisonNumber}/create-induction/${journeyId}/hoping-to-work-on-release`,
@@ -32,13 +33,14 @@ describe('hopingToWorkOnReleaseCreateController', () => {
     jest.resetAllMocks()
     req.session.pageFlowHistory = undefined
     req.body = {}
+    req.journeyData = {}
   })
 
   describe('getHopingToWorkOnReleaseView', () => {
     it('should get the Hoping To Work On Release view given there is not a HopingToWorkOnReleaseForm already on the session', async () => {
       // Given
       const inductionDto: InductionDto = undefined
-      req.session.inductionDto = inductionDto
+      req.journeyData.inductionDto = inductionDto
 
       req.session.hopingToWorkOnReleaseForm = undefined
 
@@ -57,13 +59,13 @@ describe('hopingToWorkOnReleaseCreateController', () => {
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/induction/hopingToWorkOnRelease/index', expectedView)
       expect(req.session.hopingToWorkOnReleaseForm).toBeUndefined()
-      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(req.journeyData.inductionDto).toEqual(inductionDto)
     })
 
     it('should get the Hoping To Work On Release view given there is a HopingToWorkOnReleaseForm already on the session', async () => {
       // Given
       const inductionDto: InductionDto = undefined
-      req.session.inductionDto = inductionDto
+      req.journeyData.inductionDto = inductionDto
 
       const expectedHopingToWorkOnReleaseForm = {
         hopingToGetWork: HopingToGetWorkValue.YES,
@@ -81,7 +83,7 @@ describe('hopingToWorkOnReleaseCreateController', () => {
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/induction/hopingToWorkOnRelease/index', expectedView)
       expect(req.session.hopingToWorkOnReleaseForm).toBeUndefined()
-      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(req.journeyData.inductionDto).toEqual(inductionDto)
     })
   })
 
@@ -89,7 +91,7 @@ describe('hopingToWorkOnReleaseCreateController', () => {
     it('should redisplay page given form is submitted with validation errors', async () => {
       // Given
       const inductionDto = { prisonNumber } as InductionDto
-      req.session.inductionDto = inductionDto
+      req.journeyData.inductionDto = inductionDto
 
       const invalidHopingToWorkOnReleaseForm = {
         hopingToGetWork: '',
@@ -113,13 +115,13 @@ describe('hopingToWorkOnReleaseCreateController', () => {
         expectedErrors,
       )
       expect(req.session.hopingToWorkOnReleaseForm).toEqual(invalidHopingToWorkOnReleaseForm)
-      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(req.journeyData.inductionDto).toEqual(inductionDto)
     })
 
     it('should update Induction in session and redirect to Work Interest Types page given form is submitted with Hoping To Work as Yes', async () => {
       // Given
       const inductionDto = { prisonNumber } as InductionDto
-      req.session.inductionDto = inductionDto
+      req.journeyData.inductionDto = inductionDto
 
       const hopingToWorkOnReleaseForm = {
         hopingToGetWork: HopingToGetWorkValue.YES,
@@ -143,7 +145,7 @@ describe('hopingToWorkOnReleaseCreateController', () => {
       // Then
       expect(res.redirect).toHaveBeenCalledWith(`/prisoners/A1234BC/create-induction/${journeyId}/work-interest-types`)
       expect(req.session.hopingToWorkOnReleaseForm).toBeUndefined()
-      expect(req.session.inductionDto).toEqual(expectedInduction)
+      expect(req.journeyData.inductionDto).toEqual(expectedInduction)
     })
 
     Array.of<HopingToGetWorkValue>(HopingToGetWorkValue.NO, HopingToGetWorkValue.NOT_SURE).forEach(
@@ -151,7 +153,7 @@ describe('hopingToWorkOnReleaseCreateController', () => {
         it(`should update Induction in session and redirect to factors affecting ability to work page given form is submitted with Hoping To Work as ${hopingToGetWorkValue}`, async () => {
           // Given
           const inductionDto = { prisonNumber } as InductionDto
-          req.session.inductionDto = inductionDto
+          req.journeyData.inductionDto = inductionDto
 
           const hopingToWorkOnReleaseForm = {
             hopingToGetWork: hopingToGetWorkValue,
@@ -177,7 +179,7 @@ describe('hopingToWorkOnReleaseCreateController', () => {
             `/prisoners/A1234BC/create-induction/${journeyId}/affect-ability-to-work`,
           )
           expect(req.session.hopingToWorkOnReleaseForm).toBeUndefined()
-          expect(req.session.inductionDto).toEqual(expectedInduction)
+          expect(req.journeyData.inductionDto).toEqual(expectedInduction)
         })
       },
     )
@@ -187,7 +189,7 @@ describe('hopingToWorkOnReleaseCreateController', () => {
       async (hopingToGetWorkValue: HopingToGetWorkValue) => {
         // Given
         const inductionDto = aValidInductionDto({ hopingToGetWork: hopingToGetWorkValue })
-        req.session.inductionDto = inductionDto
+        req.journeyData.inductionDto = inductionDto
 
         const hopingToWorkOnReleaseForm = {
           hopingToGetWork: hopingToGetWorkValue,
@@ -217,7 +219,7 @@ describe('hopingToWorkOnReleaseCreateController', () => {
       async (hopingToGetWorkValue: HopingToGetWorkValue) => {
         // Given
         const inductionDto = aValidInductionDto({ hopingToGetWork: HopingToGetWorkValue.YES })
-        req.session.inductionDto = inductionDto
+        req.journeyData.inductionDto = inductionDto
 
         const hopingToWorkOnReleaseForm = {
           hopingToGetWork: hopingToGetWorkValue,
@@ -237,7 +239,7 @@ describe('hopingToWorkOnReleaseCreateController', () => {
         await controller.submitHopingToWorkOnReleaseForm(req, res, next)
 
         // Then
-        const updatedInduction = req.session.inductionDto
+        const updatedInduction = req.journeyData.inductionDto
         expect(updatedInduction.workOnRelease.hopingToWork).toEqual(hopingToGetWorkValue)
         expect(updatedInduction.futureWorkInterests.interests).toEqual([])
         expect(res.redirect).toHaveBeenCalledWith(`/prisoners/A1234BC/create-induction/${journeyId}/check-your-answers`)
@@ -250,7 +252,7 @@ describe('hopingToWorkOnReleaseCreateController', () => {
       async (previousHopingToGetWorkValue: HopingToGetWorkValue) => {
         // Given
         const inductionDto = aValidInductionDto({ hopingToGetWork: previousHopingToGetWorkValue })
-        req.session.inductionDto = inductionDto
+        req.journeyData.inductionDto = inductionDto
 
         const hopingToWorkOnReleaseForm = {
           hopingToGetWork: HopingToGetWorkValue.YES,
@@ -270,7 +272,7 @@ describe('hopingToWorkOnReleaseCreateController', () => {
         await controller.submitHopingToWorkOnReleaseForm(req, res, next)
 
         // Then
-        const updatedInduction = req.session.inductionDto
+        const updatedInduction = req.journeyData.inductionDto
         expect(updatedInduction.workOnRelease.hopingToWork).toEqual(HopingToGetWorkValue.YES)
         expect(updatedInduction.futureWorkInterests.interests).toEqual([])
         expect(res.redirect).toHaveBeenCalledWith(

@@ -15,6 +15,7 @@ describe('workedBeforeCreateController', () => {
 
   const req = {
     session: {},
+    journeyData: {},
     body: {},
     params: { prisonNumber, journeyId },
     originalUrl: `/prisoners/${prisonNumber}/create-induction/${journeyId}/has-worked-before`,
@@ -31,6 +32,7 @@ describe('workedBeforeCreateController', () => {
     jest.resetAllMocks()
     req.session.pageFlowHistory = undefined
     req.body = {}
+    req.journeyData = {}
   })
 
   describe('getWorkedBeforeView', () => {
@@ -38,7 +40,7 @@ describe('workedBeforeCreateController', () => {
       // Given
       const inductionDto = aValidInductionDto()
       inductionDto.previousWorkExperiences = undefined
-      req.session.inductionDto = inductionDto
+      req.journeyData.inductionDto = inductionDto
       req.session.workedBeforeForm = undefined
 
       const expectedWorkedBeforeForm: WorkedBeforeForm = {
@@ -56,14 +58,14 @@ describe('workedBeforeCreateController', () => {
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/induction/workedBefore/index', expectedView)
       expect(req.session.workedBeforeForm).toBeUndefined()
-      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(req.journeyData.inductionDto).toEqual(inductionDto)
     })
 
     it('should get the WorkedBefore view given there is an WorkedBeforeForm already on the session', async () => {
       // Given
       const inductionDto = aValidInductionDto()
       inductionDto.previousWorkExperiences = undefined
-      req.session.inductionDto = inductionDto
+      req.journeyData.inductionDto = inductionDto
 
       const expectedWorkedBeforeForm = {
         hasWorkedBefore: HasWorkedBeforeValue.NO,
@@ -81,7 +83,7 @@ describe('workedBeforeCreateController', () => {
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/induction/workedBefore/index', expectedView)
       expect(req.session.workedBeforeForm).toBeUndefined()
-      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(req.journeyData.inductionDto).toEqual(inductionDto)
     })
   })
 
@@ -90,7 +92,7 @@ describe('workedBeforeCreateController', () => {
       // Given
       const inductionDto = aValidInductionDto()
       inductionDto.previousWorkExperiences = undefined
-      req.session.inductionDto = inductionDto
+      req.journeyData.inductionDto = inductionDto
 
       const invalidWorkedBeforeForm: WorkedBeforeForm = {
         hasWorkedBefore: undefined,
@@ -111,14 +113,14 @@ describe('workedBeforeCreateController', () => {
         expectedErrors,
       )
       expect(req.session.workedBeforeForm).toEqual(invalidWorkedBeforeForm)
-      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(req.journeyData.inductionDto).toEqual(inductionDto)
     })
 
     it('should update InductionDto and display Previous Work Experience page given form is submitted with worked before YES', async () => {
       // Given
       const inductionDto = aValidInductionDto()
       inductionDto.previousWorkExperiences = undefined
-      req.session.inductionDto = inductionDto
+      req.journeyData.inductionDto = inductionDto
 
       const workedBeforeForm: WorkedBeforeForm = {
         hasWorkedBefore: HasWorkedBeforeValue.YES,
@@ -135,7 +137,7 @@ describe('workedBeforeCreateController', () => {
         `/prisoners/A1234BC/create-induction/${journeyId}/previous-work-experience`,
       )
       expect(req.session.workedBeforeForm).toBeUndefined()
-      const updatedInduction = req.session.inductionDto
+      const updatedInduction = req.journeyData.inductionDto
       expect(updatedInduction.previousWorkExperiences.hasWorkedBefore).toEqual('YES')
       expect(updatedInduction.previousWorkExperiences.hasWorkedBeforeNotRelevantReason).toBeUndefined()
     })
@@ -144,7 +146,7 @@ describe('workedBeforeCreateController', () => {
       // Given
       const inductionDto = aValidInductionDto()
       inductionDto.previousWorkExperiences = undefined
-      req.session.inductionDto = inductionDto
+      req.journeyData.inductionDto = inductionDto
 
       const workedBeforeForm: WorkedBeforeForm = {
         hasWorkedBefore: HasWorkedBeforeValue.NO,
@@ -159,7 +161,7 @@ describe('workedBeforeCreateController', () => {
       // Then
       expect(res.redirect).toHaveBeenCalledWith(`/prisoners/A1234BC/create-induction/${journeyId}/skills`)
       expect(req.session.workedBeforeForm).toBeUndefined()
-      const updatedInduction = req.session.inductionDto
+      const updatedInduction = req.journeyData.inductionDto
       expect(updatedInduction.previousWorkExperiences.hasWorkedBefore).toEqual('NO')
       expect(updatedInduction.previousWorkExperiences.hasWorkedBeforeNotRelevantReason).toBeUndefined()
     })
@@ -168,7 +170,7 @@ describe('workedBeforeCreateController', () => {
       // Given
       const inductionDto = aValidInductionDto()
       inductionDto.previousWorkExperiences = undefined
-      req.session.inductionDto = inductionDto
+      req.journeyData.inductionDto = inductionDto
 
       const workedBeforeForm: WorkedBeforeForm = {
         hasWorkedBefore: HasWorkedBeforeValue.NOT_RELEVANT,
@@ -184,7 +186,7 @@ describe('workedBeforeCreateController', () => {
       // Then
       expect(res.redirect).toHaveBeenCalledWith(`/prisoners/A1234BC/create-induction/${journeyId}/skills`)
       expect(req.session.workedBeforeForm).toBeUndefined()
-      const updatedInduction = req.session.inductionDto
+      const updatedInduction = req.journeyData.inductionDto
       expect(updatedInduction.previousWorkExperiences.hasWorkedBefore).toEqual('NOT_RELEVANT')
       expect(updatedInduction.previousWorkExperiences.hasWorkedBeforeNotRelevantReason).toEqual(
         'Chris feels his previous work experience is not relevant as he is not planning on working upon release.',
@@ -194,7 +196,7 @@ describe('workedBeforeCreateController', () => {
     it('should update inductionDto and redirect to Previous Work Experience given previous page was Check Your Answers and worked before is changed to NO', async () => {
       // Given
       const inductionDto = aValidInductionDto({ hasWorkedBefore: HasWorkedBeforeValue.YES })
-      req.session.inductionDto = inductionDto
+      req.journeyData.inductionDto = inductionDto
 
       const workedBeforeForm: WorkedBeforeForm = {
         hasWorkedBefore: HasWorkedBeforeValue.NO,
@@ -215,7 +217,7 @@ describe('workedBeforeCreateController', () => {
       await controller.submitWorkedBeforeForm(req, res, next)
 
       // Then
-      const updatedInduction = req.session.inductionDto
+      const updatedInduction = req.journeyData.inductionDto
       expect(updatedInduction.previousWorkExperiences.hasWorkedBefore).toEqual('NO')
       expect(updatedInduction.previousWorkExperiences.hasWorkedBeforeNotRelevantReason).toBeUndefined()
       expect(res.redirect).toHaveBeenCalledWith(`/prisoners/A1234BC/create-induction/${journeyId}/check-your-answers`)
@@ -225,7 +227,7 @@ describe('workedBeforeCreateController', () => {
     it('should update inductionDto and redirect to Previous Work Experience given previous page was Check Your Answers and worked before is changed to NOT_RELEVANT', async () => {
       // Given
       const inductionDto = aValidInductionDto({ hasWorkedBefore: HasWorkedBeforeValue.YES })
-      req.session.inductionDto = inductionDto
+      req.journeyData.inductionDto = inductionDto
 
       const workedBeforeForm: WorkedBeforeForm = {
         hasWorkedBefore: HasWorkedBeforeValue.NOT_RELEVANT,
@@ -247,7 +249,7 @@ describe('workedBeforeCreateController', () => {
       await controller.submitWorkedBeforeForm(req, res, next)
 
       // Then
-      const updatedInduction = req.session.inductionDto
+      const updatedInduction = req.journeyData.inductionDto
       expect(updatedInduction.previousWorkExperiences.hasWorkedBefore).toEqual('NOT_RELEVANT')
       expect(updatedInduction.previousWorkExperiences.hasWorkedBeforeNotRelevantReason).toEqual(
         'Chris feels his previous work experience is not relevant as he is not planning on working upon release.',
@@ -263,7 +265,7 @@ describe('workedBeforeCreateController', () => {
       inductionDto.previousWorkExperiences.hasWorkedBeforeNotRelevantReason =
         'Chris feels his previous work experience is not relevant as he is not planning on working upon release.'
       inductionDto.previousWorkExperiences.experiences = []
-      req.session.inductionDto = inductionDto
+      req.journeyData.inductionDto = inductionDto
 
       const workedBeforeForm: WorkedBeforeForm = {
         hasWorkedBefore: HasWorkedBeforeValue.YES,
@@ -284,7 +286,7 @@ describe('workedBeforeCreateController', () => {
       await controller.submitWorkedBeforeForm(req, res, next)
 
       // Then
-      const updatedInduction = req.session.inductionDto
+      const updatedInduction = req.journeyData.inductionDto
       expect(updatedInduction.previousWorkExperiences.hasWorkedBefore).toEqual('YES')
       expect(updatedInduction.previousWorkExperiences.hasWorkedBeforeNotRelevantReason).toBeUndefined()
       expect(updatedInduction.previousWorkExperiences.experiences).toEqual([])

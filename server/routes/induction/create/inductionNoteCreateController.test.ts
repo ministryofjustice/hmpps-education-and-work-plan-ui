@@ -15,6 +15,7 @@ describe('inductionNoteController', () => {
 
   const req = {
     session: {},
+    journeyData: {},
     body: {},
     params: { prisonNumber, journeyId },
     originalUrl: `/prisoners/${prisonNumber}/create-induction/${journeyId}/notes`,
@@ -31,6 +32,7 @@ describe('inductionNoteController', () => {
     jest.resetAllMocks()
     req.session.pageFlowHistory = undefined
     req.body = {}
+    req.journeyData = {}
   })
 
   describe('getInductionNoteView', () => {
@@ -40,7 +42,7 @@ describe('inductionNoteController', () => {
         ...aValidInductionDto(),
         notes: 'Induction session went well and Chris is feeling quite positive about his future',
       }
-      req.session.inductionDto = inductionDto
+      req.journeyData.inductionDto = inductionDto
       getPrisonerContext(req.session, prisonNumber).inductionNoteForm = undefined
 
       const expectedForm: InductionNoteForm = {
@@ -87,7 +89,7 @@ describe('inductionNoteController', () => {
         ...aValidInductionDto(),
         notes: undefined as string,
       }
-      req.session.inductionDto = inductionDto
+      req.journeyData.inductionDto = inductionDto
       getPrisonerContext(req.session, prisonNumber).inductionNoteForm = undefined
 
       const validForm: InductionNoteForm = {
@@ -96,7 +98,7 @@ describe('inductionNoteController', () => {
       req.body = validForm
 
       const expectedInductionDto = {
-        ...req.session.inductionDto,
+        ...req.journeyData.inductionDto,
         notes: 'Induction session went well and Chris is feeling quite positive about his future',
       }
 
@@ -106,7 +108,7 @@ describe('inductionNoteController', () => {
       // Then
       expect(res.redirect).toHaveBeenCalledWith(`/prisoners/A1234BC/create-induction/${journeyId}/check-your-answers`)
       expect(getPrisonerContext(req.session, prisonNumber).inductionNoteForm).toBeUndefined()
-      expect(req.session.inductionDto).toEqual(expectedInductionDto)
+      expect(req.journeyData.inductionDto).toEqual(expectedInductionDto)
     })
   })
 
