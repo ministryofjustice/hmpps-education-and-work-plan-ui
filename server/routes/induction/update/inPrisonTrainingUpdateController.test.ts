@@ -27,6 +27,7 @@ describe('inPrisonTrainingUpdateController', () => {
 
   const req = {
     session: {},
+    journeyData: {},
     body: {},
     user: { username },
     params: { prisonNumber, journeyId },
@@ -43,13 +44,14 @@ describe('inPrisonTrainingUpdateController', () => {
   beforeEach(() => {
     jest.resetAllMocks()
     req.body = {}
+    req.journeyData = {}
   })
 
   describe('getInPrisonTrainingView', () => {
     it('should get the In Prison Training view given there is no InPrisonTrainingForm on the session', async () => {
       // Given
       const inductionDto = aValidInductionDto()
-      req.session.inductionDto = inductionDto
+      req.journeyData.inductionDto = inductionDto
       req.session.inPrisonTrainingForm = undefined
 
       const expectedInPrisonTrainingForm = {
@@ -72,13 +74,13 @@ describe('inPrisonTrainingUpdateController', () => {
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/induction/inPrisonTraining/index', expectedView)
       expect(req.session.inPrisonTrainingForm).toBeUndefined()
-      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(req.journeyData.inductionDto).toEqual(inductionDto)
     })
 
     it('should get the In Prison Training view given there is an InPrisonTrainingForm already on the session', async () => {
       // Given
       const inductionDto = aValidInductionDto()
-      req.session.inductionDto = inductionDto
+      req.journeyData.inductionDto = inductionDto
 
       const expectedInPrisonTrainingForm = {
         inPrisonTraining: [InPrisonTrainingValue.CATERING, InPrisonTrainingValue.OTHER],
@@ -97,7 +99,7 @@ describe('inPrisonTrainingUpdateController', () => {
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/induction/inPrisonTraining/index', expectedView)
       expect(req.session.inPrisonTrainingForm).toBeUndefined()
-      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(req.journeyData.inductionDto).toEqual(inductionDto)
     })
   })
 
@@ -105,7 +107,7 @@ describe('inPrisonTrainingUpdateController', () => {
     it('should not update Induction given form is submitted with validation errors', async () => {
       // Given
       const inductionDto = aValidInductionDto()
-      req.session.inductionDto = inductionDto
+      req.journeyData.inductionDto = inductionDto
 
       const invalidInPrisonTrainingForm = {
         inPrisonTraining: [InPrisonTrainingValue.OTHER],
@@ -130,13 +132,13 @@ describe('inPrisonTrainingUpdateController', () => {
         expectedErrors,
       )
       expect(req.session.inPrisonTrainingForm).toEqual(invalidInPrisonTrainingForm)
-      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(req.journeyData.inductionDto).toEqual(inductionDto)
     })
 
     it('should update Induction and call API and redirect to education and training page', async () => {
       // Given
       const inductionDto = aValidInductionDto()
-      req.session.inductionDto = inductionDto
+      req.journeyData.inductionDto = inductionDto
 
       const inPrisonTrainingForm = {
         inPrisonTraining: [InPrisonTrainingValue.FORKLIFT_DRIVING, InPrisonTrainingValue.OTHER],
@@ -171,13 +173,13 @@ describe('inPrisonTrainingUpdateController', () => {
       expect(inductionService.updateInduction).toHaveBeenCalledWith(prisonNumber, updateInductionDto, username)
       expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/view/education-and-training`)
       expect(req.session.inPrisonTrainingForm).toBeUndefined()
-      expect(req.session.inductionDto).toBeUndefined()
+      expect(req.journeyData.inductionDto).toBeUndefined()
     })
 
     it('should not update Induction given error calling service', async () => {
       // Given
       const inductionDto = aValidInductionDto()
-      req.session.inductionDto = inductionDto
+      req.journeyData.inductionDto = inductionDto
 
       const inPrisonTrainingForm = {
         inPrisonTraining: [InPrisonTrainingValue.FORKLIFT_DRIVING, InPrisonTrainingValue.OTHER],
@@ -218,7 +220,7 @@ describe('inPrisonTrainingUpdateController', () => {
       expect(inductionService.updateInduction).toHaveBeenCalledWith(prisonNumber, updateInductionDto, username)
       expect(next).toHaveBeenCalledWith(expectedError)
       expect(req.session.inPrisonTrainingForm).toEqual(inPrisonTrainingForm)
-      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(req.journeyData.inductionDto).toEqual(inductionDto)
     })
   })
 })

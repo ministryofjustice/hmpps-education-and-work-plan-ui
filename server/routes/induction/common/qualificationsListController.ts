@@ -17,7 +17,7 @@ export default abstract class QualificationsListController extends InductionCont
     res: Response,
     next: NextFunction,
   ): Promise<void> => {
-    const { inductionDto } = req.session
+    const inductionDto = req.session.inductionDto ?? req.journeyData?.inductionDto
     const { prisonerSummary } = res.locals
 
     const qualifications: Array<AchievedQualificationDto> = inductionDto.previousQualifications?.qualifications

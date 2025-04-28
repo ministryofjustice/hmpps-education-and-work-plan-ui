@@ -11,7 +11,7 @@ export default abstract class CheckYourAnswersController extends InductionContro
    * Returns the Check Your Answers view; suitable for use by the Create and Update journeys.
    */
   getCheckYourAnswersView: RequestHandler = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    const { inductionDto } = req.session
+    const inductionDto = req.session.inductionDto ?? req.journeyData?.inductionDto
     const { prisonerSummary } = res.locals
 
     req.session.pageFlowHistory = buildNewPageFlowHistory(req)

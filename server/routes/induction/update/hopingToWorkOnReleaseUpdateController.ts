@@ -19,7 +19,7 @@ export default class HopingToWorkOnReleaseUpdateController extends HopingToWorkO
     next: NextFunction,
   ): Promise<void> => {
     const { prisonNumber, journeyId } = req.params
-    const { inductionDto } = req.session
+    const { inductionDto } = req.journeyData
     const { prisonerSummary } = res.locals
     const { prisonId } = prisonerSummary
 
@@ -37,12 +37,12 @@ export default class HopingToWorkOnReleaseUpdateController extends HopingToWorkO
     // If the user has not changed the answer, go back to Work & Interests
     if (this.answerHasNotBeenChanged(inductionDto, hopingToWorkOnReleaseForm)) {
       req.session.hopingToWorkOnReleaseForm = undefined
-      req.session.inductionDto = undefined
+      req.journeyData.inductionDto = undefined
       return res.redirect(`/plan/${prisonNumber}/view/work-and-interests`)
     }
 
     const updatedInduction = this.updatedInductionDtoWithHopingToWorkOnRelease(inductionDto, hopingToWorkOnReleaseForm)
-    req.session.inductionDto = updatedInduction
+    req.journeyData.inductionDto = updatedInduction
 
     // If the new answer for Hoping To Work On Release is YES then we need to go to Work Interest Types in order to capture the prisoners future work interests.
     if (hopingToWorkOnReleaseForm.hopingToGetWork === HopingToGetWorkValue.YES) {
@@ -60,7 +60,7 @@ export default class HopingToWorkOnReleaseUpdateController extends HopingToWorkO
     }
 
     req.session.hopingToWorkOnReleaseForm = undefined
-    req.session.inductionDto = undefined
+    req.journeyData.inductionDto = undefined
     return res.redirect(`/plan/${prisonNumber}/view/work-and-interests`)
   }
 }

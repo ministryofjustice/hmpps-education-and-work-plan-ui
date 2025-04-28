@@ -14,10 +14,11 @@ import WorkInterestRolesUpdateController from './workInterestRolesUpdateControll
 import AdditionalTrainingUpdateController from './additionalTrainingUpdateController'
 import HopingToWorkOnReleaseUpdateController from './hopingToWorkOnReleaseUpdateController'
 import setCurrentPageInPageFlowQueue from '../../routerRequestHandlers/setCurrentPageInPageFlowQueue'
-import retrieveInductionIfNotInSession from '../../routerRequestHandlers/retrieveInductionIfNotInSession'
+import retrieveInductionIfNotInJourneyData from '../../routerRequestHandlers/retrieveInductionIfNotInJourneyData'
 import asyncMiddleware from '../../../middleware/asyncMiddleware'
 import ApplicationAction from '../../../enums/applicationAction'
 import insertJourneyIdentifier from '../../routerRequestHandlers/insertJourneyIdentifier'
+import setupJourneyData from '../../routerRequestHandlers/setupJourneyData'
 
 /**
  * Route definitions for updating the various sections of an Induction
@@ -26,7 +27,7 @@ import insertJourneyIdentifier from '../../routerRequestHandlers/insertJourneyId
  * /prisoners/<prison-number>/induction/<page-or-section-id>
  */
 export default (router: Router, services: Services) => {
-  const { inductionService } = services
+  const { inductionService, journeyDataService } = services
   const hopingToWorkOnReleaseController = new HopingToWorkOnReleaseUpdateController(inductionService)
   const inPrisonWorkUpdateController = new InPrisonWorkUpdateController(inductionService)
   const inPrisonTrainingUpdateController = new InPrisonTrainingUpdateController(inductionService)
@@ -43,9 +44,12 @@ export default (router: Router, services: Services) => {
   const additionalTrainingUpdateController = new AdditionalTrainingUpdateController(inductionService)
 
   router.use('/prisoners/:prisonNumber/induction', [
-    insertJourneyIdentifier({ insertIdAfterElement: 3 }), // insert journey ID immediately after '/prisoners/:prisonNumber/induction' - eg: '/prisoners/A1234BC/induction/473e9ee4-37d6-4afb-92a2-5729b10cc60f/hoping-to-work-on-release'
     checkUserHasPermissionTo(ApplicationAction.UPDATE_INDUCTION),
-    retrieveInductionIfNotInSession(services.inductionService),
+    insertJourneyIdentifier({ insertIdAfterElement: 3 }), // insert journey ID immediately after '/prisoners/:prisonNumber/induction' - eg: '/prisoners/A1234BC/induction/473e9ee4-37d6-4afb-92a2-5729b10cc60f/hoping-to-work-on-release'
+  ])
+  router.use('/prisoners/:prisonNumber/induction/:journeyId', [
+    setupJourneyData(journeyDataService),
+    retrieveInductionIfNotInJourneyData(services.inductionService),
     setCurrentPageInPageFlowQueue,
   ])
 

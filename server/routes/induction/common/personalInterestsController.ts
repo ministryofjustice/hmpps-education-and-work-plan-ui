@@ -13,7 +13,7 @@ export default abstract class PersonalInterestsController extends InductionContr
    * Returns the Personal Interests view; suitable for use by the Create and Update journeys.
    */
   getPersonalInterestsView: RequestHandler = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    const { inductionDto } = req.session
+    const inductionDto = req.session.inductionDto ?? req.journeyData?.inductionDto
     const { prisonerSummary } = res.locals
 
     const personalInterestsForm = req.session.personalInterestsForm || toPersonalInterestsForm(inductionDto)

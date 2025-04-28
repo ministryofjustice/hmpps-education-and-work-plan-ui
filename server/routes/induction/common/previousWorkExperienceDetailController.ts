@@ -19,7 +19,7 @@ export default abstract class PreviousWorkExperienceDetailController extends Ind
     res: Response,
     next: NextFunction,
   ): Promise<void> => {
-    const { inductionDto } = req.session
+    const inductionDto = req.session.inductionDto ?? req.journeyData?.inductionDto
     const { prisonerSummary } = res.locals
     const { typeOfWorkExperience } = req.params
 

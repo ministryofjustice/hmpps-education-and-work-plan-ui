@@ -23,7 +23,7 @@ export default class PreviousWorkExperienceTypesUpdateController extends Previou
     next: NextFunction,
   ): Promise<void> => {
     const { prisonNumber, journeyId } = req.params
-    const { inductionDto } = req.session
+    const { inductionDto } = req.journeyData
     const { prisonerSummary } = res.locals
 
     req.session.previousWorkExperienceTypesForm = { ...req.body }
@@ -68,7 +68,7 @@ export default class PreviousWorkExperienceTypesUpdateController extends Previou
             req.user.username,
           )
           req.session.previousWorkExperienceTypesForm = undefined
-          req.session.inductionDto = undefined
+          req.journeyData.inductionDto = undefined
         } catch (e) {
           logger.error(`Error updating Induction for prisoner ${prisonNumber}`, e)
           return next(createError(500, `Error updating Induction for prisoner ${prisonNumber}. Error: ${e}`))
@@ -78,13 +78,13 @@ export default class PreviousWorkExperienceTypesUpdateController extends Previou
       }
 
       req.session.previousWorkExperienceTypesForm = undefined
-      req.session.inductionDto = undefined
+      req.journeyData.inductionDto = undefined
       return res.redirect(`/plan/${prisonNumber}/view/work-and-interests`)
     }
 
     // Update the InductionDTO in the session with changes to Previous Work Experiences, but do not persist to the API
     // The user will be redirected to each Previous Work Experience Detail page in turn
-    req.session.inductionDto = updatedInduction
+    req.journeyData.inductionDto = updatedInduction
 
     /* We need to show the Details page for each of:
          - any additional job types that have been added by the form submission
