@@ -11,7 +11,7 @@ export default class AdditionalTrainingCreateController extends AdditionalTraini
     next: NextFunction,
   ): Promise<void> => {
     const { prisonNumber, journeyId } = req.params
-    const { inductionDto } = req.session
+    const { inductionDto } = req.journeyData
     const { prisonerSummary } = res.locals
 
     const additionalTrainingForm: AdditionalTrainingForm = {
@@ -29,7 +29,7 @@ export default class AdditionalTrainingCreateController extends AdditionalTraini
     }
 
     const updatedInduction = this.updatedInductionDtoWithAdditionalTraining(inductionDto, additionalTrainingForm)
-    req.session.inductionDto = updatedInduction
+    req.journeyData.inductionDto = updatedInduction
     req.session.additionalTrainingForm = undefined
 
     // If the previous page was Check Your Answers, forward to Check Your Answers again

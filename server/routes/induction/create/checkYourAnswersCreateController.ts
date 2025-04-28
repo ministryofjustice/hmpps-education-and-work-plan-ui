@@ -12,7 +12,7 @@ export default class CheckYourAnswersCreateController extends CheckYourAnswersCo
 
   submitCheckYourAnswers: RequestHandler = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { prisonNumber } = req.params
-    const { inductionDto } = req.session
+    const { inductionDto } = req.journeyData
     const { prisonerSummary } = res.locals
     const { prisonId } = prisonerSummary
 
@@ -35,7 +35,7 @@ export default class CheckYourAnswersCreateController extends CheckYourAnswersCo
       logger.debug(`RR-1300 - ${prisonNumber}'s induction created`)
 
       req.session.pageFlowHistory = undefined
-      req.session.inductionDto = undefined
+      req.journeyData.inductionDto = undefined
       return res.redirect(`/plan/${prisonNumber}/induction-created`)
     } catch (e) {
       logger.error(`Error creating Induction for prisoner ${prisonNumber}`, e)

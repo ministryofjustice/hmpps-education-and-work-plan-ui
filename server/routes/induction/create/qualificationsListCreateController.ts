@@ -10,7 +10,7 @@ export default class QualificationsListCreateController extends QualificationsLi
     next: NextFunction,
   ): Promise<void> => {
     const { prisonNumber, journeyId } = req.params
-    const { inductionDto } = req.session
+    const { inductionDto } = req.journeyData
 
     if (!req.session.pageFlowHistory) {
       req.session.pageFlowHistory = buildNewPageFlowHistory(req)
@@ -22,7 +22,7 @@ export default class QualificationsListCreateController extends QualificationsLi
 
     if (userClickedOnButton(req, 'removeQualification')) {
       const qualificationIndexToRemove = req.body.removeQualification as number
-      req.session.inductionDto = inductionWithRemovedQualification(inductionDto, qualificationIndexToRemove)
+      req.journeyData.inductionDto = inductionWithRemovedQualification(inductionDto, qualificationIndexToRemove)
       return res.redirect(`/prisoners/${prisonNumber}/create-induction/${journeyId}/qualifications`)
     }
 

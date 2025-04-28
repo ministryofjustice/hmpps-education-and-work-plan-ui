@@ -17,7 +17,6 @@ const removeFormDataFromSession = async (req: Request, res: Response, next: Next
 
   session.pageFlowQueue = undefined
   session.pageFlowHistory = undefined
-  session.inductionDto = undefined
   session.hopingToWorkOnReleaseForm = undefined
   session.inPrisonWorkForm = undefined
   session.skillsForm = undefined

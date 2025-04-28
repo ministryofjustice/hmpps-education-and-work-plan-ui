@@ -7,7 +7,7 @@ import { asArray } from '../../../utils/utils'
 export default class InPrisonWorkCreateController extends InPrisonWorkController {
   submitInPrisonWorkForm: RequestHandler = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { prisonNumber, journeyId } = req.params
-    const { inductionDto } = req.session
+    const { inductionDto } = req.journeyData
     const { prisonerSummary } = res.locals
 
     const inPrisonWorkForm: InPrisonWorkForm = {
@@ -22,7 +22,7 @@ export default class InPrisonWorkCreateController extends InPrisonWorkController
     }
 
     const updatedInduction = this.updatedInductionDtoWithInPrisonWork(inductionDto, inPrisonWorkForm)
-    req.session.inductionDto = updatedInduction
+    req.journeyData.inductionDto = updatedInduction
 
     return this.previousPageWasCheckYourAnswers(req)
       ? res.redirect(`/prisoners/${prisonNumber}/create-induction/${journeyId}/check-your-answers`)

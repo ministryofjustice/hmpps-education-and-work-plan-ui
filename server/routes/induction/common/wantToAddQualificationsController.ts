@@ -20,7 +20,7 @@ export default abstract class WantToAddQualificationsController extends Inductio
     res: Response,
     next: NextFunction,
   ): Promise<void> => {
-    const inductionDto = req.session.inductionDto ?? req.journeyData?.inductionDto
+    const { inductionDto } = req.journeyData
     const { prisonerSummary } = res.locals
 
     this.addCurrentPageToFlowHistoryWhenComingFromCheckYourAnswers(req)

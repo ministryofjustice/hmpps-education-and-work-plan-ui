@@ -11,7 +11,7 @@ export default class PersonalInterestsCreateController extends PersonalInterests
     next: NextFunction,
   ): Promise<void> => {
     const { prisonNumber, journeyId } = req.params
-    const { inductionDto } = req.session
+    const { inductionDto } = req.journeyData
     const { prisonerSummary } = res.locals
 
     const personalInterestsForm: PersonalInterestsForm = {
@@ -29,7 +29,7 @@ export default class PersonalInterestsCreateController extends PersonalInterests
     }
 
     const updatedInduction = this.updatedInductionDtoWithPersonalInterests(inductionDto, personalInterestsForm)
-    req.session.inductionDto = updatedInduction
+    req.journeyData.inductionDto = updatedInduction
     req.session.personalInterestsForm = undefined
 
     const nextPage = this.previousPageWasCheckYourAnswers(req)

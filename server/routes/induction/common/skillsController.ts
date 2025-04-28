@@ -13,7 +13,7 @@ export default abstract class SkillsController extends InductionController {
    * Returns the Skills view; suitable for use by the Create and Update journeys.
    */
   getSkillsView: RequestHandler = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    const inductionDto = req.session.inductionDto ?? req.journeyData?.inductionDto
+    const { inductionDto } = req.journeyData
     const { prisonerSummary } = res.locals
 
     const skillsForm = req.session.skillsForm || toSkillsForm(inductionDto)

@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
 import type { InductionDto } from 'inductionDto'
-import createEmptyInductionIfNotInSession from './createEmptyInductionIfNotInSession'
+import createEmptyInductionIfNotInJourneyData from './createEmptyInductionIfNotInJourneyData'
 import EducationAndWorkPlanService from '../../services/educationAndWorkPlanService'
 import aValidEducationDto from '../../testsupport/educationDtoTestDataBuilder'
 import { anAchievedQualificationDto } from '../../testsupport/achievedQualificationDtoTestDataBuilder'
@@ -8,13 +8,13 @@ import EducationLevelValue from '../../enums/educationLevelValue'
 
 jest.mock('../../services/educationAndWorkPlanService')
 
-describe('createEmptyInductionIfNotInSession', () => {
+describe('createEmptyInductionIfNotInJourneyData', () => {
   const educationAndWorkPlanService = new EducationAndWorkPlanService(
     null,
     null,
     null,
   ) as jest.Mocked<EducationAndWorkPlanService>
-  const requestHandler = createEmptyInductionIfNotInSession(educationAndWorkPlanService)
+  const requestHandler = createEmptyInductionIfNotInJourneyData(educationAndWorkPlanService)
 
   const prisonNumber = 'A1234BC'
   const username = 'auser_gen'
@@ -26,15 +26,15 @@ describe('createEmptyInductionIfNotInSession', () => {
   beforeEach(() => {
     jest.resetAllMocks()
     req = {
-      session: {},
+      journeyData: {},
       params: { prisonNumber },
       user: { username },
     } as unknown as Request
   })
 
-  it('should create an empty induction for the prisoner given there is no induction on the session and the prisoner has no education already', async () => {
+  it('should create an empty induction for the prisoner given there is no induction in the journeyData and the prisoner has no education already', async () => {
     // Given
-    req.session.inductionDto = undefined
+    req.journeyData.inductionDto = undefined
 
     educationAndWorkPlanService.getEducation.mockResolvedValue(null)
 
@@ -45,13 +45,13 @@ describe('createEmptyInductionIfNotInSession', () => {
 
     // Then
     expect(next).toHaveBeenCalled()
-    expect(req.session.inductionDto).toEqual(expectedInduction)
+    expect(req.journeyData.inductionDto).toEqual(expectedInduction)
     expect(educationAndWorkPlanService.getEducation).toHaveBeenCalledWith(prisonNumber, username)
   })
 
-  it('should create an empty induction for the prisoner given there is no induction on the session and the prisoner has an education already', async () => {
+  it('should create an empty induction for the prisoner given there is no induction in the journeyData and the prisoner has an education already', async () => {
     // Given
-    req.session.inductionDto = undefined
+    req.journeyData.inductionDto = undefined
 
     const qualifications = [anAchievedQualificationDto()]
     const highestLevelOfEducation = EducationLevelValue.SECONDARY_SCHOOL_TOOK_EXAMS
@@ -75,13 +75,13 @@ describe('createEmptyInductionIfNotInSession', () => {
 
     // Then
     expect(next).toHaveBeenCalled()
-    expect(req.session.inductionDto).toEqual(expectedInduction)
+    expect(req.journeyData.inductionDto).toEqual(expectedInduction)
     expect(educationAndWorkPlanService.getEducation).toHaveBeenCalledWith(prisonNumber, username)
   })
 
-  it('should create an empty induction for a prisoner with no previously recorded education given there is an induction on the session for a different prisoner', async () => {
+  it('should create an empty induction for a prisoner with no previously recorded education given there is an induction in the journeyData for a different prisoner', async () => {
     // Given
-    req.session.inductionDto = { prisonNumber: 'Z1234ZZ' } as InductionDto
+    req.journeyData.inductionDto = { prisonNumber: 'Z1234ZZ' } as InductionDto
 
     educationAndWorkPlanService.getEducation.mockResolvedValue(null)
 
@@ -92,13 +92,13 @@ describe('createEmptyInductionIfNotInSession', () => {
 
     // Then
     expect(next).toHaveBeenCalled()
-    expect(req.session.inductionDto).toEqual(expectedInduction)
+    expect(req.journeyData.inductionDto).toEqual(expectedInduction)
     expect(educationAndWorkPlanService.getEducation).toHaveBeenCalledWith(prisonNumber, username)
   })
 
-  it('should create an empty induction for a prisoner who has previously recorded education given there is an induction on the session for a different prisoner', async () => {
+  it('should create an empty induction for a prisoner who has previously recorded education given there is an induction in the journeyData for a different prisoner', async () => {
     // Given
-    req.session.inductionDto = { prisonNumber: 'Z1234ZZ' } as InductionDto
+    req.journeyData.inductionDto = { prisonNumber: 'Z1234ZZ' } as InductionDto
 
     const qualifications = [anAchievedQualificationDto()]
     const highestLevelOfEducation = EducationLevelValue.SECONDARY_SCHOOL_TOOK_EXAMS
@@ -122,11 +122,11 @@ describe('createEmptyInductionIfNotInSession', () => {
 
     // Then
     expect(next).toHaveBeenCalled()
-    expect(req.session.inductionDto).toEqual(expectedInduction)
+    expect(req.journeyData.inductionDto).toEqual(expectedInduction)
     expect(educationAndWorkPlanService.getEducation).toHaveBeenCalledWith(prisonNumber, username)
   })
 
-  it('should not create an empty induction for the prisoner given there is already an induction on the session for the prisoner', async () => {
+  it('should not create an empty induction for the prisoner given there is already an induction in the journeyData for the prisoner', async () => {
     // Given
     const expectedInduction = {
       prisonNumber,
@@ -135,14 +135,14 @@ describe('createEmptyInductionIfNotInSession', () => {
       },
     } as InductionDto
 
-    req.session.inductionDto = expectedInduction
+    req.journeyData.inductionDto = expectedInduction
 
     // When
     await requestHandler(req, res, next)
 
     // Then
     expect(next).toHaveBeenCalled()
-    expect(req.session.inductionDto).toEqual(expectedInduction)
+    expect(req.journeyData.inductionDto).toEqual(expectedInduction)
     expect(educationAndWorkPlanService.getEducation).not.toHaveBeenCalled()
   })
 })

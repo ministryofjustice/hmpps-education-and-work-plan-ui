@@ -11,7 +11,7 @@ export default class InPrisonTrainingCreateController extends InPrisonTrainingCo
     next: NextFunction,
   ): Promise<void> => {
     const { prisonNumber, journeyId } = req.params
-    const { inductionDto } = req.session
+    const { inductionDto } = req.journeyData
     const { prisonerSummary } = res.locals
 
     const inPrisonTrainingForm: InPrisonTrainingForm = {
@@ -29,7 +29,7 @@ export default class InPrisonTrainingCreateController extends InPrisonTrainingCo
     }
 
     const updatedInduction = this.updatedInductionDtoWithInPrisonTraining(inductionDto, inPrisonTrainingForm)
-    req.session.inductionDto = updatedInduction
+    req.journeyData.inductionDto = updatedInduction
     req.session.inPrisonTrainingForm = undefined
 
     return this.previousPageWasCheckYourAnswers(req)

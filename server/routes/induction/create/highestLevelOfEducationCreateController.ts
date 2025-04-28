@@ -9,7 +9,7 @@ export default class HighestLevelOfEducationCreateController extends HighestLeve
     next: NextFunction,
   ): Promise<void> => {
     const { prisonNumber, journeyId } = req.params
-    const { inductionDto } = req.session
+    const { inductionDto } = req.journeyData
     const { prisonerSummary } = res.locals
 
     req.session.highestLevelOfEducationForm = { ...req.body }
@@ -27,7 +27,7 @@ export default class HighestLevelOfEducationCreateController extends HighestLeve
       inductionDto,
       highestLevelOfEducationForm,
     )
-    req.session.inductionDto = updatedInduction
+    req.journeyData.inductionDto = updatedInduction
     req.session.highestLevelOfEducationForm = undefined
 
     if (this.previousPageWasCheckYourAnswers(req)) {

@@ -15,6 +15,7 @@ describe('workInterestRolesCreateController', () => {
 
   const req = {
     session: {},
+    journeyData: {},
     body: {},
     params: { prisonNumber, journeyId },
     originalUrl: `/prisoners/${prisonNumber}/create-induction/${journeyId}/work-interest-roles`,
@@ -31,6 +32,7 @@ describe('workInterestRolesCreateController', () => {
     jest.resetAllMocks()
     req.session.pageFlowHistory = undefined
     req.body = {}
+    req.journeyData = {}
   })
 
   describe('getWorkInterestRolesView', () => {
@@ -42,7 +44,7 @@ describe('workInterestRolesCreateController', () => {
         { workType: WorkInterestTypeValue.CONSTRUCTION, workTypeOther: undefined, role: undefined },
         { workType: WorkInterestTypeValue.OTHER, workTypeOther: 'Film, TV and media', role: undefined },
       ]
-      req.session.inductionDto = inductionDto
+      req.journeyData.inductionDto = inductionDto
 
       const expectedWorkInterestRolesForm = {
         workInterestRoles: [
@@ -63,7 +65,7 @@ describe('workInterestRolesCreateController', () => {
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/induction/workInterests/workInterestRoles', expectedView)
-      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(req.journeyData.inductionDto).toEqual(inductionDto)
     })
   })
 
@@ -74,7 +76,7 @@ describe('workInterestRolesCreateController', () => {
       inductionDto.futureWorkInterests.interests = [
         { workType: WorkInterestTypeValue.RETAIL, workTypeOther: undefined, role: undefined },
       ]
-      req.session.inductionDto = inductionDto
+      req.journeyData.inductionDto = inductionDto
 
       const invalidWorkInterestRolesForm = {
         workInterestRoles: {
@@ -103,7 +105,7 @@ describe('workInterestRolesCreateController', () => {
         expectedErrors,
       )
       expect(req.session.workInterestRolesForm).toEqual(expectedWorkInterestRolesForm)
-      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(req.journeyData.inductionDto).toEqual(inductionDto)
     })
 
     it('should update InductionDto and redirect to Affect Ability To Work', async () => {
@@ -114,7 +116,7 @@ describe('workInterestRolesCreateController', () => {
         { workType: WorkInterestTypeValue.CONSTRUCTION, workTypeOther: undefined, role: undefined },
         { workType: WorkInterestTypeValue.OTHER, workTypeOther: 'Film, TV and media', role: undefined },
       ]
-      req.session.inductionDto = inductionDto
+      req.journeyData.inductionDto = inductionDto
 
       req.body = {
         workInterestRoles: {
@@ -149,7 +151,7 @@ describe('workInterestRolesCreateController', () => {
 
       // Then
       const futureWorkInterestsOnInduction: Array<FutureWorkInterestDto> =
-        req.session.inductionDto.futureWorkInterests.interests
+        req.journeyData.inductionDto.futureWorkInterests.interests
       expect(futureWorkInterestsOnInduction).toEqual(expectedUpdatedWorkInterests)
       expect(res.redirect).toHaveBeenCalledWith(expectedNextPage)
     })
@@ -162,7 +164,7 @@ describe('workInterestRolesCreateController', () => {
         { workType: WorkInterestTypeValue.CONSTRUCTION, workTypeOther: undefined, role: undefined },
         { workType: WorkInterestTypeValue.OTHER, workTypeOther: 'Film, TV and media', role: undefined },
       ]
-      req.session.inductionDto = inductionDto
+      req.journeyData.inductionDto = inductionDto
 
       req.body = {
         workInterestRoles: {
@@ -203,7 +205,7 @@ describe('workInterestRolesCreateController', () => {
 
       // Then
       const futureWorkInterestsOnInduction: Array<FutureWorkInterestDto> =
-        req.session.inductionDto.futureWorkInterests.interests
+        req.journeyData.inductionDto.futureWorkInterests.interests
       expect(futureWorkInterestsOnInduction).toEqual(expectedUpdatedWorkInterests)
       expect(res.redirect).toHaveBeenCalledWith(`/prisoners/A1234BC/create-induction/${journeyId}/check-your-answers`)
     })

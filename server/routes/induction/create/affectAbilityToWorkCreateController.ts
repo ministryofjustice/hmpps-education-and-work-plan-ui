@@ -11,7 +11,7 @@ export default class AffectAbilityToWorkCreateController extends AffectAbilityTo
     next: NextFunction,
   ): Promise<void> => {
     const { prisonNumber, journeyId } = req.params
-    const { inductionDto } = req.session
+    const { inductionDto } = req.journeyData
     const { prisonerSummary } = res.locals
 
     const affectAbilityToWorkForm: AffectAbilityToWorkForm = {
@@ -29,7 +29,7 @@ export default class AffectAbilityToWorkCreateController extends AffectAbilityTo
     }
 
     const updatedInduction = this.updatedInductionDtoWithAffectAbilityToWork(inductionDto, affectAbilityToWorkForm)
-    req.session.inductionDto = updatedInduction
+    req.journeyData.inductionDto = updatedInduction
     req.session.affectAbilityToWorkForm = undefined
 
     const nextPage = this.previousPageWasCheckYourAnswers(req)

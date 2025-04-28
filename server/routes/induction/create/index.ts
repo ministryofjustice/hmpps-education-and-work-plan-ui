@@ -4,7 +4,7 @@ import asyncMiddleware from '../../../middleware/asyncMiddleware'
 import { checkUserHasPermissionTo } from '../../../middleware/roleBasedAccessControl'
 import HopingToWorkOnReleaseCreateController from './hopingToWorkOnReleaseCreateController'
 import WantToAddQualificationsCreateController from './wantToAddQualificationsCreateController'
-import createEmptyInductionIfNotInSession from '../../routerRequestHandlers/createEmptyInductionIfNotInSession'
+import createEmptyInductionIfNotInJourneyData from '../../routerRequestHandlers/createEmptyInductionIfNotInJourneyData'
 import QualificationsListCreateController from './qualificationsListCreateController'
 import retrieveCuriousFunctionalSkills from '../../routerRequestHandlers/retrieveCuriousFunctionalSkills'
 import HighestLevelOfEducationCreateController from './highestLevelOfEducationCreateController'
@@ -29,6 +29,7 @@ import InductionNoteCreateController from './inductionNoteCreateController'
 import checkInductionDoesNotExist from '../../routerRequestHandlers/checkInductionDoesNotExist'
 import ApplicationAction from '../../../enums/applicationAction'
 import insertJourneyIdentifier from '../../routerRequestHandlers/insertJourneyIdentifier'
+import setupJourneyData from '../../routerRequestHandlers/setupJourneyData'
 
 /**
  * Route definitions for creating an Induction
@@ -37,7 +38,7 @@ import insertJourneyIdentifier from '../../routerRequestHandlers/insertJourneyId
  * /prisoners/<prison-number>/create-induction/<journeyId>/<page-or-section-id>
  */
 export default (router: Router, services: Services) => {
-  const { curiousService, educationAndWorkPlanService, inductionService } = services
+  const { curiousService, educationAndWorkPlanService, inductionService, journeyDataService } = services
 
   const hopingToWorkOnReleaseCreateController = new HopingToWorkOnReleaseCreateController()
   const wantToAddQualificationsCreateController = new WantToAddQualificationsCreateController()
@@ -61,9 +62,12 @@ export default (router: Router, services: Services) => {
   const inductionNoteController = new InductionNoteCreateController()
 
   router.use('/prisoners/:prisonNumber/create-induction', [
-    insertJourneyIdentifier({ insertIdAfterElement: 3 }), // insert journey ID immediately after '/prisoners/:prisonNumber/create-induction' - eg: '/prisoners/A1234BC/create-induction/473e9ee4-37d6-4afb-92a2-5729b10cc60f/hoping-to-work-on-release'
     checkUserHasPermissionTo(ApplicationAction.RECORD_INDUCTION),
-    createEmptyInductionIfNotInSession(educationAndWorkPlanService),
+    insertJourneyIdentifier({ insertIdAfterElement: 3 }), // insert journey ID immediately after '/prisoners/:prisonNumber/create-induction' - eg: '/prisoners/A1234BC/create-induction/473e9ee4-37d6-4afb-92a2-5729b10cc60f/hoping-to-work-on-release'
+  ])
+  router.use('/prisoners/:prisonNumber/create-induction/:journeyId', [
+    setupJourneyData(journeyDataService),
+    createEmptyInductionIfNotInJourneyData(educationAndWorkPlanService),
     setCurrentPageInPageFlowQueue,
   ])
 

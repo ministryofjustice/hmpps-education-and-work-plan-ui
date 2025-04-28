@@ -8,7 +8,7 @@ import EducationLevelValue from '../../../enums/educationLevelValue'
 export default class WantToAddQualificationsCreateController extends WantToAddQualificationsController {
   submitWantToAddQualificationsForm: RequestHandler = async (req: Request, res: Response): Promise<void> => {
     const { prisonNumber, journeyId } = req.params
-    const { inductionDto } = req.session
+    const { inductionDto } = req.journeyData
     const { prisonerSummary } = res.locals
 
     req.session.wantToAddQualificationsForm = { ...req.body }
@@ -28,7 +28,7 @@ export default class WantToAddQualificationsCreateController extends WantToAddQu
       inductionDto,
       wantToAddQualificationsForm.wantToAddQualifications === YesNoValue.YES,
     )
-    req.session.inductionDto = updatedInduction
+    req.journeyData.inductionDto = updatedInduction
 
     // If the previous page was Check Your Answers
     if (this.previousPageWasCheckYourAnswers(req)) {
@@ -40,7 +40,7 @@ export default class WantToAddQualificationsCreateController extends WantToAddQu
       if (this.formSubmittedIndicatingQualificationsShouldNotBeRecorded(wantToAddQualificationsForm)) {
         // User has come from the Check Your Answers page and has said they do not want to record any qualifications
         // We need to remove any qualifications that may have been set on the Induction
-        req.session.inductionDto = this.inductionWithRemovedQualifications(inductionDto)
+        req.journeyData.inductionDto = this.inductionWithRemovedQualifications(inductionDto)
         return res.redirect(`/prisoners/${prisonNumber}/create-induction/${journeyId}/check-your-answers`)
       }
 

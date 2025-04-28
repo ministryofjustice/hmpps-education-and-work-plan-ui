@@ -18,6 +18,7 @@ describe('previousWorkExperienceDetailCreateController', () => {
 
   const req = {
     session: {} as SessionData,
+    journeyData: {} as Express.JourneyData,
     body: {},
     params: { prisonNumber, journeyId } as Record<string, string>,
     originalUrl: '',
@@ -34,6 +35,7 @@ describe('previousWorkExperienceDetailCreateController', () => {
     jest.resetAllMocks()
     req.session.pageFlowHistory = undefined
     req.body = {}
+    req.journeyData = {}
   })
 
   describe('getPreviousWorkExperienceDetailView', () => {
@@ -43,7 +45,7 @@ describe('previousWorkExperienceDetailCreateController', () => {
       req.originalUrl = `/prisoners/${prisonNumber}/create-induction/${journeyId}/previous-work-experience/construction`
 
       const inductionDto = inductionDtoWithWorkExperienceTypes()
-      req.session.inductionDto = inductionDto
+      req.journeyData.inductionDto = inductionDto
       req.session.previousWorkExperienceDetailForm = undefined
 
       const expectedPreviousWorkExperienceDetailForm = {
@@ -66,7 +68,7 @@ describe('previousWorkExperienceDetailCreateController', () => {
         expectedView,
       )
       expect(req.session.previousWorkExperienceDetailForm).toBeUndefined()
-      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(req.journeyData.inductionDto).toEqual(inductionDto)
     })
 
     it('should get the Previous Work Experience Detail view given there is an PreviousWorkExperienceDetailForm already on the session', async () => {
@@ -75,7 +77,7 @@ describe('previousWorkExperienceDetailCreateController', () => {
       req.originalUrl = `/prisoners/${prisonNumber}/create-induction/${journeyId}/previous-work-experience/construction`
 
       const inductionDto = inductionDtoWithWorkExperienceTypes()
-      req.session.inductionDto = inductionDto
+      req.journeyData.inductionDto = inductionDto
 
       const expectedPreviousWorkExperienceDetailForm = {
         jobRole: 'General labourer',
@@ -98,7 +100,7 @@ describe('previousWorkExperienceDetailCreateController', () => {
         expectedView,
       )
       expect(req.session.previousWorkExperienceDetailForm).toBeUndefined()
-      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(req.journeyData.inductionDto).toEqual(inductionDto)
     })
 
     it(`should not get the Previous Work Experience Detail view given the request path contains a valid work experience type that is not on the prisoner's induction`, async () => {
@@ -108,7 +110,7 @@ describe('previousWorkExperienceDetailCreateController', () => {
 
       const inductionDto = inductionDtoWithWorkExperienceTypes()
       // The induction has work experience types of construction and other, but not retail
-      req.session.inductionDto = inductionDto
+      req.journeyData.inductionDto = inductionDto
       req.session.previousWorkExperienceDetailForm = undefined
 
       const expectedError = createError(404, `Previous Work Experience type retail not found on Induction`)
@@ -127,7 +129,7 @@ describe('previousWorkExperienceDetailCreateController', () => {
       req.originalUrl = `/prisoners/${prisonNumber}/create-induction/${journeyId}/previous-work-experience/some-non-valid-work-experience-type`
 
       const inductionDto = inductionDtoWithWorkExperienceTypes()
-      req.session.inductionDto = inductionDto
+      req.journeyData.inductionDto = inductionDto
 
       const expectedError = createError(
         404,
@@ -151,7 +153,7 @@ describe('previousWorkExperienceDetailCreateController', () => {
         req.originalUrl = `/prisoners/${prisonNumber}/create-induction/${journeyId}/previous-work-experience/construction`
 
         const inductionDto = inductionDtoWithWorkExperienceTypes()
-        req.session.inductionDto = inductionDto
+        req.journeyData.inductionDto = inductionDto
 
         const invalidPreviousWorkExperienceDetailForm = {
           jobRole: 'General labourer',
@@ -173,7 +175,7 @@ describe('previousWorkExperienceDetailCreateController', () => {
           expectedErrors,
         )
         expect(req.session.previousWorkExperienceDetailForm).toEqual(invalidPreviousWorkExperienceDetailForm)
-        expect(req.session.inductionDto).toEqual(inductionDto)
+        expect(req.journeyData.inductionDto).toEqual(inductionDto)
       })
 
       it('should not update Induction given form is submitted with the request path containing an invalid work experience type', async () => {
@@ -182,7 +184,7 @@ describe('previousWorkExperienceDetailCreateController', () => {
         req.originalUrl = `/prisoners/${prisonNumber}/create-induction/${journeyId}/previous-work-experience/some-non-valid-work-experience-type`
 
         const inductionDto = inductionDtoWithWorkExperienceTypes()
-        req.session.inductionDto = inductionDto
+        req.journeyData.inductionDto = inductionDto
 
         const expectedError = createError(
           404,
@@ -204,7 +206,7 @@ describe('previousWorkExperienceDetailCreateController', () => {
 
         const inductionDto = inductionDtoWithWorkExperienceTypes()
         // The induction has work experience of construction and other, but not retail
-        req.session.inductionDto = inductionDto
+        req.journeyData.inductionDto = inductionDto
         req.session.previousWorkExperienceDetailForm = undefined
 
         const expectedError = createError(404, `Previous Work Experience type retail not found on Induction`)
@@ -231,7 +233,7 @@ describe('previousWorkExperienceDetailCreateController', () => {
       req.originalUrl = `/prisoners/${prisonNumber}/create-induction/${journeyId}/previous-work-experience/construction`
 
       const inductionDto = inductionDtoWithWorkExperienceTypes()
-      req.session.inductionDto = inductionDto
+      req.journeyData.inductionDto = inductionDto
 
       const previousWorkExperienceDetailForm = {
         jobRole: 'General labourer',
@@ -284,7 +286,7 @@ describe('previousWorkExperienceDetailCreateController', () => {
       expect(req.session.previousWorkExperienceDetailForm).toBeUndefined()
       expect(req.session.pageFlowQueue).toEqual(pageFlowQueue)
       expect(req.session.pageFlowHistory).toEqual(pageFlowHistory)
-      expect(req.session.inductionDto.previousWorkExperiences.experiences).toEqual(expectedWorkExperiences)
+      expect(req.journeyData.inductionDto.previousWorkExperiences.experiences).toEqual(expectedWorkExperiences)
     })
 
     it('should update inductionDto and redirect to Personal Skills given we are on the last page of the queue', async () => {
@@ -306,7 +308,7 @@ describe('previousWorkExperienceDetailCreateController', () => {
           return experience
         },
       )
-      req.session.inductionDto = inductionDto
+      req.journeyData.inductionDto = inductionDto
 
       const previousWorkExperienceDetailForm = {
         jobRole: 'Milkman',
@@ -360,7 +362,7 @@ describe('previousWorkExperienceDetailCreateController', () => {
       expect(req.session.previousWorkExperienceDetailForm).toBeUndefined()
       expect(req.session.pageFlowQueue).toBeUndefined()
       expect(req.session.pageFlowHistory).toBeUndefined()
-      expect(req.session.inductionDto.previousWorkExperiences.experiences).toEqual(expectedWorkExperiences)
+      expect(req.journeyData.inductionDto.previousWorkExperiences.experiences).toEqual(expectedWorkExperiences)
     })
 
     it('should update inductionDto and redirect to Check Your Answers given previous page was Check Your Answers', async () => {
@@ -369,7 +371,7 @@ describe('previousWorkExperienceDetailCreateController', () => {
       req.originalUrl = `/prisoners/${prisonNumber}/create-induction/${journeyId}/previous-work-experience/construction`
 
       const inductionDto = inductionDtoWithWorkExperienceTypes()
-      req.session.inductionDto = inductionDto
+      req.journeyData.inductionDto = inductionDto
 
       const previousWorkExperienceDetailForm = {
         jobRole: 'General labourer',
@@ -405,7 +407,7 @@ describe('previousWorkExperienceDetailCreateController', () => {
       await controller.submitPreviousWorkExperienceDetailForm(req as unknown as Request, res, next)
 
       // Then
-      const updatedInduction = req.session.inductionDto
+      const updatedInduction = req.journeyData.inductionDto
       expect(updatedInduction.previousWorkExperiences.experiences).toEqual(expectedWorkExperiences)
       expect(res.redirect).toHaveBeenCalledWith(`/prisoners/A1234BC/create-induction/${journeyId}/check-your-answers`)
       expect(req.session.previousWorkExperienceDetailForm).toBeUndefined()
@@ -430,7 +432,7 @@ describe('previousWorkExperienceDetailCreateController', () => {
           return experience
         },
       )
-      req.session.inductionDto = inductionDto
+      req.journeyData.inductionDto = inductionDto
 
       const previousWorkExperienceDetailForm = {
         jobRole: 'Milkman',
@@ -479,7 +481,7 @@ describe('previousWorkExperienceDetailCreateController', () => {
       await controller.submitPreviousWorkExperienceDetailForm(req as unknown as Request, res, next)
 
       // Then
-      const updatedInduction = req.session.inductionDto
+      const updatedInduction = req.journeyData.inductionDto
       expect(updatedInduction.previousWorkExperiences.experiences).toEqual(expectedWorkExperiences)
       expect(res.redirect).toHaveBeenCalledWith(`/prisoners/A1234BC/create-induction/${journeyId}/check-your-answers`)
       expect(req.session.previousWorkExperienceDetailForm).toBeUndefined()

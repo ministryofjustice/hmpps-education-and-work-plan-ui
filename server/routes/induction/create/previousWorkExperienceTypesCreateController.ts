@@ -16,7 +16,7 @@ export default class PreviousWorkExperienceTypesCreateController extends Previou
     next: NextFunction,
   ): Promise<void> => {
     const { prisonNumber, journeyId } = req.params
-    const { inductionDto } = req.session
+    const { inductionDto } = req.journeyData
     const { prisonerSummary } = res.locals
 
     const previousWorkExperienceTypesForm: PreviousWorkExperienceTypesForm = {
@@ -38,7 +38,7 @@ export default class PreviousWorkExperienceTypesCreateController extends Previou
       inductionDto,
       previousWorkExperienceTypesForm,
     )
-    req.session.inductionDto = updatedInduction
+    req.journeyData.inductionDto = updatedInduction
 
     // We need to show the Details page for each work experience type.
     const pageFlowQueue = buildPageFlowQueue(updatedInduction, prisonNumber, journeyId)

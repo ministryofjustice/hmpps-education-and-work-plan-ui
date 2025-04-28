@@ -11,7 +11,7 @@ export default class WorkInterestTypesCreateController extends WorkInterestTypes
     next: NextFunction,
   ): Promise<void> => {
     const { prisonNumber, journeyId } = req.params
-    const { inductionDto } = req.session
+    const { inductionDto } = req.journeyData
     const { prisonerSummary } = res.locals
 
     const workInterestTypesForm: WorkInterestTypesForm = {
@@ -29,7 +29,7 @@ export default class WorkInterestTypesCreateController extends WorkInterestTypes
     }
 
     const updatedInduction = this.updatedInductionDtoWithWorkInterestTypes(inductionDto, workInterestTypesForm)
-    req.session.inductionDto = updatedInduction
+    req.journeyData.inductionDto = updatedInduction
     req.session.workInterestTypesForm = undefined
 
     return this.previousPageWasCheckYourAnswers(req)

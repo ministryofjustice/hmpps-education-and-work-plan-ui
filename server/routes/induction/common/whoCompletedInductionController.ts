@@ -11,7 +11,7 @@ import InductionController from './inductionController'
  */
 export default abstract class WhoCompletedInductionController extends InductionController {
   getWhoCompletedInductionView: RequestHandler = async (req, res, next): Promise<void> => {
-    const inductionDto = req.session.inductionDto ?? req.journeyData?.inductionDto
+    const { inductionDto } = req.journeyData
     const { prisonNumber } = req.params
     const { prisonerSummary } = res.locals
 

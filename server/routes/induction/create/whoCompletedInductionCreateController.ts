@@ -8,7 +8,7 @@ import WhoCompletedInductionController from '../common/whoCompletedInductionCont
 
 export default class WhoCompletedInductionCreateController extends WhoCompletedInductionController {
   submitWhoCompletedInductionForm: RequestHandler = async (req, res, next): Promise<void> => {
-    const { inductionDto } = req.session
+    const { inductionDto } = req.journeyData
     const { prisonNumber, journeyId } = req.params
 
     const whoCompletedInductionForm: WhoCompletedInductionForm = { ...req.body }
@@ -23,7 +23,7 @@ export default class WhoCompletedInductionCreateController extends WhoCompletedI
     }
 
     const updatedInductionDto = updateDtoWithFormContents(inductionDto, whoCompletedInductionForm)
-    req.session.inductionDto = updatedInductionDto
+    req.journeyData.inductionDto = updatedInductionDto
     getPrisonerContext(req.session, prisonNumber).whoCompletedInductionForm = undefined
 
     return this.previousPageWasCheckYourAnswers(req)

@@ -16,6 +16,7 @@ describe('inPrisonWorkCreateController', () => {
 
   const req = {
     session: {},
+    journeyData: {},
     body: {},
     params: { prisonNumber, journeyId },
     originalUrl: `/prisoners/${prisonNumber}/create-induction/${journeyId}/in-prison-work`,
@@ -32,6 +33,7 @@ describe('inPrisonWorkCreateController', () => {
     jest.resetAllMocks()
     req.session.pageFlowHistory = undefined
     req.body = {}
+    req.journeyData = {}
   })
 
   describe('getInPrisonWorkView', () => {
@@ -39,7 +41,7 @@ describe('inPrisonWorkCreateController', () => {
       // Given
       const inductionDto = aValidInductionDto()
       inductionDto.inPrisonInterests.inPrisonWorkInterests = undefined
-      req.session.inductionDto = inductionDto
+      req.journeyData.inductionDto = inductionDto
       req.session.inPrisonWorkForm = undefined
 
       const expectedInPrisonWorkForm: InPrisonWorkForm = {
@@ -58,14 +60,14 @@ describe('inPrisonWorkCreateController', () => {
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/induction/inPrisonWork/index', expectedView)
       expect(req.session.inPrisonWorkForm).toBeUndefined()
-      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(req.journeyData.inductionDto).toEqual(inductionDto)
     })
 
     it('should get the In Prison Work view given there is an InPrisonWork already on the session', async () => {
       // Given
       const inductionDto = aValidInductionDto()
       inductionDto.inPrisonInterests.inPrisonWorkInterests = undefined
-      req.session.inductionDto = inductionDto
+      req.journeyData.inductionDto = inductionDto
 
       const expectedInPrisonWorkForm: InPrisonWorkForm = {
         inPrisonWork: ['PRISON_LIBRARY', 'WELDING_AND_METALWORK'],
@@ -84,7 +86,7 @@ describe('inPrisonWorkCreateController', () => {
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/induction/inPrisonWork/index', expectedView)
       expect(req.session.inPrisonWorkForm).toBeUndefined()
-      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(req.journeyData.inductionDto).toEqual(inductionDto)
     })
   })
 
@@ -93,7 +95,7 @@ describe('inPrisonWorkCreateController', () => {
       // Given
       const inductionDto = aValidInductionDto()
       inductionDto.inPrisonInterests.inPrisonWorkInterests = undefined
-      req.session.inductionDto = inductionDto
+      req.journeyData.inductionDto = inductionDto
 
       const invalidInPrisonWorkForm: InPrisonWorkForm = {
         inPrisonWork: ['OTHER'],
@@ -119,14 +121,14 @@ describe('inPrisonWorkCreateController', () => {
         expectedErrors,
       )
       expect(req.session.inPrisonWorkForm).toEqual(invalidInPrisonWorkForm)
-      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(req.journeyData.inductionDto).toEqual(inductionDto)
     })
 
     it('should update inductionDto and redirect to in-prison training interests page', async () => {
       // Given
       const inductionDto = aValidInductionDto()
       inductionDto.inPrisonInterests.inPrisonWorkInterests = undefined
-      req.session.inductionDto = inductionDto
+      req.journeyData.inductionDto = inductionDto
 
       const inPrisonWorkForm: InPrisonWorkForm = {
         inPrisonWork: ['KITCHENS_AND_COOKING', 'OTHER'],
@@ -144,7 +146,7 @@ describe('inPrisonWorkCreateController', () => {
       await controller.submitInPrisonWorkForm(req, res, next)
 
       // Then
-      const updatedInduction = req.session.inductionDto
+      const updatedInduction = req.journeyData.inductionDto
       expect(updatedInduction.inPrisonInterests.inPrisonWorkInterests).toEqual(expectedInPrisonWorkInterests)
       expect(res.redirect).toHaveBeenCalledWith(`/prisoners/A1234BC/create-induction/${journeyId}/in-prison-training`)
       expect(req.session.inPrisonWorkForm).toBeUndefined()
@@ -153,7 +155,7 @@ describe('inPrisonWorkCreateController', () => {
     it('should update inductionDto and redirect to Check Your Answers given previous page was Check Your Answers', async () => {
       // Given
       const inductionDto = aValidInductionDto()
-      req.session.inductionDto = inductionDto
+      req.journeyData.inductionDto = inductionDto
 
       const inPrisonWorkForm: InPrisonWorkForm = {
         inPrisonWork: ['KITCHENS_AND_COOKING', 'OTHER'],
@@ -179,7 +181,7 @@ describe('inPrisonWorkCreateController', () => {
       await controller.submitInPrisonWorkForm(req, res, next)
 
       // Then
-      const updatedInduction = req.session.inductionDto
+      const updatedInduction = req.journeyData.inductionDto
       expect(updatedInduction.inPrisonInterests.inPrisonWorkInterests).toEqual(expectedInPrisonWorkInterests)
       expect(res.redirect).toHaveBeenCalledWith(`/prisoners/A1234BC/create-induction/${journeyId}/check-your-answers`)
       expect(req.session.skillsForm).toBeUndefined()

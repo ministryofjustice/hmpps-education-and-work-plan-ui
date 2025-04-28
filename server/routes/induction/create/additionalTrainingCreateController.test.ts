@@ -15,6 +15,7 @@ describe('additionalTrainingCreateController', () => {
 
   const req = {
     session: {},
+    journeyData: {},
     body: {},
     user: {},
     params: { prisonNumber, journeyId },
@@ -32,6 +33,7 @@ describe('additionalTrainingCreateController', () => {
     jest.resetAllMocks()
     req.session.pageFlowHistory = undefined
     req.body = {}
+    req.journeyData = {}
   })
 
   describe('getAdditionalTrainingView', () => {
@@ -39,7 +41,7 @@ describe('additionalTrainingCreateController', () => {
       // Given
       const inductionDto = aValidInductionDto()
       inductionDto.previousTraining = undefined
-      req.session.inductionDto = inductionDto
+      req.journeyData.inductionDto = inductionDto
       req.session.additionalTrainingForm = undefined
       const expectedAdditionalTrainingForm: AdditionalTrainingForm = {
         additionalTraining: [],
@@ -57,14 +59,14 @@ describe('additionalTrainingCreateController', () => {
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/induction/additionalTraining/index', expectedView)
       expect(req.session.additionalTrainingForm).toBeUndefined()
-      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(req.journeyData.inductionDto).toEqual(inductionDto)
     })
 
     it('should get the Additional Training view given there is an AdditionalTrainingForm already on the session', async () => {
       // Given
       const inductionDto = aValidInductionDto()
       inductionDto.previousTraining = undefined
-      req.session.inductionDto = inductionDto
+      req.journeyData.inductionDto = inductionDto
 
       const expectedAdditionalTrainingForm: AdditionalTrainingForm = {
         additionalTraining: [AdditionalTrainingValue.FULL_UK_DRIVING_LICENCE, AdditionalTrainingValue.OTHER],
@@ -83,7 +85,7 @@ describe('additionalTrainingCreateController', () => {
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/induction/additionalTraining/index', expectedView)
       expect(req.session.additionalTrainingForm).toBeUndefined()
-      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(req.journeyData.inductionDto).toEqual(inductionDto)
     })
   })
 
@@ -92,7 +94,7 @@ describe('additionalTrainingCreateController', () => {
       // Given
       const inductionDto = aValidInductionDto()
       inductionDto.previousTraining = undefined
-      req.session.inductionDto = inductionDto
+      req.journeyData.inductionDto = inductionDto
 
       const invalidAdditionalTrainingForm = {
         additionalTraining: [AdditionalTrainingValue.OTHER],
@@ -117,14 +119,14 @@ describe('additionalTrainingCreateController', () => {
         expectedErrors,
       )
       expect(req.session.additionalTrainingForm).toEqual(invalidAdditionalTrainingForm)
-      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(req.journeyData.inductionDto).toEqual(inductionDto)
     })
 
     it('should update InductionDto and redirect to Has Worked Before', async () => {
       // Given
       const inductionDto = aValidInductionDto()
       inductionDto.previousTraining = undefined
-      req.session.inductionDto = inductionDto
+      req.journeyData.inductionDto = inductionDto
 
       const additionalTrainingForm = {
         additionalTraining: [AdditionalTrainingValue.HGV_LICENCE, AdditionalTrainingValue.OTHER],
@@ -142,7 +144,7 @@ describe('additionalTrainingCreateController', () => {
       await controller.submitAdditionalTrainingForm(req, res, next)
 
       // Then
-      const updatedInductionDto = req.session.inductionDto
+      const updatedInductionDto = req.journeyData.inductionDto
       expect(updatedInductionDto.previousTraining.trainingTypes).toEqual(expectedUpdatedAdditionalTraining)
       expect(updatedInductionDto.previousTraining.trainingTypeOther).toEqual(expectedUpdatedAdditionalTrainingOther)
       expect(res.redirect).toHaveBeenCalledWith(expectedNextPage)
@@ -152,7 +154,7 @@ describe('additionalTrainingCreateController', () => {
     it('should update InductionDto and redirect to Check Your Answers given previous page was Check Your Answers', async () => {
       // Given
       const inductionDto = aValidInductionDto()
-      req.session.inductionDto = inductionDto
+      req.journeyData.inductionDto = inductionDto
 
       const additionalTrainingForm = {
         additionalTraining: [AdditionalTrainingValue.HGV_LICENCE, AdditionalTrainingValue.OTHER],
@@ -177,7 +179,7 @@ describe('additionalTrainingCreateController', () => {
       await controller.submitAdditionalTrainingForm(req, res, next)
 
       // Then
-      const updatedInductionDto = req.session.inductionDto
+      const updatedInductionDto = req.journeyData.inductionDto
       expect(updatedInductionDto.previousTraining.trainingTypes).toEqual(expectedUpdatedAdditionalTraining)
       expect(updatedInductionDto.previousTraining.trainingTypeOther).toEqual(expectedUpdatedAdditionalTrainingOther)
       expect(res.redirect).toHaveBeenCalledWith(expectedNextPage)

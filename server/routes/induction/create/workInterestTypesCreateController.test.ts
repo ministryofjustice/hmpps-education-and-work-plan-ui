@@ -16,6 +16,7 @@ describe('workInterestTypesCreateController', () => {
 
   const req = {
     session: {},
+    journeyData: {},
     body: {},
     params: { prisonNumber, journeyId },
     originalUrl: `/prisoners/${prisonNumber}/create-induction/${journeyId}/work-interest-types`,
@@ -32,6 +33,7 @@ describe('workInterestTypesCreateController', () => {
     jest.resetAllMocks()
     req.session.pageFlowHistory = undefined
     req.body = {}
+    req.journeyData = {}
   })
 
   describe('getWorkInterestTypesView', () => {
@@ -39,7 +41,7 @@ describe('workInterestTypesCreateController', () => {
       // Given
       const inductionDto = aValidInductionDto()
       inductionDto.futureWorkInterests = undefined
-      req.session.inductionDto = inductionDto
+      req.journeyData.inductionDto = inductionDto
       req.session.workInterestTypesForm = undefined
 
       const expectedWorkInterestTypesForm: WorkInterestTypesForm = {
@@ -58,14 +60,14 @@ describe('workInterestTypesCreateController', () => {
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/induction/workInterests/workInterestTypes', expectedView)
       expect(req.session.workInterestTypesForm).toBeUndefined()
-      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(req.journeyData.inductionDto).toEqual(inductionDto)
     })
 
     it('should get the Work Interest Types view given there is an WorkInterestTypesForm already on the session', async () => {
       // Given
       const inductionDto = aValidInductionDto()
       inductionDto.futureWorkInterests = undefined
-      req.session.inductionDto = inductionDto
+      req.journeyData.inductionDto = inductionDto
 
       const expectedWorkInterestTypesForm = {
         workInterestTypes: [
@@ -88,7 +90,7 @@ describe('workInterestTypesCreateController', () => {
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/induction/workInterests/workInterestTypes', expectedView)
       expect(req.session.workInterestTypesForm).toBeUndefined()
-      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(req.journeyData.inductionDto).toEqual(inductionDto)
     })
   })
 
@@ -97,7 +99,7 @@ describe('workInterestTypesCreateController', () => {
       // Given
       const inductionDto = aValidInductionDto()
       inductionDto.futureWorkInterests = undefined
-      req.session.inductionDto = inductionDto
+      req.journeyData.inductionDto = inductionDto
 
       const invalidWorkInterestTypesForm = {
         workInterestTypes: [WorkInterestTypeValue.OTHER],
@@ -122,14 +124,14 @@ describe('workInterestTypesCreateController', () => {
         expectedErrors,
       )
       expect(req.session.workInterestTypesForm).toEqual(invalidWorkInterestTypesForm)
-      expect(req.session.inductionDto).toEqual(inductionDto)
+      expect(req.journeyData.inductionDto).toEqual(inductionDto)
     })
 
     it('should update InductionDto and redirect to Work Interests Details', async () => {
       // Given
       const inductionDto = aValidInductionDto()
       inductionDto.futureWorkInterests = undefined
-      req.session.inductionDto = inductionDto
+      req.journeyData.inductionDto = inductionDto
 
       const workInterestTypesForm = {
         workInterestTypes: [WorkInterestTypeValue.DRIVING, WorkInterestTypeValue.OTHER],
@@ -150,7 +152,7 @@ describe('workInterestTypesCreateController', () => {
 
       // Then
       const futureWorkInterestsOnInduction: Array<FutureWorkInterestDto> =
-        req.session.inductionDto.futureWorkInterests.interests
+        req.journeyData.inductionDto.futureWorkInterests.interests
       expect(futureWorkInterestsOnInduction).toEqual(expectedFutureWorkInterests)
       expect(res.redirect).toHaveBeenCalledWith(expectedNextPage)
       expect(req.session.workInterestTypesForm).toBeUndefined()
@@ -160,7 +162,7 @@ describe('workInterestTypesCreateController', () => {
       // Given
       const inductionDto = aValidInductionDto()
       inductionDto.futureWorkInterests = undefined
-      req.session.inductionDto = inductionDto
+      req.journeyData.inductionDto = inductionDto
 
       const workInterestTypesForm = {
         workInterestTypes: [WorkInterestTypeValue.DRIVING, WorkInterestTypeValue.OTHER],
@@ -187,7 +189,7 @@ describe('workInterestTypesCreateController', () => {
 
       // Then
       const futureWorkInterestsOnInduction: Array<FutureWorkInterestDto> =
-        req.session.inductionDto.futureWorkInterests.interests
+        req.journeyData.inductionDto.futureWorkInterests.interests
       expect(futureWorkInterestsOnInduction).toEqual(expectedFutureWorkInterests)
       expect(res.redirect).toHaveBeenCalledWith(`/prisoners/A1234BC/create-induction/${journeyId}/check-your-answers`)
       expect(req.session.workInterestTypesForm).toBeUndefined()
