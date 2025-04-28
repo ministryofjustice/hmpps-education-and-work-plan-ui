@@ -17,7 +17,6 @@ context('Overdue sessions list page', () => {
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubSignInAsUserWithManagerRole')
-    cy.task('stubAuthUser')
     cy.task('stubGetSessionSummary')
 
     // Generate 3 records (to match 3 overdue from the sessionSummary stub)
@@ -85,7 +84,6 @@ context('Overdue sessions list page', () => {
     // Given
     cy.signOut()
     cy.task('stubSignInAsUserWithContributorRole')
-    cy.task('stubAuthUser')
     cy.signIn()
 
     // When

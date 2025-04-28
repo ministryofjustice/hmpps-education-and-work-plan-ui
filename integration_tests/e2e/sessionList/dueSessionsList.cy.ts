@@ -17,7 +17,6 @@ context('Due sessions list page', () => {
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubSignInAsUserWithManagerRole')
-    cy.task('stubAuthUser')
     cy.task('stubGetSessionSummary')
 
     // Generate 7 records (to match 7 due from the sessionSummary stub)
@@ -83,7 +82,6 @@ context('Due sessions list page', () => {
     // Given
     cy.signOut()
     cy.task('stubSignInAsUserWithContributorRole')
-    cy.task('stubAuthUser')
     cy.signIn()
 
     // When

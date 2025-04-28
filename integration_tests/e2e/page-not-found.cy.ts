@@ -5,7 +5,6 @@ import AuthSignInPage from '../pages/authSignIn'
 context('404 Page Not Found', () => {
   beforeEach(() => {
     cy.task('reset')
-    cy.task('stubAuthUser')
     cy.task('stubSignInAsReadOnlyUser')
     cy.task('stubPrisonerList')
     cy.task('stubCiagInductionList')

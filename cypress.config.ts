@@ -33,11 +33,12 @@ export default defineConfig({
         reset: resetStubs,
         ...auth,
 
-        stubSignIn: (roles: []) => auth.stubSignIn(roles),
-        stubSignInAsReadOnlyUser: () => auth.stubSignIn([]),
-        stubSignInAsUserWithManagerRole: () => auth.stubSignIn(['ROLE_LWP_MANAGER']),
-        stubSignInAsUserWithContributorRole: () => auth.stubSignIn(['ROLE_LWP_CONTRIBUTOR']),
-        stubSignInAsUserWithAllRoles: () => auth.stubSignIn(['ROLE_LWP_MANAGER', 'ROLE_LWP_CONTRIBUTOR']),
+        stubSignIn: ({ roles = [], name = 'john smith' }: { roles?: Array<string>; name?: string } = {}) =>
+          auth.stubSignIn({ roles, name }),
+        stubSignInAsReadOnlyUser: () => auth.stubSignIn({ roles: [] }),
+        stubSignInAsUserWithManagerRole: () => auth.stubSignIn({ roles: ['ROLE_LWP_MANAGER'] }),
+        stubSignInAsUserWithContributorRole: () => auth.stubSignIn({ roles: ['ROLE_LWP_CONTRIBUTOR'] }),
+        stubSignInAsUserWithAllRoles: () => auth.stubSignIn({ roles: ['ROLE_LWP_MANAGER', 'ROLE_LWP_CONTRIBUTOR'] }),
         log(message) {
           // eslint-disable-next-line no-console
           console.log(message)

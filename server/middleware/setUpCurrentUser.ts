@@ -8,7 +8,7 @@ import populateUserAuthorities from './populateUserAuthorities'
 export default function setUpCurrentUser({ userService }: Services): Router {
   const router = Router({ mergeParams: true })
   router.use(auth.authenticationMiddleware(tokenVerifier))
-  router.use(populateCurrentUser(userService))
+  router.use(populateCurrentUser())
   router.use(populateCurrentUserCaseloads(userService))
   router.use(populateUserAuthorities())
   return router
