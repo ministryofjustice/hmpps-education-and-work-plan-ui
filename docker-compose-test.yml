@@ -17,8 +17,6 @@ services:
     command: "--global-response-templating --enable-stub-cors" # add command `--verbose` to output verbose request matching
     ports:
       - "9091:8080"
-    volumes:
-      - ./wiremock:/home/wiremock
 
 networks:
   hmpps_int:
