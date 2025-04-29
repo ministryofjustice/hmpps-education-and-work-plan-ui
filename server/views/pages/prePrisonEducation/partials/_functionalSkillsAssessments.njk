@@ -1,22 +1,26 @@
 {% if not functionalSkills.problemRetrievingData %}
   {% if functionalSkills.assessments.length %}
     <table class="govuk-table govuk-!-margin-bottom-8">
-      <caption class="govuk-table__caption govuk-table__caption--m">Current functional skills assessment scores</caption>
-      <caption class="govuk-table__caption govuk-!-font-weight-regular govuk-body">Functional skills assessment scores inform in-prison work and education allocations.</caption>
+      <caption class="govuk-table__caption govuk-table__caption--m">Functional skills initial assessment scores</caption>
+      <caption class="govuk-table__caption govuk-!-font-weight-regular govuk-body">
+        Information from Curious. These scores are from a person's induction assessment. For recent functional skills qualifications, go to in-prison courses and qualifications.
+      </caption>
 
       <thead class="govuk-table__head">
       <tr class="govuk-table__row">
-        <th scope="col" class="govuk-table__header">Assessment</th>
+        <th scope="col" class="govuk-table__header">Subject</th>
+        <th scope="col" class="govuk-table__header">Location</th>
         <th scope="col" class="govuk-table__header">Level</th>
-        <th scope="col" class="govuk-table__header">Assessment date</th>
+        <th scope="col" class="govuk-table__header">Assessed on</th>
       </tr>
       </thead>
       <tbody class="govuk-table__body">
       {% for item in functionalSkills.assessments %}
         <tr class="govuk-table__row">
           <td class="govuk-table__cell">{{ item.type | formatFunctionalSkillType }}</td>
+          <td class="govuk-table__cell"> {{ item.prisonName }}</td>
           <td class="govuk-table__cell"> {{ item.grade }}</td>
-          <td class="govuk-table__cell">{{ item.assessmentDate | formatDate('DD MMM yyyy') }}</td>
+          <td class="govuk-table__cell">{{ item.assessmentDate | formatDate('D MMM YYYY') }}</td>
         </tr>
       {% endfor %}
       </tbody>
@@ -25,7 +29,7 @@
     <section class="govuk-!-margin-bottom-8">
       <h2 class="govuk-heading-m">Functional skills assessment levels</h2>
       <p>Functional skills assessment scores inform in-prison work and education allocations.</p>
-      <p>{{  prisonerSummary.firstName + " " + prisonerSummary.lastName }} has no recorded functional skills assessment scores.</p>
+      <p>{{ prisonerSummary.firstName + " " + prisonerSummary.lastName }} has no recorded functional skills assessment scores.</p>
     </section>
   {% endif %}
 {% else %}
