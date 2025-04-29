@@ -13,10 +13,6 @@ export interface User {
   caseLoadIds: Array<string>
 }
 
-export interface UserRole {
-  roleCode: string
-}
-
 export interface UserCaseloadDetail {
   username: string
   active: boolean
@@ -35,11 +31,6 @@ export default class ManageUsersApiClient {
 
   private static restClient(token: string): RestClient {
     return new RestClient('Manage Users Api Client', config.apis.manageUsersApi, token)
-  }
-
-  async getUser(token: string): Promise<User> {
-    logger.info('Getting user details: calling HMPPS Manage Users Api')
-    return ManageUsersApiClient.restClient(token).get<User>({ path: '/users/me' })
   }
 
   async getUserCaseLoads(token: string): Promise<UserCaseloadDetail> {

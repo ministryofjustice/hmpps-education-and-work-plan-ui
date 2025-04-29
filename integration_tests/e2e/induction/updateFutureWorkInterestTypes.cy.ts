@@ -10,7 +10,6 @@ context('Update future work interest types within an Induction', () => {
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubSignInAsUserWithManagerRole')
-    cy.task('stubAuthUser')
     cy.task('stubPrisonerList')
     cy.task('stubCiagInductionList')
     cy.task('stubActionPlansList')

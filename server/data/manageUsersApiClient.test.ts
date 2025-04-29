@@ -18,20 +18,6 @@ describe('manageUsersApiClient', () => {
     nock.cleanAll()
   })
 
-  describe('getUser', () => {
-    it('should return data from api', async () => {
-      const response = { data: 'data' }
-
-      fakeManageUsersApiClient
-        .get('/users/me')
-        .matchHeader('authorization', `Bearer ${token.access_token}`)
-        .reply(200, response)
-
-      const output = await manageUsersApiClient.getUser(token.access_token)
-      expect(output).toEqual(response)
-    })
-  })
-
   describe('getUserCaseLoads', () => {
     it('should get user case load details', async () => {
       // Given

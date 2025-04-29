@@ -233,7 +233,6 @@ const signInWithAuthority = (authority: 'MANAGER' | 'CONTRIBUTOR' | 'ALL' | 'VIE
       cy.task('stubSignInAsReadOnlyUser')
       break
   }
-  cy.task('stubAuthUser')
   cy.task('stubPrisonerList')
   cy.task('stubCiagInductionList')
   cy.task('stubActionPlansList')

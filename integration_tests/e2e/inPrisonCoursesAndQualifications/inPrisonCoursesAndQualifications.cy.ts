@@ -90,8 +90,7 @@ context('In Prison Courses and Qualifications', () => {
   context('DPS user', () => {
     beforeEach(() => {
       cy.task('reset')
-      cy.task('stubSignIn', ['ROLE_SOME_NON_PLP_ROLE'])
-      cy.task('stubAuthUser')
+      cy.task('stubSignIn', { roles: ['ROLE_SOME_NON_PLP_ROLE'] })
       cy.signIn()
     })
 
@@ -201,8 +200,7 @@ context('In Prison Courses and Qualifications', () => {
       beforeEach(() => {
         cy.signOut()
         cy.task('reset')
-        cy.task('stubSignIn', ['ROLE_SOME_NON_PLP_ROLE', 'ROLE_POM']) // Users with POM role can see restricted patients (prisoners with prisonId OUT) as long as their caseload ID matches prisoners supporting prison ID
-        cy.task('stubAuthUser')
+        cy.task('stubSignIn', { roles: ['ROLE_SOME_NON_PLP_ROLE', 'ROLE_POM'] }) // Users with POM role can see restricted patients (prisoners with prisonId OUT) as long as their caseload ID matches prisoners supporting prison ID
         cy.task('stubLearnerProfile')
         cy.task('stubLearnerEducation')
         cy.signIn()
@@ -239,7 +237,7 @@ context('In Prison Courses and Qualifications', () => {
       it(`should display in-prison courses & qualifications page given prisoner is OUT and user is an Inactive Bookings user and user's caseloads are not for the prisoner's supporting prison`, () => {
         // Given
         cy.signOut()
-        cy.task('stubSignIn', ['ROLE_SOME_NON_PLP_ROLE', 'ROLE_INACTIVE_BOOKINGS', 'ROLE_POM']) // Users with INACTIVE_BOOKINGS and POM roles can see any restricted patients
+        cy.task('stubSignIn', { roles: ['ROLE_SOME_NON_PLP_ROLE', 'ROLE_INACTIVE_BOOKINGS', 'ROLE_POM'] }) // Users with INACTIVE_BOOKINGS and POM roles can see any restricted patients
         cy.signIn()
 
         const prisonNumber = 'G0577GL' // Prisoner is OUT (eg: hospital) and their supporting prison is Pentonville (PVI) which is not one of the user's caseloads

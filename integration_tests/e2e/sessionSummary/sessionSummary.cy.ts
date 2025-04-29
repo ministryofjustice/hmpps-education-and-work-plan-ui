@@ -11,7 +11,6 @@ context(`Display the Sessions Summary screen`, () => {
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubSignInAsUserWithManagerRole')
-    cy.task('stubAuthUser')
     cy.task('stubGetSessionSummary')
   })
 

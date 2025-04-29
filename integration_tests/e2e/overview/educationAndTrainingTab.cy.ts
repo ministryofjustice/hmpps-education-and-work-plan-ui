@@ -9,7 +9,6 @@ context('Prisoner Overview page - Education And Training tab', () => {
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubSignInAsReadOnlyUser')
-    cy.task('stubAuthUser')
     cy.task('stubPrisonerList')
     cy.task('stubCiagInductionList')
     cy.task('stubActionPlansList')

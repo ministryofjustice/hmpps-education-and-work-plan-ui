@@ -7,7 +7,6 @@ context('Prisoner Overview page - Common functionality for both pre and post ind
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubSignInAsReadOnlyUser')
-    cy.task('stubAuthUser')
     cy.task('stubPrisonerList')
     cy.task('stubCiagInductionList')
     cy.task('stubActionPlansList')

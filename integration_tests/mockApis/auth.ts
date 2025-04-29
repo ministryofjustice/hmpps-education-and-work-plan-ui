@@ -6,11 +6,13 @@ import tokenVerification from './tokenVerification'
 import stubPing from './common'
 import manageUsersApi from './manageUsersApi'
 
-const createToken = (roles: string[] = []) => {
+const createToken = ({ roles = [], name = 'john smith' }: { roles?: Array<string>; name?: string }) => {
   // authorities in the session are always prefixed by ROLE.
   const authorities = roles.map(role => (role.startsWith('ROLE_') ? role : `ROLE_${role}`))
   const payload = {
+    name: name || 'john smith',
     user_name: 'USER1',
+    user_id: 231232,
     scope: ['read'],
     auth_source: 'nomis',
     authorities,
@@ -73,7 +75,7 @@ const signOut = () =>
     },
   })
 
-const token = (roles: string[] = []) =>
+const token = ({ roles = [], name = 'john smith' }: { roles?: Array<string>; name?: string }) =>
   stubFor({
     request: {
       method: 'POST',
@@ -86,7 +88,8 @@ const token = (roles: string[] = []) =>
         Location: 'http://localhost:3007/sign-in/callback?code=codexxxx&state=stateyyyy',
       },
       jsonBody: {
-        access_token: createToken(roles),
+        access_token: createToken({ roles, name }),
+        auth_source: 'nomis',
         token_type: 'bearer',
         user_name: 'USER1',
         expires_in: 599,
@@ -96,48 +99,22 @@ const token = (roles: string[] = []) =>
     },
   })
 
-const stubUser = (name: string) =>
-  stubFor({
-    request: {
-      method: 'GET',
-      urlPattern: '/manage-users-api/users/me',
-    },
-    response: {
-      status: 200,
-      headers: {
-        'Content-Type': 'application/json;charset=UTF-8',
-      },
-      jsonBody: {
-        staffId: 231232,
-        username: 'USER1',
-        active: true,
-        name,
-        activeCaseLoadId: 'BXI',
-        authSource: 'nomis',
-      },
-    },
-  })
-
-const stubUserRoles = () =>
-  stubFor({
-    request: {
-      method: 'GET',
-      urlPattern: '/manage-users-api/user/me/roles',
-    },
-    response: {
-      status: 200,
-      headers: {
-        'Content-Type': 'application/json;charset=UTF-8',
-      },
-      jsonBody: ['SOME_USER_ROLE'],
-    },
-  })
-
 export default {
   getSignInUrl,
   stubAuthPing: stubPing('auth'),
-  stubSignIn: (roles = []): Promise<[Response, Response, Response, Response, Response]> =>
-    Promise.all([favicon(), redirect(), signOut(), token(roles), tokenVerification.stubVerifyToken()]),
-  stubAuthUser: (name = 'john smith'): Promise<[Response, Response, Response]> =>
-    Promise.all([stubUser(name), stubUserRoles(), manageUsersApi.stubGetUserCaseloads()]),
+  stubSignIn: ({
+    roles = [],
+    name = 'john smith',
+  }: {
+    roles?: Array<string>
+    name?: string
+  } = {}): Promise<[Response, Response, Response, Response, Response, Response]> =>
+    Promise.all([
+      favicon(),
+      redirect(),
+      signOut(),
+      token({ roles, name }),
+      tokenVerification.stubVerifyToken(),
+      manageUsersApi.stubGetUserCaseloads(),
+    ]),
 }

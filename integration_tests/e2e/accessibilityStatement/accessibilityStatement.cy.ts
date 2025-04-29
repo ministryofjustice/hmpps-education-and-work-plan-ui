@@ -9,7 +9,6 @@ context('Accessibility statement', () => {
   it('should render accessibility statement page given the user has no roles', () => {
     // Given
     cy.task('stubSignIn')
-    cy.task('stubAuthUser')
 
     cy.signIn()
 

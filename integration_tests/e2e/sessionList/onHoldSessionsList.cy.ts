@@ -17,7 +17,6 @@ context('On Hold sessions list page', () => {
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubSignInAsUserWithManagerRole')
-    cy.task('stubAuthUser')
     cy.task('stubGetSessionSummary')
 
     // Generate 11 records (to match 11 on-hold from the sessionSummary stub)
@@ -85,7 +84,6 @@ context('On Hold sessions list page', () => {
     // Given
     cy.signOut()
     cy.task('stubSignInAsUserWithContributorRole')
-    cy.task('stubAuthUser')
     cy.signIn()
 
     // When

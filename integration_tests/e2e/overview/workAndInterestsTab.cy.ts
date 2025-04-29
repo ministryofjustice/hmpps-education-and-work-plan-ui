@@ -19,7 +19,6 @@ context('Prisoner Overview page - Work and Interests tab', () => {
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubSignInAsReadOnlyUser')
-    cy.task('stubAuthUser')
     cy.task('stubPrisonerList')
     cy.task('stubCiagInductionList')
     cy.task('stubActionPlansList')
