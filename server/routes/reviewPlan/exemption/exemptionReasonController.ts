@@ -16,7 +16,7 @@ export default class ExemptionReasonController {
     if (getPrisonerContext(req.session, prisonNumber).reviewExemptionForm) {
       reviewExemptionForm = getPrisonerContext(req.session, prisonNumber).reviewExemptionForm
     } else {
-      reviewExemptionForm = toReviewExemptionForm(getPrisonerContext(req.session, prisonNumber).reviewExemptionDto)
+      reviewExemptionForm = toReviewExemptionForm(req.journeyData.reviewExemptionDto)
     }
 
     getPrisonerContext(req.session, prisonNumber).reviewExemptionForm = undefined
@@ -43,7 +43,7 @@ export default class ExemptionReasonController {
       return res.redirectWithErrors(`/plan/${prisonNumber}/${journeyId}/review/exemption`, errors)
     }
 
-    const { reviewExemptionDto } = getPrisonerContext(req.session, prisonNumber)
+    const { reviewExemptionDto } = req.journeyData
     const updatedExemptionDto = updateDtoWithFormContents(
       reviewExemptionDto,
       prisonNumber,
@@ -51,7 +51,7 @@ export default class ExemptionReasonController {
       reviewExemptionForm,
     )
 
-    getPrisonerContext(req.session, prisonNumber).reviewExemptionDto = updatedExemptionDto
+    req.journeyData.reviewExemptionDto = updatedExemptionDto
     getPrisonerContext(req.session, prisonNumber).reviewExemptionForm = undefined
 
     return res.redirect(`/plan/${prisonNumber}/${journeyId}/review/exemption/confirm`)

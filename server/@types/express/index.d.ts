@@ -77,13 +77,12 @@ declare module 'express-session' {
     // Review related forms
     whoCompletedReviewForm?: WhoCompletedReviewForm
     reviewNoteForm?: ReviewNoteForm
-    // Review exemption related forms and DTO
+    // Review exemption related forms
     reviewExemptionForm?: ReviewExemptionForm
-    reviewExemptionDto?: ReviewExemptionDto
     // Induction related forms
     whoCompletedInductionForm?: WhoCompletedInductionForm
     inductionNoteForm?: InductionNoteForm
-    // Induction exemption related forms and DTO
+    // Induction exemption related forms
     inductionExemptionForm?: InductionExemptionForm
   }
 
@@ -102,6 +101,7 @@ export declare global {
       inductionDto?: InductionDto
       inductionExemptionDto?: InductionExemptionDto
       reviewPlanDto?: ReviewPlanDto
+      reviewExemptionDto?: ReviewExemptionDto
     }
 
     interface Response {

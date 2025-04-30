@@ -1,7 +1,6 @@
 import createError from 'http-errors'
 import { v4 as uuidV4 } from 'uuid'
 import { Request, Response } from 'express'
-import { getPrisonerContext } from '../../../data/session/prisonerContexts'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
 import ConfirmExemptionController from './confirmExemptionController'
 import aValidReviewExemptionDto from '../../../testsupport/reviewExemptionDtoTestDataBuilder'
@@ -28,7 +27,7 @@ describe('ConfirmExemptionController', () => {
     req = {
       user: { username: 'a-dps-user' },
       params: { prisonNumber, journeyId },
-      session: {},
+      journeyData: {},
     } as unknown as Request
     res = {
       render: jest.fn(),
@@ -36,7 +35,7 @@ describe('ConfirmExemptionController', () => {
       locals: { prisonerSummary },
     } as unknown as Response
 
-    getPrisonerContext(req.session, prisonNumber).reviewExemptionDto = undefined
+    req.journeyData.reviewExemptionDto = undefined
 
     jest.clearAllMocks()
   })
@@ -45,7 +44,7 @@ describe('ConfirmExemptionController', () => {
     it('should render the "Are you sure you want to put review on hold" page', async () => {
       // Given
       const reviewExemptionDto = aValidReviewExemptionDto()
-      getPrisonerContext(req.session, prisonNumber).reviewExemptionDto = reviewExemptionDto
+      req.journeyData.reviewExemptionDto = reviewExemptionDto
 
       const expectedViewData = { prisonerSummary, reviewExemptionDto }
 
@@ -61,7 +60,7 @@ describe('ConfirmExemptionController', () => {
     it(`should redirect to 'Exemption recorded' page given successful service call`, async () => {
       // Given
       const reviewExemptionDto = aValidReviewExemptionDto()
-      getPrisonerContext(req.session, prisonNumber).reviewExemptionDto = reviewExemptionDto
+      req.journeyData.reviewExemptionDto = reviewExemptionDto
 
       reviewService.updateActionPlanReviewScheduleStatus.mockResolvedValue(undefined)
 
@@ -71,14 +70,14 @@ describe('ConfirmExemptionController', () => {
       // Then
       expect(res.redirect).toHaveBeenCalledWith(`/plan/A1234BC/${journeyId}/review/exemption/recorded`)
       expect(reviewService.updateActionPlanReviewScheduleStatus).toHaveBeenCalledWith(reviewExemptionDto, 'a-dps-user')
-      expect(getPrisonerContext(req.session, prisonNumber).reviewExemptionDto).toEqual(reviewExemptionDto)
+      expect(req.journeyData.reviewExemptionDto).toEqual(reviewExemptionDto)
       expect(auditService.logExemptActionPlanReview).toHaveBeenCalled()
     })
 
     it('should not redirect to review complete page given service throws an error', async () => {
       // Given
       const reviewExemptionDto = aValidReviewExemptionDto()
-      getPrisonerContext(req.session, prisonNumber).reviewExemptionDto = reviewExemptionDto
+      req.journeyData.reviewExemptionDto = reviewExemptionDto
 
       reviewService.updateActionPlanReviewScheduleStatus.mockRejectedValue(new Error('Service failure'))
 
@@ -88,7 +87,7 @@ describe('ConfirmExemptionController', () => {
       // Then
       expect(next).toHaveBeenCalledWith(createError(500, 'Error exempting Action Plan Review for prisoner A1234BC'))
       expect(reviewService.updateActionPlanReviewScheduleStatus).toHaveBeenCalledWith(reviewExemptionDto, 'a-dps-user')
-      expect(getPrisonerContext(req.session, prisonNumber).reviewExemptionDto).toEqual(reviewExemptionDto)
+      expect(req.journeyData.reviewExemptionDto).toEqual(reviewExemptionDto)
       expect(auditService.logExemptActionPlanReview).not.toHaveBeenCalled()
     })
   })
