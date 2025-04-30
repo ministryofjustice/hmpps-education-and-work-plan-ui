@@ -23,14 +23,14 @@ export default class ConfirmExemptionController {
   }
 
   submitConfirmExemption: RequestHandler = async (req, res, next): Promise<void> => {
-    const { prisonNumber } = req.params
+    const { prisonNumber, journeyId } = req.params
 
     try {
       const { reviewExemptionDto } = getPrisonerContext(req.session, prisonNumber)
       await this.reviewService.updateActionPlanReviewScheduleStatus(reviewExemptionDto, req.user.username)
 
       this.auditService.logExemptActionPlanReview(exemptActionPlanReviewAuditData(req)) // no need to wait for response
-      return res.redirect(`/plan/${prisonNumber}/review/exemption/recorded`)
+      return res.redirect(`/plan/${prisonNumber}/${journeyId}/review/exemption/recorded`)
 
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (e) {

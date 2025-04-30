@@ -10,29 +10,27 @@ import ApplicationAction from '../../../enums/applicationAction'
 /**
  * Route definitions to remove the exemption on a prisoner's Action Plan Review
  */
-export default function exemptionRemovalActionPlanReviewRoutes(router: Router, services: Services) {
+export default function exemptionRemovalActionPlanReviewRoutes(services: Services) {
   const { auditService, reviewService } = services
 
   const confirmExemptionRemovalController = new ConfirmExemptionRemovalController(reviewService, auditService)
   const exemptionRemovedController = new ExemptionRemovedController()
 
-  router.get('/plan/:prisonNumber/review/exemption/remove', [
-    checkUserHasPermissionTo(ApplicationAction.REMOVE_REVIEW_EXEMPTION),
+  const router = Router({ mergeParams: true })
+
+  router.use('/exemption', [checkUserHasPermissionTo(ApplicationAction.REMOVE_REVIEW_EXEMPTION)])
+
+  router.get('/exemption/remove', [
     retrieveActionPlanReviews(reviewService),
     asyncMiddleware(confirmExemptionRemovalController.getConfirmExemptionRemovalView),
   ])
-  router.post('/plan/:prisonNumber/review/exemption/remove', [
-    checkUserHasPermissionTo(ApplicationAction.REMOVE_REVIEW_EXEMPTION),
-    asyncMiddleware(confirmExemptionRemovalController.submitConfirmExemptionRemoval),
-  ])
+  router.post('/exemption/remove', [asyncMiddleware(confirmExemptionRemovalController.submitConfirmExemptionRemoval)])
 
-  router.get('/plan/:prisonNumber/review/exemption/removed', [
-    checkUserHasPermissionTo(ApplicationAction.REMOVE_REVIEW_EXEMPTION),
+  router.get('/exemption/removed', [
     retrieveActionPlanReviews(reviewService),
     asyncMiddleware(exemptionRemovedController.getExemptionRemovedView),
   ])
-  router.post('/plan/:prisonNumber/review/exemption/removed', [
-    checkUserHasPermissionTo(ApplicationAction.REMOVE_REVIEW_EXEMPTION),
-    asyncMiddleware(exemptionRemovedController.submitExemptionRemoved),
-  ])
+  router.post('/exemption/removed', [asyncMiddleware(exemptionRemovedController.submitExemptionRemoved)])
+
+  return router
 }

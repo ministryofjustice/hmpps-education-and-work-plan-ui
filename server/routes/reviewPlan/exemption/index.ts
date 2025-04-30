@@ -13,44 +13,44 @@ import ApplicationAction from '../../../enums/applicationAction'
 /**
  * Route definitions to set a prisoner's Action Plan Review as exempt
  */
-export default function exemptActionPlanReviewRoutes(router: Router, services: Services) {
+export default function exemptActionPlanReviewRoutes(services: Services) {
   const { auditService, reviewService } = services
 
   const exemptionReasonController = new ExemptionReasonController()
   const confirmExemptionController = new ConfirmExemptionController(reviewService, auditService)
   const exemptionRecordedController = new ExemptionRecordedController()
 
-  router.get('/plan/:prisonNumber/review/exemption', [
-    checkUserHasPermissionTo(ApplicationAction.EXEMPT_REVIEW),
+  const router = Router({ mergeParams: true })
+
+  router.use('/exemption', [checkUserHasPermissionTo(ApplicationAction.EXEMPT_REVIEW)])
+
+  router.get('/exemption', [
     createEmptyReviewExemptionDtoIfNotInPrisonerContext,
     asyncMiddleware(exemptionReasonController.getExemptionReasonView),
   ])
-  router.post('/plan/:prisonNumber/review/exemption', [
-    checkUserHasPermissionTo(ApplicationAction.EXEMPT_REVIEW),
+  router.post('/exemption', [
     createEmptyReviewExemptionDtoIfNotInPrisonerContext,
     asyncMiddleware(exemptionReasonController.submitExemptionReasonForm),
   ])
 
-  router.get('/plan/:prisonNumber/review/exemption/confirm', [
-    checkUserHasPermissionTo(ApplicationAction.EXEMPT_REVIEW),
+  router.get('/exemption/confirm', [
     checkReviewExemptionDtoExistsInPrisonerContext,
     asyncMiddleware(confirmExemptionController.getConfirmExemptionView),
   ])
-  router.post('/plan/:prisonNumber/review/exemption/confirm', [
-    checkUserHasPermissionTo(ApplicationAction.EXEMPT_REVIEW),
+  router.post('/exemption/confirm', [
     checkReviewExemptionDtoExistsInPrisonerContext,
     asyncMiddleware(confirmExemptionController.submitConfirmExemption),
   ])
 
-  router.get('/plan/:prisonNumber/review/exemption/recorded', [
-    checkUserHasPermissionTo(ApplicationAction.EXEMPT_REVIEW),
+  router.get('/exemption/recorded', [
     checkReviewExemptionDtoExistsInPrisonerContext,
     retrieveActionPlanReviews(reviewService),
     asyncMiddleware(exemptionRecordedController.getExemptionRecordedView),
   ])
-  router.post('/plan/:prisonNumber/review/exemption/recorded', [
-    checkUserHasPermissionTo(ApplicationAction.EXEMPT_REVIEW),
+  router.post('/exemption/recorded', [
     checkReviewExemptionDtoExistsInPrisonerContext,
     asyncMiddleware(exemptionRecordedController.submitExemptionRecorded),
   ])
+
+  return router
 }

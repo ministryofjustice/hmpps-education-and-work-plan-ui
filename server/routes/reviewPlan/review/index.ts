@@ -13,7 +13,7 @@ import ApplicationAction from '../../../enums/applicationAction'
 /**
  * Route definitions to complete a prisoner's Action Plan Review
  */
-export default function completeActionPlanReviewRoutes(router: Router, services: Services) {
+export default function completeActionPlanReviewRoutes(services: Services) {
   const { auditService, reviewService } = services
 
   const whoCompletedReviewController = new WhoCompletedReviewController()
@@ -21,47 +21,45 @@ export default function completeActionPlanReviewRoutes(router: Router, services:
   const reviewCheckYourAnswersController = new ReviewCheckYourAnswersController(reviewService, auditService)
   const reviewCompleteController = new ReviewCompleteController()
 
-  router.get('/plan/:prisonNumber/review', [
-    checkUserHasPermissionTo(ApplicationAction.RECORD_REVIEW),
+  const router = Router({ mergeParams: true })
+
+  router.use([checkUserHasPermissionTo(ApplicationAction.RECORD_REVIEW)])
+
+  router.get('/', [
     createEmptyReviewPlanDtoIfNotInPrisonerContext,
     asyncMiddleware(whoCompletedReviewController.getWhoCompletedReviewView),
   ])
-  router.post('/plan/:prisonNumber/review', [
-    checkUserHasPermissionTo(ApplicationAction.RECORD_REVIEW),
+  router.post('/', [
     createEmptyReviewPlanDtoIfNotInPrisonerContext,
     asyncMiddleware(whoCompletedReviewController.submitWhoCompletedReviewForm),
   ])
 
-  router.get('/plan/:prisonNumber/review/notes', [
-    checkUserHasPermissionTo(ApplicationAction.RECORD_REVIEW),
+  router.get('/notes', [
     checkReviewPlanDtoExistsInPrisonerContext,
     asyncMiddleware(reviewNoteController.getReviewNoteView),
   ])
-  router.post('/plan/:prisonNumber/review/notes', [
-    checkUserHasPermissionTo(ApplicationAction.RECORD_REVIEW),
+  router.post('/notes', [
     checkReviewPlanDtoExistsInPrisonerContext,
     asyncMiddleware(reviewNoteController.submitReviewNoteForm),
   ])
 
-  router.get('/plan/:prisonNumber/review/check-your-answers', [
-    checkUserHasPermissionTo(ApplicationAction.RECORD_REVIEW),
+  router.get('/check-your-answers', [
     checkReviewPlanDtoExistsInPrisonerContext,
     asyncMiddleware(reviewCheckYourAnswersController.getReviewCheckYourAnswersView),
   ])
-  router.post('/plan/:prisonNumber/review/check-your-answers', [
-    checkUserHasPermissionTo(ApplicationAction.RECORD_REVIEW),
+  router.post('/check-your-answers', [
     checkReviewPlanDtoExistsInPrisonerContext,
     asyncMiddleware(reviewCheckYourAnswersController.submitCheckYourAnswers),
   ])
 
-  router.get('/plan/:prisonNumber/review/complete', [
-    checkUserHasPermissionTo(ApplicationAction.RECORD_REVIEW),
+  router.get('/complete', [
     checkReviewPlanDtoExistsInPrisonerContext,
     asyncMiddleware(reviewCompleteController.getReviewCompleteView),
   ])
-  router.post('/plan/:prisonNumber/review/complete', [
-    checkUserHasPermissionTo(ApplicationAction.RECORD_REVIEW),
+  router.post('/complete', [
     checkReviewPlanDtoExistsInPrisonerContext,
     asyncMiddleware(reviewCompleteController.goToLearningAndWorkProgressPlan),
   ])
+
+  return router
 }

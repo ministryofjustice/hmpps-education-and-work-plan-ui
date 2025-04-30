@@ -26,7 +26,7 @@ export default class ExemptionReasonController {
   }
 
   submitExemptionReasonForm: RequestHandler = async (req, res, next): Promise<void> => {
-    const { prisonNumber } = req.params
+    const { prisonNumber, journeyId } = req.params
     const { prisonId } = res.locals.prisonerSummary
     const { exemptionReason, exemptionReasonDetails } = req.body
     const selectedExemptionReasonDetails = { [exemptionReason]: exemptionReasonDetails[exemptionReason] }
@@ -40,7 +40,7 @@ export default class ExemptionReasonController {
 
     const errors = validateReviewExemptionForm(reviewExemptionForm)
     if (errors.length > 0) {
-      return res.redirectWithErrors(`/plan/${prisonNumber}/review/exemption`, errors)
+      return res.redirectWithErrors(`/plan/${prisonNumber}/${journeyId}/review/exemption`, errors)
     }
 
     const { reviewExemptionDto } = getPrisonerContext(req.session, prisonNumber)
@@ -54,7 +54,7 @@ export default class ExemptionReasonController {
     getPrisonerContext(req.session, prisonNumber).reviewExemptionDto = updatedExemptionDto
     getPrisonerContext(req.session, prisonNumber).reviewExemptionForm = undefined
 
-    return res.redirect(`/plan/${prisonNumber}/review/exemption/confirm`)
+    return res.redirect(`/plan/${prisonNumber}/${journeyId}/review/exemption/confirm`)
   }
 }
 
