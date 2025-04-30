@@ -4,7 +4,6 @@ import createError from 'http-errors'
 import { v4 as uuidV4 } from 'uuid'
 import type { ReviewPlanDto } from 'dto'
 import ReviewCheckYourAnswersController from './reviewCheckYourAnswersController'
-import { getPrisonerContext } from '../../../data/session/prisonerContexts'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
 import SessionCompletedByValue from '../../../enums/sessionCompletedByValue'
 import AuditService from '../../../services/auditService'
@@ -31,6 +30,7 @@ describe('ReviewCheckYourAnswersController', () => {
     req = {
       params: { prisonNumber, journeyId },
       session: {},
+      journeyData: {},
       user: { username: 'a-dps-user' },
       originalUrl: `/plan/${prisonNumber}/${journeyId}/review/check-your-answers`,
     } as unknown as Request
@@ -41,7 +41,7 @@ describe('ReviewCheckYourAnswersController', () => {
       locals: { prisonerSummary },
     } as unknown as Response
 
-    getPrisonerContext(req.session, prisonNumber).reviewPlanDto = undefined
+    req.journeyData.reviewPlanDto = undefined
 
     jest.clearAllMocks()
   })
@@ -57,7 +57,7 @@ describe('ReviewCheckYourAnswersController', () => {
         reviewDate: startOfDay('2024-03-09'),
         notes: 'Progress noted in review.',
       }
-      getPrisonerContext(req.session, prisonNumber).reviewPlanDto = reviewPlanDto
+      req.journeyData.reviewPlanDto = reviewPlanDto
 
       const expectedViewData = {
         prisonerSummary,
@@ -87,7 +87,7 @@ describe('ReviewCheckYourAnswersController', () => {
         reviewDate: startOfDay('2024-03-09'),
         notes: 'Chris has progressed well',
       }
-      getPrisonerContext(req.session, prisonNumber).reviewPlanDto = reviewPlanDto
+      req.journeyData.reviewPlanDto = reviewPlanDto
 
       const createdActionPlanReview = aValidCreatedActionPlanReview({ wasLastReviewBeforeRelease: true })
       reviewService.createActionPlanReview.mockResolvedValue(createdActionPlanReview)
@@ -105,7 +105,7 @@ describe('ReviewCheckYourAnswersController', () => {
       // Then
       expect(res.redirect).toHaveBeenCalledWith(`/plan/A1234BC/${journeyId}/review/complete`)
       expect(reviewService.createActionPlanReview).toHaveBeenCalledWith(reviewPlanDto, 'a-dps-user')
-      expect(getPrisonerContext(req.session, prisonNumber).reviewPlanDto).toEqual(expectedUpdatedReviewPlanDto)
+      expect(req.journeyData.reviewPlanDto).toEqual(expectedUpdatedReviewPlanDto)
       expect(auditService.logCreateActionPlanReview).toHaveBeenCalled()
     })
 
@@ -118,7 +118,7 @@ describe('ReviewCheckYourAnswersController', () => {
         reviewDate: startOfDay('2024-03-09'),
         notes: 'Chris has progressed well',
       }
-      getPrisonerContext(req.session, prisonNumber).reviewPlanDto = reviewPlanDto
+      req.journeyData.reviewPlanDto = reviewPlanDto
 
       const createdActionPlanReview = aValidCreatedActionPlanReview({ wasLastReviewBeforeRelease: false })
       reviewService.createActionPlanReview.mockResolvedValue(createdActionPlanReview)
@@ -136,7 +136,7 @@ describe('ReviewCheckYourAnswersController', () => {
       // Then
       expect(res.redirect).toHaveBeenCalledWith(`/plan/A1234BC/${journeyId}/review/complete`)
       expect(reviewService.createActionPlanReview).toHaveBeenCalledWith(reviewPlanDto, 'a-dps-user')
-      expect(getPrisonerContext(req.session, prisonNumber).reviewPlanDto).toEqual(expectedUpdatedReviewPlanDto)
+      expect(req.journeyData.reviewPlanDto).toEqual(expectedUpdatedReviewPlanDto)
       expect(auditService.logCreateActionPlanReview).toHaveBeenCalled()
     })
 
@@ -149,7 +149,7 @@ describe('ReviewCheckYourAnswersController', () => {
         reviewDate: startOfDay('2024-03-09'),
         notes: 'Chris has progressed well',
       }
-      getPrisonerContext(req.session, prisonNumber).reviewPlanDto = reviewPlanDto
+      req.journeyData.reviewPlanDto = reviewPlanDto
 
       reviewService.createActionPlanReview.mockRejectedValue(new Error('Service failure'))
 
@@ -159,7 +159,7 @@ describe('ReviewCheckYourAnswersController', () => {
       // Then
       expect(next).toHaveBeenCalledWith(createError(500, 'Error creating Action Plan Review for prisoner A1234BC'))
       expect(reviewService.createActionPlanReview).toHaveBeenCalledWith(reviewPlanDto, 'a-dps-user')
-      expect(getPrisonerContext(req.session, prisonNumber).reviewPlanDto).toEqual(reviewPlanDto)
+      expect(req.journeyData.reviewPlanDto).toEqual(reviewPlanDto)
       expect(auditService.logCreateActionPlanReview).not.toHaveBeenCalled()
     })
   })

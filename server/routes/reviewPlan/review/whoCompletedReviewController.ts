@@ -16,7 +16,7 @@ export default class WhoCompletedReviewController {
     if (getPrisonerContext(req.session, prisonNumber).whoCompletedReviewForm) {
       whoCompletedReviewForm = getPrisonerContext(req.session, prisonNumber).whoCompletedReviewForm
     } else {
-      whoCompletedReviewForm = toWhoCompletedReviewForm(getPrisonerContext(req.session, prisonNumber).reviewPlanDto)
+      whoCompletedReviewForm = toWhoCompletedReviewForm(req.journeyData.reviewPlanDto)
     }
 
     getPrisonerContext(req.session, prisonNumber).whoCompletedReviewForm = undefined
@@ -37,14 +37,14 @@ export default class WhoCompletedReviewController {
       return res.redirectWithErrors(`/plan/${prisonNumber}/${journeyId}/review`, errors)
     }
 
-    const { reviewPlanDto } = getPrisonerContext(req.session, prisonNumber)
+    const { reviewPlanDto } = req.journeyData
     const updatedReviewPlanDto = updateDtoWithFormContents(
       reviewPlanDto,
       whoCompletedReviewForm,
       prisonNumber,
       prisonId,
     )
-    getPrisonerContext(req.session, prisonNumber).reviewPlanDto = updatedReviewPlanDto
+    req.journeyData.reviewPlanDto = updatedReviewPlanDto
     getPrisonerContext(req.session, prisonNumber).whoCompletedReviewForm = undefined
 
     return previousPageWasCheckYourAnswers(req)

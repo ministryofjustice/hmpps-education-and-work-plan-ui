@@ -19,6 +19,7 @@ describe('reviewNoteController', () => {
     session: {},
     body: {},
     params: { prisonNumber, journeyId },
+    journeyData: {},
   } as unknown as Request
   const res = {
     redirect: jest.fn(),
@@ -31,7 +32,7 @@ describe('reviewNoteController', () => {
   beforeEach(() => {
     jest.resetAllMocks()
     req.body = {}
-    getPrisonerContext(req.session, prisonNumber).reviewPlanDto = undefined
+    req.journeyData = {}
     getPrisonerContext(req.session, prisonNumber).reviewNoteForm = undefined
   })
 
@@ -47,7 +48,7 @@ describe('reviewNoteController', () => {
         reviewDate: startOfDay('2024-03-09'),
         notes: 'Chris has progressed well',
       }
-      getPrisonerContext(req.session, prisonNumber).reviewPlanDto = reviewPlanDto
+      req.journeyData.reviewPlanDto = reviewPlanDto
 
       const expectedForm: ReviewNoteForm = {
         notes: 'Chris has progressed well',
@@ -98,7 +99,7 @@ describe('reviewNoteController', () => {
         reviewDate: startOfDay('2024-03-09'),
         notes: undefined,
       }
-      getPrisonerContext(req.session, prisonNumber).reviewPlanDto = reviewPlanDto
+      req.journeyData.reviewPlanDto = reviewPlanDto
 
       const validForm: ReviewNoteForm = {
         notes: 'Chris has progressed well',
@@ -116,7 +117,7 @@ describe('reviewNoteController', () => {
       // Then
       expect(res.redirect).toHaveBeenCalledWith(`/plan/A1234BC/${journeyId}/review/check-your-answers`)
       expect(getPrisonerContext(req.session, prisonNumber).reviewNoteForm).toBeUndefined()
-      expect(getPrisonerContext(req.session, prisonNumber).reviewPlanDto).toEqual(expectedReviewPlanDto)
+      expect(req.journeyData.reviewPlanDto).toEqual(expectedReviewPlanDto)
     })
   })
 

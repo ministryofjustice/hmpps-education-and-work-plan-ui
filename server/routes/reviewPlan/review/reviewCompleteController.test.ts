@@ -2,7 +2,6 @@ import { Request, Response } from 'express'
 import ReviewCompleteController from './reviewCompleteController'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
 import aValidReviewPlanDto from '../../../testsupport/reviewPlanDtoTestDataBuilder'
-import { getPrisonerContext } from '../../../data/session/prisonerContexts'
 
 describe('ReviewCompleteController', () => {
   const controller = new ReviewCompleteController()
@@ -14,6 +13,7 @@ describe('ReviewCompleteController', () => {
   const req = {
     session: {},
     params: { prisonNumber },
+    journeyData: {},
   } as unknown as Request
   const res = {
     redirectWithSuccess: jest.fn(),
@@ -24,12 +24,13 @@ describe('ReviewCompleteController', () => {
 
   beforeEach(() => {
     jest.resetAllMocks()
+    req.journeyData = {}
   })
 
   describe('getReviewCompleteView', () => {
     it('should render the "Review Complete" page', async () => {
       // Given
-      getPrisonerContext(req.session, prisonNumber).reviewPlanDto = reviewPlanDto
+      req.journeyData.reviewPlanDto = reviewPlanDto
 
       const expectedViewData = {
         prisonerSummary,
