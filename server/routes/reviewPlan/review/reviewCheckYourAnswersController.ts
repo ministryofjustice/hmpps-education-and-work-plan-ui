@@ -26,7 +26,7 @@ export default class ReviewCheckYourAnswersController {
   }
 
   submitCheckYourAnswers: RequestHandler = async (req, res, next): Promise<void> => {
-    const { prisonNumber } = req.params
+    const { prisonNumber, journeyId } = req.params
     const { reviewPlanDto } = getPrisonerContext(req.session, prisonNumber)
 
     try {
@@ -36,7 +36,7 @@ export default class ReviewCheckYourAnswersController {
       getPrisonerContext(req.session, prisonNumber).reviewPlanDto = updatedReviewPlanDto
 
       this.auditService.logCreateActionPlanReview(createActionPlanReviewAuditData(req)) // no need to wait for response
-      return res.redirect(`/plan/${prisonNumber}/review/complete`)
+      return res.redirect(`/plan/${prisonNumber}/${journeyId}/review/complete`)
 
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (e) {

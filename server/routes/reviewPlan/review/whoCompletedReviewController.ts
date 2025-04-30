@@ -26,7 +26,7 @@ export default class WhoCompletedReviewController {
   }
 
   submitWhoCompletedReviewForm: RequestHandler = async (req, res, next): Promise<void> => {
-    const { prisonNumber } = req.params
+    const { prisonNumber, journeyId } = req.params
     const { prisonId } = res.locals.prisonerSummary
 
     const whoCompletedReviewForm: WhoCompletedReviewForm = { ...req.body }
@@ -34,7 +34,7 @@ export default class WhoCompletedReviewController {
 
     const errors = validateWhoCompletedReviewForm(whoCompletedReviewForm)
     if (errors.length > 0) {
-      return res.redirectWithErrors(`/plan/${prisonNumber}/review`, errors)
+      return res.redirectWithErrors(`/plan/${prisonNumber}/${journeyId}/review`, errors)
     }
 
     const { reviewPlanDto } = getPrisonerContext(req.session, prisonNumber)
@@ -48,8 +48,8 @@ export default class WhoCompletedReviewController {
     getPrisonerContext(req.session, prisonNumber).whoCompletedReviewForm = undefined
 
     return previousPageWasCheckYourAnswers(req)
-      ? res.redirect(`/plan/${prisonNumber}/review/check-your-answers`)
-      : res.redirect(`/plan/${prisonNumber}/review/notes`)
+      ? res.redirect(`/plan/${prisonNumber}/${journeyId}/review/check-your-answers`)
+      : res.redirect(`/plan/${prisonNumber}/${journeyId}/review/notes`)
   }
 }
 

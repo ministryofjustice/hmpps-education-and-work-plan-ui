@@ -1,5 +1,6 @@
-import type { ReviewExemptionForm } from 'reviewPlanForms'
 import { Request, Response } from 'express'
+import { v4 as uuidV4 } from 'uuid'
+import type { ReviewExemptionForm } from 'reviewPlanForms'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
 import { getPrisonerContext } from '../../../data/session/prisonerContexts'
 import ExemptionReasonController from './exemptionReasonController'
@@ -8,6 +9,8 @@ import ReviewScheduleStatusValue from '../../../enums/reviewScheduleStatusValue'
 
 describe('exemptionReasonController', () => {
   const controller = new ExemptionReasonController()
+
+  const journeyId = uuidV4()
   const prisonNumber = 'A1234BC'
   const prisonId = 'MDI'
   const prisonerSummary = aValidPrisonerSummary({ prisonNumber, prisonId })
@@ -15,7 +18,7 @@ describe('exemptionReasonController', () => {
   const req = {
     session: {},
     body: {},
-    params: { prisonNumber },
+    params: { prisonNumber, journeyId },
   } as unknown as Request
   const res = {
     redirect: jest.fn(),
@@ -82,7 +85,7 @@ describe('exemptionReasonController', () => {
       await controller.submitExemptionReasonForm(req, res, next)
 
       // Then
-      expect(res.redirect).toHaveBeenCalledWith('/plan/A1234BC/review/exemption/confirm')
+      expect(res.redirect).toHaveBeenCalledWith(`/plan/A1234BC/${journeyId}/review/exemption/confirm`)
       expect(getPrisonerContext(req.session, prisonNumber).reviewExemptionForm).toBeUndefined()
       expect(getPrisonerContext(req.session, prisonNumber).reviewExemptionDto).toEqual(reviewExemptionDto)
     })
@@ -112,7 +115,7 @@ describe('exemptionReasonController', () => {
       await controller.submitExemptionReasonForm(req, res, next)
 
       // Then
-      expect(res.redirect).toHaveBeenCalledWith('/plan/A1234BC/review/exemption/confirm')
+      expect(res.redirect).toHaveBeenCalledWith(`/plan/A1234BC/${journeyId}/review/exemption/confirm`)
       expect(getPrisonerContext(req.session, prisonNumber).reviewExemptionDto).toEqual(expectedReviewExemptionDto)
     })
 
@@ -132,7 +135,7 @@ describe('exemptionReasonController', () => {
       await controller.submitExemptionReasonForm(req, res, next)
 
       // Then
-      expect(res.redirectWithErrors).toHaveBeenCalledWith('/plan/A1234BC/review/exemption', expectedErrors)
+      expect(res.redirectWithErrors).toHaveBeenCalledWith(`/plan/A1234BC/${journeyId}/review/exemption`, expectedErrors)
       expect(getPrisonerContext(req.session, prisonNumber).reviewExemptionForm).toEqual(expectedExemptionReasonForm)
     })
 
@@ -157,7 +160,7 @@ describe('exemptionReasonController', () => {
       await controller.submitExemptionReasonForm(req, res, next)
 
       // Then
-      expect(res.redirectWithErrors).toHaveBeenCalledWith('/plan/A1234BC/review/exemption', expectedErrors)
+      expect(res.redirectWithErrors).toHaveBeenCalledWith(`/plan/A1234BC/${journeyId}/review/exemption`, expectedErrors)
       expect(getPrisonerContext(req.session, prisonNumber).reviewExemptionForm).toEqual(expectedExemptionReasonForm)
     })
   })

@@ -24,7 +24,7 @@ export default class ReviewNoteController {
   }
 
   submitReviewNoteForm: RequestHandler = async (req, res, next): Promise<void> => {
-    const { prisonNumber } = req.params
+    const { prisonNumber, journeyId } = req.params
 
     const reviewNoteForm: ReviewNoteForm = { ...req.body }
 
@@ -34,10 +34,10 @@ export default class ReviewNoteController {
 
     const errors = validateReviewNote(reviewNoteForm)
     if (errors.length > 0) {
-      return res.redirectWithErrors(`/plan/${prisonNumber}/review/notes`, errors)
+      return res.redirectWithErrors(`/plan/${prisonNumber}/${journeyId}/review/notes`, errors)
     }
 
-    return res.redirect(`/plan/${prisonNumber}/review/check-your-answers`)
+    return res.redirect(`/plan/${prisonNumber}/${journeyId}/review/check-your-answers`)
   }
 }
 

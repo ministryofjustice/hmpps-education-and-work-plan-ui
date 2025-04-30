@@ -1,4 +1,5 @@
 import createError from 'http-errors'
+import { v4 as uuidV4 } from 'uuid'
 import { Request, Response } from 'express'
 import { getPrisonerContext } from '../../../data/session/prisonerContexts'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
@@ -15,6 +16,7 @@ describe('ConfirmExemptionController', () => {
   const auditService = new AuditService(null) as jest.Mocked<AuditService>
   const controller = new ConfirmExemptionController(reviewService, auditService)
 
+  const journeyId = uuidV4()
   const prisonNumber = 'A1234BC'
   const prisonerSummary = aValidPrisonerSummary({ prisonNumber })
 
@@ -25,7 +27,7 @@ describe('ConfirmExemptionController', () => {
   beforeEach(() => {
     req = {
       user: { username: 'a-dps-user' },
-      params: { prisonNumber },
+      params: { prisonNumber, journeyId },
       session: {},
     } as unknown as Request
     res = {
@@ -67,7 +69,7 @@ describe('ConfirmExemptionController', () => {
       await controller.submitConfirmExemption(req, res, next)
 
       // Then
-      expect(res.redirect).toHaveBeenCalledWith('/plan/A1234BC/review/exemption/recorded')
+      expect(res.redirect).toHaveBeenCalledWith(`/plan/A1234BC/${journeyId}/review/exemption/recorded`)
       expect(reviewService.updateActionPlanReviewScheduleStatus).toHaveBeenCalledWith(reviewExemptionDto, 'a-dps-user')
       expect(getPrisonerContext(req.session, prisonNumber).reviewExemptionDto).toEqual(reviewExemptionDto)
       expect(auditService.logExemptActionPlanReview).toHaveBeenCalled()

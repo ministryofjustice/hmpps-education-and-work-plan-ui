@@ -56,9 +56,10 @@ context(`Review a prisoner's plan`, () => {
   it('should redirect to overview page given user tries to navigate directly to Review Notes screen - ie. navigate out of sequence', () => {
     // Given
     cy.signIn()
+    const nonExistentJourneyId = '60f46a68-b016-4ccc-8ba4-f53a0de3a6f4'
 
     // When
-    cy.visit(`/plan/${prisonNumber}/review/notes`)
+    cy.visit(`/plan/${prisonNumber}/${nonExistentJourneyId}/review/notes`)
 
     // Then
     Page.verifyOnPage(OverviewPage)

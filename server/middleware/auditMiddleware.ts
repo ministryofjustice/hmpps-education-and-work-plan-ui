@@ -24,15 +24,20 @@ const pageViewEventMap: Record<string, Page> = {
   '/plan/:prisonNumber/view/goals': Page.VIEW_GOALS,
 
   // Review journey pages
-  '/plan/:prisonNumber/review': Page.REVIEW_PLAN,
-  '/plan/:prisonNumber/review/notes': Page.REVIEW_PLAN_NOTES,
-  '/plan/:prisonNumber/review/check-your-answers': Page.REVIEW_PLAN_CHECK_YOUR_ANSWERS,
-  '/plan/:prisonNumber/review/complete': Page.REVIEW_PLAN_COMPLETE,
-  '/plan/:prisonNumber/review/exemption': Page.REVIEW_PLAN_EXEMPTION,
-  '/plan/:prisonNumber/review/exemption/confirm': Page.REVIEW_PLAN_EXEMPTION_CONFIRM,
-  '/plan/:prisonNumber/review/exemption/recorded': Page.REVIEW_PLAN_EXEMPTION_RECORDED,
-  '/plan/:prisonNumber/review/exemption/remove': Page.REVIEW_PLAN_EXEMPTION_REMOVAL_CONFIRM,
-  '/plan/:prisonNumber/review/exemption/removed': Page.REVIEW_PLAN_EXEMPTION_REMOVED,
+  '/plan/:prisonNumber/review': null, // route without the journeyId does not raise an audit event because it redirects to the route with a journeyId
+  '/plan/:prisonNumber/:journeyId/review': Page.REVIEW_PLAN,
+  '/plan/:prisonNumber/:journeyId/review/notes': Page.REVIEW_PLAN_NOTES,
+  '/plan/:prisonNumber/:journeyId/review/check-your-answers': Page.REVIEW_PLAN_CHECK_YOUR_ANSWERS,
+  '/plan/:prisonNumber/:journeyId/review/complete': Page.REVIEW_PLAN_COMPLETE,
+  // Exempt review journey pages
+  '/plan/:prisonNumber/review/exemption': null, // route without the journeyId does not raise an audit event because it redirects to the route with a journeyId
+  '/plan/:prisonNumber/:journeyId/review/exemption': Page.REVIEW_PLAN_EXEMPTION,
+  '/plan/:prisonNumber/:journeyId/review/exemption/confirm': Page.REVIEW_PLAN_EXEMPTION_CONFIRM,
+  '/plan/:prisonNumber/:journeyId/review/exemption/recorded': Page.REVIEW_PLAN_EXEMPTION_RECORDED,
+  // Remove review exemption journey pages
+  '/plan/:prisonNumber/review/exemption/remove': null, // route without the journeyId does not raise an audit event because it redirects to the route with a journeyId
+  '/plan/:prisonNumber/:journeyId/review/exemption/remove': Page.REVIEW_PLAN_EXEMPTION_REMOVAL_CONFIRM,
+  '/plan/:prisonNumber/:journeyId/review/exemption/removed': Page.REVIEW_PLAN_EXEMPTION_REMOVED,
 
   // Create goals
   '/plan/:prisonNumber/goals/create': Page.CREATE_GOALS,

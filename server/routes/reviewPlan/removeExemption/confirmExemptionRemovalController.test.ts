@@ -1,5 +1,6 @@
 import { Request, Response } from 'express'
 import createError from 'http-errors'
+import { v4 as uuidV4 } from 'uuid'
 import ReviewService from '../../../services/reviewService'
 import AuditService from '../../../services/auditService'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
@@ -17,6 +18,7 @@ describe('confirmExemptionRemovalController', () => {
   const auditService = new AuditService(null) as jest.Mocked<AuditService>
   const controller = new ConfirmExemptionRemovalController(reviewService, auditService)
 
+  const journeyId = uuidV4()
   const prisonNumber = 'A1234BC'
   const prisonerSummary = aValidPrisonerSummary({ prisonNumber })
   const actionPlanReviews = aValidActionPlanReviews({
@@ -32,7 +34,7 @@ describe('confirmExemptionRemovalController', () => {
   beforeEach(() => {
     req = {
       user: { username: 'a-dps-user' },
-      params: { prisonNumber },
+      params: { prisonNumber, journeyId },
       session: {},
     } as unknown as Request
     res = {
@@ -76,7 +78,7 @@ describe('confirmExemptionRemovalController', () => {
       await controller.submitConfirmExemptionRemoval(req, res, next)
 
       // Then
-      expect(res.redirect).toHaveBeenCalledWith('/plan/A1234BC/review/exemption/removed')
+      expect(res.redirect).toHaveBeenCalledWith(`/plan/A1234BC/${journeyId}/review/exemption/removed`)
       expect(reviewService.updateActionPlanReviewScheduleStatus).toHaveBeenCalledWith(expectedDtp, 'a-dps-user')
       expect(auditService.logRemoveExemptionActionPlanReview).toHaveBeenCalled()
     })

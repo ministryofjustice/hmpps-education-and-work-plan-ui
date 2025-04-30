@@ -1,6 +1,7 @@
 import { Request, Response } from 'express'
 import { startOfDay } from 'date-fns'
 import createError from 'http-errors'
+import { v4 as uuidV4 } from 'uuid'
 import type { ReviewPlanDto } from 'dto'
 import ReviewCheckYourAnswersController from './reviewCheckYourAnswersController'
 import { getPrisonerContext } from '../../../data/session/prisonerContexts'
@@ -18,6 +19,7 @@ describe('ReviewCheckYourAnswersController', () => {
   const auditService = new AuditService(null) as jest.Mocked<AuditService>
   const controller = new ReviewCheckYourAnswersController(reviewService, auditService)
 
+  const journeyId = uuidV4()
   const prisonNumber = 'A1234BC'
   const prisonerSummary = aValidPrisonerSummary({ prisonNumber })
 
@@ -27,10 +29,10 @@ describe('ReviewCheckYourAnswersController', () => {
 
   beforeEach(() => {
     req = {
-      params: { prisonNumber },
+      params: { prisonNumber, journeyId },
       session: {},
       user: { username: 'a-dps-user' },
-      originalUrl: `/plan/${prisonNumber}/review/check-your-answers`,
+      originalUrl: `/plan/${prisonNumber}/${journeyId}/review/check-your-answers`,
     } as unknown as Request
 
     res = {
@@ -63,7 +65,7 @@ describe('ReviewCheckYourAnswersController', () => {
       }
       const expectedPageFlowHistory = {
         currentPageIndex: 0,
-        pageUrls: [`/plan/${prisonNumber}/review/check-your-answers`],
+        pageUrls: [`/plan/${prisonNumber}/${journeyId}/review/check-your-answers`],
       }
 
       // When
@@ -101,7 +103,7 @@ describe('ReviewCheckYourAnswersController', () => {
       await controller.submitCheckYourAnswers(req, res, next)
 
       // Then
-      expect(res.redirect).toHaveBeenCalledWith('/plan/A1234BC/review/complete')
+      expect(res.redirect).toHaveBeenCalledWith(`/plan/A1234BC/${journeyId}/review/complete`)
       expect(reviewService.createActionPlanReview).toHaveBeenCalledWith(reviewPlanDto, 'a-dps-user')
       expect(getPrisonerContext(req.session, prisonNumber).reviewPlanDto).toEqual(expectedUpdatedReviewPlanDto)
       expect(auditService.logCreateActionPlanReview).toHaveBeenCalled()
@@ -132,7 +134,7 @@ describe('ReviewCheckYourAnswersController', () => {
       await controller.submitCheckYourAnswers(req, res, next)
 
       // Then
-      expect(res.redirect).toHaveBeenCalledWith('/plan/A1234BC/review/complete')
+      expect(res.redirect).toHaveBeenCalledWith(`/plan/A1234BC/${journeyId}/review/complete`)
       expect(reviewService.createActionPlanReview).toHaveBeenCalledWith(reviewPlanDto, 'a-dps-user')
       expect(getPrisonerContext(req.session, prisonNumber).reviewPlanDto).toEqual(expectedUpdatedReviewPlanDto)
       expect(auditService.logCreateActionPlanReview).toHaveBeenCalled()

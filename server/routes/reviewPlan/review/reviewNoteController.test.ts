@@ -1,5 +1,6 @@
 import { Request, Response } from 'express'
 import { startOfDay } from 'date-fns'
+import { v4 as uuidV4 } from 'uuid'
 import type { ReviewPlanDto } from 'dto'
 import type { ReviewNoteForm } from 'reviewPlanForms'
 import ReviewNoteController from './reviewNoteController'
@@ -10,13 +11,14 @@ import SessionCompletedByValue from '../../../enums/sessionCompletedByValue'
 describe('reviewNoteController', () => {
   const controller = new ReviewNoteController()
 
+  const journeyId = uuidV4()
   const prisonNumber = 'A1234BC'
   const prisonerSummary = aValidPrisonerSummary({ prisonNumber })
 
   const req = {
     session: {},
     body: {},
-    params: { prisonNumber },
+    params: { prisonNumber, journeyId },
   } as unknown as Request
   const res = {
     redirect: jest.fn(),
@@ -112,7 +114,7 @@ describe('reviewNoteController', () => {
       await controller.submitReviewNoteForm(req, res, next)
 
       // Then
-      expect(res.redirect).toHaveBeenCalledWith('/plan/A1234BC/review/check-your-answers')
+      expect(res.redirect).toHaveBeenCalledWith(`/plan/A1234BC/${journeyId}/review/check-your-answers`)
       expect(getPrisonerContext(req.session, prisonNumber).reviewNoteForm).toBeUndefined()
       expect(getPrisonerContext(req.session, prisonNumber).reviewPlanDto).toEqual(expectedReviewPlanDto)
     })
@@ -133,7 +135,7 @@ describe('reviewNoteController', () => {
     await controller.submitReviewNoteForm(req, res, next)
 
     // Then
-    expect(res.redirectWithErrors).toHaveBeenCalledWith('/plan/A1234BC/review/notes', expectedErrors)
+    expect(res.redirectWithErrors).toHaveBeenCalledWith(`/plan/A1234BC/${journeyId}/review/notes`, expectedErrors)
     expect(getPrisonerContext(req.session, prisonNumber).reviewNoteForm).toEqual(invalidForm.notes)
   })
 
@@ -152,7 +154,7 @@ describe('reviewNoteController', () => {
     await controller.submitReviewNoteForm(req, res, next)
 
     // Then
-    expect(res.redirectWithErrors).toHaveBeenCalledWith('/plan/A1234BC/review/notes', expectedErrors)
+    expect(res.redirectWithErrors).toHaveBeenCalledWith(`/plan/A1234BC/${journeyId}/review/notes`, expectedErrors)
     expect(getPrisonerContext(req.session, prisonNumber).reviewNoteForm).toEqual(invalidForm)
   })
 })
