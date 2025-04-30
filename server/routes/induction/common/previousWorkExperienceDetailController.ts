@@ -2,10 +2,12 @@ import createError from 'http-errors'
 import { NextFunction, Request, RequestHandler, Response } from 'express'
 import type { PreviousWorkExperienceDetailForm } from 'inductionForms'
 import type { InductionDto, PreviousWorkExperienceDto } from 'inductionDto'
+import type { PageFlow } from 'viewModels'
 import InductionController from './inductionController'
 import PreviousWorkExperienceDetailView from './previousWorkExperienceDetailView'
 import TypeOfWorkExperienceValue from '../../../enums/typeOfWorkExperienceValue'
 import logger from '../../../../logger'
+import previousWorkExperienceTypeScreenOrderComparator from '../previousWorkExperienceTypeScreenOrderComparator'
 
 /**
  * Abstract controller class defining functionality common to both the Create and Update Induction journeys.
@@ -19,9 +21,9 @@ export default abstract class PreviousWorkExperienceDetailController extends Ind
     res: Response,
     next: NextFunction,
   ): Promise<void> => {
+    const { journeyId, prisonNumber, typeOfWorkExperience } = req.params
     const { inductionDto } = req.journeyData
     const { prisonerSummary } = res.locals
-    const { typeOfWorkExperience } = req.params
 
     let previousWorkExperienceType: TypeOfWorkExperienceValue
     try {
@@ -37,6 +39,21 @@ export default abstract class PreviousWorkExperienceDetailController extends Ind
     }
 
     this.addCurrentPageToFlowHistoryWhenComingFromCheckYourAnswers(req)
+
+    if (
+      req.originalUrl?.includes('/create-induction/') &&
+      !this.previousPageWasCheckYourAnswers(req) &&
+      !req.session.pageFlowQueue
+    ) {
+      // If this is part of the "create induction" journey, and the previous page was not Check Your Answers and there is
+      // no PageFlowQueue then the user is using the Back navigation and has arrived on this Previous Work Experience
+      // detail screen.
+      // To be able to proceed forwards again we need a properly constructed and populated PageFlowQueue
+      logger.debug(
+        `User has navigated Back to arrive on this Previous Work Experience Detail screen for ${previousWorkExperienceType}. Setting up a PageFlowQueue.`,
+      )
+      req.session.pageFlowQueue = buildPageFlowQueue(inductionDto, prisonNumber, journeyId, previousWorkExperienceType)
+    }
 
     const previousWorkExperienceDetailsForm =
       req.session.previousWorkExperienceDetailForm ||
@@ -124,5 +141,34 @@ const toPreviousWorkExperienceDetailForm = (
   return {
     jobRole: previousWorkExperience?.role || '',
     jobDetails: previousWorkExperience?.details || '',
+  }
+}
+
+/**
+ * Builds and returns a Page Flow Queue to show the Details page for each work experience type. The list of pages to be
+ * added to the queue is the list of work types on the induction.
+ */
+const buildPageFlowQueue = (
+  induction: InductionDto,
+  prisonNumber: string,
+  journeyId: string,
+  workExperienceType: TypeOfWorkExperienceValue,
+): PageFlow => {
+  const workExperienceTypesOnUpdatedInduction = (induction.previousWorkExperiences.experiences || []).map(
+    experience => experience.experienceType,
+  )
+
+  const workExperienceTypesToShowDetailsFormFor = [...workExperienceTypesOnUpdatedInduction].sort(
+    previousWorkExperienceTypeScreenOrderComparator, // sort them by the order presented on screen (which is not alphabetic on the enum values)
+  )
+
+  const nextPages = workExperienceTypesToShowDetailsFormFor.map(
+    workType =>
+      `/prisoners/${prisonNumber}/create-induction/${journeyId}/previous-work-experience/${workType.toLowerCase()}`,
+  )
+  const pageUrls = [`/prisoners/${prisonNumber}/create-induction/${journeyId}/previous-work-experience`, ...nextPages]
+  return {
+    pageUrls,
+    currentPageIndex: workExperienceTypesToShowDetailsFormFor.indexOf(workExperienceType),
   }
 }

@@ -12,10 +12,9 @@ export default class PreviousWorkExperienceDetailCreateController extends Previo
     res: Response,
     next: NextFunction,
   ): Promise<void> => {
-    const { prisonNumber, journeyId } = req.params
+    const { journeyId, prisonNumber, typeOfWorkExperience } = req.params
     const { inductionDto } = req.journeyData
     const { prisonerSummary } = res.locals
-    const { typeOfWorkExperience } = req.params
 
     let previousWorkExperienceType: TypeOfWorkExperienceValue
     try {
