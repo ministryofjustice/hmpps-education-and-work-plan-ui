@@ -76,7 +76,7 @@
     ]
   },
   "dependencies": {
-    "@aws-sdk/client-sqs": "^3.787.0",
+    "@aws-sdk/client-sqs": "^3.796.0",
     "@date-fns/utc": "^2.1.0",
     "@microsoft/applicationinsights-clickanalytics-js": "^3.3.6",
     "@microsoft/applicationinsights-web": "^3.3.6",
@@ -124,7 +124,7 @@
     "@types/jest": "^29.5.14",
     "@types/jsonwebtoken": "^9.0.9",
     "@types/lodash": "^4.17.16",
-    "@types/node": "^22.14.1",
+    "@types/node": "^22.15.2",
     "@types/nunjucks": "^3.2.6",
     "@types/passport": "^1.0.17",
     "@types/passport-oauth2": "^1.4.17",
