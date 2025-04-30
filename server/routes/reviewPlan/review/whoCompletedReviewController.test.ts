@@ -17,6 +17,7 @@ describe('whoCompletedReviewController', () => {
 
   const req = {
     session: {},
+    journeyData: {},
     body: {},
     params: { prisonNumber, journeyId },
   } as unknown as Request
@@ -31,7 +32,7 @@ describe('whoCompletedReviewController', () => {
   beforeEach(() => {
     jest.resetAllMocks()
     req.body = {}
-    getPrisonerContext(req.session, prisonNumber).reviewPlanDto = undefined
+    req.journeyData = {}
     getPrisonerContext(req.session, prisonNumber).whoCompletedReviewForm = undefined
   })
 
@@ -46,7 +47,7 @@ describe('whoCompletedReviewController', () => {
         completedBy: SessionCompletedByValue.MYSELF,
         reviewDate: startOfDay('2024-03-09'),
       }
-      getPrisonerContext(req.session, prisonNumber).reviewPlanDto = reviewPlanDto
+      req.journeyData.reviewPlanDto = reviewPlanDto
 
       const expectedForm: WhoCompletedReviewForm = {
         completedBy: SessionCompletedByValue.MYSELF,
@@ -145,7 +146,7 @@ describe('whoCompletedReviewController', () => {
       // Then
       expect(res.redirect).toHaveBeenCalledWith(`/plan/A1234BC/${journeyId}/review/notes`)
       expect(getPrisonerContext(req.session, prisonNumber).whoCompletedReviewForm).toBeUndefined()
-      expect(getPrisonerContext(req.session, prisonNumber).reviewPlanDto).toEqual(reviewPlanDto)
+      expect(req.journeyData.reviewPlanDto).toEqual(reviewPlanDto)
     })
 
     it('should redirect to review check-your-answers page given form submitted successfully and previous page was check-your-answers', async () => {
@@ -177,7 +178,7 @@ describe('whoCompletedReviewController', () => {
       // Then
       expect(res.redirect).toHaveBeenCalledWith(`/plan/A1234BC/${journeyId}/review/check-your-answers`)
       expect(getPrisonerContext(req.session, prisonNumber).whoCompletedReviewForm).toBeUndefined()
-      expect(getPrisonerContext(req.session, prisonNumber).reviewPlanDto).toEqual(reviewPlanDto)
+      expect(req.journeyData.reviewPlanDto).toEqual(reviewPlanDto)
     })
   })
 })

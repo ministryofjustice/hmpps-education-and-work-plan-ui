@@ -74,10 +74,9 @@ declare module 'express-session' {
     qualificationLevelForm?: QualificationLevelForm
     qualificationDetailsForm?: QualificationDetailsForm
     educationDto?: EducationDto
-    // Review related forms and DTO
+    // Review related forms
     whoCompletedReviewForm?: WhoCompletedReviewForm
     reviewNoteForm?: ReviewNoteForm
-    reviewPlanDto?: ReviewPlanDto
     // Review exemption related forms and DTO
     reviewExemptionForm?: ReviewExemptionForm
     reviewExemptionDto?: ReviewExemptionDto
@@ -102,6 +101,7 @@ export declare global {
     interface JourneyData {
       inductionDto?: InductionDto
       inductionExemptionDto?: InductionExemptionDto
+      reviewPlanDto?: ReviewPlanDto
     }
 
     interface Response {

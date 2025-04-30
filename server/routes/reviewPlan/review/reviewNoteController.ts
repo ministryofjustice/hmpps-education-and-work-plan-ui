@@ -14,7 +14,7 @@ export default class ReviewNoteController {
     if (getPrisonerContext(req.session, prisonNumber).reviewNoteForm) {
       reviewNoteForm = getPrisonerContext(req.session, prisonNumber).reviewNoteForm
     } else {
-      reviewNoteForm = toReviewNoteForm(getPrisonerContext(req.session, prisonNumber).reviewPlanDto)
+      reviewNoteForm = toReviewNoteForm(req.journeyData.reviewPlanDto)
     }
 
     getPrisonerContext(req.session, prisonNumber).reviewNoteForm = undefined
@@ -28,9 +28,9 @@ export default class ReviewNoteController {
 
     const reviewNoteForm: ReviewNoteForm = { ...req.body }
 
-    const { reviewPlanDto } = getPrisonerContext(req.session, prisonNumber)
+    const { reviewPlanDto } = req.journeyData
     const updatedReviewPlanDto = updateDtoWithFormContents(reviewPlanDto, reviewNoteForm)
-    getPrisonerContext(req.session, prisonNumber).reviewPlanDto = updatedReviewPlanDto
+    req.journeyData.reviewPlanDto = updatedReviewPlanDto
 
     const errors = validateReviewNote(reviewNoteForm)
     if (errors.length > 0) {

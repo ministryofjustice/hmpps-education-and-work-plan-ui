@@ -1,4 +1,5 @@
 import { startOfToday, sub } from 'date-fns'
+import { v4 as uuidV4 } from 'uuid'
 import Page from '../../../pages/page'
 import WhoCompletedReviewPage from '../../../pages/reviewPlan/WhoCompletedReviewPage'
 import AuthorisationErrorPage from '../../../pages/authorisationError'
@@ -56,7 +57,7 @@ context(`Review a prisoner's plan`, () => {
   it('should redirect to overview page given user tries to navigate directly to Review Notes screen - ie. navigate out of sequence', () => {
     // Given
     cy.signIn()
-    const nonExistentJourneyId = '60f46a68-b016-4ccc-8ba4-f53a0de3a6f4'
+    const nonExistentJourneyId = uuidV4()
 
     // When
     cy.visit(`/plan/${prisonNumber}/${nonExistentJourneyId}/review/notes`)

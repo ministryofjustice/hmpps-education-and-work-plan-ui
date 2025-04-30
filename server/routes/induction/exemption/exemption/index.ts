@@ -25,7 +25,7 @@ export default (services: Services) => {
   const router = Router({ mergeParams: true })
 
   router.use([
-    //
+    // comment to allow formatting code with line breaks
     checkUserHasPermissionTo(ApplicationAction.EXEMPT_INDUCTION),
     setupJourneyData(journeyDataService),
   ])
