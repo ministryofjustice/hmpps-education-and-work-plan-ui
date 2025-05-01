@@ -1,5 +1,6 @@
 import type { Express } from 'express'
 import request from 'supertest'
+import { v4 as uuidV4 } from 'uuid'
 import { appWithAllRoutes } from '../routes/testutils/appSetup'
 import AuditService, { Page } from '../services/auditService'
 import PrisonerListService from '../services/prisonerListService'
@@ -161,11 +162,12 @@ describe('auditMiddleware', () => {
 
   it('should raise page view audit events with the user subject and path params', async () => {
     // Given
+    const journeyId = uuidV4()
     const prisonNumber = 'A1234AA'
     prisonerSearchService.getPrisonerByPrisonNumber.mockResolvedValue(aValidPrisoner({ prisonNumber }))
 
     // When
-    const response = await request(app).get(`/plan/${prisonNumber}/goals/create`)
+    const response = await request(app).get(`/plan/${prisonNumber}/goals/${journeyId}/create`)
 
     // Then
     expect(response.statusCode).toBe(200)
@@ -177,6 +179,7 @@ describe('auditMiddleware', () => {
       details: {
         params: {
           prisonNumber,
+          journeyId,
         },
         query: {},
       },
@@ -189,6 +192,7 @@ describe('auditMiddleware', () => {
       details: {
         params: {
           prisonNumber,
+          journeyId,
         },
         query: {},
       },
