@@ -17,6 +17,7 @@ describe('exemptionReasonController', () => {
 
   const req = {
     session: {},
+    journeyData: {},
     body: {},
     params: { prisonNumber, journeyId },
   } as unknown as Request
@@ -31,6 +32,7 @@ describe('exemptionReasonController', () => {
   beforeEach(() => {
     jest.resetAllMocks()
     req.body = {}
+    req.journeyData = {}
     getPrisonerContext(req.session, prisonNumber).reviewExemptionForm = undefined
   })
 
@@ -41,7 +43,7 @@ describe('exemptionReasonController', () => {
         exemptionReason: ReviewScheduleStatusValue.EXEMPT_PRISONER_DRUG_OR_ALCOHOL_DEPENDENCY,
         exemptionReasonDetails: 'In treatment',
       })
-      getPrisonerContext(req.session, prisonNumber).reviewExemptionDto = reviewExemptionDto
+      req.journeyData.reviewExemptionDto = reviewExemptionDto
 
       const expectedForm: ReviewExemptionForm = {
         exemptionReason: 'EXEMPT_PRISONER_DRUG_OR_ALCOHOL_DEPENDENCY',
@@ -87,7 +89,7 @@ describe('exemptionReasonController', () => {
       // Then
       expect(res.redirect).toHaveBeenCalledWith(`/plan/A1234BC/${journeyId}/review/exemption/confirm`)
       expect(getPrisonerContext(req.session, prisonNumber).reviewExemptionForm).toBeUndefined()
-      expect(getPrisonerContext(req.session, prisonNumber).reviewExemptionDto).toEqual(reviewExemptionDto)
+      expect(req.journeyData.reviewExemptionDto).toEqual(reviewExemptionDto)
     })
 
     it('should successfully submit the form with only the relevant exemption reason details given more than one has been entered', async () => {
@@ -116,7 +118,7 @@ describe('exemptionReasonController', () => {
 
       // Then
       expect(res.redirect).toHaveBeenCalledWith(`/plan/A1234BC/${journeyId}/review/exemption/confirm`)
-      expect(getPrisonerContext(req.session, prisonNumber).reviewExemptionDto).toEqual(expectedReviewExemptionDto)
+      expect(req.journeyData.reviewExemptionDto).toEqual(expectedReviewExemptionDto)
     })
 
     it('should redisplay page with relevant error message when no radio buttons have been selected', async () => {

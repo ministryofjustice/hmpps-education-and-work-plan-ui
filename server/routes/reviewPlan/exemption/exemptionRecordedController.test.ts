@@ -2,7 +2,6 @@ import { Request, Response } from 'express'
 import { startOfDay } from 'date-fns'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
 import ExemptionRecordedController from './exemptionRecordedController'
-import { getPrisonerContext } from '../../../data/session/prisonerContexts'
 import aValidReviewExemptionDto from '../../../testsupport/reviewExemptionDtoTestDataBuilder'
 import ReviewScheduleStatusValue from '../../../enums/reviewScheduleStatusValue'
 import aValidActionPlanReviews from '../../../testsupport/actionPlanReviewsTestDataBuilder'
@@ -24,7 +23,7 @@ describe('ExemptionRecordedController', () => {
   beforeEach(() => {
     req = {
       params: { prisonNumber },
-      session: {},
+      journeyData: {},
     } as unknown as Request
 
     res = {
@@ -45,7 +44,7 @@ describe('ExemptionRecordedController', () => {
       const reviewExemptionDto = aValidReviewExemptionDto({
         exemptionReason: ReviewScheduleStatusValue.EXEMPT_PRISONER_DRUG_OR_ALCOHOL_DEPENDENCY,
       })
-      getPrisonerContext(req.session, prisonNumber).reviewExemptionDto = reviewExemptionDto
+      req.journeyData.reviewExemptionDto = reviewExemptionDto
 
       const expectedViewData = {
         prisonerSummary,
@@ -65,7 +64,7 @@ describe('ExemptionRecordedController', () => {
       const reviewExemptionDto = aValidReviewExemptionDto({
         exemptionReason: ReviewScheduleStatusValue.EXEMPT_SYSTEM_TECHNICAL_ISSUE,
       })
-      getPrisonerContext(req.session, prisonNumber).reviewExemptionDto = reviewExemptionDto
+      req.journeyData.reviewExemptionDto = reviewExemptionDto
 
       const expectedViewData = {
         prisonerSummary,
@@ -87,7 +86,7 @@ describe('ExemptionRecordedController', () => {
       const reviewExemptionDto = aValidReviewExemptionDto({
         exemptionReason: ReviewScheduleStatusValue.EXEMPT_PRISON_OPERATION_OR_SECURITY_ISSUE,
       })
-      getPrisonerContext(req.session, prisonNumber).reviewExemptionDto = reviewExemptionDto
+      req.journeyData.reviewExemptionDto = reviewExemptionDto
 
       // When
       await controller.submitExemptionRecorded(req, res, next)
@@ -105,7 +104,7 @@ describe('ExemptionRecordedController', () => {
       const reviewExemptionDto = aValidReviewExemptionDto({
         exemptionReason: ReviewScheduleStatusValue.EXEMPT_SYSTEM_TECHNICAL_ISSUE,
       })
-      getPrisonerContext(req.session, prisonNumber).reviewExemptionDto = reviewExemptionDto
+      req.journeyData.reviewExemptionDto = reviewExemptionDto
 
       // When
       await controller.submitExemptionRecorded(req, res, next)

@@ -2,19 +2,20 @@ import { Router } from 'express'
 import asyncMiddleware from '../../../middleware/asyncMiddleware'
 import ExemptionReasonController from './exemptionReasonController'
 import ConfirmExemptionController from './confirmExemptionController'
-import createEmptyReviewExemptionDtoIfNotInPrisonerContext from '../../routerRequestHandlers/createEmptyReviewExemptionDtoIfNotInPrisonerContext'
+import createEmptyReviewExemptionDtoIfNotInJourneyData from '../../routerRequestHandlers/createEmptyReviewExemptionDtoIfNotInJourneyData'
 import ExemptionRecordedController from './exemptionRecordedController'
 import { Services } from '../../../services'
 import retrieveActionPlanReviews from '../../routerRequestHandlers/retrieveActionPlanReviews'
-import checkReviewExemptionDtoExistsInPrisonerContext from '../../routerRequestHandlers/checkReviewExemptionDtoExistsInPrisonerContext'
+import checkReviewExemptionDtoExistsInJourneyData from '../../routerRequestHandlers/checkReviewExemptionDtoExistsInJourneyData'
 import { checkUserHasPermissionTo } from '../../../middleware/roleBasedAccessControl'
 import ApplicationAction from '../../../enums/applicationAction'
+import setupJourneyData from '../../routerRequestHandlers/setupJourneyData'
 
 /**
  * Route definitions to set a prisoner's Action Plan Review as exempt
  */
 export default function exemptActionPlanReviewRoutes(services: Services) {
-  const { auditService, reviewService } = services
+  const { auditService, journeyDataService, reviewService } = services
 
   const exemptionReasonController = new ExemptionReasonController()
   const confirmExemptionController = new ConfirmExemptionController(reviewService, auditService)
@@ -22,33 +23,36 @@ export default function exemptActionPlanReviewRoutes(services: Services) {
 
   const router = Router({ mergeParams: true })
 
-  router.use('/exemption', [checkUserHasPermissionTo(ApplicationAction.EXEMPT_REVIEW)])
+  router.use('/exemption', [
+    checkUserHasPermissionTo(ApplicationAction.EXEMPT_REVIEW),
+    setupJourneyData(journeyDataService),
+  ])
 
   router.get('/exemption', [
-    createEmptyReviewExemptionDtoIfNotInPrisonerContext,
+    createEmptyReviewExemptionDtoIfNotInJourneyData,
     asyncMiddleware(exemptionReasonController.getExemptionReasonView),
   ])
   router.post('/exemption', [
-    createEmptyReviewExemptionDtoIfNotInPrisonerContext,
+    createEmptyReviewExemptionDtoIfNotInJourneyData,
     asyncMiddleware(exemptionReasonController.submitExemptionReasonForm),
   ])
 
   router.get('/exemption/confirm', [
-    checkReviewExemptionDtoExistsInPrisonerContext,
+    checkReviewExemptionDtoExistsInJourneyData,
     asyncMiddleware(confirmExemptionController.getConfirmExemptionView),
   ])
   router.post('/exemption/confirm', [
-    checkReviewExemptionDtoExistsInPrisonerContext,
+    checkReviewExemptionDtoExistsInJourneyData,
     asyncMiddleware(confirmExemptionController.submitConfirmExemption),
   ])
 
   router.get('/exemption/recorded', [
-    checkReviewExemptionDtoExistsInPrisonerContext,
+    checkReviewExemptionDtoExistsInJourneyData,
     retrieveActionPlanReviews(reviewService),
     asyncMiddleware(exemptionRecordedController.getExemptionRecordedView),
   ])
   router.post('/exemption/recorded', [
-    checkReviewExemptionDtoExistsInPrisonerContext,
+    checkReviewExemptionDtoExistsInJourneyData,
     asyncMiddleware(exemptionRecordedController.submitExemptionRecorded),
   ])
 
