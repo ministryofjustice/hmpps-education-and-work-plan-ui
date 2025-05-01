@@ -16,14 +16,14 @@ export default class QualificationsListUpdateController extends QualificationsLi
     res: Response,
     next: NextFunction,
   ): Promise<void> => {
-    const { prisonNumber } = req.params
+    const { prisonNumber, journeyId } = req.params
     const { prisonerSummary } = res.locals
     const { prisonId } = prisonerSummary
 
     // Behaviour and subsequent routing of the submission of the Qualifications List page depends on whether the page
     // is submitted with the values `addQualification`, `removeQualification`.
     if (this.userClickedOnButton(req, 'addQualification')) {
-      return res.redirect(`/prisoners/${prisonNumber}/education/qualification-level`)
+      return res.redirect(`/prisoners/${prisonNumber}/education/${journeyId}/qualification-level`)
     }
 
     const { educationDto } = getPrisonerContext(req.session, prisonNumber)
@@ -32,7 +32,7 @@ export default class QualificationsListUpdateController extends QualificationsLi
       const qualificationIndexToRemove = req.body.removeQualification as number
       const updatedEducation = this.educationWithRemovedQualification(educationDto, qualificationIndexToRemove)
       getPrisonerContext(req.session, prisonNumber).educationDto = updatedEducation
-      return res.redirect(`/prisoners/${prisonNumber}/education/qualifications`)
+      return res.redirect(`/prisoners/${prisonNumber}/education/${journeyId}/qualifications`)
     }
 
     // By submitting the form without adding/removing any other educational qualifications, the user is indicating their

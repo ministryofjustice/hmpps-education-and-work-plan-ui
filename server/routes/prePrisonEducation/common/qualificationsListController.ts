@@ -14,13 +14,13 @@ export default abstract class QualificationsListController {
     res: Response,
     next: NextFunction,
   ): Promise<void> => {
-    const { prisonNumber } = req.params
+    const { prisonNumber, journeyId } = req.params
     const { prisonerSummary } = res.locals
 
     const { educationDto } = getPrisonerContext(req.session, prisonNumber)
 
     if (!educationDto.educationLevel) {
-      return res.redirect(`/prisoners/${prisonNumber}/create-education/highest-level-of-education`)
+      return res.redirect(`/prisoners/${prisonNumber}/create-education/${journeyId}/highest-level-of-education`)
     }
 
     const { prisonerFunctionalSkills, curiousInPrisonCourses } = res.locals

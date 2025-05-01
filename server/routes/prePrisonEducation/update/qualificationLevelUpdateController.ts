@@ -9,7 +9,7 @@ export default class QualificationLevelUpdateController extends QualificationLev
     res: Response,
     next: NextFunction,
   ): Promise<void> => {
-    const { prisonNumber } = req.params
+    const { prisonNumber, journeyId } = req.params
     const { prisonerSummary } = res.locals
 
     const qualificationLevelForm = { ...req.body }
@@ -17,9 +17,9 @@ export default class QualificationLevelUpdateController extends QualificationLev
 
     const errors = validateQualificationLevelForm(qualificationLevelForm, prisonerSummary)
     if (errors.length > 0) {
-      return res.redirectWithErrors(`/prisoners/${prisonNumber}/education/qualification-level`, errors)
+      return res.redirectWithErrors(`/prisoners/${prisonNumber}/education/${journeyId}/qualification-level`, errors)
     }
 
-    return res.redirect(`/prisoners/${prisonNumber}/education/qualification-details`)
+    return res.redirect(`/prisoners/${prisonNumber}/education/${journeyId}/qualification-details`)
   }
 }

@@ -1,3 +1,4 @@
+import { v4 as uuidV4 } from 'uuid'
 import Page from '../../pages/page'
 import HighestLevelOfEducationPage from '../../pages/prePrisonEducation/HighestLevelOfEducationPage'
 import AuthorisationErrorPage from '../../pages/authorisationError'
@@ -45,9 +46,10 @@ context('Create a prisoners pre-prison education', () => {
   it('should redirect to Overview page given user navigates directly to Qualification Level page', () => {
     // Given
     cy.signIn()
+    const nonExistentJourneyId = uuidV4()
 
     // When
-    cy.visit(`/prisoners/${prisonNumber}/create-education/qualification-level`)
+    cy.visit(`/prisoners/${prisonNumber}/create-education/${nonExistentJourneyId}/qualification-level`)
 
     // Then
     Page.verifyOnPage(OverviewPage)
@@ -56,9 +58,10 @@ context('Create a prisoners pre-prison education', () => {
   it('should redirect to Overview page given user navigates directly to Qualification Details page', () => {
     // Given
     cy.signIn()
+    const nonExistentJourneyId = uuidV4()
 
     // When
-    cy.visit(`/prisoners/${prisonNumber}/create-education/qualification-details`)
+    cy.visit(`/prisoners/${prisonNumber}/create-education/${nonExistentJourneyId}/qualification-details`)
 
     // Then
     Page.verifyOnPage(OverviewPage)
@@ -73,11 +76,15 @@ context('Create a prisoners pre-prison education', () => {
       .selectHighestLevelOfEducation(EducationLevelValue.FURTHER_EDUCATION_COLLEGE)
 
     // When
-    // User tries to navigate to Qualifications Details page without submitting Highest Level of Education (which would take the user to Qualification Level)
-    cy.visit(`/prisoners/${prisonNumber}/create-education/qualification-details`)
+    cy.location().then(url => {
+      const journeyId = url.pathname.split('/')[4]
 
-    // Then
-    Page.verifyOnPage(QualificationLevelPage)
+      // User tries to navigate to Qualifications Details page without submitting Highest Level of Education (which would take the user to Qualification Level)
+      cy.visit(`/prisoners/${prisonNumber}/create-education/${journeyId}/qualification-details`)
+
+      // Then
+      Page.verifyOnPage(QualificationLevelPage)
+    })
   })
 
   it('should redirect to auth-error page given user does not have edit authority', () => {

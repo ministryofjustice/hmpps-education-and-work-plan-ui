@@ -1,4 +1,5 @@
 import { Request, Response } from 'express'
+import { v4 as uuidV4 } from 'uuid'
 import createError from 'http-errors'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
 import { getPrisonerContext } from '../../../data/session/prisonerContexts'
@@ -21,6 +22,7 @@ describe('qualificationsListCreateController', () => {
   ) as jest.Mocked<EducationAndWorkPlanService>
   const controller = new QualificationsListCreateController(educationAndWorkPlanService)
 
+  const journeyId = uuidV4()
   const prisonNumber = 'A1234BC'
   const prisonId = 'BXI'
   const username = 'a-dps-user'
@@ -29,7 +31,7 @@ describe('qualificationsListCreateController', () => {
   const inPrisonCourses = validInPrisonCourseRecords()
 
   const req = {
-    params: { prisonNumber },
+    params: { prisonNumber, journeyId },
     user: { username },
     session: {},
   } as unknown as Request
@@ -81,7 +83,9 @@ describe('qualificationsListCreateController', () => {
       await controller.getQualificationsListView(req, res, next)
 
       // Then
-      expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-education/highest-level-of-education')
+      expect(res.redirect).toHaveBeenCalledWith(
+        `/prisoners/A1234BC/create-education/${journeyId}/highest-level-of-education`,
+      )
       expect(getPrisonerContext(req.session, prisonNumber).educationDto).toEqual(educationDto)
     })
   })
@@ -167,7 +171,7 @@ describe('qualificationsListCreateController', () => {
       await controller.submitQualificationsListView(req, res, next)
 
       // Then
-      expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-education/qualification-level')
+      expect(res.redirect).toHaveBeenCalledWith(`/prisoners/A1234BC/create-education/${journeyId}/qualification-level`)
       expect(getPrisonerContext(req.session, prisonNumber).educationDto).toEqual(educationDto)
     })
 
@@ -196,7 +200,7 @@ describe('qualificationsListCreateController', () => {
       await controller.submitQualificationsListView(req, res, next)
 
       // Then
-      expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-education/qualifications')
+      expect(res.redirect).toHaveBeenCalledWith(`/prisoners/A1234BC/create-education/${journeyId}/qualifications`)
       expect(getPrisonerContext(req.session, prisonNumber).educationDto).toEqual(expectedEducationDto)
     })
   })

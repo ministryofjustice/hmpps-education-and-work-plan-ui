@@ -17,7 +17,7 @@ export default class HighestLevelOfEducationUpdateController extends HighestLeve
     res: Response,
     next: NextFunction,
   ): Promise<void> => {
-    const { prisonNumber } = req.params
+    const { prisonNumber, journeyId } = req.params
     const { prisonerSummary } = res.locals
     const { prisonId } = prisonerSummary
 
@@ -26,7 +26,10 @@ export default class HighestLevelOfEducationUpdateController extends HighestLeve
     const errors = validateHighestLevelOfEducationForm(highestLevelOfEducationForm, prisonerSummary)
     if (errors.length > 0) {
       getPrisonerContext(req.session, prisonNumber).highestLevelOfEducationForm = highestLevelOfEducationForm
-      return res.redirectWithErrors(`/prisoners/${prisonNumber}/education/highest-level-of-education`, errors)
+      return res.redirectWithErrors(
+        `/prisoners/${prisonNumber}/education/${journeyId}/highest-level-of-education`,
+        errors,
+      )
     }
 
     const { educationDto } = getPrisonerContext(req.session, prisonNumber)
