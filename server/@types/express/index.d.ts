@@ -65,7 +65,6 @@ declare module 'express-session' {
   }
   export interface PrisonerContext {
     // Goal related forms
-    createGoalsForm?: CreateGoalsForm
     updateGoalForm?: UpdateGoalForm
     archiveGoalForm?: ArchiveGoalForm
     completeGoalForm?: CompleteGoalForm
@@ -102,6 +101,7 @@ export declare global {
       inductionExemptionDto?: InductionExemptionDto
       reviewPlanDto?: ReviewPlanDto
       reviewExemptionDto?: ReviewExemptionDto
+      createGoalsForm?: CreateGoalsForm
     }
 
     interface Response {

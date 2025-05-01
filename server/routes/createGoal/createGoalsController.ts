@@ -10,7 +10,6 @@ import EducationAndWorkPlanService from '../../services/educationAndWorkPlanServ
 import GoalTargetCompletionDateOption from '../../enums/goalTargetCompletionDateOption'
 import { AuditService } from '../../services'
 import { BaseAuditData } from '../../services/auditService'
-import { getPrisonerContext } from '../../data/session/prisonerContexts'
 
 export default class CreateGoalsController {
   constructor(
@@ -19,11 +18,8 @@ export default class CreateGoalsController {
   ) {}
 
   getCreateGoalsView: RequestHandler = async (req, res, next): Promise<void> => {
-    const { prisonNumber } = req.params
     const { prisonerSummary } = res.locals
-
-    const { createGoalsForm } = getPrisonerContext(req.session, prisonNumber)
-    getPrisonerContext(req.session, prisonNumber).createGoalsForm = undefined
+    const { createGoalsForm } = req.journeyData
 
     const view = new CreateGoalsView(prisonerSummary, createGoalsForm, GoalTargetCompletionDateOption)
     return res.render('pages/createGoals/index', { ...view.renderArgs })
@@ -58,11 +54,11 @@ export default class CreateGoalsController {
     }
 
     if (updatedForm) {
-      getPrisonerContext(req.session, prisonNumber).createGoalsForm = updatedForm
+      req.journeyData.createGoalsForm = updatedForm
       return res.redirect(`/plan/${prisonNumber}/goals/${journeyId}/create${fieldID}`)
     }
 
-    getPrisonerContext(req.session, prisonNumber).createGoalsForm = createGoalsForm
+    req.journeyData.createGoalsForm = createGoalsForm
     return res.redirect(`/plan/${prisonNumber}/goals/${journeyId}/create`)
   }
 
@@ -72,14 +68,13 @@ export default class CreateGoalsController {
     const { prisonId } = prisonerSummary
 
     const createGoalsForm = { ...req.body } as CreateGoalsForm
-    getPrisonerContext(req.session, prisonNumber).createGoalsForm = createGoalsForm
+    req.journeyData.createGoalsForm = createGoalsForm
 
     const errors = validateCreateGoalsForm(createGoalsForm)
     if (errors.length > 0) {
       return res.redirectWithErrors(`/plan/${prisonNumber}/goals/${journeyId}/create`, errors)
     }
 
-    getPrisonerContext(req.session, prisonNumber).createGoalsForm = undefined
     const createGoalDtos = toCreateGoalDtos(createGoalsForm, prisonId)
 
     try {
@@ -100,6 +95,7 @@ export default class CreateGoalsController {
     createGoalDtos.forEach(
       (createGoalDto, idx) => this.auditService.logCreateGoal(createGoalAuditData(req, idx + 1, createGoalDtos.length)), // no need to wait for response
     )
+    req.journeyData.createGoalsForm = undefined
     return res.redirectWithSuccess(`/plan/${prisonNumber}/view/overview`, 'Goals added')
   }
 }
