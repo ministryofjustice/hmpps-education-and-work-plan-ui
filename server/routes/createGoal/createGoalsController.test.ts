@@ -10,7 +10,6 @@ import AuditService, { BaseAuditData } from '../../services/auditService'
 import toCreateGoalDtos from '../../data/mappers/createGoalDtoMapper'
 import GoalTargetCompletionDateOption from '../../enums/goalTargetCompletionDateOption'
 import { aValidGoal } from '../../testsupport/actionPlanTestDataBuilder'
-import { getPrisonerContext } from '../../data/session/prisonerContexts'
 
 jest.mock('../../services/educationAndWorkPlanService')
 jest.mock('../../services/auditService')
@@ -40,7 +39,7 @@ describe('createGoalsController', () => {
   const requestId = 'deff305c-2460-4d07-853e-f8762a8a52c6'
 
   const req = {
-    session: {},
+    journeyData: {},
     body: {},
     user: { username },
     params: { prisonNumber, journeyId },
@@ -61,13 +60,14 @@ describe('createGoalsController', () => {
   beforeEach(() => {
     jest.resetAllMocks()
     res.locals = { prisonerSummary }
+    req.journeyData = {}
     errors = []
   })
 
   describe('getCreateGoalsView', () => {
-    it('should get create goals view with no form object on the session', async () => {
+    it('should get create goals view with no form object in the journeyData', async () => {
       // Given
-      getPrisonerContext(req.session, prisonNumber).createGoalsForm = undefined
+      req.journeyData.createGoalsForm = undefined
 
       const expectedView = {
         prisonerSummary,
@@ -79,10 +79,10 @@ describe('createGoalsController', () => {
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/createGoals/index', expectedView)
-      expect(getPrisonerContext(req.session, prisonNumber).createGoalsForm).toBeUndefined()
+      expect(req.journeyData.createGoalsForm).toBeUndefined()
     })
 
-    it('should get create goals view given form object is already on the session', async () => {
+    it('should get create goals view given form object is already in the journeyData', async () => {
       // Given
       const expectedCreateGoalsForm: CreateGoalsForm = {
         prisonNumber,
@@ -96,7 +96,7 @@ describe('createGoalsController', () => {
           },
         ],
       }
-      getPrisonerContext(req.session, prisonNumber).createGoalsForm = expectedCreateGoalsForm
+      req.journeyData.createGoalsForm = expectedCreateGoalsForm
 
       const expectedView = {
         prisonerSummary,
@@ -109,7 +109,7 @@ describe('createGoalsController', () => {
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/createGoals/index', expectedView)
-      expect(getPrisonerContext(req.session, prisonNumber).createGoalsForm).toBeUndefined()
+      expect(req.journeyData.createGoalsForm).toEqual(expectedCreateGoalsForm)
     })
   })
 
@@ -139,7 +139,7 @@ describe('createGoalsController', () => {
       }
       req.body = submittedCreateGoalsForm
 
-      getPrisonerContext(req.session, prisonNumber).createGoalsForm = undefined
+      req.journeyData.createGoalsForm = undefined
 
       mockedCreateGoalsFormValidator.mockReturnValue(errors)
 
@@ -188,7 +188,7 @@ describe('createGoalsController', () => {
         expectedCreateGoalDtos,
         username,
       )
-      expect(getPrisonerContext(req.session, prisonNumber).createGoalsForm).toBeUndefined()
+      expect(req.journeyData.createGoalsForm).toBeUndefined()
       expect(auditService.logCreateGoal).toHaveBeenCalledTimes(2)
       expect(auditService.logCreateGoal).toHaveBeenCalledWith(expectedBaseAuditDataForFirstGoal)
       expect(auditService.logCreateGoal).toHaveBeenCalledWith(expectedBaseAuditDataForSecondGoal)
@@ -214,7 +214,7 @@ describe('createGoalsController', () => {
       }
       req.body = submittedCreateGoalsForm
 
-      getPrisonerContext(req.session, prisonNumber).createGoalsForm = undefined
+      req.journeyData.createGoalsForm = undefined
 
       mockedCreateGoalsFormValidator.mockReturnValue(errors)
 
@@ -251,7 +251,7 @@ describe('createGoalsController', () => {
         },
         'a-dps-user',
       )
-      expect(getPrisonerContext(req.session, prisonNumber).createGoalsForm).toBeUndefined()
+      expect(req.journeyData.createGoalsForm).toBeUndefined()
       expect(auditService.logCreateGoal).toHaveBeenCalledTimes(1)
       expect(auditService.logCreateGoal).toHaveBeenCalledWith(expectedBaseAuditDataForFirstGoal)
     })
@@ -271,7 +271,7 @@ describe('createGoalsController', () => {
         ],
       }
       req.body = expectedCreateGoalsForm
-      getPrisonerContext(req.session, prisonNumber).createGoalsForm = undefined
+      req.journeyData.createGoalsForm = undefined
 
       errors = [{ href: '#goals[0].title', text: 'some-title-error' }]
       mockedCreateGoalsFormValidator.mockReturnValue(errors)
@@ -281,7 +281,7 @@ describe('createGoalsController', () => {
 
       // Then
       expect(res.redirectWithErrors).toHaveBeenCalledWith(`/plan/A1234BC/goals/${journeyId}/create`, errors)
-      expect(getPrisonerContext(req.session, prisonNumber).createGoalsForm).toEqual(expectedCreateGoalsForm)
+      expect(req.journeyData.createGoalsForm).toEqual(expectedCreateGoalsForm)
       expect(mockedCreateGoalsFormValidator).toHaveBeenCalledWith(expectedCreateGoalsForm)
       expect(auditService.logCreateGoal).not.toHaveBeenCalled()
     })
@@ -312,7 +312,7 @@ describe('createGoalsController', () => {
       req.params.action = 'ADD_STEP'
       req.query.goalNumber = '1'
 
-      getPrisonerContext(req.session, prisonNumber).createGoalsForm = undefined
+      req.journeyData.createGoalsForm = undefined
 
       const expectedCreateGoalsForm = {
         prisonNumber,
@@ -340,7 +340,7 @@ describe('createGoalsController', () => {
 
       // Then
       expect(res.redirect).toHaveBeenCalledWith(`/plan/A1234BC/goals/${journeyId}/create#goals[1].steps[1].title`)
-      expect(getPrisonerContext(req.session, prisonNumber).createGoalsForm).toEqual(expectedCreateGoalsForm)
+      expect(req.journeyData.createGoalsForm).toEqual(expectedCreateGoalsForm)
       expect(mockedCreateGoalsFormValidator).not.toHaveBeenCalled()
       expect(auditService.logCreateGoal).not.toHaveBeenCalled()
     })
@@ -366,14 +366,14 @@ describe('createGoalsController', () => {
       req.params.action = 'ADD_STEP'
       req.query = { goalNumber }
 
-      getPrisonerContext(req.session, prisonNumber).createGoalsForm = undefined
+      req.journeyData.createGoalsForm = undefined
 
       // When
       await controller.submitAction(req, res, next)
 
       // Then
       expect(res.redirect).toHaveBeenCalledWith(`/plan/A1234BC/goals/${journeyId}/create`)
-      expect(getPrisonerContext(req.session, prisonNumber).createGoalsForm).toEqual(submittedCreateGoalsForm)
+      expect(req.journeyData.createGoalsForm).toEqual(submittedCreateGoalsForm)
       expect(mockedCreateGoalsFormValidator).not.toHaveBeenCalled()
       expect(auditService.logCreateGoal).not.toHaveBeenCalled()
     })
@@ -407,7 +407,7 @@ describe('createGoalsController', () => {
         stepNumber: '1',
       }
 
-      getPrisonerContext(req.session, prisonNumber).createGoalsForm = undefined
+      req.journeyData.createGoalsForm = undefined
 
       const expectedCreateGoalsForm = {
         prisonNumber,
@@ -435,7 +435,7 @@ describe('createGoalsController', () => {
 
       // Then
       expect(res.redirect).toHaveBeenCalledWith(`/plan/A1234BC/goals/${journeyId}/create#goals[2].steps[1].title`) // focus the Pass exam step of the bricklaying course as that is the last step in the goal
-      expect(getPrisonerContext(req.session, prisonNumber).createGoalsForm).toEqual(expectedCreateGoalsForm)
+      expect(req.journeyData.createGoalsForm).toEqual(expectedCreateGoalsForm)
       expect(mockedCreateGoalsFormValidator).not.toHaveBeenCalled()
       expect(auditService.logCreateGoal).not.toHaveBeenCalled()
     })
@@ -474,14 +474,14 @@ describe('createGoalsController', () => {
           stepNumber,
         }
 
-        getPrisonerContext(req.session, prisonNumber).createGoalsForm = undefined
+        req.journeyData.createGoalsForm = undefined
 
         // When
         await controller.submitAction(req, res, next)
 
         // Then
         expect(res.redirect).toHaveBeenCalledWith(`/plan/A1234BC/goals/${journeyId}/create`)
-        expect(getPrisonerContext(req.session, prisonNumber).createGoalsForm).toEqual(submittedCreateGoalsForm)
+        expect(req.journeyData.createGoalsForm).toEqual(submittedCreateGoalsForm)
         expect(mockedCreateGoalsFormValidator).not.toHaveBeenCalled()
         expect(auditService.logCreateGoal).not.toHaveBeenCalled()
       },
@@ -512,7 +512,7 @@ describe('createGoalsController', () => {
       req.body = submittedCreateGoalsForm
       req.params.action = 'ADD_GOAL'
 
-      getPrisonerContext(req.session, prisonNumber).createGoalsForm = undefined
+      req.journeyData.createGoalsForm = undefined
 
       const expectedCreateGoalsForm = {
         prisonNumber,
@@ -544,7 +544,7 @@ describe('createGoalsController', () => {
 
       // Then
       expect(res.redirect).toHaveBeenCalledWith(`/plan/A1234BC/goals/${journeyId}/create#goals[3].title`)
-      expect(getPrisonerContext(req.session, prisonNumber).createGoalsForm).toEqual(expectedCreateGoalsForm)
+      expect(req.journeyData.createGoalsForm).toEqual(expectedCreateGoalsForm)
       expect(mockedCreateGoalsFormValidator).not.toHaveBeenCalled()
       expect(auditService.logCreateGoal).not.toHaveBeenCalled()
     })
@@ -576,7 +576,7 @@ describe('createGoalsController', () => {
       }
       req.body = submittedCreateGoalsForm
 
-      getPrisonerContext(req.session, prisonNumber).createGoalsForm = undefined
+      req.journeyData.createGoalsForm = undefined
 
       const expectedCreateGoalsForm = {
         prisonNumber,
@@ -600,7 +600,7 @@ describe('createGoalsController', () => {
 
       // Then
       expect(res.redirect).toHaveBeenCalledWith(`/plan/A1234BC/goals/${journeyId}/create#goals[1].steps[2].title`) // focus the Pass exam step of the bricklaying course as that is the last step in the goal
-      expect(getPrisonerContext(req.session, prisonNumber).createGoalsForm).toEqual(expectedCreateGoalsForm)
+      expect(req.journeyData.createGoalsForm).toEqual(expectedCreateGoalsForm)
       expect(mockedCreateGoalsFormValidator).not.toHaveBeenCalled()
       expect(auditService.logCreateGoal).not.toHaveBeenCalled()
     })
@@ -628,14 +628,14 @@ describe('createGoalsController', () => {
           ],
         }
         req.body = submittedCreateGoalsForm
-        getPrisonerContext(req.session, prisonNumber).createGoalsForm = undefined
+        req.journeyData.createGoalsForm = undefined
 
         // When
         await controller.submitAction(req, res, next)
 
         // Then
         expect(res.redirect).toHaveBeenCalledWith(`/plan/A1234BC/goals/${journeyId}/create`)
-        expect(getPrisonerContext(req.session, prisonNumber).createGoalsForm).toEqual(submittedCreateGoalsForm)
+        expect(req.journeyData.createGoalsForm).toEqual(submittedCreateGoalsForm)
         expect(mockedCreateGoalsFormValidator).not.toHaveBeenCalled()
         expect(auditService.logCreateGoal).not.toHaveBeenCalled()
       },
