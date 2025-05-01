@@ -40,7 +40,9 @@ const pageViewEventMap: Record<string, Page> = {
   '/plan/:prisonNumber/:journeyId/review/exemption/removed': Page.REVIEW_PLAN_EXEMPTION_REMOVED,
 
   // Create goals
-  '/plan/:prisonNumber/goals/create': Page.CREATE_GOALS,
+  '/plan/:prisonNumber/goals/create': null, // route without the journeyId does not raise an audit event because it redirects to the route with a journeyId
+  '/plan/:prisonNumber/goals/:journeyId/create': Page.CREATE_GOALS,
+  '/plan/:prisonNumber/goals/:journeyId/create/:action': null, // route with the action path element does not raise an audit event because it redirects to the main create route
 
   // Update goals
   '/plan/:prisonNumber/goals/:goalReference/update': Page.UPDATE_GOALS,

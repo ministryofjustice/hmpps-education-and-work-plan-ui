@@ -30,7 +30,7 @@ export default class CreateGoalsController {
   }
 
   submitAction: RequestHandler = async (req, res): Promise<void> => {
-    const { prisonNumber, action } = req.params
+    const { prisonNumber, journeyId, action } = req.params
     const goalNumber = parseInt(req.query.goalNumber as string, 10)
     const stepNumber = parseInt(req.query.stepNumber as string, 10)
     const createGoalsForm = { ...req.body } as CreateGoalsForm
@@ -59,15 +59,15 @@ export default class CreateGoalsController {
 
     if (updatedForm) {
       getPrisonerContext(req.session, prisonNumber).createGoalsForm = updatedForm
-      return res.redirect(`/plan/${prisonNumber}/goals/create${fieldID}`)
+      return res.redirect(`/plan/${prisonNumber}/goals/${journeyId}/create${fieldID}`)
     }
 
     getPrisonerContext(req.session, prisonNumber).createGoalsForm = createGoalsForm
-    return res.redirect(`/plan/${prisonNumber}/goals/create`)
+    return res.redirect(`/plan/${prisonNumber}/goals/${journeyId}/create`)
   }
 
   submitCreateGoalsForm: RequestHandler = async (req, res, next): Promise<void> => {
-    const { prisonNumber } = req.params
+    const { prisonNumber, journeyId } = req.params
     const { prisonerSummary, actionPlan } = res.locals
     const { prisonId } = prisonerSummary
 
@@ -76,7 +76,7 @@ export default class CreateGoalsController {
 
     const errors = validateCreateGoalsForm(createGoalsForm)
     if (errors.length > 0) {
-      return res.redirectWithErrors(`/plan/${prisonNumber}/goals/create`, errors)
+      return res.redirectWithErrors(`/plan/${prisonNumber}/goals/${journeyId}/create`, errors)
     }
 
     getPrisonerContext(req.session, prisonNumber).createGoalsForm = undefined
