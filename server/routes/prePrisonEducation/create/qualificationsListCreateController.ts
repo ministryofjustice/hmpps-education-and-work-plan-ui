@@ -16,11 +16,11 @@ export default class QualificationsListCreateController extends QualificationsLi
     res: Response,
     next: NextFunction,
   ): Promise<void> => {
-    const { prisonNumber } = req.params
+    const { prisonNumber, journeyId } = req.params
     const { prisonId } = res.locals.prisonerSummary
 
     if (this.userClickedOnButton(req, 'addQualification')) {
-      return res.redirect(`/prisoners/${prisonNumber}/create-education/qualification-level`)
+      return res.redirect(`/prisoners/${prisonNumber}/create-education/${journeyId}/qualification-level`)
     }
 
     const { educationDto } = getPrisonerContext(req.session, prisonNumber)
@@ -29,11 +29,11 @@ export default class QualificationsListCreateController extends QualificationsLi
       const qualificationIndexToRemove = req.body.removeQualification as number
       const updatedEducation = this.educationWithRemovedQualification(educationDto, qualificationIndexToRemove)
       getPrisonerContext(req.session, prisonNumber).educationDto = updatedEducation
-      return res.redirect(`/prisoners/${prisonNumber}/create-education/qualifications`)
+      return res.redirect(`/prisoners/${prisonNumber}/create-education/${journeyId}/qualifications`)
     }
 
     if (!this.educationHasQualifications(educationDto)) {
-      return res.redirect(`/prisoners/${prisonNumber}/create-education/qualification-level`)
+      return res.redirect(`/prisoners/${prisonNumber}/create-education/${journeyId}/qualification-level`)
     }
 
     const createdEducationDto = toCreateEducationDto(prisonId, educationDto)

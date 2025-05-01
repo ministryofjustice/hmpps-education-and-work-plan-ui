@@ -17,12 +17,12 @@ export default abstract class QualificationDetailsController {
     next: NextFunction,
   ): Promise<void> => {
     const { prisonerSummary } = res.locals
-    const { prisonNumber } = req.params
+    const { prisonNumber, journeyId } = req.params
 
     const { qualificationLevelForm } = getPrisonerContext(req.session, prisonNumber)
     if (!qualificationLevelForm) {
       // Guard against the user using the back button to return to this page, which can cause a NPE creating the QualificationDetailsView below (depending on which pages they've been to)
-      return res.redirect(`/prisoners/${prisonNumber}/${this.journeyPathElement}/qualification-level`)
+      return res.redirect(`/prisoners/${prisonNumber}/${this.journeyPathElement}/${journeyId}/qualification-level`)
     }
 
     const qualificationDetailsForm = getPrisonerContext(req.session, prisonNumber).qualificationDetailsForm || {

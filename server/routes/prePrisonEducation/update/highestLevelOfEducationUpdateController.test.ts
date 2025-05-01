@@ -1,4 +1,5 @@
 import { Request, Response } from 'express'
+import { v4 as uuidV4 } from 'uuid'
 import createError from 'http-errors'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
 import { getPrisonerContext } from '../../../data/session/prisonerContexts'
@@ -18,6 +19,7 @@ describe('highestLevelOfEducationUpdateController', () => {
   ) as jest.Mocked<EducationAndWorkPlanService>
   const controller = new HighestLevelOfEducationUpdateController(educationAndWorkPlanService)
 
+  const journeyId = uuidV4()
   const prisonNumber = 'A1234BC'
   const prisonerSummary = aValidPrisonerSummary({ prisonNumber })
   const username = 'a-dps-user'
@@ -26,7 +28,7 @@ describe('highestLevelOfEducationUpdateController', () => {
     session: {},
     body: {},
     user: { username },
-    params: { prisonNumber },
+    params: { prisonNumber, journeyId },
   } as unknown as Request
   const res = {
     redirect: jest.fn(),
@@ -91,7 +93,7 @@ describe('highestLevelOfEducationUpdateController', () => {
 
       // Then
       expect(res.redirectWithErrors).toHaveBeenCalledWith(
-        '/prisoners/A1234BC/education/highest-level-of-education',
+        `/prisoners/A1234BC/education/${journeyId}/highest-level-of-education`,
         expectedErrors,
       )
       expect(getPrisonerContext(req.session, prisonNumber).educationDto).toEqual(educationDto)

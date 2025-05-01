@@ -1,4 +1,5 @@
 import { Request, Response } from 'express'
+import { v4 as uuidV4 } from 'uuid'
 import type { EducationDto } from 'dto'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
 import EducationLevelValue from '../../../enums/educationLevelValue'
@@ -8,12 +9,13 @@ import HighestLevelOfEducationCreateController from './highestLevelOfEducationCr
 describe('highestLevelOfEducationCreateController', () => {
   const controller = new HighestLevelOfEducationCreateController()
 
+  const journeyId = uuidV4()
   const prisonNumber = 'A1234BC'
   const prisonerSummary = aValidPrisonerSummary({ prisonNumber })
 
   const req = {
     session: {},
-    params: { prisonNumber },
+    params: { prisonNumber, journeyId },
   } as unknown as Request
   const res = {
     redirect: jest.fn(),
@@ -98,7 +100,7 @@ describe('highestLevelOfEducationCreateController', () => {
 
       // Then
       expect(res.redirectWithErrors).toHaveBeenCalledWith(
-        '/prisoners/A1234BC/create-education/highest-level-of-education',
+        `/prisoners/A1234BC/create-education/${journeyId}/highest-level-of-education`,
         expectedErrors,
       )
       expect(getPrisonerContext(req.session, prisonNumber).educationDto).toEqual(educationDto)
@@ -124,7 +126,7 @@ describe('highestLevelOfEducationCreateController', () => {
       await controller.submitHighestLevelOfEducationForm(req, res, next)
 
       // Then
-      expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/create-education/qualification-level')
+      expect(res.redirect).toHaveBeenCalledWith(`/prisoners/A1234BC/create-education/${journeyId}/qualification-level`)
       expect(getPrisonerContext(req.session, prisonNumber).educationDto).toEqual(expectedEducationDto)
       expect(getPrisonerContext(req.session, prisonNumber).highestLevelOfEducationForm).toBeUndefined()
     })

@@ -1,4 +1,5 @@
 import { Request, Response } from 'express'
+import { v4 as uuidV4 } from 'uuid'
 import createError from 'http-errors'
 import EducationAndWorkPlanService from '../../../services/educationAndWorkPlanService'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
@@ -21,6 +22,7 @@ describe('qualificationsListUpdateController', () => {
   ) as jest.Mocked<EducationAndWorkPlanService>
   const controller = new QualificationsListUpdateController(educationAndWorkPlanService)
 
+  const journeyId = uuidV4()
   const prisonNumber = 'A1234BC'
   const prisonId = 'BXI'
   const username = 'a-dps-user'
@@ -32,7 +34,7 @@ describe('qualificationsListUpdateController', () => {
     session: {},
     user: { username },
     body: {},
-    params: { prisonNumber },
+    params: { prisonNumber, journeyId },
   } as unknown as Request
   const res = {
     redirect: jest.fn(),
@@ -157,7 +159,7 @@ describe('qualificationsListUpdateController', () => {
       await controller.submitQualificationsListView(req, res, next)
 
       // Then
-      expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/education/qualification-level')
+      expect(res.redirect).toHaveBeenCalledWith(`/prisoners/A1234BC/education/${journeyId}/qualification-level`)
       expect(getPrisonerContext(req.session, prisonNumber).educationDto).toEqual(educationDto)
     })
 
@@ -186,7 +188,7 @@ describe('qualificationsListUpdateController', () => {
       await controller.submitQualificationsListView(req, res, next)
 
       // Then
-      expect(res.redirect).toHaveBeenCalledWith('/prisoners/A1234BC/education/qualifications')
+      expect(res.redirect).toHaveBeenCalledWith(`/prisoners/A1234BC/education/${journeyId}/qualifications`)
       expect(getPrisonerContext(req.session, prisonNumber).educationDto).toEqual(expectedEducationDto)
     })
   })

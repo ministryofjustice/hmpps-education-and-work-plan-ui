@@ -150,21 +150,28 @@ const pageViewEventMap: Record<string, Page> = {
   '/prisoners/:prisonNumber/induction/:journeyId/exemption/removed': Page.INDUCTION_EXEMPTION_REMOVED,
 
   // Create qualifications (before an Induction)
-  '/prisoners/:prisonNumber/create-education/highest-level-of-education': Page.CREATE_HIGHEST_LEVEL_OF_EDUCATION,
-  '/prisoners/:prisonNumber/create-education/qualification-level': Page.CREATE_QUALIFICATION_LEVEL,
-  '/prisoners/:prisonNumber/create-education/qualification-details': Page.CREATE_QUALIFICATION_DETAILS,
-  '/prisoners/:prisonNumber/create-education/qualifications': Page.CREATE_QUALIFICATIONS,
+  '/prisoners/:prisonNumber/create-education/highest-level-of-education': null, // route without the journeyId does not raise an audit event because it redirects to the route with a journeyId
+  '/prisoners/:prisonNumber/create-education/:journeyId/highest-level-of-education':
+    Page.CREATE_HIGHEST_LEVEL_OF_EDUCATION,
+  '/prisoners/:prisonNumber/create-education/:journeyId/qualification-level': Page.CREATE_QUALIFICATION_LEVEL,
+  '/prisoners/:prisonNumber/create-education/:journeyId/qualification-details': Page.CREATE_QUALIFICATION_DETAILS,
+  '/prisoners/:prisonNumber/create-education/:journeyId/qualifications': Page.CREATE_QUALIFICATIONS,
 
   // Update qualifications
-  '/prisoners/:prisonNumber/education/highest-level-of-education': Page.UPDATE_HIGHEST_LEVEL_OF_EDUCATION,
-  '/prisoners/:prisonNumber/education/qualifications': Page.UPDATE_QUALIFICATIONS,
-  '/prisoners/:prisonNumber/education/qualification-level': Page.UPDATE_QUALIFICATION_LEVEL,
-  '/prisoners/:prisonNumber/education/qualification-details': Page.UPDATE_QUALIFICATION_DETAILS,
+  '/prisoners/:prisonNumber/education/highest-level-of-education': null, // route without the journeyId does not raise an audit event because it redirects to the route with a journeyId
+  '/prisoners/:prisonNumber/education/:journeyId/highest-level-of-education': Page.UPDATE_HIGHEST_LEVEL_OF_EDUCATION,
+  '/prisoners/:prisonNumber/education/qualifications': null, // route without the journeyId does not raise an audit event because it redirects to the route with a journeyId
+  '/prisoners/:prisonNumber/education/:journeyId/qualifications': Page.UPDATE_QUALIFICATIONS,
+  '/prisoners/:prisonNumber/education/qualification-level': null, // route without the journeyId does not raise an audit event because it redirects to the route with a journeyId
+  '/prisoners/:prisonNumber/education/:journeyId/qualification-level': Page.UPDATE_QUALIFICATION_LEVEL,
+  '/prisoners/:prisonNumber/education/qualification-details': null, // route without the journeyId does not raise an audit event because it redirects to the route with a journeyId
+  '/prisoners/:prisonNumber/education/:journeyId/qualification-details': Page.UPDATE_QUALIFICATION_DETAILS,
 
   // Non audit routes. These routes do not raise an audit event
   '/': null,
   '/plan/:prisonNumber/induction-created': null,
   '/prisoners/:prisonNumber/education/add-qualifications': null,
+  '/prisoners/:prisonNumber/education/:journeyId/add-qualifications': null,
 }
 
 export default function auditMiddleware({ auditService }: Services) {

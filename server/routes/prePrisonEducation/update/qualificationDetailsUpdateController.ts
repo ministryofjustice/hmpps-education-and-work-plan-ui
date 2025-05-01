@@ -11,7 +11,7 @@ export default class QualificationDetailsUpdateController extends QualificationD
     res: Response,
     next: NextFunction,
   ): Promise<void> => {
-    const { prisonNumber } = req.params
+    const { prisonNumber, journeyId } = req.params
     const { prisonerSummary } = res.locals
 
     const { educationDto, qualificationLevelForm } = getPrisonerContext(req.session, prisonNumber)
@@ -24,7 +24,7 @@ export default class QualificationDetailsUpdateController extends QualificationD
       prisonerSummary,
     )
     if (errors.length > 0) {
-      return res.redirectWithErrors(`/prisoners/${prisonNumber}/education/qualification-details`, errors)
+      return res.redirectWithErrors(`/prisoners/${prisonNumber}/education/${journeyId}/qualification-details`, errors)
     }
 
     const updatedEducation = this.addQualificationToEducationDto(
@@ -37,6 +37,6 @@ export default class QualificationDetailsUpdateController extends QualificationD
     getPrisonerContext(req.session, prisonNumber).qualificationDetailsForm = undefined
     getPrisonerContext(req.session, prisonNumber).qualificationLevelForm = undefined
 
-    return res.redirect(`/prisoners/${prisonNumber}/education/qualifications`)
+    return res.redirect(`/prisoners/${prisonNumber}/education/${journeyId}/qualifications`)
   }
 }
