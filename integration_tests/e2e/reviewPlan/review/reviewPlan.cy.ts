@@ -83,8 +83,8 @@ context(`Review a prisoner's plan`, () => {
     Page.verifyOnPage(WhoCompletedReviewPage) //
       .hasErrorCount(2)
       .hasFieldInError('completedBy')
-      .hasFieldInError('review-date')
-      .setReviewDate(reviewConductedAtDay, reviewConductedAtMonth, reviewConductedAtYear)
+      .hasFieldInError('reviewDate')
+      .setReviewDate(reviewConductedAt)
       .selectWhoCompletedTheReview(SessionCompletedByValue.SOMEBODY_ELSE)
       .submitPage()
     Page.verifyOnPage(WhoCompletedReviewPage) //

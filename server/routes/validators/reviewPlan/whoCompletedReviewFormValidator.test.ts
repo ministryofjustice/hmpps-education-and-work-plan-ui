@@ -1,4 +1,4 @@
-import { addDays, startOfToday, subDays } from 'date-fns'
+import { addDays, format, startOfToday, subDays } from 'date-fns'
 import type { WhoCompletedReviewForm } from 'reviewPlanForms'
 import validateWhoCompletedReviewForm from './whoCompletedReviewFormValidator'
 import SessionCompletedByValue from '../../../enums/sessionCompletedByValue'
@@ -13,9 +13,7 @@ describe('whoCompletedReviewFormValidator', () => {
       // Given
       const form: WhoCompletedReviewForm = {
         completedBy: SessionCompletedByValue.MYSELF,
-        'reviewDate-day': yesterday.getDate().toString(),
-        'reviewDate-month': (yesterday.getMonth() + 1).toString(),
-        'reviewDate-year': yesterday.getFullYear().toString(),
+        reviewDate: format(yesterday, 'dd/MM/yyyy'),
       }
 
       const expected: Array<Record<string, string>> = []
@@ -33,9 +31,7 @@ describe('whoCompletedReviewFormValidator', () => {
         completedBy: SessionCompletedByValue.SOMEBODY_ELSE,
         completedByOtherFullName: 'Buck Rogers',
         completedByOtherJobRole: 'CIAG',
-        'reviewDate-day': yesterday.getDate().toString(),
-        'reviewDate-month': (yesterday.getMonth() + 1).toString(),
-        'reviewDate-year': yesterday.getFullYear().toString(),
+        reviewDate: format(yesterday, 'dd/MM/yyyy'),
       }
 
       const expected: Array<Record<string, string>> = []
@@ -53,9 +49,7 @@ describe('whoCompletedReviewFormValidator', () => {
       // Given
       const form: WhoCompletedReviewForm = {
         completedBy: undefined,
-        'reviewDate-day': yesterday.getDate().toString(),
-        'reviewDate-month': (yesterday.getMonth() + 1).toString(),
-        'reviewDate-year': yesterday.getFullYear().toString(),
+        reviewDate: format(yesterday, 'dd/MM/yyyy'),
       }
 
       const expected: Array<Record<string, string>> = [
@@ -75,9 +69,7 @@ describe('whoCompletedReviewFormValidator', () => {
         completedBy: SessionCompletedByValue.SOMEBODY_ELSE,
         completedByOtherFullName: undefined,
         completedByOtherJobRole: 'CIAG',
-        'reviewDate-day': yesterday.getDate().toString(),
-        'reviewDate-month': (yesterday.getMonth() + 1).toString(),
-        'reviewDate-year': yesterday.getFullYear().toString(),
+        reviewDate: format(yesterday, 'dd/MM/yyyy'),
       }
 
       const expected: Array<Record<string, string>> = [
@@ -97,9 +89,7 @@ describe('whoCompletedReviewFormValidator', () => {
         completedBy: SessionCompletedByValue.SOMEBODY_ELSE,
         completedByOtherFullName: 'Joey Beltram',
         completedByOtherJobRole: undefined,
-        'reviewDate-day': yesterday.getDate().toString(),
-        'reviewDate-month': (yesterday.getMonth() + 1).toString(),
-        'reviewDate-year': yesterday.getFullYear().toString(),
+        reviewDate: format(yesterday, 'dd/MM/yyyy'),
       }
 
       const expected: Array<Record<string, string>> = [
@@ -119,9 +109,7 @@ describe('whoCompletedReviewFormValidator', () => {
         completedBy: SessionCompletedByValue.SOMEBODY_ELSE,
         completedByOtherFullName: undefined,
         completedByOtherJobRole: undefined,
-        'reviewDate-day': yesterday.getDate().toString(),
-        'reviewDate-month': (yesterday.getMonth() + 1).toString(),
-        'reviewDate-year': yesterday.getFullYear().toString(),
+        reviewDate: format(yesterday, 'dd/MM/yyyy'),
       }
 
       const expected: Array<Record<string, string>> = [
@@ -153,12 +141,10 @@ describe('whoCompletedReviewFormValidator', () => {
       // Given
       const form: WhoCompletedReviewForm = {
         completedBy: SessionCompletedByValue.MYSELF,
-        'reviewDate-day': spec.day,
-        'reviewDate-month': spec.month,
-        'reviewDate-year': spec.year,
+        reviewDate: `${spec.day}/${spec.month}/${spec.year}`,
       }
 
-      const expected: Array<Record<string, string>> = [{ href: '#review-date', text: 'Enter a valid date' }]
+      const expected: Array<Record<string, string>> = [{ href: '#reviewDate', text: 'Enter a valid date' }]
 
       // When
       const actual = validateWhoCompletedReviewForm(form)
@@ -171,13 +157,11 @@ describe('whoCompletedReviewFormValidator', () => {
       // Given
       const form: WhoCompletedReviewForm = {
         completedBy: SessionCompletedByValue.MYSELF,
-        'reviewDate-day': tomorrow.getDate().toString(),
-        'reviewDate-month': (tomorrow.getMonth() + 1).toString(),
-        'reviewDate-year': tomorrow.getFullYear().toString(),
+        reviewDate: format(tomorrow, 'dd/MM/yyyy'),
       }
 
       const expected: Array<Record<string, string>> = [
-        { href: '#review-date', text: 'Enter a valid date. Date cannot be in the future' },
+        { href: '#reviewDate', text: 'Enter a valid date. Date cannot be in the future' },
       ]
 
       // When
@@ -193,9 +177,7 @@ describe('whoCompletedReviewFormValidator', () => {
         completedBy: SessionCompletedByValue.SOMEBODY_ELSE,
         completedByOtherFullName: 'a'.repeat(201),
         completedByOtherJobRole: 'CIAG',
-        'reviewDate-day': yesterday.getDate().toString(),
-        'reviewDate-month': (yesterday.getMonth() + 1).toString(),
-        'reviewDate-year': yesterday.getFullYear().toString(),
+        reviewDate: format(yesterday, 'dd/MM/yyyy'),
       }
 
       const expected: Array<Record<string, string>> = [
@@ -216,9 +198,7 @@ describe('whoCompletedReviewFormValidator', () => {
       completedBy: SessionCompletedByValue.SOMEBODY_ELSE,
       completedByOtherFullName: 'Joey Beltram',
       completedByOtherJobRole: 'a'.repeat(201),
-      'reviewDate-day': yesterday.getDate().toString(),
-      'reviewDate-month': (yesterday.getMonth() + 1).toString(),
-      'reviewDate-year': yesterday.getFullYear().toString(),
+      reviewDate: format(yesterday, 'dd/MM/yyyy'),
     }
 
     const expected: Array<Record<string, string>> = [

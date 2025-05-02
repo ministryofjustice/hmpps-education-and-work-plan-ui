@@ -1,4 +1,4 @@
-import { isAfter, isValid, parse, startOfToday } from 'date-fns'
+import { getYear, isAfter, isValid, parse, startOfToday } from 'date-fns'
 import type { WhoCompletedReviewForm } from 'reviewPlanForms'
 import formatErrors from '../../errorFormatter'
 import SessionCompletedByValue from '../../../enums/sessionCompletedByValue'
@@ -12,7 +12,7 @@ const validateWhoCompletedReviewForm = (
 
   errors.push(...formatErrors('completedBy', validateCompletedBy(whoCompletedReviewForm)))
   completedByOtherErrors.forEach(error => errors.push(...formatErrors(error.field, [error.message])))
-  errors.push(...formatErrors('review-date', validateReviewDate(whoCompletedReviewForm)))
+  errors.push(...formatErrors('reviewDate', validateReviewDate(whoCompletedReviewForm)))
 
   return errors
 }
@@ -20,18 +20,16 @@ const validateWhoCompletedReviewForm = (
 const validateReviewDate = (whoCompletedReviewForm: WhoCompletedReviewForm): Array<string> => {
   const errors: Array<string> = []
 
-  const day = whoCompletedReviewForm['reviewDate-day']
-  const month = whoCompletedReviewForm['reviewDate-month']
-  const year = whoCompletedReviewForm['reviewDate-year']
+  const { reviewDate } = whoCompletedReviewForm
 
-  if (!(isOneOrTwoDigits(day) && isOneOrTwoDigits(month) && isFourDigits(year))) {
+  if (!reviewDate) {
     errors.push('Enter a valid date')
     return errors
   }
 
   const today = startOfToday()
-  const proposedDate = parse(`${year}-${month?.padStart(2, '0')}-${day?.padStart(2, '0')}`, 'yyyy-MM-dd', today)
-  if (!isValid(proposedDate)) {
+  const proposedDate = parse(reviewDate, 'd/M/yyyy', today)
+  if (!isValid(proposedDate) || getYear(proposedDate) < 1900) {
     errors.push('Enter a valid date')
   }
   if (isAfter(proposedDate, today)) {
@@ -86,14 +84,6 @@ const validateCompletedBy = (whoCompletedReviewForm: WhoCompletedReviewForm): Ar
 const isInvalidOption = (completedBy: SessionCompletedByValue): boolean => {
   const allValidValues = Object.values(SessionCompletedByValue)
   return !allValidValues.includes(completedBy)
-}
-
-const isOneOrTwoDigits = (value: string): boolean => {
-  return !Number.isNaN(Number(value)) && (value?.length === 1 || value?.length === 2)
-}
-
-const isFourDigits = (value: string): boolean => {
-  return !Number.isNaN(Number(value)) && value?.length === 4
 }
 
 export default validateWhoCompletedReviewForm

@@ -190,9 +190,7 @@ declare module 'reviewPlanForms' {
     completedBy: SessionCompletedByValue
     completedByOtherFullName?: string
     completedByOtherJobRole?: string
-    'reviewDate-day': string
-    'reviewDate-month': string
-    'reviewDate-year': string
+    reviewDate: string
   }
 
   export interface ReviewNoteForm {
