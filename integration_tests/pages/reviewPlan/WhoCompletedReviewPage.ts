@@ -24,20 +24,16 @@ export default class WhoCompletedReviewPage extends Page {
     return this
   }
 
-  setReviewDate(day: string, month: string, year: string): WhoCompletedReviewPage {
-    this.reviewDateDayField().clear().type(day)
-    this.reviewDateMonthField().clear().type(month)
-    this.reviewDateYearField().clear().type(year)
+  setReviewDate(reviewDate: Date): WhoCompletedReviewPage {
+    this.reviewDateField()
+      .clear()
+      .type(`${reviewDate.getDate()}/${reviewDate.getMonth() + 1}/${reviewDate.getFullYear()}`)
     return this
   }
 
   private radio = (value: SessionCompletedByValue): PageElement => cy.get(`.govuk-radios__input[value='${value}']`)
 
-  private reviewDateDayField = (): PageElement => cy.get('[data-qa=review-date-day]')
-
-  private reviewDateMonthField = (): PageElement => cy.get('[data-qa=review-date-month]')
-
-  private reviewDateYearField = (): PageElement => cy.get('[data-qa=review-date-year]')
+  private reviewDateField = (): PageElement => cy.get('#reviewDate')
 
   private otherReviewersFullNameField = (): PageElement => cy.get('[data-qa=completedByOtherFullName]')
 

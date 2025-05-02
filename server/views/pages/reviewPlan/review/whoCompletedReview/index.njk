@@ -92,45 +92,19 @@
             errorMessage: errors | findError('completedBy')
           }) }}
 
-          {{ govukDateInput({
-            id: "review-date",
-            fieldset: {
-              legend: {
-                html: "<span data-qa='add-review-date'>Add the review date</span>",
-                classes: "govuk-fieldset__legend--s",
-                attributes: { "data-qa": "add-review-date" }
-              }
+          {{ mojDatePicker({
+            name: "reviewDate",
+            value: form.reviewDate,
+            id: "reviewDate",
+            label: {
+              html: "<span>Add the review date</span>",
+              classes: "govuk-fieldset__legend--s",
+              attributes: { "data-qa": "add-review-date" }
             },
             hint: {
-              text: "For example, 17 5 2024"
+              text: "For example, 17/5/2024."
             },
-            items: [
-              {
-                id: 'review-date-day',
-                label: 'Day',
-                name: 'reviewDate-day',
-                classes: 'govuk-input--width-2',
-                value: form['reviewDate-day'],
-                attributes: {"data-qa": "review-date-day"}
-              },
-              {
-                id: 'review-date-month',
-                label: 'Month',
-                name: 'reviewDate-month',
-                classes: 'govuk-input--width-2',
-                value: form['reviewDate-month'],
-                attributes: {"data-qa": "review-date-month"}
-              },
-              {
-                id: 'review-date-year',
-                label: 'Year',
-                name: 'reviewDate-year',
-                classes: 'govuk-input--width-4',
-                value: form['reviewDate-year'],
-                attributes: {"data-qa": "review-date-year"}
-              }
-            ],
-            errorMessage: errors | findError('review-date')
+            errorMessage: errors | findError('reviewDate')
           }) }}
         </div>
 

@@ -1,5 +1,5 @@
 import { Request, RequestHandler } from 'express'
-import { startOfDay } from 'date-fns'
+import { format, parse, startOfDay } from 'date-fns'
 import type { WhoCompletedReviewForm } from 'reviewPlanForms'
 import type { ReviewPlanDto } from 'dto'
 import WhoCompletedReviewView from './whoCompletedReviewView'
@@ -59,9 +59,7 @@ const toWhoCompletedReviewForm = (dto: ReviewPlanDto): WhoCompletedReviewForm =>
     completedBy: dto.completedBy,
     completedByOtherFullName: dto.completedByOtherFullName,
     completedByOtherJobRole: dto.completedByOtherJobRole,
-    'reviewDate-day': reviewDate ? `${reviewDate.getDate()}`.padStart(2, '0') : undefined,
-    'reviewDate-month': reviewDate ? `${reviewDate.getMonth() + 1}`.padStart(2, '0') : undefined,
-    'reviewDate-year': reviewDate ? `${reviewDate.getFullYear()}` : undefined,
+    reviewDate: reviewDate ? format(reviewDate, 'd/M/yyyy') : undefined,
   }
 }
 
@@ -77,9 +75,7 @@ const updateDtoWithFormContents = (
   completedBy: form.completedBy,
   completedByOtherFullName: form.completedByOtherFullName,
   completedByOtherJobRole: form.completedByOtherJobRole,
-  reviewDate: startOfDay(
-    `${form['reviewDate-year']}-${form['reviewDate-month'].padStart(2, '0')}-${form['reviewDate-day'].padStart(2, '0')}`,
-  ),
+  reviewDate: startOfDay(parse(form.reviewDate, 'd/M/yyyy', new Date())),
 })
 
 const previousPageWasCheckYourAnswers = (req: Request): boolean => {

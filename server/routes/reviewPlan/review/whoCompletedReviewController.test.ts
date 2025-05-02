@@ -53,9 +53,7 @@ describe('whoCompletedReviewController', () => {
         completedBy: SessionCompletedByValue.MYSELF,
         completedByOtherFullName: undefined,
         completedByOtherJobRole: undefined,
-        'reviewDate-day': '09',
-        'reviewDate-month': '03',
-        'reviewDate-year': '2024',
+        reviewDate: '9/3/2024',
       }
 
       const expectedView = {
@@ -74,9 +72,7 @@ describe('whoCompletedReviewController', () => {
       // Given
       const expectedForm: WhoCompletedReviewForm = {
         completedBy: SessionCompletedByValue.MYSELF,
-        'reviewDate-day': '20',
-        'reviewDate-month': '3',
-        'reviewDate-year': '2024',
+        reviewDate: '20/3/2024',
       }
 
       getPrisonerContext(req.session, prisonNumber).whoCompletedReviewForm = expectedForm
@@ -101,9 +97,7 @@ describe('whoCompletedReviewController', () => {
 
       const invalidForm: WhoCompletedReviewForm = {
         completedBy: SessionCompletedByValue.SOMEBODY_ELSE,
-        'reviewDate-day': '20',
-        'reviewDate-month': '3',
-        'reviewDate-year': '2024',
+        reviewDate: '20/3/2024',
       }
       req.body = invalidForm
 
@@ -127,9 +121,7 @@ describe('whoCompletedReviewController', () => {
 
       const validForm: WhoCompletedReviewForm = {
         completedBy: SessionCompletedByValue.MYSELF,
-        'reviewDate-day': '9',
-        'reviewDate-month': '3',
-        'reviewDate-year': '2024',
+        reviewDate: '9/3/2024',
       }
       req.body = validForm
 
@@ -159,9 +151,7 @@ describe('whoCompletedReviewController', () => {
 
       const validForm: WhoCompletedReviewForm = {
         completedBy: SessionCompletedByValue.MYSELF,
-        'reviewDate-day': '9',
-        'reviewDate-month': '3',
-        'reviewDate-year': '2024',
+        reviewDate: '9/3/2024',
       }
       req.body = validForm
 
