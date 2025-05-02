@@ -10,7 +10,7 @@ const sessionListRoutes = (router: Router, services: Services) => {
   const { prisonerSearchService, sessionService } = services
   const sessionListController = new SessionListController(prisonerSearchService, sessionService)
 
-  router.use('/sessions/*', [
+  router.use('/sessions', [
     checkUserHasPermissionTo(ApplicationAction.VIEW_SESSION_SUMMARIES),
     retrieveSessionsSummary(sessionService),
   ])
