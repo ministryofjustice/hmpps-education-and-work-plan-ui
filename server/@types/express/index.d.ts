@@ -68,11 +68,10 @@ declare module 'express-session' {
     updateGoalForm?: UpdateGoalForm
     archiveGoalForm?: ArchiveGoalForm
     completeGoalForm?: CompleteGoalForm
-    // Education related forms and DTO
+    // Education related forms
     highestLevelOfEducationForm?: HighestLevelOfEducationForm
     qualificationLevelForm?: QualificationLevelForm
     qualificationDetailsForm?: QualificationDetailsForm
-    educationDto?: EducationDto
     // Review related forms
     whoCompletedReviewForm?: WhoCompletedReviewForm
     reviewNoteForm?: ReviewNoteForm
@@ -102,6 +101,7 @@ export declare global {
       reviewPlanDto?: ReviewPlanDto
       reviewExemptionDto?: ReviewExemptionDto
       createGoalsForm?: CreateGoalsForm
+      educationDto?: EducationDto
     }
 
     interface Response {

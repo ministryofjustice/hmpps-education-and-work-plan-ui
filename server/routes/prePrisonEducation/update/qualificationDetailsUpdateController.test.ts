@@ -17,6 +17,7 @@ describe('qualificationDetailsController', () => {
 
   const req = {
     session: {},
+    journeyData: {},
     params: { prisonNumber, journeyId },
   } as unknown as Request
   const res = {
@@ -29,6 +30,7 @@ describe('qualificationDetailsController', () => {
 
   beforeEach(() => {
     jest.resetAllMocks()
+    req.journeyData = {}
   })
 
   describe('getQualificationDetailsView', () => {
@@ -111,7 +113,7 @@ describe('qualificationDetailsController', () => {
         educationLevel: EducationLevelValue.FURTHER_EDUCATION_COLLEGE,
         qualifications: [],
       } as EducationDto
-      getPrisonerContext(req.session, prisonNumber).educationDto = educationDto
+      req.journeyData.educationDto = educationDto
       const qualificationLevelForm: QualificationLevelForm = {
         qualificationLevel: QualificationLevelValue.LEVEL_3,
       }
@@ -133,7 +135,7 @@ describe('qualificationDetailsController', () => {
         `/prisoners/A1234BC/education/${journeyId}/qualification-details`,
         expectedErrors,
       )
-      expect(getPrisonerContext(req.session, prisonNumber).educationDto).toEqual(educationDto)
+      expect(req.journeyData.educationDto).toEqual(educationDto)
       expect(getPrisonerContext(req.session, prisonNumber).qualificationLevelForm).toEqual(qualificationLevelForm)
       expect(getPrisonerContext(req.session, prisonNumber).qualificationDetailsForm).toEqual(
         invalidQualificationDetailsForm,
@@ -147,7 +149,7 @@ describe('qualificationDetailsController', () => {
         educationLevel: EducationLevelValue.FURTHER_EDUCATION_COLLEGE,
         qualifications: [],
       } as EducationDto
-      getPrisonerContext(req.session, prisonNumber).educationDto = educationDto
+      req.journeyData.educationDto = educationDto
       const qualificationLevelForm: QualificationLevelForm = {
         qualificationLevel: QualificationLevelValue.LEVEL_3,
       }
@@ -176,7 +178,7 @@ describe('qualificationDetailsController', () => {
 
       // Then
       expect(res.redirect).toHaveBeenCalledWith(`/prisoners/A1234BC/education/${journeyId}/qualifications`)
-      expect(getPrisonerContext(req.session, prisonNumber).educationDto).toEqual(expectedEducationDto)
+      expect(req.journeyData.educationDto).toEqual(expectedEducationDto)
       expect(getPrisonerContext(req.session, prisonNumber).qualificationLevelForm).toBeUndefined()
       expect(getPrisonerContext(req.session, prisonNumber).qualificationDetailsForm).toBeUndefined()
     })

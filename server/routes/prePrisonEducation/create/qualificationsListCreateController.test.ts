@@ -2,7 +2,6 @@ import { Request, Response } from 'express'
 import { v4 as uuidV4 } from 'uuid'
 import createError from 'http-errors'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
-import { getPrisonerContext } from '../../../data/session/prisonerContexts'
 import aValidEducationDto from '../../../testsupport/educationDtoTestDataBuilder'
 import { validFunctionalSkills } from '../../../testsupport/functionalSkillsTestDataBuilder'
 import validInPrisonCourseRecords from '../../../testsupport/inPrisonCourseRecordsTestDataBuilder'
@@ -33,7 +32,7 @@ describe('qualificationsListCreateController', () => {
   const req = {
     params: { prisonNumber, journeyId },
     user: { username },
-    session: {},
+    journeyData: {},
   } as unknown as Request
   const res = {
     redirect: jest.fn(),
@@ -48,6 +47,7 @@ describe('qualificationsListCreateController', () => {
 
   beforeEach(() => {
     jest.resetAllMocks()
+    req.journeyData = {}
     req.body = {}
   })
 
@@ -56,7 +56,7 @@ describe('qualificationsListCreateController', () => {
       // Given
       const qualifications = [aNewAchievedQualificationDto()]
       const educationDto = aValidEducationDto({ prisonNumber, qualifications })
-      getPrisonerContext(req.session, prisonNumber).educationDto = educationDto
+      req.journeyData.educationDto = educationDto
 
       const expectedView = {
         prisonerSummary,
@@ -70,14 +70,14 @@ describe('qualificationsListCreateController', () => {
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/prePrisonEducation/qualificationsList', expectedView)
-      expect(getPrisonerContext(req.session, prisonNumber).educationDto).toEqual(educationDto)
+      expect(req.journeyData.educationDto).toEqual(educationDto)
     })
 
     it('should redirect to Highest Level of Education page given EducationDto with no educationLevel on the prisoner context', async () => {
       // Given
       const educationDto = aValidEducationDto({ prisonNumber })
       educationDto.educationLevel = undefined
-      getPrisonerContext(req.session, prisonNumber).educationDto = educationDto
+      req.journeyData.educationDto = educationDto
 
       // When
       await controller.getQualificationsListView(req, res, next)
@@ -86,7 +86,7 @@ describe('qualificationsListCreateController', () => {
       expect(res.redirect).toHaveBeenCalledWith(
         `/prisoners/A1234BC/create-education/${journeyId}/highest-level-of-education`,
       )
-      expect(getPrisonerContext(req.session, prisonNumber).educationDto).toEqual(educationDto)
+      expect(req.journeyData.educationDto).toEqual(educationDto)
     })
   })
 
@@ -99,7 +99,7 @@ describe('qualificationsListCreateController', () => {
         qualifications,
         educationLevel: EducationLevelValue.SECONDARY_SCHOOL_TOOK_EXAMS,
       })
-      getPrisonerContext(req.session, prisonNumber).educationDto = educationDto
+      req.journeyData.educationDto = educationDto
 
       req.body = {}
 
@@ -119,7 +119,7 @@ describe('qualificationsListCreateController', () => {
         username,
       )
       expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/view/education-and-training`)
-      expect(getPrisonerContext(req.session, prisonNumber).educationDto).toBeUndefined()
+      expect(req.journeyData.educationDto).toBeUndefined()
     })
 
     it('should not create Education given error calling service', async () => {
@@ -130,7 +130,7 @@ describe('qualificationsListCreateController', () => {
         qualifications,
         educationLevel: EducationLevelValue.SECONDARY_SCHOOL_TOOK_EXAMS,
       })
-      getPrisonerContext(req.session, prisonNumber).educationDto = educationDto
+      req.journeyData.educationDto = educationDto
 
       req.body = {}
 
@@ -156,14 +156,14 @@ describe('qualificationsListCreateController', () => {
         username,
       )
       expect(next).toHaveBeenCalledWith(expectedError)
-      expect(getPrisonerContext(req.session, prisonNumber).educationDto).toEqual(educationDto)
+      expect(req.journeyData.educationDto).toEqual(educationDto)
     })
 
     it('should redirect to Qualification Level Page given page submitted with addQualification', async () => {
       // Given
       const qualifications = [aNewAchievedQualificationDto()]
       const educationDto = aValidEducationDto({ prisonNumber, qualifications })
-      getPrisonerContext(req.session, prisonNumber).educationDto = educationDto
+      req.journeyData.educationDto = educationDto
 
       req.body = { addQualification: '' }
 
@@ -172,7 +172,7 @@ describe('qualificationsListCreateController', () => {
 
       // Then
       expect(res.redirect).toHaveBeenCalledWith(`/prisoners/A1234BC/create-education/${journeyId}/qualification-level`)
-      expect(getPrisonerContext(req.session, prisonNumber).educationDto).toEqual(educationDto)
+      expect(req.journeyData.educationDto).toEqual(educationDto)
     })
 
     it('should redisplay Qualification Details Page given page submitted with removeQualification', async () => {
@@ -183,7 +183,7 @@ describe('qualificationsListCreateController', () => {
         aNewAchievedQualificationDto({ subject: 'French' }),
       ]
       const educationDto = aValidEducationDto({ prisonNumber, qualifications })
-      getPrisonerContext(req.session, prisonNumber).educationDto = educationDto
+      req.journeyData.educationDto = educationDto
 
       req.body = { removeQualification: '1' } // qualification to remove is zero indexed
 
@@ -201,7 +201,7 @@ describe('qualificationsListCreateController', () => {
 
       // Then
       expect(res.redirect).toHaveBeenCalledWith(`/prisoners/A1234BC/create-education/${journeyId}/qualifications`)
-      expect(getPrisonerContext(req.session, prisonNumber).educationDto).toEqual(expectedEducationDto)
+      expect(req.journeyData.educationDto).toEqual(expectedEducationDto)
     })
   })
 })

@@ -23,12 +23,12 @@ export default class HighestLevelOfEducationCreateController extends HighestLeve
       )
     }
 
-    const { educationDto } = getPrisonerContext(req.session, prisonNumber)
+    const { educationDto } = req.journeyData
     const updatedEducationDto = this.updatedEducationDtoWithHighestLevelOfEducation(
       educationDto,
       highestLevelOfEducationForm,
     )
-    getPrisonerContext(req.session, prisonNumber).educationDto = updatedEducationDto
+    req.journeyData.educationDto = updatedEducationDto
 
     return res.redirect(`/prisoners/${prisonNumber}/create-education/${journeyId}/qualification-level`)
   }

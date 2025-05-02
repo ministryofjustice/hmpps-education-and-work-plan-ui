@@ -7,18 +7,19 @@ import retrieveEducationForUpdate from '../../routerRequestHandlers/retrieveEduc
 import QualificationLevelUpdateController from './qualificationLevelUpdateController'
 import QualificationDetailsUpdateController from './qualificationDetailsUpdateController'
 import QualificationsListUpdateController from './qualificationsListUpdateController'
-import checkEducationDtoExistsInPrisonerContext from '../../routerRequestHandlers/checkEducationDtoExistsInPrisonerContext'
+import checkEducationDtoExistsInJourneyData from '../../routerRequestHandlers/checkEducationDtoExistsInJourneyData'
 import retrieveCuriousFunctionalSkills from '../../routerRequestHandlers/retrieveCuriousFunctionalSkills'
 import retrieveCuriousInPrisonCourses from '../../routerRequestHandlers/retrieveCuriousInPrisonCourses'
 import ApplicationAction from '../../../enums/applicationAction'
 import insertJourneyIdentifier from '../../routerRequestHandlers/insertJourneyIdentifier'
+import setupJourneyData from '../../routerRequestHandlers/setupJourneyData'
 
 /**
  * Route definitions for updating a prisoner's qualifications
  *
  */
 export default (router: Router, services: Services) => {
-  const { educationAndWorkPlanService } = services
+  const { educationAndWorkPlanService, journeyDataService } = services
   const highestLevelOfEducationUpdateController = new HighestLevelOfEducationUpdateController(
     educationAndWorkPlanService,
   )
@@ -30,6 +31,7 @@ export default (router: Router, services: Services) => {
     checkUserHasPermissionTo(ApplicationAction.UPDATE_EDUCATION),
     insertJourneyIdentifier({ insertIdAfterElement: 3 }), // insert journey ID immediately after '/prisoners/:prisonNumber/education' - eg: '/prisoners/A1234BC/education/473e9ee4-37d6-4afb-92a2-5729b10cc60f/highest-level-of-education'
   ])
+  router.use('/prisoners/:prisonNumber/education/:journeyId', [setupJourneyData(journeyDataService)])
 
   router.get('/prisoners/:prisonNumber/education/:journeyId/add-qualifications', [
     retrieveEducationForUpdate(educationAndWorkPlanService),
@@ -60,7 +62,7 @@ export default (router: Router, services: Services) => {
   ])
 
   router.use('/prisoners/:prisonNumber/education/:journeyId/qualification-level', [
-    checkEducationDtoExistsInPrisonerContext,
+    checkEducationDtoExistsInJourneyData,
   ])
   router.get('/prisoners/:prisonNumber/education/:journeyId/qualification-level', [
     asyncMiddleware(qualificationLevelUpdateController.getQualificationLevelView),
@@ -70,7 +72,7 @@ export default (router: Router, services: Services) => {
   ])
 
   router.use('/prisoners/:prisonNumber/education/:journeyId/qualification-details', [
-    checkEducationDtoExistsInPrisonerContext,
+    checkEducationDtoExistsInJourneyData,
   ])
   router.get('/prisoners/:prisonNumber/education/:journeyId/qualification-details', [
     asyncMiddleware(qualificationDetailsUpdateController.getQualificationDetailsView),

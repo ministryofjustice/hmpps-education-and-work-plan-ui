@@ -3,7 +3,6 @@ import type { Assessment } from 'viewModels'
 import type { EducationDto } from 'dto'
 import QualificationsListView from './qualificationsListView'
 import dateComparator from '../../dateComparator'
-import { getPrisonerContext } from '../../../data/session/prisonerContexts'
 
 /**
  * Abstract controller class defining functionality common to both the Create and Update journeys.
@@ -17,7 +16,7 @@ export default abstract class QualificationsListController {
     const { prisonNumber, journeyId } = req.params
     const { prisonerSummary } = res.locals
 
-    const { educationDto } = getPrisonerContext(req.session, prisonNumber)
+    const { educationDto } = req.journeyData
 
     if (!educationDto.educationLevel) {
       return res.redirect(`/prisoners/${prisonNumber}/create-education/${journeyId}/highest-level-of-education`)

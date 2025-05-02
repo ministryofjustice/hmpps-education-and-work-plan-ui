@@ -1,7 +1,6 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express'
 import createError from 'http-errors'
 import QualificationsListController from '../common/qualificationsListController'
-import { getPrisonerContext } from '../../../data/session/prisonerContexts'
 import toCreateEducationDto from '../../../data/mappers/createCreateOrUpdateEducationDtoMapper'
 import logger from '../../../../logger'
 import { EducationAndWorkPlanService } from '../../../services'
@@ -23,12 +22,12 @@ export default class QualificationsListCreateController extends QualificationsLi
       return res.redirect(`/prisoners/${prisonNumber}/create-education/${journeyId}/qualification-level`)
     }
 
-    const { educationDto } = getPrisonerContext(req.session, prisonNumber)
+    const { educationDto } = req.journeyData
 
     if (this.userClickedOnButton(req, 'removeQualification')) {
       const qualificationIndexToRemove = req.body.removeQualification as number
       const updatedEducation = this.educationWithRemovedQualification(educationDto, qualificationIndexToRemove)
-      getPrisonerContext(req.session, prisonNumber).educationDto = updatedEducation
+      req.journeyData.educationDto = updatedEducation
       return res.redirect(`/prisoners/${prisonNumber}/create-education/${journeyId}/qualifications`)
     }
 
@@ -40,7 +39,7 @@ export default class QualificationsListCreateController extends QualificationsLi
 
     try {
       await this.educationAndWorkPlanService.createEducation(prisonNumber, createdEducationDto, req.user.username)
-      getPrisonerContext(req.session, prisonNumber).educationDto = undefined
+      req.journeyData.educationDto = undefined
       return res.redirect(`/plan/${prisonNumber}/view/education-and-training`)
     } catch (e) {
       logger.error(`Error creating Education for prisoner ${prisonNumber}`, e)
