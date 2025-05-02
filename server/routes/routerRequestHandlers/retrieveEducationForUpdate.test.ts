@@ -3,7 +3,6 @@ import createHttpError from 'http-errors'
 import EducationAndWorkPlanService from '../../services/educationAndWorkPlanService'
 import retrieveEducationForUpdate from './retrieveEducationForUpdate'
 import aValidEducationDto from '../../testsupport/educationDtoTestDataBuilder'
-import { getPrisonerContext } from '../../data/session/prisonerContexts'
 
 jest.mock('../../services/educationAndWorkPlanService')
 
@@ -27,14 +26,14 @@ describe('retrieveEducationForUpdate', () => {
     req = {
       user: { username },
       params: { prisonNumber },
-      session: {},
+      journeyData: {},
     } as unknown as Request
     res = {} as unknown as Response
 
-    getPrisonerContext(req.session, prisonNumber).educationDto = undefined
+    req.journeyData.educationDto = undefined
   })
 
-  it('should retrieve education and store in prison context given education is not already in the prisoner context', async () => {
+  it('should retrieve education and store in prison context given education is not already in the journeyData', async () => {
     // Given
     const educationDto = aValidEducationDto({ prisonNumber })
     educationAndWorkPlanService.getEducation.mockResolvedValue(educationDto)
@@ -43,21 +42,21 @@ describe('retrieveEducationForUpdate', () => {
     await requestHandler(req, res, next)
 
     // Then
-    expect(getPrisonerContext(req.session, prisonNumber).educationDto).toEqual(educationDto)
+    expect(req.journeyData.educationDto).toEqual(educationDto)
     expect(educationAndWorkPlanService.getEducation).toHaveBeenCalledWith(prisonNumber, username)
     expect(next).toHaveBeenCalled()
   })
 
-  it('should not retrieve education given education is already in the prisoner context', async () => {
+  it('should not retrieve education given education is already in the journeyData', async () => {
     // Given
     const educationDto = aValidEducationDto({ prisonNumber })
-    getPrisonerContext(req.session, prisonNumber).educationDto = educationDto
+    req.journeyData.educationDto = educationDto
 
     // When
     await requestHandler(req, res, next)
 
     // Then
-    expect(getPrisonerContext(req.session, prisonNumber).educationDto).toEqual(educationDto)
+    expect(req.journeyData.educationDto).toEqual(educationDto)
     expect(educationAndWorkPlanService.getEducation).not.toHaveBeenCalled()
     expect(next).toHaveBeenCalled()
   })
@@ -80,7 +79,7 @@ describe('retrieveEducationForUpdate', () => {
     await requestHandler(req, res, next)
 
     // Then
-    expect(getPrisonerContext(req.session, prisonNumber).educationDto).toBeUndefined()
+    expect(req.journeyData.educationDto).toBeUndefined()
     expect(educationAndWorkPlanService.getEducation).toHaveBeenCalledWith(prisonNumber, username)
     expect(next).toHaveBeenCalledWith(expectedError)
   })
@@ -95,7 +94,7 @@ describe('retrieveEducationForUpdate', () => {
     await requestHandler(req, res, next)
 
     // Then
-    expect(getPrisonerContext(req.session, prisonNumber).educationDto).toBeUndefined()
+    expect(req.journeyData.educationDto).toBeUndefined()
     expect(educationAndWorkPlanService.getEducation).toHaveBeenCalledWith(prisonNumber, username)
     expect(next).toHaveBeenCalledWith(expectedError)
   })

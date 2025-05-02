@@ -14,7 +14,8 @@ export default class QualificationDetailsUpdateController extends QualificationD
     const { prisonNumber, journeyId } = req.params
     const { prisonerSummary } = res.locals
 
-    const { educationDto, qualificationLevelForm } = getPrisonerContext(req.session, prisonNumber)
+    const { educationDto } = req.journeyData
+    const { qualificationLevelForm } = getPrisonerContext(req.session, prisonNumber)
     const qualificationDetailsForm = { ...req.body }
     getPrisonerContext(req.session, prisonNumber).qualificationDetailsForm = qualificationDetailsForm
 
@@ -32,7 +33,7 @@ export default class QualificationDetailsUpdateController extends QualificationD
       qualificationDetailsForm,
       qualificationLevelForm.qualificationLevel,
     )
-    getPrisonerContext(req.session, prisonNumber).educationDto = updatedEducation
+    req.journeyData.educationDto = updatedEducation
 
     getPrisonerContext(req.session, prisonNumber).qualificationDetailsForm = undefined
     getPrisonerContext(req.session, prisonNumber).qualificationLevelForm = undefined

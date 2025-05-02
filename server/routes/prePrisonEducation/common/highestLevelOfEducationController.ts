@@ -16,7 +16,7 @@ export default abstract class HighestLevelOfEducationController {
     const { prisonNumber } = req.params
     const { prisonerSummary } = res.locals
 
-    const { educationDto } = getPrisonerContext(req.session, prisonNumber)
+    const { educationDto } = req.journeyData
     const highestLevelOfEducationForm =
       getPrisonerContext(req.session, prisonNumber).highestLevelOfEducationForm ||
       this.toHighestLevelOfEducationForm(educationDto)

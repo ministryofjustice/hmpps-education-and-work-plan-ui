@@ -4,21 +4,22 @@ import retrieveCuriousFunctionalSkills from '../../routerRequestHandlers/retriev
 import retrieveCuriousInPrisonCourses from '../../routerRequestHandlers/retrieveCuriousInPrisonCourses'
 import asyncMiddleware from '../../../middleware/asyncMiddleware'
 import { checkUserHasPermissionTo } from '../../../middleware/roleBasedAccessControl'
-import createEmptyEducationDtoIfNotInPrisonerContext from '../../routerRequestHandlers/createEmptyEducationDtoIfNotInPrisonerContext'
-import checkEducationDtoExistsInPrisonerContext from '../../routerRequestHandlers/checkEducationDtoExistsInPrisonerContext'
+import createEmptyEducationDtoIfNotInJourneyData from '../../routerRequestHandlers/createEmptyEducationDtoIfNotInJourneyData'
+import checkEducationDtoExistsInJourneyData from '../../routerRequestHandlers/checkEducationDtoExistsInJourneyData'
 import QualificationLevelCreateController from './qualificationLevelCreateController'
 import QualificationDetailsCreateController from './qualificationDetailsCreateController'
 import HighestLevelOfEducationCreateController from './highestLevelOfEducationCreateController'
 import QualificationsListCreateController from './qualificationsListCreateController'
 import ApplicationAction from '../../../enums/applicationAction'
 import insertJourneyIdentifier from '../../routerRequestHandlers/insertJourneyIdentifier'
+import setupJourneyData from '../../routerRequestHandlers/setupJourneyData'
 
 /**
  * Route definitions for creating a prisoner's qualifications before an Induction
  *
  */
 export default (router: Router, services: Services) => {
-  const { educationAndWorkPlanService } = services
+  const { educationAndWorkPlanService, journeyDataService } = services
   const highestLevelOfEducationCreateController = new HighestLevelOfEducationCreateController()
   const qualificationLevelCreateController = new QualificationLevelCreateController()
   const qualificationDetailsCreateController = new QualificationDetailsCreateController()
@@ -28,11 +29,10 @@ export default (router: Router, services: Services) => {
     checkUserHasPermissionTo(ApplicationAction.RECORD_EDUCATION),
     insertJourneyIdentifier({ insertIdAfterElement: 3 }), // insert journey ID immediately after '/prisoners/:prisonNumber/create-education' - eg: '/prisoners/A1234BC/create-education/473e9ee4-37d6-4afb-92a2-5729b10cc60f/highest-level-of-education'
   ])
+  router.use('/prisoners/:prisonNumber/create-education/:journeyId', [setupJourneyData(journeyDataService)])
 
-  router.use('/prisoners/:prisonNumber/create-education/:journeyId/highest-level-of-education', [
-    createEmptyEducationDtoIfNotInPrisonerContext,
-  ])
   router.get('/prisoners/:prisonNumber/create-education/:journeyId/highest-level-of-education', [
+    createEmptyEducationDtoIfNotInJourneyData,
     asyncMiddleware(highestLevelOfEducationCreateController.getHighestLevelOfEducationView),
   ])
   router.post('/prisoners/:prisonNumber/create-education/:journeyId/highest-level-of-education', [
@@ -40,7 +40,7 @@ export default (router: Router, services: Services) => {
   ])
 
   router.use('/prisoners/:prisonNumber/create-education/:journeyId/qualification-level', [
-    checkEducationDtoExistsInPrisonerContext,
+    checkEducationDtoExistsInJourneyData,
   ])
   router.get('/prisoners/:prisonNumber/create-education/:journeyId/qualification-level', [
     asyncMiddleware(qualificationLevelCreateController.getQualificationLevelView),
@@ -50,7 +50,7 @@ export default (router: Router, services: Services) => {
   ])
 
   router.use('/prisoners/:prisonNumber/create-education/:journeyId/qualification-details', [
-    checkEducationDtoExistsInPrisonerContext,
+    checkEducationDtoExistsInJourneyData,
   ])
   router.get('/prisoners/:prisonNumber/create-education/:journeyId/qualification-details', [
     asyncMiddleware(qualificationDetailsCreateController.getQualificationDetailsView),
@@ -60,7 +60,7 @@ export default (router: Router, services: Services) => {
   ])
 
   router.get('/prisoners/:prisonNumber/create-education/:journeyId/qualifications', [
-    checkEducationDtoExistsInPrisonerContext,
+    checkEducationDtoExistsInJourneyData,
   ])
   router.get('/prisoners/:prisonNumber/create-education/:journeyId/qualifications', [
     retrieveCuriousFunctionalSkills(services.curiousService),

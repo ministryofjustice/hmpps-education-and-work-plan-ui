@@ -26,6 +26,7 @@ describe('highestLevelOfEducationUpdateController', () => {
 
   const req = {
     session: {},
+    journeyData: {},
     body: {},
     user: { username },
     params: { prisonNumber, journeyId },
@@ -41,6 +42,7 @@ describe('highestLevelOfEducationUpdateController', () => {
   beforeEach(() => {
     jest.resetAllMocks()
     req.session.prisonerContexts = undefined
+    req.journeyData = {}
     req.body = {}
   })
 
@@ -51,7 +53,7 @@ describe('highestLevelOfEducationUpdateController', () => {
         prisonNumber,
         educationLevel: EducationLevelValue.FURTHER_EDUCATION_COLLEGE,
       })
-      getPrisonerContext(req.session, prisonNumber).educationDto = educationDto
+      req.journeyData.educationDto = educationDto
 
       const expectedHighestLevelOfEducationForm = {
         educationLevel: EducationLevelValue.FURTHER_EDUCATION_COLLEGE,
@@ -67,7 +69,7 @@ describe('highestLevelOfEducationUpdateController', () => {
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/prePrisonEducation/highestLevelOfEducation', expectedView)
-      expect(getPrisonerContext(req.session, prisonNumber).educationDto).toEqual(educationDto)
+      expect(req.journeyData.educationDto).toEqual(educationDto)
       expect(getPrisonerContext(req.session, prisonNumber).highestLevelOfEducationForm).toBeUndefined()
     })
   })
@@ -79,7 +81,7 @@ describe('highestLevelOfEducationUpdateController', () => {
         prisonNumber,
         educationLevel: EducationLevelValue.FURTHER_EDUCATION_COLLEGE,
       })
-      getPrisonerContext(req.session, prisonNumber).educationDto = educationDto
+      req.journeyData.educationDto = educationDto
 
       const invalidHighestLevelOfEducationForm = {}
       req.body = invalidHighestLevelOfEducationForm
@@ -96,7 +98,7 @@ describe('highestLevelOfEducationUpdateController', () => {
         `/prisoners/A1234BC/education/${journeyId}/highest-level-of-education`,
         expectedErrors,
       )
-      expect(getPrisonerContext(req.session, prisonNumber).educationDto).toEqual(educationDto)
+      expect(req.journeyData.educationDto).toEqual(educationDto)
       expect(getPrisonerContext(req.session, prisonNumber).highestLevelOfEducationForm).toEqual(
         invalidHighestLevelOfEducationForm,
       )
@@ -108,7 +110,7 @@ describe('highestLevelOfEducationUpdateController', () => {
         prisonNumber,
         educationLevel: EducationLevelValue.FURTHER_EDUCATION_COLLEGE,
       })
-      getPrisonerContext(req.session, prisonNumber).educationDto = educationDto
+      req.journeyData.educationDto = educationDto
 
       const highestLevelOfEducationForm = { educationLevel: EducationLevelValue.SECONDARY_SCHOOL_TOOK_EXAMS }
       req.body = highestLevelOfEducationForm
@@ -130,7 +132,7 @@ describe('highestLevelOfEducationUpdateController', () => {
 
       // Then
       expect(res.redirect).toHaveBeenCalledWith('/plan/A1234BC/view/education-and-training')
-      expect(getPrisonerContext(req.session, prisonNumber).educationDto).toBeUndefined()
+      expect(req.journeyData.educationDto).toBeUndefined()
       expect(getPrisonerContext(req.session, prisonNumber).highestLevelOfEducationForm).toBeUndefined()
       expect(educationAndWorkPlanService.updateEducation).toHaveBeenCalledWith(
         prisonNumber,
@@ -145,7 +147,7 @@ describe('highestLevelOfEducationUpdateController', () => {
         prisonNumber,
         educationLevel: EducationLevelValue.FURTHER_EDUCATION_COLLEGE,
       })
-      getPrisonerContext(req.session, prisonNumber).educationDto = educationDto
+      req.journeyData.educationDto = educationDto
 
       const highestLevelOfEducationForm = { educationLevel: EducationLevelValue.SECONDARY_SCHOOL_TOOK_EXAMS }
       req.body = highestLevelOfEducationForm
@@ -178,7 +180,7 @@ describe('highestLevelOfEducationUpdateController', () => {
 
       // Then
       expect(next).toHaveBeenCalledWith(expectedError)
-      expect(getPrisonerContext(req.session, prisonNumber).educationDto).toEqual(expectedEducationDto)
+      expect(req.journeyData.educationDto).toEqual(expectedEducationDto)
       expect(getPrisonerContext(req.session, prisonNumber).highestLevelOfEducationForm).toBeUndefined()
       expect(educationAndWorkPlanService.updateEducation).toHaveBeenCalledWith(
         prisonNumber,

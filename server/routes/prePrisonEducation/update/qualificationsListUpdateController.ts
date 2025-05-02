@@ -2,7 +2,6 @@ import { NextFunction, Request, RequestHandler, Response } from 'express'
 import createError from 'http-errors'
 import QualificationsListController from '../common/qualificationsListController'
 import logger from '../../../../logger'
-import { getPrisonerContext } from '../../../data/session/prisonerContexts'
 import toUpdateEducationDto from '../../../data/mappers/updateCreateOrUpdateEducationDtoMapper'
 import { EducationAndWorkPlanService } from '../../../services'
 
@@ -26,12 +25,12 @@ export default class QualificationsListUpdateController extends QualificationsLi
       return res.redirect(`/prisoners/${prisonNumber}/education/${journeyId}/qualification-level`)
     }
 
-    const { educationDto } = getPrisonerContext(req.session, prisonNumber)
+    const { educationDto } = req.journeyData
 
     if (this.userClickedOnButton(req, 'removeQualification')) {
       const qualificationIndexToRemove = req.body.removeQualification as number
       const updatedEducation = this.educationWithRemovedQualification(educationDto, qualificationIndexToRemove)
-      getPrisonerContext(req.session, prisonNumber).educationDto = updatedEducation
+      req.journeyData.educationDto = updatedEducation
       return res.redirect(`/prisoners/${prisonNumber}/education/${journeyId}/qualifications`)
     }
 
@@ -41,7 +40,7 @@ export default class QualificationsListUpdateController extends QualificationsLi
     try {
       const updateEducationDto = toUpdateEducationDto(prisonId, educationDto)
       await this.educationAndWorkPlanService.updateEducation(prisonNumber, updateEducationDto, req.user.username)
-      getPrisonerContext(req.session, prisonNumber).educationDto = undefined
+      req.journeyData.educationDto = undefined
       return res.redirect(`/plan/${prisonNumber}/view/education-and-training`)
     } catch (e) {
       logger.error(`Error updating Education for prisoner ${prisonNumber}`, e)

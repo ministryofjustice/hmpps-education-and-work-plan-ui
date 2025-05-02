@@ -32,17 +32,17 @@ export default class HighestLevelOfEducationUpdateController extends HighestLeve
       )
     }
 
-    const { educationDto } = getPrisonerContext(req.session, prisonNumber)
+    const { educationDto } = req.journeyData
     const updatedEducationDto = this.updatedEducationDtoWithHighestLevelOfEducation(
       educationDto,
       highestLevelOfEducationForm,
     )
-    getPrisonerContext(req.session, prisonNumber).educationDto = updatedEducationDto
+    req.journeyData.educationDto = updatedEducationDto
 
     try {
       const updateEducationDto = toUpdateEducationDto(prisonId, updatedEducationDto)
       await this.educationAndWorkPlanService.updateEducation(prisonNumber, updateEducationDto, req.user.username)
-      getPrisonerContext(req.session, prisonNumber).educationDto = undefined
+      req.journeyData.educationDto = undefined
       return res.redirect(`/plan/${prisonNumber}/view/education-and-training`)
     } catch (e) {
       logger.error(`Error updating Education for prisoner ${prisonNumber}`, e)
