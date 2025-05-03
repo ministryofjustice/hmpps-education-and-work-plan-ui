@@ -1,5 +1,5 @@
 import { RequestHandler } from 'express'
-import { startOfDay } from 'date-fns'
+import { format, startOfDay } from 'date-fns'
 import type { WhoCompletedInductionForm } from 'inductionForms'
 import type { InductionDto } from 'inductionDto'
 import WhoCompletedInductionView from './whoCompletedInductionView'
@@ -35,8 +35,6 @@ const toWhoCompletedInductionForm = (dto: InductionDto): WhoCompletedInductionFo
     completedBy: dto.completedBy,
     completedByOtherFullName: dto.completedByOtherFullName,
     completedByOtherJobRole: dto.completedByOtherJobRole,
-    'inductionDate-day': inductionDate ? `${inductionDate.getDate()}`.padStart(2, '0') : undefined,
-    'inductionDate-month': inductionDate ? `${inductionDate.getMonth() + 1}`.padStart(2, '0') : undefined,
-    'inductionDate-year': inductionDate ? `${inductionDate.getFullYear()}` : undefined,
+    inductionDate: inductionDate ? format(inductionDate, 'd/M/yyyy') : undefined,
   }
 }

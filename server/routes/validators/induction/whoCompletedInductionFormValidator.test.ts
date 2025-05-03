@@ -1,4 +1,4 @@
-import { addDays, startOfToday, subDays } from 'date-fns'
+import { addDays, format, startOfToday, subDays } from 'date-fns'
 import type { WhoCompletedInductionForm } from 'inductionForms'
 import validateWhoCompletedInductionForm from './whoCompletedInductionFormValidator'
 import SessionCompletedByValue from '../../../enums/sessionCompletedByValue'
@@ -13,9 +13,7 @@ describe('whoCompletedInductionFormValidator', () => {
       // Given
       const form: WhoCompletedInductionForm = {
         completedBy: SessionCompletedByValue.MYSELF,
-        'inductionDate-day': yesterday.getDate().toString(),
-        'inductionDate-month': (yesterday.getMonth() + 1).toString(),
-        'inductionDate-year': yesterday.getFullYear().toString(),
+        inductionDate: format(yesterday, 'dd/MM/yyyy'),
       }
 
       const expected: Array<Record<string, string>> = []
@@ -33,9 +31,7 @@ describe('whoCompletedInductionFormValidator', () => {
         completedBy: SessionCompletedByValue.SOMEBODY_ELSE,
         completedByOtherFullName: 'Buck Rogers',
         completedByOtherJobRole: 'CIAG',
-        'inductionDate-day': yesterday.getDate().toString(),
-        'inductionDate-month': (yesterday.getMonth() + 1).toString(),
-        'inductionDate-year': yesterday.getFullYear().toString(),
+        inductionDate: format(yesterday, 'dd/MM/yyyy'),
       }
 
       const expected: Array<Record<string, string>> = []
@@ -53,9 +49,7 @@ describe('whoCompletedInductionFormValidator', () => {
       // Given
       const form: WhoCompletedInductionForm = {
         completedBy: undefined,
-        'inductionDate-day': yesterday.getDate().toString(),
-        'inductionDate-month': (yesterday.getMonth() + 1).toString(),
-        'inductionDate-year': yesterday.getFullYear().toString(),
+        inductionDate: format(yesterday, 'dd/MM/yyyy'),
       }
 
       const expected: Array<Record<string, string>> = [
@@ -75,9 +69,7 @@ describe('whoCompletedInductionFormValidator', () => {
         completedBy: SessionCompletedByValue.SOMEBODY_ELSE,
         completedByOtherFullName: undefined,
         completedByOtherJobRole: 'CIAG',
-        'inductionDate-day': yesterday.getDate().toString(),
-        'inductionDate-month': (yesterday.getMonth() + 1).toString(),
-        'inductionDate-year': yesterday.getFullYear().toString(),
+        inductionDate: format(yesterday, 'dd/MM/yyyy'),
       }
 
       const expected: Array<Record<string, string>> = [
@@ -97,9 +89,7 @@ describe('whoCompletedInductionFormValidator', () => {
         completedBy: SessionCompletedByValue.SOMEBODY_ELSE,
         completedByOtherFullName: 'Joey Beltram',
         completedByOtherJobRole: undefined,
-        'inductionDate-day': yesterday.getDate().toString(),
-        'inductionDate-month': (yesterday.getMonth() + 1).toString(),
-        'inductionDate-year': yesterday.getFullYear().toString(),
+        inductionDate: format(yesterday, 'dd/MM/yyyy'),
       }
 
       const expected: Array<Record<string, string>> = [
@@ -119,9 +109,7 @@ describe('whoCompletedInductionFormValidator', () => {
         completedBy: SessionCompletedByValue.SOMEBODY_ELSE,
         completedByOtherFullName: undefined,
         completedByOtherJobRole: undefined,
-        'inductionDate-day': yesterday.getDate().toString(),
-        'inductionDate-month': (yesterday.getMonth() + 1).toString(),
-        'inductionDate-year': yesterday.getFullYear().toString(),
+        inductionDate: format(yesterday, 'dd/MM/yyyy'),
       }
 
       const expected: Array<Record<string, string>> = [
@@ -153,12 +141,10 @@ describe('whoCompletedInductionFormValidator', () => {
       // Given
       const form: WhoCompletedInductionForm = {
         completedBy: SessionCompletedByValue.MYSELF,
-        'inductionDate-day': spec.day,
-        'inductionDate-month': spec.month,
-        'inductionDate-year': spec.year,
+        inductionDate: `${spec.day}/${spec.month}/${spec.year}`,
       }
 
-      const expected: Array<Record<string, string>> = [{ href: '#induction-date', text: 'Enter a valid date' }]
+      const expected: Array<Record<string, string>> = [{ href: '#inductionDate', text: 'Enter a valid date' }]
 
       // When
       const actual = validateWhoCompletedInductionForm(form)
@@ -171,13 +157,11 @@ describe('whoCompletedInductionFormValidator', () => {
       // Given
       const form: WhoCompletedInductionForm = {
         completedBy: SessionCompletedByValue.MYSELF,
-        'inductionDate-day': tomorrow.getDate().toString(),
-        'inductionDate-month': (tomorrow.getMonth() + 1).toString(),
-        'inductionDate-year': tomorrow.getFullYear().toString(),
+        inductionDate: format(tomorrow, 'dd/MM/yyyy'),
       }
 
       const expected: Array<Record<string, string>> = [
-        { href: '#induction-date', text: 'Enter a valid date. Date cannot be in the future' },
+        { href: '#inductionDate', text: 'Enter a valid date. Date cannot be in the future' },
       ]
 
       // When
@@ -193,9 +177,7 @@ describe('whoCompletedInductionFormValidator', () => {
         completedBy: SessionCompletedByValue.SOMEBODY_ELSE,
         completedByOtherFullName: 'a'.repeat(201),
         completedByOtherJobRole: 'CIAG',
-        'inductionDate-day': yesterday.getDate().toString(),
-        'inductionDate-month': (yesterday.getMonth() + 1).toString(),
-        'inductionDate-year': yesterday.getFullYear().toString(),
+        inductionDate: format(yesterday, 'dd/MM/yyyy'),
       }
 
       const expected: Array<Record<string, string>> = [
@@ -216,9 +198,7 @@ describe('whoCompletedInductionFormValidator', () => {
       completedBy: SessionCompletedByValue.SOMEBODY_ELSE,
       completedByOtherFullName: 'Joey Beltram',
       completedByOtherJobRole: 'a'.repeat(201),
-      'inductionDate-day': yesterday.getDate().toString(),
-      'inductionDate-month': (yesterday.getMonth() + 1).toString(),
-      'inductionDate-year': yesterday.getFullYear().toString(),
+      inductionDate: format(yesterday, 'dd/MM/yyyy'),
     }
 
     const expected: Array<Record<string, string>> = [

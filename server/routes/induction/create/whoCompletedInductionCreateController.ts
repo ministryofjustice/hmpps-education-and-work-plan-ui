@@ -1,5 +1,5 @@
 import { RequestHandler } from 'express'
-import { startOfDay } from 'date-fns'
+import { parse, startOfDay } from 'date-fns'
 import type { WhoCompletedInductionForm } from 'inductionForms'
 import type { InductionDto } from 'inductionDto'
 import { getPrisonerContext } from '../../../data/session/prisonerContexts'
@@ -37,7 +37,5 @@ const updateDtoWithFormContents = (dto: InductionDto, form: WhoCompletedInductio
   completedBy: form.completedBy,
   completedByOtherFullName: form.completedByOtherFullName,
   completedByOtherJobRole: form.completedByOtherJobRole,
-  inductionDate: startOfDay(
-    `${form['inductionDate-year']}-${form['inductionDate-month'].padStart(2, '0')}-${form['inductionDate-day'].padStart(2, '0')}`,
-  ),
+  inductionDate: startOfDay(parse(form.inductionDate, 'd/M/yyyy', new Date())),
 })

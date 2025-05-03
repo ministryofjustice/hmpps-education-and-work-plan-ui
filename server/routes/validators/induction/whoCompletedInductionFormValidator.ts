@@ -1,4 +1,4 @@
-import { isAfter, isValid, parse, startOfToday } from 'date-fns'
+import { getYear, isAfter, isValid, parse, startOfToday } from 'date-fns'
 import type { WhoCompletedInductionForm } from 'inductionForms'
 import formatErrors from '../../errorFormatter'
 import SessionCompletedByValue from '../../../enums/sessionCompletedByValue'
@@ -12,7 +12,7 @@ const validateWhoCompletedInductionForm = (
 
   errors.push(...formatErrors('completedBy', validateCompletedBy(whoCompletedInductionForm)))
   completedByOtherErrors.forEach(error => errors.push(...formatErrors(error.field, [error.message])))
-  errors.push(...formatErrors('induction-date', validateInductionDate(whoCompletedInductionForm)))
+  errors.push(...formatErrors('inductionDate', validateInductionDate(whoCompletedInductionForm)))
 
   return errors
 }
@@ -20,18 +20,16 @@ const validateWhoCompletedInductionForm = (
 const validateInductionDate = (whoCompletedInductionForm: WhoCompletedInductionForm): Array<string> => {
   const errors: Array<string> = []
 
-  const day = whoCompletedInductionForm['inductionDate-day']
-  const month = whoCompletedInductionForm['inductionDate-month']
-  const year = whoCompletedInductionForm['inductionDate-year']
+  const { inductionDate } = whoCompletedInductionForm
 
-  if (!(isOneOrTwoDigits(day) && isOneOrTwoDigits(month) && isFourDigits(year))) {
+  if (!inductionDate) {
     errors.push('Enter a valid date')
     return errors
   }
 
   const today = startOfToday()
-  const proposedDate = parse(`${year}-${month?.padStart(2, '0')}-${day?.padStart(2, '0')}`, 'yyyy-MM-dd', today)
-  if (!isValid(proposedDate)) {
+  const proposedDate = parse(inductionDate, 'd/M/yyyy', today)
+  if (!isValid(proposedDate) || getYear(proposedDate) < 1900) {
     errors.push('Enter a valid date')
   }
   if (isAfter(proposedDate, today)) {
@@ -86,14 +84,6 @@ const validateCompletedBy = (whoCompletedInductionForm: WhoCompletedInductionFor
 const isInvalidOption = (completedBy: SessionCompletedByValue): boolean => {
   const allValidValues = Object.values(SessionCompletedByValue)
   return !allValidValues.includes(completedBy)
-}
-
-const isOneOrTwoDigits = (value: string): boolean => {
-  return !Number.isNaN(Number(value)) && (value?.length === 1 || value?.length === 2)
-}
-
-const isFourDigits = (value: string): boolean => {
-  return !Number.isNaN(Number(value)) && value?.length === 4
 }
 
 export default validateWhoCompletedInductionForm
