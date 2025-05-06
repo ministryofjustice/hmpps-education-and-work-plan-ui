@@ -21,9 +21,7 @@ describe('toCreateGoalDtos', () => {
         {
           title: 'Goal 2',
           targetCompletionDate: GoalTargetCompletionDateOption.ANOTHER_DATE,
-          'targetCompletionDate-day': '28',
-          'targetCompletionDate-month': '2',
-          'targetCompletionDate-year': '2025',
+          manuallyEnteredTargetCompletionDate: '28/2/2025',
           steps: [{ title: 'Goal 2, Step 1' }],
           note: 'Goal 2 notes',
         },

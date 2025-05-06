@@ -34,48 +34,25 @@
           }) }}
 
           {% set targetCompletionDateItems = [goalTargetDate] %}
-          {% set anotherDateHtml %}
-            {{ govukDateInput({
-              id: "another-date",
-              fieldset: {
-                legend: {
-                  text: "What date are they aiming to achieve this by?",
-                  classes: "govuk-visually-hidden"
-                }
+          {% set manuallyEnteredTargetCompletionDate %}
+            {{ mojDatePicker({
+              name: "manuallyEnteredTargetCompletionDate",
+              value: form.manuallyEnteredTargetCompletionDate,
+              id: "manuallyEnteredTargetCompletionDate",
+              label: {
+                text: "What date are they aiming to achieve this by?",
+                classes: "govuk-visually-hidden"
               },
               hint: {
-                text: "For example, 27 3 2007"
-              },
-              items: [
-                {
-                  id: 'another-date-day',
-                  label: 'Day',
-                  name: 'targetCompletionDate-day',
-                  classes: 'govuk-input--width-2',
-                  value: form['targetCompletionDate-day']
-                },
-                {
-                  id: 'another-date-month',
-                  label: 'Month',
-                  name: 'targetCompletionDate-month',
-                  classes: 'govuk-input--width-2',
-                  value: form['targetCompletionDate-month']
-                },
-                {
-                  id: 'another-date-year',
-                  label: 'Year',
-                  name: 'targetCompletionDate-year',
-                  classes: 'govuk-input--width-4',
-                  value: form['targetCompletionDate-year']
-                }
-              ]
+                text: "For example, 27/3/2007."
+              }
             }) }}
           {% endset -%}
           {% set targetCompletionDateItems = (targetCompletionDateItems.push({
               "value": "another-date",
               "text": "set another date",
               "conditional": {
-                "html": anotherDateHtml
+                "html": manuallyEnteredTargetCompletionDate
               }
             }), targetCompletionDateItems)
           %}

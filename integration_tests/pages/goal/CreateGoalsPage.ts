@@ -38,11 +38,9 @@ export default class CreateGoalsPage extends Page {
     return this
   }
 
-  setTargetCompletionDate(day: string, month: string, year: string, goalNumber: number = 1): CreateGoalsPage {
+  setTargetCompletionDate(targetCompletionDate: string, goalNumber: number = 1): CreateGoalsPage {
     this.goalTargetDateRadioButtons(goalNumber).last().check() // Setting a custom date is the last radio button option
-    this.goalTargetDateDayField(goalNumber).clear().type(day)
-    this.goalTargetDateMonthField(goalNumber).clear().type(month)
-    this.goalTargetDateYearField(goalNumber).clear().type(year)
+    this.goalManuallyEnteredTargetCompletionDateField(goalNumber).clear().type(targetCompletionDate)
     return this
   }
 
@@ -138,14 +136,8 @@ export default class CreateGoalsPage extends Page {
   private goalTargetDateRadioButtons = (goalNumber: number): PageElement =>
     cy.get(`[name="goals[${this.zeroIndexed(goalNumber)}][targetCompletionDate]"][type="radio"]`)
 
-  private goalTargetDateDayField = (goalNumber: number): PageElement =>
-    cy.get(`[name="${this.zeroIndexed(goalNumber)}][targetCompletionDate-day]"]`)
-
-  private goalTargetDateMonthField = (goalNumber: number): PageElement =>
-    cy.get(`[name="${this.zeroIndexed(goalNumber)}][targetCompletionDate-month]"]`)
-
-  private goalTargetDateYearField = (goalNumber: number): PageElement =>
-    cy.get(`[name="${this.zeroIndexed(goalNumber)}][targetCompletionDate-year]"]`)
+  private goalManuallyEnteredTargetCompletionDateField = (goalNumber: number): PageElement =>
+    cy.get(`[name="goals[${this.zeroIndexed(goalNumber)}].manuallyEnteredTargetCompletionDate"]`)
 
   private goalStepTitleFields = (goalNumber: number): PageElement =>
     // Return elements whose name attribute is goals[zeroIndexedGoalNumber][steps][.*][title]

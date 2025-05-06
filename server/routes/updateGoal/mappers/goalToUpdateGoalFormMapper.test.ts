@@ -18,10 +18,8 @@ describe('goalToUpdateGoalFormMapper', () => {
         title: 'Learn Spanish',
         note: 'Prisoner is not good at listening',
         createdAt: '2023-01-16T09:34:12.453Z',
-        targetCompletionDate: '2024-02-29',
-        'targetCompletionDate-day': null,
-        'targetCompletionDate-month': null,
-        'targetCompletionDate-year': null,
+        targetCompletionDate: '29/2/2024',
+        manuallyEnteredTargetCompletionDate: null,
         steps: [
           {
             reference: 'c88a6c48-97e2-4c04-93b5-98619966447b',
@@ -36,7 +34,7 @@ describe('goalToUpdateGoalFormMapper', () => {
             stepNumber: 2,
           },
         ],
-        originalTargetCompletionDate: '2024-02-29',
+        originalTargetCompletionDate: '29/2/2024',
         status: GoalStatusValue.ACTIVE,
       }
 

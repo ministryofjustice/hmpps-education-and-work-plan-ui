@@ -86,7 +86,7 @@ context('Update a goal', () => {
 
     // When
     updateGoalPage //
-      .setTargetCompletionDate('01', '91', 'xx91')
+      .setTargetCompletionDate('01/91/xx91')
       .submitPage()
 
     // Then
@@ -94,7 +94,7 @@ context('Update a goal', () => {
     updateGoalPage //
       .hasErrorCount(1)
       .hasFieldInError('targetCompletionDate')
-      .hasTargetCompletionDateValue('01', '91', 'xx91')
+      .hasTargetCompletionDateValue('01/91/xx91')
   })
 
   it('should be able to submit the form if no validation errors', () => {

@@ -1,29 +1,20 @@
-import { isBefore, isValid, parse, startOfToday } from 'date-fns'
+import { getYear, isBefore, isValid, parse, startOfToday } from 'date-fns'
 
-export default function goalTargetCompletionDateValidator(day?: string, month?: string, year?: string): Array<string> {
+export default function goalTargetCompletionDateValidator(manuallyEnteredTargetCompletionDate?: string): Array<string> {
   const errors: Array<string> = []
 
-  if (!(isOneOrTwoDigits(day) && isOneOrTwoDigits(month) && isFourDigits(year))) {
+  if (!manuallyEnteredTargetCompletionDate) {
     errors.push('Enter a valid date for when they are aiming to achieve this goal by')
     return errors
   }
 
   const today = startOfToday()
-  const proposedDate = parse(`${year}-${month?.padStart(2, '0')}-${day?.padStart(2, '0')}`, 'yyyy-MM-dd', today)
-  if (!isValid(proposedDate)) {
+  const proposedDate = parse(manuallyEnteredTargetCompletionDate, 'd/M/yyyy', today)
+  if (!isValid(proposedDate) || getYear(proposedDate) < 1900) {
     errors.push('Enter a valid date for when they are aiming to achieve this goal by')
-  }
-  if (isBefore(proposedDate, today)) {
+  } else if (isBefore(proposedDate, today)) {
     errors.push('Enter a valid date. Date must be in the future')
   }
 
   return errors
-}
-
-const isOneOrTwoDigits = (value: string): boolean => {
-  return !Number.isNaN(Number(value)) && (value?.length === 1 || value?.length === 2)
-}
-
-const isFourDigits = (value: string): boolean => {
-  return !Number.isNaN(Number(value)) && value?.length === 4
 }

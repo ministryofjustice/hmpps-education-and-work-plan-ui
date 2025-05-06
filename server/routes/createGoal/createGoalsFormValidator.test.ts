@@ -70,9 +70,7 @@ describe('createGoalsFormValidator', () => {
         {
           title: 'Learn Spanish',
           targetCompletionDate: GoalTargetCompletionDateOption.ANOTHER_DATE,
-          'targetCompletionDate-day': undefined,
-          'targetCompletionDate-month': undefined,
-          'targetCompletionDate-year': undefined,
+          manuallyEnteredTargetCompletionDate: undefined,
           steps: [{ title: 'Book Spanish course' }],
         },
       ],

@@ -25,9 +25,7 @@ const toAddStepDto = (step: { title?: string }, stepIndexNumber: number): AddSte
 
 const toTargetCompletionDate = (goalDateFields: {
   targetCompletionDate?: GoalTargetCompletionDateOption
-  'targetCompletionDate-day'?: string
-  'targetCompletionDate-month'?: string
-  'targetCompletionDate-year'?: string
+  manuallyEnteredTargetCompletionDate?: string
 }): Date => {
   const today = startOfToday()
   switch (goalDateFields.targetCompletionDate) {
@@ -41,10 +39,7 @@ const toTargetCompletionDate = (goalDateFields: {
       return addMonths(today, 12)
     }
     default: {
-      const day = goalDateFields['targetCompletionDate-day'].padStart(2, '0')
-      const month = goalDateFields['targetCompletionDate-month'].padStart(2, '0')
-      const year = goalDateFields['targetCompletionDate-year']
-      return parse(`${year}-${month}-${day}`, 'yyyy-MM-dd', today)
+      return parse(goalDateFields.manuallyEnteredTargetCompletionDate, 'd/M/yyyy', today)
     }
   }
 }

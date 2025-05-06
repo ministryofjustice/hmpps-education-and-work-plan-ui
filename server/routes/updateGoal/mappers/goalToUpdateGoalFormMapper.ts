@@ -10,9 +10,7 @@ const toUpdateGoalForm = (goal: Goal): UpdateGoalForm => {
     title: goal.title,
     createdAt: goal.createdAt.toISOString(),
     targetCompletionDate: toDateString(goal.targetCompletionDate),
-    'targetCompletionDate-day': null,
-    'targetCompletionDate-month': null,
-    'targetCompletionDate-year': null,
+    manuallyEnteredTargetCompletionDate: null,
     note: goal.notesByType.GOAL.at(0)?.content,
     steps: goal.steps.map(step => toUpdateStepForm(step)),
     originalTargetCompletionDate: toDateString(goal.targetCompletionDate),
@@ -30,7 +28,7 @@ const toUpdateStepForm = (step: Step): UpdateStepForm => {
 }
 
 const toDateString = (date: Date): string => {
-  return format(date, 'yyyy-MM-dd')
+  return format(date, 'd/M/yyyy')
 }
 
 export { toUpdateGoalForm, toUpdateStepForm }

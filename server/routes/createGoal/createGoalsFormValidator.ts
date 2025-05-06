@@ -21,11 +21,7 @@ export default function validateCreateGoalsForm(createGoalsForm: CreateGoalsForm
       errors.push(
         ...formatErrors(
           `goals[${goalIndex}].targetCompletionDate`,
-          goalTargetCompletionDateValidator(
-            goal['targetCompletionDate-day'],
-            goal['targetCompletionDate-month'],
-            goal['targetCompletionDate-year'],
-          ),
+          goalTargetCompletionDateValidator(goal.manuallyEnteredTargetCompletionDate),
         ),
       )
     }
