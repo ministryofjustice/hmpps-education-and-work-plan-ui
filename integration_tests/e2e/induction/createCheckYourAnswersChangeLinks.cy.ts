@@ -187,15 +187,12 @@ context(`Change links on the Check Your Answers page when creating an Induction`
 
     // Change Induction Completed By
     const inductionConductedAt = sub(startOfToday(), { days: 2 })
-    const inductionConductedAtDay = `${inductionConductedAt.getDate()}`.padStart(2, '0')
-    const inductionConductedAtMonth = `${inductionConductedAt.getMonth() + 1}`.padStart(2, '0')
-    const inductionConductedAtYear = `${inductionConductedAt.getFullYear()}`
     Page.verifyOnPage(CheckYourAnswersPage) //
       .clickInductionCompletedByChangeLink()
       .selectWhoCompletedTheReview(SessionCompletedByValue.SOMEBODY_ELSE)
       .enterFullName('Michelangelo di Lodovico Buonarroti Simoni')
       .enterJobRole('Italian sculptor, painter, architect, and poet')
-      .setInductionDate(inductionConductedAtDay, inductionConductedAtMonth, inductionConductedAtYear)
+      .setInductionDate(inductionConductedAt)
       .submitPage()
 
     // Change Induction Notes

@@ -249,11 +249,11 @@ context('Create an Induction', () => {
     Page.verifyOnPage(WhoCompletedInductionPage) //
       .hasErrorCount(2)
       .hasFieldInError('completedBy')
-      .hasFieldInError('induction-date')
+      .hasFieldInError('inductionDate')
       .selectWhoCompletedTheReview(SessionCompletedByValue.SOMEBODY_ELSE)
       .enterFullName('Joe Bloggs')
       .enterJobRole('Peer Mentor')
-      .setInductionDate(inductionConductedAtDay, inductionConductedAtMonth, inductionConductedAtYear)
+      .setInductionDate(inductionConductedAt)
       .submitPage()
 
     // Induction Notes page is next
@@ -416,7 +416,7 @@ context('Create an Induction', () => {
     // Who Completed Induction page is next
     Page.verifyOnPage(WhoCompletedInductionPage) //
       .selectWhoCompletedTheReview(SessionCompletedByValue.MYSELF)
-      .setInductionDate(inductionConductedAtDay, inductionConductedAtMonth, inductionConductedAtYear)
+      .setInductionDate(inductionConductedAt)
       .submitPage()
 
     // Induction Notes page is next
@@ -555,7 +555,7 @@ context('Create an Induction', () => {
     // Who Completed Induction page is next
     Page.verifyOnPage(WhoCompletedInductionPage) //
       .selectWhoCompletedTheReview(SessionCompletedByValue.MYSELF)
-      .setInductionDate(inductionConductedAtDay, inductionConductedAtMonth, inductionConductedAtYear)
+      .setInductionDate(inductionConductedAt)
       .submitPage()
 
     // Induction Notes page is next

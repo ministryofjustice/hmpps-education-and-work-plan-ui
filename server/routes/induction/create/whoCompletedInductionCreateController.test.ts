@@ -54,9 +54,7 @@ describe('whoCompletedInductionController', () => {
         completedBy: SessionCompletedByValue.MYSELF,
         completedByOtherFullName: undefined,
         completedByOtherJobRole: undefined,
-        'inductionDate-day': '09',
-        'inductionDate-month': '03',
-        'inductionDate-year': '2024',
+        inductionDate: '9/3/2024',
       }
 
       const expectedView = {
@@ -75,9 +73,7 @@ describe('whoCompletedInductionController', () => {
       // Given
       const expectedForm: WhoCompletedInductionForm = {
         completedBy: SessionCompletedByValue.MYSELF,
-        'inductionDate-day': '20',
-        'inductionDate-month': '3',
-        'inductionDate-year': '2024',
+        inductionDate: '20/3/2024',
       }
 
       getPrisonerContext(req.session, prisonNumber).whoCompletedInductionForm = expectedForm
@@ -102,9 +98,7 @@ describe('whoCompletedInductionController', () => {
 
       const invalidForm: WhoCompletedInductionForm = {
         completedBy: SessionCompletedByValue.SOMEBODY_ELSE,
-        'inductionDate-day': '20',
-        'inductionDate-month': '3',
-        'inductionDate-year': '2024',
+        inductionDate: '20/3/2024',
       }
       req.body = invalidForm
 
@@ -142,9 +136,7 @@ describe('whoCompletedInductionController', () => {
         completedBy: SessionCompletedByValue.SOMEBODY_ELSE,
         completedByOtherFullName: 'Joe Bloggs',
         completedByOtherJobRole: 'Peer mentor',
-        'inductionDate-day': '9',
-        'inductionDate-month': '3',
-        'inductionDate-year': '2024',
+        inductionDate: '9/3/2024',
       }
       req.body = validForm
 
@@ -189,9 +181,7 @@ describe('whoCompletedInductionController', () => {
         completedBy: SessionCompletedByValue.SOMEBODY_ELSE,
         completedByOtherFullName: 'Joe Bloggs',
         completedByOtherJobRole: 'Peer mentor',
-        'inductionDate-day': '9',
-        'inductionDate-month': '3',
-        'inductionDate-year': '2024',
+        inductionDate: '9/3/2024',
       }
       req.body = validForm
 

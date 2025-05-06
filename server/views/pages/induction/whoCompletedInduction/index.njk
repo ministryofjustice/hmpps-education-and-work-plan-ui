@@ -82,45 +82,19 @@
             errorMessage: errors | findError('completedBy')
           }) }}
 
-          {{ govukDateInput({
-            id: "induction-date",
-            fieldset: {
-              legend: {
-                html: "<span data-qa='add-induction-date'>Add the induction date</span>",
-                classes: "govuk-fieldset__legend--s",
-                attributes: { "data-qa": "add-induction-date" }
-              }
+          {{ mojDatePicker({
+            name: "inductionDate",
+            value: form.inductionDate,
+            id: "inductionDate",
+            label: {
+              html: "<span>Add the induction date</span>",
+              classes: "govuk-fieldset__legend--s",
+              attributes: { "data-qa": "add-induction-date" }
             },
             hint: {
-              text: "For example, 17 5 2024"
+              text: "For example, 17/5/2024."
             },
-            items: [
-              {
-                id: 'induction-date-day',
-                label: 'Day',
-                name: 'inductionDate-day',
-                classes: 'govuk-input--width-2',
-                value: form['inductionDate-day'],
-                attributes: {"data-qa": "induction-date-day"}
-              },
-              {
-                id: 'induction-date-month',
-                label: 'Month',
-                name: 'inductionDate-month',
-                classes: 'govuk-input--width-2',
-                value: form['inductionDate-month'],
-                attributes: {"data-qa": "induction-date-month"}
-              },
-              {
-                id: 'induction-date-year',
-                label: 'Year',
-                name: 'inductionDate-year',
-                classes: 'govuk-input--width-4',
-                value: form['inductionDate-year'],
-                attributes: {"data-qa": "induction-date-year"}
-              }
-            ],
-            errorMessage: errors | findError('induction-date')
+            errorMessage: errors | findError('inductionDate')
           }) }}
         </div>
 

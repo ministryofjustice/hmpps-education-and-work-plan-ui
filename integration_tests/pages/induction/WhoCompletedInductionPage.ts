@@ -21,20 +21,16 @@ export default class WhoCompletedInductionPage extends Page {
     return this
   }
 
-  setInductionDate(day: string, month: string, year: string): WhoCompletedInductionPage {
-    this.inductionDateDayField().clear().type(day)
-    this.inductionDateMonthField().clear().type(month)
-    this.inductionDateYearField().clear().type(year)
+  setInductionDate(inductionDate: Date): WhoCompletedInductionPage {
+    this.inductionDateField()
+      .clear()
+      .type(`${inductionDate.getDate()}/${inductionDate.getMonth() + 1}/${inductionDate.getFullYear()}`)
     return this
   }
 
   private radio = (value: SessionCompletedByValue): PageElement => cy.get(`.govuk-radios__input[value='${value}']`)
 
-  private inductionDateDayField = (): PageElement => cy.get('[data-qa=induction-date-day]')
-
-  private inductionDateMonthField = (): PageElement => cy.get('[data-qa=induction-date-month]')
-
-  private inductionDateYearField = (): PageElement => cy.get('[data-qa=induction-date-year]')
+  private inductionDateField = (): PageElement => cy.get('#inductionDate')
 
   private fullNameField = (): PageElement => cy.get('[data-qa=completedByOtherFullName]')
 

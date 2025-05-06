@@ -172,12 +172,9 @@ Cypress.Commands.add(
       .submitPage()
     // Who Completed Induction page is next
     const inductionConductedAt = sub(startOfToday(), { weeks: 1 })
-    const inductionConductedAtDay = `${inductionConductedAt.getDate()}`.padStart(2, '0')
-    const inductionConductedAtMonth = `${inductionConductedAt.getMonth() + 1}`.padStart(2, '0')
-    const inductionConductedAtYear = `${inductionConductedAt.getFullYear()}`
     Page.verifyOnPage(WhoCompletedInductionPage) //
       .selectWhoCompletedTheReview(SessionCompletedByValue.MYSELF)
-      .setInductionDate(inductionConductedAtDay, inductionConductedAtMonth, inductionConductedAtYear)
+      .setInductionDate(inductionConductedAt)
       .submitPage()
     // Induction Notes page is next
     Page.verifyOnPage(InductionNotePage) //

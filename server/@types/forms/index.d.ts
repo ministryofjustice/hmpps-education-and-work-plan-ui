@@ -167,9 +167,7 @@ declare module 'inductionForms' {
     completedBy: SessionCompletedByValue
     completedByOtherFullName?: string
     completedByOtherJobRole?: string
-    'inductionDate-day': string
-    'inductionDate-month': string
-    'inductionDate-year': string
+    inductionDate: string
   }
 
   export interface InductionNoteForm {

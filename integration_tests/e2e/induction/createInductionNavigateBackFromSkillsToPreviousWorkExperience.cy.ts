@@ -153,7 +153,7 @@ context('Create induction having navigated back from Skills to Previous Work Exp
     // Who Completed Induction page is next
     Page.verifyOnPage(WhoCompletedInductionPage) //
       .selectWhoCompletedTheReview(SessionCompletedByValue.MYSELF)
-      .setInductionDate(inductionConductedAtDay, inductionConductedAtMonth, inductionConductedAtYear)
+      .setInductionDate(inductionConductedAt)
       .submitPage()
 
     // Induction Notes page is next
