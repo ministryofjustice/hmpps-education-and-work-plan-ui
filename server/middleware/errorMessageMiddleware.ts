@@ -8,9 +8,13 @@ export default function errorMessageMiddleware(req: Request, res: Response, next
 
   if (req.method === 'GET') {
     const errorMessages = req.flash('errors')[0]
+    const invalidForm = req.flash('invalidForm')[0]
 
     if (errorMessages) {
       res.locals.errors = JSON.parse(errorMessages)
+    }
+    if (invalidForm) {
+      res.locals.invalidForm = JSON.parse(invalidForm)
     }
   }
 
