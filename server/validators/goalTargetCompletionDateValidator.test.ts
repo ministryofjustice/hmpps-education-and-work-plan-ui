@@ -17,7 +17,7 @@ describe('goalTargetDateValidator', () => {
       // Given
 
       // When
-      const errors = validateTargetDate(dateValues.day, dateValues.month, dateValues.year)
+      const errors = validateTargetDate(`${dateValues.day}/${dateValues.month}/${dateValues.year}`)
 
       // Then
       expect(errors).toStrictEqual(['Enter a valid date for when they are aiming to achieve this goal by'])
@@ -26,11 +26,9 @@ describe('goalTargetDateValidator', () => {
 
   it('should validate given a date in the past', () => {
     // Given
-    const day = '26'
-    const month = '02'
-    const year = '2007'
+
     // When
-    const errors = validateTargetDate(day, month, year)
+    const errors = validateTargetDate('26/2/2007')
 
     // Then
     expect(errors).toStrictEqual(['Enter a valid date. Date must be in the future'])

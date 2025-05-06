@@ -10,9 +10,7 @@ declare module 'forms' {
     title?: string
     createdAt: string
     targetCompletionDate?: string
-    'targetCompletionDate-day'?: string
-    'targetCompletionDate-month'?: string
-    'targetCompletionDate-year'?: string
+    manuallyEnteredTargetCompletionDate?: string
     note?: string
     steps: Array<UpdateStepForm>
     action?: 'add-another-step' | 'submit-form' | 'delete-step-[0]'
@@ -32,9 +30,7 @@ declare module 'forms' {
     goals: Array<{
       title?: string
       targetCompletionDate?: GoalTargetCompletionDateOption
-      'targetCompletionDate-day'?: string
-      'targetCompletionDate-month'?: string
-      'targetCompletionDate-year'?: string
+      manuallyEnteredTargetCompletionDate?: string
       steps: Array<{
         title?: string
       }>

@@ -66,41 +66,18 @@
               errorMessage: errors | findError("goals[" + goalLoop.index0 + "].title")
             }) }}
 
-            {% set anotherDateHtml %}
-              {{ govukDateInput({
-                id: "goals[" + goalLoop.index0 + "].another-date",
-                fieldset: {
-                  legend: {
-                    text: "When are they aiming to achieve this goal by?",
-                    classes: "govuk-visually-hidden"
-                  }
+            {% set manuallyEnteredTargetCompletionDate %}
+              {{ mojDatePicker({
+                name: "goals[" + goalLoop.index0 + "][manuallyEnteredTargetCompletionDate]",
+                value: form.goals[(goalLoop.index0)][manuallyEnteredTargetCompletionDate],
+                id: "goals[" + goalLoop.index0 + "][manuallyEnteredTargetCompletionDate]",
+                label: {
+                  text: "When are they aiming to achieve this goal by?",
+                  classes: "govuk-visually-hidden"
                 },
                 hint: {
-                  text: "For example, 27 3 2007"
-                },
-                items: [
-                  {
-                    id: 'goals[' + goalLoop.index0 + '].targetCompletionDate-day',
-                    label: 'Day',
-                    name: "goals[" + goalLoop.index0 + "][targetCompletionDate-day]",
-                    classes: 'govuk-input--width-2',
-                    value: form.goals[(goalLoop.index0)]['targetCompletionDate-day']
-                  },
-                  {
-                    id: 'goals[' + goalLoop.index0 + '].targetCompletionDate-month',
-                    label: 'Month',
-                    name: "goals[" + goalLoop.index0 + "][targetCompletionDate-month]",
-                    classes: 'govuk-input--width-2',
-                    value: form.goals[(goalLoop.index0)]['targetCompletionDate-month']
-                  },
-                  {
-                    id: 'goals[' + goalLoop.index0 + '].targetCompletionDate-year',
-                    label: 'Year',
-                    name: "goals[" + goalLoop.index0 + "][targetCompletionDate-year]",
-                    classes: 'govuk-input--width-4',
-                    value: form.goals[(goalLoop.index0)]['targetCompletionDate-year']
-                  }
-                ]
+                  text: "For example, 27/3/2007."
+                }
               }) }}
             {% endset -%}
 
@@ -128,7 +105,7 @@
                   "value": goalTargetCompletionDateOptions.ANOTHER_DATE,
                   "text": "set another date",
                   "conditional": {
-                    "html": anotherDateHtml
+                    "html": manuallyEnteredTargetCompletionDate
                   }
                 }
               ],

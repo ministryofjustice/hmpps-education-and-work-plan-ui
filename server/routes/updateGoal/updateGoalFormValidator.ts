@@ -13,11 +13,7 @@ export default function validateUpdateGoalForm(updateGoalForm: UpdateGoalForm): 
     errors.push(
       ...formatErrors(
         'targetCompletionDate',
-        goalTargetCompletionDateValidator(
-          updateGoalForm['targetCompletionDate-day'],
-          updateGoalForm['targetCompletionDate-month'],
-          updateGoalForm['targetCompletionDate-year'],
-        ),
+        goalTargetCompletionDateValidator(updateGoalForm.manuallyEnteredTargetCompletionDate),
       ),
     )
   }

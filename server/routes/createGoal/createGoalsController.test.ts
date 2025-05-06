@@ -89,9 +89,7 @@ describe('createGoalsController', () => {
         goals: [
           {
             title: 'Learn French',
-            'targetCompletionDate-day': '31',
-            'targetCompletionDate-month': '12',
-            'targetCompletionDate-year': '2024',
+            manuallyEnteredTargetCompletionDate: '31/12/2024',
             steps: [{ title: 'Book Course' }, { title: 'Attend Course' }],
           },
         ],
@@ -263,9 +261,7 @@ describe('createGoalsController', () => {
         goals: [
           {
             title: '',
-            'targetCompletionDate-day': '31',
-            'targetCompletionDate-month': '12',
-            'targetCompletionDate-year': '2024',
+            manuallyEnteredTargetCompletionDate: '31/12/2024',
             steps: [{ title: 'Book Course' }],
           },
         ],

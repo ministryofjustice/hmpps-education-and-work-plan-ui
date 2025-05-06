@@ -7,10 +7,8 @@ const aValidUpdateGoalForm = (reference = '95b18362-fe56-4234-9ad2-11ef98b974a3'
     reference,
     title: 'Learn Spanish',
     createdAt: '2023-01-16',
-    targetCompletionDate: '2024-02-29',
-    'targetCompletionDate-day': null,
-    'targetCompletionDate-month': null,
-    'targetCompletionDate-year': null,
+    targetCompletionDate: '29/2/2024',
+    manuallyEnteredTargetCompletionDate: null,
     note: 'Prisoner is not good at listening',
     steps: [
       {
@@ -27,7 +25,7 @@ const aValidUpdateGoalForm = (reference = '95b18362-fe56-4234-9ad2-11ef98b974a3'
       },
     ],
     action: 'submit-form',
-    originalTargetCompletionDate: '2024-02-29',
+    originalTargetCompletionDate: '29/2/2024',
     status: GoalStatusValue.ACTIVE,
   }
 }
@@ -40,9 +38,7 @@ const aValidUpdateGoalFormWithIndividualTargetDateFields = (
     title: 'Learn Spanish',
     createdAt: '2023-01-16',
     targetCompletionDate: 'another-date',
-    'targetCompletionDate-day': '29',
-    'targetCompletionDate-month': '02',
-    'targetCompletionDate-year': '2024',
+    manuallyEnteredTargetCompletionDate: '29/2/2024',
     note: 'Prisoner is not good at listening',
     steps: [
       {
@@ -53,7 +49,7 @@ const aValidUpdateGoalFormWithIndividualTargetDateFields = (
       },
     ],
     action: 'submit-form',
-    originalTargetCompletionDate: '2024-02-29',
+    originalTargetCompletionDate: '29/2/2024',
     status: GoalStatusValue.ACTIVE,
   }
 }
@@ -65,10 +61,8 @@ const aValidUpdateGoalFormDuringDaylightSavingTime = (
     reference,
     title: 'Learn Spanish',
     createdAt: '2023-01-16',
-    targetCompletionDate: '2024-06-29',
-    'targetCompletionDate-day': null,
-    'targetCompletionDate-month': null,
-    'targetCompletionDate-year': null,
+    targetCompletionDate: '29/6/2024',
+    manuallyEnteredTargetCompletionDate: null,
     note: 'Prisoner is not good at listening',
     steps: [
       {
@@ -79,7 +73,7 @@ const aValidUpdateGoalFormDuringDaylightSavingTime = (
       },
     ],
     action: 'submit-form',
-    originalTargetCompletionDate: '2024-06-29',
+    originalTargetCompletionDate: '29/6/2024',
     status: GoalStatusValue.ACTIVE,
   }
 }

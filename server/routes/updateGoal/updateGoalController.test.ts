@@ -76,10 +76,8 @@ describe('updateGoalController', () => {
         reference: goal.goalReference,
         title: goal.title,
         createdAt: goal.createdAt.toISOString(),
-        targetCompletionDate: '2024-02-29',
-        'targetCompletionDate-day': null,
-        'targetCompletionDate-month': null,
-        'targetCompletionDate-year': null,
+        targetCompletionDate: '29/2/2024',
+        manuallyEnteredTargetCompletionDate: null,
         note: goal.notesByType.GOAL[0].content,
         steps: [
           {
@@ -89,7 +87,7 @@ describe('updateGoalController', () => {
             status: goal.steps[0].status,
           },
         ],
-        originalTargetCompletionDate: '2024-02-29',
+        originalTargetCompletionDate: '29/2/2024',
         status: goal.status,
       } as UpdateGoalForm
       const expectedView = {
@@ -97,7 +95,7 @@ describe('updateGoalController', () => {
         form: updateGoalForm,
         goalTargetDate: {
           text: 'by 29 February 2024 (goal created on 16 January 2023)',
-          value: '2024-02-29',
+          value: '29/2/2024',
         },
       }
 

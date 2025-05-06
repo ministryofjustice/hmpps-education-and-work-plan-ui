@@ -22,9 +22,7 @@ describe('updateGoalFormValidator', () => {
       title: undefined,
       createdAt: '2023-01-16',
       targetCompletionDate: '2024-02-29',
-      'targetCompletionDate-day': null,
-      'targetCompletionDate-month': null,
-      'targetCompletionDate-year': null,
+      manuallyEnteredTargetCompletionDate: null,
       note: 'Prisoner is not good at listening',
       steps: [
         {
@@ -51,9 +49,7 @@ describe('updateGoalFormValidator', () => {
       title: 'Learn Spanish',
       createdAt: '2023-01-16',
       targetCompletionDate: 'another-date',
-      'targetCompletionDate-day': null,
-      'targetCompletionDate-month': null,
-      'targetCompletionDate-year': null,
+      manuallyEnteredTargetCompletionDate: null,
       note: 'Prisoner is not good at listening',
       steps: [
         {
@@ -80,9 +76,7 @@ describe('updateGoalFormValidator', () => {
       title: 'Learn Spanish',
       createdAt: '2023-01-16',
       targetCompletionDate: '2024-02-29',
-      'targetCompletionDate-day': null,
-      'targetCompletionDate-month': null,
-      'targetCompletionDate-year': null,
+      manuallyEnteredTargetCompletionDate: null,
       note: 'Prisoner is not good at listening',
       steps: [
         {
@@ -109,9 +103,7 @@ describe('updateGoalFormValidator', () => {
       title: 'Learn Spanish',
       createdAt: '2023-01-16',
       targetCompletionDate: '2024-02-29',
-      'targetCompletionDate-day': null,
-      'targetCompletionDate-month': null,
-      'targetCompletionDate-year': null,
+      manuallyEnteredTargetCompletionDate: null,
       note: 'Prisoner is not good at listening',
       steps: [
         {

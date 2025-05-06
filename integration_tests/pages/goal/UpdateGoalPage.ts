@@ -56,24 +56,20 @@ export default class UpdateGoalPage extends Page {
     return this
   }
 
-  setTargetCompletionDate(day: string, month: string, year: string): UpdateGoalPage {
+  setTargetCompletionDate(targetCompletionDate: string): UpdateGoalPage {
     this.targetDateField().last().check()
-    this.targetDateFieldDayField().clear().type(day)
-    this.targetDateFieldMonthField().clear().type(month)
-    this.targetDateFieldYearField().clear().type(year)
+    this.manuallyEnteredTargetCompletionDateField().clear().type(targetCompletionDate)
     return this
   }
 
-  hasTargetCompletionDateValue(expectedDay: string, expectedMonth: string, expectedYear: string): UpdateGoalPage {
+  hasTargetCompletionDateValue(expectedTargetCompletionDate: string): UpdateGoalPage {
     this.targetDateField()
       .filter(':checked')
       .then(selectedRadioElement => {
         if (selectedRadioElement.val() === 'another-date') {
-          this.targetDateFieldDayField().should('have.value', expectedDay)
-          this.targetDateFieldMonthField().should('have.value', expectedMonth)
-          this.targetDateFieldYearField().should('have.value', expectedYear)
+          this.manuallyEnteredTargetCompletionDateField().should('have.value', expectedTargetCompletionDate)
         } else {
-          cy.wrap(selectedRadioElement).should('have.value', `${expectedYear}-${expectedMonth}-${expectedDay}`)
+          cy.wrap(selectedRadioElement).should('have.value', expectedTargetCompletionDate)
         }
       })
     return this
@@ -96,9 +92,5 @@ export default class UpdateGoalPage extends Page {
 
   targetDateField = (): PageElement => cy.get('[name="targetCompletionDate"][type="radio"]')
 
-  targetDateFieldDayField = (): PageElement => cy.get('#another-date-day')
-
-  targetDateFieldMonthField = (): PageElement => cy.get('#another-date-month')
-
-  targetDateFieldYearField = (): PageElement => cy.get('#another-date-year')
+  manuallyEnteredTargetCompletionDateField = (): PageElement => cy.get('#manuallyEnteredTargetCompletionDate')
 }

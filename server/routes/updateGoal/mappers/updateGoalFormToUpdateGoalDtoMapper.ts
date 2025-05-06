@@ -1,4 +1,4 @@
-import { startOfDay } from 'date-fns'
+import { parse, startOfDay, startOfToday } from 'date-fns'
 import type { UpdateStepDto, UpdateGoalDto } from 'dto'
 import type { UpdateGoalForm, UpdateStepForm } from 'forms'
 
@@ -24,13 +24,11 @@ const toUpdateStepDto = (updateStepForm: UpdateStepForm): UpdateStepDto => {
 }
 
 const toTargetCompletionDate = (updateGoalForm: UpdateGoalForm): Date => {
+  const today = startOfToday()
   if (updateGoalForm.targetCompletionDate === 'another-date') {
-    const day = updateGoalForm['targetCompletionDate-day'].padStart(2, '0')
-    const month = updateGoalForm['targetCompletionDate-month'].padStart(2, '0')
-    const year = updateGoalForm['targetCompletionDate-year']
-    return startOfDay(`${year}-${month}-${day}`)
+    return startOfDay(parse(updateGoalForm.manuallyEnteredTargetCompletionDate, 'd/M/yyyy', today))
   }
-  return startOfDay(updateGoalForm.targetCompletionDate)
+  return startOfDay(parse(updateGoalForm.targetCompletionDate, 'd/M/yyyy', today))
 }
 
 export { toUpdateGoalDto, toUpdateStepDto }
