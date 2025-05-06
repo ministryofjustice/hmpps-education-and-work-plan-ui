@@ -1,7 +1,6 @@
 import createError from 'http-errors'
 import { NextFunction, Request, RequestHandler, Response } from 'express'
 import HopingToWorkOnReleaseController from '../common/hopingToWorkOnReleaseController'
-import validateHopingToWorkOnReleaseForm from '../../validators/induction/hopingToWorkOnReleaseFormValidator'
 import { InductionService } from '../../../services'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
 import logger from '../../../../logger'
@@ -23,20 +22,10 @@ export default class HopingToWorkOnReleaseUpdateController extends HopingToWorkO
     const { prisonerSummary } = res.locals
     const { prisonId } = prisonerSummary
 
-    req.session.hopingToWorkOnReleaseForm = { ...req.body }
-    const { hopingToWorkOnReleaseForm } = req.session
-
-    const errors = validateHopingToWorkOnReleaseForm(hopingToWorkOnReleaseForm, prisonerSummary)
-    if (errors.length > 0) {
-      return res.redirectWithErrors(
-        `/prisoners/${prisonNumber}/induction/${journeyId}/hoping-to-work-on-release`,
-        errors,
-      )
-    }
+    const hopingToWorkOnReleaseForm = { ...req.body }
 
     // If the user has not changed the answer, go back to Work & Interests
     if (this.answerHasNotBeenChanged(inductionDto, hopingToWorkOnReleaseForm)) {
-      req.session.hopingToWorkOnReleaseForm = undefined
       req.journeyData.inductionDto = undefined
       return res.redirect(`/plan/${prisonNumber}/view/work-and-interests`)
     }
@@ -59,7 +48,6 @@ export default class HopingToWorkOnReleaseUpdateController extends HopingToWorkO
       return next(createError(500, `Error updating Induction for prisoner ${prisonNumber}. Error: ${e}`))
     }
 
-    req.session.hopingToWorkOnReleaseForm = undefined
     req.journeyData.inductionDto = undefined
     return res.redirect(`/plan/${prisonNumber}/view/work-and-interests`)
   }

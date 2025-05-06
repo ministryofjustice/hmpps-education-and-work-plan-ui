@@ -30,6 +30,8 @@ import checkInductionDoesNotExist from '../../routerRequestHandlers/checkInducti
 import ApplicationAction from '../../../enums/applicationAction'
 import insertJourneyIdentifier from '../../routerRequestHandlers/insertJourneyIdentifier'
 import setupJourneyData from '../../routerRequestHandlers/setupJourneyData'
+import { hopingToWorkOnReleaseSchema } from '../validationSchemas'
+import { validate } from '../../routerRequestHandlers/validationMiddleware'
 
 /**
  * Route definitions for creating an Induction
@@ -76,6 +78,7 @@ export default (router: Router, services: Services) => {
     asyncMiddleware(hopingToWorkOnReleaseCreateController.getHopingToWorkOnReleaseView),
   ])
   router.post('/prisoners/:prisonNumber/create-induction/:journeyId/hoping-to-work-on-release', [
+    validate(hopingToWorkOnReleaseSchema),
     asyncMiddleware(hopingToWorkOnReleaseCreateController.submitHopingToWorkOnReleaseForm),
   ])
 

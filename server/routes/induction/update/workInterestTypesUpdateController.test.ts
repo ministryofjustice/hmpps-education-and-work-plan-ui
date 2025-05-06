@@ -235,12 +235,11 @@ describe('workInterestTypesUpdateController', () => {
       expect(req.journeyData.inductionDto).toEqual(inductionDto)
     })
 
-    it('should redirect to Work Interest Roles and not call the API to update Induction given form is submitted and there is a hopingToWork on the session', async () => {
+    it('should redirect to Work Interest Roles and not call the API to update Induction given form is submitted with hoping to work as yes but no future work interests defined yet', async () => {
       // Given
       const inductionDto = aValidInductionDto({ hopingToGetWork: HopingToGetWorkValue.YES })
       inductionDto.futureWorkInterests = {} as FutureWorkInterestsDto
       req.journeyData.inductionDto = inductionDto
-      req.session.hopingToWorkOnReleaseForm = { hopingToGetWork: HopingToGetWorkValue.YES }
 
       const workInterestTypesForm = {
         workInterestTypes: [WorkInterestTypeValue.CONSTRUCTION],

@@ -1,6 +1,5 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express'
 import HopingToWorkOnReleaseController from '../common/hopingToWorkOnReleaseController'
-import validateHopingToWorkOnReleaseForm from '../../validators/induction/hopingToWorkOnReleaseFormValidator'
 import YesNoValue from '../../../enums/yesNoValue'
 
 export default class HopingToWorkOnReleaseCreateController extends HopingToWorkOnReleaseController {
@@ -11,18 +10,8 @@ export default class HopingToWorkOnReleaseCreateController extends HopingToWorkO
   ): Promise<void> => {
     const { prisonNumber, journeyId } = req.params
     const { inductionDto } = req.journeyData
-    const { prisonerSummary } = res.locals
 
-    req.session.hopingToWorkOnReleaseForm = { ...req.body }
-    const { hopingToWorkOnReleaseForm } = req.session
-
-    const errors = validateHopingToWorkOnReleaseForm(hopingToWorkOnReleaseForm, prisonerSummary)
-    if (errors.length > 0) {
-      return res.redirectWithErrors(
-        `/prisoners/${prisonNumber}/create-induction/${journeyId}/hoping-to-work-on-release`,
-        errors,
-      )
-    }
+    const hopingToWorkOnReleaseForm = { ...req.body }
 
     // If the previous page was Check Your Answers and the user has not changed the answer, go back to Check Your Answers
     if (
@@ -34,7 +23,6 @@ export default class HopingToWorkOnReleaseCreateController extends HopingToWorkO
 
     const updatedInduction = this.updatedInductionDtoWithHopingToWorkOnRelease(inductionDto, hopingToWorkOnReleaseForm)
     req.journeyData.inductionDto = updatedInduction
-    req.session.hopingToWorkOnReleaseForm = undefined
 
     let nextPage: string
     if (this.previousPageWasCheckYourAnswers(req)) {

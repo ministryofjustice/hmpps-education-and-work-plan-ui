@@ -5,6 +5,7 @@ import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateIn
 import logger from '../../../../logger'
 import { InductionService } from '../../../services'
 import validateWorkInterestTypesForm from '../../validators/induction/workInterestTypesFormValidator'
+import HopingToGetWorkValue from '../../../enums/hopingToGetWorkValue'
 
 /**
  * Controller for updating a Prisoner's Future Work Interest Types part of an Induction.
@@ -40,9 +41,13 @@ export default class WorkInterestTypesUpdateController extends WorkInterestTypes
 
     const updatedInduction = this.updatedInductionDtoWithWorkInterestTypes(inductionDto, workInterestTypesForm)
 
-    // If there is a hopingToWorkOnReleaseForm on the session it means the user is updating a prisoners induction by changing whether they want to work on release.
-    // In this case we need to go to Work Interest Roles in order to complete the capture the prisoners future work interests.
-    if (req.session.hopingToWorkOnReleaseForm) {
+    // If on the original induction the prisoner is hoping to work on release but there are no future work interests
+    // then we have come from the Hoping To Work On Release page and we need to go to Work Interest Roles in order to
+    // complete the capture the prisoners future work interests.
+    if (
+      inductionDto.workOnRelease.hopingToWork === HopingToGetWorkValue.YES &&
+      (inductionDto.futureWorkInterests?.interests || []).length === 0
+    ) {
       req.journeyData.inductionDto = updatedInduction
       return res.redirect(`/prisoners/${prisonNumber}/induction/${journeyId}/work-interest-roles`)
     }
