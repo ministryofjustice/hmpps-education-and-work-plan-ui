@@ -17,12 +17,11 @@ export default abstract class HopingToWorkOnReleaseController extends InductionC
     next: NextFunction,
   ): Promise<void> => {
     const { inductionDto } = req.journeyData
-    const { prisonerSummary } = res.locals
+    const { prisonerSummary, invalidForm } = res.locals
 
     this.addCurrentPageToFlowHistoryWhenComingFromCheckYourAnswers(req)
 
-    const hopingToWorkOnReleaseForm = req.session.hopingToWorkOnReleaseForm || toHopingToWorkOnReleaseForm(inductionDto)
-    req.session.hopingToWorkOnReleaseForm = undefined
+    const hopingToWorkOnReleaseForm = invalidForm ?? toHopingToWorkOnReleaseForm(inductionDto)
 
     const view = new HopingToWorkOnReleaseView(prisonerSummary, hopingToWorkOnReleaseForm)
     return res.render('pages/induction/hopingToWorkOnRelease/index', { ...view.renderArgs })
