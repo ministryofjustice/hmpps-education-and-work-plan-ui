@@ -1,6 +1,7 @@
 import type { UpdateGoalForm, UpdateStepForm } from 'forms'
 import type { Goal, Step } from 'viewModels'
-import { format } from 'date-fns'
+import { format, formatISO } from 'date-fns'
+import { UTCDate } from '@date-fns/utc'
 import GoalStatusValue from '../../../enums/goalStatusValue'
 import StepStatusValue from '../../../enums/stepStatusValue'
 
@@ -8,7 +9,7 @@ const toUpdateGoalForm = (goal: Goal): UpdateGoalForm => {
   return {
     reference: goal.goalReference,
     title: goal.title,
-    createdAt: goal.createdAt.toISOString(),
+    createdAt: formatISO(new UTCDate(goal.createdAt)),
     targetCompletionDate: toDateString(goal.targetCompletionDate),
     manuallyEnteredTargetCompletionDate: null,
     note: goal.notesByType.GOAL.at(0)?.content,

@@ -1,5 +1,7 @@
-import createError from 'http-errors'
 import { NextFunction, Request, Response } from 'express'
+import createError from 'http-errors'
+import { formatISO } from 'date-fns'
+import { UTCDate } from '@date-fns/utc'
 import type { UpdateGoalForm } from 'forms'
 import EducationAndWorkPlanService from '../../services/educationAndWorkPlanService'
 import UpdateGoalController from './updateGoalController'
@@ -75,7 +77,7 @@ describe('updateGoalController', () => {
       const updateGoalForm = {
         reference: goal.goalReference,
         title: goal.title,
-        createdAt: goal.createdAt.toISOString(),
+        createdAt: formatISO(new UTCDate(goal.createdAt)),
         targetCompletionDate: '29/2/2024',
         manuallyEnteredTargetCompletionDate: null,
         note: goal.notesByType.GOAL[0].content,
