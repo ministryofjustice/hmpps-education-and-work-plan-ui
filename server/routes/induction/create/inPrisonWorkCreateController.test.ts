@@ -184,7 +184,6 @@ describe('inPrisonWorkCreateController', () => {
       const updatedInduction = req.journeyData.inductionDto
       expect(updatedInduction.inPrisonInterests.inPrisonWorkInterests).toEqual(expectedInPrisonWorkInterests)
       expect(res.redirect).toHaveBeenCalledWith(`/prisoners/A1234BC/create-induction/${journeyId}/check-your-answers`)
-      expect(req.session.skillsForm).toBeUndefined()
     })
   })
 })
