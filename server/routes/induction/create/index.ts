@@ -30,7 +30,7 @@ import checkInductionDoesNotExist from '../../routerRequestHandlers/checkInducti
 import ApplicationAction from '../../../enums/applicationAction'
 import insertJourneyIdentifier from '../../routerRequestHandlers/insertJourneyIdentifier'
 import setupJourneyData from '../../routerRequestHandlers/setupJourneyData'
-import { hopingToWorkOnReleaseSchema, skillsSchema } from '../validationSchemas'
+import { hopingToWorkOnReleaseSchema, skillsSchema, whoCompletedInductionSchema } from '../validationSchemas'
 import { validate } from '../../routerRequestHandlers/validationMiddleware'
 
 /**
@@ -203,6 +203,7 @@ export default (router: Router, services: Services) => {
     asyncMiddleware(whoCompletedInductionController.getWhoCompletedInductionView),
   ])
   router.post('/prisoners/:prisonNumber/create-induction/:journeyId/who-completed-induction', [
+    validate(whoCompletedInductionSchema),
     asyncMiddleware(whoCompletedInductionController.submitWhoCompletedInductionForm),
   ])
 

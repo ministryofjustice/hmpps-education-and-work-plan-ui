@@ -2,8 +2,6 @@ import { RequestHandler } from 'express'
 import { parse, startOfDay } from 'date-fns'
 import type { WhoCompletedInductionForm } from 'inductionForms'
 import type { InductionDto } from 'inductionDto'
-import { getPrisonerContext } from '../../../data/session/prisonerContexts'
-import validateWhoCompletedInductionForm from '../../validators/induction/whoCompletedInductionFormValidator'
 import WhoCompletedInductionController from '../common/whoCompletedInductionController'
 
 export default class WhoCompletedInductionCreateController extends WhoCompletedInductionController {
@@ -11,20 +9,10 @@ export default class WhoCompletedInductionCreateController extends WhoCompletedI
     const { inductionDto } = req.journeyData
     const { prisonNumber, journeyId } = req.params
 
-    const whoCompletedInductionForm: WhoCompletedInductionForm = { ...req.body }
-    getPrisonerContext(req.session, prisonNumber).whoCompletedInductionForm = whoCompletedInductionForm
-
-    const errors = validateWhoCompletedInductionForm(whoCompletedInductionForm)
-    if (errors.length > 0) {
-      return res.redirectWithErrors(
-        `/prisoners/${prisonNumber}/create-induction/${journeyId}/who-completed-induction`,
-        errors,
-      )
-    }
+    const whoCompletedInductionForm = { ...req.body }
 
     const updatedInductionDto = updateDtoWithFormContents(inductionDto, whoCompletedInductionForm)
     req.journeyData.inductionDto = updatedInductionDto
-    getPrisonerContext(req.session, prisonNumber).whoCompletedInductionForm = undefined
 
     return this.previousPageWasCheckYourAnswers(req)
       ? res.redirect(`/prisoners/${prisonNumber}/create-induction/${journeyId}/check-your-answers`)

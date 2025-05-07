@@ -1,4 +1,5 @@
 import hopingToWorkOnReleaseSchema from './hopingToWorkOnReleaseSchema'
 import skillsSchema from './skillsSchema'
+import whoCompletedInductionSchema from './whoCompletedInductionSchema'
 
-export { hopingToWorkOnReleaseSchema, skillsSchema }
+export { hopingToWorkOnReleaseSchema, skillsSchema, whoCompletedInductionSchema }

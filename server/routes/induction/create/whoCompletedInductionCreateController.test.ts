@@ -4,7 +4,6 @@ import { startOfDay } from 'date-fns'
 import type { WhoCompletedInductionForm } from 'inductionForms'
 import WhoCompletedInductionCreateController from './whoCompletedInductionCreateController'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
-import { getPrisonerContext } from '../../../data/session/prisonerContexts'
 import SessionCompletedByValue from '../../../enums/sessionCompletedByValue'
 import { aValidInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
 
@@ -35,10 +34,11 @@ describe('whoCompletedInductionController', () => {
     req.session.pageFlowHistory = undefined
     req.body = {}
     req.journeyData = {}
+    res.locals.invalidForm = undefined
   })
 
   describe('getWhoCompletedInductionView', () => {
-    it(`should get 'who completed induction' view given form is not on the prisoner context, but DTO is on the context`, async () => {
+    it(`should get 'who completed induction' view given form is not res.locals.invalidForm, but DTO is on the context`, async () => {
       // Given
       const inductionDto = {
         ...aValidInductionDto(),
@@ -48,7 +48,7 @@ describe('whoCompletedInductionController', () => {
         inductionDate: startOfDay('2024-03-09'),
       }
       req.journeyData.inductionDto = inductionDto
-      getPrisonerContext(req.session, prisonNumber).whoCompletedInductionForm = undefined
+      res.locals.invalidForm = undefined
 
       const expectedForm: WhoCompletedInductionForm = {
         completedBy: SessionCompletedByValue.MYSELF,
@@ -69,14 +69,14 @@ describe('whoCompletedInductionController', () => {
       expect(res.render).toHaveBeenCalledWith('pages/induction/whoCompletedInduction/index', expectedView)
     })
 
-    it(`should get 'who completed induction' view given form is already on the prisoner context`, async () => {
+    it(`should get 'who completed induction' view given form is on res.locals.invalidForm`, async () => {
       // Given
       const expectedForm: WhoCompletedInductionForm = {
         completedBy: SessionCompletedByValue.MYSELF,
         inductionDate: '20/3/2024',
       }
 
-      getPrisonerContext(req.session, prisonNumber).whoCompletedInductionForm = expectedForm
+      res.locals.invalidForm = expectedForm
 
       const expectedView = {
         prisonerSummary,
@@ -92,32 +92,6 @@ describe('whoCompletedInductionController', () => {
   })
 
   describe('submitWhoCompletedInductionForm', () => {
-    it('should redisplay page given form submitted with validation errors', async () => {
-      // Given
-      getPrisonerContext(req.session, prisonNumber).whoCompletedInductionForm = undefined
-
-      const invalidForm: WhoCompletedInductionForm = {
-        completedBy: SessionCompletedByValue.SOMEBODY_ELSE,
-        inductionDate: '20/3/2024',
-      }
-      req.body = invalidForm
-
-      const expectedErrors = [
-        { href: '#completedByOtherFullName', text: 'Enter the full name of the person who completed the induction' },
-        { href: '#completedByOtherJobRole', text: 'Enter the job title of the person who completed the induction' },
-      ]
-
-      // When
-      await controller.submitWhoCompletedInductionForm(req, res, next)
-
-      // Then
-      expect(res.redirectWithErrors).toHaveBeenCalledWith(
-        `/prisoners/A1234BC/create-induction/${journeyId}/who-completed-induction`,
-        expectedErrors,
-      )
-      expect(getPrisonerContext(req.session, prisonNumber).whoCompletedInductionForm).toEqual(invalidForm)
-    })
-
     it('should redirect to induction notes page given form submitted successfully and previous page was not check-your-answers', async () => {
       // Given
       const inductionDto = {
@@ -130,7 +104,7 @@ describe('whoCompletedInductionController', () => {
       req.journeyData.inductionDto = inductionDto
 
       req.session.pageFlowHistory = undefined
-      getPrisonerContext(req.session, prisonNumber).whoCompletedInductionForm = undefined
+      res.locals.invalidForm = undefined
 
       const validForm: WhoCompletedInductionForm = {
         completedBy: SessionCompletedByValue.SOMEBODY_ELSE,
@@ -153,7 +127,7 @@ describe('whoCompletedInductionController', () => {
 
       // Then
       expect(res.redirect).toHaveBeenCalledWith(`/prisoners/A1234BC/create-induction/${journeyId}/notes`)
-      expect(getPrisonerContext(req.session, prisonNumber).whoCompletedInductionForm).toBeUndefined()
+      expect(res.locals.invalidForm).toBeUndefined()
       expect(req.journeyData.inductionDto).toEqual(expectedInductionDto)
     })
 
@@ -166,7 +140,7 @@ describe('whoCompletedInductionController', () => {
         ],
         currentPageIndex: 1,
       }
-      getPrisonerContext(req.session, prisonNumber).whoCompletedInductionForm = undefined
+      res.locals.invalidForm = undefined
 
       const inductionDto = {
         ...aValidInductionDto(),
@@ -198,7 +172,7 @@ describe('whoCompletedInductionController', () => {
 
       // Then
       expect(res.redirect).toHaveBeenCalledWith(`/prisoners/A1234BC/create-induction/${journeyId}/check-your-answers`)
-      expect(getPrisonerContext(req.session, prisonNumber).whoCompletedInductionForm).toBeUndefined()
+      expect(res.locals.invalidForm).toBeUndefined()
       expect(req.journeyData.inductionDto).toEqual(expectedInductionDto)
     })
   })
