@@ -3,7 +3,6 @@ import { format, startOfDay } from 'date-fns'
 import type { WhoCompletedInductionForm } from 'inductionForms'
 import type { InductionDto } from 'inductionDto'
 import WhoCompletedInductionView from './whoCompletedInductionView'
-import { getPrisonerContext } from '../../../data/session/prisonerContexts'
 import InductionController from './inductionController'
 
 /**
@@ -12,17 +11,9 @@ import InductionController from './inductionController'
 export default abstract class WhoCompletedInductionController extends InductionController {
   getWhoCompletedInductionView: RequestHandler = async (req, res, next): Promise<void> => {
     const { inductionDto } = req.journeyData
-    const { prisonNumber } = req.params
-    const { prisonerSummary } = res.locals
+    const { prisonerSummary, invalidForm } = res.locals
 
-    let whoCompletedInductionForm: WhoCompletedInductionForm
-    if (getPrisonerContext(req.session, prisonNumber).whoCompletedInductionForm) {
-      whoCompletedInductionForm = getPrisonerContext(req.session, prisonNumber).whoCompletedInductionForm
-    } else {
-      whoCompletedInductionForm = toWhoCompletedInductionForm(inductionDto)
-    }
-
-    getPrisonerContext(req.session, prisonNumber).whoCompletedInductionForm = undefined
+    const whoCompletedInductionForm = invalidForm ?? toWhoCompletedInductionForm(inductionDto)
 
     const view = new WhoCompletedInductionView(prisonerSummary, whoCompletedInductionForm)
     return res.render('pages/induction/whoCompletedInduction/index', { ...view.renderArgs })

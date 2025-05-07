@@ -1,10 +1,9 @@
 import { RequestHandler, Request, Response } from 'express'
 import { z } from 'zod'
+import { format, getYear, isAfter, isValid, parse, startOfToday } from 'date-fns'
 import type { Error } from '../../filters/findErrorFilter'
 
 const FLASH_KEY__INVALID_FORM_DATA = 'invalidForm'
-
-export const createSchema = <T = object>(shape: T) => zodAlwaysRefine(zObjectStrict(shape))
 
 const zObjectStrict = <T = object>(shape: T) => z.object({ _csrf: z.string().optional(), ...shape }).strict()
 
@@ -28,6 +27,34 @@ const normaliseNewLines = (body: Record<string, unknown>) => {
   )
 }
 
+type BaseDateOptions = { mandatoryMessage: string; invalidFormatMessage: string; pattern?: string }
+const dateTransformer = ({ mandatoryMessage, invalidFormatMessage, pattern = 'd/M/yyyy' }: BaseDateOptions) =>
+  z //
+    .string({ message: mandatoryMessage })
+    .min(1, mandatoryMessage)
+    .transform(inductionDate => parse(inductionDate, pattern, startOfToday()))
+    .refine(inductionDate => isValid(inductionDate) && getYear(inductionDate) >= 1900, invalidFormatMessage)
+
+/**
+ * Creates a zod schema object
+ */
+export const createSchema = <T = object>(shape: T) => zodAlwaysRefine(zObjectStrict(shape))
+
+/**
+ * Helper function for when creating a zod schema, this function can be used to set a field to be validated as a Date whose
+ * value is today or in the past (ie. not a future date)
+ */
+export const dateIsTodayOrInThePast = (options: BaseDateOptions & { invalidMessage: string }) =>
+  dateTransformer(options)
+    .refine(inductionDate => !isAfter(inductionDate, startOfToday()), options.invalidMessage)
+    .transform(inductionDate => format(inductionDate, 'd/M/yyyy'))
+
+/**
+ * Function that returns a middleware that will validate the request body against the given schema.
+ * On successful validation `next` is called; else redirectWithErrors is called on the response object, where the errors
+ * flash key is populated with the validation errors in a form suitable for rendering in a nunjucks template with the
+ * nunjucks error filter.
+ */
 export const validate = (schema: z.ZodTypeAny | SchemaFactory): RequestHandler => {
   return async (req, res, next) => {
     if (!schema) {

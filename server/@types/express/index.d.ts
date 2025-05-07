@@ -19,7 +19,6 @@ import type {
   PreviousWorkExperienceDetailForm,
   PreviousWorkExperienceTypesForm,
   WantToAddQualificationsForm,
-  WhoCompletedInductionForm,
   WorkedBeforeForm,
   WorkInterestRolesForm,
   WorkInterestTypesForm,
@@ -74,7 +73,6 @@ declare module 'express-session' {
     // Review exemption related forms
     reviewExemptionForm?: ReviewExemptionForm
     // Induction related forms
-    whoCompletedInductionForm?: WhoCompletedInductionForm
     inductionNoteForm?: InductionNoteForm
     // Induction exemption related forms
     inductionExemptionForm?: InductionExemptionForm
