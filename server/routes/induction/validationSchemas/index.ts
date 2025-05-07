@@ -1,4 +1,4 @@
 import hopingToWorkOnReleaseSchema from './hopingToWorkOnReleaseSchema'
+import skillsSchema from './skillsSchema'
 
-// eslint-disable-next-line import/prefer-default-export
-export { hopingToWorkOnReleaseSchema }
+export { hopingToWorkOnReleaseSchema, skillsSchema }

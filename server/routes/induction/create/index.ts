@@ -30,7 +30,7 @@ import checkInductionDoesNotExist from '../../routerRequestHandlers/checkInducti
 import ApplicationAction from '../../../enums/applicationAction'
 import insertJourneyIdentifier from '../../routerRequestHandlers/insertJourneyIdentifier'
 import setupJourneyData from '../../routerRequestHandlers/setupJourneyData'
-import { hopingToWorkOnReleaseSchema } from '../validationSchemas'
+import { hopingToWorkOnReleaseSchema, skillsSchema } from '../validationSchemas'
 import { validate } from '../../routerRequestHandlers/validationMiddleware'
 
 /**
@@ -167,6 +167,7 @@ export default (router: Router, services: Services) => {
     asyncMiddleware(skillsCreateController.getSkillsView),
   ])
   router.post('/prisoners/:prisonNumber/create-induction/:journeyId/skills', [
+    validate(skillsSchema),
     asyncMiddleware(skillsCreateController.submitSkillsForm),
   ])
 
