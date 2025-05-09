@@ -6,12 +6,12 @@ import asyncMiddleware from '../../middleware/asyncMiddleware'
 import logger from '../../../logger'
 
 /**
- * Middleware function that returns a request handler function to check whether an Induction exists in the journeyData for
+ * Middleware function that returns a request handler function to check whether an InductionDto exists in the journeyData for
  * the prisoner referenced in the request URL.
- * If one does not exist, or it is for a different prisoner, create a new empty Induction for the prisoner.
- * If the prisoner already has qualifications, add them to the Induction.
+ * If one does not exist, or it is for a different prisoner, create a new empty InductionDto for the prisoner.
+ * If the prisoner already has qualifications, add them to the InductionDto.
  */
-const createEmptyInductionIfNotInJourneyData = (
+const createEmptyInductionDtoIfNotInJourneyData = (
   educationAndWorkPlanService: EducationAndWorkPlanService,
 ): RequestHandler => {
   return asyncMiddleware(async (req: Request, res: Response, next: NextFunction) => {
@@ -48,4 +48,4 @@ const createEmptyInductionIfNotInJourneyData = (
   })
 }
 
-export default createEmptyInductionIfNotInJourneyData
+export default createEmptyInductionDtoIfNotInJourneyData
