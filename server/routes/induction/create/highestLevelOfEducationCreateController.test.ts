@@ -111,7 +111,7 @@ describe('highestLevelOfEducationCreateController', () => {
       const expectedErrors = [
         {
           href: '#educationLevel',
-          text: `Select Jimmy Lightfingers's highest level of education`,
+          text: `Select Ifereeca Peigh's highest level of education`,
         },
       ]
 

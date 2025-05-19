@@ -100,13 +100,13 @@ export default class PagedPrisonerSearchSummary {
         case FilterBy.NAME: {
           const searchTerms = [
             prisonerSearchSummary.prisonNumber.toUpperCase(), // eg: A1234BB
-            prisonerSearchSummary.firstName.toUpperCase(), // eg: JIMMY
-            prisonerSearchSummary.lastName.toUpperCase(), // eg: LIGHTFINGERS
-            `${prisonerSearchSummary.firstName}, ${prisonerSearchSummary.lastName}`.toUpperCase(), // eg: JIMMY, LIGHTFINGERS
-            `${prisonerSearchSummary.firstName} ${prisonerSearchSummary.lastName}`.toUpperCase(), // eg: JIMMY LIGHTFINGERS
-            `${prisonerSearchSummary.lastName}, ${prisonerSearchSummary.firstName}`.toUpperCase(), // eg: LIGHTFINGERS, JIMMY
-            `${prisonerSearchSummary.lastName} ${prisonerSearchSummary.firstName}`.toUpperCase(), // eg: LIGHTFINGERS JIMMY
-            `${prisonerSearchSummary.firstName.charAt(0)} ${prisonerSearchSummary.lastName}`.toUpperCase(), // eg: J LIGHTFINGERS
+            prisonerSearchSummary.firstName.toUpperCase(), // eg: FIRSTNAME
+            prisonerSearchSummary.lastName.toUpperCase(), // eg: SURNAME
+            `${prisonerSearchSummary.firstName}, ${prisonerSearchSummary.lastName}`.toUpperCase(), // eg: FIRSTNAME, SURNAME
+            `${prisonerSearchSummary.firstName} ${prisonerSearchSummary.lastName}`.toUpperCase(), // eg: FIRSTNAME SURNAME
+            `${prisonerSearchSummary.lastName}, ${prisonerSearchSummary.firstName}`.toUpperCase(), // eg: SURNAME, FIRSTNAME
+            `${prisonerSearchSummary.lastName} ${prisonerSearchSummary.firstName}`.toUpperCase(), // eg: SURNAME FIRSTNAME
+            `${prisonerSearchSummary.firstName.charAt(0)} ${prisonerSearchSummary.lastName}`.toUpperCase(), // eg: F SURNAME
           ]
           return searchTerms.some(searchTerm => searchTerm.includes(value.trim().toUpperCase()))
         }

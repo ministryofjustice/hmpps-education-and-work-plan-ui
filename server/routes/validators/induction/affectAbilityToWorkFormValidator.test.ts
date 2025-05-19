@@ -41,7 +41,7 @@ describe('affectAbilityToWorkFormValidator', () => {
         const expected: Array<Record<string, string>> = [
           {
             href: '#affectAbilityToWork',
-            text: `Select factors affecting Jimmy Lightfingers's ability to work or select 'None of these'`,
+            text: `Select factors affecting Ifereeca Peigh's ability to work or select 'None of these'`,
           },
         ]
 
@@ -64,7 +64,7 @@ describe('affectAbilityToWorkFormValidator', () => {
       it(`form data: ${JSON.stringify(spec)}`, () => {
         // Given
         const expected: Array<Record<string, string>> = [
-          { href: '#affectAbilityToWorkOther', text: `Enter factors affecting Jimmy Lightfingers's ability to work` },
+          { href: '#affectAbilityToWorkOther', text: `Enter factors affecting Ifereeca Peigh's ability to work` },
         ]
 
         // When

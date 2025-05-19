@@ -122,7 +122,7 @@ describe('affectAbilityToWorkUpdateController', () => {
       const expectedErrors = [
         {
           href: '#affectAbilityToWorkOther',
-          text: `Enter factors affecting Jimmy Lightfingers's ability to work`,
+          text: `Enter factors affecting Ifereeca Peigh's ability to work`,
         },
       ]
 

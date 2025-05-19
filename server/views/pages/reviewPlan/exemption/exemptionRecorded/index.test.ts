@@ -38,7 +38,7 @@ describe('ExemptionRecordedPage', () => {
     expect($('[data-qa="warning-text"]').length).toEqual(0)
     expect($('[data-qa="review-due"]').length).toEqual(1)
     expect($('[data-qa="review-due"]').text().trim()).toBe(
-      'You must now review this learning and work plan with Jimmy Lightfingers by 9 November 2024.',
+      'You must now review this learning and work plan with Ifereeca Peigh by 9 November 2024.',
     )
   })
 
@@ -58,7 +58,7 @@ describe('ExemptionRecordedPage', () => {
     expect($('[data-qa="warning-text"]').length).toEqual(1)
     expect($('[data-qa="session-on-hold"]').length).toEqual(1)
     expect($('[data-qa="session-on-hold"]').text().trim()).toBe(
-      'Jimmy Lightfingers is now exempt from reviews and the session is on hold.',
+      'Ifereeca Peigh is now exempt from reviews and the session is on hold.',
     )
   })
 })

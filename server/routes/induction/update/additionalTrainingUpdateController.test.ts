@@ -118,7 +118,7 @@ describe('additionalTrainingUpdateController', () => {
       const expectedErrors = [
         {
           href: '#additionalTrainingOther',
-          text: 'Enter the type of training or vocational qualification Jimmy Lightfingers has',
+          text: 'Enter the type of training or vocational qualification Ifereeca Peigh has',
         },
       ]
 

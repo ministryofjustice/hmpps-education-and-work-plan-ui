@@ -112,7 +112,7 @@ describe('workedBeforeUpdateController', () => {
       req.session.workedBeforeForm = undefined
 
       const expectedErrors = [
-        { href: '#hasWorkedBefore', text: 'Select whether Jimmy Lightfingers has worked before or not' },
+        { href: '#hasWorkedBefore', text: 'Select whether Ifereeca Peigh has worked before or not' },
       ]
 
       // When

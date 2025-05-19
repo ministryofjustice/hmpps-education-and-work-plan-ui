@@ -56,7 +56,7 @@ describe('hopingToWorkOnReleaseSchema', () => {
     const expectedErrors: Array<Error> = [
       {
         href: '#hopingToGetWork',
-        text: `Select whether Jimmy Lightfingers is hoping to get work`,
+        text: `Select whether Ifereeca Peigh is hoping to get work`,
       },
     ]
     const expectedInvalidForm = JSON.stringify(requestBody)

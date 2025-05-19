@@ -112,7 +112,7 @@ describe('previousWorkExperienceTypesCreateController', () => {
       req.session.previousWorkExperienceTypesForm = undefined
 
       const expectedErrors = [
-        { href: '#typeOfWorkExperienceOther', text: 'Enter the type of work Jimmy Lightfingers has done before' },
+        { href: '#typeOfWorkExperienceOther', text: 'Enter the type of work Ifereeca Peigh has done before' },
       ]
 
       // When

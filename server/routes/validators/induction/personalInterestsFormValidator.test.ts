@@ -41,7 +41,7 @@ describe('personalInterestsFormValidator', () => {
         const expected: Array<Record<string, string>> = [
           {
             href: '#personalInterests',
-            text: `Select Jimmy Lightfingers's interests or select 'None of these'`,
+            text: `Select Ifereeca Peigh's interests or select 'None of these'`,
           },
         ]
 
@@ -64,7 +64,7 @@ describe('personalInterestsFormValidator', () => {
       it(`form data: ${JSON.stringify(spec)}`, () => {
         // Given
         const expected: Array<Record<string, string>> = [
-          { href: '#personalInterestsOther', text: `Enter Jimmy Lightfingers's interests` },
+          { href: '#personalInterestsOther', text: `Enter Ifereeca Peigh's interests` },
         ]
 
         // When

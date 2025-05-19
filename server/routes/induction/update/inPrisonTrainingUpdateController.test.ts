@@ -119,7 +119,7 @@ describe('inPrisonTrainingUpdateController', () => {
       const expectedErrors = [
         {
           href: '#inPrisonTrainingOther',
-          text: 'Enter the type of type of training Jimmy Lightfingers would like to do in prison',
+          text: 'Enter the type of type of training Ifereeca Peigh would like to do in prison',
         },
       ]
 

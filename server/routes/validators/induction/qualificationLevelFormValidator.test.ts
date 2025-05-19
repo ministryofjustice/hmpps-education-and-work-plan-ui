@@ -31,7 +31,7 @@ describe('qualificationLevelFormValidator', () => {
       it(`form data: ${JSON.stringify(spec)}`, () => {
         // Given
         const expected: Array<Record<string, string>> = [
-          { href: '#qualificationLevel', text: 'Select the level of qualification Jimmy Lightfingers wants to add' },
+          { href: '#qualificationLevel', text: 'Select the level of qualification Ifereeca Peigh wants to add' },
         ]
 
         // When

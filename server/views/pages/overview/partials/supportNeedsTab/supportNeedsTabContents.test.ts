@@ -93,7 +93,7 @@ describe('Support Needs tab view', () => {
     // expect there to be 0 gov-uk-summmary-list, replaced with a message stating no LDD screener data available
     expect($('[data-qa=support-needs-list]')).toHaveLength(0)
     expect($('[data-qa=no-data-message]').text()).toContain(
-      'Jimmy Lightfingers has no screener and assessment results recorded in Curious.',
+      'Ifereeca Peigh has no screener and assessment results recorded in Curious.',
     )
   })
 

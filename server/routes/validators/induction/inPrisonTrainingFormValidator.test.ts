@@ -39,7 +39,7 @@ describe('inPrisonTrainingFormValidator', () => {
         const expected: Array<Record<string, string>> = [
           {
             href: '#inPrisonTraining',
-            text: `Select the type of training Jimmy Lightfingers would like to do in prison`,
+            text: `Select the type of training Ifereeca Peigh would like to do in prison`,
           },
         ]
 
@@ -64,7 +64,7 @@ describe('inPrisonTrainingFormValidator', () => {
         const expected: Array<Record<string, string>> = [
           {
             href: '#inPrisonTrainingOther',
-            text: `Enter the type of type of training Jimmy Lightfingers would like to do in prison`,
+            text: `Enter the type of type of training Ifereeca Peigh would like to do in prison`,
           },
         ]
 

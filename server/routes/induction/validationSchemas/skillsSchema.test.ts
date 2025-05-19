@@ -63,7 +63,7 @@ describe('skillsSchema', () => {
     const expectedErrors: Array<Error> = [
       {
         href: '#skills',
-        text: `Select the skills that Jimmy Lightfingers feels they have or select 'None of these'`,
+        text: `Select the skills that Ifereeca Peigh feels they have or select 'None of these'`,
       },
     ]
     const expectedInvalidForm = JSON.stringify(requestBody)
@@ -93,7 +93,7 @@ describe('skillsSchema', () => {
       req.body = requestBody
 
       const expectedErrors: Array<Error> = [
-        { href: '#skillsOther', text: 'Enter the skill that Jimmy Lightfingers feels they have' },
+        { href: '#skillsOther', text: 'Enter the skill that Ifereeca Peigh feels they have' },
       ]
       const expectedInvalidForm = JSON.stringify(requestBody)
 
