@@ -102,8 +102,8 @@ context(`Review a prisoner's plan`, () => {
       .hasErrorCount(1)
       .hasFieldInError('notes')
       .setReviewNote(
-        `Daniel's review went well and he has made good progress on his goals.
-Working in the prison kitchen is suiting Daniel well and is allowing him to focus on more productive uses of his time whilst in prison.
+        `Edfdau's review went well and he has made good progress on his goals.
+Working in the prison kitchen is suiting Edfdau well and is allowing him to focus on more productive uses of his time whilst in prison.
 
 We have agreed and set a new goal, and the next review is 1 year from now.
 `,
@@ -115,8 +115,8 @@ We have agreed and set a new goal, and the next review is 1 year from now.
       .reviewWasCompletedBySomebodyElse('A Reviewer')
       .reviewWasCompletedBySomebodyElseWithJobRole('CIAG')
       .hasNotes(
-        `Daniel's review went well and he has made good progress on his goals.
-Working in the prison kitchen is suiting Daniel well and is allowing him to focus on more productive uses of his time whilst in prison.
+        `Edfdau's review went well and he has made good progress on his goals.
+Working in the prison kitchen is suiting Edfdau well and is allowing him to focus on more productive uses of his time whilst in prison.
 
 We have agreed and set a new goal, and the next review is 1 year from now.
 `,
@@ -125,7 +125,7 @@ We have agreed and set a new goal, and the next review is 1 year from now.
 
     // Next page is Review Completed page
     Page.verifyOnPage(ReviewCompletePage) //
-      .hasNextReviewDueMessage(`Daniel Craig's next review is due between 14 March 2025 and 14 April 2025.`) // Date values come from the stub `stubCreateActionPlanReview`
+      .hasNextReviewDueMessage(`Edfdau Carrer's next review is due between 14 March 2025 and 14 April 2025.`) // Date values come from the stub `stubCreateActionPlanReview`
       .submitPage()
 
     // Then
@@ -136,7 +136,7 @@ We have agreed and set a new goal, and the next review is 1 year from now.
         .withRequestBody(
           matchingJsonPath(
             "$[?(@.prisonId == 'BXI' && " +
-              `@.note == "Daniel's review went well and he has made good progress on his goals.\r\nWorking in the prison kitchen is suiting Daniel well and is allowing him to focus on more productive uses of his time whilst in prison.\r\n\r\nWe have agreed and set a new goal, and the next review is 1 year from now.\r\n" && ` +
+              `@.note == "Edfdau's review went well and he has made good progress on his goals.\r\nWorking in the prison kitchen is suiting Edfdau well and is allowing him to focus on more productive uses of his time whilst in prison.\r\n\r\nWe have agreed and set a new goal, and the next review is 1 year from now.\r\n" && ` +
               `@.conductedAt == '${reviewConductedAtYear}-${reviewConductedAtMonth}-${reviewConductedAtDay}' && ` +
               "@.conductedBy == 'A Reviewer' && " +
               "@.conductedByRole == 'CIAG')]",

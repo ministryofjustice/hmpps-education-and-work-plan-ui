@@ -93,9 +93,7 @@ describe('highestLevelOfEducationCreateController', () => {
       const invalidHighestLevelOfEducationForm = {}
       req.body = invalidHighestLevelOfEducationForm
 
-      const expectedErrors = [
-        { href: '#educationLevel', text: `Select Jimmy Lightfingers's highest level of education` },
-      ]
+      const expectedErrors = [{ href: '#educationLevel', text: `Select Ifereeca Peigh's highest level of education` }]
 
       // When
       await controller.submitHighestLevelOfEducationForm(req, res, next)

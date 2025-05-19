@@ -118,7 +118,7 @@ describe('qualificationDetailsCreateController', () => {
       const expectedErrors = [
         {
           href: '#qualificationSubject',
-          text: `Enter the subject of Jimmy Lightfingers's level 3 qualification`,
+          text: `Enter the subject of Ifereeca Peigh's level 3 qualification`,
         },
       ]
 

@@ -34,7 +34,7 @@ describe('ConfirmExemptionPage', () => {
     const $ = cheerio.load(content)
     // Then
     expect($('[data-qa="page-heading"]').text().trim()).toBe(
-      "Are you sure you want to put Jimmy Lightfingers's review on hold?",
+      "Are you sure you want to put Ifereeca Peigh's review on hold?",
     )
     expect($('[data-qa="exemption-reason-heading"]').text().trim()).toBe('Exemption reason')
     expect($('[data-qa="exemption-reason"]').text().trim()).toBe(
@@ -57,7 +57,7 @@ describe('ConfirmExemptionPage', () => {
     const $ = cheerio.load(content)
     // Then
     expect($('[data-qa="page-heading"]').text().trim()).toBe(
-      "Are you sure you want to put Jimmy Lightfingers's review on hold?",
+      "Are you sure you want to put Ifereeca Peigh's review on hold?",
     )
     expect($('[data-qa="exemption-reason-heading"]').text().trim()).toBe('Exemption reason')
     expect($('[data-qa="exemption-reason"]').text().trim()).toBe(

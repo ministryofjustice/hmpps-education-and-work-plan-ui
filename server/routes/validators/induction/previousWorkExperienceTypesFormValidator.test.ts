@@ -37,7 +37,7 @@ describe('previousWorkExperienceTypesFormValidator', () => {
       it(`form data: ${JSON.stringify(spec)}`, () => {
         // Given
         const expected: Array<Record<string, string>> = [
-          { href: '#typeOfWorkExperience', text: 'Select the type of work Jimmy Lightfingers has done before' },
+          { href: '#typeOfWorkExperience', text: 'Select the type of work Ifereeca Peigh has done before' },
         ]
 
         // When
@@ -59,7 +59,7 @@ describe('previousWorkExperienceTypesFormValidator', () => {
       it(`form data: ${JSON.stringify(spec)}`, () => {
         // Given
         const expected: Array<Record<string, string>> = [
-          { href: '#typeOfWorkExperienceOther', text: 'Enter the type of work Jimmy Lightfingers has done before' },
+          { href: '#typeOfWorkExperienceOther', text: 'Enter the type of work Ifereeca Peigh has done before' },
         ]
 
         // When

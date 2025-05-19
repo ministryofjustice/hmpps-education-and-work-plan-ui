@@ -24,7 +24,7 @@ describe('wantToAddQualificationsFormValidator', () => {
       const expected: Array<Record<string, string>> = [
         {
           href: '#wantToAddQualifications',
-          text: 'Select whether Jimmy Lightfingers wants to record any other educational qualifications',
+          text: 'Select whether Ifereeca Peigh wants to record any other educational qualifications',
         },
       ]
 

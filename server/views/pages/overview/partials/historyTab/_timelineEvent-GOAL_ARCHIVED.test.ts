@@ -46,7 +46,7 @@ describe('_timelineEvent-GOAL_ARCHIVED', () => {
     expect($(`[data-qa-goal-archive-reason=${archiveReason}]`).length).toEqual(1)
     expect($('.moj-timeline__byline').text().trim()).toEqual('by Fred Bloggs, Moorland (HMP & YOI)')
     expect($('.moj-timeline__date').text().trim()).toEqual('1 August 2023')
-    expect($('.moj-timeline__description a').text().trim()).toEqual(`View Jimmy Lightfingers's archived goals`)
+    expect($('.moj-timeline__description a').text().trim()).toEqual(`View Ifereeca Peigh's archived goals`)
   })
 
   it('should display GOAL_ARCHIVED timeline event with reason OTHER', () => {
@@ -74,7 +74,7 @@ describe('_timelineEvent-GOAL_ARCHIVED', () => {
     expect($('[data-qa-goal-archive-reason=OTHER]').length).toEqual(1)
     expect($('.moj-timeline__byline').text().trim()).toEqual('by Fred Bloggs, Moorland (HMP & YOI)')
     expect($('.moj-timeline__date').text().trim()).toEqual('1 August 2023')
-    expect($('.moj-timeline__description a').text().trim()).toEqual(`View Jimmy Lightfingers's archived goals`)
+    expect($('.moj-timeline__description a').text().trim()).toEqual(`View Ifereeca Peigh's archived goals`)
     expect($('.moj-timeline__description p:first-of-type').text().trim()).toEqual(
       'Reason: Other - Prisoner has deceased',
     )

@@ -32,7 +32,7 @@ describe('previousWorkExperienceDetailFormValidator', () => {
       it(`form data: ${JSON.stringify(spec)}`, () => {
         // Given
         const expected: Array<Record<string, string>> = [
-          { href: '#jobRole', text: 'Enter the job role Jimmy Lightfingers wants to add' },
+          { href: '#jobRole', text: 'Enter the job role Ifereeca Peigh wants to add' },
         ]
 
         // When
@@ -68,7 +68,7 @@ describe('previousWorkExperienceDetailFormValidator', () => {
       it(`form data: ${JSON.stringify(spec)}`, () => {
         // Given
         const expected: Array<Record<string, string>> = [
-          { href: '#jobDetails', text: 'Enter details of what Jimmy Lightfingers did in their job' },
+          { href: '#jobDetails', text: 'Enter details of what Ifereeca Peigh did in their job' },
         ]
 
         // When

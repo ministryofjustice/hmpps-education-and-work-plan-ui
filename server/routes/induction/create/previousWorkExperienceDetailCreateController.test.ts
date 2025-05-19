@@ -162,9 +162,7 @@ describe('previousWorkExperienceDetailCreateController', () => {
         req.body = invalidPreviousWorkExperienceDetailForm
         req.session.previousWorkExperienceDetailForm = undefined
 
-        const expectedErrors = [
-          { href: '#jobDetails', text: 'Enter details of what Jimmy Lightfingers did in their job' },
-        ]
+        const expectedErrors = [{ href: '#jobDetails', text: 'Enter details of what Ifereeca Peigh did in their job' }]
 
         // When
         await controller.submitPreviousWorkExperienceDetailForm(req as unknown as Request, res, next)

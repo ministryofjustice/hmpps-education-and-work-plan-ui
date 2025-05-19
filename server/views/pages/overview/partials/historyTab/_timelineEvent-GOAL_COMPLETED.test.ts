@@ -35,6 +35,6 @@ describe('_timelineEvent-GOAL_COMPLETED', () => {
     expect($('[data-qa-event-type=GOAL_COMPLETED]').length).toEqual(1)
     expect($('.moj-timeline__byline').text().trim()).toEqual('by Fred Bloggs, Moorland (HMP & YOI)')
     expect($('.moj-timeline__date').text().trim()).toEqual('1 August 2023')
-    expect($('.moj-timeline__description a').text().trim()).toEqual(`View Jimmy Lightfingers's completed goals`)
+    expect($('.moj-timeline__description a').text().trim()).toEqual(`View Ifereeca Peigh's completed goals`)
   })
 })

@@ -38,7 +38,7 @@ describe('ReviewPlanCheckYourAnswersPage', () => {
 
     // Then
     expect($('[data-qa="page-heading"]').text().replace(/\s+/g, ' ').trim()).toBe(
-      `Check Jimmy Lightfingers's review information`,
+      `Check Ifereeca Peigh's review information`,
     )
     expect($('[data-qa="review-completed-by-change-link"]').attr('href')).toBe('../review')
     expect($('[data-qa="review-completed-by-MYSELF"]').length).toEqual(1)
@@ -65,7 +65,7 @@ describe('ReviewPlanCheckYourAnswersPage', () => {
 
     // Then
     expect($('[data-qa="page-heading"]').text().replace(/\s+/g, ' ').trim()).toBe(
-      `Check Jimmy Lightfingers's review information`,
+      `Check Ifereeca Peigh's review information`,
     )
     expect($('[data-qa="review-completed-by-change-link"]').attr('href')).toBe('../review')
     expect($('[data-qa="review-completed-by-SOMEBODY_ELSE"]').text().trim()).toBe('Larry David')

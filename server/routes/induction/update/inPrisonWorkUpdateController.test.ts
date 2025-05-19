@@ -121,7 +121,7 @@ describe('inPrisonWorkUpdateController', () => {
       req.session.inPrisonWorkForm = undefined
 
       const expectedErrors = [
-        { href: '#inPrisonWorkOther', text: 'Enter the type of work Jimmy Lightfingers would like to do in prison' },
+        { href: '#inPrisonWorkOther', text: 'Enter the type of work Ifereeca Peigh would like to do in prison' },
       ]
 
       // When

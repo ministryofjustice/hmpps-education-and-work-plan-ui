@@ -21,22 +21,22 @@ describe('sessionListController', () => {
 
   const sessionsSummary = aValidSessionsSummary()
 
-  const jimmyLightFingers = aValidPrisonerSummary({
+  const jimmyLilac = aValidPrisonerSummary({
     prisonNumber: 'A1234BC',
     firstName: 'Jimmy',
-    lastName: 'Lightfingers',
+    lastName: 'Lilac',
     releaseDate: startOfDay('2023-10-01'),
   })
-  const jimmyMcShifty = aValidPrisonerSummary({
+  const jimmyOrange = aValidPrisonerSummary({
     prisonNumber: 'B1234BC',
     firstName: 'Jimmy',
-    lastName: 'McShifty',
+    lastName: 'Orange',
     releaseDate: startOfDay('2000-07-23'),
   })
-  const donVitoCorleone = aValidPrisonerSummary({
+  const valhallaCavalier = aValidPrisonerSummary({
     prisonNumber: 'C1234BC',
-    firstName: 'Vito',
-    lastName: 'Corleone',
+    firstName: 'Valhalla',
+    lastName: 'Cavalier',
     releaseDate: startOfDay('2020-09-10'),
   })
   const frederickMcNoSession = aValidPrisonerSummary({
@@ -45,30 +45,30 @@ describe('sessionListController', () => {
     lastName: 'McNoSession',
     releaseDate: startOfDay('2020-09-10'),
   })
-  const johnNogooder = aValidPrisonerSummary({
+  const johnnyPurple = aValidPrisonerSummary({
     prisonNumber: 'E1234BC',
     firstName: 'Johny',
-    lastName: 'Nogooder',
+    lastName: 'Purple',
     releaseDate: startOfDay('2023-04-12'),
   })
   const prisonerSummaries = {
     problemRetrievingData: false,
-    prisoners: [jimmyLightFingers, jimmyMcShifty, donVitoCorleone, frederickMcNoSession, johnNogooder],
+    prisoners: [jimmyLilac, jimmyOrange, valhallaCavalier, frederickMcNoSession, johnnyPurple],
   }
 
-  const jimmyLightFingersSession = aValidPrisonerSession({
+  const jimmyLilacSession = aValidPrisonerSession({
     prisonNumber: 'A1234BC',
     sessionType: SessionTypeValue.INDUCTION,
     deadlineDate: startOfDay('2025-10-01'),
     exemption: undefined,
   })
-  const jimmyMcShiftySession = aValidPrisonerSession({
+  const jimmyOrangeSession = aValidPrisonerSession({
     prisonNumber: 'B1234BC',
     sessionType: SessionTypeValue.REVIEW,
     deadlineDate: startOfDay('2025-09-30'),
     exemption: undefined,
   })
-  const donVitoCorleoneSession = aValidPrisonerSession({
+  const valhallaCavalierSession = aValidPrisonerSession({
     prisonNumber: 'C1234BC',
     sessionType: SessionTypeValue.REVIEW,
     deadlineDate: startOfDay('2025-11-15'),
@@ -77,7 +77,7 @@ describe('sessionListController', () => {
       exemptionDate: startOfDay('2025-02-18'),
     },
   })
-  const johnNogooderSession = aValidPrisonerSession({
+  const johnnyPurpleSession = aValidPrisonerSession({
     prisonNumber: 'E1234BC',
     sessionType: SessionTypeValue.INDUCTION,
     deadlineDate: startOfDay('2025-01-10'),
@@ -118,15 +118,15 @@ describe('sessionListController', () => {
 
       const prisonerSessions = aValidSessions({
         problemRetrievingData: false,
-        sessions: [jimmyLightFingersSession, jimmyMcShiftySession],
+        sessions: [jimmyLilacSession, jimmyOrangeSession],
       })
       sessionService.getSessionsInStatusForPrisoners.mockResolvedValue(prisonerSessions)
 
       const expectedView: RenderedSessionListView = {
         sessionsSummary,
         currentPageOfRecords: [
-          { ...jimmyLightFingers, ...jimmyLightFingersSession },
-          { ...jimmyMcShifty, ...jimmyMcShiftySession },
+          { ...jimmyLilac, ...jimmyLilacSession },
+          { ...jimmyOrange, ...jimmyOrangeSession },
         ], // default sort order (due-by descending) applied
         searchTerm: '',
         sessionType: '',
@@ -170,15 +170,15 @@ describe('sessionListController', () => {
 
         const prisonerSessions = aValidSessions({
           problemRetrievingData: false,
-          sessions: [jimmyLightFingersSession, jimmyMcShiftySession],
+          sessions: [jimmyLilacSession, jimmyOrangeSession],
         })
         sessionService.getSessionsInStatusForPrisoners.mockResolvedValue(prisonerSessions)
 
         const expectedView: RenderedSessionListView = {
           sessionsSummary,
           currentPageOfRecords: [
-            { ...jimmyMcShifty, ...jimmyMcShiftySession },
-            { ...jimmyLightFingers, ...jimmyLightFingersSession },
+            { ...jimmyOrange, ...jimmyOrangeSession },
+            { ...jimmyLilac, ...jimmyLilacSession },
           ], // sort order (name descending) applied
           searchTerm: '',
           sessionType: '',
@@ -220,15 +220,15 @@ describe('sessionListController', () => {
 
         const prisonerSessions = aValidSessions({
           problemRetrievingData: false,
-          sessions: [jimmyLightFingersSession, jimmyMcShiftySession],
+          sessions: [jimmyLilacSession, jimmyOrangeSession],
         })
         sessionService.getSessionsInStatusForPrisoners.mockResolvedValue(prisonerSessions)
 
         const expectedView: RenderedSessionListView = {
           sessionsSummary,
           currentPageOfRecords: [
-            { ...jimmyMcShifty, ...jimmyMcShiftySession },
-            { ...jimmyLightFingers, ...jimmyLightFingersSession },
+            { ...jimmyOrange, ...jimmyOrangeSession },
+            { ...jimmyLilac, ...jimmyLilacSession },
           ], // sort order (release-date ascending) applied
           searchTerm: '',
           sessionType: '',
@@ -268,18 +268,18 @@ describe('sessionListController', () => {
     describe('filtering', () => {
       it('should get due sessions view given name filtering', async () => {
         // Given
-        req.query = { searchTerm: 'shifty' }
+        req.query = { searchTerm: 'orange' }
 
         const prisonerSessions = aValidSessions({
           problemRetrievingData: false,
-          sessions: [jimmyLightFingersSession, jimmyMcShiftySession],
+          sessions: [jimmyLilacSession, jimmyOrangeSession],
         })
         sessionService.getSessionsInStatusForPrisoners.mockResolvedValue(prisonerSessions)
 
         const expectedView: RenderedSessionListView = {
           sessionsSummary,
-          currentPageOfRecords: [{ ...jimmyMcShifty, ...jimmyMcShiftySession }], // filtering on name applied
-          searchTerm: 'shifty',
+          currentPageOfRecords: [{ ...jimmyOrange, ...jimmyOrangeSession }], // filtering on name applied
+          searchTerm: 'orange',
           sessionType: '',
           sortBy: 'due-by',
           sortOrder: 'descending',
@@ -319,13 +319,13 @@ describe('sessionListController', () => {
 
         const prisonerSessions = aValidSessions({
           problemRetrievingData: false,
-          sessions: [jimmyLightFingersSession, jimmyMcShiftySession],
+          sessions: [jimmyLilacSession, jimmyOrangeSession],
         })
         sessionService.getSessionsInStatusForPrisoners.mockResolvedValue(prisonerSessions)
 
         const expectedView: RenderedSessionListView = {
           sessionsSummary,
-          currentPageOfRecords: [{ ...jimmyLightFingers, ...jimmyLightFingersSession }], // filtering on session type applied
+          currentPageOfRecords: [{ ...jimmyLilac, ...jimmyLilacSession }], // filtering on session type applied
           searchTerm: '',
           sessionType: 'INDUCTION',
           sortBy: 'due-by',
@@ -369,13 +369,13 @@ describe('sessionListController', () => {
 
       const prisonerSessions = aValidSessions({
         problemRetrievingData: false,
-        sessions: [donVitoCorleoneSession],
+        sessions: [valhallaCavalierSession],
       })
       sessionService.getSessionsInStatusForPrisoners.mockResolvedValue(prisonerSessions)
 
       const expectedView: RenderedSessionListView = {
         sessionsSummary,
-        currentPageOfRecords: [{ ...donVitoCorleone, ...donVitoCorleoneSession }], // default sort order (due-by descending) applied
+        currentPageOfRecords: [{ ...valhallaCavalier, ...valhallaCavalierSession }], // default sort order (due-by descending) applied
         searchTerm: '',
         sessionType: '',
         sortBy: 'due-by',
@@ -418,13 +418,13 @@ describe('sessionListController', () => {
 
       const prisonerSessions = aValidSessions({
         problemRetrievingData: false,
-        sessions: [johnNogooderSession],
+        sessions: [johnnyPurpleSession],
       })
       sessionService.getSessionsInStatusForPrisoners.mockResolvedValue(prisonerSessions)
 
       const expectedView: RenderedSessionListView = {
         sessionsSummary,
-        currentPageOfRecords: [{ ...johnNogooder, ...johnNogooderSession }], // default sort order (due-by descending) applied
+        currentPageOfRecords: [{ ...johnnyPurple, ...johnnyPurpleSession }], // default sort order (due-by descending) applied
         searchTerm: '',
         sessionType: '',
         sortBy: 'due-by',

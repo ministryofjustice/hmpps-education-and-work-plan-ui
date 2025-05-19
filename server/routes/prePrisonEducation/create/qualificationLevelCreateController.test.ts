@@ -78,7 +78,7 @@ describe('qualificationLevelCreateController', () => {
       req.body = invalidQualificationLevelForm
 
       const expectedErrors = [
-        { href: '#qualificationLevel', text: 'Select the level of qualification Jimmy Lightfingers wants to add' },
+        { href: '#qualificationLevel', text: 'Select the level of qualification Ifereeca Peigh wants to add' },
       ]
 
       // When

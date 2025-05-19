@@ -35,7 +35,7 @@ describe('ExemptionReasonPage', () => {
 
     // Then
     expect($('[data-qa="page-heading"]').text().trim()).toBe(
-      "Select an exemption reason to put Jimmy Lightfingers's review on hold",
+      "Select an exemption reason to put Ifereeca Peigh's review on hold",
     )
     const radioLabels = $('input[name="exemptionReason"] + label')
     expect($(radioLabels[0]).text().trim()).toBe(`Has a drug or alcohol dependency and is in assessment or treatment`)

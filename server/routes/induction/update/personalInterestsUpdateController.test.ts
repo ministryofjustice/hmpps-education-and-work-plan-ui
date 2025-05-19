@@ -111,7 +111,7 @@ describe('personalInterestsUpdateController', () => {
       req.body = invalidPersonalInterestsForm
       req.session.personalInterestsForm = undefined
 
-      const expectedErrors = [{ href: '#personalInterestsOther', text: `Enter Jimmy Lightfingers's interests` }]
+      const expectedErrors = [{ href: '#personalInterestsOther', text: `Enter Ifereeca Peigh's interests` }]
 
       // When
       await controller.submitPersonalInterestsForm(req, res, next)

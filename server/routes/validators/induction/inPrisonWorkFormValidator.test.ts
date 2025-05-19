@@ -37,7 +37,7 @@ describe('inPrisonWorkFormValidator', () => {
       it(`form data: ${JSON.stringify(spec)}`, () => {
         // Given
         const expected: Array<Record<string, string>> = [
-          { href: '#inPrisonWork', text: 'Select the type of work Jimmy Lightfingers would like to do in prison' },
+          { href: '#inPrisonWork', text: 'Select the type of work Ifereeca Peigh would like to do in prison' },
         ]
 
         // When
@@ -59,7 +59,7 @@ describe('inPrisonWorkFormValidator', () => {
       it(`form data: ${JSON.stringify(spec)}`, () => {
         // Given
         const expected: Array<Record<string, string>> = [
-          { href: '#inPrisonWorkOther', text: 'Enter the type of work Jimmy Lightfingers would like to do in prison' },
+          { href: '#inPrisonWorkOther', text: 'Enter the type of work Ifereeca Peigh would like to do in prison' },
         ]
 
         // When

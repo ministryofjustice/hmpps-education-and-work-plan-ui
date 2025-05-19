@@ -44,8 +44,8 @@ context(`Change links on the Check Your Answers page when creating a review`, ()
 
     Page.verifyOnPage(ReviewPlanCheckYourAnswersPage) //
       .hasNotes(
-        `Daniel's review went well and he has made good progress on his goals.
-Working in the prison kitchen is suiting Daniel well and is allowing him to focus on more productive uses of his time whilst in prison.
+        `Edfdau's review went well and he has made good progress on his goals.
+Working in the prison kitchen is suiting Edfdau well and is allowing him to focus on more productive uses of his time whilst in prison.
 
 We have agreed and set a new goal, and the next review is 1 year from now.
 `,

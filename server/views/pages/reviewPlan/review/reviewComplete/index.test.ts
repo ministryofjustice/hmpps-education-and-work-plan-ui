@@ -36,7 +36,7 @@ describe('ReviewCompletePage', () => {
 
     // Then
     expect($('[data-qa="no-reviews-due"]').text().trim()).toEqual(
-      "No more reviews due as Jimmy Lightfingers's release date is 31 December 2025.",
+      "No more reviews due as Ifereeca Peigh's release date is 31 December 2025.",
     )
     expect($('[data-qa="next-review-due"]').length).toEqual(0)
   })
@@ -59,7 +59,7 @@ describe('ReviewCompletePage', () => {
     // Then
     expect($('[data-qa="no-reviews-due"]').length).toEqual(0)
     expect($('[data-qa="next-review-due"]').text().trim()).toEqual(
-      "Jimmy Lightfingers's next review is due between 1 January 2025 and 28 February 2025.",
+      "Ifereeca Peigh's next review is due between 1 January 2025 and 28 February 2025.",
     )
   })
 })

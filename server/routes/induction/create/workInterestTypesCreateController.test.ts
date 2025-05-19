@@ -111,7 +111,7 @@ describe('workInterestTypesCreateController', () => {
       const expectedErrors = [
         {
           href: '#workInterestTypesOther',
-          text: 'Enter the type of work Jimmy Lightfingers is interested in',
+          text: 'Enter the type of work Ifereeca Peigh is interested in',
         },
       ]
 

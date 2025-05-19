@@ -9,28 +9,28 @@ import { PrisonerListService } from '../../services'
 import aValidPrisonerSearchSummary from '../../testsupport/prisonerSearchSummaryTestDataBuilder'
 
 describe('prisonerListController', () => {
-  const jimmyLightFingers = aValidPrisonerSearchSummary({
+  const jimmyLilac = aValidPrisonerSearchSummary({
     firstName: 'Jimmy',
-    lastName: 'Lightfingers',
+    lastName: 'Lilac',
     receptionDate: startOfDay('2023-10-01'),
     hasCiagInduction: true,
     hasActionPlan: true,
   })
-  const jimmyMcShifty = aValidPrisonerSearchSummary({
+  const jimmyOrange = aValidPrisonerSearchSummary({
     firstName: 'Jimmy',
-    lastName: 'McShifty',
+    lastName: 'Orange',
     receptionDate: startOfDay('2000-07-23'),
     hasCiagInduction: false,
     hasActionPlan: false,
   })
-  const donVitoCorleone = aValidPrisonerSearchSummary({
-    firstName: 'Vito',
-    lastName: 'Corleone',
+  const valhallaCavalier = aValidPrisonerSearchSummary({
+    firstName: 'Valhalla',
+    lastName: 'Cavalier',
     receptionDate: startOfDay('2020-09-10'),
     hasCiagInduction: false,
     hasActionPlan: false,
   })
-  const prisonerSearchSummaries = [jimmyLightFingers, jimmyMcShifty, donVitoCorleone]
+  const prisonerSearchSummaries = [jimmyLilac, jimmyOrange, valhallaCavalier]
 
   const prisonerListService = {
     getPrisonerSearchSummariesForPrisonId: jest.fn(),
@@ -68,7 +68,7 @@ describe('prisonerListController', () => {
       req.query = {}
 
       const expectedView: RenderedPrisonerListView = {
-        currentPageOfRecords: [jimmyLightFingers, donVitoCorleone, jimmyMcShifty], // default sort order (reception-date descending) applied
+        currentPageOfRecords: [jimmyLilac, valhallaCavalier, jimmyOrange], // default sort order (reception-date descending) applied
         searchTerm: '',
         statusFilter: '',
         sortBy: 'reception-date',
@@ -131,7 +131,7 @@ describe('prisonerListController', () => {
         }
 
         const expectedView: RenderedPrisonerListView = {
-          currentPageOfRecords: [jimmyLightFingers, jimmyMcShifty],
+          currentPageOfRecords: [jimmyLilac, jimmyOrange],
           searchTerm: 'Jimmy',
           statusFilter: '',
           sortBy: 'reception-date',
@@ -171,7 +171,7 @@ describe('prisonerListController', () => {
         }
 
         const expectedView: RenderedPrisonerListView = {
-          currentPageOfRecords: [donVitoCorleone, jimmyMcShifty], // default sort order (reception-date descending) applied
+          currentPageOfRecords: [valhallaCavalier, jimmyOrange], // default sort order (reception-date descending) applied
           searchTerm: '',
           statusFilter: 'NEEDS_PLAN',
           sortBy: 'reception-date',
@@ -212,7 +212,7 @@ describe('prisonerListController', () => {
         }
 
         const expectedView: RenderedPrisonerListView = {
-          currentPageOfRecords: [jimmyMcShifty],
+          currentPageOfRecords: [jimmyOrange],
           searchTerm: 'Jimmy',
           statusFilter: 'NEEDS_PLAN',
           sortBy: 'reception-date',
@@ -254,7 +254,7 @@ describe('prisonerListController', () => {
         }
 
         const expectedView: RenderedPrisonerListView = {
-          currentPageOfRecords: [donVitoCorleone, jimmyLightFingers, jimmyMcShifty],
+          currentPageOfRecords: [valhallaCavalier, jimmyLilac, jimmyOrange],
           searchTerm: '',
           statusFilter: '',
           sortBy: 'name',
@@ -295,7 +295,7 @@ describe('prisonerListController', () => {
         }
 
         const expectedView: RenderedPrisonerListView = {
-          currentPageOfRecords: [jimmyLightFingers, donVitoCorleone, jimmyMcShifty], // default sort order (reception-date descending) applied
+          currentPageOfRecords: [jimmyLilac, valhallaCavalier, jimmyOrange], // default sort order (reception-date descending) applied
           searchTerm: '',
           statusFilter: '',
           sortBy: 'reception-date', // current sort by field is `reception-date` given the requested value was invalid
@@ -335,7 +335,7 @@ describe('prisonerListController', () => {
         req.session.prisonerListSortOptions = 'name,ascending'
 
         const expectedView: RenderedPrisonerListView = {
-          currentPageOfRecords: [donVitoCorleone, jimmyLightFingers, jimmyMcShifty],
+          currentPageOfRecords: [valhallaCavalier, jimmyLilac, jimmyOrange],
           searchTerm: '',
           statusFilter: '',
           sortBy: 'name',

@@ -32,7 +32,7 @@ describe('WhoCompletedReviewPage', () => {
     const $ = cheerio.load(content)
 
     // Then
-    expect($('[data-qa="page-heading"]').text().trim()).toBe("Who completed Jimmy Lightfingers's review?")
+    expect($('[data-qa="page-heading"]').text().trim()).toBe("Who completed Ifereeca Peigh's review?")
     expect($('[data-qa="completed-by-other-full-name"]').text().trim()).toBe('Full name')
     expect($('[data-qa="completed-by-other-job-role"]').text().trim()).toBe('Job role')
     const radioLabels = $('input[name="completedBy"] + label')
