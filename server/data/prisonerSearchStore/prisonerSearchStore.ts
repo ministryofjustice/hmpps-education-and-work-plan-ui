@@ -17,14 +17,14 @@ export default class PrisonerSearchStore {
     }
   }
 
-  async setPrisoner(prisonNumber: string, prisoner: Prisoner, durationHours = 24): Promise<string> {
+  async setPrisoner(prisonNumber: string, prisoner: Prisoner, durationHours = 24): Promise<void> {
     await this.ensureConnected()
-    return this.client.set(`${PRISONER}-${prisonNumber}`, JSON.stringify(prisoner), { EX: durationHours * 60 * 60 })
+    this.client.set(`${PRISONER}-${prisonNumber}`, JSON.stringify(prisoner), { EX: durationHours * 60 * 60 })
   }
 
   async getPrisoner(prisonNumber: string): Promise<Prisoner> {
     await this.ensureConnected()
     const serializedPrisoner = await this.client.get(`${PRISONER}-${prisonNumber}`)
-    return serializedPrisoner ? (JSON.parse(serializedPrisoner) as Prisoner) : undefined
+    return serializedPrisoner ? (JSON.parse(serializedPrisoner.toString()) as Prisoner) : undefined
   }
 }

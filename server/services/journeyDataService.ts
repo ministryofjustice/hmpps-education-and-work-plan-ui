@@ -12,8 +12,8 @@ export default class JourneyDataService {
     journeyId: string,
     journeyData: Express.JourneyData,
     durationHours: number,
-  ): Promise<string> {
-    return this.journeyDataStore.setJourneyData(username, journeyId, journeyData, durationHours)
+  ): Promise<void> {
+    await this.journeyDataStore.setJourneyData(username, journeyId, journeyData, durationHours)
   }
 
   async deleteJourneyData(username: string, journeyId: string): Promise<void> {
