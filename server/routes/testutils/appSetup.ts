@@ -12,6 +12,7 @@ import AuditService from '../../services/auditService'
 import setUpWebSession from '../../middleware/setUpWebSession'
 import auditMiddleware from '../../middleware/auditMiddleware'
 import populateUserAuthorities from '../../middleware/populateUserAuthorities'
+import createUserToken from '../../testutils/createUserToken'
 
 jest.mock('../../services/auditService')
 
@@ -28,8 +29,7 @@ const testUserWithManagerRole = {
   firstName: 'first',
   lastName: 'last',
   userId: 'id',
-  token:
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InVzZXIxIiwiaWF0IjoxNTE2MjM5MDIyLCJhdXRob3JpdGllcyI6WyJST0xFX0xXUF9NQU5BR0VSIl19.y-vHsiBtvTSwd0KINx953dX-pk6nsZ5s1MvdYfRmcf0',
+  token: createUserToken(['ROLE_LWP_MANAGER']),
   username: 'user1',
   displayName: 'First Last',
   activeCaseLoadId: 'BXI',
