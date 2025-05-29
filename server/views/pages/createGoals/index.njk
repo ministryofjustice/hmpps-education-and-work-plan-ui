@@ -69,7 +69,7 @@
             {% set manuallyEnteredTargetCompletionDate %}
               {{ mojDatePicker({
                 name: "goals[" + goalLoop.index0 + "][manuallyEnteredTargetCompletionDate]",
-                value: form.goals[(goalLoop.index0)][manuallyEnteredTargetCompletionDate],
+                value: form.goals[(goalLoop.index0)].manuallyEnteredTargetCompletionDate,
                 id: "goals[" + goalLoop.index0 + "][manuallyEnteredTargetCompletionDate]",
                 label: {
                   text: "When are they aiming to achieve this goal by?",
