@@ -22,9 +22,15 @@ import EducationAndWorkPlanClient from './educationAndWorkPlanClient'
 import CuriousClient from './curiousClient'
 import CiagInductionClient from './ciagInductionClient'
 import PrisonRegisterStore from './prisonRegisterStore/prisonRegisterStore'
+import InMemoryPrisonRegisterStore from './prisonRegisterStore/inMemoryPrisonRegisterStore'
+import RedisPrisonRegisterStore from './prisonRegisterStore/redisPrisonRegisterStore'
 import PrisonRegisterClient from './prisonRegisterClient'
-import PrisonerSearchStore from './prisonerSearchStore/prisonerSearchStore'
 import JourneyDataStore from './journeyDataStore/journeyDataStore'
+import InMemoryJourneyDataStore from './journeyDataStore/inMemoryJourneyDataStore'
+import RedisJourneyDataStore from './journeyDataStore/redisJourneyDataStore'
+import PrisonerSearchStore from './prisonerSearchStore/prisonerSearchStore'
+import InMemoryPrisonerSearchStore from './prisonerSearchStore/inMemoryPrisonerSearchStore'
+import RedisPrisonerSearchStore from './prisonerSearchStore/redisPrisonerSearchStore'
 
 type RestClientBuilder<T> = (token: string) => T
 
@@ -35,14 +41,20 @@ export const dataAccess = () => ({
   ),
   hmppsAuditClient: new HmppsAuditClient(config.sqs.audit),
   manageUsersApiClient: new ManageUsersApiClient(),
-  prisonerSearchStore: new PrisonerSearchStore(createRedisClient('prisonerSearch:')),
+  prisonerSearchStore: config.redis.enabled
+    ? new RedisPrisonerSearchStore(createRedisClient('prisonerSearch:'))
+    : new InMemoryPrisonerSearchStore(),
   prisonerSearchClient: new PrisonerSearchClient(),
   educationAndWorkPlanClient: new EducationAndWorkPlanClient(),
   curiousClient: new CuriousClient(),
   ciagInductionClient: new CiagInductionClient(),
-  prisonRegisterStore: new PrisonRegisterStore(createRedisClient('prisonRegister:')),
+  prisonRegisterStore: config.redis.enabled
+    ? new RedisPrisonRegisterStore(createRedisClient('prisonRegister:'))
+    : new InMemoryPrisonRegisterStore(),
   prisonRegisterClient: new PrisonRegisterClient(),
-  journeyDataStore: new JourneyDataStore(createRedisClient('journeyData:')),
+  journeyDataStore: config.redis.enabled
+    ? new RedisJourneyDataStore(createRedisClient('journeyData:'))
+    : new InMemoryJourneyDataStore(),
 })
 
 export type DataAccess = ReturnType<typeof dataAccess>
@@ -52,12 +64,12 @@ export {
   RestClientBuilder,
   HmppsAuditClient,
   ManageUsersApiClient,
-  PrisonerSearchStore,
+  type PrisonerSearchStore,
   PrisonerSearchClient,
   EducationAndWorkPlanClient,
   CuriousClient,
   CiagInductionClient,
-  PrisonRegisterStore,
+  type PrisonRegisterStore,
   PrisonRegisterClient,
-  JourneyDataStore,
+  type JourneyDataStore,
 }

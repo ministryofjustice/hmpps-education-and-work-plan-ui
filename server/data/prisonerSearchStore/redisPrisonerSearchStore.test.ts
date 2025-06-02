@@ -1,15 +1,15 @@
-import PrisonerSearchStore from './prisonerSearchStore'
+import RedisPrisonerSearchStore from './redisPrisonerSearchStore'
 import aValidPrisoner from '../../testsupport/prisonerTestDataBuilder'
 import { RedisClient } from '../redisClient'
 
-describe('prisonerSearchStore', () => {
+describe('redisPrisonerSearchStore', () => {
   const redisClient = {
     on: jest.fn(),
     get: jest.fn(),
     set: jest.fn(),
     connect: jest.fn(),
   }
-  const prisonerSearchStore = new PrisonerSearchStore(redisClient as unknown as RedisClient)
+  const prisonerSearchStore = new RedisPrisonerSearchStore(redisClient as unknown as RedisClient)
 
   const prisonNumber = 'A1234BC'
   const prisoner = aValidPrisoner({ prisonNumber })

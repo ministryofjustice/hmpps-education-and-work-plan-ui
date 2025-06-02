@@ -1,5 +1,6 @@
 import { v4 as uuidV4 } from 'uuid'
 import JourneyDataStore from './journeyDataStore'
+import RedisJourneyDataStore from './redisJourneyDataStore'
 import { RedisClient } from '../redisClient'
 import { aValidInductionDto } from '../../testsupport/inductionDtoTestDataBuilder'
 
@@ -16,11 +17,11 @@ const journeyId = uuidV4()
 const expectedCacheKey = `journey.${username}.${journeyId}`
 const journeyData: Express.JourneyData = { inductionDto: aValidInductionDto() }
 
-describe('journeyDataStore', () => {
+describe('redisJourneyDataStore', () => {
   let journeyDataStore: JourneyDataStore
 
   beforeEach(() => {
-    journeyDataStore = new JourneyDataStore(redisClient as unknown as RedisClient)
+    journeyDataStore = new RedisJourneyDataStore(redisClient as unknown as RedisClient)
   })
 
   afterEach(() => {

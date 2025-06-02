@@ -1,7 +1,7 @@
 import type { PrisonerSummaries } from 'viewModels'
 import HmppsAuthClient from '../data/hmppsAuthClient'
 import PrisonerSearchClient from '../data/prisonerSearchClient'
-import PrisonerSearchStore from '../data/prisonerSearchStore/prisonerSearchStore'
+import RedisPrisonerSearchStore from '../data/prisonerSearchStore/redisPrisonerSearchStore'
 import PrisonerSearchService from './prisonerSearchService'
 import aValidPrisoner from '../testsupport/prisonerTestDataBuilder'
 import aValidPrisonerSummary from '../testsupport/prisonerSummaryTestDataBuilder'
@@ -11,14 +11,14 @@ import aValidPagedCollectionOfPrisoners from '../testsupport/pagedCollectionOfPr
 jest.mock('../data/mappers/prisonerSummaryMapper')
 jest.mock('../data/hmppsAuthClient')
 jest.mock('../data/prisonerSearchClient')
-jest.mock('../data/prisonerSearchStore/prisonerSearchStore')
+jest.mock('../data/prisonerSearchStore/redisPrisonerSearchStore')
 
 describe('prisonerSearchService', () => {
   const mockedPrisonerSummaryMapper = toPrisonerSummary as jest.MockedFunction<typeof toPrisonerSummary>
 
   const hmppsAuthClient = new HmppsAuthClient(null) as jest.Mocked<HmppsAuthClient>
   const prisonerSearchClient = new PrisonerSearchClient() as jest.Mocked<PrisonerSearchClient>
-  const prisonerSearchStore = new PrisonerSearchStore(null) as jest.Mocked<PrisonerSearchStore>
+  const prisonerSearchStore = new RedisPrisonerSearchStore(null) as jest.Mocked<RedisPrisonerSearchStore>
 
   const prisonerSearchService = new PrisonerSearchService(hmppsAuthClient, prisonerSearchClient, prisonerSearchStore)
 
