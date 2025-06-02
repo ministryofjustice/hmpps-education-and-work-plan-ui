@@ -22,7 +22,7 @@ describe('createEducationMapper', () => {
 
     const expected = aValidCreateEducationRequest({
       prisonId: 'BXI',
-      educationLevel: 'SECONDARY_SCHOOL_TOOK_EXAMS',
+      educationLevel: EducationLevelValue.SECONDARY_SCHOOL_TOOK_EXAMS,
       qualifications: [
         {
           subject: 'Needlecraft',

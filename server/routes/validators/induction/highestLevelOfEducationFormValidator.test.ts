@@ -13,6 +13,7 @@ describe('highestLevelOfEducationFormValidator', () => {
       { educationLevel: 'FURTHER_EDUCATION_COLLEGE' },
       { educationLevel: 'UNDERGRADUATE_DEGREE_AT_UNIVERSITY' },
       { educationLevel: 'POSTGRADUATE_DEGREE_AT_UNIVERSITY' },
+      { educationLevel: 'NO_FORMAL_EDUCATION' },
       { educationLevel: 'NOT_SURE' },
     ).forEach(spec => {
       it(`form data: ${JSON.stringify(spec)}`, () => {

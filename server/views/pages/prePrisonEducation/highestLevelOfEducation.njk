@@ -71,6 +71,11 @@ Data supplied to this template:
                 value: "NOT_SURE",
                 text: "NOT_SURE" | formatEducationLevel,
                 checked: form.educationLevel === "NOT_SURE"
+              },
+              {
+                value: "NO_FORMAL_EDUCATION",
+                text: "NO_FORMAL_EDUCATION" | formatEducationLevel,
+                checked: form.educationLevel === "NO_FORMAL_EDUCATION"
               }
             ],
             errorMessage: errors | findError('educationLevel')
