@@ -16,24 +16,10 @@ export default class CheckYourAnswersCreateController extends CheckYourAnswersCo
     const { prisonerSummary } = res.locals
     const { prisonId } = prisonerSummary
 
-    if (!inductionDto) {
-      logger.debug(`RR-1300 - InductionDto for ${prisonNumber} was not retrieved from the session`)
-    } else {
-      logger.debug(`RR-1300 - InductionDto for ${prisonNumber} retrieved from the session successfully`)
-      if (!inductionDto.workOnRelease) {
-        logger.debug(
-          `RR-1300 - Retrieved InductionDto is missing at least the workOnRelease property: ${JSON.stringify(inductionDto)}`,
-        )
-      }
-    }
-
     const createInductionDto = toCreateOrUpdateInductionDto(prisonId, inductionDto)
 
     try {
-      logger.debug(`RR-1300 - Calling API to create ${prisonNumber}'s induction`)
       await this.inductionService.createInduction(prisonNumber, createInductionDto, req.user.username)
-      logger.debug(`RR-1300 - ${prisonNumber}'s induction created`)
-
       req.session.pageFlowHistory = undefined
       req.journeyData.inductionDto = undefined
       return res.redirect(`/plan/${prisonNumber}/induction-created`)

@@ -1,6 +1,5 @@
 import { NextFunction, Request, Response } from 'express'
 import { clearPrisonerContext } from '../../data/session/prisonerContexts'
-import logger from '../../../logger'
 
 /**
  *  Request handler function that removes all form and DTO related data the session and/or prisoner context.
@@ -10,8 +9,6 @@ import logger from '../../../logger'
 const removeFormDataFromSession = async (req: Request, res: Response, next: NextFunction) => {
   const { session } = req
   const { prisonNumber } = req.params
-
-  logger.debug('RR-1300 - clearing all form data from session')
 
   clearPrisonerContext(session, prisonNumber)
 
