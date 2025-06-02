@@ -22,17 +22,15 @@ export default class JourneyDataStore {
     journeyId: string,
     journeyData: Express.JourneyData,
     durationHours = 1,
-  ): Promise<string> {
+  ): Promise<void> {
     await this.ensureConnected()
-    return this.client.set(`journey.${username}.${journeyId}`, JSON.stringify(journeyData), {
-      EX: durationHours * 60 * 60,
-    })
+    this.client.set(`journey.${username}.${journeyId}`, JSON.stringify(journeyData), { EX: durationHours * 60 * 60 })
   }
 
   async getJourneyData(username: string, journeyId: string): Promise<Express.JourneyData> {
     await this.ensureConnected()
     const serializedJourneyData = await this.client.get(`journey.${username}.${journeyId}`)
-    return JSON.parse(serializedJourneyData ?? '{}', dataParsingReviver(DATE_FIELDS))
+    return serializedJourneyData ? JSON.parse(serializedJourneyData.toString(), dataParsingReviver(DATE_FIELDS)) : {}
   }
 
   async deleteJourneyData(username: string, journeyId: string): Promise<void> {
