@@ -9,6 +9,7 @@ describe('formatLevelOfEducationFilter', () => {
       { source: 'FURTHER_EDUCATION_COLLEGE', expected: 'Further education college' },
       { source: 'UNDERGRADUATE_DEGREE_AT_UNIVERSITY', expected: 'Undergraduate degree at university' },
       { source: 'POSTGRADUATE_DEGREE_AT_UNIVERSITY', expected: 'Postgraduate degree at university' },
+      { source: 'NO_FORMAL_EDUCATION', expected: 'No formal education' },
       { source: 'NOT_SURE', expected: 'Not sure' },
     ).forEach(spec => {
       it(`source: ${spec.source}, expected: ${spec.expected}`, () => {

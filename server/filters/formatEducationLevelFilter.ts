@@ -11,5 +11,6 @@ enum HighestLevelOfEducationValues {
   FURTHER_EDUCATION_COLLEGE = 'Further education college',
   UNDERGRADUATE_DEGREE_AT_UNIVERSITY = 'Undergraduate degree at university',
   POSTGRADUATE_DEGREE_AT_UNIVERSITY = 'Postgraduate degree at university',
+  NO_FORMAL_EDUCATION = 'No formal education',
   NOT_SURE = 'Not sure',
 }

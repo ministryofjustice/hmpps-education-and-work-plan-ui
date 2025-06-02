@@ -459,6 +459,7 @@ export interface components {
         | 'FURTHER_EDUCATION_COLLEGE'
         | 'UNDERGRADUATE_DEGREE_AT_UNIVERSITY'
         | 'POSTGRADUATE_DEGREE_AT_UNIVERSITY'
+        | 'NO_FORMAL_EDUCATION'
         | 'NOT_SURE'
       /**
        * @description A list of achieved qualifications that should be updated or created as part of the education record.
@@ -725,6 +726,7 @@ export interface components {
         | 'FURTHER_EDUCATION_COLLEGE'
         | 'UNDERGRADUATE_DEGREE_AT_UNIVERSITY'
         | 'POSTGRADUATE_DEGREE_AT_UNIVERSITY'
+        | 'NO_FORMAL_EDUCATION'
         | 'NOT_SURE'
       /**
        * @description A list of the Prisoner's previous qualifications.   These can either be new qualfications without a reference field, or for any qualifications with a reference field they will be treated as updates.
@@ -1103,6 +1105,7 @@ export interface components {
         | 'FURTHER_EDUCATION_COLLEGE'
         | 'UNDERGRADUATE_DEGREE_AT_UNIVERSITY'
         | 'POSTGRADUATE_DEGREE_AT_UNIVERSITY'
+        | 'NO_FORMAL_EDUCATION'
         | 'NOT_SURE'
       /**
        * @description A list of achieved qualifications that should be created as part of the education record.
@@ -1195,6 +1198,7 @@ export interface components {
         | 'FURTHER_EDUCATION_COLLEGE'
         | 'UNDERGRADUATE_DEGREE_AT_UNIVERSITY'
         | 'POSTGRADUATE_DEGREE_AT_UNIVERSITY'
+        | 'NO_FORMAL_EDUCATION'
         | 'NOT_SURE'
       /**
        * @description A list of the Prisoner's previous qualifications.   These can either be new qualfications without a reference field, or for any qualifications with a reference field they will be treated as updates.
@@ -1650,7 +1654,7 @@ export interface components {
     }
     HmppsSubjectAccessRequestContent: {
       /** @description The content of the subject access request response */
-      content: Record<string, never>
+      content: unknown
     }
     ErrorResponse: {
       /** Format: int32 */
@@ -1778,7 +1782,7 @@ export interface components {
     }
     DlqMessage: {
       body: {
-        [key: string]: Record<string, never>
+        [key: string]: unknown
       }
       messageId: string
     }
@@ -1871,6 +1875,7 @@ export interface components {
         | 'FURTHER_EDUCATION_COLLEGE'
         | 'UNDERGRADUATE_DEGREE_AT_UNIVERSITY'
         | 'POSTGRADUATE_DEGREE_AT_UNIVERSITY'
+        | 'NO_FORMAL_EDUCATION'
         | 'NOT_SURE'
       /**
        * @description A list of achieved qualifications. Can be empty but not null.
@@ -2182,6 +2187,7 @@ export interface components {
         | 'FURTHER_EDUCATION_COLLEGE'
         | 'UNDERGRADUATE_DEGREE_AT_UNIVERSITY'
         | 'POSTGRADUATE_DEGREE_AT_UNIVERSITY'
+        | 'NO_FORMAL_EDUCATION'
         | 'NOT_SURE'
       /**
        * @description A list of the Prisoner's previous qualifications. Can be empty but not null.
