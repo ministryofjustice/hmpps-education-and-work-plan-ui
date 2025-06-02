@@ -3,7 +3,6 @@ import type { EducationDto } from 'dto'
 import type { InductionDto } from 'inductionDto'
 import { EducationAndWorkPlanService } from '../../services'
 import asyncMiddleware from '../../middleware/asyncMiddleware'
-import logger from '../../../logger'
 
 /**
  * Middleware function that returns a request handler function to check whether an InductionDto exists in the journeyData for
@@ -19,10 +18,6 @@ const createEmptyInductionDtoIfNotInJourneyData = (
 
     // Either no Induction in the journeyData, or it's for a different prisoner. Create a new one, including the prisoners education if it has been previously recorded.
     if (req.journeyData?.inductionDto?.prisonNumber !== prisonNumber) {
-      logger.debug(
-        `RR-1300 - Setting up new InductionDto in the journeyData for ${prisonNumber} because ${!req.journeyData?.inductionDto ? 'InductionDto is not in the journeyData' : 'InductionDto in the journeyData is for a different prisoner'}`,
-      )
-
       let educationDto: EducationDto
       try {
         educationDto = await educationAndWorkPlanService.getEducation(prisonNumber, req.user.username)
