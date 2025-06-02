@@ -1,5 +1,6 @@
 import type { PrisonResponse } from 'prisonRegisterApiClient'
 import PrisonRegisterStore from './prisonRegisterStore'
+import RedisPrisonRegisterStore from './redisPrisonRegisterStore'
 import { RedisClient } from '../redisClient'
 import aValidPrisonResponse from '../../testsupport/prisonResponseTestDataBuilder'
 
@@ -23,11 +24,11 @@ const activePrisons: Array<PrisonResponse> = [
   }),
 ]
 
-describe('prisonRegisterStore', () => {
+describe('redisPrisonRegisterStore', () => {
   let prisonRegisterStore: PrisonRegisterStore
 
   beforeEach(() => {
-    prisonRegisterStore = new PrisonRegisterStore(redisClient as unknown as RedisClient)
+    prisonRegisterStore = new RedisPrisonRegisterStore(redisClient as unknown as RedisClient)
   })
 
   afterEach(() => {
