@@ -102,10 +102,7 @@ const workOutReviewStatus = (
   if (isAfter(today, reviewDueDate)) {
     return 'OVERDUE'
   }
-  if (
-    isWithinInterval(today, { start: reviewDateFrom, end: reviewDueDate }) ||
-    isAfter(reviewDateFrom, reviewDueDate) // TODO remove this in RR-1409. This was a temporary fix to cater for where the earliest review date is after the latest review date
-  ) {
+  if (isWithinInterval(today, { start: reviewDateFrom, end: reviewDueDate })) {
     return 'DUE'
   }
   return 'NOT_DUE'
