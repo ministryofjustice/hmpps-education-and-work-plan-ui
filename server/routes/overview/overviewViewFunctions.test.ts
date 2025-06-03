@@ -387,31 +387,6 @@ describe('overviewViewFunctions', () => {
       expect(actual).toEqual(expected)
     })
 
-    // TODO - remove this temporary test via RR-1409
-    it('should build ActionPlanReviewScheduleView given review schedule is due by virtue of the fromDate being later than the toDate', () => {
-      // Given
-      const actionPlanReviews = aValidActionPlanReviews({
-        latestReviewSchedule: aValidScheduledActionPlanReview({
-          status: ActionPlanReviewStatusValue.SCHEDULED,
-          reviewDateFrom: twoMonthsAndOneDayAway,
-          reviewDateTo: tomorrow,
-        }),
-      })
-
-      const expected: ActionPlanReviewScheduleView = {
-        problemRetrievingData: false,
-        reviewStatus: 'DUE',
-        exemptionReason: undefined,
-        reviewDueDate: tomorrow,
-      }
-
-      // When
-      const actual = toActionPlanReviewScheduleView(actionPlanReviews)
-
-      // Then
-      expect(actual).toEqual(expected)
-    })
-
     it('should build ActionPlanReviewScheduleView given review schedule is not due', () => {
       // Given
       const actionPlanReviews = aValidActionPlanReviews({
