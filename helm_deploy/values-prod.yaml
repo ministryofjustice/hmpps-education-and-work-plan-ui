@@ -20,4 +20,4 @@ generic-service:
     ACTIVITIES_API_URL: "https://activities-api.prison.service.justice.gov.uk"
 
 generic-prometheus-alerts:
-  alertSeverity: digital-prison-service
+  alertSeverity: hmpps-support-additional-needs-prod
