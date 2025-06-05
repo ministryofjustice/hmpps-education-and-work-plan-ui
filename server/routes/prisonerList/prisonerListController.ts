@@ -4,6 +4,7 @@ import { PrisonerListService } from '../../services'
 import PrisonerListView from './prisonerListView'
 import config from '../../config'
 import PagedPrisonerSearchSummary, { FilterBy, SortBy, SortOrder } from './pagedPrisonerSearchSummary'
+import logger from '../../../logger'
 
 const DEFAULT_SORT_FIELD = SortBy.RECEPTION_DATE
 const DEFAULT_SORT_DIRECTION = SortOrder.DESCENDING
@@ -49,8 +50,8 @@ export default class PrisonerListController {
       )
 
       return res.render('pages/prisonerList/index', { ...view.renderArgs })
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
+      logger.error(`Error producing prisoner list for prison ${prisonId}`, error)
       return next(createError(500, `Error producing prisoner list for prison ${prisonId}`))
     }
   }
