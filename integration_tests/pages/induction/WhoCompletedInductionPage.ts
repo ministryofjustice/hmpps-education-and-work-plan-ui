@@ -12,19 +12,19 @@ export default class WhoCompletedInductionPage extends Page {
   }
 
   enterFullName(value: string): WhoCompletedInductionPage {
-    this.fullNameField().clear().type(value)
+    this.fullNameField().clear().type(value, { delay: 0 })
     return this
   }
 
   enterJobRole(value: string): WhoCompletedInductionPage {
-    this.jobRoleField().clear().type(value)
+    this.jobRoleField().clear().type(value, { delay: 0 })
     return this
   }
 
   setInductionDate(inductionDate: Date): WhoCompletedInductionPage {
     this.inductionDateField()
       .clear()
-      .type(`${inductionDate.getDate()}/${inductionDate.getMonth() + 1}/${inductionDate.getFullYear()}`)
+      .type(`${inductionDate.getDate()}/${inductionDate.getMonth() + 1}/${inductionDate.getFullYear()}`, { delay: 0 })
     return this
   }
 

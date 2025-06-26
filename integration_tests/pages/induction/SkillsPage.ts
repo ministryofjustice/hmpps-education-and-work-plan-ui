@@ -28,7 +28,7 @@ export default class SkillsPage extends Page {
   }
 
   setOtherSkillType(value: string): SkillsPage {
-    this.otherSkillField().clear().type(value)
+    this.otherSkillField().clear().type(value, { delay: 0 })
     return this
   }
 

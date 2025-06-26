@@ -28,7 +28,7 @@ export default class InPrisonTrainingPage extends Page {
   }
 
   setInPrisonTrainingOther(value: string): InPrisonTrainingPage {
-    this.inPrisonTrainingOtherField().clear().type(value)
+    this.inPrisonTrainingOtherField().clear().type(value, { delay: 0 })
     return this
   }
 

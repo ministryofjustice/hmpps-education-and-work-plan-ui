@@ -17,7 +17,7 @@ export default class ArchiveGoalPage extends Page {
   }
 
   enterReason(value: string): ArchiveGoalPage {
-    this.reasonOther().type(value)
+    this.reasonOther().type(value, { delay: 0 })
     return this
   }
 
@@ -27,7 +27,7 @@ export default class ArchiveGoalPage extends Page {
   }
 
   enterNotes(value: string): ArchiveGoalPage {
-    this.notesField().clear().type(value)
+    this.notesField().clear().type(value, { delay: 0 })
     return this
   }
 

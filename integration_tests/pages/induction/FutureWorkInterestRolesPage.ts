@@ -10,7 +10,7 @@ export default class FutureWorkInterestRolesPage extends Page {
   }
 
   setWorkInterestRole(workInterestType: WorkInterestTypeValue, value: string): FutureWorkInterestRolesPage {
-    this.workInterestRoleField(workInterestType).clear().type(value)
+    this.workInterestRoleField(workInterestType).clear().type(value, { delay: 0 })
     return this
   }
 

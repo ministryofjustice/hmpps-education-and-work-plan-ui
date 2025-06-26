@@ -28,7 +28,7 @@ export default class PersonalInterestsPage extends Page {
   }
 
   setOtherPersonalInterestType(value: string): PersonalInterestsPage {
-    this.otherPersonalInterestField().clear().type(value)
+    this.otherPersonalInterestField().clear().type(value, { delay: 0 })
     return this
   }
 

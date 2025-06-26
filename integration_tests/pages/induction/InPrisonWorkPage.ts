@@ -28,7 +28,7 @@ export default class InPrisonWorkPage extends Page {
   }
 
   setOtherWorkType(value: string): InPrisonWorkPage {
-    this.otherWorkTypeField().clear().type(value)
+    this.otherWorkTypeField().clear().type(value, { delay: 0 })
     return this
   }
 

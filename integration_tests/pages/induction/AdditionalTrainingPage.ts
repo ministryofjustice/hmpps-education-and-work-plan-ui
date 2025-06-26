@@ -28,7 +28,7 @@ export default class AdditionalTrainingPage extends Page {
   }
 
   setAdditionalTrainingOther(value: string): AdditionalTrainingPage {
-    this.additionalTrainingOtherField().clear().type(value)
+    this.additionalTrainingOtherField().clear().type(value, { delay: 0 })
     return this
   }
 

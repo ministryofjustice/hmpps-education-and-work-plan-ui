@@ -6,7 +6,7 @@ export default class InductionNotePage extends Page {
   }
 
   setInductionNote = (notes: string): InductionNotePage => {
-    this.inductionNotesField().clear().type(notes)
+    this.inductionNotesField().clear().type(notes, { delay: 0 })
     return this
   }
 

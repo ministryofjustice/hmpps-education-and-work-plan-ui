@@ -11,7 +11,7 @@ export default class CompleteGoalPage extends Page {
   }
 
   enterNotes(value: string): CompleteGoalPage {
-    this.notesField().clear().type(value)
+    this.notesField().clear().type(value, { delay: 0 })
     return this
   }
 

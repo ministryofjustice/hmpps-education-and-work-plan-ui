@@ -7,7 +7,7 @@ export default class SessionsSummaryPage extends Page {
   }
 
   setNameSearchTerm(value: string): SessionsSummaryPage {
-    this.searchTermField().clear().type(value)
+    this.searchTermField().clear().type(value, { delay: 0 })
     return this
   }
 
