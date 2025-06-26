@@ -6,7 +6,7 @@ export default class PreviousWorkExperienceDetailPage extends Page {
   }
 
   setJobRole(value: string): PreviousWorkExperienceDetailPage {
-    this.jobRoleField().clear().type(value)
+    this.jobRoleField().clear().type(value, { delay: 0 })
     return this
   }
 
@@ -21,7 +21,7 @@ export default class PreviousWorkExperienceDetailPage extends Page {
   }
 
   setJobDetails(value: string): PreviousWorkExperienceDetailPage {
-    this.jobDetailsField().clear().type(value)
+    this.jobDetailsField().clear().type(value, { delay: 0 })
     return this
   }
 

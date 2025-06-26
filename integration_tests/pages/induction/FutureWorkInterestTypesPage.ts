@@ -28,7 +28,7 @@ export default class FutureWorkInterestTypesPage extends Page {
   }
 
   setWorkInterestTypesOther(value: string): FutureWorkInterestTypesPage {
-    this.workInterestTypesOtherField().clear().type(value)
+    this.workInterestTypesOtherField().clear().type(value, { delay: 0 })
     return this
   }
 

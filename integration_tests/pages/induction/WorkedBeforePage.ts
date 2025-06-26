@@ -15,7 +15,7 @@ export default class WorkedBeforePage extends Page {
   }
 
   setNotRelevantReason(value: string): WorkedBeforePage {
-    this.notRelevantReasonField().clear().type(value)
+    this.notRelevantReasonField().clear().type(value, { delay: 0 })
     return this
   }
 

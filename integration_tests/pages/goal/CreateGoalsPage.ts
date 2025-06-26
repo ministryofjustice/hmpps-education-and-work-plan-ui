@@ -9,7 +9,7 @@ export default class CreateGoalsPage extends Page {
   }
 
   setGoalTitle(title: string, goalNumber: number = 1): CreateGoalsPage {
-    this.goalTitleField(goalNumber).clear().type(title)
+    this.goalTitleField(goalNumber).clear().type(title, { delay: 0 })
     return this
   }
 
@@ -40,12 +40,12 @@ export default class CreateGoalsPage extends Page {
 
   setTargetCompletionDate(targetCompletionDate: string, goalNumber: number = 1): CreateGoalsPage {
     this.goalTargetDateRadioButtons(goalNumber).last().check() // Setting a custom date is the last radio button option
-    this.goalManuallyEnteredTargetCompletionDateField(goalNumber).clear().type(targetCompletionDate)
+    this.goalManuallyEnteredTargetCompletionDateField(goalNumber).clear().type(targetCompletionDate, { delay: 0 })
     return this
   }
 
   setGoalNote(note: string, goalNumber: number = 1): CreateGoalsPage {
-    this.goalNoteField(goalNumber).clear().type(note)
+    this.goalNoteField(goalNumber).clear().type(note, { delay: 0 })
     return this
   }
 
@@ -60,7 +60,7 @@ export default class CreateGoalsPage extends Page {
   }
 
   setStepTitle(title: string, goalNumber: number, stepNumber: number): CreateGoalsPage {
-    this.stepTitleField(goalNumber, stepNumber).clear().type(title)
+    this.stepTitleField(goalNumber, stepNumber).clear().type(title, { delay: 0 })
     return this
   }
 

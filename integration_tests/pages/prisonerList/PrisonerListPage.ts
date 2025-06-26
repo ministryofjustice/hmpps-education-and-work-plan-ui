@@ -34,7 +34,7 @@ export default class PrisonerListPage extends Page {
   }
 
   setNameFilter(value: string): PrisonerListPage {
-    this.searchTermField().clear().type(value)
+    this.searchTermField().clear().type(value, { delay: 0 })
     return this
   }
 

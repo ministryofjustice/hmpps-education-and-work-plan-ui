@@ -20,7 +20,7 @@ export default class ExemptionReasonPage extends Page {
   }
 
   typeExemptionReasonDetails(reason: string, details: string): ExemptionReasonPage {
-    cy.get(`#${reason}`).type(details)
+    cy.get(`#${reason}`).type(details, { delay: 0 })
     return this
   }
 
