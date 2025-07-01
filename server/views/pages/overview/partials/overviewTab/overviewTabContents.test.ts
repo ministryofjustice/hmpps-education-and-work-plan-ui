@@ -123,7 +123,7 @@ describe('overviewTabContents', () => {
       `/prisoners/${prisonerSummary.prisonNumber}/create-induction/hoping-to-work-on-release`,
     )
 
-    expect(userHasPermissionTo).toBeCalledWith('RECORD_INDUCTION')
+    expect(userHasPermissionTo).toHaveBeenCalledWith('RECORD_INDUCTION')
   })
 
   it('should not render the complete induction banner when the the user does not have permission to create inductions', () => {
@@ -140,7 +140,7 @@ describe('overviewTabContents', () => {
     // Then
     expect($('[data-qa="pre-induction-overview"]').length).toEqual(0)
 
-    expect(userHasPermissionTo).toBeCalledWith('RECORD_INDUCTION')
+    expect(userHasPermissionTo).toHaveBeenCalledWith('RECORD_INDUCTION')
   })
 
   it('should not render the complete induction banner when the prisoner has had an induction', () => {
