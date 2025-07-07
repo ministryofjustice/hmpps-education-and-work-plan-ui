@@ -38,4 +38,5 @@ generic-service:
       - prisons-education
 
 generic-prometheus-alerts:
-  alertSeverity: digital-prison-service-dev
+  alertSeverity: hmpps-support-additional-needs-dev
+  businessHoursOnly: true
