@@ -1,23 +1,14 @@
 import { RequestHandler } from 'express'
 import type { ReviewPlanDto } from 'dto'
 import type { ReviewNoteForm } from 'reviewPlanForms'
-import { getPrisonerContext } from '../../../data/session/prisonerContexts'
 import ReviewNoteView from './reviewNoteView'
-import validateReviewNote from '../../validators/reviewPlan/reviewNoteValidator'
 
 export default class ReviewNoteController {
   getReviewNoteView: RequestHandler = async (req, res, next): Promise<void> => {
-    const { prisonNumber } = req.params
-    const { prisonerSummary } = res.locals
+    const { reviewPlanDto } = req.journeyData
+    const { prisonerSummary, invalidForm } = res.locals
 
-    let reviewNoteForm: ReviewNoteForm
-    if (getPrisonerContext(req.session, prisonNumber).reviewNoteForm) {
-      reviewNoteForm = getPrisonerContext(req.session, prisonNumber).reviewNoteForm
-    } else {
-      reviewNoteForm = toReviewNoteForm(req.journeyData.reviewPlanDto)
-    }
-
-    getPrisonerContext(req.session, prisonNumber).reviewNoteForm = undefined
+    const reviewNoteForm = invalidForm ?? toReviewNoteForm(reviewPlanDto)
 
     const view = new ReviewNoteView(prisonerSummary, reviewNoteForm)
     return res.render('pages/reviewPlan/review/reviewNote/index', { ...view.renderArgs })
@@ -26,16 +17,11 @@ export default class ReviewNoteController {
   submitReviewNoteForm: RequestHandler = async (req, res, next): Promise<void> => {
     const { prisonNumber, journeyId } = req.params
 
-    const reviewNoteForm: ReviewNoteForm = { ...req.body }
+    const reviewNoteForm = { ...req.body }
 
     const { reviewPlanDto } = req.journeyData
     const updatedReviewPlanDto = updateDtoWithFormContents(reviewPlanDto, reviewNoteForm)
     req.journeyData.reviewPlanDto = updatedReviewPlanDto
-
-    const errors = validateReviewNote(reviewNoteForm)
-    if (errors.length > 0) {
-      return res.redirectWithErrors(`/plan/${prisonNumber}/${journeyId}/review/notes`, errors)
-    }
 
     return res.redirect(`/plan/${prisonNumber}/${journeyId}/review/check-your-answers`)
   }

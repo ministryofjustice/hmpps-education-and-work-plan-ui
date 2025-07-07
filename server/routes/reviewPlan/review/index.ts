@@ -10,6 +10,9 @@ import { Services } from '../../../services'
 import { checkUserHasPermissionTo } from '../../../middleware/roleBasedAccessControl'
 import ApplicationAction from '../../../enums/applicationAction'
 import setupJourneyData from '../../routerRequestHandlers/setupJourneyData'
+import whoCompletedReviewSchema from '../validationSchemas/whoCompletedReviewSchema'
+import { validate } from '../../routerRequestHandlers/validationMiddleware'
+import reviewNoteSchema from '../validationSchemas/reviewNoteSchema'
 
 /**
  * Route definitions to complete a prisoner's Action Plan Review
@@ -36,6 +39,7 @@ export default function completeActionPlanReviewRoutes(services: Services) {
   ])
   router.post('/', [
     createEmptyReviewPlanDtoIfNotInJourneyData,
+    validate(whoCompletedReviewSchema),
     asyncMiddleware(whoCompletedReviewController.submitWhoCompletedReviewForm),
   ])
 
@@ -46,6 +50,7 @@ export default function completeActionPlanReviewRoutes(services: Services) {
   ])
   router.post('/notes', [
     checkReviewPlanDtoExistsInJourneyData,
+    validate(reviewNoteSchema),
     asyncMiddleware(reviewNoteController.submitReviewNoteForm),
   ])
 

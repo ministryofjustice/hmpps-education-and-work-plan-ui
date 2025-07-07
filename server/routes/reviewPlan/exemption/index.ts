@@ -10,6 +10,8 @@ import checkReviewExemptionDtoExistsInJourneyData from '../../routerRequestHandl
 import { checkUserHasPermissionTo } from '../../../middleware/roleBasedAccessControl'
 import ApplicationAction from '../../../enums/applicationAction'
 import setupJourneyData from '../../routerRequestHandlers/setupJourneyData'
+import reviewExemptionSchema from '../validationSchemas/reviewExemptionSchema'
+import { validate } from '../../routerRequestHandlers/validationMiddleware'
 
 /**
  * Route definitions to set a prisoner's Action Plan Review as exempt
@@ -34,6 +36,7 @@ export default function exemptActionPlanReviewRoutes(services: Services) {
   ])
   router.post('/exemption', [
     createEmptyReviewExemptionDtoIfNotInJourneyData,
+    validate(reviewExemptionSchema),
     asyncMiddleware(exemptionReasonController.submitExemptionReasonForm),
   ])
 

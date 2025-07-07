@@ -3,23 +3,14 @@ import { format, parse, startOfDay } from 'date-fns'
 import type { WhoCompletedReviewForm } from 'reviewPlanForms'
 import type { ReviewPlanDto } from 'dto'
 import WhoCompletedReviewView from './whoCompletedReviewView'
-import { getPrisonerContext } from '../../../data/session/prisonerContexts'
-import validateWhoCompletedReviewForm from '../../validators/reviewPlan/whoCompletedReviewFormValidator'
 import { getPreviousPage } from '../../pageFlowHistory'
 
 export default class WhoCompletedReviewController {
   getWhoCompletedReviewView: RequestHandler = async (req, res, next): Promise<void> => {
-    const { prisonNumber } = req.params
-    const { prisonerSummary } = res.locals
+    const { reviewPlanDto } = req.journeyData
+    const { prisonerSummary, invalidForm } = res.locals
 
-    let whoCompletedReviewForm: WhoCompletedReviewForm
-    if (getPrisonerContext(req.session, prisonNumber).whoCompletedReviewForm) {
-      whoCompletedReviewForm = getPrisonerContext(req.session, prisonNumber).whoCompletedReviewForm
-    } else {
-      whoCompletedReviewForm = toWhoCompletedReviewForm(req.journeyData.reviewPlanDto)
-    }
-
-    getPrisonerContext(req.session, prisonNumber).whoCompletedReviewForm = undefined
+    const whoCompletedReviewForm = invalidForm ?? toWhoCompletedReviewForm(reviewPlanDto)
 
     const view = new WhoCompletedReviewView(prisonerSummary, whoCompletedReviewForm)
     return res.render('pages/reviewPlan/review/whoCompletedReview/index', { ...view.renderArgs })
@@ -29,13 +20,7 @@ export default class WhoCompletedReviewController {
     const { prisonNumber, journeyId } = req.params
     const { prisonId } = res.locals.prisonerSummary
 
-    const whoCompletedReviewForm: WhoCompletedReviewForm = { ...req.body }
-    getPrisonerContext(req.session, prisonNumber).whoCompletedReviewForm = whoCompletedReviewForm
-
-    const errors = validateWhoCompletedReviewForm(whoCompletedReviewForm)
-    if (errors.length > 0) {
-      return res.redirectWithErrors(`/plan/${prisonNumber}/${journeyId}/review`, errors)
-    }
+    const whoCompletedReviewForm = { ...req.body }
 
     const { reviewPlanDto } = req.journeyData
     const updatedReviewPlanDto = updateDtoWithFormContents(
@@ -45,7 +30,6 @@ export default class WhoCompletedReviewController {
       prisonId,
     )
     req.journeyData.reviewPlanDto = updatedReviewPlanDto
-    getPrisonerContext(req.session, prisonNumber).whoCompletedReviewForm = undefined
 
     return previousPageWasCheckYourAnswers(req)
       ? res.redirect(`/plan/${prisonNumber}/${journeyId}/review/check-your-answers`)

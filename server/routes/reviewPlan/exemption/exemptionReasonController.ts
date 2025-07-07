@@ -1,25 +1,17 @@
 import type { ReviewExemptionDto } from 'dto'
 import type { RequestHandler } from 'express'
 import type { ReviewExemptionForm } from 'reviewPlanForms'
-import { getPrisonerContext } from '../../../data/session/prisonerContexts'
 import ExemptionReasonView from './exemptionReasonView'
-import validateReviewExemptionForm from '../../validators/reviewPlan/reviewExemptionFormValidator'
 
 export default class ExemptionReasonController {
   getExemptionReasonView: RequestHandler = async (req, res, next): Promise<void> => {
-    const { prisonNumber } = req.params
-    const { prisonerSummary } = res.locals
+    const { reviewExemptionDto } = req.journeyData
+    const { prisonerSummary, invalidForm } = res.locals
 
     // TODO - add validation that the review is in a state by which it can be exempted
+    // (not in the zod validator - zod validators are for form validation, not business rules validation)
 
-    let reviewExemptionForm: ReviewExemptionForm
-    if (getPrisonerContext(req.session, prisonNumber).reviewExemptionForm) {
-      reviewExemptionForm = getPrisonerContext(req.session, prisonNumber).reviewExemptionForm
-    } else {
-      reviewExemptionForm = toReviewExemptionForm(req.journeyData.reviewExemptionDto)
-    }
-
-    getPrisonerContext(req.session, prisonNumber).reviewExemptionForm = undefined
+    const reviewExemptionForm = invalidForm ?? toReviewExemptionForm(reviewExemptionDto)
 
     const view = new ExemptionReasonView(prisonerSummary, reviewExemptionForm)
     return res.render('pages/reviewPlan/exemption/exemptionReason/index', { ...view.renderArgs })
@@ -36,13 +28,6 @@ export default class ExemptionReasonController {
       exemptionReasonDetails: selectedExemptionReasonDetails,
     }
 
-    getPrisonerContext(req.session, prisonNumber).reviewExemptionForm = reviewExemptionForm
-
-    const errors = validateReviewExemptionForm(reviewExemptionForm)
-    if (errors.length > 0) {
-      return res.redirectWithErrors(`/plan/${prisonNumber}/${journeyId}/review/exemption`, errors)
-    }
-
     const { reviewExemptionDto } = req.journeyData
     const updatedExemptionDto = updateDtoWithFormContents(
       reviewExemptionDto,
@@ -52,7 +37,6 @@ export default class ExemptionReasonController {
     )
 
     req.journeyData.reviewExemptionDto = updatedExemptionDto
-    getPrisonerContext(req.session, prisonNumber).reviewExemptionForm = undefined
 
     return res.redirect(`/plan/${prisonNumber}/${journeyId}/review/exemption/confirm`)
   }
