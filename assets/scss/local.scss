@@ -52,7 +52,7 @@
 // Custom tag and container for the sessions data
 
 .govuk-tag.govuk-tag--custom-width {
-   white-space: nowrap; 
+   white-space: nowrap;
    padding-right: 17px;
 }
 
@@ -64,11 +64,11 @@
 // Match the widths of the columns of functional skills and courses on overview page
 
 tbody[data-qa="functional-skills-table-body"] .govuk-table__cell:first-child {
-  width: 40%; 
+  width: 40%;
 }
 
 tbody[data-qa="functional-skills-table-body"] .govuk-table__cell:nth-child(2) {
-  width: 50%; 
+  width: 50%;
 }
 
 tbody[data-qa="completed-courses-table-body"] .govuk-table__cell:first-child {
@@ -99,6 +99,7 @@ tbody[data-qa="completed-courses-table-body"] .govuk-table__cell:nth-child(2) {
 
 .app-u-multiline-text {
   white-space: pre-line;
+  word-wrap: break-word;
 }
 
 .app-u-button-as-link {

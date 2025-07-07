@@ -23,7 +23,6 @@ import type {
   WorkInterestRolesForm,
   WorkInterestTypesForm,
 } from 'inductionForms'
-import type { ReviewNoteForm, WhoCompletedReviewForm, ReviewExemptionForm } from 'reviewPlanForms'
 import type { EducationDto, ReviewPlanDto, ReviewExemptionDto } from 'dto'
 import type { InductionDto, InductionExemptionDto } from 'inductionDto'
 import type { UserDetails } from '../../services/userService'
@@ -67,11 +66,6 @@ declare module 'express-session' {
     highestLevelOfEducationForm?: HighestLevelOfEducationForm
     qualificationLevelForm?: QualificationLevelForm
     qualificationDetailsForm?: QualificationDetailsForm
-    // Review related forms
-    whoCompletedReviewForm?: WhoCompletedReviewForm
-    reviewNoteForm?: ReviewNoteForm
-    // Review exemption related forms
-    reviewExemptionForm?: ReviewExemptionForm
     // Induction related forms
     inductionNoteForm?: InductionNoteForm
     // Induction exemption related forms

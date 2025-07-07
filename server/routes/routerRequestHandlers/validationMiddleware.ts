@@ -1,6 +1,6 @@
 import { RequestHandler, Request, Response } from 'express'
 import { z } from 'zod'
-import { format, getYear, isAfter, isValid, parse, startOfToday } from 'date-fns'
+import { format, getYear, isAfter, isBefore, isValid, isWithinInterval, parse, startOfToday } from 'date-fns'
 import type { Error } from '../../filters/findErrorFilter'
 
 const FLASH_KEY__INVALID_FORM_DATA = 'invalidForm'
@@ -46,8 +46,26 @@ export const createSchema = <T = object>(shape: T) => zodAlwaysRefine(zObjectStr
  */
 export const dateIsTodayOrInThePast = (options: BaseDateOptions & { invalidMessage: string }) =>
   dateTransformer(options)
-    .refine(inductionDate => !isAfter(inductionDate, startOfToday()), options.invalidMessage)
-    .transform(inductionDate => format(inductionDate, 'd/M/yyyy'))
+    .refine(date => !isAfter(date, startOfToday()), options.invalidMessage)
+    .transform(date => format(date, 'd/M/yyyy'))
+
+/**
+ * Helper function for when creating a zod schema, this function can be used to set a field to be validated as a Date whose
+ * value is today or in the future (ie. not a past date)
+ */
+export const dateIsTodayOrInTheFuture = (options: BaseDateOptions & { invalidMessage: string }) =>
+  dateTransformer(options)
+    .refine(date => !isBefore(date, startOfToday()), options.invalidMessage)
+    .transform(date => format(date, 'd/M/yyyy'))
+
+/**
+ * Helper function for when creating a zod schema, this function can be used to set a field to be validated as a Date whose
+ * value is within the specified `start` and `end` dates.
+ */
+export const dateIsWithinInterval = (options: BaseDateOptions & { invalidMessage: string; start: Date; end: Date }) =>
+  dateTransformer(options)
+    .refine(date => isWithinInterval(date, { start: options.start, end: options.end }), options.invalidMessage)
+    .transform(date => format(date, 'd/M/yyyy'))
 
 /**
  * Function that returns a middleware that will validate the request body against the given schema.

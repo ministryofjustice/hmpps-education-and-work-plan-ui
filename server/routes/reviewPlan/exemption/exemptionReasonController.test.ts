@@ -2,7 +2,6 @@ import { Request, Response } from 'express'
 import { v4 as uuidV4 } from 'uuid'
 import type { ReviewExemptionForm } from 'reviewPlanForms'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
-import { getPrisonerContext } from '../../../data/session/prisonerContexts'
 import ExemptionReasonController from './exemptionReasonController'
 import aValidReviewExemptionDto from '../../../testsupport/reviewExemptionDtoTestDataBuilder'
 import ReviewScheduleStatusValue from '../../../enums/reviewScheduleStatusValue'
@@ -33,7 +32,7 @@ describe('exemptionReasonController', () => {
     jest.resetAllMocks()
     req.body = {}
     req.journeyData = {}
-    getPrisonerContext(req.session, prisonNumber).reviewExemptionForm = undefined
+    res.locals.invalidForm = undefined
   })
 
   describe('getExemptionReasonView', () => {
@@ -88,7 +87,7 @@ describe('exemptionReasonController', () => {
 
       // Then
       expect(res.redirect).toHaveBeenCalledWith(`/plan/A1234BC/${journeyId}/review/exemption/confirm`)
-      expect(getPrisonerContext(req.session, prisonNumber).reviewExemptionForm).toBeUndefined()
+      expect(res.locals.invalidForm).toBeUndefined()
       expect(req.journeyData.reviewExemptionDto).toEqual(reviewExemptionDto)
     })
 
@@ -119,51 +118,6 @@ describe('exemptionReasonController', () => {
       // Then
       expect(res.redirect).toHaveBeenCalledWith(`/plan/A1234BC/${journeyId}/review/exemption/confirm`)
       expect(req.journeyData.reviewExemptionDto).toEqual(expectedReviewExemptionDto)
-    })
-
-    it('should redisplay page with relevant error message when no radio buttons have been selected', async () => {
-      // Given
-      const expectedExemptionReasonForm = {
-        exemptionReason: '',
-        exemptionReasonDetails: {},
-      }
-      req.body = expectedExemptionReasonForm
-
-      const expectedErrors = [
-        { href: '#exemptionReason', text: 'Select an exemption reason to put the review on hold' },
-      ]
-
-      // When
-      await controller.submitExemptionReasonForm(req, res, next)
-
-      // Then
-      expect(res.redirectWithErrors).toHaveBeenCalledWith(`/plan/A1234BC/${journeyId}/review/exemption`, expectedErrors)
-      expect(getPrisonerContext(req.session, prisonNumber).reviewExemptionForm).toEqual(expectedExemptionReasonForm)
-    })
-
-    it('should redisplay page with relevant error message when user exemption reason details exceeds 200 characters', async () => {
-      // Given
-      const expectedExemptionReasonForm = {
-        exemptionReason: 'EXEMPT_PRISONER_DRUG_OR_ALCOHOL_DEPENDENCY',
-        exemptionReasonDetails: {
-          EXEMPT_PRISONER_DRUG_OR_ALCOHOL_DEPENDENCY: 'a'.repeat(201),
-        },
-      }
-      req.body = expectedExemptionReasonForm
-
-      const expectedErrors = [
-        {
-          href: '#EXEMPT_PRISONER_DRUG_OR_ALCOHOL_DEPENDENCY',
-          text: 'Exemption details must be 200 characters or less',
-        },
-      ]
-
-      // When
-      await controller.submitExemptionReasonForm(req, res, next)
-
-      // Then
-      expect(res.redirectWithErrors).toHaveBeenCalledWith(`/plan/A1234BC/${journeyId}/review/exemption`, expectedErrors)
-      expect(getPrisonerContext(req.session, prisonNumber).reviewExemptionForm).toEqual(expectedExemptionReasonForm)
     })
   })
 })
