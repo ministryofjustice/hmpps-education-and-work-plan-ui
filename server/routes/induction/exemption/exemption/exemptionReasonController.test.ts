@@ -2,7 +2,6 @@ import type { InductionExemptionForm } from 'inductionForms'
 import { Request, Response } from 'express'
 import { v4 as uuidV4 } from 'uuid'
 import aValidPrisonerSummary from '../../../../testsupport/prisonerSummaryTestDataBuilder'
-import { getPrisonerContext } from '../../../../data/session/prisonerContexts'
 import ExemptionReasonController from './exemptionReasonController'
 import aValidInductionExemptionDto from '../../../../testsupport/inductionExemptionDtoTestDataBuilder'
 import InductionScheduleStatusValue from '../../../../enums/inductionScheduleStatusValue'
@@ -32,7 +31,7 @@ describe('exemptionReasonController', () => {
   beforeEach(() => {
     jest.resetAllMocks()
     req.body = {}
-    getPrisonerContext(req.session, prisonNumber).inductionExemptionForm = undefined
+    res.locals.invalidForm = undefined
   })
 
   describe('getExemptionReasonView', () => {
@@ -87,7 +86,7 @@ describe('exemptionReasonController', () => {
 
       // Then
       expect(res.redirect).toHaveBeenCalledWith(`/prisoners/A1234BC/induction/${journeyId}/exemption/confirm`)
-      expect(getPrisonerContext(req.session, prisonNumber).inductionExemptionForm).toBeUndefined()
+      expect(res.locals.invalidForm).toBeUndefined()
       expect(req.journeyData.inductionExemptionDto).toEqual(inductionExemptionDto)
     })
 
@@ -117,58 +116,8 @@ describe('exemptionReasonController', () => {
 
       // Then
       expect(res.redirect).toHaveBeenCalledWith(`/prisoners/A1234BC/induction/${journeyId}/exemption/confirm`)
+      expect(res.locals.invalidForm).toBeUndefined()
       expect(req.journeyData.inductionExemptionDto).toEqual(expectedInductionExemptionDto)
-    })
-
-    it('should redisplay page with relevant error message when no radio buttons have been selected', async () => {
-      // Given
-      const expectedExemptionReasonForm = {
-        exemptionReason: '',
-        exemptionReasonDetails: {},
-      }
-      req.body = expectedExemptionReasonForm
-
-      const expectedErrors = [
-        { href: '#exemptionReason', text: 'Select an exemption reason to put the induction on hold' },
-      ]
-
-      // When
-      await controller.submitExemptionReasonForm(req, res, next)
-
-      // Then
-      expect(res.redirectWithErrors).toHaveBeenCalledWith(
-        `/prisoners/A1234BC/induction/${journeyId}/exemption`,
-        expectedErrors,
-      )
-      expect(getPrisonerContext(req.session, prisonNumber).inductionExemptionForm).toEqual(expectedExemptionReasonForm)
-    })
-
-    it('should redisplay page with relevant error message when user exemption reason details exceeds 200 characters', async () => {
-      // Given
-      const expectedExemptionReasonForm = {
-        exemptionReason: 'EXEMPT_PRISONER_DRUG_OR_ALCOHOL_DEPENDENCY',
-        exemptionReasonDetails: {
-          EXEMPT_PRISONER_DRUG_OR_ALCOHOL_DEPENDENCY: 'a'.repeat(201),
-        },
-      }
-      req.body = expectedExemptionReasonForm
-
-      const expectedErrors = [
-        {
-          href: '#EXEMPT_PRISONER_DRUG_OR_ALCOHOL_DEPENDENCY',
-          text: 'Exemption details must be 200 characters or less',
-        },
-      ]
-
-      // When
-      await controller.submitExemptionReasonForm(req, res, next)
-
-      // Then
-      expect(res.redirectWithErrors).toHaveBeenCalledWith(
-        `/prisoners/A1234BC/induction/${journeyId}/exemption`,
-        expectedErrors,
-      )
-      expect(getPrisonerContext(req.session, prisonNumber).inductionExemptionForm).toEqual(expectedExemptionReasonForm)
     })
   })
 })

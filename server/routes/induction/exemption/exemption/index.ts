@@ -11,6 +11,8 @@ import checkInductionIsScheduled from '../../../routerRequestHandlers/checkInduc
 import { checkUserHasPermissionTo } from '../../../../middleware/roleBasedAccessControl'
 import ApplicationAction from '../../../../enums/applicationAction'
 import setupJourneyData from '../../../routerRequestHandlers/setupJourneyData'
+import inductionExemptionSchema from '../../validationSchemas/inductionExemptionSchema'
+import { validate } from '../../../routerRequestHandlers/validationMiddleware'
 
 /**
  * Route definitions for exempting a prisoner's Induction
@@ -37,6 +39,7 @@ export default (services: Services) => {
   ])
   router.post('/', [
     checkInductionExemptionDtoExistsInJourneyData,
+    validate(inductionExemptionSchema),
     asyncMiddleware(exemptionReasonController.submitExemptionReasonForm),
   ])
 
