@@ -11,7 +11,6 @@ import type {
 import type {
   AdditionalTrainingForm,
   AffectAbilityToWorkForm,
-  InductionExemptionForm,
   InductionNoteForm,
   InPrisonTrainingForm,
   InPrisonWorkForm,
@@ -68,8 +67,6 @@ declare module 'express-session' {
     qualificationDetailsForm?: QualificationDetailsForm
     // Induction related forms
     inductionNoteForm?: InductionNoteForm
-    // Induction exemption related forms
-    inductionExemptionForm?: InductionExemptionForm
   }
 
   export type PrisonerContexts = Record<string, PrisonerContext>

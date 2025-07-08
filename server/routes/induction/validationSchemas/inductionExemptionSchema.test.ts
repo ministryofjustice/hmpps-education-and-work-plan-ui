@@ -1,10 +1,10 @@
 import { Request, Response } from 'express'
-import type { Error } from '../../../filters/findErrorFilter'
+import { InductionExemptionReason } from '../../../enums/inductionExemptionReasonValue'
 import { validate } from '../../routerRequestHandlers/validationMiddleware'
-import reviewExemptionSchema from './reviewExemptionSchema'
-import { ReviewPlanExemptionReason } from '../../../enums/reviewPlanExemptionReasonValue'
+import inductionExemptionSchema from './inductionExemptionSchema'
+import type { Error } from '../../../filters/findErrorFilter'
 
-describe('reviewExemptionSchema', () => {
+describe('inductionExemptionSchema', () => {
   const req = {
     originalUrl: '',
     body: {},
@@ -17,12 +17,12 @@ describe('reviewExemptionSchema', () => {
 
   beforeEach(() => {
     jest.resetAllMocks()
-    req.originalUrl = '/plan/A1234BC/39e5a1a9-0f69-466c-8223-18a2e1cb2d78/review/exemption'
+    req.originalUrl = '/prisoners/A1234BC/induction/39e5a1a9-0f69-466c-8223-18a2e1cb2d78/exemption'
   })
 
   it.each(
-    ReviewPlanExemptionReason.map(exemptionReason => ({ exemptionReason })).concat(
-      ReviewPlanExemptionReason.map(exemptionReason => ({
+    InductionExemptionReason.map(exemptionReason => ({ exemptionReason })).concat(
+      InductionExemptionReason.map(exemptionReason => ({
         exemptionReason,
         exemptionReasonDetails: { [exemptionReason]: 'A reason for the exemption' },
       })),
@@ -34,7 +34,7 @@ describe('reviewExemptionSchema', () => {
       req.body = requestBody
 
       // When
-      await validate(reviewExemptionSchema)(req, res, next)
+      await validate(inductionExemptionSchema)(req, res, next)
 
       // Then
       expect(req.body).toEqual(requestBody)
@@ -50,7 +50,7 @@ describe('reviewExemptionSchema', () => {
     { exemptionReason: null },
     { exemptionReason: 'a-non-supported-value' },
     { exemptionReason: 'EXEMPT_PRISONER_DRUG_OR_ALCOHOL_DEPE' },
-    { exemptionReason: 'SCHEDULED' }, // SCHEDULED is a review status, but is not a reason exemption reason
+    { exemptionReason: 'SCHEDULED' }, // SCHEDULED is an induction status, but is not a reason exemption reason
   ])('sad path - validation of exemptionReason field fails - exemptionReason: $exemptionReason', async requestBody => {
     // Given
     req.body = requestBody
@@ -58,26 +58,26 @@ describe('reviewExemptionSchema', () => {
     const expectedErrors: Array<Error> = [
       {
         href: '#exemptionReason',
-        text: 'Select an exemption reason to put the review on hold',
+        text: 'Select an exemption reason to put the induction on hold',
       },
     ]
     const expectedInvalidForm = JSON.stringify(requestBody)
 
     // When
-    await validate(reviewExemptionSchema)(req, res, next)
+    await validate(inductionExemptionSchema)(req, res, next)
 
     // Then
     expect(req.body).toEqual(requestBody)
     expect(next).not.toHaveBeenCalled()
     expect(req.flash).toHaveBeenCalledWith('invalidForm', expectedInvalidForm)
     expect(res.redirectWithErrors).toHaveBeenCalledWith(
-      '/plan/A1234BC/39e5a1a9-0f69-466c-8223-18a2e1cb2d78/review/exemption',
+      '/prisoners/A1234BC/induction/39e5a1a9-0f69-466c-8223-18a2e1cb2d78/exemption',
       expectedErrors,
     )
   })
 
   it.each(
-    ReviewPlanExemptionReason.map(exemptionReason => ({
+    InductionExemptionReason.map(exemptionReason => ({
       exemptionReason,
       exemptionReasonDetails: { [exemptionReason]: 'a'.repeat(201) },
     })),
@@ -96,14 +96,14 @@ describe('reviewExemptionSchema', () => {
       const expectedInvalidForm = JSON.stringify(requestBody)
 
       // When
-      await validate(reviewExemptionSchema)(req, res, next)
+      await validate(inductionExemptionSchema)(req, res, next)
 
       // Then
       expect(req.body).toEqual(requestBody)
       expect(next).not.toHaveBeenCalled()
       expect(req.flash).toHaveBeenCalledWith('invalidForm', expectedInvalidForm)
       expect(res.redirectWithErrors).toHaveBeenCalledWith(
-        '/plan/A1234BC/39e5a1a9-0f69-466c-8223-18a2e1cb2d78/review/exemption',
+        '/prisoners/A1234BC/induction/39e5a1a9-0f69-466c-8223-18a2e1cb2d78/exemption',
         expectedErrors,
       )
     },
