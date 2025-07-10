@@ -11,7 +11,7 @@ import checkInductionIsScheduled from '../../../routerRequestHandlers/checkInduc
 import { checkUserHasPermissionTo } from '../../../../middleware/roleBasedAccessControl'
 import ApplicationAction from '../../../../enums/applicationAction'
 import setupJourneyData from '../../../routerRequestHandlers/setupJourneyData'
-import inductionExemptionSchema from '../../validationSchemas/inductionExemptionSchema'
+import { inductionExemptionSchema } from '../../validationSchemas'
 import { validate } from '../../../routerRequestHandlers/validationMiddleware'
 
 /**
