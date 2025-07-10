@@ -110,7 +110,7 @@
     "superagent": "^10.2.1",
     "url-value-parser": "^2.2.0",
     "uuid": "^11.1.0",
-    "zod": "^3.25.67"
+    "zod": "^3.25.74"
   },
   "devDependencies": {
     "@jgoz/esbuild-plugin-typecheck": "^4.0.3",
@@ -149,7 +149,7 @@
     "esbuild-sass-plugin": "^3.3.1",
     "glob": "^11.0.3",
     "husky": "^9.1.7",
-    "jest": "^30.0.3",
+    "jest": "^30.0.4",
     "jest-html-reporter": "^4.3.0",
     "jest-junit": "^16.0.0",
     "jsonwebtoken": "^9.0.2",
