@@ -11,7 +11,6 @@ import type {
 import type {
   AdditionalTrainingForm,
   AffectAbilityToWorkForm,
-  InductionNoteForm,
   InPrisonTrainingForm,
   InPrisonWorkForm,
   PersonalInterestsForm,
@@ -65,8 +64,6 @@ declare module 'express-session' {
     highestLevelOfEducationForm?: HighestLevelOfEducationForm
     qualificationLevelForm?: QualificationLevelForm
     qualificationDetailsForm?: QualificationDetailsForm
-    // Induction related forms
-    inductionNoteForm?: InductionNoteForm
   }
 
   export type PrisonerContexts = Record<string, PrisonerContext>
