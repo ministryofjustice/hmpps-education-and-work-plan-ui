@@ -18,7 +18,7 @@ const whoCompletedReviewSchema = async () => {
 
   return createSchema({
     completedBy: z //
-      .nativeEnum(SessionCompletedByValue, { message: completedByMandatoryMessage }),
+      .enum(SessionCompletedByValue, { message: completedByMandatoryMessage }),
     completedByOtherFullName: z //
       .string()
       .nullable()
