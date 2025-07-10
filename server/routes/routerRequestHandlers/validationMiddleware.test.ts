@@ -97,7 +97,7 @@ describe('validationMiddleware', () => {
       expect(next).not.toHaveBeenCalled()
       expect(req.flash).toHaveBeenCalledWith('invalidForm', JSON.stringify(req.body))
       expect(res.redirectWithErrors).toHaveBeenCalledWith('/some-url', [
-        { href: '#', text: `Unrecognized key(s) in object: 'someOtherField'` },
+        { href: '#', text: 'Unrecognized key: "someOtherField"' },
       ])
     })
   })

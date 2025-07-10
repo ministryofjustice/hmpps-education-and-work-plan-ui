@@ -13,16 +13,18 @@ const reviewExemptionSchema = async () => {
     exemptionReason: z //
       .enum(ReviewPlanExemptionReason, { message: exemptionReasonMandatoryMessage }),
     exemptionReasonDetails: z //
-      .record(z.enum(ReviewPlanExemptionReason), z.string())
+      .record(z.enum(ReviewPlanExemptionReason), z.string().optional())
       .optional()
       .nullable(),
-  }).superRefine(({ exemptionReason, exemptionReasonDetails }, ctx) => {
+  }).check(ctx => {
+    const { exemptionReason, exemptionReasonDetails } = ctx.value
     if (!exemptionReasonDetails || !Object.prototype.hasOwnProperty.call(exemptionReasonDetails, exemptionReason)) {
       return
     }
     if (textValueExceedsLength(exemptionReasonDetails[exemptionReason], MAX_EXEMPTION_REASON_LENGTH)) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
+      ctx.issues.push({
+        code: 'custom',
+        input: ctx.value,
         path: [exemptionReason],
         message: exemptionReasonDetailsMaxLengthMessage,
       })

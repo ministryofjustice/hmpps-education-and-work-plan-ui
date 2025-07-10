@@ -8,7 +8,7 @@ const hopingToWorkOnReleaseSchema = async (req: Request, res: Response) => {
   const hopingToWorkMandatoryMessage = `Select whether ${prisonerSummary.firstName} ${prisonerSummary.lastName} is hoping to get work`
   return createSchema({
     hopingToGetWork: z //
-      .nativeEnum(HopingToGetWorkValue, { message: hopingToWorkMandatoryMessage }),
+      .enum(HopingToGetWorkValue, { message: hopingToWorkMandatoryMessage }),
   })
 }
 
