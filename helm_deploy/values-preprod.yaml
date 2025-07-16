@@ -29,3 +29,4 @@ generic-service:
 
 generic-prometheus-alerts:
   alertSeverity: digital-prison-service-dev
+  businessHoursOnly: true
