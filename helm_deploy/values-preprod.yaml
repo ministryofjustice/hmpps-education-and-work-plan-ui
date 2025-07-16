@@ -29,3 +29,4 @@ generic-service:
 
 generic-prometheus-alerts:
   alertSeverity: hmpps-support-additional-needs-preprod
+  businessHoursOnly: true
