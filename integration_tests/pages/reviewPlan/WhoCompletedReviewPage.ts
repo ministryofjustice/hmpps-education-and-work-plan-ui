@@ -15,19 +15,19 @@ export default class WhoCompletedReviewPage extends Page {
   }
 
   enterReviewersFullName(value: string): WhoCompletedReviewPage {
-    this.otherReviewersFullNameField().clear().type(value)
+    this.otherReviewersFullNameField().clear().type(value, { delay: 0 })
     return this
   }
 
   enterReviewersJobRole(value: string): WhoCompletedReviewPage {
-    this.otherReviewersJobRoleField().clear().type(value)
+    this.otherReviewersJobRoleField().clear().type(value, { delay: 0 })
     return this
   }
 
   setReviewDate(reviewDate: Date): WhoCompletedReviewPage {
     this.reviewDateField()
       .clear()
-      .type(`${reviewDate.getDate()}/${reviewDate.getMonth() + 1}/${reviewDate.getFullYear()}`)
+      .type(`${reviewDate.getDate()}/${reviewDate.getMonth() + 1}/${reviewDate.getFullYear()}`, { delay: 0 })
     return this
   }
 

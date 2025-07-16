@@ -28,7 +28,7 @@ export default class AffectAbilityToWorkPage extends Page {
   }
 
   setAffectAbilityToWorkOther(value: string): AffectAbilityToWorkPage {
-    this.affectAbilityToWorkOtherField().clear().type(value)
+    this.affectAbilityToWorkOtherField().clear().type(value, { delay: 0 })
     return this
   }
 

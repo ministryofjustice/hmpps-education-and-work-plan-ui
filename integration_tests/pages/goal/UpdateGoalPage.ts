@@ -11,7 +11,7 @@ export default class UpdateGoalPage extends Page {
   }
 
   setGoalTitle(title: string): this {
-    this.titleField().clear().type(title)
+    this.titleField().clear().type(title, { delay: 0 })
     return this
   }
 
@@ -28,7 +28,7 @@ export default class UpdateGoalPage extends Page {
   setStepTitle(stepNumber: number, stepTitle: string) {
     this.stepTitleField(stepNumber - 1)
       .clear()
-      .type(stepTitle)
+      .type(stepTitle, { delay: 0 })
     return this
   }
 
@@ -58,7 +58,7 @@ export default class UpdateGoalPage extends Page {
 
   setTargetCompletionDate(targetCompletionDate: string): UpdateGoalPage {
     this.targetDateField().last().check()
-    this.manuallyEnteredTargetCompletionDateField().clear().type(targetCompletionDate)
+    this.manuallyEnteredTargetCompletionDateField().clear().type(targetCompletionDate, { delay: 0 })
     return this
   }
 

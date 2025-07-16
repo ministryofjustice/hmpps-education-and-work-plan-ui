@@ -3,7 +3,6 @@ import { v4 as uuidV4 } from 'uuid'
 import type { InductionNoteForm } from 'inductionForms'
 import InductionNoteCreateController from './inductionNoteCreateController'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
-import { getPrisonerContext } from '../../../data/session/prisonerContexts'
 import { aValidInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
 
 describe('inductionNoteController', () => {
@@ -33,17 +32,18 @@ describe('inductionNoteController', () => {
     req.session.pageFlowHistory = undefined
     req.body = {}
     req.journeyData = {}
+    res.locals.invalidForm = undefined
   })
 
   describe('getInductionNoteView', () => {
-    it(`should get 'induction note' view given form is not on the prisoner context, but DTO is on the context`, async () => {
+    it(`should get 'induction note' view given there is no Induction form on res.locals.invalidForm`, async () => {
       // Given
       const inductionDto = {
         ...aValidInductionDto(),
         notes: 'Induction session went well and Chris is feeling quite positive about his future',
       }
       req.journeyData.inductionDto = inductionDto
-      getPrisonerContext(req.session, prisonNumber).inductionNoteForm = undefined
+      res.locals.invalidForm = undefined
 
       const expectedForm: InductionNoteForm = {
         notes: 'Induction session went well and Chris is feeling quite positive about his future',
@@ -61,13 +61,13 @@ describe('inductionNoteController', () => {
       expect(res.render).toHaveBeenCalledWith('pages/induction/inductionNote/index', expectedView)
     })
 
-    it(`should get 'induction note' view given form is already on the prisoner context`, async () => {
+    it(`should get 'induction note' view given form is already on res.locals.invalidForm`, async () => {
       // Given
       const expectedForm: InductionNoteForm = {
         notes: 'Induction session went well and Chris is feeling quite positive about his future',
       }
 
-      getPrisonerContext(req.session, prisonNumber).inductionNoteForm = expectedForm
+      res.locals.invalidForm = expectedForm
 
       const expectedView = {
         prisonerSummary,
@@ -83,14 +83,13 @@ describe('inductionNoteController', () => {
   })
 
   describe('submitInductionNoteForm', () => {
-    it('should redirect to check your answers page given form submitted successfully', async () => {
+    it('should redirect to check your answers page', async () => {
       // Given
       const inductionDto = {
         ...aValidInductionDto(),
         notes: undefined as string,
       }
       req.journeyData.inductionDto = inductionDto
-      getPrisonerContext(req.session, prisonNumber).inductionNoteForm = undefined
 
       const validForm: InductionNoteForm = {
         notes: 'Induction session went well and Chris is feeling quite positive about his future',
@@ -107,30 +106,8 @@ describe('inductionNoteController', () => {
 
       // Then
       expect(res.redirect).toHaveBeenCalledWith(`/prisoners/A1234BC/create-induction/${journeyId}/check-your-answers`)
-      expect(getPrisonerContext(req.session, prisonNumber).inductionNoteForm).toBeUndefined()
+      expect(res.locals.invalidForm).toBeUndefined()
       expect(req.journeyData.inductionDto).toEqual(expectedInductionDto)
     })
-  })
-
-  it('should redisplay page given form submitted with a note that exceeds maximum length', async () => {
-    // Given
-    const invalidForm: InductionNoteForm = {
-      notes: 'a'.repeat(513),
-    }
-    getPrisonerContext(req.session, prisonNumber).inductionNoteForm = invalidForm
-
-    req.body = invalidForm
-
-    const expectedErrors = [{ href: '#notes', text: 'Induction note must be 512 characters or less' }]
-
-    // When
-    await controller.submitInductionNoteForm(req, res, next)
-
-    // Then
-    expect(res.redirectWithErrors).toHaveBeenCalledWith(
-      `/prisoners/A1234BC/create-induction/${journeyId}/notes`,
-      expectedErrors,
-    )
-    expect(getPrisonerContext(req.session, prisonNumber).inductionNoteForm).toEqual(invalidForm)
   })
 })

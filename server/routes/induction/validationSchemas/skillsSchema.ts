@@ -16,7 +16,7 @@ const skillsSchema = async (req: Request, res: Response) => {
       .preprocess(
         val => asArray(val),
         z //
-          .array(z.nativeEnum(SkillsValue, { message: skillsMandatoryMessage }))
+          .array(z.enum(SkillsValue, { message: skillsMandatoryMessage }))
           .min(1, skillsMandatoryMessage),
       )
       .refine(skills => !(skills.length > 1 && skills.includes(SkillsValue.NONE)), skillsMandatoryMessage),

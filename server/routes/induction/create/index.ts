@@ -30,7 +30,12 @@ import checkInductionDoesNotExist from '../../routerRequestHandlers/checkInducti
 import ApplicationAction from '../../../enums/applicationAction'
 import insertJourneyIdentifier from '../../routerRequestHandlers/insertJourneyIdentifier'
 import setupJourneyData from '../../routerRequestHandlers/setupJourneyData'
-import { hopingToWorkOnReleaseSchema, skillsSchema, whoCompletedInductionSchema } from '../validationSchemas'
+import {
+  hopingToWorkOnReleaseSchema,
+  inductionNoteSchema,
+  skillsSchema,
+  whoCompletedInductionSchema,
+} from '../validationSchemas'
 import { validate } from '../../routerRequestHandlers/validationMiddleware'
 import checkInductionDtoExistsInJourneyData from '../../routerRequestHandlers/checkInductionDtoExistsInJourneyData'
 
@@ -249,6 +254,7 @@ export default (router: Router, services: Services) => {
   ])
   router.post('/prisoners/:prisonNumber/create-induction/:journeyId/notes', [
     checkInductionDtoExistsInJourneyData,
+    validate(inductionNoteSchema),
     asyncMiddleware(inductionNoteController.submitInductionNoteForm),
   ])
 

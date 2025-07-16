@@ -136,7 +136,7 @@ We have agreed and set a new goal, and the next review is 1 year from now.
         .withRequestBody(
           matchingJsonPath(
             "$[?(@.prisonId == 'BXI' && " +
-              `@.note == "Edfdau's review went well and he has made good progress on his goals.\r\nWorking in the prison kitchen is suiting Edfdau well and is allowing him to focus on more productive uses of his time whilst in prison.\r\n\r\nWe have agreed and set a new goal, and the next review is 1 year from now.\r\n" && ` +
+              `@.note == "Edfdau's review went well and he has made good progress on his goals.\nWorking in the prison kitchen is suiting Edfdau well and is allowing him to focus on more productive uses of his time whilst in prison.\n\nWe have agreed and set a new goal, and the next review is 1 year from now.\n" && ` +
               `@.conductedAt == '${reviewConductedAtYear}-${reviewConductedAtMonth}-${reviewConductedAtDay}' && ` +
               "@.conductedBy == 'A Reviewer' && " +
               "@.conductedByRole == 'CIAG')]",

@@ -1,7 +1,6 @@
 import { RequestHandler } from 'express'
 import type { InductionDto } from 'inductionDto'
 import type { InductionNoteForm } from 'inductionForms'
-import validateInductionNoteForm from '../../validators/induction/inductionNoteFormValidator'
 import InductionNoteController from '../common/inductionNoteController'
 
 export default class InductionNoteCreateController extends InductionNoteController {
@@ -13,11 +12,6 @@ export default class InductionNoteCreateController extends InductionNoteControll
 
     const updatedInductionDto = updateDtoWithFormContents(inductionDto, inductionNoteForm)
     req.journeyData.inductionDto = updatedInductionDto
-
-    const errors = validateInductionNoteForm(inductionNoteForm)
-    if (errors.length > 0) {
-      return res.redirectWithErrors(`/prisoners/${prisonNumber}/create-induction/${journeyId}/notes`, errors)
-    }
 
     return res.redirect(`/prisoners/${prisonNumber}/create-induction/${journeyId}/check-your-answers`)
   }

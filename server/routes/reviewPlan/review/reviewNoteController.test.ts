@@ -5,7 +5,6 @@ import type { ReviewPlanDto } from 'dto'
 import type { ReviewNoteForm } from 'reviewPlanForms'
 import ReviewNoteController from './reviewNoteController'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
-import { getPrisonerContext } from '../../../data/session/prisonerContexts'
 import SessionCompletedByValue from '../../../enums/sessionCompletedByValue'
 
 describe('reviewNoteController', () => {
@@ -33,14 +32,12 @@ describe('reviewNoteController', () => {
     jest.resetAllMocks()
     req.body = {}
     req.journeyData = {}
-    getPrisonerContext(req.session, prisonNumber).reviewNoteForm = undefined
+    res.locals.invalidForm = undefined
   })
 
   describe('getReviewNoteView', () => {
-    it(`should get 'review note' view given form is not on the prisoner context, but DTO is on the context`, async () => {
+    it(`should get 'review note' view given form is not res.locals.invalidForm, but DTO is on the context`, async () => {
       // Given
-      getPrisonerContext(req.session, prisonNumber).reviewNoteForm = undefined
-
       const reviewPlanDto: ReviewPlanDto = {
         prisonNumber,
         prisonId: 'BXI',
@@ -66,13 +63,13 @@ describe('reviewNoteController', () => {
       expect(res.render).toHaveBeenCalledWith('pages/reviewPlan/review/reviewNote/index', expectedView)
     })
 
-    it(`should get 'review note' view given form is already on the prisoner context`, async () => {
+    it(`should get 'review note' view given form is already res.locals.invalidForm`, async () => {
       // Given
       const expectedForm: ReviewNoteForm = {
         notes: 'Chris has progressed well',
       }
 
-      getPrisonerContext(req.session, prisonNumber).reviewNoteForm = expectedForm
+      res.locals.invalidForm = expectedForm
 
       const expectedView = {
         prisonerSummary,
@@ -90,8 +87,6 @@ describe('reviewNoteController', () => {
   describe('submitReviewNoteForm', () => {
     it('should redirect to check your answers page given form submitted successfully', async () => {
       // Given
-      getPrisonerContext(req.session, prisonNumber).reviewNoteForm = undefined
-
       const reviewPlanDto: ReviewPlanDto = {
         prisonNumber,
         prisonId: 'BXI',
@@ -116,46 +111,8 @@ describe('reviewNoteController', () => {
 
       // Then
       expect(res.redirect).toHaveBeenCalledWith(`/plan/A1234BC/${journeyId}/review/check-your-answers`)
-      expect(getPrisonerContext(req.session, prisonNumber).reviewNoteForm).toBeUndefined()
+      expect(res.locals.invalidForm).toBeUndefined()
       expect(req.journeyData.reviewPlanDto).toEqual(expectedReviewPlanDto)
     })
-  })
-
-  it('should redisplay page given form submitted without a note', async () => {
-    // Given
-    getPrisonerContext(req.session, prisonNumber).reviewNoteForm = undefined
-
-    const invalidForm: ReviewNoteForm = {
-      notes: undefined,
-    }
-    req.body = invalidForm
-
-    const expectedErrors = [{ href: '#notes', text: 'You must add a note to this review' }]
-
-    // When
-    await controller.submitReviewNoteForm(req, res, next)
-
-    // Then
-    expect(res.redirectWithErrors).toHaveBeenCalledWith(`/plan/A1234BC/${journeyId}/review/notes`, expectedErrors)
-    expect(getPrisonerContext(req.session, prisonNumber).reviewNoteForm).toEqual(invalidForm.notes)
-  })
-
-  it('should redisplay page given form submitted with a note that exceeds maximum length', async () => {
-    // Given
-    const invalidForm: ReviewNoteForm = {
-      notes: 'a'.repeat(513),
-    }
-    getPrisonerContext(req.session, prisonNumber).reviewNoteForm = invalidForm
-
-    req.body = invalidForm
-
-    const expectedErrors = [{ href: '#notes', text: 'Review note must be 512 characters or less' }]
-
-    // When
-    await controller.submitReviewNoteForm(req, res, next)
-
-    // Then
-    expect(res.redirectWithErrors).toHaveBeenCalledWith(`/plan/A1234BC/${journeyId}/review/notes`, expectedErrors)
-    expect(getPrisonerContext(req.session, prisonNumber).reviewNoteForm).toEqual(invalidForm)
   })
 })

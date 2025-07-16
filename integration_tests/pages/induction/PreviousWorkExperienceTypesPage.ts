@@ -25,7 +25,7 @@ export default class PreviousWorkExperienceTypesPage extends Page {
   }
 
   setOtherPreviousWorkExperienceType(value: string): PreviousWorkExperienceTypesPage {
-    this.otherPreviousWorkExperienceField().clear().type(value)
+    this.otherPreviousWorkExperienceField().clear().type(value, { delay: 0 })
     return this
   }
 

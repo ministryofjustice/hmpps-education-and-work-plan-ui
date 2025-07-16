@@ -6,7 +6,7 @@ export default class ReviewNotePage extends Page {
   }
 
   setReviewNote = (notes: string): ReviewNotePage => {
-    this.reviewNotesField().clear().type(notes)
+    this.reviewNotesField().clear().type(notes, { delay: 0 })
     return this
   }
 

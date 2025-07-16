@@ -5,7 +5,6 @@ import type { WhoCompletedReviewForm } from 'reviewPlanForms'
 import type { ReviewPlanDto } from 'dto'
 import WhoCompletedReviewController from './whoCompletedReviewController'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
-import { getPrisonerContext } from '../../../data/session/prisonerContexts'
 import SessionCompletedByValue from '../../../enums/sessionCompletedByValue'
 
 describe('whoCompletedReviewController', () => {
@@ -33,14 +32,12 @@ describe('whoCompletedReviewController', () => {
     jest.resetAllMocks()
     req.body = {}
     req.journeyData = {}
-    getPrisonerContext(req.session, prisonNumber).whoCompletedReviewForm = undefined
+    res.locals.invalidForm = undefined
   })
 
   describe('getWhoCompletedReviewView', () => {
-    it(`should get 'who completed review' view given form is not on the prisoner context, but DTO is on the context`, async () => {
+    it(`should get 'who completed review' view given form is not on res.locals.invalidForm, but DTO is on the context`, async () => {
       // Given
-      getPrisonerContext(req.session, prisonNumber).whoCompletedReviewForm = undefined
-
       const reviewPlanDto: ReviewPlanDto = {
         prisonNumber,
         prisonId: 'BXI',
@@ -68,14 +65,14 @@ describe('whoCompletedReviewController', () => {
       expect(res.render).toHaveBeenCalledWith('pages/reviewPlan/review/whoCompletedReview/index', expectedView)
     })
 
-    it(`should get 'who completed review' view given form is already on the prisoner context`, async () => {
+    it(`should get 'who completed review' view given form is on res.locals.invalidForm`, async () => {
       // Given
       const expectedForm: WhoCompletedReviewForm = {
         completedBy: SessionCompletedByValue.MYSELF,
         reviewDate: '20/3/2024',
       }
 
-      getPrisonerContext(req.session, prisonNumber).whoCompletedReviewForm = expectedForm
+      res.locals.invalidForm = expectedForm
 
       const expectedView = {
         prisonerSummary,
@@ -91,33 +88,9 @@ describe('whoCompletedReviewController', () => {
   })
 
   describe('submitWhoCompletedReviewForm', () => {
-    it('should redisplay page given form submitted with validation errors', async () => {
-      // Given
-      getPrisonerContext(req.session, prisonNumber).whoCompletedReviewForm = undefined
-
-      const invalidForm: WhoCompletedReviewForm = {
-        completedBy: SessionCompletedByValue.SOMEBODY_ELSE,
-        reviewDate: '20/3/2024',
-      }
-      req.body = invalidForm
-
-      const expectedErrors = [
-        { href: '#completedByOtherFullName', text: 'Enter the full name of the person who completed the review' },
-        { href: '#completedByOtherJobRole', text: 'Enter the job title of the person who completed the review' },
-      ]
-
-      // When
-      await controller.submitWhoCompletedReviewForm(req, res, next)
-
-      // Then
-      expect(res.redirectWithErrors).toHaveBeenCalledWith(`/plan/A1234BC/${journeyId}/review`, expectedErrors)
-      expect(getPrisonerContext(req.session, prisonNumber).whoCompletedReviewForm).toEqual(invalidForm)
-    })
-
     it('should redirect to review notes page given form submitted successfully and previous page was not check-your-answers', async () => {
       // Given
       req.session.pageFlowHistory = undefined
-      getPrisonerContext(req.session, prisonNumber).whoCompletedReviewForm = undefined
 
       const validForm: WhoCompletedReviewForm = {
         completedBy: SessionCompletedByValue.MYSELF,
@@ -137,7 +110,7 @@ describe('whoCompletedReviewController', () => {
 
       // Then
       expect(res.redirect).toHaveBeenCalledWith(`/plan/A1234BC/${journeyId}/review/notes`)
-      expect(getPrisonerContext(req.session, prisonNumber).whoCompletedReviewForm).toBeUndefined()
+      expect(res.locals.invalidForm).toBeUndefined()
       expect(req.journeyData.reviewPlanDto).toEqual(reviewPlanDto)
     })
 
@@ -147,7 +120,6 @@ describe('whoCompletedReviewController', () => {
         currentPageIndex: 0,
         pageUrls: [`/plan/${prisonNumber}/review/check-your-answers`],
       }
-      getPrisonerContext(req.session, prisonNumber).whoCompletedReviewForm = undefined
 
       const validForm: WhoCompletedReviewForm = {
         completedBy: SessionCompletedByValue.MYSELF,
@@ -167,7 +139,7 @@ describe('whoCompletedReviewController', () => {
 
       // Then
       expect(res.redirect).toHaveBeenCalledWith(`/plan/A1234BC/${journeyId}/review/check-your-answers`)
-      expect(getPrisonerContext(req.session, prisonNumber).whoCompletedReviewForm).toBeUndefined()
+      expect(res.locals.invalidForm).toBeUndefined()
       expect(req.journeyData.reviewPlanDto).toEqual(reviewPlanDto)
     })
   })

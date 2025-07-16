@@ -17,7 +17,7 @@ const whoCompletedInductionSchema = async () => {
 
   return createSchema({
     completedBy: z //
-      .nativeEnum(SessionCompletedByValue, { message: completedByMandatoryMessage }),
+      .enum(SessionCompletedByValue, { message: completedByMandatoryMessage }),
     completedByOtherFullName: z //
       .string()
       .max(MAX_COMPLETED_BY_FULL_NAME_LENGTH, completedByFullNameMaxLengthMessage)

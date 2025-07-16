@@ -9,7 +9,7 @@ export default class QualificationDetailsPage extends Page {
   }
 
   setQualificationSubject(value: string): QualificationDetailsPage {
-    this.qualificationSubjectField().clear().type(value)
+    this.qualificationSubjectField().clear().type(value, { delay: 0 })
     return this
   }
 
@@ -19,7 +19,7 @@ export default class QualificationDetailsPage extends Page {
   }
 
   setQualificationGrade(value: string): QualificationDetailsPage {
-    this.qualificationGradeField().clear().type(value)
+    this.qualificationGradeField().clear().type(value, { delay: 0 })
     return this
   }
 
