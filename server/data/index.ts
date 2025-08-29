@@ -10,6 +10,8 @@ const applicationInfo = applicationInfoSupplier()
 initialiseAppInsights()
 buildAppInsightsClient(applicationInfo)
 
+// eslint-disable-next-line import/order
+import { AuthenticationClient } from '@ministryofjustice/hmpps-auth-clients'
 import HmppsAuthClient from './hmppsAuthClient'
 import ManageUsersApiClient from './manageUsersApiClient'
 import { createRedisClient } from './redisClient'
@@ -31,12 +33,18 @@ import RedisJourneyDataStore from './journeyDataStore/redisJourneyDataStore'
 import PrisonerSearchStore from './prisonerSearchStore/prisonerSearchStore'
 import InMemoryPrisonerSearchStore from './prisonerSearchStore/inMemoryPrisonerSearchStore'
 import RedisPrisonerSearchStore from './prisonerSearchStore/redisPrisonerSearchStore'
+import logger from '../../logger'
 
 type RestClientBuilder<T> = (token: string) => T
 
 export const dataAccess = () => ({
   applicationInfo,
   hmppsAuthClient: new HmppsAuthClient(
+    config.redis.enabled ? new RedisTokenStore(createRedisClient()) : new InMemoryTokenStore(),
+  ),
+  hmppsAuthenticationClient: new AuthenticationClient(
+    config.apis.hmppsAuth,
+    logger,
     config.redis.enabled ? new RedisTokenStore(createRedisClient()) : new InMemoryTokenStore(),
   ),
   hmppsAuditClient: new HmppsAuditClient(config.sqs.audit),
@@ -61,6 +69,7 @@ export type DataAccess = ReturnType<typeof dataAccess>
 
 export {
   HmppsAuthClient,
+  AuthenticationClient,
   RestClientBuilder,
   HmppsAuditClient,
   ManageUsersApiClient,

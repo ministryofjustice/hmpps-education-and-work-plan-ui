@@ -89,15 +89,6 @@ export default {
       curiousClientSecret: get('CURIOUS_CLIENT_SECRET', 'clientsecret', requiredInProduction),
       includeInHealthCheck: true,
     },
-    manageUsersApi: {
-      url: get('MANAGE_USERS_API_URL', 'http://localhost:9091', requiredInProduction),
-      timeout: {
-        response: Number(get('MANAGE_USERS_API_TIMEOUT_RESPONSE', 5000)),
-        deadline: Number(get('MANAGE_USERS_API_TIMEOUT_DEADLINE', 5000)),
-      },
-      agent: new AgentConfig(Number(get('MANAGE_USERS_API_TIMEOUT_RESPONSE', 5000))),
-      includeInHealthCheck: true,
-    },
     tokenVerification: {
       url: get('TOKEN_VERIFICATION_API_URL', 'http://localhost:8100', requiredInProduction),
       timeout: {
@@ -107,6 +98,25 @@ export default {
       agent: new AgentConfig(Number(get('TOKEN_VERIFICATION_API_TIMEOUT_RESPONSE', 5000))),
       enabled: get('TOKEN_VERIFICATION_ENABLED', 'false') === 'true',
       includeInHealthCheck: get('TOKEN_VERIFICATION_ENABLED', 'false') === 'true',
+    },
+    componentApi: {
+      url: get('COMPONENT_API_URL', 'http://localhost:8082', requiredInProduction),
+      healthPath: null,
+      timeout: {
+        response: Number(get('COMPONENT_TIMEOUT_RESPONSE', 5000)),
+        deadline: Number(get('COMPONENT_TIMEOUT_DEADLINE', 5000)),
+      },
+      agent: new AgentConfig(Number(get('COMPONENT_TIMEOUT_DEADLINE', 5000))),
+      includeInHealthCheck: false,
+    },
+    manageUsersApi: {
+      url: get('MANAGE_USERS_API_URL', 'http://localhost:9091', requiredInProduction),
+      timeout: {
+        response: Number(get('MANAGE_USERS_API_TIMEOUT_RESPONSE', 5000)),
+        deadline: Number(get('MANAGE_USERS_API_TIMEOUT_DEADLINE', 5000)),
+      },
+      agent: new AgentConfig(Number(get('MANAGE_USERS_API_TIMEOUT_RESPONSE', 5000))),
+      includeInHealthCheck: true,
     },
     educationAndWorkPlan: {
       url: get('EDUCATION_AND_WORK_PLAN_API_URL', 'http://localhost:8083', requiredInProduction),
