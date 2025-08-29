@@ -110,7 +110,7 @@
     "superagent": "^10.2.3",
     "url-value-parser": "^2.2.0",
     "uuid": "^11.1.0",
-    "zod": "^4.1.0"
+    "zod": "^4.1.1"
   },
   "devDependencies": {
     "@jgoz/esbuild-plugin-typecheck": "^4.0.3",
