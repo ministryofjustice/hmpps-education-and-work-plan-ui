@@ -1,9 +1,8 @@
-import type { LearnerEducation, LearnerEductionPagedResponse, LearnerProfile } from 'curiousApiClient'
+import type { LearnerEducation, LearnerEducationPagedResponse, LearnerProfile } from 'curiousApiClient'
 import type { FunctionalSkills, InPrisonCourse, InPrisonCourseRecords, PrisonerSupportNeeds } from 'viewModels'
 import { startOfToday, sub } from 'date-fns'
 import toPrisonerSupportNeeds from '../routes/overview/mappers/prisonerSupportNeedsMapper'
 import CuriousClient from '../data/curiousClient'
-import { HmppsAuthClient } from '../data'
 import logger from '../../logger'
 import toFunctionalSkills from '../routes/overview/mappers/functionalSkillsMapper'
 import { toInPrisonCourse } from '../data/mappers/inPrisonCourseMapper'
@@ -12,17 +11,15 @@ import PrisonService from './prisonService'
 
 export default class CuriousService {
   constructor(
-    private readonly hmppsAuthClient: HmppsAuthClient,
     private readonly curiousClient: CuriousClient,
     private readonly prisonService: PrisonService,
   ) {}
 
   async getPrisonerSupportNeeds(prisonNumber: string, username: string): Promise<PrisonerSupportNeeds> {
     const prisonNamesById = await this.prisonService.getAllPrisonNamesById(username)
-    const curiousClientToken = await this.hmppsAuthClient.getCuriousClientToken()
 
     try {
-      const learnerProfiles = await this.getLearnerProfile(prisonNumber, curiousClientToken)
+      const learnerProfiles = await this.getLearnerProfile(prisonNumber)
       return toPrisonerSupportNeeds(learnerProfiles, prisonNamesById)
     } catch (error) {
       logger.error(`Error retrieving support needs data from Curious: ${JSON.stringify(error)}`)
@@ -32,10 +29,9 @@ export default class CuriousService {
 
   async getPrisonerFunctionalSkills(prisonNumber: string, username: string): Promise<FunctionalSkills> {
     const prisonNamesById = await this.prisonService.getAllPrisonNamesById(username)
-    const curiousClientToken = await this.hmppsAuthClient.getCuriousClientToken()
 
     try {
-      const learnerProfiles = await this.getLearnerProfile(prisonNumber, curiousClientToken)
+      const learnerProfiles = await this.getLearnerProfile(prisonNumber)
       return toFunctionalSkills(learnerProfiles, prisonNumber, prisonNamesById)
     } catch (error) {
       logger.error(`Error retrieving functional skills data from Curious: ${JSON.stringify(error)}`)
@@ -51,21 +47,15 @@ export default class CuriousService {
    * grouped into arrays of `InPrisonCourse` within the returned `InPrisonCourseRecords` object.
    */
   async getPrisonerInPrisonCourses(prisonNumber: string, username: string): Promise<InPrisonCourseRecords> {
-    const curiousClientToken = await this.hmppsAuthClient.getCuriousClientToken()
-
     try {
       let page = 0
-      let apiPagedResponse = { last: false } as LearnerEductionPagedResponse
+      let apiPagedResponse = { last: false } as LearnerEducationPagedResponse
       const apiLearnerEducation: Array<LearnerEducation> = []
 
       // loop until the API response's `last` field is `true`
       while (apiPagedResponse.last === false) {
         // eslint-disable-next-line no-await-in-loop
-        apiPagedResponse = (await this.curiousClient.getLearnerEducationPage(
-          prisonNumber,
-          curiousClientToken,
-          page,
-        )) || {
+        apiPagedResponse = (await this.curiousClient.getLearnerEducationPage(prisonNumber, page)) || {
           last: true,
           content: [],
         }
@@ -120,8 +110,8 @@ export default class CuriousService {
     }
   }
 
-  private getLearnerProfile = async (prisonNumber: string, token: string): Promise<Array<LearnerProfile>> =>
-    (await this.curiousClient.getLearnerProfile(prisonNumber, token)) || []
+  private getLearnerProfile = async (prisonNumber: string): Promise<Array<LearnerProfile>> =>
+    (await this.curiousClient.getLearnerProfile(prisonNumber)) || []
 
   private setPrisonNamesOnInPrisonCourses = async (
     inPrisonCourses: Array<InPrisonCourse>,
