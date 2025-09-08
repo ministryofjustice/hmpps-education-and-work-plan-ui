@@ -29,6 +29,9 @@ interface StreamRequest {
   errorLogger?: (e: UnsanitisedError) => void
 }
 
+/**
+ * @deprecated - Client classes should use RestClient from '@ministryofjustice/hmpps-rest-client' instead
+ */
 export default class RestClient {
   agent: Agent
 

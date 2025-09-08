@@ -37,33 +37,42 @@ import logger from '../../logger'
 
 type RestClientBuilder<T> = (token: string) => T
 
-export const dataAccess = () => ({
-  applicationInfo,
-  hmppsAuthClient: new HmppsAuthClient(
-    config.redis.enabled ? new RedisTokenStore(createRedisClient()) : new InMemoryTokenStore(),
-  ),
-  hmppsAuthenticationClient: new AuthenticationClient(
-    config.apis.hmppsAuth,
+export const dataAccess = () => {
+  const tokenStore = config.redis.enabled ? new RedisTokenStore(createRedisClient()) : new InMemoryTokenStore()
+  const hmppsAuthClient = new HmppsAuthClient(tokenStore)
+  const hmppsAuthenticationClient = new AuthenticationClient(config.apis.hmppsAuth, logger, tokenStore)
+  const curiousApiAuthClient = new AuthenticationClient(
+    {
+      ...config.apis.hmppsAuth,
+      systemClientId: config.apis.hmppsAuth.curiousClientId,
+      systemClientSecret: config.apis.hmppsAuth.curiousClientSecret,
+    },
     logger,
-    config.redis.enabled ? new RedisTokenStore(createRedisClient()) : new InMemoryTokenStore(),
-  ),
-  hmppsAuditClient: new HmppsAuditClient(config.sqs.audit),
-  manageUsersApiClient: new ManageUsersApiClient(),
-  prisonerSearchStore: config.redis.enabled
-    ? new RedisPrisonerSearchStore(createRedisClient('prisonerSearch:'))
-    : new InMemoryPrisonerSearchStore(),
-  prisonerSearchClient: new PrisonerSearchClient(),
-  educationAndWorkPlanClient: new EducationAndWorkPlanClient(),
-  curiousClient: new CuriousClient(),
-  ciagInductionClient: new CiagInductionClient(),
-  prisonRegisterStore: config.redis.enabled
-    ? new RedisPrisonRegisterStore(createRedisClient('prisonRegister:'))
-    : new InMemoryPrisonRegisterStore(),
-  prisonRegisterClient: new PrisonRegisterClient(),
-  journeyDataStore: config.redis.enabled
-    ? new RedisJourneyDataStore(createRedisClient('journeyData:'))
-    : new InMemoryJourneyDataStore(),
-})
+    tokenStore,
+  )
+
+  return {
+    applicationInfo,
+    hmppsAuthClient,
+    hmppsAuthenticationClient,
+    hmppsAuditClient: new HmppsAuditClient(config.sqs.audit),
+    manageUsersApiClient: new ManageUsersApiClient(),
+    prisonerSearchStore: config.redis.enabled
+      ? new RedisPrisonerSearchStore(createRedisClient('prisonerSearch:'))
+      : new InMemoryPrisonerSearchStore(),
+    prisonerSearchClient: new PrisonerSearchClient(),
+    educationAndWorkPlanClient: new EducationAndWorkPlanClient(),
+    curiousClient: new CuriousClient(curiousApiAuthClient),
+    ciagInductionClient: new CiagInductionClient(),
+    prisonRegisterStore: config.redis.enabled
+      ? new RedisPrisonRegisterStore(createRedisClient('prisonRegister:'))
+      : new InMemoryPrisonRegisterStore(),
+    prisonRegisterClient: new PrisonRegisterClient(),
+    journeyDataStore: config.redis.enabled
+      ? new RedisJourneyDataStore(createRedisClient('journeyData:'))
+      : new InMemoryJourneyDataStore(),
+  }
+}
 
 export type DataAccess = ReturnType<typeof dataAccess>
 

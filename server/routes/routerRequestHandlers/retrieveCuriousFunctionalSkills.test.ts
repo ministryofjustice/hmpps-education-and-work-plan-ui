@@ -6,7 +6,7 @@ import retrieveCuriousFunctionalSkills from './retrieveCuriousFunctionalSkills'
 jest.mock('../../services/curiousService')
 
 describe('retrieveCuriousFunctionalSkills', () => {
-  const curiousService = new CuriousService(null, null, null) as jest.Mocked<CuriousService>
+  const curiousService = new CuriousService(null, null) as jest.Mocked<CuriousService>
   const requestHandler = retrieveCuriousFunctionalSkills(curiousService)
 
   const prisonNumber = 'A1234GC'

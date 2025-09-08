@@ -1,12 +1,12 @@
 import { format, startOfToday, sub } from 'date-fns'
-import type { LearnerEductionPagedResponse } from 'curiousApiClient'
+import type { LearnerEducationPagedResponse } from 'curiousApiClient'
 import {
   aValidEnglishLearnerEducation,
   aValidMathsLearnerEducation,
   aValidWoodWorkingLearnerEducation,
 } from './learnerEducationTestDataBuilder'
 
-const learnerEducationPagedResponse = (prisonNumber = 'A1234BC'): LearnerEductionPagedResponse => {
+const learnerEducationPagedResponse = (prisonNumber = 'A1234BC'): LearnerEducationPagedResponse => {
   const completedEnglishCourse = aValidEnglishLearnerEducation(prisonNumber)
   completedEnglishCourse.completionStatus =
     'The learner has completed the learning activities leading to the learning aim'
@@ -49,7 +49,7 @@ const learnerEducationPagedResponse = (prisonNumber = 'A1234BC'): LearnerEductio
   }
 }
 
-const learnerEducationPagedResponsePage1Of1 = (prisonNumber = 'A1234BC'): LearnerEductionPagedResponse => {
+const learnerEducationPagedResponsePage1Of1 = (prisonNumber = 'A1234BC'): LearnerEducationPagedResponse => {
   return {
     content: [aValidEnglishLearnerEducation(prisonNumber), aValidMathsLearnerEducation(prisonNumber)],
     empty: false,
@@ -72,7 +72,7 @@ const learnerEducationPagedResponsePage1Of1 = (prisonNumber = 'A1234BC'): Learne
   }
 }
 
-const learnerEducationPagedResponsePage1Of2 = (prisonNumber = 'A1234BC'): LearnerEductionPagedResponse => {
+const learnerEducationPagedResponsePage1Of2 = (prisonNumber = 'A1234BC'): LearnerEducationPagedResponse => {
   return {
     content: [aValidEnglishLearnerEducation(prisonNumber), aValidMathsLearnerEducation(prisonNumber)],
     empty: false,
@@ -95,7 +95,7 @@ const learnerEducationPagedResponsePage1Of2 = (prisonNumber = 'A1234BC'): Learne
   }
 }
 
-const learnerEducationPagedResponsePage2Of2 = (prisonNumber = 'A1234BC'): LearnerEductionPagedResponse => {
+const learnerEducationPagedResponsePage2Of2 = (prisonNumber = 'A1234BC'): LearnerEducationPagedResponse => {
   return {
     content: [aValidWoodWorkingLearnerEducation(prisonNumber)],
     empty: false,

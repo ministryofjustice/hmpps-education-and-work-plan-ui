@@ -6,7 +6,7 @@ import retrieveCuriousSupportNeeds from './retrieveCuriousSupportNeeds'
 jest.mock('../../services/curiousService')
 
 describe('retrieveCuriousSupportNeeds', () => {
-  const curiousService = new CuriousService(null, null, null) as jest.Mocked<CuriousService>
+  const curiousService = new CuriousService(null, null) as jest.Mocked<CuriousService>
   const requestHandler = retrieveCuriousSupportNeeds(curiousService)
 
   const prisonNumber = 'A1234GC'

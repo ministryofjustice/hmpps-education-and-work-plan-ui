@@ -1,26 +1,35 @@
-import type { LearnerEductionPagedResponse, LearnerProfile } from 'curiousApiClient'
-import RestClient from './restClient'
+import type { AuthenticationClient } from '@ministryofjustice/hmpps-auth-clients'
+import type { LearnerEducationPagedResponse, LearnerProfile } from 'curiousApiClient'
+import { asSystem, RestClient } from '@ministryofjustice/hmpps-rest-client'
+import restClientErrorHandler from './restClientErrorHandler'
 import config from '../config'
+import logger from '../../logger'
 
-export default class CuriousClient {
-  private static restClient(token: string): RestClient {
-    return new RestClient('Curious API Client', config.apis.curious, token)
+export default class CuriousClient extends RestClient {
+  constructor(authenticationClient: AuthenticationClient) {
+    super('Curious API Client', config.apis.curious, logger, authenticationClient)
   }
 
-  async getLearnerProfile(prisonNumber: string, token: string): Promise<Array<LearnerProfile>> {
-    return CuriousClient.restClient(token).get<Array<LearnerProfile>>({
-      path: `/learnerProfile/${prisonNumber}`,
-      ignore404: true,
-    })
-  }
-
-  async getLearnerEducationPage(prisonNumber: string, token: string, page = 0): Promise<LearnerEductionPagedResponse> {
-    return CuriousClient.restClient(token).get<LearnerEductionPagedResponse>({
-      path: `/learnerEducation/${prisonNumber}`,
-      query: {
-        page,
+  async getLearnerProfile(prisonNumber: string): Promise<Array<LearnerProfile>> {
+    return this.get<Array<LearnerProfile>>(
+      {
+        path: `/learnerProfile/${prisonNumber}`,
+        errorHandler: restClientErrorHandler({ ignore404: true }),
       },
-      ignore404: true,
-    })
+      asSystem('CURIOUS_API'),
+    )
+  }
+
+  async getLearnerEducationPage(prisonNumber: string, page = 0): Promise<LearnerEducationPagedResponse> {
+    return this.get<LearnerEducationPagedResponse>(
+      {
+        path: `/learnerEducation/${prisonNumber}`,
+        query: {
+          page,
+        },
+        errorHandler: restClientErrorHandler({ ignore404: true }),
+      },
+      asSystem('CURIOUS_API'),
+    )
   }
 }
