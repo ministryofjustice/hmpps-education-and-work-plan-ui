@@ -11,7 +11,7 @@ import TimelineFilterTypeValue from '../../enums/timelineFilterTypeValue'
  */
 const toTimeline = (
   timelineResponse: TimelineResponse,
-  prisonNamesById: Map<string, string>,
+  prisonNamesById: Record<string, string>,
   filterOptions: Array<TimelineFilterTypeValue>,
 ): Timeline => {
   return {
@@ -25,20 +25,20 @@ const toTimeline = (
 
 const toTimelineEvent = (
   timelineEventResponse: TimelineEventResponse,
-  prisonNamesById: Map<string, string>,
+  prisonNamesById: Record<string, string>,
 ): TimelineEvent => {
   return {
     reference: timelineEventResponse.reference,
     sourceReference: timelineEventResponse.sourceReference,
     eventType: timelineEventResponse.eventType,
-    prisonName: prisonNamesById.get(timelineEventResponse.prisonId) || timelineEventResponse.prisonId,
+    prisonName: prisonNamesById[timelineEventResponse.prisonId] || timelineEventResponse.prisonId,
     timestamp: toDate(timelineEventResponse.timestamp),
     correlationId: timelineEventResponse.correlationId,
     contextualInfo: isPrisonTransfer(timelineEventResponse)
       ? {
           ...timelineEventResponse.contextualInfo,
           PRISON_TRANSFERRED_FROM:
-            prisonNamesById.get(timelineEventResponse.contextualInfo.PRISON_TRANSFERRED_FROM) ||
+            prisonNamesById[timelineEventResponse.contextualInfo.PRISON_TRANSFERRED_FROM] ||
             timelineEventResponse.contextualInfo.PRISON_TRANSFERRED_FROM,
         }
       : timelineEventResponse.contextualInfo,

@@ -4,10 +4,10 @@ import toCompletedActionPlanReview from './completedActionPlanReviewMapper'
 import aValidCompletedActionPlanReviewResponse from '../../testsupport/completedActionPlanReviewResponseTestDataBuilder'
 
 describe('completedActionPlanReviewMapper', () => {
-  const examplePrisonNamesById = new Map([
-    ['BXI', 'Brixton (HMP)'],
-    ['MDI', 'Moorland (HMP & YOI)'],
-  ])
+  const examplePrisonNamesById = {
+    BXI: 'Brixton (HMP)',
+    MDI: 'Moorland (HMP & YOI)',
+  }
 
   it('should map a CompletedActionPlanReviewResponse to a CompletedActionPlanReview view model object', () => {
     // Given

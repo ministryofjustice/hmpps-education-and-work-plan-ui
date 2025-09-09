@@ -47,7 +47,7 @@ describe('timelineMapper', () => {
     }
 
     // When
-    const actual = toTimeline(timeline, new Map(), filterOptions)
+    const actual = toTimeline(timeline, {}, filterOptions)
 
     // Then
     expect(actual).toEqual(expectedTimeline)
@@ -92,7 +92,7 @@ describe('timelineMapper', () => {
     }
 
     // When
-    const actual = toTimeline(timeline, new Map([['MDI', 'Moorland (HMP & YOI)']]), filterOptions)
+    const actual = toTimeline(timeline, { MDI: 'Moorland (HMP & YOI)' }, filterOptions)
 
     // Then
     expect(actual).toEqual(expectedTimeline)
@@ -144,14 +144,7 @@ describe('timelineMapper', () => {
     }
 
     // When
-    const actual = toTimeline(
-      timeline,
-      new Map([
-        ['MDI', 'Moorland (HMP & YOI)'],
-        ['ASI', 'Ashfield (HMP)'],
-      ]),
-      filterOptions,
-    )
+    const actual = toTimeline(timeline, { MDI: 'Moorland (HMP & YOI)', ASI: 'Ashfield (HMP)' }, filterOptions)
 
     // Then
     expect(actual).toEqual(expectedTimeline)
@@ -203,7 +196,7 @@ describe('timelineMapper', () => {
     }
 
     // When
-    const actual = toTimeline(timeline, new Map([['MDI', 'Moorland (HMP & YOI)']]), filterOptions)
+    const actual = toTimeline(timeline, { MDI: 'Moorland (HMP & YOI)' }, filterOptions)
 
     // Then
     expect(actual).toEqual(expectedTimeline)

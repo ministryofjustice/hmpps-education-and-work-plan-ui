@@ -43,7 +43,7 @@ export default class EducationAndWorkPlanService {
         return { prisonNumber, goals: [], problemRetrievingData: false }
       }
 
-      const prisonNamesById = await this.getAllPrisonNamesByIdSafely(username)
+      const prisonNamesById = await this.prisonService.getAllPrisonNamesById(username)
       return toActionPlan(actionPlanResponse, false, prisonNamesById)
     } catch (error) {
       logger.error(`Error retrieving Action Plan for Prisoner [${prisonNumber}]`, error)
@@ -75,7 +75,7 @@ export default class EducationAndWorkPlanService {
       const response = (await this.educationAndWorkPlanClient.getGoalsByStatus(prisonNumber, status, systemToken)) || {
         goals: [],
       }
-      const prisonNamesById = await this.getAllPrisonNamesByIdSafely(username)
+      const prisonNamesById = await this.prisonService.getAllPrisonNamesById(username)
       return { goals: toGoals(response, prisonNamesById), problemRetrievingData: false }
     } catch (error) {
       logger.error(`Error retrieving goals with status [${status}] for Prisoner [${prisonNumber}]: ${error}`)
@@ -157,15 +157,6 @@ export default class EducationAndWorkPlanService {
     } catch (error) {
       logger.error(`Error updating Education for prisoner [${prisonNumber}] in the Education And Work Plan API `, error)
       throw error
-    }
-  }
-
-  private async getAllPrisonNamesByIdSafely(username: string): Promise<Map<string, string>> {
-    try {
-      return await this.prisonService.getAllPrisonNamesById(username)
-    } catch (error) {
-      logger.error(`Error retrieving prison names, defaulting to just IDs: ${error}`)
-      return new Map()
     }
   }
 }

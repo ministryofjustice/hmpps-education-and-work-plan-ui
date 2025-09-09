@@ -5,7 +5,7 @@ import toNote from './noteMapper'
 
 const toCompletedActionPlanReview = (
   completedActionPlanReviewResponse: CompletedActionPlanReviewResponse,
-  prisonNamesById: Map<string, string>,
+  prisonNamesById: Record<string, string>,
 ): CompletedActionPlanReview => ({
   reference: completedActionPlanReviewResponse.reference,
   deadlineDate: startOfDay(parseISO(completedActionPlanReviewResponse.deadlineDate)),
@@ -17,7 +17,7 @@ const toCompletedActionPlanReview = (
   createdByDisplayName: completedActionPlanReviewResponse.createdByDisplayName,
   createdAt: parseISO(completedActionPlanReviewResponse.createdAt),
   createdAtPrison:
-    prisonNamesById.get(completedActionPlanReviewResponse.createdAtPrison) ||
+    prisonNamesById[completedActionPlanReviewResponse.createdAtPrison] ||
     completedActionPlanReviewResponse.createdAtPrison,
 })
 

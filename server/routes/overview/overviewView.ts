@@ -25,7 +25,7 @@ export default class OverviewView {
       problemRetrievingData: boolean
       inductionDto?: InductionDto
     },
-    private readonly prisonNamesById: Map<string, string>,
+    private readonly prisonNamesById: Record<string, string>,
   ) {}
 
   get renderArgs(): OverviewViewRenderArgs {
@@ -74,8 +74,7 @@ export default class OverviewView {
       lastSessionConductedBy = this.induction.inductionDto.updatedByDisplayName
       lastSessionConductedAt = this.induction.inductionDto.updatedAt
       lastSessionConductedAtPrison =
-        this.prisonNamesById.get(this.induction.inductionDto.updatedAtPrison) ||
-        this.induction.inductionDto.updatedAtPrison
+        this.prisonNamesById[this.induction.inductionDto.updatedAtPrison] || this.induction.inductionDto.updatedAtPrison
     } else if (prisonerHasHadInductionAndAtLeastOneReview) {
       lastSessionConductedBy = mostRecentReviewSession.createdByDisplayName
       lastSessionConductedAt = mostRecentReviewSession.createdAt

@@ -4,10 +4,10 @@ import type { LearnerProfile } from 'curiousApiClient'
 import toPrisonerSupportNeeds from './prisonerSupportNeedsMapper'
 
 describe('prisonerSupportNeedsMapper', () => {
-  const examplePrisonNamesById = new Map([
-    ['DNI', 'Doncaster (HMP)'],
-    ['MDI', 'Moorland (HMP & YOI)'],
-  ])
+  const examplePrisonNamesById = {
+    DNI: 'Doncaster (HMP)',
+    MDI: 'Moorland (HMP & YOI)',
+  }
 
   it('should map to SupportNeeds', () => {
     // Given

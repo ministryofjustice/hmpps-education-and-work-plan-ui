@@ -41,7 +41,7 @@ describe('educationAndWorkPlanService', () => {
   const username = 'a-dps-user'
   const prisonNumber = 'A1234BC'
   const prisonId = 'BXI'
-  const prisonNamesById = new Map([['BXI', 'Brixton (HMP)']])
+  const prisonNamesById = { BXI: 'Brixton (HMP)' }
 
   beforeEach(() => {
     jest.resetAllMocks()
@@ -110,7 +110,7 @@ describe('educationAndWorkPlanService', () => {
       // Given
       const actionPlanResponse = aValidActionPlanResponseWithOneGoal()
       educationAndWorkPlanClient.getActionPlan.mockResolvedValue(actionPlanResponse)
-      prisonService.getAllPrisonNamesById.mockRejectedValue(Error('Service Unavailable'))
+      prisonService.getAllPrisonNamesById.mockResolvedValue({})
       const expectedActionPlan = aValidActionPlanWithOneGoal({
         goal: aValidGoal({ createdAtPrisonName: 'BXI', updatedAtPrisonName: 'BXI' }),
       })
@@ -195,7 +195,7 @@ describe('educationAndWorkPlanService', () => {
       const status = GoalStatusValue.ACTIVE
 
       educationAndWorkPlanClient.getGoalsByStatus.mockResolvedValue({ goals: [aValidGoalResponse()] })
-      prisonService.getAllPrisonNamesById.mockRejectedValue(createError(404, 'Not Found'))
+      prisonService.getAllPrisonNamesById.mockResolvedValue({})
       const expectedResponse: Goals = {
         goals: [aValidGoal({ createdAtPrisonName: 'BXI', updatedAtPrisonName: 'BXI' })],
         problemRetrievingData: false,

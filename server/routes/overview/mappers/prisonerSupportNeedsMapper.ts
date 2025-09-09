@@ -4,7 +4,7 @@ import type { LearnerProfile } from 'curiousApiClient'
 
 const toPrisonerSupportNeeds = (
   learnerProfiles: Array<LearnerProfile>,
-  prisonNamesById: Map<string, string>,
+  prisonNamesById: Record<string, string>,
 ): PrisonerSupportNeeds => ({
   problemRetrievingData: false,
   healthAndSupportNeeds: learnerProfiles.map(profile => toHealthAndSupportNeeds(profile, prisonNamesById)),
@@ -12,10 +12,10 @@ const toPrisonerSupportNeeds = (
 
 const toHealthAndSupportNeeds = (
   learnerProfile: LearnerProfile,
-  prisonNamesById: Map<string, string>,
+  prisonNamesById: Record<string, string>,
 ): HealthAndSupportNeeds => ({
   prisonId: learnerProfile.establishmentId,
-  prisonName: prisonNamesById.get(learnerProfile.establishmentId) || learnerProfile.establishmentId,
+  prisonName: prisonNamesById[learnerProfile.establishmentId] || learnerProfile.establishmentId,
   rapidAssessmentDate: dateOrNull(learnerProfile.rapidAssessmentDate),
   inDepthAssessmentDate: dateOrNull(learnerProfile.inDepthAssessmentDate),
   primaryLddAndHealthNeeds: learnerProfile.primaryLDDAndHealthProblem,
