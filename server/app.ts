@@ -25,6 +25,7 @@ import type { Services } from './services'
 import auditMiddleware from './middleware/auditMiddleware'
 import successMessageMiddleware from './middleware/successMessageMiddleware'
 import errorMessageMiddleware from './middleware/errorMessageMiddleware'
+import apiErrorMiddleware from './middleware/apiErrorMiddleware'
 
 export default function createApp(services: Services): express.Application {
   const app = express()
@@ -46,6 +47,7 @@ export default function createApp(services: Services): express.Application {
   app.use(authorisationMiddleware())
   app.use(setUpCsrf())
   app.use(setUpCurrentUser(services))
+  app.use(apiErrorMiddleware())
   app.use(successMessageMiddleware)
   app.use(errorMessageMiddleware)
 

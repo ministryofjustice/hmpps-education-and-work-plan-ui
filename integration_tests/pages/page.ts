@@ -133,4 +133,14 @@ export default abstract class Page {
   private backLink(): PageElement {
     return cy.get('.govuk-back-link')
   }
+
+  apiErrorBannerIsNotDisplayed = () => {
+    this.apiErrorBanner().should('not.exist')
+  }
+
+  apiErrorBannerIsDisplayed = () => {
+    this.apiErrorBanner().should('be.visible')
+  }
+
+  private apiErrorBanner = (): PageElement => cy.get('[data-qa=api-error-banner]')
 }
