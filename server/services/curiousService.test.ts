@@ -18,7 +18,7 @@ jest.mock('./prisonService')
 
 describe('curiousService', () => {
   const curiousClient = new CuriousClient(null) as jest.Mocked<CuriousClient>
-  const prisonService = new PrisonService(null, null, null) as jest.Mocked<PrisonService>
+  const prisonService = new PrisonService(null, null) as jest.Mocked<PrisonService>
   const curiousService = new CuriousService(curiousClient, prisonService)
 
   const prisonNumber = 'A1234BC'

@@ -67,7 +67,7 @@ export const dataAccess = () => {
     prisonRegisterStore: config.redis.enabled
       ? new RedisPrisonRegisterStore(createRedisClient('prisonRegister:'))
       : new InMemoryPrisonRegisterStore(),
-    prisonRegisterClient: new PrisonRegisterClient(),
+    prisonRegisterClient: new PrisonRegisterClient(hmppsAuthenticationClient),
     journeyDataStore: config.redis.enabled
       ? new RedisJourneyDataStore(createRedisClient('journeyData:'))
       : new InMemoryJourneyDataStore(),

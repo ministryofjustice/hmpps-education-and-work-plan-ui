@@ -33,9 +33,8 @@ jest.mock('./prisonService')
 jest.mock('../data/hmppsAuthClient')
 
 describe('educationAndWorkPlanService', () => {
-  const educationAndWorkPlanClient =
-    new EducationAndWorkPlanClient() as unknown as jest.Mocked<EducationAndWorkPlanClient>
-  const prisonService = new PrisonService(null, null, null) as unknown as jest.Mocked<PrisonService>
+  const educationAndWorkPlanClient = new EducationAndWorkPlanClient() as jest.Mocked<EducationAndWorkPlanClient>
+  const prisonService = new PrisonService(null, null) as jest.Mocked<PrisonService>
 
   const mockedEducationMapper = toEducationDto as jest.MockedFunction<typeof toEducationDto>
   const systemToken = 'a-system-token'

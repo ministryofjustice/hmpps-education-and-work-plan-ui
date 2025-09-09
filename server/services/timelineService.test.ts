@@ -19,7 +19,7 @@ describe('timelineService', () => {
   const mockedTimelineMapper = toTimeline as jest.MockedFunction<typeof toTimeline>
 
   const educationAndWorkPlanClient = new EducationAndWorkPlanClient() as jest.Mocked<EducationAndWorkPlanClient>
-  const prisonService = new PrisonService(null, null, null) as jest.Mocked<PrisonService>
+  const prisonService = new PrisonService(null, null) as jest.Mocked<PrisonService>
   const hmppsAuthClient = new HmppsAuthClient(null) as jest.Mocked<HmppsAuthClient>
   const timelineService = new TimelineService(educationAndWorkPlanClient, prisonService, hmppsAuthClient)
 

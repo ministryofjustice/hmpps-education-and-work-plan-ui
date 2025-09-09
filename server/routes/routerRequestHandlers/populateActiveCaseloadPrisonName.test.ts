@@ -5,7 +5,7 @@ import populateActiveCaseloadPrisonName from './populateActiveCaseloadPrisonName
 jest.mock('../../services/prisonService')
 
 describe('populateActiveCaseloadPrisonName', () => {
-  const prisonService = new PrisonService(null, null, null) as jest.Mocked<PrisonService>
+  const prisonService = new PrisonService(null, null) as jest.Mocked<PrisonService>
   const requestHandler = populateActiveCaseloadPrisonName(prisonService)
 
   const username = 'a-dps-user'

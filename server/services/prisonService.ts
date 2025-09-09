@@ -2,7 +2,6 @@ import type { PrisonResponse } from 'prisonRegisterApiClient'
 import PrisonRegisterStore from '../data/prisonRegisterStore/prisonRegisterStore'
 import PrisonRegisterClient from '../data/prisonRegisterClient'
 import logger from '../../logger'
-import { HmppsAuthClient } from '../data'
 
 const PRISON_CACHE_TTL_DAYS = 1
 
@@ -13,7 +12,6 @@ export default class PrisonService {
   constructor(
     private readonly prisonRegisterStore: PrisonRegisterStore,
     private readonly prisonRegisterClient: PrisonRegisterClient,
-    private readonly hmppsAuthClient: HmppsAuthClient,
   ) {}
 
   /**
@@ -21,8 +19,7 @@ export default class PrisonService {
    */
   async getAllPrisonNamesById(username: string): Promise<Map<string, string>> {
     try {
-      const systemToken = await this.hmppsAuthClient.getSystemClientToken(username)
-      const prisons = (await this.getCachedPrisons()) || (await this.retrieveAndCacheActivePrisons(systemToken))
+      const prisons = (await this.getCachedPrisons()) || (await this.retrieveAndCacheActivePrisons(username))
       return new Map(prisons.map(obj => [obj.prisonId, obj.prisonName]))
     } catch (e) {
       logger.error(`Error looking up prisons`, e)
@@ -35,13 +32,13 @@ export default class PrisonService {
    * Return the object from the cache if it exists in the cache, else seed the cache by calling the API and return the
    * specified [PrisonResponse]
    */
-  private async getPrison(prisonId: string, token: string): Promise<PrisonResponse> {
+  private async getPrison(prisonId: string, username: string): Promise<PrisonResponse> {
     return (
       // return prison from the cache
       (await this.getCachedPrison(prisonId)) ||
       (async () => {
         // or retrieve prisons from the API and cache them before returning the one we are looking for
-        const allPrisonResponses = await this.retrieveAndCacheActivePrisons(token)
+        const allPrisonResponses = await this.retrieveAndCacheActivePrisons(username)
         return allPrisonResponses.find(prisonResponse => prisonResponse.prisonId === prisonId)
       })()
     )
@@ -80,11 +77,11 @@ export default class PrisonService {
    * Calls the prison-register API to retrieve all prisons, then caches just the active ones in the cache.
    * Returns an array of active prisons that were cached.
    */
-  private async retrieveAndCacheActivePrisons(token: string): Promise<Array<PrisonResponse>> {
+  private async retrieveAndCacheActivePrisons(username: string): Promise<Array<PrisonResponse>> {
     logger.info('Retrieving and caching active prisons')
     let allPrisonResponses: Array<PrisonResponse>
     try {
-      allPrisonResponses = (await this.prisonRegisterClient.getAllPrisons(token)) || []
+      allPrisonResponses = (await this.prisonRegisterClient.getAllPrisons(username)) || []
     } catch (ex) {
       // Retrieving prisons from the API failed. Return an empty array.
       logger.error('Error retrieving prisons', ex)

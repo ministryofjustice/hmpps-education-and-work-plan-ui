@@ -13,7 +13,7 @@ import {
 jest.mock('../../services/prisonService')
 
 describe('functionalSkillsController', () => {
-  const prisonService = new PrisonService(null, null, null) as jest.Mocked<PrisonService>
+  const prisonService = new PrisonService(null, null) as jest.Mocked<PrisonService>
   const controller = new FunctionalSkillsController(prisonService)
 
   const prisonNumber = 'A1234GC'
