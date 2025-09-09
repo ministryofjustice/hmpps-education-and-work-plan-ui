@@ -1,16 +1,18 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express'
-import asyncMiddleware from '../../middleware/asyncMiddleware'
 import { PrisonService } from '../../services'
+import { Result } from '../../utils/result/result'
 
 /**
  *  Middleware function that returns a Request handler function to retrieve prison names by ID from PrisonService and store in res.locals
  */
 const retrievePrisonNamesById = (prisonService: PrisonService): RequestHandler => {
-  return asyncMiddleware(async (req: Request, res: Response, next: NextFunction) => {
-    res.locals.prisonNamesById = await prisonService.getAllPrisonNamesById(req.user.username)
+  return async (req: Request, res: Response, next: NextFunction) => {
+    const { username } = req.user
 
-    next()
-  })
+    res.locals.prisonNamesById = await Result.wrap(prisonService.getAllPrisonNamesById(username))
+
+    return next()
+  }
 }
 
 export default retrievePrisonNamesById

@@ -9,6 +9,7 @@ import OverviewController from './overviewController'
 import aValidActionPlanReviews from '../../testsupport/actionPlanReviewsTestDataBuilder'
 import { aValidInductionDto } from '../../testsupport/inductionDtoTestDataBuilder'
 import aValidInductionSchedule from '../../testsupport/inductionScheduleTestDataBuilder'
+import { Result } from '../../utils/result/result'
 
 describe('overviewController', () => {
   const controller = new OverviewController()
@@ -16,6 +17,7 @@ describe('overviewController', () => {
   const prisonNumber = 'A1234GC'
   const username = 'a-dps-user'
   const prisonerSummary = aValidPrisonerSummary({ prisonNumber })
+  const prisonNamesById = { MDI: 'Moorland (HMP & YOI)', WDI: 'Wakefield (HMP)' }
 
   const inPrisonCourses: InPrisonCourseRecords = {
     problemRetrievingData: false,
@@ -80,6 +82,7 @@ describe('overviewController', () => {
         problemRetrievingData: false,
       },
       inductionSchedule,
+      prisonNamesById: Result.fulfilled(prisonNamesById),
     }
     jest.resetAllMocks()
   })
@@ -144,6 +147,10 @@ describe('overviewController', () => {
         inductionDueDate: startOfDay('2024-12-10'),
         inductionStatus: 'GOALS_OVERDUE',
       },
+      prisonNamesById: expect.objectContaining({
+        status: 'fulfilled',
+        value: prisonNamesById,
+      }),
     }
 
     // When
@@ -240,6 +247,10 @@ describe('overviewController', () => {
         inductionDueDate: startOfDay('2024-12-10'),
         inductionStatus: 'INDUCTION_OVERDUE',
       },
+      prisonNamesById: expect.objectContaining({
+        status: 'fulfilled',
+        value: prisonNamesById,
+      }),
     }
 
     // When
@@ -332,6 +343,10 @@ describe('overviewController', () => {
         inductionDueDate: startOfDay('2024-12-10'),
         inductionStatus: 'GOALS_OVERDUE',
       },
+      prisonNamesById: expect.objectContaining({
+        status: 'fulfilled',
+        value: prisonNamesById,
+      }),
     }
 
     // When
@@ -401,6 +416,10 @@ describe('overviewController', () => {
         inductionDueDate: startOfDay('2024-12-10'),
         inductionStatus: 'INDUCTION_OVERDUE',
       },
+      prisonNamesById: expect.objectContaining({
+        status: 'fulfilled',
+        value: prisonNamesById,
+      }),
     }
 
     // When
@@ -472,6 +491,10 @@ describe('overviewController', () => {
         inductionDueDate: startOfDay('2024-12-10'),
         inductionStatus: 'GOALS_OVERDUE',
       },
+      prisonNamesById: expect.objectContaining({
+        status: 'fulfilled',
+        value: prisonNamesById,
+      }),
     }
 
     // When
@@ -545,6 +568,10 @@ describe('overviewController', () => {
         inductionDueDate: startOfDay('2024-12-10'),
         inductionStatus: 'GOALS_OVERDUE',
       },
+      prisonNamesById: expect.objectContaining({
+        status: 'fulfilled',
+        value: prisonNamesById,
+      }),
     }
 
     // When
