@@ -1,29 +1,18 @@
 import type { PrisonResponse } from 'prisonRegisterApiClient'
 import PrisonService from './prisonService'
-import PrisonRegisterStore from '../data/prisonRegisterStore/prisonRegisterStore'
+import RedisPrisonRegisterStore from '../data/prisonRegisterStore/redisPrisonRegisterStore'
 import PrisonRegisterClient from '../data/prisonRegisterClient'
-import { HmppsAuthClient } from '../data'
 import aValidPrisonResponse from '../testsupport/prisonResponseTestDataBuilder'
 
+jest.mock('../data/prisonRegisterStore/redisPrisonRegisterStore')
+jest.mock('../data/prisonRegisterClient')
+
 describe('prisonService', () => {
-  const prisonRegisterStore = {
-    getActivePrisons: jest.fn(),
-    setActivePrisons: jest.fn(),
-  }
+  const prisonRegisterStore = new RedisPrisonRegisterStore(null) as jest.Mocked<RedisPrisonRegisterStore>
+  const prisonRegisterClient = new PrisonRegisterClient(null) as jest.Mocked<PrisonRegisterClient>
+  const prisonService = new PrisonService(prisonRegisterStore, prisonRegisterClient)
 
-  const prisonRegisterClient = {
-    getAllPrisons: jest.fn(),
-  }
-
-  const hmppsAuthClient = {
-    getSystemClientToken: jest.fn(),
-  }
-
-  const prisonService = new PrisonService(
-    prisonRegisterStore as unknown as PrisonRegisterStore,
-    prisonRegisterClient as unknown as PrisonRegisterClient,
-    hmppsAuthClient as unknown as HmppsAuthClient,
-  )
+  const username = 'some-username'
 
   beforeEach(() => {
     jest.resetAllMocks()
@@ -63,11 +52,6 @@ describe('prisonService', () => {
   describe('getAllPrisonNamesById', () => {
     it('should get prison names by ID given prisons have been previously cached', async () => {
       // Given
-      const username = 'some-username'
-      const systemToken = 'a-system-token'
-
-      hmppsAuthClient.getSystemClientToken.mockResolvedValue(systemToken)
-
       prisonRegisterStore.getActivePrisons.mockResolvedValue(activePrisons)
 
       // When
@@ -81,18 +65,12 @@ describe('prisonService', () => {
         ]),
       )
       expect(prisonRegisterStore.getActivePrisons).toHaveBeenCalled()
-      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
       expect(prisonRegisterClient.getAllPrisons).not.toHaveBeenCalled()
       expect(prisonRegisterStore.setActivePrisons).not.toHaveBeenCalled()
     })
 
     it('should get prison names by ID given prisons have not been previously cached', async () => {
       // Given
-      const username = 'some-username'
-      const systemToken = 'a-system-token'
-
-      hmppsAuthClient.getSystemClientToken.mockResolvedValue(systemToken)
-
       prisonRegisterStore.getActivePrisons.mockResolvedValue([])
       prisonRegisterClient.getAllPrisons.mockResolvedValue(allPrisons)
 
@@ -107,18 +85,12 @@ describe('prisonService', () => {
         ]),
       )
       expect(prisonRegisterStore.getActivePrisons).toHaveBeenCalled()
-      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
-      expect(prisonRegisterClient.getAllPrisons).toHaveBeenCalled()
+      expect(prisonRegisterClient.getAllPrisons).toHaveBeenCalledWith(username)
       expect(prisonRegisterStore.setActivePrisons).toHaveBeenCalledWith(activePrisons, 1)
     })
 
     it('should get prison names by ID from service given retrieving from cache throws an error', async () => {
       // Given
-      const username = 'some-username'
-      const systemToken = 'a-system-token'
-
-      hmppsAuthClient.getSystemClientToken.mockResolvedValue(systemToken)
-
       prisonRegisterStore.getActivePrisons.mockRejectedValue('some-error')
       prisonRegisterClient.getAllPrisons.mockResolvedValue(allPrisons)
 
@@ -133,18 +105,12 @@ describe('prisonService', () => {
         ]),
       )
       expect(prisonRegisterStore.getActivePrisons).toHaveBeenCalled()
-      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
-      expect(prisonRegisterClient.getAllPrisons).toHaveBeenCalled()
+      expect(prisonRegisterClient.getAllPrisons).toHaveBeenCalledWith(username)
       expect(prisonRegisterStore.setActivePrisons).toHaveBeenCalledWith(activePrisons, 1)
     })
 
     it('should not get prison names by ID given retrieving from cache and API both throw errors', async () => {
       // Given
-      const username = 'some-username'
-      const systemToken = 'a-system-token'
-
-      hmppsAuthClient.getSystemClientToken.mockResolvedValue(systemToken)
-
       prisonRegisterStore.getActivePrisons.mockRejectedValue('some-cache-error')
       prisonRegisterClient.getAllPrisons.mockRejectedValue('some-api-error')
 
@@ -154,18 +120,12 @@ describe('prisonService', () => {
       // Then
       expect(actual).toEqual(new Map())
       expect(prisonRegisterStore.getActivePrisons).toHaveBeenCalled()
-      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
-      expect(prisonRegisterClient.getAllPrisons).toHaveBeenCalled()
+      expect(prisonRegisterClient.getAllPrisons).toHaveBeenCalledWith(username)
       expect(prisonRegisterStore.setActivePrisons).not.toHaveBeenCalled()
     })
 
     it('should get prison names by ID given prisons have not been previously cached but putting in cache throws an error', async () => {
       // Given
-      const username = 'some-username'
-      const systemToken = 'a-system-token'
-
-      hmppsAuthClient.getSystemClientToken.mockResolvedValue(systemToken)
-
       prisonRegisterStore.getActivePrisons.mockResolvedValue([])
       prisonRegisterClient.getAllPrisons.mockResolvedValue(allPrisons)
       prisonRegisterStore.setActivePrisons.mockRejectedValue('some-error')
@@ -181,8 +141,7 @@ describe('prisonService', () => {
         ]),
       )
       expect(prisonRegisterStore.getActivePrisons).toHaveBeenCalled()
-      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
-      expect(prisonRegisterClient.getAllPrisons).toHaveBeenCalled()
+      expect(prisonRegisterClient.getAllPrisons).toHaveBeenCalledWith(username)
       expect(prisonRegisterStore.setActivePrisons).toHaveBeenCalledWith(activePrisons, 1)
     })
   })

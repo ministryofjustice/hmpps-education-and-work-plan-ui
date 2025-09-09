@@ -19,7 +19,7 @@ let app: Express
 const auditService = new AuditService(null) as jest.Mocked<AuditService>
 const prisonerSearchService = new PrisonerSearchService(null, null, null) as jest.Mocked<PrisonerSearchService>
 const prisonerListService = new PrisonerListService(null, null, null, null) as jest.Mocked<PrisonerListService>
-const prisonService = new PrisonService(null, null, null) as jest.Mocked<PrisonService>
+const prisonService = new PrisonService(null, null) as jest.Mocked<PrisonService>
 const journeyDataService = new JourneyDataService(null) as jest.Mocked<JourneyDataService>
 
 beforeEach(() => {
