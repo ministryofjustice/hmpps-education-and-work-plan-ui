@@ -8,10 +8,10 @@ import {
 } from '../../testsupport/actionPlanResponseTestDataBuilder'
 
 describe('actionPlanMapper', () => {
-  const examplePrisonNamesById = new Map([
-    ['BXI', 'Brixton (HMP)'],
-    ['MDI', 'Moorland (HMP & YOI)'],
-  ])
+  const examplePrisonNamesById = {
+    BXI: 'Brixton (HMP)',
+    MDI: 'Moorland (HMP & YOI)',
+  }
 
   describe('toActionPlan', () => {
     it('should map to ActionPlan given valid ActionPlanResponse', () => {

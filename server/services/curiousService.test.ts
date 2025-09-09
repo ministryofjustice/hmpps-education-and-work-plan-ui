@@ -24,16 +24,16 @@ describe('curiousService', () => {
   const prisonNumber = 'A1234BC'
   const username = 'a-dps-user'
 
+  const prisonNamesById = { MDI: 'Moorland (HMP & YOI)', WDI: 'Wakefield (HMP)' }
+
   beforeEach(() => {
     jest.resetAllMocks()
+    prisonService.getAllPrisonNamesById.mockResolvedValue(prisonNamesById)
   })
 
   describe('getPrisonerSupportNeeds', () => {
     it('should get prisoner support needs given a known prison number', async () => {
       // Given
-      const prisonNamesById = new Map([['MDI', 'Moorland (HMP & YOI)']])
-      prisonService.getAllPrisonNamesById.mockResolvedValue(prisonNamesById)
-
       const learnerProfiles = [
         {
           ...aValidLearnerProfile(),
@@ -114,9 +114,6 @@ describe('curiousService', () => {
       const learnerProfiles = [aValidLearnerProfile()]
       curiousClient.getLearnerProfile.mockResolvedValue(learnerProfiles)
 
-      const prisonNamesById = new Map([['MDI', 'Moorland (HMP & YOI)']])
-      prisonService.getAllPrisonNamesById.mockResolvedValue(prisonNamesById)
-
       const expectedFunctionalSkills: FunctionalSkills = {
         problemRetrievingData: false,
         assessments: [
@@ -181,18 +178,8 @@ describe('curiousService', () => {
   })
 
   describe('getPrisonerInPrisonCourses', () => {
-    const mockAllPrisonNameLookup = (): Promise<Map<string, string>> => {
-      const prisonNamesById = new Map([
-        ['MDI', 'Moorland (HMP & YOI)'],
-        ['WDI', 'Wakefield (HMP)'],
-      ])
-      return Promise.resolve(prisonNamesById)
-    }
-
     it('should get In Prison Courses', async () => {
       // Given
-      prisonService.getAllPrisonNamesById.mockImplementation(mockAllPrisonNameLookup)
-
       const learnerEducationPage1Of1: LearnerEducationPagedResponse = learnerEducationPagedResponse(prisonNumber)
       curiousClient.getLearnerEducationPage.mockResolvedValue(learnerEducationPage1Of1)
 
@@ -309,8 +296,6 @@ describe('curiousService', () => {
 
     it('should get In Prison Courses given there is only 1 page of data in Curious for the prisoner', async () => {
       // Given
-      prisonService.getAllPrisonNamesById.mockImplementation(mockAllPrisonNameLookup)
-
       const learnerEducationPage1Of1: LearnerEducationPagedResponse =
         learnerEducationPagedResponsePage1Of1(prisonNumber)
       curiousClient.getLearnerEducationPage.mockResolvedValue(learnerEducationPage1Of1)
@@ -368,8 +353,6 @@ describe('curiousService', () => {
 
     it('should get In Prison Courses given there are 2 pages of data in Curious for the prisoner', async () => {
       // Given
-      prisonService.getAllPrisonNamesById.mockImplementation(mockAllPrisonNameLookup)
-
       const learnerEducationPage1Of2: LearnerEducationPagedResponse =
         learnerEducationPagedResponsePage1Of2(prisonNumber)
       curiousClient.getLearnerEducationPage.mockResolvedValueOnce(learnerEducationPage1Of2)

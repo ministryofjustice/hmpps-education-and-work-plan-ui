@@ -12,7 +12,7 @@ const populateActiveCaseloadPrisonName = (prisonService: PrisonService): Request
     } = res.locals
 
     const allPrisonNamesById = await prisonService.getAllPrisonNamesById(username)
-    res.locals.activeCaseloadPrisonName = allPrisonNamesById.get(activeCaseLoadId) || activeCaseLoadId
+    res.locals.activeCaseloadPrisonName = allPrisonNamesById[activeCaseLoadId] || activeCaseLoadId
 
     next()
   })

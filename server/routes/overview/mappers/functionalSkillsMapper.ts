@@ -5,7 +5,7 @@ import type { Assessment, FunctionalSkills } from 'viewModels'
 const toFunctionalSkills = (
   learnerProfiles: Array<LearnerProfile>,
   prisonNumber: string,
-  prisonNamesById: Map<string, string>,
+  prisonNamesById: Record<string, string>,
 ): FunctionalSkills => ({
   problemRetrievingData: false,
   assessments: learnerProfiles.flatMap(learnerProfile =>
@@ -19,10 +19,10 @@ const toFunctionalSkills = (
 const toAssessment = (
   prisonId: string,
   assessment: AssemmentDto,
-  prisonNamesById: Map<string, string>,
+  prisonNamesById: Record<string, string>,
 ): Assessment => ({
   prisonId,
-  prisonName: prisonNamesById.get(prisonId),
+  prisonName: prisonNamesById[prisonId] || prisonId,
   type: toAssessmentType(assessment.qualificationType),
   grade: assessment.qualificationGrade,
   assessmentDate: dateOrNull(assessment.assessmentDate),

@@ -26,10 +26,10 @@ describe('timelineService', () => {
   const prisonNumber = 'A1234BC'
   const username = 'a-dps-user'
   const systemToken = 'a-system-token'
-  const mockedPrisonNamesById = new Map([
-    ['ASI', 'Ashfield (HMP)'],
-    ['MDI', 'Moorland (HMP & YOI)'],
-  ])
+  const mockedPrisonNamesById = {
+    ASI: 'Ashfield (HMP)',
+    MDI: 'Moorland (HMP & YOI)',
+  }
 
   beforeEach(() => {
     jest.resetAllMocks()
@@ -157,7 +157,7 @@ describe('timelineService', () => {
       }
       mockedTimelineMapper.mockReturnValue(timeline)
 
-      prisonService.getAllPrisonNamesById.mockResolvedValue(new Map())
+      prisonService.getAllPrisonNamesById.mockResolvedValue({})
 
       const expectedApiFilterOptions = new TimelineApiFilterOptions()
 
@@ -165,7 +165,7 @@ describe('timelineService', () => {
       const actual = await timelineService.getTimeline(filterOptions)
 
       // Then
-      expect(mockedTimelineMapper).toHaveBeenCalledWith(timelineResponse, new Map(), [TimelineFilterTypeValue.ALL])
+      expect(mockedTimelineMapper).toHaveBeenCalledWith(timelineResponse, {}, [TimelineFilterTypeValue.ALL])
       expect(prisonService.getAllPrisonNamesById).toHaveBeenCalledWith(username)
       expect(actual).toEqual(timeline)
       expect(educationAndWorkPlanClient.getTimeline).toHaveBeenCalledWith(
@@ -269,7 +269,7 @@ describe('timelineService', () => {
       })
       mockedTimelineMapper.mockReturnValue(timeline)
 
-      prisonService.getAllPrisonNamesById.mockResolvedValue(new Map())
+      prisonService.getAllPrisonNamesById.mockResolvedValue({})
 
       const expectedApiFilterOptions = new TimelineApiFilterOptions({
         inductions: true,
@@ -315,7 +315,7 @@ describe('timelineService', () => {
       })
       mockedTimelineMapper.mockReturnValue(timeline)
 
-      prisonService.getAllPrisonNamesById.mockResolvedValue(new Map())
+      prisonService.getAllPrisonNamesById.mockResolvedValue({})
 
       const expectedApiFilterOptions = new TimelineApiFilterOptions({
         inductions: false,
@@ -365,7 +365,7 @@ describe('timelineService', () => {
       })
       mockedTimelineMapper.mockReturnValue(timeline)
 
-      prisonService.getAllPrisonNamesById.mockResolvedValue(new Map())
+      prisonService.getAllPrisonNamesById.mockResolvedValue({})
 
       const expectedApiFilterOptions = new TimelineApiFilterOptions({
         inductions: false,

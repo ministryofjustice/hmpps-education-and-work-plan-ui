@@ -5,7 +5,7 @@ import toCompletedActionPlanReview from './completedActionPlanReviewMapper'
 
 const toActionPlanReviews = (
   actionPlanReviewsResponse: ActionPlanReviewsResponse,
-  prisonNamesById: Map<string, string>,
+  prisonNamesById: Record<string, string>,
 ): ActionPlanReviews => ({
   latestReviewSchedule: toScheduledActionPlanReview(actionPlanReviewsResponse.latestReviewSchedule, prisonNamesById),
   completedReviews: actionPlanReviewsResponse.completedReviews.map(

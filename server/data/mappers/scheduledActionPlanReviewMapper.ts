@@ -6,7 +6,7 @@ import ActionPlanReviewCalculationRuleValue from '../../enums/actionPlanReviewCa
 
 const toScheduledActionPlanReview = (
   scheduledActionPlanReviewResponse: ScheduledActionPlanReviewResponse,
-  prisonNamesById: Map<string, string>,
+  prisonNamesById: Record<string, string>,
 ): ScheduledActionPlanReview => ({
   reference: scheduledActionPlanReviewResponse.reference,
   reviewDateFrom: startOfDay(parseISO(scheduledActionPlanReviewResponse.reviewDateFrom)),
@@ -17,13 +17,13 @@ const toScheduledActionPlanReview = (
   createdByDisplayName: scheduledActionPlanReviewResponse.createdByDisplayName,
   createdAt: parseISO(scheduledActionPlanReviewResponse.createdAt),
   createdAtPrison:
-    prisonNamesById.get(scheduledActionPlanReviewResponse.createdAtPrison) ||
+    prisonNamesById[scheduledActionPlanReviewResponse.createdAtPrison] ||
     scheduledActionPlanReviewResponse.createdAtPrison,
   updatedBy: scheduledActionPlanReviewResponse.updatedBy,
   updatedByDisplayName: scheduledActionPlanReviewResponse.updatedByDisplayName,
   updatedAt: parseISO(scheduledActionPlanReviewResponse.updatedAt),
   updatedAtPrison:
-    prisonNamesById.get(scheduledActionPlanReviewResponse.updatedAtPrison) ||
+    prisonNamesById[scheduledActionPlanReviewResponse.updatedAtPrison] ||
     scheduledActionPlanReviewResponse.updatedAtPrison,
 })
 

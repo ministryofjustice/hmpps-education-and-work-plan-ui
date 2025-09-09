@@ -15,48 +15,19 @@ export default class PrisonService {
   ) {}
 
   /**
-   * Returns a Map of prison id to prison name
+   * Returns a simple object of prison id to prison name
    */
-  async getAllPrisonNamesById(username: string): Promise<Map<string, string>> {
+  async getAllPrisonNamesById(username: string): Promise<Record<string, string>> {
     try {
       const prisons = (await this.getCachedPrisons()) || (await this.retrieveAndCacheActivePrisons(username))
-      return new Map(prisons.map(obj => [obj.prisonId, obj.prisonName]))
+      return prisons.reduce((acc, prison) => {
+        acc[prison.prisonId] = prison.prisonName
+        return acc
+      }, {})
     } catch (e) {
       logger.error(`Error looking up prisons`, e)
-      return new Map<string, string>()
+      return {}
     }
-  }
-
-  /**
-   * Returns the [PrisonResponse] identified by the specified `prisonId`
-   * Return the object from the cache if it exists in the cache, else seed the cache by calling the API and return the
-   * specified [PrisonResponse]
-   */
-  private async getPrison(prisonId: string, username: string): Promise<PrisonResponse> {
-    return (
-      // return prison from the cache
-      (await this.getCachedPrison(prisonId)) ||
-      (async () => {
-        // or retrieve prisons from the API and cache them before returning the one we are looking for
-        const allPrisonResponses = await this.retrieveAndCacheActivePrisons(username)
-        return allPrisonResponses.find(prisonResponse => prisonResponse.prisonId === prisonId)
-      })()
-    )
-  }
-
-  private async getCachedPrison(prisonId: string): Promise<PrisonResponse> {
-    try {
-      const allActivePrisons = await this.prisonRegisterStore.getActivePrisons()
-      const cachedPrison = allActivePrisons.find(prisonResponse => prisonResponse.prisonId === prisonId)
-      if (cachedPrison) {
-        return cachedPrison
-      }
-      logger.debug(`Prison ${prisonId} not found in cache`)
-    } catch (ex) {
-      // Looking up the prisons from the cached data store failed for some reason. Return undefined.
-      logger.error('Error retrieving cached prisons', ex)
-    }
-    return undefined
   }
 
   private async getCachedPrisons(): Promise<Array<PrisonResponse>> {

@@ -38,19 +38,16 @@ describe('functionalSkillsController', () => {
   const FIVE_DAYS_AGO = subDays(NOW, 5)
   const TEN_DAYS_AGO = subDays(NOW, 10)
 
-  const mockAllPrisonNameLookup = (): Promise<Map<string, string>> => {
-    const prisonNamesById = new Map([
-      ['MDI', 'Moorland (HMP & YOI)'],
-      ['LFI', 'Lancaster Farms (HMP)'],
-      ['WMI', 'Wymott (HMP & YOI)'],
-    ])
-    return Promise.resolve(prisonNamesById)
+  const prisonNamesById = {
+    MDI: 'Moorland (HMP & YOI)',
+    LFI: 'Lancaster Farms (HMP)',
+    WMI: 'Wymott (HMP & YOI)',
   }
 
   describe('getFunctionalSkillsView', () => {
     it('should get functional skills view given curious service returns functional skills data for the prisoner', async () => {
       // Given
-      prisonService.getAllPrisonNamesById.mockImplementation(mockAllPrisonNameLookup)
+      prisonService.getAllPrisonNamesById.mockResolvedValue(prisonNamesById)
 
       const functionalSkills = validFunctionalSkills({
         prisonNumber,
@@ -121,7 +118,7 @@ describe('functionalSkillsController', () => {
           grade: 'Level 2',
           assessmentDate: FIVE_DAYS_AGO,
           prisonId: 'LEI',
-          prisonName: undefined,
+          prisonName: 'LEI',
         },
         {
           type: 'DIGITAL_LITERACY',

@@ -6,10 +6,10 @@ import ActionPlanReviewStatusValue from '../../enums/actionPlanReviewStatusValue
 import ActionPlanReviewCalculationRuleValue from '../../enums/actionPlanReviewCalculationRuleValue'
 
 describe('scheduledActionPlanReviewMapper', () => {
-  const examplePrisonNamesById = new Map([
-    ['BXI', 'Brixton (HMP)'],
-    ['MDI', 'Moorland (HMP & YOI)'],
-  ])
+  const examplePrisonNamesById = {
+    BXI: 'Brixton (HMP)',
+    MDI: 'Moorland (HMP & YOI)',
+  }
 
   it('should map a ScheduledActionPlanReviewResponse to a ScheduledActionPlanReview view model object', () => {
     // Given

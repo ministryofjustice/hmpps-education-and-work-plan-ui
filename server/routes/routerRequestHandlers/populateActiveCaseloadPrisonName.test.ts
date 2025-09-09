@@ -11,11 +11,11 @@ describe('populateActiveCaseloadPrisonName', () => {
   const username = 'a-dps-user'
   const activeCaseLoadId = 'BXI'
 
-  const prisonNamesById = new Map([
-    ['BXI', 'Brixton (HMP)'],
-    ['WDI', 'Wakefield (HMP)'],
-    ['BLI', 'Bristol (HMP)'],
-  ])
+  const prisonNamesById = {
+    BXI: 'Brixton (HMP)',
+    WDI: 'Wakefield (HMP)',
+    BLI: 'Bristol (HMP)',
+  }
 
   let req: Request
   let res: Response
@@ -66,9 +66,9 @@ describe('populateActiveCaseloadPrisonName', () => {
     expect(prisonService.getAllPrisonNamesById).toHaveBeenCalledWith(username)
   })
 
-  it('should store prisonId on res.locals given prison name lookup returns empty map', async () => {
+  it('should store prisonId on res.locals given prison name lookup returns empty object', async () => {
     // Given
-    prisonService.getAllPrisonNamesById.mockResolvedValue(new Map())
+    prisonService.getAllPrisonNamesById.mockResolvedValue({})
     res.locals.user.activeCaseLoadId = 'BXI'
 
     const expected = 'BXI'

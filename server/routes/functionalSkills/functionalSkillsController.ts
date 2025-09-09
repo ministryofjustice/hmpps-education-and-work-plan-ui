@@ -3,7 +3,6 @@ import { RequestHandler } from 'express'
 import FunctionalSkillsView from './functionalSkillsView'
 import PrisonService from '../../services/prisonService'
 import { functionalSkillsByType } from '../functionalSkillsResolver'
-import logger from '../../../logger'
 
 export default class FunctionalSkillsController {
   constructor(private readonly prisonService: PrisonService) {}
@@ -39,21 +38,12 @@ export default class FunctionalSkillsController {
     assessments: Array<Assessment>,
     username: string,
   ): Promise<Array<Assessment>> => {
-    const allPrisonNamesById = await this.getAllPrisonNamesByIdSafely(username)
+    const allPrisonNamesById = await this.prisonService.getAllPrisonNamesById(username)
     return assessments.map(assessment => {
       return {
         ...assessment,
-        prisonName: allPrisonNamesById.get(assessment.prisonId),
+        prisonName: allPrisonNamesById[assessment.prisonId] || assessment.prisonId,
       }
     })
-  }
-
-  private getAllPrisonNamesByIdSafely = async (username: string): Promise<Map<string, string>> => {
-    try {
-      return await this.prisonService.getAllPrisonNamesById(username)
-    } catch (error) {
-      logger.error(`Error retrieving prison names, defaulting to just IDs: ${error}`)
-      return new Map()
-    }
   }
 }

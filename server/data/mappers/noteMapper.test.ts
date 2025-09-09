@@ -4,10 +4,10 @@ import toNote from './noteMapper'
 import aValidNoteResponse from '../../testsupport/noteResponseTestDataBuilder'
 
 describe('noteMapper', () => {
-  const examplePrisonNamesById = new Map([
-    ['BXI', 'Brixton (HMP)'],
-    ['MDI', 'Moorland (HMP & YOI)'],
-  ])
+  const examplePrisonNamesById = {
+    BXI: 'Brixton (HMP)',
+    MDI: 'Moorland (HMP & YOI)',
+  }
 
   it('should map a NoteResponse to a Note view model object', () => {
     // Given

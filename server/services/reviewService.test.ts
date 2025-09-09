@@ -30,10 +30,10 @@ describe('reviewService', () => {
   const systemToken = 'a-system-token'
   const username = 'a-dps-user'
   const prisonNumber = 'A1234BC'
-  const prisonNamesById = new Map([
-    ['BXI', 'Brixton (HMP)'],
-    ['MDI', 'Moorland (HMP & YOI)'],
-  ])
+  const prisonNamesById = {
+    BXI: 'Brixton (HMP)',
+    MDI: 'Moorland (HMP & YOI)',
+  }
 
   beforeEach(() => {
     jest.resetAllMocks()
@@ -106,7 +106,7 @@ describe('reviewService', () => {
       // Given
       const actionPlanReviewsResponse = aValidActionPlanReviewsResponse()
       educationAndWorkPlanClient.getActionPlanReviews.mockResolvedValue(actionPlanReviewsResponse)
-      prisonService.getAllPrisonNamesById.mockRejectedValue(Error('Service Unavailable'))
+      prisonService.getAllPrisonNamesById.mockResolvedValue({})
 
       const expectedActionPlanReviews: ActionPlanReviews = {
         completedReviews: [

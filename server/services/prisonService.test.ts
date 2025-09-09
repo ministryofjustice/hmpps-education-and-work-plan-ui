@@ -58,12 +58,7 @@ describe('prisonService', () => {
       const actual = await prisonService.getAllPrisonNamesById(username)
 
       // Then
-      expect(actual).toEqual(
-        new Map([
-          ['ASI', 'Ashfield (HMP)'],
-          ['MDI', 'Moorland (HMP & YOI)'],
-        ]),
-      )
+      expect(actual).toEqual({ ASI: 'Ashfield (HMP)', MDI: 'Moorland (HMP & YOI)' })
       expect(prisonRegisterStore.getActivePrisons).toHaveBeenCalled()
       expect(prisonRegisterClient.getAllPrisons).not.toHaveBeenCalled()
       expect(prisonRegisterStore.setActivePrisons).not.toHaveBeenCalled()
@@ -78,12 +73,7 @@ describe('prisonService', () => {
       const actual = await prisonService.getAllPrisonNamesById(username)
 
       // Then
-      expect(actual).toEqual(
-        new Map([
-          ['ASI', 'Ashfield (HMP)'],
-          ['MDI', 'Moorland (HMP & YOI)'],
-        ]),
-      )
+      expect(actual).toEqual({ ASI: 'Ashfield (HMP)', MDI: 'Moorland (HMP & YOI)' })
       expect(prisonRegisterStore.getActivePrisons).toHaveBeenCalled()
       expect(prisonRegisterClient.getAllPrisons).toHaveBeenCalledWith(username)
       expect(prisonRegisterStore.setActivePrisons).toHaveBeenCalledWith(activePrisons, 1)
@@ -98,12 +88,7 @@ describe('prisonService', () => {
       const actual = await prisonService.getAllPrisonNamesById(username)
 
       // Then
-      expect(actual).toEqual(
-        new Map([
-          ['ASI', 'Ashfield (HMP)'],
-          ['MDI', 'Moorland (HMP & YOI)'],
-        ]),
-      )
+      expect(actual).toEqual({ ASI: 'Ashfield (HMP)', MDI: 'Moorland (HMP & YOI)' })
       expect(prisonRegisterStore.getActivePrisons).toHaveBeenCalled()
       expect(prisonRegisterClient.getAllPrisons).toHaveBeenCalledWith(username)
       expect(prisonRegisterStore.setActivePrisons).toHaveBeenCalledWith(activePrisons, 1)
@@ -118,7 +103,7 @@ describe('prisonService', () => {
       const actual = await prisonService.getAllPrisonNamesById(username)
 
       // Then
-      expect(actual).toEqual(new Map())
+      expect(actual).toEqual({})
       expect(prisonRegisterStore.getActivePrisons).toHaveBeenCalled()
       expect(prisonRegisterClient.getAllPrisons).toHaveBeenCalledWith(username)
       expect(prisonRegisterStore.setActivePrisons).not.toHaveBeenCalled()
@@ -134,12 +119,7 @@ describe('prisonService', () => {
       const actual = await prisonService.getAllPrisonNamesById(username)
 
       // Then
-      expect(actual).toEqual(
-        new Map([
-          ['ASI', 'Ashfield (HMP)'],
-          ['MDI', 'Moorland (HMP & YOI)'],
-        ]),
-      )
+      expect(actual).toEqual({ ASI: 'Ashfield (HMP)', MDI: 'Moorland (HMP & YOI)' })
       expect(prisonRegisterStore.getActivePrisons).toHaveBeenCalled()
       expect(prisonRegisterClient.getAllPrisons).toHaveBeenCalledWith(username)
       expect(prisonRegisterStore.setActivePrisons).toHaveBeenCalledWith(activePrisons, 1)
