@@ -58,6 +58,13 @@
       }
     }) }}
 
+    {% if pageHasApiErrors %}
+      <div class="hmpps-api-error-banner" data-qa="api-error-banner">
+        <p>Sorry, there is a problem with the service</p>
+        <p>Some information on this page may be unavailable. Try again later.</p>
+      </div>
+    {% endif %}
+
     {% block beforeContent %}{% endblock %}
     <main class="govuk-main-wrapper govuk-!-padding-top-0 {{ mainClasses }}" id="main-content" role="main"{% if mainLang %} lang="{{ mainLang }}"{% endif %}>
       {% if successMessage %}
