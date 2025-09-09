@@ -1,6 +1,7 @@
 import type { Assessment, InPrisonCourse, PrisonerSummary } from 'viewModels'
 import ActionPlanReviewStatusValue from '../../enums/actionPlanReviewStatusValue'
 import InductionScheduleStatusValue from '../../enums/inductionScheduleStatusValue'
+import { Result } from '../../utils/result/result'
 
 type OverviewViewRenderArgs = {
   tab: string
@@ -44,6 +45,7 @@ type OverviewViewRenderArgs = {
   }
   inductionSchedule: InductionScheduleView
   actionPlanReview: ActionPlanReviewScheduleView
+  prisonNamesById: Result<Record<string, string>>
 }
 
 type ActionPlanReviewScheduleView = {

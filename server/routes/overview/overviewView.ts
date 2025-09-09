@@ -12,6 +12,7 @@ import type { InductionDto } from 'inductionDto'
 import type { OverviewViewRenderArgs } from './overviewViewTypes'
 import dateComparator from '../dateComparator'
 import { toActionPlanReviewScheduleView, toInductionScheduleView } from './overviewViewFunctions'
+import { Result } from '../../utils/result/result'
 
 export default class OverviewView {
   constructor(
@@ -25,10 +26,12 @@ export default class OverviewView {
       problemRetrievingData: boolean
       inductionDto?: InductionDto
     },
-    private readonly prisonNamesById: Record<string, string>,
+    private readonly prisonNamesById: Result<Record<string, string>>,
   ) {}
 
   get renderArgs(): OverviewViewRenderArgs {
+    const prisonNamesById = this.prisonNamesById.isFulfilled() ? this.prisonNamesById.getOrThrow() : {}
+
     const today = startOfToday()
     const twelveMonthsAgo = sub(today, { months: 12 })
     const hasCoursesCompletedMoreThan12MonthsAgo = !this.inPrisonCourses.problemRetrievingData
@@ -74,7 +77,7 @@ export default class OverviewView {
       lastSessionConductedBy = this.induction.inductionDto.updatedByDisplayName
       lastSessionConductedAt = this.induction.inductionDto.updatedAt
       lastSessionConductedAtPrison =
-        this.prisonNamesById[this.induction.inductionDto.updatedAtPrison] || this.induction.inductionDto.updatedAtPrison
+        prisonNamesById[this.induction.inductionDto.updatedAtPrison] || this.induction.inductionDto.updatedAtPrison
     } else if (prisonerHasHadInductionAndAtLeastOneReview) {
       lastSessionConductedBy = mostRecentReviewSession.createdByDisplayName
       lastSessionConductedAt = mostRecentReviewSession.createdAt
@@ -129,6 +132,7 @@ export default class OverviewView {
       },
       inductionSchedule: toInductionScheduleView(this.inductionSchedule, this.induction.inductionDto),
       actionPlanReview: toActionPlanReviewScheduleView(this.actionPlanReviews),
+      prisonNamesById: this.prisonNamesById,
     }
   }
 }
