@@ -9,7 +9,8 @@ const retrievePrisonNamesById = (prisonService: PrisonService): RequestHandler =
   return async (req: Request, res: Response, next: NextFunction) => {
     const { username } = req.user
 
-    res.locals.prisonNamesById = await Result.wrap(prisonService.getAllPrisonNamesById(username))
+    const { apiErrorCallback } = res.locals
+    res.locals.prisonNamesById = await Result.wrap(prisonService.getAllPrisonNamesById(username), apiErrorCallback)
 
     return next()
   }

@@ -11,6 +11,11 @@ import {
   learnerEducationPagedResponsePage2Of2,
 } from '../testsupport/learnerEducationPagedResponseTestDataBuilder'
 import PrisonService from './prisonService'
+import {
+  aLearnerLatestAssessmentV1DTO,
+  aLearnerLddInfoExternalV1DTO,
+  anAllAssessmentDTO,
+} from '../testsupport/curiousAssessmentsTestDataBuilder'
 
 jest.mock('../data/curiousClient')
 jest.mock('../data/hmppsAuthClient')
@@ -34,23 +39,30 @@ describe('curiousService', () => {
   describe('getPrisonerSupportNeeds', () => {
     it('should get prisoner support needs given a known prison number', async () => {
       // Given
-      const learnerProfiles = [
-        {
-          ...aValidLearnerProfile(),
-          rapidAssessmentDate: '2022-02-18',
-          inDepthAssessmentDate: '2022-02-18',
-        },
-      ]
-      curiousClient.getLearnerProfile.mockResolvedValue(learnerProfiles)
+      const allAssessments = anAllAssessmentDTO({
+        v1Assessments: [
+          aLearnerLatestAssessmentV1DTO({
+            prisonNumber: 'G6123VU',
+            lddAssessments: [
+              aLearnerLddInfoExternalV1DTO({
+                prisonId: 'MDI',
+                rapidAssessmentDate: '2022-02-18',
+                inDepthAssessmentDate: '2022-02-18',
+                lddPrimaryName: 'Visual impairment',
+                lddSecondaryNames: ['Hearing impairment'],
+              }),
+            ],
+          }),
+        ],
+      })
+      curiousClient.getAssessmentsByPrisonNumber.mockResolvedValue(allAssessments)
 
       const expectedSupportNeeds: PrisonerSupportNeeds = {
-        problemRetrievingData: false,
-        healthAndSupportNeeds: [
+        lddAssessments: [
           {
             prisonId: 'MDI',
-            prisonName: 'Moorland (HMP & YOI)',
-            rapidAssessmentDate: new Date('2022-02-18'),
-            inDepthAssessmentDate: new Date('2022-02-18'),
+            rapidAssessmentDate: startOfDay('2022-02-18'),
+            inDepthAssessmentDate: startOfDay('2022-02-18'),
             primaryLddAndHealthNeeds: 'Visual impairment',
             additionalLddAndHealthNeeds: ['Hearing impairment'],
             hasSupportNeeds: true,
@@ -59,52 +71,44 @@ describe('curiousService', () => {
       }
 
       // When
-      const actual = await curiousService.getPrisonerSupportNeeds(prisonNumber, username)
+      const actual = await curiousService.getPrisonerSupportNeeds(prisonNumber)
 
       // Then
       expect(actual).toEqual(expectedSupportNeeds)
-      expect(curiousClient.getLearnerProfile).toHaveBeenCalledWith(prisonNumber)
+      expect(curiousClient.getAssessmentsByPrisonNumber).toHaveBeenCalledWith(prisonNumber)
     })
 
-    it('should handle retrieval of prisoner support needs given Curious returns an unexpected error for the learner profile', async () => {
+    it('should rethrow error given Curious returns an error for the assessments', async () => {
       // Given
       const curiousApiError = {
         message: 'Internal Server Error',
         status: 500,
         text: { errorCode: 'VC5000', errorMessage: 'Internal server error', httpStatusCode: 500 },
       }
-      curiousClient.getLearnerProfile.mockRejectedValue(curiousApiError)
-
-      const expectedSupportNeeds: PrisonerSupportNeeds = {
-        problemRetrievingData: true,
-        healthAndSupportNeeds: [],
-      }
+      curiousClient.getAssessmentsByPrisonNumber.mockRejectedValue(curiousApiError)
 
       // When
-      const actual = await curiousService.getPrisonerSupportNeeds(prisonNumber, username).catch(error => {
-        return error
-      })
+      const actual = await curiousService.getPrisonerSupportNeeds(prisonNumber).catch(error => error)
 
       // Then
-      expect(actual).toEqual(expectedSupportNeeds)
-      expect(curiousClient.getLearnerProfile).toHaveBeenCalledWith(prisonNumber)
+      expect(actual).toEqual(curiousApiError)
+      expect(curiousClient.getAssessmentsByPrisonNumber).toHaveBeenCalledWith(prisonNumber)
     })
 
-    it('should handle retrieval of prisoner support needs given Curious API client returns null indicating not found error for the learner profile', async () => {
+    it('should handle retrieval of prisoner support needs given Curious API client returns null indicating not found error for the prisoner assessments', async () => {
       // Given
-      curiousClient.getLearnerProfile.mockResolvedValue(null)
+      curiousClient.getAssessmentsByPrisonNumber.mockResolvedValue(null)
 
       const expectedSupportNeeds: PrisonerSupportNeeds = {
-        problemRetrievingData: false,
-        healthAndSupportNeeds: [],
+        lddAssessments: [],
       }
 
       // When
-      const actual = await curiousService.getPrisonerSupportNeeds(prisonNumber, username)
+      const actual = await curiousService.getPrisonerSupportNeeds(prisonNumber)
 
       // Then
       expect(actual).toEqual(expectedSupportNeeds)
-      expect(curiousClient.getLearnerProfile).toHaveBeenCalledWith(prisonNumber)
+      expect(curiousClient.getAssessmentsByPrisonNumber).toHaveBeenCalledWith(prisonNumber)
     })
   })
 

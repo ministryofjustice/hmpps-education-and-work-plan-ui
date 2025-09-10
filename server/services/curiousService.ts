@@ -15,15 +15,13 @@ export default class CuriousService {
     private readonly prisonService: PrisonService,
   ) {}
 
-  async getPrisonerSupportNeeds(prisonNumber: string, username: string): Promise<PrisonerSupportNeeds> {
-    const prisonNamesById = await this.prisonService.getAllPrisonNamesById(username)
-
+  async getPrisonerSupportNeeds(prisonNumber: string): Promise<PrisonerSupportNeeds> {
     try {
-      const learnerProfiles = await this.getLearnerProfile(prisonNumber)
-      return toPrisonerSupportNeeds(learnerProfiles, prisonNamesById)
+      const allPrisonerAssessments = await this.curiousClient.getAssessmentsByPrisonNumber(prisonNumber)
+      return toPrisonerSupportNeeds(allPrisonerAssessments)
     } catch (error) {
-      logger.error(`Error retrieving support needs data from Curious: ${JSON.stringify(error)}`)
-      return { problemRetrievingData: true, healthAndSupportNeeds: [] }
+      logger.error('Error retrieving support needs data from Curious', error)
+      throw error
     }
   }
 

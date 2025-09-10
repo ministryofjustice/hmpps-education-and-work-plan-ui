@@ -10,23 +10,22 @@ describe('retrieveCuriousSupportNeeds', () => {
   const requestHandler = retrieveCuriousSupportNeeds(curiousService)
 
   const prisonNumber = 'A1234GC'
-  const username = 'a-dps-user'
 
+  const apiErrorCallback = jest.fn()
   let req: Request
   const res = {
-    locals: {} as Record<string, unknown>,
+    locals: { apiErrorCallback },
   } as unknown as Response
   const next = jest.fn()
 
   beforeEach(() => {
     jest.resetAllMocks()
     req = {
-      user: { username },
       params: { prisonNumber },
     } as unknown as Request
   })
 
-  it('should retrieve prisoner functional skills', async () => {
+  it('should retrieve curious support needs and store on res.locals', async () => {
     // Given
     const expectedSupportNeeds = aValidPrisonerSupportNeeds()
     curiousService.getPrisonerSupportNeeds.mockResolvedValue(expectedSupportNeeds)
@@ -35,8 +34,23 @@ describe('retrieveCuriousSupportNeeds', () => {
     await requestHandler(req, res, next)
 
     // Then
-    expect(curiousService.getPrisonerSupportNeeds).toHaveBeenCalledWith(prisonNumber, username)
-    expect(res.locals.prisonerSupportNeeds).toEqual(expectedSupportNeeds)
+    expect(res.locals.prisonerSupportNeeds.isFulfilled()).toEqual(true)
+    expect(res.locals.prisonerSupportNeeds.value).toEqual(expectedSupportNeeds)
+    expect(curiousService.getPrisonerSupportNeeds).toHaveBeenCalledWith(prisonNumber)
     expect(next).toHaveBeenCalled()
+  })
+
+  it('should store un-fulfilled promise on res.locals given service returns an error', async () => {
+    // Given
+    const error = new Error('An error occurred')
+    curiousService.getPrisonerSupportNeeds.mockRejectedValue(error)
+
+    // When
+    await requestHandler(req, res, next)
+
+    // Then
+    expect(res.locals.prisonerSupportNeeds.isFulfilled()).toEqual(false)
+    expect(next).toHaveBeenCalled()
+    expect(apiErrorCallback).toHaveBeenCalledWith(error)
   })
 })
