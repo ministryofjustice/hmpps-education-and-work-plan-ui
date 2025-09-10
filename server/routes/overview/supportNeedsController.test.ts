@@ -2,6 +2,7 @@ import { Request, Response } from 'express'
 import aValidPrisonerSummary from '../../testsupport/prisonerSummaryTestDataBuilder'
 import aValidPrisonerSupportNeeds from '../../testsupport/supportNeedsTestDataBuilder'
 import SupportNeedsController from './supportNeedsController'
+import { Result } from '../../utils/result/result'
 
 jest.mock('../../services/curiousService')
 jest.mock('../../services/prisonService')
@@ -11,7 +12,8 @@ describe('supportNeedsController', () => {
 
   const prisonNumber = 'A1234GC'
   const prisonerSummary = aValidPrisonerSummary({ prisonNumber })
-  const prisonerSupportNeeds = aValidPrisonerSupportNeeds()
+  const prisonerSupportNeeds = Result.fulfilled(aValidPrisonerSupportNeeds())
+  const prisonNamesById = Result.fulfilled({ MDI: 'Moorland (HMP & YOI)', WDI: 'Wakefield (HMP)' })
 
   const req = {
     user: {
@@ -24,6 +26,7 @@ describe('supportNeedsController', () => {
     locals: {
       prisonerSummary,
       prisonerSupportNeeds,
+      prisonNamesById,
     },
   } as unknown as Response
   const next = jest.fn()
@@ -38,10 +41,10 @@ describe('supportNeedsController', () => {
     req.params.tab = expectedTab
 
     const expectedView = {
-      prisonerSummary,
       tab: expectedTab,
+      prisonerSummary,
+      prisonNamesById,
       supportNeeds: prisonerSupportNeeds,
-      atLeastOnePrisonHasSupportNeeds: true,
     }
 
     // When

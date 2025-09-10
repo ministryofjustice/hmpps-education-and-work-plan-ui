@@ -1,30 +1,27 @@
 import { parseISO, startOfDay } from 'date-fns'
-import type { HealthAndSupportNeeds, PrisonerSupportNeeds } from 'viewModels'
-import type { LearnerProfile } from 'curiousApiClient'
+import type { LddAssessment, PrisonerSupportNeeds } from 'viewModels'
+import type { AllAssessmentDTO, LearnerLatestAssessmentV1DTO, LearnerLddInfoExternalV1DTO } from 'curiousApiClient'
 
-const toPrisonerSupportNeeds = (
-  learnerProfiles: Array<LearnerProfile>,
-  prisonNamesById: Record<string, string>,
-): PrisonerSupportNeeds => ({
-  problemRetrievingData: false,
-  healthAndSupportNeeds: learnerProfiles.map(profile => toHealthAndSupportNeeds(profile, prisonNamesById)),
-})
+const toPrisonerSupportNeeds = (allAssessments: AllAssessmentDTO): PrisonerSupportNeeds => {
+  const learnerLddInfos = ((allAssessments?.v1 || []) as Array<LearnerLatestAssessmentV1DTO>).flatMap(
+    assessment => assessment.ldd,
+  ) as Array<LearnerLddInfoExternalV1DTO>
+  return {
+    lddAssessments: learnerLddInfos.map(toLddAssessment),
+  }
+}
 
-const toHealthAndSupportNeeds = (
-  learnerProfile: LearnerProfile,
-  prisonNamesById: Record<string, string>,
-): HealthAndSupportNeeds => ({
-  prisonId: learnerProfile.establishmentId,
-  prisonName: prisonNamesById[learnerProfile.establishmentId] || learnerProfile.establishmentId,
-  rapidAssessmentDate: dateOrNull(learnerProfile.rapidAssessmentDate),
-  inDepthAssessmentDate: dateOrNull(learnerProfile.inDepthAssessmentDate),
-  primaryLddAndHealthNeeds: learnerProfile.primaryLDDAndHealthProblem,
-  additionalLddAndHealthNeeds: learnerProfile.additionalLDDAndHealthProblems?.sort() || [],
+const toLddAssessment = (learnerLddInfo: LearnerLddInfoExternalV1DTO): LddAssessment => ({
+  prisonId: learnerLddInfo.establishmentId,
+  rapidAssessmentDate: dateOrNull(learnerLddInfo.rapidAssessmentDate),
+  inDepthAssessmentDate: dateOrNull(learnerLddInfo.inDepthAssessmentDate),
+  primaryLddAndHealthNeeds: learnerLddInfo.lddPrimaryName,
+  additionalLddAndHealthNeeds: learnerLddInfo.lddSecondaryNames || [],
   hasSupportNeeds: !!(
-    learnerProfile.rapidAssessmentDate ||
-    learnerProfile.inDepthAssessmentDate ||
-    learnerProfile.primaryLddAndHealthNeeds ||
-    (learnerProfile.additionalLddAndHealthNeeds || []).length > 0
+    learnerLddInfo.rapidAssessmentDate ||
+    learnerLddInfo.inDepthAssessmentDate ||
+    learnerLddInfo.lddPrimaryName ||
+    (learnerLddInfo.lddSecondaryNames || []).length > 0
   ),
 })
 

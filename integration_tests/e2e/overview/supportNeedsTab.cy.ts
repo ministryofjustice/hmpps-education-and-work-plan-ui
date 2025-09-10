@@ -14,11 +14,12 @@ context('Prisoner Overview page - Support Needs tab', () => {
     cy.task('stubLearnerEducation')
     cy.task('stubGetInduction')
     cy.task('getActionPlan')
+    cy.task('stubGetAllPrisons')
   })
 
   it('should display Support Needs data', () => {
     // Given
-    cy.task('stubLearnerProfile')
+    cy.task('stubLearnerAssessments')
 
     cy.signIn()
     const prisonNumber = 'G6115VJ'
@@ -37,7 +38,7 @@ context('Prisoner Overview page - Support Needs tab', () => {
 
   it('should display no results message given curious API returns a 404', () => {
     // Given
-    cy.task('stubLearnerProfile404Error')
+    cy.task('stubLearnerAssessments404Error')
 
     cy.signIn()
     const prisonNumber = 'G6115VJ'
@@ -56,7 +57,7 @@ context('Prisoner Overview page - Support Needs tab', () => {
 
   it('should display curious unavailable message given curious is unavailable', () => {
     // Given
-    cy.task('stubLearnerProfile401Error')
+    cy.task('stubLearnerAssessments500Error')
 
     cy.signIn()
     const prisonNumber = 'G6115VJ'

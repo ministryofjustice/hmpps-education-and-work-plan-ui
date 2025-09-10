@@ -3,10 +3,9 @@ import { startOfDay } from 'date-fns'
 
 export default function aValidPrisonerSupportNeeds(): PrisonerSupportNeeds {
   return {
-    healthAndSupportNeeds: [
+    lddAssessments: [
       {
         prisonId: 'MDI',
-        prisonName: 'Moorland (HMP & YOI)',
         rapidAssessmentDate: startOfDay('2022-02-18'),
         inDepthAssessmentDate: undefined,
         primaryLddAndHealthNeeds: 'Visual impairment',
@@ -19,7 +18,6 @@ export default function aValidPrisonerSupportNeeds(): PrisonerSupportNeeds {
       },
       {
         prisonId: 'ACI',
-        prisonName: 'Altcourse (HMP)',
         rapidAssessmentDate: undefined,
         inDepthAssessmentDate: undefined,
         primaryLddAndHealthNeeds: null,
@@ -27,6 +25,5 @@ export default function aValidPrisonerSupportNeeds(): PrisonerSupportNeeds {
         hasSupportNeeds: false,
       },
     ],
-    problemRetrievingData: false,
   }
 }

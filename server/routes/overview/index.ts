@@ -53,6 +53,7 @@ export default (router: Router, services: Services) => {
   ])
 
   router.get('/plan/:prisonNumber/view/support-needs', [
+    retrievePrisonNamesById(prisonService),
     retrieveCuriousSupportNeeds(curiousService),
     asyncMiddleware(supportNeedsController.getSupportNeedsView),
   ])

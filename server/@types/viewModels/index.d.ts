@@ -61,13 +61,12 @@ declare module 'viewModels' {
   }
 
   export interface PrisonerSupportNeeds {
-    problemRetrievingData: boolean
-    healthAndSupportNeeds: Array<HealthAndSupportNeeds>
+    lddAssessments: Array<LddAssessment>
+    // TODO - add property for Curious 2 ALN assessments
   }
 
-  export interface HealthAndSupportNeeds {
+  export interface LddAssessment {
     prisonId: string
-    prisonName: string
     rapidAssessmentDate?: Date
     inDepthAssessmentDate?: Date
     primaryLddAndHealthNeeds?: string
