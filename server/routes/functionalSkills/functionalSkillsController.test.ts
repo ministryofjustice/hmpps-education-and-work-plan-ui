@@ -1,23 +1,20 @@
 import { Request, Response } from 'express'
-import { subDays } from 'date-fns'
-import type { Assessment } from 'viewModels'
-import PrisonService from '../../services/prisonService'
 import FunctionalSkillsController from './functionalSkillsController'
 import aValidPrisonerSummary from '../../testsupport/prisonerSummaryTestDataBuilder'
-import {
-  functionalSkillsWithProblemRetrievingData,
-  validFunctionalSkills,
-  validFunctionalSkillsWithNoAssessments,
-} from '../../testsupport/functionalSkillsTestDataBuilder'
-
-jest.mock('../../services/prisonService')
+import { validFunctionalSkills } from '../../testsupport/functionalSkillsTestDataBuilder'
+import { Result } from '../../utils/result/result'
 
 describe('functionalSkillsController', () => {
-  const prisonService = new PrisonService(null, null) as jest.Mocked<PrisonService>
-  const controller = new FunctionalSkillsController(prisonService)
+  const controller = new FunctionalSkillsController()
 
   const prisonNumber = 'A1234GC'
   const prisonerSummary = aValidPrisonerSummary({ prisonNumber })
+  const prisonNamesById = Result.fulfilled({
+    MDI: 'Moorland (HMP & YOI)',
+    LFI: 'Lancaster Farms (HMP)',
+    WMI: 'Wymott (HMP & YOI)',
+  })
+  const prisonerFunctionalSkills = validFunctionalSkills()
 
   const req = {
     params: { prisonNumber },
@@ -25,7 +22,7 @@ describe('functionalSkillsController', () => {
   } as unknown as Request
   const res = {
     render: jest.fn(),
-    locals: { prisonerSummary },
+    locals: { prisonerSummary, prisonNamesById, prisonerFunctionalSkills },
   } as unknown as Response
   const next = jest.fn()
 
@@ -33,142 +30,13 @@ describe('functionalSkillsController', () => {
     jest.resetAllMocks()
   })
 
-  const NOW = new Date()
-  const YESTERDAY = subDays(NOW, 1)
-  const FIVE_DAYS_AGO = subDays(NOW, 5)
-  const TEN_DAYS_AGO = subDays(NOW, 10)
-
-  const prisonNamesById = {
-    MDI: 'Moorland (HMP & YOI)',
-    LFI: 'Lancaster Farms (HMP)',
-    WMI: 'Wymott (HMP & YOI)',
-  }
-
   describe('getFunctionalSkillsView', () => {
     it('should get functional skills view given curious service returns functional skills data for the prisoner', async () => {
       // Given
-      prisonService.getAllPrisonNamesById.mockResolvedValue(prisonNamesById)
-
-      const functionalSkills = validFunctionalSkills({
-        prisonNumber,
-        assessments: [
-          {
-            type: 'ENGLISH',
-            grade: 'Level 1',
-            assessmentDate: TEN_DAYS_AGO,
-            prisonId: 'MDI',
-            prisonName: 'MOORLAND (HMP/YOI)',
-          },
-          {
-            type: 'MATHS',
-            grade: 'Level 1',
-            assessmentDate: TEN_DAYS_AGO,
-            prisonId: 'MDI',
-            prisonName: 'MOORLAND (HMP/YOI)',
-          },
-          {
-            type: 'DIGITAL_LITERACY',
-            grade: 'Level 1',
-            assessmentDate: TEN_DAYS_AGO,
-            prisonId: 'MDI',
-            prisonName: 'MOORLAND (HMP/YOI)',
-          },
-          {
-            type: 'DIGITAL_LITERACY',
-            grade: 'Level 3',
-            assessmentDate: YESTERDAY,
-            prisonId: 'MDI',
-            prisonName: 'MOORLAND (HMP/YOI)',
-          },
-          {
-            type: 'MATHS',
-            grade: 'Level 2',
-            assessmentDate: FIVE_DAYS_AGO,
-            prisonId: 'LFI',
-            prisonName: 'LANCASTER FARMS (HMP)',
-          },
-          {
-            type: 'DIGITAL_LITERACY',
-            grade: 'Level 2',
-            assessmentDate: FIVE_DAYS_AGO,
-            prisonId: 'LEI',
-            prisonName: 'LEEDS (HMP)',
-          },
-          {
-            type: 'MATHS',
-            grade: 'Level 3',
-            assessmentDate: YESTERDAY,
-            prisonId: 'WMI',
-            prisonName: 'WYMOTT (HMP/YOI)',
-          },
-        ],
-      })
-      res.locals.prisonerFunctionalSkills = functionalSkills
-
-      const expectedDigitalSkills: Array<Assessment> = [
-        {
-          type: 'DIGITAL_LITERACY',
-          grade: 'Level 3',
-          assessmentDate: YESTERDAY,
-          prisonId: 'MDI',
-          prisonName: 'Moorland (HMP & YOI)',
-        },
-        {
-          type: 'DIGITAL_LITERACY',
-          grade: 'Level 2',
-          assessmentDate: FIVE_DAYS_AGO,
-          prisonId: 'LEI',
-          prisonName: 'LEI',
-        },
-        {
-          type: 'DIGITAL_LITERACY',
-          grade: 'Level 1',
-          assessmentDate: TEN_DAYS_AGO,
-          prisonId: 'MDI',
-          prisonName: 'Moorland (HMP & YOI)',
-        },
-      ]
-
-      const expectedEnglishSkills = [
-        {
-          type: 'ENGLISH',
-          grade: 'Level 1',
-          assessmentDate: TEN_DAYS_AGO,
-          prisonId: 'MDI',
-          prisonName: 'Moorland (HMP & YOI)',
-        },
-      ] as Array<Assessment>
-
-      const expectedMathsSkills = [
-        {
-          type: 'MATHS',
-          grade: 'Level 3',
-          assessmentDate: YESTERDAY,
-          prisonId: 'WMI',
-          prisonName: 'Wymott (HMP & YOI)',
-        },
-        {
-          type: 'MATHS',
-          grade: 'Level 2',
-          assessmentDate: FIVE_DAYS_AGO,
-          prisonId: 'LFI',
-          prisonName: 'Lancaster Farms (HMP)',
-        },
-        {
-          type: 'MATHS',
-          grade: 'Level 1',
-          assessmentDate: TEN_DAYS_AGO,
-          prisonId: 'MDI',
-          prisonName: 'Moorland (HMP & YOI)',
-        },
-      ] as Array<Assessment>
-
       const expectedView = {
         prisonerSummary,
-        problemRetrievingData: false,
-        digitalSkills: expectedDigitalSkills,
-        englishSkills: expectedEnglishSkills,
-        mathsSkills: expectedMathsSkills,
+        prisonNamesById,
+        prisonerFunctionalSkills,
       }
 
       // When
@@ -176,60 +44,6 @@ describe('functionalSkillsController', () => {
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/functionalSkills/index', expectedView)
-    })
-
-    it('should get functional skills view given curious service returns no functional skills data for the prisoner', async () => {
-      // Given
-      const functionalSkills = validFunctionalSkillsWithNoAssessments({ prisonNumber })
-      res.locals.prisonerFunctionalSkills = functionalSkills
-
-      const expectedDigitalSkills = [] as Array<Assessment>
-
-      const expectedEnglishSkills = [] as Array<Assessment>
-
-      const expectedMathsSkills = [] as Array<Assessment>
-
-      const expectedView = {
-        prisonerSummary,
-        problemRetrievingData: false,
-        digitalSkills: expectedDigitalSkills,
-        englishSkills: expectedEnglishSkills,
-        mathsSkills: expectedMathsSkills,
-      }
-
-      // When
-      await controller.getFunctionalSkillsView(req, res, next)
-
-      // Then
-      expect(res.render).toHaveBeenCalledWith('pages/functionalSkills/index', expectedView)
-      expect(prisonService.getAllPrisonNamesById).not.toHaveBeenCalled()
-    })
-
-    it('should get functional skills view given curious service has problem retrieving data', async () => {
-      // Given
-      const functionalSkills = functionalSkillsWithProblemRetrievingData({ prisonNumber })
-      res.locals.prisonerFunctionalSkills = functionalSkills
-
-      const expectedDigitalSkills = [] as Array<Assessment>
-
-      const expectedEnglishSkills = [] as Array<Assessment>
-
-      const expectedMathsSkills = [] as Array<Assessment>
-
-      const expectedView = {
-        prisonerSummary,
-        problemRetrievingData: true,
-        digitalSkills: expectedDigitalSkills,
-        englishSkills: expectedEnglishSkills,
-        mathsSkills: expectedMathsSkills,
-      }
-
-      // When
-      await controller.getFunctionalSkillsView(req, res, next)
-
-      // Then
-      expect(res.render).toHaveBeenCalledWith('pages/functionalSkills/index', expectedView)
-      expect(prisonService.getAllPrisonNamesById).not.toHaveBeenCalled()
     })
   })
 })

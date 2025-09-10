@@ -3,6 +3,7 @@
     `config` argument is an object with the following properties:
       * id - the id of the sortable table
       * assessments - an array of assessment data, where each item is an instance of view model type Assessment
+      * prisonNamesById - key/value pairs of prisonIDs to prison names
     ------------------------------------------------------------- #}
 {% macro sortableTable(config) %}
     <table class="govuk-table" data-module="moj-sortable-table" data-qa="{{ config.id }}-sortable-table">
@@ -17,12 +18,13 @@
 
       <tbody class="govuk-table__body">
         {% for assessment in config.assessments %}
-        <tr class="govuk-table__row">
-          <td class="govuk-table__cell">{{ assessment.type | formatFunctionalSkillType }}</td>
-          <td class="govuk-table__cell">{{ assessment.prisonName if assessment.prisonName else assessment.prisonId }}</td>
-          <td class="govuk-table__cell">{{ assessment.assessmentDate | formatDate('D MMMM YYYY') }}</td>
-          <td class="govuk-table__cell">{{ assessment.grade }}</td>
-        </tr>
+          {% set prisonName = config.prisonNamesById[assessment.prisonId] | default(assessment.prisonId) %}
+          <tr class="govuk-table__row">
+            <td class="govuk-table__cell">{{ assessment.type | formatFunctionalSkillType }}</td>
+            <td class="govuk-table__cell">{{ prisonName }}</td>
+            <td class="govuk-table__cell">{{ assessment.assessmentDate | formatDate('d MMMM yyyy') }}</td>
+            <td class="govuk-table__cell">{{ assessment.grade }}</td>
+          </tr>
         {% endfor %}
       </tbody>
     </table>

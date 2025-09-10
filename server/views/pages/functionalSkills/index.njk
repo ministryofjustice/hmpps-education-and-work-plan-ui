@@ -42,7 +42,12 @@
     <div class="govuk-grid-row">
       <div class="govuk-grid-column-two-thirds">
 
-        {% if not problemRetrievingData %}
+        {% if not prisonerFunctionalSkills.problemRetrievingData %}
+
+          {% set prisonNamesById = prisonNamesById.value if prisonNamesById.isFulfilled() else {} %}
+          {% set englishSkills = prisonerFunctionalSkills.assessments | filterArrayOnProperty('type', 'ENGLISH') | sort(attribute = 'assessmentDate', reverse = true) %}
+          {% set mathsSkills = prisonerFunctionalSkills.assessments | filterArrayOnProperty('type', 'MATHS') | sort(attribute = 'assessmentDate', reverse = true) %}
+          {% set digitalSkills = prisonerFunctionalSkills.assessments | filterArrayOnProperty('type', 'DIGITAL_LITERACY') | sort(attribute = 'assessmentDate', reverse = true) %}
 
           <p class="govuk-hint">Information from Curious. These scores are from a person's induction assessment.<br/>For recent functional skills qualifications, go to in-prison courses and qualifications.</p>
 
@@ -51,6 +56,7 @@
           {% if englishSkills.length > 0 %}
             {{ sortableTable({
               id: "english-skills",
+              prisonNamesById: prisonNamesById,
               assessments: englishSkills
             }) }}
           {% else %}
@@ -62,6 +68,7 @@
           {% if mathsSkills.length > 0 %}
             {{ sortableTable({
               id: "maths-skills",
+              prisonNamesById: prisonNamesById,
               assessments: mathsSkills
             }) }}
           {% else %}
@@ -73,6 +80,7 @@
           {% if digitalSkills.length > 0 %}
             {{ sortableTable({
               id: "digital-skills",
+              prisonNamesById: prisonNamesById,
               assessments: digitalSkills
             }) }}
           {% else %}
