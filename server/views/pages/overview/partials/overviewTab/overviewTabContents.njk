@@ -4,7 +4,7 @@ Data supplied to this template:
   * prisonerSummary - object with firstName and lastName
   * prisonerGoals - object containing prisoner goal summary data - see template _goalsSummaryCard.njk
   * inPrisonCourses - object containing in-prison course summary data - see template _educationAndTrainingSummaryCard.njk
-  * functionalSkills - object containing summary data of prisoner's most receent functional skills - see template _educationAndTrainingSummaryCard.njk
+  * prisonerFunctionalSkills - prisoner functional skills - see template _educationAndTrainingSummaryCard.njk
   * sessionHistory - object containing summary data of CIAG sessions with the prisoner - see template _sessionHistorySummaryCard.njk
   * induction: {
   *   problemRetrievingData: boolean
@@ -12,7 +12,7 @@ Data supplied to this template:
   * }
   * inductionSchedule - object containing details about the prisoner's Induction schedule
   * acionPlanReview - object containing details about the prisoner's Review schedule
-
+  * prisonNamesById - key/value pairs of prisonIDs to prison names
 #}
 
 {% from "govuk/components/notification-banner/macro.njk" import govukNotificationBanner %}
@@ -28,6 +28,8 @@ Data supplied to this template:
 
   {% block content %}
     <div class="govuk-grid-column-two-thirds app-u-print-full-width">
+      {% set prisonNamesById = prisonNamesById.value if prisonNamesById.isFulfilled() else {} %}
+
       {% if not induction.problemRetrievingData and not induction.isPostInduction
             and not inductionSchedule.problemRetrievingData and inductionSchedule.inductionStatus != 'ON_HOLD'
             and userHasPermissionTo('RECORD_INDUCTION')

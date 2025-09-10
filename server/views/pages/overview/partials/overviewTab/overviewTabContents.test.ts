@@ -5,6 +5,9 @@ import aValidPrisonerSummary from '../../../../../testsupport/prisonerSummaryTes
 import formatDate from '../../../../../filters/formatDateFilter'
 import formatFunctionalSkillTypeFilter from '../../../../../filters/formatFunctionalSkillTypeFilter'
 import formatInductionExemptionReasonFilter from '../../../../../filters/formatInductionExemptionReasonFilter'
+import { Result } from '../../../../../utils/result/result'
+import { validFunctionalSkills } from '../../../../../testsupport/functionalSkillsTestDataBuilder'
+import filterArrayOnPropertyFilter from '../../../../../filters/filterArrayOnPropertyFilter'
 
 const njkEnv = nunjucks.configure([
   'node_modules/govuk-frontend/govuk/',
@@ -16,12 +19,17 @@ const njkEnv = nunjucks.configure([
   __dirname,
 ])
 
-njkEnv.addFilter('formatDate', formatDate)
-njkEnv.addFilter('formatFunctionalSkillType', formatFunctionalSkillTypeFilter)
-njkEnv.addFilter('formatInductionExemptionReason', formatInductionExemptionReasonFilter)
-njkEnv.addGlobal('userHasPermissionTo', () => true)
+njkEnv //
+  .addFilter('formatDate', formatDate)
+  .addFilter('formatFunctionalSkillType', formatFunctionalSkillTypeFilter)
+  .addFilter('formatInductionExemptionReason', formatInductionExemptionReasonFilter)
+  .addFilter('filterArrayOnProperty', filterArrayOnPropertyFilter)
+  .addGlobal('userHasPermissionTo', () => true)
 
 const prisonerSummary = aValidPrisonerSummary()
+const prisonNamesById = Result.fulfilled({ BXI: 'Brixton (HMP)', MDI: 'Moorland (HMP & YOI)' })
+const prisonerFunctionalSkills = validFunctionalSkills()
+
 const template = 'overviewTabContents.njk'
 
 const userHasPermissionTo = jest.fn()
@@ -39,21 +47,6 @@ const templateParams = {
     lastUpdatedBy: 'Elaine Benes',
     lastUpdatedDate: new Date('2024-01-21T13:42:01.401Z'),
     lastUpdatedAtPrisonName: 'Brixton (HMP)',
-  },
-  functionalSkills: {
-    problemRetrievingData: false,
-    mostRecentAssessments: [
-      {
-        prisonId: 'BXI',
-        prisonName: 'Brixton (HMP)',
-        type: 'MATHS',
-        grade: 'Level 1',
-        assessmentDate: parseISO('2023-01-15T00:00:00Z'),
-      },
-      {
-        type: 'ENGLISH',
-      },
-    ],
   },
   inPrisonCourses: {
     problemRetrievingData: false,
@@ -98,6 +91,8 @@ const templateParams = {
     problemRetrievingData: false,
     reviewStatus: 'NO_SCHEDULED_REVIEW',
   },
+  prisonerFunctionalSkills,
+  prisonNamesById,
 }
 
 describe('overviewTabContents', () => {

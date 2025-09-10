@@ -1,15 +1,8 @@
-import type { Assessment, InPrisonCourse, PrisonerSummary } from 'viewModels'
+import type { InPrisonCourse } from 'viewModels'
 import ActionPlanReviewStatusValue from '../../enums/actionPlanReviewStatusValue'
 import InductionScheduleStatusValue from '../../enums/inductionScheduleStatusValue'
-import { Result } from '../../utils/result/result'
 
 type OverviewViewRenderArgs = {
-  tab: string
-  prisonerSummary: PrisonerSummary
-  functionalSkills: {
-    problemRetrievingData: boolean
-    mostRecentAssessments: Array<Assessment>
-  }
   inPrisonCourses: {
     problemRetrievingData: boolean
     coursesCompletedInLast12Months: Array<InPrisonCourse>
@@ -45,7 +38,6 @@ type OverviewViewRenderArgs = {
   }
   inductionSchedule: InductionScheduleView
   actionPlanReview: ActionPlanReviewScheduleView
-  prisonNamesById: Result<Record<string, string>>
 }
 
 type ActionPlanReviewScheduleView = {
