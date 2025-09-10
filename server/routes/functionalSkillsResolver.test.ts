@@ -1,6 +1,6 @@
 import { subDays } from 'date-fns'
-import type { FunctionalSkills, Assessment } from 'viewModels'
-import { allFunctionalSkills, mostRecentFunctionalSkills, functionalSkillsByType } from './functionalSkillsResolver'
+import type { FunctionalSkills } from 'viewModels'
+import { allFunctionalSkills, mostRecentFunctionalSkills } from './functionalSkillsResolver'
 
 describe('functionalSkillsResolver', () => {
   const NOW = new Date()
@@ -204,53 +204,6 @@ describe('functionalSkillsResolver', () => {
 
       // When
       const actual = allFunctionalSkills(functionalSkills)
-
-      // Then
-      expect(actual).toEqual(expected)
-    })
-  })
-
-  describe('functionalSkillsByType', () => {
-    it('should return Functional Skills by type given Assessments and type', () => {
-      // Given
-      const assessments = [
-        { type: 'ENGLISH', grade: 'Level 1', assessmentDate: TEN_DAYS_AGO },
-        { type: 'MATHS', grade: 'Level 1', assessmentDate: TEN_DAYS_AGO },
-        { type: 'DIGITAL_LITERACY', grade: 'Level 1', assessmentDate: TEN_DAYS_AGO },
-        { type: 'DIGITAL_LITERACY', grade: 'Level 3', assessmentDate: YESTERDAY },
-        { type: 'MATHS', grade: 'Level 2', assessmentDate: FIVE_DAYS_AGO },
-        { type: 'DIGITAL_LITERACY', grade: 'Level 2', assessmentDate: FIVE_DAYS_AGO },
-        { type: 'MATHS', grade: 'Level 3', assessmentDate: YESTERDAY },
-      ] as Array<Assessment>
-
-      const expected = [
-        { type: 'DIGITAL_LITERACY', grade: 'Level 3', assessmentDate: YESTERDAY },
-        { type: 'DIGITAL_LITERACY', grade: 'Level 2', assessmentDate: FIVE_DAYS_AGO },
-        { type: 'DIGITAL_LITERACY', grade: 'Level 1', assessmentDate: TEN_DAYS_AGO },
-      ] as Array<Assessment>
-
-      // When
-      const actual = functionalSkillsByType(assessments, 'DIGITAL_LITERACY')
-
-      // Then
-      expect(actual).toEqual(expected)
-    })
-
-    it('should return empty array given no assessments of type found', () => {
-      // Given
-      const assessments = [
-        { type: 'MATHS', grade: 'Level 1', assessmentDate: TEN_DAYS_AGO },
-        { type: 'DIGITAL_LITERACY', grade: 'Level 1', assessmentDate: TEN_DAYS_AGO },
-        { type: 'DIGITAL_LITERACY', grade: 'Level 3', assessmentDate: YESTERDAY },
-        { type: 'MATHS', grade: 'Level 2', assessmentDate: FIVE_DAYS_AGO },
-        { type: 'DIGITAL_LITERACY', grade: 'Level 2', assessmentDate: FIVE_DAYS_AGO },
-        { type: 'MATHS', grade: 'Level 3', assessmentDate: YESTERDAY },
-      ] as Array<Assessment>
-
-      const expected = [] as Array<Assessment>
-
-      // When
-      const actual = functionalSkillsByType(assessments, 'ENGLISH')
 
       // Then
       expect(actual).toEqual(expected)
