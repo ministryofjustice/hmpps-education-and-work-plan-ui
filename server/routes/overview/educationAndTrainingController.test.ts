@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
-import { parse, startOfDay } from 'date-fns'
-import type { FunctionalSkills, InPrisonCourseRecords } from 'viewModels'
+import { startOfDay } from 'date-fns'
+import type { InPrisonCourseRecords } from 'viewModels'
 import aValidPrisonerSummary from '../../testsupport/prisonerSummaryTestDataBuilder'
 import {
   aValidEnglishInPrisonCourse,
@@ -12,6 +12,8 @@ import { aValidInductionDto } from '../../testsupport/inductionDtoTestDataBuilde
 import aValidEducationDto from '../../testsupport/educationDtoTestDataBuilder'
 import aValidInductionSchedule from '../../testsupport/inductionScheduleTestDataBuilder'
 import InductionScheduleStatusValue from '../../enums/inductionScheduleStatusValue'
+import { Result } from '../../utils/result/result'
+import { validFunctionalSkills } from '../../testsupport/functionalSkillsTestDataBuilder'
 
 describe('educationAndTrainingController', () => {
   const controller = new EducationAndTrainingController()
@@ -36,21 +38,10 @@ describe('educationAndTrainingController', () => {
     },
     coursesCompletedInLast12Months: [aValidEnglishInPrisonCourseCompletedWithinLast12Months()],
   }
-  const functionalSkillsFromCurious: FunctionalSkills = {
-    prisonNumber,
-    problemRetrievingData: false,
-    assessments: [
-      {
-        assessmentDate: startOfDay(parse('2012-02-16', 'yyyy-MM-dd', new Date())),
-        grade: 'Level 1',
-        prisonId: 'MDI',
-        prisonName: 'MOORLAND (HMP & YOI)',
-        type: 'ENGLISH',
-      },
-    ],
-  }
+  const prisonerFunctionalSkills = validFunctionalSkills()
   const educationDto = aValidEducationDto()
   const inductionSchedule = aValidInductionSchedule({ scheduleStatus: InductionScheduleStatusValue.COMPLETED })
+  const prisonNamesById = Result.fulfilled({ MDI: 'Moorland (HMP & YOI)', WDI: 'Wakefield (HMP)' })
 
   const expectedTab = 'education-and-training'
 
@@ -68,10 +59,11 @@ describe('educationAndTrainingController', () => {
     locals: {
       prisonerSummary,
       curiousInPrisonCourses: inPrisonCourses,
-      prisonerFunctionalSkills: functionalSkillsFromCurious,
+      prisonerFunctionalSkills,
       education: educationDto,
       induction,
       inductionSchedule,
+      prisonNamesById,
     },
   } as unknown as Response
   const next = jest.fn()
@@ -82,31 +74,10 @@ describe('educationAndTrainingController', () => {
 
   it('should get eduction and training view', async () => {
     // Given
-    const expectedFunctionalSkills: FunctionalSkills = {
-      prisonNumber,
-      problemRetrievingData: false,
-      assessments: [
-        {
-          assessmentDate: startOfDay(parse('2012-02-16', 'yyyy-MM-dd', new Date())),
-          grade: 'Level 1',
-          prisonId: 'MDI',
-          prisonName: 'MOORLAND (HMP & YOI)',
-          type: 'ENGLISH',
-        },
-        {
-          type: 'MATHS',
-          assessmentDate: undefined,
-          grade: undefined,
-          prisonId: undefined,
-          prisonName: undefined,
-        },
-      ],
-    }
-
     const expectedView = {
       prisonerSummary,
       tab: expectedTab,
-      functionalSkills: expectedFunctionalSkills,
+      prisonerFunctionalSkills,
       inPrisonCourses,
       induction,
       education: educationDto,
@@ -115,6 +86,7 @@ describe('educationAndTrainingController', () => {
         inductionStatus: 'COMPLETE',
         inductionDueDate: startOfDay('2024-12-10'),
       },
+      prisonNamesById,
     }
 
     // When

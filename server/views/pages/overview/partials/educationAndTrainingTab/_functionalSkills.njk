@@ -11,7 +11,7 @@
         </ul>
       </div>
       <div class="govuk-summary-card__content">
-        {% if not functionalSkills.problemRetrievingData %}
+        {% if not prisonerFunctionalSkills.problemRetrievingData %}
 
           <p class="govuk-hint">
             Information from Curious. These scores are from a person's induction assessment. For recent functional skills qualifications, go to in-prison courses and qualifications.
@@ -30,18 +30,27 @@
             </thead>
 
             <tbody class="govuk-table__body">
-            {% for assessment in functionalSkills.assessments %}
-              <tr class="govuk-table__row" data-qa="functional-skill-{{ assessment.type }}">
-                <td class="govuk-table__cell">{{ assessment.type | formatFunctionalSkillType }}</td>
-                {% if assessment.assessmentDate and assessment.grade %}
-                  <td class="govuk-table__cell">{{ assessment.prisonName }}</td>
-                  <td class="govuk-table__cell">{{ assessment.assessmentDate | formatDate('D MMMM YYYY') }}</td>
-                  <td class="govuk-table__cell">{{ assessment.grade }}</td>
-                {% else %}
-                  <td class="govuk-table__cell" colspan="3" data-qa="no-assessment-score-for-functional-skill-for-{{ assessment.type }}">No functional skill assessment scores recorded in Curious</td>
-                {% endif %}
-              </tr>
-            {% endfor %}
+              {% set mostRecentEnglishAssessment = prisonerFunctionalSkills.assessments | filterArrayOnProperty('type', 'ENGLISH') | sort(attribute = 'assessmentDate', reverse = true) | first %}
+              {% set mostRecentMathsAssessment = prisonerFunctionalSkills.assessments | filterArrayOnProperty('type', 'MATHS') | sort(attribute = 'assessmentDate', reverse = true) | first %}
+              {% set mostRecentDigitalSkillsAssessment = prisonerFunctionalSkills.assessments | filterArrayOnProperty('type', 'DIGITAL_LITERACY') | sort(attribute = 'assessmentDate', reverse = true) | first %}
+              {% set mostRecentAssessmentsOfType = [ mostRecentEnglishAssessment or {'type': 'ENGLISH'}, mostRecentMathsAssessment or {'type': 'MATHS'} ] %}
+              {% if mostRecentDigitalSkillsAssessment %}
+                {% set mostRecentAssessmentsOfType = (mostRecentAssessmentsOfType.push(mostRecentDigitalSkillsAssessment), mostRecentAssessmentsOfType) %}
+              {% endif %}
+
+              {% for functionalSkillAssessment in mostRecentAssessmentsOfType %}
+                <tr class="govuk-table__row" data-qa="functional-skill-{{ functionalSkillAssessment.type }}">
+                  <td class="govuk-table__cell">{{ functionalSkillAssessment.type | formatFunctionalSkillType }}</td>
+                  {% if functionalSkillAssessment.assessmentDate and functionalSkillAssessment.grade %}
+                    {% set prisonName = prisonNamesById[functionalSkillAssessment.prisonId] | default(functionalSkillAssessment.prisonId) %}
+                    <td class="govuk-table__cell">{{ prisonName }}</td>
+                    <td class="govuk-table__cell">{{ functionalSkillAssessment.assessmentDate | formatDate('d MMMM yyyy') }}</td>
+                    <td class="govuk-table__cell">{{ functionalSkillAssessment.grade }}</td>
+                  {% else %}
+                    <td class="govuk-table__cell" colspan="3" data-qa="no-assessment-score-for-functional-skill-for-{{ functionalSkillAssessment.type }}">No functional skill assessment scores recorded in Curious</td>
+                  {% endif %}
+                </tr>
+              {% endfor %}
             </tbody>
           </table>
 

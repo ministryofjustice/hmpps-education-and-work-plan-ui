@@ -59,6 +59,7 @@ export default (router: Router, services: Services) => {
   ])
 
   router.get('/plan/:prisonNumber/view/education-and-training', [
+    retrievePrisonNamesById(prisonService),
     retrieveCuriousFunctionalSkills(curiousService),
     retrieveCuriousInPrisonCourses(curiousService),
     retrieveInductionSchedule(inductionService),
