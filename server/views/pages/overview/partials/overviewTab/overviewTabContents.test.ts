@@ -6,7 +6,7 @@ import formatDate from '../../../../../filters/formatDateFilter'
 import formatFunctionalSkillTypeFilter from '../../../../../filters/formatFunctionalSkillTypeFilter'
 import formatInductionExemptionReasonFilter from '../../../../../filters/formatInductionExemptionReasonFilter'
 import { Result } from '../../../../../utils/result/result'
-import { validFunctionalSkills } from '../../../../../testsupport/functionalSkillsTestDataBuilder'
+import validFunctionalSkills from '../../../../../testsupport/functionalSkillsTestDataBuilder'
 import filterArrayOnPropertyFilter from '../../../../../filters/filterArrayOnPropertyFilter'
 
 const njkEnv = nunjucks.configure([
@@ -28,7 +28,7 @@ njkEnv //
 
 const prisonerSummary = aValidPrisonerSummary()
 const prisonNamesById = Result.fulfilled({ BXI: 'Brixton (HMP)', MDI: 'Moorland (HMP & YOI)' })
-const prisonerFunctionalSkills = validFunctionalSkills()
+const prisonerFunctionalSkills = Result.fulfilled(validFunctionalSkills())
 
 const template = 'overviewTabContents.njk'
 

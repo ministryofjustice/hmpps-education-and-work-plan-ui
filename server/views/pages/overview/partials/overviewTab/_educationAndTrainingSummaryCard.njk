@@ -17,7 +17,8 @@ Data supplied to this template:
     <h2 class="govuk-summary-card__title govuk-!-font-size-24">Education and training</h2>
   </div>
   <div class="govuk-summary-card__content">
-    {% if not prisonerFunctionalSkills.problemRetrievingData %}
+    {% if prisonerFunctionalSkills.isFulfilled() %}
+      {% set prisonerFunctionalSkills = prisonerFunctionalSkills.value %}
       <h3 class="govuk-heading-s" data-qa="functional-skills-heading">Functional skills initial assessment scores</h3>
       <p class="govuk-hint" data-qa="functional-skills-hint">Information from Curious. These scores are from a person's induction assessment.<br/>For recent functional skills qualifications, go to courses and qualifications.</p>
 

@@ -1,4 +1,5 @@
-{% if not prisonerFunctionalSkills.problemRetrievingData %}
+{% if prisonerFunctionalSkills.isFulfilled() %}
+  {% set prisonerFunctionalSkills = prisonerFunctionalSkills.value %}
   {% set mostRecentEnglishAssessment = prisonerFunctionalSkills.assessments | filterArrayOnProperty('type', 'ENGLISH') | sort(attribute = 'assessmentDate', reverse = true) | first %}
   {% set mostRecentMathsAssessment = prisonerFunctionalSkills.assessments | filterArrayOnProperty('type', 'MATHS') | sort(attribute = 'assessmentDate', reverse = true) | first %}
   {% set mostRecentDigitalSkillsAssessment = prisonerFunctionalSkills.assessments | filterArrayOnProperty('type', 'DIGITAL_LITERACY') | sort(attribute = 'assessmentDate', reverse = true) | first %}

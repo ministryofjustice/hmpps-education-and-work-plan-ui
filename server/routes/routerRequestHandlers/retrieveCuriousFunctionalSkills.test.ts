@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
 import CuriousService from '../../services/curiousService'
-import { validFunctionalSkills } from '../../testsupport/functionalSkillsTestDataBuilder'
+import validFunctionalSkills from '../../testsupport/functionalSkillsTestDataBuilder'
 import retrieveCuriousFunctionalSkills from './retrieveCuriousFunctionalSkills'
 
 jest.mock('../../services/curiousService')
@@ -10,7 +10,6 @@ describe('retrieveCuriousFunctionalSkills', () => {
   const requestHandler = retrieveCuriousFunctionalSkills(curiousService)
 
   const prisonNumber = 'A1234GC'
-  const username = 'a-dps-user'
 
   let req: Request
   const res = {
@@ -21,22 +20,22 @@ describe('retrieveCuriousFunctionalSkills', () => {
   beforeEach(() => {
     jest.resetAllMocks()
     req = {
-      user: { username },
       params: { prisonNumber },
     } as unknown as Request
   })
 
   it('should retrieve prisoner functional skills', async () => {
     // Given
-    const expectedFunctionalSkills = validFunctionalSkills({ prisonNumber })
+    const expectedFunctionalSkills = validFunctionalSkills()
     curiousService.getPrisonerFunctionalSkills.mockResolvedValue(expectedFunctionalSkills)
 
     // When
     await requestHandler(req, res, next)
 
     // Then
-    expect(curiousService.getPrisonerFunctionalSkills).toHaveBeenCalledWith(prisonNumber, username)
-    expect(res.locals.prisonerFunctionalSkills).toEqual(expectedFunctionalSkills)
+    expect(res.locals.prisonerFunctionalSkills.isFulfilled()).toEqual(true)
+    expect(res.locals.prisonerFunctionalSkills.value).toEqual(expectedFunctionalSkills)
+    expect(curiousService.getPrisonerFunctionalSkills).toHaveBeenCalledWith(prisonNumber)
     expect(next).toHaveBeenCalled()
   })
 })

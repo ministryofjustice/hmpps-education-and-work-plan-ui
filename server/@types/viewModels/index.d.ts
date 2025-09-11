@@ -78,9 +78,7 @@ declare module 'viewModels' {
    * A prisoner's Functional Skills, which is made up of a collection of Assessments.
    */
   export interface FunctionalSkills {
-    problemRetrievingData: boolean
     assessments: Array<Assessment>
-    prisonNumber: string
   }
 
   /**
@@ -88,7 +86,6 @@ declare module 'viewModels' {
    */
   export interface Assessment {
     prisonId: string
-    prisonName: string
     type?: 'ENGLISH' | 'MATHS' | 'DIGITAL_LITERACY'
     grade?: string
     assessmentDate?: Date
