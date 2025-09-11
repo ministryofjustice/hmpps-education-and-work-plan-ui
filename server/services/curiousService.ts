@@ -25,15 +25,13 @@ export default class CuriousService {
     }
   }
 
-  async getPrisonerFunctionalSkills(prisonNumber: string, username: string): Promise<FunctionalSkills> {
-    const prisonNamesById = await this.prisonService.getAllPrisonNamesById(username)
-
+  async getPrisonerFunctionalSkills(prisonNumber: string): Promise<FunctionalSkills> {
     try {
       const learnerProfiles = await this.getLearnerProfile(prisonNumber)
-      return toFunctionalSkills(learnerProfiles, prisonNumber, prisonNamesById)
+      return toFunctionalSkills(learnerProfiles)
     } catch (error) {
-      logger.error(`Error retrieving functional skills data from Curious: ${JSON.stringify(error)}`)
-      return { problemRetrievingData: true } as FunctionalSkills
+      logger.error('Error retrieving functional skills data from Curious', error)
+      throw error
     }
   }
 

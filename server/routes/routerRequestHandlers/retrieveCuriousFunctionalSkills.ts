@@ -1,21 +1,18 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express'
 import { CuriousService } from '../../services'
-import asyncMiddleware from '../../middleware/asyncMiddleware'
+import { Result } from '../../utils/result/result'
 
 /**
  *  Middleware function that returns a Request handler function to look up the prisoner's functional skills from Curious
  */
 const retrieveCuriousFunctionalSkills = (curiousService: CuriousService): RequestHandler => {
-  return asyncMiddleware(async (req: Request, res: Response, next: NextFunction) => {
+  return async (req: Request, res: Response, next: NextFunction) => {
     const { prisonNumber } = req.params
 
     // Lookup the prisoners functional skills and store in res.locals
-    res.locals.prisonerFunctionalSkills = await curiousService.getPrisonerFunctionalSkills(
-      prisonNumber,
-      req.user.username,
-    )
+    res.locals.prisonerFunctionalSkills = await Result.wrap(curiousService.getPrisonerFunctionalSkills(prisonNumber))
 
-    next()
-  })
+    return next()
+  }
 }
 export default retrieveCuriousFunctionalSkills

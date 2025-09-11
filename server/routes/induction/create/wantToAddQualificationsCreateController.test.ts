@@ -4,7 +4,7 @@ import type { WantToAddQualificationsForm } from 'inductionForms'
 import type { AchievedQualificationDto } from 'dto'
 import type { PreviousQualificationsDto } from 'inductionDto'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
-import { validFunctionalSkills } from '../../../testsupport/functionalSkillsTestDataBuilder'
+import validFunctionalSkills from '../../../testsupport/functionalSkillsTestDataBuilder'
 import WantToAddQualificationsCreateController from './wantToAddQualificationsCreateController'
 import YesNoValue from '../../../enums/yesNoValue'
 import { aValidInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
@@ -19,7 +19,7 @@ describe('wantToAddQualificationsCreateController', () => {
   const journeyId = uuidV4()
   const prisonNumber = 'A1234BC'
   const prisonerSummary = aValidPrisonerSummary()
-  const prisonerFunctionalSkills = validFunctionalSkills()
+  const prisonerFunctionalSkills = Result.fulfilled(validFunctionalSkills())
   const inPrisonCourses = validInPrisonCourseRecords()
   const prisonNamesById = Result.fulfilled({ MDI: 'Moorland (HMP & YOI)', WDI: 'Wakefield (HMP)' })
 

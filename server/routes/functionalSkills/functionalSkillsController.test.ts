@@ -1,7 +1,7 @@
 import { Request, Response } from 'express'
 import FunctionalSkillsController from './functionalSkillsController'
 import aValidPrisonerSummary from '../../testsupport/prisonerSummaryTestDataBuilder'
-import { validFunctionalSkills } from '../../testsupport/functionalSkillsTestDataBuilder'
+import validFunctionalSkills from '../../testsupport/functionalSkillsTestDataBuilder'
 import { Result } from '../../utils/result/result'
 
 describe('functionalSkillsController', () => {
@@ -14,7 +14,7 @@ describe('functionalSkillsController', () => {
     LFI: 'Lancaster Farms (HMP)',
     WMI: 'Wymott (HMP & YOI)',
   })
-  const prisonerFunctionalSkills = validFunctionalSkills()
+  const prisonerFunctionalSkills = Result.fulfilled(validFunctionalSkills())
 
   const req = {
     params: { prisonNumber },

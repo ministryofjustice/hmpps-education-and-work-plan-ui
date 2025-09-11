@@ -3,7 +3,7 @@ import { v4 as uuidV4 } from 'uuid'
 import createError from 'http-errors'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
 import aValidEducationDto from '../../../testsupport/educationDtoTestDataBuilder'
-import { validFunctionalSkills } from '../../../testsupport/functionalSkillsTestDataBuilder'
+import validFunctionalSkills from '../../../testsupport/functionalSkillsTestDataBuilder'
 import validInPrisonCourseRecords from '../../../testsupport/inPrisonCourseRecordsTestDataBuilder'
 import { aNewAchievedQualificationDto } from '../../../testsupport/achievedQualificationDtoTestDataBuilder'
 import EducationAndWorkPlanService from '../../../services/educationAndWorkPlanService'
@@ -27,7 +27,7 @@ describe('qualificationsListCreateController', () => {
   const prisonId = 'BXI'
   const username = 'a-dps-user'
   const prisonerSummary = aValidPrisonerSummary({ prisonNumber, prisonId })
-  const prisonerFunctionalSkills = validFunctionalSkills()
+  const prisonerFunctionalSkills = Result.fulfilled(validFunctionalSkills())
   const inPrisonCourses = validInPrisonCourseRecords()
   const prisonNamesById = Result.fulfilled({ MDI: 'Moorland (HMP & YOI)', WDI: 'Wakefield (HMP)' })
 

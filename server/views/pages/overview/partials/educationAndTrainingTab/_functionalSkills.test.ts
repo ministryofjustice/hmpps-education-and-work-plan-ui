@@ -1,11 +1,12 @@
 import nunjucks from 'nunjucks'
 import * as cheerio from 'cheerio'
 import { startOfDay } from 'date-fns'
-import { validFunctionalSkills } from '../../../../../testsupport/functionalSkillsTestDataBuilder'
+import validFunctionalSkills from '../../../../../testsupport/functionalSkillsTestDataBuilder'
 import formatDate from '../../../../../filters/formatDateFilter'
 import formatFunctionalSkillTypeFilter from '../../../../../filters/formatFunctionalSkillTypeFilter'
 import filterArrayOnPropertyFilter from '../../../../../filters/filterArrayOnPropertyFilter'
 import aValidAssessment from '../../../../../testsupport/assessmentTestDataBuilder'
+import { Result } from '../../../../../utils/result/result'
 
 const njkEnv = nunjucks.configure([
   'node_modules/govuk-frontend/govuk/',
@@ -23,7 +24,7 @@ njkEnv //
   .addFilter('filterArrayOnProperty', filterArrayOnPropertyFilter)
 
 const prisonNamesById = { BXI: 'Brixton (HMP)', MDI: 'Moorland (HMP & YOI)' }
-const prisonerFunctionalSkills = validFunctionalSkills()
+const prisonerFunctionalSkills = Result.fulfilled(validFunctionalSkills())
 
 const template = '_functionalSkills.njk'
 
@@ -49,13 +50,11 @@ describe('Education and Training tab view - Functional Skills', () => {
     expect(functionalSkillsRows.length).toEqual(2) // English and Maths are always shown, even if the prisoner has not taken those assessments
   })
 
-  it('should render content saying curious is unavailable given problem retrieving data is true', () => {
+  it('should render content saying curious is unavailable given Functional Skills promise is not resolved', () => {
     // Given
     const params = {
       ...templateParams,
-      prisonerFunctionalSkills: {
-        problemRetrievingData: true,
-      },
+      prisonerFunctionalSkills: Result.rejected(new Error('Failed to retrieve functional skills')),
     }
 
     // When
@@ -69,16 +68,18 @@ describe('Education and Training tab view - Functional Skills', () => {
   it('should render Functional Skill assessments given prisoner only has 1 assessment in Curious', () => {
     const params = {
       ...templateParams,
-      prisonerFunctionalSkills: validFunctionalSkills({
-        assessments: [
-          aValidAssessment({
-            type: 'ENGLISH',
-            assessmentDate: startOfDay('2012-02-16'),
-            grade: 'Level 1',
-            prisonId: 'MDI',
-          }),
-        ],
-      }),
+      prisonerFunctionalSkills: Result.fulfilled(
+        validFunctionalSkills({
+          assessments: [
+            aValidAssessment({
+              type: 'ENGLISH',
+              assessmentDate: startOfDay('2012-02-16'),
+              grade: 'Level 1',
+              prisonId: 'MDI',
+            }),
+          ],
+        }),
+      ),
     }
 
     // When
@@ -102,9 +103,11 @@ describe('Education and Training tab view - Functional Skills', () => {
   it('should render Functional Skill assessments given prisoner has no assessments in Curious', () => {
     const params = {
       ...templateParams,
-      prisonerFunctionalSkills: validFunctionalSkills({
-        assessments: [],
-      }),
+      prisonerFunctionalSkills: Result.fulfilled(
+        validFunctionalSkills({
+          assessments: [],
+        }),
+      ),
     }
 
     // When
@@ -128,16 +131,18 @@ describe('Education and Training tab view - Functional Skills', () => {
   it('should render Functional Skill assessments given prisoner only has a digital skills assessment in Curious', () => {
     const params = {
       ...templateParams,
-      prisonerFunctionalSkills: validFunctionalSkills({
-        assessments: [
-          aValidAssessment({
-            type: 'DIGITAL_LITERACY',
-            assessmentDate: startOfDay('2012-02-16'),
-            grade: 'Level 1',
-            prisonId: 'BXI',
-          }),
-        ],
-      }),
+      prisonerFunctionalSkills: Result.fulfilled(
+        validFunctionalSkills({
+          assessments: [
+            aValidAssessment({
+              type: 'DIGITAL_LITERACY',
+              assessmentDate: startOfDay('2012-02-16'),
+              grade: 'Level 1',
+              prisonId: 'BXI',
+            }),
+          ],
+        }),
+      ),
     }
 
     // When

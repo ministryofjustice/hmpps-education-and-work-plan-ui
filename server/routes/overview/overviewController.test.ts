@@ -10,7 +10,7 @@ import aValidActionPlanReviews from '../../testsupport/actionPlanReviewsTestData
 import { aValidInductionDto } from '../../testsupport/inductionDtoTestDataBuilder'
 import aValidInductionSchedule from '../../testsupport/inductionScheduleTestDataBuilder'
 import { Result } from '../../utils/result/result'
-import { validFunctionalSkills } from '../../testsupport/functionalSkillsTestDataBuilder'
+import validFunctionalSkills from '../../testsupport/functionalSkillsTestDataBuilder'
 
 describe('overviewController', () => {
   const controller = new OverviewController()
@@ -33,7 +33,7 @@ describe('overviewController', () => {
     coursesCompletedInLast12Months: [],
   }
 
-  const prisonerFunctionalSkills = validFunctionalSkills()
+  const prisonerFunctionalSkills = Result.fulfilled(validFunctionalSkills())
 
   const inProgressGoal = {
     ...aValidGoalResponse(),

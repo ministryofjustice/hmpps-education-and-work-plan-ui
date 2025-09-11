@@ -11,7 +11,8 @@
         </ul>
       </div>
       <div class="govuk-summary-card__content">
-        {% if not prisonerFunctionalSkills.problemRetrievingData %}
+        {% if prisonerFunctionalSkills.isFulfilled() %}
+          {% set prisonerFunctionalSkills = prisonerFunctionalSkills.value %}
 
           <p class="govuk-hint">
             Information from Curious. These scores are from a person's induction assessment. For recent functional skills qualifications, go to in-prison courses and qualifications.

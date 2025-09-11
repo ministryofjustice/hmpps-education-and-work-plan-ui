@@ -13,7 +13,7 @@ import aValidEducationDto from '../../testsupport/educationDtoTestDataBuilder'
 import aValidInductionSchedule from '../../testsupport/inductionScheduleTestDataBuilder'
 import InductionScheduleStatusValue from '../../enums/inductionScheduleStatusValue'
 import { Result } from '../../utils/result/result'
-import { validFunctionalSkills } from '../../testsupport/functionalSkillsTestDataBuilder'
+import validFunctionalSkills from '../../testsupport/functionalSkillsTestDataBuilder'
 
 describe('educationAndTrainingController', () => {
   const controller = new EducationAndTrainingController()
@@ -38,7 +38,7 @@ describe('educationAndTrainingController', () => {
     },
     coursesCompletedInLast12Months: [aValidEnglishInPrisonCourseCompletedWithinLast12Months()],
   }
-  const prisonerFunctionalSkills = validFunctionalSkills()
+  const prisonerFunctionalSkills = Result.fulfilled(validFunctionalSkills())
   const educationDto = aValidEducationDto()
   const inductionSchedule = aValidInductionSchedule({ scheduleStatus: InductionScheduleStatusValue.COMPLETED })
   const prisonNamesById = Result.fulfilled({ MDI: 'Moorland (HMP & YOI)', WDI: 'Wakefield (HMP)' })

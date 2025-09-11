@@ -42,8 +42,8 @@
     <div class="govuk-grid-row">
       <div class="govuk-grid-column-two-thirds">
 
-        {% if not prisonerFunctionalSkills.problemRetrievingData %}
-
+        {% if prisonerFunctionalSkills.isFulfilled() %}
+          {% set prisonerFunctionalSkills = prisonerFunctionalSkills.value %}
           {% set prisonNamesById = prisonNamesById.value if prisonNamesById.isFulfilled() else {} %}
           {% set englishSkills = prisonerFunctionalSkills.assessments | filterArrayOnProperty('type', 'ENGLISH') | sort(attribute = 'assessmentDate', reverse = true) %}
           {% set mathsSkills = prisonerFunctionalSkills.assessments | filterArrayOnProperty('type', 'MATHS') | sort(attribute = 'assessmentDate', reverse = true) %}

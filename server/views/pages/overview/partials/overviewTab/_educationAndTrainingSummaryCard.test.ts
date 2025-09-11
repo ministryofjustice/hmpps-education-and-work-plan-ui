@@ -6,7 +6,8 @@ import formatDate from '../../../../../filters/formatDateFilter'
 import aValidPrisonerSummary from '../../../../../testsupport/prisonerSummaryTestDataBuilder'
 import formatFunctionalSkillTypeFilter from '../../../../../filters/formatFunctionalSkillTypeFilter'
 import filterArrayOnPropertyFilter from '../../../../../filters/filterArrayOnPropertyFilter'
-import { validFunctionalSkills } from '../../../../../testsupport/functionalSkillsTestDataBuilder'
+import validFunctionalSkills from '../../../../../testsupport/functionalSkillsTestDataBuilder'
+import { Result } from '../../../../../utils/result/result'
 
 const njkEnv = nunjucks.configure([
   'node_modules/govuk-frontend/govuk/',
@@ -25,7 +26,7 @@ njkEnv //
 
 const prisonerSummary = aValidPrisonerSummary()
 const prisonNamesById = { BXI: 'Brixton (HMP)', MDI: 'Moorland (HMP & YOI)' }
-const prisonerFunctionalSkills = validFunctionalSkills()
+const prisonerFunctionalSkills = Result.fulfilled(validFunctionalSkills())
 const inPrisonCourses = {
   problemRetrievingData: false,
   coursesCompletedInLast12Months: [
@@ -59,25 +60,24 @@ describe('_educationAndTrainingSummaryCard', () => {
     // Given
     const params = {
       ...templateParams,
-      prisonerFunctionalSkills: {
-        problemRetrievingData: false,
-        assessments: [
-          {
-            prisonId: 'LEI',
-            prisonName: 'Leeds (HMP)',
-            type: 'MATHS',
-            grade: 'Level 1',
-            assessmentDate: parseISO('2022-01-15T00:00:00Z'),
-          },
-          {
-            prisonId: 'BXI',
-            prisonName: 'Brixton (HMP)',
-            type: 'MATHS',
-            grade: 'Level 2',
-            assessmentDate: parseISO('2023-01-15T00:00:00Z'),
-          },
-        ],
-      },
+      prisonerFunctionalSkills: Result.fulfilled(
+        validFunctionalSkills({
+          assessments: [
+            {
+              prisonId: 'LEI',
+              type: 'MATHS',
+              grade: 'Level 1',
+              assessmentDate: parseISO('2022-01-15T00:00:00Z'),
+            },
+            {
+              prisonId: 'BXI',
+              type: 'MATHS',
+              grade: 'Level 2',
+              assessmentDate: parseISO('2023-01-15T00:00:00Z'),
+            },
+          ],
+        }),
+      ),
       inPrisonCourses: {
         problemRetrievingData: false,
         coursesCompletedInLast12Months: [
@@ -206,13 +206,11 @@ describe('_educationAndTrainingSummaryCard', () => {
     expect($('[data-qa="curious-unavailable-message"]').length).toEqual(0)
   })
 
-  it('should not render functional skills data given problem retrieving functional skills data', () => {
+  it('should not render functional skills data given Functional Skills promise is not resolved', () => {
     // Given
     const params = {
       ...templateParams,
-      prisonerFunctionalSkills: {
-        problemRetrievingData: true,
-      },
+      prisonerFunctionalSkills: Result.rejected(new Error('Failed to retrieve functional skills')),
     }
 
     // When
@@ -248,9 +246,7 @@ describe('_educationAndTrainingSummaryCard', () => {
     // Given
     const params = {
       ...templateParams,
-      prisonerFunctionalSkills: {
-        problemRetrievingData: true,
-      },
+      prisonerFunctionalSkills: Result.rejected(new Error('Failed to retrieve functional skills')),
       inPrisonCourses: {
         problemRetrievingData: true,
       },
