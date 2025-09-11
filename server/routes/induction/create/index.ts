@@ -38,6 +38,7 @@ import {
 } from '../validationSchemas'
 import { validate } from '../../routerRequestHandlers/validationMiddleware'
 import checkInductionDtoExistsInJourneyData from '../../routerRequestHandlers/checkInductionDtoExistsInJourneyData'
+import retrievePrisonNamesById from '../../routerRequestHandlers/retrievePrisonNamesById'
 
 /**
  * Route definitions for creating an Induction
@@ -46,7 +47,7 @@ import checkInductionDtoExistsInJourneyData from '../../routerRequestHandlers/ch
  * /prisoners/<prison-number>/create-induction/<journeyId>/<page-or-section-id>
  */
 export default (router: Router, services: Services) => {
-  const { curiousService, educationAndWorkPlanService, inductionService, journeyDataService } = services
+  const { curiousService, educationAndWorkPlanService, inductionService, journeyDataService, prisonService } = services
 
   const hopingToWorkOnReleaseCreateController = new HopingToWorkOnReleaseCreateController()
   const wantToAddQualificationsCreateController = new WantToAddQualificationsCreateController()
@@ -91,6 +92,7 @@ export default (router: Router, services: Services) => {
 
   router.get('/prisoners/:prisonNumber/create-induction/:journeyId/want-to-add-qualifications', [
     checkInductionDtoExistsInJourneyData,
+    retrievePrisonNamesById(prisonService),
     retrieveCuriousFunctionalSkills(curiousService),
     retrieveCuriousInPrisonCourses(curiousService),
     asyncMiddleware(wantToAddQualificationsCreateController.getWantToAddQualificationsView),
@@ -102,6 +104,7 @@ export default (router: Router, services: Services) => {
 
   router.get('/prisoners/:prisonNumber/create-induction/:journeyId/qualifications', [
     checkInductionDtoExistsInJourneyData,
+    retrievePrisonNamesById(prisonService),
     retrieveCuriousFunctionalSkills(curiousService),
     retrieveCuriousInPrisonCourses(curiousService),
     asyncMiddleware(qualificationsListCreateController.getQualificationsListView),

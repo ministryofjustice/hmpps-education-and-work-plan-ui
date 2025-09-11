@@ -7,8 +7,9 @@
 Data supplied to this template:
   * prisonerSummary - object with firstName and lastName
   * qualifications - Array of AchievedQualificationDto representing the educational qualifications on the Induction
-  * functionalSkills - The most recent Functional Skills assessments from Curious
   * inPrisonCourses - All in-prison courses and qualifications from Curious
+  * prisonerFunctionalSkills - prisoner functional skills - see _functionalSkillsAssessments.njk
+  * prisonNamesById - key/value pairs of prisonIDs to prison names
 #}
 
 {% block beforeContent %}
@@ -24,6 +25,8 @@ Data supplied to this template:
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
       <h1 class="govuk-heading-l">{{ prisonerSummary.firstName }} {{ prisonerSummary.lastName }}'s qualifications</h1>
+
+      {% set prisonNamesById = prisonNamesById.value if prisonNamesById.isFulfilled() else {} %}
 
       <form class="form" method="post" novalidate="">
         <input type="hidden" name="_csrf" value="{{ csrfToken }}" />

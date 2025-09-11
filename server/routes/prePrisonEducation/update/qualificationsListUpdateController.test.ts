@@ -10,6 +10,7 @@ import validInPrisonCourseRecords from '../../../testsupport/inPrisonCourseRecor
 import { anUpdateAchievedQualificationDto } from '../../../testsupport/achievedQualificationDtoTestDataBuilder'
 import EducationLevelValue from '../../../enums/educationLevelValue'
 import aValidUpdateEducationDto from '../../../testsupport/updateEducationDtoTestDataBuilder'
+import { Result } from '../../../utils/result/result'
 
 jest.mock('../../../services/educationAndWorkPlanService')
 
@@ -26,8 +27,9 @@ describe('qualificationsListUpdateController', () => {
   const prisonId = 'BXI'
   const username = 'a-dps-user'
   const prisonerSummary = aValidPrisonerSummary({ prisonNumber, prisonId })
-  const functionalSkills = validFunctionalSkills()
+  const prisonerFunctionalSkills = validFunctionalSkills()
   const inPrisonCourses = validInPrisonCourseRecords()
+  const prisonNamesById = Result.fulfilled({ MDI: 'Moorland (HMP & YOI)', WDI: 'Wakefield (HMP)' })
 
   const req = {
     journeyData: {},
@@ -40,8 +42,9 @@ describe('qualificationsListUpdateController', () => {
     render: jest.fn(),
     locals: {
       prisonerSummary,
-      prisonerFunctionalSkills: functionalSkills,
+      prisonerFunctionalSkills,
       curiousInPrisonCourses: inPrisonCourses,
+      prisonNamesById,
     },
   } as unknown as Response
   const next = jest.fn()
@@ -63,8 +66,9 @@ describe('qualificationsListUpdateController', () => {
       const expectedView = {
         prisonerSummary,
         qualifications: expectedQualifications,
-        functionalSkills,
+        prisonerFunctionalSkills,
         inPrisonCourses,
+        prisonNamesById,
       }
 
       // When

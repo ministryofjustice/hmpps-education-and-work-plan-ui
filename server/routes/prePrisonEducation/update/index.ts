@@ -13,13 +13,14 @@ import retrieveCuriousInPrisonCourses from '../../routerRequestHandlers/retrieve
 import ApplicationAction from '../../../enums/applicationAction'
 import insertJourneyIdentifier from '../../routerRequestHandlers/insertJourneyIdentifier'
 import setupJourneyData from '../../routerRequestHandlers/setupJourneyData'
+import retrievePrisonNamesById from '../../routerRequestHandlers/retrievePrisonNamesById'
 
 /**
  * Route definitions for updating a prisoner's qualifications
  *
  */
 export default (router: Router, services: Services) => {
-  const { educationAndWorkPlanService, journeyDataService } = services
+  const { educationAndWorkPlanService, journeyDataService, prisonService } = services
   const highestLevelOfEducationUpdateController = new HighestLevelOfEducationUpdateController(
     educationAndWorkPlanService,
   )
@@ -52,6 +53,7 @@ export default (router: Router, services: Services) => {
   ])
 
   router.get('/prisoners/:prisonNumber/education/:journeyId/qualifications', [
+    retrievePrisonNamesById(prisonService),
     retrieveEducationForUpdate(educationAndWorkPlanService),
     retrieveCuriousFunctionalSkills(services.curiousService),
     retrieveCuriousInPrisonCourses(services.curiousService),

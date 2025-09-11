@@ -9,6 +9,7 @@ import { validFunctionalSkills } from '../../../testsupport/functionalSkillsTest
 import EducationLevelValue from '../../../enums/educationLevelValue'
 import validInPrisonCourseRecords from '../../../testsupport/inPrisonCourseRecordsTestDataBuilder'
 import HopingToGetWorkValue from '../../../enums/hopingToGetWorkValue'
+import { Result } from '../../../utils/result/result'
 
 describe('qualificationsListCreateController', () => {
   const controller = new QualificationsListCreateController()
@@ -16,8 +17,9 @@ describe('qualificationsListCreateController', () => {
   const journeyId = uuidV4()
   const prisonNumber = 'A1234BC'
   const prisonerSummary = aValidPrisonerSummary()
-  const functionalSkills = validFunctionalSkills()
+  const prisonerFunctionalSkills = validFunctionalSkills()
   const inPrisonCourses = validInPrisonCourseRecords()
+  const prisonNamesById = Result.fulfilled({ MDI: 'Moorland (HMP & YOI)', WDI: 'Wakefield (HMP)' })
 
   const req = {
     session: {},
@@ -31,8 +33,9 @@ describe('qualificationsListCreateController', () => {
     render: jest.fn(),
     locals: {
       prisonerSummary,
-      prisonerFunctionalSkills: functionalSkills,
+      prisonerFunctionalSkills,
       curiousInPrisonCourses: inPrisonCourses,
+      prisonNamesById,
     },
   } as unknown as Response
   const next = jest.fn()
@@ -56,8 +59,9 @@ describe('qualificationsListCreateController', () => {
       const expectedView = {
         prisonerSummary,
         qualifications: expectedQualifications,
-        functionalSkills,
+        prisonerFunctionalSkills,
         inPrisonCourses,
+        prisonNamesById,
       }
 
       // When
@@ -79,8 +83,9 @@ describe('qualificationsListCreateController', () => {
       const expectedView = {
         prisonerSummary,
         qualifications: expectedQualifications,
-        functionalSkills,
+        prisonerFunctionalSkills,
         inPrisonCourses,
+        prisonNamesById,
       }
 
       // When
