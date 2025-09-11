@@ -1,28 +1,27 @@
 import { RequestHandler } from 'express'
-import { mostRecentFunctionalSkills } from '../functionalSkillsResolver'
-import EducationAndTrainingView from './educationAndTrainingView'
+import { toInductionScheduleView } from './overviewViewFunctions'
 
 export default class EducationAndTrainingController {
   getEducationAndTrainingView: RequestHandler = async (req, res, next): Promise<void> => {
     const {
       prisonerSummary,
       prisonerFunctionalSkills,
+      prisonNamesById,
       curiousInPrisonCourses,
       induction,
       education,
       inductionSchedule,
     } = res.locals
 
-    const functionalSkills = mostRecentFunctionalSkills(prisonerFunctionalSkills)
-
-    const view = new EducationAndTrainingView(
+    res.render('pages/overview/index', {
+      tab: 'education-and-training',
       prisonerSummary,
-      functionalSkills,
-      curiousInPrisonCourses,
+      prisonerFunctionalSkills,
+      prisonNamesById,
+      inPrisonCourses: curiousInPrisonCourses,
       induction,
       education,
-      inductionSchedule,
-    )
-    res.render('pages/overview/index', { ...view.renderArgs })
+      inductionSchedule: toInductionScheduleView(inductionSchedule, induction.inductionDto),
+    })
   }
 }

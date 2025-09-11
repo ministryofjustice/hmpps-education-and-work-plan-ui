@@ -4,6 +4,8 @@ Contains 'Functional skills', 'In-prison qualifications and achievements', 'Educ
 'Training and eduction in prison' summary cards.
 #}
 
+{% set prisonNamesById = prisonNamesById.value if prisonNamesById.isFulfilled() else {} %}
+
 {# 'Functional skills' summary card #}
 {% include './_functionalSkills.njk' %}
 {# 'In-prison qualifications and achievements' summary card #}
