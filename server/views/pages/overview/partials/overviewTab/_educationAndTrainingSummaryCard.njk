@@ -2,17 +2,14 @@
 
 Data supplied to this template:
   * prisonerSummary - object with firstName and lastName
-  * functionalSkills: {
-  *   problemRetrievingData: boolean
-  *   mostRecentAssessments: Array<Assessment>
-  * }
+  * prisonerFunctionalSkills - prisoner functional skills
   * inPrisonCourses: {
   *   problemRetrievingData: boolean
   *   coursesCompletedInLast12Months: Array<InPrisonCourse>
   *   hasWithdrawnOrInProgressCourses: boolean
   *   hasCoursesCompletedMoreThan12MonthsAgo: boolean
   * }
-
+  * prisonNamesById - key/value pairs of prisonIDs to prison names
 #}
 
 <div class="govuk-summary-card">
@@ -20,7 +17,7 @@ Data supplied to this template:
     <h2 class="govuk-summary-card__title govuk-!-font-size-24">Education and training</h2>
   </div>
   <div class="govuk-summary-card__content">
-    {% if not functionalSkills.problemRetrievingData %}
+    {% if not prisonerFunctionalSkills.problemRetrievingData %}
       <h3 class="govuk-heading-s" data-qa="functional-skills-heading">Functional skills initial assessment scores</h3>
       <p class="govuk-hint" data-qa="functional-skills-hint">Information from Curious. These scores are from a person's induction assessment.<br/>For recent functional skills qualifications, go to courses and qualifications.</p>
 
@@ -32,20 +29,29 @@ Data supplied to this template:
           </tr>
         </thead>
         <tbody class="govuk-table__body" data-qa="functional-skills-table-body">
-        {% for skill in functionalSkills.mostRecentAssessments %}
-          <tr class="govuk-table__row {% if loop.last %}last-row-no-border{% endif %}">
-            <td class="govuk-table__cell">
-              <span class="govuk-body">{{skill.type | formatFunctionalSkillType }} {{ skill.grade }}</span>
-            </td>
-            <td class="govuk-table__cell">
-              {% if skill.assessmentDate %}
-                <span class="govuk-hint">Assessed on {{ skill.assessmentDate | formatDate('D MMMM YYYY') }}, {{ skill.prisonName }}</span>
-              {% else %}
-                <span class="govuk-hint">No functional skill assessment scores recorded in Curious</span>
-              {% endif %}
-            </td>
-          </tr>
-        {% endfor %}
+          {% set mostRecentEnglishAssessment = prisonerFunctionalSkills.assessments | filterArrayOnProperty('type', 'ENGLISH') | sort(attribute = 'assessmentDate', reverse = true) | first %}
+          {% set mostRecentMathsAssessment = prisonerFunctionalSkills.assessments | filterArrayOnProperty('type', 'MATHS') | sort(attribute = 'assessmentDate', reverse = true) | first %}
+          {% set mostRecentDigitalSkillsAssessment = prisonerFunctionalSkills.assessments | filterArrayOnProperty('type', 'DIGITAL_LITERACY') | sort(attribute = 'assessmentDate', reverse = true) | first %}
+          {% set mostRecentAssessmentsOfType = [ mostRecentEnglishAssessment or {'type': 'ENGLISH'}, mostRecentMathsAssessment or {'type': 'MATHS'} ] %}
+          {% if mostRecentDigitalSkillsAssessment %}
+            {% set mostRecentAssessmentsOfType = (mostRecentAssessmentsOfType.push(mostRecentDigitalSkillsAssessment), mostRecentAssessmentsOfType) %}
+          {% endif %}
+
+          {% for functionalSkillAssessment in mostRecentAssessmentsOfType %}
+            <tr class="govuk-table__row {% if loop.last %}last-row-no-border{% endif %}">
+              <td class="govuk-table__cell">
+                <span class="govuk-body">{{functionalSkillAssessment.type | formatFunctionalSkillType }} {{ functionalSkillAssessment.grade }}</span>
+              </td>
+              <td class="govuk-table__cell">
+                {% if functionalSkillAssessment.assessmentDate %}
+                  {% set prisonName = prisonNamesById[functionalSkillAssessment.prisonId] | default(functionalSkillAssessment.prisonId) %}
+                  <span class="govuk-hint">Assessed on {{ functionalSkillAssessment.assessmentDate | formatDate('d MMMM yyyy') }}, {{ prisonName }}</span>
+                {% else %}
+                  <span class="govuk-hint">No functional skill assessment scores recorded in Curious</span>
+                {% endif %}
+              </td>
+            </tr>
+          {% endfor %}
         </tbody>
       </table>
     {% else %}

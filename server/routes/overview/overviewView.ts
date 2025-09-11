@@ -1,23 +1,12 @@
-import type {
-  ActionPlanReviews,
-  Assessment,
-  FunctionalSkills,
-  InductionSchedule,
-  InPrisonCourseRecords,
-  PrisonerGoals,
-  PrisonerSummary,
-} from 'viewModels'
+import type { ActionPlanReviews, InductionSchedule, InPrisonCourseRecords, PrisonerGoals } from 'viewModels'
 import { startOfToday, sub } from 'date-fns'
 import type { InductionDto } from 'inductionDto'
 import type { OverviewViewRenderArgs } from './overviewViewTypes'
-import dateComparator from '../dateComparator'
 import { toActionPlanReviewScheduleView, toInductionScheduleView } from './overviewViewFunctions'
 import { Result } from '../../utils/result/result'
 
 export default class OverviewView {
   constructor(
-    private readonly prisonerSummary: PrisonerSummary,
-    private readonly functionalSkills: FunctionalSkills,
     private readonly inPrisonCourses: InPrisonCourseRecords,
     private readonly inductionSchedule: InductionSchedule,
     private readonly actionPlanReviews: ActionPlanReviews,
@@ -85,14 +74,6 @@ export default class OverviewView {
     }
 
     return {
-      tab: 'overview',
-      prisonerSummary: this.prisonerSummary,
-      functionalSkills: {
-        problemRetrievingData: this.functionalSkills.problemRetrievingData,
-        mostRecentAssessments: !this.functionalSkills.problemRetrievingData
-          ? mostRecentAssessments(this.functionalSkills.assessments)
-          : undefined,
-      },
       inPrisonCourses: {
         problemRetrievingData: this.inPrisonCourses.problemRetrievingData,
         coursesCompletedInLast12Months: this.inPrisonCourses.coursesCompletedInLast12Months,
@@ -132,37 +113,6 @@ export default class OverviewView {
       },
       inductionSchedule: toInductionScheduleView(this.inductionSchedule, this.induction.inductionDto),
       actionPlanReview: toActionPlanReviewScheduleView(this.actionPlanReviews),
-      prisonNamesById: this.prisonNamesById,
     }
   }
-}
-
-const mostRecentAssessments = (allAssessments: Array<Assessment>): Array<Assessment> => {
-  const allAssessmentsGroupedByTypeSortedByDateDesc = assessmentsGroupedByTypeSortedByDateDesc(allAssessments)
-
-  const latestEnglishAssessment = (
-    allAssessmentsGroupedByTypeSortedByDateDesc.get('ENGLISH') || [{ type: 'ENGLISH' } as Assessment]
-  ).at(0)
-  const latestMathsAssessment = (
-    allAssessmentsGroupedByTypeSortedByDateDesc.get('MATHS') || [{ type: 'MATHS' } as Assessment]
-  ).at(0)
-  const latestOtherAssessments = [...allAssessmentsGroupedByTypeSortedByDateDesc.keys()]
-    .filter(key => key !== 'ENGLISH' && key !== 'MATHS')
-    .map(key => allAssessmentsGroupedByTypeSortedByDateDesc.get(key).at(0))
-
-  return [latestEnglishAssessment, latestMathsAssessment, ...latestOtherAssessments]
-}
-
-const assessmentsGroupedByTypeSortedByDateDesc = (assessments: Array<Assessment>): Map<string, Array<Assessment>> => {
-  const map = new Map<string, Array<Assessment>>()
-  assessments.forEach(assessment => {
-    const key = assessment.type
-    const value: Array<Assessment> = map.get(key) || []
-    value.push(assessment)
-    map.set(
-      key,
-      value.sort((left: Assessment, right: Assessment) => dateComparator(left.assessmentDate, right.assessmentDate)),
-    )
-  })
-  return map
 }

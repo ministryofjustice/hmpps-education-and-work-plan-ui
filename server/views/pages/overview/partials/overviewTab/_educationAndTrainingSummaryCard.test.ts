@@ -5,6 +5,8 @@ import type { InPrisonCourse } from 'viewModels'
 import formatDate from '../../../../../filters/formatDateFilter'
 import aValidPrisonerSummary from '../../../../../testsupport/prisonerSummaryTestDataBuilder'
 import formatFunctionalSkillTypeFilter from '../../../../../filters/formatFunctionalSkillTypeFilter'
+import filterArrayOnPropertyFilter from '../../../../../filters/filterArrayOnPropertyFilter'
+import { validFunctionalSkills } from '../../../../../testsupport/functionalSkillsTestDataBuilder'
 
 const njkEnv = nunjucks.configure([
   'node_modules/govuk-frontend/govuk/',
@@ -16,29 +18,63 @@ const njkEnv = nunjucks.configure([
   __dirname,
 ])
 
-njkEnv.addFilter('formatDate', formatDate)
-njkEnv.addFilter('formatFunctionalSkillType', formatFunctionalSkillTypeFilter)
+njkEnv //
+  .addFilter('formatDate', formatDate)
+  .addFilter('formatFunctionalSkillType', formatFunctionalSkillTypeFilter)
+  .addFilter('filterArrayOnProperty', filterArrayOnPropertyFilter)
 
 const prisonerSummary = aValidPrisonerSummary()
+const prisonNamesById = { BXI: 'Brixton (HMP)', MDI: 'Moorland (HMP & YOI)' }
+const prisonerFunctionalSkills = validFunctionalSkills()
+const inPrisonCourses = {
+  problemRetrievingData: false,
+  coursesCompletedInLast12Months: [
+    {
+      prisonId: 'BXI',
+      prisonName: 'Brixton (HMP)',
+      courseName: 'Basic English',
+      courseCode: 'ENG_01',
+      isAccredited: true,
+      courseStartDate: parseISO('2022-12-01T00:00:00Z'),
+      courseCompletionDate: parseISO('2023-06-15T00:00:00Z'),
+      courseStatus: 'COMPLETED',
+      grade: 'Pass',
+      source: 'CURIOUS',
+    },
+  ],
+  hasWithdrawnOrInProgressCourses: false,
+  hasCoursesCompletedMoreThan12MonthsAgo: false,
+}
+const templateParams = {
+  prisonerSummary,
+  prisonerFunctionalSkills,
+  inPrisonCourses,
+  prisonNamesById,
+}
+
 const template = '_educationAndTrainingSummaryCard.njk'
 
 describe('_educationAndTrainingSummaryCard', () => {
   it('should render education and training summary card correctly given prisoner has functional skills and in-prison courses completed in the last 12 months', () => {
     // Given
-    const pageViewModel = {
-      prisonerSummary,
-      functionalSkills: {
+    const params = {
+      ...templateParams,
+      prisonerFunctionalSkills: {
         problemRetrievingData: false,
-        mostRecentAssessments: [
+        assessments: [
+          {
+            prisonId: 'LEI',
+            prisonName: 'Leeds (HMP)',
+            type: 'MATHS',
+            grade: 'Level 1',
+            assessmentDate: parseISO('2022-01-15T00:00:00Z'),
+          },
           {
             prisonId: 'BXI',
             prisonName: 'Brixton (HMP)',
             type: 'MATHS',
-            grade: 'Level 1',
+            grade: 'Level 2',
             assessmentDate: parseISO('2023-01-15T00:00:00Z'),
-          },
-          {
-            type: 'ENGLISH',
           },
         ],
       },
@@ -64,23 +100,19 @@ describe('_educationAndTrainingSummaryCard', () => {
     }
 
     // When
-    const content = njkEnv.render(template, pageViewModel)
+    const content = njkEnv.render(template, params)
     const $ = cheerio.load(content)
 
     // Then
-    expect($('[data-qa="functional-skills-table"]').length).toEqual(1)
-    expect($('[data-qa="functional-skills-table-body"] tr').length).toEqual(2)
-    expect($('[data-qa="functional-skills-table-body"] tr:nth-of-type(1) td:nth-of-type(1)').text().trim()).toEqual(
-      'Maths skills Level 1',
-    )
-    expect($('[data-qa="functional-skills-table-body"] tr:nth-of-type(1) td:nth-of-type(2)').text().trim()).toEqual(
-      'Assessed on 15 January 2023, Brixton (HMP)',
-    )
-    expect($('[data-qa="functional-skills-table-body"] tr:nth-of-type(2) td:nth-of-type(1)').text().trim()).toEqual(
-      'English skills',
-    )
-    expect($('[data-qa="functional-skills-table-body"] tr:nth-of-type(2) td:nth-of-type(2)').text().trim()).toEqual(
+    const functionalSkillsRows = $('[data-qa="functional-skills-table-body"] tr')
+    expect(functionalSkillsRows.length).toEqual(2)
+    expect(functionalSkillsRows.eq(0).find('td').eq(0).text().trim()).toEqual('English skills')
+    expect(functionalSkillsRows.eq(0).find('td').eq(1).text().trim()).toEqual(
       'No functional skill assessment scores recorded in Curious',
+    )
+    expect(functionalSkillsRows.eq(1).find('td').eq(0).text().trim()).toEqual('Maths skills Level 2')
+    expect(functionalSkillsRows.eq(1).find('td').eq(1).text().trim()).toEqual(
+      'Assessed on 15 January 2023, Brixton (HMP)',
     )
 
     expect($('[data-qa="completed-in-prison-courses-in-last-12-months-table"]').length).toEqual(1)
@@ -101,23 +133,8 @@ describe('_educationAndTrainingSummaryCard', () => {
 
   it('should render no course message given prisoner has taken no courses at all', () => {
     // Given
-    const pageViewModel = {
-      prisonerSummary,
-      functionalSkills: {
-        problemRetrievingData: false,
-        mostRecentAssessments: [
-          {
-            prisonId: 'BXI',
-            prisonName: 'Brixton (HMP)',
-            type: 'MATHS',
-            grade: 'Level 1',
-            assessmentDate: parseISO('2023-01-15T00:00:00Z'),
-          },
-          {
-            type: 'ENGLISH',
-          },
-        ],
-      },
+    const params = {
+      ...templateParams,
       inPrisonCourses: {
         problemRetrievingData: false,
         coursesCompletedInLast12Months: [] as Array<InPrisonCourse>,
@@ -127,7 +144,7 @@ describe('_educationAndTrainingSummaryCard', () => {
     }
 
     // When
-    const content = njkEnv.render(template, pageViewModel)
+    const content = njkEnv.render(template, params)
     const $ = cheerio.load(content)
 
     // Then
@@ -141,23 +158,8 @@ describe('_educationAndTrainingSummaryCard', () => {
 
   it('should render no completed course message given prisoner has taken courses but not completed them', () => {
     // Given
-    const pageViewModel = {
-      prisonerSummary,
-      functionalSkills: {
-        problemRetrievingData: false,
-        mostRecentAssessments: [
-          {
-            prisonId: 'BXI',
-            prisonName: 'Brixton (HMP)',
-            type: 'MATHS',
-            grade: 'Level 1',
-            assessmentDate: parseISO('2023-01-15T00:00:00Z'),
-          },
-          {
-            type: 'ENGLISH',
-          },
-        ],
-      },
+    const params = {
+      ...templateParams,
       inPrisonCourses: {
         problemRetrievingData: false,
         coursesCompletedInLast12Months: [] as Array<InPrisonCourse>,
@@ -167,7 +169,7 @@ describe('_educationAndTrainingSummaryCard', () => {
     }
 
     // When
-    const content = njkEnv.render(template, pageViewModel)
+    const content = njkEnv.render(template, params)
     const $ = cheerio.load(content)
 
     // Then
@@ -179,25 +181,10 @@ describe('_educationAndTrainingSummaryCard', () => {
     expect($('[data-qa="curious-unavailable-message"]').length).toEqual(0)
   })
 
-  it('should render course completed over 12 months ago message given prisoner has courses over 12 moonths ago', () => {
+  it('should render course completed over 12 months ago message given prisoner has courses over 12 months ago', () => {
     // Given
-    const pageViewModel = {
-      prisonerSummary,
-      functionalSkills: {
-        problemRetrievingData: false,
-        mostRecentAssessments: [
-          {
-            prisonId: 'BXI',
-            prisonName: 'Brixton (HMP)',
-            type: 'MATHS',
-            grade: 'Level 1',
-            assessmentDate: parseISO('2023-01-15T00:00:00Z'),
-          },
-          {
-            type: 'ENGLISH',
-          },
-        ],
-      },
+    const params = {
+      ...templateParams,
       inPrisonCourses: {
         problemRetrievingData: false,
         coursesCompletedInLast12Months: [] as Array<InPrisonCourse>,
@@ -207,7 +194,7 @@ describe('_educationAndTrainingSummaryCard', () => {
     }
 
     // When
-    const content = njkEnv.render(template, pageViewModel)
+    const content = njkEnv.render(template, params)
     const $ = cheerio.load(content)
 
     // Then
@@ -221,34 +208,15 @@ describe('_educationAndTrainingSummaryCard', () => {
 
   it('should not render functional skills data given problem retrieving functional skills data', () => {
     // Given
-    const pageViewModel = {
-      prisonerSummary,
-      functionalSkills: {
+    const params = {
+      ...templateParams,
+      prisonerFunctionalSkills: {
         problemRetrievingData: true,
-      },
-      inPrisonCourses: {
-        problemRetrievingData: false,
-        coursesCompletedInLast12Months: [
-          {
-            prisonId: 'BXI',
-            prisonName: 'Brixton (HMP)',
-            courseName: 'Basic English',
-            courseCode: 'ENG_01',
-            isAccredited: true,
-            courseStartDate: parseISO('2022-12-01T00:00:00Z'),
-            courseCompletionDate: parseISO('2023-06-15T00:00:00Z'),
-            courseStatus: 'COMPLETED',
-            grade: 'Pass',
-            source: 'CURIOUS',
-          },
-        ],
-        hasWithdrawnOrInProgressCourses: false,
-        hasCoursesCompletedMoreThan12MonthsAgo: false,
       },
     }
 
     // When
-    const content = njkEnv.render(template, pageViewModel)
+    const content = njkEnv.render(template, params)
     const $ = cheerio.load(content)
 
     // Then
@@ -259,30 +227,15 @@ describe('_educationAndTrainingSummaryCard', () => {
 
   it('should not render in-prison course data given problem retrieving in-prison course data', () => {
     // Given
-    const pageViewModel = {
-      prisonerSummary,
-      functionalSkills: {
-        problemRetrievingData: false,
-        mostRecentAssessments: [
-          {
-            prisonId: 'BXI',
-            prisonName: 'Brixton (HMP)',
-            type: 'MATHS',
-            grade: 'Level 1',
-            assessmentDate: parseISO('2023-01-15T00:00:00Z'),
-          },
-          {
-            type: 'ENGLISH',
-          },
-        ],
-      },
+    const params = {
+      ...templateParams,
       inPrisonCourses: {
         problemRetrievingData: true,
       },
     }
 
     // When
-    const content = njkEnv.render(template, pageViewModel)
+    const content = njkEnv.render(template, params)
     const $ = cheerio.load(content)
 
     // Then
@@ -293,9 +246,9 @@ describe('_educationAndTrainingSummaryCard', () => {
 
   it('should not render function skills or in-prison course data given problem retrieving functional skills and in-prison course data', () => {
     // Given
-    const pageViewModel = {
-      prisonerSummary,
-      functionalSkills: {
+    const params = {
+      ...templateParams,
+      prisonerFunctionalSkills: {
         problemRetrievingData: true,
       },
       inPrisonCourses: {
@@ -304,7 +257,7 @@ describe('_educationAndTrainingSummaryCard', () => {
     }
 
     // When
-    const content = njkEnv.render(template, pageViewModel)
+    const content = njkEnv.render(template, params)
     const $ = cheerio.load(content)
 
     // Then

@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import type { Assessment, FunctionalSkills, InPrisonCourse, InPrisonCourseRecords } from 'viewModels'
+import type { InPrisonCourse, InPrisonCourseRecords } from 'viewModels'
 import { parseISO, startOfDay } from 'date-fns'
 import { aValidEnglishInPrisonCourse, aValidMathsInPrisonCourse } from '../../testsupport/inPrisonCourseTestDataBuilder'
 import aValidPrisonerSummary from '../../testsupport/prisonerSummaryTestDataBuilder'
@@ -10,6 +10,7 @@ import aValidActionPlanReviews from '../../testsupport/actionPlanReviewsTestData
 import { aValidInductionDto } from '../../testsupport/inductionDtoTestDataBuilder'
 import aValidInductionSchedule from '../../testsupport/inductionScheduleTestDataBuilder'
 import { Result } from '../../utils/result/result'
+import { validFunctionalSkills } from '../../testsupport/functionalSkillsTestDataBuilder'
 
 describe('overviewController', () => {
   const controller = new OverviewController()
@@ -32,10 +33,7 @@ describe('overviewController', () => {
     coursesCompletedInLast12Months: [],
   }
 
-  const functionalSkillsFromCurious = {
-    problemRetrievingData: false,
-    assessments: [{ type: 'ENGLISH' }, { type: 'MATHS' }],
-  } as FunctionalSkills
+  const prisonerFunctionalSkills = validFunctionalSkills()
 
   const inProgressGoal = {
     ...aValidGoalResponse(),
@@ -71,7 +69,7 @@ describe('overviewController', () => {
     res.locals = {
       prisonerSummary,
       curiousInPrisonCourses: inPrisonCourses,
-      prisonerFunctionalSkills: functionalSkillsFromCurious,
+      prisonerFunctionalSkills,
       allGoalsForPrisoner: {
         prisonNumber,
         goals: {
@@ -99,10 +97,7 @@ describe('overviewController', () => {
     const expectedView = {
       tab: 'overview',
       prisonerSummary,
-      functionalSkills: {
-        problemRetrievingData: false,
-        mostRecentAssessments: [{ type: 'ENGLISH' }, { type: 'MATHS' }],
-      },
+      prisonerFunctionalSkills,
       inPrisonCourses: {
         problemRetrievingData: false,
         coursesCompletedInLast12Months: inPrisonCourses.coursesCompletedInLast12Months,
@@ -199,10 +194,7 @@ describe('overviewController', () => {
     const expectedView = {
       tab: 'overview',
       prisonerSummary,
-      functionalSkills: {
-        problemRetrievingData: false,
-        mostRecentAssessments: [{ type: 'ENGLISH' }, { type: 'MATHS' }],
-      },
+      prisonerFunctionalSkills,
       inPrisonCourses: {
         problemRetrievingData: false,
         coursesCompletedInLast12Months: [] as Array<InPrisonCourse>,
@@ -295,10 +287,7 @@ describe('overviewController', () => {
     const expectedView = {
       tab: 'overview',
       prisonerSummary,
-      functionalSkills: {
-        problemRetrievingData: false,
-        mostRecentAssessments: [{ type: 'ENGLISH' }, { type: 'MATHS' }],
-      },
+      prisonerFunctionalSkills,
       inPrisonCourses: {
         problemRetrievingData: false,
         coursesCompletedInLast12Months: inPrisonCourses.coursesCompletedInLast12Months,
@@ -368,10 +357,7 @@ describe('overviewController', () => {
     const expectedView = {
       tab: 'overview',
       prisonerSummary,
-      functionalSkills: {
-        problemRetrievingData: false,
-        mostRecentAssessments: [{ type: 'ENGLISH' }, { type: 'MATHS' }],
-      },
+      prisonerFunctionalSkills,
       inPrisonCourses: {
         problemRetrievingData: false,
         coursesCompletedInLast12Months: inPrisonCourses.coursesCompletedInLast12Months,
@@ -443,10 +429,7 @@ describe('overviewController', () => {
     const expectedView = {
       tab: 'overview',
       prisonerSummary,
-      functionalSkills: {
-        problemRetrievingData: false,
-        mostRecentAssessments: [{ type: 'ENGLISH' }, { type: 'MATHS' }],
-      },
+      prisonerFunctionalSkills,
       inPrisonCourses: {
         problemRetrievingData: true,
         coursesCompletedInLast12Months: undefined as Array<InPrisonCourse>,
@@ -520,9 +503,8 @@ describe('overviewController', () => {
     const expectedView = {
       tab: 'overview',
       prisonerSummary,
-      functionalSkills: {
+      prisonerFunctionalSkills: {
         problemRetrievingData: true,
-        mostRecentAssessments: undefined as Array<Assessment>,
       },
       inPrisonCourses: {
         problemRetrievingData: false,
