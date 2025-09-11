@@ -1,8 +1,5 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express'
-import type { Assessment } from 'viewModels'
 import type { EducationDto } from 'dto'
-import QualificationsListView from './qualificationsListView'
-import dateComparator from '../../dateComparator'
 
 /**
  * Abstract controller class defining functionality common to both the Create and Update journeys.
@@ -14,7 +11,7 @@ export default abstract class QualificationsListController {
     next: NextFunction,
   ): Promise<void> => {
     const { prisonNumber, journeyId } = req.params
-    const { prisonerSummary } = res.locals
+    const { prisonerSummary, prisonerFunctionalSkills, prisonNamesById, curiousInPrisonCourses } = res.locals
 
     const { educationDto } = req.journeyData
 
@@ -22,19 +19,13 @@ export default abstract class QualificationsListController {
       return res.redirect(`/prisoners/${prisonNumber}/create-education/${journeyId}/highest-level-of-education`)
     }
 
-    const { prisonerFunctionalSkills, curiousInPrisonCourses } = res.locals
-    const functionalSkills = {
-      ...prisonerFunctionalSkills,
-      assessments: mostRecentAssessments(prisonerFunctionalSkills.assessments || []),
-    }
-
-    const view = new QualificationsListView(
+    return res.render('pages/prePrisonEducation/qualificationsList', {
       prisonerSummary,
-      educationDto.qualifications,
-      functionalSkills,
-      curiousInPrisonCourses,
-    )
-    return res.render('pages/prePrisonEducation/qualificationsList', { ...view.renderArgs })
+      prisonNamesById,
+      prisonerFunctionalSkills,
+      qualifications: educationDto.qualifications,
+      inPrisonCourses: curiousInPrisonCourses,
+    })
   }
 
   protected educationHasQualifications = (educationDto: EducationDto): boolean =>
@@ -54,35 +45,4 @@ export default abstract class QualificationsListController {
       qualifications: updatedQualifications,
     }
   }
-}
-
-// TODO - this is duplicated in induction QualificationListController and WantToAddQualificationsController - needs putting somewhere common
-const mostRecentAssessments = (allAssessments: Array<Assessment>): Array<Assessment> => {
-  const allAssessmentsGroupedByTypeSortedByDateDesc = assessmentsGroupedByTypeSortedByDateDesc(allAssessments)
-
-  const latestEnglishAssessment = allAssessmentsGroupedByTypeSortedByDateDesc.get('ENGLISH')?.at(0)
-  const latestMathsAssessment = allAssessmentsGroupedByTypeSortedByDateDesc.get('MATHS')?.at(0)
-  const latestOtherAssessments = [...allAssessmentsGroupedByTypeSortedByDateDesc.keys()]
-    .filter(key => key !== 'ENGLISH' && key !== 'MATHS')
-    .map(key => allAssessmentsGroupedByTypeSortedByDateDesc.get(key).at(0))
-
-  return Array.of(latestEnglishAssessment, latestMathsAssessment, ...latestOtherAssessments).filter(
-    assessment => assessment != null,
-  )
-}
-
-const assessmentsGroupedByTypeSortedByDateDesc = (assessments: Array<Assessment>): Map<string, Array<Assessment>> => {
-  const assessmentsByType = new Map<string, Array<Assessment>>()
-  assessments.forEach(assessment => {
-    const key = assessment.type
-    const value: Array<Assessment> = assessmentsByType.get(key) || []
-    value.push(assessment)
-    assessmentsByType.set(
-      key,
-      value.sort((left: Assessment, right: Assessment) =>
-        dateComparator(left.assessmentDate, right.assessmentDate, 'DESC'),
-      ),
-    )
-  })
-  return assessmentsByType
 }

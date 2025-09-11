@@ -1,5 +1,19 @@
-{% if not functionalSkills.problemRetrievingData %}
-  {% if functionalSkills.assessments.length %}
+{% if not prisonerFunctionalSkills.problemRetrievingData %}
+  {% set mostRecentEnglishAssessment = prisonerFunctionalSkills.assessments | filterArrayOnProperty('type', 'ENGLISH') | sort(attribute = 'assessmentDate', reverse = true) | first %}
+  {% set mostRecentMathsAssessment = prisonerFunctionalSkills.assessments | filterArrayOnProperty('type', 'MATHS') | sort(attribute = 'assessmentDate', reverse = true) | first %}
+  {% set mostRecentDigitalSkillsAssessment = prisonerFunctionalSkills.assessments | filterArrayOnProperty('type', 'DIGITAL_LITERACY') | sort(attribute = 'assessmentDate', reverse = true) | first %}
+  {% set mostRecentAssessmentsOfType = [] %}
+  {% if mostRecentEnglishAssessment %}
+    {% set mostRecentAssessmentsOfType = (mostRecentAssessmentsOfType.push(mostRecentEnglishAssessment), mostRecentAssessmentsOfType) %}
+  {% endif %}
+  {% if mostRecentMathsAssessment %}
+    {% set mostRecentAssessmentsOfType = (mostRecentAssessmentsOfType.push(mostRecentMathsAssessment), mostRecentAssessmentsOfType) %}
+  {% endif %}
+  {% if mostRecentDigitalSkillsAssessment %}
+    {% set mostRecentAssessmentsOfType = (mostRecentAssessmentsOfType.push(mostRecentDigitalSkillsAssessment), mostRecentAssessmentsOfType) %}
+  {% endif %}
+
+  {% if mostRecentAssessmentsOfType.length %}
     <table class="govuk-table govuk-!-margin-bottom-8">
       <caption class="govuk-table__caption govuk-table__caption--m">Functional skills initial assessment scores</caption>
       <caption class="govuk-table__caption govuk-!-font-weight-regular govuk-body">
@@ -7,22 +21,23 @@
       </caption>
 
       <thead class="govuk-table__head">
-      <tr class="govuk-table__row">
-        <th scope="col" class="govuk-table__header">Subject</th>
-        <th scope="col" class="govuk-table__header">Location</th>
-        <th scope="col" class="govuk-table__header">Level</th>
-        <th scope="col" class="govuk-table__header">Assessed on</th>
-      </tr>
+        <tr class="govuk-table__row">
+          <th scope="col" class="govuk-table__header">Subject</th>
+          <th scope="col" class="govuk-table__header">Location</th>
+          <th scope="col" class="govuk-table__header">Level</th>
+          <th scope="col" class="govuk-table__header">Assessed on</th>
+        </tr>
       </thead>
       <tbody class="govuk-table__body">
-      {% for item in functionalSkills.assessments %}
-        <tr class="govuk-table__row">
-          <td class="govuk-table__cell">{{ item.type | formatFunctionalSkillType }}</td>
-          <td class="govuk-table__cell"> {{ item.prisonName }}</td>
-          <td class="govuk-table__cell"> {{ item.grade }}</td>
-          <td class="govuk-table__cell">{{ item.assessmentDate | formatDate('D MMM YYYY') }}</td>
-        </tr>
-      {% endfor %}
+        {% for functionalSkillAssessment in mostRecentAssessmentsOfType %}
+          {% set prisonName = prisonNamesById[functionalSkillAssessment.prisonId] | default(functionalSkillAssessment.prisonId) %}
+          <tr class="govuk-table__row">
+            <td class="govuk-table__cell">{{ functionalSkillAssessment.type | formatFunctionalSkillType }}</td>
+            <td class="govuk-table__cell">{{ prisonName }}</td>
+            <td class="govuk-table__cell">{{ functionalSkillAssessment.grade }}</td>
+            <td class="govuk-table__cell">{{ functionalSkillAssessment.assessmentDate | formatDate('d MMM yyyy') }}</td>
+          </tr>
+        {% endfor %}
       </tbody>
     </table>
   {% else %}

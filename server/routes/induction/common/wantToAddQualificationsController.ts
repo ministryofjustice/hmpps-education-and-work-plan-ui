@@ -1,10 +1,7 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express'
-import type { Assessment } from 'viewModels'
 import type { WantToAddQualificationsForm } from 'inductionForms'
 import type { InductionDto } from 'inductionDto'
 import InductionController from './inductionController'
-import WantToAddQualificationsView from './wantToAddQualificationsView'
-import dateComparator from '../../dateComparator'
 import YesNoValue from '../../../enums/yesNoValue'
 import EducationLevelValue from '../../../enums/educationLevelValue'
 
@@ -21,27 +18,21 @@ export default abstract class WantToAddQualificationsController extends Inductio
     next: NextFunction,
   ): Promise<void> => {
     const { inductionDto } = req.journeyData
-    const { prisonerSummary } = res.locals
+    const { prisonerSummary, prisonerFunctionalSkills, prisonNamesById, curiousInPrisonCourses } = res.locals
 
     this.addCurrentPageToFlowHistoryWhenComingFromCheckYourAnswers(req)
-
-    const { prisonerFunctionalSkills, curiousInPrisonCourses } = res.locals
-    const functionalSkills = {
-      ...prisonerFunctionalSkills,
-      assessments: mostRecentAssessments(prisonerFunctionalSkills.assessments || []),
-    }
 
     const wantToAddQualificationsForm =
       req.session.wantToAddQualificationsForm || createWantToAddQualificationsForm(inductionDto)
     req.session.wantToAddQualificationsForm = undefined
 
-    const view = new WantToAddQualificationsView(
+    return res.render('pages/prePrisonEducation/wantToAddQualifications', {
       prisonerSummary,
-      wantToAddQualificationsForm,
-      functionalSkills,
-      curiousInPrisonCourses,
-    )
-    return res.render('pages/prePrisonEducation/wantToAddQualifications', { ...view.renderArgs })
+      form: wantToAddQualificationsForm,
+      prisonNamesById,
+      prisonerFunctionalSkills,
+      inPrisonCourses: curiousInPrisonCourses,
+    })
   }
 
   protected formSubmittedFromCheckYourAnswersWithNoChangeMade = (
@@ -71,37 +62,6 @@ export default abstract class WantToAddQualificationsController extends Inductio
       },
     }
   }
-}
-
-// TODO - this is duplicated in QualificationsListController - needs putting somewhere common
-const mostRecentAssessments = (allAssessments: Array<Assessment>): Array<Assessment> => {
-  const allAssessmentsGroupedByTypeSortedByDateDesc = assessmentsGroupedByTypeSortedByDateDesc(allAssessments)
-
-  const latestEnglishAssessment = allAssessmentsGroupedByTypeSortedByDateDesc.get('ENGLISH')?.at(0)
-  const latestMathsAssessment = allAssessmentsGroupedByTypeSortedByDateDesc.get('MATHS')?.at(0)
-  const latestOtherAssessments = [...allAssessmentsGroupedByTypeSortedByDateDesc.keys()]
-    .filter(key => key !== 'ENGLISH' && key !== 'MATHS')
-    .map(key => allAssessmentsGroupedByTypeSortedByDateDesc.get(key).at(0))
-
-  return Array.of(latestEnglishAssessment, latestMathsAssessment, ...latestOtherAssessments).filter(
-    assessment => assessment != null,
-  )
-}
-
-const assessmentsGroupedByTypeSortedByDateDesc = (assessments: Array<Assessment>): Map<string, Array<Assessment>> => {
-  const assessmentsByType = new Map<string, Array<Assessment>>()
-  assessments.forEach(assessment => {
-    const key = assessment.type
-    const value: Array<Assessment> = assessmentsByType.get(key) || []
-    value.push(assessment)
-    assessmentsByType.set(
-      key,
-      value.sort((left: Assessment, right: Assessment) =>
-        dateComparator(left.assessmentDate, right.assessmentDate, 'DESC'),
-      ),
-    )
-  })
-  return assessmentsByType
 }
 
 const createWantToAddQualificationsForm = (inductionDto: InductionDto): WantToAddQualificationsForm => {

@@ -13,13 +13,14 @@ import QualificationsListCreateController from './qualificationsListCreateContro
 import ApplicationAction from '../../../enums/applicationAction'
 import insertJourneyIdentifier from '../../routerRequestHandlers/insertJourneyIdentifier'
 import setupJourneyData from '../../routerRequestHandlers/setupJourneyData'
+import retrievePrisonNamesById from '../../routerRequestHandlers/retrievePrisonNamesById'
 
 /**
  * Route definitions for creating a prisoner's qualifications before an Induction
  *
  */
 export default (router: Router, services: Services) => {
-  const { educationAndWorkPlanService, journeyDataService } = services
+  const { educationAndWorkPlanService, journeyDataService, curiousService, prisonService } = services
   const highestLevelOfEducationCreateController = new HighestLevelOfEducationCreateController()
   const qualificationLevelCreateController = new QualificationLevelCreateController()
   const qualificationDetailsCreateController = new QualificationDetailsCreateController()
@@ -60,11 +61,9 @@ export default (router: Router, services: Services) => {
   ])
 
   router.get('/prisoners/:prisonNumber/create-education/:journeyId/qualifications', [
-    checkEducationDtoExistsInJourneyData,
-  ])
-  router.get('/prisoners/:prisonNumber/create-education/:journeyId/qualifications', [
-    retrieveCuriousFunctionalSkills(services.curiousService),
-    retrieveCuriousInPrisonCourses(services.curiousService),
+    retrievePrisonNamesById(prisonService),
+    retrieveCuriousFunctionalSkills(curiousService),
+    retrieveCuriousInPrisonCourses(curiousService),
     asyncMiddleware(qualificationsListCreateController.getQualificationsListView),
   ])
   router.post('/prisoners/:prisonNumber/create-education/:journeyId/qualifications', [
