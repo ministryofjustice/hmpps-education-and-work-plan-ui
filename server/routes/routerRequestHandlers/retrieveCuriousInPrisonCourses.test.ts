@@ -35,8 +35,9 @@ describe('retrieveCuriousInPrisonCourses', () => {
     await requestHandler(req, res, next)
 
     // Then
+    expect(res.locals.curiousInPrisonCourses.isFulfilled()).toEqual(true)
+    expect(res.locals.curiousInPrisonCourses.value).toEqual(expectedInPrisonCourses)
     expect(curiousService.getPrisonerInPrisonCourses).toHaveBeenCalledWith(prisonNumber)
-    expect(res.locals.curiousInPrisonCourses).toEqual(expectedInPrisonCourses)
     expect(next).toHaveBeenCalled()
   })
 })

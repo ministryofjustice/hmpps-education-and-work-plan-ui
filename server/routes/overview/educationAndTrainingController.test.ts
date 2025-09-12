@@ -21,7 +21,7 @@ describe('educationAndTrainingController', () => {
     inductionDto: aValidInductionDto(),
   }
 
-  const inPrisonCourses = validInPrisonCourseRecords()
+  const inPrisonCourses = Result.fulfilled(validInPrisonCourseRecords())
   const prisonerFunctionalSkills = Result.fulfilled(validFunctionalSkills())
   const educationDto = aValidEducationDto()
   const inductionSchedule = aValidInductionSchedule({ scheduleStatus: InductionScheduleStatusValue.COMPLETED })

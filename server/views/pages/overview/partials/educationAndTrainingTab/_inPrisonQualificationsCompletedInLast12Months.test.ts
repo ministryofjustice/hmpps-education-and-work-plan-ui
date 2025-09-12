@@ -6,6 +6,7 @@ import aValidPrisonerSummary from '../../../../../testsupport/prisonerSummaryTes
 import formatDate from '../../../../../filters/formatDateFilter'
 import validInPrisonCourseRecords from '../../../../../testsupport/inPrisonCourseRecordsTestDataBuilder'
 import formatIsAccreditedFilter from '../../../../../filters/formatIsAccreditedFilter'
+import { Result } from '../../../../../utils/result/result'
 
 const njkEnv = nunjucks.configure([
   'node_modules/govuk-frontend/govuk/',
@@ -23,7 +24,7 @@ njkEnv //
 
 const prisonerSummary = aValidPrisonerSummary()
 const prisonNamesById = { WDI: 'Wakefield (HMP)' }
-const inPrisonCourses = validInPrisonCourseRecords()
+const inPrisonCourses = Result.fulfilled(validInPrisonCourseRecords())
 const templateParams = {
   prisonerSummary,
   prisonNamesById,
@@ -41,8 +42,7 @@ describe('Education and Training tab view - In Prison Qualifications Completed I
     // Given
     const params = {
       ...templateParams,
-      inPrisonCourses: {
-        problemRetrievingData: false,
+      inPrisonCourses: Result.fulfilled({
         totalRecords: 2,
         coursesByStatus: {
           WITHDRAWN: [] as Array<InPrisonCourse>,
@@ -89,7 +89,7 @@ describe('Education and Training tab view - In Prison Qualifications Completed I
             source: 'CURIOUS',
           },
         ],
-      },
+      }),
     }
 
     const expectedCourseCompletionDate = format(nineMonthsAgo, 'd MMMM yyyy')
@@ -115,15 +115,14 @@ describe('Education and Training tab view - In Prison Qualifications Completed I
     expect($('#completed-in-prison-courses-in-last-12-months-table tbody tr td:nth-child(5)').text().trim()).toEqual(
       'C',
     ) // Grade
+    expect($('[data-qa=view-all-in-prison-courses-link]').length).toEqual(1)
   })
 
   it('should render content saying curious is unavailable given problem retrieving data is true', () => {
     // Given
     const params = {
       ...templateParams,
-      inPrisonCourses: {
-        problemRetrievingData: true,
-      },
+      inPrisonCourses: Result.rejected(new Error('Failed to retrieve in prison courses')),
     }
 
     // When
@@ -139,10 +138,11 @@ describe('Education and Training tab view - In Prison Qualifications Completed I
     // Given
     const params = {
       ...templateParams,
-      inPrisonCourses: {
+      inPrisonCourses: Result.fulfilled({
         ...validInPrisonCourseRecords(),
+        totalRecords: 0,
         coursesCompletedInLast12Months: [] as Array<InPrisonCourse>,
-      },
+      }),
     }
 
     // When
@@ -155,5 +155,6 @@ describe('Education and Training tab view - In Prison Qualifications Completed I
     expect($('#completed-in-prison-courses-in-last-12-months-table tbody tr td').text().trim()).toEqual(
       'No courses or qualifications completed in last 12 months.',
     )
+    expect($('[data-qa=view-all-in-prison-courses-link]').length).toEqual(0)
   })
 })

@@ -57,7 +57,9 @@ Data supplied to this template:
 
     <h3 class="govuk-heading-s govuk-!-padding-top-7" data-qa="completed-courses-heading">Courses and qualifications completed in the last 12 months</h3>
     <p class="govuk-hint" data-qa="completed-courses-hint">Information from Curious. This only includes educational courses. Contact the local education team to find out more.</p>
-    {% if not curiousInPrisonCourses.problemRetrievingData %}
+    {% if curiousInPrisonCourses.isFulfilled() %}
+      {% set curiousInPrisonCourses = curiousInPrisonCourses.value %}
+
       {% if curiousInPrisonCourses.coursesCompletedInLast12Months.length > 0 %}
         <table class="govuk-table" data-qa="completed-in-prison-courses-in-last-12-months-table">
           <tbody class="govuk-table__body" data-qa="completed-courses-table-body">

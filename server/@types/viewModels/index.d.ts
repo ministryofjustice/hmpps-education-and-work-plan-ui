@@ -221,7 +221,6 @@ declare module 'viewModels' {
    * A prisoner's record of In-Prison courses, which is made up of collections of [InPrisonCourse].
    */
   export interface InPrisonCourseRecords {
-    problemRetrievingData: boolean
     totalRecords: number
     coursesByStatus: Record<'COMPLETED' | 'IN_PROGRESS' | 'WITHDRAWN' | 'TEMPORARILY_WITHDRAWN', Array<InPrisonCourse>>
     coursesCompletedInLast12Months: Array<InPrisonCourse>

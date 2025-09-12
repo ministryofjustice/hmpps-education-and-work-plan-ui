@@ -6,7 +6,6 @@ import {
 } from './inPrisonCourseTestDataBuilder'
 
 const validInPrisonCourseRecords = (): InPrisonCourseRecords => ({
-  problemRetrievingData: false,
   totalRecords: 3,
   coursesByStatus: {
     COMPLETED: [aValidMathsInPrisonCourse(), aValidEnglishInPrisonCourseCompletedWithinLast12Months()],

@@ -172,7 +172,6 @@ describe('curiousService', () => {
       curiousClient.getLearnerEducationPage.mockResolvedValue(learnerEducationPage1Of1)
 
       const expected: InPrisonCourseRecords = {
-        problemRetrievingData: false,
         totalRecords: 5,
         coursesByStatus: {
           COMPLETED: [
@@ -283,7 +282,6 @@ describe('curiousService', () => {
       curiousClient.getLearnerEducationPage.mockResolvedValue(learnerEducationPage1Of1)
 
       const expected: InPrisonCourseRecords = {
-        problemRetrievingData: false,
         totalRecords: 2,
         coursesByStatus: {
           COMPLETED: [],
@@ -342,7 +340,6 @@ describe('curiousService', () => {
       curiousClient.getLearnerEducationPage.mockResolvedValueOnce(learnerEducationPage2Of2)
 
       const expected: InPrisonCourseRecords = {
-        problemRetrievingData: false,
         totalRecords: 3,
         coursesByStatus: {
           COMPLETED: [],
@@ -405,7 +402,7 @@ describe('curiousService', () => {
       expect(curiousClient.getLearnerEducationPage).toHaveBeenCalledWith(prisonNumber, 1)
     })
 
-    it('should not get In Prison Courses given the curious API request for page 1 returns an error response', async () => {
+    it('should rethrow error given the curious API request for page 1 returns an error response', async () => {
       // Given
       const curiousApiError = {
         message: 'Internal Server Error',
@@ -414,19 +411,15 @@ describe('curiousService', () => {
       }
       curiousClient.getLearnerEducationPage.mockRejectedValue(curiousApiError)
 
-      const expected = {
-        problemRetrievingData: true,
-      } as InPrisonCourseRecords
-
       // When
-      const actual = await curiousService.getPrisonerInPrisonCourses(prisonNumber)
+      const actual = await curiousService.getPrisonerInPrisonCourses(prisonNumber).catch(error => error)
 
       // Then
-      expect(actual).toEqual(expected)
+      expect(actual).toEqual(curiousApiError)
       expect(curiousClient.getLearnerEducationPage).toHaveBeenCalledWith(prisonNumber, 0)
     })
 
-    it('should not get In Prison Courses given the Curious API request for page 2 returns an error response', async () => {
+    it('should rethrow error given the Curious API request for page 2 returns an error response', async () => {
       // Given
       const learnerEducationPage1Of2: LearnerEducationPagedResponse =
         learnerEducationPagedResponsePage1Of2(prisonNumber)
@@ -439,15 +432,11 @@ describe('curiousService', () => {
       }
       curiousClient.getLearnerEducationPage.mockRejectedValueOnce(curiousApiError)
 
-      const expected = {
-        problemRetrievingData: true,
-      } as InPrisonCourseRecords
-
       // When
-      const actual = await curiousService.getPrisonerInPrisonCourses(prisonNumber)
+      const actual = await curiousService.getPrisonerInPrisonCourses(prisonNumber).catch(error => error)
 
       // Then
-      expect(actual).toEqual(expected)
+      expect(actual).toEqual(curiousApiError)
       expect(curiousClient.getLearnerEducationPage).toHaveBeenCalledWith(prisonNumber, 0)
       expect(curiousClient.getLearnerEducationPage).toHaveBeenCalledWith(prisonNumber, 1)
     })
@@ -457,7 +446,6 @@ describe('curiousService', () => {
       curiousClient.getLearnerEducationPage.mockResolvedValue(null)
 
       const expected: InPrisonCourseRecords = {
-        problemRetrievingData: false,
         totalRecords: 0,
         coursesByStatus: {
           COMPLETED: [],

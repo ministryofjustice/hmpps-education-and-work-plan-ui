@@ -38,7 +38,8 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
 
-      {% if not curiousInPrisonCourses.problemRetrievingData %}
+      {% if curiousInPrisonCourses.isFulfilled() %}
+        {% set curiousInPrisonCourses = curiousInPrisonCourses.value %}
         {% set prisonNamesById = prisonNamesById.value if prisonNamesById.isFulfilled() else {} %}
 
         {% set curiousHelpText %}
