@@ -38,12 +38,14 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
 
-      {% if not problemRetrievingData %}
+      {% if not curiousInPrisonCourses.problemRetrievingData %}
+        {% set prisonNamesById = prisonNamesById.value if prisonNamesById.isFulfilled() else {} %}
 
         {% set curiousHelpText %}
           Information from Curious. This only includes educational courses. Contact the local education team to find out more.
         {% endset %}
 
+        {% set completedCourses = curiousInPrisonCourses.coursesByStatus['COMPLETED'] | sort(attribute = 'courseCompletionDate', reverse = true) %}
         {% set completedCoursesHtml %}
           <p class="govuk-hint">{{ curiousHelpText }}</p>
           {% if completedCourses.length > 0 %}
@@ -54,6 +56,7 @@
           {% endif %}
         {% endset -%}
 
+        {% set inProgressCourses = curiousInPrisonCourses.coursesByStatus['IN_PROGRESS'] | sort(attribute = 'courseStartDate', reverse = true) %}
         {% set inProgressCoursesHtml %}
           <p class="govuk-hint">{{ curiousHelpText }}</p>
           {% if inProgressCourses.length > 0 %}
@@ -64,6 +67,8 @@
           {% endif %}
         {% endset -%}
 
+        {% set withdrawnCourses = curiousInPrisonCourses.coursesByStatus['WITHDRAWN'] %}
+        {% set withdrawnCourses = withdrawnCourses.concat(curiousInPrisonCourses.coursesByStatus['TEMPORARILY_WITHDRAWN']) | sort(attribute = 'courseStartDate', reverse = true) %}
         {% set withdrawnCoursesHtml %}
           <p class="govuk-hint">{{ curiousHelpText }}</p>
           {% if withdrawnCourses.length > 0 %}

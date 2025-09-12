@@ -13,8 +13,8 @@
       <tr class="govuk-table__row">
         <td class="govuk-table__cell" data-qa="course-name">{{ course.courseName }}</td>
         <td class="govuk-table__cell">{{ course.isAccredited | formatIsAccredited }}</td>
-        <td class="govuk-table__cell" data-sort-value="{{ course.courseStartDate | formatDate('YYYYMMDD') }}">{{ course.courseStartDate | formatDate('D MMMM YYYY') }}</td>
-        <td class="govuk-table__cell" data-sort-value="{{ course.coursePlannedEndDate | formatDate('YYYYMMDD') }}">{{ course.coursePlannedEndDate | formatDate('D MMMM YYYY') }}</td>
+        <td class="govuk-table__cell" data-sort-value="{{ course.courseStartDate | formatDate('yyyyMMdd') }}">{{ course.courseStartDate | formatDate('d MMMM yyyy') }}</td>
+        <td class="govuk-table__cell" data-sort-value="{{ course.coursePlannedEndDate | formatDate('yyyyMMdd') }}">{{ course.coursePlannedEndDate | formatDate('d MMMM yyyy') }}</td>
       </tr>
     {% endfor %}
   </tbody>
