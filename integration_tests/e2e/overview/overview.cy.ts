@@ -11,7 +11,7 @@ context('Prisoner Overview page - Common functionality for both pre and post ind
     cy.task('stubCiagInductionList')
     cy.task('stubActionPlansList')
     cy.task('getPrisonerById')
-    cy.task('stubLearnerProfile')
+    cy.task('stubLearnerAssessments')
     cy.task('stubLearnerEducation')
     cy.task('stubGetInduction')
     cy.task('stubGetAllPrisons')
@@ -165,12 +165,12 @@ context('Prisoner Overview page - Common functionality for both pre and post ind
       .hasNoCoursesRecordedMessageDisplayed()
   })
 
-  it('should display Curious unavailable message given Curious errors when getting Functional Skills', () => {
+  it('should display Curious unavailable message given Curious errors when getting Functional Skills assessments', () => {
     // Given
     cy.signIn()
 
     // When
-    cy.task('stubLearnerProfile401Error')
+    cy.task('stubLearnerAssessments500Error')
     cy.visit(`/plan/${prisonNumber}/view/overview`)
 
     // Then
@@ -281,7 +281,7 @@ context('Prisoner Overview page - Common functionality for both pre and post ind
     it('should display Curious unavailable message given Curious has timeout errors when getting Functional Skills and In Prison Courses', () => {
       // Given
       cy.signIn()
-      cy.task('stubLearnerProfileConnectionTimeoutError')
+      cy.task('stubLearnerAssessmentsConnectionTimeoutError')
       cy.task('stubLearnerEducationConnectionTimeoutError')
 
       // When

@@ -1,4 +1,4 @@
-import type { LearnerEducation, LearnerEducationPagedResponse, LearnerProfile } from 'curiousApiClient'
+import type { LearnerEducation, LearnerEducationPagedResponse } from 'curiousApiClient'
 import type { FunctionalSkills, InPrisonCourse, InPrisonCourseRecords, PrisonerSupportNeeds } from 'viewModels'
 import { startOfToday, sub } from 'date-fns'
 import toPrisonerSupportNeeds from '../routes/overview/mappers/prisonerSupportNeedsMapper'
@@ -27,8 +27,8 @@ export default class CuriousService {
 
   async getPrisonerFunctionalSkills(prisonNumber: string): Promise<FunctionalSkills> {
     try {
-      const learnerProfiles = await this.getLearnerProfile(prisonNumber)
-      return toFunctionalSkills(learnerProfiles)
+      const allPrisonerAssessments = await this.curiousClient.getAssessmentsByPrisonNumber(prisonNumber)
+      return toFunctionalSkills(allPrisonerAssessments)
     } catch (error) {
       logger.error('Error retrieving functional skills data from Curious', error)
       throw error
@@ -105,9 +105,6 @@ export default class CuriousService {
       return { problemRetrievingData: true } as InPrisonCourseRecords
     }
   }
-
-  private getLearnerProfile = async (prisonNumber: string): Promise<Array<LearnerProfile>> =>
-    (await this.curiousClient.getLearnerProfile(prisonNumber)) || []
 
   private setPrisonNamesOnInPrisonCourses = async (
     inPrisonCourses: Array<InPrisonCourse>,

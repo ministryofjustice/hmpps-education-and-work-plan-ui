@@ -4,7 +4,7 @@ import type { AllAssessmentDTO, LearnerLatestAssessmentV1DTO, LearnerLddInfoExte
 
 const toPrisonerSupportNeeds = (allAssessments: AllAssessmentDTO): PrisonerSupportNeeds => {
   const learnerLddInfos = ((allAssessments?.v1 || []) as Array<LearnerLatestAssessmentV1DTO>).flatMap(
-    assessment => assessment.ldd,
+    assessment => assessment.ldd || [],
   ) as Array<LearnerLddInfoExternalV1DTO>
   return {
     lddAssessments: learnerLddInfos.map(toLddAssessment),

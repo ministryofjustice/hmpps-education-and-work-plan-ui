@@ -7,12 +7,13 @@ context(`Display a prisoner's functional skills`, () => {
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubSignInAsReadOnlyUser')
+    cy.task('stubGetAllPrisons')
     cy.task('stubPrisonerList')
     cy.task('stubCiagInductionList')
     cy.task('stubActionPlansList')
     cy.task('getPrisonerById')
     cy.task('getActionPlan')
-    cy.task('stubLearnerProfile')
+    cy.task('stubLearnerAssessments')
     cy.task('stubLearnerEducation')
     cy.task('stubGetInduction')
   })
@@ -48,9 +49,9 @@ context(`Display a prisoner's functional skills`, () => {
     educationAndTrainingPage.activeTabIs('Education and training')
   })
 
-  it('should display curious unavailable message given curious is unavailable for the learner profile', () => {
+  it('should display curious unavailable message given curious is unavailable for the learner assessments', () => {
     // Given
-    cy.task('stubLearnerProfile401Error')
+    cy.task('stubLearnerAssessments500Error')
     cy.task('stubLearnerEducation')
 
     cy.signIn()

@@ -3,7 +3,6 @@ import type { LearnerEducationPagedResponse } from 'curiousApiClient'
 import type { FunctionalSkills, InPrisonCourseRecords, PrisonerSupportNeeds } from 'viewModels'
 import CuriousClient from '../data/curiousClient'
 import CuriousService from './curiousService'
-import aValidLearnerProfile from '../testsupport/learnerProfileTestDataBuilder'
 import {
   learnerEducationPagedResponse,
   learnerEducationPagedResponsePage1Of1,
@@ -115,8 +114,8 @@ describe('curiousService', () => {
   describe('getPrisonerFunctionalSkills', () => {
     it('should get prisoner functional skills given a known prison number', async () => {
       // Given
-      const learnerProfiles = [aValidLearnerProfile()]
-      curiousClient.getLearnerProfile.mockResolvedValue(learnerProfiles)
+      const allAssessments = anAllAssessmentDTO()
+      curiousClient.getAssessmentsByPrisonNumber.mockResolvedValue(allAssessments)
 
       const expectedFunctionalSkills: FunctionalSkills = {
         assessments: [
@@ -134,12 +133,12 @@ describe('curiousService', () => {
 
       // Then
       expect(actual).toEqual(expectedFunctionalSkills)
-      expect(curiousClient.getLearnerProfile).toHaveBeenCalledWith(prisonNumber)
+      expect(curiousClient.getAssessmentsByPrisonNumber).toHaveBeenCalledWith(prisonNumber)
     })
 
-    it('should handle retrieval of prisoner functional skills given Curious client returns null indicating not found error for the learner profile', async () => {
+    it('should handle retrieval of prisoner functional skills given Curious client returns null indicating not found error for the assessments', async () => {
       // Given
-      curiousClient.getLearnerProfile.mockResolvedValue(null)
+      curiousClient.getAssessmentsByPrisonNumber.mockResolvedValue(null)
 
       const expectedFunctionalSkills: FunctionalSkills = {
         assessments: [],
@@ -150,7 +149,7 @@ describe('curiousService', () => {
 
       // Then
       expect(actual).toEqual(expectedFunctionalSkills)
-      expect(curiousClient.getLearnerProfile).toHaveBeenCalledWith(prisonNumber)
+      expect(curiousClient.getAssessmentsByPrisonNumber).toHaveBeenCalledWith(prisonNumber)
     })
 
     it('should rethrow error given Curious API returns an unexpected error', async () => {
@@ -160,14 +159,14 @@ describe('curiousService', () => {
         status: 500,
         text: { errorCode: 'VC5000', errorMessage: 'Internal server error', httpStatusCode: 500 },
       }
-      curiousClient.getLearnerProfile.mockRejectedValue(curiousApiError)
+      curiousClient.getAssessmentsByPrisonNumber.mockRejectedValue(curiousApiError)
 
       // When
       const actual = await curiousService.getPrisonerFunctionalSkills(prisonNumber).catch(error => error)
 
       // Then
       expect(actual).toEqual(curiousApiError)
-      expect(curiousClient.getLearnerProfile).toHaveBeenCalledWith(prisonNumber)
+      expect(curiousClient.getAssessmentsByPrisonNumber).toHaveBeenCalledWith(prisonNumber)
     })
   })
 

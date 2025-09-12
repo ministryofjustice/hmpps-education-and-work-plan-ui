@@ -1,20 +1,23 @@
 import { parseISO, startOfDay } from 'date-fns'
-import type { Assessment as AssemmentDto, LearnerProfile } from 'curiousApiClient'
+import type { AllAssessmentDTO, LearnerAssessmentV1DTO, LearnerLatestAssessmentV1DTO } from 'curiousApiClient'
 import type { Assessment, FunctionalSkills } from 'viewModels'
 
-const toFunctionalSkills = (learnerProfiles: Array<LearnerProfile>): FunctionalSkills => ({
-  assessments: learnerProfiles.flatMap(learnerProfile =>
-    (learnerProfile.qualifications as Array<AssemmentDto>).map(assessment =>
-      toAssessment(learnerProfile.establishmentId, assessment),
-    ),
-  ),
-})
+const toFunctionalSkills = (allAssessments: AllAssessmentDTO): FunctionalSkills => {
+  const v1LearnerAssessments = ((allAssessments?.v1 || []) as Array<LearnerLatestAssessmentV1DTO>).flatMap(
+    assessment => assessment.qualifications || [],
+  ) as Array<LearnerAssessmentV1DTO>
+  return {
+    assessments: v1LearnerAssessments
+      .filter(v1LearnerAssessment => v1LearnerAssessment.qualification != null)
+      .map(toAssessment),
+  }
+}
 
-const toAssessment = (prisonId: string, assessment: AssemmentDto): Assessment => ({
-  prisonId,
-  type: toAssessmentType(assessment.qualificationType),
-  grade: assessment.qualificationGrade,
-  assessmentDate: dateOrNull(assessment.assessmentDate),
+const toAssessment = (v1LearnerAssessment: LearnerAssessmentV1DTO): Assessment => ({
+  prisonId: v1LearnerAssessment.establishmentId,
+  type: toAssessmentType(v1LearnerAssessment.qualification.qualificationType),
+  grade: v1LearnerAssessment.qualification.qualificationGrade,
+  assessmentDate: dateOrNull(v1LearnerAssessment.qualification.assessmentDate),
 })
 
 const dateOrNull = (value: string): Date | undefined => {

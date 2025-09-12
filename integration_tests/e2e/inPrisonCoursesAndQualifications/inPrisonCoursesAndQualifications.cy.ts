@@ -99,7 +99,7 @@ context('In Prison Courses and Qualifications', () => {
 
       beforeEach(() => {
         cy.task('getPrisonerById', prisonNumber)
-        cy.task('stubLearnerProfile', prisonNumber)
+        cy.task('stubLearnerAssessments', prisonNumber)
       })
 
       it('should display completed In Prison courses', () => {
@@ -201,7 +201,7 @@ context('In Prison Courses and Qualifications', () => {
         cy.signOut()
         cy.task('reset')
         cy.task('stubSignIn', { roles: ['ROLE_SOME_NON_PLP_ROLE', 'ROLE_POM'] }) // Users with POM role can see restricted patients (prisoners with prisonId OUT) as long as their caseload ID matches prisoners supporting prison ID
-        cy.task('stubLearnerProfile')
+        cy.task('stubLearnerAssessments')
         cy.task('stubLearnerEducation')
         cy.signIn()
       })
@@ -224,7 +224,7 @@ context('In Prison Courses and Qualifications', () => {
         // Given
         const prisonNumber = 'A8520DZ' // Prisoner is OUT (eg: hospital) and their supporting prison is Brixton (BXI) which is not one of the user's caseloads
         cy.task('getPrisonerById', prisonNumber)
-        cy.task('stubLearnerProfile', prisonNumber)
+        cy.task('stubLearnerAssessments', prisonNumber)
         cy.task('stubLearnerEducation', prisonNumber)
 
         // When
@@ -242,7 +242,7 @@ context('In Prison Courses and Qualifications', () => {
 
         const prisonNumber = 'G0577GL' // Prisoner is OUT (eg: hospital) and their supporting prison is Pentonville (PVI) which is not one of the user's caseloads
         cy.task('getPrisonerById', prisonNumber)
-        cy.task('stubLearnerProfile', prisonNumber)
+        cy.task('stubLearnerAssessments', prisonNumber)
         cy.task('stubLearnerEducation', prisonNumber)
 
         // When

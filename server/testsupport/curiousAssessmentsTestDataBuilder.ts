@@ -24,7 +24,7 @@ const aLearnerLatestAssessmentV1DTO = (options?: {
   lddAssessments?: Array<LearnerLddInfoExternalV1DTO>
 }): LearnerLatestAssessmentV1DTO => ({
   prn: options?.prisonNumber || 'A1234BC',
-  qualifications: options?.qualifications || [aLearnerAssessmentV1DTO()],
+  qualifications: options?.qualifications === null ? null : options?.qualifications || [aLearnerAssessmentV1DTO()],
   ldd: options?.lddAssessments || [aLearnerLddInfoExternalV1DTO()],
 })
 

@@ -32,14 +32,22 @@ const stubLearnerAssessments = (prisonNumber = 'G6115VJ'): SuperAgentRequest =>
             ],
             qualifications: [
               {
-                qualificationType: 'Maths',
-                qualificationGrade: 'Entry Level 1',
-                assessmentDate: '2021-07-01',
+                establishmentId: 'MDI',
+                establishmentName: 'MOORLAND (HMP & YOI)',
+                qualification: {
+                  qualificationType: 'Maths',
+                  qualificationGrade: 'Entry Level 1',
+                  assessmentDate: '2021-07-01',
+                },
               },
               {
-                qualificationType: 'Digital Literacy',
-                qualificationGrade: 'Entry Level 3',
-                assessmentDate: '2021-07-01',
+                establishmentId: 'MDI',
+                establishmentName: 'MOORLAND (HMP & YOI)',
+                qualification: {
+                  qualificationType: 'Digital Literacy',
+                  qualificationGrade: 'Entry Level 3',
+                  assessmentDate: '2021-07-01',
+                },
               },
             ],
           },
@@ -86,8 +94,22 @@ const stubLearnerAssessments404Error = (prisonNumber = 'G6115VJ'): SuperAgentReq
     },
   })
 
+const stubLearnerAssessmentsConnectionTimeoutError = (prisonNumber = 'G6115VJ'): SuperAgentRequest =>
+  stubFor({
+    request: {
+      method: 'GET',
+      urlPattern: `/learnerAssessments/v2/${prisonNumber}`,
+    },
+    response: {
+      status: 503,
+      fixedDelayMilliseconds: 6000, // response will take 6 seconds, which is longer than the configured timeout for the API in `config.ts`
+      headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+    },
+  })
+
 export default {
   stubLearnerAssessments,
   stubLearnerAssessments500Error,
   stubLearnerAssessments404Error,
+  stubLearnerAssessmentsConnectionTimeoutError,
 }
