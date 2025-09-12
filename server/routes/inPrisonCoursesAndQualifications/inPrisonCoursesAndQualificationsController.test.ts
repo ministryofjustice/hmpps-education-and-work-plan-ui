@@ -10,7 +10,7 @@ describe('inPrisonCoursesAndQualificationsController', () => {
   const prisonNumber = 'A1234GC'
   const prisonerSummary = aValidPrisonerSummary({ prisonNumber })
   const prisonNamesById = Result.fulfilled({ MDI: 'Moorland (HMP & YOI)' })
-  const curiousInPrisonCourses = validInPrisonCourseRecords()
+  const curiousInPrisonCourses = Result.fulfilled(validInPrisonCourseRecords())
 
   const req = {
     params: { prisonNumber },

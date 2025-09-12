@@ -19,7 +19,6 @@ const toInPrisonCourseRecords = (apiLearnerEducations: Array<LearnerEducation>):
   )
 
   return {
-    problemRetrievingData: false,
     totalRecords: allCourses.length,
     coursesByStatus: {
       COMPLETED: completedCourses,

@@ -4,7 +4,7 @@
     <div class="govuk-summary-card">
       <div class="govuk-summary-card__title-wrapper">
         <h2 class="govuk-summary-card__title">In-prison courses and qualifications</h2>
-        {% if not inPrisonCourses.problemRetrievingData and inPrisonCourses.totalRecords > 0 %}
+        {% if inPrisonCourses.isFulfilled() and inPrisonCourses.value.totalRecords > 0 %}
           <ul class="govuk-summary-card__actions govuk-!-display-none-print">
             <li class="govuk-summary-card__action">
               <a class="govuk-link" href="/plan/{{ prisonerSummary.prisonNumber }}/in-prison-courses-and-qualifications" data-qa="view-all-in-prison-courses-link">View all<span class="govuk-visually-hidden"> in-prison courses and qualifications</span></a>
@@ -13,7 +13,9 @@
         {% endif %}
       </div>
       <div class="govuk-summary-card__content">
-        {% if not inPrisonCourses.problemRetrievingData %}
+        {% if inPrisonCourses.isFulfilled() %}
+          {% set inPrisonCourses = inPrisonCourses.value %}
+
           <p class="govuk-hint">Information from Curious. This only includes educational courses. Contact the local education team to find out more.</p>
 
           <table class="govuk-table" id="completed-in-prison-courses-in-last-12-months-table">

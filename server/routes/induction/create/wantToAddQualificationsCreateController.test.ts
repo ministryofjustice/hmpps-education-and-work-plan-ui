@@ -20,7 +20,7 @@ describe('wantToAddQualificationsCreateController', () => {
   const prisonNumber = 'A1234BC'
   const prisonerSummary = aValidPrisonerSummary()
   const prisonerFunctionalSkills = Result.fulfilled(validFunctionalSkills())
-  const inPrisonCourses = validInPrisonCourseRecords()
+  const inPrisonCourses = Result.fulfilled(validInPrisonCourseRecords())
   const prisonNamesById = Result.fulfilled({ MDI: 'Moorland (HMP & YOI)', WDI: 'Wakefield (HMP)' })
 
   // Returns a DTO for this step of the create journey

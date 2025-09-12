@@ -28,7 +28,7 @@ describe('qualificationsListUpdateController', () => {
   const username = 'a-dps-user'
   const prisonerSummary = aValidPrisonerSummary({ prisonNumber, prisonId })
   const prisonerFunctionalSkills = Result.fulfilled(validFunctionalSkills())
-  const inPrisonCourses = validInPrisonCourseRecords()
+  const inPrisonCourses = Result.fulfilled(validInPrisonCourseRecords())
   const prisonNamesById = Result.fulfilled({ MDI: 'Moorland (HMP & YOI)', WDI: 'Wakefield (HMP)' })
 
   const req = {

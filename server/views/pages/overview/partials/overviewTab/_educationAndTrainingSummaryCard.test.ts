@@ -27,8 +27,7 @@ njkEnv //
 const prisonerSummary = aValidPrisonerSummary()
 const prisonNamesById = { BXI: 'Brixton (HMP)', MDI: 'Moorland (HMP & YOI)' }
 const prisonerFunctionalSkills = Result.fulfilled(validFunctionalSkills())
-const curiousInPrisonCourses = {
-  problemRetrievingData: false,
+const curiousInPrisonCourses = Result.fulfilled({
   coursesCompletedInLast12Months: [
     {
       prisonId: 'BXI',
@@ -45,7 +44,7 @@ const curiousInPrisonCourses = {
   ],
   hasWithdrawnOrInProgressCourses: () => false,
   hasCoursesCompletedMoreThan12MonthsAgo: () => false,
-}
+})
 const templateParams = {
   prisonerSummary,
   prisonerFunctionalSkills,
@@ -78,8 +77,7 @@ describe('_educationAndTrainingSummaryCard', () => {
           ],
         }),
       ),
-      curiousInPrisonCourses: {
-        problemRetrievingData: false,
+      curiousInPrisonCourses: Result.fulfilled({
         coursesCompletedInLast12Months: [
           {
             prisonId: 'BXI',
@@ -96,7 +94,7 @@ describe('_educationAndTrainingSummaryCard', () => {
         ],
         hasWithdrawnOrInProgressCourses: () => false,
         hasCoursesCompletedMoreThan12MonthsAgo: () => false,
-      },
+      }),
     }
 
     // When
@@ -135,12 +133,11 @@ describe('_educationAndTrainingSummaryCard', () => {
     // Given
     const params = {
       ...templateParams,
-      curiousInPrisonCourses: {
-        problemRetrievingData: false,
+      curiousInPrisonCourses: Result.fulfilled({
         coursesCompletedInLast12Months: [] as Array<InPrisonCourse>,
         hasWithdrawnOrInProgressCourses: () => false,
         hasCoursesCompletedMoreThan12MonthsAgo: () => false,
-      },
+      }),
     }
 
     // When
@@ -160,12 +157,11 @@ describe('_educationAndTrainingSummaryCard', () => {
     // Given
     const params = {
       ...templateParams,
-      curiousInPrisonCourses: {
-        problemRetrievingData: false,
+      curiousInPrisonCourses: Result.fulfilled({
         coursesCompletedInLast12Months: [] as Array<InPrisonCourse>,
         hasWithdrawnOrInProgressCourses: () => true,
         hasCoursesCompletedMoreThan12MonthsAgo: () => false,
-      },
+      }),
     }
 
     // When
@@ -185,12 +181,11 @@ describe('_educationAndTrainingSummaryCard', () => {
     // Given
     const params = {
       ...templateParams,
-      curiousInPrisonCourses: {
-        problemRetrievingData: false,
+      curiousInPrisonCourses: Result.fulfilled({
         coursesCompletedInLast12Months: [] as Array<InPrisonCourse>,
         hasWithdrawnOrInProgressCourses: () => false,
         hasCoursesCompletedMoreThan12MonthsAgo: () => true,
-      },
+      }),
     }
 
     // When
@@ -227,9 +222,7 @@ describe('_educationAndTrainingSummaryCard', () => {
     // Given
     const params = {
       ...templateParams,
-      curiousInPrisonCourses: {
-        problemRetrievingData: true,
-      },
+      curiousInPrisonCourses: Result.rejected(new Error('Failed to retrieve in-prison courses')),
     }
 
     // When
@@ -247,9 +240,7 @@ describe('_educationAndTrainingSummaryCard', () => {
     const params = {
       ...templateParams,
       prisonerFunctionalSkills: Result.rejected(new Error('Failed to retrieve functional skills')),
-      curiousInPrisonCourses: {
-        problemRetrievingData: true,
-      },
+      curiousInPrisonCourses: Result.rejected(new Error('Failed to retrieve in-prison courses')),
     }
 
     // When

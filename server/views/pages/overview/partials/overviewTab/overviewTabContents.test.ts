@@ -30,7 +30,7 @@ njkEnv //
 const prisonerSummary = aValidPrisonerSummary()
 const prisonNamesById = Result.fulfilled({ BXI: 'Brixton (HMP)', MDI: 'Moorland (HMP & YOI)' })
 const prisonerFunctionalSkills = Result.fulfilled(validFunctionalSkills())
-const curiousInPrisonCourses = validInPrisonCourseRecords()
+const curiousInPrisonCourses = Result.fulfilled(validInPrisonCourseRecords())
 
 const template = 'overviewTabContents.njk'
 

@@ -1,5 +1,7 @@
-{% if not inPrisonCourses.problemRetrievingData %}
+{% if inPrisonCourses.isFulfilled() %}
+  {% set curiousInPrisonCourses = inPrisonCourses.value %}
   {% set completedCourses = inPrisonCourses.coursesByStatus['COMPLETED'] %}
+
   {% if completedCourses.length %}
     <table class="govuk-table govuk-!-margin-bottom-8">
       <caption class="govuk-table__caption govuk-table__caption--m">In-prison courses and qualifications</caption>

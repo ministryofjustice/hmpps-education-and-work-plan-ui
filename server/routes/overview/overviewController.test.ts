@@ -18,7 +18,7 @@ describe('overviewController', () => {
   const username = 'a-dps-user'
   const prisonerSummary = aValidPrisonerSummary({ prisonNumber })
   const prisonNamesById = { MDI: 'Moorland (HMP & YOI)', WDI: 'Wakefield (HMP)' }
-  const curiousInPrisonCourses = validInPrisonCourseRecords()
+  const curiousInPrisonCourses = Result.fulfilled(validInPrisonCourseRecords())
   const prisonerFunctionalSkills = Result.fulfilled(validFunctionalSkills())
 
   const inProgressGoal = {

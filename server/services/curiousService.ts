@@ -64,7 +64,7 @@ export default class CuriousService {
       return toInPrisonCourseRecords(apiLearnerEducation)
     } catch (error) {
       logger.error('Error retrieving learner education data from Curious', error)
-      return { problemRetrievingData: true } as InPrisonCourseRecords
+      throw error
     }
   }
 
