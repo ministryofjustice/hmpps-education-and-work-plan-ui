@@ -14,7 +14,6 @@ describe('inPrisonCourseMapper', () => {
 
       const expectedInPrisonCourse: InPrisonCourse = {
         prisonId: 'MDI',
-        prisonName: 'MOORLAND (HMP & YOI)',
         courseCode: '008ENGL06',
         courseName: 'GCSE English',
         courseStartDate: startOfDay(parseISO('2021-06-01')),
@@ -43,7 +42,6 @@ describe('inPrisonCourseMapper', () => {
 
       const expectedInPrisonCourse: InPrisonCourse = {
         prisonId: 'WDI',
-        prisonName: 'WAKEFIELD (HMP)',
         courseCode: '246674',
         courseName: 'GCSE Maths',
         courseStartDate: startOfDay(parseISO('2016-05-18')),
@@ -71,7 +69,6 @@ describe('inPrisonCourseMapper', () => {
 
       const expectedInPrisonCourse: InPrisonCourse = {
         prisonId: 'WDI',
-        prisonName: 'WAKEFIELD (HMP)',
         courseCode: '246674',
         courseName: 'GCSE Maths',
         courseStartDate: startOfDay(parseISO('2016-05-18')),
@@ -99,7 +96,6 @@ describe('inPrisonCourseMapper', () => {
 
       const expectedInPrisonCourse: InPrisonCourse = {
         prisonId: 'WDI',
-        prisonName: 'WAKEFIELD (HMP)',
         courseCode: '246674',
         courseName: 'GCSE Maths',
         courseStartDate: startOfDay(parseISO('2016-05-18')),
@@ -127,7 +123,6 @@ describe('inPrisonCourseMapper', () => {
 
       const expectedInPrisonCourse: InPrisonCourse = {
         prisonId: 'WDI',
-        prisonName: 'WAKEFIELD (HMP)',
         courseCode: '246674',
         courseName: 'GCSE Maths',
         courseStartDate: startOfDay(parseISO('2016-05-18')),

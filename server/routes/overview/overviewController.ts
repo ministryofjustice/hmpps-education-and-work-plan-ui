@@ -14,19 +14,13 @@ export default class OverviewController {
       prisonNamesById,
     } = res.locals
 
-    const view = new OverviewView(
-      curiousInPrisonCourses,
-      inductionSchedule,
-      actionPlanReviews,
-      allGoalsForPrisoner,
-      induction,
-      prisonNamesById,
-    )
+    const view = new OverviewView(inductionSchedule, actionPlanReviews, allGoalsForPrisoner, induction, prisonNamesById)
 
     res.render('pages/overview/index', {
       ...view.renderArgs,
       tab: 'overview',
       prisonerSummary,
+      curiousInPrisonCourses,
       prisonerFunctionalSkills,
       prisonNamesById,
     })

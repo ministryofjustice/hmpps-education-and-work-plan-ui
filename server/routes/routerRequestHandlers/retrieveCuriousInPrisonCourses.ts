@@ -10,7 +10,7 @@ const retrieveCuriousInPrisonCourses = (curiousService: CuriousService): Request
     const { prisonNumber } = req.params
 
     // Lookup the prisoners In Prison Courses and store in res.locals
-    res.locals.curiousInPrisonCourses = await curiousService.getPrisonerInPrisonCourses(prisonNumber, req.user.username)
+    res.locals.curiousInPrisonCourses = await curiousService.getPrisonerInPrisonCourses(prisonNumber)
 
     next()
   })

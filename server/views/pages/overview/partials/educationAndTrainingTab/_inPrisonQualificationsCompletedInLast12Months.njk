@@ -31,12 +31,13 @@
 
             <tbody class="govuk-table__body">
               {% if inPrisonCourses.coursesCompletedInLast12Months.length > 0 %}
-                {% for completedCourse in inPrisonCourses.coursesCompletedInLast12Months %}
+                {% for completedCourse in inPrisonCourses.coursesCompletedInLast12Months | sort(attribute = 'courseCompletionDate', reverse = true) %}
+                  {% set prisonName = prisonNamesById[completedCourse.prisonId] | default(completedCourse.prisonId) %}
                   <tr class="govuk-table__row">
                     <td class="govuk-table__cell" data-qa="completed-course-name">{{ completedCourse.courseName }}</td>
                     <td class="govuk-table__cell">{{ completedCourse.isAccredited | formatIsAccredited }}</td>
-                    <td class="govuk-table__cell">{{ completedCourse.prisonName if completedCourse.prisonName else completedCourse.prisonId }}</td>
-                    <td class="govuk-table__cell">{{ completedCourse.courseCompletionDate | formatDate('D MMMM YYYY') }}</td>
+                    <td class="govuk-table__cell">{{ prisonName }}</td>
+                    <td class="govuk-table__cell">{{ completedCourse.courseCompletionDate | formatDate('d MMMM yyyy') }}</td>
                     <td class="govuk-table__cell">{{ completedCourse.grade }}</td>
                   </tr>
                 {% endfor %}

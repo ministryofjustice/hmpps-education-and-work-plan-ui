@@ -12,7 +12,7 @@
   </thead>
 
   <tbody class="govuk-table__body">
-    {% for course in withdrawnCourses %}
+    {% for course in withdrawnCourses | sort(attribute = 'courseStartDate', reverse = true) %}
       {% set prisonName = prisonNamesById[course.prisonId] | default(course.prisonId) %}
       <tr class="govuk-table__row">
         <td class="govuk-table__cell" data-qa="course-name">{{ course.courseName }}</td>

@@ -225,7 +225,8 @@ declare module 'viewModels' {
     totalRecords: number
     coursesByStatus: Record<'COMPLETED' | 'IN_PROGRESS' | 'WITHDRAWN' | 'TEMPORARILY_WITHDRAWN', Array<InPrisonCourse>>
     coursesCompletedInLast12Months: Array<InPrisonCourse>
-    prisonNumber: string
+    hasCoursesCompletedMoreThan12MonthsAgo: () => boolean
+    hasWithdrawnOrInProgressCourses: () => boolean
   }
 
   /**
@@ -242,7 +243,6 @@ declare module 'viewModels' {
    */
   export interface InPrisonCourse {
     prisonId: string
-    prisonName: string
     courseName: string
     courseCode: string
     courseStartDate: Date

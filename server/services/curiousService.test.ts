@@ -10,7 +10,6 @@ import {
   learnerEducationPagedResponsePage1Of2,
   learnerEducationPagedResponsePage2Of2,
 } from '../testsupport/learnerEducationPagedResponseTestDataBuilder'
-import PrisonService from './prisonService'
 import {
   aLearnerLatestAssessmentV1DTO,
   aLearnerLddInfoExternalV1DTO,
@@ -23,17 +22,12 @@ jest.mock('./prisonService')
 
 describe('curiousService', () => {
   const curiousClient = new CuriousClient(null) as jest.Mocked<CuriousClient>
-  const prisonService = new PrisonService(null, null) as jest.Mocked<PrisonService>
-  const curiousService = new CuriousService(curiousClient, prisonService)
+  const curiousService = new CuriousService(curiousClient, null)
 
   const prisonNumber = 'A1234BC'
-  const username = 'a-dps-user'
-
-  const prisonNamesById = { MDI: 'Moorland (HMP & YOI)', WDI: 'Wakefield (HMP)' }
 
   beforeEach(() => {
     jest.resetAllMocks()
-    prisonService.getAllPrisonNamesById.mockResolvedValue(prisonNamesById)
   })
 
   describe('getPrisonerSupportNeeds', () => {
@@ -179,24 +173,9 @@ describe('curiousService', () => {
 
       const expected: InPrisonCourseRecords = {
         problemRetrievingData: false,
-        prisonNumber,
         totalRecords: 5,
         coursesByStatus: {
           COMPLETED: [
-            {
-              courseCode: '008WOOD06',
-              courseCompletionDate: sub(startOfToday(), { months: 3 }),
-              courseName: 'City & Guilds Wood Working',
-              courseStartDate: startOfDay('2021-06-01'),
-              coursePlannedEndDate: startOfDay('2021-08-06'),
-              courseStatus: 'COMPLETED',
-              grade: null,
-              isAccredited: false,
-              prisonId: 'MDI',
-              prisonName: 'Moorland (HMP & YOI)',
-              withdrawalReason: null,
-              source: 'CURIOUS',
-            },
             {
               courseCode: '008ENGL06',
               courseCompletionDate: startOfDay('2021-12-13'),
@@ -207,7 +186,19 @@ describe('curiousService', () => {
               grade: null,
               isAccredited: false,
               prisonId: 'MDI',
-              prisonName: 'Moorland (HMP & YOI)',
+              withdrawalReason: null,
+              source: 'CURIOUS',
+            },
+            {
+              courseCode: '008WOOD06',
+              courseCompletionDate: sub(startOfToday(), { months: 3 }),
+              courseName: 'City & Guilds Wood Working',
+              courseStartDate: startOfDay('2021-06-01'),
+              coursePlannedEndDate: startOfDay('2021-08-06'),
+              courseStatus: 'COMPLETED',
+              grade: null,
+              isAccredited: false,
+              prisonId: 'MDI',
               withdrawalReason: null,
               source: 'CURIOUS',
             },
@@ -219,7 +210,6 @@ describe('curiousService', () => {
               courseStartDate: startOfDay('2021-06-01'),
               coursePlannedEndDate: startOfDay('2021-08-06'),
               prisonId: 'MDI',
-              prisonName: 'Moorland (HMP & YOI)',
               courseStatus: 'IN_PROGRESS',
               courseCompletionDate: null,
               isAccredited: false,
@@ -234,7 +224,6 @@ describe('curiousService', () => {
               courseName: 'GCSE Maths',
               courseStartDate: startOfDay('2016-05-18'),
               prisonId: 'WDI',
-              prisonName: 'Wakefield (HMP)',
               courseStatus: 'WITHDRAWN',
               courseCompletionDate: startOfDay('2016-07-15'),
               coursePlannedEndDate: startOfDay('2016-12-23'),
@@ -255,7 +244,6 @@ describe('curiousService', () => {
               grade: 'No achievement',
               isAccredited: true,
               prisonId: 'WDI',
-              prisonName: 'Wakefield (HMP)',
               withdrawalReason: 'Significant ill health causing them to be unable to attend education',
               source: 'CURIOUS',
             },
@@ -272,20 +260,20 @@ describe('curiousService', () => {
             grade: null,
             isAccredited: false,
             prisonId: 'MDI',
-            prisonName: 'Moorland (HMP & YOI)',
             withdrawalReason: null,
             source: 'CURIOUS',
           },
         ],
+        hasCoursesCompletedMoreThan12MonthsAgo: expect.any(Function),
+        hasWithdrawnOrInProgressCourses: expect.any(Function),
       }
 
       // When
-      const actual = await curiousService.getPrisonerInPrisonCourses(prisonNumber, username)
+      const actual = await curiousService.getPrisonerInPrisonCourses(prisonNumber)
 
       // Then
       expect(actual).toEqual(expected)
       expect(curiousClient.getLearnerEducationPage).toHaveBeenCalledWith(prisonNumber, 0)
-      expect(prisonService.getAllPrisonNamesById).toHaveBeenCalledWith(username)
     })
 
     it('should get In Prison Courses given there is only 1 page of data in Curious for the prisoner', async () => {
@@ -296,7 +284,6 @@ describe('curiousService', () => {
 
       const expected: InPrisonCourseRecords = {
         problemRetrievingData: false,
-        prisonNumber,
         totalRecords: 2,
         coursesByStatus: {
           COMPLETED: [],
@@ -307,7 +294,6 @@ describe('curiousService', () => {
               courseStartDate: startOfDay('2021-06-01'),
               coursePlannedEndDate: startOfDay('2021-08-06'),
               prisonId: 'MDI',
-              prisonName: 'Moorland (HMP & YOI)',
               courseStatus: 'IN_PROGRESS',
               courseCompletionDate: null,
               isAccredited: false,
@@ -322,7 +308,6 @@ describe('curiousService', () => {
               courseName: 'GCSE Maths',
               courseStartDate: startOfDay('2016-05-18'),
               prisonId: 'WDI',
-              prisonName: 'Wakefield (HMP)',
               courseStatus: 'WITHDRAWN',
               courseCompletionDate: startOfDay('2016-07-15'),
               coursePlannedEndDate: startOfDay('2016-12-23'),
@@ -335,10 +320,12 @@ describe('curiousService', () => {
           TEMPORARILY_WITHDRAWN: [],
         },
         coursesCompletedInLast12Months: [],
+        hasCoursesCompletedMoreThan12MonthsAgo: expect.any(Function),
+        hasWithdrawnOrInProgressCourses: expect.any(Function),
       }
 
       // When
-      const actual = await curiousService.getPrisonerInPrisonCourses(prisonNumber, username)
+      const actual = await curiousService.getPrisonerInPrisonCourses(prisonNumber)
 
       // Then
       expect(actual).toEqual(expected)
@@ -356,7 +343,6 @@ describe('curiousService', () => {
 
       const expected: InPrisonCourseRecords = {
         problemRetrievingData: false,
-        prisonNumber,
         totalRecords: 3,
         coursesByStatus: {
           COMPLETED: [],
@@ -366,7 +352,6 @@ describe('curiousService', () => {
               courseName: 'GCSE English',
               courseStartDate: startOfDay('2021-06-01'),
               prisonId: 'MDI',
-              prisonName: 'Moorland (HMP & YOI)',
               courseStatus: 'IN_PROGRESS',
               courseCompletionDate: null,
               coursePlannedEndDate: startOfDay('2021-08-06'),
@@ -381,7 +366,6 @@ describe('curiousService', () => {
               courseStartDate: startOfDay('2021-06-01'),
               coursePlannedEndDate: startOfDay('2021-08-06'),
               prisonId: 'MDI',
-              prisonName: 'Moorland (HMP & YOI)',
               courseStatus: 'IN_PROGRESS',
               courseCompletionDate: null,
               isAccredited: false,
@@ -396,7 +380,6 @@ describe('curiousService', () => {
               courseName: 'GCSE Maths',
               courseStartDate: startOfDay('2016-05-18'),
               prisonId: 'WDI',
-              prisonName: 'Wakefield (HMP)',
               courseStatus: 'WITHDRAWN',
               courseCompletionDate: startOfDay('2016-07-15'),
               coursePlannedEndDate: startOfDay('2016-12-23'),
@@ -409,10 +392,12 @@ describe('curiousService', () => {
           TEMPORARILY_WITHDRAWN: [],
         },
         coursesCompletedInLast12Months: [],
+        hasCoursesCompletedMoreThan12MonthsAgo: expect.any(Function),
+        hasWithdrawnOrInProgressCourses: expect.any(Function),
       }
 
       // When
-      const actual = await curiousService.getPrisonerInPrisonCourses(prisonNumber, username)
+      const actual = await curiousService.getPrisonerInPrisonCourses(prisonNumber)
 
       // Then
       expect(actual).toEqual(expected)
@@ -434,12 +419,11 @@ describe('curiousService', () => {
       } as InPrisonCourseRecords
 
       // When
-      const actual = await curiousService.getPrisonerInPrisonCourses(prisonNumber, username)
+      const actual = await curiousService.getPrisonerInPrisonCourses(prisonNumber)
 
       // Then
       expect(actual).toEqual(expected)
       expect(curiousClient.getLearnerEducationPage).toHaveBeenCalledWith(prisonNumber, 0)
-      expect(prisonService.getAllPrisonNamesById).not.toHaveBeenCalled()
     })
 
     it('should not get In Prison Courses given the Curious API request for page 2 returns an error response', async () => {
@@ -460,13 +444,12 @@ describe('curiousService', () => {
       } as InPrisonCourseRecords
 
       // When
-      const actual = await curiousService.getPrisonerInPrisonCourses(prisonNumber, username)
+      const actual = await curiousService.getPrisonerInPrisonCourses(prisonNumber)
 
       // Then
       expect(actual).toEqual(expected)
       expect(curiousClient.getLearnerEducationPage).toHaveBeenCalledWith(prisonNumber, 0)
       expect(curiousClient.getLearnerEducationPage).toHaveBeenCalledWith(prisonNumber, 1)
-      expect(prisonService.getAllPrisonNamesById).not.toHaveBeenCalled()
     })
 
     it('should handle retrieval of In Prison Courses given Curious API client returns null indicating not found error for the learner education', async () => {
@@ -475,7 +458,6 @@ describe('curiousService', () => {
 
       const expected: InPrisonCourseRecords = {
         problemRetrievingData: false,
-        prisonNumber,
         totalRecords: 0,
         coursesByStatus: {
           COMPLETED: [],
@@ -484,10 +466,12 @@ describe('curiousService', () => {
           TEMPORARILY_WITHDRAWN: [],
         },
         coursesCompletedInLast12Months: [],
+        hasCoursesCompletedMoreThan12MonthsAgo: expect.any(Function),
+        hasWithdrawnOrInProgressCourses: expect.any(Function),
       }
 
       // When
-      const actual = await curiousService.getPrisonerInPrisonCourses(prisonNumber, username)
+      const actual = await curiousService.getPrisonerInPrisonCourses(prisonNumber)
 
       // Then
       expect(actual).toEqual(expected)

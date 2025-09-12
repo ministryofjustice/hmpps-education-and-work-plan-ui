@@ -5,7 +5,6 @@ import type { InPrisonCourse } from 'viewModels'
 const toInPrisonCourse = (apiLearnerEducation: LearnerEducation): InPrisonCourse => {
   return {
     prisonId: apiLearnerEducation.establishmentId,
-    prisonName: apiLearnerEducation.establishmentName,
     courseCode: apiLearnerEducation.courseCode,
     courseName: apiLearnerEducation.courseName,
     courseStartDate: startOfDay(parseISO(apiLearnerEducation.learningStartDate)),

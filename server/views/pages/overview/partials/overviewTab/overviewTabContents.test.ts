@@ -1,6 +1,6 @@
 import nunjucks from 'nunjucks'
 import * as cheerio from 'cheerio'
-import { parseISO, startOfDay } from 'date-fns'
+import { startOfDay } from 'date-fns'
 import aValidPrisonerSummary from '../../../../../testsupport/prisonerSummaryTestDataBuilder'
 import formatDate from '../../../../../filters/formatDateFilter'
 import formatFunctionalSkillTypeFilter from '../../../../../filters/formatFunctionalSkillTypeFilter'
@@ -8,6 +8,7 @@ import formatInductionExemptionReasonFilter from '../../../../../filters/formatI
 import { Result } from '../../../../../utils/result/result'
 import validFunctionalSkills from '../../../../../testsupport/functionalSkillsTestDataBuilder'
 import filterArrayOnPropertyFilter from '../../../../../filters/filterArrayOnPropertyFilter'
+import validInPrisonCourseRecords from '../../../../../testsupport/inPrisonCourseRecordsTestDataBuilder'
 
 const njkEnv = nunjucks.configure([
   'node_modules/govuk-frontend/govuk/',
@@ -29,6 +30,7 @@ njkEnv //
 const prisonerSummary = aValidPrisonerSummary()
 const prisonNamesById = Result.fulfilled({ BXI: 'Brixton (HMP)', MDI: 'Moorland (HMP & YOI)' })
 const prisonerFunctionalSkills = Result.fulfilled(validFunctionalSkills())
+const curiousInPrisonCourses = validInPrisonCourseRecords()
 
 const template = 'overviewTabContents.njk'
 
@@ -48,25 +50,7 @@ const templateParams = {
     lastUpdatedDate: new Date('2024-01-21T13:42:01.401Z'),
     lastUpdatedAtPrisonName: 'Brixton (HMP)',
   },
-  inPrisonCourses: {
-    problemRetrievingData: false,
-    coursesCompletedInLast12Months: [
-      {
-        prisonId: 'BXI',
-        prisonName: 'Brixton (HMP)',
-        courseName: 'Basic English',
-        courseCode: 'ENG_01',
-        isAccredited: true,
-        courseStartDate: parseISO('2022-12-01T00:00:00Z'),
-        courseCompletionDate: parseISO('2023-06-15T00:00:00Z'),
-        courseStatus: 'COMPLETED',
-        grade: 'Pass',
-        source: 'CURIOUS',
-      },
-    ],
-    hasWithdrawnOrInProgressCourses: false,
-    hasCoursesCompletedMoreThan12MonthsAgo: false,
-  },
+  curiousInPrisonCourses,
   sessionHistory: {
     problemRetrievingData: false,
     counts: {
