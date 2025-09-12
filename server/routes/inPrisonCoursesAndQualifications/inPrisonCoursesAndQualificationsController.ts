@@ -1,16 +1,23 @@
 import { RequestHandler } from 'express'
-import InPrisonCoursesAndQualificationsView from './inPrisonCoursesAndQualificationsView'
 
 export default class InPrisonCoursesAndQualificationsController {
   getInPrisonCoursesAndQualificationsViewForPlp: RequestHandler = async (req, res): Promise<void> => {
-    const { prisonerSummary, curiousInPrisonCourses } = res.locals
-    const view = new InPrisonCoursesAndQualificationsView(prisonerSummary, curiousInPrisonCourses)
-    res.render('pages/inPrisonCoursesAndQualifications/plpTemplate', { ...view.renderArgs })
+    const { prisonerSummary, curiousInPrisonCourses, prisonNamesById } = res.locals
+
+    res.render('pages/inPrisonCoursesAndQualifications/plpTemplate', {
+      prisonerSummary,
+      prisonNamesById,
+      curiousInPrisonCourses,
+    })
   }
 
   getInPrisonCoursesAndQualificationsViewForDps: RequestHandler = async (req, res): Promise<void> => {
-    const { prisonerSummary, curiousInPrisonCourses } = res.locals
-    const view = new InPrisonCoursesAndQualificationsView(prisonerSummary, curiousInPrisonCourses)
-    res.render('pages/inPrisonCoursesAndQualifications/dpsTemplate', { ...view.renderArgs })
+    const { prisonerSummary, curiousInPrisonCourses, prisonNamesById } = res.locals
+
+    res.render('pages/inPrisonCoursesAndQualifications/dpsTemplate', {
+      prisonerSummary,
+      prisonNamesById,
+      curiousInPrisonCourses,
+    })
   }
 }

@@ -7,6 +7,7 @@ context('In Prison Courses and Qualifications', () => {
     const prisonNumber = 'G6115VJ'
 
     beforeEach(() => {
+      cy.task('stubGetAllPrisons')
       cy.signInAsUserWithContributorAuthorityToArriveOnPrisonerListPage()
     })
 
@@ -90,6 +91,7 @@ context('In Prison Courses and Qualifications', () => {
   context('DPS user', () => {
     beforeEach(() => {
       cy.task('reset')
+      cy.task('stubGetAllPrisons')
       cy.task('stubSignIn', { roles: ['ROLE_SOME_NON_PLP_ROLE'] })
       cy.signIn()
     })

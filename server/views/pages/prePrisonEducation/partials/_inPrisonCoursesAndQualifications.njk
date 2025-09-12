@@ -16,11 +16,12 @@
       </thead>
       <tbody class="govuk-table__body">
       {% for course in completedCourses %}
+        {% set prisonName = prisonNamesById[course.prisonId] | default(course.prisonId) %}
         <tr class="govuk-table__row">
           <td class="govuk-table__cell">{{ course.courseName }}</td>
           <td class="govuk-table__cell"> {{ course.isAccredited | formatIsAccredited }}</td>
-          <td class="govuk-table__cell">{{ course.prisonName }}</td>
-          <td class="govuk-table__cell">{{ course.courseCompletionDate | formatDate('D MMM YYYY') }}</td>
+          <td class="govuk-table__cell">{{ prisonName }}</td>
+          <td class="govuk-table__cell">{{ course.courseCompletionDate | formatDate('d MMM yyyy') }}</td>
           <td class="govuk-table__cell"> {{ course.grade }}</td>
         </tr>
       {% endfor %}
